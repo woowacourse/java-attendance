@@ -12,6 +12,10 @@ public class AttendanceBook {
         this.attendanceRecord = attendanceRecord;
     }
 
+    public AttendanceLog findAttendanceLogByCrew(Crew crew) {
+        return attendanceRecord.get(crew);
+    }
+
     //1. 출석등록
     public Attendance registerAttendance(Crew crew, LocalDateTime newAttendanceDateTime) {
         validateCrewExistance(crew);

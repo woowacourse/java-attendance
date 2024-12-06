@@ -14,7 +14,7 @@ public class FileReader {
 
     private static final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
 
-    public void readCSV() {
+    public AttendanceBook readCSV() {
         File file = new File("src/main/resources/attendances.csv");
 
         try (BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(file)))) {
@@ -34,9 +34,10 @@ public class FileReader {
                 crewAttendanceLogRecord.put(crew, attendanceLog);
             }
 
-            new AttendanceBook(crewAttendanceLogRecord);
+            return new AttendanceBook(crewAttendanceLogRecord);
         } catch (Exception e) {
             e.printStackTrace();
         }
+        return null;
     }
 }
