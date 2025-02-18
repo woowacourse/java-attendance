@@ -23,4 +23,13 @@ public class AttendanceTest {
             crew.attendance(LocalDate.now(), LocalTime.of(10, 01));
         }).isInstanceOf(AlreadyAttendanceException.class);
     }
+
+    @Test
+    void 닉네임과_수정날짜와_등교시간으로_기록을_수정한다() {
+        Crews crews = new Crews();
+        crews.add(new Crew("pobi"));
+        Crew crew = crews.get("pobi");
+        crew.attendance(LocalDate.now(), LocalTime.of(10, 00));
+        crew.modifyAttendance(LocalDate.now(), LocalTime.of(10, 10));
+    }
 }
