@@ -27,4 +27,9 @@ public class Attendance {
         return day.isAbsent(attendanceTime);
     }
 
+    public AttendanceDto toDto() {
+        return new AttendanceDto(isLate, isAbsent);
+    }
+
+
 }
