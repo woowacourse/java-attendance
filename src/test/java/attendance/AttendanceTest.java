@@ -99,4 +99,6 @@ public class AttendanceTest {
     void test13() {
         assertThatCode(() -> Attendance.method2(24)).doesNotThrowAnyException();
     }
+
+
 }
