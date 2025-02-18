@@ -1,9 +1,11 @@
 package attendance.domain;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -31,6 +33,18 @@ class AttendanceTest {
         assertThatThrownBy(() -> new Attendance(crew, LocalDateTime.of(2025, 2, 18, hour, minute)))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("%02d:%02d은 캠퍼스 운영 시간이 아닙니다.", hour, minute);
+    }
+
+    @Test
+    void 변경_시간을_알려주면_출석_시간을_수정한다() {
+        // Given
+        Attendance attendance = new Attendance(crew, LocalDateTime.of(2025, 2, 18, 9, 0));
+
+        // When
+        attendance.changeAttendanceTime(LocalTime.of(10, 30));
+
+        // Then
+        assertThat(attendance).extracting("attendanceDateTime").isEqualTo(LocalDateTime.of(2025, 2, 18, 10, 30));
     }
 
 }
