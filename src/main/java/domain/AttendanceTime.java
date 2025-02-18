@@ -2,6 +2,7 @@ package domain;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 
 public class AttendanceTime {
 
@@ -15,5 +16,15 @@ public class AttendanceTime {
 
     public boolean checkSameDate(LocalDate attendanceDate) {
         return this.attendanceDateTime.toLocalDate().equals(attendanceDate);
+    }
+
+    public LocalDateTime getAttendanceDateTime() {
+        return attendanceDateTime;
+    }
+
+    public void updateAttendanceDateTime(LocalTime newTime) {
+        this.attendanceDateTime = LocalDateTime.of(attendanceDateTime.getYear(), attendanceDateTime.getMonth(),
+                attendanceDateTime.getDayOfMonth(), newTime.getHour(), newTime.getMinute());
+        this.attendanceStatus = AttendanceStatus.findStatus(attendanceDateTime);
     }
 }
