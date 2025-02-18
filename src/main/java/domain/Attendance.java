@@ -7,20 +7,18 @@ import java.time.LocalTime;
 
 public class Attendance {
 
-    private Crew crew;
     private LocalDateTime dateTime;
     private String status;
 
-    private Attendance(Crew crew, LocalDateTime dateTime) {
+    private Attendance(LocalDateTime dateTime) {
         validateDayOfWeek(dateTime);
         validateHoliday(dateTime);
         setStatus(dateTime);
-        this.crew = crew;
         this.dateTime = dateTime;
     }
 
-    public static Attendance of(Crew crew, LocalDateTime dateTime) {
-        return new Attendance(crew, dateTime);
+    public static Attendance of(LocalDateTime dateTime) {
+        return new Attendance(dateTime);
     }
 
     private void validateDayOfWeek(LocalDateTime dateTime) {

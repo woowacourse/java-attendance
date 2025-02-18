@@ -7,25 +7,18 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
 public class AttendanceTest {
-    private Crew crew;
-
-    @BeforeEach
-    void setUp() {
-        crew = new Crew("이든");
-    }
 
     @Test
     void 닉네임과_등교시간으로_출석을_한다() {
         LocalTime time = LocalTime.of(9, 59);
         LocalDateTime localDateTime = LocalDateTime.of(LocalDate.now(), time);
 
-        assertThatCode(() -> Attendance.of(crew, localDateTime))
+        assertThatCode(() -> Attendance.of(localDateTime))
             .doesNotThrowAnyException();
     }
 
@@ -36,7 +29,7 @@ public class AttendanceTest {
         LocalDate saturday = LocalDate.of(2024, 12, 14);
         LocalDateTime localDateTime = LocalDateTime.of(saturday, time);
 
-        assertThatThrownBy(() -> Attendance.of(crew, localDateTime))
+        assertThatThrownBy(() -> Attendance.of(localDateTime))
             .isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -47,7 +40,7 @@ public class AttendanceTest {
         LocalDate monday = LocalDate.of(2024, 12, 9);
         LocalDateTime localDateTime = LocalDateTime.of(monday, time);
 
-        assertThatCode(() -> Attendance.of(crew, localDateTime))
+        assertThatCode(() -> Attendance.of(localDateTime))
             .doesNotThrowAnyException();
     }
 
@@ -58,7 +51,7 @@ public class AttendanceTest {
 
         LocalDate monday = LocalDate.of(2024, 12, 9);
         LocalDateTime localDateTime = LocalDateTime.of(monday, time);
-        Attendance attendance = Attendance.of(crew, localDateTime);
+        Attendance attendance = Attendance.of(localDateTime);
 
         assertThat(attendance.getStatus()).isEqualTo(expectedStatus);
     }
@@ -70,7 +63,7 @@ public class AttendanceTest {
 
         LocalDate tuesday = LocalDate.of(2024, 12, 10);
         LocalDateTime localDateTime = LocalDateTime.of(tuesday, time);
-        Attendance attendance = Attendance.of(crew, localDateTime);
+        Attendance attendance = Attendance.of(localDateTime);
 
         assertThat(attendance.getStatus()).isEqualTo(expectedStatus);
     }
@@ -82,7 +75,7 @@ public class AttendanceTest {
         LocalDate holiday = LocalDate.of(2024, 12, 25);
         LocalDateTime localDateTime = LocalDateTime.of(holiday, time);
 
-        assertThatThrownBy(() -> Attendance.of(crew, localDateTime))
+        assertThatThrownBy(() -> Attendance.of(localDateTime))
             .isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -91,7 +84,7 @@ public class AttendanceTest {
         LocalDate previousDate = LocalDate.of(2024, 12, 3);
         LocalTime previousTime = LocalTime.of(10, 7);
         LocalTime updatedTime = LocalTime.of(9, 58);
-        Attendance attendance = Attendance.of(crew, LocalDateTime.of(previousDate, previousTime));
+        Attendance attendance = Attendance.of(LocalDateTime.of(previousDate, previousTime));
 
         attendance.update(LocalDateTime.of(previousDate, updatedTime));
 
