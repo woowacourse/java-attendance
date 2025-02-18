@@ -11,7 +11,8 @@ public class FileLoaderTest {
     @Test
     void test1(){
         String data = "쿠키,2024-12-13 10:08";
-        Assertions.assertThatCode(() -> FileLoader.load(data))
+
+        Assertions.assertThat(FileLoader.load(data))
                 .isNotNull()
                 .isInstanceOf(Attendance.class);
     }
