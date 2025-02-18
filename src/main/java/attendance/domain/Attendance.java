@@ -10,17 +10,20 @@ import java.time.format.TextStyle;
 import java.util.Locale;
 
 public class Attendance {
-
     private static final LocalTime OPERATION_START_TIME = LocalTime.of(8, 0);
     private static final LocalTime OPERATION_END_TIME = LocalTime.of(23, 0);
 
     private final Crew crew;
-    private final LocalDateTime attendanceDateTime;
+    private LocalDateTime attendanceDateTime;
 
     public Attendance(final Crew crew, final LocalDateTime attendanceDateTime) {
         validate(attendanceDateTime);
         this.crew = crew;
         this.attendanceDateTime = attendanceDateTime;
+    }
+
+    public void changeAttendanceTime(LocalTime changeTime) {
+        this.attendanceDateTime = LocalDateTime.of(this.attendanceDateTime.toLocalDate(), changeTime);
     }
 
     private void validate(final LocalDateTime attendanceDateTime) {
@@ -50,5 +53,4 @@ public class Attendance {
         DayOfWeek attendanceDayOfWeek = attendanceDateTime.getDayOfWeek();
         return attendanceDayOfWeek.equals(SUNDAY) || attendanceDayOfWeek.equals(SATURDAY);
     }
-
 }
