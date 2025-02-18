@@ -2,12 +2,26 @@ package domain;
 
 import java.time.DayOfWeek;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.TextStyle;
+import java.util.Locale;
 
 public class Attendance {
+    private final LocalDateTime dateAndTime;
     private final String state;
 
     public Attendance(LocalDateTime localDateTime) {
+        dateAndTime = localDateTime;
         state = checkAttendanceState(localDateTime);
+    }
+
+    public String printAttendance(){
+        String str = "";
+        str += dateAndTime.format(DateTimeFormatter.ofPattern("MM월 dd일 "));
+        str += dateAndTime.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.KOREAN) + " ";
+        str += dateAndTime.format(DateTimeFormatter.ofPattern("HH:mm ", Locale.KOREAN));
+        str += this.state;
+        return str;
     }
 
     private String checkAttendanceState(LocalDateTime localDateTime) {
@@ -28,20 +42,25 @@ public class Attendance {
             startHour = 13;
         }
         if(hour < startHour){
-            return "출석";
+            return "(출석)";
         }
         if (hour == startHour) {
             if (minute <= 5) {
-                return "출석";
+                return "(출석)";
             }
             if (minute <= 30) {
-                return "지각";
+                return "(지각)";
             }
         }
-        return "결석";
+        return "(결석)";
     }
 
     public String getState() {
         return state;
     }
+
+    public boolean isEqualDate(LocalDateTime localDateTime) {
+        return dateAndTime.toLocalDate().isEqual(localDateTime.toLocalDate());
+    }
+
 }
