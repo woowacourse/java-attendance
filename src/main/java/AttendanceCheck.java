@@ -53,4 +53,14 @@ public class AttendanceCheck {
             throw new IllegalArgumentException("[ERROR] 입력된 시간 형식이 적절하지 않습니다.");
         }
     }
+
+    public static LocalTime getStandardTime(LocalDate date) {
+        if (date.getDayOfWeek().getValue() == 1) {
+            return LocalTime.of(13, 0);
+        }
+        if (date.getDayOfWeek().getValue() == 6 || date.getDayOfWeek().getValue() == 7) {
+            throw new IllegalArgumentException("[ERROR] 오늘은 등교일이 아닙니다.");
+        }
+        return LocalTime.of(10, 0);
+    }
 }
