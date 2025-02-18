@@ -9,9 +9,8 @@ import java.util.Optional;
 public class Attendance {
     private final List<AttendanceDate> attendanceDates = new ArrayList<>();
 
-    public Attendance(List<LocalDateTime> localDateTimes) {
+    public Attendance(List<LocalDateTime> localDateTimes, LocalDate endDate) {
         LocalDate startDate = LocalDate.of(2024, 12, 2);
-        LocalDate endDate = LocalDate.now();
 
         for (LocalDate cursorDate = startDate; cursorDate.isBefore(endDate); cursorDate = cursorDate.plusDays(1)) {
             if (cursorDate.getDayOfWeek().getValue() > 5 || Holiday.has(cursorDate)) {
@@ -40,5 +39,30 @@ public class Attendance {
         }
 
         throw new IllegalArgumentException("");
+    }
+
+    public int countAbsence() {
+        return (int) attendanceDates.stream()
+                .filter(attendanceDate -> attendanceDate.calculateAttendanceState()
+                        .equals(AttendanceState.ABSENCE))
+                .count();
+    }
+
+    public int countAttendance() {
+        return (int) attendanceDates.stream()
+                .filter(attendanceDate -> attendanceDate.calculateAttendanceState()
+                        .equals(AttendanceState.ATTENDANCE))
+                .count();
+    }
+
+    public int countTardy() {
+        return (int) attendanceDates.stream()
+                .filter(attendanceDate -> attendanceDate.calculateAttendanceState()
+                        .equals(AttendanceState.TARDY))
+                .count();
+    }
+
+    public int countAbsenceIncludingTardy() {
+        return countAbsence() + (countTardy() / 3);
     }
 }

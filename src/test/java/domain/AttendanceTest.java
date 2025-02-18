@@ -1,5 +1,6 @@
 package domain;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import org.assertj.core.api.Assertions;
@@ -14,9 +15,64 @@ public class AttendanceTest {
         List<LocalDateTime> localDateTimes = List.of(LocalDateTime.of(2024, 12, 2, 10, 0));
 
         // when
-        Attendance attendance = new Attendance(localDateTimes);
+        Attendance attendance = new Attendance(localDateTimes, LocalDate.now());
 
         // then
         Assertions.assertThat(attendance).isInstanceOf(Attendance.class);
     }
+
+    @DisplayName("학생 한 명의 결석횟수")
+    @Test
+    void test2() {
+        List<LocalDateTime> localDateTimes = List.of(LocalDateTime.of(2024, 12, 2, 10, 0));
+
+        Attendance attendance = new Attendance(localDateTimes, LocalDate.now());
+
+        Assertions.assertThat(attendance.countAbsence()).isEqualTo(54);
+    }
+
+    @DisplayName("학생 한 명의 출석 횟수")
+    @Test
+    void test3() {
+        List<LocalDateTime> localDateTimes = List.of(LocalDateTime.of(2024, 12, 2, 10, 0));
+
+        Attendance attendance = new Attendance(localDateTimes, LocalDate.now());
+
+        Assertions.assertThat(attendance.countAttendance()).isEqualTo(1);
+    }
+
+    @DisplayName("학생 한 명의 지각 횟수")
+    @Test
+    void test4() {
+        List<LocalDateTime> localDateTimes = List.of(LocalDateTime.of(2024, 12, 2, 10, 0));
+
+        Attendance attendance = new Attendance(localDateTimes, LocalDate.now());
+
+        Assertions.assertThat(attendance.countTardy()).isEqualTo(0);
+    }
+
+    @DisplayName("결석이 여섯 번 이상일 때 제적대상자임을 반환한다")
+    @Test
+    void test5() {
+        List<LocalDateTime> localDateTimes = List.of(LocalDateTime.of(2024, 12, 2, 10, 0));
+        Attendance attendance = new Attendance(localDateTimes, LocalDate.now());
+
+        AttendanceWarning attendanceWarning = AttendanceWarning.determineAttendanceWarning(
+                attendance.countAbsenceIncludingTardy());
+
+        Assertions.assertThat(attendanceWarning).isEqualTo(AttendanceWarning.WEEDING);
+    }
+
+    @DisplayName("결석이 두 번일 때 경고대상자임을 반환한다")
+    @Test
+    void test6() {
+        List<LocalDateTime> localDateTimes = List.of(LocalDateTime.of(2024, 12, 2, 10, 0));
+        Attendance attendance = new Attendance(localDateTimes, LocalDate.of(2024, 12, 5));
+
+        AttendanceWarning attendanceWarning = AttendanceWarning.determineAttendanceWarning(
+                attendance.countAbsenceIncludingTardy());
+
+        Assertions.assertThat(attendanceWarning).isEqualTo(AttendanceWarning.WARNING);
+    }
+
 }
