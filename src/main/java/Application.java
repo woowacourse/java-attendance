@@ -12,6 +12,7 @@ public class Application {
         AttendanceController attendanceController = new AttendanceController
             (new InputView(), new OutputView(),attendanceRepository);
 
+        fileController.initializeFile("src/main/resources/attendances.csv");
         attendanceController.run();
     }
 }
