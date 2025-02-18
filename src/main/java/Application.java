@@ -1,8 +1,11 @@
-import java.util.List;
+import java.util.Scanner;
 
 public class Application {
     public static void main(String[] args) {
-        List<String> students = File.readFile("src/main/resources/attendances.csv");
-        
+        final Scanner scanner = new Scanner(System.in);
+        final InputView inputView = new InputView(scanner);
+        final AttendacneController attendacneController = new AttendacneController(inputView);
+        attendacneController.run();
+        scanner.close();
     }
 }
