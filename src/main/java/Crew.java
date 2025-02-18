@@ -14,6 +14,9 @@ public class Crew {
     }
 
     public void attendance(LocalDate date, LocalTime time) {
+        if (attendanceHistory.stream().anyMatch(localDateTime -> localDateTime.toLocalDate().equals(date))) {
+            throw new AlreadyAttendanceException("이미 출석 처리되어 있습니다. 수정 기능을 이용해주세요.");
+        }
         attendanceHistory.add(LocalDateTime.of(date, time));
     }
 

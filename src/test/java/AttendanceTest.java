@@ -18,6 +18,7 @@ public class AttendanceTest {
     @Test
     void 이미_출석한_경우_예외를_던진다() {
         Crew crew = new Crew("pobi");
+        crew.attendance(LocalDate.now(), LocalTime.of(10, 01));
         Assertions.assertThatThrownBy(() -> {
             crew.attendance(LocalDate.now(), LocalTime.of(10, 01));
         }).isInstanceOf(AlreadyAttendanceException.class);
