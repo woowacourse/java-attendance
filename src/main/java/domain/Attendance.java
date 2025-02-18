@@ -17,7 +17,7 @@ public class Attendance {
     private LocalDateTime attendanceTime;
     private String attendanceStatus;
     
-    public Attendance(String name, LocalDateTime attendanceTime) {
+    public Attendance(LocalDateTime attendanceTime) {
         validateDate(attendanceTime.toLocalDate());
         validateTime(attendanceTime.toLocalTime());
         this.attendanceTime = attendanceTime;

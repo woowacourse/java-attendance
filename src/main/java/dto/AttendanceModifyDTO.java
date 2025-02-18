@@ -38,4 +38,15 @@ public class AttendanceModifyDTO {
     public String getNewAttendanceStatus() {
         return newAttendanceStatus;
     }
+    
+    @Override
+    public String toString() {
+        return "AttendanceModifyDTO{" +
+                "attendanceDate=" + attendanceDate +
+                ", oldAttendanceTime=" + oldAttendanceTime +
+                ", oldAttendanceStatus='" + oldAttendanceStatus + '\'' +
+                ", newAttendanceTime=" + newAttendanceTime +
+                ", newAttendanceStatus='" + newAttendanceStatus + '\'' +
+                '}';
+    }
 }

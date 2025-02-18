@@ -23,7 +23,7 @@ public class AttendanceTest {
             LocalDateTime localDateTime = LocalDateTime.of(2024, 12, 3, 10, 5);
             
             // when
-            Attendance attendance = new Attendance(inputName, localDateTime);
+            Attendance attendance = new Attendance(localDateTime);
             
             // then
             assertThat(attendance).extracting("attendanceTime").isEqualTo(LocalDateTime.of(2024, 12, 3, 10, 5));
@@ -37,7 +37,7 @@ public class AttendanceTest {
             LocalDateTime localDateTime = LocalDateTime.of(2024, 12, 3, 10, 6);
             
             // when
-            Attendance attendance = new Attendance(inputName, localDateTime);
+            Attendance attendance = new Attendance(localDateTime);
             
             // then
             assertThat(attendance).extracting("attendanceStatus").isEqualTo("지각");
@@ -50,7 +50,7 @@ public class AttendanceTest {
             LocalDateTime localDateTime = LocalDateTime.of(2024, 12, 3, 10, 30);
             
             // when
-            Attendance attendance = new Attendance(inputName, localDateTime);
+            Attendance attendance = new Attendance(localDateTime);
             
             // then
             assertThat(attendance).extracting("attendanceStatus").isEqualTo("지각");
@@ -63,7 +63,7 @@ public class AttendanceTest {
             LocalDateTime localDateTime = LocalDateTime.of(2024, 12, 3, 10, 31);
             
             // when
-            Attendance attendance = new Attendance(inputName, localDateTime);
+            Attendance attendance = new Attendance(localDateTime);
             
             // then
             assertThat(attendance).extracting("attendanceStatus").isEqualTo("결석");
@@ -76,7 +76,7 @@ public class AttendanceTest {
             LocalDateTime localDateTime = LocalDateTime.of(2024, 12, 8, 10, 30);
             
             // expected
-            assertThatThrownBy(() -> new Attendance(inputName, localDateTime))
+            assertThatThrownBy(() -> new Attendance(localDateTime))
                     .isExactlyInstanceOf(IllegalArgumentException.class)
                     .hasMessage("출석 가능한 날짜가 아닙니다.");
         }
@@ -88,7 +88,7 @@ public class AttendanceTest {
             LocalDateTime localDateTime = LocalDateTime.of(2024, 12, 3, 7, 59);
             
             // expected
-            assertThatThrownBy(() -> new Attendance(inputName, localDateTime))
+            assertThatThrownBy(() -> new Attendance(localDateTime))
                     .isExactlyInstanceOf(IllegalArgumentException.class)
                     .hasMessage("출석 가능한 시간이 아닙니다.");
         }
@@ -98,7 +98,7 @@ public class AttendanceTest {
             // given
             String inputName = "Lemon";
             LocalDateTime localDateTime = LocalDateTime.of(2024, 12, 3, 9, 45);
-            Attendance attendance = new Attendance(inputName, localDateTime);
+            Attendance attendance = new Attendance(localDateTime);
             
             // when
             AttendanceResultDTO result = attendance.createAttendanceResult();
@@ -117,7 +117,7 @@ public class AttendanceTest {
             //given
             String inputName = "Lemon";
             LocalDateTime localDateTime = LocalDateTime.of(2024, 12, 3, 9, 45);
-            Attendance attendance = new Attendance(inputName, localDateTime);
+            Attendance attendance = new Attendance(localDateTime);
             LocalTime newAttendanceTime = LocalTime.of(10, 6);
             
             //when
