@@ -23,6 +23,12 @@ public class AttendanceRecord {
         this.attendance = Attendance.getAttendanceStatus(Day.getDay(date), time);
     }
 
+    public AttendanceRecord(LocalDate date) {
+        this.date = date;
+        this.time = LocalTime.of(0, 0);
+        this.attendance = Attendance.ABSENT;
+    }
+
     private void validateDate(LocalDate date) {
         if (Day.checkHoliday(date)) {
             throw new IllegalArgumentException(String.format("[ERROR] %d월 %d일 %s은 등교일이 아닙니다.",
@@ -30,5 +36,9 @@ public class AttendanceRecord {
                     date.getDayOfMonth(),
                     Day.getDay(date).getName()));
         }
+    }
+
+    public LocalDate getDate() {
+        return date;
     }
 }
