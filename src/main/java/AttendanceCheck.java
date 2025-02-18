@@ -1,3 +1,5 @@
+import domain.DayOfWeek;
+
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -18,38 +20,14 @@ public class AttendanceCheck {
     }
 
     public static String convertKorean(LocalDate localDate) {
-        if (localDate.getDayOfWeek().getValue() == 1) {
-            return "월요일";
-        }
-        if (localDate.getDayOfWeek().getValue() == 2) {
-            return "화요일";
-        }
-        if (localDate.getDayOfWeek().getValue() == 3) {
-            return "수요일";
-        }
-        if (localDate.getDayOfWeek().getValue() == 4) {
-            return "목요일";
-        }
-
-        if (localDate.getDayOfWeek().getValue() == 5) {
-            return "금요일";
-        }
-
-        if (localDate.getDayOfWeek().getValue() == 6) {
-            return "토요일";
-        }
-
-        return "일요일";
-
+        return DayOfWeek.getNameById(localDate.getDayOfWeek().getValue());
     }
 
-    public static LocalTime getStandardTime(LocalDate date) {
-        if (date.getDayOfWeek().getValue() == 1) {
-            return LocalTime.of(13, 0);
-        }
-        if (date.getDayOfWeek().getValue() == 6 || date.getDayOfWeek().getValue() == 7) {
+    public static LocalTime getStandardTime(LocalDate localDate) {
+        try {
+            return DayOfWeek.getStandardTimeById(localDate.getDayOfWeek().getValue());
+        } catch (Exception e) {
             throw new IllegalArgumentException("[ERROR] 오늘은 등교일이 아닙니다.");
         }
-        return LocalTime.of(10, 0);
     }
 }
