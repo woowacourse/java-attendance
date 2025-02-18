@@ -5,7 +5,7 @@ import java.util.LinkedHashMap;
 
 public class Student {
 
-    LinkedHashMap<LocalDateTime, AttendanceStatus> record;
+    LinkedHashMap<LocalDateTime, AttendanceStatus> record = new LinkedHashMap<>();
     String name;
     int absent;
     int attendance;
@@ -24,14 +24,25 @@ public class Student {
     public void updateState(LocalDateTime localDateTime) {
         DayOfWeek dayOfWeek = localDateTime.getDayOfWeek();
         int day = dayOfWeek.getValue();
-
-        if (day == 1) {
-
-        }
-
         if (day == 6 || day == 7) {
-
+            return;
         }
+
+        AttendanceStatus attendanceStatus = AttendanceCalculatorByDay.
+                attendanceCalculator(day, LocalTime.from(localDateTime));
+
+        record.putIfAbsent(localDateTime, attendanceStatus);
+
+        assert attendanceStatus != null;
+        if (attendanceStatus.equals(AttendanceStatus.ATTENDANCE)){
+            attendance++;
+            return;
+        }
+        if (attendanceStatus.equals(AttendanceStatus.LATE)){
+            late++;
+            return;
+        }
+        absent++;
 
     }
 }
