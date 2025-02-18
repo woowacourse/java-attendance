@@ -1,48 +1,33 @@
 package model;
 
 import attendance.model.Attendence;
+import java.time.LocalDateTime;
 import org.assertj.core.api.Assertions;
-import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 public class AttendenceTest {
 
-    @DisplayName("출석을 생성한다.")
     @Test
-    void test1 (){
-        Attendence attendence = Attendence.출석;
-        Assertions.assertThat(attendence).isNotNull();
-    }
+    void test7() {
+        LocalDateTime dateTime = LocalDateTime.of(2024, 12, 10, 10, 0);
 
-    @DisplayName("출석을 생성한다.")
-    @Test
-    void test2 (){
-        Attendence attendence = Attendence.지각;
-        Assertions.assertThat(attendence).isNotNull();
-    }
-
-    @DisplayName("출석을 생성한다.")
-    @Test
-    void test3 (){
-        Attendence attendence = Attendence.결석;
-        Assertions.assertThat(attendence).isNotNull();
+        Attendence attendence = Attendence.from(dateTime);
+        Assertions.assertThat(attendence).isEqualTo(Attendence.출석);
     }
 
     @Test
-    void test4() {
-            Attendence attendence = Attendence.from(5);
-            Assertions.assertThat(attendence).isEqualTo(Attendence.출석);
-    }
+    void test8() {
+        LocalDateTime dateTime = LocalDateTime.of(2024, 12, 10, 10, 6);
 
-    @Test
-    void test5() {
-        Attendence attendence = Attendence.from(6);
+        Attendence attendence = Attendence.from(dateTime);
         Assertions.assertThat(attendence).isEqualTo(Attendence.지각);
     }
 
     @Test
-    void test6() {
-        Attendence attendence = Attendence.from(31);
+    void test9() {
+        LocalDateTime dateTime = LocalDateTime.of(2024, 12, 10, 10, 31);
+
+        Attendence attendence = Attendence.from(dateTime);
         Assertions.assertThat(attendence).isEqualTo(Attendence.결석);
     }
 

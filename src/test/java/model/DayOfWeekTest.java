@@ -1,10 +1,9 @@
 package model;
 
 import attendance.model.WoowaDayOfWeek;
-import java.time.DayOfWeek;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import org.assertj.core.api.Assertions;
-import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 public class DayOfWeekTest {
@@ -38,5 +37,13 @@ public class DayOfWeekTest {
     void test5() {
         WoowaDayOfWeek dayOfWeek = WoowaDayOfWeek.화요일;
         Assertions.assertThat(dayOfWeek.getEndTime()).isEqualTo(LocalTime.of(18, 0));
+    }
+
+    @Test
+    void test6() {
+        LocalDateTime localDateTime = LocalDateTime.of(2024, 12, 10, 10, 0);
+        WoowaDayOfWeek dayOfWeek = WoowaDayOfWeek.from(localDateTime);
+
+        Assertions.assertThat(dayOfWeek).isEqualTo(WoowaDayOfWeek.화요일);
     }
 }
