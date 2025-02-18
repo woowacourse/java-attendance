@@ -28,6 +28,12 @@
   - [ ] 출석 기록 등록
 - [ ] 출석 수정
 
+### AttendanceStatus
+- [x] 출석, 지각, 결석 구분
+
+### AttendanceTime
+- [ ] 출석 시간, 출석 상태 저장
+
 ---
 
 ## 👀 View

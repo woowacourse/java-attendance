@@ -1,0 +1,27 @@
+package domain;
+
+import java.time.DayOfWeek;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+
+public enum AttendanceStatus {
+
+    ATTEND,
+    LATE,
+    ABSENT;
+
+    public static AttendanceStatus findStatus(LocalDateTime attendanceDateTime) {
+        LocalTime startTime = LocalTime.of(10, 0);
+        if (attendanceDateTime.getDayOfWeek() == DayOfWeek.MONDAY) {
+            startTime = LocalTime.of(13, 0);
+        }
+
+        LocalTime attendanceTime = attendanceDateTime.toLocalTime();
+        if (attendanceTime.isBefore(startTime.plusMinutes(5))) {
+            return ATTEND;
+        } else if (attendanceTime.isAfter(startTime.plusMinutes(5)) && attendanceTime.isBefore(attendanceTime.plusMinutes(30))) {
+            return LATE;
+        }
+        return ABSENT;
+    }
+}
