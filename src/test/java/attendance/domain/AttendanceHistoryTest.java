@@ -8,12 +8,28 @@ import org.junit.jupiter.api.Test;
 public class AttendanceHistoryTest {
     @Test
     void create() {
-        LocalDateTime localDateTime = LocalDateTime.of(2024, 12, 26, 10, 00);
-        String attendanceResult = "출석";
-        AttendanceHistory result = new AttendanceHistory(localDateTime, attendanceResult);
+        AttendanceHistory result = new AttendanceHistory(
+                LocalDateTime.of(2024, 12, 26, 10, 00),
+                "출석"
+        );
 
         assertThat(result).isNotNull();
-        assertThat(result.getAttendanceTime()).isEqualTo(localDateTime);
-        assertThat(result.getAttendanceResult()).isEqualTo(attendanceResult);
+        assertThat(result.getAttendanceTime()).isEqualTo(LocalDateTime.of(2024, 12, 26, 10, 00));
+        assertThat(result.getAttendanceResult()).isEqualTo("출석");
+    }
+
+    @Test
+    void modify_attendance_result() {
+        AttendanceHistory result = new AttendanceHistory(
+                LocalDateTime.of(2024, 12, 26, 10, 00),
+                "출석"
+        );
+
+        result.modify(
+                LocalDateTime.of(2024, 12, 26, 11, 00),
+                "결석"
+        );
+        assertThat(result.getAttendanceTime()).isEqualTo(LocalDateTime.of(2024, 12, 26, 11, 00));
+        assertThat(result.getAttendanceResult()).isEqualTo("결석");
     }
 }

@@ -3,8 +3,8 @@ package attendance.domain;
 import java.time.LocalDateTime;
 
 public class AttendanceHistory {
-    private final LocalDateTime attendanceTime;
-    private final String attendanceResult;
+    private LocalDateTime attendanceTime;
+    private String attendanceResult;
 
     public AttendanceHistory(LocalDateTime attendanceTime, String attendanceResult) {
         this.attendanceTime = attendanceTime;
@@ -17,5 +17,10 @@ public class AttendanceHistory {
 
     public String getAttendanceResult() {
         return attendanceResult;
+    }
+
+    public void modify(LocalDateTime modifyLocalDateTime, String modifyAttendanceResult) {
+        attendanceTime = modifyLocalDateTime;
+        attendanceResult = modifyAttendanceResult;
     }
 }
