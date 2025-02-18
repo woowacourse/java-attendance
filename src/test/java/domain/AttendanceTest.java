@@ -33,7 +33,21 @@ public class AttendanceTest {
     void 해당_날짜에_출석을_저장한다() {
         LocalDate localDate = LocalDate.of(2024, 12, 10);
         LocalTime localTime = LocalTime.of(10, 04);
+
         Attendance.addAttendStatus("시소", LocalDateTime.of(localDate, localTime));
+
         assertThat(Attendance.getAttendanceTime("시소", localDate)).isEqualTo(localTime);
+    }
+
+    @Test
+    void 해당_날짜에_대한_출석을_수정한다() {
+        LocalDate attendanceDate = LocalDate.of(2024, 12, 10);
+        LocalTime attendanceTime = LocalTime.of(10, 04);
+        LocalTime modifiedTime = LocalTime.of(10, 20);
+
+        Attendance.addAttendStatus("시소", LocalDateTime.of(attendanceDate, attendanceTime));
+        Attendance.editAttendStatus("시소", LocalDateTime.of(attendanceDate, modifiedTime));
+
+        assertThat(Attendance.getAttendanceTime("시소", attendanceDate)).isEqualTo(modifiedTime);
     }
 }

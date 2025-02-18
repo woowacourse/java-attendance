@@ -44,4 +44,12 @@ public class Attendance {
     public static LocalTime getAttendanceTime(String name, LocalDate date) {
         return attendanceBook.getOrDefault(date, LocalTime.of(0, 0));
     }
+
+    public static void editAttendStatus(String name, LocalDateTime target) {
+        LocalDate date = target.toLocalDate();
+        if (!attendanceBook.containsKey(date)) {
+            throw new IllegalArgumentException();
+        }
+        attendanceBook.put(date, target.toLocalTime());
+    }
 }
