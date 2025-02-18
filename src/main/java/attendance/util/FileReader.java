@@ -27,7 +27,7 @@ public class FileReader {
 
         String line;
         while ((line = reader.readLine()) != null) {
-            List<String> attendanceRecord = Arrays.asList(line.split(""));   //TODO constant: delimiter
+            List<String> attendanceRecord = Arrays.asList(line.split(","));   //TODO constant: delimiter
             attendanceRecords.add(attendanceRecord);
         }
         return attendanceRecords;
