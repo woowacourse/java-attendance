@@ -53,7 +53,7 @@ public class AttendanceTest {
     @DisplayName("캠퍼스 운영 시간 외 예외 발생")
     @Test
     void test7() {
-        assertThatThrownBy(Attendance.method1(7, 59))
+        assertThatThrownBy(() -> Attendance.method1(7, 59))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("[ERROR] 현재 캠퍼스 운영시간이 아닙니다.");
     }
@@ -61,6 +61,6 @@ public class AttendanceTest {
     @DisplayName("캠퍼스 운영 시간 내 통과")
     @Test
     void test8() {
-        assertThatCode(Attendance.method1(8, 0)).doesNotThrowAnyException();
+        assertThatCode(() -> Attendance.method1(8, 0)).doesNotThrowAnyException();
     }
 }
