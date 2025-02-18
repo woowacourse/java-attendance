@@ -14,14 +14,12 @@ public class Attendance {
     public static final LocalTime MIN_ATTENDANCE_TIME = LocalTime.of(8, 0);
     public static final List<DayOfWeek> WEEKEND = List.of(DayOfWeek.SATURDAY, DayOfWeek.SUNDAY);
     
-    private String name;
     private LocalDateTime attendanceTime;
     private String attendanceStatus;
     
     public Attendance(String name, LocalDateTime attendanceTime) {
         validateDate(attendanceTime.toLocalDate());
         validateTime(attendanceTime.toLocalTime());
-        this.name = name;
         this.attendanceTime = attendanceTime;
         this.attendanceStatus = checkAttendanceStatus(attendanceTime);
     }
@@ -67,7 +65,7 @@ public class Attendance {
     }
     
     public AttendanceResultDTO createAttendanceResult() {
-        return new AttendanceResultDTO(name, attendanceTime, attendanceStatus);
+        return new AttendanceResultDTO(attendanceTime, attendanceStatus);
     }
     
     public AttendanceModifyDTO modifyAttendanceTime(LocalTime newAttendanceTime) {
@@ -80,7 +78,6 @@ public class Attendance {
         attendanceStatus = checkAttendanceStatus(attendanceTime);
         
         return new AttendanceModifyDTO(
-                name,
                 attendanceTime.toLocalDate(),
                 oldAttendanceTime.toLocalTime(),
                 oldAttendanceStatus,

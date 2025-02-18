@@ -26,7 +26,6 @@ public class AttendanceTest {
             Attendance attendance = new Attendance(inputName, localDateTime);
             
             // then
-            assertThat(attendance).extracting("name").isEqualTo("Lemon");
             assertThat(attendance).extracting("attendanceTime").isEqualTo(LocalDateTime.of(2024, 12, 3, 10, 5));
             assertThat(attendance).extracting("attendanceStatus").isEqualTo("출석");
         }
@@ -105,7 +104,6 @@ public class AttendanceTest {
             AttendanceResultDTO result = attendance.createAttendanceResult();
             
             //then
-            assertThat(result.getName()).isEqualTo("Lemon");
             assertThat(result.getAttendanceTime()).isEqualTo(LocalDateTime.of(2024, 12, 3, 9, 45));
             assertThat(result.getAttendanceStatus()).isEqualTo("출석");
         }
@@ -126,7 +124,6 @@ public class AttendanceTest {
             AttendanceModifyDTO result = attendance.modifyAttendanceTime(newAttendanceTime);
             
             //then
-            assertThat(result.getName()).isEqualTo("Lemon");
             assertThat(result.getAttendanceDate()).isEqualTo(LocalDate.of(2024, 12, 3));
             assertThat(result.getOldAttendanceTime()).isEqualTo(LocalTime.of(9, 45));
             assertThat(result.getOldAttendanceStatus()).isEqualTo("출석");
