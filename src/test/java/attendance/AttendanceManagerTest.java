@@ -13,10 +13,10 @@ import org.junit.jupiter.params.provider.ValueSource;
 
 import attendance.domain.AttendanceFormatter;
 import attendance.domain.AttendanceManager;
-import attendance.domain.AttendanceStatus;
+import attendance.dto.AttendanceDateDto;
 import attendance.exception.AttendanceException;
 
-public class AttendanceTest {
+public class AttendanceManagerTest {
     private AttendanceFormatter attendanceFormatter;
 
     @BeforeEach
@@ -43,10 +43,9 @@ public class AttendanceTest {
         var time = LocalDateTime.parse("2024-12-03T10:15:30");
         AttendanceManager attendanceManager = new AttendanceManager();
         attendanceManager.addAttendance(nickname, time);
-        LocalDateTime attendanceTime = attendanceManager.getAttendanceTime(nickname);
-        AttendanceStatus attendanceStatus = attendanceManager.getAttendanceStatus(nickname);
+        AttendanceDateDto attendanceResult = attendanceManager.getAttendanceResult(nickname, time);
 
-        String result = attendanceFormatter.formattedTime(attendanceTime, attendanceStatus);
+        String result = attendanceFormatter.formattedTime(attendanceResult);
         assertThat(result)
             .isEqualTo("12월 3일 화요일 10:15 (출석)");
     }
