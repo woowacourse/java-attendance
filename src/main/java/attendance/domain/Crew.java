@@ -10,4 +10,10 @@ public class Crew {
         this.lateCount = 0;
         this.absentCount = 0;
     }
+
+    // TODO count late, absent
+
+    public String getName() {
+        return crewName;
+    }
 }
