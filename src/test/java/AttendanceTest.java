@@ -1,0 +1,14 @@
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+
+import org.junit.jupiter.api.Test;
+
+public class AttendanceTest {
+
+    @Test
+    void 닉네임과_등교_시간으로_출석한다() {
+        Crew crew = new Crew("pobi");
+        crew.attendance(LocalDate.now(), LocalTime.of(10, 1));
+    }
+}
