@@ -14,4 +14,8 @@ public class Attendance {
     public LocalDateTime getAttendanceTime() {
         return attendanceTime;
     }
+
+    public String getCrewName() {
+        return crewName;
+    }
 }

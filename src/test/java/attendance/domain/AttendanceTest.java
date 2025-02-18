@@ -1,6 +1,6 @@
 package attendance.domain;
 
-import java.util.List;
+import java.util.Set;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -12,7 +12,7 @@ class AttendanceTest {
     void 명단에_없는_크루원이면_예외를_발생한다() {
 
         //given
-        List<String> names = List.of("a", "b", "c");
+        Set<String> names = Set.of("a", "b", "c");
         AttendanceBook attendanceBook = new AttendanceBook(names);
         //when
 

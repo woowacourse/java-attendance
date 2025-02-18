@@ -1,6 +1,7 @@
 package attendance.controller;
 
 import attendance.domain.Attendance;
+import attendance.domain.AttendanceBook;
 import attendance.repository.AttendanceRepository;
 import attendance.utils.FileReader;
 import attendance.view.InputView;
@@ -21,6 +22,8 @@ public class AttendanceController {
 
     public void start() {
         AttendanceRepository attendanceRepository = new AttendanceRepository(getAttendanceRecordContent());
+        AttendanceBook attendanceBook = new AttendanceBook(attendanceRepository.getUniqueNames());
+
     }
 
     private List<Attendance> getAttendanceRecordContent() {
@@ -33,9 +36,9 @@ public class AttendanceController {
             String crewName = split[0];
             LocalDateTime attendanceTime = LocalDateTime.parse(split[1],
                     DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
+
             attendances.add(new Attendance(crewName, attendanceTime));
         }
-
         return attendances;
     }
 }

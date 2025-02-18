@@ -1,12 +1,12 @@
 package attendance.domain;
 
-import java.util.List;
+import java.util.Set;
 
 public class AttendanceBook {
 
-    private final List<String> names;
+    private final Set<String> names;
 
-    public AttendanceBook(List<String> names) {
+    public AttendanceBook(Set<String> names) {
         this.names = names;
     }
 
