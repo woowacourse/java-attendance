@@ -1,3 +1,7 @@
+package repository;
+
+import domain.Crew;
+
 import java.util.Optional;
 
 public interface CrewRepository {

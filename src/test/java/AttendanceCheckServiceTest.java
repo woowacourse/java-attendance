@@ -1,10 +1,13 @@
+import domain.Attendance;
+import domain.Crew;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import repository.AttendanceRepository;
+import repository.CrewRepository;
+import repository.CrewRepositoryImpl;
+import service.AttendanceCheckService;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;

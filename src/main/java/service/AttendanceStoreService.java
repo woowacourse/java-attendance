@@ -1,3 +1,10 @@
+package service;
+
+import domain.Attendance;
+import domain.Crew;
+import repository.AttendanceRepository;
+import repository.CrewRepositoryImpl;
+
 import java.io.*;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;

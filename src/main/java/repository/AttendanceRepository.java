@@ -1,3 +1,8 @@
+package repository;
+
+import domain.Attendance;
+import domain.Crew;
+
 import java.util.ArrayList;
 import java.util.List;
 
