@@ -19,9 +19,12 @@ public class Attendance {
         String str = "";
         str += dateAndTime.format(DateTimeFormatter.ofPattern("MM월 dd일 "));
         str += dateAndTime.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.KOREAN) + " ";
-        str += dateAndTime.format(DateTimeFormatter.ofPattern("HH:mm ", Locale.KOREAN));
-        str += this.state;
+        str += getFormattedTimeAndState();
         return str;
+    }
+
+    public String getFormattedTimeAndState() {
+        return dateAndTime.format(DateTimeFormatter.ofPattern("HH:mm ", Locale.KOREAN)) + this.state;
     }
 
     private String checkAttendanceState(LocalDateTime localDateTime) {
@@ -63,4 +66,7 @@ public class Attendance {
         return dateAndTime.toLocalDate().isEqual(localDateTime.toLocalDate());
     }
 
+    public void update(LocalDateTime newDateAndTime) {
+
+    }
 }
