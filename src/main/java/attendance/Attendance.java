@@ -1,7 +1,7 @@
 package attendance;
 
 public class Attendance {
-    public static int method(final int hour, final int minute) {
+    public static int checkAttendance(final int hour, final int minute) {
         if (hour <= 10 && minute <= 5) {
             return 1;
         }
