@@ -1,10 +1,10 @@
-package attendance.domain;
+package attendance.utils;
 
 import java.time.LocalDateTime;
 
 public class AttendanceChecker {
 
-    public String check(LocalDateTime dateTime) {
+    public static String check(LocalDateTime dateTime) {
         // 평일로 가정
 
         String day = dateTime.getDayOfWeek().name();
@@ -16,7 +16,8 @@ public class AttendanceChecker {
         return checkStatusWithCondition(dateTime, 10, 0, 6);
     }
 
-    private String checkStatusWithCondition(LocalDateTime dateTime, int hour, int attendanceMinute, int lateMinute) {
+    private static String checkStatusWithCondition(LocalDateTime dateTime, int hour, int attendanceMinute,
+                                                   int lateMinute) {
 
         if (!dateTime.isAfter(
                 LocalDateTime.of(dateTime.getYear(), dateTime.getMonth(), dateTime.getDayOfMonth(), hour,
