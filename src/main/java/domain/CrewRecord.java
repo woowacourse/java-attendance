@@ -5,11 +5,15 @@ import java.time.LocalDateTime;
 public class CrewRecord {
 
     private final String name;
-    private final LocalDateTime dateTime;
+    private LocalDateTime dateTime;
 
     public CrewRecord(String name, LocalDateTime dateTime) {
         this.name = name;
         this.dateTime = dateTime;
+    }
+
+    public void editRecord(LocalDateTime newDateTime) {
+        this.dateTime = newDateTime;
     }
 
     public String getName() {
