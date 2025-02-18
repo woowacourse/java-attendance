@@ -1,5 +1,7 @@
 package attendance.model;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import java.time.LocalDateTime;
 import java.util.Set;
 import org.assertj.core.api.Assertions;
@@ -37,5 +39,23 @@ class AttendancesTest {
         Assertions.assertThatThrownBy(() -> attendances.validateAttendance(notExistNickname))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("등록되지 않은 닉네임입니다.");
+    }
+
+    @DisplayName("출석 기록을 수정할 수 있다.")
+    @Test
+    void attendanceUpdateTest() {
+        Crew crew = new Crew("포비");
+        CrewGroup crewGroup = new CrewGroup(Set.of(crew));
+        LocalDateTime now = LocalDateTime.of(2024, 12, 13, 10, 1);
+        Attendance attendance = new Attendance(crew, now);
+        Attendances attendances = new Attendances(crewGroup, Set.of(attendance));
+
+        LocalDateTime updateDateTime = LocalDateTime.of(2024, 12, 13, 11, 1);
+        Attendance updateAttendance = new Attendance(crew, updateDateTime);
+        attendances.update(updateAttendance);
+
+        assertThat(attendances)
+                .extracting("attendances")
+                .isEqualTo(Set.of(updateAttendance));
     }
 }

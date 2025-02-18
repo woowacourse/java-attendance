@@ -26,4 +26,8 @@ public class Attendances {
         }
         attendances.add(attendance);
     }
+
+    public void update(Attendance attendance) {
+        attendances.add(attendance);
+    }
 }
