@@ -6,11 +6,11 @@ import java.util.List;
 
 public class Crew {
 
-    private final String name;
+    private final String nickname;
     private final List<LocalDateTime> attendanceHistory = new ArrayList<>();
 
     public Crew(String name) {
-        this.name = name;
+        this.nickname = name;
     }
 
     public void attendance(LocalDate date, LocalTime time) {
@@ -18,6 +18,6 @@ public class Crew {
     }
 
     public String getName() {
-        return name;
+        return nickname;
     }
 }
