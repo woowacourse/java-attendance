@@ -9,7 +9,7 @@ public class FileParserTest {
     @Test
     void 출석_기록을_정상적으로_파싱한다() {
         // given
-        String attendanceData = "moko,2025-02-03,13:00";
+        String attendanceData = "moko,2025-02-03 13:00";
 
         AttendanceRecord attendanceRecord = FileParser.parseAttendanceHistory(attendanceData);
         SoftAssertions.assertSoftly(softly -> {
