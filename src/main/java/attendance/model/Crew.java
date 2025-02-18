@@ -1,9 +1,14 @@
 package attendance.model;
 
-public record Crew(String name){
+public class Crew {
 
-    public Crew {
+    private final String name;
+    private final AttendenceHistory attendenceHistory;
+
+    public Crew(String name) {
         validate(name);
+        this.name = name;
+        this.attendenceHistory = new AttendenceHistory();
     }
 
     private void validate(String name) {
@@ -15,4 +20,15 @@ public record Crew(String name){
         }
     }
 
+    public void addAttendenceDetail(AttendenceDetail attendenceDetail) {
+        attendenceHistory.addAttendenceDetail(attendenceDetail);
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public AttendenceHistory getAttendenceHistory() {
+        return attendenceHistory;
+    }
 }

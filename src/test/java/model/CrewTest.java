@@ -3,7 +3,9 @@ package model;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+import attendance.model.AttendenceDetail;
 import attendance.model.Crew;
+import java.time.LocalDateTime;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -24,7 +26,7 @@ public class CrewTest {
         String name = "멍구";
         Crew crew = new Crew(name);
 
-        assertThat(crew.name()).isEqualTo(name);
+        assertThat(crew.getName()).isEqualTo(name);
     }
 
     @DisplayName("크루의 이름이 5자 이내가 아니라면 예외가 발생한다.")
@@ -43,6 +45,15 @@ public class CrewTest {
 
         assertThatThrownBy(() -> new Crew(name))
                 .isInstanceOf(IllegalArgumentException.class);
+    }
+
+    @DisplayName("크루가 가지고 있는 기록을 확인한다.")
+    @Test
+    void test_checkHistory() {
+        Crew crew = new Crew("멍구");
+        crew.addAttendenceDetail(new AttendenceDetail(LocalDateTime.of(2024, 12, 10, 10, 0)));
+
+        assertThat(crew.getAttendenceHistory().getAttendenceCount()).isEqualTo(1);
     }
 
 }
