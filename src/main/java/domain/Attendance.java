@@ -1,5 +1,6 @@
 package domain;
 
+import dto.AttendanceModifyDTO;
 import dto.AttendanceResultDTO;
 
 import java.time.DayOfWeek;
@@ -67,5 +68,24 @@ public class Attendance {
     
     public AttendanceResultDTO createAttendanceResult() {
         return new AttendanceResultDTO(name, attendanceTime, attendanceStatus);
+    }
+    
+    public AttendanceModifyDTO modifyAttendanceTime(LocalTime newAttendanceTime) {
+        LocalDateTime oldAttendanceTime = attendanceTime;
+        attendanceTime = attendanceTime
+                .withHour(newAttendanceTime.getHour())
+                .withMinute(newAttendanceTime.getMinute());
+        
+        String oldAttendanceStatus = attendanceStatus;
+        attendanceStatus = checkAttendanceStatus(attendanceTime);
+        
+        return new AttendanceModifyDTO(
+                name,
+                attendanceTime.toLocalDate(),
+                oldAttendanceTime.toLocalTime(),
+                oldAttendanceStatus,
+                attendanceTime.toLocalTime(),
+                attendanceStatus
+        );
     }
 }
