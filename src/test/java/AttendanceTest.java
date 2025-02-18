@@ -1,8 +1,9 @@
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
 
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 public class AttendanceTest {
@@ -19,7 +20,7 @@ public class AttendanceTest {
     void 이미_출석한_경우_예외를_던진다() {
         Crew crew = new Crew("pobi");
         crew.attendance(LocalDate.now(), LocalTime.of(10, 00));
-        Assertions.assertThatThrownBy(() -> {
+        assertThatThrownBy(() -> {
             crew.attendance(LocalDate.now(), LocalTime.of(10, 01));
         }).isInstanceOf(AlreadyAttendanceException.class);
     }
@@ -31,5 +32,6 @@ public class AttendanceTest {
         Crew crew = crews.get("pobi");
         crew.attendance(LocalDate.now(), LocalTime.of(10, 00));
         crew.modifyAttendance(LocalDate.now(), LocalTime.of(10, 10));
+        assertThat(crew.getAttendanceTimeByDate(LocalDate.now())).isEqualTo(LocalTime.of(10, 10));
     }
 }
