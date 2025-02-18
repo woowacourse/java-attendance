@@ -1,12 +1,18 @@
+import java.time.DayOfWeek;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.LinkedHashMap;
 
 public class Student {
 
+    LinkedHashMap<LocalDateTime, AttendanceStatus> record;
     String name;
     int absent;
     int attendance;
+    int late;
 
-    public Student() {
+    public Student(String name) {
+        this.name = name;
     }
 
     public void isStartTime(LocalTime localTime) {
@@ -15,4 +21,17 @@ public class Student {
         }
     }
 
+    public void updateState(LocalDateTime localDateTime) {
+        DayOfWeek dayOfWeek = localDateTime.getDayOfWeek();
+        int day = dayOfWeek.getValue();
+
+        if (day == 1) {
+
+        }
+
+        if (day == 6 || day == 7) {
+
+        }
+
+    }
 }
