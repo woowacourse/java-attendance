@@ -1,11 +1,21 @@
 public class DailyAttendance {
     private final String date;
     private final String time;
-    private final String status;
 
-    public DailyAttendance(String date, String time, String status) {
+    public DailyAttendance(String date, String time) {
         this.date = date;
         this.time = time;
-        this.status = status;
+    }
+
+    public boolean hasDate(String date) {
+        return this.date.equals(date);
+    }
+
+    public String getDate() {
+        return date;
+    }
+
+    public String getTime() {
+        return time;
     }
 }
