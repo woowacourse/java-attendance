@@ -26,3 +26,5 @@ public class Attendance {
         return AttendanceStatus.ATTEND;
     }
 }
+
+
