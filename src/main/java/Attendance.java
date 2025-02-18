@@ -1,4 +1,5 @@
 import java.time.DayOfWeek;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 public class Attendance {
@@ -31,6 +32,10 @@ public class Attendance {
             }
         }
         return AttendanceStatus.ATTEND;
+    }
+
+    public boolean isEqualToDate(LocalDate today) {
+        return today.equals(LocalDate.from(dateTime));
     }
 }
 

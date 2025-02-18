@@ -1,5 +1,6 @@
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import org.junit.jupiter.api.Test;
 
@@ -52,5 +53,17 @@ public class AttendanceTest {
         LocalDateTime dateTime = LocalDateTime.of(2024,12,16,14,1,0);
         Attendance attendance = new Attendance(dateTime);
         assertThat(attendance.checkAttendanceStatus(dateTime)).isEqualTo(AttendanceStatus.ABSENCE);
+    }
+
+    @Test
+    void 해당_날짜와_입력한_날짜가_일치하면_true() {
+        Attendance attendance = new Attendance(LocalDateTime.of(2024, 12, 16, 14, 0, 0));
+        assertThat(attendance.isEqualToDate(LocalDate.of(2024,12,16))).isTrue();
+    }
+
+    @Test
+    void 해당_날짜와_입력한_날짜가_일치하지않으면_false() {
+        Attendance attendance = new Attendance(LocalDateTime.of(2024, 12, 16, 14, 0, 0));
+        assertThat(attendance.isEqualToDate(LocalDate.of(2024,12,15))).isFalse();
     }
 }

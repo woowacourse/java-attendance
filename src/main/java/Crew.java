@@ -1,3 +1,4 @@
+import java.time.LocalDate;
 import java.util.List;
 
 public class Crew {
@@ -16,6 +17,14 @@ public class Crew {
 
     public List<Attendance> getAttendances() {
         return attendances;
+    }
+
+    public void existInAttendances(LocalDate date) {
+        for (Attendance attendance : attendances) {
+            if(attendance.isEqualToDate(date)) {
+                throw new IllegalArgumentException("[ERROR] 이미 오늘 출석을 하셨습니다. 출석 수정을 이용해주세요.");
+            }
+        }
     }
 
     public String getNickname() {
