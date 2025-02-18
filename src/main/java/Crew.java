@@ -1,4 +1,3 @@
-import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.HashMap;
@@ -43,7 +42,7 @@ public class Crew {
     public Map<AttendanceStatus, Integer> getAttendanceStatusStatistics(LocalDate today) {
         Map<AttendanceStatus, Integer> result = new HashMap<>();
         for(int day = 1; day < today.getDayOfMonth(); day++) {
-            if (isOffDay(today, day)) {
+            if (DayUtil.isOffDay(today, day)) {
                 continue;
             }
             AttendanceStatus attendanceStatus = getAttendanceStatusByDate(LocalDate.of(today.getYear(),
@@ -51,14 +50,5 @@ public class Crew {
             result.put(attendanceStatus, result.getOrDefault(attendanceStatus, 0) + 1);
         }
         return result;
-    }
-
-    private static boolean isOffDay(LocalDate today, int day) {
-        LocalDate targetDay = LocalDate.of(today.getYear(), today.getMonth(), day);
-        boolean isWeekend = targetDay.getDayOfWeek().equals(DayOfWeek.SATURDAY) ||
-            targetDay.getDayOfWeek().equals(DayOfWeek.SUNDAY);
-        boolean isHoliday = false; // TODO: 적용 필요
-
-        return isWeekend || isHoliday;
     }
 }

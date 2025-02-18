@@ -82,7 +82,6 @@ public class AttendanceTest {
         crew.attendance(LocalDate.of(2025, 02, 4), LocalTime.of(10, 05));
         // 결석
         crew.attendance(LocalDate.of(2025, 02, 5), LocalTime.of(10, 31));
-
         Map<AttendanceStatus, Integer> attendanceStatusStatistics =
             crew.getAttendanceStatusStatistics(LocalDate.of(2025, 02, 6));
 
@@ -99,7 +98,6 @@ public class AttendanceTest {
         crew.attendance(LocalDate.of(2025, 02, 4), LocalTime.of(10, 06));
         // 지각
         crew.attendance(LocalDate.of(2025, 02, 5), LocalTime.of(10, 30));
-
         Map<AttendanceStatus, Integer> attendanceStatusStatistics =
             crew.getAttendanceStatusStatistics(LocalDate.of(2025, 02, 7));
 
@@ -112,7 +110,6 @@ public class AttendanceTest {
         Crew crew = new Crew("pobi");
         // 지각
         crew.attendance(LocalDate.of(2025, 02, 3), LocalTime.of(13, 10));
-
         Map<AttendanceStatus, Integer> attendanceStatusStatistics =
             crew.getAttendanceStatusStatistics(LocalDate.of(2025, 02, 7));
 
@@ -122,7 +119,8 @@ public class AttendanceTest {
 
     @Test
     void 결석_6회_이상인_경우_제적_대상자가_된다() {
-        Crew crew = new Crew("pobi");        Map<AttendanceStatus, Integer> attendanceStatusStatistics =
+        Crew crew = new Crew("pobi");
+        Map<AttendanceStatus, Integer> attendanceStatusStatistics =
             crew.getAttendanceStatusStatistics(LocalDate.of(2025, 02, 11));
 
         Manage manage = Manage.of(attendanceStatusStatistics);
