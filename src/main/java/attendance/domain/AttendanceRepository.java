@@ -9,4 +9,5 @@ public class AttendanceRepository {
     public AttendanceRepository() {
         this.attendances = new ArrayList<>();
     }
+
 }
