@@ -93,4 +93,31 @@ public class AttendanceCheckTest {
                 .hasMessageStartingWith("[ERROR]");
     }
 
+    @ParameterizedTest
+    @ValueSource(strings = {"10:31"})
+    void 날짜에_따른_출석_기준_시간을_적용한다(String value) {
+        final var today = LocalDate.now();
+        final var month = today.getMonth().getValue();
+        final var date = today.getDayOfMonth();
+        final var dayOfWeek = AttendanceCheck.convertKorean(today);
+
+        LocalTime standardTime = AttendanceCheck.getStandardTime(today);
+        LocalTime attendanceTime = AttendanceCheck.convertToLocalTime(value);
+
+        final var attendanceCheck = AttendanceCheck.checkAttendanceStatus(standardTime, attendanceTime);
+
+        final var actual = month + "월 " + date + "일 " + dayOfWeek + " " + attendanceTime + " (" + attendanceCheck + ")";
+        final var expected = "2월 18일 화요일 10:31 (결석)";
+        assertThat(actual).isEqualTo(expected);
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {"10:31"})
+    void 주말에_출석을_시도하면_예외가_발생한다(String value) {
+        final var today = LocalDate.of(2025, 2, 22);
+
+        assertThatThrownBy(() -> AttendanceCheck.getStandardTime(today))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageStartingWith("[ERROR]");
+    }
 }
