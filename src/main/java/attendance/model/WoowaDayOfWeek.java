@@ -23,4 +23,8 @@ public enum WoowaDayOfWeek {
     public LocalTime getStartTime() {
         return startTime;
     }
+
+    public LocalTime getEndTime() {
+        return endTime;
+    }
 }
