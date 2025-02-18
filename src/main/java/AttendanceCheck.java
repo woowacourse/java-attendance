@@ -1,3 +1,6 @@
+import domain.Attendance;
+import domain.AttendanceDto;
+import domain.Day;
 import domain.DayOfWeek;
 
 import java.time.Duration;
@@ -17,6 +20,12 @@ public class AttendanceCheck {
         }
 
         return "결석";
+    }
+
+    public static AttendanceDto checkAttendanceStatus2(LocalDate today, LocalTime attendanceTime) {
+        Day day = new Day(today);
+        Attendance attendance = new Attendance(day, attendanceTime);
+        return attendance.toDto();
     }
 
     public static String convertKorean(LocalDate localDate) {
