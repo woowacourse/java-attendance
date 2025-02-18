@@ -72,4 +72,82 @@ public class AttendanceTest {
             softly.assertThat(attendanceStatusStatistics.get(AttendanceStatus.ABSENT)).isEqualTo(21);
         });
     }
+
+    @Test
+    void 결석_2회_미만인_경우_아무_관리_대상자가_아니다() {
+        Crew crew = new Crew("pobi");
+        // 지각
+        crew.attendance(LocalDate.of(2025, 02, 17), LocalTime.of(13, 06));
+        // 출석
+        crew.attendance(LocalDate.of(2025, 02, 18), LocalTime.of(10, 05));
+        // 결석
+        crew.attendance(LocalDate.of(2025, 02, 19), LocalTime.of(10, 31));
+
+        Map<AttendanceStatus, Integer> attendanceStatusStatistics =
+            crew.getAttendanceStatusStatistics(LocalDate.of(2025, 02, 25));
+
+        Manage manage = Manage.of(attendanceStatusStatistics);
+        assertThat(manage).isEqualTo(Manage.NONE);
+    }
+
+    @Test
+    void 결석_2회_이상인_경우_경고_대상자가_된다() {
+        Crew crew = new Crew("pobi");
+        // 지각
+        crew.attendance(LocalDate.of(2025, 02, 17), LocalTime.of(13, 06));
+        // 지각
+        crew.attendance(LocalDate.of(2025, 02, 18), LocalTime.of(10, 06));
+        // 결석
+        crew.attendance(LocalDate.of(2025, 02, 19), LocalTime.of(10, 31));
+        // 지각
+        crew.attendance(LocalDate.of(2025, 02, 20), LocalTime.of(10, 30));
+
+        Map<AttendanceStatus, Integer> attendanceStatusStatistics =
+            crew.getAttendanceStatusStatistics(LocalDate.of(2025, 02, 25));
+
+        Manage manage = Manage.of(attendanceStatusStatistics);
+        assertThat(manage).isEqualTo(Manage.WARNING);
+    }
+
+    @Test
+    void 결석_3회_이상인_경우_면담_대상자가_된다() {
+        Crew crew = new Crew("pobi");
+        // 지각
+        crew.attendance(LocalDate.of(2025, 02, 17), LocalTime.of(13, 10));
+        // 결석
+        crew.attendance(LocalDate.of(2025, 02, 18), LocalTime.of(10, 31));
+        // 결석
+        crew.attendance(LocalDate.of(2025, 02, 19), LocalTime.of(10, 31));
+        // 결석
+        crew.attendance(LocalDate.of(2025, 02, 20), LocalTime.of(10, 31));
+
+        Map<AttendanceStatus, Integer> attendanceStatusStatistics =
+            crew.getAttendanceStatusStatistics(LocalDate.of(2025, 02, 25));
+
+        Manage manage = Manage.of(attendanceStatusStatistics);
+        assertThat(manage).isEqualTo(Manage.INTERVIEW);
+    }
+
+    @Test
+    void 결석_6회_이상인_경우_제적_대상자가_된다() {
+        Crew crew = new Crew("pobi");
+        // 결석
+        crew.attendance(LocalDate.of(2025, 02, 17), LocalTime.of(13, 51));
+        // 결석
+        crew.attendance(LocalDate.of(2025, 02, 18), LocalTime.of(10, 31));
+        // 결석
+        crew.attendance(LocalDate.of(2025, 02, 19), LocalTime.of(10, 31));
+        // 결석
+        crew.attendance(LocalDate.of(2025, 02, 20), LocalTime.of(10, 31));
+        // 결석
+        crew.attendance(LocalDate.of(2025, 02, 21), LocalTime.of(10, 31));
+        // 결석
+        crew.attendance(LocalDate.of(2025, 02, 24), LocalTime.of(13, 31));
+
+        Map<AttendanceStatus, Integer> attendanceStatusStatistics =
+            crew.getAttendanceStatusStatistics(LocalDate.of(2025, 02, 25));
+
+        Manage manage = Manage.of(attendanceStatusStatistics);
+        assertThat(manage).isEqualTo(Manage.EXPELLED);
+    }
 }
