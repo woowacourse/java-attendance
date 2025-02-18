@@ -21,6 +21,11 @@ public class InputView {
         return trim(scanner.nextLine());
     }
 
+    public String inputAttendanceTime() {
+        System.out.println("등교 시간을 입력해 주세요.");
+        return trim(scanner.nextLine());
+    }
+
     private String trim(String input) {
         return input.replaceAll(" ", "");
     }
