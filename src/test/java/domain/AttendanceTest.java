@@ -7,15 +7,17 @@ import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.HashMap;
 import java.util.List;
-import java.util.Optional;
-import org.assertj.core.api.Assertions;
+import java.util.Map;
 import org.junit.jupiter.api.Test;
 import util.AttendancesFileHandler;
 
 public class AttendanceTest {
 
     Attendance attendance = new Attendance(AttendancesFileHandler.generateAttendances());
+    Map<String, List<LocalDateTime>> testAttendanceFile = new HashMap<>();
+
 
     public AttendanceTest() throws IOException {
     }
@@ -53,5 +55,14 @@ public class AttendanceTest {
                 .count();
 
         assertThat(count).isEqualTo(1);
+    }
+
+    @Test
+    void 크루의_출석_기록_통계_확인_기능() {
+        Map<AttendanceStatus, Integer> attendanceStatuses = attendance.countAttendanceStatus("빙티");
+
+        assertThat(attendanceStatuses.get(AttendanceStatus.ATTEND)).isEqualTo(3);
+        assertThat(attendanceStatuses.get(AttendanceStatus.LATE)).isEqualTo(4);
+        assertThat(attendanceStatuses.get(AttendanceStatus.ABSENT)).isEqualTo(14);
     }
 }

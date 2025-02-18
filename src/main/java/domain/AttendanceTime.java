@@ -14,12 +14,21 @@ public class AttendanceTime {
         this.attendanceStatus = AttendanceStatus.findStatus(attendanceDateTime);
     }
 
-    public boolean checkSameDate(LocalDate attendanceDate) {
-        return this.attendanceDateTime.toLocalDate().equals(attendanceDate);
+    public AttendanceTime(LocalDate attendanceDate, AttendanceStatus attendanceStatus) {
+        this.attendanceDateTime = attendanceDate.atTime(0, 0);
+        this.attendanceStatus = attendanceStatus;
     }
 
     public LocalDateTime getAttendanceDateTime() {
         return attendanceDateTime;
+    }
+
+    public AttendanceStatus getAttendanceStatus() {
+        return attendanceStatus;
+    }
+
+    public boolean checkSameDate(LocalDate attendanceDate) {
+        return this.attendanceDateTime.toLocalDate().equals(attendanceDate);
     }
 
     public void updateAttendanceDateTime(LocalTime newTime) {
