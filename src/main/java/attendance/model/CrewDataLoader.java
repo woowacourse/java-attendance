@@ -5,6 +5,7 @@ import java.io.InputStreamReader;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Objects;
+import java.util.Optional;
 
 public class CrewDataLoader {
     private final Crews crews;
@@ -29,10 +30,15 @@ public class CrewDataLoader {
     }
 
     private void addCrew(Crew crew, LocalDateTime dateTime) {
-        if(!crews.getCrews().contains(crew)) {
+        Optional<Crew> foundCrew = crews.findCrew(crew);
+        if(foundCrew.isEmpty()) {
             crews.add(crew);
+            crew.addAttendanceDetail(new AttendanceDetail(dateTime));
+
+            return;
         }
-        crew.addAttendanceDetail(new AttendanceDetail(dateTime));
+        foundCrew.get().addAttendanceDetail(new AttendanceDetail(dateTime));
+
     }
 
     private String[] parseRow(String row) {

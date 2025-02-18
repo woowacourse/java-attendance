@@ -15,7 +15,7 @@ public enum AttendanceWarning {
     }
 
 
-    public static AttendanceWarning from(int absenceCount) {
+    public static AttendanceWarning from(long absenceCount) {
         if (absenceCount > 5) {
             return 제적;
         }

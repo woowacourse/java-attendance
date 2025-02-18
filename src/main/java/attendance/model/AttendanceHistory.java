@@ -2,6 +2,7 @@ package attendance.model;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Stream;
 
 public class AttendanceHistory {
     private final List<AttendanceDetail> attendanceHistory = new ArrayList<>();
@@ -26,7 +27,7 @@ public class AttendanceHistory {
 
     }
 
-    private long getTotalLateCount() {
+    public long getTotalLateCount() {
         return attendanceHistory.stream()
                 .filter(attendanceDetail -> attendanceDetail.getAttandence().equals(Attendance.지각))
                 .count();
@@ -36,6 +37,15 @@ public class AttendanceHistory {
         return getTotalLateCount() / 3 + attendanceHistory.stream()
                 .filter(attendanceDetail -> attendanceDetail.getAttandence().equals(Attendance.결석))
                 .count();
+    }
 
+    public long getTotalAbsenceCount() {
+        return attendanceHistory.stream()
+                .filter(attendanceDetail -> attendanceDetail.getAttandence().equals(Attendance.결석))
+                .count();
+    }
+
+    public Stream<AttendanceDetail> stream() {
+        return attendanceHistory.stream();
     }
 }
