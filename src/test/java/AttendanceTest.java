@@ -1,4 +1,5 @@
 import domain.Attendance;
+import dto.AttendanceResultDTO;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDateTime;
@@ -84,5 +85,21 @@ public class AttendanceTest {
         assertThatThrownBy(() -> new Attendance(inputName,localDateTime))
                 .isExactlyInstanceOf(IllegalArgumentException.class)
                 .hasMessage("출석 가능한 시간이 아닙니다.");
+    }
+    
+    @Test
+    void 출석을_완료하면_출석기록이_출력된다() {
+        // given
+        String inputName = "Lemon";
+        LocalDateTime localDateTime = LocalDateTime.of(2024, 12, 3, 9, 45);
+        Attendance attendance = new Attendance(inputName, localDateTime);
+        
+        // when
+        AttendanceResultDTO result = attendance.createAttendanceResult();
+        
+        //then
+        assertThat(result.getName()).isEqualTo("Lemon");
+        assertThat(result.getAttendanceTime()).isEqualTo(LocalDateTime.of(2024, 12, 3, 9, 45));
+        assertThat(result.getAttendanceStatus()).isEqualTo("출석");
     }
 }
