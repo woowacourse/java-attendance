@@ -7,17 +7,27 @@ import attendance.view.Output;
 public class AttendanceController {
     private final Input input;
     private final Output output;
-//    private final Crews crews;
+    private final Crews crews;
+    private final Attendances attendances;
 
     public AttendanceController() {
         this.input = new Input();
         this.output = new Output();
-        //this.crews = 블라블라
+        this.crews = new Crews();
+        this.attendances = new Attendances();
     }
 
     public void run() {
+        FileReader reader = new FileReader();
+        List<List<String>> attendanceRecords = reader.readResource("attendances.csv");
+
+        crews.initCrews(attendanceRecords);
+        attendances.initAttendances(crews, attendanceRecords);
+
         MenuCommand command = null;
-        // TODO 24년 12월 14일 localdatetime 객체 만들어서 readCommand 매개변수로 넣어주기
+        // TODO 24년 12월 14일 localdate 객체 만들어서 readCommand 매개변수로 넣어주기
+        LocalDate currentDate = LocalDate.of(2024, 12, 14);
+
         while (!MenuCommand.QUIT.equals(command)) {
             command = MenuCommand.toCommand(input.readCommand());
             executeCommand(command);
