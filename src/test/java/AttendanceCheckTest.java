@@ -1,5 +1,6 @@
 import org.junit.jupiter.api.Test;
 
+import java.time.LocalDate;
 import java.time.LocalTime;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -39,4 +40,19 @@ public class AttendanceCheckTest {
         assertThat(actual).isEqualTo(expected);
     }
 
+    @Test
+    void 출석확인시_현재날짜가_출력되어야한다() {
+        LocalTime standardTime = LocalTime.of(10, 0);
+        LocalTime attendanceTime = LocalTime.of(10, 31);
+
+        final var attendanceCheck = AttendanceCheck.checkAttendanceStatus(standardTime, attendanceTime);
+        final var today = LocalDate.now();
+        final var month = today.getMonth().getValue();
+        final var date = today.getDayOfMonth();
+        final var dayOfWeek = AttendanceCheck.convertKorean(today);
+
+        final var actual = month + "월 " + date + "일 " + dayOfWeek + " " + attendanceTime + " (" + attendanceCheck + ")";
+        final var expected = "2월 18일 화요일 10:31 (결석)";
+        assertThat(actual).isEqualTo(expected);
+    }
 }
