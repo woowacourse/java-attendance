@@ -65,4 +65,9 @@ public class Attendance {
     public String getStatus() {
         return status;
     }
+
+    public void update(LocalDateTime updatedDateTime) {
+        setStatus(updatedDateTime);
+        this.dateTime = updatedDateTime;
+    }
 }
