@@ -66,7 +66,7 @@ public class StudentRepositoryTest {
         String name = "짱수";
         int month = LocalDateTime.now().getMonthValue();
         int day = LocalDateTime.now().getDayOfMonth();
-        LocalDateTime localDateTime = LocalDateTime.of(2024, month, day,9,59);
+        LocalDateTime localDateTime = LocalDateTime.of(2025, month, day,9,59);
 
         Student student6 = studentRepository.findStudentByName(name);
         student6.updateState(localDateTime);
@@ -80,7 +80,7 @@ public class StudentRepositoryTest {
         String name = "짱수";
         int month = LocalDateTime.now().getMonthValue();
         int day = LocalDateTime.now().getDayOfMonth();
-        LocalDateTime localDateTime = LocalDateTime.of(2024, month, day,9,59);
+        LocalDateTime localDateTime = LocalDateTime.of(2025, month, day,9,59);
 
         Student student6 = studentRepository.findStudentByName(name);
         student6.updateState(localDateTime);
