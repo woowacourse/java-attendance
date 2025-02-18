@@ -1,5 +1,6 @@
 package attendance.domain;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 
@@ -41,8 +42,8 @@ public class AttendanceManager {
         }
     }
 
-    public AttendanceDateDto getAttendanceResult(String nickname, LocalDateTime attendanceTime) {
+    public AttendanceDateDto getAttendanceResult(String nickname, LocalDate attendanceDate) {
         var attendances = findAttendances(nickname);
-        return attendances.getAttendanceTime(attendanceTime.toLocalDate());
+        return attendances.getAttendanceTime(attendanceDate);
     }
 }
