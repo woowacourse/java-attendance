@@ -1,6 +1,7 @@
 package domain;
 
 import java.time.DayOfWeek;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 
@@ -12,6 +13,7 @@ public class Attendance {
 
     private Attendance(Crew crew, LocalDateTime dateTime) {
         validateDayOfWeek(dateTime);
+        validateHoliday(dateTime);
         setStatus(dateTime);
         this.crew = crew;
         this.dateTime = dateTime;
@@ -24,6 +26,14 @@ public class Attendance {
     private void validateDayOfWeek(LocalDateTime dateTime) {
         DayOfWeek dayOfWeek = dateTime.getDayOfWeek();
         if (dayOfWeek == DayOfWeek.SATURDAY || dayOfWeek == DayOfWeek.SUNDAY) {
+            throw new IllegalArgumentException();
+        }
+    }
+
+    private void validateHoliday(LocalDateTime dateTime) {
+        LocalDate date = dateTime.toLocalDate();
+        LocalDate holiday = LocalDate.of(2024, 12, 25);
+        if (date.equals(holiday)) {
             throw new IllegalArgumentException();
         }
     }
