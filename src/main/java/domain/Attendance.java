@@ -13,12 +13,14 @@ public class Attendance {
 
     private String name;
     private LocalDateTime attendanceTime;
+    private String attendanceStatus;
 
     public Attendance(String name, LocalDateTime attendanceTime) {
         validateDate(attendanceTime.toLocalDate());
         validateTime(attendanceTime.toLocalTime());
         this.name = name;
         this.attendanceTime = attendanceTime;
+        this.attendanceStatus = checkAttendanceStatus(attendanceTime);
     }
 
     private void validateDate(LocalDate date) {
@@ -32,5 +34,32 @@ public class Attendance {
         if (time.isAfter(MAX_ATTENDANCE_TIME) || time.isBefore(MIN_ATTENDANCE_TIME)) {
             throw new IllegalArgumentException("출석 가능한 시간이 아닙니다.");
         }
+    }
+
+    private String checkAttendanceStatus(LocalDateTime attendanceTime) {
+        if (attendanceTime.getDayOfWeek() == DayOfWeek.MONDAY) {
+            return checkMondayAttendanceStatus(attendanceTime);
+        }
+        return checkNotMondayAttendanceStatus(attendanceTime);
+    }
+
+    private String checkMondayAttendanceStatus(LocalDateTime attendanceTime) {
+        if (attendanceTime.toLocalTime().isBefore(LocalTime.of(13,5)) || attendanceTime.toLocalTime().equals(LocalTime.of(13,5))) {
+            return "출석";
+        }
+        if (attendanceTime.toLocalTime().isBefore(LocalTime.of(13,30)) || attendanceTime.toLocalTime().equals(LocalTime.of(13,30))) {
+            return "지각";
+        }
+        return "결석";
+    }
+
+    private String checkNotMondayAttendanceStatus(LocalDateTime attendanceTime) {
+        if (attendanceTime.toLocalTime().isBefore(LocalTime.of(10,5)) || attendanceTime.toLocalTime().equals(LocalTime.of(10,5))) {
+            return "출석";
+        }
+        if (attendanceTime.toLocalTime().isBefore(LocalTime.of(10,30)) || attendanceTime.toLocalTime().equals(LocalTime.of(10,30))) {
+            return "지각";
+        }
+        return "결석";
     }
 }
