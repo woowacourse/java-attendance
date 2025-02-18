@@ -45,17 +45,34 @@ public class Crew {
         LocalDate localDate = LocalDate.of(2024, 12, 1);
         int absenceCount = 0, tardyCount = 0;
         for (int day = 0; day < now; day++) {
-            if (!attendanceBook.containsKey(localDate) && !DateUtil.isWeekend(localDate)) {
-                absenceCount++;
+            if(isNowAbscence(localDate)) {
+                absenceCount ++;
             }
-            if (attendanceBook.containsKey(localDate)) {
-                LocalTime localTime = attendanceBook.get(localDate);
-                AttendanceStatus attend = AttendanceStatus.attend(assembleDateAndTime(localDate, localTime));
-                if (attend == AttendanceStatus.ABSENCE) absenceCount++;
-                if (attend == AttendanceStatus.TARDY) tardyCount++;
+            if(isNowTardy(localDate)) {
+                tardyCount ++;
             }
             localDate = localDate.plusDays(1);
         }
         return absenceCount + tardyCount / 3;
+    }
+
+    public boolean isNowAbscence(LocalDate localDate) {
+        if(!attendanceBook.containsKey(localDate) && !DateUtil.isWeekend(localDate)) {
+            return true;
+        }
+        if(!attendanceBook.containsKey(localDate)) {
+            return false;
+        }
+        LocalTime localTime = attendanceBook.get(localDate);
+        AttendanceStatus attend = AttendanceStatus.attend(assembleDateAndTime(localDate, localTime));
+        return attend == AttendanceStatus.ABSENCE;
+    }
+    public boolean isNowTardy(LocalDate localDate) {
+        if (attendanceBook.containsKey(localDate)) {
+            LocalTime localTime = attendanceBook.get(localDate);
+            AttendanceStatus attend = AttendanceStatus.attend(assembleDateAndTime(localDate, localTime));
+            return attend == AttendanceStatus.TARDY;
+        }
+        return false;
     }
 }
