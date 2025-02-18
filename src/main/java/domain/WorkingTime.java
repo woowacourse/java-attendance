@@ -1,5 +1,10 @@
 package domain;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.temporal.ChronoUnit;
+
 public enum WorkingTime {
     MONDAY(13, 0, 18, 0),
     TUESDAY(10, 0, 18, 0),
@@ -23,5 +28,15 @@ public enum WorkingTime {
         this.endMinute = endMinute;
     }
 
+    public static int getMinute(LocalDateTime checkInTime) {
+        String name = checkInTime.getDayOfWeek().name();
+        WorkingTime workingTime = WorkingTime.valueOf(name);
 
+        int hour = workingTime.startHour;
+        int minute = workingTime.startMinute;
+
+        LocalDateTime startTime = LocalDateTime.of(LocalDate.from(checkInTime), LocalTime.of(hour, minute));
+
+        return Math.toIntExact(ChronoUnit.MINUTES.between(startTime, checkInTime));
+    }
 }
