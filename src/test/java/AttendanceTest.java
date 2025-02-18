@@ -12,9 +12,9 @@ public class AttendanceTest {
 
     @Test
     void 닉네임과_등교_시간으로_출석한다() {
-        Crews crews = new Crews();
-        crews.add(new Crew("pobi"));
-        Crew crew = crews.get("pobi");
+        CrewRepository crewRepository = new CrewRepository();
+        crewRepository.add(new Crew("pobi"));
+        Crew crew = crewRepository.get("pobi");
         crew.attendance(LocalDate.now(), LocalTime.of(10, 1));
     }
 
@@ -29,9 +29,9 @@ public class AttendanceTest {
 
     @Test
     void 닉네임과_수정날짜와_등교시간으로_기록을_수정한다() {
-        Crews crews = new Crews();
-        crews.add(new Crew("pobi"));
-        Crew crew = crews.get("pobi");
+        CrewRepository crewRepository = new CrewRepository();
+        crewRepository.add(new Crew("pobi"));
+        Crew crew = crewRepository.get("pobi");
         crew.attendance(LocalDate.now(), LocalTime.of(10, 00));
         crew.modifyAttendance(LocalDate.now(), LocalTime.of(10, 10));
         assertThat(crew.getAttendanceTimeByDate(LocalDate.now())).isEqualTo(LocalTime.of(10, 10));
@@ -39,9 +39,9 @@ public class AttendanceTest {
 
     @Test
     void 날짜와_시간으로_출석_상태를_계산한다() {
-        Crews crews = new Crews();
-        crews.add(new Crew("pobi"));
-        Crew crew = crews.get("pobi");
+        CrewRepository crewRepository = new CrewRepository();
+        crewRepository.add(new Crew("pobi"));
+        Crew crew = crewRepository.get("pobi");
         crew.attendance(LocalDate.of(2025, 02, 17), LocalTime.of(13, 06));
         crew.attendance(LocalDate.of(2025, 02, 18), LocalTime.of(10, 05));
         crew.attendance(LocalDate.of(2025, 02, 19), LocalTime.of(10, 31));
