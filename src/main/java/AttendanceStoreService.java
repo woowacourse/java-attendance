@@ -5,15 +5,20 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class AttendanceStoreService {
-    public List<Object> parse(String s) {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
-        String[] parsed = s.split(",");
-        Crew crew = new Crew(parsed[0]);
-        LocalDateTime attendanceTime = LocalDateTime.parse(parsed[1], formatter);
-        return List.of(crew, attendanceTime);
+    private final CrewRepository crewRepository;
+    private final AttendanceRepository attendanceRepository;
+
+
+    public AttendanceStoreService(CrewRepository crewRepository, AttendanceRepository attendanceRepository) {
+        this.crewRepository = crewRepository;
+        this.attendanceRepository = attendanceRepository;
     }
 
-    public List<String> load(String file) {
+    private String[] parse(String s) {
+        return s.split(",");
+    }
+
+    private List<String> loadLines(String file) {
         List<String> lines = new ArrayList<>();
         try {
             BufferedReader reader = new BufferedReader(new FileReader(file));
@@ -28,6 +33,18 @@ public class AttendanceStoreService {
             return lines;
         } catch (IOException e) {
             throw new RuntimeException("파일 로드 중에 오류가 발생했습니다.");
+        }
+    }
+
+    public void save() {
+        List<String> lines = loadLines("src/main/resources/attendances.csv");
+        for (String line : lines) {
+            String[] parsed = parse(line);
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+            Crew crew = new Crew(parsed[0]);
+            LocalDateTime attendanceTime = LocalDateTime.parse(parsed[1], formatter);
+            crewRepository.save(crew);
+            attendanceRepository.save(new Attendance(crew, attendanceTime));
         }
     }
 }
