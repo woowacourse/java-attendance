@@ -50,7 +50,7 @@ public class AttendanceTest {
         assertThat(result).isEqualTo(-1);
     }
 
-    @DisplayName("캠퍼스 운영 시간 외 예외 발생")
+    @DisplayName("캠퍼스 운영 시작 시간 전 출석 시 예외 발생")
     @Test
     void test7() {
         assertThatThrownBy(() -> Attendance.method1(7, 59))
@@ -58,9 +58,23 @@ public class AttendanceTest {
                 .hasMessage("[ERROR] 현재 캠퍼스 운영시간이 아닙니다.");
     }
 
-    @DisplayName("캠퍼스 운영 시간 내 통과")
+    @DisplayName("캠퍼스 운영 시작 시간 이후 출석 시 통과")
     @Test
     void test8() {
         assertThatCode(() -> Attendance.method1(8, 0)).doesNotThrowAnyException();
+    }
+
+    @DisplayName("캠퍼스 운영 종료 시간 이후 출석 시 예외 발생")
+    @Test
+    void test9() {
+        assertThatThrownBy(() -> Attendance.method1(23, 1))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("[ERROR] 현재 캠퍼스 운영시간이 아닙니다.");
+    }
+
+    @DisplayName("캠퍼스 운영 종료 시간 이전 출석 시 통과")
+    @Test
+    void test10() {
+        assertThatCode(() -> Attendance.method1(23, 0)).doesNotThrowAnyException();
     }
 }
