@@ -13,11 +13,11 @@ class AttendanceTest {
 
         //given
         List<String> names = List.of("a", "b", "c");
-        Attendance attendance = new Attendance(names);
+        AttendanceBook attendanceBook = new AttendanceBook(names);
         //when
 
         //then
-        Assertions.assertThatThrownBy(() -> attendance.checkName("d"))
+        Assertions.assertThatThrownBy(() -> attendanceBook.checkName("d"))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("[ERROR] 출석부에 없는 크루원입니다.");
     }

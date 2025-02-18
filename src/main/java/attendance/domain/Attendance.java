@@ -1,18 +1,17 @@
 package attendance.domain;
 
-import java.util.List;
+import java.time.LocalDateTime;
 
 public class Attendance {
+    private final String crewName;
+    private final LocalDateTime attendanceTime;
 
-    private final List<String> names;
-
-    public Attendance(List<String> names){
-        this.names = names;
+    public Attendance(String crewName, LocalDateTime attendanceTime) {
+        this.crewName = crewName;
+        this.attendanceTime = attendanceTime;
     }
 
-    public void checkName(String name) {
-        if(!names.contains(name)){
-            throw new IllegalArgumentException("[ERROR] 출석부에 없는 크루원입니다.");
-        }
+    public LocalDateTime getAttendanceTime() {
+        return attendanceTime;
     }
 }
