@@ -34,4 +34,8 @@ public class Crew {
     public LocalTime getAttendanceTimeByDate(LocalDate date) {
         return attendanceTimes.get(date);
     }
+
+    public AttendanceStatus getAttendanceStatusByDate(LocalDate date) {
+        return AttendanceStatus.of(date, attendanceTimes.get(date));
+    }
 }
