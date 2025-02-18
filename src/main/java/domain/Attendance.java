@@ -1,7 +1,8 @@
 package domain;
 
-import java.time.LocalDate;
+import java.time.DayOfWeek;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 
 public class Attendance {
     private final Crew crew;
@@ -18,6 +19,28 @@ public class Attendance {
 
     public Crew getCrew() {
         return crew;
+    }
+
+    public String getStatus() {
+        DayOfWeek dayOfWeek = time.getDayOfWeek();
+        if (dayOfWeek == DayOfWeek.MONDAY) {
+            // 13:00 기준
+            if (time.toLocalTime().isBefore(LocalTime.of(13, 5, 0))) { // 따로 저장해두기 (enum ...)
+                return "출석";
+            }
+            if (time.toLocalTime().isBefore(LocalTime.of(13, 30, 0))) {
+                return "지각";
+            }
+            return "결석";
+        }
+        // 10:00
+        if (time.toLocalTime().isBefore(LocalTime.of(10, 0, 0))) {
+            return "출석";
+        }
+        if (time.toLocalTime().isBefore(LocalTime.of(10, 30, 0))) {
+            return "지각";
+        }
+        return "결석";
     }
 
     @Override
