@@ -1,6 +1,8 @@
-import org.junit.jupiter.api.Test;
+import static org.assertj.core.api.Assertions.assertThat;
 
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import domain.Crew;
+import domain.StringParser;
+import org.junit.jupiter.api.Test;
 
 public class CrewTest {
 
@@ -19,6 +21,15 @@ public class CrewTest {
         Crew parsedCrew1 = new Crew(crew1[0], crew1[1]);
 
         assertThat(parsedCrew1.getName()).isEqualTo("쿠키");
-        assertThat(parsedCrew1.getTime()).isEqualTo("2024-12-13 10:08");
+        assertThat(parsedCrew1.getAttendTimes().get(0).toString()).isEqualTo("2024-12-13T10:08");
+    }
+
+    @Test
+    void test3() {
+        Crew crew = new Crew("폰트", "2024-12-13 10:08");
+
+        crew.attend("2024-12-13 10:09");
+
+        assertThat(crew.getAttendTimes().size()).isEqualTo(2);
     }
 }
