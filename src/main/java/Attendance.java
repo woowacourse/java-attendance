@@ -27,9 +27,9 @@ public class Attendance {
         validateOperatingTime(time);
     }
 
-    public void update(LocalDateTime updateDateTime) {
-        validate(updateDateTime);
-        this.attendanceDateTime = updateDateTime;
+    public void update(LocalTime updateTime) {
+        validateOperatingTime(updateTime);
+        this.attendanceDateTime = LocalDateTime.of(this.attendanceDateTime.toLocalDate(), updateTime);
     }
 
     public AttendanceState check() {

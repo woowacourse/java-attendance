@@ -1,7 +1,9 @@
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.stream.Stream;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -108,44 +110,37 @@ public class AttendanceTest {
         }
     }
 
-//    @Nested
-//    class Update {
-//        @ParameterizedTest
-//        @DisplayName("출석 기록을 수정할 수 있다")
-//        @MethodSource("provideDateAndTimeForUpdate")
-//        void updateTest(LocalTime originTime, LocalDate updateDate, LocalTime updateTime, String result) {
-//            // given
-//            Attendance attendance = Attendance.from(attendanceDateTime);
-//
-//            // when
-//            String expectedResult = attendance.update(originTime, nickname, updateDate, updateTime);
-//
-//            // then
-//            assertThat(expectedResult).isEqualTo(result);
-//        }
-//
-//        private static Stream<Arguments> provideDateAndTimeForUpdate() {
-//            return Stream.of(
-//                    Arguments.of(
-//                            LocalTime.of(10, 7),
-//                            LocalDate.of(2024, 12, 3),
-//                            LocalTime.of(9, 59),
-//                            "12월 03일 화요일 10:07 (지각) -> 09:59 (출석) 수정 완료!"
-//                    ),
-//                    Arguments.of(
-//                            LocalTime.of(10, 7),
-//                            LocalDate.of(2024, 12, 3),
-//                            LocalTime.of(10, 12),
-//                            "12월 03일 화요일 10:07 (지각) -> 10:12 (지각) 수정 완료!"
-//                    ),
-//                    Arguments.of(
-//                            LocalTime.of(10, 7),
-//                            LocalDate.of(2024, 12, 4),
-//                            LocalTime.of(9, 59),
-//                            "12월 04일 수요일 10:07 (지각) -> 09:59 (출석) 수정 완료!"
-//                    )
-//            );
-//        }
-//    }
+    @Nested
+    class Update {
+        @ParameterizedTest
+        @DisplayName("출석 기록을 수정할 수 있다")
+        @MethodSource("provideOriginDateTimeForUpdate")
+        void updateTest(LocalDateTime originDateTime, LocalTime updateTime) {
+            // given
+            Attendance attendance = Attendance.from(originDateTime);
+
+            // when
+            // then
+            assertThatCode(() -> attendance.update(updateTime))
+                    .doesNotThrowAnyException();
+        }
+
+        private static Stream<Arguments> provideOriginDateTimeForUpdate() {
+            return Stream.of(
+                    Arguments.of(
+                            LocalDateTime.of(2024, 12, 3, 10, 7),
+                            LocalTime.of(9, 59)
+                    ),
+                    Arguments.of(
+                            LocalDateTime.of(2024, 12, 3, 10, 7),
+                            LocalTime.of(10, 12)
+                    ),
+                    Arguments.of(
+                            LocalDateTime.of(2024, 12, 4, 10, 7),
+                            LocalTime.of(9, 59)
+                    )
+            );
+        }
+    }
 
 }
