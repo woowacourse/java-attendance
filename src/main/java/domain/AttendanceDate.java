@@ -18,7 +18,7 @@ public class AttendanceDate {
     }
 
     public AttendanceState calculateAttendanceState() {
-        return null;
+        return AttendanceState.calculateAttendanceState(this.getDayOfWeek(), this.dateTime);
     }
 
     private int getDayOfWeek() {
