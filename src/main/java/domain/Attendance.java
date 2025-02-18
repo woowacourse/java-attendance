@@ -14,20 +14,19 @@ public class Attendance {
         LocalDate endDate = LocalDate.now();
 
         for (LocalDate cursorDate = startDate; cursorDate.isBefore(endDate); cursorDate = cursorDate.plusDays(1)) {
-            Optional<LocalDate> cursorlocalDate = localDateTimes.stream().map(LocalDateTime::toLocalDate)
-                    .filter(cursorDate::equals).findFirst();
-            try {
-                if (cursorlocalDate.isPresent()) {
-                    LocalDateTime cursorLocalDateTime = findDateTime(cursorlocalDate.get(), localDateTimes);
-                    attendanceDates.add(new AttendanceDate(cursorLocalDateTime));
-                    continue;
-                }
-                attendanceDates.add(new AttendanceDate(
-                        LocalDateTime.of(cursorDate.getYear(), cursorDate.getMonth(), cursorDate.getDayOfMonth(), 23,
-                                59)));
-            } catch (IllegalArgumentException e) {
+            if (cursorDate.getDayOfWeek().getValue() > 5 || Holiday.has(cursorDate)) {
                 continue;
             }
+            Optional<LocalDate> cursorlocalDate = localDateTimes.stream().map(LocalDateTime::toLocalDate)
+                    .filter(cursorDate::equals).findFirst();
+            if (cursorlocalDate.isPresent()) {
+                LocalDateTime cursorLocalDateTime = findDateTime(cursorlocalDate.get(), localDateTimes);
+                attendanceDates.add(new AttendanceDate(cursorLocalDateTime));
+                continue;
+            }
+            attendanceDates.add(new AttendanceDate(
+                    LocalDateTime.of(cursorDate.getYear(), cursorDate.getMonth(), cursorDate.getDayOfMonth(), 23,
+                            59)));
         }
     }
 

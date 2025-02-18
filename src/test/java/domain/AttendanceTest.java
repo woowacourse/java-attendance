@@ -18,6 +18,5 @@ public class AttendanceTest {
 
         // then
         Assertions.assertThat(attendance).isInstanceOf(Attendance.class);
-
     }
 }
