@@ -1,5 +1,6 @@
 package domain;
 
+import java.time.DayOfWeek;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 
@@ -19,16 +20,16 @@ public enum AttendanceStatus {
     }
 
     public static AttendanceStatus attend(LocalDateTime target) {
-        int dayOfWeek = target.getDayOfWeek().getValue();
+        DayOfWeek dayOfWeek = target.getDayOfWeek();
 
         LocalTime attendanceTime = LocalTime.of(10, 0);
         LocalTime targetTime = target.toLocalTime();
 
-        if (dayOfWeek == 6 || dayOfWeek == 7) {
+        if (dayOfWeek == DayOfWeek.SATURDAY || dayOfWeek == DayOfWeek.SUNDAY) {
             throw new IllegalArgumentException();
         }
 
-        if (dayOfWeek == 1) {
+        if (dayOfWeek == DayOfWeek.MONDAY) {
             attendanceTime = LocalTime.of(13, 0);
         }
 

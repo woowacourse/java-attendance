@@ -5,6 +5,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.ArrayList;
+import java.util.List;
+
 import org.junit.jupiter.api.Test;
 
 class CrewTest {
@@ -31,5 +34,15 @@ class CrewTest {
         crew.editAttendStatus(LocalDateTime.of(attendanceDate, modifiedTime));
 
         assertThat(crew.getAttendanceTime(attendanceDate)).isEqualTo(modifiedTime);
+    }
+
+    @Test
+    void 결석_횟수를_계산한다() {
+        Crew crew = new Crew("두리");
+        for(int day = 3; day <= 6; day ++) {
+            crew.addAttendStatus(LocalDateTime.of(2024, 12, day, 10, 20, 0));
+        }
+
+        assertThat(crew.calculateAbsence(7)).isEqualTo(2);
     }
 }
