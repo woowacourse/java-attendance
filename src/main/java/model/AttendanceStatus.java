@@ -1,3 +1,5 @@
+package model;
+
 public enum AttendanceStatus {
 
     ABSENT("결석"),

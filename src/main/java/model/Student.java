@@ -1,3 +1,5 @@
+package model;
+
 import java.time.DayOfWeek;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -5,11 +7,11 @@ import java.util.LinkedHashMap;
 
 public class Student {
 
-    LinkedHashMap<LocalDateTime, AttendanceStatus> record = new LinkedHashMap<>();
-    String name;
-    int absent;
-    int attendance;
-    int late;
+    public LinkedHashMap<LocalDateTime, AttendanceStatus> record = new LinkedHashMap<>();
+    public String name;
+    public int absent;
+    public int attendance;
+    public int late;
 
     public Student(String name) {
         this.name = name;
