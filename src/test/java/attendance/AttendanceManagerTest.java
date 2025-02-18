@@ -43,10 +43,25 @@ public class AttendanceManagerTest {
         var time = LocalDateTime.parse("2024-12-03T10:15:30");
         AttendanceManager attendanceManager = new AttendanceManager();
         attendanceManager.addAttendance(nickname, time);
+
         AttendanceDateDto attendanceResult = attendanceManager.getAttendanceResult(nickname, time);
 
         String result = attendanceFormatter.formattedTime(attendanceResult);
         assertThat(result)
             .isEqualTo("12월 3일 화요일 10:15 (출석)");
+    }
+
+    @Test
+    @DisplayName("이미 출석한 경우, 예외를 반환한다.")
+    void test2() {
+        var nickname = "몽이2";
+        var time = LocalDateTime.parse("2024-12-03T10:15:30");
+        var DUPLICATE_ATTENDANCE_DATE = "이미 출석되었습니다. 수정 기능을 이용해주세요.";
+        AttendanceManager attendanceManager = new AttendanceManager();
+        attendanceManager.addAttendance(nickname, time);
+
+        assertThatThrownBy(() -> attendanceManager.addAttendance(nickname, time))
+            .isInstanceOf(AttendanceException.class)
+            .hasMessage(DUPLICATE_ATTENDANCE_DATE);
     }
 }

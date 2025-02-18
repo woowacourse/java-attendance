@@ -22,6 +22,7 @@ public class AttendanceManager {
         AttendanceStatus attendanceStatus = AttendanceStatus.of("출석");
 
         Attendances attendances = attendanceManager.getOrDefault(nickname, new Attendances());
+
         attendanceManager.put(nickname, attendances);
         attendances.addAttendance(time, attendanceStatus);
     }
