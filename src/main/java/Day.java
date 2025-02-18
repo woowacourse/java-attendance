@@ -48,4 +48,8 @@ public enum Day {
     public LocalTime getStart() {
         return start;
     }
+
+    public String getName() {
+        return name;
+    }
 }
