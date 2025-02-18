@@ -3,6 +3,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.Map;
 
 import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.Test;
@@ -50,6 +51,25 @@ public class AttendanceTest {
             softly.assertThat(crew.getAttendanceStatusByDate(LocalDate.of(2025, 02, 17))).isEqualTo(AttendanceStatus.LATE);
             softly.assertThat(crew.getAttendanceStatusByDate(LocalDate.of(2025, 02, 18))).isEqualTo(AttendanceStatus.ATTENDANCE);
             softly.assertThat(crew.getAttendanceStatusByDate(LocalDate.of(2025, 02, 19))).isEqualTo(AttendanceStatus.ABSENT);
+        });
+    }
+
+    @Test
+    void 출석_상태별_횟수를_계산한다() {
+        Crew crew = new Crew("pobi");
+        // 지각
+        crew.attendance(LocalDate.of(2025, 02, 17), LocalTime.of(13, 06));
+        // 출석
+        crew.attendance(LocalDate.of(2025, 02, 18), LocalTime.of(10, 05));
+        // 결석
+        crew.attendance(LocalDate.of(2025, 02, 19), LocalTime.of(10, 31));
+
+        Map<AttendanceStatus, Integer> attendanceStatusStatistics =
+            crew.getAttendanceStatusStatistics(LocalDate.of(2025, 02, 25));
+        SoftAssertions.assertSoftly(softly -> {
+            softly.assertThat(attendanceStatusStatistics.get(AttendanceStatus.ATTENDANCE)).isEqualTo(1);
+            softly.assertThat(attendanceStatusStatistics.get(AttendanceStatus.LATE)).isEqualTo(1);
+            softly.assertThat(attendanceStatusStatistics.get(AttendanceStatus.ABSENT)).isEqualTo(21);
         });
     }
 }
