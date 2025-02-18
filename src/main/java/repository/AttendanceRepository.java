@@ -6,16 +6,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class AttendanceRepository {
+
     private List<CrewRecord> crewRecords = new ArrayList<>();
 
-    public void attend(CrewRecord data){
-
-        crewRecords.add(data);
-    }
-
-    public CrewRecord attend(String inputName, LocalDateTime inputDateAndTime){
-        for(CrewRecord crewRecord : crewRecords) {
-            if(crewRecord.isAttend(inputName, inputDateAndTime)) {
+    public CrewRecord attend(String inputName, LocalDateTime inputDateAndTime) {
+        for (CrewRecord crewRecord : crewRecords) {
+            if (crewRecord.isAttend(inputName, inputDateAndTime)) {
                 throw new IllegalArgumentException("이미 출석한 경우 수정만 가능합니다.");
             }
         }
@@ -26,8 +22,8 @@ public class AttendanceRepository {
 
     public List<CrewRecord> findByName(String name) {
         List<CrewRecord> records = new ArrayList<>();
-        for(CrewRecord crewRecord : crewRecords) {
-            if(name.equals(crewRecord.getName())) {
+        for (CrewRecord crewRecord : crewRecords) {
+            if (name.equals(crewRecord.getName())) {
                 records.add(crewRecord);
             }
         }
