@@ -1,22 +1,27 @@
+import java.time.DayOfWeek;
+import java.time.LocalDateTime;
+
 public class Attendance {
 
-    public AttendanceStatus attend(String nickname, String time) {
-        String[] times = time.split(":");
-        int hour = Integer.parseInt(times[0]);
-        int minute = Integer.parseInt(times[1]);
+    public AttendanceStatus checkAttendanceStatus(String nickname, LocalDateTime time) {
+        int hour = time.getHour();
+        int minute = time.getMinute();
 
-        if (hour == 10 && minute > 5) {
-            if (minute > 30) {
-            return AttendanceStatus.ABSENCE;
-            }
-            return AttendanceStatus.LATE;
+        if (time.getDayOfWeek() == DayOfWeek.MONDAY) {
+            return attend(hour, minute, 13);
         }
 
-        if(hour == 13 && minute > 5) {
-            if (minute > 30) {
+        return  attend(hour, minute, 10);
+    }
+
+    private AttendanceStatus attend(int hour, int minute, int startHour) {
+        if (hour >= startHour) {
+            if (hour > startHour || minute > 30) {
                 return AttendanceStatus.ABSENCE;
             }
-            return AttendanceStatus.LATE;
+            if (minute > 5) {
+                return AttendanceStatus.LATE;
+            }
         }
         return AttendanceStatus.ATTEND;
     }
