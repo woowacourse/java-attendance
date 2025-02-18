@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import java.time.LocalDate;
 import java.time.LocalTime;
 
+import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.Test;
 
 public class AttendanceTest {
@@ -33,5 +34,22 @@ public class AttendanceTest {
         crew.attendance(LocalDate.now(), LocalTime.of(10, 00));
         crew.modifyAttendance(LocalDate.now(), LocalTime.of(10, 10));
         assertThat(crew.getAttendanceTimeByDate(LocalDate.now())).isEqualTo(LocalTime.of(10, 10));
+    }
+
+    @Test
+    void 날짜와_시간으로_출석_상태를_계산한다() {
+        Crews crews = new Crews();
+        crews.add(new Crew("pobi"));
+        Crew crew = crews.get("pobi");
+        crew.attendance(LocalDate.of(2025, 02, 17), LocalTime.of(13, 06));
+        crew.attendance(LocalDate.of(2025, 02, 18), LocalTime.of(10, 05));
+        crew.attendance(LocalDate.of(2025, 02, 19), LocalTime.of(10, 31));
+
+        SoftAssertions.assertSoftly(softly -> {
+            softly.assertThat(crew.getAttendanceStatusByDate(LocalDate.of(2025, 02, 01))).isEqualTo(AttendanceStatus.ABSENT);
+            softly.assertThat(crew.getAttendanceStatusByDate(LocalDate.of(2025, 02, 17))).isEqualTo(AttendanceStatus.LATE);
+            softly.assertThat(crew.getAttendanceStatusByDate(LocalDate.of(2025, 02, 18))).isEqualTo(AttendanceStatus.ATTENDANCE);
+            softly.assertThat(crew.getAttendanceStatusByDate(LocalDate.of(2025, 02, 19))).isEqualTo(AttendanceStatus.ABSENT);
+        });
     }
 }
