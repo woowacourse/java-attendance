@@ -22,7 +22,7 @@ public class Attendance {
     }
 
     public static void method1(final int hour, final int minute) {
-        if (hour < 8) {
+        if (hour < 8 || (hour >= 23 && minute > 0)) {
             throw new IllegalArgumentException("[ERROR] 현재 캠퍼스 운영시간이 아닙니다.");
         }
     }
