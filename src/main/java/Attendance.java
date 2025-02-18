@@ -2,8 +2,15 @@ import java.time.DayOfWeek;
 import java.time.LocalDateTime;
 
 public class Attendance {
+    private LocalDateTime dateTime;
+    private AttendanceStatus status;
 
-    public AttendanceStatus checkAttendanceStatus(String nickname, LocalDateTime time) {
+    public Attendance(LocalDateTime dateTime) {
+        this.dateTime = dateTime;
+        this.status = checkAttendanceStatus(dateTime);
+    }
+
+    public AttendanceStatus checkAttendanceStatus(LocalDateTime time) {
         int hour = time.getHour();
         int minute = time.getMinute();
 

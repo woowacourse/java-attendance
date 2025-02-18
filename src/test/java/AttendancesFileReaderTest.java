@@ -12,4 +12,11 @@ class AttendancesFileReaderTest {
                 + "빙티,2024-12-13 10:07\n"
                 + "이든,2024-12-13 10:07\n");
     }
+
+    @Test
+    void 입력_받은_파일_내용을_가공한다() {
+        AttendancesFileParser attendancesFileParser = new AttendancesFileParser();
+        Crews crews = attendancesFileParser.init();
+        assertThat(crews.size()).isEqualTo(4);
+    }
 }

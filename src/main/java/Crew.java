@@ -3,9 +3,9 @@ import java.util.List;
 public class Crew {
 
     private String nickname;
-    private List<String> attendances;
+    private List<Attendance> attendances;
 
-    public Crew(String nickname, List<String> attendances) {
+    public Crew(String nickname, List<Attendance> attendances) {
         this.nickname = nickname;
         this.attendances = attendances;
     }
@@ -14,7 +14,7 @@ public class Crew {
         return this.nickname.equals(nickname);
     }
 
-    public List<String> getAttendances() {
+    public List<Attendance> getAttendances() {
         return attendances;
     }
 
