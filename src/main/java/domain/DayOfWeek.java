@@ -1,5 +1,6 @@
 package domain;
 
+import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.Arrays;
 
@@ -37,4 +38,16 @@ public enum DayOfWeek {
                 .findFirst()
                 .orElseThrow(() -> new IllegalArgumentException("[ERROR] 해당 ID에 대한 요일이 없습니다."));
     }
+
+    public static DayOfWeek getInstance(LocalDate date) {
+        return Arrays.stream(values())
+                .filter(value -> value.id.equals(date.getDayOfWeek().getValue()))
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException("[ERROR] 해당 날짜에 대한 요일이 없습니다."));
+    }
+
+    public LocalTime getStandardTime() {
+        return standardTime;
+    }
+
 }
