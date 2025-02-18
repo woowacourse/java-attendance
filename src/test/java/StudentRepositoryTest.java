@@ -3,14 +3,15 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.time.Month;
+import model.AttendanceStatus;
+import model.Student;
+import model.StudentRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 public class StudentRepositoryTest {
-    Student student;
     Student student1 = new Student("짱수");
     Student student2 = new Student("이든");
     Student student3 = new Student("쿠키");
@@ -39,7 +40,7 @@ public class StudentRepositoryTest {
         OutputStream out = new ByteArrayOutputStream();
         System.setOut(new PrintStream(out));*/
 
-        Assertions.assertTrue(studentRepository.notExistStudent("포비"));
+        Assertions.assertFalse(studentRepository.notExistStudent("포비"));
     }
 
     @Test
@@ -47,7 +48,7 @@ public class StudentRepositoryTest {
     void test2() {
         LocalTime localTime = LocalTime.of(7,59);
 
-        assertThatThrownBy(() -> student.isStartTime(localTime))
+        assertThatThrownBy(() -> student1.isStartTime(localTime))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("[ERROR] 캠퍼스 운영 시간이 아닙니다.");
     }
