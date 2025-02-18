@@ -1,0 +1,35 @@
+package domain;
+
+import static org.assertj.core.api.Assertions.assertThat;
+
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import org.junit.jupiter.api.Test;
+
+class CrewTest {
+    @Test
+    void 해당_날짜에_출석을_저장한다() {
+        LocalDate localDate = LocalDate.of(2024, 12, 10);
+        LocalTime localTime = LocalTime.of(10, 04);
+
+        Crew crew = new Crew("시소");
+        crew.addAttendStatus(LocalDateTime.of(localDate, localTime));
+
+        assertThat(crew.getAttendanceTime(localDate)).isEqualTo(localTime);
+    }
+
+    @Test
+    void 해당_날짜에_대한_출석을_수정한다() {
+        LocalDate attendanceDate = LocalDate.of(2024, 12, 10);
+        LocalTime attendanceTime = LocalTime.of(10, 04);
+        LocalTime modifiedTime = LocalTime.of(10, 20);
+
+        Crew crew = new Crew("시소");
+
+        crew.addAttendStatus(LocalDateTime.of(attendanceDate, attendanceTime));
+        crew.editAttendStatus(LocalDateTime.of(attendanceDate, modifiedTime));
+
+        assertThat(crew.getAttendanceTime(attendanceDate)).isEqualTo(modifiedTime);
+    }
+}

@@ -7,25 +7,25 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class Crew {
-    String name;
-    Map<LocalDate, LocalTime> attendanceBook;
+    private final String name;
+    private final Map<LocalDate, LocalTime> attendanceBook;
 
-    public Crew(String name) {
+    public Crew(final String name) {
         this.name = name;
         attendanceBook = new HashMap<>();
     }
 
-    public void addAttendStatus(LocalDateTime target) {
+    public void addAttendStatus(final LocalDateTime target) {
         LocalDate date = target.toLocalDate();
         LocalTime time = target.toLocalTime();
         attendanceBook.put(date, time);
     }
 
-    public boolean isNameMatch(String name) {
+    public boolean isNameMatch(final String name) {
         return this.name.equals(name);
     }
 
-    public void editAttendStatus(LocalDateTime target) {
+    public void editAttendStatus(final LocalDateTime target) {
         LocalDate date = target.toLocalDate();
         if (!attendanceBook.containsKey(date)) {
             throw new IllegalArgumentException();
@@ -33,7 +33,7 @@ public class Crew {
         attendanceBook.put(date, target.toLocalTime());
     }
 
-    public LocalTime getAttendanceTime(LocalDate date) {
+    public LocalTime getAttendanceTime(final LocalDate date) {
         return attendanceBook.getOrDefault(date, LocalTime.of(0, 0));
     }
 }

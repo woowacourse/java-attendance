@@ -3,8 +3,22 @@ package domain;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 
-public class Attendance {
-    public static Object attend(LocalDateTime target) {
+public enum AttendanceStatus {
+    ATTENDANCE("출석"),
+    TARDY("지각"),
+    ABSENCE("결석");
+
+    public String getStatus() {
+        return status;
+    }
+
+    private final String status;
+
+    AttendanceStatus(String status) {
+        this.status = status;
+    }
+
+    public static AttendanceStatus attend(LocalDateTime target) {
         int dayOfWeek = target.getDayOfWeek().getValue();
 
         LocalTime attendanceTime = LocalTime.of(10, 0);
@@ -21,13 +35,13 @@ public class Attendance {
 
         if (targetTime.isAfter(attendanceTime)) {
             if (attendanceTime.plusMinutes(30).isBefore(targetTime)) {
-                return 2;
+                return ABSENCE;
             }
             if (attendanceTime.plusMinutes(5).isBefore(targetTime)) {
-                return 1;
+                return TARDY;
             }
-            return 0;
+            return ATTENDANCE;
         }
-        return 0;
+        return ATTENDANCE;
     }
 }
