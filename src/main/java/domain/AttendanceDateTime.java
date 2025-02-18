@@ -10,7 +10,13 @@ public class AttendanceDateTime {
     }
 
     public AttendanceType getAttendanceType() {
-
+        int dayOfWeek = attendanceDate.getDayOfWeek();
+        if (attendanceTime.isAbsence(dayOfWeek)) {
+            return AttendanceType.ABSENCE;
+        }
+        if (attendanceTime.isLate(dayOfWeek)) {
+            return AttendanceType.LATE;
+        }
+        return AttendanceType.PRESENT;
     }
-
 }
