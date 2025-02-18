@@ -28,6 +28,10 @@ public class Attendance {
         timestamps.put(date, hourMinute);
     }
 
+    public boolean isNameMatch(String anotherName) {
+        return this.name.equals(anotherName);
+    }
+
     public static int checkAttendance(final int hour, final int minute) {
         if (hour <= 10 && minute <= 5) {
             return 1;

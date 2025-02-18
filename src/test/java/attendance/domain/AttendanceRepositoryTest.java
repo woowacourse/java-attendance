@@ -4,6 +4,8 @@ import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -12,17 +14,28 @@ public class AttendanceRepositoryTest {
     @DisplayName("크루 출석 정보 저장 성공")
     @Test
     void test1() {
-        AttendanceRepository attendanceRepository = new AttendanceRepository();
+        List<Attendance> attendances = new ArrayList<>();
+        attendances.add(new Attendance("빙티"));
+        attendances.add(new Attendance("이든"));
+        attendances.add(new Attendance("쿠키"));
+        attendances.add(new Attendance("빙봉"));
+        AttendanceRepository attendanceRepository = new AttendanceRepository(attendances);
         String name = "빙봉";
         LocalDateTime localDateTime = LocalDateTime.of(2024, 12, 23, 13, 1);
 
-        assertThatCode(attendanceRepository.add(name, localDateTime)).doesNotThrowAnyException();
+        assertThatCode(() -> attendanceRepository.add(name, localDateTime)).doesNotThrowAnyException();
     }
 
     @DisplayName("크루 출석 정보 저장 실패")
     @Test
     void test2() {
-        AttendanceRepository attendanceRepository = new AttendanceRepository();
+        List<Attendance> attendances = new ArrayList<>();
+        attendances.add(new Attendance("빙티"));
+        attendances.add(new Attendance("이든"));
+        attendances.add(new Attendance("쿠키"));
+        attendances.add(new Attendance("빙봉"));
+
+        AttendanceRepository attendanceRepository = new AttendanceRepository(attendances);
         String name = "빙봉";
         LocalDateTime localDateTime = LocalDateTime.of(2024, 12, 23, 13, 1);
         Attendance attendance = new Attendance(name);
