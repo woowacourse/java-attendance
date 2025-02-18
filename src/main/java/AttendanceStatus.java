@@ -17,13 +17,13 @@ public enum AttendanceStatus {
         this.threshold = threshold;
     }
 
-    public static AttendanceStatus of(LocalDate date, LocalTime localTime) {
-        if(localTime == null) {
+    public static AttendanceStatus of(LocalDate date, LocalTime attendanceTime) {
+        if(attendanceTime == null) {
             return AttendanceStatus.ABSENT;
         }
 
         LectureTime lectureTime = LectureTime.from(date);
-        long difference = MINUTES.between(lectureTime.getStartTime(), localTime);
+        long difference = MINUTES.between(lectureTime.getStartTime(), attendanceTime);
         return Arrays.stream(values()).filter(attendanceStatus -> attendanceStatus.threshold < difference)
             .max(Comparator.comparing(AttendanceStatus::getThreshold))
             .orElse(null);
