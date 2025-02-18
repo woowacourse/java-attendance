@@ -8,7 +8,9 @@ public class AttendanceTest {
 
     @Test
     void 닉네임과_등교_시간으로_출석한다() {
-        Crew crew = new Crew("pobi");
+        Crews crews = new Crews();
+        crews.add(new Crew("pobi"));
+        Crew crew = crews.get("pobi");
         crew.attendance(LocalDate.now(), LocalTime.of(10, 1));
     }
 }
