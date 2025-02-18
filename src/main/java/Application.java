@@ -9,4 +9,11 @@ public class Application {
 
         return hour > 10 || (hour == 10 && minute > 5);
     }
+
+    public static boolean absenceCheck(int dayOfWeek, int hour, int minute) {
+        if (dayOfWeek == 1) {
+            return hour > 13 || (hour == 13 && minute > 30);
+        }
+        return hour > 10 || (hour == 10 && minute > 30);
+    }
 }
