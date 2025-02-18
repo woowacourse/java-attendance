@@ -76,7 +76,7 @@ public class AttendanceTest {
     @Test
     void test10() {
         assertThatCode(() -> Attendance.method1(23, 0)).doesNotThrowAnyException();
-    }   
+    }
 
     @DisplayName("공휴일 출석 실패")
     @Test
@@ -88,7 +88,7 @@ public class AttendanceTest {
 
     @DisplayName("주말 출석 실패")
     @Test
-    void test11() {
+    void test12() {
         assertThatThrownBy(() -> Attendance.method2(22))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("[ERROR] 12월 22일 일요일은 등교일이 아닙니다.");
@@ -96,7 +96,7 @@ public class AttendanceTest {
 
     @DisplayName("평일 출석 통과")
     @Test
-    void test12() {
+    void test13() {
         assertThatCode(() -> Attendance.method2(24)).doesNotThrowAnyException();
     }
 }
