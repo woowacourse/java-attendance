@@ -37,17 +37,8 @@ public enum AttendanceTime {
     public static boolean isAbsence(int dayOfWeek, LocalDateTime dateTime) {
         for (AttendanceTime value : values()) {
             if (value.dayOfWeek == dayOfWeek) {
-                return value.hour > dateTime.getHour() || (value.hour == dateTime.getHour()
-                        && value.minute >= dateTime.getMinute());
-            }
-        }
-        return false;
-    }
-
-    public static boolean isTardy(int dayOfWeek, LocalDateTime dateTime) {
-        for (AttendanceTime value : values()) {
-            if (value.dayOfWeek == dayOfWeek) {
-                return(value.hour < dateTime.getHour() && (value.hour == dateTime.getHour() && (value.minute + 25 < dateTime.getMinute())));
+                return value.hour < dateTime.getHour() || (value.hour == dateTime.getHour()
+                        && value.minute + 25 < dateTime.getMinute());
             }
         }
         return false;
