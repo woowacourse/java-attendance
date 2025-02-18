@@ -5,7 +5,7 @@ public class Attendance {
         if (hour <= 10 && minute <= 5) {
             return 1;
         }
-        if (hour == 10 && (minute > 5 && minute <= 30)) {
+        if (hour == 10 && (minute <= 30)) {
             return 0;
         }
         return -1;
@@ -15,7 +15,7 @@ public class Attendance {
         if (hour <= 13 && minute <= 5) {
             return 1;
         }
-        if (hour == 13 && (minute > 5 && minute <= 30)) {
+        if (hour == 13 && (minute <= 30)) {
             return 0;
         }
         return -1;
