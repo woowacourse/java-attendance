@@ -23,4 +23,8 @@ public class Crew {
     public int hashCode() {
         return Objects.hashCode(nickname);
     }
+
+    public boolean isEqualsNickname(String nickname) {
+        return this.nickname.equals(nickname);
+    }
 }

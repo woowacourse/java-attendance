@@ -3,6 +3,7 @@ package attendance;
 import attendance.model.Attendance;
 import attendance.model.Attendances;
 import attendance.model.Crew;
+import attendance.model.CrewGroup;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -20,12 +21,14 @@ public class AttendancesFactory {
         List<String> lines = readLinesWithoutHeader();
 
         Set<Attendance> attendances = new HashSet<>();
+        Set<Crew> crews = new HashSet<>();
         for (String line : lines) {
             String[] split = line.split(",");
-            String nickname = split[0];
-            attendances.add(new Attendance(new Crew(nickname), toLocalDateTime(split[1])));
+            Crew crew = new Crew(split[0]);
+            crews.add(crew);
+            attendances.add(new Attendance(crew, toLocalDateTime(split[1])));
         }
-        return new Attendances(attendances);
+        return new Attendances(new CrewGroup(crews), attendances);
     }
 
     private List<String> readLinesWithoutHeader() {
