@@ -61,4 +61,4 @@
 ## 🛠 Util
 
 ### AttendancesFileHandler
-- [ ] attendances.csv에서 불러온 출석 목록 저장 및 파싱
+- [x] attendances.csv에서 불러온 출석 목록 저장 및 파싱
