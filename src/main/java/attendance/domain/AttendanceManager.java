@@ -1,11 +1,12 @@
 package attendance.domain;
 
 import java.time.DayOfWeek;
+import java.time.LocalDate;
 import java.time.LocalTime;
 
 public class AttendanceManager {
     public static String checkAttendanceResult(DayOfWeek dayOfWeek, LocalTime localTime) {
-        if (dayOfWeek.equals(DayOfWeek.MONDAY)) {
+        if (dayOfWeek == DayOfWeek.MONDAY) {
             if (localTime.isBefore(LocalTime.of(13, 6))) {
                 return "출석";
             }
@@ -23,5 +24,16 @@ public class AttendanceManager {
             return "지각";
         }
         return "결석";
+    }
+
+    public static boolean checkHoliday(LocalDate localDate) {
+        DayOfWeek dayOfWeek = localDate.getDayOfWeek();
+        if (dayOfWeek == DayOfWeek.SATURDAY || dayOfWeek == DayOfWeek.SUNDAY) {
+            return true;
+        }
+        if (localDate.equals(LocalDate.of(2024, 12, 25))) {
+            return true;
+        }
+        return false;
     }
 }
