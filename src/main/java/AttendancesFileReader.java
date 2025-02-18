@@ -4,12 +4,13 @@ import java.io.IOException;
 
 public class AttendancesFileReader {
 
-    public void read() {
+    public String read() {
         try (BufferedReader reader = new BufferedReader(new FileReader("src/main/resources/attendances.csv"))) {
             String line;
             reader.readLine(); //첫줄
             while ((line = reader.readLine()) != null) {
-                System.out.println(line);
+                sb.append(line);
+                sb.append("\n");
             }
         } catch (IOException e) {
             throw new IllegalArgumentException(e);
