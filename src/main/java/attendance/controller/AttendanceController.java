@@ -6,6 +6,7 @@ import attendance.model.Attendances;
 import attendance.model.Command;
 import attendance.model.Crew;
 import attendance.view.InputView;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
@@ -29,6 +30,9 @@ public class AttendanceController {
             if (command == Command.ATTENDANCE) {
                 doAttendance(now);
             }
+            if (command == Command.ATTENDANCE_UPDATE) {
+                doUpdateAttendance(now);
+            }
         } catch (RuntimeException e) {
             System.out.println("[ERROR] " + e.getMessage());
         }
@@ -36,10 +40,10 @@ public class AttendanceController {
 
     private void doAttendance(LocalDateTime now) {
         String nickname = inputView.inputNickname();
-        attendances.validateAttendance(nickname);
+        attendances.validateExistNickname(nickname);
 
         String rawAttendanceTime = inputView.inputAttendanceTime();
-        LocalTime attendanceTime = LocalTime.parse(rawAttendanceTime, DateTimeFormatter.ofPattern("HH:mm"));
+        LocalTime attendanceTime = toLocalTime(rawAttendanceTime);
         Crew crew = new Crew(nickname);
         LocalDateTime attendanceDateTime = LocalDateTime.of(now.toLocalDate(), attendanceTime);
         attendances.add(new Attendance(crew, attendanceDateTime));
@@ -49,5 +53,23 @@ public class AttendanceController {
                 attendanceDateTime.getDayOfWeek().getDisplayName(TextStyle.SHORT, Locale.KOREAN),
                 attendanceDateTime.getHour(),
                 attendanceTime.getMinute());
+    }
+
+    private void doUpdateAttendance(LocalDateTime now) {
+        String nickname = inputView.inputNicknameForUpdateAttendance();
+        attendances.validateExistNickname(nickname);
+        LocalDateTime updateDateTime = getUpdateDateTime(now);
+        attendances.update(new Attendance(new Crew(nickname), updateDateTime));
+    }
+
+    private LocalDateTime getUpdateDateTime(LocalDateTime now) {
+        int targetUpdateDate = inputView.inputDateForUpdateAttendance();
+        String rawTimeForUpdate = inputView.inputTimeForUpdateAttendance();
+        LocalDate updateDate = LocalDate.of(now.getYear(), now.getMonth(), targetUpdateDate);
+        return LocalDateTime.of(updateDate, toLocalTime(rawTimeForUpdate));
+    }
+
+    private LocalTime toLocalTime(String rawTime) {
+        return LocalTime.parse(rawTime, DateTimeFormatter.ofPattern("HH:mm"));
     }
 }

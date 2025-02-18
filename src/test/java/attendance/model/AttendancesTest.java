@@ -36,7 +36,7 @@ class AttendancesTest {
         Attendances attendances = new Attendances(crewGroup, Set.of(attendance));
 
         String notExistNickname = "네오";
-        Assertions.assertThatThrownBy(() -> attendances.validateAttendance(notExistNickname))
+        Assertions.assertThatThrownBy(() -> attendances.validateExistNickname(notExistNickname))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("등록되지 않은 닉네임입니다.");
     }

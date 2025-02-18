@@ -26,7 +26,30 @@ public class InputView {
         return trim(scanner.nextLine());
     }
 
+    public String inputNicknameForUpdateAttendance() {
+        System.out.println("출석을 수정하려는 크루의 닉네임을 입력해 주세요.");
+        return trim(scanner.nextLine());
+    }
+
+    public int inputDateForUpdateAttendance() {
+        System.out.println("수정하려는 날짜(일)를 입력해 주세요.");
+        return parseInt(trim(scanner.nextLine()));
+    }
+
+    public String inputTimeForUpdateAttendance() {
+        System.out.println("언제로 변경하시겠습니끼?");
+        return trim(scanner.nextLine());
+    }
+
     private String trim(String input) {
         return input.replaceAll(" ", "");
+    }
+
+    private int parseInt(String input) {
+        try {
+            return Integer.parseInt(input);
+        } catch (NumberFormatException e) {
+            throw new IllegalArgumentException("숫자만 입력할 수 있습니다.");
+        }
     }
 }
