@@ -3,12 +3,12 @@ package attendance.model;
 public class Crew {
 
     private final String name;
-    private final AttendenceHistory attendenceHistory;
+    private final AttendanceHistory attendanceHistory;
 
     public Crew(String name) {
         validate(name);
         this.name = name;
-        this.attendenceHistory = new AttendenceHistory();
+        this.attendanceHistory = new AttendanceHistory();
     }
 
     private void validate(String name) {
@@ -20,15 +20,15 @@ public class Crew {
         }
     }
 
-    public void addAttendenceDetail(AttendenceDetail attendenceDetail) {
-        attendenceHistory.addAttendenceDetail(attendenceDetail);
+    public void addAttendanceDetail(AttendanceDetail attendanceDetail) {
+        attendanceHistory.addAttendanceDetail(attendanceDetail);
     }
 
     public String getName() {
         return name;
     }
 
-    public AttendenceHistory getAttendenceHistory() {
-        return attendenceHistory;
+    public AttendanceHistory getAttendanceHistory() {
+        return attendanceHistory;
     }
 }

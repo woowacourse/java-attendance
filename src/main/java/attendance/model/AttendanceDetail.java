@@ -3,13 +3,13 @@ package attendance.model;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 
-public class AttendenceDetail {
+public class AttendanceDetail {
     private LocalDateTime localDateTime;
-    private final Attendence attendence;
+    private final Attendance attendance;
 
-    public AttendenceDetail(LocalDateTime localDateTime) {
+    public AttendanceDetail(LocalDateTime localDateTime) {
         this.localDateTime = localDateTime;
-        this.attendence = Attendence.from(localDateTime);
+        this.attendance = Attendance.from(localDateTime);
     }
 
     public void modify(LocalTime localTime) {
@@ -19,8 +19,8 @@ public class AttendenceDetail {
         );
     }
 
-    public Attendence getAttendence() {
-        return attendence;
+    public Attendance getAttandence() {
+        return attendance;
     }
 
     public LocalDateTime getLocalDateTime() {

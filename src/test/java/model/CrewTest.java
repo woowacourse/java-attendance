@@ -3,7 +3,7 @@ package model;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-import attendance.model.AttendenceDetail;
+import attendance.model.AttendanceDetail;
 import attendance.model.Crew;
 import java.time.LocalDateTime;
 import org.junit.jupiter.api.DisplayName;
@@ -51,9 +51,9 @@ public class CrewTest {
     @Test
     void test_checkHistory() {
         Crew crew = new Crew("멍구");
-        crew.addAttendenceDetail(new AttendenceDetail(LocalDateTime.of(2024, 12, 10, 10, 0)));
+        crew.addAttendanceDetail(new AttendanceDetail(LocalDateTime.of(2024, 12, 10, 10, 0)));
 
-        assertThat(crew.getAttendenceHistory().getAttendenceCount()).isEqualTo(1);
+        assertThat(crew.getAttendanceHistory().getAttendanceCount()).isEqualTo(1);
     }
 
 }

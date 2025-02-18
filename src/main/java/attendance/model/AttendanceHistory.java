@@ -1,0 +1,41 @@
+package attendance.model;
+
+import java.util.ArrayList;
+import java.util.List;
+
+public class AttendanceHistory {
+    private final List<AttendanceDetail> attendanceHistory = new ArrayList<>();
+
+    public void addAttendanceDetail(AttendanceDetail attendanceDetail) {
+        attendanceHistory.add(attendanceDetail);
+    }
+
+    public List<AttendanceDetail> getAttendanceHistory() {
+        return attendanceHistory;
+    }
+
+    public long getAttendanceCount() {
+        return attendanceHistory.stream()
+                .filter(attendanceDetail -> attendanceDetail.getAttandence().equals(Attendance.출석))
+                .count();
+
+    }
+
+    public long getLateCount() {
+        return getTotalLateCount() % 3;
+
+    }
+
+    private long getTotalLateCount() {
+        return attendanceHistory.stream()
+                .filter(attendanceDetail -> attendanceDetail.getAttandence().equals(Attendance.지각))
+                .count();
+    }
+
+    public long getAbsenceCount() {
+        return getTotalLateCount() / 3 + attendanceHistory.stream()
+                .filter(attendanceDetail -> attendanceDetail.getAttandence().equals(Attendance.결석))
+                .count();
+
+    }
+}

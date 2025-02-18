@@ -1,6 +1,6 @@
 package attendance.model;
 
-public enum AttendenceWarning {
+public enum AttendanceWarning {
 
     경고(2),
     면담(3),
@@ -10,12 +10,12 @@ public enum AttendenceWarning {
 
     private final int absenceCount;
 
-    AttendenceWarning(int absenceCount) {
+    AttendanceWarning(int absenceCount) {
         this.absenceCount = absenceCount;
     }
 
 
-    public static AttendenceWarning from(int absenceCount) {
+    public static AttendanceWarning from(int absenceCount) {
         if (absenceCount > 5) {
             return 제적;
         }

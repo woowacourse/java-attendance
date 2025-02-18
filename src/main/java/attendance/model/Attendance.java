@@ -4,13 +4,13 @@ import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 
-public enum Attendence {
+public enum Attendance {
     출석(),
     지각(),
     결석();
 
 
-    public static Attendence from(LocalDateTime dateTime) {
+    public static Attendance from(LocalDateTime dateTime) {
         LocalTime nowTime = dateTime.toLocalTime();
         WoowaDayOfWeek dayOfWeek = WoowaDayOfWeek.from(dateTime);
 
