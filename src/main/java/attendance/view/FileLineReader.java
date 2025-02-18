@@ -1,4 +1,4 @@
-package attendance;
+package attendance.view;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
