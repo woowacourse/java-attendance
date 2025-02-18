@@ -38,4 +38,14 @@ public class Crew {
     public AttendanceStatus getAttendanceStatusByDate(LocalDate date) {
         return AttendanceStatus.of(date, attendanceTimes.get(date));
     }
+
+    public Map<AttendanceStatus, Integer> getAttendanceStatusStatistics(LocalDate today) {
+        Map<AttendanceStatus, Integer> result = new HashMap<>();
+        for(int day = 1; day < today.getDayOfMonth() - 1; day++) {
+            AttendanceStatus attendanceStatus = getAttendanceStatusByDate(LocalDate.of(today.getYear(),
+                today.getMonth(), day));
+            result.put(attendanceStatus, result.getOrDefault(attendanceStatus, 0) + 1);
+        }
+        return result;
+    }
 }
