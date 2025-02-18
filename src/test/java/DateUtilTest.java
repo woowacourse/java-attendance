@@ -66,6 +66,59 @@ public class DateUtilTest {
         // then
         assertThat(result).isEqualTo(true);
     }
+
+    @Test
+    void 출석_대상_날짜_확인_주말() throws Exception {
+        //given
+        LocalDateTime holiday = LocalDateTime.of(2024, 12, 1, 0, 0);
+
+        //when
+        var result = DateUtil.isDayOff(holiday);
+
+        //then
+        Assertions.assertThat(result).isEqualTo(true);
+    }
+
+    @Test
+    @DisplayName("출석_대상_날짜_확인_평일")
+    void test2() throws Exception {
+        //given
+        LocalDateTime holiday = LocalDateTime.of(2024, 12, 2, 0, 0);
+
+        //when
+        var result = DateUtil.isDayOff(holiday);
+
+        //then
+        Assertions.assertThat(result).isEqualTo(false);
+    }
+
+    @Test
+    @DisplayName("출석_대상_날짜_확인_공휴일")
+    void test3() throws Exception {
+        //given
+        LocalDateTime holiday = LocalDateTime.of(2024, 12, 25, 0, 0);
+
+        //when
+        var result = DateUtil.isDayOff(holiday);
+
+        //then
+        Assertions.assertThat(result).isEqualTo(true);
+    }
+
+    @Test
+    void test4() throws Exception {
+        //given
+        int day = 13;
+
+        //when
+        List<Integer> result = DateUtil.getAttendUntilDay(day);
+
+        //then
+        Assertions.assertThat(result).containsExactly(
+                2, 3, 4, 5, 6, 9, 10, 11, 12, 13
+        );
+    }
+
     @Test
     @DisplayName("숫자가 아닌 입력 시 예외")
     void test5() throws Exception {
