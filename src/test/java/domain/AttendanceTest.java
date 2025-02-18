@@ -28,4 +28,12 @@ public class AttendanceTest {
     void 결석을_확인한다() {
         assertThat(Attendance.attend("시소", LocalDateTime.of(LocalDate.now(), LocalTime.of(10, 31, 00)))).isEqualTo(2);
     }
+
+    @Test
+    void 해당_날짜에_출석을_저장한다() {
+        LocalDate localDate = LocalDate.of(2024, 12, 10);
+        LocalTime localTime = LocalTime.of(10, 04);
+        Attendance.addAttendStatus("시소", LocalDateTime.of(localDate, localTime));
+        assertThat(Attendance.getAttendanceTime("시소", localDate)).isEqualTo(localTime);
+    }
 }

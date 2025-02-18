@@ -1,10 +1,13 @@
 package domain;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.HashMap;
+import java.util.Map;
 
 public class Attendance {
-
+    public static Map<LocalDate, LocalTime> attendanceBook = new HashMap<>();
     public static Object attend(String name, LocalDateTime target) {
         int dayOfWeek = target.getDayOfWeek().getValue();
 
@@ -30,5 +33,15 @@ public class Attendance {
             return 0;
         }
         return 0;
+    }
+
+    public static void addAttendStatus(String name, LocalDateTime target) {
+        LocalDate date = target.toLocalDate();
+        LocalTime time = target.toLocalTime();
+        attendanceBook.put(date, time);
+    }
+
+    public static LocalTime getAttendanceTime(String name, LocalDate date) {
+        return attendanceBook.getOrDefault(date, LocalTime.of(0, 0));
     }
 }
