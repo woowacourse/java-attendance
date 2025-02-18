@@ -5,11 +5,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class AttendanceStoreService {
-    private final CrewRepository crewRepository;
+    private final CrewRepositoryImpl crewRepository;
     private final AttendanceRepository attendanceRepository;
 
 
-    public AttendanceStoreService(CrewRepository crewRepository, AttendanceRepository attendanceRepository) {
+    public AttendanceStoreService(CrewRepositoryImpl crewRepository, AttendanceRepository attendanceRepository) {
         this.crewRepository = crewRepository;
         this.attendanceRepository = attendanceRepository;
     }

@@ -1,14 +1,7 @@
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Optional;
 
-public class CrewRepository {
-    private final List<Crew> crews;
+public interface CrewRepository {
+    void save(Crew crew);
 
-    public CrewRepository() {
-        this.crews = new ArrayList<>();
-    }
-
-    public void save(Crew crew) {
-        crews.add(crew);
-    }
+    Optional<Crew> findByName(String name);
 }
