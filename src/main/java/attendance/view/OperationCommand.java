@@ -23,4 +23,9 @@ public enum OperationCommand {
                 .findAny()
                 .orElseThrow(() -> new IllegalArgumentException("제공되지 않는 기능입니다."));
     }
+
+    public boolean isAttendanceConfirmation() {
+        return this.equals(ATTENDANCE_CONFIRMATION);
+    }
+
 }

@@ -7,6 +7,8 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 
 class AttendancesTest {
 
@@ -30,6 +32,18 @@ class AttendancesTest {
 
         // When & Then
         assertThat(attendances.findAllBeforeToday(today)).hasSize(3);
+    }
+
+    @CsvSource(value = {
+            "4,false", "3,true"
+    })
+    @ParameterizedTest
+    void 날짜를_알려주면_해당_날짜의_출석기록이_존재하는지_알려준다(int day, boolean expected) {
+        List<LocalDateTime> attendanceDateTimes = List.of(LocalDateTime.of(2025, 2, 3, 10, 0));
+        LocalDateTime today = LocalDateTime.of(2025, 2, 4, 10, 0);
+        Attendances attendances = new Attendances(attendanceDateTimes, today);
+
+        assertThat(attendances.existsByLocalDate(LocalDate.of(2025, 2, day))).isEqualTo(expected);
     }
 
 }
