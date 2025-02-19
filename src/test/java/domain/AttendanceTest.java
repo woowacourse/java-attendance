@@ -1,5 +1,7 @@
 package domain;
 
+import static org.assertj.core.api.Assertions.*;
+
 import domain.attendance.Attendance;
 import domain.attendance.AttendanceDate;
 import domain.attendance.AttendanceWarning;
@@ -17,7 +19,7 @@ public class AttendanceTest {
         Attendance attendance = new Attendance(AttendanceDate.DEFAULT_START_DATE, LocalDate.now());
 
         // then
-        Assertions.assertThat(attendance)
+        assertThat(attendance)
                 .isInstanceOf(Attendance.class);
     }
 
@@ -26,7 +28,7 @@ public class AttendanceTest {
     void test2() {
         Attendance attendance = new Attendance(AttendanceDate.DEFAULT_START_DATE, LocalDate.of(2025, 2, 17));
 
-        Assertions.assertThat(attendance.countAbsence()).isEqualTo(54);
+        assertThat(attendance.countAbsence()).isEqualTo(54);
     }
 
     @DisplayName("학생 한 명의 출석 횟수")
@@ -34,9 +36,9 @@ public class AttendanceTest {
     void test3() {
         Attendance attendance = new Attendance(AttendanceDate.DEFAULT_START_DATE, LocalDate.now());
 
-        attendance.updateAttendanceDate(LocalDateTime.of(2025, 2, 10, 10, 0));
+        attendance.editAttendanceDateTime(LocalDateTime.of(2025, 2, 10, 10, 0));
 
-        Assertions.assertThat(attendance.countAttendance()).isEqualTo(1);
+        assertThat(attendance.countAttendance()).isEqualTo(1);
     }
 
     @DisplayName("학생 한 명의 지각 횟수")
@@ -44,9 +46,9 @@ public class AttendanceTest {
     void test4() {
         Attendance attendance = new Attendance(AttendanceDate.DEFAULT_START_DATE, LocalDate.now());
 
-        attendance.updateAttendanceDate(LocalDateTime.of(2025, 2, 18, 10, 10));
+        attendance.editAttendanceDateTime(LocalDateTime.of(2025, 2, 18, 10, 10));
 
-        Assertions.assertThat(attendance.countTardy()).isEqualTo(1);
+        assertThat(attendance.countTardy()).isEqualTo(1);
     }
 
     @DisplayName("결석이 여섯 번 이상일 때 제적대상자임을 반환한다")
@@ -57,7 +59,7 @@ public class AttendanceTest {
         AttendanceWarning attendanceWarning = AttendanceWarning.determineAttendanceWarning(
                 attendance.countAbsenceIncludingTardy());
 
-        Assertions.assertThat(attendanceWarning).isEqualTo(AttendanceWarning.WEEDING);
+        assertThat(attendanceWarning).isEqualTo(AttendanceWarning.WEEDING);
     }
 
     @DisplayName("결석이  번일 때 경고대상자임을 반환한다")
@@ -69,7 +71,7 @@ public class AttendanceTest {
         AttendanceWarning attendanceWarning = AttendanceWarning.determineAttendanceWarning(
                 attendance.countAbsenceIncludingTardy());
 
-        Assertions.assertThat(attendanceWarning).isEqualTo(AttendanceWarning.WEEDING);
+        assertThat(attendanceWarning).isEqualTo(AttendanceWarning.WEEDING);
     }
 
     @DisplayName("출석부의 출석일자를 업데이트 한다")
@@ -80,10 +82,10 @@ public class AttendanceTest {
         LocalDateTime updateDateTime = LocalDateTime.of(2024, 12, 2, 10, 0);
 
         // then
-        attendance.updateAttendanceDate(updateDateTime);
+        attendance.editAttendanceDateTime(updateDateTime);
 
         // given
-        Assertions.assertThat(attendance.findAttendanceDate(AttendanceDate.DEFAULT_START_DATE).checkAttendanceTime())
+        assertThat(attendance.findAttendanceDate(AttendanceDate.DEFAULT_START_DATE).checkAttendanceTime())
                 .isEqualTo(updateDateTime);
     }
 
@@ -98,7 +100,7 @@ public class AttendanceTest {
         attendance.attend(nowDateTime);
 
         // then
-        Assertions.assertThat(attendance.findAttendanceDate(nowDateTime.toLocalDate()))
+        assertThat(attendance.findAttendanceDate(nowDateTime.toLocalDate()))
                 .isInstanceOf(AttendanceDate.class);
     }
 
@@ -110,7 +112,7 @@ public class AttendanceTest {
         Attendance attendance = new Attendance(AttendanceDate.DEFAULT_START_DATE, LocalDate.now());
 
         // when & then
-        Assertions.assertThatThrownBy(() -> attendance.attend(tomorrowDateTime))
+        assertThatThrownBy(() -> attendance.attend(tomorrowDateTime))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("");
     }
@@ -124,7 +126,7 @@ public class AttendanceTest {
         attendance.attend(todayDateTime);
 
         // when & then
-        Assertions.assertThatThrownBy(() -> attendance.attend(todayDateTime))
+        assertThatThrownBy(() -> attendance.attend(todayDateTime))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("");
     }

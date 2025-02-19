@@ -21,7 +21,7 @@ public class Attendance {
         }
     }
 
-    public void updateAttendanceDate(LocalDateTime attendanceDateTime) {
+    public void editAttendanceDateTime(LocalDateTime attendanceDateTime) {
         AttendanceDate attendanceDate = findAttendanceDate(attendanceDateTime.toLocalDate());
         attendanceDate.editDateTime(attendanceDateTime);
     }

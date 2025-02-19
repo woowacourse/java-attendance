@@ -1,7 +1,8 @@
 package domain;
 
+import static org.assertj.core.api.Assertions.*;
+
 import java.util.List;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -10,7 +11,7 @@ public class CrewGroupTest {
     @Test
     void test() {
         List<String> crews = List.of("수양", "수양");
-        Assertions.assertThatThrownBy(() -> CrewGroup.from(crews))
+        assertThatThrownBy(() -> CrewGroup.from(crews))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("");
     }
@@ -24,7 +25,7 @@ public class CrewGroupTest {
 
         Crew crew = crewGroup.findCrew(crewName);
 
-        Assertions.assertThat(crew).isInstanceOf(Crew.class);
-        Assertions.assertThat(crew.getName()).isEqualTo(crewName);
+        assertThat(crew).isInstanceOf(Crew.class);
+        assertThat(crew.getName()).isEqualTo(crewName);
     }
 }
