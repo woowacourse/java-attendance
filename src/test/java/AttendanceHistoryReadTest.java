@@ -69,7 +69,7 @@ public class AttendanceHistoryReadTest {
     void 제적위험자_여부를_판단한다(int lateCount, int absentCount, String expected) {
 
         int nonAttendanceCount = absentCount + lateCount / 3;
-        String actual = PenaltyStatus.getStatusName(nonAttendanceCount);
+        String actual = PenaltyStatus.getInstance(nonAttendanceCount).getName();
 
         assertThat(actual).isEqualTo(expected);
     }

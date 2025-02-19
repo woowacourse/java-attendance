@@ -17,11 +17,18 @@ public enum PenaltyStatus {
         this.name = name;
     }
 
-    public static String getStatusName(Integer nonAttendanceCount) {
+    public static PenaltyStatus getInstance(Integer nonAttendanceCount) {
         return Arrays.stream(values())
                 .filter(status -> status.threshold <= nonAttendanceCount)
-                .map(status -> status.name)
                 .findFirst()
                 .orElseThrow(RuntimeException::new);
+    }
+
+    public Integer getThreshold() {
+        return threshold;
+    }
+
+    public String getName() {
+        return name;
     }
 }
