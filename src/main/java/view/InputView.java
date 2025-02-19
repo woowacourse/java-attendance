@@ -34,12 +34,14 @@ public class InputView {
         return prompt("출석을 수정하려는 크루의 닉네임을 입력해 주세요.");
     }
 
-    public String readEditArrivalDate() {
-        return prompt("수정하려는 날짜(일)를 입력해 주세요.");
+    public int readEditArrivalDate() {
+        String response = prompt("수정하려는 날짜(일)를 입력해 주세요.");
+        return parseInt(response);
     }
 
-    public String readEditArrivalTime() {
-        return prompt("언제로 변경하겠습니까?");
+    public LocalTime readEditArrivalTime() {
+        String response = prompt("언제로 변경하겠습니까?");
+        return parseTime(response);
     }
 
     private String prompt(String message) {
@@ -49,5 +51,9 @@ public class InputView {
 
     private LocalTime parseTime(String response) {
         return LocalTime.parse(response, DateTimeFormatter.ofPattern("HH:mm"));
+    }
+
+    private int parseInt(String response) {
+        return Integer.parseInt(response);
     }
 }

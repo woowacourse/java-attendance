@@ -3,7 +3,6 @@ package controller;
 import domain.Attendance;
 import domain.AttendanceStatus;
 import domain.MenuOption;
-import java.awt.Menu;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -39,7 +38,21 @@ public class AttendanceController {
             LocalDateTime attendanceDateTime = attendance.getAttendanceDateTime(nickName, nowDate);
             AttendanceStatus attendanceStatus = attendance.getAttendanceStatus(nickName, nowDate);
 
-            outputView.printAttendanceMessage(attendanceDateTime, attendanceStatus);
+            outputView.printCheckAttendanceMessage(attendanceDateTime, attendanceStatus);
+        } else if (option.equals(MenuOption.ATTENDANCE_CORRECTION.getCommand())) {
+            // 2. 출석 수정
+            String nickName = inputView.readEditNickname();
+            int editArrivalDate = inputView.readEditArrivalDate();
+            LocalTime editArrivalTime = inputView.readEditArrivalTime();
+
+            LocalDate editDate = LocalDate.of(2024, 12, editArrivalDate);
+            LocalDateTime oldAttendanceDateTime = attendance.getAttendanceDateTime(nickName, editDate);
+            AttendanceStatus oldAttendanceStatus = attendance.getAttendanceStatus(nickName, editDate);
+            attendance.edit(nickName, editArrivalDate, editArrivalTime);
+            LocalDateTime newAttendanceDateTime = attendance.getAttendanceDateTime(nickName, editDate);
+            AttendanceStatus newAttendanceStatus = attendance.getAttendanceStatus(nickName, editDate);
+
+            outputView.printEditAttendanceMessage(oldAttendanceDateTime, oldAttendanceStatus, newAttendanceDateTime, newAttendanceStatus);
         }
 
 
