@@ -124,7 +124,7 @@ class CrewAttendanceRecordsTest {
 
     @Test
     @DisplayName("입력 받은 크루의 출결 기록을 날짜순으로 정렬해서 반환한다.")
-    void test() {
+    void getSortedRecordsTest() {
         CrewAttendanceRecords crewAttendanceRecords = new CrewAttendanceRecords("/attendances.csv", () -> LocalDate.of(2024, 12, 13));
         Crew crew = new Crew("빙티");
         List<AttendanceRecord> actualRecords = crewAttendanceRecords.getSortedRecords(crew);
@@ -141,5 +141,15 @@ class CrewAttendanceRecordsTest {
                 new AttendanceRecord("2024-12-13 10:07"));
 
         assertThat(actualRecords).isEqualTo(expectedRecords);
+    }
+
+    @Test
+    @DisplayName("제적 위험자 리스트를 반환한다.")
+    void getWarnedCrewsTest() {
+        CrewAttendanceRecords crewAttendanceRecords = new CrewAttendanceRecords("/attendances.csv", () -> LocalDate.of(2024, 12, 13));
+        List<Crew> actualCrews = crewAttendanceRecords.getWarnedCrews();
+        List<Crew> expected = List.of(new Crew("빙티"), new Crew("이든"), new Crew("빙봉"), new Crew("쿠키"));
+
+        assertThat(actualCrews).isEqualTo(expected);
     }
 }

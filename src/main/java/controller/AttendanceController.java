@@ -58,6 +58,6 @@ public class AttendanceController {
     }
 
     public void checkDisciplinaryStatus() {
-        System.out.println("제적 위험자 확인");
+        outputView.displayWarnedCrews(crewAttendanceRecords.getWarnedCrews(), crewAttendanceRecords);
     }
 }

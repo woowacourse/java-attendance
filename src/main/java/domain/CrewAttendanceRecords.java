@@ -5,6 +5,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -102,5 +103,20 @@ public class CrewAttendanceRecords {
 
     public List<AttendanceRecord> getSortedRecords(Crew crew) {
         return crewAttendanceRecords.get(crew).getSortedRecords();
+    }
+
+    public List<Crew> getWarnedCrews() {
+        List<Crew> warnedCrews = new ArrayList<>();
+        for (Map.Entry<Crew, AttendanceRecords> recordsEntry : crewAttendanceRecords.entrySet()) {
+            Crew crew = recordsEntry.getKey();
+            AttendanceRecords attendanceRecords = recordsEntry.getValue();
+            int absentCount = attendanceRecords.getAbsentCount();
+            int tardyCount = attendanceRecords.getTardyCount();
+            DisciplinaryStatus status = DisciplinaryStatus.getStatus(absentCount, tardyCount);
+            if (status != DisciplinaryStatus.NONE) {
+                warnedCrews.add(crew);
+            }
+        }
+        return warnedCrews;
     }
 }

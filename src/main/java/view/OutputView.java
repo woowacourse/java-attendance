@@ -59,6 +59,19 @@ public class OutputView {
         int tardyCount = crewAttendanceRecords.getTardyCount(crew);
         int absentCount = crewAttendanceRecords.getAbsentCount(crew);
         DisciplinaryStatus status = DisciplinaryStatus.getStatus(absentCount, tardyCount);
+        if (status == DisciplinaryStatus.NONE) {
+            return;
+        }
         System.out.printf("%s 대상자입니다.", status.getName());
+    }
+
+    public void displayWarnedCrews(List<Crew> warnedCrews, CrewAttendanceRecords crewAttendanceRecords) {
+        System.out.println("\n제적 위험자 조회 결과");
+        for (Crew warnedCrew : warnedCrews) {
+            int absentCount = crewAttendanceRecords.getAbsentCount(warnedCrew);
+            int tardyCount = crewAttendanceRecords.getTardyCount(warnedCrew);
+            System.out.printf("- %s: %s %d회, %s %d회 (%s)%n", warnedCrew.getName(), Attendance.ABSENT.getName(), absentCount,
+                    Attendance.TARDY.getName(), tardyCount, DisciplinaryStatus.getStatus(absentCount, tardyCount).getName());
+        }
     }
 }
