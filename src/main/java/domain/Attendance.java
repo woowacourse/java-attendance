@@ -12,6 +12,11 @@ class Attendance {
         this.dateTime = LocalDateTime.parse(time, FORMATTER);
     }
 
+    public Attendance(final Attendance attendance) {
+        final LocalDateTime targetDateTime = attendance.dateTime;
+        this.dateTime = LocalDateTime.of(targetDateTime.toLocalDate(), targetDateTime.toLocalTime());
+    }
+
     public LocalDateTime getDateTime() {
         return dateTime;
     }
