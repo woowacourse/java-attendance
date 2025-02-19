@@ -1,15 +1,18 @@
 package controller;
 
-import domain.Crew;
-import domain.CurrentDateGenerator;
-import domain.DateGenerator;
+import domain.*;
 import view.InputView;
+import view.OutputView;
 
+import java.time.LocalDate;
 import java.time.LocalTime;
 
 public class AttendanceController {
     private final InputView inputView = new InputView();
-    private final DateGenerator currentDateGenerator = new CurrentDateGenerator();
+    private final OutputView outputView = new OutputView();
+    //    private final DateGenerator currentDateGenerator = new CurrentDateGenerator();
+    private final DateGenerator currentDateGenerator = () -> LocalDate.of(2024, 12, 13);
+    private final CrewAttendanceRecords crewAttendanceRecords = new CrewAttendanceRecords("/attendances.csv", currentDateGenerator);
 
     public void run() {
         String menuInput = inputView.readMenu(currentDateGenerator.generate());
@@ -33,6 +36,11 @@ public class AttendanceController {
     public void checkIn() {
         Crew crew = inputView.readNickname();
         LocalTime time = inputView.readCheckInTime();
+        AttendanceRecord attendanceRecord = crewAttendanceRecords.checkIn(crew, time, currentDateGenerator);
+        LocalDate date = attendanceRecord.getDate();
+        Attendance attendance = attendanceRecord.getAttendance();
+        Day day = Day.getDay(date);
+        outputView.displayAttendanceRecord(date, day, time, attendance);
     }
 
     public void updateAttendance() {

@@ -76,4 +76,11 @@ public class AttendanceRecord {
         return attendance.equals(Attendance.ABSENT);
     }
 
+    public LocalTime getTime() {
+        return time;
+    }
+
+    public Attendance getAttendance() {
+        return attendance;
+    }
 }

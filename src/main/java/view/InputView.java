@@ -30,7 +30,7 @@ public class InputView {
     }
 
     public Crew readNickname() {
-        System.out.println("닉네임을 입력해 주세요.");
+        System.out.println("\n닉네임을 입력해 주세요.");
         String input = scanner.nextLine();
         return new Crew(input);
     }
