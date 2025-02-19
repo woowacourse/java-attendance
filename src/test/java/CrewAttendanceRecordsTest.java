@@ -107,4 +107,15 @@ class CrewAttendanceRecordsTest {
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("[ERROR] 등록되지 않은 닉네임입니다.");
     }
+
+    @Test
+    @DisplayName("이미 출석을 하였는데 다시 출석 확인을 하는 경우 예외를 발생시킨다.")
+    void validatePresenceTest() {
+        CrewAttendanceRecords crewAttendanceRecords = new CrewAttendanceRecords("/attendances.csv", () -> LocalDate.of(2024, 12, 13));
+        Crew crew = new Crew("쿠키");
+        LocalTime time = LocalTime.of(10, 0);
+        assertThatThrownBy(() -> crewAttendanceRecords.checkIn(crew, time, () -> LocalDate.of(2024, 12, 13)))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("[ERROR] 이미 출석을 확인하였습니다. 필요한 경우 수정 기능을 이용해 주세요.");
+    }
 }
