@@ -30,6 +30,13 @@ public class AttendanceRecord {
         this.attendance = Attendance.ABSENT;
     }
 
+    public AttendanceRecord(LocalDate date, LocalTime time) {
+        this.date = date;
+        validateDate(date);
+        this.time = time;
+        this.attendance = Attendance.getAttendanceStatus(Day.getDay(date), time);
+    }
+
     private void validateDate(LocalDate date) {
         if (Day.checkHoliday(date)) {
             throw new IllegalArgumentException(String.format("[ERROR] %d월 %d일 %s은 등교일이 아닙니다.",

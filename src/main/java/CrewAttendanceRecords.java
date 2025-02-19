@@ -53,4 +53,10 @@ public class CrewAttendanceRecords {
         AttendanceRecords records = this.crewAttendanceRecords.get(crew);
         return records.hasRecordOfDate(date);
     }
+
+    public AttendanceRecord updateAttendanceRecord(Crew crew, AttendanceRecord newAttendanceRecord) {
+        AttendanceRecords records = crewAttendanceRecords.get(crew);
+        records.addRecord(newAttendanceRecord);
+        return records.removeRecord(newAttendanceRecord.getDate());
+    }
 }
