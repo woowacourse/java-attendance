@@ -1,11 +1,19 @@
 package view;
 
+import domain.Crews;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Scanner;
 
 import static domain.util.DateUtil.TODAY;
 
 public class InputView {
     Scanner scanner;
+
     public InputView(Scanner scanner) {
         this.scanner = scanner;
     }
@@ -31,5 +39,29 @@ public class InputView {
 
     public String inputAttendTime() {
         return inputByMessage("등교 시간을 입력해 주세요.\n");
+    }
+
+    public Crews getFile() {
+        try {
+            InputStream inputStream = ClassLoader.getSystemClassLoader().getResource("./attendances.csv").openStream();
+            BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
+            Crews crews = new Crews();
+            bufferedReader.readLine();
+            String line;
+            while ((line = bufferedReader.readLine()) != null) {
+                String[] tokens = line.split(",");
+                validateName(tokens[0]);
+                crews.initAttendStatus(tokens[0], LocalDateTime.parse(tokens[1], DateTimeFormatter.ofPattern("yyyy-mm-dd hh:mm")));
+            }
+            return crews;
+        } catch (IOException e) {
+            throw new IllegalArgumentException();
+        }
+    }
+
+    public void validateName(String name) {
+        if (name.length() > 4 || name.length() < 2) {
+            throw new IllegalArgumentException();
+        }
     }
 }
