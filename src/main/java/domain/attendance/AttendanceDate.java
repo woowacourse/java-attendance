@@ -2,7 +2,6 @@ package domain.attendance;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.Objects;
 
 public class AttendanceDate implements Comparable<AttendanceDate> {
     public static final int DEFAULT_START_TIME = 2024;
@@ -40,7 +39,7 @@ public class AttendanceDate implements Comparable<AttendanceDate> {
     public boolean equals(LocalDate compareDate) {
         return (this.dateTime.getYear() == compareDate.getYear()
                 && this.dateTime.getMonthValue() == compareDate.getMonthValue()
-                && this.dateTime.getMonthValue() == compareDate.getMonthValue());
+                && this.dateTime.getDayOfMonth() == compareDate.getDayOfMonth());
     }
 
     private int getDayOfWeek() {

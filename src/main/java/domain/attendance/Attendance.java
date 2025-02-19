@@ -22,8 +22,8 @@ public class Attendance {
     }
 
     public void updateAttendanceDate(LocalDateTime attendanceDateTime) {
-        fillAttendanceDate();
-        findAttendanceDate(attendanceDateTime.toLocalDate()).editDateTime(attendanceDateTime);
+        AttendanceDate attendanceDate = findAttendanceDate(attendanceDateTime.toLocalDate());
+        attendanceDate.editDateTime(attendanceDateTime);
     }
 
     public AttendanceDate findAttendanceDate(LocalDate findAttendanceDate) {
@@ -32,16 +32,34 @@ public class Attendance {
         if (attendanceDate.isPresent()) {
             return attendanceDate.get();
         }
+        if (findAttendanceDate.isBefore(LocalDate.now())) {
+            fillAttendanceDate();
+            return findAttendanceDate(findAttendanceDate);
+        }
         throw new IllegalArgumentException("");
+    }
+
+
+    public void attend(LocalDateTime attendDateTime) {
+        if (!attendDateTime.isBefore(LocalDateTime.now())) {
+            throw new IllegalArgumentException("");
+        }
+        if (has(attendDateTime.toLocalDate())) {
+            throw new IllegalArgumentException("");
+        }
+        attendanceDates.add(new AttendanceDate(attendDateTime));
     }
 
     public void fillAttendanceDate() {
         for (LocalDate cursorCheckDate = LocalDate.now().minusDays(1); !this.has(cursorCheckDate);
              cursorCheckDate = cursorCheckDate.minusDays(1)) {
-            attendanceDates.add(new AttendanceDate(
-                    LocalDateTime.of(cursorCheckDate.getYear(), cursorCheckDate.getMonth(),
-                            cursorCheckDate.getDayOfMonth(), 23,
-                            59)));
+            try {
+                attendanceDates.add(new AttendanceDate(
+                        LocalDateTime.of(cursorCheckDate.getYear(), cursorCheckDate.getMonth(),
+                                cursorCheckDate.getDayOfMonth(), 23,
+                                59)));
+            } catch (IllegalArgumentException exception) {
+            }
         }
         this.attendanceDates = attendanceDates.stream().sorted().toList();
     }
