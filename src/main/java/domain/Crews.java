@@ -8,6 +8,7 @@ public class Crews {
 
     public Crews() {
         crews = new HashSet<>();
+        crews.add(Crew.of("히로"));
     }
 
     public void add(String nickname) {
@@ -18,7 +19,7 @@ public class Crews {
         return crews.stream()
                 .filter(crew -> crew.hasSame(nickname))
                 .findAny()
-                .orElseThrow(() -> new IllegalArgumentException("[ERROR] 존재하지 않는 크루입니다"));
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 크루입니다"));
     }
 
 //    private boolean isRegistered(String nickname) {

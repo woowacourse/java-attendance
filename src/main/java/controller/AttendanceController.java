@@ -1,5 +1,6 @@
 package controller;
 
+import controller.dto.AttendanceHistoryDto;
 import controller.dto.AttendanceTimeDto;
 import domain.AttendanceDate;
 import domain.AttendanceDateTime;
@@ -48,7 +49,8 @@ public class AttendanceController {
         String nickname = getValidNickname();
         AttendanceDateTime attendanceDateTime = getAttendanceDateTime();
 
-        attendanceService.checkAttendance(nickname, attendanceDateTime);
+        AttendanceHistoryDto attendanceHistoryDto = attendanceService.checkAttendance(nickname, attendanceDateTime);
+        OutputView.printCheckedHistory(attendanceHistoryDto);
     }
 
 

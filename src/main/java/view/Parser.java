@@ -1,6 +1,9 @@
 package view;
 
 import controller.dto.AttendanceTimeDto;
+import java.time.DayOfWeek;
+import java.time.format.TextStyle;
+import java.util.Locale;
 
 public class Parser {
 
@@ -22,5 +25,17 @@ public class Parser {
         } catch (NumberFormatException exception) {
             throw new IllegalArgumentException("시간 형식이 올바르지 않습니다.");
         }
+    }
+
+    public static String parseDateFormat(int month, int day) {
+        return String.format("%02d월 %02d일", month, day);
+    }
+
+    public static String parseTimeFormat(int hour, int minute) {
+        return String.format("%02d:%02d", hour, minute);
+    }
+
+    public static String parseDayOfWeek(int dayOfWeek) {
+        return DayOfWeek.of(dayOfWeek).getDisplayName(TextStyle.FULL, Locale.KOREAN);
     }
 }
