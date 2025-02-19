@@ -1,13 +1,14 @@
 package model;
 
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.Objects;
 
 public class Attendance {
 
     private final Crew crew;
-    private final LocalDateTime checkInTime;
-    private final AttendanceType attendanceType;
+    private LocalDateTime checkInTime;
+    private AttendanceType attendanceType;
 
     private Attendance(Crew crew, LocalDateTime checkInTime, AttendanceType attendanceType) {
         this.crew = crew;
@@ -25,6 +26,11 @@ public class Attendance {
     public boolean isSameDateAndCrew(Attendance attendance) {
         return checkInTime.toLocalDate().equals(attendance.checkInTime.toLocalDate()) && attendance.crew.isEqualName(
                 crew.getNickname());
+    }
+
+    public void modify(LocalTime modifiedCheckInTime) {
+        checkInTime = LocalDateTime.of(checkInTime.toLocalDate(), modifiedCheckInTime);
+        attendanceType = AttendanceType.calculateType(checkInTime);
     }
 
     private static void validateHolidayAndWeekend(LocalDateTime checkInTime) {
