@@ -1,8 +1,12 @@
 package domain;
 
+import dto.AttendanceModifyDTO;
+import dto.AttendanceModifyResult;
 import dto.AttendanceResultDTO;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.Map;
 
 public class AttendanceBook {
@@ -23,5 +27,11 @@ public class AttendanceBook {
         if (memberAttendances.get(name) == null) {
             throw new IllegalArgumentException("해당 멤버는 존재하지 않습니다.");
         }
+    }
+    
+    public AttendanceModifyResult editAttendance(String name, LocalDate date, LocalTime time) {
+        MemberAttendances memberAttendance = memberAttendances.get(name);
+        AttendanceModifyDTO result = memberAttendance.modifyAttendance(date, time);
+        return new AttendanceModifyResult(name, result.attendanceDate(), result.oldAttendanceTime(), result.oldAttendanceStatus(), result.newAttendanceTime(), result.newAttendanceStatus());
     }
 }

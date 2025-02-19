@@ -1,5 +1,6 @@
 import domain.Attendance;
 import domain.MemberAttendances;
+import dto.AttendanceModifyDTO;
 import dto.AttendanceResultDTO;
 import dto.AttendanceResultDTOs;
 import dto.ExpelMeasurementDTO;
