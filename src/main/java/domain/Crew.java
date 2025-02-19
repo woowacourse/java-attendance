@@ -1,7 +1,12 @@
+package domain;
+
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.HashMap;
 import java.util.Map;
+
+import exception.AlreadyAttendanceException;
+import util.DayUtil;
 
 public class Crew {
 

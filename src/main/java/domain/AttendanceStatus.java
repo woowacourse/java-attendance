@@ -1,3 +1,5 @@
+package domain;
+
 import static java.time.temporal.ChronoUnit.MINUTES;
 
 import java.time.LocalDate;

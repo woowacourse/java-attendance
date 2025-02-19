@@ -8,6 +8,12 @@ import java.util.Map;
 import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.Test;
 
+import domain.AttendanceStatus;
+import domain.Crew;
+import domain.CrewRepository;
+import domain.Manage;
+import exception.AlreadyAttendanceException;
+
 public class AttendanceTest {
 
     @Test
