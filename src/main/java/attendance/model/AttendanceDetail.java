@@ -5,7 +5,7 @@ import java.time.LocalTime;
 
 public class AttendanceDetail {
     private LocalDateTime localDateTime;
-    private final Attendance attendance;
+    private Attendance attendance;
 
     public AttendanceDetail(LocalDateTime localDateTime) {
         this.localDateTime = localDateTime;
@@ -17,6 +17,7 @@ public class AttendanceDetail {
                 localDateTime.toLocalDate(),
                 localTime
         );
+        this.attendance = Attendance.from(localDateTime);
     }
 
     public Attendance getAttandence() {
@@ -25,5 +26,10 @@ public class AttendanceDetail {
 
     public LocalDateTime getLocalDateTime() {
         return localDateTime;
+    }
+
+    @Override
+    public AttendanceDetail clone() {
+        return new AttendanceDetail(this.localDateTime);
     }
 }
