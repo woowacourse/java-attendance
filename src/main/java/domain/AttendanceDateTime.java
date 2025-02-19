@@ -10,8 +10,27 @@ public class AttendanceDateTime {
     }
 
     public static AttendanceDateTime of(int day, int hour, int minute) {
-        return new AttendanceDateTime(new AttendanceDate(day),
-                new AttendanceTime(hour, minute));
+        return new AttendanceDateTime(new AttendanceDate(day), new AttendanceTime(hour, minute));
+    }
+
+    public int getMonth() {
+        return attendanceDate.getMonth();
+    }
+
+    public int getDay() {
+        return attendanceDate.getDay();
+    }
+
+    public int getDayOfWeek() {
+        return attendanceDate.getDayOfWeek();
+    }
+
+    public int getHour() {
+        return attendanceTime.getHour();
+    }
+
+    public int getMinute() {
+        return attendanceTime.getMinute();
     }
 
     public AttendanceType getAttendanceType() {
@@ -23,5 +42,9 @@ public class AttendanceDateTime {
             return AttendanceType.LATE;
         }
         return AttendanceType.PRESENT;
+    }
+
+    public boolean hasSameDay(AttendanceDateTime comparedDateTime) {
+        return comparedDateTime.attendanceDate.getDay() == attendanceDate.getDay();
     }
 }

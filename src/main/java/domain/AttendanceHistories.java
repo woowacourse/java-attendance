@@ -14,4 +14,15 @@ public class AttendanceHistories {
         attendanceHistories.add(AttendanceHistory.of(crew, attendanceDateTime));
     }
 
+    public void update(AttendanceHistory beforeAttendanceHistory, AttendanceHistory newAttendanceHistory) {
+        int foundIndex = attendanceHistories.indexOf(beforeAttendanceHistory);
+        attendanceHistories.set(foundIndex, newAttendanceHistory);
+    }
+
+    public AttendanceHistory findHistoryBy(AttendanceHistory newAttendanceHistory) {
+        return attendanceHistories.stream()
+                .filter(history -> history.hasSameDay(newAttendanceHistory) && history.isSameCrew(newAttendanceHistory))
+                .findAny()
+                .orElseThrow(() -> new IllegalArgumentException("해당 출석 기록이 존재하지 않습니다."));
+    }
 }

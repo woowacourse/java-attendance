@@ -10,6 +10,14 @@ public class AttendanceTime {
         this.minute = minute;
     }
 
+    public int getHour() {
+        return hour;
+    }
+
+    public int getMinute() {
+        return minute;
+    }
+
     public boolean isLate(int dayOfWeek) {
         if (dayOfWeek == 1) {
             return hour > 13 || (hour == 13 && minute > 5);

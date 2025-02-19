@@ -8,6 +8,7 @@ import domain.Crew;
 import service.AttendanceService;
 import view.Function;
 import view.InputView;
+import view.OutputView;
 
 public class AttendanceController {
     private final AttendanceService attendanceService;
@@ -17,8 +18,12 @@ public class AttendanceController {
     }
 
     public void run() {
-        Function function = InputView.readOption();
-        runFunction(function);
+        try {
+            Function function = InputView.readOption();
+            runFunction(function);
+        } catch (RuntimeException exception) {
+            OutputView.printErrorMessage(exception.getMessage());
+        }
     }
 
     public void runFunction(Function function) {
@@ -27,7 +32,8 @@ public class AttendanceController {
             return;
         }
         if (function == Function.EDIT_ATTENDANCE) {
-
+            editAttendance();
+            return;
         }
         if (function == Function.CHECK_ATTENDANCE_OF_CREW) {
 
@@ -37,15 +43,34 @@ public class AttendanceController {
         }
     }
 
-    public void checkAttendance() {
-        String nickname = InputView.readNickname();
-        int day = InputView.readToday();
-        AttendanceTimeDto attendanceTimeDto = InputView.readAttendanceTime();
-        AttendanceDateTime attendanceDateTime = AttendanceDateTime.of(day, attendanceTimeDto.hour(),
-                attendanceTimeDto.minute());
 
-        // 출석 확인 (새롭게 저장)
+    private void checkAttendance() {
+        String nickname = getValidNickname();
+        AttendanceDateTime attendanceDateTime = getAttendanceDateTime();
+
         attendanceService.checkAttendance(nickname, attendanceDateTime);
     }
 
+
+    private void editAttendance() {
+        String nickname = getValidNickname();
+        AttendanceDateTime newDateTime = getAttendanceDateTime();
+
+        attendanceService.editAttendance(nickname, newDateTime);
+    }
+
+    private static AttendanceDateTime getAttendanceDateTime() {
+        int day = InputView.readToday();
+        AttendanceTimeDto attendanceTimeDto = InputView.readAttendanceTime();
+
+        return AttendanceDateTime.of(day, attendanceTimeDto.hour(),
+                attendanceTimeDto.minute());
+    }
+
+    private String getValidNickname() {
+        String nickname = InputView.readNickname();
+        attendanceService.checkNicknameIsExisted(nickname);
+
+        return nickname;
+    }
 }
