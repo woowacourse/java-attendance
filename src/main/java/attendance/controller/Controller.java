@@ -1,5 +1,8 @@
 package attendance.controller;
 
+import attendance.dto.AttendanceDTO;
+import attendance.dto.AttendanceDTO.AttendanceDetailDTO;
+import attendance.dto.WarningCrewsDTO;
 import attendance.model.AttendanceDetail;
 import attendance.model.Crew;
 import attendance.model.CrewDataLoader;
@@ -37,7 +40,7 @@ public class Controller {
                             LocalTime.parse(entryTime, DateTimeFormatter.ofPattern("HH:mm")))
             );
             crews.findCrew(new Crew(crewName)).get().getAttendanceHistory().addAttendanceDetail(attendanceDetail);
-            outputView.printAttendanceDetail(attendanceDetail);
+            outputView.printAttendanceDetail(AttendanceDetailDTO.from(attendanceDetail));
         }
         if (s.equals("2")) {
             String crewName = inputView.inputModifyAttendanceCrewName();
@@ -52,14 +55,18 @@ public class Controller {
             AttendanceDetail cloned = attendanceDetail.clone();
             attendanceDetail.modify(modifyTime);
 
-            outputView.printModifyResult(cloned, attendanceDetail);
+            outputView.printModifyResult(
+                    AttendanceDetailDTO.from(cloned),
+                    AttendanceDetailDTO.from(attendanceDetail)
+            );
         }
         if (s.equals("3")) {
             String crewName = inputView.inputCrewName();
-            outputView.printAttendanceHistory(crews.findCrew(new Crew(crewName)).get());
+            Crew crew = crews.findCrew(new Crew(crewName)).get();
+            outputView.printAttendanceHistory(AttendanceDTO.from(crew));
         }
         if (s.equals(("4"))) {
-            outputView.printWarningCrews(crews);
+            outputView.printWarningCrews(WarningCrewsDTO.from(crews));
         }
         if (s.equals("Q")) {
             System.exit(1);
