@@ -36,4 +36,14 @@ public enum AttendanceCalculatorByDay {
         }
         return null;
     }
+
+
+    public static String findDayByDayOfWeekValue(int dayOfWeekValue) {
+        for (AttendanceCalculatorByDay attendanceCalculatorByDay : AttendanceCalculatorByDay.values()) {
+            if (attendanceCalculatorByDay.dayOfWeekValue == dayOfWeekValue) {
+                return attendanceCalculatorByDay.day;
+            }
+        }
+        return null;
+    }
 }
