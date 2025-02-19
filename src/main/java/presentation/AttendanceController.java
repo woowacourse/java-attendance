@@ -2,18 +2,38 @@ package presentation;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import presentation.view.FileInputView;
 import presentation.view.InputView;
 import presentation.view.OutputView;
 import util.DateTimeUtil;
 
 public class AttendanceController {
+    private final FileInputView fileInputView;
+
+    public AttendanceController(FileInputView fileInputView) {
+        this.fileInputView = fileInputView;
+    }
+
     public void run() {
+        Map<String, List<String>> crewTextInitAttendanceDates = fileInputView.getFileInput();
+        Map<String, List<LocalDateTime>> crewInitAttendanceDates = new HashMap<>();
+
+         for(String key :crewTextInitAttendanceDates.keySet()){
+
+            crewInitAttendanceDates.put(key,
+                    crewTextInitAttendanceDates.get(key).stream()
+                    .map(DateTimeUtil::convertStringToLocalDateTime)
+                    .toList());
+        }
+         
         while (true) {
             if (controlCommand()) {
                 break;
             }
         }
-        return;
     }
 
     private boolean controlCommand() {
