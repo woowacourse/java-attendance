@@ -10,6 +10,7 @@ import repository.AttendanceRepository;
 import repository.AttendanceRepositoryImpl;
 import service.dto.AttendanceHistoryResponse;
 
+import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.*;
@@ -59,6 +60,7 @@ class AttendanceHistoryServiceTest {
     void test2() {
         // given
 
+
         // when
 
         // then
@@ -68,10 +70,16 @@ class AttendanceHistoryServiceTest {
     @Test
     void test3() {
         // given
+        LocalDate date = LocalDate.of(year, month, 6);
 
         // when
+        Map<String, Integer> attendanceCount = attendanceHistoryService.getAttendanceResultOf(name, date);
 
         // then
+        assertThat(attendanceCount.get("출석")).isEqualTo(1);
+        assertThat(attendanceCount.get("지각")).isEqualTo(1);
+        assertThat(attendanceCount.get("결석")).isEqualTo(2);
+
     }
 
     @DisplayName("출석 상태에 따라서 경고/면담/제적 대상자 여부를 반환할 수 있다.")
