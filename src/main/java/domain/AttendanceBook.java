@@ -1,16 +1,31 @@
 package domain;
 
-import dto.AttendanceModifyDTO;
-import dto.AttendanceModifyResult;
-import dto.AttendanceResultDTO;
-import dto.AttendanceResultDTOs;
+import dto.*;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.Comparator;
+import java.util.List;
 import java.util.Map;
 
 public class AttendanceBook {
+    
+    private static final class ExpelMeasurementComparator implements Comparator<ExpelMeasurementDTO> {
+        @Override
+        public int compare(ExpelMeasurementDTO o1, ExpelMeasurementDTO o2) {
+            if (!o1.measurementName().equals(o2.measurementName())) {
+                return -o1.measurementName().compareTo(o2.measurementName());
+            }
+            if (o1.lateCount() + o1.absentCount() != o2.lateCount() + o2.absentCount()) {
+                return -Integer.compare(o1.lateCount() + o1.absentCount(), o2.lateCount() + o2.absentCount());
+            }
+            if (o1.absentCount() != o2.absentCount()) {
+                return -Integer.compare(o1.absentCount(), o2.absentCount());
+            }
+            return o1.targetName().compareTo(o2.targetName());
+        }
+    }
     
     private final Map<String, MemberAttendances> memberAttendances;
     
@@ -40,5 +55,13 @@ public class AttendanceBook {
     public AttendanceResultDTOs getAttendanceResult(String name) {
         MemberAttendances oneMemberAttendances = memberAttendances.get(name);
         return oneMemberAttendances.getAttendanceResult();
+    }
+    
+    public List<ExpelMeasurementDTO> checkExpelWarnings() {
+        return memberAttendances.values().stream()
+                .map(MemberAttendances::measureExpelRisk)
+                .filter(dto -> dto.measurementName() != null)
+                .sorted(new ExpelMeasurementComparator())
+                .toList();
     }
 }
