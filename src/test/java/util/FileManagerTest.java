@@ -23,24 +23,12 @@ public class FileManagerTest {
         final String expectedHeader = "nickname,datetime";
 
         //when
-        final Queue<String> data = FileManger.readFileLines(fileName);
+        final Queue<String> data = FileManager.readFileLines(fileName);
 
         //then
         assertThat(data)
                 .isNotEmpty()
                 .hasSize(expectedSize)
                 .startsWith(expectedHeader);
-    }
-
-    private class FileManger {
-
-        public static Queue<String> readFileLines(final String fileName) {
-            final String path = "src/main/resources/";
-            try {
-                return new ArrayDeque<>(Files.readAllLines(Path.of(path + fileName)));
-            } catch (final IOException e) {
-                throw new IllegalStateException(e);
-            }
-        }
     }
 }
