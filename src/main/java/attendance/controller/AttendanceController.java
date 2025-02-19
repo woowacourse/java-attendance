@@ -26,6 +26,30 @@ public class AttendanceController {
 
     public void run() {
         checkAttendance();
+        modifyAttendance();
+    }
+
+    private void modifyAttendance() {
+        String nickName = InputView.readModifyingNickName();
+        LocalDate modifyingCheckinDate = getModifyingCheckinDate();
+        LocalTime modifyingCheckinTime = getModifyingCheckinTime();
+
+        Crew crew = crews.getCrew(nickName);
+        Attendance attendance = attendances.getAttendance(crew, modifyingCheckinDate);
+
+        Attendance previousAttendance = Attendance.of(attendance.getDateTime());
+        attendance.modify(LocalDateTime.of(modifyingCheckinDate, modifyingCheckinTime));
+        OutputView.printModifyingResult(previousAttendance, attendance);
+    }
+
+    private static LocalTime getModifyingCheckinTime() {
+        String inputModifyingCheckinTime = InputView.readModifyingCheckinTime();
+        return LocalTime.parse(inputModifyingCheckinTime);
+    }
+
+    private static LocalDate getModifyingCheckinDate() {
+        String inputModifyingCheckinDate = InputView.readModifyingCheckinDate();
+        return LocalDate.of(2024, 12, Integer.parseInt(inputModifyingCheckinDate));
     }
 
     private void checkAttendance() {

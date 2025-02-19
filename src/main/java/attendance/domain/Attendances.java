@@ -2,6 +2,7 @@ package attendance.domain;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -25,6 +26,18 @@ public class Attendances {
         }
 
         attendances.get(crew).add(attendance);
+    }
+
+    public Attendance getAttendance(Crew crew, LocalDate localDate) {
+        List<Attendance> attendanceList = attendances.get(crew);
+        for (Attendance attendance : attendanceList) {
+            if (attendance.getDateTime().getDayOfMonth() == localDate.getDayOfMonth()) {
+                return attendance;
+            }
+        }
+        Attendance attendance = Attendance.of(LocalDateTime.of(localDate, LocalTime.of(0, 0)));
+        addAttendance(crew, attendance);
+        return attendance;
     }
 
     public List<Attendance> getByCrew(Crew crew, LocalDate date) {

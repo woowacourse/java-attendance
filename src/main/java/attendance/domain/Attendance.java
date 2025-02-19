@@ -1,10 +1,10 @@
 package attendance.domain;
 
+import attendance.util.DateUtil;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import attendance.util.DateUtil;
 
 public class Attendance {
 
@@ -65,12 +65,20 @@ public class Attendance {
         return status;
     }
 
-    public void update(LocalDateTime updatedDateTime) {
-        setStatus(updatedDateTime);
-        this.dateTime = updatedDateTime;
+    public void modify(LocalDateTime modifiedDateTime) {
+        setStatus(modifiedDateTime);
+        this.dateTime = modifiedDateTime;
     }
 
     public LocalDateTime getDateTime() {
         return dateTime;
+    }
+
+    @Override
+    public String toString() {
+        return "Attendance{" +
+            "dateTime=" + dateTime +
+            ", status=" + status +
+            '}';
     }
 }

@@ -83,10 +83,10 @@ public class AttendanceTest {
     void 출석시간을_수정할수있고_수정된_시간에따라_상태가_변경된다() {
         LocalDate previousDate = LocalDate.of(2024, 12, 3);
         LocalTime previousTime = LocalTime.of(10, 7);
-        LocalTime updatedTime = LocalTime.of(9, 58);
+        LocalTime modifiedTime = LocalTime.of(9, 58);
         Attendance attendance = Attendance.of(LocalDateTime.of(previousDate, previousTime));
 
-        attendance.update(LocalDateTime.of(previousDate, updatedTime));
+        attendance.modify(LocalDateTime.of(previousDate, modifiedTime));
 
         assertThat(attendance.getStatus()).isEqualTo(AttendanceStatus.CHECKIN);
     }
