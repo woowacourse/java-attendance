@@ -22,5 +22,23 @@ public class InputView {
         }
     }
 
+    public static String inputNickName() {
+        System.out.println("닉네임을 입력해 주세요.");
+        String input = Console.readLine();
+        validateNullOrEmpty(input);
+        return input;
+    }
 
+    public static String inputSchoolStartTime() {
+        System.out.println("등교 시간을 입력해 주세요.");
+        String input = Console.readLine();
+        validateNullOrEmpty(input);
+        return input;
+    }
+
+    private static void validateNullOrEmpty(final String nickName) {
+        if (nickName.isBlank()) {
+            throw new IllegalArgumentException("빈 값은 입력할 수 없습니다.");
+        }
+    }
 }
