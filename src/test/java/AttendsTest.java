@@ -2,6 +2,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.util.ArrayList;
+import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -108,4 +109,59 @@ public class AttendsTest {
         // then
         assertThat(attends.attends).containsExactly(afterAttend);
     }
+
+    @Test
+    @DisplayName("출석 대상 날짜들이 들어있는 리스트를 토대로 출석 객체들을 반환한다")
+    void sholud_return_attends_by_day_of_week() {
+        // given
+        List<Integer> dayOfWeek = DateUtil.getAttendUntilDay(13);
+        List<Attend> attendsInitValue = List.of(
+                Attend.of("2", "13:00"),
+                Attend.of("3", "10:07"),
+                Attend.of("4", "13:00"),
+                Attend.of("5", "13:00"),
+                Attend.of("6", "13:00"),
+                Attend.of("9", "13:00"),
+                Attend.of("10", "13:00"),
+                Attend.of("11", "13:00"),
+                Attend.of("12", "13:00"),
+                Attend.of("13", "13:00"));
+        Attends attends = new Attends(new ArrayList<>(attendsInitValue));
+
+        // when
+        List<Attend> result = attends.getAttends(dayOfWeek);
+
+        // than
+        assertThat(result).containsOnlyElementsOf(attendsInitValue);
+    }
+
+    @Test
+    @DisplayName("출석 대상 날짜들이 들어있는 리스트를 토대로 출석 객체들을 반환한다, 미래 시간은 안 가져오는지 확인")
+    void sholud_return_attends_by_day_of_week_exclude_future_attends() {
+        // given
+        // 2,3,4,5,6,9,10,11,12,13
+        List<Integer> dayOfWeek = DateUtil.getAttendUntilDay(13);
+        List<Attend> attendsInitValue = List.of(
+                Attend.of("2", "13:00"),
+                Attend.of("3", "10:07"),
+                Attend.of("4", "13:00"),
+                Attend.of("5", "13:00"),
+                Attend.of("6", "13:00"),
+                Attend.of("9", "13:00"),
+                Attend.of("10", "13:00"),
+                Attend.of("11", "13:00"),
+                Attend.of("12", "13:00"),
+                Attend.of("13", "13:00"));
+        Attends attends = new Attends(new ArrayList<>(attendsInitValue));
+
+        attends.addAttend(Attend.of("16", "10:00"));
+        attends.addAttend(Attend.of("17", "10:17"));
+
+        // when
+        List<Attend> result = attends.getAttends(dayOfWeek);
+
+        // than
+        assertThat(result).containsOnlyElementsOf(attendsInitValue);
+    }
+
 }

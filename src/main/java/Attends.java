@@ -1,3 +1,4 @@
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -54,5 +55,22 @@ public class Attends {
         attends = attends.stream()
                 .filter(before -> !before.isDayEqual(target))
                 .collect(Collectors.toList());
+    }
+
+    private boolean hasDayEqualsAttend(int day) {
+        return attends.stream()
+                .anyMatch(attend -> attend.isDayEqual(day));
+    }
+
+    public List<Attend> getAttends(List<Integer> dayOfWeek) {
+        List<Integer> existAttendDay = dayOfWeek.stream()
+                .filter(day -> hasDayEqualsAttend(day))
+                .toList();
+
+        List<Attend> result = new ArrayList<>();
+        for (int day : existAttendDay) {
+            result.add(findByDay(day));
+        }
+        return result;
     }
 }
