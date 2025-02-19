@@ -23,15 +23,16 @@ public class AttendanceBook {
         return memberAttendance.attend(attendDateTime);
     }
     
+    public AttendanceModifyResult editAttendance(String name, LocalDate date, LocalTime time) {
+        validateName(name);
+        MemberAttendances memberAttendance = memberAttendances.get(name);
+        AttendanceModifyDTO result = memberAttendance.modifyAttendance(date, time);
+        return new AttendanceModifyResult(name, result.attendanceDate(), result.oldAttendanceTime(), result.oldAttendanceStatus(), result.newAttendanceTime(), result.newAttendanceStatus());
+    }
+    
     private void validateName(String name) {
         if (memberAttendances.get(name) == null) {
             throw new IllegalArgumentException("해당 멤버는 존재하지 않습니다.");
         }
-    }
-    
-    public AttendanceModifyResult editAttendance(String name, LocalDate date, LocalTime time) {
-        MemberAttendances memberAttendance = memberAttendances.get(name);
-        AttendanceModifyDTO result = memberAttendance.modifyAttendance(date, time);
-        return new AttendanceModifyResult(name, result.attendanceDate(), result.oldAttendanceTime(), result.oldAttendanceStatus(), result.newAttendanceTime(), result.newAttendanceStatus());
     }
 }

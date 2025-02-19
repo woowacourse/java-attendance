@@ -4,6 +4,8 @@ import dto.AttendanceModifyDTO;
 import dto.AttendanceResultDTO;
 import dto.AttendanceResultDTOs;
 import dto.ExpelMeasurementDTO;
+import util.exception.IllegalAttendDateException;
+import util.exception.IllegalAttendTimeException;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -83,9 +85,13 @@ public class MemberAttendances {
             }
         }
         
-        Attendance newAttendance = new Attendance(LocalDateTime.of(date, time));
-        return new AttendanceModifyDTO(
-                date, null, null, time, newAttendance.createAttendanceResult().attendanceStatus()
-        );
+        try {
+            Attendance newAttendance = new Attendance(LocalDateTime.of(date, time));
+            return new AttendanceModifyDTO(date, null, null, time, newAttendance.createAttendanceResult().attendanceStatus());
+        } catch (IllegalAttendDateException e) {
+            throw new IllegalAttendDateException("수정 가능한 날짜가 아닙니다.");
+        } catch (IllegalAttendTimeException e) {
+            throw new IllegalAttendTimeException("수정 가능한 시간이 아닙니다.");
+        }
     }
 }

@@ -7,4 +7,8 @@ public class IllegalAttendTimeException extends IllegalArgumentException {
     public IllegalAttendTimeException() {
         super(DEFAULT_MESSAGE);
     }
+    
+    public IllegalAttendTimeException(String message) {
+        super(message);
+    }
 }

@@ -5,6 +5,8 @@ import dto.AttendanceModifyResult;
 import dto.AttendanceResultDTO;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import util.exception.IllegalAttendDateException;
+import util.exception.IllegalAttendTimeException;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -80,7 +82,7 @@ public class AttendanceBookTest {
             
             // expected
             assertThatThrownBy(() -> attendanceBook.addAttendance(inputName, attendDateTime))
-                    .isExactlyInstanceOf(IllegalArgumentException.class)
+                    .isExactlyInstanceOf(IllegalAttendDateException.class)
                     .hasMessage("출석 가능한 날짜가 아닙니다.");
         }
         
@@ -93,7 +95,7 @@ public class AttendanceBookTest {
             
             // expected
             assertThatThrownBy(() -> attendanceBook.addAttendance(inputName, attendDateTime))
-                    .isExactlyInstanceOf(IllegalArgumentException.class)
+                    .isExactlyInstanceOf(IllegalAttendTimeException.class)
                     .hasMessage("출석 가능한 시간이 아닙니다.");
         }
     }
@@ -123,8 +125,46 @@ public class AttendanceBookTest {
             ));
         }
         
-        // 만약 두 시간이 같다면??
+        @Test
+        void 존재하지_않는_회원의_기록을_수정하려고_하면_예외() {
+            // given
+            String name = "Moko";
+            LocalDate date = LocalDate.of(2024, 12, 6);
+            LocalTime time = LocalTime.of(10, 5);
+            AttendanceBook attendanceBook = new AttendanceBook(attendancesMap);
+            
+            // expected
+            assertThatThrownBy(() -> attendanceBook.editAttendance(name, date, time))
+                    .isExactlyInstanceOf(IllegalArgumentException.class)
+                    .hasMessage("해당 멤버는 존재하지 않습니다.");
+        }
+        
+        @Test
+        void 주말_기록을_수정하려하면_예외() {
+            // given
+            String name = "Dompoo";
+            LocalDate date = LocalDate.of(2024, 12, 1);
+            LocalTime time = LocalTime.of(10, 5);
+            AttendanceBook attendanceBook = new AttendanceBook(attendancesMap);
+            
+            // expected
+            assertThatThrownBy(() -> attendanceBook.editAttendance(name, date, time))
+                    .isExactlyInstanceOf(IllegalAttendDateException.class)
+                    .hasMessage("수정 가능한 날짜가 아닙니다.");
+        }
+        
+        @Test
+        void 수정시_출석_가능한_시간이_아니면_예외() {
+            // given
+            String name = "Dompoo";
+            LocalDate date = LocalDate.of(2024, 12, 3);
+            LocalTime time = LocalTime.of(7, 5);
+            AttendanceBook attendanceBook = new AttendanceBook(attendancesMap);
+            
+            // expected
+            assertThatThrownBy(() -> attendanceBook.editAttendance(name, date, time))
+                    .isExactlyInstanceOf(IllegalAttendTimeException.class)
+                    .hasMessage("수정 가능한 시간이 아닙니다.");
+        }
     }
-    
-    
 }

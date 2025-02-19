@@ -7,4 +7,8 @@ public class IllegalAttendDateException extends IllegalArgumentException {
     public IllegalAttendDateException() {
         super(DEFAULT_MESSAGE);
     }
+    
+    public IllegalAttendDateException(String message) {
+        super(message);
+    }
 }
