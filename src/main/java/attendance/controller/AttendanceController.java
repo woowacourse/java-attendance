@@ -15,6 +15,10 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
@@ -40,6 +44,9 @@ public class AttendanceController {
             }
             if (command == Command.ATTENDANCE_TIMELINE) {
                 doAttendanceTimeline(now);
+            }
+            if (command == Command.EMERGENCY_CHECK) {
+                doEmergencyCheck(now);
             }
         } catch (RuntimeException e) {
             System.out.println("[ERROR] " + e.getMessage());
@@ -112,8 +119,8 @@ public class AttendanceController {
         AttendanceTimeline attendanceTimeline = AttendanceTimeline.generateAttendanceTimelineUntilDate(
                 attendanceHistory, now.toLocalDate());
         System.out.printf("이번달 %s의 출석 기록입니다.%n%n", nickname);
-        for(AttendanceLog attendanceLog: attendanceTimeline.attendanceLogs()) {
-            if(attendanceLog.time() == null) {
+        for (AttendanceLog attendanceLog : attendanceTimeline.attendanceLogs()) {
+            if (attendanceLog.time() == null) {
                 System.out.printf("%s --:-- (%s)%n",
                         attendanceLog.date().format(DateTimeFormatter.ofPattern("MM월 dd일 E요일")),
                         displayAttendanceType(attendanceLog.attendanceType()));
@@ -137,6 +144,63 @@ public class AttendanceController {
         if (level != AttendanceWarningLevel.CLEAN) {
             System.out.printf("%n%s 대상자입니다.", displayAttendanceWarningLevel(level));
         }
+    }
+
+    private void doEmergencyCheck(LocalDateTime now) {
+        Map<Crew, Set<Attendance>> allAttendanceHistory = attendances.findAllByMonth(now.getMonth());
+        List<CrewAttendanceSummary> crewAttendanceSummaries = createAllCrewAttendanceSummaries(
+                now, allAttendanceHistory);
+        List<CrewAttendanceSummary> sortedList = sortCrewAttendanceSummaries(crewAttendanceSummaries);
+        printResult(sortedList);
+    }
+
+    private List<CrewAttendanceSummary> createAllCrewAttendanceSummaries(LocalDateTime now,
+                                                                         Map<Crew, Set<Attendance>> allAttendanceHistory) {
+        List<CrewAttendanceSummary> crewAttendanceSummaries = new ArrayList<>();
+        for (Crew crew : allAttendanceHistory.keySet()) {
+            AttendanceTimeline attendanceTimeline = AttendanceTimeline.generateAttendanceTimelineUntilDate(
+                    allAttendanceHistory.get(crew), now.toLocalDate());
+            int lateCount = attendanceTimeline.countByAttendanceType(AttendanceType.LATE);
+            int absenceCount = attendanceTimeline.countByAttendanceType(AttendanceType.ABSENCE);
+            AttendanceWarningLevel level = AttendanceWarningLevel.judge(
+                    lateCount,
+                    absenceCount
+            );
+            crewAttendanceSummaries.add(new CrewAttendanceSummary(crew, lateCount, absenceCount, level));
+        }
+        return crewAttendanceSummaries;
+    }
+
+    private List<CrewAttendanceSummary> sortCrewAttendanceSummaries(
+            List<CrewAttendanceSummary> crewAttendanceSummaries) {
+        return crewAttendanceSummaries.stream()
+                .sorted(Comparator
+                        .comparing(CrewAttendanceSummary::level)
+                        .reversed()
+                        .thenComparing(summary -> summary.absenceCount() + (summary.lateCount() / 3),
+                                Comparator.reverseOrder())
+                        .thenComparing(summary -> summary.crew().getNickname())
+                )
+                .toList();
+    }
+
+    private void printResult(List<CrewAttendanceSummary> sortedList) {
+        System.out.println("제적 위험자 조회 결과");
+        sortedList.stream()
+                .filter(summary -> summary.level != AttendanceWarningLevel.CLEAN)
+                .forEach(summary -> System.out.printf("- %s: 결석 %d회, 지각 %d회 (%s)%n",
+                        summary.crew.getNickname(),
+                        summary.absenceCount,
+                        summary.lateCount,
+                        displayAttendanceWarningLevel(summary.level)));
+    }
+
+    record CrewAttendanceSummary(
+            Crew crew,
+            int lateCount,
+            int absenceCount,
+            AttendanceWarningLevel level
+    ) {
     }
 
     private String displayAttendanceWarningLevel(AttendanceWarningLevel level) {

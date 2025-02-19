@@ -10,6 +10,14 @@ public class Crew {
         this.nickname = nickname;
     }
 
+    public boolean isEqualsNickname(String nickname) {
+        return this.nickname.equals(nickname);
+    }
+
+    public String getNickname() {
+        return nickname;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) {
@@ -22,9 +30,5 @@ public class Crew {
     @Override
     public int hashCode() {
         return Objects.hashCode(nickname);
-    }
-
-    public boolean isEqualsNickname(String nickname) {
-        return this.nickname.equals(nickname);
     }
 }

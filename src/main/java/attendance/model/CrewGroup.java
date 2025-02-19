@@ -7,7 +7,7 @@ public class CrewGroup {
     private final Set<Crew> crews;
 
     public CrewGroup(Set<Crew> crews) {
-        this.crews = crews;
+        this.crews = Set.copyOf(crews);
     }
 
     public boolean contains(String nickname) {
@@ -17,5 +17,9 @@ public class CrewGroup {
 
     public boolean contains(Crew crew) {
         return crews.contains(crew);
+    }
+
+    public Set<Crew> getCrews() {
+        return Set.copyOf(crews);
     }
 }

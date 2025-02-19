@@ -5,6 +5,7 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.Month;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -54,5 +55,13 @@ public class Attendances {
         if (!crewGroup.contains(crew)) {
             throw new IllegalArgumentException("등록되지 않은 크루입니다.");
         }
+    }
+
+    public Map<Crew, Set<Attendance>> findAllByMonth(Month findMonth) {
+        return crewGroup.getCrews().stream()
+                .collect(Collectors.toMap(
+                        crew -> crew,
+                        crew -> findAllByCrewAndMonth(crew, findMonth)
+                ));
     }
 }
