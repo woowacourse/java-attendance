@@ -14,7 +14,7 @@ public enum AttendanceStatus {
     }
 
     public static AttendanceStatus findByAttendanceTime(Week day, LocalTime attendanceTime) {
-        if (attendanceTime.isBefore(day.getAttendanceTime())) {
+        if (attendanceTime.isBefore(day.getAttendanceTime()) || attendanceTime.equals(day.getAttendanceTime())) {
             return ATTENDANCE;
         }
         if (attendanceTime.isBefore(day.getAttendanceTime().plusMinutes(30))) {
