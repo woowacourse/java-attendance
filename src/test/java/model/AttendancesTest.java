@@ -66,7 +66,6 @@ class AttendancesTest {
         attendances.modify(crew, modifiedCheckInTime);
 
         //then
-        Assertions.assertThat(attendances.getAttendances()).doesNotContain(attendance);
-        Assertions.assertThat(attendances.getAttendances()).doesNotContain(Attendance.of(crew, modifiedCheckInTime));
+        Assertions.assertThat(attendances.getAttendances()).contains(Attendance.of(crew, modifiedCheckInTime));
     }
 }
