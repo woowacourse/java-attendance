@@ -29,4 +29,8 @@ public class TimeAndStatus {
         }
         return "출석";
     }
+
+    public String getStatus() {
+        return status;
+    }
 }
