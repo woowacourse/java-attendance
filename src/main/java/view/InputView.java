@@ -1,7 +1,7 @@
 package view;
 
+import java.time.DayOfWeek;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.Scanner;
 import model.AttendanceCalculatorByDay;
 
@@ -17,9 +17,9 @@ public class InputView {
     public static void printTodayAndSelectFunction(LocalDate localDate) {
         int month = localDate.getMonthValue();
         int date = localDate.getDayOfMonth();
-        String day = AttendanceCalculatorByDay.findDayByDayOfWeekValue(date);
+        DayOfWeek dayOfWeek = localDate.getDayOfWeek();
+        String day = AttendanceCalculatorByDay.findDayByDayOfWeekValue(dayOfWeek.getValue());
         System.out.println("오늘은 " + month + "월 " + date + "일 " + day + "입니다. 기능을 선택해 주세요.");
-        printMenu();
     }
 
     private static void printMenu() {
