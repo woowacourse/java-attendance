@@ -2,6 +2,8 @@ package domain;
 
 import dto.AttendanceModifyDTO;
 import dto.AttendanceResultDTO;
+import util.exception.IllegalAttendDateException;
+import util.exception.IllegalAttendTimeException;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
@@ -25,15 +27,15 @@ public class Attendance {
     }
     
     private void validateDate(LocalDate date) {
-        // TODO : 주말, 공휴일이면 '출석 가능한 날짜가 아닙니다.'
+        // TODO : 공휴일이면 '출석 가능한 날짜가 아닙니다.'
         if (WEEKEND.contains(date.getDayOfWeek())) {
-            throw new IllegalArgumentException("출석 가능한 날짜가 아닙니다.");
+            throw new IllegalAttendDateException();
         }
     }
     
     private void validateTime(LocalTime time) {
         if (time.isAfter(MAX_ATTENDANCE_TIME) || time.isBefore(MIN_ATTENDANCE_TIME)) {
-            throw new IllegalArgumentException("출석 가능한 시간이 아닙니다.");
+            throw new IllegalAttendTimeException();
         }
     }
     

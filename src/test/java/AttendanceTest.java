@@ -3,6 +3,8 @@ import dto.AttendanceModifyDTO;
 import dto.AttendanceResultDTO;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import util.exception.IllegalAttendDateException;
+import util.exception.IllegalAttendTimeException;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -77,7 +79,7 @@ public class AttendanceTest {
             
             // expected
             assertThatThrownBy(() -> new Attendance(localDateTime))
-                    .isExactlyInstanceOf(IllegalArgumentException.class)
+                    .isExactlyInstanceOf(IllegalAttendDateException.class)
                     .hasMessage("출석 가능한 날짜가 아닙니다.");
         }
         
@@ -89,7 +91,7 @@ public class AttendanceTest {
             
             // expected
             assertThatThrownBy(() -> new Attendance(localDateTime))
-                    .isExactlyInstanceOf(IllegalArgumentException.class)
+                    .isExactlyInstanceOf(IllegalAttendTimeException.class)
                     .hasMessage("출석 가능한 시간이 아닙니다.");
         }
         
