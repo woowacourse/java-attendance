@@ -37,4 +37,19 @@ public class ModifyAttendanceTest {
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("[ERROR] 등록되지 않은 닉네임입니다.");
     }
+
+    @Test
+    @DisplayName("수정하려는 날짜의 기록이 존재하지 않을 경우, 에러를 출력한다.")
+    void 수정하려는_날짜의_기록이_존재하지_않을_경우_에러를_출력한다() {
+        AttendanceBook attendanceBook = new AttendanceBook();
+
+        Crew crew1 = Crew.createByName("쿠키");
+        crew1.addDailyAttendance(Map.of(LocalDate.of(2024, 12, 3), LocalTime.of(10, 6)));
+        attendanceBook.addNewCrew(crew1);
+
+        assertThatThrownBy(
+                () -> attendanceBook.modifyAttendance("쿠키", Map.of(LocalDate.of(2024, 12, 5), LocalTime.of(10, 20))))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("[ERROR] 05일 기록이 존재하지 않습니다.");
+    }
 }
