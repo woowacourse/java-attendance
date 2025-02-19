@@ -9,7 +9,7 @@ import java.util.Arrays;
 import java.util.List;
 
 public class FileReader {
-    public List<List<String>> readResource(String fileName) {
+    public List<List<String>> readResource(final String fileName) {
         try (InputStream resource = getClass()
                 .getClassLoader()
                 .getResourceAsStream(fileName)) {
