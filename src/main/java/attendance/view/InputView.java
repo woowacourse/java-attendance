@@ -6,7 +6,7 @@ public class InputView {
 
     public int inputFunction(int month, int day, String dayOfWeek) {
 
-        System.out.println("오늘은 " + month + "월" + day + "일 " + dayOfWeek + "입니다. 기능을 선택해주세요");
+        System.out.println("오늘은 " + month + "월 " + day + "일 " + dayOfWeek + "입니다. 기능을 선택해주세요.");
         System.out.println("1. 출석 확인");
         System.out.println("2. 출석 수정");
         System.out.println("3. 크루별 출석 기록 확인");

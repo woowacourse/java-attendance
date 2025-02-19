@@ -11,6 +11,9 @@ public class Console {
     }
 
     public static int readInt() {
-        return scanner.nextInt();
+        int input = scanner.nextInt();
+        scanner.nextLine();
+
+        return input;
     }
 }
