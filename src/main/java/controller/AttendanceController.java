@@ -3,7 +3,6 @@ package controller;
 import domain.Attendance;
 import domain.AttendanceStatus;
 import domain.AttendanceTime;
-import domain.ExpelStatus;
 import domain.MenuOption;
 import java.io.IOException;
 import java.time.LocalDate;
@@ -71,7 +70,14 @@ public class AttendanceController {
 
             Map<AttendanceStatus, Integer> attendStatuses = attendance.countAttendanceStatus(nickName);
             outputView.printCrewStatuses(attendStatuses);
-        } 
+        } else if (option.equals(MenuOption.CHECK_EXPELLED_CREW.getCommand())) {
+            // 4. 제적 위험자 확인
+            List<String> expelledCrews = attendance.checkExpelledCrew();
+            outputView.printExpelledCrewHeader();
+            for (String crew : expelledCrews) {
+                outputView.printExpelledCrew(crew, attendance.countAttendanceStatus(crew));
+            }
+        }
 
 
     }

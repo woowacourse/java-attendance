@@ -4,9 +4,9 @@ import java.util.Map;
 
 public enum ExpelStatus {
 
-    WARNING("경고 대상자"),
-    INTERVIEW("면담 대상자"),
-    EXPULSION("제적 대상자"),
+    WARNING("경고"),
+    INTERVIEW("면담"),
+    EXPULSION("제적"),
     NONE("미해당");
 
     private final String expelStatus;

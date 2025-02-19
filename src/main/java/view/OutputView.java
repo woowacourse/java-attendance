@@ -46,12 +46,23 @@ public class OutputView {
         System.out.println(sb);
     }
 
+    public void printExpelledCrewHeader() {
+        System.out.println("제적 위험자 조회 결과");
+    }
+
+    public void printExpelledCrew(String crewName, Map<AttendanceStatus, Integer> attendStatuses) {
+        System.out.println(String.format("- %s: 결석 %d회, 지각 %d회 (%s)", crewName,
+                attendStatuses.get(AttendanceStatus.ABSENT) + attendStatuses.get(AttendanceStatus.UNATTEND),
+                attendStatuses.get(AttendanceStatus.LATE),
+                ExpelStatus.determineExpelStatus(attendStatuses).getExpelStatus()));
+    }
+
     private String writeCrewStatus(AttendanceStatus attendanceStatus, int attendanceStatusCount) {
         return String.format("%s: %d회%n", attendanceStatus.getStatus(), attendanceStatusCount);
     }
 
     private String writeExpelStatus(Map<AttendanceStatus, Integer> attendStatuses) {
-        return String.format("%s입니다.", ExpelStatus.determineExpelStatus(attendStatuses).getExpelStatus());
+        return String.format("%s 대상자입니다.", ExpelStatus.determineExpelStatus(attendStatuses).getExpelStatus());
     }
 
     private String writeAttendanceDateMessage(LocalDateTime attendanceDateTime) {
