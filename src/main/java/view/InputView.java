@@ -44,4 +44,27 @@ public class InputView {
             throw new IllegalArgumentException("[ERROR] 시간은 24시간 형식으로 입력해 주세요.");
         }
     }
+
+    public Crew readUpdateNickname() {
+        System.out.println("\n출석을 수정하려는 크루의 닉네임을 입력해 주세요.");
+        String input = scanner.nextLine();
+        return new Crew(input);
+    }
+
+    public LocalDate readUpdateDate() {
+        System.out.println("수정하려는 날짜(일)를 입력해 주세요.");
+        String input = scanner.nextLine();
+        int dateNumber = Integer.parseInt(input);
+        return LocalDate.of(2024, 12, dateNumber);
+    }
+
+    public LocalTime readUpdateTime() {
+        System.out.println("언제로 변경하겠습니까?");
+        String input = scanner.nextLine();
+        try {
+            return LocalTime.parse(input);
+        } catch (DateTimeParseException e) {
+            throw new IllegalArgumentException("[ERROR] 시간은 24시간 형식으로 입력해 주세요.");
+        }
+    }
 }

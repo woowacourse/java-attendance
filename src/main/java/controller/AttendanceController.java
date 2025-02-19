@@ -1,6 +1,9 @@
 package controller;
 
-import domain.*;
+import domain.AttendanceRecord;
+import domain.Crew;
+import domain.CrewAttendanceRecords;
+import domain.DateGenerator;
 import view.InputView;
 import view.OutputView;
 
@@ -37,14 +40,16 @@ public class AttendanceController {
         Crew crew = inputView.readNickname();
         LocalTime time = inputView.readCheckInTime();
         AttendanceRecord attendanceRecord = crewAttendanceRecords.checkIn(crew, time, currentDateGenerator);
-        LocalDate date = attendanceRecord.getDate();
-        Attendance attendance = attendanceRecord.getAttendance();
-        Day day = Day.getDay(date);
-        outputView.displayAttendanceRecord(date, day, time, attendance);
+        outputView.displayAttendanceRecord(attendanceRecord);
     }
 
     public void updateAttendance() {
-        System.out.println("출석 수정");
+        Crew crew = inputView.readUpdateNickname();
+        LocalDate date = inputView.readUpdateDate();
+        LocalTime time = inputView.readUpdateTime();
+        AttendanceRecord newRecord = new AttendanceRecord(date, time);
+        AttendanceRecord oldRecord = crewAttendanceRecords.updateAttendanceRecord(crew, newRecord);
+        outputView.displayUpdatedRecord(oldRecord, newRecord);
     }
 
     public void checkAttendanceRecords() {
