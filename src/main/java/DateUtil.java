@@ -20,7 +20,7 @@ public class DateUtil {
     public static LocalDateTime parseDatetime(String time) {
         var hour = time.substring(0, 2);
         var min = time.substring(3);
-        return LocalDateTime.of(2024, 12, 1, Integer.parseInt(hour), Integer.parseInt(min));
+        return LocalDateTime.of(2024, 12, 13, Integer.parseInt(hour), Integer.parseInt(min));
     }
 
     public static boolean isDayEqual(final int day, final LocalDateTime datetime) {
