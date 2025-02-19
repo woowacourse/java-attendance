@@ -101,4 +101,49 @@ public class CrewTest {
                 + "12월 11일 수요일 --:-- (결석)\n"
                 + "12월 12일 목요일 --:-- (결석)\n");
     }
+
+
+    @DisplayName("특정 크루 출석 상태 현황 출력")
+    @Test
+    public void test44() {
+        Crew crew = new Crew("미미");
+        crew.addAttendance(LocalDateTime.of(2024, 12, 2, 13,0));
+        crew.addAttendance(LocalDateTime.of(2024, 12, 3, 9,58));
+        crew.addAttendance(LocalDateTime.of(2024, 12, 4, 10,2));
+        crew.addAttendance(LocalDateTime.of(2024, 12, 5, 10,6));
+        crew.addAttendance(LocalDateTime.of(2024, 12, 6, 10,1));
+        crew.addAttendance(LocalDateTime.of(2024, 12, 10, 10,8));
+        assertThat(crew.printAttendanceStateInfo(LocalDate.of(2024, 12, 12))).isEqualTo("출석: 4회\n"
+                + "지각: 2회\n"
+                + "결석: 3회\n");
+    }
+
+    @DisplayName("특정 크루 출석 상태 현황 출력_면담 대상자 여부 판별")
+    @Test
+    public void test55() {
+        Crew crew = new Crew("미미");
+        crew.addAttendance(LocalDateTime.of(2024, 12, 2, 13,0));
+        crew.addAttendance(LocalDateTime.of(2024, 12, 3, 9,58));
+        crew.addAttendance(LocalDateTime.of(2024, 12, 4, 10,2));
+        crew.addAttendance(LocalDateTime.of(2024, 12, 5, 10,6));
+        crew.addAttendance(LocalDateTime.of(2024, 12, 6, 10,1));
+        crew.addAttendance(LocalDateTime.of(2024, 12, 10, 10,8));
+//        assertThat(crew.print(LocalDate.of(2024, 12, 12))).isEqualTo("면담 대상자입니다.");
+    }
+
+    @DisplayName("특정 크루 제적 위험 판별")
+    @Test
+    void test66() {
+        Crew crew = new Crew("미미");
+        // 1일 -x
+        crew.addAttendance(LocalDateTime.of(2024, 12, 2, 13,0)); // 출
+        crew.addAttendance(LocalDateTime.of(2024, 12, 3, 9,58));    // 출
+        crew.addAttendance(LocalDateTime.of(2024, 12, 4, 10,2));    // 출
+        crew.addAttendance(LocalDateTime.of(2024, 12, 5, 10,6));    // 지
+        crew.addAttendance(LocalDateTime.of(2024, 12, 6, 10,1));    // 출
+        crew.addAttendance(LocalDateTime.of(2024, 12, 10, 10,8));   // 지
+        assertThat(crew.printWarningInfo(LocalDate.of(2024, 12, 12)))
+                .isEqualTo("미미: 결석 3회, 지각 2회 (면담)");
+    }
+
 }
