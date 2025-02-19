@@ -9,6 +9,9 @@ public class AttendanceController {
     private final DateGenerator currentDateGenerator = new CurrentDateGenerator();
 
     public void run() {
-        inputView.displayMenu(currentDateGenerator.generate());
+        String menuInput = inputView.readMenu(currentDateGenerator.generate());
+        if (menuInput.matches("[Qq]")) {
+            return;
+        }
     }
 }
