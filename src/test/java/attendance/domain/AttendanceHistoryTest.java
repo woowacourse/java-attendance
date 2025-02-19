@@ -1,5 +1,6 @@
 package attendance.domain;
 
+import static attendance.domain.AttendanceType.ATTENDANCE;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
@@ -14,7 +15,7 @@ public class AttendanceHistoryTest {
         AttendanceHistory attendanceHistory = new AttendanceHistory();
         AttendanceResult attendanceResult = new AttendanceResult(
                 LocalDateTime.of(2024, 12, 26, 10, 00),
-                "출석"
+                ATTENDANCE
         );
         attendanceHistory.addAttendanceResult(attendanceResult);
         assertThatThrownBy(() -> attendanceHistory.addAttendanceResult(attendanceResult))
@@ -28,7 +29,7 @@ public class AttendanceHistoryTest {
         AttendanceHistory attendanceHistory = new AttendanceHistory();
         AttendanceResult attendanceResult = new AttendanceResult(
                 LocalDateTime.of(2024, 12, 26, 10, 00),
-                "출석"
+                ATTENDANCE
         );
 
         //when
@@ -46,7 +47,7 @@ public class AttendanceHistoryTest {
         AttendanceHistory attendanceHistory = new AttendanceHistory();
         AttendanceResult attendanceResult = new AttendanceResult(
                 LocalDateTime.of(2024, 12, 26, 10, 00),
-                "출석"
+                ATTENDANCE
         );
 
         //when

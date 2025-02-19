@@ -5,9 +5,9 @@ import java.util.Objects;
 
 public class AttendanceResult {
     private LocalDateTime attendanceTime;
-    private String attendanceType;
+    private AttendanceType attendanceType;
 
-    public AttendanceResult(LocalDateTime attendanceTime, String attendanceType) {
+    public AttendanceResult(LocalDateTime attendanceTime, AttendanceType attendanceType) {
         this.attendanceTime = attendanceTime;
         this.attendanceType = attendanceType;
     }
@@ -16,7 +16,7 @@ public class AttendanceResult {
         return attendanceTime;
     }
 
-    public String getAttendanceType() {
+    public AttendanceType getAttendanceType() {
         return attendanceType;
     }
 

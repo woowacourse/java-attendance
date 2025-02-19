@@ -1,5 +1,7 @@
 package attendance.domain;
 
+import static attendance.domain.AttendanceType.ABSENT;
+import static attendance.domain.AttendanceType.ATTENDANCE;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.time.LocalDateTime;
@@ -10,12 +12,12 @@ public class AttendanceResultTest {
     void create() {
         AttendanceResult result = new AttendanceResult(
                 LocalDateTime.of(2024, 12, 26, 10, 00),
-                "출석"
+                ATTENDANCE
         );
 
         assertThat(result).isNotNull();
         assertThat(result.getAttendanceTime()).isEqualTo(LocalDateTime.of(2024, 12, 26, 10, 00));
-        assertThat(result.getAttendanceType()).isEqualTo("출석");
+        assertThat(result.getAttendanceType()).isEqualTo(ATTENDANCE);
     }
 
     @Test
@@ -23,11 +25,11 @@ public class AttendanceResultTest {
         //given
         AttendanceResult attendanceResult = new AttendanceResult(
                 LocalDateTime.of(2024, 12, 26, 11, 00),
-                "결석"
+                ABSENT
         );
         AttendanceResult modifyAttendanceResult = new AttendanceResult(
                 LocalDateTime.of(2024, 12, 26, 10, 00),
-                "출석"
+                ATTENDANCE
         );
 
         //when
@@ -36,6 +38,6 @@ public class AttendanceResultTest {
         //then
         assertThat(attendanceResult).isEqualTo(modifyAttendanceResult);
         assertThat(attendanceResult.getAttendanceTime()).isEqualTo(modifyAttendanceResult.getAttendanceTime());
-        assertThat(attendanceResult.getAttendanceType()).isEqualTo("출석");
+        assertThat(attendanceResult.getAttendanceType()).isEqualTo(ATTENDANCE);
     }
 }
