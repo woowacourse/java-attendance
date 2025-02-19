@@ -22,10 +22,13 @@ public class AttendanceBook {
 
     public void initialize(String name, String date, String time) {
         if (!checkAlreadyExists(name)) {
-            crews.add(Crew.createByName(name));
-
+            addNewCrew(Crew.createByName(name));
         }
         addDailyAttendanceByName(name, date, time);
+    }
+
+    public void addNewCrew(Crew newCrew) {
+        crews.add(newCrew);
     }
 
     public void addDailyAttendanceByName(String name, String date, String time) {

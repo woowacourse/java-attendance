@@ -27,6 +27,10 @@ public class Crew {
         return name;
     }
 
+    public List<DailyAttendance> getDailyAttendance() {
+        return dailyAttendances;
+    }
+
     public DailyAttendance getDailyAttendanceByDate(String date) {
         return dailyAttendances.stream()
                 .filter(dailyAttendance -> dailyAttendance.hasDate(date))
