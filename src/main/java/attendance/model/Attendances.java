@@ -1,6 +1,10 @@
 package attendance.model;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.HashSet;
+import java.util.Optional;
 import java.util.Set;
 
 public class Attendances {
@@ -29,5 +33,11 @@ public class Attendances {
 
     public void update(Attendance attendance) {
         attendances.add(attendance);
+    }
+
+    public Optional<Attendance> findByCrewAndDate(Crew crew, LocalDate date) {
+        return attendances.stream()
+                .filter(attendance -> attendance.equals(new Attendance(crew, LocalDateTime.of(date, LocalTime.MIN))))
+                .findFirst();
     }
 }

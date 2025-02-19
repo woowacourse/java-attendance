@@ -2,7 +2,9 @@ package attendance.model;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Optional;
 import java.util.Set;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
@@ -57,5 +59,35 @@ class AttendancesTest {
         assertThat(attendances)
                 .extracting("attendances")
                 .isEqualTo(Set.of(updateAttendance));
+    }
+
+    @DisplayName("크루가 찾으려는 날짜에 출석한 경우 닉네임과 날짜로 기존 출석을 찾을 수 있다.")
+    @Test
+    void attendanceFindTest() {
+        Crew crew = new Crew("포비");
+        CrewGroup crewGroup = new CrewGroup(Set.of(crew));
+        LocalDateTime now = LocalDateTime.of(2024, 12, 13, 10, 1);
+        Attendance attendance = new Attendance(crew, now);
+        Attendances attendances = new Attendances(crewGroup, Set.of(attendance));
+
+        LocalDate findDate = LocalDate.of(2024, 12, 13);
+        Optional<Attendance> optionalAttendance = attendances.findByCrewAndDate(crew, findDate);
+
+        assertThat(optionalAttendance)
+                .hasValue(attendance);
+    }
+
+    @DisplayName("크루가 찾으려는 날짜에 출석하지 않은 경우 닉네임과 날짜로 기존 출석을 찾을 수 없다.")
+    @Test
+    void attendanceNotFoundTest() {
+        Crew crew = new Crew("포비");
+        CrewGroup crewGroup = new CrewGroup(Set.of(crew));
+        Attendances attendances = new Attendances(crewGroup, Set.of());
+
+        LocalDate findDate = LocalDate.of(2024, 12, 13);
+        Optional<Attendance> optionalAttendance = attendances.findByCrewAndDate(crew, findDate);
+
+        assertThat(optionalAttendance)
+                .isNotPresent();
     }
 }
