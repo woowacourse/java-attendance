@@ -56,10 +56,10 @@ public class Attendances {
     }
 
     public String findOriginalTime(final Crew crew, final LocalDate localDate) {
-        return findMatchCrewDate(crew, localDate).getTime();
+        return findMatchCrewDate(crew, localDate).getTimeValue();
     }
 
-    public String findOriginalType(final Crew crew, final LocalDate localDate) {
+    public AttendanceType findOriginalType(final Crew crew, final LocalDate localDate) {
         return findMatchCrewDate(crew, localDate).getType();
     }
 }
