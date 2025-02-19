@@ -68,4 +68,18 @@ class AttendancesTest {
         //then
         Assertions.assertThat(attendances.getAttendances()).contains(Attendance.of(crew, modifiedCheckInTime));
     }
+
+    @Test
+    @DisplayName("출석 시간을 수정할 때 출석이 없으면 새로 생성한다.")
+    void test4() {
+        //given
+        Crew crew = Crew.of("쿠키");
+        LocalDateTime modifiedCheckInTime = LocalDateTime.of(2024, 12, 3, 10, 0);
+
+        //when
+        attendances.modify(crew, modifiedCheckInTime);
+
+        //then
+        Assertions.assertThat(attendances.getAttendances()).contains(Attendance.of(crew, modifiedCheckInTime));
+    }
 }
