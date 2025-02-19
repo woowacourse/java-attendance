@@ -1,21 +1,32 @@
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
+import domain.AttendanceManager;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.List;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+
 public class AttendanceEditTest {
-//
-//    @Test
-//    @DisplayName("출석 정보를 변경한다.")
-//    void 출석_정보_변경() {
-//        AttendanceRepository attendanceRepository = new AttendanceRepository();
-//        attendanceRepository.attend("빙티", LocalDateTime.of(2024, 12, 3,12,58));
-//
-//        String name = "빙티";
-//        String dayOfMonth = "3";
-//        String time = "09:58";
-//
-//        LocalDateTime expectedDate = LocalDateTime.of(2024, 12, 3,9,58);
-//
-//        CrewRecord record = attendanceRepository.edit(name, Integer.parseInt(dayOfMonth),time);
-//
-//        assertThat(expectedDate).isEqualTo(record.getDateTime());
-//    }
+
+    @Test
+    @DisplayName("출석 상태를 출석에서 지각으로 변경한다.")
+    void 출석_상태_변경() {
+        AttendanceManager attendanceManager = new AttendanceManager();
+
+        String name = "빙봉";
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+        LocalDateTime initialDateAndTime = LocalDateTime.parse("2024-12-15 13:00", formatter);
+        LocalDateTime editedDateAndTime = LocalDateTime.parse("2024-12-15 13:06", formatter);
+        LocalDate localDate = editedDateAndTime.toLocalDate();
+
+        attendanceManager.createCrew(name, List.of(initialDateAndTime));
+        attendanceManager.editCrew(name, editedDateAndTime);
+
+        Records records = attendanceManager.findByName(name);
+        TimeAndStatus timeAndStatus = records.findByDate(localDate);
+
+        assertThat(timeAndStatus.getStatus()).isEqualTo("지각");
+    }
 }
