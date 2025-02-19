@@ -1,0 +1,64 @@
+package view;
+
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.Scanner;
+import model.AttendanceCalculatorByDay;
+
+public class InputView {
+    private final static String ATTENDANCE_CHECK_MENU = "1. 출석 확인";
+    private final static String ATTENDANCE_MODIFY_MENU = "2. 출석 수정";
+    private final static String RECORD_PRINT_FOR_EACH_CREW_MENU = "3. 크루별 출석 기록 확인";
+    private final static String DISMISSAL_CREW_CHECK_MENU = "4. 제적 위험자 확인";
+    private final static String QUICK = "Q";
+
+    private final static Scanner scanner = new Scanner(System.in);
+
+    public static void printTodayAndSelectFunction(LocalDate localDate) {
+        int month = localDate.getMonthValue();
+        int date = localDate.getDayOfMonth();
+        String day = AttendanceCalculatorByDay.findDayByDayOfWeekValue(date);
+        System.out.println("오늘은 " + month + "월 " + date + "일 " + day + "입니다. 기능을 선택해 주세요.");
+        printMenu();
+    }
+
+    private static void printMenu() {
+        System.out.println(ATTENDANCE_CHECK_MENU);
+        System.out.println(ATTENDANCE_MODIFY_MENU);
+        System.out.println(RECORD_PRINT_FOR_EACH_CREW_MENU);
+        System.out.println(DISMISSAL_CREW_CHECK_MENU);
+        System.out.println(QUICK);
+    }
+
+    private static String userInput(){
+        return scanner.nextLine();
+    }
+    public static String getUserInputString(){
+        printMenu();
+        String input = userInput();
+        try{
+            return isQOrOneOrTwoOrThreeOrFour(input);
+        } catch (IllegalArgumentException e){
+            System.out.println(e.getMessage());
+            return getUserInputString();
+        }
+    }
+
+    private static String isQOrOneOrTwoOrThreeOrFour(String input){
+        String regex = "[1-4]|Q";
+        if (!input.matches(regex)) {
+            throw new IllegalArgumentException("[ERROR] 메뉴에 없는 선택지 입니다.");
+        }
+        return input;
+    }
+
+    public static String printInputNicName(){
+        System.out.println("닉네임을 입력해 주세요.");
+        return userInput();
+    }
+
+    public static String printStartTime(){
+        System.out.println("등교 시간을 입력해 주세요.");
+        return userInput();
+    }
+}
