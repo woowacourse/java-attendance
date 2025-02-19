@@ -30,12 +30,9 @@ public class AttendanceManager {
 
     public void addAttendance(String nickname, LocalDateTime time) {
         validateNickname(nickname);
-        if (nickname == null || nickname.isEmpty() || nickname.isBlank()) {
-            throw new AttendanceException(CANNOT_BE_EMPTY_NICKNAME);
-        }
         LocalTime currentTime = time.toLocalTime();
         validateIsSchoolOpen(currentTime);
-        AttendanceStatus attendanceStatus = determineAttendanceStatus(time,currentTime);
+        AttendanceStatus attendanceStatus = determineAttendanceStatus(time.toLocalDate(),currentTime);
         Attendances attendances = attendanceManager.getOrDefault(nickname, new Attendances());
         attendanceManager.put(nickname, attendances);
         attendances.addAttendance(time, attendanceStatus);
@@ -73,8 +70,7 @@ public class AttendanceManager {
         return attendances.getAttendanceTime(attendanceDate);
     }
 
-    private AttendanceStatus determineAttendanceStatus(LocalDateTime time, LocalTime currentTime) {
-        LocalDate currentDate = time.toLocalDate();
+    private AttendanceStatus determineAttendanceStatus(LocalDate currentDate, LocalTime currentTime) {
         LocalTime startTime = determineAttendanceStartTime(currentDate);
         validateIsAttendanceAvailable(currentDate);
         if(currentTime.isAfter(startTime.plusMinutes(ABSENCE_MINUTE))){
