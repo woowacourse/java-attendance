@@ -1,23 +1,24 @@
 package controller;
 
-import domain.AttendTime;
-import domain.AttendanceFileReader;
-import domain.Crews;
-import domain.StringParser;
+import domain.*;
+
 import java.util.List;
 import view.InputView;
+import view.OutputView;
 
 public class AttendanceController {
 
     private final InputView inputView;
+    private final OutputView outputView;
 
-    public AttendanceController(final InputView inputView) {
+    public AttendanceController(final InputView inputView, OutputView outputView) {
         this.inputView = inputView;
+        this.outputView = outputView;
     }
 
     public void run() {
         List<String> students = AttendanceFileReader.readFile("src/main/resources/attendances.csv");
-        Crews crews = new Crews(StringParser.parse(students));
+        Crews crews = new Crews(students);
 
         String command = inputView.readCommand();
         if (command.equals("1")) {
@@ -37,6 +38,14 @@ public class AttendanceController {
             System.out.print(time);
             String inputTime = String.format("%d-%d-%d %s", year, month, date2, time);
             System.out.println(crews.findCrew(nickname).attend(inputTime));
+        }
+
+        if(command.equals("3")){
+            String nickname= inputView.readNickname();
+            System.out.printf("이번 달 %s의 출석 기록입니다.%n",nickname);
+            System.out.println();
+            outputView.printCrewAttendance(crews.findCrew(nickname));
+
         }
     }
 
