@@ -61,4 +61,17 @@ public class WarningLevelTest {
         assertThat(level)
                 .isEqualTo(WarningLevel.NONE);
     }
+
+    @DisplayName("지각 3회는 결석 1회로 간주")
+    @Test
+    void test5(){
+        Map<AttendanceStatus, Integer> attendanceStatuses = new EnumMap<>(AttendanceStatus.class);
+        attendanceStatuses.put(AttendanceStatus.ABSENCE, 5);
+        attendanceStatuses.put(AttendanceStatus.PRESENT, 0);
+        attendanceStatuses.put(AttendanceStatus.LATENESS, 5);
+
+        WarningLevel level = WarningLevel.calculateLevel(attendanceStatuses);
+        assertThat(level)
+                .isEqualTo(WarningLevel.REMOVE);
+    }
 }
