@@ -1,10 +1,13 @@
 package domain;
 
 public enum PenaltyStatus {
+
     WARNING(2),
     INTERVIEWEE(3),
     EXPULSION(6),
     NONE(0);
+
+    private static final int LATE_TO_ABSENCE_UNIT = 3;
 
     private final int penalty;
 
@@ -15,19 +18,19 @@ public enum PenaltyStatus {
     public static PenaltyStatus getPenaltyStatus(int absenceCount, int lateCount) {
         int penaltyCount = convertToAbsence(absenceCount, lateCount);
 
-        if (penaltyCount < 2) {
-            return PenaltyStatus.NONE;
+        if (penaltyCount < WARNING.penalty) {
+            return NONE;
         }
-        if (penaltyCount < 3) {
-            return PenaltyStatus.WARNING;
+        if (penaltyCount < INTERVIEWEE.penalty) {
+            return WARNING;
         }
-        if (penaltyCount < 6) {
-            return PenaltyStatus.INTERVIEWEE;
+        if (penaltyCount < EXPULSION.penalty) {
+            return INTERVIEWEE;
         }
-        return PenaltyStatus.EXPULSION;
+        return EXPULSION;
     }
 
     private static int convertToAbsence(int absenceCount, int lateCount) {
-        return (lateCount / 3) + absenceCount;
+        return (lateCount / LATE_TO_ABSENCE_UNIT) + absenceCount;
     }
 }
