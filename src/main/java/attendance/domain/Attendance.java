@@ -75,4 +75,8 @@ public class Attendance {
                                     TextStyle.FULL, Locale.KOREA)));
         }
     }
+
+    public HourMinute modify(final LocalDate localDate, final HourMinute hourMinute) {
+        return timestamps.put(localDate, hourMinute);
+    }
 }
