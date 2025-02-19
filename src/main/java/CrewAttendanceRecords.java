@@ -55,6 +55,9 @@ public class CrewAttendanceRecords {
     }
 
     public AttendanceRecord updateAttendanceRecord(Crew crew, AttendanceRecord newAttendanceRecord) {
+        if (!hasCrew(crew)) {
+            throw new IllegalArgumentException("[ERROR] 등록되지 않은 닉네임입니다.");
+        }
         AttendanceRecords records = crewAttendanceRecords.get(crew);
         records.addRecord(newAttendanceRecord);
         return records.removeRecord(newAttendanceRecord.getDate());

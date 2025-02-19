@@ -5,6 +5,7 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class CrewAttendanceRecordsTest {
     @Test
@@ -26,8 +27,22 @@ class CrewAttendanceRecordsTest {
         LocalDate date = LocalDate.of(2024, 12, 3);
         LocalTime time = LocalTime.of(9, 58);
         AttendanceRecord newAttendanceRecord = new AttendanceRecord(date, time);
-
         AttendanceRecord oldAttendanceRecord = crewAttendanceRecords.updateAttendanceRecord(crew, newAttendanceRecord);
+
         assertThat(oldAttendanceRecord).isEqualTo(new AttendanceRecord("2024-12-03 10:07"));
+    }
+
+    @Test
+    @DisplayName("수정할 때 기록이 없는 닉네임을 입력하면 예외가 발생한다.")
+    void updateAttendanceRecordExceptionTest() {
+        CrewAttendanceRecords crewAttendanceRecords = new CrewAttendanceRecords("/attendances.csv");
+        Crew crew = new Crew("포비");
+        LocalDate date = LocalDate.of(2024, 12, 3);
+        LocalTime time = LocalTime.of(9, 58);
+        AttendanceRecord newAttendanceRecord = new AttendanceRecord(date, time);
+
+        assertThatThrownBy(() -> crewAttendanceRecords.updateAttendanceRecord(crew, newAttendanceRecord))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("[ERROR] 등록되지 않은 닉네임입니다.");
     }
 }
