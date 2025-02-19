@@ -16,6 +16,11 @@ public class AttendanceChecker {
             throw new IllegalArgumentException(message);
         }
 
+        int hour = dateTime.getHour();
+        if (hour < 8 || (hour == 23 && dateTime.getMinute() > 0)) {
+            throw new IllegalArgumentException("[ERROR] 출석 가능한 시간이 아닙니다.");
+        }
+
         if (day.equals("MONDAY")) { // 월요일
 
             return checkStatusWithCondition(dateTime, 13, 0, 6);

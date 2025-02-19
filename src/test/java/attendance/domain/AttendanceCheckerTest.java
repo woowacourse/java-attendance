@@ -41,4 +41,21 @@ class AttendanceCheckerTest {
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage(message);
     }
+
+    @DisplayName("캠퍼스 운영 시간에만 출석한다.")
+    @ParameterizedTest
+    @CsvSource(value = {
+            "7,59",
+            "23,1"
+    }, delimiter = ',')
+    void 캠퍼스_운영_시간에만_출석한다(int hour, int minute) {
+
+        // given
+        LocalDateTime dateTime = LocalDateTime.of(2025, 2, 19, hour, minute);
+
+        // when & then
+        assertThatThrownBy(() -> AttendanceChecker.check(dateTime))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("[ERROR] 출석 가능한 시간이 아닙니다.");
+    }
 }
