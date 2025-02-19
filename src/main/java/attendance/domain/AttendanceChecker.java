@@ -1,29 +1,44 @@
 package attendance.domain;
 
+import static attendance.domain.AttendanceStatus.ABSENCE;
+import static attendance.domain.AttendanceStatus.LATENESS;
+import static attendance.domain.AttendanceStatus.PRESENT;
+
 import java.time.DayOfWeek;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.format.TextStyle;
 import java.util.Locale;
 
 public class AttendanceChecker {
-    public static int checkAttendance(final int hour, final int minute) {
-        if (hour <= 10 && minute <= 5) {
-            return 1;
+    public static AttendanceStatus checkAttendance(LocalDateTime localDateTime) {
+        int hour = localDateTime.getHour();
+        int minute = localDateTime.getMinute();
+
+        if (localDateTime.getDayOfWeek().equals(DayOfWeek.MONDAY)) {
+            return checkAttendance(hour, minute);
         }
-        if (hour == 10 && (minute <= 30)) {
-            return 0;
-        }
-        return -1;
+        return checkRegularAttendance(hour, minute);
     }
 
-    public static int checkMondayAttendance(final int hour, final int minute) {
+    public static AttendanceStatus checkRegularAttendance(final int hour, final int minute) {
+        if (hour <= 10 && minute <= 5) {
+            return PRESENT;
+        }
+        if (hour == 10 && (minute <= 30)) {
+            return LATENESS;
+        }
+        return ABSENCE;
+    }
+
+    public static AttendanceStatus checkAttendance(final int hour, final int minute) {
         if (hour <= 13 && minute <= 5) {
-            return 1;
+            return PRESENT;
         }
         if (hour == 13 && (minute <= 30)) {
-            return 0;
+            return LATENESS;
         }
-        return -1;
+        return ABSENCE;
     }
 
     public static void checkCampusHour(final int hour, final int minute) {

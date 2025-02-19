@@ -41,10 +41,10 @@ public class AttendanceTest {
         Attendance attendance = new Attendance("빙봉");
         attendance.add(localDateTime);
 
-        LocalDate localDate = LocalDate.of(2024, 12, 23);
-        HourMinute hourMinute = new HourMinute(13, 1);
+        LocalDateTime newLocalDateTime = LocalDateTime.of(2024, 12, 23, 13, 1);
+        HourMinute hourMinute = new HourMinute(newLocalDateTime);
 
-        HourMinute prevHourMinute = attendance.modify(localDate, hourMinute);
+        HourMinute prevHourMinute = attendance.modify(newLocalDateTime.toLocalDate(), hourMinute);
 
         assertThat(prevHourMinute.hour()).isEqualTo(localDateTime.getHour());
         assertThat(prevHourMinute.minute()).isEqualTo(localDateTime.getMinute());

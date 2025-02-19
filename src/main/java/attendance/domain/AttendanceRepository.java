@@ -18,7 +18,8 @@ public class AttendanceRepository {
     }
 
     private Attendance findByName(final String name) {
-        Optional<Attendance> crewAttendance = attendances.stream().filter(attendance -> attendance.isNameMatch(name))
+        Optional<Attendance> crewAttendance = attendances.stream()
+                .filter(attendance -> attendance.isNameMatch(name))
                 .findAny();
         if (crewAttendance.isEmpty()) {
             throw new IllegalArgumentException("[ERROR] 유효하지 않은 닉네임입니다.");
@@ -28,7 +29,7 @@ public class AttendanceRepository {
 
     public void update(final String name, final LocalDateTime newLocalDateTime) {
         LocalDate localDate = newLocalDateTime.toLocalDate();
-        HourMinute hourMinute = new HourMinute(newLocalDateTime.getHour(), newLocalDateTime.getMinute());
+        HourMinute hourMinute = new HourMinute(newLocalDateTime);
 
         Attendance crewAttendance = findByName(name);
         if (!crewAttendance.hasTimeStamp(localDate)) {

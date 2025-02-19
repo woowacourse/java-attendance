@@ -16,7 +16,7 @@ public class Attendance {
 
     public void add(final LocalDateTime localDateTime) {
         LocalDate date = localDateTime.toLocalDate();
-        HourMinute hourMinute = new HourMinute(localDateTime.getHour(), localDateTime.getMinute());
+        HourMinute hourMinute = new HourMinute(localDateTime);
 
         if (timestamps.containsKey(date)) {
             throw new IllegalArgumentException("[ERROR] 출석 기록이 존재합니다. 출석 수정 기능을 이용하세요.");

@@ -1,9 +1,13 @@
 package attendance.domain;
 
+import static attendance.domain.AttendanceStatus.ABSENCE;
+import static attendance.domain.AttendanceStatus.LATENESS;
+import static attendance.domain.AttendanceStatus.PRESENT;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+import java.time.LocalDateTime;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -11,43 +15,49 @@ class AttendanceCheckerTest {
     @DisplayName("출석")
     @Test
     void test1() {
-        int result = AttendanceChecker.checkAttendance(10, 5);
-        assertThat(result).isEqualTo(1);
+        LocalDateTime localDateTime = LocalDateTime.of(2024, 12, 24, 10, 5);
+        AttendanceStatus result = AttendanceChecker.checkAttendance(localDateTime);
+        assertThat(result).isEqualTo(PRESENT);
     }
 
     @DisplayName("지각")
     @Test
     void test2() {
-        int result = AttendanceChecker.checkAttendance(10, 6);
-        assertThat(result).isEqualTo(0);
+        LocalDateTime localDateTime = LocalDateTime.of(2024, 12, 24, 10, 6);
+        AttendanceStatus result = AttendanceChecker.checkAttendance(localDateTime);
+        assertThat(result).isEqualTo(LATENESS);
     }
 
     @DisplayName("결석")
     @Test
     void test3() {
-        int result = AttendanceChecker.checkAttendance(10, 31);
-        assertThat(result).isEqualTo(-1);
+        LocalDateTime localDateTime = LocalDateTime.of(2024, 12, 24, 10, 31);
+        AttendanceStatus result = AttendanceChecker.checkAttendance(localDateTime);
+        assertThat(result).isEqualTo(ABSENCE);
     }
 
     @DisplayName("월요일 출석")
     @Test
     void test4() {
-        int result = AttendanceChecker.checkMondayAttendance(13, 5);
-        assertThat(result).isEqualTo(1);
+        LocalDateTime localDateTime = LocalDateTime.of(2024, 12, 23, 13, 5);
+        AttendanceStatus result = AttendanceChecker.checkAttendance(localDateTime);
+        assertThat(result).isEqualTo(PRESENT);
     }
 
     @DisplayName("월요일 지각")
     @Test
     void test5() {
-        int result = AttendanceChecker.checkMondayAttendance(13, 6);
-        assertThat(result).isEqualTo(0);
+        LocalDateTime localDateTime = LocalDateTime.of(2024, 12, 23, 13, 6);
+        AttendanceStatus result = AttendanceChecker.checkAttendance(localDateTime);
+        assertThat(result).isEqualTo(LATENESS);
     }
 
     @DisplayName("월요일 결석")
     @Test
     void test6() {
-        int result = AttendanceChecker.checkMondayAttendance(13, 31);
-        assertThat(result).isEqualTo(-1);
+        LocalDateTime localDateTime = LocalDateTime.of(2024, 12, 24, 13, 31);
+        AttendanceStatus result = AttendanceChecker.checkAttendance(localDateTime);
+        assertThat(result).isEqualTo(ABSENCE);
     }
 
     @DisplayName("캠퍼스 운영 시작 시간 전 출석 시 예외 발생")
