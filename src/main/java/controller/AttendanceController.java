@@ -2,10 +2,8 @@ package controller;
 
 import controller.dto.AttendanceHistoryDto;
 import controller.dto.AttendanceTimeDto;
-import domain.AttendanceDate;
+import controller.dto.AttendanceUpdateResultDto;
 import domain.AttendanceDateTime;
-import domain.AttendanceTime;
-import domain.Crew;
 import service.AttendanceService;
 import view.Function;
 import view.InputView;
@@ -20,8 +18,10 @@ public class AttendanceController {
 
     public void run() {
         try {
-            Function function = InputView.readOption();
-            runFunction(function);
+            while (true) {
+                Function function = InputView.readOption();
+                runFunction(function);
+            }
         } catch (RuntimeException exception) {
             OutputView.printErrorMessage(exception.getMessage());
         }
@@ -58,7 +58,8 @@ public class AttendanceController {
         String nickname = getValidNickname();
         AttendanceDateTime newDateTime = getAttendanceDateTime();
 
-        attendanceService.editAttendance(nickname, newDateTime);
+        AttendanceUpdateResultDto attendanceUpdateResultDto = attendanceService.editAttendance(nickname, newDateTime);
+        OutputView.printUpdatedResult(attendanceUpdateResultDto);
     }
 
     private static AttendanceDateTime getAttendanceDateTime() {
