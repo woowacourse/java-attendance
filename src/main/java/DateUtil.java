@@ -1,4 +1,5 @@
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -33,6 +34,14 @@ public class DateUtil {
     public static boolean isDayOff(int day) {
         LocalDateTime targetDate = LocalDateTime.of(2024, 12, day, 0, 0);
         return isDayOff(targetDate);
+    }
+
+    public static boolean isDayOff(Attend attend) {
+        return isDayOff(attend.getDay());
+    }
+
+    public static boolean isTimeOff(Attend attend, LocalTime startTime, LocalTime endTime) {
+        return attend.time.toLocalTime().isBefore(startTime) || attend.time.toLocalTime().isAfter(endTime);
     }
 
     public static List<Integer> getAttendUntilDay(int day) {

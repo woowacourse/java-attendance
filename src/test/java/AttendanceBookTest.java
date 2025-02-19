@@ -1,6 +1,7 @@
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 public class AttendanceBookTest {
@@ -47,6 +48,37 @@ public class AttendanceBookTest {
         assertThatThrownBy(() -> attendanceBook.attend(name, attend))
                 .isInstanceOf(IllegalArgumentException.class);
     }
+
+    @Test
+    @DisplayName("운영 시간 전에 시간을 입력했을 경우, 예외를 throw 한다.")
+    void test() throws Exception {
+        //given
+        AttendanceBook attendanceBook = new AttendanceBook();
+        String name = "플린트";
+        String day = "13";
+        String time = "07:59";
+        Attend attend = Attend.of(day, time);
+
+        //when & then
+        assertThatThrownBy(() -> attendanceBook.attend(name, attend))
+                .isInstanceOf(IllegalArgumentException.class);
+    }
+
+    @Test
+    @DisplayName("운영 시간 이후에 시간을 입력했을 경우, 예외를 throw 한다.")
+    void test2() throws Exception {
+        //given
+        AttendanceBook attendanceBook = new AttendanceBook();
+        String name = "플린트";
+        String day = "13";
+        String time = "23:01";
+        Attend attend = Attend.of(day, time);
+
+        //when & then
+        assertThatThrownBy(() -> attendanceBook.attend(name, attend))
+                .isInstanceOf(IllegalArgumentException.class);
+    }
+
     @Test
     void 존재하지_않는_출석_수정_테스트() throws Exception {
         //given
