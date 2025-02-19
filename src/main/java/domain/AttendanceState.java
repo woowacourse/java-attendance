@@ -1,9 +1,6 @@
 package domain;
 
-import java.time.DayOfWeek;
-import java.time.LocalDate;
 import java.time.LocalTime;
-import util.DateTimeUtil;
 
 public enum AttendanceState {
 
@@ -17,43 +14,25 @@ public enum AttendanceState {
         this.description = description;
     }
 
-    public static AttendanceState findStateBy(final LocalTime localTime, final LocalDate localDate) {
-        DateTimeUtil.validateHoliDay(DateTimeUtil.getDateBy(localDate));
-
-        if (checkAbsenceDay(localTime)) {
-            return AttendanceState.ABSENCE;
-        }
-        AttendanceTime.validateCampusTime(localTime);
-
-        return getDayOfWeekString(localTime, localDate);
-    }
-
-    private static boolean checkAbsenceDay(LocalTime localTime) {
-        return localTime.equals(LocalTime.of(0, 0));
-    }
-
-    private static AttendanceState getDayOfWeekString(LocalTime localTime, LocalDate localDate) {
-        if (localDate.getDayOfWeek() == DayOfWeek.MONDAY) {
-            return determineAttendanceStatus(localTime, AttendanceTime.MON_TIME);
+    public static String findStateBy(final LocalTime localTime, final String dayOfWeek) {
+        if (dayOfWeek.equals("월요일")) {
+            if (localTime.isAfter(AttendanceTime.MON_TIME.getLocalTimes().get(1))) {
+                return ABSENCE.description;
+            } else if (localTime.isAfter(AttendanceTime.MON_TIME.getLocalTimes().get(0))) {
+                return LATENESS.description;
+            }
+            return ATTENDANCE.description;
         }
 
-        if (!(localDate.getDayOfWeek() == DayOfWeek.SATURDAY) && !(localDate.getDayOfWeek() == DayOfWeek.SUNDAY)) {
-            return determineAttendanceStatus(localTime, AttendanceTime.ELSE_TIME);
+        if (!dayOfWeek.equals("월") && !dayOfWeek.equals("공휴일")) {
+            if (localTime.isAfter(AttendanceTime.ELSE_TIME.getLocalTimes().get(1))) {
+                return ABSENCE.description;
+            } else if (localTime.isAfter(AttendanceTime.ELSE_TIME.getLocalTimes().get(0))) {
+                return LATENESS.description;
+            }
+            return ATTENDANCE.description;
         }
 
         return null;
-    }
-
-    private static AttendanceState determineAttendanceStatus(LocalTime localTime, AttendanceTime time) {
-        if (localTime.isAfter(time.getLocalTimes().get(1))) {
-            return ABSENCE;
-        } else if (localTime.isAfter(time.getLocalTimes().get(0))) {
-            return LATENESS;
-        }
-        return ATTENDANCE;
-    }
-
-    public String getDescription() {
-        return description;
     }
 }
