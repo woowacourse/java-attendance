@@ -8,15 +8,18 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
 import java.util.Set;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 
 @DisplayName("출석 기록 테스트")
 class AttendanceTimelineTest {
 
     @DisplayName("크루의 오늘까지 출석 기록을 생성할 수 있다.")
     @Test
-    void name() {
+    void createTimelineUntilNowTest() {
         Crew crew = new Crew("포비");
         Set<Attendance> attendances = Set.of(
                 new Attendance(crew, LocalDateTime.of(2024, 12, 2, 10, 1)),
@@ -45,5 +48,27 @@ class AttendanceTimelineTest {
                                 AttendanceType.ABSENCE
                         )
                 ));
+    }
+
+    @DisplayName("크루의 각 출석 유형에 따른 횟수를 계산할 수 있다.")
+    @ParameterizedTest
+    @CsvSource({
+            "OK, 1",
+            "LATE, 1",
+            "ABSENCE, 2"
+    })
+    void countAttendanceTypeTest(AttendanceType attendanceType, int expected) {
+        Crew crew = new Crew("포비");
+        Set<Attendance> attendances = Set.of(
+                new Attendance(crew, LocalDateTime.of(2024, 12, 2, 10, 1)),
+                new Attendance(crew, LocalDateTime.of(2024, 12, 3, 10, 6))
+        );
+
+        LocalDate now = LocalDate.of(2024, 12, 5);
+        final var attendanceTimeline = AttendanceTimeline.generateAttendanceTimelineUntilDate(attendances, now);
+
+        int count = attendanceTimeline.countByAttendanceType(attendanceType);
+
+        Assertions.assertThat(count).isEqualTo(expected);
     }
 }

@@ -3,6 +3,8 @@ package attendance.controller;
 import attendance.AttendancesFactory;
 import attendance.model.Attendance;
 import attendance.model.AttendanceStartTime;
+import attendance.model.AttendanceTimeline;
+import attendance.model.AttendanceTimeline.AttendanceLog;
 import attendance.model.AttendanceType;
 import attendance.model.Attendances;
 import attendance.model.Command;
@@ -13,6 +15,7 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Optional;
+import java.util.Set;
 
 public class AttendanceController {
 
@@ -33,6 +36,9 @@ public class AttendanceController {
             }
             if (command == Command.ATTENDANCE_UPDATE) {
                 doUpdateAttendance(now);
+            }
+            if (command == Command.ATTENDANCE_TIMELINE) {
+                doAttendanceTimeline(now);
             }
         } catch (RuntimeException e) {
             System.out.println("[ERROR] " + e.getMessage());
@@ -91,6 +97,43 @@ public class AttendanceController {
         return LocalDateTime.of(updateDate, toLocalTime(rawTimeForUpdate));
     }
 
+    private AttendanceType calculateAttendanceType(LocalDateTime dateTime) {
+        LocalTime startTime = AttendanceStartTime.findDayOfWeek(dateTime.getDayOfWeek());
+        return AttendanceType.judge(startTime, dateTime.toLocalTime());
+    }
+
+    private void doAttendanceTimeline(LocalDateTime now) {
+        String nickname = inputView.inputNickname();
+        attendances.validateExistNickname(nickname);
+
+        Crew crew = new Crew(nickname);
+        Set<Attendance> attendanceHistory = attendances.findAllByCrewAndMonth(crew, now.getMonth());
+        AttendanceTimeline attendanceTimeline = AttendanceTimeline.generateAttendanceTimelineUntilDate(
+                attendanceHistory, now.toLocalDate());
+        System.out.printf("이번달 %s의 출석 기록입니다.%n%n", nickname);
+        for(AttendanceLog attendanceLog: attendanceTimeline.attendanceLogs()) {
+            if(attendanceLog.time() == null) {
+                System.out.printf("%s --:-- (%s)%n",
+                        attendanceLog.date().format(DateTimeFormatter.ofPattern("MM월 dd일 E요일")),
+                        displayAttendanceType(attendanceLog.attendanceType()));
+                continue;
+            }
+            System.out.printf("%s %s (%s)%n",
+                    attendanceLog.date().format(DateTimeFormatter.ofPattern("MM월 dd일 E요일")),
+                    attendanceLog.time().format(DateTimeFormatter.ofPattern("HH:mm")),
+                    displayAttendanceType(attendanceLog.attendanceType()));
+        }
+
+        System.out.printf("%n출석: %d%n지각: %d%n결석: %d%n",
+                attendanceTimeline.countByAttendanceType(AttendanceType.OK),
+                attendanceTimeline.countByAttendanceType(AttendanceType.LATE),
+                attendanceTimeline.countByAttendanceType(AttendanceType.ABSENCE));
+    }
+
+    private LocalTime toLocalTime(String rawTime) {
+        return LocalTime.parse(rawTime, DateTimeFormatter.ofPattern("HH:mm"));
+    }
+
     private String displayAttendanceType(AttendanceType type) {
         if (type == AttendanceType.OK) {
             return "출석";
@@ -99,14 +142,5 @@ public class AttendanceController {
             return "지각";
         }
         return "결석";
-    }
-
-    private AttendanceType calculateAttendanceType(LocalDateTime dateTime) {
-        LocalTime startTime = AttendanceStartTime.findDayOfWeek(dateTime.getDayOfWeek());
-        return AttendanceType.judge(startTime, dateTime.toLocalTime());
-    }
-
-    private LocalTime toLocalTime(String rawTime) {
-        return LocalTime.parse(rawTime, DateTimeFormatter.ofPattern("HH:mm"));
     }
 }

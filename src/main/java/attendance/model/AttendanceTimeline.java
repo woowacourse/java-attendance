@@ -52,6 +52,12 @@ public record AttendanceTimeline(
         return isWeekend || Holiday.isHoliday(LocalDate.of(date.getYear(), date.getMonth(), date.getDayOfMonth()));
     }
 
+    public int countByAttendanceType(AttendanceType attendanceType) {
+        return Math.toIntExact(attendanceLogs.stream()
+                .filter(attendanceLog -> attendanceLog.attendanceType == attendanceType)
+                .count());
+    }
+
     public record AttendanceLog(
             LocalDate date,
             LocalTime time,
