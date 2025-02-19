@@ -17,11 +17,18 @@ public class AttendanceHistory {
         return Collections.unmodifiableSet(attendanceHistory);
     }
 
+    public AttendanceResult getAttendanceResult(AttendanceResult modifyAttendanceResult) {
+        return attendanceHistory.stream()
+                .filter(result -> result.equals(modifyAttendanceResult))
+                .findAny()
+                .orElseThrow(() -> new IllegalArgumentException("출석 기록이 존재하지 않습니다."));
+    }
+
     public void modifyAttendanceResult(AttendanceResult modifyAttendanceResult) {
         AttendanceResult attendanceResult = attendanceHistory.stream()
                 .filter(result -> result.equals(modifyAttendanceResult))
                 .findAny()
-                .orElseThrow(() -> new IllegalArgumentException("출석 기록이 존재하지 않습니다."));
+                .get();
         attendanceResult.modify(modifyAttendanceResult);
     }
 }

@@ -1,9 +1,5 @@
 package attendance.domain;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Set;
-
 public class Crew {
     private final String name;
     private final AttendanceHistory attendanceHistory;
@@ -17,11 +13,20 @@ public class Crew {
         attendanceHistory.addAttendanceResult(attendanceResult);
     }
 
+    public void modifyAttendanceResult(AttendanceResult attendanceResult) {
+        attendanceHistory.modifyAttendanceResult(attendanceResult);
+    }
+
+
     public String getName() {
         return name;
     }
 
     public AttendanceHistory getAttendanceHistory() {
          return attendanceHistory;
+    }
+
+    public AttendanceResult getAttendanceResult(AttendanceResult attendanceResult) {
+        return attendanceHistory.getAttendanceResult(attendanceResult);
     }
 }

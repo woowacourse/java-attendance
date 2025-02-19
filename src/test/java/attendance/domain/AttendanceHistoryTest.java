@@ -1,5 +1,6 @@
 package attendance.domain;
 
+import static attendance.domain.AttendanceType.ABSENCE;
 import static attendance.domain.AttendanceType.ATTENDANCE;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -42,17 +43,40 @@ public class AttendanceHistoryTest {
     }
 
     @Test
-    void modify_attendance_history() {
+    void modify_attendance_result() {
         //given
         AttendanceHistory attendanceHistory = new AttendanceHistory();
-        AttendanceResult attendanceResult = new AttendanceResult(
+        AttendanceResult beforeAttendanceResult = new AttendanceResult(
+                LocalDateTime.of(2024, 12, 26, 15, 00),
+                ABSENCE
+        );
+        attendanceHistory.addAttendanceResult(beforeAttendanceResult);
+        AttendanceResult afterAttendanceResult = new AttendanceResult(
                 LocalDateTime.of(2024, 12, 26, 10, 00),
                 ATTENDANCE
         );
 
         //when
+        attendanceHistory.modifyAttendanceResult(afterAttendanceResult);
+
         //then
-        assertThatThrownBy(() -> attendanceHistory.modifyAttendanceResult(attendanceResult))
+        assertThat(beforeAttendanceResult).isEqualTo(afterAttendanceResult);
+        assertThat(beforeAttendanceResult.getAttendanceTime()).isEqualTo(afterAttendanceResult.getAttendanceTime());
+        assertThat(beforeAttendanceResult.getAttendanceType()).isEqualTo(afterAttendanceResult.getAttendanceType());
+    }
+
+    @Test
+    void get_attendance_result_exception() {
+        //given
+        AttendanceHistory attendanceHistory = new AttendanceHistory();
+        AttendanceResult attendanceResult = new AttendanceResult(
+                LocalDateTime.of(2024, 12, 26, 15, 00),
+                ABSENCE
+        );
+
+        //when
+        //then
+        assertThatThrownBy(() -> attendanceHistory.getAttendanceResult(attendanceResult))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("출석 기록이 존재하지 않습니다.");
     }

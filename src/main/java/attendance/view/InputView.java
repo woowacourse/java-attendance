@@ -1,6 +1,5 @@
 package attendance.view;
 
-import java.time.DateTimeException;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
@@ -35,6 +34,20 @@ public class InputView {
         } catch (DateTimeParseException e) {
             throw new IllegalArgumentException("잚못된 시간 형식입니다.");
         }
+    }
+
+    public LocalDate inputModifyDate(LocalDate localDate) {
+        System.out.println("수정하려는 날짜(일)를 입력해 주세요.");
+        int endDate = localDate.lengthOfMonth();
+        String userInput = userInput();
+        if (!userInput.matches("\\d+")) {
+            throw new IllegalArgumentException("숫자가 아님");
+        }
+        int date = Integer.parseInt(userInput);
+        if (date < 1 || date > endDate) {
+            throw new IllegalArgumentException("잘못된 날짜입니다.");
+        }
+        return LocalDate.of(localDate.getYear(), localDate.getMonthValue(), date);
     }
 
     private static LocalTime parseStringToLocalTime(String userInput) {
