@@ -1,11 +1,13 @@
 package view;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 import domain.AttendanceStatus;
 import domain.Manage;
 import dto.AttendanceHistoryResult;
 import dto.AttendanceResult;
+import dto.CrewCloseToExpelledResult;
 import dto.Formatter;
 import dto.ModifiedResult;
 
@@ -26,8 +28,8 @@ public class OutputView {
         System.out.println(sb.toString());
     }
 
-    public static void printHistory(String nickname, AttendanceHistoryResult historyResult) {
-        System.out.printf("이번 달 %s의 출석 기록입니다.%n%n", nickname);
+    public static void printHistory(AttendanceHistoryResult historyResult) {
+        System.out.printf("이번 달 %s의 출석 기록입니다.%n%n", historyResult.nickname());
         historyResult.history().forEach(innerHistory -> {
                 StringBuilder sb = new StringBuilder();
                 sb.append(innerHistory.date().format(Formatter.DATE_FORMATTER));
@@ -51,5 +53,22 @@ public class OutputView {
         if (!historyResult.manage().equals(Manage.NONE)) {
             System.out.printf("%s 대상자입니다.%n%n", historyResult.manage().getDescription());
         }
+    }
+
+    public static void printCrewsCloseToExpelled(List<CrewCloseToExpelledResult> result) {
+        String format = "- %s: %s %d회, %s %d회 (%s)%n";
+
+        result = result.stream().sorted().toList();
+
+        result.forEach(crew ->
+            System.out.printf(format,
+                crew.nickname(),
+                AttendanceStatus.ABSENT.getDescription(),
+                crew.attendanceStatusStatistics().get(AttendanceStatus.ABSENT),
+                AttendanceStatus.LATE.getDescription(),
+                crew.attendanceStatusStatistics().get(AttendanceStatus.LATE),
+                crew.manage().getDescription()
+                )
+        );
     }
 }

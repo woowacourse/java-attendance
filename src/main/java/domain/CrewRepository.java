@@ -35,8 +35,12 @@ public class CrewRepository {
 
     public Crew get(String name) {
         return crews.stream()
-            .filter(crew -> crew.getName().equals(name))
+            .filter(crew -> crew.getNickname().equals(name))
             .findAny()
             .orElse(null); // TODO 예외처리?
+    }
+
+    public List<Crew> getAll() {
+        return crews;
     }
 }

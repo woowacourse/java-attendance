@@ -33,7 +33,7 @@ public class Crew {
         }
     }
 
-    public String getName() {
+    public String getNickname() {
         return nickname;
     }
 

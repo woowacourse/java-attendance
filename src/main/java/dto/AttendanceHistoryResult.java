@@ -11,17 +11,18 @@ import domain.History;
 import domain.Manage;
 
 public record AttendanceHistoryResult(
+    String nickname,
     List<InnerHistory> history,
     Map<AttendanceStatus, Integer> statusCounter,
     Manage manage
 ) {
-    public static AttendanceHistoryResult of(List<History> history, Map<AttendanceStatus,
+    public static AttendanceHistoryResult of(String nickname, List<History> history, Map<AttendanceStatus,
         Integer> statusCounter, Manage manage) {
         List<InnerHistory> innerHistory = new ArrayList<>();
         history.forEach(h -> {
             innerHistory.add(InnerHistory.of(h.date(), h.time(), h.status(), h.isChecked()));
         });
-        return new AttendanceHistoryResult(innerHistory, statusCounter, manage);
+        return new AttendanceHistoryResult(nickname, innerHistory, statusCounter, manage);
     }
 
     public record InnerHistory(

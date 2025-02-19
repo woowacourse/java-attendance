@@ -2,7 +2,9 @@ package controller;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import domain.AttendanceStatus;
 import domain.Crew;
@@ -13,6 +15,7 @@ import dto.AttendanceHistoryResult;
 import dto.AttendanceModifyRequest;
 import dto.AttendanceRequest;
 import dto.AttendanceResult;
+import dto.CrewCloseToExpelledResult;
 import dto.ModifiedResult;
 import util.DayUtil;
 import view.InputView;
@@ -57,12 +60,26 @@ public class AttendanceController {
                 Manage manage = Manage.of(crew.getAttendanceStatusStatistics(now));
 
                 OutputView.printHistory(
-                    crew.getName(),
                     AttendanceHistoryResult.of(
+                        crew.getNickname(),
                         history,
                         crew.getAttendanceStatusStatistics(now),
                         manage
-                ));
+                    ));
+            }
+            case "4" -> {
+                List<Crew> crews = crewRepository.getAll();
+                List<CrewCloseToExpelledResult> result = new ArrayList<>();
+                for (Crew crew : crews) {
+                    Map<AttendanceStatus, Integer> attendanceStatusStatistics = crew.getAttendanceStatusStatistics(
+                        DayUtil.now());
+                    result.add(new CrewCloseToExpelledResult(
+                        crew.getNickname(),
+                        attendanceStatusStatistics,
+                        Manage.of(attendanceStatusStatistics)
+                    ));
+                }
+                OutputView.printCrewsCloseToExpelled(result);
             }
         }
     }
