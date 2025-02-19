@@ -1,5 +1,6 @@
 package attendance.domain;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
@@ -102,6 +103,14 @@ public class AttendanceRepositoryTest {
         assertThatThrownBy(() -> attendanceRepository.update(name, newLocalDateTime))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("해당 날짜에 출석 기록이 없습니다.");
+    }
 
+    @DisplayName("크루 이름으로 제적 위험 여부 조회")
+    @Test
+    void test7() {
+        AttendanceRepository attendanceRepository = AttendanceRepositoryTestFixture.createAttendanceRepository();
+        WarningLevel warningLevel = attendanceRepository.queryWarningLevelByName("빙티", 13);
+
+        assertThat(warningLevel).isEqualTo(WarningLevel.COUNSELING);
     }
 }
