@@ -1,7 +1,5 @@
 package model;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 import converter.StringConverter;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -25,7 +23,7 @@ class AttendancesTest {
 
     @Test
     @DisplayName("닉네임과 등교 시간을 입력하면 출석할 수 있다.")
-    void test() {
+    void test1() {
         //given
         Crew crew = Crew.of("쿠키");
         LocalDateTime checkInTime = LocalDateTime.of(2024, 12, 13, 9, 35);
@@ -36,5 +34,20 @@ class AttendancesTest {
 
         //then
         Assertions.assertThat(attendances.contains(attendance)).isTrue();
+    }
+
+    @Test
+    @DisplayName("이미 출석한 경우에는 다시 출석할 수 없다.")
+    void test2() {
+        //given
+        Crew crew = Crew.of("쿠키");
+        LocalDateTime checkInTime = LocalDateTime.of(2024, 12, 13, 9, 35);
+        Attendance attendance = Attendance.of(crew, checkInTime);
+        attendances.checkIn(attendance);
+
+        //when & then
+        Assertions.assertThatThrownBy(() -> attendances.checkIn(attendance))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("이미 출석한 경우에는 다시 출석할 수 없습니다.");
     }
 }
