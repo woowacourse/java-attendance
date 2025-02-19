@@ -6,6 +6,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Map;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -78,5 +79,24 @@ public class AttendanceTest {
 
         assertThat(result)
                 .isTrue();
+    }
+
+    @DisplayName("출석, 지각, 결석 횟수 조회")
+    @Test
+    void test19() {
+        LocalDateTime localDateTime1 = LocalDateTime.of(2024, 12, 3, 9, 58);
+        LocalDateTime localDateTime2 = LocalDateTime.of(2024, 12, 4, 10, 2);
+        LocalDateTime localDateTime3 = LocalDateTime.of(2024, 12, 5, 10, 6);
+
+        Attendance attendance = new Attendance("빙티");
+        attendance.add(localDateTime1);
+        attendance.add(localDateTime2);
+        attendance.add(localDateTime3);
+
+        Map<AttendanceStatus, Integer> attendanceStatuses = attendance.countAttendanceStatus();
+
+        assertThat(attendanceStatuses.get(AttendanceStatus.PRESENT)).isEqualTo(2);
+        assertThat(attendanceStatuses.get(AttendanceStatus.LATENESS)).isEqualTo(1);
+        assertThat(attendanceStatuses.get(AttendanceStatus.ABSENCE)).isEqualTo(0);
     }
 }
