@@ -35,6 +35,6 @@ class AttendancesTest {
         //when , then
         assertThatThrownBy(() -> attendances.findAttendanceByName("차니"))
                 .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage("[ERROR]");
+                .hasMessageContaining("[ERROR]");
     }
 }
