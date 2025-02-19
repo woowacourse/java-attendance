@@ -1,5 +1,6 @@
 package attendance.domain;
 
+import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -26,7 +27,38 @@ public class Attendances {
 
             attendances.add(new Attendance(crew, localDateTime, status));
         }
+        fillAbsentDay(crews);
+    }
 
+    private void fillAbsentDay(Crews crews) {
+        for (Crew crew : crews.getCrews()) {
+            LocalDate firstDay = LocalDate.of(2025, 2, 1);
+            LocalDate today = LocalDate.now();
+
+            for (LocalDate day = firstDay; day.isBefore(today); day = day.plusDays(1)) {
+                if (isWorkDay(day) && !isExistingDay(crew, day)) {
+                    // 출근날인데 없네? -> 결석으로 추가
+                    LocalDate localDate = LocalDate.of(day.getYear(), day.getMonthValue(), day.getDayOfMonth());
+                    LocalTime localTime = LocalTime.of(0, 0);
+                    LocalDateTime localDateTime = LocalDateTime.of(localDate, localTime);
+                    attendances.add(new Attendance(crew, localDateTime, AttendanceType.ABSENT));
+                }
+            }
+        }
+    }
+
+    private boolean isExistingDay(Crew crew, LocalDate day) {
+        boolean flag = false;
+        for (Attendance attendance : attendances) {
+            if (attendance.isSameCrewDate(crew, day)) {
+                flag = true;
+            }
+        }
+        return flag;
+    }
+
+    private boolean isWorkDay(LocalDate today) {
+        return !today.getDayOfWeek().equals(DayOfWeek.SATURDAY) && !today.getDayOfWeek().equals(DayOfWeek.SUNDAY);
     }
 
     public void add(Attendance attendance) {
@@ -62,4 +94,12 @@ public class Attendances {
     public AttendanceType findOriginalType(final Crew crew, final LocalDate localDate) {
         return findMatchCrewDate(crew, localDate).getType();
     }
+
+    public List<Attendance> findCrewAttendances(Crew crew) {
+        return attendances.stream()
+                .filter(attendance -> attendance.isSameCrew(crew))
+                .toList();
+    }
+
+
 }
