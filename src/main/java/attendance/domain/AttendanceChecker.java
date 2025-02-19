@@ -47,11 +47,10 @@ public class AttendanceChecker {
         }
     }
 
-    public static void checkCampusDay(final int day) {
+    public static void validateCampusDay(final int day) {
         LocalDate localDate = LocalDate.of(2024, 12, day);
         DayOfWeek dayOfWeek = localDate.getDayOfWeek();
-
-        if (isHoliday(day) || isWeekend(dayOfWeek)) {
+        if (!isCampusDay(day)) {
             throw new IllegalArgumentException(
                     String.format("[ERROR] %d월 %d일 %s은 등교일이 아닙니다.", localDate.getMonthValue(), day,
                             dayOfWeek.getDisplayName(
@@ -59,11 +58,17 @@ public class AttendanceChecker {
         }
     }
 
+    public static boolean isCampusDay(final int day) {
+        LocalDate localDate = LocalDate.of(2024, 12, day);
+        DayOfWeek dayOfWeek = localDate.getDayOfWeek();
+        return !(isHoliday(day) || isWeekend(dayOfWeek));
+    }
+
     private static boolean isHoliday(final int day) {
         return day == 25;
     }
 
     private static boolean isWeekend(final DayOfWeek dayOfWeek) {
-        return  dayOfWeek == DayOfWeek.SATURDAY || dayOfWeek == DayOfWeek.SUNDAY;
+        return dayOfWeek == DayOfWeek.SATURDAY || dayOfWeek == DayOfWeek.SUNDAY;
     }
 }

@@ -38,7 +38,9 @@ public class Attendance {
         return timestamps.containsKey(localDate);
     }
 
-    public Map<AttendanceStatus, Integer> countAttendanceStatus() {
+    public Map<AttendanceStatus, Integer> countAttendanceStatus(final int today) {
+        updateTimestamp(today);
+
         Map<AttendanceStatus, Integer> attendanceStatuses = new EnumMap<>(AttendanceStatus.class);
 
         for (AttendanceStatus attendanceStatus : AttendanceStatus.values()) {
@@ -50,5 +52,18 @@ public class Attendance {
         }
 
         return attendanceStatuses;
+    }
+
+    private void updateTimestamp(int today) {
+        for(int day = 1 ; day < today ; day++){
+            LocalDate date = LocalDate.of(2024, 12, today);
+            if(!AttendanceChecker.isCampusDay(day)){
+                continue;
+            }
+
+            if (!timestamps.containsKey(date)){
+                timestamps.put(date, new HourMinute(-1, -1, AttendanceStatus.ABSENCE));
+            }
+        }
     }
 }

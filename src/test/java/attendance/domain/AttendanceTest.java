@@ -1,5 +1,8 @@
 package attendance.domain;
 
+import static attendance.domain.AttendanceStatus.ABSENCE;
+import static attendance.domain.AttendanceStatus.LATENESS;
+import static attendance.domain.AttendanceStatus.PRESENT;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -93,10 +96,10 @@ public class AttendanceTest {
         attendance.add(localDateTime2);
         attendance.add(localDateTime3);
 
-        Map<AttendanceStatus, Integer> attendanceStatuses = attendance.countAttendanceStatus();
+        Map<AttendanceStatus, Integer> attendanceStatuses = attendance.countAttendanceStatus(6);
 
-        assertThat(attendanceStatuses.get(AttendanceStatus.PRESENT)).isEqualTo(2);
-        assertThat(attendanceStatuses.get(AttendanceStatus.LATENESS)).isEqualTo(1);
-        assertThat(attendanceStatuses.get(AttendanceStatus.ABSENCE)).isEqualTo(0);
+        assertThat(attendanceStatuses.get(PRESENT)).isEqualTo(2);
+        assertThat(attendanceStatuses.get(LATENESS)).isEqualTo(1);
+        assertThat(attendanceStatuses.get(ABSENCE)).isEqualTo(1);
     }
 }

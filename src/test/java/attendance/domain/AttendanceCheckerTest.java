@@ -96,7 +96,7 @@ class AttendanceCheckerTest {
     @DisplayName("공휴일 출석 실패")
     @Test
     void test11() {
-        assertThatThrownBy(() -> AttendanceChecker.checkCampusDay(25))
+        assertThatThrownBy(() -> AttendanceChecker.isCampusDay(25))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("[ERROR] 12월 25일 수요일은 등교일이 아닙니다.");
     }
@@ -104,7 +104,7 @@ class AttendanceCheckerTest {
     @DisplayName("주말 출석 실패")
     @Test
     void test12() {
-        assertThatThrownBy(() -> AttendanceChecker.checkCampusDay(22))
+        assertThatThrownBy(() -> AttendanceChecker.isCampusDay(22))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("[ERROR] 12월 22일 일요일은 등교일이 아닙니다.");
     }
@@ -112,7 +112,7 @@ class AttendanceCheckerTest {
     @DisplayName("평일 출석 통과")
     @Test
     void test13() {
-        assertThatCode(() -> AttendanceChecker.checkCampusDay(24)).doesNotThrowAnyException();
+        assertThatCode(() -> AttendanceChecker.isCampusDay(24)).doesNotThrowAnyException();
     }
 
 }
