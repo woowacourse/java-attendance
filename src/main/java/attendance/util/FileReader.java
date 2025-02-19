@@ -21,7 +21,7 @@ public class FileReader {
         }
     }
 
-    private List<List<String>> convertResource(BufferedReader reader) throws IOException {
+    private List<List<String>> convertResource(final BufferedReader reader) throws IOException {
         List<List<String>> attendanceRecords = new ArrayList<>();
         validateFileContent(reader.readLine());
 
@@ -33,7 +33,7 @@ public class FileReader {
         return attendanceRecords;
     }
 
-    private void validateFileContent(String firstLine) {
+    private void validateFileContent(final String firstLine) {
         if (firstLine == null) {
             throw new IllegalStateException("File is empty"); //TODO constant: empty file content
         }
