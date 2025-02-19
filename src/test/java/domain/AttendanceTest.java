@@ -5,13 +5,20 @@ import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 class AttendanceTest {
 
     @Test
     @DisplayName("크루의 이름을 입력받아 해당 크루의 출석부인지 판단")
     void isSameNameTest() {
         String name = "조로";
-        Attendance attendance = Attendance.of(name, List.of());
+        
+        Attendance attendance = Attendance.of(
+                Crew.of(name),
+                CheckInTimes.of(List.of())
+        );
+
         assertThat(attendance.isSameName("조로")).isTrue();
     }
 

@@ -15,7 +15,7 @@ public class Crew {
     }
 
     private void validateEmptyName(String name) {
-        if(name == null || name.isBlank()){
+        if (name == null || name.isBlank()) {
             throw new IllegalArgumentException("[ERROR] 크루 이름은 NULL 또는 빈 값일 수 없습니다.");
         }
     }
@@ -24,5 +24,9 @@ public class Crew {
         if (name.length() < 2 || name.length() > 4) {
             throw new IllegalArgumentException("[ERROR] 크루 이름은 2글자 이상 4글자 이하여야 합니다.");
         }
+    }
+
+    public boolean isSameName(String name) {
+        return this.name.equals(name);
     }
 }
