@@ -7,21 +7,24 @@ public class Attendance {
 
     private final Crew crew;
     private final LocalDateTime checkInTime;
+    private final AttendanceType attendanceType;
 
-    private Attendance(Crew crew, LocalDateTime checkInTime) {
+    private Attendance(Crew crew, LocalDateTime checkInTime, AttendanceType attendanceType) {
         this.crew = crew;
         this.checkInTime = checkInTime;
+        this.attendanceType = attendanceType;
     }
 
     public static Attendance of(Crew crew, LocalDateTime checkInTime) {
         validateHolidayAndWeekend(checkInTime);
         validateOperationTime(checkInTime);
 
-        return new Attendance(crew, checkInTime);
+        return new Attendance(crew, checkInTime, AttendanceType.calculateType(checkInTime));
     }
 
-    public boolean isSameDateAndCrew(Attendance attendance){
-        return checkInTime.toLocalDate().equals(attendance.checkInTime.toLocalDate()) && attendance.crew.isEqualName(crew.getNickname());
+    public boolean isSameDateAndCrew(Attendance attendance) {
+        return checkInTime.toLocalDate().equals(attendance.checkInTime.toLocalDate()) && attendance.crew.isEqualName(
+                crew.getNickname());
     }
 
     private static void validateHolidayAndWeekend(LocalDateTime checkInTime) {
@@ -59,5 +62,9 @@ public class Attendance {
 
     public LocalDateTime getCheckInTime() {
         return checkInTime;
+    }
+
+    public AttendanceType getAttendanceType() {
+        return attendanceType;
     }
 }

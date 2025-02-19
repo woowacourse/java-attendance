@@ -51,7 +51,7 @@ public class AttendanceTest {
     void test4() {
         //given
         Crew crew = Crew.of("쿠키");
-        LocalDateTime checkInTime = LocalDateTime.of(2024, 12, 3, 9, 1);
+        LocalDateTime checkInTime = LocalDateTime.of(2024, 12, 3, 10, 30);
 
         //when
         Attendance attendance = Attendance.of(crew, checkInTime);
@@ -65,7 +65,7 @@ public class AttendanceTest {
     void test5() {
         //given
         Crew crew = Crew.of("쿠키");
-        LocalDateTime checkInTime = LocalDateTime.of(2024, 12, 3, 9, 31);
+        LocalDateTime checkInTime = LocalDateTime.of(2024, 12, 3, 10, 31);
 
         //when
         Attendance attendance = Attendance.of(crew, checkInTime);
