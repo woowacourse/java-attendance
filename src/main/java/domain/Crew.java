@@ -1,7 +1,10 @@
 package domain;
 
+import java.time.DayOfWeek;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 
@@ -23,6 +26,10 @@ public class Crew {
         Attendance attendance = new Attendance(localDateTime);
         attendanceInfo.add(attendance);
         return attendance;
+    }
+
+    public String getName() {
+        return name;
     }
 
     private Attendance getAlreadyExistAttendance(LocalDateTime localDateTime) {
@@ -61,4 +68,81 @@ public class Crew {
         return str;
     }
 
+    public String printAttendanceStateInfo(LocalDate lastDate) {
+        updateUntil(lastDate);
+        String str = "";
+        str += "출석: " + getAttendanceCount()+"회\n";
+        str += "지각: " + getLateCount()+"회\n";
+        str += "결석: " + getAbsentCount()+"회\n";
+        return str;
+    }
+
+    private int getAttendanceCount() {
+        int count = 0;
+        for (Attendance attendance : attendanceInfo) {
+            if(attendance.getState().equals("(출석)")) {
+                count++;
+            }
+        }
+        return count;
+    }
+
+    private int getLateCount() {
+        int count = 0;
+        for (Attendance attendance : attendanceInfo) {
+            if(attendance.getState().equals("(지각)")) {
+                count++;
+            }
+        }
+        return count;
+    }
+    private int getAbsentCount() {
+        int count = 0;
+        for (Attendance attendance : attendanceInfo) {
+            if(attendance.getState().equals("(결석)")) {
+                count++;
+            }
+        }
+        return count;
+    }
+
+    public void updateUntil(LocalDate lastDate) {
+        for(int i=1;i <= lastDate.getDayOfMonth();i++){
+            DayOfWeek todayDayOfWeek = LocalDate.of(2024, 12, i).getDayOfWeek();
+            if (todayDayOfWeek == DayOfWeek.SATURDAY || todayDayOfWeek == DayOfWeek.SUNDAY || i == 25) {
+                continue;
+            }
+            if(!containsDayOfMonth(i)){
+                attendanceInfo.add(new Attendance(LocalDateTime.of(2024,12,i,15,0)));
+            }
+        }
+    }
+
+    private boolean containsDayOfMonth(int i) {
+        for (Attendance attendance : attendanceInfo) {
+            if (attendance.getDayOfMonth() == i) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+
+    public String printWarningInfo(LocalDate lastDate) {
+        updateUntil(lastDate);
+        int lateCount = getLateCount();
+        int originalAbsentCount = getAbsentCount();
+        int absentCount = originalAbsentCount + (lateCount / 3);
+        String str = name + ": 결석 " + originalAbsentCount +"회, 지각 " + lateCount + "회 ";
+        if(absentCount > 5) { // 5회 초과, 3회 이상, 2회 이상
+            return str + "(제적)";
+        }
+        if(absentCount >= 3) {
+            return str + "(면담)";
+        }
+        if(absentCount >= 2) {
+            return str + "(경고)";
+        }
+        return str;
+    }
 }
