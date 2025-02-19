@@ -23,6 +23,15 @@ class AttendanceCalculatorByDayTest {
                 isEqualTo(AttendanceStatus.ABSENT);
     }
 
+    @Test
+    @DisplayName("정수형을 입력 받고, String 형 요일을 출력하는 메서드 테스트")
+    void test3() {
+        int friday = 5;
+        Assertions.assertThat(AttendanceCalculatorByDay.
+                        findDayByDayOfWeekValue(friday)).
+                isEqualTo("금요일");
+    }
+
 
 
 }
