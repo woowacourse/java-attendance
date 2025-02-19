@@ -1,15 +1,51 @@
 package attendance.domain;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.TextStyle;
+import java.util.List;
+import java.util.Locale;
 
 public class Attendance {
     private final Crew crew;
-    private final LocalDateTime presentTime;
-    private final AttendanceType attendanceType;
+    private LocalDateTime presentTime;
+    private AttendanceType attendanceType;
 
     public Attendance(Crew crew, LocalDateTime presentTime, AttendanceType attendanceType) {
         this.crew = crew;
         this.presentTime = presentTime;
         this.attendanceType = attendanceType;
+    }
+
+    public boolean isSameCrewDate(final Crew crew, final LocalDate localDate) {
+        return this.crew.equals(crew) && this.presentTime.toLocalDate().equals(localDate);
+    }
+
+    public List<String> getInfo() {
+        return List.of(
+                String.valueOf(presentTime.getMonthValue()),
+                String.valueOf(presentTime.getDayOfMonth()),
+                presentTime.getDayOfWeek().getDisplayName(TextStyle.NARROW, Locale.KOREAN),
+                presentTime.format(DateTimeFormatter.ofPattern("HH:mm")),
+                this.attendanceType.toString()
+        );
+    }
+
+
+    public void modifyLocalDateTime(LocalDateTime changedPresentTime) {
+        this.presentTime = changedPresentTime;
+    }
+
+    public String getTime() {
+        return presentTime.format(DateTimeFormatter.ofPattern("HH:mm"));
+    }
+
+    public String getType() {
+        return attendanceType.toString();
+    }
+
+    public void modifyAttendanceType(LocalDateTime localDateTime) {
+        attendanceType = AttendanceType.of(localDateTime);
     }
 }
