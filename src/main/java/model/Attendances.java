@@ -20,7 +20,18 @@ public class Attendances {
     }
 
     public void checkIn(Attendance attendance) {
+        validateExistAttendance(attendance);
+
         attendances.add(attendance);
+    }
+
+    private void validateExistAttendance(Attendance newAttendance) {
+        attendances.stream()
+                .filter(attendance -> attendance.isSameDateAndCrew(newAttendance))
+                .findAny()
+                .ifPresent(error -> {
+                    throw new IllegalArgumentException("이미 출석한 경우에는 다시 출석할 수 없습니다.");
+                });
     }
 
     public List<Attendance> getAttendances() {

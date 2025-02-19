@@ -41,7 +41,7 @@ class AttendancesTest {
     void test2() {
         //given
         Crew crew = Crew.of("쿠키");
-        LocalDateTime checkInTime = LocalDateTime.of(2024, 12, 13, 9, 35);
+        LocalDateTime checkInTime = LocalDateTime.of(2024, 12, 3, 9, 35);
         Attendance attendance = Attendance.of(crew, checkInTime);
         attendances.checkIn(attendance);
 

@@ -19,6 +19,10 @@ public class Attendance {
         return new Attendance(crew, checkInTime);
     }
 
+    public boolean isSameDateAndCrew(Attendance attendance){
+        return checkInTime.toLocalDate().equals(attendance.checkInTime.toLocalDate()) && attendance.crew.isEqualName(crew.getNickname());
+    }
+
     private static void validateHolidayAndWeekend(LocalDateTime checkInTime) {
         if (Holiday.isHolidayOrWeekend(checkInTime)) {
             throw new IllegalArgumentException("주말 및 공휴일에는 출석할 수 없습니다.");
