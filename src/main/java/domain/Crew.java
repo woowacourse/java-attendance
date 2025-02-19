@@ -32,6 +32,8 @@ public class Crew {
         return name;
     }
 
+
+
     private Attendance getAlreadyExistAttendance(LocalDateTime localDateTime) {
         Optional<Attendance> sameDateAttendance = attendanceInfo.stream().filter(attendance ->
                 attendance.isEqualDate(localDateTime)
@@ -77,6 +79,20 @@ public class Crew {
         return str;
     }
 
+    public int getAbsentCount() {
+        return getOriginalAbsentCount() + (getLateCount() / 3);
+    }
+
+    private int getOriginalAbsentCount() {
+        int count = 0;
+        for (Attendance attendance : attendanceInfo) {
+            if(attendance.getState().equals("(결석)")) {
+                count++;
+            }
+        }
+        return count;
+    }
+
     private int getAttendanceCount() {
         int count = 0;
         for (Attendance attendance : attendanceInfo) {
@@ -96,15 +112,8 @@ public class Crew {
         }
         return count;
     }
-    private int getAbsentCount() {
-        int count = 0;
-        for (Attendance attendance : attendanceInfo) {
-            if(attendance.getState().equals("(결석)")) {
-                count++;
-            }
-        }
-        return count;
-    }
+
+
 
     public void updateUntil(LocalDate lastDate) {
         for(int i=1;i <= lastDate.getDayOfMonth();i++){
@@ -131,18 +140,34 @@ public class Crew {
     public String printWarningInfo(LocalDate lastDate) {
         updateUntil(lastDate);
         int lateCount = getLateCount();
-        int originalAbsentCount = getAbsentCount();
+        int originalAbsentCount = getOriginalAbsentCount();
         int absentCount = originalAbsentCount + (lateCount / 3);
         String str = name + ": 결석 " + originalAbsentCount +"회, 지각 " + lateCount + "회 ";
+        String str1 = calculateWarningStatus(absentCount);
+        if(str1.isEmpty()) {
+            return str;
+        }
+        str += "("+str1+")";
+        return str;
+    }
+
+    private static String calculateWarningStatus(int absentCount) {
         if(absentCount > 5) { // 5회 초과, 3회 이상, 2회 이상
-            return str + "(제적)";
+            return"제적";
         }
         if(absentCount >= 3) {
-            return str + "(면담)";
+            return"면담";
         }
-        if(absentCount >= 2) {
-            return str + "(경고)";
+        if(absentCount >= 2){
+            return"경고";
         }
-        return str;
+        return "";
+    }
+
+    public String printWarningStatus(LocalDate lastDate) {
+        updateUntil(lastDate);
+        String warningStatus = calculateWarningStatus(getAbsentCount());
+        if(warningStatus.isEmpty()) return "";
+        return warningStatus + " 대상자입니다.";
     }
 }
