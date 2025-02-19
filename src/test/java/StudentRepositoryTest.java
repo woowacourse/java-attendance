@@ -40,7 +40,9 @@ public class StudentRepositoryTest {
         OutputStream out = new ByteArrayOutputStream();
         System.setOut(new PrintStream(out));*/
 
-        Assertions.assertFalse(studentRepository.notExistStudent("포비"));
+        assertThatThrownBy(() -> studentRepository.notExistStudent("포비"))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("[ERROR] 등록되지 않은 닉네임입니다.");
     }
 
     @Test
