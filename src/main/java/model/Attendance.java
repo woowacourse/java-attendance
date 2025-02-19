@@ -15,6 +15,7 @@ public class Attendance {
 
     public static Attendance of(Crew crew, LocalDateTime checkInTime) {
         validateHolidayAndWeekend(checkInTime);
+        validateOperationTime(checkInTime);
 
         return new Attendance(crew, checkInTime);
     }
@@ -26,6 +27,12 @@ public class Attendance {
     private static void validateHolidayAndWeekend(LocalDateTime checkInTime) {
         if (Holiday.isHolidayOrWeekend(checkInTime)) {
             throw new IllegalArgumentException("주말 및 공휴일에는 출석할 수 없습니다.");
+        }
+    }
+
+    private static void validateOperationTime(LocalDateTime checkInTime) {
+        if (AttendanceTime.isNotInOperation(checkInTime)) {
+            throw new IllegalArgumentException("지금은 운영 시간이 아닙니다.");
         }
     }
 

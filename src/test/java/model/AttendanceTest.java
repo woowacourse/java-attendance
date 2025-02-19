@@ -38,7 +38,7 @@ public class AttendanceTest {
     void test3() {
         //given
         Crew crew = Crew.of("쿠키");
-        LocalDateTime checkInTime = LocalDateTime.of(2024, 12, 3, 24, 0);
+        LocalDateTime checkInTime = LocalDateTime.of(2024, 12, 3, 23, 30);
 
         //when & then
         Assertions.assertThatThrownBy(() -> Attendance.of(crew, checkInTime))
