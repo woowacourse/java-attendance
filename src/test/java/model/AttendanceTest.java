@@ -26,7 +26,7 @@ public class AttendanceTest {
     void test() {
         //given
         Crew crew = Crew.of("쿠키");
-        LocalDateTime checkInTime = LocalDateTime.of(2024, 12, 14, 9, 35);
+        LocalDateTime checkInTime = LocalDateTime.of(2024, 12, 13, 9, 35);
         Attendance attendance = Attendance.of(crew, checkInTime);
 
         //when
@@ -34,5 +34,19 @@ public class AttendanceTest {
 
         //then
         Assertions.assertThat(attendances.contains(attendance)).isTrue();
+    }
+
+    @Test
+    @DisplayName("주말 및 공휴일에는 출석할 수 없다.")
+    void test2() {
+        //given
+        Crew crew = Crew.of("쿠키");
+        LocalDateTime checkInTime = LocalDateTime.of(2024, 12, 14, 9, 35);
+        Attendance attendance = Attendance.of(crew, checkInTime);
+
+        //when & then
+        Assertions.assertThatThrownBy(() -> attendances.checkIn(attendance))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("주말 및 공휴일에는 출석할 수 없습니다.");
     }
 }
