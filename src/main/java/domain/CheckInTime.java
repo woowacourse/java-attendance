@@ -2,10 +2,9 @@ package domain;
 
 import java.time.DayOfWeek;
 import java.time.LocalDateTime;
-import java.time.temporal.ChronoUnit;
 
 public class CheckInTime {
-    private final LocalDateTime checkInTime;
+    private LocalDateTime checkInTime;
 
     private CheckInTime(LocalDateTime checkInTime) {
         validateWorkingDay(checkInTime);
@@ -27,12 +26,34 @@ public class CheckInTime {
 
     public AttendanceStatus getAttendanceStatus() {
         int minute = WorkingTime.getMinute(checkInTime);
-        if(minute <= 5){
+        if (minute <= 5) {
             return AttendanceStatus.PRESENCE;
         }
-        if(minute <= 30) {
+        if (minute <= 30) {
             return AttendanceStatus.LATE;
         }
         return AttendanceStatus.ABSENCE;
+    }
+
+    public boolean isSameDate(CheckInTime otherTime) {
+        return checkInTime.toLocalDate()
+                .isEqual(
+                        otherTime.checkInTime.toLocalDate()
+                );
+    }
+
+    public boolean isBeforeDate(LocalDateTime otherTime) {
+        return checkInTime.toLocalDate()
+                .isBefore(
+                        otherTime.toLocalDate()
+                );
+    }
+
+    public void modify(CheckInTime otherTime) {
+        checkInTime = otherTime.checkInTime;
+    }
+
+    public boolean isNotModifiable(LocalDateTime time) {
+        return checkInTime.isAfter(time);
     }
 }

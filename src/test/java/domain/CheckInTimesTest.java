@@ -39,7 +39,7 @@ class CheckInTimesTest {
     @DisplayName("출근 시간 추가")
     void addCheckInTimeTest() {
         CheckInTimes checkInTimes = createCheckInTimes();
-        CheckInTime now = CheckInTime.of(LocalDateTime.of(2024, 12, 4, 10, 0));
+        CheckInTime now = CheckInTime.of(LocalDateTime.of(2024, 12, 12, 10, 0));
 
         checkInTimes.add(now);
 
@@ -74,7 +74,7 @@ class CheckInTimesTest {
     void getAttendanceLogTest() {
         CheckInTimes checkInTimes = createCheckInTimes();
 
-        CheckInTime now = CheckInTime.of(LocalDateTime.of(2024, 12, 14, 10, 20));
+        LocalDateTime now = LocalDateTime.of(2024, 12, 14, 10, 20);
 
         List<CheckInTime> log = checkInTimes.getAttendanceLog(now);
 
