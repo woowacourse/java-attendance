@@ -8,8 +8,10 @@ import java.util.List;
 public class StudentRepository {
     List<Student> students = new ArrayList<>();
 
-    public boolean notExistStudent(String studentName) {
-        return false;
+    public void notExistStudent(String studentName) {
+        if (findStudentByName(studentName) == null){
+            throw new IllegalArgumentException("[ERROR] 등록되지 않은 닉네임입니다.");
+        }
     }
 
     public Student findStudentByName(String name) {
