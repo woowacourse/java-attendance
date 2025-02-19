@@ -11,30 +11,26 @@ public class CheckInTimes {
         this.checkInTimes = checkInTimes;
     }
 
-    public static CheckInTimes of (List<CheckInTime> checkInTimes) {
+    public static CheckInTimes of(List<CheckInTime> checkInTimes) {
         return new CheckInTimes(checkInTimes);
     }
 
     public int countPresence() {
-        return Math.toIntExact(
-                checkInTimes.stream()
-                .filter(time -> time.getAttendanceStatus() == PRESENCE)
-                .count()
-        );
+        return countAttendenceStatus(PRESENCE);
     }
 
     public int countLate() {
-        return Math.toIntExact(
-                checkInTimes.stream()
-                        .filter(time -> time.getAttendanceStatus() == LATE)
-                        .count()
-        );
+        return countAttendenceStatus(LATE);
     }
 
     public int countAbsence() {
+        return countAttendenceStatus(ABSENCE);
+    }
+
+    private int countAttendenceStatus(AttendanceStatus status) {
         return Math.toIntExact(
                 checkInTimes.stream()
-                        .filter(time -> time.getAttendanceStatus() == ABSENCE)
+                        .filter(time -> time.getAttendanceStatus() == status)
                         .count()
         );
     }
