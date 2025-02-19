@@ -1,5 +1,7 @@
 package domain;
 
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+
 import java.time.LocalDateTime;
 import java.util.stream.Stream;
 import org.assertj.core.api.Assertions;
@@ -24,6 +26,23 @@ class WeekTest {
         return Stream.of(
                 Arguments.arguments(LocalDateTime.of(2024, 12, 16, 11, 11), Week.MONDAY),
                 Arguments.arguments(LocalDateTime.of(2024, 12, 17, 11, 11), Week.TUESDAY)
+        );
+    }
+
+    @ParameterizedTest
+    @MethodSource("methodSources2")
+    void 주말이_들어오면_예외_처리(LocalDateTime localDateTime) {
+        // given
+        // when
+        // then
+        assertThatThrownBy(() -> Week.findByAttendanceTime(localDateTime))
+                .isInstanceOf(IllegalArgumentException.class);
+    }
+
+    private static Stream<Arguments> methodSources2() {
+        return Stream.of(
+                Arguments.arguments(LocalDateTime.of(2024, 12, 14, 11, 11)),
+                Arguments.arguments(LocalDateTime.of(2024, 12, 15, 11, 11))
         );
     }
 

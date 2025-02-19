@@ -29,6 +29,6 @@ public enum Week {
         return Arrays.stream(Week.values())
                 .filter(week -> week.name().equals(day.name()))
                 .findFirst()
-                .orElseThrow(IllegalArgumentException::new);
+                .orElseThrow(() -> new IllegalArgumentException("평일만 출근이 가능합니다."));
     }
 }
