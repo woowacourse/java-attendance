@@ -1,3 +1,5 @@
+import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
+
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.Map;
@@ -19,5 +21,20 @@ public class ModifyAttendanceTest {
         crew2.addDailyAttendance(Map.of(LocalDate.of(2024, 12, 3), LocalTime.of(10, 7)));
         attendanceBook.addNewCrew(crew2);
         crew2.modifyDailyAttendance(Map.of(LocalDate.of(2024, 12, 3), LocalTime.of(10, 20)));
+    }
+
+    @Test
+    @DisplayName("등록되지 않는 닉네임의 경우 예외를 출력한다.")
+    void 등록되지_않는_닉네임의_경우_예외를_출력한다() {
+        AttendanceBook attendanceBook = new AttendanceBook();
+
+        Crew crew1 = Crew.createByName("쿠키");
+        crew1.addDailyAttendance(Map.of(LocalDate.of(2024, 12, 3), LocalTime.of(10, 6)));
+        attendanceBook.addNewCrew(crew1);
+
+        assertThatThrownBy(
+                () -> attendanceBook.modifyAttendance("없음", Map.of(LocalDate.of(2024, 12, 3), LocalTime.of(10, 20))))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("[ERROR] 등록되지 않은 닉네임입니다.");
     }
 }
