@@ -2,6 +2,7 @@ import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -80,5 +81,13 @@ public class CrewAttendanceRecords {
         if (!hasCrew(crew)) {
             throw new IllegalArgumentException("[ERROR] 등록되지 않은 닉네임입니다.");
         }
+    }
+
+    public AttendanceRecord checkIn(Crew crew, LocalTime time, DateGenerator dateGenerator) {
+        validateCrewPresence(crew);
+        AttendanceRecords attendanceRecords = crewAttendanceRecords.get(crew);
+        AttendanceRecord attendanceRecord = new AttendanceRecord(time, dateGenerator);
+        attendanceRecords.addRecord(attendanceRecord);
+        return attendanceRecord;
     }
 }

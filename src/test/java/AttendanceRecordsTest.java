@@ -2,6 +2,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -11,8 +12,8 @@ class AttendanceRecordsTest {
     @DisplayName("출석 기록이 없는 날짜가 결석으로 기록되었는지 확인한다.")
     void fillAbsencesTest() {
         CrewAttendanceRecords crewAttendanceRecords = new CrewAttendanceRecords("/attendances.csv", () -> LocalDate.of(2024, 12, 13));
-        Crew crew = new Crew("짱수");
-        boolean hasRecord = crewAttendanceRecords.hasRecord(crew, LocalDate.of(2024, 12, 13));
+        Crew crew = new Crew("쿠키");
+        boolean hasRecord = crewAttendanceRecords.hasRecord(crew, LocalDate.of(2024, 12, 12));
 
         assertThat(hasRecord).isTrue();
     }
@@ -88,5 +89,33 @@ class AttendanceRecordsTest {
         attendanceRecords.addRecord(new AttendanceRecord("2024-12-12 11:00"));
 
         assertThat(attendanceRecords.getAbsentCount()).isEqualTo(3);
+    }
+
+    @Test
+    @DisplayName("출결 기록을 날짜순으로 정렬해서 반환한다.")
+    void getSortedRecordsTest() {
+        AttendanceRecords actualRecords = new AttendanceRecords();
+        actualRecords.addRecord(new AttendanceRecord("2024-12-12 11:00"));
+        actualRecords.addRecord(new AttendanceRecord("2024-12-11 11:00"));
+        actualRecords.addRecord(new AttendanceRecord("2024-12-10 10:08"));
+        actualRecords.addRecord(new AttendanceRecord("2024-12-09 14:00"));
+        actualRecords.addRecord(new AttendanceRecord("2024-12-06 10:01"));
+        actualRecords.addRecord(new AttendanceRecord("2024-12-05 10:06"));
+        actualRecords.addRecord(new AttendanceRecord("2024-12-04 10:02"));
+        actualRecords.addRecord(new AttendanceRecord("2024-12-03 09:58"));
+        actualRecords.addRecord(new AttendanceRecord("2024-12-02 13:00"));
+
+        List<AttendanceRecord> expectedRecords = List.of(
+                new AttendanceRecord("2024-12-02 13:00"),
+                new AttendanceRecord("2024-12-03 09:58"),
+                new AttendanceRecord("2024-12-04 10:02"),
+                new AttendanceRecord("2024-12-05 10:06"),
+                new AttendanceRecord("2024-12-06 10:01"),
+                new AttendanceRecord("2024-12-09 14:00"),
+                new AttendanceRecord("2024-12-10 10:08"),
+                new AttendanceRecord("2024-12-11 11:00"),
+                new AttendanceRecord("2024-12-12 11:00"));
+
+        assertThat(actualRecords.getSortedRecords()).isEqualTo(expectedRecords);
     }
 }

@@ -1,5 +1,6 @@
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 public class AttendanceRecords {
@@ -21,7 +22,7 @@ public class AttendanceRecords {
     }
 
     public void fillAbsences(DateGenerator dateGenerator) {
-        for (LocalDate date = dateGenerator.generate(); date.isAfter(FILL_START_DATE); date = date.minusDays(1)) {
+        for (LocalDate date = dateGenerator.generate().minusDays(1); date.isAfter(FILL_START_DATE); date = date.minusDays(1)) {
             if (!hasRecordOfDate(date) && !Day.checkHoliday(date)) {
                 this.attendanceRecords.add(new AttendanceRecord(date));
             }
@@ -47,5 +48,9 @@ public class AttendanceRecords {
 
     public int getAbsentCount() {
         return (int) attendanceRecords.stream().filter(AttendanceRecord::isAbsent).count();
+    }
+
+    public List<AttendanceRecord> getSortedRecords() {
+        return attendanceRecords.stream().sorted(Comparator.comparing(AttendanceRecord::getDate)).toList();
     }
 }
