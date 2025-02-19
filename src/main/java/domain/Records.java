@@ -9,7 +9,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-
 public class Records {
 
     private Map<LocalDate, TimeAndStatus> records;
@@ -18,7 +17,7 @@ public class Records {
         this.records = initializeRecords(localDateTimes);
     }
 
-    public TimeAndStatus findByDate(LocalDate localDate){
+    public TimeAndStatus findByDate(LocalDate localDate) {
         return records.get(localDate);
     }
 
@@ -42,14 +41,14 @@ public class Records {
         return timeAndStatus;
     }
 
-    public boolean isSameDate(LocalDateTime localDateTime){
+    public boolean isSameDate(LocalDateTime localDateTime) {
         LocalDate localDate = localDateTime.toLocalDate();
         return records.containsKey(localDate);
     }
 
     private Map<LocalDate, TimeAndStatus> initializeRecords(List<LocalDateTime> localDateTimes) {
         Map<LocalDate, TimeAndStatus> result = new HashMap<>();
-        for(LocalDateTime localDateTime : localDateTimes) {
+        for (LocalDateTime localDateTime : localDateTimes) {
             LocalDate localDate = localDateTime.toLocalDate();
             TimeAndStatus timeStatus = createTimeAndStatus(localDateTime);
             result.put(localDate, timeStatus);

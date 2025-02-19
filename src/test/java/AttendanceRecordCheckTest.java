@@ -1,7 +1,10 @@
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 import domain.AttendanceManager;
+import domain.AttendanceStatistics;
 import domain.Records;
+import domain.StatisticsResult;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -40,7 +43,9 @@ public class AttendanceRecordCheckTest {
     void 출석_통계_계산() {
         String name = "빙티";
         Records records = attendanceManager.findByName(name);
-        StatisticsResult statisticsResult = AttendanceStatistics.countStatus(records);
+
+        LocalDate nowDate = LocalDate.of(2024, 12, 7);
+        StatisticsResult statisticsResult = AttendanceStatistics.countStatus(nowDate, records);
         int attendanceCount = statisticsResult.getAttendanceCount();
         int latenessCount = statisticsResult.getLatenessCount();
         int absenceCount = statisticsResult.getAbsenceCount();
