@@ -35,6 +35,7 @@ public class Attendances {
     }
 
     public void update(Attendance attendance) {
+        attendances.remove(attendance);
         attendances.add(attendance);
     }
 

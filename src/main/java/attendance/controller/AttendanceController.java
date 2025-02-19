@@ -35,8 +35,7 @@ public class AttendanceController {
     public void run() {
         Command command;
         do {
-            LocalDateTime now = LocalDateTime.of(2024,12,13, 10,1);
-//            LocalDateTime now = LocalDateTime.now();
+            LocalDateTime now = LocalDateTime.now();
             command = Command.from(inputView.inputCommand(now.toLocalDate()));
             try {
                 if (command == Command.ATTENDANCE) {
@@ -81,15 +80,15 @@ public class AttendanceController {
             throw new IllegalArgumentException("미래 날짜의 출석을 수정할 수 없습니다.");
         }
         Crew crew = new Crew(nickname);
-        Optional<Attendance> optionalAttendance = attendances.findByCrewAndDate(crew, updateDateTime.toLocalDate());
+        Optional<Attendance> beforeAttendance = findAttendanceByCrewAndDate(crew, updateDateTime);
         attendances.update(new Attendance(crew, updateDateTime));
-
-        if (optionalAttendance.isPresent()) {
-            Attendance attendance = optionalAttendance.get();
+        Optional<Attendance> afterAttendance = findAttendanceByCrewAndDate(crew, updateDateTime);
+        if (beforeAttendance.isPresent()) {
+            Attendance attendance = beforeAttendance.get();
             System.out.printf("%s (%s) -> %s (%s) 수정 완료!%n",
                     attendance.getDateTime().format(DateTimeFormatter.ofPattern("MM월 dd일 E요일 HH:mm")),
                     displayAttendanceType(calculateAttendanceType(attendance.getDateTime())),
-                    updateDateTime.format(DateTimeFormatter.ofPattern("HH:mm")),
+                    afterAttendance.get().getDateTime().format(DateTimeFormatter.ofPattern("HH:mm")),
                     displayAttendanceType(calculateAttendanceType(updateDateTime))
             );
             return;
@@ -100,6 +99,10 @@ public class AttendanceController {
                 updateDateTime.format(DateTimeFormatter.ofPattern("HH:mm")),
                 displayAttendanceType(calculateAttendanceType(updateDateTime))
         );
+    }
+
+    private Optional<Attendance> findAttendanceByCrewAndDate(Crew crew, LocalDateTime updateDateTime) {
+        return attendances.findByCrewAndDate(crew, updateDateTime.toLocalDate());
     }
 
     private LocalDateTime getUpdateDateTime(LocalDateTime now) {
