@@ -2,25 +2,25 @@ package attendance.domain;
 
 import java.time.LocalDateTime;
 
-public class AttendanceHistory {
+public class AttendanceResult {
     private LocalDateTime attendanceTime;
-    private String attendanceResult;
+    private String attendanceType;
 
-    public AttendanceHistory(LocalDateTime attendanceTime, String attendanceResult) {
+    public AttendanceResult(LocalDateTime attendanceTime, String attendanceType) {
         this.attendanceTime = attendanceTime;
-        this.attendanceResult = attendanceResult;
+        this.attendanceType = attendanceType;
     }
 
     public LocalDateTime getAttendanceTime() {
         return attendanceTime;
     }
 
-    public String getAttendanceResult() {
-        return attendanceResult;
+    public String getAttendanceType() {
+        return attendanceType;
     }
 
     public void modify(LocalDateTime modifyLocalDateTime, String modifyAttendanceResult) {
         attendanceTime = modifyLocalDateTime;
-        attendanceResult = modifyAttendanceResult;
+        attendanceType = modifyAttendanceResult;
     }
 }

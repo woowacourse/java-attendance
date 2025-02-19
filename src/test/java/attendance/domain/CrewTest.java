@@ -17,11 +17,11 @@ public class CrewTest {
         Crew crew = new Crew("젠슨");
         LocalDateTime localDateTime = LocalDateTime.of(2024, 12, 26, 10, 00);
         String attendanceResult = "출석";
-        AttendanceHistory attendanceHistory = new AttendanceHistory(localDateTime, attendanceResult);
+        AttendanceResult attendanceHistory = new AttendanceResult(localDateTime, attendanceResult);
         crew.addAttendanceHistory(attendanceHistory);
-        assertThat(crew.getAttendanceHistories()).isNotNull();
-        assertThat(crew.getAttendanceHistories().size()).isEqualTo(1);
-        assertThat(crew.getAttendanceHistories()).contains(attendanceHistory);
+        assertThat(crew.getAttendanceHistory()).isNotNull();
+        assertThat(crew.getAttendanceHistory().size()).isEqualTo(1);
+        assertThat(crew.getAttendanceHistory()).contains(attendanceHistory);
     }
 }
 

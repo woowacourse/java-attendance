@@ -6,7 +6,7 @@ import java.util.List;
 
 public class Crew {
     private final String name;
-    private final List<AttendanceHistory> attendanceHistories = new ArrayList<>();
+    private final List<AttendanceResult> attendanceHistory = new ArrayList<>();
 
     public Crew(String name) {
         this.name =  name;
@@ -16,11 +16,11 @@ public class Crew {
         return name;
     }
 
-    public void addAttendanceHistory(AttendanceHistory attendanceHistory) {
-        attendanceHistories.add(attendanceHistory);
+    public void addAttendanceHistory(AttendanceResult attendanceResult) {
+        attendanceHistory.add(attendanceResult);
     }
 
-    public List<AttendanceHistory> getAttendanceHistories() {
-        return Collections.unmodifiableList(attendanceHistories);
+    public List<AttendanceResult> getAttendanceHistory() {
+        return Collections.unmodifiableList(attendanceHistory);
     }
 }
