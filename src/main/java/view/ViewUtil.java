@@ -4,27 +4,24 @@ import java.time.DayOfWeek;
 
 public class ViewUtil {
     public static String getDayOfWeekToMessage(DayOfWeek dayOfWeek) {
-        if(dayOfWeek == DayOfWeek.MONDAY) {
+        if (dayOfWeek == DayOfWeek.MONDAY) {
             return "월요일";
         }
-        if(dayOfWeek == DayOfWeek.TUESDAY) {
+        if (dayOfWeek == DayOfWeek.TUESDAY) {
             return "화요일";
         }
-        if(dayOfWeek == DayOfWeek.WEDNESDAY) {
+        if (dayOfWeek == DayOfWeek.WEDNESDAY) {
             return "수요일";
         }
-        if(dayOfWeek == DayOfWeek.THURSDAY) {
+        if (dayOfWeek == DayOfWeek.THURSDAY) {
             return "목요일";
         }
-        if(dayOfWeek == DayOfWeek.FRIDAY) {
+        if (dayOfWeek == DayOfWeek.FRIDAY) {
             return "금요일";
         }
-        if(dayOfWeek == DayOfWeek.SATURDAY) {
+        if (dayOfWeek == DayOfWeek.SATURDAY) {
             return "토요일";
         }
-        if(dayOfWeek == DayOfWeek.SUNDAY) {
-            return "일요일";
-        }
-
+        return "일요일";
     }
 }

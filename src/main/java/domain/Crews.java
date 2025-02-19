@@ -17,6 +17,13 @@ public class Crews {
         crews.add(new Crew(name));
     }
 
+    public void initAttendStatus(final String name, final LocalDateTime target) {
+        if (!hasCrewName(name)) {
+            addCrew(name);
+        }
+        addAttendStatus(name, target);
+    }
+
     public void addAttendStatus(final String name, final LocalDateTime target) {
         Crew crew = findCrewByName(name);
         crew.addAttendStatus(target);
@@ -32,12 +39,21 @@ public class Crews {
         return crew.getAttendanceTime(date);
     }
 
+    public boolean hasCrewName(final String name) {
+        for (Crew crew : crews) {
+            if (crew.isNameMatch(name)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     private Crew findCrewByName(final String name) {
         for (Crew crew : crews) {
             if (crew.isNameMatch(name)) {
                 return crew;
             }
         }
-        throw new IllegalArgumentException();
+        return null;
     }
 }

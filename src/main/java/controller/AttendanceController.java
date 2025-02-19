@@ -1,5 +1,6 @@
 package controller;
 
+import domain.Crews;
 import view.InputView;
 import view.OutputView;
 
@@ -18,8 +19,13 @@ public class AttendanceController {
 
     public void start() {
         String menu = inputView.inputMenu();
-
+        initCrews();
     }
+
+    public void initCrews() {
+        Crews crews = inputView.getFile();
+    }
+
     public void selectMenu(String menu) {
         if(menu.equals("1")) {
 
