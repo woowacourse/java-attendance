@@ -12,6 +12,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import util.AttendancesFileHandler;
+import util.RepeatExecutor;
 import view.InputView;
 import view.OutputView;
 
@@ -19,10 +20,12 @@ public class AttendanceController {
 
     private final InputView inputView;
     private final OutputView outputView;
+    private final RepeatExecutor repeatExecutor;
 
     public AttendanceController(final InputView inputView, final OutputView outputView) {
         this.inputView = inputView;
         this.outputView = outputView;
+        this.repeatExecutor = new RepeatExecutor(outputView);
     }
 
     public void run() throws IOException {
@@ -47,9 +50,8 @@ public class AttendanceController {
         }
     }
 
-
     private void checkAttendance(Attendance attendance, LocalDate nowDate) {
-        String nickName = inputView.readNickname();
+        String nickName = getNickName(attendance);
         LocalTime arrivalTime = inputView.readArrivalTime();
         attendance.attend(nickName, LocalDateTime.of(nowDate, arrivalTime));
 
@@ -57,6 +59,14 @@ public class AttendanceController {
         AttendanceStatus attendanceStatus = attendance.getAttendanceStatus(nickName, nowDate);
 
         outputView.printCheckAttendanceMessage(attendanceDateTime, attendanceStatus);
+    }
+
+    private String getNickName(Attendance attendance) {
+        return repeatExecutor.repeatUntilSuccess(() -> {
+            String nickName = inputView.readNickname();
+            attendance.validateNickName(nickName);
+            return nickName;
+        });
     }
 
     private void editAttendance(Attendance attendance) {

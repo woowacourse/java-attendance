@@ -119,4 +119,10 @@ public class Attendance {
                 .findAny()
                 .orElseThrow(() -> new IllegalArgumentException("[ERROR] 출석하지 않은 날짜입니다."));
     }
+
+    public void validateNickName(String nickName) {
+        if (!this.attendance.containsKey(nickName)) {
+            throw new IllegalArgumentException("[ERROR] 존재하지 않는 닉네임입니다.");
+        }
+    }
 }
