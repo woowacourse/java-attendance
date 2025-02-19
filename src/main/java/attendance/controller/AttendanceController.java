@@ -35,7 +35,7 @@ public class AttendanceController {
         LocalDate now = LocalDate.of(2024, 12, 17);
         Crews crews = crewsService.init(AttendancesFileReader.read(), now);
 
-        printAttendanceByCrew(crews, now);
+        printWarningCrews(crews);
     }
 
     private void confirmAttendance(Crews crews, LocalDate now) {
@@ -58,5 +58,9 @@ public class AttendanceController {
             outputView.printWarning(warning);
         }
 
+    }
+
+    private void printWarningCrews(Crews crews) {
+        outputView.printWarningCrews(crews.collectWarningCrews());
     }
 }

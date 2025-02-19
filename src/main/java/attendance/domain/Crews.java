@@ -1,5 +1,6 @@
 package attendance.domain;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Crews {
@@ -20,5 +21,17 @@ public class Crews {
 
     public int size() {
         return crews.size();
+    }
+
+    public List<Crew> collectWarningCrews() {
+        List<Crew> collectedCrews = new ArrayList<>();
+        for (Crew crew : crews) {
+            if (!crew.checkWarning().equals(Warning.NONE)) {
+                collectedCrews.add(crew);
+            }
+        }
+        return collectedCrews.stream()
+                .sorted(Crew::compareTo)
+                .toList();
     }
 }

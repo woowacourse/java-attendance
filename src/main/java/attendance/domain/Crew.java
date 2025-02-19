@@ -5,7 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class Crew {
+public class Crew implements Comparable<Crew> {
 
     private String nickname;
     private List<Attendance> attendances;
@@ -52,8 +52,37 @@ public class Crew {
     }
 
     public Warning checkWarning() {
-        int absenceCount = statusCount.getOrDefault(AttendanceStatus.ABSENCE, 0) + statusCount.getOrDefault(AttendanceStatus.LATE_ABSENCE, 0);
-        absenceCount += statusCount.getOrDefault(AttendanceStatus.LATE, 0) / 3;
-        return Warning.check(absenceCount);
+        return Warning.check(calculateTotalAbsenceCount());
+    }
+
+    @Override
+    public int compareTo(Crew o) {
+        int targetAbsenceCount = o.calculateTotalAbsenceCount();
+        int targetLateCount = o.statusCount
+                .getOrDefault(AttendanceStatus.LATE, 0) % 3;
+
+        int absenceCount = calculateTotalAbsenceCount();
+        int lateCount = statusCount.getOrDefault(AttendanceStatus.LATE, 0) % 3;
+
+        if (targetAbsenceCount > absenceCount) {
+            return 1;
+        }
+        if (targetAbsenceCount < absenceCount) {
+            return -1;
+        }
+
+        if (targetLateCount > lateCount) {
+            return 1;
+        }
+        if (targetLateCount < lateCount) {
+            return -1;
+        }
+        return nickname.compareTo(o.getNickname());
+    }
+
+    private int calculateTotalAbsenceCount() {
+        return statusCount.getOrDefault(AttendanceStatus.ABSENCE, 0)
+                + statusCount.getOrDefault(AttendanceStatus.LATE_ABSENCE, 0)
+                + statusCount.getOrDefault(AttendanceStatus.LATE, 0) / 3;
     }
 }
