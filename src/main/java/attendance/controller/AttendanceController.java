@@ -46,7 +46,6 @@ public class AttendanceController {
 
         if (functionValue == 3) {
             attendanceHistoryByName();
-
         }
     }
 
@@ -90,8 +89,7 @@ public class AttendanceController {
         int month = LocalDate.now().getMonthValue();
         Time modifyDateTime = createTime(LocalDate.of(year, month, modifyDay), modifyTime);
 
-        Attendance attendance = attendanceRepository.findAttendanceByNameAndDateTime(crewName,
-                modifyDay);
+        Attendance attendance = attendanceRepository.findAttendanceByNameAndLocalDate(crewName, year, month, modifyDay);
 
         Time previousDateTime = attendance.getAttendanceTime();
         String previousAttendanceStatus = attendance.getAttendanceStatus();
