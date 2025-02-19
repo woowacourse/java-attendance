@@ -13,6 +13,7 @@ public enum WarningLevel {
 
     public static WarningLevel calculateLevel(final Map<AttendanceStatus, Integer> attendanceStatuses) {
         int absenceCount = attendanceStatuses.get(AttendanceStatus.ABSENCE);
+        absenceCount += convertLateness(attendanceStatuses.get(AttendanceStatus.LATENESS));
         if(absenceCount >= 6) {
             return WarningLevel.REMOVE;
         }
@@ -23,6 +24,10 @@ public enum WarningLevel {
             return WarningLevel.WARNING;
         }
         return WarningLevel.NONE;
+    }
+
+    private static int convertLateness(int latenessCount) {
+        return latenessCount / 3;
     }
 
     public String getLevel() {
