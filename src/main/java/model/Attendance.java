@@ -28,8 +28,11 @@ public class Attendance {
                 crew.getNickname());
     }
 
-    public void modify(LocalTime modifiedCheckInTime) {
-        checkInTime = LocalDateTime.of(checkInTime.toLocalDate(), modifiedCheckInTime);
+    public void modify(LocalTime modifiedTime) {
+        LocalDateTime modifiedCheckInTime = LocalDateTime.of(checkInTime.toLocalDate(), modifiedTime);
+        validateOperationTime(modifiedCheckInTime);
+
+        checkInTime = modifiedCheckInTime;
         attendanceType = AttendanceType.calculateType(checkInTime);
     }
 
