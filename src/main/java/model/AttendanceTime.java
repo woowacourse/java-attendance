@@ -7,11 +7,11 @@ import java.util.Arrays;
 
 public enum AttendanceTime {
 
-    MONDAY(DayOfWeek.MONDAY, LocalTime.of(8, 0), LocalTime.of(23, 0), LocalTime.of(13, 0)), TUESDAY(DayOfWeek.TUESDAY,
-            LocalTime.of(8, 0), LocalTime.of(23, 0), LocalTime.of(10, 0)), WEDNESDAY(DayOfWeek.WEDNESDAY,
-            LocalTime.of(8, 0), LocalTime.of(23, 0), LocalTime.of(10, 0)), THURSDAY(DayOfWeek.THURSDAY,
-            LocalTime.of(8, 0), LocalTime.of(23, 0), LocalTime.of(10, 0)), FRIDAY(DayOfWeek.FRIDAY, LocalTime.of(8, 0),
-            LocalTime.of(23, 0), LocalTime.of(10, 0)),
+    MONDAY(DayOfWeek.MONDAY, LocalTime.of(8, 0), LocalTime.of(23, 0), LocalTime.of(13, 0)),
+    TUESDAY(DayOfWeek.TUESDAY, LocalTime.of(8, 0), LocalTime.of(23, 0), LocalTime.of(10, 0)),
+    WEDNESDAY(DayOfWeek.WEDNESDAY, LocalTime.of(8, 0), LocalTime.of(23, 0), LocalTime.of(10, 0)),
+    THURSDAY(DayOfWeek.THURSDAY, LocalTime.of(8, 0), LocalTime.of(23, 0), LocalTime.of(10, 0)),
+    FRIDAY(DayOfWeek.FRIDAY, LocalTime.of(8, 0), LocalTime.of(23, 0), LocalTime.of(10, 0)),
     ;
 
     private final DayOfWeek dayOfWeek;
@@ -32,7 +32,6 @@ public enum AttendanceTime {
         return localDateTime.toLocalTime().isBefore(attendanceTime.operationStartTime) || localDateTime.toLocalTime()
                 .isAfter(attendanceTime.operationEndTime);
     }
-
 
     // 5 < 체크인 타임 <= 30
     public static boolean isLate(LocalDateTime localDateTime, int beLateMinute, int absenceMinute) {
