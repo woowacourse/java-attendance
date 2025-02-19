@@ -1,15 +1,19 @@
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-
 import org.junit.jupiter.api.Test;
+
+import java.time.LocalDateTime;
+import java.util.List;
+
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 public class CrewsTest {
 
     @Test
-    void 닉네임을_이용해_출석기록을_확인한다() {
-        AttendancesFileParser attendancesFileParser = new AttendancesFileParser();
-        Crews crews = attendancesFileParser.init();
-        Crew crew = crews.findByName("쿠키");
-        assertThat(crew.getAttendances().size()).isEqualTo(1);
+    void 닉네임을_이용해_크루를_검색한다() {
+        List<Crew> crewsList = List.of(new Crew("쿠키",
+                List.of(new Attendance(LocalDateTime.of(2024, 12, 16, 9, 59)))));
+        Crews crews = new Crews(crewsList);
+        assertThat(crews.findByName("쿠키")).extracting("nickname")
+                .isEqualTo("쿠키");
     }
 }
 
