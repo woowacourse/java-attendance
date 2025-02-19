@@ -4,9 +4,14 @@ public class AttendanceDateTime {
     private final AttendanceDate attendanceDate;
     private final AttendanceTime attendanceTime;
 
-    public AttendanceDateTime(AttendanceDate attendanceDate, AttendanceTime attendanceTime) {
+    private AttendanceDateTime(AttendanceDate attendanceDate, AttendanceTime attendanceTime) {
         this.attendanceDate = attendanceDate;
         this.attendanceTime = attendanceTime;
+    }
+
+    public static AttendanceDateTime of(int day, int hour, int minute) {
+        return new AttendanceDateTime(new AttendanceDate(day),
+                new AttendanceTime(hour, minute));
     }
 
     public AttendanceType getAttendanceType() {
