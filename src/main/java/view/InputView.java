@@ -1,6 +1,7 @@
 package view;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.format.TextStyle;
 import java.util.Locale;
 import java.util.Scanner;
@@ -32,6 +33,11 @@ public class InputView {
 
     public String readTime() {
         System.out.println("등교 시간을 입력해 주세요.");
-        return scanner.nextLine();
+        LocalDateTime nowTime = LocalDateTime.now();
+        String year=String.valueOf(nowTime.getYear());
+        String month=String.format("%02d", nowTime.getMonthValue());
+        String date=String.valueOf(nowTime.getDayOfMonth());
+
+        return year+"-"+month+"-"+date+" "+scanner.nextLine();
     }
 }

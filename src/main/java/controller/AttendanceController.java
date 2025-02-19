@@ -1,8 +1,11 @@
 package controller;
 
 import domain.AttendanceFileReader;
-import java.util.List;
+import domain.Crews;
+import domain.StringParser;
 import view.InputView;
+
+import java.util.List;
 
 public class AttendanceController {
 
@@ -14,11 +17,14 @@ public class AttendanceController {
 
     public void run() {
         List<String> students = AttendanceFileReader.readFile("src/main/resources/attendances.csv");
+        Crews crews = new Crews(StringParser.parse(students));
+
         String command = inputView.readCommand();
         if (command.equals("1")) {
             String nickname = inputView.readNickname();
             String time = inputView.readTime();
-
+            System.out.println(crews.ifFindNameAddTime(nickname, time));
         }
     }
+
 }

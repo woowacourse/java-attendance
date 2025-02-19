@@ -17,13 +17,17 @@ public class Crews {
                 .orElse(null);
     }
 
-    public void ifFindNameAddTime(final String nickname, final String time) {
+    public String ifFindNameAddTime(final String nickname, final String time) {
         Crew crew = findCrew(nickname);
+
         if (crew != null) {
-            crew.attend(time);
-            return;
+            crew.addAttendTime(time);
+            return crew.attend(time);
         }
-        crews.add(new Crew(nickname, time));
+        Crew crew1 = new Crew(nickname, time);
+        crews.add(crew1);
+        return crew1.attend(time);
+
     }
 
     public List<Crew> getCrews() {
