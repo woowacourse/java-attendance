@@ -1,5 +1,8 @@
 package attendance.domain;
 
+import static attendance.domain.AttendanceType.ABSENT;
+import static attendance.domain.AttendanceType.ATTENDANCE;
+import static attendance.domain.AttendanceType.LATE;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -16,69 +19,69 @@ public class AttendanceManagerTest {
     class CheckAttendanceResult {
         @Test
         void checkAttendanceResult7() {
-            String result = AttendanceManager.checkAttendanceResult(DayOfWeek.TUESDAY, LocalTime.of(8, 12));
-            assertThat(result).isEqualTo("출석");
+            AttendanceType result = AttendanceManager.checkAttendanceType(DayOfWeek.TUESDAY, LocalTime.of(8, 12));
+            assertThat(result).isEqualTo(ATTENDANCE);
         }
 
         @Test
         void checkAttendanceResult8() {
-            String result = AttendanceManager.checkAttendanceResult(DayOfWeek.TUESDAY, LocalTime.of(10, 5));
-            assertThat(result).isEqualTo("출석");
+            AttendanceType result = AttendanceManager.checkAttendanceType(DayOfWeek.TUESDAY, LocalTime.of(10, 5));
+            assertThat(result).isEqualTo(ATTENDANCE);
         }
 
         @Test
         void checkAttendanceResult9() {
-            String result = AttendanceManager.checkAttendanceResult(DayOfWeek.TUESDAY, LocalTime.of(10, 6));
-            assertThat(result).isEqualTo("지각");
+            AttendanceType result = AttendanceManager.checkAttendanceType(DayOfWeek.TUESDAY, LocalTime.of(10, 6));
+            assertThat(result).isEqualTo(LATE);
         }
 
         @Test
         void checkAttendanceResult10() {
-            String result = AttendanceManager.checkAttendanceResult(DayOfWeek.TUESDAY, LocalTime.of(10, 30));
-            assertThat(result).isEqualTo("지각");
+            AttendanceType result = AttendanceManager.checkAttendanceType(DayOfWeek.TUESDAY, LocalTime.of(10, 30));
+            assertThat(result).isEqualTo(LATE);
         }
 
 
         @Test
         void checkAttendanceResult11() {
-            String result = AttendanceManager.checkAttendanceResult(DayOfWeek.TUESDAY, LocalTime.of(10, 31));
-            assertThat(result).isEqualTo("결석");
+            AttendanceType result = AttendanceManager.checkAttendanceType(DayOfWeek.TUESDAY, LocalTime.of(10, 31));
+            assertThat(result).isEqualTo(ABSENT);
         }
 
         @Test
         void checkAttendanceResult12() {
-            String result = AttendanceManager.checkAttendanceResult(DayOfWeek.TUESDAY, LocalTime.of(10, 31));
-            assertThat(result).isEqualTo("결석");
+            AttendanceType result = AttendanceManager.checkAttendanceType(DayOfWeek.TUESDAY, LocalTime.of(10, 31));
+            assertThat(result).isEqualTo(ABSENT);
         }
 
         @Test
         void checkAttendanceResult13() {
-            String result = AttendanceManager.checkAttendanceResult(DayOfWeek.MONDAY, LocalTime.of(12, 30));
-            assertThat(result).isEqualTo("출석");
+            AttendanceType result = AttendanceManager.checkAttendanceType(DayOfWeek.MONDAY, LocalTime.of(12, 30));
+            assertThat(result).isEqualTo(ATTENDANCE);
         }
 
         @Test
         void checkAttendanceResult133() {
-            String result = AttendanceManager.checkAttendanceResult(DayOfWeek.MONDAY, LocalTime.of(13, 5));
-            assertThat(result).isEqualTo("출석");
+            AttendanceType result = AttendanceManager.checkAttendanceType(DayOfWeek.MONDAY, LocalTime.of(13, 5));
+            assertThat(result).isEqualTo(ATTENDANCE);
         }
 
         @Test
         void checkAttendanceResult14() {
-            String result = AttendanceManager.checkAttendanceResult(DayOfWeek.MONDAY, LocalTime.of(13, 6));
-            assertThat(result).isEqualTo("지각");
+            AttendanceType result = AttendanceManager.checkAttendanceType(DayOfWeek.MONDAY, LocalTime.of(13, 6));
+            assertThat(result).isEqualTo(LATE);
         }
 
         @Test
         void checkAttendanceResult144() {
-            String result = AttendanceManager.checkAttendanceResult(DayOfWeek.MONDAY, LocalTime.of(13, 30));
-            assertThat(result).isEqualTo("지각");
+            AttendanceType result = AttendanceManager.checkAttendanceType(DayOfWeek.MONDAY, LocalTime.of(13, 30));
+            assertThat(result).isEqualTo(LATE);
         }
 
         @Test
         void checkAttendanceResult15() {
-            String result = AttendanceManager.checkAttendanceResult(DayOfWeek.MONDAY, LocalTime.of(13, 31));
-            assertThat(result).isEqualTo("결석");
+            AttendanceType result = AttendanceManager.checkAttendanceType(DayOfWeek.MONDAY, LocalTime.of(13, 31));
+            assertThat(result).isEqualTo(ABSENT);
         }
     }
 

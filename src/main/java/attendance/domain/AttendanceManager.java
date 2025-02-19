@@ -1,29 +1,33 @@
 package attendance.domain;
 
+import static attendance.domain.AttendanceType.ABSENT;
+import static attendance.domain.AttendanceType.ATTENDANCE;
+import static attendance.domain.AttendanceType.LATE;
+
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalTime;
 
 public class AttendanceManager {
-    public static String checkAttendanceResult(DayOfWeek dayOfWeek, LocalTime localTime) {
+    public static AttendanceType checkAttendanceType(DayOfWeek dayOfWeek, LocalTime localTime) {
         if (dayOfWeek == DayOfWeek.MONDAY) {
             if (localTime.isBefore(LocalTime.of(13, 6))) {
-                return "출석";
+                return ATTENDANCE;
             }
 
             if (localTime.isBefore(LocalTime.of(13, 31))) {
-                return "지각";
+                return LATE;
             }
-            return "결석";
+            return ABSENT;
         }
         if (localTime.isBefore(LocalTime.of(10, 6))) {
-            return "출석";
+            return ATTENDANCE;
         }
 
         if (localTime.isBefore(LocalTime.of(10, 31))) {
-            return "지각";
+            return LATE;
         }
-        return "결석";
+        return ABSENT;
     }
 
     public static void checkHoliday(LocalDate localDate) {
