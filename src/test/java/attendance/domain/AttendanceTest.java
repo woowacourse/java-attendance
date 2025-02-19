@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -121,5 +122,21 @@ public class AttendanceTest {
         assertThatThrownBy(() -> attendance.add(localDateTime))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("[ERROR] 출석 기록이 존재합니다. 출석 수정 기능을 이용하세요.");
+    }
+
+    @DisplayName("출석 정보 수정 시 기존 시간, 분 반환")
+    @Test
+    void test16() {
+        LocalDateTime localDateTime = LocalDateTime.of(2024, 12, 23, 13, 3);
+        Attendance attendance = new Attendance("빙봉");
+        attendance.add(localDateTime);
+
+        LocalDate localDate = LocalDate.of(2024, 12, 23);
+        HourMinute hourMinute = new HourMinute(13, 1);
+
+        HourMinute prevHourMinute = attendance.modify(localDate, hourMinute);
+
+        assertThat(prevHourMinute.hour()).isEqualTo(localDateTime.getHour());
+        assertThat(prevHourMinute.minute()).isEqualTo(localDateTime.getMinute());
     }
 }
