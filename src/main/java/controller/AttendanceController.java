@@ -20,6 +20,9 @@ public class AttendanceController {
         try {
             while (true) {
                 Function function = InputView.readOption();
+                if (function == Function.QUIT) {
+                    break;
+                }
                 runFunction(function);
             }
         } catch (RuntimeException exception) {
@@ -40,7 +43,6 @@ public class AttendanceController {
 
         }
         if (function == Function.CHECK_WARNING_CREW) {
-
         }
     }
 
