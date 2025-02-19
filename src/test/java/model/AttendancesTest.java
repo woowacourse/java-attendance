@@ -50,4 +50,23 @@ class AttendancesTest {
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("이미 출석한 경우에는 다시 출석할 수 없습니다.");
     }
+
+    @Test
+    @DisplayName("출석 시간을 수정한다.")
+    void test3() {
+        //given
+        Crew crew = Crew.of("쿠키");
+        LocalDateTime checkInTime = LocalDateTime.of(2024, 12, 3, 10, 31);
+        Attendance attendance = Attendance.of(crew, checkInTime);
+        attendances.checkIn(attendance);
+
+        LocalDateTime modifiedCheckInTime = LocalDateTime.of(2024, 12, 3, 10, 0);
+
+        //when
+        attendances.modify(crew, modifiedCheckInTime);
+
+        //then
+        Assertions.assertThat(attendances.getAttendances()).doesNotContain(attendance);
+        Assertions.assertThat(attendances.getAttendances()).doesNotContain(Attendance.of(crew, modifiedCheckInTime));
+    }
 }
