@@ -1,6 +1,7 @@
 package model;
 
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -72,5 +73,22 @@ public class AttendanceTest {
 
         //then
         Assertions.assertThat(attendance.getAttendanceType()).isEqualTo(AttendanceType.ABSENCE);
+    }
+
+    @Test
+    @DisplayName("출석 시간을 수정한다.")
+    void test() {
+        //given
+        Crew crew = Crew.of("쿠키");
+        LocalDateTime checkInTime = LocalDateTime.of(2024, 12, 3, 10, 31);
+        Attendance attendance = Attendance.of(crew, checkInTime);
+
+        LocalTime modifiedTime = LocalTime.of(10, 0);
+
+        //when
+        attendance.modify(modifiedTime);
+
+        //then
+        Assertions.assertThat(attendance.getCheckInTime()).isEqualTo(LocalDateTime.of(2024, 12, 3, 10, 0));
     }
 }
