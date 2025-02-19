@@ -4,6 +4,7 @@ import attendance.model.Attendance;
 import attendance.model.AttendanceDetail;
 import attendance.model.AttendanceWarning;
 import attendance.model.Crew;
+import attendance.model.Crews;
 import java.time.format.DateTimeFormatter;
 
 public class OutputView {
@@ -49,5 +50,26 @@ public class OutputView {
             dateTime = attendanceDetail.getLocalDateTime().format(absenceFormatter);
         }
         return String.format("%s (%s)", dateTime, attendanceDetail.getAttandence().name());
+    }
+
+    public void printWarningCrews(Crews crews) {
+        CustomStringBuilder stringBuilder = new CustomStringBuilder();
+
+        stringBuilder.appendLine("제적 위험자 조회 결과");
+
+        for (Crew crew : crews.getCrews()) {
+            long absenceCount = crew.getAttendanceHistory().getTotalAbsenceCount();
+            long lateCount = crew.getAttendanceHistory().getTotalLateCount();
+
+            AttendanceWarning warning = AttendanceWarning.from(crew.getAttendanceHistory().getAbsenceCount());
+
+            if (warning.equals(AttendanceWarning.해당없음)) {
+                continue;
+            }
+            stringBuilder.appendLine(
+                    String.format("- %s: 결석 %d회, 지각: %d회 (%s)", crew.getName(), absenceCount, lateCount,
+                            warning.name()));
+        }
+        stringBuilder.print();
     }
 }

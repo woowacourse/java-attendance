@@ -58,6 +58,9 @@ public class Controller {
             String crewName = inputView.inputCrewName();
             outputView.printAttendanceHistory(crews.findCrew(new Crew(crewName)).get());
         }
+        if (s.equals(("4"))) {
+            outputView.printWarningCrews(crews);
+        }
         if (s.equals("Q")) {
             System.exit(1);
         }
