@@ -1,0 +1,29 @@
+package domain;
+
+import java.time.LocalDateTime;
+import java.util.Arrays;
+
+enum AttendanceStatus {
+    ATTENDANCE("출석", 0),
+    LATE("지각", 5),
+    ABSENCE("결석", 30);
+
+    String name;
+    int boundary;
+
+    AttendanceStatus(final String name, final int boundary) {
+        this.name = name;
+        this.boundary = boundary;
+    }
+
+    public static AttendanceStatus of(final LocalDateTime dateTime, final int boundaryHour, final int boundaryMinute) {
+        final LocalDateTime timeBoundary = dateTime
+                .withHour(boundaryHour)
+                .withMinute(boundaryMinute);
+        return Arrays.stream(values())
+                .sorted((o1, o2) -> o2.boundary - o1.boundary)
+                .filter(status -> dateTime.isAfter(timeBoundary.plusMinutes(status.boundary)))
+                .findFirst()
+                .orElse(ATTENDANCE);
+    }
+}
