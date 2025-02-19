@@ -77,7 +77,7 @@ public class AttendanceTest {
 
     @Test
     @DisplayName("출석 시간을 수정한다.")
-    void test() {
+    void test6() {
         //given
         Crew crew = Crew.of("쿠키");
         LocalDateTime checkInTime = LocalDateTime.of(2024, 12, 3, 10, 31);
@@ -90,5 +90,21 @@ public class AttendanceTest {
 
         //then
         Assertions.assertThat(attendance.getCheckInTime()).isEqualTo(LocalDateTime.of(2024, 12, 3, 10, 0));
+    }
+
+    @Test
+    @DisplayName("수정할 출석 시간이 운영시간 내여야 한다.")
+    void test7() {
+        //given
+        Crew crew = Crew.of("쿠키");
+        LocalDateTime checkInTime = LocalDateTime.of(2024, 12, 3, 10, 31);
+        Attendance attendance = Attendance.of(crew, checkInTime);
+
+        LocalTime modifiedTime = LocalTime.of(23, 5);
+
+        //when & then
+        Assertions.assertThatThrownBy(() -> attendance.modify(modifiedTime))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("지금은 운영 시간이 아닙니다.");
     }
 }
