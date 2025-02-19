@@ -2,6 +2,7 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 import domain.AttendanceManager;
 import domain.AttendanceStatistics;
+import domain.Penalty;
 import domain.Records;
 import domain.StatisticsResult;
 import java.time.LocalDate;
@@ -53,5 +54,20 @@ public class AttendanceRecordCheckTest {
         assertThat(attendanceCount).isEqualTo(2);
         assertThat(latenessCount).isEqualTo(1);
         assertThat(absenceCount).isEqualTo(2);
+    }
+
+    @DisplayName("경고 및 면담 기준을 정확하게 계산한다.")
+    @Test
+    void 경고_및_면담_기준_계산() {
+        String name = "빙티";
+        Records records = attendanceManager.findByName(name);
+
+        LocalDate nowDate = LocalDate.of(2024, 12, 7);
+        StatisticsResult statisticsResult = AttendanceStatistics.countStatus(nowDate, records);
+
+        int latenessCount = statisticsResult.getLatenessCount();
+        int absenceCount = statisticsResult.getAbsenceCount();
+
+        assertThat(Penalty.WARNING).isEqualTo(Penalty.check(absenceCount,latenessCount));
     }
 }
