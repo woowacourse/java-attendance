@@ -2,12 +2,16 @@ package controller;
 
 import domain.Attendance;
 import domain.AttendanceStatus;
+import domain.AttendanceTime;
+import domain.ExpelStatus;
 import domain.MenuOption;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
 import util.AttendancesFileHandler;
 import view.InputView;
 import view.OutputView;
@@ -53,9 +57,22 @@ public class AttendanceController {
             AttendanceStatus newAttendanceStatus = attendance.getAttendanceStatus(nickName, editDate);
 
             outputView.printEditAttendanceMessage(oldAttendanceDateTime, oldAttendanceStatus, newAttendanceDateTime, newAttendanceStatus);
-        }
+        } else if (option.equals(MenuOption.CREW_ATTENDANCE_CHECK.getCommand())) {
+            // 3. 크루별 출석 기록 확인
+            String nickName = inputView.readNickname();
+            outputView.printCrewAttendanceHeader(nickName);
+
+            List<AttendanceTime> crewAttendances = attendance.getAttendanceTimes(nickName);
+
+            for (AttendanceTime crewAttendance : crewAttendances) {
+                outputView.printCheckAttendanceMessage(crewAttendance.getAttendanceDateTime(),
+                        crewAttendance.getAttendanceStatus());
+            }
+
+            Map<AttendanceStatus, Integer> attendStatuses = attendance.countAttendanceStatus(nickName);
+            outputView.printCrewStatuses(attendStatuses);
+        } 
 
 
-        String nickName = inputView.readEditNickname();
     }
 }

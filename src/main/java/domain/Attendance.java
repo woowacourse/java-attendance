@@ -5,6 +5,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -26,6 +27,10 @@ public class Attendance {
 
         LocalDate startDate = LocalDate.of(2024, 12, 1);
         LocalDate endDate = nowDate;
+        if (endDate.isAfter(LocalDate.of(2024, 12, 31))) {
+            endDate = LocalDate.of(2025, 1, 1);
+        }
+
         for (String name : attendance.keySet() ) {
             Set<LocalDate> attendanceDates = this.attendance.get(name).stream()
                     .map(attendanceTime -> attendanceTime.getAttendanceDateTime().toLocalDate())
@@ -42,7 +47,9 @@ public class Attendance {
     }
 
     public List<AttendanceTime> getAttendanceTimes(String name) {
-        return this.attendance.getOrDefault(name, new ArrayList<>());
+        List<AttendanceTime> crewAttendances = this.attendance.getOrDefault(name, new ArrayList<>());
+        crewAttendances.sort(Comparator.comparing(AttendanceTime::getAttendanceDateTime));
+        return crewAttendances;
     }
 
     public void attend(String crewName, LocalDateTime attendanceTime) {
@@ -112,6 +119,4 @@ public class Attendance {
                 .findAny()
                 .orElseThrow(() -> new IllegalArgumentException("[ERROR] 출석하지 않은 날짜입니다."));
     }
-
-
 }
