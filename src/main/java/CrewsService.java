@@ -1,3 +1,4 @@
+import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -21,8 +22,11 @@ public class CrewsService {
     private List<Attendance> initAttendances(LocalDate now, Map.Entry<String, List<LocalDateTime>> crewAttendances, LocalDate firstDay, List<LocalDateTime> dateTimes) {
         List<Attendance> attendances = new ArrayList<>();
         for (LocalDate day = firstDay; day.isBefore(now); day = day.plusDays(1L)) {
-            List<LocalDateTime> attendance = crewAttendances.getValue();
-            attendances.add(createAttendanceByDate(dateTimes, day));
+            List<DayOfWeek> weekends = List.of(DayOfWeek.SATURDAY, DayOfWeek.SUNDAY);
+            if (!weekends.contains(day.getDayOfWeek()) && day.getDayOfMonth() != 25) {
+                List<LocalDateTime> attendance = crewAttendances.getValue();
+                attendances.add(createAttendanceByDate(dateTimes, day));
+            }
         }
         return attendances;
     }
