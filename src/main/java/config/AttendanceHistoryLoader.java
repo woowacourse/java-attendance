@@ -24,7 +24,7 @@ public class AttendanceHistoryLoader {
         DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm");
 
-        try (BufferedReader reader = new BufferedReader(new FileReader("src/main/resources/attendance2.csv"))) {
+        try (BufferedReader reader = new BufferedReader(new FileReader("src/main/resources/attendances.csv"))) {
             reader.readLine();
             String line;
 
