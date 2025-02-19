@@ -10,15 +10,9 @@ public class Crew {
 
     public Crew(String crewName) {
         this.crewName = crewName;
+        this.safeCount = 0;
         this.lateCount = 0;
         this.absentCount = 0;
-    }
-
-    // TODO count late, absent
-    public void countLate() {
-    }
-
-    public void countAbsent() {
     }
 
     public boolean isSameCrewName(final String crewName) {
