@@ -104,7 +104,6 @@ public class AttendanceController {
         OutputView.printCheckedHistory(attendanceHistoryDto);
     }
 
-
     private void editAttendance() {
         String nickname = InputView.readNicknameWillEditHistory();
         attendanceService.checkNicknameIsExisted(nickname);

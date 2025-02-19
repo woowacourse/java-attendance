@@ -8,7 +8,7 @@ public class FunctionTest {
     void functionTest1() {
         String input = "1";
         Function function = Function.getFunction(input);
-        Assertions.assertThat(function).isEqualTo(Function.CHECK_ATTENDANCE);
+        Assertions.assertThat(function).isEqualTo(Function.APPLY_ATTENDANCE);
     }
 
     @Test
