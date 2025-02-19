@@ -44,6 +44,13 @@ public class AttendanceController {
             checkCrewsRecord();
             return;
         }
+        if (menu.equals("4")) {
+            return;
+        }
+        if (menu.equals("Q")) {
+            return;
+        }
+        throw new IllegalArgumentException();
     }
 
     private void checkCrewsRecord() {

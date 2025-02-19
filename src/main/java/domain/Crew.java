@@ -2,6 +2,7 @@ package domain;
 
 import domain.util.DateUtil;
 
+import dto.CrewResponse;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -89,5 +90,9 @@ public class Crew {
 
     public RiskStatus calculateRiskStatus() {
         return RiskStatus.getRiskStatus(calculateAbsenceCount(), calculateTardyCount());
+    }
+
+    public CrewResponse createResponse() {
+        return new CrewResponse(name, attendanceBook);
     }
 }
