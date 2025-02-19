@@ -17,13 +17,26 @@ public class AllCrew {
         allCrew.add(crew);
     }
 
-    public void addCrewAttendanceByName(String name, LocalDateTime dateTime) {
+    public boolean containsCrewName(String crewName) {
+        return allCrew.stream().anyMatch(crew -> crew.getName().equals(crewName));
+    }
+
+    public String addCrewAttendanceByName(String name, LocalDateTime dateTime) {
+        Crew crew = findCrewByName(name);
+        return crew.addAttendance(dateTime).printAttendance();
+    }
+
+    public String modifyCrewAttendanceByName(String name, LocalDateTime dateTime) {
+        Crew crew = findCrewByName(name);
+        return crew.update(dateTime);
+    }
+
+    private Crew findCrewByName(String name) {
         Crew findCrew = allCrew.stream()
                 .filter(crew -> crew.getName().equals(name))
                 .findFirst()
                 .orElseThrow(() -> new IllegalArgumentException("Crew not found"));
-
-        findCrew.addAttendance(dateTime);
+        return findCrew;
     }
 
     public String printAllCrewWarningInfo(LocalDate date) {
