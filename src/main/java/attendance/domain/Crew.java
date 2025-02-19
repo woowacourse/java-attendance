@@ -1,5 +1,7 @@
 package attendance.domain;
 
+import java.util.Objects;
+
 public class Crew {
     private final String crewName;
     private final int lateCount;
