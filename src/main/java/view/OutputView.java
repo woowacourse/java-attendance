@@ -2,6 +2,8 @@ package view;
 
 import controller.dto.AttendanceHistoryDto;
 import controller.dto.AttendanceUpdateResultDto;
+import domain.AttendanceHistories;
+import java.util.Map;
 
 public class OutputView {
     public static void printErrorMessage(String message) {
@@ -23,13 +25,30 @@ public class OutputView {
     }
 
     private static String getHistoryFormat(AttendanceHistoryDto attendanceHistoryDto) {
-        return Parser.parseDateFormat(attendanceHistoryDto.month(), attendanceHistoryDto.day())
+        String result = Parser.parseDateFormat(attendanceHistoryDto.month(), attendanceHistoryDto.day())
                 + " "
                 + Parser.parseDayOfWeek(attendanceHistoryDto.dayOfWeek())
-                + " "
-                + Parser.parseTimeFormat(attendanceHistoryDto.hour(), attendanceHistoryDto.minute())
-                + " ("
+                + " ";
+
+        if (attendanceHistoryDto.hour() == 0 && attendanceHistoryDto.minute() == 0) {
+            result += "--:--"
+                    + " ("
+                    + attendanceHistoryDto.type().getName()
+                    + ") ";
+            return result;
+        }
+
+        result += Parser.parseTimeFormat(attendanceHistoryDto.hour(), attendanceHistoryDto.minute()) + " ("
                 + attendanceHistoryDto.type().getName()
                 + ") ";
+
+        return result;
+    }
+
+    public static void printAttendanceHistories(Map<Integer, AttendanceHistoryDto> histories) {
+        for (Map.Entry<Integer, AttendanceHistoryDto> entry : histories.entrySet()) {
+            AttendanceHistoryDto historyDto = entry.getValue();
+            System.out.println(getHistoryFormat(historyDto));
+        }
     }
 }

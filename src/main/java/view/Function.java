@@ -4,7 +4,7 @@ import java.util.Arrays;
 import java.util.Objects;
 
 public enum Function {
-    CHECK_ATTENDANCE("1", "출석 확인"),
+    APPLY_ATTENDANCE("1", "출석 확인"),
     EDIT_ATTENDANCE("2", "출석 수정"),
     CHECK_ATTENDANCE_OF_CREW("3", "크루별 출석 기록 확인"),
     CHECK_WARNING_CREW("4", "제적 위험자 확인"),

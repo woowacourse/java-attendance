@@ -4,6 +4,7 @@ import controller.dto.AttendanceHistoryDto;
 import controller.dto.AttendanceTimeDto;
 import controller.dto.AttendanceUpdateResultDto;
 import domain.AttendanceDateTime;
+import java.util.Map;
 import service.AttendanceService;
 import view.Function;
 import view.InputView;
@@ -31,8 +32,8 @@ public class AttendanceController {
     }
 
     public void runFunction(Function function) {
-        if (function == Function.CHECK_ATTENDANCE) {
-            checkAttendance();
+        if (function == Function.APPLY_ATTENDANCE) {
+            applyAttendance();
             return;
         }
         if (function == Function.EDIT_ATTENDANCE) {
@@ -40,21 +41,21 @@ public class AttendanceController {
             return;
         }
         if (function == Function.CHECK_ATTENDANCE_OF_CREW) {
-
+            checkAttendanceOfCrew();
+            return;
         }
         if (function == Function.CHECK_WARNING_CREW) {
         }
     }
 
 
-    private void checkAttendance() {
+    private void applyAttendance() {
         String nickname = getValidNickname();
         AttendanceDateTime attendanceDateTime = getAttendanceDateTime();
 
-        AttendanceHistoryDto attendanceHistoryDto = attendanceService.checkAttendance(nickname, attendanceDateTime);
+        AttendanceHistoryDto attendanceHistoryDto = attendanceService.applyAttendance(nickname, attendanceDateTime);
         OutputView.printCheckedHistory(attendanceHistoryDto);
     }
-
 
     private void editAttendance() {
         String nickname = getValidNickname();
@@ -62,6 +63,14 @@ public class AttendanceController {
 
         AttendanceUpdateResultDto attendanceUpdateResultDto = attendanceService.editAttendance(nickname, newDateTime);
         OutputView.printUpdatedResult(attendanceUpdateResultDto);
+    }
+
+    private void checkAttendanceOfCrew() {
+        String nickname = getValidNickname();
+        int day = InputView.readToday();
+        Map<Integer, AttendanceHistoryDto> integerAttendanceHistoryDtoMap = attendanceService.checkAttendanceOf(
+                nickname, day);
+        OutputView.printAttendanceHistories(integerAttendanceHistoryDtoMap);
     }
 
     private static AttendanceDateTime getAttendanceDateTime() {

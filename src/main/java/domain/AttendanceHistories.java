@@ -1,6 +1,7 @@
 package domain;
 
 import java.util.LinkedList;
+import java.util.List;
 
 public class AttendanceHistories {
     // TODO: LinkedList 로 변경 고민해보기
@@ -24,5 +25,11 @@ public class AttendanceHistories {
                 .filter(history -> history.hasSameDay(newAttendanceHistory) && history.isSameCrew(newAttendanceHistory))
                 .findAny()
                 .orElseThrow(() -> new IllegalArgumentException("해당 출석 기록이 존재하지 않습니다."));
+    }
+
+    public List<AttendanceHistory> findAllHistoriesOf(Crew crew) {
+        return attendanceHistories.stream()
+                .filter(history -> history.isSameCrew(crew))
+                .toList();
     }
 }
