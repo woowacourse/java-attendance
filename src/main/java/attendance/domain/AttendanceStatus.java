@@ -2,7 +2,7 @@ package attendance.domain;
 
 import java.util.Arrays;
 
-import attendance.exception.AttendanceException;
+import attendance.exception.AttendanceArgumentException;
 
 public enum AttendanceStatus {
     ATTENDANCE("출석"),
@@ -20,7 +20,7 @@ public enum AttendanceStatus {
         return Arrays.stream(AttendanceStatus.values())
             .filter((attendanceStatus) -> attendanceStatus.status.equals(findStatus))
             .findFirst()
-            .orElseThrow(() -> new AttendanceException(INVALID_STATUS));
+            .orElseThrow(() -> new AttendanceArgumentException(INVALID_STATUS));
     }
 
     public String getStatus() {

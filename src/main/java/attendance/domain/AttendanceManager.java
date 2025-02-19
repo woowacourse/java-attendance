@@ -7,7 +7,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 
 import attendance.dto.AttendanceDateDto;
-import attendance.exception.AttendanceException;
+import attendance.exception.AttendanceArgumentException;
 import attendance.utility.StringUtility;
 import java.util.Locale;
 
@@ -28,7 +28,7 @@ public class AttendanceManager {
     private void validateIsSchoolOpen(LocalTime currentTime) {
         if(currentTime.isBefore(AttendanceManagerHelper.SCHOOL_OPEN_TIME) || currentTime.isAfter(
                 AttendanceManagerHelper.SCHOOL_CLOSE_TIME)){
-            throw new AttendanceException(AttendanceManagerHelper.OUT_OF_SCHOOL_SCHEDULE);
+            throw new AttendanceArgumentException(AttendanceManagerHelper.OUT_OF_SCHOOL_SCHEDULE);
         }
     }
 
@@ -36,27 +36,22 @@ public class AttendanceManager {
         if(currentDate.getDayOfWeek().getValue() >= AttendanceManagerHelper.WEEKEND_NUMBER) {
             String cannotAttendanceMessage = currentDate.format(DateTimeFormatter.ofPattern(
                     AttendanceManagerHelper.CANNOT_ATTENDANCE_WEEKEND_FORMAT, Locale.KOREA));
-            throw new AttendanceException(cannotAttendanceMessage);
+            throw new AttendanceArgumentException(cannotAttendanceMessage);
         }
     }
 
-    private Attendances findAttendances(String nickname) {
+    public Attendances findAttendances(String nickname) {
         Attendances attendances = attendanceManager.get(nickname);
         if (attendances == null) {
-            throw new AttendanceException(AttendanceManagerHelper.NICKNAME_NOT_EXISTS);
+            throw new AttendanceArgumentException(AttendanceManagerHelper.NICKNAME_NOT_EXISTS);
         }
         return attendances;
     }
 
     private void validateNickname(String nickname) {
         if (StringUtility.isEmpty(nickname)) {
-            throw new AttendanceException(AttendanceManagerHelper.CANNOT_BE_EMPTY_NICKNAME);
+            throw new AttendanceArgumentException(AttendanceManagerHelper.CANNOT_BE_EMPTY_NICKNAME);
         }
-    }
-
-    public AttendanceDateDto getAttendanceResult(String nickname, LocalDate attendanceDate) {
-        var attendances = findAttendances(nickname);
-        return attendances.getAttendanceTime(attendanceDate);
     }
 
     private AttendanceStatus determineAttendanceStatus(LocalDate currentDate, LocalTime currentTime) {
