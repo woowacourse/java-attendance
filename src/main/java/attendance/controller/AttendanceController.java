@@ -39,13 +39,6 @@ public class AttendanceController {
         outputView.printAttendanceResult(attendance);
     }
 
-    public void run() {
-        LocalDate now = LocalDate.of(2024, 12, 17);
-        Crews crews = crewsService.init(AttendancesFileReader.read(), now);
-
-        updateAttendance(crews, now);
-    }
-
     private void printAttendanceByCrew(Crews crews, LocalDate now) {
         Crew crew = crews.findByName(inputView.inputNickname());
         outputView.printAttendanceByCrew(crew);
@@ -72,5 +65,32 @@ public class AttendanceController {
         LocalDateTime beforeTime = before.getDateTime();
         Attendance after = crew.updateAttendance(timeFormatter(updateDate, inputUpdateTime));
         outputView.printUpdateAttendance(beforeTime, beforeStatus, after);
+    }
+
+    public void run() {
+        LocalDate now = LocalDate.of(2024, 12, 17);
+        Crews crews = crewsService.init(AttendancesFileReader.read(), now);
+        while (true) {
+            try {
+                String inputMenu = inputView.inputMenu(now);
+                if (inputMenu.equals("1")) {
+                    confirmAttendance(crews, now);
+                }
+                if (inputMenu.equals("2")) {
+                    updateAttendance(crews, now);
+                }
+                if (inputMenu.equals("3")) {
+                    printAttendanceByCrew(crews, now);
+                }
+                if (inputMenu.equals("4")) {
+                    printWarningCrews(crews);
+                }
+                if (inputMenu.equals("Q")) {
+                    break;
+                }
+            } catch (Exception e) {
+                outputView.printExceptionMessage(e);
+            }
+        }
     }
 }
