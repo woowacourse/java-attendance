@@ -23,4 +23,8 @@ public enum Warning {
                 .findFirst()
                 .orElse(NONE);
     }
+
+    public String getMessage() {
+        return message;
+    }
 }

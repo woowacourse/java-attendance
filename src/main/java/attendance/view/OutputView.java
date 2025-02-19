@@ -3,6 +3,7 @@ package attendance.view;
 import attendance.domain.Attendance;
 import attendance.domain.AttendanceStatus;
 import attendance.domain.Crew;
+import attendance.domain.Warning;
 
 import java.time.LocalDateTime;
 import java.time.format.TextStyle;
@@ -21,7 +22,6 @@ public class OutputView {
                 dateTime.getHour(),
                 dateTime.getMinute(),
                 status.getMessage());
-        //12월 05일 화요일 09:59 (출석)
     }
 
     public void printAttendanceByCrew(Crew crew) {
@@ -43,5 +43,9 @@ public class OutputView {
         System.out.printf("출석 : %d회\n", statusCount.getOrDefault(AttendanceStatus.ATTEND, 0));
         System.out.printf("지각 : %d회\n", statusCount.getOrDefault(AttendanceStatus.LATE, 0));
         System.out.printf("결석 : %d회\n", (statusCount.getOrDefault(AttendanceStatus.ABSENCE, 0)) + statusCount.getOrDefault(AttendanceStatus.LATE_ABSENCE, 0));
+    }
+
+    public void printWarning(Warning warning) {
+        System.out.printf("%s 대상자입니다.\n", warning.getMessage());
     }
 }

@@ -3,6 +3,7 @@ package attendance.controller;
 import attendance.domain.Attendance;
 import attendance.domain.Crew;
 import attendance.domain.Crews;
+import attendance.domain.Warning;
 import attendance.reader.AttendancesFileReader;
 import attendance.service.CrewsService;
 import attendance.view.InputView;
@@ -51,5 +52,11 @@ public class AttendanceController {
     private void printAttendanceByCrew(Crews crews, LocalDate now) {
         Crew crew = crews.findByName(inputView.inputNickname());
         outputView.printAttendanceByCrew(crew);
+
+        Warning warning = crew.checkWarning();
+        if (!warning.equals(Warning.NONE)) {
+            outputView.printWarning(warning);
+        }
+
     }
 }
