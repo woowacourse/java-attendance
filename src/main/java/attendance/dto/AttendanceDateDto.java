@@ -4,11 +4,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 import attendance.domain.AttendanceStatus;
+import java.time.LocalTime;
 
-public record AttendanceDateDto(LocalDateTime time, AttendanceStatus attendanceStatus) {
-
-    public static AttendanceDateDto generateAttendanceDateDto(LocalDate date, AttendanceTimeDto attendanceTimeDto) {
-        LocalDateTime time = LocalDateTime.of(date, attendanceTimeDto.time());
-        return new AttendanceDateDto(time, attendanceTimeDto.attendanceStatus());
-    }
+public record AttendanceDateDto(LocalDate attendanceDate, LocalTime attendanceTime, AttendanceStatus attendanceStatus) {
 }
