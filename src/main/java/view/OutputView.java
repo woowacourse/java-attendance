@@ -12,13 +12,27 @@ public class OutputView {
                 Convertor.convertDayOfWeekToKorean(nowDate.getDayOfWeek())));
     }
 
-    public void printAttendanceMessage(LocalDateTime attendanceDateTime, AttendanceStatus attendanceStatus) {
-        System.out.println(String.format("%n%d월 %02d일 %s요일 %02d:%02d (%s)",
+    public void printCheckAttendanceMessage(LocalDateTime attendanceDateTime, AttendanceStatus attendanceStatus) {
+
+        System.out.println(writeAttendanceMessage(attendanceDateTime, attendanceStatus));
+    }
+
+    public void printEditAttendanceMessage(LocalDateTime oldAttendanceDateTime, AttendanceStatus oldAttendanceStatus, LocalDateTime newAttendanceDateTime, AttendanceStatus newAttendanceStatus) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(writeAttendanceMessage(oldAttendanceDateTime, oldAttendanceStatus))
+                .append(" -> ")
+                .append(String.format("%02d:%02d (%s)", newAttendanceDateTime.getHour(), newAttendanceDateTime.getMinute(), newAttendanceStatus.getStatus()));
+        System.out.println(sb);
+    }
+
+    private String writeAttendanceMessage(LocalDateTime attendanceDateTime, AttendanceStatus attendanceStatus) {
+        return String.format("%n%d월 %02d일 %s요일 %02d:%02d (%s)",
                 attendanceDateTime.getMonthValue(),
                 attendanceDateTime.getDayOfMonth(),
                 Convertor.convertDayOfWeekToKorean(attendanceDateTime.getDayOfWeek()),
                 attendanceDateTime.getHour(),
                 attendanceDateTime.getMinute(),
-                attendanceStatus.getStatus()));
+                attendanceStatus.getStatus());
     }
+
 }
