@@ -53,10 +53,24 @@ public class Attendance {
     }
 
     public void attend(String crewName, LocalDateTime attendanceTime) {
+        validateAttended(crewName, attendanceTime);
+        validateOpenHours(attendanceTime);
+        attendance.get(crewName).add(new AttendanceTime(attendanceTime));
+    }
+
+    private void validateOpenHours(LocalDateTime attendanceDateTime) {
+        LocalTime attendanceTime = attendanceDateTime.toLocalTime();
+        LocalTime openHour = LocalTime.of(8, 0);
+        LocalTime closeHour = LocalTime.of(23, 0);
+        if (attendanceTime.isBefore(openHour) || attendanceTime.isAfter(closeHour)) {
+            throw new IllegalArgumentException("[ERROR] 캠퍼스 운영 시간이 아닙니다.");
+        }
+    }
+
+    private void validateAttended(String crewName, LocalDateTime attendanceTime) {
         if (checkAttended(crewName, attendanceTime.toLocalDate())) {
             throw new IllegalArgumentException("[ERROR] 이미 출석했습니다. 수정 기능을 이용하세요.");
         };
-        attendance.get(crewName).add(new AttendanceTime(attendanceTime));
     }
 
     public void edit(String crewName, int attendanceDay, LocalTime newAttendanceTime) {

@@ -52,9 +52,12 @@ public class AttendanceController {
 
     private void checkAttendance(Attendance attendance, LocalDate nowDate) {
         String nickName = getNickName(attendance);
-        LocalTime arrivalTime = getLocalTime(attendance);
 
-        attendance.attend(nickName, LocalDateTime.of(nowDate, arrivalTime));
+        repeatExecutor.repeatUntilSuccess(() -> {
+            LocalTime arrivalTime = getLocalTime(attendance);
+            attendance.attend(nickName, LocalDateTime.of(nowDate, arrivalTime));
+            return null;
+        });
 
         LocalDateTime attendanceDateTime = attendance.getAttendanceDateTime(nickName, nowDate);
         AttendanceStatus attendanceStatus = attendance.getAttendanceStatus(nickName, nowDate);
