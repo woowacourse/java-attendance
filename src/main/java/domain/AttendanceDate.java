@@ -6,9 +6,15 @@ public class AttendanceDate {
     private final int month = 12;
     private final int day;
 
-    // TODO: 범위 벗어나면 에러 던지기
     public AttendanceDate(int day) {
+        validate(day);
         this.day = day;
+    }
+
+    private void validate(int day) {
+        if (day > 31 || day <= 0) {
+            throw new IllegalArgumentException("유효하지 않은 날짜입니다.");
+        }
     }
 
     public int getDay() {
@@ -27,5 +33,4 @@ public class AttendanceDate {
         List<Integer> restDays = List.of(1, 7, 8, 14, 15, 21, 22, 25, 28, 29);
         return restDays.contains(day);
     }
-
 }
