@@ -1,5 +1,6 @@
 import controller.AttendanceController;
 import repository.AttendanceRepository;
+import repository.AttendanceRepositoryImpl;
 import repository.CrewRepository;
 import repository.CrewRepositoryImpl;
 import service.AttendanceCheckService;
@@ -9,7 +10,7 @@ import view.OutputView;
 
 public class Application {
     public static void main(String[] args) {
-        AttendanceRepository attendanceRepository = new AttendanceRepository();
+        AttendanceRepository attendanceRepository = new AttendanceRepositoryImpl();
         CrewRepository crewRepository = new CrewRepositoryImpl();
 
         AttendanceController attendanceController = new AttendanceController(

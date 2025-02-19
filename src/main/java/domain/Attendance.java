@@ -47,6 +47,10 @@ public class Attendance {
         return "결석";
     }
 
+    public Attendance modify(int newHour, int newMinutes) {
+        return new Attendance(crew, time.withHour(newHour).withMinute(newMinutes));
+    }
+
     @Override
     public boolean equals(Object obj) {
         if (this == obj) return true;

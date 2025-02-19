@@ -3,21 +3,15 @@ package repository;
 import domain.Attendance;
 import domain.Crew;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
-public class AttendanceRepository {
-    private final List<Attendance> attendances;
+public interface AttendanceRepository {
+    void save(Attendance attendance);
 
-    public AttendanceRepository() {
-        this.attendances = new ArrayList<>();
-    }
+    List<Attendance> findByCrew(Crew crew);
 
-    public void save(Attendance attendance) {
-        attendances.add(attendance);
-    }
+    Optional<Attendance> findByCrewAndDate(Crew crew, int date);
 
-    public List<Attendance> findByCrew(Crew crew) {
-        return attendances.stream().filter(attendance -> attendance.getCrew().equals(crew)).toList();
-    }
+    void replace(Attendance beforeAttendance, Attendance afterAttendance);
 }

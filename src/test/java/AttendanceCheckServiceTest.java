@@ -1,10 +1,10 @@
 import domain.Attendance;
 import domain.Crew;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import repository.AttendanceRepository;
+import repository.AttendanceRepositoryImpl;
 import repository.CrewRepository;
 import repository.CrewRepositoryImpl;
 import service.AttendanceCheckService;
@@ -22,7 +22,7 @@ public class AttendanceCheckServiceTest {
     void setUp() {
         crewRepository = new CrewRepositoryImpl();
         crewRepository.save(new Crew("이든"));
-        attendanceRepository = new AttendanceRepository();
+        attendanceRepository = new AttendanceRepositoryImpl();
         attendanceCheckService = new AttendanceCheckService(crewRepository, attendanceRepository);
     }
 
