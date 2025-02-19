@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.Month;
 import java.util.Optional;
 import java.util.Set;
 import org.assertj.core.api.Assertions;
@@ -89,5 +90,26 @@ class AttendancesTest {
 
         assertThat(optionalAttendance)
                 .isNotPresent();
+    }
+
+    @DisplayName("크루의 해당 달의 출석 기록을 조회할 수 있다.")
+    @Test
+    void attendanceHistoryByCrewTest() {
+        Crew crew = new Crew("포비");
+        CrewGroup crewGroup = new CrewGroup(Set.of(crew));
+        Attendances attendances = new Attendances(crewGroup, Set.of(
+                new Attendance(crew, LocalDateTime.of(2024, 11, 1, 10, 1)),
+                new Attendance(crew, LocalDateTime.of(2024, 12, 2, 10, 1)),
+                new Attendance(crew, LocalDateTime.of(2024, 12, 3, 10, 12))
+        ));
+
+        Month findMonth = Month.DECEMBER;
+        Set<Attendance> attendanceHistory = attendances.findAllByCrewAndMonth(crew, findMonth);
+
+        assertThat(attendanceHistory)
+                .isEqualTo(Set.of(
+                        new Attendance(crew, LocalDateTime.of(2024, 12, 2, 10, 1)),
+                        new Attendance(crew, LocalDateTime.of(2024, 12, 3, 10, 12))
+                ));
     }
 }

@@ -3,9 +3,11 @@ package attendance.model;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.Month;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 public class Attendances {
 
@@ -39,5 +41,18 @@ public class Attendances {
         return attendances.stream()
                 .filter(attendance -> attendance.equals(new Attendance(crew, LocalDateTime.of(date, LocalTime.MIN))))
                 .findFirst();
+    }
+
+    public Set<Attendance> findAllByCrewAndMonth(Crew crew, Month findMonth) {
+        validateExistCrew(crew);
+        return attendances.stream()
+                .filter(attendance -> attendance.isCrewAttendanceInMonth(crew, findMonth))
+                .collect(Collectors.toUnmodifiableSet());
+    }
+
+    private void validateExistCrew(Crew crew) {
+        if (!crewGroup.contains(crew)) {
+            throw new IllegalArgumentException("등록되지 않은 크루입니다.");
+        }
     }
 }

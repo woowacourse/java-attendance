@@ -14,4 +14,8 @@ public class CrewGroup {
         return crews.stream()
                 .anyMatch(crew -> crew.isEqualsNickname(nickname));
     }
+
+    public boolean contains(Crew crew) {
+        return crews.contains(crew);
+    }
 }
