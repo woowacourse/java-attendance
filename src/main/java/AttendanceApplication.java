@@ -1,4 +1,4 @@
-import controller.AttendanceController;
+import presentation.AttendanceController;
 
 public class AttendanceApplication {
     public static void main(String[] args) {
