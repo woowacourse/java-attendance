@@ -45,4 +45,32 @@ public class AttendanceTest {
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("지금은 운영 시간이 아닙니다.");
     }
+
+    @Test
+    @DisplayName("출석 시간을 5분 초과하면 지각이다.")
+    void test4() {
+        //given
+        Crew crew = Crew.of("쿠키");
+        LocalDateTime checkInTime = LocalDateTime.of(2024, 12, 3, 9, 1);
+
+        //when
+        Attendance attendance = Attendance.of(crew, checkInTime);
+
+        //then
+        Assertions.assertThat(attendance.getAttendanceType()).isEqualTo(AttendanceType.BE_LATE);
+    }
+
+    @Test
+    @DisplayName("출석 시간을 30분 초과하면 결석이다.")
+    void test5() {
+        //given
+        Crew crew = Crew.of("쿠키");
+        LocalDateTime checkInTime = LocalDateTime.of(2024, 12, 3, 9, 31);
+
+        //when
+        Attendance attendance = Attendance.of(crew, checkInTime);
+
+        //then
+        Assertions.assertThat(attendance.getAttendanceType()).isEqualTo(AttendanceType.ABSENCE);
+    }
 }
