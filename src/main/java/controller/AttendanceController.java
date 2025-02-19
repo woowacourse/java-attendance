@@ -32,6 +32,7 @@ public class AttendanceController {
 
         Attendance attendance = stringConverter.convertToAttendance(rawNickname, rawCheckInTime);
 
+
     }
 
     private void modifyAttendance() {
