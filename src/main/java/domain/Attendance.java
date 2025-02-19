@@ -85,4 +85,8 @@ public class Attendance {
                 attendanceStatus
         );
     }
+    
+    public boolean isSameDay(LocalDate date) {
+        return attendanceTime.toLocalDate().equals(date);
+    }
 }

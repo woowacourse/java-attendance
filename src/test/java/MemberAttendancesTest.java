@@ -6,7 +6,9 @@ import dto.ExpelMeasurementDTO;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -50,11 +52,11 @@ public class MemberAttendancesTest {
         AttendanceResultDTOs result = attendances.getAttendanceResult();
         
         // then
-        assertThat(result.getName()).isEqualTo("Lemon");
-        assertThat(result.getAttendCount()).isEqualTo(3);
-        assertThat(result.getLateCount()).isEqualTo(3);
-        assertThat(result.getAbsentCount()).isEqualTo(2);
-        assertThat(result.getAttendanceResults()).containsExactlyInAnyOrder(
+        assertThat(result.name()).isEqualTo("Lemon");
+        assertThat(result.attendCount()).isEqualTo(3);
+        assertThat(result.lateCount()).isEqualTo(3);
+        assertThat(result.absentCount()).isEqualTo(2);
+        assertThat(result.attendanceResults()).containsExactlyInAnyOrder(
                 new AttendanceResultDTO(LocalDateTime.of(2024, 12, 2, 10, 0), "출석"),
                 new AttendanceResultDTO(LocalDateTime.of(2024, 12, 3, 10, 1), "출석"),
                 new AttendanceResultDTO(LocalDateTime.of(2024, 12, 4, 10, 5), "출석"),
@@ -118,6 +120,31 @@ public class MemberAttendancesTest {
         
         //then
         assertThat(result).isEqualTo(new ExpelMeasurementDTO("Lemon", 0, 6, "제적"));
+    }
+    
+    @Test
+    void 출석_정보_수정() {
+        // given
+        MemberAttendances attendances = new MemberAttendances("Lemon", List.of(
+                new Attendance(LocalDateTime.of(2024, 12, 4, 10, 31)),
+                new Attendance(LocalDateTime.of(2024, 12, 5, 10, 31)),
+                new Attendance(LocalDateTime.of(2024, 12, 6, 10, 31)),
+                new Attendance(LocalDateTime.of(2024, 12, 10, 10, 31)),
+                new Attendance(LocalDateTime.of(2024, 12, 11, 10, 31)),
+                new Attendance(LocalDateTime.of(2024, 12, 12, 10, 31))
+        ));
+        var date = LocalDate.of(2024, 12, 4);
+        var time = LocalTime.of(10, 5);
+        
+        // when
+        AttendanceModifyDTO result = attendances.modifyAttendance(date, time);
+        
+        // then
+        assertThat(result).isEqualTo(new AttendanceModifyDTO(
+                LocalDate.of(2024, 12, 4),
+                LocalTime.of(10, 31), "결석",
+                LocalTime.of(10, 5), "출석")
+        );
     }
     
 }

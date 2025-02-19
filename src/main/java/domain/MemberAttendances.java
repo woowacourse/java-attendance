@@ -1,10 +1,13 @@
 package domain;
 
+import dto.AttendanceModifyDTO;
 import dto.AttendanceResultDTO;
 import dto.AttendanceResultDTOs;
 import dto.ExpelMeasurementDTO;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,11 +29,11 @@ public class MemberAttendances {
                 .toList();
         
         for (AttendanceResultDTO attendanceResult : attendanceResults) {
-            if (attendanceResult.getAttendanceStatus().equals("지각")) {
+            if (attendanceResult.attendanceStatus().equals("지각")) {
                 lateCount++;
                 continue;
             }
-            if (attendanceResult.getAttendanceStatus().equals("결석")) {
+            if (attendanceResult.attendanceStatus().equals("결석")) {
                 absentCount++;
             }
         }
@@ -51,15 +54,15 @@ public class MemberAttendances {
                 .toList();
         
         for (AttendanceResultDTO attendanceResult : attendanceResults) {
-            if (attendanceResult.getAttendanceStatus().equals("출석")) {
+            if (attendanceResult.attendanceStatus().equals("출석")) {
                 attendCount++;
                 continue;
             }
-            if (attendanceResult.getAttendanceStatus().equals("지각")) {
+            if (attendanceResult.attendanceStatus().equals("지각")) {
                 lateCount++;
                 continue;
             }
-            if (attendanceResult.getAttendanceStatus().equals("결석")) {
+            if (attendanceResult.attendanceStatus().equals("결석")) {
                 absentCount++;
             }
         }
@@ -71,5 +74,18 @@ public class MemberAttendances {
         Attendance newAttendance = new Attendance(attendDateTime);
         attendances.add(newAttendance);
         return newAttendance.createAttendanceResult();
+    }
+    
+    public AttendanceModifyDTO modifyAttendance(LocalDate date, LocalTime time) {
+        for (Attendance attendance : attendances) {
+            if (attendance.isSameDay(date)) {
+                return attendance.modifyAttendanceTime(time);
+            }
+        }
+        
+        Attendance newAttendance = new Attendance(LocalDateTime.of(date, time));
+        return new AttendanceModifyDTO(
+                date, null, null, time, newAttendance.createAttendanceResult().attendanceStatus()
+        );
     }
 }
