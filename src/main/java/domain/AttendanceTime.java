@@ -4,6 +4,7 @@ public class AttendanceTime {
     private final int hour;
     private final int minute;
 
+    // TODO: 범위 벗어나면 에러 던지기
     public AttendanceTime(int hour, int minute) {
         this.hour = hour;
         this.minute = minute;

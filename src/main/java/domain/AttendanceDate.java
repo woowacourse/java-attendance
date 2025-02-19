@@ -6,6 +6,7 @@ public class AttendanceDate {
     private final int month = 12;
     private final int day;
 
+    // TODO: 범위 벗어나면 에러 던지기
     public AttendanceDate(int day) {
         this.day = day;
     }
