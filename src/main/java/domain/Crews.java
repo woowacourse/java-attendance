@@ -9,4 +9,13 @@ public class Crews {
     public Crews(List<Crew> crews) {
         this.crews = crews;
     }
+
+    public Crew findByNickname(String nickname) {
+        for (Crew crew : crews) {
+            if (crew.isEqualTo(nickname)) {
+                return crew;
+            }
+        }
+        throw new IllegalArgumentException("[ERROR] 등록되지 않은 닉네임입니다.");
+    }
 }
