@@ -31,6 +31,16 @@ public class AttendanceManager {
         return records.attend(localDateTime);
     }
 
+    public void editCrew(String name, LocalDateTime newLocalDateTime) {
+        Records records = crews.get(name);
+
+        if (!records.isSameDate(newLocalDateTime)) {
+            throw new IllegalArgumentException("수정 기능은 출석 후 이용 가능합니다.");
+        }
+
+        records.edit(newLocalDateTime);
+    }
+
     public Records findByName(String name) {
         return crews.get(name);
     }
