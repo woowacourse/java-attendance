@@ -23,4 +23,15 @@ public class AttendanceRepository {
     public List<Attendance> findAttendanceByName() {
         return List.of(new Attendance("체체", LocalDateTime.now()));
     }
+
+    public Attendance findAttendanceByNameAndDateTime(String name, int day) {
+
+        for (Attendance attendance : attendances) {
+            if (attendance.isSameByNameAndDay(name, day)) {
+                return attendance;
+            }
+        }
+
+        throw new IllegalArgumentException("[ERROR] 존재하지 않는 출석 기록입니다.");
+    }
 }

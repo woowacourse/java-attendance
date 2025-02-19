@@ -41,4 +41,23 @@ class AttendanceRepositoryTest {
                 .hasMessage("[ERROR] 오늘은 이미 출석하셨습니다. 수정 기능을 이용해 주세요.");
     }
 
+    @DisplayName("출석 기록을 수정한다.")
+    @Test
+    void 출석_기록을_수정한다() {
+
+        // given
+        LocalDateTime localDateTime = LocalDateTime.of(2025, 2, 19, 10, 0, 0);
+        Attendance attendance = new Attendance("체체", localDateTime);
+        AttendanceRepository attendanceRepository = new AttendanceRepository(new ArrayList<>());
+        attendanceRepository.add(attendance);
+
+        //when
+        Attendance resultAttendance = attendanceRepository.findAttendanceByNameAndDateTime("체체", 19);
+
+        //then
+        assertThat(attendance).isEqualTo(resultAttendance);
+
+
+    }
+
 }

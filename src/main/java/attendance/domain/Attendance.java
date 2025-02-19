@@ -27,4 +27,9 @@ public class Attendance {
 
         return attendanceTime.toLocalDate().isEqual(currentAttendance.attendanceTime.toLocalDate());
     }
+
+
+    public boolean isSameByNameAndDay(String name, int day) {
+        return crewName.equals(name) && day == attendanceTime.getDayOfMonth();
+    }
 }
