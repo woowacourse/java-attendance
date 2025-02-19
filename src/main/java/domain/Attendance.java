@@ -1,3 +1,5 @@
+package domain;
+
 import java.time.Duration;
 import java.time.LocalTime;
 

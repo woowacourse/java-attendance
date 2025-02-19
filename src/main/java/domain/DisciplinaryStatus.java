@@ -1,3 +1,5 @@
+package domain;
+
 public enum DisciplinaryStatus {
     NONE("해당 사항 없음", 1),
     WARNING("경고", 2),

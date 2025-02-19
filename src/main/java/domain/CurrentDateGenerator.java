@@ -1,3 +1,5 @@
+package domain;
+
 import java.time.LocalDate;
 
 public class CurrentDateGenerator implements DateGenerator {
