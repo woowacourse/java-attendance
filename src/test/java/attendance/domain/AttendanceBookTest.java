@@ -5,7 +5,7 @@ import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-class AttendanceTest {
+class AttendanceBookTest {
 
     @DisplayName("명단에 없는 크루원이면 예외를 발생한다.")
     @Test

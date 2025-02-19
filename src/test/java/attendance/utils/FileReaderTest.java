@@ -19,7 +19,6 @@ class FileReaderTest {
         //when
         List<String> attendances = FileReader.parseToFile(filePath);
 
-
         //then
         assertThat(attendances.size()).isEqualTo(42);
     }

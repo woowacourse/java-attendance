@@ -16,9 +16,8 @@ class AttendanceCheckerTest {
 
         // given
         LocalDateTime dateTime = LocalDateTime.of(year, month, day, hour, minute);
-        AttendanceChecker attendance = new AttendanceChecker();
 
         // when && then
-        assertThat(attendance.check(dateTime)).isEqualTo(result);
+        assertThat(AttendanceChecker.check(dateTime)).isEqualTo(result);
     }
 }
