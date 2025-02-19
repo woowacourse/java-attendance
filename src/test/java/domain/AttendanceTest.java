@@ -44,4 +44,14 @@ class AttendanceTest {
         assertThatThrownBy(() -> Attendance.of(input))
                 .isInstanceOf(IllegalArgumentException.class);
     }
+
+    @Test
+    void 주말에_출석을_시도했을_때_예외_처리() {
+        // given
+        String input = "2024-12-25 11:11";
+        // when
+        // then
+        assertThatThrownBy(() -> Attendance.of(input))
+                .isInstanceOf(IllegalArgumentException.class);
+    }
 }

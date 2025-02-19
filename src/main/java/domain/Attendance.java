@@ -7,6 +7,7 @@ import java.time.format.DateTimeParseException;
 public class Attendance {
 
     private static final String DATE_TIME_FORMAT = "yyyy-MM-dd HH:mm";
+    private static final int HOLIDAY = 25;
 
     LocalDateTime localDateTime;
     AttendanceStatus attendanceStatus;
@@ -22,9 +23,17 @@ public class Attendance {
     }
 
     public Attendance(final LocalDateTime localDateTime) {
+        validateHoliday(localDateTime);
         Week day = Week.findByAttendanceTime(localDateTime);
         this.localDateTime = localDateTime;
         this.attendanceStatus = AttendanceStatus.findByAttendanceTime(day, localDateTime.toLocalTime());
+    }
+
+    private void validateHoliday(LocalDateTime localDateTime) {
+        final int day = localDateTime.getDayOfMonth();
+        if (day == HOLIDAY) {
+            throw new IllegalArgumentException("공휴일에는 출석할 수 없습니다.");
+        }
     }
 
     public LocalDateTime getLocalDateTime() {
