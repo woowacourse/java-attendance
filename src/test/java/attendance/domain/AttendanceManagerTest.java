@@ -1,6 +1,8 @@
 package attendance.domain;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatCode;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
@@ -81,20 +83,23 @@ public class AttendanceManagerTest {
     }
 
     @Test
+    void check_weekday() {
+        assertThatCode(() -> AttendanceManager.checkHoliday(LocalDate.of(2024, 12, 26)))
+                .doesNotThrowAnyException();
+    }
+
+    @Test
     void check_holiday_1() {
-        boolean isHoliday = AttendanceManager.checkHoliday(LocalDate.of(2024, 12, 26));
-        assertThat(isHoliday).isFalse();
+        assertThatThrownBy(() -> AttendanceManager.checkHoliday(LocalDate.of(2024, 12, 22)))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("등교일이 아닙니다");
     }
 
     @Test
     void check_holiday_2() {
-        boolean isHoliday = AttendanceManager.checkHoliday(LocalDate.of(2024, 12, 22));
-        assertThat(isHoliday).isTrue();
+        assertThatThrownBy(() -> AttendanceManager.checkHoliday(LocalDate.of(2024, 12, 25)))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("등교일이 아닙니다");
     }
 
-    @Test
-    void check_holiday_3() {
-        boolean isHoliday = AttendanceManager.checkHoliday(LocalDate.of(2024, 12, 25));
-        assertThat(isHoliday).isTrue();
-    }
 }

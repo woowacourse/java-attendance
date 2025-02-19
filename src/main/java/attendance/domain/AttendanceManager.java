@@ -26,14 +26,12 @@ public class AttendanceManager {
         return "결석";
     }
 
-    public static boolean checkHoliday(LocalDate localDate) {
+    public static void checkHoliday(LocalDate localDate) {
         DayOfWeek dayOfWeek = localDate.getDayOfWeek();
-        if (dayOfWeek == DayOfWeek.SATURDAY || dayOfWeek == DayOfWeek.SUNDAY) {
-            return true;
+        if (dayOfWeek != DayOfWeek.SATURDAY && dayOfWeek != DayOfWeek.SUNDAY &&
+                !localDate.equals(LocalDate.of(2024, 12, 25))) {
+            return;
         }
-        if (localDate.equals(LocalDate.of(2024, 12, 25))) {
-            return true;
-        }
-        return false;
+        throw new IllegalArgumentException("등교일이 아닙니다");
     }
 }
