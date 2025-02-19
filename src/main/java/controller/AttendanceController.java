@@ -1,5 +1,6 @@
 package controller;
 
+import constant.Command;
 import converter.StringConverter;
 import java.util.List;
 import model.Attendance;
@@ -8,14 +9,17 @@ import model.Crew;
 import model.Crews;
 import util.DataReader;
 import view.InputView;
+import view.OutputView;
 
 public class AttendanceController {
 
     private final InputView inputView;
+    private final OutputView outputView;
     private final StringConverter stringConverter;
 
-    public AttendanceController(InputView inputView, StringConverter stringConverter) {
+    public AttendanceController(InputView inputView, OutputView outputView, StringConverter stringConverter) {
         this.inputView = inputView;
+        this.outputView = outputView;
         this.stringConverter = stringConverter;
     }
 
@@ -24,15 +28,34 @@ public class AttendanceController {
         Crews crews = stringConverter.convertToCrews(rawAttendances);
         Attendances attendances = stringConverter.convertToAttendances(rawAttendances, crews);
 
+        String rawCommand = inputView.readCommand();
+        Command command = stringConverter.convertToCommand(rawCommand);
+        if (command.equals(Command.ONE)) {
+            Attendance attendance = checkInAttendance(attendances);
+            outputView.printCheckInResult(attendance);
+        }
+        if (command.equals(Command.TWO)) {
+            modifyAttendance();
+        }
+        if (command.equals(Command.THREE)) {
+            checkAttendance();
+        }
+        if (command.equals(Command.FOUR)) {
+
+        }
+        if (command.equals(Command.QUIT)) {
+        }
+
     }
 
-    private void checkInAttendance() {
+    private Attendance checkInAttendance(Attendances attendances) {
         String rawNickname = inputView.readNickname();
         String rawCheckInTime = inputView.readCheckInTime();
 
         Attendance attendance = stringConverter.convertToAttendance(rawNickname, rawCheckInTime);
+        attendances.checkIn(attendance);
 
-
+        return attendance;
     }
 
     private void modifyAttendance() {
@@ -46,6 +69,5 @@ public class AttendanceController {
     private void checkAttendance() {
         String rawNickname = inputView.readNickname();
         Crew crew = stringConverter.convertToNickname(rawNickname);
-
     }
 }

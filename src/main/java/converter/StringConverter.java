@@ -1,5 +1,6 @@
 package converter;
 
+import constant.Command;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -60,10 +61,18 @@ public class StringConverter {
         return Attendance.of(crew, checkInTime);
     }
 
+    public Command convertToCommand(String rawCommand) {
+        return Command.find(rawCommand);
+    }
+
     public Crew convertToNickname(String rawNickname) {
         validateNullOrBlank(rawNickname);
 
         return Crew.of(rawNickname);
+    }
+
+    public void validateCommand(String rawCommand){
+        List<String> commands = List.of("1", "2", "3", "4", "Q");
     }
 
     private void validateLocalDateTimeFormat(String dateTime) {
