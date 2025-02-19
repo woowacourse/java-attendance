@@ -7,6 +7,7 @@ import java.time.LocalDateTime;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import view.InputView;
 
 class TodayDateTest {
     @Test
@@ -14,7 +15,7 @@ class TodayDateTest {
     void test1(){
         String time = "09:59";
         TodayDate todayDate = new TodayDate(LocalDate.of(2024, 12, 13));
-        LocalDateTime localDateTime = todayDate.makeLocalDateToLocalDateTime(time);
+        LocalDateTime localDateTime = InputView.makeLocalDateToLocalDateTime(LocalDate.of(2024,12,13));
         LocalDateTime expect = LocalDateTime.of(2024, 12, 13, 9, 59);
         Assertions.assertTrue(localDateTime.isEqual(expect));
     }
@@ -24,7 +25,7 @@ class TodayDateTest {
     void test2() {
         String time = "09:71";
         TodayDate todayDate = new TodayDate(LocalDate.of(2024, 12, 13));
-        org.assertj.core.api.Assertions.assertThatThrownBy(() -> todayDate.makeLocalDateToLocalDateTime(time))
+        org.assertj.core.api.Assertions.assertThatThrownBy(() -> InputView.makeLocalDateToLocalDateTime(LocalDate.of(2024,12,13)))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("[ERROR] 시간 형식에 맞지 않습니다.");
     }
