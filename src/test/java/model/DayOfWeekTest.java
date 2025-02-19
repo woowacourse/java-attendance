@@ -1,6 +1,7 @@
 package model;
 
 import attendance.model.WoowaDayOfWeek;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import org.assertj.core.api.Assertions;
@@ -45,5 +46,19 @@ public class DayOfWeekTest {
         WoowaDayOfWeek dayOfWeek = WoowaDayOfWeek.from(localDateTime);
 
         Assertions.assertThat(dayOfWeek).isEqualTo(WoowaDayOfWeek.화요일);
+    }
+
+    @Test
+    void test7() {
+        LocalDate localDate = LocalDate.of(2024, 12, 10);
+
+        Assertions.assertThat(WoowaDayOfWeek.isHoliday(localDate)).isFalse();
+    }
+
+    @Test
+    void test8() {
+        LocalDate localDate = LocalDate.of(2024, 12, 25);
+
+        Assertions.assertThat(WoowaDayOfWeek.isHoliday(localDate)).isTrue();
     }
 }
