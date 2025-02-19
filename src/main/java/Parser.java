@@ -1,6 +1,9 @@
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 public class Parser {
     public static List<String> parse(List<String> loadedData) {
@@ -17,7 +20,12 @@ public class Parser {
         return result;
     }
 
-    public static List<String> parseDate(String rawDate) {
-        return Arrays.asList(rawDate.split(" "));
+    public static Map<LocalDate, LocalTime> parseDate(String rawDateTime) {
+        List<String> rawDateAndTime = Arrays.asList(rawDateTime.split(" "));
+        String rawDate = rawDateAndTime.getFirst();
+        String rawTime = rawDateAndTime.getLast();
+        LocalDate date = LocalDate.parse(rawDate);
+        LocalTime time = LocalTime.parse(rawTime);
+        return Map.of(date, time);
     }
 }

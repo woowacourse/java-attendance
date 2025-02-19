@@ -1,5 +1,8 @@
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class AttendanceBook {
     private final List<Crew> crews;
@@ -20,20 +23,20 @@ public class AttendanceBook {
         return result;
     }
 
-    public void initialize(String name, String date, String time) {
+    public void initialize(String name, Map<LocalDate, LocalTime> dateAndTime) {
         if (!checkAlreadyExists(name)) {
             addNewCrew(Crew.createByName(name));
         }
-        addDailyAttendanceByName(name, date, time);
+        addDailyAttendanceByName(name, dateAndTime);
     }
 
     public void addNewCrew(Crew newCrew) {
         crews.add(newCrew);
     }
 
-    public void addDailyAttendanceByName(String name, String date, String time) {
+    public void addDailyAttendanceByName(String name, Map<LocalDate, LocalTime> dateAndTime) {
         Crew suitableCrew = getCrewByName(name);
-        suitableCrew.addDailyAttendance(date, time);
+        suitableCrew.addDailyAttendance(dateAndTime);
     }
 
     public Crew getCrewByName(String name) {

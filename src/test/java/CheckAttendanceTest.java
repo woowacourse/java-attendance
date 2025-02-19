@@ -1,3 +1,6 @@
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.util.Map;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -9,11 +12,11 @@ public class CheckAttendanceTest {
         AttendanceBook attendanceBook = new AttendanceBook();
 
         Crew crew1 = Crew.createByName("쿠키");
-        crew1.addDailyAttendance("2024-12-01", "10:06");
+        crew1.addDailyAttendance(Map.of(LocalDate.of(2024,12,1),LocalTime.of(10, 6)));
         attendanceBook.addNewCrew(crew1);
 
         Crew crew2 = Crew.createByName("우유");
-        crew2.addDailyAttendance("2024-12-01", "10:07");
+        crew2.addDailyAttendance(Map.of(LocalDate.of(2024,12,1), LocalTime.of(10, 7)));
         attendanceBook.addNewCrew(crew2);
 
         attendanceBook.checkAttendance("쿠키", "2024-12-02", "10:08"); // 정상

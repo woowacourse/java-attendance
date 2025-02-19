@@ -1,4 +1,7 @@
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.List;
+import java.util.Map;
 
 public class Controller {
     private final CsvReader csvFileReader;
@@ -19,10 +22,10 @@ public class Controller {
 
         for (List<String> data : seperatedData){
             String name = data.getFirst();
-            String date = Parser.parseDate(data.getLast()).getFirst();
-            String time = Parser.parseDate(data.getLast()).getLast();
-            attendanceBook.initialize(name, date, time);
+            Map<LocalDate, LocalTime> dateAndTime = Parser.parseDate(data.getLast());
+            attendanceBook.initialize(name, dateAndTime);
         }
-
     }
+
+
 }
