@@ -6,17 +6,19 @@ import java.time.LocalTime;
 
 public enum AttendanceStatus {
 
-    OK(5),
-    LATE(5),
-    ABSENT(30);
+    OK("출석", 5),
+    LATE("지각", 5),
+    ABSENT("결석", 30);
 
     private static final LocalTime MONDAY_START_TIME = LocalTime.of(13, 0);
     private static final LocalTime TUESDAY_TO_FRIDAY_START_TIME = LocalTime.of(10, 0);
     private static final LocalTime END_TIME = LocalTime.of(18, 0);
 
+    private final String text;
     private final int deadLineMinute;
 
-    AttendanceStatus(final int deadLineMinute) {
+    AttendanceStatus(final String text, final int deadLineMinute) {
+        this.text = text;
         this.deadLineMinute = deadLineMinute;
     }
 
@@ -38,6 +40,10 @@ public enum AttendanceStatus {
             return LATE;
         }
         return OK;
+    }
+
+    public String getText() {
+        return text;
     }
 
 }

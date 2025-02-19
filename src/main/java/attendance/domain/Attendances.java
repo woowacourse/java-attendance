@@ -11,10 +11,11 @@ public class Attendances {
     private final List<Attendance> attendances = new ArrayList<>();
 
     public Attendances(List<LocalDateTime> attendanceDateTimes, LocalDateTime today) {
-        for(int day=1; day<today.getDayOfMonth(); day++) {
+        for (int day = 1; day < today.getDayOfMonth(); day++) {
             LocalDate localDate = LocalDate.of(today.getYear(), today.getMonth(), day);
             DayOfWeek dayOfWeek = localDate.getDayOfWeek();
-            if (dayOfWeek.equals(DayOfWeek.SUNDAY) || dayOfWeek.equals(DayOfWeek.SATURDAY) || Holiday.isExists(localDate)) {
+            if (dayOfWeek.equals(DayOfWeek.SUNDAY) || dayOfWeek.equals(DayOfWeek.SATURDAY) || Holiday.isExists(
+                    localDate)) {
                 continue;
             }
             this.attendances.add(initializeAttendance(attendanceDateTimes, today, day));
@@ -23,7 +24,8 @@ public class Attendances {
 
     private Attendance initializeAttendance(List<LocalDateTime> attendanceDateTimes, LocalDateTime today, int day) {
         return attendanceDateTimes.stream()
-                .filter(dateTime -> dateTime.toLocalDate().isEqual(LocalDate.of(today.getYear(), today.getMonth(), day)))
+                .filter(dateTime -> dateTime.toLocalDate()
+                        .isEqual(LocalDate.of(today.getYear(), today.getMonth(), day)))
                 .findAny()
                 .map(Attendance::new)
                 .orElse(Attendance.absence(LocalDate.of(today.getYear(), today.getMonth(), day)));
@@ -49,4 +51,10 @@ public class Attendances {
         return attendances.stream()
                 .toList();
     }
+
+    public boolean existsByLocalDate(final LocalDate localDate) {
+        return attendances.stream()
+                .anyMatch(attendance -> attendance.isSameDate(localDate));
+    }
+
 }
