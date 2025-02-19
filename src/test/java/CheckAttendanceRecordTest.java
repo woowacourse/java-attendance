@@ -1,5 +1,6 @@
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.List;
 import java.util.Map;
 import org.junit.jupiter.api.Test;
 
@@ -15,6 +16,8 @@ public class CheckAttendanceRecordTest {
         attendanceBook.checkAttendance("쿠키", Map.of(LocalDate.of(2024, 12, 4), LocalTime.of(9, 7)));
         attendanceBook.checkAttendance("쿠키", Map.of(LocalDate.of(2024, 12, 5), LocalTime.of(14, 7)));
 
-        crew1.getAttendanceRecords();
+        List<AttendanceRecordsResponse> attendanceRecords = crew1.getAttendanceRecords();
+
+        TotalRecordsResponse totalRecordsResponse = TotalRecordsResponse.fromAttendanceRecords(attendanceRecords);
     }
 }
