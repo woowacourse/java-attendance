@@ -6,6 +6,7 @@ import attendance.model.AttendanceStartTime;
 import attendance.model.AttendanceTimeline;
 import attendance.model.AttendanceTimeline.AttendanceLog;
 import attendance.model.AttendanceType;
+import attendance.model.AttendanceWarningLevel;
 import attendance.model.Attendances;
 import attendance.model.Command;
 import attendance.model.Crew;
@@ -128,6 +129,24 @@ public class AttendanceController {
                 attendanceTimeline.countByAttendanceType(AttendanceType.OK),
                 attendanceTimeline.countByAttendanceType(AttendanceType.LATE),
                 attendanceTimeline.countByAttendanceType(AttendanceType.ABSENCE));
+
+        AttendanceWarningLevel level = AttendanceWarningLevel.judge(
+                attendanceTimeline.countByAttendanceType(AttendanceType.LATE),
+                attendanceTimeline.countByAttendanceType(AttendanceType.ABSENCE)
+        );
+        if (level != AttendanceWarningLevel.CLEAN) {
+            System.out.printf("%n%s 대상자입니다.", displayAttendanceWarningLevel(level));
+        }
+    }
+
+    private String displayAttendanceWarningLevel(AttendanceWarningLevel level) {
+        if (level == AttendanceWarningLevel.WARNING) {
+            return "경고";
+        }
+        if (level == AttendanceWarningLevel.MEETING) {
+            return "면담";
+        }
+        return "제적";
     }
 
     private LocalTime toLocalTime(String rawTime) {
