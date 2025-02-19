@@ -1,16 +1,21 @@
 package attendance.service;
 
+import attendance.domain.Attendance;
 import attendance.domain.AttendanceManager;
+import attendance.domain.AttendanceStatus;
 import attendance.domain.DateTimeFormatterWrapper;
 import attendance.repository.AttendanceFileRepository;
+import java.sql.Wrapper;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
 
 public class AttendanceManagerService {
     private final AttendanceManager attendanceManager;
     private final AttendanceFileRepository attendanceFileRepository;
     private String ATTENDANCE_RESULT_FORMAT = "%s (%s)";
+    private String ATTENDANCE_MODIFY_RESULT_FORMAT = "%s -> %s (%s) 수정 완료!";
 
 
     public AttendanceManagerService(AttendanceManager attendanceManager, AttendanceFileRepository attendanceFileRepository) {
@@ -43,7 +48,11 @@ public class AttendanceManagerService {
         return String.format(ATTENDANCE_RESULT_FORMAT,dateTimeFormatResult,attendanceStatus.getStatus());
     }
 
-    public void attendanceModify(String nickname, LocalDate datetime) {
-//        attendanceManager.modifyAttendance(nickname, datetime);
+    public String attendanceModify(String nickname, LocalDate modifyDate, LocalTime afterModifyTime) {
+        String beforeAttendance = attendanceResult(nickname, modifyDate);
+        attendanceManager.modifyAttendance(nickname, modifyDate,afterModifyTime);
+        AttendanceStatus attendanceStatus = attendanceManager.findAttendances(nickname).getAttendanceStatus(modifyDate);
+        String timeFormatResult = DateTimeFormatterWrapper.parsingAttendanceTime(afterModifyTime);
+        return String.format(ATTENDANCE_MODIFY_RESULT_FORMAT,beforeAttendance,timeFormatResult,attendanceStatus.getStatus());
     }
 }
