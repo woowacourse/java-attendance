@@ -1,7 +1,7 @@
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.List;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
@@ -15,7 +15,7 @@ public class DateUtilTest {
         String time = "09:59";
 
         //when
-        var result = DateUtil.parseDatetime(time);
+        var result = DateUtil.parsetime(time);
 
         //then
         assertAll(
@@ -31,7 +31,7 @@ public class DateUtilTest {
         String time = "09:59";
 
         //when
-        var result = DateUtil.parseDatetime(day, time);
+        var result = DateUtil.parsetime(day, time);
 
         //then
         assertAll(
@@ -45,10 +45,10 @@ public class DateUtilTest {
     void should_return_is_day_equals_정확하게하는지_false() {
         // given
         final int day = 3;
-        final LocalDateTime localDateTime = LocalDateTime.of(2024, 12, 1, 9, 59);
+        final LocalDate localDate = LocalDate.of(2024, 12, 1);
 
         // when
-        final boolean result = DateUtil.isDayEqual(day, localDateTime);
+        final boolean result = DateUtil.isDayEqual(day, localDate);
 
         // then
         assertThat(result).isEqualTo(false);
@@ -58,10 +58,10 @@ public class DateUtilTest {
     void should_return_is_day_equals_정확하게하는지_true() {
         // given
         final int day = 1;
-        final LocalDateTime localDateTime = LocalDateTime.of(2024, 12, 1, 9, 59);
+        final LocalDate localDate = LocalDate.of(2024, 12, 1);
 
         // when
-        final boolean result = DateUtil.isDayEqual(day, localDateTime);
+        final boolean result = DateUtil.isDayEqual(day, localDate);
 
         // then
         assertThat(result).isEqualTo(true);
@@ -70,7 +70,7 @@ public class DateUtilTest {
     @Test
     void 출석_대상_날짜_확인_주말() throws Exception {
         //given
-        LocalDateTime holiday = LocalDateTime.of(2024, 12, 1, 0, 0);
+        LocalDate holiday = LocalDate.of(2024, 12, 1);
 
         //when
         var result = DateUtil.isDayOff(holiday);
@@ -83,7 +83,7 @@ public class DateUtilTest {
     @DisplayName("출석_대상_날짜_확인_평일")
     void test2() throws Exception {
         //given
-        LocalDateTime holiday = LocalDateTime.of(2024, 12, 2, 0, 0);
+        LocalDate holiday = LocalDate.of(2024, 12, 2);
 
         //when
         var result = DateUtil.isDayOff(holiday);
@@ -96,7 +96,7 @@ public class DateUtilTest {
     @DisplayName("출석_대상_날짜_확인_공휴일")
     void test3() throws Exception {
         //given
-        LocalDateTime holiday = LocalDateTime.of(2024, 12, 25, 0, 0);
+        LocalDate holiday = LocalDate.of(2024, 12, 25);
 
         //when
         var result = DateUtil.isDayOff(holiday);
@@ -106,6 +106,7 @@ public class DateUtilTest {
     }
 
     @Test
+    @DisplayName("출석하는 날짜 리스트 추춣 테스트")
     void test4() throws Exception {
         //given
         int day = 13;
@@ -128,7 +129,7 @@ public class DateUtilTest {
 
         //when & then
         Assertions.assertThatThrownBy(
-                () -> DateUtil.parseDatetime(day, time)
+                () -> DateUtil.parsetime(day, time)
         ).isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -141,7 +142,7 @@ public class DateUtilTest {
 
         //when & then
         Assertions.assertThatThrownBy(
-                () -> DateUtil.parseDatetime(day, time)
+                () -> DateUtil.parsetime(day, time)
         ).isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -154,7 +155,7 @@ public class DateUtilTest {
 
         //when & then
         Assertions.assertThatThrownBy(
-                () -> DateUtil.parseDatetime(day, time)
+                () -> DateUtil.parsetime(day, time)
         ).isInstanceOf(IllegalArgumentException.class);
     }
 }

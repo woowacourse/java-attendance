@@ -57,7 +57,7 @@ public class Attends {
                 .collect(Collectors.toList());
     }
 
-    private boolean hasDayEqualsAttend(int day) {
+    public boolean hasDayEqualsAttend(int day) {
         return attends.stream()
                 .anyMatch(attend -> attend.isDayEqual(day));
     }

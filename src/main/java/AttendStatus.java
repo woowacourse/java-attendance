@@ -4,7 +4,7 @@ public enum AttendStatus {
     ATTEND, LATE, ABSENCE;
 
     public static AttendStatus calculateAttend(Attend attend, LocalTime lateTime, LocalTime absenceTime) {
-        LocalTime targetTime = attend.time.toLocalTime();
+        LocalTime targetTime = attend.time;
         if (targetTime.isAfter(absenceTime)) {
             return ABSENCE;
         }

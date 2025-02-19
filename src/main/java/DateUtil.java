@@ -1,3 +1,4 @@
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
@@ -5,7 +6,7 @@ import java.util.List;
 
 public class DateUtil {
 
-    public static LocalDateTime parseDatetime(String day, String time) {
+    public static LocalDateTime parsetime(String day, String time) {
         try {
             final int parsedDay = Integer.parseInt(day);
             vaildateDay(parsedDay);
@@ -17,22 +18,26 @@ public class DateUtil {
         }
     }
 
-    public static LocalDateTime parseDatetime(String time) {
+    public static LocalTime parsetime(String time) {
         var hour = time.substring(0, 2);
         var min = time.substring(3);
-        return LocalDateTime.of(2024, 12, 13, Integer.parseInt(hour), Integer.parseInt(min));
+        return LocalTime.of(Integer.parseInt(hour), Integer.parseInt(min));
     }
 
-    public static boolean isDayEqual(final int day, final LocalDateTime datetime) {
-        return datetime.getDayOfMonth() == day;
+    public static LocalDate parseDate(String date) {
+        return LocalDate.of(2024, 12, Integer.parseInt(date));
     }
 
-    public static boolean isDayOff(LocalDateTime holiday) {
+    public static boolean isDayEqual(final int day, final LocalDate date) {
+        return date.getDayOfMonth() == day;
+    }
+
+    public static boolean isDayOff(LocalDate holiday) {
         return holiday.getDayOfWeek().getValue() >= 6 || holiday.getDayOfMonth() == 25;
     }
 
     public static boolean isDayOff(int day) {
-        LocalDateTime targetDate = LocalDateTime.of(2024, 12, day, 0, 0);
+        LocalDate targetDate = LocalDate.of(2024, 12, day);
         return isDayOff(targetDate);
     }
 
@@ -41,7 +46,7 @@ public class DateUtil {
     }
 
     public static boolean isTimeOff(Attend attend, LocalTime startTime, LocalTime endTime) {
-        return attend.time.toLocalTime().isBefore(startTime) || attend.time.toLocalTime().isAfter(endTime);
+        return attend.time.isBefore(startTime) || attend.time.isAfter(endTime);
     }
 
     public static List<Integer> getAttendUntilDay(int day) {

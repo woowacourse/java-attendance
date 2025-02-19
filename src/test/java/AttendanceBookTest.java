@@ -1,5 +1,6 @@
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,8 +35,7 @@ public class AttendanceBookTest {
         Attend attend = Attend.of(date, time);
 
         //when & then
-        assertThatThrownBy(() -> attendanceBook.attend(name, attend))
-                .isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> attendanceBook.attend(name, attend)).isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
@@ -48,8 +48,7 @@ public class AttendanceBookTest {
         Attend attend = Attend.of(date, time);
 
         //when & then
-        assertThatThrownBy(() -> attendanceBook.attend(name, attend))
-                .isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> attendanceBook.attend(name, attend)).isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
@@ -63,8 +62,7 @@ public class AttendanceBookTest {
         Attend attend = Attend.of(day, time);
 
         //when & then
-        assertThatThrownBy(() -> attendanceBook.attend(name, attend))
-                .isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> attendanceBook.attend(name, attend)).isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
@@ -78,8 +76,7 @@ public class AttendanceBookTest {
         Attend attend = Attend.of(day, time);
 
         //when & then
-        assertThatThrownBy(() -> attendanceBook.attend(name, attend))
-                .isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> attendanceBook.attend(name, attend)).isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
@@ -120,17 +117,9 @@ public class AttendanceBookTest {
         // given
         String name = "플린트";
         AttendanceBook attendanceBook = new AttendanceBook();
-        List<Attend> attendsInitValue = List.of(
-                Attend.of("2", "13:00"),
-                Attend.of("3", "10:07"),
-                Attend.of("4", "13:00"),
-                Attend.of("5", "13:00"),
-                Attend.of("6", "13:00"),
-                Attend.of("9", "13:00"),
-                Attend.of("10", "13:00"),
-                Attend.of("11", "13:00"),
-                Attend.of("12", "13:00"),
-                Attend.of("13", "13:00"));
+        List<Attend> attendsInitValue = List.of(Attend.of("2", "13:00"), Attend.of("3", "10:07"),
+                Attend.of("4", "13:00"), Attend.of("5", "13:00"), Attend.of("6", "13:00"), Attend.of("9", "13:00"),
+                Attend.of("10", "13:00"), Attend.of("11", "13:00"), Attend.of("12", "13:00"), Attend.of("13", "13:00"));
         for (Attend attend : attendsInitValue) {
             attendanceBook.attend(name, attend);
         }
@@ -142,5 +131,49 @@ public class AttendanceBookTest {
         List<Attend> expected = new ArrayList<>(attendsInitValue);
         expected.removeLast();
         assertThat(result).containsOnlyElementsOf(expected);
+    }
+
+    @Test
+    @DisplayName("닉네임 대상의 출석을 현재 날짜 이전까지 출력해야 한다.")
+    void test3() {
+        //given
+        String name = "플린트";
+        AttendanceBook attendanceBook = new AttendanceBook();
+        List<Attend> expectAttend = List.of(Attend.of("2", "10:00"), Attend.of("3", "10:06"), Attend.of("4", "10:31"));
+        List<AttendStatus> expectedStatus = List.of(AttendStatus.ATTEND, AttendStatus.LATE, AttendStatus.ABSENCE);
+        List<Attend> attends = new ArrayList<>(expectAttend);
+        for (Attend attend : attends) {
+            attendanceBook.attend(name, attend);
+        }
+
+        //when
+        List<AttendanceResult> result = attendanceBook.checkAttendance(name, DateUtil.getAttendUntilDay(4));
+
+        //then
+        List<AttendanceResult> expected = List.of(new AttendanceResult(expectAttend.get(0), expectedStatus.get(0)),
+                new AttendanceResult(expectAttend.get(1), expectedStatus.get(1)),
+                new AttendanceResult(expectAttend.get(2), expectedStatus.get(2)));
+        Assertions.assertThat(result).containsOnlyElementsOf(expected);
+    }
+
+    @Test
+    @DisplayName("닉네임 대상의 출석을 현재 날짜 이전까지 출력해야 한다.")
+    void test4() {
+        //given
+        String name = "플린트";
+        AttendanceBook attendanceBook = new AttendanceBook();
+        List<Attend> expectAttend = List.of(Attend.of("2", "10:00"), Attend.of("3", "10:06"), Attend.of("4", "10:31"));
+        List<Attend> attends = new ArrayList<>(expectAttend);
+        for (Attend attend : attends) {
+            attendanceBook.attend(name, attend);
+        }
+        List<Integer> days = DateUtil.getAttendUntilDay(5);
+
+        //when
+        List<AttendanceResult> result = attendanceBook.checkAttendance(name, days);
+
+        //then
+        assertAll(() -> Assertions.assertThat(result.get(3).attend()).isEqualTo(Attend.fromDay(5)),
+                () -> Assertions.assertThat(result.get(3).attendStatus()).isEqualTo(AttendStatus.ABSENCE));
     }
 }
