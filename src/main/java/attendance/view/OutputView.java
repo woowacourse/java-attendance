@@ -1,7 +1,6 @@
 package attendance.view;
 
 import attendance.domain.Attendance;
-import attendance.utils.AttendanceChecker;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -23,19 +22,20 @@ public class OutputView {
         System.out.println("결석: " + absent + "회");
     }
 
-    public void printModifyAttendanceResult(LocalDateTime originTime, LocalDateTime modifyTime) {
-        printAttendance(originTime, AttendanceChecker.check(originTime));
+    public void printModifyAttendanceResult(LocalDateTime originTime, String originAttendanceStatus,
+                                            LocalDateTime modifyTime, String modifyAttendanceStatus) {
+        printAttendance(originTime, originAttendanceStatus);
 
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");
         System.out.println(
-                " ->  " + modifyTime.format(formatter) + "(" + AttendanceChecker.check(modifyTime) + ") 수정 완료!");
+                " ->  " + modifyTime.format(formatter) + "(" + modifyAttendanceStatus + ") 수정 완료!");
     }
 
     public void printNameAndAttendances(String name, List<Attendance> attendances) {
 
         System.out.println("이번 달 " + name + "의 출석 기록입니다.");
         for (Attendance attendance : attendances) {
-            String attendanceStatus = AttendanceChecker.check(attendance.getAttendanceTime());
+            String attendanceStatus = attendance.getAttendanceStatus();
             printAttendance(attendance.getAttendanceTime(), attendanceStatus);
         }
     }

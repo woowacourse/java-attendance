@@ -20,7 +20,7 @@ class FileReaderTest {
         List<String> attendances = FileReader.parseToFile(filePath);
 
         //then
-        assertThat(attendances.size()).isEqualTo(42);
+        assertThat(attendances.size()).isEqualTo(43);
     }
 
 }

@@ -4,7 +4,6 @@ import attendance.domain.Attendance;
 import attendance.domain.AttendanceBook;
 import attendance.dto.AttendanceContentDTO;
 import attendance.repository.AttendanceRepository;
-import attendance.utils.AttendanceChecker;
 import attendance.utils.AttendanceReader;
 import attendance.utils.FileReader;
 import attendance.view.InputView;
@@ -58,9 +57,10 @@ public class AttendanceController {
         attendanceBook.checkName(crewName);
         String attendanceTime = inputView.inputTime();
         LocalDateTime todayDateTime = createTime(LocalDate.now(), attendanceTime);
-        attendanceRepository.add(new Attendance(crewName, todayDateTime));
+        Attendance attendance = new Attendance(crewName, todayDateTime);
+        attendanceRepository.add(attendance);
 
-        outputView.printAttendance(todayDateTime, AttendanceChecker.check(todayDateTime));
+        outputView.printAttendance(todayDateTime, attendance.getAttendanceStatus());
     }
 
     private LocalDateTime createTime(LocalDate date, String attendanceTime) {
@@ -79,13 +79,14 @@ public class AttendanceController {
         int month = LocalDate.now().getMonthValue();
         LocalDateTime modifyDateTime = createTime(LocalDate.of(year, month, modifyDay), modifyTime);
 
-        Attendance previousAttendance = attendanceRepository.findAttendanceByNameAndDateTime(crewName,
+        Attendance attendance = attendanceRepository.findAttendanceByNameAndDateTime(crewName,
                 modifyDay);
 
-        LocalDateTime previousDateTime = previousAttendance.getAttendanceTime();
-        previousAttendance.modifyAttendanceTime(modifyDateTime);
+        LocalDateTime previousDateTime = attendance.getAttendanceTime();
+        String previousAttendanceStatus = attendance.getAttendanceStatus();
 
-        outputView.printModifyAttendanceResult(previousDateTime, modifyDateTime);
+        outputView.printModifyAttendanceResult(previousDateTime, previousAttendanceStatus, modifyDateTime,
+                attendance.getAttendanceStatus());
     }
 
 }
