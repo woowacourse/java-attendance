@@ -2,6 +2,7 @@ package domain;
 
 import java.time.LocalDateTime;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class CrewGroup {
@@ -25,5 +26,12 @@ public class CrewGroup {
     public void calculateAllAttendanceCount() {
         crews.values()
                 .forEach(Crew::updateAttendanceCount);
+    }
+
+    public List<Crew> getAllAttendanceAlertLevel() {
+        return crews.values()
+                .stream()
+                .filter(crew -> !crew.calculateAttendanceAlertLevel().equals(AttendanceAlertLevel.NORMAL))
+                .toList();
     }
 }

@@ -4,6 +4,8 @@ import domain.AttendanceStatus;
 import java.time.LocalDateTime;
 import java.time.format.TextStyle;
 import java.util.Locale;
+import view.dto.AlertCrewDTO;
+import view.dto.AlertCrewsDTO;
 import view.dto.AttendanceLogDTO;
 import view.dto.CrewAttendancesDTO;
 
@@ -47,5 +49,20 @@ public class OutputView {
         );
         stringBuilder.append("\n");
         return stringBuilder.toString();
+    }
+
+    public void printAlertCrews(AlertCrewsDTO alertCrewsDTO) {
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append("제적 위험자 조회 결과\n");
+        for (AlertCrewDTO alertCrewDTO : alertCrewsDTO.alertCrews()) {
+            stringBuilder.append(makeAlertCrew(alertCrewDTO));
+        }
+
+        System.out.println(stringBuilder);
+    }
+
+    private String makeAlertCrew(AlertCrewDTO alertCrewDTO) {
+        return String.format("- %s: 결석 %d회, 지각 %d회 (%s)\n", alertCrewDTO.nickName(), alertCrewDTO.absent(),
+                alertCrewDTO.late(), alertCrewDTO.AlertLevel());
     }
 }

@@ -3,6 +3,7 @@ package domain;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import service.DayComparator;
 
 public class Crew {
@@ -41,6 +42,10 @@ public class Crew {
         }
     }
 
+    public AttendanceAlertLevel calculateAttendanceAlertLevel() {
+        return attendanceCount.calculateAttendanceAlertLevel();
+    }
+
     public String getNickname() {
         return nickname;
     }
@@ -51,5 +56,22 @@ public class Crew {
 
     public List<Attendance> getAttendances() {
         return attendances;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        Crew crew = (Crew) o;
+        return Objects.equals(nickname, crew.nickname);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(nickname);
     }
 }
