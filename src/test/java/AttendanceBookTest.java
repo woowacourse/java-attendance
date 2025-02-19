@@ -47,4 +47,35 @@ public class AttendanceBookTest {
         assertThatThrownBy(() -> attendanceBook.attend(name, attend))
                 .isInstanceOf(IllegalArgumentException.class);
     }
+    @Test
+    void 존재하지_않는_출석_수정_테스트() throws Exception {
+        //given
+        AttendanceBook attendanceBook = new AttendanceBook();
+        var name = "플린트";
+        var date = "13";
+        var time = "10:11";
+        Attend attend = Attend.of(date, time);
+
+        //when
+        attendanceBook.edit(name, attend);
+
+        //then
+        Assertions.assertThat(attendanceBook.findByName(name).attends).contains(attend);
+    }
+
+    @Test
+    void 존재하는_출석_수정_테스트() throws Exception {
+        //given
+        AttendanceBook attendanceBook = new AttendanceBook();
+        var name = "플린트";
+        Attend beforeAttend = Attend.of("13", "10:00");
+        Attend afterAttend = Attend.of("13", "10:10");
+        attendanceBook.attend(name, beforeAttend);
+
+        //when
+        attendanceBook.edit(name, afterAttend);
+
+        //then
+        Assertions.assertThat(attendanceBook.findByName(name).attends).contains(afterAttend);
+    }
 }

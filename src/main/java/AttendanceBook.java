@@ -17,6 +17,12 @@ public class AttendanceBook {
         map.put(name, attendOfUser);
     }
 
+    public void edit(String name, Attend attend) {
+        var attendOfUser = map.getOrDefault(name, new Attends(new ArrayList<>()));
+        validateAttendableDay(attend);
+        attendOfUser.edit(attend);
+        map.put(name, attendOfUser);
+    }
     private void validateAttendableDay(Attend attend) {
         if (DateUtil.isDayOff(attend)) {
             throw new IllegalArgumentException("쉬는날은 출석할 수 없음");
