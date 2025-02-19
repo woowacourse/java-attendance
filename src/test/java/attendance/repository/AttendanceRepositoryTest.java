@@ -74,7 +74,8 @@ class AttendanceRepositoryTest {
         attendanceRepository.add(attendance);
 
         //when
-        Attendance resultAttendance = attendanceRepository.findAttendanceByNameAndDateTime("체체", 17);
+        Attendance resultAttendance = attendanceRepository.findAttendanceByNameAndLocalDate("체체", localDate1.getYear(),
+                localDate1.getMonthValue(), 17);
 
         //then
         assertThat(attendance).isEqualTo(resultAttendance);
