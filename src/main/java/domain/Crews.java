@@ -1,13 +1,18 @@
 package domain;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Crews {
 
     private final List<Crew> crews;
 
-    public Crews(final List<Crew> crews) {
-        this.crews = crews;
+    public Crews(final List<String> inputCrews) {
+        crews = new ArrayList<>();
+        inputCrews.forEach(inputCrew -> {
+            String[] s = inputCrew.split(",");
+            ifFindNameAddTime(s[0], s[1]);
+        });
     }
 
     public Crew findCrew(final String nickname) {

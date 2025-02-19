@@ -1,21 +1,19 @@
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-
 import domain.AttendTime;
 import domain.Crew;
 import domain.Crews;
-import java.util.ArrayList;
-import java.util.List;
+import domain.December;
 import org.junit.jupiter.api.Test;
+
+import java.util.List;
+
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 public class CrewsTest {
 
     @Test
     void test1() {
-        List<Crew> crewList = new ArrayList<>();
-        crewList.add(new Crew("폰트", "2024-12-13 10:08"));
-        crewList.add(new Crew("슬링키", "2024-12-09 13:03"));
 
-        Crews crews = new Crews(crewList);
+        Crews crews = new Crews(List.of("폰트,2024-12-13 10:08", "슬링키,2024-12-09 13:03"));
 
         Crew crew = crews.findCrew("폰트");
 
@@ -24,12 +22,7 @@ public class CrewsTest {
 
     @Test
     void test2() {
-        List<Crew> crewList = new ArrayList<>();
-        crewList.add(new Crew("폰트", "2024-12-13 10:08"));
-        crewList.add(new Crew("슬링키", "2024-12-09 13:03"));
-
-        Crews crews = new Crews(crewList);
-
+        Crews crews = new Crews(List.of("폰트,2024-12-13 10:08", "슬링키,2024-12-09 13:03"));
         Crew crew = crews.findCrew("슬링키");
 
         assertThat(crew.getName()).isEqualTo("슬링키");
@@ -37,11 +30,7 @@ public class CrewsTest {
 
     @Test
     void test3() {
-        List<Crew> crewList = new ArrayList<>();
-        crewList.add(new Crew("폰트", "2024-12-13 10:08"));
-        crewList.add(new Crew("슬링키", "2024-12-09 13:03"));
-
-        Crews crews = new Crews(crewList);
+        Crews crews = new Crews(List.of("폰트,2024-12-13 10:08", "슬링키,2024-12-09 13:03"));
 
         crews.ifFindNameAddTime("슬링키", "2024-12-09 13:03");
 
@@ -51,11 +40,7 @@ public class CrewsTest {
 
     @Test
     void test4() {
-        List<Crew> crewList = new ArrayList<>();
-        crewList.add(new Crew("폰트", "2024-12-13 10:08"));
-        crewList.add(new Crew("슬링키", "2024-12-09 13:03"));
-
-        Crews crews = new Crews(crewList);
+        Crews crews = new Crews(List.of("폰트,2024-12-13 10:08", "슬링키,2024-12-09 13:03"));
 
         crews.ifFindNameAddTime("포비", "2024-12-09 13:03");
 
@@ -65,14 +50,15 @@ public class CrewsTest {
 
     @Test
     void test5() {
-        List<Crew> crewList = new ArrayList<>();
-        crewList.add(new Crew("폰트", "2024-12-13 10:08"));
-        crewList.add(new Crew("슬링키", "2024-12-09 13:03"));
-        Crews crews = new Crews(crewList);
-
+        Crews crews = new Crews(List.of("폰트,2024-12-13 10:08", "슬링키,2024-12-09 13:03"));
         AttendTime attendTime = crews.deleteAttendance("슬링키", 9);
 
         assertThat(attendTime.getAttendTime().getHour()).isEqualTo(13);
         assertThat(attendTime.getAttendTime().getMinute()).isEqualTo(3);
+    }
+
+    @Test
+    void test6() {
+        System.out.println(December.getWeekDays());
     }
 }
