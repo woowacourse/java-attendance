@@ -11,6 +11,11 @@ public class Attendance {
         this.status = checkAttendanceStatus(dateTime);
     }
 
+    public Attendance(LocalDateTime dateTime, AttendanceStatus status) {
+        this.dateTime = dateTime;
+        this.status = status;
+    }
+
     public AttendanceStatus checkAttendanceStatus(LocalDateTime time) {
         int hour = time.getHour();
         int minute = time.getMinute();
