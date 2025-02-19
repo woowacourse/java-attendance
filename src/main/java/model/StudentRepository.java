@@ -30,10 +30,17 @@ public class StudentRepository {
     public void createStudent(ArrayList<String> fileInformation) {
         for (String information : fileInformation) {
             String[] studentNameAndAttendanceTime = information.split(",");
-            Student student = new Student(studentNameAndAttendanceTime[0]);
-            students.add(student);
+            if (findStudentByName(studentNameAndAttendanceTime[0]) == null) {
+                Student student = new Student(studentNameAndAttendanceTime[0]);
+                students.add(student);
+                DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+                LocalDateTime localDateTime = LocalDateTime.parse(studentNameAndAttendanceTime[1], dateTimeFormatter);
+                student.updateState(localDateTime);
+                continue;
+            }
+            Student student = findStudentByName(studentNameAndAttendanceTime[0]);
             DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
-            LocalDateTime localDateTime = LocalDateTime.parse(information, dateTimeFormatter);
+            LocalDateTime localDateTime = LocalDateTime.parse(studentNameAndAttendanceTime[1], dateTimeFormatter);
             student.updateState(localDateTime);
         }
     }
