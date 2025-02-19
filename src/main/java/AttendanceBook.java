@@ -50,7 +50,7 @@ public class AttendanceBook {
         Crew foundCrew = crews.stream()
                 .filter(crew -> crew.hasName(name))
                 .findAny()
-                .orElse(null);
+                .orElseThrow(() -> new IllegalArgumentException("[ERROR] 등록되지 않은 닉네임입니다."));
 
         LocalDate date = dateAndTime.keySet().stream()
                 .findAny()
