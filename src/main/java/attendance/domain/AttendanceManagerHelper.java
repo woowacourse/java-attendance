@@ -18,4 +18,5 @@ public class AttendanceManagerHelper {
     static final String CANNOT_BE_EMPTY_NICKNAME = "닉네임은 공백일 수 없습니다.";
     static final String CANNOT_ATTENDANCE_WEEKEND_FORMAT = "MM월 dd일 E요일은 등교일이 아닙니다.";
     static final String OUT_OF_SCHOOL_SCHEDULE = "등교시간에만 출석 가능합니다.";
+    static final String ATTENDANCE_NOT_AVAILABLE = "출석 시스템은 2024년 12월 동안만 유효합니다";
 }
