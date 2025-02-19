@@ -2,11 +2,12 @@ package service;
 
 import domain.Attendance;
 import domain.Crew;
+import exception.CrewNotExistException;
+import exception.DuplicateAttendanceException;
 import repository.AttendanceRepository;
 import repository.CrewRepository;
 
 import java.time.LocalDateTime;
-import java.util.Optional;
 
 public class AttendanceCheckService {
     private final CrewRepository crewRepository;
@@ -18,14 +19,14 @@ public class AttendanceCheckService {
     }
 
     public Crew findCrew(String name) {
-        Optional<Crew> crew = crewRepository.findByName(name);
-        return crew.orElseThrow(IllegalArgumentException::new);
+        return crewRepository.findByName(name).orElseThrow(() -> new CrewNotExistException("존재하지 않는 크루입니다."));
     }
 
-    public Attendance register(Crew crew, LocalDateTime time) {
+    public Attendance register(String name, LocalDateTime time) {
+        Crew crew = findCrew(name);
         for (Attendance attendance : attendanceRepository.findByCrew(crew)) {
             if (attendance.isSameDateWith(time)) {
-                throw new IllegalArgumentException("이미 출석한 날짜입니다.");
+                throw new DuplicateAttendanceException("이미 출석한 날짜입니다.");
             }
         }
         Attendance attendance = new Attendance(crew, time);
@@ -33,4 +34,3 @@ public class AttendanceCheckService {
         return attendance;
     }
 }
-
