@@ -50,13 +50,16 @@ public class Attendance {
 
             attendanceStatuses.put(attendanceStatus, (int) count);
         }
+        AttendanceStatus status = timestamps.get(LocalDate.of(2024, 12, today)).attendanceStatus();
+
+        attendanceStatuses.put(status, attendanceStatuses.get(status) - 1);
 
         return attendanceStatuses;
     }
 
     private void updateTimestamp(int today) {
         for(int day = 1 ; day < today ; day++){
-            LocalDate date = LocalDate.of(2024, 12, today);
+            LocalDate date = LocalDate.of(2024, 12, day);
             if(!AttendanceChecker.isCampusDay(day)){
                 continue;
             }

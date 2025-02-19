@@ -3,6 +3,7 @@ package attendance.domain;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 public class AttendanceRepository {
@@ -36,5 +37,11 @@ public class AttendanceRepository {
             throw new IllegalArgumentException("해당 날짜에 출석 기록이 없습니다.");
         }
         crewAttendance.modify(localDate, hourMinute);
+    }
+
+    public WarningLevel queryWarningLevelByName(final String name, int today) {
+        Attendance crewAttendance = findByName(name);
+        final Map<AttendanceStatus, Integer> crewAttendanceStatuses = crewAttendance.countAttendanceStatus(today);
+        return WarningLevel.calculateLevel(crewAttendanceStatuses);
     }
 }

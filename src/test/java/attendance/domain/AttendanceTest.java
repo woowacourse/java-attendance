@@ -90,11 +90,13 @@ public class AttendanceTest {
         LocalDateTime localDateTime1 = LocalDateTime.of(2024, 12, 3, 9, 58);
         LocalDateTime localDateTime2 = LocalDateTime.of(2024, 12, 4, 10, 2);
         LocalDateTime localDateTime3 = LocalDateTime.of(2024, 12, 5, 10, 6);
+        LocalDateTime localDateTime4 = LocalDateTime.of(2024, 12, 6, 10, 1);
 
         Attendance attendance = new Attendance("빙티");
         attendance.add(localDateTime1);
         attendance.add(localDateTime2);
         attendance.add(localDateTime3);
+        attendance.add(localDateTime4);
 
         Map<AttendanceStatus, Integer> attendanceStatuses = attendance.countAttendanceStatus(6);
 
