@@ -7,9 +7,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class DataFileReader {
-    private final String FILE_PATH = "src/main/resources/attendances.csv";
+    private static final String FILE_PATH = "src/main/resources/attendances.csv";
 
-    public List<String> read() {
+    public static List<String> read() {
         List<String> datas = new ArrayList<>();
         try (BufferedReader bufferedReader = new BufferedReader(new FileReader(FILE_PATH))) {
             bufferedReader.readLine();
