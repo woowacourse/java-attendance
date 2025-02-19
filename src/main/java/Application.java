@@ -16,12 +16,12 @@ public class Application {
         AttendanceController attendanceController = new AttendanceController(
                 new InputView(),
                 new OutputView(),
-                new AttendanceCheckService(crewRepository, attendanceRepository)
+                new AttendanceCheckService(attendanceRepository)
         );
 
         // TODO: 옮기기
         AttendanceStoreService attendanceStoreService = new AttendanceStoreService(
-                crewRepository, attendanceRepository
+                attendanceRepository
         );
         attendanceStoreService.save();
         // -----------

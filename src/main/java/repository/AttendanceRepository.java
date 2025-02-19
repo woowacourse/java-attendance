@@ -1,17 +1,22 @@
 package repository;
 
 import domain.Attendance;
+import domain.AttendanceBook;
 import domain.Crew;
 
 import java.util.List;
 import java.util.Optional;
 
 public interface AttendanceRepository {
-    void save(Attendance attendance);
+    void save(Crew crew);
 
-    List<Attendance> findByCrew(Crew crew);
+    void createNewAttendance(String crewName, int date, int hour, int minute);
 
-    Optional<Attendance> findByCrewAndDate(Crew crew, int date);
+    AttendanceBook findByCrewName(String crewName);
 
-    void replace(Attendance beforeAttendance, Attendance afterAttendance);
+    Optional<Attendance> findByCrewAndDate(String crewName, int date);
+
+    void modifyAttendance(String crewName, Attendance beforeAttendance, Attendance afterAttendance);
+
+    Crew findCrewByName(String crewName);
 }

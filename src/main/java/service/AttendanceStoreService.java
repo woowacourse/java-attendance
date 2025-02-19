@@ -1,9 +1,7 @@
 package service;
 
-import domain.Attendance;
 import domain.Crew;
 import repository.AttendanceRepository;
-import repository.CrewRepository;
 
 import java.io.*;
 import java.time.LocalDateTime;
@@ -12,12 +10,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class AttendanceStoreService {
-    private final CrewRepository crewRepository;
     private final AttendanceRepository attendanceRepository;
 
 
-    public AttendanceStoreService(CrewRepository crewRepository, AttendanceRepository attendanceRepository) {
-        this.crewRepository = crewRepository;
+    public AttendanceStoreService(AttendanceRepository attendanceRepository) {
         this.attendanceRepository = attendanceRepository;
     }
 
@@ -50,8 +46,12 @@ public class AttendanceStoreService {
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
             Crew crew = new Crew(parsed[0]);
             LocalDateTime attendanceTime = LocalDateTime.parse(parsed[1], formatter);
-            crewRepository.save(crew);
-            attendanceRepository.save(new Attendance(crew, attendanceTime));
+            attendanceRepository.save(crew);
+            attendanceRepository.createNewAttendance(parsed[0]
+                    , attendanceTime.getDayOfMonth()
+                    , attendanceTime.getHour()
+                    , attendanceTime.getMinute()
+            );
         }
     }
 }

@@ -3,13 +3,12 @@ package domain;
 import java.time.DayOfWeek;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.Objects;
 
 public class Attendance {
-    private final Crew crew;
     private final LocalDateTime time;
 
-    public Attendance(Crew crew, LocalDateTime time) {
-        this.crew = crew;
+    public Attendance(LocalDateTime time) {
         this.time = time;
     }
 
@@ -19,10 +18,6 @@ public class Attendance {
 
     public LocalDateTime getTime() {
         return time;
-    }
-
-    public Crew getCrew() {
-        return crew;
     }
 
     public String getStatus() {
@@ -48,7 +43,7 @@ public class Attendance {
     }
 
     public Attendance modify(int newHour, int newMinutes) {
-        return new Attendance(crew, time.withHour(newHour).withMinute(newMinutes));
+        return new Attendance(time.withHour(newHour).withMinute(newMinutes));
     }
 
     @Override
@@ -58,6 +53,11 @@ public class Attendance {
             return false;
         }
         Attendance other = (Attendance) obj;
-        return crew.equals(other.crew) && time.isEqual(other.time);
+        return time.isEqual(other.getTime());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(time);
     }
 }
