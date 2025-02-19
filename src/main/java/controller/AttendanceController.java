@@ -9,6 +9,7 @@ import view.OutputView;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.function.Supplier;
 
 public class AttendanceController {
     private final InputView inputView = new InputView();
@@ -18,21 +19,34 @@ public class AttendanceController {
     private final CrewAttendanceRecords crewAttendanceRecords = new CrewAttendanceRecords("/attendances.csv", currentDateGenerator);
 
     public void run() {
-        String menuInput = inputView.readMenu(currentDateGenerator.generate());
-        if (menuInput.matches("[Qq]")) {
-            return;
-        }
-        if (menuInput.equals("1")) {
-            checkIn();
-        }
-        if (menuInput.equals("2")) {
-            updateAttendance();
-        }
-        if (menuInput.equals("3")) {
-            checkAttendanceRecords();
-        }
-        if (menuInput.equals("4")) {
-            checkDisciplinaryStatus();
+        String menuInput;
+        do {
+            menuInput = retryUntilSuccess(() -> {
+                String input = inputView.readMenu(currentDateGenerator.generate());
+                if (input.equals("1")) {
+                    checkIn();
+                }
+                if (input.equals("2")) {
+                    updateAttendance();
+                }
+                if (input.equals("3")) {
+                    checkAttendanceRecords();
+                }
+                if (input.equals("4")) {
+                    checkDisciplinaryStatus();
+                }
+                return input;
+            });
+        } while (!menuInput.matches("[Qq]"));
+    }
+
+    private String retryUntilSuccess(Supplier<String> supplier) {
+        while (true) {
+            try {
+                return supplier.get();
+            } catch (IllegalArgumentException e) {
+                System.out.println(e.getMessage());
+            }
         }
     }
 

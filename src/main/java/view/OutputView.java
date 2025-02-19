@@ -62,7 +62,7 @@ public class OutputView {
         if (status == DisciplinaryStatus.NONE) {
             return;
         }
-        System.out.printf("%s 대상자입니다.", status.getName());
+        System.out.printf("%s 대상자입니다.%n", status.getName());
     }
 
     public void displayWarnedCrews(List<Crew> warnedCrews, CrewAttendanceRecords crewAttendanceRecords) {

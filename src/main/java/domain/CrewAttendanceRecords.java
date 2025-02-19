@@ -5,10 +5,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class CrewAttendanceRecords {
     private static final int HEADER_ROW = 1;
@@ -117,6 +114,24 @@ public class CrewAttendanceRecords {
                 warnedCrews.add(crew);
             }
         }
-        return warnedCrews;
+        return sortWarnedCrews(warnedCrews);
+    }
+
+    private List<Crew> sortWarnedCrews(List<Crew> crews) {
+        crews.sort(Comparator.comparing(Crew::getName));
+        crews.sort(Comparator.comparing(crew -> {
+            int absentCount = crewAttendanceRecords.get(crew).getAbsentCount();
+            int tardyCount = crewAttendanceRecords.get(crew).getTardyCount();
+            absentCount += (tardyCount / 3);
+            return (absentCount + tardyCount % 3) * -1;
+        }));
+        crews.sort(Comparator.comparing(crew -> {
+            AttendanceRecords attendanceRecords = crewAttendanceRecords.get(crew);
+            int absentCount = attendanceRecords.getAbsentCount();
+            int tardyCount = attendanceRecords.getTardyCount();
+            DisciplinaryStatus status = DisciplinaryStatus.getStatus(absentCount, tardyCount);
+            return status.ordinal() * -1;
+        }));
+        return crews;
     }
 }
