@@ -1,27 +1,24 @@
 package domain;
 
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.IntStream;
 
 public class Crew {
 
-    //목적: 크루.
-
     private final String name;
-    private final List<AttendTime> attendTimes;
-    private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+    private final AttendanceHistory attendanceHistory;
+//    private final List<AttendTime> attendTimes;
 
     public Crew(String nickname, String attendTime) {
         this.name = nickname;
-        this.attendTimes = new ArrayList<>();
-        attendTimes.add(new AttendTime(attendTime));
+        this.attendanceHistory = new AttendanceHistory(new ArrayList<>());
+        attendanceHistory.addAttendance(new AttendTime(attendTime));
     }
 
     public void addAttendTime(String inputTime) {
         AttendTime attendTime = new AttendTime(inputTime);
-        attendTimes.add(attendTime);
+        attendanceHistory.addAttendance(attendTime);
     }
 
     public String attend(final String inputTime) {
@@ -35,17 +32,22 @@ public class Crew {
     }
 
     public List<AttendTime> getAttendTimes() {
-        return attendTimes;
+        return attendanceHistory.getAttendTimes();
+    }
+
+    public AttendanceHistory getAttendanceHistory() {
+        return attendanceHistory;
     }
 
     public AttendTime findAttendanceByDate(final int date) {
-        return attendTimes.stream()
+        return attendanceHistory.getAttendTimes().stream()
                 .filter(attendTime -> attendTime.getAttendTime().getDayOfMonth() == date)
                 .findAny()
                 .orElse(null);
     }
 
     public void deleteAttendance(final int date) {
+        List<AttendTime> attendTimes = attendanceHistory.getAttendTimes();
         IntStream.range(0, attendTimes.size())
                 .forEach(i -> {
                     if (attendTimes.get(i).getAttendTime().getDayOfMonth() == date) {

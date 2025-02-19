@@ -12,7 +12,6 @@ public class AttendTime {
     }
 
     public String checkTime() {
-
         final LocalDateTime lateTime = LocalDateTime.of(2024, 12, attendTime.getDayOfMonth(),
                 getDayInfo(attendTime.getDayOfMonth()), 5, 0);
         final LocalDateTime absentTime = LocalDateTime.of(2024, 12, attendTime.getDayOfMonth(),
