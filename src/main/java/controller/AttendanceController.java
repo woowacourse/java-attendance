@@ -53,7 +53,8 @@ public class AttendanceController {
     }
 
     public void checkAttendanceRecords() {
-        System.out.println("출석 기록 확인");
+        Crew crew = inputView.readNickname();
+        outputView.displayAttendanceRecords(crew, crewAttendanceRecords);
     }
 
     public void checkDisciplinaryStatus() {

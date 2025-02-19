@@ -1,11 +1,10 @@
 package view;
 
-import domain.Attendance;
-import domain.AttendanceRecord;
-import domain.Day;
+import domain.*;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.List;
 
 public class OutputView {
     public void displayAttendanceRecord(AttendanceRecord attendanceRecord) {
@@ -17,8 +16,15 @@ public class OutputView {
                 date.getMonthValue(),
                 date.getDayOfMonth(),
                 day.getName(),
-                time,
+                getDisplayTime(time, attendance),
                 attendance.getName());
+    }
+
+    private String getDisplayTime(LocalTime time, Attendance attendance) {
+        if (attendance == Attendance.ABSENT) {
+            return "--:--";
+        }
+        return time.toString();
     }
 
     public void displayUpdatedRecord(AttendanceRecord oldRecord, AttendanceRecord newRecord) {
@@ -26,5 +32,18 @@ public class OutputView {
         Attendance newAttendance = newRecord.getAttendance();
         displayAttendanceRecord(oldRecord);
         System.out.printf(" -> %s (%s) 수정 완료!%n", newTime, newAttendance.getName());
+    }
+
+    public void displayAttendanceRecords(Crew crew, CrewAttendanceRecords crewAttendanceRecords) {
+        System.out.printf("%n이번 달 %s의 출석 기록입니다.%n%n", crew.getName());
+        displaySortedRecords(crew, crewAttendanceRecords);
+    }
+
+    private void displaySortedRecords(Crew crew, CrewAttendanceRecords crewAttendanceRecords) {
+        List<AttendanceRecord> sortedRecords = crewAttendanceRecords.getSortedRecords(crew);
+        sortedRecords.forEach((record) -> {
+            displayAttendanceRecord(record);
+            System.out.println();
+        });
     }
 }

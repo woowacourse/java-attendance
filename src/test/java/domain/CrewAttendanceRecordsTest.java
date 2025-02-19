@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -119,5 +120,26 @@ class CrewAttendanceRecordsTest {
         assertThatThrownBy(() -> crewAttendanceRecords.checkIn(crew, time, () -> LocalDate.of(2024, 12, 13)))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("[ERROR] 이미 출석을 확인하였습니다. 필요한 경우 수정 기능을 이용해 주세요.");
+    }
+
+    @Test
+    @DisplayName("입력 받은 크루의 출결 기록을 날짜순으로 정렬해서 반환한다.")
+    void test() {
+        CrewAttendanceRecords crewAttendanceRecords = new CrewAttendanceRecords("/attendances.csv", () -> LocalDate.of(2024, 12, 13));
+        Crew crew = new Crew("빙티");
+        List<AttendanceRecord> actualRecords = crewAttendanceRecords.getSortedRecords(crew);
+        List<AttendanceRecord> expectedRecords = List.of(
+                new AttendanceRecord("2024-12-02 13:00"),
+                new AttendanceRecord("2024-12-03 10:07"),
+                new AttendanceRecord("2024-12-04 10:02"),
+                new AttendanceRecord("2024-12-05 10:06"),
+                new AttendanceRecord("2024-12-06 10:01"),
+                new AttendanceRecord(LocalDate.of(2024, 12, 9)),
+                new AttendanceRecord("2024-12-10 10:08"),
+                new AttendanceRecord(LocalDate.of(2024, 12, 11)),
+                new AttendanceRecord(LocalDate.of(2024, 12, 12)),
+                new AttendanceRecord("2024-12-13 10:07"));
+
+        assertThat(actualRecords).isEqualTo(expectedRecords);
     }
 }
