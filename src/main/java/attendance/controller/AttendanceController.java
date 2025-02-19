@@ -28,11 +28,8 @@ public class AttendanceController {
         initDataFromCSV();
 
         MenuCommand command = null;
-        // TODO 24년 12월 14일 localdate 객체 만들어서 readCommand 매개변수로 넣어주기
-        LocalDate currentDate = LocalDate.of(2024, 12, 14);
-
         while (!MenuCommand.QUIT.equals(command)) {
-            command = MenuCommand.toCommand(input.readCommand());
+            command = MenuCommand.toCommand(getMenuOption());
             executeCommand(command);
         }
     }
@@ -57,7 +54,7 @@ public class AttendanceController {
 
     private void executeCommand(MenuCommand command) {
         if (command.equals(MenuCommand.ATTEND)) {
-            // 출석기능 구현
+            // 출석 확인 기능 구현
             checkCrewAttendance();
         }
         if (command.equals(MenuCommand.MODIFY)) {
@@ -75,18 +72,22 @@ public class AttendanceController {
     }
 
     private void checkCrewAttendance() {
+        // crewName -> findCrew (Crews) -> addCrewAttendance (Attendances)
 
     }
 
     private void modifyCrewAttendance() {
+        // crewName -> findCrew (Crews) -> findCrewAttendance (Attendances) -> modifyCrewAttendance (Attendances)
 
     }
 
     private void lookupCrewAttendanceHistory() {
+        // crewName -> findCrew (Crews) -> findCrewAttendances (Attendances)
 
     }
 
     private void lookupCrewsExpelStatus() {
+        // showExpelStatus (Crews)
 
     }
 }
