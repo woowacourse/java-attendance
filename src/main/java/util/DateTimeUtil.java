@@ -56,17 +56,27 @@ public class DateTimeUtil {
         return "일요일";
     }
 
-    public static LocalDateTime convertStringToLocalDateTime(LocalDate localDate, String textLocalDateTime) {
+    public static LocalDateTime convertStringToLocalDateTime(LocalDate localDate, String textLocalTime) {
         try {
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");
-            LocalTime localTime = LocalTime.parse(textLocalDateTime, formatter);
+            LocalTime localTime = LocalTime.parse(textLocalTime, formatter);
             return LocalDateTime.of(localDate, localTime);
         } catch (DateTimeParseException exception) {
             throw new IllegalArgumentException("");
         }
     }
 
-//    public LocalDate stringToLocalDate(String textLocalDate) {
+    public static LocalDateTime convertStringToLocalDateTime(String textLocalDateTime) {
+        try {
+            DateTimeFormatter localDateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+            LocalDateTime localTime = LocalDateTime.parse(textLocalDateTime, localDateTimeFormatter);
+            return localTime;
+        } catch (DateTimeParseException exception) {
+            throw new IllegalArgumentException("");
+        }
+    }
+
+//    public LocalDate convertStringToLocalDate(String textLocalDate) {
 //
 //    }
 }
