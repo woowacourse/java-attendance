@@ -4,27 +4,29 @@ import constants.DateConstants;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
-import java.util.List;
 
 public enum Month {
-    JANUARY(31),
-    FEBRUARY(29),
-    MARCH(31),
-    APRIL(30),
-    MAY(31),
-    JUNE(30),
-    JULY(31),
-    AUGUST(31),
-    SEPTEMBER(30),
-    OCTOBER(31),
-    NOVEMBER(30),
-    DECEMBER(31),
+    JANUARY(31, 1),
+    FEBRUARY(29, 2),
+    MARCH(31, 3),
+    APRIL(30, 4),
+    MAY(31, 5),
+    JUNE(30, 6),
+    JULY(31, 7),
+    AUGUST(31, 8),
+    SEPTEMBER(30, 9),
+    OCTOBER(31, 10),
+    NOVEMBER(30, 11),
+    DECEMBER(31, 12),
     ;
 
     private final int lastDay;
 
-    Month(int lastDay) {
+    private final int value;
+
+    Month(int lastDay, int value) {
         this.lastDay = lastDay;
+        this.value = value;
     }
 
     public boolean isHoliday(int day) {
@@ -33,11 +35,15 @@ public enum Month {
                 return true;
             }
         }
-        DayOfWeek dayOfWeek = LocalDate.of(DateConstants.YEAR, DateConstants.MONTH, day).getDayOfWeek();
+        DayOfWeek dayOfWeek = LocalDate.of(DateConstants.YEAR, DateConstants.MONTH.getValue(), day).getDayOfWeek();
         return dayOfWeek == DayOfWeek.SATURDAY || dayOfWeek == DayOfWeek.SUNDAY;
     }
 
     public int getLastDay() {
         return lastDay;
+    }
+
+    public int getValue() {
+        return value;
     }
 }

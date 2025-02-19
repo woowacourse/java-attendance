@@ -2,11 +2,11 @@ package domain;
 
 import constants.DateConstants;
 import exception.DuplicateAttendanceException;
+import service.dto.AttendanceHistoryResponse;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 public class AttendanceBook {
     private final Map<Integer, Attendance> attendances; // key: 몇 일, value: 출석 시간
@@ -25,7 +25,7 @@ public class AttendanceBook {
             throw new DuplicateAttendanceException();
         }
         Attendance attendance = new Attendance(
-                LocalDateTime.of(DateConstants.YEAR, DateConstants.MONTH, date, hour, minute)
+                LocalDateTime.of(DateConstants.YEAR, DateConstants.MONTH.getValue(), date, hour, minute)
         );
         attendances.put(date, attendance);
         return attendance;
@@ -41,5 +41,30 @@ public class AttendanceBook {
     public void replace(Attendance beforeAttendance, Attendance afterAttendance) {
         int date = beforeAttendance.getTime().getDayOfMonth();
         attendances.replace(date, beforeAttendance, afterAttendance);
+    }
+
+    public List<AttendanceHistoryResponse> getAllAttendance(LocalDate limitDate) {
+        List<AttendanceHistoryResponse> histories = new ArrayList<>();
+        for (int date = 1; date < limitDate.getDayOfMonth(); date++) {
+            if (DateConstants.MONTH.isHoliday(date)) {
+                continue;
+            }
+            if (attendances.containsKey(date)) {
+                Attendance attendance = attendances.get(date);
+                histories.add(new AttendanceHistoryResponse(
+                        attendance.getTime().toLocalDate(),
+                        Optional.of(attendance.getTime().toLocalTime()),
+                        attendance.getStatus())
+                );
+            }
+            else {
+                histories.add(new AttendanceHistoryResponse(
+                        LocalDate.of(DateConstants.YEAR, DateConstants.MONTH.getValue(), date),
+                        Optional.empty(),
+                        "결석")
+                );
+            }
+        }
+        return histories;
     }
 }

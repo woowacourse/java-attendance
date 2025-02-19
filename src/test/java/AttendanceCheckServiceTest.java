@@ -47,7 +47,7 @@ public class AttendanceCheckServiceTest {
         String name = "이든";
         LocalDateTime time = LocalDateTime.of(
                 DateConstants.YEAR,
-                DateConstants.MONTH,
+                DateConstants.MONTH.getValue(),
                 18,
                 15,
                 52
@@ -69,7 +69,7 @@ public class AttendanceCheckServiceTest {
         attendanceRepository.createNewAttendance(name, 18, 15, 52);
         LocalDateTime inputTime = LocalDateTime.of(
                 DateConstants.YEAR,
-                DateConstants.MONTH,
+                DateConstants.MONTH.getValue(),
                 18,
                 16,
                 55
