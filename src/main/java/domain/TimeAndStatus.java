@@ -2,11 +2,11 @@ package domain;
 
 import java.time.LocalTime;
 
-public class TimeStatus {
+public class TimeAndStatus {
     private LocalTime time;
     private String status;
 
-    public TimeStatus(LocalTime time, String dayOfWeek){
+    public TimeAndStatus(LocalTime time, String dayOfWeek){
         this.time = time;
         this.status = checkStatus(dayOfWeek);
     }
