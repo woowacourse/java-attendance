@@ -2,9 +2,9 @@ package attendance.view;
 
 import java.util.Scanner;
 
-public class Input {
+public class InputView {
     private static final String MENU_STRING = """
-            오늘은 %s월 %s일 %s입니다. 기능을 선택해 주세요.
+            오늘은 %s월 %s일 %s요일입니다. 기능을 선택해 주세요.
             1. 출석 확인
             2. 출석 수정
             3. 크루별 출석 기록 확인
@@ -24,8 +24,18 @@ public class Input {
         return scanner.nextLine();
     }
 
-    public String readCommand(String month, String date, String day) {
+    public String readModifyDate() {
+        System.out.println("수정하려는 날짜(일)를 입력해 주세요.");
+        return scanner.nextLine();
+    }
+
+    public String readCommand(final String month, final String date, final String day) {
         System.out.println(MENU_STRING.formatted(month, date, day));
+        return scanner.nextLine();
+    }
+
+    public String readModifyTime() {
+        System.out.println("언제로 변경하겠습니까?");
         return scanner.nextLine();
     }
 }
