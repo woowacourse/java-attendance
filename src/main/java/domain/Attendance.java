@@ -38,4 +38,8 @@ public class Attendance {
     public int getDay() {
         return date.getDayOfMonth();
     }
+
+    public LocalDateTime getDate() {
+        return date;
+    }
 }

@@ -9,7 +9,7 @@ public class DayComparator {
 
     public static boolean isHoliday(int date, LocalDateTime today) {
         LocalDate targetDate = LocalDate.of(today.getYear(), today.getMonth(), date);
-        if (date == CHRISTMAS){
+        if (date == CHRISTMAS) {
             return true;
         }
         return targetDate.getDayOfWeek().getValue() == 6 || targetDate.getDayOfWeek().getValue() == 7;

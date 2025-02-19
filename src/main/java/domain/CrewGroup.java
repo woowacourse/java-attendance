@@ -8,7 +8,7 @@ public class CrewGroup {
     private final Map<String, Crew> crews = new HashMap<>();
 
     public void addCrew(String nickname, LocalDateTime date) {
-        crews.put(nickname, crews.getOrDefault(nickname, new Crew()));
+        crews.put(nickname, crews.getOrDefault(nickname, new Crew(nickname)));
         Crew crew = crews.get(nickname);
         crew.addAttendance(date);
     }
