@@ -18,36 +18,43 @@ public class CheckInTimes {
     }
 
     public void add(CheckInTime checkInTime) {
-        for (CheckInTime time : checkInTimes) {
-            if (time.isSameDate(checkInTime)) {
-                throw new IllegalArgumentException("[ERROR] CheckInTime is already in the list]");
-            }
-        }
+        validateAddable(checkInTime);
         checkInTimes.add(checkInTime);
     }
 
     public void modify(CheckInTime checkInTime) {
-        LocalDateTime now = LocalDateTime.now();
-        if (checkInTime.isNotModifiable(now)) {
-            throw new IllegalArgumentException("[ERROR] CheckInTime is not modifiable");
-        }
+        validateModifiable(checkInTime);
 
-        for (CheckInTime time : checkInTimes) {
-            if (time.isSameDate(checkInTime)) {
-                time.modify(checkInTime);
-            }
-        }
+        checkInTimes.stream()
+                .filter(time -> time.isSameDate(checkInTime))
+                .forEach(time -> time.modify(checkInTime));
     }
 
     public List<CheckInTime> getAttendanceLog(LocalDateTime localDateTime) {
         List<CheckInTime> attendanceLog = new ArrayList<>();
-        for (CheckInTime checkInTime : checkInTimes) {
-            if (checkInTime.isBeforeDate(localDateTime)) {
-                attendanceLog.add(checkInTime);
-            }
-        }
+
+        checkInTimes.stream()
+                .filter(time -> time.isBeforeDate(localDateTime))
+                .forEach(attendanceLog::add);
 
         return attendanceLog;
+    }
+
+    private void validateAddable(CheckInTime checkInTime) {
+
+        checkInTimes.stream()
+                .filter(time -> time.isSameDate(checkInTime))
+                .findAny()
+                .ifPresent(time -> {
+                    throw new IllegalArgumentException("[ERROR] CheckInTime is already in the list]");
+                });
+    }
+
+    private void validateModifiable(CheckInTime checkInTime) {
+        LocalDateTime now = LocalDateTime.now();
+        if (checkInTime.isNotModifiable(now)) {
+            throw new IllegalArgumentException("[ERROR] CheckInTime is not modifiable");
+        }
     }
 
     public int countPresence() {
