@@ -18,4 +18,13 @@ public class Attendance {
     public String getCrewName() {
         return crewName;
     }
+
+    public boolean isAlreadyAttendance(Attendance currentAttendance) {
+
+        if (!crewName.equals(currentAttendance.crewName)) {
+            return false;
+        }
+
+        return attendanceTime.toLocalDate().isEqual(currentAttendance.attendanceTime.toLocalDate());
+    }
 }
