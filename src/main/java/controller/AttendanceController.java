@@ -1,5 +1,6 @@
 package controller;
 
+import domain.CrewRecord;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import repository.AttendanceRepository;
@@ -20,10 +21,13 @@ public class AttendanceController {
     }
 
     public void run() {
-        function_1();
+
+        attend();
+        edit();
+
     }
 
-    private void function_1() {
+    private void attend() {
         String name = inputView.readName();
         String time = inputView.readTime();
 
@@ -34,5 +38,14 @@ public class AttendanceController {
 
         attendanceRepository.attend(name,dateTime);
         outputView.printAttendanceRecord(dateTime);
+    }
+
+    private void edit(){
+        String name = inputView.readEditName();
+        String dayOfMonth = inputView.readEditDayOfMonth();
+        String time = inputView.readTime();
+
+        CrewRecord newRecord = attendanceRepository.edit(name, Integer.parseInt(dayOfMonth) , time);
+        outputView.printEditResult();
     }
 }
