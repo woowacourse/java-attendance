@@ -31,4 +31,34 @@ public class AttendsTest {
         assertThatThrownBy(() -> attends.addAttend(attend))
                 .isInstanceOf(IllegalArgumentException.class);
     }
+
+    @Test
+    void should_return_is_same_attend_by_day_true_case() {
+        // given
+        Attend containedAttend = Attend.of("13", "10:00");
+        Attend attendToAdd = Attend.of("13", "10:01");
+        Attends attends = new Attends(new ArrayList<>());
+        attends.addAttend(containedAttend);
+
+        // when
+        boolean hasDayEqualsAttend = attends.hasDayEqualsAttend(attendToAdd);
+
+        // than
+        assertThat(hasDayEqualsAttend).isEqualTo(true);
+    }
+
+    @Test
+    void should_return_is_same_attend_by_day_false_case() {
+        // given
+        Attend containedAttend = Attend.of("12", "10:00");
+        Attend attendToAdd = Attend.of("13", "10:01");
+        Attends attends = new Attends(new ArrayList<>());
+        attends.addAttend(containedAttend);
+
+        // when
+        boolean hasDayEqualsAttend = attends.hasDayEqualsAttend(attendToAdd);
+
+        // than
+        assertThat(hasDayEqualsAttend).isEqualTo(false);
+    }
 }

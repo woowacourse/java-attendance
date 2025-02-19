@@ -19,4 +19,9 @@ public class Attends {
             throw new IllegalArgumentException("같은 날짜에 출석할 수 없다.");
         }
     }
+    public boolean hasDayEqualsAttend(Attend attendToAdd) {
+        return attends.stream()
+                .anyMatch(attend -> attend.isDayEqual(attendToAdd));
+    }
+
 }
