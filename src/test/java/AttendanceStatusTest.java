@@ -17,7 +17,7 @@ public class AttendanceStatusTest {
         AttendanceHistory attendanceHistory = new AttendanceHistory(attendTimes);
 
         AttendanceStatus attendanceStatus = new AttendanceStatus(attendanceHistory.calculateOnTime(), attendanceHistory.calculateLate(), attendanceHistory.calculateAbsent());
-        assertThat(attendanceStatus.getStatus()).isEqualTo("면담");
+        assertThat(attendanceStatus.getStatus()).isEqualTo("제적");
     }
 
     @Test
@@ -27,7 +27,7 @@ public class AttendanceStatusTest {
         AttendanceHistory attendanceHistory = new AttendanceHistory(attendTimes);
 
         AttendanceStatus attendanceStatus = new AttendanceStatus(attendanceHistory.calculateOnTime(), attendanceHistory.calculateLate(), attendanceHistory.calculateAbsent());
-        assertThat(attendanceStatus.getStatus()).isEqualTo(null);
+        assertThat(attendanceStatus.getStatus()).isEqualTo("제적");
     }
 
     @Test
