@@ -1,7 +1,11 @@
 package view;
 
+import java.time.DateTimeException;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Scanner;
 import model.AttendanceCalculatorByDay;
 
@@ -30,7 +34,7 @@ public class InputView {
         System.out.println(QUICK);
     }
 
-    private static String userInput(){
+    public static String userInput(){
         return scanner.nextLine();
     }
     public static String getUserInputString(){
@@ -52,13 +56,44 @@ public class InputView {
         return input;
     }
 
-    public static String printInputNicName(){
+    public static void printInputNicName(){
         System.out.println("닉네임을 입력해 주세요.");
-        return userInput();
     }
 
-    public static String printStartTime(){
+    public static void printStartTime(){
         System.out.println("등교 시간을 입력해 주세요.");
-        return userInput();
     }
+
+    public static void printStudentNameForModify(){
+        System.out.println("출석을 수정하려는 크루의 닉네임을 입력해 주세요.");
+    }
+
+    public static int inputDateForModify(){
+        System.out.println("수정하려는 날짜(일)를 입력해 주세요.");
+        try{
+            int date = Integer.parseInt(userInput());
+            if(date < 1 || date > 31){
+                throw new IllegalArgumentException("[ERROR] 1~31 사이의 숫자만 입력해주세요");
+            }
+            return date;
+        }catch (IllegalArgumentException e){
+            return inputDateForModify();
+        }
+    }
+
+    public static void printTimeForModify(){
+        System.out.println("언제로 변경하겠습니까?");
+    }
+
+    public static LocalDateTime makeLocalDateToLocalDateTime(LocalDate localDate) {
+        String time = userInput();
+        try {
+            DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("HH:mm");
+            LocalTime localTime = LocalTime.parse(time,dateTimeFormatter);
+            return localDate.atTime(localTime);
+        } catch (DateTimeException e) {
+            throw new IllegalArgumentException("[ERROR] 시간 형식에 맞지 않습니다.");
+        }
+    }
+
 }
