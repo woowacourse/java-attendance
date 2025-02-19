@@ -5,6 +5,7 @@ import java.time.format.TextStyle;
 import java.util.Locale;
 import java.util.Scanner;
 
+import dto.AttendanceModifyRequest;
 import dto.AttendanceRequest;
 import util.DayUtil;
 
@@ -35,5 +36,15 @@ public class InputView {
         System.out.println("등교 시간을 입력해 주세요.");
         String time = scanner.nextLine();
         return AttendanceRequest.of(nickname, time);
+    }
+
+    public static AttendanceModifyRequest scanModify() {
+        System.out.println("출석을 수정하려는 크루의 닉네임을 입력해 주세요.");
+        String nickname = scanner.nextLine();
+        System.out.println("수정하려는 날짜(일)를 입력해 주세요.");
+        String day = scanner.nextLine();
+        System.out.println("언제로 변경하겠습니까?");
+        String time = scanner.nextLine();
+        return AttendanceModifyRequest.of(nickname, day, time);
     }
 }
