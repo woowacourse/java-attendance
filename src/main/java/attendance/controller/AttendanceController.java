@@ -1,25 +1,30 @@
 package attendance.controller;
 
+import attendance.domain.Attendance;
+import attendance.domain.AttendanceType;
 import attendance.domain.Attendances;
+import attendance.domain.Crew;
 import attendance.domain.Crews;
 import attendance.domain.MenuCommand;
 import attendance.util.FileReader;
-import attendance.view.Input;
-import attendance.view.Output;
+import attendance.view.InputView;
+import attendance.view.OutputView;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.format.TextStyle;
 import java.util.List;
 import java.util.Locale;
 
 public class AttendanceController {
-    private final Input input;
-    private final Output output;
+    private final InputView inputView;
+    private final OutputView outputView;
     private final Crews crews;
     private final Attendances attendances;
 
     public AttendanceController() {
-        this.input = new Input();
-        this.output = new Output();
+        this.inputView = new InputView();
+        this.outputView = new OutputView();
         this.crews = new Crews();
         this.attendances = new Attendances();
     }
@@ -49,7 +54,7 @@ public class AttendanceController {
         String day = String.valueOf(currentDate.getDayOfMonth());
         String dayOfWeek = currentDate.getDayOfWeek().getDisplayName(TextStyle.NARROW, Locale.KOREAN);
 
-        return input.readCommand(month, day, dayOfWeek);
+        return inputView.readCommand(month, day, dayOfWeek);
     }
 
     private void executeCommand(final MenuCommand command) {
@@ -72,13 +77,58 @@ public class AttendanceController {
     }
 
     private void checkCrewAttendance() {
-        // crewName -> findCrew (Crews) -> addCrewAttendance (Attendances)
+        String crewName = inputView.readCrewName();
+        Crew crew = crews.findCrew(crewName);
 
+        String presentTime = inputView.readPresentTime();
+        validateTimeFormat(presentTime);
+
+        LocalTime localTime = LocalTime.parse(presentTime);
+        LocalDate localDate = LocalDate.now();
+        LocalDateTime localDateTime = LocalDateTime.of(localDate, localTime);
+
+        AttendanceType status = AttendanceType.of(localDateTime);
+        Attendance todayAttendance = new Attendance(crew, localDateTime, status);
+        attendances.add(todayAttendance);
+        outputView.printTodayAttendance(todayAttendance.getInfo());
+    }
+
+    private void validateTimeFormat(final String presentTime) {
+        // 시간 형식에 맞게 입력받았는지 확인하기
+        final String TIME_PATTERN = "(2[0-3]|[01][0-9]):[0-5][0-9]";
+        if (!presentTime.matches(TIME_PATTERN)) {
+            throw new IllegalArgumentException(("[ERROR] 올바르지 않은 시간 형식을 입력했습니다."));
+        }
     }
 
     private void modifyCrewAttendance() {
         // crewName -> findCrew (Crews) -> findCrewAttendance (Attendances) -> modifyCrewAttendance (Attendances)
+        String crewName = inputView.readCrewName();
+        Crew crew = crews.findCrew(crewName);
 
+        String date = inputView.readModifyDate();
+        validateDateFormat(date);
+        LocalDate localDate = LocalDate.of(2025, 2, Integer.parseInt(date));
+
+        String originalTime = attendances.findOriginalTime(crew, localDate);
+        String originalType = attendances.findOriginalType(crew, localDate);
+
+        String modifyTime = inputView.readModifyTime();
+        LocalTime localTime = LocalTime.parse(modifyTime);
+        LocalDateTime localDateTime = LocalDateTime.of(localDate, localTime);
+
+        attendances.modifyAttendances(crew, localDateTime);
+        Attendance newAttendance = attendances.findMatchCrewDate(crew, localDate);
+
+        outputView.printModifiedAttendance(originalTime, originalType, newAttendance.getInfo());
+    }
+
+    private void validateDateFormat(final String date) {
+        final String DATE_PATTERN = "^([1-2][0-8])|([1-9])$";
+
+        if (!date.matches(DATE_PATTERN)) {
+            throw new IllegalArgumentException("[ERROR] 올바른 형식의 날짜가 아닙니다.");
+        }
     }
 
     private void lookupCrewAttendanceHistory() {
