@@ -16,11 +16,11 @@ public class OutputView {
 
         String beforeAttendanceState = AttendanceState.findStateBy(
                 beforeDateTime.toLocalTime(),
-                beforeDateTime.getDayOfWeek().getValue());
+                beforeDateTime.getDayOfMonth());
 
         String afterAttendanceState = AttendanceState.findStateBy(
                 afterDateTime.toLocalTime(),
-                afterDateTime.getDayOfWeek().getValue());
+                afterDateTime.getDayOfMonth());
 
         System.out.printf("12월 %02d일 %s %02d:%02d (%s) -> %02d:%02d (%s) 수정 완료!\n",
                 beforeDateTime.getDayOfMonth(),
