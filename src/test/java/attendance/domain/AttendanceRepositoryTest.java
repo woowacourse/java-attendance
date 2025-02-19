@@ -57,6 +57,7 @@ public class AttendanceRepositoryTest {
         LocalDateTime localDateTime = LocalDateTime.of(2024, 12, 23, 13, 3);
         Attendance attendance = new Attendance("빙봉");
         attendance.add(localDateTime);
+        attendances.add(attendance);
 
         AttendanceRepository attendanceRepository = new AttendanceRepository(attendances);
         String name = "빙봉";
@@ -73,6 +74,7 @@ public class AttendanceRepositoryTest {
         LocalDateTime localDateTime = LocalDateTime.of(2024, 12, 23, 13, 3);
         Attendance attendance = new Attendance("빙봉");
         attendance.add(localDateTime);
+        attendances.add(attendance);
 
         AttendanceRepository attendanceRepository = new AttendanceRepository(attendances);
         String name = "빙티";
@@ -80,7 +82,7 @@ public class AttendanceRepositoryTest {
 
         assertThatThrownBy(() -> attendanceRepository.update(name, newLocalDateTime))
                 .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage("해당 날짜에 출석 기록이 없습니다.");
+                .hasMessage("[ERROR] 유효하지 않은 닉네임입니다.");
 
     }
 
@@ -91,6 +93,7 @@ public class AttendanceRepositoryTest {
         LocalDateTime localDateTime = LocalDateTime.of(2024, 12, 23, 13, 3);
         Attendance attendance = new Attendance("빙봉");
         attendance.add(localDateTime);
+        attendances.add(attendance);
 
         AttendanceRepository attendanceRepository = new AttendanceRepository(attendances);
         String name = "빙봉";
