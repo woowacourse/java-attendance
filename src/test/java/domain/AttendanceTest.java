@@ -1,6 +1,7 @@
 package domain;
 
 import domain.attendance.Attendance;
+import domain.attendance.AttendanceDate;
 import domain.attendance.AttendanceWarning;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -17,7 +18,7 @@ public class AttendanceTest {
         List<LocalDateTime> localDateTimes = List.of(LocalDateTime.of(2024, 12, 2, 10, 0));
 
         // when
-        Attendance attendance = new Attendance(localDateTimes, LocalDate.now());
+        Attendance attendance = new Attendance(AttendanceDate.DEFAULT_START_DATE, LocalDate.now());
 
         // then
         Assertions.assertThat(attendance).isInstanceOf(Attendance.class);
@@ -28,7 +29,7 @@ public class AttendanceTest {
     void test2() {
         List<LocalDateTime> localDateTimes = List.of(LocalDateTime.of(2024, 12, 2, 10, 0));
 
-        Attendance attendance = new Attendance(localDateTimes, LocalDate.now());
+        Attendance attendance = new Attendance(AttendanceDate.DEFAULT_START_DATE, LocalDate.now());
 
         Assertions.assertThat(attendance.countAbsence()).isEqualTo(54);
     }
@@ -38,7 +39,7 @@ public class AttendanceTest {
     void test3() {
         List<LocalDateTime> localDateTimes = List.of(LocalDateTime.of(2024, 12, 2, 10, 0));
 
-        Attendance attendance = new Attendance(localDateTimes, LocalDate.now());
+        Attendance attendance = new Attendance(AttendanceDate.DEFAULT_START_DATE, LocalDate.now());
 
         Assertions.assertThat(attendance.countAttendance()).isEqualTo(1);
     }
@@ -48,7 +49,7 @@ public class AttendanceTest {
     void test4() {
         List<LocalDateTime> localDateTimes = List.of(LocalDateTime.of(2024, 12, 2, 10, 0));
 
-        Attendance attendance = new Attendance(localDateTimes, LocalDate.now());
+        Attendance attendance = new Attendance(AttendanceDate.DEFAULT_START_DATE, LocalDate.now());
 
         Assertions.assertThat(attendance.countTardy()).isEqualTo(0);
     }
@@ -57,7 +58,7 @@ public class AttendanceTest {
     @Test
     void test5() {
         List<LocalDateTime> localDateTimes = List.of(LocalDateTime.of(2024, 12, 2, 10, 0));
-        Attendance attendance = new Attendance(localDateTimes, LocalDate.now());
+        Attendance attendance = new Attendance(AttendanceDate.DEFAULT_START_DATE, LocalDate.now());
 
         AttendanceWarning attendanceWarning = AttendanceWarning.determineAttendanceWarning(
                 attendance.countAbsenceIncludingTardy());
@@ -69,7 +70,8 @@ public class AttendanceTest {
     @Test
     void test6() {
         List<LocalDateTime> localDateTimes = List.of(LocalDateTime.of(2024, 12, 2, 10, 0));
-        Attendance attendance = new Attendance(localDateTimes, LocalDate.of(2024, 12, 5));
+        Attendance attendance = new Attendance(AttendanceDate.DEFAULT_START_DATE
+                , LocalDate.of(2024, 12, 5));
 
         AttendanceWarning attendanceWarning = AttendanceWarning.determineAttendanceWarning(
                 attendance.countAbsenceIncludingTardy());
@@ -77,5 +79,18 @@ public class AttendanceTest {
         Assertions.assertThat(attendanceWarning).isEqualTo(AttendanceWarning.WARNING);
     }
 
+    @DisplayName("출석부의 출석일자를 업데이트 한다")
+    @Test
+    void test7() {
+        // given
+        Attendance attendance = new Attendance(AttendanceDate.DEFAULT_START_DATE, LocalDate.of(2024, 12, 3));
+        LocalDateTime updateDateTime = LocalDateTime.of(2024, 12, 2, 10, 0);
 
+        // then
+        attendance.updateAttendanceDate(updateDateTime);
+
+        // given
+        Assertions.assertThat(attendance.findAttendanceDate(AttendanceDate.DEFAULT_START_DATE).checkAttendanceTime())
+                .isEqualTo(updateDateTime);
+    }
 }

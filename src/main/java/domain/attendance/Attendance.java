@@ -7,38 +7,47 @@ import java.util.List;
 import java.util.Optional;
 
 public class Attendance {
-    private final List<AttendanceDate> attendanceDates = new ArrayList<>();
+    private List<AttendanceDate> attendanceDates = new ArrayList<>();
 
-    public Attendance(List<LocalDateTime> localDateTimes, LocalDate endDate) {
-        LocalDate startDate = LocalDate.of(2024, 12, 2);
-
+    public Attendance(LocalDate startDate, LocalDate endDate) {
         for (LocalDate cursorDate = startDate; cursorDate.isBefore(endDate); cursorDate = cursorDate.plusDays(1)) {
             if (cursorDate.getDayOfWeek().getValue() > 5 || Holiday.has(cursorDate)) {
                 continue;
             }
-            Optional<LocalDate> cursorlocalDate = localDateTimes.stream().map(LocalDateTime::toLocalDate)
-                    .filter(cursorDate::equals).findFirst();
-            if (cursorlocalDate.isPresent()) {
-                LocalDateTime cursorLocalDateTime = findDateTime(cursorlocalDate.get(), localDateTimes);
-                attendanceDates.add(new AttendanceDate(cursorLocalDateTime));
-                continue;
-            }
+
             attendanceDates.add(new AttendanceDate(
                     LocalDateTime.of(cursorDate.getYear(), cursorDate.getMonth(), cursorDate.getDayOfMonth(), 23,
                             59)));
         }
     }
 
-    private LocalDateTime findDateTime(LocalDate cursorlocalDate, List<LocalDateTime> localDateTimes) {
-        for (LocalDateTime localDateTime : localDateTimes) {
-            if (localDateTime.getYear() == cursorlocalDate.getYear()
-                    && localDateTime.getMonth() == cursorlocalDate.getMonth()
-                    && localDateTime.getDayOfMonth() == cursorlocalDate.getDayOfMonth()) {
-                return localDateTime;
-            }
-        }
+    public void updateAttendanceDate(LocalDateTime attendanceDateTime) {
+        fillAttendanceDate();
+        findAttendanceDate(attendanceDateTime.toLocalDate()).editDateTime(attendanceDateTime);
+    }
 
+    public AttendanceDate findAttendanceDate(LocalDate findAttendanceDate) {
+        Optional<AttendanceDate> attendanceDate = attendanceDates.stream()
+                .filter(localDate -> localDate.equals(findAttendanceDate)).findFirst();
+        if (attendanceDate.isPresent()) {
+            return attendanceDate.get();
+        }
         throw new IllegalArgumentException("");
+    }
+
+    public void fillAttendanceDate() {
+        for (LocalDate cursorCheckDate = LocalDate.now().minusDays(1); !this.has(cursorCheckDate);
+             cursorCheckDate = cursorCheckDate.minusDays(1)) {
+            attendanceDates.add(new AttendanceDate(
+                    LocalDateTime.of(cursorCheckDate.getYear(), cursorCheckDate.getMonth(),
+                            cursorCheckDate.getDayOfMonth(), 23,
+                            59)));
+        }
+        this.attendanceDates = attendanceDates.stream().sorted().toList();
+    }
+
+    private boolean has(LocalDate localDate) {
+        return attendanceDates.stream().anyMatch(attendanceDate -> attendanceDate.equals(localDate));
     }
 
     public int countAbsence() {
