@@ -48,4 +48,17 @@ public class WarningLevelTest {
         assertThat(level)
                 .isEqualTo(WarningLevel.REMOVE);
     }
+
+    @DisplayName("결석이 2회 미만인 경우 해당 없음")
+    @Test
+    void test4(){
+        Map<AttendanceStatus, Integer> attendanceStatuses = new EnumMap<>(AttendanceStatus.class);
+        attendanceStatuses.put(AttendanceStatus.ABSENCE, 1);
+        attendanceStatuses.put(AttendanceStatus.PRESENT, 0);
+        attendanceStatuses.put(AttendanceStatus.LATENESS, 0);
+
+        WarningLevel level = WarningLevel.calculateLevel(attendanceStatuses);
+        assertThat(level)
+                .isEqualTo(WarningLevel.NONE);
+    }
 }
