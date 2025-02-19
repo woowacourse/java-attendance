@@ -1,3 +1,5 @@
+package attendance.domain;
+
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -41,6 +43,14 @@ public class Attendance {
 
     public boolean isEqualToDate(LocalDate today) {
         return today.equals(LocalDate.from(dateTime));
+    }
+
+    public LocalDateTime getDateTime() {
+        return dateTime;
+    }
+
+    public AttendanceStatus getStatus() {
+        return status;
     }
 }
 

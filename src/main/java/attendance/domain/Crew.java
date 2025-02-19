@@ -1,3 +1,5 @@
+package attendance.domain;
+
 import java.time.LocalDate;
 import java.util.List;
 
@@ -29,5 +31,9 @@ public class Crew {
 
     public String getNickname() {
         return nickname;
+    }
+
+    public void addAttendance(Attendance attendance) {
+        attendances.add(attendance);
     }
 }

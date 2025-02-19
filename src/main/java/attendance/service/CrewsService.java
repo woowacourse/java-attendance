@@ -1,3 +1,10 @@
+package attendance.service;
+
+import attendance.domain.Attendance;
+import attendance.domain.AttendanceStatus;
+import attendance.domain.Crew;
+import attendance.domain.Crews;
+
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;

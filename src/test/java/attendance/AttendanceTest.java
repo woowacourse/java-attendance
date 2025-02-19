@@ -1,8 +1,13 @@
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+package attendance;
+
+import attendance.domain.Attendance;
+import attendance.domain.AttendanceStatus;
+import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import org.junit.jupiter.api.Test;
+
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 public class AttendanceTest {
 
