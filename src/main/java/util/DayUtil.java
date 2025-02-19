@@ -13,4 +13,8 @@ public class DayUtil {
 
         return isWeekend || isHoliday;
     }
+
+    public static LocalDate now() {
+        return LocalDate.now();
+    }
 }

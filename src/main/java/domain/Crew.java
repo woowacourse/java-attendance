@@ -17,9 +17,10 @@ public class Crew {
         this.nickname = name;
     }
 
-    public void attendance(LocalDate date, LocalTime time) {
+    public AttendanceStatus attendance(LocalDate date, LocalTime time) {
         validateAlreadyAttendanceDate(date);
         attendanceTimes.put(date, time);
+        return getAttendanceStatusByDate(date);
     }
 
     private void validateAlreadyAttendanceDate(LocalDate date) {
