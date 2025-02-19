@@ -1,5 +1,6 @@
 package attendance.model;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Stream;
@@ -47,5 +48,10 @@ public class AttendanceHistory {
 
     public Stream<AttendanceDetail> stream() {
         return attendanceHistory.stream();
+    }
+
+    public boolean containsNowDate(LocalDate nowDate) {
+        return attendanceHistory.stream()
+                .anyMatch(attendanceDetail -> attendanceDetail.getLocalDateTime().toLocalDate().equals(nowDate));
     }
 }

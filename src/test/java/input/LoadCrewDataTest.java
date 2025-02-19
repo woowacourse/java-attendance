@@ -3,20 +3,20 @@ package input;
 import attendance.model.Crew;
 import attendance.model.CrewDataLoader;
 import attendance.model.Crews;
+import attendance.model.CustomLocalDateTime;
 import org.assertj.core.api.Assertions;
-import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 public class LoadCrewDataTest {
 
-    @DisplayName("크루 데이터 csv 파일을 읽어온다.")
+    //@DisplayName("")
     @Test
-    void test_read() {
+    void test_read2() {
         Crews crews = new Crews();
-        CrewDataLoader crewDataLoader = new CrewDataLoader(crews);
+        CrewDataLoader crewDataLoader = new CrewDataLoader(crews, CustomLocalDateTime.now());
         crewDataLoader.load("attendances.csv");
-        Assertions.assertThat(crews.findCrew(new Crew("빙티")).get().getAttendanceHistory().getAttendanceHistory()).hasSize(7);
-
+        Assertions.assertThat(crews.findCrew(new Crew("빙티")).get().getAttendanceHistory().getAttendanceHistory())
+                .hasSize(8);
     }
 
 }
