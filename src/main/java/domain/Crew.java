@@ -86,4 +86,8 @@ public class Crew {
         }
         return false;
     }
+
+    public RiskStatus calculateRiskStatus() {
+        return RiskStatus.getRiskStatus(calculateAbsenceCount(), calculateTardyCount());
+    }
 }
