@@ -22,12 +22,12 @@ public class Crew {
                 .findAny()
                 .orElseThrow();
 
-        validateIsDateUnique(date);
+        validateIsNotAlreadyAttended(date);
 
         dailyAttendances.putAll(dateAndTime);
     }
 
-    private void validateIsDateUnique(LocalDate date) {
+    private void validateIsNotAlreadyAttended(LocalDate date) {
         if (dailyAttendances.containsKey(date)) {
             throw new IllegalArgumentException("[ERROR] 이미 출석한 날짜입니다. 수정 기능을 이용해주세요.");
         }
@@ -44,7 +44,12 @@ public class Crew {
     public void modifyDailyAttendance(Map<LocalDate, LocalTime> dateAndTime) {
         LocalDate date = dateAndTime.keySet().stream()
                 .findAny()
-                .orElseThrow(()-> new IllegalArgumentException("[ERROR] "));
+                .orElseThrow();
+
+        if (!dailyAttendances.containsKey(date))
+        {
+            throw new IllegalArgumentException(String.format("[ERROR] %02d일 기록이 존재하지 않습니다.", date.getDayOfMonth()));
+        }
 
         dailyAttendances.putAll(dateAndTime);
     }
