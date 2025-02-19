@@ -21,4 +21,9 @@ public class CrewGroup {
         crews.values()
                 .forEach(crew -> crew.addAbsent(today));
     }
+
+    public void calculateAllAttendanceCount() {
+        crews.values()
+                .forEach(Crew::updateAttendanceCount);
+    }
 }

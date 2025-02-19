@@ -7,10 +7,17 @@ import java.util.List;
 import util.FileReader;
 
 public class CrewLoader {
-
     public CrewGroup loadCrews(LocalDateTime today) {
         FileReader fileReader = new FileReader();
         List<String> lines = fileReader.readFile();
+        CrewGroup crewGroup = getCrewGroup(lines);
+
+        crewGroup.addAllAbsent(today);
+        crewGroup.calculateAllAttendanceCount();
+        return crewGroup;
+    }
+
+    private CrewGroup getCrewGroup(List<String> lines) {
         CrewGroup crewGroup = new CrewGroup();
 
         for (String line : lines) {
@@ -21,8 +28,6 @@ public class CrewLoader {
             LocalDateTime dateTime = LocalDateTime.parse(rawDate, formatter);
             crewGroup.addCrew(nickname, dateTime);
         }
-
-        crewGroup.addAllAbsent(today);
         return crewGroup;
     }
 }

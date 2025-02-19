@@ -5,14 +5,14 @@ public class AttendanceCount {
     private int late;
     private int absent;
 
-    public void calculateRecord(Attandance attandance) {
-        if (attandance.calculateAttendanceStatus() == AttendanceStatus.PRESENT){
+    public void calculateRecord(Attendance attendance) {
+        if (attendance.calculateAttendanceStatus() == AttendanceStatus.PRESENT){
             present++;
         }
-        if (attandance.calculateAttendanceStatus() == AttendanceStatus.LATE){
+        if (attendance.calculateAttendanceStatus() == AttendanceStatus.LATE){
             late++;
         }
-        if (attandance.calculateAttendanceStatus() == AttendanceStatus.ABSENT){
+        if (attendance.calculateAttendanceStatus() == AttendanceStatus.ABSENT){
             absent++;
         }
     }
