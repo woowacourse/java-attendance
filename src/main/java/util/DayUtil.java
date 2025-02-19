@@ -5,8 +5,7 @@ import java.time.LocalDate;
 
 public class DayUtil {
 
-    public static boolean isOffDay(LocalDate today, int day) {
-        LocalDate targetDay = LocalDate.of(today.getYear(), today.getMonth(), day);
+    public static boolean isOffDay(LocalDate targetDay) {
         boolean isWeekend = targetDay.getDayOfWeek().equals(DayOfWeek.SATURDAY) ||
             targetDay.getDayOfWeek().equals(DayOfWeek.SUNDAY);
         boolean isHoliday = false; // TODO: 적용 필요

@@ -8,9 +8,10 @@ import java.util.Arrays;
 import java.util.Comparator;
 
 public enum AttendanceStatus {
-    ATTENDANCE("출석", 0),
+    ATTENDANCE("출석", Integer.MIN_VALUE),
     LATE("지각", 6),
     ABSENT("결석", 31),
+    NONE("", Integer.MAX_VALUE),
     ;
 
     private final String description;

@@ -1,10 +1,15 @@
 package controller;
 
+import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.List;
 
 import domain.AttendanceStatus;
 import domain.Crew;
 import domain.CrewRepository;
+import domain.History;
+import domain.Manage;
+import dto.AttendanceHistoryResult;
 import dto.AttendanceModifyRequest;
 import dto.AttendanceRequest;
 import dto.AttendanceResult;
@@ -45,7 +50,20 @@ public class AttendanceController {
                     afterStatus
                 ));
             }
+            case "3" -> {
+                Crew crew = crewRepository.get(InputView.scanNickname());
+                LocalDate now = DayUtil.now();
+                List<History> history = crew.getAllHistory(now);
+                Manage manage = Manage.of(crew.getAttendanceStatusStatistics(now));
 
+                OutputView.printHistory(
+                    crew.getName(),
+                    AttendanceHistoryResult.of(
+                        history,
+                        crew.getAttendanceStatusStatistics(now),
+                        manage
+                ));
+            }
         }
     }
 }

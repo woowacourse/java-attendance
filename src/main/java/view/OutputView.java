@@ -2,6 +2,9 @@ package view;
 
 import java.time.LocalDateTime;
 
+import domain.AttendanceStatus;
+import domain.Manage;
+import dto.AttendanceHistoryResult;
 import dto.AttendanceResult;
 import dto.Formatter;
 import dto.ModifiedResult;
@@ -21,5 +24,32 @@ public class OutputView {
         sb.append(" 수정 완료!");
 
         System.out.println(sb.toString());
+    }
+
+    public static void printHistory(String nickname, AttendanceHistoryResult historyResult) {
+        System.out.printf("이번 달 %s의 출석 기록입니다.%n%n", nickname);
+        historyResult.history().forEach(innerHistory -> {
+                StringBuilder sb = new StringBuilder();
+                sb.append(innerHistory.date().format(Formatter.DATE_FORMATTER));
+                sb.append(" ");
+                if (innerHistory.time() == null) {
+                    sb.append("--:--");
+                } else {
+                    sb.append(innerHistory.time().format(Formatter.TIME_FORMATTER));
+                }
+                sb.append(String.format(" (%s)", innerHistory.status().getDescription()));
+            }
+        );
+        System.out.println();
+
+        System.out.printf("출석: %d회%n", historyResult.statusCounter().get(AttendanceStatus.ATTENDANCE));
+        System.out.printf("지각: %d회%n", historyResult.statusCounter().get(AttendanceStatus.LATE));
+        System.out.printf("결석: %d회%n", historyResult.statusCounter().get(AttendanceStatus.ABSENT));
+
+        System.out.println();
+
+        if (!historyResult.manage().equals(Manage.NONE)) {
+            System.out.printf("%s 대상자입니다.%n%n", historyResult.manage().getDescription());
+        }
     }
 }

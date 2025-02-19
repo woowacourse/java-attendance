@@ -47,4 +47,9 @@ public class InputView {
         String time = scanner.nextLine();
         return AttendanceModifyRequest.of(nickname, day, time);
     }
+
+    public static String scanNickname() {
+        System.out.println("닉네임을 입력해 주세요.");
+        return scanner.nextLine();
+    }
 }

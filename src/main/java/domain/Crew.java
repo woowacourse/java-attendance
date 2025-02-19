@@ -2,7 +2,11 @@ package domain;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.EnumMap;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import exception.AlreadyAttendanceException;
@@ -42,19 +46,49 @@ public class Crew {
     }
 
     public AttendanceStatus getAttendanceStatusByDate(LocalDate date) {
+        if(DayUtil.isOffDay(date)) {
+            return AttendanceStatus.NONE;
+        }
+        if(!attendanceTimes.containsKey(date)) {
+            return AttendanceStatus.ABSENT;
+        }
         return AttendanceStatus.of(date, attendanceTimes.get(date));
     }
 
+    public List<History> getAllHistory(LocalDate today) {
+        List<History> histories = new ArrayList<>();
+        for (int day = 1; day < today.getDayOfMonth(); day++) {
+            if (DayUtil.isOffDay(today.withDayOfMonth(day))) {
+                continue;
+            }
+            LocalDate date = today.withDayOfMonth(day);
+            LocalTime time = attendanceTimes.get(date);
+            histories.add(
+                new History(
+                    date,
+                    time,
+                    getAttendanceStatusByDate(date),
+                    time == null
+                ));
+        }
+        return histories;
+    }
+
     public Map<AttendanceStatus, Integer> getAttendanceStatusStatistics(LocalDate today) {
-        Map<AttendanceStatus, Integer> result = new HashMap<>();
+        Map<AttendanceStatus, Integer> statusCounter = new EnumMap<>(AttendanceStatus.class);
+        initializeStatusCounter(statusCounter);
         for(int day = 1; day < today.getDayOfMonth(); day++) {
-            if (DayUtil.isOffDay(today, day)) {
+            if (DayUtil.isOffDay(today.withDayOfMonth(day))) {
                 continue;
             }
             AttendanceStatus attendanceStatus = getAttendanceStatusByDate(LocalDate.of(today.getYear(),
                 today.getMonth(), day));
-            result.put(attendanceStatus, result.getOrDefault(attendanceStatus, 0) + 1);
+            statusCounter.put(attendanceStatus, statusCounter.getOrDefault(attendanceStatus, 0) + 1);
         }
-        return result;
+        return statusCounter;
+    }
+
+    private void initializeStatusCounter(Map<AttendanceStatus, Integer> result) {
+        Arrays.stream(AttendanceStatus.values()).forEach(status -> result.put(status, 0));
     }
 }

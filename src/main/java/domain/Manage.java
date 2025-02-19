@@ -5,16 +5,20 @@ import java.util.Comparator;
 import java.util.Map;
 
 public enum Manage {
-    NONE(0),
-    WARNING(2),
-    INTERVIEW(3),
-    EXPELLED(6),
+    NONE(0, ""),
+    WARNING(2, "경고"),
+    INTERVIEW(3, "면담"),
+    EXPELLED(6, "제적"),
     ;
 
     private final int absentThreshold;
+    private final String description;
 
-    Manage(int absentThreshold) {
+    Manage(int absentThreshold, String description) {
+
         this.absentThreshold = absentThreshold;
+        this.description = description;
+
     }
 
     public static Manage of(Map<AttendanceStatus, Integer> attendanceStatusStatistics) {
@@ -29,5 +33,9 @@ public enum Manage {
 
     public int getAbsentThreshold() {
         return absentThreshold;
+    }
+
+    public String getDescription() {
+        return description;
     }
 }
