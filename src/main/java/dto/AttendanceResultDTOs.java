@@ -7,6 +7,7 @@ public record AttendanceResultDTOs(
         List<AttendanceResultDTO> attendanceResults,
         int attendCount,
         int lateCount,
-        int absentCount
+        int absentCount,
+        String interviewee
 ) {
 }

@@ -24,52 +24,77 @@ public class MemberAttendances {
     }
     
     public ExpelMeasurementDTO measureExpelRisk() {
-        int lateCount = 0;
-        int absentCount = 0;
-        List<AttendanceResultDTO> attendanceResults = attendances.stream()
-                .map(Attendance::createAttendanceResult)
-                .toList();
+        int lateCount = calculateLateCount();
+        int absentCount = calculateAbsentCount();
         
-        for (AttendanceResultDTO attendanceResult : attendanceResults) {
-            if (attendanceResult.attendanceStatus().equals("지각")) {
-                lateCount++;
-                continue;
-            }
-            if (attendanceResult.attendanceStatus().equals("결석")) {
-                absentCount++;
-            }
-        }
-        
-        int expelRiskMeasurement = absentCount + lateCount / 3;
-        if (expelRiskMeasurement > 5) return new ExpelMeasurementDTO(name, lateCount, absentCount, "제적");
-        if (expelRiskMeasurement >= 3) return new ExpelMeasurementDTO(name, lateCount, absentCount, "면담");
-        if (expelRiskMeasurement >= 2) return new ExpelMeasurementDTO(name, lateCount, absentCount, "경고");
-        return new ExpelMeasurementDTO(name, lateCount, absentCount, null);
+        return new ExpelMeasurementDTO(name, lateCount, absentCount, checkStatus(lateCount, absentCount));
     }
     
     public AttendanceResultDTOs getAttendanceResult() {
-        int attendCount = 0;
-        int lateCount = 0;
-        int absentCount = 0;
+        int attendCount = calculateAttendCount();
+        int lateCount = calculateLateCount();
+        int absentCount = calculateAbsentCount();
+        
+        return new AttendanceResultDTOs(name,
+                attendances.stream().map(Attendance::createAttendanceResult).toList(),
+                attendCount,
+                lateCount,
+                absentCount,
+                checkStatus(lateCount, absentCount)
+        );
+    }
+    
+    public int calculateAttendCount() {
+        int count = 0;
+        
         List<AttendanceResultDTO> attendanceResults = attendances.stream()
                 .map(Attendance::createAttendanceResult)
                 .toList();
         
         for (AttendanceResultDTO attendanceResult : attendanceResults) {
             if (attendanceResult.attendanceStatus().equals("출석")) {
-                attendCount++;
-                continue;
-            }
-            if (attendanceResult.attendanceStatus().equals("지각")) {
-                lateCount++;
-                continue;
-            }
-            if (attendanceResult.attendanceStatus().equals("결석")) {
-                absentCount++;
+                count++;
             }
         }
+        return count;
+    }
+    
+    public int calculateLateCount() {
+        int count = 0;
         
-        return new AttendanceResultDTOs(name, attendanceResults, attendCount, lateCount, absentCount);
+        List<AttendanceResultDTO> attendanceResults = attendances.stream()
+                .map(Attendance::createAttendanceResult)
+                .toList();
+        
+        for (AttendanceResultDTO attendanceResult : attendanceResults) {
+            if (attendanceResult.attendanceStatus().equals("지각")) {
+                count++;
+            }
+        }
+        return count;
+    }
+    
+    public int calculateAbsentCount() {
+        int count = 0;
+        
+        List<AttendanceResultDTO> attendanceResults = attendances.stream()
+                .map(Attendance::createAttendanceResult)
+                .toList();
+        
+        for (AttendanceResultDTO attendanceResult : attendanceResults) {
+            if (attendanceResult.attendanceStatus().equals("결석")) {
+                count++;
+            }
+        }
+        return count;
+    }
+    
+    public String checkStatus(int lateCount, int absentCount) {
+        int expelRiskMeasurement = absentCount + lateCount / 3;
+        if (expelRiskMeasurement > 5) return "제적";
+        if (expelRiskMeasurement >= 3) return "면담";
+        if (expelRiskMeasurement >= 2) return "경고";
+        return null;
     }
     
     public AttendanceResultDTO attend(LocalDateTime attendDateTime) {

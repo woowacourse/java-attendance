@@ -3,6 +3,7 @@ import domain.AttendanceBook;
 import domain.MemberAttendances;
 import dto.AttendanceModifyResult;
 import dto.AttendanceResultDTO;
+import dto.AttendanceResultDTOs;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import util.exception.IllegalAttendDateException;
@@ -165,6 +166,118 @@ public class AttendanceBookTest {
             assertThatThrownBy(() -> attendanceBook.editAttendance(name, date, time))
                     .isExactlyInstanceOf(IllegalAttendTimeException.class)
                     .hasMessage("수정 가능한 시간이 아닙니다.");
+        }
+    }
+    
+    @Nested
+    class 크루별_출석_기록_확인 {
+        
+        @Test
+        void 크루별_출석기록을_확인할_수_있다() {
+            //given
+            String name = "Dompoo";
+            AttendanceBook attendanceBook = new AttendanceBook(Map.of("Dompoo", new MemberAttendances("Dompoo", List.of(
+                    new Attendance(LocalDateTime.of(2024, 12, 6, 10, 15)),
+                    new Attendance(LocalDateTime.of(2024, 12, 10, 10, 30)),
+                    new Attendance(LocalDateTime.of(2024, 12, 11, 10, 31)))
+            )));
+            
+            //when
+            AttendanceResultDTOs result = attendanceBook.getAttendanceResult(name);
+            
+            //then
+            assertThat(result).isEqualTo(new AttendanceResultDTOs(
+                    "Dompoo", List.of(
+                    new AttendanceResultDTO(LocalDateTime.of(2024, 12, 6, 10, 15), "지각"),
+                    new AttendanceResultDTO(LocalDateTime.of(2024, 12, 10, 10, 30), "지각"),
+                    new AttendanceResultDTO(LocalDateTime.of(2024, 12, 11, 10, 31), "결석")
+            ), 0, 2, 1, null
+            ));
+        }
+        
+        @Test
+        void 크루별_출석기록을_확인할_수_있다_경고() {
+            //given
+            String name = "Dompoo";
+            AttendanceBook attendanceBook = new AttendanceBook(Map.of("Dompoo", new MemberAttendances("Dompoo", List.of(
+                    new Attendance(LocalDateTime.of(2024, 12, 6, 10, 15)),
+                    new Attendance(LocalDateTime.of(2024, 12, 10, 10, 30)),
+                    new Attendance(LocalDateTime.of(2024, 12, 11, 10, 31)),
+                    new Attendance(LocalDateTime.of(2024, 12, 12, 10, 32)))
+            )));
+            
+            //when
+            AttendanceResultDTOs result = attendanceBook.getAttendanceResult(name);
+            
+            //then
+            assertThat(result).isEqualTo(new AttendanceResultDTOs(
+                    "Dompoo", List.of(
+                    new AttendanceResultDTO(LocalDateTime.of(2024, 12, 6, 10, 15), "지각"),
+                    new AttendanceResultDTO(LocalDateTime.of(2024, 12, 10, 10, 30), "지각"),
+                    new AttendanceResultDTO(LocalDateTime.of(2024, 12, 11, 10, 31), "결석"),
+                    new AttendanceResultDTO(LocalDateTime.of(2024, 12, 12, 10, 32), "결석")
+            ), 0, 2, 2, "경고"
+            ));
+        }
+        
+        @Test
+        void 크루별_출석기록을_확인할_수_있다_면담() {
+            //given
+            String name = "Dompoo";
+            AttendanceBook attendanceBook = new AttendanceBook(Map.of("Dompoo", new MemberAttendances("Dompoo", List.of(
+                    new Attendance(LocalDateTime.of(2024, 12, 6, 10, 15)),
+                    new Attendance(LocalDateTime.of(2024, 12, 10, 10, 30)),
+                    new Attendance(LocalDateTime.of(2024, 12, 11, 10, 31)),
+                    new Attendance(LocalDateTime.of(2024, 12, 12, 10, 32)),
+                    new Attendance(LocalDateTime.of(2024, 12, 13, 10, 33)))
+            )));
+            
+            //when
+            AttendanceResultDTOs result = attendanceBook.getAttendanceResult(name);
+            
+            //then
+            assertThat(result).isEqualTo(new AttendanceResultDTOs(
+                    "Dompoo", List.of(
+                    new AttendanceResultDTO(LocalDateTime.of(2024, 12, 6, 10, 15), "지각"),
+                    new AttendanceResultDTO(LocalDateTime.of(2024, 12, 10, 10, 30), "지각"),
+                    new AttendanceResultDTO(LocalDateTime.of(2024, 12, 11, 10, 31), "결석"),
+                    new AttendanceResultDTO(LocalDateTime.of(2024, 12, 12, 10, 32), "결석"),
+                    new AttendanceResultDTO(LocalDateTime.of(2024, 12, 13, 10, 33), "결석")
+            ), 0, 2, 3, "면담"
+            ));
+        }
+        
+        @Test
+        void 크루별_출석기록을_확인할_수_있다_제적() {
+            //given
+            String name = "Dompoo";
+            AttendanceBook attendanceBook = new AttendanceBook(Map.of("Dompoo", new MemberAttendances("Dompoo", List.of(
+                    new Attendance(LocalDateTime.of(2024, 12, 6, 10, 15)),
+                    new Attendance(LocalDateTime.of(2024, 12, 10, 10, 30)),
+                    new Attendance(LocalDateTime.of(2024, 12, 11, 10, 31)),
+                    new Attendance(LocalDateTime.of(2024, 12, 12, 10, 32)),
+                    new Attendance(LocalDateTime.of(2024, 12, 13, 10, 33)),
+                    new Attendance(LocalDateTime.of(2024, 12, 17, 10, 34)),
+                    new Attendance(LocalDateTime.of(2024, 12, 18, 10, 35)),
+                    new Attendance(LocalDateTime.of(2024, 12, 19, 10, 35)))
+            )));
+            
+            //when
+            AttendanceResultDTOs result = attendanceBook.getAttendanceResult(name);
+            
+            //then
+            assertThat(result).isEqualTo(new AttendanceResultDTOs(
+                    "Dompoo", List.of(
+                    new AttendanceResultDTO(LocalDateTime.of(2024, 12, 6, 10, 15), "지각"),
+                    new AttendanceResultDTO(LocalDateTime.of(2024, 12, 10, 10, 30), "지각"),
+                    new AttendanceResultDTO(LocalDateTime.of(2024, 12, 11, 10, 31), "결석"),
+                    new AttendanceResultDTO(LocalDateTime.of(2024, 12, 12, 10, 32), "결석"),
+                    new AttendanceResultDTO(LocalDateTime.of(2024, 12, 13, 10, 33), "결석"),
+                    new AttendanceResultDTO(LocalDateTime.of(2024, 12, 17, 10, 34), "결석"),
+                    new AttendanceResultDTO(LocalDateTime.of(2024, 12, 18, 10, 35), "결석"),
+                    new AttendanceResultDTO(LocalDateTime.of(2024, 12, 19, 10, 35), "결석")
+            ), 0, 2, 6, "제적"
+            ));
         }
     }
 }

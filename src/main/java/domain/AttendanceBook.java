@@ -3,6 +3,7 @@ package domain;
 import dto.AttendanceModifyDTO;
 import dto.AttendanceModifyResult;
 import dto.AttendanceResultDTO;
+import dto.AttendanceResultDTOs;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -34,5 +35,10 @@ public class AttendanceBook {
         if (memberAttendances.get(name) == null) {
             throw new IllegalArgumentException("해당 멤버는 존재하지 않습니다.");
         }
+    }
+    
+    public AttendanceResultDTOs getAttendanceResult(String name) {
+        MemberAttendances oneMemberAttendances = memberAttendances.get(name);
+        return oneMemberAttendances.getAttendanceResult();
     }
 }
