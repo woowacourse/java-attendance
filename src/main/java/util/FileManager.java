@@ -1,16 +1,11 @@
 package util;
 
 import domain.Attendance;
-import domain.AttendanceState;
 import domain.Crew;
-import dto.AttendanceRecord;
-import dto.Time;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -28,32 +23,34 @@ public class FileManager {
             br.readLine();
 
             String line;
-            Map<Crew, List<AttendanceRecord>> attendances = new LinkedHashMap<>();
+            Map<Crew, List<LocalDateTime>> attendances = new LinkedHashMap<>();
 
             while ((line = br.readLine()) != null) {
                 String[] lineSplit = line.split(",");
 
                 String name = lineSplit[0];
-                Crew crew = Crew.from(name);
+                Crew crew = getCrewByName(name, attendances);
+
                 String dateTime = lineSplit[1];
-
                 LocalDateTime localDateTime = LocalDateTime.parse(dateTime, DATE_TIME_FORMAT);
-                LocalDate localDate = localDateTime.toLocalDate();
-                LocalTime localTime = localDateTime.toLocalTime();
-                AttendanceState state = AttendanceState.findStateBy(localTime, localDate);
+                List<LocalDateTime> localDateTimes = attendances.getOrDefault(crew, new ArrayList<>());
+                localDateTimes.add(localDateTime);
 
-                Time time = new Time(localTime, state);
-                AttendanceRecord record = new AttendanceRecord(localDate, time);
-
-                List<AttendanceRecord> records = attendances.getOrDefault(crew, new ArrayList<>());
-                records.add(record);
-
-                attendances.put(crew, records);
+                attendances.put(crew, localDateTimes);
             }
 
             return new Attendance(attendances);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    private static Crew getCrewByName(String name, Map<Crew, List<LocalDateTime>> attendances) {
+        return attendances.keySet()
+                .stream()
+                .filter(crew -> crew.getName().equals(name))
+                .findFirst()
+                .orElseGet(() -> Crew.from(name)
+                );
     }
 }
