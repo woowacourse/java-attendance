@@ -2,6 +2,7 @@ package attendance.domain;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -35,5 +36,19 @@ public class Attendance {
 
     public boolean hasTimeStamp(final LocalDate localDate) {
         return timestamps.containsKey(localDate);
+    }
+
+    public Map<AttendanceStatus, Integer> countAttendanceStatus() {
+        Map<AttendanceStatus, Integer> attendanceStatuses = new EnumMap<>(AttendanceStatus.class);
+
+        for (AttendanceStatus attendanceStatus : AttendanceStatus.values()) {
+            long count = timestamps.values().stream()
+                    .filter(hourMinute -> hourMinute.attendanceStatus().equals(attendanceStatus))
+                    .count();
+
+            attendanceStatuses.put(attendanceStatus, (int) count);
+        }
+
+        return attendanceStatuses;
     }
 }
