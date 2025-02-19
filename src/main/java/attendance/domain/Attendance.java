@@ -22,26 +22,26 @@ public class Attendance {
     public String getAttendanceStatus() {
         if (attendanceTime.getDayOfWeek().equals("월요일")) { // 월요일
 
-            return checkStatusWithCondition(13, 0, 6);
+            return checkStatusWithCondition(13, 5, 30);
         }
 
-        return checkStatusWithCondition(10, 0, 6);
+        return checkStatusWithCondition(10, 5, 30);
     }
 
-    private String checkStatusWithCondition(int hour, int attendanceMinute,
-                                            int lateMinute) {
+    private String checkStatusWithCondition(int hour,
+                                            int lateMinute, int absentMinute) {
 
         if (!attendanceTime.isAfter(
                 LocalDateTime.of(attendanceTime.getYear(), attendanceTime.getMonth(), attendanceTime.getDay(),
                         hour,
-                        attendanceMinute))) {
+                        lateMinute))) {
             return "출석";
         }
 
         if (!attendanceTime.isAfter(
                 LocalDateTime.of(attendanceTime.getYear(), attendanceTime.getMonth(), attendanceTime.getDay(),
                         hour,
-                        lateMinute))) {
+                        absentMinute))) {
             return "지각";
         }
 
@@ -58,8 +58,9 @@ public class Attendance {
     }
 
 
-    public boolean isSameByNameAndDay(String name, int day) {
-        return crewName.equals(name) && day == attendanceTime.getDay();
+    public boolean isSameByNameAndLocalDate(String name, int year, int month, int day) {
+        return crewName.equals(name) && day == attendanceTime.getDay() && year == attendanceTime.getYear()
+                && month == attendanceTime.getMonth();
     }
 
     public void modifyAttendanceTime(Time modifyTime) {

@@ -37,7 +37,11 @@ public class Time {
     }
 
     public boolean isAfter(LocalDateTime localDateTime) {
-        return date.atTime(Integer.parseInt(hour), Integer.parseInt(minute)).isAfter(localDateTime);
+        if (!isAbsent) {
+            return date.atTime(Integer.parseInt(hour), Integer.parseInt(minute)).isAfter(localDateTime);
+        }
+
+        return true;
     }
 
     public LocalDate getDate() {

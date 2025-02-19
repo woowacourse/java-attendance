@@ -71,7 +71,7 @@ class AttendanceTest {
     }
 
     @ParameterizedTest
-    @CsvSource(value = {"2024,12,13,10,00,출석", "2024,12,13,10,06,지각", "2024,12,13,10,31,결석",
+    @CsvSource(value = {"2024,12,13,10,00,출석", "2024,12,13,10,05,출석", "2024,12,13,10,06,지각", "2024,12,13,10,31,결석",
             "2024,12,9,12,30,출석", "2024,12,9,13,06,지각", "2024,12,9,13,31,결석"})
     void 시간에_맞는_출결_상태를_갖는다(int year, int month, int day, String hour, String minute, String result) {
 
