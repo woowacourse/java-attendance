@@ -25,6 +25,21 @@ public class OutputView {
                 status.getMessage());
     }
 
+    public void printUpdateAttendance(LocalDateTime beforeTime, AttendanceStatus beforeStatus, Attendance after) {
+        LocalDateTime afterDateTime = after.getDateTime();
+        System.out.printf("%d월 %02d일 %s %02d:%02d (%s) -> %02d:%02d (%s) 수정 완료!\n",
+                beforeTime.getMonthValue(),
+                beforeTime.getDayOfMonth(),
+                beforeTime.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.KOREA),
+                beforeTime.getHour(),
+                beforeTime.getMinute(),
+                beforeStatus.getMessage(),
+                afterDateTime.getHour(),
+                afterDateTime.getMinute(),
+                after.getStatus().getMessage()
+        );
+    }
+
     public void printAttendanceByCrew(Crew crew) {
         System.out.printf("이번 달 %s의 출석 기록입니다.\n", crew.getNickname());
         for (Attendance attendance : crew.getAttendances()) {

@@ -1,9 +1,6 @@
 package attendance.controller;
 
-import attendance.domain.Attendance;
-import attendance.domain.Crew;
-import attendance.domain.Crews;
-import attendance.domain.Warning;
+import attendance.domain.*;
 import attendance.reader.AttendancesFileReader;
 import attendance.service.CrewsService;
 import attendance.view.InputView;
@@ -31,13 +28,6 @@ public class AttendanceController {
         return LocalDateTime.of(now, time);
     }
 
-    public void run() {
-        LocalDate now = LocalDate.of(2024, 12, 17);
-        Crews crews = crewsService.init(AttendancesFileReader.read(), now);
-
-        printWarningCrews(crews);
-    }
-
     private void confirmAttendance(Crews crews, LocalDate now) {
         Crew crew = crews.findByName(inputView.inputNickname());
         crew.existInAttendances(now); //TODO: 수정으로 유도, 공휴일인지
@@ -47,6 +37,13 @@ public class AttendanceController {
 
         crew.addAttendance(attendance);
         outputView.printAttendanceResult(attendance);
+    }
+
+    public void run() {
+        LocalDate now = LocalDate.of(2024, 12, 17);
+        Crews crews = crewsService.init(AttendancesFileReader.read(), now);
+
+        updateAttendance(crews, now);
     }
 
     private void printAttendanceByCrew(Crews crews, LocalDate now) {
@@ -62,5 +59,18 @@ public class AttendanceController {
 
     private void printWarningCrews(Crews crews) {
         outputView.printWarningCrews(crews.collectWarningCrews());
+    }
+
+    private void updateAttendance(Crews crews, LocalDate now) {
+        Crew crew = crews.findByName(inputView.inputNickname());
+
+        LocalDate updateDate = LocalDate.of(now.getYear(), now.getMonthValue(), inputView.inputUpdateDate());
+        String inputUpdateTime = inputView.inputUpdateTime();
+
+        Attendance before = crew.findAttendanceByDate(updateDate);
+        AttendanceStatus beforeStatus = before.getStatus();
+        LocalDateTime beforeTime = before.getDateTime();
+        Attendance after = crew.updateAttendance(timeFormatter(updateDate, inputUpdateTime));
+        outputView.printUpdateAttendance(beforeTime, beforeStatus, after);
     }
 }

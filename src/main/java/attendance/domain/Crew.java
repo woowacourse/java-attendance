@@ -67,6 +67,13 @@ public class Crew implements Comparable<Crew> {
         statusCount.put(after, statusCount.getOrDefault(after, 0) + 1);
     }
 
+    public Attendance findAttendanceByDate(LocalDate updateDate) {
+        return attendances.stream()
+                .filter(attendance -> attendance.isEqualToDate(updateDate))
+                .findFirst()
+                .orElseThrow(IllegalArgumentException::new);
+    }
+
     @Override
     public int compareTo(Crew o) {
         int targetAbsenceCount = o.calculateTotalAbsenceCount();
