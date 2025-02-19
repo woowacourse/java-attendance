@@ -1,5 +1,7 @@
 package domain;
 
+import domain.attendance.Attendance;
+import domain.attendance.AttendanceWarning;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -74,5 +76,6 @@ public class AttendanceTest {
 
         Assertions.assertThat(attendanceWarning).isEqualTo(AttendanceWarning.WARNING);
     }
+
 
 }

@@ -1,4 +1,4 @@
-package domain;
+package domain.attendance;
 
 public enum AttendanceWarning {
     WEEDING("제적", 6),
