@@ -1,8 +1,6 @@
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
@@ -20,7 +18,19 @@ public class Crew {
     }
 
     public void addDailyAttendance(Map<LocalDate, LocalTime> dateAndTime) {
+        LocalDate date = dateAndTime.keySet().stream()
+                .findAny()
+                .orElseThrow();
+
+        validateIsDateUnique(date);
+
         dailyAttendances.putAll(dateAndTime);
+    }
+
+    private void validateIsDateUnique(LocalDate date) {
+        if(dailyAttendances.containsKey(date)){
+            throw new IllegalArgumentException("[ERROR] 이미 출석한 날짜입니다. 수정 기능을 이용해주세요.");
+        }
     }
 
     public boolean hasName(String value) {
