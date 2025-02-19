@@ -38,6 +38,7 @@ public class OutputView {
         System.out.printf("%n이번 달 %s의 출석 기록입니다.%n%n", crew.getName());
         displaySortedRecords(crew, crewAttendanceRecords);
         displayAttendanceCount(crew, crewAttendanceRecords);
+        displayDisciplinaryStatus(crew, crewAttendanceRecords);
     }
 
     private void displaySortedRecords(Crew crew, CrewAttendanceRecords crewAttendanceRecords) {
@@ -52,5 +53,12 @@ public class OutputView {
         System.out.printf("%n%s: %d회%n", Attendance.PRESENT.getName(), crewAttendanceRecords.getPresentCount(crew));
         System.out.printf("%s: %d회%n", Attendance.TARDY.getName(), crewAttendanceRecords.getTardyCount(crew));
         System.out.printf("%s: %d회%n%n", Attendance.ABSENT.getName(), crewAttendanceRecords.getAbsentCount(crew));
+    }
+
+    private void displayDisciplinaryStatus(Crew crew, CrewAttendanceRecords crewAttendanceRecords) {
+        int tardyCount = crewAttendanceRecords.getTardyCount(crew);
+        int absentCount = crewAttendanceRecords.getAbsentCount(crew);
+        DisciplinaryStatus status = DisciplinaryStatus.getStatus(absentCount, tardyCount);
+        System.out.printf("%s 대상자입니다.", status.getName());
     }
 }

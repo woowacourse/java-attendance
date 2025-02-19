@@ -30,4 +30,8 @@ public enum DisciplinaryStatus {
     private static int calculateTotalAbsentCount(int absentCount, int tardyCount) {
         return absentCount + (tardyCount / 3);
     }
+
+    public String getName() {
+        return name;
+    }
 }
