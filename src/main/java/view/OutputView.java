@@ -13,6 +13,7 @@ public class OutputView {
 
             System.out.printf("12월 %d일 %s --:-- (결석)",date,December.getDayByDate(date));
             System.out.println();
+
         }
 
         AttendanceHistory attendanceHistory = crew.getAttendanceHistory();
@@ -23,6 +24,8 @@ public class OutputView {
         System.out.printf("결석: %d회",attendanceHistory.calculateAbsent());
 
         AttendanceStatus attendanceStatus = attendanceHistory.getAttendanceStatus();
+        System.out.println();
         System.out.printf("%s 대상자입니다.",attendanceStatus.getStatus());
+
     }
 }
