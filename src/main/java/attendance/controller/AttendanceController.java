@@ -7,7 +7,9 @@ import attendance.util.FileReader;
 import attendance.view.Input;
 import attendance.view.Output;
 import java.time.LocalDate;
+import java.time.format.TextStyle;
 import java.util.List;
+import java.util.Locale;
 
 public class AttendanceController {
     private final Input input;
@@ -23,11 +25,7 @@ public class AttendanceController {
     }
 
     public void run() {
-        FileReader reader = new FileReader();
-        List<List<String>> attendanceRecords = reader.readResource("attendances.csv");
-
-        crews.initCrews(attendanceRecords);
-        attendances.initAttendances(crews, attendanceRecords);
+        initDataFromCSV();
 
         MenuCommand command = null;
         // TODO 24년 12월 14일 localdate 객체 만들어서 readCommand 매개변수로 넣어주기
@@ -37,6 +35,24 @@ public class AttendanceController {
             command = MenuCommand.toCommand(input.readCommand());
             executeCommand(command);
         }
+    }
+
+    private void initDataFromCSV() {
+        FileReader reader = new FileReader();
+        List<List<String>> attendanceRecords = reader.readResource("attendances.csv");
+
+        crews.initCrews(attendanceRecords);
+        attendances.initAttendances(crews, attendanceRecords);
+    }
+
+    private String getMenuOption() {
+        LocalDate currentDate = LocalDate.of(2024, 12, 14);
+
+        String month = String.valueOf(currentDate.getMonthValue());
+        String day = String.valueOf(currentDate.getDayOfMonth());
+        String dayOfWeek = currentDate.getDayOfWeek().getDisplayName(TextStyle.NARROW, Locale.KOREAN);
+
+        return input.readCommand(month, day, dayOfWeek);
     }
 
     private void executeCommand(MenuCommand command) {
