@@ -51,6 +51,13 @@ public class AttendanceBook {
                 .filter(crew -> crew.hasName(name))
                 .findAny()
                 .orElse(null);
+
+        LocalDate date = dateAndTime.keySet().stream()
+                .findAny()
+                .orElseThrow();
+
+        Holiday.validateIsWorkingDay(date.getDayOfMonth());
+
         foundCrew.addDailyAttendance(dateAndTime);
     }
 }
