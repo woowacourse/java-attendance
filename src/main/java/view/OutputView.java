@@ -7,6 +7,7 @@ import java.util.Locale;
 import view.dto.AlertCrewDTO;
 import view.dto.AlertCrewsDTO;
 import view.dto.AttendanceLogDTO;
+import view.dto.ChangeAttendanceLogDTO;
 import view.dto.CrewAttendancesDTO;
 
 public class OutputView {
@@ -68,5 +69,18 @@ public class OutputView {
     private String makeAlertCrew(AlertCrewDTO alertCrewDTO) {
         return String.format("- %s: 결석 %d회, 지각 %d회 (%s)\n", alertCrewDTO.nickName(), alertCrewDTO.absent(),
                 alertCrewDTO.late(), alertCrewDTO.AlertLevel());
+    }
+
+    public void printChangeLog(ChangeAttendanceLogDTO changeAttendanceLogDTO) {
+        LocalDateTime originalTime = changeAttendanceLogDTO.originalTime();
+        LocalDateTime changeTime = changeAttendanceLogDTO.changeTime();
+        String dayOfWeekKorean = originalTime.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.KOREAN);
+        String time = String.format("%02d:%02d", originalTime.getHour(), originalTime.getMinute());
+        String cTime = String.format("%02d:%02d", changeTime.getHour(), changeTime.getMinute());
+        System.out.println(String.format("%d월 %02d일 %s %s (%s) -> %s (%s) 수정 완료!",
+                originalTime.getMonth().getValue(),
+                originalTime.getDayOfMonth(),
+                dayOfWeekKorean, time, changeAttendanceLogDTO.originalStatus().getName(), cTime,
+                changeAttendanceLogDTO.changeStatus().getName()));
     }
 }

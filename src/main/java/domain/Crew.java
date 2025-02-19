@@ -38,6 +38,20 @@ public class Crew {
         }
     }
 
+    public Attendance getSpecificAttendance(int date) {
+        return attendances.stream()
+                .filter(attendance -> attendance.isSameDay(date))
+                .findFirst()
+                .orElseThrow();
+    }
+
+    public Attendance changeAttendance(int date, String time) {
+        Attendance targetAttendance = getSpecificAttendance(date);
+        targetAttendance.updateAttendance(time);
+
+        return targetAttendance;
+    }
+
     public void updateAttendanceCount() {
         for (Attendance attendance : attendances) {
             attendanceCount.calculateRecord(attendance);

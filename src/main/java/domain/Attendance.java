@@ -27,8 +27,11 @@ public class Attendance {
         return AttendanceStatus.PRESENT;
     }
 
-    public void updateAttendance(LocalDateTime updateTime) {
-        date = updateTime;
+    public void updateAttendance(String time) {
+        String[] spilttedTime = time.split(":");
+
+        date = LocalDateTime.of(date.getYear(), date.getMonth(), date.getDayOfMonth(),
+                Integer.parseInt(spilttedTime[0]), Integer.parseInt(spilttedTime[1]));
     }
 
     public boolean isSameDay(int day) {
