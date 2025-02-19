@@ -56,9 +56,9 @@ public class AttendanceRecordCheckTest {
         assertThat(absenceCount).isEqualTo(2);
     }
 
-    @DisplayName("경고 및 면담 기준을 정확하게 계산한다.")
+    @DisplayName("경고 기준을 정확하게 계산한다.")
     @Test
-    void 경고_및_면담_기준_계산() {
+    void 경고_기준_계산() {
         String name = "빙티";
         Records records = attendanceManager.findByName(name);
 
@@ -70,4 +70,56 @@ public class AttendanceRecordCheckTest {
 
         assertThat(Penalty.WARNING).isEqualTo(Penalty.check(absenceCount,latenessCount));
     }
+
+    @DisplayName("면담 기준을 정확하게 계산한다.")
+    @Test
+    void 면담_기준_계산() {
+        List<LocalDateTime> counselingRecords = List.of(
+            LocalDateTime.of(2024, 12, 2, 13, 0), // 출석
+            LocalDateTime.of(2024, 12, 3, 9, 59), // 출석
+            LocalDateTime.of(2024, 12, 4, 10, 6), // 지각
+            LocalDateTime.of(2024, 12, 5, 10, 31),// 결석
+            LocalDateTime.of(2024, 12, 6, 10, 40), // 결석
+            LocalDateTime.of(2024, 12, 9, 13, 40)); // 결석
+
+        String name = "빙티";
+        attendanceManager.createCrew(name, counselingRecords);
+        Records records = attendanceManager.findByName(name);
+
+        LocalDate nowDate = LocalDate.of(2024, 12, 10);
+        StatisticsResult statisticsResult = AttendanceStatistics.countStatus(nowDate, records);
+
+        int latenessCount = statisticsResult.getLatenessCount();
+        int absenceCount = statisticsResult.getAbsenceCount();
+
+        assertThat(Penalty.COUNSELING).isEqualTo(Penalty.check(absenceCount,latenessCount));
+    }
+
+    @DisplayName("제적 기준을 정확하게 계산한다.")
+    @Test
+    void 제적_기준_계산() {
+        List<LocalDateTime> expelledRecords = List.of(
+            LocalDateTime.of(2024, 12, 2, 13, 0), // 출석
+            LocalDateTime.of(2024, 12, 3, 9, 59), // 출석
+            LocalDateTime.of(2024, 12, 4, 10, 6), // 지각
+            LocalDateTime.of(2024, 12, 5, 10, 31),// 결석
+            LocalDateTime.of(2024, 12, 6, 10, 40), // 결석
+            LocalDateTime.of(2024, 12, 9, 13, 40), // 결석
+            LocalDateTime.of(2024, 12, 10, 11, 40), // 결석
+            LocalDateTime.of(2024, 12, 11, 11, 40), // 결석
+            LocalDateTime.of(2024, 12, 12, 11, 40)); // 결석
+
+        String name = "빙티";
+        attendanceManager.createCrew(name, expelledRecords);
+        Records records = attendanceManager.findByName(name);
+
+        LocalDate nowDate = LocalDate.of(2024, 12, 13);
+        StatisticsResult statisticsResult = AttendanceStatistics.countStatus(nowDate, records);
+
+        int latenessCount = statisticsResult.getLatenessCount();
+        int absenceCount = statisticsResult.getAbsenceCount();
+
+        assertThat(Penalty.EXPELLED).isEqualTo(Penalty.check(absenceCount,latenessCount));
+    }
+
 }
