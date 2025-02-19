@@ -36,4 +36,27 @@ public class Attendance {
         localDateTimes.add(todayLocalDateTime);
         attendanceMap.put(crew, localDateTimes);
     }
+
+    public LocalDateTime update(final Crew crew, final String updateTime, final int date) {
+        List<LocalDateTime> localDateTimes = attendanceMap.get(crew);
+        int i;
+        LocalDateTime beforeLocalDateTime = null;
+        for (i = 0; i < localDateTimes.size(); i++) {
+            LocalDateTime localDateTime = localDateTimes.get(i);
+            int dayOfMonth = localDateTime.getDayOfMonth();
+            if (dayOfMonth == date) {
+                beforeLocalDateTime = localDateTime;
+                break;
+            }
+        }
+
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+
+        String today = String.format("2024-12-%02d %s", date, updateTime);
+        LocalDateTime todayLocalDateTime = LocalDateTime.parse(today, formatter);
+
+        localDateTimes.set(i, todayLocalDateTime);
+
+        return beforeLocalDateTime;
+    }
 }
