@@ -3,6 +3,7 @@ package domain;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 public class AllCrew {
@@ -26,6 +27,10 @@ public class AllCrew {
     }
 
     public String printAllCrewWarningInfo(LocalDate date) {
+        allCrew.sort(
+                Comparator.comparing(Crew::getAbsentCount)
+                        .thenComparing(Crew::getName)
+        );
         String result = "";
         for(Crew crew : allCrew) {
             result += crew.printWarningInfo(date) + "\n";
