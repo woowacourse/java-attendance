@@ -13,19 +13,6 @@ import java.util.Locale;
 
 public class AttendanceManager {
 
-    private static final int MONDAY = 1;
-    private static final LocalTime MONDAY_START_TIME = LocalTime.of(13, 0);
-    private static final LocalTime NORMAL_START_TIME = LocalTime.of(10, 0);
-    private static final LocalTime SCHOOL_OPEN_TIME = LocalTime.of(8, 0);
-    private static final LocalTime SCHOOL_CLOSE_TIME = LocalTime.of(23, 0);
-    private final int LATE_MINUTE = 5;
-    private final int WEEKEND_NUMBER = 6;
-    private final int ABSENCE_MINUTE = 30;
-    private final String NICKNAME_NOT_EXISTS = "출석 정보가 존재하지 않습니다.";
-    private final String CANNOT_BE_EMPTY_NICKNAME = "닉네임은 공백일 수 없습니다.";
-    private final String CANNOT_ATTENDANCE_WEEKEND_FORMAT = "MM월 dd일 E요일은 등교일이 아닙니다.";
-    private final String OUT_OF_SCHOOL_SCHEDULE = "등교시간에만 출석 가능합니다.";
-
     private HashMap<String, Attendances> attendanceManager = new HashMap<>();
 
     public void addAttendance(String nickname, LocalDateTime time) {
@@ -39,14 +26,16 @@ public class AttendanceManager {
     }
 
     private void validateIsSchoolOpen(LocalTime currentTime) {
-        if(currentTime.isBefore(SCHOOL_OPEN_TIME) || currentTime.isAfter(SCHOOL_CLOSE_TIME)){
-            throw new AttendanceException(OUT_OF_SCHOOL_SCHEDULE);
+        if(currentTime.isBefore(AttendanceManagerHelper.SCHOOL_OPEN_TIME) || currentTime.isAfter(
+                AttendanceManagerHelper.SCHOOL_CLOSE_TIME)){
+            throw new AttendanceException(AttendanceManagerHelper.OUT_OF_SCHOOL_SCHEDULE);
         }
     }
 
     private void validateIsAttendanceAvailable(LocalDate currentDate) {
-        if(currentDate.getDayOfWeek().getValue() >= WEEKEND_NUMBER) {
-            String cannotAttendanceMessage = currentDate.format(DateTimeFormatter.ofPattern(CANNOT_ATTENDANCE_WEEKEND_FORMAT, Locale.KOREA));
+        if(currentDate.getDayOfWeek().getValue() >= AttendanceManagerHelper.WEEKEND_NUMBER) {
+            String cannotAttendanceMessage = currentDate.format(DateTimeFormatter.ofPattern(
+                    AttendanceManagerHelper.CANNOT_ATTENDANCE_WEEKEND_FORMAT, Locale.KOREA));
             throw new AttendanceException(cannotAttendanceMessage);
         }
     }
@@ -54,14 +43,14 @@ public class AttendanceManager {
     private Attendances findAttendances(String nickname) {
         Attendances attendances = attendanceManager.get(nickname);
         if (attendances == null) {
-            throw new AttendanceException(NICKNAME_NOT_EXISTS);
+            throw new AttendanceException(AttendanceManagerHelper.NICKNAME_NOT_EXISTS);
         }
         return attendances;
     }
 
     private void validateNickname(String nickname) {
         if (StringUtility.isEmpty(nickname)) {
-            throw new AttendanceException(CANNOT_BE_EMPTY_NICKNAME);
+            throw new AttendanceException(AttendanceManagerHelper.CANNOT_BE_EMPTY_NICKNAME);
         }
     }
 
@@ -73,19 +62,19 @@ public class AttendanceManager {
     private AttendanceStatus determineAttendanceStatus(LocalDate currentDate, LocalTime currentTime) {
         LocalTime startTime = determineAttendanceStartTime(currentDate);
         validateIsAttendanceAvailable(currentDate);
-        if(currentTime.isAfter(startTime.plusMinutes(ABSENCE_MINUTE))){
+        if(currentTime.isAfter(startTime.plusMinutes(AttendanceManagerHelper.ABSENCE_MINUTE))){
             return AttendanceStatus.ABSENCE;
         }
-        if(currentTime.isAfter(startTime.plusMinutes(LATE_MINUTE))){
+        if(currentTime.isAfter(startTime.plusMinutes(AttendanceManagerHelper.LATE_MINUTE))){
             return AttendanceStatus.LATE;
         }
         return AttendanceStatus.ATTENDANCE;
     }
 
     private LocalTime determineAttendanceStartTime(LocalDate currentDate) {
-        if(currentDate.getDayOfWeek().getValue() == MONDAY){
-            return MONDAY_START_TIME;
+        if(currentDate.getDayOfWeek().getValue() == AttendanceManagerHelper.MONDAY){
+            return AttendanceManagerHelper.MONDAY_START_TIME;
         }
-        return NORMAL_START_TIME;
+        return AttendanceManagerHelper.NORMAL_START_TIME;
     }
 }
