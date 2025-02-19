@@ -32,6 +32,8 @@ public class Attendances {
                 attendance.modify(modifiedCheckInTime.toLocalTime());
             }
         }
+        Attendance attendance = Attendance.of(crew, modifiedCheckInTime);
+        checkIn(attendance);
     }
 
     private void validateExistAttendance(Attendance newAttendance) {
