@@ -79,4 +79,11 @@ public class Attendance {
     public HourMinute modify(final LocalDate localDate, final HourMinute hourMinute) {
         return timestamps.put(localDate, hourMinute);
     }
+
+    public boolean hasTimeStamp(final LocalDate localDate) {
+        if(!timestamps.containsKey(localDate)){
+            throw new IllegalArgumentException("해당 날짜에 출석 기록이 없습니다.");
+        }
+        return timestamps.containsKey(localDate);
+    }
 }
