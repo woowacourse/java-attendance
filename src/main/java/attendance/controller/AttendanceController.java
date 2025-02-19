@@ -1,5 +1,6 @@
 package attendance.controller;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -11,20 +12,26 @@ import attendance.domain.Attendances;
 import attendance.domain.Crew;
 import attendance.view.FileLineReader;
 import attendance.view.InputView;
+import attendance.view.OutputView;
 
 public class AttendanceController {
 
     private static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
     private final InputView inputView;
+    private final OutputView outputView;
 
-    public AttendanceController(final InputView inputView) {
+    public AttendanceController(final InputView inputView, final OutputView outputView) {
         this.inputView = inputView;
+        this.outputView = outputView;
     }
 
     public void run() {
         List<String> firstSkippedLines = readAttendanceFileLinesWithoutFirstLine();
         Map<Crew, List<LocalDateTime>> crewAttendanceDateTimes = createAttendanceDateTimes(firstSkippedLines);
         Map<Crew, Attendances> crewAttendances = createCrewAttendances(crewAttendanceDateTimes);
+
+        outputView.printOperations(LocalDate.now());
+        inputView.readOperationCommand();
     }
 
     private Map<Crew, Attendances> createCrewAttendances(final Map<Crew, List<LocalDateTime>> crewAttendanceDateTimes) {
