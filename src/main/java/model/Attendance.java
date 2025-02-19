@@ -1,5 +1,6 @@
 package model;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.Objects;
@@ -34,6 +35,13 @@ public class Attendance {
 
         checkInTime = modifiedCheckInTime;
         attendanceType = AttendanceType.calculateType(checkInTime);
+    }
+
+    public boolean isSame(Crew crew, LocalDate localDate) {
+        if (crew.equals(crew) && checkInTime.toLocalDate().equals(localDate)) {
+            return true;
+        }
+        return false;
     }
 
     private static void validateHolidayAndWeekend(LocalDateTime checkInTime) {

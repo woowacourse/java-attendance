@@ -1,5 +1,6 @@
 package model;
 
+import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
 
@@ -23,6 +24,14 @@ public class Attendances {
         validateExistAttendance(attendance);
 
         attendances.add(attendance);
+    }
+
+    public void modify(Crew crew, LocalDateTime modifiedCheckInTime) {
+        for (Attendance attendance : attendances) {
+            if (attendance.isSame(crew, modifiedCheckInTime.toLocalDate())) {
+                attendance.modify(modifiedCheckInTime.toLocalTime());
+            }
+        }
     }
 
     private void validateExistAttendance(Attendance newAttendance) {
