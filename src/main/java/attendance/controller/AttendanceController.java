@@ -111,7 +111,7 @@ public class AttendanceController {
         LocalDate localDate = LocalDate.of(2025, 2, Integer.parseInt(date));
 
         String originalTime = attendances.findOriginalTime(crew, localDate);
-        String originalType = attendances.findOriginalType(crew, localDate);
+        AttendanceType originalType = attendances.findOriginalType(crew, localDate);
 
         String modifyTime = inputView.readModifyTime();
         LocalTime localTime = LocalTime.parse(modifyTime);
@@ -120,7 +120,7 @@ public class AttendanceController {
         attendances.modifyAttendances(crew, localDateTime);
         Attendance newAttendance = attendances.findMatchCrewDate(crew, localDate);
 
-        outputView.printModifiedAttendance(originalTime, originalType, newAttendance.getInfo());
+        outputView.printModifiedAttendance(originalTime, originalType.toString(), newAttendance.getInfo());
     }
 
     private void validateDateFormat(final String date) {
