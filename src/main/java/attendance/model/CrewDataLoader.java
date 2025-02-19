@@ -32,10 +32,14 @@ public class CrewDataLoader {
                 });
 
         LocalDate currentDate = LocalDate.of(2024, 12, 1);
-        while (currentDate.isBefore(LocalDate.of(2025, 1, 1))) {
+        while (
+                currentDate.isBefore(LocalDate.of(2025, 1, 1))
+                        && currentDate.isBefore(CustomLocalDateTime.now().toLocalDate())
+        ) {
             for (Crew crew : crews.getCrews()) {
-                if (crew.getAttendanceHistory().containsNowDate(currentDate)) {
-                    return;
+                AttendanceHistory attendanceHistory = crew.getAttendanceHistory();
+                if (attendanceHistory.containsNowDate(currentDate) || WoowaDayOfWeek.isHoliday(currentDate)) {
+                    continue;
                 }
                 LocalDateTime lateDatetime = LocalDateTime.of(currentDate, LocalTime.of(17, 0));
                 crew.addAttendanceDetail(new AttendanceDetail(lateDatetime));
