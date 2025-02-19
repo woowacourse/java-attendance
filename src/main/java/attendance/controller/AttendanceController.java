@@ -33,24 +33,28 @@ public class AttendanceController {
     }
 
     public void run() {
-        LocalDateTime now = LocalDateTime.now();
-        Command command = Command.from(inputView.inputCommand(now.toLocalDate()));
-        try {
-            if (command == Command.ATTENDANCE) {
-                doAttendance(now);
+        Command command;
+        do {
+            LocalDateTime now = LocalDateTime.of(2024,12,13, 10,1);
+//            LocalDateTime now = LocalDateTime.now();
+            command = Command.from(inputView.inputCommand(now.toLocalDate()));
+            try {
+                if (command == Command.ATTENDANCE) {
+                    doAttendance(now);
+                }
+                if (command == Command.ATTENDANCE_UPDATE) {
+                    doUpdateAttendance(now);
+                }
+                if (command == Command.ATTENDANCE_TIMELINE) {
+                    doAttendanceTimeline(now);
+                }
+                if (command == Command.EMERGENCY_CHECK) {
+                    doEmergencyCheck(now);
+                }
+            } catch (RuntimeException e) {
+                System.out.println("[ERROR] " + e.getMessage());
             }
-            if (command == Command.ATTENDANCE_UPDATE) {
-                doUpdateAttendance(now);
-            }
-            if (command == Command.ATTENDANCE_TIMELINE) {
-                doAttendanceTimeline(now);
-            }
-            if (command == Command.EMERGENCY_CHECK) {
-                doEmergencyCheck(now);
-            }
-        } catch (RuntimeException e) {
-            System.out.println("[ERROR] " + e.getMessage());
-        }
+        } while (command != Command.QUIT);
     }
 
     private void doAttendance(LocalDateTime now) {
