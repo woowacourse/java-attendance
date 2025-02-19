@@ -1,7 +1,7 @@
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
-import util.InputConverter;
+import util.Converter;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -78,7 +78,7 @@ public class AttendanceCheckTest {
     void 입력받은_문자열이_LocalTime_객체로_정상변환된다(String value) {
         LocalTime standardTime = LocalTime.of(10, 0);
 
-        LocalTime attendanceTime = InputConverter.convertToLocalTime(value);
+        LocalTime attendanceTime = Converter.convertToLocalTime(value);
 
         final var attendanceCheck = AttendanceCheck.checkAttendanceStatus(standardTime, attendanceTime);
         final var today = LocalDate.now();
@@ -94,7 +94,7 @@ public class AttendanceCheckTest {
     @ParameterizedTest
     @ValueSource(strings = {"10:61"})
     void 존재하지않는_시간을_입력하면_예외가_발생한다(String value) {
-        assertThatThrownBy(() -> InputConverter.convertToLocalTime(value))
+        assertThatThrownBy(() -> Converter.convertToLocalTime(value))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageStartingWith("[ERROR]");
     }
@@ -102,7 +102,7 @@ public class AttendanceCheckTest {
     @ParameterizedTest
     @ValueSource(strings = {"테스트:00"})
     void 시간형식이_아닌값을_입력하면_예외가_발생한다(String value) {
-        assertThatThrownBy(() -> InputConverter.convertToLocalTime(value))
+        assertThatThrownBy(() -> Converter.convertToLocalTime(value))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageStartingWith("[ERROR]");
     }
@@ -116,7 +116,7 @@ public class AttendanceCheckTest {
         final var dayOfWeek = AttendanceCheck.convertKorean(today);
 
         LocalTime standardTime = AttendanceCheck.getStandardTime(today);
-        LocalTime attendanceTime = InputConverter.convertToLocalTime(value);
+        LocalTime attendanceTime = Converter.convertToLocalTime(value);
 
         final var attendanceCheck = AttendanceCheck.checkAttendanceStatus(standardTime, attendanceTime);
 
