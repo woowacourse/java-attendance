@@ -1,4 +1,4 @@
-package domain;
+package attendance.domain;
 
 import java.util.Objects;
 

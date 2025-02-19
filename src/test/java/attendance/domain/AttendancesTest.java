@@ -1,11 +1,10 @@
-package domain;
+package attendance.domain;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import file.AttendanceFileReader;
+import attendance.file.AttendanceFileReader;
 import java.io.IOException;
 import java.time.LocalDate;
-import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -17,7 +16,7 @@ public class AttendancesTest {
 
     @BeforeEach
     void setUp() throws IOException {
-        attendances = AttendanceFileReader.read(path);
+        attendances = AttendanceFileReader.read(path).attendances();
     }
 
     @Test

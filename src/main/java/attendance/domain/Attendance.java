@@ -1,10 +1,10 @@
-package domain;
+package attendance.domain;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import util.DateUtil;
+import attendance.util.DateUtil;
 
 public class Attendance {
 

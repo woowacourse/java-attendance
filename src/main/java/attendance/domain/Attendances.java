@@ -1,4 +1,4 @@
-package domain;
+package attendance.domain;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import util.DateUtil;
+import attendance.util.DateUtil;
 
 public class Attendances {
 
@@ -16,6 +16,12 @@ public class Attendances {
         if (!attendances.containsKey(crew)) {
             attendances.put(crew, new ArrayList<>(List.of(attendance)));
             return;
+        }
+
+        for (Attendance attendance1 : attendances.get(crew)) {
+            if (attendance1.getDateTime().getDayOfMonth() == attendance.getDateTime().getDayOfMonth()) {
+                throw new IllegalArgumentException("수정 이용하세요");
+            }
         }
 
         attendances.get(crew).add(attendance);

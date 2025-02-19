@@ -1,4 +1,4 @@
-package util;
+package attendance.util;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;

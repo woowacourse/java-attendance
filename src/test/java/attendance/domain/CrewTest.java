@@ -1,7 +1,8 @@
-package domain;
+package attendance.domain;
 
 import static org.assertj.core.api.Assertions.assertThatCode;
 
+import attendance.domain.Crew;
 import org.junit.jupiter.api.Test;
 
 public class CrewTest {
