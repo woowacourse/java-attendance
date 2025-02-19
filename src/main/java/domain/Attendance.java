@@ -28,8 +28,11 @@ public class Attendance {
     }
 
     public AttendanceDto toDto() {
-        return new AttendanceDto(isLate, isAbsent);
+        return new AttendanceDto(isLate, isAbsent, attendanceTime);
     }
 
-
+    public void setAttendanceTime(LocalTime attendanceTime) {
+        this.attendanceTime = attendanceTime;
+        updateStatus();
+    }
 }
