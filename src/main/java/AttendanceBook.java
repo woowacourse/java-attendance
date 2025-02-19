@@ -56,7 +56,7 @@ public class AttendanceBook {
                 .findAny()
                 .orElseThrow();
 
-        Holiday.validateIsWorkingDay(date.getDayOfMonth());
+        Calendar.validateIsWorkingDay(date.getDayOfMonth());
 
         foundCrew.addDailyAttendance(dateAndTime);
     }
