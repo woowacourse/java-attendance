@@ -12,7 +12,7 @@ public enum AttendanceStatus {
 
     private final String message;
 
-    public AttendanceStatus getInMonday(LocalTime time) {
+    public static AttendanceStatus getInMonday(LocalTime time) {
         if (!time.isBefore(LocalTime.of(8, 0)) && !time.isAfter(LocalTime.of(13, 0))) {
             return ATTEND;
         }
@@ -25,7 +25,7 @@ public enum AttendanceStatus {
         return NONE;
     }
 
-    public AttendanceStatus getExceptMonday(LocalTime time) {
+    public static AttendanceStatus getExceptMonday(LocalTime time) {
         if (!time.isBefore(LocalTime.of(8, 0)) && !time.isAfter(LocalTime.of(10, 0))) {
             return ATTEND;
         }

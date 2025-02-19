@@ -21,4 +21,11 @@ public class Calendar {
     public static boolean isMonday(int date) {
         return MONDAYS.contains(date);
     }
+
+    public static boolean checkIsWorkingDay(int date) {
+        if (SATURDAYS.contains(date) || SUNDAYS.contains(date) || HOLIDAYS.contains(date)) {
+            return false;
+        }
+        return true;
+    }
 }

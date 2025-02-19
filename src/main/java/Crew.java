@@ -1,6 +1,8 @@
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
@@ -46,11 +48,39 @@ public class Crew {
                 .findAny()
                 .orElseThrow();
 
-        if (!dailyAttendances.containsKey(date))
-        {
+        if (!dailyAttendances.containsKey(date)) {
             throw new IllegalArgumentException(String.format("[ERROR] %02d일 기록이 존재하지 않습니다.", date.getDayOfMonth()));
         }
 
         dailyAttendances.putAll(dateAndTime);
+    }
+
+    public List<AttendanceRecordsResponse> getAttendanceRecords() {
+        List<AttendanceRecordsResponse> records = new ArrayList<>();
+        for (int day = 1; day <= 31; day++) {
+            if (!Calendar.checkIsWorkingDay(day)) {
+                continue;
+            }
+            LocalTime time = dailyAttendances.get(day);
+
+            if (time == null) {
+                records.add(new AttendanceRecordsResponse(LocalDate.of(2024, 12, day), null,
+                        AttendanceStatus.NONE));
+                continue;
+            }
+
+            //  없는 날에 --:--
+
+            if (Calendar.isMonday(day)) {
+                records.add(new AttendanceRecordsResponse(LocalDate.of(2024, 12, day), time,
+                        AttendanceStatus.getInMonday(time)));
+            }
+            if (!Calendar.isMonday(day)) {
+                records.add(new AttendanceRecordsResponse(LocalDate.of(2024, 12, day), time,
+                        AttendanceStatus.getExceptMonday(time)));
+            }
+        }
+
+        return records;
     }
 }
