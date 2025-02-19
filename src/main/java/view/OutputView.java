@@ -1,6 +1,7 @@
 package view;
 
 import domain.AttendanceStatus;
+import domain.AttendanceTime;
 import domain.ExpelStatus;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -20,12 +21,12 @@ public class OutputView {
                         + writeAttendanceTimeMessage(attendanceDateTime, attendanceStatus));
     }
 
-    public void printEditAttendanceMessage(LocalDateTime oldAttendanceDateTime, AttendanceStatus oldAttendanceStatus, LocalDateTime newAttendanceDateTime, AttendanceStatus newAttendanceStatus) {
+    public void printEditAttendanceMessage(AttendanceTime oldAttendanceTime, AttendanceTime newAttendanceTime) {
         StringBuilder sb = new StringBuilder();
-        sb.append(writeAttendanceDateMessage(oldAttendanceDateTime))
-                .append(writeAttendanceTimeMessage(oldAttendanceDateTime, oldAttendanceStatus))
+        sb.append(writeAttendanceDateMessage(oldAttendanceTime.getAttendanceDateTime()))
+                .append(writeAttendanceTimeMessage(oldAttendanceTime.getAttendanceDateTime(), oldAttendanceTime.getAttendanceStatus()))
                 .append(" ->")
-                .append(writeAttendanceTimeMessage(newAttendanceDateTime, newAttendanceStatus))
+                .append(writeAttendanceTimeMessage(newAttendanceTime.getAttendanceDateTime(), newAttendanceTime.getAttendanceStatus()))
                 .append(" 수정 완료!");
         System.out.println(sb);
     }

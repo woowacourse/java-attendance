@@ -113,7 +113,7 @@ public class Attendance {
         return attendanceTime.getAttendanceStatus();
     }
 
-    private AttendanceTime findAttendanceTime(String nickName, LocalDate attendanceDate) {
+    public AttendanceTime findAttendanceTime(String nickName, LocalDate attendanceDate) {
         return attendance.get(nickName).stream()
                 .filter(a -> a.getAttendanceDateTime().toLocalDate().equals(attendanceDate))
                 .findAny()
