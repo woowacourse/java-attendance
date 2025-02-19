@@ -16,7 +16,7 @@ public enum MenuCommand {
         this.command = command;
     }
 
-    public static MenuCommand toCommand(String input) {
+    public static MenuCommand toCommand(final String input) {
         return Arrays.stream(values())
                 .filter(command -> command.getCommand().equals(input))
                 .findFirst()
