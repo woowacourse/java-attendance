@@ -15,8 +15,10 @@ public class Crew {
         this.nickname = nickname;
     }
 
-    public void addAttendance(LocalDateTime date) {
-        attendances.add(new Attendance(date));
+    public Attendance addAttendance(LocalDateTime date) {
+        Attendance attendance = new Attendance(date);
+        attendances.add(attendance);
+        return attendance;
     }
 
     public void addAbsent(LocalDateTime today) {

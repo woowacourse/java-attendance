@@ -14,4 +14,11 @@ public class DayComparator {
         }
         return targetDate.getDayOfWeek().getValue() == 6 || targetDate.getDayOfWeek().getValue() == 7;
     }
+
+    public static boolean isHoliday(LocalDateTime today) {
+        if (today.getDayOfMonth() == CHRISTMAS) {
+            return true;
+        }
+        return today.getDayOfWeek().getValue() == 6 || today.getDayOfWeek().getValue() == 7;
+    }
 }

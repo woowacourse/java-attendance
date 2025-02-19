@@ -34,6 +34,10 @@ public class OutputView {
         System.out.println(stringBuilder);
     }
 
+    public void printAttendanceLog(AttendanceLogDTO attendanceLogDTO) {
+        System.out.println(makeAttendanceLog(attendanceLogDTO));
+    }
+
     private String makeAttendanceLog(AttendanceLogDTO attendanceLogDTO) {
         StringBuilder stringBuilder = new StringBuilder();
         LocalDateTime dateTime = attendanceLogDTO.localDateTime();
