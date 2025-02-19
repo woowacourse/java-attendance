@@ -1,20 +1,17 @@
 package attendance.domain;
 
 import java.time.LocalDateTime;
-import java.time.format.TextStyle;
-import java.util.Locale;
 
 public class Attendance {
     private final String crewName;
-    private LocalDateTime attendanceTime;
+    private Time attendanceTime;
 
-    public Attendance(String crewName, LocalDateTime attendanceTime) {
-        validatePossibleAttendance(attendanceTime);
+    public Attendance(String crewName, Time attendanceTime) {
         this.crewName = crewName;
         this.attendanceTime = attendanceTime;
     }
 
-    public LocalDateTime getAttendanceTime() {
+    public Time getAttendanceTime() {
         return attendanceTime;
     }
 
@@ -22,25 +19,8 @@ public class Attendance {
         return crewName;
     }
 
-    private void validatePossibleAttendance(LocalDateTime attendanceTime) {
-        String day = attendanceTime.getDayOfWeek().name();
-
-        if (day.equals("SATURDAY") || day.equals("SUNDAY")) {
-            String message = String.format("[ERROR] %d월 %d일 %s은 등교일이 아닙니다.",
-                    attendanceTime.getMonthValue(), attendanceTime.getDayOfMonth(),
-                    attendanceTime.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.KOREAN));
-            throw new IllegalArgumentException(message);
-        }
-
-        int hour = attendanceTime.getHour();
-        if (hour < 8 || (hour == 23 && attendanceTime.getMinute() > 0)) {
-            throw new IllegalArgumentException("[ERROR] 출석 가능한 시간이 아닙니다.");
-        }
-    }
-
-
     public String getAttendanceStatus() {
-        if (attendanceTime.getDayOfWeek().name().equals("MONDAY")) { // 월요일
+        if (attendanceTime.getDayOfWeek().equals("월요일")) { // 월요일
 
             return checkStatusWithCondition(13, 0, 6);
         }
@@ -52,14 +32,14 @@ public class Attendance {
                                             int lateMinute) {
 
         if (!attendanceTime.isAfter(
-                LocalDateTime.of(attendanceTime.getYear(), attendanceTime.getMonth(), attendanceTime.getDayOfMonth(),
+                LocalDateTime.of(attendanceTime.getYear(), attendanceTime.getMonth(), attendanceTime.getDay(),
                         hour,
                         attendanceMinute))) {
             return "출석";
         }
 
         if (!attendanceTime.isAfter(
-                LocalDateTime.of(attendanceTime.getYear(), attendanceTime.getMonth(), attendanceTime.getDayOfMonth(),
+                LocalDateTime.of(attendanceTime.getYear(), attendanceTime.getMonth(), attendanceTime.getDay(),
                         hour,
                         lateMinute))) {
             return "지각";
@@ -74,15 +54,15 @@ public class Attendance {
             return false;
         }
 
-        return attendanceTime.toLocalDate().isEqual(currentAttendance.attendanceTime.toLocalDate());
+        return attendanceTime.getDate().isEqual(currentAttendance.attendanceTime.getDate());
     }
 
 
     public boolean isSameByNameAndDay(String name, int day) {
-        return crewName.equals(name) && day == attendanceTime.getDayOfMonth();
+        return crewName.equals(name) && day == attendanceTime.getDay();
     }
 
-    public void modifyAttendanceTime(LocalDateTime modifyTime) {
+    public void modifyAttendanceTime(Time modifyTime) {
         this.attendanceTime = modifyTime;
     }
 }

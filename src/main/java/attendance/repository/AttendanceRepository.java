@@ -1,7 +1,8 @@
 package attendance.repository;
 
 import attendance.domain.Attendance;
-import java.time.LocalDateTime;
+import attendance.domain.Time;
+import java.time.LocalDate;
 import java.util.List;
 
 public class AttendanceRepository {
@@ -20,8 +21,10 @@ public class AttendanceRepository {
         attendances.add(currentAttendance);
     }
 
-    public List<Attendance> findAttendanceByName() {
-        return List.of(new Attendance("체체", LocalDateTime.now()));
+    public List<Attendance> findAllAttendanceByName(String name) {
+        return attendances.stream()
+                .filter(attendance -> attendance.getCrewName().equals(name))
+                .toList();
     }
 
     public Attendance findAttendanceByNameAndDateTime(String name, int day) {
@@ -33,5 +36,20 @@ public class AttendanceRepository {
         }
 
         throw new IllegalArgumentException("[ERROR] 존재하지 않는 출석 기록입니다.");
+    }
+
+    public void initAbsent(String name) {
+
+        for (int day = 1; day < LocalDate.now().getDayOfMonth(); day++) {
+            try {
+                Attendance attendance = findAttendanceByNameAndDateTime(name, day);
+
+            } catch (IllegalArgumentException e) {
+                int year = LocalDate.now().getYear();
+                int month = LocalDate.now().getMonthValue();
+                attendances.add(new Attendance(name, new Time(LocalDate.of(year, month, day), "--", "--", true)));
+
+            }
+        }
     }
 }

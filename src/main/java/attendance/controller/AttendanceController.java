@@ -2,6 +2,7 @@ package attendance.controller;
 
 import attendance.domain.Attendance;
 import attendance.domain.AttendanceBook;
+import attendance.domain.Time;
 import attendance.dto.AttendanceContentDTO;
 import attendance.repository.AttendanceRepository;
 import attendance.utils.AttendanceReader;
@@ -11,6 +12,7 @@ import attendance.view.OutputView;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.TextStyle;
+import java.util.List;
 import java.util.Locale;
 
 public class AttendanceController {
@@ -41,7 +43,13 @@ public class AttendanceController {
         if (functionValue == 2) {
             attendanceModifyFunction();
         }
+
+        if (functionValue == 3) {
+            attendanceHistoryByName();
+
+        }
     }
+
 
     private void initAttendanceSystem() {
         AttendanceContentDTO attendanceRecordContent = AttendanceReader.getAttendanceRecordContent(
@@ -49,6 +57,8 @@ public class AttendanceController {
 
         attendanceRepository = new AttendanceRepository(attendanceRecordContent.attendances());
         attendanceBook = new AttendanceBook(attendanceRecordContent.names());
+
+        attendanceBook.initAbsent(attendanceRepository);
     }
 
     private void attendanceCheckFunction() {
@@ -56,16 +66,17 @@ public class AttendanceController {
         String crewName = inputView.inputCrewName();
         attendanceBook.checkName(crewName);
         String attendanceTime = inputView.inputTime();
-        LocalDateTime todayDateTime = createTime(LocalDate.now(), attendanceTime);
+        Time todayDateTime = createTime(LocalDate.now(), attendanceTime);
+
         Attendance attendance = new Attendance(crewName, todayDateTime);
         attendanceRepository.add(attendance);
 
         outputView.printAttendance(todayDateTime, attendance.getAttendanceStatus());
     }
 
-    private LocalDateTime createTime(LocalDate date, String attendanceTime) {
+    private Time createTime(LocalDate date, String attendanceTime) {
         String[] split = attendanceTime.split(":");
-        return date.atTime(Integer.parseInt(split[0]), Integer.parseInt(split[1]));
+        return new Time(date, split[0], split[1], false);
     }
 
     private void attendanceModifyFunction() {
@@ -77,16 +88,25 @@ public class AttendanceController {
 
         int year = LocalDate.now().getYear();
         int month = LocalDate.now().getMonthValue();
-        LocalDateTime modifyDateTime = createTime(LocalDate.of(year, month, modifyDay), modifyTime);
+        Time modifyDateTime = createTime(LocalDate.of(year, month, modifyDay), modifyTime);
 
         Attendance attendance = attendanceRepository.findAttendanceByNameAndDateTime(crewName,
                 modifyDay);
 
-        LocalDateTime previousDateTime = attendance.getAttendanceTime();
+        Time previousDateTime = attendance.getAttendanceTime();
         String previousAttendanceStatus = attendance.getAttendanceStatus();
 
         outputView.printModifyAttendanceResult(previousDateTime, previousAttendanceStatus, modifyDateTime,
                 attendance.getAttendanceStatus());
+    }
+
+    private void attendanceHistoryByName() {
+
+        String crewName = inputView.inputCrewName();
+
+        List<Attendance> attendances = attendanceRepository.findAllAttendanceByName(crewName);
+
+        outputView.printNameAndAttendances(crewName, attendances);
     }
 
 }

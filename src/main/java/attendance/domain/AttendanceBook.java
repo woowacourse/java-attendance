@@ -1,5 +1,6 @@
 package attendance.domain;
 
+import attendance.repository.AttendanceRepository;
 import java.util.Set;
 
 public class AttendanceBook {
@@ -13,6 +14,12 @@ public class AttendanceBook {
     public void checkName(String name) {
         if (!names.contains(name)) {
             throw new IllegalArgumentException("[ERROR] 출석부에 없는 크루원입니다.");
+        }
+    }
+
+    public void initAbsent(AttendanceRepository attendanceRepository) {
+        for (String name : names) {
+            attendanceRepository.initAbsent(name);
         }
     }
 }

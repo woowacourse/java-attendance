@@ -1,7 +1,7 @@
 package attendance.view;
 
 import attendance.domain.Attendance;
-import java.time.LocalDateTime;
+import attendance.domain.Time;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
@@ -22,28 +22,50 @@ public class OutputView {
         System.out.println("결석: " + absent + "회");
     }
 
-    public void printModifyAttendanceResult(LocalDateTime originTime, String originAttendanceStatus,
-                                            LocalDateTime modifyTime, String modifyAttendanceStatus) {
+    public void printModifyAttendanceResult(Time originTime, String originAttendanceStatus,
+                                            Time modifyTime, String modifyAttendanceStatus) {
         printAttendance(originTime, originAttendanceStatus);
 
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");
-        System.out.println(
-                " ->  " + modifyTime.format(formatter) + "(" + modifyAttendanceStatus + ") 수정 완료!");
+
+        System.out.print(String.format("%02d월 %02d일 %s %s:%s (%s)", originTime.getMonth(), originTime.getDay(),
+                originTime.getDayOfWeek(), originTime.getHour(), originTime.getMinute(), originTime));
+
+        System.out.print(" -> ");
+
+        System.out.print(
+                String.format("%s:%s (%s)", modifyTime.getHour(), modifyTime.getMinute(),
+                        modifyTime));
+
+        System.out.print(" 수정 완료!");
+
     }
 
     public void printNameAndAttendances(String name, List<Attendance> attendances) {
 
         System.out.println("이번 달 " + name + "의 출석 기록입니다.");
         for (Attendance attendance : attendances) {
+            if (attendance.getAttendanceTime() == null) {
+                printAbsentAttendance();
+                continue;
+            }
             String attendanceStatus = attendance.getAttendanceStatus();
             printAttendance(attendance.getAttendanceTime(), attendanceStatus);
         }
     }
 
-    public void printAttendance(LocalDateTime attendanceTime, String attendanceStatus) {
+    public void printAttendance(Time attendanceTime, String attendanceStatus) {
 
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM월 dd일 E요일 HH:mm");
-        System.out.print(attendanceTime.format(formatter) + " (" + attendanceStatus + ")");
+        System.out.println(
+                String.format("%02d월 %02d일 %s %s:%s (%s)", attendanceTime.getMonth(), attendanceTime.getDay(),
+                        attendanceTime.getDayOfWeek(), attendanceTime.getHour(), attendanceTime.getMinute(),
+                        attendanceStatus));
     }
+
+    private void printAbsentAttendance() {
+
+        System.out.println("결석");
+    }
+
 
 }
