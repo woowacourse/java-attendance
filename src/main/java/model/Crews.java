@@ -1,5 +1,6 @@
 package model;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -30,5 +31,9 @@ public class Crews {
         if (!crews.contains(crew)) {
             throw new IllegalArgumentException("존재하지 않는 크루입니다.");
         }
+    }
+
+    public List<Crew> getCrews() {
+        return Collections.unmodifiableList(crews);
     }
 }

@@ -33,4 +33,12 @@ public class Attendance {
     public int hashCode() {
         return Objects.hash(crew, checkInTime);
     }
+
+    public Crew getCrew() {
+        return crew;
+    }
+
+    public LocalDateTime getCheckInTime() {
+        return checkInTime;
+    }
 }

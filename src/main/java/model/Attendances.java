@@ -1,5 +1,6 @@
 package model;
 
+import java.util.Collections;
 import java.util.List;
 
 public class Attendances {
@@ -20,5 +21,9 @@ public class Attendances {
 
     public void checkIn(Attendance attendance) {
         attendances.add(attendance);
+    }
+
+    public List<Attendance> getAttendances() {
+        return Collections.unmodifiableList(attendances);
     }
 }

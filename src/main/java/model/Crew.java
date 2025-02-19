@@ -34,4 +34,8 @@ public class Crew {
     public int hashCode() {
         return Objects.hashCode(nickname);
     }
+
+    public String getNickname() {
+        return nickname;
+    }
 }
