@@ -2,6 +2,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.util.ArrayList;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 public class AttendsTest {
@@ -18,6 +19,22 @@ public class AttendsTest {
 
         //then
         assertThat(attends.attends).hasSize(1);
+    }
+
+    @Test
+    void 날짜주면가져오는거테스트() throws Exception {
+        //given
+        final String time = "09:59";
+        Attend attend = Attend.of(time);
+        Attends attends = new Attends(new ArrayList<>());
+        final int targetDay = 13;
+
+        //when
+        attends.addAttend(attend);
+        Attend result = attends.findByDay(targetDay);
+
+        //then
+        assertThat(result).isEqualTo(attend);
     }
 
     @Test
