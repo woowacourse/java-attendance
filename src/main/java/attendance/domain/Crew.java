@@ -1,26 +1,27 @@
 package attendance.domain;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 
 public class Crew {
     private final String name;
-    private final List<AttendanceResult> attendanceHistory = new ArrayList<>();
+    private final AttendanceHistory attendanceHistory;
 
     public Crew(String name) {
         this.name =  name;
+        this.attendanceHistory = new AttendanceHistory();
+    }
+
+    public void addAttendanceResult(AttendanceResult attendanceResult) {
+        attendanceHistory.addAttendanceResult(attendanceResult);
     }
 
     public String getName() {
         return name;
     }
 
-    public void addAttendanceHistory(AttendanceResult attendanceResult) {
-        attendanceHistory.add(attendanceResult);
-    }
-
-    public List<AttendanceResult> getAttendanceHistory() {
-        return Collections.unmodifiableList(attendanceHistory);
+    public AttendanceHistory getAttendanceHistory() {
+         return attendanceHistory;
     }
 }
