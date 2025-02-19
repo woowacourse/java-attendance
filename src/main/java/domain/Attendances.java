@@ -1,11 +1,15 @@
 package domain;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import util.DateUtil;
 
 public class Attendances {
+
     private Map<Crew, List<Attendance>> attendances = new HashMap<>();
 
     public void addAttendance(Crew crew, Attendance attendance) {
@@ -17,7 +21,26 @@ public class Attendances {
         attendances.get(crew).add(attendance);
     }
 
-    public List<Attendance> getByCrew(Crew crew) {
-        return attendances.get(crew);
+    public List<Attendance> getByCrew(Crew crew, LocalDate date) {
+        int day = date.getDayOfMonth();
+        List<Attendance> copiedAttendancesOfCrew = new ArrayList<>(attendances.get(crew));
+        int sequenceOfRecord = 0;
+        for (int i = 1; i < day; i++) {
+            if (DateUtil.isWeekend(LocalDate.of(2024, 12, i))) {
+                continue;
+            }
+            addAbsenceIfNotExistRecord(copiedAttendancesOfCrew, sequenceOfRecord, i);
+            sequenceOfRecord++;
+        }
+        return copiedAttendancesOfCrew;
+    }
+
+    private void addAbsenceIfNotExistRecord(List<Attendance> copiedAttendancesOfCrew,
+        int sequenceOfRecord, int i) {
+        Attendance attendance = copiedAttendancesOfCrew.get(sequenceOfRecord);
+        if (attendance.getDateTime().getDayOfMonth() > i) {
+            copiedAttendancesOfCrew.add(sequenceOfRecord,
+                Attendance.of(LocalDateTime.of(2024, 12, i, 0, 0, 0)));
+        }
     }
 }

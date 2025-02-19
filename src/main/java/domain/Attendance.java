@@ -4,6 +4,7 @@ import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import util.DateUtil;
 
 public class Attendance {
 
@@ -22,8 +23,7 @@ public class Attendance {
     }
 
     private void validateDayOfWeek(LocalDateTime dateTime) {
-        DayOfWeek dayOfWeek = dateTime.getDayOfWeek();
-        if (dayOfWeek == DayOfWeek.SATURDAY || dayOfWeek == DayOfWeek.SUNDAY) {
+        if (DateUtil.isWeekend(dateTime)) {
             throw new IllegalArgumentException();
         }
     }
@@ -48,7 +48,8 @@ public class Attendance {
     }
 
     private void determineStatus(LocalTime time, int hour) {
-        if (time.isBefore(LocalTime.of(hour, 5)) || time.equals(LocalTime.of(hour, 5))) {
+        if ((time.isAfter(LocalTime.of(8, 0)) && time.isBefore(LocalTime.of(hour, 5)))
+            || time.equals(LocalTime.of(hour, 5))) {
             status = "출석";
             return;
         }
@@ -67,5 +68,9 @@ public class Attendance {
     public void update(LocalDateTime updatedDateTime) {
         setStatus(updatedDateTime);
         this.dateTime = updatedDateTime;
+    }
+
+    public LocalDateTime getDateTime() {
+        return dateTime;
     }
 }
