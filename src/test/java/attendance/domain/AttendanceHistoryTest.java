@@ -39,4 +39,20 @@ public class AttendanceHistoryTest {
         assertThat(result.size()).isEqualTo(1);
         assertThat(result).contains(attendanceResult);
     }
+
+    @Test
+    void modify_attendance_history() {
+        //given
+        AttendanceHistory attendanceHistory = new AttendanceHistory();
+        AttendanceResult attendanceResult = new AttendanceResult(
+                LocalDateTime.of(2024, 12, 26, 10, 00),
+                "출석"
+        );
+
+        //when
+        //then
+        assertThatThrownBy(() -> attendanceHistory.modifyAttendanceResult(attendanceResult))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("출석 기록이 존재하지 않습니다.");
+    }
 }

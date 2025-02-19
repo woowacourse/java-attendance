@@ -20,9 +20,9 @@ public class AttendanceResult {
         return attendanceType;
     }
 
-    public void modify(LocalDateTime modifyLocalDateTime, String modifyAttendanceResult) {
-        attendanceTime = modifyLocalDateTime;
-        attendanceType = modifyAttendanceResult;
+    public void modify(AttendanceResult attendanceResult) {
+        this.attendanceTime = attendanceResult.getAttendanceTime();
+        this.attendanceType = attendanceResult.getAttendanceType();
     }
 
     @Override

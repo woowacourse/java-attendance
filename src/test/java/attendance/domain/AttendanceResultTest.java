@@ -20,16 +20,22 @@ public class AttendanceResultTest {
 
     @Test
     void modify_attendance_result() {
-        AttendanceResult result = new AttendanceResult(
+        //given
+        AttendanceResult attendanceResult = new AttendanceResult(
+                LocalDateTime.of(2024, 12, 26, 11, 00),
+                "결석"
+        );
+        AttendanceResult modifyAttendanceResult = new AttendanceResult(
                 LocalDateTime.of(2024, 12, 26, 10, 00),
                 "출석"
         );
 
-        result.modify(
-                LocalDateTime.of(2024, 12, 26, 11, 00),
-                "결석"
-        );
-        assertThat(result.getAttendanceTime()).isEqualTo(LocalDateTime.of(2024, 12, 26, 11, 00));
-        assertThat(result.getAttendanceType()).isEqualTo("결석");
+        //when
+        attendanceResult.modify(modifyAttendanceResult);
+
+        //then
+        assertThat(attendanceResult).isEqualTo(modifyAttendanceResult);
+        assertThat(attendanceResult.getAttendanceTime()).isEqualTo(modifyAttendanceResult.getAttendanceTime());
+        assertThat(attendanceResult.getAttendanceType()).isEqualTo("출석");
     }
 }

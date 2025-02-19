@@ -16,4 +16,12 @@ public class AttendanceHistory {
     public Set<AttendanceResult> getAttendanceHistory() {
         return Collections.unmodifiableSet(attendanceHistory);
     }
+
+    public void modifyAttendanceResult(AttendanceResult modifyAttendanceResult) {
+        AttendanceResult attendanceResult = attendanceHistory.stream()
+                .filter(result -> result.equals(modifyAttendanceResult))
+                .findAny()
+                .orElseThrow(() -> new IllegalArgumentException("출석 기록이 존재하지 않습니다."));
+        attendanceResult.modify(modifyAttendanceResult);
+    }
 }
