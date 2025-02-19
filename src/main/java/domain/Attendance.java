@@ -17,6 +17,10 @@ public class Attendance {
         return dateTime.toLocalDate().isEqual(time.toLocalDate());
     }
 
+    public LocalDateTime getTime() {
+        return time;
+    }
+
     public Crew getCrew() {
         return crew;
     }

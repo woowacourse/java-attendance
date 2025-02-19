@@ -1,5 +1,8 @@
 package controller;
 
+import domain.Attendance;
+import exception.CrewNotExistException;
+import exception.DuplicateAttendanceException;
 import service.AttendanceCheckService;
 import view.InputView;
 import view.OutputView;
@@ -34,6 +37,18 @@ public class AttendanceController {
                 Integer.parseInt(minuteAndHour[0]),
                 Integer.parseInt(minuteAndHour[1])
         );
-        attendanceCheckService.register(name, time); //출석등록
+        registerAttendance(name, time);
+    }
+
+    private void registerAttendance(String name, LocalDateTime time) {
+        try {
+            Attendance attendance = attendanceCheckService.register(name, time);//출석등록
+            outputView.printAttendanceResult(attendance);
+        } catch (DuplicateAttendanceException e) {
+            // TODO: 에러 잘 뜨는지 보기
+            outputView.recommendModifyFunction(e.getMessage());
+        } catch (CrewNotExistException e) {
+            outputView.printExceptionMessage(e.getMessage());
+        }
     }
 }

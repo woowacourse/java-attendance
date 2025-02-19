@@ -3,7 +3,7 @@ package service;
 import domain.Attendance;
 import domain.Crew;
 import repository.AttendanceRepository;
-import repository.CrewRepositoryImpl;
+import repository.CrewRepository;
 
 import java.io.*;
 import java.time.LocalDateTime;
@@ -12,11 +12,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class AttendanceStoreService {
-    private final CrewRepositoryImpl crewRepository;
+    private final CrewRepository crewRepository;
     private final AttendanceRepository attendanceRepository;
 
 
-    public AttendanceStoreService(CrewRepositoryImpl crewRepository, AttendanceRepository attendanceRepository) {
+    public AttendanceStoreService(CrewRepository crewRepository, AttendanceRepository attendanceRepository) {
         this.crewRepository = crewRepository;
         this.attendanceRepository = attendanceRepository;
     }

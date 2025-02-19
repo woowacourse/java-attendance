@@ -1,5 +1,7 @@
 import domain.Attendance;
 import domain.Crew;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import repository.AttendanceRepository;
@@ -9,38 +11,46 @@ import service.AttendanceCheckService;
 
 import java.time.LocalDateTime;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.assertj.core.api.Assertions.*;
 
 public class AttendanceCheckServiceTest {
-    CrewRepository crewRepository = new CrewRepositoryImpl();
-    AttendanceRepository attendanceRepository = new AttendanceRepository();
-    AttendanceCheckService attendanceCheckService = new AttendanceCheckService(crewRepository, attendanceRepository);
+    CrewRepository crewRepository;
+    AttendanceRepository attendanceRepository;
+    AttendanceCheckService attendanceCheckService;
+
+    @BeforeEach
+    void setUp() {
+        crewRepository = new CrewRepositoryImpl();
+        crewRepository.save(new Crew("이든"));
+        attendanceRepository = new AttendanceRepository();
+        attendanceCheckService = new AttendanceCheckService(crewRepository, attendanceRepository);
+    }
 
     @DisplayName("닉네임을 입력하면 올바른 크루 객체를 반환할 수 있다.")
     @Test
     void test() {
         // given
         String name = "이든";
-        crewRepository.save(new Crew(name));
+        Crew crew = new Crew(name);
+        crewRepository.save(crew);
 
         // when
-        Crew crew = attendanceCheckService.findCrew(name);
+        Crew found = attendanceCheckService.findCrew(name);
 
         // then
-        assertThat(crew.getName()).isEqualTo(name);
+        assertThat(found).isEqualTo(crew);
     }
 
     @DisplayName("등교시간을 입력하면 Attendance 객체를 추가할 수 있다.")
     @Test
     void test2() {
         // given
-        Crew crew = new Crew("이든");
+        String name = "이든";
         LocalDateTime time = LocalDateTime.of(2025, 2, 18, 15, 52);
-        Attendance original = new Attendance(crew, time);
+        Attendance original = new Attendance(new Crew(name), time);
 
         // when
-        Attendance attendance = attendanceCheckService.register(crew, time);
+        Attendance attendance = attendanceCheckService.register(name,time);
 
         // then
         assertThat(attendance).isEqualTo(original);
@@ -50,14 +60,15 @@ public class AttendanceCheckServiceTest {
     @Test
     void test3() {
         // given
-        Crew crew = new Crew("이든");
+        String name = "이든";
         LocalDateTime time = LocalDateTime.of(2025, 2, 18, 15, 52);
-        Attendance original = new Attendance(crew, time);
+        Attendance original = new Attendance(new Crew(name), time);
         attendanceRepository.save(original);
+        LocalDateTime inputTime = LocalDateTime.of(2025, 2, 18, 16, 55);
 
         // when & then
         assertThatThrownBy(() -> {
-            attendanceCheckService.register(crew, time);
-        }).isInstanceOf(IllegalArgumentException.class);
+            attendanceCheckService.register(name, inputTime);
+        }).isInstanceOf(IllegalArgumentException.class).hasMessageContaining("이미 출석한 날짜입니다.");
     }
 }
