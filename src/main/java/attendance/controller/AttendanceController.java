@@ -43,7 +43,7 @@ public class AttendanceController {
     }
 
     private String getMenuOption() {
-        LocalDate currentDate = LocalDate.of(2024, 12, 14);
+        LocalDate currentDate = LocalDate.now();
 
         String month = String.valueOf(currentDate.getMonthValue());
         String day = String.valueOf(currentDate.getDayOfMonth());
@@ -52,7 +52,7 @@ public class AttendanceController {
         return input.readCommand(month, day, dayOfWeek);
     }
 
-    private void executeCommand(MenuCommand command) {
+    private void executeCommand(final MenuCommand command) {
         if (command.equals(MenuCommand.ATTEND)) {
             // 출석 확인 기능 구현
             checkCrewAttendance();
