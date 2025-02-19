@@ -51,8 +51,8 @@ public class AttendanceBookTest {
             AttendanceResultDTO attendanceResultDTO = attendanceBook.addAttendance(inputName, attendDateTime);
             
             // then
-            assertThat(attendanceResultDTO.getAttendanceStatus()).isEqualTo("출석");
-            assertThat(attendanceResultDTO.getAttendanceTime()).isEqualTo(LocalDateTime.of(2024, 12, 13, 10, 2));
+            assertThat(attendanceResultDTO.attendanceStatus()).isEqualTo("출석");
+            assertThat(attendanceResultDTO.attendanceTime()).isEqualTo(LocalDateTime.of(2024, 12, 13, 10, 2));
         }
         
         @Test
@@ -94,6 +94,34 @@ public class AttendanceBookTest {
                     .hasMessage("출석 가능한 시간이 아닙니다.");
         }
     }
+
+//    @Nested
+//    class 수정_테스트 {
+//
+//        @Test
+//        void 출석_기록을_수정할_수_있다() {
+//            //given
+//            String name = "Dompoo";
+//            LocalDate date = LocalDate.of(2024, 12, 6);
+//            LocalTime time = LocalTime.of(10, 5);
+//            AttendanceBook attendanceBook = new AttendanceBook(attendancesMap);
+//
+//            //when
+//            AttendanceModifyResult result = attendanceBook.editAttendance(name, date, time);
+//
+//            //then
+//            assertThat(result).isEqualTo(new AttendanceModifyResult(
+//                    "Dompoo",
+//                    LocalDate.of(2024, 12, 6),
+//                    LocalTime.of(10, 15),
+//                    "지각",
+//                    LocalTime.of(10, 5),
+//                    "출석"
+//            ));
+//        }
+//
+//        // 만약 두 시간이 같다면??
+//    }
     
     
 }
