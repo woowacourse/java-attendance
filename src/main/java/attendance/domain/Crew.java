@@ -4,8 +4,9 @@ import java.util.Objects;
 
 public class Crew {
     private final String crewName;
-    private final int lateCount;
-    private final int absentCount;
+    private int safeCount;
+    private int lateCount;
+    private int absentCount;
 
     public Crew(String crewName) {
         this.crewName = crewName;
@@ -35,5 +36,29 @@ public class Crew {
         Crew crew = (Crew) o; // 만일 매개변수 객체가 Crew 타입과 호환된다면 다운캐스팅(down casting) 진행
         return Objects.equals(this.crewName, crew.crewName);
         // this 객체 이름과 매개변수 객체 이름이 같을경우 true, 다를 경우 false
+    }
+
+    public void plusSafeCount() {
+        this.safeCount++;
+    }
+
+    public void plusLateCount() {
+        this.lateCount++;
+    }
+
+    public void plusAbsentCount() {
+        this.absentCount++;
+    }
+
+    public int getLateCount() {
+        return lateCount;
+    }
+
+    public int getAbsentCount() {
+        return absentCount;
+    }
+
+    public String getName() {
+        return crewName;
     }
 }
