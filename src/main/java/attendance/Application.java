@@ -10,6 +10,7 @@ public class Application {
         InputView inputView = new InputView();
         OutputView outputView = new OutputView();
         Controller controller = new Controller(inputView, outputView);
+        controller.loadDate();
         controller.run();
     }
 }

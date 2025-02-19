@@ -54,4 +54,11 @@ public class AttendanceHistory {
         return attendanceHistory.stream()
                 .anyMatch(attendanceDetail -> attendanceDetail.getLocalDateTime().toLocalDate().equals(nowDate));
     }
+
+    public AttendanceDetail getAttendanceDetail(LocalDate localDate) {
+
+        return attendanceHistory.stream()
+                .filter(attendanceDetail -> attendanceDetail.getLocalDateTime().toLocalDate().equals(localDate))
+                .findFirst().orElseThrow(() -> new IllegalArgumentException("존재하지 않는 날짜입니다."));
+    }
 }

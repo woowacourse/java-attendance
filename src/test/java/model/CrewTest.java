@@ -3,9 +3,13 @@ package model;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+import attendance.model.Attendance;
 import attendance.model.AttendanceDetail;
 import attendance.model.Crew;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -54,6 +58,25 @@ public class CrewTest {
         crew.addAttendanceDetail(new AttendanceDetail(LocalDateTime.of(2024, 12, 10, 10, 0)));
 
         assertThat(crew.getAttendanceHistory().getAttendanceCount()).isEqualTo(1);
+    }
+
+    @DisplayName("크루가 가지고 있는 기록을 수정한 후 반영되었는지 확인한다.")
+    @Test
+    void test_checkHistory2() {
+        Crew crew = new Crew("멍구");
+        crew.addAttendanceDetail(new AttendanceDetail(LocalDateTime.of(2024, 12, 10, 10, 0)));
+
+        crew.getAttendanceHistory().getAttendanceDetail(LocalDate.of(2024, 12, 10))
+                .modify(LocalTime.of(10, 6));
+
+        AttendanceDetail attendanceDetail = crew.getAttendanceHistory().getAttendanceDetail(LocalDate.of(2024, 12, 10));
+
+        Assertions.assertThat(attendanceDetail.getLocalDateTime()
+                        .toLocalTime())
+                .isEqualTo(LocalTime.of(10, 6));
+        Assertions.assertThat(
+                        attendanceDetail.getAttandence())
+                .isEqualTo(Attendance.지각);
     }
 
 }
