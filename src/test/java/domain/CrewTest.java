@@ -3,6 +3,7 @@ package domain;
 import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -27,7 +28,7 @@ public class CrewTest {
     void test3() {
         Crew crew = new Crew("띠용");
 
-        assertEquals("12월 05일 목요일 10:31 (결석)", crew.addAttendance(LocalDateTime.of(2024, 12, 5, 10, 31)).printAttendance());
+        assertEquals("12월 05일 목요일 --:-- (결석)", crew.addAttendance(LocalDateTime.of(2024, 12, 5, 10, 31)).printAttendance());
     }
     @DisplayName("중복 출석 시도")
     @Test
@@ -58,4 +59,46 @@ public class CrewTest {
     }
 
     // Todo : 테스트 시나리오 다양화
+
+
+
+    @DisplayName("특정 크루 출석기록 출력하기")
+    @Test
+    void test11() {
+        Crew crew = new Crew("미미");
+        crew.addAttendance(LocalDateTime.of(2024, 12, 2, 13,0));
+        crew.addAttendance(LocalDateTime.of(2024, 12, 3, 10,7));
+        assertThat(crew.printAttendanceInfo(LocalDate.of(2024, 12, 3))).isEqualTo("12월 02일 월요일 13:00 (출석)\n12월 03일 화요일 10:07 (지각)\n");
+    }
+
+    @DisplayName("특정 크루 빈 출석 기록 포함 출력하기")
+    @Test
+    void test22() {
+        Crew crew = new Crew("미미");
+        crew.addAttendance(LocalDateTime.of(2024, 12, 2, 13,0));
+        crew.addAttendance(LocalDateTime.of(2024, 12, 3, 10,7));
+        crew.addAttendance(LocalDateTime.of(2024, 12, 5, 10,7));
+        assertThat(crew.printAttendanceInfo(LocalDate.of(2024, 12, 5))).isEqualTo("12월 02일 월요일 13:00 (출석)\n12월 03일 화요일 10:07 (지각)\n12월 04일 수요일 --:-- (결석)\n12월 05일 목요일 10:07 (지각)\n");
+    }
+
+    @DisplayName("특정 크루 빈 출석 기록 포함 출력하기2")
+    @Test
+    void test33() {
+        Crew crew = new Crew("미미");
+        crew.addAttendance(LocalDateTime.of(2024, 12, 2, 13,0));
+        crew.addAttendance(LocalDateTime.of(2024, 12, 3, 9,58));
+        crew.addAttendance(LocalDateTime.of(2024, 12, 4, 10,2));
+        crew.addAttendance(LocalDateTime.of(2024, 12, 5, 10,6));
+        crew.addAttendance(LocalDateTime.of(2024, 12, 6, 10,1));
+        crew.addAttendance(LocalDateTime.of(2024, 12, 10, 10,8));
+        assertThat(crew.printAttendanceInfo(LocalDate.of(2024, 12, 12))).isEqualTo("12월 02일 월요일 13:00 (출석)\n"
+                + "12월 03일 화요일 09:58 (출석)\n"
+                + "12월 04일 수요일 10:02 (출석)\n"
+                + "12월 05일 목요일 10:06 (지각)\n"
+                + "12월 06일 금요일 10:01 (출석)\n"
+                + "12월 09일 월요일 --:-- (결석)\n"
+                + "12월 10일 화요일 10:08 (지각)\n"
+                + "12월 11일 수요일 --:-- (결석)\n"
+                + "12월 12일 목요일 --:-- (결석)\n");
+    }
 }
