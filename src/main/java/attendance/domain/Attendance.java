@@ -4,22 +4,27 @@ import static java.time.DayOfWeek.SATURDAY;
 import static java.time.DayOfWeek.SUNDAY;
 
 import java.time.DayOfWeek;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.TextStyle;
 import java.util.Locale;
 
 public class Attendance {
+
     private static final LocalTime OPERATION_START_TIME = LocalTime.of(8, 0);
     private static final LocalTime OPERATION_END_TIME = LocalTime.of(23, 0);
+    private static final LocalTime ABSENT_TIME = LocalTime.of(23, 0);
 
-    private final Crew crew;
     private LocalDateTime attendanceDateTime;
 
-    public Attendance(final Crew crew, final LocalDateTime attendanceDateTime) {
+    public Attendance(final LocalDateTime attendanceDateTime) {
         validate(attendanceDateTime);
-        this.crew = crew;
         this.attendanceDateTime = attendanceDateTime;
+    }
+
+    public static Attendance absence(final LocalDate absentDate) {
+        return new Attendance(absentDate.atTime(ABSENT_TIME));
     }
 
     public void changeAttendanceTime(LocalTime changeTime) {
@@ -53,4 +58,9 @@ public class Attendance {
         DayOfWeek attendanceDayOfWeek = attendanceDateTime.getDayOfWeek();
         return attendanceDayOfWeek.equals(SUNDAY) || attendanceDayOfWeek.equals(SATURDAY);
     }
+
+    public boolean isSameDate(final LocalDate findDate) {
+        return findDate.isEqual(attendanceDateTime.toLocalDate());
+    }
+
 }
