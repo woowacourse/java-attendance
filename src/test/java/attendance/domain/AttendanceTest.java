@@ -37,4 +37,18 @@ class AttendanceTest {
         //then
         assertThat(isEqual).isFalse();
     }
+
+    @DisplayName("주어진 시간으로 출석 기록을 변경한다.")
+    @Test
+    void 주어진_시간으로_출석_기록을_변경한다() {
+
+        // given
+        LocalDateTime now = LocalDateTime.now();
+
+        Attendance attendance = new Attendance("체체", now);
+        // when
+        attendance.modifyAttendanceTime(now.plusHours(1));
+        // then
+        assertThat(attendance.getAttendanceTime()).isEqualTo(now.plusHours(1));
+    }
 }

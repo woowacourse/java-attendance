@@ -38,6 +38,10 @@ public class AttendanceController {
         if (functionValue == 1) {
             attendanceCheckFunction();
         }
+
+        if (functionValue == 2) {
+            attendanceModifyFunction();
+        }
     }
 
     private void initAttendanceSystem() {
@@ -53,16 +57,35 @@ public class AttendanceController {
         String crewName = inputView.inputCrewName();
         attendanceBook.checkName(crewName);
         String attendanceTime = inputView.inputTime();
-        LocalDateTime todayDateTime = createTodayTime(attendanceTime);
+        LocalDateTime todayDateTime = createTime(LocalDate.now(), attendanceTime);
         attendanceRepository.add(new Attendance(crewName, todayDateTime));
 
         outputView.printAttendance(todayDateTime, AttendanceChecker.check(todayDateTime));
     }
 
-    private LocalDateTime createTodayTime(String attendanceTime) {
+    private LocalDateTime createTime(LocalDate date, String attendanceTime) {
         String[] split = attendanceTime.split(":");
-        LocalDate todayDate = LocalDateTime.now().toLocalDate();
-        return todayDate.atTime(Integer.parseInt(split[0]), Integer.parseInt(split[1]));
+        return date.atTime(Integer.parseInt(split[0]), Integer.parseInt(split[1]));
+    }
+
+    private void attendanceModifyFunction() {
+
+        String crewName = inputView.inputModifyCrewName();
+        attendanceBook.checkName(crewName);
+        int modifyDay = inputView.inputModifyDay();
+        String modifyTime = inputView.inputModifyTime();
+
+        int year = LocalDate.now().getYear();
+        int month = LocalDate.now().getMonthValue();
+        LocalDateTime modifyDateTime = createTime(LocalDate.of(year, month, modifyDay), modifyTime);
+
+        Attendance previousAttendance = attendanceRepository.findAttendanceByNameAndDateTime(crewName,
+                modifyDay);
+
+        LocalDateTime previousDateTime = previousAttendance.getAttendanceTime();
+        previousAttendance.modifyAttendanceTime(modifyDateTime);
+
+        outputView.printModifyAttendanceResult(previousDateTime, modifyDateTime);
     }
 
 }

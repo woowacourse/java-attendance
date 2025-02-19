@@ -4,7 +4,7 @@ import java.time.LocalDateTime;
 
 public class Attendance {
     private final String crewName;
-    private final LocalDateTime attendanceTime;
+    private LocalDateTime attendanceTime;
 
     public Attendance(String crewName, LocalDateTime attendanceTime) {
         this.crewName = crewName;
@@ -31,5 +31,9 @@ public class Attendance {
 
     public boolean isSameByNameAndDay(String name, int day) {
         return crewName.equals(name) && day == attendanceTime.getDayOfMonth();
+    }
+
+    public void modifyAttendanceTime(LocalDateTime modifyTime) {
+        this.attendanceTime = modifyTime;
     }
 }
