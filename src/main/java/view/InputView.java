@@ -34,10 +34,26 @@ public class InputView {
     public String readTime() {
         System.out.println("등교 시간을 입력해 주세요.");
         LocalDateTime nowTime = LocalDateTime.now();
-        String year=String.valueOf(nowTime.getYear());
-        String month=String.format("%02d", nowTime.getMonthValue());
-        String date=String.valueOf(nowTime.getDayOfMonth());
+        String year = String.valueOf(nowTime.getYear());
+        String month = String.format("%02d", nowTime.getMonthValue());
+        String date = String.valueOf(nowTime.getDayOfMonth());
 
-        return year+"-"+month+"-"+date+" "+scanner.nextLine();
+        return year + "-" + month + "-" + date + " " + scanner.nextLine();
     }
+
+    public String readNickNameForChange() {
+        System.out.println("출석을 수정하려는 크루의 닉네임을 입력해 주세요.");
+        return scanner.nextLine();
+    }
+
+    public int readDateForChange() {
+        System.out.println("수정하려는 날짜(일)를 입력해 주세요.");
+        return Integer.parseInt(scanner.nextLine());
+    }
+
+    public String readTimeForChange() {
+        System.out.println("언제로 변경하겠습니까?");
+        return scanner.nextLine();
+    }
+
 }

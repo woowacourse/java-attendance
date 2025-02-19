@@ -1,5 +1,6 @@
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
+import domain.AttendTime;
 import domain.Crew;
 import domain.Crews;
 import java.util.ArrayList;
@@ -62,4 +63,16 @@ public class CrewsTest {
                 .isEqualTo(3);
     }
 
+    @Test
+    void test5() {
+        List<Crew> crewList = new ArrayList<>();
+        crewList.add(new Crew("폰트", "2024-12-13 10:08"));
+        crewList.add(new Crew("슬링키", "2024-12-09 13:03"));
+        Crews crews = new Crews(crewList);
+
+        AttendTime attendTime = crews.deleteAttendance("슬링키", 9);
+
+        assertThat(attendTime.getAttendTime().getHour()).isEqualTo(13);
+        assertThat(attendTime.getAttendTime().getMinute()).isEqualTo(3);
+    }
 }

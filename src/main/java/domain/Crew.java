@@ -1,9 +1,9 @@
 package domain;
 
-import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.IntStream;
 
 public class Crew {
 
@@ -19,14 +19,15 @@ public class Crew {
         attendTimes.add(new AttendTime(attendTime));
     }
 
-    public void addAttendTime(String inputTime){
+    public void addAttendTime(String inputTime) {
         AttendTime attendTime = new AttendTime(inputTime);
         attendTimes.add(attendTime);
     }
+
     public String attend(final String inputTime) {
         AttendTime attendTime = new AttendTime(inputTime);
 //        attendTimes.add(attendTime);
-        return  attendTime.checkTime();
+        return attendTime.checkTime();
     }
 
     public String getName() {
@@ -34,8 +35,22 @@ public class Crew {
     }
 
     public List<AttendTime> getAttendTimes() {
-
         return attendTimes;
     }
 
+    public AttendTime findAttendanceByDate(final int date) {
+        return attendTimes.stream()
+                .filter(attendTime -> attendTime.getAttendTime().getDayOfMonth() == date)
+                .findAny()
+                .orElse(null);
+    }
+
+    public void deleteAttendance(final int date) {
+        IntStream.range(0, attendTimes.size())
+                .forEach(i -> {
+                    if (attendTimes.get(i).getAttendTime().getDayOfMonth() == date) {
+                        attendTimes.remove(i);
+                    }
+                });
+    }
 }

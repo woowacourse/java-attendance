@@ -1,8 +1,8 @@
-import domain.Crew;
-import domain.StringParser;
-import org.junit.jupiter.api.Test;
-
 import static org.assertj.core.api.Assertions.assertThat;
+
+import domain.AttendTime;
+import domain.Crew;
+import org.junit.jupiter.api.Test;
 
 public class CrewTest {
 
@@ -19,7 +19,7 @@ public class CrewTest {
     void test3() {
         Crew crew = new Crew("폰트", "2024-12-13 10:08");
 
-        crew.attend("2024-12-13 10:09");
+        crew.addAttendTime("2024-12-13 10:09");
 
         assertThat(crew.getAttendTimes().size()).isEqualTo(2);
     }
@@ -39,16 +39,35 @@ public class CrewTest {
     }
 
     @Test
-    void test6(){
+    void test6() {
         Crew crew = new Crew("폰트", "2024-12-13 10:08");
         var i = crew.attend("2024-12-13 09:59");
         assertThat(i).isEqualTo("출석");
     }
+
     @Test
-    void test7(){
+    void test7() {
         Crew crew = new Crew("폰트", "2024-12-13 10:08");
         var i = crew.attend("2024-12-16 12:59");
         assertThat(i).isEqualTo("출석");
+    }
+
+    @Test
+    void test8() {
+        Crew crew = new Crew("폰트", "2024-12-13 10:08");
+
+        AttendTime attendTime = crew.findAttendanceByDate(13);
+
+        assertThat(attendTime.getAttendTime().getDayOfMonth()).isEqualTo(13);
+    }
+
+    @Test
+    void test9() {
+        Crew crew = new Crew("폰트", "2024-12-13 10:08");
+
+        crew.deleteAttendance(13);
+
+        assertThat(crew.getAttendTimes().size()).isEqualTo(0);
     }
 
 }

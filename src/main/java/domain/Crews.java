@@ -33,4 +33,11 @@ public class Crews {
     public List<Crew> getCrews() {
         return crews;
     }
+
+    public AttendTime deleteAttendance(final String nickname, final int date) {
+        Crew crew = findCrew(nickname);
+        AttendTime attendTime = crew.findAttendanceByDate(date);
+        crew.deleteAttendance(date);
+        return attendTime;
+    }
 }
