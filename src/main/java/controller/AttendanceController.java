@@ -52,7 +52,8 @@ public class AttendanceController {
 
     private void checkAttendance(Attendance attendance, LocalDate nowDate) {
         String nickName = getNickName(attendance);
-        LocalTime arrivalTime = inputView.readArrivalTime();
+        LocalTime arrivalTime = getLocalTime(attendance);
+
         attendance.attend(nickName, LocalDateTime.of(nowDate, arrivalTime));
 
         LocalDateTime attendanceDateTime = attendance.getAttendanceDateTime(nickName, nowDate);
@@ -67,6 +68,10 @@ public class AttendanceController {
             attendance.validateNickName(nickName);
             return nickName;
         });
+    }
+
+    private LocalTime getLocalTime(Attendance attendance) {
+        return repeatExecutor.repeatUntilSuccess(inputView::readArrivalTime);
     }
 
     private void editAttendance(Attendance attendance) {

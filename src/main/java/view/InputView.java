@@ -3,6 +3,7 @@ package view;
 import domain.MenuOption;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.List;
 import java.util.Scanner;
 
@@ -50,7 +51,11 @@ public class InputView {
     }
 
     private LocalTime parseTime(String response) {
-        return LocalTime.parse(response, DateTimeFormatter.ofPattern("HH:mm"));
+        try {
+            return LocalTime.parse(response, DateTimeFormatter.ofPattern("HH:mm"));
+        } catch (DateTimeParseException e) {
+            throw new IllegalArgumentException("[ERROR] 시간 형식이 올바르지 않습니다.");
+        }
     }
 
     private int parseInt(String response) {
