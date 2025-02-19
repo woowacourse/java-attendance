@@ -63,4 +63,14 @@ class AttendanceDateTest {
         boolean isRestDay = new AttendanceDate(25).isRestDay();
         Assertions.assertThat(isRestDay).isTrue();
     }
+
+    @Test
+    void exceptionTest1() {
+        Assertions.assertThatIllegalArgumentException().isThrownBy(() -> new AttendanceDate(0));
+    }
+
+    @Test
+    void exceptionTest2() {
+        Assertions.assertThatIllegalArgumentException().isThrownBy(() -> new AttendanceDate(32));
+    }
 }
