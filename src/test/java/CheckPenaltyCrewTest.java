@@ -1,0 +1,22 @@
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.util.Map;
+import org.junit.jupiter.api.Test;
+
+public class CheckPenaltyCrewTest {
+
+    @Test
+    void 전날까지의_크루_출석_기록을_바탕으로_제적_위험자를_파악한다() {
+        AttendanceBook attendanceBook = new AttendanceBook();
+
+        Crew crew1 = Crew.createByName("쿠키");
+        crew1.addDailyAttendance(Map.of(LocalDate.of(2024, 12, 1), LocalTime.of(10, 6)));
+        attendanceBook.addNewCrew(crew1);
+
+        Crew crew2 = Crew.createByName("우유");
+        crew2.addDailyAttendance(Map.of(LocalDate.of(2024, 12, 1), LocalTime.of(10, 7)));
+        attendanceBook.addNewCrew(crew2);
+
+        attendanceBook.checkPenaltyCrew();
+    }
+}
