@@ -20,9 +20,9 @@ public class AttendanceRecords {
                 .anyMatch((record) -> record.getDate().equals(date));
     }
 
-    public void fillAbsences() {
-        for (LocalDate date = LocalDate.now(); date.isAfter(FILL_START_DATE); date = date.minusDays(1)) {
-            if (!hasRecordOfDate(date)) {
+    public void fillAbsences(DateGenerator dateGenerator) {
+        for (LocalDate date = dateGenerator.generate(); date.isAfter(FILL_START_DATE); date = date.minusDays(1)) {
+            if (!hasRecordOfDate(date) && !Day.checkHoliday(date)) {
                 this.attendanceRecords.add(new AttendanceRecord(date));
             }
         }
@@ -35,5 +35,17 @@ public class AttendanceRecords {
                 .orElseThrow(() -> new IllegalArgumentException("[ERROR] 출석 기록이 없는 날짜는 수정할 수 없습니다."));
         attendanceRecords.remove(attendanceRecord);
         return attendanceRecord;
+    }
+
+    public int getPresentCount() {
+        return (int) attendanceRecords.stream().filter(AttendanceRecord::isPresent).count();
+    }
+
+    public int getTardyCount() {
+        return (int) attendanceRecords.stream().filter(AttendanceRecord::isTardy).count();
+    }
+
+    public int getAbsentCount() {
+        return (int) attendanceRecords.stream().filter(AttendanceRecord::isAbsent).count();
     }
 }

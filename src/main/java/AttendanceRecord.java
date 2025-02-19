@@ -61,4 +61,17 @@ public class AttendanceRecord {
     public int hashCode() {
         return Objects.hash(date, time, attendance);
     }
+
+    public boolean isPresent() {
+        return attendance.equals(Attendance.PRESENT);
+    }
+
+    public boolean isTardy() {
+        return attendance.equals(Attendance.TARDY);
+    }
+
+    public boolean isAbsent() {
+        return attendance.equals(Attendance.ABSENT);
+    }
+
 }

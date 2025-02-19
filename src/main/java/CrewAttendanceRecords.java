@@ -13,7 +13,7 @@ public class CrewAttendanceRecords {
 
     private final Map<Crew, AttendanceRecords> crewAttendanceRecords = new HashMap<>();
 
-    public CrewAttendanceRecords(String path) {
+    public CrewAttendanceRecords(String path, DateGenerator dateGenerator) {
         List<String> rows = readContent(path).stream().skip(HEADER_ROW).toList();
         for (String row : rows) {
             Crew crew = new Crew(row.split(",")[CREW_INDEX]);
@@ -22,7 +22,7 @@ public class CrewAttendanceRecords {
             existingRecords.addRecord(attendanceRecord);
             this.crewAttendanceRecords.put(crew, existingRecords);
         }
-        crewAttendanceRecords.values().forEach(AttendanceRecords::fillAbsences);
+        crewAttendanceRecords.values().forEach(attendanceRecord -> attendanceRecord.fillAbsences(dateGenerator));
     }
 
     private List<String> readContent(String path) {
@@ -55,11 +55,30 @@ public class CrewAttendanceRecords {
     }
 
     public AttendanceRecord updateAttendanceRecord(Crew crew, AttendanceRecord newAttendanceRecord) {
-        if (!hasCrew(crew)) {
-            throw new IllegalArgumentException("[ERROR] 등록되지 않은 닉네임입니다.");
-        }
+        validateCrewPresence(crew);
         AttendanceRecords records = crewAttendanceRecords.get(crew);
         records.addRecord(newAttendanceRecord);
         return records.removeRecord(newAttendanceRecord.getDate());
+    }
+
+    public int getPresentCount(Crew crew) {
+        validateCrewPresence(crew);
+        return crewAttendanceRecords.get(crew).getPresentCount();
+    }
+
+    public int getTardyCount(Crew crew) {
+        validateCrewPresence(crew);
+        return crewAttendanceRecords.get(crew).getTardyCount();
+    }
+
+    public int getAbsentCount(Crew crew) {
+        validateCrewPresence(crew);
+        return crewAttendanceRecords.get(crew).getAbsentCount();
+    }
+
+    private void validateCrewPresence(Crew crew) {
+        if (!hasCrew(crew)) {
+            throw new IllegalArgumentException("[ERROR] 등록되지 않은 닉네임입니다.");
+        }
     }
 }
