@@ -6,6 +6,7 @@ public class OutputView {
     // string formats
     private static final String ATTENDANCE_STRING = "%s월 %s일 %s요일 %s (%s)";
     private static final String MODIFIED_ATTENDANCE_STRING = " -> %s (%s) 수정 완료!";
+    private static final String CREW_ATTENDANCE_HISTORY_STRING = "이번 달 %s의 출석 기록입니다.";
 
     // print methods
     // TODO 출석 확인 기능 출력:
@@ -44,6 +45,29 @@ public class OutputView {
         System.out.println();
     }
 
+    public void printCrewAttendanceHistory(String crewName, List<List<String>> crewAttendanceHistory) {
+        System.out.println(
+                CREW_ATTENDANCE_HISTORY_STRING.formatted(crewName)
+        );
+
+        for (List<String> crewStatistic : crewAttendanceHistory) {
+            String absentTime = crewStatistic.get(3);
+            if (absentTime.equals("00:00")) {
+                absentTime = "--:--";
+            }
+
+            System.out.println(
+                    ATTENDANCE_STRING.formatted(
+                            crewStatistic.get(0),
+                            crewStatistic.get(1),
+                            crewStatistic.get(2),
+                            absentTime,
+                            crewStatistic.get(4)
+                    )
+            );
+        }
+    }
+
     // TODO 크루별 출석 기록 확인 기능 출력:
     // 이번 달 빙티의 출석 기록입니다.
     //
@@ -55,7 +79,7 @@ public class OutputView {
     // 02월 06일 금요일 10:01 (출석)
     // 02월 09일 월요일 --:-- (결석)
     // (전날까지의 기록 출력)
-    //
+    // TODO >>>>>>
     // 출석: 3회
     // 지각: 0회
     // 결석: 3회
@@ -66,5 +90,4 @@ public class OutputView {
     // 제적 위험자 조회 결과
     // - 빙티: 결석 3회, 지각 4회 (면담)
     // (해당 되지 않는 사람은 출력 X)
-
 }
