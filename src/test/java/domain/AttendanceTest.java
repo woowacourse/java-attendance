@@ -7,7 +7,6 @@ import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.junit.jupiter.api.Test;
@@ -16,8 +15,6 @@ import util.AttendancesFileHandler;
 public class AttendanceTest {
 
     Attendance attendance = new Attendance(AttendancesFileHandler.generateAttendances());
-    Map<String, List<LocalDateTime>> testAttendanceFile = new HashMap<>();
-
 
     public AttendanceTest() throws IOException {
     }
@@ -26,6 +23,7 @@ public class AttendanceTest {
     void 크루의_출석_기능() {
         String crewName = "이든";
         LocalDateTime attendanceTime = LocalDateTime.of(2024, 12, 16, 9, 59, 0);
+
         assertDoesNotThrow(() -> attendance.attend(crewName, attendanceTime));
     }
 
@@ -63,6 +61,12 @@ public class AttendanceTest {
 
         assertThat(attendanceStatuses.get(AttendanceStatus.ATTEND)).isEqualTo(3);
         assertThat(attendanceStatuses.get(AttendanceStatus.LATE)).isEqualTo(4);
-        assertThat(attendanceStatuses.get(AttendanceStatus.ABSENT)).isEqualTo(14);
+        assertThat(attendanceStatuses.get(AttendanceStatus.ABSENT) + attendanceStatuses.get(AttendanceStatus.UNATTEND)).isEqualTo(14);
+    }
+
+    @Test
+    void 제적_위험자_확인_기능() {
+        List<String> expelledCrew = attendance.checkExpelledCrew();
+        assertThat(expelledCrew).contains("빙티");
     }
 }

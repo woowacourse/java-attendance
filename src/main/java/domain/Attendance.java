@@ -36,7 +36,7 @@ public class Attendance {
                 if (attendanceDates.contains(date) || date.getDayOfWeek() == DayOfWeek.SATURDAY || date.getDayOfWeek() == DayOfWeek.SUNDAY || date.isEqual(LocalDate.of(2024, 12, 25))) {
                     continue;
                 }
-                attendanceTimes.add(new AttendanceTime(date, AttendanceStatus.ABSENT));
+                attendanceTimes.add(new AttendanceTime(date, AttendanceStatus.UNATTEND));
             }
         }
     }
@@ -52,9 +52,13 @@ public class Attendance {
         attendance.get(crewName).add(new AttendanceTime(attendanceTime));
     }
 
+    /***
+     * 여기부터............ 출석이 안됨
+     */
     public void edit(String crewName, int attendanceDay, LocalTime newAttendanceTime) {
         AttendanceTime attendanceTime = getAttendanceTimes(crewName).stream()
                 .filter(attendance -> attendance.getAttendanceDateTime().getDayOfMonth() == attendanceDay)
+                .filter(attendance -> attendance.getAttendanceStatus() != AttendanceStatus.UNATTEND)
                 .findAny()
                 .orElseThrow(() -> new IllegalArgumentException("[ERROR] 출석하지 않은 날짜입니다."));
 
@@ -65,8 +69,10 @@ public class Attendance {
     public Map<AttendanceStatus, Integer> countAttendanceStatus(String name) {
         Map<AttendanceStatus, Integer> attendanceStatuses = new HashMap<>();
         List<AttendanceTime> attendanceTimes = getAttendanceTimes(name);
+        for (AttendanceStatus attendanceStatus : AttendanceStatus.values()) {
+            attendanceStatuses.put(attendanceStatus, 0);
+        }
         for (AttendanceTime attendanceTime : attendanceTimes) {
-            attendanceStatuses.putIfAbsent(attendanceTime.getAttendanceStatus(), 0);
             attendanceStatuses.put(attendanceTime.getAttendanceStatus(),
                     attendanceStatuses.get(attendanceTime.getAttendanceStatus()) + 1);
         }
@@ -76,10 +82,20 @@ public class Attendance {
     private boolean checkAttended(String crewName, LocalDate attendanceDate) {
         List<AttendanceTime> attendancesOfCrew = attendance.get(crewName);
         for (AttendanceTime attendances : attendancesOfCrew) {
-            if (attendances.checkSameDate(attendanceDate)) {
+            if (attendances.checkAttended(attendanceDate)) {
                 return true;
             }
         }
         return false;
+    }
+
+    public List<String> checkExpelledCrew() {
+        List<String> expelledCrew = new ArrayList<>();
+        for (String name : attendance.keySet()) {
+            if (ExpelStatus.determineExpelStatus(countAttendanceStatus(name)) != ExpelStatus.NONE) {
+                expelledCrew.add(name);
+            }
+        }
+        return expelledCrew;
     }
 }

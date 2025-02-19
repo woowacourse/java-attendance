@@ -8,7 +8,8 @@ public enum AttendanceStatus {
 
     ATTEND,
     LATE,
-    ABSENT;
+    ABSENT,
+    UNATTEND;
 
     public static AttendanceStatus findStatus(LocalDateTime attendanceDateTime) {
         LocalTime startTime = LocalTime.of(10, 0);

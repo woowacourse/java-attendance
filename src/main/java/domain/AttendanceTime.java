@@ -27,8 +27,8 @@ public class AttendanceTime {
         return attendanceStatus;
     }
 
-    public boolean checkSameDate(LocalDate attendanceDate) {
-        return this.attendanceDateTime.toLocalDate().equals(attendanceDate);
+    public boolean checkAttended(LocalDate attendanceDate) {
+        return this.attendanceDateTime.toLocalDate().equals(attendanceDate) && !this.attendanceStatus.equals(AttendanceStatus.UNATTEND);
     }
 
     public void updateAttendanceDateTime(LocalTime newTime) {
