@@ -78,3 +78,6 @@
 
 ### AttendancesFileHandler
 - [x] attendances.csv에서 불러온 출석 목록 저장 및 파싱
+
+### Convertor
+- [x] 요일을 한국어로 변환
