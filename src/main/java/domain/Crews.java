@@ -8,7 +8,6 @@ public class Crews {
 
     public Crews() {
         crews = new HashSet<>();
-        crews.add(Crew.of("히로"));
     }
 
     public void add(String nickname) {
@@ -21,9 +20,4 @@ public class Crews {
                 .findAny()
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 크루입니다"));
     }
-
-//    private boolean isRegistered(String nickname) {
-//        return crews.stream()
-//                .anyMatch(crew -> crew.hasSame(nickname));
-//    }
 }
