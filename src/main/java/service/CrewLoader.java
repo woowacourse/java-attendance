@@ -1,6 +1,5 @@
 package service;
 
-import domain.Crew;
 import domain.CrewGroup;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -9,7 +8,7 @@ import util.FileReader;
 
 public class CrewLoader {
 
-    public CrewGroup loadCrews() {
+    public CrewGroup loadCrews(LocalDateTime today) {
         FileReader fileReader = new FileReader();
         List<String> lines = fileReader.readFile();
         CrewGroup crewGroup = new CrewGroup();
@@ -23,6 +22,7 @@ public class CrewLoader {
             crewGroup.addCrew(nickname, dateTime);
         }
 
+        crewGroup.addAllAbsent(today);
         return crewGroup;
     }
 }

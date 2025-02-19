@@ -31,4 +31,12 @@ public class Attandance {
     public void updateAttendance(LocalDateTime updateTime) {
         date = updateTime;
     }
+
+    public boolean isSameDay(int day) {
+        return date.getDayOfMonth() == day;
+    }
+
+    public int getDay() {
+        return date.getDayOfMonth();
+    }
 }

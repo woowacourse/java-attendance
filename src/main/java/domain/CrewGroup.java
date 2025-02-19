@@ -16,4 +16,9 @@ public class CrewGroup {
     public Crew searchCrew(String nickname) {
         return crews.getOrDefault(nickname, null);
     }
+
+    public void addAllAbsent(LocalDateTime today) {
+        crews.values()
+                .forEach(crew -> crew.addAbsent(today));
+    }
 }

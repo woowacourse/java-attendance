@@ -29,4 +29,31 @@ class AttandanceTest {
         Attandance attandance = new Attandance(originalTime);
         Assertions.assertSame(attandance.calculateAttendanceStatus(), AttendanceStatus.ABSENT);
     }
+
+    @Test
+    void test4(){
+        LocalDateTime day = LocalDateTime.of(2024,12,2,13,0);
+        int sameDay = 2;
+
+        Attandance attendance = new Attandance(day);
+        Assertions.assertTrue(attendance.isSameDay(sameDay));
+    }
+
+    @Test
+    void test5(){
+        LocalDateTime day = LocalDateTime.of(2024,12,2,13,0);
+        int sameDay = 10;
+
+        Attandance attendance = new Attandance(day);
+        Assertions.assertFalse(attendance.isSameDay(sameDay));
+    }
+
+    @Test
+    void test6(){
+        LocalDateTime day = LocalDateTime.of(2024,12,2,13,0);
+        int sameDay = 2;
+
+        Attandance attendance = new Attandance(day);
+        Assertions.assertEquals(sameDay, attendance.getDay());
+    }
 }
