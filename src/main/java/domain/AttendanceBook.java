@@ -67,4 +67,25 @@ public class AttendanceBook {
         }
         return histories;
     }
+
+    public Map<String, Integer> calculateAttendanceResult(LocalDate limitDate) {
+        Map<String, Integer> result = new HashMap<>();
+        result.put("출석", 0);
+        result.put("지각", 0);
+        result.put("결석", 0);
+        for (int date = 1; date < limitDate.getDayOfMonth(); date++) {
+            if (DateConstants.MONTH.isHoliday(date)) {
+                continue;
+            }
+            if (attendances.containsKey(date)) {
+                Attendance attendance = attendances.get(date);
+                String status = attendance.getStatus();
+                result.replace(status, result.get(status) + 1);
+            }
+            else {
+                result.replace("결석", result.get("결석") + 1);
+            }
+        }
+        return result;
+    }
 }

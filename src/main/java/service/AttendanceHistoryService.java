@@ -21,6 +21,7 @@ public class AttendanceHistoryService {
     }
 
     public Map<String, Integer> getAttendanceResultOf(String name, LocalDate date) {
-        return null;
+        AttendanceBook attendanceBook = attendanceRepository.findByCrewName(name);
+        return attendanceBook.calculateAttendanceResult(date);
     }
 }
