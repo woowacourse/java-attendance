@@ -7,19 +7,18 @@ import java.time.LocalTime;
 public class Day {
 
     private LocalDate date;
-    private Boolean isHoliday = false;
     private DayOfWeek dayOfWeek;
 
     public Day(LocalDate date) {
         this.date = date;
         this.dayOfWeek = DayOfWeek.getInstance(date);
-        checkHoliday();
     }
 
-    private void checkHoliday() {
+    public Boolean checkHoliday() {
         if (dayOfWeek.equals(DayOfWeek.SATURDAY) || dayOfWeek.equals(DayOfWeek.SUNDAY)) {
-            isHoliday = true;
+            return true;
         }
+        return false;
     }
 
     public boolean isLate(LocalTime attendanceTime) {
