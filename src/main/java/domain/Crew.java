@@ -51,4 +51,14 @@ public class Crew {
         return str;
     }
 
+    public String printAttendanceInfo(LocalDate lastDate) {
+        updateUntil(lastDate);
+        attendanceInfo.sort(Comparator.comparing(Attendance::getDayOfMonth));
+        String str ="";
+        for (Attendance attendance : attendanceInfo) {
+            str += attendance.printAttendance() + "\n";
+        }
+        return str;
+    }
+
 }
