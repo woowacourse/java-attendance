@@ -4,6 +4,7 @@ import attendance.domain.Attendance;
 import attendance.domain.AttendanceType;
 import attendance.domain.Attendances;
 import attendance.domain.Crew;
+import attendance.domain.CrewStatistic;
 import attendance.domain.Crews;
 import attendance.domain.MenuCommand;
 import attendance.util.FileReader;
@@ -133,7 +134,17 @@ public class AttendanceController {
 
     private void lookupCrewAttendanceHistory() {
         // crewName -> findCrew (Crews) -> findCrewAttendances (Attendances)
+        String crewName = inputView.readCrewName();
+        Crew crew = crews.findCrew(crewName);
 
+        List<Attendance> crewAttendances = attendances.findCrewAttendances(crew);
+        CrewStatistic crewStatistic = new CrewStatistic(crew, crewAttendances);
+
+        crewStatistic.initCrewStatus();
+        crewStatistic.calculatePenalty();
+
+        // TODO
+        outputView.printCrewAttendanceHistory(crew.getName(), crewStatistic.getStatisticInfo());
     }
 
     private void lookupCrewsExpelStatus() {
