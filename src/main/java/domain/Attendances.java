@@ -14,11 +14,11 @@ public class Attendances {
     }
 
     public Attendance findAttendanceByName(String name) {
-        for (Attendance attendance : attendances) {
-            if (attendance.isSameName(name)) {
-                return attendance;
-            }
-        }
-        throw new IllegalArgumentException("[ERROR] 출석부에 해당하는 이름이 없습니다.");
+        return attendances.stream()
+                .filter(attendance -> attendance.isSameName(name))
+                .findAny()
+                .orElseThrow(
+                        () -> new IllegalArgumentException("[ERROR] 출석부에 해당하는 이름이 없습니다.")
+                );
     }
 }
