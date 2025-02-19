@@ -32,12 +32,20 @@ public class Attendance {
         );
     }
 
+    public boolean isSameCrew(Crew crew) {
+        return this.crew.equals(crew);
+    }
 
     public void modifyLocalDateTime(LocalDateTime changedPresentTime) {
         this.presentTime = changedPresentTime;
     }
 
-    public String getTime() {
+
+    public LocalDate getDate() {
+        return presentTime.toLocalDate();
+    }
+
+    public String getTimeValue() {
         return presentTime.format(DateTimeFormatter.ofPattern("HH:mm"));
     }
 
