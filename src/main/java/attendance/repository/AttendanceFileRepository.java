@@ -6,14 +6,16 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.time.temporal.Temporal;
+import java.time.format.DateTimeParseException;
 
 public class AttendanceFileRepository {
     private final AttendanceManager attendanceManager;
     private final String attendanceFileSrc;
     private final String FILE_DOESNT_EXISTS = "존재하지 않은 파일입니다.";
+    private final String INVALID_ATTENDNACE_DATE = "유효하지 않은 날짜 양식입니다.";
 
     public AttendanceFileRepository(String attendanceFileSrc) {
         this.attendanceManager = new AttendanceManager();
@@ -49,8 +51,13 @@ public class AttendanceFileRepository {
     }
 
     private LocalDateTime parsingAttendanceDate(String datetime) {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd H:mm");
-        return LocalDateTime.parse(datetime, formatter);
+        try{
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd H:mm");
+            return LocalDateTime.parse(datetime, formatter);
+        }catch (DateTimeParseException e){
+            throw new AttendanceException(INVALID_ATTENDNACE_DATE);
+        }
+
     }
 
     public AttendanceManager getAttendanceManager() {

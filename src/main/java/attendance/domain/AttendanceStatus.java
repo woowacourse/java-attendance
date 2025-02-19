@@ -6,7 +6,7 @@ import attendance.exception.AttendanceException;
 
 public enum AttendanceStatus {
     ATTENDANCE("출석"),
-    RATE("지각"),
+    LATE("지각"),
     ABSENCE("결석");
 
     private static final String INVALID_STATUS = "존재하지 않는 출석 상태입니다.";
