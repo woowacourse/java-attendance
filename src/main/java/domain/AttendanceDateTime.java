@@ -86,4 +86,8 @@ public class AttendanceDateTime {
             throw new IllegalArgumentException("[ERROR] 공휴일에는 출석할 수 없습니다.");
         }
     }
+
+    public boolean isSame(AttendanceSheet attendanceSheet) {
+         return this.attendanceDateTime.toLocalDate().equals(attendanceSheet.getAttendanceDateTime().attendanceDateTime.toLocalDate());
+    }
 }
