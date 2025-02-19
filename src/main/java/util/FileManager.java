@@ -29,9 +29,9 @@ public class FileManager {
                 String[] lineSplit = line.split(",");
 
                 String name = lineSplit[0];
-                Crew crew = getCrewByName(name, attendances);
-
+                Crew crew = Crew.from(name);
                 String dateTime = lineSplit[1];
+
                 LocalDateTime localDateTime = LocalDateTime.parse(dateTime, DATE_TIME_FORMAT);
                 List<LocalDateTime> localDateTimes = attendances.getOrDefault(crew, new ArrayList<>());
                 localDateTimes.add(localDateTime);
@@ -43,14 +43,5 @@ public class FileManager {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-    }
-
-    private static Crew getCrewByName(String name, Map<Crew, List<LocalDateTime>> attendances) {
-        return attendances.keySet()
-                .stream()
-                .filter(crew -> crew.getName().equals(name))
-                .findFirst()
-                .orElseGet(() -> Crew.from(name)
-                );
     }
 }
