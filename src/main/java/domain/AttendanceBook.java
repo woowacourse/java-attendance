@@ -1,6 +1,6 @@
 package domain;
 
-import dto.*;
+import dto.result.*;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -11,9 +11,9 @@ import java.util.Map;
 
 public class AttendanceBook {
     
-    private static final class ExpelMeasurementComparator implements Comparator<ExpelMeasurementDTO> {
+    private static final class ExpelMeasurementComparator implements Comparator<ExpelMeasurementResult> {
         @Override
-        public int compare(ExpelMeasurementDTO o1, ExpelMeasurementDTO o2) {
+        public int compare(ExpelMeasurementResult o1, ExpelMeasurementResult o2) {
             if (!o1.measurementName().equals(o2.measurementName())) {
                 return -o1.measurementName().compareTo(o2.measurementName());
             }
@@ -33,17 +33,17 @@ public class AttendanceBook {
         this.memberAttendances = memberAttendances;
     }
     
-    public AttendanceResultDTO addAttendance(String name, LocalDateTime attendDateTime) {
+    public AttendResult addAttendance(String name, LocalDateTime attendDateTime) {
         validateName(name);
         MemberAttendances memberAttendance = memberAttendances.get(name);
         return memberAttendance.attend(attendDateTime);
     }
     
-    public AttendanceModifyResult editAttendance(String name, LocalDate date, LocalTime time) {
+    public MemberAttendanceModifyResult editAttendance(String name, LocalDate date, LocalTime time) {
         validateName(name);
         MemberAttendances memberAttendance = memberAttendances.get(name);
-        AttendanceModifyDTO result = memberAttendance.modifyAttendance(date, time);
-        return new AttendanceModifyResult(name, result.attendanceDate(), result.oldAttendanceTime(), result.oldAttendanceStatus(), result.newAttendanceTime(), result.newAttendanceStatus());
+        AttendanceModifyResult result = memberAttendance.modifyAttendance(date, time);
+        return new MemberAttendanceModifyResult(name, result.attendanceDate(), result.oldAttendanceTime(), result.oldAttendanceStatus(), result.newAttendanceTime(), result.newAttendanceStatus());
     }
     
     private void validateName(String name) {
@@ -52,12 +52,12 @@ public class AttendanceBook {
         }
     }
     
-    public AttendanceResultDTOs getAttendanceResult(String name) {
+    public MemberAttendResult getAttendanceResult(String name) {
         MemberAttendances oneMemberAttendances = memberAttendances.get(name);
         return oneMemberAttendances.getAttendanceResult();
     }
     
-    public List<ExpelMeasurementDTO> checkExpelWarnings() {
+    public List<ExpelMeasurementResult> checkExpelWarnings() {
         return memberAttendances.values().stream()
                 .map(MemberAttendances::measureExpelRisk)
                 .filter(dto -> dto.measurementName() != null)

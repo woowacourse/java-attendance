@@ -1,7 +1,7 @@
 package domain;
 
-import dto.AttendanceModifyDTO;
-import dto.AttendanceResultDTO;
+import dto.result.AttendResult;
+import dto.result.AttendanceModifyResult;
 import util.exception.IllegalAttendDateException;
 import util.exception.IllegalAttendTimeException;
 
@@ -66,11 +66,11 @@ public class Attendance {
         return "결석";
     }
     
-    public AttendanceResultDTO createAttendanceResult() {
-        return new AttendanceResultDTO(attendanceTime, attendanceStatus);
+    public AttendResult createAttendanceResult() {
+        return new AttendResult(attendanceTime, attendanceStatus);
     }
     
-    public AttendanceModifyDTO modifyAttendanceTime(LocalTime newAttendanceTime) {
+    public AttendanceModifyResult modifyAttendanceTime(LocalTime newAttendanceTime) {
         LocalDateTime oldAttendanceTime = attendanceTime;
         attendanceTime = attendanceTime
                 .withHour(newAttendanceTime.getHour())
@@ -79,7 +79,7 @@ public class Attendance {
         String oldAttendanceStatus = attendanceStatus;
         attendanceStatus = checkAttendanceStatus(attendanceTime);
         
-        return new AttendanceModifyDTO(
+        return new AttendanceModifyResult(
                 attendanceTime.toLocalDate(),
                 oldAttendanceTime.toLocalTime(),
                 oldAttendanceStatus,

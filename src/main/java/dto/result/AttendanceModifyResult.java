@@ -1,10 +1,9 @@
-package dto;
+package dto.result;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
 
 public record AttendanceModifyResult(
-        String name,
         LocalDate attendanceDate,
         LocalTime oldAttendanceTime,
         String oldAttendanceStatus,

@@ -1,6 +1,6 @@
-package dto;
+package dto.result;
 
-public record ExpelMeasurementDTO(
+public record ExpelMeasurementResult(
         String targetName,
         int lateCount,
         int absentCount,

@@ -1,10 +1,10 @@
-package dto;
+package dto.result;
 
 import java.util.List;
 
-public record AttendanceResultDTOs(
+public record MemberAttendResult(
         String name,
-        List<AttendanceResultDTO> attendanceResults,
+        List<AttendResult> attendanceResults,
         int attendCount,
         int lateCount,
         int absentCount,

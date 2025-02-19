@@ -1,10 +1,10 @@
 import domain.Attendance;
 import domain.AttendanceBook;
 import domain.MemberAttendances;
-import dto.AttendanceModifyResult;
-import dto.AttendanceResultDTO;
-import dto.AttendanceResultDTOs;
-import dto.ExpelMeasurementDTO;
+import dto.result.AttendResult;
+import dto.result.ExpelMeasurementResult;
+import dto.result.MemberAttendResult;
+import dto.result.MemberAttendanceModifyResult;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import util.exception.IllegalAttendDateException;
@@ -55,11 +55,11 @@ public class AttendanceBookTest {
             AttendanceBook attendanceBook = new AttendanceBook(attendancesMap);
             
             // when
-            AttendanceResultDTO attendanceResultDTO = attendanceBook.addAttendance(inputName, attendDateTime);
+            AttendResult attendResult = attendanceBook.addAttendance(inputName, attendDateTime);
             
             // then
-            assertThat(attendanceResultDTO.attendanceStatus()).isEqualTo("출석");
-            assertThat(attendanceResultDTO.attendanceTime()).isEqualTo(LocalDateTime.of(2024, 12, 13, 10, 2));
+            assertThat(attendResult.attendanceStatus()).isEqualTo("출석");
+            assertThat(attendResult.attendanceTime()).isEqualTo(LocalDateTime.of(2024, 12, 13, 10, 2));
         }
         
         @Test
@@ -114,10 +114,10 @@ public class AttendanceBookTest {
             AttendanceBook attendanceBook = new AttendanceBook(attendancesMap);
             
             //when
-            AttendanceModifyResult result = attendanceBook.editAttendance(name, date, time);
+            MemberAttendanceModifyResult result = attendanceBook.editAttendance(name, date, time);
             
             //then
-            assertThat(result).isEqualTo(new AttendanceModifyResult(
+            assertThat(result).isEqualTo(new MemberAttendanceModifyResult(
                     "Dompoo",
                     LocalDate.of(2024, 12, 6),
                     LocalTime.of(10, 15),
@@ -184,14 +184,14 @@ public class AttendanceBookTest {
             )));
             
             //when
-            AttendanceResultDTOs result = attendanceBook.getAttendanceResult(name);
+            MemberAttendResult result = attendanceBook.getAttendanceResult(name);
             
             //then
-            assertThat(result).isEqualTo(new AttendanceResultDTOs(
+            assertThat(result).isEqualTo(new MemberAttendResult(
                     "Dompoo", List.of(
-                    new AttendanceResultDTO(LocalDateTime.of(2024, 12, 6, 10, 15), "지각"),
-                    new AttendanceResultDTO(LocalDateTime.of(2024, 12, 10, 10, 30), "지각"),
-                    new AttendanceResultDTO(LocalDateTime.of(2024, 12, 11, 10, 31), "결석")
+                    new AttendResult(LocalDateTime.of(2024, 12, 6, 10, 15), "지각"),
+                    new AttendResult(LocalDateTime.of(2024, 12, 10, 10, 30), "지각"),
+                    new AttendResult(LocalDateTime.of(2024, 12, 11, 10, 31), "결석")
             ), 0, 2, 1, null
             ));
         }
@@ -208,15 +208,15 @@ public class AttendanceBookTest {
             )));
             
             //when
-            AttendanceResultDTOs result = attendanceBook.getAttendanceResult(name);
+            MemberAttendResult result = attendanceBook.getAttendanceResult(name);
             
             //then
-            assertThat(result).isEqualTo(new AttendanceResultDTOs(
+            assertThat(result).isEqualTo(new MemberAttendResult(
                     "Dompoo", List.of(
-                    new AttendanceResultDTO(LocalDateTime.of(2024, 12, 6, 10, 15), "지각"),
-                    new AttendanceResultDTO(LocalDateTime.of(2024, 12, 10, 10, 30), "지각"),
-                    new AttendanceResultDTO(LocalDateTime.of(2024, 12, 11, 10, 31), "결석"),
-                    new AttendanceResultDTO(LocalDateTime.of(2024, 12, 12, 10, 32), "결석")
+                    new AttendResult(LocalDateTime.of(2024, 12, 6, 10, 15), "지각"),
+                    new AttendResult(LocalDateTime.of(2024, 12, 10, 10, 30), "지각"),
+                    new AttendResult(LocalDateTime.of(2024, 12, 11, 10, 31), "결석"),
+                    new AttendResult(LocalDateTime.of(2024, 12, 12, 10, 32), "결석")
             ), 0, 2, 2, "경고"
             ));
         }
@@ -234,16 +234,16 @@ public class AttendanceBookTest {
             )));
             
             //when
-            AttendanceResultDTOs result = attendanceBook.getAttendanceResult(name);
+            MemberAttendResult result = attendanceBook.getAttendanceResult(name);
             
             //then
-            assertThat(result).isEqualTo(new AttendanceResultDTOs(
+            assertThat(result).isEqualTo(new MemberAttendResult(
                     "Dompoo", List.of(
-                    new AttendanceResultDTO(LocalDateTime.of(2024, 12, 6, 10, 15), "지각"),
-                    new AttendanceResultDTO(LocalDateTime.of(2024, 12, 10, 10, 30), "지각"),
-                    new AttendanceResultDTO(LocalDateTime.of(2024, 12, 11, 10, 31), "결석"),
-                    new AttendanceResultDTO(LocalDateTime.of(2024, 12, 12, 10, 32), "결석"),
-                    new AttendanceResultDTO(LocalDateTime.of(2024, 12, 13, 10, 33), "결석")
+                    new AttendResult(LocalDateTime.of(2024, 12, 6, 10, 15), "지각"),
+                    new AttendResult(LocalDateTime.of(2024, 12, 10, 10, 30), "지각"),
+                    new AttendResult(LocalDateTime.of(2024, 12, 11, 10, 31), "결석"),
+                    new AttendResult(LocalDateTime.of(2024, 12, 12, 10, 32), "결석"),
+                    new AttendResult(LocalDateTime.of(2024, 12, 13, 10, 33), "결석")
             ), 0, 2, 3, "면담"
             ));
         }
@@ -264,19 +264,19 @@ public class AttendanceBookTest {
             )));
             
             //when
-            AttendanceResultDTOs result = attendanceBook.getAttendanceResult(name);
+            MemberAttendResult result = attendanceBook.getAttendanceResult(name);
             
             //then
-            assertThat(result).isEqualTo(new AttendanceResultDTOs(
+            assertThat(result).isEqualTo(new MemberAttendResult(
                     "Dompoo", List.of(
-                    new AttendanceResultDTO(LocalDateTime.of(2024, 12, 6, 10, 15), "지각"),
-                    new AttendanceResultDTO(LocalDateTime.of(2024, 12, 10, 10, 30), "지각"),
-                    new AttendanceResultDTO(LocalDateTime.of(2024, 12, 11, 10, 31), "결석"),
-                    new AttendanceResultDTO(LocalDateTime.of(2024, 12, 12, 10, 32), "결석"),
-                    new AttendanceResultDTO(LocalDateTime.of(2024, 12, 13, 10, 33), "결석"),
-                    new AttendanceResultDTO(LocalDateTime.of(2024, 12, 17, 10, 34), "결석"),
-                    new AttendanceResultDTO(LocalDateTime.of(2024, 12, 18, 10, 35), "결석"),
-                    new AttendanceResultDTO(LocalDateTime.of(2024, 12, 19, 10, 35), "결석")
+                    new AttendResult(LocalDateTime.of(2024, 12, 6, 10, 15), "지각"),
+                    new AttendResult(LocalDateTime.of(2024, 12, 10, 10, 30), "지각"),
+                    new AttendResult(LocalDateTime.of(2024, 12, 11, 10, 31), "결석"),
+                    new AttendResult(LocalDateTime.of(2024, 12, 12, 10, 32), "결석"),
+                    new AttendResult(LocalDateTime.of(2024, 12, 13, 10, 33), "결석"),
+                    new AttendResult(LocalDateTime.of(2024, 12, 17, 10, 34), "결석"),
+                    new AttendResult(LocalDateTime.of(2024, 12, 18, 10, 35), "결석"),
+                    new AttendResult(LocalDateTime.of(2024, 12, 19, 10, 35), "결석")
             ), 0, 2, 6, "제적"
             ));
         }
@@ -316,13 +316,13 @@ public class AttendanceBookTest {
                     )));
             
             //when
-            List<ExpelMeasurementDTO> result = attendanceBook.checkExpelWarnings();
+            List<ExpelMeasurementResult> result = attendanceBook.checkExpelWarnings();
             
             //then
             assertThat(result).containsExactlyInAnyOrder(
-                    new ExpelMeasurementDTO("Dompoo_경고", 2, 2, "경고"),
-                    new ExpelMeasurementDTO("Dompoo_면담", 2, 3, "면담"),
-                    new ExpelMeasurementDTO("Dompoo_제적", 2, 6, "제적")
+                    new ExpelMeasurementResult("Dompoo_경고", 2, 2, "경고"),
+                    new ExpelMeasurementResult("Dompoo_면담", 2, 3, "면담"),
+                    new ExpelMeasurementResult("Dompoo_제적", 2, 6, "제적")
             );
         }
         
@@ -383,16 +383,16 @@ public class AttendanceBookTest {
             ));
             
             //when
-            List<ExpelMeasurementDTO> result = attendanceBook.checkExpelWarnings();
+            List<ExpelMeasurementResult> result = attendanceBook.checkExpelWarnings();
             
             //then
             assertThat(result).containsExactly(
-                    new ExpelMeasurementDTO("빙티", 4, 3, "면담"),
-                    new ExpelMeasurementDTO("이든", 5, 2, "면담"),
-                    new ExpelMeasurementDTO("빙봉", 6, 1, "면담"),
-                    new ExpelMeasurementDTO("쿠키", 3, 2, "면담"),
-                    new ExpelMeasurementDTO("양수", 6, 0, "경고"),
-                    new ExpelMeasurementDTO("장수", 6, 0, "경고")
+                    new ExpelMeasurementResult("빙티", 4, 3, "면담"),
+                    new ExpelMeasurementResult("이든", 5, 2, "면담"),
+                    new ExpelMeasurementResult("빙봉", 6, 1, "면담"),
+                    new ExpelMeasurementResult("쿠키", 3, 2, "면담"),
+                    new ExpelMeasurementResult("양수", 6, 0, "경고"),
+                    new ExpelMeasurementResult("장수", 6, 0, "경고")
             
             );
         }

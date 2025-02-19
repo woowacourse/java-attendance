@@ -1,6 +1,6 @@
 import domain.Attendance;
-import dto.AttendanceModifyDTO;
-import dto.AttendanceResultDTO;
+import dto.result.AttendResult;
+import dto.result.AttendanceModifyResult;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import util.exception.IllegalAttendDateException;
@@ -103,7 +103,7 @@ public class AttendanceTest {
             Attendance attendance = new Attendance(localDateTime);
             
             // when
-            AttendanceResultDTO result = attendance.createAttendanceResult();
+            AttendResult result = attendance.createAttendanceResult();
             
             //then
             assertThat(result.attendanceTime()).isEqualTo(LocalDateTime.of(2024, 12, 3, 9, 45));
@@ -123,7 +123,7 @@ public class AttendanceTest {
             LocalTime newAttendanceTime = LocalTime.of(10, 6);
             
             //when
-            AttendanceModifyDTO result = attendance.modifyAttendanceTime(newAttendanceTime);
+            AttendanceModifyResult result = attendance.modifyAttendanceTime(newAttendanceTime);
             
             //then
             assertThat(result.attendanceDate()).isEqualTo(LocalDate.of(2024, 12, 3));

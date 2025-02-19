@@ -1,9 +1,9 @@
 package domain;
 
-import dto.AttendanceModifyDTO;
-import dto.AttendanceResultDTO;
-import dto.AttendanceResultDTOs;
-import dto.ExpelMeasurementDTO;
+import dto.result.AttendResult;
+import dto.result.AttendanceModifyResult;
+import dto.result.ExpelMeasurementResult;
+import dto.result.MemberAttendResult;
 import util.exception.IllegalAttendDateException;
 import util.exception.IllegalAttendTimeException;
 
@@ -23,19 +23,19 @@ public class MemberAttendances {
         this.attendances = new ArrayList<>(attendances);
     }
     
-    public ExpelMeasurementDTO measureExpelRisk() {
+    public ExpelMeasurementResult measureExpelRisk() {
         int lateCount = calculateLateCount();
         int absentCount = calculateAbsentCount();
         
-        return new ExpelMeasurementDTO(name, lateCount, absentCount, checkStatus(lateCount, absentCount));
+        return new ExpelMeasurementResult(name, lateCount, absentCount, checkStatus(lateCount, absentCount));
     }
     
-    public AttendanceResultDTOs getAttendanceResult() {
+    public MemberAttendResult getAttendanceResult() {
         int attendCount = calculateAttendCount();
         int lateCount = calculateLateCount();
         int absentCount = calculateAbsentCount();
         
-        return new AttendanceResultDTOs(name,
+        return new MemberAttendResult(name,
                 attendances.stream().map(Attendance::createAttendanceResult).toList(),
                 attendCount,
                 lateCount,
@@ -47,11 +47,11 @@ public class MemberAttendances {
     public int calculateAttendCount() {
         int count = 0;
         
-        List<AttendanceResultDTO> attendanceResults = attendances.stream()
+        List<AttendResult> attendanceResults = attendances.stream()
                 .map(Attendance::createAttendanceResult)
                 .toList();
         
-        for (AttendanceResultDTO attendanceResult : attendanceResults) {
+        for (AttendResult attendanceResult : attendanceResults) {
             if (attendanceResult.attendanceStatus().equals("출석")) {
                 count++;
             }
@@ -62,11 +62,11 @@ public class MemberAttendances {
     public int calculateLateCount() {
         int count = 0;
         
-        List<AttendanceResultDTO> attendanceResults = attendances.stream()
+        List<AttendResult> attendanceResults = attendances.stream()
                 .map(Attendance::createAttendanceResult)
                 .toList();
         
-        for (AttendanceResultDTO attendanceResult : attendanceResults) {
+        for (AttendResult attendanceResult : attendanceResults) {
             if (attendanceResult.attendanceStatus().equals("지각")) {
                 count++;
             }
@@ -77,11 +77,11 @@ public class MemberAttendances {
     public int calculateAbsentCount() {
         int count = 0;
         
-        List<AttendanceResultDTO> attendanceResults = attendances.stream()
+        List<AttendResult> attendanceResults = attendances.stream()
                 .map(Attendance::createAttendanceResult)
                 .toList();
         
-        for (AttendanceResultDTO attendanceResult : attendanceResults) {
+        for (AttendResult attendanceResult : attendanceResults) {
             if (attendanceResult.attendanceStatus().equals("결석")) {
                 count++;
             }
@@ -97,13 +97,13 @@ public class MemberAttendances {
         return null;
     }
     
-    public AttendanceResultDTO attend(LocalDateTime attendDateTime) {
+    public AttendResult attend(LocalDateTime attendDateTime) {
         Attendance newAttendance = new Attendance(attendDateTime);
         attendances.add(newAttendance);
         return newAttendance.createAttendanceResult();
     }
     
-    public AttendanceModifyDTO modifyAttendance(LocalDate date, LocalTime time) {
+    public AttendanceModifyResult modifyAttendance(LocalDate date, LocalTime time) {
         for (Attendance attendance : attendances) {
             if (attendance.isSameDay(date)) {
                 return attendance.modifyAttendanceTime(time);
@@ -112,7 +112,7 @@ public class MemberAttendances {
         
         try {
             Attendance newAttendance = new Attendance(LocalDateTime.of(date, time));
-            return new AttendanceModifyDTO(date, null, null, time, newAttendance.createAttendanceResult().attendanceStatus());
+            return new AttendanceModifyResult(date, null, null, time, newAttendance.createAttendanceResult().attendanceStatus());
         } catch (IllegalAttendDateException e) {
             throw new IllegalAttendDateException("수정 가능한 날짜가 아닙니다.");
         } catch (IllegalAttendTimeException e) {
