@@ -6,9 +6,39 @@ import java.util.Map;
 
 public class AttendanceBook {
     private final List<Crew> crews;
+    public List<CrewPenaltyResponse> crewPenaltyResponses;
 
     public AttendanceBook() {
         this.crews = new ArrayList<>();
+    }
+
+    public List<CrewPenaltyResponse> checkPenaltyCrew() {
+        List<CrewPenaltyResponse> crewPenaltyResponses = new ArrayList<>();
+
+        for (Crew crew : crews) {
+            List<AttendanceRecordsResponse> attendanceRecords = crew.getAttendanceRecords();
+            TotalRecordsResponse totalRecords = TotalRecordsResponse.fromAttendanceRecords(attendanceRecords);
+
+            int penaltyCount = getPenaltyCount(totalRecords);
+            String penalty = "";
+
+            if (penaltyCount > 5) {
+                penalty = "(제적)";
+            }
+            if (penaltyCount >= 3) {
+                penalty = "(면담)";
+            }
+            if (penaltyCount >= 2) {
+                penalty = "(경고)";
+            }
+            crewPenaltyResponses.add(new CrewPenaltyResponse(
+                    totalRecords.absentCount(),
+                    totalRecords.lateCount(),
+                    penalty)
+            );
+        }
+
+        return crewPenaltyResponses;
     }
 
     public boolean checkAlreadyExists(String name) {
@@ -68,5 +98,9 @@ public class AttendanceBook {
                 .orElseThrow(() -> new IllegalArgumentException("[ERROR] 등록되지 않은 닉네임입니다."));
 
         foundCrew.modifyDailyAttendance(dateAndTime);
+    }
+
+    private int getPenaltyCount(TotalRecordsResponse totalRecords) {
+        return totalRecords.absentCount() + (totalRecords.lateCount() / 3);
     }
 }
