@@ -4,6 +4,8 @@ import dto.AttendanceResultDTO;
 import dto.AttendanceResultDTOs;
 import dto.ExpelMeasurementDTO;
 
+import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 public class MemberAttendances {
@@ -13,7 +15,7 @@ public class MemberAttendances {
     
     public MemberAttendances(String name, List<Attendance> attendances) {
         this.name = name;
-        this.attendances = attendances;
+        this.attendances = new ArrayList<>(attendances);
     }
     
     public ExpelMeasurementDTO measureExpelRisk() {
@@ -63,5 +65,11 @@ public class MemberAttendances {
         }
         
         return new AttendanceResultDTOs(name, attendanceResults, attendCount, lateCount, absentCount);
+    }
+    
+    public AttendanceResultDTO attend(LocalDateTime attendDateTime) {
+        Attendance newAttendance = new Attendance(attendDateTime);
+        attendances.add(newAttendance);
+        return newAttendance.createAttendanceResult();
     }
 }

@@ -3,6 +3,7 @@ import domain.MemberAttendances;
 import dto.AttendanceResultDTO;
 import dto.AttendanceResultDTOs;
 import dto.ExpelMeasurementDTO;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDateTime;
@@ -22,6 +23,23 @@ public class MemberAttendancesTest {
             new Attendance(LocalDateTime.of(2024, 12, 11, 10, 31)),
             new Attendance(LocalDateTime.of(2024, 12, 12, 10, 32))
     );
+    
+    @Nested
+    class 출석_테스트 {
+        
+        @Test
+        void 출석을_등록한다() {
+            //given
+            MemberAttendances attendances = new MemberAttendances("Lemon", attendanceList);
+            LocalDateTime attendTime = LocalDateTime.of(2024, 12, 13, 10, 0);
+            
+            //when
+            AttendanceResultDTO result = attendances.attend(attendTime);
+            
+            //then
+            assertThat(result).isEqualTo(new AttendanceResultDTO(LocalDateTime.of(2024, 12, 13, 10, 0), "출석"));
+        }
+    }
     
     @Test
     void 이름_입력시_출석기록_반환() {
