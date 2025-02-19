@@ -1,5 +1,6 @@
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.Objects;
 
 public class AttendanceRecord {
     private static final int DATE_INDEX = 0;
@@ -40,5 +41,17 @@ public class AttendanceRecord {
 
     public LocalDate getDate() {
         return date;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        AttendanceRecord that = (AttendanceRecord) o;
+        return Objects.equals(date, that.date) && Objects.equals(time, that.time) && attendance == that.attendance;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(date, time, attendance);
     }
 }
