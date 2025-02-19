@@ -22,7 +22,7 @@ public class AttendanceChecker {
     }
 
     public static AttendanceStatus checkRegularAttendance(final int hour, final int minute) {
-        if (hour <= 10 && minute <= 5) {
+        if ((hour == 10 && minute <= 5) || hour < 10) {
             return PRESENT;
         }
         if (hour == 10 && (minute <= 30)) {

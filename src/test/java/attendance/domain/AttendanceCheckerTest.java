@@ -15,10 +15,15 @@ class AttendanceCheckerTest {
     @DisplayName("출석")
     @Test
     void test1() {
-        LocalDateTime localDateTime = LocalDateTime.of(2024, 12, 24, 10, 5);
-        AttendanceStatus result = AttendanceChecker.checkAttendance(localDateTime);
-        assertThat(result).isEqualTo(PRESENT);
+        LocalDateTime localDateTime1 = LocalDateTime.of(2024, 12, 24, 10, 5);
+        LocalDateTime localDateTime2 = LocalDateTime.of(2024, 12, 24, 9, 5);
+        AttendanceStatus result1 = AttendanceChecker.checkAttendance(localDateTime1);
+        AttendanceStatus result2 = AttendanceChecker.checkAttendance(localDateTime2);
+        assertThat(result1).isEqualTo(PRESENT);
+        assertThat(result2).isEqualTo(PRESENT);
     }
+
+
 
     @DisplayName("지각")
     @Test
