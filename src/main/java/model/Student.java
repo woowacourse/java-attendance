@@ -26,7 +26,7 @@ public class Student {
     public void updateState(LocalDateTime localDateTime) {
         DayOfWeek dayOfWeek = localDateTime.getDayOfWeek();
         int day = dayOfWeek.getValue();
-        if (day == 6 || day == 7) {
+        if (day == 6 || day == 7 || localDateTime.getDayOfMonth() == 25) {
             return;
         }
 
