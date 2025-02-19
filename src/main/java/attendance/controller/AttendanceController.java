@@ -34,6 +34,10 @@ public class AttendanceController {
         LocalDate now = LocalDate.of(2024, 12, 17);
         Crews crews = crewsService.init(AttendancesFileReader.read(), now);
 
+        printAttendanceByCrew(crews, now);
+    }
+
+    private void confirmAttendance(Crews crews, LocalDate now) {
         Crew crew = crews.findByName(inputView.inputNickname());
         crew.existInAttendances(now); //TODO: 수정으로 유도, 공휴일인지
 
@@ -42,5 +46,10 @@ public class AttendanceController {
 
         crew.addAttendance(attendance);
         outputView.printAttendanceResult(attendance);
+    }
+
+    private void printAttendanceByCrew(Crews crews, LocalDate now) {
+        Crew crew = crews.findByName(inputView.inputNickname());
+        outputView.printAttendanceByCrew(crew);
     }
 }

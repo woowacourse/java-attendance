@@ -1,24 +1,26 @@
 package attendance.domain;
 
 import java.time.LocalDate;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class Crew {
 
     private String nickname;
     private List<Attendance> attendances;
+    private Map<AttendanceStatus, Integer> statusCount;
 
     public Crew(String nickname, List<Attendance> attendances) {
         this.nickname = nickname;
         this.attendances = attendances;
+
+        statusCount = new HashMap<>();
+        attendances.forEach((attendance) -> updateStatusCount(attendance, 1));
     }
 
     public boolean isEqualToNickname(String nickname) {
         return this.nickname.equals(nickname);
-    }
-
-    public List<Attendance> getAttendances() {
-        return attendances;
     }
 
     public void existInAttendances(LocalDate date) {
@@ -29,11 +31,23 @@ public class Crew {
         }
     }
 
-    public String getNickname() {
-        return nickname;
+    public void updateStatusCount(Attendance attendance, int amount) {
+        statusCount.put(attendance.getStatus(), statusCount.getOrDefault(attendance.getStatus(), 0) + amount);
     }
 
     public void addAttendance(Attendance attendance) {
         attendances.add(attendance);
+    }
+
+    public String getNickname() {
+        return nickname;
+    }
+
+    public List<Attendance> getAttendances() {
+        return attendances;
+    }
+
+    public Map<AttendanceStatus, Integer> getStatusCount() {
+        return statusCount;
     }
 }

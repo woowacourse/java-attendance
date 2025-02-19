@@ -32,7 +32,7 @@ public class Attendance {
     private AttendanceStatus attend(int hour, int minute, int startHour) {
         if (hour >= startHour) {
             if (hour > startHour || minute > 30) {
-                return AttendanceStatus.ABSENCE;
+                return AttendanceStatus.LATE_ABSENCE;
             }
             if (minute > 5) {
                 return AttendanceStatus.LATE;
