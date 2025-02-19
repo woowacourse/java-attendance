@@ -1,15 +1,12 @@
 package attendance.controller;
 
-import attendance.domain.Attendance;
 import attendance.domain.AttendanceBook;
+import attendance.dto.AttendanceContentDTO;
 import attendance.repository.AttendanceRepository;
+import attendance.utils.AttendanceReader;
 import attendance.utils.FileReader;
 import attendance.view.InputView;
 import attendance.view.OutputView;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.List;
 
 public class AttendanceController {
     private final InputView inputView;
@@ -21,24 +18,14 @@ public class AttendanceController {
     }
 
     public void start() {
-        AttendanceRepository attendanceRepository = new AttendanceRepository(getAttendanceRecordContent());
-        AttendanceBook attendanceBook = new AttendanceBook(attendanceRepository.getUniqueNames());
+
+        AttendanceContentDTO attendanceRecordContent = AttendanceReader.getAttendanceRecordContent(
+                FileReader.parseToFile("src/main/resources/attendances.csv"));
+
+        AttendanceRepository attendanceRepository = new AttendanceRepository(attendanceRecordContent.attendances());
+        AttendanceBook attendanceBook = new AttendanceBook(attendanceRecordContent.names());
 
     }
 
-    private List<Attendance> getAttendanceRecordContent() {
-        List<String> attendanceRecordContents = FileReader.parseToFile("src/main/resources/attendances.csv");
-        attendanceRecordContents.removeFirst();
-        final List<Attendance> attendances = new ArrayList<>();
-        for (String content : attendanceRecordContents) {
-            String[] split = content.split(",");
 
-            String crewName = split[0];
-            LocalDateTime attendanceTime = LocalDateTime.parse(split[1],
-                    DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
-
-            attendances.add(new Attendance(crewName, attendanceTime));
-        }
-        return attendances;
-    }
 }
