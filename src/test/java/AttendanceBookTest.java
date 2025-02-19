@@ -1,5 +1,8 @@
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+import java.util.ArrayList;
+import java.util.List;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -109,5 +112,35 @@ public class AttendanceBookTest {
 
         //then
         Assertions.assertThat(attendanceBook.findByName(name).attends).contains(afterAttend);
+    }
+
+    @Test
+    @DisplayName("닉네임 대상의 어제까지의 출석 정보를 반환하는 기능")
+    void shuold_return_Asdf() {
+        // given
+        String name = "플린트";
+        AttendanceBook attendanceBook = new AttendanceBook();
+        List<Attend> attendsInitValue = List.of(
+                Attend.of("2", "13:00"),
+                Attend.of("3", "10:07"),
+                Attend.of("4", "13:00"),
+                Attend.of("5", "13:00"),
+                Attend.of("6", "13:00"),
+                Attend.of("9", "13:00"),
+                Attend.of("10", "13:00"),
+                Attend.of("11", "13:00"),
+                Attend.of("12", "13:00"),
+                Attend.of("13", "13:00"));
+        for (Attend attend : attendsInitValue) {
+            attendanceBook.attend(name, attend);
+        }
+
+        // when
+        List<Attend> result = attendanceBook.getAttends(name);
+
+        // than
+        List<Attend> expected = new ArrayList<>(attendsInitValue);
+        expected.removeLast();
+        assertThat(result).containsOnlyElementsOf(expected);
     }
 }

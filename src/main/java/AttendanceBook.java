@@ -1,6 +1,7 @@
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class AttendanceBook {
@@ -44,5 +45,12 @@ public class AttendanceBook {
 
     public Attends findByName(String name) {
         return map.getOrDefault(name, null);
+    }
+
+    public List<Attend> getAttends(String name) {
+        // TODO: 닉네임 존재 여부 확인하는 validate 추가해야함
+        List<Integer> days = DateUtil.getAttendUntilDay(Current.TODAY.getYesterday());
+        return map.get(name)
+                .getAttends(days);
     }
 }
