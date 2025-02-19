@@ -9,6 +9,8 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.Arrays;
+import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import util.AttendancesFileHandler;
@@ -31,7 +33,6 @@ public class AttendanceController {
 
     public void run() throws IOException {
         LocalDate nowDate = LocalDate.now();
-
         Attendance attendance = new Attendance(AttendancesFileHandler.generateAttendances(), nowDate);
 
         while (true) {
@@ -84,7 +85,6 @@ public class AttendanceController {
                     Convertor.convertDayOfWeekToKorean(nowDate.getDayOfWeek())));
         }
     }
-
 
     private String getCheckNickName(Attendance attendance) {
         return repeatExecutor.repeatUntilSuccess(() -> {
@@ -152,6 +152,16 @@ public class AttendanceController {
 
     private void checkExpelledCrew(Attendance attendance) {
         List<String> expelledCrews = attendance.checkExpelledCrew();
+
+        expelledCrews.sort(Comparator.comparing(attendance::getAbsentCount)
+                        .thenComparing(attendance::getLateCount).reversed()
+                        .thenComparing(name->name));
+
+        Map<String, Map<AttendanceStatus, Integer>> expelledResult = new HashMap<>();
+        for (String expelledCrew : expelledCrews) {
+            expelledResult.put(expelledCrew, attendance.countAttendanceStatus(expelledCrew));
+        }
+
         outputView.printExpelledCrewHeader();
         for (String crew : expelledCrews) {
             outputView.printExpelledCrew(crew, attendance.countAttendanceStatus(crew));

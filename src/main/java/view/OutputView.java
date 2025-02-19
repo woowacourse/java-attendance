@@ -51,7 +51,7 @@ public class OutputView {
     }
 
     public void printExpelledCrewHeader() {
-        System.out.println("제적 위험자 조회 결과");
+        System.out.println("\n제적 위험자 조회 결과");
     }
 
     public void printExpelledCrew(String crewName, Map<AttendanceStatus, Integer> attendStatuses) {

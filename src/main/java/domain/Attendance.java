@@ -92,8 +92,7 @@ public class Attendance {
             attendanceStatuses.put(attendanceStatus, 0);
         }
         for (AttendanceTime attendanceTime : attendanceTimes) {
-            attendanceStatuses.put(attendanceTime.getAttendanceStatus(),
-                    attendanceStatuses.get(attendanceTime.getAttendanceStatus()) + 1);
+            attendanceStatuses.put(attendanceTime.getAttendanceStatus(), attendanceStatuses.get(attendanceTime.getAttendanceStatus()) + 1);
         }
         return attendanceStatuses;
     }
@@ -140,5 +139,27 @@ public class Attendance {
         if (!this.attendance.containsKey(nickName)) {
             throw new IllegalArgumentException("[ERROR] 존재하지 않는 닉네임입니다.");
         }
+    }
+
+    public int getAbsentCount(String nickName) {
+        int absentCount =  (int) this.attendance.get(nickName)
+                .stream()
+                .filter(e -> e.getAttendanceStatus().equals(AttendanceStatus.ABSENT) || e.getAttendanceStatus().equals(AttendanceStatus.UNATTEND))
+                .count();
+        int lateCount = (int) this.attendance.get(nickName)
+                .stream()
+                .filter(e -> e.getAttendanceStatus().equals(AttendanceStatus.LATE))
+                .count();
+
+        return absentCount + lateCount / 3;
+    }
+
+    public int getLateCount(String nickName) {
+        int lateCount = (int) this.attendance.get(nickName)
+                .stream()
+                .filter(e -> e.getAttendanceStatus().equals(AttendanceStatus.LATE))
+                .count();
+
+        return lateCount % 3;
     }
 }
