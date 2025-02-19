@@ -14,7 +14,8 @@ public enum AttendanceState {
         this.description = description;
     }
 
-    public static String findStateBy(final LocalTime localTime, final String dayOfWeek) {
+    public static String findStateBy(final LocalTime localTime, final int dayOfWeekValue) {
+        String dayOfWeek = Calender.findBy(dayOfWeekValue);
         if (dayOfWeek.equals("월요일")) {
             if (localTime.isAfter(AttendanceTime.MON_TIME.getLocalTimes().get(1))) {
                 return ABSENCE.description;
@@ -24,7 +25,7 @@ public enum AttendanceState {
             return ATTENDANCE.description;
         }
 
-        if (!dayOfWeek.equals("월") && !dayOfWeek.equals("공휴일")) {
+        if (!dayOfWeek.equals("월요일") && !dayOfWeek.equals("공휴일")) {
             if (localTime.isAfter(AttendanceTime.ELSE_TIME.getLocalTimes().get(1))) {
                 return ABSENCE.description;
             } else if (localTime.isAfter(AttendanceTime.ELSE_TIME.getLocalTimes().get(0))) {
