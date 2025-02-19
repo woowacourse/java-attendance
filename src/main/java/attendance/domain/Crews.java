@@ -11,7 +11,7 @@ public class Crews {
         this.crews = new ArrayList<>();
     }
 
-    public void initCrews(List<List<String>> attendanceRecords) {
+    public void initCrews(final List<List<String>> attendanceRecords) {
         List<String> crewNames = new ArrayList<>();
 
         for (List<String> attendanceRecord : attendanceRecords) {
@@ -25,11 +25,11 @@ public class Crews {
         }
     }
 
-    public Crew findCrew(String crewName) {
+    public Crew findCrew(final String crewName) {
         return crews.stream()
                 .filter(crew -> crew.isSameCrewName(crewName))
                 .findFirst()
-                .orElseThrow(() -> new IllegalStateException("No such crew name exists"));
+                .orElseThrow(() -> new IllegalStateException("[ERROR] 입력하신 이름의 크루가 존재하지 않습니다."));
     }
 
     public List<Crew> getCrews() {
