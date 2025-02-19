@@ -6,10 +6,20 @@ import java.time.LocalTime;
 
 public enum AttendanceStatus {
 
-    ATTEND,
-    LATE,
-    ABSENT,
-    UNATTEND;
+    ATTEND("출석"),
+    LATE("지각"),
+    ABSENT("결석"),
+    UNATTEND("미출석");
+
+    private final String status;
+
+    AttendanceStatus(String status) {
+        this.status = status;
+    }
+
+    public String getStatus() {
+        return status;
+    }
 
     public static AttendanceStatus findStatus(LocalDateTime attendanceDateTime) {
         LocalTime startTime = LocalTime.of(10, 0);

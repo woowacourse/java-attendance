@@ -5,6 +5,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
 import java.io.IOException;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
@@ -14,7 +15,7 @@ import util.AttendancesFileHandler;
 
 public class AttendanceTest {
 
-    Attendance attendance = new Attendance(AttendancesFileHandler.generateAttendances());
+    Attendance attendance = new Attendance(AttendancesFileHandler.generateAttendances(), LocalDate.of(2024, 12, 17));
 
     public AttendanceTest() throws IOException {
     }
@@ -61,7 +62,7 @@ public class AttendanceTest {
 
         assertThat(attendanceStatuses.get(AttendanceStatus.ATTEND)).isEqualTo(3);
         assertThat(attendanceStatuses.get(AttendanceStatus.LATE)).isEqualTo(4);
-        assertThat(attendanceStatuses.get(AttendanceStatus.ABSENT) + attendanceStatuses.get(AttendanceStatus.UNATTEND)).isEqualTo(14);
+        assertThat(attendanceStatuses.get(AttendanceStatus.ABSENT) + attendanceStatuses.get(AttendanceStatus.UNATTEND)).isEqualTo(4);
     }
 
     @Test

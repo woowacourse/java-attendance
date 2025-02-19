@@ -1,6 +1,8 @@
 package view;
 
 import domain.MenuOption;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Scanner;
 
@@ -23,8 +25,9 @@ public class InputView {
         return prompt("닉네임을 입력해 주세요.");
     }
 
-    public String readArrivalTime() {
-        return prompt("등교 시간을 입력해 주세요.");
+    public LocalTime readArrivalTime() {
+        String response = prompt("등교 시간을 입력해 주세요.");
+        return parseTime(response);
     }
 
     public String readEditNickname() {
@@ -39,9 +42,12 @@ public class InputView {
         return prompt("언제로 변경하겠습니까?");
     }
 
-
     private String prompt(String message) {
         System.out.println(message);
         return scanner.nextLine();
+    }
+
+    private LocalTime parseTime(String response) {
+        return LocalTime.parse(response, DateTimeFormatter.ofPattern("HH:mm"));
     }
 }

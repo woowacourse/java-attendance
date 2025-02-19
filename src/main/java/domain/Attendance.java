@@ -15,7 +15,7 @@ public class Attendance {
 
     private final Map<String, List<AttendanceTime>> attendance;
 
-    public Attendance(Map<String, List<LocalDateTime>> attendance) {
+    public Attendance(Map<String, List<LocalDateTime>> attendance, LocalDate nowDate) {
         this.attendance = new HashMap<>();
         for (String name : attendance.keySet()) {
             this.attendance.put(name, attendance.get(name)
@@ -25,14 +25,14 @@ public class Attendance {
         }
 
         LocalDate startDate = LocalDate.of(2024, 12, 1);
-        LocalDate endDate = LocalDate.of(2024, 12, 31);
+        LocalDate endDate = nowDate;
         for (String name : attendance.keySet() ) {
             Set<LocalDate> attendanceDates = this.attendance.get(name).stream()
                     .map(attendanceTime -> attendanceTime.getAttendanceDateTime().toLocalDate())
                     .collect(Collectors.toSet());
 
             List<AttendanceTime> attendanceTimes = this.attendance.get(name);
-            for (LocalDate date = startDate; date.isBefore(endDate.plusDays(1)); date = date.plusDays(1)) {
+            for (LocalDate date = startDate; date.isBefore(endDate); date = date.plusDays(1)) {
                 if (attendanceDates.contains(date) || date.getDayOfWeek() == DayOfWeek.SATURDAY || date.getDayOfWeek() == DayOfWeek.SUNDAY || date.isEqual(LocalDate.of(2024, 12, 25))) {
                     continue;
                 }
@@ -52,9 +52,6 @@ public class Attendance {
         attendance.get(crewName).add(new AttendanceTime(attendanceTime));
     }
 
-    /***
-     * 여기부터............ 출석이 안됨
-     */
     public void edit(String crewName, int attendanceDay, LocalTime newAttendanceTime) {
         AttendanceTime attendanceTime = getAttendanceTimes(crewName).stream()
                 .filter(attendance -> attendance.getAttendanceDateTime().getDayOfMonth() == attendanceDay)
@@ -98,4 +95,23 @@ public class Attendance {
         }
         return expelledCrew;
     }
+
+    public LocalDateTime getAttendanceDateTime(String nickName, LocalDate attendanceDate) {
+        AttendanceTime attendanceTime = findAttendanceTime(nickName, attendanceDate);
+        return attendanceTime.getAttendanceDateTime();
+    }
+
+    public AttendanceStatus getAttendanceStatus(String nickName, LocalDate attendanceDate) {
+        AttendanceTime attendanceTime = findAttendanceTime(nickName, attendanceDate);
+        return attendanceTime.getAttendanceStatus();
+    }
+
+    private AttendanceTime findAttendanceTime(String nickName, LocalDate attendanceDate) {
+        return attendance.get(nickName).stream()
+                .filter(a -> a.getAttendanceDateTime().toLocalDate().equals(attendanceDate))
+                .findAny()
+                .orElseThrow(() -> new IllegalArgumentException("[ERROR] 출석하지 않은 날짜입니다."));
+    }
+
+
 }
