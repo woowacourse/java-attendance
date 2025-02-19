@@ -11,6 +11,14 @@ public class AttendanceDate {
         this.day = day;
     }
 
+    public int getDay() {
+        return day;
+    }
+
+    public int getMonth() {
+        return month;
+    }
+
     public int getDayOfWeek() {
         return ((day + 5) % 7) + 1;
     }
@@ -19,4 +27,5 @@ public class AttendanceDate {
         List<Integer> restDays = List.of(1, 7, 8, 14, 15, 21, 22, 25, 28, 29);
         return restDays.contains(day);
     }
+
 }

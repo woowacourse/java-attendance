@@ -15,4 +15,16 @@ public class AttendanceHistory {
     public static AttendanceHistory of(Crew crew, AttendanceDateTime attendanceDateTime) {
         return new AttendanceHistory(crew, attendanceDateTime, attendanceDateTime.getAttendanceType());
     }
+
+    public AttendanceDateTime getAttendanceDateTime() {
+        return attendanceDateTime;
+    }
+
+    public boolean isSameCrew(AttendanceHistory attendanceHistory) {
+        return crew.equals(attendanceHistory.crew);
+    }
+
+    public boolean hasSameDay(AttendanceHistory comparedHistory) {
+        return attendanceDateTime.hasSameDay(comparedHistory.attendanceDateTime);
+    }
 }
