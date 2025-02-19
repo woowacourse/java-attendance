@@ -38,12 +38,16 @@ public class Attendance {
 
             List<AttendanceTime> attendanceTimes = this.attendance.get(name);
             for (LocalDate date = startDate; date.isBefore(endDate); date = date.plusDays(1)) {
-                if (attendanceDates.contains(date) || date.getDayOfWeek() == DayOfWeek.SATURDAY || date.getDayOfWeek() == DayOfWeek.SUNDAY || date.isEqual(LocalDate.of(2024, 12, 25))) {
+                if (attendanceDates.contains(date) || isClosed(date)) {
                     continue;
                 }
                 attendanceTimes.add(new AttendanceTime(date, AttendanceStatus.UNATTEND));
             }
         }
+    }
+
+    public boolean isClosed(LocalDate date) {
+        return date.getDayOfWeek() == DayOfWeek.SATURDAY || date.getDayOfWeek() == DayOfWeek.SUNDAY || date.isEqual(LocalDate.of(2024, 12, 25));
     }
 
     public List<AttendanceTime> getAttendanceTimes(String name) {
@@ -52,10 +56,16 @@ public class Attendance {
         return crewAttendances;
     }
 
-    public void attend(String crewName, LocalDateTime attendanceTime) {
-        validateAttended(crewName, attendanceTime);
-        validateOpenHours(attendanceTime);
-        attendance.get(crewName).add(new AttendanceTime(attendanceTime));
+    public void attend(String crewName, LocalDateTime attendanceDateTime) {
+        validateAttended(crewName, attendanceDateTime);
+        validateOpenHours(attendanceDateTime);
+        attendance.get(crewName).add(new AttendanceTime(attendanceDateTime));
+    }
+
+    public void validateOpenDate(LocalDate attendanceDate) {
+        if (isClosed(attendanceDate)) {
+            throw new IllegalArgumentException("[ERROR] 캠퍼스 운영 날짜가 아닙니다.");
+        }
     }
 
     private void validateOpenHours(LocalDateTime attendanceDateTime) {
@@ -67,10 +77,10 @@ public class Attendance {
         }
     }
 
-    private void validateAttended(String crewName, LocalDateTime attendanceTime) {
-        if (checkAttended(crewName, attendanceTime.toLocalDate())) {
+    private void validateAttended(String crewName, LocalDateTime attendanceDateTime) {
+        if (checkAttended(crewName, attendanceDateTime.toLocalDate())) {
             throw new IllegalArgumentException("[ERROR] 이미 출석했습니다. 수정 기능을 이용하세요.");
-        };
+        }
     }
 
     public void edit(String crewName, int attendanceDay, LocalTime newAttendanceTime) {

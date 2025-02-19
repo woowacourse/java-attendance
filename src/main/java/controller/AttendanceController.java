@@ -12,6 +12,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import util.AttendancesFileHandler;
+import util.Convertor;
 import util.RepeatExecutor;
 import view.InputView;
 import view.OutputView;
@@ -33,13 +34,12 @@ public class AttendanceController {
         Attendance attendance = new Attendance(AttendancesFileHandler.generateAttendances(), nowDate);
 
         outputView.printMenuHeader(nowDate);
-        String option = inputView.readOption(Arrays.asList(MenuOption.values()));
-
-        process(option, attendance, nowDate);
+        String option = getOption(attendance, nowDate);
     }
 
     private void process(String option, Attendance attendance, LocalDate nowDate) {
         if (option.equals(MenuOption.ATTENDANCE_CHECK.getCommand())) {
+            validateCampusOpenDate(attendance, nowDate);
             checkAttendance(attendance, nowDate);
         } else if (option.equals(MenuOption.ATTENDANCE_CORRECTION.getCommand())) {
             editAttendance(attendance);
@@ -64,6 +64,22 @@ public class AttendanceController {
 
         outputView.printCheckAttendanceMessage(attendanceDateTime, attendanceStatus);
     }
+
+    private String getOption(Attendance attendance, LocalDate nowDate) {
+        return repeatExecutor.repeatUntilSuccess(() -> {
+            String option = inputView.readOption(Arrays.asList(MenuOption.values()));
+            process(option, attendance, nowDate);
+            return option;
+        });
+    }
+
+    private void validateCampusOpenDate(Attendance attendance, LocalDate nowDate) {
+        if (attendance.isClosed(nowDate)) {
+            throw new IllegalArgumentException(String.format("[ERROR] %d월 %d일 %s요일은 등교일이 아닙니다.", nowDate.getMonthValue(), nowDate.getDayOfMonth(),
+                    Convertor.convertDayOfWeekToKorean(nowDate.getDayOfWeek())));
+        }
+    }
+
 
     private String getNickName(Attendance attendance) {
         return repeatExecutor.repeatUntilSuccess(() -> {
