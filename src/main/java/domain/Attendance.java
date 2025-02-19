@@ -1,5 +1,6 @@
 package domain;
 
+import java.time.LocalDate;
 import java.time.LocalTime;
 
 public class Attendance {
@@ -12,6 +13,10 @@ public class Attendance {
         this.day = day;
         this.attendanceTime = attendanceTime;
         updateStatus();
+    }
+
+    public Boolean isEqualTo(LocalDate date) {
+        return day.isEqualTo(date);
     }
 
     private void updateStatus() {

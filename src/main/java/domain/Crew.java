@@ -1,5 +1,6 @@
 package domain;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -38,5 +39,19 @@ public class Crew {
         return (int) attendances.stream()
                 .filter(attendance -> attendance.toDto().getAbsent().equals(true))
                 .count();
+    }
+
+    public Boolean isEqualTo(String nickname) {
+        return this.nickName.equals(nickname);
+    }
+
+    public Boolean isAlreadyAttend() {
+        LocalDate today = LocalDate.now();
+        for (Attendance attendance : attendances) {
+            if (attendance.isEqualTo(today)) {
+                return true;
+            }
+        }
+        return false;
     }
 }

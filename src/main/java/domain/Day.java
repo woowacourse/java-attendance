@@ -14,6 +14,10 @@ public class Day {
         this.dayOfWeek = DayOfWeek.getInstance(date);
     }
 
+    public Boolean isEqualTo(LocalDate date) {
+        return this.date.equals(date);
+    }
+
     public Boolean checkHoliday() {
         if (dayOfWeek.equals(DayOfWeek.SATURDAY) || dayOfWeek.equals(DayOfWeek.SUNDAY)) {
             return true;
