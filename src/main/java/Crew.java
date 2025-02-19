@@ -28,7 +28,7 @@ public class Crew {
     }
 
     private void validateIsDateUnique(LocalDate date) {
-        if(dailyAttendances.containsKey(date)){
+        if (dailyAttendances.containsKey(date)) {
             throw new IllegalArgumentException("[ERROR] 이미 출석한 날짜입니다. 수정 기능을 이용해주세요.");
         }
     }
@@ -39,5 +39,13 @@ public class Crew {
 
     public String getName() {
         return name;
+    }
+
+    public void modifyDailyAttendance(Map<LocalDate, LocalTime> dateAndTime) {
+        LocalDate date = dateAndTime.keySet().stream()
+                .findAny()
+                .orElseThrow(()-> new IllegalArgumentException("[ERROR] "));
+
+        dailyAttendances.putAll(dateAndTime);
     }
 }
