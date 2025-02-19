@@ -15,6 +15,10 @@ public class Attend {
         this.time = localDateTime;
     }
 
+    public boolean isDayEqual(Attend attend) {
+        return getDay() == attend.getDay();
+    }
+
     public boolean isDayEqual(final int day) {
         return DateUtil.isDayEqual(day, time);
     }

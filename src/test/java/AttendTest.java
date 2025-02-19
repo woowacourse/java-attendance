@@ -1,7 +1,7 @@
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
-
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 public class AttendTest {
@@ -40,4 +40,29 @@ public class AttendTest {
         );
     }
 
+    @Test
+    void Day_비교() {
+        //given
+        Attend attend = Attend.of("1", "10:00");
+        Attend attend2 = Attend.of("1", "10:01");
+
+        //when
+        boolean result = attend.isDayEqual(attend2);
+
+        //then
+        Assertions.assertThat(result).isEqualTo(true);
+    }
+
+    @Test
+    void Day_다를때_비교() {
+        //given
+        Attend attend = Attend.of("1", "10:00");
+        Attend attend2 = Attend.of("2", "10:00");
+
+        //when
+        boolean result = attend.isDayEqual(attend2);
+
+        //then
+        Assertions.assertThat(result).isEqualTo(false);
+    }
 }
