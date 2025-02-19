@@ -12,8 +12,13 @@ public class Crew {
     }
 
     // TODO count late, absent
+    public void countLate() {
+    }
 
-    public String getName() {
-        return crewName;
+    public void countAbsent() {
+    }
+
+    public boolean isSameCrewName(String crewName) {
+        return this.crewName.equals(crewName);
     }
 }
