@@ -1,33 +1,40 @@
 package attendance.service;
 
-import attendance.domain.Attendance;
+
+import attendance.domain.AbsenceStatusCount;
+import attendance.domain.AttendanceDismiss;
+import attendance.domain.AttendanceDismissStatus;
+import attendance.domain.AttendanceHistory;
 import attendance.domain.AttendanceManager;
 import attendance.domain.AttendanceStatus;
 import attendance.domain.DateTimeFormatterWrapper;
 import attendance.repository.AttendanceFileRepository;
-import java.sql.Wrapper;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
 
 public class AttendanceManagerService {
+    private final String ATTENDANCE_HISTORY_STATUS = "\n출석: %d회\n지각: %d회\n결석: %d회\n";
     private final AttendanceManager attendanceManager;
     private final AttendanceFileRepository attendanceFileRepository;
-    private String ATTENDANCE_RESULT_FORMAT = "%s (%s)";
-    private String ATTENDANCE_MODIFY_RESULT_FORMAT = "%s -> %s (%s) 수정 완료!";
+    private final String ATTENDANCE_RESULT_FORMAT = "%s (%s)";
+    private final String ATTENDANCE_MODIFY_RESULT_FORMAT = "%s -> %s (%s) 수정 완료!";
+    private String ATTENDANCE_DISMISS_STATUS_FORMAT = "\n%s 대상자입니다.";
+    private String CREW_ATTENDANCE_HISTORY_PREFIX = "이번 달 %s의 출석 기록입니다.\n\n";
 
 
-    public AttendanceManagerService(AttendanceManager attendanceManager, AttendanceFileRepository attendanceFileRepository) {
+    public AttendanceManagerService(AttendanceManager attendanceManager,
+                                    AttendanceFileRepository attendanceFileRepository) {
         this.attendanceManager = attendanceManager;
         this.attendanceFileRepository = attendanceFileRepository;
         initiateAttendanceManager();
     }
 
-    private void initiateAttendanceManager(){
+    private void initiateAttendanceManager() {
         List<String> attendanceLines = attendanceFileRepository.loadAttendanceLinesFromAttendanceFile();
 
-        for(String attendanceLine : attendanceLines){
+        for (String attendanceLine : attendanceLines) {
             String[] attendanceUnits = attendanceLine.split(",");
             String nickname = attendanceUnits[0];
             LocalDateTime datetime = DateTimeFormatterWrapper.parsingAttendanceDate(attendanceUnits[1]);
@@ -44,15 +51,60 @@ public class AttendanceManagerService {
         var attendanceTime = attendances.getAttendanceTime(attendanceDate);
         var attendanceStatus = attendances.getAttendanceStatus(attendanceDate);
 
-        var dateTimeFormatResult = DateTimeFormatterWrapper.parsingAttendanceResult(LocalDateTime.of(attendanceDate, attendanceTime));
-        return String.format(ATTENDANCE_RESULT_FORMAT,dateTimeFormatResult,attendanceStatus.getStatus());
+        var dateTimeFormatResult = DateTimeFormatterWrapper.parsingAttendanceResult(
+                LocalDateTime.of(attendanceDate, attendanceTime));
+        return String.format(ATTENDANCE_RESULT_FORMAT, dateTimeFormatResult, attendanceStatus.getStatus());
     }
 
     public String attendanceModify(String nickname, LocalDate modifyDate, LocalTime afterModifyTime) {
         String beforeAttendance = attendanceResult(nickname, modifyDate);
-        attendanceManager.modifyAttendance(nickname, modifyDate,afterModifyTime);
+        attendanceManager.modifyAttendance(nickname, modifyDate, afterModifyTime);
         AttendanceStatus attendanceStatus = attendanceManager.findAttendances(nickname).getAttendanceStatus(modifyDate);
         String timeFormatResult = DateTimeFormatterWrapper.parsingAttendanceTime(afterModifyTime);
-        return String.format(ATTENDANCE_MODIFY_RESULT_FORMAT,beforeAttendance,timeFormatResult,attendanceStatus.getStatus());
+        return String.format(ATTENDANCE_MODIFY_RESULT_FORMAT, beforeAttendance, timeFormatResult,
+                attendanceStatus.getStatus());
+    }
+
+    public String crewAttendanceHistory(String nickname) {
+        AttendanceHistory attendanceHistory = attendanceManager.crewAttendanceHistory(nickname);
+        StringBuilder stringBuilder = new StringBuilder(String.format(CREW_ATTENDANCE_HISTORY_PREFIX, nickname));
+        stringBuilder.append(formattingHistory(attendanceHistory, stringBuilder));
+
+        AbsenceStatusCount absenceStatusCount = countAbsenceStatus(attendanceHistory);
+        AttendanceDismissStatus attendanceDismissStatus = AttendanceDismiss.calculateAttendanceDismiss(
+                absenceStatusCount.late(), absenceStatusCount.absence());
+
+        return stringBuilder
+                .append(attendanceStatus(absenceStatusCount.absence(), absenceStatusCount.late(),
+                        absenceStatusCount.attendance()))
+                .append(formattingAttendanceDismissStatus(attendanceDismissStatus))
+                .toString();
+    }
+
+    private String formattingHistory(AttendanceHistory attendanceHistory, StringBuilder stringBuilder) {
+        for (String history : attendanceHistory.attendanceHistories()) {
+            stringBuilder
+                    .append(history)
+                    .append("\n");
+        }
+        return stringBuilder.toString();
+    }
+
+    private AbsenceStatusCount countAbsenceStatus(AttendanceHistory attendanceHistory) {
+        int attendance = attendanceHistory.status().get(AttendanceStatus.ATTENDANCE);
+        int absence = attendanceHistory.status().get(AttendanceStatus.ABSENCE);
+        int late = attendanceHistory.status().get(AttendanceStatus.LATE);
+        return new AbsenceStatusCount(absence, late, attendance);
+    }
+
+    public String attendanceStatus(int absence, int late, int attendance) {
+        return String.format(ATTENDANCE_HISTORY_STATUS, attendance, late, absence);
+    }
+
+    public String formattingAttendanceDismissStatus(AttendanceDismissStatus attendanceDismissStatus) {
+        if (attendanceDismissStatus == AttendanceDismissStatus.NONE) {
+            return "";
+        }
+        return String.format(ATTENDANCE_DISMISS_STATUS_FORMAT, attendanceDismissStatus.getStatus());
     }
 }
