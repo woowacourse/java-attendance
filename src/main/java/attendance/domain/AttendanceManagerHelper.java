@@ -1,8 +1,11 @@
 package attendance.domain;
 
+import java.time.LocalDate;
 import java.time.LocalTime;
 
 public class AttendanceManagerHelper {
+    static final LocalDate ATTENDANCE_AVAILABLE_START_DATE = LocalDate.of(2024,12,1);
+    static final LocalDate ATTENDANCE_AVAILABLE_END_DATE = LocalDate.of(2024,12,31);
     static final LocalTime MONDAY_START_TIME = LocalTime.of(13, 0);
     static final LocalTime NORMAL_START_TIME = LocalTime.of(10, 0);
     static final LocalTime SCHOOL_OPEN_TIME = LocalTime.of(8, 0);

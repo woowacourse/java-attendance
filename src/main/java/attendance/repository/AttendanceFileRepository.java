@@ -18,7 +18,7 @@ public class AttendanceFileRepository {
     }
 
     public List<String> loadAttendanceLinesFromAttendanceFile() {
-        File file = new File(attendanceFileSrc);
+        File file = new File(getClass().getResource(attendanceFileSrc).getFile());
         return loadAttendanceLines(file);
     }
 

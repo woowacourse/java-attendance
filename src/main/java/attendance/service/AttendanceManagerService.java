@@ -42,4 +42,8 @@ public class AttendanceManagerService {
         var dateTimeFormatResult = DateTimeFormatterWrapper.parsingAttendanceResult(LocalDateTime.of(attendanceDate, attendanceTime));
         return String.format(ATTENDANCE_RESULT_FORMAT,dateTimeFormatResult,attendanceStatus.getStatus());
     }
+
+    public void attendanceModify(String nickname, LocalDate datetime) {
+//        attendanceManager.modifyAttendance(nickname, datetime);
+    }
 }
