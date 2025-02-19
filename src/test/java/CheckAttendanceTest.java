@@ -41,4 +41,26 @@ public class CheckAttendanceTest {
                 .isInstanceOf(IllegalArgumentException.class);
 
     }
+
+    @Test
+    @DisplayName("주말 및 공휴일에는 출석을 받지 않는다.")
+    void 주말_및_공휴일에는_출석을_받지_않는다() {
+        AttendanceBook attendanceBook = new AttendanceBook();
+        Crew crew1 = Crew.createByName("쿠키");
+        crew1.addDailyAttendance(Map.of(LocalDate.of(2024,12,1),LocalTime.of(10, 6)));
+        attendanceBook.addNewCrew(crew1);
+
+        assertThatThrownBy(
+                () -> attendanceBook.checkAttendance("쿠키", Map.of(LocalDate.of(2024, 12, 25), LocalTime.of(10, 7))))
+                .isInstanceOf(IllegalArgumentException.class) // 공휴일
+                .hasMessage("[ERROR] 12월 25일 공휴일은 등교일이 아닙니다.");
+        assertThatThrownBy(
+                () -> attendanceBook.checkAttendance("쿠키", Map.of(LocalDate.of(2024, 12, 1), LocalTime.of(10, 7))))
+                .isInstanceOf(IllegalArgumentException.class) // 일요일
+                .hasMessage("[ERROR] 12월 01일 일요일은 등교일이 아닙니다.");
+        assertThatThrownBy(
+                () -> attendanceBook.checkAttendance("쿠키", Map.of(LocalDate.of(2024, 12, 7), LocalTime.of(10, 7))))
+                .isInstanceOf(IllegalArgumentException.class) // 토요일
+                .hasMessage("[ERROR] 12월 07일 토요일은 등교일이 아닙니다.");
+    }
 }
