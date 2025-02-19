@@ -8,6 +8,7 @@ import java.time.LocalTime;
 import java.util.HashMap;
 import java.util.Map;
 
+import static domain.util.DateUtil.TODAY;
 import static domain.util.DateUtil.assembleDateAndTime;
 
 public class Crew {
@@ -34,29 +35,38 @@ public class Crew {
         if (!attendanceBook.containsKey(date)) {
             throw new IllegalArgumentException();
         }
-        attendanceBook.put(date, target.toLocalTime());
+        addAttendStatus(target);
     }
 
     public LocalTime getAttendanceTime(final LocalDate date) {
         return attendanceBook.getOrDefault(date, LocalTime.of(0, 0));
     }
 
-    public int calculateAbsence(int now) {
-        LocalDate localDate = LocalDate.of(2024, 12, 1);
-        int absenceCount = 0, tardyCount = 0;
-        for (int day = 0; day < now; day++) {
-            if(isNowAbscence(localDate)) {
+    public int calculateAbsenceCount() {
+        LocalDate localDate = DateUtil.getFirstDateOfMonth();
+        int absenceCount = 0;
+        for (int day = 0; day < TODAY.getDayOfMonth(); day++) {
+            if(isNowAbsence(localDate)) {
                 absenceCount ++;
             }
+            localDate = localDate.plusDays(1);
+        }
+        return absenceCount;
+    }
+
+    public int calculateTardyCount() {
+        LocalDate localDate = DateUtil.getFirstDateOfMonth();
+        int tardyCount = 0;
+        for (int day = 0; day < TODAY.getDayOfMonth(); day++) {
             if(isNowTardy(localDate)) {
                 tardyCount ++;
             }
             localDate = localDate.plusDays(1);
         }
-        return absenceCount + tardyCount / 3;
+        return tardyCount;
     }
 
-    public boolean isNowAbscence(LocalDate localDate) {
+    public boolean isNowAbsence(LocalDate localDate) {
         if(!attendanceBook.containsKey(localDate) && !DateUtil.isWeekend(localDate)) {
             return true;
         }
@@ -67,6 +77,7 @@ public class Crew {
         AttendanceStatus attend = AttendanceStatus.attend(assembleDateAndTime(localDate, localTime));
         return attend == AttendanceStatus.ABSENCE;
     }
+
     public boolean isNowTardy(LocalDate localDate) {
         if (attendanceBook.containsKey(localDate)) {
             LocalTime localTime = attendanceBook.get(localDate);

@@ -43,6 +43,16 @@ class CrewTest {
             crew.addAttendStatus(LocalDateTime.of(2024, 12, day, 10, 20, 0));
         }
 
-        assertThat(crew.calculateAbsence(7)).isEqualTo(2);
+        assertThat(crew.calculateAbsenceCount()).isEqualTo(0);
+    }
+
+    @Test
+    void 지각_횟수를_계산한다() {
+        Crew crew = new Crew("두리");
+        for(int day = 3; day <= 6; day ++) {
+            crew.addAttendStatus(LocalDateTime.of(2024, 12, day, 10, 20, 0));
+        }
+
+        assertThat(crew.calculateTardyCount()).isEqualTo(4);
     }
 }
