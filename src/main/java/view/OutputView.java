@@ -17,13 +17,13 @@ public class OutputView {
 
         System.out.printf(RECORD_FORMAT, date, time);
     }
-
-    public void printEditResult(LocalDateTime beforeTime, LocalDateTime afterTime){
-        String date = String.format(DATE_FORMAT, dateAndTime.getMonthValue(), dateAndTime.getDayOfMonth(),
-            dateAndTime.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.KOREAN));
-        String time = String.format(TIME_FORMAT, dateAndTime.getHour(), dateAndTime.getMinute());
-
-
-    }
+//
+//    public void printEditResult(LocalDateTime beforeTime, LocalDateTime afterTime){
+//        String date = String.format(DATE_FORMAT, dateAndTime.getMonthValue(), dateAndTime.getDayOfMonth(),
+//            dateAndTime.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.KOREAN));
+//        String time = String.format(TIME_FORMAT, dateAndTime.getHour(), dateAndTime.getMinute());
+//
+//
+//    }
 
 }

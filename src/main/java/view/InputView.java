@@ -27,7 +27,7 @@ public class InputView {
     }
 
     public String readEditTime(){
-        return basicInput(INPUT_EDIT_TIME);
+        return basicInput(INPUT_EDIT_TIME_MESSAGE);
     }
 
     private String basicInput(String message) {

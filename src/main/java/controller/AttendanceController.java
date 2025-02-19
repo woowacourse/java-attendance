@@ -1,9 +1,8 @@
 package controller;
 
-import domain.CrewRecord;
+import domain.AttendanceManager;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import repository.AttendanceRepository;
 import view.InputView;
 import view.OutputView;
 
@@ -11,20 +10,18 @@ public class AttendanceController {
 
     private final InputView inputView;
     private final OutputView outputView;
-    private final AttendanceRepository attendanceRepository;
+    private final AttendanceManager attendanceManager;
 
     public AttendanceController(InputView inputView, OutputView outputView,
-        AttendanceRepository attendanceRepository) {
+        AttendanceManager attendanceManager) {
         this.inputView = inputView;
         this.outputView = outputView;
-        this.attendanceRepository = attendanceRepository;
+        this.attendanceManager = attendanceManager;
     }
 
     public void run() {
-
         attend();
         edit();
-
     }
 
     private void attend() {
@@ -36,16 +33,17 @@ public class AttendanceController {
         formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
         LocalDateTime dateTime = LocalDateTime.parse(date + " " + time, formatter);
 
-        attendanceRepository.attend(name,dateTime);
-        outputView.printAttendanceRecord(dateTime);
+        try {
+            attendanceManager.attendCrew(name, dateTime);
+            outputView.printAttendanceRecord(dateTime);
+        } catch (IllegalArgumentException e) {
+            System.out.println(e.getMessage());
+        }
     }
 
     private void edit(){
         String name = inputView.readEditName();
         String dayOfMonth = inputView.readEditDayOfMonth();
         String time = inputView.readTime();
-
-        CrewRecord newRecord = attendanceRepository.edit(name, Integer.parseInt(dayOfMonth) , time);
-        outputView.printEditResult();
     }
 }
