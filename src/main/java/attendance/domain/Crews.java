@@ -25,6 +25,13 @@ public class Crews {
         }
     }
 
+    public Crew findCrew(String crewName) {
+        return crews.stream()
+                .filter(crew -> crew.isSameCrewName(crewName))
+                .findFirst()
+                .orElseThrow(() -> new IllegalStateException("No such crew name exists"));
+    }
+
     public List<Crew> getCrews() {
         return crews;
     }
