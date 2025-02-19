@@ -16,7 +16,7 @@ public class Attendances {
     public void initAttendances(Crews crews, List<List<String>> attendanceRecords) {
         for (List<String> attendanceRecord : attendanceRecords) {
             String crewName = attendanceRecord.getFirst();
-            Crew crew = findCrew(crews, crewName);
+            Crew crew = crews.findCrew(crewName);
 
             List<String> dateInfo = List.of(attendanceRecord.getLast().split(" "));
             LocalDateTime localDateTime = LocalDateTime.of(LocalDate.parse(dateInfo.getFirst()),
@@ -27,12 +27,5 @@ public class Attendances {
             attendances.add(new Attendance(crew, localDateTime, status));
         }
 
-    }
-
-    private Crew findCrew(Crews crews, String crewName) {
-        return crews.getCrews().stream()
-                .filter(crew -> crew.getName().equals(crewName))
-                .findFirst()
-                .orElseThrow(() -> new IllegalStateException("No such crew name exists"));
     }
 }
