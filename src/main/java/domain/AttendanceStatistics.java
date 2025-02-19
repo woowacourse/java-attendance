@@ -6,7 +6,7 @@ public class AttendanceStatistics {
 
     private static final int COUNT_START_YEAR = 2024;
     private static final int COUNT_START_MONTH = 12;
-    private static final int COUNT_START_DAY = 2;
+    private static final int COUNT_START_DAY = 1;
 
     public static StatisticsResult countStatus(LocalDate nowDate, Records records) {
         int attendanceCount = 0;
@@ -16,6 +16,11 @@ public class AttendanceStatistics {
         LocalDate startDate = LocalDate.of(COUNT_START_YEAR, COUNT_START_MONTH, COUNT_START_DAY);
         while (startDate.isBefore(nowDate)) {
             TimeAndStatus status = records.findByDate(startDate);
+            startDate = startDate.plusDays(1);
+
+            if (status == null || status.getStatus() == null) {
+                continue;
+            }
 
             if (status.getStatus().equals("출석")) {
                 attendanceCount++;
@@ -26,7 +31,6 @@ public class AttendanceStatistics {
             if (status.getStatus().equals("결석")) {
                 absenceCount++;
             }
-            startDate = startDate.plusDays(1);
         }
         return new StatisticsResult(attendanceCount, latenessCount, absenceCount);
     }
