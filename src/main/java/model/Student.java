@@ -45,6 +45,10 @@ public class Student {
             return;
         }
         absent++;
-
     }
+
+    public LinkedHashMap<LocalDateTime, AttendanceStatus> getRecord() {
+        return record;
+    }
+
 }
