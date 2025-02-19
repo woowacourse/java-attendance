@@ -25,19 +25,19 @@ public class Attendance {
         DayOfWeek dayOfWeek = time.getDayOfWeek();
         if (dayOfWeek == DayOfWeek.MONDAY) {
             // 13:00 기준
-            if (time.toLocalTime().isBefore(LocalTime.of(13, 5, 0))) { // 따로 저장해두기 (enum ...)
+            if (time.toLocalTime().toNanoOfDay() <= LocalTime.of(13, 5, 0).toNanoOfDay()) { // 따로 저장해두기 (enum ...)
                 return "출석";
             }
-            if (time.toLocalTime().isBefore(LocalTime.of(13, 30, 0))) {
+            if (time.toLocalTime().toNanoOfDay() <= LocalTime.of(13, 30, 0).toNanoOfDay()) {
                 return "지각";
             }
             return "결석";
         }
         // 10:00
-        if (time.toLocalTime().isBefore(LocalTime.of(10, 0, 0))) {
+        if (time.toLocalTime().toNanoOfDay() <= LocalTime.of(10, 0, 0).toNanoOfDay()) {
             return "출석";
         }
-        if (time.toLocalTime().isBefore(LocalTime.of(10, 30, 0))) {
+        if (time.toLocalTime().toNanoOfDay() <= LocalTime.of(10, 30, 0).toNanoOfDay()) {
             return "지각";
         }
         return "결석";

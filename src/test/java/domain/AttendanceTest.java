@@ -6,7 +6,6 @@ import org.junit.jupiter.api.Test;
 import java.time.LocalDateTime;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
 
 class AttendanceTest {
     @DisplayName("출석인지 확인한다.")
@@ -26,19 +25,25 @@ class AttendanceTest {
     @Test
     void test2() {
         // given
+        Attendance attendance = new Attendance(new Crew("밍곰"), LocalDateTime.of(2025, 2, 17, 13, 30));
 
         // when
+        String status = attendance.getStatus();
 
         // then
+        assertThat(status).isEqualTo("지각");
     }
 
     @DisplayName("결석인지 확인한다.")
     @Test
     void test3() {
         // given
+        Attendance attendance = new Attendance(new Crew("밍곰"), LocalDateTime.of(2025, 2, 17, 13, 31));
 
         // when
+        String status = attendance.getStatus();
 
         // then
+        assertThat(status).isEqualTo("결석");
     }
 }
