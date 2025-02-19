@@ -139,4 +139,33 @@ public class AttendanceTest {
         assertThat(prevHourMinute.hour()).isEqualTo(localDateTime.getHour());
         assertThat(prevHourMinute.minute()).isEqualTo(localDateTime.getMinute());
     }
+
+    @DisplayName("출석 날짜가 존재하지 않는 경우 예외를 발생")
+    @Test
+    void test17() {
+        LocalDateTime localDateTime = LocalDateTime.of(2024, 12, 23, 13, 3);
+        Attendance attendance = new Attendance("빙봉");
+        attendance.add(localDateTime);
+
+        LocalDate localDate = LocalDate.of(2024, 12, 22);
+
+        assertThatThrownBy(() -> attendance.hasTimeStamp(localDate))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("해당 날짜에 출석 기록이 없습니다.");
+    }
+
+    @DisplayName("출석 날짜가 존재하는 경우 예외를 발생X")
+    @Test
+    void test18() {
+        LocalDateTime localDateTime = LocalDateTime.of(2024, 12, 23, 13, 3);
+        Attendance attendance = new Attendance("빙봉");
+        attendance.add(localDateTime);
+
+        LocalDate localDate = LocalDate.of(2024, 12, 23);
+
+        boolean result = attendance.hasTimeStamp(localDate);
+
+        assertThat(result)
+                .isTrue();
+    }
 }
