@@ -1,8 +1,11 @@
 package view;
 
+import domain.Crew;
 import domain.Day;
 
 import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.format.DateTimeParseException;
 import java.util.Scanner;
 
 public class InputView {
@@ -23,6 +26,22 @@ public class InputView {
     private void validateMenuInput(String input) {
         if (!input.matches("[1234Qq]")) {
             throw new IllegalArgumentException("[ERROR] 존재하지 않는 메뉴입니다.");
+        }
+    }
+
+    public Crew readNickname() {
+        System.out.println("닉네임을 입력해 주세요.");
+        String input = scanner.nextLine();
+        return new Crew(input);
+    }
+
+    public LocalTime readCheckInTime() {
+        System.out.println("등교 시간을 입력해 주세요.");
+        String input = scanner.nextLine();
+        try {
+            return LocalTime.parse(input);
+        } catch (DateTimeParseException e) {
+            throw new IllegalArgumentException("[ERROR] 시간은 24시간 형식으로 입력해 주세요.");
         }
     }
 }

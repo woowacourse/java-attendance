@@ -1,8 +1,11 @@
 package controller;
 
+import domain.Crew;
 import domain.CurrentDateGenerator;
 import domain.DateGenerator;
 import view.InputView;
+
+import java.time.LocalTime;
 
 public class AttendanceController {
     private final InputView inputView = new InputView();
@@ -28,7 +31,8 @@ public class AttendanceController {
     }
 
     public void checkIn() {
-        System.out.println("출석 확인");
+        Crew crew = inputView.readNickname();
+        LocalTime time = inputView.readCheckInTime();
     }
 
     public void updateAttendance() {
