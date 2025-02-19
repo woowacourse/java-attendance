@@ -5,6 +5,9 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.stream.Stream;
+
+import domain.AttendanceState;
+import domain.AttendanceDateTime;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -12,17 +15,17 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
-public class AttendanceTest {
+public class AttendanceTimeTest {
 
     @Test
     @DisplayName("출석 시간을 입력하면 출석할 수 있다")
     void input_enterTime_then_attendance() {
         // given
         LocalDateTime attendanceDateTime = LocalDateTime.of(2024, 12, 9, 10, 10);
-        Attendance attendance = Attendance.from(attendanceDateTime);
+        AttendanceDateTime attendanceTime = AttendanceDateTime.from(attendanceDateTime);
 
         // when
-        AttendanceState attendanceState = attendance.check();
+        AttendanceState attendanceState = attendanceTime.check();
 
         // then
         assertThat(attendanceState).isEqualTo(AttendanceState.ATTEND);
@@ -33,10 +36,10 @@ public class AttendanceTest {
     @MethodSource("provideDateTimeForAbsent")
     void over_enterTime_then_absent(LocalDateTime attendanceDateTime) {
         // given
-        Attendance attendance = Attendance.from(attendanceDateTime);
+        AttendanceDateTime attendanceTime = AttendanceDateTime.from(attendanceDateTime);
 
         // when
-        AttendanceState attendanceState = attendance.check();
+        AttendanceState attendanceState = attendanceTime.check();
 
         // then
         assertThat(attendanceState).isEqualTo(AttendanceState.ABSENT);
@@ -60,7 +63,7 @@ public class AttendanceTest {
     }
 
     @Nested
-    class AttendanceExceptionTest {
+    class AttendanceTimeExceptionTest {
         @Test
         @DisplayName("캠퍼스 운영시간 전에 출석하면 예외가 발생한다")
         void under_operating_time_then_exception() {
@@ -68,7 +71,7 @@ public class AttendanceTest {
             LocalDateTime attendanceDateTime = LocalDateTime.of(2024, 12, 9, 7, 10);
 
             // when-then
-            assertThatThrownBy(() -> Attendance.from(attendanceDateTime))
+            assertThatThrownBy(() -> AttendanceDateTime.from(attendanceDateTime))
                     .isInstanceOf(IllegalArgumentException.class)
                     .hasMessage("[ERROR] 출석 시간이 아닙니다.");
         }
@@ -80,7 +83,7 @@ public class AttendanceTest {
             LocalDateTime attendanceDateTime = LocalDateTime.of(2024, 12, 9, 23, 10);
 
             // when-then
-            assertThatThrownBy(() -> Attendance.from(attendanceDateTime))
+            assertThatThrownBy(() -> AttendanceDateTime.from(attendanceDateTime))
                     .isInstanceOf(IllegalArgumentException.class)
                     .hasMessage("[ERROR] 출석 시간이 아닙니다.");
         }
@@ -92,7 +95,7 @@ public class AttendanceTest {
             LocalDateTime attendanceDateTime = LocalDateTime.of(2024, 12, 8, 10, 10);
 
             // when-then
-            assertThatThrownBy(() -> Attendance.from(attendanceDateTime))
+            assertThatThrownBy(() -> AttendanceDateTime.from(attendanceDateTime))
                     .isInstanceOf(IllegalArgumentException.class)
                     .hasMessage("[ERROR] 주말에는 출석할 수 없습니다.");
         }
@@ -104,7 +107,7 @@ public class AttendanceTest {
             LocalDateTime attendanceDateTime = LocalDateTime.of(2024, 12, 25, 10, 10);
 
             // when-then
-            assertThatThrownBy(() -> Attendance.from(attendanceDateTime))
+            assertThatThrownBy(() -> AttendanceDateTime.from(attendanceDateTime))
                     .isInstanceOf(IllegalArgumentException.class)
                     .hasMessage("[ERROR] 공휴일에는 출석할 수 없습니다.");
         }
@@ -117,11 +120,11 @@ public class AttendanceTest {
         @MethodSource("provideOriginDateTimeForUpdate")
         void updateTest(LocalDateTime originDateTime, LocalTime updateTime) {
             // given
-            Attendance attendance = Attendance.from(originDateTime);
+            AttendanceDateTime attendanceTime = AttendanceDateTime.from(originDateTime);
 
             // when
             // then
-            assertThatCode(() -> attendance.update(updateTime))
+            assertThatCode(() -> attendanceTime.update(updateTime))
                     .doesNotThrowAnyException();
         }
 

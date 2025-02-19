@@ -1,20 +1,22 @@
+package domain;
+
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.MonthDay;
 
-public class Attendance {
+public class AttendanceDateTime {
 
     private LocalDateTime attendanceDateTime;
 
-    private Attendance(LocalDateTime attendanceDateTime) {
+    private AttendanceDateTime(LocalDateTime attendanceDateTime) {
         this.attendanceDateTime = attendanceDateTime;
     }
 
-    public static Attendance from(LocalDateTime attendanceDateTime) {
+    public static AttendanceDateTime from(LocalDateTime attendanceDateTime) {
         validate(attendanceDateTime);
-        return new Attendance(attendanceDateTime);
+        return new AttendanceDateTime(attendanceDateTime);
     }
 
     public static void validate(LocalDateTime attendanceDateTime) {
