@@ -5,8 +5,11 @@ import static org.assertj.core.api.Assertions.assertThat;
 import file.AttendanceFileReader;
 import java.io.IOException;
 import java.time.LocalDate;
+import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 
 public class AttendancesTest {
     private static String path = "src/test/resources/testAttendances.csv";
@@ -22,5 +25,16 @@ public class AttendancesTest {
         Crew crew = new Crew("빙티");
         LocalDate localDate = LocalDate.of(2024, 12, 14);
         assertThat(attendances.getByCrew(crew, localDate)).hasSize(10);
+    }
+
+    @ParameterizedTest
+    @CsvSource(value = {"빙티:INTERVIEW", "쿠키:REMOVAL"}, delimiterString = ":")
+    void 지각횟수와_결석횟수로_제적위험자를_판단한다(String nickName, Penalty expected) {
+        Crew crew = new Crew(nickName);
+        LocalDate localDate = LocalDate.of(2024, 12, 14);
+        int absenceCount = attendances.countAttendanceStatus(crew, localDate, AttendanceStatus.ABSENCE);
+        int lateCount = attendances.countAttendanceStatus(crew, localDate, AttendanceStatus.LATE);
+        Penalty penalty = Penalty.determine(absenceCount, lateCount);
+        assertThat(penalty).isEqualTo(expected);
     }
 }

@@ -44,9 +44,9 @@ public class AttendanceTest {
             .doesNotThrowAnyException();
     }
 
-    @CsvSource(value = {"13:5:출석", "13:6:지각", "13:31:결석"}, delimiterString = ":")
+    @CsvSource(value = {"13:5:CHECKIN", "13:6:LATE", "13:31:ABSENCE"}, delimiterString = ":")
     @ParameterizedTest
-    void 월요일의_시간에따라_다른출석상태를_반환한다(int hour, int minute, String expectedStatus) {
+    void 월요일의_시간에따라_다른출석상태를_반환한다(int hour, int minute, AttendanceStatus expectedStatus) {
         LocalTime time = LocalTime.of(hour, minute);
 
         LocalDate monday = LocalDate.of(2024, 12, 9);
@@ -56,9 +56,9 @@ public class AttendanceTest {
         assertThat(attendance.getStatus()).isEqualTo(expectedStatus);
     }
 
-    @CsvSource(value = {"10:5:출석", "10:6:지각", "10:31:결석"}, delimiterString = ":")
+    @CsvSource(value = {"10:5:CHECKIN", "10:6:LATE", "10:31:ABSENCE"}, delimiterString = ":")
     @ParameterizedTest
-    void 화요일의_시간에따라_다른출석상태를_반환한다(int hour, int minute, String expectedStatus) {
+    void 화요일의_시간에따라_다른출석상태를_반환한다(int hour, int minute, AttendanceStatus expectedStatus) {
         LocalTime time = LocalTime.of(hour, minute);
 
         LocalDate tuesday = LocalDate.of(2024, 12, 10);
@@ -88,6 +88,6 @@ public class AttendanceTest {
 
         attendance.update(LocalDateTime.of(previousDate, updatedTime));
 
-        assertThat(attendance.getStatus()).isEqualTo("출석");
+        assertThat(attendance.getStatus()).isEqualTo(AttendanceStatus.CHECKIN);
     }
 }

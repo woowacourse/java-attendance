@@ -9,7 +9,7 @@ import util.DateUtil;
 public class Attendance {
 
     private LocalDateTime dateTime;
-    private String status;
+    private AttendanceStatus status;
 
     private Attendance(LocalDateTime dateTime) {
         validateDayOfWeek(dateTime);
@@ -50,18 +50,18 @@ public class Attendance {
     private void determineStatus(LocalTime time, int hour) {
         if ((time.isAfter(LocalTime.of(8, 0)) && time.isBefore(LocalTime.of(hour, 5)))
             || time.equals(LocalTime.of(hour, 5))) {
-            status = "출석";
+            status = AttendanceStatus.CHECKIN;
             return;
         }
         if (time.isAfter(LocalTime.of(hour, 5)) && time.isBefore(LocalTime.of(hour, 30))
             || time.equals(LocalTime.of(hour, 30))) {
-            status = "지각";
+            status = AttendanceStatus.LATE;
             return;
         }
-        status = "결석";
+        status = AttendanceStatus.ABSENCE;
     }
 
-    public String getStatus() {
+    public AttendanceStatus getStatus() {
         return status;
     }
 

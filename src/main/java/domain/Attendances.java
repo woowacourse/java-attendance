@@ -43,4 +43,15 @@ public class Attendances {
                 Attendance.of(LocalDateTime.of(2024, 12, i, 0, 0, 0)));
         }
     }
+
+    public int countAttendanceStatus(Crew crew, LocalDate date, AttendanceStatus status) {
+        List<Attendance> attendanceList = getByCrew(crew, date);
+        int absenceCount = 0;
+        for (Attendance attendance : attendanceList) {
+            if (attendance.getStatus().equals(status)) {
+                absenceCount++;
+            }
+        }
+        return absenceCount;
+    }
 }
