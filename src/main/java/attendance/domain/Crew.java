@@ -1,6 +1,7 @@
 package attendance.domain;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -16,7 +17,7 @@ public class Crew implements Comparable<Crew> {
         this.attendances = attendances;
 
         statusCount = new HashMap<>();
-        attendances.forEach((attendance) -> updateStatusCount(attendance, 1));
+        attendances.forEach((attendance) -> addStatusCount(attendance, 1));
     }
 
     public boolean isEqualToNickname(String nickname) {
@@ -31,7 +32,7 @@ public class Crew implements Comparable<Crew> {
         }
     }
 
-    public void updateStatusCount(Attendance attendance, int amount) {
+    public void addStatusCount(Attendance attendance, int amount) {
         statusCount.put(attendance.getStatus(), statusCount.getOrDefault(attendance.getStatus(), 0) + amount);
     }
 
@@ -39,20 +40,31 @@ public class Crew implements Comparable<Crew> {
         attendances.add(attendance);
     }
 
-    public String getNickname() {
-        return nickname;
-    }
-
-    public List<Attendance> getAttendances() {
-        return attendances;
-    }
-
-    public Map<AttendanceStatus, Integer> getStatusCount() {
-        return statusCount;
-    }
-
     public Warning checkWarning() {
         return Warning.check(calculateTotalAbsenceCount());
+    }
+
+    private int calculateTotalAbsenceCount() {
+        return statusCount.getOrDefault(AttendanceStatus.ABSENCE, 0)
+                + statusCount.getOrDefault(AttendanceStatus.LATE_ABSENCE, 0)
+                + statusCount.getOrDefault(AttendanceStatus.LATE, 0) / 3;
+    }
+
+    public Attendance updateAttendance(LocalDateTime dateTime) {
+        for (Attendance attendance : attendances) {
+            if (attendance.isEqualToDate(LocalDate.from(dateTime))) {
+                AttendanceStatus before = attendance.getStatus();
+                AttendanceStatus after = attendance.updateDateTime(dateTime);
+                updateStatusCount(before, after);
+                return attendance;
+            }
+        }
+        throw new IllegalArgumentException();
+    }
+
+    private void updateStatusCount(AttendanceStatus before, AttendanceStatus after) {
+        statusCount.put(before, statusCount.getOrDefault(before, 0) - 1);
+        statusCount.put(after, statusCount.getOrDefault(after, 0) + 1);
     }
 
     @Override
@@ -80,9 +92,15 @@ public class Crew implements Comparable<Crew> {
         return nickname.compareTo(o.getNickname());
     }
 
-    private int calculateTotalAbsenceCount() {
-        return statusCount.getOrDefault(AttendanceStatus.ABSENCE, 0)
-                + statusCount.getOrDefault(AttendanceStatus.LATE_ABSENCE, 0)
-                + statusCount.getOrDefault(AttendanceStatus.LATE, 0) / 3;
+    public String getNickname() {
+        return nickname;
+    }
+
+    public List<Attendance> getAttendances() {
+        return attendances;
+    }
+
+    public Map<AttendanceStatus, Integer> getStatusCount() {
+        return statusCount;
     }
 }

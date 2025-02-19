@@ -1,6 +1,7 @@
 package attendance;
 
 import attendance.domain.Attendance;
+import attendance.domain.AttendanceStatus;
 import attendance.domain.Crew;
 import attendance.domain.Warning;
 import org.junit.jupiter.api.Test;
@@ -83,5 +84,21 @@ class CrewTest {
         Crew crew = new Crew("훌라", attendances);
 
         assertThat(crew.checkWarning()).isEqualTo(Warning.WARN);
+    }
+
+    @Test
+    void 출석_수정을_성공하면_수정한_기록을_받는다() {
+        List<Attendance> attendances = List.of(new Attendance(LocalDateTime.of(2024, 12, 16, 9, 0)),
+                new Attendance(LocalDateTime.of(2024, 12, 17, 10, 0)),
+                new Attendance(LocalDateTime.of(2024, 12, 18, 10, 0)),
+                new Attendance(LocalDateTime.of(2024, 12, 19, 10, 0)),
+                new Attendance(LocalDateTime.of(2024, 12, 20, 10, 0)));
+        Crew crew = new Crew("훌라", attendances);
+
+        LocalDateTime localDateTime = LocalDateTime.of(2024, 12, 20, 11, 0);
+
+        Attendance attendance = crew.updateAttendance(localDateTime);
+        assertThat(attendance.getDateTime()).isEqualTo(localDateTime);
+        assertThat(crew.getStatusCount().get(AttendanceStatus.LATE_ABSENCE)).isEqualTo(1);
     }
 }

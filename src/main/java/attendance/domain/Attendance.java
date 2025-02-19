@@ -52,6 +52,12 @@ public class Attendance {
     public AttendanceStatus getStatus() {
         return status;
     }
+
+    public AttendanceStatus updateDateTime(LocalDateTime dateTime) {
+        this.dateTime = dateTime;
+        this.status = checkAttendanceStatus(dateTime);
+        return this.status;
+    }
 }
 
 
