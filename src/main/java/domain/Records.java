@@ -34,10 +34,12 @@ public class Records {
         return timeAndStatus;
     }
 
-    public void edit(LocalDateTime newDateTime) {
+    public TimeAndStatus edit(LocalDateTime newDateTime) {
         LocalDate localDate = newDateTime.toLocalDate();
         TimeAndStatus timeAndStatus = createTimeAndStatus(newDateTime);
         records.put(localDate, timeAndStatus);
+
+        return timeAndStatus;
     }
 
     public boolean isSameDate(LocalDateTime localDateTime){
