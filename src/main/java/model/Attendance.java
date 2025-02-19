@@ -19,6 +19,12 @@ public class Attendance {
         return new Attendance(crew, checkInTime);
     }
 
+    private static void validateHolidayAndWeekend(LocalDateTime checkInTime) {
+        if (Holiday.isHolidayOrWeekend(checkInTime)) {
+            throw new IllegalArgumentException("주말 및 공휴일에는 출석할 수 없습니다.");
+        }
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
