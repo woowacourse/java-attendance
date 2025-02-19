@@ -3,12 +3,14 @@ package domain;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import java.time.LocalDate;
 import java.time.LocalTime;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
 class AttendanceStateTest {
+
+    @DisplayName("출석 시간과 요일로 출석 상태를 계산하여 반환한다.")
     @ParameterizedTest
     @CsvSource(value = {
             "13:05,2,출석",
@@ -22,8 +24,7 @@ class AttendanceStateTest {
     }, delimiter = ',')
     void statusReturn(LocalTime localTime, int dayOfMonth, String expected) {
         // given
-        String actual = AttendanceState.findStateBy(localTime,
-                LocalDate.of(2024, 12, dayOfMonth)).getDescription();
+        String actual = AttendanceState.findStateBy(localTime, dayOfMonth);
 
         // when & then
         assertThat(actual).isEqualTo(expected);
