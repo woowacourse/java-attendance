@@ -14,6 +14,8 @@ public class Attendance {
     }
 
     public static Attendance of(Crew crew, LocalDateTime checkInTime) {
+        validateHolidayAndWeekend(checkInTime);
+
         return new Attendance(crew, checkInTime);
     }
 
