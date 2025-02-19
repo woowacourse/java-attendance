@@ -61,4 +61,34 @@ public class AttendsTest {
         // than
         assertThat(hasDayEqualsAttend).isEqualTo(false);
     }
+
+    @Test
+    @DisplayName("같은 날짜에 출석이 존재하지 않으면 수정할 값으로 출석을 추가하는 기능")
+    void should_edit_attend_not_exist_case() {
+        // given
+        Attends attends = new Attends(new ArrayList<>());
+        Attend attend = Attend.of("13", "10:00");
+
+        // when
+        attends.edit(attend);
+
+        // then
+        assertThat(attends.attends).hasSize(1);
+    }
+
+    @Test
+    @DisplayName("같은 날짜에 출석이 존재하면 수정할 값으로 출석을 변경하는 기능")
+    void should_edit_attend_exist_case() {
+        // given
+        Attends attends = new Attends(new ArrayList<>());
+        Attend beforeAttend = Attend.of("13", "10:00");
+        Attend afterAttend = Attend.of("13", "10:10");
+        attends.addAttend(beforeAttend);
+
+        // when
+        attends.edit(afterAttend);
+
+        // then
+        assertThat(attends.attends).containsExactly(afterAttend);
+    }
 }
