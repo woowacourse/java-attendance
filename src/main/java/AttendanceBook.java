@@ -60,4 +60,13 @@ public class AttendanceBook {
 
         foundCrew.addDailyAttendance(dateAndTime);
     }
+
+    public void modifyAttendance(String name, Map<LocalDate, LocalTime> dateAndTime) {
+        Crew foundCrew = crews.stream()
+                .filter(crew -> crew.hasName(name))
+                .findAny()
+                .orElseThrow(() -> new IllegalArgumentException("[ERROR] 등록되지 않은 닉네임입니다."));
+
+        foundCrew.modifyDailyAttendance(dateAndTime);
+    }
 }
