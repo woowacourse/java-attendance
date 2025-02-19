@@ -19,6 +19,6 @@ public class CheckAttendanceTest {
         crew2.addDailyAttendance(Map.of(LocalDate.of(2024,12,1), LocalTime.of(10, 7)));
         attendanceBook.addNewCrew(crew2);
 
-        attendanceBook.checkAttendance("쿠키", "2024-12-02", "10:08"); // 정상
+        attendanceBook.checkAttendance("쿠키", Map.of(LocalDate.of(2024,12,1), LocalTime.of(10, 7))); // 정상
     }
 }

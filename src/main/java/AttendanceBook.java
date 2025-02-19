@@ -45,4 +45,12 @@ public class AttendanceBook {
                 .findFirst()
                 .orElseThrow();
     }
+
+    public void checkAttendance(String name, Map<LocalDate, LocalTime> dateAndTime) {
+        Crew foundCrew = crews.stream()
+                .filter(crew -> crew.hasName(name))
+                .findAny()
+                .orElse(null);
+        foundCrew.addDailyAttendance(dateAndTime);
+    }
 }
