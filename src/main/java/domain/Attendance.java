@@ -62,12 +62,6 @@ public class Attendance {
         attendance.get(crewName).add(new AttendanceTime(attendanceDateTime));
     }
 
-    public void validateOpenDate(LocalDate attendanceDate) {
-        if (isClosed(attendanceDate)) {
-            throw new IllegalArgumentException("[ERROR] 캠퍼스 운영 날짜가 아닙니다.");
-        }
-    }
-
     private void validateOpenHours(LocalDateTime attendanceDateTime) {
         LocalTime attendanceTime = attendanceDateTime.toLocalTime();
         LocalTime openHour = LocalTime.of(8, 0);
@@ -84,12 +78,9 @@ public class Attendance {
     }
 
     public void edit(String crewName, int attendanceDay, LocalTime newAttendanceTime) {
-        AttendanceTime attendanceTime = getAttendanceTimes(crewName).stream()
-                .filter(attendance -> attendance.getAttendanceDateTime().getDayOfMonth() == attendanceDay)
-                .filter(attendance -> attendance.getAttendanceStatus() != AttendanceStatus.UNATTEND)
-                .findAny()
-                .orElseThrow(() -> new IllegalArgumentException("[ERROR] 출석하지 않은 날짜입니다."));
-
+        LocalDateTime newAttendanceDateTime = LocalDateTime.of(2024, 12, attendanceDay, newAttendanceTime.getHour(), newAttendanceTime.getMinute());
+        validateOpenHours(newAttendanceDateTime);
+        AttendanceTime attendanceTime = findAttendanceTime(crewName, LocalDate.of(2024, 12, attendanceDay));
         attendanceTime.updateAttendanceDateTime(newAttendanceTime);
 
     }
@@ -138,8 +129,9 @@ public class Attendance {
     }
 
     public AttendanceTime findAttendanceTime(String nickName, LocalDate attendanceDate) {
-        return attendance.get(nickName).stream()
-                .filter(a -> a.getAttendanceDateTime().toLocalDate().equals(attendanceDate))
+        return getAttendanceTimes(nickName).stream()
+                .filter(attendance -> attendance.getAttendanceDateTime().toLocalDate().equals(attendanceDate))
+                .filter(attendance -> attendance.getAttendanceStatus() != AttendanceStatus.UNATTEND)
                 .findAny()
                 .orElseThrow(() -> new IllegalArgumentException("[ERROR] 출석하지 않은 날짜입니다."));
     }

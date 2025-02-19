@@ -37,7 +37,7 @@ public class InputView {
 
     public int readEditArrivalDate() {
         String response = prompt("수정하려는 날짜(일)를 입력해 주세요.");
-        return parseInt(response);
+        return parseDay(response);
     }
 
     public LocalTime readEditArrivalTime() {
@@ -58,7 +58,11 @@ public class InputView {
         }
     }
 
-    private int parseInt(String response) {
-        return Integer.parseInt(response);
+    private int parseDay(String response) {
+        try {
+            return Integer.parseInt(response);
+        } catch (NumberFormatException e) {
+            throw new IllegalArgumentException("[ERROR] 날짜 형식이 올바르지 않습니다.");
+        }
     }
 }

@@ -31,10 +31,14 @@ public class AttendanceController {
 
     public void run() throws IOException {
         LocalDate nowDate = LocalDate.now();
+
         Attendance attendance = new Attendance(AttendancesFileHandler.generateAttendances(), nowDate);
 
-        outputView.printMenuHeader(nowDate);
-        String option = getOption(attendance, nowDate);
+        while (true) {
+            if(getOption(attendance, nowDate).equals(MenuOption.QUIT.getCommand())) {
+                break;
+            }
+        }
     }
 
     private void process(String option, Attendance attendance, LocalDate nowDate) {
@@ -51,10 +55,10 @@ public class AttendanceController {
     }
 
     private void checkAttendance(Attendance attendance, LocalDate nowDate) {
-        String nickName = getNickName(attendance);
+        String nickName = getCheckNickName(attendance);
 
         repeatExecutor.repeatUntilSuccess(() -> {
-            LocalTime arrivalTime = getLocalTime(attendance);
+            LocalTime arrivalTime = getLocalTime();
             attendance.attend(nickName, LocalDateTime.of(nowDate, arrivalTime));
             return null;
         });
@@ -67,6 +71,7 @@ public class AttendanceController {
 
     private String getOption(Attendance attendance, LocalDate nowDate) {
         return repeatExecutor.repeatUntilSuccess(() -> {
+            outputView.printMenuHeader(nowDate);
             String option = inputView.readOption(Arrays.asList(MenuOption.values()));
             process(option, attendance, nowDate);
             return option;
@@ -81,7 +86,7 @@ public class AttendanceController {
     }
 
 
-    private String getNickName(Attendance attendance) {
+    private String getCheckNickName(Attendance attendance) {
         return repeatExecutor.repeatUntilSuccess(() -> {
             String nickName = inputView.readNickname();
             attendance.validateNickName(nickName);
@@ -89,21 +94,47 @@ public class AttendanceController {
         });
     }
 
-    private LocalTime getLocalTime(Attendance attendance) {
+    private String getEditNickName(Attendance attendance) {
+        return repeatExecutor.repeatUntilSuccess(() -> {
+            String nickName = inputView.readEditNickname();
+            attendance.validateNickName(nickName);
+            return nickName;
+        });
+    }
+
+    private LocalTime getLocalTime() {
         return repeatExecutor.repeatUntilSuccess(inputView::readArrivalTime);
     }
 
     private void editAttendance(Attendance attendance) {
-        String nickName = inputView.readEditNickname();
-        int editArrivalDate = inputView.readEditArrivalDate();
-        LocalTime editArrivalTime = inputView.readEditArrivalTime();
+        String nickName = getEditNickName(attendance);
 
+        AttendanceTime oldAttendanceTime = repeatExecutor.repeatUntilSuccess(() -> {
+            int editArrivalDate = getEditArrivalDate();
+            LocalDate editDate = LocalDate.of(2024, 12, editArrivalDate);
+            return attendance.findAttendanceTime(nickName, editDate);
+        });
+
+        int editArrivalDate = oldAttendanceTime.getAttendanceDateTime().getDayOfMonth();
         LocalDate editDate = LocalDate.of(2024, 12, editArrivalDate);
-        AttendanceTime oldAttendanceTime = attendance.findAttendanceTime(nickName, editDate);
-        attendance.edit(nickName, editArrivalDate, editArrivalTime);
+
+        repeatExecutor.repeatUntilSuccess(() -> {
+            LocalTime editArrivalTime = inputView.readEditArrivalTime();
+            attendance.edit(nickName, editArrivalDate, editArrivalTime);
+            return null;
+        });
+
         AttendanceTime newAttendanceTime = attendance.findAttendanceTime(nickName, editDate);
 
         outputView.printEditAttendanceMessage(oldAttendanceTime, newAttendanceTime);
+    }
+
+    private int getEditArrivalDate() {
+        int day = inputView.readEditArrivalDate();
+        if (day < 1 || day > 31) {
+            throw new IllegalArgumentException("[ERROR] 유효한 날짜가 아닙니다.");
+        }
+        return day;
     }
 
     private void checkCrewAttendance(Attendance attendance) {
