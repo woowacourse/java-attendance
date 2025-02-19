@@ -1,6 +1,6 @@
 package attendance.domain;
 
-import static attendance.domain.AttendanceType.ABSENT;
+import static attendance.domain.AttendanceType.ABSENCE;
 import static attendance.domain.AttendanceType.ATTENDANCE;
 import static attendance.domain.AttendanceType.LATE;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -45,13 +45,13 @@ public class AttendanceManagerTest {
         @Test
         void checkAttendanceResult11() {
             AttendanceType result = AttendanceManager.checkAttendanceType(DayOfWeek.TUESDAY, LocalTime.of(10, 31));
-            assertThat(result).isEqualTo(ABSENT);
+            assertThat(result).isEqualTo(ABSENCE);
         }
 
         @Test
         void checkAttendanceResult12() {
             AttendanceType result = AttendanceManager.checkAttendanceType(DayOfWeek.TUESDAY, LocalTime.of(10, 31));
-            assertThat(result).isEqualTo(ABSENT);
+            assertThat(result).isEqualTo(ABSENCE);
         }
 
         @Test
@@ -81,7 +81,7 @@ public class AttendanceManagerTest {
         @Test
         void checkAttendanceResult15() {
             AttendanceType result = AttendanceManager.checkAttendanceType(DayOfWeek.MONDAY, LocalTime.of(13, 31));
-            assertThat(result).isEqualTo(ABSENT);
+            assertThat(result).isEqualTo(ABSENCE);
         }
     }
 

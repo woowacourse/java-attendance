@@ -1,6 +1,6 @@
 package attendance.domain;
 
-import static attendance.domain.AttendanceType.ABSENT;
+import static attendance.domain.AttendanceType.ABSENCE;
 import static attendance.domain.AttendanceType.ATTENDANCE;
 import static attendance.domain.AttendanceType.LATE;
 
@@ -18,7 +18,7 @@ public class AttendanceManager {
             if (localTime.isBefore(LocalTime.of(13, 31))) {
                 return LATE;
             }
-            return ABSENT;
+            return ABSENCE;
         }
         if (localTime.isBefore(LocalTime.of(10, 6))) {
             return ATTENDANCE;
@@ -27,7 +27,7 @@ public class AttendanceManager {
         if (localTime.isBefore(LocalTime.of(10, 31))) {
             return LATE;
         }
-        return ABSENT;
+        return ABSENCE;
     }
 
     public static void checkHoliday(LocalDate localDate) {

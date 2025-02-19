@@ -1,6 +1,6 @@
 package attendance.domain;
 
-import static attendance.domain.AttendanceType.ABSENT;
+import static attendance.domain.AttendanceType.ABSENCE;
 import static attendance.domain.AttendanceType.ATTENDANCE;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -25,7 +25,7 @@ public class AttendanceResultTest {
         //given
         AttendanceResult attendanceResult = new AttendanceResult(
                 LocalDateTime.of(2024, 12, 26, 11, 00),
-                ABSENT
+                ABSENCE
         );
         AttendanceResult modifyAttendanceResult = new AttendanceResult(
                 LocalDateTime.of(2024, 12, 26, 10, 00),
