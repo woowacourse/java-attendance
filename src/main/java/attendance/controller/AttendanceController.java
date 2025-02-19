@@ -2,6 +2,8 @@ package attendance.controller;
 
 import attendance.AttendancesFactory;
 import attendance.model.Attendance;
+import attendance.model.AttendanceStartTime;
+import attendance.model.AttendanceType;
 import attendance.model.Attendances;
 import attendance.model.Command;
 import attendance.model.Crew;
@@ -10,8 +12,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
-import java.time.format.TextStyle;
-import java.util.Locale;
+import java.util.Optional;
 
 public class AttendanceController {
 
@@ -47,19 +48,40 @@ public class AttendanceController {
         Crew crew = new Crew(nickname);
         LocalDateTime attendanceDateTime = LocalDateTime.of(now.toLocalDate(), attendanceTime);
         attendances.add(new Attendance(crew, attendanceDateTime));
-        System.out.printf("%02d월 %2d일 %s요일 %02d:%02d (출석)%n",
-                attendanceDateTime.getMonth().getValue(),
-                attendanceDateTime.getDayOfMonth(),
-                attendanceDateTime.getDayOfWeek().getDisplayName(TextStyle.SHORT, Locale.KOREAN),
-                attendanceDateTime.getHour(),
-                attendanceTime.getMinute());
+        System.out.printf("%s (%s)%n",
+                attendanceDateTime.format(DateTimeFormatter.ofPattern("MM월 dd일 E요일 HH:mm")),
+                displayAttendanceType(calculateAttendanceType(attendanceDateTime))
+        );
     }
 
     private void doUpdateAttendance(LocalDateTime now) {
         String nickname = inputView.inputNicknameForUpdateAttendance();
         attendances.validateExistNickname(nickname);
         LocalDateTime updateDateTime = getUpdateDateTime(now);
-        attendances.update(new Attendance(new Crew(nickname), updateDateTime));
+        boolean isFutureDate = updateDateTime.toLocalDate().isAfter(now.toLocalDate());
+        if (isFutureDate) {
+            throw new IllegalArgumentException("미래 날짜의 출석을 수정할 수 없습니다.");
+        }
+        Crew crew = new Crew(nickname);
+        Optional<Attendance> optionalAttendance = attendances.findByCrewAndDate(crew, updateDateTime.toLocalDate());
+        attendances.update(new Attendance(crew, updateDateTime));
+
+        if (optionalAttendance.isPresent()) {
+            Attendance attendance = optionalAttendance.get();
+            System.out.printf("%s (%s) -> %s (%s) 수정 완료!%n",
+                    attendance.getDateTime().format(DateTimeFormatter.ofPattern("MM월 dd일 E요일 HH:mm")),
+                    displayAttendanceType(calculateAttendanceType(attendance.getDateTime())),
+                    updateDateTime.format(DateTimeFormatter.ofPattern("HH:mm")),
+                    displayAttendanceType(calculateAttendanceType(updateDateTime))
+            );
+            return;
+        }
+        System.out.printf("%s (%s) -> %s (%s) 수정 완료!%n",
+                updateDateTime.format(DateTimeFormatter.ofPattern("MM월 dd일 E요일 --:--")),
+                displayAttendanceType(null),
+                updateDateTime.format(DateTimeFormatter.ofPattern("HH:mm")),
+                displayAttendanceType(calculateAttendanceType(updateDateTime))
+        );
     }
 
     private LocalDateTime getUpdateDateTime(LocalDateTime now) {
@@ -67,6 +89,21 @@ public class AttendanceController {
         String rawTimeForUpdate = inputView.inputTimeForUpdateAttendance();
         LocalDate updateDate = LocalDate.of(now.getYear(), now.getMonth(), targetUpdateDate);
         return LocalDateTime.of(updateDate, toLocalTime(rawTimeForUpdate));
+    }
+
+    private String displayAttendanceType(AttendanceType type) {
+        if (type == AttendanceType.OK) {
+            return "출석";
+        }
+        if (type == AttendanceType.LATE) {
+            return "지각";
+        }
+        return "결석";
+    }
+
+    private AttendanceType calculateAttendanceType(LocalDateTime dateTime) {
+        LocalTime startTime = AttendanceStartTime.findDayOfWeek(dateTime.getDayOfWeek());
+        return AttendanceType.judge(startTime, dateTime.toLocalTime());
     }
 
     private LocalTime toLocalTime(String rawTime) {

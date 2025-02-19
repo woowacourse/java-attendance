@@ -25,6 +25,10 @@ public class Attendance {
         }
     }
 
+    public LocalDateTime getDateTime() {
+        return dateTime;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) {
