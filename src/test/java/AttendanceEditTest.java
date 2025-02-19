@@ -59,7 +59,6 @@ public class AttendanceEditTest {
 
         assertThatThrownBy(() -> {
             attendanceManager.editCrew(name, editedDateAndTime);
-            ;
         }).isInstanceOf(IllegalArgumentException.class);
     }
 
