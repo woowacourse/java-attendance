@@ -6,7 +6,6 @@ import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 
-import attendance.dto.AttendanceDateDto;
 import attendance.exception.AttendanceArgumentException;
 import attendance.utility.StringUtility;
 import java.util.Locale;
@@ -14,15 +13,27 @@ import java.util.Locale;
 public class AttendanceManager {
 
     private HashMap<String, Attendances> attendanceManager = new HashMap<>();
+    private String ATTENDANCE_NOT_AVAILABLE = "출석 시스템은 2024년 12월 동안만 유효합니다";
 
     public void addAttendance(String nickname, LocalDateTime time) {
         validateNickname(nickname);
         LocalTime currentTime = time.toLocalTime();
+        LocalDate currentDate = time.toLocalDate();
         validateIsSchoolOpen(currentTime);
-        AttendanceStatus attendanceStatus = determineAttendanceStatus(time.toLocalDate(),currentTime);
+        validateAttendanceAvailable(currentDate);
+        AttendanceStatus attendanceStatus = determineAttendanceStatus(currentDate,currentTime);
         Attendances attendances = attendanceManager.getOrDefault(nickname, new Attendances());
         attendanceManager.put(nickname, attendances);
         attendances.addAttendance(time, attendanceStatus);
+    }
+
+    private void validateAttendanceAvailable(LocalDate currentDate) {
+        LocalDate attendanceAvailableStartDate = AttendanceManagerHelper.ATTENDANCE_AVAILABLE_START_DATE;
+        LocalDate attendanceAvailableEndDate = AttendanceManagerHelper.ATTENDANCE_AVAILABLE_END_DATE;
+        if (attendanceAvailableEndDate.isAfter(currentDate) || attendanceAvailableStartDate.isBefore(currentDate)) {
+            return;
+        }
+        throw new AttendanceArgumentException(ATTENDANCE_NOT_AVAILABLE);
     }
 
     private void validateIsSchoolOpen(LocalTime currentTime) {
@@ -71,5 +82,12 @@ public class AttendanceManager {
             return AttendanceManagerHelper.MONDAY_START_TIME;
         }
         return AttendanceManagerHelper.NORMAL_START_TIME;
+    }
+
+    public void modifyAttendance(String nickname, LocalDate modifyDate,LocalTime afterModifyTime) {
+
+
+
+
     }
 }
