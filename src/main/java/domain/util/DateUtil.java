@@ -22,4 +22,8 @@ public class DateUtil {
     public static LocalDateTime assembleDateAndTime(LocalDate localDate, LocalTime localTime) {
         return LocalDateTime.of(localDate, localTime);
     }
+
+    public static LocalDate getDateByInputDay(int day) {
+        return LocalDate.of(TODAY.getYear(), TODAY.getDayOfMonth(), day);
+    }
 }

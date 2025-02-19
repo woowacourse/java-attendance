@@ -54,6 +54,6 @@ public class Crews {
                 return crew;
             }
         }
-        return null;
+        throw new IllegalArgumentException();
     }
 }

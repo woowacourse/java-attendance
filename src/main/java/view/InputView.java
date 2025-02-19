@@ -25,20 +25,19 @@ public class InputView {
                 2. 출석 수정
                 3. 크루별 출석 기록 확인
                 4. 제적 위험자 확인
-                Q. 종료
-                """, TODAY.getMonth().getValue(), TODAY.getDayOfMonth(), ViewUtil.getDayOfWeekToMessage(TODAY.getDayOfWeek())));
+                Q. 종료""", TODAY.getMonth().getValue(), TODAY.getDayOfMonth(), ViewUtil.getDayOfWeekToMessage(TODAY.getDayOfWeek())));
     }
     public String inputByMessage(String message) {
         System.out.println(message);
         return scanner.nextLine();
     }
 
-    public String inputNickName() {
-        return inputByMessage("닉네임을 입력해 주세요.\n");
+    public String inputName() {
+        return inputByMessage("닉네임을 입력해 주세요.");
     }
 
     public String inputAttendTime() {
-        return inputByMessage("등교 시간을 입력해 주세요.\n");
+        return inputByMessage("등교 시간을 입력해 주세요.");
     }
 
     public Crews getFile() {
@@ -51,7 +50,7 @@ public class InputView {
             while ((line = bufferedReader.readLine()) != null) {
                 String[] tokens = line.split(",");
                 validateName(tokens[0]);
-                crews.initAttendStatus(tokens[0], LocalDateTime.parse(tokens[1], DateTimeFormatter.ofPattern("yyyy-mm-dd hh:mm")));
+                crews.initAttendStatus(tokens[0], LocalDateTime.parse(tokens[1], DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")));
             }
             return crews;
         } catch (IOException e) {
@@ -59,9 +58,21 @@ public class InputView {
         }
     }
 
+    public String inputEditCrewName() {
+        return inputByMessage("출석을 수정하려는 크루의 닉네임을 입력해 주세요.");
+    }
+
     public void validateName(String name) {
         if (name.length() > 4 || name.length() < 2) {
             throw new IllegalArgumentException();
         }
+    }
+
+    public String inputEditDay() {
+        return inputByMessage("수정하려는 날짜(일)를 입력해 주세요.");
+    }
+
+    public String inputEditTime() {
+        return inputByMessage("언제로 변경하겠습니까?");
     }
 }
