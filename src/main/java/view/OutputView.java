@@ -12,6 +12,7 @@ import model.Attendance;
 import model.AttendanceType;
 import model.Attendances;
 import model.Crew;
+import model.PunishmentType;
 
 public class OutputView {
 
@@ -22,9 +23,13 @@ public class OutputView {
     private final String ATTENDANCE_RECORD_FORMAT = "%d월 %02d일 %s %02d:%02d (%s)%n";
     private final String ATTENDANCE_RECORD_ABSENCE_FORMAT = "%d월 %02d일 %s --:-- (결석)%n";
     private final String ATTENDANCE_COUNT = "%s: %d회%n";
+    private final String ATTENDANCE_PUNISHMENT = "%s 대상자입니다.";
     private final String SUCCESS = "출석";
     private final String BE_LATE = "지각";
     private final String ABSENCE = "결석";
+    private final String WARNING = "경고";
+    private final String MEETING = "면담";
+    private final String EXPULSION = "제적";
 
     public void printCheckInResult(Attendance attendance) {
         LocalDateTime checkInTime = attendance.getCheckInTime();
@@ -100,6 +105,10 @@ public class OutputView {
                     countsEntry.getValue()
             );
         }
+
+        if (!result.getPunishmentType().equals(PunishmentType.NONE)) {
+            System.out.printf(ATTENDANCE_PUNISHMENT, convertToPunishmentTypeString(result.getPunishmentType()));
+        }
     }
 
     private String convertToAttendanceTypeString(AttendanceType attendanceType) {
@@ -111,6 +120,19 @@ public class OutputView {
         }
         if (attendanceType.equals(AttendanceType.ABSENCE)) {
             return ABSENCE;
+        }
+        return "";
+    }
+
+    private String convertToPunishmentTypeString(PunishmentType punishmentType) {
+        if (punishmentType.equals(PunishmentType.WARNING)) {
+            return WARNING;
+        }
+        if (punishmentType.equals(PunishmentType.MEETING)) {
+            return MEETING;
+        }
+        if (punishmentType.equals(PunishmentType.EXPULSION)) {
+            return EXPULSION;
         }
         return "";
     }
