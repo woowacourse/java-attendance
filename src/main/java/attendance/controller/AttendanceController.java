@@ -15,10 +15,6 @@ import java.util.Map;
 public class AttendanceController {
     private static final Map<String, Runnable> operations = new HashMap<>();
 
-    public AttendanceController() {
-
-    }
-
     public void run() {
         AttendanceRepository attendanceRepository = initData();
         initOperations(attendanceRepository);
@@ -26,11 +22,6 @@ public class AttendanceController {
         while (!(option = getInputOption()).equals("Q")) {
             operations.get(option).run();
         }
-    }
-
-    private String getInputOption() {
-        OutputView.printOptions();
-        return InputView.readOption();
     }
 
     private AttendanceRepository initData(){
@@ -42,6 +33,11 @@ public class AttendanceController {
         operations.put("2", () -> modifyAttendance(attendanceRepository));
         operations.put("3", () -> queryAttendance(attendanceRepository));
         operations.put("4", () -> queryWarningCrews(attendanceRepository));
+    }
+
+    private String getInputOption() {
+        OutputView.printOptions();
+        return InputView.readOption();
     }
 
     private void registerAttendance(AttendanceRepository attendanceRepository) {
