@@ -77,7 +77,7 @@ public class AttendanceHistoryTest {
 
         LocalDate modifyDate = LocalDate.of(2024, 12, 2);
         // when
-        AttendanceDetail attendanceDetail = attendanceHistory.getAttendanceDetail(modifyDate);
+        AttendanceDetail attendanceDetail = attendanceHistory.findAttendanceDetail(modifyDate);
 
         // then
         assertThat(attendanceDetail).isEqualTo(attendanceDetail1);
@@ -98,7 +98,7 @@ public class AttendanceHistoryTest {
 
         LocalDate modifyDate = LocalDate.of(2024, 12, 2);
         // when
-        AttendanceDetail attendanceDetail = attendanceHistory.getAttendanceDetail(modifyDate);
+        AttendanceDetail attendanceDetail = attendanceHistory.findAttendanceDetail(modifyDate);
         attendanceDetail.modify(LocalTime.of(13, 10));
         Assertions.assertThat(attendanceDetail.getLocalDateTime().toLocalTime()).isEqualTo(LocalTime.of(13, 10));
         Assertions.assertThat(attendanceDetail.getAttandence()).isEqualTo(Attendance.지각);

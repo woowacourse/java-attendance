@@ -2,6 +2,7 @@ package attendance.model;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Stream;
 
 public class Crews {
     private final List<Crew> crews;
@@ -18,9 +19,13 @@ public class Crews {
         return crews;
     }
 
-    public Crew findCrew(Crew crew) {
+    public Stream<Crew> stream() {
+        return crews.stream();
+    }
+
+    public Crew findCrew(String name) {
         return crews.stream()
-                .filter(c -> c.getName().equals(crew.getName()))
+                .filter(c -> c.getName().equals(name))
                 .findFirst()
                 .orElseThrow(() -> new IllegalArgumentException("등록되지 않은 닉네임입니다."));
     }

@@ -66,10 +66,11 @@ public class CrewTest {
         Crew crew = new Crew("멍구");
         crew.addAttendanceDetail(new AttendanceDetail(LocalDateTime.of(2024, 12, 10, 10, 0)));
 
-        crew.getAttendanceHistory().getAttendanceDetail(LocalDate.of(2024, 12, 10))
+        crew.getAttendanceHistory().findAttendanceDetail(LocalDate.of(2024, 12, 10))
                 .modify(LocalTime.of(10, 6));
 
-        AttendanceDetail attendanceDetail = crew.getAttendanceHistory().getAttendanceDetail(LocalDate.of(2024, 12, 10));
+        AttendanceDetail attendanceDetail = crew.getAttendanceHistory()
+                .findAttendanceDetail(LocalDate.of(2024, 12, 10));
 
         Assertions.assertThat(attendanceDetail.getLocalDateTime()
                         .toLocalTime())

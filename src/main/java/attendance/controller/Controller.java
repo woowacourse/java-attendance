@@ -10,10 +10,7 @@ import attendance.model.Crews;
 import attendance.model.CustomLocalDateTime;
 import attendance.view.InputView;
 import attendance.view.OutputView;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
 
 public class Controller {
     private final InputView inputView;
@@ -34,32 +31,23 @@ public class Controller {
         String s = inputView.inputCommand();
         if (s.equals("1")) {
             process(() -> {
-                String crewName = inputView.inputCrewName();
-                Crew crew = crews.findCrew(new Crew(crewName));
-                String entryTime = inputView.inputEntryTime();
-                AttendanceDetail attendanceDetail = new AttendanceDetail(
-                        LocalDateTime.of(CustomLocalDateTime.now().toLocalDate(),
-                                LocalTime.parse(entryTime, DateTimeFormatter.ofPattern("HH:mm")))
-                );
-                crew.getAttendanceHistory().addAttendanceDetail(attendanceDetail);
+                Crew crew = crews.findCrew(inputView.inputCrewName());
+                AttendanceDetail attendanceDetail = new AttendanceDetail(LocalDateTime.of(
+                        CustomLocalDateTime.nowDate(),
+                        CustomLocalDateTime.parseTime(inputView.inputEntryTime())
+                ));
+                crew.attend(attendanceDetail);
                 outputView.printAttendanceDetail(AttendanceDetailDTO.from(attendanceDetail));
             });
         }
         if (s.equals("2")) {
             process(() -> {
-                String crewName = inputView.inputModifyAttendanceCrewName();
-                Crew crew = crews.findCrew(new Crew(crewName));
-                String modifyDateInput = inputView.inputModifyAttendanceDate();
-                LocalDate modifyDate = LocalDate.of(2024, 12, Integer.parseInt(modifyDateInput));
-                //
-                AttendanceDetail attendanceDetail = crew.getAttendanceHistory()
-                        .getAttendanceDetail(modifyDate);
-                String modifyTimeInput = inputView.inputModifyAttendanceTime();
-                LocalTime modifyTime = LocalTime.parse(modifyTimeInput, DateTimeFormatter.ofPattern("HH:mm"));
-
+                Crew crew = crews.findCrew(inputView.inputModifyAttendanceCrewName());
+                AttendanceDetail attendanceDetail = crew.findAttendanceDetail(
+                        CustomLocalDateTime.parseDate(inputView.inputModifyAttendanceDate())
+                );
                 AttendanceDetail cloned = attendanceDetail.clone();
-                attendanceDetail.modify(modifyTime);
-
+                attendanceDetail.modify(CustomLocalDateTime.parseTime(inputView.inputModifyAttendanceTime()));
                 outputView.printModifyResult(
                         AttendanceDetailDTO.from(cloned),
                         AttendanceDetailDTO.from(attendanceDetail)
@@ -68,8 +56,7 @@ public class Controller {
         }
         if (s.equals("3")) {
             process(() -> {
-                String crewName = inputView.inputCrewName();
-                Crew crew = crews.findCrew(new Crew(crewName));
+                Crew crew = crews.findCrew(inputView.inputCrewName());
                 outputView.printAttendanceHistory(AttendanceDTO.from(crew));
             });
         }

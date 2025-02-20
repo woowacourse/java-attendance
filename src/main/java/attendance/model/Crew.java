@@ -1,5 +1,8 @@
 package attendance.model;
 
+import java.time.LocalDate;
+import java.util.stream.Stream;
+
 public class Crew {
 
     private final String name;
@@ -32,4 +35,15 @@ public class Crew {
         return attendanceHistory;
     }
 
+    public AttendanceDetail findAttendanceDetail(LocalDate localDate) {
+        return attendanceHistory.findAttendanceDetail(localDate);
+    }
+
+    public Stream<AttendanceDetail> attendanceHistoryStream() {
+        return attendanceHistory.stream();
+    }
+
+    public void attend(AttendanceDetail attendanceDetail) {
+        addAttendanceDetail(attendanceDetail);
+    }
 }

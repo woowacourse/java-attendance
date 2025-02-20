@@ -60,7 +60,7 @@ public class AttendanceHistory {
                 .anyMatch(attendanceDetail -> attendanceDetail.getLocalDateTime().toLocalDate().equals(nowDate));
     }
 
-    public AttendanceDetail getAttendanceDetail(LocalDate localDate) {
+    public AttendanceDetail findAttendanceDetail(LocalDate localDate) {
         validateHoliday(localDate);
         return attendanceHistory.stream()
                 .filter(attendanceDetail -> attendanceDetail.getLocalDateTime().toLocalDate().equals(localDate))
