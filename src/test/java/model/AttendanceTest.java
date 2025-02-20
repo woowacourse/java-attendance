@@ -107,4 +107,21 @@ public class AttendanceTest {
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("지금은 운영 시간이 아닙니다.");
     }
+
+    @Test
+    @DisplayName("크루의 출석 기록이 해당 월인지 판단한다.")
+    void test8() {
+        //given
+        Crew crew = Crew.of("쿠키");
+        LocalDateTime checkInTime = LocalDateTime.of(2025, 2, 19, 10, 31);
+        Attendance attendance = Attendance.of(crew, checkInTime);
+
+        int month = 2;
+
+        //when
+        boolean result = attendance.findByCrewAndMonth(crew, month);
+
+        //then
+        Assertions.assertThat(result).isTrue();
+    }
 }

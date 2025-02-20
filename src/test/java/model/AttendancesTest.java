@@ -82,4 +82,21 @@ class AttendancesTest {
         //then
         Assertions.assertThat(attendances.getAttendances()).contains(Attendance.of(crew, modifiedCheckInTime));
     }
+
+    @Test
+    @DisplayName("크루의 출석 기록을 조회한다.")
+    void test8() {
+        //given
+        Crew crew = Crew.of("쿠키");
+
+        Attendance attendance1 = Attendance.of(crew, LocalDateTime.of(2025, 2, 17, 10, 0, 0));
+        Attendance attendance2 = Attendance.of(crew, LocalDateTime.of(2025, 2, 18, 10, 31, 0));
+        Attendance attendance3 = Attendance.of(crew, LocalDateTime.of(2025, 2, 19, 10, 6, 0));
+
+        //when
+        List<Attendance> filteredAttendances = attendances.findByCrewAndMonth(crew, 2);
+
+        //then
+        Assertions.assertThat(filteredAttendances).containsExactly(attendance1, attendance2, attendance3);
+    }
 }

@@ -3,6 +3,7 @@ package model;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 
@@ -38,6 +39,13 @@ public class Attendances {
         checkIn(attendance);
 
         return attendance;
+    }
+
+    public List<Attendance> findByCrewAndMonth(Crew crew, int month) {
+        return attendances.stream()
+                .filter(attendance -> attendance.findByCrewAndMonth(crew, month))
+                .sorted(Comparator.comparing(Attendance::getCheckInTime))
+                .toList();
     }
 
     public Optional<Attendance> find(Crew crew, LocalDate localDate) {

@@ -48,6 +48,10 @@ public class Attendance {
         return false;
     }
 
+    public boolean findByCrewAndMonth(Crew crew, int month) {
+        return this.crew.equals(crew) && checkInTime.getMonthValue() == month;
+    }
+
     private static void validateHolidayAndWeekend(LocalDateTime checkInTime) {
         if (Holiday.isHolidayOrWeekend(checkInTime)) {
             throw new IllegalArgumentException("주말 및 공휴일에는 출석할 수 없습니다.");
