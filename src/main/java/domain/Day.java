@@ -6,12 +6,17 @@ import java.time.LocalTime;
 
 public class Day {
 
-    private LocalDate date;
-    private DayOfWeek dayOfWeek;
+    private static final Integer STANDARD_LATE_MINUTE = 5;
+    private static final Integer STANDARD_ABSENT_MINUTE = 30;
+
+    private final LocalDate date;
 
     public Day(LocalDate date) {
         this.date = date;
-        this.dayOfWeek = DayOfWeek.getInstance(date);
+    }
+
+    private DayOfWeek getDayOfWeek() {
+        return DayOfWeek.getInstance(date);
     }
 
     public Boolean isEqualTo(LocalDate date) {
@@ -19,25 +24,25 @@ public class Day {
     }
 
     public Boolean checkHoliday() {
-        return dayOfWeek.equals(DayOfWeek.SATURDAY) || dayOfWeek.equals(DayOfWeek.SUNDAY);
+        return getDayOfWeek().equals(DayOfWeek.SATURDAY) || getDayOfWeek().equals(DayOfWeek.SUNDAY);
     }
 
     public boolean isLate(LocalTime attendanceTime) {
-        LocalTime standardTime = dayOfWeek.getStandardTime();
+        LocalTime standardTime = getDayOfWeek().getStandardTime();
         if (standardTime == null) {
             return false;
         }
         long betweenMinutes = Duration.between(standardTime, attendanceTime).toMinutes();
-        return betweenMinutes > 5 && betweenMinutes <= 30;
+        return betweenMinutes > STANDARD_LATE_MINUTE && betweenMinutes <= STANDARD_ABSENT_MINUTE;
     }
 
     public boolean isAbsent(LocalTime attendanceTime) {
-        LocalTime standardTime = dayOfWeek.getStandardTime();
+        LocalTime standardTime = getDayOfWeek().getStandardTime();
         if (standardTime == null) {
             return false;
         }
         long betweenMinutes = Duration.between(standardTime, attendanceTime).toMinutes();
-        return betweenMinutes > 30;
+        return betweenMinutes > STANDARD_ABSENT_MINUTE;
     }
 
     public LocalDate getDate() {
