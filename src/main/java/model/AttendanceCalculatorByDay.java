@@ -10,10 +10,10 @@ public enum AttendanceCalculatorByDay {
     THURSDAY(LocalTime.of(10,5), LocalTime.of(10,30),4,"목요일"),
     FRIDAY(LocalTime.of(10,5), LocalTime.of(10,30),5,"금요일");
 
-    private LocalTime lateTime;
-    private LocalTime absentTime;
-    private int dayOfWeekValue;
-    private String day;
+    private final LocalTime lateTime;
+    private final LocalTime absentTime;
+    private final int dayOfWeekValue;
+    private final String day;
 
     AttendanceCalculatorByDay(LocalTime lateTime, LocalTime absentTime, int dayOfWeekValue, String day) {
         this.lateTime = lateTime;

@@ -6,7 +6,7 @@ public enum AttendanceStatus {
     ATTENDANCE("출석"),
     LATE("지각");
 
-    private String state;
+    private final String state;
 
     AttendanceStatus(String state) {
         this.state = state;
