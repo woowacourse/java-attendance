@@ -8,6 +8,7 @@ import domain.UserInput;
 import dto.AttendanceRecordResponse;
 import dto.ModifyAttendanceResponse;
 import dto.TotalRecordsResponse;
+import java.time.DateTimeException;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
@@ -45,7 +46,6 @@ public class AttendanceController {
         while (true) {
 
             outputView.displayPrompt(); // 기능 선택창
-
             UserInput selection = retryUntilValid(this::getUserInput);
 
             try {
@@ -61,16 +61,13 @@ public class AttendanceController {
                 if (selection == UserInput.CHECK_PENALTY) {
                     outputView.displayPenaltyCrew(attendanceBook.checkPenaltyCrew());
                 }
-
-                if (selection == UserInput.QUIT) { // 출석 확인
+                if (selection == UserInput.QUIT) {
                     break;
                 }
 
             } catch (IllegalArgumentException e) {
                 outputView.displayErrorMessage(e.getMessage());
             }
-
-            inputView.askName();
         }
     }
 
@@ -96,15 +93,19 @@ public class AttendanceController {
     }
 
     private LocalTime askTimeToModify(AttendanceBook attendanceBook) {
-        LocalTime modifiedTime = LocalTime.parse(inputView.askTimeForModify());
+        LocalTime modifiedTime = inputView.askTimeForModify();
         attendanceBook.validateIsInOperationHour(modifiedTime);
         return modifiedTime;
     }
 
     private LocalDate askDayToModify(AttendanceBook attendanceBook, String name) {
-        LocalDate modifiedDay = LocalDate.parse(inputView.askDayForModify());
-        attendanceBook.validateDateAlreadyExistsByCrewName(name, modifiedDay);
-        return modifiedDay;
+        try {
+            LocalDate modifiedDay = LocalDate.now().withDayOfMonth(inputView.askDayForModify().getDayOfMonth());
+            attendanceBook.validateDateAlreadyExistsByCrewName(name, modifiedDay);
+            return modifiedDay;
+        } catch (DateTimeException | NumberFormatException e) {
+            throw new IllegalArgumentException("[ERROR] 날짜(일) 입력이 올바르지 않습니다.");
+        }
     }
 
     private String askNameToModify(AttendanceBook attendanceBook) {

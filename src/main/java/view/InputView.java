@@ -1,5 +1,8 @@
 package view;
 
+import domain.Parser;
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.Scanner;
 
 public class InputView {
@@ -29,14 +32,14 @@ public class InputView {
         return getUserSelection();
     }
 
-    public String askDayForModify() {
+    public LocalDate askDayForModify() {
         System.out.println(ASK_DAY_FOR_MODIFY);
-        return getUserSelection();
+        return Parser.parseInputDay(getUserSelection());
     }
 
-    public String askTimeForModify() {
+    public LocalTime askTimeForModify() {
         System.out.println(ASK_TIME_FOR_MODIFY);
-        return getUserSelection();
+        return Parser.parseInputTime(getUserSelection());
     }
 
     public String getUserSelection() {

@@ -12,6 +12,10 @@ import java.util.List;
 import java.util.Locale;
 
 public class OutputView {
+    public static void displaySpacing() {
+        System.out.println();
+    }
+
     public void displayPrompt() {
         System.out.println(
                 OutputMessages.DATE_PROMPT.format(LocalDate.now().getDayOfMonth(), LocalDate.now().getDayOfWeek()));
@@ -23,16 +27,13 @@ public class OutputView {
         System.out.println(OutputMessages.GUIDE_PROMPT.getFormat());
     }
 
-    public static void displaySpacing() {
-        System.out.println();
-    }
-
     public void displayCheckAttendanceResult(AttendanceRecordResponse response) {
         int day = response.date().getDayOfMonth();
         String koreanDayOfWeek = response.date().getDayOfWeek()
                 .getDisplayName(TextStyle.FULL, Locale.KOREAN);
         String formattedTime = response.time().format(DateTimeFormatter.ofPattern("HH:mm"));
-        System.out.printf("12월 %02d일 %s %s %s%n", day, koreanDayOfWeek, formattedTime, response.attendanceStatus());
+        System.out.printf("12월 %02d일 %s %s %s%n", day, koreanDayOfWeek, formattedTime,
+                response.attendanceStatus().getMessage());
     }
 
     public void displayModifyAttendanceResult(ModifyAttendanceResponse response) {
@@ -69,7 +70,9 @@ public class OutputView {
         System.out.printf("지각: %d회%n", totalRecords.lateCount());
         System.out.printf("결석: %d회%n", totalRecords.absentCount());
         displaySpacing();
-        System.out.printf("%s 대상자입니다.%n", penalty);
+        if (!penalty.isBlank()) {
+            System.out.printf("%s 대상자입니다.%n", penalty);
+        }
     }
 
     public void displayPenaltyCrew(List<CrewPenaltyResponse> responses) {
