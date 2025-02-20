@@ -44,4 +44,14 @@ public class AttendanceRepository {
         final Map<AttendanceStatus, Integer> crewAttendanceStatuses = crewAttendance.countAttendanceStatus(today);
         return WarningLevel.calculateLevel(crewAttendanceStatuses);
     }
+
+    public Map<LocalDate, HourMinute> queryCrewAttendance(final String name, int today) {
+        Attendance crewAttendance = findByName(name);
+        return crewAttendance.getTimestamps(today);
+    }
+
+    public Map<AttendanceStatus, Integer> queryCrewAttendanceStatus(final String name, int today) {
+        Attendance crewAttendance = findByName(name);
+        return crewAttendance.countAttendanceStatus(today);
+    }
 }

@@ -15,7 +15,8 @@ public class AttendanceController {
     public void run() {
         AttendanceRepository attendanceRepository = initData();
 //        registerAttendance(attendanceRepository);
-        modifyAttendance(attendanceRepository);
+//        modifyAttendance(attendanceRepository);
+        queryAttendance(attendanceRepository);
     }
 
     private AttendanceRepository initData(){
@@ -39,4 +40,8 @@ public class AttendanceController {
         OutputView.printModifiedAttendance(prevHourMinute, localDateTime);
     }
 
+    private void queryAttendance(AttendanceRepository attendanceRepository) {
+        String name = InputView.readNickName();
+        OutputView.printQueryAttendance(name, attendanceRepository);
+    }
 }

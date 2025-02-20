@@ -2,8 +2,12 @@ package attendance.domain;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.EnumMap;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class Attendance {
@@ -50,11 +54,19 @@ public class Attendance {
 
             attendanceStatuses.put(attendanceStatus, (int) count);
         }
-        AttendanceStatus status = timestamps.get(LocalDate.of(2024, 12, today)).attendanceStatus();
-
-        attendanceStatuses.put(status, attendanceStatuses.get(status) - 1);
+        removeTodayStatus(today, attendanceStatuses);
 
         return attendanceStatuses;
+    }
+
+    private void removeTodayStatus(final int today, final Map<AttendanceStatus, Integer> attendanceStatuses) {
+        LocalDate dateOfToday = LocalDate.of(2024, 12, today);
+        if(!timestamps.containsKey(dateOfToday)) {
+            return;
+        }
+        AttendanceStatus status = timestamps.get(dateOfToday).attendanceStatus();
+
+        attendanceStatuses.put(status, attendanceStatuses.get(status) - 1);
     }
 
     private void updateTimestamp(int today) {
@@ -68,5 +80,22 @@ public class Attendance {
                 timestamps.put(date, new HourMinute(-1, -1, AttendanceStatus.ABSENCE));
             }
         }
+    }
+
+    public List<LocalDateTime> queryAll(int today) {
+        updateTimestamp(today);
+        List<LocalDateTime> attendances = new ArrayList<>();
+        timestamps.keySet().forEach(localDate -> {
+            HourMinute hourMinute = timestamps.get(localDate);
+            LocalTime localTime = LocalTime.of(hourMinute.hour(), hourMinute.minute());
+            LocalDateTime localDateTime = LocalDateTime.of(localDate, localTime);
+            attendances.add(localDateTime);
+        });
+        return attendances;
+    }
+
+    public Map<LocalDate, HourMinute> getTimestamps(int today) {
+        updateTimestamp(today);
+        return Collections.unmodifiableMap(timestamps);
     }
 }
