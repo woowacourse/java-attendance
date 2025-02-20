@@ -24,8 +24,8 @@ class AttendanceStatusTest {
 
     private static Stream<Arguments> methodSources() {
         return Stream.of(
-                Arguments.arguments(LocalTime.of(12, 0), AttendanceStatus.ATTENDANCE),
-                Arguments.arguments(LocalTime.of(13, 1), AttendanceStatus.TARDINESS),
+                Arguments.arguments(LocalTime.of(12, 5), AttendanceStatus.ATTENDANCE),
+                Arguments.arguments(LocalTime.of(13, 30), AttendanceStatus.TARDINESS),
                 Arguments.arguments(LocalTime.of(13, 31), AttendanceStatus.ABSENCE)
         );
     }
