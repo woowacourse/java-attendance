@@ -27,4 +27,8 @@ public class Attendance {
     public List<LocalDateTime> getAttendanceLog() {
         return checkInTimes.getAttendanceLog(LocalDateTime.now());
     }
+
+    public LocalDateTime modify(LocalDateTime time) {
+        return checkInTimes.modify(CheckInTime.of(time));
+    }
 }

@@ -22,12 +22,17 @@ public class CheckInTimes {
         checkInTimes.add(checkInTime);
     }
 
-    public void modify(CheckInTime checkInTime) {
+    public LocalDateTime modify(CheckInTime checkInTime) {
         validateModifiable(checkInTime);
 
-        checkInTimes.stream()
+        CheckInTime target = checkInTimes.stream()
                 .filter(time -> time.isSameDate(checkInTime))
-                .forEach(time -> time.modify(checkInTime));
+                .findAny().orElseThrow(() -> new IllegalArgumentException("CheckInTime is not found"));
+
+        LocalDateTime before = target.toLocalDateTime();
+        target.modify(checkInTime);
+
+        return before;
     }
 
     public List<LocalDateTime> getAttendanceLog(LocalDateTime localDateTime) {

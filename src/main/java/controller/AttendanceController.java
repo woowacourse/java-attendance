@@ -1,21 +1,58 @@
 package controller;
 
-import domain.Attendance;
-import domain.Attendances;
-import domain.CheckInTimes;
-import domain.Crew;
+import domain.*;
 import util.CsvParser;
+import view.InputView;
+import view.OutputView;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
 public class AttendanceController {
 
-    public static void run() {
+    private final InputView inputView;
+    private final OutputView outputView;
+
+    public AttendanceController(InputView inputView,
+                                OutputView outputView) {
+        this.inputView = inputView;
+        this.outputView = outputView;
+    }
+
+    public void run() {
         Attendances attendances = registerAttendances();
 
+//        checkIn(attendances);
+
+        // modifyCheckInTime(attendances);
+
+
+    }
+
+    private void modifyCheckInTime(Attendances attendances) {
+        String name = inputView.readNickNameForModify();
+        Attendance attendanceByName = attendances.findAttendanceByName(name);
+        int day = Integer.parseInt(inputView.readDateForModify());
+        LocalDate date = LocalDate.of(2024, 12, day);
+        String s = inputView.readTimeForModify();
+        LocalTime time = LocalTime.parse(s, DateTimeFormatter.ofPattern("HH:mm"));
+        LocalDateTime checkInTime = LocalDateTime.of(date, time);
+        LocalDateTime before = attendanceByName.modify(checkInTime);
+        outputView.printModifyCheckInTime(CheckInTime.of(before), CheckInTime.of(checkInTime));
+    }
+
+    private void checkIn(Attendances attendances) {
+        String name = inputView.readNickNameForCheckIn();
+        Attendance attendanceByName = attendances.findAttendanceByName(name);
+        String s = inputView.readTimeForCheckIn();
+        LocalTime parsed = LocalTime.parse(s, DateTimeFormatter.ofPattern("HH:mm"));
+        LocalDateTime checkInTime = LocalDateTime.of(LocalDate.now(), parsed);
+        attendanceByName.checkIn(checkInTime);
+        outputView.printTodayCheckInTime(CheckInTime.of(checkInTime));
     }
 
     private static Attendances registerAttendances() {

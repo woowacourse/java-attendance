@@ -11,4 +11,8 @@ public class OutputView {
 
         System.out.println(localDateTime);
     }
+
+    public void printModifyCheckInTime(CheckInTime before, CheckInTime after) {
+        System.out.println(before.toLocalDateTime() + " -> " + after.toLocalDateTime());
+    }
 }
