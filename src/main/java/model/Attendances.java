@@ -4,7 +4,9 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 public class Attendances {
@@ -41,11 +43,25 @@ public class Attendances {
         return attendance;
     }
 
-    public List<Attendance> findByCrewAndMonth(Crew crew, int month) {
-        return attendances.stream()
+    public Attendances findByCrewAndMonth(Crew crew, int month) {
+        return Attendances.of(attendances.stream()
                 .filter(attendance -> attendance.findByCrewAndMonth(crew, month))
                 .sorted(Comparator.comparing(Attendance::getCheckInTime))
-                .toList();
+                .toList()
+        );
+    }
+
+    public Map<AttendanceType, Integer> calculateAttendanceTypeCount() {
+        Map<AttendanceType, Integer> attendanceTypesCount = new HashMap<>();
+
+        for (AttendanceType attendanceType : AttendanceType.values()) {
+            long attendanceTypeCount = attendances.stream()
+                    .filter(attendance -> attendance.getAttendanceType().equals(attendanceType))
+                    .count();
+            attendanceTypesCount.put(attendanceType, (int) attendanceTypeCount);
+        }
+
+        return attendanceTypesCount;
     }
 
     public Optional<Attendance> find(Crew crew, LocalDate localDate) {
