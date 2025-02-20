@@ -12,6 +12,9 @@ public class LocalDateTimePrintFormatter {
         String day = AttendanceCalculatorByDay.findDayByDayOfWeekValue(dayOfWeek);
         DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("HH:mm");
         String time = localDateTime.format(dateTimeFormatter);
+        if (time.equals("00:00")){
+            time = "--:--";
+        }
         return month + "월 " + date + "일 " + day +" "+ time + " ";
     }
 }
