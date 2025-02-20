@@ -1,5 +1,6 @@
 package controller;
 
+import Constant.DateFormatInformation;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -82,9 +83,10 @@ public class Controller {
         student.updateState(modifyLocalDateTime);
         String recordAfterModify = student.findStateByLocalDateTime(modifyLocalDateTime);
 
-        String localDateTimeFormat3 = modifyLocalDateTime.format(DateTimeFormatter.ofPattern("HH:mm" + " (" + recordAfterModify + ") 수정 완료!"));
+        String localDateTimeFormat = modifyLocalDateTime.format(DateTimeFormatter.ofPattern(
+                DateFormatInformation.LOCAL_TIME_FORMATTER + " (" + recordAfterModify + ") 수정 완료!"));
 
-        OutputView.printSecondMenu(recordBeforeModify, localDateTimeFormat3);
+        OutputView.printSecondMenu(recordBeforeModify, localDateTimeFormat);
     }
 
     private LocalDateTime getLocalDateTimeToModify() {
