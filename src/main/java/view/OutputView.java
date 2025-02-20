@@ -4,6 +4,7 @@ import dto.AttendanceRecordResponse;
 import dto.CrewPenaltyResponse;
 import dto.ModifyAttendanceResponse;
 import dto.TotalRecordsResponse;
+import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.TextStyle;
 import java.util.Comparator;
@@ -12,7 +13,8 @@ import java.util.Locale;
 
 public class OutputView {
     public void displayPrompt() {
-        System.out.println(OutputMessages.DATE_PROMPT.getFormat());
+        System.out.println(
+                OutputMessages.DATE_PROMPT.format(LocalDate.now().getDayOfMonth(), LocalDate.now().getDayOfWeek()));
         System.out.println(OutputMessages.FIRST_FUNCTION_PROMPT.getFormat());
         System.out.println(OutputMessages.SECOND_FUNCTION_PROMPT.getFormat());
         System.out.println(OutputMessages.THIRD_FUNCTION_PROMPT.getFormat());
@@ -83,5 +85,10 @@ public class OutputView {
             System.out.printf("- %s: 결석 %d회, 지각 %d회 (%s)%n",
                     response.name(), response.absentCount(), response.lateCount(), response.penaltyStatus());
         }
+    }
+
+    public void displayErrorMessage(String errorMessage) {
+        System.out.println(errorMessage);
+        displaySpacing();
     }
 }
