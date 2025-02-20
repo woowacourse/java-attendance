@@ -1,5 +1,8 @@
 package attendance.view;
 
+import static attendance.domain.AttendanceStatus.ABSENCE;
+import static attendance.domain.AttendanceStatus.LATENESS;
+
 import attendance.domain.AttendanceChecker;
 import attendance.domain.AttendanceRepository;
 import attendance.domain.AttendanceStatus;
@@ -9,6 +12,8 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.TextStyle;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
@@ -19,6 +24,9 @@ public class OutputView {
     private static final String ATTENDANCE_STATUS_FORMAT = "%s: %d회";
     private static final String ABSENCE_TIME_FORMAT = "--:--";
     private static final String WARNING_FORMAT = "%s 대상자입니다.";
+    private static final String WARNING_CREW_HEADER_FORMAT = "제적 위험자 조회 결과";
+    private static final String WARNING_CREW_RESULT_FORMAT = "- %s: 결석 %d회, 지각 %d회 (%s)";
+
 
     public static void printAddedAttendance(LocalDateTime localDateTime) {
         System.out.println();
@@ -110,6 +118,28 @@ public class OutputView {
         System.out.println();
         System.out.printf(WARNING_FORMAT, level.getLevel());
         System.out.println();
+    }
+
+    public static void printWarningCrews(AttendanceRepository attendanceRepository){
+        System.out.println(WARNING_CREW_HEADER_FORMAT);
+
+        int today = LocalDate.now().getDayOfMonth();
+        Arrays.stream(WarningLevel.values()).sequential().forEach(level -> {
+            List<String> names = attendanceRepository.findByWarningLevel(level, today);
+            List<String> formatted = format(attendanceRepository, names, today);
+            formatted.forEach(System.out::println);
+        });
+    }
+
+    private static List<String> format(final AttendanceRepository attendanceRepository, final List<String> names,
+                                  final int today) {
+        return names.stream().map(name -> {
+            final Map<AttendanceStatus, Integer> crewStatuses = attendanceRepository.queryCrewAttendanceStatus(
+                    name, today);
+            WarningLevel level = WarningLevel.calculateLevel(crewStatuses);
+
+            return String.format(WARNING_CREW_RESULT_FORMAT, name, crewStatuses.get(ABSENCE), crewStatuses.get(LATENESS), level.getLevel());
+        }).toList();
     }
 
 }

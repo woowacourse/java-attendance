@@ -54,4 +54,17 @@ public class AttendanceRepository {
         Attendance crewAttendance = findByName(name);
         return crewAttendance.countAttendanceStatus(today);
     }
+
+    public List<String> queryAllNames() {
+        return attendances.stream().map(Attendance::getName).toList();
+    }
+
+    public List<String> findByWarningLevel(final WarningLevel warningLevel, int today) {
+        return attendances.stream().map(Attendance::getName).filter(name -> {
+            final Map<AttendanceStatus, Integer> crewStatuses = queryCrewAttendanceStatus(name, today);
+            WarningLevel crewWarningLevel = WarningLevel.calculateLevel(crewStatuses);
+            return crewWarningLevel.equals(warningLevel);
+
+        }).toList();
+    }
 }

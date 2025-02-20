@@ -98,4 +98,8 @@ public class Attendance {
         updateTimestamp(today);
         return Collections.unmodifiableMap(timestamps);
     }
+
+    public String getName() {
+        return name;
+    }
 }

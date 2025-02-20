@@ -16,7 +16,8 @@ public class AttendanceController {
         AttendanceRepository attendanceRepository = initData();
 //        registerAttendance(attendanceRepository);
 //        modifyAttendance(attendanceRepository);
-        queryAttendance(attendanceRepository);
+//        queryAttendance(attendanceRepository);
+        queryWarningCrews(attendanceRepository);
     }
 
     private AttendanceRepository initData(){
@@ -43,5 +44,9 @@ public class AttendanceController {
     private void queryAttendance(AttendanceRepository attendanceRepository) {
         String name = InputView.readNickName();
         OutputView.printQueryAttendance(name, attendanceRepository);
+    }
+
+    private void queryWarningCrews(AttendanceRepository attendanceRepository) {
+        OutputView.printWarningCrews(attendanceRepository);
     }
 }
