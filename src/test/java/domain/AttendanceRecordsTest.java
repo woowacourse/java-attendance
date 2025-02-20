@@ -120,4 +120,39 @@ class AttendanceRecordsTest {
 
         assertThat(actualRecords.getSortedRecords()).isEqualTo(expectedRecords);
     }
+
+    @Test
+    @DisplayName("제적 위험자 대상 상태(경고)를 반환한다.")
+    void getDisciplinaryStatusWarningTest() {
+        AttendanceRecords actualRecords = new AttendanceRecords();
+        actualRecords.addRecord(AttendanceRecord.parse("2024-12-12 12:00"));
+        actualRecords.addRecord(AttendanceRecord.parse("2024-12-11 12:00"));
+
+        assertThat(actualRecords.getDisciplinaryStatus()).isEqualTo(DisciplinaryStatus.WARNING);
+    }
+
+    @Test
+    @DisplayName("제적 위험자 대상 상태(면담)를 반환한다.")
+    void getDisciplinaryStatusOneOnOneTest() {
+        AttendanceRecords actualRecords = new AttendanceRecords();
+        actualRecords.addRecord(AttendanceRecord.parse("2024-12-12 12:00"));
+        actualRecords.addRecord(AttendanceRecord.parse("2024-12-11 12:00"));
+        actualRecords.addRecord(AttendanceRecord.parse("2024-12-10 12:08"));
+
+        assertThat(actualRecords.getDisciplinaryStatus()).isEqualTo(DisciplinaryStatus.ONE_ON_ONE);
+    }
+
+    @Test
+    @DisplayName("제적 위험자 대상 상태(제적)를 반환한다.")
+    void getDisciplinaryStatusExpelledTest() {
+        AttendanceRecords actualRecords = new AttendanceRecords();
+        actualRecords.addRecord(AttendanceRecord.parse("2024-12-13 12:08"));
+        actualRecords.addRecord(AttendanceRecord.parse("2024-12-12 12:00"));
+        actualRecords.addRecord(AttendanceRecord.parse("2024-12-11 12:00"));
+        actualRecords.addRecord(AttendanceRecord.parse("2024-12-10 12:08"));
+        actualRecords.addRecord(AttendanceRecord.parse("2024-12-09 14:08"));
+        actualRecords.addRecord(AttendanceRecord.parse("2024-12-06 14:08"));
+
+        assertThat(actualRecords.getDisciplinaryStatus()).isEqualTo(DisciplinaryStatus.EXPELLED);
+    }
 }

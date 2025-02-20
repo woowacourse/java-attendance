@@ -107,9 +107,7 @@ public class CrewAttendanceRecords {
         for (Map.Entry<Crew, AttendanceRecords> recordsEntry : crewAttendanceRecords.entrySet()) {
             Crew crew = recordsEntry.getKey();
             AttendanceRecords attendanceRecords = recordsEntry.getValue();
-            int absentCount = attendanceRecords.getAbsentCount();
-            int tardyCount = attendanceRecords.getTardyCount();
-            DisciplinaryStatus status = DisciplinaryStatus.getStatus(absentCount, tardyCount);
+            DisciplinaryStatus status = attendanceRecords.getDisciplinaryStatus();
             if (status != DisciplinaryStatus.NONE) {
                 warnedCrews.add(crew);
             }
@@ -127,9 +125,7 @@ public class CrewAttendanceRecords {
         }));
         crews.sort(Comparator.comparing(crew -> {
             AttendanceRecords attendanceRecords = crewAttendanceRecords.get(crew);
-            int absentCount = attendanceRecords.getAbsentCount();
-            int tardyCount = attendanceRecords.getTardyCount();
-            DisciplinaryStatus status = DisciplinaryStatus.getStatus(absentCount, tardyCount);
+            DisciplinaryStatus status = attendanceRecords.getDisciplinaryStatus();
             return status.ordinal() * -1;
         }));
         return crews;

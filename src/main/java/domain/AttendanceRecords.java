@@ -57,4 +57,10 @@ public class AttendanceRecords {
     public List<AttendanceRecord> getSortedRecords() {
         return attendanceRecords.stream().sorted(Comparator.comparing(AttendanceRecord::getDate)).toList();
     }
+
+    public DisciplinaryStatus getDisciplinaryStatus() {
+        int absentCount = getAbsentCount();
+        int tardyCount = getTardyCount();
+        return DisciplinaryStatus.getStatus(absentCount, tardyCount);
+    }
 }
