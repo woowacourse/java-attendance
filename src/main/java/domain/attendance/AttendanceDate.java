@@ -49,11 +49,11 @@ public class AttendanceDate implements Comparable<AttendanceDate> {
     @Override
     public int compareTo(AttendanceDate compareAttendanceDate) {
         if (this.dateTime.isBefore(compareAttendanceDate.dateTime)) {
-            return 1;
+            return -1;
         }
         if (this.dateTime.isEqual(compareAttendanceDate.dateTime)) {
             return 0;
         }
-        return -1;
+        return 1;
     }
 }

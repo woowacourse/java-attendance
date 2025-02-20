@@ -8,7 +8,8 @@ import java.time.format.DateTimeParseException;
 
 public class DateTimeUtil {
     private final static DateTimeFormatter localDateFormatter = DateTimeFormatter.ofPattern("MM월 dd일");
-    private final static DateTimeFormatter localTimeFormatter = DateTimeFormatter.ofPattern("hh시 mm분");
+    private final static DateTimeFormatter localTimeFormatter = DateTimeFormatter.ofPattern("hh:mm");
+    private final static DateTimeFormatter localTimeKoreanFormatter = DateTimeFormatter.ofPattern("hh시 mm분");
 
     public static int getDayOfWeek(LocalDateTime localDateTime) {
         return localDateTime.getDayOfWeek().getValue();
@@ -17,7 +18,7 @@ public class DateTimeUtil {
     public static String convertLocalDateTimeToString(LocalDateTime localDateTime) {
         try {
             String parsedLocalDate = localDateTime.format(localDateFormatter);
-            String parsedLocalTime = localDateTime.format(localTimeFormatter);
+            String parsedLocalTime = localDateTime.format(localTimeKoreanFormatter);
             return parsedLocalDate + " " + convertDayOfWeekToString(localDateTime.getDayOfWeek().getValue()) + " " +
                     parsedLocalTime;
         } catch (DateTimeParseException exception) {
@@ -33,6 +34,15 @@ public class DateTimeUtil {
             throw new IllegalArgumentException("");
         }
     }
+
+    public static String convertLocalDateTimeToTimeString(LocalDateTime localDateTime) {
+        try {
+            return localDateTime.format(localTimeFormatter);
+        } catch (DateTimeParseException exception) {
+            throw new IllegalArgumentException("");
+        }
+    }
+
 
     private static String convertDayOfWeekToString(int dayOfWeek) {
         if (dayOfWeek == 1) {

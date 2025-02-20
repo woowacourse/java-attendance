@@ -15,6 +15,10 @@ public enum AttendanceWarning {
         this.absenseCount = absenseCount;
     }
 
+    public String getStatus() {
+        return status;
+    }
+
     public static AttendanceWarning determineAttendanceWarning(int absenceIncludingTardyCount) {
         for (AttendanceWarning value : values()) {
             if (value.absenseCount <= absenceIncludingTardyCount) {

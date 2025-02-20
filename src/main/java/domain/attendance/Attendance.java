@@ -17,8 +17,7 @@ public class Attendance {
             }
 
             attendanceDates.add(new AttendanceDate(
-                    LocalDateTime.of(cursorDate.getYear(), cursorDate.getMonth(), cursorDate.getDayOfMonth(), 23,
-                            59)));
+                    LocalDateTime.of(cursorDate.getYear(), cursorDate.getMonth(), cursorDate.getDayOfMonth(), 23, 59)));
         }
     }
 
@@ -39,7 +38,6 @@ public class Attendance {
         }
         throw new IllegalArgumentException("");
     }
-
 
     public AttendanceState attend(LocalDateTime attendDateTime) {
         if (!attendDateTime.isBefore(LocalDateTime.now())) {
@@ -90,6 +88,10 @@ public class Attendance {
                 .filter(attendanceDate -> attendanceDate.calculateAttendanceState()
                         .equals(AttendanceState.TARDY))
                 .count();
+    }
+
+    public List<AttendanceDate> getAttendanceDates() {
+        return attendanceDates;
     }
 
     public int countAbsenceIncludingTardy() {

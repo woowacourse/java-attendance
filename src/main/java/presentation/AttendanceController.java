@@ -3,7 +3,10 @@ package presentation;
 import domain.Crew;
 import domain.CrewGroup;
 import domain.attendance.Attendance;
+import domain.attendance.AttendanceDate;
 import domain.attendance.AttendanceState;
+import dto.ResponseAttendanceEditStateDto;
+import dto.ResponseCrewAttendanceStateDto;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -56,7 +59,8 @@ public class AttendanceController {
                 Attendance attendance = crew.getAttendance();
                 AttendanceState attendanceState = attendance.attend(attendanceDateTime);
 
-                OutputView.printAttend(DateTimeUtil.convertLocalDateTimeToString(attendanceDateTime), attendanceState);
+                OutputView.printAttendanceState(DateTimeUtil.convertLocalDateTimeToString(attendanceDateTime),
+                        attendanceState);
             }
             if (command.equals("2")) {
                 // 출석 수정
@@ -64,11 +68,36 @@ public class AttendanceController {
                 String textAttendanceDay = InputView.inputAttendanceDay();
                 String textAttendanceTime = InputView.inputAttendanceTime();
 
+                int attendanceDay = InputParser.parseInt(textAttendanceDay);
+
+                Crew crew = crewGroup.findCrew(nickname);
+
+                LocalDate findLocalDate = LocalDate.of(LocalDate.now().getYear(),
+                        LocalDateTime.now().getMonthValue(), attendanceDay);
+
+                // before
+                Attendance attendance = crew.getAttendance();
+                AttendanceDate attendanceDate = attendance.findAttendanceDate(findLocalDate);
+                String beforeEditDate = DateTimeUtil.convertLocalDateTimeToString(
+                        attendanceDate.checkAttendanceTime());
+                AttendanceState beforeState = attendanceDate.calculateAttendanceState();
+
+                // after
+                LocalDateTime afterEditDateTime = DateTimeUtil.convertStringToLocalDateTime(findLocalDate,
+                        textAttendanceTime);
+                String afterEditTime = DateTimeUtil.convertLocalDateTimeToTimeString(afterEditDateTime);
+
+                attendanceDate.editDateTime(afterEditDateTime);
+                AttendanceState afterState = attendanceDate.calculateAttendanceState();
+
+                OutputView.printEditState(
+                        new ResponseAttendanceEditStateDto(beforeEditDate, beforeState, afterEditTime, afterState));
             }
             if (command.equals("3")) {
-                // 크루 별 출석 기록 확인
                 String nickname = InputView.inputNickname();
+                Crew findCrew = crewGroup.findCrew(nickname);
 
+                OutputView.printAttendanceStatusCrew(ResponseCrewAttendanceStateDto.of(findCrew.getName(), findCrew.getAttendance()));
             }
             if (command.equals("4")) {
                 // 제적 위험자 확인

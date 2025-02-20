@@ -19,5 +19,13 @@ public class InputParser {
         }
         return crewInitAttendanceDates;
     }
+
+    public static int parseInt(String textNumber) {
+        try{
+            return Integer.parseInt(textNumber);
+        } catch (NumberFormatException e){
+            throw  new IllegalArgumentException("");
+        }
+    }
 }
 
