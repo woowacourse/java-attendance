@@ -8,6 +8,7 @@ import domain.Nickname;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import util.Constants;
 import util.CrewGenerator;
 import util.CsvReader;
@@ -48,12 +49,20 @@ public class AttendanceController {
 
     }
 
-    private static void processAttendanceRecordByCrew(final Crews crews) {
+    private static void processCheckAttendees(final Crews crews, final LocalDateTime fixDateTime) {
         String inputNickName = InputView.readNickName();
         Nickname nickname = new Nickname(inputNickName);
         Crew crew = crews.findByNickname(nickname);
-
-        OutputView.printCrewAttendances(crew);
+        String inputTime = InputView.readDateTime();
+        final LocalDate localDate = fixDateTime.toLocalDate();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");
+        final LocalTime parsedInputTime = LocalTime.parse(inputTime, formatter);
+        if (crew.isAttended(LocalDateTime.of(localDate, parsedInputTime))) {
+            throw new IllegalArgumentException("이미 출석했습니다. 다음에는 수정기능을 이용해주세요.");
+        }
+        final Attendance attendance = new Attendance(LocalDateTime.of(localDate, parsedInputTime));
+        crew.add(attendance);
+        OutputView.printAttendance(attendance);
     }
 
     private static void processEditAttendance(final Crews crews) {
@@ -73,18 +82,12 @@ public class AttendanceController {
         OutputView.printUpdateAttendance(oldAttendance, newAttendance);
     }
 
-    private static void processCheckAttendees(final Crews crews, final LocalDateTime fixDateTime) {
+    private static void processAttendanceRecordByCrew(final Crews crews) {
         String inputNickName = InputView.readNickName();
         Nickname nickname = new Nickname(inputNickName);
         Crew crew = crews.findByNickname(nickname);
-        String inputDateTime = InputView.readDateTime();
-        final LocalDate localDate = fixDateTime.toLocalDate();
-        final LocalTime dateTime = LocalTime.parse(inputDateTime);
-        if (crew.isAttended(LocalDateTime.of(localDate, dateTime))) {
-            throw new IllegalArgumentException("이미 출석했습니다. 다음에는 수정기능을 이용해주세요.");
-        }
-        final Attendance attendance = new Attendance(LocalDateTime.of(localDate, dateTime));
-        crew.add(attendance);
-        OutputView.printAttendance(attendance);
+
+        OutputView.printCrewAttendances(crew);
     }
 }
+
