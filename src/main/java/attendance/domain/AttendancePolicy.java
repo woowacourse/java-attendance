@@ -9,6 +9,8 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 
 public class AttendancePolicy {
+    private AttendancePolicy() {}
+
     public static AttendanceType checkAttendanceType(LocalDate localDate, LocalTime localTime) {
         DayOfWeek dayOfWeek = localDate.getDayOfWeek();
         if (dayOfWeek == DayOfWeek.MONDAY) {

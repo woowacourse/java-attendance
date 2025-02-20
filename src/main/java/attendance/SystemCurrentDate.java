@@ -1,6 +1,5 @@
 package attendance;
 
-import attendance.CurrentDate;
 import java.time.LocalDate;
 
 public class SystemCurrentDate implements CurrentDate {
