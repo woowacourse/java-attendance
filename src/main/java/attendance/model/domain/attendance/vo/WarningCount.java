@@ -21,11 +21,11 @@ public class WarningCount {
     }
 
     public int getPolicyAppliedAbsenceCount() {
-        return absenceCount.getPolicyAppliedAbsenceCount(lateCount);
+        return absenceCount.getPolicyAppliedValue(lateCount);
     }
 
     public int getPolicyAppliedLateCount() {
-        return lateCount.calculatePolicyAppliedLateCount();
+        return lateCount.calculatePolicyValue();
     }
 
     public int getAbsenceCount() {

@@ -31,7 +31,7 @@ public class AbsenceCount {
                 .toList();
     }
 
-    public int getPolicyAppliedAbsenceCount(LateCount lateCount) {
+    public int getPolicyAppliedValue(LateCount lateCount) {
         return value + lateCount.calculatePolicyAppliedAbsenceCount();
     }
 
