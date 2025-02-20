@@ -3,9 +3,11 @@ package controller;
 import constant.Command;
 import converter.StringConverter;
 import dto.AttendanceResult;
+import dto.CrewsAttendanceResult;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import model.Attendance;
 import model.Attendances;
@@ -32,24 +34,26 @@ public class AttendanceController {
         Crews crews = stringConverter.convertToCrews(rawAttendances);
         Attendances attendances = stringConverter.convertToAttendances(rawAttendances, crews);
 
-        String rawCommand = inputView.readCommand();
-        Command command = stringConverter.convertToCommand(rawCommand);
-        if (command.equals(Command.ONE)) {
-            Attendance attendance = checkInAttendance(attendances);
-            outputView.printCheckInResult(attendance);
-        }
-        if (command.equals(Command.TWO)) {
-            modifyAttendance(attendances);
-        }
-        if (command.equals(Command.THREE)) {
-            checkAttendance(attendances);
-        }
-        if (command.equals(Command.FOUR)) {
+        while (true) {
+            String rawCommand = inputView.readCommand();
+            Command command = stringConverter.convertToCommand(rawCommand);
+            if (command.equals(Command.ONE)) {
+                Attendance attendance = checkInAttendance(attendances);
+                outputView.printCheckInResult(attendance);
+            }
+            if (command.equals(Command.TWO)) {
+                modifyAttendance(attendances);
+            }
+            if (command.equals(Command.THREE)) {
+                checkAttendance(attendances);
+            }
+            if (command.equals(Command.FOUR)) {
 
+            }
+            if (command.equals(Command.QUIT)) {
+                break;
+            }
         }
-        if (command.equals(Command.QUIT)) {
-        }
-
     }
 
     private Attendance checkInAttendance(Attendances attendances) {
@@ -84,5 +88,12 @@ public class AttendanceController {
 
         AttendanceResult attendanceResult = AttendanceResult.of(filteredAttendances);
         outputView.printAttendanceRecord(crew, attendanceResult);
+    }
+
+    private void checkPunishment(Crews crews, Attendances attendances) {
+        Map<Crew, Attendances> crewsAttendance = attendances.findAll(crews, LocalDate.now().getMonthValue());
+        CrewsAttendanceResult crewsAttendanceResult = CrewsAttendanceResult.of(crewsAttendance);
+
+        //outputView.
     }
 }

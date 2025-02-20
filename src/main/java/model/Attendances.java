@@ -4,7 +4,9 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 public class Attendances {
@@ -39,6 +41,15 @@ public class Attendances {
         checkIn(attendance);
 
         return attendance;
+    }
+
+    public Map<Crew, Attendances> findAll(Crews crews, int month) {
+        Map<Crew, Attendances> crewsAttendances = new HashMap<>();
+        for (Crew crew : crews.getCrews()) {
+            Attendances attendances = findByCrewAndMonth(crew, month);
+            crewsAttendances.put(crew, attendances);
+        }
+        return crewsAttendances;
     }
 
     public Attendances findByCrewAndMonth(Crew crew, int month) {
