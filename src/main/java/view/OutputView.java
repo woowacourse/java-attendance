@@ -1,18 +1,32 @@
 package view;
 
 import domain.Attendance;
+import domain.AttendanceStatus;
 import domain.CheckInTime;
 import domain.PenaltyStatus;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.TextStyle;
 import java.util.List;
+import java.util.Locale;
 
 public class OutputView {
 
     public void printTodayCheckInTime(CheckInTime time) {
         LocalDateTime localDateTime = time.toLocalDateTime();
+        AttendanceStatus attendanceStatus = time.getAttendanceStatus();
+        System.out.println(formatDateTime(localDateTime) + " (" + attendanceStatusToString(attendanceStatus) + ")");
+    }
 
-        System.out.println(localDateTime);
+    private String attendanceStatusToString(AttendanceStatus attendanceStatus) {
+        if (attendanceStatus == AttendanceStatus.PRESENCE) {
+            return "출석";
+        }
+        if (attendanceStatus == AttendanceStatus.LATE) {
+            return "지각";
+        }
+        return "결석";
     }
 
     public void printModifyCheckInTime(CheckInTime before, CheckInTime after) {
@@ -38,5 +52,17 @@ public class OutputView {
         for (Attendance attendance : dangerCrews) {
             System.out.println(attendance);
         }
+    }
+
+    private String formatDateTime(LocalDateTime localDateTime) {
+        DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("MM월 dd일", Locale.KOREAN);
+        String datePart = localDateTime.format(dateFormatter);
+
+        String dayOfWeek = localDateTime.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.KOREAN);
+
+        DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm");
+        String timePart = localDateTime.format(timeFormatter);
+
+        return datePart + " " + dayOfWeek + " " + timePart;
     }
 }
