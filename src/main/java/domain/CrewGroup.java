@@ -19,10 +19,6 @@ public class CrewGroup {
         return new CrewGroup(crews);
     }
 
-//    private boolean has(String crewName) {
-//        return this.crews.contains(crewName);
-//    }
-
     public Crew findCrew(String crewName) {
         Optional<Crew> findCrew = crews.stream().filter(crew -> crew.getName().equals(crewName)).findFirst();
         if (findCrew.isEmpty()) {
