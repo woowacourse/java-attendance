@@ -11,7 +11,7 @@ public enum Command {
     QUIT("Q"),
     ;
 
-    private String value;
+    private final String value;
 
     Command(String value) {
         this.value = value;

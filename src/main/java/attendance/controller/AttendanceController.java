@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.function.Function;
 
 public class AttendanceController {
 
@@ -80,40 +81,47 @@ public class AttendanceController {
     }
 
     private void doUpdateAttendance(LocalDateTime now) {
-        String nickname = inputView.inputNicknameForUpdateAttendance();
-        attendances.validateExistNickname(nickname);
-        LocalDateTime updateDateTime = getUpdateDateTime(now);
+        String nickname = inputExistNickname();
+        LocalDateTime updateDateTime = inputUpdateDateTime(now);
         boolean isFutureDate = updateDateTime.toLocalDate().isAfter(now.toLocalDate());
         if (isFutureDate) {
             throw new IllegalArgumentException("미래 날짜의 출석을 수정할 수 없습니다.");
         }
         Crew crew = new Crew(nickname);
         Optional<Attendance> beforeAttendance = findAttendanceByCrewAndDate(crew, updateDateTime);
-        attendances.update(new Attendance(crew, updateDateTime));
-        Optional<Attendance> afterAttendance = findAttendanceByCrewAndDate(crew, updateDateTime);
-        printModifiedAttendance(beforeAttendance, afterAttendance);
+        Attendance modifidedAttendance =  attendances.update(new Attendance(crew, updateDateTime));
+        printModifiedAttendance(beforeAttendance.orElse(null), modifidedAttendance);
     }
 
-    private Optional<Attendance> findAttendanceByCrewAndDate(Crew crew, LocalDateTime updateDateTime) {
-        return attendances.findByCrewAndDate(crew, updateDateTime.toLocalDate());
+    private String inputExistNickname() {
+        String nickname = inputView.inputNicknameForUpdateAttendance();
+        attendances.validateExistNickname(nickname);
+        return nickname;
     }
 
-    private LocalDateTime getUpdateDateTime(LocalDateTime now) {
+    private LocalDateTime inputUpdateDateTime(LocalDateTime now) {
         int targetUpdateDate = inputView.inputDateForUpdateAttendance();
         String rawTimeForUpdate = inputView.inputTimeForUpdateAttendance();
         LocalDate updateDate = LocalDate.of(now.getYear(), now.getMonth(), targetUpdateDate);
         return LocalDateTime.of(updateDate, toLocalTime(rawTimeForUpdate));
     }
 
-    private void printModifiedAttendance(Optional<Attendance> beforeAttendance, Optional<Attendance> afterAttendance) {
-        if (beforeAttendance.isPresent()) {
-            outputView.printModifiedAttendance(beforeAttendance.get(), afterAttendance.get(),
-                    calculateAttendanceType(beforeAttendance.get().getDateTime()),
-                    calculateAttendanceType(afterAttendance.get().getDateTime()));
-            return;
+    private Optional<Attendance> findAttendanceByCrewAndDate(Crew crew, LocalDateTime updateDateTime) {
+        return attendances.findByCrewAndDate(crew, updateDateTime.toLocalDate());
+    }
+
+    private void printModifiedAttendance(Attendance beforeAttendance, Attendance modifidedAttendance) {
+        outputView.printModifiedAttendance(beforeAttendance, modifidedAttendance,
+                getAttendanceType(beforeAttendance),
+                getAttendanceType(modifidedAttendance)
+        );
+    }
+
+    private AttendanceType getAttendanceType(Attendance attendance) {
+        if (attendance == null) {
+            return AttendanceType.ABSENCE;
         }
-        outputView.printModifiedAttendance(null, afterAttendance.get(),
-                AttendanceType.ABSENCE, calculateAttendanceType(afterAttendance.get().getDateTime()));
+        return calculateAttendanceType(attendance.getDateTime());
     }
 
     private AttendanceType calculateAttendanceType(LocalDateTime dateTime) {
@@ -122,8 +130,7 @@ public class AttendanceController {
     }
 
     private void doAttendanceTimeline(LocalDateTime now) {
-        String nickname = inputView.inputNickname();
-        attendances.validateExistNickname(nickname);
+        String nickname = inputExistNickname();
 
         Crew crew = new Crew(nickname);
         Set<Attendance> attendanceHistory = attendances.findAllByCrewAndMonth(crew, now.getMonth());
@@ -164,10 +171,7 @@ public class AttendanceController {
                     allAttendanceHistory.get(crew), now.toLocalDate());
             int lateCount = attendanceTimeline.countByAttendanceType(AttendanceType.LATE);
             int absenceCount = attendanceTimeline.countByAttendanceType(AttendanceType.ABSENCE);
-            AttendanceWarningLevel level = AttendanceWarningLevel.judge(
-                    lateCount,
-                    absenceCount
-            );
+            AttendanceWarningLevel level = judgeWarningLevel(attendanceTimeline);
             crewAttendanceSummaries.add(new CrewAttendanceSummary(crew, lateCount, absenceCount, level));
         }
         return crewAttendanceSummaries;
@@ -176,14 +180,25 @@ public class AttendanceController {
     private List<CrewAttendanceSummary> sortCrewAttendanceSummaries(
             List<CrewAttendanceSummary> crewAttendanceSummaries) {
         return crewAttendanceSummaries.stream()
-                .sorted(Comparator
-                        .comparing(CrewAttendanceSummary::level)
-                        .reversed()
-                        .thenComparing(summary -> summary.absenceCount() + (summary.lateCount() / 3),
-                                Comparator.reverseOrder())
-                        .thenComparing(summary -> summary.crew().getNickname())
+                .sorted(sortWarningLevelDesc()
+                        .thenComparing(calculateTotalAbsentCount(), Comparator.reverseOrder())
+                        .thenComparing(getCrewNickname())
                 )
                 .toList();
+    }
+
+    private Comparator<CrewAttendanceSummary> sortWarningLevelDesc() {
+        return Comparator
+                .comparing(CrewAttendanceSummary::level)
+                .reversed();
+    }
+
+    private Function<CrewAttendanceSummary, Integer> calculateTotalAbsentCount() {
+        return summary -> summary.absenceCount() + AttendanceWarningLevel.calculateLateToAbsent(summary.lateCount);
+    }
+
+    private Function<CrewAttendanceSummary, String> getCrewNickname() {
+        return summary -> summary.crew().getNickname();
     }
 
     public record CrewAttendanceSummary(

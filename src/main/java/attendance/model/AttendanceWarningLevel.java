@@ -18,10 +18,14 @@ public enum AttendanceWarningLevel {
     }
 
     public static AttendanceWarningLevel judge(int lateCount, int absenceCount) {
-        int totalAbsentCount = absenceCount + (lateCount / 3);
+        int totalAbsentCount = calculateLateToAbsent(lateCount) + absenceCount;
         return Arrays.stream(values())
                 .filter(level -> level.isMatch.apply(totalAbsentCount))
                 .findFirst()
                 .orElse(CLEAN);
+    }
+
+    public static int calculateLateToAbsent(int lateCount) {
+        return lateCount / 3;
     }
 }
