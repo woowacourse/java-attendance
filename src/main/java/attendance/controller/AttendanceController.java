@@ -73,32 +73,35 @@ public class AttendanceController {
     }
 
     private void doAttendance(LocalDateTime now) {
-        String nickname = inputExistNickname();
-        String rawAttendanceTime = inputView.inputAttendanceTime();
-        LocalTime attendanceTime = toLocalTime(rawAttendanceTime);
-        Crew crew = new Crew(nickname);
-        LocalDateTime attendanceDateTime = LocalDateTime.of(now.toLocalDate(), attendanceTime);
-        attendances.add(new Attendance(crew, attendanceDateTime));
-        outputView.printCheckAttendance(attendanceDateTime, calculateAttendanceType(attendanceDateTime));
+        Attendance attendance = createAttendance(now);
+        attendances.add(attendance);
+        outputView.printCheckAttendance(attendance.getDateTime(), calculateAttendanceType(attendance.getDateTime()));
     }
 
-    private void doUpdateAttendance(LocalDateTime now) {
-        String nickname = inputExistNicknameForUpdate();
-        LocalDateTime updateDateTime = inputUpdateDateTime(now);
-        boolean isFutureDate = updateDateTime.toLocalDate().isAfter(now.toLocalDate());
-        if (isFutureDate) {
-            throw new IllegalArgumentException("미래 날짜의 출석을 수정할 수 없습니다.");
-        }
-        Crew crew = new Crew(nickname);
-        Optional<Attendance> beforeAttendance = findAttendanceByCrewAndDate(crew, updateDateTime);
-        Attendance modifidedAttendance =  attendances.update(new Attendance(crew, updateDateTime));
-        printModifiedAttendance(beforeAttendance.orElse(null), modifidedAttendance);
+    private Attendance createAttendance(LocalDateTime now) {
+        Crew crew = new Crew(inputExistNickname());
+        LocalDateTime attendanceDateTime = inputAttendanceDateTime(now);
+        return new Attendance(crew, attendanceDateTime);
     }
 
     private String inputExistNickname() {
         String nickname = inputView.inputNickname();
         attendances.validateExistNickname(nickname);
         return nickname;
+    }
+
+    private LocalDateTime inputAttendanceDateTime(LocalDateTime now) {
+        String rawAttendanceTime = inputView.inputAttendanceTime();
+        LocalTime attendanceTime = toLocalTime(rawAttendanceTime);
+        return LocalDateTime.of(now.toLocalDate(), attendanceTime);
+    }
+
+    private void doUpdateAttendance(LocalDateTime now) {
+        Crew crew = new Crew(inputExistNicknameForUpdate());
+        LocalDateTime updateDateTime = inputUpdateDateTime(now);
+        Optional<Attendance> beforeAttendance = findAttendanceByCrewAndDate(crew, updateDateTime);
+        Attendance modifidedAttendance = attendances.update(new Attendance(crew, updateDateTime));
+        printModifiedAttendance(beforeAttendance.orElse(null), modifidedAttendance);
     }
 
     private String inputExistNicknameForUpdate() {
@@ -111,7 +114,16 @@ public class AttendanceController {
         int targetUpdateDate = inputView.inputDateForUpdateAttendance();
         String rawTimeForUpdate = inputView.inputTimeForUpdateAttendance();
         LocalDate updateDate = LocalDate.of(now.getYear(), now.getMonth(), targetUpdateDate);
-        return LocalDateTime.of(updateDate, toLocalTime(rawTimeForUpdate));
+        LocalDateTime updateDateTime = LocalDateTime.of(updateDate, toLocalTime(rawTimeForUpdate));
+        validateFutureDate(now, updateDateTime);
+        return updateDateTime;
+    }
+
+    private void validateFutureDate(LocalDateTime now, LocalDateTime updateDateTime) {
+        boolean isFutureDate = updateDateTime.toLocalDate().isAfter(now.toLocalDate());
+        if (isFutureDate) {
+            throw new IllegalArgumentException("미래 날짜의 출석을 수정할 수 없습니다.");
+        }
     }
 
     private Optional<Attendance> findAttendanceByCrewAndDate(Crew crew, LocalDateTime updateDateTime) {
@@ -138,14 +150,16 @@ public class AttendanceController {
     }
 
     private void doAttendanceTimeline(LocalDateTime now) {
-        String nickname = inputExistNickname();
-        Crew crew = new Crew(nickname);
-        Set<Attendance> attendanceHistory = attendances.findAllByCrewAndMonth(crew, now.getMonth());
-        AttendanceTimeline attendanceTimeline = AttendanceTimeline.generateAttendanceTimelineUntilDate(
-                attendanceHistory, now.toLocalDate());
-        outputView.printAttendanceTimelineInMonth(nickname, attendanceTimeline);
+        Crew crew = new Crew(inputExistNickname());
+        AttendanceTimeline attendanceTimeline = generateAttendanceTimelineByCrew(now, crew);
+        outputView.printAttendanceTimelineInMonth(crew.getNickname(), attendanceTimeline);
         printCountOfAttendanceType(attendanceTimeline);
         outputView.printWarningLevel(judgeWarningLevel(attendanceTimeline));
+    }
+
+    private AttendanceTimeline generateAttendanceTimelineByCrew(LocalDateTime now, Crew crew) {
+        Set<Attendance> attendanceHistory = attendances.findAllByCrewAndMonth(crew, now.getMonth());
+        return AttendanceTimeline.generateAttendanceTimelineUntilDate(attendanceHistory, now.toLocalDate());
     }
 
     private void printCountOfAttendanceType(AttendanceTimeline attendanceTimeline) {
@@ -163,11 +177,13 @@ public class AttendanceController {
     }
 
     private void doEmergencyCheck(LocalDateTime now) {
+        List<CrewAttendanceSummary> crewAttendanceSummaries = createAllAttendanceSummaries(now);
+        outputView.printEmergencyCrews(sortCrewAttendanceSummaries(crewAttendanceSummaries));
+    }
+
+    private List<CrewAttendanceSummary> createAllAttendanceSummaries(LocalDateTime now) {
         Map<Crew, Set<Attendance>> allAttendanceHistory = attendances.findAllByMonth(now.getMonth());
-        List<CrewAttendanceSummary> crewAttendanceSummaries = createAllCrewAttendanceSummaries(
-                now, allAttendanceHistory);
-        List<CrewAttendanceSummary> sortedList = sortCrewAttendanceSummaries(crewAttendanceSummaries);
-        outputView.printEmergencyCrews(sortedList);
+        return createAllCrewAttendanceSummaries(now, allAttendanceHistory);
     }
 
     private List<CrewAttendanceSummary> createAllCrewAttendanceSummaries(LocalDateTime now,
@@ -184,9 +200,8 @@ public class AttendanceController {
         return crewAttendanceSummaries;
     }
 
-    private List<CrewAttendanceSummary> sortCrewAttendanceSummaries(
-            List<CrewAttendanceSummary> crewAttendanceSummaries) {
-        return crewAttendanceSummaries.stream()
+    private List<CrewAttendanceSummary> sortCrewAttendanceSummaries(List<CrewAttendanceSummary> summaries) {
+        return summaries.stream()
                 .sorted(sortWarningLevelDesc()
                         .thenComparing(calculateTotalAbsentCount(), Comparator.reverseOrder())
                         .thenComparing(getCrewNickname())
