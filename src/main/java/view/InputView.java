@@ -9,7 +9,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Scanner;
 
-import static domain.util.DateUtil.TODAY;
+import static global.util.DateUtil.TODAY;
 
 public class InputView {
     Scanner scanner;

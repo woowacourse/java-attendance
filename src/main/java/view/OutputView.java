@@ -1,6 +1,7 @@
 package view;
 
-import domain.util.DateUtil;
+import domain.AttendanceStatus;
+import global.util.DateUtil;
 import dto.CrewResponse;
 import java.time.LocalDate;
 import java.time.LocalTime;

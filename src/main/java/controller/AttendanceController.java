@@ -1,14 +1,14 @@
 package controller;
 
 import domain.Crews;
-import domain.util.DateUtil;
+import global.util.DateUtil;
 import view.InputView;
 import view.OutputView;
 
 import java.time.LocalTime;
 import java.time.format.DateTimeParseException;
 
-import static domain.util.DateUtil.assembleDateAndTime;
+import static global.util.DateUtil.assembleDateAndTime;
 
 public class AttendanceController {
     InputView inputView;
