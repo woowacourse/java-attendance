@@ -1,5 +1,6 @@
 package util;
 
+import Constant.DateFormatInformation;
 import java.time.DayOfWeek;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -9,7 +10,7 @@ import java.util.Locale;
 public class LocalDateTimePrintFormatter {
 
     public static String LocalDateTimeToLocalTime(LocalDateTime localDateTime) {
-        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("HH:mm");
+        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern(DateFormatInformation.LOCAL_TIME_FORMATTER);
         DayOfWeek dayOfWeek = localDateTime.getDayOfWeek();
 
         if (localDateTime.format(dateTimeFormatter).equals("00:00")) {
@@ -18,6 +19,6 @@ public class LocalDateTimePrintFormatter {
         }
 
         return localDateTime.format(DateTimeFormatter.ofPattern("MM월 dd일 " + dayOfWeek.getDisplayName(
-                TextStyle.FULL, Locale.KOREAN) + " HH:mm"));
+                TextStyle.FULL, Locale.KOREAN) + DateFormatInformation.LOCAL_DATE_TIME_FORMATTER));
     }
 }
