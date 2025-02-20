@@ -8,6 +8,7 @@ import attendance.domain.Crew;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Map;
 
 public class OutputView {
     private static final String ATTENDANCE_RESULT_MESSAGE = "%d월 %d일 %s %02d:%02d (%s)";
@@ -58,6 +59,12 @@ public class OutputView {
             } catch (IllegalArgumentException e) {
                 System.out.println("%02d월 %02d일 %s --:-- (결석)".formatted(month, i, date.getDayOfWeek()));
             }
+        }
+    }
+
+    public void printAttendanceResult(Map<AttendanceType, Integer> attendanceResult) {
+        for (AttendanceType attendanceType : attendanceResult.keySet()) {
+            System.out.println("%s: %d회".formatted(attendanceType, attendanceResult.get(attendanceType)));
         }
     }
 }

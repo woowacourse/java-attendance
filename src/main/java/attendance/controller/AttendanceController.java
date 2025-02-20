@@ -11,6 +11,7 @@ import attendance.view.OutputView;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.Map;
 
 public class AttendanceController {
     private final InputView inputView;
@@ -57,14 +58,16 @@ public class AttendanceController {
             if (option.equals("3")) {
                 String crewName = inputView.inputCrewName();
                 Crew crew = crewManager.findByCrewName(crewName);
+                Map<AttendanceType, Integer> attendanceResult = crew.calculateAttendanceResult(now);
                 outputView.printAttendanceHistories(now, crew);
+                outputView.printAttendanceResult(attendanceResult);
                 continue;
             }
             if (option.equals("4")) {
-                return;
+                continue;
             }
             if (option.equals("Q")) {
-                break;
+                continue;
             }
             throw new IllegalArgumentException("잘못된 입력 입니다.");
         }

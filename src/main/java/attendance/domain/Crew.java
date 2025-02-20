@@ -2,6 +2,7 @@ package attendance.domain;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.Map;
 
 public class Crew {
     private final String name;
@@ -13,7 +14,7 @@ public class Crew {
     }
 
     public void addAttendanceResult(AttendanceHistory attendanceHistory) {
-        attendanceHistoryManager.addAttendanceResult(attendanceHistory);
+        attendanceHistoryManager.addAttendanceHistory(attendanceHistory);
     }
 
     public AttendanceHistory modifyAttendanceResult(AttendanceHistory attendanceHistory, LocalTime localTime) {
@@ -26,5 +27,9 @@ public class Crew {
 
     public AttendanceHistory getAttendanceHistory(LocalDate localDate) {
         return attendanceHistoryManager.getAttendanceHistory(localDate);
+    }
+
+    public Map<AttendanceType, Integer> calculateAttendanceResult(LocalDate localDate) {
+        return attendanceHistoryManager.calculateAttendanceResult(localDate);
     }
 }

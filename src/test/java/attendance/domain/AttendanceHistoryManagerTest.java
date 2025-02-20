@@ -20,8 +20,8 @@ public class AttendanceHistoryManagerTest {
                 LocalDateTime.of(2024, 12, 26, 10, 00),
                 ATTENDANCE
         );
-        attendanceHistoryManager.addAttendanceResult(attendanceHistory);
-        assertThatThrownBy(() -> attendanceHistoryManager.addAttendanceResult(attendanceHistory))
+        attendanceHistoryManager.addAttendanceHistory(attendanceHistory);
+        assertThatThrownBy(() -> attendanceHistoryManager.addAttendanceHistory(attendanceHistory))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("해당 날짜에 이미 출석하셨습니다.");
     }
@@ -36,7 +36,7 @@ public class AttendanceHistoryManagerTest {
         );
 
         //when
-        attendanceHistoryManager.addAttendanceResult(attendanceHistory);
+        attendanceHistoryManager.addAttendanceHistory(attendanceHistory);
         Set<AttendanceHistory> result = attendanceHistoryManager.getAttendanceHistories();
 
         //then
@@ -51,7 +51,7 @@ public class AttendanceHistoryManagerTest {
         LocalDate localDate = LocalDate.of(2024, 12, 26);
         LocalTime localTime = LocalTime.of(11, 00);
         AttendanceHistory attendanceHistory = new AttendanceHistory(LocalDateTime.of(localDate, localTime), ABSENCE);
-        attendanceHistoryManager.addAttendanceResult(attendanceHistory);
+        attendanceHistoryManager.addAttendanceHistory(attendanceHistory);
 
         LocalTime modifyTime = LocalTime.of(10, 00);
 
