@@ -1,5 +1,6 @@
 package presentation.view;
 
+import domain.attendance.AttendanceDate;
 import domain.attendance.AttendanceState;
 import domain.attendance.AttendanceWarning;
 import dto.ResponseAttendanceEditStateDto;
@@ -14,8 +15,10 @@ public class OutputView {
     }
 
     //12월 13일 금요일 09:59 (출석)
-    public static void printAttendanceState(String attendanceTime, AttendanceState attendanceState) {
-        System.out.println(getAttendanceInfo(attendanceTime, attendanceState));
+    public static void printAttendanceState(String attendanceDate,
+                                            String attendanceTime,
+                                            AttendanceState attendanceState) {
+        System.out.println(attendanceDate + " " + getAttendanceInfo(attendanceTime, attendanceState));
     }
 
     public static void printEditState(ResponseAttendanceEditStateDto editStateDto) {
@@ -50,21 +53,29 @@ public class OutputView {
         System.out.printf("이번 달 %s의 출석 기록입니다.\n", crewAttendanceStateDto.crewName());
         System.out.println();
         crewAttendanceStateDto.crewAttendanceStateDtos().stream().forEach(
-                responseCrewStatusDto -> printAttendanceState(responseCrewStatusDto.crewDateTime(),
-                        responseCrewStatusDto.attendanceState()));
+                responseCrewStatusDto -> System.out.println(getAttendanceDateTimeState(
+                        responseCrewStatusDto.crewDate(),
+                        responseCrewStatusDto.crewTime(),
+                        responseCrewStatusDto.attendanceState())));
         System.out.println();
         printAttendanceStatusCount(crewAttendanceStateDto.attendanceStateCountDto());
         System.out.println();
     }
 
-    // hh:mm (출석)
+    private static String getAttendanceDateTimeState(String date, String time, AttendanceState state) {
+        if (state == AttendanceState.ABSENCE) {
+            return date + " " + "--:--" + getAttendanceStateMessage(state);
+        }
+        return date + " " + time + getAttendanceStateMessage(state);
+    }
+
     private static String getAttendanceInfo(String attendanceTime, AttendanceState attendanceState) {
         return attendanceTime + getAttendanceStateMessage(attendanceState);
     }
 
     // (출석)
     private static String getAttendanceStateMessage(AttendanceState attendanceState) {
-        return "(" + attendanceState.getState() + ")";
+        return " (" + attendanceState.getState() + ")";
     }
 
     private static void printAttendanceStatusCount(ResponseAttendanceStateCountDto responseAttendanceStateCountDto) {

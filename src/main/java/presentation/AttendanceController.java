@@ -59,7 +59,9 @@ public class AttendanceController {
                 Attendance attendance = crew.getAttendance();
                 AttendanceState attendanceState = attendance.attend(attendanceDateTime);
 
-                OutputView.printAttendanceState(DateTimeUtil.convertLocalDateTimeToString(attendanceDateTime),
+                OutputView.printAttendanceState(
+                        DateTimeUtil.convertLocalDateToString(attendanceDateTime.toLocalDate()),
+                        DateTimeUtil.convertLocalDateTimeToTimeString(attendanceDateTime),
                         attendanceState);
             }
             if (command.equals("2")) {
@@ -97,7 +99,8 @@ public class AttendanceController {
                 String nickname = InputView.inputNickname();
                 Crew findCrew = crewGroup.findCrew(nickname);
 
-                OutputView.printAttendanceStatusCrew(ResponseCrewAttendanceStateDto.of(findCrew.getName(), findCrew.getAttendance()));
+                OutputView.printAttendanceStatusCrew(
+                        ResponseCrewAttendanceStateDto.of(findCrew.getName(), findCrew.getAttendance()));
             }
             if (command.equals("4")) {
                 // 제적 위험자 확인

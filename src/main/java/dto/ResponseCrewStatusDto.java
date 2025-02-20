@@ -4,10 +4,11 @@ import domain.attendance.AttendanceDate;
 import domain.attendance.AttendanceState;
 import util.DateTimeUtil;
 
-public record ResponseCrewStatusDto(String crewDateTime, AttendanceState attendanceState) {
+public record ResponseCrewStatusDto(String crewDate, String crewTime, AttendanceState attendanceState) {
     public static ResponseCrewStatusDto from(AttendanceDate attendanceDate) {
-        String crewDateTime = DateTimeUtil.convertLocalDateTimeToString(attendanceDate.checkAttendanceTime());
+        String crewDate = DateTimeUtil.convertLocalDateToString(attendanceDate.checkAttendanceTime().toLocalDate());
+        String crewTime = DateTimeUtil.convertLocalDateTimeToTimeString(attendanceDate.checkAttendanceTime());
         AttendanceState attendanceState = attendanceDate.calculateAttendanceState();
-        return new ResponseCrewStatusDto(crewDateTime, attendanceState);
+        return new ResponseCrewStatusDto(crewDate, crewTime, attendanceState);
     }
 }
