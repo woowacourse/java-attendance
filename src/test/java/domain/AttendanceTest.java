@@ -1,6 +1,8 @@
 package domain;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatCode;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import dto.AbsenceResultDto;
 import dto.AttendanceResultDto;
@@ -36,6 +38,49 @@ class AttendanceTest {
 
         //then
         assertThat(attendance.getAttendanceMap().get(crew)).hasSize(5);
+    }
+
+    @DisplayName("이미 출석한 크루가 다시 출석하면 예외가 발생한다.")
+    @Test
+    void duplicateSave() {
+        //given
+        Crew crew = new Crew("도기");
+        List<LocalDateTime> localDateTimes = new ArrayList<>();
+        localDateTimes.add(LocalDateTime.of(2024, 12, 2, 10, 00));
+        localDateTimes.add(LocalDateTime.of(2024, 12, 3, 10, 06));
+        localDateTimes.add(LocalDateTime.of(2024, 12, 4, 10, 11));
+        localDateTimes.add(LocalDateTime.of(2024, 12, 5, 10, 14));
+
+        Map<Crew, List<LocalDateTime>> attendances = new LinkedHashMap<>();
+        attendances.put(crew, localDateTimes);
+
+        Attendance attendance = new Attendance(attendances);
+
+        //when & then
+        assertThatThrownBy(() -> attendance.save(crew, "09:55", 2))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("이미 출석한 크루입니다.");
+    }
+
+    @DisplayName("이미 출석한 크루가 다시 출석하면 예외가 발생한다.")
+    @Test
+    void nonDuplicateSave() {
+        //given
+        Crew crew = new Crew("도기");
+        List<LocalDateTime> localDateTimes = new ArrayList<>();
+        localDateTimes.add(LocalDateTime.of(2024, 12, 2, 10, 00));
+        localDateTimes.add(LocalDateTime.of(2024, 12, 3, 10, 06));
+        localDateTimes.add(LocalDateTime.of(2024, 12, 4, 10, 11));
+        localDateTimes.add(LocalDateTime.of(2024, 12, 5, 10, 14));
+
+        Map<Crew, List<LocalDateTime>> attendances = new LinkedHashMap<>();
+        attendances.put(crew, localDateTimes);
+
+        Attendance attendance = new Attendance(attendances);
+
+        //when & then
+        assertThatCode(() -> attendance.save(crew, "09:55", 6))
+                .doesNotThrowAnyException();
     }
 
     @DisplayName("특정 크루의 출석 수정 시간을 저장한다.")

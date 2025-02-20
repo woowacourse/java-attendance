@@ -64,8 +64,9 @@ public class MainController {
 
         String attendanceState = AttendanceState.findStateBy(dateTime, todayDay);
 
-        OutputView.printTodayAttendance(todayDay, todayDayOfWeek, schoolStartTime, attendanceState);
         attendance.save(crew, schoolStartTime, todayDay);
+
+        OutputView.printTodayAttendance(todayDay, todayDayOfWeek, schoolStartTime, attendanceState);
     }
 
     private void attendanceUpdate() {
