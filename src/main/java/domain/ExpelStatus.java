@@ -26,7 +26,7 @@ public enum ExpelStatus {
     }
 
     private static ExpelStatus getExpelStatus(int absentCount) {
-        if (absentCount >= 5) {
+        if (absentCount > 5) {
             return EXPULSION;
         }
         if (absentCount >= 3) {
