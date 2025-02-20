@@ -6,15 +6,15 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import model.Student;
 import model.StudentRepository;
-import model.TodayDate;
 import util.FileInput;
 import util.LocalDateTimePrintFormatter;
 import view.InputView;
 import view.OutputView;
 
 public class Controller {
+    private static final LocalDateTime TODAY = LocalDateTime.of(2024, 12, 13, 10,0);
 
-    public StudentRepository readFileAndCreateStudentRepository() throws IOException {
+    private StudentRepository readFileAndCreateStudentRepository() throws IOException {
         FileInput fileInput = new FileInput();
         StudentRepository studentRepository = new StudentRepository();
         studentRepository.createStudent(fileInput.readAttendanceFile());
@@ -30,12 +30,12 @@ public class Controller {
     }
 
     public void attendanceStart() {
-        TodayDate todayDate = new TodayDate(LocalDate.of(2024, 12, 13));
-        InputView.printTodayAndSelectFunction(todayDate.getTodayDate());
+        LocalDate todayDate = LocalDate.from(TODAY);
+        InputView.printTodayAndSelectFunction(todayDate);
         StudentRepository studentRepository = createStudentRepository();
 
         for (Student student : studentRepository.getStudents()) {
-            student.updateStateNotExistInFile(todayDate.getTodayDateTIme());
+            student.updateStateNotExistInFile(TODAY);
         }
 
         while(true) {
@@ -94,7 +94,7 @@ public class Controller {
         return getTimeUntilValidate(localDate);
     }
 
-    private void functionForMenuOne(StudentRepository studentRepository, TodayDate todayDate) {
+    private void functionForMenuOne(StudentRepository studentRepository, LocalDate todayDate) {
         String studentName = getStudentForAttendanceCheckUntilExist(studentRepository);
         LocalDateTime localDateTime = getLocalDateTimeUntilValidate(todayDate);
         Student student = studentRepository.findStudentByName(studentName);
@@ -104,17 +104,17 @@ public class Controller {
 
     private String getStudentNameForModifyUntilValidate(StudentRepository studentRepository) {
         try {
-            InputView.printInputNicName();
+            InputView.printStudentNameForModify();
             return getStudentNameUntilExist(studentRepository);
         } catch (IllegalArgumentException e) {
             return getStudentNameForModifyUntilValidate(studentRepository);
         }
     }
 
-    private LocalDateTime getLocalDateTimeUntilValidate(TodayDate todayDate) {
+    private LocalDateTime getLocalDateTimeUntilValidate(LocalDate todayDate) {
         try {
             InputView.printStartTime();
-            return getTimeUntilValidate(todayDate.getTodayDate());
+            return getTimeUntilValidate(todayDate);
         } catch (IllegalArgumentException e) {
             return getLocalDateTimeUntilValidate(todayDate);
         }
