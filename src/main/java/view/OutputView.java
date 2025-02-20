@@ -7,6 +7,7 @@ import domain.AttendanceStatus;
 import domain.CrewStatus;
 import service.dto.AttendanceHistoryResponse;
 import service.dto.AttendanceModifyResponse;
+import service.dto.DisenrollmentCheckResponse;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -97,5 +98,17 @@ public class OutputView {
 
     private void printCrewStatus(CrewStatus crewStatus) {
         System.out.printf("%s 대상자입니다.\n", crewStatus.getExpression());
+    }
+
+    public void printDisenrollmentCheckResult(List<DisenrollmentCheckResponse> responses) {
+        System.out.println("제적 위험자 조회 결과");
+        for (DisenrollmentCheckResponse response : responses) {
+            System.out.printf("- %s: 결석 %d회, 지각 %d회 (%s)\n",
+                    response.name(),
+                    response.absenceCount(),
+                    response.lateCount(),
+                    response.crewStatus()
+            );
+        }
     }
 }

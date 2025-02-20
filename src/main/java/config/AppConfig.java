@@ -3,10 +3,7 @@ package config;
 import controller.*;
 import repository.AttendanceRepository;
 import repository.AttendanceRepositoryImpl;
-import service.AttendanceCheckService;
-import service.AttendanceHistoryService;
-import service.AttendanceModifyService;
-import service.AttendanceStoreService;
+import service.*;
 import view.InputView;
 import view.OutputView;
 
@@ -36,7 +33,10 @@ public class AppConfig {
     }
 
     private Controller getDisenrollmentCheckController() {
-        return new DisenrollmentCheckController();
+        return new DisenrollmentCheckController(
+                getOutputView(),
+                new DisenrollmentCheckService(getAttendanceRepository())
+        );
     }
 
     private Controller getModifyController() {

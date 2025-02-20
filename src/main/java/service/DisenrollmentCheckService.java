@@ -1,0 +1,38 @@
+package service;
+
+import domain.*;
+import repository.AttendanceRepository;
+import service.dto.DisenrollmentCheckResponse;
+
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
+public class DisenrollmentCheckService {
+    private final AttendanceRepository attendanceRepository;
+
+    public DisenrollmentCheckService(AttendanceRepository attendanceRepository) {
+        this.attendanceRepository = attendanceRepository;
+    }
+
+    public List<DisenrollmentCheckResponse> getDisenrollmentCheckResult() {
+        LocalDate now = AttendanceCustomDate.now().toLocalDate();
+        Map<Crew, AttendanceBook> attendances = attendanceRepository.findAll();
+        List<Map.Entry<Crew, AttendanceBook>> disenrollmentAttendances = attendances.entrySet().stream().filter(entry -> {
+            AttendanceBook attendanceBook = entry.getValue();
+            CrewStatus status = CrewStatus.from(attendanceBook.getLateCountAt(now), attendanceBook.getAbsenceCountAt(now));
+            return status != CrewStatus.NORMAL;
+        }).toList();
+
+        return disenrollmentAttendances.stream().map(entry -> {
+            String name = entry.getKey().getName();
+            AttendanceBook attendanceBook = entry.getValue();
+            int absenceCount = attendanceBook.getAbsenceCountAt(now);
+            int lateCount = attendanceBook.getLateCountAt(now);
+            String status = CrewStatus.from(lateCount, absenceCount).getExpression();
+            return new DisenrollmentCheckResponse(name, absenceCount, lateCount, status);
+        }).toList();
+    }
+}

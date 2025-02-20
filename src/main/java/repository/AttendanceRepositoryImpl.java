@@ -63,4 +63,9 @@ public class AttendanceRepositoryImpl implements AttendanceRepository{
                 .findFirst()
                 .orElseThrow(CrewNotExistException::new);
     }
+
+    @Override
+    public Map<Crew, AttendanceBook> findAll() {
+        return Collections.unmodifiableMap(crewAttendances);
+    }
 }

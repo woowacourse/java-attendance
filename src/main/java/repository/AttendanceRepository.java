@@ -5,6 +5,7 @@ import domain.AttendanceBook;
 import domain.Crew;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 public interface AttendanceRepository {
@@ -19,4 +20,6 @@ public interface AttendanceRepository {
     void modifyAttendance(String crewName, Attendance beforeAttendance, Attendance afterAttendance);
 
     Crew findCrewByName(String crewName);
+
+    Map<Crew, AttendanceBook> findAll();
 }
