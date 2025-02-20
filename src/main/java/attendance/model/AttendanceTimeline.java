@@ -28,7 +28,7 @@ public record AttendanceTimeline(
 
     private static List<AttendanceLog> collectAttendanceLogs(LocalDate now, Map<LocalDate, LocalTime> map) {
         List<AttendanceLog> logs = new ArrayList<>();
-        for (int date = 1; date <= now.getDayOfMonth(); date++) {
+        for (int date = 1; date < now.getDayOfMonth(); date++) {
             LocalDate currentDate = LocalDate.of(now.getYear(), now.getMonth(), date);
             if (isCloseDay(currentDate)) {
                 continue;

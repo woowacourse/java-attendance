@@ -70,8 +70,7 @@ public class AttendanceController {
     }
 
     private void doAttendance(LocalDateTime now) {
-        String nickname = inputView.inputNickname();
-        attendances.validateExistNickname(nickname);
+        String nickname = inputExistNickname();
         String rawAttendanceTime = inputView.inputAttendanceTime();
         LocalTime attendanceTime = toLocalTime(rawAttendanceTime);
         Crew crew = new Crew(nickname);
@@ -81,7 +80,7 @@ public class AttendanceController {
     }
 
     private void doUpdateAttendance(LocalDateTime now) {
-        String nickname = inputExistNickname();
+        String nickname = inputExistNicknameForUpdate();
         LocalDateTime updateDateTime = inputUpdateDateTime(now);
         boolean isFutureDate = updateDateTime.toLocalDate().isAfter(now.toLocalDate());
         if (isFutureDate) {
@@ -94,6 +93,12 @@ public class AttendanceController {
     }
 
     private String inputExistNickname() {
+        String nickname = inputView.inputNickname();
+        attendances.validateExistNickname(nickname);
+        return nickname;
+    }
+
+    private String inputExistNicknameForUpdate() {
         String nickname = inputView.inputNicknameForUpdateAttendance();
         attendances.validateExistNickname(nickname);
         return nickname;
@@ -131,7 +136,6 @@ public class AttendanceController {
 
     private void doAttendanceTimeline(LocalDateTime now) {
         String nickname = inputExistNickname();
-
         Crew crew = new Crew(nickname);
         Set<Attendance> attendanceHistory = attendances.findAllByCrewAndMonth(crew, now.getMonth());
         AttendanceTimeline attendanceTimeline = AttendanceTimeline.generateAttendanceTimelineUntilDate(
