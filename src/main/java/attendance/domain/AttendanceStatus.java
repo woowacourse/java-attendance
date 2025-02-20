@@ -1,7 +1,5 @@
 package attendance.domain;
 
-import java.time.DayOfWeek;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
 
@@ -25,17 +23,15 @@ public enum AttendanceStatus {
         this.lateCount = lateCount;
     }
 
-    public static AttendanceStatus findByAttendanceDateTime(final LocalDateTime attendanceDateTime) {
-        LocalTime attendanceTime = attendanceDateTime.toLocalTime();
-        if (attendanceDateTime.toLocalDate().getDayOfWeek().equals(DayOfWeek.MONDAY)) {
+    public static AttendanceStatus findByAttendanceDateTime(final AttendanceDate attendanceDate, final AttendanceTime attendanceTime) {
+        if (attendanceDate.isMonday()) {
             return findStatusByStartTime(MONDAY_START_TIME, attendanceTime);
         }
         return findStatusByStartTime(TUESDAY_TO_FRIDAY_START_TIME, attendanceTime);
     }
 
-    private static AttendanceStatus findStatusByStartTime(final LocalTime startTime, final LocalTime attendanceTime) {
-        int result = (attendanceTime.getHour() - startTime.getHour()) * 60
-                + (attendanceTime.getMinute() - startTime.getMinute());
+    private static AttendanceStatus findStatusByStartTime(final LocalTime startTime, final AttendanceTime attendanceTime) {
+        int result = attendanceTime.calculateMinuteDifferences(startTime);
         if (result > ABSENT.deadLineMinute) {
             return ABSENT;
         }

@@ -29,7 +29,8 @@ public class Attendances {
                 .filter(dateTime -> dateTime.toLocalDate()
                         .isEqual(LocalDate.of(today.getYear(), today.getMonth(), day)))
                 .findAny()
-                .map(Attendance::new)
+                .map(dateTime -> new Attendance(
+                        new AttendanceDate(dateTime.toLocalDate()), new AttendanceTime(dateTime.toLocalTime())))
                 .orElse(Attendance.absence(LocalDate.of(today.getYear(), today.getMonth(), day)));
     }
 

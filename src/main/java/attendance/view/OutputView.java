@@ -39,7 +39,7 @@ public class OutputView {
 
     public void printModificationResult(LocalDateTime originDateTime, String originAttendanceStatus,
                                         LocalDateTime newDateTime, String newAttendanceStatus) {
-        System.out.printf("%02d월 %02d일 %s %02d:%02d (%s) -> %02d:%02d (%s) 수정 완료!",
+        System.out.printf("%02d월 %02d일 %s %02d:%02d (%s) -> %02d:%02d (%s) 수정 완료!%n",
                 originDateTime.getMonthValue(), originDateTime.getDayOfMonth(),
                 originDateTime.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.KOREA)
                 , originDateTime.toLocalTime().getHour(), originDateTime.toLocalTime().getMinute(),

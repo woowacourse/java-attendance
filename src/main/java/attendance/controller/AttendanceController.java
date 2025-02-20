@@ -10,8 +10,10 @@ import java.util.List;
 import java.util.Map;
 
 import attendance.domain.Attendance;
+import attendance.domain.AttendanceDate;
 import attendance.domain.AttendanceHistory;
 import attendance.domain.AttendanceStatus;
+import attendance.domain.AttendanceTime;
 import attendance.domain.Attendances;
 import attendance.domain.Crew;
 import attendance.domain.ExpulsionStatus;
@@ -88,9 +90,9 @@ public class AttendanceController {
         attendances.remove(originAttendance);
         attendances.addAttendance(newAttendance);
         String originAttendanceStatus = AttendanceStatus.findByAttendanceDateTime(
-                originAttendance.getAttendanceDateTime()).getText();
-        String newAttendanceStatus = AttendanceStatus.findByAttendanceDateTime(newAttendance.getAttendanceDateTime())
-                .getText();
+                originAttendance.getAttendanceDate(), originAttendance.getAttendanceTime()).getText();
+        String newAttendanceStatus = AttendanceStatus.findByAttendanceDateTime(new AttendanceDate(modificationDate),
+                new AttendanceTime(modificationTime)).getText();
         outputView.printModificationResult(originAttendance.getAttendanceDateTime(), originAttendanceStatus,
                 newAttendance.getAttendanceDateTime(), newAttendanceStatus);
     }
@@ -103,7 +105,8 @@ public class AttendanceController {
                 .map(Attendance::getAttendanceDateTime)
                 .toList();
         List<AttendanceStatus> attendanceStatus = attendanceTimes.stream()
-                .map(AttendanceStatus::findByAttendanceDateTime)
+                .map(dateTime -> AttendanceStatus.findByAttendanceDateTime(new AttendanceDate(dateTime.toLocalDate()),
+                        new AttendanceTime(dateTime.toLocalTime())))
                 .toList();
         List<String> attendanceStatusTexts = attendanceStatus.stream()
                 .map(AttendanceStatus::getText)
@@ -157,9 +160,11 @@ public class AttendanceController {
     }
 
     private void saveTodayAttendance(final Attendances attendances, final LocalDateTime attendanceDateTime) {
-        Attendance attendance = new Attendance(attendanceDateTime);
+        AttendanceDate attendanceDate = new AttendanceDate(attendanceDateTime.toLocalDate());
+        AttendanceTime attendanceTime = new AttendanceTime(attendanceDateTime.toLocalTime());
+        Attendance attendance = new Attendance(attendanceDate, attendanceTime);
         attendances.addAttendance(attendance);
-        String attendanceStatus = AttendanceStatus.findByAttendanceDateTime(attendanceDateTime)
+        String attendanceStatus = AttendanceStatus.findByAttendanceDateTime(attendanceDate, attendanceTime)
                 .getText();
         outputView.printAttendance(attendance.getAttendanceDateTime(), attendanceStatus);
     }
