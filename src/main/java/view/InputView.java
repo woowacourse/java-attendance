@@ -54,7 +54,7 @@ public class InputView {
             }
             return crews;
         } catch (IOException e) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("출석 파일을 불러올 수 없습니다.");
         }
     }
 
@@ -74,5 +74,11 @@ public class InputView {
 
     public String inputEditTime() {
         return inputByMessage("언제로 변경하겠습니까?");
+    }
+
+    public void validateName(String name) {
+        if (name.length() > 4 || name.length() < 2) {
+            throw new IllegalArgumentException("크루 닉네임은 2자 이상, 4자 이하만 입력할 수 있습니다.");
+        }
     }
 }

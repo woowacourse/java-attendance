@@ -50,7 +50,7 @@ public class AttendanceController {
         if (menu.equals("Q")) {
             return;
         }
-        throw new IllegalArgumentException();
+        throw new IllegalArgumentException("메뉴는 1, 2, 3, 4, Q만 입력할 수 있습니다.");
     }
 
     private void checkCrewsRecord() {
@@ -74,7 +74,8 @@ public class AttendanceController {
             LocalTime time = LocalTime.parse(inputView.inputAttendTime());
             crews.addAttendStatus(name, assembleDateAndTime(DateUtil.TODAY.toLocalDate(), time));
         } catch (DateTimeParseException | IllegalArgumentException e) {
-            System.out.println("[ERROR]");
+            outputView.printErrorMessage(e);
+            attendCrew();
         }
     }
 }

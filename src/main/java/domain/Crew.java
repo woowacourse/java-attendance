@@ -1,6 +1,6 @@
 package domain;
 
-import domain.util.DateUtil;
+import global.util.DateUtil;
 
 import dto.CrewResponse;
 import java.time.LocalDate;
@@ -11,6 +11,8 @@ import java.util.Map;
 
 import static domain.util.DateUtil.TODAY;
 import static domain.util.DateUtil.assembleDateAndTime;
+import static global.util.DateUtil.TODAY;
+import static global.util.DateUtil.assembleDateAndTime;
 
 public class Crew {
     private final String name;
@@ -34,7 +36,7 @@ public class Crew {
     public void editAttendStatus(final LocalDateTime target) {
         LocalDate date = target.toLocalDate();
         if (!attendanceBook.containsKey(date)) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("출석 기록이 없어 수정할 수 없습니다.");
         }
         addAttendStatus(target);
     }

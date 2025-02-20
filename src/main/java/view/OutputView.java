@@ -30,4 +30,7 @@ public class OutputView {
         // TODO: 출석, 지각 결석 및 제적 위험자 상태 출력
     }
 
+    public void printErrorMessage(Exception e) {
+        System.out.println("[ERROR] " + e.getMessage());
+    }
 }
