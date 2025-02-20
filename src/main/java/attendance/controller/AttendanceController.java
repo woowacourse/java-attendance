@@ -27,21 +27,21 @@ public class AttendanceController {
         Crews crews = crewsService.init(CrewAttendanceParser.parseCrewAttendances(AttendancesFileReader.read()), now);
         while (true) {
             try {
-                String inputMenu = inputView.inputMenu(now);
-                if (selectMenu(inputMenu, crews, now)) break;
+                Menu selectedMenu = inputView.inputMenu(now);
+                if (selectMenu(selectedMenu, crews, now)) break;
             } catch (Exception e) {
                 outputView.printExceptionMessage(e);
             }
         }
     }
 
-    private boolean selectMenu(String inputMenu, Crews crews, LocalDate now) {
-        if (inputMenu.equals("1")) confirmAttendance(crews, now);
-        if (inputMenu.equals("2")) updateAttendance(crews, now);
-        if (inputMenu.equals("3")) printAttendanceByCrew(crews, now);
-        if (inputMenu.equals("4")) printWarningCrews(crews);
+    private boolean selectMenu(Menu selectedMenu, Crews crews, LocalDate now) {
+        if (selectedMenu.equals(Menu.CHECK_ATTEND)) confirmAttendance(crews, now);
+        if (selectedMenu.equals(Menu.UPDATE_ATTEND)) updateAttendance(crews, now);
+        if (selectedMenu.equals(Menu.PRINT_ATTEND_BY_CREW)) printAttendanceByCrew(crews, now);
+        if (selectedMenu.equals(Menu.PRINT_WARNING)) printWarningCrews(crews);
 
-        return inputMenu.equals("Q");
+        return selectedMenu.equals(Menu.QUIT);
     }
 
     private void confirmAttendance(final Crews crews, final LocalDate now) {

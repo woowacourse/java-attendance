@@ -1,5 +1,7 @@
 package attendance.view;
 
+import attendance.domain.Menu;
+
 import java.time.LocalDate;
 import java.time.format.TextStyle;
 import java.util.Locale;
@@ -8,14 +10,14 @@ import java.util.Scanner;
 public class InputView {
     Scanner scanner = new Scanner(System.in);
 
-    public String inputMenu(LocalDate now) {
+    public Menu inputMenu(LocalDate now) {
         System.out.printf("오늘은 %d월 %d일 %s입니다. 기능을 선택해 주세요.\n" +
                 "1. 출석 확인\n" +
                 "2. 출석 수정\n" +
                 "3. 크루별 출석 기록 확인\n" +
                 "4. 제적 위험자 확인\n" +
                 "Q. 종료\n", now.getMonthValue(), now.getDayOfMonth(), now.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.KOREA));
-        return scanner.nextLine();
+        return Menu.of(scanner.nextLine());
     }
 
     public String inputNickname() {
