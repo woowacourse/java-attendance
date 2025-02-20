@@ -1,13 +1,16 @@
 package domain;
 
+import dto.AttendanceResultDto;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 
 public class Attendance {
 
-    private static Map<Crew, List<LocalDateTime>> attendanceMap;
+    private final Map<Crew, List<LocalDateTime>> attendanceMap;
 
     public Attendance(final Map<Crew, List<LocalDateTime>> attendanceMap) {
         this.attendanceMap = attendanceMap;
@@ -21,7 +24,7 @@ public class Attendance {
                 .orElse(null);
     }
 
-    public static Map<Crew, List<LocalDateTime>> getAttendanceMap() {
+    public Map<Crew, List<LocalDateTime>> getAttendanceMap() {
         return attendanceMap;
     }
 
@@ -58,5 +61,46 @@ public class Attendance {
         localDateTimes.set(i, todayLocalDateTime);
 
         return beforeLocalDateTime;
+    }
+
+    public List<AttendanceResultDto> readRecord(final Crew crew, int todayDay) {
+        List<LocalDateTime> localDateTimes = attendanceMap.get(crew); //해당 크루의 출석 기록
+        localDateTimes.sort(Comparator.comparing((LocalDateTime::getDayOfMonth)));
+
+        List<AttendanceResultDto> attendanceResultDtos = new ArrayList<>();
+
+        int idx = 0;
+        for (int dayIndex = 1; dayIndex < todayDay; dayIndex++) {
+            if (Calender.findBy(dayIndex).equals("공휴일")) {
+                continue;
+            }
+
+            LocalDateTime localDateTime = null;
+            try {
+                localDateTime = localDateTimes.get(idx);
+            } catch (IndexOutOfBoundsException e) {
+                checkAbsence(dayIndex, attendanceResultDtos);
+                continue;
+            }
+
+            int dayOfMonth = localDateTime.getDayOfMonth();
+
+            if (dayIndex == dayOfMonth) {
+                String state = AttendanceState.findStateBy(localDateTime.toLocalTime(), dayOfMonth);
+                AttendanceResultDto attendanceResultDto = new AttendanceResultDto(localDateTime, state);
+                attendanceResultDtos.add(attendanceResultDto);
+                idx++;
+                continue;
+            }
+            checkAbsence(dayIndex, attendanceResultDtos);
+        }
+        return attendanceResultDtos;
+    }
+
+    private void checkAbsence(final int dayIndex, final List<AttendanceResultDto> attendanceResultDtos) {
+        String state = "결석";
+        LocalDateTime newLocalDateTime = LocalDateTime.of(2024, 12, dayIndex, 0, 0);
+        AttendanceResultDto attendanceResultDto = new AttendanceResultDto(newLocalDateTime, state);
+        attendanceResultDtos.add(attendanceResultDto);
     }
 }

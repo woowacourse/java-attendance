@@ -2,6 +2,7 @@ package domain;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import dto.AttendanceResultDto;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -62,5 +63,30 @@ class AttendanceTest {
                 LocalDateTime.of(2024, 12, 4, 10, 02),
                 LocalDateTime.of(2024, 12, 5, 10, 14)
         );
+    }
+
+    @DisplayName("특정 크루의 출석부를 조회한다.")
+    @Test
+    void readRecord() {
+        //given
+        Crew crew = new Crew("도기");
+        List<LocalDateTime> localDateTimes = new ArrayList<>();
+        localDateTimes.add(LocalDateTime.of(2024, 12, 2, 10, 00));
+        localDateTimes.add(LocalDateTime.of(2024, 12, 3, 10, 06));
+        localDateTimes.add(LocalDateTime.of(2024, 12, 4, 10, 11));
+        localDateTimes.add(LocalDateTime.of(2024, 12, 5, 10, 14));
+
+        Map<Crew, List<LocalDateTime>> attendances = new LinkedHashMap<>();
+        attendances.put(crew, localDateTimes);
+
+        Attendance attendance = new Attendance(attendances);
+
+        int todayDay = 10;
+
+        //when
+        List<AttendanceResultDto> actual = attendance.readRecord(crew, todayDay);
+
+        //then
+        assertThat(actual).hasSize(6);
     }
 }
