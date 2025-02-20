@@ -1,18 +1,24 @@
 package attendance.view;
 
-import attendance.domain.AttendanceHistory;
-
-import javax.swing.text.DateFormatter;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.TextStyle;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+
+import attendance.domain.AttendanceHistory;
 
 public class OutputView {
 
-    public static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("HH:mm");
+    private static final DateTimeFormatter TIME_FORMATTER = DateTimeFormatter.ofPattern("HH:mm");
+    private static final DateTimeFormatter ATTENDANCE_DATE_TIME_FORMATTER =
+            DateTimeFormatter.ofPattern("MM월 dd일 E요일 HH:mm");
+    private static final DateTimeFormatter ABSENT_DATE_TIME__FORMATTER =
+            DateTimeFormatter.ofPattern("MM월 dd일 E요일 --:--");
 
     public void printOperations(LocalDate today) {
         System.out.printf("오늘은 %d월 %d일 %s입니다. 기능을 선택해 주세요.%n", today.getMonthValue(), today.getDayOfMonth(),
@@ -31,17 +37,11 @@ public class OutputView {
 
     public void printAttendance(final LocalDateTime attendanceDateTime, final String attendanceStatus) {
         LocalTime attendanceTime = attendanceDateTime.toLocalTime();
-        if (attendanceTime.equals(LocalTime.of(23, 00))) {
-            System.out.printf("%d월 %d일 %s %s (%s)%n", attendanceDateTime.getMonthValue(),
-                    attendanceDateTime.getDayOfMonth(),
-                    attendanceDateTime.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.KOREA),
-                    "--:--", attendanceStatus);
+        if (attendanceTime.equals(LocalTime.of(23, 0))) {
+            System.out.printf((ABSENT_DATE_TIME__FORMATTER.format(attendanceDateTime)) + "(%s)%n", attendanceStatus);
             return;
         }
-        System.out.printf("%d월 %d일 %s %s (%s)%n", attendanceDateTime.getMonthValue(),
-                attendanceDateTime.getDayOfMonth(),
-                attendanceDateTime.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.KOREA),
-                DATE_TIME_FORMATTER.format(attendanceTime), attendanceStatus);
+        System.out.printf((ATTENDANCE_DATE_TIME_FORMATTER.format(attendanceDateTime)) + "(%s)%n", attendanceStatus);
     }
 
     public void printErrorMessage(final String message) {
@@ -51,21 +51,21 @@ public class OutputView {
     public void printModificationResult(LocalDateTime originDateTime, String originAttendanceStatus,
                                         LocalDateTime newDateTime, String newAttendanceStatus) {
         LocalTime originTime = originDateTime.toLocalTime();
-        if (originTime.equals(LocalTime.of(23, 00))) {
+        if (originTime.equals(LocalTime.of(23, 0))) {
             System.out.printf("%02d월 %02d일 %s %s (%s) -> %s (%s) 수정 완료!%n",
                     originDateTime.getMonthValue(), originDateTime.getDayOfMonth(),
                     originDateTime.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.KOREA)
                     , "--:--",
                     originAttendanceStatus
-                    , DATE_TIME_FORMATTER.format(newDateTime), newAttendanceStatus);
+                    , TIME_FORMATTER.format(newDateTime), newAttendanceStatus);
             return;
         }
         System.out.printf("%02d월 %02d일 %s %s (%s) -> %s (%s) 수정 완료!%n",
                 originDateTime.getMonthValue(), originDateTime.getDayOfMonth(),
                 originDateTime.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.KOREA)
-                , DATE_TIME_FORMATTER.format(originDateTime),
+                , TIME_FORMATTER.format(originDateTime),
                 originAttendanceStatus
-                , DATE_TIME_FORMATTER.format(newDateTime), newAttendanceStatus);
+                , TIME_FORMATTER.format(newDateTime), newAttendanceStatus);
     }
 
     public void printAttendances(final String crewNickname, final List<LocalDateTime> attendanceTimes,
@@ -101,7 +101,9 @@ public class OutputView {
         });
         for (String key : keys) {
             AttendanceHistory attendanceHistory = attendanceHistories.get(key);
-            System.out.printf("- %s: 결석 %d회, 지각 %d회 (%s)%n", key, attendanceHistory.getAbsentCount(), attendanceHistory.getLateCount(), attendanceHistory.getExpulsionStatus());
+            System.out.printf("- %s: 결석 %d회, 지각 %d회 (%s)%n", key, attendanceHistory.getAbsentCount(),
+                    attendanceHistory.getLateCount(), attendanceHistory.getExpulsionStatus());
         }
     }
+
 }
