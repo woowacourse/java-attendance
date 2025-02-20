@@ -6,6 +6,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -103,5 +104,20 @@ public class Attendance {
         LocalDateTime newLocalDateTime = LocalDateTime.of(2024, 12, dayIndex, 0, 0);
         AttendanceResultDto attendanceResultDto = new AttendanceResultDto(newLocalDateTime, state);
         attendanceResultDtos.add(attendanceResultDto);
+    }
+
+    public Map<Crew, AbsenceResultDto> getAbsence(final int todayDay) {
+        Map<Crew, AbsenceResultDto> absenceMap = new HashMap<>();
+
+        for (Crew crew : attendanceMap.keySet()) {
+            List<AttendanceResultDto> attendanceResultDtos = readRecord(crew, todayDay);
+
+            AbsenceHistory absenceHistory = new AbsenceHistory(attendanceResultDtos);
+            AbsenceResultDto absenceResultDto = absenceHistory.calculate();
+
+            absenceMap.put(crew, absenceResultDto);
+        }
+
+        return absenceMap;
     }
 }
