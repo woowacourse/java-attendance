@@ -60,6 +60,6 @@ public class Crews {
     }
 
     public CrewResponse createCrewResponseByName(String name) {
-         return findCrewByName(name).createResponse();
+         return findCrewByName(name).createCrewResponse();
     }
 }

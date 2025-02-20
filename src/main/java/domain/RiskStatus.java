@@ -12,6 +12,9 @@ public enum RiskStatus {
         this.status = status;
     }
 
+    public String getStatus() {
+        return status;
+    }
 
     public static RiskStatus getRiskStatus(int absenceCount, int tardyCount) {
         int totalAbsenceCount = absenceCount + tardyCount / 3;

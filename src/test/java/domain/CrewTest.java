@@ -52,4 +52,14 @@ class CrewTest {
 
         assertThat(crew.calculateTardyCount()).isEqualTo(4);
     }
+
+    @Test
+    void 출석_횟수를_계산한다() {
+        Crew crew = new Crew("두리");
+        for(int day = 3; day <= 6; day ++) {
+            crew.addAttendStatus(LocalDateTime.of(2024, 12, day, 10, 0, 0));
+        }
+
+        assertThat(crew.calculateAttendanceCount()).isEqualTo(4);
+    }
 }
