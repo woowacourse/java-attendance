@@ -5,6 +5,7 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
+import presentation.InputValidator;
 
 public class DateTimeUtil {
     private final static DateTimeFormatter localDateFormatter = DateTimeFormatter.ofPattern("MM월 dd일");
@@ -18,7 +19,7 @@ public class DateTimeUtil {
             return parsedLocalDate + " " + convertDayOfWeekToString(localDateTime.getDayOfWeek().getValue()) + " " +
                     parsedLocalTime;
         } catch (DateTimeParseException exception) {
-            throw new IllegalArgumentException("");
+            throw new IllegalArgumentException(InputValidator.INVALID_DATETIME_ARGUMENT_EXCEPTION);
         }
     }
 
@@ -27,7 +28,7 @@ public class DateTimeUtil {
             String parsedLocalDate = localDate.format(localDateFormatter);
             return parsedLocalDate + " " + convertDayOfWeekToString(localDate.getDayOfWeek().getValue());
         } catch (DateTimeParseException exception) {
-            throw new IllegalArgumentException("");
+            throw new IllegalArgumentException(InputValidator.INVALID_DATETIME_ARGUMENT_EXCEPTION);
         }
     }
 
@@ -35,7 +36,7 @@ public class DateTimeUtil {
         try {
             return localDateTime.format(localTimeFormatter);
         } catch (DateTimeParseException exception) {
-            throw new IllegalArgumentException("");
+            throw new IllegalArgumentException(InputValidator.INVALID_DATETIME_ARGUMENT_EXCEPTION);
         }
     }
 
@@ -68,7 +69,7 @@ public class DateTimeUtil {
             LocalTime localTime = LocalTime.parse(textLocalTime, formatter);
             return LocalDateTime.of(localDate, localTime);
         } catch (DateTimeParseException exception) {
-            throw new IllegalArgumentException("");
+            throw new IllegalArgumentException(InputValidator.INVALID_DATETIME_ARGUMENT_EXCEPTION);
         }
     }
 
@@ -78,7 +79,7 @@ public class DateTimeUtil {
             LocalDateTime localTime = LocalDateTime.parse(textLocalDateTime, localDateTimeFormatter);
             return localTime;
         } catch (DateTimeParseException exception) {
-            throw new IllegalArgumentException("");
+            throw new IllegalArgumentException(InputValidator.INVALID_DATETIME_ARGUMENT_EXCEPTION);
         }
     }
 }

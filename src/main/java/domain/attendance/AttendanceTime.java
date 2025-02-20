@@ -20,7 +20,7 @@ public enum AttendanceTime {
         this.dayOfWeek = dayOfWeek;
 
         if (hour < 8 || hour > 22) {
-            throw new IllegalArgumentException("");
+            throw new IllegalArgumentException("캠퍼스 운영 시간에만 출석이 가능합니다.");
         }
     }
 

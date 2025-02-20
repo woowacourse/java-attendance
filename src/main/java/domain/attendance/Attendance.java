@@ -25,7 +25,8 @@ public class Attendance {
             return;
         }
         attendanceDates.add(new AttendanceDate(
-                LocalDateTime.of(cursorDate.getYear(), cursorDate.getMonth(), cursorDate.getDayOfMonth(), ABSENCE_HOUR, ABSENCE_MINUTE)));
+                LocalDateTime.of(cursorDate.getYear(), cursorDate.getMonth(), cursorDate.getDayOfMonth(), ABSENCE_HOUR,
+                        ABSENCE_MINUTE)));
     }
 
     public void editAttendanceDateTime(LocalDateTime attendanceDateTime) {
@@ -43,15 +44,15 @@ public class Attendance {
             fillAttendanceDate();
             return findAttendanceDate(findAttendanceDate);
         }
-        throw new IllegalArgumentException("");
+        throw new IllegalArgumentException("아직 수정할 수 없습니다.");
     }
 
     public AttendanceState attend(LocalDateTime attendDateTime) {
         if (!attendDateTime.isBefore(LocalDateTime.now())) {
-            throw new IllegalArgumentException("");
+            throw new IllegalArgumentException("아직 출석할 수 없습니다.");
         }
         if (has(attendDateTime.toLocalDate())) {
-            throw new IllegalArgumentException("");
+            throw new IllegalArgumentException("이미 출석을 확인하였습니다. 필요한 경우 수정 기능을 이용해 주세요.");
         }
         AttendanceDate attendanceDate = new AttendanceDate(attendDateTime);
         attendanceDates.add(attendanceDate);

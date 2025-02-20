@@ -20,10 +20,10 @@ public class AttendanceDate implements Comparable<AttendanceDate> {
 
         int dayOfWeek = getDayOfWeek();
         if (dayOfWeek >= SATURDAY) {
-            throw new IllegalArgumentException("");
+            throw new IllegalArgumentException(dateTime + " 은 등교일이 아닙니다.");
         }
         if (Holiday.has(dateTime)) {
-            throw new IllegalArgumentException("");
+            throw new IllegalArgumentException(dateTime + " 은 등교일이 아닙니다.");
         }
     }
 

@@ -24,7 +24,7 @@ public class InputParser {
         try{
             return Integer.parseInt(textNumber);
         } catch (NumberFormatException e){
-            throw  new IllegalArgumentException("");
+            throw  new IllegalArgumentException("올바르지 않은 명령어 입니다.");
         }
     }
 }

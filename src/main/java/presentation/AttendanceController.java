@@ -20,6 +20,13 @@ import service.AttendanceService;
 import util.DateTimeUtil;
 
 public class AttendanceController {
+    private final static String ATTEND_COMMAND = "1";
+    private final static String EDIT_COMMAND = "2";
+    private final static String CREW_QUERY_COMMAND = "3";
+    private final static String CREWS_WARNING_COMMAND = "4";
+    private final static String EXIT_COMMAND_1 = "Q";
+    private final static String EXIT_COMMAND_2 = "q";
+
     private final FileInputView fileInputView;
     private final AttendanceService attendanceService;
 
@@ -50,19 +57,19 @@ public class AttendanceController {
         try {
             String command = InputView.inputCommand();
             InputValidator.commandValidate(command);
-            if (command.equals("1")) { // 출석 확인
+            if (command.equals(ATTEND_COMMAND)) {
                 attendCommand(crewGroup);
             }
-            if (command.equals("2")) { // 출석 수정
+            if (command.equals(EDIT_COMMAND)) {
                 attendanceEditCommand(crewGroup);
             }
-            if (command.equals("3")) {
+            if (command.equals(CREW_QUERY_COMMAND)) {
                 crewQueryCommand(crewGroup);
             }
-            if (command.equals("4")) {
+            if (command.equals(CREWS_WARNING_COMMAND)) {
                 attendanceWarningCommand(crewGroup);
             }
-            if (command.equals("Q") || command.equals("q")) {
+            if (command.equals(EXIT_COMMAND_1) || command.equals(EXIT_COMMAND_2)) {
                 return true;
             }
             return false;
@@ -72,7 +79,7 @@ public class AttendanceController {
         }
     }
 
-    private static void attendanceWarningCommand(CrewGroup crewGroup) {
+    private void attendanceWarningCommand(CrewGroup crewGroup) {
         List<Crew> warningCrews = crewGroup.sortedAttendanceWarning();
         List<ResponseWarningCrewDto> warningCrewDtos = warningCrews.stream()
                 .map(warningCrew -> new ResponseWarningCrewDto(
@@ -80,13 +87,12 @@ public class AttendanceController {
                         warningCrew.getAttendance().countAbsence(),
                         warningCrew.getAttendance().countTardy(),
                         AttendanceWarning.determineAttendanceWarning(
-                                // todo: 미래의 나
                                 warningCrew.getAttendance().countAbsenceIncludingTardy())))
                 .toList();
         OutputView.printAttendanceWarningCrews(warningCrewDtos);
     }
 
-    private static void crewQueryCommand(CrewGroup crewGroup) {
+    private void crewQueryCommand(CrewGroup crewGroup) {
         String nickname = InputView.inputNickname();
         Crew findCrew = crewGroup.findCrew(nickname);
 
@@ -94,7 +100,7 @@ public class AttendanceController {
                 ResponseCrewAttendanceStateDto.of(findCrew.getName(), findCrew.getAttendance()));
     }
 
-    private static void attendanceEditCommand(CrewGroup crewGroup) {
+    private void attendanceEditCommand(CrewGroup crewGroup) {
         String nickname = InputView.inputNickname();
         String textAttendanceDay = InputView.inputAttendanceDay();
         String textAttendanceTime = InputView.inputAttendanceTime();
@@ -105,14 +111,14 @@ public class AttendanceController {
         LocalDate findLocalDate = LocalDate.of(LocalDate.now().getYear(),
                 LocalDateTime.now().getMonthValue(), attendanceDay);
 
-        // before
+        // beforeDate
         Attendance attendance = crew.getAttendance();
         AttendanceDate attendanceDate = attendance.findAttendanceDate(findLocalDate);
         String beforeEditDate = DateTimeUtil.convertLocalDateTimeToString(
                 attendanceDate.checkAttendanceTime());
         AttendanceState beforeState = attendanceDate.calculateAttendanceState();
 
-        // after
+        // afterDate
         LocalDateTime afterEditDateTime = DateTimeUtil.convertStringToLocalDateTime(findLocalDate,
                 textAttendanceTime);
         String afterEditTime = DateTimeUtil.convertLocalDateTimeToTimeString(afterEditDateTime);
@@ -123,7 +129,7 @@ public class AttendanceController {
                 new ResponseAttendanceEditStateDto(beforeEditDate, beforeState, afterEditTime, afterState));
     }
 
-    private static void attendCommand(CrewGroup crewGroup) {
+    private void attendCommand(CrewGroup crewGroup) {
         String nickname = InputView.inputNickname();
         String textAttendanceTime = InputView.inputAttendanceTime();
         LocalDateTime attendanceDateTime = DateTimeUtil.convertStringToLocalDateTime(LocalDate.now(),

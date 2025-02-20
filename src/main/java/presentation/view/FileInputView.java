@@ -11,10 +11,11 @@ import java.util.Map;
 public class FileInputView {
     private static final int NAME_INDEX = 0;
     private static final int ATTENDANCE_DATE_INDEX = 1;
+    private static final String FILE_NAME = "attendances.csv";
 
     public Map<String, List<String>> getFileInput() {
 
-        InputStream inputStream = getClass().getClassLoader().getResourceAsStream("attendances.csv");
+        InputStream inputStream = getClass().getClassLoader().getResourceAsStream(FILE_NAME);
         BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
 
         //수정
@@ -27,7 +28,6 @@ public class FileInputView {
     private void addInitDate(Map<String, List<String>> dateGroupByCrew, String fileData) {
         String[] parsedData = fileData.split(",");
 
-        // todo: 수정
         List<String> mapInside = dateGroupByCrew.getOrDefault(parsedData[NAME_INDEX], new ArrayList<>());
         mapInside.add(parsedData[ATTENDANCE_DATE_INDEX]);
         dateGroupByCrew.put(parsedData[NAME_INDEX], mapInside);
