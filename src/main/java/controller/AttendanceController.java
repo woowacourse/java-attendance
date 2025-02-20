@@ -26,9 +26,9 @@ public class AttendanceController {
     public void run() {
         Attendances attendances = registerAttendances();
 
-        checkIn(attendances);
+        //checkIn(attendances);
 
-//        modifyCheckInTime(attendances);
+        modifyCheckInTime(attendances);
 
 //        readCheckInTime(attendances);
 

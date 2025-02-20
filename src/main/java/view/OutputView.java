@@ -30,7 +30,11 @@ public class OutputView {
     }
 
     public void printModifyCheckInTime(CheckInTime before, CheckInTime after) {
-        System.out.println(before.toLocalDateTime() + " -> " + after.toLocalDateTime());
+        String beforeDateTime = formatDateTime(before.toLocalDateTime());
+        String beforeStatus = attendanceStatusToString(before.getAttendanceStatus());
+        String afterTime = formatTimePart(after.toLocalDateTime());
+        String afterStatus = attendanceStatusToString(after.getAttendanceStatus());
+        System.out.printf("%s (%s) -> %s (%s) 수정 완료! \n", beforeDateTime, beforeStatus, afterTime, afterStatus);
     }
 
     public void printAttendanceLog(Attendance attendance) {
@@ -60,9 +64,14 @@ public class OutputView {
 
         String dayOfWeek = localDateTime.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.KOREAN);
 
-        DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm");
-        String timePart = localDateTime.format(timeFormatter);
+        String timePart = formatTimePart(localDateTime);
 
         return datePart + " " + dayOfWeek + " " + timePart;
+    }
+
+    private static String formatTimePart(LocalDateTime localDateTime) {
+        DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm");
+        String timePart = localDateTime.format(timeFormatter);
+        return timePart;
     }
 }
