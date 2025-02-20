@@ -10,14 +10,18 @@ import java.util.List;
 
 public class Student {
 
-    public HashMap<LocalDateTime, AttendanceStatus> record = new HashMap<>();
-    public String name;
-    public int absent;
-    public int attendance;
-    public int late;
+    private final HashMap<LocalDateTime, AttendanceStatus> record = new HashMap<>();
+    private final String name;
+    private int absent;
+    private int attendance;
+    private int late;
 
     public int getLate() {
         return late;
+    }
+
+    public int getAttendance() {
+        return attendance;
     }
 
     public String getName() {
@@ -152,7 +156,7 @@ public class Student {
         return record;
     }
 
-    private boolean compareDayIsSame(LocalDateTime localDateTime1, LocalDateTime localDateTime2) {
+    public boolean compareDayIsSame(LocalDateTime localDateTime1, LocalDateTime localDateTime2) {
         LocalDateTime dayDate1 = localDateTime1.truncatedTo(ChronoUnit.DAYS);
         LocalDateTime dayDate2 = localDateTime2.truncatedTo(ChronoUnit.DAYS);
 

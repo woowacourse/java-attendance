@@ -57,9 +57,9 @@ public class OutputView {
     }
 
     public static void printStudentState(Student student) {
-        System.out.println(ATTENDANCE + student.attendance + COUNT);
-        System.out.println(LATE + student.late + COUNT);
-        System.out.println(ABSENT + student.absent + COUNT);
+        System.out.println(ATTENDANCE + student.getAttendance() + COUNT);
+        System.out.println(LATE + student.getLate() + COUNT);
+        System.out.println(ABSENT + student.getAbsent() + COUNT);
     }
 
     public static void printStudentPunishmentLabel(Student student) {

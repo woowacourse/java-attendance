@@ -20,7 +20,7 @@ public class StudentRepository {
 
     public Student findStudentByName(String name) {
         for (Student student : students){
-            if (student.name.equals(name)){
+            if (student.getName().equals(name)){
                 return student;
             }
         }
