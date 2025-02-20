@@ -4,7 +4,9 @@ import java.time.DayOfWeek;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 public class Student {
 
@@ -52,21 +54,30 @@ public class Student {
                     attendance --;
                     record.remove(localDateTime1);
                     record.putIfAbsent(localDateTime, attendanceStatus);
-                    return;
+
+                    assert attendanceStatus != null;
+
+                    if (updateStudentAfterModify(attendanceStatus)) {
+                        return;
+                    }
                 }
 
                 if (record.get(localDateTime1).equals(AttendanceStatus.LATE)) {
                     late --;
                     record.remove(localDateTime1);
                     record.putIfAbsent(localDateTime, attendanceStatus);
-                    return;
+                    if (updateStudentAfterModify(attendanceStatus)) {
+                        return;
+                    }
                 }
 
                 if (record.get(localDateTime1).equals(AttendanceStatus.ABSENT)) {
                     absent --;
                     record.remove(localDateTime1);
                     record.putIfAbsent(localDateTime, attendanceStatus);
-                    return;
+                    if (updateStudentAfterModify(attendanceStatus)) {
+                        return;
+                    }
                 }
             }
         }
@@ -83,6 +94,22 @@ public class Student {
             return;
         }
         absent++;
+    }
+
+    private boolean updateStudentAfterModify(AttendanceStatus attendanceStatus) {
+        if (attendanceStatus.equals(AttendanceStatus.ATTENDANCE)){
+            attendance++;
+            return true;
+        }
+        if (attendanceStatus.equals(AttendanceStatus.LATE)){
+            late++;
+            return true;
+        }
+        if (attendanceStatus.equals(AttendanceStatus.ABSENT)){
+            absent++;
+            return true;
+        }
+        return false;
     }
 
     public HashMap<LocalDateTime, AttendanceStatus> getRecord() {
@@ -126,19 +153,26 @@ public class Student {
         return recordClone;
     }
 
+    private boolean isExistLocalDate(HashMap<LocalDateTime, AttendanceStatus> recordClone, LocalDateTime localDateTime) {
+        List<LocalDateTime> localDateTimes = new ArrayList<>(recordClone.keySet());
+        for (LocalDateTime localDateTime1 : localDateTimes) {
+            if (compareDayIsSame(localDateTime,localDateTime1)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     public void updateStateNotExistInFile(LocalDateTime today) {
         LocalDateTime standard = LocalDateTime.of(2024,12,1,0,0);
         HashMap<LocalDateTime, AttendanceStatus> recordClone = makeRecordClone();
         while (!compareDayIsSame(standard,today)) {
-            for (LocalDateTime localDateTime : recordClone.keySet()) {
-                if (compareDayIsSame(localDateTime,standard)) {
-                    standard = standard.plusDays(1);
-                    continue;
-                }
-                updateState(standard);
+            if (isExistLocalDate(recordClone,standard)) {
                 standard = standard.plusDays(1);
+                continue;
+            }
+            updateState(standard);
+            standard = standard.plusDays(1);
             }
         }
-
-    }
 }
