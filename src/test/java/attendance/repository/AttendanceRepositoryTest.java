@@ -2,15 +2,22 @@ package attendance.repository;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import attendance.domain.Attendance;
 import attendance.domain.Time;
+import attendance.dto.AttendanceCountAndAcademicStatusDTO;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Stream;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 
 class AttendanceRepositoryTest {
 
@@ -95,6 +102,59 @@ class AttendanceRepositoryTest {
                 List.of(attendance1, attendance2)));
         // then
         assertThat(attendanceRepository.findAllAttendanceByName("체체").size()).isEqualTo(2);
+    }
+
+    @DisplayName("해당 닉네임을 가진 크루의 출석 상태를 가져온다.")
+    @ParameterizedTest
+    @MethodSource("name")
+    void 해당_닉네임을_가진_크루의_출석_상태를_가져온다(List<Attendance> attendances, AttendanceCountAndAcademicStatusDTO expectedResult) {
+
+        // given
+        AttendanceRepository attendanceRepository = new AttendanceRepository(attendances);
+
+        // when
+        AttendanceCountAndAcademicStatusDTO result = attendanceRepository.getAcademicStatusByName("체체");
+
+        // then
+        assertAll(() -> {
+            assertEquals(result.attend(), expectedResult.attend());
+            assertEquals(result.late(), expectedResult.late());
+            assertEquals(result.absent(), expectedResult.absent());
+            assertEquals(result.academicStatus(), expectedResult.academicStatus());
+        });
+    }
+
+    private static Stream<Arguments> name() {
+        return Stream.of(
+                Arguments.of(
+                        List.of(makeAbsentAttendance(2025, 2, 20)),
+                        new AttendanceCountAndAcademicStatusDTO(0, 0, 1, "X")
+                ),
+                Arguments.of(
+                        List.of(makeAbsentAttendance(2025, 2, 10),
+                                makeAbsentAttendance(2025, 2, 11)),
+                        new AttendanceCountAndAcademicStatusDTO(0, 0, 2, "경고")
+                ),
+                Arguments.of(
+                        List.of(makeAbsentAttendance(2025, 2, 10),
+                                makeAbsentAttendance(2025, 2, 11),
+                                makeAbsentAttendance(2025, 2, 12)),
+                        new AttendanceCountAndAcademicStatusDTO(0, 0, 3, "면담")
+                ),
+                Arguments.of(
+                        List.of(makeAbsentAttendance(2025, 2, 10),
+                                makeAbsentAttendance(2025, 2, 11),
+                                makeAbsentAttendance(2025, 2, 12),
+                                makeAbsentAttendance(2025, 2, 13),
+                                makeAbsentAttendance(2025, 2, 14),
+                                makeAbsentAttendance(2025, 2, 17)),
+                        new AttendanceCountAndAcademicStatusDTO(0, 0, 6, "제적")
+                )
+        );
+    }
+
+    private static Attendance makeAbsentAttendance(int year, int month, int day) {
+        return new Attendance("체체", new Time(LocalDate.of(year, month, day), "18", "00", true));
     }
 
 }

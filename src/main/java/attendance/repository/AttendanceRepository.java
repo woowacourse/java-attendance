@@ -2,9 +2,13 @@ package attendance.repository;
 
 import attendance.domain.Attendance;
 import attendance.domain.Time;
+import attendance.dto.AttendanceCountAndAcademicStatusDTO;
 import java.time.LocalDate;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class AttendanceRepository {
     private final List<Attendance> attendances;
@@ -61,5 +65,36 @@ public class AttendanceRepository {
 
             }
         }
+    }
+
+    public AttendanceCountAndAcademicStatusDTO getAcademicStatusByName(String name) {
+        List<Attendance> attendances = findAllAttendanceByName(name);
+
+        Map<String, Long> counts = attendances.stream()
+                .collect(Collectors.groupingBy(Attendance::getAttendanceStatus, Collectors.counting()));
+
+        int attend = counts.getOrDefault("출석", 0L).intValue();
+        int late = counts.getOrDefault("지각", 0L).intValue();
+        int absent = counts.getOrDefault("결석", 0L).intValue();
+
+        return new AttendanceCountAndAcademicStatusDTO(attend, late, absent, getAcademicStatus(late, absent));
+    }
+
+    private String getAcademicStatus(int late, int absent) {
+        return Stream.of(late / 3 + absent)
+                .map(count -> {
+                    if (count > 5) {
+                        return "제적";
+                    }
+                    if (count >= 3) {
+                        return "면담";
+                    }
+                    if (count == 2) {
+                        return "경고";
+                    }
+                    return "X";
+                })
+                .findFirst()
+                .orElse("X");
     }
 }
