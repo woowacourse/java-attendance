@@ -13,10 +13,10 @@ public enum AttendanceStatus {
     private final String message;
 
     public static AttendanceStatus getInMonday(LocalTime time) {
-        if (!time.isBefore(LocalTime.of(8, 0)) && !time.isAfter(LocalTime.of(13, 0))) {
+        if (!time.isBefore(LocalTime.of(8, 0)) && !time.isAfter(LocalTime.of(13, 5))) {
             return ATTEND;
         }
-        if (!time.isBefore(LocalTime.of(13, 0)) && !time.isAfter(LocalTime.of(13, 30))) {
+        if (!time.isBefore(LocalTime.of(13, 5)) && !time.isAfter(LocalTime.of(13, 30))) {
             return LATE;
         }
         if (!time.isBefore(LocalTime.of(13, 30)) && !time.isAfter(LocalTime.of(23, 0))) {
@@ -26,10 +26,10 @@ public enum AttendanceStatus {
     }
 
     public static AttendanceStatus getExceptMonday(LocalTime time) {
-        if (!time.isBefore(LocalTime.of(8, 0)) && !time.isAfter(LocalTime.of(10, 0))) {
+        if (!time.isBefore(LocalTime.of(8, 0)) && !time.isAfter(LocalTime.of(10, 5))) {
             return ATTEND;
         }
-        if (!time.isBefore(LocalTime.of(10, 0)) && !time.isAfter(LocalTime.of(10, 30))) {
+        if (!time.isBefore(LocalTime.of(10, 5)) && !time.isAfter(LocalTime.of(10, 30))) {
             return LATE;
         }
         if (!time.isBefore(LocalTime.of(10, 30)) && !time.isAfter(LocalTime.of(23, 0))) {
