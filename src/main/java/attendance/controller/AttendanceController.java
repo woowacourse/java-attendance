@@ -41,9 +41,29 @@ public class AttendanceController {
             if (operationCommand.isAttendanceConfirmation()) {
                 attendanceConfirmation(crewAttendances, today);
             }
+            if (operationCommand.isAttendanceModification()) {
+                modifyAttendance(crewAttendances, today);
+            }
         } catch (IllegalArgumentException e) {
             outputView.printErrorMessage(e.getMessage());
         }
+    }
+
+    private void modifyAttendance(Map<Crew, Attendances> crewAttendances, LocalDate today) {
+        String nickname = inputView.readModificationCrewNickname();
+        Crew crew = new Crew(nickname);
+        validateCrewExistence(crewAttendances, crew);
+
+        LocalDate modificationDate = inputView.readModificationDay(today);
+        LocalTime modificationTime = inputView.readModificationTime();
+        Attendances attendances = crewAttendances.get(crew);
+        Attendance originAttendance = attendances.findAttendanceByLocalDate(modificationDate);
+        Attendance newAttendance = originAttendance.changeAttendanceTime(modificationTime);
+        attendances.remove(originAttendance);
+        attendances.addAttendance(newAttendance);
+        String originAttendanceStatus = AttendanceStatus.findByAttendanceDateTime(originAttendance.getAttendanceDateTime()).getText();
+        String newAttendanceStatus = AttendanceStatus.findByAttendanceDateTime(newAttendance.getAttendanceDateTime()).getText();
+        outputView.printModificationResult(originAttendance.getAttendanceDateTime(), originAttendanceStatus, newAttendance.getAttendanceDateTime(), newAttendanceStatus);
     }
 
 

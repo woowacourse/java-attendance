@@ -16,7 +16,7 @@ public class Attendance {
     private static final LocalTime OPERATION_END_TIME = LocalTime.of(23, 0);
     private static final LocalTime ABSENT_TIME = LocalTime.of(23, 0);
 
-    private LocalDateTime attendanceDateTime;
+    private final LocalDateTime attendanceDateTime;
 
     public Attendance(final LocalDateTime attendanceDateTime) {
         validate(attendanceDateTime);
@@ -27,8 +27,8 @@ public class Attendance {
         return new Attendance(absentDate.atTime(ABSENT_TIME));
     }
 
-    public void changeAttendanceTime(LocalTime changeTime) {
-        this.attendanceDateTime = LocalDateTime.of(this.attendanceDateTime.toLocalDate(), changeTime);
+    public Attendance changeAttendanceTime(LocalTime changeTime) {
+        return new Attendance(LocalDateTime.of(this.attendanceDateTime.toLocalDate(), changeTime));
     }
 
     private void validate(final LocalDateTime attendanceDateTime) {
