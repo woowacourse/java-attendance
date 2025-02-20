@@ -5,7 +5,7 @@ import view.OutputView;
 public class Main {
 
     public static void main(String[] args) {
-        AttendanceController attendanceController = new AttendanceController();
+        AttendanceController attendanceController = new AttendanceController(new InputView(), new OutputView());
         attendanceController.run();
     }
 }
