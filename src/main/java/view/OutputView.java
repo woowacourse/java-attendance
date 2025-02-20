@@ -1,9 +1,12 @@
 package view;
 
 import dto.AttendanceResult;
+import dto.CrewsAttendanceResult;
+import dto.CrewsAttendanceResult.CrewAttendanceResult;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.TextStyle;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -24,6 +27,8 @@ public class OutputView {
     private final String ATTENDANCE_RECORD_ABSENCE_FORMAT = "%d월 %02d일 %s --:-- (결석)%n";
     private final String ATTENDANCE_COUNT = "%s: %d회%n";
     private final String ATTENDANCE_PUNISHMENT = "%s 대상자입니다.";
+    private final String EXPULSION_LIST_HEADER = "제적 위험자 조회 결과";
+    private final String PUNISHMENT_FORMAT = "- %s: 결석 %d회, 지각 %d회 (%s)%n";
     private final String SUCCESS = "출석";
     private final String BE_LATE = "지각";
     private final String ABSENCE = "결석";
@@ -111,6 +116,24 @@ public class OutputView {
         }
     }
 
+    public void printAllCrewPunishment(CrewsAttendanceResult result) {
+        System.out.println(EXPULSION_LIST_HEADER);
+        List<CrewAttendanceResult> attendanceResults = result.getCrewsAttendanceResult();
+        for (CrewAttendanceResult crewAttendanceResult : attendanceResults) {
+            Crew crew = crewAttendanceResult.getCrew();
+            AttendanceResult attendanceResult = crewAttendanceResult.getAttendanceResult();
+            Map<AttendanceType, Integer> attendanceTypeCount = attendanceResult.getCounts();
+            System.out.printf(
+                    PUNISHMENT_FORMAT,
+                    crew.getNickname(),
+                    attendanceTypeCount.get(AttendanceType.ABSENCE),
+                    attendanceTypeCount.get(AttendanceType.BE_LATE),
+                    convertToPunishmentTypeString(attendanceResult.getPunishmentType())
+            );
+        }
+        printEmptyLine();
+    }
+
     private String convertToAttendanceTypeString(AttendanceType attendanceType) {
         if (attendanceType.equals(AttendanceType.SUCCESS)) {
             return SUCCESS;
@@ -135,5 +158,9 @@ public class OutputView {
             return EXPULSION;
         }
         return "";
+    }
+
+    private void printEmptyLine() {
+        System.out.println();
     }
 }

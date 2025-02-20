@@ -48,7 +48,7 @@ public class AttendanceController {
                 checkAttendance(attendances);
             }
             if (command.equals(Command.FOUR)) {
-
+                checkPunishment(crews, attendances);
             }
             if (command.equals(Command.QUIT)) {
                 break;
@@ -94,6 +94,6 @@ public class AttendanceController {
         Map<Crew, Attendances> crewsAttendance = attendances.findAll(crews, LocalDate.now().getMonthValue());
         CrewsAttendanceResult crewsAttendanceResult = CrewsAttendanceResult.of(crewsAttendance);
 
-        //outputView.
+        outputView.printAllCrewPunishment(crewsAttendanceResult);
     }
 }

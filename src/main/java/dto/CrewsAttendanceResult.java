@@ -1,6 +1,7 @@
 package dto;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -20,6 +21,13 @@ public class CrewsAttendanceResult {
         for (Entry<Crew, Attendances> crewAttendancesEntry : crewsAttendance.entrySet()) {
             result.add(CrewAttendanceResult.of(crewAttendancesEntry.getKey(), crewAttendancesEntry.getValue()));
         }
+
+        result.sort(new Comparator<CrewAttendanceResult>() {
+            @Override
+            public int compare(CrewAttendanceResult o1, CrewAttendanceResult o2) {
+                return o1.crew.getNickname().compareTo(o2.crew.getNickname());
+            }
+        });
         return new CrewsAttendanceResult(result);
     }
 
@@ -39,6 +47,14 @@ public class CrewsAttendanceResult {
 
         public static CrewAttendanceResult of(Crew crew, Attendances attendances) {
             return new CrewAttendanceResult(crew, AttendanceResult.of(attendances));
+        }
+
+        public Crew getCrew() {
+            return crew;
+        }
+
+        public AttendanceResult getAttendanceResult() {
+            return attendanceResult;
         }
     }
 }
