@@ -7,15 +7,18 @@ import java.util.Scanner;
 
 import dto.AttendanceModifyRequest;
 import dto.AttendanceRequest;
+import dto.OptionRequest;
 import util.DateTimeUtil;
+import util.RetryHandler;
 
 public class InputView {
 
     private static final Scanner scanner = new Scanner(System.in);
 
-    public static String scanOption() {
-        LocalDate now = DateTimeUtil.nowDate();
-        System.out.println(String.format("""
+    public static OptionRequest scanOption() {
+        return RetryHandler.retryUntilSuccessWithReturn(() -> {
+            LocalDate now = DateTimeUtil.nowDate();
+            System.out.println(String.format("""
                 오늘은 %d월 %d일 %s요일입니다. 기능을 선택해 주세요.
                 1. 출석 확인
                 2. 출석 수정
@@ -23,11 +26,13 @@ public class InputView {
                 4. 제적 위험자 확인
                 Q. 종료 
                 """,
-            now.getMonth().getValue(),
-            now.getDayOfMonth(),
-            now.getDayOfWeek().getDisplayName(TextStyle.SHORT, Locale.KOREAN))
-        );
-        return scanner.nextLine();
+                now.getMonth().getValue(),
+                now.getDayOfMonth(),
+                now.getDayOfWeek().getDisplayName(TextStyle.SHORT, Locale.KOREAN))
+            );
+            String option = scanner.nextLine();
+            return new OptionRequest(option);
+        });
     }
 
     public static AttendanceRequest scanAttendance() {
