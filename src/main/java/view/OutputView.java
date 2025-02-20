@@ -1,16 +1,18 @@
 package view;
 
-import static view.ViewUtil.getAttendanceStatusMessage;
-import static view.ViewUtil.getRiskStatusMessage;
-
 import domain.AttendanceStatus;
 import domain.RiskStatus;
 import dto.CrewResponse;
 import global.util.DateUtil;
+
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Map;
+
+import static view.ViewUtil.getAttendanceStatusMessage;
+import static view.ViewUtil.getRiskStatusMessage;
 
 public class OutputView {
     public void printCrewAttendanceRecord(CrewResponse crewResponse) {
@@ -56,7 +58,20 @@ public class OutputView {
                 .forEach(e -> System.out.printf("- %s: 결석 %d회, 지각 %d회 (%s)\n", e.name(), e.absenceCount(), e.tardyCount(), getRiskStatusMessage(e.riskStatus())));
     }
 
-    private static String getEachDateAttendanceMessage(LocalDate currentDate, Map<LocalDate, LocalTime> map) {
+    public void printAttendDateAttendanceMessage(LocalDate currentDate, Map<LocalDate, LocalTime> map) {
+        System.out.println(getEachDateAttendanceMessage(currentDate, map));
+    }
+
+    public void printAttendEditMessage(LocalDate date, AttendanceStatus beforeAttendanceStatus, LocalTime beforeTime, AttendanceStatus afterAttendanceStatus, LocalTime afterTime) {
+        System.out.printf("%s %s (%s) -> %s (%s) 수정 완료!\n",
+                DateTimeFormatter.ofPattern("MM월 dd일 E요일").format(date),
+                DateTimeFormatter.ofPattern("hh:mm").format(beforeTime),
+                ViewUtil.getAttendanceStatusMessage(beforeAttendanceStatus),
+                DateTimeFormatter.ofPattern("hh:mm").format(afterTime),
+                ViewUtil.getAttendanceStatusMessage(afterAttendanceStatus));
+    }
+
+    private String getEachDateAttendanceMessage(LocalDate currentDate, Map<LocalDate, LocalTime> map) {
         if (!map.containsKey(currentDate)) {
             return String.format("%d월 %02d일 %s %s (%s)", currentDate.getMonthValue(), currentDate.getDayOfMonth(),
                     ViewUtil.getDayOfWeekToMessage(currentDate.getDayOfWeek()), ViewUtil.getNoneAttendanceMessage(), getAttendanceStatusMessage(AttendanceStatus.ABSENCE));

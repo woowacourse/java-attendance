@@ -1,22 +1,25 @@
 package controller;
 
-import static global.util.DateUtil.assembleDateAndTime;
-import static global.util.Validator.validateIsFutureDate;
-import static global.util.Validator.validateIsNotWorkingDay;
-
+import domain.AttendanceStatus;
+import domain.Crew;
 import domain.Crews;
 import global.util.DateUtil;
+import view.InputView;
+import view.OutputView;
+
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeParseException;
-import view.InputView;
-import view.OutputView;
+
+import static global.util.DateUtil.TODAY;
+import static global.util.DateUtil.assembleDateAndTime;
+import static global.util.Validator.validateIsFutureDate;
+import static global.util.Validator.validateIsNotWorkingDay;
 
 public class AttendanceController {
     InputView inputView;
     OutputView outputView;
     Crews crews;
-    //TODO: 재입력
 
     public AttendanceController(InputView inputView, OutputView outputView) {
         this.inputView = inputView;
@@ -25,8 +28,19 @@ public class AttendanceController {
 
     public void start() {
         crews = initCrews();
-        String menu = inputView.inputMenu();
-        selectMenu(menu);
+        while (true) {
+            String menu;
+            try {
+                menu = inputView.inputMenu();
+                if (menu.equals("Q")) {
+                    break;
+                }
+                selectMenu(menu);
+            } catch (DateTimeParseException | IllegalArgumentException e) {
+                outputView.printErrorMessage(e);
+            }
+
+        }
     }
 
     public Crews initCrews() {
@@ -35,7 +49,7 @@ public class AttendanceController {
 
     public void selectMenu(String menu) {
         if (menu.equals("1")) {
-            validateIsNotWorkingDay(DateUtil.TODAY.toLocalDate());
+            validateIsNotWorkingDay(TODAY.toLocalDate());
             attendCrew();
             return;
         }
@@ -51,9 +65,6 @@ public class AttendanceController {
             checkRiskCrews();
             return;
         }
-        if (menu.equals("Q")) {
-            return;
-        }
         throw new IllegalArgumentException("메뉴는 1, 2, 3, 4, Q만 입력할 수 있습니다.");
     }
 
@@ -63,27 +74,29 @@ public class AttendanceController {
 
     private void checkCrewsRecord() {
         String name = inputView.inputName();
-        outputView.printCrewAttendanceRecord(crews.createCrewResponseByName(name));
+        Crew crew = crews.findCrewByName(name);
+        outputView.printCrewAttendanceRecord(crews.createCrewResponse(crew));
     }
 
     public void attendCrew() {
-        try {
-            String name = inputView.inputName();
-            if (!crews.hasCrewName(name)) throw new IllegalArgumentException();
-            LocalTime time = LocalTime.parse(inputView.inputAttendTime());
-            crews.addAttendStatus(name, assembleDateAndTime(DateUtil.TODAY.toLocalDate(), time));
-        } catch (DateTimeParseException | IllegalArgumentException e) {
-            outputView.printErrorMessage(e);
-            attendCrew();
-        }
+        String name = inputView.inputName();
+        Crew crew = crews.findCrewByName(name);
+        crew.validateAvailableAttendanceDate(TODAY.toLocalDate());
+        LocalTime time = LocalTime.parse(inputView.inputAttendTime());
+        crew.addAttendStatus(assembleDateAndTime(TODAY.toLocalDate(), time));
+        outputView.printAttendDateAttendanceMessage(TODAY.toLocalDate(), crews.createCrewResponse(crew).attendanceBook());
     }
 
     private void editAttend() {
         String name = inputView.inputEditCrewName();
-        if (!crews.hasCrewName(name)) throw new IllegalArgumentException();
-        LocalDate day = DateUtil.getDateByInputDay(Integer.parseInt(inputView.inputEditDay()));
-        validateIsFutureDate(day);
+        Crew crew = crews.findCrewByName(name);
+        LocalDate date = DateUtil.getDateByInputDay(Integer.parseInt(inputView.inputEditDay()));
+        validateIsFutureDate(date);
+        LocalTime beforeTime = crew.getAttendanceTime(date);
+        AttendanceStatus beforAttendanceStatus = crew.getAttendanceStatusByDate(DateUtil.assembleDateAndTime(date, beforeTime));
         LocalTime time = LocalTime.parse(inputView.inputEditTime());
-        crews.editAttendStatus(name, assembleDateAndTime(day, time));
+        AttendanceStatus afterAttendanceStatus = crew.editAttendStatus(assembleDateAndTime(date, time));
+        LocalTime afterTime = crew.getAttendanceTime(date);
+        outputView.printAttendEditMessage(date, beforAttendanceStatus, beforeTime, afterAttendanceStatus, afterTime);
     }
 }

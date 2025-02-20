@@ -33,20 +33,20 @@ public class ViewUtil {
     }
 
     public static String getRiskStatusMessage(RiskStatus riskStatus) {
-        if(RiskStatus.WARNING == riskStatus) {
+        if (RiskStatus.WARNING == riskStatus) {
             return "경고";
         }
-        if(RiskStatus.COUNSELING == riskStatus) {
+        if (RiskStatus.COUNSELING == riskStatus) {
             return "면담";
         }
         return "제적";
     }
 
     public static String getAttendanceStatusMessage(AttendanceStatus attendanceStatus) {
-        if(AttendanceStatus.ABSENCE == attendanceStatus) {
+        if (AttendanceStatus.ABSENCE == attendanceStatus) {
             return "결석";
         }
-        if(AttendanceStatus.ATTENDANCE == attendanceStatus) {
+        if (AttendanceStatus.ATTENDANCE == attendanceStatus) {
             return "출석";
         }
         return "지각";
