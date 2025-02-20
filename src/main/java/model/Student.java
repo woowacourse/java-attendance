@@ -41,47 +41,83 @@ public class Student {
     public void updateState(LocalDateTime localDateTime) {
         DayOfWeek dayOfWeek = localDateTime.getDayOfWeek();
         int day = dayOfWeek.getValue();
-        if (day == 6 || day == 7 || localDateTime.getDayOfMonth() == 25) {
+        if (checkHoliday(localDateTime, day)) {
             return;
         }
-
         AttendanceStatus attendanceStatus = AttendanceCalculatorByDay.
                 attendanceCalculator(day, LocalTime.from(localDateTime));
 
         for (LocalDateTime localDateTime1 : record.keySet()) {
-            if (compareDayIsSame(localDateTime1, localDateTime)) {
-                if (record.get(localDateTime1).equals(AttendanceStatus.ATTENDANCE)) {
-                    attendance --;
-                    record.remove(localDateTime1);
-                    record.putIfAbsent(localDateTime, attendanceStatus);
-
-                    assert attendanceStatus != null;
-
-                    if (updateStudentAfterModify(attendanceStatus)) {
-                        return;
-                    }
-                }
-
-                if (record.get(localDateTime1).equals(AttendanceStatus.LATE)) {
-                    late --;
-                    record.remove(localDateTime1);
-                    record.putIfAbsent(localDateTime, attendanceStatus);
-                    if (updateStudentAfterModify(attendanceStatus)) {
-                        return;
-                    }
-                }
-
-                if (record.get(localDateTime1).equals(AttendanceStatus.ABSENT)) {
-                    absent --;
-                    record.remove(localDateTime1);
-                    record.putIfAbsent(localDateTime, attendanceStatus);
-                    if (updateStudentAfterModify(attendanceStatus)) {
-                        return;
-                    }
-                }
+            if (compareDayAndModify(localDateTime, localDateTime1, attendanceStatus)) {
+                return;
             }
         }
 
+        updateRecordForNoLocalDateTime(localDateTime, attendanceStatus);
+    }
+
+    private boolean compareDayAndModify(LocalDateTime localDateTime, LocalDateTime localDateTime1,
+                              AttendanceStatus attendanceStatus) {
+        if (compareDayIsSame(localDateTime1, localDateTime)) {
+            if (modifyByState(localDateTime, localDateTime1, attendanceStatus)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private boolean modifyByState(LocalDateTime localDateTime, LocalDateTime localDateTime1,
+                              AttendanceStatus attendanceStatus) {
+        if (record.get(localDateTime1).equals(AttendanceStatus.ATTENDANCE)) {
+            if (modifyRecordAndUpdateStudentForAttendance(localDateTime, localDateTime1, attendanceStatus)) {
+                return true;
+            }
+        }
+
+        if (record.get(localDateTime1).equals(AttendanceStatus.LATE)) {
+            if (modifyRecordAndUpdateStudentForLate(localDateTime, localDateTime1, attendanceStatus)) {
+                return true;
+            }
+        }
+
+        if (record.get(localDateTime1).equals(AttendanceStatus.ABSENT)) {
+            if (modifyRecordAndUpdateStudentForAbsent(localDateTime, localDateTime1, attendanceStatus)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private boolean modifyRecordAndUpdateStudentForAbsent(LocalDateTime localDateTime, LocalDateTime localDateTime1,
+                              AttendanceStatus attendanceStatus) {
+        absent --;
+        return modifyRecordAndUpdateStudentForState(localDateTime, localDateTime1, attendanceStatus);
+    }
+
+    private boolean modifyRecordAndUpdateStudentForLate(LocalDateTime localDateTime, LocalDateTime localDateTime1,
+                              AttendanceStatus attendanceStatus) {
+        late --;
+        return modifyRecordAndUpdateStudentForState(localDateTime, localDateTime1, attendanceStatus);
+    }
+
+    private boolean modifyRecordAndUpdateStudentForState(LocalDateTime localDateTime, LocalDateTime localDateTime1,
+                              AttendanceStatus attendanceStatus) {
+        modifyRecord(localDateTime, localDateTime1, attendanceStatus);
+        assert attendanceStatus != null;
+        return updateStudentAfterModify(attendanceStatus);
+    }
+
+    private boolean modifyRecordAndUpdateStudentForAttendance(LocalDateTime localDateTime, LocalDateTime localDateTime1,
+                              AttendanceStatus attendanceStatus) {
+        attendance --;
+        return modifyRecordAndUpdateStudentForState(localDateTime, localDateTime1, attendanceStatus);
+    }
+
+    private static boolean checkHoliday(LocalDateTime localDateTime, int day) {
+        return day == 6 || day == 7 || localDateTime.getDayOfMonth() == 25;
+    }
+
+    private void updateRecordForNoLocalDateTime(LocalDateTime localDateTime, AttendanceStatus attendanceStatus) {
         record.putIfAbsent(localDateTime, attendanceStatus);
 
         assert attendanceStatus != null;
@@ -94,6 +130,12 @@ public class Student {
             return;
         }
         absent++;
+    }
+
+    private void modifyRecord(LocalDateTime localDateTime, LocalDateTime localDateTime1,
+                           AttendanceStatus attendanceStatus) {
+        record.remove(localDateTime1);
+        record.putIfAbsent(localDateTime, attendanceStatus);
     }
 
     private boolean updateStudentAfterModify(AttendanceStatus attendanceStatus) {
