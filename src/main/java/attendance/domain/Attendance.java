@@ -1,13 +1,12 @@
 package attendance.domain;
 
+import static attendance.domain.HourMinute.NULL_TIME;
+
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.EnumMap;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public class Attendance {
@@ -30,12 +29,12 @@ public class Attendance {
         timestamps.put(date, hourMinute);
     }
 
-    public boolean isNameMatch(String anotherName) {
-        return this.name.equals(anotherName);
-    }
-
     public HourMinute modify(final LocalDate localDate, final HourMinute hourMinute) {
         return timestamps.put(localDate, hourMinute);
+    }
+
+    public boolean isNameMatch(String anotherName) {
+        return this.name.equals(anotherName);
     }
 
     public boolean hasTimeStamp(final LocalDate localDate) {
@@ -43,8 +42,16 @@ public class Attendance {
     }
 
     public Map<AttendanceStatus, Integer> countAttendanceStatus(final int today) {
-        updateTimestamp(today);
+        updateTimestampUntil(today);
 
+        Map<AttendanceStatus, Integer> attendanceStatuses = calculateAttendanceStatus();
+
+        removeTodayStatus(today, attendanceStatuses);
+
+        return attendanceStatuses;
+    }
+
+    private Map<AttendanceStatus, Integer> calculateAttendanceStatus() {
         Map<AttendanceStatus, Integer> attendanceStatuses = new EnumMap<>(AttendanceStatus.class);
 
         for (AttendanceStatus attendanceStatus : AttendanceStatus.values()) {
@@ -54,8 +61,6 @@ public class Attendance {
 
             attendanceStatuses.put(attendanceStatus, (int) count);
         }
-        removeTodayStatus(today, attendanceStatuses);
-
         return attendanceStatuses;
     }
 
@@ -69,33 +74,21 @@ public class Attendance {
         attendanceStatuses.put(status, attendanceStatuses.get(status) - 1);
     }
 
-    private void updateTimestamp(int today) {
+    private void updateTimestampUntil(int today) {
         for(int day = 1 ; day < today ; day++){
             LocalDate date = LocalDate.of(2024, 12, day);
-            if(!AttendanceChecker.isCampusDay(day)){
-                continue;
-            }
-
-            if (!timestamps.containsKey(date)){
-                timestamps.put(date, new HourMinute(-1, -1, AttendanceStatus.ABSENCE));
-            }
+            updateTimeStamp(day, date);
         }
     }
 
-    public List<LocalDateTime> queryAll(int today) {
-        updateTimestamp(today);
-        List<LocalDateTime> attendances = new ArrayList<>();
-        timestamps.keySet().forEach(localDate -> {
-            HourMinute hourMinute = timestamps.get(localDate);
-            LocalTime localTime = LocalTime.of(hourMinute.hour(), hourMinute.minute());
-            LocalDateTime localDateTime = LocalDateTime.of(localDate, localTime);
-            attendances.add(localDateTime);
-        });
-        return attendances;
+    private void updateTimeStamp(final int day, final LocalDate date) {
+        if (AttendanceChecker.isCampusDay(day) && !timestamps.containsKey(date)){
+            timestamps.put(date, new HourMinute(NULL_TIME, NULL_TIME, AttendanceStatus.ABSENCE));
+        }
     }
 
     public Map<LocalDate, HourMinute> getTimestamps(int today) {
-        updateTimestamp(today);
+        updateTimestampUntil(today);
         return Collections.unmodifiableMap(timestamps);
     }
 
