@@ -38,7 +38,7 @@ public class AttendanceUpdateTest {
 
         final var modifiedTime = LocalTime.of(9, 58);
 
-        attendance.setAttendanceTime(modifiedTime);
+        attendance.updateAttendanceTime(modifiedTime);
 
         AttendanceDto attendanceDto = attendance.toDto();
 
@@ -54,7 +54,7 @@ public class AttendanceUpdateTest {
         Day day = new Day(date);
         Attendance attendance = new Attendance(day, originTime);
 
-        attendance.setAttendanceTime(modifiedTime);
+        attendance.updateAttendanceTime(modifiedTime);
 
         AttendanceDto attendanceDto = attendance.toDto();
 
@@ -70,12 +70,10 @@ public class AttendanceUpdateTest {
         Day day = new Day(date);
         Attendance attendance = new Attendance(day, originTime);
 
-        attendance.setAttendanceTime(modifiedTime);
+        attendance.updateAttendanceTime(modifiedTime);
 
         AttendanceDto attendanceDto = attendance.toDto();
 
         assertThat(attendanceDto.getAbsent()).isEqualTo(isAbsent);
     }
-
-
 }

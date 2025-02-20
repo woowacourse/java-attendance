@@ -1,16 +1,36 @@
+import domain.Attendance;
+import domain.AttendanceDto;
+import domain.Day;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.jupiter.params.provider.ValueSource;
 import util.Converter;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 
 public class AttendanceCheckTest {
 
+    private LocalDate today = LocalDate.now();
+
+    public static Stream<Arguments> getDayOfWeekAndAttendanceTime() {
+        return Stream.of(
+                // 월요일
+                Arguments.of(LocalDate.of(2025, 2, 17), LocalTime.of(13, 4), false, false),
+                Arguments.of(LocalDate.of(2025, 2, 17), LocalTime.of(13, 6), true, false),
+                Arguments.of(LocalDate.of(2025, 2, 17), LocalTime.of(13, 31), false, true),
+                Arguments.of(LocalDate.of(2025, 2, 20), LocalTime.of(10, 4), false, false),
+                // 목요일
+                Arguments.of(LocalDate.of(2025, 2, 20), LocalTime.of(10, 6), true, false),
+                Arguments.of(LocalDate.of(2025, 2, 20), LocalTime.of(13, 4), false, true)
+        );
+    }
 
     @Test
     void 출석시간_정상입력시_출석으로_표시된다() {
@@ -21,80 +41,10 @@ public class AttendanceCheckTest {
         assertThat(actual).isEqualTo(expected);
     }
 
-    @Test
-    void 출석시간이_지각범위내라면_지각으로_표시된다() {
-        LocalTime attendanceTime = LocalTime.of(10, 6);
-
-        final var attendanceCheck = AttendanceCheck.checkAttendanceStatus2(LocalDate.now(), attendanceTime);
-        String status = "출석";
-        if (attendanceCheck.getLate()) {
-            status = "지각";
-        }
-        if (attendanceCheck.getAbsent()) {
-            status = "결석";
-        }
-
-        final var actual = "12월 05일 화요일 " + attendanceTime + " (" + status + ")";
-        final var expected = "12월 05일 화요일 10:06 (지각)";
-        assertThat(actual).isEqualTo(expected);
-    }
-
-    @Test
-    void 출석시간이_결석범위라면_결석으로_표시된다() {
-        LocalTime attendanceTime = LocalTime.of(10, 31);
-
-        final var attendanceCheck = AttendanceCheck.checkAttendanceStatus2(LocalDate.now(), attendanceTime);
-        String status = "출석";
-        if (attendanceCheck.getLate()) {
-            status = "지각";
-        }
-        if (attendanceCheck.getAbsent()) {
-            status = "결석";
-        }
-
-        final var actual = "12월 05일 화요일 " + attendanceTime + " (" + status + ")";
-        final var expected = "12월 05일 화요일 10:31 (결석)";
-        assertThat(actual).isEqualTo(expected);
-    }
-
-    @Test
-    void 출석확인시_현재날짜가_출력되어야한다() {
-        LocalTime standardTime = LocalTime.of(10, 0);
-        LocalTime attendanceTime = LocalTime.of(10, 31);
-
-        final var attendanceCheck = AttendanceCheck.checkAttendanceStatus(standardTime, attendanceTime);
-        final var today = LocalDate.now();
-        final var month = today.getMonth().getValue();
-        final var date = today.getDayOfMonth();
-        final var dayOfWeek = AttendanceCheck.convertKorean(today);
-
-        final var actual = month + "월 " + date + "일 " + dayOfWeek + " " + attendanceTime + " (" + attendanceCheck + ")";
-        final var expected = "2월 18일 화요일 10:31 (결석)";
-        assertThat(actual).isEqualTo(expected);
-    }
-
-    @ParameterizedTest
-    @ValueSource(strings = {"10:31"})
-    void 입력받은_문자열이_LocalTime_객체로_정상변환된다(String value) {
-        LocalTime standardTime = LocalTime.of(10, 0);
-
-        LocalTime attendanceTime = Converter.convertToLocalTime(value);
-
-        final var attendanceCheck = AttendanceCheck.checkAttendanceStatus(standardTime, attendanceTime);
-        final var today = LocalDate.now();
-        final var month = today.getMonth().getValue();
-        final var date = today.getDayOfMonth();
-        final var dayOfWeek = AttendanceCheck.convertKorean(today);
-
-        final var actual = month + "월 " + date + "일 " + dayOfWeek + " " + attendanceTime + " (" + attendanceCheck + ")";
-        final var expected = "2월 18일 화요일 10:31 (결석)";
-        assertThat(actual).isEqualTo(expected);
-    }
-
     @ParameterizedTest
     @ValueSource(strings = {"10:61"})
     void 존재하지않는_시간을_입력하면_예외가_발생한다(String value) {
-        assertThatThrownBy(() -> Converter.convertToLocalTime(value))
+        assertThatThrownBy(() -> Converter.convertStringToLocalTime(value))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageStartingWith("[ERROR]");
     }
@@ -102,35 +52,29 @@ public class AttendanceCheckTest {
     @ParameterizedTest
     @ValueSource(strings = {"테스트:00"})
     void 시간형식이_아닌값을_입력하면_예외가_발생한다(String value) {
-        assertThatThrownBy(() -> Converter.convertToLocalTime(value))
+        assertThatThrownBy(() -> Converter.convertStringToLocalTime(value))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageStartingWith("[ERROR]");
     }
 
     @ParameterizedTest
-    @ValueSource(strings = {"10:31"})
-    void 날짜에_따른_출석_기준_시간을_적용한다(String value) {
-        final var today = LocalDate.now();
-        final var month = today.getMonth().getValue();
-        final var date = today.getDayOfMonth();
-        final var dayOfWeek = AttendanceCheck.convertKorean(today);
+    @MethodSource("getDayOfWeekAndAttendanceTime")
+    void 날짜에_따른_출석_기준_시간을_적용한다(LocalDate date, LocalTime attendanceTime, Boolean isLate, Boolean isAbsent) {
+        Attendance attendance = new Attendance(new Day(date), attendanceTime);
+        AttendanceDto dto = attendance.toDto();
 
-        LocalTime standardTime = AttendanceCheck.getStandardTime(today);
-        LocalTime attendanceTime = Converter.convertToLocalTime(value);
+        Boolean actualIsLate = dto.getLate();
+        Boolean actualIsAbsent = dto.getAbsent();
 
-        final var attendanceCheck = AttendanceCheck.checkAttendanceStatus(standardTime, attendanceTime);
-
-        final var actual = month + "월 " + date + "일 " + dayOfWeek + " " + attendanceTime + " (" + attendanceCheck + ")";
-        final var expected = "2월 18일 화요일 10:31 (결석)";
-        assertThat(actual).isEqualTo(expected);
+        assertThat(actualIsLate).isEqualTo(isLate);
+        assertThat(actualIsAbsent).isEqualTo(isAbsent);
     }
 
-    @ParameterizedTest
-    @ValueSource(strings = {"10:31"})
-    void 주말에_출석을_시도하면_예외가_발생한다(String value) {
+    @Test
+    void 주말에_출석을_시도하면_예외가_발생한다() {
         final var today = LocalDate.of(2025, 2, 22);
 
-        assertThatThrownBy(() -> AttendanceCheck.getStandardTime(today))
+        assertThatThrownBy(() -> new Attendance(new Day(today), LocalTime.of(10, 31)))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageStartingWith("[ERROR]");
     }
