@@ -1,7 +1,6 @@
 package domain;
 
 import java.time.LocalDate;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -21,7 +20,7 @@ public class AttendanceStatistics {
             TimeAndStatus status = records.findByDate(startDate);
             startDate = startDate.plusDays(1);
 
-            if(!Holiday.isHoliday(startDate.minusDays(1))) {
+            if (!Holiday.isHoliday(startDate.minusDays(1))) {
                 if (status == null || status.getStatus() == null) {
                     absenceCount++;
                     continue;

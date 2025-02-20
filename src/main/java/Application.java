@@ -10,7 +10,7 @@ public class Application {
         AttendanceManager attendanceManager = new AttendanceManager();
         FileController fileController = new FileController(attendanceManager);
         AttendanceController attendanceController = new AttendanceController
-            (new InputView(), new OutputView(),attendanceManager);
+            (new InputView(), new OutputView(), attendanceManager);
 
         fileController.initializeFile("src/main/resources/attendances.csv");
         attendanceController.run();

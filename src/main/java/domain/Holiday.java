@@ -16,15 +16,16 @@ public enum Holiday {
     }
 
     public static boolean isHoliday(LocalDate localDate) {
-        if(localDate.getDayOfWeek().getDisplayName(TextStyle.SHORT, Locale.KOREAN).equals("토")) {
+        if (localDate.getDayOfWeek().getDisplayName(TextStyle.SHORT, Locale.KOREAN).equals("토")) {
             return true;
         }
-        if(localDate.getDayOfWeek().getDisplayName(TextStyle.SHORT, Locale.KOREAN).equals("일")) {
+        if (localDate.getDayOfWeek().getDisplayName(TextStyle.SHORT, Locale.KOREAN).equals("일")) {
             return true;
         }
 
-        for(Holiday holiday : values()) {
-            if(localDate.getMonthValue() == holiday.month && localDate.getDayOfMonth() == holiday.day) {
+        for (Holiday holiday : values()) {
+            if (localDate.getMonthValue() == holiday.month
+                && localDate.getDayOfMonth() == holiday.day) {
                 return true;
             }
         }

@@ -23,7 +23,7 @@ public class FileController {
     public void initializeFile(String filePath) {
         try {
             Map<String, List<LocalDateTime>> result = createRecords(loadFile(filePath));
-            for(String name : result.keySet()) {
+            for (String name : result.keySet()) {
                 attendanceManager.createCrew(name, result.get(name));
             }
         } catch (FileNotFoundException e) {
