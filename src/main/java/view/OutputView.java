@@ -15,7 +15,8 @@ import dto.ModifiedResult;
 public class OutputView {
 
     public static void printAttendanceResult(AttendanceResult result) {
-        System.out.println(LocalDateTime.of(result.date(), result.time()).format(Formatter.DATETIME_FORMATTER));
+        String dateTime = LocalDateTime.of(result.date(), result.time()).format(Formatter.DATETIME_FORMATTER);
+        System.out.printf(dateTime + " (%s)%n", result.status().getDescription());
     }
 
     public static void printModifiedResult(ModifiedResult modifiedResult) {
