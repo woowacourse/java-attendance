@@ -1,7 +1,6 @@
-package attendance;
+package attendance.service;
 
 import attendance.domain.Crews;
-import attendance.service.CrewsService;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;

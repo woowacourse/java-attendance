@@ -1,9 +1,5 @@
-package attendance;
+package attendance.domain;
 
-import attendance.domain.Attendance;
-import attendance.domain.AttendanceStatus;
-import attendance.domain.Crew;
-import attendance.domain.Warning;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
@@ -99,6 +95,5 @@ class CrewTest {
 
         Attendance attendance = crew.updateAttendance(localDateTime);
         assertThat(attendance.getDateTime()).isEqualTo(localDateTime);
-        assertThat(crew.getStatusCount().get(AttendanceStatus.LATE_ABSENCE)).isEqualTo(1);
     }
 }

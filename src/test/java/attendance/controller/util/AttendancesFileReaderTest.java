@@ -1,6 +1,5 @@
-package attendance;
+package attendance.controller.util;
 
-import attendance.controller.util.AttendancesFileReader;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
