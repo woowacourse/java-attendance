@@ -82,4 +82,8 @@ public class OutputView {
                 dayOfWeekKorean, time, changeAttendanceLogDTO.originalStatus().getName(), cTime,
                 changeAttendanceLogDTO.changeStatus().getName()));
     }
+
+    public void printGuide() {
+        System.out.println("이미 출석하셨습니다. 출석 수정을 이용해주세요.");
+    }
 }

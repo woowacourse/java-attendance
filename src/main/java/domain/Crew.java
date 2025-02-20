@@ -4,7 +4,6 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import service.DayComparator;
 
 public class Crew {
     private final String nickname;
@@ -26,7 +25,7 @@ public class Crew {
         List<Integer> attendanceDays = attendances.stream().map(Attendance::getDay).toList();
         List<Integer> weekDays = new ArrayList<>();
         for (int day = 1; day < dayOfMonth; day++) {
-            if (DayComparator.isHoliday(day, today)) {
+            if (Day.isHoliday(day, today)) {
                 continue;
             }
             weekDays.add(day);
@@ -61,6 +60,17 @@ public class Crew {
 
     public AttendanceAlertLevel calculateAttendanceAlertLevel() {
         return attendanceCount.calculateAttendanceAlertLevel();
+    }
+
+    public boolean isAlreadyChecked(LocalDateTime today) {
+        long count = attendances.stream()
+                .filter(attendance -> attendance.isSameDay(today.getDayOfMonth()))
+                .count();
+
+        if (count != 0) {
+            return true;
+        }
+        return false;
     }
 
     public String getNickname() {

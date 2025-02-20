@@ -8,7 +8,7 @@ import domain.Time;
 import java.time.LocalDateTime;
 import java.util.List;
 import service.CrewLoader;
-import service.DayComparator;
+import domain.Day;
 import view.InputView;
 import view.OutputView;
 import view.dto.AlertCrewDTO;
@@ -27,7 +27,7 @@ public class Controller {
     }
 
     public void run() {
-        LocalDateTime today = LocalDateTime.of(2024, 12, 17, 10, 0);
+        LocalDateTime today = LocalDateTime.of(2024, 12, 14, 10, 0);
         CrewLoader crewLoader = new CrewLoader();
         CrewGroup crewGroup = crewLoader.loadCrews(today);
 
@@ -54,12 +54,18 @@ public class Controller {
     }
 
     private void attendanceCheck(CrewGroup crewGroup, LocalDateTime today) {
-        if (DayComparator.isHoliday(today)) {
+        if (Day.isHoliday(today)) {
             throw new IllegalArgumentException();
         }
         String rawName = inputView.insertNickname();
-        String rawTime = inputView.insertTime();
         Crew crew = crewGroup.searchCrew(rawName);
+
+        if(crew.isAlreadyChecked(today)) {
+            outputView.printGuide();
+            return;
+        }
+
+        String rawTime = inputView.insertTime();
         Time time = new Time(rawTime);
         LocalDateTime attendanceTime = LocalDateTime.of(today.getYear(), today.getMonth(), today.getDayOfMonth(),
                 time.getHour(), time.getMinute());
