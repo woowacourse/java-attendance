@@ -1,10 +1,13 @@
 package domain;
 
+import java.time.DayOfWeek;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-import static domain.AttendanceStatus.*;
+import static domain.AttendanceStatus.LATE;
+import static domain.AttendanceStatus.PRESENCE;
 
 public class CheckInTimes {
     private List<CheckInTime> checkInTimes;
@@ -72,7 +75,7 @@ public class CheckInTimes {
     }
 
     public int countAbsence() {
-        return countAttendenceStatus(ABSENCE);
+        return countWorkDay() - (countAttendenceStatus(PRESENCE) + countAttendenceStatus(LATE));
     }
 
     private int countAttendenceStatus(AttendanceStatus status) {
@@ -81,5 +84,19 @@ public class CheckInTimes {
                         .filter(time -> time.getAttendanceStatus() == status)
                         .count()
         );
+    }
+
+    private int countWorkDay() {
+        LocalDate today = LocalDate.now();
+        int workDayCount = 0;
+        for (int i = 1; i < today.getDayOfMonth(); i++) {
+            if (LocalDate.of(2024, 12, i).getDayOfWeek() == DayOfWeek.SATURDAY
+                    || LocalDate.of(2024, 12, i).getDayOfWeek() == DayOfWeek.SATURDAY
+                    || i == 25) {
+                continue;
+            }
+            workDayCount++;
+        }
+        return workDayCount;
     }
 }

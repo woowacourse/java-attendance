@@ -30,9 +30,9 @@ public class AttendanceController {
 
 //        modifyCheckInTime(attendances);
 
-        readCheckInTime(attendances);
+//        readCheckInTime(attendances);
 
-//        readDangerCrews(attendances);
+        readDangerCrews(attendances);
     }
 
     private void checkIn(Attendances attendances) {

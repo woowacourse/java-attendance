@@ -44,7 +44,7 @@ public class OutputView {
 
         List<LocalDateTime> attendanceLog = attendance.getAttendanceLog();
         List<Integer> list = attendanceLog.stream().map(LocalDateTime::getDayOfMonth).toList();
-        int absenceCount = attendance.countAbsence();
+
         for (int i = 1; i < LocalDate.now().getDayOfMonth(); i++) {
             LocalDate localDate = LocalDate.of(2024, 12, i);
             if (localDate.getDayOfWeek() == DayOfWeek.SATURDAY
@@ -61,11 +61,11 @@ public class OutputView {
             }
             String datePart = formatDatePart(LocalDateTime.of(2024, 12, i, 0, 0));
             System.out.printf("%s --:-- (결석)\n", datePart);
-            absenceCount++;
         }
 
         int presenceCount = attendance.countPresence();
         int lateCount = attendance.countLate();
+        int absenceCount = attendance.countAbsence();
         PenaltyStatus penaltyStatus = PenaltyStatus.getPenaltyStatus(absenceCount, lateCount);
         String status = penaltyStatusToString(penaltyStatus);
 
@@ -76,26 +76,32 @@ public class OutputView {
         System.out.println();
 
         if (status != null) {
-            System.out.println(status + "입니다.");
+            System.out.println(status + " 대상자입니다.");
         }
     }
 
     private String penaltyStatusToString(PenaltyStatus penaltyStatus) {
         if (penaltyStatus == PenaltyStatus.WARNING) {
-            return "경고 대상자";
+            return "경고";
         }
         if (penaltyStatus == PenaltyStatus.INTERVIEWEE) {
-            return "면담 대상자";
+            return "면담";
         }
         if (penaltyStatus == PenaltyStatus.EXPULSION) {
-            return "제적 대상자";
+            return "제적";
         }
         return null;
     }
 
     public void printDangerCrews(List<Attendance> dangerCrews) {
+        System.out.println("제적 위험자 조회 결과");
+
         for (Attendance attendance : dangerCrews) {
-            System.out.println(attendance);
+            int absenceCount = attendance.countAbsence();
+            int lateCount = attendance.countLate();
+
+            PenaltyStatus penaltyStatus = PenaltyStatus.getPenaltyStatus(absenceCount, lateCount);
+            System.out.printf("- %s: 결석 %d회, 지각 %d회 (%s)\n", attendance.getName(), absenceCount, lateCount, penaltyStatusToString(penaltyStatus));
         }
     }
 

@@ -43,6 +43,8 @@ public class Attendance implements Comparable<Attendance> {
     }
 
     public int countAbsence() {
+        LocalDateTime now = LocalDateTime.now();
+
         return checkInTimes.countAbsence();
     }
 
