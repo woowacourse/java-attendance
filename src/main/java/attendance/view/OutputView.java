@@ -12,6 +12,7 @@ import attendance.domain.Crew;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 
@@ -74,6 +75,7 @@ public class OutputView {
     }
 
     public void printDangerousCrews(LocalDate now, List<Crew> dangerousCrews) {
+        sortDangerousCrews(now, dangerousCrews);
         for (Crew crew : dangerousCrews) {
             Map<AttendanceType, Integer> attendanceResult = crew.calculateAttendanceResult(now);
             CrewStatus crewStatus = crew.calculateCrewStatus(attendanceResult);
@@ -82,5 +84,19 @@ public class OutputView {
                     attendanceResult.get(LATE), crewStatus.getName())
             );
         }
+    }
+
+    private static void sortDangerousCrews(LocalDate now, List<Crew> dangerousCrews) {
+        dangerousCrews.sort(new Comparator<Crew>() {
+            @Override
+            public int compare(Crew o1, Crew o2) {
+                CrewStatus crewStatus1 = o1.calculateCrewStatus(o1.calculateAttendanceResult(now));
+                CrewStatus crewStatus2 = o2.calculateCrewStatus(o2.calculateAttendanceResult(now));
+                if (crewStatus1 == crewStatus2) {
+                    return o1.getName().compareTo(o2.getName());
+                }
+                return crewStatus2.getOrder() - crewStatus1.getOrder();
+            }
+        });
     }
 }
