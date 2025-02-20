@@ -21,7 +21,7 @@ public class AttendanceController {
     private static String CSV_PATH = "src/main/resources/attendances.csv";
 
     public void start() {
-        LocalDateTime fixDateTime = LocalDateTime.of(2024, Constants.MONTH, 25, 0, 0, 0, 0);
+        LocalDateTime fixDateTime = LocalDateTime.of(2024, Constants.MONTH, 16, 0, 0, 0, 0);
         final String input = InputView.readCommand(fixDateTime);
         Command command = Command.findByCommandNumber(input);
         Crews crews = CrewGenerator.generate(CsvReader.readFile(CSV_PATH),
@@ -49,23 +49,37 @@ public class AttendanceController {
         }
     }
 
-    private static void processCheckAttendees(final Crews crews, final LocalDateTime fixDateTime) {
-        String inputNickName = InputView.readNickName();
-        Nickname nickname = new Nickname(inputNickName);
-        Crew crew = crews.findByNickname(nickname);
-        String inputTime = InputView.readDateTime();
-        final LocalDate localDate = fixDateTime.toLocalDate();
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");
-        final LocalTime parsedInputTime = LocalTime.parse(inputTime, formatter);
-        if (crew.isAttended(LocalDateTime.of(localDate, parsedInputTime))) {
+    private void processCheckAttendees(final Crews crews, final LocalDateTime fixDateTime) {
+        final Nickname nickname = readNickname();
+        final Crew crew = crews.findByNickname(nickname);
+        final LocalDateTime attendedDateTime = LocalDateTime.of(fixDateTime.toLocalDate(), readLocalTime());
+
+        if (crew.isAttended(attendedDateTime)) {
             throw new CustomIllegalArgumentException("이미 출석했습니다. 다음에는 수정기능을 이용해주세요.");
         }
-        final Attendance attendance = new Attendance(LocalDateTime.of(localDate, parsedInputTime));
-        crew.add(attendance);
+        final Attendance attendance = attend(crew, attendedDateTime);
         OutputView.printAttendance(attendance);
     }
 
-    private static void processEditAttendance(final Crews crews) {
+    private Nickname readNickname() {
+        final String inputNickName = InputView.readNickName();
+        return new Nickname(inputNickName);
+    }
+
+    private LocalTime readLocalTime() {
+        final String inputTime = InputView.readDateTime();
+        final DateTimeFormatter formatter = DateTimeFormatter.ofPattern(Constants.TIME_FORMAT);
+        return LocalTime.parse(inputTime, formatter);
+    }
+
+    private Attendance attend(Crew crew, LocalDateTime attendedDateTime) {
+        final Attendance attendance = new Attendance(attendedDateTime);
+        crew.add(attendance);
+        return attendance;
+    }
+
+
+    private void processEditAttendance(final Crews crews) {
         String inputNickName = InputView.readUpdateNickName();
         Nickname nickname = new Nickname(inputNickName);
         Crew crew = crews.findByNickname(nickname);
