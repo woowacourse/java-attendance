@@ -17,8 +17,8 @@ class AttendanceBookTest {
         crew1.addDailyAttendance(Map.of(LocalDate.of(2024, 12, 1), LocalTime.of(10, 6)));
         attendanceBook.addNewCrew(crew1);
 
-        assertThat(attendanceBook.checkAlreadyExists("쿠키")).isEqualTo(true);
-        assertThat(attendanceBook.checkAlreadyExists("없음")).isEqualTo(false);
+        assertThat(attendanceBook.checkCrewAlreadyExists("쿠키")).isEqualTo(true);
+        assertThat(attendanceBook.checkCrewAlreadyExists("없음")).isEqualTo(false);
     }
 
     @Test

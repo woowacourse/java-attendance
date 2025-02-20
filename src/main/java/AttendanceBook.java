@@ -42,7 +42,7 @@ public class AttendanceBook {
         return crewPenaltyResponses;
     }
 
-    public boolean checkAlreadyExists(String name) {
+    public boolean checkCrewAlreadyExists(String name) {
         boolean result = false;
 
         for (Crew crew : crews) {
@@ -55,7 +55,7 @@ public class AttendanceBook {
     }
 
     public void initialize(String name, Map<LocalDate, LocalTime> dateAndTime) {
-        if (!checkAlreadyExists(name)) {
+        if (!checkCrewAlreadyExists(name)) {
             addNewCrew(Crew.createByName(name));
         }
         addDailyAttendanceByName(name, dateAndTime);
@@ -74,14 +74,11 @@ public class AttendanceBook {
         return crews.stream()
                 .filter(crew -> crew.hasName(name))
                 .findFirst()
-                .orElseThrow();
+                .orElseThrow(() -> new IllegalArgumentException("[ERROR] 등록되지 않은 닉네임입니다."));
     }
 
     public void checkAttendance(String name, Map<LocalDate, LocalTime> dateAndTime) {
-        Crew foundCrew = crews.stream()
-                .filter(crew -> crew.hasName(name))
-                .findAny()
-                .orElseThrow(() -> new IllegalArgumentException("[ERROR] 등록되지 않은 닉네임입니다."));
+        Crew foundCrew = getCrewByName(name);
 
         LocalDate date = dateAndTime.keySet().stream()
                 .findAny()
@@ -99,10 +96,7 @@ public class AttendanceBook {
     }
 
     public void modifyAttendance(String name, Map<LocalDate, LocalTime> dateAndTime) {
-        Crew foundCrew = crews.stream()
-                .filter(crew -> crew.hasName(name))
-                .findAny()
-                .orElseThrow(() -> new IllegalArgumentException("[ERROR] 등록되지 않은 닉네임입니다."));
+        Crew foundCrew = getCrewByName(name);
 
         LocalTime time = dateAndTime.values().stream()
                 .findAny()
@@ -120,6 +114,12 @@ public class AttendanceBook {
     public void validateIsInOperationHour(LocalTime time) {
         if (!time.isAfter(LocalTime.of(8, 0)) || !time.isBefore(LocalTime.of(23, 0))) {
             throw new IllegalArgumentException("[ERROR] 캠퍼스 운영 시간은 08:00~23:00 입니다.");
+        }
+    }
+
+    public void validateNameAlreadyExists(String name) {
+        if (!checkCrewAlreadyExists(name)) {
+            throw new IllegalArgumentException("[ERROR] 등록되지 않은 닉네임입니다.");
         }
     }
 }
