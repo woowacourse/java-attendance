@@ -9,15 +9,18 @@ public enum AttendanceStatus {
     LATE("(지각)"),
     NONE("");
 
-    public String getMessage() {
-        return message;
-    }
+    private static final LocalTime OPERATION_HOUR_START = LocalTime.of(8, 0);
+    private static final LocalTime MONDAY_ATTEND_TIME_END = LocalTime.of(13, 5);
+    private static final LocalTime MONDAY_LATE_TIME_END = LocalTime.of(13, 30);
+    private static final LocalTime OPERATION_TIME_END = LocalTime.of(23, 0);
+    private static final LocalTime EXCEPT_MONDAY_ATTEND_TIME_START = LocalTime.of(8, 0);
+    private static final LocalTime EXCEPT_MONDAY_ATTEND_TIME_END = LocalTime.of(10, 5);
+    private static final LocalTime EXCEPT_MONDAY_LATE_TIME_END = LocalTime.of(10, 30);
+    private final String message;
 
     AttendanceStatus(String message) {
         this.message = message;
     }
-
-    private final String message;
 
     public static AttendanceStatus judgeStatus(LocalDate date, LocalTime time) {
         int day = date.getDayOfMonth();
@@ -28,28 +31,32 @@ public enum AttendanceStatus {
     }
 
     public static AttendanceStatus getInMonday(LocalTime time) {
-        if (!time.isBefore(LocalTime.of(8, 0)) && !time.isAfter(LocalTime.of(13, 5))) {
+        if (!time.isBefore(OPERATION_HOUR_START) && !time.isAfter(MONDAY_ATTEND_TIME_END)) {
             return ATTEND;
         }
-        if (!time.isBefore(LocalTime.of(13, 5)) && !time.isAfter(LocalTime.of(13, 30))) {
+        if (!time.isBefore(MONDAY_ATTEND_TIME_END) && !time.isAfter(MONDAY_LATE_TIME_END)) {
             return LATE;
         }
-        if (!time.isBefore(LocalTime.of(13, 30)) && !time.isAfter(LocalTime.of(23, 0))) {
+        if (!time.isBefore(MONDAY_LATE_TIME_END) && !time.isAfter(OPERATION_TIME_END)) {
             return ABSENT;
         }
         return NONE;
     }
 
     public static AttendanceStatus getExceptMonday(LocalTime time) {
-        if (!time.isBefore(LocalTime.of(8, 0)) && !time.isAfter(LocalTime.of(10, 5))) {
+        if (!time.isBefore(EXCEPT_MONDAY_ATTEND_TIME_START) && !time.isAfter(EXCEPT_MONDAY_ATTEND_TIME_END)) {
             return ATTEND;
         }
-        if (!time.isBefore(LocalTime.of(10, 5)) && !time.isAfter(LocalTime.of(10, 30))) {
+        if (!time.isBefore(EXCEPT_MONDAY_ATTEND_TIME_END) && !time.isAfter(EXCEPT_MONDAY_LATE_TIME_END)) {
             return LATE;
         }
-        if (!time.isBefore(LocalTime.of(10, 30)) && !time.isAfter(LocalTime.of(23, 0))) {
+        if (!time.isBefore(EXCEPT_MONDAY_LATE_TIME_END) && !time.isAfter(OPERATION_TIME_END)) {
             return ABSENT;
         }
         return NONE;
+    }
+
+    public String getMessage() {
+        return message;
     }
 }

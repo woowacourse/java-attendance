@@ -9,6 +9,10 @@ import java.util.List;
 import java.util.Map;
 
 public class Parser {
+
+    private static final String DATE_DELIMITER = " ";
+    private static final String NAME_DELIMITER = ",";
+
     public static List<String> parse(List<String> loadedData) {
         loadedData.removeFirst();
         return loadedData;
@@ -17,14 +21,14 @@ public class Parser {
     public static List<List<String>> parseName(List<String> removedData) {
         List<List<String>> result = new ArrayList<>();
         for (String data: removedData) {
-            List<String> nameSeperatedData = Arrays.asList(data.split(","));
+            List<String> nameSeperatedData = Arrays.asList(data.split(NAME_DELIMITER));
             result.add(nameSeperatedData);
         }
         return result;
     }
 
     public static Map<LocalDate, LocalTime> parseDate(String rawDateTime) {
-        List<String> rawDateAndTime = Arrays.asList(rawDateTime.split(" "));
+        List<String> rawDateAndTime = Arrays.asList(rawDateTime.split(DATE_DELIMITER));
         String rawDate = rawDateAndTime.getFirst();
         String rawTime = rawDateAndTime.getLast();
         LocalDate date = LocalDate.parse(rawDate);
@@ -36,7 +40,7 @@ public class Parser {
         try {
             return LocalDate.now().withDayOfMonth(Integer.parseInt(input));
         } catch (DateTimeException | NumberFormatException e) {
-            throw new IllegalArgumentException("[ERROR] 날짜(일) 입력이 올바르지 않습니다.");
+            throw new IllegalArgumentException(ErrorCode.DAY_INPUT_NOT_VALID.getMessage());
         }
     }
 
@@ -44,7 +48,7 @@ public class Parser {
         try {
             return LocalTime.parse(input);
         } catch (DateTimeException | NumberFormatException e) {
-            throw new IllegalArgumentException("[ERROR] 시간 입력이 올바르지 않습니다.");
+            throw new IllegalArgumentException(ErrorCode.TIME_INPUT_NOT_VALID.getMessage());
         }
     }
 }

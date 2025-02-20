@@ -10,13 +10,16 @@ public class Calendar {
 
     public static void validateIsWorkingDay(int date) {
         if (SATURDAYS.contains(date)) {
-            throw new IllegalArgumentException(String.format("[ERROR] 12월 %02d일 토요일은 등교일이 아닙니다.", date));
+            throw new IllegalArgumentException(
+                    String.format(ErrorCode.SATURDAY_NOT_WORKING_DAY_FORMAT.getMessage(), date));
         }
         if (SUNDAYS.contains(date)) {
-            throw new IllegalArgumentException(String.format("[ERROR] 12월 %02d일 일요일은 등교일이 아닙니다.", date));
+            throw new IllegalArgumentException(
+                    String.format(ErrorCode.SUNDAY_NOT_WORKING_DAY_FORMAT.getMessage(), date));
         }
         if (HOLIDAYS.contains(date)) {
-            throw new IllegalArgumentException(String.format("[ERROR] 12월 %02d일 공휴일은 등교일이 아닙니다.", date));
+            throw new IllegalArgumentException(
+                    String.format(ErrorCode.HOLIDAY_NOT_WORKING_DAY_FORMAT.getMessage(), date));
         }
     }
 
@@ -25,9 +28,6 @@ public class Calendar {
     }
 
     public static boolean checkIsWorkingDay(int date) {
-        if (SATURDAYS.contains(date) || SUNDAYS.contains(date) || HOLIDAYS.contains(date)) {
-            return false;
-        }
-        return true;
+        return !SATURDAYS.contains(date) && !SUNDAYS.contains(date) && !HOLIDAYS.contains(date);
     }
 }

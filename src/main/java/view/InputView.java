@@ -15,13 +15,11 @@ public class InputView {
 
     private final Scanner scanner = new Scanner(System.in);
 
-    // 출석 확인 기능, 크루 출석 기록 확인 기능: 닉네임 입력
     public String askName() {
         System.out.println(ASK_NAME);
         return getUserSelection();
     }
 
-    // 출석 확인 기능: 시간 입력
     public String askTime() {
         System.out.println(ASK_TIME);
         return getUserSelection();

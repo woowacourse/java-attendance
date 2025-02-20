@@ -10,6 +10,9 @@ import java.util.Map;
 import java.util.Objects;
 
 public class Crew {
+    private static final int END_DAY_OF_DECEMBER = 31;
+    private static final int START_DAY_OF_DECEMBER = 1;
+
     private final String name;
     private final Map<LocalDate, LocalTime> dailyAttendances;
 
@@ -34,7 +37,7 @@ public class Crew {
 
     private void validateIsNotAlreadyAttended(LocalDate date) {
         if (dailyAttendances.containsKey(date)) {
-            throw new IllegalArgumentException("[ERROR] 이미 출석한 날짜입니다. 수정 기능을 이용해주세요.");
+            throw new IllegalArgumentException(ErrorCode.CHECK_ATTENDANCE_ALREADY_EXISTS.getMessage());
         }
     }
 
@@ -58,13 +61,14 @@ public class Crew {
 
     public void validateDateAlreadyExists(LocalDate date) {
         if (!dailyAttendances.containsKey(date)) {
-            throw new IllegalArgumentException(String.format("[ERROR] %02d일 기록이 존재하지 않습니다.", date.getDayOfMonth()));
+            throw new IllegalArgumentException(
+                    String.format(ErrorCode.ATTENDANCE_RECORD_NOT_EXISTS_FORMAT.getMessage(), date.getDayOfMonth()));
         }
     }
 
     public List<AttendanceRecordResponse> getAttendanceRecords() {
         List<AttendanceRecordResponse> records = new ArrayList<>();
-        for (int day = 1; day <= 31; day++) {
+        for (int day = START_DAY_OF_DECEMBER; day <= END_DAY_OF_DECEMBER; day++) {
             if (!Calendar.checkIsWorkingDay(day)) {
                 continue;
             }
@@ -75,8 +79,6 @@ public class Crew {
                         AttendanceStatus.ABSENT));
                 continue;
             }
-
-            //  없는 날에 --:--
 
             if (Calendar.isMonday(day)) {
                 records.add(new AttendanceRecordResponse(LocalDate.of(2024, 12, day), time,

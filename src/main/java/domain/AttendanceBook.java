@@ -12,7 +12,6 @@ import java.util.Map;
 
 public class AttendanceBook {
     private final List<Crew> crews;
-    public List<CrewPenaltyResponse> crewPenaltyResponses;
 
     public AttendanceBook() {
         this.crews = new ArrayList<>();
@@ -77,7 +76,7 @@ public class AttendanceBook {
         return crews.stream()
                 .filter(crew -> crew.hasName(name))
                 .findFirst()
-                .orElseThrow(() -> new IllegalArgumentException("[ERROR] 등록되지 않은 닉네임입니다."));
+                .orElseThrow(() -> new IllegalArgumentException(ErrorCode.NICKNAME_NOT_FOUND.getMessage()));
     }
 
     public AttendanceRecordResponse checkAttendance(String name, Map<LocalDate, LocalTime> dateAndTime) {
@@ -132,13 +131,13 @@ public class AttendanceBook {
 
     public void validateIsInOperationHour(LocalTime time) {
         if (!time.isAfter(LocalTime.of(8, 0)) || !time.isBefore(LocalTime.of(23, 0))) {
-            throw new IllegalArgumentException("[ERROR] 캠퍼스 운영 시간은 08:00~23:00 입니다.");
+            throw new IllegalArgumentException(ErrorCode.TIME_NOT_IN_OPERATION_HOUR.getMessage());
         }
     }
 
     public void validateNameAlreadyExists(String name) {
         if (!checkCrewAlreadyExists(name)) {
-            throw new IllegalArgumentException("[ERROR] 등록되지 않은 닉네임입니다.");
+            throw new IllegalArgumentException(ErrorCode.NICKNAME_NOT_FOUND.getMessage());
         }
     }
 }
