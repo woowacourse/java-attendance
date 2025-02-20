@@ -5,7 +5,7 @@ import java.util.Map;
 import domain.AttendanceStatus;
 import domain.Manage;
 
-public record CrewCloseToExpelledResult(
+public record CrewAlmostExpelledResult(
     String nickname,
     Map<AttendanceStatus, Integer> attendanceStatusStatistics,
     Manage manage

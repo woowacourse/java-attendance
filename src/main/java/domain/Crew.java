@@ -76,7 +76,7 @@ public class Crew {
         return histories;
     }
 
-    public Map<AttendanceStatus, Integer> getAttendanceStatusStatistics(LocalDate today) {
+    public Map<AttendanceStatus, Integer> getAttendanceStatusCounter(LocalDate today) {
         Map<AttendanceStatus, Integer> statusCounter = new EnumMap<>(AttendanceStatus.class);
         initializeStatusCounter(statusCounter);
         for(int day = 1; day < today.getDayOfMonth(); day++) {

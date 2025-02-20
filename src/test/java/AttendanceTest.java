@@ -52,7 +52,7 @@ public class AttendanceTest {
         crew.attendance(LocalDate.of(2025, 02, 19), LocalTime.of(10, 31));
 
         SoftAssertions.assertSoftly(softly -> {
-            softly.assertThat(crew.getAttendanceStatusByDate(LocalDate.of(2025, 02, 01))).isEqualTo(AttendanceStatus.ABSENT);
+            softly.assertThat(crew.getAttendanceStatusByDate(LocalDate.of(2025, 02, 03))).isEqualTo(AttendanceStatus.ABSENT);
             softly.assertThat(crew.getAttendanceStatusByDate(LocalDate.of(2025, 02, 17))).isEqualTo(AttendanceStatus.LATE);
             softly.assertThat(crew.getAttendanceStatusByDate(LocalDate.of(2025, 02, 18))).isEqualTo(AttendanceStatus.ATTENDANCE);
             softly.assertThat(crew.getAttendanceStatusByDate(LocalDate.of(2025, 02, 19))).isEqualTo(AttendanceStatus.ABSENT);
@@ -70,7 +70,7 @@ public class AttendanceTest {
         crew.attendance(LocalDate.of(2025, 02, 5), LocalTime.of(10, 31));
 
         Map<AttendanceStatus, Integer> attendanceStatusStatistics =
-            crew.getAttendanceStatusStatistics(LocalDate.of(2025, 02, 10));
+            crew.getAttendanceStatusCounter(LocalDate.of(2025, 02, 10));
         SoftAssertions.assertSoftly(softly -> {
             softly.assertThat(attendanceStatusStatistics.get(AttendanceStatus.ATTENDANCE)).isEqualTo(1);
             softly.assertThat(attendanceStatusStatistics.get(AttendanceStatus.LATE)).isEqualTo(1);
@@ -88,7 +88,7 @@ public class AttendanceTest {
         // 결석
         crew.attendance(LocalDate.of(2025, 02, 5), LocalTime.of(10, 31));
         Map<AttendanceStatus, Integer> attendanceStatusStatistics =
-            crew.getAttendanceStatusStatistics(LocalDate.of(2025, 02, 6));
+            crew.getAttendanceStatusCounter(LocalDate.of(2025, 02, 6));
 
         Manage manage = Manage.of(attendanceStatusStatistics);
         assertThat(manage).isEqualTo(Manage.NONE);
@@ -104,7 +104,7 @@ public class AttendanceTest {
         // 지각
         crew.attendance(LocalDate.of(2025, 02, 5), LocalTime.of(10, 30));
         Map<AttendanceStatus, Integer> attendanceStatusStatistics =
-            crew.getAttendanceStatusStatistics(LocalDate.of(2025, 02, 7));
+            crew.getAttendanceStatusCounter(LocalDate.of(2025, 02, 7));
 
         Manage manage = Manage.of(attendanceStatusStatistics);
         assertThat(manage).isEqualTo(Manage.WARNING);
@@ -116,7 +116,7 @@ public class AttendanceTest {
         // 지각
         crew.attendance(LocalDate.of(2025, 02, 3), LocalTime.of(13, 10));
         Map<AttendanceStatus, Integer> attendanceStatusStatistics =
-            crew.getAttendanceStatusStatistics(LocalDate.of(2025, 02, 7));
+            crew.getAttendanceStatusCounter(LocalDate.of(2025, 02, 7));
 
         Manage manage = Manage.of(attendanceStatusStatistics);
         assertThat(manage).isEqualTo(Manage.INTERVIEW);
@@ -126,7 +126,7 @@ public class AttendanceTest {
     void 결석_6회_이상인_경우_제적_대상자가_된다() {
         Crew crew = new Crew("pobi");
         Map<AttendanceStatus, Integer> attendanceStatusStatistics =
-            crew.getAttendanceStatusStatistics(LocalDate.of(2025, 02, 11));
+            crew.getAttendanceStatusCounter(LocalDate.of(2025, 02, 11));
 
         Manage manage = Manage.of(attendanceStatusStatistics);
         assertThat(manage).isEqualTo(Manage.EXPELLED);

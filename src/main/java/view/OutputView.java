@@ -8,7 +8,7 @@ import domain.AttendanceStatus;
 import domain.Manage;
 import dto.AttendanceHistoryResult;
 import dto.AttendanceResult;
-import dto.CrewCloseToExpelledResult;
+import dto.CrewAlmostExpelledResult;
 import dto.Formatter;
 import dto.ModifiedResult;
 
@@ -56,13 +56,13 @@ public class OutputView {
         }
     }
 
-    public static void printCrewsCloseToExpelled(List<CrewCloseToExpelledResult> result) {
+    public static void printCrewsAlmostExpelled(List<CrewAlmostExpelledResult> result) {
         String format = "- %s: %s %d회, %s %d회 (%s)%n";
 
         result = result.stream()
             .sorted(
-                Comparator.comparing(CrewCloseToExpelledResult::calculateTotalCount, Comparator.reverseOrder())
-                    .thenComparing(CrewCloseToExpelledResult::nickname))
+                Comparator.comparing(CrewAlmostExpelledResult::calculateTotalCount, Comparator.reverseOrder())
+                    .thenComparing(CrewAlmostExpelledResult::nickname))
             .toList();
 
         result.forEach(crew ->

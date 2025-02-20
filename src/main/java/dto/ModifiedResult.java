@@ -7,10 +7,14 @@ import domain.AttendanceStatus;
 
 public record ModifiedResult (
     LocalDate date,
-    LocalTime before,
-    AttendanceStatus beforeStatus,
-    LocalTime after,
-    AttendanceStatus afterStatus
+    InnerStatus before,
+    InnerStatus after
 ){
 
+    public record InnerStatus(
+        LocalTime time,
+        AttendanceStatus status
+    ) {
+
+    }
 }
