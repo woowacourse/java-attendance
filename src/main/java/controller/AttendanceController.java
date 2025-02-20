@@ -70,9 +70,7 @@ public class AttendanceController {
 
     private void check() {
         String name = inputView.readName();
-        String date = DEFAULT_YEAR + "-" + DEFAULT_MONTH + "-" + DEFAULT_DAY;
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-        LocalDate localDate = LocalDate.parse(date, formatter);
+        LocalDate localDate = calculateTodayDate();
         Records records = attendanceManager.findByName(name);
         StatisticsResult statisticsResult = AttendanceStatistics.countStatus(localDate, records);
         int attendanceCount = statisticsResult.getAttendanceCount();
@@ -83,12 +81,16 @@ public class AttendanceController {
         outputView.printStatistics(attendanceCount, latenessCount, absenceCount, penaltyResult);
     }
 
-    private void checkExpelledWarning(){
-        String date = DEFAULT_YEAR + "-" + DEFAULT_MONTH + "-" + DEFAULT_DAY;
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-        LocalDate localDate = LocalDate.parse(date, formatter);
+    private void checkExpelledWarning() {
+        LocalDate localDate = calculateTodayDate();
 
         Map<String, StatisticsResult> sortedResult =attendanceManager.sortCrew(localDate);
         outputView.printExpelledWarningResult(sortedResult);
+    }
+
+    private LocalDate calculateTodayDate() {
+        String date = DEFAULT_YEAR + "-" + DEFAULT_MONTH + "-" + DEFAULT_DAY;
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        return LocalDate.parse(date, formatter);
     }
 }
