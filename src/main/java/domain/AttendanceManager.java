@@ -1,5 +1,6 @@
 package domain;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
@@ -39,6 +40,10 @@ public class AttendanceManager {
         }
 
         return records.edit(newLocalDateTime);
+    }
+
+    public Map<String, StatisticsResult> findWarningCrews(LocalDate nowDate) {
+        return AttendanceStatistics.calculateExpelledWarning(nowDate, crews);
     }
 
     public Records findByName(String name) {

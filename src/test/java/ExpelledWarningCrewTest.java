@@ -46,8 +46,8 @@ public class ExpelledWarningCrewTest {
     @DisplayName("크루 출석 기록을 바탕으로 제적 위험자를 파악한다.")
     @Test
     void 제적_위험자_계산() {
-        LocalDate nowDate = LocalDate.of(2024, 12, 7);
-        Map<String, StatisticsResult> warningCrews = attendanceManager.findWarningCrew(nowDate);
+        LocalDate nowDate = LocalDate.of(2024, 12, 10);
+        Map<String, StatisticsResult> warningCrews = attendanceManager.findWarningCrews(nowDate);
 
         assertThat(warningCrews.size()).isEqualTo(2);
     }
