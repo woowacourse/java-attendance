@@ -1,6 +1,7 @@
 package controller;
 
 import domain.Attendance;
+import domain.AttendanceCustomDate;
 import exception.CrewNotExistException;
 import exception.DuplicateAttendanceException;
 import service.AttendanceCheckService;
@@ -10,12 +11,12 @@ import view.OutputView;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
-public class AttendanceController {
+public class AttendanceCheckController implements Controller {
     private final InputView inputView;
     private final OutputView outputView;
     private final AttendanceCheckService attendanceCheckService;
 
-    public AttendanceController(
+    public AttendanceCheckController(
             InputView inputView,
             OutputView outputView,
             AttendanceCheckService attendanceCheckService
@@ -25,10 +26,12 @@ public class AttendanceController {
         this.attendanceCheckService = attendanceCheckService;
     }
 
-    public void checkAttendance() {
+    @Override
+    public void run() {
+        //TODO : 오늘이 출석 일자인지 확인하고 아니면 에러 날리기
         String name = inputView.readName();
         String timeInput = inputView.readTime();
-        LocalDate now = LocalDateTime.now().toLocalDate();
+        LocalDate now = AttendanceCustomDate.now().toLocalDate();
         String[] minuteAndHour = timeInput.split(":");
         LocalDateTime time = LocalDateTime.of(
                 now.getYear(),

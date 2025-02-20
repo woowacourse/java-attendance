@@ -12,13 +12,27 @@ import java.util.List;
 public class AttendanceStoreService {
     private final AttendanceRepository attendanceRepository;
 
-
     public AttendanceStoreService(AttendanceRepository attendanceRepository) {
         this.attendanceRepository = attendanceRepository;
     }
 
-    private String[] parse(String s) {
-        return s.split(",");
+    public void save() {
+        List<String> lines = loadLines("src/main/resources/attendances.csv");
+        for (String line : lines) {
+            String[] parsed = line.split(",");;
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+            Crew crew = new Crew(parsed[0]);
+            LocalDateTime attendanceTime = LocalDateTime.parse(parsed[1], formatter);
+            try {
+                attendanceRepository.save(crew);
+            } catch (RuntimeException ignored) {
+            }
+            attendanceRepository.createNewAttendance(parsed[0]
+                    , attendanceTime.getDayOfMonth()
+                    , attendanceTime.getHour()
+                    , attendanceTime.getMinute()
+            );
+        }
     }
 
     private List<String> loadLines(String file) {
@@ -36,22 +50,6 @@ public class AttendanceStoreService {
             return lines;
         } catch (IOException e) {
             throw new RuntimeException("파일 로드 중에 오류가 발생했습니다.");
-        }
-    }
-
-    public void save() {
-        List<String> lines = loadLines("src/main/resources/attendances.csv");
-        for (String line : lines) {
-            String[] parsed = parse(line);
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
-            Crew crew = new Crew(parsed[0]);
-            LocalDateTime attendanceTime = LocalDateTime.parse(parsed[1], formatter);
-            attendanceRepository.save(crew);
-            attendanceRepository.createNewAttendance(parsed[0]
-                    , attendanceTime.getDayOfMonth()
-                    , attendanceTime.getHour()
-                    , attendanceTime.getMinute()
-            );
         }
     }
 }

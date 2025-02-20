@@ -32,9 +32,6 @@ public class AttendanceRepositoryImpl implements AttendanceRepository{
     @Override
     public AttendanceBook findByCrewName(String crewName) {
         Crew crew = findCrewByName(crewName);
-        if (!crewAttendances.containsKey(crew)) {
-            throw new CrewNotExistException();
-        }
         return crewAttendances.get(crew);
     }
 
@@ -66,5 +63,4 @@ public class AttendanceRepositoryImpl implements AttendanceRepository{
                 .findFirst()
                 .orElseThrow(CrewNotExistException::new);
     }
-
 }
