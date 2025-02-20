@@ -1,6 +1,7 @@
 package attendance.controller;
 
 import attendance.dto.AttendanceLogResponse;
+import attendance.dto.RequiresManagementCrewResponse;
 import attendance.dto.UpdateAttendanceResponse;
 import attendance.model.domain.crew.Crew;
 import attendance.model.domain.crew.CrewAttendanceComparator;
@@ -8,16 +9,22 @@ import attendance.model.domain.crew.DefaultCrewAttendanceComparator;
 import attendance.model.repository.AttendanceRepository;
 import attendance.model.repository.CrewAttendanceDeserializer;
 import attendance.model.service.AttendanceService;
-import attendance.view.input.Command;
+import attendance.view.input.ConsoleInputView;
 import attendance.view.input.InputView;
+import attendance.view.output.ConsoleOutputView;
 import attendance.view.output.OutputView;
 import java.nio.file.Path;
 import java.time.LocalDateTime;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class Controller {
 
-    private final InputView inputView = new InputView();
-    private final OutputView outputView = new OutputView();
+    private final Map<Command, Runnable> commandActions = new HashMap<>();
+
+    private final InputView inputView = new ConsoleInputView();
+    private final OutputView outputView = new ConsoleOutputView();
 
     private final CrewAttendanceDeserializer crewAttendanceDeserializer = new CrewAttendanceDeserializer();
     private final Path crewAttendanceDataPath = Path.of("src/main/resources/attendances.csv");
@@ -26,28 +33,26 @@ public class Controller {
     private final AttendanceService attendanceService = new AttendanceService(attendanceRepository);
     private final CrewAttendanceComparator crewAttendanceComparator = new DefaultCrewAttendanceComparator();
 
-    public void run() {
+    public Controller() {
+        setUpCommandActions();
+    }
 
+    public void run() {
         Command command;
         do {
             command = inputView.inputCommand();
-
-            if (command == Command.ATTENDANCE_CHECK) {
-                attendance();
-            }
-
-            if (command == Command.ATTENDANCE_MODIFY) {
-                updateAttendance();
-            }
-
-            if (command == Command.CREW_ATTENDANCE_CHECK) {
-                checkCrewAttendance();
-            }
+            commandActions.get(command).run();
         } while (command != Command.QUIT);
-
     }
 
-    public void attendance() {
+    private void setUpCommandActions() {
+        commandActions.put(Command.ATTENDANCE, this::attendance);
+        commandActions.put(Command.UPDATE_ATTENDANCE, this::updateAttendance);
+        commandActions.put(Command.GET_ATTENDANCE_LOG, this::checkCrewAttendance);
+        commandActions.put(Command.GET_REQUIRES_MANAGEMENT_CREWS, this::printRequiresManagementCrews);
+    }
+
+    private void attendance() {
         try {
             String crewName = inputView.inputNickname();
             Crew crew = attendanceService.findCrewByName(crewName);
