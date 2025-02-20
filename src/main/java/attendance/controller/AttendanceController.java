@@ -15,6 +15,7 @@ import java.time.LocalTime;
 import java.util.List;
 
 public class AttendanceController {
+
     private Attendances attendances;
     private Crews crews;
 
@@ -26,10 +27,24 @@ public class AttendanceController {
     }
 
     public void run() {
-        recordAttendance();
-        modifyAttendance();
-        checkAttendanceRecordOfCrew();
-        OutputView.printPenaltyOfCrews(crews.getCrews(), attendances);
+        while (true) {
+            String inputFunction = InputView.readFunction();
+            if (inputFunction.equals("1")) {
+                recordAttendance();
+            }
+            if (inputFunction.equals("2")) {
+                modifyAttendance();
+            }
+            if (inputFunction.equals("3")) {
+                checkAttendanceRecordOfCrew();
+            }
+            if (inputFunction.equals("4")) {
+                OutputView.printPenaltyOfCrews(crews.getCrews(), attendances);
+            }
+            if (inputFunction.equals("Q")) {
+                break;
+            }
+        }
     }
 
     private void recordAttendance() {
@@ -76,7 +91,7 @@ public class AttendanceController {
 
     private void checkAttendanceRecordOfCrew() {
         Crew crew = getCrew();
-        List<Attendance> attendanceList = attendances.getByCrew(crew , LocalDate.of(2024, 12, 14));
+        List<Attendance> attendanceList = attendances.getByCrew(crew, LocalDate.of(2024, 12, 14));
         OutputView.printAttendanceRecordAndPenalty(attendanceList);
     }
 }

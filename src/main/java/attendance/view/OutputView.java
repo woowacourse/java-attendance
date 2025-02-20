@@ -14,7 +14,7 @@ import java.util.stream.Collectors;
 
 public class OutputView {
 
-    private static final String DATE_FORMATTER = "MM월 dd일 EEE요일";
+    public static final String DATE_FORMATTER = "MM월 dd일 EEE요일";
     private static final String TIME_FORMATTER = "HH:mm";
     private static final String ABSENCE_FORMATTER = "MM월 dd일 EEE요일 --:--";
 
@@ -65,7 +65,7 @@ public class OutputView {
 
         Penalty penalty = Penalty.determine(absenceCount, lateCount);
         if (penalty != Penalty.NONE) {
-            System.out.printf("%n%s 대상자입니다.", penalty.getKoreanName());
+            System.out.printf("%n%s 대상자입니다.%n", penalty.getKoreanName());
         }
     }
 
@@ -97,11 +97,14 @@ public class OutputView {
         }
     }
 
-    private static List<PenaltyResult> getPenaltyResults(List<Crew> crews, Attendances attendances) {
+    private static List<PenaltyResult> getPenaltyResults(List<Crew> crews,
+        Attendances attendances) {
         return crews.stream()
             .map(crew -> {
-                List<Attendance> attendanceOfCrew = attendances.getByCrew(crew, LocalDate.of(2024, 12, 14));
-                int absenceCount = countAttendanceStatus(attendanceOfCrew, AttendanceStatus.ABSENCE);
+                List<Attendance> attendanceOfCrew = attendances.getByCrew(crew,
+                    LocalDate.of(2024, 12, 14));
+                int absenceCount = countAttendanceStatus(attendanceOfCrew,
+                    AttendanceStatus.ABSENCE);
                 int lateCount = countAttendanceStatus(attendanceOfCrew, AttendanceStatus.LATE);
                 Penalty penalty = Penalty.determine(absenceCount, lateCount);
                 return new PenaltyResult(crew.getName(), absenceCount, lateCount, penalty);
@@ -114,6 +117,7 @@ public class OutputView {
                 AttendanceStatus.ABSENCE.getKoreanName(),
                 penaltyResult.absenceCount, AttendanceStatus.LATE.getKoreanName(),
                 penaltyResult.lateCount, penaltyResult.penalty.getKoreanName());
+            System.out.println();
         }
     }
 
