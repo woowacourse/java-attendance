@@ -11,7 +11,6 @@ public class AttendanceHistory {
     private final List<AttendanceDetail> attendanceHistory = new ArrayList<>();
 
     public void addAttendanceDetail(AttendanceDetail attendanceDetail) {
-        validateHoliday(attendanceDetail.getAttendanceDate());
         attendanceHistory.add(attendanceDetail);
     }
 
