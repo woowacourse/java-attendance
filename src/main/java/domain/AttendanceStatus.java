@@ -25,10 +25,10 @@ public enum AttendanceStatus {
         LocalTime startTime = getStartTime(attendanceDateTime);
         LocalTime attendanceTime = attendanceDateTime.toLocalTime();
 
-        if (attendanceTime.isBefore(startTime.plusMinutes(5))) {
+        if (attendanceTime.isBefore(startTime.plusMinutes(5).plusSeconds(1)) ) {
             return ATTEND;
         }
-        if (attendanceTime.isAfter(startTime.plusMinutes(5)) && attendanceTime.isBefore(attendanceTime.plusMinutes(30))) {
+        if (attendanceTime.isAfter(startTime.plusMinutes(5)) && attendanceTime.isBefore(startTime.plusMinutes(30).plusSeconds(1))) {
             return LATE;
         }
         return ABSENT;
