@@ -1,7 +1,6 @@
 package domain;
 
 import java.util.Arrays;
-import java.util.List;
 
 public enum Command {
     CHECK_ATTENDEES("출석 확인", "1"),
@@ -23,11 +22,6 @@ public enum Command {
                 .filter(c -> c.commandNumber.equals(commandNumber))
                 .findFirst()
                 .orElseThrow(() -> new IllegalArgumentException("알맞은 명령어를 입력하세요."));
-    }
-
-    public static List<Command> findAll() {
-        return Arrays.stream(Command.values())
-                .toList();
     }
 
     public String getCommandName() {
