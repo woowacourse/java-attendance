@@ -9,9 +9,15 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 
 public class AttendancePolicy {
+    private static final LocalTime OPEN_TIME = LocalTime.of(8, 0);
+    private static final LocalTime CLOSE_TIME = LocalTime.of(23, 0);
+
     private AttendancePolicy() {}
 
     public static AttendanceType checkAttendanceType(LocalDate localDate, LocalTime localTime) {
+        if (localTime.isBefore(OPEN_TIME) || localTime.isAfter(CLOSE_TIME)) {
+            throw new IllegalArgumentException("캠퍼스 운영 시간이 아닙니다.");
+        }
         DayOfWeek dayOfWeek = localDate.getDayOfWeek();
         if (dayOfWeek == DayOfWeek.MONDAY) {
             return checkMondayAttendanceType(localTime);
