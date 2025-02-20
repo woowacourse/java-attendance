@@ -4,14 +4,14 @@ import java.util.Objects;
 
 public class Crew {
 
-    private String name;
+    private String nickName;
 
-    public Crew(String name) {
-        this.name = name;
+    public Crew(String nickName) {
+        this.nickName = nickName;
     }
 
-    public String getName() {
-        return name;
+    public String getNickName() {
+        return nickName;
     }
 
     @Override
@@ -20,11 +20,11 @@ public class Crew {
             return false;
         }
 
-        return Objects.equals(name, crew.name);
+        return Objects.equals(nickName, crew.nickName);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(name);
+        return Objects.hashCode(nickName);
     }
 }

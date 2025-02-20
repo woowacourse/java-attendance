@@ -1,5 +1,6 @@
 package attendance.domain;
 
+import attendance.constant.Holiday;
 import attendance.util.DateUtil;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
@@ -30,8 +31,7 @@ public class Attendance {
 
     private void validateHoliday(LocalDateTime dateTime) {
         LocalDate date = dateTime.toLocalDate();
-        LocalDate holiday = LocalDate.of(2024, 12, 25);
-        if (date.equals(holiday)) {
+        if (Holiday.isHoliday(date)) {
             throw new IllegalArgumentException();
         }
     }
@@ -72,13 +72,5 @@ public class Attendance {
 
     public LocalDateTime getDateTime() {
         return dateTime;
-    }
-
-    @Override
-    public String toString() {
-        return "Attendance{" +
-            "dateTime=" + dateTime +
-            ", status=" + status +
-            '}';
     }
 }

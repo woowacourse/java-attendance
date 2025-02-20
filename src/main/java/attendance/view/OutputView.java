@@ -27,9 +27,7 @@ public class OutputView {
         DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern(
             DATE_FORMATTER + " " + TIME_FORMATTER);
         String attendanceDate = attendanceDateTime.format(dateTimeFormatter);
-        System.out.println(
-            System.lineSeparator() + attendanceDate + " (" + attendanceStatus.getKoreanName()
-                + ")");
+        System.out.printf("%n%s (%s)%n", attendanceDate, attendanceStatus.getKoreanName());
     }
 
     public static void printModifyingResult(Attendance previousAttendance, Attendance attendance) {
@@ -45,15 +43,15 @@ public class OutputView {
             date, beforeTime, beforeStatus, afterTime, afterStatus);
     }
 
-    public static void printAttendanceRecordAndPenalty(List<Attendance> attendances) {
+    public static void printAttendanceRecordAndPenalty(List<Attendance> attendancesOfCrew) {
         System.out.printf("%n이번 달 빙티의 출석 기록입니다.%n");
-        for (Attendance attendance : attendances) {
+        for (Attendance attendance : attendancesOfCrew) {
             System.out.println(getFormattedAttendanceRecord(attendance));
         }
 
-        int attendanceCount = countAttendanceStatus(attendances, AttendanceStatus.CHECKIN);
-        int lateCount = countAttendanceStatus(attendances, AttendanceStatus.LATE);
-        int absenceCount = countAttendanceStatus(attendances, AttendanceStatus.ABSENCE);
+        int attendanceCount = countAttendanceStatus(attendancesOfCrew, AttendanceStatus.CHECKIN);
+        int lateCount = countAttendanceStatus(attendancesOfCrew, AttendanceStatus.LATE);
+        int absenceCount = countAttendanceStatus(attendancesOfCrew, AttendanceStatus.ABSENCE);
         printPenaltyOfAttendanceStatus(attendanceCount, lateCount, absenceCount);
     }
 
@@ -71,13 +69,15 @@ public class OutputView {
 
     private static int countAttendanceStatus(List<Attendance> attendances,
         AttendanceStatus attendanceStatus) {
-        return Math.toIntExact(attendances.stream()
-            .filter(attendance -> attendance.getStatus() == attendanceStatus).count());
+        return Math.toIntExact(
+            attendances.stream()
+                .filter(attendance -> attendance.getStatus() == attendanceStatus)
+                .count()
+        );
     }
 
     private static String getFormattedAttendanceRecord(Attendance attendance) {
-        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern(
-            DATE_FORMATTER + " " + TIME_FORMATTER);
+        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern(DATE_FORMATTER + " " + TIME_FORMATTER);
         DateTimeFormatter absenceFormatter = DateTimeFormatter.ofPattern(ABSENCE_FORMATTER);
 
         String dateTime = attendance.getDateTime().format(dateTimeFormatter);
@@ -101,14 +101,13 @@ public class OutputView {
         Attendances attendances) {
         return crews.stream()
             .map(crew -> {
-                List<Attendance> attendanceOfCrew = attendances.getByCrew(crew,
-                    LocalDate.now());
-                int absenceCount = countAttendanceStatus(attendanceOfCrew,
-                    AttendanceStatus.ABSENCE);
+                List<Attendance> attendanceOfCrew = attendances.getByCrew(crew, LocalDate.now());
+                int absenceCount = countAttendanceStatus(attendanceOfCrew, AttendanceStatus.ABSENCE);
                 int lateCount = countAttendanceStatus(attendanceOfCrew, AttendanceStatus.LATE);
                 Penalty penalty = Penalty.determine(absenceCount, lateCount);
-                return new PenaltyResult(crew.getName(), absenceCount, lateCount, penalty);
-            }).collect(Collectors.toList());
+                return new PenaltyResult(crew.getNickName(), absenceCount, lateCount, penalty);
+            })
+            .collect(Collectors.toList());
     }
 
     private static void printPenaltyResult(PenaltyResult penaltyResult) {

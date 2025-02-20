@@ -19,18 +19,22 @@ public class Attendances {
             return;
         }
 
-        for (Attendance attendance1 : attendances.get(crew)) {
-            if (attendance1.getDateTime().getDayOfMonth() == attendance.getDateTime().getDayOfMonth()) {
-                throw new IllegalArgumentException("\n[ERROR] 이미 출석을 완료했습니다. 수정 기능을 이용해주세요.");
-            }
+        for (Attendance existAttendance : attendances.get(crew)) {
+            validateAlreadyAttended(attendance, existAttendance);
         }
 
         attendances.get(crew).add(attendance);
     }
 
+    private void validateAlreadyAttended(Attendance attendance, Attendance existAttendance) {
+        if (existAttendance.getDateTime().getDayOfMonth() == attendance.getDateTime().getDayOfMonth()) {
+            throw new IllegalArgumentException("\n[ERROR] 이미 출석을 완료했습니다. 수정 기능을 이용해주세요.");
+        }
+    }
+
     public Attendance getAttendance(Crew crew, LocalDate localDate) {
-        List<Attendance> attendanceList = attendances.get(crew);
-        for (Attendance attendance : attendanceList) {
+        List<Attendance> attendancesOfCrew = attendances.get(crew);
+        for (Attendance attendance : attendancesOfCrew) {
             if (attendance.getDateTime().getDayOfMonth() == localDate.getDayOfMonth()) {
                 return attendance;
             }
@@ -64,9 +68,9 @@ public class Attendances {
     }
 
     public int countAttendanceStatus(Crew crew, LocalDate date, AttendanceStatus status) {
-        List<Attendance> attendanceList = getByCrew(crew, date);
+        List<Attendance> attendancesOfCrew = getByCrew(crew, date);
         int absenceCount = 0;
-        for (Attendance attendance : attendanceList) {
+        for (Attendance attendance : attendancesOfCrew) {
             if (attendance.getStatus().equals(status)) {
                 absenceCount++;
             }

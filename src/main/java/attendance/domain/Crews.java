@@ -15,7 +15,7 @@ public class Crews {
 
     public Crew getCrew(String nickName) {
         return crews.stream()
-            .filter(crew -> crew.getName().equals(nickName))
+            .filter(crew -> crew.getNickName().equals(nickName))
             .findFirst()
             .orElseThrow(() -> new IllegalArgumentException("\n[ERROR] 등록되지 않은 닉네임입니다."));
     }

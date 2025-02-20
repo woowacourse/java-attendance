@@ -1,5 +1,6 @@
 package attendance.controller;
 
+import attendance.constant.Holiday;
 import attendance.domain.Attendance;
 import attendance.domain.Attendances;
 import attendance.domain.Crew;
@@ -59,7 +60,7 @@ public class AttendanceController {
     }
 
     private void validateAttendanceDate() {
-        if (DateUtil.isWeekend(LocalDate.now())) {
+        if (DateUtil.isWeekend(LocalDate.now()) || Holiday.isHoliday(LocalDate.now())) {
             throw new IllegalArgumentException(String.format("%n[ERROR] %s은 등교일이 아닙니다.", LocalDate.now().format(
                 DateTimeFormatter.ofPattern(OutputView.DATE_FORMATTER))));
         }
@@ -109,7 +110,7 @@ public class AttendanceController {
 
     private void checkAttendanceRecordOfCrew() {
         Crew crew = getCrew();
-        List<Attendance> attendanceList = attendances.getByCrew(crew, LocalDate.now());
-        OutputView.printAttendanceRecordAndPenalty(attendanceList);
+        List<Attendance> attendancesOfCrew = attendances.getByCrew(crew, LocalDate.now());
+        OutputView.printAttendanceRecordAndPenalty(attendancesOfCrew);
     }
 }

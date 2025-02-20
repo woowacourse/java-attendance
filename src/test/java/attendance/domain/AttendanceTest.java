@@ -72,7 +72,7 @@ public class AttendanceTest {
     void 등교날짜가_공휴일이면_예외가_발생한다() {
         LocalTime time = LocalTime.of(9, 59);
 
-        LocalDate holiday = LocalDate.of(2024, 12, 25);
+        LocalDate holiday = LocalDate.of(2025, 12, 25);
         LocalDateTime localDateTime = LocalDateTime.of(holiday, time);
 
         assertThatThrownBy(() -> Attendance.of(localDateTime))
