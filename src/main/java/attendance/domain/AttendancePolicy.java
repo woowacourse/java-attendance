@@ -12,23 +12,9 @@ public class AttendancePolicy {
     public static AttendanceType checkAttendanceType(LocalDate localDate, LocalTime localTime) {
         DayOfWeek dayOfWeek = localDate.getDayOfWeek();
         if (dayOfWeek == DayOfWeek.MONDAY) {
-            if (localTime.isBefore(LocalTime.of(13, 6))) {
-                return ATTENDANCE;
-            }
-
-            if (localTime.isBefore(LocalTime.of(13, 31))) {
-                return LATE;
-            }
-            return ABSENCE;
+            return checkMondayAttendanceType(localTime);
         }
-        if (localTime.isBefore(LocalTime.of(10, 6))) {
-            return ATTENDANCE;
-        }
-
-        if (localTime.isBefore(LocalTime.of(10, 31))) {
-            return LATE;
-        }
-        return ABSENCE;
+        return checkGeneralAttendanceType(localTime);
     }
 
     public static void checkHoliday(LocalDate localDate) {
@@ -38,5 +24,30 @@ public class AttendancePolicy {
             return;
         }
         throw new IllegalArgumentException("등교일이 아닙니다");
+    }
+
+    private static AttendanceType checkMondayAttendanceType(LocalTime localTime) {
+        if (localTime.isBefore(LocalTime.of(13, 6))) {
+            return ATTENDANCE;
+        }
+
+        if (localTime.isBefore(LocalTime.of(13, 31))) {
+            return LATE;
+        }
+        return ABSENCE;
+    }
+
+    /**
+     * 월요일이 아닌 목 ~ 금의 출석 타입을 반환
+     */
+    private static AttendanceType checkGeneralAttendanceType(LocalTime localTime) {
+        if (localTime.isBefore(LocalTime.of(10, 6))) {
+            return ATTENDANCE;
+        }
+
+        if (localTime.isBefore(LocalTime.of(10, 31))) {
+            return LATE;
+        }
+        return ABSENCE;
     }
 }

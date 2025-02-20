@@ -39,10 +39,7 @@ public class AttendanceHistoryManager {
     }
 
     public Map<AttendanceType, Integer> calculateAttendanceResult(LocalDate localDate) {
-        Map<AttendanceType, Integer> attendanceResult = new HashMap<>();
-        for (AttendanceType attendanceType : AttendanceType.values()) {
-            attendanceResult.put(attendanceType, 0);
-        }
+        Map<AttendanceType, Integer> attendanceResult = initializeAttendanceResult();
         for (int i = 1; i < localDate.getDayOfMonth(); i++) {
             LocalDate date = LocalDate.of(localDate.getYear(), localDate.getMonthValue(), i);
             try {
@@ -79,5 +76,13 @@ public class AttendanceHistoryManager {
             return WARNING;
         }
         return CLEAR;
+    }
+
+    private Map<AttendanceType, Integer> initializeAttendanceResult() {
+        Map<AttendanceType, Integer> attendanceResult = new HashMap<>();
+        for (AttendanceType attendanceType : AttendanceType.values()) {
+            attendanceResult.put(attendanceType, 0);
+        }
+        return attendanceResult;
     }
 }
