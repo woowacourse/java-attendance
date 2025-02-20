@@ -17,8 +17,4 @@ public enum StudentPunishment {
         return standard;
     }
 
-    public String getPunishmentLabel() {
-        return punishmentLabel;
-    }
-
 }
