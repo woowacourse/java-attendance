@@ -83,7 +83,7 @@ public class OutputView {
                     )
             );
         }
-        System.out.println();
+        printNewLine();
     }
 
     public void printCrewStatisticStatus(List<String> crewStatisticStatus) {
@@ -98,7 +98,7 @@ public class OutputView {
         System.out.println(
                 CREW_STATUS_STRING.formatted(crewStatisticStatus.get(3))
         );
-        System.out.println();
+        printNewLine();
     }
 
     // TODO 제적 위험자 확인 기능 출력:
