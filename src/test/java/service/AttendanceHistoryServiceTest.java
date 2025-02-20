@@ -2,6 +2,7 @@ package service;
 
 import constants.DateConstants;
 import domain.Crew;
+import domain.CrewStatus;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -15,6 +16,7 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.*;
 
+import static org.assertj.core.api.Assertions.as;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -86,9 +88,12 @@ class AttendanceHistoryServiceTest {
     @Test
     void test4() {
         // given
+        LocalDate date = LocalDate.of(year, month, 6);
 
         // when
+        CrewStatus crewStatus = attendanceHistoryService.getCrewStatus(name, date);
 
         // then
+        assertThat(crewStatus).isSameAs(CrewStatus.WARNING);
     }
 }
