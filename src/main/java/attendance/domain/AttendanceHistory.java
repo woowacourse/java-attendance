@@ -1,34 +1,44 @@
 package attendance.domain;
 
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Set;
+import java.time.LocalDateTime;
+import java.util.Objects;
 
 public class AttendanceHistory {
-    private final Set<AttendanceResult> attendanceHistory = new HashSet<>();
+    private LocalDateTime attendanceTime;
+    private AttendanceType attendanceType;
 
-    public void addAttendanceResult(AttendanceResult attendanceResult) {
-        if (!attendanceHistory.add(attendanceResult)) {
-            throw new IllegalArgumentException("해당 날짜에 이미 출석하셨습니다.");
+    public AttendanceHistory(LocalDateTime attendanceTime, AttendanceType attendanceType) {
+        this.attendanceTime = attendanceTime;
+        this.attendanceType = attendanceType;
+    }
+
+    public LocalDateTime getAttendanceTime() {
+        return attendanceTime;
+    }
+
+    public AttendanceType getAttendanceType() {
+        return attendanceType;
+    }
+
+    public void modify(AttendanceHistory attendanceHistory) {
+        this.attendanceTime = attendanceHistory.getAttendanceTime();
+        this.attendanceType = attendanceHistory.getAttendanceType();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
         }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        AttendanceHistory that = (AttendanceHistory) o;
+        return Objects.equals(attendanceTime.toLocalDate(), that.attendanceTime.toLocalDate());
     }
 
-    public Set<AttendanceResult> getAttendanceHistory() {
-        return Collections.unmodifiableSet(attendanceHistory);
-    }
-
-    public AttendanceResult getAttendanceResult(AttendanceResult modifyAttendanceResult) {
-        return attendanceHistory.stream()
-                .filter(result -> result.equals(modifyAttendanceResult))
-                .findAny()
-                .orElseThrow(() -> new IllegalArgumentException("출석 기록이 존재하지 않습니다."));
-    }
-
-    public void modifyAttendanceResult(AttendanceResult modifyAttendanceResult) {
-        AttendanceResult attendanceResult = attendanceHistory.stream()
-                .filter(result -> result.equals(modifyAttendanceResult))
-                .findAny()
-                .get();
-        attendanceResult.modify(modifyAttendanceResult);
+    @Override
+    public int hashCode() {
+        return Objects.hash(attendanceTime.toLocalDate());
     }
 }

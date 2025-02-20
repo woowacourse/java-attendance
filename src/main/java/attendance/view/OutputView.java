@@ -1,7 +1,7 @@
 package attendance.view;
 
-import attendance.domain.AttendanceResult;
-import attendance.domain.AttendanceResultDto;
+import attendance.domain.AttendanceHistory;
+import attendance.domain.AttendanceHistoryDto;
 import attendance.domain.AttendanceType;
 import java.time.DayOfWeek;
 import java.time.LocalDateTime;
@@ -10,25 +10,25 @@ public class OutputView {
     private static final String ATTENDANCE_RESULT_MESSAGE = "%d월 %d일 %s %02d:%02d (%s)";
     private static final String MODIFY_ATTENDANCE_RESULT_MESSAGE = "%d월 %d일 %s %02d:%02d (%s) -> %02d:%02d (%s) 수정 완료!";
 
-    public void printAttendanceResult(AttendanceResult attendanceResult) {
-        LocalDateTime attendanceTime = attendanceResult.getAttendanceTime();
+    public void printAttendanceResult(AttendanceHistory attendanceHistory) {
+        LocalDateTime attendanceTime = attendanceHistory.getAttendanceTime();
         int month = attendanceTime.getMonthValue();
         int day = attendanceTime.getDayOfMonth();
         DayOfWeek dayOfWeek = attendanceTime.getDayOfWeek();
-        AttendanceType attendanceType = attendanceResult.getAttendanceType();
+        AttendanceType attendanceType = attendanceHistory.getAttendanceType();
         System.out.println(ATTENDANCE_RESULT_MESSAGE.formatted(month, day, dayOfWeek, attendanceTime.getHour(),
                 attendanceTime.getMinute(), attendanceType.getName()));
     }
 
-    public void printModifyAttendanceResult(AttendanceResultDto beforeAttendanceResultDto,
-                                            AttendanceResult afterAttendanceResult) {
-        LocalDateTime beforeAttendanceTime = beforeAttendanceResultDto.getAttendanceTime();
-        LocalDateTime afterAttendanceTime = afterAttendanceResult.getAttendanceTime();
+    public void printModifyAttendanceResult(AttendanceHistoryDto beforeAttendanceHistoryDto,
+                                            AttendanceHistory afterAttendanceHistory) {
+        LocalDateTime beforeAttendanceTime = beforeAttendanceHistoryDto.getAttendanceTime();
+        LocalDateTime afterAttendanceTime = afterAttendanceHistory.getAttendanceTime();
         int month = beforeAttendanceTime.getMonthValue();
         int day = beforeAttendanceTime.getDayOfMonth();
         DayOfWeek dayOfWeek = beforeAttendanceTime.getDayOfWeek();
-        AttendanceType beforeAttendanceType = beforeAttendanceResultDto.getAttendanceType();
-        AttendanceType afterAttendanceType = afterAttendanceResult.getAttendanceType();
+        AttendanceType beforeAttendanceType = beforeAttendanceHistoryDto.getAttendanceType();
+        AttendanceType afterAttendanceType = afterAttendanceHistory.getAttendanceType();
         System.out.println(
                 MODIFY_ATTENDANCE_RESULT_MESSAGE.formatted(month, day, dayOfWeek, beforeAttendanceTime.getHour(),
                         beforeAttendanceTime.getMinute(), beforeAttendanceType.getName(), afterAttendanceTime.getHour(),

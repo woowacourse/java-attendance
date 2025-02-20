@@ -13,94 +13,94 @@ import java.time.LocalTime;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
-public class AttendanceManagerTest {
+public class AttendancePolicyTest {
 
     @Nested
-    class CheckAttendanceResult {
+    class CheckAttendanceHistory {
         @Test
         void checkAttendanceResult7() {
-            AttendanceType result = AttendanceManager.checkAttendanceType(DayOfWeek.TUESDAY, LocalTime.of(8, 12));
+            AttendanceType result = AttendancePolicy.checkAttendanceType(DayOfWeek.TUESDAY, LocalTime.of(8, 12));
             assertThat(result).isEqualTo(ATTENDANCE);
         }
 
         @Test
         void checkAttendanceResult8() {
-            AttendanceType result = AttendanceManager.checkAttendanceType(DayOfWeek.TUESDAY, LocalTime.of(10, 5));
+            AttendanceType result = AttendancePolicy.checkAttendanceType(DayOfWeek.TUESDAY, LocalTime.of(10, 5));
             assertThat(result).isEqualTo(ATTENDANCE);
         }
 
         @Test
         void checkAttendanceResult9() {
-            AttendanceType result = AttendanceManager.checkAttendanceType(DayOfWeek.TUESDAY, LocalTime.of(10, 6));
+            AttendanceType result = AttendancePolicy.checkAttendanceType(DayOfWeek.TUESDAY, LocalTime.of(10, 6));
             assertThat(result).isEqualTo(LATE);
         }
 
         @Test
         void checkAttendanceResult10() {
-            AttendanceType result = AttendanceManager.checkAttendanceType(DayOfWeek.TUESDAY, LocalTime.of(10, 30));
+            AttendanceType result = AttendancePolicy.checkAttendanceType(DayOfWeek.TUESDAY, LocalTime.of(10, 30));
             assertThat(result).isEqualTo(LATE);
         }
 
 
         @Test
         void checkAttendanceResult11() {
-            AttendanceType result = AttendanceManager.checkAttendanceType(DayOfWeek.TUESDAY, LocalTime.of(10, 31));
+            AttendanceType result = AttendancePolicy.checkAttendanceType(DayOfWeek.TUESDAY, LocalTime.of(10, 31));
             assertThat(result).isEqualTo(ABSENCE);
         }
 
         @Test
         void checkAttendanceResult12() {
-            AttendanceType result = AttendanceManager.checkAttendanceType(DayOfWeek.TUESDAY, LocalTime.of(10, 31));
+            AttendanceType result = AttendancePolicy.checkAttendanceType(DayOfWeek.TUESDAY, LocalTime.of(10, 31));
             assertThat(result).isEqualTo(ABSENCE);
         }
 
         @Test
         void checkAttendanceResult13() {
-            AttendanceType result = AttendanceManager.checkAttendanceType(DayOfWeek.MONDAY, LocalTime.of(12, 30));
+            AttendanceType result = AttendancePolicy.checkAttendanceType(DayOfWeek.MONDAY, LocalTime.of(12, 30));
             assertThat(result).isEqualTo(ATTENDANCE);
         }
 
         @Test
         void checkAttendanceResult133() {
-            AttendanceType result = AttendanceManager.checkAttendanceType(DayOfWeek.MONDAY, LocalTime.of(13, 5));
+            AttendanceType result = AttendancePolicy.checkAttendanceType(DayOfWeek.MONDAY, LocalTime.of(13, 5));
             assertThat(result).isEqualTo(ATTENDANCE);
         }
 
         @Test
         void checkAttendanceResult14() {
-            AttendanceType result = AttendanceManager.checkAttendanceType(DayOfWeek.MONDAY, LocalTime.of(13, 6));
+            AttendanceType result = AttendancePolicy.checkAttendanceType(DayOfWeek.MONDAY, LocalTime.of(13, 6));
             assertThat(result).isEqualTo(LATE);
         }
 
         @Test
         void checkAttendanceResult144() {
-            AttendanceType result = AttendanceManager.checkAttendanceType(DayOfWeek.MONDAY, LocalTime.of(13, 30));
+            AttendanceType result = AttendancePolicy.checkAttendanceType(DayOfWeek.MONDAY, LocalTime.of(13, 30));
             assertThat(result).isEqualTo(LATE);
         }
 
         @Test
         void checkAttendanceResult15() {
-            AttendanceType result = AttendanceManager.checkAttendanceType(DayOfWeek.MONDAY, LocalTime.of(13, 31));
+            AttendanceType result = AttendancePolicy.checkAttendanceType(DayOfWeek.MONDAY, LocalTime.of(13, 31));
             assertThat(result).isEqualTo(ABSENCE);
         }
     }
 
     @Test
     void check_weekday() {
-        assertThatCode(() -> AttendanceManager.checkHoliday(LocalDate.of(2024, 12, 26)))
+        assertThatCode(() -> AttendancePolicy.checkHoliday(LocalDate.of(2024, 12, 26)))
                 .doesNotThrowAnyException();
     }
 
     @Test
     void check_holiday_1() {
-        assertThatThrownBy(() -> AttendanceManager.checkHoliday(LocalDate.of(2024, 12, 22)))
+        assertThatThrownBy(() -> AttendancePolicy.checkHoliday(LocalDate.of(2024, 12, 22)))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("등교일이 아닙니다");
     }
 
     @Test
     void check_holiday_2() {
-        assertThatThrownBy(() -> AttendanceManager.checkHoliday(LocalDate.of(2024, 12, 25)))
+        assertThatThrownBy(() -> AttendancePolicy.checkHoliday(LocalDate.of(2024, 12, 25)))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("등교일이 아닙니다");
     }

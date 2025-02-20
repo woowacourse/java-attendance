@@ -2,19 +2,19 @@ package attendance.domain;
 
 public class Crew {
     private final String name;
-    private final AttendanceHistory attendanceHistory;
+    private final AttendanceHistoryManager attendanceHistoryManager;
 
     public Crew(String name) {
         this.name =  name;
-        this.attendanceHistory = new AttendanceHistory();
+        this.attendanceHistoryManager = new AttendanceHistoryManager();
     }
 
-    public void addAttendanceResult(AttendanceResult attendanceResult) {
-        attendanceHistory.addAttendanceResult(attendanceResult);
+    public void addAttendanceResult(AttendanceHistory attendanceHistory) {
+        attendanceHistoryManager.addAttendanceResult(attendanceHistory);
     }
 
-    public void modifyAttendanceResult(AttendanceResult attendanceResult) {
-        attendanceHistory.modifyAttendanceResult(attendanceResult);
+    public void modifyAttendanceResult(AttendanceHistory attendanceHistory) {
+        attendanceHistoryManager.modifyAttendanceResult(attendanceHistory);
     }
 
 
@@ -22,11 +22,11 @@ public class Crew {
         return name;
     }
 
-    public AttendanceHistory getAttendanceHistory() {
-         return attendanceHistory;
+    public AttendanceHistoryManager getAttendanceHistory() {
+         return attendanceHistoryManager;
     }
 
-    public AttendanceResult getAttendanceResult(AttendanceResult attendanceResult) {
-        return attendanceHistory.getAttendanceResult(attendanceResult);
+    public AttendanceHistory getAttendanceResult(AttendanceHistory attendanceHistory) {
+        return attendanceHistoryManager.getAttendanceHistory(attendanceHistory);
     }
 }

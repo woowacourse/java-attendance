@@ -2,17 +2,17 @@ package attendance.domain;
 
 import java.time.LocalDateTime;
 
-public class AttendanceResultDto {
+public class AttendanceHistoryDto {
     private final LocalDateTime attendanceTime;
     private final AttendanceType attendanceType;
 
-    private AttendanceResultDto(LocalDateTime attendanceTime, AttendanceType attendanceType) {
+    private AttendanceHistoryDto(LocalDateTime attendanceTime, AttendanceType attendanceType) {
         this.attendanceTime = attendanceTime;
         this.attendanceType = attendanceType;
     }
 
-    public static AttendanceResultDto of(AttendanceResult attendanceResult) {
-        return new AttendanceResultDto(attendanceResult.getAttendanceTime(), attendanceResult.getAttendanceType());
+    public static AttendanceHistoryDto of(AttendanceHistory attendanceHistory) {
+        return new AttendanceHistoryDto(attendanceHistory.getAttendanceTime(), attendanceHistory.getAttendanceType());
     }
 
     public LocalDateTime getAttendanceTime() {

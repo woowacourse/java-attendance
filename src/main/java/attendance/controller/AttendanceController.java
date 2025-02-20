@@ -1,8 +1,8 @@
 package attendance.controller;
 
-import attendance.domain.AttendanceManager;
-import attendance.domain.AttendanceResult;
-import attendance.domain.AttendanceResultDto;
+import attendance.domain.AttendancePolicy;
+import attendance.domain.AttendanceHistory;
+import attendance.domain.AttendanceHistoryDto;
 import attendance.domain.AttendanceType;
 import attendance.domain.Crew;
 import attendance.domain.CrewManager;
@@ -32,16 +32,16 @@ public class AttendanceController {
         while (true) {
             String option = inputView.inputOption(now);
             if (option.equals("1")) {
-                AttendanceManager.checkHoliday(now);
+                AttendancePolicy.checkHoliday(now);
                 String crewName = inputView.inputCrewName();
                 Crew crew = crewManager.findByCrewName(crewName);
                 LocalTime attendanceTime = inputView.inputAttendanceTime();
-                AttendanceType attendanceType = AttendanceManager.checkAttendanceType(now.getDayOfWeek(),
+                AttendanceType attendanceType = AttendancePolicy.checkAttendanceType(now.getDayOfWeek(),
                         attendanceTime);
-                AttendanceResult attendanceResult = new AttendanceResult(LocalDateTime.of(now, attendanceTime),
+                AttendanceHistory attendanceHistory = new AttendanceHistory(LocalDateTime.of(now, attendanceTime),
                         attendanceType);
-                crew.addAttendanceResult(attendanceResult);
-                outputView.printAttendanceResult(attendanceResult);
+                crew.addAttendanceResult(attendanceHistory);
+                outputView.printAttendanceResult(attendanceHistory);
                 continue;
             }
             if (option.equals("2")) {
@@ -49,13 +49,14 @@ public class AttendanceController {
                 Crew crew = crewManager.findByCrewName(crewName);
                 LocalDate modifyDate = inputView.inputModifyDate(now);
                 LocalTime attendanceTime = inputView.inputAttendanceTime();
-                AttendanceType attendanceType = AttendanceManager.checkAttendanceType(now.getDayOfWeek(),
+                AttendanceType attendanceType = AttendancePolicy.checkAttendanceType(now.getDayOfWeek(),
                         attendanceTime);
-                AttendanceResult afterAttendanceResult = new AttendanceResult(LocalDateTime.of(modifyDate, attendanceTime),
+                AttendanceHistory afterAttendanceHistory = new AttendanceHistory(LocalDateTime.of(modifyDate, attendanceTime),
                         attendanceType);
-                AttendanceResultDto beforeAttendanceResultDto = AttendanceResultDto.of(crew.getAttendanceResult(afterAttendanceResult));
-                crew.modifyAttendanceResult(afterAttendanceResult);
-                outputView.printModifyAttendanceResult(beforeAttendanceResultDto, afterAttendanceResult);
+                AttendanceHistoryDto beforeAttendanceHistoryDto = AttendanceHistoryDto.of(crew.getAttendanceResult(
+                        afterAttendanceHistory));
+                crew.modifyAttendanceResult(afterAttendanceHistory);
+                outputView.printModifyAttendanceResult(beforeAttendanceHistoryDto, afterAttendanceHistory);
                 continue;
             }
             if (option.equals("3")) {
