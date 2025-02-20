@@ -29,7 +29,6 @@ public class CrewsService {
     private List<Attendance> initAttendances(LocalDate now, List<LocalDateTime> crewAttendances, LocalDate firstDay) {
         List<Attendance> attendances = new ArrayList<>();
         for (LocalDate day = firstDay; day.isBefore(now); day = day.plusDays(1L)) {
-            // TODO : indent 줄이기
             if (isHoliday(day)) {
                 continue;
             }
