@@ -73,4 +73,32 @@ public class CrewStatistic {
 
         return crewStatisticInfo;
     }
+
+    public List<String> getCrewStatisticStatus() {
+        return List.of(
+                String.valueOf(crew.getSafeCount()),
+                String.valueOf(crew.getLateCount()),
+                String.valueOf(crew.getAbsentCount()),
+                status.toString()
+        );
+    }
+
+    public int getPenaltyCount() {
+        int absentCount = crew.getAbsentCount();
+        int lateCount = crew.getLateCount();
+        return absentCount + lateCount / 3;
+    }
+
+    public String getCrewName() {
+        return crew.getName();
+    }
+
+    public List<String> crewExpelExpectedInfo() {
+        return List.of(
+                crew.getName(),
+                String.valueOf(crew.getAbsentCount()),
+                String.valueOf(crew.getLateCount()),
+                status.toString()
+        );
+    }
 }
