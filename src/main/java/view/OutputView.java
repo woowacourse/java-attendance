@@ -2,7 +2,9 @@ package view;
 
 import domain.AttendanceState;
 import domain.Calender;
+import dto.AttendanceResultDto;
 import java.time.LocalDateTime;
+import java.util.List;
 
 public class OutputView {
 
@@ -32,5 +34,26 @@ public class OutputView {
                 afterDateTime.getMinute(),
                 afterAttendanceState
         );
+    }
+
+    public static void printRecordAttendance(List<AttendanceResultDto> attendanceResultDtos) {
+        for (AttendanceResultDto attendanceResultDto : attendanceResultDtos) {
+            System.out.printf(printDayAttendance(attendanceResultDto));
+        }
+    }
+
+    private static String printDayAttendance(AttendanceResultDto attendanceResultDto) {
+        if (attendanceResultDto.localDateTime().getHour() != 0) {
+            return String.format("12월 %02d일 %s %02d:%02d (%s)\n",
+                    attendanceResultDto.localDateTime().getDayOfMonth(),
+                    Calender.findBy(attendanceResultDto.localDateTime().getDayOfMonth()),
+                    attendanceResultDto.localDateTime().getHour(),
+                    attendanceResultDto.localDateTime().getMinute(),
+                    attendanceResultDto.attendanceState());
+        }
+        return String.format("12월 %02d일 %s --:-- (%s)\n",
+                attendanceResultDto.localDateTime().getDayOfMonth(),
+                Calender.findBy(attendanceResultDto.localDateTime().getDayOfMonth()),
+                attendanceResultDto.attendanceState());
     }
 }
