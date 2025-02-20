@@ -44,44 +44,62 @@ public class Controller {
                 break;
             }
             if (Integer.parseInt(selectFunction) == 1) {
-                String studentName = getStudentForAttendanceCheckUntilExist(studentRepository);
-                LocalDateTime localDateTime = getLocalDateTimeUntilValidate(todayDate);
-                Student student = studentRepository.findStudentByName(studentName);
-                student.updateState(localDateTime);
-                OutputView.printTodayAttendanceResult(student, localDateTime);
+                functionForMenuOne(studentRepository, todayDate);
             }
-
             if (Integer.parseInt(selectFunction) == 2) {
-                String studentName = getStudentNameForModifyUntilValidate(studentRepository);
-                Student student = studentRepository.findStudentByName(studentName);
-
-                int modifyDate = InputView.inputDateForModify();
-
-                InputView.printTimeForModify();
-                LocalDate localDate = LocalDate.of(2024, 12, modifyDate);
-
-                LocalDateTime modifyLocalDateTime = getTimeUntilValidate(localDate);
-
-                String recordBeforeModify = LocalDateTimePrintFormatter.LocalDateTimeToLocalTime(student.findLocalDateTime(modifyLocalDateTime)) + student.findStateByLocalDateTime(modifyLocalDateTime);
-
-                student.updateState(modifyLocalDateTime);
-                String recordAfterModify = student.findStateByLocalDateTime(modifyLocalDateTime);
-                String localDateTimeFormat3 = modifyLocalDateTime.format(DateTimeFormatter.ofPattern("HH:mm" + " (" + recordAfterModify + ") 수정 완료!"));
-
-                OutputView.printSecondMenu(recordBeforeModify, localDateTimeFormat3);
+                functionForMenuTwo(studentRepository);
             }
             if (Integer.parseInt(selectFunction) == 3) {
-                String studentName = getStudentForAttendanceCheckUntilExist(studentRepository);
-                OutputView.printAttendanceRecord(studentRepository.findStudentByName(studentName).getRecord());
-                studentRepository.findStudentByName(studentName).calculateAbsent();
-                OutputView.printStudentState(studentRepository.findStudentByName(studentName));
-                OutputView.printStudentPunishmentLabel(studentRepository.findStudentByName(studentName));
+                functionForMenuThree(studentRepository);
             }
             if (Integer.parseInt(selectFunction) == 4) {
-                OutputView.printEveryStudentPunishmentLabel(studentRepository);
+                functionForMenuFour(studentRepository);
             }
         }
 
+    }
+
+    private static void functionForMenuFour(StudentRepository studentRepository) {
+        OutputView.printEveryStudentPunishmentLabel(studentRepository);
+    }
+
+    private void functionForMenuThree(StudentRepository studentRepository) {
+        String studentName = getStudentForAttendanceCheckUntilExist(studentRepository);
+        OutputView.printAttendanceRecord(studentRepository.findStudentByName(studentName).getRecord());
+        studentRepository.findStudentByName(studentName).calculateAbsent();
+        OutputView.printStudentState(studentRepository.findStudentByName(studentName));
+        OutputView.printStudentPunishmentLabel(studentRepository.findStudentByName(studentName));
+    }
+
+    private void functionForMenuTwo(StudentRepository studentRepository) {
+        String studentName = getStudentNameForModifyUntilValidate(studentRepository);
+        Student student = studentRepository.findStudentByName(studentName);
+
+        LocalDateTime modifyLocalDateTime = getLocalDateTimeToModify();
+
+        String recordBeforeModify = LocalDateTimePrintFormatter.LocalDateTimeToLocalTime(student.findLocalDateTime(modifyLocalDateTime)) + student.findStateByLocalDateTime(modifyLocalDateTime);
+
+        student.updateState(modifyLocalDateTime);
+        String recordAfterModify = student.findStateByLocalDateTime(modifyLocalDateTime);
+
+        String localDateTimeFormat3 = modifyLocalDateTime.format(DateTimeFormatter.ofPattern("HH:mm" + " (" + recordAfterModify + ") 수정 완료!"));
+
+        OutputView.printSecondMenu(recordBeforeModify, localDateTimeFormat3);
+    }
+
+    private LocalDateTime getLocalDateTimeToModify() {
+        int modifyDate = InputView.inputDateForModify();
+        InputView.printTimeForModify();
+        LocalDate localDate = LocalDate.of(2024, 12, modifyDate);
+        return getTimeUntilValidate(localDate);
+    }
+
+    private void functionForMenuOne(StudentRepository studentRepository, TodayDate todayDate) {
+        String studentName = getStudentForAttendanceCheckUntilExist(studentRepository);
+        LocalDateTime localDateTime = getLocalDateTimeUntilValidate(todayDate);
+        Student student = studentRepository.findStudentByName(studentName);
+        student.updateState(localDateTime);
+        OutputView.printTodayAttendanceResult(student, localDateTime);
     }
 
     private String getStudentNameForModifyUntilValidate(StudentRepository studentRepository) {
