@@ -1,39 +1,33 @@
 package domain;
 
-import java.time.DayOfWeek;
+import global.util.DateUtil;
+
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 
 public enum AttendanceStatus {
-    ATTENDANCE("출석"),
-    TARDY("지각"),
-    ABSENCE("결석");
-
-    public String getStatus() {
-        return status;
-    }
-
-    private final String status;
-
-    AttendanceStatus(String status) {
-        this.status = status;
-    }
+    ATTENDANCE,
+    TARDY,
+    ABSENCE;
 
     public static AttendanceStatus attend(LocalDateTime target) {
-        DayOfWeek dayOfWeek = target.getDayOfWeek();
+        LocalDate targetDate = target.toLocalDate();
 
         LocalTime attendanceTime = LocalTime.of(10, 0);
         LocalTime targetTime = target.toLocalTime();
-
-        if (dayOfWeek == DayOfWeek.SATURDAY || dayOfWeek == DayOfWeek.SUNDAY) {
+        if (DateUtil.isNotWorkingDay(targetDate)) {
             throw new IllegalArgumentException();
         }
 
-        if (dayOfWeek == DayOfWeek.MONDAY) {
+        if (DateUtil.isMonday(targetDate)) {
             attendanceTime = LocalTime.of(13, 0);
         }
+        return getAttendanceStatusByTime(attendanceTime, targetTime);
 
+    }
 
+    private static AttendanceStatus getAttendanceStatusByTime(LocalTime attendanceTime, LocalTime targetTime) {
         if (targetTime.isAfter(attendanceTime)) {
             if (attendanceTime.plusMinutes(30).isBefore(targetTime)) {
                 return ABSENCE;

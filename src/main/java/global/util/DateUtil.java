@@ -14,8 +14,8 @@ public class DateUtil {
                 .withDayOfMonth(1);
     }
 
-    public static boolean isHoliday(LocalDate localDate) {
-        return localDate.isEqual(CHRISTMAS);
+    public static boolean isNotWorkingDay(LocalDate localDate) {
+        return localDate.isEqual(CHRISTMAS) || isWeekend(localDate);
     }
 
     public static boolean isWeekend(LocalDate localDate) {
@@ -23,7 +23,7 @@ public class DateUtil {
     }
 
     public static boolean isWeekday(LocalDate localDate) {
-        return !(isHoliday(localDate) || isWeekend(localDate));
+        return !(isNotWorkingDay(localDate) || isWeekend(localDate));
     }
 
     public static LocalDateTime assembleDateAndTime(LocalDate localDate, LocalTime localTime) {
@@ -32,5 +32,9 @@ public class DateUtil {
 
     public static LocalDate getDateByInputDay(int day) {
         return LocalDate.of(TODAY.getYear(), TODAY.getDayOfMonth(), day);
+    }
+
+    public static boolean isMonday(LocalDate targetDate) {
+        return targetDate.getDayOfWeek() == DayOfWeek.MONDAY;
     }
 }

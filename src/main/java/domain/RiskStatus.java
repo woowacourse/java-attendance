@@ -1,20 +1,10 @@
 package domain;
 
 public enum RiskStatus {
-    WARNING("경고"),
-    COUNSELING("면담"),
-    EXPULSION("제적"),
-    NONE("-");
-
-    private final String status;
-
-    RiskStatus(String status) {
-        this.status = status;
-    }
-
-    public String getStatus() {
-        return status;
-    }
+    WARNING,
+    COUNSELING,
+    EXPULSION,
+    NONE;
 
     public static RiskStatus getRiskStatus(int absenceCount, int tardyCount) {
         int totalAbsenceCount = absenceCount + tardyCount / 3;
@@ -27,10 +17,14 @@ public enum RiskStatus {
             return RiskStatus.COUNSELING;
         }
 
-        if (totalAbsenceCount >= 2) {
+        if (totalAbsenceCount == 2) {
             return RiskStatus.WARNING;
         }
 
         return RiskStatus.NONE;
+    }
+
+    public boolean hasRisk() {
+        return this != RiskStatus.NONE;
     }
 }
