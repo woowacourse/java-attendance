@@ -1,8 +1,5 @@
 package util;
 
-import static util.Constants.HOLIDAYS;
-import static util.Constants.LENGTH_OF_MONTH;
-import static util.Constants.MONTH;
 
 import domain.Attendance;
 import domain.AttendanceCounter;
@@ -13,7 +10,6 @@ import domain.Nickname;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -38,25 +34,30 @@ public final class CrewGenerator {
             crewData.computeIfAbsent(name, k -> new ArrayList<>()).add(attendance);
         }
 
-        // FIXME :: 메서드 추출하기
         final List<Integer> validDates = getValidDates(nowDate);
         List<Crew> crews = new ArrayList<>();
         for (Entry<Nickname, List<Attendance>> nicknameListEntry : crewData.entrySet()) {
-            final Attendances attendances = new Attendances(nicknameListEntry.getValue());
-            List<Integer> alreadyAttendanceDates = attendances.getDates();
-
-            List<Integer> noPresentAttendanceDates = new ArrayList<>(validDates);
-            noPresentAttendanceDates.removeAll(alreadyAttendanceDates);
-            for (Integer attendanceDate : noPresentAttendanceDates) {
-                LocalDateTime dateTime = LocalDateTime.of(LocalDate.of(2024, MONTH, attendanceDate),
-                        LocalTime.of(0, 0));
-                Attendance attendance = new Attendance(dateTime);
-                attendances.add(attendance);
-            }
+            final Attendances attendances = getAttendances(nicknameListEntry, validDates);
             crews.add(new Crew(nicknameListEntry.getKey(), attendances, AttendanceCounter.of(attendances)));
 
         }
         return new Crews(crews);
+    }
+
+    private static Attendances getAttendances(final Entry<Nickname, List<Attendance>> nicknameListEntry,
+                                              final List<Integer> validDates) {
+        final Attendances attendances = new Attendances(nicknameListEntry.getValue());
+        List<Integer> alreadyAttendanceDates = attendances.getDates();
+
+        List<Integer> noPresentAttendanceDates = new ArrayList<>(validDates);
+        noPresentAttendanceDates.removeAll(alreadyAttendanceDates);
+        for (Integer attendanceDate : noPresentAttendanceDates) {
+            LocalDateTime dateTime = LocalDateTime.of(LocalDate.of(2024, Constants.MONTH, attendanceDate),
+                    Constants.ABSENCE_TIME);
+            Attendance attendance = new Attendance(dateTime);
+            attendances.add(attendance);
+        }
+        return attendances;
     }
 
     public static List<Integer> getValidDates(LocalDate localDate) {
@@ -71,20 +72,20 @@ public final class CrewGenerator {
     public static List<Integer> getExcludeNotAttendanceDays() {
         List<Integer> excludeNotAttendanceDays = new ArrayList<>();
         excludeNotAttendanceDays.addAll(getWeekendDays());
-        excludeNotAttendanceDays.addAll(HOLIDAYS);
+        excludeNotAttendanceDays.addAll(Constants.HOLIDAYS);
 
         return excludeNotAttendanceDays;
     }
 
     private static Collection<Integer> getWeekendDays() {
-        return IntStream.rangeClosed(1, LENGTH_OF_MONTH)
+        return IntStream.rangeClosed(1, Constants.LENGTH_OF_MONTH)
                 .filter(CrewGenerator::excludeNotAttendanceDays)
                 .boxed()
                 .toList();
     }
 
     public static boolean excludeNotAttendanceDays(int day) {
-        DayOfWeek dayOfWeek = LocalDate.of(2024, MONTH, day).getDayOfWeek();
+        DayOfWeek dayOfWeek = LocalDate.of(2024, Constants.MONTH, day).getDayOfWeek();
         return dayOfWeek == DayOfWeek.SATURDAY || dayOfWeek == DayOfWeek.SUNDAY;
     }
 }
