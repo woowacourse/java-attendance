@@ -11,7 +11,7 @@ public enum AttendanceDismissStatus {
         return status;
     }
 
-    private String status;
+    private final String status;
 
     AttendanceDismissStatus(String status) {
         this.status = status;
