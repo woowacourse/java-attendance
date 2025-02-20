@@ -1,5 +1,6 @@
 package view;
 
+import domain.PenaltyStatus;
 import dto.AttendanceRecordResponse;
 import dto.CrewPenaltyResponse;
 import dto.ModifyAttendanceResponse;
@@ -88,8 +89,12 @@ public class OutputView {
 
         System.out.println("제적 위험자 조회 결과");
         for (CrewPenaltyResponse response : responses) {
+            if (response.penaltyStatus() == PenaltyStatus.NONE) {
+                continue;
+            }
             System.out.printf("- %s: 결석 %d회, 지각 %d회 (%s)%n",
-                    response.name(), response.absentCount(), response.lateCount(), response.penaltyStatus());
+                    response.name(), response.absentCount(), response.lateCount(),
+                    response.penaltyStatus().getMessage());
         }
     }
 

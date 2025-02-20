@@ -68,7 +68,7 @@ public class Crew {
             if (!Calendar.checkIsWorkingDay(day)) {
                 continue;
             }
-            LocalTime time = dailyAttendances.get(day);
+            LocalTime time = dailyAttendances.get(LocalDate.now().withYear(2024).withMonth(12).withDayOfMonth(day));
 
             if (time == null) {
                 records.add(new AttendanceRecordResponse(LocalDate.of(2024, 12, day), null,
