@@ -1,5 +1,6 @@
 package domain;
 
+import java.time.LocalDate;
 import java.time.LocalTime;
 
 public enum AttendanceStatus {
@@ -13,6 +14,14 @@ public enum AttendanceStatus {
     }
 
     private final String message;
+
+    public static AttendanceStatus judgeStatus(LocalDate date, LocalTime time) {
+        int day = date.getDayOfMonth();
+        if (Calendar.isMonday(day)) {
+            return getInMonday(time);
+        }
+        return getExceptMonday(time);
+    }
 
     public static AttendanceStatus getInMonday(LocalTime time) {
         if (!time.isBefore(LocalTime.of(8, 0)) && !time.isAfter(LocalTime.of(13, 5))) {

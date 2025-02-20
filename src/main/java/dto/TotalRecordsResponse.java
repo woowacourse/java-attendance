@@ -8,7 +8,7 @@ public record TotalRecordsResponse(
         int lateCount,
         int absentCount
 ) {
-    public static TotalRecordsResponse fromAttendanceRecords(List<AttendanceRecordsResponse> records) {
+    public static TotalRecordsResponse fromAttendanceRecords(List<AttendanceRecordResponse> records) {
         List<AttendanceStatus> statuses = records.stream().map(record -> record.attendanceStatus()).toList();
         int attendanceCount = 0;
         int lateCount = 0;

@@ -1,6 +1,6 @@
 package domain;
 
-import dto.AttendanceRecordsResponse;
+import dto.AttendanceRecordResponse;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
@@ -58,8 +58,8 @@ public class Crew {
         dailyAttendances.putAll(dateAndTime);
     }
 
-    public List<AttendanceRecordsResponse> getAttendanceRecords() {
-        List<AttendanceRecordsResponse> records = new ArrayList<>();
+    public List<AttendanceRecordResponse> getAttendanceRecords() {
+        List<AttendanceRecordResponse> records = new ArrayList<>();
         for (int day = 1; day <= 31; day++) {
             if (!Calendar.checkIsWorkingDay(day)) {
                 continue;
@@ -67,7 +67,7 @@ public class Crew {
             LocalTime time = dailyAttendances.get(day);
 
             if (time == null) {
-                records.add(new AttendanceRecordsResponse(LocalDate.of(2024, 12, day), null,
+                records.add(new AttendanceRecordResponse(LocalDate.of(2024, 12, day), null,
                         AttendanceStatus.NONE));
                 continue;
             }
@@ -75,11 +75,11 @@ public class Crew {
             //  없는 날에 --:--
 
             if (Calendar.isMonday(day)) {
-                records.add(new AttendanceRecordsResponse(LocalDate.of(2024, 12, day), time,
+                records.add(new AttendanceRecordResponse(LocalDate.of(2024, 12, day), time,
                         AttendanceStatus.getInMonday(time)));
             }
             if (!Calendar.isMonday(day)) {
-                records.add(new AttendanceRecordsResponse(LocalDate.of(2024, 12, day), time,
+                records.add(new AttendanceRecordResponse(LocalDate.of(2024, 12, day), time,
                         AttendanceStatus.getExceptMonday(time)));
             }
         }

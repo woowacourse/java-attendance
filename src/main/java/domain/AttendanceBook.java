@@ -1,6 +1,6 @@
 package domain;
 
-import dto.AttendanceRecordsResponse;
+import dto.AttendanceRecordResponse;
 import dto.CrewPenaltyResponse;
 import dto.TotalRecordsResponse;
 import java.time.LocalDate;
@@ -21,7 +21,7 @@ public class AttendanceBook {
         List<CrewPenaltyResponse> crewPenaltyResponses = new ArrayList<>();
 
         for (Crew crew : crews) {
-            List<AttendanceRecordsResponse> attendanceRecords = crew.getAttendanceRecords();
+            List<AttendanceRecordResponse> attendanceRecords = crew.getAttendanceRecords();
             TotalRecordsResponse totalRecords = TotalRecordsResponse.fromAttendanceRecords(attendanceRecords);
 
             int penaltyCount = getPenaltyCount(totalRecords);
@@ -82,7 +82,7 @@ public class AttendanceBook {
                 .orElseThrow(() -> new IllegalArgumentException("[ERROR] 등록되지 않은 닉네임입니다."));
     }
 
-    public void checkAttendance(String name, Map<LocalDate, LocalTime> dateAndTime) {
+    public AttendanceRecordResponse checkAttendance(String name, Map<LocalDate, LocalTime> dateAndTime) {
         Crew foundCrew = getCrewByName(name);
 
         LocalDate date = dateAndTime.keySet().stream()
@@ -98,6 +98,7 @@ public class AttendanceBook {
         validateIsInOperationHour(time);
 
         foundCrew.addDailyAttendance(dateAndTime);
+        return new AttendanceRecordResponse(date, time, AttendanceStatus.judgeStatus(date, time));
     }
 
     public void modifyAttendance(String name, Map<LocalDate, LocalTime> dateAndTime) {

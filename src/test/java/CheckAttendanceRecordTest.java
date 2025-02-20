@@ -1,6 +1,6 @@
 import domain.AttendanceBook;
 import domain.Crew;
-import dto.AttendanceRecordsResponse;
+import dto.AttendanceRecordResponse;
 import dto.TotalRecordsResponse;
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -20,7 +20,7 @@ public class CheckAttendanceRecordTest {
         attendanceBook.checkAttendance("쿠키", Map.of(LocalDate.of(2024, 12, 4), LocalTime.of(9, 7)));
         attendanceBook.checkAttendance("쿠키", Map.of(LocalDate.of(2024, 12, 5), LocalTime.of(14, 7)));
 
-        List<AttendanceRecordsResponse> attendanceRecords = crew1.getAttendanceRecords();
+        List<AttendanceRecordResponse> attendanceRecords = crew1.getAttendanceRecords();
 
         TotalRecordsResponse totalRecordsResponse = TotalRecordsResponse.fromAttendanceRecords(attendanceRecords);
     }
