@@ -28,16 +28,21 @@ public enum AttendanceCalculatorByDay {
         }
         for (AttendanceCalculatorByDay attendanceCalculatorByDay : AttendanceCalculatorByDay.values()) {
             if (attendanceCalculatorByDay.dayOfWeekValue == day) {
-                if (localTime.isBefore(attendanceCalculatorByDay.lateTime)) {
-                    return AttendanceStatus.ATTENDANCE;
-                }
-                if (localTime.isBefore(attendanceCalculatorByDay.absentTime)) {
-                    return AttendanceStatus.LATE;
-                }
-                return AttendanceStatus.ABSENT;
+                return getAttendanceStatus(localTime, attendanceCalculatorByDay);
             }
         }
         return null;
+    }
+
+    private static AttendanceStatus getAttendanceStatus(LocalTime localTime,
+                                                        AttendanceCalculatorByDay attendanceCalculatorByDay) {
+        if (localTime.isBefore(attendanceCalculatorByDay.lateTime)) {
+            return AttendanceStatus.ATTENDANCE;
+        }
+        if (localTime.isBefore(attendanceCalculatorByDay.absentTime)) {
+            return AttendanceStatus.LATE;
+        }
+        return AttendanceStatus.ABSENT;
     }
 
 
