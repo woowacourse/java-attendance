@@ -32,7 +32,7 @@ public class StudentRepositoryTest {
         OutputStream out = new ByteArrayOutputStream();
         System.setOut(new PrintStream(out));
 
-        assertThatThrownBy(() -> studentRepository.notExistStudent("포비"))
+        assertThatThrownBy(() -> studentRepository.notExistStudent(InputView.userInput()))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("[ERROR] 등록되지 않은 닉네임입니다.");
     }
