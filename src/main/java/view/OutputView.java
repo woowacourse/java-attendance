@@ -10,18 +10,38 @@ import java.util.List;
 
 public class OutputView {
 
+    public void printTodayAttendance(final AttendTime attendTime) {
+        System.out.println();
+        printAttendTime(attendTime);
+        System.out.println();
+        System.out.println();
+    }
+
+    public void printBeforeChangedCrewAttendance(final AttendTime attendTime) {
+        System.out.println();
+        printAttendTime(attendTime);
+    }
+
+    public void printChangedCrewAttendance(String time, String status) {
+        System.out.printf(" -> %s (%s) 수정 완료!", time, status);
+        System.out.println();
+        System.out.println();
+    }
+
     public void printCrewAttendance(Crew crew) {
         for (int date : December.getWeekDays()) {
             AttendTime attendTime = crew.findAttendanceByDate(date);
             if (attendTime != null) {
-                System.out.println(attendTime.checkTime());
+                printAttendTime(attendTime);
+                System.out.println();
                 continue;
             }
 
-            System.out.printf("12월 %d일 %s --:-- (결석)", date, December.getDayByDate(date));
+            System.out.printf("12월 %02d일 %s --:-- (결석)", date, December.getDayByDate(date));
             System.out.println();
-
         }
+
+        System.out.println();
 
         AttendanceHistory attendanceHistory = crew.getAttendanceHistory();
         System.out.printf("출석: %d회", attendanceHistory.calculateOnTime());
@@ -29,10 +49,12 @@ public class OutputView {
         System.out.printf("지각: %d회", attendanceHistory.calculateLate());
         System.out.println();
         System.out.printf("결석: %d회", attendanceHistory.calculateAbsent());
-
-        AttendanceStatus attendanceStatus = attendanceHistory.getAttendanceStatus();
         System.out.println();
-        System.out.printf("%s 대상자입니다.", attendanceStatus.getStatus());
+
+        System.out.println();
+        AttendanceStatus attendanceStatus = attendanceHistory.getAttendanceStatus();
+        System.out.printf("%s 대상자입니다.\n", attendanceStatus.getStatus());
+        System.out.println();
     }
 
 
@@ -58,7 +80,7 @@ public class OutputView {
             }
             return i;
         };
-        
+
         dangerousCrews.sort(comparator);
         dangerousCrews.forEach(crew -> {
             System.out.printf("- %s: 결석 %d회, 지각 %d회 (%s)", crew.getName(),
@@ -68,5 +90,16 @@ public class OutputView {
             System.out.println();
         });
     }
+
+    private void printAttendTime(final AttendTime attendTime) {
+        System.out.printf("12월 %02d일 %s %02d:%02d (%s)",
+                attendTime.getAttendTime().getDayOfMonth(),
+                December.getDayByDate(attendTime.getAttendTime().getDayOfMonth()),
+                attendTime.getAttendTime().getHour(),
+                attendTime.getAttendTime().getMinute(),
+                attendTime.checkTime()
+        );
+    }
+
 
 }

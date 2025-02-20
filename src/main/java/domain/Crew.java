@@ -8,7 +8,6 @@ public class Crew {
 
     private final String name;
     private final AttendanceHistory attendanceHistory;
-//    private final List<AttendTime> attendTimes;
 
     public Crew(String nickname, String attendTime) {
         this.name = nickname;
@@ -48,7 +47,7 @@ public class Crew {
 
     public void deleteAttendance(final int date) {
         List<AttendTime> attendTimes = attendanceHistory.getAttendTimes();
-        IntStream.range(0, attendTimes.size())
+        IntStream.range(0, attendTimes.size() - 1)
                 .forEach(i -> {
                     if (attendTimes.get(i).getAttendTime().getDayOfMonth() == date) {
                         attendTimes.remove(i);

@@ -22,17 +22,17 @@ public class Crews {
                 .orElse(null);
     }
 
-    public String ifFindNameAddTime(final String nickname, final String time) {
+    public void ifFindNameAddTime(final String nickname, final String time) {
         Crew crew = findCrew(nickname);
 
         if (crew != null) {
             crew.addAttendTime(time);
-            return crew.attend(time);
+            crew.attend(time);
+            return;
         }
         Crew crew1 = new Crew(nickname, time);
         crews.add(crew1);
-        return crew1.attend(time);
-
+        crew1.attend(time);
     }
 
     public List<Crew> getCrews() {
