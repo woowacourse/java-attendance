@@ -48,10 +48,10 @@ public class Crew {
     }
 
     public AttendanceStatus getAttendanceStatusByDate(LocalDate date) {
-        if(DateTimeUtil.isOffDay(date)) {
+        if (DateTimeUtil.isOffDay(date)) {
             return AttendanceStatus.NONE;
         }
-        if(!attendanceTimes.containsKey(date)) {
+        if (!attendanceTimes.containsKey(date)) {
             return AttendanceStatus.ABSENT;
         }
         return AttendanceStatus.of(date, attendanceTimes.get(date));
@@ -65,13 +65,7 @@ public class Crew {
             }
             LocalDate date = today.withDayOfMonth(day);
             LocalTime time = attendanceTimes.get(date);
-            histories.add(
-                new History(
-                    date,
-                    time,
-                    getAttendanceStatusByDate(date),
-                    time == null
-                ));
+            histories.add(new History(date, time, getAttendanceStatusByDate(date), time == null));
         }
         return histories;
     }
@@ -79,7 +73,7 @@ public class Crew {
     public Map<AttendanceStatus, Integer> getAttendanceStatusCounter(LocalDate today) {
         Map<AttendanceStatus, Integer> statusCounter = new EnumMap<>(AttendanceStatus.class);
         initializeStatusCounter(statusCounter);
-        for(int day = 1; day < today.getDayOfMonth(); day++) {
+        for (int day = 1; day < today.getDayOfMonth(); day++) {
             if (DateTimeUtil.isOffDay(today.withDayOfMonth(day))) {
                 continue;
             }

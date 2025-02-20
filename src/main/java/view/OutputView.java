@@ -13,6 +13,7 @@ import dto.Formatter;
 import dto.ModifiedResult;
 
 public class OutputView {
+
     public static void printAttendanceResult(AttendanceResult result) {
         System.out.println(LocalDateTime.of(result.date(), result.time()).format(Formatter.DATETIME_FORMATTER));
     }
@@ -20,10 +21,11 @@ public class OutputView {
     public static void printModifiedResult(ModifiedResult modifiedResult) {
         StringBuilder sb = new StringBuilder();
         sb.append(
-            LocalDateTime.of(modifiedResult.date(), modifiedResult.before()).format(Formatter.DATETIME_FORMATTER));
-        sb.append(String.format(" (%s) -> ", modifiedResult.beforeStatus().getDescription()));
-        sb.append(modifiedResult.after().format(Formatter.TIME_FORMATTER));
-        sb.append(String.format(" (%s)", modifiedResult.afterStatus().getDescription()));
+            LocalDateTime.of(modifiedResult.date(), modifiedResult.before().time())
+                .format(Formatter.DATETIME_FORMATTER));
+        sb.append(String.format(" (%s) -> ", modifiedResult.before().status().getDescription()));
+        sb.append(modifiedResult.after().time().format(Formatter.TIME_FORMATTER));
+        sb.append(String.format(" (%s)", modifiedResult.after().status().getDescription()));
         sb.append(" 수정 완료!%n%n");
 
         System.out.printf(sb.toString());
@@ -32,23 +34,16 @@ public class OutputView {
     public static void printHistory(AttendanceHistoryResult historyResult) {
         System.out.printf("이번 달 %s의 출석 기록입니다.%n%n", historyResult.nickname());
         historyResult.history().forEach(innerHistory -> {
-                StringBuilder sb = new StringBuilder();
-                sb.append(innerHistory.date().format(Formatter.DATE_FORMATTER));
-                sb.append(" ");
-                if (innerHistory.time() == null) {
-                    sb.append("--:--");
-                } else {
-                    sb.append(innerHistory.time().format(Formatter.TIME_FORMATTER));
-                }
-                sb.append(String.format(" (%s)", innerHistory.status().getDescription()));
-            }
-        );
+            StringBuilder message = new StringBuilder();
+            message.append(innerHistory.date().format(Formatter.DATE_FORMATTER));
+            message.append(" ");
+            message.append(convertToTime(innerHistory));
+            message.append(String.format(" (%s)", innerHistory.status().getDescription()));
+        });
         System.out.println();
-
         System.out.printf("출석: %d회%n", historyResult.statusCounter().get(AttendanceStatus.ATTENDANCE));
         System.out.printf("지각: %d회%n", historyResult.statusCounter().get(AttendanceStatus.LATE));
         System.out.printf("결석: %d회%n", historyResult.statusCounter().get(AttendanceStatus.ABSENT));
-
         System.out.println();
 
         if (!historyResult.manage().equals(Manage.NONE)) {
@@ -56,9 +51,15 @@ public class OutputView {
         }
     }
 
+    private static String convertToTime(AttendanceHistoryResult.InnerHistory innerHistory) {
+        if (innerHistory.time() == null) {
+            return "--:--";
+        }
+        return innerHistory.time().format(Formatter.TIME_FORMATTER);
+    }
+
     public static void printCrewsAlmostExpelled(List<CrewAlmostExpelledResult> result) {
         String format = "- %s: %s %d회, %s %d회 (%s)%n";
-
         result = result.stream()
             .sorted(
                 Comparator.comparing(CrewAlmostExpelledResult::calculateTotalCount, Comparator.reverseOrder())
