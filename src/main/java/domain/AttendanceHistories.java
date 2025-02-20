@@ -4,7 +4,6 @@ import java.util.LinkedList;
 import java.util.List;
 
 public class AttendanceHistories {
-    // TODO: LinkedList 로 변경 고민해보기
     private final LinkedList<AttendanceHistory> attendanceHistories;
 
     public AttendanceHistories() {
