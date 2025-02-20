@@ -30,45 +30,61 @@ public class Controller {
     public void run() {
         String s = inputView.inputCommand();
         if (s.equals("1")) {
-            process(() -> {
-                Crew crew = crews.findCrew(inputView.inputCrewName());
-                AttendanceDetail attendanceDetail = new AttendanceDetail(LocalDateTime.of(
-                        CustomLocalDateTime.nowDate(),
-                        CustomLocalDateTime.parseTime(inputView.inputEntryTime())
-                ));
-                crew.attend(attendanceDetail);
-                outputView.printAttendanceDetail(AttendanceDetailDTO.from(attendanceDetail));
-            });
+            processAddAttendance();
         }
         if (s.equals("2")) {
-            process(() -> {
-                Crew crew = crews.findCrew(inputView.inputModifyAttendanceCrewName());
-                AttendanceDetail attendanceDetail = crew.findAttendanceDetail(
-                        CustomLocalDateTime.parseDate(inputView.inputModifyAttendanceDate())
-                );
-                AttendanceDetail cloned = attendanceDetail.clone();
-                attendanceDetail.modify(CustomLocalDateTime.parseTime(inputView.inputModifyAttendanceTime()));
-                outputView.printModifyResult(
-                        AttendanceDetailDTO.from(cloned),
-                        AttendanceDetailDTO.from(attendanceDetail)
-                );
-            });
+            processModifyAttendance();
         }
         if (s.equals("3")) {
-            process(() -> {
-                Crew crew = crews.findCrew(inputView.inputCrewName());
-                outputView.printAttendanceHistory(AttendanceDTO.from(crew));
-            });
+            processDisplayAttendanceHistory();
         }
         if (s.equals(("4"))) {
-            process(() -> {
-                outputView.printWarningCrews(WarningCrewsDTO.from(crews));
-            });
+            processDisplayWarningCrew();
         }
         if (s.equals("Q")) {
             System.exit(1);
         }
         run();
+    }
+
+    private void processDisplayWarningCrew() {
+        process(() -> {
+            outputView.printWarningCrews(WarningCrewsDTO.from(crews));
+        });
+    }
+
+    private void processDisplayAttendanceHistory() {
+        process(() -> {
+            Crew crew = crews.findCrew(inputView.inputCrewName());
+            outputView.printAttendanceHistory(AttendanceDTO.from(crew));
+        });
+    }
+
+    private void processModifyAttendance() {
+        process(() -> {
+            Crew crew = crews.findCrew(inputView.inputModifyAttendanceCrewName());
+            AttendanceDetail attendanceDetail = crew.findAttendanceDetail(
+                    CustomLocalDateTime.parseDate(inputView.inputModifyAttendanceDate())
+            );
+            AttendanceDetail cloned = attendanceDetail.clone();
+            attendanceDetail.modify(CustomLocalDateTime.parseTime(inputView.inputModifyAttendanceTime()));
+            outputView.printModifyResult(
+                    AttendanceDetailDTO.from(cloned),
+                    AttendanceDetailDTO.from(attendanceDetail)
+            );
+        });
+    }
+
+    private void processAddAttendance() {
+        process(() -> {
+            Crew crew = crews.findCrew(inputView.inputCrewName());
+            AttendanceDetail attendanceDetail = new AttendanceDetail(LocalDateTime.of(
+                    CustomLocalDateTime.nowDate(),
+                    CustomLocalDateTime.parseTime(inputView.inputEntryTime())
+            ));
+            crew.attend(attendanceDetail);
+            outputView.printAttendanceDetail(AttendanceDetailDTO.from(attendanceDetail));
+        });
     }
 
     private void process(Runnable runnable) {
