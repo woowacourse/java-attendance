@@ -26,6 +26,10 @@ public class Attendance {
         return new Attendance(dateTime);
     }
 
+    public static Attendance of(final LocalDateTime dateTime) {
+        return new Attendance(dateTime, false);
+    }
+
     public static Attendance empty(final LocalDateTime dateTime) {
         return new Attendance(dateTime, true);
     }

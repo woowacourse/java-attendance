@@ -2,6 +2,7 @@ package domain;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
@@ -34,11 +35,31 @@ public class AttendanceSystem {
         }
     }
 
+    public void validateUpdateAttendanceDay(final String crewName, final int dayOfMonth) {
+        if (!existTodayAttendanceByCrewName(crewName, LocalDate.of(2024, 12, dayOfMonth))) {
+            throw new IllegalArgumentException("유효하지 않은 날짜입니다.");
+        }
+    }
+
+    public Attendance updateAttendanceByCrewNameAndDay(final LocalTime targetTime, final String crewName,
+                                                       final int dayOfMonth) {
+        final Crew crew = findCrewByName(crewName);
+        final LocalDate targetDate = LocalDate.of(2024, 12, dayOfMonth);
+        final Attendance afterAttendance = crew.updateAttendanceByDateAndTime(targetTime, targetDate);
+        return afterAttendance;
+    }
+
+    public Attendance findAttendanceByDate(final String crewName, final int dayOfMonth) {
+        final Crew crew = findCrewByName(crewName);
+        final LocalDate targetDate = LocalDate.of(2024, 12, dayOfMonth);
+        return crew.findAttendanceByDate(targetDate);
+    }
+
     private boolean existCrewByName(final String name) {
         return crews.stream().anyMatch(crew -> crew.isSameName(name));
     }
 
-    public boolean existTodayAttendanceByCrewName(final String name, final LocalDate today) {
+    private boolean existTodayAttendanceByCrewName(final String name, final LocalDate today) {
         final Crew crew = findCrewByName(name);
         return crew.existTodayAttendance(today);
     }

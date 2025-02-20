@@ -53,6 +53,14 @@ public class Crew {
         attendances.add(updatedAttendance);
     }
 
+    public Attendance updateAttendanceByDateAndTime(final LocalTime attendanceTime, final LocalDate localDate) {
+        final LocalDateTime newAttendanceDateAndTime = LocalDateTime.of(localDate, attendanceTime);
+        final Attendance updatedAttendance = Attendance.of(newAttendanceDateAndTime);
+        attendances.remove(updatedAttendance);
+        attendances.add(updatedAttendance);
+        return updatedAttendance;
+    }
+
     public Map<AttendanceStatus, Integer> calculateAttendanceStatistics() {
         final Map<AttendanceStatus, Integer> statistics = initializeStatistics();
         attendances.stream()
@@ -71,6 +79,13 @@ public class Crew {
         final Map<AttendanceStatus, Integer> statusCount = calculateAttendanceStatistics();
         final int absence = statusCount.get(AttendanceStatus.LATE) / 3 + statusCount.get(AttendanceStatus.ABSENCE);
         return ExpulsionStatus.of(absence);
+    }
+
+    public Attendance findAttendanceByDate(final LocalDate date) {
+        return attendances.stream()
+                .filter(attendance -> attendance.matchDate(date))
+                .findAny()
+                .orElseThrow(IllegalArgumentException::new);
     }
 
     public CrewName getName() {

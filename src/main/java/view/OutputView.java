@@ -12,16 +12,36 @@ import java.util.stream.Collectors;
 
 public class OutputView {
 
-    public void printAddAttendanceCrewName(){
+    public void printAddAttendanceCrewName() {
         System.out.println("닉네임을 입력해주세요.");
     }
 
-    public void printAddAttendanceDate(){
+    public void printAddAttendanceDate() {
         System.out.println("등교 시간을 입력해 주세요.");
     }
 
-    public void printUpdateAttendanceCrewName(){
+    public void printUpdateAttendanceCrewName() {
         System.out.println("출석을 수정하려는 크루의 닉네임을 입력해 주세요.");
+    }
+
+    public void printUpdateAttendanceDayOfMonth() {
+        System.out.println("수정하려는 날짜(일)을 입력해 주세요.");
+    }
+
+    public void printUpdateAttendanceDate() {
+        System.out.println("언제로 변경하겠습니까?");
+    }
+
+    public void printUpdateAttendanceResult(final AttendanceResponse beforeAttendance,
+                                            final AttendanceResponse afterAttendance) {
+        final LocalDateTime before = beforeAttendance.attendanceDate();
+        final LocalDateTime after = afterAttendance.attendanceDate();
+        System.out.printf(System.lineSeparator() + "%02d월 %02d일 %s %s (%s) -> %s (%s) 수정 완료!" + System.lineSeparator(),
+                before.getMonthValue(), before.getDayOfMonth(),
+                before.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.KOREA),
+                formatAttendanceTimeByEmpty(before, beforeAttendance.isEmpty()), beforeAttendance.attendanceStatus().getName(),
+                formatAttendanceTimeByEmpty(after, afterAttendance.isEmpty()), afterAttendance.attendanceStatus().getName()
+        );
     }
 
     public void printAttendanceHistoryTitle(final String crewName) {
@@ -39,7 +59,7 @@ public class OutputView {
     private String formatAttendanceResponse(final AttendanceResponse attendanceResponse) {
         final LocalDateTime attendanceDate = attendanceResponse.attendanceDate();
         final String status = attendanceResponse.attendanceStatus().getName();
-        return String.format("%d월 %02d일 %s %s (%s)", attendanceDate.getMonthValue(),
+        return String.format("%02d월 %02d일 %s %s (%s)", attendanceDate.getMonthValue(),
                 attendanceDate.getDayOfMonth(),
                 attendanceDate.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.KOREAN),
                 formatAttendanceTimeByEmpty(attendanceDate, attendanceResponse.isEmpty()), status);

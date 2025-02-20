@@ -10,7 +10,6 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 import util.FileManager;
 import view.InputView;
@@ -33,7 +32,8 @@ public class AttendanceController {
 
     public void run() {
 //        responseCrewAttendanceHistory();
-        attendance();
+//        attendance();
+        updateAttendance();
     }
 
     private void attendance() {
@@ -41,10 +41,30 @@ public class AttendanceController {
         final String crewName = inputView.readCrewName();
         attendanceSystem.validateCrewByName(crewName);
         outputView.printAddAttendanceDate();
-        final LocalDateTime localDateTime = inputView.readTime();
-        final Attendance attendance = attendanceSystem.attendance(crewName, localDateTime);
+        final LocalTime localDateTime = inputView.readTime();
+        final Attendance attendance = attendanceSystem.attendance(crewName, convertLocalDateTime(localDateTime));
         final AttendanceResponse attendanceResponse = convertAttendanceToResponse(attendance);
         outputView.printCrewAttendances(List.of(attendanceResponse));
+    }
+
+    private LocalDateTime convertLocalDateTime(final LocalTime time) {
+        return LocalDateTime.of(LocalDate.of(2024, 12, LocalDate.now().getDayOfMonth()), time);
+    }
+
+    private void updateAttendance() {
+        outputView.printUpdateAttendanceCrewName();
+        final String crewName = inputView.readCrewName();
+        attendanceSystem.validateCrewByName(crewName);
+        outputView.printUpdateAttendanceDayOfMonth();
+        final int dayOfMonth = inputView.readDayOfMonth();
+        attendanceSystem.validateUpdateAttendanceDay(crewName, dayOfMonth);
+        outputView.printUpdateAttendanceDate();
+        final LocalTime targetTime = inputView.readTime();
+        final Attendance beforeAttendance = attendanceSystem.findAttendanceByDate(crewName, dayOfMonth);
+        final Attendance afterAttendance = attendanceSystem.updateAttendanceByCrewNameAndDay(targetTime, crewName,
+                dayOfMonth);
+        outputView.printUpdateAttendanceResult(convertAttendanceToResponse(beforeAttendance),
+                convertAttendanceToResponse(afterAttendance));
     }
 
 

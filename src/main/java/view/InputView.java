@@ -12,10 +12,16 @@ public class InputView {
         return scanner.nextLine();
     }
 
-    public LocalDateTime readTime() {
+    public int readDayOfMonth() {
         Scanner scanner = new Scanner(System.in);
         final String time = scanner.nextLine();
-        return LocalDateTime.of(LocalDate.of(2024, 12, LocalDate.now().getDayOfMonth()), LocalTime.parse(time));
+        return Integer.parseInt(time);
+    }
+
+    public LocalTime readTime() {
+        Scanner scanner = new Scanner(System.in);
+        final String time = scanner.nextLine();
+        return LocalTime.parse(time);
     }
 
 }
