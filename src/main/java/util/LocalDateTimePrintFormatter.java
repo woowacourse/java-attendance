@@ -1,20 +1,23 @@
 package util;
 
+import java.time.DayOfWeek;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import model.AttendanceCalculatorByDay;
+import java.time.format.TextStyle;
+import java.util.Locale;
 
 public class LocalDateTimePrintFormatter {
+
     public static String LocalDateTimeToLocalTime(LocalDateTime localDateTime) {
-        int month = localDateTime.getMonthValue();
-        int date = localDateTime.getDayOfMonth();
-        int dayOfWeek = localDateTime.getDayOfWeek().getValue();
-        String day = AttendanceCalculatorByDay.findDayByDayOfWeekValue(dayOfWeek);
         DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("HH:mm");
-        String time = localDateTime.format(dateTimeFormatter);
-        if (time.equals("00:00")){
-            time = "--:--";
+        DayOfWeek dayOfWeek = localDateTime.getDayOfWeek();
+
+        if (localDateTime.format(dateTimeFormatter).equals("00:00")) {
+            return localDateTime.format(DateTimeFormatter.ofPattern("MM월 dd일 " + dayOfWeek.getDisplayName(
+                    TextStyle.FULL, Locale.KOREAN) + " --:--"));
         }
-        return month + "월 " + date + "일 " + day +" "+ time + " ";
+
+        return localDateTime.format(DateTimeFormatter.ofPattern("MM월 dd일 " + dayOfWeek.getDisplayName(
+                TextStyle.FULL, Locale.KOREAN) + " HH:mm"));
     }
 }
