@@ -20,6 +20,10 @@ public class Attendance {
     }
 
     private void updateStatus() {
+        if (attendanceTime == null) {
+            isAbsent = true;
+            return;
+        }
         isLate = isLate();
         isAbsent = isAbsent();
     }
@@ -33,11 +37,13 @@ public class Attendance {
     }
 
     public AttendanceDto toDto() {
-        return new AttendanceDto(isLate, isAbsent, attendanceTime);
+        LocalDate date = day.getDate();
+        return new AttendanceDto(date, isLate, isAbsent, attendanceTime);
     }
 
-    public void setAttendanceTime(LocalTime attendanceTime) {
+    public void updateAttendanceTime(LocalTime attendanceTime) {
         this.attendanceTime = attendanceTime;
         updateStatus();
     }
+
 }
