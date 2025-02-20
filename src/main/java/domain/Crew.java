@@ -51,11 +51,15 @@ public class Crew {
                 .findAny()
                 .orElseThrow();
 
+        validateDateAlreadyExists(date);
+
+        dailyAttendances.putAll(dateAndTime);
+    }
+
+    public void validateDateAlreadyExists(LocalDate date) {
         if (!dailyAttendances.containsKey(date)) {
             throw new IllegalArgumentException(String.format("[ERROR] %02d일 기록이 존재하지 않습니다.", date.getDayOfMonth()));
         }
-
-        dailyAttendances.putAll(dateAndTime);
     }
 
     public List<AttendanceRecordResponse> getAttendanceRecords() {

@@ -4,6 +4,7 @@ import domain.AttendanceBook;
 import domain.CsvReader;
 import domain.Parser;
 import domain.UserInput;
+import dto.ModifyAttendanceResponse;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
@@ -38,34 +39,86 @@ public class AttendanceController {
             attendanceBook.initialize(name, dateAndTime);
         }
 
-        outputView.displayPrompt(); // 기능 선택창
+        while (true) {
 
-        UserInput selection = UserInput.getByInput(inputView.getUserSelection());
+            outputView.displayPrompt(); // 기능 선택창
 
-        if (selection == UserInput.CHECK_ATTENDANCE) { // 출석 확인
-            String name = inputView.askName();
-            attendanceBook.validateNameAlreadyExists(name);
+            UserInput selection = retryUntilValid(this::getUserInput);
 
-            String time = inputView.askTime();
-            LocalTime parsedTime = LocalTime.parse(time);
+            try {
+                if (selection == UserInput.CHECK_ATTENDANCE) { // 출석 확인
+                    checkAttendance(attendanceBook);
+                }
+                if (selection == UserInput.MODIFY_ATTENDANCE) { // 출석 확인
+                    modifyAttendance(attendanceBook);
+                }
 
-            attendanceBook.validateIsInOperationHour(parsedTime);
+                if (selection == UserInput.QUIT) { // 출석 확인
+                    break;
+                }
 
-            outputView.displayCheckAttendanceResult(
-                    attendanceBook.checkAttendance(name, Map.of(LocalDate.now(), parsedTime)));
+            } catch (IllegalArgumentException e) {
+                outputView.displayErrorMessage(e.getMessage());
+            }
+
+            inputView.askName();
         }
+    }
 
-        if (selection == UserInput.MODIFY_ATTENDANCE) { // 출석 확인
-            String name = inputView.askNameForModify();
+    private void modifyAttendance(AttendanceBook attendanceBook) {
+        String name = retryUntilValid(() -> askNameToModify(attendanceBook));
 
-            String modifiedDay = inputView.askDayForModify();
+        LocalDate modifiedDay = retryUntilValid(() -> askDayToModify(attendanceBook, name));
 
-            String modifiedTime = inputView.askTimeForModify();
-        }
+        LocalTime modifiedTime = retryUntilValid(() -> askTimeToModify(attendanceBook));
 
-        inputView.askName();
+        ModifyAttendanceResponse response = attendanceBook.modifyAttendance(name,
+                Map.of(modifiedDay, modifiedTime));
+        outputView.displayModifyAttendanceResult(response);
+    }
 
+    private LocalTime askTimeToModify(AttendanceBook attendanceBook) {
+        LocalTime modifiedTime = LocalTime.parse(inputView.askTimeForModify());
+        attendanceBook.validateIsInOperationHour(modifiedTime);
+        return modifiedTime;
+    }
 
+    private LocalDate askDayToModify(AttendanceBook attendanceBook, String name) {
+        LocalDate modifiedDay = LocalDate.parse(inputView.askDayForModify());
+        attendanceBook.validateDateAlreadyExistsByCrewName(name, modifiedDay);
+        return modifiedDay;
+    }
+
+    private String askNameToModify(AttendanceBook attendanceBook) {
+        String name = inputView.askNameForModify();
+        attendanceBook.validateNameAlreadyExists(name);
+        return name;
+    }
+
+    private void checkAttendance(AttendanceBook attendanceBook) {
+        String name = retryUntilValid(() -> askNameToCheckAttendance(attendanceBook));
+
+        LocalTime parsedTime = retryUntilValid(() -> getTime(attendanceBook));
+
+        outputView.displayCheckAttendanceResult(
+                attendanceBook.checkAttendance(name, Map.of(LocalDate.now(), parsedTime)));
+    }
+
+    private UserInput getUserInput() {
+        return UserInput.getByInput(inputView.getUserSelection());
+    }
+
+    private LocalTime getTime(AttendanceBook attendanceBook) {
+        String time = inputView.askTime();
+        LocalTime parsedTime = LocalTime.parse(time);
+        attendanceBook.validateIsInOperationHour(parsedTime);
+        return parsedTime;
+    }
+
+    private String askNameToCheckAttendance(AttendanceBook attendanceBook) {
+        String name = inputView.askName();
+        attendanceBook.validateNameAlreadyExists(name);
+        return name;
     }
 
     private <T> T retryUntilValid(Supplier<T> supplier) {

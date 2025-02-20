@@ -9,10 +9,6 @@ public enum UserInput {
     CHECK_PENALTY("4"),
     QUIT("Q");
 
-    public String getInput() {
-        return input;
-    }
-
     private final String input;
 
     UserInput(String input) {
@@ -22,6 +18,11 @@ public enum UserInput {
     public static UserInput getByInput(String input) {
         return Arrays.stream(UserInput.values())
                 .filter(userInput -> userInput.getInput().equals(input))
-                .findAny().orElseThrow();
+                .findAny()
+                .orElseThrow(() -> new IllegalArgumentException("[ERROR]"));
+    }
+
+    public String getInput() {
+        return input;
     }
 }

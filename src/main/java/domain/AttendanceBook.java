@@ -52,6 +52,11 @@ public class AttendanceBook {
         return result;
     }
 
+    public void validateDateAlreadyExistsByCrewName(String name, LocalDate date) {
+        Crew foundCrew = getCrewByName(name);
+        foundCrew.validateDateAlreadyExists(date);
+    }
+
     public void initialize(String name, Map<LocalDate, LocalTime> dateAndTime) {
         if (!checkCrewAlreadyExists(name)) {
             addNewCrew(Crew.createByName(name));
@@ -94,23 +99,23 @@ public class AttendanceBook {
         return new AttendanceRecordResponse(date, time, AttendanceStatus.judgeStatus(date, time));
     }
 
-    public ModifyAttendanceResponse modifyAttendance(String name, Map<LocalDate, LocalTime> dateAndTime) {
+    public ModifyAttendanceResponse modifyAttendance(String name, Map<LocalDate, LocalTime> dateAndTimeToModify) {
 
         Crew foundCrew = getCrewByName(name);
 
-        LocalDate date = dateAndTime.keySet().stream()
+        LocalDate date = dateAndTimeToModify.keySet().stream()
                 .findAny()
                 .orElseThrow();
 
         LocalTime originalTime = foundCrew.getTimeByDate(date);
 
-        LocalTime modifiedTime = dateAndTime.values().stream()
+        LocalTime modifiedTime = dateAndTimeToModify.values().stream()
                 .findAny()
                 .orElseThrow();
 
         validateIsInOperationHour(modifiedTime);
 
-        foundCrew.modifyDailyAttendance(dateAndTime);
+        foundCrew.modifyDailyAttendance(dateAndTimeToModify);
 
         return new ModifyAttendanceResponse(
                 date,
