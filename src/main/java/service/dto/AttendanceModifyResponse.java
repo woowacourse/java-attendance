@@ -1,11 +1,13 @@
 package service.dto;
 
+import domain.AttendanceStatus;
+
 import java.time.LocalDateTime;
 
 public record AttendanceModifyResponse(
         LocalDateTime beforeTime,
-        String beforeStatus,
+        AttendanceStatus beforeStatus,
         LocalDateTime afterTime,
-        String afterStatus
+        AttendanceStatus afterStatus
 ) {
 }

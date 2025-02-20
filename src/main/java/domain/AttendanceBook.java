@@ -61,29 +61,29 @@ public class AttendanceBook {
                 histories.add(new AttendanceHistoryResponse(
                         LocalDate.of(DateConstants.YEAR, DateConstants.MONTH.getValue(), date),
                         Optional.empty(),
-                        "결석")
+                        AttendanceStatus.ABSENCE)
                 );
             }
         }
         return histories;
     }
 
-    public Map<String, Integer> calculateAttendanceResult(LocalDate limitDate) {
-        Map<String, Integer> result = new HashMap<>();
-        result.put("출석", 0);
-        result.put("지각", 0);
-        result.put("결석", 0);
+    public Map<AttendanceStatus, Integer> calculateAttendanceResult(LocalDate limitDate) {
+        Map<AttendanceStatus, Integer> result = new HashMap<>();
+        result.put(AttendanceStatus.ATTENDANCE, 0);
+        result.put(AttendanceStatus.LATE, 0);
+        result.put(AttendanceStatus.ABSENCE, 0);
         for (int date = 1; date < limitDate.getDayOfMonth(); date++) {
             if (DateConstants.MONTH.isHoliday(date)) {
                 continue;
             }
             if (attendances.containsKey(date)) {
                 Attendance attendance = attendances.get(date);
-                String status = attendance.getStatus();
+                AttendanceStatus status = attendance.getStatus();
                 result.replace(status, result.get(status) + 1);
             }
             else {
-                result.replace("결석", result.get("결석") + 1);
+                result.replace(AttendanceStatus.ABSENCE, result.get(AttendanceStatus.ABSENCE) + 1);
             }
         }
         return result;
@@ -97,7 +97,7 @@ public class AttendanceBook {
             }
             if (attendances.containsKey(date)) {
                 Attendance attendance = attendances.get(date);
-                if (attendance.getStatus().equals("지각")) {
+                if (attendance.getStatus() == AttendanceStatus.LATE) {
                     lateCount++;
                 }
             }
@@ -113,7 +113,7 @@ public class AttendanceBook {
             }
             if (attendances.containsKey(date)) {
                 Attendance attendance = attendances.get(date);
-                if (attendance.getStatus().equals("결석")) {
+                if (attendance.getStatus() == AttendanceStatus.ABSENCE) {
                     absenceCount++;
                 }
             } else {

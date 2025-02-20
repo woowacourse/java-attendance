@@ -1,15 +1,15 @@
 package domain;
 
-import java.time.DayOfWeek;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.util.Objects;
 
 public class Attendance {
     private final LocalDateTime time;
+    private final AttendanceStatus status;
 
     public Attendance(LocalDateTime time) {
         this.time = time;
+        this.status = AttendanceStatus.of(time);
     }
 
     public boolean isSameDateWith(LocalDateTime dateTime) {
@@ -20,26 +20,8 @@ public class Attendance {
         return time;
     }
 
-    public String getStatus() {
-        DayOfWeek dayOfWeek = time.getDayOfWeek();
-        if (dayOfWeek == DayOfWeek.MONDAY) {
-            // 13:00 기준
-            if (time.toLocalTime().toNanoOfDay() <= LocalTime.of(13, 5, 0).toNanoOfDay()) { // 따로 저장해두기 (enum ...)
-                return "출석";
-            }
-            if (time.toLocalTime().toNanoOfDay() <= LocalTime.of(13, 30, 0).toNanoOfDay()) {
-                return "지각";
-            }
-            return "결석";
-        }
-        // 10:00
-        if (time.toLocalTime().toNanoOfDay() <= LocalTime.of(10, 0, 0).toNanoOfDay()) {
-            return "출석";
-        }
-        if (time.toLocalTime().toNanoOfDay() <= LocalTime.of(10, 30, 0).toNanoOfDay()) {
-            return "지각";
-        }
-        return "결석";
+    public AttendanceStatus getStatus() {
+        return status;
     }
 
     public Attendance modify(int newHour, int newMinutes) {

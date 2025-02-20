@@ -13,7 +13,7 @@ public class OutputView {
         String formattedDate = time.format(
                 DateTimeFormatter.ofPattern("MM월 dd일 E요일 HH:mm").withLocale(Locale.forLanguageTag("ko"))
         );
-        String formattedStatus = "(" + attendance.getStatus() + ")";
+        String formattedStatus = "(" + attendance.getStatus().getExpression() + ")";
         System.out.println(formattedDate + " " + formattedStatus);
     }
 
