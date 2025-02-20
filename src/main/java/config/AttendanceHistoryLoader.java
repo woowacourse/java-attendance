@@ -18,36 +18,43 @@ import java.util.Map;
 
 public class AttendanceHistoryLoader {
 
+
+    private final DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+    private final DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm");
+
     public Crews loadCrews() {
         List<Crew> crews = new ArrayList<>();
         Map<String, Crew> crewMap = new HashMap<>();
-        DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-        DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm");
 
         try (BufferedReader reader = new BufferedReader(new FileReader("src/main/resources/attendances.csv"))) {
             reader.readLine();
-            String line;
-
-            while ((line = reader.readLine()) != null) {
-                String[] values = line.split(",");
-                String nickname = values[0];
-                String datetime = values[1];
-                String[] datetimeValues = datetime.split(" ");
-                String date = datetimeValues[0];
-                String time = datetimeValues[1];
-
-                Crew crew = crewMap.computeIfAbsent(nickname, key -> {
-                    Crew newCrew = new Crew(nickname);
-                    crews.add(newCrew);
-                    return newCrew;
-                });
-
-                crew.addAttendance(new Attendance(new Day(LocalDate.parse(date, dateFormatter)), LocalTime.parse(time, timeFormatter)));
-            }
+            loadAttendanceHistory(reader, crewMap, crews);
         } catch (IOException e) {
             e.printStackTrace();
         }
 
         return new Crews(crews);
+    }
+
+    private void loadAttendanceHistory(BufferedReader reader, Map<String, Crew> crewMap, List<Crew> crews) throws IOException {
+        String line;
+        while ((line = reader.readLine()) != null) {
+            String[] values = line.split(",");
+            String[] datetimeValues = values[1].split(" ");
+            String date = datetimeValues[0];
+            String time = datetimeValues[1];
+
+            Crew crew = getCrew(crewMap, crews, values[0]);
+
+            crew.addAttendance(new Attendance(new Day(LocalDate.parse(date, dateFormatter)), LocalTime.parse(time, timeFormatter)));
+        }
+    }
+
+    private Crew getCrew(Map<String, Crew> crewMap, List<Crew> crews, String nickname) {
+        return crewMap.computeIfAbsent(nickname, key -> {
+            Crew newCrew = new Crew(nickname);
+            crews.add(newCrew);
+            return newCrew;
+        });
     }
 }
