@@ -26,13 +26,7 @@ public class CheckInTime {
 
     public AttendanceStatus getAttendanceStatus() {
         int minute = WorkingTime.getMinute(checkInTime);
-        if (minute <= 5) {
-            return AttendanceStatus.PRESENCE;
-        }
-        if (minute <= 30) {
-            return AttendanceStatus.LATE;
-        }
-        return AttendanceStatus.ABSENCE;
+        return AttendanceStatus.timeGapToAttendanceStatus(minute);
     }
 
     public boolean isSameDate(CheckInTime otherTime) {
