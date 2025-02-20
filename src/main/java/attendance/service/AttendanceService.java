@@ -75,7 +75,7 @@ public class AttendanceService { // todo : 최대한 메서드 분리 작업
     }
 
     private LocalTime parseTime(boolean isForUpdated) {
-        String time = inputView.readAttendanceTime(true);
+        String time = inputView.readAttendanceTime(isForUpdated);
         return DateTimeParser.parseTime(time);
     }
 
