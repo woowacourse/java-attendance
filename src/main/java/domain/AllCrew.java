@@ -44,6 +44,7 @@ public class AllCrew {
         return findCrew;
     }
 
+    // TODO : 제적 위험자 아닌 사람 필터링
     public String printAllCrewWarningInfo(LocalDate date) {
         allCrew.sort(
                 Comparator.comparing(Crew::getAbsentCount).reversed()
@@ -51,6 +52,9 @@ public class AllCrew {
         );
         String result = "";
         for(Crew crew : allCrew) {
+            if (crew.calculateWarningStatus(crew.getAbsentCount()).equals("")){
+                continue;
+            }
             result += "- "+crew.printWarningInfo(date) + "\n";
         }
         return result;
