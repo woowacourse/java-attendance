@@ -26,22 +26,14 @@ public class AttendanceBook {
             TotalRecordsResponse totalRecords = TotalRecordsResponse.fromAttendanceRecords(attendanceRecords);
 
             int penaltyCount = getPenaltyCount(totalRecords);
-            String penalty = "";
 
-            if (penaltyCount > 5) {
-                penalty = "(제적)";
-            }
-            if (penaltyCount >= 3) {
-                penalty = "(면담)";
-            }
-            if (penaltyCount >= 2) {
-                penalty = "(경고)";
-            }
-            crewPenaltyResponses.add(new CrewPenaltyResponse(
-                    crew.getName(),
-                    totalRecords.absentCount(),
-                    totalRecords.lateCount(),
-                    penalty)
+            crewPenaltyResponses.add(
+                    new CrewPenaltyResponse(
+                            crew.getName(),
+                            totalRecords.absentCount(),
+                            totalRecords.lateCount(),
+                            PenaltyStatus.getByPenaltyCount(penaltyCount).getMessage()
+                    )
             );
         }
 
