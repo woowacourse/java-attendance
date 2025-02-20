@@ -2,7 +2,6 @@ package attendance.view;
 
 import attendance.domain.Attendance;
 import attendance.domain.Time;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 public class OutputView {
@@ -24,18 +23,13 @@ public class OutputView {
 
     public void printModifyAttendanceResult(Time originTime, String originAttendanceStatus,
                                             Time modifyTime, String modifyAttendanceStatus) {
-        printAttendance(originTime, originAttendanceStatus);
-
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");
-
-        System.out.print(String.format("%02d월 %02d일 %s %s:%s (%s)", originTime.getMonth(), originTime.getDay(),
-                originTime.getDayOfWeek(), originTime.getHour(), originTime.getMinute(), originTime));
+        System.out.printf("%02d월 %02d일 %s %s:%s (%s)", originTime.getMonth(), originTime.getDay(),
+                originTime.getDayOfWeek(), originTime.getHour(), originTime.getMinute(), originAttendanceStatus);
 
         System.out.print(" -> ");
 
-        System.out.print(
-                String.format("%s:%s (%s)", modifyTime.getHour(), modifyTime.getMinute(),
-                        modifyTime));
+        System.out.printf("%s:%s (%s)", modifyTime.getHour(), modifyTime.getMinute(),
+                modifyAttendanceStatus);
 
         System.out.print(" 수정 완료!");
 
