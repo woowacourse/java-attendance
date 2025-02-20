@@ -34,8 +34,8 @@ public class Attendance {
         final int day = localDateTime.getDayOfMonth();
         if (Constants.HOLIDAYS.contains(day)) {
             throw new IllegalArgumentException(
-                    String.format("%d월 %d일 %d요일은 등교일이 아닙니다.", localDateTime.getMonth(), localDateTime.getDayOfMonth(),
-                            localDateTime.getDayOfWeek()));
+                    String.format("%d월 %d일 %s은 등교일이 아닙니다.", Constants.MONTH, localDateTime.getDayOfMonth(),
+                            Week.findKoreanName(localDateTime.getDayOfWeek())));
         }
     }
 
