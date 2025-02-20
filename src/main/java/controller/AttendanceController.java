@@ -48,15 +48,34 @@ public class AttendanceController {
                 continue;
             }
 
+            if (select.equals("4")) {
+                printRiskOfExpulsion(attendanceSheets);
+                continue;
+            }
+
+            if (select.equals("Q")) {
+                return;
+            }
+        }
+    }
+
+    private void printRiskOfExpulsion(AttendanceSheets attendanceSheets) {
+        List<String> allNames = attendanceSheets.findAllNames();
+
+        OutputView.printRiskOfExpulsionBanner();
 
         for (String name : allNames) {
             List<AttendanceSheet> attendanceByNickname = attendanceSheets.findAttendanceByNickname(name);
 
-            int lateCount = 0;
-            int absentCount = 0;
-            if (select.equals("Q")) {
-                return;
+            int lateCount = getLateCount(attendanceByNickname);
+            int absentCount = getAbsentCount(attendanceByNickname);
+
+            AbsentPolicy absentPolicy = AbsentPolicy.calculateAbsentPolicy(absentCount, lateCount);
+            if (AbsentPolicy.isRiskOfExpulsion(absentPolicy)) {
+                continue;
             }
+
+            OutputView.printRiskOfExpulsion(name, lateCount, absentCount, absentPolicy);
         }
     }
 
