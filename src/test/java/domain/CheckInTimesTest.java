@@ -76,7 +76,7 @@ class CheckInTimesTest {
 
         LocalDateTime now = LocalDateTime.of(2024, 12, 14, 10, 20);
 
-        List<CheckInTime> log = checkInTimes.getAttendanceLog(now);
+        List<LocalDateTime> log = checkInTimes.getAttendanceLog(now);
 
         assertThat(log).hasSize(6);
     }

@@ -30,11 +30,12 @@ public class CheckInTimes {
                 .forEach(time -> time.modify(checkInTime));
     }
 
-    public List<CheckInTime> getAttendanceLog(LocalDateTime localDateTime) {
-        List<CheckInTime> attendanceLog = new ArrayList<>();
+    public List<LocalDateTime> getAttendanceLog(LocalDateTime localDateTime) {
+        List<LocalDateTime> attendanceLog = new ArrayList<>();
 
         checkInTimes.stream()
                 .filter(time -> time.isBeforeDate(localDateTime))
+                .map(CheckInTime::toLocalDateTime)
                 .forEach(attendanceLog::add);
 
         return attendanceLog;

@@ -56,4 +56,8 @@ public class CheckInTime {
     public boolean isNotModifiable(LocalDateTime time) {
         return checkInTime.isAfter(time);
     }
+
+    public LocalDateTime toLocalDateTime() {
+        return LocalDateTime.from(checkInTime);
+    }
 }
