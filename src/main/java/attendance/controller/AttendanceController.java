@@ -48,6 +48,7 @@ public class AttendanceController {
 
         crews.initCrews(attendanceRecords);
         attendances.initAttendances(crews, attendanceRecords);
+
     }
 
     private String getMenuOption() {
@@ -142,6 +143,7 @@ public class AttendanceController {
         outputView.printCrewStatisticStatus(crewStatistic.getCrewStatisticStatus());
     }
 
+
     private void lookupCrewsExpelStatus() {
         List<CrewStatistic> crewStatistics = new ArrayList<>();
 
@@ -154,12 +156,19 @@ public class AttendanceController {
             crewStatistics.add(crewStatistic);
         }
 
-        List<CrewStatistic> sortedCrewStatistics = crewStatistics.stream()
+        List<CrewStatistic> sortedCrewStatistics = getSortedCrewStatistics(crewStatistics);
+        printExpelCrew(sortedCrewStatistics);
+    }
+
+    private static List<CrewStatistic> getSortedCrewStatistics(final List<CrewStatistic> crewStatistics) {
+        return crewStatistics.stream()
                 .sorted(Comparator.comparing(CrewStatistic::getPenaltyCount)
                         .reversed()
                         .thenComparing(CrewStatistic::getCrewName))
                 .toList();
+    }
 
+    private void printExpelCrew(final List<CrewStatistic> sortedCrewStatistics) {
         outputView.printExpelCrewHead();
         for (CrewStatistic sortedCrewStatistic : sortedCrewStatistics) {
             outputView.printExpelCrew(sortedCrewStatistic.crewExpelExpectedInfo());
