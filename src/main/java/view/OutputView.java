@@ -4,6 +4,7 @@ import domain.AttendanceStatus;
 import domain.ExpulsionStatus;
 import dto.AttendanceResponse;
 import dto.ExpulsionCrewResponse;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.TextStyle;
 import java.util.List;
@@ -12,6 +13,20 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 public class OutputView {
+
+    public void printToday(final LocalDate today) {
+        System.out.printf(System.lineSeparator() + "오늘은 %d월 %d일 %s입니다. 기능을 선택해주세요." + System.lineSeparator(),
+                today.getMonthValue(),
+                today.getDayOfMonth(), today.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.KOREA));
+    }
+
+    public void printIntroduceOperation() {
+        System.out.println("1. 출석 확인");
+        System.out.println("2. 출석 수정");
+        System.out.println("3. 출석 크루별 출석 기록");
+        System.out.println("4. 제적 위험자 확인");
+        System.out.println("Q. 종료");
+    }
 
     public void printAddAttendanceCrewName() {
         System.out.println("닉네임을 입력해주세요.");
@@ -40,8 +55,10 @@ public class OutputView {
         System.out.printf(System.lineSeparator() + "%02d월 %02d일 %s %s (%s) -> %s (%s) 수정 완료!" + System.lineSeparator(),
                 before.getMonthValue(), before.getDayOfMonth(),
                 before.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.KOREA),
-                formatAttendanceTimeByEmpty(before, beforeAttendance.isEmpty()), beforeAttendance.attendanceStatus().getName(),
-                formatAttendanceTimeByEmpty(after, afterAttendance.isEmpty()), afterAttendance.attendanceStatus().getName()
+                formatAttendanceTimeByEmpty(before, beforeAttendance.isEmpty()),
+                beforeAttendance.attendanceStatus().getName(),
+                formatAttendanceTimeByEmpty(after, afterAttendance.isEmpty()),
+                afterAttendance.attendanceStatus().getName()
         );
     }
 
@@ -95,5 +112,9 @@ public class OutputView {
         if (expulsionStatus != ExpulsionStatus.NORMAL) {
             System.out.printf(System.lineSeparator() + "%s 대상자입니다.\n", expulsionStatus.getName());
         }
+    }
+
+    public void printExceptionMessage(final String message) {
+        System.out.println(message);
     }
 }

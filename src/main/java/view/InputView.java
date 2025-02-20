@@ -1,5 +1,6 @@
 package view;
 
+import domain.Operation;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -7,21 +8,28 @@ import java.util.Scanner;
 
 public class InputView {
 
+    private final Scanner scanner;
+
+    public InputView() {
+        scanner = new Scanner(System.in);
+    }
+
     public String readCrewName() {
-        Scanner scanner = new Scanner(System.in);
         return scanner.nextLine();
     }
 
     public int readDayOfMonth() {
-        Scanner scanner = new Scanner(System.in);
         final String time = scanner.nextLine();
         return Integer.parseInt(time);
     }
 
     public LocalTime readTime() {
-        Scanner scanner = new Scanner(System.in);
         final String time = scanner.nextLine();
         return LocalTime.parse(time);
+    }
+
+    public Operation readChoiceOperation() {
+        return Operation.of(scanner.nextLine());
     }
 
 }
