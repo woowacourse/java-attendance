@@ -18,4 +18,10 @@ public class Crews {
         }
         throw new IllegalArgumentException("[ERROR] 등록되지 않은 닉네임입니다.");
     }
+
+    public void recordAllAbsence() {
+        crews.forEach(Crew::recordAbsence);
+    }
+
+
 }

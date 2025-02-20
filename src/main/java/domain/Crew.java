@@ -56,6 +56,19 @@ public class Crew {
         return false;
     }
 
+    public void recordAbsence() {
+        LocalDate today = LocalDate.now();
+
+        for (LocalDate date = today.withDayOfMonth(1); date.isBefore(today); date = date.plusDays(1)) {
+            if (date.getDayOfWeek().getValue() == 6 || date.getDayOfWeek().getValue() == 7) {
+                continue;
+            }
+            if (!isAlreadyAttend(date)) {
+                addAttendance(new Attendance(new Day(date), null));
+            }
+        }
+    }
+
     public Attendance findByDate(Integer dayOfMonth) {
         LocalDate today = LocalDate.now();
         validateDayOfMonth(dayOfMonth, today);
