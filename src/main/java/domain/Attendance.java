@@ -24,21 +24,21 @@ public enum Attendance {
         LocalTime start = day.getStart();
         Duration between = Duration.between(start, time);
         if (between.compareTo(TARDY.thresholdInMinutes) < 0) {
-            return Attendance.PRESENT;
+            return PRESENT;
         }
         if (between.compareTo(ABSENT.thresholdInMinutes) < 0) {
-            return Attendance.TARDY;
+            return TARDY;
         }
         return ABSENT;
     }
 
-    private static void validateOpenTime(LocalTime time) {
-        if (time.isBefore(OPEN_HOUR) || time.isAfter(CLOSE_HOUR)) {
-            throw new IllegalArgumentException("[ERROR] 캠퍼스 운영 시간에만 출석이 가능합니다.");
-        }
-    }
-
     public String getName() {
         return name;
+    }
+
+    private static void validateOpenTime(LocalTime time) {
+        if (time.isBefore(OPEN_HOUR) || time.isAfter(CLOSE_HOUR)) {
+            throw new IllegalArgumentException("[ERROR] 캠퍼스 운영 시간에만 출석이 가능합니다.\n");
+        }
     }
 }
