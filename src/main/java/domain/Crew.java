@@ -152,7 +152,7 @@ public class Crew {
         return str;
     }
 
-    private static String calculateWarningStatus(int absentCount) {
+    public String calculateWarningStatus(int absentCount) {
         if(absentCount > 5) { // 5회 초과, 3회 이상, 2회 이상
             return"제적";
         }

@@ -1,0 +1,37 @@
+package view;
+
+import domain.AllCrew;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+
+public class OutputView {
+    private static LocalDate today = LocalDate.of(2024, 12, 13);
+
+    public static void printDangerousCrew(AllCrew allCrew) {
+        System.out.println("제적 위험자 조회 결과");
+        System.out.println(allCrew.printAllCrewWarningInfo(today));
+    }
+
+    public static void printAttendanceHistory(AllCrew allCrew, String name) {
+        System.out.println(allCrew.printAttendanceHistory(name, today));
+    }
+
+    public static void printCheckedAttendance(AllCrew allCrew, String name, String[] time){
+        System.out.println(allCrew.addCrewAttendanceByName(name, LocalDateTime.of(today.getYear(),
+                today.getMonthValue(),
+                today.getDayOfMonth(),
+                Integer.parseInt(time[0]),
+                Integer.parseInt(time[1]))));
+    }
+
+    public static void printModifyAttendance(AllCrew allCrew, String name, int day, String[] time){
+        System.out.println("\n" +
+                allCrew.modifyCrewAttendanceByName(name, LocalDateTime.of(today.getYear(),
+                        today.getMonthValue(),
+                        day,
+                        Integer.parseInt(time[0]),
+                        Integer.parseInt(time[1])))
+        );
+    }
+
+}
