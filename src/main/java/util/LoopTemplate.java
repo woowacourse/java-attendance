@@ -10,22 +10,20 @@ public class LoopTemplate {
     }
 
     public static <T> T tryCatchLoop(final Supplier<T> callback, final OutputView outputView) {
-        while (true) {
-            try {
-                return callback.get();
-            } catch (final IllegalArgumentException | IllegalStateException e) {
-                outputView.printExceptionMessage(e.getMessage());
-            }
+        try {
+            return callback.get();
+        } catch (final IllegalArgumentException | IllegalStateException e) {
+            outputView.printExceptionMessage(e.getMessage());
+            return tryCatchLoop(callback, outputView);
         }
     }
 
     public static <T, R> R tryCatchLoop(final Function<T, R> callback, final T data, final OutputView outputView) {
-        while (true) {
-            try {
-                return callback.apply(data);
-            } catch (final IllegalArgumentException | IllegalStateException e) {
-                outputView.printExceptionMessage(e.getMessage());
-            }
+        try {
+            return callback.apply(data);
+        } catch (final IllegalArgumentException | IllegalStateException e) {
+            outputView.printExceptionMessage(e.getMessage());
+            return tryCatchLoop(callback, data, outputView);
         }
     }
 }

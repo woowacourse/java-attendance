@@ -23,17 +23,21 @@ public class Crew implements Comparable<Crew> {
         final LocalDate christmas = LocalDate.of(2024, 12, 25);
         final int dayOfMonth = inputLocalDate.getDayOfMonth();
         for (int i = 1; i < dayOfMonth; i++) {
-            final LocalDateTime localDateTime = LocalDateTime.of(LocalDate.of(2024, 12, i), LocalTime.MAX);
-            final LocalDate localDate = LocalDate.of(localDateTime.getYear(), localDateTime.getMonthValue(),
-                    localDateTime.getDayOfMonth());
-            if (localDateTime.getDayOfWeek() == DayOfWeek.SATURDAY || localDateTime.getDayOfWeek() == DayOfWeek.SUNDAY
-                    || localDate.equals(christmas)) {
-                continue;
-            }
-            attendances.add(Attendance.empty(localDateTime));
+            addAttendance(i, christmas, attendances);
         }
         return new Crew(name, attendances);
 
+    }
+
+    private static void addAttendance(final int i, final LocalDate christmas, final List<Attendance> attendances) {
+        final LocalDateTime localDateTime = LocalDateTime.of(LocalDate.of(2024, 12, i), LocalTime.MAX);
+        final LocalDate localDate = LocalDate.of(localDateTime.getYear(), localDateTime.getMonthValue(),
+                localDateTime.getDayOfMonth());
+        if (localDateTime.getDayOfWeek() == DayOfWeek.SATURDAY || localDateTime.getDayOfWeek() == DayOfWeek.SUNDAY
+                || localDate.equals(christmas)) {
+            return;
+        }
+        attendances.add(Attendance.empty(localDateTime));
     }
 
     public Attendance addAttendance(final String attendanceTime) {
