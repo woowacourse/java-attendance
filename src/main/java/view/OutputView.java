@@ -86,4 +86,8 @@ public class OutputView {
     public void printGuide() {
         System.out.println("이미 출석하셨습니다. 출석 수정을 이용해주세요.");
     }
+
+    public void printError(String message) {
+        System.out.println("\n[ERROR] " + message);
+    }
 }

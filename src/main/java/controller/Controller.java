@@ -9,6 +9,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import service.CrewLoader;
 import domain.Day;
+import util.DayOfWeekConverter;
 import view.InputView;
 import view.OutputView;
 import view.dto.AlertCrewDTO;
@@ -31,31 +32,35 @@ public class Controller {
         CrewLoader crewLoader = new CrewLoader();
         CrewGroup crewGroup = crewLoader.loadCrews(today);
 
-        while (true) {
-            String rawFunction = inputView.insertFunction(today);
-            Function function = new Function(rawFunction);
-
-            if (function.equals("Q")) {
-                break;
+        try {
+            while (true) {
+                String rawFunction = inputView.insertFunction(today);
+                Function function = new Function(rawFunction);
+                if (function.equals("Q")) {
+                    break;
+                }
+                if (function.equals("1")) {
+                    attendanceCheck(crewGroup, today);
+                }
+                if (function.equals("2")) {
+                    changeAttendance(crewGroup);
+                }
+                if (function.equals("3")) {
+                    showCrewAttendance(crewGroup);
+                }
+                if (function.equals("4")) {
+                    showAlertCrews(crewGroup);
+                }
             }
-            if (function.equals("1")) {
-                attendanceCheck(crewGroup, today);
-            }
-            if (function.equals("2")) {
-                changeAttendance(crewGroup);
-            }
-            if (function.equals("3")) {
-                showCrewAttendance(crewGroup);
-            }
-            if (function.equals("4")) {
-                showAlertCrews(crewGroup);
-            }
+        } catch (Exception e) {
+            outputView.printError(e.getMessage());
         }
     }
 
     private void attendanceCheck(CrewGroup crewGroup, LocalDateTime today) {
         if (Day.isHoliday(today)) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException(String.format("%d월 %d일 %s은 등교일이 아닙니다.", today.getMonthValue(), today.getDayOfMonth(),
+                    DayOfWeekConverter.convertDayOfWeek(today)));
         }
         String rawName = inputView.insertNickname();
         Crew crew = crewGroup.searchCrew(rawName);

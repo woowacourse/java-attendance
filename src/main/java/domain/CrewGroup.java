@@ -16,7 +16,7 @@ public class CrewGroup {
 
     public Crew searchCrew(String nickname) {
         if (!crews.containsKey(nickname)) {
-            throw new IllegalArgumentException("존재하지 않는 크루입니다.");
+            throw new IllegalArgumentException("등록되지 않은 닉네임입니다.");
         }
         return crews.get(nickname);
     }
