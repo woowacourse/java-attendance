@@ -5,7 +5,9 @@ import static attendance.domain.AttendanceType.ATTENDANCE;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.Set;
 import org.junit.jupiter.api.Test;
 
@@ -46,37 +48,31 @@ public class AttendanceHistoryManagerTest {
     void modify_attendance_result() {
         //given
         AttendanceHistoryManager attendanceHistoryManager = new AttendanceHistoryManager();
-        AttendanceHistory beforeAttendanceHistory = new AttendanceHistory(
-                LocalDateTime.of(2024, 12, 26, 15, 00),
-                ABSENCE
-        );
-        attendanceHistoryManager.addAttendanceResult(beforeAttendanceHistory);
-        AttendanceHistory afterAttendanceHistory = new AttendanceHistory(
-                LocalDateTime.of(2024, 12, 26, 10, 00),
-                ATTENDANCE
-        );
+        LocalDate localDate = LocalDate.of(2024, 12, 26);
+        LocalTime localTime = LocalTime.of(11, 00);
+        AttendanceHistory attendanceHistory = new AttendanceHistory(LocalDateTime.of(localDate, localTime), ABSENCE);
+        attendanceHistoryManager.addAttendanceResult(attendanceHistory);
+
+        LocalTime modifyTime = LocalTime.of(10, 00);
 
         //when
-        attendanceHistoryManager.modifyAttendanceResult(afterAttendanceHistory);
+        AttendanceHistory result = attendanceHistoryManager.modifyAttendanceResult(attendanceHistory, modifyTime);
 
         //then
-        assertThat(beforeAttendanceHistory).isEqualTo(afterAttendanceHistory);
-        assertThat(beforeAttendanceHistory.getAttendanceTime()).isEqualTo(afterAttendanceHistory.getAttendanceTime());
-        assertThat(beforeAttendanceHistory.getAttendanceType()).isEqualTo(afterAttendanceHistory.getAttendanceType());
+        assertThat(attendanceHistory).isEqualTo(result);
+        assertThat(result.getAttendanceTime()).isEqualTo(LocalDateTime.of(localDate, modifyTime));
+        assertThat(attendanceHistory.getAttendanceType()).isEqualTo(ATTENDANCE);
     }
 
     @Test
     void get_attendance_result_exception() {
         //given
         AttendanceHistoryManager attendanceHistoryManager = new AttendanceHistoryManager();
-        AttendanceHistory attendanceHistory = new AttendanceHistory(
-                LocalDateTime.of(2024, 12, 26, 15, 00),
-                ABSENCE
-        );
+        LocalDate localDate = LocalDate.of(2024, 12, 26);
 
         //when
         //then
-        assertThatThrownBy(() -> attendanceHistoryManager.getAttendanceHistory(attendanceHistory))
+        assertThatThrownBy(() -> attendanceHistoryManager.getAttendanceHistory(localDate))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("출석 기록이 존재하지 않습니다.");
     }

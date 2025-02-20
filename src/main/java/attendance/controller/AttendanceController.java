@@ -36,8 +36,7 @@ public class AttendanceController {
                 String crewName = inputView.inputCrewName();
                 Crew crew = crewManager.findByCrewName(crewName);
                 LocalTime attendanceTime = inputView.inputAttendanceTime();
-                AttendanceType attendanceType = AttendancePolicy.checkAttendanceType(now.getDayOfWeek(),
-                        attendanceTime);
+                AttendanceType attendanceType = AttendancePolicy.checkAttendanceType(now, attendanceTime);
                 AttendanceHistory attendanceHistory = new AttendanceHistory(LocalDateTime.of(now, attendanceTime),
                         attendanceType);
                 crew.addAttendanceResult(attendanceHistory);
@@ -47,15 +46,15 @@ public class AttendanceController {
             if (option.equals("2")) {
                 String crewName = inputView.inputCrewName();
                 Crew crew = crewManager.findByCrewName(crewName);
+
                 LocalDate modifyDate = inputView.inputModifyDate(now);
-                LocalTime attendanceTime = inputView.inputAttendanceTime();
-                AttendanceType attendanceType = AttendancePolicy.checkAttendanceType(now.getDayOfWeek(),
-                        attendanceTime);
-                AttendanceHistory afterAttendanceHistory = new AttendanceHistory(LocalDateTime.of(modifyDate, attendanceTime),
-                        attendanceType);
-                AttendanceHistoryDto beforeAttendanceHistoryDto = AttendanceHistoryDto.of(crew.getAttendanceResult(
-                        afterAttendanceHistory));
-                crew.modifyAttendanceResult(afterAttendanceHistory);
+                LocalTime modifyTime = inputView.inputAttendanceTime();
+
+                AttendanceHistory attendanceHistory = crew.getAttendanceHistory(modifyDate);
+                
+                AttendanceHistoryDto beforeAttendanceHistoryDto = AttendanceHistoryDto.of(attendanceHistory); // 수정 전
+                AttendanceHistory afterAttendanceHistory = crew.modifyAttendanceResult(attendanceHistory, modifyTime);
+
                 outputView.printModifyAttendanceResult(beforeAttendanceHistoryDto, afterAttendanceHistory);
                 continue;
             }

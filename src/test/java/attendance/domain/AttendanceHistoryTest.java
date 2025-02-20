@@ -4,7 +4,9 @@ import static attendance.domain.AttendanceType.ABSENCE;
 import static attendance.domain.AttendanceType.ATTENDANCE;
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import org.junit.jupiter.api.Test;
 
 public class AttendanceHistoryTest {
@@ -23,21 +25,19 @@ public class AttendanceHistoryTest {
     @Test
     void modify_attendance_result() {
         //given
-        AttendanceHistory attendanceHistory = new AttendanceHistory(
-                LocalDateTime.of(2024, 12, 26, 11, 00),
-                ABSENCE
-        );
-        AttendanceHistory modifyAttendanceHistory = new AttendanceHistory(
-                LocalDateTime.of(2024, 12, 26, 10, 00),
-                ATTENDANCE
-        );
+        LocalDate localDate = LocalDate.of(2024, 12, 26);
+        LocalTime localTime = LocalTime.of(11, 00);
+        LocalDateTime dateTime = LocalDateTime.of(localDate, localTime);
+        AttendanceHistory attendanceHistory = new AttendanceHistory(dateTime, ABSENCE);
+
+        LocalTime modifyTime = LocalTime.of(10, 00);
+        AttendanceType modifyAttendanceType = AttendancePolicy.checkAttendanceType(dateTime.toLocalDate(), modifyTime);
 
         //when
-        attendanceHistory.modify(modifyAttendanceHistory);
+        attendanceHistory.modify(modifyTime, modifyAttendanceType);
 
         //then
-        assertThat(attendanceHistory).isEqualTo(modifyAttendanceHistory);
-        assertThat(attendanceHistory.getAttendanceTime()).isEqualTo(modifyAttendanceHistory.getAttendanceTime());
-        assertThat(attendanceHistory.getAttendanceType()).isEqualTo(ATTENDANCE);
+        assertThat(attendanceHistory.getAttendanceTime()).isEqualTo(LocalDateTime.of(localDate, modifyTime));
+        assertThat(attendanceHistory.getAttendanceType()).isEqualTo(modifyAttendanceType);
     }
 }

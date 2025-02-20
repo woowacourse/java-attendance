@@ -1,5 +1,8 @@
 package attendance.domain;
 
+import java.time.LocalDate;
+import java.time.LocalTime;
+
 public class Crew {
     private final String name;
     private final AttendanceHistoryManager attendanceHistoryManager;
@@ -13,8 +16,8 @@ public class Crew {
         attendanceHistoryManager.addAttendanceResult(attendanceHistory);
     }
 
-    public void modifyAttendanceResult(AttendanceHistory attendanceHistory) {
-        attendanceHistoryManager.modifyAttendanceResult(attendanceHistory);
+    public AttendanceHistory modifyAttendanceResult(AttendanceHistory attendanceHistory, LocalTime localTime) {
+        return attendanceHistoryManager.modifyAttendanceResult(attendanceHistory, localTime);
     }
 
 
@@ -22,11 +25,7 @@ public class Crew {
         return name;
     }
 
-    public AttendanceHistoryManager getAttendanceHistory() {
-         return attendanceHistoryManager;
-    }
-
-    public AttendanceHistory getAttendanceResult(AttendanceHistory attendanceHistory) {
-        return attendanceHistoryManager.getAttendanceHistory(attendanceHistory);
+    public AttendanceHistory getAttendanceHistory(LocalDate localDate) {
+        return attendanceHistoryManager.getAttendanceHistory(localDate);
     }
 }

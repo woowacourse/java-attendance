@@ -1,6 +1,7 @@
 package attendance.domain;
 
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.Objects;
 
 public class AttendanceHistory {
@@ -20,9 +21,9 @@ public class AttendanceHistory {
         return attendanceType;
     }
 
-    public void modify(AttendanceHistory attendanceHistory) {
-        this.attendanceTime = attendanceHistory.getAttendanceTime();
-        this.attendanceType = attendanceHistory.getAttendanceType();
+    public void modify(LocalTime localTime, AttendanceType attendanceType) {
+        this.attendanceTime = LocalDateTime.of(this.attendanceTime.toLocalDate(), localTime);
+        this.attendanceType = attendanceType;
     }
 
     @Override

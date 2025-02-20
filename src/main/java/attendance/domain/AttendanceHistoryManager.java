@@ -1,5 +1,7 @@
 package attendance.domain;
 
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
@@ -17,18 +19,25 @@ public class AttendanceHistoryManager {
         return Collections.unmodifiableSet(attendanceHistories);
     }
 
-    public AttendanceHistory getAttendanceHistory(AttendanceHistory modifyAttendanceHistory) {
+    public AttendanceHistory getAttendanceHistory2(AttendanceHistory modifyAttendanceHistory) {
         return attendanceHistories.stream()
                 .filter(result -> result.equals(modifyAttendanceHistory))
                 .findAny()
                 .orElseThrow(() -> new IllegalArgumentException("출석 기록이 존재하지 않습니다."));
     }
 
-    public void modifyAttendanceResult(AttendanceHistory modifyAttendanceHistory) {
-        AttendanceHistory attendanceHistory = attendanceHistories.stream()
-                .filter(result -> result.equals(modifyAttendanceHistory))
+
+    public AttendanceHistory getAttendanceHistory(LocalDate localDate) {
+        return attendanceHistories.stream()
+                .filter(history -> history.getAttendanceTime().toLocalDate().equals(localDate))
                 .findAny()
-                .get();
-        attendanceHistory.modify(modifyAttendanceHistory);
+                .orElseThrow(() -> new IllegalArgumentException("출석 기록이 존재하지 않습니다."));
+    }
+
+    public AttendanceHistory modifyAttendanceResult(AttendanceHistory modifyAttendanceHistory, LocalTime localTime) {
+        AttendanceType attendanceType = AttendancePolicy.checkAttendanceType(
+                modifyAttendanceHistory.getAttendanceTime().toLocalDate(), localTime);
+        modifyAttendanceHistory.modify(localTime, attendanceType);
+        return modifyAttendanceHistory;
     }
 }
