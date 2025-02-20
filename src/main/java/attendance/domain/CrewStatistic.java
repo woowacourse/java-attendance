@@ -50,7 +50,7 @@ public class CrewStatistic {
         }
     }
 
-    public List<List<String>> getStatisticInfo() {
+    public List<List<String>> getCrewAttendanceHistory() {
         List<Attendance> sortedAttendances = crewAttendances.stream()
                 .sorted(Comparator.comparing(Attendance::getDate))
                 .toList();
