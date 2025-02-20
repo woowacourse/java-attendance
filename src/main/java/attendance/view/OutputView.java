@@ -51,14 +51,15 @@ public class OutputView { // todo : 상수 분리 적용 필요, response 파라
 
     public void printAttendUpdateResult(AttendanceUpdateResult result) {
         printAttendanceRecord(result.before());
-        System.out.printf(" -> %s (%s) 수정 완료",
+        System.out.printf(" -> %s (%s) 수정 완료\n",
                 result.after().dateTime().toLocalTime(),
                 result.after().status()
         );
+        printBlankLine();
     }
 
     public void printAttendUpdateResult(AttendanceSearchResult result) {
-        System.out.printf("이번 달 %s의 출석 기록입니다.\n\n", result.nickname());
+        System.out.printf("이번 달 %s의 출석 기록입니다.\n", result.nickname());
         List<AttendanceResponse> response = result.recordUntilToday().responses();
 
         response.forEach(this::printAttendanceRecord);
@@ -77,7 +78,8 @@ public class OutputView { // todo : 상수 분리 적용 필요, response 파라
         );
 
         System.out.println();
-        System.out.printf("%s 대상자입니다.", groupByStatus.warning()); // todo : 출력 순서랑 이후 날짜 중재
+        System.out.printf("%s 대상자입니다.\n", groupByStatus.warning()); // todo : 출력 순서랑 이후 날짜 중재
+        printBlankLine();
     }
 
     public void printWarnedStudents(WarnedStudentResponses response) {
@@ -91,9 +93,15 @@ public class OutputView { // todo : 상수 분리 적용 필요, response 파라
                     student.attendanceGroupByStatus().warning()
             );
         });
+        printBlankLine();
     }
 
     public void printErrorMessage(String message) {
         System.out.println(message);
+        printBlankLine();
+    }
+
+    private void printBlankLine() {
+        System.out.println();
     }
 }
