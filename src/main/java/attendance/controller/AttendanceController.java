@@ -36,37 +36,35 @@ public class AttendanceController {
             String functionValue = functionInput(today);
 
             try {
-                if (functionValue.equals("1")) {
-                    attendanceCheckFunction();
-                    continue;
+                if (choiceFunction(functionValue)) {
+                    return;
                 }
-
-                if (functionValue.equals("2")) {
-                    attendanceModifyFunction();
-                    continue;
-                }
-
-                if (functionValue.equals("3")) {
-                    attendanceHistoryByName();
-                    continue;
-                }
-
-                if (functionValue.equals("4")) {
-                    crewAtRiskOfExpulsion();
-                    continue;
-                }
-
-                if (functionValue.equals("Q")) {
-                    break;
-                }
-
                 throw new IllegalArgumentException("[ERROR] 올바른 기능을 입력해주세요.");
             } catch (IllegalArgumentException e) {
                 outputView.printErrorMessage(e.getMessage());
             }
 
-
         } while (true);
+    }
+
+    private boolean choiceFunction(String functionValue) {
+        if (functionValue.equals("1")) {
+            attendanceCheckFunction();
+        }
+
+        if (functionValue.equals("2")) {
+            attendanceModifyFunction();
+        }
+
+        if (functionValue.equals("3")) {
+            attendanceHistoryByName();
+        }
+
+        if (functionValue.equals("4")) {
+            crewAtRiskOfExpulsion();
+        }
+
+        return functionValue.equals("Q");
     }
 
     private String functionInput(LocalDateTime today) {
@@ -87,9 +85,8 @@ public class AttendanceController {
     private void attendanceCheckFunction() {
 
         String crewName = inputView.inputCrewName();
-        attendanceBook.checkName(crewName);
-        String attendanceTime = inputView.inputTime();
-        Time todayDateTime = createTime(LocalDate.now(), attendanceTime);
+        attendanceBook.checkName(inputView.inputCrewName());
+        Time todayDateTime = createTime(LocalDate.now(), inputView.inputTime());
 
         Attendance attendance = new Attendance(crewName, todayDateTime);
         attendanceRepository.add(attendance);
@@ -108,7 +105,10 @@ public class AttendanceController {
         attendanceBook.checkName(crewName);
         int modifyDay = inputView.inputModifyDay();
         String modifyTime = inputView.inputModifyTime();
+        modifyAttendance(modifyDay, modifyTime, crewName);
+    }
 
+    private void modifyAttendance(int modifyDay, String modifyTime, String crewName) {
         int year = LocalDate.now().getYear();
         int month = LocalDate.now().getMonthValue();
         Time modifyDateTime = createTime(LocalDate.of(year, month, modifyDay), modifyTime);
