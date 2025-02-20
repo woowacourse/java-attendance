@@ -42,24 +42,26 @@ public class Crews {
     }
 
     public boolean hasCrewName(final String name) {
-        for (Crew crew : crews) {
-            if (crew.isNameMatch(name)) {
-                return true;
-            }
-        }
-        return false;
+        return crews.stream().anyMatch(crew -> crew.isNameMatch(name));
     }
 
     private Crew findCrewByName(final String name) {
-        for (Crew crew : crews) {
-            if (crew.isNameMatch(name)) {
-                return crew;
-            }
-        }
-        throw new IllegalArgumentException("등록되지 않은 닉네임입니다.");
+        return crews.stream()
+                .filter(crew -> crew.isNameMatch(name))
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException("등록되지 않은 닉네임입니다."));
     }
 
     public CrewResponse createCrewResponseByName(String name) {
-         return findCrewByName(name).createCrewResponse();
+        return findCrewByName(name).createCrewResponse();
+    }
+
+    public List<CrewResponse> getCrewResponseWithRisk() {
+        return crews.stream()
+                .filter(crew ->
+                    crew.getRiskStatus()
+                            .hasRisk())
+                .map(Crew::createCrewResponse)
+                .toList();
     }
 }

@@ -1,5 +1,8 @@
 package view;
 
+import domain.AttendanceStatus;
+import domain.RiskStatus;
+
 import java.time.DayOfWeek;
 
 public class ViewUtil {
@@ -27,5 +30,25 @@ public class ViewUtil {
 
     public static String getNoneAttendanceMessage() {
         return "--:--";
+    }
+
+    public static String getRiskStatusMessage(RiskStatus riskStatus) {
+        if(RiskStatus.WARNING == riskStatus) {
+            return "경고";
+        }
+        if(RiskStatus.COUNSELING == riskStatus) {
+            return "면담";
+        }
+        return "제적";
+    }
+
+    public static String getAttendanceStatusMessage(AttendanceStatus attendanceStatus) {
+        if(AttendanceStatus.ABSENCE == attendanceStatus) {
+            return "결석";
+        }
+        if(AttendanceStatus.ATTENDANCE == attendanceStatus) {
+            return "출석";
+        }
+        return "지각";
     }
 }

@@ -32,25 +32,30 @@ public class AttendanceController {
     }
 
     public void selectMenu(String menu) {
-        if(menu.equals("1")) {
+        if (menu.equals("1")) {
             attendCrew();
             return;
         }
-        if(menu.equals("2")) {
+        if (menu.equals("2")) {
             editAttend();
             return;
         }
-        if(menu.equals("3")) {
+        if (menu.equals("3")) {
             checkCrewsRecord();
             return;
         }
         if (menu.equals("4")) {
+            checkRiskCrews();
             return;
         }
         if (menu.equals("Q")) {
             return;
         }
         throw new IllegalArgumentException("메뉴는 1, 2, 3, 4, Q만 입력할 수 있습니다.");
+    }
+
+    private void checkRiskCrews() {
+        outputView.printRiskCrews(crews.getCrewResponseWithRisk());
     }
 
     private void checkCrewsRecord() {
@@ -60,7 +65,7 @@ public class AttendanceController {
 
     private void editAttend() {
         String name = inputView.inputEditCrewName();
-        if(!crews.hasCrewName(name)) throw new IllegalArgumentException();
+        if (!crews.hasCrewName(name)) throw new IllegalArgumentException();
         String day = inputView.inputEditDay();
         //TODO: day 검증, time 검증
         String time = inputView.inputEditTime();
@@ -70,7 +75,7 @@ public class AttendanceController {
     public void attendCrew() {
         try {
             String name = inputView.inputName();
-            if(!crews.hasCrewName(name)) throw new IllegalArgumentException();
+            if (!crews.hasCrewName(name)) throw new IllegalArgumentException();
             LocalTime time = LocalTime.parse(inputView.inputAttendTime());
             crews.addAttendStatus(name, assembleDateAndTime(DateUtil.TODAY.toLocalDate(), time));
         } catch (DateTimeParseException | IllegalArgumentException e) {

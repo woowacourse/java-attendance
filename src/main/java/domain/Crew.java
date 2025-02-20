@@ -52,7 +52,7 @@ public class Crew {
     public int calculateAbsenceCount() {
         LocalDate localDate = DateUtil.getFirstDateOfMonth();
         int absenceCount = 0;
-        for (int day = 0; day < TODAY.getDayOfMonth(); day++) {
+        while(!localDate.isAfter(TODAY.toLocalDate())) {
             if (isNowAbsence(localDate)) {
                 absenceCount++;
             }
@@ -104,7 +104,7 @@ public class Crew {
         return new CrewResponse(name, attendanceBook, calculateAttendanceCount(), absenceCount, tardyCount, RiskStatus.getRiskStatus(absenceCount, tardyCount));
     }
 
-//    public CrewAttendanceStatusResponse createCrewRiskStatusResponse() {
-//
-//    }
+    public RiskStatus getRiskStatus() {
+        return RiskStatus.getRiskStatus(calculateAbsenceCount(), calculateTardyCount());
+    }
 }
