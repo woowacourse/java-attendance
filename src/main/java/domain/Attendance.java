@@ -15,12 +15,12 @@ public class Attendance {
         state = checkAttendanceState(localDateTime);
     }
 
-    public String printAttendance(){
-        String str = "";
-        str += dateAndTime.format(DateTimeFormatter.ofPattern("MM월 dd일 "));
-        str += dateAndTime.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.KOREAN) + " ";
-        str += getFormattedTimeAndState();
-        return str;
+    public int getDayOfMonth() {
+        return dateAndTime.getDayOfMonth();
+    }
+
+    public String getState() {
+        return state;
     }
 
     public String getFormattedTimeAndState() {
@@ -30,47 +30,44 @@ public class Attendance {
         return dateAndTime.format(DateTimeFormatter.ofPattern("HH:mm ", Locale.KOREAN)) + "(" + this.state + ")";
     }
 
-    public int getDayOfMonth() {
-        return dateAndTime.getDayOfMonth();
+    public String getFormattedAttended() {
+        return dateAndTime.format(DateTimeFormatter.ofPattern("MM월 dd일 "))
+                + dateAndTime.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.KOREAN) + " "
+                + getFormattedTimeAndState();
     }
 
     private String checkAttendanceState(LocalDateTime localDateTime) {
         int hour = localDateTime.getHour();
         int minute = localDateTime.getMinute();
         DayOfWeek dayOfWeek = localDateTime.getDayOfWeek();
-        if(dayOfWeek == DayOfWeek.SATURDAY || dayOfWeek == DayOfWeek.SUNDAY || localDateTime.getDayOfMonth() == 25) {
-            throw new IllegalArgumentException("주말 또는 공휴일은 캠퍼스 휴장");
-        }
-
-        if(hour < 8 || hour == 23) {
-            throw new IllegalArgumentException("캠퍼스 운영 시간이 아님");
-        }
-
+        validateRunningTime(localDateTime, dayOfWeek, hour);
         int startHour = 10;
-
         if (dayOfWeek == DayOfWeek.MONDAY) {
             startHour = 13;
         }
-        if(hour < startHour){
+        return decideAttendanceState(startHour, hour, minute);
+    }
+
+    private String decideAttendanceState(int startHour, int hour, int minute) {
+        if (hour < startHour || (hour == startHour && minute < 5)) {
             return "출석";
         }
-        if (hour == startHour) {
-            if (minute <= 5) {
-                return "출석";
-            }
-            if (minute <= 30) {
-                return "지각";
-            }
+        if ((hour == startHour) && minute <= 30) {
+            return "지각";
         }
         return "결석";
     }
 
-    public String getState() {
-        return state;
+    private void validateRunningTime(LocalDateTime localDateTime, DayOfWeek dayOfWeek, int hour) {
+        if (dayOfWeek == DayOfWeek.SATURDAY || dayOfWeek == DayOfWeek.SUNDAY || localDateTime.getDayOfMonth() == 25) {
+            throw new IllegalArgumentException("주말 또는 공휴일은 캠퍼스 휴장");
+        }
+        if (hour < 8 || hour == 23) {
+            throw new IllegalArgumentException("캠퍼스 운영 시간이 아님");
+        }
     }
 
     public boolean isEqualDate(LocalDateTime localDateTime) {
         return dateAndTime.toLocalDate().isEqual(localDateTime.toLocalDate());
     }
-
 }

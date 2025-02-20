@@ -2,29 +2,32 @@ package controller;
 
 import domain.AllCrew;
 import java.time.LocalDate;
-import util.DateGenerator;
 import view.FileInputView;
 import view.OutputView;
 import view.UserInputView;
 
 public class AttendanceSystem {
     private final FileInputView fileInputView;
-    private final DateGenerator dateGenerator;
+    private final UserInputView userInputView;
+    private final OutputView outputView;
     private final AllCrew allCrew;
+    private final LocalDate date;
 
-    public AttendanceSystem(DateGenerator dateGenerator) {
+    public AttendanceSystem(LocalDate date) {
+        this.date = date;
+        this.userInputView = new UserInputView(date);
+        this.outputView = new OutputView(date);
         this.fileInputView = new FileInputView();
-        this.dateGenerator = dateGenerator;
         this.allCrew = new AllCrew();
     }
 
     public void start() {
         fileInputView.readAttendanceFile(allCrew);
-        LocalDate today = dateGenerator.getDate();
+        LocalDate today = date;
         allCrew.updateAbsentHistory(today.minusDays(1));
         boolean onRunning = true;
         while (onRunning) {
-            String menuInput = UserInputView.askMenu();
+            String menuInput = userInputView.askMenu();
             onRunning = executeMenu(menuInput);
         }
     }
@@ -46,25 +49,25 @@ public class AttendanceSystem {
     }
 
     private void checkDangerousCrew() {
-        OutputView.printDangerousCrew(allCrew);
+        outputView.printDangerousCrew(allCrew);
     }
 
     private void checkCrewAttendanceHistory() {
-        String name = UserInputView.askNickNameForCheckAttendanceInfo();
-        OutputView.printAttendanceHistory(allCrew, name);
+        String name = userInputView.askNickNameForCheckAttendanceInfo();
+        outputView.printAttendanceHistory(allCrew, name);
     }
 
     private void checkAttendance() {
-        String name = UserInputView.askNickNameForCheckAttendance();
-        String[] time = UserInputView.askAttendanceTimeForCheckAttendance();
-        OutputView.printCheckedAttendance(allCrew, name, time);
+        String name = userInputView.askNickNameForCheckAttendance();
+        String[] time = userInputView.askAttendanceTimeForCheckAttendance();
+        outputView.printCheckedAttendance(allCrew, name, time);
     }
 
     private void modifyAttendance() {
-        String name = UserInputView.askNickNameForModifyAttendanceInfo();
-        int day = UserInputView.askDayForModifyAttendanceInfo();
-        String[] time = UserInputView.askAttendanceTimeForModifyAttendance();
-        OutputView.printModifyAttendance(allCrew, name, day, time);
+        String name = userInputView.askNickNameForModifyAttendanceInfo();
+        int day = userInputView.askDayForModifyAttendanceInfo();
+        String[] time = userInputView.askAttendanceTimeForModifyAttendance();
+        outputView.printModifyAttendance(allCrew, name, day, time);
     }
 }
 

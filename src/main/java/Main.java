@@ -1,11 +1,9 @@
 import controller.AttendanceSystem;
-import util.DateGenerator;
+import java.time.LocalDate;
 
 public class Main {
     public static void main(String[] args) {
-        DateGenerator dateGenerator = new DateGenerator(2024, 12, 13);
-        AttendanceSystem attendanceSystem = new AttendanceSystem(dateGenerator);
-
+        AttendanceSystem attendanceSystem = new AttendanceSystem(LocalDate.of(2024, 12, 13));
         attendanceSystem.start();
     }
 }

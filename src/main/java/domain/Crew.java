@@ -9,7 +9,6 @@ import java.util.List;
 import java.util.Optional;
 
 public class Crew {
-    // 이름 - 출석 정보
     private final String name;
     private final List<Attendance> attendanceInfo;
 
@@ -21,7 +20,7 @@ public class Crew {
     public Attendance addAttendance(LocalDateTime localDateTime) {
         Attendance isAlreadyExisted = getAlreadyExistAttendance(localDateTime);
         if (isAlreadyExisted != null) {
-            throw new IllegalArgumentException("이미 출첵 완");
+            throw new IllegalArgumentException("이미 출석 되었습니다.");
         }
         Attendance attendance = new Attendance(localDateTime);
         attendanceInfo.add(attendance);
@@ -33,13 +32,11 @@ public class Crew {
     }
 
     private Attendance getAlreadyExistAttendance(LocalDateTime localDateTime) {
-        Optional<Attendance> sameDateAttendance = attendanceInfo.stream().filter(attendance ->
-                attendance.isEqualDate(localDateTime)
-        ).findFirst();
-        if (sameDateAttendance.isPresent()) {
-            return sameDateAttendance.get();
-        }
-        return null;
+        Optional<Attendance> sameDateAttendance = attendanceInfo.stream()
+                .filter(attendance ->
+                        attendance.isEqualDate(localDateTime))
+                .findFirst();
+        return sameDateAttendance.orElse(null);
     }
 
     public String update(LocalDateTime newDateAndTime) {
@@ -50,72 +47,52 @@ public class Crew {
         attendanceInfo.remove(existAttendance);
         Attendance attendance = new Attendance(newDateAndTime);
         attendanceInfo.add(attendance);
-        String str = "";
-        str += existAttendance.printAttendance();
-        str += " -> ";
-        str += attendance.getFormattedTimeAndState();
-        str += " 수정 완료!";
+        String str = getFormatedModifiedAttendance(existAttendance, attendance);
         return str;
+    }
+
+    private static String getFormatedModifiedAttendance(Attendance existAttendance, Attendance newAttendance) {
+        return existAttendance.getFormattedAttended()
+                + " -> "
+                + newAttendance.getFormattedTimeAndState()
+                + " 수정 완료!";
     }
 
     public String getAttendanceHistory(LocalDate lastDate) {
         updateUntil(lastDate);
-        return printAttendanceInfo(lastDate) + "\n"
-                + printAttendanceStateInfo(lastDate) + "\n"
-                + printWarningStatus(lastDate) + "\n";
+        return getFormatedAttendanceInfo(lastDate) + "\n"
+                + getFormatedAttendanceStateInfo(lastDate) + "\n"
+                + getFormatedWarningStatus(lastDate) + "\n";
     }
 
-    public String printAttendanceInfo(LocalDate lastDate) {
+    public String getFormatedAttendanceInfo(LocalDate lastDate) {
         updateUntil(lastDate);
         attendanceInfo.sort(Comparator.comparing(Attendance::getDayOfMonth));
-        String str = "";
-        for (Attendance attendance : attendanceInfo) {
-            str += attendance.printAttendance() + "\n";
+        StringBuilder formatedAttendanceInfo = new StringBuilder();
+        for (Attendance attendance : this.attendanceInfo) {
+            formatedAttendanceInfo.append(attendance.getFormattedAttended()).append("\n");
         }
-        return str;
+        return formatedAttendanceInfo.toString();
     }
 
-    public String printAttendanceStateInfo(LocalDate lastDate) {
+    public String getFormatedAttendanceStateInfo(LocalDate lastDate) {
         updateUntil(lastDate.minusDays(1));
-        String str = "";
-        str += "출석: " + getAttendanceCount() + "회\n";
-        str += "지각: " + getLateCount() + "회\n";
-        str += "결석: " + getAbsentCount() + "회\n";
-        return str;
+        return "출석: " + getAttendanceCount() + "회\n"
+                + "지각: " + getLateCount() + "회\n"
+                + "결석: " + getAbsentCount() + "회\n";
     }
 
     public int getAbsentCount() {
         return getOriginalAbsentCount() + (getLateCount() / 3);
     }
 
-    private int getOriginalAbsentCount() {
-        int count = 0;
-        for (Attendance attendance : attendanceInfo) {
-            if (attendance.getState().equals("결석")) {
-                count++;
-            }
+    public String getFormatedWarningStatus(LocalDate lastDate) {
+        updateUntil(lastDate.minusDays(1));
+        String warningStatus = calculateWarningStatus(getAbsentCount());
+        if (warningStatus.isEmpty()) {
+            return "";
         }
-        return count;
-    }
-
-    private int getAttendanceCount() {
-        int count = 0;
-        for (Attendance attendance : attendanceInfo) {
-            if (attendance.getState().equals("출석")) {
-                count++;
-            }
-        }
-        return count;
-    }
-
-    private int getLateCount() {
-        int count = 0;
-        for (Attendance attendance : attendanceInfo) {
-            if (attendance.getState().equals("지각")) {
-                count++;
-            }
-        }
-        return count;
+        return warningStatus + " 대상자입니다.";
     }
 
     public void updateUntil(LocalDate lastDate) {
@@ -130,32 +107,21 @@ public class Crew {
         }
     }
 
-    private boolean containsDayOfMonth(int i) {
-        for (Attendance attendance : attendanceInfo) {
-            if (attendance.getDayOfMonth() == i) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-
     public String printWarningInfo(LocalDate lastDate) {
         updateUntil(lastDate.minusDays(1));
         int lateCount = getLateCount();
         int originalAbsentCount = getOriginalAbsentCount();
-        int absentCount = originalAbsentCount + (lateCount / 3);
-        String str = name + ": 결석 " + originalAbsentCount + "회, 지각 " + lateCount + "회 ";
-        String str1 = calculateWarningStatus(absentCount);
-        if (str1.isEmpty()) {
-            return str;
+        String nameAndCount = name + ": 결석 " + originalAbsentCount + "회, 지각 " + lateCount + "회 ";
+        String warningStatus = calculateWarningStatus(getAbsentCount());
+        if (warningStatus.isEmpty()) {
+            return nameAndCount;
         }
-        str += "(" + str1 + ")";
-        return str;
+        nameAndCount += "(" + warningStatus + ")";
+        return nameAndCount;
     }
 
     public String calculateWarningStatus(int absentCount) {
-        if (absentCount > 5) { // 5회 초과, 3회 이상, 2회 이상
+        if (absentCount > 5) {
             return "제적";
         }
         if (absentCount >= 3) {
@@ -167,12 +133,26 @@ public class Crew {
         return "";
     }
 
-    public String printWarningStatus(LocalDate lastDate) {
-        updateUntil(lastDate.minusDays(1));
-        String warningStatus = calculateWarningStatus(getAbsentCount());
-        if (warningStatus.isEmpty()) {
-            return "";
-        }
-        return warningStatus + " 대상자입니다.";
+    private int getAttendanceCount() {
+        return getStateCount("출석");
+    }
+
+    private int getLateCount() {
+        return getStateCount("지각");
+    }
+
+    private int getOriginalAbsentCount() {
+        return getStateCount("결석");
+    }
+
+    private int getStateCount(String state) {
+        return (int) attendanceInfo.stream()
+                .filter(a -> a.getState().equals(state))
+                .count();
+    }
+
+    private boolean containsDayOfMonth(int i) {
+        return attendanceInfo.stream()
+                .anyMatch(a -> a.getDayOfMonth() == i);
     }
 }

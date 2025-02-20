@@ -24,7 +24,7 @@ public class AllCrew {
 
     public String addCrewAttendanceByName(String name, LocalDateTime dateTime) {
         Crew crew = findCrewByName(name);
-        return crew.addAttendance(dateTime).printAttendance();
+        return crew.addAttendance(dateTime).getFormattedAttended();
     }
 
     public String modifyCrewAttendanceByName(String name, LocalDateTime dateTime) {
@@ -38,11 +38,10 @@ public class AllCrew {
     }
 
     private Crew findCrewByName(String name) {
-        Crew findCrew = allCrew.stream()
+        return allCrew.stream()
                 .filter(crew -> crew.getName().equals(name))
                 .findFirst()
                 .orElseThrow(() -> new IllegalArgumentException("Crew not found"));
-        return findCrew;
     }
 
     public String printAllCrewWarningInfo(LocalDate date) {
@@ -52,18 +51,21 @@ public class AllCrew {
                         .thenComparing(Crew::getName)
         );
         String result = "";
-        for(Crew crew : allCrew) {
-            if (crew.calculateWarningStatus(crew.getAbsentCount()).isEmpty()){
-                continue;
-            }
-            result += "- "+crew.printWarningInfo(date) + "\n";
+        for (Crew crew : allCrew) {
+            result = scanWarningCrew(date, crew, result);
         }
         return result;
     }
 
+    private static String scanWarningCrew(LocalDate date, Crew crew, String result) {
+        if (crew.calculateWarningStatus(crew.getAbsentCount()).isEmpty()) {
+            return "";
+        }
+        result += "- " + crew.printWarningInfo(date) + "\n";
+        return result;
+    }
+
     public void updateAbsentHistory(LocalDate date) {
-        allCrew.stream().forEach(crew -> {
-            crew.updateUntil(date);
-        });
+        allCrew.forEach(crew -> crew.updateUntil(date));
     }
 }

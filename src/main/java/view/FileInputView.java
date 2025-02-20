@@ -12,16 +12,24 @@ public class FileInputView {
         try {
             FileReader fileReader = new FileReader("src/main/attendance.csv");
             Scanner scanner = new Scanner(fileReader);
-            while (scanner.hasNextLine()) {
-                String line = scanner.nextLine();
-                String crewName = line.split(",")[0];
-                if (!allCrew.containsCrewName(crewName)) {
-                    allCrew.addCrew(new Crew(crewName));
-                }
-                initializeCrewInfo(allCrew, line, crewName);
-            }
+            readFilePerLine(allCrew, scanner);
         } catch (FileNotFoundException e) {
             System.out.println("없는 파일입니다.");
+        }
+    }
+
+    private void readFilePerLine(AllCrew allCrew, Scanner scanner) {
+        while (scanner.hasNextLine()) {
+            String line = scanner.nextLine();
+            String crewName = line.split(",")[0];
+            addNewCrewWhenNotExisted(allCrew, crewName);
+            initializeCrewInfo(allCrew, line, crewName);
+        }
+    }
+
+    private void addNewCrewWhenNotExisted(AllCrew allCrew, String crewName) {
+        if (!allCrew.containsCrewName(crewName)) {
+            allCrew.addCrew(new Crew(crewName));
         }
     }
 
