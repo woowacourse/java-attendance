@@ -22,7 +22,7 @@ public class InputView {
     private final static String PROMPT_STUDENT_NAME_INPUT = "닉네임을 입력해 주세요.";
     private final static String PROMPT_START_TIME_INPUT = "등교 시간을 입력해 주세요.";
     private final static String MENU_OPTION = "[1-4]|Q";
-
+    private final static String PRINT_TODAY_FORMAT = "오늘은 %d월 %d일 %s입니다. 기능을 선택해 주세요.\n";
     private final static Scanner scanner = new Scanner(System.in);
 
     public static void printTodayAndSelectFunction(LocalDate localDate) {
@@ -30,7 +30,7 @@ public class InputView {
         int date = localDate.getDayOfMonth();
         DayOfWeek dayOfWeek = localDate.getDayOfWeek();
         String day = AttendanceCalculatorByDay.findDayByDayOfWeekValue(dayOfWeek.getValue());
-        System.out.println("오늘은 " + month + "월 " + date + "일 " + day + "입니다. 기능을 선택해 주세요.");
+        System.out.printf(String.format(PRINT_TODAY_FORMAT,month,date,day));
     }
 
     private static void printMenu() {

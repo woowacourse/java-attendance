@@ -2,8 +2,12 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import controller.Controller;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.PrintStream;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 import model.AttendanceStatus;
 import model.Student;
 import model.StudentRepository;
@@ -22,11 +26,11 @@ public class StudentRepositoryTest {
     void test1() {
         String input = "포비";
 
-        /*InputStream in = new ByteArrayInputStream(input.getBytes());
+        InputStream in = new ByteArrayInputStream(input.getBytes());
         System.setIn(in);
 
         OutputStream out = new ByteArrayOutputStream();
-        System.setOut(new PrintStream(out));*/
+        System.setOut(new PrintStream(out));
 
         assertThatThrownBy(() -> studentRepository.notExistStudent("포비"))
                 .isInstanceOf(IllegalArgumentException.class)
