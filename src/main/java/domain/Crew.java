@@ -72,7 +72,7 @@ public class Crew {
 
             if (time == null) {
                 records.add(new AttendanceRecordResponse(LocalDate.of(2024, 12, day), null,
-                        AttendanceStatus.NONE));
+                        AttendanceStatus.ABSENT));
                 continue;
             }
 

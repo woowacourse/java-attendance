@@ -77,6 +77,7 @@ public class OutputView {
         if (!penalty.isBlank()) {
             System.out.printf("%s 대상자입니다.%n", penalty);
         }
+        displaySpacing();
     }
 
     public void displayPenaltyCrew(List<CrewPenaltyResponse> responses) {
