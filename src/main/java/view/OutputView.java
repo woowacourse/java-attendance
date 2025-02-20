@@ -1,0 +1,106 @@
+package view;
+
+import domain.Attendance;
+import domain.AttendanceCounter;
+import domain.AttendanceStatus;
+import domain.Attendances;
+import domain.Crew;
+import domain.Crews;
+import domain.Nickname;
+import domain.Punishment;
+import domain.Week;
+import java.time.DayOfWeek;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+
+public final class OutputView {
+
+    private OutputView() {
+    }
+
+    public static void printAttendance(Attendance attendance) {
+        final LocalDateTime localDateTime = attendance.getLocalDateTime();
+        final AttendanceStatus attendanceStatus = attendance.getAttendanceStatus();
+        final int day = localDateTime.getDayOfMonth();
+        final String dayName = Week.findKoreanName(localDateTime.getDayOfWeek());
+        final LocalTime localTime = localDateTime.toLocalTime();
+
+        System.out.println(
+                String.format("12월 %02d일 %s %s (%s)", day, dayName, localTime, attendanceStatus.getKoreanName()));
+    }
+
+    public static void printUpdateAttendance(final Attendance oldAttendance, final Attendance newAttendance) {
+        final LocalDateTime oldLocalDateTime = oldAttendance.getLocalDateTime();
+        final AttendanceStatus oldAttendanceStatus = oldAttendance.getAttendanceStatus();
+        final int oldDay = oldLocalDateTime.getDayOfMonth();
+        final String oldDayName = Week.findKoreanName(oldLocalDateTime.getDayOfWeek());
+        final LocalTime oldLocalTime = oldLocalDateTime.toLocalTime();
+
+        final LocalDateTime newLocalDateTime = newAttendance.getLocalDateTime();
+        final AttendanceStatus newAttendanceStatus = newAttendance.getAttendanceStatus();
+        final LocalTime newLocalTime = newLocalDateTime.toLocalTime();
+
+        System.out.println(
+                String.format("12월 %02d일 %s %s (%s) -> %s (%s) 수정 완료!", oldDay, oldDayName, oldLocalTime,
+                        oldAttendanceStatus.getKoreanName(), newLocalTime, newAttendanceStatus.getKoreanName()));
+    }
+
+    public static void printCrewAttendances(Crew crew) {
+        final Nickname nickname = crew.getNickname();
+        final Attendances attendances = crew.getAttendances();
+        attendances.sort();
+
+        final AttendanceCounter attendanceCounter = AttendanceCounter.of(attendances);
+        final int attendanceCount = attendanceCounter.getAttendanceCount();
+        final int tardiness = attendanceCounter.getTardiness();
+        final int absence = attendanceCounter.getAbsence();
+
+        int sum = (tardiness * 3) + absence;
+        final Punishment punishment = Punishment.findByAbsenceCount(sum);
+
+        System.out.println(String.format("이번 달 %s의 출석 기록입니다.", nickname.getNickname()));
+        System.out.println();
+
+        for (Attendance attendance : attendances.getAttendances()) {
+            final AttendanceStatus attendanceStatus = attendance.getAttendanceStatus();
+            final LocalDateTime localDateTime = attendance.getLocalDateTime();
+            final int day = localDateTime.getDayOfMonth();
+            final DayOfWeek dayOfWeek = localDateTime.getDayOfWeek();
+            final LocalTime localTime = localDateTime.toLocalTime();
+            String timeFormat = String.valueOf(localTime);
+            if (localTime.equals(LocalTime.of(0, 0))) {
+                timeFormat = "--:--";
+            }
+            System.out.println(
+                    String.format("12월 %02d일 %s %s (%s)", day, Week.findKoreanName(dayOfWeek), timeFormat,
+                            attendanceStatus.getKoreanName()));
+        }
+        System.out.println();
+
+        System.out.println(String.format("%s: %d회", AttendanceStatus.ATTENDANCE.getKoreanName(), attendanceCount));
+        System.out.println(String.format("%s: %d회", AttendanceStatus.TARDINESS.getKoreanName(), tardiness));
+        System.out.println(String.format("%s: %d회", AttendanceStatus.ABSENCE.getKoreanName(), absence));
+        System.out.println();
+
+        System.out.println(String.format("%s 대상자입니다.", punishment.getPunishmentName()));
+    }
+
+    public static void printAllExpulsion(final Crews crews) {
+        System.out.println("제적 위험자 조회");
+        for (Crew crew : crews.getSortedCrews()) {
+            final String nickname = crew.getNickname().getNickname();
+            final Attendances attendances = crew.getAttendances();
+            final AttendanceCounter attendanceCounter = AttendanceCounter.of(attendances);
+            final int absence = attendanceCounter.getAbsence();
+            final int tardiness = attendanceCounter.getTardiness();
+            final int sum = (tardiness * 3) + absence;
+            final Punishment punishment = Punishment.findByAbsenceCount(sum);
+
+            if (punishment.equals(Punishment.NONE)) {
+                continue;
+            }
+            System.out.println(String.format("- %s: 결석 %d회, 지각 %d회 (%s)", nickname, absence, tardiness,
+                    punishment.getPunishmentName()));
+        }
+    }
+}
