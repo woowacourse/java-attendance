@@ -12,7 +12,7 @@ import view.InputView;
 class TodayDateTest {
     @Test
     @DisplayName("시간을 입력받아 LocalDateTime 으로 변환하는 메서드 테스트")
-    void test1(){
+    void 시간을_입력받아_LocalDateTime_으로_변환하는_메서드_테스트(){
         String time = "09:59";
         TodayDate todayDate = new TodayDate(LocalDate.of(2024, 12, 13));
         LocalDateTime localDateTime = InputView.makeLocalDateToLocalDateTime(LocalDate.of(2024,12,13));
@@ -22,7 +22,7 @@ class TodayDateTest {
 
     @Test
     @DisplayName("형식이 잘못된 시간을 입력하면 예외 발생 테스트")
-    void test2() {
+    void 형식이_잘못된_시간을_입력하면_예외_발생_테스트() {
         String time = "09:71";
         TodayDate todayDate = new TodayDate(LocalDate.of(2024, 12, 13));
         org.assertj.core.api.Assertions.assertThatThrownBy(() -> InputView.makeLocalDateToLocalDateTime(LocalDate.of(2024,12,13)))

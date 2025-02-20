@@ -23,7 +23,7 @@ public class StudentRepositoryTest {
 
     @Test
     @DisplayName("존재하지 않는 학생을 입력시 예외처리 한다.")
-    void test1() {
+    void 존재하지_않는_학생을_입력시_예외처리_한다() {
         String input = "포비";
 
         InputStream in = new ByteArrayInputStream(input.getBytes());
@@ -39,7 +39,7 @@ public class StudentRepositoryTest {
 
     @Test
     @DisplayName("등교시간 잘못 입력시 예외처리 한다.")
-    void test2() {
+    void 등교시간_잘못_입력시_예외처리_한다() {
         assertThatThrownBy(() -> InputView.isNotOpeningHour(LocalDateTime.of(2024,12,13,7,59)))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("[ERROR] 캠퍼스 운영 시간이 아닙니다.");
@@ -47,7 +47,7 @@ public class StudentRepositoryTest {
 
     @Test
     @DisplayName("이름 기준으로 학생 객체 찾는 기능")
-    void test3() {
+    void 이름_기준으로_학생_객체_찾는_기능() {
         String name = "짱수";
         Student student6 = studentRepository.findStudentByName(name);
         assertThat(student6).isEqualTo(student);
@@ -55,7 +55,7 @@ public class StudentRepositoryTest {
 
     @Test
     @DisplayName("등교 시간을 바탕으로 출석 기록 업데이트하는 기능")
-    void test4() {
+    void 등교_시간을_바탕으로_출석_기록_업데이트하는_기능() {
         String name = "짱수";
         int month = LocalDateTime.now().getMonthValue();
         int day = LocalDateTime.now().getDayOfMonth();
@@ -69,7 +69,7 @@ public class StudentRepositoryTest {
 
     @Test
     @DisplayName("등교 시간을 바탕으로 출석 기록을 map에 업데이트하는 기능")
-    void test5() {
+    void 등교_시간을_바탕으로_출석_기록을_map에_업데이트하는_기능() {
         String name = "짱수";
         int month = LocalDateTime.now().getMonthValue();
         int day = LocalDateTime.now().getDayOfMonth();
@@ -83,14 +83,14 @@ public class StudentRepositoryTest {
 
     @Test
     @DisplayName("LocalDateTime 을 날짜까지만 비교하는 메서드 테스트")
-    void test6() {
+    void LocalDateTime을_날짜까지만_비교하는_메서드_테스트() {
         boolean compareResult = student.compareDayIsSame(LocalDateTime.of(2024,12,12,9,59),LocalDateTime.of(2024,12,12,13,25));
         Assertions.assertTrue(compareResult);
     }
 
     @Test
     @DisplayName("출석 기록 업데이트 하는 메서드 테스트")
-    void test7() {
+    void 출석_기록_업데이트_하는_메서드_테스트() {
         Student student1 = studentRepository.findStudentByName("빙티");
         student1.updateState(LocalDateTime.of(2024,12,3,10,0));
         Assertions.assertTrue(student1.getRecord().get(LocalDateTime.of(2024,12,3,10,0)).equals(AttendanceStatus.ATTENDANCE));
