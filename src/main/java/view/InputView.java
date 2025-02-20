@@ -63,6 +63,7 @@ public class InputView {
     public static String inputUpdateDate() {
         System.out.println("수정하려는 날짜(일)를 입력해 주세요.");
         String input = Console.readLine();
+        validateDateSize(input);
         validateInteger(input);
         return input;
     }
@@ -72,6 +73,13 @@ public class InputView {
             Integer.parseInt(input);
         } catch (NumberFormatException e) {
             throw new IllegalArgumentException("0이상의 숫자만 입력해 주세요.");
+        }
+    }
+
+    private static void validateDateSize(final String input) {
+        int date = Integer.parseInt(input);
+        if (date > 31 || date < 1) {
+            throw new IllegalArgumentException("날짜는 1부터 31일까지만 입력할 수 있습니다.");
         }
     }
 
