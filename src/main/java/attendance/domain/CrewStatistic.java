@@ -18,6 +18,10 @@ public class CrewStatistic {
         this.status = CrewStatus.NONE;
     }
 
+    public void resetCrewStatus() {
+        crew.resetCount();
+    }
+
     public void initCrewStatus() {
         for (Attendance crewAttendance : crewAttendances) {
             if (crewAttendance.getType() == AttendanceType.SAFE) {
