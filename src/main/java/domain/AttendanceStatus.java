@@ -26,7 +26,7 @@ public enum AttendanceStatus {
         if (dayOfWeek == DayOfWeek.MONDAY) {
             startHour = 13;
         }
-        if (inputTime.toLocalTime().toNanoOfDay() <= LocalTime.of(startHour, 0, 0).toNanoOfDay()) {
+        if (inputTime.toLocalTime().toNanoOfDay() <= LocalTime.of(startHour, 5, 0).toNanoOfDay()) {
             return ATTENDANCE;
         }
         if (inputTime.toLocalTime().toNanoOfDay() <= LocalTime.of(startHour, 30, 0).toNanoOfDay()) {

@@ -1,6 +1,7 @@
 package service;
 
 import constants.DateConstants;
+import domain.AttendanceStatus;
 import domain.Crew;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -49,8 +50,8 @@ class AttendanceModifyServiceTest {
 
         //then
         assertThat(response.beforeTime()).isEqualTo(before);
-        assertThat(response.beforeStatus()).isEqualTo("지각");
+        assertThat(response.beforeStatus()).isSameAs(AttendanceStatus.LATE);
         assertThat(response.afterTime()).isEqualTo(after);
-        assertThat(response.afterStatus()).isEqualTo("출석");
+        assertThat(response.afterStatus()).isSameAs(AttendanceStatus.ATTENDANCE);
     }
 }
