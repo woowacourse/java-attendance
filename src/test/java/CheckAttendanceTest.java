@@ -71,11 +71,11 @@ public class CheckAttendanceTest {
     void 등록되지_않는_닉네임의_경우_예외를_출력한다() {
         AttendanceBook attendanceBook = new AttendanceBook();
         Crew crew1 = Crew.createByName("쿠키");
-        crew1.addDailyAttendance(Map.of(LocalDate.of(2024, 12, 1), LocalTime.of(10, 6)));
+        crew1.addDailyAttendance(Map.of(LocalDate.of(2024, 12, 3), LocalTime.of(10, 6)));
         attendanceBook.addNewCrew(crew1);
 
         assertThatThrownBy(
-                () -> attendanceBook.checkAttendance("우유", Map.of(LocalDate.of(2024, 12, 3), LocalTime.of(10, 7))))
+                () -> attendanceBook.checkAttendance("우유", Map.of(LocalDate.of(2024, 12, 4), LocalTime.of(10, 7))))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("[ERROR] 등록되지 않은 닉네임입니다.");
 
