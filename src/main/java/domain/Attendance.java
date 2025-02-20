@@ -4,7 +4,7 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 
 public class Attendance {
-    private Day day;
+    private final Day day;
     private Boolean isLate = false;
     private Boolean isAbsent = false;
     private LocalTime attendanceTime;
