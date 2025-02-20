@@ -49,6 +49,10 @@ public class Attendance {
 
     }
 
+    public boolean matchDate(final LocalDate localDate) {
+        return dateTime.toLocalDate().equals(localDate);
+    }
+
     public boolean isEmpty() {
         return isEmpty;
     }

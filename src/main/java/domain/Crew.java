@@ -36,9 +36,16 @@ public class Crew {
 
     }
 
-    public void addAttendance(final String attendanceTime) {
-        attendances.add(new Attendance(attendanceTime));
+    public Attendance addAttendance(final String attendanceTime) {
+        final Attendance attendance = new Attendance(attendanceTime);
+        attendances.add(attendance);
+        return attendance;
     }
+
+    public boolean existTodayAttendance(final LocalDate localDate) {
+        return attendances.stream().anyMatch(attendance -> attendance.matchDate(localDate));
+    }
+
 
     public void updateAttendanceByDateTime(final String attendanceTime) {
         final Attendance updatedAttendance = Attendance.of(attendanceTime);

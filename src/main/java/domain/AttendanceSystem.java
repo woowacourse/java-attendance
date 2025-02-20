@@ -1,6 +1,8 @@
 package domain;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 public class AttendanceSystem {
@@ -17,11 +19,31 @@ public class AttendanceSystem {
                 .distinct()
                 .map(d -> Crew.of(d, today))
                 .toList();
-        data.forEach(d -> updateAttendance(crews, d));
+        data.forEach(d -> initAttendance(crews, d));
         return new AttendanceSystem(crews);
     }
 
-    private static void updateAttendance(final List<Crew> crews, final String input) {
+    public Attendance attendance(final String name, final LocalDateTime localDateTime) {
+        final Crew crew = findCrewByName(name);
+        return crew.addAttendance(localDateTime.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")));
+    }
+
+    public void validateCrewByName(final String name) {
+        if (!existCrewByName(name)) {
+            throw new IllegalArgumentException("크루가 존재하지 않습니다.");
+        }
+    }
+
+    private boolean existCrewByName(final String name) {
+        return crews.stream().anyMatch(crew -> crew.isSameName(name));
+    }
+
+    public boolean existTodayAttendanceByCrewName(final String name, final LocalDate today) {
+        final Crew crew = findCrewByName(name);
+        return crew.existTodayAttendance(today);
+    }
+
+    private static void initAttendance(final List<Crew> crews, final String input) {
         final String[] data = input.split(",");
         crews.stream()
                 .filter(crew -> crew.isSameName(data[0]))

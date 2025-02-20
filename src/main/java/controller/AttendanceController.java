@@ -7,7 +7,10 @@ import domain.Crew;
 import domain.ExpulsionStatus;
 import dto.AttendanceResponse;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import util.FileManager;
 import view.InputView;
@@ -29,7 +32,19 @@ public class AttendanceController {
     }
 
     public void run() {
-        responseCrewAttendanceHistory();
+//        responseCrewAttendanceHistory();
+        attendance();
+    }
+
+    private void attendance() {
+        outputView.printAddAttendanceCrewName();
+        final String crewName = inputView.readCrewName();
+        attendanceSystem.validateCrewByName(crewName);
+        outputView.printAddAttendanceDate();
+        final LocalDateTime localDateTime = inputView.readTime();
+        final Attendance attendance = attendanceSystem.attendance(crewName, localDateTime);
+        final AttendanceResponse attendanceResponse = convertAttendanceToResponse(attendance);
+        outputView.printCrewAttendances(List.of(attendanceResponse));
     }
 
 

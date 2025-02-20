@@ -12,6 +12,18 @@ import java.util.stream.Collectors;
 
 public class OutputView {
 
+    public void printAddAttendanceCrewName(){
+        System.out.println("닉네임을 입력해주세요.");
+    }
+
+    public void printAddAttendanceDate(){
+        System.out.println("등교 시간을 입력해 주세요.");
+    }
+
+    public void printUpdateAttendanceCrewName(){
+        System.out.println("출석을 수정하려는 크루의 닉네임을 입력해 주세요.");
+    }
+
     public void printAttendanceHistoryTitle(final String crewName) {
         System.out.printf("이번 달 %s의 출석 기록입니다.\n", crewName);
     }
