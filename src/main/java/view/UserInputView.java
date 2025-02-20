@@ -7,7 +7,7 @@ import java.util.Locale;
 import java.util.Scanner;
 
 // TODO : 입력값 검증 로직
-public class InputView {
+public class UserInputView {
     public static String showMenu() {
         LocalDate today = LocalDate.of(2024, 12, 13);
         String str = "오늘은 " + today.format(DateTimeFormatter.ofPattern("MM월 dd일 ")) +
