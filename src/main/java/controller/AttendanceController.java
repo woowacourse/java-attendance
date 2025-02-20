@@ -9,6 +9,7 @@ import domain.TimeAndStatus;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Map;
 import view.InputView;
 import view.OutputView;
 
@@ -16,7 +17,7 @@ public class AttendanceController {
 
     private final String DEFAULT_YEAR = "2024";
     private final String DEFAULT_MONTH = "12";
-    private final String DEFAULT_DAY = "16";
+    private final String DEFAULT_DAY = "13";
     private final InputView inputView;
     private final OutputView outputView;
     private final AttendanceManager attendanceManager;
@@ -29,7 +30,7 @@ public class AttendanceController {
     }
 
     public void run() {
-        check();
+        checkExpelledWarning();
     }
 
     private void attend() {
@@ -80,5 +81,14 @@ public class AttendanceController {
         Penalty penaltyResult = statisticsResult.getPenalty();
         outputView.printRecords(name, localDate, records);
         outputView.printStatistics(attendanceCount, latenessCount, absenceCount, penaltyResult);
+    }
+
+    private void checkExpelledWarning(){
+        String date = DEFAULT_YEAR + "-" + DEFAULT_MONTH + "-" + DEFAULT_DAY;
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        LocalDate localDate = LocalDate.parse(date, formatter);
+
+        Map<String, StatisticsResult> sortedResult =attendanceManager.sortCrew(localDate);
+        outputView.printExpelledWarningResult(sortedResult);
     }
 }
