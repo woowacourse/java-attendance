@@ -22,6 +22,10 @@ public class Converter {
     public static String covertLocalTimeToString(LocalTime localTime) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");
 
+        if (localTime == null) {
+            return "--:--";
+        }
+
         return localTime.format(formatter);
     }
 
