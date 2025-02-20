@@ -3,6 +3,7 @@ package controller;
 import domain.Attendance;
 import domain.Crew;
 import domain.CrewGroup;
+import domain.Function;
 import domain.Time;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -31,7 +32,9 @@ public class Controller {
         CrewGroup crewGroup = crewLoader.loadCrews(today);
 
         while (true) {
-            String function = inputView.insertFunction(today);
+            String rawFunction = inputView.insertFunction(today);
+            Function function = new Function(rawFunction);
+
             if (function.equals("Q")) break;
             if (function.equals("1")) {
                 attendanceCheck(crewGroup, today);

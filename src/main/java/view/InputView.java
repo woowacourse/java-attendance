@@ -47,6 +47,6 @@ public class InputView {
                 4. 제적 위험자 확인
                 Q. 종료
                 """);
-        return getInput();
+        return getInput().trim();
     }
 }
