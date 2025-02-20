@@ -126,7 +126,7 @@ public class AttendanceBook {
         );
     }
 
-    private int getPenaltyCount(TotalRecordsResponse totalRecords) {
+    public int getPenaltyCount(TotalRecordsResponse totalRecords) {
         return totalRecords.absentCount() + (totalRecords.lateCount() / 3);
     }
 

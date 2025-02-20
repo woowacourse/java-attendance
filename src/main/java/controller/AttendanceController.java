@@ -3,8 +3,11 @@ package controller;
 import domain.AttendanceBook;
 import domain.CsvReader;
 import domain.Parser;
+import domain.PenaltyStatus;
 import domain.UserInput;
+import dto.AttendanceRecordResponse;
 import dto.ModifyAttendanceResponse;
+import dto.TotalRecordsResponse;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
@@ -46,13 +49,15 @@ public class AttendanceController {
             UserInput selection = retryUntilValid(this::getUserInput);
 
             try {
-                if (selection == UserInput.CHECK_ATTENDANCE) { // 출석 확인
+                if (selection == UserInput.CHECK_ATTENDANCE) {
                     checkAttendance(attendanceBook);
                 }
-                if (selection == UserInput.MODIFY_ATTENDANCE) { // 출석 확인
+                if (selection == UserInput.MODIFY_ATTENDANCE) {
                     modifyAttendance(attendanceBook);
                 }
-
+                if (selection == UserInput.TOTAL_RECORDS_BY_CREW) {
+                    getTotalRecordsByCrew(attendanceBook);
+                }
                 if (selection == UserInput.QUIT) { // 출석 확인
                     break;
                 }
@@ -63,6 +68,15 @@ public class AttendanceController {
 
             inputView.askName();
         }
+    }
+
+    private void getTotalRecordsByCrew(AttendanceBook attendanceBook) {
+        String name = retryUntilValid(() -> askNameToCheckAttendance(attendanceBook));
+
+        List<AttendanceRecordResponse> records = attendanceBook.getCrewByName(name).getAttendanceRecords();
+        TotalRecordsResponse totalRecord = TotalRecordsResponse.fromAttendanceRecords(records);
+        PenaltyStatus penalty = PenaltyStatus.getByPenaltyCount(attendanceBook.getPenaltyCount(totalRecord));
+        outputView.displayAttendanceRecordByName(name, records, totalRecord, penalty.getMessage());
     }
 
     private void modifyAttendance(AttendanceBook attendanceBook) {
