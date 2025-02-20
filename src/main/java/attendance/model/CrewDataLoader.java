@@ -9,6 +9,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.Objects;
 
 public class CrewDataLoader {
+    public static final LocalTime ABSENCE_TIME = LocalTime.of(17, 0);
     private final Crews crews;
     private final LocalDateTime localDateTime;
 
@@ -30,32 +31,44 @@ public class CrewDataLoader {
                     addCrew(crew, dateTime);
                 });
 
+        fillAbsencesForNoAttendance();
+    }
+
+    private void fillAbsencesForNoAttendance() {
         LocalDate currentDate = LocalDate.of(2024, 12, 1);
-        while (
-                currentDate.isBefore(LocalDate.of(2025, 1, 1))
-                        && currentDate.isBefore(CustomLocalDateTime.now().toLocalDate())
-        ) {
-            for (Crew crew : crews.getCrews()) {
-                AttendanceHistory attendanceHistory = crew.getAttendanceHistory();
-                if (attendanceHistory.containsDate(currentDate) || CustomLocalDateTime.isHoliday(currentDate)) {
-                    continue;
-                }
-                LocalDateTime lateDatetime = LocalDateTime.of(currentDate, LocalTime.of(17, 0));
-                crew.addAttendanceDetail(new AttendanceDetail(lateDatetime));
-            }
+        while (isAttendableDate(currentDate)) {
+            addAbsence(currentDate);
             currentDate = currentDate.plusDays(1);
         }
+    }
+
+    private boolean isAttendableDate(LocalDate currentDate) {
+        return currentDate.isBefore(LocalDate.of(2025, 1, 1)) &&
+                currentDate.isBefore(CustomLocalDateTime.now().toLocalDate());
+    }
+
+    private void addAbsence(LocalDate currentDate) {
+        for (Crew crew : crews.getCrews()) {
+            AttendanceHistory attendanceHistory = crew.getAttendanceHistory();
+            if (!canAttend(attendanceHistory, currentDate)) {
+                continue;
+            }
+            LocalDateTime absenceDatetime = LocalDateTime.of(currentDate, ABSENCE_TIME);
+            crew.addAttendanceDetail(new AttendanceDetail(absenceDatetime));
+        }
+    }
+
+    private boolean canAttend(AttendanceHistory attendanceHistory, LocalDate currentDate) {
+        return !(attendanceHistory.containsDate(currentDate) || CustomLocalDateTime.isHoliday(currentDate));
     }
 
     private void addCrew(Crew crew, LocalDateTime dateTime) {
         if (!crews.containsCrew(crew.getName())) {
             crews.add(crew);
             crew.addAttendanceDetail(new AttendanceDetail(dateTime));
-
             return;
         }
         crews.findCrew(crew.getName()).addAttendanceDetail(new AttendanceDetail(dateTime));
-
     }
 
     private String[] parseRow(String row) {
