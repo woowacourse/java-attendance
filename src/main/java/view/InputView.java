@@ -1,6 +1,7 @@
 package view;
 
 
+import domain.Command;
 import java.time.LocalDateTime;
 import java.util.Scanner;
 
@@ -15,11 +16,10 @@ public final class InputView {
         System.out.println(
                 String.format("오늘은 12월 %s일 %s요일입니다. 기능을 선택해주세요.", dateTime.getDayOfMonth(),
                         dateTime.getDayOfWeek()));
-        System.out.println("1. 출석 확인");
-        System.out.println("2. 출석 수정");
-        System.out.println("3. 크루별 출석 기록 확인");
-        System.out.println("4. 제적 위험자 확인");
-        System.out.println("Q. 종료");
+        for (Command command : Command.values()) {
+            System.out.println(String.format("%s. %s", command.getCommandNumber(), command.getCommandName()));
+
+        }
         final String input = scanner.nextLine();
         validateInput(input);
 
