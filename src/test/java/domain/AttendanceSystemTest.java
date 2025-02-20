@@ -1,8 +1,12 @@
 package domain;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -48,12 +52,98 @@ public class AttendanceSystemTest {
         @DisplayName("출석을 생성한다.")
         void attendance() {
             //given
-
+            final LocalDate today = LocalDate.of(2024, 12, 14);
+            final LocalTime time = LocalTime.of(10, 30);
+            final LocalDateTime attendancedTime = LocalDateTime.of(today, time);
+            final List<String> data = List.of("쿠키,2024-12-13 10:08");
+            final AttendanceSystem attendanceSystem = AttendanceSystem.of(data, today);
+            final Attendance expectedAttendance = Attendance.of(attendancedTime);
 
             //when
+            final Attendance actual = attendanceSystem.attendance("쿠키", attendancedTime);
 
             //then
+            assertThat(actual).isEqualTo(expectedAttendance);
+        }
 
+        @Test
+        @DisplayName("오늘 이미 출석했는지 여부를 반환한다.")
+        void isAlreadyTodayAttendance() {
+            // given
+            final LocalDate today = LocalDate.of(2024, 12, 20);
+            final LocalTime time = LocalTime.of(10, 30);
+            final LocalDateTime attendancedTime = LocalDateTime.of(today, time);
+            final List<String> data = List.of("쿠키,2024-12-13 10:08");
+            final AttendanceSystem attendanceSystem = AttendanceSystem.of(data, today);
+            attendanceSystem.attendance("쿠키", attendancedTime);
+
+            // when
+            boolean actual = attendanceSystem.isAlreadyTodayAttendance("쿠키");
+
+            // then
+            assertThat(actual).isTrue();
+        }
+
+        @Test
+        @DisplayName("경고를 받은 크루원들을 계산해서 반환한다.")
+        void calculateExpulsionCrews() {
+            // given
+            final LocalDate today = LocalDate.of(2024, 12, 14);
+            final List<String> data = List.of("쿠키,2024-12-13 11:08", "쿠키,2024-12-12 11:08", "쿠키,2024-12-11 11:08");
+            final AttendanceSystem attendanceSystem = AttendanceSystem.of(data, today);
+
+            // when
+            final List<Crew> crews = attendanceSystem.calculateExpulsionCrews();
+
+            // then
+            assertThat(crews).isNotEmpty();
+            assertThat(crews.getFirst().getName().getName()).isEqualTo("쿠키");
+        }
+
+        @Test
+        @DisplayName("크루 이름과 날짜에 해당하는 출석을 수정한다.")
+        void updateAttendanceByCrewNameAndDay() {
+            // given
+            final LocalDate today = LocalDate.of(2024, 12, 14);
+            final LocalTime time = LocalTime.of(10, 30);
+            final List<String> data = List.of("쿠키,2024-12-13 11:08", "쿠키,2024-12-12 11:08", "쿠키,2024-12-11 11:08");
+            final AttendanceSystem attendanceSystem = AttendanceSystem.of(data, today);
+
+            // when
+            Attendance attendance = attendanceSystem.updateAttendanceByCrewNameAndDay(time, "쿠키", 13);
+
+            // then
+            assertThat(attendance.getDateTime().toLocalTime()).isEqualTo(time);
+        }
+
+        @Test
+        @DisplayName("크루 이름과 날짜에 해당하는 출석을 반환한다.")
+        void findAttendanceByDate() {
+            // given
+            final LocalDate today = LocalDate.of(2024, 12, 13);
+            final List<String> data = List.of("쿠키,2024-12-13 11:08", "쿠키,2024-12-12 11:08", "쿠키,2024-12-11 11:08");
+            final AttendanceSystem attendanceSystem = AttendanceSystem.of(data, today);
+
+            // when
+            Attendance attendance = attendanceSystem.findAttendanceByDate("쿠키", 13);
+
+            // then
+            assertThat(attendance.getDateTime().toLocalDate().getDayOfMonth()).isEqualTo(13);
+        }
+
+        @Test
+        @DisplayName("크루 이름에 해당하는 크루를 반환한다.")
+        void findCrewByName() {
+            // given
+            final LocalDate today = LocalDate.of(2024, 12, 13);
+            final List<String> data = List.of("쿠키,2024-12-13 11:08", "쿠키,2024-12-12 11:08", "쿠키,2024-12-11 11:08");
+            final AttendanceSystem attendanceSystem = AttendanceSystem.of(data, today);
+
+            // when
+            Crew actual = attendanceSystem.findCrewByName("쿠키");
+
+            // then
+            assertThat(actual.getName().getName()).isEqualTo("쿠키");
         }
 
     }
@@ -62,6 +152,34 @@ public class AttendanceSystemTest {
     @Nested
     @DisplayName("실패 테스트")
     class FailCases {
+
+        @Test
+        @DisplayName("크루가 존재하지 않는다면, 예외가 발생한다.")
+        void validateCrewByName() {
+            // given
+            final LocalDate today = LocalDate.of(2024, 12, 13);
+            final List<String> data = List.of("쿠키,2024-12-13 11:08", "쿠키,2024-12-12 11:08", "쿠키,2024-12-11 11:08");
+            final AttendanceSystem attendanceSystem = AttendanceSystem.of(data, today);
+
+            // when & then
+            assertThatThrownBy(() -> {
+                attendanceSystem.validateCrewByName("감자");
+            }).isInstanceOf(IllegalArgumentException.class);
+        }
+
+        @Test
+        @DisplayName("수정할 수 없는 날짜라면, 예외가 발생한다.")
+        void validateUpdateAttendanceDay() {
+            // given
+            final LocalDate today = LocalDate.of(2024, 12, 25);
+            final List<String> data = List.of("쿠키,2024-12-13 11:08", "쿠키,2024-12-12 11:08", "쿠키,2024-12-11 11:08");
+            final AttendanceSystem attendanceSystem = AttendanceSystem.of(data, today);
+
+            // when & then
+            assertThatThrownBy(() -> {
+                attendanceSystem.validateUpdateAttendanceDay("쿠키", 25);
+            }).isInstanceOf(IllegalArgumentException.class);
+        }
 
     }
 }
