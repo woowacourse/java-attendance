@@ -39,7 +39,7 @@ class AttendanceRecordsTest {
 
         assertThatThrownBy(() -> attendanceRecords.removeRecord(LocalDate.of(2024, 12, 4)))
                 .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage("[ERROR] 출석 기록이 없는 날짜는 수정할 수 없습니다.");
+                .hasMessage("[ERROR] 출석 기록이 없는 날짜는 수정할 수 없습니다.\n");
     }
 
     @Test

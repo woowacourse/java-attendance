@@ -35,17 +35,21 @@ public class AttendanceRecords {
         AttendanceRecord attendanceRecord = attendanceRecords.stream()
                 .filter(record -> record.getDate().equals(date))
                 .findFirst()
-                .orElseThrow(() -> new IllegalArgumentException("[ERROR] 출석 기록이 없는 날짜는 수정할 수 없습니다."));
+                .orElseThrow(() -> new IllegalArgumentException("[ERROR] 출석 기록이 없는 날짜는 수정할 수 없습니다.\n"));
         attendanceRecords.remove(attendanceRecord);
         return attendanceRecord;
     }
 
     public int getTardyCount() {
-        return (int) attendanceRecords.stream().filter(AttendanceRecord::isTardy).count();
+        return (int) attendanceRecords.stream()
+                .filter(AttendanceRecord::isTardy)
+                .count();
     }
 
     public int getAbsentCount() {
-        return (int) attendanceRecords.stream().filter(AttendanceRecord::isAbsent).count();
+        return (int) attendanceRecords.stream()
+                .filter(AttendanceRecord::isAbsent)
+                .count();
     }
 
     public int getAttendanceCount(Attendance targetAttendance) {
@@ -55,7 +59,9 @@ public class AttendanceRecords {
     }
 
     public List<AttendanceRecord> getSortedRecords() {
-        return attendanceRecords.stream().sorted(Comparator.comparing(AttendanceRecord::getDate)).toList();
+        return attendanceRecords.stream()
+                .sorted(Comparator.comparing(AttendanceRecord::getDate))
+                .toList();
     }
 
     public DisciplinaryStatus getDisciplinaryStatus() {
