@@ -10,9 +10,16 @@ public class Attendance {
     private LocalTime attendanceTime;
 
     public Attendance(Day day, LocalTime attendanceTime) {
+        validateDay(day);
         this.day = day;
         this.attendanceTime = attendanceTime;
         updateStatus();
+    }
+
+    private void validateDay(Day day) {
+        if (day.checkHoliday()) {
+            throw new IllegalArgumentException("[ERROR] 등교일이 아닙니다.");
+        }
     }
 
     public Boolean isEqualTo(LocalDate date) {
