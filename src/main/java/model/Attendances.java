@@ -1,8 +1,10 @@
 package model;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 public class Attendances {
 
@@ -26,14 +28,26 @@ public class Attendances {
         attendances.add(attendance);
     }
 
-    public void modify(Crew crew, LocalDateTime modifiedCheckInTime) {
-        for (Attendance attendance : attendances) {
-            if (attendance.isSame(crew, modifiedCheckInTime.toLocalDate())) {
-                attendance.modify(modifiedCheckInTime.toLocalTime());
-            }
+    public Attendance modify(Crew crew, LocalDateTime modifiedCheckInTime) {
+        Optional<Attendance> existAttendance = find(crew, modifiedCheckInTime.toLocalDate());
+        if (existAttendance.isPresent()) {
+            existAttendance.get().modify(modifiedCheckInTime.toLocalTime());
+            return existAttendance.get();
         }
         Attendance attendance = Attendance.of(crew, modifiedCheckInTime);
         checkIn(attendance);
+
+        return attendance;
+    }
+
+    public Optional<Attendance> find(Crew crew, LocalDate localDate) {
+        for (Attendance attendance : attendances) {
+            if (attendance.isSame(crew, localDate)) {
+                Attendance copy = attendance.clone(attendance);
+                return Optional.of(copy);
+            }
+        }
+        return Optional.empty();
     }
 
     private void validateExistAttendance(Attendance newAttendance) {

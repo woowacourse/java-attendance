@@ -24,6 +24,10 @@ public class Attendance {
         return new Attendance(crew, checkInTime, AttendanceType.calculateType(checkInTime));
     }
 
+    public Attendance clone(Attendance attendance) {
+        return Attendance.of(attendance.crew, attendance.checkInTime);
+    }
+
     public boolean isSameDateAndCrew(Attendance attendance) {
         return checkInTime.toLocalDate().equals(attendance.checkInTime.toLocalDate()) && attendance.crew.isEqualName(
                 crew.getNickname());

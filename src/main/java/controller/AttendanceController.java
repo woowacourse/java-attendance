@@ -2,7 +2,9 @@ package controller;
 
 import constant.Command;
 import converter.StringConverter;
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 import model.Attendance;
 import model.Attendances;
 import model.Crew;
@@ -35,7 +37,7 @@ public class AttendanceController {
             outputView.printCheckInResult(attendance);
         }
         if (command.equals(Command.TWO)) {
-            modifyAttendance();
+            modifyAttendance(attendances);
         }
         if (command.equals(Command.THREE)) {
             checkAttendance();
@@ -58,12 +60,18 @@ public class AttendanceController {
         return attendance;
     }
 
-    private void modifyAttendance() {
+    private void modifyAttendance(Attendances attendances) {
         String rawNickname = inputView.readNickname();
         String rawDay = inputView.readDay();
         String rawChangeTime = inputView.readChangeTime();
 
-        Attendance changeAttendance = stringConverter.convertToAttendance(rawNickname, rawChangeTime);
+        Crew crew = stringConverter.convertToNickname(rawNickname);
+        LocalDateTime changeTime = stringConverter.convertToLocalDateTime(rawDay, rawChangeTime);
+
+        Optional<Attendance> existAttendance = attendances.find(crew, changeTime.toLocalDate());
+        Attendance modifedAttendance = attendances.modify(crew, changeTime);
+
+        outputView.printModifiedResult(existAttendance, modifedAttendance);
     }
 
     private void checkAttendance() {

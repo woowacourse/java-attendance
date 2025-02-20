@@ -71,8 +71,32 @@ public class StringConverter {
         return Crew.of(rawNickname);
     }
 
-    public void validateCommand(String rawCommand){
-        List<String> commands = List.of("1", "2", "3", "4", "Q");
+    public LocalDateTime convertToLocalDateTime(String rawDay, String rawTime) {
+        validateDayFormat(rawDay);
+        LocalDate now = LocalDate.now();
+        LocalDate nowDate = LocalDate.of(now.getYear(), now.getMonthValue(), Integer.parseInt(rawDay));
+
+        validateTimeFormat(rawTime);
+        String[] split = rawTime.split(":");
+        LocalTime nowTime = LocalTime.of(Integer.parseInt(split[0]), Integer.parseInt(split[1]));
+
+        return LocalDateTime.of(nowDate, nowTime);
+    }
+
+    private void validateDayFormat(String rawDay) {
+        int day;
+        try {
+            day = Integer.parseInt(rawDay);
+        } catch (NumberFormatException e) {
+            throw new IllegalArgumentException("날짜 형식이 아닙니다.");
+        }
+
+        LocalDate now = LocalDate.now();
+        int lastDay = now.withDayOfMonth(now.lengthOfMonth()).getDayOfMonth();
+
+        if (day < 1 || day > lastDay) {
+            throw new IllegalArgumentException("잘못된 날짜입니다.");
+        }
     }
 
     private void validateLocalDateTimeFormat(String dateTime) {
