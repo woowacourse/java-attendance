@@ -1,6 +1,9 @@
 package domain;
 
 import java.time.LocalDate;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 public class AttendanceStatistics {
 
@@ -34,5 +37,18 @@ public class AttendanceStatistics {
             }
         }
         return new StatisticsResult(attendanceCount, latenessCount, absenceCount);
+    }
+
+    public static Map<String, StatisticsResult> calculateExpelledWarning(LocalDate nowDate, Map<String, Records> crews) {
+        Map<String, StatisticsResult> result = new LinkedHashMap<>();
+        for(String crewName : crews.keySet()) {
+            StatisticsResult statisticsResult = AttendanceStatistics.countStatus(nowDate, crews.get(crewName));
+
+            Penalty penalty = statisticsResult.getPenalty();
+            if(penalty != Penalty.NONE) {
+                result.put(crewName, statisticsResult);
+            }
+        }
+        return result;
     }
 }
