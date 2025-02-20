@@ -32,7 +32,7 @@ public class AttendanceBook {
                             crew.getName(),
                             totalRecords.absentCount(),
                             totalRecords.lateCount(),
-                            PenaltyStatus.getByPenaltyCount(penaltyCount).getMessage()
+                            PenaltyStatus.getByPenaltyCount(penaltyCount)
                     )
             );
         }

@@ -2,9 +2,9 @@ package domain;
 
 public enum PenaltyStatus {
     NONE(""),
-    WARNING("경고"),
+    EXPULSION("제적"),
     INTERVIEW("면담"),
-    EXPULSION("제적");
+    WARNING("경고");
 
     private final String message;
 
@@ -28,4 +28,6 @@ public enum PenaltyStatus {
     public String getMessage() {
         return message;
     }
+
+
 }
