@@ -21,8 +21,9 @@ public class Crews {
         return crews.stream().
                 sorted(
                         punishmentOrder
-                                .thenComparing(punishmentOrder1)
-                                .thenComparing(punishmentOrder2)
+                                .thenComparing(absenceOrder)
+                                .thenComparing(tardinessOrder)
+                                .thenComparing(nameOrder)
                 )
                 .toList();
     }
@@ -36,12 +37,14 @@ public class Crews {
         return (attendanceCounter.getTardiness() * 3) + attendanceCounter.getAbsence();
     }
 
-    private final Comparator<Crew> punishmentOrder1 = Comparator
+    private final Comparator<Crew> absenceOrder = Comparator
             .comparingInt((Crew crew) -> crew.getAttendanceCounter().getAbsence())
             .reversed();
 
-    private final Comparator<Crew> punishmentOrder2 = Comparator
+    private final Comparator<Crew> tardinessOrder = Comparator
             .comparingInt((Crew crew) -> crew.getAttendanceCounter().getTardiness())
             .reversed();
+
+    private final Comparator<Crew> nameOrder = Comparator.comparing(Crew::getNickname);
 
 }
