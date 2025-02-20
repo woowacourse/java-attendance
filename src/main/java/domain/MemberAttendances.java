@@ -15,8 +15,8 @@ import java.util.List;
 
 public class MemberAttendances {
     
-    private String name;
-    private List<Attendance> attendances;
+    private final String name;
+    private final List<Attendance> attendances;
     
     public MemberAttendances(String name, List<Attendance> attendances) {
         this.name = name;
