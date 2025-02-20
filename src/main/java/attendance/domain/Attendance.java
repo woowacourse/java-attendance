@@ -1,7 +1,5 @@
 package attendance.domain;
 
-import java.time.LocalDateTime;
-
 public class Attendance {
     private final String crewName;
     private Time attendanceTime;
@@ -22,30 +20,10 @@ public class Attendance {
     public String getAttendanceStatus() {
         if (attendanceTime.getDayOfWeek().equals("월요일")) { // 월요일
 
-            return checkStatusWithCondition(13, 5, 30);
+            return AttendanceStatus.checkStatusWithCondition(attendanceTime, 13, 5, 30);
         }
 
-        return checkStatusWithCondition(10, 5, 30);
-    }
-
-    private String checkStatusWithCondition(int hour,
-                                            int lateMinute, int absentMinute) {
-
-        if (!attendanceTime.isAfter(
-                LocalDateTime.of(attendanceTime.getYear(), attendanceTime.getMonth(), attendanceTime.getDay(),
-                        hour,
-                        lateMinute))) {
-            return "출석";
-        }
-
-        if (!attendanceTime.isAfter(
-                LocalDateTime.of(attendanceTime.getYear(), attendanceTime.getMonth(), attendanceTime.getDay(),
-                        hour,
-                        absentMinute))) {
-            return "지각";
-        }
-
-        return "결석";
+        return AttendanceStatus.checkStatusWithCondition(attendanceTime, 10, 5, 30);
     }
 
     public boolean isAlreadyAttendance(Attendance currentAttendance) {

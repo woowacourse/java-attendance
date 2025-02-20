@@ -1,5 +1,10 @@
 package attendance.repository;
 
+import static attendance.domain.AttendanceStatus.ABSEMT;
+import static attendance.domain.AttendanceStatus.ATTEND;
+import static attendance.domain.AttendanceStatus.LATE;
+
+import attendance.domain.AcademicStatus;
 import attendance.domain.Attendance;
 import attendance.domain.Time;
 import attendance.dto.CrewNameAndAcademicStatusDTO;
@@ -10,7 +15,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
-import java.util.stream.Stream;
 
 public class AttendanceRepository {
     private final List<Attendance> attendances;
@@ -80,28 +84,11 @@ public class AttendanceRepository {
         Map<String, Long> counts = attendances.stream()
                 .collect(Collectors.groupingBy(Attendance::getAttendanceStatus, Collectors.counting()));
 
-        int attend = counts.getOrDefault("출석", 0L).intValue();
-        int late = counts.getOrDefault("지각", 0L).intValue();
-        int absent = counts.getOrDefault("결석", 0L).intValue();
+        int attend = counts.getOrDefault(ATTEND.getValue(), 0L).intValue();
+        int late = counts.getOrDefault(LATE.getValue(), 0L).intValue();
+        int absent = counts.getOrDefault(ABSEMT.getValue(), 0L).intValue();
 
-        return new CrewNameAndAcademicStatusDTO(name, attend, late, absent, getAcademicStatus(late, absent));
-    }
-
-    private String getAcademicStatus(int late, int absent) {
-        return Stream.of(late / 3 + absent)
-                .map(count -> {
-                    if (count > 5) {
-                        return "제적";
-                    }
-                    if (count >= 3) {
-                        return "면담";
-                    }
-                    if (count == 2) {
-                        return "경고";
-                    }
-                    return "X";
-                })
-                .findFirst()
-                .orElse("X");
+        return new CrewNameAndAcademicStatusDTO(name, attend, late, absent,
+                AcademicStatus.getAcademicStatus(late, absent));
     }
 }

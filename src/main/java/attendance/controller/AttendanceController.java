@@ -1,5 +1,9 @@
 package attendance.controller;
 
+import static attendance.domain.AcademicStatus.EXPELLED;
+import static attendance.domain.AcademicStatus.INTERVIEW;
+import static attendance.domain.AcademicStatus.WARNING;
+
 import attendance.domain.Attendance;
 import attendance.domain.AttendanceBook;
 import attendance.domain.Time;
@@ -140,9 +144,12 @@ public class AttendanceController {
 
         outputView.printCrewsAtRiskOfExpulsionStartMessage();
 
-        outputView.printCrewsAtRiskOfExpulsion(attendanceBook.getCrewAtRiskOfExpulsion(attendanceRepository, "제적"));
-        outputView.printCrewsAtRiskOfExpulsion(attendanceBook.getCrewAtRiskOfExpulsion(attendanceRepository, "면담"));
-        outputView.printCrewsAtRiskOfExpulsion(attendanceBook.getCrewAtRiskOfExpulsion(attendanceRepository, "경고"));
+        outputView.printCrewsAtRiskOfExpulsion(
+                attendanceBook.getCrewAtRiskOfExpulsion(attendanceRepository, EXPELLED.getValue()));
+        outputView.printCrewsAtRiskOfExpulsion(
+                attendanceBook.getCrewAtRiskOfExpulsion(attendanceRepository, INTERVIEW.getValue()));
+        outputView.printCrewsAtRiskOfExpulsion(
+                attendanceBook.getCrewAtRiskOfExpulsion(attendanceRepository, WARNING.getValue()));
     }
 
 }
