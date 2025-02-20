@@ -1,30 +1,37 @@
 import controller.AttendanceController;
+import controller.AttendanceControllerExceptionHandleProxy;
+import controller.AttendanceControllerImpl;
 import util.dataTimeProvider.DateProviderImpl;
 import util.inputProvider.DefaultInputProvider;
 import util.outputHandler.DefaultOutputHandler;
 import view.InputView;
 import view.OutputView;
 
-import java.io.IOException;
-
 public class AttendanceApplication {
     
-    public static void main(String[] args) throws IOException {
-        
-        var defaultOutputHandler = new DefaultOutputHandler();
-        
+    public static void main(String[] args) throws Exception {
+        getAttendanceController().run();
+    }
+    
+    private static AttendanceController getAttendanceController() {
+        var outputHandler = new DefaultOutputHandler();
         var dateProvider = new DateProviderImpl();
-        new AttendanceController(
+        AttendanceController targetController = new AttendanceControllerImpl(
                 dateProvider,
                 new InputView(
                         new DefaultInputProvider(),
-                        defaultOutputHandler,
+                        outputHandler,
                         dateProvider
                 ),
                 new OutputView(
-                        new DefaultOutputHandler(),
+                        outputHandler,
                         dateProvider
                 )
-        ).run();
+        );
+        
+        return new AttendanceControllerExceptionHandleProxy(
+                outputHandler,
+                targetController
+        );
     }
 }
