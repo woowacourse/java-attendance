@@ -39,7 +39,9 @@ public class InputView {
 
     public String insertFunction(LocalDateTime today) {
         String dayOfWeekKorean = today.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.KOREAN);
-        System.out.println(String.format("오늘은 %d월 %d일 %s입니다. 기능을 선택해 주세요.", today.getMonth().getValue(), today.getDayOfMonth(), dayOfWeekKorean));
+        System.out.println(
+                String.format("오늘은 %d월 %d일 %s입니다. 기능을 선택해 주세요.", today.getMonth().getValue(), today.getDayOfMonth(),
+                        dayOfWeekKorean));
         System.out.print("""
                 1. 출석 확인
                 2. 출석 수정

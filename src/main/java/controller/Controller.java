@@ -35,14 +35,16 @@ public class Controller {
             String rawFunction = inputView.insertFunction(today);
             Function function = new Function(rawFunction);
 
-            if (function.equals("Q")) break;
+            if (function.equals("Q")) {
+                break;
+            }
             if (function.equals("1")) {
                 attendanceCheck(crewGroup, today);
             }
             if (function.equals("2")) {
                 changeAttendance(crewGroup);
             }
-            if(function.equals("3")) {
+            if (function.equals("3")) {
                 showCrewAttendance(crewGroup);
             }
             if (function.equals("4")) {

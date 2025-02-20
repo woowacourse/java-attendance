@@ -2,8 +2,7 @@ package view;
 
 import domain.AttendanceStatus;
 import java.time.LocalDateTime;
-import java.time.format.TextStyle;
-import java.util.Locale;
+import util.DayOfWeekConverter;
 import view.dto.AlertCrewDTO;
 import view.dto.AlertCrewsDTO;
 import view.dto.AttendanceLogDTO;
@@ -47,7 +46,7 @@ public class OutputView {
             time = "--:--";
         }
 
-        String dayOfWeekKorean = dateTime.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.KOREAN);
+        String dayOfWeekKorean = DayOfWeekConverter.convertDayOfWeek(dateTime);
         stringBuilder.append(
                 String.format(("%d월 %02d일 %s %s (%s)"), dateTime.getMonth().getValue(), dateTime.getDayOfMonth(),
                         dayOfWeekKorean, time, attendanceLogDTO.attendanceStatus().getName())
@@ -74,7 +73,7 @@ public class OutputView {
     public void printChangeLog(ChangeAttendanceLogDTO changeAttendanceLogDTO) {
         LocalDateTime originalTime = changeAttendanceLogDTO.originalTime();
         LocalDateTime changeTime = changeAttendanceLogDTO.changeTime();
-        String dayOfWeekKorean = originalTime.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.KOREAN);
+        String dayOfWeekKorean = DayOfWeekConverter.convertDayOfWeek(originalTime);
         String time = String.format("%02d:%02d", originalTime.getHour(), originalTime.getMinute());
         String cTime = String.format("%02d:%02d", changeTime.getHour(), changeTime.getMinute());
         System.out.println(String.format("%d월 %02d일 %s %s (%s) -> %s (%s) 수정 완료!",

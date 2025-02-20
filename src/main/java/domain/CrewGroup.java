@@ -15,7 +15,10 @@ public class CrewGroup {
     }
 
     public Crew searchCrew(String nickname) {
-        return crews.getOrDefault(nickname, null);
+        if (!crews.containsKey(nickname)) {
+            throw new IllegalArgumentException("존재하지 않는 크루입니다.");
+        }
+        return crews.get(nickname);
     }
 
     public void addAllAbsent(LocalDateTime today) {

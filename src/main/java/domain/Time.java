@@ -26,7 +26,7 @@ public class Time {
             Date openTime = formatter.parse("08:00");
             Date closeTime = formatter.parse("22:59");
 
-            if(time.before(openTime) || time.after(closeTime)) {
+            if (time.before(openTime) || time.after(closeTime)) {
                 throw new IllegalArgumentException("캠퍼스 운영 시간은 08:00 ~ 23:00 입니다.");
             }
         } catch (ParseException e) {
@@ -37,11 +37,11 @@ public class Time {
     private void validateTimeFormat(String rawTime) {
         String[] spilttedTime = rawTime.split(":");
         int spittedHour = Integer.parseInt(spilttedTime[0]);
-        if(spittedHour < 0 || spittedHour > 23) {
+        if (spittedHour < 0 || spittedHour > 23) {
             throw new IllegalArgumentException(INVALID_TIME_FORMAT);
         }
         int spittedMinute = Integer.parseInt(spilttedTime[1]);
-        if(spittedMinute < 0 || spittedMinute > 59) {
+        if (spittedMinute < 0 || spittedMinute > 59) {
             throw new IllegalArgumentException(INVALID_TIME_FORMAT);
         }
     }

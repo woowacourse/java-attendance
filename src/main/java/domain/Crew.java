@@ -48,6 +48,7 @@ public class Crew {
     public Attendance changeAttendance(int date, Time time) {
         Attendance targetAttendance = getSpecificAttendance(date);
         targetAttendance.updateAttendance(time);
+        updateAttendanceCount();
 
         return targetAttendance;
     }

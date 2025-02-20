@@ -3,8 +3,8 @@ package domain;
 import java.util.List;
 
 public class Function {
-    private final String function;
     private static final List<String> functions = List.of("1", "2", "3", "4", "Q");
+    private final String function;
 
     public Function(String function) {
         validateFunction(function);
