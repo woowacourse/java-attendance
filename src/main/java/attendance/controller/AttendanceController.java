@@ -9,7 +9,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import attendance.domain.*;
+import attendance.domain.Attendance;
+import attendance.domain.AttendanceHistory;
+import attendance.domain.AttendanceStatus;
+import attendance.domain.Attendances;
+import attendance.domain.Crew;
+import attendance.domain.ExpulsionStatus;
 import attendance.view.FileLineReader;
 import attendance.view.InputView;
 import attendance.view.OperationCommand;
@@ -32,20 +37,25 @@ public class AttendanceController {
         Map<Crew, Attendances> crewAttendances = createCrewAttendances(crewAttendanceDateTimes);
 
         LocalDate today = LocalDate.now();
-        outputView.printOperations(today);
         try {
-            OperationCommand operationCommand = inputView.readOperationCommand();
-            if (operationCommand.isAttendanceConfirmation()) {
-                attendanceConfirmation(crewAttendances, today);
-            }
-            if (operationCommand.isAttendanceModification()) {
-                modifyAttendance(crewAttendances, today);
-            }
-            if (operationCommand.isCrewAttendancesCheck()) {
-                checkCrewAttendances(crewAttendances);
-            }
-            if (operationCommand.isExpulsionCheck()) {
-                checkExpulsionCrews(crewAttendances);
+            while (true) {
+                outputView.printOperations(today);
+                OperationCommand operationCommand = inputView.readOperationCommand();
+                if (operationCommand.isQuit()) {
+                    break;
+                }
+                if (operationCommand.isAttendanceConfirmation()) {
+                    attendanceConfirmation(crewAttendances, today);
+                }
+                if (operationCommand.isAttendanceModification()) {
+                    modifyAttendance(crewAttendances, today);
+                }
+                if (operationCommand.isCrewAttendancesCheck()) {
+                    checkCrewAttendances(crewAttendances);
+                }
+                if (operationCommand.isExpulsionCheck()) {
+                    checkExpulsionCrews(crewAttendances);
+                }
             }
         } catch (IllegalArgumentException e) {
             outputView.printErrorMessage(e.getMessage());
@@ -58,7 +68,8 @@ public class AttendanceController {
             Attendances attendances = entry.getValue();
             Map<String, Integer> attendanceStatusCounts = attendances.calculateStatusCount();
             ExpulsionStatus expulsionStatus = attendances.calculateExpulsionStatus();
-            AttendanceHistory attendanceHistory = new AttendanceHistory(attendanceStatusCounts.get("결석"), attendanceStatusCounts.get("지각"), expulsionStatus.getText());
+            AttendanceHistory attendanceHistory = new AttendanceHistory(attendanceStatusCounts.get("결석"),
+                    attendanceStatusCounts.get("지각"), expulsionStatus.getText());
             attendanceHistories.put(entry.getKey().getNickname(), attendanceHistory);
         }
         outputView.printExpulsionCrews(attendanceHistories);
@@ -76,9 +87,12 @@ public class AttendanceController {
         Attendance newAttendance = originAttendance.changeAttendanceTime(modificationTime);
         attendances.remove(originAttendance);
         attendances.addAttendance(newAttendance);
-        String originAttendanceStatus = AttendanceStatus.findByAttendanceDateTime(originAttendance.getAttendanceDateTime()).getText();
-        String newAttendanceStatus = AttendanceStatus.findByAttendanceDateTime(newAttendance.getAttendanceDateTime()).getText();
-        outputView.printModificationResult(originAttendance.getAttendanceDateTime(), originAttendanceStatus, newAttendance.getAttendanceDateTime(), newAttendanceStatus);
+        String originAttendanceStatus = AttendanceStatus.findByAttendanceDateTime(
+                originAttendance.getAttendanceDateTime()).getText();
+        String newAttendanceStatus = AttendanceStatus.findByAttendanceDateTime(newAttendance.getAttendanceDateTime())
+                .getText();
+        outputView.printModificationResult(originAttendance.getAttendanceDateTime(), originAttendanceStatus,
+                newAttendance.getAttendanceDateTime(), newAttendanceStatus);
     }
 
     private void checkCrewAttendances(final Map<Crew, Attendances> crewAttendances) {

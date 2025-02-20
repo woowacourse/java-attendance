@@ -39,4 +39,8 @@ public enum OperationCommand {
     public boolean isExpulsionCheck() {
         return this.equals(EXPULSION_CHECK);
     }
+
+    public boolean isQuit() {
+        return this.equals(QUIT);
+    }
 }
