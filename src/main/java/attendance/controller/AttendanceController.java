@@ -46,20 +46,19 @@ public class AttendanceController {
             if (option.equals("2")) {
                 String crewName = inputView.inputCrewName();
                 Crew crew = crewManager.findByCrewName(crewName);
-
                 LocalDate modifyDate = inputView.inputModifyDate(now);
                 LocalTime modifyTime = inputView.inputAttendanceTime();
-
                 AttendanceHistory attendanceHistory = crew.getAttendanceHistory(modifyDate);
-                
                 AttendanceHistoryDto beforeAttendanceHistoryDto = AttendanceHistoryDto.of(attendanceHistory); // 수정 전
                 AttendanceHistory afterAttendanceHistory = crew.modifyAttendanceResult(attendanceHistory, modifyTime);
-
                 outputView.printModifyAttendanceResult(beforeAttendanceHistoryDto, afterAttendanceHistory);
                 continue;
             }
             if (option.equals("3")) {
-                return;
+                String crewName = inputView.inputCrewName();
+                Crew crew = crewManager.findByCrewName(crewName);
+                outputView.printAttendanceHistories(now, crew);
+                continue;
             }
             if (option.equals("4")) {
                 return;

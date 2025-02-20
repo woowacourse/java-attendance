@@ -20,7 +20,6 @@ public class Crew {
         return attendanceHistoryManager.modifyAttendanceResult(attendanceHistory, localTime);
     }
 
-
     public String getName() {
         return name;
     }

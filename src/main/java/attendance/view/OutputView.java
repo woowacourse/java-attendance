@@ -2,8 +2,11 @@ package attendance.view;
 
 import attendance.domain.AttendanceHistory;
 import attendance.domain.AttendanceHistoryDto;
+import attendance.domain.AttendancePolicy;
 import attendance.domain.AttendanceType;
+import attendance.domain.Crew;
 import java.time.DayOfWeek;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 public class OutputView {
@@ -34,5 +37,27 @@ public class OutputView {
                         beforeAttendanceTime.getMinute(), beforeAttendanceType.getName(), afterAttendanceTime.getHour(),
                         afterAttendanceTime.getMinute(), afterAttendanceType.getName())
         );
+    }
+
+    public void printAttendanceHistories(LocalDate now, Crew crew) {
+        for (int i = 1; i <= now.getDayOfMonth(); i++) {
+            int year = now.getYear();
+            int month = now.getMonthValue();
+            LocalDate date = LocalDate.of(year, month, i);
+            try {
+                AttendancePolicy.checkHoliday(date);
+            } catch (IllegalArgumentException e) {
+                continue;
+            }
+            try {
+                AttendanceHistory attendanceHistory = crew.getAttendanceHistory(date);
+                LocalDateTime attendanceTime = attendanceHistory.getAttendanceTime();
+                AttendanceType attendanceType = attendanceHistory.getAttendanceType();
+                System.out.println("%02d월 %02d일 %s %02d:%02d (%s)".formatted(month, i, date.getDayOfWeek(),
+                        attendanceTime.getHour(), attendanceTime.getMinute(), attendanceType.getName()));
+            } catch (IllegalArgumentException e) {
+                System.out.println("%02d월 %02d일 %s --:-- (결석)".formatted(month, i, date.getDayOfWeek()));
+            }
+        }
     }
 }

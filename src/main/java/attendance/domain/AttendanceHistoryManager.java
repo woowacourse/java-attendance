@@ -2,8 +2,11 @@ package attendance.domain;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 public class AttendanceHistoryManager {
@@ -25,7 +28,6 @@ public class AttendanceHistoryManager {
                 .findAny()
                 .orElseThrow(() -> new IllegalArgumentException("출석 기록이 존재하지 않습니다."));
     }
-
 
     public AttendanceHistory getAttendanceHistory(LocalDate localDate) {
         return attendanceHistories.stream()
