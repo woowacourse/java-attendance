@@ -1,7 +1,5 @@
 package domain;
 
-import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -31,8 +29,10 @@ public class CrewGroup {
     }
 
     public List<Crew> sortedAttendanceWarning() {
-        List<Crew> warningCrews = crews.stream().filter(Crew::isAttendanceWarning).collect(Collectors.toList());
-        Collections.sort(warningCrews);
+        List<Crew> warningCrews = crews.stream()
+                .filter(Crew::isAttendanceWarning)
+                .sorted()
+                .collect(Collectors.toList());
         return warningCrews;
     }
 }

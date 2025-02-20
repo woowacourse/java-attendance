@@ -9,24 +9,27 @@ import java.util.List;
 import java.util.Map;
 
 public class FileInputView {
+    private static final int NAME_INDEX = 0;
+    private static final int ATTENDANCE_DATE_INDEX = 1;
+
     public Map<String, List<String>> getFileInput() {
 
         InputStream inputStream = getClass().getClassLoader().getResourceAsStream("attendances.csv");
         BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
 
         //수정
-        Map<String, List<String>> map = new HashMap<>();
+        Map<String, List<String>> attendanceDateGroupByCrew = new HashMap<>();
 
-        reader.lines().skip(1).forEach(fileData -> addInitDate(map, fileData));
-        return map;
+        reader.lines().skip(1).forEach(fileData -> addInitDate(attendanceDateGroupByCrew, fileData));
+        return attendanceDateGroupByCrew;
     }
 
-    private void addInitDate(Map<String, List<String>> map, String fileData) {
+    private void addInitDate(Map<String, List<String>> dateGroupByCrew, String fileData) {
         String[] parsedData = fileData.split(",");
 
         // todo: 수정
-        List<String> mapInside = map.getOrDefault(parsedData[0], new ArrayList<>());
-        mapInside.add(parsedData[1]);
-        map.put(parsedData[0], mapInside);
+        List<String> mapInside = dateGroupByCrew.getOrDefault(parsedData[NAME_INDEX], new ArrayList<>());
+        mapInside.add(parsedData[ATTENDANCE_DATE_INDEX]);
+        dateGroupByCrew.put(parsedData[NAME_INDEX], mapInside);
     }
 }

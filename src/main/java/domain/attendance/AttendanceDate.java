@@ -4,10 +4,13 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 public class AttendanceDate implements Comparable<AttendanceDate> {
-    public static final int DEFAULT_START_TIME = 2024;
-    public static final int DEFAULT_START_MONTH = 12;
-    public static final int DEFAULT_START_DAY = 2;
-    public static final LocalDate DEFAULT_START_DATE = LocalDate.of(DEFAULT_START_TIME, DEFAULT_START_MONTH,
+    public static final int SATURDAY = 6;
+
+    private static final int DEFAULT_START_TIME = 2024;
+    private static final int DEFAULT_START_MONTH = 12;
+    private static final int DEFAULT_START_DAY = 2;
+
+    public static final LocalDate DEFAULT_START_DATE = java.time.LocalDate.of(DEFAULT_START_TIME, DEFAULT_START_MONTH,
             DEFAULT_START_DAY);
 
     private LocalDateTime dateTime;
@@ -16,7 +19,7 @@ public class AttendanceDate implements Comparable<AttendanceDate> {
         this.dateTime = dateTime;
 
         int dayOfWeek = getDayOfWeek();
-        if (dayOfWeek > 5) {
+        if (dayOfWeek >= SATURDAY) {
             throw new IllegalArgumentException("");
         }
         if (Holiday.has(dateTime)) {
@@ -30,6 +33,10 @@ public class AttendanceDate implements Comparable<AttendanceDate> {
 
     public LocalDateTime checkAttendanceTime() {
         return this.dateTime;
+    }
+
+    public LocalDate convertLocalDate() {
+        return this.dateTime.toLocalDate();
     }
 
     public AttendanceState calculateAttendanceState() {

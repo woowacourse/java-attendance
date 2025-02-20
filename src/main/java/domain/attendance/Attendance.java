@@ -8,17 +8,24 @@ import java.util.List;
 import java.util.Optional;
 
 public class Attendance {
+    private static final int ABSENCE_HOUR = 23;
+    private static final int ABSENCE_MINUTE = 59;
+    private static final int ABSENCE_PER_TARDY = 3;
+
     private final List<AttendanceDate> attendanceDates = new ArrayList<>();
 
     public Attendance(LocalDate startDate, LocalDate endDate) {
         for (LocalDate cursorDate = startDate; cursorDate.isBefore(endDate); cursorDate = cursorDate.plusDays(1)) {
-            if (cursorDate.getDayOfWeek().getValue() > 5 || Holiday.has(cursorDate)) {
-                continue;
-            }
-
-            attendanceDates.add(new AttendanceDate(
-                    LocalDateTime.of(cursorDate.getYear(), cursorDate.getMonth(), cursorDate.getDayOfMonth(), 23, 59)));
+            validateAndUpdateAttendanceDates(cursorDate);
         }
+    }
+
+    private void validateAndUpdateAttendanceDates(LocalDate cursorDate) {
+        if (cursorDate.getDayOfWeek().getValue() >= AttendanceDate.SATURDAY || Holiday.has(cursorDate)) {
+            return;
+        }
+        attendanceDates.add(new AttendanceDate(
+                LocalDateTime.of(cursorDate.getYear(), cursorDate.getMonth(), cursorDate.getDayOfMonth(), ABSENCE_HOUR, ABSENCE_MINUTE)));
     }
 
     public void editAttendanceDateTime(LocalDateTime attendanceDateTime) {
@@ -56,10 +63,11 @@ public class Attendance {
              cursorCheckDate = cursorCheckDate.minusDays(1)) {
             try {
                 attendanceDates.add(new AttendanceDate(
-                        LocalDateTime.of(cursorCheckDate.getYear(), cursorCheckDate.getMonth(),
-                                cursorCheckDate.getDayOfMonth(), 23,
-                                59)));
-            } catch (IllegalArgumentException exception) {
+                        LocalDateTime.of(cursorCheckDate.getYear(),
+                                cursorCheckDate.getMonth(),
+                                cursorCheckDate.getDayOfMonth(), ABSENCE_HOUR,
+                                ABSENCE_MINUTE)));
+            } catch (IllegalArgumentException ignored) {
             }
         }
         Collections.sort(this.attendanceDates);
@@ -95,6 +103,6 @@ public class Attendance {
     }
 
     public int countAbsenceIncludingTardy() {
-        return countAbsence() + (countTardy() / 3);
+        return countAbsence() + (countTardy() / ABSENCE_PER_TARDY);
     }
 }

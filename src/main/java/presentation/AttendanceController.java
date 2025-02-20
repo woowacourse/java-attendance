@@ -50,81 +50,17 @@ public class AttendanceController {
         try {
             String command = InputView.inputCommand();
             InputValidator.commandValidate(command);
-            if (command.equals("1")) {
-                // 출석 확인
-                String nickname = InputView.inputNickname();
-                String textAttendanceTime = InputView.inputAttendanceTime();
-                LocalDateTime attendanceDateTime = DateTimeUtil.convertStringToLocalDateTime(LocalDate.now(),
-                        textAttendanceTime);
-
-                Crew crew = crewGroup.findCrew(nickname);
-                Attendance attendance = crew.getAttendance();
-                AttendanceState attendanceState = attendance.attend(attendanceDateTime);
-
-                OutputView.printAttendanceState(
-                        DateTimeUtil.convertLocalDateToString(attendanceDateTime.toLocalDate()),
-                        DateTimeUtil.convertLocalDateTimeToTimeString(attendanceDateTime),
-                        attendanceState);
+            if (command.equals("1")) { // 출석 확인
+                attendCommand(crewGroup);
             }
-            if (command.equals("2")) {
-                // 출석 수정
-                String nickname = InputView.inputNickname();
-                String textAttendanceDay = InputView.inputAttendanceDay();
-                String textAttendanceTime = InputView.inputAttendanceTime();
-
-                int attendanceDay = InputParser.parseInt(textAttendanceDay);
-
-                Crew crew = crewGroup.findCrew(nickname);
-
-                LocalDate findLocalDate = LocalDate.of(LocalDate.now().getYear(),
-                        LocalDateTime.now().getMonthValue(), attendanceDay);
-
-                // before
-                Attendance attendance = crew.getAttendance();
-                AttendanceDate attendanceDate = attendance.findAttendanceDate(findLocalDate);
-                String beforeEditDate = DateTimeUtil.convertLocalDateTimeToString(
-                        attendanceDate.checkAttendanceTime());
-                AttendanceState beforeState = attendanceDate.calculateAttendanceState();
-
-                // after
-                LocalDateTime afterEditDateTime = DateTimeUtil.convertStringToLocalDateTime(findLocalDate,
-                        textAttendanceTime);
-                String afterEditTime = DateTimeUtil.convertLocalDateTimeToTimeString(afterEditDateTime);
-
-                attendanceDate.editDateTime(afterEditDateTime);
-                AttendanceState afterState = attendanceDate.calculateAttendanceState();
-
-                OutputView.printEditState(
-                        new ResponseAttendanceEditStateDto(beforeEditDate, beforeState, afterEditTime, afterState));
+            if (command.equals("2")) { // 출석 수정
+                attendanceEditCommand(crewGroup);
             }
             if (command.equals("3")) {
-                String nickname = InputView.inputNickname();
-                Crew findCrew = crewGroup.findCrew(nickname);
-
-                OutputView.printAttendanceStatusCrew(
-                        ResponseCrewAttendanceStateDto.of(findCrew.getName(), findCrew.getAttendance()));
+                crewQueryCommand(crewGroup);
             }
             if (command.equals("4")) {
-                // 제적 위험자 확인
-                /*
-                제적 위험자 조회 결과
-                - 빙티: 결석 3회, 지각 4회 (면담)
-                - 이든: 결석 2회, 지각 5회 (면담)
-                - 빙봉: 결석 1회, 지각 6회 (면담)
-                - 쿠키: 결석 2회, 지각 3회 (면담)
-                - 짱수: 결석 0회, 지각 6회 (경고)
-                 */
-
-                List<Crew> warningCrews = crewGroup.sortedAttendanceWarning();
-                List<ResponseWarningCrewDto> warningCrewDtos = warningCrews.stream()
-                        .map(warningCrew -> new ResponseWarningCrewDto(
-                                warningCrew.getName(),
-                                warningCrew.getAttendance().countAbsence(),
-                                warningCrew.getAttendance().countTardy(),
-                                AttendanceWarning.determineAttendanceWarning(
-                                        warningCrew.getAttendance().countAbsenceIncludingTardy())))
-                        .toList();
-                OutputView.printAttendanceWarningCrews(warningCrewDtos);
+                attendanceWarningCommand(crewGroup);
             }
             if (command.equals("Q") || command.equals("q")) {
                 return true;
@@ -134,5 +70,72 @@ public class AttendanceController {
             OutputView.printError(e.getMessage());
             return false;
         }
+    }
+
+    private static void attendanceWarningCommand(CrewGroup crewGroup) {
+        List<Crew> warningCrews = crewGroup.sortedAttendanceWarning();
+        List<ResponseWarningCrewDto> warningCrewDtos = warningCrews.stream()
+                .map(warningCrew -> new ResponseWarningCrewDto(
+                        warningCrew.getName(),
+                        warningCrew.getAttendance().countAbsence(),
+                        warningCrew.getAttendance().countTardy(),
+                        AttendanceWarning.determineAttendanceWarning(
+                                // todo: 미래의 나
+                                warningCrew.getAttendance().countAbsenceIncludingTardy())))
+                .toList();
+        OutputView.printAttendanceWarningCrews(warningCrewDtos);
+    }
+
+    private static void crewQueryCommand(CrewGroup crewGroup) {
+        String nickname = InputView.inputNickname();
+        Crew findCrew = crewGroup.findCrew(nickname);
+
+        OutputView.printAttendanceStatusCrew(
+                ResponseCrewAttendanceStateDto.of(findCrew.getName(), findCrew.getAttendance()));
+    }
+
+    private static void attendanceEditCommand(CrewGroup crewGroup) {
+        String nickname = InputView.inputNickname();
+        String textAttendanceDay = InputView.inputAttendanceDay();
+        String textAttendanceTime = InputView.inputAttendanceTime();
+
+        int attendanceDay = InputParser.parseInt(textAttendanceDay);
+        Crew crew = crewGroup.findCrew(nickname);
+
+        LocalDate findLocalDate = LocalDate.of(LocalDate.now().getYear(),
+                LocalDateTime.now().getMonthValue(), attendanceDay);
+
+        // before
+        Attendance attendance = crew.getAttendance();
+        AttendanceDate attendanceDate = attendance.findAttendanceDate(findLocalDate);
+        String beforeEditDate = DateTimeUtil.convertLocalDateTimeToString(
+                attendanceDate.checkAttendanceTime());
+        AttendanceState beforeState = attendanceDate.calculateAttendanceState();
+
+        // after
+        LocalDateTime afterEditDateTime = DateTimeUtil.convertStringToLocalDateTime(findLocalDate,
+                textAttendanceTime);
+        String afterEditTime = DateTimeUtil.convertLocalDateTimeToTimeString(afterEditDateTime);
+        attendanceDate.editDateTime(afterEditDateTime);
+        AttendanceState afterState = attendanceDate.calculateAttendanceState();
+
+        OutputView.printEditState(
+                new ResponseAttendanceEditStateDto(beforeEditDate, beforeState, afterEditTime, afterState));
+    }
+
+    private static void attendCommand(CrewGroup crewGroup) {
+        String nickname = InputView.inputNickname();
+        String textAttendanceTime = InputView.inputAttendanceTime();
+        LocalDateTime attendanceDateTime = DateTimeUtil.convertStringToLocalDateTime(LocalDate.now(),
+                textAttendanceTime);
+
+        Crew crew = crewGroup.findCrew(nickname);
+        Attendance attendance = crew.getAttendance();
+        AttendanceState attendanceState = attendance.attend(attendanceDateTime);
+
+        OutputView.printAttendanceState(
+                DateTimeUtil.convertLocalDateToString(attendanceDateTime.toLocalDate()),
+                DateTimeUtil.convertLocalDateTimeToTimeString(attendanceDateTime),
+                attendanceState);
     }
 }

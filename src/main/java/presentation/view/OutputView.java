@@ -1,22 +1,18 @@
 package presentation.view;
 
-import domain.attendance.AttendanceDate;
 import domain.attendance.AttendanceState;
 import domain.attendance.AttendanceWarning;
 import dto.ResponseAttendanceEditStateDto;
 import dto.ResponseAttendanceStateCountDto;
 import dto.ResponseCrewAttendanceStateDto;
-import dto.ResponseCrewStatusDto;
 import dto.ResponseWarningCrewDto;
 import java.util.List;
-import util.DateTimeUtil;
 
 public class OutputView {
     public static void printError(String message) {
         System.out.println("[ERROR] " + message);
     }
 
-    //12월 13일 금요일 09:59 (출석)
     public static void printAttendanceState(String attendanceDate,
                                             String attendanceTime,
                                             AttendanceState attendanceState) {
@@ -32,7 +28,7 @@ public class OutputView {
     public static void printAttendanceStatusCrew(ResponseCrewAttendanceStateDto crewAttendanceStateDto) {
         System.out.printf("이번 달 %s의 출석 기록입니다.\n", crewAttendanceStateDto.crewName());
         System.out.println();
-        crewAttendanceStateDto.crewAttendanceStateDtos().stream().forEach(
+        crewAttendanceStateDto.crewAttendanceStateDtos().forEach(
                 responseCrewStatusDto -> System.out.println(getAttendanceDateTimeState(
                         responseCrewStatusDto.crewDate(),
                         responseCrewStatusDto.crewTime(),
@@ -53,7 +49,6 @@ public class OutputView {
         return attendanceTime + getAttendanceStateMessage(attendanceState);
     }
 
-    // (출석)
     private static String getAttendanceStateMessage(AttendanceState attendanceState) {
         return " (" + attendanceState.getState() + ")";
     }
@@ -70,7 +65,7 @@ public class OutputView {
 
     public static void printAttendanceWarningCrews(List<ResponseWarningCrewDto> warningCrewDtos) {
         System.out.println("제적 위험자 조회 결과");
-        warningCrewDtos.stream().forEach(OutputView::printAttendanceWarningCrew);
+        warningCrewDtos.forEach(OutputView::printAttendanceWarningCrew);
         System.out.println();
     }
 

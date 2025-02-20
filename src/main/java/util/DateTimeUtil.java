@@ -11,10 +11,6 @@ public class DateTimeUtil {
     private final static DateTimeFormatter localTimeFormatter = DateTimeFormatter.ofPattern("hh:mm");
     private final static DateTimeFormatter localTimeKoreanFormatter = DateTimeFormatter.ofPattern("hh시 mm분");
 
-    public static int getDayOfWeek(LocalDateTime localDateTime) {
-        return localDateTime.getDayOfWeek().getValue();
-    }
-
     public static String convertLocalDateTimeToString(LocalDateTime localDateTime) {
         try {
             String parsedLocalDate = localDateTime.format(localDateFormatter);
@@ -85,8 +81,4 @@ public class DateTimeUtil {
             throw new IllegalArgumentException("");
         }
     }
-
-//    public LocalDate convertStringToLocalDate(String textLocalDate) {
-//
-//    }
 }
