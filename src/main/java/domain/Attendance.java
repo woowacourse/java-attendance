@@ -14,12 +14,12 @@ import java.util.stream.Collectors;
 
 public class Attendance {
 
-    private final Map<String, List<AttendanceTime>> attendance;
+    private final Map<Crew, List<AttendanceTime>> attendance;
 
     public Attendance(Map<String, List<LocalDateTime>> attendance, LocalDate nowDate) {
         this.attendance = new HashMap<>();
         for (String name : attendance.keySet()) {
-            this.attendance.put(name, attendance.get(name)
+            this.attendance.put(new Crew(name), attendance.get(name)
                     .stream()
                     .map(AttendanceTime::new)
                     .collect(Collectors.toList()));
@@ -39,12 +39,19 @@ public class Attendance {
         }
     }
 
+    private Crew findCrew(String name) {
+        return attendance.keySet().stream()
+                .filter(crew -> crew.getName().equals(name))
+                .findAny()
+                .orElseThrow(() -> new IllegalArgumentException("[ERROR] 존재하지 않는 크루입니다."));
+    }
+
     private void initializeAttendance(String name, LocalDate startDate, LocalDate endDate) {
-        Set<LocalDate> attendanceDates = this.attendance.get(name).stream()
+        Set<LocalDate> attendanceDates = this.attendance.get(findCrew(name)).stream()
                 .map(attendanceTime -> attendanceTime.getAttendanceDateTime().toLocalDate())
                 .collect(Collectors.toSet());
 
-        List<AttendanceTime> attendanceTimes = this.attendance.get(name);
+        List<AttendanceTime> attendanceTimes = this.attendance.get(findCrew(name));
         for (LocalDate date = startDate; date.isBefore(endDate); date = date.plusDays(1)) {
             addUnattended(attendanceDates, date, attendanceTimes);
         }
@@ -61,7 +68,7 @@ public class Attendance {
     }
 
     public List<AttendanceTime> getAttendanceTimes(String name) {
-        List<AttendanceTime> crewAttendances = this.attendance.getOrDefault(name, new ArrayList<>());
+        List<AttendanceTime> crewAttendances = this.attendance.getOrDefault(findCrew(name), new ArrayList<>());
         crewAttendances.sort(Comparator.comparing(AttendanceTime::getAttendanceDateTime));
         return crewAttendances;
     }
@@ -69,7 +76,7 @@ public class Attendance {
     public void attend(String crewName, LocalDateTime attendanceDateTime) {
         validateAttended(crewName, attendanceDateTime);
         validateOpenHours(attendanceDateTime);
-        attendance.get(crewName).add(new AttendanceTime(attendanceDateTime));
+        attendance.get(findCrew(crewName)).add(new AttendanceTime(attendanceDateTime));
     }
 
     private void validateOpenHours(LocalDateTime attendanceDateTime) {
@@ -107,7 +114,7 @@ public class Attendance {
     }
 
     private boolean checkAttended(String crewName, LocalDate attendanceDate) {
-        List<AttendanceTime> attendancesOfCrew = attendance.get(crewName);
+        List<AttendanceTime> attendancesOfCrew = attendance.get(findCrew(crewName));
         for (AttendanceTime attendances : attendancesOfCrew) {
             if (attendances.checkAttended(attendanceDate)) {
                 return true;
@@ -118,9 +125,9 @@ public class Attendance {
 
     public List<String> checkExpelledCrew() {
         List<String> expelledCrew = new ArrayList<>();
-        for (String name : attendance.keySet()) {
-            if (ExpelStatus.determineExpelStatus(countAttendanceStatus(name)) != ExpelStatus.NONE) {
-                expelledCrew.add(name);
+        for (Crew crew : attendance.keySet()) {
+            if (ExpelStatus.determineExpelStatus(countAttendanceStatus(crew.getName())) != ExpelStatus.NONE) {
+                expelledCrew.add(crew.getName());
             }
         }
         return expelledCrew;
@@ -145,16 +152,16 @@ public class Attendance {
     }
 
     public void validateNickName(String nickName) {
-        if (!this.attendance.containsKey(nickName)) {
+        if (!this.attendance.containsKey(findCrew(nickName))) {
             throw new IllegalArgumentException("[ERROR] 등록되지 않는 닉네임입니다.");
         }
     }
 
     public int getAbsentCount(String nickName) {
-        int absentCount =  (int) this.attendance.get(nickName).stream()
+        int absentCount =  (int) this.attendance.get(findCrew(nickName)).stream()
                 .filter(e -> e.getAttendanceStatus().equals(AttendanceStatus.ABSENT) || e.getAttendanceStatus().equals(AttendanceStatus.UNATTEND))
                 .count();
-        int lateCount = (int) this.attendance.get(nickName).stream()
+        int lateCount = (int) this.attendance.get(findCrew(nickName)).stream()
                 .filter(e -> e.getAttendanceStatus().equals(AttendanceStatus.LATE))
                 .count();
 
@@ -162,7 +169,7 @@ public class Attendance {
     }
 
     public int getLateCount(String nickName) {
-        int lateCount = (int) this.attendance.get(nickName).stream()
+        int lateCount = (int) this.attendance.get(findCrew(nickName)).stream()
                 .filter(e -> e.getAttendanceStatus().equals(AttendanceStatus.LATE))
                 .count();
 
