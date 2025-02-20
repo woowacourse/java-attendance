@@ -56,4 +56,17 @@ public class OutputView {
                 Calender.findBy(attendanceResultDto.localDateTime().getDayOfMonth()),
                 attendanceResultDto.attendanceState());
     }
+
+    public static void printAbsenceHistory(final int attendanceCount,
+                                           final int lateCount,
+                                           final int absenceCount,
+                                           final String absenceStatus) {
+        System.out.printf("출석: %d회\n", attendanceCount);
+        System.out.printf("지각: %d회\n", lateCount);
+        System.out.printf("결석: %d회\n", absenceCount);
+
+        System.out.println();
+
+        System.out.printf("%s 대상자입니다.\n", absenceStatus);
+    }
 }
