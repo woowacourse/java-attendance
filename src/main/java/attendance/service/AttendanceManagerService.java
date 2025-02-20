@@ -85,7 +85,7 @@ public class AttendanceManagerService {
         AttendanceHistory attendanceHistory = attendanceManager.crewAttendanceHistory(nickname);
         StringBuilder stringBuilder = new StringBuilder(String.format(CREW_ATTENDANCE_HISTORY_PREFIX, nickname));
         stringBuilder.append(formattingHistory(attendanceHistory));
-        AbsenceStatusCount absenceStatusCount = countAbsenceStatus(attendanceHistory);
+        AbsenceStatusCount absenceStatusCount = attendanceHistory.countAbsenceStatus();
         AttendanceDismissStatus attendanceDismissStatus = AttendanceDismiss.calculateAttendanceDismiss(
                 absenceStatusCount.late(), absenceStatusCount.absence());
         return stringBuilder.append(attendanceStatus(absenceStatusCount.absence(), absenceStatusCount.late(),
@@ -102,13 +102,6 @@ public class AttendanceManagerService {
                     .append("\n");
         }
         return stringBuilder.toString();
-    }
-
-    private AbsenceStatusCount countAbsenceStatus(AttendanceHistory attendanceHistory) {
-        int attendance = attendanceHistory.status().get(AttendanceStatus.ATTENDANCE);
-        int absence = attendanceHistory.status().get(AttendanceStatus.ABSENCE);
-        int late = attendanceHistory.status().get(AttendanceStatus.LATE);
-        return new AbsenceStatusCount(absence, late, attendance);
     }
 
     public String attendanceStatus(int absence, int late, int attendance) {

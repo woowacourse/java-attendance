@@ -6,8 +6,11 @@ import attendance.domain.AttendanceDismissStatus;
 import attendance.domain.AttendanceHistory;
 import attendance.domain.AttendanceManager;
 import attendance.domain.AttendanceStatus;
+import attendance.domain.CrewDismiss;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public class CrewDismissService {
 
@@ -22,11 +25,18 @@ public class CrewDismissService {
     public String formattingCrewDismiss() {
         StringBuilder stringBuilder = new StringBuilder(CREW_DISMISS_PREFIX);
         List<String> nicknames = attendanceManager.currentAttendancesNicknames();
+        List<CrewDismiss> crewDismisses = new ArrayList<>();
         for (String nickname : nicknames) {
             AttendanceHistory attendanceHistory = attendanceManager.crewAttendanceHistory(nickname);
+
+            String crewDismissResult = formattingCrewDismiss(nickname, attendanceHistory);
+            crewDismisses.add(new CrewDismiss(nickname, crewDismissResult, attendanceHistory));
             stringBuilder.append(formattingCrewDismiss(nickname, attendanceHistory));
         }
-        return stringBuilder.toString();
+        return crewDismisses.stream()
+                .sorted()
+                .map((CrewDismiss::getCrewDismissResult))
+                .collect(Collectors.joining("\n"));
     }
 
     private String formattingCrewDismiss(String nickname, AttendanceHistory attendanceHistory) {
