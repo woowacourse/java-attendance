@@ -18,7 +18,6 @@ import java.util.Map;
 
 public class AttendanceController {
 
-    public void run() throws IOException {
     private final InputView inputView;
 
     public AttendanceController(InputView inputView) {
@@ -41,6 +40,11 @@ public class AttendanceController {
 
         List<String> allNames = attendanceSheets.findAllNames();
         System.out.println(allNames);
+            if (select.equals("2")) {
+                updateAttendance(attendanceSheets);
+                continue;
+            }
+
 
         for (String name : allNames) {
             List<AttendanceSheet> attendanceByNickname = attendanceSheets.findAttendanceByNickname(name);
@@ -51,6 +55,25 @@ public class AttendanceController {
                 return;
             }
         }
+    }
+
+    private void updateAttendance(AttendanceSheets attendanceSheets) {
+        String nickname = inputView.inputUpdateNickname();
+
+        List<AttendanceSheet> attendanceByNickname = attendanceSheets.findAttendanceByNickname(nickname);
+
+        int day = inputView.inputUpdateDate();
+
+        AttendanceSheet attendanceSheetByNicknameAndDay = attendanceByNickname.stream()
+                .filter(attendanceSheet -> attendanceSheet.getAttendanceDateTime().getAttendanceDateTime().getDayOfMonth() == day)
+                .findFirst()
+                .orElseThrow();
+
+        String time = inputView.inputUpdateTime();
+        int hour = Integer.parseInt(time.split(":")[0]);
+        int minute = Integer.parseInt(time.split(":")[1]);
+
+        attendanceSheetByNicknameAndDay.getAttendanceDateTime().update(LocalTime.of(hour, minute));
     }
 
     private void attend(LocalDate date, AttendanceSheets attendanceSheets) {
