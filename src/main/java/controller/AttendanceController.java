@@ -5,7 +5,6 @@ import domain.AttendanceStatus;
 import domain.AttendanceTime;
 import domain.AttendanceTimes;
 import domain.MenuOption;
-import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -31,7 +30,7 @@ public class AttendanceController {
         this.repeatExecutor = new RepeatExecutor(outputView);
     }
 
-    public void run() throws IOException {
+    public void run() {
         LocalDate nowDate = LocalDate.now();
         Attendance attendance = new Attendance(AttendancesFileHandler.generateAttendances(), nowDate);
 

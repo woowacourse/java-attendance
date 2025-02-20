@@ -15,13 +15,21 @@ public class AttendancesFileHandler {
     private static final Path ATTENDANCES_PATH = Path.of("src/main/resources/attendances.csv");
     private static Map<String, List<LocalDateTime>> attendances;
 
-    public static Map<String, List<LocalDateTime>> generateAttendances() throws IOException {
+    public static Map<String, List<LocalDateTime>> generateAttendances()  {
         attendances = new HashMap<>();
-        List<String> lines = Files.readAllLines(ATTENDANCES_PATH);
+        try {
+            List<String> lines = Files.readAllLines(ATTENDANCES_PATH);
+            readInformation(lines);
+            return attendances;
+        } catch (IOException e) {
+            throw new IllegalArgumentException("[ERROR] 파일을 읽어올 수 없습니다.");
+        }
+    }
+
+    private static void readInformation(List<String> lines) {
         for (String line : lines.subList(1, lines.size())) {
             addInfoFromLine(line);
         }
-        return attendances;
     }
 
     private static void addInfoFromLine(String line) {
