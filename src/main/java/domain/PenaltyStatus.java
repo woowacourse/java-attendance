@@ -7,7 +7,7 @@ public enum PenaltyStatus {
     EXPULSION(6),
     NONE(0);
 
-    private static final int LATE_TO_ABSENCE_UNIT = 3;
+    public static final int LATE_TO_ABSENCE_UNIT = 3;
 
     private final int penalty;
 

@@ -3,6 +3,8 @@ package domain;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import static domain.PenaltyStatus.LATE_TO_ABSENCE_UNIT;
+
 public class Attendance implements Comparable<Attendance> {
     private final Crew crew;
     private final CheckInTimes checkInTimes;
@@ -60,8 +62,8 @@ public class Attendance implements Comparable<Attendance> {
         int absence = this.countAbsence();
         int late = this.countLate();
 
-        int other = (absenceOther * 3) + lateOther;
-        int me = (absence * 3) + late;
+        int other = (absenceOther * LATE_TO_ABSENCE_UNIT) + lateOther;
+        int me = (absence * LATE_TO_ABSENCE_UNIT) + late;
 
         if (me != other) {
             return me - other;
