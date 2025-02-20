@@ -9,6 +9,10 @@ public enum AttendanceStatus {
     LATE("(지각)"),
     NONE("");
 
+    public String getMessage() {
+        return message;
+    }
+
     AttendanceStatus(String message) {
         this.message = message;
     }
