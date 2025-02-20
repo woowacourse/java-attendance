@@ -2,6 +2,7 @@ package controller;
 
 import domain.AttendanceManager;
 import domain.AttendanceStatistics;
+import domain.Penalty;
 import domain.Records;
 import domain.StatisticsResult;
 import domain.TimeAndStatus;
@@ -71,13 +72,13 @@ public class AttendanceController {
         String date = DEFAULT_YEAR + "-" + DEFAULT_MONTH + "-" + DEFAULT_DAY;
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         LocalDate localDate = LocalDate.parse(date, formatter);
-        Records records =attendanceManager.findByName(name);
+        Records records = attendanceManager.findByName(name);
         StatisticsResult statisticsResult = AttendanceStatistics.countStatus(localDate, records);
-        int attendanceCount=statisticsResult.getAttendanceCount();
-        int latenessCount=statisticsResult.getLatenessCount();
-        int absenceCount=statisticsResult.getAbsenceCount();
-
+        int attendanceCount = statisticsResult.getAttendanceCount();
+        int latenessCount = statisticsResult.getLatenessCount();
+        int absenceCount = statisticsResult.getAbsenceCount();
+        Penalty penaltyResult = statisticsResult.getPenalty();
         outputView.printRecords(name, localDate, records);
-        outputView.printStatistics( attendanceCount,  latenessCount, absenceCount);
+        outputView.printStatistics(attendanceCount, latenessCount, absenceCount, penaltyResult);
     }
 }

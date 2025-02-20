@@ -2,10 +2,8 @@ package view;
 
 import domain.Penalty;
 import domain.Records;
-import domain.StatisticsResult;
 import domain.TimeAndStatus;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.format.TextStyle;
 import java.util.Locale;
 
@@ -59,18 +57,18 @@ public class OutputView {
         }
     }
 
-    public void printStatistics(int attendanceCount, int latenessCount, int absenceCount) {
+    public void printStatistics(int attendanceCount, int latenessCount, int absenceCount,
+        Penalty penaltyResult) {
         System.out.println();
         System.out.printf(ATTEND_CHECK_FORMAT, attendanceCount);
         System.out.printf(LATENESS_CHECK_FORMAT, latenessCount);
         System.out.printf(ABSENCE_CHECK_FORMAT, absenceCount);
         System.out.println();
-        printPenalty(absenceCount, latenessCount);
+        printPenalty(penaltyResult);
     }
 
-    public void printPenalty(int absenceCount, int latenessCount) {
-        Penalty penaltyResult = Penalty.check(absenceCount, latenessCount);
-        if(penaltyResult != Penalty.NONE){
+    public void printPenalty(Penalty penaltyResult) {
+        if (penaltyResult != Penalty.NONE) {
             System.out.printf(PENALTY_FORMAT, penaltyResult.penalty);
         }
     }
