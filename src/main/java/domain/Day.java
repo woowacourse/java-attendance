@@ -32,6 +32,7 @@ public enum Day {
             return true;
         }
         return Arrays.stream(Day.values())
+                .filter(day -> day.dayOfWeek.equals(date.getDayOfWeek()))
                 .anyMatch(day -> day.dayOfWeek.equals(DayOfWeek.SATURDAY) || day.dayOfWeek.equals(DayOfWeek.SUNDAY));
     }
 
