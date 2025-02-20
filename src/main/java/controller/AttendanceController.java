@@ -73,7 +73,7 @@ public class AttendanceController {
     }
 
     private void checkAttendance(Attendance attendance, LocalDate nowDate) {
-        String nickName = getCheckNickName(attendance);
+        String nickName = processNickNameInput(attendance);
         repeatExecutor.repeatUntilSuccess(() -> {
             LocalTime arrivalTime = getLocalTime();
             attendance.attend(nickName, LocalDateTime.of(nowDate, arrivalTime));
@@ -102,7 +102,7 @@ public class AttendanceController {
         }
     }
 
-    private String getCheckNickName(Attendance attendance) {
+    private String processNickNameInput(Attendance attendance) {
         return repeatExecutor.repeatUntilSuccess(() -> {
             String nickName = inputView.readNickname();
             attendance.validateNickName(nickName);
@@ -159,12 +159,16 @@ public class AttendanceController {
     }
 
     private void checkCrewAttendance(Attendance attendance) {
-        String nickName = inputView.readNickname();
+        String nickName = processNickNameInput(attendance);
         outputView.printCrewAttendanceHeader(nickName);
 
         AttendanceTimes crewAttendances = attendance.getAttendanceTimes(nickName);
         List<AttendanceTime> attendanceTimes = crewAttendances.getAttendanceTimes();
         attendanceTimes.sort(Comparator.comparing(AttendanceTime::getAttendanceDateTime));
+        printCrewAttendances(attendance, attendanceTimes, nickName);
+    }
+
+    private void printCrewAttendances(Attendance attendance, List<AttendanceTime> attendanceTimes, String nickName) {
         for (AttendanceTime crewAttendance : attendanceTimes) {
             outputView.printCheckAttendanceMessage(crewAttendance.getAttendanceDateTime(), crewAttendance.getAttendanceStatus());
         }
