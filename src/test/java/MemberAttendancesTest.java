@@ -40,7 +40,7 @@ public class MemberAttendancesTest {
             AttendResult result = attendances.attend(attendTime);
             
             //then
-            assertThat(result).isEqualTo(new AttendResult(LocalDateTime.of(2024, 12, 13, 10, 0), "출석"));
+            assertThat(result).isEqualTo(new AttendResult(LocalDateTime.of(2024, 12, 13, 10, 0), "출석", true));
         }
     }
     
@@ -58,14 +58,14 @@ public class MemberAttendancesTest {
         assertThat(result.lateCount()).isEqualTo(3);
         assertThat(result.absentCount()).isEqualTo(2);
         assertThat(result.attendanceResults()).containsExactlyInAnyOrder(
-                new AttendResult(LocalDateTime.of(2024, 12, 2, 10, 0), "출석"),
-                new AttendResult(LocalDateTime.of(2024, 12, 3, 10, 1), "출석"),
-                new AttendResult(LocalDateTime.of(2024, 12, 4, 10, 5), "출석"),
-                new AttendResult(LocalDateTime.of(2024, 12, 5, 10, 6), "지각"),
-                new AttendResult(LocalDateTime.of(2024, 12, 6, 10, 15), "지각"),
-                new AttendResult(LocalDateTime.of(2024, 12, 10, 10, 30), "지각"),
-                new AttendResult(LocalDateTime.of(2024, 12, 11, 10, 31), "결석"),
-                new AttendResult(LocalDateTime.of(2024, 12, 12, 10, 32), "결석")
+                new AttendResult(LocalDateTime.of(2024, 12, 2, 10, 0), "출석", true),
+                new AttendResult(LocalDateTime.of(2024, 12, 3, 10, 1), "출석", true),
+                new AttendResult(LocalDateTime.of(2024, 12, 4, 10, 5), "출석", true),
+                new AttendResult(LocalDateTime.of(2024, 12, 5, 10, 6), "지각", true),
+                new AttendResult(LocalDateTime.of(2024, 12, 6, 10, 15), "지각", true),
+                new AttendResult(LocalDateTime.of(2024, 12, 10, 10, 30), "지각", true),
+                new AttendResult(LocalDateTime.of(2024, 12, 11, 10, 31), "결석", true),
+                new AttendResult(LocalDateTime.of(2024, 12, 12, 10, 32), "결석", true)
         );
     }
     

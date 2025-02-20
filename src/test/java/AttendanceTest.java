@@ -21,7 +21,6 @@ public class AttendanceTest {
         @Test
         void 닉네임과_등교_시간을_입력하면_출석() {
             // given
-            String inputName = "Lemon";
             LocalDateTime localDateTime = LocalDateTime.of(2024, 12, 3, 10, 5);
             
             // when
@@ -35,7 +34,6 @@ public class AttendanceTest {
         @Test
         void 출석_시간보다_5분_초과_늦으면_지각() {
             // given
-            String inputName = "Lemon";
             LocalDateTime localDateTime = LocalDateTime.of(2024, 12, 3, 10, 6);
             
             // when
@@ -48,7 +46,6 @@ public class AttendanceTest {
         @Test
         void 출석_시간보다_5분_초과_30분_이하_늦으면_지각() {
             // given
-            String inputName = "Lemon";
             LocalDateTime localDateTime = LocalDateTime.of(2024, 12, 3, 10, 30);
             
             // when
@@ -61,7 +58,6 @@ public class AttendanceTest {
         @Test
         void 출석_시간보다_30분_초과_늦으면_지각() {
             // given
-            String inputName = "Lemon";
             LocalDateTime localDateTime = LocalDateTime.of(2024, 12, 3, 10, 31);
             
             // when
@@ -74,7 +70,6 @@ public class AttendanceTest {
         @Test
         void 주말에_출석하면_예외가_발생한다() {
             // given
-            String inputName = "Lemon";
             LocalDateTime localDateTime = LocalDateTime.of(2024, 12, 8, 10, 30);
             
             // expected
@@ -86,7 +81,6 @@ public class AttendanceTest {
         @Test
         void _8시와_23시_사이가_아니면_예외가_발생한다() {
             // given
-            String inputName = "Lemon";
             LocalDateTime localDateTime = LocalDateTime.of(2024, 12, 3, 7, 59);
             
             // expected
@@ -98,7 +92,6 @@ public class AttendanceTest {
         @Test
         void 출석을_완료하면_출석기록이_출력된다() {
             // given
-            String inputName = "Lemon";
             LocalDateTime localDateTime = LocalDateTime.of(2024, 12, 3, 9, 45);
             Attendance attendance = new Attendance(localDateTime);
             
@@ -117,7 +110,6 @@ public class AttendanceTest {
         @Test
         void 등교_시간을_수정한다() {
             //given
-            String inputName = "Lemon";
             LocalDateTime localDateTime = LocalDateTime.of(2024, 12, 3, 9, 45);
             Attendance attendance = new Attendance(localDateTime);
             LocalTime newAttendanceTime = LocalTime.of(10, 6);
