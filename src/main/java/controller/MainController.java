@@ -1,51 +1,57 @@
 package controller;
 
+import domain.AbsenceHistory;
 import domain.Attendance;
 import domain.AttendanceState;
+import domain.Calender;
 import domain.Crew;
-import domain.HistoryCalculator;
-import dto.AbsenceRecordDto;
-import dto.AttendanceHistoryDto;
-import dto.AttendanceRecord;
-import dto.AttendanceStatus;
+import dto.AbsenceResultDto;
+import dto.AttendanceResultDto;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
-import util.DateTimeUtil;
+import java.util.Map;
 import util.FileManager;
 import view.InputView;
 import view.OutputView;
 
 public class MainController {
 
+    private LocalDate today;
+    private int todayMonth;
+    private int todayDay;
+    private String todayDayOfWeek;
     private Attendance attendance;
 
     public void run() {
         prepareToday();
         String feature;
         do {
-            feature = InputView.inputFeature();
-            switch (feature) {
-                case "1":
-                    attendanceCheck();
-                    break;
-                case "2":
-                    attendanceUpdate();
-                    break;
-                case "3":
-                    attendanceHistory();
-                    break;
-                case "4":
-                    absenceHistory();
-                    break;
+            feature = InputView.inputFeature(todayMonth, todayDay, todayDayOfWeek);
+            if (feature.equals("1")) {
+                attendanceCheck();
             }
-        } while (!"Q".equals(feature));
+            if (feature.equals("2")) {
+                attendanceUpdate();
+            }
+            if (feature.equals("3")) {
+                attendanceRecord();
+            }
+            if (feature.equals("4")) {
+                readAbsence();
+            }
+
+        } while (!feature.equals("Q"));
     }
 
     private void prepareToday() {
         attendance = FileManager.readFile();
+        today = LocalDate.now();
+        todayMonth = 12;
+        todayDay = today.getDayOfMonth();
+        todayDayOfWeek = Calender.findBy(todayDay);
     }
 
     private void attendanceCheck() {
@@ -56,12 +62,10 @@ public class MainController {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");
         LocalTime dateTime = LocalTime.parse(schoolStartTime, formatter);
 
-        AttendanceState attendanceState = AttendanceState.findStateBy(dateTime,
-                LocalDate.of(2024, 12, DateTimeUtil.getTodayDate()));
+        String attendanceState = AttendanceState.findStateBy(dateTime, todayDay);
 
-        attendance.save(crew, schoolStartTime, LocalDate.of(2024, 12, DateTimeUtil.getTodayDate()));
-
-        OutputView.printTodayAttendance(schoolStartTime, attendanceState.getDescription());
+        OutputView.printTodayAttendance(todayDay, todayDayOfWeek, schoolStartTime, attendanceState);
+        attendance.save(crew, schoolStartTime, todayDay);
     }
 
     private void attendanceUpdate() {
@@ -71,32 +75,33 @@ public class MainController {
 
         Crew crew = attendance.getCrewByName(nickname);
 
-        LocalTime beforeTime = attendance.update(crew, time, date);
+        LocalDateTime beforeDateTime = attendance.update(crew, time, date);
 
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");
         LocalTime afterTime = LocalTime.parse(time, formatter);
 
-        LocalDateTime afterLocalDateTime = LocalDateTime.of(
-                2024, 12, date, afterTime.getHour(), afterTime.getMinute());
+        LocalDateTime afterLocalDateTime = LocalDateTime.of(beforeDateTime.getYear(), beforeDateTime.getMonth(),
+                beforeDateTime.getDayOfMonth(), afterTime.getHour(), afterTime.getMinute());
 
-        OutputView.printUpdateAttendance(beforeTime, afterLocalDateTime);
+        OutputView.printUpdateAttendance(beforeDateTime, afterLocalDateTime);
     }
 
-    private void attendanceHistory() {
+    private void attendanceRecord() {
         String nickname = InputView.inputNickName();
         Crew crew = attendance.getCrewByName(nickname);
 
-        List<AttendanceRecord> attendanceRecords = attendance.getRecordByCrew(crew);
+        List<AttendanceResultDto> attendanceResultDtos = attendance.readRecord(crew, todayDay);
+        OutputView.printRecordAttendance(attendanceResultDtos);
 
-        AttendanceStatus attendanceStatus = HistoryCalculator.calculateAttendanceRecordBy(attendanceRecords);
+        AbsenceHistory absenceHistory = new AbsenceHistory(attendanceResultDtos);
 
-        AttendanceHistoryDto attendanceHistoryDto = new AttendanceHistoryDto(crew, attendanceRecords, attendanceStatus);
+        AbsenceResultDto absenceResultDto = absenceHistory.calculate();
 
-        OutputView.printRecordAttendance(attendanceHistoryDto);
+        OutputView.printAbsenceHistory(absenceResultDto);
     }
 
-    private void absenceHistory() {
-        List<AbsenceRecordDto> absenceRecordDtos = HistoryCalculator.calculateAbsenceRecordBy(attendance);
-        OutputView.printAbsenceResult(absenceRecordDtos);
+    private void readAbsence() {
+        Map<Crew, AbsenceResultDto> result = attendance.getAbsence(14);
+        OutputView.printAbsenceResult(result);
     }
 }
