@@ -17,7 +17,7 @@ public class FileReader {
 
             return convertResource(reader);
         } catch (IOException e) {
-            throw new IllegalStateException("Cannot read file"); //TODO constant: no file exists
+            throw new IllegalStateException("[ERROR] 파일을 읽는 데 실패했습니다.");
         }
     }
 
@@ -27,7 +27,7 @@ public class FileReader {
 
         String line;
         while ((line = reader.readLine()) != null) {
-            List<String> attendanceRecord = Arrays.asList(line.split(","));   //TODO constant: delimiter
+            List<String> attendanceRecord = Arrays.asList(line.split(","));
             attendanceRecords.add(attendanceRecord);
         }
         return attendanceRecords;
@@ -35,7 +35,7 @@ public class FileReader {
 
     private void validateFileContent(final String firstLine) {
         if (firstLine == null) {
-            throw new IllegalStateException("File is empty"); //TODO constant: empty file content
+            throw new IllegalStateException("[ERROR] 파일 내용이 없습니다.");
         }
     }
 }
