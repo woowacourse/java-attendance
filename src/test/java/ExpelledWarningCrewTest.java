@@ -46,7 +46,7 @@ public class ExpelledWarningCrewTest {
     @DisplayName("크루 출석 기록을 바탕으로 제적 위험자를 파악한다.")
     @Test
     void 제적_위험자_계산() {
-        LocalDate nowDate = LocalDate.of(2024, 12, 10);
+        LocalDate nowDate = LocalDate.of(2024, 12, 11);
         Map<String, StatisticsResult> warningCrews = attendanceManager.findWarningCrews(nowDate);
 
         assertThat(warningCrews.size()).isEqualTo(2);
@@ -55,7 +55,7 @@ public class ExpelledWarningCrewTest {
     @DisplayName("제적 위험자를 기준에 맞게 정렬한다.")
     @Test
     void 제적_위험자_정렬() {
-        LocalDate nowDate = LocalDate.of(2024, 12, 10);
+        LocalDate nowDate = LocalDate.of(2024, 12, 11);
         Map<String, StatisticsResult> sortedResult = attendanceManager.sortCrew(nowDate);
         List<String> names = new ArrayList<>(sortedResult.keySet());
 
