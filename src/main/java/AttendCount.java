@@ -1,6 +1,6 @@
-public record AttendCount(int attend, int late, int absence) {
+public record AttendCount(long attend, long late, long absence) {
     public WarningStatus judgeWarning() {
-        int totalAbsenceCount = calculateTotalAbsenceCount();
+        long totalAbsenceCount = calculateTotalAbsenceCount();
         if (totalAbsenceCount > 5) {
             return WarningStatus.EXPEL;
         }
@@ -13,7 +13,7 @@ public record AttendCount(int attend, int late, int absence) {
         return WarningStatus.CLEAR;
     }
 
-    private int calculateTotalAbsenceCount() {
+    private long calculateTotalAbsenceCount() {
         return late / 3 + absence;
     }
 }
