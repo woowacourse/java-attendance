@@ -1,5 +1,6 @@
 package domain;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Crews {
@@ -21,6 +22,14 @@ public class Crews {
 
     public void recordAllAbsence() {
         crews.forEach(Crew::recordAbsence);
+    }
+
+    public List<CrewDto> createCrewDtos() {
+        List<CrewDto> crewDtos = new ArrayList<>();
+        for (Crew crew : crews) {
+            crewDtos.add(crew.toDto());
+        }
+        return crewDtos;
     }
 
 
