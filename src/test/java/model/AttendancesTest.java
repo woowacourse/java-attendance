@@ -1,8 +1,10 @@
 package model;
 
 import converter.StringConverter;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -13,11 +15,12 @@ class AttendancesTest {
 
     private final StringConverter stringConverter = new StringConverter();
     private Attendances attendances;
+    private Crews crews;
 
     @BeforeEach
     void beforeEach() {
         List<String> rawAttendances = new DataReader().readAttendances("src/test/resources/attendances.csv");
-        Crews crews = stringConverter.convertToCrews(rawAttendances);
+        crews = stringConverter.convertToCrews(rawAttendances);
         attendances = stringConverter.convertToAttendances(rawAttendances, crews);
     }
 
@@ -101,5 +104,17 @@ class AttendancesTest {
         //then
         Assertions.assertThat(filteredAttendances.getAttendances())
                 .contains(attendance1, attendance2, attendance3);
+    }
+
+    @Test
+    @DisplayName("크루의 출석을 모두 조회한다.")
+    void test9() {
+        //given
+
+        //when
+        Map<Crew, Attendances> crewsAttendances = attendances.findAll(crews, LocalDate.now().getMonthValue());
+
+        //then
+        Assertions.assertThat(crewsAttendances.get(Crew.of("쿠키")).getAttendances()).hasSize(13);
     }
 }
