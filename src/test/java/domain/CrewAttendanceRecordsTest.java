@@ -47,7 +47,7 @@ class CrewAttendanceRecordsTest {
 
         assertThatThrownBy(() -> crewAttendanceRecords.updateAttendanceRecord(crew, newAttendanceRecord))
                 .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage("[ERROR] 등록되지 않은 닉네임입니다.");
+                .hasMessage("[ERROR] 등록되지 않은 닉네임입니다.\n");
     }
 
     @Test
@@ -80,9 +80,9 @@ class CrewAttendanceRecordsTest {
         CrewAttendanceRecords crewAttendanceRecords = new CrewAttendanceRecords(new CsvParsingGenerator(), () -> LocalDate.of(2024, 12, 13));
         Crew crew = new Crew("포비");
         assertAll(
-                () -> assertThatThrownBy(() -> crewAttendanceRecords.getAttendanceCount(crew, Attendance.PRESENT)).isInstanceOf(IllegalArgumentException.class).hasMessage("[ERROR] 등록되지 않은 닉네임입니다."),
-                () -> assertThatThrownBy(() -> crewAttendanceRecords.getAttendanceCount(crew, Attendance.TARDY)).isInstanceOf(IllegalArgumentException.class).hasMessage("[ERROR] 등록되지 않은 닉네임입니다."),
-                () -> assertThatThrownBy(() -> crewAttendanceRecords.getAttendanceCount(crew, Attendance.ABSENT)).isInstanceOf(IllegalArgumentException.class).hasMessage("[ERROR] 등록되지 않은 닉네임입니다.")
+                () -> assertThatThrownBy(() -> crewAttendanceRecords.getAttendanceCount(crew, Attendance.PRESENT)).isInstanceOf(IllegalArgumentException.class).hasMessage("[ERROR] 등록되지 않은 닉네임입니다.\n"),
+                () -> assertThatThrownBy(() -> crewAttendanceRecords.getAttendanceCount(crew, Attendance.TARDY)).isInstanceOf(IllegalArgumentException.class).hasMessage("[ERROR] 등록되지 않은 닉네임입니다.\n"),
+                () -> assertThatThrownBy(() -> crewAttendanceRecords.getAttendanceCount(crew, Attendance.ABSENT)).isInstanceOf(IllegalArgumentException.class).hasMessage("[ERROR] 등록되지 않은 닉네임입니다.\n")
         );
     }
 
@@ -108,7 +108,7 @@ class CrewAttendanceRecordsTest {
         LocalTime time = LocalTime.of(10, 0);
         assertThatThrownBy(() -> crewAttendanceRecords.checkIn(crew, time, () -> LocalDate.of(2024, 12, 13)))
                 .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage("[ERROR] 등록되지 않은 닉네임입니다.");
+                .hasMessage("[ERROR] 등록되지 않은 닉네임입니다.\n");
     }
 
     @Test
@@ -119,7 +119,7 @@ class CrewAttendanceRecordsTest {
         LocalTime time = LocalTime.of(10, 0);
         assertThatThrownBy(() -> crewAttendanceRecords.checkIn(crew, time, () -> LocalDate.of(2024, 12, 13)))
                 .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage("[ERROR] 이미 출석을 확인하였습니다. 필요한 경우 수정 기능을 이용해 주세요.");
+                .hasMessage("[ERROR] 이미 출석을 확인하였습니다. 필요한 경우 수정 기능을 이용해 주세요.\n");
     }
 
     @Test

@@ -48,12 +48,6 @@ public class CrewAttendanceRecords {
         return crewAttendanceRecords.get(crew).getAttendanceCount(attendance);
     }
 
-    private void validateCrewPresence(Crew crew) {
-        if (!hasCrew(crew)) {
-            throw new IllegalArgumentException("[ERROR] 등록되지 않은 닉네임입니다.");
-        }
-    }
-
     public AttendanceRecord checkIn(Crew crew, LocalTime time, DateGenerator dateGenerator) {
         validateCrewPresence(crew);
         AttendanceRecords attendanceRecords = crewAttendanceRecords.get(crew);
@@ -61,12 +55,6 @@ public class CrewAttendanceRecords {
         AttendanceRecord attendanceRecord = AttendanceRecord.checkIn(time, dateGenerator);
         attendanceRecords.addRecord(attendanceRecord);
         return attendanceRecord;
-    }
-
-    private void validatePresence(AttendanceRecords attendanceRecords, DateGenerator dateGenerator) {
-        if (attendanceRecords.hasRecordOfDate(dateGenerator.generate())) {
-            throw new IllegalArgumentException("[ERROR] 이미 출석을 확인하였습니다. 필요한 경우 수정 기능을 이용해 주세요.");
-        }
     }
 
     public List<AttendanceRecord> getSortedRecords(Crew crew) {
@@ -87,18 +75,42 @@ public class CrewAttendanceRecords {
     }
 
     private List<Crew> sortWarnedCrews(List<Crew> crews) {
+        sortCrewsByName(crews);
+        sortCrewsByAttendanceCount(crews);
+        sortCrewsByDisciplinaryStatus(crews);
+        return crews;
+    }
+
+    private void sortCrewsByName(List<Crew> crews) {
         crews.sort(Comparator.comparing(Crew::name));
+    }
+
+    private void sortCrewsByAttendanceCount(List<Crew> crews) {
         crews.sort(Comparator.comparing(crew -> {
             int absentCount = crewAttendanceRecords.get(crew).getAbsentCount();
             int tardyCount = crewAttendanceRecords.get(crew).getTardyCount();
             absentCount += (tardyCount / 3);
             return (absentCount + tardyCount % 3) * -1;
         }));
+    }
+
+    private void sortCrewsByDisciplinaryStatus(List<Crew> crews) {
         crews.sort(Comparator.comparing(crew -> {
             AttendanceRecords attendanceRecords = crewAttendanceRecords.get(crew);
             DisciplinaryStatus status = attendanceRecords.getDisciplinaryStatus();
             return status.ordinal() * -1;
         }));
-        return crews;
+    }
+
+    private void validatePresence(AttendanceRecords attendanceRecords, DateGenerator dateGenerator) {
+        if (attendanceRecords.hasRecordOfDate(dateGenerator.generate())) {
+            throw new IllegalArgumentException("[ERROR] 이미 출석을 확인하였습니다. 필요한 경우 수정 기능을 이용해 주세요.\n");
+        }
+    }
+
+    private void validateCrewPresence(Crew crew) {
+        if (!hasCrew(crew)) {
+            throw new IllegalArgumentException("[ERROR] 등록되지 않은 닉네임입니다.\n");
+        }
     }
 }
