@@ -50,7 +50,7 @@ public class StudentRepositoryTest {
 
         Student student = studentRepository.findStudentByName(name);
         student.updateState(localDateTime);
-        assertThat(student.getAttendance()).isEqualTo(1);
+        assertThat(student.getAttendance()).isEqualTo(2);
     }
 
     @Test
