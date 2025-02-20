@@ -1,5 +1,7 @@
 package domain;
 
+import dto.CrewResponse;
+
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -55,5 +57,9 @@ public class Crews {
             }
         }
         throw new IllegalArgumentException("등록되지 않은 닉네임입니다.");
+    }
+
+    public CrewResponse createCrewResponseByName(String name) {
+         return findCrewByName(name).createResponse();
     }
 }

@@ -55,7 +55,7 @@ public class AttendanceController {
 
     private void checkCrewsRecord() {
         String name = inputView.inputName();
-
+        outputView.printCrewAttendanceRecord(crews.createCrewResponseByName(name));
     }
 
     private void editAttend() {
