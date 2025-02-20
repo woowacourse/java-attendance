@@ -5,8 +5,10 @@ import domain.CrewGroup;
 import domain.attendance.Attendance;
 import domain.attendance.AttendanceDate;
 import domain.attendance.AttendanceState;
+import domain.attendance.AttendanceWarning;
 import dto.ResponseAttendanceEditStateDto;
 import dto.ResponseCrewAttendanceStateDto;
+import dto.ResponseWarningCrewDto;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -104,7 +106,25 @@ public class AttendanceController {
             }
             if (command.equals("4")) {
                 // 제적 위험자 확인
+                /*
+                제적 위험자 조회 결과
+                - 빙티: 결석 3회, 지각 4회 (면담)
+                - 이든: 결석 2회, 지각 5회 (면담)
+                - 빙봉: 결석 1회, 지각 6회 (면담)
+                - 쿠키: 결석 2회, 지각 3회 (면담)
+                - 짱수: 결석 0회, 지각 6회 (경고)
+                 */
 
+                List<Crew> warningCrews = crewGroup.sortedAttendanceWarning();
+                List<ResponseWarningCrewDto> warningCrewDtos = warningCrews.stream()
+                        .map(warningCrew -> new ResponseWarningCrewDto(
+                                warningCrew.getName(),
+                                warningCrew.getAttendance().countAbsence(),
+                                warningCrew.getAttendance().countTardy(),
+                                AttendanceWarning.determineAttendanceWarning(
+                                        warningCrew.getAttendance().countAbsenceIncludingTardy())))
+                        .toList();
+                OutputView.printAttendanceWarningCrews(warningCrewDtos);
             }
             if (command.equals("Q") || command.equals("q")) {
                 return true;

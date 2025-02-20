@@ -2,9 +2,10 @@ package domain;
 
 import domain.attendance.Attendance;
 import domain.attendance.AttendanceDate;
+import domain.attendance.AttendanceWarning;
 import java.time.LocalDate;
 
-public class Crew {
+public class Crew implements Comparable<Crew> {
     private final String name;
     private final Attendance attendance;
 
@@ -21,5 +22,27 @@ public class Crew {
 
     public Attendance getAttendance() {
         return attendance;
+    }
+
+    public boolean isAttendanceWarning() {
+        return AttendanceWarning.determineAttendanceWarning(this.attendance.countAbsenceIncludingTardy())
+                != AttendanceWarning.NONE;
+    }
+
+    @Override
+    public int compareTo(Crew compareCrew) {
+        if (this.attendance.countAbsence() < compareCrew.attendance.countAttendance()) {
+            return -1;
+        }
+        if (this.attendance.countAbsence() > compareCrew.attendance.countAttendance()) {
+            return 1;
+        }
+        if (this.attendance.countTardy() < compareCrew.attendance.countTardy()) {
+            return -1;
+        }
+        if (this.attendance.countTardy() > compareCrew.attendance.countTardy()) {
+            return 1;
+        }
+        return 0;
     }
 }

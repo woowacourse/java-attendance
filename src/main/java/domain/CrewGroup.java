@@ -1,7 +1,10 @@
 package domain;
 
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 public class CrewGroup {
     private List<Crew> crews;
@@ -25,5 +28,11 @@ public class CrewGroup {
             throw new IllegalArgumentException("");
         }
         return findCrew.get();
+    }
+
+    public List<Crew> sortedAttendanceWarning() {
+        List<Crew> warningCrews = crews.stream().filter(Crew::isAttendanceWarning).collect(Collectors.toList());
+        Collections.sort(warningCrews);
+        return warningCrews;
     }
 }

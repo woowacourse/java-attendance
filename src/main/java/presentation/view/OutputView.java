@@ -7,6 +7,8 @@ import dto.ResponseAttendanceEditStateDto;
 import dto.ResponseAttendanceStateCountDto;
 import dto.ResponseCrewAttendanceStateDto;
 import dto.ResponseCrewStatusDto;
+import dto.ResponseWarningCrewDto;
+import java.util.List;
 import util.DateTimeUtil;
 
 public class OutputView {
@@ -27,28 +29,6 @@ public class OutputView {
         );
     }
 
-    // 크루 별 출석 기록 확인
-    // todo: README에 결석일 때는 시간 상관없이 --:--로 출력한다 (수정, 조회 모두)
-                /*
-                이번 달 빙티의 출석 기록입니다.
-
-                12월 02일 월요일 13:00 (출석)
-                12월 03일 화요일 10:07 (지각)
-                12월 04일 수요일 10:02 (출석)
-                12월 05일 목요일 10:06 (지각)
-                12월 06일 금요일 10:01 (출석)
-                12월 09일 월요일 --:-- (결석)
-                12월 10일 화요일 10:03 (출석)
-                12월 11일 수요일 --:-- (결석)
-                12월 12일 목요일 --:-- (결석)
-                12월 13일 금요일 10:02 (출석)
-
-                출석: 3회
-                지각: 0회
-                결석: 3회
-
-                면담 대상자입니다.
-                 */
     public static void printAttendanceStatusCrew(ResponseCrewAttendanceStateDto crewAttendanceStateDto) {
         System.out.printf("이번 달 %s의 출석 기록입니다.\n", crewAttendanceStateDto.crewName());
         System.out.println();
@@ -86,5 +66,17 @@ public class OutputView {
         if (responseAttendanceStateCountDto.attendanceWarning() != AttendanceWarning.NONE) {
             System.out.printf("\n%s 대상자 입니다.\n", responseAttendanceStateCountDto.attendanceWarning().getStatus());
         }
+    }
+
+    public static void printAttendanceWarningCrews(List<ResponseWarningCrewDto> warningCrewDtos) {
+        System.out.println("제적 위험자 조회 결과");
+        warningCrewDtos.stream().forEach(OutputView::printAttendanceWarningCrew);
+        System.out.println();
+    }
+
+    private static void printAttendanceWarningCrew(ResponseWarningCrewDto warningCrewDto) {
+        System.out.println("- "+ warningCrewDto.crewName() + ": 결석 " + warningCrewDto.absenceCount() + "회, 지각 "
+                + warningCrewDto.tardyCount() + "회"
+                + " (" + (warningCrewDto.attendanceWarning().getStatus()) + ")");
     }
 }
