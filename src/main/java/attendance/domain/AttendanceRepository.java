@@ -28,7 +28,7 @@ public class AttendanceRepository {
         return crewAttendance.get();
     }
 
-    public void update(final String name, final LocalDateTime newLocalDateTime) {
+    public HourMinute update(final String name, final LocalDateTime newLocalDateTime) {
         LocalDate localDate = newLocalDateTime.toLocalDate();
         HourMinute hourMinute = new HourMinute(newLocalDateTime);
 
@@ -36,7 +36,7 @@ public class AttendanceRepository {
         if (!crewAttendance.hasTimeStamp(localDate)) {
             throw new IllegalArgumentException("해당 날짜에 출석 기록이 없습니다.");
         }
-        crewAttendance.modify(localDate, hourMinute);
+        return crewAttendance.modify(localDate, hourMinute);
     }
 
     public WarningLevel queryWarningLevelByName(final String name, int today) {
