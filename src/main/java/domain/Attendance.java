@@ -3,11 +3,11 @@ package domain;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
+import util.Constants;
 
 public class Attendance {
 
     private static final String DATE_TIME_FORMAT = "yyyy-MM-dd HH:mm";
-    private static final int HOLIDAY = 25;
 
     LocalDateTime localDateTime;
     AttendanceStatus attendanceStatus;
@@ -32,7 +32,7 @@ public class Attendance {
 
     private void validateHoliday(LocalDateTime localDateTime) {
         final int day = localDateTime.getDayOfMonth();
-        if (day == HOLIDAY) {
+        if (Constants.HOLIDAYS.contains(day)) {
             throw new IllegalArgumentException(
                     String.format("%d월 %d일 %d요일은 등교일이 아닙니다.", localDateTime.getMonth(), localDateTime.getDayOfMonth(),
                             localDateTime.getDayOfWeek()));

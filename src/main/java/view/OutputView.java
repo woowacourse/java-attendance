@@ -12,6 +12,7 @@ import domain.Week;
 import java.time.DayOfWeek;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import util.Constants;
 
 public final class OutputView {
 
@@ -26,7 +27,8 @@ public final class OutputView {
         final LocalTime localTime = localDateTime.toLocalTime();
 
         System.out.println(
-                String.format("12월 %02d일 %s %s (%s)", day, dayName, localTime, attendanceStatus.getKoreanName()));
+                String.format("%d월 %02d일 %s %s (%s)", Constants.MONTH, day, dayName, localTime,
+                        attendanceStatus.getKoreanName()));
     }
 
     public static void printUpdateAttendance(final Attendance oldAttendance, final Attendance newAttendance) {
@@ -41,7 +43,8 @@ public final class OutputView {
         final LocalTime newLocalTime = newLocalDateTime.toLocalTime();
 
         System.out.println(
-                String.format("12월 %02d일 %s %s (%s) -> %s (%s) 수정 완료!", oldDay, oldDayName, oldLocalTime,
+                String.format("%d월 %02d일 %s %s (%s) -> %s (%s) 수정 완료!", Constants.MONTH, oldDay, oldDayName,
+                        oldLocalTime,
                         oldAttendanceStatus.getKoreanName(), newLocalTime, newAttendanceStatus.getKoreanName()));
     }
 
@@ -72,7 +75,8 @@ public final class OutputView {
                 timeFormat = "--:--";
             }
             System.out.println(
-                    String.format("12월 %02d일 %s %s (%s)", day, Week.findKoreanName(dayOfWeek), timeFormat,
+                    String.format("%d월 %02d일 %s %s (%s)", Constants.MONTH, day, Week.findKoreanName(dayOfWeek),
+                            timeFormat,
                             attendanceStatus.getKoreanName()));
         }
         System.out.println();

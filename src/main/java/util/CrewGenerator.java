@@ -1,5 +1,9 @@
 package util;
 
+import static util.Constants.HOLIDAYS;
+import static util.Constants.LENGTH_OF_MONTH;
+import static util.Constants.MONTH;
+
 import domain.Attendance;
 import domain.AttendanceCounter;
 import domain.Attendances;
@@ -65,27 +69,20 @@ public final class CrewGenerator {
     public static List<Integer> getExcludeNotAttendanceDays() {
         List<Integer> excludeNotAttendanceDays = new ArrayList<>();
         excludeNotAttendanceDays.addAll(getWeekendDays());
-        excludeNotAttendanceDays.addAll(getHolidays());
+        excludeNotAttendanceDays.addAll(HOLIDAYS);
 
         return excludeNotAttendanceDays;
     }
 
     private static Collection<Integer> getWeekendDays() {
-        final int lengthOfMonth = 31;
-        return IntStream.rangeClosed(1, lengthOfMonth)
+        return IntStream.rangeClosed(1, LENGTH_OF_MONTH)
                 .filter(CrewGenerator::excludeNotAttendanceDays)
                 .boxed()
                 .toList();
     }
 
     public static boolean excludeNotAttendanceDays(int day) {
-        DayOfWeek dayOfWeek = LocalDate.of(2024, 12, day).getDayOfWeek();
+        DayOfWeek dayOfWeek = LocalDate.of(2024, MONTH, day).getDayOfWeek();
         return dayOfWeek == DayOfWeek.SATURDAY || dayOfWeek == DayOfWeek.SUNDAY;
-    }
-
-    private static Collection<Integer> getHolidays() {
-        List<Integer> holidays = new ArrayList<>();
-        holidays.add(25);
-        return holidays;
     }
 }
