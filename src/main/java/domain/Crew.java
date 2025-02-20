@@ -11,9 +11,7 @@ public class Crew implements Comparable<Crew> {
 
     public Crew(String name) {
         this.name = name;
-        this.attendance = new Attendance(
-                LocalDate.of(AttendanceDate.DEFAULT_START_TIME, AttendanceDate.DEFAULT_START_MONTH,
-                        AttendanceDate.DEFAULT_START_DAY), LocalDate.now());
+        this.attendance = new Attendance(AttendanceDate.DEFAULT_START_DATE, LocalDate.now());
     }
 
     public String getName() {
@@ -31,18 +29,18 @@ public class Crew implements Comparable<Crew> {
 
     @Override
     public int compareTo(Crew compareCrew) {
-        if (this.attendance.countAbsence() < compareCrew.attendance.countAttendance()) {
-            return -1;
-        }
-        if (this.attendance.countAbsence() > compareCrew.attendance.countAttendance()) {
+        if (this.attendance.countAbsence() < compareCrew.attendance.countAbsence()) {
             return 1;
+        }
+        if (this.attendance.countAbsence() > compareCrew.attendance.countAbsence()) {
+            return -1;
         }
         if (this.attendance.countTardy() < compareCrew.attendance.countTardy()) {
-            return -1;
-        }
-        if (this.attendance.countTardy() > compareCrew.attendance.countTardy()) {
             return 1;
         }
-        return 0;
+        if (this.attendance.countTardy() > compareCrew.attendance.countTardy()) {
+            return -1;
+        }
+        return this.name.compareTo(compareCrew.name);
     }
 }
