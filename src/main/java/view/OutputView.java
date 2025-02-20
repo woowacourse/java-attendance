@@ -1,7 +1,7 @@
 package view;
 
 import java.time.LocalDateTime;
-import java.util.LinkedHashMap;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import model.AttendanceStatus;
@@ -14,11 +14,15 @@ public class OutputView {
 
     public static void printTodayAttendanceResult(Student student, LocalDateTime localDateTime) {
         for (LocalDateTime localDateTimeIn : student.getRecord().keySet()) {
-            if (localDateTimeIn.isEqual(localDateTime)) {
-                String dateAndTime = LocalDateTimePrintFormatter.LocalDateTimeToLocalTime(localDateTimeIn);
-                String state = student.getRecord().get(localDateTimeIn).getState();
-                System.out.println(dateAndTime + "(" + state +")");
-            }
+            makeLocalDateTimeFormatAndPrint(student, localDateTime, localDateTimeIn);
+        }
+    }
+
+    private static void makeLocalDateTimeFormatAndPrint(Student student, LocalDateTime localDateTime, LocalDateTime localDateTimeIn) {
+        if (localDateTimeIn.isEqual(localDateTime)) {
+            String dateAndTime = LocalDateTimePrintFormatter.LocalDateTimeToLocalTime(localDateTimeIn);
+            String state = student.getRecord().get(localDateTimeIn).getState();
+            System.out.println(dateAndTime + "(" + state +")");
         }
     }
 
@@ -26,7 +30,7 @@ public class OutputView {
         System.out.println(recordBeforeModify + " -> " + localDateTimeFormat3);
     }
 
-    public static void printAttendanceRecord(LinkedHashMap<LocalDateTime, AttendanceStatus> record) {
+    public static void printAttendanceRecord(HashMap<LocalDateTime, AttendanceStatus> record) {
         List<Map.Entry<LocalDateTime, AttendanceStatus>> entries =
                 record.entrySet().stream()
                         .sorted(Map.Entry.comparingByKey())
@@ -58,17 +62,22 @@ public class OutputView {
 
     public static void printEveryStudentPunishmentLabel(StudentRepository studentRepository) {
         for (Student student : studentRepository.getStudents()) {
-            if (student.calculateAbsent() > StudentPunishment.DISMISSAL.getStandard()) {
-                System.out.println("- " + student.getName() + ": 결석" + student.getAbsent() + "회, 지각 " + student.getLate() + "회 (" + StudentPunishment.DISMISSAL.getPunishmentLabel() + ")" );
-                return;
-            }
-            if (student.calculateAbsent() >= StudentPunishment.INTERVIEW.getStandard()) {
-                System.out.println("- " + student.getName() + ": 결석" + student.getAbsent() + "회, 지각 " + student.getLate() + "회 (" + StudentPunishment.INTERVIEW.getPunishmentLabel() + ")" );
-                return;
-            }
-            if (student.calculateAbsent() >= StudentPunishment.WARNING.getStandard()) {
-                System.out.println("- " + student.getName() + ": 결석" + student.getAbsent() + "회, 지각 " + student.getLate() + "회 (" + StudentPunishment.WARNING.getPunishmentLabel() + ")" );
-            }
+            printStudentPunishmentLabelAndPrint(student);
         }
     }
+
+    private static void printStudentPunishmentLabelAndPrint(Student student) {
+        if (student.calculateAbsent() > StudentPunishment.DISMISSAL.getStandard()) {
+            System.out.println("- " + student.getName() + ": 결석" + student.getAbsent() + "회, 지각 " + student.getLate() + "회 (" + StudentPunishment.DISMISSAL.getPunishmentLabel() + ")" );
+            return;
+        }
+        if (student.calculateAbsent() >= StudentPunishment.INTERVIEW.getStandard()) {
+            System.out.println("- " + student.getName() + ": 결석" + student.getAbsent() + "회, 지각 " + student.getLate() + "회 (" + StudentPunishment.INTERVIEW.getPunishmentLabel() + ")" );
+            return;
+        }
+        if (student.calculateAbsent() >= StudentPunishment.WARNING.getStandard()) {
+            System.out.println("- " + student.getName() + ": 결석" + student.getAbsent() + "회, 지각 " + student.getLate() + "회 (" + StudentPunishment.WARNING.getPunishmentLabel() + ")" );
+        }
+    }
+
 }
