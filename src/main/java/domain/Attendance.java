@@ -35,11 +35,21 @@ public class Attendance {
         List<LocalDateTime> localDateTimes = attendanceMap.get(crew);
 
         String today = String.format("2024-12-%02d %s", todayDay, schoolStartTime);
-
         LocalDateTime todayLocalDateTime = LocalDateTime.parse(today, formatter);
 
+        validateDuplicateSave(todayDay, localDateTimes);
         localDateTimes.add(todayLocalDateTime);
         attendanceMap.put(crew, localDateTimes);
+    }
+
+    private void validateDuplicateSave(final int todayDay, final List<LocalDateTime> localDateTimes) {
+        for (LocalDateTime localDateTime : localDateTimes) {
+            int dayOfMonth = localDateTime.getDayOfMonth();
+
+            if (dayOfMonth == todayDay) {
+                throw new IllegalArgumentException("이미 출석한 크루입니다.");
+            }
+        }
     }
 
     public LocalDateTime update(final Crew crew, final String updateTime, final int date) {
