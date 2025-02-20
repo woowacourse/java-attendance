@@ -23,9 +23,9 @@ public class OutputView {
         sb.append(String.format(" (%s) -> ", modifiedResult.beforeStatus().getDescription()));
         sb.append(modifiedResult.after().format(Formatter.TIME_FORMATTER));
         sb.append(String.format(" (%s)", modifiedResult.afterStatus().getDescription()));
-        sb.append(" 수정 완료!");
+        sb.append(" 수정 완료!%n%n");
 
-        System.out.println(sb.toString());
+        System.out.printf(sb.toString());
     }
 
     public static void printHistory(AttendanceHistoryResult historyResult) {

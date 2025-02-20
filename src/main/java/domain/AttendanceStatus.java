@@ -31,7 +31,7 @@ public enum AttendanceStatus {
         long difference = MINUTES.between(lectureTime.getStartTime(), attendanceTime);
         return Arrays.stream(values()).filter(attendanceStatus -> attendanceStatus.threshold <= difference)
             .max(Comparator.comparing(AttendanceStatus::getThreshold))
-            .orElse(null);
+            .orElse(AttendanceStatus.NONE);
     }
 
     public int getThreshold() {

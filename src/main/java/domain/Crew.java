@@ -9,7 +9,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import exception.AlreadyAttendanceException;
 import util.DateTimeUtil;
 
 public class Crew {
@@ -22,14 +21,17 @@ public class Crew {
     }
 
     public AttendanceStatus attendance(LocalDate date, LocalTime time) {
-        validateAlreadyAttendanceDate(date);
+        validateDate(date);
         attendanceTimes.put(date, time);
         return getAttendanceStatusByDate(date);
     }
 
-    private void validateAlreadyAttendanceDate(LocalDate date) {
+    private void validateDate(LocalDate date) {
         if (attendanceTimes.containsKey(date)) {
-            throw new AlreadyAttendanceException("이미 출석 처리되어 있습니다. 수정 기능을 이용해주세요.");
+            throw new IllegalArgumentException("이미 출석 처리되어 있습니다. 수정 기능을 이용해주세요.");
+        }
+        if (DateTimeUtil.isOffDay(date)) {
+            throw new IllegalArgumentException("주말 및 공휴일에는 출석을 받지 않습니다.");
         }
     }
 

@@ -15,7 +15,7 @@ public record AttendanceModifyRequest (
         int parsedDay = convertToInt(day);
         return new AttendanceModifyRequest(
             nickname,
-            DateTimeUtil.nowDate().withDayOfMonth(parsedDay),
+            DateTimeUtil.convertToDate(DateTimeUtil.nowDate(), parsedDay),
             LocalTime.parse(time, Formatter.TIME_FORMATTER)
         );
     }

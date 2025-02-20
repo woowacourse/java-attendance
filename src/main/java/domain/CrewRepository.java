@@ -37,7 +37,7 @@ public class CrewRepository {
         return crews.stream()
             .filter(crew -> crew.getNickname().equals(name))
             .findAny()
-            .orElse(null); // TODO 예외처리?
+            .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 크루명입니다."));
     }
 
     public List<Crew> getAll() {

@@ -29,7 +29,7 @@ public enum LectureTime {
         return Arrays.stream(values())
             .filter(lectureTime -> lectureTime.dayOfWeek.equals(date.getDayOfWeek()))
             .findAny()
-            .orElse(null);
+            .orElseThrow(() -> new IllegalStateException("잘못된 상황입니다."));
     }
 
     public DayOfWeek getDayOfWeek() {

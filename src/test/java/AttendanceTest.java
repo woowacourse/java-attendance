@@ -12,7 +12,6 @@ import domain.AttendanceStatus;
 import domain.Crew;
 import domain.CrewRepository;
 import domain.Manage;
-import exception.AlreadyAttendanceException;
 
 public class AttendanceTest {
 
@@ -30,7 +29,7 @@ public class AttendanceTest {
         crew.attendance(LocalDate.now(), LocalTime.of(10, 00));
         assertThatThrownBy(() -> {
             crew.attendance(LocalDate.now(), LocalTime.of(10, 01));
-        }).isInstanceOf(AlreadyAttendanceException.class);
+        }).isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test

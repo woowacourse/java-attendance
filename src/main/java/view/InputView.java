@@ -18,7 +18,7 @@ public class InputView {
     public static OptionRequest scanOption() {
         return RetryHandler.retryUntilSuccessWithReturn(() -> {
             LocalDate now = DateTimeUtil.nowDate();
-            System.out.println(String.format("""
+            System.out.printf("""
                 오늘은 %d월 %d일 %s요일입니다. 기능을 선택해 주세요.
                 1. 출석 확인
                 2. 출석 수정
@@ -28,9 +28,10 @@ public class InputView {
                 """,
                 now.getMonth().getValue(),
                 now.getDayOfMonth(),
-                now.getDayOfWeek().getDisplayName(TextStyle.SHORT, Locale.KOREAN))
+                now.getDayOfWeek().getDisplayName(TextStyle.SHORT, Locale.KOREAN)
             );
             String option = scanner.nextLine();
+            System.out.println();
             return new OptionRequest(option);
         });
     }
@@ -40,6 +41,7 @@ public class InputView {
         String nickname = scanner.nextLine();
         System.out.println("등교 시간을 입력해 주세요.");
         String time = scanner.nextLine();
+        System.out.println();
         return AttendanceRequest.of(nickname, time);
     }
 
@@ -50,11 +52,14 @@ public class InputView {
         String day = scanner.nextLine();
         System.out.println("언제로 변경하겠습니까?");
         String time = scanner.nextLine();
+        System.out.println();
         return AttendanceModifyRequest.of(nickname, day, time);
     }
 
     public static String scanNickname() {
         System.out.println("닉네임을 입력해 주세요.");
-        return scanner.nextLine();
+        String nickname = scanner.nextLine();
+        System.out.println();
+        return nickname;
     }
 }

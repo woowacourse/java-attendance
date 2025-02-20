@@ -15,10 +15,8 @@ public enum Manage {
     private final String description;
 
     Manage(int absentThreshold, String description) {
-
         this.absentThreshold = absentThreshold;
         this.description = description;
-
     }
 
     public static Manage of(Map<AttendanceStatus, Integer> attendanceStatusStatistics) {
@@ -28,7 +26,7 @@ public enum Manage {
         return Arrays.stream(values())
             .filter(manage -> manage.absentThreshold <= absentCount)
             .max(Comparator.comparing(Manage::getAbsentThreshold))
-            .orElse(null);
+            .orElseThrow(() -> new IllegalStateException("잘못된 상황입니다."));
     }
 
     public int getAbsentThreshold() {

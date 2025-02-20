@@ -32,8 +32,8 @@ public class AttendanceController {
             OptionRequest optionRequest = InputView.scanOption();
             switch (optionRequest.option()) {
                 case "1" -> {
-                    validateCampusTime();
                     AttendanceRequest request = InputView.scanAttendance();
+                    validateCampusTime(request.time());
                     Crew crew = crewRepository.get(request.nickname());
                     AttendanceStatus status = crew.attendance(DateTimeUtil.nowDate(), request.time());
                     OutputView.printAttendanceResult(
@@ -43,10 +43,13 @@ public class AttendanceController {
                             status));
                 }
                 case "2" -> {
-                    validateCampusTime();
                     AttendanceModifyRequest request = InputView.scanModify();
+                    validateCampusTime(request.time());
                     Crew crew = crewRepository.get(request.nickname());
                     LocalTime before = crew.getAttendanceTimeByDate(request.date());
+                    if (before == null) {
+                        throw new IllegalArgumentException("출석 기록이 없는 날짜입니다.");
+                    }
                     AttendanceStatus beforeStatus = crew.getAttendanceStatusByDate(request.date());
                     crew.modifyAttendance(request.date(), request.time());
                     LocalTime after = crew.getAttendanceTimeByDate(request.date());
@@ -94,10 +97,9 @@ public class AttendanceController {
         }
     }
 
-    private void validateCampusTime() {
-        LocalTime now = DateTimeUtil.nowTime();
-        if(now.isBefore(CampusConstant.startTime) || now.isAfter(CampusConstant.endTime)) {
-            throw new IllegalArgumentException("지금은 캠퍼스 운영시간이 아닙니다.");
+    private void validateCampusTime(LocalTime time) {
+        if(time.isBefore(CampusConstant.startTime) || time.isAfter(CampusConstant.endTime)) {
+            throw new IllegalArgumentException("캠퍼스 운영시간이 아닙니다.");
         }
     }
 }
