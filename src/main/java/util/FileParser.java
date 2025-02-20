@@ -18,20 +18,17 @@ public class FileParser {
     public static List<AttendanceRecord> loadAttendanceRecords() {
         File file = new File("src/main/resources/attendances.csv");
         BufferedReader br = null;
-        String line;
 
         List<AttendanceRecord> result = new ArrayList<>();
         try {
+            String line;
             br = new BufferedReader(new FileReader(file));
             while ((line = br.readLine()) != null) {
                 result.add(parseAttendanceHistory(line));
             }
-        } catch (FileNotFoundException e) {
-            throw new RuntimeException(e);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-
         return result;
     }
 
