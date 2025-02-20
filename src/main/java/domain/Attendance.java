@@ -33,7 +33,9 @@ public class Attendance {
     private void validateHoliday(LocalDateTime localDateTime) {
         final int day = localDateTime.getDayOfMonth();
         if (day == HOLIDAY) {
-            throw new IllegalArgumentException("공휴일에는 출석할 수 없습니다.");
+            throw new IllegalArgumentException(
+                    String.format("%d월 %d일 %d요일은 등교일이 아닙니다.", localDateTime.getMonth(), localDateTime.getDayOfMonth(),
+                            localDateTime.getDayOfWeek()));
         }
     }
 
