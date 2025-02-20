@@ -2,8 +2,9 @@ package attendance.controller;
 
 import attendance.controller.util.AttendancesFileReader;
 import attendance.controller.util.CrewAttendanceParser;
-import attendance.controller.util.HolidayValidator;
 import attendance.controller.util.TimeFormatter;
+import attendance.controller.validator.HolidayValidator;
+import attendance.controller.validator.OperatingHoursValidator;
 import attendance.domain.*;
 import attendance.service.CrewsService;
 import attendance.view.InputView;
@@ -11,67 +12,64 @@ import attendance.view.OutputView;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 
 public class AttendanceController {
-    public static final LocalTime START_TIME = LocalTime.of(8, 0);
-    public static final LocalTime END_TIME = LocalTime.of(23, 0);
-
     private final CrewsService crewsService;
     private final InputView inputView;
     private final OutputView outputView;
+    private final LocalDate today;
 
-    public AttendanceController() {
+    public AttendanceController(LocalDate today) {
         this.crewsService = new CrewsService();
         this.inputView = new InputView();
         this.outputView = new OutputView();
+        this.today = today;
     }
 
     public void run() {
-        LocalDate now = LocalDate.of(2024, 12, 16);
-        Crews crews = crewsService.init(CrewAttendanceParser.parseCrewAttendances(AttendancesFileReader.read()), now);
+        Crews crews = crewsService.init(CrewAttendanceParser.parseCrewAttendances(AttendancesFileReader.read()), today);
         while (true) {
             try {
-                Menu selectedMenu = inputView.inputMenu(now);
-                if (selectMenu(selectedMenu, crews, now)) break;
+                Menu selectedMenu = inputView.inputMenu(today);
+                if (selectMenu(selectedMenu, crews)) break;
             } catch (IllegalArgumentException e) {
                 outputView.printExceptionMessage(e);
             }
         }
     }
 
-    private boolean selectMenu(Menu selectedMenu, Crews crews, LocalDate now) {
-        if (selectedMenu.equals(Menu.CHECK_ATTEND)) confirmAttendance(crews, now);
-        if (selectedMenu.equals(Menu.UPDATE_ATTEND)) updateAttendance(crews, now);
-        if (selectedMenu.equals(Menu.PRINT_ATTEND_BY_CREW)) printAttendanceByCrew(crews, now);
+    private boolean selectMenu(Menu selectedMenu, Crews crews) {
+        if (selectedMenu.equals(Menu.CHECK_ATTEND)) confirmAttendance(crews);
+        if (selectedMenu.equals(Menu.UPDATE_ATTEND)) updateAttendance(crews);
+        if (selectedMenu.equals(Menu.PRINT_ATTEND_BY_CREW)) printAttendanceByCrew(crews);
         if (selectedMenu.equals(Menu.PRINT_WARNING)) printWarningCrews(crews);
 
         return selectedMenu.equals(Menu.QUIT);
     }
 
-    private void confirmAttendance(final Crews crews, final LocalDate now) {
-        HolidayValidator.isHoliday(now);
+    private void confirmAttendance(final Crews crews) {
+        HolidayValidator.validate(today);
 
         Crew crew = crews.findByName(inputView.inputNickname());
-        crew.existInAttendances(now);
+        crew.existInAttendances(today);
 
-        LocalDateTime attendDateTime = TimeFormatter.format(now, inputView.inputAttendTime());
-        validateOperatingHours(attendDateTime);
+        LocalDateTime attendDateTime = TimeFormatter.format(today, inputView.inputAttendTime());
+        OperatingHoursValidator.validate(attendDateTime);
         Attendance attendance = new Attendance(attendDateTime);
 
         crew.addAttendance(attendance);
         outputView.printAttendanceResult(attendance);
     }
 
-    private void updateAttendance(final Crews crews, final LocalDate now) {
+    private void updateAttendance(final Crews crews) {
         Crew crew = crews.findByName(inputView.inputNickname());
 
-        LocalDate updateDate = LocalDate.of(now.getYear(), now.getMonthValue(), inputView.inputUpdateDate(now));
-        HolidayValidator.isHoliday(updateDate);
+        LocalDate updateDate = LocalDate.of(today.getYear(), today.getMonthValue(), inputView.inputUpdateDate(today));
+        HolidayValidator.validate(updateDate);
 
         String inputUpdateTime = inputView.inputUpdateTime();
         LocalDateTime updateTime = TimeFormatter.format(updateDate, inputUpdateTime);
-        validateOperatingHours(updateTime);
+        OperatingHoursValidator.validate(updateTime);
 
         Attendance before = crew.findAttendanceByDate(updateDate);
         // TODO : dto로 추출
@@ -82,7 +80,7 @@ public class AttendanceController {
         outputView.printUpdateAttendance(beforeTime, beforeStatus, after);
     }
 
-    private void printAttendanceByCrew(final Crews crews, final LocalDate now) {
+    private void printAttendanceByCrew(final Crews crews) {
         Crew crew = crews.findByName(inputView.inputNickname());
         outputView.printAttendanceByCrew(crew);
 
@@ -94,12 +92,5 @@ public class AttendanceController {
 
     private void printWarningCrews(final Crews crews) {
         outputView.printWarningCrews(crews.collectWarningCrews());
-    }
-
-    private void validateOperatingHours(LocalDateTime attendDateTime) {
-        LocalTime attendTime = attendDateTime.toLocalTime();
-        if (attendTime.isAfter(END_TIME) || attendTime.isBefore(START_TIME)) {
-            throw new IllegalArgumentException("[ERROR] 캠퍼스 운영 시간이 아닙니다.");
-        }
     }
 }

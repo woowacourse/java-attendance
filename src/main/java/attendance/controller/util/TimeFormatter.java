@@ -20,6 +20,5 @@ public class TimeFormatter {
         } catch (DateTimeParseException e) {
             throw new IllegalArgumentException(String.format("[ERROR] 시간은 %s 형식으로 입력해주세요.", TIME_FORMAT));
         }
-
     }
 }
