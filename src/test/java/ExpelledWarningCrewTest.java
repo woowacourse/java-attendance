@@ -55,7 +55,8 @@ public class ExpelledWarningCrewTest {
     @DisplayName("제적 위험자를 기준에 맞게 정렬한다.")
     @Test
     void 제적_위험자_정렬() {
-        Map<String, StatisticsResult> sortedResult = attendanceManager.sortCrew();
+        LocalDate nowDate = LocalDate.of(2024, 12, 10);
+        Map<String, StatisticsResult> sortedResult = attendanceManager.sortCrew(nowDate);
         List<String> names = new ArrayList<>(sortedResult.keySet());
 
         assertThat(names.get(0)).isEqualTo("이든");

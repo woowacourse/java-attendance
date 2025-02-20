@@ -2,7 +2,10 @@ package domain;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -45,6 +48,22 @@ public class AttendanceManager {
     public Map<String, StatisticsResult> findWarningCrews(LocalDate nowDate) {
         return AttendanceStatistics.calculateExpelledWarning(nowDate, crews);
     }
+
+    public Map<String, StatisticsResult> sortCrew(LocalDate nowDate) {
+        Map<String, StatisticsResult> statisticsMap = AttendanceStatistics.calculateExpelledWarning(
+            nowDate, crews);
+
+        return statisticsMap
+            .entrySet().stream().sorted(Comparator.comparing(
+                    (Map.Entry<String, StatisticsResult> entry) -> entry.getValue().getPenalty(),
+                    Comparator.reverseOrder())
+                .thenComparing(entry -> entry.getValue().getAbsenceCount(),
+                    Comparator.reverseOrder()).thenComparing(Map.Entry::getKey)
+            )
+            .collect(LinkedHashMap::new, (map, entry) -> map.put(entry.getKey(), entry.getValue()),
+                Map::putAll);
+    }
+
 
     public Records findByName(String name) {
         return crews.get(name);
