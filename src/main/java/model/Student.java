@@ -32,12 +32,6 @@ public class Student {
         this.name = name;
     }
 
-    public void isStartTime(LocalTime localTime) {
-        if (localTime.isAfter(LocalTime.of(23,0)) || localTime.isBefore(LocalTime.of(8,0))){
-            throw new IllegalArgumentException("[ERROR] 캠퍼스 운영 시간이 아닙니다.");
-        }
-    }
-
     public void updateState(LocalDateTime localDateTime) {
         DayOfWeek dayOfWeek = localDateTime.getDayOfWeek();
         int day = dayOfWeek.getValue();
@@ -158,7 +152,7 @@ public class Student {
         return record;
     }
 
-    public boolean compareDayIsSame(LocalDateTime localDateTime1, LocalDateTime localDateTime2) {
+    private boolean compareDayIsSame(LocalDateTime localDateTime1, LocalDateTime localDateTime2) {
         LocalDateTime dayDate1 = localDateTime1.truncatedTo(ChronoUnit.DAYS);
         LocalDateTime dayDate2 = localDateTime2.truncatedTo(ChronoUnit.DAYS);
 
@@ -187,7 +181,7 @@ public class Student {
         return absent + late/3;
     }
 
-    public HashMap<LocalDateTime, AttendanceStatus> makeRecordClone() {
+    private HashMap<LocalDateTime, AttendanceStatus> makeRecordClone() {
         HashMap<LocalDateTime, AttendanceStatus> recordClone = new HashMap<>();
         for (LocalDateTime localDateTime : record.keySet()) {
             recordClone.putIfAbsent(localDateTime, record.get(localDateTime));
