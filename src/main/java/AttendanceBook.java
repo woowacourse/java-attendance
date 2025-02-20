@@ -16,20 +16,27 @@ public class AttendanceBook {
         this.map = new HashMap<>();
     }
 
+    public void registerName(String name) {
+        if (map.containsKey(name)) {
+            return;
+        }
+        map.put(name, new Attends(new ArrayList<>()));
+    }
+
     public void attend(String name, Attend attend) {
-        var attendOfUser = map.getOrDefault(name, new Attends(new ArrayList<>()));
+        validateIsNameExist(name);
         validateAttendableDay(attend);
         validateAttendableTime(attend);
-        attendOfUser.addAttend(attend);
-        map.put(name, attendOfUser);
+        Attends attends = map.get(name);
+        attends.addAttend(attend);
     }
 
     public void edit(String name, Attend attend) {
-        var attendOfUser = map.getOrDefault(name, new Attends(new ArrayList<>()));
+        validateIsNameExist(name);
         validateAttendableDay(attend);
         validateAttendableTime(attend);
-        attendOfUser.edit(attend);
-        map.put(name, attendOfUser);
+        Attends attends = map.get(name);
+        attends.edit(attend);
     }
 
     private void validateAttendableTime(Attend attend) {
@@ -46,14 +53,21 @@ public class AttendanceBook {
     }
 
     public Attends findByName(String name) {
-        return map.getOrDefault(name, null);
+        validateIsNameExist(name);
+        return map.get(name);
     }
 
     public List<Attend> getAttends(String name) {
-        // TODO: 닉네임 존재 여부 확인하는 validate 추가해야함
+        validateIsNameExist(name);
         List<Integer> days = DateUtil.getAttendUntilDay(Current.TODAY.getYesterday());
         return map.get(name)
                 .getAttends(days);
+    }
+
+    private void validateIsNameExist(String name) {
+        if (!map.containsKey(name)) {
+            throw new IllegalArgumentException("출석부에 존재하지 않는 크루입니다.");
+        }
     }
 
     public AttendanceResults checkAttendance(String name, List<Integer> days) {

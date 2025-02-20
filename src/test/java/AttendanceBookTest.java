@@ -13,9 +13,10 @@ public class AttendanceBookTest {
     @Test
     void 평일_출석_저장_테스트() throws Exception {
         //given
-        AttendanceBook attendanceBook = new AttendanceBook();
         var name = "플린트";
         var time = "09:59";
+        AttendanceBook attendanceBook = new AttendanceBook();
+        attendanceBook.registerName(name);
         Attend attend = Attend.of(time);
 
         //when
@@ -26,12 +27,44 @@ public class AttendanceBookTest {
     }
 
     @Test
+    @DisplayName("이름이 존재하지 않는 크루 출석시 예외")
+    void test524523432() throws Exception {
+        //given
+        var name = "플린트";
+        var time = "09:59";
+        AttendanceBook attendanceBook = new AttendanceBook();
+        Attend attend = Attend.of(time);
+
+        //when & then
+        assertThatThrownBy(
+                () -> attendanceBook.attend(name, attend))
+                .isInstanceOf(IllegalArgumentException.class);
+    }
+
+    @Test
+    @DisplayName("이름이 존재하지 않는 크루 수정 시 예외")
+    void test52452233432() throws Exception {
+        //given
+        var name = "플린트";
+        var time = "09:59";
+        AttendanceBook attendanceBook = new AttendanceBook();
+        Attend attend = Attend.of(time);
+
+        //when & then
+        assertThatThrownBy(
+                () -> attendanceBook.edit(name, attend))
+                .isInstanceOf(IllegalArgumentException.class);
+    }
+
+
+    @Test
     void 주말_출석_저장_시도하면_예외() throws Exception {
         //given
-        AttendanceBook attendanceBook = new AttendanceBook();
         var name = "플린트";
         var date = "14";
         var time = "09:59";
+        AttendanceBook attendanceBook = new AttendanceBook();
+        attendanceBook.registerName(name);
         Attend attend = Attend.of(date, time);
 
         //when & then
@@ -41,10 +74,11 @@ public class AttendanceBookTest {
     @Test
     void 공휴일_출석_저장_시도하면_예외() throws Exception {
         //given
-        AttendanceBook attendanceBook = new AttendanceBook();
         var name = "플린트";
         var date = "25";
         var time = "09:59";
+        AttendanceBook attendanceBook = new AttendanceBook();
+        attendanceBook.registerName(name);
         Attend attend = Attend.of(date, time);
 
         //when & then
@@ -55,10 +89,11 @@ public class AttendanceBookTest {
     @DisplayName("운영 시간 전에 시간을 입력했을 경우, 예외를 throw 한다.")
     void test() throws Exception {
         //given
-        AttendanceBook attendanceBook = new AttendanceBook();
         String name = "플린트";
         String day = "13";
         String time = "07:59";
+        AttendanceBook attendanceBook = new AttendanceBook();
+        attendanceBook.registerName(name);
         Attend attend = Attend.of(day, time);
 
         //when & then
@@ -69,10 +104,11 @@ public class AttendanceBookTest {
     @DisplayName("운영 시간 이후에 시간을 입력했을 경우, 예외를 throw 한다.")
     void test2() throws Exception {
         //given
-        AttendanceBook attendanceBook = new AttendanceBook();
         String name = "플린트";
         String day = "13";
         String time = "23:01";
+        AttendanceBook attendanceBook = new AttendanceBook();
+        attendanceBook.registerName(name);
         Attend attend = Attend.of(day, time);
 
         //when & then
@@ -82,10 +118,11 @@ public class AttendanceBookTest {
     @Test
     void 존재하지_않는_출석_수정_테스트() throws Exception {
         //given
-        AttendanceBook attendanceBook = new AttendanceBook();
         var name = "플린트";
         var date = "13";
         var time = "10:11";
+        AttendanceBook attendanceBook = new AttendanceBook();
+        attendanceBook.registerName(name);
         Attend attend = Attend.of(date, time);
 
         //when
@@ -98,10 +135,11 @@ public class AttendanceBookTest {
     @Test
     void 존재하는_출석_수정_테스트() throws Exception {
         //given
-        AttendanceBook attendanceBook = new AttendanceBook();
         var name = "플린트";
         Attend beforeAttend = Attend.of("13", "10:00");
         Attend afterAttend = Attend.of("13", "10:10");
+        AttendanceBook attendanceBook = new AttendanceBook();
+        attendanceBook.registerName(name);
         attendanceBook.attend(name, beforeAttend);
 
         //when
@@ -117,6 +155,7 @@ public class AttendanceBookTest {
         // given
         String name = "플린트";
         AttendanceBook attendanceBook = new AttendanceBook();
+        attendanceBook.registerName(name);
         List<Attend> attendsInitValue = List.of(Attend.of("2", "13:00"), Attend.of("3", "10:07"),
                 Attend.of("4", "13:00"), Attend.of("5", "13:00"), Attend.of("6", "13:00"), Attend.of("9", "13:00"),
                 Attend.of("10", "13:00"), Attend.of("11", "13:00"), Attend.of("12", "13:00"), Attend.of("13", "13:00"));
@@ -139,6 +178,7 @@ public class AttendanceBookTest {
         //given
         String name = "플린트";
         AttendanceBook attendanceBook = new AttendanceBook();
+        attendanceBook.registerName(name);
         List<Attend> expectAttend = List.of(Attend.of("2", "10:00"), Attend.of("3", "10:06"), Attend.of("4", "10:31"));
         List<AttendStatus> expectedStatus = List.of(AttendStatus.ATTEND, AttendStatus.LATE, AttendStatus.ABSENCE);
         List<Attend> attends = new ArrayList<>(expectAttend);
@@ -162,6 +202,7 @@ public class AttendanceBookTest {
         //given
         String name = "플린트";
         AttendanceBook attendanceBook = new AttendanceBook();
+        attendanceBook.registerName(name);
         List<Attend> expectAttend = List.of(Attend.of("2", "10:00"), Attend.of("3", "10:06"), Attend.of("4", "10:31"));
         List<Attend> attends = new ArrayList<>(expectAttend);
         for (Attend attend : attends) {
@@ -183,8 +224,9 @@ public class AttendanceBookTest {
     @DisplayName("출석부에서 제적 위험자 조회 기능")
     void test11() throws Exception {
         //given
-        AttendanceBook attendanceBook = new AttendanceBook();
         String name = "플린트";
+        AttendanceBook attendanceBook = new AttendanceBook();
+        attendanceBook.registerName(name);
         List<Integer> days = DateUtil.getAttendUntilDay(5);
         List<Attend> expectAttend = List.of(Attend.of("2", "10:00"), Attend.of("3", "10:06"), Attend.of("4", "10:31"));
         for (Attend attend : expectAttend) {
@@ -204,14 +246,16 @@ public class AttendanceBookTest {
     @DisplayName("출석부에서 제적 위험자 조회 기능- 맞는 대상만 잘 가져오는지")
     void test156421() throws Exception {
         //given
-        AttendanceBook attendanceBook = new AttendanceBook();
         List<Integer> days = DateUtil.getAttendUntilDay(5);
         String name = "플린트";
+        AttendanceBook attendanceBook = new AttendanceBook();
+        attendanceBook.registerName(name);
         List<Attend> expectAttend = List.of(Attend.of("2", "10:00"), Attend.of("3", "10:06"), Attend.of("4", "10:31"));
         for (Attend attend : expectAttend) {
             attendanceBook.attend(name, attend);
         }
         String secondName = "후유";
+        attendanceBook.registerName(secondName);
         List<Attend> secondAttends = List.of(Attend.of("2", "10:00"), Attend.of("3", "10:00"), Attend.of("4", "10:00"));
         for (Attend attend : secondAttends) {
             attendanceBook.attend(secondName, attend);
@@ -224,5 +268,24 @@ public class AttendanceBookTest {
         AttendCount expectedAttendCount = new AttendCount(1, 1, 2);
         WarningCrew expected = new WarningCrew(name, expectedAttendCount);
         assertThat(warningCrews).contains(expected);
+    }
+
+
+    @Test
+    @DisplayName("크루 중복 등록시 아무런 문제가 발생하지 않는다.")
+    void test12312312312312() throws Exception {
+        // given
+        String name = "플린트";
+        AttendanceBook attendanceBook = new AttendanceBook();
+        attendanceBook.registerName(name);
+        Attend attend = Attend.of("2", "10:00");
+        attendanceBook.attend(name, attend);
+
+        // when
+        attendanceBook.registerName(name);
+        Attends attends = attendanceBook.findByName(name);
+
+        // then
+        assertThat(attends.attends).contains(attend);
     }
 }

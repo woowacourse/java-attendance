@@ -17,7 +17,10 @@ public class AttendanceController {
     private AttendanceBook loadAttendanceBook(List<String> data) {
         AttendanceBook attendanceBook = new AttendanceBook();
         for (String row : data) {
-            attendanceBook.attend(parseName(row), parseAttend(row));
+            final String name = parseName(row);
+            final Attend attend = parseAttend(row);
+            attendanceBook.registerName(name);
+            attendanceBook.attend(name, attend);
         }
         return attendanceBook;
     }

@@ -17,6 +17,7 @@ public class AttendResultsTest {
                 Attend.of("3", "10:06"),
                 Attend.of("4", "10:31")
         );
+        attendanceBook.registerName(name);
         for (Attend attend : attends) {
             attendanceBook.attend(name, attend);
         }
