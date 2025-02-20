@@ -22,7 +22,7 @@ public class CrewStatistic {
         crew.resetCount();
     }
 
-    public void initCrewStatus() {
+    public void initCrewsStatus() {
         for (Attendance crewAttendance : crewAttendances) {
             if (crewAttendance.getType() == AttendanceType.SAFE) {
                 crew.plusSafeCount();
