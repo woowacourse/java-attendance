@@ -24,7 +24,7 @@ public class AttendanceApplication {
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
             return LocalDateTime.parse(args[0], formatter);
         } catch (Exception e) {
-            return LocalDateTime.now();
+            return LocalDateTime.of(2024, 12, 13, 0, 0);
         }
     }
 }
