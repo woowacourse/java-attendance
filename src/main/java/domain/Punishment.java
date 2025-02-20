@@ -3,6 +3,7 @@ package domain;
 import java.util.Arrays;
 
 public enum Punishment {
+
     EXPULSION("제적", 5),
     INTERVIEW("면담", 2),
     WARNING("경고", 1),

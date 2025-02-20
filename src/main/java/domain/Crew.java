@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 import java.util.Objects;
 
 public class Crew implements Comparable<Crew> {
+
     Nickname nickname;
     Attendances attendances;
     AttendanceCounter attendanceCounter;
@@ -33,7 +34,6 @@ public class Crew implements Comparable<Crew> {
     public void updateAttendance(final Attendance oldAttendance, final Attendance attendance) {
         attendances.remove(oldAttendance);
         attendances.add(attendance);
-
     }
 
     public Attendances getAttendances() {

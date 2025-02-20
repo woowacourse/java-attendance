@@ -3,6 +3,7 @@ package domain;
 import java.util.Arrays;
 
 public enum Command {
+
     CHECK_ATTENDEES("출석 확인", "1"),
     EDIT_ATTENDANCE("출석 수정", "2"),
     CHECK_THE_ATTENDANCE_RECORD_BY_CREW("크루별 출석 기록 확인", "3"),

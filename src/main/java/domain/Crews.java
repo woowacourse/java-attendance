@@ -4,6 +4,7 @@ import java.util.Comparator;
 import java.util.List;
 
 public class Crews {
+
     private List<Crew> crews;
 
     public Crews(final List<Crew> crews) {
@@ -46,5 +47,4 @@ public class Crews {
             .reversed();
 
     private final Comparator<Crew> nameOrder = Comparator.comparing(Crew::getNickname);
-
 }

@@ -9,6 +9,7 @@ import java.util.Map;
 import util.Constants;
 
 public enum Week {
+
     MONDAY(LocalTime.of(13, 0)),
     TUESDAY(LocalTime.of(10, 0)),
     WEDNESDAY(LocalTime.of(10, 0)),

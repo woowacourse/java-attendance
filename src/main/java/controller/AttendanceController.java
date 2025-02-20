@@ -46,7 +46,6 @@ public class AttendanceController {
                 OutputView.printAllExpulsion(crews);
             }
         }
-
     }
 
     private static void processCheckAttendees(final Crews crews, final LocalDateTime fixDateTime) {
@@ -90,4 +89,3 @@ public class AttendanceController {
         OutputView.printCrewAttendances(crew);
     }
 }
-

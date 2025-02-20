@@ -4,6 +4,7 @@ import java.util.Objects;
 import java.util.regex.Pattern;
 
 public class Nickname implements Comparable<Nickname> {
+
     private final String nickname;
 
     public Nickname(final String nickname) {

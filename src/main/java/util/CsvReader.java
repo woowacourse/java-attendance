@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.util.List;
 
 public final class CsvReader {
+
     private static final String DELIMITER = ",";
     private static final int LINES_TO_SKIP = 1;
 
