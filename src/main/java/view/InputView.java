@@ -62,12 +62,6 @@ public class InputView {
         return inputByMessage("출석을 수정하려는 크루의 닉네임을 입력해 주세요.");
     }
 
-    public void validateName(String name) {
-        if (name.length() > 4 || name.length() < 2) {
-            throw new IllegalArgumentException();
-        }
-    }
-
     public String inputEditDay() {
         return inputByMessage("수정하려는 날짜(일)를 입력해 주세요.");
     }

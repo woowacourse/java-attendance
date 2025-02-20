@@ -9,8 +9,6 @@ import java.time.LocalTime;
 import java.util.HashMap;
 import java.util.Map;
 
-import static domain.util.DateUtil.TODAY;
-import static domain.util.DateUtil.assembleDateAndTime;
 import static global.util.DateUtil.TODAY;
 import static global.util.DateUtil.assembleDateAndTime;
 
@@ -70,7 +68,7 @@ public class Crew {
     }
 
     public boolean isNowAbsence(LocalDate localDate) {
-        if(!attendanceBook.containsKey(localDate) && !DateUtil.isWeekend(localDate)) {
+        if(!attendanceBook.containsKey(localDate) && DateUtil.isWeekday(localDate)) {
             return true;
         }
         if(!attendanceBook.containsKey(localDate)) {

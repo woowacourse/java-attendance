@@ -24,4 +24,8 @@ public class ViewUtil {
         }
         return "일요일";
     }
+
+    public static String getNoneAttendanceMessage() {
+        return "--:--";
+    }
 }

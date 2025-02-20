@@ -7,6 +7,7 @@ import java.time.LocalTime;
 
 public class DateUtil {
     public static LocalDateTime TODAY = LocalDateTime.of(LocalDate.of(2024, 12, 07), LocalTime.of(10, 30, 00));
+    public static final LocalDate CHRISTMAS = LocalDate.of(2024, 12, 25);
 
     public static LocalDate getFirstDateOfMonth() {
         return TODAY.toLocalDate()
@@ -14,9 +15,16 @@ public class DateUtil {
                 .toLocalDate();
     }
 
+    public static boolean isHoliday(LocalDate localDate) {
+        return localDate.isEqual(CHRISTMAS);
+    }
+
     public static boolean isWeekend(LocalDate localDate) {
-        //TODO: 공휴일 체크
         return localDate.getDayOfWeek() == DayOfWeek.SATURDAY || localDate.getDayOfWeek() == DayOfWeek.SUNDAY;
+    }
+
+    public static boolean isWeekday(LocalDate localDate) {
+        return !(isHoliday(localDate) || isWeekend(localDate));
     }
 
     public static LocalDateTime assembleDateAndTime(LocalDate localDate, LocalTime localTime) {
