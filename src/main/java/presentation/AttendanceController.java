@@ -1,6 +1,9 @@
 package presentation;
 
+import domain.Crew;
 import domain.CrewGroup;
+import domain.attendance.Attendance;
+import domain.attendance.AttendanceState;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -48,6 +51,12 @@ public class AttendanceController {
                 String textAttendanceTime = InputView.inputAttendanceTime();
                 LocalDateTime attendanceDateTime = DateTimeUtil.convertStringToLocalDateTime(LocalDate.now(),
                         textAttendanceTime);
+
+                Crew crew = crewGroup.findCrew(nickname);
+                Attendance attendance = crew.getAttendance();
+                AttendanceState attendanceState = attendance.attend(attendanceDateTime);
+
+                OutputView.printAttend(DateTimeUtil.convertLocalDateTimeToString(attendanceDateTime), attendanceState);
             }
             if (command.equals("2")) {
                 // 출석 수정

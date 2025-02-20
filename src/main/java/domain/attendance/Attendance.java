@@ -3,11 +3,12 @@ package domain.attendance;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
 public class Attendance {
-    private List<AttendanceDate> attendanceDates = new ArrayList<>();
+    private final List<AttendanceDate> attendanceDates = new ArrayList<>();
 
     public Attendance(LocalDate startDate, LocalDate endDate) {
         for (LocalDate cursorDate = startDate; cursorDate.isBefore(endDate); cursorDate = cursorDate.plusDays(1)) {
@@ -40,14 +41,16 @@ public class Attendance {
     }
 
 
-    public void attend(LocalDateTime attendDateTime) {
+    public AttendanceState attend(LocalDateTime attendDateTime) {
         if (!attendDateTime.isBefore(LocalDateTime.now())) {
             throw new IllegalArgumentException("");
         }
         if (has(attendDateTime.toLocalDate())) {
             throw new IllegalArgumentException("");
         }
-        attendanceDates.add(new AttendanceDate(attendDateTime));
+        AttendanceDate attendanceDate = new AttendanceDate(attendDateTime);
+        attendanceDates.add(attendanceDate);
+        return attendanceDate.calculateAttendanceState();
     }
 
     public void fillAttendanceDate() {
@@ -61,7 +64,7 @@ public class Attendance {
             } catch (IllegalArgumentException exception) {
             }
         }
-        this.attendanceDates = attendanceDates.stream().sorted().toList();
+        Collections.sort(this.attendanceDates);
     }
 
     private boolean has(LocalDate localDate) {

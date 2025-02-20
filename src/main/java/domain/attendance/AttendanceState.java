@@ -14,6 +14,10 @@ public enum AttendanceState {
         this.state = state;
     }
 
+    public String getState() {
+        return state;
+    }
+
     public static AttendanceState calculateAttendanceState(int dayOfWeek, LocalDateTime dateTime) {
         if (AttendanceTime.isAttendance(dayOfWeek, dateTime)) {
             return ATTENDANCE;
