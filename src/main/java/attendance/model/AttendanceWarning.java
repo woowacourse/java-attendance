@@ -1,10 +1,9 @@
 package attendance.model;
 
 public enum AttendanceWarning {
-
-    경고(2),
-    면담(3),
     제적(6),
+    면담(3),
+    경고(2),
     해당없음(0),
     ;
 
@@ -14,17 +13,23 @@ public enum AttendanceWarning {
         this.absenceCount = absenceCount;
     }
 
-
     public static AttendanceWarning from(long absenceCount) {
-        if (absenceCount > 5) {
-            return 제적;
-        }
-        if (absenceCount >= 3) {
-            return 면담;
-        }
-        if (absenceCount >= 2) {
-            return 경고;
+
+        for (AttendanceWarning warning : AttendanceWarning.values()) {
+            if (absenceCount >= warning.absenceCount) {
+                return warning;
+            }
         }
         return 해당없음;
+//        if (absenceCount > 제적.absenceCount) {
+//            return 제적;
+//        }
+//        if (absenceCount >= 면담.absenceCount) {
+//            return 면담;
+//        }
+//        if (absenceCount >= 경고.absenceCount) {
+//            return 경고;
+//        }
+//        return 해당없음;
     }
 }

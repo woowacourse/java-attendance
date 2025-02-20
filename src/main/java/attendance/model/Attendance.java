@@ -1,28 +1,28 @@
 package attendance.model;
 
-import java.time.Duration;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 
 public enum Attendance {
-    출석(),
-    지각(),
-    결석();
+    출석(0),
+    지각(5),
+    결석(30),
+    ;
 
+    private final int lateMinute;
+
+    Attendance(int lateMinute) {
+        this.lateMinute = lateMinute;
+    }
 
     public static Attendance from(LocalDateTime dateTime) {
-        LocalTime nowTime = dateTime.toLocalTime();
         WoowaDayOfWeek dayOfWeek = WoowaDayOfWeek.from(dateTime);
-
-        long duration = Duration.between(dayOfWeek.getStartTime(),nowTime).toMinutes();
-
-        if (duration > 30) {
+        long duration = dayOfWeek.calculateDuration(dateTime.toLocalTime());
+        if (duration > 결석.lateMinute) {
             return 결석;
         }
-        if (duration > 5) {
+        if (duration > 지각.lateMinute) {
             return 지각;
         }
-
         return 출석;
     }
 }
