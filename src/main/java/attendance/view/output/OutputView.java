@@ -2,51 +2,18 @@ package attendance.view.output;
 
 import attendance.dto.AttendanceLogResponse;
 import attendance.dto.CrewAttendanceLogResponse;
+import attendance.dto.RequiresManagementCrewResponse;
 import attendance.dto.UpdateAttendanceResponse;
-import attendance.view.input.KoreaDayOfWeek;
-import java.time.LocalTime;
-import java.util.Map;
+import java.util.List;
 
-public class OutputView {
+public interface OutputView {
 
-    public void printAttendanceLog(AttendanceLogResponse response) {
-        String message = String.format("%d월 %d일 %s %s (%s)",
-                response.getDate().getMonthValue(),
-                response.getDate().getDayOfMonth(),
-                KoreaDayOfWeek.from(response.getDate().getDayOfWeek()).getName(),
-                formatTime(response.getTime()),
-                response.getAttendanceStatusResponse().getAttendanceStatus());
-        System.out.println(message);
-    }
+    void printAttendanceLog(AttendanceLogResponse response);
 
-    public void printUpdateAttendanceResponse(UpdateAttendanceResponse updateAttendanceResponse) {
-        String message = String.format("%d월 %d일 %s %s (%s) -> %s (%s) 수정 완료!",
-                updateAttendanceResponse.getBefore().getMonthValue(),
-                updateAttendanceResponse.getBefore().getDayOfMonth(),
-                KoreaDayOfWeek.from(updateAttendanceResponse.getBefore().getDayOfWeek()).getName(),
-                formatTime(updateAttendanceResponse.getBefore().toLocalTime()),
-                updateAttendanceResponse.getBeforeStatus(),
-                formatTime(updateAttendanceResponse.getAfter().toLocalTime()),
-                updateAttendanceResponse.getAfterStatus());
-        System.out.println(message);
-    }
+    void printUpdateAttendanceResponse(UpdateAttendanceResponse updateAttendanceResponse);
 
-    public void printCrewAttendanceLogResponse(CrewAttendanceLogResponse crewAttendanceLogResponse) {
-        System.out.printf("이번 달 %s의 출석 기록입니다.%n%n", crewAttendanceLogResponse.getCrewName());
+    void printCrewAttendanceLogResponse(CrewAttendanceLogResponse crewAttendanceLogResponse);
 
-        crewAttendanceLogResponse.getTimeLogs().forEach(this::printAttendanceLog);
-
-        Map<String, Integer> attendanceStatusStatistics = crewAttendanceLogResponse.getAttendanceStatusStatistics();
-        System.out.println();
-        attendanceStatusStatistics.forEach((status, count) -> System.out.printf("%s: %d회%n", status, count));
-
-        System.out.printf("%n%s 대상자입니다.%n", crewAttendanceLogResponse.getManagementStatus());
-    }
-
-    public String formatTime(LocalTime time) {
-        if (time == null) {
-            return "--:--";
-        }
-        return String.format("%2d:%2d", time.getHour(), time.getMinute());
-    }
+    void printRequiresManagementCrewResponse(
+            List<RequiresManagementCrewResponse> requiresManagementCrewResponses);
 }
