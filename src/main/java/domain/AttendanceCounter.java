@@ -2,9 +2,9 @@ package domain;
 
 public class AttendanceCounter {
 
-    private int attendanceCount;
-    private int tardinessCount;
-    private int absenceCount;
+    private final int attendanceCount;
+    private final int tardinessCount;
+    private final int absenceCount;
 
     public static AttendanceCounter of(final Attendances attendances) {
         AttendanceDto dto = attendances.calculateAttendanceCount();
@@ -15,30 +15,6 @@ public class AttendanceCounter {
         this.attendanceCount = attendanceCount;
         this.tardinessCount = tardinessCount;
         this.absenceCount = absenceCount;
-    }
-
-    public void incrementAttendanceCount() {
-        attendanceCount++;
-    }
-
-    public void incrementTardiness() {
-        tardinessCount++;
-    }
-
-    public void incrementAbsence() {
-        absenceCount++;
-    }
-
-    public void decrementAttendanceCount() {
-        attendanceCount--;
-    }
-
-    public void decrementTardiness() {
-        tardinessCount--;
-    }
-
-    public void decrementAbsence() {
-        absenceCount--;
     }
 
     public int getAttendanceCount() {
