@@ -31,14 +31,6 @@ public enum DayOfWeek {
                 .orElseThrow(() -> new IllegalArgumentException("[ERROR] 해당 ID에 대한 요일이 없습니다."));
     }
 
-    public static LocalTime getStandardTimeById(Integer id) {
-        return Arrays.stream(values())
-                .filter(value -> value.id.equals(id))
-                .map(value -> value.standardTime)
-                .findFirst()
-                .orElseThrow(() -> new IllegalArgumentException("[ERROR] 해당 ID에 대한 요일이 없습니다."));
-    }
-
     public static DayOfWeek getInstance(LocalDate date) {
         return Arrays.stream(values())
                 .filter(value -> value.id.equals(date.getDayOfWeek().getValue()))
