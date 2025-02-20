@@ -29,7 +29,7 @@ public class OutputView {
                         attendanceInfo.get(4)
                 )
         );
-        System.out.println();
+        printNewLine();
     }
 
     // TODO 출석 수정 기능 출력:
@@ -50,7 +50,7 @@ public class OutputView {
                         newAttendanceInfo.get(4)
                 )
         );
-        System.out.println();
+        printNewLine();
     }
 
     // TODO 크루별 출석 기록 확인 기능 출력:
@@ -118,6 +118,9 @@ public class OutputView {
                         crewExpelExpectedInfo.get(3)
                 )
         );
+    }
+
+    public void printNewLine() {
         System.out.println();
     }
 }
