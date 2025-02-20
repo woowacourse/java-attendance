@@ -19,6 +19,7 @@ public class AttendanceStatistics {
             startDate = startDate.plusDays(1);
 
             if (status == null || status.getStatus() == null) {
+                absenceCount++;
                 continue;
             }
 
