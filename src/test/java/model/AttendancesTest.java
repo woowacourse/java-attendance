@@ -3,6 +3,7 @@ package model;
 import converter.StringConverter;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -99,5 +100,21 @@ class AttendancesTest {
         //then
         Assertions.assertThat(filteredAttendances.getAttendances())
                 .containsExactly(attendance1, attendance2, attendance3);
+    }
+
+    @Test
+    @DisplayName("크루의 출석, 지각, 결석 총합을 반환한다.")
+    void test() {
+        //given
+        Crew crew = Crew.of("쿠키");
+        Attendances filteredAttendances = attendances.findByCrewAndMonth(crew, 2);
+
+        //when
+        Map<AttendanceType, Integer> attendanceTypesCount = filteredAttendances.calculateAttendanceTypeCount();
+
+        //then
+        Assertions.assertThat(attendanceTypesCount.get(AttendanceType.SUCCESS)).isEqualTo(1);
+        Assertions.assertThat(attendanceTypesCount.get(AttendanceType.BE_LATE)).isEqualTo(1);
+        Assertions.assertThat(attendanceTypesCount.get(AttendanceType.ABSENCE)).isEqualTo(1);
     }
 }
