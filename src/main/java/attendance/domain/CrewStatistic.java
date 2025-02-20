@@ -24,15 +24,19 @@ public class CrewStatistic {
 
     public void initCrewsStatus() {
         for (Attendance crewAttendance : crewAttendances) {
-            if (crewAttendance.getType() == AttendanceType.SAFE) {
-                crew.plusSafeCount();
-            }
-            if (crewAttendance.getType() == AttendanceType.LATE) {
-                crew.plusLateCount();
-            }
-            if (crewAttendance.getType() == AttendanceType.ABSENT) {
-                crew.plusAbsentCount();
-            }
+            initCrewStatus(crewAttendance);
+        }
+    }
+
+    private void initCrewStatus(Attendance crewAttendance) {
+        if (crewAttendance.getType() == AttendanceType.SAFE) {
+            crew.plusSafeCount();
+        }
+        if (crewAttendance.getType() == AttendanceType.LATE) {
+            crew.plusLateCount();
+        }
+        if (crewAttendance.getType() == AttendanceType.ABSENT) {
+            crew.plusAbsentCount();
         }
     }
 
