@@ -24,4 +24,12 @@ public class Converter {
 
         return localTime.format(formatter);
     }
+
+    public static Integer convertStringToInteger(String input) {
+        try {
+            return Integer.parseInt(input);
+        } catch (NumberFormatException e) {
+            throw new IllegalArgumentException("숫자만 입력 가능합니다.");
+        }
+    }
 }
