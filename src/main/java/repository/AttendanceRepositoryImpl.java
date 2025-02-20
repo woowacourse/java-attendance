@@ -37,17 +37,8 @@ public class AttendanceRepositoryImpl implements AttendanceRepository{
 
     @Override
     public Optional<Attendance> findByCrewAndDate(String crewName, int date) {
-        AttendanceBook attendanceBook = findByCrewName(crewName); // 크루 존재 여부 파악해줌
+        AttendanceBook attendanceBook = findByCrewName(crewName);
         return attendanceBook.findAttendanceByDate(date);
-//
-//        // TODO: 상수화 하기
-//        int month = 12;
-//
-//        return findByCrew(crew).stream()
-//                .filter(attendance ->
-//                        attendance.getTime().getMonthValue() == month && attendance.getTime().getDayOfMonth() == date
-//                )
-//                .findFirst();
     }
 
     @Override

@@ -2,8 +2,8 @@ package view;
 
 import controller.Menu;
 
-import java.util.Arrays;
-import java.util.List;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Scanner;
 
 public class InputView {
@@ -32,9 +32,10 @@ public class InputView {
         return Integer.parseInt(scanner.nextLine());
     }
 
-    public List<Integer> readModifyTime() {
+    public LocalTime readModifyTime() {
         System.out.println("언제로 변경하겠습니까?");
-        //TODO : LocalTime으로 파싱하기
-        return Arrays.stream(scanner.nextLine().split(":")).map(Integer::parseInt).toList();
+        String input = scanner.nextLine();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");
+        return LocalTime.parse(input, formatter);
     }
 }

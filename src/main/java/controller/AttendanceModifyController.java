@@ -5,6 +5,8 @@ import service.dto.AttendanceModifyResponse;
 import view.InputView;
 import view.OutputView;
 
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
 
 public class AttendanceModifyController implements Controller{
@@ -23,11 +25,11 @@ public class AttendanceModifyController implements Controller{
     public void run() {
         String crewName = inputView.readName();
         int modifyDate = inputView.readModifyDate();
-        List<Integer> hourAndMinute = inputView.readModifyTime();
+        LocalTime modifyTime = inputView.readModifyTime();
         AttendanceModifyResponse response = modifyService.modify(crewName,
                 modifyDate,
-                hourAndMinute.get(0),
-                hourAndMinute.get(1)
+                modifyTime.getHour(),
+                modifyTime.getMinute()
         );
         outputView.printModifyResult(response);
     }
