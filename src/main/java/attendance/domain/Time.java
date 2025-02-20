@@ -24,8 +24,21 @@ public record Time(LocalDate date, String hour, String minute, boolean isAbsent)
         }
     }
 
-
     private void validatePossibleTime(LocalDate date, String hour, String minute) {
+        validateAttendanceDate(date);
+        validateAttendanceTime(hour, minute);
+    }
+
+    private static void validateAttendanceTime(String hour, String minute) {
+        int parsingHour = Parser.parseInt(hour);
+        int parsingMinute = Parser.parseInt(minute);
+
+        if (parsingHour < 8 || parsingHour == 23 && parsingMinute > 0) {
+            throw new IllegalArgumentException("[ERROR] 출석 가능한 시간이 아닙니다.");
+        }
+    }
+
+    private static void validateAttendanceDate(LocalDate date) {
         String day = date.getDayOfWeek().name();
 
         if (day.equals("SATURDAY") || day.equals("SUNDAY")) {
@@ -33,13 +46,6 @@ public record Time(LocalDate date, String hour, String minute, boolean isAbsent)
                     date.getMonthValue(), date.getDayOfMonth(),
                     date.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.KOREAN));
             throw new IllegalArgumentException(message);
-        }
-
-        int parsingHour = Parser.parseInt(hour);
-        int parsingMinute = Parser.parseInt(minute);
-
-        if (parsingHour < 8 || parsingHour == 23 && parsingMinute > 0) {
-            throw new IllegalArgumentException("[ERROR] 출석 가능한 시간이 아닙니다.");
         }
     }
 
