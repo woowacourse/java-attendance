@@ -39,7 +39,7 @@ public class Attendances {
         return attendances.stream()
                 .filter(attendance -> attendance.isSameDate(findDate))
                 .findAny()
-                .orElse(Attendance.absence(findDate));
+                .orElseThrow(() -> new IllegalArgumentException("출석 기록이 존재하지 않습니다."));
     }
 
     public List<Attendance> findAllBeforeToday(LocalDateTime today) {
@@ -55,6 +55,10 @@ public class Attendances {
     public boolean existsByLocalDate(final LocalDate localDate) {
         return attendances.stream()
                 .anyMatch(attendance -> attendance.isSameDate(localDate));
+    }
+
+    public void remove(Attendance attendance) {
+        this.attendances.remove(attendance);
     }
 
 }

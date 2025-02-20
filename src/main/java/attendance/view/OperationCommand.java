@@ -28,4 +28,7 @@ public enum OperationCommand {
         return this.equals(ATTENDANCE_CONFIRMATION);
     }
 
+    public boolean isAttendanceModification() {
+        return this.equals(ATTENDANCE_MODIFICATION);
+    }
 }
