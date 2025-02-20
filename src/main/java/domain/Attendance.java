@@ -23,7 +23,7 @@ public class Attendance {
                 .stream()
                 .filter(crew -> crew.getName().equals(name))
                 .findFirst()
-                .orElse(null);
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 크루 입니다."));
     }
 
     public Map<Crew, List<LocalDateTime>> getAttendanceMap() {

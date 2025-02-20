@@ -20,6 +20,34 @@ import util.FileManager;
 
 class AttendanceTest {
 
+    @DisplayName("입력받은 크루가 존재하지 않는 크루라면 예외를 발생한다.")
+    @Test
+    void nonExistenceCrew() {
+        //given
+        Attendance attendance = FileManager.readFile();
+        String name = "도기";
+
+        //when & then
+        assertThatThrownBy(() -> attendance.getCrewByName(name))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("존재하지 않는 크루 입니다.");
+    }
+
+    @DisplayName("입력받은 크루가 존재하는 크루를 반환한다.")
+    @Test
+    void existenceCrew() {
+        //given
+        Attendance attendance = FileManager.readFile();
+        String name = "빙티";
+
+        //when
+        Crew actual = attendance.getCrewByName(name);
+
+        //then
+        assertThat(actual.getName()).isEqualTo("빙티");
+
+    }
+
     @DisplayName("특정 크루의 오늘 출석 시간을 저장한다.")
     @Test
     void save() {
