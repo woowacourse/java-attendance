@@ -24,27 +24,7 @@ public class AttendanceTimes {
             endDate = LocalDate.of(2025, 1, 1);
         }
 
-        initializeUnattend(startDate, endDate);
-    }
-
-    private void initializeUnattend(LocalDate startDate, LocalDate endDate) {
-        Set<LocalDate> attendanceDates = this.attendanceTimes.stream()
-                .map(attendanceTime -> attendanceTime.getAttendanceDateTime().toLocalDate())
-                .collect(Collectors.toSet());
-
-        for (LocalDate date = startDate; date.isBefore(endDate); date = date.plusDays(1)) {
-            addUnattended(attendanceDates, date);
-        }
-    }
-
-    private void addUnattended(Set<LocalDate> attendanceDates, LocalDate date) {
-        if (!(attendanceDates.contains(date) || isClosed(date))) {
-            attendanceTimes.add(new AttendanceTime(date, AttendanceStatus.UNATTEND));
-        }
-    }
-
-    private boolean isClosed(LocalDate date) {
-        return date.getDayOfWeek() == DayOfWeek.SATURDAY || date.getDayOfWeek() == DayOfWeek.SUNDAY || date.isEqual(LocalDate.of(2024, 12, 25));
+        initializeUnattended(startDate, endDate);
     }
 
     public void addAttendance(AttendanceTime attendanceTime) {
@@ -99,5 +79,25 @@ public class AttendanceTimes {
                 .filter(attendance -> attendance.getAttendanceStatus() != AttendanceStatus.UNATTEND)
                 .findAny()
                 .orElseThrow(() -> new IllegalArgumentException("[ERROR] 출석하지 않은 날짜입니다."));
+    }
+
+    private void initializeUnattended(LocalDate startDate, LocalDate endDate) {
+        Set<LocalDate> attendanceDates = this.attendanceTimes.stream()
+                .map(attendanceTime -> attendanceTime.getAttendanceDateTime().toLocalDate())
+                .collect(Collectors.toSet());
+
+        for (LocalDate date = startDate; date.isBefore(endDate); date = date.plusDays(1)) {
+            addUnattended(attendanceDates, date);
+        }
+    }
+
+    private void addUnattended(Set<LocalDate> attendanceDates, LocalDate date) {
+        if (!(attendanceDates.contains(date) || isClosed(date))) {
+            attendanceTimes.add(new AttendanceTime(date, AttendanceStatus.UNATTEND));
+        }
+    }
+
+    private boolean isClosed(LocalDate date) {
+        return date.getDayOfWeek() == DayOfWeek.SATURDAY || date.getDayOfWeek() == DayOfWeek.SUNDAY || date.isEqual(LocalDate.of(2024, 12, 25));
     }
 }

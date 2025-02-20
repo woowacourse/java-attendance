@@ -39,30 +39,11 @@ public class Attendance {
         attendance.get(crews.findCrew(crewName)).addAttendance(new AttendanceTime(attendanceDateTime));
     }
 
-    private void validateOpenHours(LocalDateTime attendanceDateTime) {
-        LocalTime attendanceTime = attendanceDateTime.toLocalTime();
-        LocalTime openHour = LocalTime.of(8, 0);
-        LocalTime closeHour = LocalTime.of(23, 0);
-        if (attendanceTime.isBefore(openHour) || attendanceTime.isAfter(closeHour)) {
-            throw new IllegalArgumentException("[ERROR] 캠퍼스 운영 시간이 아닙니다.");
-        }
-    }
-
-    private void validateAttended(String crewName, LocalDateTime attendanceDateTime) {
-        if (checkAttended(crewName, attendanceDateTime.toLocalDate())) {
-            throw new IllegalArgumentException("[ERROR] 이미 출석했습니다. 수정 기능을 이용하세요.");
-        }
-    }
-
     public void edit(String crewName, int attendanceDay, LocalTime newAttendanceTime) {
         LocalDateTime newAttendanceDateTime = LocalDateTime.of(2024, 12, attendanceDay, newAttendanceTime.getHour(), newAttendanceTime.getMinute());
         validateOpenHours(newAttendanceDateTime);
         AttendanceTime attendanceTime = findAttendanceTime(crewName, LocalDate.of(2024, 12, attendanceDay));
         attendanceTime.updateAttendanceDateTime(newAttendanceTime);
-    }
-
-    private boolean checkAttended(String crewName, LocalDate attendanceDate) {
-        return attendance.get(crews.findCrew(crewName)).checkAttended(attendanceDate);
     }
 
     public List<String> checkExpelledCrew() {
@@ -105,5 +86,24 @@ public class Attendance {
     public Map<AttendanceStatus, Integer> getCrewAttendanceStatus(String nickName) {
         Crew crew = crews.findCrew(nickName);
         return crew.getAttendanceStatus(attendance.get(crew));
+    }
+
+    private void validateAttended(String crewName, LocalDateTime attendanceDateTime) {
+        if (checkAttended(crewName, attendanceDateTime.toLocalDate())) {
+            throw new IllegalArgumentException("[ERROR] 이미 출석했습니다. 수정 기능을 이용하세요.");
+        }
+    }
+
+    private void validateOpenHours(LocalDateTime attendanceDateTime) {
+        LocalTime attendanceTime = attendanceDateTime.toLocalTime();
+        LocalTime openHour = LocalTime.of(8, 0);
+        LocalTime closeHour = LocalTime.of(23, 0);
+        if (attendanceTime.isBefore(openHour) || attendanceTime.isAfter(closeHour)) {
+            throw new IllegalArgumentException("[ERROR] 캠퍼스 운영 시간이 아닙니다.");
+        }
+    }
+
+    private boolean checkAttended(String crewName, LocalDate attendanceDate) {
+        return attendance.get(crews.findCrew(crewName)).checkAttended(attendanceDate);
     }
 }
