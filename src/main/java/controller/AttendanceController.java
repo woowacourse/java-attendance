@@ -20,7 +20,8 @@ public class AttendanceController {
 
     public void start() {
         while (true) {
-            final LocalDateTime fixDateTime = LocalDateTime.of(2024, Constants.MONTH, 16, 0, 0, 0, 0);
+            final LocalDateTime fixDateTime = LocalDateTime.of(2024, Constants.FIXED_MONTH, Constants.FIXED_DAY, 0, 0,
+                    0, 0);
             final String input = InputView.readCommand(fixDateTime);
             final Command command = Command.findByCommandNumber(input);
             final Crews crews = CrewGenerator.generate(CsvReader.readFile(Constants.CSV_PATH),
@@ -78,20 +79,22 @@ public class AttendanceController {
 
 
     private void processEditAttendance(final Crews crews) {
-        String inputNickName = InputView.readUpdateNickName();
-        Nickname nickname = new Nickname(inputNickName);
-        Crew crew = crews.findByNickname(nickname);
-        String inputUpdateDate = InputView.readUpdateDate();
-        String inputUpdateTime = InputView.readUpdateDateTime();
+        final Nickname nickname = readNickname();
+        final Crew crew = crews.findByNickname(nickname);
+        final LocalDateTime desiredUpdateDateTime = readUpdateDateTime();
+        final Attendance oldAttendance = crew.getAttendance(desiredUpdateDateTime);
+        final Attendance newAttendance = new Attendance(desiredUpdateDateTime);
 
-        final LocalDate localDate = LocalDate.of(2024, Constants.MONTH, Integer.parseInt(inputUpdateDate));
-        final LocalTime oldTime = LocalTime.parse(inputUpdateTime);
-        LocalDateTime oldDateTime = LocalDateTime.of(localDate, oldTime);
-
-        Attendance oldAttendance = crew.getAttendance(oldDateTime);
-        Attendance newAttendance = new Attendance(oldDateTime);
         crew.updateAttendance(oldAttendance, newAttendance);
         OutputView.printUpdateAttendance(oldAttendance, newAttendance);
+    }
+
+    private LocalDateTime readUpdateDateTime() {
+        final String updateDate = InputView.readUpdateDate();
+        final LocalTime desiredUpdateTime = LocalTime.parse(InputView.readUpdateDateTime());
+        final LocalDate fixedLocalDate = LocalDate.of(Constants.FIXED_YEAR, Constants.FIXED_MONTH,
+                Integer.parseInt(updateDate));
+        return LocalDateTime.of(fixedLocalDate, desiredUpdateTime);
     }
 
     private static void processAttendanceRecordByCrew(final Crews crews) {
