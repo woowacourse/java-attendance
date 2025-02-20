@@ -1,42 +1,44 @@
 package presentation;
 
+import domain.CrewGroup;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import presentation.view.FileInputView;
 import presentation.view.InputView;
 import presentation.view.OutputView;
+import service.AttendanceService;
 import util.DateTimeUtil;
 
 public class AttendanceController {
     private final FileInputView fileInputView;
+    private final AttendanceService attendanceService;
 
-    public AttendanceController(FileInputView fileInputView) {
+    public AttendanceController(FileInputView fileInputView, AttendanceService attendanceService) {
         this.fileInputView = fileInputView;
+        this.attendanceService = attendanceService;
     }
 
     public void run() {
-        Map<String, List<String>> crewTextInitAttendanceDates = fileInputView.getFileInput();
-        Map<String, List<LocalDateTime>> crewInitAttendanceDates = new HashMap<>();
+        Map<String, List<String>> attendanceFileInfo = fileInputView.getFileInput();
+        Map<String, List<LocalDateTime>> crewInitAttendanceDates = InputParser.getFileAttendanceInfo(
+                attendanceFileInfo);
 
-         for(String key :crewTextInitAttendanceDates.keySet()){
+        CrewGroup crewGroup = attendanceService.createCrewGroup(crewInitAttendanceDates);
 
-            crewInitAttendanceDates.put(key,
-                    crewTextInitAttendanceDates.get(key).stream()
-                    .map(DateTimeUtil::convertStringToLocalDateTime)
-                    .toList());
-        }
-         
+        repeatCommand(crewGroup);
+    }
+
+    private boolean repeatCommand(CrewGroup crewGroup) {
         while (true) {
-            if (controlCommand()) {
-                break;
+            if (controlCommand(crewGroup)) {
+                return true;
             }
         }
     }
 
-    private boolean controlCommand() {
+    private boolean controlCommand(CrewGroup crewGroup) {
         try {
             String command = InputView.inputCommand();
             InputValidator.commandValidate(command);

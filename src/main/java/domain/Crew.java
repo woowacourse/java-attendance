@@ -18,4 +18,8 @@ public class Crew {
     public String getName() {
         return this.name;
     }
+
+    public Attendance getAttendance() {
+        return attendance;
+    }
 }
