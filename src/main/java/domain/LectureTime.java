@@ -32,10 +32,6 @@ public enum LectureTime {
             .orElseThrow(() -> new IllegalStateException("잘못된 상황입니다."));
     }
 
-    public DayOfWeek getDayOfWeek() {
-        return dayOfWeek;
-    }
-
     public LocalTime getStartTime() {
         return startTime;
     }

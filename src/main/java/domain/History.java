@@ -9,4 +9,5 @@ public record History(
     AttendanceStatus status,
     boolean isChecked
 ) {
+
 }

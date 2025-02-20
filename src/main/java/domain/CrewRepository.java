@@ -11,7 +11,10 @@ public class CrewRepository {
 
     private final List<Crew> crews = new ArrayList<>();
 
-    public CrewRepository() {
+    public CrewRepository(boolean initiailize) {
+        if (!initiailize) {
+            return;
+        }
         FileParser.loadAttendanceRecords()
             .forEach(record -> add(
                 record.nickname(),

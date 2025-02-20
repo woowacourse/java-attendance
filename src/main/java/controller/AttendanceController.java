@@ -24,7 +24,7 @@ import view.OutputView;
 
 public class AttendanceController {
 
-    private CrewRepository crewRepository = new CrewRepository();
+    private CrewRepository crewRepository = new CrewRepository(true);
 
     public void run() {
         boolean isRunning = true;
