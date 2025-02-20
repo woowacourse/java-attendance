@@ -6,14 +6,13 @@ import attendance.util.FileLoader;
 import attendance.view.DataFileReader;
 import attendance.view.InputView;
 import attendance.view.OutputView;
-import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 
 public class AttendanceController {
 
-    public void run() throws IOException {
+    public void run() {
         AttendanceRepository attendanceRepository = initData();
 //        registerAttendance(attendanceRepository);
         modifyAttendance(attendanceRepository);
@@ -23,7 +22,7 @@ public class AttendanceController {
         return new AttendanceRepository(FileLoader.loadAll(DataFileReader.read()));
     }
 
-    private void registerAttendance(AttendanceRepository attendanceRepository) throws IOException {
+    private void registerAttendance(AttendanceRepository attendanceRepository) {
         String name = InputView.readNickName();
         final LocalTime localTime = InputView.readAttendanceTime();
         LocalDateTime localDateTime = LocalDateTime.of(LocalDateTime.now().toLocalDate(), localTime);
@@ -31,7 +30,7 @@ public class AttendanceController {
         OutputView.printAddedAttendance(localDateTime);
     }
 
-    private void modifyAttendance(AttendanceRepository attendanceRepository) throws IOException {
+    private void modifyAttendance(AttendanceRepository attendanceRepository) {
         String name = InputView.readModifyNickName();
         final int day = InputView.readModifyDay();
         LocalTime newTime = InputView.readModifyTime();
