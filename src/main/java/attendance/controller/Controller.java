@@ -62,7 +62,7 @@ public class Controller {
         }
     }
 
-    public void updateAttendance() {
+    private void updateAttendance() {
         try {
             String crewName = inputView.inputUpdateCrewName();
             Crew crew = attendanceService.findCrewByName(crewName);
@@ -79,7 +79,7 @@ public class Controller {
         }
     }
 
-    public void checkCrewAttendance() {
+    private void checkCrewAttendance() {
         try {
             String crewName = inputView.inputNickname();
             Crew crew = attendanceService.findCrewByName(crewName);
