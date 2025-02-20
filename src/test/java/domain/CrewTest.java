@@ -113,7 +113,7 @@ public class CrewTest {
         crew.addAttendance(LocalDateTime.of(2024, 12, 5, 10,6));
         crew.addAttendance(LocalDateTime.of(2024, 12, 6, 10,1));
         crew.addAttendance(LocalDateTime.of(2024, 12, 10, 10,8));
-        assertThat(crew.printAttendanceStateInfo(LocalDate.of(2024, 12, 12))).isEqualTo("출석: 4회\n"
+        assertThat(crew.printAttendanceStateInfo(LocalDate.of(2024, 12, 13))).isEqualTo("출석: 4회\n"
                 + "지각: 2회\n"
                 + "결석: 3회\n");
     }
@@ -128,7 +128,7 @@ public class CrewTest {
         crew.addAttendance(LocalDateTime.of(2024, 12, 5, 10,6));
         crew.addAttendance(LocalDateTime.of(2024, 12, 6, 10,1));
         crew.addAttendance(LocalDateTime.of(2024, 12, 10, 10,8));
-        assertThat(crew.printWarningStatus(LocalDate.of(2024, 12, 12))).isEqualTo("면담 대상자입니다.");
+        assertThat(crew.printWarningStatus(LocalDate.of(2024, 12, 13))).isEqualTo("면담 대상자입니다.");
     }
 
     @DisplayName("특정 크루 출석 상태 현황 출력_경고 대상자 여부 판별")
@@ -142,7 +142,7 @@ public class CrewTest {
         crew.addAttendance(LocalDateTime.of(2024, 12, 6, 10,1));
         crew.addAttendance(LocalDateTime.of(2024, 12, 9, 9,8));
         crew.addAttendance(LocalDateTime.of(2024, 12, 10, 10,8));
-        assertThat(crew.printWarningStatus(LocalDate.of(2024, 12, 12))).isEqualTo("경고 대상자입니다.");
+        assertThat(crew.printWarningStatus(LocalDate.of(2024, 12, 13))).isEqualTo("경고 대상자입니다.");
     }
 
     @DisplayName("특정 크루 출석 상태 현황 출력_제적 대상자 여부 판별")
@@ -152,7 +152,7 @@ public class CrewTest {
         crew.addAttendance(LocalDateTime.of(2024, 12, 2, 13,0));
         crew.addAttendance(LocalDateTime.of(2024, 12, 3, 9,58));
         crew.addAttendance(LocalDateTime.of(2024, 12, 4, 10,2));
-        assertThat(crew.printWarningStatus(LocalDate.of(2024, 12, 12))).isEqualTo("제적 대상자입니다.");
+        assertThat(crew.printWarningStatus(LocalDate.of(2024, 12, 13))).isEqualTo("제적 대상자입니다.");
     }
 
     @DisplayName("특정 크루 출석 상태 현황 출력_대상자 X 여부 판별")
@@ -180,7 +180,7 @@ public class CrewTest {
         crew.addAttendance(LocalDateTime.of(2024, 12, 5, 10,6));    // 지
         crew.addAttendance(LocalDateTime.of(2024, 12, 6, 10,1));    // 출
         crew.addAttendance(LocalDateTime.of(2024, 12, 10, 10,8));   // 지
-        assertThat(crew.printWarningInfo(LocalDate.of(2024, 12, 12)))
+        assertThat(crew.printWarningInfo(LocalDate.of(2024, 12, 13)))
                 .isEqualTo("미미: 결석 3회, 지각 2회 (면담)");
     }
 
