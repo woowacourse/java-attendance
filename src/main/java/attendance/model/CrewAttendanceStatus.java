@@ -39,6 +39,8 @@ public class CrewAttendanceStatus {
                         .filter(dateTime -> AttendanceStatus.from(dateTime) == AttendanceStatus.ABSENCE)
                         .count()
         );
+        value += Calender.getNotExistsDatesBeforeToday(dateTimes.stream().map(LocalDateTime::toLocalDate).toList())
+                .size();
         return AbsenceCount.from(value);
     }
 
