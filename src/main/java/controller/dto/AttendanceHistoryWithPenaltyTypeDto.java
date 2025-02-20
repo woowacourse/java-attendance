@@ -1,6 +1,6 @@
 package controller.dto;
 
-import domain.PenaltyType;
+import domain.attendance.PenaltyType;
 import java.util.Map;
 
 public record AttendanceHistoryWithPenaltyTypeDto(

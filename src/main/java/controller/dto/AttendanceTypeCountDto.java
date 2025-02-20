@@ -1,8 +1,8 @@
 package controller.dto;
 
-import domain.AttendanceTypeCount;
-import domain.Crew;
-import domain.PenaltyType;
+import domain.attendance.AttendanceTypeCount;
+import domain.crew.Crew;
+import domain.attendance.PenaltyType;
 
 public record AttendanceTypeCountDto(
         String nickname,

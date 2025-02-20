@@ -1,13 +1,36 @@
-package domain;
+package domain.date;
 
 public class AttendanceTime {
+
+    private static final int VALID_HOUR_MIN_RANGE = 0;
+    private static final int VALID_HOUR_MAX_RANGE = 24;
+    private static final int VALID_MINUTE_MIN_RANGE = 0;
+    private static final int VALID_MINUTE_MAX_RANGE = 59;
+
     private final int hour;
     private final int minute;
 
-    // TODO: 등교 시간이 운영 시간이 아니면 출석 확인 시 에러 던지기
     public AttendanceTime(int hour, int minute) {
+        validate(hour, minute);
         this.hour = hour;
         this.minute = minute;
+    }
+
+    private void validate(int hour, int minute) {
+        validateHour(hour);
+        validateMinute(minute);
+    }
+
+    private void validateMinute(int minute) {
+        if (minute > VALID_MINUTE_MAX_RANGE || minute < VALID_MINUTE_MIN_RANGE) {
+            throw new IllegalArgumentException("분 형식이 올바르지 않습니다.");
+        }
+    }
+
+    private void validateHour(int hour) {
+        if (hour > VALID_HOUR_MAX_RANGE || hour < VALID_HOUR_MIN_RANGE) {
+            throw new IllegalArgumentException("시각 형식이 올바르지 않습니다.");
+        }
     }
 
     public int getHour() {

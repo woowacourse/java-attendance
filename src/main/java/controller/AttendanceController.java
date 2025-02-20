@@ -6,7 +6,7 @@ import controller.dto.AttendanceRequestDto;
 import controller.dto.AttendanceTimeDto;
 import controller.dto.AttendanceTypeCountDto;
 import controller.dto.AttendanceUpdateResultDto;
-import domain.AttendanceDateTime;
+import domain.date.AttendanceDateTime;
 import io.CustomFileReader;
 import java.io.FileNotFoundException;
 import java.util.List;

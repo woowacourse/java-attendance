@@ -1,7 +1,7 @@
 package view;
 
 import controller.dto.AttendanceTimeDto;
-import domain.PenaltyType;
+import domain.attendance.PenaltyType;
 import java.time.DayOfWeek;
 import java.time.format.TextStyle;
 import java.util.Locale;

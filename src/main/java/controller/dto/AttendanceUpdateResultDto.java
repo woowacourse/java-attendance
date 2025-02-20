@@ -1,6 +1,6 @@
 package controller.dto;
 
-import domain.AttendanceDateTime;
+import domain.date.AttendanceDateTime;
 
 public record AttendanceUpdateResultDto(AttendanceHistoryDto beforeHistoryDto, AttendanceHistoryDto afterHistoryDto) {
     public static AttendanceUpdateResultDto from(

@@ -1,4 +1,6 @@
-package domain;
+package domain.date;
+
+import domain.attendance.AttendanceType;
 
 public class AttendanceDateTime {
     private final AttendanceDate attendanceDate;

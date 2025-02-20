@@ -1,7 +1,7 @@
 package controller.dto;
 
-import domain.AttendanceDateTime;
-import domain.AttendanceType;
+import domain.date.AttendanceDateTime;
+import domain.attendance.AttendanceType;
 
 public record AttendanceHistoryDto(
         int month,

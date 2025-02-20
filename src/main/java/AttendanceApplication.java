@@ -1,6 +1,6 @@
 import controller.AttendanceController;
-import domain.AttendanceHistories;
-import domain.Crews;
+import domain.attendance.AttendanceHistories;
+import domain.crew.Crews;
 import service.AttendanceService;
 
 public class AttendanceApplication {

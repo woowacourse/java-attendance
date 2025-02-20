@@ -1,5 +1,7 @@
-package domain;
+package domain.attendance;
 
+import domain.crew.Crew;
+import domain.date.AttendanceDateTime;
 import java.util.LinkedList;
 import java.util.List;
 

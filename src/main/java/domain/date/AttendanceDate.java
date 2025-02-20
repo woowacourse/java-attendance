@@ -1,4 +1,4 @@
-package domain;
+package domain.date;
 
 import java.util.List;
 

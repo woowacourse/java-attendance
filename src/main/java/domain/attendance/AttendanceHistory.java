@@ -1,4 +1,7 @@
-package domain;
+package domain.attendance;
+
+import domain.crew.Crew;
+import domain.date.AttendanceDateTime;
 
 public class AttendanceHistory {
     private final Crew crew;
