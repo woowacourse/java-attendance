@@ -1,10 +1,20 @@
 package attendance.domain;
 
 public enum Penalty {
-    WARNING,
-    INTERVIEW,
-    REMOVAL,
-    NONE;
+    WARNING("경고"),
+    INTERVIEW("면담"),
+    REMOVAL("제적"),
+    NONE("");
+
+    private String koreanName;
+
+    Penalty(String koreanName) {
+        this.koreanName = koreanName;
+    }
+
+    public String getKoreanName() {
+        return koreanName;
+    }
 
     public static Penalty determine(int absenceCount, int lateCount) {
         absenceCount = absenceCount + lateCount / 3;

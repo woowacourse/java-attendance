@@ -12,6 +12,7 @@ import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.List;
 
 public class AttendanceController {
     private Attendances attendances;
@@ -25,34 +26,12 @@ public class AttendanceController {
     }
 
     public void run() {
-        checkAttendance();
+        recordAttendance();
         modifyAttendance();
+        checkAttendanceRecordOfCrew();
     }
 
-    private void modifyAttendance() {
-        String nickName = InputView.readModifyingNickName();
-        LocalDate modifyingCheckinDate = getModifyingCheckinDate();
-        LocalTime modifyingCheckinTime = getModifyingCheckinTime();
-
-        Crew crew = crews.getCrew(nickName);
-        Attendance attendance = attendances.getAttendance(crew, modifyingCheckinDate);
-
-        Attendance previousAttendance = Attendance.of(attendance.getDateTime());
-        attendance.modify(LocalDateTime.of(modifyingCheckinDate, modifyingCheckinTime));
-        OutputView.printModifyingResult(previousAttendance, attendance);
-    }
-
-    private static LocalTime getModifyingCheckinTime() {
-        String inputModifyingCheckinTime = InputView.readModifyingCheckinTime();
-        return LocalTime.parse(inputModifyingCheckinTime);
-    }
-
-    private static LocalDate getModifyingCheckinDate() {
-        String inputModifyingCheckinDate = InputView.readModifyingCheckinDate();
-        return LocalDate.of(2024, 12, Integer.parseInt(inputModifyingCheckinDate));
-    }
-
-    private void checkAttendance() {
+    private void recordAttendance() {
         Crew crew = getCrew();
         LocalTime checkInTime = getCheckInTime();
         LocalDateTime dateTime = LocalDateTime.of(LocalDate.now(), checkInTime);
@@ -69,5 +48,34 @@ public class AttendanceController {
     private LocalTime getCheckInTime() {
         String inputCheckInTime = InputView.readCheckInTime();
         return LocalTime.parse(inputCheckInTime);
+    }
+
+    private void modifyAttendance() {
+        String nickName = InputView.readModifyingNickName();
+        LocalDate modifyingCheckinDate = getModifyingCheckinDate();
+        LocalTime modifyingCheckinTime = getModifyingCheckinTime();
+
+        Crew crew = crews.getCrew(nickName);
+        Attendance attendance = attendances.getAttendance(crew, modifyingCheckinDate);
+
+        Attendance previousAttendance = Attendance.of(attendance.getDateTime());
+        attendance.modify(LocalDateTime.of(modifyingCheckinDate, modifyingCheckinTime));
+        OutputView.printModifyingResult(previousAttendance, attendance);
+    }
+
+    private LocalTime getModifyingCheckinTime() {
+        String inputModifyingCheckinTime = InputView.readModifyingCheckinTime();
+        return LocalTime.parse(inputModifyingCheckinTime);
+    }
+
+    private LocalDate getModifyingCheckinDate() {
+        String inputModifyingCheckinDate = InputView.readModifyingCheckinDate();
+        return LocalDate.of(2024, 12, Integer.parseInt(inputModifyingCheckinDate));
+    }
+
+    private void checkAttendanceRecordOfCrew() {
+        Crew crew = getCrew();
+        List<Attendance> attendanceList = attendances.getByCrew(crew , LocalDate.of(2024, 12, 14));
+        OutputView.printAttendanceRecordAndPenalty(attendanceList);
     }
 }
