@@ -1,5 +1,6 @@
 package view;
 
+import domain.Holiday;
 import domain.Penalty;
 import domain.Records;
 import domain.StatisticsResult;
@@ -27,8 +28,6 @@ public class OutputView {
     private final String PENALTY_FORMAT = "%s 대상자입니다.%n";
     private final String WARNING_CREW_MESSAGE = "제적 위험자 조회 결과";
     private final String WARNING_CREW_FORMAT = "- %s: 결석 %d회, 지각 %d회 (%s)%n";
-    private final String FUNCTION_MESSAGE ="오늘은 %s입니다. 기능을 선택해 주세요.%n";
-
 
     public void printAttendanceRecord(LocalDate localDate, TimeAndStatus timeAndStatus) {
         String date = dateFormatting(localDate);
@@ -51,13 +50,15 @@ public class OutputView {
         LocalDate startDate = LocalDate.of(COUNT_START_YEAR, COUNT_START_MONTH, COUNT_START_DAY);
         while (startDate.isBefore(nowDate)) {
             TimeAndStatus status = records.findByDate(startDate);
-            if (status == null || status.getStatus() == null) {
-                String date = dateFormatting(startDate);
-                System.out.printf(RECORD_FORMAT, date, ABSENCE_FORMAT);
-                startDate = startDate.plusDays(1);
-                continue;
+            if(!Holiday.isHoliday(startDate)) {
+                if (status == null || status.getStatus() == null) {
+                    String date = dateFormatting(startDate);
+                    System.out.printf(RECORD_FORMAT, date, ABSENCE_FORMAT);
+                    startDate = startDate.plusDays(1);
+                    continue;
+                }
+                printAttendanceRecord(startDate, status);
             }
-            printAttendanceRecord(startDate, status);
             startDate = startDate.plusDays(1);
         }
     }
@@ -87,19 +88,6 @@ public class OutputView {
                 , statisticsResult.getPenalty().penalty
             );
         }
-    }
-
-    public void printFunction(LocalDate localDate) {
-        String date = dateFormatting(localDate);
-        System.out.printf(FUNCTION_MESSAGE, date);
-        System.out.printf(
-            "1. 출석 확인%n"
-            + "2. 출석 수정%n"
-            + "3. 크루별 출석 기록 확인%n"
-            + "4. 제적 위험자 확인%n"
-            + "Q. 종료"
-        );
-
     }
 
     private String timeFormatting(TimeAndStatus timeAndStatus) {
