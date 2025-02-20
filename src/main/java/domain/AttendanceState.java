@@ -15,6 +15,8 @@ public enum AttendanceState {
     }
 
     public static String findStateBy(final LocalTime localTime, final int dayOfWeekValue) {
+        AttendanceTime.validateCampusTime(localTime);
+
         String dayOfWeek = Calender.findBy(dayOfWeekValue);
         if (dayOfWeek.equals("월요일")) {
             if (localTime.isAfter(AttendanceTime.MON_TIME.getLocalTimes().get(1))) {

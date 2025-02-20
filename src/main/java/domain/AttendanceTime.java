@@ -22,6 +22,12 @@ public enum AttendanceTime {
         this.localTimes = localTimes;
     }
 
+    public static void validateCampusTime(final LocalTime localTime) {
+        if (localTime.isBefore(LocalTime.of(8, 0)) || localTime.isAfter(LocalTime.of(23, 0))) {
+            throw new IllegalArgumentException("캠퍼스 운영 시간은 매일 08:00~23:00입니다.");
+        }
+    }
+
     public List<Calender> getCalenders() {
         return calenders;
     }
@@ -29,4 +35,5 @@ public enum AttendanceTime {
     public List<LocalTime> getLocalTimes() {
         return localTimes;
     }
+
 }

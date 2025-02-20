@@ -15,7 +15,7 @@ class AttendanceTimeTest {
     @MethodSource("boundaryProvider")
     void campusTime(LocalTime localTime) {
 
-        // when & then
+        //when & then
         Assertions.assertThatThrownBy(() -> AttendanceTime.validateCampusTime(localTime))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("캠퍼스 운영 시간은 매일 08:00~23:00입니다.");
