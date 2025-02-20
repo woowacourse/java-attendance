@@ -1,6 +1,7 @@
 package view;
 
 import java.time.LocalDateTime;
+import java.util.Comparator;
 import java.util.List;
 
 import domain.AttendanceStatus;
@@ -58,7 +59,11 @@ public class OutputView {
     public static void printCrewsCloseToExpelled(List<CrewCloseToExpelledResult> result) {
         String format = "- %s: %s %d회, %s %d회 (%s)%n";
 
-        result = result.stream().sorted().toList();
+        result = result.stream()
+            .sorted(
+                Comparator.comparing(CrewCloseToExpelledResult::calculateTotalCount, Comparator.reverseOrder())
+                    .thenComparing(CrewCloseToExpelledResult::nickname))
+            .toList();
 
         result.forEach(crew ->
             System.out.printf(format,
@@ -68,7 +73,7 @@ public class OutputView {
                 AttendanceStatus.LATE.getDescription(),
                 crew.attendanceStatusStatistics().get(AttendanceStatus.LATE),
                 crew.manage().getDescription()
-                )
+            )
         );
     }
 }
