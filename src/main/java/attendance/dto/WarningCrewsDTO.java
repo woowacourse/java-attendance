@@ -17,13 +17,15 @@ public record WarningCrewsDTO(List<WarningCrewDetailDTO> warningCrewDetailDTO) {
             String crewName,
             long absenceCount,
             long lateCount,
+            long convertLateCount,
             String warningType
     ) {
         public static WarningCrewDetailDTO from(Crew crew) {
             return new WarningCrewDetailDTO(
                     crew.getName(),
-                    crew.getAttendanceHistory().getTotalAbsenceCount(),
-                    crew.getAttendanceHistory().getTotalLateCount(),
+                    crew.getAttendanceHistory().getAbsenceCount(),
+                    crew.getAttendanceHistory().getLateCount(),
+                    crew.getAttendanceHistory().getLateCount() + crew.getAttendanceHistory().getLateCount() * 3,
                     AttendanceWarning.from(crew).name());
         }
     }

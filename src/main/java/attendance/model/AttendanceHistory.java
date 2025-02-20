@@ -22,13 +22,13 @@ public class AttendanceHistory {
                 .count();
     }
 
-    public long getTotalLateCount() {
+    public long getLateCount() {
         return attendanceHistory.stream()
                 .filter(attendanceDetail -> attendanceDetail.isSameAs(Attendance.지각))
                 .count();
     }
 
-    public long getTotalAbsenceCount() {
+    public long getAbsenceCount() {
         return attendanceHistory.stream()
                 .filter(attendanceDetail -> attendanceDetail.isSameAs(Attendance.결석))
                 .count();

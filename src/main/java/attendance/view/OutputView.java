@@ -15,23 +15,24 @@ public class OutputView {
     public void printAttendanceHistory(AttendanceDTO attendanceDTO) {
         CustomStringBuilder stringBuilder = new CustomStringBuilder();
         stringBuilder.appendLine(String.format("이번 달 %s의 출석 기록입니다.", attendanceDTO.crewName()));
-
         attendanceDTO.attendanceDetailDTOs().stream()
-                .sorted(Comparator.comparing(AttendanceDetailDTO::attendanceDateTime)).forEach(
-                        attendanceDetail -> stringBuilder.appendLine(
-                                generateAttendanceDetail(attendanceDetail.attendanceDateTime(),
-                                        attendanceDetail.attendanceType())));
+                .sorted(Comparator.comparing(AttendanceDetailDTO::attendanceDateTime))
+                .forEach(attendanceDetail -> stringBuilder.appendLine(generateAttendanceDetail(
+                        attendanceDetail.attendanceDateTime(),
+                        attendanceDetail.attendanceType()
+                )));
         stringBuilder.appendLine(String.format("출석: %d회", attendanceDTO.attendanceCount()));
         stringBuilder.appendLine(String.format("지각: %d회", attendanceDTO.lateCount()));
         stringBuilder.appendLine(String.format("결석: %d회", attendanceDTO.absenceCount()));
-
         stringBuilder.appendLine(String.format("%s 대상자입니다.", attendanceDTO.warningType()));
         stringBuilder.print();
     }
 
     public void printAttendanceDetail(AttendanceDetailDTO attendanceDetailDTO) {
-        System.out.println(generateAttendanceDetail(attendanceDetailDTO.attendanceDateTime(),
-                attendanceDetailDTO.attendanceType()));
+        System.out.println(generateAttendanceDetail(
+                attendanceDetailDTO.attendanceDateTime(),
+                attendanceDetailDTO.attendanceType()
+        ));
     }
 
     public void printModifyResult(AttendanceDetailDTO before, AttendanceDetailDTO after) {
@@ -51,14 +52,14 @@ public class OutputView {
     public void printWarningCrews(WarningCrewsDTO warningCrewsDTO) {
         CustomStringBuilder stringBuilder = new CustomStringBuilder();
         stringBuilder.appendLine("제적 위험자 조회 결과");
-        warningCrewsDTO.warningCrewDetailDTO().stream().sorted((o1, o2) -> {
-            long o1TotalCount = o1.absenceCount() * 3 + o1.lateCount();
-            long o2TotalCount = o2.absenceCount() * 3 + o2.lateCount();
-            return Long.compare(o2TotalCount, o1TotalCount);
-        }).forEach(warningCrewDetailDTO -> stringBuilder.appendLine(
-                String.format("- %s: 결석 %d회, 지각: %d회 (%s)", warningCrewDetailDTO.crewName(),
-                        warningCrewDetailDTO.absenceCount(), warningCrewDetailDTO.lateCount(),
-                        warningCrewDetailDTO.warningType())));
+        warningCrewsDTO.warningCrewDetailDTO().stream()
+                .sorted((o1, o2) -> Long.compare(o1.convertLateCount(), o2.convertLateCount()))
+                .forEach(warningCrewDetailDTO -> stringBuilder.appendLine(String.format("- %s: 결석 %d회, 지각: %d회 (%s)",
+                        warningCrewDetailDTO.crewName(),
+                        warningCrewDetailDTO.absenceCount(),
+                        warningCrewDetailDTO.lateCount(),
+                        warningCrewDetailDTO.warningType()
+                )));
         stringBuilder.print();
     }
 

@@ -20,8 +20,8 @@ public record AttendanceDTO(
                 crew.getAttendanceHistory().stream().map(AttendanceDetailDTO::from).toList(),
                 AttendanceWarning.from(crew).name(),
                 crew.getAttendanceHistory().getAttendanceCount(),
-                crew.getAttendanceHistory().getTotalLateCount(),
-                crew.getAttendanceHistory().getTotalAbsenceCount()
+                crew.getAttendanceHistory().getLateCount(),
+                crew.getAttendanceHistory().getAbsenceCount()
         );
     }
 

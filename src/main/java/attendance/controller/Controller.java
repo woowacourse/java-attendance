@@ -66,10 +66,10 @@ public class Controller {
             AttendanceDetail attendanceDetail = crew.findAttendanceDetail(
                     CustomLocalDateTime.parseDate(inputView.inputModifyAttendanceDate())
             );
-            AttendanceDetail cloned = attendanceDetail.clone();
+            AttendanceDetail beforeModify = new AttendanceDetail(attendanceDetail.getAttendanceDateTime());
             attendanceDetail.modify(CustomLocalDateTime.parseTime(inputView.inputModifyAttendanceTime()));
             outputView.printModifyResult(
-                    AttendanceDetailDTO.from(cloned),
+                    AttendanceDetailDTO.from(beforeModify),
                     AttendanceDetailDTO.from(attendanceDetail)
             );
         });

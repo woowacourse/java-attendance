@@ -37,14 +37,4 @@ public class AttendanceDetail {
         return attendance.equals(this.attendance);
     }
 
-    @Override
-    public AttendanceDetail clone() {
-        try {
-            AttendanceDetail cloned = (AttendanceDetail) super.clone();
-            cloned.attendance = Attendance.from(cloned.localDateTime);
-            return cloned;
-        } catch (CloneNotSupportedException e) {
-            throw new AssertionError("클론 실패", e);
-        }
-    }
 }

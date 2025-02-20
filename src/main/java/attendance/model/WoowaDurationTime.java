@@ -34,12 +34,12 @@ public enum WoowaDurationTime {
     }
 
     public static long calculateDuration(LocalDateTime localDateTime) {
-        return Duration.between(getStartTime(localDateTime), localDateTime.toLocalTime()).toMinutes();
+        return Duration.between(getStartTime(localDateTime.getDayOfWeek()), localDateTime.toLocalTime()).toMinutes();
     }
 
-    private static LocalTime getStartTime(LocalDateTime localDateTime) {
+    private static LocalTime getStartTime(DayOfWeek dayOfWeek) {
         return Arrays.stream(WoowaDurationTime.values())
-                .filter(woowaDurationTime -> woowaDurationTime.dayOfWeek == localDateTime.getDayOfWeek())
+                .filter(woowaDurationTime -> woowaDurationTime.dayOfWeek == dayOfWeek)
                 .findFirst()
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 운영시간입니다.")).startTime;
     }
