@@ -1,5 +1,11 @@
-package domain;
+package util;
 
+import domain.Attendance;
+import domain.AttendanceCounter;
+import domain.Attendances;
+import domain.Crew;
+import domain.Crews;
+import domain.Nickname;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
