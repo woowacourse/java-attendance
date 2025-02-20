@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class StudentRepository {
-    List<Student> students = new ArrayList<>();
+    private final List<Student> students = new ArrayList<>();
 
     public List<Student> getStudents() {
         return students;
@@ -34,19 +34,30 @@ public class StudentRepository {
     public void createStudent(ArrayList<String> fileInformation) {
         for (String information : fileInformation) {
             String[] studentNameAndAttendanceTime = information.split(",");
-            if (findStudentByName(studentNameAndAttendanceTime[0]) == null) {
-                Student student = new Student(studentNameAndAttendanceTime[0]);
-                addStudent(student);
-                DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
-                LocalDateTime localDateTime = LocalDateTime.parse(studentNameAndAttendanceTime[1], dateTimeFormatter);
-                student.updateState(localDateTime);
-                continue;
-            }
-            Student student = findStudentByName(studentNameAndAttendanceTime[0]);
-            DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
-            LocalDateTime localDateTime = LocalDateTime.parse(studentNameAndAttendanceTime[1], dateTimeFormatter);
-            student.updateState(localDateTime);
+            creatStudentByName(studentNameAndAttendanceTime);
         }
+    }
+
+    private void creatStudentByName(String[] studentNameAndAttendanceTime) {
+        String name = studentNameAndAttendanceTime[0];
+        String timeInformation = studentNameAndAttendanceTime[1];
+        String localDateTimeFormatter = "yyyy-MM-dd HH:mm";
+        if (findStudentByName(name) == null) {
+            Student student = new Student(name);
+            addStudent(student);
+            makeDateTimeFormatAndUpdateStudentState(localDateTimeFormatter, student,
+                    timeInformation);
+            return;
+        }
+        Student student = findStudentByName(name);
+        makeDateTimeFormatAndUpdateStudentState(localDateTimeFormatter, student,
+                timeInformation);
+    }
+
+    private static void makeDateTimeFormatAndUpdateStudentState(String localDateTimeFormatter, Student student, String studentNameAndAttendanceTime) {
+        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern(localDateTimeFormatter);
+        LocalDateTime localDateTime = LocalDateTime.parse(studentNameAndAttendanceTime, dateTimeFormatter);
+        student.updateState(localDateTime);
     }
 
 }
