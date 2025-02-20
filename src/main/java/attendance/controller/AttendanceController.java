@@ -97,7 +97,6 @@ public class AttendanceController {
     }
 
     private void validateTimeFormat(final String presentTime) {
-        // 시간 형식에 맞게 입력받았는지 확인하기
         final String TIME_PATTERN = "(2[0-3]|[01][0-9]):[0-5][0-9]";
         if (!presentTime.matches(TIME_PATTERN)) {
             throw new IllegalArgumentException(("[ERROR] 올바르지 않은 시간 형식을 입력했습니다."));
@@ -105,7 +104,6 @@ public class AttendanceController {
     }
 
     private void modifyCrewAttendance() {
-        // crewName -> findCrew (Crews) -> findCrewAttendance (Attendances) -> modifyCrewAttendance (Attendances)
         String crewName = inputView.readCrewName();
         Crew crew = crews.findCrew(crewName);
 
@@ -135,7 +133,6 @@ public class AttendanceController {
     }
 
     private void lookupCrewAttendanceHistory() {
-        // crewName -> findCrew (Crews) -> findCrewAttendances (Attendances)
         String crewName = inputView.readCrewName();
         Crew crew = crews.findCrew(crewName);
 
@@ -145,12 +142,32 @@ public class AttendanceController {
         crewStatistic.initCrewStatus();
         crewStatistic.calculatePenalty();
 
-        // TODO
-        outputView.printCrewAttendanceHistory(crew.getName(), crewStatistic.getStatisticInfo());
+        outputView.printCrewAttendanceHistory(crew.getName(), crewStatistic.getCrewAttendanceHistory());
+        outputView.printCrewStatisticStatus(crewStatistic.getCrewStatisticStatus());
     }
 
     private void lookupCrewsExpelStatus() {
-        // showExpelStatus (Crews)
+        List<CrewStatistic> crewStatistics = new ArrayList<>();
 
+        for (Crew crew : crews.getCrews()) {
+            List<Attendance> crewAttendances = attendances.findCrewAttendances(crew);
+            CrewStatistic crewStatistic = new CrewStatistic(crew, crewAttendances);
+
+            crewStatistic.initCrewStatus();
+            crewStatistic.calculatePenalty();
+            crewStatistics.add(crewStatistic);
+        }
+
+        List<CrewStatistic> sortedCrewStatistics = crewStatistics.stream()
+                .sorted(Comparator.comparing(CrewStatistic::getPenaltyCount)
+                        .reversed()
+                        .thenComparing(CrewStatistic::getCrewName))
+                .toList();
+
+        outputView.printExpelCrewHead();
+        for (CrewStatistic sortedCrewStatistic : sortedCrewStatistics) {
+            outputView.printExpelCrew(sortedCrewStatistic.crewExpelExpectedInfo());
+        }
+        outputView.printNewLine();
     }
 }
