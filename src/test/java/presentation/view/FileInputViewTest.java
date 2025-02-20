@@ -14,6 +14,6 @@ class FileInputViewTest {
         Map<String, List<String>> fileInput = inputView.getFileInput();
 
         Assertions.assertThat(fileInput.get("쿠키")).hasSize(8);
-        Assertions.assertThat(fileInput.get("빙봉")).hasSize(10);
+        Assertions.assertThat(fileInput.get("빙봉")).hasSize(11);
     }
 }

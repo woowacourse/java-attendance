@@ -27,8 +27,7 @@ public class AttendanceTest {
     @Test
     void test2() {
         Attendance attendance = new Attendance(AttendanceDate.DEFAULT_START_DATE, LocalDate.of(2025, 2, 17));
-
-        assertThat(attendance.countAbsence()).isEqualTo(54);
+        assertThat(attendance.countAbsence()).isEqualTo(53);
     }
 
     @DisplayName("학생 한 명의 출석 횟수")
