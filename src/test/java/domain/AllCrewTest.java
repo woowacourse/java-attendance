@@ -45,8 +45,8 @@ class AllCrewTest {
         // 결과
         assertThat(allCrew.printAllCrewWarningInfo(LocalDate.of(2024, 12, 12)))
                 .isEqualTo("""
-                        빙티: 결석 3회, 지각 2회 (면담)
-                        이든: 결석 2회, 지각 4회 (면담)
+                        - 빙티: 결석 3회, 지각 2회 (면담)
+                        - 이든: 결석 2회, 지각 4회 (면담)
                         """);
     }
 
@@ -87,8 +87,8 @@ class AllCrewTest {
         // 결과
         assertThat(allCrew.printAllCrewWarningInfo(LocalDate.of(2024, 12, 12)))
                 .isEqualTo("""
-                        빙티: 결석 3회, 지각 2회 (면담)
-                        이든: 결석 2회, 지각 4회 (면담)
+                        - 빙티: 결석 3회, 지각 2회 (면담)
+                        - 이든: 결석 2회, 지각 4회 (면담)
                         """);
     }
 }

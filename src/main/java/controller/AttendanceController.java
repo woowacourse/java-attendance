@@ -1,3 +1,5 @@
+package controller;
+
 import domain.AllCrew;
 import domain.Crew;
 import java.io.FileNotFoundException;
@@ -39,7 +41,7 @@ public class AttendanceController {
 //                checkCrewAttendanceInfo();
             }
             if (menuInput.equals("4")) {
-//                checkDangerousCrew();
+                checkDangerousCrew();
             }
             if (menuInput.equals("Q")) {
                 break;
@@ -48,6 +50,21 @@ public class AttendanceController {
 
         }
 
+    }
+
+    private void checkDangerousCrew() {
+        System.out.println("제적 위험자 조회 결과");
+        System.out.println(allCrew.printAllCrewWarningInfo(today));
+    }
+
+    private void checkCrewAttendanceInfo() {
+        System.out.println("닉네임을 입력해 주세요.");
+        Scanner sc = new Scanner(System.in);
+        String name = sc.nextLine();
+
+        System.out.println("\n이번 달 " + name + "의 출석 기록입니다.\n");
+
+        System.out.println(allCrew.printAttendanceHistory(name, today));
     }
 
     private void readAttendanceFile(AllCrew allCrew) {
