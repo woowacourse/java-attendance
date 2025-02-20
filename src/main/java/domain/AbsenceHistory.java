@@ -1,5 +1,6 @@
 package domain;
 
+import dto.AbsenceResultDto;
 import dto.AttendanceResultDto;
 import java.util.List;
 
@@ -11,21 +12,29 @@ public class AbsenceHistory {
         this.attendanceResultDtos = attendanceResultDtos;
     }
 
-    public int lateCalculate() {
+    public AbsenceResultDto calculate() {
+        int attendance = attendanceCalculate();
+        int lateness = lateCalculate();
+        int absence = absenceCalculate();
+
+        String absenceStatus = AbsencePolicy.getAbsencePolicy(absence, lateness);
+        return new AbsenceResultDto(attendance, lateness, absence, absenceStatus);
+    }
+
+    private int lateCalculate() {
         return calculateAbsence(AttendanceState.LATENESS);
     }
 
-    public int absenceCalculate() {
+    private int absenceCalculate() {
         return calculateAbsence(AttendanceState.ABSENCE);
     }
 
-    public int attendanceCalculate() {
+    private int attendanceCalculate() {
         return calculateAbsence(AttendanceState.ATTENDANCE);
     }
 
     private int calculateAbsence(AttendanceState state) {
-        return (int) attendanceResultDtos.stream()
-                .filter(dto -> dto.attendanceState().equals(state.getDescription()))
+        return (int) attendanceResultDtos.stream().filter(dto -> dto.attendanceState().equals(state.getDescription()))
                 .count();
     }
 }

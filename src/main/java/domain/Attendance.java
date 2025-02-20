@@ -1,5 +1,6 @@
 package domain;
 
+import dto.AbsenceResultDto;
 import dto.AttendanceResultDto;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
