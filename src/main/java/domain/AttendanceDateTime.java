@@ -88,6 +88,10 @@ public class AttendanceDateTime {
     }
 
     public boolean isSame(AttendanceSheet attendanceSheet) {
-         return this.attendanceDateTime.toLocalDate().equals(attendanceSheet.getAttendanceDateTime().attendanceDateTime.toLocalDate());
+        return this.attendanceDateTime.toLocalDate().equals(attendanceSheet.getAttendanceDateTime().attendanceDateTime.toLocalDate());
+    }
+
+    public LocalDateTime getAttendanceDateTime() {
+        return attendanceDateTime;
     }
 }
