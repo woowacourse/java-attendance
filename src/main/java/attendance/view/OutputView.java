@@ -63,4 +63,8 @@ public class OutputView {
                         warningCrewDetailDTO.warningType())));
         stringBuilder.print();
     }
+
+    public void printError(String message) {
+        System.out.println(String.format("[ERROR] %s", message));
+    }
 }

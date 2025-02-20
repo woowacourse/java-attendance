@@ -8,6 +8,7 @@ import attendance.model.Crew;
 import attendance.model.CrewDataLoader;
 import attendance.model.Crews;
 import attendance.model.CustomLocalDateTime;
+import attendance.model.WoowaDayOfWeek;
 import attendance.view.InputView;
 import attendance.view.OutputView;
 import java.time.LocalDate;
@@ -19,6 +20,8 @@ public class Controller {
     private final InputView inputView;
     private final OutputView outputView;
     private final static Crews crews = new Crews();
+
+    private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM월 dd일 EEEE은 등교일이 아닙니다.");
 
     public Controller(InputView inputView, OutputView outputView) {
         this.inputView = inputView;
@@ -33,44 +36,64 @@ public class Controller {
     public void run() {
         String s = inputView.inputCommand();
         if (s.equals("1")) {
-            String crewName = inputView.inputCrewName();
-            String entryTime = inputView.inputEntryTime();
-            AttendanceDetail attendanceDetail = new AttendanceDetail(
-                    LocalDateTime.of(CustomLocalDateTime.now().toLocalDate(),
-                            LocalTime.parse(entryTime, DateTimeFormatter.ofPattern("HH:mm")))
-            );
-            crews.findCrew(new Crew(crewName)).get().getAttendanceHistory().addAttendanceDetail(attendanceDetail);
-            outputView.printAttendanceDetail(AttendanceDetailDTO.from(attendanceDetail));
+            process(() -> {
+                String crewName = inputView.inputCrewName();
+                Crew crew = crews.findCrew(new Crew(crewName));
+                String entryTime = inputView.inputEntryTime();
+                AttendanceDetail attendanceDetail = new AttendanceDetail(
+                        LocalDateTime.of(CustomLocalDateTime.now().toLocalDate(),
+                                LocalTime.parse(entryTime, DateTimeFormatter.ofPattern("HH:mm")))
+                );
+                crew.getAttendanceHistory().addAttendanceDetail(attendanceDetail);
+                outputView.printAttendanceDetail(AttendanceDetailDTO.from(attendanceDetail));
+            });
         }
         if (s.equals("2")) {
-            String crewName = inputView.inputModifyAttendanceCrewName();
-            String modifyDateInput = inputView.inputModifyAttendanceDate();
-            LocalDate modifyDate = LocalDate.of(2024, 12, Integer.parseInt(modifyDateInput));
-            String modifyTimeInput = inputView.inputModifyAttendanceTime();
-            LocalTime modifyTime = LocalTime.parse(modifyTimeInput, DateTimeFormatter.ofPattern("HH:mm"));
+            process(() -> {
+                String crewName = inputView.inputModifyAttendanceCrewName();
+                Crew crew = crews.findCrew(new Crew(crewName));
+                String modifyDateInput = inputView.inputModifyAttendanceDate();
+                LocalDate modifyDate = LocalDate.of(2024, 12, Integer.parseInt(modifyDateInput));
+                if (WoowaDayOfWeek.isHoliday(modifyDate)) {
+                    throw new IllegalArgumentException(modifyDate.format(formatter));
+                }
+                AttendanceDetail attendanceDetail = crew.getAttendanceHistory()
+                        .getAttendanceDetail(modifyDate);
+                String modifyTimeInput = inputView.inputModifyAttendanceTime();
+                LocalTime modifyTime = LocalTime.parse(modifyTimeInput, DateTimeFormatter.ofPattern("HH:mm"));
 
-            AttendanceDetail attendanceDetail = crews.findCrew(new Crew(crewName)).get().getAttendanceHistory()
-                    .getAttendanceDetail(modifyDate);
+                AttendanceDetail cloned = attendanceDetail.clone();
+                attendanceDetail.modify(modifyTime);
 
-            AttendanceDetail cloned = attendanceDetail.clone();
-            attendanceDetail.modify(modifyTime);
-
-            outputView.printModifyResult(
-                    AttendanceDetailDTO.from(cloned),
-                    AttendanceDetailDTO.from(attendanceDetail)
-            );
+                outputView.printModifyResult(
+                        AttendanceDetailDTO.from(cloned),
+                        AttendanceDetailDTO.from(attendanceDetail)
+                );
+            });
         }
         if (s.equals("3")) {
-            String crewName = inputView.inputCrewName();
-            Crew crew = crews.findCrew(new Crew(crewName)).get();
-            outputView.printAttendanceHistory(AttendanceDTO.from(crew));
+            process(() -> {
+                String crewName = inputView.inputCrewName();
+                Crew crew = crews.findCrew(new Crew(crewName));
+                outputView.printAttendanceHistory(AttendanceDTO.from(crew));
+            });
         }
         if (s.equals(("4"))) {
-            outputView.printWarningCrews(WarningCrewsDTO.from(crews));
+            process(() -> {
+                outputView.printWarningCrews(WarningCrewsDTO.from(crews));
+            });
         }
         if (s.equals("Q")) {
             System.exit(1);
         }
         run();
+    }
+
+    private void process(Runnable runnable) {
+        try {
+            runnable.run();
+        } catch (IllegalArgumentException exception) {
+            outputView.printError(exception.getMessage());
+        }
     }
 }

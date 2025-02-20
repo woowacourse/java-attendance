@@ -1,10 +1,12 @@
 package model;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import attendance.model.Attendance;
 import attendance.model.AttendanceDetail;
 import attendance.model.AttendanceHistory;
+import attendance.model.Crew;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -105,6 +107,16 @@ public class AttendanceHistoryTest {
         // then
         assertThat(attendanceDetail).isEqualTo(attendanceDetail1);
 
+    }
+
+    @DisplayName("등교일이 아닐 때 예외가 발생한다")
+    @Test
+    void test7() {
+        Crew crew = new Crew("멍구");
+        AttendanceDetail attendanceDetail = new AttendanceDetail(LocalDateTime.of(2024, 12, 7, 10, 0));
+
+        assertThatThrownBy(() -> crew.addAttendanceDetail(attendanceDetail))
+                .isInstanceOf(IllegalArgumentException.class);
     }
 
 }
