@@ -16,5 +16,4 @@ class FileInputViewTest {
         Assertions.assertThat(fileInput.get("쿠키")).hasSize(8);
         Assertions.assertThat(fileInput.get("빙봉")).hasSize(10);
     }
-
 }
