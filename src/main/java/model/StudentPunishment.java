@@ -5,8 +5,8 @@ public enum StudentPunishment {
     INTERVIEW(3,"면담"),
     DISMISSAL(5,"제적");
 
-    private int standard;
-    private String punishmentLabel;
+    private final int standard;
+    private final String punishmentLabel;
 
     StudentPunishment(int standard, String punishmentLabel) {
         this.standard = standard;
