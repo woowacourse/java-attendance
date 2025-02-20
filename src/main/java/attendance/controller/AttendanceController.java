@@ -8,13 +8,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Stream;
 
-import attendance.domain.Attendance;
-import attendance.domain.AttendanceStatus;
-import attendance.domain.Attendances;
-import attendance.domain.Crew;
-import attendance.domain.ExpulsionStatus;
+import attendance.domain.*;
 import attendance.view.FileLineReader;
 import attendance.view.InputView;
 import attendance.view.OperationCommand;
@@ -49,9 +44,24 @@ public class AttendanceController {
             if (operationCommand.isCrewAttendancesCheck()) {
                 checkCrewAttendances(crewAttendances);
             }
+            if (operationCommand.isExpulsionCheck()) {
+                checkExpulsionCrews(crewAttendances);
+            }
         } catch (IllegalArgumentException e) {
             outputView.printErrorMessage(e.getMessage());
         }
+    }
+
+    private void checkExpulsionCrews(Map<Crew, Attendances> crewAttendances) {
+        Map<String, AttendanceHistory> attendanceHistories = new HashMap<>();
+        for (Map.Entry<Crew, Attendances> entry : crewAttendances.entrySet()) {
+            Attendances attendances = entry.getValue();
+            Map<String, Integer> attendanceStatusCounts = attendances.calculateStatusCount();
+            ExpulsionStatus expulsionStatus = attendances.calculateExpulsionStatus();
+            AttendanceHistory attendanceHistory = new AttendanceHistory(attendanceStatusCounts.get("결석"), attendanceStatusCounts.get("지각"), expulsionStatus.getText());
+            attendanceHistories.put(entry.getKey().getNickname(), attendanceHistory);
+        }
+        outputView.printExpulsionCrews(attendanceHistories);
     }
 
     private void modifyAttendance(Map<Crew, Attendances> crewAttendances, LocalDate today) {

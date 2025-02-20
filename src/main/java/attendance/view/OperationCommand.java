@@ -35,4 +35,8 @@ public enum OperationCommand {
     public boolean isCrewAttendancesCheck() {
         return this.equals(CREW_ATTENDANCES_CHECK);
     }
+
+    public boolean isExpulsionCheck() {
+        return this.equals(EXPULSION_CHECK);
+    }
 }
