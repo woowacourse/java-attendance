@@ -2,6 +2,7 @@ package domain;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import dto.AbsenceResultDto;
 import dto.AttendanceResultDto;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -10,6 +11,7 @@ import java.util.List;
 import java.util.Map;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import util.FileManager;
 
 class AttendanceTest {
 
@@ -88,5 +90,18 @@ class AttendanceTest {
 
         //then
         assertThat(actual).hasSize(6);
+    }
+
+    @DisplayName("출결 기록을 바탕으로 제적 위험자를 확인한다.")
+    @Test
+    void getAbsence() {
+        //given
+        Attendance attendance = FileManager.readFile();
+
+        //when
+        Map<Crew, AbsenceResultDto> actual = attendance.getAbsence(14);
+
+        //then
+        assertThat(actual).hasSize(5);
     }
 }
