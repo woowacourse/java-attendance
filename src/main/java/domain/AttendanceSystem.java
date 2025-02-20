@@ -30,6 +30,11 @@ public class AttendanceSystem {
         return crew.addAttendance(localDateTime.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")));
     }
 
+    public boolean isAlreadyTodayAttendance(final String crewName) {
+        final Crew crew = this.findCrewByName(crewName);
+        return crew.existTodayAttendance(LocalDate.now().withYear(2024).withMonth(12));
+    }
+
     public void validateCrewByName(final String name) {
         if (!existCrewByName(name)) {
             throw new IllegalArgumentException("크루가 존재하지 않습니다.");

@@ -1,5 +1,6 @@
 package controller;
 
+import domain.AnswerCommand;
 import domain.Attendance;
 import domain.AttendanceStatus;
 import domain.AttendanceSystem;
@@ -62,9 +63,27 @@ public class AttendanceController {
 
     private void addAttendance() {
         final String crewName = LoopTemplate.tryCatchLoop(this::inputCrewName, outputView);
-        final Attendance attendance = LoopTemplate.tryCatchLoop(this::attendance, crewName, outputView);
-        final AttendanceResponse attendanceResponse = convertAttendanceToResponse(attendance);
-        outputView.printCrewAttendances(List.of(attendanceResponse));
+        if (!attendanceSystem.isAlreadyTodayAttendance(crewName)) {
+            final Attendance attendance = LoopTemplate.tryCatchLoop(this::attendance, crewName, outputView);
+            final AttendanceResponse attendanceResponse = convertAttendanceToResponse(attendance);
+            outputView.printCrewAttendances(List.of(attendanceResponse));
+            return;
+        }
+        updateAttendanceForDuplicateAttendance(crewName);
+    }
+
+    private void updateAttendanceForDuplicateAttendance(final String crewName) {
+        outputView.printIntroduceAnswerCommand();
+        final AnswerCommand answerCommand = inputView.readAnswerCommand();
+        if (answerCommand == AnswerCommand.YES) {
+            final int dayOfMonth = LocalDate.now().getDayOfMonth();
+            final LocalTime targetTime = LoopTemplate.tryCatchLoop(this::inputUpdateTime, outputView);
+            final Attendance beforeAttendance = attendanceSystem.findAttendanceByDate(crewName, dayOfMonth);
+            final Attendance afterAttendance = attendanceSystem.updateAttendanceByCrewNameAndDay(targetTime, crewName,
+                    dayOfMonth);
+            outputView.printUpdateAttendanceResult(convertAttendanceToResponse(beforeAttendance),
+                    convertAttendanceToResponse(afterAttendance));
+        }
     }
 
     private Attendance attendance(final String crewName) {
