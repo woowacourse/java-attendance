@@ -147,13 +147,13 @@ public class AttendanceBookTest {
         }
 
         //when
-        List<AttendanceResult> result = attendanceBook.checkAttendance(name, DateUtil.getAttendUntilDay(4));
+        AttendanceResults result = attendanceBook.checkAttendance(name, DateUtil.getAttendUntilDay(4));
 
         //then
         List<AttendanceResult> expected = List.of(new AttendanceResult(expectAttend.get(0), expectedStatus.get(0)),
                 new AttendanceResult(expectAttend.get(1), expectedStatus.get(1)),
                 new AttendanceResult(expectAttend.get(2), expectedStatus.get(2)));
-        Assertions.assertThat(result).containsOnlyElementsOf(expected);
+        Assertions.assertThat(result.getAttendanceResults()).containsOnlyElementsOf(expected);
     }
 
     @Test
@@ -170,10 +170,14 @@ public class AttendanceBookTest {
         List<Integer> days = DateUtil.getAttendUntilDay(5);
 
         //when
-        List<AttendanceResult> result = attendanceBook.checkAttendance(name, days);
+        AttendanceResults result = attendanceBook.checkAttendance(name, days);
 
         //then
-        assertAll(() -> Assertions.assertThat(result.get(3).attend()).isEqualTo(Attend.fromDay(5)),
-                () -> Assertions.assertThat(result.get(3).attendStatus()).isEqualTo(AttendStatus.ABSENCE));
+        assertAll(
+                () -> Assertions.assertThat(result.getAttendanceResults().get(3).attend()).isEqualTo(Attend.fromDay(5)),
+                () -> Assertions.assertThat(result.getAttendanceResults().get(3).attendStatus())
+                        .isEqualTo(AttendStatus.ABSENCE));
+    }
+
     }
 }

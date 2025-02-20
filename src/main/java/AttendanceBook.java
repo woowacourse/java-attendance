@@ -56,13 +56,13 @@ public class AttendanceBook {
                 .getAttends(days);
     }
 
-    public List<AttendanceResult> checkAttendance(String name, List<Integer> days) {
+    public AttendanceResults checkAttendance(String name, List<Integer> days) {
         List<AttendanceResult> result = new ArrayList<>();
         Attends attends = findByName(name);
         for (int day : days) {
             result.add(getAttendanceResult(attends, day));
         }
-        return result;
+        return new AttendanceResults(result);
     }
 
     private AttendanceResult getAttendanceResult(Attends attends, int day) {

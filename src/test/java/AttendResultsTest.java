@@ -20,8 +20,7 @@ public class AttendResultsTest {
         for (Attend attend : attends) {
             attendanceBook.attend(name, attend);
         }
-        List<AttendanceResult> attendanceResult = attendanceBook.checkAttendance(name, DateUtil.getAttendUntilDay(day));
-        AttendanceResults attendanceResults = new AttendanceResults(attendanceResult);
+        AttendanceResults attendanceResults = attendanceBook.checkAttendance(name, DateUtil.getAttendUntilDay(day));
 
         //when
         AttendCount attendCount = attendanceResults.countAttendStatus();

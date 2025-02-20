@@ -20,4 +20,8 @@ public class AttendanceResults {
                 .count();
         return new AttendCount(attendCount, lateCount, absenceCount);
     }
+
+    public List<AttendanceResult> getAttendanceResults() {
+        return attendanceResults;
+    }
 }
