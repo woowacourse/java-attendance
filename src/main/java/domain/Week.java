@@ -6,6 +6,7 @@ import java.time.LocalTime;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
+import util.Constants;
 
 public enum Week {
     MONDAY(LocalTime.of(13, 0)),
@@ -39,13 +40,14 @@ public enum Week {
 
     public static Week findByAttendanceTime(final LocalDateTime localDateTime) {
         DayOfWeek day = localDateTime.getDayOfWeek();
+        final String dayOfWeek = Week.findKoreanName(localDateTime.getDayOfWeek());
 
         return Arrays.stream(Week.values())
                 .filter(week -> week.name().equals(day.name()))
                 .findFirst()
                 .orElseThrow(() -> new IllegalArgumentException(
-                        String.format("%d월 %d일 %s요일은 등교일이 아닙니다.", localDateTime.getMonth(),
-                                localDateTime.getDayOfMonth(), localDateTime.getDayOfWeek())));
+                        String.format("%d월 %d일 %s은 등교일이 아닙니다.", Constants.MONTH,
+                                localDateTime.getDayOfMonth(), dayOfWeek)));
     }
 
     public static String findKoreanName(final DayOfWeek day) {
