@@ -20,13 +20,6 @@ public class OutputView {
                 attendance.getName());
     }
 
-    private String getDisplayTime(LocalTime time, Attendance attendance) {
-        if (attendance == Attendance.ABSENT) {
-            return "--:--";
-        }
-        return time.toString();
-    }
-
     public void displayUpdatedRecord(AttendanceRecord oldRecord, AttendanceRecord newRecord) {
         LocalTime newTime = newRecord.getTime();
         Attendance newAttendance = newRecord.getAttendance();
@@ -39,6 +32,16 @@ public class OutputView {
         displaySortedRecords(crew, crewAttendanceRecords);
         displayAttendanceCount(crew, crewAttendanceRecords);
         displayDisciplinaryStatus(crew, crewAttendanceRecords);
+    }
+
+    public void displayWarnedCrews(List<Crew> warnedCrews, CrewAttendanceRecords crewAttendanceRecords) {
+        System.out.println("\n제적 위험자 조회 결과");
+        for (Crew warnedCrew : warnedCrews) {
+            int absentCount = crewAttendanceRecords.getAbsentCount(warnedCrew);
+            int tardyCount = crewAttendanceRecords.getTardyCount(warnedCrew);
+            System.out.printf("- %s: %s %d회, %s %d회 (%s)%n", warnedCrew.getName(), Attendance.ABSENT.getName(), absentCount,
+                    Attendance.TARDY.getName(), tardyCount, DisciplinaryStatus.getStatus(absentCount, tardyCount).getName());
+        }
     }
 
     private void displaySortedRecords(Crew crew, CrewAttendanceRecords crewAttendanceRecords) {
@@ -65,13 +68,10 @@ public class OutputView {
         System.out.printf("%s 대상자입니다.%n", status.getName());
     }
 
-    public void displayWarnedCrews(List<Crew> warnedCrews, CrewAttendanceRecords crewAttendanceRecords) {
-        System.out.println("\n제적 위험자 조회 결과");
-        for (Crew warnedCrew : warnedCrews) {
-            int absentCount = crewAttendanceRecords.getAbsentCount(warnedCrew);
-            int tardyCount = crewAttendanceRecords.getTardyCount(warnedCrew);
-            System.out.printf("- %s: %s %d회, %s %d회 (%s)%n", warnedCrew.getName(), Attendance.ABSENT.getName(), absentCount,
-                    Attendance.TARDY.getName(), tardyCount, DisciplinaryStatus.getStatus(absentCount, tardyCount).getName());
+    private String getDisplayTime(LocalTime time, Attendance attendance) {
+        if (attendance == Attendance.ABSENT) {
+            return "--:--";
         }
+        return time.toString();
     }
 }
