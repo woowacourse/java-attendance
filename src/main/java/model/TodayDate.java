@@ -1,6 +1,8 @@
 package model;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+
 public class TodayDate {
 
     private final LocalDate todayDate;
@@ -11,5 +13,9 @@ public class TodayDate {
 
     public LocalDate getTodayDate() {
         return todayDate;
+    }
+
+    public LocalDateTime getTodayDateTIme() {
+        return todayDate.atTime(0,0);
     }
 }
