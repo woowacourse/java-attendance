@@ -44,6 +44,10 @@ public class Crew {
         this.absentCount++;
     }
 
+    public int getSafeCount() {
+        return safeCount;
+    }
+
     public int getLateCount() {
         return lateCount;
     }
