@@ -63,6 +63,10 @@ public class Attendance {
         return findDate.isEqual(attendanceDateTime.toLocalDate());
     }
 
+    public AttendanceStatus calculateStatus() {
+        return AttendanceStatus.findByAttendanceDateTime(attendanceDateTime);
+    }
+
     public LocalDateTime getAttendanceDateTime() {
         return attendanceDateTime;
     }
