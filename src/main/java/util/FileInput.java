@@ -15,16 +15,16 @@ public class FileInput {
     }
 
     public ArrayList<String> readAttendanceFile() throws IOException{
-        ArrayList<String> attendenceFile = new ArrayList<>();
+        ArrayList<String> attendanceFile = new ArrayList<>();
         fileBr.readLine();
         while(true) {
             String information = fileBr.readLine();
             if (information == null) {
                 break;
             }
-            attendenceFile.add(information);
+            attendanceFile.add(information);
         }
-        return attendenceFile;
+        return attendanceFile;
     }
 
 }
