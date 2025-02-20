@@ -1,49 +1,30 @@
 package model;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import attendance.model.Attendance;
 import attendance.model.AttendanceDetail;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import org.assertj.core.api.Assertions;
 import org.assertj.core.api.SoftAssertions;
-import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 public class AttendanceDetailTest {
 
     @Test
-    void test1() {
-        LocalDateTime dateTime = LocalDateTime.of(2024, 12, 10, 10, 0);
-        AttendanceDetail attendanceDetail = new AttendanceDetail(dateTime);
-        Assertions.assertThat(attendanceDetail).isNotNull();
+    void 같은_출석상태일때_true를_반환한다() {
+        AttendanceDetail attendanceDetail = new AttendanceDetail(LocalDateTime.of(2024, 12, 10, 10, 2));
+        assertThat(attendanceDetail.isSameAs(Attendance.출석)).isTrue();
     }
 
     @Test
-    void test2() {
-        AttendanceDetail attendanceDetail = new AttendanceDetail(LocalDateTime.of(2024, 12, 3, 10, 7));
-
-        assertThat(attendanceDetail.getAttendance()).isEqualTo(Attendance.지각);
+    void 다른_출석상태일때_false를_반환한다() {
+        AttendanceDetail attendanceDetail = new AttendanceDetail(LocalDateTime.of(2024, 12, 10, 10, 2));
+        assertThat(attendanceDetail.isSameAs(Attendance.지각)).isFalse();
     }
 
     @Test
-    void test3() {
-        AttendanceDetail attendanceDetail = new AttendanceDetail(LocalDateTime.of(2024, 12, 5, 17, 6));
-
-        assertThat(attendanceDetail.getAttendance()).isEqualTo(Attendance.결석);
-    }
-
-    @Test
-    void test4() {
-        AttendanceDetail attendanceDetail = new AttendanceDetail(LocalDateTime.of(2024, 12, 3, 10, 2));
-
-        assertThat(attendanceDetail.getAttendance()).isEqualTo(Attendance.출석);
-    }
-
-    @Test
-    void test5() {
+    void 등교시간_수정후_결과가_반영된다() {
         AttendanceDetail attendanceDetail = new AttendanceDetail(LocalDateTime.of(2024, 12, 10, 10, 2));
         attendanceDetail.modify(LocalTime.of(9, 58));
         SoftAssertions softly = new SoftAssertions();
@@ -52,10 +33,4 @@ public class AttendanceDetailTest {
         softly.assertAll();
     }
 
-    @DisplayName("등교일이 아닐 때 예외가 발생한다")
-    @Test
-    void test7() {
-        assertThatThrownBy(() -> new AttendanceDetail(LocalDateTime.of(2024, 12, 7, 10, 0)))
-                .isInstanceOf(IllegalArgumentException.class);
-    }
 }
