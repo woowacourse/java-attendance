@@ -101,10 +101,12 @@ public class Crew {
     public CrewResponse createCrewResponse() {
         int tardyCount = calculateTardyCount();
         int absenceCount = calculateAbsenceCount();
-        return new CrewResponse(name, attendanceBook, calculateAttendanceCount(), absenceCount, tardyCount, RiskStatus.getRiskStatus(absenceCount, tardyCount));
+        return new CrewResponse(name, attendanceBook, calculateAttendanceCount(), absenceCount, tardyCount, calculateRiskStatus());
     }
 
-    public RiskStatus getRiskStatus() {
-        return RiskStatus.getRiskStatus(calculateAbsenceCount(), calculateTardyCount());
+    public CrewResponse createCrewRiskStatusResponse() {
+        int tardyCount = calculateTardyCount();
+        int absenceCount = calculateAbsenceCount();
+        return new CrewResponse(name, calculateAttendanceCount(), absenceCount, tardyCount, calculateRiskStatus());
     }
 }

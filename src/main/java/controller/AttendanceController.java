@@ -1,14 +1,16 @@
 package controller;
 
+import static global.util.DateUtil.assembleDateAndTime;
+import static global.util.Validator.validateIsFutureDate;
+import static global.util.Validator.validateIsNotWorkingDay;
+
 import domain.Crews;
 import global.util.DateUtil;
-import view.InputView;
-import view.OutputView;
-
+import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeParseException;
-
-import static global.util.DateUtil.assembleDateAndTime;
+import view.InputView;
+import view.OutputView;
 
 public class AttendanceController {
     InputView inputView;
@@ -33,6 +35,7 @@ public class AttendanceController {
 
     public void selectMenu(String menu) {
         if (menu.equals("1")) {
+            validateIsNotWorkingDay(DateUtil.TODAY.toLocalDate());
             attendCrew();
             return;
         }
@@ -63,15 +66,6 @@ public class AttendanceController {
         outputView.printCrewAttendanceRecord(crews.createCrewResponseByName(name));
     }
 
-    private void editAttend() {
-        String name = inputView.inputEditCrewName();
-        if (!crews.hasCrewName(name)) throw new IllegalArgumentException();
-        String day = inputView.inputEditDay();
-        //TODO: day 검증, time 검증
-        String time = inputView.inputEditTime();
-        crews.editAttendStatus(name, assembleDateAndTime(DateUtil.getDateByInputDay(Integer.parseInt(day)), LocalTime.parse(time)));
-    }
-
     public void attendCrew() {
         try {
             String name = inputView.inputName();
@@ -82,5 +76,14 @@ public class AttendanceController {
             outputView.printErrorMessage(e);
             attendCrew();
         }
+    }
+
+    private void editAttend() {
+        String name = inputView.inputEditCrewName();
+        if (!crews.hasCrewName(name)) throw new IllegalArgumentException();
+        LocalDate day = DateUtil.getDateByInputDay(Integer.parseInt(inputView.inputEditDay()));
+        validateIsFutureDate(day);
+        LocalTime time = LocalTime.parse(inputView.inputEditTime());
+        crews.editAttendStatus(name, assembleDateAndTime(day, time));
     }
 }

@@ -1,19 +1,16 @@
 package view;
 
+import static view.ViewUtil.getAttendanceStatusMessage;
+import static view.ViewUtil.getRiskStatusMessage;
+
 import domain.AttendanceStatus;
-import domain.Crew;
 import domain.RiskStatus;
 import dto.CrewResponse;
 import global.util.DateUtil;
-
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
-
-import static view.ViewUtil.getAttendanceStatusMessage;
-import static view.ViewUtil.getRiskStatusMessage;
 
 public class OutputView {
     public void printCrewAttendanceRecord(CrewResponse crewResponse) {
@@ -39,17 +36,6 @@ public class OutputView {
         }
     }
 
-    private static String getEachDateAttendanceMessage(LocalDate currentDate, Map<LocalDate, LocalTime> map) {
-        if (!map.containsKey(currentDate)) {
-            return String.format("%d월 %02d일 %s %s (%s)", currentDate.getMonthValue(), currentDate.getDayOfMonth(),
-                    ViewUtil.getDayOfWeekToMessage(currentDate.getDayOfWeek()), ViewUtil.getNoneAttendanceMessage(), getAttendanceStatusMessage(AttendanceStatus.ABSENCE));
-        }
-        LocalTime attendTime = map.get(currentDate);
-        AttendanceStatus attendanceStatus = AttendanceStatus.attend(DateUtil.assembleDateAndTime(currentDate, attendTime));
-        return String.format("%d월 %02d일 %s %s (%s)", currentDate.getMonthValue(), currentDate.getDayOfMonth(),
-                ViewUtil.getDayOfWeekToMessage(currentDate.getDayOfWeek()), attendTime, getAttendanceStatusMessage(attendanceStatus));
-    }
-
     public void printErrorMessage(Exception e) {
         System.out.println("[ERROR] " + e.getMessage());
     }
@@ -68,5 +54,16 @@ public class OutputView {
                     return totalCount1 - totalCount2;
                 })
                 .forEach(e -> System.out.printf("- %s: 결석 %d회, 지각 %d회 (%s)\n", e.name(), e.absenceCount(), e.tardyCount(), getRiskStatusMessage(e.riskStatus())));
+    }
+
+    private static String getEachDateAttendanceMessage(LocalDate currentDate, Map<LocalDate, LocalTime> map) {
+        if (!map.containsKey(currentDate)) {
+            return String.format("%d월 %02d일 %s %s (%s)", currentDate.getMonthValue(), currentDate.getDayOfMonth(),
+                    ViewUtil.getDayOfWeekToMessage(currentDate.getDayOfWeek()), ViewUtil.getNoneAttendanceMessage(), getAttendanceStatusMessage(AttendanceStatus.ABSENCE));
+        }
+        LocalTime attendTime = map.get(currentDate);
+        AttendanceStatus attendanceStatus = AttendanceStatus.attend(DateUtil.assembleDateAndTime(currentDate, attendTime));
+        return String.format("%d월 %02d일 %s %s (%s)", currentDate.getMonthValue(), currentDate.getDayOfMonth(),
+                ViewUtil.getDayOfWeekToMessage(currentDate.getDayOfWeek()), attendTime, getAttendanceStatusMessage(attendanceStatus));
     }
 }

@@ -59,9 +59,9 @@ public class Crews {
     public List<CrewResponse> getCrewResponseWithRisk() {
         return crews.stream()
                 .filter(crew ->
-                    crew.getRiskStatus()
+                    crew.calculateRiskStatus()
                             .hasRisk())
-                .map(Crew::createCrewResponse)
+                .map(Crew::createCrewRiskStatusResponse)
                 .toList();
     }
 }

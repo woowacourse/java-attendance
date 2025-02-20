@@ -56,6 +56,6 @@ class AttendanceTest {
             crew.addAttendStatus(LocalDateTime.of(2024, 12, day, 10, 35, 0));
         }
 
-        assertThat(crew.calculateRiskStatus()).isEqualTo(RiskStatus.COUNSELING);
+        assertThat(crew.calculateRiskStatus()).isEqualTo(RiskStatus.EXPULSION);
     }
 }

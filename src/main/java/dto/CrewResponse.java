@@ -13,16 +13,6 @@ public record CrewResponse (
         int tardyCount,
         RiskStatus riskStatus
 ) {
-    public CrewResponse(String name, Map<LocalDate, LocalTime> attendanceBook, int attendanceCount, int absenceCount,
-                        int tardyCount, RiskStatus riskStatus) {
-        this.name = name;
-        this.attendanceBook = attendanceBook;
-        this.attendanceCount = attendanceCount;
-        this.absenceCount = absenceCount;
-        this.tardyCount = tardyCount;
-        this.riskStatus = riskStatus;
-    }
-
     public CrewResponse(String name, int attendanceCount, int absenceCount, int tardyCount, RiskStatus riskStatus) {
         this(name, Map.of(), attendanceCount, absenceCount, tardyCount, riskStatus);
     }
