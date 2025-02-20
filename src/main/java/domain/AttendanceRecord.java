@@ -49,10 +49,6 @@ public class AttendanceRecord {
         return attendance;
     }
 
-    public boolean isPresent() {
-        return attendance.equals(Attendance.PRESENT);
-    }
-
     public boolean isTardy() {
         return attendance.equals(Attendance.TARDY);
     }

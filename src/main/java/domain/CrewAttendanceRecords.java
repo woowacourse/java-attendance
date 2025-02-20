@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Map;
 
 public class CrewAttendanceRecords {
-    private Map<Crew, AttendanceRecords> crewAttendanceRecords;
+    private final Map<Crew, AttendanceRecords> crewAttendanceRecords;
 
     public CrewAttendanceRecords(CrewAttendanceRecordsGenerator generator, DateGenerator dateGenerator) {
         this.crewAttendanceRecords = generator.generate(dateGenerator);

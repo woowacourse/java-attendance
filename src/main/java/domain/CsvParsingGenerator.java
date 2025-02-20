@@ -16,7 +16,7 @@ public class CsvParsingGenerator implements CrewAttendanceRecordsGenerator {
     @Override
     public Map<Crew, AttendanceRecords> generate(DateGenerator dateGenerator) {
         Map<Crew, AttendanceRecords> crewAttendanceRecords = new HashMap<>();
-        List<String> rows = readContent(FILE_PATH).stream().skip(HEADER_ROW).toList();
+        List<String> rows = getStrings(FILE_PATH).stream().skip(HEADER_ROW).toList();
         for (String row : rows) {
             Crew crew = new Crew(row.split(",")[CREW_INDEX]);
             AttendanceRecord attendanceRecord = AttendanceRecord.parse(row.split(",")[RECORD_INDEX]);
@@ -30,13 +30,6 @@ public class CsvParsingGenerator implements CrewAttendanceRecordsGenerator {
     private Map<Crew, AttendanceRecords> fillAbsence(Map<Crew, AttendanceRecords> crewAttendanceRecords, DateGenerator dateGenerator) {
         crewAttendanceRecords.values().forEach(attendanceRecord -> attendanceRecord.fillAbsences(dateGenerator));
         return crewAttendanceRecords;
-    }
-
-    private List<String> readContent(String path) {
-        if (path.isEmpty()) {
-            throw new IllegalStateException("");
-        }
-        return getStrings(path);
     }
 
     private List<String> getStrings(String path) {

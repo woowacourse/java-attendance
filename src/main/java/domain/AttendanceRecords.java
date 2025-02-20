@@ -8,7 +8,7 @@ import java.util.List;
 public class AttendanceRecords {
     private static final LocalDate FILL_START_DATE = LocalDate.of(2024, 11, 30);
 
-    private List<AttendanceRecord> attendanceRecords;
+    private final List<AttendanceRecord> attendanceRecords;
 
     public AttendanceRecords() {
         this.attendanceRecords = new ArrayList<>();

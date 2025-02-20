@@ -55,9 +55,10 @@ public class OutputView {
 
     private void displayAttendanceCount(Crew crew, CrewAttendanceRecords crewAttendanceRecords) {
         System.out.println();
-        Arrays.stream(Attendance.values()).forEach(attendance -> {
-            System.out.printf("%s: %d회%n", attendance.getName(), crewAttendanceRecords.getAttendanceCount(crew, attendance));
-        });
+        Arrays.stream(Attendance.values())
+                .forEach(attendance -> System.out.printf("%s: %d회%n",
+                        attendance.getName(),
+                        crewAttendanceRecords.getAttendanceCount(crew, attendance)));
         System.out.println();
     }
 
