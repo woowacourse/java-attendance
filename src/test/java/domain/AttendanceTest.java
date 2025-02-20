@@ -14,7 +14,7 @@ class AttendanceTest {
     @Test
     void 출석이_정상적으로_실행() {
         // given
-        final LocalDateTime localDateTime = LocalDateTime.of(2024, 12, 1, 0, 0, 0);
+        final LocalDateTime localDateTime = LocalDateTime.of(2024, 12, 2, 0, 0, 0);
 
         // when
         // then
