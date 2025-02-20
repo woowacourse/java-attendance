@@ -1,7 +1,7 @@
 package attendance.domain;
 
-import attendance.exception.AttendanceArgumentException;
-import attendance.utility.StringUtility;
+import static attendance.domain.DateTimeFormatterWrapper.*;
+
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -10,10 +10,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import attendance.exception.AttendanceArgumentException;
+import attendance.utility.StringUtility;
+
 public class AttendanceManager {
 
-    private HashMap<String, Attendances> attendanceManager = new HashMap<>();
-    private String ATTENDANCE_RESULT_FORMAT = "%s (%s)";
+    private final HashMap<String, Attendances> attendanceManager = new HashMap<>();
+    private final String ATTENDANCE_RESULT_FORMAT = "%s (%s)";
 
     public void addAttendance(String nickname, LocalDateTime time) {
         validateNickname(nickname);
@@ -27,6 +30,10 @@ public class AttendanceManager {
     }
 
     private void validateAttendanceAvailable(LocalDate currentDate) {
+        if (currentDate.getDayOfWeek().getValue() >= AttendanceManagerHelper.WEEKEND_NUMBER) {
+            throw new AttendanceArgumentException(formattingAttendanceWeekendError(currentDate));
+        }
+
         LocalDate attendanceAvailableStartDate = AttendanceManagerHelper.ATTENDANCE_AVAILABLE_START_DATE;
         LocalDate attendanceAvailableEndDate = AttendanceManagerHelper.ATTENDANCE_AVAILABLE_END_DATE;
         if (attendanceAvailableEndDate.isAfter(currentDate) || attendanceAvailableStartDate.isBefore(currentDate)) {
@@ -37,7 +44,7 @@ public class AttendanceManager {
 
     private void validateIsSchoolOpen(LocalTime currentTime) {
         if (currentTime.isBefore(AttendanceManagerHelper.SCHOOL_OPEN_TIME) || currentTime.isAfter(
-                AttendanceManagerHelper.SCHOOL_CLOSE_TIME)) {
+            AttendanceManagerHelper.SCHOOL_CLOSE_TIME)) {
             throw new AttendanceArgumentException(AttendanceManagerHelper.OUT_OF_SCHOOL_SCHEDULE);
         }
     }
@@ -70,7 +77,7 @@ public class AttendanceManager {
     }
 
     public void validateIsAttendanceAvailable(LocalDate currentDate) {
-        String ATTENDANCE_WEEKEND_ERROR = DateTimeFormatterWrapper.formattingAttendanceWeekendError(currentDate);
+        String ATTENDANCE_WEEKEND_ERROR = formattingAttendanceWeekendError(currentDate);
         if (currentDate.getDayOfWeek().getValue() >= AttendanceManagerHelper.WEEKEND_NUMBER) {
             throw new AttendanceArgumentException(ATTENDANCE_WEEKEND_ERROR);
         }
@@ -97,10 +104,10 @@ public class AttendanceManager {
                 attendances.validateIsExistAttendanceHistory(currentDate);
             } catch (AttendanceArgumentException e) {
                 String absenceHistory = DateTimeFormatterWrapper.formattingAttendanceAbsenceHistory(
-                        currentDate);
+                    currentDate);
                 attendanceHistories.add(absenceHistory);
                 attendanceStatusMap.put(AttendanceStatus.ABSENCE,
-                        attendanceStatusMap.getOrDefault(AttendanceStatus.ABSENCE, 0) + 1);
+                    attendanceStatusMap.getOrDefault(AttendanceStatus.ABSENCE, 0) + 1);
                 continue;
             }
 
@@ -110,9 +117,9 @@ public class AttendanceManager {
             attendanceStatusMap.put(attendanceStatus, attendanceStatusMap.getOrDefault(attendanceStatus, 0) + 1);
 
             var dateTimeFormatResult = DateTimeFormatterWrapper.parsingAttendanceResult(
-                    LocalDateTime.of(currentDate, attendanceTime));
+                LocalDateTime.of(currentDate, attendanceTime));
             attendanceHistories.add(
-                    String.format(ATTENDANCE_RESULT_FORMAT, dateTimeFormatResult, attendanceStatus.getStatus()));
+                String.format(ATTENDANCE_RESULT_FORMAT, dateTimeFormatResult, attendanceStatus.getStatus()));
         }
         return new AttendanceHistory(attendanceHistories, attendanceStatusMap);
 

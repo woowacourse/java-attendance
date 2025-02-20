@@ -3,7 +3,11 @@ package attendance.domain;
 public class AttendanceDismiss {
 
     public static AttendanceDismissStatus calculateAttendanceDismiss(int late, int absence) {
-        int absenceCount = (late / 3) + absence;
+        var absenceCount = (late / 3) + absence;
+        return getAttendanceDismissStatus(absenceCount);
+    }
+
+    private static AttendanceDismissStatus getAttendanceDismissStatus(int absenceCount) {
         if (absenceCount > 5) {
             return AttendanceDismissStatus.DISMISS;
         }
@@ -15,4 +19,5 @@ public class AttendanceDismiss {
         }
         return AttendanceDismissStatus.NONE;
     }
+
 }
