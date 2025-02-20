@@ -16,7 +16,7 @@ class AttendanceBookTest {
     void 출석부에_기존이름이_존재여부_확인() {
         AttendanceBook attendanceBook = new AttendanceBook();
         Crew crew1 = Crew.createByName("쿠키");
-        crew1.addDailyAttendance(Map.of(LocalDate.of(2024, 12, 1), LocalTime.of(10, 6)));
+        crew1.addDailyAttendance(Map.of(LocalDate.of(2024, 12, 3), LocalTime.of(10, 6)));
         attendanceBook.addNewCrew(crew1);
 
         assertThat(attendanceBook.checkCrewAlreadyExists("쿠키")).isEqualTo(true);

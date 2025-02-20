@@ -22,6 +22,7 @@ public class ModifyAttendanceTest {
         Crew crew2 = Crew.createByName("우유");
         crew2.addDailyAttendance(Map.of(LocalDate.of(2024, 12, 3), LocalTime.of(10, 7)));
         attendanceBook.addNewCrew(crew2);
+
         crew2.modifyDailyAttendance(Map.of(LocalDate.of(2024, 12, 3), LocalTime.of(10, 20)));
     }
 
