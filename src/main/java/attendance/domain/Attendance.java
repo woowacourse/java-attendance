@@ -34,14 +34,18 @@ public class Attendance {
     }
 
     private AttendanceStatus attend(final int hour, final int minute, final int startHour) {
-        // TODO : indent 줄이기
         if (hour >= startHour) {
-            if (hour > startHour || minute > ABSENCE_CRITERIA) {
-                return AttendanceStatus.LATE_ABSENCE;
-            }
-            if (minute > LATE_CRITERIA) {
-                return AttendanceStatus.LATE;
-            }
+            return attendAfterStart(hour, minute, startHour);
+        }
+        return AttendanceStatus.ATTEND;
+    }
+
+    private static AttendanceStatus attendAfterStart(int hour, int minute, int startHour) {
+        if (hour > startHour || minute > ABSENCE_CRITERIA) {
+            return AttendanceStatus.LATE_ABSENCE;
+        }
+        if (minute > LATE_CRITERIA) {
+            return AttendanceStatus.LATE;
         }
         return AttendanceStatus.ATTEND;
     }
@@ -50,10 +54,10 @@ public class Attendance {
         return today.equals(LocalDate.from(dateTime));
     }
 
-    public AttendanceStatus updateDateTime(final LocalDateTime dateTime) {
+    public Attendance updateDateTime(final LocalDateTime dateTime) {
         this.dateTime = dateTime;
         this.status = checkAttendanceStatus(dateTime);
-        return this.status;
+        return this;
     }
 
     public LocalDateTime getDateTime() {

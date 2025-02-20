@@ -6,6 +6,9 @@ import attendance.controller.util.TimeFormatter;
 import attendance.controller.validator.HolidayValidator;
 import attendance.controller.validator.OperatingHoursValidator;
 import attendance.domain.*;
+import attendance.dto.AttendanceResultResponse;
+import attendance.dto.UpdateAfterAttendanceResponse;
+import attendance.dto.UpdateBeforeAttendanceResponse;
 import attendance.service.CrewsService;
 import attendance.view.InputView;
 import attendance.view.OutputView;
@@ -58,26 +61,21 @@ public class AttendanceController {
         Attendance attendance = new Attendance(attendDateTime);
 
         crew.addAttendance(attendance);
-        outputView.printAttendanceResult(attendance);
+        outputView.printAttendanceResult(AttendanceResultResponse.of(attendance));
     }
 
     private void updateAttendance(final Crews crews) {
         Crew crew = crews.findByName(inputView.inputNickname());
-
         LocalDate updateDate = LocalDate.of(today.getYear(), today.getMonthValue(), inputView.inputUpdateDate(today));
         HolidayValidator.validate(updateDate);
 
-        String inputUpdateTime = inputView.inputUpdateTime();
-        LocalDateTime updateTime = TimeFormatter.format(updateDate, inputUpdateTime);
+        LocalDateTime updateTime = TimeFormatter.format(updateDate, inputView.inputUpdateTime());
         OperatingHoursValidator.validate(updateTime);
 
-        Attendance before = crew.findAttendanceByDate(updateDate);
-        // TODO : dto로 추출
-        AttendanceStatus beforeStatus = before.getStatus();
-        LocalDateTime beforeTime = before.getDateTime();
+        UpdateBeforeAttendanceResponse beforeResponse = UpdateBeforeAttendanceResponse.of(crew.findAttendanceByDate(updateDate));
+        UpdateAfterAttendanceResponse afterResponse = UpdateAfterAttendanceResponse.of(crew.updateAttendance(updateTime));
 
-        Attendance after = crew.updateAttendance(updateTime);
-        outputView.printUpdateAttendance(beforeTime, beforeStatus, after);
+        outputView.printUpdateAttendance(beforeResponse, afterResponse);
     }
 
     private void printAttendanceByCrew(final Crews crews) {
