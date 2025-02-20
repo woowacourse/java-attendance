@@ -22,7 +22,7 @@ public enum Command {
         return Arrays.stream(values())
                 .filter(command -> command.option.equals(option))
                 .findFirst()
-                .orElseThrow(() -> new IllegalArgumentException("해당하는 기능은 없습니다."));
+                .orElseThrow(() -> new IllegalArgumentException("해당하는 기능은 존재하지 않습니다."));
     }
 
     public String getOption() {
