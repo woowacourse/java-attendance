@@ -8,7 +8,7 @@ import java.util.Scanner;
 
 // TODO : 입력값 검증 로직
 public class UserInputView {
-    public static String showMenu() {
+    public static String askMenu() {
         LocalDate today = LocalDate.of(2024, 12, 13);
         String str = "오늘은 " + today.format(DateTimeFormatter.ofPattern("MM월 dd일 ")) +
                 today.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.KOREAN) + "입니다. ";

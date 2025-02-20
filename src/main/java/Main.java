@@ -1,9 +1,11 @@
-import controller.AttendanceController;
-import view.FileInputView;
+import controller.AttendanceSystem;
+import util.DateGenerator;
 
 public class Main {
     public static void main(String[] args) {
-        AttendanceController attendanceController = new AttendanceController(new FileInputView());
-        attendanceController.run();
+        DateGenerator dateGenerator = new DateGenerator(2024, 12, 13);
+        AttendanceSystem attendanceSystem = new AttendanceSystem(dateGenerator);
+
+        attendanceSystem.start();
     }
 }

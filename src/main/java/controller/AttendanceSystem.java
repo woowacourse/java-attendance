@@ -2,48 +2,54 @@ package controller;
 
 import domain.AllCrew;
 import java.time.LocalDate;
+import util.DateGenerator;
 import view.FileInputView;
-import view.UserInputView;
 import view.OutputView;
+import view.UserInputView;
 
-public class AttendanceController {
+public class AttendanceSystem {
     private final FileInputView fileInputView;
-    AllCrew allCrew = new AllCrew();
-    LocalDate today = LocalDate.of(2024, 12, 13);
+    private final DateGenerator dateGenerator;
+    private final AllCrew allCrew;
 
-    public AttendanceController(FileInputView fileInputView) {
-        this.fileInputView = fileInputView;
+    public AttendanceSystem(DateGenerator dateGenerator) {
+        this.fileInputView = new FileInputView();
+        this.dateGenerator = dateGenerator;
+        this.allCrew = new AllCrew();
     }
 
-    public void run() {
+    public void start() {
         fileInputView.readAttendanceFile(allCrew);
+        LocalDate today = dateGenerator.getDate();
         allCrew.updateAbsentHistory(today.minusDays(1));
-
-        while (true) {
-            String menuInput = UserInputView.showMenu();
-            if (menuInput.equals("1")) {
-                checkAttendance();
-            }
-            if (menuInput.equals("2")) {
-                modifyAttendance();
-            }
-            if (menuInput.equals("3")) {
-                checkCrewAttendanceInfo();
-            }
-            if (menuInput.equals("4")) {
-                checkDangerousCrew();
-            }
-            if (menuInput.equals("Q")) {
-                break;
-            }
+        boolean onRunning = true;
+        while (onRunning) {
+            String menuInput = UserInputView.askMenu();
+            onRunning = executeMenu(menuInput);
         }
+    }
+
+    private boolean executeMenu(String menuInput) {
+        if (menuInput.equals("1")) {
+            checkAttendance();
+        }
+        if (menuInput.equals("2")) {
+            modifyAttendance();
+        }
+        if (menuInput.equals("3")) {
+            checkCrewAttendanceHistory();
+        }
+        if (menuInput.equals("4")) {
+            checkDangerousCrew();
+        }
+        return !menuInput.matches("[Qq]");
     }
 
     private void checkDangerousCrew() {
         OutputView.printDangerousCrew(allCrew);
     }
 
-    private void checkCrewAttendanceInfo() {
+    private void checkCrewAttendanceHistory() {
         String name = UserInputView.askNickNameForCheckAttendanceInfo();
         OutputView.printAttendanceHistory(allCrew, name);
     }
