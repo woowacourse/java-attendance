@@ -15,7 +15,7 @@ public class LoadCrewDataTest {
         Crews crews = new Crews();
         CrewDataLoader crewDataLoader = new CrewDataLoader(crews, CustomLocalDateTime.now());
         crewDataLoader.load("attendances.csv");
-        Assertions.assertThat(crews.findCrew(new Crew("빙티")).get().getAttendanceHistory().getAttendanceHistory())
+        Assertions.assertThat(crews.findCrew(new Crew("빙티")).getAttendanceHistory().getAttendanceHistory())
                 .hasSize(10);
     }
 

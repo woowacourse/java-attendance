@@ -7,7 +7,6 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Objects;
-import java.util.Optional;
 
 public class CrewDataLoader {
     private final Crews crews;
@@ -49,14 +48,13 @@ public class CrewDataLoader {
     }
 
     private void addCrew(Crew crew, LocalDateTime dateTime) {
-        Optional<Crew> foundCrew = crews.findCrew(crew);
-        if (foundCrew.isEmpty()) {
+        if (!crews.containsCrew(crew.getName())) {
             crews.add(crew);
             crew.addAttendanceDetail(new AttendanceDetail(dateTime));
 
             return;
         }
-        foundCrew.get().addAttendanceDetail(new AttendanceDetail(dateTime));
+        crews.findCrew(crew).addAttendanceDetail(new AttendanceDetail(dateTime));
 
     }
 
