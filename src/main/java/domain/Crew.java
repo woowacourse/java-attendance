@@ -87,5 +87,7 @@ public class Crew {
         return records;
     }
 
-
+    public LocalTime getTimeByDate(LocalDate date) {
+        return dailyAttendances.get(date);
+    }
 }

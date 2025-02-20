@@ -2,6 +2,7 @@ package domain;
 
 import dto.AttendanceRecordResponse;
 import dto.CrewPenaltyResponse;
+import dto.ModifyAttendanceResponse;
 import dto.TotalRecordsResponse;
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -101,16 +102,31 @@ public class AttendanceBook {
         return new AttendanceRecordResponse(date, time, AttendanceStatus.judgeStatus(date, time));
     }
 
-    public void modifyAttendance(String name, Map<LocalDate, LocalTime> dateAndTime) {
+    public ModifyAttendanceResponse modifyAttendance(String name, Map<LocalDate, LocalTime> dateAndTime) {
+
         Crew foundCrew = getCrewByName(name);
 
-        LocalTime time = dateAndTime.values().stream()
+        LocalDate date = dateAndTime.keySet().stream()
                 .findAny()
                 .orElseThrow();
 
-        validateIsInOperationHour(time);
+        LocalTime originalTime = foundCrew.getTimeByDate(date);
+
+        LocalTime modifiedTime = dateAndTime.values().stream()
+                .findAny()
+                .orElseThrow();
+
+        validateIsInOperationHour(modifiedTime);
 
         foundCrew.modifyDailyAttendance(dateAndTime);
+
+        return new ModifyAttendanceResponse(
+                date,
+                originalTime,
+                modifiedTime,
+                AttendanceStatus.judgeStatus(date, originalTime),
+                AttendanceStatus.judgeStatus(date, modifiedTime)
+        );
     }
 
     private int getPenaltyCount(TotalRecordsResponse totalRecords) {
