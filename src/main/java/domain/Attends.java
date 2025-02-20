@@ -1,3 +1,5 @@
+package domain;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -25,7 +27,8 @@ public class Attends {
         return attends.stream()
                 .filter(attend -> attend.isDayEqual(day))
                 .findFirst()
-                .orElseThrow(IllegalAccessError::new);
+                .orElse(Attend.fromDay(day));
+        // TODO: 예외를 던지던 테스트 코드 수정
     }
 
     public boolean hasDayEqualsAttend(Attend target) {

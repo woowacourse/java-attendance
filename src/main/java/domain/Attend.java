@@ -1,6 +1,9 @@
+package domain;
+
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.Objects;
+import util.DateUtil;
 
 public class Attend {
 

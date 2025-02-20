@@ -1,3 +1,5 @@
+import domain.Attend;
+import domain.AttendStatus;
 import java.time.LocalTime;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;

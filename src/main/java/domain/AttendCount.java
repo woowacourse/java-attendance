@@ -1,3 +1,5 @@
+package domain;
+
 public record AttendCount(long attend, long late, long absence) {
     public WarningStatus judgeWarning() {
         long totalAbsenceCount = calculateTotalAbsenceCount();
@@ -11,6 +13,10 @@ public record AttendCount(long attend, long late, long absence) {
             return WarningStatus.WARNING;
         }
         return WarningStatus.CLEAR;
+    }
+
+    public long calculateRank() {
+        return absence * 3 + late;
     }
 
     private long calculateTotalAbsenceCount() {

@@ -1,3 +1,5 @@
+package domain;
+
 import java.time.LocalTime;
 
 public enum AttendStatus {
@@ -5,7 +7,7 @@ public enum AttendStatus {
 
     public static AttendStatus calculateAttend(Attend attend, LocalTime lateTime, LocalTime absenceTime) {
         LocalTime targetTime = attend.time;
-        if (targetTime.isAfter(absenceTime)) {
+        if (targetTime == null || targetTime.isAfter(absenceTime)) {
             return ABSENCE;
         }
         if (targetTime.isAfter(lateTime)) {

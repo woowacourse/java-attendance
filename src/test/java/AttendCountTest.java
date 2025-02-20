@@ -1,3 +1,5 @@
+import domain.AttendCount;
+import domain.WarningStatus;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -16,7 +18,7 @@ public class AttendCountTest {
         //then
         Assertions.assertThat(warningStatus).isEqualTo(WarningStatus.CLEAR);
     }
-    
+
     @Test
     @DisplayName("제적 위험자를 계산하는 기능 - 정상")
     void test13() throws Exception {

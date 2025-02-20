@@ -1,8 +1,11 @@
+package domain;
+
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import util.DateUtil;
 
 public class AttendanceBook {
     private static final LocalTime START_TIME = LocalTime.of(8, 0);
@@ -57,6 +60,12 @@ public class AttendanceBook {
         return map.get(name);
     }
 
+    public Attend findByNameAndDay(String name, int day) {
+        Attends attends = map.get(name);
+        return attends.findByDay(day);
+    }
+
+
     public List<Attend> getAttends(String name) {
         validateIsNameExist(name);
         List<Integer> days = DateUtil.getAttendUntilDay(Current.TODAY.getYesterday());
@@ -68,6 +77,10 @@ public class AttendanceBook {
         if (!map.containsKey(name)) {
             throw new IllegalArgumentException("출석부에 존재하지 않는 크루입니다.");
         }
+    }
+
+    public AttendStatus checkAttendance(Attend attend) {
+        return AttendStatus.calculateAttend(attend, LATE_TIME, ABSENCE_TIME);
     }
 
     public AttendanceResults checkAttendance(String name, List<Integer> days) {
