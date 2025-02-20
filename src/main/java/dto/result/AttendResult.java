@@ -3,7 +3,7 @@ package dto.result;
 import java.time.LocalDateTime;
 
 public record AttendResult(
-        LocalDateTime attendanceTime,
+        LocalDateTime attendanceDateTime,
         String attendanceStatus
 ) {
 }

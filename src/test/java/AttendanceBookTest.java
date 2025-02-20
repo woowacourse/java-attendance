@@ -59,7 +59,7 @@ public class AttendanceBookTest {
             
             // then
             assertThat(attendResult.attendanceStatus()).isEqualTo("출석");
-            assertThat(attendResult.attendanceTime()).isEqualTo(LocalDateTime.of(2024, 12, 13, 10, 2));
+            assertThat(attendResult.attendanceDateTime()).isEqualTo(LocalDateTime.of(2024, 12, 13, 10, 2));
         }
         
         @Test
