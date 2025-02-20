@@ -1,5 +1,7 @@
 package domain;
 
+import java.util.Arrays;
+
 public enum MenuOption {
 
     ATTENDANCE_CHECK("1", "출석 확인"),
@@ -14,6 +16,16 @@ public enum MenuOption {
     MenuOption(String command, String option) {
         this.command = command;
         this.option = option;
+    }
+
+    public static void validateCommandExist(String command) {
+        int count = (int) Arrays.stream(MenuOption.values())
+                .filter(option -> option.getCommand().equals(command))
+                .count();
+
+        if (count == 0) {
+            throw new IllegalArgumentException("[ERROR] 존재하지 않는 옵션입니다.");
+        }
     }
 
     public String getCommand() {

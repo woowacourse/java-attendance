@@ -24,7 +24,10 @@ public class Attendance {
                     .map(AttendanceTime::new)
                     .collect(Collectors.toList()));
         }
+        initializeAttendances(attendance, nowDate);
+    }
 
+    private void initializeAttendances(Map<String, List<LocalDateTime>> attendance, LocalDate nowDate) {
         LocalDate startDate = LocalDate.of(2024, 12, 1);
         LocalDate endDate = nowDate;
         if (endDate.isAfter(LocalDate.of(2024, 12, 31))) {
@@ -32,17 +35,24 @@ public class Attendance {
         }
 
         for (String name : attendance.keySet() ) {
-            Set<LocalDate> attendanceDates = this.attendance.get(name).stream()
-                    .map(attendanceTime -> attendanceTime.getAttendanceDateTime().toLocalDate())
-                    .collect(Collectors.toSet());
+            initializeAttendance(name, startDate, endDate);
+        }
+    }
 
-            List<AttendanceTime> attendanceTimes = this.attendance.get(name);
-            for (LocalDate date = startDate; date.isBefore(endDate); date = date.plusDays(1)) {
-                if (attendanceDates.contains(date) || isClosed(date)) {
-                    continue;
-                }
-                attendanceTimes.add(new AttendanceTime(date, AttendanceStatus.UNATTEND));
-            }
+    private void initializeAttendance(String name, LocalDate startDate, LocalDate endDate) {
+        Set<LocalDate> attendanceDates = this.attendance.get(name).stream()
+                .map(attendanceTime -> attendanceTime.getAttendanceDateTime().toLocalDate())
+                .collect(Collectors.toSet());
+
+        List<AttendanceTime> attendanceTimes = this.attendance.get(name);
+        for (LocalDate date = startDate; date.isBefore(endDate); date = date.plusDays(1)) {
+            addUnattended(attendanceDates, date, attendanceTimes);
+        }
+    }
+
+    private void addUnattended(Set<LocalDate> attendanceDates, LocalDate date, List<AttendanceTime> attendanceTimes) {
+        if (!(attendanceDates.contains(date) || isClosed(date))) {
+            attendanceTimes.add(new AttendanceTime(date, AttendanceStatus.UNATTEND));
         }
     }
 
@@ -82,7 +92,6 @@ public class Attendance {
         validateOpenHours(newAttendanceDateTime);
         AttendanceTime attendanceTime = findAttendanceTime(crewName, LocalDate.of(2024, 12, attendanceDay));
         attendanceTime.updateAttendanceDateTime(newAttendanceTime);
-
     }
 
     public Map<AttendanceStatus, Integer> countAttendanceStatus(String name) {
@@ -137,17 +146,15 @@ public class Attendance {
 
     public void validateNickName(String nickName) {
         if (!this.attendance.containsKey(nickName)) {
-            throw new IllegalArgumentException("[ERROR] 존재하지 않는 닉네임입니다.");
+            throw new IllegalArgumentException("[ERROR] 등록되지 않는 닉네임입니다.");
         }
     }
 
     public int getAbsentCount(String nickName) {
-        int absentCount =  (int) this.attendance.get(nickName)
-                .stream()
+        int absentCount =  (int) this.attendance.get(nickName).stream()
                 .filter(e -> e.getAttendanceStatus().equals(AttendanceStatus.ABSENT) || e.getAttendanceStatus().equals(AttendanceStatus.UNATTEND))
                 .count();
-        int lateCount = (int) this.attendance.get(nickName)
-                .stream()
+        int lateCount = (int) this.attendance.get(nickName).stream()
                 .filter(e -> e.getAttendanceStatus().equals(AttendanceStatus.LATE))
                 .count();
 
@@ -155,8 +162,7 @@ public class Attendance {
     }
 
     public int getLateCount(String nickName) {
-        int lateCount = (int) this.attendance.get(nickName)
-                .stream()
+        int lateCount = (int) this.attendance.get(nickName).stream()
                 .filter(e -> e.getAttendanceStatus().equals(AttendanceStatus.LATE))
                 .count();
 

@@ -22,17 +22,23 @@ public enum AttendanceStatus {
     }
 
     public static AttendanceStatus findStatus(LocalDateTime attendanceDateTime) {
+        LocalTime startTime = getStartTime(attendanceDateTime);
+        LocalTime attendanceTime = attendanceDateTime.toLocalTime();
+
+        if (attendanceTime.isBefore(startTime.plusMinutes(5))) {
+            return ATTEND;
+        }
+        if (attendanceTime.isAfter(startTime.plusMinutes(5)) && attendanceTime.isBefore(attendanceTime.plusMinutes(30))) {
+            return LATE;
+        }
+        return ABSENT;
+    }
+
+    private static LocalTime getStartTime(LocalDateTime attendanceDateTime) {
         LocalTime startTime = LocalTime.of(10, 0);
         if (attendanceDateTime.getDayOfWeek() == DayOfWeek.MONDAY) {
             startTime = LocalTime.of(13, 0);
         }
-
-        LocalTime attendanceTime = attendanceDateTime.toLocalTime();
-        if (attendanceTime.isBefore(startTime.plusMinutes(5))) {
-            return ATTEND;
-        } else if (attendanceTime.isAfter(startTime.plusMinutes(5)) && attendanceTime.isBefore(attendanceTime.plusMinutes(30))) {
-            return LATE;
-        }
-        return ABSENT;
+        return startTime;
     }
 }

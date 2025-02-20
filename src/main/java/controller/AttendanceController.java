@@ -10,7 +10,6 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.Arrays;
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import util.AttendancesFileHandler;
@@ -35,29 +34,46 @@ public class AttendanceController {
         LocalDate nowDate = LocalDate.now();
         Attendance attendance = new Attendance(AttendancesFileHandler.generateAttendances(), nowDate);
 
-        while (true) {
-            if(getOption(attendance, nowDate).equals(MenuOption.QUIT.getCommand())) {
-                break;
-            }
-        }
+        String option;
+        do {
+            option = getOption(attendance, nowDate);
+        } while (!option.equals(MenuOption.QUIT.getCommand()));
     }
 
     private void process(String option, Attendance attendance, LocalDate nowDate) {
+        processAttendanceCheck(option, attendance, nowDate);
+        processAttendanceCorrection(option, attendance);
+        processCrewAttendanceCheck(option, attendance);
+        processCheckExpelledCrew(option, attendance);
+    }
+
+    private void processAttendanceCheck(String option, Attendance attendance, LocalDate nowDate) {
         if (option.equals(MenuOption.ATTENDANCE_CHECK.getCommand())) {
             validateCampusOpenDate(attendance, nowDate);
             checkAttendance(attendance, nowDate);
-        } else if (option.equals(MenuOption.ATTENDANCE_CORRECTION.getCommand())) {
+        }
+    }
+
+    private void processAttendanceCorrection(String option, Attendance attendance) {
+        if (option.equals(MenuOption.ATTENDANCE_CORRECTION.getCommand())) {
             editAttendance(attendance);
-        } else if (option.equals(MenuOption.CREW_ATTENDANCE_CHECK.getCommand())) {
+        }
+    }
+
+    private void processCrewAttendanceCheck(String option, Attendance attendance) {
+        if (option.equals(MenuOption.CREW_ATTENDANCE_CHECK.getCommand())) {
             checkCrewAttendance(attendance);
-        } else if (option.equals(MenuOption.CHECK_EXPELLED_CREW.getCommand())) {
+        }
+    }
+
+    private void processCheckExpelledCrew(String option, Attendance attendance) {
+        if (option.equals(MenuOption.CHECK_EXPELLED_CREW.getCommand())) {
             checkExpelledCrew(attendance);
         }
     }
 
     private void checkAttendance(Attendance attendance, LocalDate nowDate) {
         String nickName = getCheckNickName(attendance);
-
         repeatExecutor.repeatUntilSuccess(() -> {
             LocalTime arrivalTime = getLocalTime();
             attendance.attend(nickName, LocalDateTime.of(nowDate, arrivalTime));
@@ -66,7 +82,6 @@ public class AttendanceController {
 
         LocalDateTime attendanceDateTime = attendance.getAttendanceDateTime(nickName, nowDate);
         AttendanceStatus attendanceStatus = attendance.getAttendanceStatus(nickName, nowDate);
-
         outputView.printCheckAttendanceMessage(attendanceDateTime, attendanceStatus);
     }
 
@@ -74,6 +89,7 @@ public class AttendanceController {
         return repeatExecutor.repeatUntilSuccess(() -> {
             outputView.printMenuHeader(nowDate);
             String option = inputView.readOption(Arrays.asList(MenuOption.values()));
+            MenuOption.validateCommandExist(option);
             process(option, attendance, nowDate);
             return option;
         });
@@ -108,25 +124,30 @@ public class AttendanceController {
 
     private void editAttendance(Attendance attendance) {
         String nickName = getEditNickName(attendance);
-
-        AttendanceTime oldAttendanceTime = repeatExecutor.repeatUntilSuccess(() -> {
-            int editArrivalDate = getEditArrivalDate();
-            LocalDate editDate = LocalDate.of(2024, 12, editArrivalDate);
-            return attendance.findAttendanceTime(nickName, editDate);
-        });
+        AttendanceTime oldAttendanceTime = getOldAttendanceTime(attendance, nickName);
 
         int editArrivalDate = oldAttendanceTime.getAttendanceDateTime().getDayOfMonth();
         LocalDate editDate = LocalDate.of(2024, 12, editArrivalDate);
 
+        editAttendanceTime(attendance, nickName, editArrivalDate);
+        AttendanceTime newAttendanceTime = attendance.findAttendanceTime(nickName, editDate);
+        outputView.printEditAttendanceMessage(oldAttendanceTime, newAttendanceTime);
+    }
+
+    private AttendanceTime getOldAttendanceTime(Attendance attendance, String nickName) {
+        return repeatExecutor.repeatUntilSuccess(() -> {
+            int editArrivalDate = getEditArrivalDate();
+            LocalDate editDate = LocalDate.of(2024, 12, editArrivalDate);
+            return attendance.findAttendanceTime(nickName, editDate);
+        });
+    }
+
+    private void editAttendanceTime(Attendance attendance, String nickName, int editArrivalDate) {
         repeatExecutor.repeatUntilSuccess(() -> {
             LocalTime editArrivalTime = inputView.readEditArrivalTime();
             attendance.edit(nickName, editArrivalDate, editArrivalTime);
             return null;
         });
-
-        AttendanceTime newAttendanceTime = attendance.findAttendanceTime(nickName, editDate);
-
-        outputView.printEditAttendanceMessage(oldAttendanceTime, newAttendanceTime);
     }
 
     private int getEditArrivalDate() {
@@ -152,15 +173,9 @@ public class AttendanceController {
 
     private void checkExpelledCrew(Attendance attendance) {
         List<String> expelledCrews = attendance.checkExpelledCrew();
-
         expelledCrews.sort(Comparator.comparing(attendance::getAbsentCount)
                         .thenComparing(attendance::getLateCount).reversed()
                         .thenComparing(name->name));
-
-        Map<String, Map<AttendanceStatus, Integer>> expelledResult = new HashMap<>();
-        for (String expelledCrew : expelledCrews) {
-            expelledResult.put(expelledCrew, attendance.countAttendanceStatus(expelledCrew));
-        }
 
         outputView.printExpelledCrewHeader();
         for (String crew : expelledCrews) {

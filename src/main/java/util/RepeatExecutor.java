@@ -1,6 +1,5 @@
 package util;
 
-import java.util.function.Consumer;
 import java.util.function.Supplier;
 import view.OutputView;
 
@@ -12,12 +11,11 @@ public class RepeatExecutor {
     }
 
     public <T> T repeatUntilSuccess(Supplier<T> supplier) {
-        while (true) {
-            try {
-                return supplier.get();
-            } catch (IllegalArgumentException e) {
-                outputView.printErrorMessage(e.getMessage());
-            }
+        try {
+            return supplier.get();
+        } catch (IllegalArgumentException e) {
+            outputView.printErrorMessage(e.getMessage());
+            return repeatUntilSuccess(supplier);
         }
     }
 }

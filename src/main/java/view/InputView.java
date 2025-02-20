@@ -23,7 +23,7 @@ public class InputView {
     }
 
     public String readNickname() {
-        return prompt("닉네임을 입력해 주세요.");
+        return prompt("\n닉네임을 입력해 주세요.");
     }
 
     public LocalTime readArrivalTime() {
