@@ -4,11 +4,11 @@ import java.time.DayOfWeek;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
-import java.util.LinkedHashMap;
+import java.util.HashMap;
 
 public class Student {
 
-    public LinkedHashMap<LocalDateTime, AttendanceStatus> record = new LinkedHashMap<>();
+    public HashMap<LocalDateTime, AttendanceStatus> record = new HashMap<>();
     public String name;
     public int absent;
     public int attendance;
@@ -85,7 +85,7 @@ public class Student {
         absent++;
     }
 
-    public LinkedHashMap<LocalDateTime, AttendanceStatus> getRecord() {
+    public HashMap<LocalDateTime, AttendanceStatus> getRecord() {
         return record;
     }
 
@@ -118,4 +118,27 @@ public class Student {
         return absent + late/3;
     }
 
+    public HashMap<LocalDateTime, AttendanceStatus> makeRecordClone() {
+        HashMap<LocalDateTime, AttendanceStatus> recordClone = new HashMap<>();
+        for (LocalDateTime localDateTime : record.keySet()) {
+            recordClone.putIfAbsent(localDateTime, record.get(localDateTime));
+        }
+        return recordClone;
+    }
+
+    public void updateStateNotExistInFile(LocalDateTime today) {
+        LocalDateTime standard = LocalDateTime.of(2024,12,1,0,0);
+        HashMap<LocalDateTime, AttendanceStatus> recordClone = makeRecordClone();
+        while (!compareDayIsSame(standard,today)) {
+            for (LocalDateTime localDateTime : recordClone.keySet()) {
+                if (compareDayIsSame(localDateTime,standard)) {
+                    standard = standard.plusDays(1);
+                    continue;
+                }
+                updateState(standard);
+                standard = standard.plusDays(1);
+            }
+        }
+
+    }
 }
