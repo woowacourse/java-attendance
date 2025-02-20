@@ -6,16 +6,19 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeParseException;
 
+import domain.Holiday;
 import dto.Formatter;
 
 public class DateTimeUtil {
 
-    public static boolean isOffDay(LocalDate targetDay) {
-        boolean isWeekend = targetDay.getDayOfWeek().equals(DayOfWeek.SATURDAY) ||
-            targetDay.getDayOfWeek().equals(DayOfWeek.SUNDAY);
-        boolean isHoliday = false; // TODO: 적용 필요
+    public static boolean isOffDay(LocalDate date) {
+        boolean isWeekend = date.getDayOfWeek().equals(DayOfWeek.SATURDAY) ||
+            date.getDayOfWeek().equals(DayOfWeek.SUNDAY);
+        return isWeekend || isHoliday(date);
+    }
 
-        return isWeekend || isHoliday;
+    private static boolean isHoliday(LocalDate date) {
+        return !Holiday.from(date).equals(Holiday.NONE);
     }
 
     public static LocalDate nowDate() {
