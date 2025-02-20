@@ -6,6 +6,8 @@ import java.util.List;
 
 public class LateCount {
 
+    private static final int LATE_TO_ABSENCE_COUNT = 3;
+
     private final int value;
 
     private LateCount(int value) {
@@ -22,11 +24,11 @@ public class LateCount {
     }
 
     public int calculatePolicyAppliedAbsenceCount() {
-        return value / 3;
+        return value / LATE_TO_ABSENCE_COUNT;
     }
 
     public int calculatePolicyAppliedLateCount() {
-        return value % 3;
+        return value % LATE_TO_ABSENCE_COUNT;
     }
 
     public int getValue() {
