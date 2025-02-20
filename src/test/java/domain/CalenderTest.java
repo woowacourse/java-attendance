@@ -31,7 +31,7 @@ class CalenderTest {
         //when & then
         assertThatThrownBy(() -> Calender.validateHolyDay(dayOfMonth))
                 .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage("공휴일에는 출석확인을 할 수 없습니다.");
+                .hasMessage("공휴일에는 출석을 할 수 없습니다.");
     }
 
     @DisplayName("공휴일이 아닌 날에 출석확인을 할 수 있다.")
