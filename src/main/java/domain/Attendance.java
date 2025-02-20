@@ -12,19 +12,17 @@ import java.util.Map;
 public class Attendance {
 
     private final Map<Crew, AttendanceTimes> attendance;
+    private final Crews crews;
 
     public Attendance(Map<String, List<LocalDateTime>> attendance, LocalDate nowDate) {
         this.attendance = new HashMap<>();
+        List<Crew> crews = new ArrayList<>();
         for (String name : attendance.keySet()) {
-            this.attendance.put(new Crew(name), new AttendanceTimes(attendance.get(name), nowDate));
+            Crew crew = new Crew(name);
+            this.attendance.put(crew, new AttendanceTimes(attendance.get(name), nowDate));
+            crews.add(crew);
         }
-    }
-
-    private Crew findCrew(String name) {
-        return attendance.keySet().stream()
-                .filter(crew -> crew.getName().equals(name))
-                .findAny()
-                .orElseThrow(() -> new IllegalArgumentException("[ERROR] 존재하지 않는 크루입니다."));
+        this.crews = new Crews(crews);
     }
 
     public boolean isClosed(LocalDate date) {
@@ -32,13 +30,13 @@ public class Attendance {
     }
 
     public AttendanceTimes getAttendanceTimes(String name) {
-        return attendance.get(findCrew(name));
+        return attendance.get(crews.findCrew(name));
     }
 
     public void attend(String crewName, LocalDateTime attendanceDateTime) {
         validateAttended(crewName, attendanceDateTime);
         validateOpenHours(attendanceDateTime);
-        attendance.get(findCrew(crewName)).addAttendance(new AttendanceTime(attendanceDateTime));
+        attendance.get(crews.findCrew(crewName)).addAttendance(new AttendanceTime(attendanceDateTime));
     }
 
     private void validateOpenHours(LocalDateTime attendanceDateTime) {
@@ -64,7 +62,7 @@ public class Attendance {
     }
 
     private boolean checkAttended(String crewName, LocalDate attendanceDate) {
-        return attendance.get(findCrew(crewName)).checkAttended(attendanceDate);
+        return attendance.get(crews.findCrew(crewName)).checkAttended(attendanceDate);
     }
 
     public List<String> checkExpelledCrew() {
@@ -88,26 +86,24 @@ public class Attendance {
     }
 
     public AttendanceTime findAttendanceTime(String nickName, LocalDate attendanceDate) {
-        AttendanceTimes attendanceTimes = this.attendance.get(findCrew(nickName));
+        AttendanceTimes attendanceTimes = this.attendance.get(crews.findCrew(nickName));
         return attendanceTimes.getAttendanceTime(attendanceDate);
     }
 
     public void validateNickName(String nickName) {
-        if (!this.attendance.containsKey(findCrew(nickName))) {
-            throw new IllegalArgumentException("[ERROR] 등록되지 않는 닉네임입니다.");
-        }
+        crews.findCrew(nickName);
     }
 
     public int getAbsentCount(String nickName) {
-        return this.attendance.get(findCrew(nickName)).getAbsentCount();
+        return this.attendance.get(crews.findCrew(nickName)).getAbsentCount();
     }
 
     public int getLateCountForSort(String nickName) {
-        return this.attendance.get(findCrew(nickName)).getLateCount() % 3;
+        return this.attendance.get(crews.findCrew(nickName)).getLateCount() % 3;
     }
 
     public Map<AttendanceStatus, Integer> getCrewAttendanceStatus(String nickName) {
-        Crew crew = findCrew(nickName);
+        Crew crew = crews.findCrew(nickName);
         return crew.getAttendanceStatus(attendance.get(crew));
     }
 }
