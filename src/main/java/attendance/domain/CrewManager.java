@@ -4,14 +4,16 @@ import static attendance.domain.CrewStatus.*;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
  public class CrewManager {
-    private final List<Crew> crews = new ArrayList<>();
+    private final Set<Crew> crews = new HashSet<>();
 
-    public void addCrew(Crew crew) {
-        crews.add(crew);
+    public boolean addCrew(Crew crew) {
+        return crews.add(crew);
     }
 
     public boolean contains(Crew crew) {

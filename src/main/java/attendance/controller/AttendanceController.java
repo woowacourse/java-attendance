@@ -29,7 +29,6 @@ public class AttendanceController {
     }
 
     public void start() {
-        crewManager.addCrew(new Crew("레오"));
         LocalDate now = currentDate.now();
         while (true) {
             String option = inputView.inputOption(now);
