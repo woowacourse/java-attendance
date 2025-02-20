@@ -23,6 +23,9 @@ public enum AttendanceCalculatorByDay {
     }
 
     public static AttendanceStatus attendanceCalculator(int day, LocalTime localTime) {
+        if (localTime.equals(LocalTime.of(0,0))) {
+            return AttendanceStatus.ABSENT;
+        }
         for (AttendanceCalculatorByDay attendanceCalculatorByDay : AttendanceCalculatorByDay.values()) {
             if (attendanceCalculatorByDay.dayOfWeekValue == day) {
                 if (localTime.isBefore(attendanceCalculatorByDay.lateTime)) {
