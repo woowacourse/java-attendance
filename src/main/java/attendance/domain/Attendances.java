@@ -20,8 +20,10 @@ public class Attendances {
             Crew crew = crews.findCrew(crewName);
 
             List<String> dateInfo = List.of(attendanceRecord.getLast().split(" "));
-            LocalDateTime localDateTime = LocalDateTime.of(LocalDate.parse(dateInfo.getFirst()),
-                    LocalTime.parse(dateInfo.getLast()));
+            LocalDateTime localDateTime = LocalDateTime.of(
+                    LocalDate.parse(dateInfo.getFirst()),
+                    LocalTime.parse(dateInfo.getLast())
+            );
 
             AttendanceType status = AttendanceType.of(localDateTime);
 
@@ -30,24 +32,30 @@ public class Attendances {
         fillAbsentDay(crews);
     }
 
-    private void fillAbsentDay(Crews crews) {
+    private void fillAbsentDay(final Crews crews) {
+        LocalDate firstDay = LocalDate.of(2025, 2, 1);
+        LocalDate today = LocalDate.now();
         for (Crew crew : crews.getCrews()) {
-            LocalDate firstDay = LocalDate.of(2025, 2, 1);
-            LocalDate today = LocalDate.now();
-
-            for (LocalDate day = firstDay; day.isBefore(today); day = day.plusDays(1)) {
-                if (isWorkDay(day) && !isExistingDay(crew, day)) {
-                    // 출근날인데 없네? -> 결석으로 추가
-                    LocalDate localDate = LocalDate.of(day.getYear(), day.getMonthValue(), day.getDayOfMonth());
-                    LocalTime localTime = LocalTime.of(0, 0);
-                    LocalDateTime localDateTime = LocalDateTime.of(localDate, localTime);
-                    attendances.add(new Attendance(crew, localDateTime, AttendanceType.ABSENT));
-                }
-            }
+            checkDaysBeforeToday(crew, firstDay, today);
         }
     }
 
-    private boolean isExistingDay(Crew crew, LocalDate day) {
+    private void checkDaysBeforeToday(final Crew crew, final LocalDate firstDay, final LocalDate today) {
+        for (LocalDate day = firstDay; day.isBefore(today); day = day.plusDays(1)) {
+            checkNotExistingWorkingDay(crew, day);
+        }
+    }
+
+    private void checkNotExistingWorkingDay(final Crew crew, final LocalDate day) {
+        if (isWorkDay(day) && !isExistingDay(crew, day)) {
+            LocalDate localDate = LocalDate.of(day.getYear(), day.getMonthValue(), day.getDayOfMonth());
+            LocalTime localTime = LocalTime.of(0, 0);
+            LocalDateTime localDateTime = LocalDateTime.of(localDate, localTime);
+            attendances.add(new Attendance(crew, localDateTime, AttendanceType.ABSENT));
+        }
+    }
+
+    private boolean isExistingDay(final Crew crew, final LocalDate day) {
         boolean flag = false;
         for (Attendance attendance : attendances) {
             if (attendance.isSameCrewDate(crew, day)) {
@@ -83,7 +91,6 @@ public class Attendances {
         LocalDate localDate = localDateTime.toLocalDate();
         if (attendance.isSameCrewDate(crew, localDate)) {
             attendance.modifyLocalDateTime(localDateTime);
-            attendance.modifyAttendanceType(localDateTime);
         }
     }
 
