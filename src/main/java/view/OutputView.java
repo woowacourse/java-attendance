@@ -1,6 +1,7 @@
 package view;
 
 import dto.AttendanceRecordResponse;
+import dto.CrewPenaltyResponse;
 import dto.ModifyAttendanceResponse;
 import dto.TotalRecordsResponse;
 import java.time.format.DateTimeFormatter;
@@ -52,6 +53,14 @@ public class OutputView {
         System.out.printf("결석: %d회%n", totalRecords.absentCount());
         displaySpacing();
         System.out.printf("%s 대상자입니다.%n", penalty);
+    }
+
+    public void displayPenaltyCrew(List<CrewPenaltyResponse> responses) {
+        System.out.println("제적 위험자 조회 결과");
+        for (CrewPenaltyResponse response : responses) {
+            System.out.printf("- %s: 결석 %d회, 지각 %d회 (%s)%n",
+                    response.name(), response.absentCount(), response.lateCount(), response.penalty());
+        }
     }
 
     public static void displaySpacing() {
