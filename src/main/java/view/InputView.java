@@ -1,5 +1,8 @@
 package view;
 
+import java.time.LocalDateTime;
+import java.time.format.TextStyle;
+import java.util.Locale;
 import java.util.Scanner;
 
 public class InputView {
@@ -32,5 +35,18 @@ public class InputView {
     public int insertChangeDate() {
         System.out.println("수정하려는 날짜(일)를 입력해 주세요.");
         return Integer.parseInt(getInput());
+    }
+
+    public String insertFunction(LocalDateTime today) {
+        String dayOfWeekKorean = today.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.KOREAN);
+        System.out.println(String.format("오늘은 %d월 %d일 %s입니다. 기능을 선택해 주세요.", today.getMonth().getValue(), today.getDayOfMonth(), dayOfWeekKorean));
+        System.out.print("""
+                1. 출석 확인
+                2. 출석 수정
+                3. 크루별 출석 기록 확인
+                4. 제적 위험자 확인
+                Q. 종료
+                """);
+        return getInput();
     }
 }
