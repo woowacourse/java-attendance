@@ -1,6 +1,7 @@
 package domain;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 public class Attendance {
     private final Crew crew;
@@ -21,5 +22,9 @@ public class Attendance {
 
     public boolean isSameName(String crewName) {
         return crew.isSameName(crewName);
+    }
+
+    public List<LocalDateTime> getAttendanceLog() {
+        return checkInTimes.getAttendanceLog(LocalDateTime.now());
     }
 }
