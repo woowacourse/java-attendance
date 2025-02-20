@@ -5,6 +5,7 @@ import domain.CheckInTime;
 import domain.PenaltyStatus;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 public class OutputView {
 
@@ -31,5 +32,11 @@ public class OutputView {
         System.out.println("지각: " + lateCount);
         System.out.println("결석: " + absenceCount);
         System.out.println(penaltyStatus.name());
+    }
+
+    public void printDangerCrews(List<Attendance> dangerCrews) {
+        for (Attendance attendance : dangerCrews) {
+            System.out.println(attendance);
+        }
     }
 }

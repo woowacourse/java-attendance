@@ -1,5 +1,6 @@
 package domain;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Attendances {
@@ -20,5 +21,17 @@ public class Attendances {
                 .orElseThrow(
                         () -> new IllegalArgumentException("[ERROR] 출석부에 해당하는 이름이 없습니다.")
                 );
+    }
+
+    public List<Attendance> findDangerCrew() {
+        List<Attendance> dangerAttendances = new ArrayList<>();
+        for (Attendance attendance : attendances) {
+            int late = attendance.countLate();
+            int absence = attendance.countAbsence();
+            if (PenaltyStatus.getPenaltyStatus(absence, late) != PenaltyStatus.NONE) {
+                dangerAttendances.add(attendance);
+            }
+        }
+        return dangerAttendances;
     }
 }

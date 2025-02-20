@@ -3,7 +3,7 @@ package domain;
 import java.time.LocalDateTime;
 import java.util.List;
 
-public class Attendance {
+public class Attendance implements Comparable<Attendance> {
     private final Crew crew;
     private final CheckInTimes checkInTimes;
 
@@ -42,5 +42,22 @@ public class Attendance {
 
     public int countAbsence() {
         return checkInTimes.countAbsence();
+    }
+
+    @Override
+    public int compareTo(Attendance o) {
+        int absenceOther = o.countAbsence();
+        int lateOther = o.countLate();
+
+        int absence = this.countAbsence();
+        int late = this.countLate();
+
+        int other = (absenceOther * 3) + lateOther;
+        int me = (absence * 3) + late;
+
+        if (me != other) {
+            return me - other;
+        }
+        return this.crew.compareTo(o.crew);
     }
 }

@@ -31,12 +31,18 @@ public class AttendanceController {
 //        modifyCheckInTime(attendances);
 
 //        readCheckInTime(attendances);
+
+//        readDangerCrews(attendances);
     }
 
-    private void readCheckInTime(Attendances attendances) {
+    private void checkIn(Attendances attendances) {
         String name = inputView.readNickName();
         Attendance attendanceByName = attendances.findAttendanceByName(name);
-        outputView.printAttendanceLog(attendanceByName);
+        String s = inputView.readTimeForCheckIn();
+        LocalTime parsed = LocalTime.parse(s, DateTimeFormatter.ofPattern("HH:mm"));
+        LocalDateTime checkInTime = LocalDateTime.of(LocalDate.now(), parsed);
+        attendanceByName.checkIn(checkInTime);
+        outputView.printTodayCheckInTime(CheckInTime.of(checkInTime));
     }
 
     private void modifyCheckInTime(Attendances attendances) {
@@ -51,14 +57,16 @@ public class AttendanceController {
         outputView.printModifyCheckInTime(CheckInTime.of(before), CheckInTime.of(checkInTime));
     }
 
-    private void checkIn(Attendances attendances) {
+    private void readCheckInTime(Attendances attendances) {
         String name = inputView.readNickName();
         Attendance attendanceByName = attendances.findAttendanceByName(name);
-        String s = inputView.readTimeForCheckIn();
-        LocalTime parsed = LocalTime.parse(s, DateTimeFormatter.ofPattern("HH:mm"));
-        LocalDateTime checkInTime = LocalDateTime.of(LocalDate.now(), parsed);
-        attendanceByName.checkIn(checkInTime);
-        outputView.printTodayCheckInTime(CheckInTime.of(checkInTime));
+        outputView.printAttendanceLog(attendanceByName);
+    }
+
+    private void readDangerCrews(Attendances attendances) {
+        List<Attendance> dangerCrew = attendances.findDangerCrew();
+        List<Attendance> sorted = dangerCrew.stream().sorted().toList();
+        outputView.printDangerCrews(sorted);
     }
 
     private static Attendances registerAttendances() {

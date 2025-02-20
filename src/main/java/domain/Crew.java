@@ -1,6 +1,6 @@
 package domain;
 
-public class Crew {
+public class Crew implements Comparable<Crew> {
     private final String name;
 
     private Crew(String name) {
@@ -28,5 +28,10 @@ public class Crew {
 
     public boolean isSameName(String name) {
         return this.name.equals(name);
+    }
+
+    @Override
+    public int compareTo(Crew o) {
+        return this.name.compareTo(o.name);
     }
 }
