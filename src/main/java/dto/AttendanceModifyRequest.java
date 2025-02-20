@@ -3,7 +3,7 @@ package dto;
 import java.time.LocalDate;
 import java.time.LocalTime;
 
-import util.DayUtil;
+import util.DateTimeUtil;
 
 public record AttendanceModifyRequest (
     String nickname,
@@ -15,7 +15,7 @@ public record AttendanceModifyRequest (
         int parsedDay = convertToInt(day);
         return new AttendanceModifyRequest(
             nickname,
-            DayUtil.now().withDayOfMonth(parsedDay),
+            DateTimeUtil.nowDate().withDayOfMonth(parsedDay),
             LocalTime.parse(time, Formatter.TIME_FORMATTER)
         );
     }

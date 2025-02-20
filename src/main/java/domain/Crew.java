@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.Map;
 
 import exception.AlreadyAttendanceException;
-import util.DayUtil;
+import util.DateTimeUtil;
 
 public class Crew {
 
@@ -46,7 +46,7 @@ public class Crew {
     }
 
     public AttendanceStatus getAttendanceStatusByDate(LocalDate date) {
-        if(DayUtil.isOffDay(date)) {
+        if(DateTimeUtil.isOffDay(date)) {
             return AttendanceStatus.NONE;
         }
         if(!attendanceTimes.containsKey(date)) {
@@ -58,7 +58,7 @@ public class Crew {
     public List<History> getAllHistory(LocalDate today) {
         List<History> histories = new ArrayList<>();
         for (int day = 1; day < today.getDayOfMonth(); day++) {
-            if (DayUtil.isOffDay(today.withDayOfMonth(day))) {
+            if (DateTimeUtil.isOffDay(today.withDayOfMonth(day))) {
                 continue;
             }
             LocalDate date = today.withDayOfMonth(day);
@@ -78,7 +78,7 @@ public class Crew {
         Map<AttendanceStatus, Integer> statusCounter = new EnumMap<>(AttendanceStatus.class);
         initializeStatusCounter(statusCounter);
         for(int day = 1; day < today.getDayOfMonth(); day++) {
-            if (DayUtil.isOffDay(today.withDayOfMonth(day))) {
+            if (DateTimeUtil.isOffDay(today.withDayOfMonth(day))) {
                 continue;
             }
             AttendanceStatus attendanceStatus = getAttendanceStatusByDate(LocalDate.of(today.getYear(),

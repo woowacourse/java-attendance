@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import constant.CampusConstant;
 import domain.AttendanceStatus;
 import domain.Crew;
 import domain.CrewRepository;
@@ -17,7 +18,7 @@ import dto.AttendanceRequest;
 import dto.AttendanceResult;
 import dto.CrewCloseToExpelledResult;
 import dto.ModifiedResult;
-import util.DayUtil;
+import util.DateTimeUtil;
 import view.InputView;
 import view.OutputView;
 
@@ -28,16 +29,18 @@ public class AttendanceController {
         String option = InputView.scanOption();
         switch (option) {
             case "1" -> {
+                validateCampusTime();
                 AttendanceRequest request = InputView.scanAttendance();
                 Crew crew = crewRepository.get(request.nickname());
-                AttendanceStatus status = crew.attendance(DayUtil.now(), request.time());
+                AttendanceStatus status = crew.attendance(DateTimeUtil.nowDate(), request.time());
                 OutputView.printAttendanceResult(
                     AttendanceResult.of(
-                        DayUtil.now(),
+                        DateTimeUtil.nowDate(),
                         request.time(),
                         status));
             }
             case "2" -> {
+                validateCampusTime();
                 AttendanceModifyRequest request = InputView.scanModify();
                 Crew crew = crewRepository.get(request.nickname());
                 LocalTime before = crew.getAttendanceTimeByDate(request.date());
@@ -55,7 +58,7 @@ public class AttendanceController {
             }
             case "3" -> {
                 Crew crew = crewRepository.get(InputView.scanNickname());
-                LocalDate now = DayUtil.now();
+                LocalDate now = DateTimeUtil.nowDate();
                 List<History> history = crew.getAllHistory(now);
                 Manage manage = Manage.of(crew.getAttendanceStatusStatistics(now));
 
@@ -72,7 +75,7 @@ public class AttendanceController {
                 List<CrewCloseToExpelledResult> result = new ArrayList<>();
                 for (Crew crew : crews) {
                     Map<AttendanceStatus, Integer> attendanceStatusStatistics = crew.getAttendanceStatusStatistics(
-                        DayUtil.now());
+                        DateTimeUtil.nowDate());
                     result.add(new CrewCloseToExpelledResult(
                         crew.getNickname(),
                         attendanceStatusStatistics,
@@ -81,6 +84,13 @@ public class AttendanceController {
                 }
                 OutputView.printCrewsCloseToExpelled(result);
             }
+        }
+    }
+
+    private void validateCampusTime() {
+        LocalTime now = DateTimeUtil.nowTime();
+        if(now.isBefore(CampusConstant.startTime) || now.isAfter(CampusConstant.endTime)) {
+            throw new IllegalArgumentException("지금은 캠퍼스 운영시간이 아닙니다.");
         }
     }
 }

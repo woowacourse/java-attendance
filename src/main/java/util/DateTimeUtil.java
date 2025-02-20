@@ -2,8 +2,9 @@ package util;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
+import java.time.LocalTime;
 
-public class DayUtil {
+public class DateTimeUtil {
 
     public static boolean isOffDay(LocalDate targetDay) {
         boolean isWeekend = targetDay.getDayOfWeek().equals(DayOfWeek.SATURDAY) ||
@@ -13,7 +14,10 @@ public class DayUtil {
         return isWeekend || isHoliday;
     }
 
-    public static LocalDate now() {
+    public static LocalDate nowDate() {
         return LocalDate.now();
+    }
+    public static LocalTime nowTime() {
+        return LocalTime.now();
     }
 }

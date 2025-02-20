@@ -7,14 +7,14 @@ import java.util.Scanner;
 
 import dto.AttendanceModifyRequest;
 import dto.AttendanceRequest;
-import util.DayUtil;
+import util.DateTimeUtil;
 
 public class InputView {
 
     private static final Scanner scanner = new Scanner(System.in);
 
     public static String scanOption() {
-        LocalDate now = DayUtil.now();
+        LocalDate now = DateTimeUtil.nowDate();
         System.out.println(String.format("""
                 오늘은 %d월 %d일 %s요일입니다. 기능을 선택해 주세요.
                 1. 출석 확인
