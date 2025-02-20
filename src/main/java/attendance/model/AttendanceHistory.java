@@ -12,59 +12,42 @@ public class AttendanceHistory {
     private final List<AttendanceDetail> attendanceHistory = new ArrayList<>();
 
     public void addAttendanceDetail(AttendanceDetail attendanceDetail) {
-        LocalDate localDate = attendanceDetail.getLocalDateTime().toLocalDate();
-        validateHoliday(localDate);
+        validateHoliday(attendanceDetail.getAttendanceDate());
         attendanceHistory.add(attendanceDetail);
-    }
-
-    public List<AttendanceDetail> getAttendanceHistory() {
-        return attendanceHistory;
     }
 
     public long getAttendanceCount() {
         return attendanceHistory.stream()
-                .filter(attendanceDetail -> attendanceDetail.getAttandence().equals(Attendance.출석))
+                .filter(attendanceDetail -> attendanceDetail.getAttendance().equals(Attendance.출석))
                 .count();
-
-    }
-
-    public long getLateCount() {
-        return getTotalLateCount() % 3;
-
     }
 
     public long getTotalLateCount() {
         return attendanceHistory.stream()
-                .filter(attendanceDetail -> attendanceDetail.getAttandence().equals(Attendance.지각))
-                .count();
-    }
-
-    public long getAbsenceCount() {
-        return getTotalLateCount() / 3 + attendanceHistory.stream()
-                .filter(attendanceDetail -> attendanceDetail.getAttandence().equals(Attendance.결석))
+                .filter(attendanceDetail -> attendanceDetail.isSameAs(Attendance.지각))
                 .count();
     }
 
     public long getTotalAbsenceCount() {
         return attendanceHistory.stream()
-                .filter(attendanceDetail -> attendanceDetail.getAttandence().equals(Attendance.결석))
+                .filter(attendanceDetail -> attendanceDetail.isSameAs(Attendance.결석))
                 .count();
-    }
-
-    public Stream<AttendanceDetail> stream() {
-        return attendanceHistory.stream();
     }
 
     public boolean containsNowDate(LocalDate nowDate) {
         return attendanceHistory.stream()
-                .anyMatch(attendanceDetail -> attendanceDetail.getLocalDateTime().toLocalDate().equals(nowDate));
+                .anyMatch(attendanceDetail -> attendanceDetail.getAttendanceDate().equals(nowDate));
     }
 
     public AttendanceDetail findAttendanceDetail(LocalDate localDate) {
         validateHoliday(localDate);
         return attendanceHistory.stream()
-                .filter(attendanceDetail -> attendanceDetail.getLocalDateTime().toLocalDate().equals(localDate))
+                .filter(attendanceDetail -> attendanceDetail.getAttendanceDate().equals(localDate))
                 .findFirst().orElseThrow(() -> new IllegalArgumentException("존재하지 않는 날짜입니다."));
+    }
+
+    public Stream<AttendanceDetail> stream() {
+        return attendanceHistory.stream();
     }
 
     private void validateHoliday(LocalDate localDate) {

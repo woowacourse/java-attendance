@@ -3,7 +3,6 @@ package attendance.view;
 import attendance.dto.AttendanceDTO;
 import attendance.dto.AttendanceDTO.AttendanceDetailDTO;
 import attendance.dto.WarningCrewsDTO;
-import attendance.model.AttendanceWarning;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Comparator;
@@ -26,8 +25,7 @@ public class OutputView {
         stringBuilder.appendLine(String.format("지각: %d회", attendanceDTO.lateCount()));
         stringBuilder.appendLine(String.format("결석: %d회", attendanceDTO.absenceCount()));
 
-        AttendanceWarning warning = AttendanceWarning.from(attendanceDTO.absenceCount());
-        stringBuilder.appendLine(String.format("%s 대상자입니다.", warning.name()));
+        stringBuilder.appendLine(String.format("%s 대상자입니다.", attendanceDTO.warningType()));
         stringBuilder.print();
     }
 

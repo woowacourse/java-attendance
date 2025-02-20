@@ -1,6 +1,5 @@
 package input;
 
-import attendance.model.Crew;
 import attendance.model.CrewDataLoader;
 import attendance.model.Crews;
 import attendance.model.CustomLocalDateTime;
@@ -15,7 +14,7 @@ public class LoadCrewDataTest {
         Crews crews = new Crews();
         CrewDataLoader crewDataLoader = new CrewDataLoader(crews, CustomLocalDateTime.now());
         crewDataLoader.load("attendances.csv");
-        Assertions.assertThat(crews.findCrew(new Crew("빙티")).getAttendanceHistory().getAttendanceHistory())
+        Assertions.assertThat(crews.findCrew("빙티").getAttendanceHistory().stream())
                 .hasSize(10);
     }
 

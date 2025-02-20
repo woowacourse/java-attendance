@@ -25,21 +25,21 @@ public class AttendanceDetailTest {
     void test2() {
         AttendanceDetail attendanceDetail = new AttendanceDetail(LocalDateTime.of(2024, 12, 3, 10, 7));
 
-        assertThat(attendanceDetail.getAttandence()).isEqualTo(Attendance.지각);
+        assertThat(attendanceDetail.getAttendance()).isEqualTo(Attendance.지각);
     }
 
     @Test
     void test3() {
         AttendanceDetail attendanceDetail = new AttendanceDetail(LocalDateTime.of(2024, 12, 5, 17, 6));
 
-        assertThat(attendanceDetail.getAttandence()).isEqualTo(Attendance.결석);
+        assertThat(attendanceDetail.getAttendance()).isEqualTo(Attendance.결석);
     }
 
     @Test
     void test4() {
         AttendanceDetail attendanceDetail = new AttendanceDetail(LocalDateTime.of(2024, 12, 3, 10, 2));
 
-        assertThat(attendanceDetail.getAttandence()).isEqualTo(Attendance.출석);
+        assertThat(attendanceDetail.getAttendance()).isEqualTo(Attendance.출석);
     }
 
     @Test
@@ -47,8 +47,8 @@ public class AttendanceDetailTest {
         AttendanceDetail attendanceDetail = new AttendanceDetail(LocalDateTime.of(2024, 12, 10, 10, 2));
         attendanceDetail.modify(LocalTime.of(9, 58));
         SoftAssertions softly = new SoftAssertions();
-        softly.assertThat(attendanceDetail.getLocalDateTime()).isEqualTo(LocalDateTime.of(2024, 12, 10, 9, 58));
-        softly.assertThat(attendanceDetail.getAttandence()).isEqualTo(Attendance.출석);
+        softly.assertThat(attendanceDetail.getAttendanceDateTime()).isEqualTo(LocalDateTime.of(2024, 12, 10, 9, 58));
+        softly.assertThat(attendanceDetail.getAttendance()).isEqualTo(Attendance.출석);
         softly.assertAll();
     }
 

@@ -1,5 +1,6 @@
 package attendance.model;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 
@@ -20,16 +21,30 @@ public class AttendanceDetail {
         this.attendance = Attendance.from(localDateTime);
     }
 
-    public Attendance getAttandence() {
+    public Attendance getAttendance() {
         return attendance;
     }
 
-    public LocalDateTime getLocalDateTime() {
+    public LocalDate getAttendanceDate() {
+        return localDateTime.toLocalDate();
+    }
+
+    public LocalDateTime getAttendanceDateTime() {
         return localDateTime;
+    }
+
+    public boolean isSameAs(Attendance attendance) {
+        return attendance.equals(this.attendance);
     }
 
     @Override
     public AttendanceDetail clone() {
-        return new AttendanceDetail(this.localDateTime);
+        try {
+            AttendanceDetail cloned = (AttendanceDetail) super.clone();
+            cloned.attendance = Attendance.from(cloned.localDateTime);
+            return cloned;
+        } catch (CloneNotSupportedException e) {
+            throw new AssertionError("클론 실패", e);
+        }
     }
 }

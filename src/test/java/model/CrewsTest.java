@@ -30,7 +30,7 @@ public class CrewsTest {
         // given
         Crews crews = new Crews();
 
-        assertThatThrownBy(() -> crews.findCrew(new Crew("빙티")))
+        assertThatThrownBy(() -> crews.findCrew("빙티"))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 }

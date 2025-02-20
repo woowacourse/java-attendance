@@ -54,7 +54,7 @@ public class CrewDataLoader {
 
             return;
         }
-        crews.findCrew(crew).addAttendanceDetail(new AttendanceDetail(dateTime));
+        crews.findCrew(crew.getName()).addAttendanceDetail(new AttendanceDetail(dateTime));
 
     }
 

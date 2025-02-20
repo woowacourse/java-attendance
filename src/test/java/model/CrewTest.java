@@ -72,11 +72,11 @@ public class CrewTest {
         AttendanceDetail attendanceDetail = crew.getAttendanceHistory()
                 .findAttendanceDetail(LocalDate.of(2024, 12, 10));
 
-        Assertions.assertThat(attendanceDetail.getLocalDateTime()
+        Assertions.assertThat(attendanceDetail.getAttendanceDateTime()
                         .toLocalTime())
                 .isEqualTo(LocalTime.of(10, 6));
         Assertions.assertThat(
-                        attendanceDetail.getAttandence())
+                        attendanceDetail.getAttendance())
                 .isEqualTo(Attendance.지각);
     }
 

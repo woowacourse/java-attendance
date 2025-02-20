@@ -28,7 +28,7 @@ public class AttendanceHistoryTest {
         attendanceHistory.addAttendanceDetail(new AttendanceDetail(LocalDateTime.of(2024, 12, 3, 10, 7)));
         attendanceHistory.addAttendanceDetail(new AttendanceDetail(LocalDateTime.of(2024, 12, 4, 10, 2)));
 
-        assertThat(attendanceHistory.getAttendanceHistory()).hasSize(3);
+        assertThat(attendanceHistory.stream()).hasSize(3);
     }
 
     @Test
@@ -58,8 +58,6 @@ public class AttendanceHistoryTest {
         SoftAssertions softly = new SoftAssertions();
 
         softly.assertThat(attendanceHistory.getAttendanceCount()).isEqualTo(5); //5
-        softly.assertThat(attendanceHistory.getLateCount()).isEqualTo(2); //2
-        softly.assertThat(attendanceHistory.getAbsenceCount()).isEqualTo(3); //
         softly.assertAll();
     }
 
@@ -100,8 +98,8 @@ public class AttendanceHistoryTest {
         // when
         AttendanceDetail attendanceDetail = attendanceHistory.findAttendanceDetail(modifyDate);
         attendanceDetail.modify(LocalTime.of(13, 10));
-        Assertions.assertThat(attendanceDetail.getLocalDateTime().toLocalTime()).isEqualTo(LocalTime.of(13, 10));
-        Assertions.assertThat(attendanceDetail.getAttandence()).isEqualTo(Attendance.지각);
+        Assertions.assertThat(attendanceDetail.getAttendanceDateTime().toLocalTime()).isEqualTo(LocalTime.of(13, 10));
+        Assertions.assertThat(attendanceDetail.getAttendance()).isEqualTo(Attendance.지각);
         // then
         assertThat(attendanceDetail).isEqualTo(attendanceDetail1);
 

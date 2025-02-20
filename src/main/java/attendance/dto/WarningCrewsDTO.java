@@ -24,8 +24,8 @@ public record WarningCrewsDTO(List<WarningCrewDetailDTO> warningCrewDetailDTO) {
                     crew.getName(),
                     crew.getAttendanceHistory().getTotalAbsenceCount(),
                     crew.getAttendanceHistory().getTotalLateCount(),
-                    AttendanceWarning.from(crew.getAttendanceHistory().getAbsenceCount()).name()
-            );
+                    AttendanceWarning.from(crew).name());
         }
     }
+
 }
