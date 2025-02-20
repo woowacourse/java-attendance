@@ -28,6 +28,13 @@ public enum Calender {
                 .orElseThrow(() -> new IllegalArgumentException("존재하는 요일이 없습니다."));
     }
 
+    public static void validateHolyDay(final int dayOfWeekValue) {
+        String dayOfWeek = findBy(dayOfWeekValue);
+        if (dayOfWeek.equals("공휴일")) {
+            throw new IllegalArgumentException("공휴일에는 출석확인을 할 수 없습니다.");
+        }
+    }
+
     public String getDescription() {
         return description;
     }
