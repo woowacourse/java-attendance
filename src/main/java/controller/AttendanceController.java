@@ -9,45 +9,44 @@ import view.OutputView;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.time.format.DateTimeParseException;
+import java.util.Map;
 import java.util.function.Supplier;
 
 public class AttendanceController {
+    private final static int START_DATE_INDEX = 0;
+    private static final String QUIT_MENU = "[Qq]";
+
+    private final Map<String, Runnable> menu = Map.of(
+            "1", this::checkIn,
+            "2", this::updateAttendance,
+            "3", this::checkAttendanceRecords,
+            "4", this::checkDisciplinaryStatus);
     private final InputView inputView = new InputView();
     private final OutputView outputView = new OutputView();
-    //    private final DateGenerator currentDateGenerator = new CurrentDateGenerator();
-    private final DateGenerator currentDateGenerator = () -> LocalDate.of(2024, 12, 13);
-    private final CrewAttendanceRecords crewAttendanceRecords = new CrewAttendanceRecords("/attendances.csv", currentDateGenerator);
+    private final DateGenerator currentDateGenerator;
+    private final CrewAttendanceRecords crewAttendanceRecords;
+
+    public AttendanceController(String[] args) {
+        this.currentDateGenerator = () -> {
+            try {
+                return LocalDate.parse(args[START_DATE_INDEX]);
+            } catch (DateTimeParseException e) {
+                throw new IllegalArgumentException("[ERROR] 프로그램 인수를 YYYY-MM-DD 형식으로 입력해 주세요.");
+            }
+        };
+        this.crewAttendanceRecords = new CrewAttendanceRecords("/attendances.csv", currentDateGenerator);
+    }
 
     public void run() {
         String menuInput;
         do {
             menuInput = retryUntilSuccess(() -> {
                 String input = inputView.readMenu(currentDateGenerator.generate());
-                if (input.equals("1")) {
-                    checkIn();
-                }
-                if (input.equals("2")) {
-                    updateAttendance();
-                }
-                if (input.equals("3")) {
-                    checkAttendanceRecords();
-                }
-                if (input.equals("4")) {
-                    checkDisciplinaryStatus();
-                }
+                menu.get(input).run();
                 return input;
             });
-        } while (!menuInput.matches("[Qq]"));
-    }
-
-    private String retryUntilSuccess(Supplier<String> supplier) {
-        while (true) {
-            try {
-                return supplier.get();
-            } catch (IllegalArgumentException e) {
-                System.out.println(e.getMessage());
-            }
-        }
+        } while (!menuInput.matches(QUIT_MENU));
     }
 
     public void checkIn() {
@@ -73,5 +72,15 @@ public class AttendanceController {
 
     public void checkDisciplinaryStatus() {
         outputView.displayWarnedCrews(crewAttendanceRecords.getWarnedCrews(), crewAttendanceRecords);
+    }
+
+    private String retryUntilSuccess(Supplier<String> supplier) {
+        while (true) {
+            try {
+                return supplier.get();
+            } catch (IllegalArgumentException e) {
+                System.out.println(e.getMessage());
+            }
+        }
     }
 }
