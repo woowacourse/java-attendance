@@ -28,9 +28,15 @@ public class AttendanceController {
 
 //        checkIn(attendances);
 
-        // modifyCheckInTime(attendances);
+//        modifyCheckInTime(attendances);
 
+//        readCheckInTime(attendances);
+    }
 
+    private void readCheckInTime(Attendances attendances) {
+        String name = inputView.readNickName();
+        Attendance attendanceByName = attendances.findAttendanceByName(name);
+        outputView.printAttendanceLog(attendanceByName);
     }
 
     private void modifyCheckInTime(Attendances attendances) {
@@ -46,7 +52,7 @@ public class AttendanceController {
     }
 
     private void checkIn(Attendances attendances) {
-        String name = inputView.readNickNameForCheckIn();
+        String name = inputView.readNickName();
         Attendance attendanceByName = attendances.findAttendanceByName(name);
         String s = inputView.readTimeForCheckIn();
         LocalTime parsed = LocalTime.parse(s, DateTimeFormatter.ofPattern("HH:mm"));

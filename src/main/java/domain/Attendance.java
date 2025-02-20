@@ -31,4 +31,16 @@ public class Attendance {
     public LocalDateTime modify(LocalDateTime time) {
         return checkInTimes.modify(CheckInTime.of(time));
     }
+
+    public int countPresence() {
+        return checkInTimes.countPresence();
+    }
+
+    public int countLate() {
+        return checkInTimes.countLate();
+    }
+
+    public int countAbsence() {
+        return checkInTimes.countAbsence();
+    }
 }

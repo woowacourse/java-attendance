@@ -5,7 +5,7 @@ import java.util.Scanner;
 public class InputView {
     private final Scanner scanner = new Scanner(System.in);
 
-    public String readNickNameForCheckIn() {
+    public String readNickName() {
         System.out.println("닉네임을 입력해 주세요.");
         return scanner.next();
     }
@@ -29,4 +29,5 @@ public class InputView {
         System.out.println("언제로 변경하겠습니까?");
         return scanner.next();
     }
+
 }
