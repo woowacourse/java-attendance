@@ -3,20 +3,14 @@ package domain;
 public class AttendanceHistory {
     private final Crew crew;
     private final AttendanceDateTime attendanceDateTime;
-    private final AttendanceType attendanceType;
 
     private AttendanceHistory(Crew crew, AttendanceDateTime attendanceDateTime, AttendanceType attendanceType) {
         this.crew = crew;
         this.attendanceDateTime = attendanceDateTime;
-        this.attendanceType = attendanceType;
     }
 
     public static AttendanceHistory of(Crew crew, AttendanceDateTime attendanceDateTime) {
         return new AttendanceHistory(crew, attendanceDateTime, attendanceDateTime.getAttendanceType());
-    }
-
-    public Crew getCrew() {
-        return crew;
     }
 
     public AttendanceDateTime getAttendanceDateTime() {
