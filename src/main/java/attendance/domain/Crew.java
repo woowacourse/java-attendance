@@ -32,4 +32,8 @@ public class Crew {
     public Map<AttendanceType, Integer> calculateAttendanceResult(LocalDate localDate) {
         return attendanceHistoryManager.calculateAttendanceResult(localDate);
     }
+
+    public CrewStatus calculateCrewStatus(Map<AttendanceType, Integer> attendanceResult) {
+        return attendanceHistoryManager.calculateCrewStatus(attendanceResult);
+    }
 }

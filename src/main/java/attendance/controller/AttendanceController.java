@@ -1,8 +1,11 @@
 package attendance.controller;
 
+import static attendance.domain.AttendanceType.*;
+
 import attendance.domain.AttendancePolicy;
 import attendance.domain.AttendanceHistory;
-import attendance.domain.AttendanceHistoryDto;
+import attendance.domain.CrewStatus;
+import attendance.domain.dto.AttendanceHistoryDto;
 import attendance.domain.AttendanceType;
 import attendance.domain.Crew;
 import attendance.domain.CrewManager;
@@ -11,6 +14,8 @@ import attendance.view.OutputView;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.Comparator;
+import java.util.List;
 import java.util.Map;
 
 public class AttendanceController {
@@ -64,6 +69,19 @@ public class AttendanceController {
                 continue;
             }
             if (option.equals("4")) {
+                List<Crew> dangerousCrews = crewManager.getDangerousCrews(now);
+                dangerousCrews.sort(new Comparator<Crew>() {
+                    @Override
+                    public int compare(Crew o1, Crew o2) {
+                        CrewStatus crewStatus1 = o1.calculateCrewStatus(o1.calculateAttendanceResult(now));
+                        CrewStatus crewStatus2 = o2.calculateCrewStatus(o2.calculateAttendanceResult(now));
+                        if (crewStatus1 == crewStatus2) {
+                            return o1.getName().compareTo(o2.getName());
+                        }
+                        return crewStatus2.getOrder() - crewStatus1.getOrder();
+                    }
+                });
+                outputView.printDangerousCrews(now, dangerousCrews);
                 continue;
             }
             if (option.equals("Q")) {

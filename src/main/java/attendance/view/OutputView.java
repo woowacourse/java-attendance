@@ -1,13 +1,18 @@
 package attendance.view;
 
+import static attendance.domain.AttendanceType.ABSENCE;
+import static attendance.domain.AttendanceType.LATE;
+
 import attendance.domain.AttendanceHistory;
-import attendance.domain.AttendanceHistoryDto;
+import attendance.domain.CrewStatus;
+import attendance.domain.dto.AttendanceHistoryDto;
 import attendance.domain.AttendancePolicy;
 import attendance.domain.AttendanceType;
 import attendance.domain.Crew;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Map;
 
 public class OutputView {
@@ -41,7 +46,7 @@ public class OutputView {
     }
 
     public void printAttendanceHistories(LocalDate now, Crew crew) {
-        for (int i = 1; i <= now.getDayOfMonth(); i++) {
+        for (int i = 1; i < now.getDayOfMonth(); i++) {
             int year = now.getYear();
             int month = now.getMonthValue();
             LocalDate date = LocalDate.of(year, month, i);
@@ -65,6 +70,17 @@ public class OutputView {
     public void printAttendanceResult(Map<AttendanceType, Integer> attendanceResult) {
         for (AttendanceType attendanceType : attendanceResult.keySet()) {
             System.out.println("%s: %d회".formatted(attendanceType, attendanceResult.get(attendanceType)));
+        }
+    }
+
+    public void printDangerousCrews(LocalDate now, List<Crew> dangerousCrews) {
+        for (Crew crew : dangerousCrews) {
+            Map<AttendanceType, Integer> attendanceResult = crew.calculateAttendanceResult(now);
+            CrewStatus crewStatus = crew.calculateCrewStatus(attendanceResult);
+            System.out.println("- %s: 결석 %d회, 지각 %d회 (%s)".formatted(crew.getName(),
+                    attendanceResult.get(ABSENCE),
+                    attendanceResult.get(LATE), crewStatus.getName())
+            );
         }
     }
 }

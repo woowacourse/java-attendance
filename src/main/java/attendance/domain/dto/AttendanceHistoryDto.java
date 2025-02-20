@@ -1,5 +1,7 @@
-package attendance.domain;
+package attendance.domain.dto;
 
+import attendance.domain.AttendanceHistory;
+import attendance.domain.AttendanceType;
 import java.time.LocalDateTime;
 
 public class AttendanceHistoryDto {
