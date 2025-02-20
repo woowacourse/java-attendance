@@ -5,6 +5,8 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 public class Attendances {
 
@@ -59,6 +61,29 @@ public class Attendances {
 
     public void remove(Attendance attendance) {
         this.attendances.remove(attendance);
+    }
+
+    public Map<String, Integer> calculateStatusCount() {
+        List<AttendanceStatus> statuses = attendances.stream()
+                .map(Attendance::calculateStatus)
+                .toList();
+        return statuses.stream()
+                .collect(Collectors.groupingBy(AttendanceStatus::getText,
+                        Collectors.collectingAndThen(Collectors.counting(), Long::intValue))
+                );
+    }
+
+    public ExpulsionStatus calculateExpulsionStatus() {
+        List<AttendanceStatus> statuses = attendances.stream()
+                .map(Attendance::calculateStatus)
+                .toList();
+        int totalAbsentCount = AttendanceStatus.calculateTotalAbsentCount(statuses);
+        return ExpulsionStatus.findByAbsentCount(totalAbsentCount);
+    }
+
+    public List<Attendance> getAttendances() {
+        return attendances.stream()
+                .toList();
     }
 
 }

@@ -1,6 +1,7 @@
 package attendance.domain;
 
 import static java.time.LocalDate.of;
+import static org.assertj.core.api.Assertions.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
@@ -52,6 +53,14 @@ class AttendanceTest {
         Attendance attendance = new Attendance(LocalDateTime.of(2025, 2, 18, 9, 0));
 
         assertThat(attendance.isSameDate(of(2025, 2, day))).isEqualTo(expected);
+    }
+
+    @CsvSource(value = {"5,OK", "30,LATE", "31,ABSENT" })
+    @ParameterizedTest
+    void 출석_시간을_통해_출석_상태를_알려준다(int minute, AttendanceStatus expected) {
+        Attendance attendance = new Attendance(LocalDateTime.of(2025, 2, 20, 10, minute));
+
+        assertThat(attendance.calculateStatus()).isEqualTo(expected);
     }
 
 }

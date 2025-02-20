@@ -46,4 +46,32 @@ class AttendancesTest {
         assertThat(attendances.existsByLocalDate(LocalDate.of(2025, 2, day))).isEqualTo(expected);
     }
 
+    @Test
+    void 현재_출석_상태_별_횟수를_알려준다() {
+        Attendances attendances = new Attendances(List.of(
+                LocalDateTime.of(2025, 2, 3, 10, 0),
+                LocalDateTime.of(2025, 2, 4, 10, 6),
+                LocalDateTime.of(2025, 2, 5, 10, 31)
+        ), LocalDateTime.of(2025, 2, 6, 10, 0));
+
+        assertThat(attendances.calculateStatusCount()).containsKeys("출석", "지각", "결석")
+                .containsValues(1, 1, 1);
+    }
+
+    @Test
+    void 현재_출석_상태를_통해_제적_위험_대상인지_알려준다() {
+        Attendances attendances = new Attendances(List.of(
+                LocalDateTime.of(2025, 2, 4, 10, 31),
+                LocalDateTime.of(2025, 2, 5, 10, 31),
+                LocalDateTime.of(2025, 2, 6, 10, 31),
+                LocalDateTime.of(2025, 2, 7, 10, 31),
+                LocalDateTime.of(2025, 2, 11, 10, 31),
+                LocalDateTime.of(2025, 2, 12, 10, 30),
+                LocalDateTime.of(2025, 2, 13, 10, 30),
+                LocalDateTime.of(2025, 2, 14, 10, 30)
+        ), LocalDateTime.of(2025, 2, 15, 10, 0));
+
+        assertThat(attendances.calculateExpulsionStatus()).isEqualTo(ExpulsionStatus.EXPULSION);
+    }
+
 }

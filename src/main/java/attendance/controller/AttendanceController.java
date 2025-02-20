@@ -8,11 +8,13 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Stream;
 
 import attendance.domain.Attendance;
 import attendance.domain.AttendanceStatus;
 import attendance.domain.Attendances;
 import attendance.domain.Crew;
+import attendance.domain.ExpulsionStatus;
 import attendance.view.FileLineReader;
 import attendance.view.InputView;
 import attendance.view.OperationCommand;
@@ -44,6 +46,9 @@ public class AttendanceController {
             if (operationCommand.isAttendanceModification()) {
                 modifyAttendance(crewAttendances, today);
             }
+            if (operationCommand.isCrewAttendancesCheck()) {
+                checkCrewAttendances(crewAttendances);
+            }
         } catch (IllegalArgumentException e) {
             outputView.printErrorMessage(e.getMessage());
         }
@@ -64,6 +69,26 @@ public class AttendanceController {
         String originAttendanceStatus = AttendanceStatus.findByAttendanceDateTime(originAttendance.getAttendanceDateTime()).getText();
         String newAttendanceStatus = AttendanceStatus.findByAttendanceDateTime(newAttendance.getAttendanceDateTime()).getText();
         outputView.printModificationResult(originAttendance.getAttendanceDateTime(), originAttendanceStatus, newAttendance.getAttendanceDateTime(), newAttendanceStatus);
+    }
+
+    private void checkCrewAttendances(final Map<Crew, Attendances> crewAttendances) {
+        Crew crew = new Crew(inputView.readCrewNickname());
+        validateCrewExistence(crewAttendances, crew);
+        Attendances attendances = crewAttendances.get(crew);
+        List<LocalDateTime> attendanceTimes = attendances.getAttendances().stream()
+                .map(Attendance::getAttendanceDateTime)
+                .toList();
+        List<AttendanceStatus> attendanceStatus = attendanceTimes.stream()
+                .map(AttendanceStatus::findByAttendanceDateTime)
+                .toList();
+        List<String> attendanceStatusTexts = attendanceStatus.stream()
+                .map(AttendanceStatus::getText)
+                .toList();
+        Map<String, Integer> statusCount = attendances.calculateStatusCount();
+        outputView.printAttendances(crew.getNickname(), attendanceTimes, attendanceStatusTexts);
+        outputView.printStatusCounts(statusCount);
+        ExpulsionStatus expulsionStatus = attendances.calculateExpulsionStatus();
+        outputView.printExpulsionStatus(expulsionStatus.getText());
     }
 
 

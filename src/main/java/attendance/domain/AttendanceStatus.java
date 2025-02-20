@@ -3,12 +3,13 @@ package attendance.domain;
 import java.time.DayOfWeek;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.List;
 
 public enum AttendanceStatus {
 
-    OK("출석", 5),
-    LATE("지각", 5),
-    ABSENT("결석", 30);
+    OK("출석", 5, 0),
+    LATE("지각", 5, 1),
+    ABSENT("결석", 30, 3);
 
     private static final LocalTime MONDAY_START_TIME = LocalTime.of(13, 0);
     private static final LocalTime TUESDAY_TO_FRIDAY_START_TIME = LocalTime.of(10, 0);
@@ -16,10 +17,12 @@ public enum AttendanceStatus {
 
     private final String text;
     private final int deadLineMinute;
+    private final int lateCount;
 
-    AttendanceStatus(final String text, final int deadLineMinute) {
+    AttendanceStatus(final String text, final int deadLineMinute, final int lateCount) {
         this.text = text;
         this.deadLineMinute = deadLineMinute;
+        this.lateCount = lateCount;
     }
 
     public static AttendanceStatus findByAttendanceDateTime(final LocalDateTime attendanceDateTime) {
@@ -40,6 +43,13 @@ public enum AttendanceStatus {
             return LATE;
         }
         return OK;
+    }
+
+    public static int calculateTotalAbsentCount(final List<AttendanceStatus> statuses) {
+        int totalLateCount = statuses.stream()
+                .mapToInt(status -> status.lateCount)
+                .sum();
+        return totalLateCount / ABSENT.lateCount;
     }
 
     public String getText() {

@@ -31,4 +31,8 @@ public enum OperationCommand {
     public boolean isAttendanceModification() {
         return this.equals(ATTENDANCE_MODIFICATION);
     }
+
+    public boolean isCrewAttendancesCheck() {
+        return this.equals(CREW_ATTENDANCES_CHECK);
+    }
 }
