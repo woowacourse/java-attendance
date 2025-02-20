@@ -19,6 +19,12 @@ public class Crew {
         return this.crewName.equals(crewName);
     }
 
+    public void resetCount() {
+        this.safeCount = 0;
+        this.lateCount = 0;
+        this.absentCount = 0;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
