@@ -18,7 +18,7 @@ public class AttendanceDateTest {
         // when && then
         assertThatThrownBy(() -> new AttendanceDate(christmasDateTime))
                 .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage("");
+                .hasMessage("12월 25일 수요일은 등교일이 아닙니다.");
     }
 
     @DisplayName("주말일 때 출석일자 생성이 안 된다")
@@ -33,7 +33,7 @@ public class AttendanceDateTest {
 
         assertThatThrownBy(() -> new AttendanceDate(weekendDateTime))
                 .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage("");
+                .hasMessage("02월 16일 일요일은 등교일이 아닙니다.");
     }
 
     @DisplayName("평일일 때 출석일자 생성")

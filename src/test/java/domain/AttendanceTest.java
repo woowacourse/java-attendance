@@ -7,7 +7,6 @@ import domain.attendance.AttendanceDate;
 import domain.attendance.AttendanceWarning;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -113,7 +112,7 @@ public class AttendanceTest {
         // when & then
         assertThatThrownBy(() -> attendance.attend(tomorrowDateTime))
                 .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage("");
+                .hasMessage("아직 출석할 수 없습니다.");
     }
 
     @DisplayName("학생이 이미 출석했으면 다시 출석할 수 없다")
@@ -127,6 +126,6 @@ public class AttendanceTest {
         // when & then
         assertThatThrownBy(() -> attendance.attend(todayDateTime))
                 .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage("");
+                .hasMessage("이미 출석을 확인하였습니다. 필요한 경우 수정 기능을 이용해 주세요.");
     }
 }

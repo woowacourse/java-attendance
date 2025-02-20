@@ -13,7 +13,7 @@ public class CrewGroupTest {
         List<String> crews = List.of("수양", "수양");
         assertThatThrownBy(() -> CrewGroup.from(crews))
                 .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage("");
+                .hasMessage("중복된 이름의 크루는 존재할 수 없습니다.");
     }
 
     @DisplayName("크루 이름으로 크루목록에서 조회한다")

@@ -9,9 +9,7 @@ import util.DateTimeUtil;
 public class InputParser {
     public static Map<String, List<LocalDateTime>> getFileAttendanceInfo(Map<String, List<String>> attendanceInfo) {
         Map<String, List<LocalDateTime>> crewInitAttendanceDates = new HashMap<>();
-
         for (String key : attendanceInfo.keySet()) {
-
             crewInitAttendanceDates.put(key,
                     attendanceInfo.get(key).stream()
                             .map(DateTimeUtil::convertStringToLocalDateTime)
@@ -28,4 +26,3 @@ public class InputParser {
         }
     }
 }
-

@@ -8,7 +8,6 @@ import java.util.List;
 import java.util.Map;
 
 public class AttendanceService {
-    // todo: createCrewGroup 메서드명 변경
     public CrewGroup createCrewGroup(Map<String, List<LocalDateTime>> crewInitAttendanceDates) {
         List<String> crewNames = crewInitAttendanceDates.keySet().stream().toList();
         CrewGroup crewGroup = CrewGroup.from(crewNames);
@@ -20,6 +19,4 @@ public class AttendanceService {
         }
         return crewGroup;
     }
-
-
 }

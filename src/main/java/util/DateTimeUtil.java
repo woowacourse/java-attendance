@@ -40,7 +40,6 @@ public class DateTimeUtil {
         }
     }
 
-
     private static String convertDayOfWeekToString(int dayOfWeek) {
         if (dayOfWeek == 1) {
             return "월요일";

@@ -2,6 +2,7 @@ package domain.attendance;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import util.DateTimeUtil;
 
 public class AttendanceDate implements Comparable<AttendanceDate> {
     public static final int SATURDAY = 6;
@@ -20,10 +21,10 @@ public class AttendanceDate implements Comparable<AttendanceDate> {
 
         int dayOfWeek = getDayOfWeek();
         if (dayOfWeek >= SATURDAY) {
-            throw new IllegalArgumentException(dateTime + " 은 등교일이 아닙니다.");
+            throw new IllegalArgumentException(DateTimeUtil.convertLocalDateToString(dateTime.toLocalDate()) + "은 등교일이 아닙니다.");
         }
         if (Holiday.has(dateTime)) {
-            throw new IllegalArgumentException(dateTime + " 은 등교일이 아닙니다.");
+            throw new IllegalArgumentException(DateTimeUtil.convertLocalDateToString(dateTime.toLocalDate()) + "은 등교일이 아닙니다.");
         }
     }
 
