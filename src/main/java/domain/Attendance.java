@@ -24,7 +24,7 @@ public class Attendance {
     }
 
     public String getFormattedTimeAndState() {
-        if (this.state.equals("(결석)")) {
+        if (this.state.equals("결석")) {
             return "--:-- " + this.state;
         }
         return dateAndTime.format(DateTimeFormatter.ofPattern("HH:mm ", Locale.KOREAN)) + this.state;
@@ -52,17 +52,17 @@ public class Attendance {
             startHour = 13;
         }
         if(hour < startHour){
-            return "(출석)";
+            return "출석";
         }
         if (hour == startHour) {
             if (minute <= 5) {
-                return "(출석)";
+                return "출석";
             }
             if (minute <= 30) {
-                return "(지각)";
+                return "지각";
             }
         }
-        return "(결석)";
+        return "결석";
     }
 
     public String getState() {
@@ -73,7 +73,4 @@ public class Attendance {
         return dateAndTime.toLocalDate().isEqual(localDateTime.toLocalDate());
     }
 
-    public void update(LocalDateTime newDateAndTime) {
-
-    }
 }

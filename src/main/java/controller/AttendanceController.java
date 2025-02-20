@@ -17,6 +17,7 @@ public class AttendanceController {
 
     public void run() {
         readAttendanceFile(allCrew);
+        allCrew.updateAbsentHistory(today.minusDays(1));
 
         while (true) {
             String str = "오늘은 " + today.format(DateTimeFormatter.ofPattern("MM월 dd일 ")) +
@@ -49,7 +50,6 @@ public class AttendanceController {
             // TODO:메뉴 입력 예외
 
         }
-
     }
 
     private void checkDangerousCrew() {

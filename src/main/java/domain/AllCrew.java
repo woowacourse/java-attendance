@@ -46,7 +46,7 @@ public class AllCrew {
 
     public String printAllCrewWarningInfo(LocalDate date) {
         allCrew.sort(
-                Comparator.comparing(Crew::getAbsentCount)
+                Comparator.comparing(Crew::getAbsentCount).reversed()
                         .thenComparing(Crew::getName)
         );
         String result = "";
@@ -54,5 +54,11 @@ public class AllCrew {
             result += "- "+crew.printWarningInfo(date) + "\n";
         }
         return result;
+    }
+
+    public void updateAbsentHistory(LocalDate date) {
+        allCrew.stream().forEach(crew -> {
+            crew.updateUntil(date);
+        });
     }
 }

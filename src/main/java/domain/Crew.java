@@ -59,6 +59,7 @@ public class Crew {
     }
 
     public String getAttendanceHistory(LocalDate lastDate) {
+        updateUntil(lastDate);
         return printAttendanceInfo(lastDate) + printAttendanceStateInfo(lastDate) + printWarningStatus(lastDate);
     }
 
@@ -73,7 +74,7 @@ public class Crew {
     }
 
     public String printAttendanceStateInfo(LocalDate lastDate) {
-        updateUntil(lastDate);
+        updateUntil(lastDate.minusDays(1));
         String str = "";
         str += "출석: " + getAttendanceCount()+"회\n";
         str += "지각: " + getLateCount()+"회\n";
@@ -88,7 +89,7 @@ public class Crew {
     private int getOriginalAbsentCount() {
         int count = 0;
         for (Attendance attendance : attendanceInfo) {
-            if(attendance.getState().equals("(결석)")) {
+            if(attendance.getState().equals("결석")) {
                 count++;
             }
         }
@@ -98,7 +99,7 @@ public class Crew {
     private int getAttendanceCount() {
         int count = 0;
         for (Attendance attendance : attendanceInfo) {
-            if(attendance.getState().equals("(출석)")) {
+            if(attendance.getState().equals("출석")) {
                 count++;
             }
         }
@@ -108,14 +109,12 @@ public class Crew {
     private int getLateCount() {
         int count = 0;
         for (Attendance attendance : attendanceInfo) {
-            if(attendance.getState().equals("(지각)")) {
+            if(attendance.getState().equals("지각")) {
                 count++;
             }
         }
         return count;
     }
-
-
 
     public void updateUntil(LocalDate lastDate) {
         for(int i=1;i <= lastDate.getDayOfMonth();i++){
@@ -140,7 +139,7 @@ public class Crew {
 
 
     public String printWarningInfo(LocalDate lastDate) {
-        updateUntil(lastDate);
+        updateUntil(lastDate.minusDays(1));
         int lateCount = getLateCount();
         int originalAbsentCount = getOriginalAbsentCount();
         int absentCount = originalAbsentCount + (lateCount / 3);
@@ -167,7 +166,7 @@ public class Crew {
     }
 
     public String printWarningStatus(LocalDate lastDate) {
-        updateUntil(lastDate);
+        updateUntil(lastDate.minusDays(1));
         String warningStatus = calculateWarningStatus(getAbsentCount());
         if(warningStatus.isEmpty()) return "";
         return warningStatus + " 대상자입니다.";
