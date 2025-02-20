@@ -1,6 +1,5 @@
 package view;
 
-import domain.PenaltyStatus;
 import dto.AttendanceRecordResponse;
 import dto.CrewPenaltyResponse;
 import dto.ModifyAttendanceResponse;
@@ -12,6 +11,16 @@ import java.util.List;
 import java.util.Locale;
 
 public class OutputView {
+    public void displayPrompt() {
+        System.out.println(OutputMessages.DATE_PROMPT.getFormat());
+        System.out.println(OutputMessages.FIRST_FUNCTION_PROMPT.getFormat());
+        System.out.println(OutputMessages.SECOND_FUNCTION_PROMPT.getFormat());
+        System.out.println(OutputMessages.THIRD_FUNCTION_PROMPT.getFormat());
+        System.out.println(OutputMessages.FOURTH_FUNCTION_PROMPT.getFormat());
+        System.out.println(OutputMessages.QUIT_FUNCTION_PROMPT.getFormat());
+        System.out.println(OutputMessages.GUIDE_PROMPT.getFormat());
+    }
+
     public static void displaySpacing() {
         System.out.println();
     }
