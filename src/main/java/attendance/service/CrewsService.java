@@ -13,32 +13,29 @@ import java.util.List;
 import java.util.Map;
 
 public class CrewsService {
+    public static final LocalDate CHRISTMAS = LocalDate.of(2024, 12, 25);
+    public static final List<DayOfWeek> WEEKENDS = List.of(DayOfWeek.SATURDAY, DayOfWeek.SUNDAY);
 
     public Crews init(Map<String, List<LocalDateTime>> crewsAttendances, LocalDate now) {
         List<Crew> crews = new ArrayList<>();
         LocalDate firstDay = LocalDate.of(now.getYear(), now.getMonth(), 1);
         for (Map.Entry<String, List<LocalDateTime>> crewAttendances : crewsAttendances.entrySet()) {
-            List<Attendance> attendances = initAttendances(now, crewAttendances, firstDay);
+            List<Attendance> attendances = initAttendances(now, crewAttendances.getValue(), firstDay);
             crews.add(new Crew(crewAttendances.getKey(), attendances));
         }
         return new Crews(crews);
     }
 
-    private List<Attendance> initAttendances(LocalDate now, Map.Entry<String, List<LocalDateTime>> crewAttendances, LocalDate firstDay) {
+    private List<Attendance> initAttendances(LocalDate now, List<LocalDateTime> crewAttendances, LocalDate firstDay) {
         List<Attendance> attendances = new ArrayList<>();
         for (LocalDate day = firstDay; day.isBefore(now); day = day.plusDays(1L)) {
             // TODO : indent 줄이기
             if (isHoliday(day)) {
                 continue;
             }
-            attendances.add(createAttendanceByDate(crewAttendances.getValue(), day));
+            attendances.add(createAttendanceByDate(crewAttendances, day));
         }
         return attendances;
-    }
-
-    private boolean isHoliday(LocalDate day) {
-        List<DayOfWeek> weekends = List.of(DayOfWeek.SATURDAY, DayOfWeek.SUNDAY);
-        return weekends.contains(day.getDayOfWeek()) || day.getDayOfMonth() == 25;
     }
 
     private Attendance createAttendanceByDate(List<LocalDateTime> attendances, LocalDate day) {
@@ -47,5 +44,9 @@ public class CrewsService {
                 .findFirst()
                 .map(Attendance::new)
                 .orElse(new Attendance(day.atStartOfDay(), AttendanceStatus.ABSENCE));
+    }
+
+    private boolean isHoliday(LocalDate day) {
+        return WEEKENDS.contains(day.getDayOfWeek()) || day.equals(CHRISTMAS);
     }
 }

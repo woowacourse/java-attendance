@@ -2,6 +2,7 @@ package attendance.controller;
 
 import attendance.controller.util.AttendancesFileReader;
 import attendance.controller.util.CrewAttendanceParser;
+import attendance.controller.util.HolidayValidator;
 import attendance.controller.util.TimeFormatter;
 import attendance.domain.*;
 import attendance.service.CrewsService;
@@ -27,13 +28,13 @@ public class AttendanceController {
     }
 
     public void run() {
-        LocalDate now = LocalDate.of(2024, 12, 17);
+        LocalDate now = LocalDate.of(2024, 12, 16);
         Crews crews = crewsService.init(CrewAttendanceParser.parseCrewAttendances(AttendancesFileReader.read()), now);
         while (true) {
             try {
                 Menu selectedMenu = inputView.inputMenu(now);
                 if (selectMenu(selectedMenu, crews, now)) break;
-            } catch (Exception e) {
+            } catch (IllegalArgumentException e) {
                 outputView.printExceptionMessage(e);
             }
         }
@@ -49,6 +50,8 @@ public class AttendanceController {
     }
 
     private void confirmAttendance(final Crews crews, final LocalDate now) {
+        HolidayValidator.isHoliday(now);
+
         Crew crew = crews.findByName(inputView.inputNickname());
         crew.existInAttendances(now);
 
@@ -64,6 +67,8 @@ public class AttendanceController {
         Crew crew = crews.findByName(inputView.inputNickname());
 
         LocalDate updateDate = LocalDate.of(now.getYear(), now.getMonthValue(), inputView.inputUpdateDate());
+        HolidayValidator.isHoliday(updateDate);
+
         String inputUpdateTime = inputView.inputUpdateTime();
         LocalDateTime updateTime = TimeFormatter.format(updateDate, inputUpdateTime);
         validateOperatingHours(updateTime);
