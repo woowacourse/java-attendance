@@ -3,6 +3,7 @@ package controller;
 import domain.Attendance;
 import domain.AttendanceStatus;
 import domain.AttendanceTime;
+import domain.AttendanceTimes;
 import domain.MenuOption;
 import java.io.IOException;
 import java.time.LocalDate;
@@ -162,8 +163,10 @@ public class AttendanceController {
         String nickName = inputView.readNickname();
         outputView.printCrewAttendanceHeader(nickName);
 
-        List<AttendanceTime> crewAttendances = attendance.getAttendanceTimes(nickName);
-        for (AttendanceTime crewAttendance : crewAttendances) {
+        AttendanceTimes crewAttendances = attendance.getAttendanceTimes(nickName);
+        List<AttendanceTime> attendanceTimes = crewAttendances.getAttendanceTimes();
+        attendanceTimes.sort(Comparator.comparing(AttendanceTime::getAttendanceDateTime));
+        for (AttendanceTime crewAttendance : attendanceTimes) {
             outputView.printCheckAttendanceMessage(crewAttendance.getAttendanceDateTime(), crewAttendance.getAttendanceStatus());
         }
 
@@ -174,7 +177,7 @@ public class AttendanceController {
     private void checkExpelledCrew(Attendance attendance) {
         List<String> expelledCrews = attendance.checkExpelledCrew();
         expelledCrews.sort(Comparator.comparing(attendance::getAbsentCount)
-                        .thenComparing(attendance::getLateCount).reversed()
+                        .thenComparing(attendance::getLateCountForSort).reversed()
                         .thenComparing(name->name));
 
         outputView.printExpelledCrewHeader();

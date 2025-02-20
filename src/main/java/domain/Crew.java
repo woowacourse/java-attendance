@@ -7,7 +7,7 @@ import java.util.Map;
 public class Crew {
 
     private final String name;
-    private final Map<AttendanceStatus, Integer> attendanceStatuses;
+    private Map<AttendanceStatus, Integer> attendanceStatuses;
 
     public Crew(String name) {
         this.name = name;
@@ -18,22 +18,17 @@ public class Crew {
         return this.name;
     }
 
-    public Map<AttendanceStatus, Integer> getAttendanceStatus(List<AttendanceTime> attendanceTimes) {
+    public Map<AttendanceStatus, Integer> getAttendanceStatus(AttendanceTimes attendanceTimes) {
         countAttendanceStatus(attendanceTimes);
         return attendanceStatuses;
     }
 
-    private void countAttendanceStatus(List<AttendanceTime> attendanceTimes) {
-        for (AttendanceStatus attendanceStatus : AttendanceStatus.values()) {
-            attendanceStatuses.put(attendanceStatus, 0);
-        }
-        for (AttendanceTime attendanceTime : attendanceTimes) {
-            attendanceStatuses.put(attendanceTime.getAttendanceStatus(), attendanceStatuses.get(attendanceTime.getAttendanceStatus()) + 1);
-        }
-    }
-
-    public boolean getExpelStatus(List<AttendanceTime> attendanceTimes) {
+    public boolean getExpelStatus(AttendanceTimes attendanceTimes) {
         countAttendanceStatus(attendanceTimes);
         return ExpelStatus.determineExpelStatus(attendanceStatuses) != ExpelStatus.NONE;
+    }
+
+    private void countAttendanceStatus(AttendanceTimes attendanceTimes) {
+        this.attendanceStatuses = attendanceTimes.calculateAttendanceStatuses();
     }
 }

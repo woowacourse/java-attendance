@@ -48,7 +48,8 @@ public class AttendanceTest {
 
         attendance.edit(crewName, attendanceDay, newAttendanceTime);
 
-        List<AttendanceTime> attendanceTimes = attendance.getAttendanceTimes(crewName);
+        AttendanceTimes crewAttendances = attendance.getAttendanceTimes(crewName);
+        List<AttendanceTime> attendanceTimes = crewAttendances.getAttendanceTimes();
         int count = (int) attendanceTimes.stream().map(AttendanceTime::getAttendanceDateTime)
                 .filter(attendanceTime -> attendanceTime.equals(newAttendanceDateTime))
                 .count();

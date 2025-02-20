@@ -1,5 +1,6 @@
 package domain;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -10,13 +11,14 @@ public class CrewTest {
 
     @Test
     void 크루_제적인_상태_확인() {
-        List<AttendanceTime> attendanceTimes = new ArrayList<>();
-        attendanceTimes.add(new AttendanceTime(LocalDateTime.of(2024, 12, 2, 19, 0)));
-        attendanceTimes.add(new AttendanceTime(LocalDateTime.of(2024, 12, 3, 19, 0)));
-        attendanceTimes.add(new AttendanceTime(LocalDateTime.of(2024, 12, 4, 19, 0)));
-        attendanceTimes.add(new AttendanceTime(LocalDateTime.of(2024, 12, 5, 14, 58)));
-        attendanceTimes.add(new AttendanceTime(LocalDateTime.of(2024, 12, 6, 14, 58)));
-        attendanceTimes.add(new AttendanceTime(LocalDateTime.of(2024, 12, 9, 14, 58)));
+        List<LocalDateTime> attendanceDateTimes = new ArrayList<>();
+        attendanceDateTimes.add(LocalDateTime.of(2024, 12, 2, 19, 0));
+        attendanceDateTimes.add(LocalDateTime.of(2024, 12, 3, 19, 0));
+        attendanceDateTimes.add(LocalDateTime.of(2024, 12, 4, 19, 0));
+        attendanceDateTimes.add(LocalDateTime.of(2024, 12, 5, 14, 58));
+        attendanceDateTimes.add(LocalDateTime.of(2024, 12, 6, 14, 58));
+        attendanceDateTimes.add(LocalDateTime.of(2024, 12, 9, 14, 58));
+        AttendanceTimes attendanceTimes = new AttendanceTimes(attendanceDateTimes, LocalDate.of(2024, 12, 10));
 
         Crew crew = new Crew("메이");
         Assertions.assertThat(crew.getExpelStatus(attendanceTimes)).isEqualTo(true);
@@ -24,13 +26,16 @@ public class CrewTest {
 
         @Test
     void 크루_제적_아닌_상태_확인() {
-        List<AttendanceTime> attendanceTimes = new ArrayList<>();
-        attendanceTimes.add(new AttendanceTime(LocalDateTime.of(2024, 12, 2, 14, 0)));
-        attendanceTimes.add(new AttendanceTime(LocalDateTime.of(2024, 12, 3, 9, 0)));
-        attendanceTimes.add(new AttendanceTime(LocalDateTime.of(2024, 12, 4, 9, 0)));
-        attendanceTimes.add(new AttendanceTime(LocalDateTime.of(2024, 12, 5, 9, 58)));
+            List<LocalDateTime> attendanceDateTimes = new ArrayList<>();
+            attendanceDateTimes.add(LocalDateTime.of(2024, 12, 2, 9, 0));
+            attendanceDateTimes.add(LocalDateTime.of(2024, 12, 3, 9, 0));
+            attendanceDateTimes.add(LocalDateTime.of(2024, 12, 4, 9, 0));
+            attendanceDateTimes.add(LocalDateTime.of(2024, 12, 5, 9, 58));
+            attendanceDateTimes.add(LocalDateTime.of(2024, 12, 6, 9, 58));
+            attendanceDateTimes.add(LocalDateTime.of(2024, 12, 9, 9, 58));
+            AttendanceTimes attendanceTimes = new AttendanceTimes(attendanceDateTimes, LocalDate.of(2024, 12, 10));
 
-        Crew crew = new Crew("메이");
-        Assertions.assertThat(crew.getExpelStatus(attendanceTimes)).isEqualTo(false);
+            Crew crew = new Crew("메이");
+            Assertions.assertThat(crew.getExpelStatus(attendanceTimes)).isEqualTo(false);
     }
 }
