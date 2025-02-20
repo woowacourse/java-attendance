@@ -1,5 +1,6 @@
 package domain;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class AttendanceSheets {
@@ -7,7 +8,7 @@ public class AttendanceSheets {
     List<AttendanceSheet> attendanceSheets;
 
     public AttendanceSheets(List<AttendanceSheet> attendanceSheets) {
-        this.attendanceSheets = attendanceSheets;
+        this.attendanceSheets = new ArrayList<>(attendanceSheets);
     }
 
     public void add(AttendanceSheet attendanceSheet) {

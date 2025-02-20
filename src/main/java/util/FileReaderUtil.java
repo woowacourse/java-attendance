@@ -1,6 +1,7 @@
 package util;
 
 import java.io.BufferedReader;
+import java.io.FileReader;
 import java.io.IOException;
 import java.util.List;
 
@@ -11,7 +12,7 @@ public class FileReaderUtil {
     private static final int HEADER = 1;
 
     public List<String> read() {
-        try (BufferedReader reader = new BufferedReader(new java.io.FileReader(ATTENDANCE_DATA_PATH))) {
+        try (BufferedReader reader = new BufferedReader(new FileReader(ATTENDANCE_DATA_PATH))) {
 
             return reader.lines()
                     .skip(HEADER)

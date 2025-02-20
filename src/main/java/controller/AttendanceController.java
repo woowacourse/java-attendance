@@ -32,7 +32,8 @@ public class AttendanceController {
         AttendanceSheets attendanceSheets = attendanceSheetsFactory.create();
 
         while (true) {
-            String select = inputView.inputMenu(LocalDate.now());
+            String select = inputView.inputMenu(date);
+            System.out.print(System.lineSeparator());
 
             if (select.equals("1")) {
                 attend(date, attendanceSheets);
@@ -78,6 +79,7 @@ public class AttendanceController {
 
             OutputView.printRiskOfExpulsion(name, lateCount, absentCount, absentPolicy);
         }
+        System.out.print(System.lineSeparator());
     }
 
     private void printAttendance(AttendanceSheets attendanceSheets, LocalDate date) {
@@ -100,6 +102,7 @@ public class AttendanceController {
         OutputView.printAttendanceStatistics(attendCount, lateCount, absentCount);
 
         OutputView.printAbsentPolicy(AbsentPolicy.calculateAbsentPolicy(absentCount, lateCount));
+        System.out.print(System.lineSeparator());
     }
 
     private void updateAttendance(AttendanceSheets attendanceSheets) {
@@ -107,7 +110,7 @@ public class AttendanceController {
 
         List<AttendanceSheet> attendanceByNickname = attendanceSheets.findAttendanceByNickname(nickname);
 
-        int day = inputView.inputUpdateDate();
+        int day = Integer.parseInt(inputView.inputUpdateDate());
 
         AttendanceSheet attendanceSheetByNicknameAndDay = attendanceByNickname.stream()
                 .filter(attendanceSheet -> attendanceSheet.getAttendanceDateTime().getAttendanceDateTime().getDayOfMonth() == day)

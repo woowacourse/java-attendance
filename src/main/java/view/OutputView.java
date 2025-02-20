@@ -12,6 +12,7 @@ import java.util.Map;
 public class OutputView {
 
     public static void printAttendanceSheetIntro(String nickname) {
+        System.out.print(System.lineSeparator());
         System.out.printf(ViewMessage.CURRENT_MONTH_ATTENDANCE_SHEET, nickname);
     }
 
