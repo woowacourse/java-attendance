@@ -16,14 +16,14 @@ public class Attendance {
     public static final LocalTime MIN_ATTENDANCE_TIME = LocalTime.of(8, 0);
     public static final List<DayOfWeek> WEEKEND = List.of(DayOfWeek.SATURDAY, DayOfWeek.SUNDAY);
     
-    private LocalDateTime attendanceTime;
+    private LocalDateTime attendanceDateTime;
     private String attendanceStatus;
     
-    public Attendance(LocalDateTime attendanceTime) {
-        validateDate(attendanceTime.toLocalDate());
-        validateTime(attendanceTime.toLocalTime());
-        this.attendanceTime = attendanceTime;
-        this.attendanceStatus = checkAttendanceStatus(attendanceTime);
+    public Attendance(LocalDateTime attendanceDateTime) {
+        validateDate(attendanceDateTime.toLocalDate());
+        validateTime(attendanceDateTime.toLocalTime());
+        this.attendanceDateTime = attendanceDateTime;
+        this.attendanceStatus = checkAttendanceStatus(attendanceDateTime);
     }
     
     private void validateDate(LocalDate date) {
@@ -67,28 +67,28 @@ public class Attendance {
     }
     
     public AttendResult createAttendanceResult() {
-        return new AttendResult(attendanceTime, attendanceStatus);
+        return new AttendResult(attendanceDateTime, attendanceStatus, true);
     }
     
     public AttendanceModifyResult modifyAttendanceTime(LocalTime newAttendanceTime) {
-        LocalDateTime oldAttendanceTime = attendanceTime;
-        attendanceTime = attendanceTime
+        LocalDateTime oldAttendanceTime = attendanceDateTime;
+        attendanceDateTime = attendanceDateTime
                 .withHour(newAttendanceTime.getHour())
                 .withMinute(newAttendanceTime.getMinute());
         
         String oldAttendanceStatus = attendanceStatus;
-        attendanceStatus = checkAttendanceStatus(attendanceTime);
+        attendanceStatus = checkAttendanceStatus(attendanceDateTime);
         
         return new AttendanceModifyResult(
-                attendanceTime.toLocalDate(),
+                attendanceDateTime.toLocalDate(),
                 oldAttendanceTime.toLocalTime(),
                 oldAttendanceStatus,
-                attendanceTime.toLocalTime(),
+                attendanceDateTime.toLocalTime(),
                 attendanceStatus
         );
     }
     
     public boolean isSameDay(LocalDate date) {
-        return attendanceTime.toLocalDate().equals(date);
+        return attendanceDateTime.toLocalDate().equals(date);
     }
 }

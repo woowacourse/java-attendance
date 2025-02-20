@@ -31,7 +31,7 @@ public class InputView {
         String todayOfWeek = checkToday(now);
         
         String decision = String.format("""
-                 오늘은 %d월 %d일 %s입니다. 기능을 선택해 주세요.
+                오늘은 %d월 %d일 %s입니다. 기능을 선택해 주세요.
                 1. 출석 확인
                 2. 출석 수정
                 3. 크루별 출석 기록 확인
@@ -60,7 +60,8 @@ public class InputView {
         System.out.println("출석을 수정하려는 크루의 닉네임을 입력해 주세요.");
         String name = inputProvider.get();
         System.out.println("수정하려는 날짜(일)를 입력해 주세요.");
-        LocalDate date = LocalDate.parse(inputProvider.get());
+        
+        LocalDate date = dateProvider.now().withDayOfMonth(Integer.parseInt(inputProvider.get()));
         System.out.println("언제로 변경하겠습니까?");
         LocalTime time = LocalTime.parse(inputProvider.get());
         

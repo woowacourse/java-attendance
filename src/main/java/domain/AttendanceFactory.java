@@ -3,6 +3,7 @@ package domain;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -30,9 +31,13 @@ public class AttendanceFactory {
     
     private static void insertAttendance(String str) {
         String name = str.split(",")[0];
-        String dateTIme = str.split(",")[1];
+        LocalDateTime dateTime = LocalDateTime.parse(str.split(",")[1], DATE_TIME_FORMATTER);
         
-        Attendance attendance = new Attendance(LocalDateTime.parse(dateTIme, DATE_TIME_FORMATTER));
+        if (!LocalDate.now().getMonth().equals(dateTime.getMonth())) {
+            return;
+        }
+        
+        Attendance attendance = new Attendance(dateTime);
         
         if (!attendances.containsKey(name)) {
             attendances.put(name, new ArrayList<>());
