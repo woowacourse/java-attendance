@@ -3,11 +3,13 @@ package attendance.repository;
 import attendance.domain.Attendance;
 import attendance.domain.Time;
 import attendance.dto.CrewNameAndAcademicStatusDTO;
+import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 public class AttendanceRepository {
@@ -19,11 +21,15 @@ public class AttendanceRepository {
 
     public void add(Attendance currentAttendance) {
         for (Attendance attendance : attendances) {
-            if (attendance.isAlreadyAttendance(currentAttendance)) {
-                throw new IllegalArgumentException("[ERROR] 오늘은 이미 출석하셨습니다. 수정 기능을 이용해 주세요.");
-            }
+            validateAlreadyHasAttendance(attendance, currentAttendance);
         }
         attendances.add(currentAttendance);
+    }
+
+    private void validateAlreadyHasAttendance(Attendance attendance, Attendance currentAttendance) {
+        if (attendance.isAlreadyAttendance(currentAttendance)) {
+            throw new IllegalArgumentException("[ERROR] 오늘은 이미 출석하셨습니다. 수정 기능을 이용해 주세요.");
+        }
     }
 
     public List<Attendance> findAllAttendanceByName(String name) {
@@ -35,35 +41,36 @@ public class AttendanceRepository {
     }
 
     public Attendance findAttendanceByNameAndLocalDate(String name, int year, int month, int day) {
-
-        for (Attendance attendance : attendances) {
-            if (attendance.isSameByNameAndLocalDate(name, year, month, day)) {
-                return attendance;
-            }
-        }
-
-        throw new IllegalArgumentException("[ERROR] 존재하지 않는 출석 기록입니다.");
+        return attendances.stream()
+                .filter(attendance -> attendance.isSameByNameAndLocalDate(name, year, month, day))
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException("[ERROR] 존재하지 않는 출석 기록입니다."));
     }
 
-    public void initAbsent(String name) {
 
+    public void initAbsent(String name) {
         int currentYear = LocalDate.now().getYear();
         int currentMonth = LocalDate.now().getMonthValue();
+        int currentDay = LocalDate.now().getDayOfMonth();
 
-        for (int day = 1; day < LocalDate.now().getDayOfMonth(); day++) {
-            try {
-                String dayOfWeek = LocalDate.of(currentYear, currentMonth, day).getDayOfWeek().name();
-                if (dayOfWeek.equals("SATURDAY") || dayOfWeek.equals("SUNDAY")) {
-                    continue;
-                }
+        IntStream.range(1, currentDay)
+                .mapToObj(day -> LocalDate.of(currentYear, currentMonth, day))
+                .filter(date -> !isWeekend(date))
+                .filter(date -> isAbsent(name, date))
+                .forEach(date -> attendances.add(new Attendance(name, new Time(date, "--", "--", true))));
+    }
 
-                Attendance attendance = findAttendanceByNameAndLocalDate(name, currentYear, currentMonth, day);
-            } catch (IllegalArgumentException e) {
-                int year = LocalDate.now().getYear();
-                int month = currentMonth;
-                attendances.add(new Attendance(name, new Time(LocalDate.of(year, month, day), "--", "--", true)));
+    private boolean isWeekend(LocalDate date) {
+        DayOfWeek dayOfWeek = date.getDayOfWeek();
+        return dayOfWeek == DayOfWeek.SATURDAY || dayOfWeek == DayOfWeek.SUNDAY;
+    }
 
-            }
+    private boolean isAbsent(String name, LocalDate date) {
+        try {
+            findAttendanceByNameAndLocalDate(name, date.getYear(), date.getMonthValue(), date.getDayOfMonth());
+            return false;
+        } catch (IllegalArgumentException e) {
+            return true;
         }
     }
 
