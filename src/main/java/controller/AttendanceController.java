@@ -20,7 +20,8 @@ public class AttendanceController {
 
     public void start() {
         while (true) {
-            final LocalDateTime fixDateTime = LocalDateTime.of(2024, Constants.FIXED_MONTH, Constants.FIXED_DAY, 0, 0,
+            final LocalDateTime fixDateTime = LocalDateTime.of(Constants.FIXED_YEAR, Constants.FIXED_MONTH,
+                    Constants.FIXED_DAY, 0, 0,
                     0, 0);
             final String input = InputView.readCommand(fixDateTime);
             final Command command = Command.findByCommandNumber(input);
