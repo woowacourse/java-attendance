@@ -1,6 +1,6 @@
+package model;
+
 import java.time.LocalTime;
-import model.AttendanceCalculatorByDay;
-import model.AttendanceStatus;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
