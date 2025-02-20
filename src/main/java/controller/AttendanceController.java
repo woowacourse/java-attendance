@@ -57,6 +57,7 @@ public class AttendanceController {
             throw new CustomIllegalArgumentException("이미 출석했습니다. 다음에는 수정기능을 이용해주세요.");
         }
         final Attendance attendance = attend(crew, attendedDateTime);
+
         OutputView.printAttendance(attendance);
     }
 
@@ -97,9 +98,8 @@ public class AttendanceController {
         return LocalDateTime.of(fixedLocalDate, desiredUpdateTime);
     }
 
-    private static void processAttendanceRecordByCrew(final Crews crews) {
-        String inputNickName = InputView.readNickName();
-        Nickname nickname = new Nickname(inputNickName);
+    private void processAttendanceRecordByCrew(final Crews crews) {
+        Nickname nickname = readNickname();
         Crew crew = crews.findByNickname(nickname);
 
         OutputView.printCrewAttendances(crew);
