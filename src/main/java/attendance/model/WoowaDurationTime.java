@@ -25,14 +25,6 @@ public enum WoowaDurationTime {
         this.endTime = endTime;
     }
 
-//    public static WoowaDurationTime from(LocalDateTime localDateTime) {
-//        DayOfWeek dayOfWeek = localDateTime.getDayOfWeek();
-//        return Arrays.stream(WoowaDurationTime.values())
-//                .filter(woowaDurationTime -> woowaDurationTime.dayOfWeek.equals(dayOfWeek))
-//                .findFirst()
-//                .orElseThrow(() -> new IllegalArgumentException(localDateTime.format(formatter)));
-//    }
-
     public LocalTime getStartTime() {
         return startTime;
     }

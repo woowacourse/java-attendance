@@ -25,14 +25,14 @@ public class Crews {
 
     public Crew findCrew(String name) {
         return crews.stream()
-                .filter(c -> c.getName().equals(name))
+                .filter(crew -> crew.getName().equals(name))
                 .findFirst()
                 .orElseThrow(() -> new IllegalArgumentException("등록되지 않은 닉네임입니다."));
     }
 
     public boolean containsCrew(String name) {
         return crews.stream()
-                .anyMatch(c -> c.getName().equals(name));
+                .anyMatch(crew -> crew.getName().equals(name));
     }
 
 }

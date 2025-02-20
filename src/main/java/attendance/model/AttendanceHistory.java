@@ -34,15 +34,15 @@ public class AttendanceHistory {
                 .count();
     }
 
-    public boolean containsNowDate(LocalDate nowDate) {
+    public boolean containsDate(LocalDate date) {
         return attendanceHistory.stream()
-                .anyMatch(attendanceDetail -> attendanceDetail.getAttendanceDate().equals(nowDate));
+                .anyMatch(attendanceDetail -> attendanceDetail.getAttendanceDate().equals(date));
     }
 
-    public AttendanceDetail findAttendanceDetail(LocalDate localDate) {
-        validateHoliday(localDate);
+    public AttendanceDetail findAttendanceDetail(LocalDate attendanceDate) {
+        validateHoliday(attendanceDate);
         return attendanceHistory.stream()
-                .filter(attendanceDetail -> attendanceDetail.getAttendanceDate().equals(localDate))
+                .filter(attendanceDetail -> attendanceDetail.getAttendanceDate().equals(attendanceDate))
                 .findFirst().orElseThrow(() -> new IllegalArgumentException("존재하지 않는 날짜입니다."));
     }
 
@@ -50,9 +50,9 @@ public class AttendanceHistory {
         return attendanceHistory.stream();
     }
 
-    private void validateHoliday(LocalDate localDate) {
-        if (CustomLocalDateTime.isHoliday(localDate)) {
-            throw new IllegalArgumentException(localDate.format(formatter));
+    private void validateHoliday(LocalDate attendanceDate) {
+        if (CustomLocalDateTime.isHoliday(attendanceDate)) {
+            throw new IllegalArgumentException(attendanceDate.format(formatter));
         }
     }
 
