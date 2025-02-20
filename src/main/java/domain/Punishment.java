@@ -9,8 +9,8 @@ public enum Punishment {
     WARNING("경고", 1),
     NONE("없음", 0);
 
-    private String punishmentName;
-    private int absenceCount;
+    private final String punishmentName;
+    private final int absenceCount;
 
     Punishment(final String punishmentName, final int absenceCount) {
         this.punishmentName = punishmentName;
