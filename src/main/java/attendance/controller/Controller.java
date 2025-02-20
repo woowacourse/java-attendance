@@ -64,7 +64,7 @@ public class Controller {
 
     public void updateAttendance() {
         try {
-            String crewName = inputView.inputNickname();
+            String crewName = inputView.inputUpdateCrewName();
             Crew crew = attendanceService.findCrewByName(crewName);
 
             LocalDateTime updatedTime = LocalDateTime.of(inputView.inputUpdateAttendanceDate(),
