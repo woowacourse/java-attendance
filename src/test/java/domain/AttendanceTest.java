@@ -11,8 +11,11 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import util.FileManager;
 
 class AttendanceTest {
@@ -148,5 +151,28 @@ class AttendanceTest {
 
         //then
         assertThat(actual).hasSize(5);
+    }
+
+    @DisplayName("출석 수정일이 공휴일일 경우 예외를 던진다.")
+    @ParameterizedTest
+    @ValueSource(ints = {1, 7, 8, 14, 15, 21, 22, 25, 28, 29})
+    void updateHoliday(int dayOfMonth) {
+        // given
+        Crew crew = new Crew("도기");
+        List<LocalDateTime> localDateTimes = new ArrayList<>();
+        localDateTimes.add(LocalDateTime.of(2024, 12, 2, 10, 00));
+        localDateTimes.add(LocalDateTime.of(2024, 12, 3, 10, 06));
+        localDateTimes.add(LocalDateTime.of(2024, 12, 4, 10, 11));
+        localDateTimes.add(LocalDateTime.of(2024, 12, 5, 10, 14));
+
+        Map<Crew, List<LocalDateTime>> attendances = new LinkedHashMap<>();
+        attendances.put(crew, localDateTimes);
+
+        Attendance attendance = new Attendance(attendances);
+
+        // when & then
+        Assertions.assertThatThrownBy(() -> attendance.update(crew, "09:55", dayOfMonth))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("공휴일에는 출석을 할 수 없습니다.");
     }
 }

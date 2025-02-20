@@ -53,6 +53,8 @@ public class Attendance {
     }
 
     public LocalDateTime update(final Crew crew, final String updateTime, final int date) {
+        Calender.validateHolyDay(date);
+
         List<LocalDateTime> localDateTimes = attendanceMap.get(crew);
         int i;
         LocalDateTime beforeLocalDateTime = null;
