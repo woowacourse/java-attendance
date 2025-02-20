@@ -50,4 +50,12 @@ public class AttendanceStatusTest {
             AttendanceStatus.attend(LocalDateTime.of(2024, 12, 1, 10, 30));
         }).isInstanceOf(IllegalArgumentException.class);
     }
+
+    @Test
+    void 월요일일때_출석을_확인한다() {
+        LocalTime targetTime = LocalTime.of(13, 0, 0);
+        LocalDateTime targetDate = LocalDateTime.of(LocalDate.of(2024, 12, 2), targetTime);
+
+        assertThat(AttendanceStatus.attend(targetDate)).isEqualTo(AttendanceStatus.ATTENDANCE);
+    }
 }

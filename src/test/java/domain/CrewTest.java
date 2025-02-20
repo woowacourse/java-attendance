@@ -42,4 +42,21 @@ class CrewTest {
             crew.editAttendStatus(LocalDateTime.of(2024, 12, 10, 10, 30));
         }).isInstanceOf(IllegalArgumentException.class);
     }
+
+    @Test
+    void 미래_날짜에_출석시_예외를_던진다() {
+        Crew crew = new Crew("두리");
+        assertThatThrownBy(() -> {
+            crew.validateAvailableAttendanceDate(LocalDate.of(2029, 12, 25));
+        }).isInstanceOf(IllegalArgumentException.class);
+    }
+
+    @Test
+    void 이미_출석한_날에_출석시_예외를_던진다() {
+        Crew crew = new Crew("두리");
+        crew.addAttendStatus(LocalDateTime.of(2024, 12, 5, 10, 30));
+        assertThatThrownBy(() -> {
+            crew.validateAvailableAttendanceDate(LocalDate.of(2024, 12, 5));
+        }).isInstanceOf(IllegalArgumentException.class);
+    }
 }
