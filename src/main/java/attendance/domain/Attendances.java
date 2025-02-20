@@ -107,6 +107,4 @@ public class Attendances {
                 .filter(attendance -> attendance.isSameCrew(crew))
                 .toList();
     }
-
-
 }
