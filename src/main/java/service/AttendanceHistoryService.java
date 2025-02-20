@@ -1,6 +1,7 @@
 package service;
 
 import domain.AttendanceBook;
+import domain.AttendanceStatus;
 import domain.CrewStatus;
 import repository.AttendanceRepository;
 import service.dto.AttendanceHistoryResponse;
@@ -21,7 +22,7 @@ public class AttendanceHistoryService {
         return attendanceBook.getAllAttendance(date);
     }
 
-    public Map<String, Integer> getAttendanceResultOf(String name, LocalDate date) {
+    public Map<AttendanceStatus, Integer> getAttendanceResultOf(String name, LocalDate date) {
         AttendanceBook attendanceBook = attendanceRepository.findByCrewName(name);
         return attendanceBook.calculateAttendanceResult(date);
     }

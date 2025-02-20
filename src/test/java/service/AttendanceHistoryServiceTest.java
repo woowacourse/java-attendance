@@ -1,9 +1,9 @@
 package service;
 
 import constants.DateConstants;
+import domain.AttendanceStatus;
 import domain.Crew;
 import domain.CrewStatus;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -11,14 +11,11 @@ import repository.AttendanceRepository;
 import repository.AttendanceRepositoryImpl;
 import service.dto.AttendanceHistoryResponse;
 
-import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.*;
 
-import static org.assertj.core.api.Assertions.as;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
 
 class AttendanceHistoryServiceTest {
     int year = DateConstants.YEAR;
@@ -26,10 +23,10 @@ class AttendanceHistoryServiceTest {
     String name = "빙티";
     Crew crew = new Crew(name);
     List<AttendanceHistoryResponse> attendanceHistoryResponses = new ArrayList<>(Arrays.asList(
-            new AttendanceHistoryResponse(LocalDate.of(year, month, 2), Optional.of(LocalTime.of(13, 0)), "출석"),
-            new AttendanceHistoryResponse(LocalDate.of(year, month, 3), Optional.of(LocalTime.of(10, 7)), "지각"),
-            new AttendanceHistoryResponse(LocalDate.of(year, month, 4), Optional.of(LocalTime.of(10, 31)), "결석"),
-            new AttendanceHistoryResponse(LocalDate.of(year, month, 5), Optional.empty(), "결석")
+            new AttendanceHistoryResponse(LocalDate.of(year, month, 2), Optional.of(LocalTime.of(13, 0)), AttendanceStatus.ATTENDANCE),
+            new AttendanceHistoryResponse(LocalDate.of(year, month, 3), Optional.of(LocalTime.of(10, 7)), AttendanceStatus.LATE),
+            new AttendanceHistoryResponse(LocalDate.of(year, month, 4), Optional.of(LocalTime.of(10, 31)), AttendanceStatus.ABSENCE),
+            new AttendanceHistoryResponse(LocalDate.of(year, month, 5), Optional.empty(), AttendanceStatus.ABSENCE)
     ));
     AttendanceRepository attendanceRepository;
     AttendanceHistoryService attendanceHistoryService;
@@ -75,12 +72,12 @@ class AttendanceHistoryServiceTest {
         LocalDate date = LocalDate.of(year, month, 6);
 
         // when
-        Map<String, Integer> attendanceCount = attendanceHistoryService.getAttendanceResultOf(name, date);
+        Map<AttendanceStatus, Integer> attendanceCount = attendanceHistoryService.getAttendanceResultOf(name, date);
 
         // then
-        assertThat(attendanceCount.get("출석")).isEqualTo(1);
-        assertThat(attendanceCount.get("지각")).isEqualTo(1);
-        assertThat(attendanceCount.get("결석")).isEqualTo(2);
+        assertThat(attendanceCount.get(AttendanceStatus.ATTENDANCE)).isEqualTo(1);
+        assertThat(attendanceCount.get(AttendanceStatus.LATE)).isEqualTo(1);
+        assertThat(attendanceCount.get(AttendanceStatus.ABSENCE)).isEqualTo(2);
 
     }
 
