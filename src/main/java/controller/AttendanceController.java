@@ -38,10 +38,13 @@ public class AttendanceController {
                 continue;
             }
 
-        List<String> allNames = attendanceSheets.findAllNames();
-        System.out.println(allNames);
             if (select.equals("2")) {
                 updateAttendance(attendanceSheets);
+                continue;
+            }
+
+            if (select.equals("3")) {
+                printAttendance(attendanceSheets, date);
                 continue;
             }
 
@@ -55,6 +58,28 @@ public class AttendanceController {
                 return;
             }
         }
+    }
+
+    private void printAttendance(AttendanceSheets attendanceSheets, LocalDate date) {
+        String nickname = inputView.inputNickname();
+
+        OutputView.printAttendanceSheetIntro(nickname);
+
+        List<AttendanceSheet> attendancesByNickname = attendanceSheets.findAttendanceByNickname(nickname);
+        Map<Integer, AttendanceDateTime> dayToAttendanceDateTime = new HashMap<>();
+        attendancesByNickname.forEach(attendance ->
+                dayToAttendanceDateTime.put(
+                        attendance.getAttendanceDateTime().getAttendanceDateTime().getDayOfMonth(),
+                        attendance.getAttendanceDateTime()));
+
+        OutputView.printAttendanceSheets(dayToAttendanceDateTime, date.getDayOfMonth());
+
+        int attendCount = getAttendCount(attendancesByNickname);
+        int lateCount = getLateCount(attendancesByNickname);
+        int absentCount = getAbsentCount(attendancesByNickname);
+        OutputView.printAttendanceStatistics(attendCount, lateCount, absentCount);
+
+        OutputView.printAbsentPolicy(AbsentPolicy.calculateAbsentPolicy(absentCount, lateCount));
     }
 
     private void updateAttendance(AttendanceSheets attendanceSheets) {
@@ -86,39 +111,46 @@ public class AttendanceController {
         attendanceSheets.add(new AttendanceSheet(nickname, AttendanceDateTime.from(localDateTime)));
     }
 
-            for (AttendanceSheet attendanceSheet : attendanceByNickname) {
-                AttendanceState state = attendanceSheet.getAttendanceDateTime().check();
 
-                if (state == AttendanceState.LATE) {
-                    lateCount++;
-                }
+    private int getLateCount(List<AttendanceSheet> attendanceByNickname) {
+        int lateCount = 0;
 
-                if (state == AttendanceState.ABSENT) {
-                    absentCount++;
-                }
+        for (AttendanceSheet attendanceSheet : attendanceByNickname) {
+            AttendanceState state = attendanceSheet.getAttendanceDateTime().check();
+
+            if (state == AttendanceState.LATE) {
+                lateCount++;
             }
-
-            System.out.println("name = " + name);
-            System.out.println("absentCount = " + absentCount);
-            System.out.println("lateCount = " + lateCount);
-
-            absentCount += lateCount / 3;
-            lateCount %= 3;
-
-//            경고 대상자: 결석 2회 이상
-//            면담 대상자: 결석 3회 이상
-//            제적 대상자: 결석 5회 초과
-
-            if (absentCount > 5) {
-                System.out.println("제적");
-            } else if (absentCount >= 3) {
-                System.out.println("면담");
-            } else if (absentCount == 2) {
-                System.out.println("경고");
-            }
-            System.out.println();
-
-
         }
+
+        return lateCount;
+    }
+
+    private int getAbsentCount(List<AttendanceSheet> attendanceByNickname) {
+        int absentCount = 0;
+
+        for (AttendanceSheet attendanceSheet : attendanceByNickname) {
+            AttendanceState state = attendanceSheet.getAttendanceDateTime().check();
+
+            if (state == AttendanceState.ABSENT) {
+                absentCount++;
+            }
+        }
+
+        return absentCount;
+    }
+
+    private int getAttendCount(List<AttendanceSheet> attendanceByNickname) {
+        int attendCount = 0;
+
+        for (AttendanceSheet attendanceSheet : attendanceByNickname) {
+            AttendanceState state = attendanceSheet.getAttendanceDateTime().check();
+
+            if (state == AttendanceState.ATTEND) {
+                attendCount++;
+            }
+        }
+
+        return attendCount;
     }
 }
