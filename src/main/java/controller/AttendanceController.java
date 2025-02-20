@@ -62,6 +62,10 @@ public class AttendanceController {
 
 
     private void addAttendance() {
+        if (attendanceSystem.isNotAttendanceDay(LocalDate.now().withYear(2024).withMonth(12))) {
+            outputView.printNotAttendanceDay();
+            return;
+        }
         final String crewName = LoopTemplate.tryCatchLoop(this::inputCrewName, outputView);
         if (!attendanceSystem.isAlreadyTodayAttendance(crewName)) {
             final Attendance attendance = LoopTemplate.tryCatchLoop(this::attendance, crewName, outputView);

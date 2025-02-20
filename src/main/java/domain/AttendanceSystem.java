@@ -1,5 +1,6 @@
 package domain;
 
+import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -52,6 +53,10 @@ public class AttendanceSystem {
                 .filter(this::isExpulsionCrew)
                 .sorted()
                 .toList();
+    }
+
+    public boolean isNotAttendanceDay(final LocalDate localDate) {
+        return localDate.getDayOfWeek() == DayOfWeek.SUNDAY || localDate.getDayOfWeek() == DayOfWeek.SATURDAY || localDate.equals(LocalDate.of(2024, 12, 25));
     }
 
 

@@ -121,4 +121,8 @@ public class OutputView {
     public void printExceptionMessage(final String message) {
         System.out.println(message);
     }
+
+    public void printNotAttendanceDay() {
+        System.out.println("오늘은 등교일이 아닙니다.");
+    }
 }
