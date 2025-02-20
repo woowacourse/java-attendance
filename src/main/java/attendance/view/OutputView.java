@@ -2,13 +2,17 @@ package attendance.view;
 
 import attendance.domain.AttendanceHistory;
 
+import javax.swing.text.DateFormatter;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.time.format.TextStyle;
 import java.util.*;
 
 public class OutputView {
+
+    public static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("HH:mm");
 
     public void printOperations(LocalDate today) {
         System.out.printf("오늘은 %d월 %d일 %s입니다. 기능을 선택해 주세요.%n", today.getMonthValue(), today.getDayOfMonth(),
@@ -27,10 +31,17 @@ public class OutputView {
 
     public void printAttendance(final LocalDateTime attendanceDateTime, final String attendanceStatus) {
         LocalTime attendanceTime = attendanceDateTime.toLocalTime();
-        System.out.printf("%d월 %d일 %s %02d:%02d (%s)%n", attendanceDateTime.getMonthValue(),
+        if (attendanceTime.equals(LocalTime.of(23, 00))) {
+            System.out.printf("%d월 %d일 %s %s (%s)%n", attendanceDateTime.getMonthValue(),
+                    attendanceDateTime.getDayOfMonth(),
+                    attendanceDateTime.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.KOREA),
+                    "--:--", attendanceStatus);
+            return;
+        }
+        System.out.printf("%d월 %d일 %s %s (%s)%n", attendanceDateTime.getMonthValue(),
                 attendanceDateTime.getDayOfMonth(),
                 attendanceDateTime.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.KOREA),
-                attendanceTime.getHour(), attendanceTime.getMinute(), attendanceStatus);
+                DATE_TIME_FORMATTER.format(attendanceTime), attendanceStatus);
     }
 
     public void printErrorMessage(final String message) {
@@ -39,12 +50,22 @@ public class OutputView {
 
     public void printModificationResult(LocalDateTime originDateTime, String originAttendanceStatus,
                                         LocalDateTime newDateTime, String newAttendanceStatus) {
-        System.out.printf("%02d월 %02d일 %s %02d:%02d (%s) -> %02d:%02d (%s) 수정 완료!%n",
+        LocalTime originTime = originDateTime.toLocalTime();
+        if (originTime.equals(LocalTime.of(23, 00))) {
+            System.out.printf("%02d월 %02d일 %s %s (%s) -> %s (%s) 수정 완료!%n",
+                    originDateTime.getMonthValue(), originDateTime.getDayOfMonth(),
+                    originDateTime.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.KOREA)
+                    , "--:--",
+                    originAttendanceStatus
+                    , DATE_TIME_FORMATTER.format(newDateTime), newAttendanceStatus);
+            return;
+        }
+        System.out.printf("%02d월 %02d일 %s %s (%s) -> %s (%s) 수정 완료!%n",
                 originDateTime.getMonthValue(), originDateTime.getDayOfMonth(),
                 originDateTime.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.KOREA)
-                , originDateTime.toLocalTime().getHour(), originDateTime.toLocalTime().getMinute(),
+                , DATE_TIME_FORMATTER.format(originDateTime),
                 originAttendanceStatus
-                , newDateTime.toLocalTime().getHour(), newDateTime.toLocalTime().getMinute(), newAttendanceStatus);
+                , DATE_TIME_FORMATTER.format(newDateTime), newAttendanceStatus);
     }
 
     public void printAttendances(final String crewNickname, final List<LocalDateTime> attendanceTimes,
