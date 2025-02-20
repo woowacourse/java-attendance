@@ -58,6 +58,10 @@ public class AttendanceController {
                 if (selection == UserInput.TOTAL_RECORDS_BY_CREW) {
                     getTotalRecordsByCrew(attendanceBook);
                 }
+                if (selection == UserInput.CHECK_PENALTY) {
+                    outputView.displayPenaltyCrew(attendanceBook.checkPenaltyCrew());
+                }
+
                 if (selection == UserInput.QUIT) { // 출석 확인
                     break;
                 }
