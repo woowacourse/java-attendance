@@ -89,4 +89,15 @@ public class Controller {
             System.out.println(runtimeException.getMessage());
         }
     }
+
+    private void printRequiresManagementCrews() {
+        try {
+            List<RequiresManagementCrewResponse> responses =
+                    attendanceService.getRequiresManagementCrews(crewAttendanceComparator);
+
+            outputView.printRequiresManagementCrewResponse(responses);
+        } catch (RuntimeException runtimeException) {
+            System.out.println(runtimeException.getMessage());
+        }
+    }
 }
