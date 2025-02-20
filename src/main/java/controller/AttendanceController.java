@@ -4,6 +4,7 @@ import domain.Attendance;
 import domain.AttendanceStatus;
 import domain.AttendanceTime;
 import domain.AttendanceTimes;
+import domain.DecemberCalender;
 import domain.MenuOption;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -136,9 +137,8 @@ public class AttendanceController {
 
     private AttendanceTime getOldAttendanceTime(Attendance attendance, String nickName) {
         return repeatExecutor.repeatUntilSuccess(() -> {
-            int editArrivalDate = getEditArrivalDate();
-            LocalDate editDate = LocalDate.of(2024, 12, editArrivalDate);
-            return attendance.findAttendanceTime(nickName, editDate);
+            DecemberCalender editArrivalDate = getEditArrivalDate();
+            return attendance.findAttendanceTime(nickName, editArrivalDate.getDate());
         });
     }
 
@@ -150,12 +150,8 @@ public class AttendanceController {
         });
     }
 
-    private int getEditArrivalDate() {
-        int day = inputView.readEditArrivalDate();
-        if (day < 1 || day > 31) {
-            throw new IllegalArgumentException("[ERROR] 유효한 날짜가 아닙니다.");
-        }
-        return day;
+    private DecemberCalender getEditArrivalDate() {
+        return new DecemberCalender(inputView.readEditArrivalDate());
     }
 
     private void checkCrewAttendance(Attendance attendance) {
