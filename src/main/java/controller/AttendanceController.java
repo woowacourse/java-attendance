@@ -2,12 +2,14 @@ package controller;
 
 import controller.dto.AttendanceHistoryDto;
 import controller.dto.AttendanceHistoryWithPenaltyTypeDto;
+import controller.dto.AttendanceRequestDto;
 import controller.dto.AttendanceTimeDto;
 import controller.dto.AttendanceTypeCountDto;
 import controller.dto.AttendanceUpdateResultDto;
 import domain.AttendanceDateTime;
+import io.CustomFileReader;
+import java.io.FileNotFoundException;
 import java.util.List;
-import java.util.Map;
 import service.AttendanceService;
 import view.Function;
 import view.InputView;
@@ -22,6 +24,7 @@ public class AttendanceController {
 
     public void run() {
         try {
+            read();
             while (true) {
                 Function function = InputView.readOption();
                 if (function == Function.QUIT) {
@@ -29,9 +32,17 @@ public class AttendanceController {
                 }
                 runFunction(function);
             }
-        } catch (RuntimeException exception) {
+        } catch (Exception exception) {
             OutputView.printErrorMessage(exception.getMessage());
         }
+    }
+
+    private void read() throws FileNotFoundException {
+        List<String> names = CustomFileReader.readCrewNames();
+        attendanceService.saveCrews(names);
+
+        List<AttendanceRequestDto> attendanceRequestDtos = CustomFileReader.readAttendanceInfo();
+        attendanceService.initializeAttendanceHistories(attendanceRequestDtos);
     }
 
     public void runFunction(Function function) {
@@ -51,7 +62,6 @@ public class AttendanceController {
             checkWarningCrew();
         }
     }
-
 
     private void applyAttendance() {
         String nickname = getValidNickname();

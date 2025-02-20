@@ -2,19 +2,18 @@ package service;
 
 import controller.dto.AttendanceHistoryDto;
 import controller.dto.AttendanceHistoryWithPenaltyTypeDto;
+import controller.dto.AttendanceRequestDto;
 import controller.dto.AttendanceTypeCountDto;
 import controller.dto.AttendanceUpdateResultDto;
 import domain.AttendanceDate;
 import domain.AttendanceDateTime;
 import domain.AttendanceHistories;
 import domain.AttendanceHistory;
-import domain.AttendanceType;
 import domain.AttendanceTypeCount;
 import domain.Crew;
 import domain.Crews;
 import domain.PenaltyType;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -26,6 +25,10 @@ public class AttendanceService {
     public AttendanceService(Crews crews, AttendanceHistories attendanceHistories) {
         this.crews = crews;
         this.attendanceHistories = attendanceHistories;
+    }
+
+    public void saveCrews(List<String> names) {
+        names.forEach(crews::add);
     }
 
     public void checkNicknameIsExisted(String nickname) {
@@ -91,5 +94,17 @@ public class AttendanceService {
         }
 
         return attendanceTypeCountDtos;
+    }
+
+    public void initializeAttendanceHistories(List<AttendanceRequestDto> attendanceRequestDtos) {
+        for (AttendanceRequestDto dto : attendanceRequestDtos) {
+            String nickname = dto.nickname();
+
+            Crew crew = crews.findCrewBy(nickname);
+            AttendanceDateTime attendanceDateTime = AttendanceDateTime.of(dto.day(), dto.attendanceTimeDto().hour(),
+                    dto.attendanceTimeDto().minute());
+
+            attendanceHistories.add(crew, attendanceDateTime);
+        }
     }
 }
