@@ -1,6 +1,7 @@
 package model;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import attendance.model.Attendance;
 import attendance.model.AttendanceDetail;
@@ -8,6 +9,7 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import org.assertj.core.api.Assertions;
 import org.assertj.core.api.SoftAssertions;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 public class AttendanceDetailTest {
@@ -48,5 +50,12 @@ public class AttendanceDetailTest {
         softly.assertThat(attendanceDetail.getLocalDateTime()).isEqualTo(LocalDateTime.of(2024, 12, 10, 9, 58));
         softly.assertThat(attendanceDetail.getAttandence()).isEqualTo(Attendance.출석);
         softly.assertAll();
+    }
+
+    @DisplayName("등교일이 아닐 때 예외가 발생한다")
+    @Test
+    void test7() {
+        assertThatThrownBy(() -> new AttendanceDetail(LocalDateTime.of(2024, 12, 7, 10, 0)))
+                .isInstanceOf(IllegalArgumentException.class);
     }
 }

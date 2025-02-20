@@ -13,11 +13,7 @@ public class AttendanceHistory {
 
     public void addAttendanceDetail(AttendanceDetail attendanceDetail) {
         LocalDate localDate = attendanceDetail.getLocalDateTime().toLocalDate();
-
-        if (WoowaDayOfWeek.isHoliday(localDate)) {
-            throw new IllegalArgumentException(localDate.format(formatter));
-        }
-        
+        validateHoliday(localDate);
         attendanceHistory.add(attendanceDetail);
     }
 
@@ -65,9 +61,16 @@ public class AttendanceHistory {
     }
 
     public AttendanceDetail getAttendanceDetail(LocalDate localDate) {
-
+        validateHoliday(localDate);
         return attendanceHistory.stream()
                 .filter(attendanceDetail -> attendanceDetail.getLocalDateTime().toLocalDate().equals(localDate))
                 .findFirst().orElseThrow(() -> new IllegalArgumentException("존재하지 않는 날짜입니다."));
     }
+
+    private void validateHoliday(LocalDate localDate) {
+        if (CustomLocalDateTime.isHoliday(localDate)) {
+            throw new IllegalArgumentException(localDate.format(formatter));
+        }
+    }
+
 }

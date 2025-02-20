@@ -8,7 +8,6 @@ import attendance.model.Crew;
 import attendance.model.CrewDataLoader;
 import attendance.model.Crews;
 import attendance.model.CustomLocalDateTime;
-import attendance.model.WoowaDayOfWeek;
 import attendance.view.InputView;
 import attendance.view.OutputView;
 import java.time.LocalDate;
@@ -20,8 +19,6 @@ public class Controller {
     private final InputView inputView;
     private final OutputView outputView;
     private final static Crews crews = new Crews();
-
-    private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM월 dd일 EEEE은 등교일이 아닙니다.");
 
     public Controller(InputView inputView, OutputView outputView) {
         this.inputView = inputView;
@@ -54,9 +51,7 @@ public class Controller {
                 Crew crew = crews.findCrew(new Crew(crewName));
                 String modifyDateInput = inputView.inputModifyAttendanceDate();
                 LocalDate modifyDate = LocalDate.of(2024, 12, Integer.parseInt(modifyDateInput));
-                if (WoowaDayOfWeek.isHoliday(modifyDate)) {
-                    throw new IllegalArgumentException(modifyDate.format(formatter));
-                }
+                //
                 AttendanceDetail attendanceDetail = crew.getAttendanceHistory()
                         .getAttendanceDetail(modifyDate);
                 String modifyTimeInput = inputView.inputModifyAttendanceTime();

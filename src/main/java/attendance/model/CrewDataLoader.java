@@ -37,7 +37,7 @@ public class CrewDataLoader {
         ) {
             for (Crew crew : crews.getCrews()) {
                 AttendanceHistory attendanceHistory = crew.getAttendanceHistory();
-                if (attendanceHistory.containsNowDate(currentDate) || WoowaDayOfWeek.isHoliday(currentDate)) {
+                if (attendanceHistory.containsNowDate(currentDate) || CustomLocalDateTime.isHoliday(currentDate)) {
                     continue;
                 }
                 LocalDateTime lateDatetime = LocalDateTime.of(currentDate, LocalTime.of(17, 0));

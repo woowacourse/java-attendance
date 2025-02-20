@@ -15,8 +15,7 @@ public enum Attendance {
     }
 
     public static Attendance from(LocalDateTime dateTime) {
-        WoowaDayOfWeek dayOfWeek = WoowaDayOfWeek.from(dateTime);
-        long duration = dayOfWeek.calculateDuration(dateTime.toLocalTime());
+        long duration = WoowaDurationTime.calculateDuration(dateTime);
         if (duration > 결석.lateMinute) {
             return 결석;
         }
