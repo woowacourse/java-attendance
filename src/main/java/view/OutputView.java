@@ -2,6 +2,8 @@ package view;
 
 import domain.AttendanceState;
 import domain.Calender;
+import domain.Crew;
+import dto.AbsenceResultDto;
 import dto.AttendanceResultDto;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -57,16 +59,13 @@ public class OutputView {
                 attendanceResultDto.attendanceState());
     }
 
-    public static void printAbsenceHistory(final int attendanceCount,
-                                           final int lateCount,
-                                           final int absenceCount,
-                                           final String absenceStatus) {
-        System.out.printf("출석: %d회\n", attendanceCount);
-        System.out.printf("지각: %d회\n", lateCount);
-        System.out.printf("결석: %d회\n", absenceCount);
+    public static void printAbsenceHistory(AbsenceResultDto absenceResultDto) {
+        System.out.printf("출석: %d회\n", absenceResultDto.attendance());
+        System.out.printf("지각: %d회\n", absenceResultDto.lateness());
+        System.out.printf("결석: %d회\n", absenceResultDto.absence());
 
         System.out.println();
 
-        System.out.printf("%s 대상자입니다.\n", absenceStatus);
+        System.out.printf("%s 대상자입니다.\n", absenceResultDto.status());
     }
 }
