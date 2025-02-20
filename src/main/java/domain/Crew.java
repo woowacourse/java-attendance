@@ -3,6 +3,7 @@ package domain;
 import java.time.LocalDate;
 import java.time.YearMonth;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 public class Crew {
@@ -73,5 +74,12 @@ public class Crew {
         if (dayOfMonth < 1 || dayOfMonth > yearMonth.lengthOfMonth()) {
             throw new IllegalArgumentException("[ERROR] 존재하지 않는 날짜입니다.");
         }
+    }
+
+    public List<Attendance> getAttendances() {
+        attendances.sort(
+                Comparator.comparing((Attendance attendance) -> attendance.toDto().getDate())
+        );
+        return List.copyOf(attendances);
     }
 }
