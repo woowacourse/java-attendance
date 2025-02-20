@@ -4,6 +4,7 @@ import domain.*;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.Arrays;
 import java.util.List;
 
 public class OutputView {
@@ -53,14 +54,16 @@ public class OutputView {
     }
 
     private void displayAttendanceCount(Crew crew, CrewAttendanceRecords crewAttendanceRecords) {
-        System.out.printf("%n%s: %d회%n", Attendance.PRESENT.getName(), crewAttendanceRecords.getPresentCount(crew));
-        System.out.printf("%s: %d회%n", Attendance.TARDY.getName(), crewAttendanceRecords.getTardyCount(crew));
-        System.out.printf("%s: %d회%n%n", Attendance.ABSENT.getName(), crewAttendanceRecords.getAbsentCount(crew));
+        System.out.println();
+        Arrays.stream(Attendance.values()).forEach(attendance -> {
+            System.out.printf("%s: %d회%n", attendance.getName(), crewAttendanceRecords.getAttendanceCount(crew, attendance));
+        });
+        System.out.println();
     }
 
     private void displayDisciplinaryStatus(Crew crew, CrewAttendanceRecords crewAttendanceRecords) {
-        int tardyCount = crewAttendanceRecords.getTardyCount(crew);
-        int absentCount = crewAttendanceRecords.getAbsentCount(crew);
+        int tardyCount = crewAttendanceRecords.getAttendanceCount(crew, Attendance.TARDY);
+        int absentCount = crewAttendanceRecords.getAttendanceCount(crew, Attendance.ABSENT);
         DisciplinaryStatus status = DisciplinaryStatus.getStatus(absentCount, tardyCount);
         if (status == DisciplinaryStatus.NONE) {
             return;

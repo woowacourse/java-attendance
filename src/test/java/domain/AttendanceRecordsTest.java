@@ -56,7 +56,7 @@ class AttendanceRecordsTest {
         attendanceRecords.addRecord(AttendanceRecord.parse("2024-12-11 11:00"));
         attendanceRecords.addRecord(AttendanceRecord.parse("2024-12-12 11:00"));
 
-        assertThat(attendanceRecords.getPresentCount()).isEqualTo(4);
+        assertThat(attendanceRecords.getAttendanceCount(Attendance.PRESENT)).isEqualTo(4);
     }
 
     @Test

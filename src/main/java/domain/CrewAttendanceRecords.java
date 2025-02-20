@@ -62,11 +62,6 @@ public class CrewAttendanceRecords {
         return records.removeRecord(newAttendanceRecord.getDate());
     }
 
-    public int getPresentCount(Crew crew) {
-        validateCrewPresence(crew);
-        return crewAttendanceRecords.get(crew).getPresentCount();
-    }
-
     public int getTardyCount(Crew crew) {
         validateCrewPresence(crew);
         return crewAttendanceRecords.get(crew).getTardyCount();
@@ -75,6 +70,11 @@ public class CrewAttendanceRecords {
     public int getAbsentCount(Crew crew) {
         validateCrewPresence(crew);
         return crewAttendanceRecords.get(crew).getAbsentCount();
+    }
+
+    public int getAttendanceCount(Crew crew, Attendance attendance) {
+        validateCrewPresence(crew);
+        return crewAttendanceRecords.get(crew).getAttendanceCount(attendance);
     }
 
     private void validateCrewPresence(Crew crew) {

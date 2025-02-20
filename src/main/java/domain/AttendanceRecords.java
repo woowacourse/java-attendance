@@ -40,16 +40,18 @@ public class AttendanceRecords {
         return attendanceRecord;
     }
 
-    public int getPresentCount() {
-        return (int) attendanceRecords.stream().filter(AttendanceRecord::isPresent).count();
-    }
-
     public int getTardyCount() {
         return (int) attendanceRecords.stream().filter(AttendanceRecord::isTardy).count();
     }
 
     public int getAbsentCount() {
         return (int) attendanceRecords.stream().filter(AttendanceRecord::isAbsent).count();
+    }
+
+    public int getAttendanceCount(Attendance targetAttendance) {
+        return (int) attendanceRecords.stream()
+                .filter(attendanceRecord -> attendanceRecord.getAttendance().equals(targetAttendance))
+                .count();
     }
 
     public List<AttendanceRecord> getSortedRecords() {

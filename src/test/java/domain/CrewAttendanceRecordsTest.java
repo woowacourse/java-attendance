@@ -55,7 +55,7 @@ class CrewAttendanceRecordsTest {
     void getPresentCountTest() {
         CrewAttendanceRecords crewAttendanceRecords = new CrewAttendanceRecords("/attendances.csv", () -> LocalDate.of(2024, 12, 13));
         Crew crew = new Crew("빙티");
-        assertThat(crewAttendanceRecords.getPresentCount(crew)).isEqualTo(3);
+        assertThat(crewAttendanceRecords.getAttendanceCount(crew, Attendance.PRESENT)).isEqualTo(3);
     }
 
     @Test
@@ -63,7 +63,7 @@ class CrewAttendanceRecordsTest {
     void getTardyCountTest() {
         CrewAttendanceRecords crewAttendanceRecords = new CrewAttendanceRecords("/attendances.csv", () -> LocalDate.of(2024, 12, 13));
         Crew crew = new Crew("빙티");
-        assertThat(crewAttendanceRecords.getTardyCount(crew)).isEqualTo(4);
+        assertThat(crewAttendanceRecords.getAttendanceCount(crew, Attendance.TARDY)).isEqualTo(4);
     }
 
     @Test
@@ -71,7 +71,7 @@ class CrewAttendanceRecordsTest {
     void getAbsentCountTest() {
         CrewAttendanceRecords crewAttendanceRecords = new CrewAttendanceRecords("/attendances.csv", () -> LocalDate.of(2024, 12, 13));
         Crew crew = new Crew("빙티");
-        assertThat(crewAttendanceRecords.getAbsentCount(crew)).isEqualTo(3);
+        assertThat(crewAttendanceRecords.getAttendanceCount(crew, Attendance.ABSENT)).isEqualTo(3);
     }
 
     @Test
@@ -80,9 +80,9 @@ class CrewAttendanceRecordsTest {
         CrewAttendanceRecords crewAttendanceRecords = new CrewAttendanceRecords("/attendances.csv", () -> LocalDate.of(2024, 12, 13));
         Crew crew = new Crew("포비");
         assertAll(
-                () -> assertThatThrownBy(() -> crewAttendanceRecords.getPresentCount(crew)).isInstanceOf(IllegalArgumentException.class).hasMessage("[ERROR] 등록되지 않은 닉네임입니다."),
-                () -> assertThatThrownBy(() -> crewAttendanceRecords.getTardyCount(crew)).isInstanceOf(IllegalArgumentException.class).hasMessage("[ERROR] 등록되지 않은 닉네임입니다."),
-                () -> assertThatThrownBy(() -> crewAttendanceRecords.getAbsentCount(crew)).isInstanceOf(IllegalArgumentException.class).hasMessage("[ERROR] 등록되지 않은 닉네임입니다.")
+                () -> assertThatThrownBy(() -> crewAttendanceRecords.getAttendanceCount(crew, Attendance.PRESENT)).isInstanceOf(IllegalArgumentException.class).hasMessage("[ERROR] 등록되지 않은 닉네임입니다."),
+                () -> assertThatThrownBy(() -> crewAttendanceRecords.getAttendanceCount(crew, Attendance.TARDY)).isInstanceOf(IllegalArgumentException.class).hasMessage("[ERROR] 등록되지 않은 닉네임입니다."),
+                () -> assertThatThrownBy(() -> crewAttendanceRecords.getAttendanceCount(crew, Attendance.ABSENT)).isInstanceOf(IllegalArgumentException.class).hasMessage("[ERROR] 등록되지 않은 닉네임입니다.")
         );
     }
 
