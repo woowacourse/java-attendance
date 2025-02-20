@@ -65,10 +65,7 @@ public class AttendanceRecordCheckTest {
         LocalDate nowDate = LocalDate.of(2024, 12, 7);
         StatisticsResult statisticsResult = AttendanceStatistics.countStatus(nowDate, records);
 
-        int latenessCount = statisticsResult.getLatenessCount();
-        int absenceCount = statisticsResult.getAbsenceCount();
-
-        assertThat(Penalty.WARNING).isEqualTo(Penalty.check(absenceCount,latenessCount));
+        assertThat(Penalty.WARNING).isEqualTo(statisticsResult.getPenalty());
     }
 
     @DisplayName("면담 기준을 정확하게 계산한다.")
@@ -89,10 +86,7 @@ public class AttendanceRecordCheckTest {
         LocalDate nowDate = LocalDate.of(2024, 12, 10);
         StatisticsResult statisticsResult = AttendanceStatistics.countStatus(nowDate, records);
 
-        int latenessCount = statisticsResult.getLatenessCount();
-        int absenceCount = statisticsResult.getAbsenceCount();
-
-        assertThat(Penalty.COUNSELING).isEqualTo(Penalty.check(absenceCount,latenessCount));
+        assertThat(Penalty.COUNSELING).isEqualTo(statisticsResult.getPenalty());
     }
 
     @DisplayName("제적 기준을 정확하게 계산한다.")
@@ -116,10 +110,6 @@ public class AttendanceRecordCheckTest {
         LocalDate nowDate = LocalDate.of(2024, 12, 13);
         StatisticsResult statisticsResult = AttendanceStatistics.countStatus(nowDate, records);
 
-        int latenessCount = statisticsResult.getLatenessCount();
-        int absenceCount = statisticsResult.getAbsenceCount();
-
-        assertThat(Penalty.EXPELLED).isEqualTo(Penalty.check(absenceCount,latenessCount));
+        assertThat(Penalty.EXPELLED).isEqualTo(statisticsResult.getPenalty());
     }
-
 }
