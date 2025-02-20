@@ -2,12 +2,7 @@ package util;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import java.io.IOException;
-import java.net.URISyntaxException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.util.ArrayDeque;
-import java.util.Queue;
+import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -23,7 +18,7 @@ public class FileManagerTest {
         final String expectedHeader = "nickname,datetime";
 
         //when
-        final Queue<String> data = FileManager.readFileLines(fileName);
+        final List<String> data = FileManager.readFileLines(fileName);
 
         //then
         assertThat(data)

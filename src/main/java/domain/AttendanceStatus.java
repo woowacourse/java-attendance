@@ -2,8 +2,9 @@ package domain;
 
 import java.time.LocalDateTime;
 import java.util.Arrays;
+import java.util.List;
 
-enum AttendanceStatus {
+public enum AttendanceStatus {
     ATTENDANCE("출석", 0),
     LATE("지각", 5),
     ABSENCE("결석", 30);
@@ -25,5 +26,15 @@ enum AttendanceStatus {
                 .filter(status -> dateTime.isAfter(timeBoundary.plusMinutes(status.boundary)))
                 .findFirst()
                 .orElse(ATTENDANCE);
+    }
+
+    public static List<AttendanceStatus> sortedStatus() {
+        return Arrays.stream(values())
+                .sorted((o1, o2) -> o1.boundary - o2.boundary)
+                .toList();
+    }
+
+    public String getName() {
+        return name;
     }
 }

@@ -1,22 +1,49 @@
 package domain;
 
+import java.time.DayOfWeek;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-class Crew {
+public class Crew {
     private final CrewName name;
     private final List<Attendance> attendances;
 
-    public Crew(final String name) {
+    public Crew(final String name, final List<Attendance> attendances) {
         this.name = new CrewName(name);
-        this.attendances = new ArrayList<>();
+        this.attendances = attendances;
+    }
+
+    public static Crew of(final String name, final LocalDate inputLocalDate) {
+        final List<Attendance> attendances = new ArrayList<>();
+        final LocalDate christmas = LocalDate.of(2024, 12, 25);
+        final int dayOfMonth = inputLocalDate.getDayOfMonth();
+        for (int i = 1; i < dayOfMonth; i++) {
+            final LocalDateTime localDateTime = LocalDateTime.of(LocalDate.of(2024, 12, i), LocalTime.MAX);
+            final LocalDate localDate = LocalDate.of(localDateTime.getYear(), localDateTime.getMonthValue(),
+                    localDateTime.getDayOfMonth());
+            if (localDateTime.getDayOfWeek() == DayOfWeek.SATURDAY || localDateTime.getDayOfWeek() == DayOfWeek.SUNDAY
+                    || localDate.equals(christmas)) {
+                continue;
+            }
+            attendances.add(Attendance.empty(localDateTime));
+        }
+        return new Crew(name, attendances);
+
     }
 
     public void addAttendance(final String attendanceTime) {
         attendances.add(new Attendance(attendanceTime));
+    }
+
+    public void updateAttendanceByDateTime(final String attendanceTime) {
+        final Attendance updatedAttendance = Attendance.of(attendanceTime);
+        attendances.remove(updatedAttendance);
+        attendances.add(updatedAttendance);
     }
 
     public Map<AttendanceStatus, Integer> calculateAttendanceStatistics() {
@@ -28,9 +55,8 @@ class Crew {
     }
 
     private Map<AttendanceStatus, Integer> initializeStatistics() {
-        final Map<AttendanceStatus, Integer> statistics = new HashMap<>();
-        Arrays.stream(AttendanceStatus.values())
-                .forEach(status -> statistics.put(status, 0));
+        final Map<AttendanceStatus, Integer> statistics = new LinkedHashMap<>();
+        AttendanceStatus.sortedStatus().forEach(status -> statistics.put(status, 0));
         return statistics;
     }
 
@@ -42,6 +68,10 @@ class Crew {
 
     public CrewName getName() {
         return name;
+    }
+
+    public boolean isSameName(final String name) {
+        return this.name.isSameName(name);
     }
 
     public List<Attendance> getAttendances() {

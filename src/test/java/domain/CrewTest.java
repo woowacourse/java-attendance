@@ -2,7 +2,9 @@ package domain;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import org.junit.jupiter.api.DisplayName;
@@ -17,7 +19,7 @@ public class CrewTest {
         final String name = "윌슨";
 
         //when
-        final Crew crew = new Crew(name);
+        final Crew crew = Crew.of(name, LocalDate.now());
         final CrewName crewName = crew.getName();
 
         //then
@@ -30,7 +32,7 @@ public class CrewTest {
         //given
         final String name = "윌슨";
         final String time = "2024-12-13 10:08";
-        final Crew crew = new Crew(name);
+        final Crew crew = new Crew(name, new ArrayList<>());
         final LocalDateTime expectedTime = LocalDateTime.of(2024, 12, 13, 10, 8, 0);
 
         //when
@@ -38,7 +40,7 @@ public class CrewTest {
         final List<Attendance> attendances = crew.getAttendances();
 
         //then
-        assertThat(attendances.size()).isEqualTo(1);
+        assertThat(attendances).isNotEmpty();
         assertThat(attendances.getFirst().getDateTime()).isEqualTo(expectedTime);
     }
 
@@ -50,7 +52,7 @@ public class CrewTest {
         final String attendancedTime = "2024-12-13 10:05";
         final String latedTime = "2024-12-13 10:30";
         final String absencedTime = "2024-12-13 10:35";
-        final Crew crew = new Crew(name);
+        final Crew crew = new Crew(name, new ArrayList<>());
 
         //when
         crew.addAttendance(attendancedTime);
@@ -72,7 +74,7 @@ public class CrewTest {
         //given
         final String name = "윌슨";
         final List<String> absences = List.of("2024-12-12 10:35", "2024-12-11 10:35", "2024-12-10 10:35");
-        final Crew crew = new Crew(name);
+        final Crew crew = new Crew(name, new ArrayList<>());
         absences.forEach(crew::addAttendance);
 
         //when

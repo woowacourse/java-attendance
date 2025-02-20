@@ -2,7 +2,7 @@ package domain;
 
 import java.util.Arrays;
 
-enum ExpulsionStatus {
+public enum ExpulsionStatus {
     NORMAL("정상", 0),
     ADVANCE("경고", 2),
     INTERVIEW("면담", 3),
@@ -22,5 +22,9 @@ enum ExpulsionStatus {
                 .filter(status -> status.boundary <= absenceCount)
                 .findFirst()
                 .orElse(NORMAL);
+    }
+
+    public String getName() {
+        return name;
     }
 }
