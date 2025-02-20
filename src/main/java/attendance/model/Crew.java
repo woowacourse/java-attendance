@@ -23,10 +23,6 @@ public class Crew {
         }
     }
 
-    public void addAttendanceDetail(AttendanceDetail attendanceDetail) {
-        attendanceHistory.addAttendanceDetail(attendanceDetail);
-    }
-
     public String getName() {
         return name;
     }
@@ -44,6 +40,6 @@ public class Crew {
     }
 
     public void attend(AttendanceDetail attendanceDetail) {
-        addAttendanceDetail(attendanceDetail);
+        attendanceHistory.addAttendanceDetail(attendanceDetail);
     }
 }

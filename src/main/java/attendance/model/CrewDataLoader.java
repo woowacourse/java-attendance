@@ -20,17 +20,14 @@ public class CrewDataLoader {
 
     public void load(String path) {
         BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(
-                Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream(path))));
-
-        bufferedReader.lines().skip(1)
-                .forEach(row -> {
-                    String[] parsed = parseRow(row);
-                    Crew crew = parseCrew(parsed[0]);
-                    LocalDateTime dateTime = parseLocalDateTime(parsed[1]);
-
-                    addCrew(crew, dateTime);
-                });
-
+                Objects.requireNonNull(getClass().getClassLoader().getResourceAsStream(path)))
+        );
+        bufferedReader.lines().skip(1).forEach(row -> {
+            String[] parsed = parseRow(row);
+            Crew crew = parseCrew(parsed[0]);
+            LocalDateTime dateTime = parseLocalDateTime(parsed[1]);
+            addCrew(crew, dateTime);
+        });
         fillAbsencesForNoAttendance();
     }
 
@@ -54,7 +51,7 @@ public class CrewDataLoader {
                 continue;
             }
             LocalDateTime absenceDatetime = LocalDateTime.of(currentDate, ABSENCE_TIME);
-            crew.addAttendanceDetail(new AttendanceDetail(absenceDatetime));
+            crew.attend(new AttendanceDetail(absenceDatetime));
         }
     }
 
@@ -65,10 +62,10 @@ public class CrewDataLoader {
     private void addCrew(Crew crew, LocalDateTime dateTime) {
         if (!crews.containsCrew(crew.getName())) {
             crews.add(crew);
-            crew.addAttendanceDetail(new AttendanceDetail(dateTime));
+            crew.attend(new AttendanceDetail(dateTime));
             return;
         }
-        crews.findCrew(crew.getName()).addAttendanceDetail(new AttendanceDetail(dateTime));
+        crews.findCrew(crew.getName()).attend(new AttendanceDetail(dateTime));
     }
 
     private String[] parseRow(String row) {
@@ -80,7 +77,6 @@ public class CrewDataLoader {
     }
 
     private LocalDateTime parseLocalDateTime(String dateTime) {
-        //2024-12-10 10:08
         return LocalDateTime.parse(dateTime, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
     }
 }

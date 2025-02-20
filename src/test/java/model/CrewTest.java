@@ -55,7 +55,7 @@ public class CrewTest {
     @Test
     void test_checkHistory() {
         Crew crew = new Crew("멍구");
-        crew.addAttendanceDetail(new AttendanceDetail(LocalDateTime.of(2024, 12, 10, 10, 0)));
+        crew.attend(new AttendanceDetail(LocalDateTime.of(2024, 12, 10, 10, 0)));
 
         assertThat(crew.getAttendanceHistory().getAttendanceCount()).isEqualTo(1);
     }
@@ -64,7 +64,7 @@ public class CrewTest {
     @Test
     void test_checkHistory2() {
         Crew crew = new Crew("멍구");
-        crew.addAttendanceDetail(new AttendanceDetail(LocalDateTime.of(2024, 12, 10, 10, 0)));
+        crew.attend(new AttendanceDetail(LocalDateTime.of(2024, 12, 10, 10, 0)));
 
         crew.getAttendanceHistory().findAttendanceDetail(LocalDate.of(2024, 12, 10))
                 .modify(LocalTime.of(10, 6));

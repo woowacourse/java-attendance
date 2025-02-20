@@ -18,22 +18,16 @@ public enum AttendanceWarning {
                 crew.getAttendanceHistory().getAbsenceCount(),
                 crew.getAttendanceHistory().getLateCount()
         );
-        for (AttendanceWarning warning : AttendanceWarning.values()) {
-            if (absenceCount >= warning.absenceCount) {
-                return warning;
-            }
+        if (absenceCount > 제적.absenceCount) {
+            return 제적;
+        }
+        if (absenceCount >= 면담.absenceCount) {
+            return 면담;
+        }
+        if (absenceCount >= 경고.absenceCount) {
+            return 경고;
         }
         return 해당없음;
-//        if (absenceCount > 제적.absenceCount) {
-//            return 제적;
-//        }
-//        if (absenceCount >= 면담.absenceCount) {
-//            return 면담;
-//        }
-//        if (absenceCount >= 경고.absenceCount) {
-//            return 경고;
-//        }
-//        return 해당없음;
     }
 
     public static long calculateAbsenceCount(long absenceCount, long lateCount) {
