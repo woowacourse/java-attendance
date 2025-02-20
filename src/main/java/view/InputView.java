@@ -97,4 +97,10 @@ public class InputView {
         }
     }
 
+    public static void isNotOpeningHour(LocalDateTime localDateTime) {
+        if (localDateTime.getHour() < 8 || localDateTime.getHour() >= 23) {
+            throw new IllegalArgumentException("[ERROR] 캠퍼스 운영 시간이 아닙니다.");
+        }
+    }
+
 }
