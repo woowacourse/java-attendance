@@ -1,6 +1,8 @@
 package view;
 
 
+import static util.Constants.MONTH;
+
 import domain.Command;
 import domain.Week;
 import error.CustomIllegalArgumentException;
@@ -16,7 +18,7 @@ public final class InputView {
 
     public static String readCommand(final LocalDateTime dateTime) {
         System.out.println(
-                String.format("오늘은 12월 %s일 %s입니다. 기능을 선택해주세요.", dateTime.getDayOfMonth(),
+                String.format("오늘은 %s월 %s일 %s입니다. 기능을 선택해주세요.", MONTH, dateTime.getDayOfMonth(),
                         Week.findKoreanName(dateTime.getDayOfWeek())));
         for (Command command : Command.values()) {
             System.out.println(String.format("%s. %s", command.getCommandNumber(), command.getCommandName()));

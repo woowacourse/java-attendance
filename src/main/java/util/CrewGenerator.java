@@ -38,6 +38,7 @@ public final class CrewGenerator {
             crewData.computeIfAbsent(name, k -> new ArrayList<>()).add(attendance);
         }
 
+        // FIXME :: 메서드 추출하기
         final List<Integer> validDates = getValidDates(nowDate);
         List<Crew> crews = new ArrayList<>();
         for (Entry<Nickname, List<Attendance>> nicknameListEntry : crewData.entrySet()) {
@@ -47,7 +48,8 @@ public final class CrewGenerator {
             List<Integer> noPresentAttendanceDates = new ArrayList<>(validDates);
             noPresentAttendanceDates.removeAll(alreadyAttendanceDates);
             for (Integer attendanceDate : noPresentAttendanceDates) {
-                LocalDateTime dateTime = LocalDateTime.of(LocalDate.of(2024, 12, attendanceDate), LocalTime.of(0, 0));
+                LocalDateTime dateTime = LocalDateTime.of(LocalDate.of(2024, MONTH, attendanceDate),
+                        LocalTime.of(0, 0));
                 Attendance attendance = new Attendance(dateTime);
                 attendances.add(attendance);
             }
