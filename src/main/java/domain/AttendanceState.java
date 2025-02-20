@@ -15,6 +15,7 @@ public enum AttendanceState {
     }
 
     public static String findStateBy(final LocalTime localTime, final int dayOfWeekValue) {
+        Calender.validateHolyDay(dayOfWeekValue);
         AttendanceTime.validateCampusTime(localTime);
 
         String dayOfWeek = Calender.findBy(dayOfWeekValue);
