@@ -10,24 +10,24 @@ public class AttendanceBook {
 
     private final Set<String> names;
 
-    public AttendanceBook(Set<String> names) {
+    public AttendanceBook(final Set<String> names) {
         this.names = names;
     }
 
-    public void checkName(String name) {
+    public void checkName(final String name) {
         if (!names.contains(name)) {
             throw new IllegalArgumentException("[ERROR] 출석부에 없는 크루원입니다.");
         }
     }
 
-    public void initAbsent(AttendanceRepository attendanceRepository) {
+    public void initAbsent(final AttendanceRepository attendanceRepository) {
         for (String name : names) {
             attendanceRepository.initAbsent(name);
         }
     }
 
-    public List<CrewNameAndAcademicStatusDTO> getCrewAtRiskOfExpulsion(AttendanceRepository attendanceRepository,
-                                                                       String academicStatus) {
+    public List<CrewNameAndAcademicStatusDTO> getCrewAtRiskOfExpulsion(final AttendanceRepository attendanceRepository,
+                                                                       final String academicStatus) {
 
         return names.stream()
                 .map(attendanceRepository::getAcademicStatusByName)

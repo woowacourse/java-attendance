@@ -11,9 +11,11 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-public class AttendanceReader {
+public final class AttendanceReader {
+    private AttendanceReader() {
+    }
 
-    public static AttendanceContentDTO getAttendanceRecordContent(List<String> attendanceContents) {
+    public static AttendanceContentDTO getAttendanceRecordContent(final List<String> attendanceContents) {
         attendanceContents.removeFirst();
         final List<Attendance> attendances = new ArrayList<>();
         final Set<String> names = new HashSet<>();

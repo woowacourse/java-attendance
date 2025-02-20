@@ -19,24 +19,24 @@ import java.util.stream.IntStream;
 public class AttendanceRepository {
     private final List<Attendance> attendances;
 
-    public AttendanceRepository(List<Attendance> attendances) {
+    public AttendanceRepository(final List<Attendance> attendances) {
         this.attendances = attendances;
     }
 
-    public void add(Attendance currentAttendance) {
+    public void add(final Attendance currentAttendance) {
         for (Attendance attendance : attendances) {
             validateAlreadyHasAttendance(attendance, currentAttendance);
         }
         attendances.add(currentAttendance);
     }
 
-    private void validateAlreadyHasAttendance(Attendance attendance, Attendance currentAttendance) {
+    private void validateAlreadyHasAttendance(final Attendance attendance, final Attendance currentAttendance) {
         if (attendance.isAlreadyAttendance(currentAttendance)) {
             throw new IllegalArgumentException("[ERROR] 오늘은 이미 출석하셨습니다. 수정 기능을 이용해 주세요.");
         }
     }
 
-    public List<Attendance> findAllAttendanceByName(String name) {
+    public List<Attendance> findAllAttendanceByName(final String name) {
         return attendances.stream()
                 .filter(attendance -> attendance.getCrewName().equals(name))
                 .filter(attendance -> attendance.getAttendanceTime().getMonth() == LocalDate.now().getMonthValue())
@@ -44,7 +44,7 @@ public class AttendanceRepository {
                 .toList();
     }
 
-    public Attendance findAttendanceByNameAndLocalDate(String name, int year, int month, int day) {
+    public Attendance findAttendanceByNameAndLocalDate(final String name, int year, int month, int day) {
         return attendances.stream()
                 .filter(attendance -> attendance.isSameByNameAndLocalDate(name, year, month, day))
                 .findFirst()
@@ -52,7 +52,7 @@ public class AttendanceRepository {
     }
 
 
-    public void initAbsent(String name) {
+    public void initAbsent(final String name) {
         int currentYear = LocalDate.now().getYear();
         int currentMonth = LocalDate.now().getMonthValue();
         int currentDay = LocalDate.now().getDayOfMonth();
@@ -64,12 +64,12 @@ public class AttendanceRepository {
                 .forEach(date -> attendances.add(new Attendance(name, new Time(date, "--", "--", true))));
     }
 
-    private boolean isWeekend(LocalDate date) {
+    private boolean isWeekend(final LocalDate date) {
         DayOfWeek dayOfWeek = date.getDayOfWeek();
         return dayOfWeek == DayOfWeek.SATURDAY || dayOfWeek == DayOfWeek.SUNDAY;
     }
 
-    private boolean isAbsent(String name, LocalDate date) {
+    private boolean isAbsent(final String name, final LocalDate date) {
         try {
             findAttendanceByNameAndLocalDate(name, date.getYear(), date.getMonthValue(), date.getDayOfMonth());
             return false;
@@ -78,7 +78,7 @@ public class AttendanceRepository {
         }
     }
 
-    public CrewNameAndAcademicStatusDTO getAcademicStatusByName(String name) {
+    public CrewNameAndAcademicStatusDTO getAcademicStatusByName(final String name) {
         List<Attendance> attendances = findAllAttendanceByName(name);
 
         Map<String, Long> counts = attendances.stream()

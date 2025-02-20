@@ -4,7 +4,7 @@ public class Attendance {
     private final String crewName;
     private Time attendanceTime;
 
-    public Attendance(String crewName, Time attendanceTime) {
+    public Attendance(final String crewName, final Time attendanceTime) {
         this.crewName = crewName;
         this.attendanceTime = attendanceTime;
     }
@@ -26,7 +26,7 @@ public class Attendance {
         return AttendanceStatus.checkStatusWithCondition(attendanceTime, 10, 5, 30);
     }
 
-    public boolean isAlreadyAttendance(Attendance currentAttendance) {
+    public boolean isAlreadyAttendance(final Attendance currentAttendance) {
 
         if (!crewName.equals(currentAttendance.crewName)) {
             return false;
@@ -36,12 +36,12 @@ public class Attendance {
     }
 
 
-    public boolean isSameByNameAndLocalDate(String name, int year, int month, int day) {
+    public boolean isSameByNameAndLocalDate(final String name, int year, int month, int day) {
         return crewName.equals(name) && day == attendanceTime.getDay() && year == attendanceTime.getYear()
                 && month == attendanceTime.getMonth();
     }
 
-    public void modifyAttendanceTime(Time modifyTime) {
+    public void modifyAttendanceTime(final Time modifyTime) {
         this.attendanceTime = modifyTime;
     }
 }

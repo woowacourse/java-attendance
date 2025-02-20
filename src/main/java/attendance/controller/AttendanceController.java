@@ -27,7 +27,7 @@ public class AttendanceController {
     private AttendanceBook attendanceBook;
     private AttendanceRepository attendanceRepository;
 
-    public AttendanceController(InputView inputView, OutputView outputView) {
+    public AttendanceController(final InputView inputView, final OutputView outputView) {
         this.inputView = inputView;
         this.outputView = outputView;
     }
@@ -51,7 +51,7 @@ public class AttendanceController {
         } while (true);
     }
 
-    private boolean choiceFunction(String functionValue) {
+    private boolean choiceFunction(final String functionValue) {
         if (functionValue.equals("1")) {
             attendanceCheckFunction();
         }
@@ -71,7 +71,7 @@ public class AttendanceController {
         return functionValue.equals("Q");
     }
 
-    private String functionInput(LocalDateTime today) {
+    private String functionInput(final LocalDateTime today) {
         return inputView.inputFunction(today.getMonthValue(), today.getDayOfMonth(),
                 today.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.KOREAN));
     }
@@ -98,7 +98,7 @@ public class AttendanceController {
         outputView.printAttendance(todayDateTime, attendance.getAttendanceStatus());
     }
 
-    private Time createTime(LocalDate date, String attendanceTime) {
+    private Time createTime(final LocalDate date, final String attendanceTime) {
         String[] split = attendanceTime.split(":");
         return new Time(date, split[0], split[1], false);
     }
@@ -112,7 +112,7 @@ public class AttendanceController {
         modifyAttendance(modifyDay, modifyTime, crewName);
     }
 
-    private void modifyAttendance(int modifyDay, String modifyTime, String crewName) {
+    private void modifyAttendance(int modifyDay, final String modifyTime, final String crewName) {
         int year = LocalDate.now().getYear();
         int month = LocalDate.now().getMonthValue();
         Time modifyDateTime = createTime(LocalDate.of(year, month, modifyDay), modifyTime);

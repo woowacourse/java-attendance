@@ -5,14 +5,16 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class FileReader {
+public final class FileReader {
+    private FileReader() {
+    }
 
-    public static List<String> parseToFile(String filePath) {
+    public static List<String> parseToFile(final String filePath) {
         try (BufferedReader reader = new BufferedReader(new java.io.FileReader(filePath))) {
 
             List<String> readingFileResult = new ArrayList<>();
             String line;
-            while((line = reader.readLine()) != null) {
+            while ((line = reader.readLine()) != null) {
                 readingFileResult.add(line);
             }
 

@@ -1,8 +1,10 @@
 package attendance.utils;
 
-public class Parser {
+public final class Parser {
+    private Parser() {
+    }
 
-    public static int parseInt(String input) {
+    public static int parseInt(final String input) {
         try {
             return Integer.parseInt(input);
         } catch (NumberFormatException e) {
