@@ -62,19 +62,15 @@ public class AttendanceController {
 
     private void executeCommand(final MenuCommand command) {
         if (command.equals(MenuCommand.ATTEND)) {
-            // 출석 확인 기능 구현
             checkCrewAttendance();
         }
         if (command.equals(MenuCommand.MODIFY)) {
-            // 출석 수정 기능 구현
             modifyCrewAttendance();
         }
         if (command.equals(MenuCommand.LOOKUP)) {
-            // 출석 기록 조회 기능 구현
             lookupCrewAttendanceHistory();
         }
         if (command.equals(MenuCommand.EXPEL)) {
-            // 제적 위험자 조회 기능 구현
             lookupCrewsExpelStatus();
         }
     }
