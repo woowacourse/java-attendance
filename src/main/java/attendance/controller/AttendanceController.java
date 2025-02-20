@@ -137,7 +137,7 @@ public class AttendanceController {
         CrewStatistic crewStatistic = new CrewStatistic(crew, crewAttendances);
 
         crewStatistic.resetCrewStatus();
-        crewStatistic.initCrewStatus();
+        crewStatistic.initCrewsStatus();
         crewStatistic.calculatePenalty();
 
         outputView.printCrewAttendanceHistory(crew.getName(), crewStatistic.getCrewAttendanceHistory());
@@ -153,7 +153,7 @@ public class AttendanceController {
             CrewStatistic crewStatistic = new CrewStatistic(crew, crewAttendances);
 
             crewStatistic.resetCrewStatus();
-            crewStatistic.initCrewStatus();
+            crewStatistic.initCrewsStatus();
             crewStatistic.calculatePenalty();
 
             crewStatistics.add(crewStatistic);
