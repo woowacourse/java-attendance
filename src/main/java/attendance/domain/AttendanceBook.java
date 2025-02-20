@@ -1,6 +1,9 @@
 package attendance.domain;
 
+import attendance.dto.CrewNameAndAcademicStatusDTO;
 import attendance.repository.AttendanceRepository;
+import java.util.Comparator;
+import java.util.List;
 import java.util.Set;
 
 public class AttendanceBook {
@@ -21,5 +24,16 @@ public class AttendanceBook {
         for (String name : names) {
             attendanceRepository.initAbsent(name);
         }
+    }
+
+    public List<CrewNameAndAcademicStatusDTO> getCrewAtRiskOfExpulsion(AttendanceRepository attendanceRepository,
+                                                                       String academicStatus) {
+
+        return names.stream()
+                .map(attendanceRepository::getAcademicStatusByName)
+                .filter(dto -> dto.academicStatus().equals(academicStatus))
+                .sorted(Comparator.comparing(CrewNameAndAcademicStatusDTO::crewName))
+                .toList();
+
     }
 }

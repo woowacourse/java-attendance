@@ -7,7 +7,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import attendance.domain.Attendance;
 import attendance.domain.Time;
-import attendance.dto.AttendanceCountAndAcademicStatusDTO;
+import attendance.dto.CrewNameAndAcademicStatusDTO;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -107,13 +107,13 @@ class AttendanceRepositoryTest {
     @DisplayName("해당 닉네임을 가진 크루의 출석 상태를 가져온다.")
     @ParameterizedTest
     @MethodSource("name")
-    void 해당_닉네임을_가진_크루의_출석_상태를_가져온다(List<Attendance> attendances, AttendanceCountAndAcademicStatusDTO expectedResult) {
+    void 해당_닉네임을_가진_크루의_출석_상태를_가져온다(List<Attendance> attendances, CrewNameAndAcademicStatusDTO expectedResult) {
 
         // given
         AttendanceRepository attendanceRepository = new AttendanceRepository(attendances);
 
         // when
-        AttendanceCountAndAcademicStatusDTO result = attendanceRepository.getAcademicStatusByName("체체");
+        CrewNameAndAcademicStatusDTO result = attendanceRepository.getAcademicStatusByName("체체");
 
         // then
         assertAll(() -> {
@@ -125,36 +125,36 @@ class AttendanceRepositoryTest {
     }
 
     private static Stream<Arguments> name() {
+        String crewName = "체체";
         return Stream.of(
                 Arguments.of(
-                        List.of(makeAbsentAttendance(2025, 2, 20)),
-                        new AttendanceCountAndAcademicStatusDTO(0, 0, 1, "X")
+                        List.of(makeAbsentAttendance(crewName, 2025, 2, 20)),
+                        new CrewNameAndAcademicStatusDTO(crewName, 0, 0, 1, "X")
                 ),
                 Arguments.of(
-                        List.of(makeAbsentAttendance(2025, 2, 10),
-                                makeAbsentAttendance(2025, 2, 11)),
-                        new AttendanceCountAndAcademicStatusDTO(0, 0, 2, "경고")
+                        List.of(makeAbsentAttendance(crewName, 2025, 2, 10),
+                                makeAbsentAttendance(crewName, 2025, 2, 11)),
+                        new CrewNameAndAcademicStatusDTO(crewName, 0, 0, 2, "경고")
                 ),
                 Arguments.of(
-                        List.of(makeAbsentAttendance(2025, 2, 10),
-                                makeAbsentAttendance(2025, 2, 11),
-                                makeAbsentAttendance(2025, 2, 12)),
-                        new AttendanceCountAndAcademicStatusDTO(0, 0, 3, "면담")
+                        List.of(makeAbsentAttendance(crewName, 2025, 2, 10),
+                                makeAbsentAttendance(crewName, 2025, 2, 11),
+                                makeAbsentAttendance(crewName, 2025, 2, 12)),
+                        new CrewNameAndAcademicStatusDTO(crewName, 0, 0, 3, "면담")
                 ),
                 Arguments.of(
-                        List.of(makeAbsentAttendance(2025, 2, 10),
-                                makeAbsentAttendance(2025, 2, 11),
-                                makeAbsentAttendance(2025, 2, 12),
-                                makeAbsentAttendance(2025, 2, 13),
-                                makeAbsentAttendance(2025, 2, 14),
-                                makeAbsentAttendance(2025, 2, 17)),
-                        new AttendanceCountAndAcademicStatusDTO(0, 0, 6, "제적")
+                        List.of(makeAbsentAttendance(crewName, 2025, 2, 10),
+                                makeAbsentAttendance(crewName, 2025, 2, 11),
+                                makeAbsentAttendance(crewName, 2025, 2, 12),
+                                makeAbsentAttendance(crewName, 2025, 2, 13),
+                                makeAbsentAttendance(crewName, 2025, 2, 14),
+                                makeAbsentAttendance(crewName, 2025, 2, 17)),
+                        new CrewNameAndAcademicStatusDTO(crewName, 0, 0, 6, "제적")
                 )
         );
     }
 
-    private static Attendance makeAbsentAttendance(int year, int month, int day) {
-        return new Attendance("체체", new Time(LocalDate.of(year, month, day), "18", "00", true));
+    private static Attendance makeAbsentAttendance(String name, int year, int month, int day) {
+        return new Attendance(name, new Time(LocalDate.of(year, month, day), "18", "00", true));
     }
-
 }

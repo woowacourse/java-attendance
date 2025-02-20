@@ -2,12 +2,12 @@ package attendance.view;
 
 import attendance.domain.Attendance;
 import attendance.domain.Time;
-import attendance.dto.AttendanceCountAndAcademicStatusDTO;
+import attendance.dto.CrewNameAndAcademicStatusDTO;
 import java.util.List;
 
 public class OutputView {
 
-    public void printAcademicStatusResult(AttendanceCountAndAcademicStatusDTO attendanceCountAndAcademicStatusDTO) {
+    public void printAcademicStatusResult(CrewNameAndAcademicStatusDTO attendanceCountAndAcademicStatusDTO) {
 
         System.out.println("출석: " + attendanceCountAndAcademicStatusDTO.attend() + "회");
         System.out.println("지각: " + attendanceCountAndAcademicStatusDTO.late() + "회");
@@ -38,10 +38,6 @@ public class OutputView {
 
         System.out.println("이번 달 " + name + "의 출석 기록입니다.");
         for (Attendance attendance : attendances) {
-            if (attendance.getAttendanceTime() == null) {
-                printAbsentAttendance();
-                continue;
-            }
             String attendanceStatus = attendance.getAttendanceStatus();
             printAttendance(attendance.getAttendanceTime(), attendanceStatus);
         }
@@ -55,9 +51,19 @@ public class OutputView {
                         attendanceStatus));
     }
 
-    private void printAbsentAttendance() {
+    public void printCrewsAtRiskOfExpulsionStartMessage() {
+        System.out.println("제적 위험자 조회 결과");
+    }
 
-        System.out.println("결석");
+    public void printCrewsAtRiskOfExpulsion(List<CrewNameAndAcademicStatusDTO> crewNameAndAcademicStatusDTOList) {
+
+        for (CrewNameAndAcademicStatusDTO crewNameAndAcademicStatusDTO : crewNameAndAcademicStatusDTOList) {
+            System.out.print("- " + crewNameAndAcademicStatusDTO.crewName() + ": ");
+            System.out.print("결석: " + crewNameAndAcademicStatusDTO.absent() + "회, ");
+            System.out.print("지각: " + crewNameAndAcademicStatusDTO.late() + "회 ");
+            System.out.println("(" + crewNameAndAcademicStatusDTO.academicStatus() + ")");
+
+        }
     }
 
 

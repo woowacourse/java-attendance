@@ -47,8 +47,11 @@ public class AttendanceController {
         if (functionValue == 3) {
             attendanceHistoryByName();
         }
-    }
 
+        if (functionValue == 4) {
+            crewAtRiskOfExpulsion();
+        }
+    }
 
     private void initAttendanceSystem() {
         AttendanceContentDTO attendanceRecordContent = AttendanceReader.getAttendanceRecordContent(
@@ -108,6 +111,15 @@ public class AttendanceController {
         outputView.printNameAndAttendances(crewName, attendances);
 
         outputView.printAcademicStatusResult(attendanceRepository.getAcademicStatusByName(crewName));
+    }
+
+    private void crewAtRiskOfExpulsion() {
+
+        outputView.printCrewsAtRiskOfExpulsionStartMessage();
+
+        outputView.printCrewsAtRiskOfExpulsion(attendanceBook.getCrewAtRiskOfExpulsion(attendanceRepository, "제적"));
+        outputView.printCrewsAtRiskOfExpulsion(attendanceBook.getCrewAtRiskOfExpulsion(attendanceRepository, "면담"));
+        outputView.printCrewsAtRiskOfExpulsion(attendanceBook.getCrewAtRiskOfExpulsion(attendanceRepository, "경고"));
     }
 
 }
