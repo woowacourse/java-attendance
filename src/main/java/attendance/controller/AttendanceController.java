@@ -10,8 +10,12 @@ import attendance.view.OutputView;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 
 public class AttendanceController {
+    public static final LocalTime START_TIME = LocalTime.of(8, 0);
+    public static final LocalTime END_TIME = LocalTime.of(23, 0);
+
     private final CrewsService crewsService;
     private final InputView inputView;
     private final OutputView outputView;
@@ -49,6 +53,7 @@ public class AttendanceController {
         crew.existInAttendances(now);
 
         LocalDateTime attendDateTime = TimeFormatter.format(now, inputView.inputAttendTime());
+        validateOperatingHours(attendDateTime);
         Attendance attendance = new Attendance(attendDateTime);
 
         crew.addAttendance(attendance);
@@ -60,14 +65,15 @@ public class AttendanceController {
 
         LocalDate updateDate = LocalDate.of(now.getYear(), now.getMonthValue(), inputView.inputUpdateDate());
         String inputUpdateTime = inputView.inputUpdateTime();
+        LocalDateTime updateTime = TimeFormatter.format(updateDate, inputUpdateTime);
+        validateOperatingHours(updateTime);
 
         Attendance before = crew.findAttendanceByDate(updateDate);
-
         // TODO : dto로 추출
         AttendanceStatus beforeStatus = before.getStatus();
         LocalDateTime beforeTime = before.getDateTime();
 
-        Attendance after = crew.updateAttendance(TimeFormatter.format(updateDate, inputUpdateTime));
+        Attendance after = crew.updateAttendance(updateTime);
         outputView.printUpdateAttendance(beforeTime, beforeStatus, after);
     }
 
@@ -83,5 +89,12 @@ public class AttendanceController {
 
     private void printWarningCrews(final Crews crews) {
         outputView.printWarningCrews(crews.collectWarningCrews());
+    }
+
+    private void validateOperatingHours(LocalDateTime attendDateTime) {
+        LocalTime attendTime = attendDateTime.toLocalTime();
+        if (attendTime.isAfter(END_TIME) || attendTime.isBefore(START_TIME)) {
+            throw new IllegalArgumentException("[ERROR] 캠퍼스 운영 시간이 아닙니다.");
+        }
     }
 }
