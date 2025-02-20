@@ -52,7 +52,7 @@ public final class CrewGenerator {
         List<Integer> noPresentAttendanceDates = new ArrayList<>(validDates);
         noPresentAttendanceDates.removeAll(alreadyAttendanceDates);
         for (Integer attendanceDate : noPresentAttendanceDates) {
-            LocalDateTime dateTime = LocalDateTime.of(LocalDate.of(2024, Constants.MONTH, attendanceDate),
+            LocalDateTime dateTime = LocalDateTime.of(LocalDate.of(2024, Constants.FIXED_MONTH, attendanceDate),
                     Constants.ABSENCE_TIME);
             Attendance attendance = new Attendance(dateTime);
             attendances.add(attendance);
@@ -85,7 +85,7 @@ public final class CrewGenerator {
     }
 
     public static boolean excludeNotAttendanceDays(int day) {
-        DayOfWeek dayOfWeek = LocalDate.of(2024, Constants.MONTH, day).getDayOfWeek();
+        DayOfWeek dayOfWeek = LocalDate.of(2024, Constants.FIXED_MONTH, day).getDayOfWeek();
         return dayOfWeek == DayOfWeek.SATURDAY || dayOfWeek == DayOfWeek.SUNDAY;
     }
 }

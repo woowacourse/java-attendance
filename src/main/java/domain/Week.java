@@ -48,7 +48,7 @@ public enum Week {
                 .filter(week -> week.name().equals(day.name()))
                 .findFirst()
                 .orElseThrow(() -> new CustomIllegalArgumentException(
-                        String.format("%d월 %d일 %s은 등교일이 아닙니다.", Constants.MONTH,
+                        String.format("%d월 %d일 %s은 등교일이 아닙니다.", Constants.FIXED_MONTH,
                                 localDateTime.getDayOfMonth(), dayOfWeek)));
     }
 
