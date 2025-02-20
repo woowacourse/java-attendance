@@ -23,4 +23,12 @@ public enum Punishment {
                 .findFirst()
                 .orElse(NONE);
     }
+
+    public String getPunishmentName() {
+        return punishmentName;
+    }
+
+    public int getAbsenceCount() {
+        return absenceCount;
+    }
 }
