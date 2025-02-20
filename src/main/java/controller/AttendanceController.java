@@ -38,7 +38,7 @@ public class AttendanceController {
                 modifyAttendance();
             }
             if (menuInput.equals("3")) {
-//                checkCrewAttendanceInfo();
+                checkCrewAttendanceInfo();
             }
             if (menuInput.equals("4")) {
                 checkDangerousCrew();

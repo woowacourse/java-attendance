@@ -32,8 +32,6 @@ public class Crew {
         return name;
     }
 
-
-
     private Attendance getAlreadyExistAttendance(LocalDateTime localDateTime) {
         Optional<Attendance> sameDateAttendance = attendanceInfo.stream().filter(attendance ->
                 attendance.isEqualDate(localDateTime)
@@ -58,6 +56,10 @@ public class Crew {
         str += attendance.getFormattedTimeAndState();
         str += " 수정 완료!";
         return str;
+    }
+
+    public String getAttendanceHistory(LocalDate lastDate) {
+        return printAttendanceInfo(lastDate) + printAttendanceStateInfo(lastDate) + printWarningStatus(lastDate);
     }
 
     public String printAttendanceInfo(LocalDate lastDate) {

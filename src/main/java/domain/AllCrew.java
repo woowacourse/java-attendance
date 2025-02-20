@@ -31,6 +31,11 @@ public class AllCrew {
         return crew.update(dateTime);
     }
 
+    public String printAttendanceHistory(String name, LocalDate lastDate) {
+        Crew crew = findCrewByName(name);
+        return crew.getAttendanceHistory(lastDate);
+    }
+
     private Crew findCrewByName(String name) {
         Crew findCrew = allCrew.stream()
                 .filter(crew -> crew.getName().equals(name))
@@ -46,7 +51,7 @@ public class AllCrew {
         );
         String result = "";
         for(Crew crew : allCrew) {
-            result += crew.printWarningInfo(date) + "\n";
+            result += "- "+crew.printWarningInfo(date) + "\n";
         }
         return result;
     }
