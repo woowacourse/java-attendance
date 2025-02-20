@@ -7,6 +7,7 @@ import attendance.domain.AttendanceDismissStatus;
 import attendance.domain.AttendanceHistory;
 import attendance.domain.AttendanceManager;
 import attendance.domain.AttendanceStatus;
+import attendance.domain.Attendances;
 import attendance.domain.DateTimeFormatterWrapper;
 import attendance.repository.AttendanceFileRepository;
 import java.time.LocalDate;
@@ -37,17 +38,17 @@ public class AttendanceManagerService {
         for (String attendanceLine : attendanceLines) {
             String[] attendanceUnits = attendanceLine.split(",");
             String nickname = attendanceUnits[0];
-            LocalDateTime datetime = DateTimeFormatterWrapper.parsingAttendanceDate(attendanceUnits[1]);
+            LocalDateTime datetime = DateTimeFormatterWrapper.parsingAttendanceDateTime(attendanceUnits[1]);
             addAttendance(nickname, datetime);
         }
     }
 
-    private void addAttendance(String nickname, LocalDateTime datetime) {
+    public void addAttendance(String nickname, LocalDateTime datetime) {
         attendanceManager.addAttendance(nickname, datetime);
     }
 
     public String attendanceResult(String nickname, LocalDate attendanceDate) {
-        var attendances = attendanceManager.findAttendances(nickname);
+        var attendances = findAttendancesByNickname(nickname);
         var attendanceTime = attendances.getAttendanceTime(attendanceDate);
         var attendanceStatus = attendances.getAttendanceStatus(attendanceDate);
 
@@ -56,10 +57,25 @@ public class AttendanceManagerService {
         return String.format(ATTENDANCE_RESULT_FORMAT, dateTimeFormatResult, attendanceStatus.getStatus());
     }
 
+    public Attendances findAttendancesByNickname(String nickname) {
+        return attendanceManager.findAttendances(nickname);
+    }
+
+    public String formattingAttendanceModify(LocalTime afterModifyTime, String beforeAttendance,
+                                             AttendanceStatus afterAttendanceStatus) {
+        String timeFormatResult = DateTimeFormatterWrapper.parsingAttendanceTime(afterModifyTime);
+        return String.format(ATTENDANCE_MODIFY_RESULT_FORMAT, beforeAttendance, timeFormatResult,
+                afterAttendanceStatus.getStatus());
+    }
+
+    public void modify(String nickname, LocalDate modifyDate, LocalTime afterModifyTime) {
+        attendanceManager.modifyAttendance(nickname, modifyDate, afterModifyTime);
+    }
+
     public String attendanceModify(String nickname, LocalDate modifyDate, LocalTime afterModifyTime) {
         String beforeAttendance = attendanceResult(nickname, modifyDate);
         attendanceManager.modifyAttendance(nickname, modifyDate, afterModifyTime);
-        AttendanceStatus attendanceStatus = attendanceManager.findAttendances(nickname).getAttendanceStatus(modifyDate);
+        AttendanceStatus attendanceStatus = findAttendancesByNickname(nickname).getAttendanceStatus(modifyDate);
         String timeFormatResult = DateTimeFormatterWrapper.parsingAttendanceTime(afterModifyTime);
         return String.format(ATTENDANCE_MODIFY_RESULT_FORMAT, beforeAttendance, timeFormatResult,
                 attendanceStatus.getStatus());
@@ -104,5 +120,23 @@ public class AttendanceManagerService {
             return "";
         }
         return String.format(ATTENDANCE_DISMISS_STATUS_FORMAT, attendanceDismissStatus.getStatus());
+    }
+
+    public AttendanceStatus getAttendanceStatus(LocalDate date, String nickname) {
+        return findAttendancesByNickname(nickname)
+                .getAttendanceStatus(date);
+    }
+
+    public void validateNickname(String nickname) {
+        attendanceManager.validateNickname(nickname);
+        attendanceManager.findAttendances(nickname);
+    }
+
+    public void validateTime(LocalTime time) {
+        attendanceManager.validateIsSchoolOpen(time);
+    }
+
+    public void validateDate(LocalDate date) {
+        attendanceManager.validateIsAttendanceAvailable(date);
     }
 }

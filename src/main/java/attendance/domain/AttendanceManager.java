@@ -11,6 +11,22 @@ import java.util.List;
 import java.util.Map;
 
 public class AttendanceManager {
+    private static AttendanceManager instance = null;
+
+    private AttendanceManager() {
+
+    }
+
+    public static AttendanceManager getInstance() {
+        if (instance == null) {
+            instance = new AttendanceManager();
+        }
+        return instance;
+    }
+
+    public static void initiateInstance() {
+        instance = null;
+    }
 
     private HashMap<String, Attendances> attendanceManager = new HashMap<>();
     private String ATTENDANCE_RESULT_FORMAT = "%s (%s)";
@@ -39,7 +55,7 @@ public class AttendanceManager {
         throw new AttendanceArgumentException(AttendanceManagerHelper.ATTENDANCE_NOT_AVAILABLE);
     }
 
-    private void validateIsSchoolOpen(LocalTime currentTime) {
+    public void validateIsSchoolOpen(LocalTime currentTime) {
         if (currentTime.isBefore(AttendanceManagerHelper.SCHOOL_OPEN_TIME) || currentTime.isAfter(
                 AttendanceManagerHelper.SCHOOL_CLOSE_TIME)) {
             throw new AttendanceArgumentException(AttendanceManagerHelper.OUT_OF_SCHOOL_SCHEDULE);
@@ -54,7 +70,7 @@ public class AttendanceManager {
         return attendances;
     }
 
-    private void validateNickname(String nickname) {
+    public void validateNickname(String nickname) {
         if (StringUtility.isEmpty(nickname)) {
             throw new AttendanceArgumentException(AttendanceManagerHelper.CANNOT_BE_EMPTY_NICKNAME);
         }
@@ -84,7 +100,7 @@ public class AttendanceManager {
     }
 
     public AttendanceHistory crewAttendanceHistory(String nickname) {
-        validateNickname(nickname);
+        validateCrewNameExist(nickname);
         LocalDate startDate = AttendanceManagerHelper.ATTENDANCE_AVAILABLE_START_DATE;
         LocalDate endDate = AttendanceManagerHelper.ATTENDANCE_AVAILABLE_END_DATE;
         List<String> attendanceHistories = new ArrayList<>();
@@ -94,6 +110,11 @@ public class AttendanceManager {
             appendAttendanceHistories(attendances, currentDate, attendanceHistories, attendanceStatusMap);
         }
         return new AttendanceHistory(attendanceHistories, attendanceStatusMap);
+    }
+
+    private void validateCrewNameExist(String nickname) {
+        validateNickname(nickname);
+        validateAttendanceExist(nickname);
     }
 
     private boolean isAttendanceAvailable(LocalDate currentDate) {
@@ -146,5 +167,9 @@ public class AttendanceManager {
                 LocalDateTime.of(currentDate, attendanceTime));
         attendanceHistories.add(
                 String.format(ATTENDANCE_RESULT_FORMAT, dateTimeFormatResult, attendanceStatus.getStatus()));
+    }
+
+    public List<String> currentAttendancesNicknames() {
+        return attendanceManager.keySet().stream().toList();
     }
 }
