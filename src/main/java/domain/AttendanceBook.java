@@ -88,4 +88,38 @@ public class AttendanceBook {
         }
         return result;
     }
+
+    public int getLateCountAt(LocalDate limitDate) {
+        int lateCount = 0;
+        for (int date = 1; date < limitDate.getDayOfMonth(); date++) {
+            if (DateConstants.MONTH.isHoliday(date)) {
+                continue;
+            }
+            if (attendances.containsKey(date)) {
+                Attendance attendance = attendances.get(date);
+                if (attendance.getStatus().equals("지각")) {
+                    lateCount++;
+                }
+            }
+        }
+        return lateCount;
+    }
+
+    public int getAbsenceCountAt(LocalDate limitDate) {
+        int absenceCount = 0;
+        for (int date = 1; date < limitDate.getDayOfMonth(); date++) {
+            if (DateConstants.MONTH.isHoliday(date)) {
+                continue;
+            }
+            if (attendances.containsKey(date)) {
+                Attendance attendance = attendances.get(date);
+                if (attendance.getStatus().equals("결석")) {
+                    absenceCount++;
+                }
+            } else {
+                absenceCount++;
+            }
+        }
+        return absenceCount;
+    }
 }

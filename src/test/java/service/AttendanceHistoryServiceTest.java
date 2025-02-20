@@ -25,12 +25,12 @@ class AttendanceHistoryServiceTest {
     int month = DateConstants.MONTH.getValue();
     String name = "빙티";
     Crew crew = new Crew(name);
-    List<AttendanceHistoryResponse> attendanceHistoryResponses = List.of(
+    List<AttendanceHistoryResponse> attendanceHistoryResponses = new ArrayList<>(Arrays.asList(
             new AttendanceHistoryResponse(LocalDate.of(year, month, 2), Optional.of(LocalTime.of(13, 0)), "출석"),
             new AttendanceHistoryResponse(LocalDate.of(year, month, 3), Optional.of(LocalTime.of(10, 7)), "지각"),
             new AttendanceHistoryResponse(LocalDate.of(year, month, 4), Optional.of(LocalTime.of(10, 31)), "결석"),
             new AttendanceHistoryResponse(LocalDate.of(year, month, 5), Optional.empty(), "결석")
-    );
+    ));
     AttendanceRepository attendanceRepository;
     AttendanceHistoryService attendanceHistoryService;
 
@@ -95,5 +95,38 @@ class AttendanceHistoryServiceTest {
 
         // then
         assertThat(crewStatus).isSameAs(CrewStatus.WARNING);
+    }
+
+    @DisplayName("출석 상태 중 지각 횟수 3회당 결석 1회로 치환해서 대상자 여부를 판단한다.")
+    @Test
+    void test5() {
+        //given
+        attendanceRepository.createNewAttendance(name, 5, 10, 6);
+        attendanceRepository.createNewAttendance(name, 6, 10, 6);
+        attendanceRepository.createNewAttendance(name, 9, 13, 6);
+        attendanceRepository.createNewAttendance(name, 10, 10, 6);
+        attendanceRepository.createNewAttendance(name, 11, 10, 6);
+        attendanceRepository.createNewAttendance(name, 12, 10, 6);
+
+        LocalDate date = LocalDate.of(year, month, 13);
+
+        //when
+        CrewStatus crewStatus = attendanceHistoryService.getCrewStatus(name, date);
+
+        //then
+        assertThat(crewStatus).isSameAs(CrewStatus.CONSULTANT);
+    }
+
+    @DisplayName("출석 상태 중 결석 횟수가 5회 초과 시 제적 대상자로 판단한다.")
+    @Test
+    void test6() {
+        //given
+        LocalDate date = LocalDate.of(year, month, 12);
+
+        //when
+        CrewStatus crewStatus = attendanceHistoryService.getCrewStatus(name, date);
+
+        //then
+        assertThat(crewStatus).isSameAs(CrewStatus.DISENROLLMENT);
     }
 }

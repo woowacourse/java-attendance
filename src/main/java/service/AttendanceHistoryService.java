@@ -27,6 +27,9 @@ public class AttendanceHistoryService {
     }
 
     public CrewStatus getCrewStatus(String name, LocalDate date) {
-        return CrewStatus.NORMAL;
+        AttendanceBook attendanceBook = attendanceRepository.findByCrewName(name);
+        int lateCount = attendanceBook.getLateCountAt(date);
+        int absenceCount = attendanceBook.getAbsenceCountAt(date);
+        return CrewStatus.from(lateCount, absenceCount);
     }
 }
