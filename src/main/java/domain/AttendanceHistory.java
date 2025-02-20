@@ -1,9 +1,14 @@
 package domain;
 
+import static domain.AttendTime.ABSENT;
+import static domain.AttendTime.ATTENDED;
+import static domain.AttendTime.LATE;
+
 import java.util.List;
 
 public class AttendanceHistory {
-    private List<AttendTime> attendTimes;
+
+    private final List<AttendTime> attendTimes;
     private AttendanceStatus attendanceStatus;
 
     public AttendanceHistory(List<AttendTime> attendTimes) {
@@ -14,24 +19,20 @@ public class AttendanceHistory {
         attendTimes.add(attendTime);
     }
 
-    public List<AttendTime> getAttendTimes() {
-        return attendTimes;
-    }
-
     public int calculateOnTime() {
         int total = 0;
         for (AttendTime attendTime : attendTimes) {
-            if (attendTime.checkTime().equals("출석")) {
+            if (attendTime.checkTime().equals(ATTENDED)) {
                 total += 1;
             }
         }
         return total;
     }
 
-    public int calculateLate(){
+    public int calculateLate() {
         int total = 0;
         for (AttendTime attendTime : attendTimes) {
-            if (attendTime.checkTime().equals("지각")) {
+            if (attendTime.checkTime().equals(LATE)) {
                 total += 1;
             }
         }
@@ -40,10 +41,8 @@ public class AttendanceHistory {
 
     public int calculateAbsent() {
         int total = 0;
-
         for (AttendTime attendTime : attendTimes) {
-
-            if (attendTime.checkTime().equals("결석")) {
+            if (attendTime.checkTime().equals(ABSENT)) {
                 total += 1;
             }
         }
@@ -53,7 +52,12 @@ public class AttendanceHistory {
     }
 
     public AttendanceStatus getAttendanceStatus() {
-        attendanceStatus = new AttendanceStatus(calculateOnTime(),calculateLate(),calculateAbsent());
+        attendanceStatus = new AttendanceStatus(
+                calculateOnTime(), calculateLate(), calculateAbsent());
         return attendanceStatus;
+    }
+
+    public List<AttendTime> getAttendTimes() {
+        return attendTimes;
     }
 }

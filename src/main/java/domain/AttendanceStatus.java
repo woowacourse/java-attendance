@@ -1,6 +1,17 @@
 package domain;
 
+import static domain.AttendTime.LATE_TO_ABSENT_COUNT;
+
 public class AttendanceStatus {
+
+    public static final String DISMISSAL = "제적";
+    public static final String INTERVIEW = "면담";
+    public static final String WARNING = "경고";
+    public static final String GOOD = "모범";
+    public static final int DISMISSAL_COUNT = 5;
+    public static final int INTERVIEW_COUNT = 3;
+    public static final int WARNING_COUNT = 2;
+
     int onTime;
     int late;
     int absent;
@@ -14,21 +25,21 @@ public class AttendanceStatus {
 
     public void calculateStatus() {
         int total = absent;
-        total += late / 3;
+        total += late / LATE_TO_ABSENT_COUNT;
 
-        if (total > 5) {
-            status = "제적";
+        if (total > DISMISSAL_COUNT) {
+            status = DISMISSAL;
             return;
         }
-        if (total >= 3) {
-            status = "면담";
+        if (total >= INTERVIEW_COUNT) {
+            status = INTERVIEW;
             return;
         }
-        if (total >= 2) {
-            status = "경고";
+        if (total >= WARNING_COUNT) {
+            status = WARNING;
             return;
         }
-        status = "모범";
+        status = GOOD;
     }
 
     public String getStatus() {

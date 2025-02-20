@@ -9,7 +9,7 @@ public class Application {
         final InputView inputView = new InputView(scanner);
         final OutputView outputView = new OutputView();
 
-        final AttendanceController attendanceController = new AttendanceController(inputView,outputView);
+        final AttendanceController attendanceController = new AttendanceController(inputView, outputView);
         attendanceController.run();
 
         scanner.close();

@@ -2,7 +2,6 @@ package domain;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.IntStream;
 
 public class Crew {
 
@@ -20,10 +19,26 @@ public class Crew {
         attendanceHistory.addAttendance(attendTime);
     }
 
-    public String attend(final String inputTime) {
+    public String attend(String inputTime) {
         AttendTime attendTime = new AttendTime(inputTime);
         attendanceHistory.getAttendanceStatus();
         return attendTime.checkTime();
+    }
+
+    public AttendTime findAttendanceByDate(int date) {
+        return attendanceHistory.getAttendTimes().stream()
+                .filter(attendTime -> attendTime.getAttendTime().getDayOfMonth() == date)
+                .findAny()
+                .orElse(null);
+    }
+
+    public void deleteAttendance(int date) {
+        List<AttendTime> attendTimes = attendanceHistory.getAttendTimes();
+        for (int i = 0; i < attendTimes.size(); i++) {
+            if (attendTimes.get(i).getAttendTime().getDayOfMonth() == date) {
+                attendTimes.remove(i);
+            }
+        }
     }
 
     public String getName() {
@@ -36,22 +51,5 @@ public class Crew {
 
     public AttendanceHistory getAttendanceHistory() {
         return attendanceHistory;
-    }
-
-    public AttendTime findAttendanceByDate(final int date) {
-        return attendanceHistory.getAttendTimes().stream()
-                .filter(attendTime -> attendTime.getAttendTime().getDayOfMonth() == date)
-                .findAny()
-                .orElse(null);
-    }
-
-    public void deleteAttendance(final int date) {
-        List<AttendTime> attendTimes = attendanceHistory.getAttendTimes();
-        IntStream.range(0, attendTimes.size() - 1)
-                .forEach(i -> {
-                    if (attendTimes.get(i).getAttendTime().getDayOfMonth() == date) {
-                        attendTimes.remove(i);
-                    }
-                });
     }
 }

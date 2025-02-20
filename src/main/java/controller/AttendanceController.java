@@ -1,5 +1,11 @@
 package controller;
 
+import static domain.AttendanceStatus.DISMISSAL;
+import static domain.AttendanceStatus.INTERVIEW;
+import static domain.AttendanceStatus.WARNING;
+import static domain.December.DEFAULT_MONTH;
+import static domain.December.DEFAULT_YEAR;
+
 import domain.AttendTime;
 import domain.AttendanceFileReader;
 import domain.Crews;
@@ -45,7 +51,7 @@ public class AttendanceController {
                 if (command.equals("2")) {
                     String nickname = inputView.readNickNameForChange();
                     int date = inputView.readDateForChange();
-                    December.checkWeekday(LocalDateTime.of(2024, 12, date, 0, 0));
+                    December.checkWeekday(LocalDateTime.of(DEFAULT_YEAR, DEFAULT_MONTH, date, 0, 0));
 
                     String time = inputView.readTimeForChange();
                     AttendTime attendTime = crews.deleteAttendance(nickname, date);
@@ -72,9 +78,9 @@ public class AttendanceController {
 
                 if (command.equals("4")) {
                     outputView.printDismissalCrews(
-                            crews.getDangerousCrews("제적"),
-                            crews.getDangerousCrews("면담"),
-                            crews.getDangerousCrews("경고")
+                            crews.getDangerousCrews(DISMISSAL),
+                            crews.getDangerousCrews(INTERVIEW),
+                            crews.getDangerousCrews(WARNING)
                     );
                 }
 

@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.List;
 
 public enum December {
+
     MONDAY(List.of(2, 9, 16, 23, 30), "월요일"),
     TUESDAY(List.of(3, 10, 17, 24, 31), "화요일"),
     WEDNESDAY(List.of(4, 11, 18), "수요일"),
@@ -13,8 +14,12 @@ public enum December {
     SATURDAY(List.of(7, 14, 21, 28), "토요일"),
     SUNDAY(List.of(8, 15, 22, 29), "일요일"),
     HOLIDAY(List.of(25), "휴일");
-    private List<Integer> dates;
-    private String dayOfWeek;
+
+    public static final int DEFAULT_YEAR = 2024;
+    public static final int DEFAULT_MONTH = 12;
+    
+    private final List<Integer> dates;
+    private final String dayOfWeek;
 
     December(List<Integer> dates, String dayOfWeek) {
         this.dates = dates;
@@ -31,7 +36,8 @@ public enum December {
     }
 
     public static List<Integer> getWeekDays() {
-        return Arrays.stream(December.values()).filter(a -> !List.of(SUNDAY, SATURDAY, HOLIDAY).contains(a))
+        return Arrays.stream(December.values())
+                .filter(a -> !List.of(SUNDAY, SATURDAY, HOLIDAY).contains(a))
                 .flatMap(a -> a.dates.stream()).sorted().toList();
     }
 
@@ -45,7 +51,7 @@ public enum December {
     }
 
     public static void checkWeekday(LocalDateTime attendTime) {
-        if (attendTime.getYear() == 2024 && attendTime.getMonthValue() == 12) {
+        if (attendTime.getYear() == DEFAULT_YEAR && attendTime.getMonthValue() == DEFAULT_MONTH) {
             if (December.getWeekDays().contains(attendTime.getDayOfMonth())) {
                 return;
             }

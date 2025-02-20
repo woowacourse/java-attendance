@@ -7,7 +7,7 @@ public class Crews {
 
     private final List<Crew> crews;
 
-    public Crews(final List<String> inputCrews) {
+    public Crews(List<String> inputCrews) {
         crews = new ArrayList<>();
         inputCrews.forEach(inputCrew -> {
             String[] s = inputCrew.split(",");
@@ -15,7 +15,7 @@ public class Crews {
         });
     }
 
-    public Crew findCrew(final String nickname) {
+    public Crew findCrew(String nickname) {
         return crews.stream()
                 .filter(c -> c.getName().equals(nickname))
                 .findAny()
@@ -29,7 +29,7 @@ public class Crews {
         }
     }
 
-    public void initializeAttendTime(final String nickname, final String time) {
+    public void initializeAttendTime(String nickname, String time) {
         Crew crew = findCrew(nickname);
 
         if (crew != null) {
@@ -42,11 +42,7 @@ public class Crews {
         crew1.attend(time);
     }
 
-    public List<Crew> getCrews() {
-        return crews;
-    }
-
-    public AttendTime deleteAttendance(final String nickname, final int date) {
+    public AttendTime deleteAttendance(String nickname, int date) {
         Crew crew = findCrew(nickname);
         AttendTime attendTime = crew.findAttendanceByDate(date);
         crew.deleteAttendance(date);
@@ -62,5 +58,9 @@ public class Crews {
             }
         });
         return dismissalCrews;
+    }
+
+    public List<Crew> getCrews() {
+        return crews;
     }
 }

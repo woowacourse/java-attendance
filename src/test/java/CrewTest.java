@@ -1,3 +1,6 @@
+import static domain.AttendTime.ABSENT;
+import static domain.AttendTime.ATTENDED;
+import static domain.AttendTime.LATE;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import domain.AttendTime;
@@ -28,28 +31,28 @@ public class CrewTest {
     void test4() {
         Crew crew = new Crew("폰트", "2024-12-13 10:08");
         var i = crew.attend("2024-12-13 10:06");
-        assertThat(i).isEqualTo("지각");
+        assertThat(i).isEqualTo(LATE);
     }
 
     @Test
     void test5() {
         Crew crew = new Crew("폰트", "2024-12-13 10:08");
         var i = crew.attend("2024-12-13 10:31");
-        assertThat(i).isEqualTo("결석");
+        assertThat(i).isEqualTo(ABSENT);
     }
 
     @Test
     void test6() {
         Crew crew = new Crew("폰트", "2024-12-13 10:08");
         var i = crew.attend("2024-12-13 09:59");
-        assertThat(i).isEqualTo("출석");
+        assertThat(i).isEqualTo(ATTENDED);
     }
 
     @Test
     void test7() {
         Crew crew = new Crew("폰트", "2024-12-13 10:08");
         var i = crew.attend("2024-12-16 12:59");
-        assertThat(i).isEqualTo("출석");
+        assertThat(i).isEqualTo(ATTENDED);
     }
 
     @Test

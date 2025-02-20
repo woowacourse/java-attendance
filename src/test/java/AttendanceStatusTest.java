@@ -1,12 +1,12 @@
+import static domain.AttendanceStatus.DISMISSAL;
+import static org.assertj.core.api.Assertions.assertThat;
+
 import domain.AttendTime;
 import domain.AttendanceHistory;
 import domain.AttendanceStatus;
-import org.junit.jupiter.api.Test;
-
 import java.util.ArrayList;
 import java.util.List;
-
-import static org.assertj.core.api.Assertions.assertThat;
+import org.junit.jupiter.api.Test;
 
 public class AttendanceStatusTest {
 
@@ -16,8 +16,9 @@ public class AttendanceStatusTest {
         attendTimes.add(new AttendTime("2024-12-13 09:59"));
         AttendanceHistory attendanceHistory = new AttendanceHistory(attendTimes);
 
-        AttendanceStatus attendanceStatus = new AttendanceStatus(attendanceHistory.calculateOnTime(), attendanceHistory.calculateLate(), attendanceHistory.calculateAbsent());
-        assertThat(attendanceStatus.getStatus()).isEqualTo("제적");
+        AttendanceStatus attendanceStatus = new AttendanceStatus(attendanceHistory.calculateOnTime(),
+                attendanceHistory.calculateLate(), attendanceHistory.calculateAbsent());
+        assertThat(attendanceStatus.getStatus()).isEqualTo(DISMISSAL);
     }
 
     @Test
@@ -26,8 +27,9 @@ public class AttendanceStatusTest {
         attendTimes.add(new AttendTime("2024-12-13 09:59"));
         AttendanceHistory attendanceHistory = new AttendanceHistory(attendTimes);
 
-        AttendanceStatus attendanceStatus = new AttendanceStatus(attendanceHistory.calculateOnTime(), attendanceHistory.calculateLate(), attendanceHistory.calculateAbsent());
-        assertThat(attendanceStatus.getStatus()).isEqualTo("제적");
+        AttendanceStatus attendanceStatus = new AttendanceStatus(attendanceHistory.calculateOnTime(),
+                attendanceHistory.calculateLate(), attendanceHistory.calculateAbsent());
+        assertThat(attendanceStatus.getStatus()).isEqualTo(DISMISSAL);
     }
 
     @Test
@@ -37,7 +39,8 @@ public class AttendanceStatusTest {
 
         AttendanceHistory attendanceHistory = new AttendanceHistory(attendTimes);
 
-        AttendanceStatus attendanceStatus = new AttendanceStatus(attendanceHistory.calculateOnTime(), attendanceHistory.calculateLate(), attendanceHistory.calculateAbsent());
-        assertThat(attendanceStatus.getStatus()).isEqualTo("제적");
+        AttendanceStatus attendanceStatus = new AttendanceStatus(attendanceHistory.calculateOnTime(),
+                attendanceHistory.calculateLate(), attendanceHistory.calculateAbsent());
+        assertThat(attendanceStatus.getStatus()).isEqualTo(DISMISSAL);
     }
 }

@@ -1,5 +1,7 @@
 package view;
 
+import static domain.AttendTime.LATE_TO_ABSENT_COUNT;
+
 import domain.AttendTime;
 import domain.AttendanceHistory;
 import domain.AttendanceStatus;
@@ -68,11 +70,14 @@ public class OutputView {
 
     private void printDismissalCrewsByType(List<Crew> dangerousCrews) {
         Comparator<Crew> comparator = (c1, c2) -> {
-            int i = (c2.getAttendanceHistory().calculateLate() / 3 + c2.getAttendanceHistory().calculateAbsent())
-                    - (c1.getAttendanceHistory().calculateLate() / 3 + c1.getAttendanceHistory().calculateAbsent());
+            int i = (c2.getAttendanceHistory().calculateLate() / LATE_TO_ABSENT_COUNT + c2.getAttendanceHistory()
+                    .calculateAbsent())
+                    - (c1.getAttendanceHistory().calculateLate() / LATE_TO_ABSENT_COUNT + c1.getAttendanceHistory()
+                    .calculateAbsent());
             if (i == 0) {
-                int j = (c2.getAttendanceHistory().calculateLate() % 3) - (c1.getAttendanceHistory().calculateLate()
-                        % 3);
+                int j = (c2.getAttendanceHistory().calculateLate() % LATE_TO_ABSENT_COUNT) - (
+                        c1.getAttendanceHistory().calculateLate()
+                                % LATE_TO_ABSENT_COUNT);
                 if (j == 0) {
                     return c1.getName().compareTo(c2.getName());
                 }
