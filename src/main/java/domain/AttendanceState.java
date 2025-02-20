@@ -36,4 +36,8 @@ public enum AttendanceState {
 
         return null;
     }
+
+    public String getDescription() {
+        return description;
+    }
 }
