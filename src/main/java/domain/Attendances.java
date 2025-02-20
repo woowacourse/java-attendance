@@ -25,5 +25,37 @@ public class Attendances {
         return new AttendanceDto((int) attendanceCount, (int) tardinessCount, (int) absence);
     }
 
+    public boolean isAttended(final LocalDateTime dateTime) {
+        return attendances.stream()
+                .anyMatch(attendance -> attendance.localDateTime.equals(dateTime));
+    }
 
+    public void add(Attendance attendance) {
+        attendances.add(attendance);
+    }
+
+    public Attendance findAttendance(final LocalDateTime dateTime) {
+        return attendances.stream()
+                .filter(attendance -> attendance.localDateTime.toLocalDate().equals(dateTime.toLocalDate()))
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException("수정하는 일자를 찾을 수 없습니다."));
+    }
+
+    public List<Integer> getDates() {
+        return attendances.stream()
+                .map(Attendance::getDate)
+                .toList();
+    }
+
+    public List<Attendance> getAttendances() {
+        return attendances;
+    }
+
+    public void remove(final Attendance oldAttendance) {
+        attendances.remove(oldAttendance);
+    }
+
+    public void sort() {
+        attendances.sort((a, b) -> a.getDate() - b.getDate());
+    }
 }
