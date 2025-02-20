@@ -19,6 +19,7 @@ public enum AttendanceType {
     public static AttendanceType of(final LocalDateTime localDateTime) {
         DayOfWeek dayOfWeek = localDateTime.getDayOfWeek();
         LocalTime localTime = localDateTime.toLocalTime();
+
         if (isMonday(dayOfWeek)) {
             return calculateAttendanceType(localTime, 13, 0);
         }
@@ -53,9 +54,4 @@ public enum AttendanceType {
     public String toString() {
         return type;
     }
-    // 해당 요일의 시작 시각으로부터 5분 초과는 지각으로 간주한다.
-    // 해당 요일의 시작 시각으로부터 30분 초과는 결석으로 간주한다.
-    // 시간은 월요일은 13:00~18:00
-    // 화요일~금요일은 10:00~18:00
-
 }
