@@ -8,7 +8,6 @@ import java.util.stream.Stream;
 
 public class AttendanceHistory {
     private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM월 dd일 EEEE은 등교일이 아닙니다.");
-
     private final List<AttendanceDetail> attendanceHistory = new ArrayList<>();
 
     public void addAttendanceDetail(AttendanceDetail attendanceDetail) {

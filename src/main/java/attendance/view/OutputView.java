@@ -53,7 +53,7 @@ public class OutputView {
         CustomStringBuilder stringBuilder = new CustomStringBuilder();
         stringBuilder.appendLine("제적 위험자 조회 결과");
         warningCrewsDTO.warningCrewDetailDTO().stream()
-                .sorted((o1, o2) -> Long.compare(o1.convertLateCount(), o2.convertLateCount()))
+                .sorted((o1, o2) -> Long.compare(o2.convertLateCount(), o1.convertLateCount()))
                 .forEach(warningCrewDetailDTO -> stringBuilder.appendLine(String.format("- %s: 결석 %d회, 지각: %d회 (%s)",
                         warningCrewDetailDTO.crewName(),
                         warningCrewDetailDTO.absenceCount(),

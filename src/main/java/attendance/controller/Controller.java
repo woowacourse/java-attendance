@@ -13,9 +13,10 @@ import attendance.view.OutputView;
 import java.time.LocalDateTime;
 
 public class Controller {
+    public static final String FILE_NAME = "attendances.csv";
     private final InputView inputView;
     private final OutputView outputView;
-    private final static Crews crews = new Crews();
+    private static final Crews crews = new Crews();
 
     public Controller(InputView inputView, OutputView outputView) {
         this.inputView = inputView;
@@ -24,7 +25,7 @@ public class Controller {
 
     public void loadDate() {
         CrewDataLoader crewDataLoader = new CrewDataLoader(crews, CustomLocalDateTime.now());
-        crewDataLoader.load("attendances.csv");
+        crewDataLoader.load(FILE_NAME);
     }
 
     public void run() {
@@ -48,16 +49,13 @@ public class Controller {
     }
 
     private void processDisplayWarningCrew() {
-        process(() -> {
-            outputView.printWarningCrews(WarningCrewsDTO.from(crews));
-        });
+        process(() -> outputView.printWarningCrews(WarningCrewsDTO.from(crews)));
     }
 
     private void processDisplayAttendanceHistory() {
-        process(() -> {
-            Crew crew = crews.findCrew(inputView.inputCrewName());
-            outputView.printAttendanceHistory(AttendanceDTO.from(crew));
-        });
+        process(() -> outputView.printAttendanceHistory(
+                AttendanceDTO.from(crews.findCrew(inputView.inputCrewName())))
+        );
     }
 
     private void processModifyAttendance() {

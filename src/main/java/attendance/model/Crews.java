@@ -19,10 +19,6 @@ public class Crews {
         return crews;
     }
 
-    public Stream<Crew> stream() {
-        return crews.stream();
-    }
-
     public Crew findCrew(String name) {
         return crews.stream()
                 .filter(crew -> crew.getName().equals(name))

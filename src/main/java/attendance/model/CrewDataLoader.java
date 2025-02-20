@@ -10,12 +10,16 @@ import java.util.Objects;
 
 public class CrewDataLoader {
     public static final LocalTime ABSENCE_TIME = LocalTime.of(17, 0);
+    public static final String ROW_DELIMITER = ",";
+    public static final DateTimeFormatter CSV_DATE_TIME_FORMATER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+    public static final int CREW_NAME_COLUMN_INDEX = 0;
+    public static final int ATTENDANCE_DATE_TIME_COLUMN_INDEX = 1;
     private final Crews crews;
-    private final LocalDateTime localDateTime;
+    private final LocalDateTime fixedDateTime;
 
     public CrewDataLoader(Crews crews, LocalDateTime localDateTime) {
         this.crews = crews;
-        this.localDateTime = localDateTime;
+        this.fixedDateTime = localDateTime;
     }
 
     public void load(String path) {
@@ -24,8 +28,8 @@ public class CrewDataLoader {
         );
         bufferedReader.lines().skip(1).forEach(row -> {
             String[] parsed = parseRow(row);
-            Crew crew = parseCrew(parsed[0]);
-            LocalDateTime dateTime = parseLocalDateTime(parsed[1]);
+            Crew crew = new Crew(parsed[CREW_NAME_COLUMN_INDEX]);
+            LocalDateTime dateTime = parseLocalDateTime(parsed[ATTENDANCE_DATE_TIME_COLUMN_INDEX]);
             addCrew(crew, dateTime);
         });
         fillAbsencesForNoAttendance();
@@ -41,7 +45,7 @@ public class CrewDataLoader {
 
     private boolean isAttendableDate(LocalDate currentDate) {
         return currentDate.isBefore(LocalDate.of(2025, 1, 1)) &&
-                currentDate.isBefore(CustomLocalDateTime.now().toLocalDate());
+                currentDate.isBefore(fixedDateTime.toLocalDate());
     }
 
     private void addAbsence(LocalDate currentDate) {
@@ -69,14 +73,10 @@ public class CrewDataLoader {
     }
 
     private String[] parseRow(String row) {
-        return row.split(",");
-    }
-
-    private Crew parseCrew(String crewName) {
-        return new Crew(crewName);
+        return row.split(ROW_DELIMITER);
     }
 
     private LocalDateTime parseLocalDateTime(String dateTime) {
-        return LocalDateTime.parse(dateTime, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
+        return LocalDateTime.parse(dateTime, CSV_DATE_TIME_FORMATER);
     }
 }

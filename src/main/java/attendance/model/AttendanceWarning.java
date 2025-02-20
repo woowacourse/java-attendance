@@ -1,12 +1,13 @@
 package attendance.model;
 
 public enum AttendanceWarning {
-    제적(6),
+    제적(5),
     면담(3),
     경고(2),
     해당없음(0),
     ;
 
+    public static final int LATES_PER_ABSENCE = 3;
     private final int absenceCount;
 
     AttendanceWarning(int absenceCount) {
@@ -31,6 +32,6 @@ public enum AttendanceWarning {
     }
 
     public static long calculateAbsenceCount(long absenceCount, long lateCount) {
-        return absenceCount + lateCount / 3;
+        return absenceCount + lateCount / LATES_PER_ABSENCE;
     }
 }

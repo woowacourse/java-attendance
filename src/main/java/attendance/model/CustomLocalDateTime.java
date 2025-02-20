@@ -12,12 +12,13 @@ import java.time.format.DateTimeFormatter;
 import java.util.Set;
 
 public class CustomLocalDateTime {
+    public static final LocalDateTime FIXED_DATE_TIME = LocalDateTime.of(2024, 12, 16, 12, 0);
     private static final Clock clock = Clock.fixed(
-            LocalDateTime.of(2024, 12, 16, 12, 0).toInstant(ZoneOffset.UTC),
+            FIXED_DATE_TIME.toInstant(ZoneOffset.UTC),
             ZoneId.of("UTC")
     );
-
     private static final Set<LocalDate> holidayDate = Set.of(LocalDate.of(2024, 12, 25));
+    private static final DateTimeFormatter MODIFY_ATTENDANCE_TIME_FORMATTER = DateTimeFormatter.ofPattern("HH:mm");
 
     public static LocalDateTime now() {
         return LocalDateTime.now(clock);
@@ -27,12 +28,8 @@ public class CustomLocalDateTime {
         return now().toLocalDate();
     }
 
-    public static LocalTime nowTime() {
-        return now().toLocalTime();
-    }
-
     public static LocalTime parseTime(String time) {
-        return LocalTime.parse(time, DateTimeFormatter.ofPattern("HH:mm"));
+        return LocalTime.parse(time, MODIFY_ATTENDANCE_TIME_FORMATTER);
     }
 
     public static LocalDate parseDate(String day) {

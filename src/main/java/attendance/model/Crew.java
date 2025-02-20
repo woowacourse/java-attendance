@@ -35,10 +35,6 @@ public class Crew {
         return attendanceHistory.findAttendanceDetail(localDate);
     }
 
-    public Stream<AttendanceDetail> attendanceHistoryStream() {
-        return attendanceHistory.stream();
-    }
-
     public void attend(AttendanceDetail attendanceDetail) {
         attendanceHistory.addAttendanceDetail(attendanceDetail);
     }

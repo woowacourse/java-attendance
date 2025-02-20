@@ -1,12 +1,6 @@
 package attendance.controller;
 
-import attendance.model.Crew;
-
 public class Parser {
-
-    public static Crew parseCrew(String name) {
-        return new Crew(name);
-    }
 
     public static int parseInt(String value) {
         try {
