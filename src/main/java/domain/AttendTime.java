@@ -5,10 +5,10 @@ import java.time.format.DateTimeFormatter;
 
 public class AttendTime {
     private final LocalDateTime attendTime;
-    private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+    public static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
 
     public AttendTime(String attendTime) {
-        this.attendTime = LocalDateTime.parse(attendTime, formatter);
+        this.attendTime = LocalDateTime.parse(attendTime, FORMATTER);
     }
 
     public String checkTime() {

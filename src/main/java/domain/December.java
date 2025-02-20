@@ -1,5 +1,6 @@
 package domain;
 
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 
@@ -21,8 +22,8 @@ public enum December {
     }
 
     public static December findDayOfWeek(int dayOfMonth) {
-        for(December day:December.values()){
-            if(day.dates.contains(dayOfMonth)){
+        for (December day : December.values()) {
+            if (day.dates.contains(dayOfMonth)) {
                 return day;
             }
         }
@@ -30,7 +31,8 @@ public enum December {
     }
 
     public static List<Integer> getWeekDays() {
-        return Arrays.stream(December.values()).filter(a -> !List.of(SUNDAY, SATURDAY, HOLIDAY).contains(a)).flatMap(a -> a.dates.stream()).sorted().toList();
+        return Arrays.stream(December.values()).filter(a -> !List.of(SUNDAY, SATURDAY, HOLIDAY).contains(a))
+                .flatMap(a -> a.dates.stream()).sorted().toList();
     }
 
     public static String getDayByDate(int dayOfMonth) {
@@ -40,6 +42,19 @@ public enum December {
             }
         }
         return null;
+    }
+
+    public static void checkWeekday(LocalDateTime attendTime) {
+        if (attendTime.getYear() == 2024 && attendTime.getMonthValue() == 12) {
+            if (December.getWeekDays().contains(attendTime.getDayOfMonth())) {
+                return;
+            }
+        }
+        throw new IllegalArgumentException(String.format(
+                "[ERROR] %02d월 %02d일 %s은 등교일이 아닙니다.",
+                attendTime.getMonthValue(),
+                attendTime.getDayOfMonth(),
+                December.getDayByDate(attendTime.getDayOfMonth())));
     }
 }
 

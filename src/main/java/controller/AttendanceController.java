@@ -3,6 +3,7 @@ package controller;
 import domain.AttendTime;
 import domain.AttendanceFileReader;
 import domain.Crews;
+import domain.December;
 import java.time.LocalDateTime;
 import java.util.List;
 import view.InputView;
@@ -27,6 +28,8 @@ public class AttendanceController {
 
             try {
                 if (command.equals("1")) {
+                    December.checkWeekday(LocalDateTime.now());
+
                     String nickname = inputView.readNickname();
                     String time = inputView.readTime();
 
@@ -41,8 +44,11 @@ public class AttendanceController {
                 if (command.equals("2")) {
                     String nickname = inputView.readNickNameForChange();
                     int date = inputView.readDateForChange();
+                    December.checkWeekday(LocalDateTime.of(2024, 12, date, 0, 0));
+
                     String time = inputView.readTimeForChange();
                     AttendTime attendTime = crews.deleteAttendance(nickname, date);
+
                     outputView.printBeforeChangedCrewAttendance(attendTime);
 
                     int year = attendTime.getAttendTime().getYear();
@@ -61,7 +67,6 @@ public class AttendanceController {
                     System.out.printf("이번 달 %s의 출석 기록입니다.%n", nickname);
                     System.out.println();
                     outputView.printCrewAttendance(crews.findCrew(nickname));
-
                 }
 
                 if (command.equals("4")) {
@@ -76,7 +81,9 @@ public class AttendanceController {
                     break;
                 }
             } catch (Exception e) {
-                throw new IllegalArgumentException();
+                System.out.println();
+                System.out.println(e.getMessage());
+                System.out.println();
             }
         }
 
