@@ -10,6 +10,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
 import java.util.stream.Collectors;
 
 public class OutputView {
@@ -25,14 +26,14 @@ public class OutputView {
         LocalDateTime attendanceDateTime = attendance.getDateTime();
         AttendanceStatus attendanceStatus = attendance.getStatus();
         DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern(
-            DATE_FORMATTER + " " + TIME_FORMATTER);
+            DATE_FORMATTER + " " + TIME_FORMATTER, Locale.KOREAN);
         String attendanceDate = attendanceDateTime.format(dateTimeFormatter);
         System.out.printf("%n%s (%s)%n", attendanceDate, attendanceStatus.getKoreanName());
     }
 
     public static void printModifyingResult(Attendance previousAttendance, Attendance attendance) {
-        DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern(DATE_FORMATTER);
-        DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern(TIME_FORMATTER);
+        DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern(DATE_FORMATTER, Locale.KOREAN);
+        DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern(TIME_FORMATTER, Locale.KOREAN);
 
         String date = attendance.getDateTime().format(dateFormatter);
         String beforeTime = previousAttendance.getDateTime().format(timeFormatter);
@@ -77,8 +78,8 @@ public class OutputView {
     }
 
     private static String getFormattedAttendanceRecord(Attendance attendance) {
-        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern(DATE_FORMATTER + " " + TIME_FORMATTER);
-        DateTimeFormatter absenceFormatter = DateTimeFormatter.ofPattern(ABSENCE_FORMATTER);
+        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern(DATE_FORMATTER + " " + TIME_FORMATTER, Locale.KOREAN);
+        DateTimeFormatter absenceFormatter = DateTimeFormatter.ofPattern(ABSENCE_FORMATTER, Locale.KOREAN);
 
         String dateTime = attendance.getDateTime().format(dateTimeFormatter);
         String status = " (" + attendance.getStatus().getKoreanName() + ")";
