@@ -17,6 +17,10 @@ public class Crew {
         return Objects.equals(this.name, nickname);
     }
 
+    public String getName() {
+        return name;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {

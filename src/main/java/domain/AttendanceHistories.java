@@ -32,4 +32,10 @@ public class AttendanceHistories {
                 .filter(history -> history.isSameCrew(crew))
                 .toList();
     }
+
+    public List<AttendanceHistory> findHistoriesBefore(Crew crew, int day) {
+        return attendanceHistories.stream()
+                .filter(history -> history.isPastHistory(day) && history.isSameCrew(crew))
+                .toList();
+    }
 }

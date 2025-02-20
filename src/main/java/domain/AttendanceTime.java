@@ -39,5 +39,4 @@ public class AttendanceTime {
         }
         return hour >= 8 && hour <= 23;
     }
-
 }
