@@ -23,26 +23,26 @@ public class CrewDismissTest {
     private static Stream<Arguments> attendanceTest() {
         return Stream.of(
                 Arguments.arguments(
-                        "/testCrewDismiss.csv",
-                        "제적 위험자 조회 결과\n"
-                                + "- 몽이: 결석 20회, 지각 0회 (제적)\n"
-                                + "- 투다: 결석 20회, 지각 0회 (제적)\n"
-                                + "- 체체: 결석 20회, 지각 1회 (제적)\n"
-                                + "- 꾹이: 결석 19회, 지각 1회 (제적)"
+                        "/testCrewDismissLate.csv",
+                        "- 몽이: 결석 3회, 지각 3회 (면담)\n\n- 투다: 결석 3회, 지각 0회 (면담)"
+                ),
+                Arguments.arguments(
+                        "/testCrewDismissNickname.csv",
+                        "- 몽이: 결석 3회, 지각 3회 (면담)\n\n- 투다: 결석 3회, 지각 3회 (면담)"
                 )
         );
     }
 
     @ParameterizedTest
     @MethodSource("attendanceTest")
-    @DisplayName("출석 데이터 테스트")
-    void testAttendances(String src, String formattedResult) {
+    @DisplayName("출석 정렬 데이터 테스트")
+    void testAttendances(String src, String orderedResult) {
         AttendanceManager attendanceManager = AttendanceManager.getInstance();
         AttendanceManagerService attendanceManagerService = new AttendanceManagerService(attendanceManager,
                 new AttendanceFileRepository(src));
         CrewDismissService crewDismissService = new CrewDismissService(attendanceManager);
         assertThat(
                 crewDismissService.formattingCrewDismiss()
-        ).contains(formattedResult);
+        ).contains(orderedResult);
     }
 }
