@@ -11,6 +11,7 @@ import attendance.model.Command;
 import attendance.model.Crew;
 import attendance.view.InputView;
 import attendance.view.OutputView;
+import java.time.DateTimeException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -48,6 +49,8 @@ public class AttendanceController {
         try {
             command = Command.from(inputView.inputCommand(now.toLocalDate()));
             logic(command, now);
+        } catch (DateTimeException e) {
+            outputView.printDateTimeErrorMessage();
         } catch (RuntimeException e) {
             outputView.printErrorMessage(e.getMessage());
         }

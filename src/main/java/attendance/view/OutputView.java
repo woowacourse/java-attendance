@@ -12,6 +12,8 @@ import java.util.List;
 
 public class OutputView {
 
+    public static final String ERROR_PREFIX = "[ERROR] ";
+
     public void printCheckAttendance(LocalDateTime dateTime, AttendanceType type) {
         System.out.printf("%s (%s)%n",
                 dateTime.format(DateTimeFormatter.ofPattern("MM월 dd일 E요일 HH:mm")),
@@ -75,7 +77,7 @@ public class OutputView {
     }
 
     public void printErrorMessage(String message) {
-        System.out.println("[ERROR] " + message);
+        System.out.println(ERROR_PREFIX + message);
     }
 
     private String displayAttendanceType(AttendanceType type) {
@@ -96,5 +98,9 @@ public class OutputView {
             return "면담";
         }
         return "제적";
+    }
+
+    public void printDateTimeErrorMessage() {
+        System.out.println(ERROR_PREFIX + "HH:mm (24시간) 형식만 사용할 수 있습니다.");
     }
 }
