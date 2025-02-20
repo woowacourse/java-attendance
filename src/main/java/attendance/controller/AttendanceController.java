@@ -102,9 +102,12 @@ public class AttendanceController {
 
         String crewName = inputView.inputCrewName();
 
+        attendanceBook.checkName(crewName);
         List<Attendance> attendances = attendanceRepository.findAllAttendanceByName(crewName);
 
         outputView.printNameAndAttendances(crewName, attendances);
+
+        outputView.printAcademicStatusResult(attendanceRepository.getAcademicStatusByName(crewName));
     }
 
 }
