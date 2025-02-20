@@ -16,7 +16,7 @@ public class CsvParsingGenerator implements CrewAttendanceRecordsGenerator {
     @Override
     public Map<Crew, AttendanceRecords> generate(DateGenerator dateGenerator) {
         Map<Crew, AttendanceRecords> crewAttendanceRecords = new HashMap<>();
-        List<String> rows = getStrings(FILE_PATH).stream().skip(HEADER_ROW).toList();
+        List<String> rows = getStrings().stream().skip(HEADER_ROW).toList();
         for (String row : rows) {
             Crew crew = new Crew(row.split(",")[CREW_INDEX]);
             AttendanceRecord attendanceRecord = AttendanceRecord.parse(row.split(",")[RECORD_INDEX]);
@@ -32,9 +32,9 @@ public class CsvParsingGenerator implements CrewAttendanceRecordsGenerator {
         return crewAttendanceRecords;
     }
 
-    private List<String> getStrings(String path) {
+    private List<String> getStrings() {
         try {
-            InputStream inputStream = CrewAttendanceRecords.class.getResourceAsStream(path);
+            InputStream inputStream = CrewAttendanceRecords.class.getResourceAsStream(FILE_PATH);
             BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
             return reader.lines().toList();
         } catch (NullPointerException e) {
