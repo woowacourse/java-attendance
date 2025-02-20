@@ -30,7 +30,29 @@ public class AttendanceController {
     }
 
     public void run() {
-        checkExpelledWarning();
+        String date = DEFAULT_YEAR + "-" + DEFAULT_MONTH + "-" + DEFAULT_DAY;
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        LocalDate localDate = LocalDate.parse(date, formatter);
+
+        while (true) {
+            String functionNumber = inputView.printFunction(localDate);
+
+            if (functionNumber.equals("1")) {
+                attend();
+            }
+            if (functionNumber.equals("2")) {
+                edit();
+            }
+            if (functionNumber.equals("3")) {
+                check();
+            }
+            if (functionNumber.equals("4")) {
+                checkExpelledWarning();
+            }
+            if (functionNumber.equalsIgnoreCase("q")) {
+                break;
+            }
+        }
     }
 
     private void attend() {
@@ -84,7 +106,7 @@ public class AttendanceController {
     private void checkExpelledWarning() {
         LocalDate localDate = calculateTodayDate();
 
-        Map<String, StatisticsResult> sortedResult =attendanceManager.sortCrew(localDate);
+        Map<String, StatisticsResult> sortedResult = attendanceManager.sortCrew(localDate);
         outputView.printExpelledWarningResult(sortedResult);
     }
 
