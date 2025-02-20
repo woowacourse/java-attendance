@@ -19,21 +19,28 @@ public class Day {
     }
 
     public Boolean checkHoliday() {
-        if (dayOfWeek.equals(DayOfWeek.SATURDAY) || dayOfWeek.equals(DayOfWeek.SUNDAY)) {
-            return true;
-        }
-        return false;
+        return dayOfWeek.equals(DayOfWeek.SATURDAY) || dayOfWeek.equals(DayOfWeek.SUNDAY);
     }
 
     public boolean isLate(LocalTime attendanceTime) {
-        long betweenMinutes = Duration.between(dayOfWeek.getStandardTime(), attendanceTime).toMinutes();
+        LocalTime standardTime = dayOfWeek.getStandardTime();
+        if (standardTime == null) {
+            return false;
+        }
+        long betweenMinutes = Duration.between(standardTime, attendanceTime).toMinutes();
         return betweenMinutes > 5 && betweenMinutes <= 30;
     }
 
     public boolean isAbsent(LocalTime attendanceTime) {
-        long betweenMinutes = Duration.between(dayOfWeek.getStandardTime(), attendanceTime).toMinutes();
+        LocalTime standardTime = dayOfWeek.getStandardTime();
+        if (standardTime == null) {
+            return false;
+        }
+        long betweenMinutes = Duration.between(standardTime, attendanceTime).toMinutes();
         return betweenMinutes > 30;
     }
 
-
+    public LocalDate getDate() {
+        return date;
+    }
 }
