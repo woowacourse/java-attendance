@@ -11,6 +11,20 @@ import model.StudentRepository;
 import util.LocalDateTimePrintFormatter;
 
 public class OutputView {
+    private static final String COUNT = "회";
+    private static final String ATTENDANCE = "출석: ";
+    private static final String LATE = "지각: ";
+    private static final String ABSENT = "결석: ";
+    private static final String DISMISSAL_SUBJECT = "제적 대상자입니다.";
+    private static final String WARNING_SUBJECT = "제적 대상자입니다.";
+    private static final String INTERVIEW_SUBJECT = "제적 대상자입니다.";
+    private static final String INTERVIEW_LABEL_FORMATTER = "- %s: 결석 %d회, 지각 %d회 (면담)\n";
+    private static final String WARNING_LABEL_FORMATTER = "- %s: 결석 %d회, 지각 %d회 (경고)\n";
+    private static final String DISMISSAL_LABEL_FORMATTER = "- %s: 결석 %d회, 지각 %d회 (제적)\n";
+    private static final String PARENTHESES_FORMATTER = "( %s )\n";
+
+
+
 
     public static void printTodayAttendanceResult(Student student, LocalDateTime localDateTime) {
         for (LocalDateTime localDateTimeIn : student.getRecord().keySet()) {
@@ -22,7 +36,8 @@ public class OutputView {
         if (localDateTimeIn.isEqual(localDateTime)) {
             String dateAndTime = LocalDateTimePrintFormatter.LocalDateTimeToLocalTime(localDateTimeIn);
             String state = student.getRecord().get(localDateTimeIn).getState();
-            System.out.println(dateAndTime + "(" + state +")");
+            System.out.printf(dateAndTime);
+            System.out.printf(String.format(PARENTHESES_FORMATTER,state));
         }
     }
 
@@ -36,27 +51,28 @@ public class OutputView {
                         .sorted(Map.Entry.comparingByKey())
                         .toList();
         for (Map.Entry<LocalDateTime,AttendanceStatus> entry : entries) {
-            System.out.println(LocalDateTimePrintFormatter.LocalDateTimeToLocalTime(entry.getKey()) + "(" +entry.getValue().getState() + ")");
+            System.out.printf(LocalDateTimePrintFormatter.LocalDateTimeToLocalTime(entry.getKey()));
+            System.out.printf(String.format(PARENTHESES_FORMATTER, entry.getValue().getState()));
         }
     }
 
     public static void printStudentState(Student student) {
-        System.out.println("출석: " + student.attendance + "회");
-        System.out.println("지각" + student.late + "회");
-        System.out.println("결석" + student.absent + "회");
+        System.out.println(ATTENDANCE + student.attendance + COUNT);
+        System.out.println(LATE + student.late + COUNT);
+        System.out.println(ABSENT + student.absent + COUNT);
     }
 
     public static void printStudentPunishmentLabel(Student student) {
         if (student.calculateAbsent() > StudentPunishment.DISMISSAL.getStandard()) {
-            System.out.println("제적 대상자입니다.");
+            System.out.println(DISMISSAL_SUBJECT);
             return;
         }
         if (student.calculateAbsent() >= StudentPunishment.INTERVIEW.getStandard()) {
-            System.out.println("면담 대상자입니다.");
+            System.out.println(INTERVIEW_SUBJECT);
             return;
         }
         if (student.calculateAbsent() >= StudentPunishment.WARNING.getStandard()) {
-            System.out.println("경고 대상자입니다.");
+            System.out.println(WARNING_SUBJECT);
         }
     }
 
@@ -68,15 +84,15 @@ public class OutputView {
 
     private static void printStudentPunishmentLabelAndPrint(Student student) {
         if (student.calculateAbsent() > StudentPunishment.DISMISSAL.getStandard()) {
-            System.out.println("- " + student.getName() + ": 결석" + student.getAbsent() + "회, 지각 " + student.getLate() + "회 (" + StudentPunishment.DISMISSAL.getPunishmentLabel() + ")" );
+            System.out.printf(String.format(DISMISSAL_LABEL_FORMATTER,student.getName(),student.getAbsent(),student.getLate()));
             return;
         }
         if (student.calculateAbsent() >= StudentPunishment.INTERVIEW.getStandard()) {
-            System.out.println("- " + student.getName() + ": 결석" + student.getAbsent() + "회, 지각 " + student.getLate() + "회 (" + StudentPunishment.INTERVIEW.getPunishmentLabel() + ")" );
+            System.out.printf(String.format(INTERVIEW_LABEL_FORMATTER,student.getName(),student.getAbsent(),student.getLate()));
             return;
         }
         if (student.calculateAbsent() >= StudentPunishment.WARNING.getStandard()) {
-            System.out.println("- " + student.getName() + ": 결석" + student.getAbsent() + "회, 지각 " + student.getLate() + "회 (" + StudentPunishment.WARNING.getPunishmentLabel() + ")" );
+            System.out.printf(String.format(WARNING_LABEL_FORMATTER,student.getName(),student.getAbsent(),student.getLate()));
         }
     }
 
