@@ -22,7 +22,7 @@ public class InputView {
     }
 
     public String inputCrewName() {
-        System.out.println("닉네임을 입력해 주세요.");
+        System.out.println("\n닉네임을 입력해 주세요.");
         return userInput();
     }
 
@@ -32,7 +32,7 @@ public class InputView {
         try {
             return parseStringToLocalTime(userInput);
         } catch (DateTimeParseException e) {
-            throw new IllegalArgumentException("잚못된 시간 형식입니다.");
+            throw new IllegalArgumentException("잘못된 시간 형식입니다.");
         }
     }
 

@@ -1,5 +1,7 @@
 package attendance.controller;
 
+import static attendance.domain.CrewStatus.INTERVIEW;
+
 import attendance.CurrentDate;
 import attendance.domain.AttendancePolicy;
 import attendance.domain.AttendanceHistory;
@@ -65,6 +67,9 @@ public class AttendanceController {
         Map<AttendanceType, Integer> attendanceResult = crew.calculateAttendanceResult(now);
         outputView.printAttendanceHistories(now, crew);
         outputView.printAttendanceResult(attendanceResult);
+        if (crew.calculateCrewStatus(attendanceResult) == INTERVIEW) {
+            outputView.printInterviewTarget();
+        }
     }
 
     private void modifyAttendance(LocalDate now) {

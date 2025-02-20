@@ -1,6 +1,6 @@
  package attendance.domain;
 
-import static attendance.domain.CrewStatus.*;
+import static attendance.domain.CrewStatus.CLEAR;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
