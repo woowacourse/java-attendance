@@ -1,5 +1,6 @@
 package model;
 
+import Constant.DateFormatInformation;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -12,6 +13,13 @@ public class StudentRepository {
         return students;
     }
 
+    public void createStudent(ArrayList<String> fileInformation) {
+        for (String information : fileInformation) {
+            String[] studentNameAndAttendanceTime = information.split(",");
+            createStudentByName(studentNameAndAttendanceTime);
+        }
+    }
+
     public void notExistStudent(String studentName) {
         if (findStudentByName(studentName) == null){
             throw new IllegalArgumentException("[ERROR] 등록되지 않은 닉네임입니다.");
@@ -19,43 +27,27 @@ public class StudentRepository {
     }
 
     public Student findStudentByName(String name) {
-        for (Student student : students){
-            if (student.getName().equals(name)){
-                return student;
-            }
-        }
-        return null;
+        return students.stream()
+                .filter(s -> s.getName().equals(name))
+                .findFirst()
+                .orElse(null);
     }
 
-    public void addStudent(Student student) {
-        students.add(student);
-    }
-
-    public void createStudent(ArrayList<String> fileInformation) {
-        for (String information : fileInformation) {
-            String[] studentNameAndAttendanceTime = information.split(",");
-            creatStudentByName(studentNameAndAttendanceTime);
-        }
-    }
-
-    private void creatStudentByName(String[] studentNameAndAttendanceTime) {
+    private void createStudentByName(String[] studentNameAndAttendanceTime) {
         String name = studentNameAndAttendanceTime[0];
         String timeInformation = studentNameAndAttendanceTime[1];
-        String localDateTimeFormatter = "yyyy-MM-dd HH:mm";
         if (findStudentByName(name) == null) {
             Student student = new Student(name);
-            addStudent(student);
-            makeDateTimeFormatAndUpdateStudentState(localDateTimeFormatter, student,
-                    timeInformation);
+            students.add(student);
+            makeDateTimeFormatAndUpdateStudentState(student, timeInformation);
             return;
         }
         Student student = findStudentByName(name);
-        makeDateTimeFormatAndUpdateStudentState(localDateTimeFormatter, student,
-                timeInformation);
+        makeDateTimeFormatAndUpdateStudentState(student, timeInformation);
     }
 
-    private static void makeDateTimeFormatAndUpdateStudentState(String localDateTimeFormatter, Student student, String studentNameAndAttendanceTime) {
-        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern(localDateTimeFormatter);
+    private static void makeDateTimeFormatAndUpdateStudentState(Student student, String studentNameAndAttendanceTime) {
+        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern(DateFormatInformation.LOCAL_DATE_TIME_FORMATTER);
         LocalDateTime localDateTime = LocalDateTime.parse(studentNameAndAttendanceTime, dateTimeFormatter);
         student.updateState(localDateTime);
     }
