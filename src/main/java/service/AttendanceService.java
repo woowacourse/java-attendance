@@ -54,7 +54,7 @@ public class AttendanceService {
 
     public AttendanceHistoryWithPenaltyTypeDto checkAttendanceOf(String nickname, int day) {
         Crew crew = crews.findCrewBy(nickname);
-        List<AttendanceHistory> foundHistories = attendanceHistories.findAllHistoriesOf(crew);
+        List<AttendanceHistory> foundHistories = attendanceHistories.findHistoriesBefore(crew, day);
 
         Map<Integer, AttendanceHistoryDto> historyDtoOfDay = new HashMap<>();
         AttendanceTypeCount attendanceTypeCount = AttendanceTypeCount.from(day, foundHistories);
@@ -79,7 +79,7 @@ public class AttendanceService {
         return new AttendanceHistoryWithPenaltyTypeDto(historyDtoOfDay, penaltyType);
     }
 
-    public List<AttendanceTypeCountDto> checkWarningCrew(int day) {
+    public List<AttendanceTypeCountDto> checkWarningCrews(int day) {
         List<AttendanceTypeCountDto> attendanceTypeCountDtos = new ArrayList<>();
         for (Crew crew : crews.getCrews()) {
             List<AttendanceHistory> beforeHistoriesOfCrew = attendanceHistories.findHistoriesBefore(crew, day);

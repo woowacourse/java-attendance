@@ -89,7 +89,7 @@ public class AttendanceController {
 
     private void checkWarningCrew() {
         int day = InputView.readToday();
-        List<AttendanceTypeCountDto> attendanceTypeCountDtos = attendanceService.checkWarningCrew(day);
+        List<AttendanceTypeCountDto> attendanceTypeCountDtos = attendanceService.checkWarningCrews(day);
         OutputView.printBanWarningCrews(attendanceTypeCountDtos);
     }
 

@@ -7,6 +7,7 @@ import controller.dto.AttendanceUpdateResultDto;
 import domain.AttendanceHistories;
 import domain.AttendanceType;
 import domain.PenaltyType;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 
@@ -80,7 +81,25 @@ public class OutputView {
     }
 
     public static void printBanWarningCrews(List<AttendanceTypeCountDto> attendanceTypeCountDtos) {
-        for (AttendanceTypeCountDto attendanceTypeCountDto : attendanceTypeCountDtos) {
+        Comparator<AttendanceTypeCountDto> penaltyTypeComparator = (p1, p2) -> {
+            List<PenaltyType> order = List.of(PenaltyType.BAN, PenaltyType.ONE_ON_ONE, PenaltyType.WARNING);
+            return Integer.compare(order.indexOf(p1.penaltyType()), order.indexOf(p2.penaltyType()));
+        };
+
+        Comparator<AttendanceTypeCountDto> absenceComparator = (p1, p2) -> {
+            int totalAbsenceCountOfP1 = p1.absenceCount() + p1.lateCount() / 3;
+            int totalAbsenceCountOfP2 = p2.absenceCount() + p2.lateCount() / 3;
+            return Integer.compare(totalAbsenceCountOfP2, totalAbsenceCountOfP1);
+        };
+
+        // 정렬
+        // 기준 제적 > 면담 > 경고 > 결석횟수 > 닉네임
+        List<AttendanceTypeCountDto> sortedAttendanceTypeCountDto = attendanceTypeCountDtos.stream()
+                .sorted(penaltyTypeComparator
+                        .thenComparing(absenceComparator)
+                        .thenComparing(AttendanceTypeCountDto::nickname)).toList();
+
+        for (AttendanceTypeCountDto attendanceTypeCountDto : sortedAttendanceTypeCountDto) {
             System.out.printf("- %s: 결석 %d회, 지각 %d회 (%s)%n", attendanceTypeCountDto.nickname(),
                     attendanceTypeCountDto.absenceCount(), attendanceTypeCountDto.lateCount(),
                     Parser.parsePenaltyTypeFormat(attendanceTypeCountDto.penaltyType()));
