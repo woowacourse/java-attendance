@@ -31,7 +31,7 @@ public enum Calender {
     public static void validateHolyDay(final int dayOfWeekValue) {
         String dayOfWeek = findBy(dayOfWeekValue);
         if (dayOfWeek.equals("공휴일")) {
-            throw new IllegalArgumentException("공휴일에는 출석확인을 할 수 없습니다.");
+            throw new IllegalArgumentException("공휴일에는 출석을 할 수 없습니다.");
         }
     }
 
