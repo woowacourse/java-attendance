@@ -167,7 +167,7 @@ public class AttendanceController {
             outputView.printCheckAttendanceMessage(crewAttendance.getAttendanceDateTime(), crewAttendance.getAttendanceStatus());
         }
 
-        Map<AttendanceStatus, Integer> attendStatuses = attendance.countAttendanceStatus(nickName);
+        Map<AttendanceStatus, Integer> attendStatuses = attendance.getCrewAttendanceStatus(nickName);
         outputView.printCrewStatuses(attendStatuses);
     }
 
@@ -179,7 +179,7 @@ public class AttendanceController {
 
         outputView.printExpelledCrewHeader();
         for (String crew : expelledCrews) {
-            outputView.printExpelledCrew(crew, attendance.countAttendanceStatus(crew));
+            outputView.printExpelledCrew(crew, attendance.getCrewAttendanceStatus(crew));
         }
     }
 }

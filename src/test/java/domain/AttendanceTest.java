@@ -58,7 +58,7 @@ public class AttendanceTest {
 
     @Test
     void 크루의_출석_기록_통계_확인_기능() {
-        Map<AttendanceStatus, Integer> attendanceStatuses = attendance.countAttendanceStatus("빙티");
+        Map<AttendanceStatus, Integer> attendanceStatuses = attendance.getCrewAttendanceStatus("빙티");
 
         assertThat(attendanceStatuses.get(AttendanceStatus.ATTEND)).isEqualTo(3);
         assertThat(attendanceStatuses.get(AttendanceStatus.LATE)).isEqualTo(4);

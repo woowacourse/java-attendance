@@ -101,18 +101,6 @@ public class Attendance {
         attendanceTime.updateAttendanceDateTime(newAttendanceTime);
     }
 
-    public Map<AttendanceStatus, Integer> countAttendanceStatus(String name) {
-        Map<AttendanceStatus, Integer> attendanceStatuses = new HashMap<>();
-        List<AttendanceTime> attendanceTimes = getAttendanceTimes(name);
-        for (AttendanceStatus attendanceStatus : AttendanceStatus.values()) {
-            attendanceStatuses.put(attendanceStatus, 0);
-        }
-        for (AttendanceTime attendanceTime : attendanceTimes) {
-            attendanceStatuses.put(attendanceTime.getAttendanceStatus(), attendanceStatuses.get(attendanceTime.getAttendanceStatus()) + 1);
-        }
-        return attendanceStatuses;
-    }
-
     private boolean checkAttended(String crewName, LocalDate attendanceDate) {
         List<AttendanceTime> attendancesOfCrew = attendance.get(findCrew(crewName));
         for (AttendanceTime attendances : attendancesOfCrew) {
@@ -125,11 +113,11 @@ public class Attendance {
 
     public List<String> checkExpelledCrew() {
         List<String> expelledCrew = new ArrayList<>();
-        for (Crew crew : attendance.keySet()) {
-            if (ExpelStatus.determineExpelStatus(countAttendanceStatus(crew.getName())) != ExpelStatus.NONE) {
-                expelledCrew.add(crew.getName());
-            }
-        }
+
+        attendance.keySet().stream()
+                .filter(crew -> crew.getExpelStatus(this.getAttendanceTimes(crew.getName())))
+                .forEach(crew -> expelledCrew.add(crew.getName()));
+
         return expelledCrew;
     }
 
@@ -174,5 +162,10 @@ public class Attendance {
                 .count();
 
         return lateCount % 3;
+    }
+
+    public Map<AttendanceStatus, Integer> getCrewAttendanceStatus(String nickName) {
+        Crew crew = findCrew(nickName);
+        return crew.getAttendanceStatus(attendance.get(crew));
     }
 }
