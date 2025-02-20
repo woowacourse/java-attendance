@@ -78,4 +78,17 @@ public class CheckAttendanceTest {
                 .hasMessage("[ERROR] 등록되지 않은 닉네임입니다.");
 
     }
+
+    @Test
+    void 출석_확인시_캠퍼스_운영_시간이_아닌_경우_예외를_출력한다() {
+        AttendanceBook attendanceBook = new AttendanceBook();
+        Crew crew1 = Crew.createByName("쿠키");
+        crew1.addDailyAttendance(Map.of(LocalDate.of(2024, 12, 3), LocalTime.of(10, 6)));
+        attendanceBook.addNewCrew(crew1);
+
+        assertThatThrownBy(
+                () -> attendanceBook.checkAttendance("쿠키", Map.of(LocalDate.of(2024, 12, 4), LocalTime.of(7, 7))))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("[ERROR] 캠퍼스 운영 시간은 08:00~23:00 입니다.");
+    }
 }
