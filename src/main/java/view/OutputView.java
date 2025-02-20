@@ -13,8 +13,11 @@ import java.util.Locale;
 
 public class OutputView {
     public void displayPrompt() {
+        String koreanDayOfWeek = LocalDate.now().getDayOfWeek()
+                .getDisplayName(TextStyle.FULL, Locale.KOREAN);
         System.out.println(
-                OutputMessages.DATE_PROMPT.format(LocalDate.now().getDayOfMonth(), LocalDate.now().getDayOfWeek()));
+                OutputMessages.DATE_PROMPT.format(LocalDate.now().getMonthValue(), LocalDate.now().getDayOfMonth(),
+                        koreanDayOfWeek));
         System.out.println(OutputMessages.FIRST_FUNCTION_PROMPT.getFormat());
         System.out.println(OutputMessages.SECOND_FUNCTION_PROMPT.getFormat());
         System.out.println(OutputMessages.THIRD_FUNCTION_PROMPT.getFormat());
