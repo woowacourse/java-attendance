@@ -31,7 +31,7 @@ public class DateUtil {
     }
 
     public static LocalDate getDateByInputDay(int day) {
-        return LocalDate.of(TODAY.getYear(), TODAY.getDayOfMonth(), day);
+        return LocalDate.of(TODAY.getYear(), TODAY.getMonth(), day);
     }
 
     public static boolean isMonday(LocalDate targetDate) {

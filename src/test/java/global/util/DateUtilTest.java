@@ -1,9 +1,11 @@
 package global.util;
 
+import net.bytebuddy.asm.Advice;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
 
+import static org.assertj.core.api.Assertions.as;
 import static org.assertj.core.api.Assertions.assertThat;
 
 class DateUtilTest {
@@ -26,6 +28,13 @@ class DateUtilTest {
     @Test
     void getFirstDayOfMonth_메서드가_첫날을_반환한다() {
         assertThat(DateUtil.getFirstDateOfMonth()).isEqualTo(LocalDate.of(2024, 12, 1));
+    }
+
+    @Test
+    void getDateByInputDay가_해당월_해당날짜의_LocalDate를_반환한다() {
+        LocalDate dateByInputDay = DateUtil.getDateByInputDay(3);
+        LocalDate targetDate = LocalDate.of(2024, 12, 3);
+        assertThat(dateByInputDay).isEqualTo(targetDate);
     }
 
 }

@@ -1,6 +1,8 @@
 package domain;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatNoException;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -35,6 +37,7 @@ class CrewTest {
 
     @Test
     void 결석_횟수를_계산한다() {
+
         Crew crew = new Crew("두리");
         for(int day = 2; day <= 6; day ++) {
             crew.addAttendStatus(LocalDateTime.of(2024, 12, day, 10, 20, 0));
@@ -61,5 +64,19 @@ class CrewTest {
         }
 
         assertThat(crew.calculateAttendanceCount()).isEqualTo(4);
+    }
+
+    @Test
+    void 출석_기록이_없는날을_수정하면_예외를_던진다() {
+        Crew crew = new Crew("두리");
+        assertThatThrownBy(() -> {
+            crew.editAttendStatus(LocalDateTime.of(2024, 12, 10, 10, 30));
+        }).isInstanceOf(IllegalArgumentException.class);
+    }
+
+    @Test
+    void 크루원이_제적_대상자면_EXPULSION를_반환한다() {
+        Crew crew = new Crew("두리");
+        assertThat(crew.getRiskStatus()).isEqualTo(RiskStatus.EXPULSION);
     }
 }

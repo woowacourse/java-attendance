@@ -40,4 +40,14 @@ class CrewsTest {
 
         assertThat(crews.getAttendanceTime(crewName1, localDate)).isEqualTo(localTime);
     }
+
+    @Test
+    void 해당_크루_이름이_있으면_true를_반환한다() {
+        Crews crews = new Crews();
+        crews.addCrew("두리");
+
+        assertThat(crews.hasCrewName("두리")).isEqualTo(true);
+        assertThat(crews.hasCrewName("시소")).isEqualTo(false);
+
+    }
 }
