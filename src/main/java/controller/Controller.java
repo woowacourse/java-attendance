@@ -1,7 +1,6 @@
 package controller;
 
 import java.io.IOException;
-import java.time.DateTimeException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -40,18 +39,15 @@ public class Controller {
             return;
         }
         if (Integer.parseInt(selectFunction) == 1) {
-            InputView.printInputNicName();
-            String studentName = getStudentNameUntilExist(studentRepository);
-            InputView.printStartTime();
-            LocalDateTime localDateTime = getTimeUntilValidate(todayDate.getTodayDate());
+            String studentName = getStudentForAttendanceCheckUntilExist(studentRepository);
+            LocalDateTime localDateTime = getLocalDateTimeUntilValidate(todayDate);
             Student student = studentRepository.findStudentByName(studentName);
             student.updateState(localDateTime);
             OutputView.printTodayAttendanceResult(student, localDateTime);
         }
 
         if (Integer.parseInt(selectFunction) == 2) {
-            InputView.printStudentNameForModify();
-            String studentName = getStudentNameUntilExist(studentRepository);
+            String studentName = getStudentNameForModifyUntilValidate(studentRepository);
             Student student = studentRepository.findStudentByName(studentName);
 
             int modifyDate = InputView.inputDateForModify();
@@ -70,8 +66,7 @@ public class Controller {
             OutputView.printSecondMenu(recordBeforeModify, localDateTimeFormat3);
         }
         if (Integer.parseInt(selectFunction) == 3) {
-            InputView.printInputNicName();
-            String studentName = getStudentNameUntilExist(studentRepository);
+            String studentName = getStudentForAttendanceCheckUntilExist(studentRepository);
             OutputView.printAttendanceRecord(studentRepository.findStudentByName(studentName).getRecord());
             studentRepository.findStudentByName(studentName).calculateAbsent();
             OutputView.printStudentState(studentRepository.findStudentByName(studentName));
@@ -82,21 +77,51 @@ public class Controller {
         }
     }
 
+    private String getStudentNameForModifyUntilValidate(StudentRepository studentRepository) {
+        try {
+            InputView.printInputNicName();
+            return getStudentNameUntilExist(studentRepository);
+        } catch (IllegalArgumentException e) {
+            return getStudentNameForModifyUntilValidate(studentRepository);
+        }
+    }
+
+    private LocalDateTime getLocalDateTimeUntilValidate(TodayDate todayDate) {
+        try {
+            InputView.printStartTime();
+            return getTimeUntilValidate(todayDate.getTodayDate());
+        } catch (IllegalArgumentException e) {
+            return getLocalDateTimeUntilValidate(todayDate);
+        }
+    }
+
+    private String getStudentForAttendanceCheckUntilExist(StudentRepository studentRepository) {
+        InputView.printInputNicName();
+        try {
+            return getStudentNameUntilExist(studentRepository);
+        }
+        catch (IllegalArgumentException e) {
+            return getStudentForAttendanceCheckUntilExist(studentRepository);
+        }
+    }
+
     private String getStudentNameUntilExist(StudentRepository studentRepository) {
         String userName = InputView.userInput();
         try{
             studentRepository.notExistStudent(userName);
             return userName;
         }catch (IllegalArgumentException e){
-            return getStudentNameUntilExist(studentRepository);
+            System.out.println(e.getMessage());
+            throw new IllegalArgumentException();
         }
     }
 
     private LocalDateTime getTimeUntilValidate(LocalDate localDate) {
         try{
             return InputView.makeLocalDateToLocalDateTime(localDate);
-        }catch (DateTimeException e){
-            return getTimeUntilValidate(localDate);
+        }catch (IllegalArgumentException e){
+            System.out.println(e.getMessage());
+            throw new IllegalArgumentException();
         }
     }
 }
