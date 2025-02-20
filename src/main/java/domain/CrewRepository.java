@@ -25,26 +25,27 @@ public class CrewRepository {
     }
 
     public void add(String nickname, LocalDate date, LocalTime time) {
-        Crew crew;
-        if (!has(nickname)) {
+        Crew crew = find(nickname);
+        if (crew == null) {
             crew = new Crew(nickname);
             crews.add(crew);
-        } else {
-            crew = get(nickname);
         }
         crew.attendance(date, time);
     }
 
-    public boolean has(String nickname) {
-        return crews.stream()
-            .anyMatch(crew -> crew.getNickname().equals(nickname));
-    }
-
-    public Crew get(String nickname) {
+    private Crew find(String nickname) {
         return crews.stream()
             .filter(crew -> crew.getNickname().equals(nickname))
             .findAny()
-            .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 크루명입니다."));
+            .orElse(null);
+    }
+
+    public Crew get(String nickname) {
+        Crew found = find(nickname);
+        if (found == null) {
+            throw new IllegalArgumentException("존재하지 않는 크루명입니다.");
+        }
+        return found;
     }
 
     public List<Crew> getAll() {
