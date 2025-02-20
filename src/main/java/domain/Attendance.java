@@ -26,7 +26,6 @@ public class Attendance {
         validateHoliday(localDateTime);
         Week day = Week.findByAttendanceTime(localDateTime);
         this.localDateTime = localDateTime;
-        localDateTime.toLocalDate().lengthOfMonth();
         this.attendanceStatus = AttendanceStatus.findByAttendanceTime(day, localDateTime.toLocalTime());
     }
 
