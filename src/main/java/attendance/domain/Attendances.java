@@ -65,15 +65,15 @@ public class Attendances {
         return flag;
     }
 
-    private boolean isWorkDay(LocalDate today) {
+    private boolean isWorkDay(final LocalDate today) {
         return !today.getDayOfWeek().equals(DayOfWeek.SATURDAY) && !today.getDayOfWeek().equals(DayOfWeek.SUNDAY);
     }
 
-    public void add(Attendance attendance) {
+    public void add(final Attendance attendance) {
         attendances.add(attendance);
     }
 
-    public Attendance findMatchCrewDate(Crew crew, LocalDate localDate) {
+    public Attendance findMatchCrewDate(final Crew crew, final LocalDate localDate) {
         return attendances.stream()
                 .filter(attendance -> attendance.isSameCrewDate(crew, localDate))
                 .findFirst()
@@ -102,7 +102,7 @@ public class Attendances {
         return findMatchCrewDate(crew, localDate).getType();
     }
 
-    public List<Attendance> findCrewAttendances(Crew crew) {
+    public List<Attendance> findCrewAttendances(final Crew crew) {
         return attendances.stream()
                 .filter(attendance -> attendance.isSameCrew(crew))
                 .toList();
