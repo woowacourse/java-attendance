@@ -5,6 +5,7 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Objects;
 
 public class AttendanceSystem {
 
@@ -40,6 +41,20 @@ public class AttendanceSystem {
             throw new IllegalArgumentException("유효하지 않은 날짜입니다.");
         }
     }
+
+    public List<Crew> calculateExpulsionCrews() {
+        return crews.stream()
+                .filter(this::isExpulsionCrew)
+                .sorted()
+                .toList();
+    }
+
+
+    private boolean isExpulsionCrew(final Crew crew) {
+        final ExpulsionStatus expulsionStatus = crew.calculateExpulsionStatus();
+        return !Objects.equals(expulsionStatus, ExpulsionStatus.NORMAL);
+    }
+
 
     public Attendance updateAttendanceByCrewNameAndDay(final LocalTime targetTime, final String crewName,
                                                        final int dayOfMonth) {

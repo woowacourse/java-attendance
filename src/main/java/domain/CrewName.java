@@ -2,7 +2,7 @@ package domain;
 
 import java.util.Objects;
 
-class CrewName {
+public class CrewName implements Comparable<CrewName> {
     private final String name;
 
     public CrewName(final String name) {
@@ -15,5 +15,10 @@ class CrewName {
 
     public boolean isSameName(final String inputName) {
         return Objects.equals(name, inputName);
+    }
+
+    @Override
+    public int compareTo(final CrewName o) {
+        return this.name.compareTo(o.name);
     }
 }

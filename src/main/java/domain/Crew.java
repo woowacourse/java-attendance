@@ -9,7 +9,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-public class Crew {
+public class Crew implements Comparable<Crew> {
     private final CrewName name;
     private final List<Attendance> attendances;
 
@@ -76,9 +76,13 @@ public class Crew {
     }
 
     public ExpulsionStatus calculateExpulsionStatus() {
-        final Map<AttendanceStatus, Integer> statusCount = calculateAttendanceStatistics();
-        final int absence = statusCount.get(AttendanceStatus.LATE) / 3 + statusCount.get(AttendanceStatus.ABSENCE);
+        final int absence = countExpulsionStatus();
         return ExpulsionStatus.of(absence);
+    }
+
+    public int countExpulsionStatus() {
+        final Map<AttendanceStatus, Integer> statusCount = calculateAttendanceStatistics();
+        return statusCount.get(AttendanceStatus.LATE) / 3 + statusCount.get(AttendanceStatus.ABSENCE);
     }
 
     public Attendance findAttendanceByDate(final LocalDate date) {
@@ -100,5 +104,16 @@ public class Crew {
         return attendances.stream()
                 .map(Attendance::new)
                 .toList();
+    }
+
+    @Override
+    public int compareTo(final Crew o) {
+        final int count1 = this.countExpulsionStatus();
+        final int count2 = o.countExpulsionStatus();
+        if (count1 != count2) {
+            return count2 - count1;
+        }
+
+        return this.name.compareTo(o.name);
     }
 }

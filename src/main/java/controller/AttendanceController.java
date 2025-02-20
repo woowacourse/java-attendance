@@ -6,6 +6,7 @@ import domain.AttendanceSystem;
 import domain.Crew;
 import domain.ExpulsionStatus;
 import dto.AttendanceResponse;
+import dto.ExpulsionCrewResponse;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -33,8 +34,10 @@ public class AttendanceController {
     public void run() {
 //        responseCrewAttendanceHistory();
 //        attendance();
-        updateAttendance();
+//        updateAttendance();
+        responseExpulsionCrews();
     }
+
 
     private void attendance() {
         outputView.printAddAttendanceCrewName();
@@ -81,6 +84,12 @@ public class AttendanceController {
 
     }
 
+    private void responseExpulsionCrews() {
+        final List<Crew> crews = attendanceSystem.calculateExpulsionCrews();
+        outputView.printExpulsionCrewResponses(convertExpulsionCrewResponses(crews));
+
+    }
+
     private List<AttendanceResponse> convertAttendancesToResponses(final List<Attendance> attendances) {
         return attendances.stream()
                 .map(this::convertAttendanceToResponse)
@@ -89,6 +98,12 @@ public class AttendanceController {
 
     private AttendanceResponse convertAttendanceToResponse(final Attendance attendance) {
         return new AttendanceResponse(attendance.getDateTime(), attendance.calculateStatus(), attendance.isEmpty());
+    }
+
+    private List<ExpulsionCrewResponse> convertExpulsionCrewResponses(final List<Crew> crews) {
+        return crews.stream()
+                .map(crew -> new ExpulsionCrewResponse(crew.getName().getName(), crew.calculateAttendanceStatistics(), crew.calculateExpulsionStatus()))
+                .toList();
     }
 
 }

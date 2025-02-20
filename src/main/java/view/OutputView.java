@@ -3,6 +3,7 @@ package view;
 import domain.AttendanceStatus;
 import domain.ExpulsionStatus;
 import dto.AttendanceResponse;
+import dto.ExpulsionCrewResponse;
 import java.time.LocalDateTime;
 import java.time.format.TextStyle;
 import java.util.List;
@@ -54,6 +55,17 @@ public class OutputView {
                 .map(this::formatAttendanceResponse)
                 .collect(Collectors.joining("\n"));
         System.out.println(System.lineSeparator() + crewAttendanceHistory);
+    }
+
+    public void printExpulsionCrewResponses(final List<ExpulsionCrewResponse> expulsionCrewResponses) {
+        System.out.println("제적 위험자 조회 결과");
+        final String message = expulsionCrewResponses.stream()
+                .map(expulsionCrewResponse -> String.format("- %s: 결석 %d회, 지각 %d회 (%s)", expulsionCrewResponse.name(),
+                        expulsionCrewResponse.attendanceStatusCount().get(AttendanceStatus.ABSENCE),
+                        expulsionCrewResponse.attendanceStatusCount().get(AttendanceStatus.LATE),
+                        expulsionCrewResponse.expulsionStatus().getName()))
+                .collect(Collectors.joining(System.lineSeparator()));
+        System.out.println(message);
     }
 
     private String formatAttendanceResponse(final AttendanceResponse attendanceResponse) {
