@@ -14,9 +14,8 @@ class FileManagerTest {
         //given
         Attendance attendance = FileManager.readFile();
 
-        //when
+        //when & then
         assertThat(attendance).isNotNull();
-        //then
     }
 
 }
