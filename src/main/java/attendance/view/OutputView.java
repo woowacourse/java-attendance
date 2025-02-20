@@ -102,7 +102,7 @@ public class OutputView {
         return crews.stream()
             .map(crew -> {
                 List<Attendance> attendanceOfCrew = attendances.getByCrew(crew,
-                    LocalDate.of(2024, 12, 14));
+                    LocalDate.now());
                 int absenceCount = countAttendanceStatus(attendanceOfCrew,
                     AttendanceStatus.ABSENCE);
                 int lateCount = countAttendanceStatus(attendanceOfCrew, AttendanceStatus.LATE);
@@ -113,7 +113,7 @@ public class OutputView {
 
     private static void printPenaltyResult(PenaltyResult penaltyResult) {
         if (penaltyResult.penalty != Penalty.NONE) {
-            System.out.printf("- %s: %s %d회, %s %d회 (%s)%n", penaltyResult.nickName(),
+            System.out.printf("- %s: %s %d회, %s %d회 (%s)", penaltyResult.nickName(),
                 AttendanceStatus.ABSENCE.getKoreanName(),
                 penaltyResult.absenceCount, AttendanceStatus.LATE.getKoreanName(),
                 penaltyResult.lateCount, penaltyResult.penalty.getKoreanName());

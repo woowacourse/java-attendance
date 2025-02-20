@@ -45,21 +45,21 @@ public class Attendances {
         List<Attendance> copiedAttendancesOfCrew = new ArrayList<>(attendances.get(crew));
         int sequenceOfRecord = 0;
         for (int i = 1; i < day; i++) {
-            if (DateUtil.isWeekend(LocalDate.of(2024, 12, i))) {
+            if (DateUtil.isWeekend(LocalDate.of(date.getYear(), date.getMonth(), i))) {
                 continue;
             }
-            addAbsenceIfNotExistRecord(copiedAttendancesOfCrew, sequenceOfRecord, i);
+            addAbsenceIfNotExistRecord(copiedAttendancesOfCrew, sequenceOfRecord, LocalDate.of(date.getYear(), date.getMonth(), i));
             sequenceOfRecord++;
         }
         return copiedAttendancesOfCrew;
     }
 
     private void addAbsenceIfNotExistRecord(List<Attendance> copiedAttendancesOfCrew,
-        int sequenceOfRecord, int i) {
+        int sequenceOfRecord, LocalDate date) {
         Attendance attendance = copiedAttendancesOfCrew.get(sequenceOfRecord);
-        if (attendance.getDateTime().getDayOfMonth() > i) {
+        if (attendance.getDateTime().getDayOfMonth() > date.getDayOfMonth()) {
             copiedAttendancesOfCrew.add(sequenceOfRecord,
-                Attendance.of(LocalDateTime.of(2024, 12, i, 0, 0, 0)));
+                Attendance.of(LocalDateTime.of(date, LocalTime.of(0, 0, 0))));
         }
     }
 

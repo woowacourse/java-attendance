@@ -86,12 +86,12 @@ public class AttendanceController {
 
     private LocalDate getModifyingCheckinDate() {
         String inputModifyingCheckinDate = InputView.readModifyingCheckinDate();
-        return LocalDate.of(2024, 12, Integer.parseInt(inputModifyingCheckinDate));
+        return LocalDate.of(LocalDate.now().getYear(), LocalDate.now().getMonth(), Integer.parseInt(inputModifyingCheckinDate));
     }
 
     private void checkAttendanceRecordOfCrew() {
         Crew crew = getCrew();
-        List<Attendance> attendanceList = attendances.getByCrew(crew, LocalDate.of(2024, 12, 14));
+        List<Attendance> attendanceList = attendances.getByCrew(crew, LocalDate.now());
         OutputView.printAttendanceRecordAndPenalty(attendanceList);
     }
 }
