@@ -18,6 +18,10 @@ public class Attendance {
         this.attendanceType = attendanceType;
     }
 
+    public boolean isSameCrew(final Crew crew) {
+        return this.crew.equals(crew);
+    }
+
     public boolean isSameCrewDate(final Crew crew, final LocalDate localDate) {
         return this.crew.equals(crew) && this.presentTime.toLocalDate().equals(localDate);
     }
@@ -32,14 +36,14 @@ public class Attendance {
         );
     }
 
-    public boolean isSameCrew(Crew crew) {
-        return this.crew.equals(crew);
-    }
-
-    public void modifyLocalDateTime(LocalDateTime changedPresentTime) {
+    public void modifyLocalDateTime(final LocalDateTime changedPresentTime) {
         this.presentTime = changedPresentTime;
+        modifyAttendanceType(changedPresentTime);
     }
 
+    private void modifyAttendanceType(final LocalDateTime localDateTime) {
+        attendanceType = AttendanceType.of(localDateTime);
+    }
 
     public LocalDate getDate() {
         return presentTime.toLocalDate();
@@ -47,10 +51,6 @@ public class Attendance {
 
     public String getTimeValue() {
         return presentTime.format(DateTimeFormatter.ofPattern("HH:mm"));
-    }
-
-    public AttendanceType getType() {
-        return attendanceType;
     }
 
     public void modifyAttendanceType(LocalDateTime localDateTime) {
