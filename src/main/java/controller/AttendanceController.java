@@ -18,15 +18,13 @@ import view.OutputView;
 
 public class AttendanceController {
 
-    private static String CSV_PATH = "src/main/resources/attendances.csv";
-
     public void start() {
         while (true) {
             LocalDateTime fixDateTime = LocalDateTime.of(2024, Constants.MONTH, 16, 0, 0, 0, 0);
             final String input = InputView.readCommand(fixDateTime);
             Command command = Command.findByCommandNumber(input);
-            Crews crews = CrewGenerator.generate(CsvReader.readFile(CSV_PATH),
-                    fixDateTime.toLocalDate());
+            Crews crews = CrewGenerator.generate(CsvReader.readFile(Constants.CSV_PATH), fixDateTime.toLocalDate());
+
             if (command.equals(Command.QUIT)) {
                 break;
             }
