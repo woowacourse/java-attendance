@@ -16,7 +16,7 @@ public class AttendanceHistory {
 
     public long getAttendanceCount() {
         return attendanceHistory.stream()
-                .filter(attendanceDetail -> attendanceDetail.getAttendance().equals(Attendance.출석))
+                .filter(attendanceDetail -> attendanceDetail.isSameAs(Attendance.출석))
                 .count();
     }
 
