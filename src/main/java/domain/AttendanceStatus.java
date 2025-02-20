@@ -26,7 +26,9 @@ public class AttendanceStatus {
         }
         if (total >= 2) {
             status = "경고";
+            return;
         }
+        status = "모범";
     }
 
     public String getStatus() {

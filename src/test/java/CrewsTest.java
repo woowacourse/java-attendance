@@ -1,12 +1,11 @@
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+
 import domain.AttendTime;
 import domain.Crew;
 import domain.Crews;
 import domain.December;
-import org.junit.jupiter.api.Test;
-
 import java.util.List;
-
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import org.junit.jupiter.api.Test;
 
 public class CrewsTest {
 
@@ -61,4 +60,24 @@ public class CrewsTest {
     void test6() {
         System.out.println(December.getWeekDays());
     }
+
+    @Test
+    void test7() {
+        Crews crews = new Crews(List.of("폰트,2024-12-13 10:08", "슬링키,2024-12-09 13:03"));
+
+        List<Crew> dismissalCrews = crews.getDangerousCrews("제적");
+
+        assertThat(dismissalCrews.size()).isEqualTo(2);
+    }
+
+    @Test
+    void test8() {
+        Crews crews = new Crews(List.of("폰트,2024-12-13 10:08", "슬링키,2024-12-09 13:03", "포비,2024-12-09 13:03"));
+
+        List<Crew> dismissalCrews = crews.getDangerousCrews("제적");
+
+        assertThat(dismissalCrews.size()).isEqualTo(3);
+    }
+
+
 }

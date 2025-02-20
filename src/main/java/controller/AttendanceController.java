@@ -1,7 +1,8 @@
 package controller;
 
-import domain.*;
-
+import domain.AttendTime;
+import domain.AttendanceFileReader;
+import domain.Crews;
 import java.util.List;
 import view.InputView;
 import view.OutputView;
@@ -31,7 +32,7 @@ public class AttendanceController {
             int date = inputView.readDateForChange();
             String time = inputView.readTimeForChange();
             AttendTime attendTime = crews.deleteAttendance(nickname, date);
-            
+
             int year = attendTime.getAttendTime().getYear();
             int month = attendTime.getAttendTime().getMonthValue();
             int date2 = attendTime.getAttendTime().getDayOfMonth();
@@ -40,12 +41,20 @@ public class AttendanceController {
             System.out.println(crews.findCrew(nickname).attend(inputTime));
         }
 
-        if(command.equals("3")){
-            String nickname= inputView.readNickname();
-            System.out.printf("이번 달 %s의 출석 기록입니다.%n",nickname);
+        if (command.equals("3")) {
+            String nickname = inputView.readNickname();
+            System.out.printf("이번 달 %s의 출석 기록입니다.%n", nickname);
             System.out.println();
             outputView.printCrewAttendance(crews.findCrew(nickname));
 
+        }
+
+        if (command.equals("4")) {
+            outputView.printDismissalCrews(
+                    crews.getDangerousCrews("제적"),
+                    crews.getDangerousCrews("면담"),
+                    crews.getDangerousCrews("경고")
+            );
         }
     }
 
