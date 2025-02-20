@@ -1,5 +1,6 @@
 package view;
 
+import java.util.regex.Pattern;
 import util.Console;
 
 public class InputView {
@@ -29,6 +30,7 @@ public class InputView {
         System.out.println("등교 시간을 입력해 주세요.");
         String input = Console.readLine();
         validateNullOrEmpty(input);
+        validateFormat(input);
         return input;
     }
 
@@ -36,6 +38,19 @@ public class InputView {
         if (nickName.isBlank()) {
             throw new IllegalArgumentException("빈 값은 입력할 수 없습니다.");
         }
+    }
+
+    private static void validateFormat(final String input) {
+        if (!isCorrectFormat(input)) {
+            throw new IllegalArgumentException("시간은 24시간 형식만 사용합니다.");
+        }
+    }
+
+    private static boolean isCorrectFormat(final String input) {
+        String datePattern = "2[0-3]|[01][0-9]:[0-5][0-9]";
+        Pattern correctPattern = Pattern.compile(datePattern);
+
+        return correctPattern.matcher(input).find();
     }
 
     public static String inputUpdateNickName() {
