@@ -17,7 +17,7 @@ public enum Warning {
         this.message = message;
     }
 
-    public static Warning check(int count) {
+    public static Warning check(final int count) {
         return Arrays.stream(Warning.values())
                 .filter(warning -> count >= warning.criteria)
                 .findFirst()

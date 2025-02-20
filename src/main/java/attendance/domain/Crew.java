@@ -8,36 +8,37 @@ import java.util.Map;
 
 public class Crew implements Comparable<Crew> {
 
-    private String nickname;
-    private List<Attendance> attendances;
-    private Map<AttendanceStatus, Integer> statusCount;
+    private final String nickname;
+    private final List<Attendance> attendances;
+    private final Map<AttendanceStatus, Integer> statusCount;
 
-    public Crew(String nickname, List<Attendance> attendances) {
+    public Crew(final String nickname, final List<Attendance> attendances) {
         this.nickname = nickname;
         this.attendances = attendances;
-
         statusCount = new HashMap<>();
         attendances.forEach((attendance) -> addStatusCount(attendance, 1));
     }
 
-    public boolean isEqualToNickname(String nickname) {
+    public boolean isEqualToNickname(final String nickname) {
         return this.nickname.equals(nickname);
     }
 
-    public void existInAttendances(LocalDate date) {
-        for (Attendance attendance : attendances) {
-            if (attendance.isEqualToDate(date)) {
-                throw new IllegalArgumentException("[ERROR] 이미 오늘 출석을 하셨습니다. 출석 수정을 이용해주세요.");
-            }
-        }
+    public void existInAttendances(final LocalDate date) {
+        attendances.stream()
+                .filter(attendance -> attendance.isEqualToDate(date))
+                .findAny()
+                .ifPresent((attendance) -> {
+                    throw new IllegalArgumentException("[ERROR] 이미 오늘 출석을 하셨습니다. 출석 수정을 이용해주세요.");
+                });
+    }
+
+    public void addAttendance(final Attendance attendance) {
+        attendances.add(attendance);
+        statusCount.put(attendance.getStatus(), statusCount.getOrDefault(attendance.getStatus(), 0) + 1);
     }
 
     public void addStatusCount(Attendance attendance, int amount) {
         statusCount.put(attendance.getStatus(), statusCount.getOrDefault(attendance.getStatus(), 0) + amount);
-    }
-
-    public void addAttendance(Attendance attendance) {
-        attendances.add(attendance);
     }
 
     public Warning checkWarning() {
@@ -50,16 +51,17 @@ public class Crew implements Comparable<Crew> {
                 + statusCount.getOrDefault(AttendanceStatus.LATE, 0) / 3;
     }
 
-    public Attendance updateAttendance(LocalDateTime dateTime) {
-        for (Attendance attendance : attendances) {
-            if (attendance.isEqualToDate(LocalDate.from(dateTime))) {
-                AttendanceStatus before = attendance.getStatus();
-                AttendanceStatus after = attendance.updateDateTime(dateTime);
-                updateStatusCount(before, after);
-                return attendance;
-            }
-        }
-        throw new IllegalArgumentException();
+    public Attendance updateAttendance(final LocalDateTime dateTime) {
+        return attendances.stream()
+                .filter(attendance -> attendance.isEqualToDate(LocalDate.from(dateTime)))
+                .findFirst()
+                .map(attendance -> {
+                    AttendanceStatus before = attendance.getStatus();
+                    AttendanceStatus after = attendance.updateDateTime(dateTime);
+                    updateStatusCount(before, after);
+                    return attendance;
+                })
+                .orElseThrow(() -> new IllegalArgumentException("[ERROR] 출석 기록이 없습니다."));
     }
 
     private void updateStatusCount(AttendanceStatus before, AttendanceStatus after) {
@@ -67,7 +69,7 @@ public class Crew implements Comparable<Crew> {
         statusCount.put(after, statusCount.getOrDefault(after, 0) + 1);
     }
 
-    public Attendance findAttendanceByDate(LocalDate updateDate) {
+    public Attendance findAttendanceByDate(final LocalDate updateDate) {
         return attendances.stream()
                 .filter(attendance -> attendance.isEqualToDate(updateDate))
                 .findFirst()

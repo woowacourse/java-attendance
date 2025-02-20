@@ -29,7 +29,7 @@ public class AttendanceTest {
     void 등교시간_입력_시_30분_늦으면_결석이다() {
         LocalDateTime dateTime = LocalDateTime.of(2024,12,17,10,31,0);
         Attendance attendance = new Attendance(dateTime);
-        assertThat(attendance.checkAttendanceStatus(dateTime)).isEqualTo(AttendanceStatus.ABSENCE);
+        assertThat(attendance.checkAttendanceStatus(dateTime)).isEqualTo(AttendanceStatus.LATE_ABSENCE);
     }
 
     @Test
