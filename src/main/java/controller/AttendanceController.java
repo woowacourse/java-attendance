@@ -31,9 +31,10 @@ public class AttendanceController {
                     December.checkWeekday(LocalDateTime.now());
 
                     String nickname = inputView.readNickname();
-                    String time = inputView.readTime();
+                    crews.ifFindNameAddTime(nickname);
 
-                    crews.ifFindNameAddTime(nickname, time);
+                    String time = inputView.readTime();
+                    crews.initializeAttendTime(nickname, time);
 
                     AttendTime attendTime = crews.findCrew(nickname)
                             .findAttendanceByDate(LocalDateTime.now().getDayOfMonth());

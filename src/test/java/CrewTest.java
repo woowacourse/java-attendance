@@ -70,11 +70,4 @@ public class CrewTest {
         assertThat(crew.getAttendTimes().size()).isEqualTo(0);
     }
 
-    @Test
-    void test10() {
-        Crew crew = new Crew("폰트", "2024-12-13 10:08");
-
-        
-    }
-
 }

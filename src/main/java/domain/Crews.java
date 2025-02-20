@@ -11,7 +11,7 @@ public class Crews {
         crews = new ArrayList<>();
         inputCrews.forEach(inputCrew -> {
             String[] s = inputCrew.split(",");
-            ifFindNameAddTime(s[0], s[1]);
+            initializeAttendTime(s[0], s[1]);
         });
     }
 
@@ -22,7 +22,14 @@ public class Crews {
                 .orElse(null);
     }
 
-    public void ifFindNameAddTime(final String nickname, final String time) {
+    public void ifFindNameAddTime(String nickname) {
+        Crew crew = findCrew(nickname);
+        if (crew == null) {
+            throw new IllegalArgumentException("[ERROR] 등록되지 않은 닉네임입니다.");
+        }
+    }
+
+    public void initializeAttendTime(final String nickname, final String time) {
         Crew crew = findCrew(nickname);
 
         if (crew != null) {
