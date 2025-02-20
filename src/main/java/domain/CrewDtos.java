@@ -4,7 +4,7 @@ import java.util.Comparator;
 import java.util.List;
 
 public class CrewDtos {
-    private final List<CrewDto> crewDtos;
+    private List<CrewDto> crewDtos;
 
     public CrewDtos(List<CrewDto> crewDtos) {
         this.crewDtos = crewDtos;
@@ -12,9 +12,9 @@ public class CrewDtos {
 
     private void sortCrewDtos() {
         crewDtos.sort(
-                Comparator.comparing((CrewDto dto) -> dto.getPenaltyStatus().getThreshold())
-                        .thenComparing(dto -> dto.getLateCount() + dto.getAbsentCount())
-                        .thenComparing(CrewDto::getNickName, Comparator.reverseOrder()));
+                Comparator.comparing((CrewDto dto) -> dto.getPenaltyStatus().getThreshold(), Comparator.reverseOrder())
+                        .thenComparing(dto -> dto.getLateCount() + dto.getAbsentCount(), Comparator.reverseOrder())
+                        .thenComparing(CrewDto::getNickName));
     }
 
     public List<CrewDto> getCrewDtos() {
