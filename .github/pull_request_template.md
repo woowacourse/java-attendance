@@ -3,8 +3,8 @@
 - [x] 미션의 필수 요구사항을 모두 구현했나요?
 - [x] Gradle `test`를 실행했을 때, 모든 테스트가 정상적으로 통과했나요?
 - [x] 애플리케이션이 정상적으로 실행되나요?
-- [x] [프롤로그](https://prolog.techcourse.co.kr)에 셀프 체크를 작성했나요?
-  - https://prolog.techcourse.co.kr/studylogs/3950
+- [x] [프롤로그](https://prolog.techcourse.co.kr/studylogs/3950) 주소
+  
 
 
 ## 객체지향 생활체조 요구사항을 얼마나 잘 충족했다고 생각하시나요?
