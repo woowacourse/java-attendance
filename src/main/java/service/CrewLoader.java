@@ -10,6 +10,8 @@ public class CrewLoader {
 
     public static final String DELIMITER_COMMA = ",";
     public static final String DATETIME_FORMAT = "yyyy-MM-dd HH:mm";
+    public static final int HOUR_INDEX = 0;
+    public static final int MINUTE_INDEX = 1;
 
     public CrewGroup loadCrews(LocalDateTime today) {
         FileReader fileReader = new FileReader();
@@ -26,8 +28,8 @@ public class CrewLoader {
 
         for (String line : lines) {
             String[] splittedLine = line.split(DELIMITER_COMMA);
-            String nickname = splittedLine[0];
-            String rawDate = splittedLine[1];
+            String nickname = splittedLine[HOUR_INDEX];
+            String rawDate = splittedLine[MINUTE_INDEX];
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern(DATETIME_FORMAT);
             LocalDateTime dateTime = LocalDateTime.parse(rawDate, formatter);
             crewGroup.addCrew(nickname, dateTime);
