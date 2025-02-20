@@ -76,9 +76,13 @@ public class AttendanceController {
         }
     }
 
-    private void checkCrewAttendance() {
+    private Crew findCrewByCrewName() {
         String crewName = inputView.readCrewName();
-        Crew crew = crews.findCrew(crewName);
+        return crews.findCrew(crewName);
+    }
+
+    private void checkCrewAttendance() {
+        Crew crew = findCrewByCrewName();
 
         String presentTime = inputView.readPresentTime();
         validateTimeFormat(presentTime);
@@ -101,8 +105,7 @@ public class AttendanceController {
     }
 
     private void modifyCrewAttendance() {
-        String crewName = inputView.readCrewName();
-        Crew crew = crews.findCrew(crewName);
+        Crew crew = findCrewByCrewName();
 
         String date = inputView.readModifyDate();
         validateDateFormat(date);
@@ -130,8 +133,7 @@ public class AttendanceController {
     }
 
     private void lookupCrewAttendanceHistory() {
-        String crewName = inputView.readCrewName();
-        Crew crew = crews.findCrew(crewName);
+        Crew crew = findCrewByCrewName();
 
         List<Attendance> crewAttendances = attendances.findCrewAttendances(crew);
         CrewStatistic crewStatistic = new CrewStatistic(crew, crewAttendances);
@@ -143,7 +145,6 @@ public class AttendanceController {
         outputView.printCrewAttendanceHistory(crew.getName(), crewStatistic.getCrewAttendanceHistory());
         outputView.printCrewStatisticStatus(crewStatistic.getCrewStatisticStatus());
     }
-
 
     private void lookupCrewsExpelStatus() {
         List<CrewStatistic> crewStatistics = new ArrayList<>();
