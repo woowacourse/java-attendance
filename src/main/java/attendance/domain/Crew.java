@@ -108,6 +108,6 @@ public class Crew implements Comparable<Crew> {
     }
 
     public List<Attendance> getAttendances() {
-        return attendances;
+        return Collections.unmodifiableList(attendances);
     }
 }
