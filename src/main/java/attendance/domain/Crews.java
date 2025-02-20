@@ -17,7 +17,7 @@ public class Crews {
         return crews.stream()
             .filter(crew -> crew.getName().equals(nickName))
             .findFirst()
-            .orElseThrow(IllegalArgumentException::new);
+            .orElseThrow(() -> new IllegalArgumentException("\n[ERROR] 등록되지 않은 닉네임입니다."));
     }
 
     public List<Crew> getCrews() {

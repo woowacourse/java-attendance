@@ -6,12 +6,14 @@ import attendance.domain.Crew;
 import attendance.domain.Crews;
 import attendance.file.AttendanceFileReader;
 import attendance.file.AttendanceFileReader.FileContents;
+import attendance.util.DateUtil;
 import attendance.view.InputView;
 import attendance.view.OutputView;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 public class AttendanceController {
@@ -29,21 +31,37 @@ public class AttendanceController {
     public void run() {
         while (true) {
             String inputFunction = InputView.readFunction();
-            if (inputFunction.equals("1")) {
-                recordAttendance();
+            try {
+                performFunction(inputFunction);
+                if (inputFunction.equals("Q")) {
+                    break;
+                }
+            } catch (IllegalArgumentException e) {
+                System.out.println(e.getMessage());
             }
-            if (inputFunction.equals("2")) {
-                modifyAttendance();
-            }
-            if (inputFunction.equals("3")) {
-                checkAttendanceRecordOfCrew();
-            }
-            if (inputFunction.equals("4")) {
-                OutputView.printPenaltyOfCrews(crews.getCrews(), attendances);
-            }
-            if (inputFunction.equals("Q")) {
-                break;
-            }
+        }
+    }
+
+    private void performFunction(String inputFunction) {
+        if (inputFunction.equals("1")) {
+            validateAttendanceDate();
+            recordAttendance();
+        }
+        if (inputFunction.equals("2")) {
+            modifyAttendance();
+        }
+        if (inputFunction.equals("3")) {
+            checkAttendanceRecordOfCrew();
+        }
+        if (inputFunction.equals("4")) {
+            OutputView.printPenaltyOfCrews(crews.getCrews(), attendances);
+        }
+    }
+
+    private void validateAttendanceDate() {
+        if (DateUtil.isWeekend(LocalDate.now())) {
+            throw new IllegalArgumentException(String.format("%n[ERROR] %s은 등교일이 아닙니다.", LocalDate.now().format(
+                DateTimeFormatter.ofPattern(OutputView.DATE_FORMATTER))));
         }
     }
 
@@ -68,10 +86,10 @@ public class AttendanceController {
 
     private void modifyAttendance() {
         String nickName = InputView.readModifyingNickName();
+        Crew crew = crews.getCrew(nickName);
         LocalDate modifyingCheckinDate = getModifyingCheckinDate();
         LocalTime modifyingCheckinTime = getModifyingCheckinTime();
 
-        Crew crew = crews.getCrew(nickName);
         Attendance attendance = attendances.getAttendance(crew, modifyingCheckinDate);
 
         Attendance previousAttendance = Attendance.of(attendance.getDateTime());

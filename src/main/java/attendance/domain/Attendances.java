@@ -21,7 +21,7 @@ public class Attendances {
 
         for (Attendance attendance1 : attendances.get(crew)) {
             if (attendance1.getDateTime().getDayOfMonth() == attendance.getDateTime().getDayOfMonth()) {
-                throw new IllegalArgumentException("수정 이용하세요");
+                throw new IllegalArgumentException("\n[ERROR] 이미 출석을 완료했습니다. 수정 기능을 이용해주세요.");
             }
         }
 
