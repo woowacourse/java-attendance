@@ -1,7 +1,6 @@
 package attendance.controller;
 
-import static attendance.domain.AttendanceType.*;
-
+import attendance.CurrentDate;
 import attendance.domain.AttendancePolicy;
 import attendance.domain.AttendanceHistory;
 import attendance.domain.CrewStatus;
@@ -22,11 +21,13 @@ public class AttendanceController {
     private final InputView inputView;
     private final CrewManager crewManager;
     private final OutputView outputView;
+    private final CurrentDate currentDate;
 
-    public AttendanceController(InputView inputView, CrewManager crewManager, OutputView outputView) {
+    public AttendanceController(InputView inputView, CrewManager crewManager, OutputView outputView, CurrentDate currentDate) {
         this.inputView = inputView;
         this.crewManager = crewManager;
         this.outputView = outputView;
+        this.currentDate = currentDate;
     }
 
     public void start() {
@@ -34,7 +35,7 @@ public class AttendanceController {
         Crew crew2 = new Crew("젠슨");
         crewManager.addCrew(crew1);
         crewManager.addCrew(crew2);
-        LocalDate now = LocalDate.now();
+        LocalDate now = currentDate.now();
         while (true) {
             String option = inputView.inputOption(now);
             if (option.equals("1")) {
