@@ -9,7 +9,6 @@ import domain.TimeAndStatus;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.IllegalFormatException;
 import java.util.List;
 import java.util.Map;
 import view.InputView;
@@ -50,20 +49,21 @@ public class AttendanceController {
             if (functionNumber.equals("4")) {
                 checkExpelledWarning();
             }
-            if(!List.of("1","2","3","4","q","Q").contains(functionNumber)){
+            if (!List.of("1", "2", "3", "4", "q", "Q").contains(functionNumber)) {
                 System.out.println("유효하지 않은 번호입니다.");
             }
-        } while(!functionNumber.equals("q"));
+        } while (!functionNumber.equals("q"));
     }
 
     private void attend() {
         try {
             String name = inputView.readName();
             attendanceManager.findByName(name);
+            List<String> time = List.of(inputView.readTime().split(":"));
 
             String dateForm = String.format(INPUT_DATE_FORMAT, DEFAULT_YEAR, DEFAULT_MONTH,
                 DEFAULT_DAY);
-            String timeForm = formatTime();
+            String timeForm = formatTime(time);
             LocalDateTime dateTime = formatDateTime(dateForm, timeForm);
 
             TimeAndStatus timeAndStatus = attendanceManager.attendCrew(name, dateTime);
@@ -78,10 +78,11 @@ public class AttendanceController {
             String name = inputView.readEditName();
             attendanceManager.findByName(name);
             String dayOfMonth = inputView.readEditDayOfMonth();
+            List<String> time = List.of(inputView.readEditTime().split(":"));
 
             String dateForm = String.format(INPUT_DATE_FORMAT, DEFAULT_YEAR, DEFAULT_MONTH,
                 Integer.parseInt(dayOfMonth));
-            String timeForm = formatTime();
+            String timeForm = formatTime(time);
             LocalDateTime localDateTime = formatDateTime(dateForm, timeForm);
             LocalDate localDate = localDateTime.toLocalDate();
 
@@ -124,8 +125,7 @@ public class AttendanceController {
         outputView.printExpelledWarningResult(sortedResult);
     }
 
-    private String formatTime() {
-        List<String> time = List.of(inputView.readTime().split(":"));
+    private String formatTime(List<String> time) {
         return String.format(INPUT_TIME_FORMAT, Integer.parseInt(time.get(0)),
             Integer.parseInt(time.get(1)));
     }

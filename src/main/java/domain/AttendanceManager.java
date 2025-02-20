@@ -59,7 +59,7 @@ public class AttendanceManager {
     }
 
     public Records findByName(String name) {
-        if(crews.get(name) == null){
+        if (crews.get(name) == null) {
             throw new IllegalArgumentException("존재하지 않는 크루입니다.");
         }
         return crews.get(name);

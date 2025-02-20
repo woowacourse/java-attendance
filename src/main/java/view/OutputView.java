@@ -50,7 +50,7 @@ public class OutputView {
         LocalDate startDate = LocalDate.of(COUNT_START_YEAR, COUNT_START_MONTH, COUNT_START_DAY);
         while (startDate.isBefore(nowDate)) {
             TimeAndStatus status = records.findByDate(startDate);
-            if(!Holiday.isHoliday(startDate)) {
+            if (!Holiday.isHoliday(startDate)) {
                 if (status == null || status.getStatus() == null) {
                     String date = dateFormatting(startDate);
                     System.out.printf(RECORD_FORMAT, date, ABSENCE_FORMAT);
