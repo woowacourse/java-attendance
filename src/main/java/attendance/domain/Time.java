@@ -1,38 +1,26 @@
 package attendance.domain;
 
+import attendance.utils.Parser;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.TextStyle;
 import java.util.Locale;
 
-public class Time {
-    private final LocalDate date;
-    private final String hour;
-    private final String minute;
-    private final boolean isAbsent;
-
-    public Time(LocalDate date, String hour, String minute, boolean isAbsent) {
+public record Time(LocalDate date, String hour, String minute, boolean isAbsent) {
+    public Time {
         if (!isAbsent) {
             validatePossibleTime(date, hour, minute);
             validateInRangeTime(hour, minute);
         }
-        this.date = date;
-        this.hour = hour;
-        this.minute = minute;
-        this.isAbsent = isAbsent;
     }
 
     private void validateInRangeTime(String hour, String minute) {
-        try {
-            if (Integer.parseInt(hour) >= 24 || Integer.parseInt(hour) < 0 || Integer.parseInt(minute) >= 60
-                    || Integer.parseInt(minute) < 0) {
-                throw new IllegalArgumentException("[ERROR] 올바른 시간을 입력해주세요.");
-
-            }
-        } catch (NumberFormatException e) {
-            System.out.println(hour);
-            System.out.println(minute);
+        int parsingHour = Parser.parseInt(hour);
+        int parsingMinute = Parser.parseInt(minute);
+        if (parsingHour >= 24 || parsingHour < 0 || parsingMinute >= 60
+                || parsingMinute < 0) {
             throw new IllegalArgumentException("[ERROR] 올바른 시간을 입력해주세요.");
+
         }
     }
 
@@ -47,21 +35,20 @@ public class Time {
             throw new IllegalArgumentException(message);
         }
 
-        if (Integer.parseInt(hour) < 8 || (Integer.parseInt(hour) == 23 && Integer.parseInt(minute) > 0)) {
+        int parsingHour = Parser.parseInt(hour);
+        int parsingMinute = Parser.parseInt(minute);
+
+        if (parsingHour < 8 || parsingHour == 23 && parsingMinute > 0) {
             throw new IllegalArgumentException("[ERROR] 출석 가능한 시간이 아닙니다.");
         }
     }
 
     public boolean isAfter(LocalDateTime localDateTime) {
         if (!isAbsent) {
-            return date.atTime(Integer.parseInt(hour), Integer.parseInt(minute)).isAfter(localDateTime);
+            return date.atTime(Parser.parseInt(hour), Parser.parseInt(minute)).isAfter(localDateTime);
         }
 
         return true;
-    }
-
-    public LocalDate getDate() {
-        return date;
     }
 
     public int getYear() {
@@ -79,17 +66,5 @@ public class Time {
     public String getDayOfWeek() {
         return date.getDayOfWeek().getDisplayName(
                 TextStyle.FULL, Locale.KOREAN);
-    }
-
-    public String getHour() {
-        return hour;
-    }
-
-    public String getMinute() {
-        return minute;
-    }
-
-    public boolean isAbsent() {
-        return isAbsent;
     }
 }

@@ -54,7 +54,7 @@ public class Attendance {
             return false;
         }
 
-        return attendanceTime.getDate().isEqual(currentAttendance.attendanceTime.getDate());
+        return attendanceTime.date().isEqual(currentAttendance.attendanceTime.date());
     }
 
 

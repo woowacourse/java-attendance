@@ -23,11 +23,11 @@ public class OutputView {
     public void printModifyAttendanceResult(Time originTime, String originAttendanceStatus,
                                             Time modifyTime, String modifyAttendanceStatus) {
         System.out.printf("%02d월 %02d일 %s %s:%s (%s)", originTime.getMonth(), originTime.getDay(),
-                originTime.getDayOfWeek(), originTime.getHour(), originTime.getMinute(), originAttendanceStatus);
+                originTime.getDayOfWeek(), originTime.hour(), originTime.minute(), originAttendanceStatus);
 
         System.out.print(" -> ");
 
-        System.out.printf("%s:%s (%s)", modifyTime.getHour(), modifyTime.getMinute(),
+        System.out.printf("%s:%s (%s)", modifyTime.hour(), modifyTime.minute(),
                 modifyAttendanceStatus);
 
         System.out.println(" 수정 완료!");
@@ -47,7 +47,7 @@ public class OutputView {
 
         System.out.println(
                 String.format("%02d월 %02d일 %s %s:%s (%s)", attendanceTime.getMonth(), attendanceTime.getDay(),
-                        attendanceTime.getDayOfWeek(), attendanceTime.getHour(), attendanceTime.getMinute(),
+                        attendanceTime.getDayOfWeek(), attendanceTime.hour(), attendanceTime.minute(),
                         attendanceStatus));
     }
 
