@@ -6,7 +6,12 @@ import java.util.Locale;
 import java.util.Scanner;
 
 public class InputView {
-    //TODO : 형식 검사
+    private final InputValidator inputValidator;
+
+    public InputView(InputValidator inputValidator) {
+        this.inputValidator = inputValidator;
+    }
+
     public String insertNickname() {
         System.out.println("닉네임을 입력해 주세요.");
         return getInput();
@@ -19,22 +24,23 @@ public class InputView {
 
     public String insertChangeTime() {
         System.out.println("언제로 변경하겠습니까?");
-        return getInput();
+        String input = getInput();
+        inputValidator.validateTimeFormat(input);
+        return input;
     }
 
     public String insertTime() {
         System.out.println("등교 시간을 입력해 주세요.");
-        return getInput();
-    }
-
-    private String getInput() {
-        Scanner scanner = new Scanner(System.in);
-        return scanner.nextLine();
+        String input = getInput();
+        inputValidator.validateTimeFormat(input);
+        return input;
     }
 
     public int insertChangeDate() {
         System.out.println("수정하려는 날짜(일)를 입력해 주세요.");
-        return Integer.parseInt(getInput());
+        String input = getInput();
+        inputValidator.validateInteger(input);
+        return Integer.parseInt(input);
     }
 
     public String insertFunction(LocalDateTime today) {
@@ -49,6 +55,11 @@ public class InputView {
                 4. 제적 위험자 확인
                 Q. 종료
                 """);
-        return getInput().trim();
+        return getInput();
+    }
+
+    private String getInput() {
+        Scanner scanner = new Scanner(System.in);
+        return scanner.nextLine().trim();
     }
 }

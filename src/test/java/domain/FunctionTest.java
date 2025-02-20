@@ -1,7 +1,5 @@
 package domain;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -13,14 +11,14 @@ class FunctionTest {
     @Test
     void functionInputErrorTest() {
         String testRawInput = "q";
-        Assertions.assertThrows(IllegalArgumentException.class, ()->new Function(testRawInput));
+        Assertions.assertThrows(IllegalArgumentException.class, () -> new Function(testRawInput));
     }
 
     @DisplayName("올바른 사용자 입력을 테스트합니다.")
     @ParameterizedTest
     @ValueSource(strings = {"1", "2", "3", "4", "Q"})
     void functionInputTest(String input) {
-        Assertions.assertDoesNotThrow(()->new Function(input));
+        Assertions.assertDoesNotThrow(() -> new Function(input));
     }
 
     @DisplayName("입력한 기능이 동일한지 확인합니다.")

@@ -12,8 +12,7 @@ import view.dto.CrewAttendancesDTO;
 public class OutputView {
     public void printAttendancesLog(CrewAttendancesDTO crewAttendancesDTO) {
         StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append(String.format("이번 달 %s의 출석 기록입니다. \n", crewAttendancesDTO.nickName()));
-        stringBuilder.append("\n");
+        stringBuilder.append(String.format("이번 달 %s의 출석 기록입니다. \n\n", crewAttendancesDTO.nickName()));
 
         for (AttendanceLogDTO attendanceLogDTO : crewAttendancesDTO.attendanceLogDTOs()) {
             stringBuilder.append(makeAttendanceLog(attendanceLogDTO));
@@ -21,17 +20,16 @@ public class OutputView {
 
         stringBuilder.append("\n");
 
-        stringBuilder.append(String.format("출석: %d회", crewAttendancesDTO.present()));
-        stringBuilder.append("\n");
-        stringBuilder.append(String.format("지각: %d회", crewAttendancesDTO.late()));
-        stringBuilder.append("\n");
-        stringBuilder.append(String.format("결석: %d회", crewAttendancesDTO.absent()));
-
-        stringBuilder.append("\n");
-        stringBuilder.append("\n");
-        stringBuilder.append(String.format("%s 대상자입니다.", crewAttendancesDTO.alertLevel()));
+        makeAttendanceStatistics(crewAttendancesDTO, stringBuilder);
 
         System.out.println(stringBuilder);
+    }
+
+    private void makeAttendanceStatistics(CrewAttendancesDTO crewAttendancesDTO, StringBuilder stringBuilder) {
+        stringBuilder.append(String.format("출석: %d회 \n", crewAttendancesDTO.present()));
+        stringBuilder.append(String.format("지각: %d회 \n", crewAttendancesDTO.late()));
+        stringBuilder.append(String.format("결석: %d회 \n\n", crewAttendancesDTO.absent()));
+        stringBuilder.append(String.format("%s 대상자입니다.", crewAttendancesDTO.alertLevel()));
     }
 
     public void printAttendanceLog(AttendanceLogDTO attendanceLogDTO) {

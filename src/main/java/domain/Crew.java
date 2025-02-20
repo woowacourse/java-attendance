@@ -6,6 +6,8 @@ import java.util.List;
 import java.util.Objects;
 
 public class Crew {
+    public static final int ABSENT_HOUR = 23;
+    public static final int ABSENT_MINUTE = 59;
     private final String nickname;
     private final AttendanceCount attendanceCount = new AttendanceCount();
     private final List<Attendance> attendances = new ArrayList<>();
@@ -33,7 +35,8 @@ public class Crew {
         weekDays.removeAll(attendanceDays);
 
         for (int day : weekDays) {
-            attendances.add(new Attendance(LocalDateTime.of(today.getYear(), today.getMonth(), day, 23, 59)));
+            attendances.add(new Attendance(LocalDateTime.of(today.getYear(), today.getMonth(), day, ABSENT_HOUR,
+                    ABSENT_MINUTE)));
         }
     }
 
@@ -63,11 +66,11 @@ public class Crew {
     }
 
     public boolean isAlreadyChecked(LocalDateTime today) {
-        long count = attendances.stream()
+        long todayAttendance = attendances.stream()
                 .filter(attendance -> attendance.isSameDay(today.getDayOfMonth()))
                 .count();
 
-        if (count != 0) {
+        if (todayAttendance != 0) {
             return true;
         }
         return false;

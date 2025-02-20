@@ -2,7 +2,6 @@ package domain;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import org.assertj.core.api.Assert;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

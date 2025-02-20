@@ -7,20 +7,26 @@ import java.util.Date;
 public class Time {
 
     public static final String INVALID_TIME_FORMAT = "적절한 시간 형식으로 입력해주세요.";
+    public static final int HOUR_INDEX = 0;
+    public static final int MINUTE_INDEX = 1;
+    public static final String TIME_DELIMITER = ":";
+    public static final String TIME_FORMAT = "HH:mm";
+    public static final int END_TIME = 23;
+    public static final int END_MINUTE = 59;
     private final int hour;
     private final int minute;
 
     public Time(String rawTime) {
         validate(rawTime);
 
-        String[] spilttedTime = rawTime.split(":");
-        this.hour = Integer.parseInt(spilttedTime[0]);
-        this.minute = Integer.parseInt(spilttedTime[1]);
+        String[] spilttedTime = rawTime.split(TIME_DELIMITER);
+        this.hour = Integer.parseInt(spilttedTime[HOUR_INDEX]);
+        this.minute = Integer.parseInt(spilttedTime[MINUTE_INDEX]);
     }
 
     private void validate(String rawTime) {
         validateTimeFormat(rawTime);
-        SimpleDateFormat formatter = new SimpleDateFormat("HH:mm");
+        SimpleDateFormat formatter = new SimpleDateFormat(TIME_FORMAT);
         try {
             Date time = formatter.parse(rawTime);
             Date openTime = formatter.parse("08:00");
@@ -35,13 +41,13 @@ public class Time {
     }
 
     private void validateTimeFormat(String rawTime) {
-        String[] spilttedTime = rawTime.split(":");
-        int spittedHour = Integer.parseInt(spilttedTime[0]);
-        if (spittedHour < 0 || spittedHour > 23) {
+        String[] spilttedTime = rawTime.split(TIME_DELIMITER);
+        int spittedHour = Integer.parseInt(spilttedTime[HOUR_INDEX]);
+        if (spittedHour < 0 || spittedHour > END_TIME) {
             throw new IllegalArgumentException(INVALID_TIME_FORMAT);
         }
-        int spittedMinute = Integer.parseInt(spilttedTime[1]);
-        if (spittedMinute < 0 || spittedMinute > 59) {
+        int spittedMinute = Integer.parseInt(spilttedTime[MINUTE_INDEX]);
+        if (spittedMinute < 0 || spittedMinute > END_MINUTE) {
             throw new IllegalArgumentException(INVALID_TIME_FORMAT);
         }
     }

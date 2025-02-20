@@ -7,6 +7,10 @@ import java.util.List;
 import util.FileReader;
 
 public class CrewLoader {
+
+    public static final String DELIMITER_COMMA = ",";
+    public static final String DATETIME_FORMAT = "yyyy-MM-dd HH:mm";
+
     public CrewGroup loadCrews(LocalDateTime today) {
         FileReader fileReader = new FileReader();
         List<String> lines = fileReader.readFile();
@@ -21,10 +25,10 @@ public class CrewLoader {
         CrewGroup crewGroup = new CrewGroup();
 
         for (String line : lines) {
-            String[] splittedLine = line.split(",");
+            String[] splittedLine = line.split(DELIMITER_COMMA);
             String nickname = splittedLine[0];
             String rawDate = splittedLine[1];
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern(DATETIME_FORMAT);
             LocalDateTime dateTime = LocalDateTime.parse(rawDate, formatter);
             crewGroup.addCrew(nickname, dateTime);
         }

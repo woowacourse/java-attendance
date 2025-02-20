@@ -1,6 +1,7 @@
 package domain;
 
 public class AttendanceCount {
+    public static final int LATE_TO_ABSENT_THRESHOLD = 3;
     private int present;
     private int late;
     private int absent;
@@ -18,7 +19,7 @@ public class AttendanceCount {
     }
 
     public AttendanceAlertLevel calculateAttendanceAlertLevel() {
-        int absentTotal = absent + (late / 3);
+        int absentTotal = absent + (late / LATE_TO_ABSENT_THRESHOLD);
         if (absentTotal >= AttendanceAlertLevel.DISMISSED.absenceLimit) {
             return AttendanceAlertLevel.DISMISSED;
         }

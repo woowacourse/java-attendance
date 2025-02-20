@@ -3,12 +3,12 @@ package controller;
 import domain.Attendance;
 import domain.Crew;
 import domain.CrewGroup;
+import domain.Day;
 import domain.Function;
 import domain.Time;
 import java.time.LocalDateTime;
 import java.util.List;
 import service.CrewLoader;
-import domain.Day;
 import util.DayOfWeekConverter;
 import view.InputView;
 import view.OutputView;
@@ -28,28 +28,16 @@ public class Controller {
     }
 
     public void run() {
-        LocalDateTime today = LocalDateTime.of(2024, 12, 14, 10, 0);
+        LocalDateTime today = LocalDateTime.of(2024, 12, 18, 10, 0);
         CrewLoader crewLoader = new CrewLoader();
         CrewGroup crewGroup = crewLoader.loadCrews(today);
-
         try {
             while (true) {
                 String rawFunction = inputView.insertFunction(today);
                 Function function = new Function(rawFunction);
+                runCycle(function, crewGroup, today);
                 if (function.equals("Q")) {
-                    break;
-                }
-                if (function.equals("1")) {
-                    attendanceCheck(crewGroup, today);
-                }
-                if (function.equals("2")) {
-                    changeAttendance(crewGroup);
-                }
-                if (function.equals("3")) {
-                    showCrewAttendance(crewGroup);
-                }
-                if (function.equals("4")) {
-                    showAlertCrews(crewGroup);
+                    return;
                 }
             }
         } catch (Exception e) {
@@ -57,15 +45,31 @@ public class Controller {
         }
     }
 
+    private void runCycle(Function function, CrewGroup crewGroup, LocalDateTime today) {
+        if (function.equals("1")) {
+            attendanceCheck(crewGroup, today);
+        }
+        if (function.equals("2")) {
+            changeAttendance(crewGroup);
+        }
+        if (function.equals("3")) {
+            showCrewAttendance(crewGroup);
+        }
+        if (function.equals("4")) {
+            showAlertCrews(crewGroup);
+        }
+    }
+
     private void attendanceCheck(CrewGroup crewGroup, LocalDateTime today) {
         if (Day.isHoliday(today)) {
-            throw new IllegalArgumentException(String.format("%d월 %d일 %s은 등교일이 아닙니다.", today.getMonthValue(), today.getDayOfMonth(),
-                    DayOfWeekConverter.convertDayOfWeek(today)));
+            throw new IllegalArgumentException(
+                    String.format("%d월 %d일 %s은 등교일이 아닙니다.", today.getMonthValue(), today.getDayOfMonth(),
+                            DayOfWeekConverter.convertDayOfWeek(today)));
         }
         String rawName = inputView.insertNickname();
         Crew crew = crewGroup.searchCrew(rawName);
 
-        if(crew.isAlreadyChecked(today)) {
+        if (crew.isAlreadyChecked(today)) {
             outputView.printGuide();
             return;
         }
@@ -80,20 +84,15 @@ public class Controller {
     }
 
     private void changeAttendance(CrewGroup crewGroup) {
-        //1. 크루 닉네임 입력
         String rawName = inputView.insertChangeDateNickname();
         Crew crew = crewGroup.searchCrew(rawName);
-        //2. 잇으면 수정하려는 날짜 입력
+
         int changeDate = inputView.insertChangeDate();
-        //3. 평일이거나 미래가 아니면 시간 입력
         String rawTime = inputView.insertChangeTime();
         Time time = new Time(rawTime);
-        // 예외
 
-        //4. 출석 수정
         Attendance originalAttendance = crew.getSpecificAttendance(changeDate);
         Attendance copy = new Attendance(originalAttendance.getDate());
-        //5. 기존 -> 변경 출력
         Attendance changedAttendance = crew.changeAttendance(changeDate, time);
 
         outputView.printChangeLog(ChangeAttendanceLogDTO.from(copy, changedAttendance));
