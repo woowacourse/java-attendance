@@ -60,13 +60,15 @@ public class Crew {
 
     public String getAttendanceHistory(LocalDate lastDate) {
         updateUntil(lastDate);
-        return printAttendanceInfo(lastDate) + printAttendanceStateInfo(lastDate) + printWarningStatus(lastDate);
+        return printAttendanceInfo(lastDate) + "\n"
+                + printAttendanceStateInfo(lastDate) + "\n"
+                + printWarningStatus(lastDate) + "\n";
     }
 
     public String printAttendanceInfo(LocalDate lastDate) {
         updateUntil(lastDate);
         attendanceInfo.sort(Comparator.comparing(Attendance::getDayOfMonth));
-        String str ="";
+        String str = "";
         for (Attendance attendance : attendanceInfo) {
             str += attendance.printAttendance() + "\n";
         }
@@ -76,9 +78,9 @@ public class Crew {
     public String printAttendanceStateInfo(LocalDate lastDate) {
         updateUntil(lastDate.minusDays(1));
         String str = "";
-        str += "출석: " + getAttendanceCount()+"회\n";
-        str += "지각: " + getLateCount()+"회\n";
-        str += "결석: " + getAbsentCount()+"회\n";
+        str += "출석: " + getAttendanceCount() + "회\n";
+        str += "지각: " + getLateCount() + "회\n";
+        str += "결석: " + getAbsentCount() + "회\n";
         return str;
     }
 
@@ -89,7 +91,7 @@ public class Crew {
     private int getOriginalAbsentCount() {
         int count = 0;
         for (Attendance attendance : attendanceInfo) {
-            if(attendance.getState().equals("결석")) {
+            if (attendance.getState().equals("결석")) {
                 count++;
             }
         }
@@ -99,7 +101,7 @@ public class Crew {
     private int getAttendanceCount() {
         int count = 0;
         for (Attendance attendance : attendanceInfo) {
-            if(attendance.getState().equals("출석")) {
+            if (attendance.getState().equals("출석")) {
                 count++;
             }
         }
@@ -109,7 +111,7 @@ public class Crew {
     private int getLateCount() {
         int count = 0;
         for (Attendance attendance : attendanceInfo) {
-            if(attendance.getState().equals("지각")) {
+            if (attendance.getState().equals("지각")) {
                 count++;
             }
         }
@@ -117,13 +119,13 @@ public class Crew {
     }
 
     public void updateUntil(LocalDate lastDate) {
-        for(int i=1;i <= lastDate.getDayOfMonth();i++){
+        for (int i = 1; i <= lastDate.getDayOfMonth(); i++) {
             DayOfWeek todayDayOfWeek = LocalDate.of(2024, 12, i).getDayOfWeek();
             if (todayDayOfWeek == DayOfWeek.SATURDAY || todayDayOfWeek == DayOfWeek.SUNDAY || i == 25) {
                 continue;
             }
-            if(!containsDayOfMonth(i)){
-                attendanceInfo.add(new Attendance(LocalDateTime.of(2024,12,i,15,0)));
+            if (!containsDayOfMonth(i)) {
+                attendanceInfo.add(new Attendance(LocalDateTime.of(2024, 12, i, 15, 0)));
             }
         }
     }
@@ -143,24 +145,24 @@ public class Crew {
         int lateCount = getLateCount();
         int originalAbsentCount = getOriginalAbsentCount();
         int absentCount = originalAbsentCount + (lateCount / 3);
-        String str = name + ": 결석 " + originalAbsentCount +"회, 지각 " + lateCount + "회 ";
+        String str = name + ": 결석 " + originalAbsentCount + "회, 지각 " + lateCount + "회 ";
         String str1 = calculateWarningStatus(absentCount);
-        if(str1.isEmpty()) {
+        if (str1.isEmpty()) {
             return str;
         }
-        str += "("+str1+")";
+        str += "(" + str1 + ")";
         return str;
     }
 
     public String calculateWarningStatus(int absentCount) {
-        if(absentCount > 5) { // 5회 초과, 3회 이상, 2회 이상
-            return"제적";
+        if (absentCount > 5) { // 5회 초과, 3회 이상, 2회 이상
+            return "제적";
         }
-        if(absentCount >= 3) {
-            return"면담";
+        if (absentCount >= 3) {
+            return "면담";
         }
-        if(absentCount >= 2){
-            return"경고";
+        if (absentCount >= 2) {
+            return "경고";
         }
         return "";
     }
@@ -168,7 +170,9 @@ public class Crew {
     public String printWarningStatus(LocalDate lastDate) {
         updateUntil(lastDate.minusDays(1));
         String warningStatus = calculateWarningStatus(getAbsentCount());
-        if(warningStatus.isEmpty()) return "";
+        if (warningStatus.isEmpty()) {
+            return "";
+        }
         return warningStatus + " 대상자입니다.";
     }
 }

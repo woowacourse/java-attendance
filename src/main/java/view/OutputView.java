@@ -8,7 +8,7 @@ public class OutputView {
     private static LocalDate today = LocalDate.of(2024, 12, 13);
 
     public static void printDangerousCrew(AllCrew allCrew) {
-        System.out.println("제적 위험자 조회 결과");
+        System.out.println("\n제적 위험자 조회 결과");
         System.out.println(allCrew.printAllCrewWarningInfo(today));
     }
 

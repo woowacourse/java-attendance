@@ -26,7 +26,7 @@ public class UserInputView {
     }
     
     public static String askNickNameForCheckAttendanceInfo() {
-        System.out.println("닉네임을 입력해 주세요.");
+        System.out.println("\n닉네임을 입력해 주세요.");
         Scanner sc = new Scanner(System.in);
         String name = sc.nextLine();
         System.out.println("\n이번 달 " + name + "의 출석 기록입니다.\n");
@@ -34,7 +34,7 @@ public class UserInputView {
     }
     
     public static String askNickNameForCheckAttendance() {
-        System.out.println("닉네임을 입력해 주세요.");
+        System.out.println("\n닉네임을 입력해 주세요.");
         return new Scanner(System.in).nextLine();
     }
     
@@ -44,7 +44,7 @@ public class UserInputView {
     }
     
     public static String askNickNameForModifyAttendanceInfo() {
-        System.out.println("출석을 수정하려는 크루의 닉네임을 입력해 주세요.");
+        System.out.println("\n출석을 수정하려는 크루의 닉네임을 입력해 주세요.");
         return new Scanner(System.in).nextLine();
     }
     
