@@ -179,5 +179,50 @@ public class AttendanceBookTest {
                         .isEqualTo(AttendStatus.ABSENCE));
     }
 
+    @Test
+    @DisplayName("출석부에서 제적 위험자 조회 기능")
+    void test11() throws Exception {
+        //given
+        AttendanceBook attendanceBook = new AttendanceBook();
+        String name = "플린트";
+        List<Integer> days = DateUtil.getAttendUntilDay(5);
+        List<Attend> expectAttend = List.of(Attend.of("2", "10:00"), Attend.of("3", "10:06"), Attend.of("4", "10:31"));
+        for (Attend attend : expectAttend) {
+            attendanceBook.attend(name, attend);
+        }
+
+        //when
+        List<WarningCrew> warningCrews = attendanceBook.checkWarningCrews(days);
+
+        //then
+        AttendCount expectedAttendCount = new AttendCount(1, 1, 2);
+        WarningCrew expected = new WarningCrew(name, expectedAttendCount);
+        assertThat(warningCrews).contains(expected);
+    }
+
+    @Test
+    @DisplayName("출석부에서 제적 위험자 조회 기능- 맞는 대상만 잘 가져오는지")
+    void test156421() throws Exception {
+        //given
+        AttendanceBook attendanceBook = new AttendanceBook();
+        List<Integer> days = DateUtil.getAttendUntilDay(5);
+        String name = "플린트";
+        List<Attend> expectAttend = List.of(Attend.of("2", "10:00"), Attend.of("3", "10:06"), Attend.of("4", "10:31"));
+        for (Attend attend : expectAttend) {
+            attendanceBook.attend(name, attend);
+        }
+        String secondName = "후유";
+        List<Attend> secondAttends = List.of(Attend.of("2", "10:00"), Attend.of("3", "10:00"), Attend.of("4", "10:00"));
+        for (Attend attend : secondAttends) {
+            attendanceBook.attend(secondName, attend);
+        }
+
+        //when
+        List<WarningCrew> warningCrews = attendanceBook.checkWarningCrews(days);
+
+        //then
+        AttendCount expectedAttendCount = new AttendCount(1, 1, 2);
+        WarningCrew expected = new WarningCrew(name, expectedAttendCount);
+        assertThat(warningCrews).contains(expected);
     }
 }

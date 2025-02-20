@@ -73,4 +73,18 @@ public class AttendanceBook {
         Attend attend = Attend.fromDay(day);
         return new AttendanceResult(attend, AttendStatus.ABSENCE);
     }
+
+    public List<WarningCrew> checkWarningCrews(List<Integer> days) {
+        List<WarningCrew> result = new ArrayList<>();
+        for (final String name : map.keySet()) {
+            AttendCount attendCount = checkAttendance(name, days).countAttendStatus();
+            WarningStatus warningStatus = attendCount.judgeWarning();
+            // TODO: Indent 줄이기
+            if (warningStatus == WarningStatus.CLEAR) {
+                continue;
+            }
+            result.add(new WarningCrew(name, attendCount));
+        }
+        return result;
+    }
 }
