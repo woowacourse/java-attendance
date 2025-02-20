@@ -1,8 +1,9 @@
 package attendance.dto;
 
-import attendance.model.CrewAttendanceStatus;
+import attendance.model.domain.attendance.CrewAttendance;
 
 public class RequiresManagementCrewResponse {
+
     private final String crewName;
     private final int absenceCount;
     private final int lateCount;
@@ -15,12 +16,12 @@ public class RequiresManagementCrewResponse {
         this.managementStatus = managementStatus;
     }
 
-    public static RequiresManagementCrewResponse from(CrewAttendanceStatus crewAttendanceStatus) {
+    public static RequiresManagementCrewResponse from(CrewAttendance crewAttendance) {
         return new RequiresManagementCrewResponse(
-                crewAttendanceStatus.getCrew().getName(),
-                crewAttendanceStatus.getAbsenceCount(),
-                crewAttendanceStatus.getLateCount(),
-                crewAttendanceStatus.getManagementStatus().getName()
+                crewAttendance.getCrewName(),
+                crewAttendance.getAbsenceCount(),
+                crewAttendance.getLateCount(),
+                crewAttendance.getManagementStatusName()
         );
     }
 

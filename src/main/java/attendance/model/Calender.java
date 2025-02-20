@@ -12,8 +12,10 @@ public enum Calender {
     WEEKEND(List.of(1, 7, 8, 14, 15, 21, 22, 28, 29)),
     HOLIDAY(List.of(25));
 
-    private static final int YEAR = 2024;
-    private static final Month MONTH = Month.DECEMBER;
+    public static final int NOW_YEAR = 2024;
+    public static final int NOW_MONTH = 12;
+    public static final int NOW_DAY = 14;
+    public static final LocalDate TODAY = LocalDate.of(NOW_YEAR, NOW_MONTH, NOW_DAY);
     private final List<Integer> days;
 
     Calender(List<Integer> days) {
@@ -23,9 +25,13 @@ public enum Calender {
     public static List<LocalDate> getNotExistsDatesBeforeToday(List<LocalDate> dates) {
         Set<LocalDate> datesSet = Set.copyOf(dates);
 
-        return getDatesBefore(LocalDate.of(2024, 12, 14)).stream()
+        return getDatesBefore(Calender.TODAY).stream()
                 .filter(date -> !datesSet.contains(date))
                 .toList();
+    }
+
+    public static int getNotExistsDatesCountBeforeToday(List<LocalDate> dates) {
+        return getNotExistsDatesBeforeToday(dates).size();
     }
 
     private static List<LocalDate> getDatesBefore(LocalDate date) {
@@ -35,7 +41,7 @@ public enum Calender {
     }
 
     public static boolean isMonday(LocalDate date) {
-        if (date.getYear() != YEAR && date.getMonth() != MONTH) {
+        if (date.getYear() != NOW_YEAR || date.getMonth() != Month.of(NOW_MONTH)) {
             throw new IllegalArgumentException("해당 날짜는 2024년 12월에 포함되지 않습니다.");
         }
         return MONDAY.days.contains(date.getDayOfMonth());
@@ -43,7 +49,7 @@ public enum Calender {
 
     public List<LocalDate> getDays() {
         return days.stream()
-                .map(day -> LocalDate.of(YEAR, MONTH, day))
+                .map(day -> LocalDate.of(NOW_YEAR, NOW_MONTH, day))
                 .toList();
     }
 }

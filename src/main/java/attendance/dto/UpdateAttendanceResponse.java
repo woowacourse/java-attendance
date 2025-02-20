@@ -1,42 +1,49 @@
 package attendance.dto;
 
-import attendance.model.AttendanceStatus;
+import attendance.model.domain.attendance.AttendanceStatus;
 import java.time.LocalDateTime;
 
 public class UpdateAttendanceResponse {
 
-    private final LocalDateTime before;
-    private final LocalDateTime after;
+    private final LocalDateTime previousDateTime;
+    private final LocalDateTime updatedDateTime;
+    private final String previousStatus;
+    private final String updatedStatus;
 
-    private final String beforeStatus;
-    private final String afterStatus;
-
-    private UpdateAttendanceResponse(LocalDateTime before, LocalDateTime after, String beforeStatus,
-                                     String afterStatus) {
-        this.before = before;
-        this.after = after;
-        this.beforeStatus = beforeStatus;
-        this.afterStatus = afterStatus;
+    private UpdateAttendanceResponse(
+            LocalDateTime previousDateTime,
+            LocalDateTime updatedDateTime,
+            String previousStatus,
+            String updatedStatus
+    ) {
+        this.previousDateTime = previousDateTime;
+        this.updatedDateTime = updatedDateTime;
+        this.previousStatus = previousStatus;
+        this.updatedStatus = updatedStatus;
     }
 
-    public static UpdateAttendanceResponse of(LocalDateTime before, LocalDateTime after, AttendanceStatus beforeStatus,
-                                              AttendanceStatus afterStatus) {
+    public static UpdateAttendanceResponse of(
+            LocalDateTime before,
+            LocalDateTime after,
+            AttendanceStatus beforeStatus,
+            AttendanceStatus afterStatus
+    ) {
         return new UpdateAttendanceResponse(before, after, beforeStatus.getName(), afterStatus.getName());
     }
 
-    public LocalDateTime getBefore() {
-        return before;
+    public LocalDateTime getPreviousDateTime() {
+        return previousDateTime;
     }
 
-    public LocalDateTime getAfter() {
-        return after;
+    public LocalDateTime getUpdatedDateTime() {
+        return updatedDateTime;
     }
 
-    public String getBeforeStatus() {
-        return beforeStatus;
+    public String getPreviousStatus() {
+        return previousStatus;
     }
 
-    public String getAfterStatus() {
-        return afterStatus;
+    public String getUpdatedStatus() {
+        return updatedStatus;
     }
 }

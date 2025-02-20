@@ -1,6 +1,6 @@
 package attendance.dto;
 
-import attendance.model.AttendanceStatus;
+import attendance.model.domain.attendance.AttendanceStatus;
 
 public class AttendanceStatusResponse {
 

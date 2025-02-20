@@ -1,9 +1,9 @@
-package attendance.model;
+package attendance.model.domain.attendance;
 
-import attendance.model.domain.crew.AbsenceCount;
-import attendance.model.domain.crew.LateCount;
+import attendance.model.domain.attendance.vo.WarningCount;
 
 public enum ManagementStatus {
+
     EXPULSION("제적"),
     COUNSELING("면담"),
     WARNING("경고"),
@@ -15,15 +15,15 @@ public enum ManagementStatus {
         this.name = name;
     }
 
-    public static ManagementStatus of(final AbsenceCount absenceCount, final LateCount lateCount) {
-        int realAbsenceCount = absenceCount.getPolicyAppliedAbsenceCount(lateCount);
-        if (realAbsenceCount > 5) {
+    public static ManagementStatus from(WarningCount warningCount) {
+        int policyAppliedAbsenceCount = warningCount.getPolicyAppliedAbsenceCount();
+        if (policyAppliedAbsenceCount > 5) {
             return EXPULSION;
         }
-        if (realAbsenceCount > 2) {
+        if (policyAppliedAbsenceCount > 2) {
             return COUNSELING;
         }
-        if (realAbsenceCount > 1) {
+        if (policyAppliedAbsenceCount > 1) {
             return WARNING;
         }
         return NONE;

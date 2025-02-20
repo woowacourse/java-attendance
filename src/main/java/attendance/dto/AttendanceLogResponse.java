@@ -1,45 +1,40 @@
 package attendance.dto;
 
-import attendance.model.AttendanceStatus;
+import attendance.model.domain.attendance.AttendanceStatus;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.Optional;
 
 public class AttendanceLogResponse {
 
-    private final LocalDate date;
-    private final LocalTime time;
+    private final TimeNullableDateTimeResponse timeNullableDateTimeResponse;
     private final AttendanceStatusResponse attendanceStatusResponse;
 
-    private AttendanceLogResponse(LocalDateTime dateTime, AttendanceStatusResponse attendanceStatusResponse) {
-        this.date = dateTime.toLocalDate();
-        this.time = dateTime.toLocalTime();
+    private AttendanceLogResponse(TimeNullableDateTimeResponse timeNullableDateTimeResponse,
+                                  AttendanceStatusResponse attendanceStatusResponse) {
+        this.timeNullableDateTimeResponse = timeNullableDateTimeResponse;
         this.attendanceStatusResponse = attendanceStatusResponse;
     }
 
-    private AttendanceLogResponse(LocalDate date, AttendanceStatusResponse attendanceStatusResponse) {
-        this.date = date;
-        this.time = null;
-        this.attendanceStatusResponse = attendanceStatusResponse;
-    }
-
-    public static AttendanceLogResponse of(LocalDateTime dateTime, AttendanceStatus attendanceStatus) {
-        return new AttendanceLogResponse(dateTime, AttendanceStatusResponse.from(attendanceStatus));
-    }
-
-    public static AttendanceLogResponse of(LocalDate date, AttendanceStatus attendanceStatus) {
-        return new AttendanceLogResponse(date, AttendanceStatusResponse.from(attendanceStatus));
+    public static AttendanceLogResponse of(TimeNullableDateTimeResponse timeNullableDateTimeResponse,
+                                           AttendanceStatus attendanceStatus) {
+        return new AttendanceLogResponse(timeNullableDateTimeResponse, AttendanceStatusResponse.from(attendanceStatus));
     }
 
     public LocalDate getDate() {
-        return date;
+        return timeNullableDateTimeResponse.getDate();
     }
 
-    public LocalTime getTime() {
-        return time;
+    public Optional<LocalTime> getTime() {
+        return timeNullableDateTimeResponse.getTime();
     }
 
-    public AttendanceStatusResponse getAttendanceStatusResponse() {
-        return attendanceStatusResponse;
+    public Optional<LocalDateTime> getDateTime() {
+        return timeNullableDateTimeResponse.getDateTime();
+    }
+
+    public String getAttendanceStatus() {
+        return attendanceStatusResponse.getAttendanceStatus();
     }
 }

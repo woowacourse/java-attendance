@@ -1,5 +1,6 @@
 package attendance.model.domain.crew;
 
+import attendance.model.domain.crew.vo.CrewName;
 import java.util.Objects;
 
 public class Crew {

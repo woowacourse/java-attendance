@@ -17,31 +17,37 @@ import java.util.stream.Stream;
 
 public class CrewAttendanceDeserializer {
 
-    public Map<Crew, List<LocalDateTime>> readAll(final Path filePath) throws UncheckedIOException {
+    private static final String CREW_DATETIME_DELIMITER = ",";
+    private static final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
 
+    public Map<Crew, List<LocalDateTime>> readAll(final Path filePath) {
         try (Stream<String> lines = Files.lines(filePath)) {
-            HashMap<Crew, List<LocalDateTime>> map = new HashMap<>();
+            HashMap<Crew, List<LocalDateTime>> parsedData = new HashMap<>();
 
             lines.skip(1)
                     .map(this::deSerialize)
-                    .forEach(entry -> {
-                        List<LocalDateTime> times = map.getOrDefault(entry.getKey(), new LinkedList<>());
-                        times.add(entry.getValue());
-                        map.put(entry.getKey(), times);
-                    });
+                    .forEach(entry -> addData(parsedData, entry));
 
-            return map;
+            return parsedData;
         } catch (IOException e) {
             throw new UncheckedIOException(e);
         }
     }
 
-    private Entry<Crew, LocalDateTime> deSerialize(final String line) throws UncheckedIOException {
+    private void addData(HashMap<Crew, List<LocalDateTime>> data, Entry<Crew, LocalDateTime> entry) {
+        List<LocalDateTime> times = data.getOrDefault(entry.getKey(), new LinkedList<>());
+        times.add(entry.getValue());
 
-        String datetime = line.split(",")[1];
-        LocalDateTime parsedDateTime = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")
-                .parse(datetime, LocalDateTime::from);
-        return new SimpleImmutableEntry<>(Crew.from(line.split(",")[0]), parsedDateTime);
+        data.put(entry.getKey(), times);
+    }
+
+    private Entry<Crew, LocalDateTime> deSerialize(final String line) {
+        String[] split = line.split(CREW_DATETIME_DELIMITER);
+
+        String crewName = split[0];
+        LocalDateTime dateTime = dateTimeFormatter.parse(split[1], LocalDateTime::from);
+
+        return new SimpleImmutableEntry<>(Crew.from(crewName), dateTime);
     }
 }
 

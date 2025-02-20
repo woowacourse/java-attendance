@@ -8,30 +8,35 @@ import attendance.view.input.KoreaDayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
-import java.util.Map;
 
 public class ConsoleOutputView implements OutputView {
 
 
     @Override
-    public void printAttendanceLog(AttendanceLogResponse response) {
-        String message = String.format("%s %s %s (%s)",
-                formatDate(response.getDate()),
-                KoreaDayOfWeek.from(response.getDate().getDayOfWeek()).getName(),
-                formatTime(response.getTime()),
-                response.getAttendanceStatusResponse().getAttendanceStatus());
+    public void printAttendanceLogResponse(AttendanceLogResponse response) {
+
+        LocalDate date = response.getDate();
+        LocalTime time = response.getTime().orElse(null);
+
+        String message = String.format("%s %s (%s)",
+                formatDateWithDayOfWeek(date),
+                formatTime(time),
+                response.getAttendanceStatus());
         System.out.println(message);
     }
 
     @Override
     public void printUpdateAttendanceResponse(UpdateAttendanceResponse updateAttendanceResponse) {
-        String message = String.format("%s %s %s (%s) -> %s (%s) 수정 완료!",
-                formatDate(updateAttendanceResponse.getBefore().toLocalDate()),
-                KoreaDayOfWeek.from(updateAttendanceResponse.getBefore().getDayOfWeek()).getName(),
-                formatTime(updateAttendanceResponse.getBefore().toLocalTime()),
-                updateAttendanceResponse.getBeforeStatus(),
-                formatTime(updateAttendanceResponse.getAfter().toLocalTime()),
-                updateAttendanceResponse.getAfterStatus());
+
+        LocalDate date = updateAttendanceResponse.getPreviousDateTime().toLocalDate();
+        LocalTime time = updateAttendanceResponse.getPreviousDateTime().toLocalTime();
+
+        String message = String.format("%s %s (%s) -> %s (%s) 수정 완료!",
+                formatDateWithDayOfWeek(date),
+                formatTime(time),
+                updateAttendanceResponse.getPreviousStatus(),
+                formatTime(time),
+                updateAttendanceResponse.getUpdatedStatus());
         System.out.println(message);
     }
 
@@ -39,18 +44,18 @@ public class ConsoleOutputView implements OutputView {
     public void printCrewAttendanceLogResponse(CrewAttendanceLogResponse crewAttendanceLogResponse) {
         System.out.printf("이번 달 %s의 출석 기록입니다.%n%n", crewAttendanceLogResponse.getCrewName());
 
-        crewAttendanceLogResponse.getTimeLogs().forEach(this::printAttendanceLog);
+        crewAttendanceLogResponse.getAttendanceLogResponses()
+                .forEach(this::printAttendanceLogResponse);
 
-        Map<String, Integer> attendanceStatusStatistics = crewAttendanceLogResponse.getAttendanceStatusStatistics();
         System.out.println();
-        attendanceStatusStatistics.forEach((status, count) -> System.out.printf("%s: %d회%n", status, count));
-
+        printAttendanceStatusStatistics(crewAttendanceLogResponse);
         System.out.printf("%n%s 대상자입니다.%n", crewAttendanceLogResponse.getManagementStatus());
     }
 
     @Override
     public void printRequiresManagementCrewResponse(
-            List<RequiresManagementCrewResponse> requiresManagementCrewResponses) {
+            List<RequiresManagementCrewResponse> requiresManagementCrewResponses
+    ) {
         System.out.println("제적 위험자 조회 결과");
         requiresManagementCrewResponses.forEach(response -> {
             System.out.printf("- %s: 결석 %d회, 지각 %d회 (%s)%n",
@@ -61,6 +66,11 @@ public class ConsoleOutputView implements OutputView {
         });
     }
 
+    private void printAttendanceStatusStatistics(CrewAttendanceLogResponse crewAttendanceLogResponse) {
+        crewAttendanceLogResponse.getAttendanceStatusStatistics()
+                .forEach((status, count) -> System.out.printf("%s: %d회%n", status, count));
+    }
+
     private String formatTime(LocalTime time) {
         if (time == null) {
             return "--:--";
@@ -68,7 +78,8 @@ public class ConsoleOutputView implements OutputView {
         return String.format("%02d:%02d", time.getHour(), time.getMinute());
     }
 
-    private String formatDate(LocalDate date) {
-        return String.format("%02d월 %02d일", date.getMonthValue(), date.getDayOfMonth());
+    private String formatDateWithDayOfWeek(LocalDate date) {
+        return String.format("%02d월 %02d일 %s", date.getMonthValue(), date.getDayOfMonth(),
+                KoreaDayOfWeek.from(date.getDayOfWeek()).getName());
     }
 }

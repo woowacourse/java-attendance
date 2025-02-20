@@ -1,4 +1,8 @@
-package attendance.model.domain.crew;
+package attendance.model.domain.attendance.vo;
+
+import attendance.model.domain.attendance.AttendanceStatus;
+import java.time.LocalDateTime;
+import java.util.List;
 
 public class LateCount {
 
@@ -9,8 +13,12 @@ public class LateCount {
         this.value = value;
     }
 
-    public static LateCount from(int value) {
-        return new LateCount(value);
+    public static LateCount fromDateTimes(List<LocalDateTime> dateTimes) {
+        long value = dateTimes.stream()
+                .filter(AttendanceStatus::isLate)
+                .count();
+
+        return new LateCount(Math.toIntExact(value));
     }
 
     public int calculatePolicyAppliedAbsenceCount() {

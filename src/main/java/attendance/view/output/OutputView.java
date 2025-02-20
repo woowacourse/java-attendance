@@ -8,7 +8,7 @@ import java.util.List;
 
 public interface OutputView {
 
-    void printAttendanceLog(AttendanceLogResponse response);
+    void printAttendanceLogResponse(AttendanceLogResponse response);
 
     void printUpdateAttendanceResponse(UpdateAttendanceResponse updateAttendanceResponse);
 

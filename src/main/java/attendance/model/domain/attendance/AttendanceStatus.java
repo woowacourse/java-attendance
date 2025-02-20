@@ -1,11 +1,13 @@
-package attendance.model;
+package attendance.model.domain.attendance;
 
+import attendance.model.Calender;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.Arrays;
+import java.util.List;
 
 public enum AttendanceStatus {
-    
+
     ATTENDANCE("출석"),
     LATE("지각"),
     ABSENCE("결석");
@@ -39,22 +41,25 @@ public enum AttendanceStatus {
                 .orElseThrow(() -> new IllegalArgumentException("해당하는 출석 상태가 없습니다."));
     }
 
-    private static boolean isAbsence(LocalDateTime dateTime) {
+    public static boolean isAbsence(LocalDateTime dateTime) {
+        LocalTime time = dateTime.toLocalTime();
         if (Calender.isMonday(dateTime.toLocalDate())) {
-            return isTimeAfter(dateTime.toLocalTime(), MONDAY_ABSENCE_TIME);
+            return time.isAfter(MONDAY_ABSENCE_TIME);
         }
-        return isTimeAfter(dateTime.toLocalTime(), WEEKDAY_ABSENCE_TIME);
+        return time.isAfter(WEEKDAY_ABSENCE_TIME);
     }
 
-    private static boolean isLate(LocalDateTime dateTime) {
+    public static boolean isLate(LocalDateTime dateTime) {
         if (Calender.isMonday(dateTime.toLocalDate())) {
             return isTimeBetween(dateTime.toLocalTime(), MONDAY_LATE_TIME, MONDAY_ABSENCE_TIME.plusMinutes(1));
         }
         return isTimeBetween(dateTime.toLocalTime(), WEEKDAY_LATE_TIME, WEEKDAY_ABSENCE_TIME.plusMinutes(1));
     }
 
-    private static boolean isTimeAfter(LocalTime time, LocalTime baseTime) {
-        return time.isAfter(baseTime);
+    public static List<String> getNames() {
+        return Arrays.stream(values())
+                .map(AttendanceStatus::getName)
+                .toList();
     }
 
     private static boolean isTimeBetween(LocalTime time, LocalTime startTime, LocalTime endTime) {

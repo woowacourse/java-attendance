@@ -46,6 +46,8 @@ public class AttendanceRepository {
 
     public void deleteAttendanceByCrew(Crew crew, LocalDateTime dateTimeToDelete) {
         validateCrewExistence(crew);
+        validateDateTimeExistenceByCrew(crew, dateTimeToDelete);
+
         values.get(crew).remove(dateTimeToDelete);
     }
 
@@ -62,6 +64,12 @@ public class AttendanceRepository {
                 .toList();
     }
 
+    public Optional<Crew> findCrewByName(String crewName) {
+        return values.keySet().stream()
+                .filter(crew -> crew.getName().equals(crewName))
+                .findFirst();
+    }
+
     private void validateCrewExistence(Crew crew) {
         if (!existsByCrew(crew)) {
             throw new IllegalArgumentException("존재하지 않는 크루입니다.");
@@ -69,25 +77,14 @@ public class AttendanceRepository {
     }
 
     private void validateDateTimeExistenceByCrew(Crew crew, LocalDateTime dateTime) {
-        values.get(crew).stream()
-                .filter(value -> value.isEqual(dateTime))
-                .findFirst()
-                .orElseThrow(() -> new IllegalArgumentException("해당 크루는 해당 일시의 출석 기록이 없습니다."));
+        if (values.get(crew).stream().noneMatch(value -> value.isEqual(dateTime))) {
+            throw new IllegalArgumentException("해당 크루는 해당 일시의 출석 기록이 없습니다.");
+        }
     }
 
     private void validateConflict(Crew crew, LocalDateTime dateTime) {
-
-        values.get(crew).stream()
-                .filter(value -> value.toLocalDate().equals(dateTime.toLocalDate()))
-                .findFirst()
-                .ifPresent(value -> {
-                    throw new IllegalStateException("금일 출석 기록이 이미 존재합니다.");
-                });
-    }
-
-    public Optional<Crew> findCrewByName(String crewName) {
-        return values.keySet().stream()
-                .filter(crew -> crew.getName().equals(crewName))
-                .findFirst();
+        if (values.get(crew).stream().anyMatch(value -> value.toLocalDate().equals(dateTime.toLocalDate()))) {
+            throw new IllegalStateException("금일 출석 기록이 이미 존재합니다.");
+        }
     }
 }

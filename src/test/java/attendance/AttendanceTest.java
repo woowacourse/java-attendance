@@ -24,7 +24,7 @@ import java.util.AbstractMap.SimpleImmutableEntry;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map.Entry;
-import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Stream;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -36,7 +36,7 @@ public class AttendanceTest {
     private static final CrewAttendanceComparator crewAttendanceComparator = new DefaultCrewAttendanceComparator();
     private static final String crewName = "pobi";
     private static final LocalDateTime attendanceTime =
-            LocalDateTime.of(LocalDate.of(2024, 12, 14), LocalTime.of(13, 20));
+            LocalDateTime.of(Calender.TODAY, LocalTime.of(13, 20));
     private final CrewAttendanceDeserializer crewAttendanceDeserializer = new CrewAttendanceDeserializer();
     private final Path crewAttendanceDataPath = Path.of("src/main/resources/attendances.csv");
 
@@ -126,7 +126,7 @@ public class AttendanceTest {
         AttendanceRepository attendanceRepository = init();
         AttendanceService service = new AttendanceService(attendanceRepository);
 
-        LocalDateTime timeToEdit = LocalDateTime.of(LocalDate.of(2024, 12, 14), LocalTime.of(14, 20));
+        LocalDateTime timeToEdit = LocalDateTime.of(Calender.TODAY, LocalTime.of(14, 20));
 
         service.updateAttendance(Crew.from(crewName), timeToEdit);
 
@@ -142,12 +142,12 @@ public class AttendanceTest {
         AttendanceRepository attendanceRepository = init();
         AttendanceService service = new AttendanceService(attendanceRepository);
 
-        LocalDateTime timeToEdit = LocalDateTime.of(LocalDate.of(2024, 12, 14), LocalTime.of(14, 20));
+        LocalDateTime timeToEdit = LocalDateTime.of(Calender.TODAY, LocalTime.of(14, 20));
 
         UpdateAttendanceResponse updateAttendanceResponse = service.updateAttendance(Crew.from(crewName), timeToEdit);
 
-        assertThat(updateAttendanceResponse.getBefore()).isEqualTo(attendanceTime);
-        assertThat(updateAttendanceResponse.getAfter()).isEqualTo(timeToEdit);
+        assertThat(updateAttendanceResponse.getPreviousDateTime()).isEqualTo(attendanceTime);
+        assertThat(updateAttendanceResponse.getUpdatedDateTime()).isEqualTo(timeToEdit);
     }
 
     // 닉네임을 입력하면 전날까지의 크루 출석 기록을 확인할 수 있다.
@@ -163,11 +163,12 @@ public class AttendanceTest {
 
         assertAll(
                 () -> assertThat(attendanceLog.getCrewName()).isEqualTo(crewName),
-                () -> assertThat(attendanceLog.getTimeLogs().stream().map(AttendanceLogResponse::getDate)).isSorted(),
-                () -> assertThat(attendanceLog.getTimeLogs().stream().map(AttendanceLogResponse::getTime)
-                        .filter(Objects::isNull).count()).isEqualTo(nonExistCount),
-                () -> assertThat(attendanceLog.getTimeLogs().stream().map(AttendanceLogResponse::getTime)
-                        .filter(Objects::nonNull).count()).isEqualTo(existCount)
+                () -> assertThat(attendanceLog.getAttendanceLogResponses().stream()
+                        .map(AttendanceLogResponse::getDate)).isSorted(),
+                () -> assertThat(attendanceLog.getAttendanceLogResponses().stream().map(AttendanceLogResponse::getTime)
+                        .filter(Optional::isEmpty).count()).isEqualTo(nonExistCount),
+                () -> assertThat(attendanceLog.getAttendanceLogResponses().stream().map(AttendanceLogResponse::getTime)
+                        .filter(Optional::isPresent).count()).isEqualTo(existCount)
         );
     }
 
