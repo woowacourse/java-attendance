@@ -2,6 +2,7 @@ package view;
 
 
 import domain.Command;
+import domain.Week;
 import java.time.LocalDateTime;
 import java.util.Scanner;
 
@@ -14,8 +15,8 @@ public final class InputView {
 
     public static String readCommand(final LocalDateTime dateTime) {
         System.out.println(
-                String.format("오늘은 12월 %s일 %s요일입니다. 기능을 선택해주세요.", dateTime.getDayOfMonth(),
-                        dateTime.getDayOfWeek()));
+                String.format("오늘은 12월 %s일 %s입니다. 기능을 선택해주세요.", dateTime.getDayOfMonth(),
+                        Week.findKoreanName(dateTime.getDayOfWeek())));
         for (Command command : Command.values()) {
             System.out.println(String.format("%s. %s", command.getCommandNumber(), command.getCommandName()));
 
