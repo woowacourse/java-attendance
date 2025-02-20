@@ -51,4 +51,14 @@ public class ExpelledWarningCrewTest {
 
         assertThat(warningCrews.size()).isEqualTo(2);
     }
+
+    @DisplayName("제적 위험자를 기준에 맞게 정렬한다.")
+    @Test
+    void 제적_위험자_정렬() {
+        Map<String, StatisticsResult> sortedResult = attendanceManager.sortCrew();
+        List<String> names = new ArrayList<>(sortedResult.keySet());
+
+        assertThat(names.get(0)).isEqualTo("이든");
+        assertThat(names.get(1)).isEqualTo("빙봉");
+    }
 }
