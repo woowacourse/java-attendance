@@ -18,7 +18,8 @@ public class AllCrew {
     }
 
     public boolean containsCrewName(String crewName) {
-        return allCrew.stream().anyMatch(crew -> crew.getName().equals(crewName));
+        return allCrew.stream()
+                .anyMatch(crew -> crew.getName().equals(crewName));
     }
 
     public String addCrewAttendanceByName(String name, LocalDateTime dateTime) {
@@ -44,15 +45,15 @@ public class AllCrew {
         return findCrew;
     }
 
-    // TODO : 제적 위험자 아닌 사람 필터링
     public String printAllCrewWarningInfo(LocalDate date) {
+        updateAbsentHistory(date);
         allCrew.sort(
                 Comparator.comparing(Crew::getAbsentCount).reversed()
                         .thenComparing(Crew::getName)
         );
         String result = "";
         for(Crew crew : allCrew) {
-            if (crew.calculateWarningStatus(crew.getAbsentCount()).equals("")){
+            if (crew.calculateWarningStatus(crew.getAbsentCount()).isEmpty()){
                 continue;
             }
             result += "- "+crew.printWarningInfo(date) + "\n";

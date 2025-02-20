@@ -25,9 +25,9 @@ public class Attendance {
 
     public String getFormattedTimeAndState() {
         if (this.state.equals("결석")) {
-            return "--:-- " + this.state;
+            return "--:-- " + "(" + this.state + ")";
         }
-        return dateAndTime.format(DateTimeFormatter.ofPattern("HH:mm ", Locale.KOREAN)) + this.state;
+        return dateAndTime.format(DateTimeFormatter.ofPattern("HH:mm ", Locale.KOREAN)) + "(" + this.state + ")";
     }
 
     public int getDayOfMonth() {
