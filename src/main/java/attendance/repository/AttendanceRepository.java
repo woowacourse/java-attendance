@@ -1,6 +1,6 @@
 package attendance.repository;
 
-import static attendance.domain.AttendanceStatus.ABSEMT;
+import static attendance.domain.AttendanceStatus.ABSENT;
 import static attendance.domain.AttendanceStatus.ATTEND;
 import static attendance.domain.AttendanceStatus.LATE;
 
@@ -86,7 +86,7 @@ public class AttendanceRepository {
 
         int attend = counts.getOrDefault(ATTEND.getValue(), 0L).intValue();
         int late = counts.getOrDefault(LATE.getValue(), 0L).intValue();
-        int absent = counts.getOrDefault(ABSEMT.getValue(), 0L).intValue();
+        int absent = counts.getOrDefault(ABSENT.getValue(), 0L).intValue();
 
         return new CrewNameAndAcademicStatusDTO(name, attend, late, absent,
                 AcademicStatus.getAcademicStatus(late, absent));

@@ -6,7 +6,7 @@ public enum AttendanceStatus {
 
     ATTEND("출석"),
     LATE("지각"),
-    ABSEMT("결석");
+    ABSENT("결석");
 
     private final String value;
 
@@ -34,6 +34,6 @@ public enum AttendanceStatus {
             return LATE.getValue();
         }
 
-        return ABSEMT.getValue();
+        return ABSENT.getValue();
     }
 }
