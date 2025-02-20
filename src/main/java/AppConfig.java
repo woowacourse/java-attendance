@@ -1,6 +1,9 @@
+import controller.AttendanceController;
+import domain.CsvReader;
+
 public class AppConfig {
-    public Controller controller() {
-        return new Controller(fileReader());
+    public AttendanceController controller() {
+        return new AttendanceController(fileReader());
     }
 
     private CsvReader fileReader() {

@@ -1,3 +1,6 @@
+package dto;
+
+import domain.AttendanceStatus;
 import java.util.List;
 
 public record TotalRecordsResponse(

@@ -1,12 +1,17 @@
+package controller;
+
+import domain.AttendanceBook;
+import domain.CsvReader;
+import domain.Parser;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
 import java.util.Map;
 
-public class Controller {
+public class AttendanceController {
     private final CsvReader csvFileReader;
 
-    public Controller(CsvReader csvReader) {
+    public AttendanceController(CsvReader csvReader) {
 
         this.csvFileReader = csvReader;
     }
@@ -20,7 +25,7 @@ public class Controller {
 
         AttendanceBook attendanceBook = new AttendanceBook();
 
-        for (List<String> data : seperatedData){
+        for (List<String> data : seperatedData) {
             String name = data.getFirst();
             Map<LocalDate, LocalTime> dateAndTime = Parser.parseDate(data.getLast());
             attendanceBook.initialize(name, dateAndTime);

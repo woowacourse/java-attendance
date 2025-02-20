@@ -1,5 +1,7 @@
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 
+import domain.AttendanceBook;
+import domain.Crew;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.Map;

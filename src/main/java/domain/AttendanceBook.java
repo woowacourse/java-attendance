@@ -1,3 +1,8 @@
+package domain;
+
+import dto.AttendanceRecordsResponse;
+import dto.CrewPenaltyResponse;
+import dto.TotalRecordsResponse;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;

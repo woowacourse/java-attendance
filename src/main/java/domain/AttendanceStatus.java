@@ -1,3 +1,5 @@
+package domain;
+
 import java.time.LocalTime;
 
 public enum AttendanceStatus {
