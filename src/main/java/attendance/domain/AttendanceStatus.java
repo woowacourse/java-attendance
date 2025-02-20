@@ -6,13 +6,13 @@ public enum AttendanceStatus {
     LATE("지각")
     ;
 
-    private String status;
+    private String koreanName;
 
-    AttendanceStatus(String status) {
-        this.status = status;
+    AttendanceStatus(String koreanName) {
+        this.koreanName = koreanName;
     }
 
-    public String getStatus() {
-        return status;
+    public String getKoreanName() {
+        return koreanName;
     }
 }

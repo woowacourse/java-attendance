@@ -29,6 +29,7 @@ public class AttendanceController {
         recordAttendance();
         modifyAttendance();
         checkAttendanceRecordOfCrew();
+        OutputView.printPenaltyOfCrews(crews.getCrews(), attendances);
     }
 
     private void recordAttendance() {

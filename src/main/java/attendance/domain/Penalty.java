@@ -1,9 +1,9 @@
 package attendance.domain;
 
 public enum Penalty {
-    WARNING("경고"),
-    INTERVIEW("면담"),
     REMOVAL("제적"),
+    INTERVIEW("면담"),
+    WARNING("경고"),
     NONE("");
 
     private String koreanName;
