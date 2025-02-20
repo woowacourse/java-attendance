@@ -1,0 +1,51 @@
+package domain;
+
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+public class CsvParsingGenerator implements CrewAttendanceRecordsGenerator {
+    private static final int HEADER_ROW = 1;
+    private static final int CREW_INDEX = 0;
+    private static final int RECORD_INDEX = 1;
+    private static final String FILE_PATH = "/attendances.csv";
+
+    @Override
+    public Map<Crew, AttendanceRecords> generate(DateGenerator dateGenerator) {
+        Map<Crew, AttendanceRecords> crewAttendanceRecords = new HashMap<>();
+        List<String> rows = readContent(FILE_PATH).stream().skip(HEADER_ROW).toList();
+        for (String row : rows) {
+            Crew crew = new Crew(row.split(",")[CREW_INDEX]);
+            AttendanceRecord attendanceRecord = AttendanceRecord.parse(row.split(",")[RECORD_INDEX]);
+            AttendanceRecords existingRecords = crewAttendanceRecords.getOrDefault(crew, new AttendanceRecords());
+            existingRecords.addRecord(attendanceRecord);
+            crewAttendanceRecords.put(crew, existingRecords);
+        }
+        return fillAbsence(crewAttendanceRecords, dateGenerator);
+    }
+
+    private Map<Crew, AttendanceRecords> fillAbsence(Map<Crew, AttendanceRecords> crewAttendanceRecords, DateGenerator dateGenerator) {
+        crewAttendanceRecords.values().forEach(attendanceRecord -> attendanceRecord.fillAbsences(dateGenerator));
+        return crewAttendanceRecords;
+    }
+
+    private List<String> readContent(String path) {
+        if (path.isEmpty()) {
+            throw new IllegalStateException("");
+        }
+        return getStrings(path);
+    }
+
+    private List<String> getStrings(String path) {
+        try {
+            InputStream inputStream = CrewAttendanceRecords.class.getResourceAsStream(path);
+            BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
+            return reader.lines().toList();
+        } catch (NullPointerException e) {
+            throw new IllegalStateException("");
+        }
+    }
+}

@@ -1,46 +1,17 @@
 package domain;
 
-import java.io.BufferedReader;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Map;
 
 public class CrewAttendanceRecords {
-    private static final int HEADER_ROW = 1;
-    private static final int CREW_INDEX = 0;
-    private static final int RECORD_INDEX = 1;
+    private Map<Crew, AttendanceRecords> crewAttendanceRecords;
 
-    private final Map<Crew, AttendanceRecords> crewAttendanceRecords = new HashMap<>();
-
-    public CrewAttendanceRecords(String path, DateGenerator dateGenerator) {
-        List<String> rows = readContent(path).stream().skip(HEADER_ROW).toList();
-        for (String row : rows) {
-            Crew crew = new Crew(row.split(",")[CREW_INDEX]);
-            AttendanceRecord attendanceRecord = AttendanceRecord.parse(row.split(",")[RECORD_INDEX]);
-            AttendanceRecords existingRecords = this.crewAttendanceRecords.getOrDefault(crew, new AttendanceRecords());
-            existingRecords.addRecord(attendanceRecord);
-            this.crewAttendanceRecords.put(crew, existingRecords);
-        }
-        crewAttendanceRecords.values().forEach(attendanceRecord -> attendanceRecord.fillAbsences(dateGenerator));
-    }
-
-    private List<String> readContent(String path) {
-        if (path.isEmpty()) {
-            throw new IllegalStateException("");
-        }
-        return getStrings(path);
-    }
-
-    private List<String> getStrings(String path) {
-        try {
-            InputStream inputStream = CrewAttendanceRecords.class.getResourceAsStream(path);
-            BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
-            return reader.lines().toList();
-        } catch (NullPointerException e) {
-            throw new IllegalStateException("");
-        }
+    public CrewAttendanceRecords(CrewAttendanceRecordsGenerator generator, DateGenerator dateGenerator) {
+        this.crewAttendanceRecords = generator.generate(dateGenerator);
     }
 
     public boolean hasCrew(Crew crew) {

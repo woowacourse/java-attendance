@@ -1,9 +1,6 @@
 package controller;
 
-import domain.AttendanceRecord;
-import domain.Crew;
-import domain.CrewAttendanceRecords;
-import domain.DateGenerator;
+import domain.*;
 import view.InputView;
 import view.OutputView;
 
@@ -35,7 +32,7 @@ public class AttendanceController {
                 throw new IllegalArgumentException("[ERROR] 프로그램 인수를 YYYY-MM-DD 형식으로 입력해 주세요.");
             }
         };
-        this.crewAttendanceRecords = new CrewAttendanceRecords("/attendances.csv", currentDateGenerator);
+        this.crewAttendanceRecords = new CrewAttendanceRecords(new CsvParsingGenerator(), currentDateGenerator);
     }
 
     public void run() {
