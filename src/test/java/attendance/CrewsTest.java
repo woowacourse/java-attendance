@@ -22,7 +22,7 @@ public class CrewsTest {
     }
 
     @Test
-    void name() {
+    void 제적_위험_대상자_테스트() {
         List<Attendance> attendances = List.of(new Attendance(LocalDateTime.of(2024, 12, 16, 13, 7)),
                 new Attendance(LocalDateTime.of(2024, 12, 17, 10, 7)),
                 new Attendance(LocalDateTime.of(2024, 12, 18, 10, 7)),
