@@ -30,10 +30,10 @@ class CrewAttendanceRecordsTest {
         Crew crew = new Crew("빙티");
         LocalDate date = LocalDate.of(2024, 12, 3);
         LocalTime time = LocalTime.of(9, 58);
-        AttendanceRecord newAttendanceRecord = new AttendanceRecord(date, time);
+        AttendanceRecord newAttendanceRecord = AttendanceRecord.of(date, time);
         AttendanceRecord oldAttendanceRecord = crewAttendanceRecords.updateAttendanceRecord(crew, newAttendanceRecord);
 
-        assertThat(oldAttendanceRecord).isEqualTo(new AttendanceRecord("2024-12-03 10:07"));
+        assertThat(oldAttendanceRecord).isEqualTo(AttendanceRecord.parse("2024-12-03 10:07"));
     }
 
     @Test
@@ -43,7 +43,7 @@ class CrewAttendanceRecordsTest {
         Crew crew = new Crew("포비");
         LocalDate date = LocalDate.of(2024, 12, 3);
         LocalTime time = LocalTime.of(9, 58);
-        AttendanceRecord newAttendanceRecord = new AttendanceRecord(date, time);
+        AttendanceRecord newAttendanceRecord = AttendanceRecord.of(date, time);
 
         assertThatThrownBy(() -> crewAttendanceRecords.updateAttendanceRecord(crew, newAttendanceRecord))
                 .isInstanceOf(IllegalArgumentException.class)
@@ -95,7 +95,7 @@ class CrewAttendanceRecordsTest {
         AttendanceRecord attendanceRecord = crewAttendanceRecords.checkIn(crew, time, () -> LocalDate.of(2024, 12, 13));
 
         assertAll(
-                () -> assertThat(attendanceRecord).isEqualTo(new AttendanceRecord("2024-12-13 10:00")),
+                () -> assertThat(attendanceRecord).isEqualTo(AttendanceRecord.parse("2024-12-13 10:00")),
                 () -> assertThat(crewAttendanceRecords.hasRecord(crew, LocalDate.of(2024, 12, 13))).isTrue()
         );
     }
@@ -129,16 +129,16 @@ class CrewAttendanceRecordsTest {
         Crew crew = new Crew("빙티");
         List<AttendanceRecord> actualRecords = crewAttendanceRecords.getSortedRecords(crew);
         List<AttendanceRecord> expectedRecords = List.of(
-                new AttendanceRecord("2024-12-02 13:00"),
-                new AttendanceRecord("2024-12-03 10:07"),
-                new AttendanceRecord("2024-12-04 10:02"),
-                new AttendanceRecord("2024-12-05 10:06"),
-                new AttendanceRecord("2024-12-06 10:01"),
-                new AttendanceRecord(LocalDate.of(2024, 12, 9)),
-                new AttendanceRecord("2024-12-10 10:08"),
-                new AttendanceRecord(LocalDate.of(2024, 12, 11)),
-                new AttendanceRecord(LocalDate.of(2024, 12, 12)),
-                new AttendanceRecord("2024-12-13 10:07"));
+                AttendanceRecord.parse("2024-12-02 13:00"),
+                AttendanceRecord.parse("2024-12-03 10:07"),
+                AttendanceRecord.parse("2024-12-04 10:02"),
+                AttendanceRecord.parse("2024-12-05 10:06"),
+                AttendanceRecord.parse("2024-12-06 10:01"),
+                AttendanceRecord.asAbsent(LocalDate.of(2024, 12, 9)),
+                AttendanceRecord.parse("2024-12-10 10:08"),
+                AttendanceRecord.asAbsent(LocalDate.of(2024, 12, 11)),
+                AttendanceRecord.asAbsent(LocalDate.of(2024, 12, 12)),
+                AttendanceRecord.parse("2024-12-13 10:07"));
 
         assertThat(actualRecords).isEqualTo(expectedRecords);
     }

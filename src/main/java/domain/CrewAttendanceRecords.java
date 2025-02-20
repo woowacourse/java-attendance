@@ -18,7 +18,7 @@ public class CrewAttendanceRecords {
         List<String> rows = readContent(path).stream().skip(HEADER_ROW).toList();
         for (String row : rows) {
             Crew crew = new Crew(row.split(",")[CREW_INDEX]);
-            AttendanceRecord attendanceRecord = new AttendanceRecord(row.split(",")[RECORD_INDEX]);
+            AttendanceRecord attendanceRecord = AttendanceRecord.parse(row.split(",")[RECORD_INDEX]);
             AttendanceRecords existingRecords = this.crewAttendanceRecords.getOrDefault(crew, new AttendanceRecords());
             existingRecords.addRecord(attendanceRecord);
             this.crewAttendanceRecords.put(crew, existingRecords);
@@ -87,7 +87,7 @@ public class CrewAttendanceRecords {
         validateCrewPresence(crew);
         AttendanceRecords attendanceRecords = crewAttendanceRecords.get(crew);
         validatePresence(attendanceRecords, dateGenerator);
-        AttendanceRecord attendanceRecord = new AttendanceRecord(time, dateGenerator);
+        AttendanceRecord attendanceRecord = AttendanceRecord.checkIn(time, dateGenerator);
         attendanceRecords.addRecord(attendanceRecord);
         return attendanceRecord;
     }
