@@ -15,23 +15,23 @@ public enum DisciplinaryStatus {
     }
 
     public static DisciplinaryStatus getStatus(int absentCount, int tardyCount) {
-        if (calculateTotalAbsentCount(absentCount, tardyCount) >= EXPELLED.thresholdCount) {
+        if (convertTardyToAbsent(absentCount, tardyCount) >= EXPELLED.thresholdCount) {
             return EXPELLED;
         }
-        if (calculateTotalAbsentCount(absentCount, tardyCount) >= ONE_ON_ONE.thresholdCount) {
+        if (convertTardyToAbsent(absentCount, tardyCount) >= ONE_ON_ONE.thresholdCount) {
             return ONE_ON_ONE;
         }
-        if (calculateTotalAbsentCount(absentCount, tardyCount) >= WARNING.thresholdCount) {
+        if (convertTardyToAbsent(absentCount, tardyCount) >= WARNING.thresholdCount) {
             return WARNING;
         }
         return NONE;
     }
 
-    private static int calculateTotalAbsentCount(int absentCount, int tardyCount) {
-        return absentCount + (tardyCount / 3);
-    }
-
     public String getName() {
         return name;
+    }
+
+    private static int convertTardyToAbsent(int absentCount, int tardyCount) {
+        return absentCount + (tardyCount / 3);
     }
 }
