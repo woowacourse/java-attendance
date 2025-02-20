@@ -26,7 +26,21 @@ public class OutputView {
     private static final String WARNING_FORMAT = "%s 대상자입니다.";
     private static final String WARNING_CREW_HEADER_FORMAT = "제적 위험자 조회 결과";
     private static final String WARNING_CREW_RESULT_FORMAT = "- %s: 결석 %d회, 지각 %d회 (%s)";
+    private static final String OPERATION_OPTION_MESSAGE =
+            """
+            1. 출석 확인
+            2. 출석 수정
+            3. 크루별 출석 기록 확인
+            4. 제적 위험자 확인
+            Q. 종료""";
 
+    private static final String TODAY_IS = "오늘은 %s입니다. 기능을 선택해 주세요.";
+
+    public static void printOptions() {
+        System.out.printf(TODAY_IS, convertDate(LocalDateTime.now()));
+        System.out.println();
+        System.out.println(OPERATION_OPTION_MESSAGE);
+    }
 
     public static void printAddedAttendance(LocalDateTime localDateTime) {
         System.out.println();
@@ -120,7 +134,7 @@ public class OutputView {
         System.out.println();
     }
 
-    public static void printWarningCrews(AttendanceRepository attendanceRepository){
+    public static void printWarningCrews(AttendanceRepository attendanceRepository) {
         System.out.println(WARNING_CREW_HEADER_FORMAT);
 
         int today = LocalDate.now().getDayOfMonth();
@@ -132,13 +146,14 @@ public class OutputView {
     }
 
     private static List<String> format(final AttendanceRepository attendanceRepository, final List<String> names,
-                                  final int today) {
+                                       final int today) {
         return names.stream().map(name -> {
             final Map<AttendanceStatus, Integer> crewStatuses = attendanceRepository.queryCrewAttendanceStatus(
                     name, today);
             WarningLevel level = WarningLevel.calculateLevel(crewStatuses);
 
-            return String.format(WARNING_CREW_RESULT_FORMAT, name, crewStatuses.get(ABSENCE), crewStatuses.get(LATENESS), level.getLevel());
+            return String.format(WARNING_CREW_RESULT_FORMAT, name, crewStatuses.get(ABSENCE),
+                    crewStatuses.get(LATENESS), level.getLevel());
         }).toList();
     }
 

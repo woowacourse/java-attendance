@@ -9,6 +9,10 @@ import java.time.format.DateTimeParseException;
 public class InputView {
     private static final BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(System.in));
 
+    public static String readOption() {
+        return readLine();
+    }
+
     public static String readNickName() {
         System.out.println("닉네임을 입력해 주세요.");
         return readLine();

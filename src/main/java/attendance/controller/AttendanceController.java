@@ -9,19 +9,39 @@ import attendance.view.OutputView;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.HashMap;
+import java.util.Map;
 
 public class AttendanceController {
+    private static final Map<String, Runnable> operations = new HashMap<>();
+
+    public AttendanceController() {
+
+    }
 
     public void run() {
         AttendanceRepository attendanceRepository = initData();
-//        registerAttendance(attendanceRepository);
-//        modifyAttendance(attendanceRepository);
-//        queryAttendance(attendanceRepository);
-        queryWarningCrews(attendanceRepository);
+        initOperations(attendanceRepository);
+        String option;
+        while (!(option = getInputOption()).equals("Q")) {
+            operations.get(option).run();
+        }
+    }
+
+    private String getInputOption() {
+        OutputView.printOptions();
+        return InputView.readOption();
     }
 
     private AttendanceRepository initData(){
         return new AttendanceRepository(FileLoader.loadAll(DataFileReader.read()));
+    }
+
+    private void initOperations(AttendanceRepository attendanceRepository) {
+        operations.put("1", () -> registerAttendance(attendanceRepository));
+        operations.put("2", () -> modifyAttendance(attendanceRepository));
+        operations.put("3", () -> queryAttendance(attendanceRepository));
+        operations.put("4", () -> queryWarningCrews(attendanceRepository));
     }
 
     private void registerAttendance(AttendanceRepository attendanceRepository) {
