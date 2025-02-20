@@ -94,9 +94,10 @@ class AttendancesTest {
         Attendance attendance3 = Attendance.of(crew, LocalDateTime.of(2025, 2, 19, 10, 6, 0));
 
         //when
-        List<Attendance> filteredAttendances = attendances.findByCrewAndMonth(crew, 2);
+        Attendances filteredAttendances = attendances.findByCrewAndMonth(crew, 2);
 
         //then
-        Assertions.assertThat(filteredAttendances).containsExactly(attendance1, attendance2, attendance3);
+        Assertions.assertThat(filteredAttendances.getAttendances())
+                .containsExactly(attendance1, attendance2, attendance3);
     }
 }
