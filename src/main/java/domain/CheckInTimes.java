@@ -30,7 +30,7 @@ public class CheckInTimes {
 
         CheckInTime target = checkInTimes.stream()
                 .filter(time -> time.isSameDate(checkInTime))
-                .findAny().orElseThrow(() -> new IllegalArgumentException("CheckInTime is not found"));
+                .findAny().orElseThrow(() -> new IllegalArgumentException("[ERROR] 수정 가능한 출석 내역이 없습니다."));
 
         LocalDateTime before = target.toLocalDateTime();
         target.modify(checkInTime);

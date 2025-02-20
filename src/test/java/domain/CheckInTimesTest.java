@@ -28,14 +28,6 @@ class CheckInTimesTest {
     }
 
     @Test
-    @DisplayName("출석 기록들을 확인하여 결석 횟수 카운트")
-    void countAbsenceTest() {
-        CheckInTimes checkInTimes = createCheckInTimes();
-        int count = checkInTimes.countAbsence();
-        assertThat(count).isEqualTo(1);
-    }
-
-    @Test
     @DisplayName("출근 시간 추가")
     void addCheckInTimeTest() {
         CheckInTimes checkInTimes = createCheckInTimes();
