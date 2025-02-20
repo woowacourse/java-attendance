@@ -25,7 +25,9 @@ public class Attendance implements Comparable<Attendance> {
     }
 
     public List<LocalDateTime> getAttendanceLog() {
-        return checkInTimes.getAttendanceLog(LocalDateTime.now());
+        return checkInTimes.getAttendanceLog(LocalDateTime.now()).stream()
+                .sorted()
+                .toList();
     }
 
     public LocalDateTime modify(LocalDateTime time) {
@@ -42,6 +44,10 @@ public class Attendance implements Comparable<Attendance> {
 
     public int countAbsence() {
         return checkInTimes.countAbsence();
+    }
+
+    public String getName() {
+        return crew.getName();
     }
 
     @Override

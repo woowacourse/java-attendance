@@ -30,6 +30,10 @@ public class Crew implements Comparable<Crew> {
         return this.name.equals(name);
     }
 
+    public String getName() {
+        return name;
+    }
+
     @Override
     public int compareTo(Crew o) {
         return this.name.compareTo(o.name);

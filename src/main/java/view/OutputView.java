@@ -5,6 +5,8 @@ import domain.AttendanceStatus;
 import domain.CheckInTime;
 import domain.PenaltyStatus;
 
+import java.time.DayOfWeek;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.TextStyle;
@@ -38,18 +40,57 @@ public class OutputView {
     }
 
     public void printAttendanceLog(Attendance attendance) {
-        for (LocalDateTime time : attendance.getAttendanceLog()) {
-            System.out.println(time);
+        System.out.printf("이번 달 %s의 출석 기록입니다.\n", attendance.getName());
+
+        List<LocalDateTime> attendanceLog = attendance.getAttendanceLog();
+        List<Integer> list = attendanceLog.stream().map(LocalDateTime::getDayOfMonth).toList();
+        int absenceCount = attendance.countAbsence();
+        for (int i = 1; i < LocalDate.now().getDayOfMonth(); i++) {
+            LocalDate localDate = LocalDate.of(2024, 12, i);
+            if (localDate.getDayOfWeek() == DayOfWeek.SATURDAY
+                    || localDate.getDayOfWeek() == DayOfWeek.SUNDAY
+                    || i == 25) {
+                continue;
+            }
+            if (list.contains(i)) {
+                LocalDateTime localDateTime = attendanceLog.get(list.indexOf(i));
+                String dateTime = formatDateTime(localDateTime);
+                String status = attendanceStatusToString(CheckInTime.of(localDateTime).getAttendanceStatus());
+                System.out.printf("%s (%s)\n", dateTime, status);
+                continue;
+            }
+            String datePart = formatDatePart(LocalDateTime.of(2024, 12, i, 0, 0));
+            System.out.printf("%s --:-- (결석)\n", datePart);
+            absenceCount++;
         }
+
         int presenceCount = attendance.countPresence();
         int lateCount = attendance.countLate();
-        int absenceCount = attendance.countAbsence();
         PenaltyStatus penaltyStatus = PenaltyStatus.getPenaltyStatus(absenceCount, lateCount);
+        String status = penaltyStatusToString(penaltyStatus);
 
-        System.out.println("출석: " + presenceCount);
-        System.out.println("지각: " + lateCount);
-        System.out.println("결석: " + absenceCount);
-        System.out.println(penaltyStatus.name());
+        System.out.println();
+        System.out.println("출석: " + presenceCount + "회");
+        System.out.println("지각: " + lateCount + "회");
+        System.out.println("결석: " + absenceCount + "회");
+        System.out.println();
+
+        if (status != null) {
+            System.out.println(status + "입니다.");
+        }
+    }
+
+    private String penaltyStatusToString(PenaltyStatus penaltyStatus) {
+        if (penaltyStatus == PenaltyStatus.WARNING) {
+            return "경고 대상자";
+        }
+        if (penaltyStatus == PenaltyStatus.INTERVIEWEE) {
+            return "면담 대상자";
+        }
+        if (penaltyStatus == PenaltyStatus.EXPULSION) {
+            return "제적 대상자";
+        }
+        return null;
     }
 
     public void printDangerCrews(List<Attendance> dangerCrews) {
@@ -59,14 +100,19 @@ public class OutputView {
     }
 
     private String formatDateTime(LocalDateTime localDateTime) {
+        String datePart = formatDatePart(localDateTime);
+        String timePart = formatTimePart(localDateTime);
+
+        return datePart + " " + timePart;
+    }
+
+    private static String formatDatePart(LocalDateTime localDateTime) {
         DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("MM월 dd일", Locale.KOREAN);
         String datePart = localDateTime.format(dateFormatter);
 
         String dayOfWeek = localDateTime.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.KOREAN);
 
-        String timePart = formatTimePart(localDateTime);
-
-        return datePart + " " + dayOfWeek + " " + timePart;
+        return datePart + " " + dayOfWeek;
     }
 
     private static String formatTimePart(LocalDateTime localDateTime) {
