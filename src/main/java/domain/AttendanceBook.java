@@ -9,16 +9,11 @@ import java.time.LocalDateTime;
 import java.util.*;
 
 public class AttendanceBook {
-    private final Map<Integer, Attendance> attendances; // key: 몇 일, value: 출석 시간
+    private final Map<Integer, Attendance> attendances;
 
     public AttendanceBook() {
         this.attendances = new HashMap<>();
     }
-
-//    public String getStatusAt(int date) {
-//        Attendance attendance = attendances.get(date);
-//        return attendance.getStatus();
-//    }
 
     public Attendance create(int date, int hour, int minute) {
         if (attendances.containsKey(date)) {

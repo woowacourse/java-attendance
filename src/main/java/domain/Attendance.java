@@ -12,10 +12,6 @@ public class Attendance {
         this.status = AttendanceStatus.of(time);
     }
 
-    public boolean isSameDateWith(LocalDateTime dateTime) {
-        return dateTime.toLocalDate().isEqual(time.toLocalDate());
-    }
-
     public LocalDateTime getTime() {
         return time;
     }

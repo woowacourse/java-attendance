@@ -30,12 +30,6 @@ public enum Menu {
                 .orElseThrow(InvalidMenuException::new);
     }
 
-//    public static List<Menu> sortByNumber() {
-//        return Arrays.stream(Menu.values())
-//                .sorted(Comparator.comparing(Menu::))
-//                .toList();
-//    }
-
     public String getInputValue() {
         return inputValue;
     }
