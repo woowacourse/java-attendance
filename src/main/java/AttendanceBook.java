@@ -32,6 +32,7 @@ public class AttendanceBook {
                 penalty = "(경고)";
             }
             crewPenaltyResponses.add(new CrewPenaltyResponse(
+                    crew.getName(),
                     totalRecords.absentCount(),
                     totalRecords.lateCount(),
                     penalty)
