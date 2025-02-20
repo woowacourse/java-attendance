@@ -1,7 +1,8 @@
 import controller.AttendanceController;
-import java.util.Scanner;
 import view.InputView;
 import view.OutputView;
+
+import java.util.Scanner;
 
 public class AttendanceApplication {
     public static void main(String[] args) {

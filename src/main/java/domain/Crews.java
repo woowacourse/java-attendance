@@ -45,22 +45,22 @@ public class Crews {
         return crews.stream().anyMatch(crew -> crew.isNameMatch(name));
     }
 
-    private Crew findCrewByName(final String name) {
+    public Crew findCrewByName(final String name) {
         return crews.stream()
                 .filter(crew -> crew.isNameMatch(name))
                 .findFirst()
                 .orElseThrow(() -> new IllegalArgumentException("등록되지 않은 닉네임입니다."));
     }
 
-    public CrewResponse createCrewResponseByName(String name) {
-        return findCrewByName(name).createCrewResponse();
+    public CrewResponse createCrewResponse(Crew crew) {
+        return crew.createCrewResponse();
     }
 
     public List<CrewResponse> getCrewResponseWithRisk() {
         return crews.stream()
                 .filter(crew ->
-                    crew.calculateRiskStatus()
-                            .hasRisk())
+                        crew.calculateRiskStatus()
+                                .hasRisk())
                 .map(Crew::createCrewRiskStatusResponse)
                 .toList();
     }

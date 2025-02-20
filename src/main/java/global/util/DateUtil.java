@@ -6,7 +6,8 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 
 public class DateUtil {
-    public static LocalDateTime TODAY = LocalDateTime.of(LocalDate.of(2024, 12, 14), LocalTime.of(10, 30, 00));
+    public static LocalDateTime TODAY = LocalDateTime.of(LocalDate.of(2024, 12, 17),
+            LocalTime.of(10, 30, 00));
     public static final LocalDate CHRISTMAS = LocalDate.of(2024, 12, 25);
 
     public static LocalDate getFirstDateOfMonth() {

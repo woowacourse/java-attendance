@@ -1,6 +1,7 @@
 package view;
 
 import domain.Crews;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -27,6 +28,7 @@ public class InputView {
                 4. 제적 위험자 확인
                 Q. 종료""", TODAY.getMonth().getValue(), TODAY.getDayOfMonth(), ViewUtil.getDayOfWeekToMessage(TODAY.getDayOfWeek())));
     }
+
     public String inputByMessage(String message) {
         System.out.println(message);
         return scanner.nextLine();
