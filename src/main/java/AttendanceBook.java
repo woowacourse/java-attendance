@@ -89,6 +89,12 @@ public class AttendanceBook {
 
         Calendar.validateIsWorkingDay(date.getDayOfMonth());
 
+        LocalTime time = dateAndTime.values().stream()
+                .findAny()
+                .orElseThrow();
+
+        validateIsInOperationHour(time);
+
         foundCrew.addDailyAttendance(dateAndTime);
     }
 
@@ -98,10 +104,22 @@ public class AttendanceBook {
                 .findAny()
                 .orElseThrow(() -> new IllegalArgumentException("[ERROR] 등록되지 않은 닉네임입니다."));
 
+        LocalTime time = dateAndTime.values().stream()
+                .findAny()
+                .orElseThrow();
+
+        validateIsInOperationHour(time);
+
         foundCrew.modifyDailyAttendance(dateAndTime);
     }
 
     private int getPenaltyCount(TotalRecordsResponse totalRecords) {
         return totalRecords.absentCount() + (totalRecords.lateCount() / 3);
+    }
+
+    public void validateIsInOperationHour(LocalTime time) {
+        if (!time.isAfter(LocalTime.of(8, 0)) || !time.isBefore(LocalTime.of(23, 0))) {
+            throw new IllegalArgumentException("[ERROR] 캠퍼스 운영 시간은 08:00~23:00 입니다.");
+        }
     }
 }
