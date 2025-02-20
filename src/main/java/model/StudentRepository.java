@@ -36,7 +36,7 @@ public class StudentRepository {
             String[] studentNameAndAttendanceTime = information.split(",");
             if (findStudentByName(studentNameAndAttendanceTime[0]) == null) {
                 Student student = new Student(studentNameAndAttendanceTime[0]);
-                students.add(student);
+                addStudent(student);
                 DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
                 LocalDateTime localDateTime = LocalDateTime.parse(studentNameAndAttendanceTime[1], dateTimeFormatter);
                 student.updateState(localDateTime);
