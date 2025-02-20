@@ -53,8 +53,7 @@ public class Attendance {
         return presentTime.format(DateTimeFormatter.ofPattern("HH:mm"));
     }
 
-    public void modifyAttendanceType(LocalDateTime localDateTime) {
-        attendanceType = AttendanceType.of(localDateTime);
+    public AttendanceType getType() {
+        return attendanceType;
     }
-
 }
