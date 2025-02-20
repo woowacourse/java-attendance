@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+import error.CustomIllegalArgumentException;
 import java.time.LocalDateTime;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -42,7 +43,7 @@ class AttendanceTest {
         // when
         // then
         assertThatThrownBy(() -> Attendance.of(input))
-                .isInstanceOf(IllegalArgumentException.class);
+                .isInstanceOf(CustomIllegalArgumentException.class);
     }
 
     @Test
@@ -52,6 +53,6 @@ class AttendanceTest {
         // when
         // then
         assertThatThrownBy(() -> Attendance.of(input))
-                .isInstanceOf(IllegalArgumentException.class);
+                .isInstanceOf(CustomIllegalArgumentException.class);
     }
 }

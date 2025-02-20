@@ -5,6 +5,7 @@ import domain.Command;
 import domain.Crew;
 import domain.Crews;
 import domain.Nickname;
+import error.CustomIllegalArgumentException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -20,7 +21,7 @@ public class AttendanceController {
     private static String CSV_PATH = "src/main/resources/attendances.csv";
 
     public void start() {
-        LocalDateTime fixDateTime = LocalDateTime.of(2024, Constants.MONTH, 16, 0, 0, 0, 0);
+        LocalDateTime fixDateTime = LocalDateTime.of(2024, Constants.MONTH, 25, 0, 0, 0, 0);
         final String input = InputView.readCommand(fixDateTime);
         Command command = Command.findByCommandNumber(input);
         Crews crews = CrewGenerator.generate(CsvReader.readFile(CSV_PATH),
@@ -57,7 +58,7 @@ public class AttendanceController {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");
         final LocalTime parsedInputTime = LocalTime.parse(inputTime, formatter);
         if (crew.isAttended(LocalDateTime.of(localDate, parsedInputTime))) {
-            throw new IllegalArgumentException("이미 출석했습니다. 다음에는 수정기능을 이용해주세요.");
+            throw new CustomIllegalArgumentException("이미 출석했습니다. 다음에는 수정기능을 이용해주세요.");
         }
         final Attendance attendance = new Attendance(LocalDateTime.of(localDate, parsedInputTime));
         crew.add(attendance);

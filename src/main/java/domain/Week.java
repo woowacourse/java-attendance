@@ -1,5 +1,6 @@
 package domain;
 
+import error.CustomIllegalArgumentException;
 import java.time.DayOfWeek;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -46,7 +47,7 @@ public enum Week {
         return Arrays.stream(Week.values())
                 .filter(week -> week.name().equals(day.name()))
                 .findFirst()
-                .orElseThrow(() -> new IllegalArgumentException(
+                .orElseThrow(() -> new CustomIllegalArgumentException(
                         String.format("%d월 %d일 %s은 등교일이 아닙니다.", Constants.MONTH,
                                 localDateTime.getDayOfMonth(), dayOfWeek)));
     }

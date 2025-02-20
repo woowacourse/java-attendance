@@ -1,5 +1,6 @@
 package domain;
 
+import error.CustomIllegalArgumentException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
@@ -18,7 +19,7 @@ public class Attendance {
             LocalDateTime dateTime = LocalDateTime.parse(inputTime, formatter);
             return new Attendance(dateTime);
         } catch (DateTimeParseException e) {
-            throw new IllegalArgumentException("올바른 형식이 아닙니다.");
+            throw new CustomIllegalArgumentException("올바른 형식이 아닙니다.");
         }
     }
 
@@ -32,7 +33,7 @@ public class Attendance {
     private void validateHoliday(LocalDateTime localDateTime) {
         final int day = localDateTime.getDayOfMonth();
         if (Constants.HOLIDAYS.contains(day)) {
-            throw new IllegalArgumentException(
+            throw new CustomIllegalArgumentException(
                     String.format("%d월 %d일 %s은 등교일이 아닙니다.", Constants.MONTH, localDateTime.getDayOfMonth(),
                             Week.findKoreanName(localDateTime.getDayOfWeek())));
         }

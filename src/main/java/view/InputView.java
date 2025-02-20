@@ -3,6 +3,7 @@ package view;
 
 import domain.Command;
 import domain.Week;
+import error.CustomIllegalArgumentException;
 import java.time.LocalDateTime;
 import java.util.Scanner;
 
@@ -64,7 +65,7 @@ public final class InputView {
 
     private static void validateInput(final String input) {
         if (input.isBlank()) {
-            throw new IllegalArgumentException("값을 입력해주세요.");
+            throw new CustomIllegalArgumentException("값을 입력해주세요.");
         }
     }
 }

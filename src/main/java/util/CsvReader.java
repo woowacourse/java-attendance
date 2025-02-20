@@ -20,7 +20,7 @@ public final class CsvReader {
                     .map(line -> line.split(DELIMITER))
                     .toList();
         } catch (IOException e) {
-            throw new IllegalStateException("CSV 파일을 읽는 중 오류 발생: " + filePath, e);
+            throw new IllegalStateException("[ERROR] CSV 파일을 읽는 중 오류 발생: " + filePath, e);
         }
     }
 }

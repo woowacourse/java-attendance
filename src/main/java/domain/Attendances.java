@@ -1,5 +1,6 @@
 package domain;
 
+import error.CustomIllegalArgumentException;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -38,7 +39,7 @@ public class Attendances {
         return attendances.stream()
                 .filter(attendance -> attendance.localDateTime.toLocalDate().equals(dateTime.toLocalDate()))
                 .findFirst()
-                .orElseThrow(() -> new IllegalArgumentException("수정하는 일자를 찾을 수 없습니다."));
+                .orElseThrow(() -> new CustomIllegalArgumentException("수정하는 일자를 찾을 수 없습니다."));
     }
 
     public List<Integer> getDates() {

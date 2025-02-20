@@ -1,5 +1,6 @@
 package domain;
 
+import error.CustomIllegalArgumentException;
 import java.util.Arrays;
 
 public enum Command {
@@ -22,7 +23,7 @@ public enum Command {
         return Arrays.stream(Command.values())
                 .filter(c -> c.commandNumber.equals(commandNumber))
                 .findFirst()
-                .orElseThrow(() -> new IllegalArgumentException("알맞은 명령어를 입력하세요."));
+                .orElseThrow(() -> new CustomIllegalArgumentException("알맞은 명령어를 입력하세요."));
     }
 
     public String getCommandName() {

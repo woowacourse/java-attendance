@@ -1,5 +1,6 @@
 package domain;
 
+import error.CustomIllegalArgumentException;
 import java.util.Comparator;
 import java.util.List;
 
@@ -15,7 +16,7 @@ public class Crews {
         return crews.stream()
                 .filter(o -> o.nickname.equals(nickname))
                 .findFirst()
-                .orElseThrow(() -> new IllegalArgumentException("크루가 존재하지 않습니다."));
+                .orElseThrow(() -> new CustomIllegalArgumentException("크루가 존재하지 않습니다."));
     }
 
     public List<Crew> getSortedCrews() {
