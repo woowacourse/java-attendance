@@ -2,6 +2,8 @@ package controller;
 
 import constant.Command;
 import converter.StringConverter;
+import dto.AttendanceResult;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -40,7 +42,7 @@ public class AttendanceController {
             modifyAttendance(attendances);
         }
         if (command.equals(Command.THREE)) {
-            checkAttendance();
+            checkAttendance(attendances);
         }
         if (command.equals(Command.FOUR)) {
 
@@ -74,8 +76,13 @@ public class AttendanceController {
         outputView.printModifiedResult(existAttendance, modifedAttendance);
     }
 
-    private void checkAttendance() {
+    private void checkAttendance(Attendances attendances) {
         String rawNickname = inputView.readNickname();
         Crew crew = stringConverter.convertToNickname(rawNickname);
+
+        Attendances filteredAttendances = attendances.findByCrewAndMonth(crew, LocalDate.now().getMonthValue());
+
+        AttendanceResult attendanceResult = AttendanceResult.of(filteredAttendances);
+        outputView.printAttendanceRecord(crew, attendanceResult);
     }
 }

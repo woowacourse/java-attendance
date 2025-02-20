@@ -10,18 +10,32 @@ public class Attendance {
     private final Crew crew;
     private LocalDateTime checkInTime;
     private AttendanceType attendanceType;
+    private final boolean isCome;
 
     private Attendance(Crew crew, LocalDateTime checkInTime, AttendanceType attendanceType) {
         this.crew = crew;
         this.checkInTime = checkInTime;
         this.attendanceType = attendanceType;
+        this.isCome = true;
+    }
+
+    private Attendance(Crew crew, LocalDate date) {
+        this.crew = crew;
+        this.checkInTime = LocalDateTime.of(date, LocalTime.of(0, 0));
+        this.attendanceType = AttendanceType.ABSENCE;
+        this.isCome = false;
     }
 
     public static Attendance of(Crew crew, LocalDateTime checkInTime) {
-        validateHolidayAndWeekend(checkInTime);
+        validateHolidayAndWeekend(checkInTime.toLocalDate());
         validateOperationTime(checkInTime);
 
         return new Attendance(crew, checkInTime, AttendanceType.calculateType(checkInTime));
+    }
+
+    public static Attendance createTimeNullAbsence(Crew crew, LocalDate date) {
+        validateHolidayAndWeekend(date);
+        return new Attendance(crew, date);
     }
 
     public Attendance clone(Attendance attendance) {
@@ -52,8 +66,8 @@ public class Attendance {
         return this.crew.equals(crew) && checkInTime.getMonthValue() == month;
     }
 
-    private static void validateHolidayAndWeekend(LocalDateTime checkInTime) {
-        if (Holiday.isHolidayOrWeekend(checkInTime)) {
+    private static void validateHolidayAndWeekend(LocalDate date) {
+        if (Holiday.isHolidayOrWeekend(date)) {
             throw new IllegalArgumentException("주말 및 공휴일에는 출석할 수 없습니다.");
         }
     }
@@ -91,5 +105,9 @@ public class Attendance {
 
     public AttendanceType getAttendanceType() {
         return attendanceType;
+    }
+
+    public boolean isCome() {
+        return isCome;
     }
 }

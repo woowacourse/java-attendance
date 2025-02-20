@@ -2,11 +2,9 @@ package model;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 public class Attendances {
@@ -44,24 +42,24 @@ public class Attendances {
     }
 
     public Attendances findByCrewAndMonth(Crew crew, int month) {
-        return Attendances.of(attendances.stream()
-                .filter(attendance -> attendance.findByCrewAndMonth(crew, month))
-                .sorted(Comparator.comparing(Attendance::getCheckInTime))
-                .toList()
-        );
-    }
+        LocalDate today = LocalDate.now();
+        List<Attendance> attendances = new ArrayList<>();
 
-    public Map<AttendanceType, Integer> calculateAttendanceTypeCount() {
-        Map<AttendanceType, Integer> attendanceTypesCount = new HashMap<>();
+        for (int i = 1; i < today.getDayOfMonth(); i++) {
+            LocalDate date = LocalDate.of(today.getYear(), month, i);
+            if (Holiday.isHolidayOrWeekend(date)) {
+                continue;
+            }
 
-        for (AttendanceType attendanceType : AttendanceType.values()) {
-            long attendanceTypeCount = attendances.stream()
-                    .filter(attendance -> attendance.getAttendanceType().equals(attendanceType))
-                    .count();
-            attendanceTypesCount.put(attendanceType, (int) attendanceTypeCount);
+            Optional<Attendance> foundAttendance = find(crew, date);
+            if (foundAttendance.isEmpty()) {
+                attendances.add(Attendance.createTimeNullAbsence(crew, date));
+                continue;
+            }
+            attendances.add(foundAttendance.get());
         }
 
-        return attendanceTypesCount;
+        return Attendances.of(attendances);
     }
 
     public Optional<Attendance> find(Crew crew, LocalDate localDate) {

@@ -1,0 +1,50 @@
+package dto;
+
+import java.util.HashMap;
+import java.util.Map;
+import model.Attendance;
+import model.AttendanceType;
+import model.Attendances;
+
+public class AttendanceResult {
+
+    private final Attendances attendances;
+    private final Map<AttendanceType, Integer> counts;
+
+    private AttendanceResult(Attendances allAttendances, Map<AttendanceType, Integer> counts) {
+        this.attendances = allAttendances;
+        this.counts = counts;
+    }
+
+    public static AttendanceResult of(Attendances attendances) {
+        Map<AttendanceType, Integer> counts = calculateAttendanceTypeCount(attendances);
+        return new AttendanceResult(attendances, counts);
+    }
+
+    public static Map<AttendanceType, Integer> calculateAttendanceTypeCount(Attendances attendances) {
+        Map<AttendanceType, Integer> attendanceTypesCount = new HashMap<>();
+        for (AttendanceType type : AttendanceType.values()) {
+            attendanceTypesCount.put(type, 0);
+        }
+
+        for (Attendance attendance : attendances.getAttendances()) {
+            if (!attendance.isCome()) {
+                attendanceTypesCount.put(AttendanceType.ABSENCE,
+                        attendanceTypesCount.get(AttendanceType.ABSENCE) + 1);
+                continue;
+            }
+            AttendanceType type = attendance.getAttendanceType();
+            attendanceTypesCount.put(type, attendanceTypesCount.get(type) + 1);
+        }
+
+        return attendanceTypesCount;
+    }
+
+    public Attendances getAttendances() {
+        return attendances;
+    }
+
+    public Map<AttendanceType, Integer> getCounts() {
+        return counts;
+    }
+}
