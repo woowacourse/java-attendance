@@ -1,5 +1,6 @@
 package domain;
 
+import java.util.Objects;
 import java.util.regex.Pattern;
 
 public class Nickname {
@@ -20,5 +21,19 @@ public class Nickname {
 
     public String getNickname() {
         return nickname;
+    }
+
+    @Override
+    public boolean equals(final Object o) {
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        final Nickname nickname1 = (Nickname) o;
+        return Objects.equals(nickname, nickname1.nickname);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(nickname);
     }
 }
