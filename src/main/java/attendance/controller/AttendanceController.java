@@ -15,6 +15,7 @@ import java.time.format.TextStyle;
 import java.util.List;
 import java.util.Locale;
 
+
 public class AttendanceController {
     private final InputView inputView;
     private final OutputView outputView;
@@ -30,27 +31,47 @@ public class AttendanceController {
     public void start() {
 
         initAttendanceSystem();
+        do {
+            LocalDateTime today = LocalDateTime.now();
+            String functionValue = functionInput(today);
 
-        LocalDateTime today = LocalDateTime.now();
-        int functionValue = inputView.inputFunction(today.getMonthValue(), today.getDayOfMonth(),
-                today.getDayOfWeek().getDisplayName(
-                        TextStyle.FULL, Locale.KOREAN));
+            try {
+                if (functionValue.equals("1")) {
+                    attendanceCheckFunction();
+                    continue;
+                }
 
-        if (functionValue == 1) {
-            attendanceCheckFunction();
-        }
+                if (functionValue.equals("2")) {
+                    attendanceModifyFunction();
+                    continue;
+                }
 
-        if (functionValue == 2) {
-            attendanceModifyFunction();
-        }
+                if (functionValue.equals("3")) {
+                    attendanceHistoryByName();
+                    continue;
+                }
 
-        if (functionValue == 3) {
-            attendanceHistoryByName();
-        }
+                if (functionValue.equals("4")) {
+                    crewAtRiskOfExpulsion();
+                    continue;
+                }
 
-        if (functionValue == 4) {
-            crewAtRiskOfExpulsion();
-        }
+                if (functionValue.equals("Q")) {
+                    break;
+                }
+
+                throw new IllegalArgumentException("[ERROR] 올바른 기능을 입력해주세요.");
+            } catch (IllegalArgumentException e) {
+                outputView.printErrorMessage(e.getMessage());
+            }
+
+
+        } while (true);
+    }
+
+    private String functionInput(LocalDateTime today) {
+        return inputView.inputFunction(today.getMonthValue(), today.getDayOfMonth(),
+                today.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.KOREAN));
     }
 
     private void initAttendanceSystem() {
@@ -96,6 +117,8 @@ public class AttendanceController {
 
         Time previousDateTime = attendance.getAttendanceTime();
         String previousAttendanceStatus = attendance.getAttendanceStatus();
+
+        attendance.modifyAttendanceTime(modifyDateTime);
 
         outputView.printModifyAttendanceResult(previousDateTime, previousAttendanceStatus, modifyDateTime,
                 attendance.getAttendanceStatus());

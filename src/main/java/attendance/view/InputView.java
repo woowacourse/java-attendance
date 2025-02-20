@@ -4,7 +4,7 @@ import attendance.utils.Console;
 
 public class InputView {
 
-    public int inputFunction(int month, int day, String dayOfWeek) {
+    public String inputFunction(int month, int day, String dayOfWeek) {
 
         System.out.println("오늘은 " + month + "월 " + day + "일 " + dayOfWeek + "입니다. 기능을 선택해주세요.");
         System.out.println("1. 출석 확인");
@@ -13,7 +13,8 @@ public class InputView {
         System.out.println("4. 제적 위험자 확인");
         System.out.println("Q. 종료");
 
-        return Console.readInt();
+        return Console.readLine();
+
     }
 
     public String inputCrewName() {

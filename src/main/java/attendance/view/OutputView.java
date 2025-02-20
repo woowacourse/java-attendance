@@ -30,7 +30,7 @@ public class OutputView {
         System.out.printf("%s:%s (%s)", modifyTime.getHour(), modifyTime.getMinute(),
                 modifyAttendanceStatus);
 
-        System.out.print(" 수정 완료!");
+        System.out.println(" 수정 완료!");
 
     }
 
@@ -66,5 +66,7 @@ public class OutputView {
         }
     }
 
-
+    public void printErrorMessage(String message) {
+        System.out.println(message);
+    }
 }

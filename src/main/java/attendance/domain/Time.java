@@ -14,12 +14,28 @@ public class Time {
     public Time(LocalDate date, String hour, String minute, boolean isAbsent) {
         if (!isAbsent) {
             validatePossibleTime(date, hour, minute);
+            validateInRangeTime(hour, minute);
         }
         this.date = date;
         this.hour = hour;
         this.minute = minute;
         this.isAbsent = isAbsent;
     }
+
+    private void validateInRangeTime(String hour, String minute) {
+        try {
+            if (Integer.parseInt(hour) >= 24 || Integer.parseInt(hour) < 0 || Integer.parseInt(minute) >= 60
+                    || Integer.parseInt(minute) < 0) {
+                throw new IllegalArgumentException("[ERROR] 올바른 시간을 입력해주세요.");
+
+            }
+        } catch (NumberFormatException e) {
+            System.out.println(hour);
+            System.out.println(minute);
+            throw new IllegalArgumentException("[ERROR] 올바른 시간을 입력해주세요.");
+        }
+    }
+
 
     private void validatePossibleTime(LocalDate date, String hour, String minute) {
         String day = date.getDayOfWeek().name();
