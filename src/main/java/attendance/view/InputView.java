@@ -8,6 +8,7 @@ import java.util.Locale;
 import java.util.Scanner;
 
 public class InputView {
+    public static final int START_DAY_OF_MONTH = 1;
     Scanner scanner = new Scanner(System.in);
 
     public Menu inputMenu(LocalDate now) {
@@ -30,13 +31,25 @@ public class InputView {
         return scanner.nextLine();
     }
 
-    public int inputUpdateDate() {
-        System.out.println("수정하려는 날짜(일)를 입력해 주세요.");
-        return Integer.parseInt(scanner.nextLine());
+    public int inputUpdateDate(LocalDate now) {
+        try {
+            System.out.println("수정하려는 날짜(일)를 입력해 주세요.");
+            int date = Integer.parseInt(scanner.nextLine());
+            validateDayOfMonth(date, now);
+            return date;
+        } catch (NumberFormatException e) {
+            throw new IllegalArgumentException("[ERROR] 날짜(일)는 숫자로 입력해주세요.");
+        }
     }
 
     public String inputUpdateTime() {
         System.out.println("언제로 변경하겠습니까?");
         return scanner.nextLine();
+    }
+
+    private void validateDayOfMonth(int number, LocalDate date) {
+        if (number >= START_DAY_OF_MONTH && number > date.lengthOfMonth()) {
+            throw new IllegalArgumentException(String.format("[ERROR] 날짜는 %d일부터 %d일 사이를 입력해주세요.", START_DAY_OF_MONTH, date.lengthOfMonth()));
+        }
     }
 }

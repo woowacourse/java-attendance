@@ -66,7 +66,7 @@ public class AttendanceController {
     private void updateAttendance(final Crews crews, final LocalDate now) {
         Crew crew = crews.findByName(inputView.inputNickname());
 
-        LocalDate updateDate = LocalDate.of(now.getYear(), now.getMonthValue(), inputView.inputUpdateDate());
+        LocalDate updateDate = LocalDate.of(now.getYear(), now.getMonthValue(), inputView.inputUpdateDate(now));
         HolidayValidator.isHoliday(updateDate);
 
         String inputUpdateTime = inputView.inputUpdateTime();
