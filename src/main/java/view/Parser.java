@@ -1,6 +1,7 @@
 package view;
 
 import controller.dto.AttendanceTimeDto;
+import domain.PenaltyType;
 import java.time.DayOfWeek;
 import java.time.format.TextStyle;
 import java.util.Locale;
@@ -37,5 +38,16 @@ public class Parser {
 
     public static String parseDayOfWeek(int dayOfWeek) {
         return DayOfWeek.of(dayOfWeek).getDisplayName(TextStyle.FULL, Locale.KOREAN);
+    }
+
+    public static String parsePenaltyTypeFormat(PenaltyType penaltyType) {
+        if (penaltyType == PenaltyType.BAN) {
+            return "제적";
+        }
+        if (penaltyType == PenaltyType.ONE_ON_ONE) {
+            return "면담";
+        }
+
+        return "경고";
     }
 }

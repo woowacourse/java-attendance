@@ -16,6 +16,10 @@ public class AttendanceHistory {
         return new AttendanceHistory(crew, attendanceDateTime, attendanceDateTime.getAttendanceType());
     }
 
+    public Crew getCrew() {
+        return crew;
+    }
+
     public AttendanceDateTime getAttendanceDateTime() {
         return attendanceDateTime;
     }
@@ -34,5 +38,9 @@ public class AttendanceHistory {
 
     public int getDay() {
         return attendanceDateTime.getDay();
+    }
+
+    public boolean isPastHistory(int day) {
+        return attendanceDateTime.getDay() < day;
     }
 }

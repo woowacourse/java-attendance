@@ -1,20 +1,23 @@
 package service;
 
 import controller.dto.AttendanceHistoryDto;
+import controller.dto.AttendanceHistoryWithPenaltyTypeDto;
+import controller.dto.AttendanceTypeCountDto;
 import controller.dto.AttendanceUpdateResultDto;
 import domain.AttendanceDate;
 import domain.AttendanceDateTime;
 import domain.AttendanceHistories;
 import domain.AttendanceHistory;
 import domain.AttendanceType;
+import domain.AttendanceTypeCount;
 import domain.Crew;
 import domain.Crews;
+import domain.PenaltyType;
 import java.util.ArrayList;
-import java.util.Date;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.IntStream;
 
 public class AttendanceService {
     private final Crews crews;
@@ -46,16 +49,15 @@ public class AttendanceService {
         return AttendanceUpdateResultDto.from(beforeAttendanceHistory.getAttendanceDateTime(), newDateTime);
     }
 
-    public Map<Integer, AttendanceHistoryDto> checkAttendanceOf(String nickname, int day) {
+    public AttendanceHistoryWithPenaltyTypeDto checkAttendanceOf(String nickname, int day) {
         Crew crew = crews.findCrewBy(nickname);
         List<AttendanceHistory> foundHistories = attendanceHistories.findAllHistoriesOf(crew);
 
-        // TODO: 변수명 생각 .. .
-        Map<Integer, AttendanceHistoryDto> historyTemp = new HashMap<>();
+        Map<Integer, AttendanceHistoryDto> historyDtoOfDay = new HashMap<>();
+        AttendanceTypeCount attendanceTypeCount = AttendanceTypeCount.from(day, foundHistories);
 
         for (AttendanceHistory history : foundHistories) {
-            historyTemp.put(history.getDay(),
-                    AttendanceHistoryDto.from(history.getAttendanceDateTime()));
+            historyDtoOfDay.put(history.getDay(), AttendanceHistoryDto.from(history.getAttendanceDateTime()));
         }
 
         for (int currentDay = 1; currentDay < day; currentDay++) {
@@ -63,12 +65,31 @@ public class AttendanceService {
                 continue;
             }
 
-            if (!historyTemp.containsKey(currentDay)) {
+            if (!historyDtoOfDay.containsKey(currentDay)) {
                 AttendanceDateTime attendanceDateTime = AttendanceDateTime.of(currentDay, 0, 0);
-                historyTemp.put(currentDay, AttendanceHistoryDto.from(attendanceDateTime));
+                historyDtoOfDay.put(currentDay, AttendanceHistoryDto.from(attendanceDateTime));
             }
         }
 
-        return historyTemp;
+        PenaltyType penaltyType = PenaltyType.getPenaltyType(attendanceTypeCount.getTotalAbsenceCount());
+
+        return new AttendanceHistoryWithPenaltyTypeDto(historyDtoOfDay, penaltyType);
+    }
+
+    public List<AttendanceTypeCountDto> checkWarningCrew(int day) {
+        List<AttendanceTypeCountDto> attendanceTypeCountDtos = new ArrayList<>();
+        for (Crew crew : crews.getCrews()) {
+            List<AttendanceHistory> beforeHistoriesOfCrew = attendanceHistories.findHistoriesBefore(crew, day);
+
+            AttendanceTypeCount attendanceTypeCount = AttendanceTypeCount.from(day, beforeHistoriesOfCrew);
+            PenaltyType penaltyType = PenaltyType.getPenaltyType(attendanceTypeCount.getTotalAbsenceCount());
+            if (penaltyType == PenaltyType.NONE) {
+                continue;
+            }
+
+            attendanceTypeCountDtos.add(AttendanceTypeCountDto.of(crew, attendanceTypeCount, penaltyType));
+        }
+
+        return attendanceTypeCountDtos;
     }
 }

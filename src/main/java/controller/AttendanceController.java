@@ -1,9 +1,12 @@
 package controller;
 
 import controller.dto.AttendanceHistoryDto;
+import controller.dto.AttendanceHistoryWithPenaltyTypeDto;
 import controller.dto.AttendanceTimeDto;
+import controller.dto.AttendanceTypeCountDto;
 import controller.dto.AttendanceUpdateResultDto;
 import domain.AttendanceDateTime;
+import java.util.List;
 import java.util.Map;
 import service.AttendanceService;
 import view.Function;
@@ -45,6 +48,7 @@ public class AttendanceController {
             return;
         }
         if (function == Function.CHECK_WARNING_CREW) {
+            checkWarningCrew();
         }
     }
 
@@ -68,9 +72,15 @@ public class AttendanceController {
     private void checkAttendanceOfCrew() {
         String nickname = getValidNickname();
         int day = InputView.readToday();
-        Map<Integer, AttendanceHistoryDto> integerAttendanceHistoryDtoMap = attendanceService.checkAttendanceOf(
+        AttendanceHistoryWithPenaltyTypeDto attendanceHistoryWithPenaltyTypeDto = attendanceService.checkAttendanceOf(
                 nickname, day);
-        OutputView.printAttendanceHistories(integerAttendanceHistoryDtoMap);
+        OutputView.printAttendanceHistories(attendanceHistoryWithPenaltyTypeDto);
+    }
+
+    private void checkWarningCrew() {
+        int day = InputView.readToday();
+        List<AttendanceTypeCountDto> attendanceTypeCountDtos = attendanceService.checkWarningCrew(day);
+        OutputView.printBanWarningCrews(attendanceTypeCountDtos);
     }
 
     private static AttendanceDateTime getAttendanceDateTime() {

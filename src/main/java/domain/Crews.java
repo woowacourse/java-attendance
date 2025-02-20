@@ -10,6 +10,10 @@ public class Crews {
         crews = new HashSet<>();
     }
 
+    public Set<Crew> getCrews() {
+        return new HashSet<>(crews);
+    }
+
     public void add(String nickname) {
         crews.add(Crew.of(nickname));
     }
