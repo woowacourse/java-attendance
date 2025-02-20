@@ -51,15 +51,3 @@
     - 정렬 기준2: 출석 상태 동일하면 닉네임으로 오름차순 정렬
 
 ---
-
-### TODO
-
-- 자료구조 정하기
-
-    - [x] Crew(crewName, 지각횟수, 결석횟수)
-    - Crews(List<Crew>)
-
-    - [x] Attendance(Crew, 도착날짜및시간요일(LocalDateTime), 출석지각결석)
-    - Attendances(List<Attendance>)
-
----
