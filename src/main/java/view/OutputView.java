@@ -11,10 +11,7 @@ import service.dto.DisenrollmentCheckResponse;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
+import java.util.*;
 
 public class OutputView {
 
@@ -102,7 +99,8 @@ public class OutputView {
 
     public void printDisenrollmentCheckResult(List<DisenrollmentCheckResponse> responses) {
         System.out.println("제적 위험자 조회 결과");
-        for (DisenrollmentCheckResponse response : responses) {
+        List<DisenrollmentCheckResponse> sortedResponse = getSortedResponse(responses);
+        for (DisenrollmentCheckResponse response : sortedResponse) {
             System.out.printf("- %s: 결석 %d회, 지각 %d회 (%s)\n",
                     response.name(),
                     response.absenceCount(),
@@ -110,5 +108,12 @@ public class OutputView {
                     response.crewStatus()
             );
         }
+    }
+
+    private List<DisenrollmentCheckResponse> getSortedResponse(List<DisenrollmentCheckResponse> responses) {
+        return responses.stream()
+                .sorted(Comparator.comparing(DisenrollmentCheckResponse::getConvertedAbsenceCount).reversed()
+                        .thenComparing(DisenrollmentCheckResponse::name))
+                .toList();
     }
 }
