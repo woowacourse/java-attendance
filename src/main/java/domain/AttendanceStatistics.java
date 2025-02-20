@@ -21,19 +21,21 @@ public class AttendanceStatistics {
             TimeAndStatus status = records.findByDate(startDate);
             startDate = startDate.plusDays(1);
 
-            if (status == null || status.getStatus() == null) {
-                absenceCount++;
-                continue;
-            }
+            if(!Holiday.isHoliday(startDate.minusDays(1))) {
+                if (status == null || status.getStatus() == null) {
+                    absenceCount++;
+                    continue;
+                }
 
-            if (status.getStatus().equals("출석")) {
-                attendanceCount++;
-            }
-            if (status.getStatus().equals("지각")) {
-                latenessCount++;
-            }
-            if (status.getStatus().equals("결석")) {
-                absenceCount++;
+                if (status.getStatus().equals("출석")) {
+                    attendanceCount++;
+                }
+                if (status.getStatus().equals("지각")) {
+                    latenessCount++;
+                }
+                if (status.getStatus().equals("결석")) {
+                    absenceCount++;
+                }
             }
         }
         return new StatisticsResult(attendanceCount, latenessCount, absenceCount);

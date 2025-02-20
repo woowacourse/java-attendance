@@ -2,10 +2,12 @@ package view;
 
 import domain.Penalty;
 import domain.Records;
+import domain.StatisticsResult;
 import domain.TimeAndStatus;
 import java.time.LocalDate;
 import java.time.format.TextStyle;
 import java.util.Locale;
+import java.util.Map;
 
 public class OutputView {
 
@@ -23,6 +25,9 @@ public class OutputView {
     private final String LATENESS_CHECK_FORMAT = "지각: %s회%n";
     private final String ABSENCE_CHECK_FORMAT = "결석: %s회%n";
     private final String PENALTY_FORMAT = "%s 대상자입니다.%n";
+    private final String WARNING_CREW_MESSAGE = "제적 위험자 조회 결과";
+    private final String WARNING_CREW_FORMAT = "- %s: 결석 %d회, 지각 %d회 (%s)%n";
+    private final String FUNCTION_MESSAGE ="오늘은 %s입니다. 기능을 선택해 주세요.%n";
 
 
     public void printAttendanceRecord(LocalDate localDate, TimeAndStatus timeAndStatus) {
@@ -71,6 +76,30 @@ public class OutputView {
         if (penaltyResult != Penalty.NONE) {
             System.out.printf(PENALTY_FORMAT, penaltyResult.penalty);
         }
+    }
+
+    public void printExpelledWarningResult(Map<String, StatisticsResult> sortedResult) {
+        System.out.println(WARNING_CREW_MESSAGE);
+        for (String name : sortedResult.keySet()) {
+            StatisticsResult statisticsResult = sortedResult.get(name);
+            System.out.printf(WARNING_CREW_FORMAT, name, statisticsResult.getAbsenceCount()
+                , statisticsResult.getLatenessCount()
+                , statisticsResult.getPenalty().penalty
+            );
+        }
+    }
+
+    public void printFunction(LocalDate localDate) {
+        String date = dateFormatting(localDate);
+        System.out.printf(FUNCTION_MESSAGE, date);
+        System.out.printf(
+            "1. 출석 확인%n"
+            + "2. 출석 수정%n"
+            + "3. 크루별 출석 기록 확인%n"
+            + "4. 제적 위험자 확인%n"
+            + "Q. 종료"
+        );
+
     }
 
     private String timeFormatting(TimeAndStatus timeAndStatus) {

@@ -50,13 +50,13 @@ public class AttendanceManager {
     }
 
     public Map<String, StatisticsResult> sortCrew(LocalDate nowDate) {
-        Map<String, StatisticsResult> statisticsMap = AttendanceStatistics.calculateExpelledWarning(
+        Map<String, StatisticsResult> sortedResult = AttendanceStatistics.calculateExpelledWarning(
             nowDate, crews);
 
-        return statisticsMap
+        return sortedResult
             .entrySet().stream().sorted(Comparator.comparing(
                     (Map.Entry<String, StatisticsResult> entry) -> entry.getValue().getPenalty(),
-                    Comparator.reverseOrder())
+                    Comparator.naturalOrder())
                 .thenComparing(entry -> entry.getValue().getAbsenceCount(),
                     Comparator.reverseOrder()).thenComparing(Map.Entry::getKey)
             )
