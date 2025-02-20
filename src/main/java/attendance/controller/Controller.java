@@ -11,9 +11,13 @@ import attendance.model.CustomLocalDateTime;
 import attendance.view.InputView;
 import attendance.view.OutputView;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 public class Controller {
     public static final String FILE_NAME = "attendances.csv";
+    private static final DateTimeFormatter NOT_ATTENDABLE_FORMATTER = DateTimeFormatter.ofPattern(
+            "MM월 dd일 EEEE은 등교일이 아닙니다.");
+
     private final InputView inputView;
     private final OutputView outputView;
     private static final Crews crews = new Crews();
@@ -75,6 +79,9 @@ public class Controller {
 
     private void processAddAttendance() {
         process(() -> {
+            if (CustomLocalDateTime.isHoliday(CustomLocalDateTime.nowDate())) {
+                throw new IllegalArgumentException(CustomLocalDateTime.nowDate().format(NOT_ATTENDABLE_FORMATTER));
+            }
             Crew crew = crews.findCrew(inputView.inputCrewName());
             AttendanceDetail attendanceDetail = new AttendanceDetail(LocalDateTime.of(
                     CustomLocalDateTime.nowDate(),
