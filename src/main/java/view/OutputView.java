@@ -4,7 +4,6 @@ import controller.dto.AttendanceHistoryDto;
 import controller.dto.AttendanceHistoryWithPenaltyTypeDto;
 import controller.dto.AttendanceTypeCountDto;
 import controller.dto.AttendanceUpdateResultDto;
-import domain.AttendanceHistories;
 import domain.AttendanceType;
 import domain.PenaltyType;
 import java.util.Comparator;
@@ -44,8 +43,6 @@ public class OutputView {
 
         return result;
     }
-
-    // TODO: 출석 지각 결석 현황 + 면담 대상자 여부 출력해야 함
 
     public static void printAttendanceHistories(AttendanceHistoryWithPenaltyTypeDto dto) {
         int attendanceCount = 0;

@@ -1,7 +1,6 @@
 package domain;
 
 public class AttendanceHistory {
-    // TODO: 클래스명 수정 관점에서 고민해보기
     private final Crew crew;
     private final AttendanceDateTime attendanceDateTime;
     private final AttendanceType attendanceType;

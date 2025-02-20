@@ -1,4 +1,4 @@
 package controller.dto;
 
-public record AttendanceTimeDto(int hour, int minute){
+public record AttendanceTimeDto(int hour, int minute) {
 }
