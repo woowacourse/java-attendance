@@ -46,16 +46,19 @@ public class AttendanceService {
 
     public CrewAttendanceLogResponse getAttendanceLog(Crew crew) {
         List<LocalDateTime> attendanceLogs = attendanceRepository.findByCrew(crew);
+
         List<AttendanceLogResponse> existTimeLogs = makeExistsTimeLogResponses(attendanceLogs);
         List<AttendanceLogResponse> notExistTimeLogs = makeNoneExistsTimeLogResponses(attendanceLogs);
-        List<AttendanceLogResponse> attendanceLogResponses = Stream.concat(existTimeLogs.stream(),
-                        notExistTimeLogs.stream())
-                .sorted(Comparator.comparing(AttendanceLogResponse::getDate))
-                .toList();
+
+        List<AttendanceLogResponse> attendanceLogResponses =
+                Stream.concat(existTimeLogs.stream(), notExistTimeLogs.stream())
+                        .sorted(Comparator.comparing(AttendanceLogResponse::getDate))
+                        .toList();
+
         return CrewAttendanceLogResponse.of(
                 crew,
                 attendanceLogResponses,
-                CrewAttendanceStatus.of(crew, attendanceRepository.findByCrew(crew)).getManagementStatus()
+                CrewAttendanceStatus.of(crew, attendanceLogs).getManagementStatus()
         );
     }
 
