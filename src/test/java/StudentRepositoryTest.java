@@ -10,6 +10,7 @@ import model.StudentRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import view.InputView;
 
 public class StudentRepositoryTest {
     Controller controller = new Controller();
@@ -35,8 +36,7 @@ public class StudentRepositoryTest {
     @Test
     @DisplayName("등교시간 잘못 입력시 예외처리 한다.")
     void test2() {
-        LocalTime localTime = LocalTime.of(7,59);
-        assertThatThrownBy(() -> student.isStartTime(localTime))
+        assertThatThrownBy(() -> InputView.isNotOpeningHour(LocalDateTime.of(2024,12,13,7,59)))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("[ERROR] 캠퍼스 운영 시간이 아닙니다.");
     }
@@ -59,7 +59,7 @@ public class StudentRepositoryTest {
 
         Student student6 = studentRepository.findStudentByName(name);
         student6.updateState(localDateTime);
-        assertThat(student6.attendance).isEqualTo(1);
+        assertThat(student6.getAttendance()).isEqualTo(1);
 
     }
 
@@ -74,7 +74,7 @@ public class StudentRepositoryTest {
         Student student6 = studentRepository.findStudentByName(name);
         student6.updateState(localDateTime);
 
-        assertThat(student6.record.get(localDateTime)).isEqualTo(AttendanceStatus.ATTENDANCE);
+        assertThat(student6.getRecord().get(localDateTime)).isEqualTo(AttendanceStatus.ATTENDANCE);
     }
 
     @Test
