@@ -55,12 +55,11 @@ class AttendancesTest {
         Attendances attendances = new Attendances(crewGroup, Set.of(attendance));
 
         LocalDateTime updateDateTime = LocalDateTime.of(2024, 12, 13, 11, 1);
-        Attendance updateAttendance = new Attendance(crew, updateDateTime);
-        attendances.update(updateAttendance);
+        Attendance modifidedAttendance = attendances.update(new Attendance(crew, updateDateTime));
 
         assertThat(attendances)
                 .extracting("attendances")
-                .isEqualTo(Set.of(updateAttendance));
+                .isEqualTo(Set.of(modifidedAttendance));
     }
 
     @DisplayName("크루가 찾으려는 날짜에 출석한 경우 닉네임과 날짜로 기존 출석을 찾을 수 있다.")

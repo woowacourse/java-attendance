@@ -34,9 +34,10 @@ public class Attendances {
         attendances.add(attendance);
     }
 
-    public void update(Attendance attendance) {
+    public Attendance update(Attendance attendance) {
         attendances.remove(attendance);
         attendances.add(attendance);
+        return attendance;
     }
 
     public Optional<Attendance> findByCrewAndDate(Crew crew, LocalDate date) {
