@@ -1,6 +1,7 @@
 package attendance;
 
 import attendance.controller.Controller;
+import attendance.controller.DefaultController;
 import attendance.model.domain.crew.DefaultCrewAttendanceComparator;
 import attendance.model.repository.AttendanceRepository;
 import attendance.model.repository.CrewAttendanceDeserializer;
@@ -18,7 +19,7 @@ public class Application {
                 Path.of("src/main/resources/attendances.csv")
         );
 
-        Controller controller = new Controller(
+        Controller controller = new DefaultController(
                 new ConsoleInputView(),
                 new ConsoleOutputView(),
                 new AttendanceService(attendanceRepository),
