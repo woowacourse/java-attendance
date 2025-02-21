@@ -20,7 +20,7 @@ public class OutputView {
     private static final String ATTENDANCE_RESULT_MESSAGE = "\n%d월 %d일 %s %02d:%02d (%s)\n";
     private static final String MODIFY_ATTENDANCE_RESULT_MESSAGE = "\n%d월 %d일 %s %02d:%02d (%s) -> %02d:%02d (%s) 수정 완료!\n";
 
-    public void printAttendanceResult(AttendanceHistory attendanceHistory) {
+    public void printAttendanceHistory(AttendanceHistory attendanceHistory) {
         LocalDateTime attendanceTime = attendanceHistory.getAttendanceTime();
         DayOfWeek dayOfWeek = attendanceTime.getDayOfWeek();
         AttendanceType attendanceType = attendanceHistory.getAttendanceType();

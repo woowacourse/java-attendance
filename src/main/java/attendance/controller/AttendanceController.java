@@ -87,15 +87,14 @@ public class AttendanceController {
         Crew crew = findCrew();
         LocalTime attendanceTime = inputView.inputAttendanceTime();
         AttendanceType attendanceType = AttendancePolicy.checkAttendanceType(now, attendanceTime);
-        AttendanceHistory attendanceHistory = new AttendanceHistory(LocalDateTime.of(now, attendanceTime),
-                attendanceType);
-        crew.addAttendanceResult(attendanceHistory);
-        outputView.printAttendanceResult(attendanceHistory);
+        LocalDateTime attedanceDateTime = LocalDateTime.of(now, attendanceTime);
+        AttendanceHistory attendanceHistory = new AttendanceHistory(attedanceDateTime, attendanceType);
+        crew.addAttendanceHistory(attendanceHistory);
+        outputView.printAttendanceHistory(attendanceHistory);
     }
 
     private Crew findCrew() {
         String crewName = inputView.inputCrewName();
-        Crew crew = crewManager.findByCrewName(crewName);
-        return crew;
+        return crewManager.findByCrewName(crewName);
     }
 }

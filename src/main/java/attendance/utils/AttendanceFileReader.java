@@ -31,7 +31,7 @@ public class AttendanceFileReader {
             if (!crewManager.addCrew(crew)) {
                 crew = crewManager.findByCrewName(nickname);
             }
-            crew.addAttendanceResult(attendanceHistory);
+            crew.addAttendanceHistory(attendanceHistory);
         }
     }
 }
