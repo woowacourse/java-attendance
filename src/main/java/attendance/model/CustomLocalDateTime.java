@@ -12,7 +12,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.Set;
 
 public class CustomLocalDateTime {
-    public static final LocalDateTime FIXED_DATE_TIME = LocalDateTime.of(2024, 12, 16, 12, 0);
+    private static final LocalDateTime FIXED_DATE_TIME = LocalDateTime.of(2024, 12, 16, 12, 0);
     private static final Clock clock = Clock.fixed(
             FIXED_DATE_TIME.toInstant(ZoneOffset.UTC),
             ZoneId.of("UTC")
