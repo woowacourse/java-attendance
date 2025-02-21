@@ -26,7 +26,7 @@ public class Attendance {
         validateDate(attendanceDateTime.toLocalDate());
         validateTime(attendanceDateTime.toLocalTime());
         this.attendanceDateTime = attendanceDateTime;
-        this.attendanceStatus = checkAttendanceStatus(attendanceDateTime);
+        this.attendanceStatus = determineAttendanceStatus(attendanceDateTime);
     }
     
     private void validateDate(LocalDate date) {
@@ -41,7 +41,7 @@ public class Attendance {
         }
     }
     
-    private AttendanceStatus checkAttendanceStatus(LocalDateTime attendanceDateTime) {
+    private AttendanceStatus determineAttendanceStatus(LocalDateTime attendanceDateTime) {
         if (attendanceDateTime.getDayOfWeek() == DayOfWeek.MONDAY) {
             return AttendanceStatus.of(attendanceDateTime.toLocalTime(), MONDAY_ATTENDANCE_TIME);
         }
@@ -59,7 +59,7 @@ public class Attendance {
                 .withMinute(newAttendanceTime.getMinute());
         
         AttendanceStatus oldAttendanceStatus = attendanceStatus;
-        attendanceStatus = checkAttendanceStatus(attendanceDateTime);
+        attendanceStatus = determineAttendanceStatus(attendanceDateTime);
         
         return new AttendanceModifyResult(
                 attendanceDateTime.toLocalDate(),
