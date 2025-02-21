@@ -15,13 +15,12 @@ public enum AttendanceTime {
     private final int dayOfWeek;
 
     AttendanceTime(int hour, int minute, int dayOfWeek) {
-        this.hour = hour;
-        this.minute = minute;
-        this.dayOfWeek = dayOfWeek;
-
         if (hour < 8 || hour > 22) {
             throw new IllegalArgumentException("캠퍼스 운영 시간에만 출석이 가능합니다.");
         }
+        this.hour = hour;
+        this.minute = minute;
+        this.dayOfWeek = dayOfWeek;
     }
 
     public static boolean isAttendance(int dayOfWeek, LocalDateTime dateTime) {
