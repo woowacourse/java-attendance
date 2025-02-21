@@ -17,8 +17,8 @@ public class AbsenceHistory {
         int lateness = lateCalculate();
         int absence = absenceCalculate();
 
-        String absenceStatus = AbsencePolicy.getAbsencePolicy(absence, lateness);
-        return new AbsenceResultDto(attendance, lateness, absence, absenceStatus);
+        AbsencePolicy absenceStatus = AbsencePolicy.getAbsencePolicy(absence, lateness);
+        return new AbsenceResultDto(attendance, lateness, absence, absenceStatus.getDescription());
     }
 
     private int lateCalculate() {
