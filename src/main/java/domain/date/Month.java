@@ -33,7 +33,7 @@ public enum Month {
         if (this == DECEMBER && day == 25) {
             return true;
         }
-        DayOfWeek dayOfWeek = LocalDate.of(AttendanceCustomDate.YEAR, AttendanceCustomDate.MONTH.getValue(), day).getDayOfWeek();
+        DayOfWeek dayOfWeek = LocalDate.of(CustomDate.YEAR, CustomDate.MONTH.getValue(), day).getDayOfWeek();
         return dayOfWeek == DayOfWeek.SATURDAY || dayOfWeek == DayOfWeek.SUNDAY;
     }
 

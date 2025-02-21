@@ -2,7 +2,7 @@ package controller.sub;
 
 import controller.sub.parent.SubController;
 import domain.attendance.Attendance;
-import domain.date.AttendanceCustomDate;
+import domain.date.CustomDate;
 import exception.CrewNotExistException;
 import exception.DuplicateAttendanceException;
 import java.time.LocalTime;
@@ -32,7 +32,7 @@ public class AttendanceRegisterController implements SubController {
     public void run() {
         String name = inputView.readName();
         LocalTime timeInput = inputView.readTime();
-        LocalDate now = AttendanceCustomDate.now().toLocalDate();
+        LocalDate now = CustomDate.now().toLocalDate();
         LocalDateTime time = LocalDateTime.of( //TODO: 한곳에서 생성
                 now.getYear(),
                 now.getMonthValue(),

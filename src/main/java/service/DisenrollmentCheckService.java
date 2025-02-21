@@ -3,7 +3,7 @@ package service;
 import domain.attendance.AttendanceBook;
 import domain.crew.Crew;
 import domain.crew.CrewStatus;
-import domain.date.AttendanceCustomDate;
+import domain.date.CustomDate;
 import repository.AttendanceRepository;
 import service.dto.DisenrollmentCheckResponse;
 
@@ -19,7 +19,7 @@ public class DisenrollmentCheckService {
     }
 
     public List<DisenrollmentCheckResponse> getDisenrollmentCheckResult() {
-        LocalDate now = AttendanceCustomDate.now().toLocalDate();
+        LocalDate now = CustomDate.now().toLocalDate();
         Map<Crew, AttendanceBook> attendances = attendanceRepository.findAll();
         List<Map.Entry<Crew, AttendanceBook>> disenrollmentAttendances = attendances.entrySet().stream()
                 .filter(entry -> {

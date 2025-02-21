@@ -1,7 +1,7 @@
 package controller.sub;
 
 import controller.sub.parent.SubController;
-import domain.date.AttendanceCustomDate;
+import domain.date.CustomDate;
 import domain.attendance.AttendanceStatus;
 import domain.crew.CrewStatus;
 import service.AttendanceHistoryService;
@@ -31,7 +31,7 @@ public class AttendanceHistoryController implements SubController {
     @Override
     public void run() {
         String name = inputView.readName();
-        LocalDate nowDate = AttendanceCustomDate.now().toLocalDate();
+        LocalDate nowDate = CustomDate.now().toLocalDate();
         List<AttendanceHistoryResponse> histories = attendanceHistoryService.getHistoriesOf(name, nowDate);
         Map<AttendanceStatus, Integer> attendanceResult = attendanceHistoryService.getAttendanceResultOf(name, nowDate);
         CrewStatus crewStatus = attendanceHistoryService.getCrewStatus(name, nowDate);

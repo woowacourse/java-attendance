@@ -5,9 +5,9 @@ import repository.AttendanceRepository;
 
 import java.io.*;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import view.format.CustomDateTimeFormatter;
 
 public class AttendanceStoreService {
     private final AttendanceRepository attendanceRepository;
@@ -20,9 +20,8 @@ public class AttendanceStoreService {
         List<String> lines = loadLines(attendanceStorePath);
         for (String line : lines) {
             String[] parsed = line.split(",");
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"); //TODO : 외부 주입
             Crew crew = new Crew(parsed[0]);
-            LocalDateTime attendanceTime = LocalDateTime.parse(parsed[1], formatter);
+            LocalDateTime attendanceTime = CustomDateTimeFormatter.parseFullDateAndTime(parsed[1]);
             createCrewIfNew(crew);
             attendanceRepository.createNewAttendance(parsed[0]
                     , attendanceTime.getDayOfMonth()

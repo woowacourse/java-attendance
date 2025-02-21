@@ -2,7 +2,7 @@ package service;
 
 import domain.attendance.AttendanceStatus;
 import domain.crew.Crew;
-import domain.date.AttendanceCustomDate;
+import domain.date.CustomDate;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -32,8 +32,8 @@ class AttendanceModifyServiceTest {
     void test() {
         //given
         LocalDateTime before = LocalDateTime.of(
-                AttendanceCustomDate.YEAR,
-                AttendanceCustomDate.MONTH.getValue(),
+                CustomDate.YEAR,
+                CustomDate.MONTH.getValue(),
                 19,
                 10,
                 30
@@ -44,7 +44,7 @@ class AttendanceModifyServiceTest {
         int date = 19;
         int hour = 10;
         int minutes = 0;
-        LocalDateTime after = LocalDateTime.of(AttendanceCustomDate.YEAR, AttendanceCustomDate.MONTH.getValue(), date, hour, minutes);
+        LocalDateTime after = LocalDateTime.of(CustomDate.YEAR, CustomDate.MONTH.getValue(), date, hour, minutes);
 
         AttendanceModifyResponse response = attendanceModifyService.modify(name, date, hour, minutes);
 

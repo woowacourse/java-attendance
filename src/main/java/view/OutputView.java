@@ -2,7 +2,7 @@ package view;
 
 import controller.facade.Menu;
 import domain.attendance.Attendance;
-import domain.date.AttendanceCustomDate;
+import domain.date.CustomDate;
 import domain.attendance.AttendanceStatus;
 import domain.crew.CrewStatus;
 import service.dto.AttendanceHistoryResponse;
@@ -10,15 +10,13 @@ import service.dto.AttendanceModifyResponse;
 import service.dto.DisenrollmentCheckResponse;
 
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.*;
+import view.format.CustomDateTimeFormatter;
 
 public class OutputView {
 
     public void printDateAndMenus() {
-        String formattedDate = AttendanceCustomDate.now().format(
-                DateTimeFormatter.ofPattern("MM월 dd일 E요일").withLocale(Locale.forLanguageTag("ko"))
-        );
+        String formattedDate = CustomDateTimeFormatter.formatDateAndDay(CustomDate.now());
         System.out.printf("오늘은 %s입니다. 기능을 선택해 주세요.%n", formattedDate);
 
         Arrays.stream(Menu.values()).forEach(menu -> {
@@ -28,11 +26,9 @@ public class OutputView {
 
     public void printAttendanceResult(Attendance attendance) {
         LocalDateTime time = attendance.getTime();
-        String formattedDate = time.format(
-                DateTimeFormatter.ofPattern("MM월 dd일 E요일 HH:mm").withLocale(Locale.forLanguageTag("ko"))
-        );
-        String formattedStatus = "(" + attendance.getStatus().getExpression() + ")";
-        System.out.println(formattedDate + " " + formattedStatus);
+        String formattedTime = CustomDateTimeFormatter.formatTime(time);
+        String formattedDate = CustomDateTimeFormatter.formatDateAndDay(time);
+        System.out.printf("%s %s (%s)\n", formattedDate, formattedTime, attendance.getStatus().getExpression());
     }
 
     public void printExceptionMessage(String message) {
@@ -44,16 +40,14 @@ public class OutputView {
     }
 
     public void printModifyResult(AttendanceModifyResponse response) {
-        String formattedBeforeDate = response.beforeTime().format(
-                DateTimeFormatter.ofPattern("MM월 dd일 E요일 HH:mm").withLocale(Locale.forLanguageTag("ko"))
-        );
-        String formattedAfterDate = response.afterTime().format(
-                DateTimeFormatter.ofPattern("HH:mm").withLocale(Locale.forLanguageTag("ko"))
-        );
-        System.out.printf("%s (%s) -> %s (%s) 수정 완료!\n",
+        String formattedBeforeDate = CustomDateTimeFormatter.formatDateAndDay(response.beforeTime());
+        String formattedBeforeTime = CustomDateTimeFormatter.formatTime(response.beforeTime());
+        String formattedAfterTime = CustomDateTimeFormatter.formatTime(response.afterTime());
+        System.out.printf("%s %s (%s) -> %s (%s) 수정 완료!\n",
                 formattedBeforeDate,
+                formattedBeforeTime,
                 response.beforeStatus().getExpression(),
-                formattedAfterDate,
+                formattedAfterTime,
                 response.afterStatus().getExpression()
         );
     }
@@ -72,9 +66,7 @@ public class OutputView {
 
     private void printHistories(List<AttendanceHistoryResponse> histories) {
         histories.forEach(response -> {
-            String formattedDate = response.date().format(
-                    DateTimeFormatter.ofPattern("MM월 dd일 E요일").withLocale(Locale.forLanguageTag("ko"))
-            );
+            String formattedDate = CustomDateTimeFormatter.formatDateAndDay(response.date());
             String formattedTime = getFormattedTime(response);
             String status = response.status().getExpression();
             System.out.printf("%s %s (%s)\n", formattedDate, formattedTime, status);
@@ -107,16 +99,15 @@ public class OutputView {
     private static String getFormattedTime(AttendanceHistoryResponse response) {
         String formattedTime = "--:--";
         if (response.time().isPresent()) {
-            formattedTime = response.time().get().format(
-                    DateTimeFormatter.ofPattern("HH:mm").withLocale(Locale.forLanguageTag("ko"))
-            );
+            formattedTime = CustomDateTimeFormatter.formatTime(response.time().get());
         }
         return formattedTime;
     }
 
     private List<DisenrollmentCheckResponse> getSortedResponse(List<DisenrollmentCheckResponse> responses) {
         return responses.stream()
-                .sorted(Comparator.comparing(DisenrollmentCheckResponse::convertedAbsenceCount).reversed()
+                .sorted(Comparator.comparing(DisenrollmentCheckResponse::convertedAbsenceCount)
+                        .reversed()
                         .thenComparing(DisenrollmentCheckResponse::name))
                 .toList();
     }
