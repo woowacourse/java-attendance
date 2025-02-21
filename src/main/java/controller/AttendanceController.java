@@ -35,12 +35,12 @@ public class AttendanceController {
         LocalDate nowDate = LocalDate.now();
         Attendance attendance = new Attendance(AttendancesFileHandler.generateAttendances(), nowDate);
 
-        String option;
+        MenuOption menuOption;
         do {
-            option = getOption(nowDate);
-            MenuOption menuOption = MenuOption.getMenuOption(option);
+            String option = getOption(nowDate);
+            menuOption = MenuOption.getMenuOption(option);
             process(menuOption, attendance, nowDate);
-        } while (!option.equals(MenuOption.QUIT.getCommand()));
+        } while (!menuOption.equals(MenuOption.QUIT));
     }
 
     private String getOption(LocalDate nowDate) {
