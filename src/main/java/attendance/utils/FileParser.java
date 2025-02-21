@@ -1,5 +1,6 @@
 package attendance.utils;
 
+import attendance.common.ErrorMessage;
 import attendance.dto.FileRequestDto;
 import java.io.BufferedReader;
 import java.io.FileReader;
@@ -24,7 +25,7 @@ public class FileParser {
             generateFileRequestDto(br, fileRequestDtos);
             return fileRequestDtos;
         } catch (IOException e) {
-            throw new IllegalArgumentException();
+            throw new RuntimeException(ErrorMessage.FILE_READ_FAIL.getMessage());
         }
     }
 
@@ -33,10 +34,17 @@ public class FileParser {
         String line;
         while ((line = br.readLine()) != null) {
             String[] inputs = line.split(",");
+            validateInput(inputs);
             String name = inputs[0];
             LocalDate date = DateConverter.convertToDate(inputs[1]);
             LocalTime time = DateConverter.convertToTime(inputs[1]);
             fileRequestDtos.add(new FileRequestDto(name, date, time));
+        }
+    }
+
+    private static void validateInput(String[] inputs) {
+        if (inputs.length != 2) {
+            throw new IllegalArgumentException(ErrorMessage.INVALID_FILE_FORMAT.getMessage());
         }
     }
 }

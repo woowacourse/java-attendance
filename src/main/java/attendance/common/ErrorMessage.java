@@ -12,7 +12,9 @@ public enum ErrorMessage {
     INVALID_DATE("출석기록하는 달이 아닙니다."),
     NOT_OPEN_DAY("%s은 등교일이 아닙니다."),
     INVALID_TIME_FORMAT_INPUT("HH:mm 형식을 지켜 작성해주세요."),
-    INVALID_FORMAT("올바른 입력 형식이 아닙니다.");
+    INVALID_FORMAT("올바른 입력 형식이 아닙니다."),
+    FILE_READ_FAIL("파일 읽기에 실패했습니다."),
+    INVALID_FILE_FORMAT("출석 파일 입력 형식이 올바르지 않습니다.");
 
     private static final String PREFIX = "[ERROR] ";
 
