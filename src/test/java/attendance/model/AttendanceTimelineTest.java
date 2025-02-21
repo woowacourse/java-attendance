@@ -17,7 +17,7 @@ import org.junit.jupiter.params.provider.CsvSource;
 @DisplayName("출석 기록 테스트")
 class AttendanceTimelineTest {
 
-    @DisplayName("크루의 오늘까지 출석 기록을 생성할 수 있다.")
+    @DisplayName("크루의 전날까지 출석 기록을 생성할 수 있다.")
     @Test
     void createTimelineUntilNowTest() {
         Crew crew = new Crew("포비");
@@ -42,20 +42,16 @@ class AttendanceTimelineTest {
                         new AttendanceLog(LocalDate.of(2024, 12, 4),
                                 null,
                                 AttendanceType.ABSENCE
-                        ),
-                        new AttendanceLog(LocalDate.of(2024, 12, 5),
-                                null,
-                                AttendanceType.ABSENCE
                         )
                 ));
     }
 
-    @DisplayName("크루의 각 출석 유형에 따른 횟수를 계산할 수 있다.")
+    @DisplayName("전날까지 크루의 각 출석 유형에 따른 횟수를 계산할 수 있다.")
     @ParameterizedTest
     @CsvSource({
             "OK, 1",
             "LATE, 1",
-            "ABSENCE, 2"
+            "ABSENCE, 1"
     })
     void countAttendanceTypeTest(AttendanceType attendanceType, int expected) {
         Crew crew = new Crew("포비");
@@ -69,6 +65,7 @@ class AttendanceTimelineTest {
 
         int count = attendanceTimeline.countByAttendanceType(attendanceType);
 
-        Assertions.assertThat(count).isEqualTo(expected);
+        Assertions.assertThat(count)
+                .isEqualTo(expected);
     }
 }
