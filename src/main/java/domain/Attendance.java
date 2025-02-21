@@ -9,7 +9,7 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import util.TodayDateTimeUtil;
+import util.DateTimeUtil;
 
 public class Attendance {
 
@@ -35,10 +35,10 @@ public class Attendance {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
         List<LocalDateTime> localDateTimes = attendanceMap.get(crew);
 
-        String today = String.format("2024-12-%02d %s", TodayDateTimeUtil.nowMonth(), schoolStartTime);
+        String today = String.format("2024-12-%02d %s", DateTimeUtil.nowMonth(), schoolStartTime);
         LocalDateTime todayLocalDateTime = LocalDateTime.parse(today, formatter);
 
-        validateDuplicateSave(TodayDateTimeUtil.nowDate(), localDateTimes);
+        validateDuplicateSave(DateTimeUtil.nowDate(), localDateTimes);
         localDateTimes.add(todayLocalDateTime);
         attendanceMap.put(crew, localDateTimes);
     }
@@ -85,7 +85,7 @@ public class Attendance {
         List<AttendanceResultDto> attendanceResultDtos = new ArrayList<>();
 
         int idx = 0;
-        for (int dayIndex = 1; dayIndex < TodayDateTimeUtil.nowDate(); dayIndex++) {
+        for (int dayIndex = 1; dayIndex < DateTimeUtil.nowDate(); dayIndex++) {
             if (Calender.findBy(dayIndex).equals("공휴일")) {
                 continue;
             }
@@ -101,7 +101,7 @@ public class Attendance {
             int dayOfMonth = localDateTime.getDayOfMonth();
 
             if (dayIndex == dayOfMonth) {
-                String state = AttendanceState.findStateBy(localDateTime.toLocalTime(), dayOfMonth);
+                String state = AttendanceState.findStateBy(localDateTime.toLocalTime(), localDateTime.getDayOfMonth());
                 AttendanceResultDto attendanceResultDto = new AttendanceResultDto(localDateTime, state);
                 attendanceResultDtos.add(attendanceResultDto);
                 idx++;

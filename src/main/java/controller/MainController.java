@@ -11,8 +11,8 @@ import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Map;
+import util.DateTimeUtil;
 import util.FileManager;
-import util.TodayDateTimeUtil;
 import view.InputView;
 import view.OutputView;
 
@@ -53,7 +53,7 @@ public class MainController {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");
         LocalTime dateTime = LocalTime.parse(schoolStartTime, formatter);
 
-        String attendanceState = AttendanceState.findStateBy(dateTime, TodayDateTimeUtil.nowDate());
+        String attendanceState = AttendanceState.findStateBy(dateTime, DateTimeUtil.nowDate());
 
         attendance.save(crew, schoolStartTime);
 
