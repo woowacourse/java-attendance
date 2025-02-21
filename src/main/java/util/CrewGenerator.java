@@ -3,14 +3,12 @@ package util;
 
 import domain.Attendance;
 import domain.AttendanceCounter;
-import domain.AttendanceDateTime;
 import domain.Attendances;
 import domain.Crew;
 import domain.Crews;
 import domain.Nickname;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -53,10 +51,7 @@ public final class CrewGenerator {
         List<Integer> noPresentAttendanceDates = new ArrayList<>(validDates);
         noPresentAttendanceDates.removeAll(alreadyAttendanceDates);
         for (Integer attendanceDate : noPresentAttendanceDates) {
-
-            LocalDateTime dateTime = LocalDateTime.of(LocalDate.of(2024, Constants.FIXED_MONTH, attendanceDate),
-                    Constants.ABSENCE_TIME);
-            Attendance attendance = new Attendance(AttendanceDateTime.of(dateTime));
+            Attendance attendance = Attendance.generateAbsentAttendance(attendanceDate);
             attendances.add(attendance);
         }
         return attendances;
