@@ -10,7 +10,7 @@ import java.time.LocalDate;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-public class LoadCrewDataTest {
+class LoadCrewDataTest {
 
     private Crews crews;
     private CrewDataLoader loader;
@@ -31,16 +31,13 @@ public class LoadCrewDataTest {
     @Test
     void Crews_데이터가_크루인원대로_생성된다() {
         loader.load("attendances.csv");
-
         assertThat(crews.getCrews()).hasSize(5);
     }
 
     @Test
     void 출석_기록이_없으면_결석처리_추가() {
         loader.load("attendances.csv");
-
         Crew crew = crews.findCrew("빙티");
-
         assertThat(crew.getAttendanceHistory()
                 .containsDate(LocalDate.of(2024, 12, 9))
         ).isTrue();
