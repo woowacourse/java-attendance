@@ -18,14 +18,11 @@ public enum MenuOption {
         this.option = option;
     }
 
-    public static void validateCommandExist(String command) {
-        int count = (int) Arrays.stream(MenuOption.values())
+    public static MenuOption getMenuOption(String command) {
+        return Arrays.stream(MenuOption.values())
                 .filter(option -> option.getCommand().equals(command))
-                .count();
-
-        if (count == 0) {
-            throw new IllegalArgumentException("[ERROR] 존재하지 않는 옵션입니다.");
-        }
+                .findAny()
+                .orElseThrow(() -> new IllegalArgumentException("[ERROR] 존재하지 않는 옵션입니다."));
     }
 
     public String getCommand() {

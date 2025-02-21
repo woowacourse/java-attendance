@@ -37,43 +37,38 @@ public class AttendanceController {
 
         String option;
         do {
-            option = getOption(attendance, nowDate);
+            option = getOption(nowDate);
+            MenuOption menuOption = MenuOption.getMenuOption(option);
+            process(menuOption, attendance, nowDate);
         } while (!option.equals(MenuOption.QUIT.getCommand()));
     }
 
-    private void process(String option, Attendance attendance, LocalDate nowDate) {
-        processAttendanceCheck(option, attendance, nowDate);
-        processAttendanceCorrection(option, attendance);
-        processCrewAttendanceCheck(option, attendance);
-        processCheckExpelledCrew(option, attendance);
+    private String getOption(LocalDate nowDate) {
+        outputView.printMenuHeader(nowDate);
+        return inputView.readOption(Arrays.asList(MenuOption.values()));
     }
 
-    private void processAttendanceCheck(String option, Attendance attendance, LocalDate nowDate) {
-        if (option.equals(MenuOption.ATTENDANCE_CHECK.getCommand())) {
-            validateCampusOpenDate(attendance, nowDate);
+    private void process(MenuOption menuOption, Attendance attendance, LocalDate nowDate) {
+        if (menuOption.equals(MenuOption.ATTENDANCE_CHECK)) {
             checkAttendance(attendance, nowDate);
+            return;
         }
-    }
-
-    private void processAttendanceCorrection(String option, Attendance attendance) {
-        if (option.equals(MenuOption.ATTENDANCE_CORRECTION.getCommand())) {
+        if (menuOption.equals(MenuOption.ATTENDANCE_CORRECTION)) {
             editAttendance(attendance);
+            return;
         }
-    }
-
-    private void processCrewAttendanceCheck(String option, Attendance attendance) {
-        if (option.equals(MenuOption.CREW_ATTENDANCE_CHECK.getCommand())) {
+        if (menuOption.equals(MenuOption.CREW_ATTENDANCE_CHECK)) {
             checkCrewAttendance(attendance);
+            return;
         }
-    }
-
-    private void processCheckExpelledCrew(String option, Attendance attendance) {
-        if (option.equals(MenuOption.CHECK_EXPELLED_CREW.getCommand())) {
+        if (menuOption.equals(MenuOption.CHECK_EXPELLED_CREW)) {
             checkExpelledCrew(attendance);
         }
     }
 
     private void checkAttendance(Attendance attendance, LocalDate nowDate) {
+        validateCampusOpenDate(attendance, nowDate);
+
         String nickName = processNickNameInput(attendance);
         repeatExecutor.repeatUntilSuccess(() -> {
             LocalTime arrivalTime = getLocalTime();
@@ -84,16 +79,6 @@ public class AttendanceController {
         LocalDateTime attendanceDateTime = attendance.getAttendanceDateTime(nickName, nowDate);
         AttendanceStatus attendanceStatus = attendance.getAttendanceStatus(nickName, nowDate);
         outputView.printCheckAttendanceMessage(attendanceDateTime, attendanceStatus);
-    }
-
-    private String getOption(Attendance attendance, LocalDate nowDate) {
-        return repeatExecutor.repeatUntilSuccess(() -> {
-            outputView.printMenuHeader(nowDate);
-            String option = inputView.readOption(Arrays.asList(MenuOption.values()));
-            MenuOption.validateCommandExist(option);
-            process(option, attendance, nowDate);
-            return option;
-        });
     }
 
     private void validateCampusOpenDate(Attendance attendance, LocalDate nowDate) {
