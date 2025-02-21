@@ -32,6 +32,19 @@ public class AttendanceTest {
         }
         
         @Test
+        void 월요일은_13시_5분까지_출석이다() {
+            // given
+            LocalDateTime localDateTime = LocalDateTime.of(2024, 12, 2, 13, 5);
+            
+            // when
+            Attendance attendance = new Attendance(localDateTime);
+            
+            // then
+            assertThat(attendance).extracting("attendanceDateTime").isEqualTo(LocalDateTime.of(2024, 12, 2, 13, 5));
+            assertThat(attendance).extracting("attendanceStatus").isEqualTo("출석");
+        }
+        
+        @Test
         void 출석_시간보다_5분_초과_늦으면_지각() {
             // given
             LocalDateTime localDateTime = LocalDateTime.of(2024, 12, 3, 10, 6);
@@ -40,6 +53,19 @@ public class AttendanceTest {
             Attendance attendance = new Attendance(localDateTime);
             
             // then
+            assertThat(attendance).extracting("attendanceStatus").isEqualTo("지각");
+        }
+        
+        @Test
+        void 월요일은_13시_6분부터_지각이다() {
+            // given
+            LocalDateTime localDateTime = LocalDateTime.of(2024, 12, 2, 13, 6);
+            
+            // when
+            Attendance attendance = new Attendance(localDateTime);
+            
+            // then
+            assertThat(attendance).extracting("attendanceDateTime").isEqualTo(LocalDateTime.of(2024, 12, 2, 13, 6));
             assertThat(attendance).extracting("attendanceStatus").isEqualTo("지각");
         }
         
@@ -56,6 +82,19 @@ public class AttendanceTest {
         }
         
         @Test
+        void 월요일은_13시_30분까지_지각이다() {
+            // given
+            LocalDateTime localDateTime = LocalDateTime.of(2024, 12, 2, 13, 30);
+            
+            // when
+            Attendance attendance = new Attendance(localDateTime);
+            
+            // then
+            assertThat(attendance).extracting("attendanceDateTime").isEqualTo(LocalDateTime.of(2024, 12, 2, 13, 30));
+            assertThat(attendance).extracting("attendanceStatus").isEqualTo("지각");
+        }
+        
+        @Test
         void 출석_시간보다_30분_초과_늦으면_지각() {
             // given
             LocalDateTime localDateTime = LocalDateTime.of(2024, 12, 3, 10, 31);
@@ -64,6 +103,19 @@ public class AttendanceTest {
             Attendance attendance = new Attendance(localDateTime);
             
             // then
+            assertThat(attendance).extracting("attendanceStatus").isEqualTo("결석");
+        }
+        
+        @Test
+        void 월요일은_13시_31분부터_결석이다() {
+            // given
+            LocalDateTime localDateTime = LocalDateTime.of(2024, 12, 2, 13, 31);
+            
+            // when
+            Attendance attendance = new Attendance(localDateTime);
+            
+            // then
+            assertThat(attendance).extracting("attendanceDateTime").isEqualTo(LocalDateTime.of(2024, 12, 2, 13, 31));
             assertThat(attendance).extracting("attendanceStatus").isEqualTo("결석");
         }
         
