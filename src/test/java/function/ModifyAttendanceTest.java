@@ -68,7 +68,7 @@ public class ModifyAttendanceTest {
         attendanceBook.addNewCrew(crew1);
 
         assertThatThrownBy(
-                () -> attendanceBook.modifyAttendance("쿠키", Map.of(LocalDate.of(2024, 12, 3), NON_OPERATING_TIME)))
+                () -> attendanceBook.modifyAttendance("쿠키", Map.of(LocalDate.of(2024, 12, 2), NON_OPERATING_TIME)))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("[ERROR] 캠퍼스 운영 시간은 08:00~23:00 입니다.");
     }

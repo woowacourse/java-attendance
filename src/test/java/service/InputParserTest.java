@@ -13,8 +13,8 @@ public class InputParserTest {
     @DisplayName("csv 파일 크루 정보에서 이름과 날짜시간을 분리한다.")
     @Test
     public void csv_파일_크루_정보에서_이름과_날짜시간을_분리한다() {
-        String existedCrewRecord = "2024-12-13 10:08";
-        List<String> expectedResult = List.of("2024-12-13", "10:08");
+        String existedCrewRecord = "빙봉,2024-12-13 10:08";
+        List<String> expectedResult = List.of("빙봉", "2024-12-13 10:08");
 
         assertThat(InputParser.parseRecordToNameAndDate(existedCrewRecord)).isEqualTo(expectedResult);
     }
