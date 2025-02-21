@@ -44,7 +44,7 @@ public class Attendances {
 
     public List<Integer> getDates() {
         return attendances.stream()
-                .map(Attendance::getDate)
+                .map(Attendance::getDateOfMonth)
                 .toList();
     }
 
@@ -57,6 +57,6 @@ public class Attendances {
     }
 
     public void sort() {
-        attendances.sort((a, b) -> a.getDate() - b.getDate());
+        attendances.sort((a, b) -> a.getDateOfMonth() - b.getDateOfMonth());
     }
 }

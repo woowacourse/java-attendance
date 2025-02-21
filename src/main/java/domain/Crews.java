@@ -31,10 +31,10 @@ public class Crews {
     }
 
     private final Comparator<Crew> punishmentOrder = Comparator
-            .comparingInt((Crew crew) -> Punishment.findByAbsenceCount(getPunishment(crew)).getAbsenceCount())
+            .comparingInt((Crew crew) -> Punishment.findByAbsenceCount(findPunishmentCountByCrew(crew)).getAbsenceCount())
             .reversed();
 
-    private static int getPunishment(final Crew crew) {
+    private static int findPunishmentCountByCrew(final Crew crew) {
         final AttendanceCounter attendanceCounter = crew.getAttendanceCounter();
         return (attendanceCounter.getTardiness() * 3) + attendanceCounter.getAbsence();
     }

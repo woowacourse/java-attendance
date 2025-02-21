@@ -27,8 +27,8 @@ public final class OutputView {
         final LocalTime localTime = localDateTime.toLocalTime();
 
         System.out.println(
-                String.format("%d월 %02d일 %s %s (%s)", Constants.MONTH, day, dayName, localTime,
-                        attendanceStatus.getKoreanName()));
+                String.format("%d월 %02d일 %s %s (%s)", Constants.FIXED_MONTH, day, dayName, localTime,
+                        attendanceStatus.getDisplayName()));
     }
 
     public static void printUpdateAttendance(final Attendance oldAttendance, final Attendance newAttendance) {
@@ -43,9 +43,9 @@ public final class OutputView {
         final LocalTime newLocalTime = newLocalDateTime.toLocalTime();
 
         System.out.println(
-                String.format("%d월 %02d일 %s %s (%s) -> %s (%s) 수정 완료!", Constants.MONTH, oldDay, oldDayName,
+                String.format("%d월 %02d일 %s %s (%s) -> %s (%s) 수정 완료!", Constants.FIXED_MONTH, oldDay, oldDayName,
                         oldLocalTime,
-                        oldAttendanceStatus.getKoreanName(), newLocalTime, newAttendanceStatus.getKoreanName()));
+                        oldAttendanceStatus.getDisplayName(), newLocalTime, newAttendanceStatus.getDisplayName()));
     }
 
     public static void printCrewAttendances(Crew crew) {
@@ -75,15 +75,15 @@ public final class OutputView {
                 timeFormat = "--:--";
             }
             System.out.println(
-                    String.format("%d월 %02d일 %s %s (%s)", Constants.MONTH, day, Week.findKoreanName(dayOfWeek),
+                    String.format("%d월 %02d일 %s %s (%s)", Constants.FIXED_MONTH, day, Week.findKoreanName(dayOfWeek),
                             timeFormat,
-                            attendanceStatus.getKoreanName()));
+                            attendanceStatus.getDisplayName()));
         }
         System.out.println();
 
-        System.out.println(String.format("%s: %d회", AttendanceStatus.ATTENDANCE.getKoreanName(), attendanceCount));
-        System.out.println(String.format("%s: %d회", AttendanceStatus.TARDINESS.getKoreanName(), tardiness));
-        System.out.println(String.format("%s: %d회", AttendanceStatus.ABSENCE.getKoreanName(), absence));
+        System.out.println(String.format("%s: %d회", AttendanceStatus.ATTENDANCE.getDisplayName(), attendanceCount));
+        System.out.println(String.format("%s: %d회", AttendanceStatus.TARDINESS.getDisplayName(), tardiness));
+        System.out.println(String.format("%s: %d회", AttendanceStatus.ABSENCE.getDisplayName(), absence));
         System.out.println();
 
         System.out.println(String.format("%s 대상자입니다.", punishment.getPunishmentName()));
