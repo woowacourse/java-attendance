@@ -14,7 +14,6 @@ public class ConsoleOutputView implements OutputView {
 
     @Override
     public void printAttendanceLogResponse(final AttendanceLogResponse response) {
-
         final LocalDate date = response.getDate();
         final LocalTime time = response.getTime().orElse(null);
 
@@ -26,7 +25,6 @@ public class ConsoleOutputView implements OutputView {
 
     @Override
     public void printUpdateAttendanceResponse(final UpdateAttendanceResponse updateAttendanceResponse) {
-
         final LocalDate date = updateAttendanceResponse.getPreviousDateTime().toLocalDate();
         final LocalTime time = updateAttendanceResponse.getPreviousDateTime().toLocalTime();
 
@@ -54,6 +52,7 @@ public class ConsoleOutputView implements OutputView {
     public void printRequiresManagementCrewResponse(
             final List<RequiresManagementCrewResponse> requiresManagementCrewResponses
     ) {
+
         System.out.println("제적 위험자 조회 결과");
         requiresManagementCrewResponses.forEach(response -> {
             System.out.printf("- %s: 결석 %d회, 지각 %d회 (%s)%n",

@@ -71,7 +71,6 @@ public class DefaultController implements Controller {
                     updatedTime);
 
             outputView.printUpdateAttendanceResponse(updateAttendanceResponse);
-
         } catch (final RuntimeException runtimeException) {
             System.out.println(runtimeException.getMessage());
         }

@@ -35,8 +35,9 @@ public class AttendanceService {
     }
 
     public UpdateAttendanceResponse updateAttendance(final Crew crew, final LocalDateTime updatedTime) {
-        final LocalDateTime previousTime = attendanceRepository.findDateTimeByCrewAndDate(crew,
-                        updatedTime.toLocalDate())
+        final LocalDateTime previousTime = attendanceRepository.findDateTimeByCrewAndDate(
+                        crew, updatedTime.toLocalDate()
+                )
                 .orElseThrow(() -> new IllegalArgumentException("해당 크루는 해당 일자의 출석 기록이 없습니다."));
 
         attendanceRepository.update(crew, previousTime, updatedTime);

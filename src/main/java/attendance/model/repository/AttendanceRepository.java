@@ -83,7 +83,9 @@ public class AttendanceRepository {
     }
 
     private void validateConflict(final Crew crew, final LocalDateTime dateTime) {
-        if (values.get(crew).stream().anyMatch(value -> value.toLocalDate().equals(dateTime.toLocalDate()))) {
+        if (values.get(crew).stream()
+                .anyMatch(value -> value.toLocalDate().equals(dateTime.toLocalDate()))
+        ) {
             throw new IllegalStateException("금일 출석 기록이 이미 존재합니다.");
         }
     }
