@@ -20,7 +20,7 @@ public class Attendance {
         return status;
     }
 
-    public Attendance modify(int newHour, int newMinutes) { //TODO : 이름 수정
+    public Attendance createModifiedAttendance(int newHour, int newMinutes) {
         return new Attendance(time.withHour(newHour).withMinute(newMinutes));
     }
 

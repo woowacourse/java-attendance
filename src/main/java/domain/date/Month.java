@@ -37,11 +37,6 @@ public enum Month {
         return dayOfWeek == DayOfWeek.SATURDAY || dayOfWeek == DayOfWeek.SUNDAY;
     }
 
-    public List<Integer> getAllDays() {
-        //TODO : why boxed?
-        return IntStream.range(1, lastDay + 1).boxed().toList();
-    }
-
     public int getValue() {
         return value;
     }

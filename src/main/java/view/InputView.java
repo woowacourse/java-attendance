@@ -18,7 +18,7 @@ public class InputView {
         return scanner.nextLine();
     }
 
-    public LocalTime readTime() { //TODO :readModifyTime과 합치면 좋겠음
+    public LocalTime readTime() {
         System.out.println("등교 시간을 입력해 주세요.");
         String input = scanner.nextLine();
         return CustomDateTimeFormatter.parseTime(input);

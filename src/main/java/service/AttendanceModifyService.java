@@ -15,7 +15,7 @@ public class AttendanceModifyService {
     public AttendanceModifyResponse modify(String name, int date, int newHour, int newMinutes) {
         Attendance beforeAttendance = attendanceRepository.findByCrewAndDate(name, date)
                 .orElseThrow(AttendanceNotExistException::new);
-        Attendance afterAttendance = beforeAttendance.modify(newHour, newMinutes);
+        Attendance afterAttendance = beforeAttendance.createModifiedAttendance(newHour, newMinutes);
         attendanceRepository.modifyAttendance(name, beforeAttendance, afterAttendance);
         return new AttendanceModifyResponse(
                 beforeAttendance.getTime(),
