@@ -3,7 +3,7 @@ import controller.AttendanceControllerExceptionHandleProxy;
 import controller.AttendanceControllerImpl;
 import io.view.InputView;
 import io.view.OutputView;
-import util.dataTimeProvider.DateProviderImpl;
+import util.dataTimeProvider.DefaultDateProvider;
 import util.inputProvider.DefaultInputProvider;
 import util.outputHandler.DefaultOutputHandler;
 
@@ -15,7 +15,7 @@ public class AttendanceApplication {
     
     private static AttendanceController getAttendanceController() {
         var outputHandler = new DefaultOutputHandler();
-        var dateProvider = new DateProviderImpl();
+        var dateProvider = new DefaultDateProvider();
         AttendanceController targetController = new AttendanceControllerImpl(
                 dateProvider,
                 new InputView(

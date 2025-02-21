@@ -32,7 +32,7 @@ public class AttendanceControllerImpl implements AttendanceController {
             switch (inputView.inputDecision()) {
                 case "1":
                     AttendRequest attendRequest = inputView.getAttendRequest();
-                    var attendResult = attendanceBook.addAttendance(attendRequest.name(), LocalDateTime.of(dateProvider.now(), attendRequest.attendTime()));
+                    var attendResult = attendanceBook.addAttendance(attendRequest.name(), LocalDateTime.of(dateProvider.getCurrentDate(), attendRequest.attendTime()));
                     outputView.handleAttendResult(attendResult);
                     break;
                 case "2":

@@ -95,7 +95,7 @@ public class OutputView {
                         %s
                         """,
                 attendanceResult.name(),
-                parseAttendResults(attendanceResult.attendanceResults(), dateProvider.now()),
+                parseAttendResults(attendanceResult.attendanceResults(), dateProvider.getCurrentDate()),
                 attendanceResult.attendCount(),
                 attendanceResult.lateCount(),
                 attendanceResult.absentCount(),

@@ -25,7 +25,7 @@ public class InputView {
     }
     
     public String inputDecision() {
-        LocalDate now = dateProvider.now();
+        LocalDate now = dateProvider.getCurrentDate();
         int monthOfYear = now.getMonth().getValue();
         int todayOfMonth = now.getDayOfMonth();
         String todayOfWeek = checkToday(now);
@@ -61,7 +61,7 @@ public class InputView {
         String name = inputProvider.get();
         System.out.println("수정하려는 날짜(일)를 입력해 주세요.");
         
-        LocalDate date = dateProvider.now().withDayOfMonth(Integer.parseInt(inputProvider.get()));
+        LocalDate date = dateProvider.getCurrentDate().withDayOfMonth(Integer.parseInt(inputProvider.get()));
         System.out.println("언제로 변경하겠습니까?");
         LocalTime time = LocalTime.parse(inputProvider.get());
         

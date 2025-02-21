@@ -13,7 +13,7 @@ public class DateProviderStub implements DateProvider {
     }
     
     @Override
-    public LocalDate now() {
+    public LocalDate getCurrentDate() {
         return localDate;
     }
 }
