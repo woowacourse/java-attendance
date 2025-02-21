@@ -29,11 +29,11 @@ public class OutputView {
                 Integer.parseInt(time.split(":")[1]))) + "\n");
     }
 
-    public void printModifyAttendance(AllCrew allCrew, String name, int day, String time){
+    public void printModifyAttendance(AllCrew allCrew, String name, String day, String time){
         System.out.println("\n" +
                 allCrew.modifyCrewAttendanceByName(name, LocalDateTime.of(today.getYear(),
                         today.getMonthValue(),
-                        day,
+                        Integer.parseInt(day),
                         Integer.parseInt(time.split(":")[0]),
                         Integer.parseInt(time.split(":")[1]))
                 ));

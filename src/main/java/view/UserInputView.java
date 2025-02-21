@@ -50,9 +50,9 @@ public class UserInputView {
         return new Scanner(System.in).nextLine();
     }
 
-    public int askDayForModifyAttendanceInfo() {
+    public String askDayForModifyAttendanceInfo() {
         System.out.println("수정하려는 날짜(일)를 입력해 주세요.");
-        return Integer.parseInt(new Scanner(System.in).nextLine());
+        return new Scanner(System.in).nextLine();
     }
 
     public String askAttendanceTimeForModifyAttendance() {

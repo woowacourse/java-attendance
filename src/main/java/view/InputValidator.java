@@ -1,6 +1,7 @@
 package view;
 
 import domain.AllCrew;
+import java.time.DateTimeException;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
@@ -32,7 +33,7 @@ public class InputValidator {
         try {
             int date = Integer.parseInt(dateInput);
             LocalDate.of(2024, 12, date);
-        } catch (NumberFormatException | DateTimeParseException e) {
+        } catch (NumberFormatException | DateTimeException e) {
             throw new IllegalArgumentException("유효하지 않은 날짜(일) 입니다.");
         }
     }

@@ -79,7 +79,8 @@ public class AttendanceSystem {
         try {
             String name = userInputView.askNickNameForModifyAttendanceInfo();
             InputValidator.validateName(name, allCrew);
-            int day = userInputView.askDayForModifyAttendanceInfo();
+            String day = userInputView.askDayForModifyAttendanceInfo();
+            InputValidator.validateDate(day);
             String time = userInputView.askAttendanceTimeForModifyAttendance();
             InputValidator.validateTimeFormat(time);
             outputView.printModifyAttendance(allCrew, name, day, time);
