@@ -29,10 +29,9 @@ public class CrewGroup {
     }
 
     public List<Crew> sortedAttendanceWarning() {
-        List<Crew> warningCrews = crews.stream()
+        return crews.stream()
                 .filter(Crew::isAttendanceWarning)
                 .sorted()
                 .collect(Collectors.toList());
-        return warningCrews;
     }
 }
