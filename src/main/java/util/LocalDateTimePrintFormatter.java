@@ -8,11 +8,12 @@ import java.util.Locale;
 
 public class LocalDateTimePrintFormatter {
 
+    public static final DateTimeFormatter dateTimeFormatterForHourMin = DateTimeFormatter.ofPattern("HH:mm");
+
     public static String LocalDateTimeToLocalTime(LocalDateTime localDateTime) {
-        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("HH:mm");
         DayOfWeek dayOfWeek = localDateTime.getDayOfWeek();
 
-        if (localDateTime.format(dateTimeFormatter).equals("00:00")) {
+        if (localDateTime.format(dateTimeFormatterForHourMin).equals("00:00")) {
             return localDateTime.format(DateTimeFormatter.ofPattern("MM월 dd일 " + dayOfWeek.getDisplayName(
                     TextStyle.FULL, Locale.KOREAN) + " --:--"));
         }
@@ -20,4 +21,5 @@ public class LocalDateTimePrintFormatter {
         return localDateTime.format(DateTimeFormatter.ofPattern("MM월 dd일 " + dayOfWeek.getDisplayName(
                 TextStyle.FULL, Locale.KOREAN) + " HH:mm"));
     }
+
 }

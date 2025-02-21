@@ -1,5 +1,7 @@
 package view;
 
+import static util.LocalDateTimePrintFormatter.dateTimeFormatterForHourMin;
+
 import java.time.DateTimeException;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
@@ -15,7 +17,6 @@ public class InputView {
     private final static String RECORD_PRINT_FOR_EACH_CREW_MENU = "3. 크루별 출석 기록 확인";
     private final static String DISMISSAL_CREW_CHECK_MENU = "4. 제적 위험자 확인";
     private final static String QUICK = "Q";
-    private final static String TIME_FORMATTER = "HH:mm";
     private final static String PROMPT_TIME_INPUT_TO_MODIFY = "언제로 변경하겠습니까?";
     private final static String PROMPT_DAY_INPUT_TO_MODIFY = "수정하려는 날짜(일)를 입력해 주세요.";
     private final static String PROMPT_STUDENT_NAME_INPUT_TO_MODIFY = "출석을 수정하려는 크루의 닉네임을 입력해 주세요.";
@@ -95,8 +96,7 @@ public class InputView {
     public static LocalDateTime makeLocalDateToLocalDateTime(LocalDate localDate) {
         String time = userInput();
         try {
-            DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern(TIME_FORMATTER);
-            LocalTime localTime = LocalTime.parse(time,dateTimeFormatter);
+            LocalTime localTime = LocalTime.parse(time,dateTimeFormatterForHourMin);
             return localDate.atTime(localTime);
         } catch (DateTimeException e) {
             throw new IllegalArgumentException("[ERROR] 시간 형식에 맞지 않습니다.");
