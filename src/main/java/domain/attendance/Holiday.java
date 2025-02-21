@@ -5,7 +5,7 @@ import java.time.LocalDateTime;
 
 public enum Holiday {
     CHRISTMAS(12, 25),
-    NEW_YEAR(1,1),
+    NEW_YEAR(1, 1),
     ;
 
     private final int month;

@@ -14,11 +14,9 @@ public class FileInputView {
     private static final String FILE_NAME = "attendances.csv";
 
     public Map<String, List<String>> getFileInput() {
-
         InputStream inputStream = getClass().getClassLoader().getResourceAsStream(FILE_NAME);
         BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
 
-        //수정
         Map<String, List<String>> attendanceDateGroupByCrew = new HashMap<>();
 
         reader.lines().skip(1).forEach(fileData -> addInitDate(attendanceDateGroupByCrew, fileData));

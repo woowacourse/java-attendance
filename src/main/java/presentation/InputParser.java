@@ -19,10 +19,10 @@ public class InputParser {
     }
 
     public static int parseInt(String textNumber) {
-        try{
+        try {
             return Integer.parseInt(textNumber);
-        } catch (NumberFormatException e){
-            throw  new IllegalArgumentException("올바르지 않은 명령어 입니다.");
+        } catch (NumberFormatException e) {
+            throw new IllegalArgumentException("올바르지 않은 명령어 입니다.");
         }
     }
 }
