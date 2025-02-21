@@ -42,8 +42,8 @@ public class Student {
         if (checkHoliday(localDateTime, day)) {
             return;
         }
-        AttendanceStatus attendanceStatus = AttendanceCalculatorByDay.
-                attendanceCalculator(day, LocalTime.from(localDateTime));
+        AttendanceStatus attendanceStatus = AttendanceRuleByDay.
+                calculateAttendance(day, LocalTime.from(localDateTime));
 
         for (LocalDateTime localDateTime1 : record.keySet()) {
             if (compareDayAndModify(localDateTime, localDateTime1, attendanceStatus)) {
