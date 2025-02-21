@@ -1,10 +1,7 @@
 package controller;
 
 import domain.AttendanceBook;
-import domain.CsvReader;
-import domain.Parser;
 import domain.PenaltyStatus;
-import domain.UserInput;
 import dto.AttendanceRecordResponse;
 import dto.ModifyAttendanceResponse;
 import dto.TotalRecordsResponse;
@@ -14,6 +11,9 @@ import java.time.LocalTime;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Supplier;
+import service.CsvReader;
+import service.FunctionSelection;
+import service.InputParser;
 import view.InputView;
 import view.OutputView;
 
@@ -29,39 +29,26 @@ public class AttendanceController {
     }
 
     public void start() {
-        String dataPath = "src/main/resources/attendances.csv";
-        List<String> fileData = csvFileReader.readCsv(dataPath);
-
-        List<String> removedData = Parser.parse(fileData);
-        List<List<String>> seperatedData = Parser.parseName(removedData);
-
-        AttendanceBook attendanceBook = new AttendanceBook();
-
-        for (List<String> data : seperatedData) {
-            String name = data.getFirst();
-            Map<LocalDate, LocalTime> dateAndTime = Parser.parseDate(data.getLast());
-            attendanceBook.initialize(name, dateAndTime);
-        }
+        AttendanceBook attendanceBook = init();
 
         while (true) {
-
             outputView.displayPrompt(); // 기능 선택창
-            UserInput selection = retryUntilValid(this::getUserInput);
+            FunctionSelection selection = retryUntilValid(this::getUserInput);
 
             try {
-                if (selection == UserInput.CHECK_ATTENDANCE) {
+                if (selection == FunctionSelection.CHECK_ATTENDANCE) {
                     checkAttendance(attendanceBook);
                 }
-                if (selection == UserInput.MODIFY_ATTENDANCE) {
+                if (selection == FunctionSelection.MODIFY_ATTENDANCE) {
                     modifyAttendance(attendanceBook);
                 }
-                if (selection == UserInput.TOTAL_RECORDS_BY_CREW) {
-                    getTotalRecordsByCrew(attendanceBook);
+                if (selection == FunctionSelection.CHECK_ATTENDANCE_RECORD) {
+                    checkAttendanceRecord(attendanceBook);
                 }
-                if (selection == UserInput.CHECK_PENALTY) {
+                if (selection == FunctionSelection.CHECK_PENALTY_CREWS) {
                     outputView.displayPenaltyCrew(attendanceBook.checkPenaltyCrew());
                 }
-                if (selection == UserInput.QUIT) {
+                if (selection == FunctionSelection.QUIT) {
                     break;
                 }
 
@@ -71,7 +58,25 @@ public class AttendanceController {
         }
     }
 
-    private void getTotalRecordsByCrew(AttendanceBook attendanceBook) {
+    // csv 파일을 바탕으로 출석부 생성
+    private AttendanceBook init() {
+        String dataPath = "src/main/resources/attendances.csv";
+        List<String> existedCrewRecords = csvFileReader.readCsv(dataPath);
+        existedCrewRecords.removeFirst();
+
+        AttendanceBook attendanceBook = new AttendanceBook();
+
+        for (String existedCrewRecord : existedCrewRecords) {
+            String name = InputParser.parseRecordToNameAndDate(existedCrewRecord).getFirst();
+            String rawDateTime = InputParser.parseRecordToNameAndDate(existedCrewRecord).getLast();
+            Map<LocalDate, LocalTime> dateAndTime = InputParser.parseDateToDayAndTime(rawDateTime);
+            attendanceBook.initialize(name, dateAndTime);
+        }
+
+        return attendanceBook;
+    }
+
+    private void checkAttendanceRecord(AttendanceBook attendanceBook) {
         String name = retryUntilValid(() -> askNameToCheckAttendance(attendanceBook));
 
         List<AttendanceRecordResponse> records = attendanceBook.getCrewByName(name).getAttendanceRecords();
@@ -123,8 +128,8 @@ public class AttendanceController {
                 attendanceBook.checkAttendance(name, Map.of(LocalDate.now(), parsedTime)));
     }
 
-    private UserInput getUserInput() {
-        return UserInput.getByInput(inputView.getUserSelection());
+    private FunctionSelection getUserInput() {
+        return FunctionSelection.getFunctionByInput(inputView.getUserSelection());
     }
 
     private LocalTime getTime(AttendanceBook attendanceBook) {

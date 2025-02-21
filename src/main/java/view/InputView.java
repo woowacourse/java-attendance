@@ -1,9 +1,9 @@
 package view;
 
-import domain.Parser;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.Scanner;
+import service.InputParser;
 
 public class InputView {
     private static final String ASK_NAME = "닉네임을 입력해 주세요.";
@@ -32,12 +32,12 @@ public class InputView {
 
     public LocalDate askDayForModify() {
         System.out.println(ASK_DAY_FOR_MODIFY);
-        return Parser.parseInputDay(getUserSelection());
+        return InputParser.parseDayInput(getUserSelection());
     }
 
     public LocalTime askTimeForModify() {
         System.out.println(ASK_TIME_FOR_MODIFY);
-        return Parser.parseInputTime(getUserSelection());
+        return InputParser.parseTimeInput(getUserSelection());
     }
 
     public String getUserSelection() {
