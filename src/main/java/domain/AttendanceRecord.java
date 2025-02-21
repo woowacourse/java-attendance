@@ -58,7 +58,7 @@ public class AttendanceRecord {
     }
 
     private void validateDate(LocalDate date) {
-        if (Day.checkHoliday(date)) {
+        if (Day.isDayOff(date)) {
             throw new IllegalArgumentException(String.format("[ERROR] %d월 %d일 %s은 등교일이 아닙니다.",
                     date.getMonthValue(),
                     date.getDayOfMonth(),

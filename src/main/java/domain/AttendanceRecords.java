@@ -25,7 +25,7 @@ public class AttendanceRecords {
 
     public void fillAbsences(DateGenerator dateGenerator) {
         for (LocalDate date = dateGenerator.generate().minusDays(1); date.isAfter(FILL_START_DATE); date = date.minusDays(1)) {
-            if (!hasRecordOfDate(date) && !Day.checkHoliday(date)) {
+            if (!hasRecordOfDate(date) && !Day.isDayOff(date)) {
                 this.attendanceRecords.add(AttendanceRecord.asAbsent(date));
             }
         }

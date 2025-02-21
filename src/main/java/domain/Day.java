@@ -27,7 +27,7 @@ public enum Day {
         this.start = start;
     }
 
-    public static boolean checkHoliday(LocalDate date) {
+    public static boolean isDayOff(LocalDate date) {
         if (HOLIDAYS.contains(date)) {
             return true;
         }
