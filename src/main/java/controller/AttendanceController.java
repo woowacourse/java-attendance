@@ -11,7 +11,7 @@ import io.CustomFileReader;
 import java.io.FileNotFoundException;
 import java.util.List;
 import service.AttendanceService;
-import view.Function;
+import view.Option;
 import view.InputView;
 import view.OutputView;
 
@@ -26,11 +26,11 @@ public class AttendanceController {
         try {
             read();
             while (true) {
-                Function function = InputView.readOption();
-                if (function == Function.QUIT) {
+                Option option = InputView.readOption();
+                if (option == Option.QUIT) {
                     break;
                 }
-                runFunction(function);
+                runFunction(option);
             }
         } catch (Exception exception) {
             OutputView.printErrorMessage(exception.getMessage());
@@ -45,20 +45,20 @@ public class AttendanceController {
         attendanceService.initializeAttendanceHistories(attendanceRequestDtos);
     }
 
-    public void runFunction(Function function) {
-        if (function == Function.APPLY_ATTENDANCE) {
+    public void runFunction(Option option) {
+        if (option == Option.APPLY_ATTENDANCE) {
             applyAttendance();
             return;
         }
-        if (function == Function.EDIT_ATTENDANCE) {
+        if (option == Option.EDIT_ATTENDANCE) {
             editAttendance();
             return;
         }
-        if (function == Function.CHECK_ATTENDANCE_OF_CREW) {
+        if (option == Option.CHECK_ATTENDANCE_OF_CREW) {
             checkAttendanceOfCrew();
             return;
         }
-        if (function == Function.CHECK_WARNING_CREW) {
+        if (option == Option.CHECK_WARNING_CREW) {
             checkWarningCrew();
         }
     }

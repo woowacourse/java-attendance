@@ -5,11 +5,11 @@ import java.util.Arrays;
 import java.util.Scanner;
 
 public class InputView {
-    public static Function readOption() {
+    public static Option readOption() {
         // TODO: 날짜 출력
         System.out.println("기능을 선택해 주세요.");
-        Arrays.stream(Function.values()).forEach(function -> System.out.println(function.toString()));
-        return Function.getFunction(scan());
+        Arrays.stream(Option.values()).forEach(option -> System.out.println(option.toString()));
+        return Option.getFunction(scan());
     }
 
     public static String readNickname() {
