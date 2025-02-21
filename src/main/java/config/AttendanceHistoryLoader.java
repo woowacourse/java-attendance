@@ -30,7 +30,7 @@ public class AttendanceHistoryLoader {
             reader.readLine();
             loadAttendanceHistory(reader, crewMap, crews);
         } catch (IOException e) {
-            e.printStackTrace();
+            throw new IllegalStateException("크루원들의 출석 기록을 읽는 중 오류가 발생했습니다.", e);
         }
 
         return new Crews(crews);
