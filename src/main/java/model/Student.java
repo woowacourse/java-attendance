@@ -7,10 +7,11 @@ import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class Student {
 
-    private final HashMap<LocalDateTime, AttendanceStatus> record = new HashMap<>();
+    private final Map<LocalDateTime, AttendanceStatus> record = new HashMap<>();
     private final String name;
     private int absent;
     private int attendance;
@@ -148,7 +149,7 @@ public class Student {
         return false;
     }
 
-    public HashMap<LocalDateTime, AttendanceStatus> getRecord() {
+    public Map<LocalDateTime, AttendanceStatus> getRecord() {
         return record;
     }
 

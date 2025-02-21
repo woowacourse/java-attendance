@@ -45,7 +45,7 @@ public class OutputView {
         System.out.println(recordBeforeModify + " -> " + localDateTimeFormat3);
     }
 
-    public static void printAttendanceRecord(HashMap<LocalDateTime, AttendanceStatus> record) {
+    public static void printAttendanceRecord(Map<LocalDateTime, AttendanceStatus> record) {
         List<Map.Entry<LocalDateTime, AttendanceStatus>> entries =
                 record.entrySet().stream()
                         .sorted(Map.Entry.comparingByKey())

@@ -1,6 +1,6 @@
 package util;
 
-import Constant.DateFormatInformation;
+import constant.DateFormatInformation;
 import java.time.DayOfWeek;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;

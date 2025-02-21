@@ -1,6 +1,6 @@
 package view;
 
-import Constant.DateFormatInformation;
+import constant.DateFormatInformation;
 import java.time.DateTimeException;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
@@ -8,7 +8,7 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Scanner;
-import model.AttendanceCalculatorByDay;
+import model.AttendanceRuleByDay;
 
 public class InputView {
     private final static String ATTENDANCE_CHECK_MENU = "1. 출석 확인";
@@ -29,7 +29,7 @@ public class InputView {
         int month = localDate.getMonthValue();
         int date = localDate.getDayOfMonth();
         DayOfWeek dayOfWeek = localDate.getDayOfWeek();
-        String day = AttendanceCalculatorByDay.findDayByDayOfWeekValue(dayOfWeek.getValue());
+        String day = AttendanceRuleByDay.findDayByDayOfWeekValue(dayOfWeek.getValue());
         System.out.println("오늘은 " + month + "월 " + date + "일 " + day + "입니다. 기능을 선택해 주세요.");
     }
 
