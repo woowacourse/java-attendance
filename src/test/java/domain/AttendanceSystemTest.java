@@ -173,6 +173,21 @@ public class AttendanceSystemTest {
             assertThatCode(() -> attendanceSystem.validateUpdateAttendanceDay("쿠키", 10)).doesNotThrowAnyException();
         }
 
+        @Test
+        @DisplayName("주말과 공휴일이 아니므로 등교일이다.")
+        void isNotAttendanceDayTest() {
+            //given
+            final LocalDate localDate = LocalDate.of(2024, 12, 2);
+            final LocalDate today = LocalDate.of(2024, 12, 13);
+            final List<String> data = List.of("쿠키,2024-12-13 11:08", "쿠키,2024-12-12 11:08", "쿠키,2024-12-11 11:08");
+            final AttendanceSystem attendanceSystem = AttendanceSystem.of(data, today);
+
+            //when
+            final boolean result = attendanceSystem.isNotAttendanceDay(localDate);
+            //then
+            assertThat(result).isFalse();
+        }
+
     }
 
 
