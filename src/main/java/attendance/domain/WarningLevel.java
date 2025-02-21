@@ -5,7 +5,7 @@ import java.util.Map;
 public enum WarningLevel {
     REMOVE("제적"), COUNSELING("면담"), WARNING("경고"), NONE("해당 없음");
 
-    private String level;
+    private final String level;
 
     WarningLevel(final String level){
         this.level = level;
