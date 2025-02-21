@@ -4,11 +4,12 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import attendance.model.Attendance;
 import attendance.model.AttendanceDetail;
+import global.BaseTest;
 import java.time.LocalDateTime;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-class AttendanceTest {
+class AttendanceTest extends BaseTest {
 
     @Test
     void 정시에_도착한_경우_출석이다() {

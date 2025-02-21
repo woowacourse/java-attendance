@@ -6,13 +6,14 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import attendance.model.Attendance;
 import attendance.model.AttendanceDetail;
 import attendance.model.AttendanceHistory;
+import global.BaseTest;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-public class AttendanceHistoryTest {
+class AttendanceHistoryTest extends BaseTest {
 
     @Test
     void 출석상세가_출석기록에_정상적으로_추가된다() {

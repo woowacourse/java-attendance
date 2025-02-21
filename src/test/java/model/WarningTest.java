@@ -3,11 +3,12 @@ package model;
 import attendance.model.AttendanceDetail;
 import attendance.model.AttendanceWarning;
 import attendance.model.Crew;
+import global.BaseTest;
 import java.time.LocalDateTime;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-class WarningTest {
+class WarningTest extends BaseTest {
 
     @Test
     void 크루가_2번에서_4번결석한_경우_경고를_받는다() {

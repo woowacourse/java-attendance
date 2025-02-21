@@ -5,11 +5,12 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import attendance.model.Crew;
 import attendance.model.Crews;
+import global.BaseTest;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-class CrewsTest {
+class CrewsTest extends BaseTest {
 
     @Test
     void 등록되지_않은_닉네임으로_찾으면_예외가_발생한다() {

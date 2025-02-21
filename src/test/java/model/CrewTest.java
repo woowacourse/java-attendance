@@ -6,6 +6,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import attendance.model.Attendance;
 import attendance.model.AttendanceDetail;
 import attendance.model.Crew;
+import global.BaseTest;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -14,7 +15,7 @@ import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-class CrewTest {
+class CrewTest extends BaseTest {
 
     @Test
     void 크루의_이름이_5자_이하가_아니라면_예외가_발생한다() {

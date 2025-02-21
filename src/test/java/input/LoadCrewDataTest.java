@@ -6,11 +6,12 @@ import attendance.model.Crew;
 import attendance.model.CrewDataLoader;
 import attendance.model.Crews;
 import attendance.model.CustomLocalDateTime;
+import global.BaseTest;
 import java.time.LocalDate;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-class LoadCrewDataTest {
+class LoadCrewDataTest extends BaseTest {
 
     private Crews crews;
     private CrewDataLoader loader;

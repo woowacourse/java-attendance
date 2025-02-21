@@ -3,13 +3,14 @@ package attendance.model;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+import global.BaseTest;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-class CustomLocalDateTimeTest {
+class CustomLocalDateTimeTest extends BaseTest {
 
     @Test
     void 커스텀_LocalDateTIme을_받아온다() {
