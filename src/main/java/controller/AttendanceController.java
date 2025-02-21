@@ -1,17 +1,20 @@
 package controller;
 
-import domain.*;
-import view.InputView;
-import view.OutputView;
-
+import domain.AttendanceRecord;
+import domain.Crew;
+import domain.CrewAttendanceRecords;
+import domain.CsvParsingGenerator;
+import domain.DateGenerator;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeParseException;
 import java.util.Map;
 import java.util.function.Supplier;
+import view.InputView;
+import view.OutputView;
 
 public class AttendanceController {
-    private final static int START_DATE_INDEX = 0;
+    private static final int START_DATE_INDEX = 0;
     private static final String QUIT_MENU = "[Qq]";
 
     private final Map<String, Runnable> menu = Map.of(

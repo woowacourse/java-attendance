@@ -1,7 +1,11 @@
 package view;
 
-import domain.*;
-
+import domain.Attendance;
+import domain.AttendanceRecord;
+import domain.Crew;
+import domain.CrewAttendanceRecords;
+import domain.Day;
+import domain.DisciplinaryStatus;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.Arrays;
@@ -40,14 +44,16 @@ public class OutputView {
         for (Crew warnedCrew : warnedCrews) {
             int absentCount = crewAttendanceRecords.getAbsentCount(warnedCrew);
             int tardyCount = crewAttendanceRecords.getTardyCount(warnedCrew);
-            System.out.printf("- %s: %s %d회, %s %d회 (%s)%n", warnedCrew.name(), Attendance.ABSENT.getName(), absentCount,
-                    Attendance.TARDY.getName(), tardyCount, DisciplinaryStatus.getStatus(absentCount, tardyCount).getName());
+            System.out.printf("- %s: %s %d회, %s %d회 (%s)%n", warnedCrew.name(), Attendance.ABSENT.getName(),
+                    absentCount,
+                    Attendance.TARDY.getName(), tardyCount,
+                    DisciplinaryStatus.getStatus(absentCount, tardyCount).getName());
         }
     }
 
     private void displaySortedRecords(Crew crew, CrewAttendanceRecords crewAttendanceRecords) {
         List<AttendanceRecord> sortedRecords = crewAttendanceRecords.getSortedRecords(crew);
-        sortedRecords.forEach((record) -> {
+        sortedRecords.forEach(record -> {
             displayAttendanceRecord(record);
             System.out.println();
         });

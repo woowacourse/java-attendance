@@ -1,19 +1,25 @@
 package domain;
 
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
-
-import java.time.LocalDate;
-import java.util.List;
-
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+import java.time.LocalDate;
+import java.util.List;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+
 class AttendanceRecordsTest {
+    @Test
+    void test() {
+        AttendanceRecords attendanceRecords = new AttendanceRecords();
+        assertThat(attendanceRecords.hasRecordOfDate(LocalDate.now())).isFalse();
+    }
+
     @Test
     @DisplayName("출석 기록이 없는 날짜가 결석으로 기록되었는지 확인한다.")
     void fillAbsencesTest() {
-        CrewAttendanceRecords crewAttendanceRecords = new CrewAttendanceRecords(new CsvParsingGenerator(), () -> LocalDate.of(2024, 12, 13));
+        CrewAttendanceRecords crewAttendanceRecords = new CrewAttendanceRecords(new CsvParsingGenerator(),
+                () -> LocalDate.of(2024, 12, 13));
         Crew crew = new Crew("쿠키");
         boolean hasRecord = crewAttendanceRecords.hasRecord(crew, LocalDate.of(2024, 12, 12));
 
