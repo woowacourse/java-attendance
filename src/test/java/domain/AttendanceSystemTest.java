@@ -1,6 +1,7 @@
 package domain;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.time.LocalDate;
@@ -144,6 +145,32 @@ public class AttendanceSystemTest {
 
             // then
             assertThat(actual.getName().getName()).isEqualTo("쿠키");
+        }
+
+        @Test
+        @DisplayName("크루가 존재하므로 예외가 발생하지 않는다")
+        void validateCrewByNameTest() {
+            //given
+            final LocalDate today = LocalDate.of(2024, 12, 13);
+            final List<String> data = List.of("쿠키,2024-12-13 11:08", "쿠키,2024-12-12 11:08", "쿠키,2024-12-11 11:08");
+            final AttendanceSystem attendanceSystem = AttendanceSystem.of(data, today);
+
+            //when
+            //then
+            assertThatCode(() -> attendanceSystem.validateCrewByName("쿠키")).doesNotThrowAnyException();
+        }
+
+        @Test
+        @DisplayName("유효한 날짜이므로 예외가 발생하지 않는다")
+        void validateUpdateAttendanceDayTest() {
+            //given
+            final LocalDate today = LocalDate.of(2024, 12, 13);
+            final List<String> data = List.of("쿠키,2024-12-13 11:08", "쿠키,2024-12-12 11:08", "쿠키,2024-12-11 11:08");
+            final AttendanceSystem attendanceSystem = AttendanceSystem.of(data, today);
+
+            //when
+            //then
+            assertThatCode(() -> attendanceSystem.validateUpdateAttendanceDay("쿠키", 10)).doesNotThrowAnyException();
         }
 
     }
