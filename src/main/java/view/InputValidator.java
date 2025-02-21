@@ -26,4 +26,8 @@ public class InputValidator {
             throw new IllegalArgumentException("올바르지 않은 시간 형식입니다.");
         }
     }
+
+    public static void validateDate(String date) {
+
+    }
 }
