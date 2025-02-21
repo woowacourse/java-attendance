@@ -15,7 +15,7 @@ public class InputValidator {
     }
 
     public static void validateName(String name, AttendanceBook attendanceBook) {
-        if (!attendanceBook.containsCrewName(name)) {
+        if (!attendanceBook.contains(name)) {
             throw new IllegalArgumentException("존재하지 않는 닉네임입니다.");
         }
     }
@@ -28,8 +28,8 @@ public class InputValidator {
         } catch (DateTimeParseException e) {
             throw new IllegalArgumentException("올바르지 않은 시간 형식입니다.");
         }
-
-        if (localTime.isBefore(LocalTime.of(8, 0)) || localTime.isAfter(LocalTime.of(23, 0))) {
+        if (localTime.isBefore(LocalTime.of(8, 0))
+                || localTime.isAfter(LocalTime.of(23, 0))) {
             throw new IllegalArgumentException("캠퍼스 운영 시간이 아닙니다.");
         }
     }

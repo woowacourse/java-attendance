@@ -1,9 +1,9 @@
 package domain;
 
-public enum WarningStatus {
+public enum Penalty {
     제적, 면담, 경고, NONE;
 
-    public static WarningStatus from(int absentCount) {
+    public static Penalty from(int absentCount) {
         if (absentCount > 5) {
             return 제적;
         }

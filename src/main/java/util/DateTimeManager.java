@@ -1,5 +1,6 @@
 package util;
 
+import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -9,6 +10,13 @@ public class DateTimeManager {
 
     public DateTimeManager(int year, int month, int day) {
         this.today = LocalDate.of(year, month, day);
+    }
+
+    public static boolean isHoliday(LocalDate date) {
+        DayOfWeek dayOfWeek = date.getDayOfWeek();
+        return dayOfWeek == DayOfWeek.SATURDAY
+                || dayOfWeek == DayOfWeek.SUNDAY
+                || date.getDayOfMonth() == 25;
     }
 
     public LocalDate getToday() {
@@ -29,7 +37,9 @@ public class DateTimeManager {
     }
 
     private LocalDate getDate(String day) {
-        return LocalDate.of(today.getYear(), today.getMonthValue(), Integer.parseInt(day));
+        return LocalDate.of(today.getYear(),
+                today.getMonthValue(),
+                Integer.parseInt(day));
     }
 
     private LocalTime getTime(String formattedTime) {

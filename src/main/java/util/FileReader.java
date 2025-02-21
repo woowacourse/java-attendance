@@ -1,16 +1,17 @@
 package util;
 
 import domain.AttendanceBook;
-import domain.Crew;
 import java.io.FileNotFoundException;
 import java.time.LocalDateTime;
 import java.util.Scanner;
 
 public class FileReader {
+    private static final String PATH = "src/main/attendance.csv";
+
     public static AttendanceBook readExistedAttendanceData() {
         AttendanceBook attendanceBook = new AttendanceBook();
         try {
-            java.io.FileReader fileReader = new java.io.FileReader("src/main/attendance.csv");
+            java.io.FileReader fileReader = new java.io.FileReader(PATH);
             Scanner scanner = new Scanner(fileReader);
             readPerLine(attendanceBook, scanner);
         } catch (FileNotFoundException e) {
@@ -28,19 +29,19 @@ public class FileReader {
         }
     }
 
-    private static void addNewCrewWhenNotExisted(AttendanceBook attendanceBook, String crewName) {
-        if (!attendanceBook.containsCrewName(crewName)) {
-            attendanceBook.addCrew(new Crew(crewName));
+    private static void addNewCrewWhenNotExisted(AttendanceBook attendanceBook, String name) {
+        if (!attendanceBook.contains(name)) {
+            attendanceBook.enter(name);
         }
     }
 
-    private static void initializeCrewInfo(AttendanceBook attendanceBook, String line, String crewName) {
-        String[] attendanceDateTime = line.split(",")[1].split(" ");
-        LocalDateTime localDateTime = LocalDateTime.of(Integer.parseInt(attendanceDateTime[0]),
-                Integer.parseInt(attendanceDateTime[1]),
-                Integer.parseInt(attendanceDateTime[2]),
-                Integer.parseInt(attendanceDateTime[3]),
-                Integer.parseInt(attendanceDateTime[4]));
-        attendanceBook.addCrewAttendanceByName(crewName, localDateTime);
+    private static void initializeCrewInfo(AttendanceBook attendanceBook, String line, String name) {
+        String[] dateAndTime = line.split(",")[1].split(" ");
+        LocalDateTime localDateTime = LocalDateTime.of(Integer.parseInt(dateAndTime[0]),
+                Integer.parseInt(dateAndTime[1]),
+                Integer.parseInt(dateAndTime[2]),
+                Integer.parseInt(dateAndTime[3]),
+                Integer.parseInt(dateAndTime[4]));
+        attendanceBook.add(name, localDateTime);
     }
 }

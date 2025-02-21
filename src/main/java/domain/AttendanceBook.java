@@ -4,70 +4,44 @@ import dto.AttendanceData;
 import dto.ModifyResult;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 
 public class AttendanceBook {
-    private final List<Crew> allCrew;
+    private final Map<String, AttendanceInfo> attendanceBook;
 
     public AttendanceBook() {
-        this.allCrew = new ArrayList<>();
+        this.attendanceBook = new HashMap<>();
     }
 
-    public void addCrew(Crew crew) {
-        allCrew.add(crew);
+    public Map<String, AttendanceInfo> getAttendanceBook() {
+        return Collections.unmodifiableMap(attendanceBook);
     }
 
-    public boolean containsCrewName(String crewName) {
-        return allCrew.stream()
-                .anyMatch(crew -> crew.getName().equals(crewName));
+    public boolean contains(String name) {
+        return attendanceBook.containsKey(name);
     }
 
-    public Attendance addCrewAttendanceByName(String name, LocalDateTime dateTime) {
-        Crew crew = findCrewByName(name);
-        return crew.addAttendance(dateTime);
+    public void enter(String name) {
+        attendanceBook.put(name, new AttendanceInfo());
     }
 
-    public ModifyResult modifyCrewAttendanceByName(String name, LocalDateTime dateTime) {
-        Crew crew = findCrewByName(name);
-        return crew.update(dateTime);
+    public Attendance add(String name, LocalDateTime dateAndTime) {
+        return attendanceBook.get(name).addAttendance(dateAndTime);
+    }
+
+    public ModifyResult modifyCrewAttendanceByName(String name, LocalDateTime dateAndTime) {
+        return attendanceBook.get(name).update(dateAndTime);
     }
 
     public AttendanceData getAttendanceData(String name, LocalDate lastDate) {
-        Crew crew = findCrewByName(name);
-        return crew.getAttendanceHistory(lastDate);
-    }
-
-    private Crew findCrewByName(String name) {
-        return allCrew.stream()
-                .filter(crew -> crew.getName().equals(name))
-                .findFirst()
-                .orElseThrow(() -> new IllegalArgumentException("해당 이름의 크루를 찾을 수 없습니다."));
-    }
-
-    public String printAllCrewWarningInfo(LocalDate date) {
-        updateAbsentHistory(date);
-        allCrew.sort(
-                Comparator.comparing(Crew::getAbsentCount).reversed()
-                        .thenComparing(Crew::getName)
-        );
-        String result = "";
-        for (Crew crew : allCrew) {
-            result = scanWarningCrew(date, crew, result);
-        }
-        return result;
-    }
-
-    private static String scanWarningCrew(LocalDate date, Crew crew, String result) {
-        if (WarningStatus.from(crew.getAbsentCount()) == WarningStatus.NONE) {
-            return "";
-        }
-        result += "- " + crew.printWarningInfo(date) + "\n";
-        return result;
+        return attendanceBook.get(name).getAttendanceHistory(lastDate);
     }
 
     public void updateAbsentHistory(LocalDate date) {
-        allCrew.forEach(crew -> crew.updateUntil(date));
+        attendanceBook.values().forEach(
+                attendanceInfo -> attendanceInfo.updateUntil(date)
+        );
     }
 }

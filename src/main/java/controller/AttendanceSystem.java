@@ -64,7 +64,7 @@ public class AttendanceSystem {
         String name = handleWithRetry(this::processName);
         String time = handleWithRetry(this::processTime);
         Attendance attendance = handleWithRestart(() ->
-                attendanceBook.addCrewAttendanceByName(name,
+                attendanceBook.add(name,
                         dateTimeManager.getDateTime(time)));
         outputView.printAttendanceResult(attendance);
     }

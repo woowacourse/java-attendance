@@ -12,32 +12,32 @@ class AttendanceBookTest {
     @Test
     void test7() {
         AttendanceBook attendanceBook = new AttendanceBook();
-        Crew crew1 = new Crew("빙티");
-        Crew crew2 = new Crew("이든");
+        AttendanceInfo attendanceInfo1 = new AttendanceInfo("빙티");
+        AttendanceInfo attendanceInfo2 = new AttendanceInfo("이든");
 
-        attendanceBook.addCrew(crew1);
-        attendanceBook.addCrew(crew2);
+        attendanceBook.add(attendanceInfo1);
+        attendanceBook.add(attendanceInfo2);
 
 
-        attendanceBook.addCrewAttendanceByName("빙티", LocalDateTime.of(2024, 12, 2, 13,0));  // 출석
-        attendanceBook.addCrewAttendanceByName("빙티", LocalDateTime.of(2024, 12, 3, 9,58));  // 출석
-        attendanceBook.addCrewAttendanceByName("빙티", LocalDateTime.of(2024, 12, 4, 10,2));  // 출석
-        attendanceBook.addCrewAttendanceByName("빙티", LocalDateTime.of(2024, 12, 5, 10,6));  // 지각
-        attendanceBook.addCrewAttendanceByName("빙티", LocalDateTime.of(2024, 12, 6, 10,1));  //  출석
+        attendanceBook.add("빙티", LocalDateTime.of(2024, 12, 2, 13,0));  // 출석
+        attendanceBook.add("빙티", LocalDateTime.of(2024, 12, 3, 9,58));  // 출석
+        attendanceBook.add("빙티", LocalDateTime.of(2024, 12, 4, 10,2));  // 출석
+        attendanceBook.add("빙티", LocalDateTime.of(2024, 12, 5, 10,6));  // 지각
+        attendanceBook.add("빙티", LocalDateTime.of(2024, 12, 6, 10,1));  //  출석
         // 9일 결석
-        attendanceBook.addCrewAttendanceByName("빙티", LocalDateTime.of(2024, 12, 10, 10,8)); // 지각
+        attendanceBook.add("빙티", LocalDateTime.of(2024, 12, 10, 10,8)); // 지각
         // 11, 12 결석
         // 결석 3회, 지각 2회
 
 
         // 2 => 결석
-        attendanceBook.addCrewAttendanceByName("이든", LocalDateTime.of(2024, 12, 3, 10,7)); // 지각
-        attendanceBook.addCrewAttendanceByName("이든", LocalDateTime.of(2024, 12, 4, 10,8)); // 지각
-        attendanceBook.addCrewAttendanceByName("이든", LocalDateTime.of(2024, 12, 5, 10,29)); // 지각
-        attendanceBook.addCrewAttendanceByName("이든", LocalDateTime.of(2024, 12, 6, 10,6));  // 지각
-        attendanceBook.addCrewAttendanceByName("이든", LocalDateTime.of(2024, 12, 9, 10,31)); // 출석 (월요일)
-        attendanceBook.addCrewAttendanceByName("이든", LocalDateTime.of(2024, 12, 10, 10,2));//출석
-        attendanceBook.addCrewAttendanceByName("이든", LocalDateTime.of(2024, 12, 11, 10,1));//출석
+        attendanceBook.add("이든", LocalDateTime.of(2024, 12, 3, 10,7)); // 지각
+        attendanceBook.add("이든", LocalDateTime.of(2024, 12, 4, 10,8)); // 지각
+        attendanceBook.add("이든", LocalDateTime.of(2024, 12, 5, 10,29)); // 지각
+        attendanceBook.add("이든", LocalDateTime.of(2024, 12, 6, 10,6));  // 지각
+        attendanceBook.add("이든", LocalDateTime.of(2024, 12, 9, 10,31)); // 출석 (월요일)
+        attendanceBook.add("이든", LocalDateTime.of(2024, 12, 10, 10,2));//출석
+        attendanceBook.add("이든", LocalDateTime.of(2024, 12, 11, 10,1));//출석
         // 12 => 결석
         // 12일까지 : 2결석 4지각
 
@@ -54,32 +54,32 @@ class AttendanceBookTest {
     @Test
     void test8() {
         AttendanceBook attendanceBook = new AttendanceBook();
-        Crew crew1 = new Crew("빙티");
-        Crew crew2 = new Crew("이든");
+        AttendanceInfo attendanceInfo1 = new AttendanceInfo("빙티");
+        AttendanceInfo attendanceInfo2 = new AttendanceInfo("이든");
 
-        attendanceBook.addCrew(crew2);
-        attendanceBook.addCrew(crew1);
+        attendanceBook.add(attendanceInfo2);
+        attendanceBook.add(attendanceInfo1);
 
 
-        attendanceBook.addCrewAttendanceByName("빙티", LocalDateTime.of(2024, 12, 2, 13,0));  // 출석
-        attendanceBook.addCrewAttendanceByName("빙티", LocalDateTime.of(2024, 12, 3, 9,58));  // 출석
-        attendanceBook.addCrewAttendanceByName("빙티", LocalDateTime.of(2024, 12, 4, 10,2));  // 출석
-        attendanceBook.addCrewAttendanceByName("빙티", LocalDateTime.of(2024, 12, 5, 10,6));  // 지각
-        attendanceBook.addCrewAttendanceByName("빙티", LocalDateTime.of(2024, 12, 6, 10,1));  //  출석
+        attendanceBook.add("빙티", LocalDateTime.of(2024, 12, 2, 13,0));  // 출석
+        attendanceBook.add("빙티", LocalDateTime.of(2024, 12, 3, 9,58));  // 출석
+        attendanceBook.add("빙티", LocalDateTime.of(2024, 12, 4, 10,2));  // 출석
+        attendanceBook.add("빙티", LocalDateTime.of(2024, 12, 5, 10,6));  // 지각
+        attendanceBook.add("빙티", LocalDateTime.of(2024, 12, 6, 10,1));  //  출석
         // 9일 결석
-        attendanceBook.addCrewAttendanceByName("빙티", LocalDateTime.of(2024, 12, 10, 10,8)); // 지각
+        attendanceBook.add("빙티", LocalDateTime.of(2024, 12, 10, 10,8)); // 지각
         // 11, 12 결석
         // 결석 3회, 지각 2회
 
 
         // 2 => 결석
-        attendanceBook.addCrewAttendanceByName("이든", LocalDateTime.of(2024, 12, 3, 10,7)); // 지각
-        attendanceBook.addCrewAttendanceByName("이든", LocalDateTime.of(2024, 12, 4, 10,8)); // 지각
-        attendanceBook.addCrewAttendanceByName("이든", LocalDateTime.of(2024, 12, 5, 10,29)); // 지각
-        attendanceBook.addCrewAttendanceByName("이든", LocalDateTime.of(2024, 12, 6, 10,6));  // 지각
-        attendanceBook.addCrewAttendanceByName("이든", LocalDateTime.of(2024, 12, 9, 10,31)); // 출석 (월요일)
-        attendanceBook.addCrewAttendanceByName("이든", LocalDateTime.of(2024, 12, 10, 10,2));//출석
-        attendanceBook.addCrewAttendanceByName("이든", LocalDateTime.of(2024, 12, 11, 10,1));//출석
+        attendanceBook.add("이든", LocalDateTime.of(2024, 12, 3, 10,7)); // 지각
+        attendanceBook.add("이든", LocalDateTime.of(2024, 12, 4, 10,8)); // 지각
+        attendanceBook.add("이든", LocalDateTime.of(2024, 12, 5, 10,29)); // 지각
+        attendanceBook.add("이든", LocalDateTime.of(2024, 12, 6, 10,6));  // 지각
+        attendanceBook.add("이든", LocalDateTime.of(2024, 12, 9, 10,31)); // 출석 (월요일)
+        attendanceBook.add("이든", LocalDateTime.of(2024, 12, 10, 10,2));//출석
+        attendanceBook.add("이든", LocalDateTime.of(2024, 12, 11, 10,1));//출석
         // 12 => 결석
         // 12일까지 : 2결석 4지각
 

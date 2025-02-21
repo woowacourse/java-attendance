@@ -29,12 +29,6 @@ public class InputView {
         return sc.nextLine();
     }
 
-    public String askNickNameForCheckAttendanceInfo() {
-        System.out.println("\n닉네임을 입력해 주세요.");
-        Scanner sc = new Scanner(System.in);
-        return sc.nextLine();
-    }
-
     public String askNickNameForCheckAttendance() {
         System.out.println("\n닉네임을 입력해 주세요.");
         return new Scanner(System.in).nextLine();
