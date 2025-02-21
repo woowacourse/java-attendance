@@ -27,12 +27,19 @@ public class Crew {
         return new Crew(name);
     }
 
-    public void addDailyAttendance(Map<LocalDate, LocalTime> dateAndTime) {
-        LocalDate date = TimeUtils.getDateFromDateAndTime(dateAndTime);
+    public String getName() {
+        return name;
+    }
 
-        validateIsNotAlreadyAttended(date);
+    public LocalTime getTimeByDate(LocalDate date) {
+        return dailyAttendances.get(date);
+    }
 
-        dailyAttendances.putAll(dateAndTime);
+    public void validateDateAlreadyExists(LocalDate date) {
+        if (!dailyAttendances.containsKey(date)) {
+            throw new IllegalArgumentException(
+                    ErrorCode.ATTENDANCE_RECORD_NOT_EXISTS_FORMAT.format(date.getDayOfMonth()));
+        }
     }
 
     private void validateIsNotAlreadyAttended(LocalDate date) {
@@ -41,12 +48,12 @@ public class Crew {
         }
     }
 
-    public boolean matchesName(String value) {
-        return Objects.equals(name, value);
-    }
+    public void addDailyAttendance(Map<LocalDate, LocalTime> dateAndTime) {
+        LocalDate date = TimeUtils.getDateFromDateAndTime(dateAndTime);
 
-    public String getName() {
-        return name;
+        validateIsNotAlreadyAttended(date);
+
+        dailyAttendances.putAll(dateAndTime);
     }
 
     public void modifyDailyAttendance(Map<LocalDate, LocalTime> dateAndTime) {
@@ -56,11 +63,8 @@ public class Crew {
         dailyAttendances.putAll(dateAndTime);
     }
 
-    public void validateDateAlreadyExists(LocalDate date) {
-        if (!dailyAttendances.containsKey(date)) {
-            throw new IllegalArgumentException(
-                    ErrorCode.ATTENDANCE_RECORD_NOT_EXISTS_FORMAT.format(date.getDayOfMonth()));
-        }
+    public boolean matchesName(String value) {
+        return Objects.equals(name, value);
     }
 
     public List<AttendanceRecordResponse> getAttendanceRecords() {
@@ -88,9 +92,5 @@ public class Crew {
         }
 
         return records;
-    }
-
-    public LocalTime getTimeByDate(LocalDate date) {
-        return dailyAttendances.get(date);
     }
 }
