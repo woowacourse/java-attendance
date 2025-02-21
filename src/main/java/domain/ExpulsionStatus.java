@@ -8,8 +8,8 @@ public enum ExpulsionStatus {
     INTERVIEW("면담", 3),
     EXPULSION("제적", 6);
 
-    String name;
-    int boundary;
+    private final String name;
+    private final int boundary;
 
     ExpulsionStatus(final String name, final int boundary) {
         this.name = name;
