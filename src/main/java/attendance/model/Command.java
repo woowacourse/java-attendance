@@ -21,6 +21,6 @@ public enum Command {
         return Arrays.stream(values())
                 .filter(command -> command.value.equals(input.trim()))
                 .findFirst()
-                .orElseThrow(() -> new IllegalArgumentException("해당 커맨드가 없습니다."));
+                .orElseThrow(() -> new IllegalArgumentException(input + "에 해당하는 커맨드가 없습니다"));
     }
 }
