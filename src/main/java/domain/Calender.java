@@ -20,17 +20,16 @@ public enum Calender {
         this.date = date;
     }
 
-    public static String findBy(final int dayOfMonth) {
+    public static Calender findBy(final int dayOfMonth) {
         return Arrays.stream(Calender.values())
                 .filter(calender -> calender.date.contains(dayOfMonth))
-                .map(calender -> calender.description)
                 .findFirst()
                 .orElseThrow(() -> new IllegalArgumentException("존재하는 요일이 없습니다."));
     }
 
     public static void validateHolyDay(final int dayOfWeekValue) {
-        String dayOfWeek = findBy(dayOfWeekValue);
-        if (dayOfWeek.equals("공휴일")) {
+        Calender dayOfWeek = findBy(dayOfWeekValue);
+        if (dayOfWeek.description.equals("공휴일")) {
             throw new IllegalArgumentException("공휴일에는 출석을 할 수 없습니다.");
         }
     }
