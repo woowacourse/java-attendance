@@ -6,6 +6,7 @@ import domain.AttendanceState;
 import domain.Crew;
 import dto.AbsenceResultDto;
 import dto.AttendanceResultDto;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
@@ -53,7 +54,7 @@ public class MainController {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");
         LocalTime dateTime = LocalTime.parse(schoolStartTime, formatter);
 
-        String attendanceState = AttendanceState.findStateBy(dateTime, DateTimeUtil.nowDate());
+        String attendanceState = AttendanceState.findStateBy(dateTime, LocalDate.now());
 
         attendance.save(crew, schoolStartTime);
 
@@ -72,8 +73,10 @@ public class MainController {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");
         LocalTime afterTime = LocalTime.parse(time, formatter);
 
-        LocalDateTime afterLocalDateTime = LocalDateTime.of(beforeDateTime.getYear(), beforeDateTime.getMonth(),
-                beforeDateTime.getDayOfMonth(), afterTime.getHour(), afterTime.getMinute());
+        LocalDateTime afterLocalDateTime = LocalDateTime.of(
+                DateTimeUtil.getYearBy(beforeDateTime.toLocalDate()),
+                DateTimeUtil.getMonthBy(beforeDateTime.toLocalDate()),
+                DateTimeUtil.getDateBy(beforeDateTime.toLocalDate()), afterTime.getHour(), afterTime.getMinute());
 
         OutputView.printUpdateAttendance(beforeDateTime, afterLocalDateTime);
     }

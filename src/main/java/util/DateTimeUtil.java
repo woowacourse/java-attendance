@@ -10,20 +10,25 @@ public class DateTimeUtil {
         return LocalDate.now();
     }
 
-    public static int nowMonth() {
-        return now().getMonthValue();
+    public static int getYearBy(LocalDate localDate) {
+        return localDate.getYear();
     }
 
-    public static int nowDate() {
-        return 19;
-//        return now().getDayOfMonth();
+    public static int getMonthBy(LocalDate localDate) {
+        return localDate.getMonthValue();
     }
 
-    public static String nowDayOfWeek() {
-        return now().getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.KOREAN);
+    public static int getDateBy(LocalDate localDate) {
+//        return 19;
+        return localDate.getDayOfMonth();
+    }
+
+    public static String getDayOfWeekBy(LocalDate localDate) {
+        return localDate.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.KOREAN);
     }
 
     public static boolean isHoliday(LocalDate localDate) {
         return localDate.getDayOfWeek().equals(DayOfWeek.SATURDAY) || localDate.getDayOfWeek().equals(DayOfWeek.SUNDAY);
     }
+
 }
