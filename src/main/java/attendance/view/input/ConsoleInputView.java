@@ -20,7 +20,7 @@ public class ConsoleInputView implements InputView {
         System.out.println(" 기능을 선택해주세요.");
 
         Arrays.stream(Command.values())
-                .forEach(command -> System.out.println(command.getOption() + ". " + command.getDescription()));
+                .forEach(command -> System.out.println(command.getMenu()));
 
         return Command.from(SCANNER.nextLine());
     }
