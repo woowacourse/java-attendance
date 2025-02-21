@@ -1,4 +1,5 @@
 import domain.Attendance;
+import domain.AttendanceStatus;
 import domain.MemberAttendances;
 import dto.result.AttendResult;
 import dto.result.AttendanceModifyResult;
@@ -40,7 +41,7 @@ public class MemberAttendancesTest {
             AttendResult result = attendances.attend(attendTime);
             
             //then
-            assertThat(result).isEqualTo(new AttendResult(LocalDateTime.of(2024, 12, 13, 10, 0), "출석", true));
+            assertThat(result).isEqualTo(new AttendResult(LocalDateTime.of(2024, 12, 13, 10, 0), AttendanceStatus.출석, true));
         }
     }
     
@@ -58,14 +59,14 @@ public class MemberAttendancesTest {
         assertThat(result.lateCount()).isEqualTo(3);
         assertThat(result.absentCount()).isEqualTo(2);
         assertThat(result.attendanceResults()).containsExactlyInAnyOrder(
-                new AttendResult(LocalDateTime.of(2024, 12, 2, 10, 0), "출석", true),
-                new AttendResult(LocalDateTime.of(2024, 12, 3, 10, 1), "출석", true),
-                new AttendResult(LocalDateTime.of(2024, 12, 4, 10, 5), "출석", true),
-                new AttendResult(LocalDateTime.of(2024, 12, 5, 10, 6), "지각", true),
-                new AttendResult(LocalDateTime.of(2024, 12, 6, 10, 15), "지각", true),
-                new AttendResult(LocalDateTime.of(2024, 12, 10, 10, 30), "지각", true),
-                new AttendResult(LocalDateTime.of(2024, 12, 11, 10, 31), "결석", true),
-                new AttendResult(LocalDateTime.of(2024, 12, 12, 10, 32), "결석", true)
+                new AttendResult(LocalDateTime.of(2024, 12, 2, 10, 0), AttendanceStatus.출석, true),
+                new AttendResult(LocalDateTime.of(2024, 12, 3, 10, 1), AttendanceStatus.출석, true),
+                new AttendResult(LocalDateTime.of(2024, 12, 4, 10, 5), AttendanceStatus.출석, true),
+                new AttendResult(LocalDateTime.of(2024, 12, 5, 10, 6), AttendanceStatus.지각, true),
+                new AttendResult(LocalDateTime.of(2024, 12, 6, 10, 15), AttendanceStatus.지각, true),
+                new AttendResult(LocalDateTime.of(2024, 12, 10, 10, 30), AttendanceStatus.지각, true),
+                new AttendResult(LocalDateTime.of(2024, 12, 11, 10, 31), AttendanceStatus.결석, true),
+                new AttendResult(LocalDateTime.of(2024, 12, 12, 10, 32), AttendanceStatus.결석, true)
         );
     }
     
@@ -143,8 +144,8 @@ public class MemberAttendancesTest {
         // then
         assertThat(result).isEqualTo(new AttendanceModifyResult(
                 LocalDate.of(2024, 12, 4),
-                LocalTime.of(10, 31), "결석",
-                LocalTime.of(10, 5), "출석")
+                LocalTime.of(10, 31), AttendanceStatus.결석,
+                LocalTime.of(10, 5), AttendanceStatus.출석)
         );
     }
     

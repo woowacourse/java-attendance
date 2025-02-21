@@ -17,7 +17,7 @@ public class Attendance {
     public static final List<DayOfWeek> WEEKEND = List.of(DayOfWeek.SATURDAY, DayOfWeek.SUNDAY);
     
     private LocalDateTime attendanceDateTime;
-    private String attendanceStatus;
+    private AttendanceStatus attendanceStatus;
     
     public Attendance(LocalDateTime attendanceDateTime) {
         validateDate(attendanceDateTime.toLocalDate());
@@ -39,31 +39,32 @@ public class Attendance {
         }
     }
     
-    private String checkAttendanceStatus(LocalDateTime attendanceTime) {
+    private AttendanceStatus checkAttendanceStatus(LocalDateTime attendanceTime) {
         if (attendanceTime.getDayOfWeek() == DayOfWeek.MONDAY) {
             return checkMondayAttendanceStatus(attendanceTime);
         }
         return checkNotMondayAttendanceStatus(attendanceTime);
     }
     
-    private String checkMondayAttendanceStatus(LocalDateTime attendanceTime) {
+    private AttendanceStatus checkMondayAttendanceStatus(LocalDateTime attendanceTime) {
         if (attendanceTime.toLocalTime().isBefore(LocalTime.of(13, 5)) || attendanceTime.toLocalTime().equals(LocalTime.of(13, 5))) {
-            return "출석";
+            return AttendanceStatus.출석;
         }
         if (attendanceTime.toLocalTime().isBefore(LocalTime.of(13, 30)) || attendanceTime.toLocalTime().equals(LocalTime.of(13, 30))) {
-            return "지각";
+            return AttendanceStatus.지각;
         }
-        return "결석";
+        return AttendanceStatus.결석;
     }
     
-    private String checkNotMondayAttendanceStatus(LocalDateTime attendanceTime) {
+    private AttendanceStatus checkNotMondayAttendanceStatus(LocalDateTime attendanceTime) {
         if (attendanceTime.toLocalTime().isBefore(LocalTime.of(10, 5)) || attendanceTime.toLocalTime().equals(LocalTime.of(10, 5))) {
-            return "출석";
+            return AttendanceStatus.출석;
+            
         }
         if (attendanceTime.toLocalTime().isBefore(LocalTime.of(10, 30)) || attendanceTime.toLocalTime().equals(LocalTime.of(10, 30))) {
-            return "지각";
+            return AttendanceStatus.지각;
         }
-        return "결석";
+        return AttendanceStatus.결석;
     }
     
     public AttendResult createAttendanceResult() {
@@ -76,7 +77,7 @@ public class Attendance {
                 .withHour(newAttendanceTime.getHour())
                 .withMinute(newAttendanceTime.getMinute());
         
-        String oldAttendanceStatus = attendanceStatus;
+        AttendanceStatus oldAttendanceStatus = attendanceStatus;
         attendanceStatus = checkAttendanceStatus(attendanceDateTime);
         
         return new AttendanceModifyResult(

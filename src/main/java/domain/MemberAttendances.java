@@ -52,7 +52,7 @@ public class MemberAttendances {
                 .toList();
         
         for (AttendResult attendanceResult : attendanceResults) {
-            if (attendanceResult.attendanceStatus().equals("출석")) {
+            if (attendanceResult.attendanceStatus() == AttendanceStatus.출석) {
                 count++;
             }
         }
@@ -67,7 +67,7 @@ public class MemberAttendances {
                 .toList();
         
         for (AttendResult attendanceResult : attendanceResults) {
-            if (attendanceResult.attendanceStatus().equals("지각")) {
+            if (attendanceResult.attendanceStatus() == AttendanceStatus.지각) {
                 count++;
             }
         }
@@ -82,7 +82,7 @@ public class MemberAttendances {
                 .toList();
         
         for (AttendResult attendanceResult : attendanceResults) {
-            if (attendanceResult.attendanceStatus().equals("결석")) {
+            if (attendanceResult.attendanceStatus() == AttendanceStatus.결석) {
                 count++;
             }
         }

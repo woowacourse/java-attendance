@@ -1,5 +1,6 @@
 package view;
 
+import domain.AttendanceStatus;
 import dto.result.AttendResult;
 import dto.result.ExpelMeasurementResult;
 import dto.result.MemberAttendResult;
@@ -57,11 +58,11 @@ public class OutputView {
         System.out.println(result);
     }
     
-    private static String parseStatus(String memberAttendanceModifyResult) {
+    private static String parseStatus(AttendanceStatus memberAttendanceModifyResult) {
         if (memberAttendanceModifyResult == null) {
-            return "결석";
+            return AttendanceStatus.결석.name();
         }
-        return memberAttendanceModifyResult;
+        return memberAttendanceModifyResult.name();
     }
     
     
@@ -119,7 +120,7 @@ public class OutputView {
             }
             
             if (!isExist) {
-                attendResultsToAdd.add(new AttendResult(LocalDateTime.of(now.withDayOfMonth(i), LocalTime.of(12, 0)), "결석", false));
+                attendResultsToAdd.add(new AttendResult(LocalDateTime.of(now.withDayOfMonth(i), LocalTime.of(12, 0)), AttendanceStatus.결석, false));
                 
             }
             

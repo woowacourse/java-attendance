@@ -1,13 +1,15 @@
 package dto.result;
 
+import domain.AttendanceStatus;
+
 import java.time.LocalDate;
 import java.time.LocalTime;
 
 public record AttendanceModifyResult(
         LocalDate attendanceDate,
         LocalTime oldAttendanceTime,
-        String oldAttendanceStatus,
+        AttendanceStatus oldAttendanceStatus,
         LocalTime newAttendanceTime,
-        String newAttendanceStatus
+        AttendanceStatus newAttendanceStatus
 ) {
 }
