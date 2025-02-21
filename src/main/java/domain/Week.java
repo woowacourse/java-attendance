@@ -19,6 +19,10 @@ public enum Week {
 
     private final LocalTime attendanceTime;
 
+    Week(final LocalTime localTime) {
+        this.attendanceTime = localTime;
+    }
+
     private static Map<DayOfWeek, String> initWeekNames() {
         final Map<DayOfWeek, String> weekNames = new HashMap<>();
         weekNames.put(DayOfWeek.MONDAY, "월요일");
@@ -30,10 +34,6 @@ public enum Week {
         weekNames.put(DayOfWeek.SUNDAY, "일요일");
 
         return weekNames;
-    }
-
-    Week(final LocalTime localTime) {
-        this.attendanceTime = localTime;
     }
 
     public LocalTime getAttendanceTime() {
