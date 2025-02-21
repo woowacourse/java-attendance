@@ -57,9 +57,7 @@ public class Student {
     private boolean compareDayAndModify(LocalDateTime localDateTime, LocalDateTime localDateTime1,
                               AttendanceStatus attendanceStatus) {
         if (compareDayIsSame(localDateTime1, localDateTime)) {
-            if (modifyByState(localDateTime, localDateTime1, attendanceStatus)) {
-                return true;
-            }
+            return modifyByState(localDateTime, localDateTime1, attendanceStatus);
         }
         return false;
     }
