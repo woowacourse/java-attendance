@@ -1,5 +1,6 @@
 package controller;
 
+import constant.CampusConstant;
 import domain.Attendance;
 import domain.AttendanceStatus;
 import domain.AttendanceTime;
@@ -112,7 +113,7 @@ public class AttendanceController {
         AttendanceTime oldAttendanceTime = processOldAttendanceTime(attendance, nickName);
 
         int editArrivalDate = oldAttendanceTime.getAttendanceDateTime().getDayOfMonth();
-        LocalDate editDate = LocalDate.of(2024, 12, editArrivalDate);
+        LocalDate editDate = LocalDate.of(CampusConstant.YEAR, CampusConstant.DECEMBER_MONTH, editArrivalDate);
 
         editAttendanceTime(attendance, nickName, editArrivalDate);
         AttendanceTime newAttendanceTime = attendance.findAttendanceTime(nickName, editDate);

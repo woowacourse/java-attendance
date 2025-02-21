@@ -1,5 +1,6 @@
 package domain;
 
+import constant.CampusConstant;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -11,6 +12,8 @@ import java.util.stream.Collectors;
 
 public class AttendanceTimes {
 
+    private static final int LATE_TO_ABSENT_UNIT = 3;
+
     private List<AttendanceTime> attendanceTimes;
 
     public AttendanceTimes(List<LocalDateTime> attendanceTimes, LocalDate nowDate) {
@@ -18,10 +21,10 @@ public class AttendanceTimes {
                 .map(AttendanceTime::new)
                 .collect(Collectors.toList());
 
-        LocalDate startDate = LocalDate.of(2024, 12, 1);
+        LocalDate startDate = CampusConstant.DECEMBER_START_DATE;
         LocalDate endDate = nowDate;
-        if (endDate.isAfter(LocalDate.of(2024, 12, 31))) {
-            endDate = LocalDate.of(2025, 1, 1);
+        if (endDate.isAfter(CampusConstant.DECEMBER_END_DATE)) {
+            endDate = CampusConstant.JANUARY_START_DATE;
         }
 
         initializeUnattended(startDate, endDate);
@@ -40,7 +43,7 @@ public class AttendanceTimes {
                 .filter(e -> e.getAttendanceStatus().equals(AttendanceStatus.LATE))
                 .count();
 
-        return absentCount + lateCount / 3;
+        return absentCount + lateCount / LATE_TO_ABSENT_UNIT;
     }
 
     public int getLateCount() {
@@ -98,6 +101,6 @@ public class AttendanceTimes {
     }
 
     private boolean isClosed(LocalDate date) {
-        return date.getDayOfWeek() == DayOfWeek.SATURDAY || date.getDayOfWeek() == DayOfWeek.SUNDAY || date.isEqual(LocalDate.of(2024, 12, 25));
+        return date.getDayOfWeek() == DayOfWeek.SATURDAY || date.getDayOfWeek() == DayOfWeek.SUNDAY || date.isEqual(CampusConstant.CHRISTMAS);
     }
 }

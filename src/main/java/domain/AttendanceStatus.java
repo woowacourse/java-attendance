@@ -1,5 +1,6 @@
 package domain;
 
+import constant.CampusConstant;
 import java.time.DayOfWeek;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -25,19 +26,20 @@ public enum AttendanceStatus {
         LocalTime startTime = getStartTime(attendanceDateTime);
         LocalTime attendanceTime = attendanceDateTime.toLocalTime();
 
-        if (attendanceTime.isBefore(startTime.plusMinutes(5).plusSeconds(1)) ) {
+        if (attendanceTime.isBefore(startTime.plusMinutes(CampusConstant.LATE_TIME).plusSeconds(1)) ) {
             return ATTEND;
         }
-        if (attendanceTime.isAfter(startTime.plusMinutes(5)) && attendanceTime.isBefore(startTime.plusMinutes(30).plusSeconds(1))) {
+        if (attendanceTime.isAfter(startTime.plusMinutes(CampusConstant.LATE_TIME))
+                && attendanceTime.isBefore(startTime.plusMinutes(CampusConstant.ABSENT_TIME).plusSeconds(1))) {
             return LATE;
         }
         return ABSENT;
     }
 
     private static LocalTime getStartTime(LocalDateTime attendanceDateTime) {
-        LocalTime startTime = LocalTime.of(10, 0);
+        LocalTime startTime = CampusConstant.STUDY_START_TIME;
         if (attendanceDateTime.getDayOfWeek() == DayOfWeek.MONDAY) {
-            startTime = LocalTime.of(13, 0);
+            startTime = CampusConstant.STUDY_START_TIME_MONDAY;
         }
         return startTime;
     }

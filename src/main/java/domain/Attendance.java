@@ -1,5 +1,6 @@
 package domain;
 
+import constant.CampusConstant;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -26,7 +27,7 @@ public class Attendance {
     }
 
     public boolean isClosed(LocalDate date) {
-        return date.getDayOfWeek() == DayOfWeek.SATURDAY || date.getDayOfWeek() == DayOfWeek.SUNDAY || date.isEqual(LocalDate.of(2024, 12, 25));
+        return date.getDayOfWeek() == DayOfWeek.SATURDAY || date.getDayOfWeek() == DayOfWeek.SUNDAY || date.isEqual(CampusConstant.CHRISTMAS);
     }
 
     public AttendanceTimes getAttendanceTimes(String name) {
@@ -40,9 +41,9 @@ public class Attendance {
     }
 
     public void edit(String crewName, int attendanceDay, LocalTime newAttendanceTime) {
-        LocalDateTime newAttendanceDateTime = LocalDateTime.of(2024, 12, attendanceDay, newAttendanceTime.getHour(), newAttendanceTime.getMinute());
+        LocalDateTime newAttendanceDateTime = LocalDateTime.of(CampusConstant.YEAR, CampusConstant.DECEMBER_MONTH, attendanceDay, newAttendanceTime.getHour(), newAttendanceTime.getMinute());
         validateOpenHours(newAttendanceDateTime);
-        AttendanceTime attendanceTime = findAttendanceTime(crewName, LocalDate.of(2024, 12, attendanceDay));
+        AttendanceTime attendanceTime = findAttendanceTime(crewName, LocalDate.of(CampusConstant.YEAR, CampusConstant.DECEMBER_MONTH, attendanceDay));
         attendanceTime.updateAttendanceDateTime(newAttendanceTime);
     }
 
@@ -70,7 +71,7 @@ public class Attendance {
     }
 
     public int getLateCountForSort(String nickName) {
-        return this.attendance.get(crews.findCrew(nickName)).getLateCount() % 3;
+        return this.attendance.get(crews.findCrew(nickName)).getLateCount() % CampusConstant.LATE_TO_ABSENT_UNIT;
     }
 
     public Map<AttendanceStatus, Integer> getCrewAttendanceStatus(String nickName) {
@@ -86,8 +87,8 @@ public class Attendance {
 
     private void validateOpenHours(LocalDateTime attendanceDateTime) {
         LocalTime attendanceTime = attendanceDateTime.toLocalTime();
-        LocalTime openHour = LocalTime.of(8, 0);
-        LocalTime closeHour = LocalTime.of(23, 0);
+        LocalTime openHour = CampusConstant.CAMPUS_OPEN_TIME;
+        LocalTime closeHour = CampusConstant.CAMPUS_CLOSE_TIME;
         if (attendanceTime.isBefore(openHour) || attendanceTime.isAfter(closeHour)) {
             throw new IllegalArgumentException("[ERROR] 캠퍼스 운영 시간이 아닙니다.");
         }
