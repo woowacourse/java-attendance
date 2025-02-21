@@ -24,7 +24,7 @@ public class AttendanceBook {
 
     public Crew getCrewByName(String name) {
         return crews.stream()
-                .filter(crew -> crew.hasName(name))
+                .filter(crew -> crew.matchesName(name))
                 .findFirst()
                 .orElseThrow(() -> new IllegalArgumentException(ErrorCode.NICKNAME_NOT_FOUND.getFormat()));
     }
@@ -58,7 +58,7 @@ public class AttendanceBook {
 
     public boolean checkCrewAlreadyExists(String name) {
         return crews.stream()
-                .anyMatch(crew -> crew.hasName(name));
+                .anyMatch(crew -> crew.matchesName(name));
     }
 
     public void addNewCrew(Crew newCrew) {

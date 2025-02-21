@@ -41,7 +41,7 @@ public class Crew {
         }
     }
 
-    public boolean hasName(String value) {
+    public boolean matchesName(String value) {
         return Objects.equals(name, value);
     }
 
