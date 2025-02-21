@@ -32,11 +32,15 @@ public class Attendance {
         return attendanceMap;
     }
 
-    public void save(final Crew crew, final String schoolStartTime) {
+    public void save(final Crew crew, final String schoolStartTime, LocalDate localDate) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
         List<LocalDateTime> localDateTimes = attendanceMap.get(crew);
 
-        String today = String.format("2024-12-%02d %s", DateTimeUtil.getMonthBy(LocalDate.now()), schoolStartTime);
+        String today = String.format("%d-%02d-%02d %s",
+                DateTimeUtil.getYearBy(localDate),
+                DateTimeUtil.getMonthBy(localDate),
+                DateTimeUtil.getDateBy(localDate),
+                schoolStartTime);
         LocalDateTime todayLocalDateTime = LocalDateTime.parse(today, formatter);
 
         validateDuplicateSave(24, localDateTimes);
@@ -60,6 +64,7 @@ public class Attendance {
         Calender.validateHolyDay(date);
 
         List<LocalDateTime> localDateTimes = attendanceMap.get(crew);
+        System.out.println(localDateTimes.size());
         int i;
         LocalDateTime beforeLocalDateTime = null;
         for (i = 0; i < localDateTimes.size(); i++) {
@@ -106,9 +111,10 @@ public class Attendance {
 //            int dayOfMonth = localDateTime.getDayOfMonth();
 
             if (dayIndex == dayOfMonth) {
-                String state = AttendanceState.findStateBy(localDateTime.toLocalTime(),
+                AttendanceState state = AttendanceState.findStateBy(localDateTime.toLocalTime(),
                         localDateTime.toLocalDate());
-                AttendanceResultDto attendanceResultDto = new AttendanceResultDto(localDateTime, state);
+                AttendanceResultDto attendanceResultDto = new AttendanceResultDto(localDateTime,
+                        state.getDescription());
                 attendanceResultDtos.add(attendanceResultDto);
                 idx++;
                 continue;

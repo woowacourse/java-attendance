@@ -23,7 +23,7 @@ class AttendanceStateTest {
     void statusReturn(LocalTime localTime, int dayOfMonth, String expected) {
         // given
         String actual = AttendanceState.findStateBy(localTime,
-                LocalDate.of(2024, 12, dayOfMonth));
+                LocalDate.of(2024, 12, dayOfMonth)).getDescription();
 
         // when & then
         assertThat(actual).isEqualTo(expected);
