@@ -1,6 +1,7 @@
 package attendance.domain;
 
-import static org.assertj.core.api.Assertions.assertThatCode;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -12,7 +13,7 @@ public class CrewTest {
         Crew crew1 = new Crew("리원");
         Crew crew2 = new Crew("리원");
 
-        assertThatCode(() -> crew1.equals(crew2)).doesNotThrowAnyException();
+        assertEquals(crew1, crew2);
     }
 
     @DisplayName("기능: 이름으로 Crew 인스턴스의 일치 여부를 확인")
@@ -20,6 +21,6 @@ public class CrewTest {
     void checkMatchingInstance() {
         Crew crew1 = new Crew("엠제이");
 
-        assertThatCode(() -> crew1.isSameCrewName("엠제이")).doesNotThrowAnyException();
+        assertTrue(crew1.isSameCrewName("엠제이"));
     }
 }
