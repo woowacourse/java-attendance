@@ -75,8 +75,8 @@ public class AttendanceController {
     private void doAttendance(LocalDateTime now) {
         Attendance attendance = createAttendance(now);
         attendances.add(attendance);
-        outputView.printCheckAttendance(attendance.getAttendanceTime(),
-                calculateAttendanceType(attendance.getAttendanceTime()));
+        outputView.printCheckAttendance(attendance.getAttendanceDateTime(),
+                calculateAttendanceType(attendance.getAttendanceDateTime()));
     }
 
     private Attendance createAttendance(LocalDateTime now) {
@@ -142,7 +142,7 @@ public class AttendanceController {
         if (attendance == null) {
             return AttendanceType.ABSENCE;
         }
-        return calculateAttendanceType(attendance.getAttendanceTime());
+        return calculateAttendanceType(attendance.getAttendanceDateTime());
     }
 
     private AttendanceType calculateAttendanceType(LocalDateTime dateTime) {

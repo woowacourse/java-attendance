@@ -25,17 +25,17 @@ public class OutputView {
                                         AttendanceType beforeType, AttendanceType afterType) {
         if (beforeAttendance != null) {
             System.out.printf("%s (%s) -> %s (%s) 수정 완료!%n",
-                    beforeAttendance.getAttendanceTime().format(DateTimeFormatter.ofPattern("MM월 dd일 E요일 HH:mm")),
+                    beforeAttendance.getAttendanceDateTime().format(DateTimeFormatter.ofPattern("MM월 dd일 E요일 HH:mm")),
                     displayAttendanceType(beforeType),
-                    afterAttendance.getAttendanceTime().format(DateTimeFormatter.ofPattern("HH:mm")),
+                    afterAttendance.getAttendanceDateTime().format(DateTimeFormatter.ofPattern("HH:mm")),
                     displayAttendanceType(afterType)
             );
             return;
         }
         System.out.printf("%s (%s) -> %s (%s) 수정 완료!%n",
-                afterAttendance.getAttendanceTime().format(DateTimeFormatter.ofPattern("MM월 dd일 E요일 --:--")),
+                afterAttendance.getAttendanceDateTime().format(DateTimeFormatter.ofPattern("MM월 dd일 E요일 --:--")),
                 displayAttendanceType(null),
-                afterAttendance.getAttendanceTime().format(DateTimeFormatter.ofPattern("HH:mm")),
+                afterAttendance.getAttendanceDateTime().format(DateTimeFormatter.ofPattern("HH:mm")),
                 displayAttendanceType(afterType)
         );
     }

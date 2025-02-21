@@ -21,8 +21,8 @@ public record AttendanceTimeline(
     private static Map<LocalDate, LocalTime> groupByAttendanceDate(Set<Attendance> attendances) {
         return attendances.stream()
                 .collect(Collectors.toMap(
-                        attendance -> attendance.getAttendanceTime().toLocalDate(),
-                        attendance -> attendance.getAttendanceTime().toLocalTime()
+                        attendance -> attendance.getAttendanceDateTime().toLocalDate(),
+                        attendance -> attendance.getAttendanceDateTime().toLocalTime()
                 ));
     }
 
