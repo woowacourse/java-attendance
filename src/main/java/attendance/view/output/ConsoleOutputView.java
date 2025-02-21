@@ -18,9 +18,8 @@ public class ConsoleOutputView implements OutputView {
         LocalDate date = response.getDate();
         LocalTime time = response.getTime().orElse(null);
 
-        String message = String.format("%s %s (%s)",
-                formatDateWithDayOfWeek(date),
-                formatTime(time),
+        String message = String.format("%s (%s)",
+                formatDateTimeWithDayOfWeek(date, time),
                 response.getAttendanceStatus());
         System.out.println(message);
     }
@@ -31,9 +30,8 @@ public class ConsoleOutputView implements OutputView {
         LocalDate date = updateAttendanceResponse.getPreviousDateTime().toLocalDate();
         LocalTime time = updateAttendanceResponse.getPreviousDateTime().toLocalTime();
 
-        String message = String.format("%s %s (%s) -> %s (%s) 수정 완료!",
-                formatDateWithDayOfWeek(date),
-                formatTime(time),
+        String message = String.format("%s (%s) -> %s (%s) 수정 완료!",
+                formatDateTimeWithDayOfWeek(date, time),
                 updateAttendanceResponse.getPreviousStatus(),
                 formatTime(time),
                 updateAttendanceResponse.getUpdatedStatus());
@@ -69,6 +67,10 @@ public class ConsoleOutputView implements OutputView {
     private void printAttendanceStatusStatistics(CrewAttendanceLogResponse crewAttendanceLogResponse) {
         crewAttendanceLogResponse.getAttendanceStatusStatistics()
                 .forEach((status, count) -> System.out.printf("%s: %d회%n", status, count));
+    }
+
+    private String formatDateTimeWithDayOfWeek(LocalDate date, LocalTime time) {
+        return String.format("%s %s", formatDateWithDayOfWeek(date), formatTime(time));
     }
 
     private String formatTime(LocalTime time) {
