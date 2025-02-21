@@ -37,31 +37,25 @@ public class AttendanceController {
 
     public void run() {
         Crews crews = crewsService.init(CrewAttendanceParser.parseCrewAttendances(AttendancesFileReader.read()), today);
-        while (true) {
-            try {
-                Menu selectedMenu = inputView.inputMenu(today);
-                if (executeMenu(selectedMenu, crews)) {
-                    break;
-                }
-            } catch (IllegalArgumentException e) {
-                outputView.printExceptionMessage(e);
-            }
+        while (!processMenu(today, crews)) {
+        }
+    }
+
+    private boolean processMenu(LocalDate today, Crews crews) {
+        try {
+            Menu selectedMenu = inputView.inputMenu(today);
+            return executeMenu(selectedMenu, crews);
+        } catch (IllegalArgumentException e) {
+            outputView.printExceptionMessage(e);
+            return false;
         }
     }
 
     private boolean executeMenu(Menu selectedMenu, Crews crews) {
-        if (selectedMenu.equals(Menu.CHECK_ATTEND)) {
-            confirmAttendance(crews);
-        }
-        if (selectedMenu.equals(Menu.UPDATE_ATTEND)) {
-            updateAttendance(crews);
-        }
-        if (selectedMenu.equals(Menu.PRINT_ATTEND_BY_CREW)) {
-            printAttendanceByCrew(crews);
-        }
-        if (selectedMenu.equals(Menu.PRINT_WARNING)) {
-            printWarningCrews(crews);
-        }
+        if (selectedMenu.equals(Menu.CHECK_ATTEND)) confirmAttendance(crews);
+        if (selectedMenu.equals(Menu.UPDATE_ATTEND)) updateAttendance(crews);
+        if (selectedMenu.equals(Menu.PRINT_ATTEND_BY_CREW)) printAttendanceByCrew(crews);
+        if (selectedMenu.equals(Menu.PRINT_WARNING)) printWarningCrews(crews);
 
         return selectedMenu.equals(Menu.QUIT);
     }
