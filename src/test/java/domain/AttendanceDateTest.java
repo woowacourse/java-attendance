@@ -49,7 +49,7 @@ public class AttendanceDateTest {
         assertThat(new AttendanceDate(weekDaysDateTime)).isInstanceOf(AttendanceDate.class);
     }
 
-    @DisplayName("Attendance Date 5분 이내 출석여부 확인")
+    @DisplayName("등교시간 5분 이내 출석하면 출석으로 판단한다.")
     @Test
     void test3() {
         //given
@@ -68,7 +68,7 @@ public class AttendanceDateTest {
         assertThat(attendanceState).isEqualTo(AttendanceState.ATTENDANCE);
     }
 
-    @DisplayName("Attendance Date 30분 이내 지각여부 확인")
+    @DisplayName("등교시간 5분 초과 30분 이내 등교하면 지각으로 판단한다.")
     @Test
     void test4() {
         //given
@@ -87,7 +87,7 @@ public class AttendanceDateTest {
         assertThat(attendanceState).isEqualTo(AttendanceState.TARDY);
     }
 
-    @DisplayName("Attendance Date 30분 이내 결석여부 확인")
+    @DisplayName("출석시간 30분 초과 등교하면 결석으로 판단한다")
     @Test
     void test5() {
         //given

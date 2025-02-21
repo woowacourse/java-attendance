@@ -26,5 +26,4 @@ class AttendanceServiceTest {
         //then
         Assertions.assertThat(crewGroup.findCrew("빙봉").getName()).isEqualTo("빙봉");
     }
-
 }
