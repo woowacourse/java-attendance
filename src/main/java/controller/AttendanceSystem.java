@@ -2,6 +2,7 @@ package controller;
 
 import domain.AllCrew;
 import java.time.LocalDate;
+import java.util.regex.Pattern;
 import view.FileInputView;
 import view.InputValidator;
 import view.OutputView;
@@ -22,14 +23,26 @@ public class AttendanceSystem {
         this.allCrew = new AllCrew();
     }
 
-    public void start() {
+    public void run() {
+        initialize();
+        start();
+    }
+
+    private void initialize() {
         fileInputView.readAttendanceFile(allCrew);
-        LocalDate today = date;
-        allCrew.updateAbsentHistory(today.minusDays(1));
+        allCrew.updateAbsentHistory(date.minusDays(1));
+    }
+
+    public void start() {
         boolean onRunning = true;
-        while (onRunning) {
-            String menuInput = userInputView.askMenu();
-            onRunning = executeMenu(menuInput);
+        while(onRunning) {
+            String menu = userInputView.askMenu();
+            try {
+                InputValidator.validateMenu(menu);
+                onRunning = executeMenu(menu);
+            } catch (IllegalArgumentException e) {
+                outputView.printExceptionMessage(e.getMessage());
+            }
         }
     }
 
