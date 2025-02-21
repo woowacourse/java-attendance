@@ -29,6 +29,12 @@ class CrewTest {
     }
 
     @Test
+    void 크루의_이름이_null인_경우_예외가_발생한다() {
+        assertThatThrownBy(() -> new Crew(null))
+                .isInstanceOf(IllegalArgumentException.class);
+    }
+
+    @Test
     void 크루가_가지고_있는_출석_기록을_확인한다() {
         Crew crew = new Crew("멍구");
         crew.attend(new AttendanceDetail(LocalDateTime.of(2024, 12, 10, 10, 0)));
