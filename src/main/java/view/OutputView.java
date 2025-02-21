@@ -35,13 +35,15 @@ public class OutputView {
 
     public static void printMonthAttendanceRecords(MonthAttendanceRecordsResult monthAttendanceRecordResult) {
         System.out.printf("이번 달 %s의 출석 기록입니다.%n%n", monthAttendanceRecordResult.nickname());
+        StringBuilder message = new StringBuilder();
         monthAttendanceRecordResult.attendanceRecords().forEach(attendanceRecord -> {
-            StringBuilder message = new StringBuilder();
             message.append(attendanceRecord.date().format(Formatter.DATE_FORMATTER));
             message.append(" ");
             message.append(convertToTime(attendanceRecord));
-            message.append(String.format(" (%s)", attendanceRecord.status().getTitle()));
+            message.append(String.format(" (%s)%n", attendanceRecord.status().getTitle()));
         });
+        System.out.println(message);
+
         System.out.printf("출석: %d회%n",
                 monthAttendanceRecordResult.attendanceStatusStatistics()
                         .getCountByStatus(AttendanceStatus.ATTENDANCE));
