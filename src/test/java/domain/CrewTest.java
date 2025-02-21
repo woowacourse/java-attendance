@@ -23,7 +23,7 @@ public class CrewTest {
         assertThat(crew.getExpelStatus(attendanceTimes)).isEqualTo(true);
     }
 
-        @Test
+    @Test
     void 크루_제적_아닌_상태_확인() {
         List<AttendanceTime> attendanceTimes = new ArrayList<>();
         attendanceTimes.add(new AttendanceTime(LocalDateTime.of(2024, 12, 2, 14, 0)));

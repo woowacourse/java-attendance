@@ -120,5 +120,4 @@ public class AttendanceTest {
 
         assertTrue(expelledCrew.contains("빙티"));
     }
-
 }
