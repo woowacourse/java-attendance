@@ -35,7 +35,7 @@ public class AttendanceController {
             String inputFunction = InputView.readFunction();
             try {
                 performFunction(inputFunction);
-                if (inputFunction.equals("Q")) {
+                if ("Q".equals(inputFunction)) {
                     break;
                 }
             } catch (IllegalArgumentException e) {
@@ -45,17 +45,17 @@ public class AttendanceController {
     }
 
     private void performFunction(String inputFunction) {
-        if (inputFunction.equals("1")) {
+        if ("1".equals(inputFunction)) {
             validateAttendanceDate();
             recordAttendance();
         }
-        if (inputFunction.equals("2")) {
+        if ("2".equals(inputFunction)) {
             modifyAttendance();
         }
-        if (inputFunction.equals("3")) {
+        if ("3".equals(inputFunction)) {
             checkAttendanceRecordOfCrew();
         }
-        if (inputFunction.equals("4")) {
+        if ("4".equals(inputFunction)) {
             OutputView.printPenaltyOfCrews(crews.getCrews(), attendances);
         }
     }
@@ -111,7 +111,7 @@ public class AttendanceController {
 
     private void checkAttendanceRecordOfCrew() {
         Crew crew = getCrew();
-        List<Attendance> attendancesOfCrew = attendances.getByCrew(crew, LocalDate.now());
+        List<Attendance> attendancesOfCrew = attendances.getAttendances(crew, LocalDate.now());
         OutputView.printAttendanceRecordAndPenalty(attendancesOfCrew);
     }
 }

@@ -1,13 +1,18 @@
 package attendance.domain;
 
+import attendance.util.DateUtil;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import attendance.util.DateUtil;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
 public class Attendances {
 
@@ -32,43 +37,45 @@ public class Attendances {
         }
     }
 
-    public Attendance getAttendance(Crew crew, LocalDate localDate) {
-        List<Attendance> attendancesOfCrew = attendances.get(crew);
+    public Attendance getAttendance(Crew targetCrew, LocalDate targetDate) {
+        List<Attendance> attendancesOfCrew = attendances.get(targetCrew);
         for (Attendance attendance : attendancesOfCrew) {
-            if (attendance.getDateTime().getDayOfMonth() == localDate.getDayOfMonth()) {
+            if (attendance.getDateTime().getDayOfMonth() == targetDate.getDayOfMonth()) {
                 return attendance;
             }
         }
-        Attendance attendance = Attendance.of(LocalDateTime.of(localDate, LocalTime.of(0, 0)));
-        addAttendance(crew, attendance);
+        Attendance attendance = Attendance.of(LocalDateTime.of(targetDate, LocalTime.of(0, 0)));
+        addAttendance(targetCrew, attendance);
         return attendance;
     }
 
-    public List<Attendance> getByCrew(Crew crew, LocalDate date) {
-        int day = date.getDayOfMonth();
-        List<Attendance> copiedAttendancesOfCrew = new ArrayList<>(attendances.get(crew));
-        int sequenceOfRecord = 0;
-        for (int i = 1; i < day; i++) {
-            if (DateUtil.isWeekend(LocalDate.of(date.getYear(), date.getMonth(), i))) {
-                continue;
-            }
-            addAbsenceIfNotExistRecord(copiedAttendancesOfCrew, sequenceOfRecord, LocalDate.of(date.getYear(), date.getMonth(), i));
-            sequenceOfRecord++;
-        }
-        return copiedAttendancesOfCrew;
+    public List<Attendance> getAttendances(Crew targetCrew, LocalDate untilDate) {
+        List<Attendance> attendancesOfCrew = attendances.getOrDefault(targetCrew, new ArrayList<>());
+        List<Attendance> absencesOfCrew = generateAbsences(attendancesOfCrew, untilDate);
+
+        return Stream.of(attendancesOfCrew, absencesOfCrew)
+            .flatMap(List::stream)
+            .sorted(Comparator.comparing(Attendance::getDateTime))
+            .collect(Collectors.toList());
     }
 
-    private void addAbsenceIfNotExistRecord(List<Attendance> copiedAttendancesOfCrew,
-        int sequenceOfRecord, LocalDate date) {
-        Attendance attendance = copiedAttendancesOfCrew.get(sequenceOfRecord);
-        if (attendance.getDateTime().getDayOfMonth() > date.getDayOfMonth()) {
-            copiedAttendancesOfCrew.add(sequenceOfRecord,
-                Attendance.of(LocalDateTime.of(date, LocalTime.of(0, 0, 0))));
-        }
+    private List<Attendance> generateAbsences(List<Attendance> attendances, LocalDate untilDate) {
+        List<Integer> attendedDays = attendances.stream()
+            .map(Attendance::getDateTime)
+            .map(LocalDateTime::getDayOfMonth)
+            .toList();
+
+        return IntStream.range(1, untilDate.getDayOfMonth())
+            .boxed()
+            .filter(Predicate.not(attendedDays::contains))
+            .map(day -> LocalDate.of(untilDate.getYear(), untilDate.getMonth(), day))
+            .filter(DateUtil::isWeekDay)
+            .map(Attendance::ofAbsence)
+            .toList();
     }
 
     public int countAttendanceStatus(Crew crew, LocalDate date, AttendanceStatus status) {
-        List<Attendance> attendancesOfCrew = getByCrew(crew, date);
+        List<Attendance> attendancesOfCrew = getAttendances(crew, date);
         int absenceCount = 0;
         for (Attendance attendance : attendancesOfCrew) {
             if (attendance.getStatus().equals(status)) {

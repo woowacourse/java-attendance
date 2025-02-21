@@ -8,6 +8,10 @@ public class DateUtil {
 
     private DateUtil() {}
 
+    public static boolean isWeekDay(LocalDate date) {
+        return !isWeekend(date);
+    }
+
     public static boolean isWeekend(LocalDate date) {
         return date.getDayOfWeek() == DayOfWeek.SATURDAY
             || date.getDayOfWeek() == DayOfWeek.SUNDAY;

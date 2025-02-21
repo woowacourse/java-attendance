@@ -23,6 +23,10 @@ public class Attendance {
         return new Attendance(dateTime);
     }
 
+    public static Attendance ofAbsence(LocalDate date) {
+        return new Attendance(date.atStartOfDay());
+    }
+
     private void validateDayOfWeek(LocalDateTime dateTime) {
         if (DateUtil.isWeekend(dateTime)) {
             throw new IllegalArgumentException();

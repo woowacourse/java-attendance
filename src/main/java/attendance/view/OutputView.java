@@ -102,7 +102,7 @@ public class OutputView {
         Attendances attendances) {
         return crews.stream()
             .map(crew -> {
-                List<Attendance> attendanceOfCrew = attendances.getByCrew(crew, LocalDate.now());
+                List<Attendance> attendanceOfCrew = attendances.getAttendances(crew, LocalDate.now());
                 int absenceCount = countAttendanceStatus(attendanceOfCrew, AttendanceStatus.ABSENCE);
                 int lateCount = countAttendanceStatus(attendanceOfCrew, AttendanceStatus.LATE);
                 Penalty penalty = Penalty.determine(absenceCount, lateCount);
