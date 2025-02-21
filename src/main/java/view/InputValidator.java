@@ -1,10 +1,8 @@
 package view;
 
-import domain.AllCrew;
+import domain.AttendanceBook;
 import java.time.DateTimeException;
-import java.time.DayOfWeek;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
@@ -16,8 +14,8 @@ public class InputValidator {
         }
     }
 
-    public static void validateName(String name, AllCrew allCrew) {
-        if (!allCrew.containsCrewName(name)) {
+    public static void validateName(String name, AttendanceBook attendanceBook) {
+        if (!attendanceBook.containsCrewName(name)) {
             throw new IllegalArgumentException("존재하지 않는 닉네임입니다.");
         }
     }

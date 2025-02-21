@@ -1,27 +1,23 @@
 package controller;
 
-import domain.AllCrew;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
+import domain.AttendanceBook;
 import java.util.function.Supplier;
-import view.FileInputView;
+import util.DateTimeManager;
 import view.InputValidator;
 import view.OutputView;
-import view.UserInputView;
+import view.InputView;
 
 public class AttendanceSystem {
-    private final FileInputView fileInputView;
-    private final UserInputView userInputView;
+    private final InputView inputView;
     private final OutputView outputView;
-    private final AllCrew allCrew;
-    private final LocalDate date;
+    private final DateTimeManager dateTimeManager;
+    private final AttendanceBook attendanceBook;
 
-    public AttendanceSystem(LocalDate date) {
-        this.date = date;
-        this.userInputView = new UserInputView(date);
-        this.outputView = new OutputView(date);
-        this.fileInputView = new FileInputView();
-        this.allCrew = new AllCrew();
+    public AttendanceSystem(AttendanceBook attendanceBook, DateTimeManager dateTimeManager) {
+        this.dateTimeManager = dateTimeManager;
+        this.inputView = new InputView(dateTimeManager.getToday());
+        this.outputView = new OutputView(dateTimeManager.getToday());
+        this.attendanceBook = attendanceBook;
     }
 
     public void run() {
@@ -30,102 +26,97 @@ public class AttendanceSystem {
     }
 
     private void initialize() {
-        fileInputView.readAttendanceFile(allCrew);
-        allCrew.updateAbsentHistory(date.minusDays(1));
+        attendanceBook.updateAbsentHistory(dateTimeManager.getYesterday());
     }
 
     public void start() {
         boolean onRunning = true;
         while (onRunning) {
-            String menu = userInputView.askMenu();
-            handleException(() -> InputValidator.validateMenu(menu));
-            onRunning = executeMenu(menu);
+            String menu = inputView.askMenu();
+            handleWithExceptionMessage(() -> InputValidator.validateMenu(menu));
+            onRunning = isNotStoppedInput(menu);
+            executeMenu(menu);
         }
     }
 
-    private boolean executeMenu(String menuInput) {
-        if (menuInput.equals("1")) {
+    private boolean isNotStoppedInput(String menu) {
+        return !menu.matches("[Qq]");
+    }
+
+    private void executeMenu(String menu) {
+        if (menu.equals("1")) {
             checkAttendance();
         }
-        if (menuInput.equals("2")) {
+        if (menu.equals("2")) {
             modifyAttendance();
         }
-        if (menuInput.equals("3")) {
+        if (menu.equals("3")) {
             checkCrewAttendanceHistory();
         }
-        if (menuInput.equals("4")) {
-            checkDangerousCrew();
+        if (menu.equals("4")) {
+            checkPenaltyCrew();
         }
-        return !menuInput.matches("[Qq]");
     }
 
     private void checkAttendance() {
         String name = handleWithRetry(this::processName);
         String time = handleWithRetry(this::processTime);
         String attendanceResult = handleWithRestart(() ->
-                allCrew.addCrewAttendanceByName(name,
-                        LocalDateTime.of(date.getYear(), date.getMonthValue(), date.getDayOfMonth(),
-                                Integer.parseInt(time.split(":")[0]),
-                                Integer.parseInt(time.split(":")[1])))
-        );
+                attendanceBook.addCrewAttendanceByName(name,
+                        dateTimeManager.getDateTime(time)));
         outputView.printAttendanceResult(attendanceResult);
     }
 
     private String processName() {
-        String name = userInputView.askNickNameForCheckAttendance();
-        InputValidator.validateName(name, allCrew);
+        String name = inputView.askNickNameForCheckAttendance();
+        InputValidator.validateName(name, attendanceBook);
         return name;
     }
 
     private String processTime() {
-        String time = userInputView.askAttendanceTimeForCheckAttendance();
+        String time = inputView.askAttendanceTimeForCheckAttendance();
         InputValidator.validateTimeFormat(time);
         return time;
     }
 
     private void modifyAttendance() {
         String modifyName = handleWithRetry(this::processModifyName);
-        String day = handleWithRetry(this::processDay);
+        String modifyDay = handleWithRetry(this::processModifyDay);
         String modifyTime = handleWithRetry(this::processModifyTime);
         String modifyResult = handleWithRestart(() ->
-                allCrew.modifyCrewAttendanceByName(modifyName, LocalDateTime.of(date.getYear(),
-                        date.getMonthValue(),
-                        Integer.parseInt(day),
-                        Integer.parseInt(modifyTime.split(":")[0]),
-                        Integer.parseInt(modifyTime.split(":")[1]))
-                )
-        );
-        outputView.printModifyAttendance(modifyResult);
+                attendanceBook.modifyCrewAttendanceByName(modifyName,
+                        dateTimeManager.getModifiedDate(modifyDay, modifyTime)));
+        outputView.printModifiedAttendance(modifyResult);
     }
 
     private String processModifyName() {
-        String name = userInputView.askNickNameForModifyAttendanceInfo();
-        InputValidator.validateName(name, allCrew);
+        String name = inputView.askNickNameForModifyAttendanceInfo();
+        InputValidator.validateName(name, attendanceBook);
         return name;
     }
 
-    private String processDay() {
-        String day = userInputView.askDayForModifyAttendanceInfo();
+    private String processModifyDay() {
+        String day = inputView.askDayForModifyAttendanceInfo();
         InputValidator.validateDate(day);
         return day;
     }
 
     private String processModifyTime() {
-        String time = userInputView.askAttendanceTimeForModifyAttendance();
+        String time = inputView.askAttendanceTimeForModifyAttendance();
         InputValidator.validateTimeFormat(time);
         return time;
     }
 
     private void checkCrewAttendanceHistory() {
         String name = handleWithRetry(this::processName);
-        outputView.printAttendanceHistory(allCrew, name);
+        outputView.printAttendanceHistory(attendanceBook, name);
     }
 
-    private void checkDangerousCrew() {
-        outputView.printDangerousCrew(allCrew);
+    private void checkPenaltyCrew() {
+        outputView.printPenaltyCrew(attendanceBook);
     }
 
-    private void handleException(Runnable task) {
+    private void handleWithExceptionMessage(Runnable task) {
         try {
             task.run();
         } catch (IllegalArgumentException e) {

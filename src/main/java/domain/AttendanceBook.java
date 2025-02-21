@@ -6,10 +6,10 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
-public class AllCrew {
+public class AttendanceBook {
     private final List<Crew> allCrew;
 
-    public AllCrew() {
+    public AttendanceBook() {
         this.allCrew = new ArrayList<>();
     }
 

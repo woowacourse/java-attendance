@@ -6,10 +6,10 @@ import java.time.format.TextStyle;
 import java.util.Locale;
 import java.util.Scanner;
 
-public class UserInputView {
+public class InputView {
     private final LocalDate today;
 
-    public UserInputView(LocalDate today) {
+    public InputView(LocalDate today) {
         this.today = today;
     }
 

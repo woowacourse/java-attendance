@@ -3,7 +3,7 @@ package view;
 import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
 
-import domain.AllCrew;
+import domain.AttendanceBook;
 import domain.Crew;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -31,19 +31,19 @@ public class InputValidatorTest {
     void test3() {
         String name = "미미";
 
-        AllCrew allCrew = new AllCrew();
-        allCrew.addCrew(new Crew(name));
+        AttendanceBook attendanceBook = new AttendanceBook();
+        attendanceBook.addCrew(new Crew(name));
 
-        assertDoesNotThrow(() -> InputValidator.validateName(name, allCrew));
+        assertDoesNotThrow(() -> InputValidator.validateName(name, attendanceBook));
     }
 
     @DisplayName("없는 닉네임을 입력할 시 예외가 발생한다.")
     @ParameterizedTest
     @ValueSource(strings = {"없는이름", "", " "})
     void test4() {
-        AllCrew allCrew = new AllCrew();
+        AttendanceBook attendanceBook = new AttendanceBook();
 
-        assertThatThrownBy(() -> InputValidator.validateName("없는 이름", allCrew));
+        assertThatThrownBy(() -> InputValidator.validateName("없는 이름", attendanceBook));
     }
 
     @DisplayName("시간을 hh:mm의 포맷에 맞게 입력한 경우 정상 동작한다.")
