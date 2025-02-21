@@ -52,31 +52,6 @@ public class Controller {
         run();
     }
 
-    private void processDisplayWarningCrew() {
-        process(() -> outputView.printWarningCrews(WarningCrewsDTO.from(crews)));
-    }
-
-    private void processDisplayAttendanceHistory() {
-        process(() -> outputView.printAttendanceHistory(
-                AttendanceDTO.from(crews.findCrew(inputView.inputCrewName())))
-        );
-    }
-
-    private void processModifyAttendance() {
-        process(() -> {
-            Crew crew = crews.findCrew(inputView.inputModifyAttendanceCrewName());
-            AttendanceDetail attendanceDetail = crew.findAttendanceDetail(
-                    CustomLocalDateTime.parseDate(inputView.inputModifyAttendanceDate())
-            );
-            AttendanceDetail beforeModify = new AttendanceDetail(attendanceDetail.getAttendanceDateTime());
-            attendanceDetail.modify(CustomLocalDateTime.parseTime(inputView.inputModifyAttendanceTime()));
-            outputView.printModifyResult(
-                    AttendanceDetailDTO.from(beforeModify),
-                    AttendanceDetailDTO.from(attendanceDetail)
-            );
-        });
-    }
-
     private void processAddAttendance() {
         process(() -> {
             if (CustomLocalDateTime.isHoliday(CustomLocalDateTime.nowDate())) {
@@ -90,6 +65,31 @@ public class Controller {
             crew.attend(attendanceDetail);
             outputView.printAttendanceDetail(AttendanceDetailDTO.from(attendanceDetail));
         });
+    }
+
+    private void processModifyAttendance() {
+        process(() -> {
+            AttendanceDetail attendanceDetail = crews.getCrewAttendanceDetail(
+                    inputView.inputModifyAttendanceCrewName(),
+                    CustomLocalDateTime.parseDate(inputView.inputModifyAttendanceDate())
+            );
+            AttendanceDetail beforeModify = new AttendanceDetail(attendanceDetail.getAttendanceDateTime());
+            attendanceDetail.modify(CustomLocalDateTime.parseTime(inputView.inputModifyAttendanceTime()));
+            outputView.printModifyResult(
+                    AttendanceDetailDTO.from(beforeModify),
+                    AttendanceDetailDTO.from(attendanceDetail)
+            );
+        });
+    }
+
+    private void processDisplayAttendanceHistory() {
+        process(() -> outputView.printAttendanceHistory(
+                AttendanceDTO.from(crews.findCrew(inputView.inputCrewName())))
+        );
+    }
+
+    private void processDisplayWarningCrew() {
+        process(() -> outputView.printWarningCrews(WarningCrewsDTO.from(crews)));
     }
 
     private void process(Runnable runnable) {

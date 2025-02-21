@@ -1,8 +1,8 @@
 package attendance.model;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Stream;
 
 public class Crews {
     private final List<Crew> crews;
@@ -29,6 +29,10 @@ public class Crews {
     public boolean containsCrew(String name) {
         return crews.stream()
                 .anyMatch(crew -> crew.getName().equals(name));
+    }
+
+    public AttendanceDetail getCrewAttendanceDetail(String name, LocalDate attendanceDate) {
+        return findCrew(name).findAttendanceDetail(attendanceDate);
     }
 
 }
