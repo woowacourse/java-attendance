@@ -97,8 +97,9 @@ public class AttendanceController {
 
     private void validateCampusOpenDate(Attendance attendance, LocalDate nowDate) {
         if (attendance.isClosed(nowDate)) {
-            throw new IllegalArgumentException(String.format("[ERROR] %d월 %d일 %s요일은 등교일이 아닙니다.", nowDate.getMonthValue(), nowDate.getDayOfMonth(),
-                    Convertor.convertDayOfWeekToKorean(nowDate.getDayOfWeek())));
+            throw new IllegalArgumentException(
+                    String.format("[ERROR] %d월 %d일 %s요일은 등교일이 아닙니다.", nowDate.getMonthValue(), nowDate.getDayOfMonth(),
+                            Convertor.convertDayOfWeekToKorean(nowDate.getDayOfWeek())));
         }
     }
 
@@ -164,7 +165,8 @@ public class AttendanceController {
 
         List<AttendanceTime> crewAttendances = attendance.getAttendanceTimes(nickName);
         for (AttendanceTime crewAttendance : crewAttendances) {
-            outputView.printCheckAttendanceMessage(crewAttendance.getAttendanceDateTime(), crewAttendance.getAttendanceStatus());
+            outputView.printCheckAttendanceMessage(crewAttendance.getAttendanceDateTime(),
+                    crewAttendance.getAttendanceStatus());
         }
 
         Map<AttendanceStatus, Integer> attendStatuses = attendance.getCrewAttendanceStatus(nickName);
@@ -174,8 +176,8 @@ public class AttendanceController {
     private void checkExpelledCrew(Attendance attendance) {
         List<String> expelledCrews = attendance.checkExpelledCrew();
         expelledCrews.sort(Comparator.comparing(attendance::getAbsentCount)
-                        .thenComparing(attendance::getLateCount).reversed()
-                        .thenComparing(name->name));
+                .thenComparing(attendance::getLateCount).reversed()
+                .thenComparing(name -> name));
 
         outputView.printExpelledCrewHeader();
         for (String crew : expelledCrews) {

@@ -9,7 +9,6 @@ public class ConvertorTest {
 
     @Test
     void 요일_변환_테스트() {
-
         assertThat(Convertor.convertDayOfWeekToKorean(DayOfWeek.MONDAY)).isEqualTo("월");
         assertThat(Convertor.convertDayOfWeekToKorean(DayOfWeek.TUESDAY)).isEqualTo("화");
         assertThat(Convertor.convertDayOfWeekToKorean(DayOfWeek.WEDNESDAY)).isEqualTo("수");

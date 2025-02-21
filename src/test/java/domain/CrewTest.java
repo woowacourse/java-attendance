@@ -1,9 +1,10 @@
 package domain;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 public class CrewTest {
@@ -19,7 +20,7 @@ public class CrewTest {
         attendanceTimes.add(new AttendanceTime(LocalDateTime.of(2024, 12, 9, 14, 58)));
 
         Crew crew = new Crew("메이");
-        Assertions.assertThat(crew.getExpelStatus(attendanceTimes)).isEqualTo(true);
+        assertThat(crew.getExpelStatus(attendanceTimes)).isEqualTo(true);
     }
 
         @Test
@@ -31,6 +32,6 @@ public class CrewTest {
         attendanceTimes.add(new AttendanceTime(LocalDateTime.of(2024, 12, 5, 9, 58)));
 
         Crew crew = new Crew("메이");
-        Assertions.assertThat(crew.getExpelStatus(attendanceTimes)).isEqualTo(false);
+        assertThat(crew.getExpelStatus(attendanceTimes)).isEqualTo(false);
     }
 }

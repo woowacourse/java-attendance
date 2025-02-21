@@ -15,39 +15,42 @@ public class OutputView {
     }
 
     public void printMenuHeader(LocalDate nowDate) {
-        System.out.print(String.format("\n오늘은 %d월 %d일 %s요일입니다. 기능을 선택해 주세요.", nowDate.getMonthValue(), nowDate.getDayOfMonth(),
-                Convertor.convertDayOfWeekToKorean(nowDate.getDayOfWeek())));
+        System.out.printf("%n오늘은 %d월 %d일 %s요일입니다. 기능을 선택해 주세요.", nowDate.getMonthValue(), nowDate.getDayOfMonth(),
+                Convertor.convertDayOfWeekToKorean(nowDate.getDayOfWeek()));
     }
 
     public void printCheckAttendanceMessage(LocalDateTime attendanceDateTime, AttendanceStatus attendanceStatus) {
-        System.out.print(writeAttendanceDateMessage(attendanceDateTime)
-                        + writeAttendanceTimeMessage(attendanceDateTime, attendanceStatus));
+        System.out.print(writeAttendanceDateMessage(attendanceDateTime) + writeAttendanceTimeMessage(attendanceDateTime,
+                attendanceStatus));
     }
 
     public void printEditAttendanceMessage(AttendanceTime oldAttendanceTime, AttendanceTime newAttendanceTime) {
-        StringBuilder sb = new StringBuilder();
-        sb.append(writeAttendanceDateMessage(oldAttendanceTime.getAttendanceDateTime()))
-                .append(writeAttendanceTimeMessage(oldAttendanceTime.getAttendanceDateTime(), oldAttendanceTime.getAttendanceStatus()))
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append(writeAttendanceDateMessage(oldAttendanceTime.getAttendanceDateTime()))
+                .append(writeAttendanceTimeMessage(oldAttendanceTime.getAttendanceDateTime(),
+                        oldAttendanceTime.getAttendanceStatus()))
                 .append(" ->")
-                .append(writeAttendanceTimeMessage(newAttendanceTime.getAttendanceDateTime(), newAttendanceTime.getAttendanceStatus()))
+                .append(writeAttendanceTimeMessage(newAttendanceTime.getAttendanceDateTime(),
+                        newAttendanceTime.getAttendanceStatus()))
                 .append(" 수정 완료!");
-        System.out.println(sb);
+        System.out.println(stringBuilder);
     }
 
     public void printCrewAttendanceHeader(String nickName) {
-        System.out.println(String.format("이번 달 %s의 출석 기록입니다.", nickName));
+        System.out.printf("이번 달 %s의 출석 기록입니다.%n", nickName);
     }
 
     public void printCrewStatuses(Map<AttendanceStatus, Integer> attendStatuses) {
-        StringBuilder sb = new StringBuilder();
-        sb.append(System.lineSeparator()).append(System.lineSeparator())
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append(System.lineSeparator()).append(System.lineSeparator())
                 .append(writeCrewStatus(AttendanceStatus.ATTEND, attendStatuses.get(AttendanceStatus.ATTEND)))
                 .append(writeCrewStatus(AttendanceStatus.LATE, attendStatuses.get(AttendanceStatus.LATE)))
-                .append(writeCrewStatus(AttendanceStatus.ABSENT, attendStatuses.get(AttendanceStatus.ABSENT) + attendStatuses.get(AttendanceStatus.UNATTEND)))
+                .append(writeCrewStatus(AttendanceStatus.ABSENT,
+                        attendStatuses.get(AttendanceStatus.ABSENT) + attendStatuses.get(AttendanceStatus.UNATTEND)))
                 .append(System.lineSeparator())
                 .append(writeExpelStatus(attendStatuses))
                 .append(System.lineSeparator());
-        System.out.println(sb);
+        System.out.println(stringBuilder);
     }
 
     public void printExpelledCrewHeader() {
@@ -55,10 +58,10 @@ public class OutputView {
     }
 
     public void printExpelledCrew(String crewName, Map<AttendanceStatus, Integer> attendStatuses) {
-        System.out.println(String.format("- %s: 결석 %d회, 지각 %d회 (%s)", crewName,
+        System.out.printf("- %s: 결석 %d회, 지각 %d회 (%s)%n", crewName,
                 attendStatuses.get(AttendanceStatus.ABSENT) + attendStatuses.get(AttendanceStatus.UNATTEND),
                 attendStatuses.get(AttendanceStatus.LATE),
-                ExpelStatus.determineExpelStatus(attendStatuses).getExpelStatus()));
+                ExpelStatus.determineExpelStatus(attendStatuses).getExpelStatus());
     }
 
     private String writeCrewStatus(AttendanceStatus attendanceStatus, int attendanceStatusCount) {

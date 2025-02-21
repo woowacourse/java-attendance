@@ -3,6 +3,7 @@ package domain;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.IOException;
 import java.time.LocalDate;
@@ -68,6 +69,6 @@ public class AttendanceTest {
     @Test
     void 제적_위험자_확인_기능() {
         List<String> expelledCrew = attendance.checkExpelledCrew();
-        assertThat(expelledCrew).contains("빙티");
+        assertTrue(expelledCrew.contains("빙티"));
     }
 }

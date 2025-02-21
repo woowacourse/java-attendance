@@ -28,7 +28,7 @@ public class Crew {
             attendanceStatuses.put(attendanceStatus, 0);
         }
         for (AttendanceTime attendanceTime : attendanceTimes) {
-            attendanceStatuses.put(attendanceTime.getAttendanceStatus(), attendanceStatuses.get(attendanceTime.getAttendanceStatus()) + 1);
+            attendanceStatuses.compute(attendanceTime.getAttendanceStatus(), (status, count) -> count + 1);
         }
     }
 

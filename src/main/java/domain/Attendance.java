@@ -46,8 +46,9 @@ public class Attendance {
                 .collect(Collectors.toSet());
 
         for (LocalDate date = startDate; date.isBefore(endDate); date = date.plusDays(1)) {
-            addUnattended(attendanceDates, date, attendanceTimes);
+            attendanceTimes = addUnattended(attendanceDates, date, attendanceTimes);
         }
+        this.attendance.put(findCrew(name), attendanceTimes);
     }
 
     private Crew findCrew(String name) {
@@ -57,10 +58,14 @@ public class Attendance {
                 .orElseThrow(() -> new IllegalArgumentException("[ERROR] 존재하지 않는 크루입니다."));
     }
 
-    private void addUnattended(Set<LocalDate> attendanceDates, LocalDate date, List<AttendanceTime> attendanceTimes) {
+    private List<AttendanceTime> addUnattended(Set<LocalDate> attendanceDates, LocalDate date,
+                                               List<AttendanceTime> attendanceTimes) {
         if (!(attendanceDates.contains(date) || isClosed(date))) {
-            attendanceTimes.add(new AttendanceTime(date, AttendanceStatus.UNATTEND));
+            List<AttendanceTime> updatedAttendanceTimes = new ArrayList<>(attendanceTimes);
+            updatedAttendanceTimes.add(new AttendanceTime(date, AttendanceStatus.UNATTEND));
+            return updatedAttendanceTimes;
         }
+        return attendanceTimes;
     }
 
     public boolean isClosed(LocalDate date) {

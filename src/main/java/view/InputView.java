@@ -12,14 +12,14 @@ public class InputView {
     private final static Scanner scanner = new Scanner(System.in);
 
     public String readOption(List<MenuOption> options) {
-        StringBuilder sb = new StringBuilder();
+        StringBuilder stringBuilder = new StringBuilder();
         for (MenuOption option : options) {
-            sb.append(System.lineSeparator())
+            stringBuilder.append(System.lineSeparator())
                     .append(option.getCommand())
                     .append(". ")
                     .append(option.getOption());
         }
-        return prompt(sb.toString());
+        return prompt(stringBuilder.toString());
     }
 
     public String readNickname() {

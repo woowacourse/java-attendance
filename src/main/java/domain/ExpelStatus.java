@@ -21,7 +21,7 @@ public enum ExpelStatus {
 
     public static ExpelStatus determineExpelStatus(Map<AttendanceStatus, Integer> attendanceStatuses) {
         int lateCount = attendanceStatuses.get(AttendanceStatus.LATE);
-        int absentCount = lateCount / 3  + attendanceStatuses.get(AttendanceStatus.ABSENT) + attendanceStatuses.get(AttendanceStatus.UNATTEND);
+        int absentCount = lateCount / 3 + attendanceStatuses.get(AttendanceStatus.ABSENT) + attendanceStatuses.get(AttendanceStatus.UNATTEND);
         return getExpelStatus(absentCount);
     }
 
