@@ -56,13 +56,8 @@ public class Attendances {
     }
 
     private boolean isExistingDay(final Crew crew, final LocalDate day) {
-        boolean flag = false;
-        for (Attendance attendance : attendances) {
-            if (attendance.isSameCrewDate(crew, day)) {
-                flag = true;
-            }
-        }
-        return flag;
+        return attendances.stream()
+                .anyMatch(attendance -> attendance.isSameCrewDate(crew, day));
     }
 
     private boolean isWorkDay(final LocalDate today) {
