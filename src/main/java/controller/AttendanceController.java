@@ -18,7 +18,6 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
 import util.DateTimeUtil;
-import util.RetryHandler;
 import view.InputView;
 import view.OutputView;
 
@@ -28,20 +27,19 @@ public class AttendanceController {
     }
 
     public void run() {
-        RetryHandler.retryUntilSuccess(() -> {
-            boolean isRunning = true;
-            while (isRunning) {
-                OptionRequest optionRequest = InputView.scanOption();
-                switch (optionRequest.option()) {
-                    case "1" -> attendanceCheck();
-                    case "2" -> attendanceModify();
-                    case "3" -> printMonthAttendanceRecords();
-                    case "4" -> checkCrewsAlmostExpelled();
-                    case "q", "Q" -> isRunning = false;
-                    default -> throw new IllegalArgumentException("존재하지 않는 옵션입니다.");
-                }
+
+        boolean isRunning = true;
+        while (isRunning) {
+            OptionRequest optionRequest = InputView.scanOption();
+            switch (optionRequest.option()) {
+                case "1" -> attendanceCheck();
+                case "2" -> attendanceModify();
+                case "3" -> printMonthAttendanceRecords();
+                case "4" -> checkCrewsAlmostExpelled();
+                case "q", "Q" -> isRunning = false;
+                default -> System.out.println("존재하지 않는 옵션입니다.");
             }
-        });
+        }
     }
 
     private void attendanceCheck() {
