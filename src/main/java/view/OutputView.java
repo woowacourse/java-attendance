@@ -7,13 +7,14 @@ import java.time.LocalDate;
 import java.util.List;
 
 public class OutputView {
-    private static final String ATTENDANCE_HISTORY_MESSAGE = "이번 달 %s의 출석 기록입니다.";
-    private static final String APPLICATION_START_MESSAGE = "오늘은 %d월 %d일 %s입니다. 기능을 선택해 주세요.\n" +
-            "1. 출석 확인\n" +
-            "2. 출석 수정\n" +
-            "3. 크루별 출석 기록 확인\n" +
-            "4. 제적 위험자 확인\n" +
-            "Q. 종료\n";
+    private static final String APPLICATION_START_MESSAGE = """
+            오늘은 %d월 %d일 %s입니다. 기능을 선택해 주세요.
+            1. 출석 확인
+            2. 출석 수정
+            3. 크루별 출석 기록 확인
+            4. 제적 위험자 확인
+            Q. 종료
+            """;
     private static final String UPDATE_COMPLETE_MESSAGE = "%d월 %02d일 %s %s (%s) -> %s (%s) 수정 완료!\n";
     private static final String CREW_ATTENDANCE_HISTORY_MESSAGE = "이번 달 %s의 출석 기록입니다.\n\n";
     private static final String ATTENDANCE_HISTORY_WITH_DATE = "%d월 %02d일 %s %s (%s)\n";
