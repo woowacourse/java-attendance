@@ -41,7 +41,7 @@ public class AllCrew {
         return allCrew.stream()
                 .filter(crew -> crew.getName().equals(name))
                 .findFirst()
-                .orElseThrow(() -> new IllegalArgumentException("Crew not found"));
+                .orElseThrow(() -> new IllegalArgumentException("해당 이름의 크루를 찾을 수 없습니다."));
     }
 
     public String printAllCrewWarningInfo(LocalDate date) {

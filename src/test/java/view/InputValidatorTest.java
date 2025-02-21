@@ -60,17 +60,29 @@ public class InputValidatorTest {
         assertThatThrownBy(() -> InputValidator.validateTimeFormat(time));
     }
 
+    @DisplayName("입력 시간이 캠퍼스 운영 시간 전인 경우 예외가 발생한다.")
+    @Test
+    void test7() {
+        assertThatThrownBy(() -> InputValidator.validateTimeFormat("07:59"));
+    }
+
+    @DisplayName("입력 시간이 캠퍼스 운영 시간 후인 경우 예외가 발생한다.")
+    @Test
+    void test8() {
+        assertThatThrownBy(() -> InputValidator.validateTimeFormat("23:01"));
+    }
+
     @DisplayName("수정하려는 날짜(일)가 유효한 날짜일 경우 정상 동작한다.")
     @ParameterizedTest
     @ValueSource(strings = {"1", "01", "31"})
-    void test7(String date) {
+    void test9(String date) {
         assertDoesNotThrow(() -> InputValidator.validateDate(date));
     }
 
     @DisplayName("수정하려는 날짜(일)가 없는 날짜인 경우 예외가 발생한다.")
     @ParameterizedTest
     @ValueSource(strings = {"0", "", " ", "32", "a"})
-    void test8(String date) {
+    void test10(String date) {
         assertThatThrownBy(() -> InputValidator.validateTimeFormat(date));
     }
 }

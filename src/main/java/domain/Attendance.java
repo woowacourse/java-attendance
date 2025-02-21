@@ -40,7 +40,7 @@ public class Attendance {
         int hour = localDateTime.getHour();
         int minute = localDateTime.getMinute();
         DayOfWeek dayOfWeek = localDateTime.getDayOfWeek();
-        validateRunningTime(localDateTime, dayOfWeek, hour);
+        validateRunningTime(localDateTime, dayOfWeek);
         int startHour = 10;
         if (dayOfWeek == DayOfWeek.MONDAY) {
             startHour = 13;
@@ -58,12 +58,9 @@ public class Attendance {
         return "결석";
     }
 
-    private void validateRunningTime(LocalDateTime localDateTime, DayOfWeek dayOfWeek, int hour) {
+    private void validateRunningTime(LocalDateTime localDateTime, DayOfWeek dayOfWeek) {
         if (dayOfWeek == DayOfWeek.SATURDAY || dayOfWeek == DayOfWeek.SUNDAY || localDateTime.getDayOfMonth() == 25) {
-            throw new IllegalArgumentException("주말 또는 공휴일은 캠퍼스 휴장");
-        }
-        if (hour < 8 || hour == 23) {
-            throw new IllegalArgumentException("캠퍼스 운영 시간이 아님");
+            throw new IllegalArgumentException("주말 또는 공휴일은 캠퍼스 휴장입니다.");
         }
     }
 

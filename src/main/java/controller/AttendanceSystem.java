@@ -2,7 +2,8 @@ package controller;
 
 import domain.AllCrew;
 import java.time.LocalDate;
-import java.util.regex.Pattern;
+import java.time.LocalDateTime;
+import java.util.function.Supplier;
 import view.FileInputView;
 import view.InputValidator;
 import view.OutputView;
@@ -35,14 +36,10 @@ public class AttendanceSystem {
 
     public void start() {
         boolean onRunning = true;
-        while(onRunning) {
+        while (onRunning) {
             String menu = userInputView.askMenu();
-            try {
-                InputValidator.validateMenu(menu);
-                onRunning = executeMenu(menu);
-            } catch (IllegalArgumentException e) {
-                outputView.printExceptionMessage(e.getMessage());
-            }
+            handleException(() -> InputValidator.validateMenu(menu));
+            onRunning = executeMenu(menu);
         }
     }
 
@@ -63,46 +60,97 @@ public class AttendanceSystem {
     }
 
     private void checkAttendance() {
-        try {
-            String name = userInputView.askNickNameForCheckAttendance();
-            InputValidator.validateName(name, allCrew);
-            String time = userInputView.askAttendanceTimeForCheckAttendance();
-            InputValidator.validateTimeFormat(time);
-            outputView.printCheckedAttendance(allCrew, name, time);
-        } catch (IllegalArgumentException e) {
-            outputView.printExceptionMessage(e.getMessage());
-            checkAttendance();
-        }
+        String name = handleWithRetry(this::processName);
+        String time = handleWithRetry(this::processTime);
+        String attendanceResult = handleWithRestart(() ->
+                allCrew.addCrewAttendanceByName(name,
+                        LocalDateTime.of(date.getYear(), date.getMonthValue(), date.getDayOfMonth(),
+                                Integer.parseInt(time.split(":")[0]),
+                                Integer.parseInt(time.split(":")[1])))
+        );
+        outputView.printAttendanceResult(attendanceResult);
+    }
+
+    private String processName() {
+        String name = userInputView.askNickNameForCheckAttendance();
+        InputValidator.validateName(name, allCrew);
+        return name;
+    }
+
+    private String processTime() {
+        String time = userInputView.askAttendanceTimeForCheckAttendance();
+        InputValidator.validateTimeFormat(time);
+        return time;
     }
 
     private void modifyAttendance() {
-        try {
-            String name = userInputView.askNickNameForModifyAttendanceInfo();
-            InputValidator.validateName(name, allCrew);
-            String day = userInputView.askDayForModifyAttendanceInfo();
-            InputValidator.validateDate(day);
-            String time = userInputView.askAttendanceTimeForModifyAttendance();
-            InputValidator.validateTimeFormat(time);
-            outputView.printModifyAttendance(allCrew, name, day, time);
-        } catch (IllegalArgumentException e) {
-            outputView.printExceptionMessage(e.getMessage());
-            modifyAttendance();
-        }
+        String modifyName = handleWithRetry(this::processModifyName);
+        String day = handleWithRetry(this::processDay);
+        String modifyTime = handleWithRetry(this::processModifyTime);
+        String modifyResult = handleWithRestart(() ->
+                allCrew.modifyCrewAttendanceByName(modifyName, LocalDateTime.of(date.getYear(),
+                        date.getMonthValue(),
+                        Integer.parseInt(day),
+                        Integer.parseInt(modifyTime.split(":")[0]),
+                        Integer.parseInt(modifyTime.split(":")[1]))
+                )
+        );
+        outputView.printModifyAttendance(modifyResult);
+    }
+
+    private String processModifyName() {
+        String name = userInputView.askNickNameForModifyAttendanceInfo();
+        InputValidator.validateName(name, allCrew);
+        return name;
+    }
+
+    private String processDay() {
+        String day = userInputView.askDayForModifyAttendanceInfo();
+        InputValidator.validateDate(day);
+        return day;
+    }
+
+    private String processModifyTime() {
+        String time = userInputView.askAttendanceTimeForModifyAttendance();
+        InputValidator.validateTimeFormat(time);
+        return time;
     }
 
     private void checkCrewAttendanceHistory() {
-        try {
-            String name = userInputView.askNickNameForCheckAttendanceInfo();
-            InputValidator.validateName(name, allCrew);
-            outputView.printAttendanceHistory(allCrew, name);
-        } catch (IllegalArgumentException e) {
-            outputView.printExceptionMessage(e.getMessage());
-            checkCrewAttendanceHistory();
-        }
+        String name = handleWithRetry(this::processName);
+        outputView.printAttendanceHistory(allCrew, name);
     }
 
     private void checkDangerousCrew() {
         outputView.printDangerousCrew(allCrew);
+    }
+
+    private void handleException(Runnable task) {
+        try {
+            task.run();
+        } catch (IllegalArgumentException e) {
+            outputView.printExceptionMessage(e.getMessage());
+        }
+    }
+
+    private <T> T handleWithRetry(Supplier<T> task) {
+        while (true) {
+            try {
+                return task.get();
+            } catch (IllegalArgumentException e) {
+                outputView.printExceptionMessage(e.getMessage());
+            }
+        }
+    }
+
+    private <T> T handleWithRestart(Supplier<T> task) {
+        try {
+            return task.get();
+        } catch (IllegalArgumentException e) {
+            outputView.printExceptionMessage(e.getMessage());
+            this.start();
+        }
+        return null;
     }
 }
 

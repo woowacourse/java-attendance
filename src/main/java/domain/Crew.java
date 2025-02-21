@@ -42,7 +42,7 @@ public class Crew {
     public String update(LocalDateTime newDateAndTime) {
         Attendance existAttendance = getAlreadyExistAttendance(newDateAndTime);
         if (existAttendance == null) {
-            throw new IllegalArgumentException("출석 기록 없음");
+            throw new IllegalArgumentException("기존의 출석 기록이 없습니다.");
         }
         attendanceInfo.remove(existAttendance);
         Attendance attendance = new Attendance(newDateAndTime);

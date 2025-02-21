@@ -2,7 +2,9 @@ package view;
 
 import domain.AllCrew;
 import java.time.DateTimeException;
+import java.time.DayOfWeek;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
@@ -22,10 +24,15 @@ public class InputValidator {
 
     public static void validateTimeFormat(String time) {
         DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm");
+        LocalTime localTime;
         try {
-            LocalTime.parse(time, timeFormatter);
+            localTime = LocalTime.parse(time, timeFormatter);
         } catch (DateTimeParseException e) {
             throw new IllegalArgumentException("올바르지 않은 시간 형식입니다.");
+        }
+
+        if (localTime.isBefore(LocalTime.of(8, 0)) || localTime.isAfter(LocalTime.of(23, 0))) {
+            throw new IllegalArgumentException("캠퍼스 운영 시간이 아닙니다.");
         }
     }
 
