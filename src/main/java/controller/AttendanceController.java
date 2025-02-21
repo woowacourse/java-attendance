@@ -25,6 +25,7 @@ public class AttendanceController {
     public void run() {
         String option = "";
         crews.recordAllAbsence();
+
         while (!option.equals("Q")) {
             outputView.printOptionMessage();
             option = inputView.getOption();
@@ -43,8 +44,8 @@ public class AttendanceController {
     public void processAttendance(String option) {
         if (!option.equals("1")) return;
         checkHoliday(LocalDate.now());
-        Crew crew = crews.findByNickname(inputView.getNickname());
 
+        Crew crew = crews.findByNickname(inputView.getNickname());
         if (crew.isAlreadyAttend(LocalDate.now())) {
             System.out.println("이미 출석 완료되었습니다. 수정 기능을 이용해주세요.");
             return;
@@ -65,22 +66,18 @@ public class AttendanceController {
 
         Crew crew = crews.findByNickname(inputView.getEditNickname());
         Attendance attendance = crew.findByDate(Converter.convertStringToInteger(inputView.getEditDayOfMonth()));
-        AttendanceDto originalAttendanceDto = attendance.toDto();
-
         attendance.updateAttendanceTime(Converter.convertStringToLocalTime(inputView.getNewTime()));
-        AttendanceDto editedAttendanceDto = attendance.toDto();
 
-        outputView.printUpdatedAttendanceHistory(originalAttendanceDto, editedAttendanceDto);
+        outputView.printUpdatedAttendanceHistory(attendance.toDto(), attendance.toDto());
     }
 
     public void processAttendanceHistory(String option) {
         if (!option.equals("3")) return;
 
         String nickname = inputView.getNickname();
-        Crew crew = crews.findByNickname(nickname);
 
         outputView.printCrewAttendanceHistoryMessage(nickname);
-        outputView.printAttendanceHistoryWithCrew(crew);
+        outputView.printAttendanceHistoryWithCrew(crews.findByNickname(nickname));
     }
 
     public void processPenaltyCheck(String option) {
@@ -100,7 +97,7 @@ public class AttendanceController {
         int month = todayDate.getMonth().getValue();
         int dayOfMonth = todayDate.getDayOfMonth();
         String dayOfWeekName = DayOfWeek.getNameById(todayDate.getDayOfWeek().getValue());
-        
+
         if (today.checkHoliday()) {
             throw new IllegalArgumentException("[ERROR] " + month + "월 " + dayOfMonth + "일 " + dayOfWeekName + "은 등교일이 아닙니다.");
         }
