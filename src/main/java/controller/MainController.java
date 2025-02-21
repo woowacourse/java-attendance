@@ -30,20 +30,20 @@ public class MainController {
         String feature;
         do {
             feature = InputView.inputFeature(todayMonth, todayDay, todayDayOfWeek);
-            if (feature.equals("1")) {
+            if ("1".equals(feature)) {
                 attendanceCheck();
             }
-            if (feature.equals("2")) {
+            if ("2".equals(feature)) {
                 attendanceUpdate();
             }
-            if (feature.equals("3")) {
+            if ("3".equals(feature)) {
                 attendanceRecord();
             }
-            if (feature.equals("4")) {
+            if ("4".equals(feature)) {
                 readAbsence();
             }
 
-        } while (!feature.equals("Q"));
+        } while (!"Q".equals(feature));
     }
 
     private void prepareToday() {
