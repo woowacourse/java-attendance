@@ -6,19 +6,18 @@ import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 public record AttendanceTimeline(
         List<AttendanceLog> attendanceLogs
 ) {
-    public static AttendanceTimeline generateAttendanceTimelineUntilDate(Set<Attendance> attendances, LocalDate now) {
+    public static AttendanceTimeline generateAttendanceTimelineUntilDate(List<Attendance> attendances, LocalDate now) {
         Map<LocalDate, LocalTime> map = groupByAttendanceDate(attendances);
         List<AttendanceLog> logs = collectAttendanceLogs(now, map);
         return new AttendanceTimeline(logs);
     }
 
-    private static Map<LocalDate, LocalTime> groupByAttendanceDate(Set<Attendance> attendances) {
+    private static Map<LocalDate, LocalTime> groupByAttendanceDate(List<Attendance> attendances) {
         return attendances.stream()
                 .collect(Collectors.toMap(
                         attendance -> attendance.getAttendanceDateTime().toLocalDate(),

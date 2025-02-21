@@ -23,17 +23,21 @@ class AttendanceTest {
     @Test
     void shouldThrowException_WhenHolidayAttendance() {
         Crew crew = new Crew("포비");
-        LocalDateTime christmas = LocalDateTime.parse("2024-12-25 11:01", DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
+        LocalDateTime christmas = LocalDateTime.parse("2024-12-25 11:01",
+                DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
         Assertions.assertThatThrownBy(() -> new Attendance(crew, christmas))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("법정 공휴일에는 출석할 수 없습니다.");
     }
 
-    @DisplayName("크루와 출석 날짜가 같은지 비교할 수 있다.")
+    @DisplayName("이미 출석했는지 알 수 있다.")
     @Test
     void equalsTest() {
-        Attendance attendance1 = new Attendance(new Crew("포비"), LocalDateTime.now());
-        Attendance attendance2 = new Attendance(new Crew("포비"), LocalDateTime.now());
-        Assertions.assertThat(attendance1).isEqualTo(attendance2);
+        Attendance attendance1 = new Attendance(new Crew("포비"), LocalDateTime.of(2024, 12, 13, 11, 1));
+        Attendance attendance2 = new Attendance(new Crew("포비"), LocalDateTime.of(2024, 12, 13, 12, 1));
+
+        boolean result = attendance1.isAlreadyAttendance(attendance2);
+
+        Assertions.assertThat(result).isTrue();
     }
 }

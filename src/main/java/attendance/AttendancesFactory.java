@@ -9,6 +9,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -20,7 +21,7 @@ public class AttendancesFactory {
     public Attendances initialize() {
         List<String> lines = readLinesWithoutHeader();
 
-        Set<Attendance> attendances = new HashSet<>();
+        List<Attendance> attendances = new ArrayList<>();
         Set<Crew> crews = new HashSet<>();
         for (String line : lines) {
             String[] split = line.split(",");

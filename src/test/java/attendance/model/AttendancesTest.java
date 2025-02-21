@@ -5,6 +5,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.Month;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
@@ -20,10 +21,10 @@ class AttendancesTest {
     void shouldThrowException_WhenCrewAgainAttendanceInToday() {
         Crew crew = new Crew("포비");
         CrewGroup crewGroup = new CrewGroup(Set.of(crew));
-        LocalDateTime now = LocalDateTime.now();
+        LocalDateTime now = LocalDateTime.of(2024, 12, 13, 11, 1);
         Attendance beforeAttendance = new Attendance(crew, now);
         Attendance afterAttendance = new Attendance(crew, now);
-        Attendances attendances = new Attendances(crewGroup, Set.of(beforeAttendance));
+        Attendances attendances = new Attendances(crewGroup, List.of(beforeAttendance));
 
         Assertions.assertThatThrownBy(() -> attendances.add(afterAttendance))
                 .isInstanceOf(IllegalArgumentException.class)
@@ -35,9 +36,9 @@ class AttendancesTest {
     void shouldThrowException_WhenUseNotExistNickname() {
         Crew crew = new Crew("포비");
         CrewGroup crewGroup = new CrewGroup(Set.of(crew));
-        LocalDateTime now = LocalDateTime.now();
+        LocalDateTime now = LocalDateTime.of(2024, 12, 13, 11, 1);
         Attendance attendance = new Attendance(crew, now);
-        Attendances attendances = new Attendances(crewGroup, Set.of(attendance));
+        Attendances attendances = new Attendances(crewGroup, List.of(attendance));
 
         String notExistNickname = "네오";
         Assertions.assertThatThrownBy(() -> attendances.validateExistNickname(notExistNickname))
@@ -52,14 +53,14 @@ class AttendancesTest {
         CrewGroup crewGroup = new CrewGroup(Set.of(crew));
         LocalDateTime now = LocalDateTime.of(2024, 12, 13, 10, 1);
         Attendance attendance = new Attendance(crew, now);
-        Attendances attendances = new Attendances(crewGroup, Set.of(attendance));
+        Attendances attendances = new Attendances(crewGroup, List.of(attendance));
 
         LocalDateTime updateDateTime = LocalDateTime.of(2024, 12, 13, 11, 1);
         Attendance modifidedAttendance = attendances.update(new Attendance(crew, updateDateTime));
 
         assertThat(attendances)
                 .extracting("attendances")
-                .isEqualTo(Set.of(modifidedAttendance));
+                .isEqualTo(List.of(modifidedAttendance));
     }
 
     @DisplayName("크루가 찾으려는 날짜에 출석한 경우 닉네임과 날짜로 기존 출석을 찾을 수 있다.")
@@ -69,7 +70,7 @@ class AttendancesTest {
         CrewGroup crewGroup = new CrewGroup(Set.of(crew));
         LocalDateTime now = LocalDateTime.of(2024, 12, 13, 10, 1);
         Attendance attendance = new Attendance(crew, now);
-        Attendances attendances = new Attendances(crewGroup, Set.of(attendance));
+        Attendances attendances = new Attendances(crewGroup, List.of(attendance));
 
         LocalDate findDate = LocalDate.of(2024, 12, 13);
         Optional<Attendance> optionalAttendance = attendances.findByCrewAndDate(crew, findDate);
@@ -83,7 +84,7 @@ class AttendancesTest {
     void attendanceNotFoundTest() {
         Crew crew = new Crew("포비");
         CrewGroup crewGroup = new CrewGroup(Set.of(crew));
-        Attendances attendances = new Attendances(crewGroup, Set.of());
+        Attendances attendances = new Attendances(crewGroup, List.of());
 
         LocalDate findDate = LocalDate.of(2024, 12, 13);
         Optional<Attendance> optionalAttendance = attendances.findByCrewAndDate(crew, findDate);
@@ -97,17 +98,17 @@ class AttendancesTest {
     void attendanceHistoryByCrewTest() {
         Crew crew = new Crew("포비");
         CrewGroup crewGroup = new CrewGroup(Set.of(crew));
-        Attendances attendances = new Attendances(crewGroup, Set.of(
+        Attendances attendances = new Attendances(crewGroup, List.of(
                 new Attendance(crew, LocalDateTime.of(2024, 11, 1, 10, 1)),
                 new Attendance(crew, LocalDateTime.of(2024, 12, 2, 10, 1)),
                 new Attendance(crew, LocalDateTime.of(2024, 12, 3, 10, 12))
         ));
 
         Month findMonth = Month.DECEMBER;
-        Set<Attendance> attendanceHistory = attendances.findAllByCrewAndMonth(crew, findMonth);
+        List<Attendance> attendanceHistory = attendances.findAllByCrewAndMonth(crew, findMonth);
 
         assertThat(attendanceHistory)
-                .isEqualTo(Set.of(
+                .isEqualTo(List.of(
                         new Attendance(crew, LocalDateTime.of(2024, 12, 2, 10, 1)),
                         new Attendance(crew, LocalDateTime.of(2024, 12, 3, 10, 12))
                 ));
@@ -119,7 +120,7 @@ class AttendancesTest {
         Crew pobi = new Crew("포비");
         Crew neo = new Crew("네오");
         CrewGroup crewGroup = new CrewGroup(Set.of(pobi, neo));
-        Attendances attendances = new Attendances(crewGroup, Set.of(
+        Attendances attendances = new Attendances(crewGroup, List.of(
                 new Attendance(pobi, LocalDateTime.of(2024, 11, 1, 10, 1)),
                 new Attendance(pobi, LocalDateTime.of(2024, 12, 2, 10, 1)),
                 new Attendance(pobi, LocalDateTime.of(2024, 12, 3, 10, 12)),
@@ -129,13 +130,13 @@ class AttendancesTest {
         ));
 
         Month findMonth = Month.DECEMBER;
-        Map<Crew, Set<Attendance>> attendanceHistory = attendances.findAllByMonth(findMonth);
+        Map<Crew, List<Attendance>> attendanceHistory = attendances.findAllByMonth(findMonth);
 
         assertThat(attendanceHistory)
                 .isEqualTo(Map.of(
-                        pobi, Set.of(new Attendance(pobi, LocalDateTime.of(2024, 12, 2, 10, 1)),
+                        pobi, List.of(new Attendance(pobi, LocalDateTime.of(2024, 12, 2, 10, 1)),
                                 new Attendance(pobi, LocalDateTime.of(2024, 12, 3, 10, 12))),
-                        neo, Set.of(new Attendance(neo, LocalDateTime.of(2024, 12, 2, 10, 1)),
+                        neo, List.of(new Attendance(neo, LocalDateTime.of(2024, 12, 2, 10, 1)),
                                 new Attendance(neo, LocalDateTime.of(2024, 12, 3, 10, 12)))
                 ));
     }

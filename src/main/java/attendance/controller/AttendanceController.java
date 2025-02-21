@@ -21,7 +21,6 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.Set;
 import java.util.function.Function;
 
 public class AttendanceController {
@@ -39,7 +38,7 @@ public class AttendanceController {
     public void run() {
         boolean isQuit;
         do {
-            LocalDateTime now = LocalDateTime.now();
+            LocalDateTime now = LocalDateTime.of(2024, 12, 13, 18, 0);
             isQuit = start(now);
         } while (isQuit);
     }
@@ -159,7 +158,7 @@ public class AttendanceController {
     }
 
     private AttendanceTimeline generateAttendanceTimelineByCrew(LocalDateTime now, Crew crew) {
-        Set<Attendance> attendanceHistory = attendances.findAllByCrewAndMonth(crew, now.getMonth());
+        List<Attendance> attendanceHistory = attendances.findAllByCrewAndMonth(crew, now.getMonth());
         return AttendanceTimeline.generateAttendanceTimelineUntilDate(attendanceHistory, now.toLocalDate());
     }
 
@@ -183,12 +182,12 @@ public class AttendanceController {
     }
 
     private List<CrewAttendanceSummary> createAllAttendanceSummaries(LocalDateTime now) {
-        Map<Crew, Set<Attendance>> allAttendanceHistory = attendances.findAllByMonth(now.getMonth());
+        Map<Crew, List<Attendance>> allAttendanceHistory = attendances.findAllByMonth(now.getMonth());
         return createAllCrewAttendanceSummaries(now, allAttendanceHistory);
     }
 
     private List<CrewAttendanceSummary> createAllCrewAttendanceSummaries(LocalDateTime now,
-                                                                         Map<Crew, Set<Attendance>> allAttendanceHistory) {
+                                                                         Map<Crew, List<Attendance>> allAttendanceHistory) {
         List<CrewAttendanceSummary> crewAttendanceSummaries = new ArrayList<>();
         for (Crew crew : allAttendanceHistory.keySet()) {
             AttendanceTimeline attendanceTimeline = AttendanceTimeline.generateAttendanceTimelineUntilDate(

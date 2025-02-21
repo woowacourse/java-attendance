@@ -7,7 +7,6 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
-import java.util.Set;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -21,7 +20,7 @@ class AttendanceTimelineTest {
     @Test
     void createTimelineUntilNowTest() {
         Crew crew = new Crew("포비");
-        Set<Attendance> attendances = Set.of(
+        List<Attendance> attendances = List.of(
                 new Attendance(crew, LocalDateTime.of(2024, 12, 2, 10, 1)),
                 new Attendance(crew, LocalDateTime.of(2024, 12, 3, 10, 6))
         );
@@ -55,7 +54,7 @@ class AttendanceTimelineTest {
     })
     void countAttendanceTypeTest(AttendanceType attendanceType, int expected) {
         Crew crew = new Crew("포비");
-        Set<Attendance> attendances = Set.of(
+        List<Attendance> attendances = List.of(
                 new Attendance(crew, LocalDateTime.of(2024, 12, 2, 10, 1)),
                 new Attendance(crew, LocalDateTime.of(2024, 12, 3, 10, 6))
         );
