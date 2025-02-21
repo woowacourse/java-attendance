@@ -1,4 +1,4 @@
-package view;
+package io.view;
 
 import domain.AttendanceStatus;
 import dto.result.AttendResult;

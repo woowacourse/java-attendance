@@ -1,4 +1,8 @@
-package domain;
+package io;
+
+import domain.Attendance;
+import domain.AttendanceBook;
+import domain.MemberAttendances;
 
 import java.io.BufferedReader;
 import java.io.FileReader;

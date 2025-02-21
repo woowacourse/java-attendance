@@ -1,5 +1,6 @@
 package view;
 
+import io.view.InputView;
 import org.junit.jupiter.api.Test;
 import testUtil.DateProviderStub;
 import testUtil.InputProviderStub;

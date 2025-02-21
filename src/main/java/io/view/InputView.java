@@ -1,4 +1,4 @@
-package view;
+package io.view;
 
 import dto.requeset.AttendRequest;
 import dto.requeset.AttendanceModifyRequest;

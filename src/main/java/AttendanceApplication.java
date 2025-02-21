@@ -1,11 +1,11 @@
 import controller.AttendanceController;
 import controller.AttendanceControllerExceptionHandleProxy;
 import controller.AttendanceControllerImpl;
+import io.view.InputView;
+import io.view.OutputView;
 import util.dataTimeProvider.DateProviderImpl;
 import util.inputProvider.DefaultInputProvider;
 import util.outputHandler.DefaultOutputHandler;
-import view.InputView;
-import view.OutputView;
 
 public class AttendanceApplication {
     
