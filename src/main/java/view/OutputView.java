@@ -1,10 +1,10 @@
 package view;
 
 import domain.AttendanceState;
-import domain.Calender;
 import domain.Crew;
 import dto.AbsenceResultDto;
 import dto.AttendanceResultDto;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
@@ -13,21 +13,31 @@ import util.DateTimeUtil;
 public class OutputView {
     public static void printTodayAttendance(
             final String schoolStartTime, final String attendanceResult) {
-        System.out.printf("12월 %02d일 %s %s (%s)\n", DateTimeUtil.nowMonth(), DateTimeUtil.nowDayOfWeek(),
+        System.out.printf("%02d월 %02d일 %s %s (%s)\n",
+                DateTimeUtil.getMonthBy(LocalDate.now()),
+                DateTimeUtil.getDateBy(LocalDate.now()),
+                DateTimeUtil.getDayOfWeekBy(LocalDate.now()),
                 schoolStartTime, attendanceResult);
     }
 
     public static void printUpdateAttendance(final LocalDateTime beforeDateTime, final LocalDateTime afterDateTime) {
 
         String beforeAttendanceState = AttendanceState.findStateBy(beforeDateTime.toLocalTime(),
-                beforeDateTime.getDayOfMonth());
+                beforeDateTime.toLocalDate());
 
         String afterAttendanceState = AttendanceState.findStateBy(afterDateTime.toLocalTime(),
-                afterDateTime.getDayOfMonth());
+                afterDateTime.toLocalDate());
 
-        System.out.printf("12월 %02d일 %s %02d:%02d (%s) -> %02d:%02d (%s) 수정 완료!\n", beforeDateTime.getDayOfMonth(),
-                Calender.findBy(beforeDateTime.getDayOfMonth()), beforeDateTime.getHour(), beforeDateTime.getMinute(),
-                beforeAttendanceState, afterDateTime.getHour(), afterDateTime.getMinute(), afterAttendanceState);
+        System.out.printf("%02d월 %02d일 %s %02d:%02d (%s) -> %02d:%02d (%s) 수정 완료!\n",
+                DateTimeUtil.getYearBy(beforeDateTime.toLocalDate()),
+                DateTimeUtil.getDateBy(beforeDateTime.toLocalDate()),
+                DateTimeUtil.getDayOfWeekBy(beforeDateTime.toLocalDate()),
+                beforeDateTime.getHour(),
+                beforeDateTime.getMinute(),
+                beforeAttendanceState,
+                afterDateTime.getHour(),
+                afterDateTime.getMinute(),
+                afterAttendanceState);
     }
 
     public static void printRecordAttendance(List<AttendanceResultDto> attendanceResultDtos) {
@@ -38,13 +48,18 @@ public class OutputView {
 
     private static String printDayAttendance(AttendanceResultDto attendanceResultDto) {
         if (attendanceResultDto.localDateTime().getHour() != 0) {
-            return String.format("12월 %02d일 %s %02d:%02d (%s)\n", attendanceResultDto.localDateTime().getDayOfMonth(),
-                    Calender.findBy(attendanceResultDto.localDateTime().getDayOfMonth()),
-                    attendanceResultDto.localDateTime().getHour(), attendanceResultDto.localDateTime().getMinute(),
+            return String.format("%02d월 %02d일 %s %02d:%02d (%s)\n",
+                    DateTimeUtil.getMonthBy(attendanceResultDto.localDateTime().toLocalDate()),
+                    DateTimeUtil.getDateBy(attendanceResultDto.localDateTime().toLocalDate()),
+                    DateTimeUtil.getDayOfWeekBy(attendanceResultDto.localDateTime().toLocalDate()),
+                    attendanceResultDto.localDateTime().getHour(),
+                    attendanceResultDto.localDateTime().getMinute(),
                     attendanceResultDto.attendanceState());
         }
-        return String.format("12월 %02d일 %s --:-- (%s)\n", attendanceResultDto.localDateTime().getDayOfMonth(),
-                Calender.findBy(attendanceResultDto.localDateTime().getDayOfMonth()),
+        return String.format("%02d월 %02d일 %s --:-- (%s)\n",
+                DateTimeUtil.getMonthBy(attendanceResultDto.localDateTime().toLocalDate()),
+                DateTimeUtil.getDateBy(attendanceResultDto.localDateTime().toLocalDate()),
+                DateTimeUtil.getDayOfWeekBy(attendanceResultDto.localDateTime().toLocalDate()),
                 attendanceResultDto.attendanceState());
     }
 
