@@ -1,15 +1,12 @@
 package attendance.domain;
 
+import static attendance.domain.AttendanceStrategy.*;
+
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 public class Attendance {
-    public static final int MONDAY_START_HOUR = 13;
-    public static final int START_HOUR = 10;
-    public static final int ABSENCE_CRITERIA = 30;
-    public static final int LATE_CRITERIA = 5;
-
     private LocalDateTime dateTime;
     private AttendanceStatus status;
 
@@ -36,9 +33,9 @@ public class Attendance {
         int minute = time.getMinute();
 
         if (time.getDayOfWeek() == DayOfWeek.MONDAY) {
-            return attend(hour, minute, MONDAY_START_HOUR);
+            return attend(hour, minute, MONDAY_START_HOUR.getCriteria());
         }
-        return attend(hour, minute, START_HOUR);
+        return attend(hour, minute, START_HOUR.getCriteria());
     }
 
     private AttendanceStatus attend(final int hour, final int minute, final int startHour) {
@@ -49,10 +46,10 @@ public class Attendance {
     }
 
     private static AttendanceStatus attendAfterStart(int hour, int minute, int startHour) {
-        if (hour > startHour || minute > ABSENCE_CRITERIA) {
+        if (hour > startHour || minute > ABSENCE_MINUTE.getCriteria()) {
             return AttendanceStatus.LATE_ABSENCE;
         }
-        if (minute > LATE_CRITERIA) {
+        if (minute > LATE_MINUTE.getCriteria()) {
             return AttendanceStatus.LATE;
         }
         return AttendanceStatus.ATTEND;

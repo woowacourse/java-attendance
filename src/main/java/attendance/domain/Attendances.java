@@ -1,12 +1,12 @@
 package attendance.domain;
 
+import static attendance.domain.AttendanceStrategy.LATE_TO_ABSENCE_UNIT;
+
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
 public class Attendances {
-    private final int LATE_TO_ABSENCE_UNIT = 3;
-
     private final List<Attendance> attendances;
 
     public Attendances(List<Attendance> attendances) {
@@ -31,7 +31,7 @@ public class Attendances {
     }
 
     public long calculateTotalAbsenceCount() {
-        return countAbsence() + (countLate() / LATE_TO_ABSENCE_UNIT);
+        return countAbsence() + (countLate() / LATE_TO_ABSENCE_UNIT.getCriteria());
     }
 
     public long countAttend() {

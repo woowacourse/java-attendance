@@ -29,7 +29,7 @@ class CrewTest {
     }
 
     @Test
-    void 결석_2회_이상_경고_대상자() {
+    void 경고_대상자를_판별한다() {
         List<Attendance> attendances = List.of(Attendance.from(LocalDateTime.of(2024, 12, 16, 14, 0)),
                 Attendance.from(LocalDateTime.of(2024, 12, 17, 11, 0)));
         Crew crew = new Crew("훌라", attendances);
@@ -38,7 +38,7 @@ class CrewTest {
     }
 
     @Test
-    void 결석_3회_이상_면담_대상자() {
+    void 면담_대상자를_판별한다() {
         List<Attendance> attendances = List.of(Attendance.from(LocalDateTime.of(2024, 12, 16, 14, 0)),
                 Attendance.from(LocalDateTime.of(2024, 12, 17, 11, 0)),
                 Attendance.from(LocalDateTime.of(2024, 12, 18, 11, 0)));
@@ -48,7 +48,7 @@ class CrewTest {
     }
 
     @Test
-    void 결석_5회_이상_제적_대상자() {
+    void 제적_대상자를_판별한다() {
         List<Attendance> attendances = List.of(Attendance.from(LocalDateTime.of(2024, 12, 16, 14, 0)),
                 Attendance.from(LocalDateTime.of(2024, 12, 17, 11, 0)),
                 Attendance.from(LocalDateTime.of(2024, 12, 18, 11, 0)),
