@@ -66,7 +66,7 @@ public class Attendance {
 
     private void removeTodayStatus(final int today, final Map<AttendanceStatus, Integer> attendanceStatuses) {
         LocalDate dateOfToday = LocalDate.of(2024, 12, today);
-        if(!timestamps.containsKey(dateOfToday)) {
+        if (!timestamps.containsKey(dateOfToday)) {
             return;
         }
         AttendanceStatus status = timestamps.get(dateOfToday).attendanceStatus();
@@ -75,14 +75,14 @@ public class Attendance {
     }
 
     private void updateTimestampUntil(int today) {
-        for(int day = 1 ; day < today ; day++){
+        for (int day = 1; day < today; day++) {
             LocalDate date = LocalDate.of(2024, 12, day);
             updateTimeStamp(day, date);
         }
     }
 
     private void updateTimeStamp(final int day, final LocalDate date) {
-        if (AttendanceChecker.isCampusDay(day) && !timestamps.containsKey(date)){
+        if (AttendanceChecker.isCampusDay(day) && !timestamps.containsKey(date)) {
             timestamps.put(date, new HourMinute(NULL_TIME, NULL_TIME, AttendanceStatus.ABSENCE));
         }
     }

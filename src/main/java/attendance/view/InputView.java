@@ -39,23 +39,23 @@ public class InputView {
 
     public static int readModifyDay() {
         System.out.print(ENTER_DAY_FOR_MODIFY);
-        try{
+        try {
             return Integer.parseInt(readLine());
-        } catch (NumberFormatException e){
+        } catch (NumberFormatException e) {
             throw new IllegalArgumentException("[ERROR] 날짜를 숫자로 입력해주세요.");
         }
     }
 
     public static LocalTime readModifyTime() {
         System.out.print(ENTER_NEW_TIME);
-        try{
+        try {
             return LocalTime.parse(readLine());
-        } catch (DateTimeParseException e){
+        } catch (DateTimeParseException e) {
             throw new IllegalArgumentException("[ERROR] 시간을 HH:mm 형식으로 입력해주세요.");
         }
     }
 
-    private static String readLine(){
+    private static String readLine() {
         try {
             return bufferedReader.readLine();
         } catch (IOException e) {

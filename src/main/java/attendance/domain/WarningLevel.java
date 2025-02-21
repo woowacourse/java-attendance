@@ -7,20 +7,20 @@ public enum WarningLevel {
 
     private final String level;
 
-    WarningLevel(final String level){
+    WarningLevel(final String level) {
         this.level = level;
     }
 
     public static WarningLevel calculateLevel(final Map<AttendanceStatus, Integer> attendanceStatuses) {
         int absenceCount = attendanceStatuses.get(AttendanceStatus.ABSENCE);
         absenceCount += convertLateness(attendanceStatuses.get(AttendanceStatus.LATENESS));
-        if(absenceCount >= 6) {
+        if (absenceCount >= 6) {
             return WarningLevel.REMOVE;
         }
-        if(absenceCount >= 3) {
+        if (absenceCount >= 3) {
             return WarningLevel.COUNSELING;
         }
-        if(absenceCount >= 2) {
+        if (absenceCount >= 2) {
             return WarningLevel.WARNING;
         }
         return WarningLevel.NONE;

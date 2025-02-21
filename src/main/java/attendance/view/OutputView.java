@@ -30,12 +30,12 @@ public class OutputView {
     private static final String TODAY_IS = "\n오늘은 %s입니다. 기능을 선택해 주세요.\n";
     private static final String OPERATION_OPTION_MESSAGE =
             """
-            1. 출석 확인
-            2. 출석 수정
-            3. 크루별 출석 기록 확인
-            4. 제적 위험자 확인
-            Q. 종료
-            """;
+                    1. 출석 확인
+                    2. 출석 수정
+                    3. 크루별 출석 기록 확인
+                    4. 제적 위험자 확인
+                    Q. 종료
+                    """;
 
     public static void printOptions() {
         System.out.printf(TODAY_IS, convertDate(LocalDateTime.now()));
@@ -88,14 +88,15 @@ public class OutputView {
     }
 
     private static void printAttendances(final Map<LocalDate, HourMinute> crewAttendances, final LocalDate date,
-                                  final int day) {
+                                         final int day) {
         if (!crewAttendances.containsKey(date)) {
             return;
         }
         HourMinute hourMinute = crewAttendances.get(date);
 
         if (hourMinute.hour() == HourMinute.NULL_TIME && hourMinute.minute() == HourMinute.NULL_TIME) {
-            System.out.printf("%s %s (%s)\n", convertDate(LocalDateTime.of(date, LocalTime.of(0, 0))), ABSENCE_TIME_FORMAT,
+            System.out.printf("%s %s (%s)\n", convertDate(LocalDateTime.of(date, LocalTime.of(0, 0))),
+                    ABSENCE_TIME_FORMAT,
                     hourMinute.attendanceStatus().getStatus());
             return;
         }
@@ -130,7 +131,8 @@ public class OutputView {
         });
     }
 
-    private static List<String> formatStatusCount(final AttendanceRepository attendanceRepository, final List<String> names,
+    private static List<String> formatStatusCount(final AttendanceRepository attendanceRepository,
+                                                  final List<String> names,
                                                   final int today) {
         return names.stream().map(name -> {
             final Map<AttendanceStatus, Integer> crewStatuses = attendanceRepository.queryCrewAttendanceStatus(
