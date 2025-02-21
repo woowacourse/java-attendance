@@ -20,13 +20,15 @@ public class PenaltyCrew implements Comparable<PenaltyCrew> {
 
     @Override
     public int compareTo(PenaltyCrew o) {
-        this.attendanceStatus.compareTo(o.attendanceStatus);
+        int attendanceComparison = this.attendanceStatus.compareTo(o.attendanceStatus);
         int pointComparison = this.point.compareTo(o.point);
 
+        if (attendanceComparison != 0) {
+            return attendanceComparison;
+        }
         if (pointComparison != 0) {
             return -pointComparison;
         }
-
         return name.compareTo(o.name);
     }
 
