@@ -27,7 +27,6 @@ public class Attendance {
     }
     
     private void validateDate(LocalDate date) {
-        // TODO : 공휴일이면 '출석 가능한 날짜가 아닙니다.'
         if (WEEKEND.contains(date.getDayOfWeek())) {
             throw new IllegalAttendDateException();
         }
