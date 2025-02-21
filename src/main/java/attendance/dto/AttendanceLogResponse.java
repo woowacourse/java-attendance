@@ -42,10 +42,6 @@ public class AttendanceLogResponse {
         return Optional.ofNullable(time);
     }
 
-    public Optional<LocalDateTime> getDateTime() {
-        return Optional.ofNullable(time).map(time -> LocalDateTime.of(date, time));
-    }
-
     public String getAttendanceStatus() {
         return attendanceStatus;
     }
