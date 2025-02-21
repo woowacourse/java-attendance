@@ -55,7 +55,7 @@ class AttendanceTimelineTest {
     @CsvSource({
             "OK, 1",
             "LATE, 1",
-            "ABSENCE, 2"
+            "ABSENCE, 1"
     })
     void countAttendanceTypeTest(AttendanceType attendanceType, int expected) {
         Crew crew = new Crew("포비");
