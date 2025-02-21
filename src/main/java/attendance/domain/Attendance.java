@@ -13,14 +13,22 @@ public class Attendance {
     private LocalDateTime dateTime;
     private AttendanceStatus status;
 
-    public Attendance(final LocalDateTime dateTime) {
+    private Attendance(final LocalDateTime dateTime) {
         this.dateTime = dateTime;
         this.status = checkAttendanceStatus(dateTime);
     }
 
-    public Attendance(final LocalDateTime dateTime, final AttendanceStatus status) {
+    private Attendance(final LocalDateTime dateTime, final AttendanceStatus status) {
         this.dateTime = dateTime;
         this.status = status;
+    }
+
+    public static Attendance from(final LocalDateTime dateTime) {
+        return new Attendance(dateTime);
+    }
+
+    public static Attendance createAbsenceAttendance(final LocalDate date) {
+        return new Attendance(date.atStartOfDay(), AttendanceStatus.ABSENCE);
     }
 
     public AttendanceStatus checkAttendanceStatus(final LocalDateTime time) {

@@ -5,16 +5,22 @@ import attendance.controller.util.CrewAttendanceParser;
 import attendance.controller.util.TimeFormatter;
 import attendance.controller.validator.HolidayValidator;
 import attendance.controller.validator.OperatingHoursValidator;
-import attendance.domain.*;
+import attendance.domain.Attendance;
+import attendance.domain.Crew;
+import attendance.domain.Crews;
+import attendance.domain.Menu;
+import attendance.domain.Warning;
 import attendance.dto.AttendanceResultResponse;
+import attendance.dto.CrewAttendanceResponse;
 import attendance.dto.UpdateAfterAttendanceResponse;
 import attendance.dto.UpdateBeforeAttendanceResponse;
+import attendance.dto.WarningCrewResponse;
 import attendance.service.CrewsService;
 import attendance.view.InputView;
 import attendance.view.OutputView;
-
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 
 public class AttendanceController {
     private final CrewsService crewsService;
@@ -34,7 +40,9 @@ public class AttendanceController {
         while (true) {
             try {
                 Menu selectedMenu = inputView.inputMenu(today);
-                if (executeMenu(selectedMenu, crews)) break;
+                if (executeMenu(selectedMenu, crews)) {
+                    break;
+                }
             } catch (IllegalArgumentException e) {
                 outputView.printExceptionMessage(e);
             }
@@ -42,10 +50,18 @@ public class AttendanceController {
     }
 
     private boolean executeMenu(Menu selectedMenu, Crews crews) {
-        if (selectedMenu.equals(Menu.CHECK_ATTEND)) confirmAttendance(crews);
-        if (selectedMenu.equals(Menu.UPDATE_ATTEND)) updateAttendance(crews);
-        if (selectedMenu.equals(Menu.PRINT_ATTEND_BY_CREW)) printAttendanceByCrew(crews);
-        if (selectedMenu.equals(Menu.PRINT_WARNING)) printWarningCrews(crews);
+        if (selectedMenu.equals(Menu.CHECK_ATTEND)) {
+            confirmAttendance(crews);
+        }
+        if (selectedMenu.equals(Menu.UPDATE_ATTEND)) {
+            updateAttendance(crews);
+        }
+        if (selectedMenu.equals(Menu.PRINT_ATTEND_BY_CREW)) {
+            printAttendanceByCrew(crews);
+        }
+        if (selectedMenu.equals(Menu.PRINT_WARNING)) {
+            printWarningCrews(crews);
+        }
 
         return selectedMenu.equals(Menu.QUIT);
     }
@@ -58,7 +74,7 @@ public class AttendanceController {
 
         LocalDateTime attendDateTime = TimeFormatter.format(today, inputView.inputAttendTime());
         OperatingHoursValidator.validate(attendDateTime);
-        Attendance attendance = new Attendance(attendDateTime);
+        Attendance attendance = Attendance.from(attendDateTime);
 
         crew.addAttendance(attendance);
         outputView.printAttendanceResult(AttendanceResultResponse.from(attendance));
@@ -83,7 +99,9 @@ public class AttendanceController {
 
     private void printAttendanceByCrew(final Crews crews) {
         Crew crew = crews.findByName(inputView.inputNickname());
-        outputView.printAttendanceByCrew(crew);
+
+        CrewAttendanceResponse response = CrewAttendanceResponse.from(crew);
+        outputView.printAttendanceByCrew(response);
 
         Warning warning = crew.checkWarning();
         if (!warning.equals(Warning.NONE)) {
@@ -92,6 +110,10 @@ public class AttendanceController {
     }
 
     private void printWarningCrews(final Crews crews) {
-        outputView.printWarningCrews(crews.collectWarningCrews());
+        List<Crew> warningCrews = crews.collectWarningCrews();
+        List<WarningCrewResponse> responses = warningCrews.stream()
+                .map(WarningCrewResponse::from)
+                .toList();
+        outputView.printWarningCrews(responses);
     }
 }

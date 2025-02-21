@@ -1,10 +1,8 @@
 package attendance.service;
 
 import attendance.domain.Attendance;
-import attendance.domain.AttendanceStatus;
 import attendance.domain.Crew;
 import attendance.domain.Crews;
-
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -41,8 +39,8 @@ public class CrewsService {
         return attendances.stream()
                 .filter(attendance -> day.equals(LocalDate.from(attendance)))
                 .findFirst()
-                .map(Attendance::new)
-                .orElse(new Attendance(day.atStartOfDay(), AttendanceStatus.ABSENCE));
+                .map(Attendance::from)
+                .orElse(Attendance.createAbsenceAttendance(day));
     }
 
     private boolean isHoliday(LocalDate day) {
