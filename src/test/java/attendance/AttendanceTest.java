@@ -71,7 +71,7 @@ public class AttendanceTest {
 
     @ParameterizedTest
     @MethodSource("attendanceTest")
-    @DisplayName("출석 데이터 테스트")
+    @DisplayName("출석 완료 테스트")
     void testAttendances(String src, String name, LocalDate localDate, String attendanceStatus) {
         AttendanceManagerService attendanceManagerService = new AttendanceManagerService(
                 AttendanceManager.getInstance(), new AttendanceFileRepository(src));
@@ -81,7 +81,7 @@ public class AttendanceTest {
     }
 
     @Test
-    @DisplayName("주말 테스트")
+    @DisplayName("주말에 출석시 예외 발생 테스트")
     void testWeekend() {
         assertThatThrownBy(() -> new AttendanceManagerService(AttendanceManager.getInstance(),
                 new AttendanceFileRepository("/testWeekend.csv")))
@@ -90,7 +90,7 @@ public class AttendanceTest {
     }
 
     @Test
-    @DisplayName("등교 시간 테스트")
+    @DisplayName("등교 외 출석시 예외 발생 테스트")
     void testSchoolStartTime() {
         assertThatThrownBy(() -> new AttendanceManagerService(AttendanceManager.getInstance(),
                 new AttendanceFileRepository("/testSchoolTime.csv")))
@@ -99,7 +99,7 @@ public class AttendanceTest {
     }
 
     @Test
-    @DisplayName("유효하지 않은 날짜 테스트")
+    @DisplayName("입력 날짜가 유효하지 않을시 예외 발생 테스트")
     void testInvalidDate() {
         assertThatThrownBy(() -> new AttendanceManagerService(AttendanceManager.getInstance(),
                 new AttendanceFileRepository("/testInvalidDate.csv")))
@@ -108,7 +108,7 @@ public class AttendanceTest {
     }
 
     @Test
-    @DisplayName("출석 중복 테스트")
+    @DisplayName("이미 동일한 날짜에 출석했을 시 예외 발생 테스트")
     void duplicateAttendanceTest() {
         assertThatThrownBy(() -> new AttendanceManagerService(AttendanceManager.getInstance(),
                 new AttendanceFileRepository("/testDuplicateNickname.csv")))
@@ -117,7 +117,7 @@ public class AttendanceTest {
     }
 
     @Test
-    @DisplayName("닉네임이 유효하지 않으면 예외가 발생한다")
+    @DisplayName("유효하지 않은 닉네임인 경우 예외 발생 테스트")
     void testNicknameInvalid() {
         assertThatThrownBy(() -> new AttendanceManagerService(AttendanceManager.getInstance(),
                 new AttendanceFileRepository("/testInvalidNickname.csv")))

@@ -55,7 +55,7 @@ public class AttendanceHistoryTest {
 
     @ParameterizedTest
     @MethodSource("attendanceTest")
-    @DisplayName("출석 데이터 테스트")
+    @DisplayName("출석 데이터 내역 확인 테스트")
     void testAttendances(String src, String name, String formattedResult) {
         AttendanceManagerService attendanceManagerService = new AttendanceManagerService(
                 AttendanceManager.getInstance(),

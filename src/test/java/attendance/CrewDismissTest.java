@@ -35,7 +35,7 @@ public class CrewDismissTest {
 
     @ParameterizedTest
     @MethodSource("attendanceTest")
-    @DisplayName("출석 정렬 데이터 테스트")
+    @DisplayName("제적 대상자 출력 테스트")
     void testAttendances(String src, String orderedResult) {
         AttendanceManager attendanceManager = AttendanceManager.getInstance();
         AttendanceManagerService attendanceManagerService = new AttendanceManagerService(attendanceManager,

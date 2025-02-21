@@ -64,7 +64,7 @@ public class AttendanceModifyTest {
 
     @ParameterizedTest
     @MethodSource("attendanceTest")
-    @DisplayName("출석 데이터 테스트")
+    @DisplayName("출석 데이터 수정 테스트")
     void testAttendances(String src, String name, LocalDate modifyDate, LocalTime afterModifyTime,
                          String formattedResult) {
         AttendanceManagerService attendanceManagerService = new AttendanceManagerService(
