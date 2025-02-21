@@ -39,8 +39,8 @@ public class AttendanceController {
         Map<Crew, Attendances> crewAttendances = createCrewAttendances(crewAttendanceDateTimes);
 
         LocalDate today = LocalDate.now();
-        try {
-            while (true) {
+        while(true) {
+            try {
                 outputView.printOperations(today);
                 OperationCommand operationCommand = inputView.readOperationCommand();
                 if (operationCommand.isQuit()) {
@@ -58,9 +58,9 @@ public class AttendanceController {
                 if (operationCommand.isExpulsionCheck()) {
                     checkExpulsionCrews(crewAttendances);
                 }
+            } catch (IllegalArgumentException e) {
+                outputView.printErrorMessage(e.getMessage());
             }
-        } catch (IllegalArgumentException e) {
-            outputView.printErrorMessage(e.getMessage());
         }
     }
 
