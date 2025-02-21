@@ -16,9 +16,9 @@ public class OutputView {
 
     private static final DateTimeFormatter TIME_FORMATTER = DateTimeFormatter.ofPattern("HH:mm");
     private static final DateTimeFormatter ATTENDANCE_DATE_TIME_FORMATTER =
-            DateTimeFormatter.ofPattern("MM월 dd일 E요일 HH:mm");
+            DateTimeFormatter.ofPattern("M월 dd일 E요일 HH:mm").withLocale(Locale.KOREA);
     private static final DateTimeFormatter ABSENT_DATE_TIME__FORMATTER =
-            DateTimeFormatter.ofPattern("MM월 dd일 E요일 --:--");
+            DateTimeFormatter.ofPattern("M월 dd일 E요일 --:--").withLocale(Locale.KOREA);
 
     public void printOperations(LocalDate today) {
         System.out.printf("오늘은 %d월 %d일 %s입니다. 기능을 선택해 주세요.%n", today.getMonthValue(), today.getDayOfMonth(),
