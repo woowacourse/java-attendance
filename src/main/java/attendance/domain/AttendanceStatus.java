@@ -6,7 +6,7 @@ public enum AttendanceStatus {
     LATE_ABSENCE("결석"),
     ABSENCE("결석");
 
-    private String message;
+    private final String message;
 
     AttendanceStatus(String message) {
         this.message = message;

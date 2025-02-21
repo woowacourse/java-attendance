@@ -1,5 +1,7 @@
 package attendance.domain;
 
+import static attendance.domain.exception.MenuExceptionMessage.NOT_IN_MENU;
+
 import java.util.Arrays;
 
 public enum Menu {
@@ -19,6 +21,6 @@ public enum Menu {
         return Arrays.stream(Menu.values())
                 .filter(menu -> menu.select.equals(input))
                 .findFirst()
-                .orElseThrow(() -> new IllegalArgumentException("[ERROR] 메뉴를 잘못 선택하셨습니다."));
+                .orElseThrow(() -> new IllegalArgumentException(NOT_IN_MENU));
     }
 }
