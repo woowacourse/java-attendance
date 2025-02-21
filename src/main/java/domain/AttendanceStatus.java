@@ -21,12 +21,10 @@ public enum AttendanceStatus {
         if (attendanceTime.isBefore(startTime) || attendanceTime.isAfter(endTime)) {
             return ABSENCE;
         }
-        if (attendanceTime.isBefore(day.getAttendanceTime().plusMinutes(5)) || attendanceTime.equals(
-                day.getAttendanceTime().plusMinutes(5))) {
+        if (isBeforeAttendanceLimit(day, attendanceTime, 5) || equalsAttendanceLimit(day, attendanceTime, 5)) {
             return ATTENDANCE;
         }
-        if (attendanceTime.isBefore(day.getAttendanceTime().plusMinutes(30)) || attendanceTime.equals(
-                day.getAttendanceTime().plusMinutes(30))) {
+        if (isBeforeAttendanceLimit(day, attendanceTime, 30) || equalsAttendanceLimit(day, attendanceTime, 30)) {
             return TARDINESS;
         }
         return ABSENCE;
@@ -34,5 +32,13 @@ public enum AttendanceStatus {
 
     public String getDisplayName() {
         return displayName;
+    }
+
+    private static boolean isBeforeAttendanceLimit(final Week day, final LocalTime attendanceTime, int minute) {
+        return attendanceTime.isBefore(day.getAttendanceTime().plusMinutes(minute));
+    }
+
+    private static boolean equalsAttendanceLimit(final Week day, final LocalTime attendanceTime, int minute) {
+        return attendanceTime.equals(day.getAttendanceTime().plusMinutes(minute));
     }
 }
