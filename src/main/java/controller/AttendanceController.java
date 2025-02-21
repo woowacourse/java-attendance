@@ -73,7 +73,7 @@ public class AttendanceController {
         Manage manage = Manage.of(crew.getAttendanceStatusStatistics(now));
 
         OutputView.printMonthAttendanceRecords(
-                MonthAttendanceRecordsResult.of(
+                new MonthAttendanceRecordsResult(
                         crew.getNickname(),
                         attendanceRecords,
                         crew.getAttendanceStatusStatistics(now),

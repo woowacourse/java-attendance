@@ -10,11 +10,5 @@ public record MonthAttendanceRecordsResult(
         AttendanceStatusStatistics attendanceStatusStatistics,
         Manage manage
 ) {
-    public static MonthAttendanceRecordsResult of(String nickname, List<AttendanceRecord> attendanceRecords,
-                                                  AttendanceStatusStatistics attendanceStatusStatistics,
-                                                  Manage manage) {
-        attendanceRecords.forEach(
-                record -> attendanceRecords.add(new AttendanceRecord(record.date(), record.time(), record.status())));
-        return new MonthAttendanceRecordsResult(nickname, attendanceRecords, attendanceStatusStatistics, manage);
-    }
+    
 }

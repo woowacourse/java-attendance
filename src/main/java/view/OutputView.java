@@ -43,7 +43,6 @@ public class OutputView {
             message.append(convertToTime(innerHistory));
             message.append(String.format(" (%s)", innerHistory.status().getTitle()));
         });
-        System.out.println();
         System.out.printf("출석: %d회%n",
                 monthAttendanceRecordResult.attendanceStatusStatistics()
                         .getCountByStatus(AttendanceStatus.ATTENDANCE));
