@@ -28,7 +28,7 @@ public class Attendances {
 
     public boolean isAttended(final LocalDateTime dateTime) {
         return attendances.stream()
-                .anyMatch(attendance -> attendance.localDateTime.equals(dateTime));
+                .anyMatch(attendance -> attendance.getLocalDateTime().equals(dateTime));
     }
 
     public void add(Attendance attendance) {
@@ -37,7 +37,7 @@ public class Attendances {
 
     public Attendance findAttendance(final LocalDateTime dateTime) {
         return attendances.stream()
-                .filter(attendance -> attendance.localDateTime.toLocalDate().equals(dateTime.toLocalDate()))
+                .filter(attendance -> attendance.getLocalDateTime().toLocalDate().equals(dateTime.toLocalDate()))
                 .findFirst()
                 .orElseThrow(() -> new CustomIllegalArgumentException("수정하는 일자를 찾을 수 없습니다."));
     }

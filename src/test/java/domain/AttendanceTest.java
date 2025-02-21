@@ -19,7 +19,7 @@ class AttendanceTest {
 
         // when
         // then
-        assertThatCode(() -> new Attendance(localDateTime))
+        assertThatCode(() -> new Attendance(AttendanceDateTime.of(localDateTime)))
                 .doesNotThrowAnyException();
     }
 

@@ -27,8 +27,8 @@ public class Crew implements Comparable<Crew> {
         attendances.add(attendance);
     }
 
-    public Attendance getAttendance(final LocalDateTime dateTime) {
-        return attendances.findAttendance(dateTime);
+    public Attendance getAttendance(final AttendanceDateTime attendanceDateTime) {
+        return attendances.findAttendance(attendanceDateTime.getLocalDateTime());
     }
 
     public void updateAttendance(final Attendance oldAttendance, final Attendance attendance) {

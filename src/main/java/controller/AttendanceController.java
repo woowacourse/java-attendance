@@ -1,16 +1,15 @@
 package controller;
 
 import domain.Attendance;
+import domain.AttendanceDateTime;
 import domain.Command;
 import domain.Crew;
 import domain.Crews;
 import domain.Nickname;
 import error.CustomIllegalArgumentException;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
-import java.time.format.DateTimeParseException;
 import util.Constants;
 import util.CrewGenerator;
 import util.CsvReader;
@@ -53,12 +52,14 @@ public class AttendanceController {
     private void processCheckAttendees(final Crews crews, final LocalDateTime fixDateTime) {
         final Nickname nickname = readNickname();
         final Crew crew = crews.findByNickname(nickname);
-        final LocalDateTime attendedDateTime = LocalDateTime.of(fixDateTime.toLocalDate(), readLocalTime());
+        final AttendanceDateTime attendanceDateTime = AttendanceDateTime.of(
+                LocalDateTime.of(fixDateTime.toLocalDate(), readLocalTime()));
 
-        if (crew.isAttended(attendedDateTime)) {
+        if (crew.isAttended(attendanceDateTime.getLocalDateTime())) {
             throw new CustomIllegalArgumentException("이미 출석했습니다. 다음에는 수정기능을 이용해주세요.");
         }
-        final Attendance attendance = attend(crew, attendedDateTime);
+
+        final Attendance attendance = attend(crew, attendanceDateTime);
 
         OutputView.printAttendance(attendance);
     }
@@ -74,7 +75,7 @@ public class AttendanceController {
         return LocalTime.parse(inputTime, formatter);
     }
 
-    private Attendance attend(Crew crew, LocalDateTime attendedDateTime) {
+    private Attendance attend(Crew crew, AttendanceDateTime attendedDateTime) {
         final Attendance attendance = new Attendance(attendedDateTime);
         crew.add(attendance);
         return attendance;
@@ -84,7 +85,7 @@ public class AttendanceController {
     private void processEditAttendance(final Crews crews) {
         final Nickname nickname = readNicknameForEditAttendance();
         final Crew crew = crews.findByNickname(nickname);
-        final LocalDateTime desiredUpdateDateTime = readUpdateDateTime();
+        final AttendanceDateTime desiredUpdateDateTime = readUpdateDateTime();
         final Attendance oldAttendance = crew.getAttendance(desiredUpdateDateTime);
         final Attendance newAttendance = new Attendance(desiredUpdateDateTime);
 
@@ -97,21 +98,11 @@ public class AttendanceController {
         return new Nickname(inputNickName);
     }
 
-    private LocalDateTime readUpdateDateTime() {
-        final String updateDate = InputView.readUpdateDate();
-        final LocalTime desiredUpdateTime = readDesiredUpdateTime();
-        final LocalDate fixedLocalDate = LocalDate.of(Constants.FIXED_YEAR, Constants.FIXED_MONTH,
-                Integer.parseInt(updateDate));
-        return LocalDateTime.of(fixedLocalDate, desiredUpdateTime);
-    }
+    private AttendanceDateTime readUpdateDateTime() {
+        final String desiredUpdateDate = InputView.readUpdateDate();
+        final String desiredUpdateTime = InputView.readUpdateDateTime();
 
-    private LocalTime readDesiredUpdateTime() {
-        final String inputDateTime = InputView.readUpdateDateTime();
-        try {
-            return LocalTime.parse(inputDateTime);
-        } catch (DateTimeParseException e) {
-            throw new CustomIllegalArgumentException("올바른 시간 형식이 아닙니다. 얘를들어 10:22 이런 형태로 작성해주세요.");
-        }
+        return AttendanceDateTime.of(desiredUpdateDate, desiredUpdateTime);
     }
 
     private void processAttendanceRecordByCrew(final Crews crews) {
