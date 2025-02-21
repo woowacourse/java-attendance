@@ -34,12 +34,23 @@ public class AttendanceController {
 
     public void run() {
         initDataFromCSV();
-
         MenuCommand command = null;
+
         while (!MenuCommand.QUIT.equals(command)) {
-            command = MenuCommand.toCommand(getMenuOption());
-            executeCommand(command);
+            command = getMenuOption(command);
         }
+    }
+
+    private MenuCommand getMenuOption(MenuCommand command) {
+        try {
+            command = MenuCommand.toCommand(readMenuOption());
+            executeCommand(command);
+        } catch (IllegalArgumentException e) {
+            System.out.println(e.getMessage());
+            outputView.printErrorMessage(e.getMessage());
+            run();
+        }
+        return command;
     }
 
     private void initDataFromCSV() {
@@ -51,7 +62,7 @@ public class AttendanceController {
 
     }
 
-    private String getMenuOption() {
+    private String readMenuOption() {
         LocalDate currentDate = LocalDate.now();
 
         String month = String.valueOf(currentDate.getMonthValue());
@@ -117,6 +128,7 @@ public class AttendanceController {
         AttendanceType originalType = attendances.findOriginalType(crew, localDate);
 
         String modifyTime = inputView.readModifyTime();
+        validateTimeFormat(modifyTime);
         LocalTime localTime = LocalTime.parse(modifyTime);
         LocalDateTime localDateTime = LocalDateTime.of(localDate, localTime);
 

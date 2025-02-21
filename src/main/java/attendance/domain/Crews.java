@@ -29,7 +29,7 @@ public class Crews {
         return crews.stream()
                 .filter(crew -> crew.isSameCrewName(crewName))
                 .findFirst()
-                .orElseThrow(() -> new IllegalStateException("[ERROR] 입력하신 이름의 크루가 존재하지 않습니다."));
+                .orElseThrow(() -> new IllegalArgumentException("[ERROR] 입력하신 이름의 크루가 존재하지 않습니다."));
     }
 
     public List<Crew> getCrews() {

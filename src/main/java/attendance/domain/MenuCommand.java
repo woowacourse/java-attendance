@@ -9,7 +9,7 @@ public enum MenuCommand {
     EXPEL("4"),
     QUIT("Q");
 
-    private static final String MENU_ERROR = "[ERROR] 지원하지 않는 기능입니다. 시스템을 종료합니다.";
+    private static final String MENU_ERROR = "[ERROR] 지원하지 않는 기능입니다. 시스템을 재시작합니다.";
     private final String command;
 
     MenuCommand(String command) {

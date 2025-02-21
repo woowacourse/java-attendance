@@ -28,7 +28,7 @@ public class OutputView {
         printNewLine();
     }
 
-    public void printModifiedAttendance(String originalTime, String originalType, List<String> newAttendanceInfo) {
+    public void printModifiedAttendance(final String originalTime, final String originalType, final List<String> newAttendanceInfo) {
         System.out.print(
                 ATTENDANCE_STRING.formatted(
                         newAttendanceInfo.get(0),
@@ -47,7 +47,7 @@ public class OutputView {
         printNewLine();
     }
 
-    public void printCrewAttendanceHistory(String crewName, List<List<String>> crewAttendanceHistory) {
+    public void printCrewAttendanceHistory(final String crewName, List<List<String>> crewAttendanceHistory) {
         System.out.println(
                 CREW_ATTENDANCE_HISTORY_STRING.formatted(crewName)
         );
@@ -71,7 +71,7 @@ public class OutputView {
         printNewLine();
     }
 
-    public void printCrewStatisticStatus(List<String> crewStatisticStatus) {
+    public void printCrewStatisticStatus(final List<String> crewStatisticStatus) {
         System.out.println(
                 CREW_STATISTICS_STRING.formatted(
                         crewStatisticStatus.get(0),
@@ -90,7 +90,7 @@ public class OutputView {
         System.out.println(EXPEL_CREWS_HEAD_STRING);
     }
 
-    public void printExpelCrew(List<String> crewExpelExpectedInfo) {
+    public void printExpelCrew(final List<String> crewExpelExpectedInfo) {
         System.out.println(
                 EXPEL_CREW_BODY_STRING.formatted(
                         crewExpelExpectedInfo.get(0),
@@ -103,5 +103,9 @@ public class OutputView {
 
     public void printNewLine() {
         System.out.println();
+    }
+
+    public void printErrorMessage(final String message) {
+        System.out.println(message);
     }
 }
