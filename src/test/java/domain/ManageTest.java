@@ -14,11 +14,11 @@ public class ManageTest {
     void 결석_2회_미만인_경우_아무_관리_대상자가_아니다() {
         Crew crew = new Crew("pobi");
         // 지각
-        crew.attendance(LocalDate.of(2025, 02, 3), LocalTime.of(13, 06));
+        crew.addAttendanceTime(LocalDate.of(2025, 02, 3), LocalTime.of(13, 06));
         // 출석
-        crew.attendance(LocalDate.of(2025, 02, 4), LocalTime.of(10, 05));
+        crew.addAttendanceTime(LocalDate.of(2025, 02, 4), LocalTime.of(10, 05));
         // 결석
-        crew.attendance(LocalDate.of(2025, 02, 5), LocalTime.of(10, 31));
+        crew.addAttendanceTime(LocalDate.of(2025, 02, 5), LocalTime.of(10, 31));
         Map<AttendanceStatus, Integer> attendanceStatusStatistics =
             crew.getAttendanceStatusCounter(LocalDate.of(2025, 02, 6));
 
@@ -30,11 +30,11 @@ public class ManageTest {
     void 결석_2회_이상인_경우_경고_대상자가_된다() {
         Crew crew = new Crew("pobi");
         // 지각
-        crew.attendance(LocalDate.of(2025, 02, 3), LocalTime.of(13, 06));
+        crew.addAttendanceTime(LocalDate.of(2025, 02, 3), LocalTime.of(13, 06));
         // 지각
-        crew.attendance(LocalDate.of(2025, 02, 4), LocalTime.of(10, 06));
+        crew.addAttendanceTime(LocalDate.of(2025, 02, 4), LocalTime.of(10, 06));
         // 지각
-        crew.attendance(LocalDate.of(2025, 02, 5), LocalTime.of(10, 30));
+        crew.addAttendanceTime(LocalDate.of(2025, 02, 5), LocalTime.of(10, 30));
         Map<AttendanceStatus, Integer> attendanceStatusStatistics =
             crew.getAttendanceStatusCounter(LocalDate.of(2025, 02, 7));
 
@@ -46,7 +46,7 @@ public class ManageTest {
     void 결석_3회_이상인_경우_면담_대상자가_된다() {
         Crew crew = new Crew("pobi");
         // 지각
-        crew.attendance(LocalDate.of(2025, 02, 3), LocalTime.of(13, 10));
+        crew.addAttendanceTime(LocalDate.of(2025, 02, 3), LocalTime.of(13, 10));
         Map<AttendanceStatus, Integer> attendanceStatusStatistics =
             crew.getAttendanceStatusCounter(LocalDate.of(2025, 02, 7));
 

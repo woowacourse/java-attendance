@@ -5,53 +5,40 @@ import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import java.util.Optional;
 import util.FileParser;
 
 public class CrewRepository {
 
-    private final List<Crew> crews = new ArrayList<>();
+    private final static List<Crew> CREWS = new ArrayList<>();
 
-    public CrewRepository(boolean initiailize) {
-        if (!initiailize) {
-            return;
+    private CrewRepository() {
+    }
+
+    public static boolean exists(String nickname) {
+        return CREWS.stream()
+                .anyMatch(crew -> nickname.equals(crew.getNickname()));
+    }
+
+    public static void addCrew(Crew crew) {
+        if(exists(crew.getNickname())) {
+            throw new IllegalArgumentException(crew.getNickname() + ": 이미 존재하는 크루명입니다");
         }
-        FileParser.loadAttendanceRecords()
-            .forEach(record -> add(
-                record.nickname(),
-                record.date(),
-                record.time()
-            ));
+        CREWS.add(crew);
     }
 
-    public void add(Crew crew) {
-        crews.add(crew);
+    public static Crew findByNickname(String nickname) {
+        return CREWS.stream()
+                .filter(crew -> nickname.equals(crew.getNickname()))
+                .findAny()
+                .orElseThrow(() -> new IllegalArgumentException(nickname + ": 존재하지 않는 크루명입니다."));
     }
 
-    public void add(String nickname, LocalDate date, LocalTime time) {
-        Crew crew = find(nickname);
-        if (crew == null) {
-            crew = new Crew(nickname);
-            crews.add(crew);
-        }
-        crew.attendance(date, time);
+    public static List<Crew> findAll() {
+        return CREWS;
     }
 
-    private Crew find(String nickname) {
-        return crews.stream()
-            .filter(crew -> crew.getNickname().equals(nickname))
-            .findAny()
-            .orElse(null);
-    }
-
-    public Crew get(String nickname) {
-        Crew found = find(nickname);
-        if (found == null) {
-            throw new IllegalArgumentException("존재하지 않는 크루명입니다.");
-        }
-        return found;
-    }
-
-    public List<Crew> getAll() {
-        return crews;
+    public static void clear() {
+        CREWS.clear();
     }
 }

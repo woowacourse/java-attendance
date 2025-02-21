@@ -18,13 +18,16 @@ import dto.AttendanceResult;
 import dto.CrewAlmostExpelledResult;
 import dto.ModifiedResult;
 import dto.OptionRequest;
+import java.util.Optional;
+import javax.swing.text.html.Option;
 import util.DateTimeUtil;
 import view.InputView;
 import view.OutputView;
 
 public class AttendanceController {
-
-    private CrewRepository crewRepository = new CrewRepository(true);
+    public AttendanceController() {
+        ResourceLoader.loadAttendanceTimes();
+    }
 
     public void run() {
         boolean isRunning = true;
@@ -44,15 +47,15 @@ public class AttendanceController {
     private void attendanceCheck() {
         AttendanceRequest request = InputView.scanAttendance();
         validateCampusTime(request.time());
-        Crew crew = crewRepository.get(request.nickname());
-        AttendanceStatus status = crew.attendance(DateTimeUtil.nowDate(), request.time());
+        Crew crew = CrewRepository.findByNickname(request.nickname());
+        AttendanceStatus status = crew.addAttendanceTime(DateTimeUtil.nowDate(), request.time());
         OutputView.printAttendanceResult(AttendanceResult.of(DateTimeUtil.nowDate(), request.time(), status));
     }
 
     private void attendanceModify() {
         AttendanceModifyRequest request = InputView.scanModify();
         validateCampusTime(request.time());
-        Crew crew = crewRepository.get(request.nickname());
+        Crew crew = CrewRepository.findByNickname(request.nickname());
         validateAttendanceTime(crew, request.date());
 
         ModifiedResult.InnerStatus before = generateInnerStatus(crew, request);
@@ -74,7 +77,7 @@ public class AttendanceController {
     }
 
     private void checkAttendanceHistory() {
-        Crew crew = crewRepository.get(InputView.scanNickname());
+        Crew crew = CrewRepository.findByNickname(InputView.scanNickname());
         LocalDate now = DateTimeUtil.nowDate();
         List<History> history = crew.getAllHistory(now);
         Manage manage = Manage.of(crew.getAttendanceStatusCounter(now));
@@ -89,7 +92,7 @@ public class AttendanceController {
     }
 
     private void checkCrewsAlmostExpelled() {
-        List<Crew> crews = crewRepository.getAll();
+        List<Crew> crews = CrewRepository.findAll();
         List<CrewAlmostExpelledResult> result = crews.stream()
             .map(crew -> {
                 Map<AttendanceStatus, Integer> statusCounter

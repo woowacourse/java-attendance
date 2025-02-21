@@ -5,20 +5,26 @@ import static org.assertj.core.api.Assertions.assertThat;
 import java.time.LocalDate;
 import java.time.LocalTime;
 
+import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 public class CrewRepositoryTest {
+    @BeforeEach
+    void initCrewRepository() {
+        CrewRepository.clear();
+    }
 
     @Test
-    @DisplayName("기존에 존재하는 크루명으로 add하는 경우 기존 출석 기록에 add한 출석 기록이 추가된다")
+    @DisplayName("기존에 존재하는 크루명으로 add하는 경우 예외를 발생시킨다.")
     void addTest() {
-        CrewRepository crewRepository = new CrewRepository(false);
-        crewRepository.add("cube", LocalDate.of(2025, 02, 03), LocalTime.of(10, 00));
-        crewRepository.add("cube", LocalDate.of(2025, 02, 04), LocalTime.of(13, 00));
-        Crew found = crewRepository.get("cube");
+        // given
+        CrewRepository.addCrew(new Crew("cube"));
 
-        assertThat(found.getAttendanceTimeByDate(LocalDate.of(2025,02,03))).isEqualTo(LocalTime.of(10, 00));
-        assertThat(found.getAttendanceTimeByDate(LocalDate.of(2025,02,04))).isEqualTo(LocalTime.of(13, 00));
+        // when & then
+        Assertions.assertThatThrownBy(() -> {
+            CrewRepository.addCrew(new Crew("cube"));
+        }).isInstanceOf(IllegalArgumentException.class);
     }
 }

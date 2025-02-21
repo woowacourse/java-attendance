@@ -20,7 +20,7 @@ public class Crew {
         this.nickname = name;
     }
 
-    public AttendanceStatus attendance(LocalDate date, LocalTime time) {
+    public AttendanceStatus addAttendanceTime(LocalDate date, LocalTime time) {
         validateDate(date);
         attendanceTimes.put(date, time);
         return getAttendanceStatusByDate(date);
