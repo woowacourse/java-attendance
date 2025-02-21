@@ -1,5 +1,8 @@
 package domain;
 
+import static constants.TimeConstants.OPERATION_TIME_END;
+import static constants.TimeConstants.OPERATION_TIME_START;
+
 import dto.AttendanceRecordResponse;
 import dto.CrewPenaltyResponse;
 import dto.ModifyAttendanceResponse;
@@ -130,7 +133,7 @@ public class AttendanceBook {
     }
 
     public void validateIsInOperationHour(LocalTime time) {
-        if (!time.isAfter(LocalTime.of(8, 0)) || !time.isBefore(LocalTime.of(23, 0))) {
+        if (!time.isAfter(OPERATION_TIME_START) || !time.isBefore(OPERATION_TIME_END)) {
             throw new IllegalArgumentException(ErrorCode.TIME_NOT_IN_OPERATION_HOUR.getMessage());
         }
     }
