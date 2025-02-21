@@ -37,7 +37,9 @@ public class InputView {
 
     public int readEditArrivalDate() {
         String response = prompt("수정하려는 날짜(일)를 입력해 주세요.");
-        return parseDay(response);
+        int day = parseDay(response);
+        validateDay(day);
+        return day;
     }
 
     public LocalTime readEditArrivalTime() {
@@ -63,6 +65,12 @@ public class InputView {
             return Integer.parseInt(response);
         } catch (NumberFormatException e) {
             throw new IllegalArgumentException("[ERROR] 날짜 형식이 올바르지 않습니다.");
+        }
+    }
+
+    private void validateDay(int day) {
+        if (day < 1 || day > 31) {
+            throw new IllegalArgumentException("[ERROR] 유효한 날짜가 아닙니다.");
         }
     }
 }

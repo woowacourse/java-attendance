@@ -5,7 +5,6 @@ import domain.Attendance;
 import domain.AttendanceStatus;
 import domain.AttendanceTime;
 import domain.AttendanceTimes;
-import domain.DecemberCalender;
 import domain.MenuOption;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -15,7 +14,6 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import util.AttendancesFileHandler;
-import util.Convertor;
 import util.RepeatExecutor;
 import view.InputView;
 import view.OutputView;
@@ -68,7 +66,7 @@ public class AttendanceController {
     }
 
     private void checkAttendance(Attendance attendance, LocalDate nowDate) {
-        validateCampusOpenDate(attendance, nowDate);
+        attendance.validateCampusOpenDate(nowDate);
 
         String nickName = processNickNameInput(attendance);
         repeatExecutor.repeatUntilSuccess(() -> {
@@ -79,13 +77,6 @@ public class AttendanceController {
 
         AttendanceTime attendanceTime = attendance.findAttendanceTime(nickName, nowDate);
         outputView.printCheckAttendanceMessage(attendanceTime);
-    }
-
-    private void validateCampusOpenDate(Attendance attendance, LocalDate nowDate) {
-        if (attendance.isClosed(nowDate)) {
-            throw new IllegalArgumentException(String.format("[ERROR] %d월 %d일 %s요일은 등교일이 아닙니다.", nowDate.getMonthValue(), nowDate.getDayOfMonth(),
-                    Convertor.convertDayOfWeekToKorean(nowDate.getDayOfWeek())));
-        }
     }
 
     private String processNickNameInput(Attendance attendance) {
@@ -122,8 +113,8 @@ public class AttendanceController {
 
     private AttendanceTime processOldAttendanceTime(Attendance attendance, String nickName) {
         return repeatExecutor.repeatUntilSuccess(() -> {
-            DecemberCalender editArrivalDate = processEditArrivalDateInput();
-            return attendance.findAttendanceTime(nickName, editArrivalDate.getDate());
+            int editArrivalDate = processEditArrivalDateInput();
+            return attendance.findAttendanceTime(nickName, LocalDate.of(CampusConstant.YEAR, CampusConstant.DECEMBER_MONTH, editArrivalDate));
         });
     }
 
@@ -135,8 +126,8 @@ public class AttendanceController {
         });
     }
 
-    private DecemberCalender processEditArrivalDateInput() {
-        return new DecemberCalender(inputView.readEditArrivalDate());
+    private int processEditArrivalDateInput() {
+        return inputView.readEditArrivalDate();
     }
 
     private void checkCrewAttendance(Attendance attendance) {

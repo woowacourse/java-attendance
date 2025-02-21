@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import util.Convertor;
 
 public class Attendance {
 
@@ -64,6 +65,13 @@ public class Attendance {
 
     public void validateNickName(String nickName) {
         crews.findCrew(nickName);
+    }
+
+    public void validateCampusOpenDate(LocalDate nowDate) {
+        if (isClosed(nowDate)) {
+            throw new IllegalArgumentException(String.format("[ERROR] %d월 %d일 %s요일은 등교일이 아닙니다.", nowDate.getMonthValue(), nowDate.getDayOfMonth(),
+                    Convertor.convertDayOfWeekToKorean(nowDate.getDayOfWeek())));
+        }
     }
 
     public int getAbsentCount(String nickName) {
