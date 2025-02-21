@@ -5,10 +5,10 @@ import java.util.HashSet;
 import java.util.List;
 
 public class Crews {
-    private final List<Crew> crews;
+    private final HashSet<Crew> crews;
 
     public Crews() {
-        this.crews = new ArrayList<>();
+        this.crews = new HashSet<>();
     }
 
     public void initCrews(final List<List<String>> attendanceRecords) {
@@ -32,7 +32,7 @@ public class Crews {
                 .orElseThrow(() -> new IllegalArgumentException("[ERROR] 입력하신 이름의 크루가 존재하지 않습니다."));
     }
 
-    public List<Crew> getCrews() {
+    public HashSet<Crew> getCrews() {
         return crews;
     }
 }
