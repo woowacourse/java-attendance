@@ -43,7 +43,7 @@ public class AttendanceTimes {
                 .filter(e -> e.getAttendanceStatus().equals(AttendanceStatus.LATE))
                 .count();
 
-        return absentCount + lateCount / LATE_TO_ABSENT_UNIT;
+        return absentCount + (lateCount / LATE_TO_ABSENT_UNIT);
     }
 
     public int getLateCount() {
