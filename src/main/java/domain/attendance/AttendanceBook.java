@@ -1,6 +1,7 @@
-package domain;
+package domain.attendance;
 
-import constants.DateConstants;
+import domain.date.AttendanceCustomDate;
+import domain.date.Month;
 import exception.DuplicateAttendanceException;
 import java.util.stream.IntStream;
 import service.dto.AttendanceHistoryResponse;
@@ -10,8 +11,8 @@ import java.time.LocalDateTime;
 import java.util.*;
 
 public class AttendanceBook {
-    private static final int year = DateConstants.YEAR;
-    private static final Month month = DateConstants.MONTH;
+    private static final int year = AttendanceCustomDate.YEAR;
+    private static final Month month = AttendanceCustomDate.MONTH;
 
     private final Map<Integer, Attendance> attendances;
 

@@ -1,7 +1,6 @@
 package repository;
 
-import domain.Crew;
-import repository.CrewRepository;
+import domain.crew.Crew;
 
 import java.util.ArrayList;
 import java.util.List;

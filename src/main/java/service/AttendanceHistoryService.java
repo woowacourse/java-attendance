@@ -1,8 +1,8 @@
 package service;
 
-import domain.AttendanceBook;
-import domain.AttendanceStatus;
-import domain.CrewStatus;
+import domain.attendance.AttendanceBook;
+import domain.attendance.AttendanceStatus;
+import domain.crew.CrewStatus;
 import repository.AttendanceRepository;
 import service.dto.AttendanceHistoryResponse;
 

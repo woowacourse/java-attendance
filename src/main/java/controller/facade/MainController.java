@@ -1,6 +1,6 @@
 package controller.facade;
 
-import controller.sub.SubController;
+import controller.sub.parent.SubController;
 import view.InputView;
 import view.OutputView;
 

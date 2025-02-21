@@ -1,7 +1,7 @@
 package service;
 
-import domain.Attendance;
-import domain.AttendanceBook;
+import domain.attendance.Attendance;
+import domain.attendance.AttendanceBook;
 import repository.AttendanceRepository;
 
 import java.time.LocalDateTime;

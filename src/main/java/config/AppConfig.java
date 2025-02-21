@@ -6,7 +6,7 @@ import controller.sub.AttendanceHistoryController;
 import controller.sub.AttendanceModifyController;
 import controller.sub.DisenrollmentCheckController;
 import controller.sub.StoreController;
-import controller.sub.SubController;
+import controller.sub.parent.SubController;
 import repository.AttendanceRepository;
 import repository.AttendanceRepositoryImpl;
 import service.*;

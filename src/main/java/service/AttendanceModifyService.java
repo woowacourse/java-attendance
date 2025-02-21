@@ -1,6 +1,6 @@
 package service;
 
-import domain.Attendance;
+import domain.attendance.Attendance;
 import exception.AttendanceNotExistException;
 import repository.AttendanceRepository;
 import service.dto.AttendanceModifyResponse;

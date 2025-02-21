@@ -1,6 +1,6 @@
 package repository;
 
-import domain.Crew;
+import domain.crew.Crew;
 
 import java.util.Optional;
 

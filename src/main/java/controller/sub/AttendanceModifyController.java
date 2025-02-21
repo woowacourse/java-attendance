@@ -1,5 +1,6 @@
 package controller.sub;
 
+import controller.sub.parent.SubController;
 import service.AttendanceModifyService;
 import service.dto.AttendanceModifyResponse;
 import view.InputView;

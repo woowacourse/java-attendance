@@ -1,6 +1,6 @@
 package service;
 
-import domain.Crew;
+import domain.crew.Crew;
 import repository.AttendanceRepository;
 
 import java.io.*;

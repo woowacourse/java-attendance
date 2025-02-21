@@ -1,14 +1,15 @@
 package service;
 
-import domain.*;
+import domain.attendance.AttendanceBook;
+import domain.crew.Crew;
+import domain.crew.CrewStatus;
+import domain.date.AttendanceCustomDate;
 import repository.AttendanceRepository;
 import service.dto.DisenrollmentCheckResponse;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 public class DisenrollmentCheckService {
     private final AttendanceRepository attendanceRepository;

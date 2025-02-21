@@ -1,5 +1,6 @@
 package controller.sub;
 
+import controller.sub.parent.SubController;
 import service.AttendanceStoreService;
 
 public class StoreController implements SubController {

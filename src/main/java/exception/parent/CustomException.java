@@ -1,4 +1,4 @@
-package exception;
+package exception.parent;
 
 public class CustomException extends IllegalArgumentException {
     public CustomException(String message) {

@@ -1,8 +1,9 @@
 package controller.sub;
 
-import domain.AttendanceCustomDate;
-import domain.AttendanceStatus;
-import domain.CrewStatus;
+import controller.sub.parent.SubController;
+import domain.date.AttendanceCustomDate;
+import domain.attendance.AttendanceStatus;
+import domain.crew.CrewStatus;
 import service.AttendanceHistoryService;
 import service.dto.AttendanceHistoryResponse;
 import view.InputView;

@@ -1,6 +1,6 @@
 package service.dto;
 
-import domain.AttendanceStatus;
+import domain.attendance.AttendanceStatus;
 
 import java.time.LocalDate;
 import java.time.LocalTime;

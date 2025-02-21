@@ -1,10 +1,9 @@
 package repository;
 
-import domain.Attendance;
-import domain.AttendanceBook;
-import domain.Crew;
+import domain.attendance.Attendance;
+import domain.attendance.AttendanceBook;
+import domain.crew.Crew;
 
-import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 

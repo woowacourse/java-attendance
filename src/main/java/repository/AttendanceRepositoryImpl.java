@@ -1,8 +1,8 @@
 package repository;
 
-import domain.Attendance;
-import domain.AttendanceBook;
-import domain.Crew;
+import domain.attendance.Attendance;
+import domain.attendance.AttendanceBook;
+import domain.crew.Crew;
 import exception.CrewNotExistException;
 
 import java.util.*;

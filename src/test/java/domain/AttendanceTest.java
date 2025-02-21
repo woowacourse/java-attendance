@@ -1,5 +1,7 @@
 package domain;
 
+import domain.attendance.Attendance;
+import domain.attendance.AttendanceStatus;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 

@@ -1,8 +1,8 @@
 package service;
 
-import constants.DateConstants;
-import domain.Attendance;
-import domain.Crew;
+import domain.attendance.Attendance;
+import domain.crew.Crew;
+import domain.date.AttendanceCustomDate;
 import exception.DuplicateAttendanceException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -47,8 +47,8 @@ public class AttendanceRegisterServiceTest {
         // given
         String name = "이든";
         LocalDateTime time = LocalDateTime.of(
-                DateConstants.YEAR,
-                DateConstants.MONTH.getValue(),
+                AttendanceCustomDate.YEAR,
+                AttendanceCustomDate.MONTH.getValue(),
                 18,
                 15,
                 52
@@ -69,8 +69,8 @@ public class AttendanceRegisterServiceTest {
         String name = "이든";
         attendanceRepository.createNewAttendance(name, 18, 15, 52);
         LocalDateTime inputTime = LocalDateTime.of(
-                DateConstants.YEAR,
-                DateConstants.MONTH.getValue(),
+                AttendanceCustomDate.YEAR,
+                AttendanceCustomDate.MONTH.getValue(),
                 18,
                 16,
                 55

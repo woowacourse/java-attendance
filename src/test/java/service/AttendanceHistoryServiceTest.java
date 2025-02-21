@@ -1,9 +1,9 @@
 package service;
 
-import constants.DateConstants;
-import domain.AttendanceStatus;
-import domain.Crew;
-import domain.CrewStatus;
+import domain.attendance.AttendanceStatus;
+import domain.crew.Crew;
+import domain.crew.CrewStatus;
+import domain.date.AttendanceCustomDate;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -18,8 +18,8 @@ import java.util.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
 class AttendanceHistoryServiceTest {
-    int year = DateConstants.YEAR;
-    int month = DateConstants.MONTH.getValue();
+    int year = AttendanceCustomDate.YEAR;
+    int month = AttendanceCustomDate.MONTH.getValue();
     String name = "빙티";
     Crew crew = new Crew(name);
     List<AttendanceHistoryResponse> attendanceHistoryResponses = new ArrayList<>(Arrays.asList(

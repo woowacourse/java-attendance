@@ -1,5 +1,6 @@
 package controller.sub;
 
+import controller.sub.parent.SubController;
 import service.DisenrollmentCheckService;
 import service.dto.DisenrollmentCheckResponse;
 import view.OutputView;

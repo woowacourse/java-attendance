@@ -1,10 +1,10 @@
 package view;
 
 import controller.facade.Menu;
-import domain.Attendance;
-import domain.AttendanceCustomDate;
-import domain.AttendanceStatus;
-import domain.CrewStatus;
+import domain.attendance.Attendance;
+import domain.date.AttendanceCustomDate;
+import domain.attendance.AttendanceStatus;
+import domain.crew.CrewStatus;
 import service.dto.AttendanceHistoryResponse;
 import service.dto.AttendanceModifyResponse;
 import service.dto.DisenrollmentCheckResponse;
