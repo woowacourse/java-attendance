@@ -39,6 +39,6 @@ public class DateConverter {
     }
 
     public static LocalTime convertToTime(String input) {
-        return LocalTime.parse(input, LOCAL_TIME_FORMAT);
+        return LocalTime.parse(input, LOCAL_DATE_TIME_FORMAT);
     }
 }
