@@ -16,10 +16,10 @@ public class CrewAttendanceLogResponse {
     private final Map<String, Integer> attendanceStatusStatistics;
 
     private CrewAttendanceLogResponse(
-            String crewName,
-            List<AttendanceLogResponse> attendanceLogResponses,
-            String managementStatus,
-            Map<String, Integer> attendanceStatusStatistics
+            final String crewName,
+            final List<AttendanceLogResponse> attendanceLogResponses,
+            final String managementStatus,
+            final Map<String, Integer> attendanceStatusStatistics
     ) {
 
         this.crewName = crewName;
@@ -29,9 +29,9 @@ public class CrewAttendanceLogResponse {
     }
 
     public static CrewAttendanceLogResponse of(
-            Crew crew,
-            List<AttendanceLogResponse> attendanceLogResponse,
-            CrewAttendance crewAttendance
+            final Crew crew,
+            final List<AttendanceLogResponse> attendanceLogResponse,
+            final CrewAttendance crewAttendance
     ) {
 
         return new CrewAttendanceLogResponse(
@@ -43,8 +43,9 @@ public class CrewAttendanceLogResponse {
     }
 
     public static Map<String, Integer> getAttendanceStatusStatistics(
-            List<AttendanceLogResponse> attendanceLogResponses
+            final List<AttendanceLogResponse> attendanceLogResponses
     ) {
+
         return AttendanceStatus.getNames().stream()
                 .collect(Collectors.toMap(
                         status -> status,
@@ -54,7 +55,11 @@ public class CrewAttendanceLogResponse {
                 );
     }
 
-    private static long getAttendanceStatusCount(List<AttendanceLogResponse> attendanceLogResponses, String status) {
+    private static long getAttendanceStatusCount(
+            final List<AttendanceLogResponse> attendanceLogResponses,
+            final String status
+    ) {
+
         return attendanceLogResponses.stream()
                 .map(AttendanceLogResponse::getAttendanceStatus)
                 .filter(status::equals)

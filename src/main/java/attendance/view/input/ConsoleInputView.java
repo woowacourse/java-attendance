@@ -13,6 +13,7 @@ import java.util.Scanner;
 public class ConsoleInputView implements InputView {
 
     private static final Scanner SCANNER = new Scanner(System.in);
+    private static final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("HH:mm");
 
     @Override
     public Command inputCommand() {
@@ -36,7 +37,7 @@ public class ConsoleInputView implements InputView {
         try {
             System.out.println("등교 시간을 입력해주세요.");
             return LocalDateTime.of(Calender.TODAY, LocalTime.parse(SCANNER.nextLine()));
-        } catch (DateTimeParseException e) {
+        } catch (final DateTimeParseException e) {
             throw new IllegalArgumentException("올바른 시간 형식이 아닙니다.");
         }
     }
@@ -56,12 +57,11 @@ public class ConsoleInputView implements InputView {
     @Override
     public LocalTime inputUpdateAttendanceTime() {
         System.out.println("언제로 변경하겠습니까?");
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");
-        return LocalTime.parse(SCANNER.nextLine(), formatter);
+        return LocalTime.parse(SCANNER.nextLine(), dateTimeFormatter);
     }
 
     private String getToday() {
-        KoreaDayOfWeek dayOfWeek = KoreaDayOfWeek.from(Calender.TODAY.getDayOfWeek());
+        final KoreaDayOfWeek dayOfWeek = KoreaDayOfWeek.from(Calender.TODAY.getDayOfWeek());
         return String.format("오늘은 %02d월 %02d일 %s입니다.",
                 Calender.NOW_MONTH,
                 Calender.NOW_DAY,

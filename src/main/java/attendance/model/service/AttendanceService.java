@@ -20,22 +20,23 @@ public class AttendanceService {
 
     private final AttendanceRepository attendanceRepository;
 
-    public AttendanceService(AttendanceRepository attendanceRepository) {
+    public AttendanceService(final AttendanceRepository attendanceRepository) {
         this.attendanceRepository = attendanceRepository;
     }
 
-    public AttendanceLogResponse attendance(Crew crew, LocalDateTime attendanceTime) {
+    public AttendanceLogResponse attendance(final Crew crew, final LocalDateTime attendanceTime) {
         attendanceRepository.save(crew, attendanceTime);
         return AttendanceLogResponse.fromDateTime(attendanceTime);
     }
 
-    public Crew findCrewByName(String crewName) {
+    public Crew findCrewByName(final String crewName) {
         return attendanceRepository.findCrewByName(crewName)
                 .orElseThrow(() -> new IllegalArgumentException("해당 크루는 존재하지 않습니다."));
     }
 
-    public UpdateAttendanceResponse updateAttendance(Crew crew, LocalDateTime updatedTime) {
-        LocalDateTime previousTime = attendanceRepository.findDateTimeByCrewAndDate(crew, updatedTime.toLocalDate())
+    public UpdateAttendanceResponse updateAttendance(final Crew crew, final LocalDateTime updatedTime) {
+        final LocalDateTime previousTime = attendanceRepository.findDateTimeByCrewAndDate(crew,
+                        updatedTime.toLocalDate())
                 .orElseThrow(() -> new IllegalArgumentException("해당 크루는 해당 일자의 출석 기록이 없습니다."));
 
         attendanceRepository.update(crew, previousTime, updatedTime);
@@ -48,8 +49,8 @@ public class AttendanceService {
         );
     }
 
-    public CrewAttendanceLogResponse getAttendanceLog(Crew crew) {
-        List<LocalDateTime> attendanceLogs = attendanceRepository.findByCrew(crew);
+    public CrewAttendanceLogResponse getAttendanceLog(final Crew crew) {
+        final List<LocalDateTime> attendanceLogs = attendanceRepository.findByCrew(crew);
 
         return CrewAttendanceLogResponse.of(
                 crew,
@@ -59,7 +60,7 @@ public class AttendanceService {
     }
 
     public List<RequiresManagementCrewResponse> getRequiresManagementCrews(
-            CrewAttendanceComparator crewAttendanceComparator
+            final CrewAttendanceComparator crewAttendanceComparator
     ) {
 
         return getSortedCrewAttendance(crewAttendanceComparator).stream()
@@ -68,7 +69,7 @@ public class AttendanceService {
                 .toList();
     }
 
-    private List<AttendanceLogResponse> mergeAndSotTimeLogResponses(List<LocalDateTime> attendanceLogs) {
+    private List<AttendanceLogResponse> mergeAndSotTimeLogResponses(final List<LocalDateTime> attendanceLogs) {
         return Stream.concat(
                         makeExistsTimeLogResponses(attendanceLogs).stream(),
                         makeNoneExistsTimeLogResponses(attendanceLogs).stream()
@@ -77,14 +78,14 @@ public class AttendanceService {
                 .toList();
     }
 
-    private List<AttendanceLogResponse> makeExistsTimeLogResponses(List<LocalDateTime> attendanceLogs) {
+    private List<AttendanceLogResponse> makeExistsTimeLogResponses(final List<LocalDateTime> attendanceLogs) {
         return attendanceLogs.stream()
                 .map(AttendanceLogResponse::fromDateTime)
                 .toList();
     }
 
-    private List<AttendanceLogResponse> makeNoneExistsTimeLogResponses(List<LocalDateTime> attendanceLogs) {
-        List<LocalDate> dateLogs = attendanceLogs.stream()
+    private List<AttendanceLogResponse> makeNoneExistsTimeLogResponses(final List<LocalDateTime> attendanceLogs) {
+        final List<LocalDate> dateLogs = attendanceLogs.stream()
                 .map(LocalDateTime::toLocalDate)
                 .toList();
 
@@ -93,7 +94,7 @@ public class AttendanceService {
                 .toList();
     }
 
-    private List<CrewAttendance> getSortedCrewAttendance(CrewAttendanceComparator crewAttendanceComparator) {
+    private List<CrewAttendance> getSortedCrewAttendance(final CrewAttendanceComparator crewAttendanceComparator) {
         return attendanceRepository.findAllCrews().stream()
                 .map(crew -> CrewAttendance.of(crew, attendanceRepository.findByCrew(crew)))
                 .sorted(crewAttendanceComparator)

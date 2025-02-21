@@ -13,24 +13,24 @@ public class ConsoleOutputView implements OutputView {
 
 
     @Override
-    public void printAttendanceLogResponse(AttendanceLogResponse response) {
+    public void printAttendanceLogResponse(final AttendanceLogResponse response) {
 
-        LocalDate date = response.getDate();
-        LocalTime time = response.getTime().orElse(null);
+        final LocalDate date = response.getDate();
+        final LocalTime time = response.getTime().orElse(null);
 
-        String message = String.format("%s (%s)",
+        final String message = String.format("%s (%s)",
                 formatDateTimeWithDayOfWeek(date, time),
                 response.getAttendanceStatus());
         System.out.println(message);
     }
 
     @Override
-    public void printUpdateAttendanceResponse(UpdateAttendanceResponse updateAttendanceResponse) {
+    public void printUpdateAttendanceResponse(final UpdateAttendanceResponse updateAttendanceResponse) {
 
-        LocalDate date = updateAttendanceResponse.getPreviousDateTime().toLocalDate();
-        LocalTime time = updateAttendanceResponse.getPreviousDateTime().toLocalTime();
+        final LocalDate date = updateAttendanceResponse.getPreviousDateTime().toLocalDate();
+        final LocalTime time = updateAttendanceResponse.getPreviousDateTime().toLocalTime();
 
-        String message = String.format("%s (%s) -> %s (%s) 수정 완료!",
+        final String message = String.format("%s (%s) -> %s (%s) 수정 완료!",
                 formatDateTimeWithDayOfWeek(date, time),
                 updateAttendanceResponse.getPreviousStatus(),
                 formatTime(time),
@@ -39,7 +39,7 @@ public class ConsoleOutputView implements OutputView {
     }
 
     @Override
-    public void printCrewAttendanceLogResponse(CrewAttendanceLogResponse crewAttendanceLogResponse) {
+    public void printCrewAttendanceLogResponse(final CrewAttendanceLogResponse crewAttendanceLogResponse) {
         System.out.printf("이번 달 %s의 출석 기록입니다.%n%n", crewAttendanceLogResponse.getCrewName());
 
         crewAttendanceLogResponse.getAttendanceLogResponses()
@@ -52,7 +52,7 @@ public class ConsoleOutputView implements OutputView {
 
     @Override
     public void printRequiresManagementCrewResponse(
-            List<RequiresManagementCrewResponse> requiresManagementCrewResponses
+            final List<RequiresManagementCrewResponse> requiresManagementCrewResponses
     ) {
         System.out.println("제적 위험자 조회 결과");
         requiresManagementCrewResponses.forEach(response -> {
@@ -64,23 +64,23 @@ public class ConsoleOutputView implements OutputView {
         });
     }
 
-    private void printAttendanceStatusStatistics(CrewAttendanceLogResponse crewAttendanceLogResponse) {
+    private void printAttendanceStatusStatistics(final CrewAttendanceLogResponse crewAttendanceLogResponse) {
         crewAttendanceLogResponse.getAttendanceStatusStatistics()
                 .forEach((status, count) -> System.out.printf("%s: %d회%n", status, count));
     }
 
-    private String formatDateTimeWithDayOfWeek(LocalDate date, LocalTime time) {
+    private String formatDateTimeWithDayOfWeek(final LocalDate date, final LocalTime time) {
         return String.format("%s %s", formatDateWithDayOfWeek(date), formatTime(time));
     }
 
-    private String formatTime(LocalTime time) {
+    private String formatTime(final LocalTime time) {
         if (time == null) {
             return "--:--";
         }
         return String.format("%02d:%02d", time.getHour(), time.getMinute());
     }
 
-    private String formatDateWithDayOfWeek(LocalDate date) {
+    private String formatDateWithDayOfWeek(final LocalDate date) {
         return String.format("%02d월 %02d일 %s", date.getMonthValue(), date.getDayOfMonth(),
                 KoreaDayOfWeek.from(date.getDayOfWeek()).getName());
     }

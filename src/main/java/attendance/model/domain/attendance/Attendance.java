@@ -9,13 +9,13 @@ public class Attendance {
     private final WarningCount warningCount;
     private final ManagementStatus managementStatus;
 
-    public Attendance(WarningCount warningCount, ManagementStatus managementStatus) {
+    public Attendance(final WarningCount warningCount, final ManagementStatus managementStatus) {
         this.warningCount = warningCount;
         this.managementStatus = managementStatus;
     }
 
-    public static Attendance from(List<LocalDateTime> dateTimes) {
-        WarningCount warningCount = WarningCount.from(dateTimes);
+    public static Attendance from(final List<LocalDateTime> dateTimes) {
+        final WarningCount warningCount = WarningCount.from(dateTimes);
         return new Attendance(warningCount, ManagementStatus.from(warningCount));
     }
 

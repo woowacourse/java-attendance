@@ -11,12 +11,12 @@ public enum ManagementStatus {
 
     private final String name;
 
-    ManagementStatus(String name) {
+    ManagementStatus(final String name) {
         this.name = name;
     }
 
-    public static ManagementStatus from(WarningCount warningCount) {
-        int policyAppliedAbsenceCount = warningCount.getPolicyAppliedAbsenceCount();
+    public static ManagementStatus from(final WarningCount warningCount) {
+        final int policyAppliedAbsenceCount = warningCount.getPolicyAppliedAbsenceCount();
         if (policyAppliedAbsenceCount > 5) {
             return EXPULSION;
         }

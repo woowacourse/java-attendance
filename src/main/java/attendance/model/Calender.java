@@ -18,29 +18,29 @@ public enum Calender {
     public static final LocalDate TODAY = LocalDate.of(NOW_YEAR, NOW_MONTH, NOW_DAY);
     private final List<Integer> days;
 
-    Calender(List<Integer> days) {
+    Calender(final List<Integer> days) {
         this.days = days;
     }
 
-    public static List<LocalDate> getNotExistsDatesBeforeToday(List<LocalDate> dates) {
-        Set<LocalDate> datesSet = Set.copyOf(dates);
+    public static List<LocalDate> getNotExistsDatesBeforeToday(final List<LocalDate> dates) {
+        final Set<LocalDate> datesSet = Set.copyOf(dates);
 
         return getDatesBefore(Calender.TODAY).stream()
                 .filter(date -> !datesSet.contains(date))
                 .toList();
     }
 
-    public static int getNotExistsDatesCountBeforeToday(List<LocalDate> dates) {
+    public static int getNotExistsDatesCountBeforeToday(final List<LocalDate> dates) {
         return getNotExistsDatesBeforeToday(dates).size();
     }
 
-    private static List<LocalDate> getDatesBefore(LocalDate date) {
+    private static List<LocalDate> getDatesBefore(final LocalDate date) {
         return WEEKDAY.getDays().stream()
                 .filter(result -> result.isBefore(date))
                 .toList();
     }
 
-    public static boolean isMonday(LocalDate date) {
+    public static boolean isMonday(final LocalDate date) {
         if (date.getYear() != NOW_YEAR || date.getMonth() != Month.of(NOW_MONTH)) {
             throw new IllegalArgumentException("해당 날짜는 2024년 12월에 포함되지 않습니다.");
         }

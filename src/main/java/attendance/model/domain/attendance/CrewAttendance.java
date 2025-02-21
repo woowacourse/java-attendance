@@ -9,12 +9,12 @@ public class CrewAttendance {
     private final Crew crew;
     private final Attendance attendance;
 
-    private CrewAttendance(Crew crew, Attendance attendance) {
+    private CrewAttendance(final Crew crew, final Attendance attendance) {
         this.crew = crew;
         this.attendance = attendance;
     }
 
-    public static CrewAttendance of(Crew crew, List<LocalDateTime> dateTimes) {
+    public static CrewAttendance of(final Crew crew, final List<LocalDateTime> dateTimes) {
         return new CrewAttendance(crew, Attendance.from(dateTimes));
     }
 

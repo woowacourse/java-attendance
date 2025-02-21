@@ -16,12 +16,12 @@ public enum KoreaDayOfWeek {
     private final String name;
     private final DayOfWeek dayOfWeek;
 
-    KoreaDayOfWeek(String name, DayOfWeek dayOfWeek) {
+    KoreaDayOfWeek(final String name, final DayOfWeek dayOfWeek) {
         this.name = name;
         this.dayOfWeek = dayOfWeek;
     }
 
-    public static KoreaDayOfWeek from(DayOfWeek dayOfWeek) {
+    public static KoreaDayOfWeek from(final DayOfWeek dayOfWeek) {
         return Arrays.stream(values())
                 .filter(koreaDayOfWeek -> koreaDayOfWeek.dayOfWeek == dayOfWeek)
                 .findFirst()

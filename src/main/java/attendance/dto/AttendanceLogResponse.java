@@ -12,13 +12,13 @@ public class AttendanceLogResponse {
     private final LocalTime time;
     private final String attendanceStatus;
 
-    private AttendanceLogResponse(LocalDate date, LocalTime time, String attendanceStatus) {
+    private AttendanceLogResponse(final LocalDate date, final LocalTime time, final String attendanceStatus) {
         this.date = date;
         this.time = time;
         this.attendanceStatus = attendanceStatus;
     }
 
-    public static AttendanceLogResponse fromDateTime(LocalDateTime dateTime) {
+    public static AttendanceLogResponse fromDateTime(final LocalDateTime dateTime) {
         return new AttendanceLogResponse(
                 dateTime.toLocalDate(),
                 dateTime.toLocalTime(),
@@ -26,7 +26,7 @@ public class AttendanceLogResponse {
         );
     }
 
-    public static AttendanceLogResponse fromAbsenceDate(LocalDate date) {
+    public static AttendanceLogResponse fromAbsenceDate(final LocalDate date) {
         return new AttendanceLogResponse(
                 date,
                 null,

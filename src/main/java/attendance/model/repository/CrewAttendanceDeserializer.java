@@ -21,31 +21,31 @@ public class CrewAttendanceDeserializer {
     private static final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
 
     public Map<Crew, List<LocalDateTime>> readAll(final Path filePath) {
-        try (Stream<String> lines = Files.lines(filePath)) {
-            HashMap<Crew, List<LocalDateTime>> parsedData = new HashMap<>();
+        try (final Stream<String> lines = Files.lines(filePath)) {
+            final HashMap<Crew, List<LocalDateTime>> parsedData = new HashMap<>();
 
             lines.skip(1)
                     .map(this::deSerialize)
                     .forEach(entry -> addData(parsedData, entry));
 
             return parsedData;
-        } catch (IOException e) {
+        } catch (final IOException e) {
             throw new UncheckedIOException(e);
         }
     }
 
-    private void addData(HashMap<Crew, List<LocalDateTime>> data, Entry<Crew, LocalDateTime> entry) {
-        List<LocalDateTime> times = data.getOrDefault(entry.getKey(), new LinkedList<>());
+    private void addData(final HashMap<Crew, List<LocalDateTime>> data, final Entry<Crew, LocalDateTime> entry) {
+        final List<LocalDateTime> times = data.getOrDefault(entry.getKey(), new LinkedList<>());
         times.add(entry.getValue());
 
         data.put(entry.getKey(), times);
     }
 
     private Entry<Crew, LocalDateTime> deSerialize(final String line) {
-        String[] split = line.split(CREW_DATETIME_DELIMITER);
+        final String[] split = line.split(CREW_DATETIME_DELIMITER);
 
-        String crewName = split[0];
-        LocalDateTime dateTime = dateTimeFormatter.parse(split[1], LocalDateTime::from);
+        final String crewName = split[0];
+        final LocalDateTime dateTime = dateTimeFormatter.parse(split[1], LocalDateTime::from);
 
         return new SimpleImmutableEntry<>(Crew.from(crewName), dateTime);
     }

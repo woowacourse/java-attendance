@@ -10,38 +10,39 @@ public class AbsenceCount {
 
     private final int value;
 
-    private AbsenceCount(int value) {
+    private AbsenceCount(final int value) {
         validate(value);
         this.value = value;
     }
 
-    public static AbsenceCount fromDateTimes(List<LocalDateTime> dateTimes) {
-        long value = dateTimes.stream()
+    public static AbsenceCount fromDateTimes(final List<LocalDateTime> dateTimes) {
+        final long existingDateCount = dateTimes.stream()
                 .filter(AttendanceStatus::isAbsence)
                 .count();
 
-        value += Calender.getNotExistsDatesCountBeforeToday(convertToDateTimesToDates(dateTimes));
+        final int notExistingDateCount =
+                Calender.getNotExistsDatesCountBeforeToday(convertToDateTimesToDates(dateTimes));
 
-        return new AbsenceCount(Math.toIntExact(value));
+        return new AbsenceCount(Math.toIntExact(existingDateCount + notExistingDateCount));
     }
 
-    private static List<LocalDate> convertToDateTimesToDates(List<LocalDateTime> dateTimes) {
+    private static List<LocalDate> convertToDateTimesToDates(final List<LocalDateTime> dateTimes) {
         return dateTimes.stream()
                 .map(LocalDateTime::toLocalDate)
                 .toList();
     }
 
-    public int getPolicyAppliedValue(LateCount lateCount) {
+    private void validate(final int value) {
+        if (value < 0) {
+            throw new IllegalArgumentException("결석 횟수는 음수가 될 수 없습니다.");
+        }
+    }
+
+    public int getPolicyAppliedValue(final LateCount lateCount) {
         return value + lateCount.calculatePolicyAppliedAbsenceCount();
     }
 
     public int getValue() {
         return value;
-    }
-
-    private void validate(int value) {
-        if (value < 0) {
-            throw new IllegalArgumentException("결석 횟수는 음수가 될 수 없습니다.");
-        }
     }
 }

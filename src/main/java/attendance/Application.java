@@ -14,12 +14,12 @@ public class Application {
 
     public static void main(String[] args) {
 
-        AttendanceRepository attendanceRepository = new AttendanceRepository(
+        final AttendanceRepository attendanceRepository = new AttendanceRepository(
                 new CrewAttendanceDeserializer(),
                 Path.of("src/main/resources/attendances.csv")
         );
 
-        Controller controller = new DefaultController(
+        final Controller controller = new DefaultController(
                 new ConsoleInputView(),
                 new ConsoleOutputView(),
                 new AttendanceService(attendanceRepository),

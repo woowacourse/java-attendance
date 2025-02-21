@@ -7,11 +7,11 @@ public class Crew {
 
     private final CrewName name;
 
-    private Crew(CrewName name) {
+    private Crew(final CrewName name) {
         this.name = name;
     }
 
-    public static Crew from(String name) {
+    public static Crew from(final String name) {
         return new Crew(CrewName.from(name));
     }
 
@@ -20,7 +20,7 @@ public class Crew {
     }
 
     @Override
-    public boolean equals(Object o) {
+    public boolean equals(final Object o) {
         if (o == null || getClass() != o.getClass()) {
             return false;
         }

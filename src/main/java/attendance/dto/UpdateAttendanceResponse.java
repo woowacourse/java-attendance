@@ -11,11 +11,12 @@ public class UpdateAttendanceResponse {
     private final String updatedStatus;
 
     private UpdateAttendanceResponse(
-            LocalDateTime previousDateTime,
-            LocalDateTime updatedDateTime,
-            String previousStatus,
-            String updatedStatus
+            final LocalDateTime previousDateTime,
+            final LocalDateTime updatedDateTime,
+            final String previousStatus,
+            final String updatedStatus
     ) {
+
         this.previousDateTime = previousDateTime;
         this.updatedDateTime = updatedDateTime;
         this.previousStatus = previousStatus;
@@ -23,12 +24,18 @@ public class UpdateAttendanceResponse {
     }
 
     public static UpdateAttendanceResponse of(
-            LocalDateTime before,
-            LocalDateTime after,
-            AttendanceStatus beforeStatus,
-            AttendanceStatus afterStatus
+            final LocalDateTime before,
+            final LocalDateTime after,
+            final AttendanceStatus beforeStatus,
+            final AttendanceStatus afterStatus
     ) {
-        return new UpdateAttendanceResponse(before, after, beforeStatus.getName(), afterStatus.getName());
+
+        return new UpdateAttendanceResponse(
+                before,
+                after,
+                beforeStatus.getName(),
+                afterStatus.getName()
+        );
     }
 
     public LocalDateTime getPreviousDateTime() {

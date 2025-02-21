@@ -10,17 +10,23 @@ public class LateCount {
 
     private final int value;
 
-    private LateCount(int value) {
+    private LateCount(final int value) {
         validate(value);
         this.value = value;
     }
 
-    public static LateCount fromDateTimes(List<LocalDateTime> dateTimes) {
-        long value = dateTimes.stream()
+    public static LateCount fromDateTimes(final List<LocalDateTime> dateTimes) {
+        final long lateCount = dateTimes.stream()
                 .filter(AttendanceStatus::isLate)
                 .count();
 
-        return new LateCount(Math.toIntExact(value));
+        return new LateCount(Math.toIntExact(lateCount));
+    }
+
+    private void validate(final int value) {
+        if (value < 0) {
+            throw new IllegalArgumentException("지각 횟수는 음수가 될 수 없습니다.");
+        }
     }
 
     public int calculatePolicyAppliedAbsenceCount() {
@@ -33,11 +39,5 @@ public class LateCount {
 
     public int getValue() {
         return value;
-    }
-
-    private void validate(int value) {
-        if (value < 0) {
-            throw new IllegalArgumentException("지각 횟수는 음수가 될 수 없습니다.");
-        }
     }
 }

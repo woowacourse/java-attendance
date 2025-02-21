@@ -8,14 +8,14 @@ public class WarningCount {
     private final AbsenceCount absenceCount;
     private final LateCount lateCount;
 
-    private WarningCount(AbsenceCount absenceCount, LateCount lateCount) {
+    private WarningCount(final AbsenceCount absenceCount, final LateCount lateCount) {
         this.absenceCount = absenceCount;
         this.lateCount = lateCount;
     }
 
-    public static WarningCount from(List<LocalDateTime> dateTimes) {
-        AbsenceCount absenceCount = AbsenceCount.fromDateTimes(dateTimes);
-        LateCount lateCount = LateCount.fromDateTimes(dateTimes);
+    public static WarningCount from(final List<LocalDateTime> dateTimes) {
+        final AbsenceCount absenceCount = AbsenceCount.fromDateTimes(dateTimes);
+        final LateCount lateCount = LateCount.fromDateTimes(dateTimes);
 
         return new WarningCount(absenceCount, lateCount);
     }

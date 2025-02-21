@@ -9,14 +9,20 @@ public class RequiresManagementCrewResponse {
     private final int lateCount;
     private final String managementStatus;
 
-    private RequiresManagementCrewResponse(String crewName, int absenceCount, int lateCount, String managementStatus) {
+    private RequiresManagementCrewResponse(
+            final String crewName,
+            final int absenceCount,
+            final int lateCount,
+            final String managementStatus
+    ) {
+
         this.crewName = crewName;
         this.absenceCount = absenceCount;
         this.lateCount = lateCount;
         this.managementStatus = managementStatus;
     }
 
-    public static RequiresManagementCrewResponse from(CrewAttendance crewAttendance) {
+    public static RequiresManagementCrewResponse from(final CrewAttendance crewAttendance) {
         return new RequiresManagementCrewResponse(
                 crewAttendance.getCrewName(),
                 crewAttendance.getAbsenceCount(),

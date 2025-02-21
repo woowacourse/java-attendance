@@ -15,13 +15,13 @@ public enum Command {
     private final String description;
     private final Consumer<Controller> action;
 
-    Command(String option, String description, Consumer<Controller> action) {
+    Command(final String option, final String description, final Consumer<Controller> action) {
         this.option = option;
         this.description = description;
         this.action = action;
     }
 
-    public static Command from(String option) {
+    public static Command from(final String option) {
         return Arrays.stream(values())
                 .filter(command -> command.option.equals(option))
                 .findFirst()
@@ -32,7 +32,7 @@ public enum Command {
         return option + ". " + description;
     }
 
-    public void run(Controller controller) {
+    public void run(final Controller controller) {
         action.accept(controller);
     }
 }

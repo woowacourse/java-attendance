@@ -20,11 +20,11 @@ public enum AttendanceStatus {
 
     private final String name;
 
-    AttendanceStatus(String name) {
+    AttendanceStatus(final String name) {
         this.name = name;
     }
 
-    public static AttendanceStatus from(LocalDateTime dateTime) {
+    public static AttendanceStatus from(final LocalDateTime dateTime) {
         if (isAbsence(dateTime)) {
             return ABSENCE;
         }
@@ -34,22 +34,22 @@ public enum AttendanceStatus {
         return ATTENDANCE;
     }
 
-    public static AttendanceStatus from(String name) {
+    public static AttendanceStatus from(final String name) {
         return Arrays.stream(values())
                 .filter(attendanceStatus -> attendanceStatus.name.equals(name))
                 .findFirst()
                 .orElseThrow(() -> new IllegalArgumentException("해당하는 출석 상태가 없습니다."));
     }
 
-    public static boolean isAbsence(LocalDateTime dateTime) {
-        LocalTime time = dateTime.toLocalTime();
+    public static boolean isAbsence(final LocalDateTime dateTime) {
+        final LocalTime time = dateTime.toLocalTime();
         if (Calender.isMonday(dateTime.toLocalDate())) {
             return time.isAfter(MONDAY_ABSENCE_TIME);
         }
         return time.isAfter(WEEKDAY_ABSENCE_TIME);
     }
 
-    public static boolean isLate(LocalDateTime dateTime) {
+    public static boolean isLate(final LocalDateTime dateTime) {
         if (Calender.isMonday(dateTime.toLocalDate())) {
             return isTimeBetween(dateTime.toLocalTime(), MONDAY_LATE_TIME, MONDAY_ABSENCE_TIME.plusMinutes(1));
         }
@@ -62,7 +62,7 @@ public enum AttendanceStatus {
                 .toList();
     }
 
-    private static boolean isTimeBetween(LocalTime time, LocalTime startTime, LocalTime endTime) {
+    private static boolean isTimeBetween(final LocalTime time, final LocalTime startTime, final LocalTime endTime) {
         return time.isAfter(startTime) && time.isBefore(endTime);
     }
 
