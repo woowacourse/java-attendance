@@ -15,11 +15,6 @@ public class AttendanceBook {
         this.attendances = new HashMap<>();
     }
 
-//    public String getStatusAt(int date) {
-//        Attendance attendance = attendances.get(date);
-//        return attendance.getStatus();
-//    }
-
     public Attendance create(int date, int hour, int minute) {
         if (attendances.containsKey(date)) {
             throw new DuplicateAttendanceException();
