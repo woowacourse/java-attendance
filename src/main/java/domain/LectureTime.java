@@ -6,13 +6,13 @@ import java.time.LocalTime;
 import java.util.Arrays;
 
 public enum LectureTime {
-    MONDAY(DayOfWeek.MONDAY, LocalTime.of(13, 00), LocalTime.of(18, 00)),
-    TUESDAY(DayOfWeek.TUESDAY, LocalTime.of(10, 00), LocalTime.of(18, 00)),
-    WEDNESDAY(DayOfWeek.WEDNESDAY, LocalTime.of(10, 00), LocalTime.of(18, 00)),
-    THURSDAY(DayOfWeek.THURSDAY, LocalTime.of(10, 00), LocalTime.of(18, 00)),
-    FRIDAY(DayOfWeek.FRIDAY, LocalTime.of(10, 00), LocalTime.of(18, 00)),
-    SATURDAY(DayOfWeek.SATURDAY, LocalTime.of(10, 00), LocalTime.of(18, 00)),
-    SUNDAY(DayOfWeek.SUNDAY, LocalTime.of(10, 00), LocalTime.of(18, 00)),
+    MONDAY(DayOfWeek.MONDAY, LocalTime.of(13, 0), LocalTime.of(18, 0)),
+    TUESDAY(DayOfWeek.TUESDAY, LocalTime.of(10, 0), LocalTime.of(18, 0)),
+    WEDNESDAY(DayOfWeek.WEDNESDAY, LocalTime.of(10, 0), LocalTime.of(18, 0)),
+    THURSDAY(DayOfWeek.THURSDAY, LocalTime.of(10, 0), LocalTime.of(18, 0)),
+    FRIDAY(DayOfWeek.FRIDAY, LocalTime.of(10, 0), LocalTime.of(18, 0)),
+    SATURDAY(DayOfWeek.SATURDAY, null, null),
+    SUNDAY(DayOfWeek.SUNDAY, null, null),
     ;
 
     private final DayOfWeek dayOfWeek;
@@ -27,9 +27,9 @@ public enum LectureTime {
 
     public static LectureTime from(LocalDate date) {
         return Arrays.stream(values())
-            .filter(lectureTime -> lectureTime.dayOfWeek.equals(date.getDayOfWeek()))
-            .findAny()
-            .orElseThrow(() -> new IllegalStateException("잘못된 상황입니다."));
+                .filter(lectureTime -> lectureTime.dayOfWeek.equals(date.getDayOfWeek()))
+                .findAny()
+                .orElseThrow(() -> new IllegalStateException("잘못된 상황입니다."));
     }
 
     public LocalTime getStartTime() {

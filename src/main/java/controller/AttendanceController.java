@@ -4,14 +4,14 @@ import constant.CampusConstant;
 import domain.AttendanceStatus;
 import domain.Crew;
 import domain.CrewRepository;
-import domain.History;
 import domain.Manage;
-import dto.AttendanceHistoryResult;
 import dto.AttendanceModifyRequest;
+import dto.AttendanceRecord;
 import dto.AttendanceRequest;
 import dto.AttendanceResult;
 import dto.CrewAlmostExpelledResult;
 import dto.ModifiedResult;
+import dto.MonthAttendanceRecordsResult;
 import dto.OptionRequest;
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -35,7 +35,7 @@ public class AttendanceController {
                 switch (optionRequest.option()) {
                     case "1" -> attendanceCheck();
                     case "2" -> attendanceModify();
-                    case "3" -> checkAttendanceHistory();
+                    case "3" -> printMonthAttendanceRecords();
                     case "4" -> checkCrewsAlmostExpelled();
                     case "q", "Q" -> isRunning = false;
                     default -> throw new IllegalArgumentException("존재하지 않는 옵션입니다.");
@@ -68,16 +68,16 @@ public class AttendanceController {
                 crew.getAttendanceStatusByDate(request.date()));
     }
 
-    private void checkAttendanceHistory() {
+    private void printMonthAttendanceRecords() {
         Crew crew = CrewRepository.findByNickname(InputView.scanNickname());
         LocalDate now = DateTimeUtil.nowDate();
-        List<History> history = crew.getAllHistory(now);
+        List<AttendanceRecord> attendanceRecords = crew.getMonthAttendanceRecords(now);
         Manage manage = Manage.of(crew.getAttendanceStatusCounter(now));
 
-        OutputView.printHistory(
-                AttendanceHistoryResult.of(
+        OutputView.printMonthAttendanceRecords(
+                MonthAttendanceRecordsResult.of(
                         crew.getNickname(),
-                        history,
+                        attendanceRecords,
                         crew.getAttendanceStatusCounter(now),
                         manage
                 ));

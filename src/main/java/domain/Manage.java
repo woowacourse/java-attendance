@@ -21,12 +21,14 @@ public enum Manage {
 
     public static Manage of(Map<AttendanceStatus, Integer> attendanceStatusStatistics) {
         int lateCount = attendanceStatusStatistics.getOrDefault(AttendanceStatus.LATE, 0);
-        int absentCount = attendanceStatusStatistics.getOrDefault(AttendanceStatus.ABSENT, 0) + lateCount / 3;
+        int absentCount = attendanceStatusStatistics.getOrDefault(AttendanceStatus.ABSENT_LATE, 0)
+                + attendanceStatusStatistics.getOrDefault(AttendanceStatus.ABSENT, 0)
+                + lateCount / 3;
 
         return Arrays.stream(values())
-            .filter(manage -> manage.absentThreshold <= absentCount)
-            .max(Comparator.comparing(Manage::getAbsentThreshold))
-            .orElseThrow(() -> new IllegalStateException("잘못된 상황입니다."));
+                .filter(manage -> manage.absentThreshold <= absentCount)
+                .max(Comparator.comparing(Manage::getAbsentThreshold))
+                .orElseThrow(() -> new IllegalStateException("잘못된 상황입니다."));
     }
 
     public int getAbsentThreshold() {

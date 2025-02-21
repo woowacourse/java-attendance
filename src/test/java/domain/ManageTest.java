@@ -5,62 +5,82 @@ import static org.assertj.core.api.Assertions.assertThat;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.Map;
-
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 public class ManageTest {
 
     @Test
-    void 결석_2회_미만인_경우_아무_관리_대상자가_아니다() {
+    @DisplayName("결석 2회 미만인 경우 어떤 관리 대상자도 아니다")
+    void ofTest_NONE() {
+        // given
         Crew crew = new Crew("pobi");
-        // 지각
-        crew.addAttendanceTime(LocalDate.of(2025, 02, 3), LocalTime.of(13, 06));
-        // 출석
-        crew.addAttendanceTime(LocalDate.of(2025, 02, 4), LocalTime.of(10, 05));
-        // 결석
-        crew.addAttendanceTime(LocalDate.of(2025, 02, 5), LocalTime.of(10, 31));
+        // LATE
+        crew.addAttendanceTime(LocalDate.of(2025, 2, 3), LocalTime.of(13, 6));
+        // ATTENDANCE
+        crew.addAttendanceTime(LocalDate.of(2025, 2, 4), LocalTime.of(10, 5));
+        // ABSENT_LATE
+        crew.addAttendanceTime(LocalDate.of(2025, 2, 5), LocalTime.of(10, 31));
         Map<AttendanceStatus, Integer> attendanceStatusStatistics =
-            crew.getAttendanceStatusCounter(LocalDate.of(2025, 02, 6));
+                crew.getAttendanceStatusCounter(LocalDate.of(2025, 2, 6));
 
+        // when
         Manage manage = Manage.of(attendanceStatusStatistics);
+
+        // then
         assertThat(manage).isEqualTo(Manage.NONE);
     }
 
     @Test
-    void 결석_2회_이상인_경우_경고_대상자가_된다() {
+    @DisplayName("결석 2회 이상인 경우 경고 대상자가 된다")
+    void ofTest_WARNING() {
+        // given
         Crew crew = new Crew("pobi");
-        // 지각
-        crew.addAttendanceTime(LocalDate.of(2025, 02, 3), LocalTime.of(13, 06));
-        // 지각
-        crew.addAttendanceTime(LocalDate.of(2025, 02, 4), LocalTime.of(10, 06));
-        // 지각
-        crew.addAttendanceTime(LocalDate.of(2025, 02, 5), LocalTime.of(10, 30));
+        // LATE
+        crew.addAttendanceTime(LocalDate.of(2025, 2, 3), LocalTime.of(13, 6));
+        // LATE
+        crew.addAttendanceTime(LocalDate.of(2025, 2, 4), LocalTime.of(10, 6));
+        // LATE
+        crew.addAttendanceTime(LocalDate.of(2025, 2, 5), LocalTime.of(10, 30));
         Map<AttendanceStatus, Integer> attendanceStatusStatistics =
-            crew.getAttendanceStatusCounter(LocalDate.of(2025, 02, 7));
+                crew.getAttendanceStatusCounter(LocalDate.of(2025, 2, 7));
 
+        // when
         Manage manage = Manage.of(attendanceStatusStatistics);
+
+        // then
         assertThat(manage).isEqualTo(Manage.WARNING);
     }
 
     @Test
-    void 결석_3회_이상인_경우_면담_대상자가_된다() {
+    @DisplayName("결석 3회 이상인 경우 면담 대상자가 된다")
+    void ofTest_INTERVIEW() {
+        // given
         Crew crew = new Crew("pobi");
-        // 지각
+        // LATE
         crew.addAttendanceTime(LocalDate.of(2025, 02, 3), LocalTime.of(13, 10));
         Map<AttendanceStatus, Integer> attendanceStatusStatistics =
-            crew.getAttendanceStatusCounter(LocalDate.of(2025, 02, 7));
+                crew.getAttendanceStatusCounter(LocalDate.of(2025, 02, 7));
 
+        // when
         Manage manage = Manage.of(attendanceStatusStatistics);
+
+        // then
         assertThat(manage).isEqualTo(Manage.INTERVIEW);
     }
 
     @Test
-    void 결석_6회_이상인_경우_제적_대상자가_된다() {
+    @DisplayName("결석 6회 이상인 경우 제적 대상자가 된다 ")
+    void ofTest_EXPELLED() {
+        // given
         Crew crew = new Crew("pobi");
         Map<AttendanceStatus, Integer> attendanceStatusStatistics =
-            crew.getAttendanceStatusCounter(LocalDate.of(2025, 02, 11));
+                crew.getAttendanceStatusCounter(LocalDate.of(2025, 2, 11));
 
+        // when
         Manage manage = Manage.of(attendanceStatusStatistics);
+
+        // then
         assertThat(manage).isEqualTo(Manage.EXPELLED);
     }
 }

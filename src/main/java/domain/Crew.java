@@ -1,5 +1,6 @@
 package domain;
 
+import dto.AttendanceRecord;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
@@ -59,17 +60,17 @@ public class Crew {
         return AttendanceStatus.of(date, attendanceTimes.get(date));
     }
 
-    public List<History> getAllHistory(LocalDate today) {
-        List<History> histories = new ArrayList<>();
+    public List<AttendanceRecord> getMonthAttendanceRecords(LocalDate today) {
+        List<AttendanceRecord> attendanceRecords = new ArrayList<>();
         for (int day = 1; day < today.getDayOfMonth(); day++) {
             if (DateTimeUtil.isOffDay(today.withDayOfMonth(day))) {
                 continue;
             }
             LocalDate date = today.withDayOfMonth(day);
             LocalTime time = attendanceTimes.get(date);
-            histories.add(new History(date, time, getAttendanceStatusByDate(date), time == null));
+            attendanceRecords.add(new AttendanceRecord(date, time, getAttendanceStatusByDate(date)));
         }
-        return histories;
+        return attendanceRecords;
     }
 
     public Map<AttendanceStatus, Integer> getAttendanceStatusCounter(LocalDate today) {

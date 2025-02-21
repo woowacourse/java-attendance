@@ -72,27 +72,33 @@ public class CrewTest {
             softly.assertThat(crew.getAttendanceStatusByDate(LocalDate.of(2025, 02, 18)))
                     .isEqualTo(AttendanceStatus.ATTENDANCE);
             softly.assertThat(crew.getAttendanceStatusByDate(LocalDate.of(2025, 02, 19)))
-                    .isEqualTo(AttendanceStatus.ABSENT);
+                    .isEqualTo(AttendanceStatus.ABSENT_LATE);
         });
     }
 
     @Test
     @DisplayName("출석 상태별 횟수를 계산한다")
     void getAttendanceStatusCounterTest() {
+        // given
         Crew crew = new Crew("pobi");
-        // 지각
-        crew.addAttendanceTime(LocalDate.of(2025, 02, 3), LocalTime.of(13, 06));
-        // 출석
-        crew.addAttendanceTime(LocalDate.of(2025, 02, 4), LocalTime.of(10, 05));
-        // 결석
-        crew.addAttendanceTime(LocalDate.of(2025, 02, 5), LocalTime.of(10, 31));
-
+        // LATE
+        crew.addAttendanceTime(LocalDate.of(2025, 2, 3), LocalTime.of(13, 6));
+        // ATTENDANCE
+        crew.addAttendanceTime(LocalDate.of(2025, 2, 4), LocalTime.of(10, 5));
+        // ABSENT_LATE
+        crew.addAttendanceTime(LocalDate.of(2025, 2, 5), LocalTime.of(10, 31));
+        // 2월6일, 2월7일 -> ABSENT
+        // when
         Map<AttendanceStatus, Integer> statusCounter = crew.getAttendanceStatusCounter(
-                LocalDate.of(2025, 02, 10));
+                LocalDate.of(2025, 2, 10)
+        );
+
+        // then
         SoftAssertions.assertSoftly(softly -> {
             softly.assertThat(statusCounter.get(AttendanceStatus.ATTENDANCE)).isEqualTo(1);
             softly.assertThat(statusCounter.get(AttendanceStatus.LATE)).isEqualTo(1);
-            softly.assertThat(statusCounter.get(AttendanceStatus.ABSENT)).isEqualTo(3);
+            softly.assertThat(statusCounter.get(AttendanceStatus.ABSENT_LATE)).isEqualTo(1);
+            softly.assertThat(statusCounter.get(AttendanceStatus.ABSENT)).isEqualTo(2);
         });
     }
 }

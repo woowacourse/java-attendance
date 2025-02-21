@@ -8,16 +8,19 @@ import java.util.Arrays;
 import java.util.Comparator;
 
 public enum AttendanceStatus {
-    ATTENDANCE("출석", Integer.MIN_VALUE),
-    LATE("지각", 5),
-    ABSENT("결석", 30),
-    NONE("쉬는 날", Integer.MAX_VALUE),
+    ATTENDANCE("출석", "출석 시간 준수", Integer.MIN_VALUE),
+    LATE("지각", "출석 시간 5분 초과해서 지각", 5),
+    ABSENT_LATE("결석", "출석 시간 30분 초과해서 결석", 30),
+    ABSENT("결석", "출석 기록을 하지 않아서 결석", Integer.MAX_VALUE),
+    NONE("쉬는 날", "출석 상태를 정의할 수 없음", Integer.MAX_VALUE),
     ;
 
+    private final String title;
     private final String description;
     private final int elapsedMinutesLimit;
 
-    AttendanceStatus(String description, int elapsedMinutesLimit) {
+    AttendanceStatus(String title, String description, int elapsedMinutesLimit) {
+        this.title = title;
         this.description = description;
         this.elapsedMinutesLimit = elapsedMinutesLimit;
     }
@@ -39,7 +42,7 @@ public enum AttendanceStatus {
         return elapsedMinutesLimit;
     }
 
-    public String getDescription() {
-        return description;
+    public String getTitle() {
+        return title;
     }
 }
