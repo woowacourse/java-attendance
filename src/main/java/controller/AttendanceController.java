@@ -88,7 +88,7 @@ public class AttendanceController {
         String rawNickname = inputView.readNickname();
         Crew crew = stringConverter.convertToNickname(rawNickname);
 
-        Attendances filteredAttendances = attendances.findByCrewAndMonth(crew, LocalDate.now().getMonthValue());
+        Attendances filteredAttendances = attendances.findByCrewThisMonth(crew, LocalDate.now());
 
         AttendanceResult attendanceResult = AttendanceResult.of(filteredAttendances);
         outputView.printAttendanceRecord(crew, attendanceResult);

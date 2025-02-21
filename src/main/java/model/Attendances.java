@@ -7,6 +7,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 
 public class Attendances {
@@ -46,36 +47,34 @@ public class Attendances {
     public Map<Crew, Attendances> findAll(Crews crews, int month) {
         Map<Crew, Attendances> crewsAttendances = new HashMap<>();
         for (Crew crew : crews.getCrews()) {
-            Attendances attendances = findByCrewAndMonth(crew, month);
+            Attendances attendances = findByCrewThisMonth(crew, LocalDate.now());
             crewsAttendances.put(crew, attendances);
         }
         return crewsAttendances;
     }
 
-    public Attendances findByCrewAndMonth(Crew crew, int month) {
-        LocalDate today = LocalDate.now();
+    public Attendances findByCrewThisMonth(Crew crew, LocalDate today) {
         List<Attendance> attendances = new ArrayList<>();
-
         for (int i = 1; i < today.getDayOfMonth(); i++) {
-            LocalDate date = LocalDate.of(today.getYear(), month, i);
+            LocalDate date = LocalDate.of(today.getYear(), today.getMonth(), i);
             if (Holiday.isHolidayOrWeekend(date)) {
                 continue;
             }
 
-            Optional<Attendance> foundAttendance = find(crew, date);
-            if (foundAttendance.isEmpty()) {
+            Optional<Attendance> optionalAttendance = find(crew, date);
+            if (optionalAttendance.isEmpty()) {
                 attendances.add(Attendance.createTimeNullAbsence(crew, date));
                 continue;
             }
-            attendances.add(foundAttendance.get());
+            attendances.add(optionalAttendance.get());
         }
 
         return Attendances.of(attendances);
     }
 
-    public Optional<Attendance> find(Crew crew, LocalDate localDate) {
+    public Optional<Attendance> find(Crew crew, LocalDate date) {
         for (Attendance attendance : attendances) {
-            if (attendance.isSame(crew, localDate)) {
+            if (attendance.isSame(crew, date)) {
                 Attendance copy = attendance.clone(attendance);
                 return Optional.of(copy);
             }
@@ -94,5 +93,22 @@ public class Attendances {
 
     public List<Attendance> getAttendances() {
         return Collections.unmodifiableList(attendances);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        Attendances that = (Attendances) o;
+        return Objects.equals(attendances, that.attendances);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(attendances);
     }
 }
