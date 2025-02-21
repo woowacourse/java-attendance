@@ -6,7 +6,6 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import org.junit.jupiter.api.Test;
 
 class CrewManagerTest {
-
     @Test
     void add() {
         CrewManager crewManager = new CrewManager();
@@ -32,7 +31,8 @@ class CrewManagerTest {
 
     @Test
     void findCrew1() {
-        assertThatThrownBy(() -> new CrewManager().findByCrewName("젠슨"))
+        CrewManager crewManager = new CrewManager();
+        assertThatThrownBy(() -> crewManager.findByCrewName("젠슨"))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("해당 이름을 가진 크루는 없음");
     }

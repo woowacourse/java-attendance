@@ -20,7 +20,7 @@ public class OutputView {
     private static final String ATTENDANCE_RESULT_MESSAGE = "\n%d월 %d일 %s %02d:%02d (%s)\n";
     private static final String MODIFY_ATTENDANCE_RESULT_MESSAGE = "\n%d월 %d일 %s %02d:%02d (%s) -> %02d:%02d (%s) 수정 완료!\n";
 
-    public void printAttendanceHistory(AttendanceHistory attendanceHistory) {
+    public static void printAttendanceHistory(AttendanceHistory attendanceHistory) {
         LocalDateTime attendanceTime = attendanceHistory.getAttendanceTime();
         DayOfWeek dayOfWeek = attendanceTime.getDayOfWeek();
         AttendanceType attendanceType = attendanceHistory.getAttendanceType();
@@ -34,8 +34,8 @@ public class OutputView {
         );
     }
 
-    public void printModifyAttendanceResult(AttendanceHistoryDto beforeAttendanceHistoryDto,
-                                            AttendanceHistory afterAttendanceHistory) {
+    public static void printModifyAttendanceResult(AttendanceHistoryDto beforeAttendanceHistoryDto,
+                                                   AttendanceHistory afterAttendanceHistory) {
         LocalDateTime beforeAttendanceTime = beforeAttendanceHistoryDto.getAttendanceTime();
         LocalDateTime afterAttendanceTime = afterAttendanceHistory.getAttendanceTime();
         AttendanceType beforeAttendanceType = beforeAttendanceHistoryDto.getAttendanceType();
@@ -54,7 +54,7 @@ public class OutputView {
         );
     }
 
-    public void printAttendanceHistories(LocalDate now, Crew crew) {
+    public static void printAttendanceHistories(LocalDate now, Crew crew) {
         System.out.println("\n이번 달 %s의 출석 기록입니다.\n".formatted(crew.getName()));
         for (int day = 1; day < now.getDayOfMonth(); day++) {
             int year = now.getYear();
@@ -88,7 +88,7 @@ public class OutputView {
         System.out.println();
     }
 
-    public void printAttendanceResult(Map<AttendanceType, Integer> attendanceResult) {
+    public static void printAttendanceResult(Map<AttendanceType, Integer> attendanceResult) {
         for (AttendanceType attendanceType : attendanceResult.keySet()) {
             System.out.println("%s: %d회".formatted(
                     attendanceType,
@@ -98,11 +98,11 @@ public class OutputView {
         System.out.println();
     }
 
-    public void printInterviewTarget() {
+    public static void printInterviewTarget() {
         System.out.println("면담 대상자입니다.\n");
     }
 
-    public void printDangerousCrews(LocalDate now, List<Crew> dangerousCrews) {
+    public static void printDangerousCrews(LocalDate now, List<Crew> dangerousCrews) {
         System.out.println("\n제적 위험자 조회 결과");
         sortDangerousCrews(now, dangerousCrews);
         for (Crew crew : dangerousCrews) {
@@ -118,7 +118,7 @@ public class OutputView {
         System.out.println();
     }
 
-    private void sortDangerousCrews(LocalDate now, List<Crew> dangerousCrews) {
+    private static void sortDangerousCrews(LocalDate now, List<Crew> dangerousCrews) {
         dangerousCrews.sort(new Comparator<Crew>() {
             @Override
             public int compare(Crew o1, Crew o2) {
