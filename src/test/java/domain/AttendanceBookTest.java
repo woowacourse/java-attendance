@@ -49,7 +49,7 @@ public class AttendanceBookTest {
         }
         
         @Test
-        void 출석이_기록되면_정보를_확인할수_있다() {
+        void 출석이_기록되면_정보를_확인할_수_있다() {
             // given
             String inputName = "Lemon";
             LocalDateTime attendDateTime = LocalDateTime.of(2024, 12, 13, 10, 2);
@@ -64,7 +64,7 @@ public class AttendanceBookTest {
         }
         
         @Test
-        void 존재하지_않는_멤버를_입력시_예외() {
+        void 존재하지_않는_멤버를_입력시_예외가_발생한다() {
             // given
             String inputName = "WANNI";
             LocalDateTime attendDateTime = LocalDateTime.of(2024, 12, 13, 10, 2);
@@ -77,7 +77,7 @@ public class AttendanceBookTest {
         }
         
         @Test
-        void 공휴일에_출석시_예외() {
+        void 공휴일에_출석시_예외가_발생한다() {
             // given
             String inputName = "Lemon";
             LocalDateTime attendDateTime = LocalDateTime.of(2024, 12, 1, 10, 2);
@@ -90,7 +90,7 @@ public class AttendanceBookTest {
         }
         
         @Test
-        void 지정된_시간이_아닐_때_출석시_예외() {
+        void 지정된_시간이_아닐_때_출석시_예외가_발생한다() {
             // given
             String inputName = "Lemon";
             LocalDateTime attendDateTime = LocalDateTime.of(2024, 12, 3, 7, 30);
@@ -104,20 +104,20 @@ public class AttendanceBookTest {
     }
     
     @Nested
-    class 수정_테스트 {
+    class 출석_기록_수정_테스트 {
         
         @Test
         void 출석_기록을_수정할_수_있다() {
-            //given
+            // given
             String name = "Dompoo";
             LocalDate date = LocalDate.of(2024, 12, 6);
             LocalTime time = LocalTime.of(10, 5);
             AttendanceBook attendanceBook = new AttendanceBook(attendancesMap);
             
-            //when
+            // when
             MemberAttendanceModifyResult result = attendanceBook.editAttendance(name, date, time);
             
-            //then
+            // then
             assertThat(result).isEqualTo(new MemberAttendanceModifyResult(
                     "Dompoo",
                     LocalDate.of(2024, 12, 6),
@@ -129,7 +129,7 @@ public class AttendanceBookTest {
         }
         
         @Test
-        void 존재하지_않는_회원의_기록을_수정하려고_하면_예외() {
+        void 존재하지_않는_회원의_기록을_수정하려고_하면_예외가_발생한다() {
             // given
             String name = "Moko";
             LocalDate date = LocalDate.of(2024, 12, 6);
@@ -143,7 +143,7 @@ public class AttendanceBookTest {
         }
         
         @Test
-        void 주말_기록을_수정하려하면_예외() {
+        void 주말_기록을_수정하려하면_예외가_발생한다() {
             // given
             String name = "Dompoo";
             LocalDate date = LocalDate.of(2024, 12, 1);
@@ -157,7 +157,7 @@ public class AttendanceBookTest {
         }
         
         @Test
-        void 수정시_출석_가능한_시간이_아니면_예외() {
+        void 수정시_출석_가능한_시간이_아니면_예외가_발생한다() {
             // given
             String name = "Dompoo";
             LocalDate date = LocalDate.of(2024, 12, 3);
@@ -172,11 +172,11 @@ public class AttendanceBookTest {
     }
     
     @Nested
-    class 크루별_출석_기록_확인 {
+    class 크루별_출석_기록_확인_테스트 {
         
         @Test
         void 크루별_출석기록을_확인할_수_있다() {
-            //given
+            // given
             String name = "Dompoo";
             AttendanceBook attendanceBook = new AttendanceBook(Map.of("Dompoo", new MemberAttendances("Dompoo", List.of(
                     new Attendance(LocalDateTime.of(2024, 12, 6, 10, 15)),
@@ -184,10 +184,10 @@ public class AttendanceBookTest {
                     new Attendance(LocalDateTime.of(2024, 12, 11, 10, 31)))
             )));
             
-            //when
+            // when
             MemberAttendResult result = attendanceBook.getAttendanceResult(name);
             
-            //then
+            // then
             assertThat(result).isEqualTo(new MemberAttendResult(
                     "Dompoo", List.of(
                     new AttendResult(LocalDateTime.of(2024, 12, 6, 10, 15), AttendanceStatus.지각, true),
@@ -199,7 +199,7 @@ public class AttendanceBookTest {
         
         @Test
         void 크루별_출석기록을_확인할_수_있다_경고() {
-            //given
+            // given
             String name = "Dompoo";
             AttendanceBook attendanceBook = new AttendanceBook(Map.of("Dompoo", new MemberAttendances("Dompoo", List.of(
                     new Attendance(LocalDateTime.of(2024, 12, 6, 10, 15)),
@@ -208,10 +208,10 @@ public class AttendanceBookTest {
                     new Attendance(LocalDateTime.of(2024, 12, 12, 10, 32)))
             )));
             
-            //when
+            // when
             MemberAttendResult result = attendanceBook.getAttendanceResult(name);
             
-            //then
+            // then
             assertThat(result).isEqualTo(new MemberAttendResult(
                     "Dompoo", List.of(
                     new AttendResult(LocalDateTime.of(2024, 12, 6, 10, 15), AttendanceStatus.지각, true),
@@ -224,7 +224,7 @@ public class AttendanceBookTest {
         
         @Test
         void 크루별_출석기록을_확인할_수_있다_면담() {
-            //given
+            // given
             String name = "Dompoo";
             AttendanceBook attendanceBook = new AttendanceBook(Map.of("Dompoo", new MemberAttendances("Dompoo", List.of(
                     new Attendance(LocalDateTime.of(2024, 12, 6, 10, 15)),
@@ -234,10 +234,10 @@ public class AttendanceBookTest {
                     new Attendance(LocalDateTime.of(2024, 12, 13, 10, 33)))
             )));
             
-            //when
+            // when
             MemberAttendResult result = attendanceBook.getAttendanceResult(name);
             
-            //then
+            // then
             assertThat(result).isEqualTo(new MemberAttendResult(
                     "Dompoo", List.of(
                     new AttendResult(LocalDateTime.of(2024, 12, 6, 10, 15), AttendanceStatus.지각, true),
@@ -251,7 +251,7 @@ public class AttendanceBookTest {
         
         @Test
         void 크루별_출석기록을_확인할_수_있다_제적() {
-            //given
+            // given
             String name = "Dompoo";
             AttendanceBook attendanceBook = new AttendanceBook(Map.of("Dompoo", new MemberAttendances("Dompoo", List.of(
                     new Attendance(LocalDateTime.of(2024, 12, 6, 10, 15)),
@@ -264,10 +264,10 @@ public class AttendanceBookTest {
                     new Attendance(LocalDateTime.of(2024, 12, 19, 10, 35)))
             )));
             
-            //when
+            // when
             MemberAttendResult result = attendanceBook.getAttendanceResult(name);
             
-            //then
+            // then
             assertThat(result).isEqualTo(new MemberAttendResult(
                     "Dompoo", List.of(
                     new AttendResult(LocalDateTime.of(2024, 12, 6, 10, 15), AttendanceStatus.지각, true),
@@ -284,11 +284,11 @@ public class AttendanceBookTest {
     }
     
     @Nested
-    class 제적_위험자_확인 {
+    class 제적_위험자_확인_테스트 {
         
         @Test
         void 제적_위험자를_확인할_수_있다() {
-            //given
+            // given
             AttendanceBook attendanceBook = new AttendanceBook(Map.of(
                     "Dompoo", new MemberAttendances("Dompoo", List.of(
                             new Attendance(LocalDateTime.of(2024, 12, 6, 10, 15)),
@@ -316,10 +316,10 @@ public class AttendanceBookTest {
                             new Attendance(LocalDateTime.of(2024, 12, 19, 10, 35)))
                     )));
             
-            //when
+            // when
             List<ExpelMeasurementResult> result = attendanceBook.checkExpelWarnings();
             
-            //then
+            // then
             assertThat(result).containsExactlyInAnyOrder(
                     new ExpelMeasurementResult("Dompoo_경고", 2, 2, "경고"),
                     new ExpelMeasurementResult("Dompoo_면담", 2, 3, "면담"),
@@ -327,14 +327,9 @@ public class AttendanceBookTest {
             );
         }
         
-        /*
-         제적 위험자는 제적 대상자, 면담 대상자, 경고 대상자순으로 출력하며,
-         대상 항목별 정렬 순서는 지각을 결석으로 간주하여 내림차순한다.
-         출석 상태가 같으면 닉네임으로 오름차순 정렬한다.
-         */
         @Test
         void 제적_위험자를_정렬하여_반환한다() {
-            //given
+            // given
             AttendanceBook attendanceBook = new AttendanceBook(Map.of(
                     "빙티", new MemberAttendances("빙티", List.of(
                             new Attendance(LocalDateTime.of(2024, 12, 6, 10, 15)),
@@ -383,10 +378,10 @@ public class AttendanceBookTest {
                     )
             ));
             
-            //when
+            // when
             List<ExpelMeasurementResult> result = attendanceBook.checkExpelWarnings();
             
-            //then
+            // then
             assertThat(result).containsExactly(
                     new ExpelMeasurementResult("빙티", 4, 3, "면담"),
                     new ExpelMeasurementResult("이든", 5, 2, "면담"),

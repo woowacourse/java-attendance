@@ -20,10 +20,10 @@ public class AttendanceTest {
     private final SoftAssertions soft = new SoftAssertions();
     
     @Nested
-    class 등교_테스트 {
+    class 출석_테스트 {
         
         @Test
-        void 닉네임과_등교_시간을_입력하면_출석() {
+        void 닉네임과_등교_시간을_입력하면_출석할_수_있다() {
             // given
             LocalDateTime localDateTime = LocalDateTime.of(2024, 12, 3, 10, 5);
             
@@ -55,7 +55,7 @@ public class AttendanceTest {
         }
         
         @Test
-        void 출석_시간보다_5분_초과_늦으면_지각() {
+        void 출석_시간보다_5분_초과_늦으면_지각이다() {
             // given
             LocalDateTime localDateTime = LocalDateTime.of(2024, 12, 3, 10, 6);
             
@@ -87,7 +87,7 @@ public class AttendanceTest {
         }
         
         @Test
-        void 출석_시간보다_5분_초과_30분_이하_늦으면_지각() {
+        void 출석_시간보다_5분_초과_30분_이하_늦으면_지각이다() {
             // given
             LocalDateTime localDateTime = LocalDateTime.of(2024, 12, 3, 10, 30);
             
@@ -119,7 +119,7 @@ public class AttendanceTest {
         }
         
         @Test
-        void 출석_시간보다_30분_초과_늦으면_지각() {
+        void 출석_시간보다_30분_초과_늦으면_지각이다() {
             // given
             LocalDateTime localDateTime = LocalDateTime.of(2024, 12, 3, 10, 31);
             
@@ -171,6 +171,10 @@ public class AttendanceTest {
                     .isExactlyInstanceOf(IllegalAttendTimeException.class)
                     .hasMessage("출석 가능한 시간이 아닙니다.");
         }
+    }
+    
+    @Nested
+    class 출석_기록_확인_테스트 {
         
         @Test
         void 출석을_완료하면_출석기록이_출력된다() {
@@ -181,26 +185,26 @@ public class AttendanceTest {
             // when
             AttendResult result = attendance.createAttendanceResult();
             
-            //then
+            // then
             soft.assertThat(result.attendanceDateTime()).isEqualTo(LocalDateTime.of(2024, 12, 3, 9, 45));
             soft.assertThat(result.attendanceStatus()).isEqualTo(AttendanceStatus.출석);
         }
     }
     
     @Nested
-    class 수정_테스트 {
+    class 출석_시간_수정_테스트 {
         
         @Test
-        void 등교_시간을_수정한다() {
-            //given
+        void 출석_시간을_수정한다() {
+            // given
             LocalDateTime localDateTime = LocalDateTime.of(2024, 12, 3, 9, 45);
             Attendance attendance = new Attendance(localDateTime);
             LocalTime newAttendanceTime = LocalTime.of(10, 6);
             
-            //when
+            // when
             AttendanceModifyResult result = attendance.modifyAttendanceTime(newAttendanceTime);
             
-            //then
+            // then
             soft.assertThat(result.attendanceDate()).isEqualTo(LocalDate.of(2024, 12, 3));
             soft.assertThat(result.oldAttendanceTime()).isEqualTo(LocalTime.of(9, 45));
             soft.assertThat(result.oldAttendanceStatus()).isEqualTo(AttendanceStatus.출석);
