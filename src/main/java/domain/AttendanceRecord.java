@@ -50,11 +50,11 @@ public class AttendanceRecord {
     }
 
     public boolean isTardy() {
-        return attendance.equals(Attendance.TARDY);
+        return attendance == Attendance.TARDY;
     }
 
     public boolean isAbsent() {
-        return attendance.equals(Attendance.ABSENT);
+        return attendance == Attendance.ABSENT;
     }
 
     private void validateDate(LocalDate date) {
@@ -68,7 +68,9 @@ public class AttendanceRecord {
 
     @Override
     public boolean equals(Object o) {
-        if (o == null || getClass() != o.getClass()) return false;
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
         AttendanceRecord that = (AttendanceRecord) o;
         return Objects.equals(date, that.date) && Objects.equals(time, that.time) && attendance == that.attendance;
     }

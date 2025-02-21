@@ -32,13 +32,13 @@ public enum Day {
             return true;
         }
         return Arrays.stream(Day.values())
-                .filter(day -> day.dayOfWeek.equals(date.getDayOfWeek()))
-                .anyMatch(day -> day.dayOfWeek.equals(DayOfWeek.SATURDAY) || day.dayOfWeek.equals(DayOfWeek.SUNDAY));
+                .filter(day -> day.dayOfWeek == date.getDayOfWeek())
+                .anyMatch(day -> day.dayOfWeek == DayOfWeek.SATURDAY || day.dayOfWeek == DayOfWeek.SUNDAY);
     }
 
     public static Day getDay(LocalDate date) {
         return Arrays.stream(Day.values())
-                .filter(day -> day.dayOfWeek.equals(date.getDayOfWeek()))
+                .filter(day -> day.dayOfWeek == date.getDayOfWeek())
                 .findFirst()
                 .orElseThrow(() -> new IllegalStateException("[ERROR] getDay 메서드 오류"));
     }
