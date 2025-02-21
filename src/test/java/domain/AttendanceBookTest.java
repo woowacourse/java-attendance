@@ -4,6 +4,7 @@ import dto.result.AttendResult;
 import dto.result.ExpelMeasurementResult;
 import dto.result.MemberAttendResult;
 import dto.result.MemberAttendanceModifyResult;
+import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import util.exception.IllegalAttendDateException;
@@ -19,6 +20,7 @@ import static org.assertj.core.api.Assertions.*;
 
 public class AttendanceBookTest {
     
+    private final SoftAssertions soft = new SoftAssertions();
     private final Map<String, MemberAttendances> attendancesMap = Map.of(
             "Lemon", new MemberAttendances("Lemon", List.of(
                     new Attendance(LocalDateTime.of(2024, 12, 2, 10, 0)),
@@ -57,8 +59,8 @@ public class AttendanceBookTest {
             AttendResult attendResult = attendanceBook.addAttendance(inputName, attendDateTime);
             
             // then
-            assertThat(attendResult.attendanceStatus()).isEqualTo(AttendanceStatus.출석);
-            assertThat(attendResult.attendanceDateTime()).isEqualTo(LocalDateTime.of(2024, 12, 13, 10, 2));
+            soft.assertThat(attendResult.attendanceStatus()).isEqualTo(AttendanceStatus.출석);
+            soft.assertThat(attendResult.attendanceDateTime()).isEqualTo(LocalDateTime.of(2024, 12, 13, 10, 2));
         }
         
         @Test

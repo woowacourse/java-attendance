@@ -4,6 +4,7 @@ import dto.result.AttendResult;
 import dto.result.AttendanceModifyResult;
 import dto.result.ExpelMeasurementResult;
 import dto.result.MemberAttendResult;
+import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
@@ -16,6 +17,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class MemberAttendancesTest {
     
+    private final SoftAssertions soft = new SoftAssertions();
     private final List<Attendance> attendanceList = List.of(
             new Attendance(LocalDateTime.of(2024, 12, 2, 10, 0)),
             new Attendance(LocalDateTime.of(2024, 12, 3, 10, 1)),
@@ -53,11 +55,11 @@ public class MemberAttendancesTest {
         MemberAttendResult result = attendances.getAttendanceResult();
         
         // then
-        assertThat(result.name()).isEqualTo("Lemon");
-        assertThat(result.attendCount()).isEqualTo(3);
-        assertThat(result.lateCount()).isEqualTo(3);
-        assertThat(result.absentCount()).isEqualTo(2);
-        assertThat(result.attendanceResults()).containsExactlyInAnyOrder(
+        soft.assertThat(result.name()).isEqualTo("Lemon");
+        soft.assertThat(result.attendCount()).isEqualTo(3);
+        soft.assertThat(result.lateCount()).isEqualTo(3);
+        soft.assertThat(result.absentCount()).isEqualTo(2);
+        soft.assertThat(result.attendanceResults()).containsExactlyInAnyOrder(
                 new AttendResult(LocalDateTime.of(2024, 12, 2, 10, 0), AttendanceStatus.출석, true),
                 new AttendResult(LocalDateTime.of(2024, 12, 3, 10, 1), AttendanceStatus.출석, true),
                 new AttendResult(LocalDateTime.of(2024, 12, 4, 10, 5), AttendanceStatus.출석, true),

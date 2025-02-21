@@ -2,6 +2,7 @@ package domain;
 
 import dto.result.AttendResult;
 import dto.result.AttendanceModifyResult;
+import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import util.exception.IllegalAttendDateException;
@@ -16,6 +17,8 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 public class AttendanceTest {
     
+    private final SoftAssertions soft = new SoftAssertions();
+    
     @Nested
     class 등교_테스트 {
         
@@ -28,8 +31,11 @@ public class AttendanceTest {
             Attendance attendance = new Attendance(localDateTime);
             
             // then
-            assertThat(attendance).extracting("attendanceDateTime").isEqualTo(LocalDateTime.of(2024, 12, 3, 10, 5));
-            assertThat(attendance).extracting("attendanceStatus").isEqualTo(AttendanceStatus.출석);
+            assertThat(attendance).extracting(
+                    "attendanceDateTime", "attendanceStatus"
+            ).containsExactly(
+                    LocalDateTime.of(2024, 12, 3, 10, 5), AttendanceStatus.출석
+            );
         }
         
         @Test
@@ -41,8 +47,11 @@ public class AttendanceTest {
             Attendance attendance = new Attendance(localDateTime);
             
             // then
-            assertThat(attendance).extracting("attendanceDateTime").isEqualTo(LocalDateTime.of(2024, 12, 2, 13, 5));
-            assertThat(attendance).extracting("attendanceStatus").isEqualTo(AttendanceStatus.출석);
+            assertThat(attendance).extracting(
+                    "attendanceDateTime", "attendanceStatus"
+            ).containsExactly(
+                    LocalDateTime.of(2024, 12, 2, 13, 5), AttendanceStatus.출석
+            );
         }
         
         @Test
@@ -54,7 +63,11 @@ public class AttendanceTest {
             Attendance attendance = new Attendance(localDateTime);
             
             // then
-            assertThat(attendance).extracting("attendanceStatus").isEqualTo(AttendanceStatus.지각);
+            assertThat(attendance).extracting(
+                    "attendanceDateTime", "attendanceStatus"
+            ).containsExactly(
+                    LocalDateTime.of(2024, 12, 3, 10, 6), AttendanceStatus.지각
+            );
         }
         
         @Test
@@ -66,8 +79,11 @@ public class AttendanceTest {
             Attendance attendance = new Attendance(localDateTime);
             
             // then
-            assertThat(attendance).extracting("attendanceDateTime").isEqualTo(LocalDateTime.of(2024, 12, 2, 13, 6));
-            assertThat(attendance).extracting("attendanceStatus").isEqualTo(AttendanceStatus.지각);
+            assertThat(attendance).extracting(
+                    "attendanceDateTime", "attendanceStatus"
+            ).containsExactly(
+                    LocalDateTime.of(2024, 12, 2, 13, 6), AttendanceStatus.지각
+            );
         }
         
         @Test
@@ -79,7 +95,11 @@ public class AttendanceTest {
             Attendance attendance = new Attendance(localDateTime);
             
             // then
-            assertThat(attendance).extracting("attendanceStatus").isEqualTo(AttendanceStatus.지각);
+            assertThat(attendance).extracting(
+                    "attendanceDateTime", "attendanceStatus"
+            ).containsExactly(
+                    LocalDateTime.of(2024, 12, 3, 10, 30), AttendanceStatus.지각
+            );
         }
         
         @Test
@@ -91,8 +111,11 @@ public class AttendanceTest {
             Attendance attendance = new Attendance(localDateTime);
             
             // then
-            assertThat(attendance).extracting("attendanceDateTime").isEqualTo(LocalDateTime.of(2024, 12, 2, 13, 30));
-            assertThat(attendance).extracting("attendanceStatus").isEqualTo(AttendanceStatus.지각);
+            assertThat(attendance).extracting(
+                    "attendanceDateTime", "attendanceStatus"
+            ).containsExactly(
+                    LocalDateTime.of(2024, 12, 2, 13, 30), AttendanceStatus.지각
+            );
         }
         
         @Test
@@ -104,7 +127,11 @@ public class AttendanceTest {
             Attendance attendance = new Attendance(localDateTime);
             
             // then
-            assertThat(attendance).extracting("attendanceStatus").isEqualTo(AttendanceStatus.결석);
+            assertThat(attendance).extracting(
+                    "attendanceDateTime", "attendanceStatus"
+            ).containsExactly(
+                    LocalDateTime.of(2024, 12, 3, 10, 31), AttendanceStatus.결석
+            );
         }
         
         @Test
@@ -116,8 +143,11 @@ public class AttendanceTest {
             Attendance attendance = new Attendance(localDateTime);
             
             // then
-            assertThat(attendance).extracting("attendanceDateTime").isEqualTo(LocalDateTime.of(2024, 12, 2, 13, 31));
-            assertThat(attendance).extracting("attendanceStatus").isEqualTo(AttendanceStatus.결석);
+            assertThat(attendance).extracting(
+                    "attendanceDateTime", "attendanceStatus"
+            ).containsExactly(
+                    LocalDateTime.of(2024, 12, 2, 13, 31), AttendanceStatus.결석
+            );
         }
         
         @Test
@@ -152,8 +182,8 @@ public class AttendanceTest {
             AttendResult result = attendance.createAttendanceResult();
             
             //then
-            assertThat(result.attendanceDateTime()).isEqualTo(LocalDateTime.of(2024, 12, 3, 9, 45));
-            assertThat(result.attendanceStatus()).isEqualTo(AttendanceStatus.출석);
+            soft.assertThat(result.attendanceDateTime()).isEqualTo(LocalDateTime.of(2024, 12, 3, 9, 45));
+            soft.assertThat(result.attendanceStatus()).isEqualTo(AttendanceStatus.출석);
         }
     }
     
@@ -171,11 +201,11 @@ public class AttendanceTest {
             AttendanceModifyResult result = attendance.modifyAttendanceTime(newAttendanceTime);
             
             //then
-            assertThat(result.attendanceDate()).isEqualTo(LocalDate.of(2024, 12, 3));
-            assertThat(result.oldAttendanceTime()).isEqualTo(LocalTime.of(9, 45));
-            assertThat(result.oldAttendanceStatus()).isEqualTo(AttendanceStatus.출석);
-            assertThat(result.newAttendanceTime()).isEqualTo(LocalTime.of(10, 6));
-            assertThat(result.newAttendanceStatus()).isEqualTo(AttendanceStatus.지각);
+            soft.assertThat(result.attendanceDate()).isEqualTo(LocalDate.of(2024, 12, 3));
+            soft.assertThat(result.oldAttendanceTime()).isEqualTo(LocalTime.of(9, 45));
+            soft.assertThat(result.oldAttendanceStatus()).isEqualTo(AttendanceStatus.출석);
+            soft.assertThat(result.newAttendanceTime()).isEqualTo(LocalTime.of(10, 6));
+            soft.assertThat(result.newAttendanceStatus()).isEqualTo(AttendanceStatus.지각);
         }
     }
 }
