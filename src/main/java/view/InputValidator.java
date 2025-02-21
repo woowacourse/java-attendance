@@ -10,6 +10,8 @@ public class InputValidator {
     }
 
     public static void validateName(String name, AllCrew allCrew) {
-
+        if(!allCrew.containsCrewName(name)) {
+            throw new IllegalArgumentException("존재하지 않는 닉네임입니다.");
+        }
     }
 }
