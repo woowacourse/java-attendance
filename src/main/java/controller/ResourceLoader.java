@@ -4,11 +4,10 @@ import domain.Crew;
 import domain.CrewRepository;
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.Optional;
 import util.FileParser;
 
 public class ResourceLoader {
-    public static void loadAttendanceTimes() {
+    public static void loadCrewRepository() {
         FileParser.loadAttendanceRecords()
                 .forEach(record -> addAttendanceTime(
                         record.nickname(),
@@ -19,7 +18,7 @@ public class ResourceLoader {
 
     private static void addAttendanceTime(String nickname, LocalDate date, LocalTime time) {
         Crew crew;
-        if(!CrewRepository.exists(nickname)) {
+        if (!CrewRepository.exists(nickname)) {
             crew = new Crew(nickname);
             CrewRepository.addCrew(crew);
         }

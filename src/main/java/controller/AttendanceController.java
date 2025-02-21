@@ -24,7 +24,7 @@ import view.OutputView;
 
 public class AttendanceController {
     public AttendanceController() {
-        ResourceLoader.loadAttendanceTimes();
+        ResourceLoader.loadCrewRepository();
     }
 
     public void run() {
