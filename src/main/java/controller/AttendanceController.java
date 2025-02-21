@@ -27,10 +27,9 @@ public class AttendanceController {
     private final OutputView outputView;
     private final AttendanceManager attendanceManager;
 
-    public AttendanceController(InputView inputView, OutputView outputView,
-        AttendanceManager attendanceManager) {
-        this.inputView = inputView;
-        this.outputView = outputView;
+    public AttendanceController(AttendanceManager attendanceManager) {
+        this.inputView = new InputView();
+        this.outputView = new OutputView();
         this.attendanceManager = attendanceManager;
     }
 

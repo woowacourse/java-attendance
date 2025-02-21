@@ -1,19 +1,19 @@
 package controller;
 
+import static util.constant.ErrorMessage.FILE_ERROR_MESSAGE;
+
 import domain.AttendanceManager;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
+import util.parser.DateTimeParser;
 
 public class FileController {
-
-    private final String FILE_ERROR_MESSAGE = "파일을 불러오는 데 문제가 발생했습니다. 잠시 후 다시 시도해 주세요.";
 
     private AttendanceManager attendanceManager;
 
@@ -24,9 +24,7 @@ public class FileController {
     public void initializeFile(String filePath) {
         try {
             Map<String, List<LocalDateTime>> result = createRecords(loadFile(filePath));
-            for (String name : result.keySet()) {
-                attendanceManager.createCrew(name, result.get(name));
-            }
+            result.forEach(attendanceManager::createCrew);
         } catch (FileNotFoundException e) {
             System.err.println(FILE_ERROR_MESSAGE);
         }
@@ -39,18 +37,15 @@ public class FileController {
         if (scanner.hasNextLine()) {
             scanner.nextLine();
         }
-
         return scanner;
     }
 
     private Map<String, List<LocalDateTime>> createRecords(Scanner attendaceScanner) {
         Map<String, List<LocalDateTime>> result = new HashMap<>();
         while (attendaceScanner.hasNextLine()) {
-            String[] attr = attendaceScanner.nextLine().split(",");
-            String name = attr[0];
-
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
-            LocalDateTime dateTime = LocalDateTime.parse(attr[1], formatter);
+            String[] attributes = attendaceScanner.nextLine().split(",");
+            String name = attributes[0];
+            LocalDateTime dateTime = DateTimeParser.parseStringToDateTime(attributes[1]);
 
             result.putIfAbsent(name, new ArrayList<>());
             result.get(name).add(dateTime);
