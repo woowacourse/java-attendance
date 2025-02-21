@@ -15,7 +15,8 @@ public class AttendanceHistoryManager {
     private final Set<AttendanceHistory> attendanceHistories = new HashSet<>();
 
     public void addAttendanceHistory(AttendanceHistory attendanceHistory) {
-        if (!attendanceHistories.add(attendanceHistory)) {
+        boolean isAttendanceExists = attendanceHistories.add(attendanceHistory);
+        if (!isAttendanceExists) {
             throw new IllegalArgumentException("해당 날짜에 이미 출석하셨습니다.");
         }
     }
@@ -26,7 +27,7 @@ public class AttendanceHistoryManager {
 
     public AttendanceHistory getAttendanceHistory(LocalDate localDate) {
         return attendanceHistories.stream()
-                .filter(history -> history.getAttendanceTime().toLocalDate().equals(localDate))
+                .filter(history -> history.isAttendanceDateEquals(localDate))
                 .findAny()
                 .orElseThrow(() -> new IllegalArgumentException("출석 기록이 존재하지 않습니다."));
     }
@@ -49,7 +50,7 @@ public class AttendanceHistoryManager {
             }
             boolean flag = false;
             for (AttendanceHistory attendanceHistory : attendanceHistories) {
-                if (attendanceHistory.getAttendanceTime().toLocalDate().equals(date)) {
+                if (attendanceHistory.isAttendanceDateEquals(date)) {
                     AttendanceType attendanceType = attendanceHistory.getAttendanceType();
                     attendanceResult.put(attendanceType, attendanceResult.get(attendanceType) + 1);
                     flag = true;

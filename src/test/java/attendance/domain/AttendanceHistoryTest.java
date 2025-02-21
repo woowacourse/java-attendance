@@ -7,6 +7,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 public class AttendanceHistoryTest {
@@ -39,5 +40,23 @@ public class AttendanceHistoryTest {
         //then
         assertThat(attendanceHistory.getAttendanceTime()).isEqualTo(LocalDateTime.of(localDate, modifyTime));
         assertThat(attendanceHistory.getAttendanceType()).isEqualTo(modifyAttendanceType);
+    }
+
+    @DisplayName("주어진_날짜와_출석_날짜가_같은지_여부를_반환할_수_있다")
+    @Test
+    void 주어진_날짜와_출석_날짜가_같은지_여부를_반환할_수_있다() {
+        //given
+        LocalDate attendanceDate = LocalDate.of(2024, 12, 26);
+        LocalTime attendanceTime = LocalTime.of(11, 00);
+        AttendanceHistory attendanceHistory = new AttendanceHistory(
+                LocalDateTime.of(attendanceDate, attendanceTime),
+                ATTENDANCE
+        );
+
+        //when
+        boolean result = attendanceHistory.isAttendanceDateEquals(attendanceDate);
+
+        //then
+        assertThat(result).isTrue();
     }
 }

@@ -1,29 +1,35 @@
 package attendance.domain;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.Objects;
 
 public class AttendanceHistory {
-    private LocalDateTime attendanceTime;
+    private LocalDateTime attendanceDateTime;
     private AttendanceType attendanceType;
 
-    public AttendanceHistory(LocalDateTime attendanceTime, AttendanceType attendanceType) {
-        this.attendanceTime = attendanceTime;
+    public AttendanceHistory(LocalDateTime attendanceDateTime, AttendanceType attendanceType) {
+        this.attendanceDateTime = attendanceDateTime;
         this.attendanceType = attendanceType;
     }
 
     public LocalDateTime getAttendanceTime() {
-        return attendanceTime;
+        return attendanceDateTime;
     }
 
     public AttendanceType getAttendanceType() {
         return attendanceType;
     }
 
-    public void modify(LocalTime localTime, AttendanceType attendanceType) {
-        this.attendanceTime = LocalDateTime.of(this.attendanceTime.toLocalDate(), localTime);
+    public void modify(LocalTime modifyTime, AttendanceType attendanceType) {
+        this.attendanceDateTime = LocalDateTime.of(attendanceDateTime.toLocalDate(), modifyTime);
         this.attendanceType = attendanceType;
+    }
+
+    public boolean isAttendanceDateEquals(LocalDate date) {
+        LocalDate attendanceDate = attendanceDateTime.toLocalDate();
+        return attendanceDate.equals(date);
     }
 
     @Override
@@ -35,11 +41,11 @@ public class AttendanceHistory {
             return false;
         }
         AttendanceHistory that = (AttendanceHistory) o;
-        return Objects.equals(attendanceTime.toLocalDate(), that.attendanceTime.toLocalDate());
+        return Objects.equals(attendanceDateTime.toLocalDate(), that.attendanceDateTime.toLocalDate());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(attendanceTime.toLocalDate());
+        return Objects.hash(attendanceDateTime.toLocalDate());
     }
 }
