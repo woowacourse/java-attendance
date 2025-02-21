@@ -19,14 +19,9 @@ import presentation.view.OutputView;
 import service.AttendanceService;
 import util.DateTimeUtil;
 
-public class AttendanceController {
-    private final static String ATTEND_COMMAND = "1";
-    private final static String EDIT_COMMAND = "2";
-    private final static String CREW_QUERY_COMMAND = "3";
-    private final static String CREWS_WARNING_COMMAND = "4";
-    private final static String EXIT_COMMAND_1 = "Q";
-    private final static String EXIT_COMMAND_2 = "q";
+import static presentation.ControllerCommand.*;
 
+public class AttendanceController {
     private final FileInputView fileInputView;
     private final AttendanceService attendanceService;
 
@@ -55,8 +50,9 @@ public class AttendanceController {
 
     private boolean controlCommand(CrewGroup crewGroup) {
         try {
-            String command = InputView.inputCommand();
-            InputValidator.commandValidate(command);
+            ControllerCommand command = convertCommand(InputView.inputCommand());
+            InputValidator.commandValidate(command.getCommand());
+
             if (command.equals(ATTEND_COMMAND)) {
                 attendCommand(crewGroup);
             }
@@ -69,7 +65,7 @@ public class AttendanceController {
             if (command.equals(CREWS_WARNING_COMMAND)) {
                 attendanceWarningCommand(crewGroup);
             }
-            if (command.equals(EXIT_COMMAND_1) || command.equals(EXIT_COMMAND_2)) {
+            if (command.equals(EXIT_COMMAND)) {
                 return true;
             }
             return false;
