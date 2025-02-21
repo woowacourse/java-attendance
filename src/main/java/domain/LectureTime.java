@@ -11,8 +11,6 @@ public enum LectureTime {
     WEDNESDAY(DayOfWeek.WEDNESDAY, LocalTime.of(10, 0), LocalTime.of(18, 0)),
     THURSDAY(DayOfWeek.THURSDAY, LocalTime.of(10, 0), LocalTime.of(18, 0)),
     FRIDAY(DayOfWeek.FRIDAY, LocalTime.of(10, 0), LocalTime.of(18, 0)),
-    SATURDAY(DayOfWeek.SATURDAY, null, null),
-    SUNDAY(DayOfWeek.SUNDAY, null, null),
     ;
 
     private final DayOfWeek dayOfWeek;
@@ -29,7 +27,7 @@ public enum LectureTime {
         return Arrays.stream(values())
                 .filter(lectureTime -> lectureTime.dayOfWeek.equals(date.getDayOfWeek()))
                 .findAny()
-                .orElseThrow(() -> new IllegalStateException("잘못된 상황입니다."));
+                .orElseThrow(() -> new IllegalArgumentException("교육 시간이 아닙니다."));
     }
 
     public LocalTime getStartTime() {
