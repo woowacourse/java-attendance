@@ -1,10 +1,5 @@
 package controller;
 
-import java.time.LocalDate;
-import java.time.LocalTime;
-import java.util.List;
-import java.util.Map;
-
 import constant.CampusConstant;
 import domain.AttendanceStatus;
 import domain.Crew;
@@ -18,9 +13,12 @@ import dto.AttendanceResult;
 import dto.CrewAlmostExpelledResult;
 import dto.ModifiedResult;
 import dto.OptionRequest;
-import java.util.Optional;
-import javax.swing.text.html.Option;
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.util.List;
+import java.util.Map;
 import util.DateTimeUtil;
+import util.RetryHandler;
 import view.InputView;
 import view.OutputView;
 
@@ -30,18 +28,20 @@ public class AttendanceController {
     }
 
     public void run() {
-        boolean isRunning = true;
-        while (isRunning) {
-            OptionRequest optionRequest = InputView.scanOption();
-            switch (optionRequest.option()) {
-                case "1" -> attendanceCheck();
-                case "2" -> attendanceModify();
-                case "3" -> checkAttendanceHistory();
-                case "4" -> checkCrewsAlmostExpelled();
-                case "q", "Q" -> isRunning = false;
-                default -> throw new IllegalArgumentException("존재하지 않는 기능입니다.");
+        RetryHandler.retryUntilSuccess(() -> {
+            boolean isRunning = true;
+            while (isRunning) {
+                OptionRequest optionRequest = InputView.scanOption();
+                switch (optionRequest.option()) {
+                    case "1" -> attendanceCheck();
+                    case "2" -> attendanceModify();
+                    case "3" -> checkAttendanceHistory();
+                    case "4" -> checkCrewsAlmostExpelled();
+                    case "q", "Q" -> isRunning = false;
+                    default -> throw new IllegalArgumentException("존재하지 않는 옵션입니다.");
+                }
             }
-        }
+        });
     }
 
     private void attendanceCheck() {
@@ -72,8 +72,8 @@ public class AttendanceController {
 
     private ModifiedResult.InnerStatus generateInnerStatus(Crew crew, AttendanceModifyRequest request) {
         return new ModifiedResult.InnerStatus(
-            crew.getAttendanceTimeByDate(request.date()),
-            crew.getAttendanceStatusByDate(request.date()));
+                crew.getAttendanceTimeByDate(request.date()),
+                crew.getAttendanceStatusByDate(request.date()));
     }
 
     private void checkAttendanceHistory() {
@@ -83,26 +83,26 @@ public class AttendanceController {
         Manage manage = Manage.of(crew.getAttendanceStatusCounter(now));
 
         OutputView.printHistory(
-            AttendanceHistoryResult.of(
-                crew.getNickname(),
-                history,
-                crew.getAttendanceStatusCounter(now),
-                manage
-            ));
+                AttendanceHistoryResult.of(
+                        crew.getNickname(),
+                        history,
+                        crew.getAttendanceStatusCounter(now),
+                        manage
+                ));
     }
 
     private void checkCrewsAlmostExpelled() {
         List<Crew> crews = CrewRepository.findAll();
         List<CrewAlmostExpelledResult> result = crews.stream()
-            .map(crew -> {
-                Map<AttendanceStatus, Integer> statusCounter
-                    = crew.getAttendanceStatusCounter(DateTimeUtil.nowDate());
-                return new CrewAlmostExpelledResult(
-                    crew.getNickname(),
-                    statusCounter,
-                    Manage.of(statusCounter));
-            })
-            .toList();
+                .map(crew -> {
+                    Map<AttendanceStatus, Integer> statusCounter
+                            = crew.getAttendanceStatusCounter(DateTimeUtil.nowDate());
+                    return new CrewAlmostExpelledResult(
+                            crew.getNickname(),
+                            statusCounter,
+                            Manage.of(statusCounter));
+                })
+                .toList();
         OutputView.printCrewsAlmostExpelled(result);
     }
 
