@@ -83,7 +83,9 @@ public class AttendanceController {
 
     private void checkCrewAttendance() {
         Crew crew = findCrewByCrewName();
-
+        if (attendances.hasTodayAttendance(crew)) {
+            throw new IllegalArgumentException("[Error] %s는 오늘 이미 출석을 했습니다!".formatted(crew.getName()));
+        }
         String presentTime = inputView.readPresentTime();
         validateTimeFormat(presentTime);
 

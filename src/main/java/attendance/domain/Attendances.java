@@ -107,4 +107,11 @@ public class Attendances {
                 .filter(attendance -> attendance.isSameCrew(crew))
                 .toList();
     }
+
+    public boolean hasTodayAttendance(Crew crew) {
+        LocalDateTime localDateTime = LocalDateTime.now();
+        return attendances.stream()
+                .anyMatch(attendance -> attendance.isSameCrewDate(crew, localDateTime.toLocalDate()));
+    }
+
 }
