@@ -23,11 +23,11 @@ class AttendanceTest {
     @DisplayName("입력받은 크루가 존재하지 않는 크루라면 예외를 발생한다.")
     @Test
     void nonExistenceCrew() {
-        //given
+        // given
         Attendance attendance = FileManager.readFile();
         String name = "도기";
 
-        //when & then
+        // when & then
         assertThatThrownBy(() -> attendance.getCrewByName(name))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("존재하지 않는 크루 입니다.");
@@ -36,14 +36,14 @@ class AttendanceTest {
     @DisplayName("입력받은 크루가 존재하는 크루를 반환한다.")
     @Test
     void existenceCrew() {
-        //given
+        // given
         Attendance attendance = FileManager.readFile();
         String name = "빙티";
 
-        //when
+        // when
         Crew actual = attendance.getCrewByName(name);
 
-        //then
+        // then
         assertThat(actual.getName()).isEqualTo("빙티");
 
     }
@@ -51,7 +51,7 @@ class AttendanceTest {
     @DisplayName("특정 크루의 오늘 출석 시간을 저장한다.")
     @Test
     void save() {
-        //given
+        // given
         Crew crew = new Crew("도기");
         List<LocalDateTime> localDateTimes = new ArrayList<>();
         localDateTimes.add(LocalDateTime.of(2024, 12, 2, 10, 00));
@@ -64,17 +64,17 @@ class AttendanceTest {
 
         Attendance attendance = new Attendance(attendances);
 
-        //when
+        // when
         attendance.save(crew, "10:20", 6);
 
-        //then
+        // then
         assertThat(attendance.getAttendanceMap().get(crew)).hasSize(5);
     }
 
     @DisplayName("이미 출석한 크루가 다시 출석하면 예외가 발생한다.")
     @Test
     void duplicateSave() {
-        //given
+        // given
         Crew crew = new Crew("도기");
         List<LocalDateTime> localDateTimes = new ArrayList<>();
         localDateTimes.add(LocalDateTime.of(2024, 12, 2, 10, 00));
@@ -87,7 +87,7 @@ class AttendanceTest {
 
         Attendance attendance = new Attendance(attendances);
 
-        //when & then
+        // when & then
         assertThatThrownBy(() -> attendance.save(crew, "09:55", 2))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("이미 출석한 크루입니다.");
@@ -96,7 +96,7 @@ class AttendanceTest {
     @DisplayName("이미 출석한 크루가 다시 출석하면 예외가 발생한다.")
     @Test
     void nonDuplicateSave() {
-        //given
+        // given
         Crew crew = new Crew("도기");
         List<LocalDateTime> localDateTimes = new ArrayList<>();
         localDateTimes.add(LocalDateTime.of(2024, 12, 2, 10, 00));
@@ -109,7 +109,7 @@ class AttendanceTest {
 
         Attendance attendance = new Attendance(attendances);
 
-        //when & then
+        // when & then
         assertThatCode(() -> attendance.save(crew, "09:55", 6))
                 .doesNotThrowAnyException();
     }
@@ -130,11 +130,11 @@ class AttendanceTest {
 
         Attendance attendance = new Attendance(attendances);
 
-        //when
+        // when
         attendance.update(crew, "10:02", 4);
         List<LocalDateTime> actual = attendances.get(crew);
 
-        //then
+        // then
         assertThat(actual).containsExactly(
                 LocalDateTime.of(2024, 12, 2, 10, 00),
                 LocalDateTime.of(2024, 12, 3, 10, 06),
@@ -146,7 +146,7 @@ class AttendanceTest {
     @DisplayName("특정 크루의 출석부를 조회한다.")
     @Test
     void readRecord() {
-        //given
+        // given
         Crew crew = new Crew("도기");
         List<LocalDateTime> localDateTimes = new ArrayList<>();
         localDateTimes.add(LocalDateTime.of(2024, 12, 2, 10, 00));
@@ -161,23 +161,23 @@ class AttendanceTest {
 
         int todayDay = 10;
 
-        //when
+        // when
         List<AttendanceResultDto> actual = attendance.readRecord(crew, todayDay);
 
-        //then
+        // then
         assertThat(actual).hasSize(6);
     }
 
     @DisplayName("출결 기록을 바탕으로 제적 위험자를 확인한다.")
     @Test
     void getAbsence() {
-        //given
+        // given
         Attendance attendance = FileManager.readFile();
 
-        //when
+        // when
         Map<Crew, AbsenceResultDto> actual = attendance.getAbsence(14);
 
-        //then
+        // then
         assertThat(actual).hasSize(5);
     }
 

@@ -28,10 +28,6 @@ public enum AttendanceTime {
         }
     }
 
-    public List<Calender> getCalenders() {
-        return calenders;
-    }
-
     public List<LocalTime> getLocalTimes() {
         return localTimes;
     }

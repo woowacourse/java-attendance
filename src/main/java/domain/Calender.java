@@ -34,8 +34,4 @@ public enum Calender {
             throw new IllegalArgumentException("공휴일에는 출석을 할 수 없습니다.");
         }
     }
-
-    public String getDescription() {
-        return description;
-    }
 }

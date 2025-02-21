@@ -9,14 +9,14 @@ class AbsencePolicyTest {
     @DisplayName("지각과 결석 횟수를 입력받아 제적 위험자를 확인할 수 있다.")
     @Test
     void getAbsencePolicy() {
-        //given
+        // given
         int lateCount = 4;
         int absenceCount = 2;
 
-        //when
+        // when
         String actual = AbsencePolicy.getAbsencePolicy(absenceCount, lateCount);
 
-        //then
+        // then
         Assertions.assertThat(actual).isEqualTo("면담");
     }
 }

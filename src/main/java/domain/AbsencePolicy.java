@@ -21,7 +21,7 @@ public enum AbsencePolicy {
         return value;
     }
 
-    public static String getAbsencePolicy(int absentCount, int lateCount) { //지각, 결석
+    public static String getAbsencePolicy(int absentCount, int lateCount) {
         int totalAbsentCount = absentCount + (lateCount / 3);
 
         return Stream.of(DISMISSED, INTERVIEW, WARNING)

@@ -78,7 +78,7 @@ public class Attendance {
     }
 
     public List<AttendanceResultDto> readRecord(final Crew crew, int todayDay) {
-        List<LocalDateTime> localDateTimes = attendanceMap.get(crew); //해당 크루의 출석 기록
+        List<LocalDateTime> localDateTimes = attendanceMap.get(crew);
         localDateTimes.sort(Comparator.comparing((LocalDateTime::getDayOfMonth)));
 
         List<AttendanceResultDto> attendanceResultDtos = new ArrayList<>();
