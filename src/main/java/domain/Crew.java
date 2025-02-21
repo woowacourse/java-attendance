@@ -28,10 +28,10 @@ public class Crew {
 
     private void validateDate(LocalDate date) {
         if (attendanceTimes.containsKey(date)) {
-            throw new IllegalArgumentException("이미 출석 처리되어 있습니다. 수정 기능을 이용해주세요.");
+            throw new IllegalArgumentException(date + ": 이미 출석 처리되어 있습니다. 수정 기능을 이용해주세요.");
         }
         if (DateTimeUtil.isOffDay(date)) {
-            throw new IllegalArgumentException("주말 및 공휴일에는 출석을 받지 않습니다.");
+            throw new IllegalArgumentException(date + ": 주말 및 공휴일에는 출석을 받지 않습니다.");
         }
     }
 
