@@ -54,11 +54,13 @@ public class MainController {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");
         LocalTime dateTime = LocalTime.parse(schoolStartTime, formatter);
 
-        String attendanceState = AttendanceState.findStateBy(dateTime, LocalDate.now());
+//        AttendanceState attendanceState = AttendanceState.findStateBy(dateTime, LocalDate.now());
+        AttendanceState attendanceState = AttendanceState.findStateBy(dateTime, LocalDate.of(2024, 12, 16));
 
-        attendance.save(crew, schoolStartTime);
+//        attendance.save(crew, schoolStartTime, LocalDate.now());
+        attendance.save(crew, schoolStartTime, LocalDate.of(2024, 12, 16));
 
-        OutputView.printTodayAttendance(schoolStartTime, attendanceState);
+        OutputView.printTodayAttendance(schoolStartTime, attendanceState.getDescription());
     }
 
     private void attendanceUpdate() {
