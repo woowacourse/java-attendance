@@ -4,7 +4,7 @@ import java.time.LocalDate;
 import java.time.format.TextStyle;
 import java.util.Locale;
 
-public class TodayDateTimeUtil {
+public class DateTimeUtil {
     private static LocalDate now() {
         return LocalDate.now();
     }
@@ -21,4 +21,5 @@ public class TodayDateTimeUtil {
     public static String nowDayOfWeek() {
         return now().getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.KOREAN);
     }
+
 }
