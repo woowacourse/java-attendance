@@ -22,11 +22,13 @@ public class OutputView {
 
     public static void printUpdateAttendance(final LocalDateTime beforeDateTime, final LocalDateTime afterDateTime) {
 
-        String beforeAttendanceState = AttendanceState.findStateBy(beforeDateTime.toLocalTime(),
-                beforeDateTime.toLocalDate()).getDescription();
+        String beforeAttendanceState = AttendanceState.findStateBy(
+                        beforeDateTime.toLocalTime(), beforeDateTime.toLocalDate())
+                .getDescription();
 
-        String afterAttendanceState = AttendanceState.findStateBy(afterDateTime.toLocalTime(),
-                afterDateTime.toLocalDate()).getDescription();
+        String afterAttendanceState = AttendanceState.findStateBy(
+                        afterDateTime.toLocalTime(), afterDateTime.toLocalDate())
+                .getDescription();
 
         System.out.printf("%02d월 %02d일 %s %02d:%02d (%s) -> %02d:%02d (%s) 수정 완료!\n",
                 DateTimeUtil.getYearBy(beforeDateTime.toLocalDate()),
