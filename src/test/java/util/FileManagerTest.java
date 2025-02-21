@@ -11,10 +11,10 @@ class FileManagerTest {
     @DisplayName("csv파일을 가져올 수 있다.")
     @Test
     void getReadFile() {
-        //given
+        // given
         Attendance attendance = FileManager.readFile();
 
-        //when & then
+        // when & then
         assertThat(attendance).isNotNull();
     }
 

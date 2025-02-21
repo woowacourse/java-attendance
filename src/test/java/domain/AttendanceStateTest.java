@@ -9,8 +9,6 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
 class AttendanceStateTest {
-
-    @DisplayName("출석 시간과 요일로 출석 상태를 계산하여 반환한다.")
     @ParameterizedTest
     @CsvSource(value = {
             "13:05,2,출석",
