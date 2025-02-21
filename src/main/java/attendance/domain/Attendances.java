@@ -48,9 +48,8 @@ public class Attendances {
 
     private void checkNotExistingWorkingDay(final Crew crew, final LocalDate day) {
         if (isWorkDay(day) && !isExistingDay(crew, day)) {
-            LocalDate localDate = LocalDate.of(day.getYear(), day.getMonthValue(), day.getDayOfMonth());
             LocalTime localTime = LocalTime.of(0, 0);
-            LocalDateTime localDateTime = LocalDateTime.of(localDate, localTime);
+            LocalDateTime localDateTime = LocalDateTime.of(day, localTime);
             attendances.add(new Attendance(crew, localDateTime, AttendanceType.ABSENT));
         }
     }
