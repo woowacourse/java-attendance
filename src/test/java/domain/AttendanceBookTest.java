@@ -1,7 +1,5 @@
-import domain.Attendance;
-import domain.AttendanceBook;
-import domain.AttendanceStatus;
-import domain.MemberAttendances;
+package domain;
+
 import dto.result.AttendResult;
 import dto.result.ExpelMeasurementResult;
 import dto.result.MemberAttendResult;

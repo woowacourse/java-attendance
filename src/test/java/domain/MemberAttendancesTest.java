@@ -1,6 +1,5 @@
-import domain.Attendance;
-import domain.AttendanceStatus;
-import domain.MemberAttendances;
+package domain;
+
 import dto.result.AttendResult;
 import dto.result.AttendanceModifyResult;
 import dto.result.ExpelMeasurementResult;

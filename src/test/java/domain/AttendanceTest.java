@@ -1,5 +1,5 @@
-import domain.Attendance;
-import domain.AttendanceStatus;
+package domain;
+
 import dto.result.AttendResult;
 import dto.result.AttendanceModifyResult;
 import org.junit.jupiter.api.Nested;
