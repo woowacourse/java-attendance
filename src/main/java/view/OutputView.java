@@ -5,6 +5,7 @@ import domain.attendance.Attendance;
 import domain.date.CustomDate;
 import domain.attendance.AttendanceStatus;
 import domain.crew.CrewStatus;
+import java.time.LocalTime;
 import service.dto.AttendanceHistoryResponse;
 import service.dto.AttendanceModifyResponse;
 import service.dto.DisenrollmentCheckResponse;
@@ -66,7 +67,8 @@ public class OutputView {
 
     private void printHistories(List<AttendanceHistoryResponse> histories) {
         histories.forEach(response -> {
-            String formattedDate = CustomDateTimeFormatter.formatDateAndDay(response.date());
+            String formattedDate = CustomDateTimeFormatter.formatDateAndDay(
+                    LocalDateTime.of(response.date(), response.time().orElse(LocalTime.of(0, 0))));
             String formattedTime = getFormattedTime(response);
             String status = response.status().getExpression();
             System.out.printf("%s %s (%s)\n", formattedDate, formattedTime, status);
@@ -99,7 +101,8 @@ public class OutputView {
     private static String getFormattedTime(AttendanceHistoryResponse response) {
         String formattedTime = "--:--";
         if (response.time().isPresent()) {
-            formattedTime = CustomDateTimeFormatter.formatTime(response.time().get());
+            formattedTime = CustomDateTimeFormatter.formatTime(
+                    LocalDateTime.of(response.date(), response.time().get()));
         }
         return formattedTime;
     }
