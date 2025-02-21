@@ -10,6 +10,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import util.Constants;
 import util.CrewGenerator;
 import util.CsvReader;
@@ -81,7 +82,7 @@ public class AttendanceController {
 
 
     private void processEditAttendance(final Crews crews) {
-        final Nickname nickname = readNickname();
+        final Nickname nickname = readNicknameForEditAttendance();
         final Crew crew = crews.findByNickname(nickname);
         final LocalDateTime desiredUpdateDateTime = readUpdateDateTime();
         final Attendance oldAttendance = crew.getAttendance(desiredUpdateDateTime);
@@ -91,12 +92,26 @@ public class AttendanceController {
         OutputView.printUpdateAttendance(oldAttendance, newAttendance);
     }
 
+    private Nickname readNicknameForEditAttendance() {
+        final String inputNickName = InputView.readUpdateNickName();
+        return new Nickname(inputNickName);
+    }
+
     private LocalDateTime readUpdateDateTime() {
         final String updateDate = InputView.readUpdateDate();
-        final LocalTime desiredUpdateTime = LocalTime.parse(InputView.readUpdateDateTime());
+        final LocalTime desiredUpdateTime = readDesiredUpdateTime();
         final LocalDate fixedLocalDate = LocalDate.of(Constants.FIXED_YEAR, Constants.FIXED_MONTH,
                 Integer.parseInt(updateDate));
         return LocalDateTime.of(fixedLocalDate, desiredUpdateTime);
+    }
+
+    private LocalTime readDesiredUpdateTime() {
+        final String inputDateTime = InputView.readUpdateDateTime();
+        try {
+            return LocalTime.parse(inputDateTime);
+        } catch (DateTimeParseException e) {
+            throw new CustomIllegalArgumentException("올바른 시간 형식이 아닙니다. 얘를들어 10:22 이런 형태로 작성해주세요.");
+        }
     }
 
     private void processAttendanceRecordByCrew(final Crews crews) {
