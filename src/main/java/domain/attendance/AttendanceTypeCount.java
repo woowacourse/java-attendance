@@ -22,21 +22,38 @@ public class AttendanceTypeCount {
             historyOfDay.put(history.getDay(), history);
         }
 
+        countAttendanceType(day, attendanceTypeCount, historyOfDay);
+
+        return new AttendanceTypeCount(attendanceTypeCount);
+    }
+
+    private static void countAttendanceType(int day,
+                                            Map<AttendanceType, Integer> attendanceTypeCount,
+                                            Map<Integer, AttendanceHistory> historyOfDay) {
+
         for (int currentDay = 1; currentDay < day; currentDay++) {
             if (AttendanceDate.isRestDay(currentDay)) {
                 continue;
             }
 
-            if (!historyOfDay.containsKey(currentDay)) {
+            if (historyIsNotExisted(historyOfDay, day)) {
                 attendanceTypeCount.merge(AttendanceType.ABSENCE, 1, Integer::sum);
                 continue;
             }
 
-            AttendanceDateTime dateTimeOfDay = historyOfDay.get(currentDay).getAttendanceDateTime();
-            attendanceTypeCount.merge(dateTimeOfDay.getAttendanceType(), 1, Integer::sum);
+            countByHistory(historyOfDay, attendanceTypeCount, currentDay);
         }
+    }
 
-        return new AttendanceTypeCount(attendanceTypeCount);
+    private static boolean historyIsNotExisted(Map<Integer, AttendanceHistory> historyOfDay, int day) {
+        return !historyOfDay.containsKey(day);
+    }
+
+    private static void countByHistory(Map<Integer, AttendanceHistory> historyOfDay,
+                                       Map<AttendanceType, Integer> attendanceTypeCount,
+                                       int currentDay) {
+        AttendanceDateTime dateTimeOfDay = historyOfDay.get(currentDay).getAttendanceDateTime();
+        attendanceTypeCount.merge(dateTimeOfDay.getAttendanceType(), 1, Integer::sum);
     }
 
     public int getTotalAbsenceCount() {
