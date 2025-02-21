@@ -2,7 +2,6 @@ package controller;
 
 import constant.CampusConstant;
 import domain.AttendanceStatus;
-import domain.AttendanceStatusStatistics;
 import domain.Crew;
 import domain.Manage;
 import dto.AttendanceModifyRequest;
@@ -30,16 +29,21 @@ public class AttendanceController {
     public void run() {
         boolean isRunning = true;
         while (isRunning) {
-            OptionRequest optionRequest = InputView.scanOption();
-            switch (optionRequest.option()) {
-                case "1" -> attendanceCheck();
-                case "2" -> attendanceModify();
-                case "3" -> printMonthAttendanceRecords();
-                case "4" -> checkCrewsAlmostExpelled();
-                case "q", "Q" -> isRunning = false;
-                default -> System.out.println("존재하지 않는 옵션입니다.");
-            }
+            isRunning = executeMainMenu(isRunning);
         }
+    }
+
+    private boolean executeMainMenu(boolean isRunning) {
+        OptionRequest optionRequest = InputView.scanOption();
+        switch (optionRequest.option()) {
+            case "1" -> attendanceCheck();
+            case "2" -> attendanceModify();
+            case "3" -> printMonthAttendanceRecords();
+            case "4" -> checkCrewsAlmostExpelled();
+            case "q", "Q" -> isRunning = false;
+            default -> System.out.println("존재하지 않는 옵션입니다.");
+        }
+        return isRunning;
     }
 
     private void attendanceCheck() {
@@ -86,7 +90,7 @@ public class AttendanceController {
         List<Crew> crews = CrewRepository.findAll();
         List<CrewAlmostExpelledResult> result = crews.stream()
                 .map(crew -> {
-                    AttendanceStatusStatistics attendanceStatusStatistics
+                    var attendanceStatusStatistics
                             = crew.getAttendanceStatusStatistics(DateTimeUtil.nowDate());
                     return new CrewAlmostExpelledResult(
                             crew.getNickname(), attendanceStatusStatistics, Manage.of(attendanceStatusStatistics));
