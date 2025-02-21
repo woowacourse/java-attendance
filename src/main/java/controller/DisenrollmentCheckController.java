@@ -2,7 +2,6 @@ package controller;
 
 import service.DisenrollmentCheckService;
 import service.dto.DisenrollmentCheckResponse;
-import view.InputView;
 import view.OutputView;
 
 import java.util.List;

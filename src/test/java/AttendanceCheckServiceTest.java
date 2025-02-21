@@ -1,5 +1,6 @@
 import constants.DateConstants;
 import domain.Attendance;
+import domain.AttendanceCustomDate;
 import domain.Crew;
 import exception.DuplicateAttendanceException;
 import org.junit.jupiter.api.BeforeEach;
@@ -19,11 +20,13 @@ public class AttendanceCheckServiceTest {
 
     @BeforeEach
     void setUp() {
+        LocalDateTime now = AttendanceCustomDate.now();
+
         Crew crew = new Crew("이든");
         attendanceRepository = new AttendanceRepositoryImpl();
         attendanceCheckService = new AttendanceCheckService(attendanceRepository);
 
-        attendanceRepository.save(crew);
+        attendanceRepository.save(crew, now.getYear(), now.getMonthValue());
     }
 
     @DisplayName("등교시간을 입력하면 Attendance 객체를 추가할 수 있다.")

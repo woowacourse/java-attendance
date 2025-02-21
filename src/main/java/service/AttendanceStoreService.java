@@ -1,5 +1,6 @@
 package service;
 
+import domain.AttendanceCustomDate;
 import domain.Crew;
 import repository.AttendanceRepository;
 
@@ -23,8 +24,9 @@ public class AttendanceStoreService {
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
             Crew crew = new Crew(parsed[0]);
             LocalDateTime attendanceTime = LocalDateTime.parse(parsed[1], formatter);
+            LocalDateTime now = AttendanceCustomDate.now();
             try {
-                attendanceRepository.save(crew);
+                attendanceRepository.save(crew, now.getYear(), now.getMonthValue());
             } catch (RuntimeException ignored) {
             }
             attendanceRepository.createNewAttendance(parsed[0]

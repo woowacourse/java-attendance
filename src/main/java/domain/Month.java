@@ -1,9 +1,11 @@
 package domain;
 
 import constants.DateConstants;
+import exception.InvalidMonthValueException;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
+import java.util.Arrays;
 
 public enum Month {
     JANUARY(31, 1),
@@ -27,6 +29,13 @@ public enum Month {
     Month(int lastDay, int value) {
         this.lastDay = lastDay;
         this.value = value;
+    }
+
+    public static Month of(int month) {
+        return Arrays.stream(values())
+                .filter(m -> m.getValue() == month)
+                .findFirst()
+                .orElseThrow(InvalidMonthValueException::new);
     }
 
     public boolean isHoliday(int day) {

@@ -4,12 +4,11 @@ import domain.Attendance;
 import domain.AttendanceBook;
 import domain.Crew;
 
-import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
 public interface AttendanceRepository {
-    void save(Crew crew);
+    void save(Crew crew, int year, int month);
 
     void createNewAttendance(String crewName, int date, int hour, int minute);
 

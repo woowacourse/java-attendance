@@ -2,12 +2,14 @@ package repository;
 
 import domain.Attendance;
 import domain.AttendanceBook;
+import domain.AttendanceCustomDate;
 import domain.Crew;
 import exception.CrewNotExistException;
 
+import java.time.LocalDate;
 import java.util.*;
 
-public class AttendanceRepositoryImpl implements AttendanceRepository{
+public class AttendanceRepositoryImpl implements AttendanceRepository {
     private final Map<Crew, AttendanceBook> crewAttendances;
 
     public AttendanceRepositoryImpl() {
@@ -15,11 +17,11 @@ public class AttendanceRepositoryImpl implements AttendanceRepository{
     }
 
     @Override
-    public void save(Crew crew) {
+    public void save(Crew crew, int year, int month) {
         if (crewAttendances.containsKey(crew)) {
             throw new RuntimeException("이미 출석부가 존재하는 크루입니다.");
         }
-        crewAttendances.put(crew, new AttendanceBook());
+        crewAttendances.put(crew, new AttendanceBook(year, month));
     }
 
     @Override

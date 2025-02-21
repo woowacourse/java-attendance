@@ -2,119 +2,102 @@ package domain;
 
 import constants.DateConstants;
 import exception.DuplicateAttendanceException;
-import service.dto.AttendanceHistoryResponse;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.*;
 
 public class AttendanceBook {
-    private final Map<Integer, Attendance> attendances; // key: 몇 일, value: 출석 시간
+    private final int year;
+    private final Month month;
+    private final Map<Integer, Optional<Attendance>> attendances; // key: 몇 일, value: 출석 시간
 
-    public AttendanceBook() {
-        this.attendances = new HashMap<>();
+    public AttendanceBook(int year, int month) {
+        this.year = year;
+        this.month = Month.of(month);
+
+        attendances = new HashMap<>();
+        for (int day = 1; day <= this.month.getLastDay(); day++) {
+            attendances.put(day, Optional.empty());
+        }
     }
 
     public Attendance create(int date, int hour, int minute) {
-        if (attendances.containsKey(date)) {
+        if (attendances.get(date).isPresent()) {
             throw new DuplicateAttendanceException();
         }
         Attendance attendance = new Attendance(
                 LocalDateTime.of(DateConstants.YEAR, DateConstants.MONTH.getValue(), date, hour, minute)
         );
-        attendances.put(date, attendance);
+        attendances.put(date, Optional.of(attendance));
         return attendance;
     }
 
     public Optional<Attendance> findAttendanceByDate(int date) {
         if (attendances.containsKey(date)) {
-            return Optional.of(attendances.get(date));
+            return attendances.get(date);
         }
         return Optional.empty();
     }
 
     public void replace(Attendance beforeAttendance, Attendance afterAttendance) {
         int date = beforeAttendance.getTime().getDayOfMonth();
-        attendances.replace(date, beforeAttendance, afterAttendance);
+        attendances.replace(date, Optional.of(beforeAttendance), Optional.of(afterAttendance));
     }
 
-    public List<AttendanceHistoryResponse> getAllAttendance(LocalDate limitDate) {
-        List<AttendanceHistoryResponse> histories = new ArrayList<>();
-        for (int date = 1; date < limitDate.getDayOfMonth(); date++) {
-            if (DateConstants.MONTH.isHoliday(date)) {
-                continue;
-            }
-            if (attendances.containsKey(date)) {
-                Attendance attendance = attendances.get(date);
-                histories.add(new AttendanceHistoryResponse(
-                        attendance.getTime().toLocalDate(),
-                        Optional.of(attendance.getTime().toLocalTime()),
-                        attendance.getStatus())
+    public List<AttendanceHistory> getAllAttendanceHistory(final int limitDay) {
+        List<AttendanceHistory> histories = new ArrayList<>();
+
+        for (int day = 1; day < limitDay; day++) {
+            if (!month.isHoliday(day)) {
+                AttendanceHistory attendanceHistory = AttendanceHistory.of(
+                        LocalDate.of(year, month.getValue(), day), attendances.get(day)
                 );
-            }
-            else {
-                histories.add(new AttendanceHistoryResponse(
-                        LocalDate.of(DateConstants.YEAR, DateConstants.MONTH.getValue(), date),
-                        Optional.empty(),
-                        AttendanceStatus.ABSENCE)
-                );
+                histories.add(attendanceHistory);
             }
         }
         return histories;
     }
 
-    public Map<AttendanceStatus, Integer> calculateAttendanceResult(LocalDate limitDate) {
+    public Map<AttendanceStatus, Integer> calculateAttendanceResult(final int limitDay) {
         Map<AttendanceStatus, Integer> result = new HashMap<>();
         result.put(AttendanceStatus.ATTENDANCE, 0);
         result.put(AttendanceStatus.LATE, 0);
         result.put(AttendanceStatus.ABSENCE, 0);
-        for (int date = 1; date < limitDate.getDayOfMonth(); date++) {
-            if (DateConstants.MONTH.isHoliday(date)) {
-                continue;
-            }
-            if (attendances.containsKey(date)) {
-                Attendance attendance = attendances.get(date);
-                AttendanceStatus status = attendance.getStatus();
-                result.replace(status, result.get(status) + 1);
-            }
-            else {
-                result.replace(AttendanceStatus.ABSENCE, result.get(AttendanceStatus.ABSENCE) + 1);
+        for (int date = 1; date < limitDay; date++) {
+            if (!month.isHoliday(date)) {
+                attendances.get(date).ifPresentOrElse(attendance -> {
+                    AttendanceStatus status = attendance.getStatus();
+                    result.replace(status, result.get(status) + 1);
+                }, () -> result.replace(AttendanceStatus.ABSENCE, result.get(AttendanceStatus.ABSENCE) + 1));
             }
         }
         return result;
     }
 
-    public int getLateCountAt(LocalDate limitDate) {
-        int lateCount = 0;
-        for (int date = 1; date < limitDate.getDayOfMonth(); date++) {
-            if (DateConstants.MONTH.isHoliday(date)) {
-                continue;
-            }
-            if (attendances.containsKey(date)) {
-                Attendance attendance = attendances.get(date);
-                if (attendance.getStatus() == AttendanceStatus.LATE) {
-                    lateCount++;
-                }
+    public int getLateCount(final int limitDay) {
+        int count = 0;
+        for (int day = 1; day < limitDay; day++) {
+            if (!month.isHoliday(day)
+                    && attendances.get(day).isPresent()
+                    && attendances.get(day).get().getStatus() == AttendanceStatus.LATE
+            ) {
+                count++;
             }
         }
-        return lateCount;
+        return count;
     }
 
-    public int getAbsenceCountAt(LocalDate limitDate) {
-        int absenceCount = 0;
-        for (int date = 1; date < limitDate.getDayOfMonth(); date++) {
-            if (DateConstants.MONTH.isHoliday(date)) {
-                continue;
-            }
-            if (attendances.containsKey(date)) {
-                Attendance attendance = attendances.get(date);
-                if (attendance.getStatus() == AttendanceStatus.ABSENCE) {
-                    absenceCount++;
-                }
-            } else {
-                absenceCount++;
+    public int getAbsenceCount(final int limitDay) {
+        int count = 0;
+        for (int day = 1; day < limitDay; day++) {
+            Optional<Attendance> attendance = attendances.get(day);
+            if (!month.isHoliday(day) && (
+                    attendance.isEmpty() || attendance.get().getStatus() == AttendanceStatus.ABSENCE
+            )) {
+                count++;
             }
         }
-        return absenceCount;
+        return count;
     }
 }

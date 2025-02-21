@@ -1,6 +1,7 @@
 package service;
 
 import constants.DateConstants;
+import domain.AttendanceCustomDate;
 import domain.AttendanceStatus;
 import domain.Crew;
 import domain.CrewStatus;
@@ -12,6 +13,7 @@ import repository.AttendanceRepositoryImpl;
 import service.dto.AttendanceHistoryResponse;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.*;
 
@@ -33,11 +35,15 @@ class AttendanceHistoryServiceTest {
 
     @BeforeEach
     void setUp() {
+        LocalDateTime now = AttendanceCustomDate.now();
+
         attendanceRepository = new AttendanceRepositoryImpl();
-        attendanceRepository.save(crew);
+        attendanceRepository.save(crew, now.getYear(), now.getMonthValue());
+
         attendanceRepository.createNewAttendance(name, 2, 13, 0);
         attendanceRepository.createNewAttendance(name, 3, 10, 7);
         attendanceRepository.createNewAttendance(name, 4, 10, 31);
+
         attendanceHistoryService = new AttendanceHistoryService(attendanceRepository);
     }
 

@@ -1,6 +1,7 @@
 package service;
 
 import constants.DateConstants;
+import domain.AttendanceCustomDate;
 import domain.AttendanceStatus;
 import domain.Crew;
 import org.junit.jupiter.api.BeforeEach;
@@ -21,10 +22,12 @@ class AttendanceModifyServiceTest {
 
     @BeforeEach
     void setUp() {
+        LocalDateTime now = AttendanceCustomDate.now();
+
         attendanceRepository = new AttendanceRepositoryImpl();
         attendanceModifyService = new AttendanceModifyService(attendanceRepository);
 
-        attendanceRepository.save(crew);
+        attendanceRepository.save(crew, now.getYear(), now.getMonthValue());
     }
 
     @DisplayName("수정한다.")
