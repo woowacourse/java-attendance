@@ -9,7 +9,7 @@ import java.util.Scanner;
 public class InputView {
     private static final String TODAY_INFO = "오늘은 %d월 %d일 %s입니다. 기능을 선택해 주세요.";
 
-    private final Scanner sc = new Scanner(System.in);
+    private final Scanner scanner = new Scanner(System.in);
 
     public String inputOption(LocalDate localDate) {
         System.out.println(TODAY_INFO.formatted(localDate.getMonthValue(), localDate.getDayOfMonth(), localDate.getDayOfWeek()));
@@ -56,6 +56,6 @@ public class InputView {
     }
 
     private String userInput() {
-        return sc.nextLine();
+        return scanner.nextLine();
     }
 }

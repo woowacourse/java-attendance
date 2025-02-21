@@ -17,10 +17,10 @@ public class AttendanceFileReader {
         return new BufferedReader(new FileReader(PATH));
     }
 
-    public static void initializeAttendances(final BufferedReader br, CrewManager crewManager) throws IOException {
+    public static void initializeAttendances(final BufferedReader bufferedReader, CrewManager crewManager) throws IOException {
         String string;
-        br.readLine();
-        while ((string = br.readLine()) != null) {
+        bufferedReader.readLine();
+        while ((string = bufferedReader.readLine()) != null) {
             String[] split = string.split(",");
             String nickname = split[0];
             Crew crew = new Crew(nickname);
