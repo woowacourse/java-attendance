@@ -53,7 +53,7 @@ public class AttendanceController {
                     modifyAttendance(crewAttendances, today);
                 }
                 if (operationCommand.isCrewAttendancesCheck()) {
-                    checkCrewAttendances(crewAttendances);
+                    inquireCrewAttendances(crewAttendances);
                 }
                 if (operationCommand.isExpulsionCheck()) {
                     checkExpulsionCrews(crewAttendances);
@@ -84,7 +84,7 @@ public class AttendanceController {
                 newAttendance.getAttendanceDateTime(), newAttendanceStatus);
     }
 
-    private void checkCrewAttendances(final Map<Crew, Attendances> crewAttendances) {
+    private void inquireCrewAttendances(final Map<Crew, Attendances> crewAttendances) {
         Crew crew = new Crew(inputView.readCrewNickname());
         validateCrewExistence(crewAttendances, crew);
         Attendances attendances = crewAttendances.get(crew);
