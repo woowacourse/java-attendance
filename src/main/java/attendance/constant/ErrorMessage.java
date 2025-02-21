@@ -6,9 +6,10 @@ public enum ErrorMessage {
     UNREGISTERED_NICKNAME("[ERROR] 캠퍼스 운영 시간이 아닙니다."),
     ;
 
-    private String message;
+    private final String message;
 
     ErrorMessage(String message) {
+        this.message = message;
     }
 
     public String getMessage() {
