@@ -6,6 +6,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import dto.AbsenceResultDto;
 import dto.AttendanceResultDto;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -65,7 +66,7 @@ class AttendanceTest {
         Attendance attendance = new Attendance(attendances);
 
         // when
-        attendance.save(crew, "10:20");
+        attendance.save(crew, "10:20", LocalDate.of(2024, 12, 8));
 
         // then
         assertThat(attendance.getAttendanceMap().get(crew)).hasSize(5);
@@ -88,12 +89,12 @@ class AttendanceTest {
         Attendance attendance = new Attendance(attendances);
 
         // when & then
-        assertThatThrownBy(() -> attendance.save(crew, "09:55"))
+        assertThatThrownBy(() -> attendance.save(crew, "09:55", LocalDate.of(2024, 12, 5)))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("이미 출석한 크루입니다.");
     }
 
-    @DisplayName("이미 출석한 크루가 다시 출석하면 예외가 발생한다.")
+    @DisplayName("하루에 한 번은 출석할 수 있다.")
     @Test
     void nonDuplicateSave() {
         // given
@@ -110,7 +111,7 @@ class AttendanceTest {
         Attendance attendance = new Attendance(attendances);
 
         // when & then
-        assertThatCode(() -> attendance.save(crew, "09:55"))
+        assertThatCode(() -> attendance.save(crew, "09:55", LocalDate.of(2024, 12, 8)))
                 .doesNotThrowAnyException();
     }
 
