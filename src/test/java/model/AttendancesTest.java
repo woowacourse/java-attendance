@@ -1,36 +1,22 @@
 package model;
 
-import converter.StringConverter;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import org.assertj.core.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import util.DataReader;
 
 class AttendancesTest {
 
-    private final StringConverter stringConverter = new StringConverter();
-    private Attendances attendances;
-    private Crews crews;
-
-    @BeforeEach
-    void beforeEach() {
-        List<String> rawAttendances = new DataReader().readAttendances("src/test/resources/attendances.csv");
-        crews = stringConverter.convertToCrews(rawAttendances);
-        attendances = stringConverter.convertToAttendances(rawAttendances, crews);
-    }
-
     @Test
-    @DisplayName("닉네임과 등교 시간을 입력하면 출석할 수 있다.")
-    void test1() {
+    void 닉네임과_등교_시간을_입력하면_출석할_수_있다() {
         //given
         Crew crew = Crew.of("쿠키");
-        LocalDateTime checkInTime = LocalDateTime.of(2024, 12, 3, 9, 35);
+        LocalDateTime checkInTime = LocalDateTime.of(2024, 12, 3, 9, 30);
         Attendance attendance = Attendance.of(crew, checkInTime);
+        Attendances attendances = Attendances.of(new ArrayList<>());
 
         //when
         attendances.checkIn(attendance);
@@ -40,31 +26,32 @@ class AttendancesTest {
     }
 
     @Test
-    @DisplayName("이미 출석한 경우에는 다시 출석할 수 없다.")
-    void test2() {
+    void 같은_날에_이미_출석한_경우에는_다시_출석할_수_없다() {
         //given
         Crew crew = Crew.of("쿠키");
-        LocalDateTime checkInTime = LocalDateTime.of(2024, 12, 3, 9, 35);
-        Attendance attendance = Attendance.of(crew, checkInTime);
-        attendances.checkIn(attendance);
+        LocalDateTime checkInTime1 = LocalDateTime.of(2024, 12, 3, 9, 30);
+        Attendance attendance1 = Attendance.of(crew, checkInTime1);
+        Attendances attendances = Attendances.of(List.of(attendance1));
+
+        LocalDateTime checkInTime2 = LocalDateTime.of(2024, 12, 3, 8, 30);
+        Attendance attendance2 = Attendance.of(crew, checkInTime2);
 
         //when & then
-        Assertions.assertThatThrownBy(() -> attendances.checkIn(attendance))
+        Assertions.assertThatThrownBy(() -> attendances.checkIn(attendance2))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("이미 출석한 경우에는 다시 출석할 수 없습니다.");
     }
 
     @Test
-    @DisplayName("출석 시간을 수정한다.")
-    void test3() {
+    void 출석_시간을_수정할_수_있다() {
         //given
         Crew crew = Crew.of("쿠키");
-        LocalDateTime checkInTime = LocalDateTime.of(2025, 2, 27, 10, 31);
+        LocalDateTime checkInTime = LocalDateTime.of(2024, 12, 3, 9, 30);
         Attendance attendance = Attendance.of(crew, checkInTime);
+        Attendances attendances = Attendances.of(new ArrayList<>());
 
         attendances.checkIn(attendance);
-
-        LocalDateTime modifiedCheckInTime = LocalDateTime.of(2025, 2, 27, 10, 0);
+        LocalDateTime modifiedCheckInTime = LocalDateTime.of(2024, 12, 3, 9, 40);
 
         //when
         Attendance modifiedAttendance = attendances.modify(crew, modifiedCheckInTime);
@@ -75,11 +62,11 @@ class AttendancesTest {
     }
 
     @Test
-    @DisplayName("출석 시간을 수정할 때 출석이 없으면 새로 생성한다.")
-    void test4() {
+    void 출석_시간을_수정할_때_출석이_없으면_새로_생성한다() {
         //given
         Crew crew = Crew.of("쿠키");
         LocalDateTime modifiedCheckInTime = LocalDateTime.of(2024, 12, 3, 10, 0);
+        Attendances attendances = Attendances.of(new ArrayList<>());
 
         //when
         attendances.modify(crew, modifiedCheckInTime);
@@ -89,29 +76,26 @@ class AttendancesTest {
     }
 
     @Test
-    @DisplayName("크루의 출석 기록을 조회한다.")
-    void test8() {
+    void 크루_한_명의_출석_기록을_조회할_수_있다() {
         //given
         Crew crew = Crew.of("쿠키");
-
-        Attendance attendance1 = Attendance.of(crew, LocalDateTime.of(2025, 2, 17, 10, 0, 0));
-        Attendance attendance2 = Attendance.of(crew, LocalDateTime.of(2025, 2, 18, 10, 31, 0));
-        Attendance attendance3 = Attendance.of(crew, LocalDateTime.of(2025, 2, 19, 10, 6, 0));
+        Attendance attendance1 = Attendance.of(crew, LocalDateTime.of(2024, 12, 3, 9, 30));
+        Attendance attendance2 = Attendance.of(crew, LocalDateTime.of(2024, 10, 3, 9, 30));
+        Attendances attendances1 = Attendances.of(List.of(attendance1, attendance2));
+        Attendances attendances2 = Attendances.of(List.of(attendance1));
 
         //when
-        Attendances filteredAttendances = attendances.findByCrewAndMonth(crew, 2);
+        Attendances filteredAttendances = attendances1.findByCrewAndMonth(crew, 12);
 
         //then
-        Assertions.assertThat(filteredAttendances.getAttendances())
-                .contains(attendance1, attendance2, attendance3);
+        Assertions.assertThat(filteredAttendances).isEqualTo(attendances2);
     }
 
     @Test
-    @DisplayName("크루의 출석을 모두 조회한다.")
-    void test9() {
-        //given
-
-        //when
+    void 크루의_출석을_모두_조회한다() {
+        //given & when
+        Attendances attendances = Attendances.of(new ArrayList<>());
+        Crews crews = Crews.of(new ArrayList<>());
         Map<Crew, Attendances> crewsAttendances = attendances.findAll(crews, LocalDate.now().getMonthValue());
 
         //then
