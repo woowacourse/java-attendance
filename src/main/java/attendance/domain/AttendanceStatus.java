@@ -6,8 +6,8 @@ import java.util.List;
 public enum AttendanceStatus {
 
     OK("출석", 5, 0),
-    LATE("지각", 5, 1),
-    ABSENT("결석", 30, 3);
+    LATE("지각", 30, 1),
+    ABSENT("결석", Integer.MAX_VALUE, 3);
 
     private static final LocalTime MONDAY_START_TIME = LocalTime.of(13, 0);
     private static final LocalTime TUESDAY_TO_FRIDAY_START_TIME = LocalTime.of(10, 0);
@@ -32,13 +32,13 @@ public enum AttendanceStatus {
 
     private static AttendanceStatus findStatusByStartTime(final LocalTime startTime, final AttendanceTime attendanceTime) {
         int result = attendanceTime.calculateMinuteDifferences(startTime);
-        if (result > ABSENT.deadLineMinute) {
-            return ABSENT;
+        if (result <= OK.deadLineMinute) {
+            return OK;
         }
-        if (result > LATE.deadLineMinute) {
+        if (result <= LATE.deadLineMinute) {
             return LATE;
         }
-        return OK;
+        return ABSENT;
     }
 
     public static int calculateTotalAbsentCount(final List<AttendanceStatus> statuses) {
