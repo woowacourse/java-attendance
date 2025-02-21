@@ -6,16 +6,18 @@ import java.util.function.Function;
 
 public enum AttendanceType {
 
-    OK(difMinutes -> difMinutes <= 5),
-    LATE(difMinutes -> difMinutes > 5 && difMinutes <= 30),
-    ABSENCE(difMinutes -> difMinutes > 30),
+    OK("출석", difMinutes -> difMinutes <= 5),
+    LATE("지각", difMinutes -> difMinutes > 5 && difMinutes <= 30),
+    ABSENCE("결석", difMinutes -> difMinutes > 30),
     ;
 
     private static final int MINUTE_SCALE = 60;
 
+    private final String label;
     private final Function<Integer, Boolean> isMatch;
 
-    AttendanceType(Function<Integer, Boolean> isMatch) {
+    AttendanceType(String label, Function<Integer, Boolean> isMatch) {
+        this.label = label;
         this.isMatch = isMatch;
     }
 
@@ -29,5 +31,9 @@ public enum AttendanceType {
     private static int calculateDifMinutes(LocalTime startTime, LocalTime attendanceTime) {
         int difSecond = attendanceTime.toSecondOfDay() - startTime.toSecondOfDay();
         return difSecond / MINUTE_SCALE;
+    }
+
+    public String getLabel() {
+        return label;
     }
 }

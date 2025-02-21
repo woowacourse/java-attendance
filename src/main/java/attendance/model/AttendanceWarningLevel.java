@@ -5,15 +5,17 @@ import java.util.function.Function;
 
 public enum AttendanceWarningLevel {
 
-    CLEAN((totalAbsentCount) -> totalAbsentCount < 2),
-    WARNING((totalAbsentCount) -> totalAbsentCount == 2),
-    MEETING((totalAbsentCount) -> totalAbsentCount >= 3 && totalAbsentCount <= 5),
-    EXPULSION((totalAbsentCount) -> totalAbsentCount > 5),
+    CLEAN("정상", totalAbsentCount -> totalAbsentCount < 2),
+    WARNING("경고", totalAbsentCount -> totalAbsentCount == 2),
+    MEETING("면담", totalAbsentCount -> totalAbsentCount >= 3 && totalAbsentCount <= 5),
+    EXPULSION("제적", totalAbsentCount -> totalAbsentCount > 5),
     ;
 
+    private final String label;
     private final Function<Integer, Boolean> isMatch;
 
-    AttendanceWarningLevel(Function<Integer, Boolean> isMatch) {
+    AttendanceWarningLevel(String label, Function<Integer, Boolean> isMatch) {
+        this.label = label;
         this.isMatch = isMatch;
     }
 
@@ -27,5 +29,9 @@ public enum AttendanceWarningLevel {
 
     public static int calculateLateToAbsent(int lateCount) {
         return lateCount / 3;
+    }
+
+    public String getLabel() {
+        return label;
     }
 }

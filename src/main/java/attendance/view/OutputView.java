@@ -21,7 +21,8 @@ public class OutputView {
         );
     }
 
-    public void printModifiedAttendance(Attendance beforeAttendance, Attendance afterAttendance, AttendanceType beforeType, AttendanceType afterType) {
+    public void printModifiedAttendance(Attendance beforeAttendance, Attendance afterAttendance,
+                                        AttendanceType beforeType, AttendanceType afterType) {
         if (beforeAttendance != null) {
             System.out.printf("%s (%s) -> %s (%s) 수정 완료!%n",
                     beforeAttendance.getDateTime().format(DateTimeFormatter.ofPattern("MM월 dd일 E요일 HH:mm")),
@@ -61,7 +62,7 @@ public class OutputView {
 
     public void printWarningLevel(AttendanceWarningLevel level) {
         if (level != AttendanceWarningLevel.CLEAN) {
-            System.out.printf("%n%s 대상자입니다.", displayAttendanceWarningLevel(level));
+            System.out.printf("%n%s 대상자입니다.", level.getLabel());
         }
     }
 
@@ -73,7 +74,7 @@ public class OutputView {
                         summary.crew().getNickname(),
                         summary.absenceCount(),
                         summary.lateCount(),
-                        displayAttendanceWarningLevel(summary.level())));
+                        summary.level().getLabel()));
     }
 
     public void printErrorMessage(String message) {
@@ -81,23 +82,10 @@ public class OutputView {
     }
 
     private String displayAttendanceType(AttendanceType type) {
-        if (type == AttendanceType.OK) {
-            return "출석";
+        if (type == null) {
+            return AttendanceType.ABSENCE.getLabel();
         }
-        if (type == AttendanceType.LATE) {
-            return "지각";
-        }
-        return "결석";
-    }
-
-    private String displayAttendanceWarningLevel(AttendanceWarningLevel level) {
-        if (level == AttendanceWarningLevel.WARNING) {
-            return "경고";
-        }
-        if (level == AttendanceWarningLevel.MEETING) {
-            return "면담";
-        }
-        return "제적";
+        return type.getLabel();
     }
 
     public void printDateTimeErrorMessage() {
