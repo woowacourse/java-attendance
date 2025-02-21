@@ -2,7 +2,7 @@ package attendance.utils;
 
 import attendance.view.OutputView;
 
-public final class ErrorUtils {
+public class ErrorUtils {
 
     private ErrorUtils() {
     }
