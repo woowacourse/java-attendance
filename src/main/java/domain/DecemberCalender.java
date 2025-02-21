@@ -4,8 +4,9 @@ import java.time.LocalDate;
 
 public class DecemberCalender {
 
-    private final int year = 2024;
-    private final int month = 12;
+    private static final int YEAR = 2024;
+    private static final int MONTH = 12;
+
     private final int day;
 
     public DecemberCalender(int day) {
@@ -20,6 +21,6 @@ public class DecemberCalender {
     }
 
     public LocalDate getDate() {
-        return LocalDate.of(year, month, day);
+        return LocalDate.of(YEAR, MONTH, day);
     }
 }
