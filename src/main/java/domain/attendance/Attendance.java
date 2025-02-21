@@ -24,14 +24,14 @@ public class Attendance {
         if (validate(cursorDate)) {
             return;
         }
-        updateAttendanceDate(cursorDate);
+        addAttendanceDate(cursorDate);
     }
 
     private boolean validate(LocalDate date) {
         return date.getDayOfWeek().getValue() >= AttendanceDate.SATURDAY || Holiday.has(date);
     }
 
-    private void updateAttendanceDate(LocalDate cursorDate) {
+    private void addAttendanceDate(LocalDate cursorDate) {
         attendanceDates.add(new AttendanceDate(
                 LocalDateTime.of(
                         cursorDate.getYear(),
