@@ -8,6 +8,7 @@ import attendance.domain.AttendanceRepository;
 import attendance.domain.AttendanceStatus;
 import attendance.domain.HourMinute;
 import attendance.domain.WarningLevel;
+import attendance.domain.WarningLevelCalculator;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -137,7 +138,7 @@ public class OutputView {
         return names.stream().map(name -> {
             final Map<AttendanceStatus, Integer> crewStatuses = attendanceRepository.queryCrewAttendanceStatus(
                     name, today);
-            WarningLevel level = WarningLevel.calculateLevel(crewStatuses);
+            WarningLevel level = WarningLevelCalculator.calculateLevel(crewStatuses);
 
             return String.format(WARNING_CREW_RESULT_FORMAT, name, crewStatuses.get(ABSENCE),
                     crewStatuses.get(LATENESS), level.getLevel());
