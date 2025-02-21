@@ -68,14 +68,14 @@ public class Attendances {
 
     public List<Integer> calculateByNameAndDate(String name, LocalDate today) {
         List<Attendance> attendanceList = findByNameAndDateWithAscend(name, today);
-        Map<AttendanceStatus, Integer> map = AttendanceStatus.calculateAbsencesUntil(today, attendanceList);
+        Map<AttendanceStatus, Integer> attendanceStatusCount = AttendanceStatus.calculateAbsencesUntil(today, attendanceList);
 
         for (Attendance attendance : attendanceList) {
             AttendanceStatus status = attendance.getStatus();
-            map.merge(status, 1, Integer::sum);
+            attendanceStatusCount.merge(status, 1, Integer::sum);
         }
 
-        return map.values().stream().toList();
+        return attendanceStatusCount.values().stream().toList();
     }
 
     public List<String> getCrewNames() {
