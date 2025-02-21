@@ -69,4 +69,11 @@ public enum AttendanceStatus {
     public String getName() {
         return name;
     }
+
+    @Override
+    public String toString() {
+        return "AttendanceStatus{" +
+                "name='" + name + '\'' +
+                '}';
+    }
 }

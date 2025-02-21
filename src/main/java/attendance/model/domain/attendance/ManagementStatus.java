@@ -36,4 +36,11 @@ public enum ManagementStatus {
     public String getName() {
         return name;
     }
+
+    @Override
+    public String toString() {
+        return "ManagementStatus{" +
+                "name='" + name + '\'' +
+                '}';
+    }
 }

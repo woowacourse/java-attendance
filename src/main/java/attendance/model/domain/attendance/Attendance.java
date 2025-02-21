@@ -3,6 +3,7 @@ package attendance.model.domain.attendance;
 import attendance.model.domain.attendance.vo.WarningCount;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
 
 public class Attendance {
 
@@ -41,5 +42,27 @@ public class Attendance {
 
     public String getManagementStatusName() {
         return managementStatus.getName();
+    }
+
+    @Override
+    public boolean equals(final Object o) {
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        Attendance that = (Attendance) o;
+        return Objects.equals(warningCount, that.warningCount) && managementStatus == that.managementStatus;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(warningCount, managementStatus);
+    }
+
+    @Override
+    public String toString() {
+        return "Attendance{" +
+                "warningCount=" + warningCount +
+                ", managementStatus=" + managementStatus +
+                '}';
     }
 }

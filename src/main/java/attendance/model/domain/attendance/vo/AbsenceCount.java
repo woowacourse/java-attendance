@@ -5,6 +5,7 @@ import attendance.model.domain.attendance.AttendanceStatus;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
 
 public class AbsenceCount {
 
@@ -44,5 +45,26 @@ public class AbsenceCount {
 
     public int getValue() {
         return value;
+    }
+
+    @Override
+    public boolean equals(final Object o) {
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        AbsenceCount that = (AbsenceCount) o;
+        return value == that.value;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(value);
+    }
+
+    @Override
+    public String toString() {
+        return "AbsenceCount{" +
+                "value=" + value +
+                '}';
     }
 }

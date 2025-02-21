@@ -3,6 +3,7 @@ package attendance.model.domain.attendance;
 import attendance.model.domain.crew.Crew;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
 
 public class CrewAttendance {
 
@@ -44,5 +45,27 @@ public class CrewAttendance {
 
     public String getManagementStatusName() {
         return attendance.getManagementStatusName();
+    }
+
+    @Override
+    public boolean equals(final Object o) {
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        CrewAttendance that = (CrewAttendance) o;
+        return Objects.equals(crew, that.crew) && Objects.equals(attendance, that.attendance);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(crew, attendance);
+    }
+
+    @Override
+    public String toString() {
+        return "CrewAttendance{" +
+                "crew=" + crew +
+                ", attendance=" + attendance +
+                '}';
     }
 }
