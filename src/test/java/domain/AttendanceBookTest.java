@@ -13,7 +13,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
-public class AttendanceSystemTest {
+public class AttendanceBookTest {
 
 
     @Nested
@@ -27,8 +27,8 @@ public class AttendanceSystemTest {
             final List<String> data = List.of("쿠키,2024-12-13 10:08", "빙봉,2024-12-13 10:07");
 
             //when
-            final AttendanceSystem attendanceSystem = AttendanceSystem.of(data, LocalDate.of(2024, 12, 14));
-            final List<Crew> crews = attendanceSystem.getCrews();
+            final AttendanceBook attendanceBook = AttendanceBook.of(data, LocalDate.of(2024, 12, 14));
+            final List<Crew> crews = attendanceBook.getCrews();
 
             //then
             assertThat(crews).hasSize(2);
@@ -39,11 +39,11 @@ public class AttendanceSystemTest {
         void test2() {
             //given
             final List<String> data = List.of("쿠키,2024-12-13 10:08", "빙봉,2024-12-13 10:07");
-            final AttendanceSystem attendanceSystem = AttendanceSystem.of(data, LocalDate.of(2024, 12, 14));
+            final AttendanceBook attendanceBook = AttendanceBook.of(data, LocalDate.of(2024, 12, 14));
             final String expectedCrewName = "쿠키";
 
             //when
-            final Crew crew = attendanceSystem.findCrewByName(expectedCrewName);
+            final Crew crew = attendanceBook.findCrewByName(expectedCrewName);
 
             //then
             assertThat(crew.getName().getName()).isEqualTo(expectedCrewName);
@@ -57,11 +57,11 @@ public class AttendanceSystemTest {
             final LocalTime time = LocalTime.of(10, 30);
             final LocalDateTime attendancedTime = LocalDateTime.of(today, time);
             final List<String> data = List.of("쿠키,2024-12-13 10:08");
-            final AttendanceSystem attendanceSystem = AttendanceSystem.of(data, today);
+            final AttendanceBook attendanceBook = AttendanceBook.of(data, today);
             final Attendance expectedAttendance = Attendance.of(attendancedTime);
 
             //when
-            final Attendance actual = attendanceSystem.attendance("쿠키", attendancedTime);
+            final Attendance actual = attendanceBook.attendance("쿠키", attendancedTime);
 
             //then
             assertThat(actual).isEqualTo(expectedAttendance);
@@ -75,11 +75,11 @@ public class AttendanceSystemTest {
             final LocalTime time = LocalTime.of(10, 30);
             final LocalDateTime attendancedTime = LocalDateTime.of(today, time);
             final List<String> data = List.of("쿠키,2024-12-13 10:08");
-            final AttendanceSystem attendanceSystem = AttendanceSystem.of(data, today);
-            attendanceSystem.attendance("쿠키", attendancedTime);
+            final AttendanceBook attendanceBook = AttendanceBook.of(data, today);
+            attendanceBook.attendance("쿠키", attendancedTime);
 
             // when
-            boolean actual = attendanceSystem.isAlreadyTodayAttendance("쿠키", today);
+            boolean actual = attendanceBook.isAlreadyTodayAttendance("쿠키", today);
 
             // then
             assertThat(actual).isTrue();
@@ -91,10 +91,10 @@ public class AttendanceSystemTest {
             // given
             final LocalDate today = LocalDate.of(2024, 12, 14);
             final List<String> data = List.of("쿠키,2024-12-13 11:08", "쿠키,2024-12-12 11:08", "쿠키,2024-12-11 11:08");
-            final AttendanceSystem attendanceSystem = AttendanceSystem.of(data, today);
+            final AttendanceBook attendanceBook = AttendanceBook.of(data, today);
 
             // when
-            final List<Crew> crews = attendanceSystem.calculateExpulsionCrews();
+            final List<Crew> crews = attendanceBook.calculateExpulsionCrews();
 
             // then
             assertThat(crews).isNotEmpty();
@@ -108,10 +108,10 @@ public class AttendanceSystemTest {
             final LocalDate today = LocalDate.of(2024, 12, 14);
             final LocalTime time = LocalTime.of(10, 30);
             final List<String> data = List.of("쿠키,2024-12-13 11:08", "쿠키,2024-12-12 11:08", "쿠키,2024-12-11 11:08");
-            final AttendanceSystem attendanceSystem = AttendanceSystem.of(data, today);
+            final AttendanceBook attendanceBook = AttendanceBook.of(data, today);
 
             // when
-            Attendance attendance = attendanceSystem.updateAttendanceByCrewNameAndDay(time, "쿠키", 13);
+            Attendance attendance = attendanceBook.updateAttendanceByCrewNameAndDay(time, "쿠키", 13);
 
             // then
             assertThat(attendance.getDateTime().toLocalTime()).isEqualTo(time);
@@ -124,10 +124,10 @@ public class AttendanceSystemTest {
             // given
             final LocalDate today = LocalDate.of(2024, 12, 13);
             final List<String> data = List.of("쿠키,2024-12-13 11:08", "쿠키,2024-12-12 11:08", "쿠키,2024-12-11 11:08");
-            final AttendanceSystem attendanceSystem = AttendanceSystem.of(data, today);
+            final AttendanceBook attendanceBook = AttendanceBook.of(data, today);
 
             // when
-            Attendance attendance = attendanceSystem.findAttendanceByDate("쿠키", 13);
+            Attendance attendance = attendanceBook.findAttendanceByDate("쿠키", 13);
 
             // then
             assertThat(attendance.getDateTime().toLocalDate().getDayOfMonth()).isEqualTo(13);
@@ -139,10 +139,10 @@ public class AttendanceSystemTest {
             // given
             final LocalDate today = LocalDate.of(2024, 12, 13);
             final List<String> data = List.of("쿠키,2024-12-13 11:08", "쿠키,2024-12-12 11:08", "쿠키,2024-12-11 11:08");
-            final AttendanceSystem attendanceSystem = AttendanceSystem.of(data, today);
+            final AttendanceBook attendanceBook = AttendanceBook.of(data, today);
 
             // when
-            Crew actual = attendanceSystem.findCrewByName("쿠키");
+            Crew actual = attendanceBook.findCrewByName("쿠키");
 
             // then
             assertThat(actual.getName().getName()).isEqualTo("쿠키");
@@ -154,11 +154,11 @@ public class AttendanceSystemTest {
             //given
             final LocalDate today = LocalDate.of(2024, 12, 13);
             final List<String> data = List.of("쿠키,2024-12-13 11:08", "쿠키,2024-12-12 11:08", "쿠키,2024-12-11 11:08");
-            final AttendanceSystem attendanceSystem = AttendanceSystem.of(data, today);
+            final AttendanceBook attendanceBook = AttendanceBook.of(data, today);
 
             //when
             //then
-            assertThatCode(() -> attendanceSystem.validateCrewByName("쿠키")).doesNotThrowAnyException();
+            assertThatCode(() -> attendanceBook.validateCrewByName("쿠키")).doesNotThrowAnyException();
         }
 
         @Test
@@ -167,11 +167,11 @@ public class AttendanceSystemTest {
             //given
             final LocalDate today = LocalDate.of(2024, 12, 13);
             final List<String> data = List.of("쿠키,2024-12-13 11:08", "쿠키,2024-12-12 11:08", "쿠키,2024-12-11 11:08");
-            final AttendanceSystem attendanceSystem = AttendanceSystem.of(data, today);
+            final AttendanceBook attendanceBook = AttendanceBook.of(data, today);
 
             //when
             //then
-            assertThatCode(() -> attendanceSystem.validateUpdateAttendanceDay("쿠키", 10)).doesNotThrowAnyException();
+            assertThatCode(() -> attendanceBook.validateUpdateAttendanceDay("쿠키", 10)).doesNotThrowAnyException();
         }
 
         @Test
@@ -181,10 +181,10 @@ public class AttendanceSystemTest {
             final LocalDate localDate = LocalDate.of(2024, 12, 2);
             final LocalDate today = LocalDate.of(2024, 12, 13);
             final List<String> data = List.of("쿠키,2024-12-13 11:08", "쿠키,2024-12-12 11:08", "쿠키,2024-12-11 11:08");
-            final AttendanceSystem attendanceSystem = AttendanceSystem.of(data, today);
+            final AttendanceBook attendanceBook = AttendanceBook.of(data, today);
 
             //when
-            final boolean result = attendanceSystem.isNotAttendanceDay(localDate);
+            final boolean result = attendanceBook.isNotAttendanceDay(localDate);
             //then
             assertThat(result).isFalse();
         }
@@ -202,11 +202,11 @@ public class AttendanceSystemTest {
             // given
             final LocalDate today = LocalDate.of(2024, 12, 13);
             final List<String> data = List.of("쿠키,2024-12-13 11:08", "쿠키,2024-12-12 11:08", "쿠키,2024-12-11 11:08");
-            final AttendanceSystem attendanceSystem = AttendanceSystem.of(data, today);
+            final AttendanceBook attendanceBook = AttendanceBook.of(data, today);
 
             // when & then
             assertThatThrownBy(() -> {
-                attendanceSystem.validateCrewByName("감자");
+                attendanceBook.validateCrewByName("감자");
             }).isInstanceOf(IllegalArgumentException.class);
         }
 
@@ -216,11 +216,11 @@ public class AttendanceSystemTest {
             // given
             final LocalDate today = LocalDate.of(2024, 12, 25);
             final List<String> data = List.of("쿠키,2024-12-13 11:08", "쿠키,2024-12-12 11:08", "쿠키,2024-12-11 11:08");
-            final AttendanceSystem attendanceSystem = AttendanceSystem.of(data, today);
+            final AttendanceBook attendanceBook = AttendanceBook.of(data, today);
 
             // when & then
             assertThatThrownBy(() -> {
-                attendanceSystem.validateUpdateAttendanceDay("쿠키", 25);
+                attendanceBook.validateUpdateAttendanceDay("쿠키", 25);
             }).isInstanceOf(IllegalArgumentException.class);
         }
 
@@ -231,11 +231,11 @@ public class AttendanceSystemTest {
             final LocalDate today = LocalDate.of(2024, 12, 26);
             final LocalDateTime time = LocalDateTime.of(2024, 12,25, 10,10 );
             final List<String> data = List.of("쿠키,2024-12-13 11:08", "쿠키,2024-12-12 11:08", "쿠키,2024-12-11 11:08");
-            final AttendanceSystem attendanceSystem = AttendanceSystem.of(data, today);
+            final AttendanceBook attendanceBook = AttendanceBook.of(data, today);
 
             // when
             // then
-            assertThatIllegalArgumentException().isThrownBy(() -> attendanceSystem.attendance("쿠키", time));
+            assertThatIllegalArgumentException().isThrownBy(() -> attendanceBook.attendance("쿠키", time));
         }
 
     }

@@ -8,22 +8,22 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Objects;
 
-public class AttendanceSystem {
+public class AttendanceBook {
 
     private final List<Crew> crews;
 
-    public AttendanceSystem(final List<Crew> crews) {
+    public AttendanceBook(final List<Crew> crews) {
         this.crews = crews;
     }
 
-    public static AttendanceSystem of(final List<String> data, final LocalDate today) {
+    public static AttendanceBook of(final List<String> data, final LocalDate today) {
         final List<Crew> crews = data.stream()
                 .map(d -> d.split(",")[0])
                 .distinct()
                 .map(d -> Crew.of(d, today))
                 .toList();
         data.forEach(d -> initAttendance(crews, d));
-        return new AttendanceSystem(crews);
+        return new AttendanceBook(crews);
     }
 
     public Attendance attendance(final String name, final LocalDateTime localDateTime) {

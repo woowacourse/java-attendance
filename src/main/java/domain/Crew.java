@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import util.DateTimeParser;
 
 public class Crew implements Comparable<Crew> {
     private final CrewName name;
@@ -41,7 +42,7 @@ public class Crew implements Comparable<Crew> {
     }
 
     public Attendance addAttendance(final String attendanceTime) {
-        final Attendance attendance = new Attendance(attendanceTime);
+        final Attendance attendance = new Attendance(DateTimeParser.parseToLocalDate(attendanceTime));
         attendances.add(attendance);
         return attendance;
     }

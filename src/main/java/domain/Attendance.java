@@ -4,14 +4,14 @@ import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import util.DateTimeParser;
 
 public class Attendance {
-    private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
     private final LocalDateTime dateTime;
     private final boolean isEmpty;
 
-    public Attendance(final String time) {
-        this.dateTime = LocalDateTime.parse(time, FORMATTER);
+    public Attendance(final LocalDateTime localDateTime) {
+        this.dateTime = localDateTime;
         isEmpty = false;
     }
 
@@ -21,7 +21,7 @@ public class Attendance {
     }
 
     public static Attendance of(final String dateTime) {
-        return new Attendance(dateTime);
+        return new Attendance(DateTimeParser.parseToLocalDate(dateTime));
     }
 
     public static Attendance of(final LocalDateTime dateTime) {
@@ -61,11 +61,10 @@ public class Attendance {
 
     @Override
     public boolean equals(final Object o) {
-        if (o instanceof Attendance) {
-            final Attendance target = (Attendance) o;
-            return dateTime.toLocalDate().equals(target.dateTime.toLocalDate());
+        if (!(o instanceof final Attendance target)) {
+            return false;
         }
+        return dateTime.toLocalDate().equals(target.dateTime.toLocalDate());
 
-        return false;
     }
 }

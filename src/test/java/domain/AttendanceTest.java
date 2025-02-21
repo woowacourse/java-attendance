@@ -7,6 +7,7 @@ import java.time.format.DateTimeFormatter;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import util.DateTimeParser;
 
 public class AttendanceTest {
 
@@ -23,7 +24,7 @@ public class AttendanceTest {
                     DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
 
             //when
-            final Attendance attendance = new Attendance(time);
+            final Attendance attendance = new Attendance(DateTimeParser.parseToLocalDate(time));
 
             //then
             assertThat(attendance.getDateTime()).isEqualTo(expectedTime);
@@ -35,7 +36,7 @@ public class AttendanceTest {
         void test2() {
             //given
             final String time = "2024-12-13 10:31";
-            final Attendance attendance = new Attendance(time);
+            final Attendance attendance = new Attendance(DateTimeParser.parseToLocalDate(time));
 
             //when
             final AttendanceStatus actual = attendance.calculateStatus();
