@@ -19,6 +19,7 @@ import model.PunishmentType;
 
 public class OutputView {
 
+    public static final String ERROR_MESSAGE_FORMAT = "[ERROR] %s%n";
     private final String CHECK_IN_FORMAT = "%d월 %d일 %s %02d:%02d (%s)%n";
     private final String MODIFY_FORMAT = "%d월 %02d일 %s %02d:%02d (%s) -> %02d:%02d (%s) 수정 완료!%n";
     private final String MODIFY_ABSENCE_FORMAT = "%d월 %02d일 %s --:-- (결석) -> %02d:%02d (%s) 수정 완료!%n";
@@ -132,6 +133,11 @@ public class OutputView {
             );
         }
         printEmptyLine();
+    }
+
+    public void printErrorMessage(RuntimeException e) {
+        printEmptyLine();
+        System.out.printf(ERROR_MESSAGE_FORMAT, e.getMessage());
     }
 
     private String convertToAttendanceTypeString(AttendanceType attendanceType) {

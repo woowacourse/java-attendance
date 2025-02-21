@@ -30,29 +30,33 @@ public class AttendanceController {
     }
 
     public void run() {
-        List<String> rawAttendances = new DataReader().readAttendances("src/main/resources/attendances.csv");
-        Crews crews = stringConverter.convertToCrews(rawAttendances);
-        Attendances attendances = stringConverter.convertToAttendances(rawAttendances, crews);
+        try {
+            List<String> rawAttendances = new DataReader().readAttendances("src/main/resources/attendances.csv");
+            Crews crews = stringConverter.convertToCrews(rawAttendances);
+            Attendances attendances = stringConverter.convertToAttendances(rawAttendances, crews);
 
-        while (true) {
-            String rawCommand = inputView.readCommand();
-            Command command = stringConverter.convertToCommand(rawCommand);
-            if (command.equals(Command.ONE)) {
-                Attendance attendance = checkInAttendance(attendances);
-                outputView.printCheckInResult(attendance);
+            while (true) {
+                String rawCommand = inputView.readCommand();
+                Command command = stringConverter.convertToCommand(rawCommand);
+                if (command.equals(Command.ONE)) {
+                    Attendance attendance = checkInAttendance(attendances);
+                    outputView.printCheckInResult(attendance);
+                }
+                if (command.equals(Command.TWO)) {
+                    modifyAttendance(attendances);
+                }
+                if (command.equals(Command.THREE)) {
+                    checkAttendance(attendances);
+                }
+                if (command.equals(Command.FOUR)) {
+                    checkPunishment(crews, attendances);
+                }
+                if (command.equals(Command.QUIT)) {
+                    break;
+                }
             }
-            if (command.equals(Command.TWO)) {
-                modifyAttendance(attendances);
-            }
-            if (command.equals(Command.THREE)) {
-                checkAttendance(attendances);
-            }
-            if (command.equals(Command.FOUR)) {
-                checkPunishment(crews, attendances);
-            }
-            if (command.equals(Command.QUIT)) {
-                break;
-            }
+        } catch (RuntimeException e) {
+            outputView.printErrorMessage(e);
         }
     }
 
