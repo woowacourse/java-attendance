@@ -18,7 +18,7 @@ import view.OutputView;
 
 public class AttendanceController {
 
-    private static String CSV_PATH = "src/main/resources/attendances.csv";
+    private static final String CSV_PATH = "src/main/resources/attendances.csv";
 
     public void start() {
         while (true) {

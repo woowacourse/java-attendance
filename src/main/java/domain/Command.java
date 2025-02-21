@@ -24,7 +24,7 @@ public enum Command {
     private final String commandNumber;
     private final BiConsumer<Crews, LocalDateTime> action;
 
-    Command(final String commandName, final String commandNumber, BiConsumer<Crews, LocalDateTime> action) {
+    Command(final String commandName, final String commandNumber, final BiConsumer<Crews, LocalDateTime> action) {
         this.commandName = commandName;
         this.commandNumber = commandNumber;
         this.action = action;
@@ -37,7 +37,7 @@ public enum Command {
                 .orElseThrow(() -> new CustomIllegalArgumentException("알맞은 명령어를 입력하세요."));
     }
 
-    public void execute(Crews crews, LocalDateTime fixDateTime) {
+    public void execute(final Crews crews, final LocalDateTime fixDateTime) {
         action.accept(crews, fixDateTime);
     }
 

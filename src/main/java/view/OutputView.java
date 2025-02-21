@@ -19,7 +19,7 @@ public final class OutputView {
     private OutputView() {
     }
 
-    public static void printAttendance(Attendance attendance) {
+    public static void printAttendance(final Attendance attendance) {
         final LocalDateTime localDateTime = attendance.getLocalDateTime();
         final AttendanceStatus attendanceStatus = attendance.getAttendanceStatus();
         final int day = localDateTime.getDayOfMonth();
@@ -48,7 +48,7 @@ public final class OutputView {
                         oldAttendanceStatus.getDisplayName(), newLocalTime, newAttendanceStatus.getDisplayName()));
     }
 
-    public static void printCrewAttendances(Crew crew) {
+    public static void printCrewAttendances(final Crew crew) {
         final Nickname nickname = crew.getNickname();
         final Attendances attendances = crew.getAttendances();
         attendances.sort();

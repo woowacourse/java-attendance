@@ -24,7 +24,7 @@ public final class CrewGenerator {
     private CrewGenerator() {
     }
 
-    public static Crews generate(List<String[]> parsedCrewsData, LocalDate nowDate) {
+    public static Crews generate(final List<String[]> parsedCrewsData, LocalDate nowDate) {
         Map<Nickname, List<Attendance>> crewData = new HashMap<>();
         for (String[] parsedCrewData : parsedCrewsData) {
             String nickname = parsedCrewData[0];
@@ -60,7 +60,7 @@ public final class CrewGenerator {
         return attendances;
     }
 
-    public static List<Integer> getValidDates(LocalDate localDate) {
+    public static List<Integer> getValidDates(final LocalDate localDate) {
         final int today = localDate.getDayOfMonth();
 
         List<Integer> allDays = IntStream.range(1, today).boxed().collect(Collectors.toList());

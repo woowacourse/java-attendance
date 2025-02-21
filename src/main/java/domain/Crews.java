@@ -6,7 +6,7 @@ import java.util.List;
 
 public class Crews {
 
-    private List<Crew> crews;
+    private final List<Crew> crews;
 
     public Crews(final List<Crew> crews) {
         this.crews = crews;
@@ -14,7 +14,7 @@ public class Crews {
 
     public Crew findByNickname(final Nickname nickname) {
         return crews.stream()
-                .filter(o -> o.nickname.equals(nickname))
+                .filter(o -> o.getNickname().equals(nickname))
                 .findFirst()
                 .orElseThrow(() -> new CustomIllegalArgumentException("크루가 존재하지 않습니다."));
     }

@@ -13,7 +13,7 @@ public final class CsvReader {
     private CsvReader() {
     }
 
-    public static List<String[]> readFile(String filePath) {
+    public static List<String[]> readFile(final String filePath) {
         try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
             return br.lines()
                     .skip(LINES_TO_SKIP)

@@ -5,11 +5,11 @@ import java.util.Objects;
 
 public class Crew implements Comparable<Crew> {
 
-    Nickname nickname;
-    Attendances attendances;
-    AttendanceCounter attendanceCounter;
+    private final Nickname nickname;
+    private final Attendances attendances;
+    private final AttendanceCounter attendanceCounter;
 
-    public Crew(final Nickname nickname, Attendances attendances, AttendanceCounter attendanceCounter) {
+    public Crew(final Nickname nickname, final Attendances attendances, final AttendanceCounter attendanceCounter) {
         this.nickname = nickname;
         this.attendances = attendances;
         this.attendanceCounter = attendanceCounter;
@@ -23,7 +23,7 @@ public class Crew implements Comparable<Crew> {
         return attendances.isAttended(dateTime);
     }
 
-    public void add(Attendance attendance) {
+    public void add(final Attendance attendance) {
         attendances.add(attendance);
     }
 

@@ -13,11 +13,11 @@ public enum AttendanceStatus {
     private static final LocalTime startTime = LocalTime.of(8, 0);
     private static final LocalTime endTime = LocalTime.of(23, 0);
 
-    AttendanceStatus(String displayName) {
+    AttendanceStatus(final String displayName) {
         this.displayName = displayName;
     }
 
-    public static AttendanceStatus findByAttendanceTime(Week day, LocalTime attendanceTime) {
+    public static AttendanceStatus findByAttendanceTime(final Week day, final LocalTime attendanceTime) {
         if (attendanceTime.isBefore(startTime) || attendanceTime.isAfter(endTime)) {
             return ABSENCE;
         }

@@ -30,8 +30,8 @@ public class Attendance {
         this.attendanceStatus = AttendanceStatus.findByAttendanceTime(day, localDateTime.toLocalTime());
     }
 
-    private void validateHoliday(LocalDateTime localDateTime) {
-        final int day = localDateTime.getDayOfMonth();
+    private void validateHoliday(final LocalDateTime localDateTime) {
+        int day = localDateTime.getDayOfMonth();
         if (Constants.HOLIDAYS.contains(day)) {
             throw new CustomIllegalArgumentException(
                     String.format("%d월 %d일 %s은 등교일이 아닙니다.", Constants.FIXED_MONTH, localDateTime.getDayOfMonth(),
