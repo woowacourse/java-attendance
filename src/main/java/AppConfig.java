@@ -5,7 +5,7 @@ import view.OutputView;
 
 public class AppConfig {
     public AttendanceController controller() {
-        return new AttendanceController(fileReader(), outputView(), inputView());
+        return new AttendanceController(csvReader(), outputView(), inputView());
     }
 
     private InputView inputView() {
@@ -16,7 +16,7 @@ public class AppConfig {
         return new OutputView();
     }
 
-    private CsvReader fileReader() {
+    private CsvReader csvReader() {
         return new CsvReader();
     }
 }

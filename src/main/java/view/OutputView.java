@@ -28,7 +28,7 @@ public class OutputView {
         System.out.println();
     }
 
-    public void displayPrompt() {
+    public void displayFunctionSelectionPrompt() {
         String koreanDayOfWeek = LocalDate.now().getDayOfWeek()
                 .getDisplayName(TextStyle.FULL, Locale.KOREAN);
         System.out.println(

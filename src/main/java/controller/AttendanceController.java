@@ -32,26 +32,20 @@ public class AttendanceController {
         AttendanceBook attendanceBook = init();
 
         while (true) {
-            outputView.displayPrompt(); // 기능 선택창
-            FunctionSelection selection = retryUntilValid(this::getUserInput);
+            outputView.displayFunctionSelectionPrompt(); // 기능 선택창
+            FunctionSelection selection = retryUntilValid(this::getFunctionInput);
 
             try {
-                if (selection == FunctionSelection.CHECK_ATTENDANCE) {
-                    checkAttendance(attendanceBook);
-                }
-                if (selection == FunctionSelection.MODIFY_ATTENDANCE) {
-                    modifyAttendance(attendanceBook);
-                }
-                if (selection == FunctionSelection.CHECK_ATTENDANCE_RECORD) {
-                    checkAttendanceRecord(attendanceBook);
-                }
+                checkAttendance(selection, attendanceBook);
+                modifyAttendance(selection, attendanceBook);
+                checkAttendanceRecord(selection, attendanceBook);
+
                 if (selection == FunctionSelection.CHECK_PENALTY_CREWS) {
                     outputView.displayPenaltyCrew(attendanceBook.checkPenaltyCrew());
                 }
                 if (selection == FunctionSelection.QUIT) {
-                    break;
+                    System.exit(1);
                 }
-
             } catch (IllegalArgumentException e) {
                 outputView.displayErrorMessage(e.getMessage());
             }
@@ -76,25 +70,44 @@ public class AttendanceController {
         return attendanceBook;
     }
 
-    private void checkAttendanceRecord(AttendanceBook attendanceBook) {
-        String name = retryUntilValid(() -> askNameToCheckAttendance(attendanceBook));
-
-        List<AttendanceRecordResponse> records = attendanceBook.getCrewByName(name).getAttendanceRecords();
-        TotalRecordsResponse totalRecord = TotalRecordsResponse.fromAttendanceRecords(records);
-        PenaltyStatus penalty = PenaltyStatus.getByPenaltyCount(attendanceBook.getPenaltyCount(totalRecord));
-        outputView.displayAttendanceRecordByName(name, records, totalRecord, penalty.getMessage());
+    private FunctionSelection getFunctionInput() {
+        return FunctionSelection.getFunctionByInput(inputView.getUserSelection());
     }
 
-    private void modifyAttendance(AttendanceBook attendanceBook) {
-        String name = retryUntilValid(() -> askNameToModify(attendanceBook));
+    private void checkAttendance(FunctionSelection selection, AttendanceBook attendanceBook) {
+        if (selection == FunctionSelection.CHECK_ATTENDANCE) {
+            String name = retryUntilValid(() -> askNameToCheckAttendance(attendanceBook));
 
-        LocalDate modifiedDay = retryUntilValid(() -> askDayToModify(attendanceBook, name));
+            LocalTime parsedTime = retryUntilValid(() -> getTime(attendanceBook));
 
-        LocalTime modifiedTime = retryUntilValid(() -> askTimeToModify(attendanceBook));
+            outputView.displayCheckAttendanceResult(
+                    attendanceBook.checkAttendance(name, Map.of(LocalDate.now(), parsedTime)));
+        }
+    }
 
-        ModifyAttendanceResponse response = attendanceBook.modifyAttendance(name,
-                Map.of(modifiedDay, modifiedTime));
-        outputView.displayModifyAttendanceResult(response);
+    private void modifyAttendance(FunctionSelection selection, AttendanceBook attendanceBook) {
+        if (selection == FunctionSelection.MODIFY_ATTENDANCE) {
+            String name = retryUntilValid(() -> askNameToModify(attendanceBook));
+
+            LocalDate modifiedDay = retryUntilValid(() -> askDayToModify(attendanceBook, name));
+
+            LocalTime modifiedTime = retryUntilValid(() -> askTimeToModify(attendanceBook));
+
+            ModifyAttendanceResponse response = attendanceBook.modifyAttendance(name,
+                    Map.of(modifiedDay, modifiedTime));
+            outputView.displayModifyAttendanceResult(response);
+        }
+    }
+
+    private void checkAttendanceRecord(FunctionSelection selection, AttendanceBook attendanceBook) {
+        if (selection == FunctionSelection.CHECK_ATTENDANCE_RECORD) {
+            String name = retryUntilValid(() -> askNameToCheckAttendance(attendanceBook));
+
+            List<AttendanceRecordResponse> records = attendanceBook.getCrewByName(name).getAttendanceRecords();
+            TotalRecordsResponse totalRecord = TotalRecordsResponse.fromAttendanceRecords(records);
+            PenaltyStatus penalty = PenaltyStatus.getByPenaltyCount(attendanceBook.getPenaltyCount(totalRecord));
+            outputView.displayAttendanceRecordByName(name, records, totalRecord, penalty.getMessage());
+        }
     }
 
     private LocalTime askTimeToModify(AttendanceBook attendanceBook) {
@@ -117,19 +130,6 @@ public class AttendanceController {
         String name = inputView.askNameForModify();
         attendanceBook.validateNameAlreadyExists(name);
         return name;
-    }
-
-    private void checkAttendance(AttendanceBook attendanceBook) {
-        String name = retryUntilValid(() -> askNameToCheckAttendance(attendanceBook));
-
-        LocalTime parsedTime = retryUntilValid(() -> getTime(attendanceBook));
-
-        outputView.displayCheckAttendanceResult(
-                attendanceBook.checkAttendance(name, Map.of(LocalDate.now(), parsedTime)));
-    }
-
-    private FunctionSelection getUserInput() {
-        return FunctionSelection.getFunctionByInput(inputView.getUserSelection());
     }
 
     private LocalTime getTime(AttendanceBook attendanceBook) {
