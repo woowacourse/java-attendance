@@ -30,7 +30,7 @@ public class OutputView {
                 dateTime.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.KOREA),
                 dateTime.getHour(),
                 dateTime.getMinute(),
-                response.status());
+                status.getMessage());
     }
 
     public void printUpdateAttendance(UpdateBeforeAttendanceResponse beforeResponse,
