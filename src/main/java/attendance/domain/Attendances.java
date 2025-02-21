@@ -75,18 +75,11 @@ public class Attendances {
                 .orElseThrow(() -> new IllegalArgumentException("[ERROR] 해당 날짜에 해당 크루의 출석 기록이 존재하지 않습니다."));
     }
 
-    public void modifyAttendances(final Crew crew, final LocalDateTime localDateTime) {
-        for (Attendance attendance : attendances) {
-            modifyAttendance(crew, localDateTime, attendance);
-        }
-    }
-
-    private static void modifyAttendance(final Crew crew, final LocalDateTime localDateTime,
-                                         final Attendance attendance) {
-        LocalDate localDate = localDateTime.toLocalDate();
-        if (attendance.isSameCrewDate(crew, localDate)) {
-            attendance.modifyLocalDateTime(localDateTime);
-        }
+    public void modifyAttendances(final Crew crew, final LocalDateTime modifyDateTime) {
+        attendances.stream()
+                .filter(attendance -> attendance.isSameCrewDate(crew, modifyDateTime.toLocalDate()))
+                .findFirst()
+                .ifPresent(attendance -> attendance.modifyLocalDateTime(modifyDateTime));
     }
 
     public String findOriginalTime(final Crew crew, final LocalDate localDate) {
