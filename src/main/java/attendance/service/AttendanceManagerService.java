@@ -1,8 +1,6 @@
 package attendance.service;
 
 
-import attendance.domain.AbsenceStatusCount;
-import attendance.domain.AttendanceDismiss;
 import attendance.domain.AttendanceDismissStatus;
 import attendance.domain.AttendanceHistory;
 import attendance.domain.AttendanceManager;
@@ -14,6 +12,8 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 public class AttendanceManagerService {
     private final String ATTENDANCE_HISTORY_STATUS = "\n출석: %d회\n지각: %d회\n결석: %d회\n";
@@ -54,7 +54,7 @@ public class AttendanceManagerService {
 
         var dateTimeFormatResult = DateTimeFormatterWrapper.parsingAttendanceResult(
                 LocalDateTime.of(attendanceDate, attendanceTime));
-        return String.format(ATTENDANCE_RESULT_FORMAT, dateTimeFormatResult, attendanceStatus.getStatus());
+        return String.format(ATTENDANCE_RESULT_FORMAT, dateTimeFormatResult, attendanceStatus);
     }
 
     public Attendances findAttendancesByNickname(String nickname) {
@@ -62,10 +62,10 @@ public class AttendanceManagerService {
     }
 
     public String formattingAttendanceModify(LocalTime afterModifyTime, String beforeAttendance,
-                                             AttendanceStatus afterAttendanceStatus) {
+                                             String afterAttendanceStatus) {
         String timeFormatResult = DateTimeFormatterWrapper.parsingAttendanceTime(afterModifyTime);
         return String.format(ATTENDANCE_MODIFY_RESULT_FORMAT, beforeAttendance, timeFormatResult,
-                afterAttendanceStatus.getStatus());
+                afterAttendanceStatus);
     }
 
     public void modify(String nickname, LocalDate modifyDate, LocalTime afterModifyTime) {
@@ -75,33 +75,36 @@ public class AttendanceManagerService {
     public String attendanceModify(String nickname, LocalDate modifyDate, LocalTime afterModifyTime) {
         String beforeAttendance = attendanceResult(nickname, modifyDate);
         attendanceManager.modifyAttendance(nickname, modifyDate, afterModifyTime);
-        AttendanceStatus attendanceStatus = findAttendancesByNickname(nickname).getAttendanceStatus(modifyDate);
+        String attendanceStatus = findAttendancesByNickname(nickname)
+                .getAttendanceStatus(modifyDate);
         String timeFormatResult = DateTimeFormatterWrapper.parsingAttendanceTime(afterModifyTime);
         return String.format(ATTENDANCE_MODIFY_RESULT_FORMAT, beforeAttendance, timeFormatResult,
-                attendanceStatus.getStatus());
+                attendanceStatus);
     }
 
     public String crewAttendanceHistory(String nickname) {
         AttendanceHistory attendanceHistory = attendanceManager.crewAttendanceHistory(nickname);
+        Map<String, Integer> status = attendanceHistory.statusMap();
+        return crewAttendanceHistory(status, nickname, attendanceHistory.attendanceHistories());
+    }
+
+    private String crewAttendanceHistory(Map<String, Integer> status, String nickname,
+                                         List<String> attendanceHistories) {
         StringBuilder stringBuilder = new StringBuilder(String.format(CREW_ATTENDANCE_HISTORY_PREFIX, nickname));
-        stringBuilder.append(formattingHistory(attendanceHistory));
-        AbsenceStatusCount absenceStatusCount = attendanceHistory.countAbsenceStatus();
-        AttendanceDismissStatus attendanceDismissStatus = AttendanceDismiss.calculateAttendanceDismiss(
-                absenceStatusCount.late(), absenceStatusCount.absence());
-        return stringBuilder.append(attendanceStatus(absenceStatusCount.absence(), absenceStatusCount.late(),
-                        absenceStatusCount.attendance()))
+        stringBuilder.append(formattingHistory(attendanceHistories));
+        int absenceCount = AttendanceStatus.absenceCount(status);
+        int lateCount = AttendanceStatus.lateCount(status);
+        int attendanceCount = AttendanceStatus.attendanceCount(status);
+        AttendanceDismissStatus attendanceDismissStatus = AttendanceDismissStatus.calculateAttendanceDismiss(
+                absenceCount, AttendanceStatus.lateCount(status));
+        return stringBuilder.append(attendanceStatus(absenceCount, lateCount, attendanceCount))
                 .append(formattingAttendanceDismissStatus(attendanceDismissStatus))
                 .toString();
     }
 
-    private String formattingHistory(AttendanceHistory attendanceHistory) {
-        StringBuilder stringBuilder = new StringBuilder();
-        for (String history : attendanceHistory.attendanceHistories()) {
-            stringBuilder
-                    .append(history)
-                    .append("\n");
-        }
-        return stringBuilder.toString();
+    private String formattingHistory(List<String> attendanceHistories) {
+        return attendanceHistories.stream()
+                .collect(Collectors.joining("\n"));
     }
 
     public String attendanceStatus(int absence, int late, int attendance) {
@@ -115,7 +118,7 @@ public class AttendanceManagerService {
         return String.format(ATTENDANCE_DISMISS_STATUS_FORMAT, attendanceDismissStatus.getStatus());
     }
 
-    public AttendanceStatus getAttendanceStatus(LocalDate date, String nickname) {
+    public String getAttendanceStatus(LocalDate date, String nickname) {
         return findAttendancesByNickname(nickname)
                 .getAttendanceStatus(date);
     }
@@ -131,5 +134,9 @@ public class AttendanceManagerService {
 
     public void validateDate(LocalDate date) {
         attendanceManager.validateIsAttendanceAvailable(date);
+    }
+
+    public List<String> attendancesNicknames() {
+        return attendanceManager.attendancesNicknames();
     }
 }

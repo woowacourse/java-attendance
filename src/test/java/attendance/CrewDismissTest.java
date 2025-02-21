@@ -42,7 +42,7 @@ public class CrewDismissTest {
                 new AttendanceFileRepository(src));
         CrewDismissService crewDismissService = new CrewDismissService(attendanceManager);
         assertThat(
-                crewDismissService.formattingCrewDismiss()
+                crewDismissService.formattingCrewDismiss(attendanceManager.attendancesNicknames())
         ).contains(orderedResult);
     }
 }

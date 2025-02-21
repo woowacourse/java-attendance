@@ -1,8 +1,8 @@
 package attendance.domain;
 
-import java.util.Arrays;
-
 import attendance.exception.AttendanceArgumentException;
+import java.util.Arrays;
+import java.util.Map;
 
 public enum AttendanceStatus {
     ATTENDANCE("출석"),
@@ -18,9 +18,21 @@ public enum AttendanceStatus {
 
     public static AttendanceStatus of(String findStatus) {
         return Arrays.stream(AttendanceStatus.values())
-            .filter((attendanceStatus) -> attendanceStatus.status.equals(findStatus))
-            .findFirst()
-            .orElseThrow(() -> new AttendanceArgumentException(INVALID_STATUS));
+                .filter((attendanceStatus) -> attendanceStatus.status.equals(findStatus))
+                .findFirst()
+                .orElseThrow(() -> new AttendanceArgumentException(INVALID_STATUS));
+    }
+
+    public static int attendanceCount(Map<String, Integer> statusMap) {
+        return statusMap.getOrDefault(ATTENDANCE.status, 0);
+    }
+
+    public static int lateCount(Map<String, Integer> statusMap) {
+        return statusMap.getOrDefault(LATE.status, 0);
+    }
+
+    public static int absenceCount(Map<String, Integer> statusMap) {
+        return statusMap.getOrDefault(ABSENCE.status, 0);
     }
 
     public String getStatus() {

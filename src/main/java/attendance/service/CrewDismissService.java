@@ -1,13 +1,10 @@
 package attendance.service;
 
 
-import attendance.domain.AttendanceDismiss;
 import attendance.domain.AttendanceDismissStatus;
-import attendance.domain.AttendanceHistory;
 import attendance.domain.AttendanceManager;
 import attendance.domain.AttendanceStatus;
 import attendance.domain.CrewDismiss;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -22,27 +19,22 @@ public class CrewDismissService {
         this.attendanceManager = attendanceManager;
     }
 
-    public String formattingCrewDismiss() {
+    public String formattingCrewDismiss(List<String> nicknames) {
         StringBuilder stringBuilder = new StringBuilder(CREW_DISMISS_PREFIX);
-        List<String> nicknames = attendanceManager.currentAttendancesNicknames();
-        List<CrewDismiss> crewDismisses = new ArrayList<>();
-        for (String nickname : nicknames) {
-            AttendanceHistory attendanceHistory = attendanceManager.crewAttendanceHistory(nickname);
-
-            String crewDismissResult = formattingCrewDismiss(nickname, attendanceHistory);
-            crewDismisses.add(new CrewDismiss(nickname, crewDismissResult, attendanceHistory));
-            stringBuilder.append(formattingCrewDismiss(nickname, attendanceHistory));
-        }
-        return crewDismisses.stream()
-                .sorted()
+        List<CrewDismiss> crewDismisses = nicknames.stream().map(nickname -> {
+            Map<String, Integer> status = attendanceManager.crewAttendanceHistory(nickname).statusMap();
+            String crewDismissResult = formattingCrewDismiss(nickname, status);
+            stringBuilder.append(formattingCrewDismiss(nickname, status));
+            return new CrewDismiss(nickname, crewDismissResult, status);
+        }).toList();
+        return crewDismisses.stream().sorted()
                 .map((CrewDismiss::getCrewDismissResult))
                 .collect(Collectors.joining("\n"));
     }
 
-    private String formattingCrewDismiss(String nickname, AttendanceHistory attendanceHistory) {
-        Map<AttendanceStatus, Integer> status = attendanceHistory.status();
-        int absenceCount = status.getOrDefault(AttendanceStatus.ABSENCE, 0);
-        int lateCount = status.getOrDefault(AttendanceStatus.LATE, 0);
+    private String formattingCrewDismiss(String nickname, Map<String, Integer> status) {
+        int absenceCount = AttendanceStatus.absenceCount(status);
+        int lateCount = AttendanceStatus.lateCount(status);
         AttendanceDismissStatus attendanceDismissStatus = calculateAttendanceStatus(absenceCount, lateCount);
         if (attendanceDismissStatus == AttendanceDismissStatus.NONE) {
             return "";
@@ -52,7 +44,7 @@ public class CrewDismissService {
     }
 
     private AttendanceDismissStatus calculateAttendanceStatus(int absenceCount, int lateCount) {
-        return AttendanceDismiss.calculateAttendanceDismiss(absenceCount,
+        return AttendanceDismissStatus.calculateAttendanceDismiss(absenceCount,
                 lateCount);
     }
 }
