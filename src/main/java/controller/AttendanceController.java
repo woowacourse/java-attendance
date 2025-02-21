@@ -21,13 +21,12 @@ public class AttendanceController {
     private static String CSV_PATH = "src/main/resources/attendances.csv";
 
     public void start() {
-        LocalDateTime fixDateTime = LocalDateTime.of(2024, Constants.MONTH, 25, 0, 0, 0, 0);
-        final String input = InputView.readCommand(fixDateTime);
-        Command command = Command.findByCommandNumber(input);
-        Crews crews = CrewGenerator.generate(CsvReader.readFile(CSV_PATH),
-                fixDateTime.toLocalDate());
-
         while (true) {
+            LocalDateTime fixDateTime = LocalDateTime.of(2024, Constants.MONTH, 25, 0, 0, 0, 0);
+            final String input = InputView.readCommand(fixDateTime);
+            Command command = Command.findByCommandNumber(input);
+            Crews crews = CrewGenerator.generate(CsvReader.readFile(CSV_PATH),
+                    fixDateTime.toLocalDate());
             if (command.equals(Command.QUIT)) {
                 break;
             }
