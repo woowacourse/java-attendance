@@ -1,23 +1,26 @@
 package attendance.domain;
 
-public class CrewDismiss implements Comparable<CrewDismiss> {
-    private final String crewDismissResult;
-    private final AttendanceHistory attendanceHistory;
-    private final String nickname;
+import java.util.Map;
 
-    public CrewDismiss(String nickname, String crewDismissResult, AttendanceHistory attendanceHistory) {
+public class CrewDismiss implements Comparable<CrewDismiss> {
+
+    private final String crewDismissResult;
+    private final String nickname;
+    private Map<String, Integer> attendanceStatus;
+
+    public CrewDismiss(String nickname, String crewDismissResult, Map<String, Integer> attendanceStatus) {
         this.nickname = nickname;
         this.crewDismissResult = crewDismissResult;
-        this.attendanceHistory = attendanceHistory;
+        this.attendanceStatus = attendanceStatus;
     }
 
     @Override
     public int compareTo(CrewDismiss o) {
-        AbsenceStatusCount absenceStatusCount = attendanceHistory.countAbsenceStatus();
-        AbsenceStatusCount otherAbsenceStatusCount = o.attendanceHistory.countAbsenceStatus();
+        Map<String, Integer> otherAttendanceStatus = o.attendanceStatus;
 
-        int weight = absenceStatusCount.absence() + absenceStatusCount.late();
-        int otherWeight = (otherAbsenceStatusCount.absence() + otherAbsenceStatusCount.late());
+        int weight = AttendanceStatus.absenceCount(attendanceStatus) + AttendanceStatus.lateCount(attendanceStatus);
+        int otherWeight = AttendanceStatus.absenceCount(otherAttendanceStatus) + AttendanceStatus.lateCount(
+                otherAttendanceStatus);
         if (weight == otherWeight) {
             return nickname.compareTo(o.nickname);
         }

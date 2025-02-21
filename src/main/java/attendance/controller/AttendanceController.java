@@ -1,11 +1,11 @@
 package attendance.controller;
 
-import attendance.domain.AttendanceStatus;
 import attendance.service.AttendanceManagerService;
 import attendance.service.CrewDismissService;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.List;
 
 public class AttendanceController {
 
@@ -26,7 +26,7 @@ public class AttendanceController {
     public String attendanceModify(String nickname, LocalDate modifyDate, LocalTime afterModifyTime) {
         String beforeAttendance = attendanceManagerService.attendanceResult(nickname, modifyDate);
         attendanceManagerService.modify(nickname, modifyDate, afterModifyTime);
-        AttendanceStatus attendanceStatus = attendanceManagerService.getAttendanceStatus(modifyDate, nickname);
+        String attendanceStatus = attendanceManagerService.getAttendanceStatus(modifyDate, nickname);
         return attendanceManagerService.formattingAttendanceModify(afterModifyTime, beforeAttendance, attendanceStatus);
     }
 
@@ -35,7 +35,8 @@ public class AttendanceController {
     }
 
     public String crewDismiss() {
-        return crewDismissService.formattingCrewDismiss();
+        List<String> attendancesNicknames = attendanceManagerService.attendancesNicknames();
+        return crewDismissService.formattingCrewDismiss(attendancesNicknames);
     }
 
     public void validateNickname(String nickname) {
