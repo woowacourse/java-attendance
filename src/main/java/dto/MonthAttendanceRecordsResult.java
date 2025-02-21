@@ -6,9 +6,9 @@ import java.util.List;
 
 public record MonthAttendanceRecordsResult(
         String nickname,
-        List<AttendanceRecord> history,
+        List<AttendanceRecord> attendanceRecords,
         AttendanceStatusStatistics attendanceStatusStatistics,
         Manage manage
 ) {
-    
+
 }

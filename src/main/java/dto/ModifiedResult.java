@@ -1,19 +1,18 @@
 package dto;
 
+import domain.AttendanceStatus;
 import java.time.LocalDate;
 import java.time.LocalTime;
 
-import domain.AttendanceStatus;
+public record ModifiedResult(
+        LocalDate date,
+        TimeAttendanceStatus before,
+        TimeAttendanceStatus after
+) {
 
-public record ModifiedResult (
-    LocalDate date,
-    InnerStatus before,
-    InnerStatus after
-){
-
-    public record InnerStatus(
-        LocalTime time,
-        AttendanceStatus status
+    public record TimeAttendanceStatus(
+            LocalTime time,
+            AttendanceStatus status
     ) {
 
     }

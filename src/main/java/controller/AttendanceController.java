@@ -12,6 +12,7 @@ import dto.AttendanceRequest;
 import dto.AttendanceResult;
 import dto.CrewAlmostExpelledResult;
 import dto.ModifiedResult;
+import dto.ModifiedResult.TimeAttendanceStatus;
 import dto.MonthAttendanceRecordsResult;
 import dto.OptionRequest;
 import java.time.LocalDate;
@@ -27,7 +28,6 @@ public class AttendanceController {
     }
 
     public void run() {
-
         boolean isRunning = true;
         while (isRunning) {
             OptionRequest optionRequest = InputView.scanOption();
@@ -45,6 +45,7 @@ public class AttendanceController {
     private void attendanceCheck() {
         AttendanceRequest request = InputView.scanAttendance();
         validateCampusTime(request.time());
+
         Crew crew = CrewRepository.findByNickname(request.nickname());
         AttendanceStatus status = crew.addAttendanceTime(DateTimeUtil.nowDate(), request.time());
         OutputView.printAttendanceResult(AttendanceResult.of(DateTimeUtil.nowDate(), request.time(), status));
@@ -53,15 +54,18 @@ public class AttendanceController {
     private void attendanceModify() {
         AttendanceModifyRequest request = InputView.scanModify();
         validateCampusTime(request.time());
+
         Crew crew = CrewRepository.findByNickname(request.nickname());
-        ModifiedResult.InnerStatus before = generateInnerStatus(crew, request);
+        TimeAttendanceStatus before = createTimeAndStatus(crew, request);
+
         crew.modifyAttendanceTime(request.date(), request.time());
-        ModifiedResult.InnerStatus after = generateInnerStatus(crew, request);
+
+        TimeAttendanceStatus after = createTimeAndStatus(crew, request);
         OutputView.printModifiedResult(new ModifiedResult(request.date(), before, after));
     }
 
-    private ModifiedResult.InnerStatus generateInnerStatus(Crew crew, AttendanceModifyRequest request) {
-        return new ModifiedResult.InnerStatus(
+    private TimeAttendanceStatus createTimeAndStatus(Crew crew, AttendanceModifyRequest request) {
+        return new TimeAttendanceStatus(
                 crew.getAttendanceTimeByDate(request.date()),
                 crew.getAttendanceStatusByDate(request.date()));
     }
