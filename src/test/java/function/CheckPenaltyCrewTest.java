@@ -1,3 +1,5 @@
+package function;
+
 import static constants.TestTimeMaker.MONDAY_ATTEND;
 
 import domain.AttendanceBook;

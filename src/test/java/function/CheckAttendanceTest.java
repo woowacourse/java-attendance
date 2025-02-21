@@ -1,3 +1,5 @@
+package function;
+
 import static constants.TestTimeMaker.EXCEPT_MONDAY_ATTEND;
 import static constants.TestTimeMaker.MONDAY_ATTEND;
 import static constants.TestTimeMaker.MONDAY_LATE;
