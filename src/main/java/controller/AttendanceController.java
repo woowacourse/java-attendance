@@ -1,5 +1,9 @@
 package controller;
 
+import static util.constant.Value.NOW_DAY;
+import static util.constant.Value.NOW_MONTH;
+import static util.constant.Value.NOW_YEAR;
+
 import domain.AttendanceManager;
 import domain.AttendanceStatistics;
 import domain.Penalty;
@@ -16,11 +20,9 @@ import view.OutputView;
 
 public class AttendanceController {
 
-    private final int DEFAULT_YEAR = 2024;
-    private final int DEFAULT_MONTH = 12;
-    private final int DEFAULT_DAY = 13;
     private final String INPUT_DATE_FORMAT = "%04d-%02d-%02d";
     private final String INPUT_TIME_FORMAT = "%02d:%02d";
+
     private final InputView inputView;
     private final OutputView outputView;
     private final AttendanceManager attendanceManager;
@@ -61,8 +63,8 @@ public class AttendanceController {
             attendanceManager.findByName(name);
             List<String> time = List.of(inputView.readTime().split(":"));
 
-            String dateForm = String.format(INPUT_DATE_FORMAT, DEFAULT_YEAR, DEFAULT_MONTH,
-                DEFAULT_DAY);
+            String dateForm = String.format(INPUT_DATE_FORMAT, NOW_YEAR, NOW_MONTH,
+                NOW_DAY);
             String timeForm = formatTime(time);
             LocalDateTime dateTime = formatDateTime(dateForm, timeForm);
 
@@ -80,7 +82,7 @@ public class AttendanceController {
             String dayOfMonth = inputView.readEditDayOfMonth();
             List<String> time = List.of(inputView.readEditTime().split(":"));
 
-            String dateForm = String.format(INPUT_DATE_FORMAT, DEFAULT_YEAR, DEFAULT_MONTH,
+            String dateForm = String.format(INPUT_DATE_FORMAT, NOW_YEAR, NOW_MONTH,
                 Integer.parseInt(dayOfMonth));
             String timeForm = formatTime(time);
             LocalDateTime localDateTime = formatDateTime(dateForm, timeForm);
@@ -132,7 +134,7 @@ public class AttendanceController {
 
 
     private LocalDate formatDate() {
-        String date = DEFAULT_YEAR + "-" + DEFAULT_MONTH + "-" + DEFAULT_DAY;
+        String date = NOW_YEAR + "-" + NOW_MONTH + "-" + NOW_DAY;
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         return LocalDate.parse(date, formatter);
     }

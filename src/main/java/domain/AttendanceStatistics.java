@@ -1,21 +1,21 @@
 package domain;
 
+import static util.constant.Value.START_DAY;
+import static util.constant.Value.START_MONTH;
+import static util.constant.Value.START_YEAR;
+
 import java.time.LocalDate;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
 public class AttendanceStatistics {
 
-    private static final int COUNT_START_YEAR = 2024;
-    private static final int COUNT_START_MONTH = 12;
-    private static final int COUNT_START_DAY = 2; // TODO:주말 처리하고 1로 바꾸기
-
     public static StatisticsResult countStatus(LocalDate nowDate, Records records) {
         int attendanceCount = 0;
         int latenessCount = 0;
         int absenceCount = 0;
 
-        LocalDate startDate = LocalDate.of(COUNT_START_YEAR, COUNT_START_MONTH, COUNT_START_DAY);
+        LocalDate startDate = LocalDate.of(START_YEAR, START_MONTH, START_DAY);
         while (startDate.isBefore(nowDate)) {
             TimeAndStatus status = records.findByDate(startDate);
             startDate = startDate.plusDays(1);
