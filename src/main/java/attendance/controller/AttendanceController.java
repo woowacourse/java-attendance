@@ -46,7 +46,6 @@ public class AttendanceController {
             command = MenuCommand.toCommand(readMenuOption());
             executeCommand(command);
         } catch (IllegalArgumentException e) {
-            System.out.println(e.getMessage());
             outputView.printErrorMessage(e.getMessage());
             run();
         }
@@ -129,13 +128,21 @@ public class AttendanceController {
 
         String modifyTime = inputView.readModifyTime();
         validateTimeFormat(modifyTime);
-        LocalTime localTime = LocalTime.parse(modifyTime);
-        LocalDateTime localDateTime = LocalDateTime.of(localDate, localTime);
+        LocalTime modifylocalTime = validateSameTime(modifyTime, originalTime);
+        LocalDateTime modifyLocalDateTime = LocalDateTime.of(localDate, modifylocalTime);
 
-        attendances.modifyAttendances(crew, localDateTime);
+        attendances.modifyAttendances(crew, modifyLocalDateTime);
         Attendance newAttendance = attendances.findMatchCrewDate(crew, localDate);
 
         outputView.printModifiedAttendance(originalTime, originalType.toString(), newAttendance.getInfo());
+    }
+
+    private static LocalTime validateSameTime(String modifyTime, String originalTime) {
+        LocalTime modifylocalTime = LocalTime.parse(modifyTime);
+        if (modifylocalTime.equals(LocalTime.parse(originalTime))) {
+            throw new IllegalArgumentException("[Error] 같은 시간으로 변경하고 있습니다.");
+        }
+        return modifylocalTime;
     }
 
     private void validateDateFormat(final String date) {
