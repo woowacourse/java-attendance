@@ -5,12 +5,12 @@ import domain.Manage;
 import dto.AttendanceRecord;
 import dto.AttendanceResult;
 import dto.CrewAlmostExpelledResult;
-import dto.Formatter;
 import dto.ModifiedResult;
 import dto.MonthAttendanceRecordsResult;
 import java.time.LocalDateTime;
 import java.util.Comparator;
 import java.util.List;
+import util.Formatter;
 
 public class OutputView {
 

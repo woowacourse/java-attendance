@@ -1,19 +1,17 @@
 package util;
 
+import domain.Holiday;
 import java.time.DateTimeException;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeParseException;
 
-import domain.Holiday;
-import dto.Formatter;
-
 public class DateTimeUtil {
 
     public static boolean isOffDay(LocalDate date) {
         boolean isWeekend = date.getDayOfWeek().equals(DayOfWeek.SATURDAY) ||
-            date.getDayOfWeek().equals(DayOfWeek.SUNDAY);
+                date.getDayOfWeek().equals(DayOfWeek.SUNDAY);
         return isWeekend || isHoliday(date);
     }
 
@@ -23,10 +21,6 @@ public class DateTimeUtil {
 
     public static LocalDate nowDate() {
         return LocalDate.now();
-    }
-
-    public static LocalTime nowTime() {
-        return LocalTime.now();
     }
 
     public static LocalTime convertToTime(String time) {
