@@ -35,9 +35,6 @@ public class Crew {
         }
     }
 
-    public String getNickname() {
-        return nickname;
-    }
 
     public void modifyAttendanceTime(LocalDate date, LocalTime time) {
         attendanceTimes.put(date, time);
@@ -88,5 +85,9 @@ public class Crew {
 
     private void initializeStatusCounter(Map<AttendanceStatus, Integer> result) {
         Arrays.stream(AttendanceStatus.values()).forEach(status -> result.put(status, 0));
+    }
+
+    public String getNickname() {
+        return nickname;
     }
 }
