@@ -15,6 +15,7 @@ public class Attendances {
     }
 
     public void initAttendances(final Crews crews, final List<List<String>> attendanceRecords) {
+        attendances.clear();
         for (List<String> attendanceRecord : attendanceRecords) {
             String crewName = attendanceRecord.getFirst();
             Crew crew = crews.findCrew(crewName);

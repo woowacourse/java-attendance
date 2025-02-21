@@ -12,6 +12,7 @@ public class Crews {
     }
 
     public void initCrews(final List<List<String>> attendanceRecords) {
+        crews.clear();
         List<String> crewNames = new ArrayList<>();
 
         for (List<String> attendanceRecord : attendanceRecords) {
