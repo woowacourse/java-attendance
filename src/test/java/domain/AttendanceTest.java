@@ -6,32 +6,33 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 class AttendanceTest {
-    @DisplayName("출석 시간이 5분 이하면 출석이다")
+    @DisplayName("출석 시간이 5분 이하면 출석합니다.")
     @Test
-    void test1() {
+    void attendancePresentTest() {
         LocalDateTime originalTime = LocalDateTime.of(2024, 12, 2, 13, 0);
         Attendance attendance = new Attendance(originalTime);
         Assertions.assertSame(attendance.calculateAttendanceStatus(), AttendanceStatus.PRESENT);
     }
 
-    @DisplayName("출석 시간이 5분 초과, 30분 이하면 지각이다")
+    @DisplayName("출석 시간이 5분 초과, 30분 이하면 지각입니다.")
     @Test
-    void test2() {
+    void attendanceLateTest() {
         LocalDateTime originalTime = LocalDateTime.of(2024, 12, 2, 13, 6);
         Attendance attendance = new Attendance(originalTime);
         Assertions.assertSame(attendance.calculateAttendanceStatus(), AttendanceStatus.LATE);
     }
 
-    @DisplayName("출석 시간이 30분 초과면 결석한다")
+    @DisplayName("출석 시간이 30분 초과면 결석입니다.")
     @Test
-    void test3() {
+    void attendanceAbsentTest() {
         LocalDateTime originalTime = LocalDateTime.of(2024, 12, 2, 13, 31);
         Attendance attendance = new Attendance(originalTime);
         Assertions.assertSame(attendance.calculateAttendanceStatus(), AttendanceStatus.ABSENT);
     }
 
+    @DisplayName("날짜가 일치하면 true를 반환합니다.")
     @Test
-    void test4() {
+    void isSameDayTrueTest() {
         LocalDateTime day = LocalDateTime.of(2024, 12, 2, 13, 0);
         int sameDay = 2;
 
@@ -39,8 +40,9 @@ class AttendanceTest {
         Assertions.assertTrue(attendance.isSameDay(sameDay));
     }
 
+    @DisplayName("날짜가 일치하면 False를 반환합니다.")
     @Test
-    void test5() {
+    void isSameDayFalseTest() {
         LocalDateTime day = LocalDateTime.of(2024, 12, 2, 13, 0);
         int sameDay = 10;
 
@@ -48,8 +50,10 @@ class AttendanceTest {
         Assertions.assertFalse(attendance.isSameDay(sameDay));
     }
 
+
+    @DisplayName("일(날짜)을 반환합니다.")
     @Test
-    void test6() {
+    void getDayTest() {
         LocalDateTime day = LocalDateTime.of(2024, 12, 2, 13, 0);
         int sameDay = 2;
 
