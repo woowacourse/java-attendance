@@ -1,5 +1,7 @@
 package attendance.controller.validator;
 
+import static attendance.constant.ErrorMessage.NOT_ATTEND_DAY;
+
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.format.TextStyle;
@@ -12,7 +14,7 @@ public class HolidayValidator {
 
     public static void validate(LocalDate day) {
         if (WEEKENDS.contains(day.getDayOfWeek()) || day.equals(CHRISTMAS)) {
-            throw new IllegalArgumentException(String.format("[ERROR] %d월 %d일 %s은 등교일이 아닙니다.",
+            throw new IllegalArgumentException(String.format(NOT_ATTEND_DAY.getMessage(),
                     day.getMonthValue(),
                     day.getDayOfMonth(),
                     day.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.KOREA)));

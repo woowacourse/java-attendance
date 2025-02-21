@@ -54,7 +54,7 @@ public class OutputView {
                         status.getMessage());
                 continue;
             }
-            printAttendanceResult(AttendanceResultResponse.of(attendance));
+            printAttendanceResult(AttendanceResultResponse.from(attendance));
         }
         System.out.printf("출석 : %d회\n", crew.countAttend());
         System.out.printf("지각 : %d회\n", crew.countLate());

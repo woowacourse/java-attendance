@@ -1,5 +1,7 @@
 package attendance.controller.validator;
 
+import static attendance.constant.ErrorMessage.NOT_OPERATING_HOURS;
+
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 
@@ -13,7 +15,7 @@ public class OperatingHoursValidator {
     public static void validate(LocalDateTime attendDateTime) {
         LocalTime attendTime = attendDateTime.toLocalTime();
         if (attendTime.isAfter(END_TIME) || attendTime.isBefore(START_TIME)) {
-            throw new IllegalArgumentException("[ERROR] 캠퍼스 운영 시간이 아닙니다.");
+            throw new IllegalArgumentException(NOT_OPERATING_HOURS.getMessage());
         }
     }
 }

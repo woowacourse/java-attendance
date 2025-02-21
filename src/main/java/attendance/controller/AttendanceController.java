@@ -34,14 +34,14 @@ public class AttendanceController {
         while (true) {
             try {
                 Menu selectedMenu = inputView.inputMenu(today);
-                if (selectMenu(selectedMenu, crews)) break;
+                if (executeMenu(selectedMenu, crews)) break;
             } catch (IllegalArgumentException e) {
                 outputView.printExceptionMessage(e);
             }
         }
     }
 
-    private boolean selectMenu(Menu selectedMenu, Crews crews) {
+    private boolean executeMenu(Menu selectedMenu, Crews crews) {
         if (selectedMenu.equals(Menu.CHECK_ATTEND)) confirmAttendance(crews);
         if (selectedMenu.equals(Menu.UPDATE_ATTEND)) updateAttendance(crews);
         if (selectedMenu.equals(Menu.PRINT_ATTEND_BY_CREW)) printAttendanceByCrew(crews);
@@ -61,19 +61,22 @@ public class AttendanceController {
         Attendance attendance = new Attendance(attendDateTime);
 
         crew.addAttendance(attendance);
-        outputView.printAttendanceResult(AttendanceResultResponse.of(attendance));
+        outputView.printAttendanceResult(AttendanceResultResponse.from(attendance));
     }
 
     private void updateAttendance(final Crews crews) {
         Crew crew = crews.findByName(inputView.inputNickname());
-        LocalDate updateDate = LocalDate.of(today.getYear(), today.getMonthValue(), inputView.inputUpdateDate(today));
+        LocalDate updateDate = LocalDate.of(today.getYear(), today.getMonthValue(),
+                inputView.inputUpdateDate(today));
         HolidayValidator.validate(updateDate);
 
         LocalDateTime updateTime = TimeFormatter.format(updateDate, inputView.inputUpdateTime());
         OperatingHoursValidator.validate(updateTime);
 
-        UpdateBeforeAttendanceResponse beforeResponse = UpdateBeforeAttendanceResponse.of(crew.findAttendanceByDate(updateDate));
-        UpdateAfterAttendanceResponse afterResponse = UpdateAfterAttendanceResponse.of(crew.updateAttendance(updateTime));
+        UpdateBeforeAttendanceResponse beforeResponse = UpdateBeforeAttendanceResponse.of(
+                crew.findAttendanceByDate(updateDate));
+        UpdateAfterAttendanceResponse afterResponse = UpdateAfterAttendanceResponse.of(
+                crew.updateAttendance(updateTime));
 
         outputView.printUpdateAttendance(beforeResponse, afterResponse);
     }

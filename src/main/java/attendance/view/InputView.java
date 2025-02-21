@@ -18,7 +18,7 @@ public class InputView {
                 "3. 크루별 출석 기록 확인\n" +
                 "4. 제적 위험자 확인\n" +
                 "Q. 종료\n", now.getMonthValue(), now.getDayOfMonth(), now.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.KOREA));
-        return Menu.of(scanner.nextLine());
+        return Menu.from(scanner.nextLine());
     }
 
     public String inputNickname() {

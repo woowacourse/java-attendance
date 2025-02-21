@@ -63,13 +63,11 @@ public class Crew implements Comparable<Crew> {
     }
 
     public Attendance updateAttendance(final LocalDateTime dateTime) {
-        Attendance after = attendances.stream()
+        return attendances.stream()
                 .filter(attendance -> attendance.isEqualToDate(LocalDate.from(dateTime)))
                 .findFirst()
                 .map(attendance -> attendance.updateDateTime(dateTime))
                 .orElseThrow(() -> new IllegalArgumentException("[ERROR] 출석 기록이 없습니다."));
-
-        return after;
     }
 
     public Attendance findAttendanceByDate(final LocalDate updateDate) {
@@ -80,9 +78,9 @@ public class Crew implements Comparable<Crew> {
     }
 
     @Override
-    public int compareTo(Crew o) {
-        long targetAbsenceCount = o.calculateTotalAbsenceCount();
-        long targetLateCount = o.countLate() % LATE_TO_ABSENCE_UNIT;
+    public int compareTo(Crew comparisonCrew) {
+        long targetAbsenceCount = comparisonCrew.calculateTotalAbsenceCount();
+        long targetLateCount = comparisonCrew.countLate() % LATE_TO_ABSENCE_UNIT;
 
         long absenceCount = this.calculateTotalAbsenceCount();
         long lateCount = this.countLate() % LATE_TO_ABSENCE_UNIT;
@@ -100,7 +98,7 @@ public class Crew implements Comparable<Crew> {
         if (targetLateCount < lateCount) {
             return -1;
         }
-        return nickname.compareTo(o.getNickname());
+        return nickname.compareTo(comparisonCrew.getNickname());
     }
 
     public String getNickname() {

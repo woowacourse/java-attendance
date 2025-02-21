@@ -1,5 +1,7 @@
 package attendance.domain;
 
+import static attendance.constant.ErrorMessage.UNREGISTERED_NICKNAME;
+
 import java.util.List;
 
 public class Crews {
@@ -14,7 +16,7 @@ public class Crews {
         return crews.stream()
                 .filter(crew -> crew.isEqualToNickname(nickname))
                 .findFirst()
-                .orElseThrow(() -> new IllegalArgumentException("[ERROR] 등록되지 않은 닉네임입니다."));
+                .orElseThrow(() -> new IllegalArgumentException(UNREGISTERED_NICKNAME.getMessage()));
     }
 
     public int size() {

@@ -15,7 +15,7 @@ public enum Menu {
         this.select = select;
     }
 
-    public static Menu of(String input) {
+    public static Menu from(String input) {
         return Arrays.stream(Menu.values())
                 .filter(menu -> menu.select.equals(input))
                 .findFirst()
