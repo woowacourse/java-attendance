@@ -37,13 +37,13 @@ public class AttendanceController {
 
         MenuOption menuOption;
         do {
-            String option = getOption(nowDate);
+            String option = getOptionInput(nowDate);
             menuOption = MenuOption.getMenuOption(option);
             process(menuOption, attendance, nowDate);
         } while (!menuOption.equals(MenuOption.QUIT));
     }
 
-    private String getOption(LocalDate nowDate) {
+    private String getOptionInput(LocalDate nowDate) {
         outputView.printMenuHeader(nowDate);
         return inputView.readOption(Arrays.asList(MenuOption.values()));
     }
@@ -71,7 +71,7 @@ public class AttendanceController {
 
         String nickName = processNickNameInput(attendance);
         repeatExecutor.repeatUntilSuccess(() -> {
-            LocalTime arrivalTime = getLocalTime();
+            LocalTime arrivalTime = processArrivalTimeInput();
             attendance.attend(nickName, LocalDateTime.of(nowDate, arrivalTime));
             return null;
         });
@@ -96,7 +96,7 @@ public class AttendanceController {
         });
     }
 
-    private String getEditNickName(Attendance attendance) {
+    private String processEditNickNameInput(Attendance attendance) {
         return repeatExecutor.repeatUntilSuccess(() -> {
             String nickName = inputView.readEditNickname();
             attendance.validateNickName(nickName);
@@ -104,13 +104,13 @@ public class AttendanceController {
         });
     }
 
-    private LocalTime getLocalTime() {
+    private LocalTime processArrivalTimeInput() {
         return repeatExecutor.repeatUntilSuccess(inputView::readArrivalTime);
     }
 
     private void editAttendance(Attendance attendance) {
-        String nickName = getEditNickName(attendance);
-        AttendanceTime oldAttendanceTime = getOldAttendanceTime(attendance, nickName);
+        String nickName = processEditNickNameInput(attendance);
+        AttendanceTime oldAttendanceTime = processOldAttendanceTime(attendance, nickName);
 
         int editArrivalDate = oldAttendanceTime.getAttendanceDateTime().getDayOfMonth();
         LocalDate editDate = LocalDate.of(2024, 12, editArrivalDate);
@@ -120,9 +120,9 @@ public class AttendanceController {
         outputView.printEditAttendanceMessage(oldAttendanceTime, newAttendanceTime);
     }
 
-    private AttendanceTime getOldAttendanceTime(Attendance attendance, String nickName) {
+    private AttendanceTime processOldAttendanceTime(Attendance attendance, String nickName) {
         return repeatExecutor.repeatUntilSuccess(() -> {
-            DecemberCalender editArrivalDate = getEditArrivalDate();
+            DecemberCalender editArrivalDate = processEditArrivalDateInput();
             return attendance.findAttendanceTime(nickName, editArrivalDate.getDate());
         });
     }
@@ -135,7 +135,7 @@ public class AttendanceController {
         });
     }
 
-    private DecemberCalender getEditArrivalDate() {
+    private DecemberCalender processEditArrivalDateInput() {
         return new DecemberCalender(inputView.readEditArrivalDate());
     }
 
