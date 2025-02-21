@@ -62,7 +62,6 @@ public final class DateTimeFormatterWrapper {
         }
     }
 
-
     public static String formattingAttendanceWeekendError(LocalDate currentDate) {
         return currentDate.format(
                 DateTimeFormatter.ofPattern(AttendanceManagerHelper.CANNOT_ATTENDANCE_WEEKEND_FORMAT, Locale.KOREA));

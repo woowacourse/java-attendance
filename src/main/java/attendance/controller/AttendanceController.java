@@ -1,15 +1,10 @@
 package attendance.controller;
 
 import attendance.domain.AttendanceStatus;
-import attendance.domain.dto.AttendanceDto;
-import attendance.domain.dto.AttendanceHistoryDto;
-import attendance.domain.dto.AttendanceModifyDto;
-import attendance.domain.dto.DateValidateDto;
-import attendance.domain.dto.NicknameValidateDto;
-import attendance.domain.dto.TimeValidateDto;
 import attendance.service.AttendanceManagerService;
 import attendance.service.CrewDismissService;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 
 public class AttendanceController {
@@ -23,39 +18,35 @@ public class AttendanceController {
         this.crewDismissService = crewDismissService;
     }
 
-    public String attendance(AttendanceDto attendanceDto) {
-        attendanceManagerService.addAttendance(attendanceDto.nickname(), attendanceDto.attendanceDate());
-        return attendanceManagerService.attendanceResult(attendanceDto.nickname(),
-                attendanceDto.attendanceDate().toLocalDate());
+    public String attendance(String nickname, LocalDateTime attendanceDateTime) {
+        attendanceManagerService.addAttendance(nickname, attendanceDateTime);
+        return attendanceManagerService.attendanceResult(nickname, attendanceDateTime.toLocalDate());
     }
 
-    public String attendanceModify(AttendanceModifyDto attendanceDto) {
-        LocalDate modifyDate = attendanceDto.attendanceDate().toLocalDate();
-        LocalTime afterModifyTime = attendanceDto.attendanceDate().toLocalTime();
-        String nickname = attendanceDto.nickname();
+    public String attendanceModify(String nickname, LocalDate modifyDate, LocalTime afterModifyTime) {
         String beforeAttendance = attendanceManagerService.attendanceResult(nickname, modifyDate);
         attendanceManagerService.modify(nickname, modifyDate, afterModifyTime);
         AttendanceStatus attendanceStatus = attendanceManagerService.getAttendanceStatus(modifyDate, nickname);
         return attendanceManagerService.formattingAttendanceModify(afterModifyTime, beforeAttendance, attendanceStatus);
     }
 
-    public String attendanceHistory(AttendanceHistoryDto attendanceHistoryDto) {
-        return attendanceManagerService.crewAttendanceHistory(attendanceHistoryDto.nickname());
+    public String attendanceHistory(String nickname) {
+        return attendanceManagerService.crewAttendanceHistory(nickname);
     }
 
     public String crewDismiss() {
         return crewDismissService.formattingCrewDismiss();
     }
 
-    public void validateNickname(NicknameValidateDto nicknameValidateDto) {
-        attendanceManagerService.validateNickname(nicknameValidateDto.nickname());
+    public void validateNickname(String nickname) {
+        attendanceManagerService.validateNickname(nickname);
     }
 
-    public void validateTime(TimeValidateDto timeValidateDto) {
-        attendanceManagerService.validateTime(timeValidateDto.time());
+    public void validateTime(LocalTime time) {
+        attendanceManagerService.validateTime(time);
     }
 
-    public void validateDate(DateValidateDto dateValidateDto) {
-        attendanceManagerService.validateDate(dateValidateDto.date());
+    public void validateDate(LocalDate date) {
+        attendanceManagerService.validateDate(date);
     }
 }

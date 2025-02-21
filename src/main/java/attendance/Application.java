@@ -3,11 +3,13 @@ package attendance;
 import attendance.config.AppConfig;
 import attendance.controller.AttendanceController;
 import attendance.domain.AttendanceMethod;
-import attendance.domain.RequestParser;
-import attendance.domain.dto.AttendanceHistoryDto;
+import attendance.domain.DateTimeFormatterWrapper;
 import attendance.exception.AttendanceArgumentException;
 import attendance.view.ConsoleInputView;
 import attendance.view.OutputView;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.EnumSet;
 import java.util.function.Supplier;
 
@@ -16,7 +18,6 @@ public class Application {
     private final static OutputView outputView = new OutputView();
     private final static ConsoleInputView inputView = new ConsoleInputView();
     private final static AppConfig appConfig = new AppConfig();
-    private final static RequestParser requestParser = new RequestParser();
     private final static AttendanceController attendanceController = appConfig.attendanceController();
     private final static EnumSet<AttendanceMethod> SUPPORTED_METHODS =
             EnumSet.of(AttendanceMethod.ATTENDANCE, AttendanceMethod.MODIFY,
@@ -36,7 +37,7 @@ public class Application {
         if (!SUPPORTED_METHODS.contains(method)) {
             throw new AttendanceArgumentException(NOT_SUPPORT_METHOD);
         }
-    
+
         switch (method) {
             case ATTENDANCE -> attendance();
             case MODIFY -> modifyAttendance();
@@ -49,8 +50,7 @@ public class Application {
         String result = handleInput(() -> {
             outputView.printNicknameInput();
             String nickname = inputView.input();
-            AttendanceHistoryDto attendanceHistory = requestParser.parseAttendanceNickname(nickname);
-            return attendanceController.attendanceHistory(attendanceHistory);
+            return attendanceController.attendanceHistory(nickname);
         });
         outputView.println(result);
     }
@@ -64,18 +64,18 @@ public class Application {
 
     private static void modifyAttendance() {
         String nickname = handleInput(() -> attendanceModifyNickname());
-        String date = handleInput(() -> attendanceModifyDate());
-        String time = handleInput(() -> attendanceTime());
-        String result = attendanceController.attendanceModify(
-                requestParser.parseAttendanceModifyRequest(nickname, time, date));
+        LocalDate date = handleInput(() -> attendanceModifyDate());
+        LocalTime time = handleInput(() -> attendanceTime());
+        String result = attendanceController.attendanceModify(nickname, date, time);
         outputView.println(result);
     }
 
-    private static String attendanceModifyDate() {
+    private static LocalDate attendanceModifyDate() {
         return handleInput(() -> {
             outputView.printAttendanceModifyDateInput();
-            String date = ATTENDANCE_MONTH + inputView.input();
-            attendanceController.validateDate(requestParser.parseDateValidateRequest(date));
+            String dateInput = ATTENDANCE_MONTH + inputView.input();
+            LocalDate date = DateTimeFormatterWrapper.parsingAttendanceDate(dateInput);
+            attendanceController.validateDate(date);
             return date;
         });
     }
@@ -84,29 +84,30 @@ public class Application {
         return handleInput(() -> {
             outputView.printAttendanceModifyNicknameInput();
             String nickname = inputView.input();
-            attendanceController.validateNickname(requestParser.parseNicknameValidateRequest(nickname));
+            attendanceController.validateNickname(nickname);
             return nickname;
         });
     }
 
     private static void attendance() {
         String nickname = handleInput(() -> attendanceNickname());
-        String time = handleInput(() -> attendanceTime());
-        String result = attendanceController.attendance(requestParser.parseAttendanceRequest(nickname, time));
+        LocalTime time = handleInput(() -> attendanceTime());
+        String result = attendanceController.attendance(nickname, LocalDateTime.of(LocalDate.now(), time));
         outputView.println(result);
     }
 
-    private static String attendanceTime() {
+    private static LocalTime attendanceTime() {
         outputView.printAttendanceTimeInput();
-        String time = inputView.input();
-        attendanceController.validateTime(requestParser.parseTimeValidateRequest(time));
+        String inputTime = inputView.input();
+        LocalTime time = DateTimeFormatterWrapper.parsingAttendanceTime(inputTime);
+        attendanceController.validateTime(time);
         return time;
     }
 
     private static String attendanceNickname() {
         outputView.printNicknameInput();
         String nickname = inputView.input();
-        attendanceController.validateNickname(requestParser.parseNicknameValidateRequest(nickname));
+        attendanceController.validateNickname(nickname);
         return nickname;
     }
 

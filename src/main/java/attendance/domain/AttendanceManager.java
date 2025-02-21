@@ -11,10 +11,10 @@ import java.util.List;
 import java.util.Map;
 
 public class AttendanceManager {
+    
     private static AttendanceManager instance = null;
 
     private AttendanceManager() {
-
     }
 
     public static AttendanceManager getInstance() {

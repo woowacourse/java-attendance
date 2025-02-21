@@ -21,8 +21,8 @@ public class AttendanceManagerService {
     private final AttendanceFileRepository attendanceFileRepository;
     private final String ATTENDANCE_RESULT_FORMAT = "%s (%s)";
     private final String ATTENDANCE_MODIFY_RESULT_FORMAT = "%s -> %s (%s) 수정 완료!";
-    private String ATTENDANCE_DISMISS_STATUS_FORMAT = "\n%s 대상자입니다.";
-    private String CREW_ATTENDANCE_HISTORY_PREFIX = "이번 달 %s의 출석 기록입니다.\n\n";
+    private final String ATTENDANCE_DISMISS_STATUS_FORMAT = "\n%s 대상자입니다.";
+    private final String CREW_ATTENDANCE_HISTORY_PREFIX = "이번 달 %s의 출석 기록입니다.\n\n";
 
 
     public AttendanceManagerService(AttendanceManager attendanceManager,
