@@ -17,7 +17,7 @@ import org.junit.jupiter.params.provider.CsvSource;
 @DisplayName("출석 기록 테스트")
 class AttendanceTimelineTest {
 
-    @DisplayName("크루의 오늘까지 출석 기록을 생성할 수 있다.")
+    @DisplayName("크루의 어제까지 출석 기록을 생성할 수 있다.")
     @Test
     void createTimelineUntilNowTest() {
         Crew crew = new Crew("포비");
@@ -40,10 +40,6 @@ class AttendanceTimelineTest {
                                 AttendanceType.LATE
                         ),
                         new AttendanceLog(LocalDate.of(2024, 12, 4),
-                                null,
-                                AttendanceType.ABSENCE
-                        ),
-                        new AttendanceLog(LocalDate.of(2024, 12, 5),
                                 null,
                                 AttendanceType.ABSENCE
                         )
