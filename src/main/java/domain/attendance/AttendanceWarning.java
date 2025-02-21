@@ -8,11 +8,11 @@ public enum AttendanceWarning {
     ;
 
     private final String status;
-    private final int absenseCount;
+    private final int absenceCount;
 
-    AttendanceWarning(String status, int absenseCount) {
+    AttendanceWarning(String status, int absenceCount) {
         this.status = status;
-        this.absenseCount = absenseCount;
+        this.absenceCount = absenceCount;
     }
 
     public String getStatus() {
@@ -21,7 +21,7 @@ public enum AttendanceWarning {
 
     public static AttendanceWarning determineAttendanceWarning(int absenceIncludingTardyCount) {
         for (AttendanceWarning value : values()) {
-            if (value.absenseCount <= absenceIncludingTardyCount) {
+            if (value.absenceCount <= absenceIncludingTardyCount) {
                 return value;
             }
         }
