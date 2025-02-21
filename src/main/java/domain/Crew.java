@@ -37,7 +37,7 @@ public class Crew {
 
     private void validateIsNotAlreadyAttended(LocalDate date) {
         if (dailyAttendances.containsKey(date)) {
-            throw new IllegalArgumentException(ErrorCode.CHECK_ATTENDANCE_ALREADY_EXISTS.getMessage());
+            throw new IllegalArgumentException(ErrorCode.CHECK_ATTENDANCE_ALREADY_EXISTS.getFormat());
         }
     }
 
@@ -59,7 +59,7 @@ public class Crew {
     public void validateDateAlreadyExists(LocalDate date) {
         if (!dailyAttendances.containsKey(date)) {
             throw new IllegalArgumentException(
-                    String.format(ErrorCode.ATTENDANCE_RECORD_NOT_EXISTS_FORMAT.getMessage(), date.getDayOfMonth()));
+                    ErrorCode.ATTENDANCE_RECORD_NOT_EXISTS_FORMAT.format(date.getDayOfMonth()));
         }
     }
 

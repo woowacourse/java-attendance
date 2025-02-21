@@ -16,14 +16,18 @@ public enum ErrorCode {
     DAY_INPUT_NOT_VALID("날짜(일) 입력이 올바르지 않습니다."),
     TIME_INPUT_NOT_VALID("시간 입력이 올바르지 않습니다.");
 
-    private final String message;
+    private final String format;
     private static final String ERROR_SIGN = "[ERROR] ";
 
-    ErrorCode(String message) {
-        this.message = message;
+    ErrorCode(String format) {
+        this.format = format;
     }
 
-    public String getMessage() {
-        return ERROR_SIGN + message;
+    public String getFormat() {
+        return ERROR_SIGN + format;
+    }
+
+    public String format(Object... args) {
+        return String.format(ERROR_SIGN + format, args);
     }
 }

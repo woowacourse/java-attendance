@@ -11,16 +11,13 @@ public class Calendar {
 
     public static void validateIsWorkingDay(int date) {
         if (SATURDAYS.contains(date)) {
-            throw new IllegalArgumentException(
-                    String.format(ErrorCode.SATURDAY_NOT_WORKING_DAY_FORMAT.getMessage(), date));
+            throw new IllegalArgumentException(ErrorCode.SATURDAY_NOT_WORKING_DAY_FORMAT.format(date));
         }
         if (SUNDAYS.contains(date)) {
-            throw new IllegalArgumentException(
-                    String.format(ErrorCode.SUNDAY_NOT_WORKING_DAY_FORMAT.getMessage(), date));
+            throw new IllegalArgumentException(ErrorCode.SUNDAY_NOT_WORKING_DAY_FORMAT.format(date));
         }
         if (HOLIDAYS.contains(date)) {
-            throw new IllegalArgumentException(
-                    String.format(ErrorCode.HOLIDAY_NOT_WORKING_DAY_FORMAT.getMessage(), date));
+            throw new IllegalArgumentException(ErrorCode.HOLIDAY_NOT_WORKING_DAY_FORMAT.format(date));
         }
     }
 

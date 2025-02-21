@@ -27,7 +27,7 @@ public class InputParser {
         try {
             return LocalDate.now().withDayOfMonth(Integer.parseInt(input));
         } catch (DateTimeException | NumberFormatException e) {
-            throw new IllegalArgumentException(ErrorCode.DAY_INPUT_NOT_VALID.getMessage());
+            throw new IllegalArgumentException(ErrorCode.DAY_INPUT_NOT_VALID.getFormat());
         }
     }
 
@@ -35,7 +35,7 @@ public class InputParser {
         try {
             return LocalTime.parse(input);
         } catch (DateTimeException | NumberFormatException e) {
-            throw new IllegalArgumentException(ErrorCode.TIME_INPUT_NOT_VALID.getMessage());
+            throw new IllegalArgumentException(ErrorCode.TIME_INPUT_NOT_VALID.getFormat());
         }
     }
 }

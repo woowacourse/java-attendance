@@ -26,13 +26,13 @@ public class AttendanceBook {
         return crews.stream()
                 .filter(crew -> crew.hasName(name))
                 .findFirst()
-                .orElseThrow(() -> new IllegalArgumentException(ErrorCode.NICKNAME_NOT_FOUND.getMessage()));
+                .orElseThrow(() -> new IllegalArgumentException(ErrorCode.NICKNAME_NOT_FOUND.getFormat()));
     }
 
     // 데이터 유효성 검사
     public void validateNameAlreadyExists(String name) {
         if (!checkCrewAlreadyExists(name)) {
-            throw new IllegalArgumentException(ErrorCode.NICKNAME_NOT_FOUND.getMessage());
+            throw new IllegalArgumentException(ErrorCode.NICKNAME_NOT_FOUND.getFormat());
         }
     }
 
@@ -43,7 +43,7 @@ public class AttendanceBook {
 
     public void validateIsInOperationHour(LocalTime time) {
         if (!time.isAfter(OPERATION_TIME_START) || !time.isBefore(OPERATION_TIME_END)) {
-            throw new IllegalArgumentException(ErrorCode.TIME_NOT_IN_OPERATION_HOUR.getMessage());
+            throw new IllegalArgumentException(ErrorCode.TIME_NOT_IN_OPERATION_HOUR.getFormat());
         }
     }
 

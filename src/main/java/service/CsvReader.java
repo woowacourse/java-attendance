@@ -19,16 +19,16 @@ public class CsvReader {
         try (Stream<String> lines = Files.lines(path)) {
             return lines.collect(Collectors.toList());
         } catch (IOException e) {
-            throw new IllegalArgumentException(CSV_FILE_READING_FAIL.getMessage() + e.getMessage(), e);
+            throw new IllegalArgumentException(CSV_FILE_READING_FAIL.getFormat() + e.getMessage(), e);
         }
     }
 
     private void validateFilePath(Path filePath) {
         if (!Files.exists(filePath)) {
-            throw new IllegalArgumentException(CSV_INVALID_FILE_PATH.getMessage() + filePath);
+            throw new IllegalArgumentException(CSV_INVALID_FILE_PATH.getFormat() + filePath);
         }
         if (!Files.isRegularFile(filePath)) {
-            throw new IllegalArgumentException(CSV_INVALID_FILE_TYPE.getMessage() + filePath);
+            throw new IllegalArgumentException(CSV_INVALID_FILE_TYPE.getFormat() + filePath);
         }
     }
 }
