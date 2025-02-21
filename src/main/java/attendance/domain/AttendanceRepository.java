@@ -4,7 +4,6 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 public class AttendanceRepository {
     private final List<Attendance> attendances;
@@ -19,13 +18,10 @@ public class AttendanceRepository {
     }
 
     private Attendance findByName(final String name) {
-        Optional<Attendance> crewAttendance = attendances.stream()
+        return attendances.stream()
                 .filter(attendance -> attendance.isNameMatch(name))
-                .findAny();
-        if (crewAttendance.isEmpty()) {
-            throw new IllegalArgumentException("[ERROR] 유효하지 않은 닉네임입니다.");
-        }
-        return crewAttendance.get();
+                .findAny()
+                .orElseThrow(() -> new IllegalArgumentException("[ERROR] 유효하지 않은 닉네임입니다."));
     }
 
     public HourMinute update(final String name, final LocalDateTime newLocalDateTime) {
