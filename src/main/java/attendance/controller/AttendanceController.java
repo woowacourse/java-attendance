@@ -70,8 +70,8 @@ public class AttendanceController {
     private void recordAttendance() {
         Crew crew = getCrew();
         LocalTime checkInTime = getCheckInTime();
-        LocalDateTime dateTime = LocalDateTime.of(LocalDate.now(), checkInTime);
-        Attendance attendance = Attendance.of(dateTime);
+        LocalDateTime attendanceDateTime = LocalDateTime.of(LocalDate.now(), checkInTime);
+        Attendance attendance = Attendance.of(attendanceDateTime);
         attendances.addAttendance(crew, attendance);
         OutputView.printAttendanceResult(attendance);
     }
@@ -94,7 +94,7 @@ public class AttendanceController {
 
         Attendance attendance = attendances.getAttendance(crew, modifyingCheckinDate);
 
-        Attendance previousAttendance = Attendance.of(attendance.getDateTime());
+        Attendance previousAttendance = Attendance.of(attendance.getAttendanceDateTime());
         attendance.modify(LocalDateTime.of(modifyingCheckinDate, modifyingCheckinTime));
         OutputView.printModifyingResult(previousAttendance, attendance);
     }

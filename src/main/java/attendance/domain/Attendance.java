@@ -9,37 +9,37 @@ import java.time.LocalTime;
 
 public class Attendance {
 
-    private LocalDateTime dateTime;
+    private LocalDateTime attendanceDateTime;
     private AttendanceStatus status;
 
-    private Attendance(LocalDateTime dateTime) {
-        validateDayOfWeek(dateTime);
-        validateHoliday(dateTime);
-        setStatus(dateTime);
-        this.dateTime = dateTime;
+    private Attendance(LocalDateTime attendanceDateTime) {
+        validateDayOfWeek(attendanceDateTime);
+        validateHoliday(attendanceDateTime);
+        setStatus(attendanceDateTime);
+        this.attendanceDateTime = attendanceDateTime;
     }
 
-    public static Attendance of(LocalDateTime dateTime) {
-        return new Attendance(dateTime);
+    public static Attendance of(LocalDateTime attendanceDateTime) {
+        return new Attendance(attendanceDateTime);
     }
 
-    private void validateDayOfWeek(LocalDateTime dateTime) {
-        if (DateUtil.isWeekend(dateTime)) {
+    private void validateDayOfWeek(LocalDateTime attendanceDateTime) {
+        if (DateUtil.isWeekend(attendanceDateTime)) {
             throw new IllegalArgumentException();
         }
     }
 
-    private void validateHoliday(LocalDateTime dateTime) {
-        LocalDate date = dateTime.toLocalDate();
+    private void validateHoliday(LocalDateTime attendanceDateTime) {
+        LocalDate date = attendanceDateTime.toLocalDate();
         if (Holiday.isHoliday(date)) {
             throw new IllegalArgumentException();
         }
     }
 
-    private void setStatus(LocalDateTime dateTime) {
-        LocalTime time = dateTime.toLocalTime();
+    private void setStatus(LocalDateTime attendanceDateTime) {
+        LocalTime time = attendanceDateTime.toLocalTime();
 
-        if (dateTime.getDayOfWeek() == DayOfWeek.MONDAY) {
+        if (attendanceDateTime.getDayOfWeek() == DayOfWeek.MONDAY) {
             determineStatus(time, 13);
             return;
         }
@@ -67,10 +67,10 @@ public class Attendance {
 
     public void modify(LocalDateTime modifiedDateTime) {
         setStatus(modifiedDateTime);
-        this.dateTime = modifiedDateTime;
+        this.attendanceDateTime = modifiedDateTime;
     }
 
-    public LocalDateTime getDateTime() {
-        return dateTime;
+    public LocalDateTime getAttendanceDateTime() {
+        return attendanceDateTime;
     }
 }

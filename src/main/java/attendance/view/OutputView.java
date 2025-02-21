@@ -23,7 +23,7 @@ public class OutputView {
     }
 
     public static void printAttendanceResult(Attendance attendance) {
-        LocalDateTime attendanceDateTime = attendance.getDateTime();
+        LocalDateTime attendanceDateTime = attendance.getAttendanceDateTime();
         AttendanceStatus attendanceStatus = attendance.getStatus();
         DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern(
             DATE_FORMATTER + " " + TIME_FORMATTER, Locale.KOREAN);
@@ -35,10 +35,10 @@ public class OutputView {
         DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern(DATE_FORMATTER, Locale.KOREAN);
         DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern(TIME_FORMATTER, Locale.KOREAN);
 
-        String date = attendance.getDateTime().format(dateFormatter);
-        String beforeTime = previousAttendance.getDateTime().format(timeFormatter);
+        String date = attendance.getAttendanceDateTime().format(dateFormatter);
+        String beforeTime = previousAttendance.getAttendanceDateTime().format(timeFormatter);
         String beforeStatus = previousAttendance.getStatus().getKoreanName();
-        String afterTime = attendance.getDateTime().toLocalTime().format(timeFormatter);
+        String afterTime = attendance.getAttendanceDateTime().toLocalTime().format(timeFormatter);
         String afterStatus = attendance.getStatus().getKoreanName();
         System.out.printf("%n%s %s (%s) -> %s (%s) 수정 완료!%n",
             date, beforeTime, beforeStatus, afterTime, afterStatus);
@@ -81,12 +81,12 @@ public class OutputView {
         DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern(DATE_FORMATTER + " " + TIME_FORMATTER, Locale.KOREAN);
         DateTimeFormatter absenceFormatter = DateTimeFormatter.ofPattern(ABSENCE_FORMATTER, Locale.KOREAN);
 
-        String dateTime = attendance.getDateTime().format(dateTimeFormatter);
+        String attendanceDateTime = attendance.getAttendanceDateTime().format(dateTimeFormatter);
         String status = " (" + attendance.getStatus().getKoreanName() + ")";
         if (attendance.getStatus() == AttendanceStatus.ABSENCE) {
-            dateTime = attendance.getDateTime().format(absenceFormatter);
+            attendanceDateTime = attendance.getAttendanceDateTime().format(absenceFormatter);
         }
-        return dateTime + status;
+        return attendanceDateTime + status;
     }
 
     public static void printPenaltyOfCrews(List<Crew> crews, Attendances attendances) {

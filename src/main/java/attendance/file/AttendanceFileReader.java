@@ -22,8 +22,8 @@ public class AttendanceFileReader {
         while ((str = br.readLine()) != null) {
             Crew crew = new Crew(str.split(",")[0]);
             crews.addCrew(crew);
-            LocalDateTime dateTime = LocalDateTime.parse(str.split(",")[1], FORMATTER);
-            attendances.addAttendance(crew, Attendance.of(dateTime));
+            LocalDateTime attendanceDateTime = LocalDateTime.parse(str.split(",")[1], FORMATTER);
+            attendances.addAttendance(crew, Attendance.of(attendanceDateTime));
         }
         return new FileContents(attendances, crews);
     }
