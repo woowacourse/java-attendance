@@ -3,9 +3,6 @@ package controller;
 import exception.InvalidMenuException;
 
 import java.util.Arrays;
-import java.util.Comparator;
-import java.util.List;
-import java.util.stream.Collectors;
 
 public enum Menu {
     ATTENDANCE_CHECK("1", "출석 확인"),
@@ -29,12 +26,6 @@ public enum Menu {
                 .findFirst()
                 .orElseThrow(InvalidMenuException::new);
     }
-
-//    public static List<Menu> sortByNumber() {
-//        return Arrays.stream(Menu.values())
-//                .sorted(Comparator.comparing(Menu::))
-//                .toList();
-//    }
 
     public String getInputValue() {
         return inputValue;

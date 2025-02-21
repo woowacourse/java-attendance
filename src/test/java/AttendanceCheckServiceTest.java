@@ -26,20 +26,6 @@ public class AttendanceCheckServiceTest {
         attendanceRepository.save(crew);
     }
 
-//    @DisplayName("닉네임을 입력하면 올바른 크루 객체를 반환할 수 있다.")
-//    @Test
-//    void test() {
-//        // given
-//        String name = "이든";
-//        Crew crew = new Crew(name);
-//
-//        // when
-//        Crew found = attendanceCheckService.findCrew(name);
-//
-//        // then
-//        assertThat(found).isEqualTo(crew);
-//    }
-
     @DisplayName("등교시간을 입력하면 Attendance 객체를 추가할 수 있다.")
     @Test
     void test2() {
