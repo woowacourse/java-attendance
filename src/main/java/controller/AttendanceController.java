@@ -74,10 +74,7 @@ public class AttendanceController {
 
         OutputView.printMonthAttendanceRecords(
                 new MonthAttendanceRecordsResult(
-                        crew.getNickname(),
-                        attendanceRecords,
-                        crew.getAttendanceStatusStatistics(now),
-                        manage
+                        crew.getNickname(), attendanceRecords, crew.getAttendanceStatusStatistics(now), manage
                 ));
     }
 
@@ -88,9 +85,7 @@ public class AttendanceController {
                     AttendanceStatusStatistics attendanceStatusStatistics
                             = crew.getAttendanceStatusStatistics(DateTimeUtil.nowDate());
                     return new CrewAlmostExpelledResult(
-                            crew.getNickname(),
-                            attendanceStatusStatistics,
-                            Manage.of(attendanceStatusStatistics));
+                            crew.getNickname(), attendanceStatusStatistics, Manage.of(attendanceStatusStatistics));
                 })
                 .toList();
         OutputView.printCrewsAlmostExpelled(result);
