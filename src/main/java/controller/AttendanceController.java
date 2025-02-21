@@ -22,7 +22,7 @@ public class AttendanceController {
 
     public void start() {
         while (true) {
-            LocalDateTime fixedDateTime = LocalDateTime.of(2024, Constants.FIXED_MONTH, 16, 0, 0, 0, 0);
+            LocalDateTime fixedDateTime = LocalDateTime.of(Constants.FIXED_YEAR, Constants.FIXED_MONTH, 16, 0, 0, 0, 0);
             final String input = InputView.readCommand(fixedDateTime);
             Command command = Command.findByCommandNumber(input);
             Crews crews = CrewGenerator.generate(CsvReader.readFile(CSV_PATH),
@@ -59,7 +59,7 @@ public class AttendanceController {
         String inputUpdateDate = InputView.readUpdateDate();
         String inputUpdateTime = InputView.readUpdateDateTime();
 
-        final LocalDate localDate = LocalDate.of(2024, Constants.FIXED_MONTH, Integer.parseInt(inputUpdateDate));
+        final LocalDate localDate = LocalDate.of(Constants.FIXED_YEAR, Constants.FIXED_MONTH, Integer.parseInt(inputUpdateDate));
         final LocalTime oldTime = LocalTime.parse(inputUpdateTime);
         LocalDateTime oldDateTime = LocalDateTime.of(localDate, oldTime);
 

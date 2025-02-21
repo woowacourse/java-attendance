@@ -21,14 +21,17 @@ import java.util.stream.IntStream;
 
 public final class CrewGenerator {
 
+    private static final int NICKNAME_IDX = 0;
+    private static final int LOCAL_DATE_TIME_IDX = 1;
+
     private CrewGenerator() {
     }
 
     public static Crews generate(final List<String[]> parsedCrewsData, LocalDate nowDate) {
         Map<Nickname, List<Attendance>> crewData = new HashMap<>();
         for (String[] parsedCrewData : parsedCrewsData) {
-            String nickname = parsedCrewData[0];
-            String localDateTime = parsedCrewData[1];
+            String nickname = parsedCrewData[NICKNAME_IDX];
+            String localDateTime = parsedCrewData[LOCAL_DATE_TIME_IDX];
             final Nickname name = new Nickname(nickname);
             final Attendance attendance = Attendance.of(localDateTime);
             crewData.computeIfAbsent(name, k -> new ArrayList<>()).add(attendance);
@@ -52,7 +55,7 @@ public final class CrewGenerator {
         List<Integer> noPresentAttendanceDates = new ArrayList<>(validDates);
         noPresentAttendanceDates.removeAll(alreadyAttendanceDates);
         for (Integer attendanceDate : noPresentAttendanceDates) {
-            LocalDateTime dateTime = LocalDateTime.of(LocalDate.of(2024, Constants.FIXED_MONTH, attendanceDate),
+            LocalDateTime dateTime = LocalDateTime.of(LocalDate.of(Constants.FIXED_YEAR, Constants.FIXED_MONTH, attendanceDate),
                     Constants.ABSENCE_TIME);
             Attendance attendance = new Attendance(dateTime);
             attendances.add(attendance);
@@ -85,7 +88,7 @@ public final class CrewGenerator {
     }
 
     public static boolean excludeNotAttendanceDays(int day) {
-        DayOfWeek dayOfWeek = LocalDate.of(2024, Constants.FIXED_MONTH, day).getDayOfWeek();
+        DayOfWeek dayOfWeek = LocalDate.of(Constants.FIXED_YEAR, Constants.FIXED_MONTH, day).getDayOfWeek();
         return dayOfWeek == DayOfWeek.SATURDAY || dayOfWeek == DayOfWeek.SUNDAY;
     }
 }

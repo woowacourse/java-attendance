@@ -11,6 +11,7 @@ import util.Constants;
 
 public enum Week {
 
+    // 월요일만 다른 출석 시간
     MONDAY(LocalTime.of(13, 0)),
     TUESDAY(LocalTime.of(10, 0)),
     WEDNESDAY(LocalTime.of(10, 0)),

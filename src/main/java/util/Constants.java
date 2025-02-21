@@ -8,6 +8,7 @@ public final class Constants {
     private Constants() {
     }
 
+    public static final int FIXED_YEAR = 2024;
     public static final int FIXED_MONTH = 12;
     public static final int LENGTH_OF_MONTH = 31;
     public static final List<Integer> HOLIDAYS = List.of(25);

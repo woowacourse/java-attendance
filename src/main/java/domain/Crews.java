@@ -6,6 +6,8 @@ import java.util.List;
 
 public class Crews {
 
+    private static final int TARDINESS_PENALTY_MULTIPLIER = 3;
+
     private final List<Crew> crews;
 
     public Crews(final List<Crew> crews) {
@@ -36,7 +38,7 @@ public class Crews {
 
     private static int findPunishmentCountByCrew(final Crew crew) {
         final AttendanceCounter attendanceCounter = crew.getAttendanceCounter();
-        return (attendanceCounter.getTardiness() * 3) + attendanceCounter.getAbsence();
+        return (attendanceCounter.getTardiness() * TARDINESS_PENALTY_MULTIPLIER) + attendanceCounter.getAbsence();
     }
 
     private final Comparator<Crew> absenceOrder = Comparator
