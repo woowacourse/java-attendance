@@ -16,7 +16,8 @@ public class Crew {
     }
 
     public CrewDto toDto() {
-        return new CrewDto(nickName, calculateLateCount(), calculateAbsentCount(), getPenaltyStatus());
+        int attendancesSize = attendances.size();
+        return new CrewDto(nickName, attendancesSize, calculateLateCount(), calculateAbsentCount(), getPenaltyStatus());
     }
 
     public void addAttendance(Attendance attendance) {

@@ -22,6 +22,9 @@ public class OutputView {
     private static final String ABSENT_COUNT = "결석: %d회\n\n";
     private static final String PENALTY_CREW_READ_RESULT_PREFIX = "제적 위험자 조회 결과";
     private static final String PENALTY_CREW_READ_RESULT = "- %s: 결석 %d회, 지각 %d회 (%s)\n";
+    private static final String ATTENDANCE_STATUS_NAME = "출석";
+    private static final String LATE_STATUS_NAME = "지각";
+    private static final String ABSENT_STATUS_NAME = "결석";
 
     public void printOptionMessage() {
         LocalDate today = LocalDate.now();
@@ -38,13 +41,11 @@ public class OutputView {
     }
 
     public void printUpdatedAttendanceHistory(AttendanceDto originalAttendanceDto, AttendanceDto editedAttendanceDto) {
-
         LocalDate date = editedAttendanceDto.getDate();
         String dayOfWeekName = DayOfWeek.getNameById(date.getDayOfWeek().getValue());
 
         String originalAttendanceTime = Converter.covertLocalTimeToString(originalAttendanceDto.getAttendanceTime());
         String editedAttendanceTime = Converter.covertLocalTimeToString(editedAttendanceDto.getAttendanceTime());
-
         String originAttendanceStatusName = getAttendanceStatusName(originalAttendanceDto);
         String editedAttendanceStatusName = getAttendanceStatusName(editedAttendanceDto);
 
@@ -60,11 +61,17 @@ public class OutputView {
 
     public void printAttendanceHistoryWithCrew(Crew crew) {
         CrewDto crewDto = crew.toDto();
+        int attendanceCount = crewDto.getAttendanceCount();
         int lateCount = crewDto.getLateCount();
         int absentCount = crewDto.getAbsentCount();
 
-        int attendanceCount = crew.getAttendances().size() - lateCount - absentCount;
+        printTotalAttendanceHistory(crew);
+        System.out.println();
+        printCountWithAttendanceStatus(attendanceCount, lateCount, absentCount);
+        System.out.println(crewDto.getPenaltyStatus().getName() + " 대상자입니다.\n");
+    }
 
+    private void printTotalAttendanceHistory(Crew crew) {
         for (Attendance attendance : crew.getAttendances()) {
             AttendanceDto dto = attendance.toDto();
             LocalDate date = dto.getDate();
@@ -75,29 +82,26 @@ public class OutputView {
             if (dto.getAttendanceTime() != null) {
                 attendanceTime = Converter.covertLocalTimeToString(dto.getAttendanceTime());
             }
-
             System.out.printf(ATTENDANCE_HISTORY_WITH_DATE, date.getMonth().getValue(), date.getDayOfMonth(), dayOfWeekName, attendanceTime, attendanceStatusName);
         }
+    }
 
-        System.out.println();
-
+    private void printCountWithAttendanceStatus(int attendanceCount, int lateCount, int absentCount) {
         System.out.printf(ATTENDANCE_COUNT, attendanceCount);
         System.out.printf(LATE_COUNT, lateCount);
         System.out.printf(ABSENT_COUNT, absentCount);
-
-        System.out.println(crewDto.getPenaltyStatus().getName() + " 대상자입니다.\n");
     }
 
     private String getAttendanceStatusName(AttendanceDto attendanceDto) {
-        String attendanceStatusName = "출석";
         if (attendanceDto.getAbsent()) {
-            attendanceStatusName = "결석";
+            return ABSENT_STATUS_NAME;
         }
 
         if (attendanceDto.getLate()) {
-            attendanceStatusName = "지각";
+            return LATE_STATUS_NAME;
         }
-        return attendanceStatusName;
+
+        return ATTENDANCE_STATUS_NAME;
     }
 
     public void printPenaltyCrews(CrewDtos crewDtos) {
