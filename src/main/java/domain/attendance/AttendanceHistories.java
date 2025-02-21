@@ -28,12 +28,6 @@ public class AttendanceHistories {
                 .orElseThrow(() -> new IllegalArgumentException("해당 출석 기록이 존재하지 않습니다."));
     }
 
-    public List<AttendanceHistory> findAllHistoriesOf(Crew crew) {
-        return attendanceHistories.stream()
-                .filter(history -> history.isSameCrew(crew))
-                .toList();
-    }
-
     public List<AttendanceHistory> findHistoriesBefore(Crew crew, int day) {
         return attendanceHistories.stream()
                 .filter(history -> history.isPastHistory(day) && history.isSameCrew(crew))
