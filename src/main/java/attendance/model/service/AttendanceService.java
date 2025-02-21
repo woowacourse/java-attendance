@@ -45,8 +45,8 @@ public class AttendanceService {
         return UpdateAttendanceResponse.of(
                 previousTime,
                 updatedTime,
-                AttendanceStatus.from(previousTime),
-                AttendanceStatus.from(updatedTime)
+                AttendanceStatus.fromDateTime(previousTime),
+                AttendanceStatus.fromDateTime(updatedTime)
         );
     }
 

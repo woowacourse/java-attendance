@@ -24,7 +24,7 @@ public enum AttendanceStatus {
         this.name = name;
     }
 
-    public static AttendanceStatus from(final LocalDateTime dateTime) {
+    public static AttendanceStatus fromDateTime(final LocalDateTime dateTime) {
         if (isAbsence(dateTime)) {
             return ABSENCE;
         }
@@ -32,13 +32,6 @@ public enum AttendanceStatus {
             return LATE;
         }
         return ATTENDANCE;
-    }
-
-    public static AttendanceStatus from(final String name) {
-        return Arrays.stream(values())
-                .filter(attendanceStatus -> attendanceStatus.name.equals(name))
-                .findFirst()
-                .orElseThrow(() -> new IllegalArgumentException("해당하는 출석 상태가 없습니다."));
     }
 
     public static boolean isAbsence(final LocalDateTime dateTime) {

@@ -22,7 +22,7 @@ public class AttendanceLogResponse {
         return new AttendanceLogResponse(
                 dateTime.toLocalDate(),
                 dateTime.toLocalTime(),
-                AttendanceStatus.from(dateTime).getName()
+                AttendanceStatus.fromDateTime(dateTime).getName()
         );
     }
 

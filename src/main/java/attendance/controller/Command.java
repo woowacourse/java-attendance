@@ -21,7 +21,7 @@ public enum Command {
         this.action = action;
     }
 
-    public static Command from(final String option) {
+    public static Command fromOption(final String option) {
         return Arrays.stream(values())
                 .filter(command -> command.option.equals(option))
                 .findFirst()

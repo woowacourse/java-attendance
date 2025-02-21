@@ -15,9 +15,9 @@ public class Attendance {
         this.managementStatus = managementStatus;
     }
 
-    public static Attendance from(final List<LocalDateTime> dateTimes) {
-        final WarningCount warningCount = WarningCount.from(dateTimes);
-        return new Attendance(warningCount, ManagementStatus.from(warningCount));
+    public static Attendance fromDateTimes(final List<LocalDateTime> dateTimes) {
+        final WarningCount warningCount = WarningCount.fromDateTimes(dateTimes);
+        return new Attendance(warningCount, ManagementStatus.fromWarningCount(warningCount));
     }
 
     public boolean requiresManagement() {

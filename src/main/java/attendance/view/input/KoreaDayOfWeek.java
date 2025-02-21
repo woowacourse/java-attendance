@@ -21,7 +21,7 @@ public enum KoreaDayOfWeek {
         this.dayOfWeek = dayOfWeek;
     }
 
-    public static KoreaDayOfWeek from(final DayOfWeek dayOfWeek) {
+    public static KoreaDayOfWeek fromDayOfWeek(final DayOfWeek dayOfWeek) {
         return Arrays.stream(values())
                 .filter(koreaDayOfWeek -> koreaDayOfWeek.dayOfWeek == dayOfWeek)
                 .findFirst()

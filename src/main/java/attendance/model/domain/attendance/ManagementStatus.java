@@ -2,6 +2,7 @@ package attendance.model.domain.attendance;
 
 import attendance.model.domain.attendance.vo.WarningCount;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.function.Predicate;
 
 public enum ManagementStatus {
@@ -19,10 +20,11 @@ public enum ManagementStatus {
         this.judgement = judgement;
     }
 
-    public static ManagementStatus from(final WarningCount warningCount) {
+    public static ManagementStatus fromWarningCount(final WarningCount warningCount) {
         final int policyAppliedAbsenceCount = warningCount.getPolicyAppliedAbsenceCount();
 
         return Arrays.stream(values())
+                .sorted(Comparator.comparingInt(ManagementStatus::ordinal))
                 .filter(status -> status.judgement.test(policyAppliedAbsenceCount))
                 .findFirst()
                 .orElseThrow(() -> new IllegalArgumentException("해당되는 관리 상태가 없습니다."));

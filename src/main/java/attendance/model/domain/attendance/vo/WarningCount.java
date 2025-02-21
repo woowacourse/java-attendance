@@ -14,7 +14,7 @@ public class WarningCount {
         this.lateCount = lateCount;
     }
 
-    public static WarningCount from(final List<LocalDateTime> dateTimes) {
+    public static WarningCount fromDateTimes(final List<LocalDateTime> dateTimes) {
         final AbsenceCount absenceCount = AbsenceCount.fromDateTimes(dateTimes);
         final LateCount lateCount = LateCount.fromDateTimes(dateTimes);
 

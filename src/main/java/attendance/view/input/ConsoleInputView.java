@@ -23,7 +23,7 @@ public class ConsoleInputView implements InputView {
         Arrays.stream(Command.values())
                 .forEach(command -> System.out.println(command.getMenu()));
 
-        return Command.from(SCANNER.nextLine());
+        return Command.fromOption(SCANNER.nextLine());
     }
 
     @Override
@@ -61,7 +61,7 @@ public class ConsoleInputView implements InputView {
     }
 
     private String getToday() {
-        final KoreaDayOfWeek dayOfWeek = KoreaDayOfWeek.from(Calender.TODAY.getDayOfWeek());
+        final KoreaDayOfWeek dayOfWeek = KoreaDayOfWeek.fromDayOfWeek(Calender.TODAY.getDayOfWeek());
         return String.format("오늘은 %02d월 %02d일 %s입니다.",
                 Calender.NOW_MONTH,
                 Calender.NOW_DAY,

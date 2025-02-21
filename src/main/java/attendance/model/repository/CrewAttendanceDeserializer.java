@@ -47,7 +47,7 @@ public class CrewAttendanceDeserializer {
         final String crewName = split[0];
         final LocalDateTime dateTime = dateTimeFormatter.parse(split[1], LocalDateTime::from);
 
-        return new SimpleImmutableEntry<>(Crew.from(crewName), dateTime);
+        return new SimpleImmutableEntry<>(Crew.fromName(crewName), dateTime);
     }
 }
 

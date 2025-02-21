@@ -11,7 +11,7 @@ public class Crew {
         this.name = name;
     }
 
-    public static Crew from(final String name) {
+    public static Crew fromName(final String name) {
         return new Crew(CrewName.from(name));
     }
 

@@ -81,6 +81,6 @@ public class ConsoleOutputView implements OutputView {
 
     private String formatDateWithDayOfWeek(final LocalDate date) {
         return String.format("%02d월 %02d일 %s", date.getMonthValue(), date.getDayOfMonth(),
-                KoreaDayOfWeek.from(date.getDayOfWeek()).getName());
+                KoreaDayOfWeek.fromDayOfWeek(date.getDayOfWeek()).getName());
     }
 }

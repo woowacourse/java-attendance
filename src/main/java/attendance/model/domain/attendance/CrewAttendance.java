@@ -16,7 +16,7 @@ public class CrewAttendance {
     }
 
     public static CrewAttendance of(final Crew crew, final List<LocalDateTime> dateTimes) {
-        return new CrewAttendance(crew, Attendance.from(dateTimes));
+        return new CrewAttendance(crew, Attendance.fromDateTimes(dateTimes));
     }
 
     public boolean requiresManagement() {
