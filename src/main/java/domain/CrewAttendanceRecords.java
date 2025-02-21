@@ -8,6 +8,9 @@ import java.util.List;
 import java.util.Map;
 
 public class CrewAttendanceRecords {
+    private static final int REVERSE_ORDER = -1;
+    private static final int TARDY_TO_ABSENT = 3;
+    
     private final Map<Crew, AttendanceRecords> crewAttendanceRecords;
 
     public CrewAttendanceRecords(CrewAttendanceRecordsGenerator generator, DateGenerator dateGenerator) {
@@ -89,8 +92,8 @@ public class CrewAttendanceRecords {
         crews.sort(Comparator.comparing(crew -> {
             int absentCount = crewAttendanceRecords.get(crew).getAbsentCount();
             int tardyCount = crewAttendanceRecords.get(crew).getTardyCount();
-            absentCount += (tardyCount / 3);
-            return (absentCount + tardyCount % 3) * -1;
+            absentCount += (tardyCount / TARDY_TO_ABSENT);
+            return (absentCount + tardyCount % TARDY_TO_ABSENT) * REVERSE_ORDER;
         }));
     }
 
@@ -98,7 +101,7 @@ public class CrewAttendanceRecords {
         crews.sort(Comparator.comparing(crew -> {
             AttendanceRecords attendanceRecords = crewAttendanceRecords.get(crew);
             DisciplinaryStatus status = attendanceRecords.getDisciplinaryStatus();
-            return status.ordinal() * -1;
+            return status.ordinal() * REVERSE_ORDER;
         }));
     }
 
