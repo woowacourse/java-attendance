@@ -2,6 +2,7 @@ package domain;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
+import util.DateValidator;
 
 public class Attendance {
     public static final int MONDAY_START_HOUR = 10;
@@ -39,8 +40,8 @@ public class Attendance {
                 time.getHour(), time.getMinute());
     }
 
-    public boolean isSameDay(int day) {
-        return date.getDayOfMonth() == day;
+    public boolean isSameDay(int date) {
+        return this.date.getDayOfMonth() == date;
     }
 
     public int getDay() {

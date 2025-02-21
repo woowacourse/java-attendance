@@ -3,13 +3,12 @@ package controller;
 import domain.Attendance;
 import domain.Crew;
 import domain.CrewGroup;
-import domain.Day;
+import util.DateValidator;
 import domain.Function;
 import domain.Time;
 import java.time.LocalDateTime;
 import java.util.List;
 import service.CrewLoader;
-import util.DayOfWeekConverter;
 import view.InputView;
 import view.OutputView;
 import view.dto.AlertCrewDTO;
@@ -50,7 +49,7 @@ public class Controller {
             attendanceCheck(crewGroup, today);
         }
         if (function.equals("2")) {
-            changeAttendance(crewGroup);
+            changeAttendance(crewGroup, today);
         }
         if (function.equals("3")) {
             showCrewAttendance(crewGroup);
@@ -61,11 +60,7 @@ public class Controller {
     }
 
     private void attendanceCheck(CrewGroup crewGroup, LocalDateTime today) {
-        if (Day.isHoliday(today)) {
-            throw new IllegalArgumentException(
-                    String.format("%d월 %d일 %s은 등교일이 아닙니다.", today.getMonthValue(), today.getDayOfMonth(),
-                            DayOfWeekConverter.convertDayOfWeek(today)));
-        }
+        DateValidator.validateAttendanceCheckDate(today);
         String rawName = inputView.insertNickname();
         Crew crew = crewGroup.searchCrew(rawName);
 
@@ -83,17 +78,18 @@ public class Controller {
         outputView.printAttendanceLog(AttendanceLogDTO.from(attendance));
     }
 
-    private void changeAttendance(CrewGroup crewGroup) {
+    private void changeAttendance(CrewGroup crewGroup, LocalDateTime today) {
         String rawName = inputView.insertChangeDateNickname();
         Crew crew = crewGroup.searchCrew(rawName);
 
-        int changeDate = inputView.insertChangeDate();
+        int date = inputView.insertChangeDate();
+        DateValidator.validateAttendanceChangeDate(date, today);
         String rawTime = inputView.insertChangeTime();
         Time time = new Time(rawTime);
 
-        Attendance originalAttendance = crew.getSpecificAttendance(changeDate);
+        Attendance originalAttendance = crew.getSpecificAttendance(date);
         Attendance copy = new Attendance(originalAttendance.getDate());
-        Attendance changedAttendance = crew.changeAttendance(changeDate, time);
+        Attendance changedAttendance = crew.changeAttendance(date, time);
 
         outputView.printChangeLog(ChangeAttendanceLogDTO.from(copy, changedAttendance));
     }
