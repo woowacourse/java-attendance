@@ -6,9 +6,9 @@ import java.util.function.Function;
 
 public enum AttendanceType {
 
-    OK((difMinutes) -> difMinutes <= 5),
-    LATE((difMinutes) -> difMinutes > 5 && difMinutes <= 30),
-    ABSENCE((difMinutes) -> difMinutes > 30),
+    OK(difMinutes -> difMinutes <= 5),
+    LATE(difMinutes -> difMinutes > 5 && difMinutes <= 30),
+    ABSENCE(difMinutes -> difMinutes > 30),
     ;
 
     private static final int MINUTE_SCALE = 60;
