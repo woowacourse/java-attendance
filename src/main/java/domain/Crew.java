@@ -73,18 +73,18 @@ public class Crew {
         return attendanceRecords;
     }
 
-    public Map<AttendanceStatus, Integer> getAttendanceStatusCounter(LocalDate today) {
+    public AttendanceStatusStatistics getAttendanceStatusStatistics(LocalDate today) {
         Map<AttendanceStatus, Integer> statusCounter = new EnumMap<>(AttendanceStatus.class);
         initializeStatusCounter(statusCounter);
         for (int day = 1; day < today.getDayOfMonth(); day++) {
             if (DateTimeUtil.isOffDay(today.withDayOfMonth(day))) {
                 continue;
             }
-            AttendanceStatus attendanceStatus = getAttendanceStatusByDate(LocalDate.of(today.getYear(),
-                    today.getMonth(), day));
+            AttendanceStatus attendanceStatus = getAttendanceStatusByDate(
+                    LocalDate.of(today.getYear(), today.getMonth(), day));
             statusCounter.put(attendanceStatus, statusCounter.getOrDefault(attendanceStatus, 0) + 1);
         }
-        return statusCounter;
+        return new AttendanceStatusStatistics(statusCounter);
     }
 
     private void initializeStatusCounter(Map<AttendanceStatus, Integer> result) {

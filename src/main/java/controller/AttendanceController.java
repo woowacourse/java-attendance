@@ -2,6 +2,7 @@ package controller;
 
 import constant.CampusConstant;
 import domain.AttendanceStatus;
+import domain.AttendanceStatusStatistics;
 import domain.Crew;
 import domain.CrewRepository;
 import domain.Manage;
@@ -16,7 +17,6 @@ import dto.OptionRequest;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
-import java.util.Map;
 import util.DateTimeUtil;
 import util.RetryHandler;
 import view.InputView;
@@ -72,13 +72,13 @@ public class AttendanceController {
         Crew crew = CrewRepository.findByNickname(InputView.scanNickname());
         LocalDate now = DateTimeUtil.nowDate();
         List<AttendanceRecord> attendanceRecords = crew.getMonthAttendanceRecords(now);
-        Manage manage = Manage.of(crew.getAttendanceStatusCounter(now));
+        Manage manage = Manage.of(crew.getAttendanceStatusStatistics(now));
 
         OutputView.printMonthAttendanceRecords(
                 MonthAttendanceRecordsResult.of(
                         crew.getNickname(),
                         attendanceRecords,
-                        crew.getAttendanceStatusCounter(now),
+                        crew.getAttendanceStatusStatistics(now),
                         manage
                 ));
     }
@@ -87,12 +87,12 @@ public class AttendanceController {
         List<Crew> crews = CrewRepository.findAll();
         List<CrewAlmostExpelledResult> result = crews.stream()
                 .map(crew -> {
-                    Map<AttendanceStatus, Integer> statusCounter
-                            = crew.getAttendanceStatusCounter(DateTimeUtil.nowDate());
+                    AttendanceStatusStatistics attendanceStatusStatistics
+                            = crew.getAttendanceStatusStatistics(DateTimeUtil.nowDate());
                     return new CrewAlmostExpelledResult(
                             crew.getNickname(),
-                            statusCounter,
-                            Manage.of(statusCounter));
+                            attendanceStatusStatistics,
+                            Manage.of(attendanceStatusStatistics));
                 })
                 .toList();
         OutputView.printCrewsAlmostExpelled(result);

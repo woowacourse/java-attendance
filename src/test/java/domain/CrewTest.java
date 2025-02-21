@@ -5,7 +5,6 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.Map;
 import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -30,9 +29,9 @@ public class CrewTest {
     @DisplayName("이미_출석한_경우_예외를_던진다")
     void attendanceExceptionTest() {
         Crew crew = new Crew("pobi");
-        crew.addAttendanceTime(LocalDate.now(), LocalTime.of(10, 00));
+        crew.addAttendanceTime(LocalDate.now(), LocalTime.of(10, 0));
         assertThatThrownBy(() -> {
-            crew.addAttendanceTime(LocalDate.now(), LocalTime.of(10, 01));
+            crew.addAttendanceTime(LocalDate.now(), LocalTime.of(10, 1));
         }).isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -41,7 +40,7 @@ public class CrewTest {
     void offdayExceptionTest() {
         Crew crew = new Crew("pobi");
         assertThatThrownBy(() -> {
-            crew.addAttendanceTime(LocalDate.of(2025, 12, 25), LocalTime.of(10, 00));
+            crew.addAttendanceTime(LocalDate.of(2025, 12, 25), LocalTime.of(10, 0));
         }).isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -50,7 +49,7 @@ public class CrewTest {
     void modifyAttendanceTest() {
         CrewRepository.addCrew(new Crew("pobi"));
         Crew crew = CrewRepository.findByNickname("pobi");
-        crew.addAttendanceTime(LocalDate.now(), LocalTime.of(10, 00));
+        crew.addAttendanceTime(LocalDate.now(), LocalTime.of(10, 0));
         crew.modifyAttendanceTime(LocalDate.now(), LocalTime.of(10, 10));
         assertThat(crew.getAttendanceTimeByDate(LocalDate.now())).isEqualTo(LocalTime.of(10, 10));
     }
@@ -60,18 +59,18 @@ public class CrewTest {
     void getAttendanceStatusByDateTest() {
         CrewRepository.addCrew(new Crew("pobi"));
         Crew crew = CrewRepository.findByNickname("pobi");
-        crew.addAttendanceTime(LocalDate.of(2025, 02, 17), LocalTime.of(13, 06));
-        crew.addAttendanceTime(LocalDate.of(2025, 02, 18), LocalTime.of(10, 05));
-        crew.addAttendanceTime(LocalDate.of(2025, 02, 19), LocalTime.of(10, 31));
+        crew.addAttendanceTime(LocalDate.of(2025, 2, 17), LocalTime.of(13, 6));
+        crew.addAttendanceTime(LocalDate.of(2025, 2, 18), LocalTime.of(10, 5));
+        crew.addAttendanceTime(LocalDate.of(2025, 2, 19), LocalTime.of(10, 31));
 
         SoftAssertions.assertSoftly(softly -> {
-            softly.assertThat(crew.getAttendanceStatusByDate(LocalDate.of(2025, 02, 03)))
+            softly.assertThat(crew.getAttendanceStatusByDate(LocalDate.of(2025, 2, 3)))
                     .isEqualTo(AttendanceStatus.ABSENT);
-            softly.assertThat(crew.getAttendanceStatusByDate(LocalDate.of(2025, 02, 17)))
+            softly.assertThat(crew.getAttendanceStatusByDate(LocalDate.of(2025, 2, 17)))
                     .isEqualTo(AttendanceStatus.LATE);
-            softly.assertThat(crew.getAttendanceStatusByDate(LocalDate.of(2025, 02, 18)))
+            softly.assertThat(crew.getAttendanceStatusByDate(LocalDate.of(2025, 2, 18)))
                     .isEqualTo(AttendanceStatus.ATTENDANCE);
-            softly.assertThat(crew.getAttendanceStatusByDate(LocalDate.of(2025, 02, 19)))
+            softly.assertThat(crew.getAttendanceStatusByDate(LocalDate.of(2025, 2, 19)))
                     .isEqualTo(AttendanceStatus.ABSENT_LATE);
         });
     }
@@ -89,16 +88,16 @@ public class CrewTest {
         crew.addAttendanceTime(LocalDate.of(2025, 2, 5), LocalTime.of(10, 31));
         // 2월6일, 2월7일 -> ABSENT
         // when
-        Map<AttendanceStatus, Integer> statusCounter = crew.getAttendanceStatusCounter(
+        AttendanceStatusStatistics attendanceStatusStatistics = crew.getAttendanceStatusStatistics(
                 LocalDate.of(2025, 2, 10)
         );
 
         // then
         SoftAssertions.assertSoftly(softly -> {
-            softly.assertThat(statusCounter.get(AttendanceStatus.ATTENDANCE)).isEqualTo(1);
-            softly.assertThat(statusCounter.get(AttendanceStatus.LATE)).isEqualTo(1);
-            softly.assertThat(statusCounter.get(AttendanceStatus.ABSENT_LATE)).isEqualTo(1);
-            softly.assertThat(statusCounter.get(AttendanceStatus.ABSENT)).isEqualTo(2);
+            softly.assertThat(attendanceStatusStatistics.getCountByStatus(AttendanceStatus.ATTENDANCE)).isEqualTo(1);
+            softly.assertThat(attendanceStatusStatistics.getCountByStatus(AttendanceStatus.LATE)).isEqualTo(1);
+            softly.assertThat(attendanceStatusStatistics.getCountByStatus(AttendanceStatus.ABSENT_LATE)).isEqualTo(1);
+            softly.assertThat(attendanceStatusStatistics.getCountByStatus(AttendanceStatus.ABSENT)).isEqualTo(2);
         });
     }
 }

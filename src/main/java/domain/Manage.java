@@ -2,37 +2,33 @@ package domain;
 
 import java.util.Arrays;
 import java.util.Comparator;
-import java.util.Map;
 
 public enum Manage {
-    NONE(0, ""),
+    NONE(0, "아무 대상자가 아님"),
     WARNING(2, "경고"),
     INTERVIEW(3, "면담"),
     EXPELLED(6, "제적"),
     ;
 
-    private final int absentThreshold;
+    private final int absentLimit;
     private final String description;
 
-    Manage(int absentThreshold, String description) {
-        this.absentThreshold = absentThreshold;
+    Manage(int absentLimit, String description) {
+        this.absentLimit = absentLimit;
         this.description = description;
     }
 
-    public static Manage of(Map<AttendanceStatus, Integer> attendanceStatusStatistics) {
-        int lateCount = attendanceStatusStatistics.getOrDefault(AttendanceStatus.LATE, 0);
-        int absentCount = attendanceStatusStatistics.getOrDefault(AttendanceStatus.ABSENT_LATE, 0)
-                + attendanceStatusStatistics.getOrDefault(AttendanceStatus.ABSENT, 0)
-                + lateCount / 3;
+    public static Manage of(AttendanceStatusStatistics attendanceStatusStatistics) {
+        int count = attendanceStatusStatistics.calculateTotalAbsentCountForManage();
 
         return Arrays.stream(values())
-                .filter(manage -> manage.absentThreshold <= absentCount)
-                .max(Comparator.comparing(Manage::getAbsentThreshold))
-                .orElseThrow(() -> new IllegalStateException("잘못된 상황입니다."));
+                .filter(manage -> manage.absentLimit <= count)
+                .max(Comparator.comparing(Manage::getAbsentLimit))
+                .orElse(NONE);
     }
 
-    public int getAbsentThreshold() {
-        return absentThreshold;
+    public int getAbsentLimit() {
+        return absentLimit;
     }
 
     public String getDescription() {

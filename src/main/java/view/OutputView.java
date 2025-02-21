@@ -34,9 +34,9 @@ public class OutputView {
         System.out.printf(message.toString());
     }
 
-    public static void printMonthAttendanceRecords(MonthAttendanceRecordsResult historyResult) {
-        System.out.printf("이번 달 %s의 출석 기록입니다.%n%n", historyResult.nickname());
-        historyResult.history().forEach(innerHistory -> {
+    public static void printMonthAttendanceRecords(MonthAttendanceRecordsResult monthAttendanceRecordResult) {
+        System.out.printf("이번 달 %s의 출석 기록입니다.%n%n", monthAttendanceRecordResult.nickname());
+        monthAttendanceRecordResult.history().forEach(innerHistory -> {
             StringBuilder message = new StringBuilder();
             message.append(innerHistory.date().format(Formatter.DATE_FORMATTER));
             message.append(" ");
@@ -44,13 +44,19 @@ public class OutputView {
             message.append(String.format(" (%s)", innerHistory.status().getTitle()));
         });
         System.out.println();
-        System.out.printf("출석: %d회%n", historyResult.statusCounter().get(AttendanceStatus.ATTENDANCE));
-        System.out.printf("지각: %d회%n", historyResult.statusCounter().get(AttendanceStatus.LATE));
-        System.out.printf("결석: %d회%n", historyResult.statusCounter().get(AttendanceStatus.ABSENT_LATE));
+        System.out.printf("출석: %d회%n",
+                monthAttendanceRecordResult.attendanceStatusStatistics()
+                        .getCountByStatus(AttendanceStatus.ATTENDANCE));
+        System.out.printf("지각: %d회%n",
+                monthAttendanceRecordResult.attendanceStatusStatistics()
+                        .getCountByStatus(AttendanceStatus.LATE));
+        System.out.printf("결석: %d회%n",
+                monthAttendanceRecordResult.attendanceStatusStatistics()
+                        .getCountByStatus(AttendanceStatus.ABSENT_LATE, AttendanceStatus.ABSENT));
         System.out.println();
 
-        if (!historyResult.manage().equals(Manage.NONE)) {
-            System.out.printf("%s 대상자입니다.%n%n", historyResult.manage().getDescription());
+        if (!monthAttendanceRecordResult.manage().equals(Manage.NONE)) {
+            System.out.printf("%s 대상자입니다.%n%n", monthAttendanceRecordResult.manage().getDescription());
         }
     }
 
@@ -63,7 +69,6 @@ public class OutputView {
     }
 
     public static void printCrewsAlmostExpelled(List<CrewAlmostExpelledResult> result) {
-        String format = "- %s: %s %d회, %s %d회 (%s)%n";
         result = result.stream()
                 .sorted(
                         Comparator.comparing(CrewAlmostExpelledResult::calculateTotalAbsentCount,
@@ -72,12 +77,14 @@ public class OutputView {
                 .toList();
 
         result.forEach(crew ->
-                System.out.printf(format,
+                System.out.printf("- %s: %s %d회, %s %d회 (%s)%n",
                         crew.nickname(),
                         AttendanceStatus.ABSENT_LATE.getTitle(),
-                        crew.attendanceStatusStatistics().get(AttendanceStatus.ABSENT_LATE),
+                        crew.attendanceStatusStatistics()
+                                .getCountByStatus(AttendanceStatus.ABSENT_LATE, AttendanceStatus.ABSENT),
                         AttendanceStatus.LATE.getTitle(),
-                        crew.attendanceStatusStatistics().get(AttendanceStatus.LATE),
+                        crew.attendanceStatusStatistics()
+                                .getCountByStatus(AttendanceStatus.LATE),
                         crew.manage().getDescription()
                 )
         );

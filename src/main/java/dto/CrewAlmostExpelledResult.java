@@ -1,17 +1,17 @@
 package dto;
 
 import domain.AttendanceStatus;
+import domain.AttendanceStatusStatistics;
 import domain.Manage;
-import java.util.Map;
 
 public record CrewAlmostExpelledResult(
         String nickname,
-        Map<AttendanceStatus, Integer> attendanceStatusStatistics,
+        AttendanceStatusStatistics attendanceStatusStatistics,
         Manage manage
 ) {
-
+    
     public int calculateTotalAbsentCount() {
-        return attendanceStatusStatistics.get(AttendanceStatus.LATE)
-                + attendanceStatusStatistics.get(AttendanceStatus.ABSENT_LATE) * 3;
+        return attendanceStatusStatistics.getStatusCounter().get(AttendanceStatus.LATE)
+                + attendanceStatusStatistics.getStatusCounter().get(AttendanceStatus.ABSENT_LATE) * 3;
     }
 }
