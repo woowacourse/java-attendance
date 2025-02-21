@@ -1,5 +1,6 @@
 package util;
 
+import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.format.TextStyle;
 import java.util.Locale;
@@ -22,4 +23,7 @@ public class DateTimeUtil {
         return now().getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.KOREAN);
     }
 
+    public static boolean isHoliday(LocalDate localDate) {
+        return localDate.getDayOfWeek().equals(DayOfWeek.SATURDAY) || localDate.getDayOfWeek().equals(DayOfWeek.SUNDAY);
+    }
 }
