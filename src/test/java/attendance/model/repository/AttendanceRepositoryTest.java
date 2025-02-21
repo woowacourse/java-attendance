@@ -78,7 +78,6 @@ class AttendanceRepositoryTest {
     @ParameterizedTest(name = "Crew: {0}, expected: {1}")
     @MethodSource("findByCrewTestCases")
     void findByCrew(final Crew crew, final List<LocalDateTime> expected) {
-
         // When
         final List<LocalDateTime> actual = attendanceRepository.findByCrew(crew);
 
@@ -89,7 +88,6 @@ class AttendanceRepositoryTest {
     @DisplayName("Crew 의 출석을 저장한다.")
     @Test
     void save() {
-
         // When
         attendanceRepository.save(CREW_ONE.getKey(),
                 LocalDateTime.of(2024, 12, 12, 12, 12)
@@ -120,7 +118,6 @@ class AttendanceRepositoryTest {
     @DisplayName("특정 Crew 의 출석 기록을 변경한다.")
     @Test
     void update() {
-
         // When
         attendanceRepository.update(
                 CREW_ONE.getKey(),
@@ -145,7 +142,6 @@ class AttendanceRepositoryTest {
     @DisplayName("특정 Crew 의 출석 기록을 삭제한다.")
     @Test
     void delete() {
-
         // When
         attendanceRepository.deleteAttendanceByCrew(
                 CREW_ONE.getKey(),
@@ -167,7 +163,6 @@ class AttendanceRepositoryTest {
     @ParameterizedTest(name = "crew: {0}, date: {1}, expected: {2}")
     @MethodSource("findByDateTimeTestCases")
     void findByDateTime(final Crew crew, final LocalDate date, final boolean expected) {
-
         // When
         final Optional<LocalDateTime> actual = attendanceRepository.findDateTimeByCrewAndDate(crew, date);
 
@@ -178,7 +173,6 @@ class AttendanceRepositoryTest {
     @DisplayName("모든 Crew 를 조회한다.")
     @Test
     void findAll() {
-
         // When
         final List<Crew> actual = attendanceRepository.findAllCrews();
 
@@ -193,7 +187,6 @@ class AttendanceRepositoryTest {
     @ParameterizedTest(name = "name: {0}, crew: {1}, expected: {2}")
     @MethodSource("findCrewByNameTestCases")
     void findCrewByName(final String name, final boolean expected) {
-
         // When
         final Optional<Crew> actual = attendanceRepository.findCrewByName(name);
 

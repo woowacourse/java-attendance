@@ -50,9 +50,8 @@ class CrewAttendanceDeserializerTest {
     @DisplayName("특정 경로의 파일에서 출석 데이터를 읽어온다.")
     @Test
     void deserialize() {
-
         // When
-        Map<Crew, List<LocalDateTime>> data = deserializer.readAll(FILE_PATH);
+        final Map<Crew, List<LocalDateTime>> data = deserializer.readAll(FILE_PATH);
 
         // Then
         assertThat(data).isEqualTo(DATA_IN_FILE);

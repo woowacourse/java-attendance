@@ -51,7 +51,6 @@ class AttendanceStatusTest {
     @ParameterizedTest(name = "dateTime: {0}, expected: {1}")
     @MethodSource("fromDateTimesDateTimeTestCases")
     void fromDateTimesDateTime(final LocalDateTime dateTime, final AttendanceStatus expected) {
-
         // When
         final AttendanceStatus actual = AttendanceStatus.fromDateTime(dateTime);
 
@@ -63,7 +62,6 @@ class AttendanceStatusTest {
     @ParameterizedTest(name = "dateTime: {0}, expected: {1}")
     @MethodSource("isAbsenceTestCases")
     void isAbsence(final LocalDateTime dateTime, final boolean expected) {
-
         // When
         final boolean actual = AttendanceStatus.isAbsence(dateTime);
 
@@ -75,7 +73,6 @@ class AttendanceStatusTest {
     @ParameterizedTest(name = "dateTime: {0}, expected: {1}")
     @MethodSource("isLateTestCases")
     void isLate(final LocalDateTime dateTime, final boolean expected) {
-
         // When
         final boolean actual = AttendanceStatus.isLate(dateTime);
 

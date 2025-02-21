@@ -67,7 +67,7 @@ class AbsenceCountTest {
     @MethodSource("fromDateTimesTestCases")
     void fromDateTimes(final List<LocalDateTime> dateTimes, final int expectedValue) {
         // When
-        AbsenceCount actual = AbsenceCount.fromDateTimes(dateTimes);
+        final AbsenceCount actual = AbsenceCount.fromDateTimes(dateTimes);
 
         // Then
         assertThat(actual.getValue()).isEqualTo(expectedValue);
@@ -78,11 +78,11 @@ class AbsenceCountTest {
     @MethodSource("getPolicyAppliedValueTestCases")
     void getPolicyAppliedValue(final List<LocalDateTime> dateTimes, final int expectedPolicyAppliedValue) {
         // Given
-        AbsenceCount absenceCount = AbsenceCount.fromDateTimes(dateTimes);
-        LateCount lateCount = LateCount.fromDateTimes(dateTimes);
+        final AbsenceCount absenceCount = AbsenceCount.fromDateTimes(dateTimes);
+        final LateCount lateCount = LateCount.fromDateTimes(dateTimes);
 
         // When
-        int actualPolicyAppliedValue = absenceCount.getPolicyAppliedValue(lateCount);
+        final int actualPolicyAppliedValue = absenceCount.getPolicyAppliedValue(lateCount);
 
         // Then
         assertThat(actualPolicyAppliedValue).isEqualTo(expectedPolicyAppliedValue);

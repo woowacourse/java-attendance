@@ -12,7 +12,6 @@ class CrewNameTest {
     @ParameterizedTest(name = "crewName: {0}")
     @ValueSource(strings = {"a", "", "abcde"})
     void validate(final String crewName) {
-
         // When & Then
         assertThatIllegalArgumentException().isThrownBy(() -> CrewName.from(crewName));
     }

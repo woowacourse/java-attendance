@@ -129,13 +129,12 @@ class DefaultCrewAttendanceComparatorTest {
     @DisplayName("결석이 많은 순으로 먼저 정렬한다.")
     @ParameterizedTest(name = "bigger: {0}, smaller: {1}")
     @MethodSource("compareMoreAbsenceTestCases")
-    void compareMoreAbsence(CrewAttendance bigger, CrewAttendance smaller) {
-
+    void compareMoreAbsence(final CrewAttendance bigger, final CrewAttendance smaller) {
         // Given
-        List<CrewAttendance> crewAttendances = List.of(smaller, bigger);
+        final List<CrewAttendance> crewAttendances = List.of(smaller, bigger);
 
         // When
-        List<CrewAttendance> sortedCrewAttendances = crewAttendances.stream()
+        final List<CrewAttendance> sortedCrewAttendances = crewAttendances.stream()
                 .sorted(comparator)
                 .toList();
 
@@ -146,13 +145,12 @@ class DefaultCrewAttendanceComparatorTest {
     @DisplayName("결석이 같다면, 지각이 많은 순으로 정렬한다.")
     @ParameterizedTest(name = "bigger: {0}, smaller: {1}")
     @MethodSource("compareMoreLateTestCases")
-    void compareMoreLate(CrewAttendance bigger, CrewAttendance smaller) {
-
+    void compareMoreLate(final CrewAttendance bigger, final CrewAttendance smaller) {
         // Given
-        List<CrewAttendance> crewAttendances = List.of(smaller, bigger);
+        final List<CrewAttendance> crewAttendances = List.of(smaller, bigger);
 
         // When
-        List<CrewAttendance> sortedCrewAttendances = crewAttendances.stream()
+        final List<CrewAttendance> sortedCrewAttendances = crewAttendances.stream()
                 .sorted(comparator)
                 .toList();
 
@@ -163,13 +161,12 @@ class DefaultCrewAttendanceComparatorTest {
     @DisplayName("결석과 지각이 같다면, 이름 순으로 정렬한다.")
     @ParameterizedTest(name = "bigger: {0}, smaller: {1}")
     @MethodSource("compareMoreNameTestCases")
-    void compareMoreName(CrewAttendance bigger, CrewAttendance smaller) {
-
+    void compareMoreName(final CrewAttendance bigger, final CrewAttendance smaller) {
         // Given
-        List<CrewAttendance> crewAttendances = List.of(smaller, bigger);
+        final List<CrewAttendance> crewAttendances = List.of(smaller, bigger);
 
         // When
-        List<CrewAttendance> sortedCrewAttendances = crewAttendances.stream()
+        final List<CrewAttendance> sortedCrewAttendances = crewAttendances.stream()
                 .sorted(comparator)
                 .toList();
 

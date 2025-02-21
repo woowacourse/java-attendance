@@ -86,7 +86,7 @@ class LateCountTest {
     @MethodSource("fromDateTimesTestCases")
     void fromDateTimes(final List<LocalDateTime> dateTimes, final int expectedValue) {
         // When
-        int actualValue = LateCount.fromDateTimes(dateTimes).getValue();
+        final int actualValue = LateCount.fromDateTimes(dateTimes).getValue();
 
         // Then
         assertThat(actualValue).isEqualTo(expectedValue);
@@ -101,10 +101,10 @@ class LateCountTest {
     ) {
 
         // Given
-        LateCount lateCount = LateCount.fromDateTimes(dateTimes);
+        final LateCount lateCount = LateCount.fromDateTimes(dateTimes);
 
         // When
-        int actualCalculatedPolicyAppliedValue = lateCount.calculatePolicyAppliedAbsenceCount();
+        final int actualCalculatedPolicyAppliedValue = lateCount.calculatePolicyAppliedAbsenceCount();
 
         // Then
         assertThat(actualCalculatedPolicyAppliedValue).isEqualTo(expectedCalculatedPolicyAppliedValue);
@@ -119,10 +119,10 @@ class LateCountTest {
     ) {
 
         // Given
-        LateCount lateCount = LateCount.fromDateTimes(dateTimes);
+        final LateCount lateCount = LateCount.fromDateTimes(dateTimes);
 
         // When
-        int actualCalculatedPolicyAppliedValue = lateCount.calculatePolicyAppliedValue();
+        final int actualCalculatedPolicyAppliedValue = lateCount.calculatePolicyAppliedValue();
 
         // Then
         assertThat(actualCalculatedPolicyAppliedValue).isEqualTo(expectedCalculatedPolicyAppliedValue);

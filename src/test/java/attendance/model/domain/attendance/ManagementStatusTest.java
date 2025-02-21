@@ -105,7 +105,6 @@ class ManagementStatusTest {
     @ParameterizedTest(name = "warningCount: {0}, expected: {1}")
     @MethodSource("fromWarningCountTestCases")
     void fromWarningCount(final WarningCount warningCount, final ManagementStatus expected) {
-
         // When
         final ManagementStatus actual = ManagementStatus.fromWarningCount(warningCount);
 
