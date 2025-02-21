@@ -1,10 +1,9 @@
-package domain;
+package domain.rule;
 
-public enum AbsentPolicy {
+public enum AbsentRule {
     EXPULSION("제적", 5),
     INTERVIEW("면담", 3),
     WARNING("경고", 2),
-
     NONE("정상", 0),
     ;
 
@@ -13,27 +12,30 @@ public enum AbsentPolicy {
     public final String description;
     public final int absentCount;
 
-    AbsentPolicy(String description, int absentCount) {
+    AbsentRule(String description, int absentCount) {
         this.description = description;
         this.absentCount = absentCount;
     }
 
-    public static boolean isRiskOfExpulsion(AbsentPolicy absentPolicy) {
-        return absentPolicy == AbsentPolicy.NONE || absentPolicy == AbsentPolicy.EXPULSION;
+    public static boolean isRiskOfExpulsion(AbsentRule absentRule) {
+        return absentRule == AbsentRule.NONE || absentRule == AbsentRule.EXPULSION;
     }
 
-    public static AbsentPolicy calculateAbsentPolicy(int absentCount, int lateCount) {
+    public static AbsentRule calculateAbsentPolicy(int absentCount, int lateCount) {
         absentCount += lateCount / LATE_TO_ABSENT_RATIO;
 
         if (absentCount > EXPULSION.absentCount) {
-            return AbsentPolicy.EXPULSION;
+            return AbsentRule.EXPULSION;
         }
+
         if (absentCount >= INTERVIEW.absentCount) {
-            return AbsentPolicy.INTERVIEW;
+            return AbsentRule.INTERVIEW;
         }
+
         if (absentCount == WARNING.absentCount) {
-            return AbsentPolicy.WARNING;
+            return AbsentRule.WARNING;
         }
-        return AbsentPolicy.NONE;
+
+        return AbsentRule.NONE;
     }
 }
