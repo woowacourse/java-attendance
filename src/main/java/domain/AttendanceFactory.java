@@ -21,7 +21,8 @@ public class AttendanceFactory {
                 FileReader fileReader = new FileReader("./src/main/resources/attendances.csv");
                 BufferedReader reader = new BufferedReader(fileReader)
         ) {
-            String str = reader.readLine();
+            String str;
+            reader.readLine();
             while ((str = reader.readLine()) != null) {
                 insertAttendance(str);
             }
