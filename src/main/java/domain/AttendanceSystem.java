@@ -27,13 +27,21 @@ public class AttendanceSystem {
     }
 
     public Attendance attendance(final String name, final LocalDateTime localDateTime) {
+        validateAttendanceDate(localDateTime);
         final Crew crew = findCrewByName(name);
         return crew.addAttendance(localDateTime.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")));
     }
 
-    public boolean isAlreadyTodayAttendance(final String crewName) {
+    private void validateAttendanceDate(final LocalDateTime localDateTime) {
+        if (localDateTime.getDayOfWeek() == DayOfWeek.SATURDAY || localDateTime.getDayOfWeek() == DayOfWeek.SUNDAY
+                || localDateTime.toLocalDate().equals(LocalDate.of(2024, 12, 25))) {
+            throw new IllegalArgumentException("주말과 공휴일은 출석할 수 없습니다.");
+        }
+    }
+
+    public boolean isAlreadyTodayAttendance(final String crewName, final LocalDate localDate) {
         final Crew crew = this.findCrewByName(crewName);
-        return crew.existTodayAttendance(LocalDate.now().withYear(2024).withMonth(12));
+        return crew.existTodayAttendance(localDate);
     }
 
     public void validateCrewByName(final String name) {
@@ -56,7 +64,8 @@ public class AttendanceSystem {
     }
 
     public boolean isNotAttendanceDay(final LocalDate localDate) {
-        return localDate.getDayOfWeek() == DayOfWeek.SUNDAY || localDate.getDayOfWeek() == DayOfWeek.SATURDAY || localDate.equals(LocalDate.of(2024, 12, 25));
+        return localDate.getDayOfWeek() == DayOfWeek.SUNDAY || localDate.getDayOfWeek() == DayOfWeek.SATURDAY
+                || localDate.equals(LocalDate.of(2024, 12, 25));
     }
 
 
@@ -70,8 +79,7 @@ public class AttendanceSystem {
                                                        final int dayOfMonth) {
         final Crew crew = findCrewByName(crewName);
         final LocalDate targetDate = LocalDate.of(2024, 12, dayOfMonth);
-        final Attendance afterAttendance = crew.updateAttendanceByDateAndTime(targetTime, targetDate);
-        return afterAttendance;
+        return crew.updateAttendanceByDateAndTime(targetTime, targetDate);
     }
 
     public Attendance findAttendanceByDate(final String crewName, final int dayOfMonth) {

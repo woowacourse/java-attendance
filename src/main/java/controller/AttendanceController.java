@@ -56,18 +56,20 @@ public class AttendanceController {
     }
 
     private void retryUntilOperationQuit() {
-        while (selectOperation() != Operation.QUIT) {
+        if (selectOperation() != Operation.QUIT) {
+            retryUntilOperationQuit();
         }
     }
 
 
     private void addAttendance() {
-        if (attendanceSystem.isNotAttendanceDay(LocalDate.now().withYear(2024).withMonth(12))) {
+        final LocalDate today = LocalDate.now().withYear(2024).withMonth(12);
+        if (attendanceSystem.isNotAttendanceDay(today)) {
             outputView.printNotAttendanceDay();
             return;
         }
         final String crewName = LoopTemplate.tryCatchLoop(this::inputCrewName, outputView);
-        if (!attendanceSystem.isAlreadyTodayAttendance(crewName)) {
+        if (!attendanceSystem.isAlreadyTodayAttendance(crewName, today)) {
             final Attendance attendance = LoopTemplate.tryCatchLoop(this::attendance, crewName, outputView);
             final AttendanceResponse attendanceResponse = convertAttendanceToResponse(attendance);
             outputView.printCrewAttendances(List.of(attendanceResponse));
@@ -93,8 +95,7 @@ public class AttendanceController {
     private Attendance attendance(final String crewName) {
         outputView.printAddAttendanceDate();
         final LocalTime localDateTime = inputView.readTime();
-        final Attendance attendance = attendanceSystem.attendance(crewName, convertLocalDateTime(localDateTime));
-        return attendance;
+        return attendanceSystem.attendance(crewName, convertLocalDateTime(localDateTime));
     }
 
     private String inputCrewName() {
@@ -121,8 +122,7 @@ public class AttendanceController {
 
     private LocalTime inputUpdateTime() {
         outputView.printUpdateAttendanceDate();
-        final LocalTime targetTime = inputView.readTime();
-        return targetTime;
+        return inputView.readTime();
     }
 
     private int inputDayOfMonthForUpdate(final String crewName) {

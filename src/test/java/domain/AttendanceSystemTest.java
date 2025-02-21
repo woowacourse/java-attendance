@@ -2,12 +2,12 @@ package domain;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
+import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.ArrayList;
 import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -53,7 +53,7 @@ public class AttendanceSystemTest {
         @DisplayName("출석을 생성한다.")
         void attendance() {
             //given
-            final LocalDate today = LocalDate.of(2024, 12, 14);
+            final LocalDate today = LocalDate.of(2024, 12, 13);
             final LocalTime time = LocalTime.of(10, 30);
             final LocalDateTime attendancedTime = LocalDateTime.of(today, time);
             final List<String> data = List.of("쿠키,2024-12-13 10:08");
@@ -71,7 +71,7 @@ public class AttendanceSystemTest {
         @DisplayName("오늘 이미 출석했는지 여부를 반환한다.")
         void isAlreadyTodayAttendance() {
             // given
-            final LocalDate today = LocalDate.of(2024, 12, 20);
+            final LocalDate today = LocalDate.of(2024, 12, 13);
             final LocalTime time = LocalTime.of(10, 30);
             final LocalDateTime attendancedTime = LocalDateTime.of(today, time);
             final List<String> data = List.of("쿠키,2024-12-13 10:08");
@@ -79,7 +79,7 @@ public class AttendanceSystemTest {
             attendanceSystem.attendance("쿠키", attendancedTime);
 
             // when
-            boolean actual = attendanceSystem.isAlreadyTodayAttendance("쿠키");
+            boolean actual = attendanceSystem.isAlreadyTodayAttendance("쿠키", today);
 
             // then
             assertThat(actual).isTrue();
@@ -116,6 +116,7 @@ public class AttendanceSystemTest {
             // then
             assertThat(attendance.getDateTime().toLocalTime()).isEqualTo(time);
         }
+
 
         @Test
         @DisplayName("크루 이름과 날짜에 해당하는 출석을 반환한다.")
@@ -221,6 +222,20 @@ public class AttendanceSystemTest {
             assertThatThrownBy(() -> {
                 attendanceSystem.validateUpdateAttendanceDay("쿠키", 25);
             }).isInstanceOf(IllegalArgumentException.class);
+        }
+
+        @Test
+        @DisplayName("주말과 공휴일(크리스마스) 날짜를 출석을 하여 예외가 발생한다.")
+        void updateAttendanceByCrewNameAndDayTest() {
+            // given
+            final LocalDate today = LocalDate.of(2024, 12, 26);
+            final LocalDateTime time = LocalDateTime.of(2024, 12,25, 10,10 );
+            final List<String> data = List.of("쿠키,2024-12-13 11:08", "쿠키,2024-12-12 11:08", "쿠키,2024-12-11 11:08");
+            final AttendanceSystem attendanceSystem = AttendanceSystem.of(data, today);
+
+            // when
+            // then
+            assertThatIllegalArgumentException().isThrownBy(() -> attendanceSystem.attendance("쿠키", time));
         }
 
     }
