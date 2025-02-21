@@ -34,19 +34,22 @@ public class AttendanceController {
         while (true) {
             try {
                 Menu selectedMenu = inputView.inputMenu(today);
-                if (selectMenu(selectedMenu, crews)) break;
+                if (isQuit(selectedMenu)) break;
+                selectMenu(selectedMenu, crews);
             } catch (IllegalArgumentException e) {
                 outputView.printExceptionMessage(e);
             }
         }
     }
 
-    private boolean selectMenu(Menu selectedMenu, Crews crews) {
+    public void selectMenu(Menu selectedMenu, Crews crews) {
         if (selectedMenu.equals(Menu.CHECK_ATTEND)) confirmAttendance(crews);
         if (selectedMenu.equals(Menu.UPDATE_ATTEND)) updateAttendance(crews);
         if (selectedMenu.equals(Menu.PRINT_ATTEND_BY_CREW)) printAttendanceByCrew(crews);
         if (selectedMenu.equals(Menu.PRINT_WARNING)) printWarningCrews(crews);
+    }
 
+    private static boolean isQuit(Menu selectedMenu) {
         return selectedMenu.equals(Menu.QUIT);
     }
 

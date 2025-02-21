@@ -21,8 +21,7 @@ public class AttendancesFileReader {
 
     private static String readLines() throws IOException {
         BufferedReader reader = new BufferedReader(new FileReader(ATTENDANCES_FILE_PATH));
-        String line;
-        reader.readLine();
+        String line = reader.readLine();
         StringBuilder sb = new StringBuilder();
         while ((line = reader.readLine()) != null) {
             sb.append(line);
