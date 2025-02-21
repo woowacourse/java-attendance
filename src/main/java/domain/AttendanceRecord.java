@@ -29,8 +29,8 @@ public class AttendanceRecord {
         return new AttendanceRecord(date, time);
     }
 
-    public static AttendanceRecord checkIn(LocalTime time, DateGenerator dateGenerator) {
-        return new AttendanceRecord(dateGenerator.generate(), time);
+    public static AttendanceRecord checkIn(LocalTime time, LocalDate today) {
+        return new AttendanceRecord(today, time);
     }
 
     public static AttendanceRecord asAbsent(LocalDate date) {

@@ -10,11 +10,11 @@ import java.util.Map;
 public class CrewAttendanceRecords {
     private static final int REVERSE_ORDER = -1;
     private static final int TARDY_TO_ABSENT = 3;
-    
+
     private final Map<Crew, AttendanceRecords> crewAttendanceRecords;
 
-    public CrewAttendanceRecords(CrewAttendanceRecordsGenerator generator, DateGenerator dateGenerator) {
-        this.crewAttendanceRecords = generator.generate(dateGenerator);
+    public CrewAttendanceRecords(CrewAttendanceRecordsGenerator generator, LocalDate today) {
+        this.crewAttendanceRecords = generator.generate(today);
     }
 
     public boolean hasCrew(Crew crew) {
@@ -51,11 +51,11 @@ public class CrewAttendanceRecords {
         return crewAttendanceRecords.get(crew).getAttendanceCount(attendance);
     }
 
-    public AttendanceRecord checkIn(Crew crew, LocalTime time, DateGenerator dateGenerator) {
+    public AttendanceRecord checkIn(Crew crew, LocalTime time, LocalDate today) {
         validateCrewPresence(crew);
         AttendanceRecords attendanceRecords = crewAttendanceRecords.get(crew);
-        validatePresence(attendanceRecords, dateGenerator);
-        AttendanceRecord attendanceRecord = AttendanceRecord.checkIn(time, dateGenerator);
+        validatePresence(attendanceRecords, today);
+        AttendanceRecord attendanceRecord = AttendanceRecord.checkIn(time, today);
         attendanceRecords.addRecord(attendanceRecord);
         return attendanceRecord;
     }
@@ -105,8 +105,8 @@ public class CrewAttendanceRecords {
         }));
     }
 
-    private void validatePresence(AttendanceRecords attendanceRecords, DateGenerator dateGenerator) {
-        if (attendanceRecords.hasRecordOfDate(dateGenerator.generate())) {
+    private void validatePresence(AttendanceRecords attendanceRecords, LocalDate date) {
+        if (attendanceRecords.hasRecordOfDate(date)) {
             throw new IllegalArgumentException("[ERROR] 이미 출석을 확인하였습니다. 필요한 경우 수정 기능을 이용해 주세요.\n");
         }
     }

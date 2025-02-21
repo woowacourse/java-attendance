@@ -3,6 +3,7 @@ package domain;
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -14,7 +15,7 @@ public class CsvParsingGenerator implements CrewAttendanceRecordsGenerator {
     private static final String FILE_PATH = "/attendances.csv";
 
     @Override
-    public Map<Crew, AttendanceRecords> generate(DateGenerator dateGenerator) {
+    public Map<Crew, AttendanceRecords> generate(LocalDate today) {
         Map<Crew, AttendanceRecords> crewAttendanceRecords = new HashMap<>();
         List<String> rows = getStrings().stream().skip(HEADER_ROW).toList();
         for (String row : rows) {
@@ -24,11 +25,12 @@ public class CsvParsingGenerator implements CrewAttendanceRecordsGenerator {
             existingRecords.addRecord(attendanceRecord);
             crewAttendanceRecords.put(crew, existingRecords);
         }
-        return fillAbsence(crewAttendanceRecords, dateGenerator);
+        return fillAbsence(crewAttendanceRecords, today);
     }
 
-    private Map<Crew, AttendanceRecords> fillAbsence(Map<Crew, AttendanceRecords> crewAttendanceRecords, DateGenerator dateGenerator) {
-        crewAttendanceRecords.values().forEach(attendanceRecord -> attendanceRecord.fillAbsences(dateGenerator));
+    private Map<Crew, AttendanceRecords> fillAbsence(Map<Crew, AttendanceRecords> crewAttendanceRecords,
+                                                     LocalDate today) {
+        crewAttendanceRecords.values().forEach(attendanceRecord -> attendanceRecord.fillAbsences(today));
         return crewAttendanceRecords;
     }
 

@@ -19,7 +19,7 @@ class AttendanceRecordsTest {
     @DisplayName("출석 기록이 없는 날짜가 결석으로 기록되었는지 확인한다.")
     void fillAbsencesTest() {
         CrewAttendanceRecords crewAttendanceRecords = new CrewAttendanceRecords(new CsvParsingGenerator(),
-                () -> LocalDate.of(2024, 12, 13));
+                LocalDate.of(2024, 12, 13));
         Crew crew = new Crew("쿠키");
         boolean hasRecord = crewAttendanceRecords.hasRecord(crew, LocalDate.of(2024, 12, 12));
 
