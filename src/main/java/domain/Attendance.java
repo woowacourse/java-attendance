@@ -34,8 +34,19 @@ public class Attendance {
             endDate = LocalDate.of(2025, 1, 1);
         }
 
-        for (String name : attendance.keySet() ) {
+        for (String name : attendance.keySet()) {
             initializeAttendance(name, startDate, endDate);
+        }
+    }
+
+    private void initializeAttendance(String name, LocalDate startDate, LocalDate endDate) {
+        List<AttendanceTime> attendanceTimes = this.attendance.get(findCrew(name));
+        Set<LocalDate> attendanceDates = attendanceTimes.stream()
+                .map(attendanceTime -> attendanceTime.getAttendanceDateTime().toLocalDate())
+                .collect(Collectors.toSet());
+
+        for (LocalDate date = startDate; date.isBefore(endDate); date = date.plusDays(1)) {
+            addUnattended(attendanceDates, date, attendanceTimes);
         }
     }
 
@@ -46,17 +57,6 @@ public class Attendance {
                 .orElseThrow(() -> new IllegalArgumentException("[ERROR] 존재하지 않는 크루입니다."));
     }
 
-    private void initializeAttendance(String name, LocalDate startDate, LocalDate endDate) {
-        Set<LocalDate> attendanceDates = this.attendance.get(findCrew(name)).stream()
-                .map(attendanceTime -> attendanceTime.getAttendanceDateTime().toLocalDate())
-                .collect(Collectors.toSet());
-
-        List<AttendanceTime> attendanceTimes = this.attendance.get(findCrew(name));
-        for (LocalDate date = startDate; date.isBefore(endDate); date = date.plusDays(1)) {
-            addUnattended(attendanceDates, date, attendanceTimes);
-        }
-    }
-
     private void addUnattended(Set<LocalDate> attendanceDates, LocalDate date, List<AttendanceTime> attendanceTimes) {
         if (!(attendanceDates.contains(date) || isClosed(date))) {
             attendanceTimes.add(new AttendanceTime(date, AttendanceStatus.UNATTEND));
@@ -64,7 +64,8 @@ public class Attendance {
     }
 
     public boolean isClosed(LocalDate date) {
-        return date.getDayOfWeek() == DayOfWeek.SATURDAY || date.getDayOfWeek() == DayOfWeek.SUNDAY || date.isEqual(LocalDate.of(2024, 12, 25));
+        return date.getDayOfWeek() == DayOfWeek.SATURDAY || date.getDayOfWeek() == DayOfWeek.SUNDAY || date.isEqual(
+                LocalDate.of(2024, 12, 25));
     }
 
     public List<AttendanceTime> getAttendanceTimes(String name) {
@@ -95,7 +96,8 @@ public class Attendance {
     }
 
     public void edit(String crewName, int attendanceDay, LocalTime newAttendanceTime) {
-        LocalDateTime newAttendanceDateTime = LocalDateTime.of(2024, 12, attendanceDay, newAttendanceTime.getHour(), newAttendanceTime.getMinute());
+        LocalDateTime newAttendanceDateTime = LocalDateTime.of(2024, 12, attendanceDay, newAttendanceTime.getHour(),
+                newAttendanceTime.getMinute());
         validateOpenHours(newAttendanceDateTime);
         AttendanceTime attendanceTime = findAttendanceTime(crewName, LocalDate.of(2024, 12, attendanceDay));
         attendanceTime.updateAttendanceDateTime(newAttendanceTime);
@@ -146,8 +148,9 @@ public class Attendance {
     }
 
     public int getAbsentCount(String nickName) {
-        int absentCount =  (int) this.attendance.get(findCrew(nickName)).stream()
-                .filter(e -> e.getAttendanceStatus().equals(AttendanceStatus.ABSENT) || e.getAttendanceStatus().equals(AttendanceStatus.UNATTEND))
+        int absentCount = (int) this.attendance.get(findCrew(nickName)).stream()
+                .filter(e -> e.getAttendanceStatus().equals(AttendanceStatus.ABSENT) || e.getAttendanceStatus()
+                        .equals(AttendanceStatus.UNATTEND))
                 .count();
         int lateCount = (int) this.attendance.get(findCrew(nickName)).stream()
                 .filter(e -> e.getAttendanceStatus().equals(AttendanceStatus.LATE))
