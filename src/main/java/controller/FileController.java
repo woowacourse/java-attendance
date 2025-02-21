@@ -15,7 +15,7 @@ import util.parser.DateTimeParser;
 
 public class FileController {
 
-    private AttendanceManager attendanceManager;
+    private final AttendanceManager attendanceManager;
 
     public FileController(AttendanceManager attendanceManager) {
         this.attendanceManager = attendanceManager;

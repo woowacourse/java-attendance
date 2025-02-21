@@ -1,8 +1,10 @@
 package controller;
 
+import static util.constant.Value.DATE_FORMAT;
 import static util.constant.Value.NOW_DAY;
 import static util.constant.Value.NOW_MONTH;
 import static util.constant.Value.NOW_YEAR;
+import static util.constant.Value.TIME_FORMAT;
 
 import domain.AttendanceManager;
 import domain.AttendanceStatistics;
@@ -15,13 +17,13 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import util.parser.DateTimeParser;
+import util.validator.InputValidator;
 import view.InputView;
 import view.OutputView;
 
 public class AttendanceController {
-
-    private final String INPUT_DATE_FORMAT = "%04d-%02d-%02d";
-    private final String INPUT_TIME_FORMAT = "%02d:%02d";
 
     private final InputView inputView;
     private final OutputView outputView;
@@ -34,26 +36,20 @@ public class AttendanceController {
     }
 
     public void run() {
-        LocalDate localDate = formatDate();
+        LocalDate currentDate = DateTimeParser.parseIntegerToDate(NOW_YEAR, NOW_MONTH, NOW_DAY);
+        Map<String, Runnable> functions = Map.of(
+            "1", this::attend,
+            "2", this::edit,
+            "3", this::check,
+            "4", this::checkExpelledWarning
+        );
+
         String functionNumber = "";
-        do {
-            functionNumber = inputView.printFunction(localDate);
-            if (functionNumber.equals("1")) {
-                attend();
-            }
-            if (functionNumber.equals("2")) {
-                edit();
-            }
-            if (functionNumber.equals("3")) {
-                check();
-            }
-            if (functionNumber.equals("4")) {
-                checkExpelledWarning();
-            }
-            if (!List.of("1", "2", "3", "4", "q", "Q").contains(functionNumber)) {
-                System.out.println("유효하지 않은 번호입니다.");
-            }
-        } while (!functionNumber.equals("q"));
+        while (!functionNumber.equalsIgnoreCase("Q")) {
+            functionNumber = inputView.printFunction(currentDate);
+            validateFunctions(functionNumber, functions.keySet());
+            functions.getOrDefault(functionNumber, () -> {}).run();
+        }
     }
 
     private void attend() {
@@ -62,7 +58,7 @@ public class AttendanceController {
             attendanceManager.findByName(name);
             List<String> time = List.of(inputView.readTime().split(":"));
 
-            String dateForm = String.format(INPUT_DATE_FORMAT, NOW_YEAR, NOW_MONTH,
+            String dateForm = String.format(DATE_FORMAT, NOW_YEAR, NOW_MONTH,
                 NOW_DAY);
             String timeForm = formatTime(time);
             LocalDateTime dateTime = formatDateTime(dateForm, timeForm);
@@ -81,7 +77,7 @@ public class AttendanceController {
             String dayOfMonth = inputView.readEditDayOfMonth();
             List<String> time = List.of(inputView.readEditTime().split(":"));
 
-            String dateForm = String.format(INPUT_DATE_FORMAT, NOW_YEAR, NOW_MONTH,
+            String dateForm = String.format(DATE_FORMAT, NOW_YEAR, NOW_MONTH,
                 Integer.parseInt(dayOfMonth));
             String timeForm = formatTime(time);
             LocalDateTime localDateTime = formatDateTime(dateForm, timeForm);
@@ -101,7 +97,7 @@ public class AttendanceController {
             String name = inputView.readName();
             attendanceManager.findByName(name);
 
-            LocalDate localDate = formatDate();
+            LocalDate localDate = DateTimeParser.parseIntegerToDate(NOW_YEAR, NOW_MONTH, NOW_DAY);
             Records records = attendanceManager.findByName(name);
 
             StatisticsResult statisticsResult = AttendanceStatistics.countStatus(localDate,
@@ -120,22 +116,15 @@ public class AttendanceController {
     }
 
     private void checkExpelledWarning() {
-        LocalDate localDate = formatDate();
+        LocalDate localDate = DateTimeParser.parseIntegerToDate(NOW_YEAR, NOW_MONTH, NOW_DAY);
 
         Map<String, StatisticsResult> sortedResult = attendanceManager.sortCrew(localDate);
         outputView.printExpelledWarningResult(sortedResult);
     }
 
     private String formatTime(List<String> time) {
-        return String.format(INPUT_TIME_FORMAT, Integer.parseInt(time.get(0)),
+        return String.format(TIME_FORMAT, Integer.parseInt(time.get(0)),
             Integer.parseInt(time.get(1)));
-    }
-
-
-    private LocalDate formatDate() {
-        String date = NOW_YEAR + "-" + NOW_MONTH + "-" + NOW_DAY;
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-        return LocalDate.parse(date, formatter);
     }
 
     private LocalDateTime formatDateTime(String dateForm, String timeForm) {
@@ -143,4 +132,11 @@ public class AttendanceController {
         return LocalDateTime.parse(dateForm + " " + timeForm, formatter);
     }
 
+    private void validateFunctions(String functionNumber, Set<String> functions) {
+        try {
+            InputValidator.checkFunctions(functionNumber, functions);
+        } catch (IllegalArgumentException e) {
+            outputView.printErrorMessage(e);
+        }
+    }
 }

@@ -4,9 +4,9 @@ import static util.constant.OutputMessage.ABSENCE_RECORD_FORMAT;
 import static util.constant.OutputMessage.ATTENDANCE_EDIT_FORMAT;
 import static util.constant.OutputMessage.ATTENDANCE_RECORD_FORMAT;
 import static util.constant.OutputMessage.CREW_ATTENDANCE_LIST_MESSAGE;
-import static util.constant.OutputMessage.DATE_FORMAT;
+import static util.constant.OutputMessage.DATE_PRINT_FORMAT;
 import static util.constant.OutputMessage.PENALTY_FORMAT;
-import static util.constant.OutputMessage.TIME_FORMAT;
+import static util.constant.OutputMessage.TIME_PRINT_FORMAT;
 import static util.constant.OutputMessage.TOTAL_ABSENCE_FORMAT;
 import static util.constant.OutputMessage.TOTAL_ATTEND_FORMAT;
 import static util.constant.OutputMessage.TOTAL_LATENESS_FORMAT;
@@ -27,6 +27,10 @@ import java.util.Locale;
 import java.util.Map;
 
 public class OutputView {
+
+    public void printErrorMessage(IllegalArgumentException e) {
+        System.out.println(e.getMessage());
+    }
 
     public void printAttendanceRecord(LocalDate localDate, TimeAndStatus timeAndStatus) {
         String date = dateFormatting(localDate);
@@ -90,12 +94,12 @@ public class OutputView {
     }
 
     private String timeFormatting(TimeAndStatus timeAndStatus) {
-        return String.format(TIME_FORMAT, timeAndStatus.getTime().getHour(),
+        return String.format(TIME_PRINT_FORMAT, timeAndStatus.getTime().getHour(),
             timeAndStatus.getTime().getMinute(), timeAndStatus.getStatus());
     }
 
     private String dateFormatting(LocalDate localDate) {
-        return String.format(DATE_FORMAT, localDate.getMonthValue(),
+        return String.format(DATE_PRINT_FORMAT, localDate.getMonthValue(),
             localDate.getDayOfMonth(),
             localDate.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.KOREAN));
     }
