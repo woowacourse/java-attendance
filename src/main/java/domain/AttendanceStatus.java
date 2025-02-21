@@ -26,10 +26,6 @@ public enum AttendanceStatus {
     }
 
     public static AttendanceStatus of(LocalDate date, LocalTime attendanceTime) {
-        if (attendanceTime == null) {
-            return AttendanceStatus.ABSENT;
-        }
-
         LectureTime lectureTime = LectureTime.from(date);
         long elapsedMinutes = MINUTES.between(lectureTime.getStartTime(), attendanceTime);
         return Arrays.stream(values())
