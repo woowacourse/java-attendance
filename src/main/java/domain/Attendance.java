@@ -1,7 +1,6 @@
 package domain;
 
 import dto.result.AttendResult;
-import dto.result.AttendanceModifyResult;
 import util.exception.IllegalAttendDateException;
 import util.exception.IllegalAttendTimeException;
 
@@ -19,8 +18,8 @@ public class Attendance {
     public static final LocalTime NOT_MONDAY_ATTENDANCE_TIME = LocalTime.of(10, 0);
     public static final LocalTime MONDAY_ATTENDANCE_TIME = LocalTime.of(13, 0);
     
-    private LocalDateTime attendanceDateTime;
-    private AttendanceStatus attendanceStatus;
+    private final LocalDateTime attendanceDateTime;
+    private final AttendanceStatus attendanceStatus;
     
     public Attendance(LocalDateTime attendanceDateTime) {
         validateDate(attendanceDateTime.toLocalDate());
@@ -52,22 +51,8 @@ public class Attendance {
         return new AttendResult(attendanceDateTime, attendanceStatus, true);
     }
     
-    public AttendanceModifyResult modifyAttendanceTime(LocalTime newAttendanceTime) {
-        LocalDateTime oldAttendanceTime = attendanceDateTime;
-        attendanceDateTime = attendanceDateTime
-                .withHour(newAttendanceTime.getHour())
-                .withMinute(newAttendanceTime.getMinute());
-        
-        AttendanceStatus oldAttendanceStatus = attendanceStatus;
-        attendanceStatus = determineAttendanceStatus(attendanceDateTime);
-        
-        return new AttendanceModifyResult(
-                attendanceDateTime.toLocalDate(),
-                oldAttendanceTime.toLocalTime(),
-                oldAttendanceStatus,
-                attendanceDateTime.toLocalTime(),
-                attendanceStatus
-        );
+    public Attendance withNewAttendanceTime(LocalTime newAttendanceTime) {
+        return new Attendance(LocalDateTime.of(attendanceDateTime.toLocalDate(), newAttendanceTime));
     }
     
     public boolean isSameDay(LocalDate date) {

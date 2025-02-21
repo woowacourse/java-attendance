@@ -1,14 +1,12 @@
 package domain;
 
 import dto.result.AttendResult;
-import dto.result.AttendanceModifyResult;
 import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import util.exception.IllegalAttendDateException;
 import util.exception.IllegalAttendTimeException;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 
@@ -202,14 +200,14 @@ public class AttendanceTest {
             LocalTime newAttendanceTime = LocalTime.of(10, 6);
             
             // when
-            AttendanceModifyResult result = attendance.modifyAttendanceTime(newAttendanceTime);
+            Attendance result = attendance.withNewAttendanceTime(newAttendanceTime);
             
             // then
-            soft.assertThat(result.attendanceDate()).isEqualTo(LocalDate.of(2024, 12, 3));
-            soft.assertThat(result.oldAttendanceTime()).isEqualTo(LocalTime.of(9, 45));
-            soft.assertThat(result.oldAttendanceStatus()).isEqualTo(AttendanceStatus.출석);
-            soft.assertThat(result.newAttendanceTime()).isEqualTo(LocalTime.of(10, 6));
-            soft.assertThat(result.newAttendanceStatus()).isEqualTo(AttendanceStatus.지각);
+            soft.assertThat(result).extracting(
+                    "attendanceDateTime", "attendanceStatus"
+            ).containsExactly(
+                    LocalDateTime.of(2024, 12, 3, 10, 6), AttendanceStatus.지각
+            );
         }
     }
 }

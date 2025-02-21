@@ -104,9 +104,17 @@ public class MemberAttendances {
     }
     
     public AttendanceModifyResult modifyAttendance(LocalDate date, LocalTime time) {
-        for (Attendance attendance : attendances) {
+        for (int index = 0; index < attendances.size(); index++) {
+            Attendance attendance = attendances.get(index);
             if (attendance.isSameDay(date)) {
-                return attendance.modifyAttendanceTime(time);
+                var newAttendance = replaceOldAttendanceAndGet(time, index);
+                AttendResult oldAttendanceResult = attendance.createAttendanceResult();
+                AttendResult newAttendanceResult = newAttendance.createAttendanceResult();
+                return new AttendanceModifyResult(
+                        oldAttendanceResult.attendanceDateTime().toLocalDate(),
+                        oldAttendanceResult.attendanceDateTime().toLocalTime(), oldAttendanceResult.attendanceStatus(),
+                        newAttendanceResult.attendanceDateTime().toLocalTime(), newAttendanceResult.attendanceStatus()
+                );
             }
         }
         
@@ -118,5 +126,12 @@ public class MemberAttendances {
         } catch (IllegalAttendTimeException e) {
             throw new IllegalAttendTimeException("수정 가능한 시간이 아닙니다.");
         }
+    }
+    
+    private Attendance replaceOldAttendanceAndGet(LocalTime time, int index) {
+        Attendance newAttendance = attendances.get(index).withNewAttendanceTime(time);
+        attendances.remove(index);
+        attendances.add(index, newAttendance);
+        return newAttendance;
     }
 }
