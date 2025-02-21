@@ -9,17 +9,17 @@ import java.util.Comparator;
 
 public enum AttendanceStatus {
     ATTENDANCE("출석", Integer.MIN_VALUE),
-    LATE("지각", 6),
-    ABSENT("결석", 31),
-    NONE("", Integer.MAX_VALUE),
+    LATE("지각", 5),
+    ABSENT("결석", 30),
+    NONE("쉬는 날", Integer.MAX_VALUE),
     ;
 
     private final String description;
-    private final int threshold;
+    private final int elapsedMinutesLimit;
 
-    AttendanceStatus(String description, int threshold) {
+    AttendanceStatus(String description, int elapsedMinutesLimit) {
         this.description = description;
-        this.threshold = threshold;
+        this.elapsedMinutesLimit = elapsedMinutesLimit;
     }
 
     public static AttendanceStatus of(LocalDate date, LocalTime attendanceTime) {
@@ -28,14 +28,15 @@ public enum AttendanceStatus {
         }
 
         LectureTime lectureTime = LectureTime.from(date);
-        long difference = MINUTES.between(lectureTime.getStartTime(), attendanceTime);
-        return Arrays.stream(values()).filter(attendanceStatus -> attendanceStatus.threshold <= difference)
-            .max(Comparator.comparing(AttendanceStatus::getThreshold))
-            .orElse(AttendanceStatus.NONE);
+        long elapsedMinutes = MINUTES.between(lectureTime.getStartTime(), attendanceTime);
+        return Arrays.stream(values())
+                .filter(attendanceStatus -> attendanceStatus.elapsedMinutesLimit < elapsedMinutes)
+                .max(Comparator.comparing(AttendanceStatus::getElapsedMinutesLimit))
+                .orElse(AttendanceStatus.NONE);
     }
 
-    public int getThreshold() {
-        return threshold;
+    public int getElapsedMinutesLimit() {
+        return elapsedMinutesLimit;
     }
 
     public String getDescription() {
