@@ -6,7 +6,6 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.Map;
-
 import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -52,7 +51,7 @@ public class CrewTest {
         CrewRepository.addCrew(new Crew("pobi"));
         Crew crew = CrewRepository.findByNickname("pobi");
         crew.addAttendanceTime(LocalDate.now(), LocalTime.of(10, 00));
-        crew.modifyAttendance(LocalDate.now(), LocalTime.of(10, 10));
+        crew.modifyAttendanceTime(LocalDate.now(), LocalTime.of(10, 10));
         assertThat(crew.getAttendanceTimeByDate(LocalDate.now())).isEqualTo(LocalTime.of(10, 10));
     }
 
@@ -67,33 +66,33 @@ public class CrewTest {
 
         SoftAssertions.assertSoftly(softly -> {
             softly.assertThat(crew.getAttendanceStatusByDate(LocalDate.of(2025, 02, 03)))
-                .isEqualTo(AttendanceStatus.ABSENT);
+                    .isEqualTo(AttendanceStatus.ABSENT);
             softly.assertThat(crew.getAttendanceStatusByDate(LocalDate.of(2025, 02, 17)))
-                .isEqualTo(AttendanceStatus.LATE);
+                    .isEqualTo(AttendanceStatus.LATE);
             softly.assertThat(crew.getAttendanceStatusByDate(LocalDate.of(2025, 02, 18)))
-                .isEqualTo(AttendanceStatus.ATTENDANCE);
+                    .isEqualTo(AttendanceStatus.ATTENDANCE);
             softly.assertThat(crew.getAttendanceStatusByDate(LocalDate.of(2025, 02, 19)))
-                .isEqualTo(AttendanceStatus.ABSENT);
+                    .isEqualTo(AttendanceStatus.ABSENT);
         });
     }
 
     @Test
     @DisplayName("출석 상태별 횟수를 계산한다")
-        void getAttendanceStatusCounterTest () {
-            Crew crew = new Crew("pobi");
-            // 지각
-            crew.addAttendanceTime(LocalDate.of(2025, 02, 3), LocalTime.of(13, 06));
-            // 출석
-            crew.addAttendanceTime(LocalDate.of(2025, 02, 4), LocalTime.of(10, 05));
-            // 결석
-            crew.addAttendanceTime(LocalDate.of(2025, 02, 5), LocalTime.of(10, 31));
+    void getAttendanceStatusCounterTest() {
+        Crew crew = new Crew("pobi");
+        // 지각
+        crew.addAttendanceTime(LocalDate.of(2025, 02, 3), LocalTime.of(13, 06));
+        // 출석
+        crew.addAttendanceTime(LocalDate.of(2025, 02, 4), LocalTime.of(10, 05));
+        // 결석
+        crew.addAttendanceTime(LocalDate.of(2025, 02, 5), LocalTime.of(10, 31));
 
-            Map<AttendanceStatus, Integer> statusCounter = crew.getAttendanceStatusCounter(
+        Map<AttendanceStatus, Integer> statusCounter = crew.getAttendanceStatusCounter(
                 LocalDate.of(2025, 02, 10));
-            SoftAssertions.assertSoftly(softly -> {
-                softly.assertThat(statusCounter.get(AttendanceStatus.ATTENDANCE)).isEqualTo(1);
-                softly.assertThat(statusCounter.get(AttendanceStatus.LATE)).isEqualTo(1);
-                softly.assertThat(statusCounter.get(AttendanceStatus.ABSENT)).isEqualTo(3);
-            });
-        }
+        SoftAssertions.assertSoftly(softly -> {
+            softly.assertThat(statusCounter.get(AttendanceStatus.ATTENDANCE)).isEqualTo(1);
+            softly.assertThat(statusCounter.get(AttendanceStatus.LATE)).isEqualTo(1);
+            softly.assertThat(statusCounter.get(AttendanceStatus.ABSENT)).isEqualTo(3);
+        });
     }
+}

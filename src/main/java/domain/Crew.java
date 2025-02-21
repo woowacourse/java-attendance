@@ -8,7 +8,6 @@ import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import util.DateTimeUtil;
 
 public class Crew {
@@ -39,11 +38,14 @@ public class Crew {
         return nickname;
     }
 
-    public void modifyAttendance(LocalDate date, LocalTime time) {
+    public void modifyAttendanceTime(LocalDate date, LocalTime time) {
         attendanceTimes.put(date, time);
     }
 
     public LocalTime getAttendanceTimeByDate(LocalDate date) {
+        if (!attendanceTimes.containsKey(date)) {
+            throw new IllegalArgumentException(date + ": 출석 기록이 존재하지 않습니다.");
+        }
         return attendanceTimes.get(date);
     }
 
@@ -78,7 +80,7 @@ public class Crew {
                 continue;
             }
             AttendanceStatus attendanceStatus = getAttendanceStatusByDate(LocalDate.of(today.getYear(),
-                today.getMonth(), day));
+                    today.getMonth(), day));
             statusCounter.put(attendanceStatus, statusCounter.getOrDefault(attendanceStatus, 0) + 1);
         }
         return statusCounter;

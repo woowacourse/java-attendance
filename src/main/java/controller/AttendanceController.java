@@ -56,18 +56,10 @@ public class AttendanceController {
         AttendanceModifyRequest request = InputView.scanModify();
         validateCampusTime(request.time());
         Crew crew = CrewRepository.findByNickname(request.nickname());
-        validateAttendanceTime(crew, request.date());
-
         ModifiedResult.InnerStatus before = generateInnerStatus(crew, request);
-        crew.modifyAttendance(request.date(), request.time());
+        crew.modifyAttendanceTime(request.date(), request.time());
         ModifiedResult.InnerStatus after = generateInnerStatus(crew, request);
         OutputView.printModifiedResult(new ModifiedResult(request.date(), before, after));
-    }
-
-    private void validateAttendanceTime(Crew crew, LocalDate date) {
-        if (crew.getAttendanceTimeByDate(date) == null) {
-            throw new IllegalArgumentException("출석 기록이 없는 날짜입니다.");
-        }
     }
 
     private ModifiedResult.InnerStatus generateInnerStatus(Crew crew, AttendanceModifyRequest request) {
