@@ -6,20 +6,37 @@ import controller.dto.AttendanceTypeCountDto;
 import controller.dto.AttendanceUpdateResultDto;
 import domain.attendance.AttendanceType;
 import domain.attendance.PenaltyType;
+import java.time.DayOfWeek;
+import java.time.format.TextStyle;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 public class OutputView {
+    public static void printTodayMessage(int month, int day, String dayOfWeek) {
+        System.out.println();
+        System.out.printf("오늘은 %02d월 %02d일 %s입니다. ", month, day, dayOfWeek);
+    }
+
     public static void printErrorMessage(String message) {
+        System.out.println();
         System.out.println("[ERROR] " + message);
     }
 
+    public static void printAttendanceDayErrorMessage(int month, int day, DayOfWeek dayOfWeek) {
+        System.out.println();
+        System.out.printf("[ERROR] %02d월 %02d일 %s은 등교일이 아닙니다.%n", month, day, dayOfWeek.getDisplayName(TextStyle.FULL,
+                Locale.KOREAN));
+    }
+
     public static void printCheckedHistory(AttendanceHistoryDto attendanceHistoryDto) {
+        System.out.println();
         System.out.println(getHistoryFormat(attendanceHistoryDto));
     }
 
     public static void printUpdatedResult(AttendanceUpdateResultDto attendanceUpdateResultDto) {
+        System.out.println();
         System.out.print(getHistoryFormat(attendanceUpdateResultDto.beforeHistoryDto()));
         System.out.print(" -> ");
 
@@ -44,10 +61,12 @@ public class OutputView {
         return result;
     }
 
-    public static void printAttendanceHistories(AttendanceHistoryWithPenaltyTypeDto dto) {
+    public static void printAttendanceHistories(String nickname, AttendanceHistoryWithPenaltyTypeDto dto) {
         int attendanceCount = 0;
         int lateCount = 0;
         int absenceCount = 0;
+
+        System.out.printf("%n이번 달 %s의 출석 기록입니다.%n%n", nickname);
 
         for (Map.Entry<Integer, AttendanceHistoryDto> entry : dto.historyDtoOfDay().entrySet()) {
             AttendanceHistoryDto historyDto = entry.getValue();
@@ -89,12 +108,13 @@ public class OutputView {
             return Integer.compare(totalAbsenceCountOfP2, totalAbsenceCountOfP1);
         };
 
-        // 정렬
-        // 기준 제적 > 면담 > 경고 > 결석횟수 > 닉네임
         List<AttendanceTypeCountDto> sortedAttendanceTypeCountDto = attendanceTypeCountDtos.stream()
                 .sorted(penaltyTypeComparator
                         .thenComparing(absenceComparator)
                         .thenComparing(AttendanceTypeCountDto::nickname)).toList();
+
+        System.out.println();
+        System.out.println("제적 위험자 조회 결과");
 
         for (AttendanceTypeCountDto attendanceTypeCountDto : sortedAttendanceTypeCountDto) {
             System.out.printf("- %s: 결석 %d회, 지각 %d회 (%s)%n", attendanceTypeCountDto.nickname(),

@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 public class AttendanceService {
     private final Crews crews;
@@ -33,6 +34,18 @@ public class AttendanceService {
 
     public void checkNicknameIsExisted(String nickname) {
         crews.findCrewBy(nickname);
+    }
+
+    public void checkAlreadyPresented(String nickname, int day) {
+        Crew foundCrew = crews.findCrewBy(nickname);
+        List<AttendanceHistory> foundHistories = attendanceHistories.findAllHistoriesOf(foundCrew);
+
+        boolean isPresented = foundHistories.stream()
+                .anyMatch(attendanceHistory -> attendanceHistory.getDay() == day);
+
+        if (isPresented) {
+            throw new IllegalArgumentException("이미 출석 내역이 있어서 출석할 수 없습니다. 수정 기능을 이용해주세요.");
+        }
     }
 
     public AttendanceHistoryDto applyAttendance(String nickname, AttendanceDateTime attendanceDateTime) {

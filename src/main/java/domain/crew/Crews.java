@@ -22,6 +22,6 @@ public class Crews {
         return crews.stream()
                 .filter(crew -> crew.hasSame(nickname))
                 .findAny()
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 크루입니다"));
+                .orElseThrow(() -> new IllegalArgumentException("등록되지 않은 닉네임입니다."));
     }
 }

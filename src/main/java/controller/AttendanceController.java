@@ -6,17 +6,23 @@ import controller.dto.AttendanceRequestDto;
 import controller.dto.AttendanceTimeDto;
 import controller.dto.AttendanceTypeCountDto;
 import controller.dto.AttendanceUpdateResultDto;
+import domain.date.AttendanceDate;
 import domain.date.AttendanceDateTime;
 import io.CustomFileReader;
 import java.io.FileNotFoundException;
+import java.time.DayOfWeek;
+import java.time.format.TextStyle;
 import java.util.List;
+import java.util.Locale;
 import service.AttendanceService;
 import view.Function;
 import view.InputView;
 import view.OutputView;
 
 public class AttendanceController {
+    private final static int SERVICE_ABLE_MONTH = 12;
     private final AttendanceService attendanceService;
+    private int today;
 
     public AttendanceController(AttendanceService attendanceService) {
         this.attendanceService = attendanceService;
@@ -24,8 +30,10 @@ public class AttendanceController {
 
     public void run() {
         try {
-            read();
+            readConfigFile();
+            today = InputView.readToday();
             while (true) {
+                OutputView.printTodayMessage(SERVICE_ABLE_MONTH, today, DayOfWeek.of(new AttendanceDate(today).getDayOfWeek()).getDisplayName(TextStyle.FULL, Locale.KOREAN));
                 Function function = InputView.readOption();
                 if (function == Function.QUIT) {
                     break;
@@ -37,7 +45,7 @@ public class AttendanceController {
         }
     }
 
-    private void read() throws FileNotFoundException {
+    private void readConfigFile() throws FileNotFoundException {
         List<String> names = CustomFileReader.readCrewNames();
         attendanceService.saveCrews(names);
 
@@ -64,47 +72,70 @@ public class AttendanceController {
     }
 
     private void applyAttendance() {
-        String nickname = getValidNickname();
-        AttendanceDateTime attendanceDateTime = getAttendanceDateTime();
+        if (validateDayForApply(today)) {
+            return;
+        }
+
+        String nickname = InputView.readNickname();
+        attendanceService.checkNicknameIsExisted(nickname);
+        attendanceService.checkAlreadyPresented(nickname, today);
+
+        AttendanceDateTime attendanceDateTime = getAttendanceDateTime(today);
 
         AttendanceHistoryDto attendanceHistoryDto = attendanceService.applyAttendance(nickname, attendanceDateTime);
         OutputView.printCheckedHistory(attendanceHistoryDto);
     }
 
+
     private void editAttendance() {
-        String nickname = getValidNickname();
-        AttendanceDateTime newDateTime = getAttendanceDateTime();
+        String nickname = InputView.readNicknameWillEditHistory();
+        attendanceService.checkNicknameIsExisted(nickname);
+        AttendanceDateTime newDateTime = getAttendanceDateTimeWillEditHistory();
+
+        if (validateDayForApply(newDateTime.getDay())) {
+            return;
+        }
 
         AttendanceUpdateResultDto attendanceUpdateResultDto = attendanceService.editAttendance(nickname, newDateTime);
         OutputView.printUpdatedResult(attendanceUpdateResultDto);
     }
 
+    private boolean validateDayForApply(int day) {
+        int rawDayOfWeek = AttendanceDate.getDayOfWeek(day);
+        if (DayOfWeek.of(rawDayOfWeek) == DayOfWeek.SATURDAY || DayOfWeek.of(rawDayOfWeek) == DayOfWeek.SUNDAY) {
+            OutputView.printAttendanceDayErrorMessage(12, today, DayOfWeek.of(rawDayOfWeek));
+            return true;
+        }
+
+        return false;
+    }
+
     private void checkAttendanceOfCrew() {
-        String nickname = getValidNickname();
-        int day = InputView.readToday();
+        String nickname = InputView.readNickname();
+        attendanceService.checkNicknameIsExisted(nickname);
+
         AttendanceHistoryWithPenaltyTypeDto attendanceHistoryWithPenaltyTypeDto = attendanceService.checkAttendanceOf(
-                nickname, day);
-        OutputView.printAttendanceHistories(attendanceHistoryWithPenaltyTypeDto);
+                nickname, today);
+        OutputView.printAttendanceHistories(nickname, attendanceHistoryWithPenaltyTypeDto);
     }
 
     private void checkWarningCrew() {
-        int day = InputView.readToday();
-        List<AttendanceTypeCountDto> attendanceTypeCountDtos = attendanceService.checkWarningCrews(day);
+        List<AttendanceTypeCountDto> attendanceTypeCountDtos = attendanceService.checkWarningCrews(today);
         OutputView.printBanWarningCrews(attendanceTypeCountDtos);
     }
 
-    private static AttendanceDateTime getAttendanceDateTime() {
-        int day = InputView.readToday();
+    private AttendanceDateTime getAttendanceDateTime(int day) {
         AttendanceTimeDto attendanceTimeDto = InputView.readAttendanceTime();
 
         return AttendanceDateTime.of(day, attendanceTimeDto.hour(),
                 attendanceTimeDto.minute());
     }
 
-    private String getValidNickname() {
-        String nickname = InputView.readNickname();
-        attendanceService.checkNicknameIsExisted(nickname);
+    private AttendanceDateTime getAttendanceDateTimeWillEditHistory() {
+        int day = InputView.readDay();
+        AttendanceTimeDto attendanceTimeDto = InputView.readAttendanceTimeWillEditHistory();
 
-        return nickname;
+        return AttendanceDateTime.of(day, attendanceTimeDto.hour(),
+                attendanceTimeDto.minute());
     }
 }

@@ -2,6 +2,7 @@ package view;
 
 import controller.dto.AttendanceTimeDto;
 import domain.attendance.PenaltyType;
+import domain.date.AttendanceDate;
 import java.time.DayOfWeek;
 import java.time.format.TextStyle;
 import java.util.Locale;
@@ -24,7 +25,17 @@ public class Parser {
         try {
             return Integer.parseInt(text);
         } catch (NumberFormatException exception) {
-            throw new IllegalArgumentException("시간 형식이 올바르지 않습니다.");
+            throw new IllegalArgumentException("입력 형식이 올바르지 않습니다. 숫자만 입력해주세요.");
+        }
+    }
+
+    public static Integer parseDay(String text) {
+        try {
+            int parsedDay = Integer.parseInt(text);
+            AttendanceDate.validate(parsedDay);
+            return parsedDay;
+        } catch (NumberFormatException exception) {
+                throw new IllegalArgumentException("입력 형식이 올바르지 않습니다. 숫자만 입력해주세요.");
         }
     }
 
