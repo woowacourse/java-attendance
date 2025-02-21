@@ -13,6 +13,8 @@ import java.util.List;
 
 public class DefaultController implements Controller {
 
+    private static final String ERROR_FORMAT = "[ERROR] %s";
+
     private final InputView inputView;
     private final OutputView outputView;
     private final AttendanceService attendanceService;
@@ -44,7 +46,7 @@ public class DefaultController implements Controller {
         try {
             return inputView.inputCommand();
         } catch (final IllegalArgumentException e) {
-            System.out.println(e.getMessage());
+            handleException(e);
             return inputCommand();
         }
     }
@@ -61,7 +63,7 @@ public class DefaultController implements Controller {
 
             outputView.printAttendanceLogResponse(response);
         } catch (final RuntimeException runtimeException) {
-            System.out.println(runtimeException.getMessage());
+            handleException(runtimeException);
         }
     }
 
@@ -81,7 +83,7 @@ public class DefaultController implements Controller {
 
             outputView.printUpdateAttendanceResponse(updateAttendanceResponse);
         } catch (final RuntimeException runtimeException) {
-            System.out.println(runtimeException.getMessage());
+            handleException(runtimeException);
         }
     }
 
@@ -93,7 +95,7 @@ public class DefaultController implements Controller {
 
             outputView.printCrewAttendanceLogResponse(attendanceService.getAttendanceLog(crew));
         } catch (final RuntimeException runtimeException) {
-            System.out.println(runtimeException.getMessage());
+            handleException(runtimeException);
         }
     }
 
@@ -105,11 +107,15 @@ public class DefaultController implements Controller {
 
             outputView.printRequiresManagementCrewResponse(responses);
         } catch (final RuntimeException runtimeException) {
-            System.out.println(runtimeException.getMessage());
+            handleException(runtimeException);
         }
     }
 
     @Override
     public void quit() {
+    }
+
+    private void handleException(final RuntimeException runtimeException) {
+        System.out.printf((ERROR_FORMAT) + "%n", runtimeException.getMessage());
     }
 }
