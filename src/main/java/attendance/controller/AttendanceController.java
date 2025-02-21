@@ -35,21 +35,12 @@ public class AttendanceController {
     public void start() {
 
         initAttendanceSystem();
-        do {
-            LocalDateTime today = LocalDateTime.now();
-            String functionValue = functionInput(today);
 
-            try {
-                if (choiceFunction(functionValue)) {
-                    return;
-                }
-                throw new IllegalArgumentException("[ERROR] 올바른 기능을 입력해주세요.");
-            } catch (IllegalArgumentException e) {
-                outputView.printErrorMessage(e.getMessage());
-            }
-
-        } while (true);
+        while (!choiceFunction(functionInput(LocalDateTime.now()))) {
+            outputView.printErrorMessage("[ERROR] 올바른 기능을 입력해주세요.");
+        }
     }
+
 
     private boolean choiceFunction(final String functionValue) {
         if (functionValue.equals("1")) {
@@ -61,7 +52,7 @@ public class AttendanceController {
         }
 
         if (functionValue.equals("3")) {
-            attendanceHistoryByName();
+            attendanceHistoryByNameFunction();
         }
 
         if (functionValue.equals("4")) {
@@ -128,7 +119,7 @@ public class AttendanceController {
                 attendance.getAttendanceStatus());
     }
 
-    private void attendanceHistoryByName() {
+    private void attendanceHistoryByNameFunction() {
 
         String crewName = inputView.inputCrewName();
 
