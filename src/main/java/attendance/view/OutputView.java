@@ -21,20 +21,21 @@ public class OutputView {
         );
     }
 
-    public void printModifiedAttendance(Attendance beforeAttendance, Attendance afterAttendance, AttendanceType beforeType, AttendanceType afterType) {
+    public void printModifiedAttendance(Attendance beforeAttendance, Attendance afterAttendance,
+                                        AttendanceType beforeType, AttendanceType afterType) {
         if (beforeAttendance != null) {
             System.out.printf("%s (%s) -> %s (%s) 수정 완료!%n",
-                    beforeAttendance.getDateTime().format(DateTimeFormatter.ofPattern("MM월 dd일 E요일 HH:mm")),
+                    beforeAttendance.getAttendanceTime().format(DateTimeFormatter.ofPattern("MM월 dd일 E요일 HH:mm")),
                     displayAttendanceType(beforeType),
-                    afterAttendance.getDateTime().format(DateTimeFormatter.ofPattern("HH:mm")),
+                    afterAttendance.getAttendanceTime().format(DateTimeFormatter.ofPattern("HH:mm")),
                     displayAttendanceType(afterType)
             );
             return;
         }
         System.out.printf("%s (%s) -> %s (%s) 수정 완료!%n",
-                afterAttendance.getDateTime().format(DateTimeFormatter.ofPattern("MM월 dd일 E요일 --:--")),
+                afterAttendance.getAttendanceTime().format(DateTimeFormatter.ofPattern("MM월 dd일 E요일 --:--")),
                 displayAttendanceType(null),
-                afterAttendance.getDateTime().format(DateTimeFormatter.ofPattern("HH:mm")),
+                afterAttendance.getAttendanceTime().format(DateTimeFormatter.ofPattern("HH:mm")),
                 displayAttendanceType(afterType)
         );
     }

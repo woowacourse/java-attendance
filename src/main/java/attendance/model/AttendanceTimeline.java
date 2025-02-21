@@ -1,6 +1,6 @@
 package attendance.model;
 
-import java.time.DayOfWeek;
+import attendance.util.DateUtils;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
@@ -21,8 +21,8 @@ public record AttendanceTimeline(
     private static Map<LocalDate, LocalTime> groupByAttendanceDate(Set<Attendance> attendances) {
         return attendances.stream()
                 .collect(Collectors.toMap(
-                        attendance -> attendance.getDateTime().toLocalDate(),
-                        attendance -> attendance.getDateTime().toLocalTime()
+                        attendance -> attendance.getAttendanceTime().toLocalDate(),
+                        attendance -> attendance.getAttendanceTime().toLocalTime()
                 ));
     }
 
@@ -39,8 +39,8 @@ public record AttendanceTimeline(
     }
 
     private static boolean isCloseDay(LocalDate date) {
-        boolean isWeekend = date.getDayOfWeek() == DayOfWeek.SATURDAY || date.getDayOfWeek() == DayOfWeek.SUNDAY;
-        return isWeekend || Holiday.isHoliday(LocalDate.of(date.getYear(), date.getMonth(), date.getDayOfMonth()));
+        return DateUtils.isWeekend(date.getDayOfWeek()) ||
+                Holiday.isHoliday(LocalDate.of(date.getYear(), date.getMonth(), date.getDayOfMonth()));
     }
 
     private static void addAttendanceLog(Map<LocalDate, LocalTime> map,
