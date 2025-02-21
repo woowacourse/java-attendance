@@ -24,20 +24,25 @@ public class AttendanceController {
 
     public void run() {
         try {
-            read();
-            while (true) {
-                FeatureOption featureOption = InputView.readOption();
-                if (featureOption == FeatureOption.QUIT) {
-                    break;
-                }
-                runFunction(featureOption);
-            }
+            readInitialData();
+            processAttendanceSystem();
         } catch (Exception exception) {
             OutputView.printErrorMessage(exception.getMessage());
         }
     }
 
-    private void read() throws FileNotFoundException {
+    private void processAttendanceSystem() {
+        while (readFeatureOption() != FeatureOption.QUIT) {
+            FeatureOption featureOption = InputView.readOption();
+            runFunction(featureOption);
+        }
+    }
+
+    private FeatureOption readFeatureOption() {
+        return InputView.readOption();
+    }
+
+    private void readInitialData() throws FileNotFoundException {
         List<String> names = CustomFileReader.readCrewNames();
         attendanceService.saveCrews(names);
 
