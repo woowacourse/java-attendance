@@ -162,7 +162,7 @@ class DefaultCrewAttendanceComparatorTest {
 
     @DisplayName("결석과 지각이 같다면, 이름 순으로 정렬한다.")
     @ParameterizedTest(name = "bigger: {0}, smaller: {1}")
-    @MethodSource("compareMoreLateTestCases")
+    @MethodSource("compareMoreNameTestCases")
     void compareMoreName(CrewAttendance bigger, CrewAttendance smaller) {
 
         // Given
