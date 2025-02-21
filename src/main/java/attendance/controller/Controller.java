@@ -10,13 +10,11 @@ import attendance.model.Crews;
 import attendance.model.CustomLocalDateTime;
 import attendance.view.InputView;
 import attendance.view.OutputView;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
+import java.time.LocalDate;
 
 public class Controller {
     public static final String FILE_NAME = "attendances.csv";
-    private static final DateTimeFormatter NOT_ATTENDABLE_FORMATTER = DateTimeFormatter.ofPattern(
-            "MM월 dd일 EEEE은 등교일이 아닙니다.");
+    private static final String NOT_ATTENDABLE_FORMAT_STRING = "MM월 dd일 EEEE은 등교일이 아닙니다.";
 
     private final InputView inputView;
     private final OutputView outputView;
@@ -54,14 +52,13 @@ public class Controller {
 
     private void processAddAttendance() {
         process(() -> {
-            if (CustomLocalDateTime.isHoliday(CustomLocalDateTime.nowDate())) {
-                throw new IllegalArgumentException(CustomLocalDateTime.nowDate().format(NOT_ATTENDABLE_FORMATTER));
+            if (CustomLocalDateTime.isTodayHoliday()) {
+                throw new IllegalArgumentException(CustomLocalDateTime.formatNowDateTime(NOT_ATTENDABLE_FORMAT_STRING));
             }
             Crew crew = crews.findCrew(inputView.inputCrewName());
-            AttendanceDetail attendanceDetail = new AttendanceDetail(LocalDateTime.of(
-                    CustomLocalDateTime.nowDate(),
-                    CustomLocalDateTime.parseTime(inputView.inputEntryTime())
-            ));
+            AttendanceDetail attendanceDetail = new AttendanceDetail(
+                    CustomLocalDateTime.generateAttendanceDateTime(inputView.inputEntryTime())
+            );
             crew.attend(attendanceDetail);
             outputView.printAttendanceDetail(AttendanceDetailDTO.from(attendanceDetail));
         });
@@ -71,7 +68,7 @@ public class Controller {
         process(() -> {
             AttendanceDetail attendanceDetail = crews.getCrewAttendanceDetail(
                     inputView.inputModifyAttendanceCrewName(),
-                    CustomLocalDateTime.parseDate(inputView.inputModifyAttendanceDate())
+                    LocalDate.of(2024, 12, Parser.parseInt(inputView.inputModifyAttendanceDate()))
             );
             AttendanceDetail beforeModify = new AttendanceDetail(attendanceDetail.getAttendanceDateTime());
             attendanceDetail.modify(CustomLocalDateTime.parseTime(inputView.inputModifyAttendanceTime()));

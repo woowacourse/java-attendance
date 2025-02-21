@@ -1,6 +1,5 @@
 package attendance.model;
 
-import attendance.controller.Parser;
 import java.time.Clock;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
@@ -32,8 +31,19 @@ public class CustomLocalDateTime {
         return LocalTime.parse(time, MODIFY_ATTENDANCE_TIME_FORMATTER);
     }
 
-    public static LocalDate parseDate(String day) {
-        return LocalDate.of(2024, 12, Parser.parseInt(day));
+    public static LocalDateTime generateAttendanceDateTime(String time) {
+        return LocalDateTime.of(
+                nowDate(),
+                CustomLocalDateTime.parseTime(time)
+        );
+    }
+
+    public static boolean isTodayHoliday() {
+        return isHoliday(nowDate());
+    }
+
+    public static String formatNowDateTime(String pattern) {
+        return now().format(DateTimeFormatter.ofPattern(pattern));
     }
 
     public static boolean isHoliday(LocalDate localDate) {

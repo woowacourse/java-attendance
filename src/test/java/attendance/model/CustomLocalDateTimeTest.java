@@ -44,15 +44,4 @@ class CustomLocalDateTimeTest {
     void 올바르지_않은_시간을_파싱하면_예외가_발생한다() {
         assertThatThrownBy(() -> CustomLocalDateTime.parseTime("28:58"));
     }
-
-    @DisplayName("X일이 문자열로 주어지면 2024년 12월 X일의 LocalDate로 파싱한다.")
-    @Test
-    void 일이_문자열로_주어지면_LocalDate로_파싱한다() {
-        assertThat(CustomLocalDateTime.parseDate("3")).isEqualTo(LocalDate.of(2024, 12, 3));
-    }
-
-    @Test
-    void 올바르지_않은_날짜를_파싱하면_예외가_발생한다() {
-        assertThatThrownBy(() -> CustomLocalDateTime.parseDate("40"));
-    }
 }
