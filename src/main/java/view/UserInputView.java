@@ -40,9 +40,9 @@ public class UserInputView {
         return new Scanner(System.in).nextLine();
     }
 
-    public String[] askAttendanceTimeForCheckAttendance() {
+    public String askAttendanceTimeForCheckAttendance() {
         System.out.println("등교 시간을 입력해 주세요.");
-        return new Scanner(System.in).nextLine().split(":");
+        return new Scanner(System.in).nextLine();
     }
 
     public String askNickNameForModifyAttendanceInfo() {
@@ -55,8 +55,8 @@ public class UserInputView {
         return Integer.parseInt(new Scanner(System.in).nextLine());
     }
 
-    public String[] askAttendanceTimeForModifyAttendance() {
+    public String askAttendanceTimeForModifyAttendance() {
         System.out.println("언제로 변경하겠습니까?");
-        return new Scanner(System.in).nextLine().split(":");
+        return new Scanner(System.in).nextLine();
     }
 }

@@ -66,7 +66,8 @@ public class AttendanceSystem {
         try {
             String name = userInputView.askNickNameForCheckAttendance();
             InputValidator.validateName(name, allCrew);
-            String[] time = userInputView.askAttendanceTimeForCheckAttendance();
+            String time = userInputView.askAttendanceTimeForCheckAttendance();
+            InputValidator.validateTimeFormat(time);
             outputView.printCheckedAttendance(allCrew, name, time);
         } catch (IllegalArgumentException e) {
             outputView.printExceptionMessage(e.getMessage());
@@ -79,7 +80,8 @@ public class AttendanceSystem {
             String name = userInputView.askNickNameForModifyAttendanceInfo();
             InputValidator.validateName(name, allCrew);
             int day = userInputView.askDayForModifyAttendanceInfo();
-            String[] time = userInputView.askAttendanceTimeForModifyAttendance();
+            String time = userInputView.askAttendanceTimeForModifyAttendance();
+            InputValidator.validateTimeFormat(time);
             outputView.printModifyAttendance(allCrew, name, day, time);
         } catch (IllegalArgumentException e) {
             outputView.printExceptionMessage(e.getMessage());

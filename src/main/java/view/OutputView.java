@@ -21,22 +21,22 @@ public class OutputView {
         System.out.println(allCrew.printAttendanceHistory(name, today));
     }
 
-    public void printCheckedAttendance(AllCrew allCrew, String name, String[] time){
+    public void printCheckedAttendance(AllCrew allCrew, String name, String time){
         System.out.println("\n" + allCrew.addCrewAttendanceByName(name, LocalDateTime.of(today.getYear(),
                 today.getMonthValue(),
                 today.getDayOfMonth(),
-                Integer.parseInt(time[0]),
-                Integer.parseInt(time[1]))) + "\n");
+                Integer.parseInt(time.split(":")[0]),
+                Integer.parseInt(time.split(":")[1]))) + "\n");
     }
 
-    public void printModifyAttendance(AllCrew allCrew, String name, int day, String[] time){
+    public void printModifyAttendance(AllCrew allCrew, String name, int day, String time){
         System.out.println("\n" +
                 allCrew.modifyCrewAttendanceByName(name, LocalDateTime.of(today.getYear(),
                         today.getMonthValue(),
                         day,
-                        Integer.parseInt(time[0]),
-                        Integer.parseInt(time[1])))
-        );
+                        Integer.parseInt(time.split(":")[0]),
+                        Integer.parseInt(time.split(":")[1]))
+                ));
     }
 
     public void printExceptionMessage(String message) {
