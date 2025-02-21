@@ -82,6 +82,9 @@ public class OutputView {
     }
 
     private void printCrewStatus(CrewStatus crewStatus) {
+        if (crewStatus.equals(CrewStatus.NORMAL)) {
+            return;
+        }
         System.out.printf("%s 대상자입니다.\n", crewStatus.getExpression());
     }
 
