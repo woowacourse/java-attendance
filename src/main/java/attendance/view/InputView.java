@@ -8,14 +8,14 @@ import java.time.format.DateTimeParseException;
 
 public class InputView {
     private static final BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(System.in));
-    public static final String ENTER_NAME = "\n닉네임을 입력해 주세요.\n";
-    public static final String ENTER_NAME_FOR_MODIFY = "\n출석을 수정하려는 크루의 닉네임을 입력해 주세요.\n";
-    public static final String ENTER_DAY_FOR_MODIFY = "수정하려는 날짜(일)를 입력해 주세요.\n";
-    public static final String ENTER_NEW_TIME = "언제로 변경하겠습니까?\n";
+    private static final String ENTER_NAME = "\n닉네임을 입력해 주세요.\n";
+    private static final String ENTER_NAME_FOR_MODIFY = "\n출석을 수정하려는 크루의 닉네임을 입력해 주세요.\n";
+    private static final String ENTER_DAY_FOR_MODIFY = "수정하려는 날짜(일)를 입력해 주세요.\n";
+    private static final String ENTER_NEW_TIME = "언제로 변경하겠습니까?\n";
     private static final String ENTER_ATTENDANCE_TIME = "등교 시간을 입력해 주세요.\n";
 
-    public static String readOption() {
-        return readLine();
+    public static char readOption() {
+        return readLine().charAt(0);
     }
 
     public static String readNickName() {
