@@ -9,7 +9,6 @@ import org.junit.jupiter.params.provider.MethodSource;
 
 class PunishmentTest {
 
-
     @ParameterizedTest
     @MethodSource("methodSources")
     void 결석_개수에_맞는_처벌_종류를_선정한다(int absenceCount, Punishment expectedPunishment) {

@@ -8,7 +8,6 @@ import org.junit.jupiter.params.provider.MethodSource;
 
 class CommandTest {
 
-
     @ParameterizedTest
     @MethodSource("methodSources")
     void 올바른_명령_문자를_입력시_명령_반환(String commandName, Command expectedCommand) {
@@ -27,5 +26,4 @@ class CommandTest {
                 Arguments.arguments("Q", Command.QUIT)
         );
     }
-
 }

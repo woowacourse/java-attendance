@@ -16,11 +16,11 @@ class CsvReaderTest {
         for (int i = 0; i < 4; i++) {
             attendances.put(parsedResult.get(i)[0], parsedResult.get(i)[1]);
         }
-        Map<String, String> expectedResult = new HashMap<>();
-        expectedResult.put("쿠키", "2024-12-13 10:08");
-        expectedResult.put("빙봉", "2024-12-13 10:07");
-        expectedResult.put("빙티", "2024-12-13 10:07");
-        expectedResult.put("이든", "2024-12-13 10:07");
+        Map<String, String> expectedResult = Map.of(
+                "쿠키", "2024-12-13 10:08",
+                "빙봉", "2024-12-13 10:07",
+                "빙티", "2024-12-13 10:07",
+                "이든", "2024-12-13 10:07");
 
         for (String nickname : expectedResult.keySet()) {
             String localDateTime = attendances.get(nickname);

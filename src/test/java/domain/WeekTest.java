@@ -46,5 +46,4 @@ class WeekTest {
                 Arguments.arguments(LocalDateTime.of(2024, 12, 15, 11, 11))
         );
     }
-
 }
