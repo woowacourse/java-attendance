@@ -1,6 +1,5 @@
 package attendance.model.domain.attendance;
 
-import attendance.model.domain.attendance.vo.WarningCount;
 import attendance.model.domain.crew.Crew;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -8,35 +7,27 @@ import java.util.List;
 public class CrewAttendance {
 
     private final Crew crew;
-    private final WarningCount warningCount;
-    private final ManagementStatus managementStatus;
+    private final Attendance attendance;
 
-    private CrewAttendance(
-            Crew crew,
-            WarningCount warningCount,
-            ManagementStatus managementStatus
-    ) {
-
+    private CrewAttendance(Crew crew, Attendance attendance) {
         this.crew = crew;
-        this.warningCount = warningCount;
-        this.managementStatus = managementStatus;
+        this.attendance = attendance;
     }
 
     public static CrewAttendance of(Crew crew, List<LocalDateTime> dateTimes) {
-        WarningCount warningCount = WarningCount.from(dateTimes);
-        return new CrewAttendance(crew, warningCount, ManagementStatus.from(warningCount));
+        return new CrewAttendance(crew, Attendance.from(dateTimes));
     }
 
     public boolean requiresManagement() {
-        return managementStatus.requiresManagement();
+        return attendance.requiresManagement();
     }
 
     public int getPolicyAppliedAbsenceCount() {
-        return warningCount.getPolicyAppliedAbsenceCount();
+        return attendance.getPolicyAppliedAbsenceCount();
     }
 
     public int getPolicyAppliedLateCount() {
-        return warningCount.getPolicyAppliedLateCount();
+        return attendance.getPolicyAppliedLateCount();
     }
 
     public String getCrewName() {
@@ -44,14 +35,14 @@ public class CrewAttendance {
     }
 
     public int getAbsenceCount() {
-        return warningCount.getAbsenceCount();
+        return attendance.getAbsenceCount();
     }
 
     public int getLateCount() {
-        return warningCount.getLateCount();
+        return attendance.getLateCount();
     }
 
     public String getManagementStatusName() {
-        return managementStatus.getName();
+        return attendance.getManagementStatusName();
     }
 }
