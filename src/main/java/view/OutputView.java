@@ -1,5 +1,16 @@
 package view;
 
+import static view.OutputMessages.DISPLAY_ABSENT_COUNT;
+import static view.OutputMessages.DISPLAY_ATTENDANCE_COUNT;
+import static view.OutputMessages.DISPLAY_ATTENDANCE_RECORD_PROMPT;
+import static view.OutputMessages.DISPLAY_ATTENDANCE_RECORD_RESULT;
+import static view.OutputMessages.DISPLAY_CHECK_ATTENDANCE_RESULT;
+import static view.OutputMessages.DISPLAY_HAS_PENALTY;
+import static view.OutputMessages.DISPLAY_LATE_COUNT;
+import static view.OutputMessages.DISPLAY_MODIFY_ATTENDANCE_RESULT;
+import static view.OutputMessages.DISPLAY_PENALTY_CREW;
+import static view.OutputMessages.DISPLAY_PENALTY_PROMPT;
+
 import domain.PenaltyStatus;
 import dto.AttendanceRecordResponse;
 import dto.CrewPenaltyResponse;
@@ -32,15 +43,17 @@ public class OutputView {
     }
 
     public void displayCheckAttendanceResult(AttendanceRecordResponse response) {
+        int month = response.date().getMonthValue();
         int day = response.date().getDayOfMonth();
         String koreanDayOfWeek = response.date().getDayOfWeek()
                 .getDisplayName(TextStyle.FULL, Locale.KOREAN);
         String formattedTime = response.time().format(DateTimeFormatter.ofPattern("HH:mm"));
-        System.out.printf("12월 %02d일 %s %s %s%n", day, koreanDayOfWeek, formattedTime,
-                response.attendanceStatus().getMessage());
+        System.out.println(DISPLAY_CHECK_ATTENDANCE_RESULT.format(month, day, koreanDayOfWeek, formattedTime,
+                response.attendanceStatus().getMessage()));
     }
 
     public void displayModifyAttendanceResult(ModifyAttendanceResponse response) {
+        int month = response.date().getMonthValue();
         int day = response.date().getDayOfMonth();
         String koreanDayOfWeek = response.date().getDayOfWeek()
                 .getDisplayName(TextStyle.FULL, Locale.KOREAN);
@@ -49,16 +62,17 @@ public class OutputView {
         String formattedOriginalTime = response.originalTime().format(dateTimeFormatter);
         String formattedModifiedTime = response.modifiedTime().format(dateTimeFormatter);
 
-        System.out.printf("12월 %02d일 %s %s %s -> %s %s 수정 완료!%n",
-                day, koreanDayOfWeek, formattedOriginalTime, response.originalStatus(), formattedModifiedTime,
-                response.modifiedStatus());
+        System.out.println(DISPLAY_MODIFY_ATTENDANCE_RESULT.format(month, day, koreanDayOfWeek, formattedOriginalTime,
+                response.originalStatus(), formattedModifiedTime,
+                response.modifiedStatus()));
     }
 
     public void displayAttendanceRecordByName(String name, List<AttendanceRecordResponse> attendanceRecords,
                                               TotalRecordsResponse totalRecords, String penalty) {
-        System.out.printf("이번 달 %s의 출석 기록입니다.%n", name);
+        System.out.printf(DISPLAY_ATTENDANCE_RECORD_PROMPT.format(name));
         displaySpacing();
         for (AttendanceRecordResponse attendanceRecord : attendanceRecords) {
+            int month = attendanceRecord.date().getMonthValue();
             int day = attendanceRecord.date().getDayOfMonth();
             String koreanDayOfWeek = attendanceRecord.date().getDayOfWeek()
                     .getDisplayName(TextStyle.FULL, Locale.KOREAN);
@@ -66,16 +80,16 @@ public class OutputView {
             if (attendanceRecord.time() != null) {
                 time = attendanceRecord.time().format(DateTimeFormatter.ofPattern("HH:mm"));
             }
-            System.out.printf("12월 %02d일 %s %s %s%n", day, koreanDayOfWeek, time,
-                    attendanceRecord.attendanceStatus().getMessage());
+            System.out.println(DISPLAY_ATTENDANCE_RECORD_RESULT.format(month, day, koreanDayOfWeek, time,
+                    attendanceRecord.attendanceStatus().getMessage()));
         }
         displaySpacing();
-        System.out.printf("출석: %d회%n", totalRecords.attendanceCount());
-        System.out.printf("지각: %d회%n", totalRecords.lateCount());
-        System.out.printf("결석: %d회%n", totalRecords.absentCount());
+        System.out.println(DISPLAY_ATTENDANCE_COUNT.format(totalRecords.attendanceCount()));
+        System.out.println(DISPLAY_LATE_COUNT.format(totalRecords.lateCount()));
+        System.out.println(DISPLAY_ABSENT_COUNT.format(totalRecords.absentCount()));
         displaySpacing();
         if (!penalty.isBlank()) {
-            System.out.printf("%s 대상자입니다.%n", penalty);
+            System.out.println(DISPLAY_HAS_PENALTY.format(penalty));
         }
         displaySpacing();
     }
@@ -88,14 +102,14 @@ public class OutputView {
                 .thenComparing(CrewPenaltyResponse::name)
         );
 
-        System.out.println("제적 위험자 조회 결과");
+        System.out.println(DISPLAY_PENALTY_PROMPT.getFormat());
         for (CrewPenaltyResponse response : responses) {
             if (response.penaltyStatus() == PenaltyStatus.NONE) {
                 continue;
             }
-            System.out.printf("- %s: 결석 %d회, 지각 %d회 (%s)%n",
-                    response.name(), response.absentCount(), response.lateCount(),
-                    response.penaltyStatus().getMessage());
+            System.out.println(
+                    DISPLAY_PENALTY_CREW.format(response.name(), response.absentCount(), response.lateCount(),
+                            response.penaltyStatus().getMessage()));
         }
     }
 
