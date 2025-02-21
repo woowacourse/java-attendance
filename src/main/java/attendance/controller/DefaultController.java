@@ -35,9 +35,18 @@ public class DefaultController implements Controller {
     public void run() {
         Command command;
         do {
-            command = inputView.inputCommand();
+            command = inputCommand();
             command.run(this);
         } while (command != Command.QUIT);
+    }
+
+    private Command inputCommand() {
+        try {
+            return inputView.inputCommand();
+        } catch (final IllegalArgumentException e) {
+            System.out.println(e.getMessage());
+            return inputCommand();
+        }
     }
 
     @Override
