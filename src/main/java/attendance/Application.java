@@ -8,6 +8,7 @@ import attendance.domain.dto.AttendanceHistoryDto;
 import attendance.exception.AttendanceArgumentException;
 import attendance.view.ConsoleInputView;
 import attendance.view.OutputView;
+import java.util.EnumSet;
 import java.util.function.Supplier;
 
 public class Application {
@@ -17,7 +18,11 @@ public class Application {
     private final static AppConfig appConfig = new AppConfig();
     private final static RequestParser requestParser = new RequestParser();
     private final static AttendanceController attendanceController = appConfig.attendanceController();
-    private static final String ATTENDANCE_MONTH = "2024 12 ";
+    private final static EnumSet<AttendanceMethod> SUPPORTED_METHODS =
+            EnumSet.of(AttendanceMethod.ATTENDANCE, AttendanceMethod.MODIFY,
+                    AttendanceMethod.ATTENDANCE_HISTORY, AttendanceMethod.CREW_DISMISS_VIEW);
+    private final static String ATTENDANCE_MONTH = "2024 12 ";
+    private final static String NOT_SUPPORT_METHOD = "지원하지 않는 기능입니다.";
 
     public static void main(String[] args) {
         AttendanceMethod method = null;
@@ -28,11 +33,15 @@ public class Application {
     }
 
     private static void doMethod(AttendanceMethod method) {
+        if (!SUPPORTED_METHODS.contains(method)) {
+            throw new AttendanceArgumentException(NOT_SUPPORT_METHOD);
+        }
+    
         switch (method) {
             case ATTENDANCE -> attendance();
             case MODIFY -> modifyAttendance();
             case ATTENDANCE_HISTORY -> attendanceHistory();
-            case CREW_DISSMISS_VIEW -> showCrewDismiss();
+            case CREW_DISMISS_VIEW -> showCrewDismiss();
         }
     }
 

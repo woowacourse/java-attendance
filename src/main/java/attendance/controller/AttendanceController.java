@@ -29,7 +29,6 @@ public class AttendanceController {
                 attendanceDto.attendanceDate().toLocalDate());
     }
 
-    //TODO 리팩토링
     public String attendanceModify(AttendanceModifyDto attendanceDto) {
         LocalDate modifyDate = attendanceDto.attendanceDate().toLocalDate();
         LocalTime afterModifyTime = attendanceDto.attendanceDate().toLocalTime();

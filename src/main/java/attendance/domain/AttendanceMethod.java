@@ -7,7 +7,7 @@ public enum AttendanceMethod {
     ATTENDANCE("1"),
     MODIFY("2"),
     ATTENDANCE_HISTORY("3"),
-    CREW_DISSMISS_VIEW("4"),
+    CREW_DISMISS_VIEW("4"),
     QUIT("Q");
 
     private final String method;
