@@ -17,15 +17,16 @@ public class OutputView {
     }
 
     public void printAttendanceHistory(AllCrew allCrew, String name) {
+        System.out.println("\n이번 달 " + name + "의 출석 기록입니다.\n");
         System.out.println(allCrew.printAttendanceHistory(name, today));
     }
 
     public void printCheckedAttendance(AllCrew allCrew, String name, String[] time){
-        System.out.println(allCrew.addCrewAttendanceByName(name, LocalDateTime.of(today.getYear(),
+        System.out.println("\n" + allCrew.addCrewAttendanceByName(name, LocalDateTime.of(today.getYear(),
                 today.getMonthValue(),
                 today.getDayOfMonth(),
                 Integer.parseInt(time[0]),
-                Integer.parseInt(time[1]))));
+                Integer.parseInt(time[1]))) + "\n");
     }
 
     public void printModifyAttendance(AllCrew allCrew, String name, int day, String[] time){
@@ -38,4 +39,7 @@ public class OutputView {
         );
     }
 
+    public void printExceptionMessage(String message) {
+        System.out.println(message);
+    }
 }

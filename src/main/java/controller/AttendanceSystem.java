@@ -3,6 +3,7 @@ package controller;
 import domain.AllCrew;
 import java.time.LocalDate;
 import view.FileInputView;
+import view.InputValidator;
 import view.OutputView;
 import view.UserInputView;
 
@@ -48,26 +49,44 @@ public class AttendanceSystem {
         return !menuInput.matches("[Qq]");
     }
 
-    private void checkDangerousCrew() {
-        outputView.printDangerousCrew(allCrew);
-    }
-
-    private void checkCrewAttendanceHistory() {
-        String name = userInputView.askNickNameForCheckAttendanceInfo();
-        outputView.printAttendanceHistory(allCrew, name);
-    }
-
     private void checkAttendance() {
-        String name = userInputView.askNickNameForCheckAttendance();
-        String[] time = userInputView.askAttendanceTimeForCheckAttendance();
-        outputView.printCheckedAttendance(allCrew, name, time);
+        try {
+            String name = userInputView.askNickNameForCheckAttendance();
+            InputValidator.validateName(name, allCrew);
+            String[] time = userInputView.askAttendanceTimeForCheckAttendance();
+            outputView.printCheckedAttendance(allCrew, name, time);
+        } catch (IllegalArgumentException e) {
+            outputView.printExceptionMessage(e.getMessage());
+            checkAttendance();
+        }
     }
 
     private void modifyAttendance() {
-        String name = userInputView.askNickNameForModifyAttendanceInfo();
-        int day = userInputView.askDayForModifyAttendanceInfo();
-        String[] time = userInputView.askAttendanceTimeForModifyAttendance();
-        outputView.printModifyAttendance(allCrew, name, day, time);
+        try {
+            String name = userInputView.askNickNameForModifyAttendanceInfo();
+            InputValidator.validateName(name, allCrew);
+            int day = userInputView.askDayForModifyAttendanceInfo();
+            String[] time = userInputView.askAttendanceTimeForModifyAttendance();
+            outputView.printModifyAttendance(allCrew, name, day, time);
+        } catch (IllegalArgumentException e) {
+            outputView.printExceptionMessage(e.getMessage());
+            modifyAttendance();
+        }
+    }
+
+    private void checkCrewAttendanceHistory() {
+        try {
+            String name = userInputView.askNickNameForCheckAttendanceInfo();
+            InputValidator.validateName(name, allCrew);
+            outputView.printAttendanceHistory(allCrew, name);
+        } catch (IllegalArgumentException e) {
+            outputView.printExceptionMessage(e.getMessage());
+            checkCrewAttendanceHistory();
+        }
+    }
+
+    private void checkDangerousCrew() {
+        outputView.printDangerousCrew(allCrew);
     }
 }
 

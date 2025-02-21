@@ -32,9 +32,7 @@ public class UserInputView {
     public String askNickNameForCheckAttendanceInfo() {
         System.out.println("\n닉네임을 입력해 주세요.");
         Scanner sc = new Scanner(System.in);
-        String name = sc.nextLine();
-        System.out.println("\n이번 달 " + name + "의 출석 기록입니다.\n");
-        return name;
+        return sc.nextLine();
     }
 
     public String askNickNameForCheckAttendance() {
