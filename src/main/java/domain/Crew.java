@@ -50,7 +50,6 @@ public class Crew implements Comparable<Crew> {
         return attendances.stream().anyMatch(attendance -> attendance.matchDate(localDate));
     }
 
-
     public void updateAttendanceByDateTime(final String attendanceTime) {
         final Attendance updatedAttendance = Attendance.of(attendanceTime);
         attendances.remove(updatedAttendance);

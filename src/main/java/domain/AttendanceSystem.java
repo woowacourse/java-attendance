@@ -9,7 +9,6 @@ import java.util.List;
 import java.util.Objects;
 
 public class AttendanceSystem {
-
     private final List<Crew> crews;
 
     public AttendanceSystem(final List<Crew> crews) {
@@ -59,12 +58,10 @@ public class AttendanceSystem {
         return localDate.getDayOfWeek() == DayOfWeek.SUNDAY || localDate.getDayOfWeek() == DayOfWeek.SATURDAY || localDate.equals(LocalDate.of(2024, 12, 25));
     }
 
-
     private boolean isExpulsionCrew(final Crew crew) {
         final ExpulsionStatus expulsionStatus = crew.calculateExpulsionStatus();
         return !Objects.equals(expulsionStatus, ExpulsionStatus.NORMAL);
     }
-
 
     public Attendance updateAttendanceByCrewNameAndDay(final LocalTime targetTime, final String crewName,
                                                        final int dayOfMonth) {

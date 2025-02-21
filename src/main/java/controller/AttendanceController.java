@@ -38,7 +38,6 @@ public class AttendanceController {
         retryUntilOperationQuit();
     }
 
-
     public Operation selectOperation() {
         outputView.printToday(LocalDate.now().withYear(2024).withMonth(12));
         outputView.printIntroduceOperation();
@@ -59,7 +58,6 @@ public class AttendanceController {
         while (selectOperation() != Operation.QUIT) {
         }
     }
-
 
     private void addAttendance() {
         if (attendanceSystem.isNotAttendanceDay(LocalDate.now().withYear(2024).withMonth(12))) {
@@ -139,7 +137,6 @@ public class AttendanceController {
         return crewName;
     }
 
-
     private void responseCrewAttendanceHistory() {
         final String crewName = LoopTemplate.tryCatchLoop(this::inputCrewName, outputView);
         final Crew crew = attendanceSystem.findCrewByName(crewName);
@@ -152,7 +149,6 @@ public class AttendanceController {
         outputView.printCrewExpulsionStatus(expulsionStatus);
 
     }
-
 
     private void responseExpulsionCrews() {
         final List<Crew> crews = attendanceSystem.calculateExpulsionCrews();

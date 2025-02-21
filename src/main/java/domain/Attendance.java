@@ -40,7 +40,6 @@ public class Attendance {
         this.isEmpty = attendance.isEmpty;
     }
 
-
     public LocalDateTime getDateTime() {
         return LocalDateTime.of(dateTime.toLocalDate(), dateTime.toLocalTime());
     }

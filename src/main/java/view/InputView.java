@@ -7,7 +7,6 @@ import java.time.format.DateTimeParseException;
 import java.util.Scanner;
 
 public class InputView {
-
     private final Scanner scanner;
 
     public InputView() {
