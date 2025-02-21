@@ -7,8 +7,8 @@ import java.util.List;
 import java.util.Locale;
 
 public class HolidayValidator {
-    public static final LocalDate CHRISTMAS = LocalDate.of(2024, 12, 25);
-    public static final List<DayOfWeek> WEEKENDS = List.of(DayOfWeek.SATURDAY, DayOfWeek.SUNDAY);
+    private static final LocalDate CHRISTMAS = LocalDate.of(2024, 12, 25);
+    private static final List<DayOfWeek> WEEKENDS = List.of(DayOfWeek.SATURDAY, DayOfWeek.SUNDAY);
 
     public static void validate(LocalDate day) {
         if (WEEKENDS.contains(day.getDayOfWeek()) || day.equals(CHRISTMAS)) {

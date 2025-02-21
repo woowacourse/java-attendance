@@ -7,7 +7,6 @@ import attendance.domain.Warning;
 import attendance.dto.AttendanceResultResponse;
 import attendance.dto.UpdateAfterAttendanceResponse;
 import attendance.dto.UpdateBeforeAttendanceResponse;
-
 import java.time.LocalDateTime;
 import java.time.format.TextStyle;
 import java.util.List;
@@ -54,7 +53,7 @@ public class OutputView {
                         status.getMessage());
                 continue;
             }
-            printAttendanceResult(AttendanceResultResponse.of(attendance));
+            printAttendanceResult(AttendanceResultResponse.from(attendance));
         }
         System.out.printf("출석 : %d회\n", crew.countAttend());
         System.out.printf("지각 : %d회\n", crew.countLate());

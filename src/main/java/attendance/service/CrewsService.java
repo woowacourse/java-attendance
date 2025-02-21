@@ -4,7 +4,6 @@ import attendance.domain.Attendance;
 import attendance.domain.AttendanceStatus;
 import attendance.domain.Crew;
 import attendance.domain.Crews;
-
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -13,8 +12,8 @@ import java.util.List;
 import java.util.Map;
 
 public class CrewsService {
-    public static final LocalDate CHRISTMAS = LocalDate.of(2024, 12, 25);
-    public static final List<DayOfWeek> WEEKENDS = List.of(DayOfWeek.SATURDAY, DayOfWeek.SUNDAY);
+    private static final LocalDate CHRISTMAS = LocalDate.of(2024, 12, 25);
+    private static final List<DayOfWeek> WEEKENDS = List.of(DayOfWeek.SATURDAY, DayOfWeek.SUNDAY);
 
     public Crews init(Map<String, List<LocalDateTime>> crewsAttendances, LocalDate now) {
         List<Crew> crews = new ArrayList<>();
