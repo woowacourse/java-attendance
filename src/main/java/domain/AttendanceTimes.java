@@ -64,12 +64,11 @@ public class AttendanceTimes {
     }
 
     public boolean checkAttended(LocalDate attendanceDate) {
-        for (AttendanceTime attendances : attendanceTimes) {
-            if (attendances.checkAttended(attendanceDate)) {
-                return true;
-            }
-        }
-        return false;
+        int count = (int) this.attendanceTimes.stream()
+                .filter(a -> a.checkAttended(attendanceDate))
+                .count();
+
+        return count > 0;
     }
 
     public List<AttendanceTime> getAttendanceTimes() {
