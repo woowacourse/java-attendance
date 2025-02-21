@@ -6,7 +6,7 @@ public enum ExpulsionStatus {
     NORMAL("정상", 0),
     ADVANCE("경고", 2),
     INTERVIEW("면담", 3),
-    EXPULSTION("제적", 6);
+    EXPULSION("제적", 6);
 
     String name;
     int boundary;
