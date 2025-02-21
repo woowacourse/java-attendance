@@ -1,6 +1,7 @@
 package domain;
 
 import java.time.LocalTime;
+import util.TodayDateTimeUtil;
 
 public enum AttendanceState {
 
@@ -14,11 +15,11 @@ public enum AttendanceState {
         this.description = description;
     }
 
-    public static String findStateBy(final LocalTime localTime, final int dayOfWeekValue) {
-        Calender.validateHolyDay(dayOfWeekValue);
+    public static String findStateBy(final LocalTime localTime, final int dayOfMonth) {
+        Calender.validateHolyDay(dayOfMonth);
         AttendanceTime.validateCampusTime(localTime);
 
-        String dayOfWeek = Calender.findBy(dayOfWeekValue);
+        String dayOfWeek = Calender.findBy(TodayDateTimeUtil.nowDate());
         if (dayOfWeek.equals("월요일")) {
             if (localTime.isAfter(AttendanceTime.MON_TIME.getLocalTimes().get(1))) {
                 return ABSENCE.description;
