@@ -10,7 +10,7 @@ public class InputView {
     private static final String ASK_NEW_TIME_FOR_CHANGE = "언제로 변경하겠습니까?";
 
 
-    private Scanner scanner = new Scanner(System.in);
+    private final Scanner scanner = new Scanner(System.in);
 
     public String getNickname() {
         System.out.println(NICKNAME_INPUT_MESSAGE);

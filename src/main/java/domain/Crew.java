@@ -8,7 +8,7 @@ import java.util.List;
 
 public class Crew {
     private final String nickName;
-    private List<Attendance> attendances;
+    private final List<Attendance> attendances;
 
     public Crew(String nickName) {
         this.nickName = nickName;

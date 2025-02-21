@@ -4,7 +4,7 @@ import java.util.Comparator;
 import java.util.List;
 
 public class CrewDtos {
-    private List<CrewDto> crewDtos;
+    private final List<CrewDto> crewDtos;
 
     public CrewDtos(List<CrewDto> crewDtos) {
         this.crewDtos = crewDtos;

@@ -4,10 +4,10 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 
 public class AttendanceDto {
-    private LocalDate date;
-    private Boolean isLate;
-    private Boolean isAbsent;
-    private LocalTime attendanceTime;
+    private final LocalDate date;
+    private final Boolean isLate;
+    private final Boolean isAbsent;
+    private final LocalTime attendanceTime;
 
     public AttendanceDto(LocalDate date, Boolean isLate, Boolean isAbsent, LocalTime attendanceTime) {
         this.date = date;
