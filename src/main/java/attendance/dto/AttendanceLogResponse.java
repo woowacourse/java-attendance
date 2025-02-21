@@ -8,33 +8,45 @@ import java.util.Optional;
 
 public class AttendanceLogResponse {
 
-    private final TimeNullableDateTimeResponse timeNullableDateTimeResponse;
-    private final AttendanceStatusResponse attendanceStatusResponse;
+    private final LocalDate date;
+    private final LocalTime time;
+    private final String attendanceStatus;
 
-    private AttendanceLogResponse(TimeNullableDateTimeResponse timeNullableDateTimeResponse,
-                                  AttendanceStatusResponse attendanceStatusResponse) {
-        this.timeNullableDateTimeResponse = timeNullableDateTimeResponse;
-        this.attendanceStatusResponse = attendanceStatusResponse;
+    private AttendanceLogResponse(LocalDate date, LocalTime time, String attendanceStatus) {
+        this.date = date;
+        this.time = time;
+        this.attendanceStatus = attendanceStatus;
     }
 
-    public static AttendanceLogResponse of(TimeNullableDateTimeResponse timeNullableDateTimeResponse,
-                                           AttendanceStatus attendanceStatus) {
-        return new AttendanceLogResponse(timeNullableDateTimeResponse, AttendanceStatusResponse.from(attendanceStatus));
+    public static AttendanceLogResponse fromDateTime(LocalDateTime dateTime) {
+        return new AttendanceLogResponse(
+                dateTime.toLocalDate(),
+                dateTime.toLocalTime(),
+                AttendanceStatus.from(dateTime).getName()
+        );
+    }
+
+    public static AttendanceLogResponse fromAbsenceDate(LocalDate date) {
+        return new AttendanceLogResponse(
+                date,
+                null,
+                AttendanceStatus.ABSENCE.getName()
+        );
     }
 
     public LocalDate getDate() {
-        return timeNullableDateTimeResponse.getDate();
+        return date;
     }
 
     public Optional<LocalTime> getTime() {
-        return timeNullableDateTimeResponse.getTime();
+        return Optional.ofNullable(time);
     }
 
     public Optional<LocalDateTime> getDateTime() {
-        return timeNullableDateTimeResponse.getDateTime();
+        return Optional.ofNullable(time).map(time -> LocalDateTime.of(date, time));
     }
 
     public String getAttendanceStatus() {
-        return attendanceStatusResponse.getAttendanceStatus();
+        return attendanceStatus;
     }
 }

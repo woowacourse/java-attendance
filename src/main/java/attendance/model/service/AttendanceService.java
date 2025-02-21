@@ -3,7 +3,6 @@ package attendance.model.service;
 import attendance.dto.AttendanceLogResponse;
 import attendance.dto.CrewAttendanceLogResponse;
 import attendance.dto.RequiresManagementCrewResponse;
-import attendance.dto.TimeNullableDateTimeResponse;
 import attendance.dto.UpdateAttendanceResponse;
 import attendance.model.Calender;
 import attendance.model.domain.attendance.AttendanceStatus;
@@ -27,10 +26,7 @@ public class AttendanceService {
 
     public AttendanceLogResponse attendance(Crew crew, LocalDateTime attendanceTime) {
         attendanceRepository.save(crew, attendanceTime);
-        return AttendanceLogResponse.of(
-                TimeNullableDateTimeResponse.fromDateTime(attendanceTime),
-                AttendanceStatus.from(attendanceTime)
-        );
+        return AttendanceLogResponse.fromDateTime(attendanceTime);
     }
 
     public Crew findCrewByName(String crewName) {
@@ -83,12 +79,7 @@ public class AttendanceService {
 
     private List<AttendanceLogResponse> makeExistsTimeLogResponses(List<LocalDateTime> attendanceLogs) {
         return attendanceLogs.stream()
-                .map(dateTime ->
-                        AttendanceLogResponse.of(
-                                TimeNullableDateTimeResponse.fromDateTime(dateTime),
-                                AttendanceStatus.from(dateTime)
-                        )
-                )
+                .map(AttendanceLogResponse::fromDateTime)
                 .toList();
     }
 
@@ -98,12 +89,7 @@ public class AttendanceService {
                 .toList();
 
         return Calender.getNotExistsDatesBeforeToday(dateLogs).stream()
-                .map(date ->
-                        AttendanceLogResponse.of(
-                                TimeNullableDateTimeResponse.fromDate(date),
-                                AttendanceStatus.ABSENCE
-                        )
-                )
+                .map(AttendanceLogResponse::fromAbsenceDate)
                 .toList();
     }
 
