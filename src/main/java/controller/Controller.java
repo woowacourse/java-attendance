@@ -14,6 +14,11 @@ import view.OutputView;
 
 public class Controller {
     private static final LocalDateTime TODAY = LocalDateTime.of(2024, 12, 13, 10,0);
+    private static final int CHECK_IN = 1;
+    private static final int MODIFY_ATTENDANCE = 2;
+    private static final int CHECK_BY_CREW = 3;
+    private static final int CHECK_DROPOUT_RISK = 4;
+
 
     private StudentRepository readFileAndCreateStudentRepository() throws IOException {
         FileInput fileInput = new FileInput();
@@ -44,16 +49,16 @@ public class Controller {
             if (selectFunction.equals("Q")){
                 break;
             }
-            if (Integer.parseInt(selectFunction) == 1) {
+            if (Integer.parseInt(selectFunction) == CHECK_IN) {
                 functionForMenuOne(studentRepository, todayDate);
             }
-            if (Integer.parseInt(selectFunction) == 2) {
+            if (Integer.parseInt(selectFunction) == MODIFY_ATTENDANCE) {
                 functionForMenuTwo(studentRepository);
             }
-            if (Integer.parseInt(selectFunction) == 3) {
+            if (Integer.parseInt(selectFunction) == CHECK_BY_CREW) {
                 functionForMenuThree(studentRepository);
             }
-            if (Integer.parseInt(selectFunction) == 4) {
+            if (Integer.parseInt(selectFunction) == CHECK_DROPOUT_RISK) {
                 functionForMenuFour(studentRepository);
             }
         }
