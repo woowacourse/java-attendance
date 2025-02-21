@@ -62,7 +62,7 @@ public class InputValidatorTest {
 
     @DisplayName("수정하려는 날짜(일)가 유효한 날짜일 경우 정상 동작한다.")
     @ParameterizedTest
-    @ValueSource(strings = {"1", "31"})
+    @ValueSource(strings = {"1", "01", "31"})
     void test7(String date) {
         assertDoesNotThrow(() -> InputValidator.validateDate(date));
     }
