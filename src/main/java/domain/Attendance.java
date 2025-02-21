@@ -10,13 +10,11 @@ public class Attendance {
     private final LocalDateTime dateTime;
     private final boolean isEmpty;
 
-    // 실제 생성
     public Attendance(final String time) {
         this.dateTime = LocalDateTime.parse(time, FORMATTER);
         isEmpty = false;
     }
 
-    // 초기화
     public Attendance(final LocalDateTime dateTime, final boolean isEmpty) {
         this.dateTime = dateTime;
         this.isEmpty = isEmpty;
