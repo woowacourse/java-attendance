@@ -8,12 +8,14 @@ import dto.AttendanceResultDto;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
+import util.TodayDateTimeUtil;
 
 public class OutputView {
-
-    public static void printTodayAttendance(final int todayDay, final String todayDayOfWeek,
-                                            final String schoolStartTime, final String attendanceResult) {
-        System.out.printf("12월 %02d일 %s %s (%s)", todayDay, todayDayOfWeek, schoolStartTime, attendanceResult);
+    //    final int todayDay, final String todayDayOfWeek,
+    public static void printTodayAttendance(
+            final String schoolStartTime, final String attendanceResult) {
+        System.out.printf("12월 %02d일 %s %s (%s)\n", TodayDateTimeUtil.nowMonth(), TodayDateTimeUtil.nowDayOfWeek(),
+                schoolStartTime, attendanceResult);
     }
 
     public static void printUpdateAttendance(final LocalDateTime beforeDateTime, final LocalDateTime afterDateTime) {

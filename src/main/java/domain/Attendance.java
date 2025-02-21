@@ -9,6 +9,7 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import util.TodayDateTimeUtil;
 
 public class Attendance {
 
@@ -30,14 +31,14 @@ public class Attendance {
         return attendanceMap;
     }
 
-    public void save(final Crew crew, final String schoolStartTime, final int todayDay) {
+    public void save(final Crew crew, final String schoolStartTime) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
         List<LocalDateTime> localDateTimes = attendanceMap.get(crew);
 
-        String today = String.format("2024-12-%02d %s", todayDay, schoolStartTime);
+        String today = String.format("2024-12-%02d %s", TodayDateTimeUtil.nowMonth(), schoolStartTime);
         LocalDateTime todayLocalDateTime = LocalDateTime.parse(today, formatter);
 
-        validateDuplicateSave(todayDay, localDateTimes);
+        validateDuplicateSave(TodayDateTimeUtil.nowDate(), localDateTimes);
         localDateTimes.add(todayLocalDateTime);
         attendanceMap.put(crew, localDateTimes);
     }
@@ -77,14 +78,14 @@ public class Attendance {
         return beforeLocalDateTime;
     }
 
-    public List<AttendanceResultDto> readRecord(final Crew crew, int todayDay) {
+    public List<AttendanceResultDto> readRecord(final Crew crew) {
         List<LocalDateTime> localDateTimes = attendanceMap.get(crew);
         localDateTimes.sort(Comparator.comparing((LocalDateTime::getDayOfMonth)));
 
         List<AttendanceResultDto> attendanceResultDtos = new ArrayList<>();
 
         int idx = 0;
-        for (int dayIndex = 1; dayIndex < todayDay; dayIndex++) {
+        for (int dayIndex = 1; dayIndex < TodayDateTimeUtil.nowDate(); dayIndex++) {
             if (Calender.findBy(dayIndex).equals("공휴일")) {
                 continue;
             }
@@ -118,11 +119,11 @@ public class Attendance {
         attendanceResultDtos.add(attendanceResultDto);
     }
 
-    public Map<Crew, AbsenceResultDto> getAbsence(final int todayDay) {
+    public Map<Crew, AbsenceResultDto> getAbsence() {
         Map<Crew, AbsenceResultDto> absenceMap = new HashMap<>();
 
         for (Crew crew : attendanceMap.keySet()) {
-            List<AttendanceResultDto> attendanceResultDtos = readRecord(crew, todayDay);
+            List<AttendanceResultDto> attendanceResultDtos = readRecord(crew);
 
             AbsenceHistory absenceHistory = new AbsenceHistory(attendanceResultDtos);
             AbsenceResultDto absenceResultDto = absenceHistory.calculate();

@@ -65,7 +65,7 @@ class AttendanceTest {
         Attendance attendance = new Attendance(attendances);
 
         // when
-        attendance.save(crew, "10:20", 6);
+        attendance.save(crew, "10:20");
 
         // then
         assertThat(attendance.getAttendanceMap().get(crew)).hasSize(5);
@@ -88,7 +88,7 @@ class AttendanceTest {
         Attendance attendance = new Attendance(attendances);
 
         // when & then
-        assertThatThrownBy(() -> attendance.save(crew, "09:55", 2))
+        assertThatThrownBy(() -> attendance.save(crew, "09:55"))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("이미 출석한 크루입니다.");
     }
@@ -110,7 +110,7 @@ class AttendanceTest {
         Attendance attendance = new Attendance(attendances);
 
         // when & then
-        assertThatCode(() -> attendance.save(crew, "09:55", 6))
+        assertThatCode(() -> attendance.save(crew, "09:55"))
                 .doesNotThrowAnyException();
     }
 
@@ -162,7 +162,7 @@ class AttendanceTest {
         int todayDay = 10;
 
         // when
-        List<AttendanceResultDto> actual = attendance.readRecord(crew, todayDay);
+        List<AttendanceResultDto> actual = attendance.readRecord(crew);
 
         // then
         assertThat(actual).hasSize(6);
@@ -175,7 +175,7 @@ class AttendanceTest {
         Attendance attendance = FileManager.readFile();
 
         // when
-        Map<Crew, AbsenceResultDto> actual = attendance.getAbsence(14);
+        Map<Crew, AbsenceResultDto> actual = attendance.getAbsence();
 
         // then
         assertThat(actual).hasSize(5);
