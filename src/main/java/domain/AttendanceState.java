@@ -20,32 +20,32 @@ public enum AttendanceState {
         Calender.validateHolyDay(DateTimeUtil.getDateBy(localDate)); // 크리스마스 고려 안 됨...
         AttendanceTime.validateCampusTime(localTime);
 
-//        String dayOfWeek = Calender.findBy(DateTimeUtil.nowDate());
-
         String dayOfWeek = DateTimeUtil.getDayOfWeekBy(
                 LocalDate.of(DateTimeUtil.getYearBy(localDate), DateTimeUtil.getMonthBy(localDate),
                         DateTimeUtil.getDateBy(localDate)));
-//        String dayOfWeek = LocalDate.of(2024, 12, date).getDayOfWeek().toString();
 
+        return getDayOfWeekString(localTime, dayOfWeek);
+    }
+
+    private static String getDayOfWeekString(LocalTime localTime, String dayOfWeek) {
         if (dayOfWeek.equals("월요일")) {
-            if (localTime.isAfter(AttendanceTime.MON_TIME.getLocalTimes().get(1))) {
-                return ABSENCE.description;
-            } else if (localTime.isAfter(AttendanceTime.MON_TIME.getLocalTimes().get(0))) {
-                return LATENESS.description;
-            }
-            return ATTENDANCE.description;
+            return determineAttendanceStatus(localTime, AttendanceTime.MON_TIME);
         }
 
-        if (!dayOfWeek.equals("월요일") && !dayOfWeek.equals("공휴일")) {
-            if (localTime.isAfter(AttendanceTime.ELSE_TIME.getLocalTimes().get(1))) {
-                return ABSENCE.description;
-            } else if (localTime.isAfter(AttendanceTime.ELSE_TIME.getLocalTimes().get(0))) {
-                return LATENESS.description;
-            }
-            return ATTENDANCE.description;
+        if (!dayOfWeek.equals("공휴일")) {
+            return determineAttendanceStatus(localTime, AttendanceTime.ELSE_TIME);
         }
 
         return null;
+    }
+
+    private static String determineAttendanceStatus(LocalTime localTime, AttendanceTime monTime) {
+        if (localTime.isAfter(monTime.getLocalTimes().get(1))) {
+            return ABSENCE.description;
+        } else if (localTime.isAfter(monTime.getLocalTimes().get(0))) {
+            return LATENESS.description;
+        }
+        return ATTENDANCE.description;
     }
 
     public String getDescription() {
