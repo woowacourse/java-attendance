@@ -14,30 +14,26 @@ public enum AttendanceState {
         this.description = description;
     }
 
-    public static String findStateBy(final LocalTime localTime, final int dayOfWeekValue) {
+    public static AttendanceState findStateBy(final LocalTime localTime, final int dayOfWeekValue) {
         Calender.validateHolyDay(dayOfWeekValue);
         AttendanceTime.validateCampusTime(localTime);
 
-        String dayOfWeek = Calender.findBy(dayOfWeekValue);
-        if (dayOfWeek.equals("월요일")) {
-            if (localTime.isAfter(AttendanceTime.MON_TIME.getLocalTimes().get(1))) {
-                return ABSENCE.description;
-            } else if (localTime.isAfter(AttendanceTime.MON_TIME.getLocalTimes().get(0))) {
-                return LATENESS.description;
-            }
-            return ATTENDANCE.description;
+        Calender calender = Calender.findBy(dayOfWeekValue);
+        AttendanceTime attendanceTime = AttendanceTime.findBy(calender);
+
+        return calculateStatusBy(localTime, attendanceTime);
+    }
+
+    private static AttendanceState calculateStatusBy(final LocalTime localTime, final AttendanceTime attendanceTime) {
+        if (localTime.isAfter(attendanceTime.getLocalTimes().get(1))) {
+            return ABSENCE;
         }
 
-        if (!dayOfWeek.equals("월요일") && !dayOfWeek.equals("공휴일")) {
-            if (localTime.isAfter(AttendanceTime.ELSE_TIME.getLocalTimes().get(1))) {
-                return ABSENCE.description;
-            } else if (localTime.isAfter(AttendanceTime.ELSE_TIME.getLocalTimes().get(0))) {
-                return LATENESS.description;
-            }
-            return ATTENDANCE.description;
+        if (localTime.isAfter(attendanceTime.getLocalTimes().get(0))) {
+            return LATENESS;
         }
 
-        return null;
+        return ATTENDANCE;
     }
 
     public String getDescription() {

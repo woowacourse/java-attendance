@@ -12,21 +12,26 @@ import java.util.Map;
 public class OutputView {
 
     public static void printTodayAttendance(final int todayDay, final String todayDayOfWeek,
-                                            final String schoolStartTime, final String attendanceResult) {
+                                            final String schoolStartTime, final AttendanceState attendanceResult) {
         System.out.printf("12월 %02d일 %s %s (%s)", todayDay, todayDayOfWeek, schoolStartTime, attendanceResult);
     }
 
     public static void printUpdateAttendance(final LocalDateTime beforeDateTime, final LocalDateTime afterDateTime) {
 
-        String beforeAttendanceState = AttendanceState.findStateBy(beforeDateTime.toLocalTime(),
+        AttendanceState beforeAttendanceState = AttendanceState.findStateBy(beforeDateTime.toLocalTime(),
                 beforeDateTime.getDayOfMonth());
 
-        String afterAttendanceState = AttendanceState.findStateBy(afterDateTime.toLocalTime(),
+        AttendanceState afterAttendanceState = AttendanceState.findStateBy(afterDateTime.toLocalTime(),
                 afterDateTime.getDayOfMonth());
 
         System.out.printf("12월 %02d일 %s %02d:%02d (%s) -> %02d:%02d (%s) 수정 완료!\n", beforeDateTime.getDayOfMonth(),
-                Calender.findBy(beforeDateTime.getDayOfMonth()), beforeDateTime.getHour(), beforeDateTime.getMinute(),
-                beforeAttendanceState, afterDateTime.getHour(), afterDateTime.getMinute(), afterAttendanceState);
+                Calender.findBy(beforeDateTime.getDayOfMonth()),
+                beforeDateTime.getHour(),
+                beforeDateTime.getMinute(),
+                beforeAttendanceState.getDescription(),
+                afterDateTime.getHour(),
+                afterDateTime.getMinute(),
+                afterAttendanceState.getDescription());
     }
 
     public static void printRecordAttendance(List<AttendanceResultDto> attendanceResultDtos) {

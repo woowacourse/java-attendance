@@ -24,9 +24,9 @@ class AttendanceStateTest {
     }, delimiter = ',')
     void statusReturn(LocalTime localTime, int dayOfMonth, String expected) {
         // given
-        String actual = AttendanceState.findStateBy(localTime, dayOfMonth);
+        AttendanceState actual = AttendanceState.findStateBy(localTime, dayOfMonth);
 
         // when & then
-        assertThat(actual).isEqualTo(expected);
+        assertThat(actual.getDescription()).isEqualTo(expected);
     }
 }

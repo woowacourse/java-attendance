@@ -18,10 +18,10 @@ class CalenderTest {
         int dayOfMonth = 19;
 
         //when
-        String result = Calender.findBy(dayOfMonth);
+        Calender result = Calender.findBy(dayOfMonth);
 
         //then
-        assertThat(result).isEqualTo("목요일");
+        assertThat(result.getDescription()).isEqualTo("목요일");
     }
 
     @DisplayName("공휴일에 출석확인을 하면 예외가 발생한다.")

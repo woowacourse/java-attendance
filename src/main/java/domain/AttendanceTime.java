@@ -1,6 +1,7 @@
 package domain;
 
 import java.time.LocalTime;
+import java.util.Arrays;
 import java.util.List;
 
 public enum AttendanceTime {
@@ -26,6 +27,13 @@ public enum AttendanceTime {
         if (localTime.isBefore(LocalTime.of(8, 0)) || localTime.isAfter(LocalTime.of(23, 0))) {
             throw new IllegalArgumentException("캠퍼스 운영 시간은 매일 08:00~23:00입니다.");
         }
+    }
+
+    public static AttendanceTime findBy(final Calender calender) {
+        return Arrays.stream(AttendanceTime.values())
+                .filter(value -> value.calenders.contains(calender))
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 요일 입니다."));
     }
 
     public List<Calender> getCalenders() {

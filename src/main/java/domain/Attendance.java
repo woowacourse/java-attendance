@@ -85,7 +85,7 @@ public class Attendance {
 
         int idx = 0;
         for (int dayIndex = 1; dayIndex < todayDay; dayIndex++) {
-            if (Calender.findBy(dayIndex).equals("공휴일")) {
+            if (Calender.findBy(dayIndex).getDescription().equals("공휴일")) {
                 continue;
             }
 
@@ -100,7 +100,7 @@ public class Attendance {
             int dayOfMonth = localDateTime.getDayOfMonth();
 
             if (dayIndex == dayOfMonth) {
-                String state = AttendanceState.findStateBy(localDateTime.toLocalTime(), dayOfMonth);
+                AttendanceState state = AttendanceState.findStateBy(localDateTime.toLocalTime(), dayOfMonth);
                 AttendanceResultDto attendanceResultDto = new AttendanceResultDto(localDateTime, state);
                 attendanceResultDtos.add(attendanceResultDto);
                 idx++;
@@ -112,7 +112,7 @@ public class Attendance {
     }
 
     private void checkAbsence(final int dayIndex, final List<AttendanceResultDto> attendanceResultDtos) {
-        String state = "결석";
+        AttendanceState state = AttendanceState.ABSENCE;
         LocalDateTime newLocalDateTime = LocalDateTime.of(2024, 12, dayIndex, 0, 0);
         AttendanceResultDto attendanceResultDto = new AttendanceResultDto(newLocalDateTime, state);
         attendanceResultDtos.add(attendanceResultDto);

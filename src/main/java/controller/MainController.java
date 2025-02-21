@@ -51,7 +51,7 @@ public class MainController {
         today = LocalDate.now();
         todayMonth = 12;
         todayDay = today.getDayOfMonth();
-        todayDayOfWeek = Calender.findBy(todayDay);
+        todayDayOfWeek = Calender.findBy(todayDay).getDescription();
     }
 
     private void attendanceCheck() {
@@ -62,7 +62,7 @@ public class MainController {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");
         LocalTime dateTime = LocalTime.parse(schoolStartTime, formatter);
 
-        String attendanceState = AttendanceState.findStateBy(dateTime, todayDay);
+        AttendanceState attendanceState = AttendanceState.findStateBy(dateTime, todayDay);
 
         attendance.save(crew, schoolStartTime, todayDay);
 
