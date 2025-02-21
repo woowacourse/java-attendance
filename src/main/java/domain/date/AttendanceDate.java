@@ -1,5 +1,6 @@
 package domain.date;
 
+import java.time.DayOfWeek;
 import java.util.List;
 
 public class AttendanceDate {
@@ -15,6 +16,14 @@ public class AttendanceDate {
         if (day > 31 || day <= 0) {
             throw new IllegalArgumentException("올바른 일 형식이 아닙니다. 1부터 31사이의 값을 입력해주세요.");
         }
+    }
+
+    public static boolean isOpenDay(DayOfWeek dayOfWeek) {
+        if (dayOfWeek == DayOfWeek.SATURDAY || dayOfWeek == DayOfWeek.SUNDAY) {
+            return false;
+        }
+
+        return true;
     }
 
     public int getDay() {
