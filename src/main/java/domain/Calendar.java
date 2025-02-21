@@ -1,6 +1,7 @@
 package domain;
 
 import java.util.List;
+import view.ErrorCode;
 
 public class Calendar {
     private static final List<Integer> SATURDAYS = List.of(7, 14, 21, 28);

@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import view.ErrorCode;
 
 public class Parser {
 
@@ -20,7 +21,7 @@ public class Parser {
 
     public static List<List<String>> parseName(List<String> removedData) {
         List<List<String>> result = new ArrayList<>();
-        for (String data: removedData) {
+        for (String data : removedData) {
             List<String> nameSeperatedData = Arrays.asList(data.split(NAME_DELIMITER));
             result.add(nameSeperatedData);
         }
@@ -36,7 +37,7 @@ public class Parser {
         return Map.of(date, time);
     }
 
-    public static LocalDate parseInputDay(String input){
+    public static LocalDate parseInputDay(String input) {
         try {
             return LocalDate.now().withDayOfMonth(Integer.parseInt(input));
         } catch (DateTimeException | NumberFormatException e) {
@@ -44,7 +45,7 @@ public class Parser {
         }
     }
 
-    public static LocalTime parseInputTime(String input){
+    public static LocalTime parseInputTime(String input) {
         try {
             return LocalTime.parse(input);
         } catch (DateTimeException | NumberFormatException e) {
