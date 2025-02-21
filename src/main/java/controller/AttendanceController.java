@@ -76,9 +76,8 @@ public class AttendanceController {
             return null;
         });
 
-        LocalDateTime attendanceDateTime = attendance.getAttendanceDateTime(nickName, nowDate);
-        AttendanceStatus attendanceStatus = attendance.getAttendanceStatus(nickName, nowDate);
-        outputView.printCheckAttendanceMessage(attendanceDateTime, attendanceStatus);
+        AttendanceTime attendanceTime = attendance.findAttendanceTime(nickName, nowDate);
+        outputView.printCheckAttendanceMessage(attendanceTime);
     }
 
     private void validateCampusOpenDate(Attendance attendance, LocalDate nowDate) {
@@ -151,7 +150,7 @@ public class AttendanceController {
 
     private void printCrewAttendances(Attendance attendance, List<AttendanceTime> attendanceTimes, String nickName) {
         for (AttendanceTime crewAttendance : attendanceTimes) {
-            outputView.printCheckAttendanceMessage(crewAttendance.getAttendanceDateTime(), crewAttendance.getAttendanceStatus());
+            outputView.printCheckAttendanceMessage(crewAttendance);
         }
 
         Map<AttendanceStatus, Integer> attendStatuses = attendance.getCrewAttendanceStatus(nickName);

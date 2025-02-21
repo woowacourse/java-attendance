@@ -19,7 +19,9 @@ public class OutputView {
                 Convertor.convertDayOfWeekToKorean(nowDate.getDayOfWeek())));
     }
 
-    public void printCheckAttendanceMessage(LocalDateTime attendanceDateTime, AttendanceStatus attendanceStatus) {
+    public void printCheckAttendanceMessage(AttendanceTime attendanceTime) {
+        LocalDateTime attendanceDateTime = attendanceTime.getAttendanceDateTime();
+        AttendanceStatus attendanceStatus = attendanceTime.getAttendanceStatus();
         System.out.print(writeAttendanceDateMessage(attendanceDateTime)
                         + writeAttendanceTimeMessage(attendanceDateTime, attendanceStatus));
     }

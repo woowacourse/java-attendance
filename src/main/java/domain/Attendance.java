@@ -56,16 +56,6 @@ public class Attendance {
         return expelledCrew;
     }
 
-    public LocalDateTime getAttendanceDateTime(String nickName, LocalDate attendanceDate) {
-        AttendanceTime attendanceTime = findAttendanceTime(nickName, attendanceDate);
-        return attendanceTime.getAttendanceDateTime();
-    }
-
-    public AttendanceStatus getAttendanceStatus(String nickName, LocalDate attendanceDate) {
-        AttendanceTime attendanceTime = findAttendanceTime(nickName, attendanceDate);
-        return attendanceTime.getAttendanceStatus();
-    }
-
     public AttendanceTime findAttendanceTime(String nickName, LocalDate attendanceDate) {
         AttendanceTimes attendanceTimes = this.attendance.get(crews.findCrew(nickName));
         return attendanceTimes.getAttendanceTime(attendanceDate);
