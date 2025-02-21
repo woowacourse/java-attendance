@@ -39,7 +39,7 @@ public class InputView {
     public int insertChangeDate() {
         System.out.println("수정하려는 날짜(일)를 입력해 주세요.");
         String input = getInput();
-        inputValidator.validateInteger(input);
+        inputValidator.validateDayFormat(input);
         return Integer.parseInt(input);
     }
 
