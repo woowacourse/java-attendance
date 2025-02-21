@@ -4,6 +4,8 @@ import java.util.Objects;
 
 public class PenaltyCrew implements Comparable<PenaltyCrew> {
 
+    public static final int LATE_TO_ABSENCE_RATIO = 3;
+
     private final String name;
     private final int absenceCount;
     private final int lateCount;
@@ -14,7 +16,7 @@ public class PenaltyCrew implements Comparable<PenaltyCrew> {
         this.lateCount = lateCount;
         this.absenceCount = absenceCount;
         this.name = name;
-        this.point = absenceCount * 3 + lateCount;
+        this.point = absenceCount * LATE_TO_ABSENCE_RATIO + lateCount;
         this.attendanceStatus = AttendancePenalty.find(absenceCount, lateCount);
     }
 
