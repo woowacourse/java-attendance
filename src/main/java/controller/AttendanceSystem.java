@@ -1,6 +1,8 @@
 package controller;
 
+import domain.Attendance;
 import domain.AttendanceBook;
+import dto.ModifyResult;
 import java.util.function.Supplier;
 import util.DateTimeManager;
 import view.InputValidator;
@@ -61,10 +63,10 @@ public class AttendanceSystem {
     private void checkAttendance() {
         String name = handleWithRetry(this::processName);
         String time = handleWithRetry(this::processTime);
-        String attendanceResult = handleWithRestart(() ->
+        Attendance attendance = handleWithRestart(() ->
                 attendanceBook.addCrewAttendanceByName(name,
                         dateTimeManager.getDateTime(time)));
-        outputView.printAttendanceResult(attendanceResult);
+        outputView.printAttendanceResult(attendance);
     }
 
     private String processName() {
@@ -83,7 +85,7 @@ public class AttendanceSystem {
         String modifyName = handleWithRetry(this::processModifyName);
         String modifyDay = handleWithRetry(this::processModifyDay);
         String modifyTime = handleWithRetry(this::processModifyTime);
-        String modifyResult = handleWithRestart(() ->
+        ModifyResult modifyResult = handleWithRestart(() ->
                 attendanceBook.modifyCrewAttendanceByName(modifyName,
                         dateTimeManager.getModifiedDate(modifyDay, modifyTime)));
         outputView.printModifiedAttendance(modifyResult);

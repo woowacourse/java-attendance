@@ -1,5 +1,7 @@
 package domain;
 
+import dto.AttendanceData;
+import dto.ModifyResult;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -22,17 +24,17 @@ public class AttendanceBook {
                 .anyMatch(crew -> crew.getName().equals(crewName));
     }
 
-    public String addCrewAttendanceByName(String name, LocalDateTime dateTime) {
+    public Attendance addCrewAttendanceByName(String name, LocalDateTime dateTime) {
         Crew crew = findCrewByName(name);
-        return crew.addAttendance(dateTime).getFormattedAttended();
+        return crew.addAttendance(dateTime);
     }
 
-    public String modifyCrewAttendanceByName(String name, LocalDateTime dateTime) {
+    public ModifyResult modifyCrewAttendanceByName(String name, LocalDateTime dateTime) {
         Crew crew = findCrewByName(name);
         return crew.update(dateTime);
     }
 
-    public String printAttendanceHistory(String name, LocalDate lastDate) {
+    public AttendanceData getAttendanceData(String name, LocalDate lastDate) {
         Crew crew = findCrewByName(name);
         return crew.getAttendanceHistory(lastDate);
     }
@@ -58,7 +60,7 @@ public class AttendanceBook {
     }
 
     private static String scanWarningCrew(LocalDate date, Crew crew, String result) {
-        if (crew.calculateWarningStatus(crew.getAbsentCount()).isEmpty()) {
+        if (WarningStatus.from(crew.getAbsentCount()) == WarningStatus.NONE) {
             return "";
         }
         result += "- " + crew.printWarningInfo(date) + "\n";
