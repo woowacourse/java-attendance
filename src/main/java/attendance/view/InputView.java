@@ -57,8 +57,7 @@ public class InputView {
 
     private LocalTime parseLocalTime(String input) {
         try {
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");
-            return LocalTime.parse(input, formatter);
+            return LocalTime.parse(input, DateConverter.LOCAL_TIME_FORMAT);
         } catch (Exception e) {
             throw new IllegalArgumentException(ErrorMessage.INVALID_TIME_FORMAT_INPUT.getMessage());
         }
