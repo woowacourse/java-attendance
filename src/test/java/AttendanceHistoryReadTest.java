@@ -15,7 +15,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class AttendanceHistoryReadTest {
 
-    private List<Attendance> attendances = List.of(
+    private final List<Attendance> attendances = List.of(
             new Attendance(new Day(LocalDate.of(2024, 12, 2)), LocalTime.of(13, 0)),
             new Attendance(new Day(LocalDate.of(2024, 12, 3)), LocalTime.of(9, 58)),
             new Attendance(new Day(LocalDate.of(2024, 12, 4)), LocalTime.of(10, 7)),

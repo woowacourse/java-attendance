@@ -17,8 +17,6 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 
 public class AttendanceCheckTest {
 
-    private LocalDate today = LocalDate.now();
-
     public static Stream<Arguments> getDayOfWeekAndAttendanceTime() {
         return Stream.of(
                 // 월요일
