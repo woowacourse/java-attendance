@@ -24,8 +24,7 @@ public class AttendanceController {
     private final static String EDIT_COMMAND = "2";
     private final static String CREW_QUERY_COMMAND = "3";
     private final static String CREWS_WARNING_COMMAND = "4";
-    private final static String EXIT_COMMAND_1 = "Q";
-    private final static String EXIT_COMMAND_2 = "q";
+    private final static String EXIT_COMMAND = "Q";
 
     private final FileInputView fileInputView;
     private final AttendanceService attendanceService;
@@ -69,7 +68,7 @@ public class AttendanceController {
             if (command.equals(CREWS_WARNING_COMMAND)) {
                 attendanceWarningCommand(crewGroup);
             }
-            if (command.equals(EXIT_COMMAND_1) || command.equals(EXIT_COMMAND_2)) {
+            if (command.equalsIgnoreCase(EXIT_COMMAND)) {
                 return true;
             }
             return false;
