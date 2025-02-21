@@ -46,14 +46,14 @@ public class InputValidatorTest {
         assertThatThrownBy(() -> InputValidator.validateName("없는 이름", allCrew));
     }
 
-    @DisplayName("등교 시간을 hh:mm의 포맷에 맞게 입력한 경우 정상 동작한다.")
+    @DisplayName("시간을 hh:mm의 포맷에 맞게 입력한 경우 정상 동작한다.")
     @ParameterizedTest
     @ValueSource(strings = {"09:59", "13:00"})
     void test5(String time) {
         assertDoesNotThrow(() -> InputValidator.validateTimeFormat(time));
     }
 
-    @DisplayName("등교 시간을 hh:mm의 포맷에 맞지 않게 입력한 경우 예외가 발생한다.")
+    @DisplayName("시간을 hh:mm의 포맷에 맞지 않게 입력한 경우 예외가 발생한다.")
     @ParameterizedTest
     @ValueSource(strings = {"9:59", "", " "})
     void test6(String time) {
