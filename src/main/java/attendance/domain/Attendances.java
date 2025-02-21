@@ -47,23 +47,30 @@ public class Attendances {
     public List<Attendance> getByCrew(Crew crew, LocalDate date) {
         int day = date.getDayOfMonth();
         List<Attendance> copiedAttendancesOfCrew = new ArrayList<>(attendances.get(crew));
+        copiedAttendancesOfCrew.removeIf(attendance -> attendance.getDateTime().getDayOfMonth() == day);
         int sequenceOfRecord = 0;
         for (int i = 1; i < day; i++) {
-            if (DateUtil.isWeekend(LocalDate.of(date.getYear(), date.getMonth(), i))) {
+            LocalDate currentDay = LocalDate.of(date.getYear(), date.getMonth(), i);
+            if (DateUtil.isWeekend(currentDay)) {
                 continue;
             }
-            addAbsenceIfNotExistRecord(copiedAttendancesOfCrew, sequenceOfRecord, LocalDate.of(date.getYear(), date.getMonth(), i));
+            addAbsenceRecord(sequenceOfRecord, copiedAttendancesOfCrew, currentDay);
             sequenceOfRecord++;
         }
         return copiedAttendancesOfCrew;
     }
 
-    private void addAbsenceIfNotExistRecord(List<Attendance> copiedAttendancesOfCrew,
-        int sequenceOfRecord, LocalDate date) {
-        Attendance attendance = copiedAttendancesOfCrew.get(sequenceOfRecord);
-        if (attendance.getDateTime().getDayOfMonth() > date.getDayOfMonth()) {
+    private void addAbsenceRecord(int sequenceOfRecord, List<Attendance> copiedAttendancesOfCrew, LocalDate currentDay) {
+        Attendance attendance;
+        if (sequenceOfRecord >= copiedAttendancesOfCrew.size()) {
+            attendance = Attendance.of(LocalDateTime.of(currentDay, LocalTime.of(0, 0)));
+            copiedAttendancesOfCrew.add(attendance);
+            return;
+        }
+        attendance = copiedAttendancesOfCrew.get(sequenceOfRecord);
+        if (attendance.getDateTime().getDayOfMonth() > currentDay.getDayOfMonth()) {
             copiedAttendancesOfCrew.add(sequenceOfRecord,
-                Attendance.of(LocalDateTime.of(date, LocalTime.of(0, 0, 0))));
+                    Attendance.of(LocalDateTime.of(currentDay, LocalTime.of(0, 0))));
         }
     }
 
