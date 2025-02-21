@@ -14,12 +14,10 @@ import java.util.List;
 public class Attendance {
     
     public static final List<DayOfWeek> WEEKEND = List.of(DayOfWeek.SATURDAY, DayOfWeek.SUNDAY);
-    public static final LocalTime MAX_ATTENDANCE_TIME = LocalTime.of(23, 0);
     public static final LocalTime MIN_ATTENDANCE_TIME = LocalTime.of(8, 0);
-    public static final LocalTime MONDAY_LATE_THRESHOLD = LocalTime.of(13, 30);
-    public static final LocalTime MONDAY_ATTEND_THRESHOLD = LocalTime.of(13, 5);
-    public static final LocalTime NOT_MONDAY_LATE_THRESHOLD = LocalTime.of(10, 30);
-    public static final LocalTime NOT_MONDAY_ATTEND_THRESHOLD = LocalTime.of(10, 5);
+    public static final LocalTime MAX_ATTENDANCE_TIME = LocalTime.of(23, 0);
+    public static final LocalTime NOT_MONDAY_ATTENDANCE_TIME = LocalTime.of(10, 0);
+    public static final LocalTime MONDAY_ATTENDANCE_TIME = LocalTime.of(13, 0);
     
     private LocalDateTime attendanceDateTime;
     private AttendanceStatus attendanceStatus;
@@ -45,29 +43,9 @@ public class Attendance {
     
     private AttendanceStatus checkAttendanceStatus(LocalDateTime attendanceDateTime) {
         if (attendanceDateTime.getDayOfWeek() == DayOfWeek.MONDAY) {
-            return checkMondayAttendanceStatus(attendanceDateTime.toLocalTime());
+            return AttendanceStatus.of(attendanceDateTime.toLocalTime(), MONDAY_ATTENDANCE_TIME);
         }
-        return checkNotMondayAttendanceStatus(attendanceDateTime.toLocalTime());
-    }
-    
-    private AttendanceStatus checkMondayAttendanceStatus(LocalTime attendanceTime) {
-        if (attendanceTime.isAfter(MONDAY_LATE_THRESHOLD)) {
-            return AttendanceStatus.결석;
-        }
-        if (attendanceTime.isAfter(MONDAY_ATTEND_THRESHOLD)) {
-            return AttendanceStatus.지각;
-        }
-        return AttendanceStatus.출석;
-    }
-    
-    private AttendanceStatus checkNotMondayAttendanceStatus(LocalTime attendanceTime) {
-        if (attendanceTime.isAfter(NOT_MONDAY_LATE_THRESHOLD)) {
-            return AttendanceStatus.결석;
-        }
-        if (attendanceTime.isAfter(NOT_MONDAY_ATTEND_THRESHOLD)) {
-            return AttendanceStatus.지각;
-        }
-        return AttendanceStatus.출석;
+        return AttendanceStatus.of(attendanceDateTime.toLocalTime(), NOT_MONDAY_ATTENDANCE_TIME);
     }
     
     public AttendResult createAttendanceResult() {
