@@ -1,8 +1,8 @@
 package view;
 
+import domain.AttendanceRecord;
 import domain.AttendanceStatus;
 import domain.Manage;
-import dto.AttendanceRecord;
 import dto.AttendanceResult;
 import dto.CrewAlmostExpelledResult;
 import dto.ModifiedResult;
@@ -23,11 +23,11 @@ public class OutputView {
 
     public static void printModifiedResult(ModifiedResult modifiedResult) {
         StringBuilder message = new StringBuilder();
-        message.append(
-                LocalDateTime.of(modifiedResult.date(), modifiedResult.before().time())
-                        .format(Formatter.DATETIME_FORMATTER));
+        message.append(modifiedResult.date().format(Formatter.DATE_FORMATTER));
+        message.append(" ");
+        message.append(modifiedResult.before().time());
         message.append(String.format(" (%s) -> ", modifiedResult.before().status().getTitle()));
-        message.append(modifiedResult.after().time().format(Formatter.TIME_FORMATTER));
+        message.append(modifiedResult.after().time());
         message.append(String.format(" (%s)", modifiedResult.after().status().getTitle()));
         message.append(" 수정 완료!%n%n");
         System.out.printf(message.toString());

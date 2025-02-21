@@ -1,28 +1,17 @@
 package controller;
 
-import constant.CampusConstant;
-import domain.AttendanceStatus;
-import domain.Crew;
-import domain.Manage;
 import dto.AttendanceModifyRequest;
-import dto.AttendanceRecord;
 import dto.AttendanceRequest;
-import dto.AttendanceResult;
-import dto.CrewAlmostExpelledResult;
-import dto.ModifiedResult;
-import dto.ModifiedResult.TimeAttendanceStatus;
-import dto.MonthAttendanceRecordsResult;
 import dto.OptionRequest;
-import java.time.LocalDate;
-import java.time.LocalTime;
-import java.util.List;
-import repository.CrewRepository;
-import util.DateTimeUtil;
+import service.AttendanceService;
 import view.InputView;
 import view.OutputView;
 
 public class AttendanceController {
-    public AttendanceController() {
+    private final AttendanceService attendanceService;
+
+    public AttendanceController(AttendanceService attendanceService) {
+        this.attendanceService = attendanceService;
         ResourceLoader.loadCrewRepository();
     }
 
@@ -36,72 +25,32 @@ public class AttendanceController {
     private boolean executeMainMenu(boolean isRunning) {
         OptionRequest optionRequest = InputView.scanOption();
         switch (optionRequest.option()) {
-            case "1" -> attendanceCheck();
-            case "2" -> attendanceModify();
+            case "1" -> insertAttendanceRecord();
+            case "2" -> modifyAttendanceRecord();
             case "3" -> printMonthAttendanceRecords();
-            case "4" -> checkCrewsAlmostExpelled();
+            case "4" -> printCrewsAlmostExpelled();
             case "q", "Q" -> isRunning = false;
             default -> System.out.println("존재하지 않는 옵션입니다.");
         }
         return isRunning;
     }
 
-    private void attendanceCheck() {
+    private void insertAttendanceRecord() {
         AttendanceRequest request = InputView.scanAttendance();
-        validateCampusTime(request.time());
-
-        Crew crew = CrewRepository.findByNickname(request.nickname());
-        AttendanceStatus status = crew.addAttendanceTime(DateTimeUtil.nowDate(), request.time());
-        OutputView.printAttendanceResult(AttendanceResult.of(DateTimeUtil.nowDate(), request.time(), status));
+        OutputView.printAttendanceResult(attendanceService.insertAttendanceRecord(request));
     }
 
-    private void attendanceModify() {
+    private void modifyAttendanceRecord() {
         AttendanceModifyRequest request = InputView.scanModify();
-        validateCampusTime(request.time());
-
-        Crew crew = CrewRepository.findByNickname(request.nickname());
-        TimeAttendanceStatus before = createTimeAndStatus(crew, request);
-
-        crew.modifyAttendanceTime(request.date(), request.time());
-
-        TimeAttendanceStatus after = createTimeAndStatus(crew, request);
-        OutputView.printModifiedResult(new ModifiedResult(request.date(), before, after));
-    }
-
-    private TimeAttendanceStatus createTimeAndStatus(Crew crew, AttendanceModifyRequest request) {
-        return new TimeAttendanceStatus(
-                crew.getAttendanceTimeByDate(request.date()),
-                crew.getAttendanceStatusByDate(request.date()));
+        OutputView.printModifiedResult(attendanceService.modifyAttendanceRecord(request));
     }
 
     private void printMonthAttendanceRecords() {
-        Crew crew = CrewRepository.findByNickname(InputView.scanNickname());
-        LocalDate now = DateTimeUtil.nowDate();
-        List<AttendanceRecord> attendanceRecords = crew.getMonthAttendanceRecords(now);
-        Manage manage = Manage.of(crew.getAttendanceStatusStatistics(now));
-
-        OutputView.printMonthAttendanceRecords(
-                new MonthAttendanceRecordsResult(
-                        crew.getNickname(), attendanceRecords, crew.getAttendanceStatusStatistics(now), manage
-                ));
+        String nickname = InputView.scanNickname();
+        OutputView.printMonthAttendanceRecords(attendanceService.getMonthAttendanceRecordsResult(nickname));
     }
 
-    private void checkCrewsAlmostExpelled() {
-        List<Crew> crews = CrewRepository.findAll();
-        List<CrewAlmostExpelledResult> result = crews.stream()
-                .map(crew -> {
-                    var attendanceStatusStatistics
-                            = crew.getAttendanceStatusStatistics(DateTimeUtil.nowDate());
-                    return new CrewAlmostExpelledResult(
-                            crew.getNickname(), attendanceStatusStatistics, Manage.of(attendanceStatusStatistics));
-                })
-                .toList();
-        OutputView.printCrewsAlmostExpelled(result);
-    }
-
-    private void validateCampusTime(LocalTime time) {
-        if (time.isBefore(CampusConstant.START_TIME) || time.isAfter(CampusConstant.END_TIME)) {
-            throw new IllegalArgumentException("캠퍼스 운영시간이 아닙니다.");
-        }
+    private void printCrewsAlmostExpelled() {
+        OutputView.printCrewsAlmostExpelled(attendanceService.getCrewsAlmostExpelled());
     }
 }

@@ -1,9 +1,10 @@
 import controller.AttendanceController;
+import service.AttendanceService;
 
 public class AttendanceApplication {
 
     public static void main(String[] args) {
-        AttendanceController controller = new AttendanceController();
+        AttendanceController controller = new AttendanceController(new AttendanceService());
         controller.run();
     }
 }

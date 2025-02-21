@@ -1,8 +1,9 @@
 package dto;
 
 import domain.AttendanceStatus;
+import domain.Crew;
 import java.time.LocalDate;
-import java.time.LocalTime;
+import util.Formatter;
 
 public record ModifiedResult(
         LocalDate date,
@@ -11,9 +12,18 @@ public record ModifiedResult(
 ) {
 
     public record TimeAttendanceStatus(
-            LocalTime time,
+            String time,
             AttendanceStatus status
     ) {
+        public static TimeAttendanceStatus of(Crew crew, LocalDate date) {
+            if (!crew.attendanceTimeExists(date)) {
+                return new TimeAttendanceStatus("--:--", AttendanceStatus.ABSENT);
+            }
 
+            return new TimeAttendanceStatus(
+                    crew.getAttendanceTimeByDate(date).format(Formatter.TIME_FORMATTER),
+                    crew.getAttendanceStatusByDate(date)
+            );
+        }
     }
 }

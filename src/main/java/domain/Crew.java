@@ -1,6 +1,5 @@
 package domain;
 
-import dto.AttendanceRecord;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
@@ -27,7 +26,7 @@ public class Crew {
     }
 
     private void validateDate(LocalDate date) {
-        if (attendanceTimes.containsKey(date)) {
+        if (attendanceTimeExists(date)) {
             throw new IllegalArgumentException(date + ": 이미 출석 처리되어 있습니다. 수정 기능을 이용해주세요.");
         }
         if (DateTimeUtil.isOffDay(date)) {
@@ -41,16 +40,20 @@ public class Crew {
     }
 
     public LocalTime getAttendanceTimeByDate(LocalDate date) {
-        if (!attendanceTimes.containsKey(date)) {
+        if (!attendanceTimeExists(date)) {
             throw new IllegalArgumentException(date + ": 출석 기록이 존재하지 않습니다.");
         }
         return attendanceTimes.get(date);
     }
 
+    public boolean attendanceTimeExists(LocalDate date) {
+        return attendanceTimes.containsKey(date);
+    }
+
     public AttendanceStatus getAttendanceStatusByDate(LocalDate date) {
         if (DateTimeUtil.isOffDay(date)) {
             return AttendanceStatus.NONE;
-        } else if (!attendanceTimes.containsKey(date)) {
+        } else if (!attendanceTimeExists(date)) {
             return AttendanceStatus.ABSENT;
         }
         return AttendanceStatus.of(date, attendanceTimes.get(date));
