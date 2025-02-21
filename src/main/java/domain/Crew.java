@@ -15,10 +15,6 @@ public class Crew {
         this.attendanceStatuses = new HashMap<>();
     }
 
-    public String getName() {
-        return this.name;
-    }
-
     public Map<AttendanceStatus, Integer> getAttendanceStatus(AttendanceTimes attendanceTimes) {
         countAttendanceStatus(attendanceTimes);
         return attendanceStatuses;
@@ -31,6 +27,14 @@ public class Crew {
 
     private void countAttendanceStatus(AttendanceTimes attendanceTimes) {
         this.attendanceStatuses = attendanceTimes.calculateAttendanceStatuses();
+    }
+
+    public boolean isSameName(String name) {
+        return this.name.equals(name);
+    }
+
+    public String getName() {
+        return this.name;
     }
 
     @Override

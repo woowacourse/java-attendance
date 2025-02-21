@@ -12,7 +12,7 @@ public class Crews {
 
     public Crew findCrew(String name) {
         return crews.stream()
-                .filter(crew -> crew.getName().equals(name))
+                .filter(crew -> crew.isSameName(name))
                 .findAny()
                 .orElseThrow(() -> new IllegalArgumentException("[ERROR] 존재하지 않는 크루입니다."));
     }
