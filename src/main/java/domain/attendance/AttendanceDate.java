@@ -21,10 +21,12 @@ public class AttendanceDate implements Comparable<AttendanceDate> {
 
         int dayOfWeek = getDayOfWeek();
         if (dayOfWeek >= SATURDAY) {
-            throw new IllegalArgumentException(DateTimeUtil.convertLocalDateToString(dateTime.toLocalDate()) + "은 등교일이 아닙니다.");
+            throw new IllegalArgumentException(
+                    DateTimeUtil.convertLocalDateToString(dateTime.toLocalDate()) + "은 등교일이 아닙니다.");
         }
         if (Holiday.has(dateTime)) {
-            throw new IllegalArgumentException(DateTimeUtil.convertLocalDateToString(dateTime.toLocalDate()) + "은 등교일이 아닙니다.");
+            throw new IllegalArgumentException(
+                    DateTimeUtil.convertLocalDateToString(dateTime.toLocalDate()) + "은 등교일이 아닙니다.");
         }
     }
 
