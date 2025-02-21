@@ -1,7 +1,5 @@
 package service.dto;
 
-public record DisenrollmentCheckResponse(String name, int absenceCount, int lateCount, String crewStatus) {
-    public int getConvertedAbsenceCount() {
-        return absenceCount + lateCount / 3;
-    }
+public record DisenrollmentCheckResponse(String name, int absenceCount, int lateCount, int convertedAbsenceCount,
+                                         String crewStatus) {
 }

@@ -13,7 +13,11 @@ public class AttendanceModifyController implements SubController {
     private final AttendanceModifyService modifyService;
 
 
-    public AttendanceModifyController(InputView inputView, OutputView outputView, AttendanceModifyService modifyService) {
+    public AttendanceModifyController(
+            InputView inputView,
+            OutputView outputView,
+            AttendanceModifyService modifyService
+    ) {
         this.inputView = inputView;
         this.outputView = outputView;
         this.modifyService = modifyService;

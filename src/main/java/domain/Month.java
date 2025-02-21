@@ -4,6 +4,8 @@ import constants.DateConstants;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
+import java.util.List;
+import java.util.stream.IntStream;
 
 public enum Month {
     JANUARY(31, 1),
@@ -30,17 +32,16 @@ public enum Month {
     }
 
     public boolean isHoliday(int day) {
-        if (this == DECEMBER) {
-            if (day == 25) {
-                return true;
-            }
+        if (this == DECEMBER && day == 25) {
+            return true;
         }
         DayOfWeek dayOfWeek = LocalDate.of(DateConstants.YEAR, DateConstants.MONTH.getValue(), day).getDayOfWeek();
         return dayOfWeek == DayOfWeek.SATURDAY || dayOfWeek == DayOfWeek.SUNDAY;
     }
 
-    public int getLastDay() {
-        return lastDay;
+    public List<Integer> getAllDays() {
+        //TODO : why boxed?
+        return IntStream.range(1, lastDay + 1).boxed().toList();
     }
 
     public int getValue() {

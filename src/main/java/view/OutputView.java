@@ -50,7 +50,6 @@ public class OutputView {
         String formattedAfterDate = response.afterTime().format(
                 DateTimeFormatter.ofPattern("HH:mm").withLocale(Locale.forLanguageTag("ko"))
         );
-
         System.out.printf("%s (%s) -> %s (%s) 수정 완료!\n",
                 formattedBeforeDate,
                 response.beforeStatus().getExpression(),
@@ -76,12 +75,7 @@ public class OutputView {
             String formattedDate = response.date().format(
                     DateTimeFormatter.ofPattern("MM월 dd일 E요일").withLocale(Locale.forLanguageTag("ko"))
             );
-            String formattedTime = "--:--";
-            if (response.time().isPresent()) {
-                formattedTime = response.time().get().format(
-                        DateTimeFormatter.ofPattern("HH:mm").withLocale(Locale.forLanguageTag("ko"))
-                );
-            }
+            String formattedTime = getFormattedTime(response);
             String status = response.status().getExpression();
             System.out.printf("%s %s (%s)\n", formattedDate, formattedTime, status);
         });
@@ -100,19 +94,29 @@ public class OutputView {
     public void printDisenrollmentCheckResult(List<DisenrollmentCheckResponse> responses) {
         System.out.println("제적 위험자 조회 결과");
         List<DisenrollmentCheckResponse> sortedResponse = getSortedResponse(responses);
-        for (DisenrollmentCheckResponse response : sortedResponse) {
+        sortedResponse.forEach(response -> {
             System.out.printf("- %s: 결석 %d회, 지각 %d회 (%s)\n",
                     response.name(),
                     response.absenceCount(),
                     response.lateCount(),
                     response.crewStatus()
             );
+        });
+    }
+
+    private static String getFormattedTime(AttendanceHistoryResponse response) {
+        String formattedTime = "--:--";
+        if (response.time().isPresent()) {
+            formattedTime = response.time().get().format(
+                    DateTimeFormatter.ofPattern("HH:mm").withLocale(Locale.forLanguageTag("ko"))
+            );
         }
+        return formattedTime;
     }
 
     private List<DisenrollmentCheckResponse> getSortedResponse(List<DisenrollmentCheckResponse> responses) {
         return responses.stream()
-                .sorted(Comparator.comparing(DisenrollmentCheckResponse::getConvertedAbsenceCount).reversed()
+                .sorted(Comparator.comparing(DisenrollmentCheckResponse::convertedAbsenceCount).reversed()
                         .thenComparing(DisenrollmentCheckResponse::name))
                 .toList();
     }

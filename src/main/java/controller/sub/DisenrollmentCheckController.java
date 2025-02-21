@@ -22,7 +22,5 @@ public class DisenrollmentCheckController implements SubController {
     public void run() {
         List<DisenrollmentCheckResponse> responses = disenrollmentCheckService.getDisenrollmentCheckResult();
         outputView.printDisenrollmentCheckResult(responses);
-
-
     }
 }

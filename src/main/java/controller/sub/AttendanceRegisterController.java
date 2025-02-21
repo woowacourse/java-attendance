@@ -4,6 +4,7 @@ import domain.Attendance;
 import domain.AttendanceCustomDate;
 import exception.CrewNotExistException;
 import exception.DuplicateAttendanceException;
+import java.time.LocalTime;
 import service.AttendanceRegisterService;
 import view.InputView;
 import view.OutputView;
@@ -28,27 +29,24 @@ public class AttendanceRegisterController implements SubController {
 
     @Override
     public void run() {
-        //TODO : 오늘이 출석 일자인지 확인하고 아니면 에러 날리기
         String name = inputView.readName();
-        String timeInput = inputView.readTime();
+        LocalTime timeInput = inputView.readTime();
         LocalDate now = AttendanceCustomDate.now().toLocalDate();
-        String[] minuteAndHour = timeInput.split(":");
-        LocalDateTime time = LocalDateTime.of(
+        LocalDateTime time = LocalDateTime.of( //TODO: 한곳에서 생성
                 now.getYear(),
                 now.getMonthValue(),
                 now.getDayOfMonth(),
-                Integer.parseInt(minuteAndHour[0]),
-                Integer.parseInt(minuteAndHour[1])
+                timeInput.getHour(),
+                timeInput.getMinute()
         );
         registerAttendance(name, time);
     }
 
     private void registerAttendance(String name, LocalDateTime time) {
         try {
-            Attendance attendance = attendanceCheckService.register(name, time);//출석등록
+            Attendance attendance = attendanceCheckService.register(name, time);
             outputView.printAttendanceResult(attendance);
         } catch (DuplicateAttendanceException e) {
-            // TODO: 에러 잘 뜨는지 보기
             outputView.recommendModifyFunction(e.getMessage());
         } catch (CrewNotExistException e) {
             outputView.printExceptionMessage(e.getMessage());

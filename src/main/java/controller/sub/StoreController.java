@@ -11,6 +11,7 @@ public class StoreController implements SubController {
 
     @Override
     public void run() {
-        attendanceStoreService.save();
+        String attendanceStorePath = "./src/main/resources/attendances.csv";
+        attendanceStoreService.save(attendanceStorePath);
     }
 }

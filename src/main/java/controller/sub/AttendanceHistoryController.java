@@ -31,8 +31,7 @@ public class AttendanceHistoryController implements SubController {
     public void run() {
         String name = inputView.readName();
         LocalDate nowDate = AttendanceCustomDate.now().toLocalDate();
-        List<AttendanceHistoryResponse> histories =
-                attendanceHistoryService.getHistoriesOf(name, nowDate);
+        List<AttendanceHistoryResponse> histories = attendanceHistoryService.getHistoriesOf(name, nowDate);
         Map<AttendanceStatus, Integer> attendanceResult = attendanceHistoryService.getAttendanceResultOf(name, nowDate);
         CrewStatus crewStatus = attendanceHistoryService.getCrewStatus(name, nowDate);
         outputView.printHistoryResult(name, histories, attendanceResult, crewStatus);

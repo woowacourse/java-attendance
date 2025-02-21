@@ -20,19 +20,25 @@ public class DisenrollmentCheckService {
     public List<DisenrollmentCheckResponse> getDisenrollmentCheckResult() {
         LocalDate now = AttendanceCustomDate.now().toLocalDate();
         Map<Crew, AttendanceBook> attendances = attendanceRepository.findAll();
-        List<Map.Entry<Crew, AttendanceBook>> disenrollmentAttendances = attendances.entrySet().stream().filter(entry -> {
-            AttendanceBook attendanceBook = entry.getValue();
-            CrewStatus status = CrewStatus.from(attendanceBook.getLateCountAt(now), attendanceBook.getAbsenceCountAt(now));
-            return status != CrewStatus.NORMAL;
-        }).toList();
+        List<Map.Entry<Crew, AttendanceBook>> disenrollmentAttendances = attendances.entrySet().stream()
+                .filter(entry -> {
+                    AttendanceBook attendanceBook = entry.getValue();
+                    CrewStatus status = CrewStatus.from(
+                            attendanceBook.getLateCountAt(now),
+                            attendanceBook.getAbsenceCountAt(now)
+                    );
+                    return status != CrewStatus.NORMAL;
+                }).toList();
 
-        return disenrollmentAttendances.stream().map(entry -> {
-            String name = entry.getKey().getName();
-            AttendanceBook attendanceBook = entry.getValue();
-            int absenceCount = attendanceBook.getAbsenceCountAt(now);
-            int lateCount = attendanceBook.getLateCountAt(now);
-            String status = CrewStatus.from(lateCount, absenceCount).getExpression();
-            return new DisenrollmentCheckResponse(name, absenceCount, lateCount, status);
-        }).toList();
+        return disenrollmentAttendances.stream()
+                .map(entry -> {
+                    String name = entry.getKey().getName();
+                    AttendanceBook attendanceBook = entry.getValue();
+                    int absenceCount = attendanceBook.getAbsenceCountAt(now);
+                    int lateCount = attendanceBook.getLateCountAt(now);
+                    int convertedAbsenceCount = absenceCount + lateCount / 3;
+                    String status = CrewStatus.from(lateCount, absenceCount).getExpression();
+                    return new DisenrollmentCheckResponse(name, absenceCount, lateCount, convertedAbsenceCount, status);
+                }).toList();
     }
 }
