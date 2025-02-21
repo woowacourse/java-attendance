@@ -1,5 +1,6 @@
 package domain;
 
+import constant.CampusConstant;
 import java.util.Map;
 
 public enum ExpelStatus {
@@ -8,6 +9,10 @@ public enum ExpelStatus {
     INTERVIEW("면담"),
     EXPULSION("제적"),
     NONE("미해당");
+
+    private static final int EXPULSION_THRESHOLD = 6;
+    private static final int INTERVIEW_THRESHOLD = 3;
+    private static final int WARNING_THRESHOLD = 2;
 
     private final String expelStatus;
 
@@ -21,18 +26,18 @@ public enum ExpelStatus {
 
     public static ExpelStatus determineExpelStatus(Map<AttendanceStatus, Integer> attendanceStatuses) {
         int lateCount = attendanceStatuses.get(AttendanceStatus.LATE);
-        int absentCount = lateCount / 3  + attendanceStatuses.get(AttendanceStatus.ABSENT) + attendanceStatuses.get(AttendanceStatus.UNATTEND);
+        int absentCount = lateCount / CampusConstant.LATE_TO_ABSENT_UNIT + attendanceStatuses.get(AttendanceStatus.ABSENT) + attendanceStatuses.get(AttendanceStatus.UNATTEND);
         return getExpelStatus(absentCount);
     }
 
     private static ExpelStatus getExpelStatus(int absentCount) {
-        if (absentCount > 5) {
+        if (absentCount >= EXPULSION_THRESHOLD) {
             return EXPULSION;
         }
-        if (absentCount >= 3) {
+        if (absentCount >= INTERVIEW_THRESHOLD) {
             return INTERVIEW;
         }
-        if (absentCount >= 2) {
+        if (absentCount >= WARNING_THRESHOLD) {
             return WARNING;
         }
         return NONE;
