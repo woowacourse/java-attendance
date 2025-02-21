@@ -20,16 +20,16 @@ public class AttendanceHistory {
         return attendanceDateTime;
     }
 
-    public boolean isSameCrew(AttendanceHistory attendanceHistory) {
-        return crew.equals(attendanceHistory.crew);
+    public boolean aboutSameCrew(Crew crew) {
+        return this.crew.equals(crew);
     }
 
     public boolean isSameCrew(Crew crew) {
         return this.crew.equals(crew);
     }
 
-    public boolean hasSameDay(AttendanceHistory comparedHistory) {
-        return attendanceDateTime.hasSameDay(comparedHistory.attendanceDateTime);
+    public boolean hasSameDay(int day) {
+        return attendanceDateTime.hasSameDay(day);
     }
 
     public int getDay() {

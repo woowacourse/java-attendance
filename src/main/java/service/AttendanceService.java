@@ -44,8 +44,8 @@ public class AttendanceService {
     public AttendanceUpdateResultDto editAttendance(String nickname, AttendanceDateTime newDateTime) {
         Crew crew = crews.findCrewBy(nickname);
 
+        AttendanceHistory beforeAttendanceHistory = attendanceHistories.findByCrewAndDay(crew, newDateTime.getDay());
         AttendanceHistory newAttendanceHistory = AttendanceHistory.of(crew, newDateTime);
-        AttendanceHistory beforeAttendanceHistory = attendanceHistories.findHistoryBy(newAttendanceHistory);
 
         attendanceHistories.update(beforeAttendanceHistory, newAttendanceHistory);
 

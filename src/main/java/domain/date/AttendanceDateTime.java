@@ -49,7 +49,7 @@ public class AttendanceDateTime {
         return AttendanceType.PRESENT;
     }
 
-    public boolean hasSameDay(AttendanceDateTime comparedDateTime) {
-        return comparedDateTime.attendanceDate.getDay() == attendanceDate.getDay();
+    public boolean hasSameDay(int day) {
+        return day == attendanceDate.getDay();
     }
 }
