@@ -1,22 +1,33 @@
 package domain;
 
+import static controller.AttendanceController.processAttendanceRecordByCrew;
+import static controller.AttendanceController.processEditAttendance;
+import static view.OutputView.printAllExpulsion;
+
+import controller.AttendanceController;
 import error.CustomIllegalArgumentException;
+import java.time.LocalDateTime;
 import java.util.Arrays;
+import java.util.function.BiConsumer;
 
 public enum Command {
 
-    CHECK_ATTENDEES("출석 확인", "1"),
-    EDIT_ATTENDANCE("출석 수정", "2"),
-    CHECK_THE_ATTENDANCE_RECORD_BY_CREW("크루별 출석 기록 확인", "3"),
-    CONFIRMATION_OF_THOSE_AT_RISK_OF_EXPULSION("제적 위험자 확인", "4"),
-    QUIT("종료", "Q");
+    CHECK_ATTENDEES("출석 확인", "1", AttendanceController::processCheckAttendees),
+    EDIT_ATTENDANCE("출석 수정", "2", (crews, fixDateTime) -> processEditAttendance(crews)),
+    CHECK_THE_ATTENDANCE_RECORD_BY_CREW("크루별 출석 기록 확인", "3",
+            (crews, fixDateTime) -> processAttendanceRecordByCrew(crews)),
+    CONFIRMATION_OF_THOSE_AT_RISK_OF_EXPULSION("제적 위험자 확인", "4", (crews, fixDateTime) -> printAllExpulsion(crews)),
+    QUIT("종료", "Q", (crews, fixDateTime) -> {
+    });
 
-    private String commandName;
-    private String commandNumber;
+    private final String commandName;
+    private final String commandNumber;
+    private final BiConsumer<Crews, LocalDateTime> action;
 
-    Command(final String commandName, final String commandNumber) {
+    Command(final String commandName, final String commandNumber, BiConsumer<Crews, LocalDateTime> action) {
         this.commandName = commandName;
         this.commandNumber = commandNumber;
+        this.action = action;
     }
 
     public static Command findByCommandNumber(final String commandNumber) {
@@ -24,6 +35,10 @@ public enum Command {
                 .filter(c -> c.commandNumber.equals(commandNumber))
                 .findFirst()
                 .orElseThrow(() -> new CustomIllegalArgumentException("알맞은 명령어를 입력하세요."));
+    }
+
+    public void execute(Crews crews, LocalDateTime fixDateTime) {
+        action.accept(crews, fixDateTime);
     }
 
     public String getCommandName() {

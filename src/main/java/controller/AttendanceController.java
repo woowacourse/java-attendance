@@ -22,33 +22,21 @@ public class AttendanceController {
 
     public void start() {
         while (true) {
-            LocalDateTime fixDateTime = LocalDateTime.of(2024, Constants.MONTH, 25, 0, 0, 0, 0);
+            LocalDateTime fixDateTime = LocalDateTime.of(2024, Constants.MONTH, 16, 0, 0, 0, 0);
             final String input = InputView.readCommand(fixDateTime);
             Command command = Command.findByCommandNumber(input);
             Crews crews = CrewGenerator.generate(CsvReader.readFile(CSV_PATH),
                     fixDateTime.toLocalDate());
+
             if (command.equals(Command.QUIT)) {
                 break;
             }
-            if (command.equals(Command.CHECK_ATTENDEES)) {
-                processCheckAttendees(crews, fixDateTime);
-                continue;
-            }
-            if (command.equals(Command.EDIT_ATTENDANCE)) {
-                processEditAttendance(crews);
-                continue;
-            }
-            if (command.equals(Command.CHECK_THE_ATTENDANCE_RECORD_BY_CREW)) {
-                processAttendanceRecordByCrew(crews);
-                continue;
-            }
-            if (command.equals(Command.CONFIRMATION_OF_THOSE_AT_RISK_OF_EXPULSION)) {
-                OutputView.printAllExpulsion(crews);
-            }
+
+            command.execute(crews, fixDateTime);
         }
     }
 
-    private static void processCheckAttendees(final Crews crews, final LocalDateTime fixDateTime) {
+    public static void processCheckAttendees(final Crews crews, final LocalDateTime fixDateTime) {
         String inputNickName = InputView.readNickName();
         Nickname nickname = new Nickname(inputNickName);
         Crew crew = crews.findByNickname(nickname);
@@ -64,7 +52,7 @@ public class AttendanceController {
         OutputView.printAttendance(attendance);
     }
 
-    private static void processEditAttendance(final Crews crews) {
+    public static void processEditAttendance(final Crews crews) {
         String inputNickName = InputView.readUpdateNickName();
         Nickname nickname = new Nickname(inputNickName);
         Crew crew = crews.findByNickname(nickname);
@@ -81,7 +69,7 @@ public class AttendanceController {
         OutputView.printUpdateAttendance(oldAttendance, newAttendance);
     }
 
-    private static void processAttendanceRecordByCrew(final Crews crews) {
+    public static void processAttendanceRecordByCrew(final Crews crews) {
         String inputNickName = InputView.readNickName();
         Nickname nickname = new Nickname(inputNickName);
         Crew crew = crews.findByNickname(nickname);
