@@ -11,7 +11,7 @@ import io.CustomFileReader;
 import java.io.FileNotFoundException;
 import java.util.List;
 import service.AttendanceService;
-import view.Option;
+import view.FeatureOption;
 import view.InputView;
 import view.OutputView;
 
@@ -26,11 +26,11 @@ public class AttendanceController {
         try {
             read();
             while (true) {
-                Option option = InputView.readOption();
-                if (option == Option.QUIT) {
+                FeatureOption featureOption = InputView.readOption();
+                if (featureOption == FeatureOption.QUIT) {
                     break;
                 }
-                runFunction(option);
+                runFunction(featureOption);
             }
         } catch (Exception exception) {
             OutputView.printErrorMessage(exception.getMessage());
@@ -45,20 +45,20 @@ public class AttendanceController {
         attendanceService.initializeAttendanceHistories(attendanceRequestDtos);
     }
 
-    public void runFunction(Option option) {
-        if (option == Option.APPLY_ATTENDANCE) {
+    public void runFunction(FeatureOption featureOption) {
+        if (featureOption == FeatureOption.APPLY_ATTENDANCE) {
             applyAttendance();
             return;
         }
-        if (option == Option.EDIT_ATTENDANCE) {
+        if (featureOption == FeatureOption.EDIT_ATTENDANCE) {
             editAttendance();
             return;
         }
-        if (option == Option.CHECK_ATTENDANCE_OF_CREW) {
+        if (featureOption == FeatureOption.CHECK_ATTENDANCE_OF_CREW) {
             checkAttendanceOfCrew();
             return;
         }
-        if (option == Option.CHECK_WARNING_CREW) {
+        if (featureOption == FeatureOption.CHECK_WARNING_CREW) {
             checkWarningCrew();
         }
     }
