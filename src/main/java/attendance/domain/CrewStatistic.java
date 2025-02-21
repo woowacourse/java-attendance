@@ -8,6 +8,10 @@ import java.util.List;
 import java.util.Locale;
 
 public class CrewStatistic {
+    private static final Integer EXPEL_STANDARD = 5;
+    private static final Integer MEETING_STANDARD = 3;
+    private static final Integer WARNING_STANDARD = 2;
+
     private final Crew crew;
     private final List<Attendance> crewAttendances;
     private CrewStatus status;
@@ -47,13 +51,13 @@ public class CrewStatistic {
         int plusAbsentCount = lateCount / 3;
         absentCount += plusAbsentCount;
 
-        if (absentCount > 5) {
+        if (absentCount > EXPEL_STANDARD) {
             status = CrewStatus.EXPEL;
         }
-        if (absentCount >= 3) {
+        if (absentCount >= MEETING_STANDARD) {
             status = CrewStatus.MEETING;
         }
-        if (absentCount >= 2) {
+        if (absentCount >= WARNING_STANDARD) {
             status = CrewStatus.WARNING;
         }
     }
