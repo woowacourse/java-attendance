@@ -12,6 +12,7 @@ import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import utils.TimeUtils;
 
 public class AttendanceBook {
     private final List<Crew> crews;
@@ -65,47 +66,32 @@ public class AttendanceBook {
 
     // 기능 1. 출석 확인
     public AttendanceRecordResponse checkAttendance(String name, Map<LocalDate, LocalTime> dateAndTime) {
-        Crew foundCrew = getCrewByName(name);
-
-        LocalDate date = dateAndTime.keySet().stream()
-                .findAny()
-                .orElseThrow();
-
+        LocalDate date = TimeUtils.getDateFromDateAndTime(dateAndTime);
         Calendar.validateIsWorkingDay(date.getDayOfMonth());
 
-        LocalTime time = dateAndTime.values().stream()
-                .findAny()
-                .orElseThrow();
-
+        LocalTime time = TimeUtils.getTimeFromDateAndTime(dateAndTime);
         validateIsInOperationHour(time);
 
-        foundCrew.addDailyAttendance(dateAndTime);
+        getCrewByName(name).addDailyAttendance(dateAndTime);
         return new AttendanceRecordResponse(date, time, AttendanceStatus.judgeStatus(date, time));
     }
 
     // 기능 2. 출석 수정
     public ModifyAttendanceResponse modifyAttendance(String name, Map<LocalDate, LocalTime> dateAndTimeToModify) {
+        validateNameAlreadyExists(name);
 
-        Crew foundCrew = getCrewByName(name);
+        LocalDate date = TimeUtils.getDateFromDateAndTime(dateAndTimeToModify);
+        validateDateAlreadyExistsByCrewName(name, date);
 
-        LocalDate date = dateAndTimeToModify.keySet().stream()
-                .findAny()
-                .orElseThrow();
-
-        LocalTime originalTime = foundCrew.getTimeByDate(date);
-
-        LocalTime modifiedTime = dateAndTimeToModify.values().stream()
-                .findAny()
-                .orElseThrow();
-
+        LocalTime modifiedTime = TimeUtils.getTimeFromDateAndTime(dateAndTimeToModify);
         validateIsInOperationHour(modifiedTime);
 
+        Crew foundCrew = getCrewByName(name);
+        LocalTime originalTime = foundCrew.getTimeByDate(date);
         foundCrew.modifyDailyAttendance(dateAndTimeToModify);
 
         return new ModifyAttendanceResponse(
-                date,
-                originalTime,
-                modifiedTime,
+                date, originalTime, modifiedTime,
                 AttendanceStatus.judgeStatus(date, originalTime),
                 AttendanceStatus.judgeStatus(date, modifiedTime)
         );

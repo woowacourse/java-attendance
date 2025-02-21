@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import utils.TimeUtils;
 
 public class Crew {
     private static final int END_DAY_OF_DECEMBER = 31;
@@ -26,9 +27,7 @@ public class Crew {
     }
 
     public void addDailyAttendance(Map<LocalDate, LocalTime> dateAndTime) {
-        LocalDate date = dateAndTime.keySet().stream()
-                .findAny()
-                .orElseThrow();
+        LocalDate date = TimeUtils.getDateFromDateAndTime(dateAndTime);
 
         validateIsNotAlreadyAttended(date);
 
@@ -50,10 +49,7 @@ public class Crew {
     }
 
     public void modifyDailyAttendance(Map<LocalDate, LocalTime> dateAndTime) {
-        LocalDate date = dateAndTime.keySet().stream()
-                .findAny()
-                .orElseThrow();
-
+        LocalDate date = TimeUtils.getDateFromDateAndTime(dateAndTime);
         validateDateAlreadyExists(date);
 
         dailyAttendances.putAll(dateAndTime);
