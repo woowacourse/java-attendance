@@ -13,6 +13,13 @@ public class Attendance {
     LocalDateTime localDateTime;
     AttendanceStatus attendanceStatus;
 
+    public Attendance(final LocalDateTime localDateTime) {
+        validateHoliday(localDateTime);
+        Week day = Week.findByAttendanceTime(localDateTime);
+        this.localDateTime = localDateTime;
+        this.attendanceStatus = AttendanceStatus.findByAttendanceTime(day, localDateTime.toLocalTime());
+    }
+
     public static Attendance of(final String inputTime) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern(DATE_TIME_FORMAT);
         try {
@@ -21,13 +28,6 @@ public class Attendance {
         } catch (DateTimeParseException e) {
             throw new CustomIllegalArgumentException("올바른 형식이 아닙니다.");
         }
-    }
-
-    public Attendance(final LocalDateTime localDateTime) {
-        validateHoliday(localDateTime);
-        Week day = Week.findByAttendanceTime(localDateTime);
-        this.localDateTime = localDateTime;
-        this.attendanceStatus = AttendanceStatus.findByAttendanceTime(day, localDateTime.toLocalTime());
     }
 
     private void validateHoliday(final LocalDateTime localDateTime) {
