@@ -27,7 +27,7 @@ public class ModifyAttendanceTest {
         crew2.addDailyAttendance(Map.of(LocalDate.of(2024, 12, 2), MONDAY_ATTEND));
         attendanceBook.addNewCrew(crew2);
 
-        crew2.modifyDailyAttendance(Map.of(LocalDate.of(2024, 12, 3), EXCEPT_MONDAY_ATTEND));
+        crew2.modifyDailyAttendance(Map.of(LocalDate.of(2024, 12, 2), MONDAY_ATTEND));
     }
 
     @Test
@@ -57,7 +57,7 @@ public class ModifyAttendanceTest {
         assertThatThrownBy(
                 () -> attendanceBook.modifyAttendance("쿠키", Map.of(LocalDate.of(2024, 12, 3), EXCEPT_MONDAY_ATTEND)))
                 .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage("[ERROR] 05일 기록이 존재하지 않습니다.");
+                .hasMessage("[ERROR] 03일 기록이 존재하지 않습니다.");
     }
 
     @Test
