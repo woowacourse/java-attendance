@@ -18,10 +18,6 @@ public enum AttendanceStatus {
         this.status = status;
     }
 
-    public String getStatus() {
-        return status;
-    }
-
     public static AttendanceStatus findStatus(LocalDateTime attendanceDateTime) {
         LocalTime startTime = getStartTime(attendanceDateTime);
         LocalTime attendanceTime = attendanceDateTime.toLocalTime();
@@ -42,5 +38,9 @@ public enum AttendanceStatus {
             startTime = CampusConstant.STUDY_START_TIME_MONDAY;
         }
         return startTime;
+    }
+
+    public String getStatus() {
+        return status;
     }
 }
