@@ -1,15 +1,13 @@
-package controller;
+package controller.sub;
 
 import service.AttendanceModifyService;
 import service.dto.AttendanceModifyResponse;
 import view.InputView;
 import view.OutputView;
 
-import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.List;
 
-public class AttendanceModifyController implements Controller{
+public class AttendanceModifyController implements SubController {
     private final InputView inputView;
     private final OutputView outputView;
     private final AttendanceModifyService modifyService;

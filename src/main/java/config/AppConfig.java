@@ -1,6 +1,12 @@
 package config;
 
-import controller.*;
+import controller.facade.MainController;
+import controller.sub.AttendanceRegisterController;
+import controller.sub.AttendanceHistoryController;
+import controller.sub.AttendanceModifyController;
+import controller.sub.DisenrollmentCheckController;
+import controller.sub.StoreController;
+import controller.sub.SubController;
 import repository.AttendanceRepository;
 import repository.AttendanceRepositoryImpl;
 import service.*;
@@ -24,7 +30,7 @@ public class AppConfig {
         );
     }
 
-    private Controller getHistoryController() {
+    private SubController getHistoryController() {
         return new AttendanceHistoryController(
                 getInputView(),
                 getOutputView(),
@@ -32,14 +38,14 @@ public class AppConfig {
         );
     }
 
-    private Controller getDisenrollmentCheckController() {
+    private SubController getDisenrollmentCheckController() {
         return new DisenrollmentCheckController(
                 getOutputView(),
                 new DisenrollmentCheckService(getAttendanceRepository())
         );
     }
 
-    private Controller getModifyController() {
+    private SubController getModifyController() {
         return new AttendanceModifyController(
                 getInputView(),
                 getOutputView(),
@@ -47,14 +53,14 @@ public class AppConfig {
         );
     }
 
-    private Controller getAttendanceStoreController() {
+    private SubController getAttendanceStoreController() {
         return new StoreController(
                 new AttendanceStoreService(getAttendanceRepository())
         );
     }
 
-    public Controller getAttendanceController() {
-        return new AttendanceCheckController(
+    public SubController getAttendanceController() {
+        return new AttendanceRegisterController(
                 getInputView(),
                 getOutputView(),
                 new AttendanceCheckService(getAttendanceRepository())

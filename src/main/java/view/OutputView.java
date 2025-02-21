@@ -1,6 +1,6 @@
 package view;
 
-import controller.Menu;
+import controller.facade.Menu;
 import domain.Attendance;
 import domain.AttendanceCustomDate;
 import domain.AttendanceStatus;

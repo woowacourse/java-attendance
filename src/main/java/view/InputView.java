@@ -1,6 +1,6 @@
 package view;
 
-import controller.Menu;
+import controller.facade.Menu;
 
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;

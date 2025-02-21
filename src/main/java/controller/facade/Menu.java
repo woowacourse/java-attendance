@@ -1,11 +1,8 @@
-package controller;
+package controller.facade;
 
 import exception.InvalidMenuException;
 
 import java.util.Arrays;
-import java.util.Comparator;
-import java.util.List;
-import java.util.stream.Collectors;
 
 public enum Menu {
     ATTENDANCE_CHECK("1", "출석 확인"),

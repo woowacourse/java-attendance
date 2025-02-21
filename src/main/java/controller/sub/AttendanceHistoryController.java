@@ -1,4 +1,4 @@
-package controller;
+package controller.sub;
 
 import domain.AttendanceCustomDate;
 import domain.AttendanceStatus;
@@ -12,7 +12,7 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 
-public class AttendanceHistoryController implements Controller {
+public class AttendanceHistoryController implements SubController {
     private final InputView inputView;
     private final OutputView outputView;
     private final AttendanceHistoryService attendanceHistoryService;

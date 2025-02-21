@@ -1,13 +1,12 @@
-package controller;
+package controller.sub;
 
 import service.DisenrollmentCheckService;
 import service.dto.DisenrollmentCheckResponse;
-import view.InputView;
 import view.OutputView;
 
 import java.util.List;
 
-public class DisenrollmentCheckController implements Controller{
+public class DisenrollmentCheckController implements SubController {
     private final OutputView outputView;
     private final DisenrollmentCheckService disenrollmentCheckService;
 

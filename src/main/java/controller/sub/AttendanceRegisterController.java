@@ -1,4 +1,4 @@
-package controller;
+package controller.sub;
 
 import domain.Attendance;
 import domain.AttendanceCustomDate;
@@ -11,12 +11,12 @@ import view.OutputView;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
-public class AttendanceCheckController implements Controller {
+public class AttendanceRegisterController implements SubController {
     private final InputView inputView;
     private final OutputView outputView;
     private final AttendanceCheckService attendanceCheckService;
 
-    public AttendanceCheckController(
+    public AttendanceRegisterController(
             InputView inputView,
             OutputView outputView,
             AttendanceCheckService attendanceCheckService

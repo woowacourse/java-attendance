@@ -1,5 +1,6 @@
-package controller;
+package controller.facade;
 
+import controller.sub.SubController;
 import view.InputView;
 import view.OutputView;
 
@@ -7,20 +8,20 @@ import java.util.EnumMap;
 import java.util.Map;
 
 public class MainController {
-    private final Controller storeController;
+    private final SubController storeController;
     private final InputView inputView;
     private final OutputView outputView;
-    private final Map<Menu, Controller> controllerMapper = new EnumMap<>(Menu.class);
+    private final Map<Menu, SubController> controllerMapper = new EnumMap<>(Menu.class);
 
 
     public MainController(
             InputView inputView,
             OutputView outputView,
-            Controller storeController,
-            Controller attendanceController,
-            Controller modifyController,
-            Controller historyController,
-            Controller disenrollmentCheckController
+            SubController storeController,
+            SubController attendanceController,
+            SubController modifyController,
+            SubController historyController,
+            SubController disenrollmentCheckController
     ) {
         this.inputView = inputView;
         this.outputView = outputView;
