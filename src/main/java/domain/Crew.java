@@ -3,6 +3,7 @@ package domain;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 public class Crew {
 
@@ -30,5 +31,22 @@ public class Crew {
 
     private void countAttendanceStatus(AttendanceTimes attendanceTimes) {
         this.attendanceStatuses = attendanceTimes.calculateAttendanceStatuses();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        Crew crew = (Crew) o;
+        return Objects.equals(name, crew.name);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(name);
     }
 }
