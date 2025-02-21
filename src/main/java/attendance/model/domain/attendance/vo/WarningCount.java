@@ -26,7 +26,7 @@ public class WarningCount {
     }
 
     public int getPolicyAppliedLateCount() {
-        return lateCount.calculatePolicyValue();
+        return lateCount.calculatePolicyAppliedValue();
     }
 
     public int getAbsenceCount() {

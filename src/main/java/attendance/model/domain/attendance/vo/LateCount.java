@@ -34,7 +34,7 @@ public class LateCount {
         return value / LATE_TO_ABSENCE_COUNT;
     }
 
-    public int calculatePolicyValue() {
+    public int calculatePolicyAppliedValue() {
         return value % LATE_TO_ABSENCE_COUNT;
     }
 
