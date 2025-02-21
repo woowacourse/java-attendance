@@ -13,29 +13,34 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class AttendanceController {
-    private static final Map<String, Runnable> operations = new HashMap<>();
+    private static final Map<Character, Runnable> operations = new HashMap<>();
+    public static final char REGISTER_ATTENDANCE_OPERATION = '1';
+    public static final char MODIFY_ATTENDANCE_OPERATION = '2';
+    public static final char QUERY_ATTENDANCE_OPERATION = '3';
+    public static final char QUERY_WARNING_CREW_OPERATION = '4';
+    public static final char QUIT_APPLICATION_OPERATION = 'Q';
 
     public void run() {
         AttendanceRepository attendanceRepository = initData();
         initOperations(attendanceRepository);
-        String option;
-        while (!(option = getInputOption()).equals("Q")) {
+        char option;
+        while ((option = getInputOption()) != QUIT_APPLICATION_OPERATION) {
             operations.get(option).run();
         }
     }
 
-    private AttendanceRepository initData(){
+    private AttendanceRepository initData() {
         return new AttendanceRepository(FileLoader.loadAll(DataFileReader.read()));
     }
 
     private void initOperations(AttendanceRepository attendanceRepository) {
-        operations.put("1", () -> registerAttendance(attendanceRepository));
-        operations.put("2", () -> modifyAttendance(attendanceRepository));
-        operations.put("3", () -> queryAttendance(attendanceRepository));
-        operations.put("4", () -> queryWarningCrews(attendanceRepository));
+        operations.put(REGISTER_ATTENDANCE_OPERATION, () -> registerAttendance(attendanceRepository));
+        operations.put(MODIFY_ATTENDANCE_OPERATION, () -> modifyAttendance(attendanceRepository));
+        operations.put(QUERY_ATTENDANCE_OPERATION, () -> queryAttendance(attendanceRepository));
+        operations.put(QUERY_WARNING_CREW_OPERATION, () -> queryWarningCrews(attendanceRepository));
     }
 
-    private String getInputOption() {
+    private char getInputOption() {
         OutputView.printOptions();
         return InputView.readOption();
     }
