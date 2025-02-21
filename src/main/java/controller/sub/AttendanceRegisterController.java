@@ -4,7 +4,7 @@ import domain.Attendance;
 import domain.AttendanceCustomDate;
 import exception.CrewNotExistException;
 import exception.DuplicateAttendanceException;
-import service.AttendanceCheckService;
+import service.AttendanceRegisterService;
 import view.InputView;
 import view.OutputView;
 
@@ -14,12 +14,12 @@ import java.time.LocalDateTime;
 public class AttendanceRegisterController implements SubController {
     private final InputView inputView;
     private final OutputView outputView;
-    private final AttendanceCheckService attendanceCheckService;
+    private final AttendanceRegisterService attendanceCheckService;
 
     public AttendanceRegisterController(
             InputView inputView,
             OutputView outputView,
-            AttendanceCheckService attendanceCheckService
+            AttendanceRegisterService attendanceCheckService
     ) {
         this.inputView = inputView;
         this.outputView = outputView;

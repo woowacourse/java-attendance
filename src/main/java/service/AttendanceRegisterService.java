@@ -6,10 +6,10 @@ import repository.AttendanceRepository;
 
 import java.time.LocalDateTime;
 
-public class AttendanceCheckService {
+public class AttendanceRegisterService {
     private final AttendanceRepository attendanceRepository;
 
-    public AttendanceCheckService(AttendanceRepository attendanceRepository) {
+    public AttendanceRegisterService(AttendanceRepository attendanceRepository) {
         this.attendanceRepository = attendanceRepository;
     }
 

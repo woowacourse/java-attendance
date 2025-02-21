@@ -1,3 +1,5 @@
+package service;
+
 import constants.DateConstants;
 import domain.Attendance;
 import domain.Crew;
@@ -7,21 +9,20 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import repository.AttendanceRepository;
 import repository.AttendanceRepositoryImpl;
-import service.AttendanceCheckService;
 
 import java.time.LocalDateTime;
 
 import static org.assertj.core.api.Assertions.*;
 
-public class AttendanceCheckServiceTest {
+public class AttendanceRegisterServiceTest {
     AttendanceRepository attendanceRepository;
-    AttendanceCheckService attendanceCheckService;
+    AttendanceRegisterService attendanceCheckService;
 
     @BeforeEach
     void setUp() {
         Crew crew = new Crew("이든");
         attendanceRepository = new AttendanceRepositoryImpl();
-        attendanceCheckService = new AttendanceCheckService(attendanceRepository);
+        attendanceCheckService = new AttendanceRegisterService(attendanceRepository);
 
         attendanceRepository.save(crew);
     }

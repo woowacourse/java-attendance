@@ -63,7 +63,7 @@ public class AppConfig {
         return new AttendanceRegisterController(
                 getInputView(),
                 getOutputView(),
-                new AttendanceCheckService(getAttendanceRepository())
+                new AttendanceRegisterService(getAttendanceRepository())
         );
     }
 
