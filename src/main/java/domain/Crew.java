@@ -10,7 +10,7 @@ public class Crew {
     public static final int ABSENT_HOUR = 23;
     public static final int ABSENT_MINUTE = 59;
     private final String nickname;
-    private final AttendanceCount attendanceCount = new AttendanceCount();
+    private final AttendanceStatusCount attendanceStatusCount = new AttendanceStatusCount();
     private final List<Attendance> attendances = new ArrayList<>();
 
     public Crew(String nickname) {
@@ -50,39 +50,34 @@ public class Crew {
 
     public Attendance changeAttendance(int date, Time time) {
         Attendance targetAttendance = getSpecificAttendance(date);
+        attendanceStatusCount.deleteStatus(targetAttendance);
         targetAttendance.updateAttendance(time);
-        updateAttendanceCount();
+        attendanceStatusCount.updateStatus(targetAttendance);
 
         return targetAttendance;
     }
 
-    public void updateAttendanceCount() {
+    public void saveAttendanceCount() {
         for (Attendance attendance : attendances) {
-            attendanceCount.calculateRecord(attendance);
+            attendanceStatusCount.updateStatus(attendance);
         }
     }
 
     public AttendanceAlertLevel calculateAttendanceAlertLevel() {
-        return attendanceCount.calculateAttendanceAlertLevel();
+        return attendanceStatusCount.calculateAttendanceAlertLevel();
     }
 
     public boolean isAlreadyChecked(LocalDateTime today) {
-        long todayAttendance = attendances.stream()
-                .filter(attendance -> attendance.isSameDay(today.getDayOfMonth()))
-                .count();
-
-        if (todayAttendance != 0) {
-            return true;
-        }
-        return false;
+        return attendances.stream()
+                .anyMatch(attendance -> attendance.isSameDay(today.getDayOfMonth()));
     }
 
     public String getNickname() {
         return nickname;
     }
 
-    public AttendanceCount getAttendanceCount() {
-        return attendanceCount;
+    public AttendanceStatusCount getAttendanceCount() {
+        return attendanceStatusCount;
     }
 
     public List<Attendance> getAttendances() {

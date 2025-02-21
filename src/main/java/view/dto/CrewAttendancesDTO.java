@@ -1,19 +1,24 @@
 package view.dto;
 
-import domain.AttendanceCount;
+import domain.AttendanceStatus;
+import domain.AttendanceStatusCount;
 import domain.Crew;
 import java.util.List;
+import java.util.Map;
 
 public record CrewAttendancesDTO(String nickName, List<AttendanceLogDTO> attendanceLogDTOs, int present, int late,
                                  int absent, String alertLevel) {
     public static CrewAttendancesDTO from(Crew crew) {
-        AttendanceCount attendanceCount = crew.getAttendanceCount();
+        AttendanceStatusCount attendanceStatusCount = crew.getAttendanceCount();
         List<AttendanceLogDTO> sortedAttendanceLogDtos = crew.getAttendances().stream()
                 .map(AttendanceLogDTO::from)
                 .sorted()
                 .toList();
-        return new CrewAttendancesDTO(crew.getNickname(), sortedAttendanceLogDtos, attendanceCount.getPresent(),
-                attendanceCount.getLate(), attendanceCount.getAbsent(),
-                attendanceCount.calculateAttendanceAlertLevel().getName());
+        Map<AttendanceStatus, Integer> statuses = attendanceStatusCount.getStatuses();
+        return new CrewAttendancesDTO(crew.getNickname(), sortedAttendanceLogDtos,
+                statuses.get(AttendanceStatus.PRESENT),
+                statuses.get(AttendanceStatus.LATE),
+                statuses.get(AttendanceStatus.ABSENT),
+                attendanceStatusCount.calculateAttendanceAlertLevel().getName());
     }
 }

@@ -15,6 +15,19 @@ public enum AttendanceAlertLevel {
         this.name = name;
     }
 
+    public static AttendanceAlertLevel calculateAttendanceAlertLevel(int absentTotal) {
+        if (absentTotal >= DISMISSED.absenceLimit) {
+            return DISMISSED;
+        }
+        if (absentTotal >= COUNSEL_REQUIRED.absenceLimit) {
+            return COUNSEL_REQUIRED;
+        }
+        if (absentTotal >= CAUTION.absenceLimit) {
+            return CAUTION;
+        }
+        return NORMAL;
+    }
+
     public int getAbsenceLimit() {
         return absenceLimit;
     }

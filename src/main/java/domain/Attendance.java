@@ -2,7 +2,6 @@ package domain;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
-import util.DateValidator;
 
 public class Attendance {
     public static final int MONDAY_START_HOUR = 10;

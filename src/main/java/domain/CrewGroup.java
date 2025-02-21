@@ -28,7 +28,7 @@ public class CrewGroup {
 
     public void calculateAllAttendanceCount() {
         crews.values()
-                .forEach(Crew::updateAttendanceCount);
+                .forEach(Crew::saveAttendanceCount);
     }
 
     public List<Crew> getAllAttendanceAlertLevel() {
