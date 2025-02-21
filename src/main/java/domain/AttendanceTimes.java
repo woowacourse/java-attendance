@@ -14,7 +14,7 @@ public class AttendanceTimes {
 
     private static final int LATE_TO_ABSENT_UNIT = 3;
 
-    private List<AttendanceTime> attendanceTimes;
+    private final List<AttendanceTime> attendanceTimes;
 
     public AttendanceTimes(List<LocalDateTime> attendanceTimes, LocalDate nowDate) {
         this.attendanceTimes = attendanceTimes.stream()
