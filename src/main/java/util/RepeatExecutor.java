@@ -11,11 +11,12 @@ public class RepeatExecutor {
     }
 
     public <T> T repeatUntilSuccess(Supplier<T> supplier) {
-        try {
-            return supplier.get();
-        } catch (IllegalArgumentException e) {
-            outputView.printErrorMessage(e.getMessage());
-            return repeatUntilSuccess(supplier);
+        while (true) {
+            try {
+                return supplier.get();
+            } catch (IllegalArgumentException e) {
+                outputView.printErrorMessage(e.getMessage());
+            }
         }
     }
 }
