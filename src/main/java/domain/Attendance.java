@@ -39,6 +39,10 @@ public class Attendance {
         }
     }
 
+    public boolean equals(final LocalDateTime dateTime) {
+        return localDateTime.equals(dateTime);
+    }
+
     public int getDateOfMonth() {
         return localDateTime.getDayOfMonth();
     }
