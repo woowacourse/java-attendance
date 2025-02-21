@@ -87,4 +87,18 @@ public class Attendances {
                 .toList();
     }
 
+    public int calculateTotalLateCount() {
+        return (int) this.attendances.stream()
+                .map(Attendance::calculateStatus)
+                .filter(AttendanceStatus::isLate)
+                .count();
+    }
+
+    public int calculateTotalAbsentCount() {
+        return (int) this.attendances.stream()
+                .map(Attendance::calculateStatus)
+                .filter(AttendanceStatus::isAbsent)
+                .count();
+    }
+
 }

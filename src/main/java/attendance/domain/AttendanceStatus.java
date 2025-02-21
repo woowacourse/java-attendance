@@ -11,7 +11,6 @@ public enum AttendanceStatus {
 
     private static final LocalTime MONDAY_START_TIME = LocalTime.of(13, 0);
     private static final LocalTime TUESDAY_TO_FRIDAY_START_TIME = LocalTime.of(10, 0);
-    private static final LocalTime END_TIME = LocalTime.of(18, 0);
 
     private final String text;
     private final int deadLineMinute;
@@ -48,8 +47,15 @@ public enum AttendanceStatus {
         return totalLateCount / ABSENT.lateCount;
     }
 
+    public boolean isLate() {
+        return this.equals(LATE);
+    }
+
+    public boolean isAbsent() {
+        return this.equals(ABSENT);
+    }
+
     public String getText() {
         return text;
     }
-
 }

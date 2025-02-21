@@ -1,5 +1,6 @@
 package attendance.domain;
 
+import static org.assertj.core.api.Assertions.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.time.LocalDate;
@@ -72,6 +73,22 @@ class AttendancesTest {
         ), LocalDateTime.of(2025, 2, 15, 10, 0));
 
         assertThat(attendances.calculateExpulsionStatus()).isEqualTo(ExpulsionStatus.EXPULSION);
+    }
+
+    @Test
+    void 현재의_지각_횟수를_알려준다() {
+        Attendances attendances = new Attendances(List.of(LocalDateTime.of(2025, 2, 3, 13, 6))
+                , LocalDateTime.of(2025, 2, 4, 10, 0));
+
+        assertThat(attendances.calculateTotalLateCount()).isEqualTo(1);
+    }
+
+    @Test
+    void 현재의_결석_횟수를_알려준다() {
+        Attendances attendances = new Attendances(List.of(LocalDateTime.of(2025, 2, 3, 13, 31))
+                , LocalDateTime.of(2025, 2, 4, 10, 0));
+
+        assertThat(attendances.calculateTotalAbsentCount()).isEqualTo(1);
     }
 
 }

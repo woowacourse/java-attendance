@@ -64,19 +64,6 @@ public class AttendanceController {
         }
     }
 
-    private void checkExpulsionCrews(Map<Crew, Attendances> crewAttendances) {
-        Map<String, AttendanceHistory> attendanceHistories = new HashMap<>();
-        for (Map.Entry<Crew, Attendances> entry : crewAttendances.entrySet()) {
-            Attendances attendances = entry.getValue();
-            Map<String, Integer> attendanceStatusCounts = attendances.calculateStatusCount();
-            ExpulsionStatus expulsionStatus = attendances.calculateExpulsionStatus();
-            AttendanceHistory attendanceHistory = new AttendanceHistory(attendanceStatusCounts.get("결석"),
-                    attendanceStatusCounts.get("지각"), expulsionStatus.getText());
-            attendanceHistories.put(entry.getKey().getNickname(), attendanceHistory);
-        }
-        outputView.printExpulsionCrews(attendanceHistories);
-    }
-
     private void modifyAttendance(Map<Crew, Attendances> crewAttendances, LocalDate today) {
         String nickname = inputView.readModificationCrewNickname();
         Crew crew = new Crew(nickname);
@@ -173,6 +160,18 @@ public class AttendanceController {
         if (!crewAttendances.containsKey(crew)) {
             throw new IllegalArgumentException("등록되지 않은 닉네임입니다.");
         }
+    }
+
+    private void checkExpulsionCrews(final Map<Crew, Attendances> crewAttendances) {
+        Map<String, AttendanceHistory> attendanceHistories = new HashMap<>();
+        for (Map.Entry<Crew, Attendances> entry : crewAttendances.entrySet()) {
+            Attendances attendances = entry.getValue();
+            ExpulsionStatus expulsionStatus = attendances.calculateExpulsionStatus();
+            AttendanceHistory attendanceHistory = new AttendanceHistory(attendances.calculateTotalAbsentCount(),
+                    attendances.calculateTotalLateCount(), expulsionStatus.getText());
+            attendanceHistories.put(entry.getKey().getNickname(), attendanceHistory);
+        }
+        outputView.printExpulsionCrews(attendanceHistories);
     }
 
 }

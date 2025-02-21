@@ -51,4 +51,10 @@ class AttendanceStatusTest {
         assertThat(calculateTotalAbsentCount(statuses)).isEqualTo(2);
     }
 
+    @CsvSource(value = {"OK,false", "LATE,true", "ABSENT,false"})
+    @ParameterizedTest
+    void 출석_상태가_지각인지_알려준다(AttendanceStatus attendanceStatus, boolean expected) {
+        assertThat(attendanceStatus.isLate()).isEqualTo(expected);
+    }
+
 }
