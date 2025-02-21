@@ -1,9 +1,9 @@
 package controller;
 
 import domain.Crew;
-import domain.CrewRepository;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import repository.CrewRepository;
 import util.FileParser;
 
 public class ResourceLoader {

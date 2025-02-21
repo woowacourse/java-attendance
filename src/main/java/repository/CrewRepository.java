@@ -1,12 +1,8 @@
-package domain;
+package repository;
 
-import java.time.LocalDate;
-import java.time.LocalTime;
+import domain.Crew;
 import java.util.ArrayList;
 import java.util.List;
-
-import java.util.Optional;
-import util.FileParser;
 
 public class CrewRepository {
 
@@ -21,7 +17,7 @@ public class CrewRepository {
     }
 
     public static void addCrew(Crew crew) {
-        if(exists(crew.getNickname())) {
+        if (exists(crew.getNickname())) {
             throw new IllegalArgumentException(crew.getNickname() + ": 이미 존재하는 크루명입니다");
         }
         CREWS.add(crew);
