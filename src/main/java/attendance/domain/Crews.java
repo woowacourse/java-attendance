@@ -2,6 +2,7 @@ package attendance.domain;
 
 import static attendance.constant.ErrorMessage.UNREGISTERED_NICKNAME;
 
+import java.util.Comparator;
 import java.util.List;
 
 public class Crews {
@@ -26,7 +27,9 @@ public class Crews {
     public List<Crew> collectWarningCrews() {
         return crews.stream()
                 .filter(crew -> !crew.checkWarning().equals(Warning.NONE))
-                .sorted(Crew::compareTo)
+                .sorted(Comparator.comparing(Crew::countAbsence)
+                        .thenComparing(Crew::countLate)
+                        .thenComparing(Crew::getNickname))
                 .toList();
     }
 }

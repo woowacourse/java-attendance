@@ -5,7 +5,7 @@ import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.List;
 
-public class Crew implements Comparable<Crew> {
+public class Crew {
     public static final int LATE_TO_ABSENCE_UNIT = 3;
 
     private final String nickname;
@@ -75,30 +75,6 @@ public class Crew implements Comparable<Crew> {
                 .filter(attendance -> attendance.isEqualToDate(updateDate))
                 .findFirst()
                 .orElseThrow(IllegalArgumentException::new);
-    }
-
-    @Override
-    public int compareTo(Crew comparisonCrew) {
-        long targetAbsenceCount = comparisonCrew.calculateTotalAbsenceCount();
-        long targetLateCount = comparisonCrew.countLate() % LATE_TO_ABSENCE_UNIT;
-
-        long absenceCount = this.calculateTotalAbsenceCount();
-        long lateCount = this.countLate() % LATE_TO_ABSENCE_UNIT;
-
-        if (targetAbsenceCount > absenceCount) {
-            return 1;
-        }
-        if (targetAbsenceCount < absenceCount) {
-            return -1;
-        }
-
-        if (targetLateCount > lateCount) {
-            return 1;
-        }
-        if (targetLateCount < lateCount) {
-            return -1;
-        }
-        return nickname.compareTo(comparisonCrew.getNickname());
     }
 
     public String getNickname() {
