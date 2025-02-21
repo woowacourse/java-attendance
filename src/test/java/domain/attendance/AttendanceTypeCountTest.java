@@ -69,4 +69,25 @@ class AttendanceTypeCountTest {
         );
     }
 
+    @Test
+    @DisplayName("지각 3회를 결석 1회로 간주해 결석 횟수를 반환한다")
+    void returnAbsenceCountConsideredLateCount() {
+        // given
+        int targetDay = 7;
+        List<AttendanceHistory> attendanceHistories = List.of(
+                AttendanceHistory.of(crew, AttendanceDateTime.of(2, 13, 6)),
+                AttendanceHistory.of(crew, AttendanceDateTime.of(3, 10, 6)),
+                AttendanceHistory.of(crew, AttendanceDateTime.of(4, 10, 6))
+        );
+
+        // when
+        AttendanceTypeCount attendanceTypeCount = AttendanceTypeCount.from(targetDay, attendanceHistories);
+
+        // then
+        assertAll(
+                () -> assertThat(attendanceTypeCount.getTotalAbsenceCount()).isEqualTo(3),
+                () -> assertThat(attendanceTypeCount.getLateCount()).isEqualTo(3)
+        );
+    }
+
 }

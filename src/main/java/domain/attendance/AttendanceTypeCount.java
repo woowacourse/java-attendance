@@ -36,7 +36,7 @@ public class AttendanceTypeCount {
                 continue;
             }
 
-            if (historyIsNotExisted(historyOfDay, day)) {
+            if (historyIsNotExisted(historyOfDay, currentDay)) {
                 attendanceTypeCount.merge(AttendanceType.ABSENCE, 1, Integer::sum);
                 continue;
             }
