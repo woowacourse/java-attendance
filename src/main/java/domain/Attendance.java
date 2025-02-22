@@ -1,5 +1,6 @@
 package domain;
 
+import domain.constants.AttendanceStatus;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;

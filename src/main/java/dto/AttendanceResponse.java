@@ -1,6 +1,6 @@
 package dto;
 
-import domain.AttendanceStatus;
+import domain.constants.AttendanceStatus;
 import java.time.LocalDateTime;
 
 public record AttendanceResponse(

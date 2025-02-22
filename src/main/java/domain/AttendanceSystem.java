@@ -1,5 +1,6 @@
 package domain;
 
+import domain.constants.AttendanceStatus;
 import domain.constants.ErrorMessage;
 import domain.constants.ExpulsionStatus;
 import java.time.DayOfWeek;

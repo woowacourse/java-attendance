@@ -1,6 +1,6 @@
 package view;
 
-import domain.AttendanceStatus;
+import domain.constants.AttendanceStatus;
 import domain.constants.ExpulsionStatus;
 import dto.AttendanceResponse;
 import dto.ExpulsionCrewResponse;

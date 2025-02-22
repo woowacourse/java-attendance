@@ -1,4 +1,4 @@
-package domain;
+package domain.constants;
 
 import java.time.LocalTime;
 import java.util.Arrays;
@@ -11,11 +11,11 @@ public enum AttendanceStatus {
     ABSENCE("결석", 30);
 
     private final String name;
-    private final int boundary;
+    private final int matchTimeMinuteBoundary;
 
-    AttendanceStatus(final String name, final int boundary) {
+    AttendanceStatus(final String name, final int matchTimeMinuteBoundary) {
         this.name = name;
-        this.boundary = boundary;
+        this.matchTimeMinuteBoundary = matchTimeMinuteBoundary;
     }
 
     public static AttendanceStatus of(final LocalTime time, final int boundaryHour, final int boundaryMinute) {
@@ -23,15 +23,15 @@ public enum AttendanceStatus {
                 .withHour(boundaryHour)
                 .withMinute(boundaryMinute);
         return Arrays.stream(values())
-                .sorted((o1, o2) -> o2.boundary - o1.boundary)
-                .filter(status -> time.isAfter(timeBoundary.plusMinutes(status.boundary)))
+                .sorted((o1, o2) -> o2.matchTimeMinuteBoundary - o1.matchTimeMinuteBoundary)
+                .filter(status -> time.isAfter(timeBoundary.plusMinutes(status.matchTimeMinuteBoundary)))
                 .findFirst()
                 .orElse(ATTENDANCE);
     }
 
     public static List<AttendanceStatus> sortedStatus() {
         return Arrays.stream(values())
-                .sorted(Comparator.comparingInt(AttendanceStatus::getBoundary))
+                .sorted(Comparator.comparingInt(AttendanceStatus::getMatchTimeMinuteBoundary))
                 .toList();
     }
 
@@ -39,7 +39,7 @@ public enum AttendanceStatus {
         return name;
     }
 
-    public int getBoundary() {
-        return boundary;
+    public int getMatchTimeMinuteBoundary() {
+        return matchTimeMinuteBoundary;
     }
 }

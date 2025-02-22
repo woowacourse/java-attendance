@@ -1,6 +1,6 @@
 package dto;
 
-import domain.AttendanceStatus;
+import domain.constants.AttendanceStatus;
 import domain.constants.ExpulsionStatus;
 import java.util.Map;
 
