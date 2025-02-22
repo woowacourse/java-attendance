@@ -9,8 +9,8 @@ import java.util.List;
 import java.util.Map;
 import model.AttendanceType;
 import model.Campus;
-import model.CrewHistory;
 import model.CrewHistories;
+import model.CrewHistory;
 import model.SubjectType;
 import model.TodayClock;
 import util.StringParser;
@@ -43,7 +43,7 @@ public class AttendanceController {
         start(crewHistories);
     }
 
-    public LocalDate getTodayDate() {
+    private LocalDate getTodayDate() {
         return todayClock.getTodayDate();
     }
 
