@@ -68,7 +68,7 @@ class AttendanceTest {
         attendance.save(crew, "10:20", 6);
 
         //then
-        assertThat(attendance.getAttendanceMap().get(crew)).hasSize(5);
+        assertThat(attendance.getAttendances().get(crew)).hasSize(5);
     }
 
     @DisplayName("이미 출석한 크루가 다시 출석하면 예외가 발생한다.")

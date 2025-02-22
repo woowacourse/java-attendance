@@ -12,34 +12,34 @@ import java.util.Map;
 
 public class Attendance {
 
-    private final Map<Crew, List<LocalDateTime>> attendanceMap;
+    private final Map<Crew, List<LocalDateTime>> attendances;
 
     public Attendance(final Map<Crew, List<LocalDateTime>> attendanceMap) {
-        this.attendanceMap = attendanceMap;
+        this.attendances = attendanceMap;
     }
 
     public Crew getCrewByName(String name) {
-        return attendanceMap.keySet()
+        return attendances.keySet()
                 .stream()
                 .filter(crew -> crew.isSame(name))
                 .findFirst()
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 크루 입니다."));
     }
 
-    public Map<Crew, List<LocalDateTime>> getAttendanceMap() {
-        return attendanceMap;
+    public Map<Crew, List<LocalDateTime>> getAttendances() {
+        return attendances;
     }
 
     public void save(final Crew crew, final String schoolStartTime, final int todayDay) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
-        List<LocalDateTime> localDateTimes = attendanceMap.get(crew);
+        List<LocalDateTime> localDateTimes = attendances.get(crew);
 
         String today = String.format("2024-12-%02d %s", todayDay, schoolStartTime);
         LocalDateTime todayLocalDateTime = LocalDateTime.parse(today, formatter);
 
         validateDuplicateSave(todayDay, localDateTimes);
         localDateTimes.add(todayLocalDateTime);
-        attendanceMap.put(crew, localDateTimes);
+        attendances.put(crew, localDateTimes);
     }
 
     private void validateDuplicateSave(final int todayDay, final List<LocalDateTime> localDateTimes) {
@@ -55,7 +55,7 @@ public class Attendance {
     public LocalDateTime update(final Crew crew, final String updateTime, final int date) {
         Calender.validateHolyDay(date);
 
-        List<LocalDateTime> localDateTimes = attendanceMap.get(crew);
+        List<LocalDateTime> localDateTimes = attendances.get(crew);
         int attendanceRecordIndex;
         LocalDateTime beforeLocalDateTime = null;
         for (attendanceRecordIndex = 0; attendanceRecordIndex < localDateTimes.size(); attendanceRecordIndex++) {
@@ -78,7 +78,7 @@ public class Attendance {
     }
 
     public List<AttendanceResultDto> readRecord(final Crew crew, int todayDay) {
-        List<LocalDateTime> localDateTimes = attendanceMap.get(crew); //해당 크루의 출석 기록
+        List<LocalDateTime> localDateTimes = attendances.get(crew); //해당 크루의 출석 기록
         localDateTimes.sort(Comparator.comparing((LocalDateTime::getDayOfMonth)));
 
         List<AttendanceResultDto> attendanceResultDtos = new ArrayList<>();
@@ -121,7 +121,7 @@ public class Attendance {
     public Map<Crew, AbsenceResultDto> getAbsence(final int todayDay) {
         Map<Crew, AbsenceResultDto> absenceMap = new HashMap<>();
 
-        for (Crew crew : attendanceMap.keySet()) {
+        for (Crew crew : attendances.keySet()) {
             List<AttendanceResultDto> attendanceResultDtos = readRecord(crew, todayDay);
 
             AbsenceHistory absenceHistory = new AbsenceHistory(attendanceResultDtos);
