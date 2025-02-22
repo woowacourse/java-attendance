@@ -12,7 +12,7 @@ import dto.AttendanceResult;
 import dto.CrewAlmostExpelledResult;
 import dto.ModifiedResult;
 import dto.ModifiedResult.TimeAttendanceStatus;
-import dto.MonthAttendanceRecordsResult;
+import dto.MonthRecord;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
@@ -57,12 +57,12 @@ public class AttendanceService {
         return new ModifiedResult(request.date(), before, after);
     }
 
-    public MonthAttendanceRecordsResult getMonthAttendanceRecordsResult(String nickname) {
+    public MonthRecord getMonthAttendanceRecordsResult(String nickname) {
         Crew crew = CrewRepository.findByNickname(nickname);
         LocalDate now = DateTimeUtil.nowDate();
         List<AttendanceRecord> attendanceRecords = getMonthAttendanceRecords(crew, now);
         Manage manage = Manage.of(getAttendanceStatusStatistics(crew, now));
-        return new MonthAttendanceRecordsResult(
+        return new MonthRecord(
                 crew.getNickname(), attendanceRecords, getAttendanceStatusStatistics(crew, now), manage
         );
     }

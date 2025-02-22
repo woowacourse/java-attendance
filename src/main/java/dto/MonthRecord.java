@@ -5,7 +5,7 @@ import domain.AttendanceStatusStatistics;
 import domain.Manage;
 import java.util.List;
 
-public record MonthAttendanceRecordsResult(
+public record MonthRecord(
         String nickname,
         List<AttendanceRecord> attendanceRecords,
         AttendanceStatusStatistics attendanceStatusStatistics,

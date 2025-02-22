@@ -54,7 +54,7 @@ public class AttendanceController {
     private void printMonthAttendanceRecords() {
         ExceptionHandler.printErrorMessageWithoutExitSystem(() -> {
             String nickname = InputView.scanNickname();
-            OutputView.printMonthAttendanceRecords(attendanceService.getMonthAttendanceRecordsResult(nickname));
+            OutputView.printMonthRecord(attendanceService.getMonthAttendanceRecordsResult(nickname));
         });
     }
 
