@@ -3,12 +3,13 @@ package domain;
 import error.CustomIllegalArgumentException;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.TreeSet;
 
 public class Attendances {
 
-    List<Attendance> attendances;
+    private final TreeSet<Attendance> attendances;
 
-    public Attendances(final List<Attendance> attendances) {
+    public Attendances(final TreeSet<Attendance> attendances) {
         this.attendances = attendances;
     }
 
@@ -42,21 +43,19 @@ public class Attendances {
                 .orElseThrow(() -> new CustomIllegalArgumentException("수정하는 일자를 찾을 수 없습니다."));
     }
 
-    public List<Integer> getDates() {
+    public List<Integer> getDayOfMonth() {
         return attendances.stream()
-                .map(Attendance::getDate)
+                .map(Attendance::getDayOfMonth)
                 .toList();
     }
 
-    public List<Attendance> getAttendances() {
-        return attendances;
+    public List<AttendanceSummary> getAttendanceSummary() {
+        return attendances.stream()
+                .map(Attendance::getSummary)
+                .toList();
     }
 
     public void remove(final Attendance oldAttendance) {
         attendances.remove(oldAttendance);
-    }
-
-    public void sort() {
-        attendances.sort((a, b) -> a.getDate() - b.getDate());
     }
 }
