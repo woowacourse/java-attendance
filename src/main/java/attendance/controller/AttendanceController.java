@@ -6,6 +6,7 @@ import static attendance.domain.AcademicStatus.WARNING;
 
 import attendance.domain.Attendance;
 import attendance.domain.AttendanceBook;
+import attendance.domain.Function;
 import attendance.domain.Time;
 import attendance.dto.AttendanceContentDTO;
 import attendance.repository.AttendanceRepository;
@@ -52,23 +53,21 @@ public class AttendanceController {
     }
 
     private boolean choiceFunction(final String functionValue) {
-        if (functionValue.equals("1")) {
+
+        Function function = Function.getFunction(functionValue);
+        if (function == Function.ATTEND) {
             attendanceCheckFunction();
         }
-
-        if (functionValue.equals("2")) {
+        if (function == Function.MODIFY_ATTENDANCE) {
             attendanceModifyFunction();
         }
-
-        if (functionValue.equals("3")) {
+        if (function == Function.GET_ATTENDANCES) {
             attendanceHistoryByName();
         }
-
-        if (functionValue.equals("4")) {
+        if (function == Function.GET_CREWS_AT_RISK_OF_EXPULSION) {
             crewAtRiskOfExpulsion();
         }
-
-        return functionValue.equals("Q");
+        return function == Function.QUIT;
     }
 
     private String functionInput(final LocalDateTime today) {
