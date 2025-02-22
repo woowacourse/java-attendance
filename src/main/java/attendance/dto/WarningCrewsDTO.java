@@ -9,7 +9,7 @@ public record WarningCrewsDTO(List<WarningCrewDetailDTO> warningCrewDetailDTO) {
 
     public static WarningCrewsDTO from(Crews crews) {
         return new WarningCrewsDTO(crews.getCrews().stream().map(WarningCrewDetailDTO::from)
-                .filter(dto -> !dto.warningType.equals(AttendanceWarning.해당없음.name()))
+                .filter(dto -> !dto.warningType.equals(AttendanceWarning.NONE.name()))
                 .toList());
     }
 

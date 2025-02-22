@@ -14,13 +14,13 @@ public class AttendanceDetailTest {
     @Test
     void 같은_출석상태일때_true를_반환한다() {
         AttendanceDetail attendanceDetail = new AttendanceDetail(LocalDateTime.of(2024, 12, 10, 10, 2));
-        assertThat(attendanceDetail.isSameAs(Attendance.출석)).isTrue();
+        assertThat(attendanceDetail.isSameAs(Attendance.PRESENT)).isTrue();
     }
 
     @Test
     void 다른_출석상태일때_false를_반환한다() {
         AttendanceDetail attendanceDetail = new AttendanceDetail(LocalDateTime.of(2024, 12, 10, 10, 2));
-        assertThat(attendanceDetail.isSameAs(Attendance.지각)).isFalse();
+        assertThat(attendanceDetail.isSameAs(Attendance.LATE)).isFalse();
     }
 
     @Test
@@ -29,7 +29,7 @@ public class AttendanceDetailTest {
         attendanceDetail.modify(LocalTime.of(9, 58));
         SoftAssertions softly = new SoftAssertions();
         softly.assertThat(attendanceDetail.getAttendanceDateTime()).isEqualTo(LocalDateTime.of(2024, 12, 10, 9, 58));
-        softly.assertThat(attendanceDetail.getAttendance()).isEqualTo(Attendance.출석);
+        softly.assertThat(attendanceDetail.getAttendance()).isEqualTo(Attendance.PRESENT);
         softly.assertAll();
     }
 

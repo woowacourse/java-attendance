@@ -14,7 +14,7 @@ class WarningTest {
         Crew crew = new Crew("빙티");
         crew.attend(new AttendanceDetail(LocalDateTime.of(2024, 12, 3, 13, 0)));
         crew.attend(new AttendanceDetail(LocalDateTime.of(2024, 12, 4, 13, 7)));
-        Assertions.assertThat(AttendanceWarning.from(crew)).isEqualTo(AttendanceWarning.경고);
+        Assertions.assertThat(AttendanceWarning.from(crew)).isEqualTo(AttendanceWarning.WARNING);
     }
 
     @Test
@@ -23,7 +23,7 @@ class WarningTest {
         crew.attend(new AttendanceDetail(LocalDateTime.of(2024, 12, 3, 17, 2)));
         crew.attend(new AttendanceDetail(LocalDateTime.of(2024, 12, 4, 17, 2)));
         crew.attend(new AttendanceDetail(LocalDateTime.of(2024, 12, 5, 17, 2)));
-        Assertions.assertThat(AttendanceWarning.from(crew)).isEqualTo(AttendanceWarning.면담);
+        Assertions.assertThat(AttendanceWarning.from(crew)).isEqualTo(AttendanceWarning.NEED_MEETING);
     }
 
     @Test
@@ -35,13 +35,13 @@ class WarningTest {
         crew.attend(new AttendanceDetail(LocalDateTime.of(2024, 12, 6, 17, 2)));
         crew.attend(new AttendanceDetail(LocalDateTime.of(2024, 12, 10, 17, 2)));
         crew.attend(new AttendanceDetail(LocalDateTime.of(2024, 12, 11, 17, 2)));
-        Assertions.assertThat(AttendanceWarning.from(crew)).isEqualTo(AttendanceWarning.제적);
+        Assertions.assertThat(AttendanceWarning.from(crew)).isEqualTo(AttendanceWarning.OUT);
     }
 
     @Test
     void 크루가_2번_미만_결석한_경우_해당없음이다() {
         Crew crew = new Crew("빙티");
         crew.attend(new AttendanceDetail(LocalDateTime.of(2024, 12, 3, 17, 2)));
-        Assertions.assertThat(AttendanceWarning.from(crew)).isEqualTo(AttendanceWarning.해당없음);
+        Assertions.assertThat(AttendanceWarning.from(crew)).isEqualTo(AttendanceWarning.NONE);
     }
 }

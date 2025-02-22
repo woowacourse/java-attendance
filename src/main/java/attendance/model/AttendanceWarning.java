@@ -1,10 +1,10 @@
 package attendance.model;
 
 public enum AttendanceWarning {
-    제적(5),
-    면담(3),
-    경고(2),
-    해당없음(0),
+    OUT(5),
+    NEED_MEETING(3),
+    WARNING(2),
+    NONE(0),
     ;
 
     public static final int LATES_PER_ABSENCE = 3;
@@ -15,20 +15,24 @@ public enum AttendanceWarning {
     }
 
     public static AttendanceWarning from(Crew crew) {
-        long absenceCount = calculateAbsenceCount(
+        long absenceCount = getAbsenceCount(crew);
+        if (absenceCount > OUT.absenceCount) {
+            return OUT;
+        }
+        if (absenceCount >= NEED_MEETING.absenceCount) {
+            return NEED_MEETING;
+        }
+        if (absenceCount >= WARNING.absenceCount) {
+            return WARNING;
+        }
+        return NONE;
+    }
+
+    private static long getAbsenceCount(Crew crew) {
+        return calculateAbsenceCount(
                 crew.getAttendanceHistory().getAbsenceCount(),
                 crew.getAttendanceHistory().getLateCount()
         );
-        if (absenceCount > 제적.absenceCount) {
-            return 제적;
-        }
-        if (absenceCount >= 면담.absenceCount) {
-            return 면담;
-        }
-        if (absenceCount >= 경고.absenceCount) {
-            return 경고;
-        }
-        return 해당없음;
     }
 
     public static long calculateAbsenceCount(long absenceCount, long lateCount) {

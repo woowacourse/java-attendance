@@ -16,19 +16,19 @@ public class AttendanceHistory {
 
     public long getAttendanceCount() {
         return attendanceHistory.stream()
-                .filter(attendanceDetail -> attendanceDetail.isSameAs(Attendance.출석))
+                .filter(attendanceDetail -> attendanceDetail.isSameAs(Attendance.PRESENT))
                 .count();
     }
 
     public long getLateCount() {
         return attendanceHistory.stream()
-                .filter(attendanceDetail -> attendanceDetail.isSameAs(Attendance.지각))
+                .filter(attendanceDetail -> attendanceDetail.isSameAs(Attendance.LATE))
                 .count();
     }
 
     public long getAbsenceCount() {
         return attendanceHistory.stream()
-                .filter(attendanceDetail -> attendanceDetail.isSameAs(Attendance.결석))
+                .filter(attendanceDetail -> attendanceDetail.isSameAs(Attendance.ABSENT))
                 .count();
     }
 

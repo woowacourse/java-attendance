@@ -38,7 +38,7 @@ public class AttendanceHistoryTest {
         AttendanceDetail attendanceDetail = attendanceHistory.findAttendanceDetail(modifyDate);
         attendanceDetail.modify(LocalTime.of(13, 10));
         Assertions.assertThat(attendanceDetail.getAttendanceDateTime().toLocalTime()).isEqualTo(LocalTime.of(13, 10));
-        Assertions.assertThat(attendanceDetail.getAttendance()).isEqualTo(Attendance.지각);
+        Assertions.assertThat(attendanceDetail.getAttendance()).isEqualTo(Attendance.LATE);
 
         // then
         assertThat(attendanceDetail).isEqualTo(attendanceDetail1);

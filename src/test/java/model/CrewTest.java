@@ -9,9 +9,7 @@ import attendance.model.Crew;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import org.assertj.core.api.Assertions;
 import org.assertj.core.api.SoftAssertions;
-import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 class CrewTest {
@@ -46,7 +44,7 @@ class CrewTest {
                 .findAttendanceDetail(LocalDate.of(2024, 12, 10));
         SoftAssertions softly = new SoftAssertions();
         softly.assertThat(attendanceDetail.getAttendanceDateTime().toLocalTime()).isEqualTo(LocalTime.of(10, 6));
-        softly.assertThat(attendanceDetail.getAttendance()).isEqualTo(Attendance.지각);
+        softly.assertThat(attendanceDetail.getAttendance()).isEqualTo(Attendance.LATE);
         softly.assertAll();
     }
 
