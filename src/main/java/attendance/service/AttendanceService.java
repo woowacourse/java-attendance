@@ -10,6 +10,7 @@ import attendance.dto.AttendanceInfoDto;
 import attendance.dto.EditResponseDto;
 import attendance.dto.FileRequestDto;
 import attendance.dto.PenaltyCrewDto;
+import attendance.utils.AttendanceFileParser;
 import attendance.utils.FileParser;
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -21,9 +22,13 @@ import java.util.Map;
 public class AttendanceService {
 
     private Attendances attendances;
+    private final FileParser fileParser;
+
+    public AttendanceService(FileParser fileParser) {
+        this.fileParser = fileParser;
+    }
 
     public void init() {
-        FileParser fileParser = new FileParser("src/main/java/resources/attendances.csv");
         List<FileRequestDto> dtos = fileParser.read();
         List<Attendance> convertedAttendances = dtos.stream()
                 .map(dto -> new Attendance(dto.name(), dto.date(), dto.time()))
