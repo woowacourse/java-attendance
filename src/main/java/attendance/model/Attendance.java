@@ -1,6 +1,6 @@
 package attendance.model;
 
-import java.time.LocalDateTime;
+import java.time.LocalTime;
 
 public enum Attendance {
     PRESENT(0),
@@ -14,8 +14,8 @@ public enum Attendance {
         this.lateMinute = lateMinute;
     }
 
-    public static Attendance from(LocalDateTime dateTime) {
-        long duration = WoowaDurationTime.calculateDuration(dateTime);
+    public static Attendance from(WoowaDate date, LocalTime attendanceTime) {
+        long duration = WoowaDurationTime.calculateDuration(date, attendanceTime);
         if (duration > ABSENT.lateMinute) {
             return ABSENT;
         }

@@ -4,8 +4,8 @@ import static attendance.error.ErrorMessage.ERROR_NAME_LENGTH;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+import attendance.TestUtil;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
 import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.Test;
@@ -30,7 +30,7 @@ class CrewTest {
     void 크루가_가지고_있는_출석_기록을_확인한다() {
         //given
         Crew crew = new Crew("멍구");
-        crew.attend(new AttendanceDetail(LocalDateTime.of(2024, 12, 10, 10, 0)));
+        crew.attend(TestUtil.creatAttendanceDetail(2024, 12, 10, 10, 0));
 
         //when
         long attendanceCount = crew.getAttendanceHistory().getAttendanceCount();
@@ -44,9 +44,9 @@ class CrewTest {
         //given
         Crew crew = new Crew("멍구");
         LocalDate targetDate = LocalDate.of(2024, 12, 10);
-        crew.attend(new AttendanceDetail(
-                LocalDateTime.of(targetDate, LocalTime.of(10, 0))
-        ));
+        crew.attend(
+                TestUtil.creatAttendanceDetail(2024, 12, 10, 10, 0)
+        );
 
         //when
         crew.getAttendanceHistory()

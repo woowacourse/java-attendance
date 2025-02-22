@@ -2,14 +2,13 @@ package attendance.model;
 
 import static attendance.error.ErrorMessage.ERROR_CREW_NOT_FOUND;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class Crews {
     private final List<Crew> crews;
 
-    public Crews() {
-        this.crews = new ArrayList<>();
+    public Crews(List<Crew> crews) {
+        this.crews = crews;
     }
 
     public void add(Crew crew) {

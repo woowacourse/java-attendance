@@ -4,7 +4,6 @@ import static attendance.error.ErrorMessage.ERROR_NOT_WOOWA_OPEN;
 
 import java.time.DayOfWeek;
 import java.time.Duration;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.Arrays;
 
@@ -23,8 +22,10 @@ public enum WoowaDurationTime {
         this.startTime = startTime;
     }
 
-    public static long calculateDuration(LocalDateTime localDateTime) {
-        return Duration.between(getStartTime(localDateTime.getDayOfWeek()), localDateTime.toLocalTime()).toMinutes();
+    public static long calculateDuration(WoowaDate woowaDate, LocalTime localTime) {
+        return Duration.between(
+                getStartTime(woowaDate.getDayOfWeek()), localTime
+        ).toMinutes();
     }
 
     private static LocalTime getStartTime(DayOfWeek dayOfWeek) {

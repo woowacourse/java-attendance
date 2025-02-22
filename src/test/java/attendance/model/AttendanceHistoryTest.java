@@ -4,8 +4,8 @@ import static attendance.error.ErrorMessage.ERROR_ATTENDANCE_DETAIL_NOT_FOUND;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+import attendance.TestUtil;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
 import org.junit.jupiter.api.Test;
 
@@ -18,7 +18,7 @@ public class AttendanceHistoryTest {
 
         //when
         attendanceHistory.addAttendanceDetail(
-                new AttendanceDetail(LocalDateTime.of(2024, 12, 2, 13, 0))
+                TestUtil.creatAttendanceDetail(2024, 12, 2, 13, 0)
         );
 
         //then
@@ -30,11 +30,11 @@ public class AttendanceHistoryTest {
         // given
         AttendanceHistory attendanceHistory = new AttendanceHistory();
 
-        AttendanceDetail originalAttendanceDetail = new AttendanceDetail(LocalDateTime.of(2024, 12, 2, 13, 0));
+        AttendanceDetail originalAttendanceDetail = TestUtil.creatAttendanceDetail(2024, 12, 2, 13, 0);
         attendanceHistory.addAttendanceDetail(originalAttendanceDetail);
 
-        attendanceHistory.addAttendanceDetail(new AttendanceDetail(LocalDateTime.of(2024, 12, 3, 9, 58)));
-        attendanceHistory.addAttendanceDetail(new AttendanceDetail(LocalDateTime.of(2024, 12, 4, 10, 2)));
+        attendanceHistory.addAttendanceDetail(TestUtil.creatAttendanceDetail(2024, 12, 3, 9, 58));
+        attendanceHistory.addAttendanceDetail(TestUtil.creatAttendanceDetail(2024, 12, 4, 10, 2));
 
         LocalDate modifyDate = LocalDate.of(2024, 12, 2);
 
@@ -54,9 +54,9 @@ public class AttendanceHistoryTest {
         AttendanceHistory attendanceHistory = new AttendanceHistory();
 
         //when
-        attendanceHistory.addAttendanceDetail(new AttendanceDetail(LocalDateTime.of(2024, 12, 2, 13, 0)));
-        attendanceHistory.addAttendanceDetail(new AttendanceDetail(LocalDateTime.of(2024, 12, 3, 9, 58)));
-        attendanceHistory.addAttendanceDetail(new AttendanceDetail(LocalDateTime.of(2024, 12, 4, 10, 2)));
+        attendanceHistory.addAttendanceDetail(TestUtil.creatAttendanceDetail(2024, 12, 2, 13, 0));
+        attendanceHistory.addAttendanceDetail(TestUtil.creatAttendanceDetail(2024, 12, 3, 9, 58));
+        attendanceHistory.addAttendanceDetail(TestUtil.creatAttendanceDetail(2024, 12, 4, 10, 2));
 
         //then
         assertThat(attendanceHistory.getAttendanceCount()).isEqualTo(3);
@@ -69,7 +69,7 @@ public class AttendanceHistoryTest {
         LocalDate targetDate = LocalDate.of(2024, 12, 2);
 
         attendanceHistory.addAttendanceDetail(
-                new AttendanceDetail(LocalDateTime.of(targetDate, LocalTime.of(13, 0)))
+                TestUtil.creatAttendanceDetail(2024, 12, 2, 13, 0)
         );
 
         //when
@@ -84,7 +84,7 @@ public class AttendanceHistoryTest {
         LocalDate targetDate = LocalDate.of(2024, 12, 2);
 
         attendanceHistory.addAttendanceDetail(
-                new AttendanceDetail(LocalDateTime.of(targetDate, LocalTime.of(13, 0)))
+                TestUtil.creatAttendanceDetail(2024, 12, 2, 13, 0)
         );
 
         //when
@@ -98,7 +98,7 @@ public class AttendanceHistoryTest {
         // given
         AttendanceHistory attendanceHistory = new AttendanceHistory();
 
-        AttendanceDetail attendanceDetail = new AttendanceDetail(LocalDateTime.of(2024, 12, 2, 13, 0));
+        AttendanceDetail attendanceDetail = TestUtil.creatAttendanceDetail(2024, 12, 2, 13, 0);
         attendanceHistory.addAttendanceDetail(attendanceDetail);
 
         LocalDate wantDate = LocalDate.of(2024, 12, 2);
@@ -115,7 +115,7 @@ public class AttendanceHistoryTest {
         // given
         AttendanceHistory attendanceHistory = new AttendanceHistory();
 
-        AttendanceDetail attendanceDetail = new AttendanceDetail(LocalDateTime.of(2024, 12, 2, 13, 0));
+        AttendanceDetail attendanceDetail = TestUtil.creatAttendanceDetail(2024, 12, 2, 13, 0);
         attendanceHistory.addAttendanceDetail(attendanceDetail);
 
         LocalDate wantDate = LocalDate.of(2024, 12, 1);

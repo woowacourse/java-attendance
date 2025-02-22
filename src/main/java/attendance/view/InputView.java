@@ -1,10 +1,15 @@
 package attendance.view;
 
-import attendance.model.CustomLocalDateTime;
+import attendance.model.FixedCustomClock;
 import java.time.format.DateTimeFormatter;
 import java.util.Scanner;
 
 public class InputView {
+    private final FixedCustomClock fixedCustomClock;
+
+    public InputView(FixedCustomClock fixedCustomClock) {
+        this.fixedCustomClock = fixedCustomClock;
+    }
 
     private static final DateTimeFormatter normalFormatter = DateTimeFormatter.ofPattern("MM월 dd일 EEEE");
     private static Scanner scanner = new Scanner(System.in);
@@ -18,7 +23,7 @@ public class InputView {
                         3. 크루별 출석 기록 확인
                         4. 제적 위험자 확인
                         Q. 종료
-                        """, CustomLocalDateTime.now().format(normalFormatter))
+                        """, fixedCustomClock.now().format(normalFormatter))
         );
         return scanner.nextLine();
     }

@@ -1,39 +1,36 @@
 package attendance.controller;
 
-import static attendance.util.DateFormatUtil.NOT_ATTENDABLE_FORMATTER;
-
 import attendance.dto.AttendanceDto;
 import attendance.dto.AttendanceDto.AttendanceDetailDto;
 import attendance.dto.WarningCrewsDto;
 import attendance.model.AttendanceDetail;
 import attendance.model.Crew;
-import attendance.model.CrewDataLoader;
 import attendance.model.Crews;
-import attendance.model.CustomLocalDateTime;
+import attendance.model.FixedCustomClock;
+import attendance.model.WoowaDate;
 import attendance.util.DateFormatUtil;
+import attendance.util.DateUtil;
 import attendance.view.InputView;
 import attendance.view.OutputView;
-import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.Map;
 
 public class Controller {
-    public static final String FILE_NAME = "attendances.csv";
 
     private final InputView inputView;
     private final OutputView outputView;
-    private static final Crews crews = new Crews();
+    private final FixedCustomClock fixedCustomClock;
+    private final Crews crews;
 
-    public Controller(InputView inputView, OutputView outputView) {
+    public Controller(InputView inputView, OutputView outputView, FixedCustomClock fixedCustomClock, Crews crews) {
         this.inputView = inputView;
         this.outputView = outputView;
-    }
-
-    public void loadDate() {
-        CrewDataLoader crewDataLoader = new CrewDataLoader(crews, CustomLocalDateTime.now());
-        crewDataLoader.load(FILE_NAME);
+        this.fixedCustomClock = fixedCustomClock;
+        this.crews = crews;
     }
 
     public void run() {
+
         Map<String, Runnable> commands = Map.of(
                 "1", this::processAddAttendance,
                 "2", this::processModifyAttendance,
@@ -44,19 +41,19 @@ public class Controller {
 
         Runnable action = commands.getOrDefault(inputView.inputCommand(), this::run);
         action.run();
+
+        run();
     }
 
     private void processAddAttendance() {
         process(() -> {
-            if (CustomLocalDateTime.isWeekendOrHoliday(CustomLocalDateTime.nowDate())) {
-                throw new IllegalArgumentException(CustomLocalDateTime.nowDate().format(NOT_ATTENDABLE_FORMATTER));
-            }
+            WoowaDate woowaDate = new WoowaDate(fixedCustomClock.now().toLocalDate(), fixedCustomClock);
             Crew crew = crews.findCrew(inputView.inputCrewName());
-            AttendanceDetail attendanceDetail = new AttendanceDetail(LocalDateTime.of(
-                    CustomLocalDateTime.nowDate(),
-                    DateFormatUtil.parseTime(inputView.inputEntryTime())
-            ));
+            LocalTime entryTime = DateFormatUtil.parseTime(inputView.inputEntryTime());
+
+            AttendanceDetail attendanceDetail = new AttendanceDetail(woowaDate, entryTime);
             crew.attend(attendanceDetail);
+
             outputView.printAttendanceDetail(AttendanceDetailDto.from(attendanceDetail));
         });
     }
@@ -64,10 +61,14 @@ public class Controller {
     private void processModifyAttendance() {
         process(() -> {
             Crew crew = crews.findCrew(inputView.inputModifyAttendanceCrewName());
-            AttendanceDetail attendanceDetail = crew.findAttendanceDetail(
-                    CustomLocalDateTime.parseDate(inputView.inputModifyAttendanceDate())
+            WoowaDate modifyDate = new WoowaDate(
+                    DateUtil.parseDate(inputView.inputModifyAttendanceDate()),
+                    fixedCustomClock
             );
-            AttendanceDetail beforeModify = new AttendanceDetail(attendanceDetail.getAttendanceDateTime());
+
+            AttendanceDetail attendanceDetail = crew.findAttendanceDetail(modifyDate.getLocalDate());
+            AttendanceDetail beforeModify = new AttendanceDetail(attendanceDetail.getAttendanceDate(),
+                    attendanceDetail.getAttendanceTime());
             attendanceDetail.modify(DateFormatUtil.parseTime(inputView.inputModifyAttendanceTime()));
             outputView.printModifyResult(
                     AttendanceDetailDto.from(beforeModify),
@@ -93,4 +94,5 @@ public class Controller {
             outputView.printError(exception.getMessage());
         }
     }
+
 }

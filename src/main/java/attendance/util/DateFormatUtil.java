@@ -3,6 +3,7 @@ package attendance.util;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 
 public class DateFormatUtil {
 
@@ -16,7 +17,11 @@ public class DateFormatUtil {
     }
 
     public static LocalTime parseTime(String time) {
-        return LocalTime.parse(time, MODIFY_ATTENDANCE_TIME_FORMATTER);
+        try {
+            return LocalTime.parse(time, MODIFY_ATTENDANCE_TIME_FORMATTER);
+        } catch (DateTimeParseException e) {
+            throw new IllegalArgumentException("잘못된 시간 형식입니다 - 올바른 형식: HH:mm)");
+        }
     }
 
     public static LocalDateTime parseLocalDateTime(String dateTime) {

@@ -34,12 +34,12 @@ public class AttendanceHistory {
 
     public boolean containsDate(LocalDate date) {
         return attendanceHistory.stream()
-                .anyMatch(attendanceDetail -> attendanceDetail.getAttendanceDate().equals(date));
+                .anyMatch(attendanceDetail -> attendanceDetail.getAttendanceDate().getLocalDate().equals(date));
     }
 
     public AttendanceDetail findAttendanceDetail(LocalDate attendanceDate) {
         return attendanceHistory.stream()
-                .filter(attendanceDetail -> attendanceDetail.getAttendanceDate().equals(attendanceDate))
+                .filter(attendanceDetail -> attendanceDetail.getAttendanceDate().getLocalDate().equals(attendanceDate))
                 .findFirst().orElseThrow(() -> new IllegalArgumentException(ERROR_ATTENDANCE_DETAIL_NOT_FOUND));
     }
 

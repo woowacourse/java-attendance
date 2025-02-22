@@ -2,7 +2,9 @@ package attendance.model;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import java.time.LocalDateTime;
+import attendance.TestUtil;
+import java.time.LocalDate;
+import java.time.LocalTime;
 import org.junit.jupiter.api.Test;
 
 class AttendanceTest {
@@ -10,10 +12,11 @@ class AttendanceTest {
     @Test
     void 정시에_도착한_경우_출석이다() {
         //given
-        LocalDateTime dateTime = LocalDateTime.of(2024, 12, 10, 10, 0);
+        LocalDate testDate = LocalDate.of(2024, 12, 10);
+        LocalTime attendanceTime = LocalTime.of(10, 0);
 
         //when
-        Attendance attendance = Attendance.from(dateTime);
+        Attendance attendance = Attendance.from(TestUtil.createTestWoowaDate(testDate), attendanceTime);
 
         //then
         assertThat(attendance).isEqualTo(Attendance.PRESENT);
@@ -22,10 +25,11 @@ class AttendanceTest {
     @Test
     void _5분_초과로_늦게온_경우_지각이다() {
         //given
-        LocalDateTime dateTime = LocalDateTime.of(2024, 12, 10, 10, 6);
+        LocalDate testDate = LocalDate.of(2024, 12, 10);
+        LocalTime attendanceTime = LocalTime.of(10, 6);
 
         //when
-        Attendance attendance = Attendance.from(dateTime);
+        Attendance attendance = Attendance.from(TestUtil.createTestWoowaDate(testDate), attendanceTime);
 
         //then
         assertThat(attendance).isEqualTo(Attendance.LATE);
@@ -34,10 +38,11 @@ class AttendanceTest {
     @Test
     void _31분_초과로_늦게온_경우_결석이다() {
         //given
-        LocalDateTime dateTime = LocalDateTime.of(2024, 12, 10, 10, 31);
+        LocalDate testDate = LocalDate.of(2024, 12, 10);
+        LocalTime attendanceTime = LocalTime.of(10, 31);
 
         //when
-        Attendance attendance = Attendance.from(dateTime);
+        Attendance attendance = Attendance.from(TestUtil.createTestWoowaDate(testDate), attendanceTime);
 
         //then
         assertThat(attendance).isEqualTo(Attendance.ABSENT);

@@ -29,8 +29,8 @@ public class Crew {
         return attendanceHistory;
     }
 
-    public AttendanceDetail findAttendanceDetail(LocalDate localDate) {
-        return attendanceHistory.findAttendanceDetail(localDate);
+    public AttendanceDetail findAttendanceDetail(LocalDate findDate) {
+        return attendanceHistory.findAttendanceDetail(findDate);
     }
 
     public void attend(AttendanceDetail attendanceDetail) {
