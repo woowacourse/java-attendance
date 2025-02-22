@@ -6,6 +6,7 @@ import static attendance.domain.AcademicStatus.WARNING;
 
 import attendance.domain.Attendance;
 import attendance.domain.AttendanceBook;
+import attendance.domain.AttendanceFunctionExecutor;
 import attendance.domain.Time;
 import attendance.dto.AttendanceContentDTO;
 import attendance.repository.AttendanceRepository;
@@ -33,33 +34,15 @@ public class AttendanceController {
     }
 
     public void start() {
-
         initAttendanceSystem();
+        AttendanceFunctionExecutor executor = new AttendanceFunctionExecutor(this);
 
-        while (!choiceFunction(functionInput(LocalDateTime.now()))) {
-            outputView.printErrorMessage("[ERROR] 올바른 기능을 입력해주세요.");
+        while (true) {
+            String functionValue = functionInput(LocalDateTime.now());
+            if (executor.execute(functionValue)) {
+                return;
+            }
         }
-    }
-
-
-    private boolean choiceFunction(final String functionValue) {
-        if (functionValue.equals("1")) {
-            attendanceCheckFunction();
-        }
-
-        if (functionValue.equals("2")) {
-            attendanceModifyFunction();
-        }
-
-        if (functionValue.equals("3")) {
-            attendanceHistoryByNameFunction();
-        }
-
-        if (functionValue.equals("4")) {
-            crewAtRiskOfExpulsion();
-        }
-
-        return functionValue.equals("Q");
     }
 
     private String functionInput(final LocalDateTime today) {
@@ -77,10 +60,10 @@ public class AttendanceController {
         attendanceBook.initAbsent(attendanceRepository);
     }
 
-    private void attendanceCheckFunction() {
+    public void attendanceCheckFunction() {
 
         String crewName = inputView.inputCrewName();
-        attendanceBook.checkName(inputView.inputCrewName());
+        attendanceBook.checkName(crewName);
         Time todayDateTime = createTime(LocalDate.now(), inputView.inputTime());
 
         Attendance attendance = new Attendance(crewName, todayDateTime);
@@ -94,7 +77,7 @@ public class AttendanceController {
         return new Time(date, split[0], split[1], false);
     }
 
-    private void attendanceModifyFunction() {
+    public void attendanceModifyFunction() {
 
         String crewName = inputView.inputModifyCrewName();
         attendanceBook.checkName(crewName);
@@ -119,7 +102,7 @@ public class AttendanceController {
                 attendance.getAttendanceStatus());
     }
 
-    private void attendanceHistoryByNameFunction() {
+    public void attendanceHistoryByNameFunction() {
 
         String crewName = inputView.inputCrewName();
 
@@ -131,7 +114,7 @@ public class AttendanceController {
         outputView.printAcademicStatusResult(attendanceRepository.getAcademicStatusByName(crewName));
     }
 
-    private void crewAtRiskOfExpulsion() {
+    public void crewAtRiskOfExpulsion() {
 
         outputView.printCrewsAtRiskOfExpulsionStartMessage();
 
@@ -141,6 +124,10 @@ public class AttendanceController {
                 attendanceBook.getCrewAtRiskOfExpulsion(attendanceRepository, INTERVIEW.getValue()));
         outputView.printCrewsAtRiskOfExpulsion(
                 attendanceBook.getCrewAtRiskOfExpulsion(attendanceRepository, WARNING.getValue()));
+    }
+
+    public void printErrorMessage(String message) {
+        outputView.printErrorMessage(message);
     }
 
 }
