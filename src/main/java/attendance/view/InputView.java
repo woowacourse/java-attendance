@@ -14,6 +14,11 @@ public class InputView {
 
     private final Scanner scanner = new Scanner(System.in);
 
+    public String readCommand(final String month, final String date, final String day) {
+        System.out.println(MENU_STRING.formatted(month, date, day));
+        return scanner.nextLine();
+    }
+
     public String readCrewName() {
         System.out.println("닉네임을 입력해 주세요.");
         return scanner.nextLine();
@@ -26,11 +31,6 @@ public class InputView {
 
     public String readModifyDate() {
         System.out.println("수정하려는 날짜(일)를 입력해 주세요.");
-        return scanner.nextLine();
-    }
-
-    public String readCommand(final String month, final String date, final String day) {
-        System.out.println(MENU_STRING.formatted(month, date, day));
         return scanner.nextLine();
     }
 
