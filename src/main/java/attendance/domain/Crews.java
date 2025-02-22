@@ -2,6 +2,7 @@ package attendance.domain;
 
 import attendance.exception.CustomException;
 import attendance.exception.ErrorMessage;
+import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -34,8 +35,9 @@ public class Crews {
         return this.crews;
     }
 
-    public void register(Map<Crew, AttendanceRegistry> register, AttendanceRegistry attendanceRegistry) {
+    public void register(Map<Crew, AttendanceRegistry> register, LocalDate now) {
         for (Crew crew : crews) {
+            AttendanceRegistry attendanceRegistry = AttendanceRegistry.fromDefaultValue(now);
             register.put(crew, attendanceRegistry);
         }
     }

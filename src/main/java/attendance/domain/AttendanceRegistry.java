@@ -1,7 +1,6 @@
 package attendance.domain;
 
 import attendance.domain.constant.AttendanceStatus;
-import attendance.domain.constant.Weekday;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;

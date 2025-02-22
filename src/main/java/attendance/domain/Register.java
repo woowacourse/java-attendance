@@ -19,7 +19,7 @@ public class Register {
 
     public Register(Crews crews, LocalDate now) {
         register = new HashMap<>();
-        crews.register(register, AttendanceRegistry.fromDefaultValue(now));
+        crews.register(register, now);
     }
 
     public DateInfo modifyInfo(Crew crew, LocalDateTime localDateTime) {
@@ -52,7 +52,6 @@ public class Register {
             int year = Integer.parseInt(make(date, HYPHEN, POSITION_ZERO));
             int month = Integer.parseInt(make(date, HYPHEN, POSITION_ONE));
             int day = Integer.parseInt(make(date, HYPHEN, POSITION_TWO));
-
             LocalDateTime localDateTime = LocalDateTime.of(year,month,day,hour,minute);
             modifyInfo(crew, localDateTime);
         }

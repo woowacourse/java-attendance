@@ -5,8 +5,16 @@ import attendance.domain.DateInfo;
 import attendance.domain.AttendanceRegistry;
 import attendance.domain.constant.CrewStatus;
 import attendance.domain.constant.Weekday;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Set;
 
 public class OutputView {
     public void writeAttendanceCheck(DateInfo dateInfo) {
@@ -57,13 +65,72 @@ public class OutputView {
 
     public void writeDismissCrewCheck(Map<Crew, List<Integer>> allExpertRiskCrews) {
         System.out.println("제적 위험자 조회 결과");
-        for (Crew crew : allExpertRiskCrews.keySet()) {
-            String crewName = crew.getCrewName();
-            int absenceCounts = allExpertRiskCrews.get(crew).get(0);
-            int lateCounts = allExpertRiskCrews.get(crew).get(1);
-            String crewStatus = CrewStatus.from(lateCounts, absenceCounts).getName();
-            writeAbsenceOver(absenceCounts, crewName, lateCounts, crewStatus);
+        List<Map.Entry<Crew, List<Integer>>> crewList = new ArrayList<>(allExpertRiskCrews.entrySet());
+        crewList.sort((e1, e2) -> Integer.compare(
+                calculateTotalAbsence(e2.getValue()),
+                calculateTotalAbsence(e1.getValue())
+        ));
+        Set<Crew> excludedCrews = orderByAbsence(crewList);
+        orderByNickname(crewList, excludedCrews);
+    }
+
+    private int calculateTotalAbsence(List<Integer> absenceCounts) {
+        int absence = absenceCounts.get(0);
+        int late = absenceCounts.get(1);
+        return absence + (late / 3);
+    }
+
+    private Set<Crew> orderByAbsence(List<Entry<Crew, List<Integer>>> crewList) {
+        Set<Crew> excludedCrews = new HashSet<>();
+        int maxAbsence = calculateTotalAbsence(crewList.get(0).getValue());
+        Iterator<Entry<Crew, List<Integer>>> iterator = crewList.iterator();
+        while (iterator.hasNext()) {
+            Entry<Crew, List<Integer>> entry = iterator.next();
+            checkMaxAbsence(entry, maxAbsence, excludedCrews, iterator);
         }
+        return excludedCrews;
+    }
+
+    private void orderByNickname(List<Entry<Crew, List<Integer>>> crewList, Set<Crew> excludedCrews) {
+        List<Entry<Crew, List<Integer>>> remainingCrewList = crewList.stream()
+                .filter(entry -> !excludedCrews.contains(entry.getKey()))
+                .sorted(Comparator.comparing(entry -> entry.getKey().getCrewName()))
+                .toList();
+
+        for (Entry<Crew, List<Integer>> entry : remainingCrewList) {
+            writeEntry(entry);
+        }
+    }
+
+    private void checkMaxAbsence(Entry<Crew, List<Integer>> entry, int maxAbsence, Set<Crew> excludedCrews,
+                           Iterator<Entry<Crew, List<Integer>>> iterator) {
+        if (entry.getValue().get(0) == maxAbsence) {
+            writeEntry(entry);
+            excludedCrews.add(entry.getKey());
+            iterator.remove();
+        }
+    }
+
+    private void writeEntry(Map.Entry<Crew, List<Integer>> entry) {
+        Crew crew = entry.getKey();
+        String crewName = crew.getCrewName();
+        int absenceCounts = entry.getValue().get(0);
+        int lateCounts = entry.getValue().get(1);
+
+        CrewStatus crewStatus = CrewStatus.from(lateCounts, absenceCounts);
+        writeOrderedCrews(crewStatus, absenceCounts, crewName, lateCounts);
+    }
+
+    private void writeOrderedCrews(CrewStatus crewStatus, int absenceCounts, String crewName, int lateCounts) {
+        if (crewStatus.equals(CrewStatus.DISMISS)) {
+            writeAbsenceOver(absenceCounts, crewName, lateCounts, crewStatus.getName());
+            return;
+        }
+        if (crewStatus.equals(CrewStatus.WARNING)) {
+            writeAbsenceOver(absenceCounts, crewName, lateCounts, crewStatus.getName());
+            return;
+        }
+        writeAbsenceOver(absenceCounts, crewName, lateCounts, crewStatus.getName());
     }
 
     private void writeAbsenceOver(int absenceCounts, String crewName, int lateCounts, String crewStatus) {

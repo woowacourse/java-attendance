@@ -66,12 +66,11 @@ class CrewsTest {
         Crews crews = Crews.fromCrewsFile(crewNames);
 
         LocalDate now = LocalDate.of(2025, 2, 19);
-        AttendanceRegistry dateInfos = AttendanceRegistry.fromDefaultValue(now);
 
         Map<Crew, AttendanceRegistry> register = new HashMap<>();
 
         // when
-        crews.register(register, dateInfos);
+        crews.register(register, now);
 
         // then
         Assertions.assertThat(register.size()).isEqualTo(3);
