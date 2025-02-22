@@ -1,12 +1,11 @@
-package attendance;
+package attendance.domain;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
 import attendance.common.ErrorMessage;
-import attendance.domain.Attendance;
-import attendance.domain.Attendances;
+
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;

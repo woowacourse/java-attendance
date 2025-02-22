@@ -12,7 +12,7 @@ import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
-public class AttendanceFileParser implements FileParser {
+public class AttendanceFileParser implements AttendanceReader {
 
     private final String path;
 

@@ -1,8 +1,7 @@
-package attendance;
+package attendance.domain;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import attendance.domain.HolidayChecker;
 import java.time.LocalDate;
 import org.junit.jupiter.api.Test;
 

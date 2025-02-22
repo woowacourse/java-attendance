@@ -10,8 +10,7 @@ import attendance.dto.AttendanceInfoDto;
 import attendance.dto.EditResponseDto;
 import attendance.dto.FileRequestDto;
 import attendance.dto.PenaltyCrewDto;
-import attendance.utils.AttendanceFileParser;
-import attendance.utils.FileParser;
+import attendance.utils.AttendanceReader;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
@@ -22,14 +21,14 @@ import java.util.Map;
 public class AttendanceService {
 
     private Attendances attendances;
-    private final FileParser fileParser;
+    private final AttendanceReader attendanceReader;
 
-    public AttendanceService(FileParser fileParser) {
-        this.fileParser = fileParser;
+    public AttendanceService(AttendanceReader attendanceReader) {
+        this.attendanceReader = attendanceReader;
     }
 
     public void init() {
-        List<FileRequestDto> dtos = fileParser.read();
+        List<FileRequestDto> dtos = attendanceReader.read();
         List<Attendance> convertedAttendances = dtos.stream()
                 .map(dto -> new Attendance(dto.name(), dto.date(), dto.time()))
                 .toList();

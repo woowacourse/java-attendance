@@ -1,6 +1,5 @@
-package attendance;
+package attendance.domain;
 
-import attendance.domain.AttendancePenalty;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;

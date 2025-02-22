@@ -1,10 +1,9 @@
-package attendance;
+package attendance.controller;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import attendance.common.ErrorMessage;
-import attendance.controller.AttendanceOption;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;

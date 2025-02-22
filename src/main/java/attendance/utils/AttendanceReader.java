@@ -4,7 +4,7 @@ import attendance.dto.FileRequestDto;
 
 import java.util.List;
 
-public interface FileParser {
+public interface AttendanceReader {
 
     public List<FileRequestDto> read();
 }

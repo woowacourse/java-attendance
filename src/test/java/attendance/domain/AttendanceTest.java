@@ -1,10 +1,10 @@
-package attendance;
+package attendance.domain;
 
 import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import attendance.common.ErrorMessage;
-import attendance.domain.Attendance;
+
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.stream.Stream;
