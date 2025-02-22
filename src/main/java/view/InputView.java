@@ -1,7 +1,9 @@
 package view;
 
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Arrays;
 import java.util.Scanner;
 
 public class InputView {
@@ -40,25 +42,39 @@ public class InputView {
         return input;
     }
 
-    public String inputDate() {
+    public LocalDate inputDate() {
         System.out.println("수정하려는 날짜(일)를 입력해 주세요.");
         String input = scanner.nextLine();
         validateEmptyInput(input);
-        return input;
+        validateDateInput(input);
+        return parseDate(input);
     }
 
-    public String inputTime() {
+    public LocalTime inputTime() {
         System.out.println("등교 시간을 입력해 주세요.");
         String input = scanner.nextLine();
         validateEmptyInput(input);
-        return input;
+        validateTimeInput(input);
+        return parseTime(input);
     }
 
-    public String inputEditTime() {
+    public LocalTime inputEditTime() {
         System.out.println("언제로 변경하겠습니까?");
         String input = scanner.nextLine();
         validateEmptyInput(input);
-        return input;
+        validateTimeInput(input);
+        return parseTime(input);
+    }
+
+    private LocalDate parseDate(String input) {
+        validateDateInput(input);
+        return LocalDate.of(2024, 12, Integer.parseInt(input));
+    }
+
+    private LocalTime parseTime(String input) {
+        validateTimeInput(input);
+        String[] parse = input.split(":");
+        return LocalTime.of(Integer.parseInt(parse[0]), Integer.parseInt(parse[1]));
     }
 
     private void validateEmptyInput(String input) {
@@ -67,4 +83,42 @@ public class InputView {
         }
     }
 
+    private void validateIntInput(String input) {
+        if (!input.matches("\\d+")) {
+            throw new IllegalArgumentException("숫자만 입력 가능");
+        }
+    }
+
+    private void validateDateInput(String input) {
+        validateIntInput(input);
+        int day = Integer.parseInt(input);
+        if (day < 1 || day > 31) {
+            throw new IllegalArgumentException("1-31만 가능");
+        }
+    }
+
+    private void validateTimeInput(String input) {
+        String[] parse = input.strip().split(":");
+        if (parse.length < 2) {
+            throw new IllegalArgumentException("입력 형식이 잘못되었습니다.");
+        }
+        Arrays.stream(parse)
+                .forEach(this::validateIntInput);
+        int hour = Integer.parseInt(parse[0]);
+        int minute = Integer.parseInt(parse[1]);
+        validateHour(hour);
+        validateMinute(minute);
+    }
+
+    private void validateHour(int hour) {
+        if (hour < 0 || hour > 23) {
+            throw new IllegalArgumentException("hour는 0-23만 가능");
+        }
+    }
+
+    private void validateMinute(int minute) {
+        if (minute < 0 || minute > 59) {
+            throw new IllegalArgumentException("minute는 0-59만 가능");
+        }
+    }
 }
