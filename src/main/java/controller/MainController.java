@@ -101,7 +101,7 @@ public class MainController {
     }
 
     private void readAbsence() {
-        Map<Crew, AbsenceResultDto> result = attendance.getAbsence(14);
+        Map<Crew, AbsenceResultDto> result = attendance.getAbsence(todayDay);
         OutputView.printAbsenceResult(result);
     }
 
