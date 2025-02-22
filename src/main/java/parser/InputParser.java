@@ -7,6 +7,9 @@ public class InputParser {
     private static final String TIME_DELIMITER = ":";
     private static final int TIME_DELIMITER_COUNT = 2;
 
+    private static final int MIN_DAY = 1;
+    private static final int MAX_DAY = 31;
+
     private static final int MIN_HOUR = 0;
     private static final int MAX_HOUR = 23;
 
@@ -16,16 +19,20 @@ public class InputParser {
     public static LocalTime timeParser(String inputTime) {
         String[] time = inputTime.split(TIME_DELIMITER);
         validateTimeFormat(time);
-        int hour = validateTime(time[0], MIN_HOUR, MAX_HOUR);
-        int minute = validateTime(time[1], MIN_MINUTE, MAX_MINUTE);
+        int hour = validateRange(time[0], MIN_HOUR, MAX_HOUR);
+        int minute = validateRange(time[1], MIN_MINUTE, MAX_MINUTE);
 
         return LocalTime.of(hour,minute);
     }
 
-    private static int validateTime(String inputTime, int minTime, int maxTime) {
-        int time = validateInteger(inputTime);
-        if(time < minTime || time > maxTime){
-            throw new IllegalArgumentException("[ERROR] 시간 범위에 맞게 입력해주세요.");
+    public static int dayParser(String day) {
+        return validateRange(day, MIN_DAY, MAX_DAY);
+    }
+
+    private static int validateRange(String input, int minRange, int maxRange) {
+        int time = validateInteger(input);
+        if(time < minRange || time > maxRange){
+            throw new IllegalArgumentException("[ERROR] 범위에 맞게 입력해주세요.");
         }
 
         return time;

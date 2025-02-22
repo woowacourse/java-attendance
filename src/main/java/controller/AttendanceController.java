@@ -69,7 +69,7 @@ public class AttendanceController {
     private void updateAttendance(AttendanceSheets attendanceSheets) {
         String nickname = inputView.inputUpdateNickname();
         List<AttendanceSheet> attendanceByNickname = attendanceSheets.findAttendanceByNickname(nickname);
-        int day = inputView.inputUpdateDate();
+        int day = InputParser.dayParser(inputView.inputUpdateDate());
 
         AttendanceSheet attendanceSheetByNicknameAndDay = attendanceByNickname.stream()
                 .filter(attendanceSheet -> attendanceSheet.getAttendanceDateTime().getAttendanceDateTime().getDayOfMonth() == day)

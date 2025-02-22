@@ -39,10 +39,10 @@ public class InputView {
         return scanner.nextLine();
     }
 
-    public int inputUpdateDate() {
+    public String inputUpdateDate() {
         System.out.println(ViewMessage.UPDATE_DATE);
 
-        return scanner.nextInt();
+        return scanner.nextLine();
     }
 
     public String inputUpdateTime() {
