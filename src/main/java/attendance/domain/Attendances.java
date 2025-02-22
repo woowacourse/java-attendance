@@ -38,15 +38,11 @@ public class Attendances {
     }
 
     public Attendance getAttendance(Crew targetCrew, LocalDate targetDate) {
-        List<Attendance> attendancesOfCrew = attendances.get(targetCrew);
-        for (Attendance attendance : attendancesOfCrew) {
-            if (attendance.getDateTime().getDayOfMonth() == targetDate.getDayOfMonth()) {
-                return attendance;
-            }
-        }
-        Attendance attendance = Attendance.of(LocalDateTime.of(targetDate, LocalTime.of(0, 0)));
-        addAttendance(targetCrew, attendance);
-        return attendance;
+        return attendances.getOrDefault(targetCrew, new ArrayList<>())
+            .stream()
+            .filter(attendance -> attendance.getDateTime().getDayOfMonth() == targetDate.getDayOfMonth())
+            .findAny()
+            .orElse(Attendance.ofAbsence(targetDate));
     }
 
     public List<Attendance> getAttendances(Crew targetCrew, LocalDate untilDate) {

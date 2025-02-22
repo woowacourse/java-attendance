@@ -31,6 +31,13 @@ public class AttendancesTest {
         Attendance saved = attendances.getAttendance(crew, LocalDate.of(2025, 2, 21));
         assertThat(saved).isEqualTo(attendance);
     }
+    
+    @Test
+    void 크루의_특정날짜에_대한_출석기록을_얻을수있다() {
+        Crew crew = new Crew("크루");
+        Attendance attendance = attendances.getAttendance(crew, LocalDate.of(2025, 2, 21));
+        assertThat(attendance.getStatus()).isEqualTo(AttendanceStatus.ABSENCE);
+    }
 
     @Test
     void 크루와_날짜로_해당크루의_출석기록들을_얻을수있다() {
