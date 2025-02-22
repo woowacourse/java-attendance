@@ -8,12 +8,12 @@ public class Crew {
     public static final int MAXIMUM_NICKNAME_LENGTH = 4;
     private final String nickname;
 
-    public Crew(String nickname) {
+    public Crew(final String nickname) {
         validateLength(nickname);
         this.nickname = nickname;
     }
 
-    private void validateLength(String nickname) {
+    private void validateLength(final String nickname) {
         if (nickname.length() < MINIMUM_NICKNAME_LENGTH || nickname.length() > MAXIMUM_NICKNAME_LENGTH) {
             throw new IllegalArgumentException(
                     "닉네임은 %d글자 이상, %d글자 이하만 가능합니다.".formatted(MINIMUM_NICKNAME_LENGTH, MAXIMUM_NICKNAME_LENGTH)

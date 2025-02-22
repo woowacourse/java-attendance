@@ -10,16 +10,16 @@ public enum ExpulsionStatus {
     NONE("없음", 0);
 
     private final String text;
-    private final int standard;
+    private final int absenceStandard;
 
-    ExpulsionStatus(final String text, final int standard) {
+    ExpulsionStatus(final String text, final int absenceStandard) {
         this.text = text;
-        this.standard = standard;
+        this.absenceStandard = absenceStandard;
     }
 
-    public static ExpulsionStatus findByAbsentCount(int absentCount) {
+    public static ExpulsionStatus findByAbsentCount(final int absentCount) {
         return Arrays.stream(values())
-                .filter(status -> status.standard <= absentCount)
+                .filter(status -> status.absenceStandard <= absentCount)
                 .findAny()
                 .orElse(NONE);
     }

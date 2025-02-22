@@ -8,31 +8,33 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import static java.time.DayOfWeek.*;
+
 public class Attendances {
 
     public static final int START_DAY_OF_MONTH = 1;
     private final List<Attendance> attendances = new ArrayList<>();
 
-    public Attendances(List<LocalDateTime> attendanceDateTimes, LocalDateTime today) {
+    public Attendances(final List<LocalDateTime> attendanceDateTimes, final LocalDateTime today) {
         for (int day = START_DAY_OF_MONTH; day < today.getDayOfMonth(); day++) {
             LocalDate localDate = LocalDate.of(today.getYear(), today.getMonth(), day);
             DayOfWeek dayOfWeek = localDate.getDayOfWeek();
-            if (dayOfWeek.equals(DayOfWeek.SUNDAY) || dayOfWeek.equals(DayOfWeek.SATURDAY) || Holiday.isExists(
-                    localDate)) {
+            if (dayOfWeek.equals(SUNDAY) || dayOfWeek.equals(SATURDAY) || Holiday.isExists(localDate)) {
                 continue;
             }
             this.attendances.add(initializeAttendance(attendanceDateTimes, today, day));
         }
     }
 
-    private Attendance initializeAttendance(List<LocalDateTime> attendanceDateTimes, LocalDateTime today, int day) {
+    private Attendance initializeAttendance(final List<LocalDateTime> attendanceDateTimes, final LocalDateTime today, final int day) {
+        LocalDate targetDate = LocalDate.of(today.getYear(), today.getMonth(), day);
         return attendanceDateTimes.stream()
                 .filter(dateTime -> dateTime.toLocalDate()
-                        .isEqual(LocalDate.of(today.getYear(), today.getMonth(), day)))
+                        .isEqual(targetDate))
                 .findAny()
                 .map(dateTime -> new Attendance(
                         new AttendanceDate(dateTime.toLocalDate()), new AttendanceTime(dateTime.toLocalTime())))
-                .orElse(Attendance.absence(LocalDate.of(today.getYear(), today.getMonth(), day)));
+                .orElse(Attendance.makeAbsence(targetDate));
     }
 
     public void addAttendance(final Attendance attendance) {
@@ -46,7 +48,7 @@ public class Attendances {
                 .orElseThrow(() -> new IllegalArgumentException("출석 기록이 존재하지 않습니다."));
     }
 
-    public List<Attendance> findAllBeforeToday(LocalDateTime today) {
+    public List<Attendance> findAllBeforeToday(final LocalDateTime today) {
         boolean hasTodayAttendance = attendances.stream()
                 .anyMatch(attendance -> attendance.isSameDate(today.toLocalDate()));
         if (hasTodayAttendance) {

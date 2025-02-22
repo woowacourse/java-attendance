@@ -17,7 +17,7 @@ public class Attendance {
         this.attendanceTime = attendanceTime;
     }
 
-    public static Attendance absence(final LocalDate absentDate) {
+    public static Attendance makeAbsence(final LocalDate absentDate) {
         return new Attendance(new AttendanceDate(absentDate), new AttendanceTime(ABSENT_TIME));
     }
 

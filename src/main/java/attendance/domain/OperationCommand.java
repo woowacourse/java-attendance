@@ -13,34 +13,14 @@ public enum OperationCommand {
     private final String commandText;
 
 
-    OperationCommand(String commandText) {
+    OperationCommand(final String commandText) {
         this.commandText = commandText;
     }
 
-    public static OperationCommand from(String commandText) {
+    public static OperationCommand from(final String commandText) {
         return Arrays.stream(values())
                 .filter(operationCommand -> operationCommand.commandText.equals(commandText))
                 .findAny()
                 .orElseThrow(() -> new IllegalArgumentException("제공되지 않는 기능입니다."));
-    }
-
-    public boolean isAttendanceConfirmation() {
-        return this.equals(ATTENDANCE_CONFIRMATION);
-    }
-
-    public boolean isAttendanceModification() {
-        return this.equals(ATTENDANCE_MODIFICATION);
-    }
-
-    public boolean isCrewAttendancesCheck() {
-        return this.equals(CREW_ATTENDANCES_CHECK);
-    }
-
-    public boolean isExpulsionCheck() {
-        return this.equals(EXPULSION_CHECK);
-    }
-
-    public boolean isQuit() {
-        return this.equals(QUIT);
     }
 }

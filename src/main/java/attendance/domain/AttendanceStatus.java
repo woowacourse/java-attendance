@@ -1,6 +1,7 @@
 package attendance.domain;
 
 import java.time.LocalTime;
+import java.util.Arrays;
 import java.util.List;
 
 public enum AttendanceStatus {
@@ -11,7 +12,6 @@ public enum AttendanceStatus {
 
     private static final LocalTime MONDAY_START_TIME = LocalTime.of(13, 0);
     private static final LocalTime TUESDAY_TO_FRIDAY_START_TIME = LocalTime.of(10, 0);
-    private static final LocalTime END_TIME = LocalTime.of(18, 0);
 
     private final String text;
     private final int deadLineMinute;
@@ -31,14 +31,11 @@ public enum AttendanceStatus {
     }
 
     private static AttendanceStatus findStatusByStartTime(final LocalTime startTime, final AttendanceTime attendanceTime) {
-        int result = attendanceTime.calculateMinuteDifferences(startTime);
-        if (result <= OK.deadLineMinute) {
-            return OK;
-        }
-        if (result <= LATE.deadLineMinute) {
-            return LATE;
-        }
-        return ABSENT;
+        int minuteDifferences = attendanceTime.calculateMinuteDifferences(startTime);
+        return Arrays.stream(values())
+                .filter(status -> minuteDifferences <= status.deadLineMinute)
+                .findAny()
+                .orElse(ABSENT);
     }
 
     public static int calculateTotalAbsentCount(final List<AttendanceStatus> statuses) {
