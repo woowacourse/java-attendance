@@ -22,11 +22,8 @@ public class CrewStatistic {
         this.status = CrewStatus.NONE;
     }
 
-    public void resetCrewStatus() {
-        crew.resetCount();
-    }
-
     public void initCrewsStatus() {
+        crew.resetCount();
         for (Attendance crewAttendance : crewAttendances) {
             initCrewStatus(crewAttendance);
         }
@@ -51,14 +48,14 @@ public class CrewStatistic {
         int plusAbsentCount = lateCount / 3;
         absentCount += plusAbsentCount;
 
-        if (absentCount > EXPEL_STANDARD) {
-            status = CrewStatus.EXPEL;
+        if (absentCount >= WARNING_STANDARD) {
+            status = CrewStatus.WARNING;
         }
         if (absentCount >= MEETING_STANDARD) {
             status = CrewStatus.MEETING;
         }
-        if (absentCount >= WARNING_STANDARD) {
-            status = CrewStatus.WARNING;
+        if (absentCount > EXPEL_STANDARD) {
+            status = CrewStatus.EXPEL;
         }
     }
 
