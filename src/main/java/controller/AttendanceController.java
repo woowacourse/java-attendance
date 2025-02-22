@@ -104,9 +104,9 @@ public class AttendanceController {
         if (selection == FunctionSelection.CHECK_ATTENDANCE_RECORD) {
             String name = retryUntilValid(() -> askName(attendanceBook));
 
-            List<AttendanceRecordResponse> records = attendanceBook.getCrewByName(name).getAttendanceRecords();
-            TotalRecordsResponse totalRecord = AttendanceBook.fromAttendanceRecords(records);
-            PenaltyStatus penalty = PenaltyStatus.getByPenaltyCount(attendanceBook.getPenaltyCount(totalRecord));
+            List<AttendanceRecordResponse> records = attendanceBook.checkAttendanceHistoryByCrew(name);
+            TotalRecordsResponse totalRecord = attendanceBook.checkAttendanceCountByCrew(records);
+            PenaltyStatus penalty = PenaltyStatus.getByPenaltyCount(attendanceBook.calculatePenaltyCount(totalRecord));
             outputView.displayAttendanceRecordByName(name, records, totalRecord, penalty.getMessage());
         }
     }

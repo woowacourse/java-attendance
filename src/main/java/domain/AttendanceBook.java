@@ -24,11 +24,8 @@ public class AttendanceBook {
         this.crews = new ArrayList<>();
     }
 
-    public Crew getCrewByName(String name) {
-        return crews.stream()
-                .filter(crew -> crew.matchesName(name))
-                .findFirst()
-                .orElseThrow(() -> new IllegalArgumentException(ErrorCode.NICKNAME_NOT_FOUND.getFormat()));
+    public void addNewCrew(Crew newCrew) {
+        crews.add(newCrew);
     }
 
     // 데이터 유효성 검사
@@ -39,7 +36,7 @@ public class AttendanceBook {
     }
 
     public void validateDateAlreadyExistsByCrewName(String name, LocalDate date) {
-        Crew foundCrew = getCrewByName(name);
+        Crew foundCrew = findCrewByName(name);
         foundCrew.validateDateAlreadyExists(date);
     }
 
@@ -54,17 +51,13 @@ public class AttendanceBook {
         if (!checkCrewAlreadyExists(name)) {
             addNewCrew(Crew.createByName(name));
         }
-        Crew crew = getCrewByName(name);
+        Crew crew = findCrewByName(name);
         crew.addDailyAttendance(dateAndTime);
     }
 
     public boolean checkCrewAlreadyExists(String name) {
         return crews.stream()
                 .anyMatch(crew -> crew.matchesName(name));
-    }
-
-    public void addNewCrew(Crew newCrew) {
-        crews.add(newCrew);
     }
 
     // 기능 1. 출석 확인
@@ -75,7 +68,7 @@ public class AttendanceBook {
         LocalTime time = TimeUtils.getTimeFromDateAndTime(dateAndTime);
         validateIsInOperationHour(time);
 
-        getCrewByName(name).addDailyAttendance(dateAndTime);
+        findCrewByName(name).addDailyAttendance(dateAndTime);
         return new AttendanceRecordResponse(date, time, AttendanceStatus.judgeStatus(date, time));
     }
 
@@ -89,7 +82,7 @@ public class AttendanceBook {
         LocalTime modifiedTime = TimeUtils.getTimeFromDateAndTime(dateAndTimeToModify);
         validateIsInOperationHour(modifiedTime);
 
-        Crew foundCrew = getCrewByName(name);
+        Crew foundCrew = findCrewByName(name);
         LocalTime originalTime = foundCrew.getTimeByDate(date);
         foundCrew.modifyDailyAttendance(dateAndTimeToModify);
 
@@ -100,7 +93,12 @@ public class AttendanceBook {
         );
     }
 
-    public static TotalRecordsResponse fromAttendanceRecords(List<AttendanceRecordResponse> records) {
+    // 기능 3. 크루별 출석 기록 확인
+    public List<AttendanceRecordResponse> checkAttendanceHistoryByCrew(String name) {
+        return findCrewByName(name).getAttendanceRecords();
+    }
+
+    public TotalRecordsResponse checkAttendanceCountByCrew(List<AttendanceRecordResponse> records) {
         List<AttendanceStatus> statuses = records.stream().map(AttendanceRecordResponse::attendanceStatus).toList();
         int attendanceCount = 0;
         int lateCount = 0;
@@ -125,9 +123,9 @@ public class AttendanceBook {
 
         for (Crew crew : crews) {
             List<AttendanceRecordResponse> attendanceRecords = crew.getAttendanceRecords();
-            TotalRecordsResponse totalRecords = fromAttendanceRecords(attendanceRecords);
+            TotalRecordsResponse totalRecords = checkAttendanceCountByCrew(attendanceRecords);
 
-            int penaltyCount = getPenaltyCount(totalRecords);
+            int penaltyCount = calculatePenaltyCount(totalRecords);
 
             crewPenaltyResponses.add(
                     new CrewPenaltyResponse(
@@ -142,7 +140,15 @@ public class AttendanceBook {
         return crewPenaltyResponses;
     }
 
-    public int getPenaltyCount(TotalRecordsResponse totalRecords) {
+    public int calculatePenaltyCount(TotalRecordsResponse totalRecords) {
         return totalRecords.absentCount() + (totalRecords.lateCount() / LATE_TO_ABSENCE_CONVERSION_CRITERIA);
+    }
+
+    // 보조 메서
+    private Crew findCrewByName(String name) {
+        return crews.stream()
+                .filter(crew -> crew.matchesName(name))
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException(ErrorCode.NICKNAME_NOT_FOUND.getFormat()));
     }
 }
