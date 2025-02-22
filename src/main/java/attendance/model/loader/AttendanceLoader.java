@@ -32,7 +32,7 @@ public class AttendanceLoader {
         return row.split(ROW_DELIMITER);
     }
 
-    public void add(String crewName, LocalDateTime dateTime) {
+    private void add(String crewName, LocalDateTime dateTime) {
         rawEntries.add(new RawAttendanceEntry(crewName, dateTime));
     }
 
