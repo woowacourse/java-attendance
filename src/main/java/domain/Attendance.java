@@ -4,7 +4,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import util.Constants;
 
-public class Attendance {
+public class Attendance implements Comparable<Attendance> {
 
     AttendanceDateTime attendanceDateTime;
     AttendanceStatus attendanceStatus;
@@ -25,7 +25,11 @@ public class Attendance {
         return new Attendance(AttendanceDateTime.of(dateTime));
     }
 
-    public int getDate() {
+    public AttendanceSummary getSummary() {
+        return new AttendanceSummary(attendanceDateTime, attendanceStatus);
+    }
+
+    public int getDayOfMonth() {
         return attendanceDateTime.getDayOfMonth();
     }
 
@@ -35,5 +39,10 @@ public class Attendance {
 
     public AttendanceStatus getAttendanceStatus() {
         return attendanceStatus;
+    }
+
+    @Override
+    public int compareTo(final Attendance object) {
+        return this.getDayOfMonth() - object.getDayOfMonth();
     }
 }
