@@ -1,12 +1,12 @@
 package attendance.model;
 
+import static attendance.util.DateFormatUtil.NOT_ATTENDABLE_FORMATTER;
+
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
 
 public class AttendanceDetail {
-    private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM월 dd일 EEEE은 등교일이 아닙니다.");
 
     private LocalDateTime localDateTime;
     private Attendance attendance;
@@ -19,7 +19,7 @@ public class AttendanceDetail {
 
     private void validateHoliday(LocalDateTime localDateTime) {
         if (CustomLocalDateTime.isHoliday(localDateTime.toLocalDate())) {
-            throw new IllegalArgumentException(localDateTime.format(formatter));
+            throw new IllegalArgumentException(localDateTime.format(NOT_ATTENDABLE_FORMATTER));
         }
     }
 

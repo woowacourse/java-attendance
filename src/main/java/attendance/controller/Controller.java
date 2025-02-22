@@ -1,5 +1,7 @@
 package attendance.controller;
 
+import static attendance.util.DateFormatUtil.NOT_ATTENDABLE_FORMATTER;
+
 import attendance.dto.AttendanceDto;
 import attendance.dto.AttendanceDto.AttendanceDetailDto;
 import attendance.dto.WarningCrewsDto;
@@ -8,16 +10,14 @@ import attendance.model.Crew;
 import attendance.model.CrewDataLoader;
 import attendance.model.Crews;
 import attendance.model.CustomLocalDateTime;
+import attendance.util.DateFormatUtil;
 import attendance.view.InputView;
 import attendance.view.OutputView;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.Map;
 
 public class Controller {
     public static final String FILE_NAME = "attendances.csv";
-    private static final DateTimeFormatter NOT_ATTENDABLE_FORMATTER = DateTimeFormatter.ofPattern(
-            "MM월 dd일 EEEE은 등교일이 아닙니다.");
 
     private final InputView inputView;
     private final OutputView outputView;
@@ -54,7 +54,7 @@ public class Controller {
             Crew crew = crews.findCrew(inputView.inputCrewName());
             AttendanceDetail attendanceDetail = new AttendanceDetail(LocalDateTime.of(
                     CustomLocalDateTime.nowDate(),
-                    CustomLocalDateTime.parseTime(inputView.inputEntryTime())
+                    DateFormatUtil.parseTime(inputView.inputEntryTime())
             ));
             crew.attend(attendanceDetail);
             outputView.printAttendanceDetail(AttendanceDetailDto.from(attendanceDetail));
@@ -68,7 +68,7 @@ public class Controller {
                     CustomLocalDateTime.parseDate(inputView.inputModifyAttendanceDate())
             );
             AttendanceDetail beforeModify = new AttendanceDetail(attendanceDetail.getAttendanceDateTime());
-            attendanceDetail.modify(CustomLocalDateTime.parseTime(inputView.inputModifyAttendanceTime()));
+            attendanceDetail.modify(DateFormatUtil.parseTime(inputView.inputModifyAttendanceTime()));
             outputView.printModifyResult(
                     AttendanceDetailDto.from(beforeModify),
                     AttendanceDetailDto.from(attendanceDetail)

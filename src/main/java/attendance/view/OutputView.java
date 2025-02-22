@@ -9,8 +9,8 @@ import java.util.Comparator;
 
 public class OutputView {
 
-    private final DateTimeFormatter normalFormatter = DateTimeFormatter.ofPattern("MM월 dd일 EEEE HH:mm");
-    private final DateTimeFormatter absenceFormatter = DateTimeFormatter.ofPattern("MM월 dd일 EEEE --:--");
+    private static final DateTimeFormatter normalFormatter = DateTimeFormatter.ofPattern("MM월 dd일 EEEE HH:mm");
+    private static final DateTimeFormatter absenceFormatter = DateTimeFormatter.ofPattern("MM월 dd일 EEEE --:--");
 
     public void printAttendanceHistory(AttendanceDto attendanceDTO) {
         CustomStringBuilder stringBuilder = new CustomStringBuilder();

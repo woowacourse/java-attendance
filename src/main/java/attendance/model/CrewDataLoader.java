@@ -1,17 +1,16 @@
 package attendance.model;
 
+import attendance.util.DateFormatUtil;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
 import java.util.Objects;
 
 public class CrewDataLoader {
     public static final LocalTime ABSENCE_TIME = LocalTime.of(17, 0);
     public static final String ROW_DELIMITER = ",";
-    public static final DateTimeFormatter CSV_DATE_TIME_FORMATER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
     public static final int CREW_NAME_COLUMN_INDEX = 0;
     public static final int ATTENDANCE_DATE_TIME_COLUMN_INDEX = 1;
     private final Crews crews;
@@ -29,7 +28,7 @@ public class CrewDataLoader {
         bufferedReader.lines().skip(1).forEach(row -> {
             String[] parsed = parseRow(row);
             Crew crew = new Crew(parsed[CREW_NAME_COLUMN_INDEX]);
-            LocalDateTime dateTime = parseLocalDateTime(parsed[ATTENDANCE_DATE_TIME_COLUMN_INDEX]);
+            LocalDateTime dateTime = DateFormatUtil.parseLocalDateTime(parsed[ATTENDANCE_DATE_TIME_COLUMN_INDEX]);
             addCrew(crew, dateTime);
         });
         fillAbsencesForNoAttendance();
@@ -76,7 +75,4 @@ public class CrewDataLoader {
         return row.split(ROW_DELIMITER);
     }
 
-    private LocalDateTime parseLocalDateTime(String dateTime) {
-        return LocalDateTime.parse(dateTime, CSV_DATE_TIME_FORMATER);
-    }
 }

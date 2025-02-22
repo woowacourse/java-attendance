@@ -6,7 +6,7 @@ import java.util.Scanner;
 
 public class InputView {
 
-    private final DateTimeFormatter normalFormatter = DateTimeFormatter.ofPattern("MM월 dd일 EEEE");
+    private static final DateTimeFormatter normalFormatter = DateTimeFormatter.ofPattern("MM월 dd일 EEEE");
     private static Scanner scanner = new Scanner(System.in);
 
     public String inputCommand() {
