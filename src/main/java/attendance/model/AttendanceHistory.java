@@ -14,24 +14,6 @@ public class AttendanceHistory {
         attendanceHistory.add(attendanceDetail);
     }
 
-//    public long getAttendanceCount() {
-//        return attendanceHistory.stream()
-//                .filter(attendanceDetail -> attendanceDetail.isSameAs(Attendance.PRESENT))
-//                .count();
-//    }
-//
-//    public long getLateCount() {
-//        return attendanceHistory.stream()
-//                .filter(attendanceDetail -> attendanceDetail.isSameAs(Attendance.LATE))
-//                .count();
-//    }
-//
-//    public long getAbsenceCount() {
-//        return attendanceHistory.stream()
-//                .filter(attendanceDetail -> attendanceDetail.isSameAs(Attendance.ABSENT))
-//                .count();
-//    }
-
     public boolean containsDate(LocalDate date) {
         return attendanceHistory.stream()
                 .anyMatch(attendanceDetail -> attendanceDetail.getAttendanceDate().getLocalDate().equals(date));

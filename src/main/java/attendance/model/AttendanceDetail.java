@@ -20,10 +20,13 @@ public class AttendanceDetail {
         this.attendance = Attendance.from(woowaDate, localTime);
     }
 
+    public boolean isSameAs(Attendance attendance) {
+        return attendance == this.attendance;
+    }
+
     public Attendance getAttendance() {
         return attendance;
     }
-
 
     public LocalDateTime getAttendanceDateTime() {
         return LocalDateTime.of(woowaDate.getLocalDate(), attendanceTime);
@@ -36,9 +39,4 @@ public class AttendanceDetail {
     public LocalTime getAttendanceTime() {
         return attendanceTime;
     }
-
-    public boolean isSameAs(Attendance attendance) {
-        return attendance == this.attendance;
-    }
-
 }
