@@ -15,6 +15,9 @@ public class OutputView {
     private static final String EXPEL_CREWS_HEAD_STRING = "제적 위험자 조회 결과";
     private static final String EXPEL_CREW_BODY_STRING = "- %s: 결석 %s회, 지각 %s회 (%s)";
 
+    private static final String ABSENT_TIME_VALUE = "00:00";
+    private static final String ABSENT_TIME_FORMAT = "--:--";
+
     public void printTodayAttendance(final List<String> attendanceInfo) {
         System.out.println(
                 ATTENDANCE_STRING.formatted(
@@ -38,37 +41,41 @@ public class OutputView {
                         originalType
                 )
         );
-        System.out.println(
-                MODIFIED_ATTENDANCE_STRING.formatted(
-                        newAttendanceInfo.get(3),
-                        newAttendanceInfo.get(4)
-                )
-        );
+        System.out.println(formatModifiedNotice(newAttendanceInfo));
         printNewLine();
+    }
+
+    private String formatModifiedNotice(List<String> newAttendanceInfo) {
+        return MODIFIED_ATTENDANCE_STRING.formatted(
+                newAttendanceInfo.get(3),
+                newAttendanceInfo.get(4)
+        );
     }
 
     public void printCrewAttendanceHistory(String crewName, List<List<String>> crewAttendanceHistory) {
         System.out.println(
                 CREW_ATTENDANCE_HISTORY_STRING.formatted(crewName)
         );
-
         for (List<String> crewStatistic : crewAttendanceHistory) {
-            String absentTime = crewStatistic.get(3);
-            if (absentTime.equals("00:00")) {
-                absentTime = "--:--";
-            }
-
             System.out.println(
                     ATTENDANCE_STRING.formatted(
                             crewStatistic.get(0),
                             crewStatistic.get(1),
                             crewStatistic.get(2),
-                            absentTime,
+                            formatAbsentTimeString(crewStatistic),
                             crewStatistic.get(4)
                     )
             );
         }
         printNewLine();
+    }
+
+    private String formatAbsentTimeString(List<String> crewStatistic) {
+        String absentTime = crewStatistic.get(3);
+        if (absentTime.equals(ABSENT_TIME_VALUE)) {
+            absentTime = ABSENT_TIME_FORMAT;
+        }
+        return absentTime;
     }
 
     public void printCrewStatisticStatus(List<String> crewStatisticStatus) {
@@ -79,7 +86,6 @@ public class OutputView {
                         crewStatisticStatus.get(2)
                 )
         );
-
         System.out.println(
                 CREW_STATUS_STRING.formatted(crewStatisticStatus.get(3))
         );
@@ -90,7 +96,7 @@ public class OutputView {
         System.out.println(EXPEL_CREWS_HEAD_STRING);
     }
 
-    public void printExpelCrew(List<String> crewExpelExpectedInfo) {
+    public void printExpelCrewBody(List<String> crewExpelExpectedInfo) {
         System.out.println(
                 EXPEL_CREW_BODY_STRING.formatted(
                         crewExpelExpectedInfo.get(0),
