@@ -77,10 +77,7 @@ public enum AttendanceStatus {
         return time.isAfter(startTime) && time.isBefore(endTime);
     }
 
-    private static long getFrequency(
-            final List<AttendanceStatus> attendanceStatuses,
-            final AttendanceStatus status
-    ) {
+    private static long getFrequency(final List<AttendanceStatus> attendanceStatuses, final AttendanceStatus status) {
         return attendanceStatuses.stream()
                 .filter(attendanceStatus -> attendanceStatus.equals(status))
                 .count();
