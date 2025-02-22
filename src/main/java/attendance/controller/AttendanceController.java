@@ -23,6 +23,9 @@ import java.util.stream.Stream;
 
 
 public class AttendanceController {
+
+    private final static String FILE_PATH = "src/main/resources/attendances.csv";
+
     private final InputView inputView;
     private final OutputView outputView;
 
@@ -53,7 +56,7 @@ public class AttendanceController {
 
     private void initAttendanceSystem() {
         AttendanceContentDTO attendanceRecordContent = AttendanceReader.getAttendanceRecordContent(
-                FileReader.parseToFile("src/main/resources/attendances.csv"));
+                FileReader.parseToFile(FILE_PATH));
 
         attendanceRepository = new AttendanceRepository(attendanceRecordContent.attendances());
         attendanceBook = new AttendanceBook(attendanceRecordContent.names());
