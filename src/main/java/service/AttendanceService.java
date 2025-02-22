@@ -30,10 +30,6 @@ public class AttendanceService {
         LocalDate nowDate = DateTimeUtil.nowDate();
         validateOffDay(nowDate);
         Crew crew = CrewRepository.findByNickname(request.nickname());
-        if (crew.attendanceTimeExists(nowDate)) {
-            throw new IllegalArgumentException(nowDate + ": 이미 출석 기록이 존재합니다. 수정 기능을 이용해 주세요.");
-        }
-
         AttendanceStatus status = crew.insertAttendanceTime(nowDate, request.time());
         return AttendanceResult.of(DateTimeUtil.nowDate(), request.time(), status);
     }
