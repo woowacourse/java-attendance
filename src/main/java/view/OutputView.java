@@ -24,15 +24,14 @@ public class OutputView {
     }
 
     public static void printModifiedResult(ModifiedResult modifiedResult) {
-        StringBuilder message = new StringBuilder();
-        message.append(modifiedResult.date().format(Formatter.DATE_FORMATTER));
-        message.append(" ");
-        message.append(modifiedResult.before().time());
-        message.append(String.format(" (%s) -> ", modifiedResult.before().status().getTitle()));
-        message.append(modifiedResult.after().time());
-        message.append(String.format(" (%s)", modifiedResult.after().status().getTitle()));
-        message.append(" 수정 완료!%n%n");
-        System.out.printf(message.toString());
+        String message = modifiedResult.date().format(Formatter.DATE_FORMATTER)
+                + " "
+                + modifiedResult.before().time()
+                + String.format(" (%s) -> ", modifiedResult.before().status().getTitle())
+                + modifiedResult.after().time()
+                + String.format(" (%s)", modifiedResult.after().status().getTitle())
+                + " 수정 완료!%n%n";
+        System.out.printf(message);
     }
 
     public static void printMonthRecord(MonthRecord monthAttendanceRecordResult) {
