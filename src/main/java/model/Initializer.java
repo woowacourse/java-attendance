@@ -2,7 +2,6 @@ package model;
 
 import static model.AttendanceType.DEFAULT_TIME;
 
-import controller.AttendanceController;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.HashMap;
@@ -15,10 +14,12 @@ public class Initializer {
     private static final String SPLITTER = ",";
 
     private final Campus campus;
+    private final TodayClock todayClock;
     private final Map<Integer, LocalDateTime> attendance;
 
-    public Initializer(final Campus campus) {
+    public Initializer(final Campus campus, final TodayClock todayClock) {
         this.campus = campus;
+        this.todayClock = todayClock;
         this.attendance = createInitialAttendance();
     }
 
@@ -49,7 +50,7 @@ public class Initializer {
 
     private Map<Integer, LocalDateTime> createInitialAttendance() {
         Map<Integer, LocalDateTime> initialAttendance = new HashMap<>();
-        LocalDate now = AttendanceController.getTodayDate();
+        LocalDate now = todayClock.getTodayDate();
         for (int day = 1; day < now.getDayOfMonth(); day++) {
             putOperationDate(day, initialAttendance);
         }

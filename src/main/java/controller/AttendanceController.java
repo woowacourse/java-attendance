@@ -12,6 +12,7 @@ import model.Campus;
 import model.CrewHistory;
 import model.CrewHistories;
 import model.SubjectType;
+import model.TodayClock;
 import util.StringParser;
 import util.TimeFormatter;
 import view.Command;
@@ -23,11 +24,14 @@ public class AttendanceController {
     private final InputView inputView;
     private final ResultView resultView;
     private final Campus campus;
+    private final TodayClock todayClock;
 
-    public AttendanceController(final InputView inputView, final ResultView resultView, final Campus campus) {
+    public AttendanceController(final InputView inputView, final ResultView resultView, final Campus campus,
+                                final TodayClock todayClock) {
         this.inputView = inputView;
         this.resultView = resultView;
         this.campus = campus;
+        this.todayClock = todayClock;
     }
 
     public void start(final CrewHistories crewHistories) {
@@ -39,8 +43,8 @@ public class AttendanceController {
         start(crewHistories);
     }
 
-    public static LocalDate getTodayDate() {
-        return LocalDate.of(2024, 12, 13);
+    public LocalDate getTodayDate() {
+        return todayClock.getTodayDate();
     }
 
     private void process(final CrewHistories crewHistories, final Command command) {
