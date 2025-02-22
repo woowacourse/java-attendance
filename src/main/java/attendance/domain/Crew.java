@@ -3,6 +3,7 @@ package attendance.domain;
 import java.util.Objects;
 
 public class Crew {
+
     private final String name;
 
     public Crew(String name) {
@@ -11,6 +12,10 @@ public class Crew {
 
     private String removeSpaceInName(String name) {
         return name.replace(" ", "");
+    }
+
+    public boolean isSameName(String name) {
+        return this.name.equals(name);
     }
 
     @Override

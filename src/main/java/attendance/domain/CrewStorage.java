@@ -1,16 +1,17 @@
 package attendance.domain;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 public class CrewStorage {
-    private final List<String> crews = new ArrayList<>();
 
-    public void addCrew(String name) {
-        crews.add(name);
+    private final Set<Crew> crews = new HashSet<>();
+
+    public void add(Crew crew) {
+        crews.add(crew);
     }
 
-    public boolean isContained(String name) {
-        return crews.contains(name);
+    public boolean isContained(String crewName) {
+        return crews.stream().anyMatch(crew -> crew.isSameName(crewName));
     }
 }
