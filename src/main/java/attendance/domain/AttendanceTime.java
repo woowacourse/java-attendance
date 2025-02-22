@@ -2,7 +2,7 @@ package attendance.domain;
 
 import java.time.LocalTime;
 
-public enum CampusRule {
+public enum AttendanceTime {
     OPEN_TIME(LocalTime.of(8, 0)),
     CLOSE_TIME(LocalTime.of(23, 0)),
     MONDAY_LATE_TIME(LocalTime.of(13, 6)),
@@ -12,7 +12,7 @@ public enum CampusRule {
 
     private final LocalTime time;
 
-    CampusRule(LocalTime time) {
+    AttendanceTime(LocalTime time) {
         this.time = time;
     }
 

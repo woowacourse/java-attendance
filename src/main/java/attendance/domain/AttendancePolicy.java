@@ -3,12 +3,12 @@ package attendance.domain;
 import static attendance.domain.AttendanceType.ABSENCE;
 import static attendance.domain.AttendanceType.ATTENDANCE;
 import static attendance.domain.AttendanceType.LATE;
-import static attendance.domain.CampusRule.CLOSE_TIME;
-import static attendance.domain.CampusRule.GENERAL_ABSENCE_TIME;
-import static attendance.domain.CampusRule.GENERAL_LATE_TIME;
-import static attendance.domain.CampusRule.MONDAY_ABSENCE_TIME;
-import static attendance.domain.CampusRule.MONDAY_LATE_TIME;
-import static attendance.domain.CampusRule.OPEN_TIME;
+import static attendance.domain.AttendanceTime.CLOSE_TIME;
+import static attendance.domain.AttendanceTime.GENERAL_ABSENCE_TIME;
+import static attendance.domain.AttendanceTime.GENERAL_LATE_TIME;
+import static attendance.domain.AttendanceTime.MONDAY_ABSENCE_TIME;
+import static attendance.domain.AttendanceTime.MONDAY_LATE_TIME;
+import static attendance.domain.AttendanceTime.OPEN_TIME;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;

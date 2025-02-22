@@ -1,17 +1,19 @@
 package attendance.domain;
 
-import static attendance.domain.AttendanceType.*;
-import static attendance.domain.CrewStatus.*;
+import static attendance.domain.AttendanceType.ABSENCE;
+import static attendance.domain.AttendanceType.LATE;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
 public class AttendanceHistoryManager {
+    private static final int LATE_THRESHOLD_AS_ABSENCE = 3;
+
     private final Set<AttendanceHistory> attendanceHistories = new HashSet<>();
 
     public void addAttendanceHistory(AttendanceHistory attendanceHistory) {
@@ -25,65 +27,56 @@ public class AttendanceHistoryManager {
         return Collections.unmodifiableSet(attendanceHistories);
     }
 
-    public AttendanceHistory getAttendanceHistory(LocalDate localDate) {
+    public AttendanceHistory getAttendanceHistory(LocalDate attendanceDate) {
         return attendanceHistories.stream()
-                .filter(history -> history.isAttendanceDateEquals(localDate))
+                .filter(history -> history.isAttendanceDateEquals(attendanceDate))
                 .findAny()
                 .orElseThrow(() -> new IllegalArgumentException("출석 기록이 존재하지 않습니다."));
     }
 
-    public AttendanceHistory modifyAttendanceResult(AttendanceHistory modifyAttendanceHistory, LocalTime localTime) {
-        AttendanceType attendanceType = AttendancePolicy.checkAttendanceType(
-                modifyAttendanceHistory.getAttendanceTime().toLocalDate(), localTime);
-        modifyAttendanceHistory.modify(localTime, attendanceType);
+    public AttendanceHistory modifyAttendanceResult(AttendanceHistory modifyAttendanceHistory, LocalTime modifyTime) {
+        LocalDateTime modifyDateTime = modifyAttendanceHistory.getAttendanceTime();
+        AttendanceType attendanceType = AttendancePolicy.checkAttendanceType(modifyDateTime.toLocalDate(), modifyTime);
+        modifyAttendanceHistory.modify(modifyTime, attendanceType);
         return modifyAttendanceHistory;
     }
 
-    public Map<AttendanceType, Integer> calculateAttendanceResult(LocalDate localDate) {
-        Map<AttendanceType, Integer> attendanceResult = initializeAttendanceResult();
-        for (int i = 1; i < localDate.getDayOfMonth(); i++) {
-            LocalDate date = LocalDate.of(localDate.getYear(), localDate.getMonthValue(), i);
+    public Map<AttendanceType, Integer> calculateAttendanceResult(LocalDate today) {
+        Map<AttendanceType, Integer> attendanceResult = AttendanceType.initializeAttendanceResult();
+        for (int date = 1; date < today.getDayOfMonth(); date++) {
+            LocalDate attendanceDate = LocalDate.of(today.getYear(), today.getMonthValue(), date);
             try {
-                AttendancePolicy.checkHoliday(date);
+                AttendancePolicy.checkHoliday(attendanceDate);
             } catch (IllegalArgumentException e) {
                 continue;
             }
-            boolean flag = false;
-            for (AttendanceHistory attendanceHistory : attendanceHistories) {
-                if (attendanceHistory.isAttendanceDateEquals(date)) {
-                    AttendanceType attendanceType = attendanceHistory.getAttendanceType();
-                    attendanceResult.put(attendanceType, attendanceResult.get(attendanceType) + 1);
-                    flag = true;
-                }
-            }
-            if (!flag) {
-                attendanceResult.put(ABSENCE, attendanceResult.get(ABSENCE) + 1);
-            }
+            calculateAttendanceResultByDate(attendanceResult, attendanceDate);
         }
         return attendanceResult;
     }
 
     public CrewStatus calculateCrewStatus(Map<AttendanceType, Integer> attendanceResult) {
-        int validateValue = 0;
-        validateValue += attendanceResult.get(ABSENCE);
-        validateValue += attendanceResult.get(LATE) / 3;
-        if (validateValue > 5) {
-            return FIRE;
-        }
-        if (validateValue >= 3) {
-            return INTERVIEW;
-        }
-        if (validateValue >= 2) {
-            return WARNING;
-        }
-        return CLEAR;
+        int absenceCount = 0;
+        absenceCount += attendanceResult.get(ABSENCE);
+        absenceCount += attendanceResult.get(LATE) / LATE_THRESHOLD_AS_ABSENCE;
+        return CrewStatus.calculateByAbsenceCount(absenceCount);
     }
 
-    private Map<AttendanceType, Integer> initializeAttendanceResult() {
-        Map<AttendanceType, Integer> attendanceResult = new HashMap<>();
-        for (AttendanceType attendanceType : AttendanceType.values()) {
-            attendanceResult.put(attendanceType, 0);
+    private void calculateAttendanceResultByDate(Map<AttendanceType, Integer> attendanceResult,
+                                                 LocalDate attendanceDate) {
+        attendanceHistories.stream()
+                .filter(attendanceHistory -> attendanceHistory.isAttendanceDateEquals(attendanceDate))
+                .map(AttendanceHistory::getAttendanceType)
+                .forEach(attendanceType -> addAttendanceTypeCount(attendanceResult, attendanceType));
+        boolean isAttendanceExists = attendanceHistories.stream()
+                .anyMatch(attendanceHistory -> !attendanceHistory.isAttendanceDateEquals(attendanceDate));
+        if (!isAttendanceExists) {
+            addAttendanceTypeCount(attendanceResult, ABSENCE);
         }
-        return attendanceResult;
+    }
+
+    private void addAttendanceTypeCount(Map<AttendanceType, Integer> attendanceResult,
+                                        AttendanceType attendanceType) {
+        attendanceResult.put(attendanceType, attendanceResult.get(attendanceType) + 1);
     }
 }
