@@ -1,5 +1,6 @@
 package attendance.domain;
 
+import java.util.Comparator;
 import java.util.Objects;
 
 public class PenaltyCrew implements Comparable<PenaltyCrew> {
@@ -26,38 +27,33 @@ public class PenaltyCrew implements Comparable<PenaltyCrew> {
 
     @Override
     public int compareTo(PenaltyCrew o) {
-        int attendanceComparison = this.attendanceStatus.compareTo(o.attendanceStatus);
-        int pointComparison = this.totalCount.compareTo(o.totalCount);
-
-        if (attendanceComparison != 0) {
-            return attendanceComparison;
-        }
-        if (pointComparison != 0) {
-            return -pointComparison;
-        }
-        return name.compareTo(o.name);
+        return Comparator.comparing(PenaltyCrew::getAttendanceStatus)
+            .thenComparing(PenaltyCrew::getTotalCount, Comparator.reverseOrder())
+            .thenComparing(PenaltyCrew::getName)
+            .compare(this, o);
     }
 
     public String getName() {
         return name;
     }
 
-    public int getAbsenceCount() {
-        return absenceCount;
-    }
-
     public int getLateCount() {
         return lateCount;
     }
 
+    public Integer getTotalCount() { return totalCount; }
+
+    public int getAbsenceCount() {
+        return absenceCount;
+    }
+
+    public AttendancePenalty getAttendanceStatus() { return attendanceStatus; }
+
     @Override
     public boolean equals(Object o) {
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
+        if (o == null || getClass() != o.getClass()) return false;
         PenaltyCrew that = (PenaltyCrew) o;
-        return absenceCount == that.absenceCount && lateCount == that.lateCount && Objects.equals(name, that.name)
-                && Objects.equals(totalCount, that.totalCount) && attendanceStatus == that.attendanceStatus;
+        return absenceCount == that.absenceCount && lateCount == that.lateCount && Objects.equals(name, that.name) && Objects.equals(totalCount, that.totalCount) && attendanceStatus == that.attendanceStatus;
     }
 
     @Override
