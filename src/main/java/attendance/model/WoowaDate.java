@@ -5,7 +5,6 @@ import static attendance.util.DateFormatUtil.NOT_ATTENDABLE_FORMATTER;
 import attendance.util.DateUtil;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
-import java.util.Objects;
 
 public class WoowaDate {
     private final LocalDate localDate;
@@ -23,10 +22,6 @@ public class WoowaDate {
         }
     }
 
-    public boolean isBefore(WoowaDate other) {
-        return this.localDate.isBefore(other.localDate);
-    }
-
     public LocalDate getLocalDate() {
         return localDate;
     }
@@ -35,19 +30,4 @@ public class WoowaDate {
         return localDate.getDayOfWeek();
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (!(o instanceof WoowaDate woowaDate)) {
-            return false;
-        }
-        return Objects.equals(localDate, woowaDate.localDate);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(localDate);
-    }
 }
