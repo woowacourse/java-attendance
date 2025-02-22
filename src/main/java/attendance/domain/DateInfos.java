@@ -76,7 +76,7 @@ public class DateInfos {
     }
 
     public List<DateInfo> getDateInfos() {
-        return dateInfos;
+        return new ArrayList<>(dateInfos);
     }
 
     public int getAbsence() {

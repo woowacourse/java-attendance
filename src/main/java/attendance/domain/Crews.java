@@ -29,7 +29,7 @@ public class Crews {
     }
 
     public Set<Crew> getCrews() {
-        return this.crews;
+        return new HashSet<>(crews);
     }
 
 }
