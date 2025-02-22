@@ -2,25 +2,27 @@
 
 ---
 
-## 추가한 기능 요구 사항
+## 수정한 요구 사항
 
-- 잘못된 입력에 대해 재입력 처리하지 않고 프로그램을 종료한다.
+### 추가한 기능 요구 사항
+
 - 잘못된 입력을 한 경우, 에러 메시지를 출력한다.
 
-## 변경한 기능 요구 사항
+### 변경한 기능 요구 사항
 
+- 잘못된 입력에 대해 재입력 처리하지 않고 프로그램을 종료한다.
 - 프로그램은 2025년 2월 한달 동안의 출석 시스템을 구현한다.
 
 ---
 
-기능 요구 사항
+## 기능 요구 사항
 
 ### 0. 파일 입출력 및 메뉴 옵션
 
 - [x] 메뉴 옵션 번호 입력
 - [예외] 1, 2, 3, 4 혹은 Q가 아닌 경우, `IllegalArgumentException` 발생
 - [x] 파일에서 출석 데이터를 읽어 저장
-- [예외] 파일 존재하지 않거나 내용이 없는 경우, `IllegalStateException` 발생
+- [예외] 파일 존재하지 않거나 혹은 내용이 없는 경우, `IllegalStateException` 발생
 
 ### 1. 출석 확인
 
@@ -30,6 +32,7 @@
 - [예외] 출석부에 등록되지 않은 닉네임 입력 시, `IllegalArgumentException` 발생
 - [예외] 올바르지 않은 형식의 등교 시간 입력 시, `IllegalArgumentException` 발생
 - [예외] 등교일이 아닌 경우, `IllegalArgumentException` 발생
+- [예외] 이미 출석한 경우, `IllegalArgumentException` 발생
 
 ### 2. 출석 수정
 
@@ -37,6 +40,8 @@
 - [x] 출석 수정 내용 변경 전과 후 내역 출력
 - [예외] 출석부에 등록되지 않은 닉네임 입력 시, `IllegalArgumentException` 발생
 - [예외] 올바르지 않은 형식의 수정 날짜 및 시간 입력 시, `IllegalArgumentException` 발생
+- [예외] 수정하려는 출석 기록이 동일한 시간인 경우, `IllegalArgumentException` 발생
+- [예외] 출석 변경이 가능한 날짜가 아닌 경우, `IllegalArgumentException` 발생
 
 ### 3. 크루별 출석 기록 확인
 
