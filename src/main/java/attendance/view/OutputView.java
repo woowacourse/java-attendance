@@ -15,31 +15,31 @@ import java.util.stream.Collectors;
 
 public class OutputView {
 
-    public static final String DATE_FORMATTER = "MM월 dd일 EEE요일";
-    private static final String TIME_FORMATTER = "HH:mm";
-    private static final String ABSENCE_FORMATTER = "MM월 dd일 EEE요일 --:--";
+    public static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("MM월 dd일 EEE요일", Locale.KOREAN);
+    public static final DateTimeFormatter TIME_FORMATTER = DateTimeFormatter.ofPattern("HH:mm", Locale.KOREAN);
+    public static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("MM월 dd일 EEE요일 HH:mm", Locale.KOREAN);
+    public static final DateTimeFormatter ABSENCE_FORMATTER = DateTimeFormatter.ofPattern("MM월 dd일 EEE요일 --:--", Locale.KOREAN);
 
     private OutputView() {
     }
 
     public static void printAttendanceResult(Attendance attendance) {
-        LocalDateTime attendanceDateTime = attendance.getAttendedTime();
+        LocalDateTime attendedTime = attendance.getAttendedTime();
         AttendanceStatus attendanceStatus = attendance.getStatus();
-        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern(
-            DATE_FORMATTER + " " + TIME_FORMATTER, Locale.KOREAN);
-        String attendanceDate = attendanceDateTime.format(dateTimeFormatter);
+
+        String attendanceDate = attendedTime.format(DATE_TIME_FORMATTER);
         System.out.printf("%n%s (%s)%n", attendanceDate, attendanceStatus.getName());
     }
 
-    public static void printModifyingResult(Attendance previousAttendance, Attendance attendance) {
-        DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern(DATE_FORMATTER, Locale.KOREAN);
-        DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern(TIME_FORMATTER, Locale.KOREAN);
+    public static void printModifyingResult(Attendance before, Attendance after) {
+        String date = after.getAttendedTime().format(DATE_FORMATTER);
 
-        String date = attendance.getAttendedTime().format(dateFormatter);
-        String beforeTime = previousAttendance.getAttendedTime().format(timeFormatter);
-        String beforeStatus = previousAttendance.getStatus().getName();
-        String afterTime = attendance.getAttendedTime().toLocalTime().format(timeFormatter);
-        String afterStatus = attendance.getStatus().getName();
+        String beforeTime = before.getAttendedTime().format(TIME_FORMATTER);
+        String beforeStatus = before.getStatus().getName();
+
+        String afterTime = after.getAttendedTime().toLocalTime().format(TIME_FORMATTER);
+        String afterStatus = after.getStatus().getName();
+
         System.out.printf("%n%s %s (%s) -> %s (%s) 수정 완료!%n",
             date, beforeTime, beforeStatus, afterTime, afterStatus);
     }
@@ -78,13 +78,10 @@ public class OutputView {
     }
 
     private static String getFormattedAttendanceRecord(Attendance attendance) {
-        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern(DATE_FORMATTER + " " + TIME_FORMATTER, Locale.KOREAN);
-        DateTimeFormatter absenceFormatter = DateTimeFormatter.ofPattern(ABSENCE_FORMATTER, Locale.KOREAN);
-
-        String dateTime = attendance.getAttendedTime().format(dateTimeFormatter);
-        String status = " (" + attendance.getStatus().getName() + ")";
+        String dateTime = attendance.getAttendedTime().format(DATE_TIME_FORMATTER);
+        String status = String.format(" (%s)", attendance.getStatus().getName());
         if (attendance.getStatus() == AttendanceStatus.ABSENCE) {
-            dateTime = attendance.getAttendedTime().format(absenceFormatter);
+            dateTime = attendance.getAttendedTime().format(ABSENCE_FORMATTER);
         }
         return dateTime + status;
     }

@@ -14,9 +14,7 @@ import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
-import java.util.Locale;
 
 public class AttendanceController {
 
@@ -63,8 +61,7 @@ public class AttendanceController {
     private void validateAttendanceDate() {
         if (DateUtil.isWeekend(LocalDate.now()) || Holiday.isHoliday(LocalDate.now())) {
             throw new IllegalArgumentException(
-                String.format("%n[ERROR] %s은 등교일이 아닙니다.", LocalDate.now().format(
-                    DateTimeFormatter.ofPattern(OutputView.DATE_FORMATTER, Locale.KOREAN))));
+                String.format("%n[ERROR] %s은 등교일이 아닙니다.", LocalDate.now().format(OutputView.DATE_FORMATTER)));
         }
     }
 
