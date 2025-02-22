@@ -34,17 +34,14 @@ public class AttendanceController {
         AttendanceBook attendanceBook = init();
 
         while (true) {
-            outputView.displayFunctionSelectionPrompt(); // 기능 선택창
+            outputView.displayFunctionSelectionPrompt(); // 선택 가능한 기능 안내
             FunctionSelection selection = retryUntilValid(this::getFunctionInput);
 
             try {
                 checkAttendance(selection, attendanceBook);
                 modifyAttendance(selection, attendanceBook);
                 checkAttendanceRecord(selection, attendanceBook);
-
-                if (selection == FunctionSelection.CHECK_PENALTY_CREWS) {
-                    outputView.displayPenaltyCrew(attendanceBook.checkPenaltyCrew());
-                }
+                CheckPenaltyCrew(selection, attendanceBook);
                 if (selection == FunctionSelection.QUIT) {
                     System.exit(1);
                 }
@@ -72,21 +69,24 @@ public class AttendanceController {
         return attendanceBook;
     }
 
+    // 기능 선택
     private FunctionSelection getFunctionInput() {
         return FunctionSelection.getFunctionByInput(inputView.getUserSelection());
     }
 
+    // 기능 1. 출석 확인
     private void checkAttendance(FunctionSelection selection, AttendanceBook attendanceBook) {
         if (selection == FunctionSelection.CHECK_ATTENDANCE) {
-            String name = retryUntilValid(() -> askNameToCheckAttendance(attendanceBook));
+            String name = retryUntilValid(() -> askName(attendanceBook));
 
-            LocalTime parsedTime = retryUntilValid(() -> getTime(attendanceBook));
+            LocalTime parsedTime = retryUntilValid(() -> askTimeToCheckAttendance(attendanceBook));
 
             outputView.displayCheckAttendanceResult(
                     attendanceBook.checkAttendance(name, Map.of(LocalDate.now(), parsedTime)));
         }
     }
 
+    // 기능 2. 출석 수정
     private void modifyAttendance(FunctionSelection selection, AttendanceBook attendanceBook) {
         if (selection == FunctionSelection.MODIFY_ATTENDANCE) {
             String name = retryUntilValid(() -> askNameToModify(attendanceBook));
@@ -101,15 +101,37 @@ public class AttendanceController {
         }
     }
 
+    // 기능 3. 크루별 출석 기록 확인
     private void checkAttendanceRecord(FunctionSelection selection, AttendanceBook attendanceBook) {
         if (selection == FunctionSelection.CHECK_ATTENDANCE_RECORD) {
-            String name = retryUntilValid(() -> askNameToCheckAttendance(attendanceBook));
+            String name = retryUntilValid(() -> askName(attendanceBook));
 
             List<AttendanceRecordResponse> records = attendanceBook.getCrewByName(name).getAttendanceRecords();
             TotalRecordsResponse totalRecord = fromAttendanceRecords(records);
             PenaltyStatus penalty = PenaltyStatus.getByPenaltyCount(attendanceBook.getPenaltyCount(totalRecord));
             outputView.displayAttendanceRecordByName(name, records, totalRecord, penalty.getMessage());
         }
+    }
+
+    // 기능 4. 제적 위험자 확인
+    private void CheckPenaltyCrew(FunctionSelection selection, AttendanceBook attendanceBook) {
+        if (selection == FunctionSelection.CHECK_PENALTY_CREWS) {
+            outputView.displayPenaltyCrew(attendanceBook.checkPenaltyCrew());
+        }
+    }
+
+    // 기능별 필요한 데이터를 입력
+    private String askName(AttendanceBook attendanceBook) {
+        String name = inputView.askName();
+        attendanceBook.validateNameAlreadyExists(name);
+        return name;
+    }
+
+    private LocalTime askTimeToCheckAttendance(AttendanceBook attendanceBook) {
+        String time = inputView.askTime();
+        LocalTime parsedTime = LocalTime.parse(time);
+        attendanceBook.validateIsInOperationHour(parsedTime);
+        return parsedTime;
     }
 
     private LocalTime askTimeToModify(AttendanceBook attendanceBook) {
@@ -134,19 +156,7 @@ public class AttendanceController {
         return name;
     }
 
-    private LocalTime getTime(AttendanceBook attendanceBook) {
-        String time = inputView.askTime();
-        LocalTime parsedTime = LocalTime.parse(time);
-        attendanceBook.validateIsInOperationHour(parsedTime);
-        return parsedTime;
-    }
-
-    private String askNameToCheckAttendance(AttendanceBook attendanceBook) {
-        String name = inputView.askName();
-        attendanceBook.validateNameAlreadyExists(name);
-        return name;
-    }
-
+    // 재입력 메서드
     private <T> T retryUntilValid(Supplier<T> supplier) {
         while (true) {
             try {
