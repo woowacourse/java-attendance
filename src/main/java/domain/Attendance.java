@@ -12,6 +12,8 @@ import java.util.Map;
 
 public class Attendance {
 
+    private static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+
     private final Map<Crew, List<LocalDateTime>> attendances;
 
     public Attendance(final Map<Crew, List<LocalDateTime>> attendanceMap) {
@@ -26,30 +28,15 @@ public class Attendance {
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 크루 입니다."));
     }
 
-    public Map<Crew, List<LocalDateTime>> getAttendances() {
-        return attendances;
-    }
-
     public void save(final Crew crew, final String schoolStartTime, final int todayDay) {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
         List<LocalDateTime> localDateTimes = attendances.get(crew);
 
         String today = String.format("2024-12-%02d %s", todayDay, schoolStartTime);
-        LocalDateTime todayLocalDateTime = LocalDateTime.parse(today, formatter);
+        LocalDateTime todayLocalDateTime = parseToLocalDateTime(today);
 
         validateDuplicateSave(todayDay, localDateTimes);
         localDateTimes.add(todayLocalDateTime);
         attendances.put(crew, localDateTimes);
-    }
-
-    private void validateDuplicateSave(final int todayDay, final List<LocalDateTime> localDateTimes) {
-        for (LocalDateTime localDateTime : localDateTimes) {
-            int dayOfMonth = localDateTime.getDayOfMonth();
-
-            if (dayOfMonth == todayDay) {
-                throw new IllegalArgumentException("이미 출석한 크루입니다.");
-            }
-        }
     }
 
     public LocalDateTime update(final Crew crew, final String updateTime, final int date) {
@@ -67,10 +54,8 @@ public class Attendance {
             }
         }
 
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
-
         String today = String.format("2024-12-%02d %s", date, updateTime);
-        LocalDateTime todayLocalDateTime = LocalDateTime.parse(today, formatter);
+        LocalDateTime todayLocalDateTime = parseToLocalDateTime(today);
 
         localDateTimes.set(attendanceRecordIndex, todayLocalDateTime);
 
@@ -111,13 +96,6 @@ public class Attendance {
         return attendanceResultDtos;
     }
 
-    private void checkAbsence(final int dayIndex, final List<AttendanceResultDto> attendanceResultDtos) {
-        AttendanceState state = AttendanceState.ABSENCE;
-        LocalDateTime newLocalDateTime = LocalDateTime.of(2024, 12, dayIndex, 0, 0);
-        AttendanceResultDto attendanceResultDto = new AttendanceResultDto(newLocalDateTime, state);
-        attendanceResultDtos.add(attendanceResultDto);
-    }
-
     public Map<Crew, AbsenceResultDto> getAbsence(final int todayDay) {
         Map<Crew, AbsenceResultDto> absenceMap = new HashMap<>();
 
@@ -131,5 +109,30 @@ public class Attendance {
         }
 
         return absenceMap;
+    }
+
+    public Map<Crew, List<LocalDateTime>> getAttendances() {
+        return attendances;
+    }
+
+    private void validateDuplicateSave(final int todayDay, final List<LocalDateTime> localDateTimes) {
+        for (LocalDateTime localDateTime : localDateTimes) {
+            int dayOfMonth = localDateTime.getDayOfMonth();
+
+            if (dayOfMonth == todayDay) {
+                throw new IllegalArgumentException("이미 출석한 크루입니다.");
+            }
+        }
+    }
+
+    private void checkAbsence(final int dayIndex, final List<AttendanceResultDto> attendanceResultDtos) {
+        AttendanceState state = AttendanceState.ABSENCE;
+        LocalDateTime newLocalDateTime = LocalDateTime.of(2024, 12, dayIndex, 0, 0);
+        AttendanceResultDto attendanceResultDto = new AttendanceResultDto(newLocalDateTime, state);
+        attendanceResultDtos.add(attendanceResultDto);
+    }
+
+    private LocalDateTime parseToLocalDateTime(final String today) {
+        return LocalDateTime.parse(today, DATE_TIME_FORMATTER);
     }
 }

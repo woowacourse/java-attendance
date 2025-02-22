@@ -19,6 +19,8 @@ import view.OutputView;
 
 public class MainController {
 
+    private static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("HH:mm");
+
     private LocalDate today;
     private int todayMonth;
     private int todayDay;
@@ -29,6 +31,7 @@ public class MainController {
         prepareToday();
         String feature;
         do {
+            //TODO if문 제거 (다형성 활용 해보기)
             feature = InputView.inputFeature(todayMonth, todayDay, todayDayOfWeek);
             if (feature.equals("1")) {
                 attendanceCheck();
@@ -59,8 +62,7 @@ public class MainController {
         Crew crew = attendance.getCrewByName(nickname);
         String schoolStartTime = InputView.inputSchoolStartTime();
 
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");
-        LocalTime dateTime = LocalTime.parse(schoolStartTime, formatter);
+        LocalTime dateTime = parseToLocalTime(schoolStartTime);
 
         AttendanceState attendanceState = AttendanceState.findStateBy(dateTime, todayDay);
 
@@ -78,9 +80,7 @@ public class MainController {
 
         LocalDateTime beforeDateTime = attendance.update(crew, time, date);
 
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");
-        LocalTime afterTime = LocalTime.parse(time, formatter);
-
+        LocalTime afterTime = parseToLocalTime(time);
         LocalDateTime afterLocalDateTime = LocalDateTime.of(beforeDateTime.getYear(), beforeDateTime.getMonth(),
                 beforeDateTime.getDayOfMonth(), afterTime.getHour(), afterTime.getMinute());
 
@@ -104,5 +104,9 @@ public class MainController {
     private void readAbsence() {
         Map<Crew, AbsenceResultDto> result = attendance.getAbsence(14);
         OutputView.printAbsenceResult(result);
+    }
+
+    private LocalTime parseToLocalTime(final String schoolStartTime) {
+        return LocalTime.parse(schoolStartTime, DATE_TIME_FORMATTER);
     }
 }
