@@ -68,7 +68,7 @@ public class Attendances {
             .boxed()
             .filter(Predicate.not(attendedDays::contains))
             .map(day -> LocalDate.of(untilDate.getYear(), untilDate.getMonth(), day))
-            .filter(DateUtil::isWeekDay)
+            .filter(DateUtil::isWeekday)
             .map(Attendance::ofAbsence)
             .toList();
     }
