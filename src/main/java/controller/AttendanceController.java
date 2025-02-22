@@ -7,8 +7,9 @@ import domain.AttendanceBook;
 import domain.AttendanceResults;
 import domain.Current;
 import domain.WarningCrew;
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.List;
-import util.DateUtil;
 import view.InputView;
 import view.OutputView;
 
@@ -23,49 +24,23 @@ public class AttendanceController {
     }
 
     public void run() {
-        while (true) {
         AttendanceBook attendanceBook = loadAttendanceBook();
+        String command = "";
+        while (!command.equals("Q")) {
+            command = inputView.inputCommand(Current.TODAY.getLocalDate());
             try {
-
-                String command = inputView.inputCommand(Current.TODAY.getLocalDate());
-                if (command.equals("Q")) {
-                    break;
-                }
                 if (command.equals("1")) {
-                    String nickName = inputView.inputNickName();
-                    String time = inputView.inputTime();
-                    Attend attend = Attend.of(time);
-                    attendanceBook.attend(nickName, attend);
-                    AttendStatus attendStatus = attendanceBook.checkAttendance(attend);
-                    outputView.printAttendResult(attend, attendStatus);
-                    continue;
+                    registerAttend(attendanceBook);
                 }
                 if (command.equals("2")) {
-                    String nickName = inputView.inputEditNickName();
-                    String date = inputView.inputDate();
-                    String time = inputView.inputEditTime();
-                    Attend after = Attend.of(date, time);
-                    int parsedDate = Integer.parseInt(date);
-                    Attend before = attendanceBook.findByNameAndDay(nickName, parsedDate);
-                    attendanceBook.edit(nickName, after);
-                    AttendStatus beforeStatus = attendanceBook.checkAttendance(before);
-                    AttendStatus afterStatus = attendanceBook.checkAttendance(after);
-                    outputView.printEditResult(before, after, beforeStatus, afterStatus);
-                    continue;
+                    editAttend(attendanceBook);
                 }
                 if (command.equals("3")) {
-                    String nickName = inputView.inputNickName();
-                    AttendanceResults attendResult = attendanceBook.checkAttendance(nickName,
-                            DateUtil.getAttendUntilDay(Current.TODAY.getYesterday()));
-                    outputView.printAttendanceResult(nickName, attendResult);
-                    continue;
+                    searchAttendance(attendanceBook);
                 }
                 if (command.equals("4")) {
-                    List<WarningCrew> warningCrews = attendanceBook.checkWarningCrews(
-                            DateUtil.getAttendUntilDay(Current.TODAY.getYesterday()));
-                    outputView.printWarningCrews(warningCrews);
+                    searchWarningCrews(attendanceBook);
                 }
-
             } catch (IllegalArgumentException e) {
                 System.out.println(e.getMessage());
             }
@@ -77,11 +52,35 @@ public class AttendanceController {
         return attendReader.loadAttendanceBook();
     }
 
+    private void searchWarningCrews(AttendanceBook attendanceBook) {
+        List<WarningCrew> warningCrews = attendanceBook.checkWarningCrews(Current.TODAY.getAttendUntilDay());
+        outputView.printWarningCrews(warningCrews);
     }
 
+    private void searchAttendance(AttendanceBook attendanceBook) {
+        String nickName = inputView.inputNickName();
+        AttendanceResults attendResult = attendanceBook.checkAttendance(nickName, Current.TODAY.getAttendUntilDay());
+        outputView.printAttendanceResult(nickName, attendResult);
     }
 
+    private void editAttend(AttendanceBook attendanceBook) {
+        String nickName = inputView.inputEditNickName();
+        LocalDate date = inputView.inputDate();
+        LocalTime time = inputView.inputEditTime();
+        Attend after = Attend.of(date, time);
+        Attend before = attendanceBook.findByNameAndDay(nickName, date.getDayOfMonth());
+        attendanceBook.edit(nickName, after);
+        AttendStatus beforeStatus = attendanceBook.checkAttendance(before);
+        AttendStatus afterStatus = attendanceBook.checkAttendance(after);
+        outputView.printEditResult(before, after, beforeStatus, afterStatus);
     }
 
+    private void registerAttend(AttendanceBook attendanceBook) {
+        String nickName = inputView.inputNickName();
+        LocalTime time = inputView.inputTime();
+        Attend attend = Attend.fromTime(time);
+        attendanceBook.attend(nickName, attend);
+        AttendStatus attendStatus = attendanceBook.checkAttendance(attend);
+        outputView.printAttendResult(attend, attendStatus);
     }
 }
