@@ -15,11 +15,11 @@ public class ManageTest {
         // given
         Crew crew = new Crew("pobi");
         // LATE
-        crew.addAttendanceTime(LocalDate.of(2025, 2, 3), LocalTime.of(13, 6));
+        crew.insertAttendanceTime(LocalDate.of(2025, 2, 3), LocalTime.of(13, 6));
         // ATTENDANCE
-        crew.addAttendanceTime(LocalDate.of(2025, 2, 4), LocalTime.of(10, 5));
+        crew.insertAttendanceTime(LocalDate.of(2025, 2, 4), LocalTime.of(10, 5));
         // ABSENT_LATE
-        crew.addAttendanceTime(LocalDate.of(2025, 2, 5), LocalTime.of(10, 31));
+        crew.insertAttendanceTime(LocalDate.of(2025, 2, 5), LocalTime.of(10, 31));
         AttendanceStatusStatistics attendanceStatusStatistics =
                 crew.getAttendanceStatusStatistics(LocalDate.of(2025, 2, 6));
 
@@ -36,11 +36,11 @@ public class ManageTest {
         // given
         Crew crew = new Crew("pobi");
         // LATE
-        crew.addAttendanceTime(LocalDate.of(2025, 2, 3), LocalTime.of(13, 6));
+        crew.insertAttendanceTime(LocalDate.of(2025, 2, 3), LocalTime.of(13, 6));
         // LATE
-        crew.addAttendanceTime(LocalDate.of(2025, 2, 4), LocalTime.of(10, 6));
+        crew.insertAttendanceTime(LocalDate.of(2025, 2, 4), LocalTime.of(10, 6));
         // LATE
-        crew.addAttendanceTime(LocalDate.of(2025, 2, 5), LocalTime.of(10, 30));
+        crew.insertAttendanceTime(LocalDate.of(2025, 2, 5), LocalTime.of(10, 30));
         AttendanceStatusStatistics attendanceStatusStatistics =
                 crew.getAttendanceStatusStatistics(LocalDate.of(2025, 2, 7));
 
@@ -57,7 +57,7 @@ public class ManageTest {
         // given
         Crew crew = new Crew("pobi");
         // LATE
-        crew.addAttendanceTime(LocalDate.of(2025, 02, 3), LocalTime.of(13, 10));
+        crew.insertAttendanceTime(LocalDate.of(2025, 02, 3), LocalTime.of(13, 10));
         AttendanceStatusStatistics attendanceStatusStatistics =
                 crew.getAttendanceStatusStatistics(LocalDate.of(2025, 02, 7));
 

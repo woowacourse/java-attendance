@@ -14,6 +14,7 @@ import dto.ModifiedResult.TimeAttendanceStatus;
 import dto.MonthAttendanceRecordsResult;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.List;
 import repository.CrewRepository;
 import util.DateTimeUtil;
@@ -23,7 +24,7 @@ public class AttendanceService {
         validateCampusTime(request.time());
 
         Crew crew = CrewRepository.findByNickname(request.nickname());
-        AttendanceStatus status = crew.addAttendanceTime(DateTimeUtil.nowDate(), request.time());
+        AttendanceStatus status = crew.insertAttendanceTime(DateTimeUtil.nowDate(), request.time());
         return AttendanceResult.of(DateTimeUtil.nowDate(), request.time(), status);
     }
 
@@ -43,12 +44,27 @@ public class AttendanceService {
     public MonthAttendanceRecordsResult getMonthAttendanceRecordsResult(String nickname) {
         Crew crew = CrewRepository.findByNickname(nickname);
         LocalDate now = DateTimeUtil.nowDate();
-        List<AttendanceRecord> attendanceRecords = crew.getMonthAttendanceRecords(now);
+        List<AttendanceRecord> attendanceRecords = getMonthAttendanceRecords(crew, now);
         Manage manage = Manage.of(crew.getAttendanceStatusStatistics(now));
         return new MonthAttendanceRecordsResult(
                 crew.getNickname(), attendanceRecords, crew.getAttendanceStatusStatistics(now), manage
         );
     }
+
+    private List<AttendanceRecord> getMonthAttendanceRecords(Crew crew, LocalDate today) {
+        List<AttendanceRecord> attendanceRecords = new ArrayList<>();
+        for (int day = 1; day < today.getDayOfMonth(); day++) {
+            if (DateTimeUtil.isOffDay(today.withDayOfMonth(day))) {
+                continue;
+            }
+            LocalDate date = today.withDayOfMonth(day);
+            attendanceRecords.add(
+                    new AttendanceRecord(date, crew.getAttendanceTimeByDate(date),
+                            crew.getAttendanceStatusByDate(date)));
+        }
+        return attendanceRecords;
+    }
+
 
     public List<CrewAlmostExpelledResult> getCrewsAlmostExpelled() {
         List<Crew> crews = CrewRepository.findAll();

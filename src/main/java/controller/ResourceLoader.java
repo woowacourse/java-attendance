@@ -23,6 +23,6 @@ public class ResourceLoader {
             CrewRepository.addCrew(crew);
         }
         crew = CrewRepository.findByNickname(nickname);
-        crew.addAttendanceTime(date, time);
+        crew.insertAttendanceTime(date, time);
     }
 }

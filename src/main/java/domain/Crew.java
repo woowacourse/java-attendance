@@ -2,11 +2,9 @@ package domain;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.EnumMap;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import util.DateTimeUtil;
 
@@ -19,7 +17,7 @@ public class Crew {
         this.nickname = name;
     }
 
-    public AttendanceStatus addAttendanceTime(LocalDate date, LocalTime time) {
+    public AttendanceStatus insertAttendanceTime(LocalDate date, LocalTime time) {
         validateDate(date);
         attendanceTimes.put(date, time);
         return getAttendanceStatusByDate(date);
@@ -33,7 +31,6 @@ public class Crew {
             throw new IllegalArgumentException(date + ": 주말 및 공휴일에는 출석을 받지 않습니다.");
         }
     }
-
 
     public void modifyAttendanceTime(LocalDate date, LocalTime time) {
         attendanceTimes.put(date, time);
@@ -57,19 +54,6 @@ public class Crew {
             return AttendanceStatus.ABSENT;
         }
         return AttendanceStatus.of(date, attendanceTimes.get(date));
-    }
-
-    public List<AttendanceRecord> getMonthAttendanceRecords(LocalDate today) {
-        List<AttendanceRecord> attendanceRecords = new ArrayList<>();
-        for (int day = 1; day < today.getDayOfMonth(); day++) {
-            if (DateTimeUtil.isOffDay(today.withDayOfMonth(day))) {
-                continue;
-            }
-            LocalDate date = today.withDayOfMonth(day);
-            LocalTime time = attendanceTimes.get(date);
-            attendanceRecords.add(new AttendanceRecord(date, time, getAttendanceStatusByDate(date)));
-        }
-        return attendanceRecords;
     }
 
     public AttendanceStatusStatistics getAttendanceStatusStatistics(LocalDate today) {
