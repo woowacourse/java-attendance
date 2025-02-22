@@ -9,40 +9,61 @@ import domain.AttendanceBook;
 import domain.AttendanceResult;
 import domain.AttendanceResults;
 import domain.Attends;
+import domain.Current;
 import domain.WarningCrew;
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
-import org.assertj.core.api.Assertions;
+import java.util.stream.Stream;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import util.DateUtil;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.CsvSource;
+import org.junit.jupiter.params.provider.MethodSource;
 
 public class AttendanceBookTest {
 
+    private static Stream<Arguments> provideDateAndTime() {
+        return Stream.of(
+                Arguments.of(LocalDate.of(2024, 12, 1), LocalTime.of(10, 0)),
+                Arguments.of(LocalDate.of(2024, 12, Current.CHRISTMAS), LocalTime.of(10, 0))
+        );
+    }
+
+    private static Stream<Arguments> provideDayAndAttend() {
+        return Stream.of(
+                Arguments.of(12, Attend.of(LocalDate.of(2024, 12, 12), LocalTime.of(10, 0))),
+                Arguments.of(13, Attend.fromDay(13))
+        );
+    }
+
     @Test
-    void 평일_출석_저장_테스트() throws Exception {
+    @DisplayName("평일 출석 저장 테스트")
+    void saveAttendTest() {
         //given
         var name = "플린트";
-        var time = "09:59";
+        var time = LocalTime.of(10, 0);
         AttendanceBook attendanceBook = new AttendanceBook();
         attendanceBook.registerName(name);
-        Attend attend = Attend.of(time);
+        Attend attend = Attend.fromTime(time);
 
         //when
         attendanceBook.attend(name, attend);
 
         //then
-        Assertions.assertThat(attendanceBook.findByName(name).attends).hasSize(1);
+        assertThat(attendanceBook.findByName(name).findByDay(Current.TODAY.getDay())).isEqualTo(attend);
     }
 
     @Test
     @DisplayName("이름이 존재하지 않는 크루 출석시 예외")
-    void test524523432() throws Exception {
+    void notExistNameTestInAttend() {
         //given
         var name = "플린트";
-        var time = "09:59";
+        var time = LocalTime.of(10, 0);
         AttendanceBook attendanceBook = new AttendanceBook();
-        Attend attend = Attend.of(time);
+        Attend attend = Attend.fromTime(time);
 
         //when & then
         assertThatThrownBy(
@@ -52,12 +73,12 @@ public class AttendanceBookTest {
 
     @Test
     @DisplayName("이름이 존재하지 않는 크루 수정 시 예외")
-    void test52452233432() throws Exception {
+    void notExistNameTestInEdit() {
         //given
         var name = "플린트";
-        var time = "09:59";
+        var time = LocalTime.of(10, 0);
         AttendanceBook attendanceBook = new AttendanceBook();
-        Attend attend = Attend.of(time);
+        Attend attend = Attend.fromTime(time);
 
         //when & then
         assertThatThrownBy(
@@ -65,13 +86,12 @@ public class AttendanceBookTest {
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
-
-    @Test
-    void 주말_출석_저장_시도하면_예외() throws Exception {
+    @ParameterizedTest
+    @MethodSource("provideDateAndTime")
+    @DisplayName("쉬는 날 출석 저장 시도하면 예외")
+    void tryAttendHoliday(LocalDate date, LocalTime time) {
         //given
         var name = "플린트";
-        var date = "14";
-        var time = "09:59";
         AttendanceBook attendanceBook = new AttendanceBook();
         attendanceBook.registerName(name);
         Attend attend = Attend.of(date, time);
@@ -80,56 +100,27 @@ public class AttendanceBookTest {
         assertThatThrownBy(() -> attendanceBook.attend(name, attend)).isInstanceOf(IllegalArgumentException.class);
     }
 
-    @Test
-    void 공휴일_출석_저장_시도하면_예외() throws Exception {
-        //given
-        var name = "플린트";
-        var date = "25";
-        var time = "09:59";
-        AttendanceBook attendanceBook = new AttendanceBook();
-        attendanceBook.registerName(name);
-        Attend attend = Attend.of(date, time);
-
-        //when & then
-        assertThatThrownBy(() -> attendanceBook.attend(name, attend)).isInstanceOf(IllegalArgumentException.class);
-    }
-
-    @Test
-    @DisplayName("운영 시간 전에 시간을 입력했을 경우, 예외를 throw 한다.")
-    void test() throws Exception {
+    @ParameterizedTest
+    @CsvSource(value = {"07:59", "23:01"})
+    @DisplayName("운영 시간 범위 외 시간을 입력했을 경우, 예외를 throw 한다.")
+    void tryInputBeforeOpenTime(String time) {
         //given
         String name = "플린트";
-        String day = "13";
-        String time = "07:59";
         AttendanceBook attendanceBook = new AttendanceBook();
         attendanceBook.registerName(name);
-        Attend attend = Attend.of(day, time);
+        Attend attend = Attend.of(LocalDate.of(2024, 12, 13), LocalTime.parse(time));
 
         //when & then
         assertThatThrownBy(() -> attendanceBook.attend(name, attend)).isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
-    @DisplayName("운영 시간 이후에 시간을 입력했을 경우, 예외를 throw 한다.")
-    void test2() throws Exception {
-        //given
-        String name = "플린트";
-        String day = "13";
-        String time = "23:01";
-        AttendanceBook attendanceBook = new AttendanceBook();
-        attendanceBook.registerName(name);
-        Attend attend = Attend.of(day, time);
-
-        //when & then
-        assertThatThrownBy(() -> attendanceBook.attend(name, attend)).isInstanceOf(IllegalArgumentException.class);
-    }
-
-    @Test
-    void 존재하지_않는_출석_수정_테스트() throws Exception {
+    @DisplayName("존재하지 않는 출석 수정 테스트")
+    void editNotContainedAttend() {
         //given
         var name = "플린트";
-        var date = "13";
-        var time = "10:11";
+        var date = LocalDate.of(2024, 12, 13);
+        var time = LocalTime.of(10, 11);
         AttendanceBook attendanceBook = new AttendanceBook();
         attendanceBook.registerName(name);
         Attend attend = Attend.of(date, time);
@@ -138,15 +129,16 @@ public class AttendanceBookTest {
         attendanceBook.edit(name, attend);
 
         //then
-        Assertions.assertThat(attendanceBook.findByName(name).attends).contains(attend);
+        assertThat(attendanceBook.findByName(name).findByDay(13)).isEqualTo(attend);
     }
 
     @Test
-    void 존재하는_출석_수정_테스트() throws Exception {
+    @DisplayName("존재하는 출석 수정 테스트")
+    void editContainedAttend() {
         //given
         var name = "플린트";
-        Attend beforeAttend = Attend.of("13", "10:00");
-        Attend afterAttend = Attend.of("13", "10:10");
+        Attend beforeAttend = Attend.of(LocalDate.of(2024, 12, 13), LocalTime.of(10, 0));
+        Attend afterAttend = Attend.of(LocalDate.of(2024, 12, 13), LocalTime.of(10, 10));
         AttendanceBook attendanceBook = new AttendanceBook();
         attendanceBook.registerName(name);
         attendanceBook.attend(name, beforeAttend);
@@ -155,7 +147,10 @@ public class AttendanceBookTest {
         attendanceBook.edit(name, afterAttend);
 
         //then
-        Assertions.assertThat(attendanceBook.findByName(name).attends).contains(afterAttend);
+        assertAll(
+                () -> assertThat(attendanceBook.findByName(name).findByDay(13)).isNotEqualTo(beforeAttend),
+                () -> assertThat(attendanceBook.findByName(name).findByDay(13)).isEqualTo(afterAttend)
+        );
     }
 
     @Test
@@ -165,9 +160,18 @@ public class AttendanceBookTest {
         String name = "플린트";
         AttendanceBook attendanceBook = new AttendanceBook();
         attendanceBook.registerName(name);
-        List<Attend> attendsInitValue = List.of(Attend.of("2", "13:00"), Attend.of("3", "10:07"),
-                Attend.of("4", "13:00"), Attend.of("5", "13:00"), Attend.of("6", "13:00"), Attend.of("9", "13:00"),
-                Attend.of("10", "13:00"), Attend.of("11", "13:00"), Attend.of("12", "13:00"), Attend.of("13", "13:00"));
+        List<Attend> attendsInitValue = List.of(
+                Attend.of(LocalDate.of(2024, 12, 2), LocalTime.of(13, 0)),
+                Attend.of(LocalDate.of(2024, 12, 3), LocalTime.of(10, 7)),
+                Attend.of(LocalDate.of(2024, 12, 4), LocalTime.of(10, 7)),
+                Attend.of(LocalDate.of(2024, 12, 5), LocalTime.of(10, 7)),
+                Attend.of(LocalDate.of(2024, 12, 6), LocalTime.of(10, 0)),
+                Attend.of(LocalDate.of(2024, 12, 9), LocalTime.of(13, 0)),
+                Attend.of(LocalDate.of(2024, 12, 10), LocalTime.of(13, 0)),
+                Attend.of(LocalDate.of(2024, 12, 11), LocalTime.of(13, 0)),
+                Attend.of(LocalDate.of(2024, 12, 12), LocalTime.of(13, 0)),
+                Attend.of(LocalDate.of(2024, 12, 13), LocalTime.of(13, 0))
+        );
         for (Attend attend : attendsInitValue) {
             attendanceBook.attend(name, attend);
         }
@@ -178,7 +182,7 @@ public class AttendanceBookTest {
         // than
         List<Attend> expected = new ArrayList<>(attendsInitValue);
         expected.removeLast();
-        assertThat(result).containsOnlyElementsOf(expected);
+        assertThat(result).containsOnlyOnceElementsOf(expected);
     }
 
     @Test
@@ -188,56 +192,46 @@ public class AttendanceBookTest {
         String name = "플린트";
         AttendanceBook attendanceBook = new AttendanceBook();
         attendanceBook.registerName(name);
-        List<Attend> expectAttend = List.of(Attend.of("2", "10:00"), Attend.of("3", "10:06"), Attend.of("4", "10:31"));
-        List<AttendStatus> expectedStatus = List.of(AttendStatus.ATTEND, AttendStatus.LATE, AttendStatus.ABSENCE);
+        List<Attend> expectAttend = List.of(
+                Attend.of(LocalDate.of(2024, 12, 2), LocalTime.of(10, 0)),
+                Attend.of(LocalDate.of(2024, 12, 3), LocalTime.of(10, 0)),
+                Attend.of(LocalDate.of(2024, 12, 4), LocalTime.of(10, 0)),
+                Attend.of(LocalDate.of(2024, 12, 5), LocalTime.of(10, 6)),
+                Attend.of(LocalDate.of(2024, 12, 6), LocalTime.of(10, 6)),
+                Attend.of(LocalDate.of(2024, 12, 9), LocalTime.of(10, 6))
+        );
         List<Attend> attends = new ArrayList<>(expectAttend);
         for (Attend attend : attends) {
             attendanceBook.attend(name, attend);
         }
 
         //when
-        AttendanceResults result = attendanceBook.checkAttendance(name, DateUtil.getAttendUntilDay(4));
+        AttendanceResults result = attendanceBook.checkAttendance(name, Current.TODAY.getAttendUntilDay());
 
         //then
-        List<AttendanceResult> expected = List.of(new AttendanceResult(expectAttend.get(0), expectedStatus.get(0)),
-                new AttendanceResult(expectAttend.get(1), expectedStatus.get(1)),
-                new AttendanceResult(expectAttend.get(2), expectedStatus.get(2)));
-        Assertions.assertThat(result.getAttendanceResults()).containsOnlyElementsOf(expected);
-    }
-
-    @Test
-    @DisplayName("닉네임 대상의 출석을 현재 날짜 이전까지 출력해야 한다.")
-    void test4() {
-        //given
-        String name = "플린트";
-        AttendanceBook attendanceBook = new AttendanceBook();
-        attendanceBook.registerName(name);
-        List<Attend> expectAttend = List.of(Attend.of("2", "10:00"), Attend.of("3", "10:06"), Attend.of("4", "10:31"));
-        List<Attend> attends = new ArrayList<>(expectAttend);
-        for (Attend attend : attends) {
-            attendanceBook.attend(name, attend);
-        }
-        List<Integer> days = DateUtil.getAttendUntilDay(5);
-
-        //when
-        AttendanceResults result = attendanceBook.checkAttendance(name, days);
-
-        //then
-        assertAll(
-                () -> Assertions.assertThat(result.getAttendanceResults().get(3).attend()).isEqualTo(Attend.fromDay(5)),
-                () -> Assertions.assertThat(result.getAttendanceResults().get(3).attendStatus())
-                        .isEqualTo(AttendStatus.ABSENCE));
+        List<AttendStatus> expectedStatus = List.of(AttendStatus.ATTEND, AttendStatus.ATTEND, AttendStatus.ATTEND,
+                AttendStatus.LATE, AttendStatus.LATE, AttendStatus.LATE, AttendStatus.ABSENCE, AttendStatus.ABSENCE,
+                AttendStatus.ABSENCE);
+        List<AttendStatus> expected = result.getAttendanceResults()
+                .stream()
+                .map(AttendanceResult::attendStatus)
+                .toList();
+        assertThat(expected).containsExactlyInAnyOrderElementsOf(expectedStatus);
     }
 
     @Test
     @DisplayName("출석부에서 제적 위험자 조회 기능")
-    void test11() throws Exception {
+    void searchWarningCrew() {
         //given
         String name = "플린트";
         AttendanceBook attendanceBook = new AttendanceBook();
         attendanceBook.registerName(name);
-        List<Integer> days = DateUtil.getAttendUntilDay(5);
-        List<Attend> expectAttend = List.of(Attend.of("2", "10:00"), Attend.of("3", "10:06"), Attend.of("4", "10:31"));
+        List<Integer> days = Current.TODAY.getAttendUntilDay();
+        List<Attend> expectAttend = List.of(
+                Attend.of(LocalDate.of(2024, 12, 2), LocalTime.of(10, 0)),
+                Attend.of(LocalDate.of(2024, 12, 3), LocalTime.of(10, 31)),
+                Attend.of(LocalDate.of(2024, 12, 4), LocalTime.of(10, 6))
+        );
         for (Attend attend : expectAttend) {
             attendanceBook.attend(name, attend);
         }
@@ -246,26 +240,34 @@ public class AttendanceBookTest {
         List<WarningCrew> warningCrews = attendanceBook.checkWarningCrews(days);
 
         //then
-        AttendCount expectedAttendCount = new AttendCount(1, 1, 2);
+        AttendCount expectedAttendCount = new AttendCount(1, 1, 7);
         WarningCrew expected = new WarningCrew(name, expectedAttendCount);
         assertThat(warningCrews).contains(expected);
     }
 
     @Test
     @DisplayName("출석부에서 제적 위험자 조회 기능- 맞는 대상만 잘 가져오는지")
-    void test156421() throws Exception {
+    void searchWarningCrewOnlySatisfy() {
         //given
-        List<Integer> days = DateUtil.getAttendUntilDay(5);
+        List<Integer> days = Current.TODAY.getAttendUntilDay();
         String name = "플린트";
         AttendanceBook attendanceBook = new AttendanceBook();
         attendanceBook.registerName(name);
-        List<Attend> expectAttend = List.of(Attend.of("2", "10:00"), Attend.of("3", "10:06"), Attend.of("4", "10:31"));
+        List<Attend> expectAttend = List.of(
+                Attend.of(LocalDate.of(2024, 12, 2), LocalTime.of(10, 0)),
+                Attend.of(LocalDate.of(2024, 12, 3), LocalTime.of(10, 31)),
+                Attend.of(LocalDate.of(2024, 12, 4), LocalTime.of(10, 6))
+        );
         for (Attend attend : expectAttend) {
             attendanceBook.attend(name, attend);
         }
         String secondName = "후유";
         attendanceBook.registerName(secondName);
-        List<Attend> secondAttends = List.of(Attend.of("2", "10:00"), Attend.of("3", "10:00"), Attend.of("4", "10:00"));
+        List<Attend> secondAttends = List.of(
+                Attend.of(LocalDate.of(2024, 12, 2), LocalTime.of(10, 0)),
+                Attend.of(LocalDate.of(2024, 12, 3), LocalTime.of(10, 0)),
+                Attend.of(LocalDate.of(2024, 12, 4), LocalTime.of(10, 0))
+        );
         for (Attend attend : secondAttends) {
             attendanceBook.attend(secondName, attend);
         }
@@ -274,20 +276,54 @@ public class AttendanceBookTest {
         List<WarningCrew> warningCrews = attendanceBook.checkWarningCrews(days);
 
         //then
-        AttendCount expectedAttendCount = new AttendCount(1, 1, 2);
+        AttendCount expectedAttendCount = new AttendCount(1, 1, 7);
         WarningCrew expected = new WarningCrew(name, expectedAttendCount);
         assertThat(warningCrews).contains(expected);
     }
 
+    @Test
+    @DisplayName("출석부에서 제적 위험자 조회 기능- 대상자가 없을 때")
+    void searchWarningCrewEmpty() {
+        //given
+        List<Integer> days = Current.TODAY.getAttendUntilDay();
+        String name = "플린트";
+        AttendanceBook attendanceBook = new AttendanceBook();
+        attendanceBook.registerName(name);
+        List<Attend> expectAttend = List.of(
+                Attend.of(LocalDate.of(2024, 12, 2), LocalTime.of(10, 0)),
+                Attend.of(LocalDate.of(2024, 12, 3), LocalTime.of(10, 0)),
+                Attend.of(LocalDate.of(2024, 12, 4), LocalTime.of(10, 0)),
+                Attend.of(LocalDate.of(2024, 12, 5), LocalTime.of(10, 0)),
+                Attend.of(LocalDate.of(2024, 12, 6), LocalTime.of(10, 0)),
+                Attend.of(LocalDate.of(2024, 12, 9), LocalTime.of(10, 0)),
+                Attend.of(LocalDate.of(2024, 12, 10), LocalTime.of(10, 0)),
+                Attend.of(LocalDate.of(2024, 12, 11), LocalTime.of(10, 0)),
+                Attend.of(LocalDate.of(2024, 12, 12), LocalTime.of(10, 0))
+        );
+        for (Attend attend : expectAttend) {
+            attendanceBook.attend(name, attend);
+        }
+        String secondName = "후유";
+        attendanceBook.registerName(secondName);
+        for (Attend attend : expectAttend) {
+            attendanceBook.attend(secondName, attend);
+        }
+
+        //when
+        List<WarningCrew> warningCrews = attendanceBook.checkWarningCrews(days);
+
+        //then
+        assertThat(warningCrews).isEmpty();
+    }
 
     @Test
     @DisplayName("크루 중복 등록시 아무런 문제가 발생하지 않는다.")
-    void test12312312312312() throws Exception {
+    void registerSameCrew() {
         // given
         String name = "플린트";
         AttendanceBook attendanceBook = new AttendanceBook();
         attendanceBook.registerName(name);
-        Attend attend = Attend.of("2", "10:00");
+        Attend attend = Attend.of(LocalDate.of(2024, 12, 2), LocalTime.of(10, 0));
         attendanceBook.attend(name, attend);
 
         // when
@@ -295,6 +331,23 @@ public class AttendanceBookTest {
         Attends attends = attendanceBook.findByName(name);
 
         // then
-        assertThat(attends.attends).contains(attend);
+        assertThat(attends.findByDay(2)).isEqualTo(attend);
+    }
+
+    @ParameterizedTest
+    @MethodSource("provideDayAndAttend")
+    @DisplayName("이름과 날짜를 기반으로 검색")
+    void findByNameAndDay(int day, Attend attend) {
+        //given
+        String name = "플린트";
+        AttendanceBook attendanceBook = new AttendanceBook();
+        attendanceBook.registerName(name);
+        attendanceBook.attend(name, attend);
+
+        //when
+        Attend expected = attendanceBook.findByNameAndDay(name, day);
+
+        //then
+        assertThat(expected).isEqualTo(attend);
     }
 }
