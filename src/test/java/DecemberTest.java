@@ -17,4 +17,9 @@ public class DecemberTest {
         assertThatThrownBy(() -> December.checkWeekday(LocalDateTime.of(2024, 12, 15, 0, 0)))
                 .isInstanceOf(IllegalArgumentException.class);
     }
+
+    @Test
+    void test3() {
+        System.out.println(December.getWeekDays());
+    }
 }

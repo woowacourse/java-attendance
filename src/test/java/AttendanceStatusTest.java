@@ -6,10 +6,12 @@ import domain.AttendanceHistory;
 import domain.AttendanceStatus;
 import java.util.ArrayList;
 import java.util.List;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 public class AttendanceStatusTest {
 
+    @DisplayName("결석 상태를 반환한다.")
     @Test
     void test1() {
         List<AttendTime> attendTimes = new ArrayList<>();
