@@ -26,16 +26,27 @@ public class AttendanceSheets {
 
 
     public List<AttendanceSheet> findAttendanceByNickname(String nickname) {
+        validateHasNickname(nickname);
 
         List<AttendanceSheet> foundAttendance = attendanceSheets.stream()
                 .filter(attendanceSheet -> attendanceSheet.hasNickname(nickname))
                 .toList();
 
-        if (foundAttendance.isEmpty()) {
-            throw new IllegalArgumentException("[ERROR] 해당 닉네임은 출석 기록이 존재하지 않습니다.");
-        }
+        validateExistAttendanceSheetsByNickname(foundAttendance);
 
         return foundAttendance;
+    }
+
+    private static void validateExistAttendanceSheetsByNickname(List<AttendanceSheet> foundAttendance) {
+        if (foundAttendance == null || foundAttendance.isEmpty()) {
+            throw new IllegalArgumentException("[ERROR] 해당 닉네임은 출석 기록이 존재하지 않습니다.");
+        }
+    }
+
+    private static void validateHasNickname(String nickname) {
+        if (nickname == null || nickname.isEmpty()) {
+            throw new IllegalArgumentException("[ERROR] 해당 닉네임은 존재하지 않습니다.");
+        }
     }
 
     public List<String> findAllNames() {
