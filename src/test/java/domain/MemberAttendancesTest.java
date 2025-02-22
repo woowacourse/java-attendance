@@ -4,7 +4,6 @@ import dto.result.AttendResult;
 import dto.result.AttendanceModifyResult;
 import dto.result.ExpelMeasurementResult;
 import dto.result.MemberAttendResult;
-import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
@@ -14,10 +13,10 @@ import java.time.LocalTime;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 public class MemberAttendancesTest {
     
-    private final SoftAssertions soft = new SoftAssertions();
     private final List<Attendance> attendanceList = List.of(
             new Attendance(LocalDateTime.of(2024, 12, 2, 10, 0)),
             new Attendance(LocalDateTime.of(2024, 12, 3, 10, 1)),
@@ -58,19 +57,21 @@ public class MemberAttendancesTest {
             MemberAttendResult result = attendances.getAttendanceResult();
             
             // then
-            soft.assertThat(result.name()).isEqualTo("Lemon");
-            soft.assertThat(result.attendCount()).isEqualTo(3);
-            soft.assertThat(result.lateCount()).isEqualTo(3);
-            soft.assertThat(result.absentCount()).isEqualTo(2);
-            soft.assertThat(result.attendanceResults()).containsExactlyInAnyOrder(
-                    new AttendResult(LocalDateTime.of(2024, 12, 2, 10, 0), AttendanceStatus.출석, true),
-                    new AttendResult(LocalDateTime.of(2024, 12, 3, 10, 1), AttendanceStatus.출석, true),
-                    new AttendResult(LocalDateTime.of(2024, 12, 4, 10, 5), AttendanceStatus.출석, true),
-                    new AttendResult(LocalDateTime.of(2024, 12, 5, 10, 6), AttendanceStatus.지각, true),
-                    new AttendResult(LocalDateTime.of(2024, 12, 6, 10, 15), AttendanceStatus.지각, true),
-                    new AttendResult(LocalDateTime.of(2024, 12, 10, 10, 30), AttendanceStatus.지각, true),
-                    new AttendResult(LocalDateTime.of(2024, 12, 11, 10, 31), AttendanceStatus.결석, true),
-                    new AttendResult(LocalDateTime.of(2024, 12, 12, 10, 32), AttendanceStatus.결석, true)
+            assertAll(
+                    () -> assertThat(result.name()).isEqualTo("Lemon"),
+                    () -> assertThat(result.attendCount()).isEqualTo(3),
+                    () -> assertThat(result.lateCount()).isEqualTo(3),
+                    () -> assertThat(result.absentCount()).isEqualTo(2),
+                    () -> assertThat(result.attendanceResults()).containsExactlyInAnyOrder(
+                            new AttendResult(LocalDateTime.of(2024, 12, 2, 10, 0), AttendanceStatus.출석, true),
+                            new AttendResult(LocalDateTime.of(2024, 12, 3, 10, 1), AttendanceStatus.출석, true),
+                            new AttendResult(LocalDateTime.of(2024, 12, 4, 10, 5), AttendanceStatus.출석, true),
+                            new AttendResult(LocalDateTime.of(2024, 12, 5, 10, 6), AttendanceStatus.지각, true),
+                            new AttendResult(LocalDateTime.of(2024, 12, 6, 10, 15), AttendanceStatus.지각, true),
+                            new AttendResult(LocalDateTime.of(2024, 12, 10, 10, 30), AttendanceStatus.지각, true),
+                            new AttendResult(LocalDateTime.of(2024, 12, 11, 10, 31), AttendanceStatus.결석, true),
+                            new AttendResult(LocalDateTime.of(2024, 12, 12, 10, 32), AttendanceStatus.결석, true)
+                    )
             );
         }
     }

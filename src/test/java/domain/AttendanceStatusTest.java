@@ -1,11 +1,12 @@
 package domain;
 
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
 import java.time.LocalTime;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 class AttendanceStatusTest {
     
@@ -23,7 +24,7 @@ class AttendanceStatusTest {
             AttendanceStatus result = AttendanceStatus.of(targetTime, attendTime);
             
             //then
-            Assertions.assertThat(result).isEqualTo(AttendanceStatus.출석);
+            assertThat(result).isEqualTo(AttendanceStatus.출석);
         }
         
         @ParameterizedTest
@@ -37,7 +38,7 @@ class AttendanceStatusTest {
             AttendanceStatus result = AttendanceStatus.of(targetTime, attendTime);
             
             //then
-            Assertions.assertThat(result).isEqualTo(AttendanceStatus.지각);
+            assertThat(result).isEqualTo(AttendanceStatus.지각);
         }
         
         @ParameterizedTest
@@ -51,7 +52,7 @@ class AttendanceStatusTest {
             AttendanceStatus result = AttendanceStatus.of(targetTime, attendTime);
             
             //then
-            Assertions.assertThat(result).isEqualTo(AttendanceStatus.결석);
+            assertThat(result).isEqualTo(AttendanceStatus.결석);
         }
     }
     

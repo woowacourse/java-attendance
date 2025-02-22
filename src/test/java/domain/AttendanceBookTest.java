@@ -4,7 +4,6 @@ import dto.result.AttendResult;
 import dto.result.ExpelMeasurementResult;
 import dto.result.MemberAttendResult;
 import dto.result.MemberAttendanceModifyResult;
-import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import util.exception.CrewNotExistException;
@@ -18,10 +17,10 @@ import java.util.List;
 import java.util.Map;
 
 import static org.assertj.core.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 public class AttendanceBookTest {
     
-    private final SoftAssertions soft = new SoftAssertions();
     private final Map<String, MemberAttendances> attendancesMap = Map.of(
             "Lemon", new MemberAttendances("Lemon", List.of(
                     new Attendance(LocalDateTime.of(2024, 12, 2, 10, 0)),
@@ -60,8 +59,10 @@ public class AttendanceBookTest {
             AttendResult attendResult = attendanceBook.addAttendance(inputName, attendDateTime);
             
             // then
-            soft.assertThat(attendResult.attendanceStatus()).isEqualTo(AttendanceStatus.출석);
-            soft.assertThat(attendResult.attendanceDateTime()).isEqualTo(LocalDateTime.of(2024, 12, 13, 10, 2));
+            assertAll(
+                    () -> assertThat(attendResult.attendanceStatus()).isEqualTo(AttendanceStatus.출석),
+                    () -> assertThat(attendResult.attendanceDateTime()).isEqualTo(LocalDateTime.of(2024, 12, 13, 10, 2))
+            );
         }
         
         @Test

@@ -1,7 +1,6 @@
 package domain;
 
 import dto.result.AttendResult;
-import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -15,10 +14,9 @@ import java.time.LocalTime;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 public class AttendanceTest {
-    
-    private final SoftAssertions soft = new SoftAssertions();
     
     @Nested
     class 출석_테스트 {
@@ -187,8 +185,10 @@ public class AttendanceTest {
             AttendResult result = attendance.createAttendanceResult();
             
             // then
-            soft.assertThat(result.attendanceDateTime()).isEqualTo(LocalDateTime.of(2024, 12, 3, 9, 45));
-            soft.assertThat(result.attendanceStatus()).isEqualTo(AttendanceStatus.출석);
+            assertAll(
+                    () -> assertThat(result.attendanceDateTime()).isEqualTo(LocalDateTime.of(2024, 12, 3, 9, 45)),
+                    () -> assertThat(result.attendanceStatus()).isEqualTo(AttendanceStatus.출석)
+            );
         }
     }
     
@@ -206,7 +206,7 @@ public class AttendanceTest {
             Attendance result = attendance.withNewAttendanceTime(newAttendanceTime);
             
             // then
-            soft.assertThat(result).extracting(
+            assertThat(result).extracting(
                     "attendanceDateTime", "attendanceStatus"
             ).containsExactly(
                     LocalDateTime.of(2024, 12, 3, 10, 6), AttendanceStatus.지각

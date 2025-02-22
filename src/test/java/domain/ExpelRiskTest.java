@@ -1,9 +1,10 @@
 package domain;
 
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 class ExpelRiskTest {
     
@@ -22,7 +23,7 @@ class ExpelRiskTest {
             ExpelRisk result = ExpelRisk.of(absentCount, lateCount);
             
             //then
-            Assertions.assertThat(result).isEqualTo(ExpelRisk.정상);
+            assertThat(result).isEqualTo(ExpelRisk.정상);
         }
         
         @ParameterizedTest
@@ -38,7 +39,7 @@ class ExpelRiskTest {
             ExpelRisk result = ExpelRisk.of(absentCount, lateCount);
             
             //then
-            Assertions.assertThat(result).isEqualTo(ExpelRisk.경고);
+            assertThat(result).isEqualTo(ExpelRisk.경고);
         }
         
         @ParameterizedTest
@@ -57,7 +58,7 @@ class ExpelRiskTest {
             ExpelRisk result = ExpelRisk.of(absentCount, lateCount);
             
             //then
-            Assertions.assertThat(result).isEqualTo(ExpelRisk.면담);
+            assertThat(result).isEqualTo(ExpelRisk.면담);
         }
         
         @ParameterizedTest
@@ -76,7 +77,7 @@ class ExpelRiskTest {
             ExpelRisk result = ExpelRisk.of(absentCount, lateCount);
             
             //then
-            Assertions.assertThat(result).isEqualTo(ExpelRisk.제적);
+            assertThat(result).isEqualTo(ExpelRisk.제적);
         }
     }
 }
