@@ -22,7 +22,7 @@ public class AttendanceFileReader {
         Crews crews = new Crews();
         while ((str = br.readLine()) != null) {
             Crew crew = new Crew(str.split(",")[0]);
-            crews.addCrew(crew);
+            crews.add(crew);
             LocalDateTime dateTime = LocalDateTime.parse(str.split(",")[1], FORMATTER);
             attendances.addAttendance(crew, Attendance.of(dateTime));
         }

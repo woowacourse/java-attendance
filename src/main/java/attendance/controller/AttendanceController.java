@@ -56,7 +56,7 @@ public class AttendanceController {
             checkAttendanceRecordOfCrew();
         }
         if ("4".equals(inputFunction)) {
-            OutputView.printPenaltyOfCrews(crews.getCrews(), attendances);
+            OutputView.printPenaltyOfCrews(crews.findAll(), attendances);
         }
     }
 
@@ -78,7 +78,7 @@ public class AttendanceController {
 
     private Crew getCrew() {
         String inputNickName = InputView.readNickName();
-        return crews.getCrew(inputNickName);
+        return crews.getByNickName(inputNickName);
     }
 
     private LocalTime getCheckInTime() {
@@ -88,7 +88,7 @@ public class AttendanceController {
 
     private void modifyAttendance() {
         String nickName = InputView.readModifyingNickName();
-        Crew crew = crews.getCrew(nickName);
+        Crew crew = crews.getByNickName(nickName);
         LocalDate modifyingCheckinDate = getModifyingCheckinDate();
         LocalTime modifyingCheckinTime = getModifyingCheckinTime();
 
