@@ -1,77 +1,80 @@
 package domain;
 
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatNoException;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+
 import domain.date.AttendanceDate;
+import java.util.stream.Stream;
 import org.assertj.core.api.Assertions;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
+import org.junit.jupiter.params.provider.ValueSource;
 
 class AttendanceDateTest {
-    @Test
-    void getDayOfWeekTest() {
-        AttendanceDate attendanceDate = new AttendanceDate(1);
-        int dayOfWeek = attendanceDate.getDayOfWeek();
-        Assertions.assertThat(dayOfWeek).isEqualTo(7);
+
+    private static Stream<Arguments> getTestCasesOfTestGetDayOfWeek() {
+        return Stream.of(
+                Arguments.of(1, 7),
+                Arguments.of(2, 1),
+                Arguments.of(7, 6),
+                Arguments.of(26, 4),
+                Arguments.of(14, 6),
+                Arguments.of(1, 7)
+        );
     }
 
-    @Test
-    void getDayOfWeekTest2() {
-        AttendanceDate attendanceDate = new AttendanceDate(2);
-        int dayOfWeek = attendanceDate.getDayOfWeek();
-        Assertions.assertThat(dayOfWeek).isEqualTo(1);
+    @ParameterizedTest
+    @MethodSource("getTestCasesOfTestGetDayOfWeek")
+    @DisplayName("한 주의 몇번째인지를 의미하는 숫자를 통해 요일을 반환한다")
+    void testGetDayOfWeek(int day, int expected) {
+        // given
+        AttendanceDate attendanceDate = new AttendanceDate(day);
+
+        // when
+        int actual = attendanceDate.getDayOfWeek();
+
+        // then
+        Assertions.assertThat(actual).isEqualTo(expected);
     }
 
-    @Test
-    void getDayOfWeekTest3() {
-        AttendanceDate attendanceDate = new AttendanceDate(7);
-        int dayOfWeek = attendanceDate.getDayOfWeek();
-        Assertions.assertThat(dayOfWeek).isEqualTo(6);
+    private static Stream<Arguments> getTestCasesForIsRestDay() {
+        return Stream.of(
+                Arguments.of(1, true),
+                Arguments.of(2, false),
+                Arguments.of(8, true),
+                Arguments.of(25, true)
+        );
     }
 
-    @Test
-    void getDayOfWeekTest4() {
-        AttendanceDate attendanceDate = new AttendanceDate(26);
-        int dayOfWeek = attendanceDate.getDayOfWeek();
-        Assertions.assertThat(dayOfWeek).isEqualTo(4);
+    @ParameterizedTest
+    @MethodSource("getTestCasesForIsRestDay")
+    @DisplayName("휴일 여부를 판단한다")
+    void testIsRestDay(int day, boolean expected) {
+        // when
+        boolean actual = AttendanceDate.isRestDay(day);
+
+        // then
+        assertThat(actual).isEqualTo(expected);
     }
 
-    @Test
-    void getDayOfWeekTest5() {
-        AttendanceDate attendanceDate = new AttendanceDate(14);
-        int dayOfWeek = attendanceDate.getDayOfWeek();
-        Assertions.assertThat(dayOfWeek).isEqualTo(6);
+    @ParameterizedTest
+    @ValueSource(ints = {0, 32, 100})
+    @DisplayName("유효한 날짜가 아닌 경우 예외를 던진다")
+    void testValidateThrowsException(int day) {
+        // when & then
+        assertThatThrownBy(() -> new AttendanceDate(day))
+                .isInstanceOf(IllegalArgumentException.class);
     }
 
-    @Test
-    void restDayTest() {
-        boolean isRestDay = AttendanceDate.isRestDay(1);
-        Assertions.assertThat(isRestDay).isTrue();
-    }
-
-    @Test
-    void restDayTest1() {
-        boolean isRestDay = AttendanceDate.isRestDay(2);
-        Assertions.assertThat(isRestDay).isFalse();
-    }
-
-    @Test
-    void restDayTest2() {
-        boolean isRestDay = AttendanceDate.isRestDay(8);
-        Assertions.assertThat(isRestDay).isTrue();
-    }
-
-    @Test
-    void restDayTest3() {
-        boolean isRestDay = AttendanceDate.isRestDay(25);
-        Assertions.assertThat(isRestDay).isTrue();
-    }
-
-    @Test
-    void exceptionTest1() {
-        Assertions.assertThatIllegalArgumentException().isThrownBy(() -> new AttendanceDate(0));
-    }
-
-    @Test
-    void exceptionTest2() {
-        Assertions.assertThatIllegalArgumentException().isThrownBy(() -> new AttendanceDate(32));
+    @ParameterizedTest
+    @ValueSource(ints = {1, 31, 5})
+    @DisplayName("유효한 날짜인 경우 예외를 던지지 않는다")
+    void testValidateDoesNotThrowException(int day) {
+        // when & then
+        assertThatNoException().isThrownBy(() -> new AttendanceDate(day));
     }
 }
