@@ -11,7 +11,7 @@ class AttendanceStatusTest {
     @ParameterizedTest
     @ValueSource(ints = {0, 5})
     void calculateAttendancePresentStatusTest(int minute) {
-        LocalDateTime present = LocalDateTime.of(2024,12,3,10,minute);
+        LocalDateTime present = LocalDateTime.of(2024, 12, 3, 10, minute);
 
         Assertions.assertEquals(AttendanceStatus.PRESENT, AttendanceStatus.calculateAttendanceStatus(present));
     }
@@ -20,7 +20,7 @@ class AttendanceStatusTest {
     @ParameterizedTest
     @ValueSource(ints = {6, 30})
     void calculateAttendanceLateStatusTest(int minute) {
-        LocalDateTime present = LocalDateTime.of(2024,12,3,10, minute);
+        LocalDateTime present = LocalDateTime.of(2024, 12, 3, 10, minute);
 
         Assertions.assertEquals(AttendanceStatus.LATE, AttendanceStatus.calculateAttendanceStatus(present));
     }
@@ -29,7 +29,7 @@ class AttendanceStatusTest {
     @ParameterizedTest
     @ValueSource(ints = {31, 59})
     void calculateAttendanceAbsentStatusTest(int minute) {
-        LocalDateTime present = LocalDateTime.of(2024,12,3,10,minute);
+        LocalDateTime present = LocalDateTime.of(2024, 12, 3, 10, minute);
 
         Assertions.assertEquals(AttendanceStatus.ABSENT, AttendanceStatus.calculateAttendanceStatus(present));
     }

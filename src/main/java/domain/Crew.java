@@ -9,6 +9,7 @@ import util.DateValidator;
 public class Crew {
     public static final int ABSENT_HOUR = 23;
     public static final int ABSENT_MINUTE = 59;
+
     private final String nickname;
     private final AttendanceStatusCount attendanceStatusCount = new AttendanceStatusCount();
     private final List<Attendance> attendances = new ArrayList<>();
@@ -23,22 +24,31 @@ public class Crew {
         return attendance;
     }
 
-    public void addAbsent(LocalDateTime today) {
-        int dayOfMonth = today.getDayOfMonth();
-        List<Integer> attendanceDays = attendances.stream().map(Attendance::getDay).toList();
-        List<Integer> weekDays = new ArrayList<>();
-        for (int day = 1; day < dayOfMonth; day++) {
-            if (DateValidator.isHoliday(day, today)) {
-                continue;
-            }
-            weekDays.add(day);
-        }
-        weekDays.removeAll(attendanceDays);
+    public void addAllAbsent(LocalDateTime today) {
+        List<Integer> attendanceDates = attendances.stream()
+                .map(Attendance::getDay)
+                .toList();
+        List<Integer> absentDates = calculateAbsentDates(today, attendanceDates);
 
-        for (int day : weekDays) {
-            attendances.add(new Attendance(LocalDateTime.of(today.getYear(), today.getMonth(), day, ABSENT_HOUR,
-                    ABSENT_MINUTE)));
+        for (int day : absentDates) {
+            attendances.add(
+                    new Attendance(
+                            LocalDateTime.of(today.getYear(), today.getMonth(), day, ABSENT_HOUR, ABSENT_MINUTE)));
         }
+    }
+
+    private List<Integer> calculateAbsentDates(LocalDateTime today, List<Integer> attendanceDays) {
+        List<Integer> days = new ArrayList<>();
+        for (int day = 1; day < today.getDayOfMonth(); day++) {
+            days.add(day);
+        }
+
+        List<Integer> weekDays = new ArrayList<>(days.stream()
+                .filter(day -> !DateValidator.isHoliday(day, today))
+                .toList());
+
+        weekDays.removeAll(attendanceDays);
+        return weekDays;
     }
 
     public Attendance getSpecificAttendance(int date) {

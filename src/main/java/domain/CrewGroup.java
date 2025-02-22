@@ -23,7 +23,7 @@ public class CrewGroup {
 
     public void addAllAbsent(LocalDateTime today) {
         crews.values()
-                .forEach(crew -> crew.addAbsent(today));
+                .forEach(crew -> crew.addAllAbsent(today));
     }
 
     public void calculateAllAttendanceCount() {

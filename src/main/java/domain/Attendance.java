@@ -1,6 +1,7 @@
 package domain;
 
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 public class Attendance {
     private LocalDateTime date;
@@ -28,5 +29,22 @@ public class Attendance {
 
     public LocalDateTime getDate() {
         return date;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        Attendance that = (Attendance) o;
+        return Objects.equals(date.getDayOfMonth(), that.date.getDayOfMonth());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(date.getDayOfMonth());
     }
 }
