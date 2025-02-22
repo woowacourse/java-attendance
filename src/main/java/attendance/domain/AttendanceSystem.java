@@ -47,14 +47,19 @@ public class AttendanceSystem {
 
     public List<AttendanceRecord> searchAttendanceRecordsByCrew(String nickname, int year, Month month) {
         validateCrew(nickname);
+
         return recordStorage.findUnmodifiedRecordsByNickname(nickname, year, month);
     }
 
+    public RiskStatistics searchRiskStatistic(String nickname, LocalDate startDate, LocalDate endDate) { // TODO: 테스트 필요
+        validateCrew(nickname);
+        return calculateRiskStatisticsByCrew(nickname, startDate, endDate);
+    }
+
     public List<RiskStatistics> searchRiskStatistics(LocalDate startDate, LocalDate endDate) {
-        int notHolidayCount = calculateNotHolidayCount(startDate, endDate);
         List<Crew> allCrew = crewStorage.findAll();
         return allCrew.stream()
-                .map(crew -> calculateRiskStatisticsByCrew(crew, notHolidayCount, startDate, endDate))
+                .map(crew -> calculateRiskStatisticsByCrew(crew.getName(), startDate, endDate))
                 .filter(statistic -> statistic.getWarningType() != RiskType.NONE)
                 .toList();
     }
@@ -90,10 +95,12 @@ public class AttendanceSystem {
                 .count();
     }
 
-    private RiskStatistics calculateRiskStatisticsByCrew(Crew crew, int notHolidayCount, LocalDate startDate,
-            LocalDate endDate) {
-        int attendanceCount = recordStorage.calculateAttendanceCount(crew.getName(), startDate, endDate);
-        int lateCount = recordStorage.calculateLateCount(crew.getName(), startDate, endDate);
-        return new RiskStatistics(crew.getName(), notHolidayCount - attendanceCount, lateCount);
+    private RiskStatistics calculateRiskStatisticsByCrew(
+            String nickName, LocalDate startDate, LocalDate endDate
+    ) {
+        int notHolidayCount = calculateNotHolidayCount(startDate, endDate);
+        int attendanceCount = recordStorage.calculateAttendanceCount(nickName, startDate, endDate);
+        int lateCount = recordStorage.calculateLateCount(nickName, startDate, endDate);
+        return new RiskStatistics(nickName, notHolidayCount - attendanceCount, lateCount);
     }
 }

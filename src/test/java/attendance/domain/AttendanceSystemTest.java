@@ -187,6 +187,28 @@ class AttendanceSystemTest {
                 .withMessage("[ERROR] 등록되지 않은 닉네임입니다.");
     }
 
+    @DisplayName("출석 상태 조회 - 해당 크루의 제적 위험 정보를 조회한다.")
+    @Test
+    void 출석_상태_조회_해당_크루의_제적_위험_정보를_조회한다() {
+        saveRiskRecord("쿠키");
+        RiskStatistics riskStatistic = attendanceSystem.searchRiskStatistic(
+                "쿠키",
+                LocalDate.of(2024, 12, 9),
+                LocalDate.of(2024, 12, 13));
+        assertThat(riskStatistic.getWarningType()).isEqualTo(RiskType.COUNSELING);
+    }
+
+
+    @DisplayName("출석 상태 조회 - 등록되지 않은 닉네임의 경우 예외 발생")
+    @Test
+    void 출석_상태_조회_등록되지_않은_닉네임의_경우_예외_발생() {
+        LocalDate startDate = LocalDate.of(2024, 12, 9);
+        LocalDate endDate = LocalDate.of(2024, 12, 13);
+        assertThatIllegalArgumentException()
+                .isThrownBy(() -> attendanceSystem.searchRiskStatistic("빙봉", startDate, endDate))
+                .withMessage("[ERROR] 등록되지 않은 닉네임입니다.");
+    }
+
     @DisplayName("제적 위험자 조회 - 제적 위험자를 조회할 수 있다.")
     @Test
     void 제적_위험자_조회_제적_위험자를_조회할_수_있다() {
