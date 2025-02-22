@@ -29,7 +29,7 @@ public class Crew {
 
     public AttendanceTime getAttendanceTimeByDate(LocalDate date) {
         if (!attendanceTimeExists(date)) {
-            throw new IllegalArgumentException(date + ": 해당 날짜의 출석 기록이 존재하지 않습니다.");
+            return new AttendanceTime(null, AttendanceStatus.ABSENT);
         }
         return attendanceTimes.get(date);
     }
