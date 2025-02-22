@@ -9,7 +9,8 @@ import dto.CrewAlmostExpelledResult;
 import dto.ModifiedResult;
 import dto.MonthRecord;
 import java.time.LocalDateTime;
-import java.util.Comparator;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import util.Formatter;
 
@@ -80,15 +81,18 @@ public class OutputView {
     }
 
     public static void printCrewsAlmostExpelled(List<CrewAlmostExpelledResult> result) {
-        result = result.stream()
-                .sorted(
-                        Comparator.comparing(CrewAlmostExpelledResult::calculateTotalAbsentCount,
-                                        Comparator.reverseOrder())
-                                .thenComparing(CrewAlmostExpelledResult::nickname))
-                .toList();
-
+        // stream.sort()는 Arrays.sort()와 동일. 퀵소트 기반이므로 최악에 O(n^2)
+//        result = result.stream()
+//                .sorted(
+//                        Comparator.comparing(CrewAlmostExpelledResult::calculateTotalAbsentCount,
+//                                        Comparator.reverseOrder())
+//                                .thenComparing(CrewAlmostExpelledResult::nickname))
+//                .toList();
+        // Collections.sort()는 머지소트 기반이므로 O(nLog(n)) 보장
+        List<CrewAlmostExpelledResult> sorted = new ArrayList<>(result);
+        Collections.sort(sorted);
         result.forEach(crew ->
-                System.out.printf("- %s: %s %d회, %s %d회 (%s)%n",
+                System.out.printf("- %s: %s %d회, %s %d회 (%s)%n%n",
                         crew.nickname(),
                         AttendanceStatus.ABSENT_LATE.getTitle(),
                         crew.attendanceStatusStatistics()
