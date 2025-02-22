@@ -12,10 +12,10 @@ public class AttendanceStatus {
     public static final int INTERVIEW_COUNT = 3;
     public static final int WARNING_COUNT = 2;
 
-    int onTime;
-    int late;
-    int absent;
-    String status;
+    private int onTime;
+    private int late;
+    private int absent;
+    private String status;
 
     public AttendanceStatus(int onTime, int late, int absent) {
         this.onTime = onTime;
