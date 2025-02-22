@@ -1,5 +1,6 @@
 package attendance.repository;
 
+import static attendance.AttendanceFixture.makeAbsentAttendance;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -106,7 +107,7 @@ class AttendanceRepositoryTest {
 
     @DisplayName("해당 닉네임을 가진 크루의 출석 상태를 가져온다.")
     @ParameterizedTest
-    @MethodSource("name")
+    @MethodSource("makeAttendance")
     void 해당_닉네임을_가진_크루의_출석_상태를_가져온다(List<Attendance> attendances, CrewNameAndAcademicStatusDTO expectedResult) {
 
         // given
@@ -124,7 +125,7 @@ class AttendanceRepositoryTest {
         });
     }
 
-    private static Stream<Arguments> name() {
+    public static Stream<Arguments> makeAttendance() {
         String crewName = "체체";
         return Stream.of(
                 Arguments.of(
@@ -152,9 +153,5 @@ class AttendanceRepositoryTest {
                         new CrewNameAndAcademicStatusDTO(crewName, 0, 0, 6, "제적")
                 )
         );
-    }
-
-    private static Attendance makeAbsentAttendance(String name, int year, int month, int day) {
-        return new Attendance(name, new Time(LocalDate.of(year, month, day), "18", "00", true));
     }
 }

@@ -9,14 +9,6 @@ public class Attendance {
         this.attendanceTime = attendanceTime;
     }
 
-    public Time getAttendanceTime() {
-        return attendanceTime;
-    }
-
-    public String getCrewName() {
-        return crewName;
-    }
-
     public String getAttendanceStatus() {
         if (attendanceTime.getDayOfWeek().equals("월요일")) { // 월요일
 
@@ -43,5 +35,13 @@ public class Attendance {
 
     public void modifyAttendanceTime(final Time modifyTime) {
         this.attendanceTime = modifyTime;
+    }
+
+    public Time getAttendanceTime() {
+        return attendanceTime;
+    }
+
+    public String getCrewName() {
+        return crewName;
     }
 }
