@@ -12,11 +12,11 @@ import java.util.List;
 
 public class Attendance {
     
-    public static final List<DayOfWeek> WEEKEND = List.of(DayOfWeek.SATURDAY, DayOfWeek.SUNDAY);
-    public static final LocalTime MIN_ATTENDANCE_TIME = LocalTime.of(8, 0);
-    public static final LocalTime MAX_ATTENDANCE_TIME = LocalTime.of(23, 0);
-    public static final LocalTime NOT_MONDAY_ATTENDANCE_TIME = LocalTime.of(10, 0);
-    public static final LocalTime MONDAY_ATTENDANCE_TIME = LocalTime.of(13, 0);
+    private static final List<DayOfWeek> WEEKEND = List.of(DayOfWeek.SATURDAY, DayOfWeek.SUNDAY);
+    private static final LocalTime MIN_ATTENDANCE_TIME = LocalTime.of(8, 0);
+    private static final LocalTime MAX_ATTENDANCE_TIME = LocalTime.of(23, 0);
+    private static final LocalTime NOT_MONDAY_ATTENDANCE_TIME = LocalTime.of(10, 0);
+    private static final LocalTime MONDAY_ATTENDANCE_TIME = LocalTime.of(13, 0);
     
     private final LocalDateTime attendanceDateTime;
     private final AttendanceStatus attendanceStatus;
