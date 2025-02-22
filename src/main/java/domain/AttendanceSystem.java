@@ -8,6 +8,7 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 public class AttendanceSystem {
@@ -76,11 +77,6 @@ public class AttendanceSystem {
                 || today.equals(CHRISTMAS_DAY);
     }
 
-    private boolean isRiskOfExpulsionCrew(final Crew crew) {
-        final ExpulsionStatus expulsionStatus = crew.calculateExpulsionStatus();
-        return !Objects.equals(expulsionStatus, ExpulsionStatus.NORMAL);
-    }
-
     public Attendance updateAttendanceByCrewNameAndDay(final LocalTime targetTime, final String crewName,
                                                        final int dayOfMonth) {
         final LocalDate targetDate = convertDayOfMonthToLocalDate(dayOfMonth);
@@ -93,11 +89,24 @@ public class AttendanceSystem {
         return findCrewByName(crewName).findAttendanceByDate(targetDate);
     }
 
-    public Crew findCrewByName(final String name) {
+    public ExpulsionStatus calculateExpulsionStatusByCrew(final String crewName) {
+        return findCrewByName(crewName).calculateExpulsionStatus();
+    }
+
+    public Map<AttendanceStatus, Integer> calculateAttendanceStatisticsByCrew(final String crewName) {
+        return findCrewByName(crewName).calculateAttendanceStatistics();
+    }
+
+    private Crew findCrewByName(final String name) {
         return crews.stream()
                 .filter(crew -> crew.isSameName(name))
                 .findAny()
                 .orElseThrow(() -> new IllegalArgumentException(ErrorMessage.CREW_NOT_FOUND.getMessage()));
+    }
+
+    private boolean isRiskOfExpulsionCrew(final Crew crew) {
+        final ExpulsionStatus expulsionStatus = crew.calculateExpulsionStatus();
+        return !Objects.equals(expulsionStatus, ExpulsionStatus.NORMAL);
     }
 
     private LocalDate convertDayOfMonthToLocalDate(final int dayOfMonth) {
@@ -112,6 +121,10 @@ public class AttendanceSystem {
 
     private boolean isAlreadyTodayAttendanceByCrewName(final String name, final LocalDate today) {
         return findCrewByName(name).isAlreadyTodayAttendance(today);
+    }
+
+    public List<Attendance> getAttendancesByCrew(final String crewName) {
+        return findCrewByName(crewName).getAttendances();
     }
 
     public List<Crew> getCrews() {

@@ -135,13 +135,14 @@ public class AttendanceController {
 
     private void responseCrewAttendanceHistory(final AttendanceSystem attendanceSystem) {
         final String crewName = LoopTemplate.tryCatchLoop(this::inputCrewName, attendanceSystem, outputView);
-        final Crew crew = attendanceSystem.findCrewByName(crewName);
         outputView.printAttendanceHistoryTitle(crewName);
-        final List<AttendanceResponse> attendanceResponses = convertAttendancesToResponses(crew.getAttendances());
+        final List<AttendanceResponse> attendanceResponses =
+                convertAttendancesToResponses(attendanceSystem.getAttendancesByCrew(crewName));
         outputView.printCrewAttendances(attendanceResponses);
-        final Map<AttendanceStatus, Integer> attendanceStatistics = crew.calculateAttendanceStatistics();
+        final Map<AttendanceStatus, Integer> attendanceStatistics =
+                attendanceSystem.calculateAttendanceStatisticsByCrew(crewName);
         outputView.printAttendancesStatistics(attendanceStatistics);
-        final ExpulsionStatus expulsionStatus = crew.calculateExpulsionStatus();
+        final ExpulsionStatus expulsionStatus = attendanceSystem.calculateExpulsionStatusByCrew(crewName);
         outputView.printCrewExpulsionStatus(expulsionStatus);
 
     }
