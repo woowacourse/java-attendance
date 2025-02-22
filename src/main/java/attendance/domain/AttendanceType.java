@@ -8,7 +8,14 @@ public enum AttendanceType {
     SAFE("출석"),
     LATE("지각"),
     ABSENT("결석"),
-    FREE("자유출근");
+    FREE("자유");
+
+    private static final int HOUR_MONDAY = 13;
+    private static final int HOUR_OTHER_WEEKDAY = 10;
+    private static final int MINUTE_ALL_WEEKDAY = 0;
+
+    private static final int MINUTE_LATE = 5;
+    private static final int MINUTE_ABSENT = 30;
 
     private final String type;
 
@@ -21,22 +28,12 @@ public enum AttendanceType {
         LocalTime localTime = localDateTime.toLocalTime();
 
         if (isMonday(dayOfWeek)) {
-            return calculateAttendanceType(localTime, 13, 0);
+            return calculateAttendanceType(localTime, HOUR_MONDAY);
         }
         if (isOtherWeekday(dayOfWeek)) {
-            return calculateAttendanceType(localTime, 10, 0);
+            return calculateAttendanceType(localTime, HOUR_OTHER_WEEKDAY);
         }
         return FREE;
-    }
-
-    private static AttendanceType calculateAttendanceType(final LocalTime localTime, final int hour, final int minute) {
-        if (localTime.isAfter(LocalTime.of(hour, minute + 30))) {
-            return ABSENT;
-        }
-        if (localTime.isAfter(LocalTime.of(hour, minute + 5))) {
-            return LATE;
-        }
-        return SAFE;
     }
 
     private static boolean isMonday(DayOfWeek dayOfWeek) {
@@ -48,6 +45,16 @@ public enum AttendanceType {
                 dayOfWeek.equals(DayOfWeek.WEDNESDAY) ||
                 dayOfWeek.equals(DayOfWeek.THURSDAY) ||
                 dayOfWeek.equals(DayOfWeek.FRIDAY);
+    }
+
+    private static AttendanceType calculateAttendanceType(final LocalTime localTime, final int hour) {
+        if (localTime.isAfter(LocalTime.of(hour, MINUTE_ALL_WEEKDAY + MINUTE_ABSENT))) {
+            return ABSENT;
+        }
+        if (localTime.isAfter(LocalTime.of(hour, MINUTE_ALL_WEEKDAY + MINUTE_LATE))) {
+            return LATE;
+        }
+        return SAFE;
     }
 
     @Override
