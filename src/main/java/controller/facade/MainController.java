@@ -36,19 +36,21 @@ public class MainController {
 
     public void run() {
         storeController.run();
-        while (true) {
-            Menu menu = readMenu();
-            if (menu == Menu.QUIT) {
-                return;
-            }
-            controllerMapper.get(menu).run();
+        boolean willContinue = true;
+        while (willContinue) {
+            willContinue = chooseAndDoAttendanceService();
         }
     }
 
-    private Menu readMenu() {
+    private boolean chooseAndDoAttendanceService() {
         return ExceptionHandler.retryIfIllegalArgumentAndReturn(() -> {
             outputView.printDateAndMenus();
-            return inputView.readMenu();
+            Menu menu =  inputView.readMenu();
+            if (menu == Menu.QUIT) {
+                return false;
+            }
+            controllerMapper.get(menu).run();
+            return true;
         });
     }
 }

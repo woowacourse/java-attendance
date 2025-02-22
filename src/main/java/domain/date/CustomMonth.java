@@ -2,6 +2,7 @@ package domain.date;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
+import java.util.Arrays;
 
 //TODO : java api Month와 맞았으면...
 public enum CustomMonth {
@@ -28,11 +29,18 @@ public enum CustomMonth {
         this.value = value;
     }
 
-    public boolean isHoliday(int day) {
-        if (this == DECEMBER && day == 25) {
+    public static CustomMonth of(int monthValue) {
+        return Arrays.stream(CustomMonth.values())
+                .filter(month -> month.value == monthValue)
+                .findFirst()
+                .orElseThrow();
+    }
+
+    public boolean isHolidayAt(int date) {
+        if (this == DECEMBER && date == 25) {
             return true;
         }
-        DayOfWeek dayOfWeek = LocalDate.of(CustomDate.YEAR, CustomDate.CUSTOM_MONTH.getValue(), day).getDayOfWeek();
+        DayOfWeek dayOfWeek = LocalDate.of(CustomDate.YEAR, CustomDate.CUSTOM_MONTH.getValue(), date).getDayOfWeek();
         return dayOfWeek == DayOfWeek.SATURDAY || dayOfWeek == DayOfWeek.SUNDAY;
     }
 

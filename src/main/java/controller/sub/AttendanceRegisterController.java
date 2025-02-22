@@ -34,10 +34,10 @@ public class AttendanceRegisterController implements SubController {
 
     @Override
     public void run() {
-        validateHoliday();
+        LocalDateTime now = CustomDate.now(); //NOW에 대한 책임소재도 Config에 넣으면 좋을듯!!!
+        CustomDate.throwIfHolidy(now);
         Crew crew = readCrewName();
         LocalTime timeInput = readTime();
-        LocalDate now = CustomDate.now().toLocalDate(); //NOW에 대한 책임소재도 Config에 넣으면 좋을듯!!!
         LocalDateTime time = LocalDateTime.of( //TODO: 한곳에서 생성
                 now.getYear(),
                 now.getMonthValue(),
@@ -46,12 +46,6 @@ public class AttendanceRegisterController implements SubController {
                 timeInput.getMinute()
         );
         registerAttendance(crew, time);
-    }
-
-    private void validateHoliday() { //TODO : 다른데로
-        if (CustomDate.CUSTOM_MONTH.isHoliday(CustomDate.now().getDayOfMonth())) {
-            throw new CannotRegisterAttendanceException(CustomDate.now());
-        }
     }
 
     private Crew readCrewName() {

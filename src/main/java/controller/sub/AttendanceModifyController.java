@@ -1,8 +1,11 @@
 package controller.sub;
 
+import domain.date.CustomDate;
 import exception.handler.ExceptionHandler;
 import controller.sub.parent.SubController;
 import domain.crew.Crew;
+import java.time.LocalDateTime;
+import java.util.Date;
 import repository.AttendanceRepository;
 import service.AttendanceModifyService;
 import service.dto.AttendanceModifyResponse;
@@ -48,7 +51,10 @@ public class AttendanceModifyController implements SubController {
 
     private int readModifyDate() {
         return ExceptionHandler.retryIfIllegalArgumentAndReturn(() -> {
-            return inputView.readModifyDate(); //TODO : 검증 추가
+            int modifyDate = inputView.readModifyDate(); //TODO : 검증 추가
+            CustomDate.throwIfHolidy(LocalDateTime.of(
+                    CustomDate.YEAR, CustomDate.CUSTOM_MONTH.getValue(), modifyDate, 0, 0));
+            return modifyDate;
         });
     }
 
@@ -58,5 +64,4 @@ public class AttendanceModifyController implements SubController {
             return modifyTime; //TODO : 검증추가
         });
     }
-
 }
