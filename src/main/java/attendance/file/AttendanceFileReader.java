@@ -10,6 +10,8 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 
 public class AttendanceFileReader {
@@ -17,8 +19,8 @@ public class AttendanceFileReader {
 
     public static FileContents read(String path) {
         List<String> contentsByLine = readContents(path);
-        Attendances attendances = new Attendances();
-        Crews crews = new Crews();
+        Attendances attendances = new Attendances(new HashMap<>());
+        Crews crews = new Crews(new HashSet<>());
         for (String line : contentsByLine) {
             Crew crew = new Crew(line.split(",")[0]);
             crews.addCrew(crew);

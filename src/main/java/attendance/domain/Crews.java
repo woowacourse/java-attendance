@@ -1,13 +1,16 @@
 package attendance.domain;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
 public class Crews {
 
-    private Set<Crew> crews = new HashSet<>();
+    private final Set<Crew> crews;
+
+    public Crews(Set<Crew> crews) {
+        this.crews = crews;
+    }
 
     public void addCrew(Crew crew) {
         crews.add(crew);

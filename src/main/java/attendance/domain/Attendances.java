@@ -1,17 +1,21 @@
 package attendance.domain;
 
+import attendance.util.DateUtil;
+
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import attendance.util.DateUtil;
 
 public class Attendances {
 
-    private Map<Crew, List<Attendance>> attendances = new HashMap<>();
+    private final Map<Crew, List<Attendance>> attendances;
+
+    public Attendances(Map<Crew, List<Attendance>> attendances) {
+        this.attendances = attendances;
+    }
 
     public void addAttendance(Crew crew, Attendance attendance) {
         if (!attendances.containsKey(crew)) {
