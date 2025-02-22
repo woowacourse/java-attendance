@@ -19,9 +19,4 @@ public class AttendanceDismiss {
         }
         return AttendanceDismissStatus.NONE;
     }
-
-    public static AttendanceDismissStatus calculateAttendanceDismiss2(int absence, int late) {
-        var absenceCount = (late / 3) + absence;
-        return getAttendanceDismissStatus(absenceCount);
-    }
 }

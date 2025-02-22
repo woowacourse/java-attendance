@@ -1,15 +1,18 @@
 package attendance.domain;
 
-import attendance.exception.AttendanceArgumentException;
+import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.HashMap;
 import java.util.Map;
 
+import attendance.exception.AttendanceArgumentException;
+
 public class Attendances {
-    private final Map<LocalDate, Attendance> attendances = new HashMap<>();
     private static final String DUPLICATE_ATTENDANCE_DATE = "이미 출석되었습니다. 수정 기능을 이용해주세요.";
     private static final String NOT_EXIST_ATTENDANCE = "해당 날짜에 출석이 존재하지 않습니다.";
+
+    private final Map<LocalDate, Attendance> attendances = new HashMap<>();
 
     private AttendanceStatus determineAttendanceStatus(LocalDate currentDate, LocalTime currentTime) {
         LocalTime startTime = determineAttendanceStartTime(currentDate);
@@ -23,7 +26,7 @@ public class Attendances {
     }
 
     private LocalTime determineAttendanceStartTime(LocalDate currentDate) {
-        if (currentDate.getDayOfWeek().getValue() == AttendanceManagerHelper.MONDAY) {
+        if (currentDate.getDayOfWeek() == DayOfWeek.MONDAY) {
             return AttendanceManagerHelper.MONDAY_START_TIME;
         }
         return AttendanceManagerHelper.NORMAL_START_TIME;
@@ -40,12 +43,12 @@ public class Attendances {
 
     public LocalTime getAttendanceTime(LocalDate datetime) {
         return attendances.get(datetime)
-                .time();
+            .time();
     }
 
     public AttendanceStatus getAttendanceStatus(LocalDate date) {
         return attendances.get(date)
-                .attendanceStatus();
+            .attendanceStatus();
     }
 
     public void modifyAttendance(LocalDate modifyDate, LocalTime afterModifyTime) {

@@ -1,5 +1,7 @@
 package attendance;
 
+import java.util.function.Supplier;
+
 import attendance.config.AppConfig;
 import attendance.controller.AttendanceController;
 import attendance.domain.AttendanceMethod;
@@ -8,15 +10,14 @@ import attendance.domain.dto.AttendanceHistoryDto;
 import attendance.exception.AttendanceArgumentException;
 import attendance.view.ConsoleInputView;
 import attendance.view.OutputView;
-import java.util.function.Supplier;
 
 public class Application {
 
-    private final static OutputView outputView = new OutputView();
-    private final static ConsoleInputView inputView = new ConsoleInputView();
-    private final static AppConfig appConfig = new AppConfig();
-    private final static RequestParser requestParser = new RequestParser();
-    private final static AttendanceController attendanceController = appConfig.attendanceController();
+    private static final OutputView outputView = new OutputView();
+    private static final ConsoleInputView inputView = new ConsoleInputView();
+    private static final AppConfig appConfig = new AppConfig();
+    private static final RequestParser requestParser = new RequestParser();
+    private static final AttendanceController attendanceController = appConfig.attendanceController();
     private static final String ATTENDANCE_MONTH = "2024 12 ";
 
     public static void main(String[] args) {
@@ -32,7 +33,7 @@ public class Application {
             case ATTENDANCE -> attendance();
             case MODIFY -> modifyAttendance();
             case ATTENDANCE_HISTORY -> attendanceHistory();
-            case CREW_DISSMISS_VIEW -> showCrewDismiss();
+            case CREW_DISMISS_VIEW -> showCrewDismiss();
         }
     }
 
@@ -58,7 +59,7 @@ public class Application {
         String date = handleInput(() -> attendanceModifyDate());
         String time = handleInput(() -> attendanceTime());
         String result = attendanceController.attendanceModify(
-                requestParser.parseAttendanceModifyRequest(nickname, time, date));
+            requestParser.parseAttendanceModifyRequest(nickname, time, date));
         outputView.println(result);
     }
 

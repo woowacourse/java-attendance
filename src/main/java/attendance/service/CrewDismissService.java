@@ -1,5 +1,9 @@
 package attendance.service;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 import attendance.domain.AttendanceDismiss;
 import attendance.domain.AttendanceDismissStatus;
@@ -7,15 +11,12 @@ import attendance.domain.AttendanceHistory;
 import attendance.domain.AttendanceManager;
 import attendance.domain.AttendanceStatus;
 import attendance.domain.CrewDismiss;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 public class CrewDismissService {
 
     private static final String CREW_DISMISS_PREFIX = "제적 위험자 조회 결과\n";
     private static final String CREW_DISMISS_FORMAT = "- %s: 결석 %d회, 지각 %d회 (%s)\n";
+
     private final AttendanceManager attendanceManager;
 
     public CrewDismissService(AttendanceManager attendanceManager) {
@@ -34,9 +35,9 @@ public class CrewDismissService {
             stringBuilder.append(formattingCrewDismiss(nickname, attendanceHistory));
         }
         return crewDismisses.stream()
-                .sorted()
-                .map((CrewDismiss::getCrewDismissResult))
-                .collect(Collectors.joining("\n"));
+            .sorted()
+            .map((CrewDismiss::getCrewDismissResult))
+            .collect(Collectors.joining("\n"));
     }
 
     private String formattingCrewDismiss(String nickname, AttendanceHistory attendanceHistory) {
@@ -48,11 +49,11 @@ public class CrewDismissService {
             return "";
         }
         return String.format(CREW_DISMISS_FORMAT, nickname, absenceCount,
-                lateCount, attendanceDismissStatus.getStatus());
+            lateCount, attendanceDismissStatus.getStatus());
     }
 
     private AttendanceDismissStatus calculateAttendanceStatus(int absenceCount, int lateCount) {
         return AttendanceDismiss.calculateAttendanceDismiss(absenceCount,
-                lateCount);
+            lateCount);
     }
 }

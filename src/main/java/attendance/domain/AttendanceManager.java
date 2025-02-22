@@ -1,7 +1,5 @@
 package attendance.domain;
 
-import attendance.exception.AttendanceArgumentException;
-import attendance.utility.StringUtility;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -10,11 +8,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import attendance.exception.AttendanceArgumentException;
+import attendance.utility.StringUtility;
+
 public class AttendanceManager {
     private static AttendanceManager instance = null;
 
     private AttendanceManager() {
-
     }
 
     public static AttendanceManager getInstance() {
@@ -28,8 +28,9 @@ public class AttendanceManager {
         instance = null;
     }
 
+    private static final String ATTENDANCE_RESULT_FORMAT = "%s (%s)";
+
     private HashMap<String, Attendances> attendanceManager = new HashMap<>();
-    private String ATTENDANCE_RESULT_FORMAT = "%s (%s)";
 
     public void addAttendance(String nickname, LocalDateTime time) {
         validateNickname(nickname);
@@ -45,7 +46,7 @@ public class AttendanceManager {
     private void validateAttendanceAvailable(LocalDate currentDate) {
         if (currentDate.getDayOfWeek().getValue() >= AttendanceManagerHelper.WEEKEND_NUMBER) {
             throw new AttendanceArgumentException(
-                    DateTimeFormatterWrapper.formattingAttendanceWeekendError(currentDate));
+                DateTimeFormatterWrapper.formattingAttendanceWeekendError(currentDate));
         }
         LocalDate attendanceAvailableStartDate = AttendanceManagerHelper.ATTENDANCE_AVAILABLE_START_DATE;
         LocalDate attendanceAvailableEndDate = AttendanceManagerHelper.ATTENDANCE_AVAILABLE_END_DATE;
@@ -57,7 +58,7 @@ public class AttendanceManager {
 
     public void validateIsSchoolOpen(LocalTime currentTime) {
         if (currentTime.isBefore(AttendanceManagerHelper.SCHOOL_OPEN_TIME) || currentTime.isAfter(
-                AttendanceManagerHelper.SCHOOL_CLOSE_TIME)) {
+            AttendanceManagerHelper.SCHOOL_CLOSE_TIME)) {
             throw new AttendanceArgumentException(AttendanceManagerHelper.OUT_OF_SCHOOL_SCHEDULE);
         }
     }
@@ -127,8 +128,8 @@ public class AttendanceManager {
     }
 
     private void appendAttendanceHistories(Attendances attendances, LocalDate currentDate,
-                                           List<String> attendanceHistories,
-                                           Map<AttendanceStatus, Integer> attendanceStatusMap) {
+        List<String> attendanceHistories,
+        Map<AttendanceStatus, Integer> attendanceStatusMap) {
         if (!isAttendanceAvailable(currentDate)) {
             return;
         }
@@ -149,24 +150,24 @@ public class AttendanceManager {
     }
 
     private void addAbsenceHistory(List<String> attendanceHistories,
-                                   Map<AttendanceStatus, Integer> attendanceStatusMap, LocalDate currentDate) {
+        Map<AttendanceStatus, Integer> attendanceStatusMap, LocalDate currentDate) {
         String absenceHistory = DateTimeFormatterWrapper.formattingAttendanceAbsenceHistory(currentDate);
         attendanceHistories.add(absenceHistory);
         attendanceStatusMap.merge(AttendanceStatus.ABSENCE, 1, Integer::sum);
     }
 
     private void addAttendanceHistory(Attendances attendances, LocalDate currentDate,
-                                      List<String> attendanceHistories,
-                                      Map<AttendanceStatus, Integer> attendanceStatusMap) {
+        List<String> attendanceHistories,
+        Map<AttendanceStatus, Integer> attendanceStatusMap) {
         LocalTime attendanceTime = attendances.getAttendanceTime(currentDate);
         AttendanceStatus attendanceStatus = attendances.getAttendanceStatus(currentDate);
 
         attendanceStatusMap.merge(attendanceStatus, 1, Integer::sum);
 
         String dateTimeFormatResult = DateTimeFormatterWrapper.parsingAttendanceResult(
-                LocalDateTime.of(currentDate, attendanceTime));
+            LocalDateTime.of(currentDate, attendanceTime));
         attendanceHistories.add(
-                String.format(ATTENDANCE_RESULT_FORMAT, dateTimeFormatResult, attendanceStatus.getStatus()));
+            String.format(ATTENDANCE_RESULT_FORMAT, dateTimeFormatResult, attendanceStatus.getStatus()));
     }
 
     public List<String> currentAttendancesNicknames() {

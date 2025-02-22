@@ -12,7 +12,6 @@ public class AttendanceManagerHelper {
     static final LocalTime NORMAL_START_TIME = LocalTime.of(10, 0);
     static final LocalTime SCHOOL_OPEN_TIME = LocalTime.of(8, 0);
     static final LocalTime SCHOOL_CLOSE_TIME = LocalTime.of(23, 0);
-    static final int MONDAY = 1;
     static final int LATE_MINUTE = 5;
     static final int WEEKEND_NUMBER = 6;
     static final int ABSENCE_MINUTE = 30;

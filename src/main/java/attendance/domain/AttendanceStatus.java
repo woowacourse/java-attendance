@@ -10,6 +10,7 @@ public enum AttendanceStatus {
     ABSENCE("결석");
 
     private static final String INVALID_STATUS = "존재하지 않는 출석 상태입니다.";
+
     private final String status;
 
     AttendanceStatus(String status) {

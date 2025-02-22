@@ -1,5 +1,9 @@
 package attendance.service;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.util.List;
 
 import attendance.domain.AbsenceStatusCount;
 import attendance.domain.AttendanceDismiss;
@@ -10,10 +14,6 @@ import attendance.domain.AttendanceStatus;
 import attendance.domain.Attendances;
 import attendance.domain.DateTimeFormatterWrapper;
 import attendance.repository.AttendanceFileRepository;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.util.List;
 
 public class AttendanceManagerService {
     private final String ATTENDANCE_HISTORY_STATUS = "\n출석: %d회\n지각: %d회\n결석: %d회\n";
@@ -21,12 +21,12 @@ public class AttendanceManagerService {
     private final AttendanceFileRepository attendanceFileRepository;
     private final String ATTENDANCE_RESULT_FORMAT = "%s (%s)";
     private final String ATTENDANCE_MODIFY_RESULT_FORMAT = "%s -> %s (%s) 수정 완료!";
+
     private String ATTENDANCE_DISMISS_STATUS_FORMAT = "\n%s 대상자입니다.";
     private String CREW_ATTENDANCE_HISTORY_PREFIX = "이번 달 %s의 출석 기록입니다.\n\n";
 
-
     public AttendanceManagerService(AttendanceManager attendanceManager,
-                                    AttendanceFileRepository attendanceFileRepository) {
+        AttendanceFileRepository attendanceFileRepository) {
         this.attendanceManager = attendanceManager;
         this.attendanceFileRepository = attendanceFileRepository;
         initiateAttendanceManager();
@@ -53,7 +53,7 @@ public class AttendanceManagerService {
         var attendanceStatus = attendances.getAttendanceStatus(attendanceDate);
 
         var dateTimeFormatResult = DateTimeFormatterWrapper.parsingAttendanceResult(
-                LocalDateTime.of(attendanceDate, attendanceTime));
+            LocalDateTime.of(attendanceDate, attendanceTime));
         return String.format(ATTENDANCE_RESULT_FORMAT, dateTimeFormatResult, attendanceStatus.getStatus());
     }
 
@@ -62,10 +62,10 @@ public class AttendanceManagerService {
     }
 
     public String formattingAttendanceModify(LocalTime afterModifyTime, String beforeAttendance,
-                                             AttendanceStatus afterAttendanceStatus) {
+        AttendanceStatus afterAttendanceStatus) {
         String timeFormatResult = DateTimeFormatterWrapper.parsingAttendanceTime(afterModifyTime);
         return String.format(ATTENDANCE_MODIFY_RESULT_FORMAT, beforeAttendance, timeFormatResult,
-                afterAttendanceStatus.getStatus());
+            afterAttendanceStatus.getStatus());
     }
 
     public void modify(String nickname, LocalDate modifyDate, LocalTime afterModifyTime) {
@@ -78,7 +78,7 @@ public class AttendanceManagerService {
         AttendanceStatus attendanceStatus = findAttendancesByNickname(nickname).getAttendanceStatus(modifyDate);
         String timeFormatResult = DateTimeFormatterWrapper.parsingAttendanceTime(afterModifyTime);
         return String.format(ATTENDANCE_MODIFY_RESULT_FORMAT, beforeAttendance, timeFormatResult,
-                attendanceStatus.getStatus());
+            attendanceStatus.getStatus());
     }
 
     public String crewAttendanceHistory(String nickname) {
@@ -87,19 +87,19 @@ public class AttendanceManagerService {
         stringBuilder.append(formattingHistory(attendanceHistory));
         AbsenceStatusCount absenceStatusCount = attendanceHistory.countAbsenceStatus();
         AttendanceDismissStatus attendanceDismissStatus = AttendanceDismiss.calculateAttendanceDismiss(
-                absenceStatusCount.late(), absenceStatusCount.absence());
+            absenceStatusCount.late(), absenceStatusCount.absence());
         return stringBuilder.append(attendanceStatus(absenceStatusCount.absence(), absenceStatusCount.late(),
-                        absenceStatusCount.attendance()))
-                .append(formattingAttendanceDismissStatus(attendanceDismissStatus))
-                .toString();
+                absenceStatusCount.attendance()))
+            .append(formattingAttendanceDismissStatus(attendanceDismissStatus))
+            .toString();
     }
 
     private String formattingHistory(AttendanceHistory attendanceHistory) {
         StringBuilder stringBuilder = new StringBuilder();
         for (String history : attendanceHistory.attendanceHistories()) {
             stringBuilder
-                    .append(history)
-                    .append("\n");
+                .append(history)
+                .append("\n");
         }
         return stringBuilder.toString();
     }
@@ -117,7 +117,7 @@ public class AttendanceManagerService {
 
     public AttendanceStatus getAttendanceStatus(LocalDate date, String nickname) {
         return findAttendancesByNickname(nickname)
-                .getAttendanceStatus(date);
+            .getAttendanceStatus(date);
     }
 
     public void validateNickname(String nickname) {
