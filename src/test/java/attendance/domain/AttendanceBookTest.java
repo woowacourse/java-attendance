@@ -27,7 +27,7 @@ class AttendanceBookTest {
         //when
 
         //then
-        Assertions.assertThatThrownBy(() -> attendanceBook.checkName("d"))
+        Assertions.assertThatThrownBy(() -> attendanceBook.validateCrewName("d"))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("[ERROR] 출석부에 없는 크루원입니다.");
     }

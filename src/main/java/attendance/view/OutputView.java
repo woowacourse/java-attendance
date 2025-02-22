@@ -18,7 +18,7 @@ public class OutputView {
             return;
         }
         System.out.println(attendanceCountAndAcademicStatusDTO.academicStatus() + " 대상자입니다.");
-        System.out.println();
+        printNewLine();
     }
 
     public void printModifyAttendanceResult(AttendanceTime originAttendanceTime, String originAttendanceStatus,
@@ -34,7 +34,7 @@ public class OutputView {
                 modifyAttendanceStatus);
 
         System.out.println(" 수정 완료!");
-        System.out.println();
+        printNewLine();
     }
 
     public void printNameAndAttendances(String name, List<Attendance> attendances) {
@@ -44,7 +44,7 @@ public class OutputView {
             String attendanceStatus = attendance.getAttendanceStatus();
             printAttendance(attendance.getAttendanceTime(), attendanceStatus);
         }
-        System.out.println();
+        printNewLine();
     }
 
     public void printAttendance(AttendanceTime attendanceTime, String attendanceStatus) {
@@ -72,5 +72,10 @@ public class OutputView {
     public void printErrorMessage(String message) {
 
         System.out.println(message);
+    }
+
+    public void printNewLine() {
+
+        System.out.println();
     }
 }

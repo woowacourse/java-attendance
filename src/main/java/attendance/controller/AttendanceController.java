@@ -19,6 +19,7 @@ import java.time.LocalDateTime;
 import java.time.format.TextStyle;
 import java.util.List;
 import java.util.Locale;
+import java.util.function.Supplier;
 
 
 public class AttendanceController {
@@ -37,25 +38,45 @@ public class AttendanceController {
     public void start() {
 
         initAttendanceSystem();
-        do {
-            LocalDateTime today = LocalDateTime.now();
-            String functionValue = functionInput(today);
-
-            try {
-                if (choiceFunction(functionValue)) {
-                    return;
-                }
-                throw new IllegalArgumentException("[ERROR] 올바른 기능을 입력해주세요.");
-            } catch (IllegalArgumentException e) {
-                outputView.printErrorMessage(e.getMessage());
-            }
-
-        } while (true);
+        attendanceSystemStart();
     }
 
-    private boolean choiceFunction(final String functionValue) {
+    private void initAttendanceSystem() {
 
-        Function function = Function.getFunction(functionValue);
+        AttendanceContentDTO attendanceRecordContent = AttendanceReader.getAttendanceRecordContent(
+                FileReader.parseToFile("src/main/resources/attendances.csv"));
+
+        attendanceRepository = new AttendanceRepository(attendanceRecordContent.attendances());
+        attendanceBook = new AttendanceBook(attendanceRecordContent.names());
+        attendanceBook.initAbsent(attendanceRepository);
+    }
+
+    private void attendanceSystemStart() {
+
+        Function function = functionInput();
+        if (isQuit(function)) {
+            return;
+        }
+        runFunction(function);
+        attendanceSystemStart();
+    }
+
+    private Function functionInput() {
+
+        return retryInput(() -> {
+            LocalDateTime today = LocalDateTime.now();
+            String functionValue = inputView.inputFunction(today.getMonthValue(), today.getDayOfMonth(),
+                    today.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.KOREAN));
+            return Function.getFunction(functionValue);
+        });
+    }
+
+    private boolean isQuit(final Function function) {
+
+        return function == Function.QUIT;
+    }
+
+    private void runFunction(final Function function) {
         if (function == Function.ATTEND) {
             attendanceCheckFunction();
         }
@@ -68,39 +89,51 @@ public class AttendanceController {
         if (function == Function.GET_CREWS_AT_RISK_OF_EXPULSION) {
             crewAtRiskOfExpulsion();
         }
-        return function == Function.QUIT;
-    }
-
-    private String functionInput(final LocalDateTime today) {
-
-        return inputView.inputFunction(today.getMonthValue(), today.getDayOfMonth(),
-                today.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.KOREAN));
-    }
-
-    private void initAttendanceSystem() {
-
-        AttendanceContentDTO attendanceRecordContent = AttendanceReader.getAttendanceRecordContent(
-                FileReader.parseToFile("src/main/resources/attendances.csv"));
-
-        attendanceRepository = new AttendanceRepository(attendanceRecordContent.attendances());
-        attendanceBook = new AttendanceBook(attendanceRecordContent.names());
-
-        attendanceBook.initAbsent(attendanceRepository);
     }
 
     private void attendanceCheckFunction() {
 
-        String crewName = inputView.inputCrewName();
-        attendanceBook.checkName(inputView.inputCrewName());
-        AttendanceTime todayDateAttendanceTime = createTime(LocalDate.now(), inputView.inputTime());
+        if (isNotAttendanceDate()) {
+            return;
+        }
 
-        Attendance attendance = new Attendance(crewName, todayDateAttendanceTime);
+        String crewName = inputCrewName();
+        AttendanceTime todayAttendanceTime = inputAttendedTime();
+
+        Attendance attendance = new Attendance(crewName, todayAttendanceTime);
         attendanceRepository.add(attendance);
 
-        outputView.printAttendance(todayDateAttendanceTime, attendance.getAttendanceStatus());
+        outputView.printAttendance(todayAttendanceTime, attendance.getAttendanceStatus());
     }
 
-    private AttendanceTime createTime(final LocalDate date, final String attendanceTime) {
+    private boolean isNotAttendanceDate() {
+        try {
+            AttendanceTime.validateAttendanceDate(LocalDate.now());
+            return false;
+        } catch (IllegalArgumentException e) {
+            outputView.printErrorMessage(e.getMessage());
+            return true;
+        }
+    }
+
+    private String inputCrewName() {
+
+        return retryInput(() -> {
+            String crewName = inputView.inputCrewName();
+            attendanceBook.validateCrewName(crewName);
+            return crewName;
+        });
+    }
+
+    private AttendanceTime inputAttendedTime() {
+
+        return retryInput(() -> {
+            String attendedTime = inputView.inputTime();
+            return createAttendanceTime(LocalDate.now(), attendedTime);
+        });
+    }
+
+    private AttendanceTime createAttendanceTime(final LocalDate date, final String attendanceTime) {
 
         String[] split = attendanceTime.split(":");
         return new AttendanceTime(date, split[0], split[1], false);
@@ -108,40 +141,58 @@ public class AttendanceController {
 
     private void attendanceModifyFunction() {
 
-        String crewName = inputView.inputModifyCrewName();
-        attendanceBook.checkName(crewName);
-        int modifyDay = inputView.inputModifyDay();
-        String modifyTime = inputView.inputModifyTime();
-        modifyAttendance(modifyDay, modifyTime, crewName);
+        String crewName = inputModifyCrewName();
+        AttendanceTime modifiedAttendanceTime = inputModifyAttendedTime();
+        modifyAttendance(crewName, modifiedAttendanceTime);
     }
 
-    private void modifyAttendance(int modifyDay, final String modifyTime, final String crewName) {
+    private String inputModifyCrewName() {
 
-        int year = LocalDate.now().getYear();
-        int month = LocalDate.now().getMonthValue();
-        AttendanceTime modifyDateAttendanceTime = createTime(LocalDate.of(year, month, modifyDay), modifyTime);
+        return retryInput(() -> {
+            String crewName = inputView.inputModifyCrewName();
+            attendanceBook.validateCrewName(crewName);
+            return crewName;
+        });
+    }
 
-        Attendance attendance = attendanceRepository.findAttendanceByNameAndLocalDate(crewName, year, month, modifyDay);
+    private AttendanceTime inputModifyAttendedTime() {
+
+        return retryInput(() -> {
+            int modifyDay = inputView.inputModifyDay();
+            String modifyTime = inputView.inputModifyTime();
+            return createAttendanceTime(
+                    LocalDate.of(LocalDate.now().getYear(), LocalDate.now().getMonthValue(), modifyDay),
+                    modifyTime
+            );
+        });
+    }
+
+    private void modifyAttendance(final String crewName, final AttendanceTime modifiedAttendanceTime) {
+
+        Attendance attendance = getTargetDateAttendance(crewName, modifiedAttendanceTime);
 
         AttendanceTime previousDateAttendanceTime = attendance.getAttendanceTime();
         String previousAttendanceStatus = attendance.getAttendanceStatus();
 
-        attendance.modifyAttendanceTime(modifyDateAttendanceTime);
-
+        attendance.modifyAttendanceTime(modifiedAttendanceTime);
         outputView.printModifyAttendanceResult(previousDateAttendanceTime, previousAttendanceStatus,
-                modifyDateAttendanceTime,
+                modifiedAttendanceTime,
                 attendance.getAttendanceStatus());
+    }
+
+    private Attendance getTargetDateAttendance(String crewName, AttendanceTime modifiedAttendanceTime) {
+        int year = modifiedAttendanceTime.getYear();
+        int month = modifiedAttendanceTime.getMonth();
+        int modifyDay = modifiedAttendanceTime.getDay();
+        return attendanceRepository.findAttendanceByNameAndLocalDate(crewName, year, month, modifyDay);
     }
 
     private void attendanceHistoryByName() {
 
-        String crewName = inputView.inputCrewName();
-
-        attendanceBook.checkName(crewName);
+        String crewName = inputCrewName();
         List<Attendance> attendances = attendanceRepository.findAllAttendanceByName(crewName);
 
         outputView.printNameAndAttendances(crewName, attendances);
-
         outputView.printAcademicStatusResult(attendanceRepository.getAcademicStatusByName(crewName));
     }
 
@@ -155,5 +206,15 @@ public class AttendanceController {
                 attendanceBook.getCrewAtRiskOfExpulsion(attendanceRepository, INTERVIEW.getValue()));
         outputView.printCrewsAtRiskOfExpulsion(
                 attendanceBook.getCrewAtRiskOfExpulsion(attendanceRepository, WARNING.getValue()));
+        outputView.printNewLine();
+    }
+
+    private <T> T retryInput(Supplier<T> supplier) {
+        try {
+            return supplier.get();
+        } catch (IllegalArgumentException e) {
+            outputView.printErrorMessage(e.getMessage());
+            return retryInput(supplier);
+        }
     }
 }

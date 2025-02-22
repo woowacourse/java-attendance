@@ -42,7 +42,7 @@ public record AttendanceTime(LocalDate date, String hour, String minute, boolean
         }
     }
 
-    private static void validateAttendanceDate(LocalDate date) {
+    public static void validateAttendanceDate(LocalDate date) {
 
         String day = date.getDayOfWeek().name();
 

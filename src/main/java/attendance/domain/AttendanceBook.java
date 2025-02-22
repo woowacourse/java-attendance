@@ -14,7 +14,7 @@ public class AttendanceBook {
         this.names = names;
     }
 
-    public void checkName(final String name) {
+    public void validateCrewName(final String name) {
 
         if (!names.contains(name)) {
             throw new IllegalArgumentException("[ERROR] 출석부에 없는 크루원입니다.");
@@ -36,6 +36,5 @@ public class AttendanceBook {
                 .filter(dto -> dto.academicStatus().equals(academicStatus))
                 .sorted(Comparator.comparing(CrewNameAndAcademicStatusDTO::crewName))
                 .toList();
-
     }
 }
