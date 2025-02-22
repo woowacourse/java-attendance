@@ -1,22 +1,22 @@
 package dto;
 
 import java.time.LocalDate;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import model.AttendanceType;
 import model.CrewHistory;
 import model.SubjectType;
 
-public record DismissalCrewDto(String nickname, int absentCount, int lateCount, SubjectType subjectType) implements
-        Comparable<DismissalCrewDto> {
+public record DismissalCrewDto(String nickname, int absentCount, int lateCount, SubjectType subjectType)
+        implements Comparable<DismissalCrewDto> {
 
-    @Override
-    public int compareTo(final DismissalCrewDto o) {
-        if (this.subjectType != o.subjectType) {
-            return SubjectType.compare(this.subjectType, o.subjectType);
-        }
-        return compareLateCountAndNickname(o);
-    }
+    private static final Comparator<DismissalCrewDto> COMPARATOR =
+            Comparator.comparing((DismissalCrewDto dismissalCrewDto) -> dismissalCrewDto.subjectType,
+                            SubjectType.getComparator())
+                    .thenComparing(dto -> SubjectType.calculateTotalLateCount(dto.lateCount, dto.absentCount),
+                            Comparator.reverseOrder())
+                    .thenComparing(dto -> dto.nickname);
 
     public static List<DismissalCrewDto> of(final LocalDate todayDate, final List<CrewHistory> crewHistories) {
         return crewHistories.stream()
@@ -30,12 +30,8 @@ public record DismissalCrewDto(String nickname, int absentCount, int lateCount, 
                 countedAttendanceType.get(AttendanceType.지각), SubjectType.from(countedAttendanceType));
     }
 
-    private int compareLateCountAndNickname(DismissalCrewDto other) {
-        int thisTotalLateCount = SubjectType.calculateTotalLateCount(this.lateCount, this.absentCount);
-        int targetTotalLateCount = SubjectType.calculateTotalLateCount(other.lateCount, other.absentCount);
-        if (thisTotalLateCount != targetTotalLateCount) {
-            return Integer.compare(targetTotalLateCount, thisTotalLateCount);
-        }
-        return this.nickname.compareTo(other.nickname);
+    @Override
+    public int compareTo(final DismissalCrewDto other) {
+        return COMPARATOR.compare(this, other);
     }
 }
