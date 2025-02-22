@@ -10,23 +10,22 @@ import java.util.Map;
 
 public class OutputView {
     public void writeAttendanceCheck(DateInfo dateInfo) {
-        int month = dateInfo.getLocalDateTime().getMonthValue();
-        int day = dateInfo.getLocalDateTime().getDayOfMonth();
+        String month = addZero(dateInfo.getLocalDateTime().getMonthValue());
+        String day = addZero(dateInfo.getLocalDateTime().getDayOfMonth());
         String dayOfWeek = Weekday.from(dateInfo.getLocalDateTime().getDayOfWeek()).getDayOfWeek();
-        int hour = dateInfo.getLocalDateTime().getHour();
-        int minute = dateInfo.getLocalDateTime().getMinute();
+        String time = convertZeroToHyphen(dateInfo.getLocalDateTime().getHour(), dateInfo.getLocalDateTime().getMinute());
         String status = dateInfo.getAttendanceStatus();
-        System.out.println(String.format("%s월 %s일 %s %s:%s (%s)", month, day, dayOfWeek, hour, minute, status));
+        System.out.println(String.format("%s월 %s일 %s %s (%s)", month, day, dayOfWeek, time, status));
     }
 
     public void writeAttendanceModifyCheck(int beforeHour, int beforeMinute, String beforeStatus, DateInfo modifiedInfo) {
-        int month = modifiedInfo.getLocalDateTime().getMonthValue();
-        int day = modifiedInfo.getLocalDateTime().getDayOfMonth();
+        String month = addZero(modifiedInfo.getLocalDateTime().getMonthValue());
+        String day = addZero(modifiedInfo.getLocalDateTime().getDayOfMonth());
         String dayOfWeek = Weekday.from(modifiedInfo.getLocalDateTime().getDayOfWeek()).getDayOfWeek();
-        int hour = modifiedInfo.getLocalDateTime().getHour();
-        int minute = modifiedInfo.getLocalDateTime().getMinute();
+        String hour = addZero(modifiedInfo.getLocalDateTime().getHour());
+        String minute = addZero(modifiedInfo.getLocalDateTime().getMinute());
         String status = modifiedInfo.getAttendanceStatus();
-        System.out.println(String.format("%s월 %s일 %s %s:%s (%s) -> %s:%s (%s) 수정 완료!", month, day, dayOfWeek, beforeHour,beforeMinute, beforeStatus, hour, minute, status));
+        System.out.println(String.format("%s월 %s일 %s %s (%s) -> %s:%s (%s) 수정 완료!", month, day, dayOfWeek, convertZeroToHyphen(beforeHour,beforeMinute), beforeStatus, hour, minute, status));
     }
 
     public void writeAttendanceHistory(Crew crew, AttendanceRegistry attendanceRegistry) {
@@ -67,11 +66,25 @@ public class OutputView {
         }
     }
 
-    private static void writeAbsenceOver(int absenceCounts, String crewName, int lateCounts, String crewStatus) {
+    private void writeAbsenceOver(int absenceCounts, String crewName, int lateCounts, String crewStatus) {
         if (absenceCounts >= 2) {
             System.out.println(String.format("- %s: 결석 %d회, 지각 %d회 (%s)", crewName, absenceCounts, lateCounts,
                     crewStatus));
         }
+    }
+
+    private String convertZeroToHyphen(int hour, int minute) {
+        if (hour == 0 && minute == 0) {
+            return "--:--";
+        }
+        return addZero(hour)+":"+addZero(minute);
+    }
+
+    private String addZero(int number) {
+        if (number < 10) {
+            return "0" + number;
+        }
+        return String.valueOf(number);
     }
 
     public void errorMessagePrint(String message) {
