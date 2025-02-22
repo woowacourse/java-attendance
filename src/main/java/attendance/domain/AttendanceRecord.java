@@ -2,6 +2,7 @@ package attendance.domain;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.Month;
 import java.util.Objects;
 
@@ -60,6 +61,10 @@ public final class AttendanceRecord {
 
     public LocalDate getDate() {
         return arrivalDateTime.toLocalDate();
+    }
+
+    public LocalTime getTime() {
+        return arrivalDateTime.toLocalTime();
     }
 
     public AttendanceType getType() {

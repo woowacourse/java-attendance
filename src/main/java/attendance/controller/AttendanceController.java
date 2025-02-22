@@ -1,10 +1,17 @@
 package attendance.controller;
 
 import attendance.config.AppConfig;
+import attendance.domain.AttendanceRecord;
 import attendance.domain.AttendanceSystem;
 import attendance.domain.AttendanceSystemInitializer;
+import attendance.domain.RiskStatistic;
+import attendance.dto.UpdateResult;
 import attendance.view.InputView;
 import attendance.view.OutputView;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.util.List;
 
 public class AttendanceController {
 
@@ -22,88 +29,77 @@ public class AttendanceController {
     }
 
     public void run() {
-//        while (true) {
-//            LocalDate today = dateGenerator.now();
-//            AttendanceMenu menu = selectMenu(today);
-//
-//            processAttendance(menu, today);
-//            if (menu == QUIT) {
-//                return;
-//            }
-//        }
+        while (true) {
+            AttendanceMenu menu = MenuTemplate.run(this::selectMenu, LocalDate.now(), outputView);
+            processMenuFunction(menu);
+            if (menu == AttendanceMenu.QUIT) {
+                return;
+            }
+        }
     }
 
-//    private void processAttendance(AttendanceMenu menu, LocalDate today) {
-//        processAttendanceCheck(menu, today);
-//        processAttendanceUpdate(menu, today);
-//        processAttendanceSearch(menu, today);
-//        processAttendanceWarnedCrew(menu, today);
-//    }
-//
-//    private void processAttendanceWarnedCrew(AttendanceMenu menu, LocalDate today) {
-//        while (true) {
-//            try {
-//                if (menu == WARNED_CREW) {
-//                    WarnedStudentResponses response = attendanceService.processWarnedStudent(today);
-//                    outputView.printWarnedStudents(response);
-//                }
-//                return;
-//            } catch (IllegalArgumentException e) {
-//                outputView.printErrorMessage(e.getMessage());
-//            }
-//        }
-//    }
-//
-//    private void processAttendanceSearch(AttendanceMenu menu, LocalDate today) {
-//        while (true) {
-//            try {
-//                if (menu == SEARCH) {
-//                    AttendanceSearchResult response = attendanceService.processAttendanceSearch(today);
-//                    outputView.printAttendUpdateResult(response);
-//                }
-//                return;
-//            } catch (IllegalArgumentException e) {
-//                outputView.printErrorMessage(e.getMessage());
-//            }
-//        }
-//    }
-//
-//    private void processAttendanceUpdate(AttendanceMenu menu, LocalDate today) {
-//        while (true) {
-//            try {
-//                if (menu == UPDATE) {
-//                    AttendanceUpdateResult response = attendanceService.processUpdateAttendance(today);
-//                    outputView.printAttendUpdateResult(response);
-//                }
-//                return;
-//            } catch (IllegalArgumentException e) {
-//                outputView.printErrorMessage(e.getMessage());
-//            }
-//        }
-//    }
-//
-//    private void processAttendanceCheck(AttendanceMenu menu, LocalDate today) {
-//        while (true) {
-//            try {
-//                if (menu == CHECK) {
-//                    AttendanceResponse response = attendanceService.processAttendance(today);
-//                    outputView.printAttendanceRecord(response);
-//                }
-//                return;
-//            } catch (IllegalArgumentException e) {
-//                outputView.printErrorMessage(e.getMessage());
-//            }
-//        }
-//    }
-//
-//    private AttendanceMenu selectMenu(LocalDate today) {
-//        while (true) {
-//            try {
-//                outputView.printMenu(today);
-//                return find(inputView.readMenuCommand());
-//            } catch (IllegalArgumentException e) {
-//                outputView.printErrorMessage(e.getMessage());
-//            }
-//        }
-//    }
+    private AttendanceMenu selectMenu(LocalDate nowDate) {
+        outputView.printMenu(nowDate);
+        return AttendanceMenu.parse(inputView.readMenuCommand());
+    }
+
+    private void processMenuFunction(AttendanceMenu menu) {
+        MenuTemplate.run(this::saveAttendanceRecord, menu, outputView);
+        MenuTemplate.run(this::updateAttendanceRecord, menu, outputView);
+        MenuTemplate.run(this::searchAttendanceRecordsByCrew, menu, outputView);
+        MenuTemplate.run(this::searchRiskStatistics, menu, outputView);
+    }
+
+    private void saveAttendanceRecord(AttendanceMenu menu) {
+        LocalDate nowDate = LocalDate.now();
+        if (menu == AttendanceMenu.ADD) {
+            String nickname = inputView.readNickname();
+            LocalTime arrivalTime = inputView.readArrivalTime();
+            LocalDateTime arrivalDateTime = LocalDateTime.of(nowDate, arrivalTime);
+            AttendanceRecord savedRecord = attendanceSystem.saveAttendanceRecord(nickname, arrivalDateTime);
+            outputView.printAttendanceRecord(savedRecord);
+        }
+    }
+
+    private void updateAttendanceRecord(AttendanceMenu menu) {
+        LocalDate nowDate = LocalDate.now();
+        if (menu == AttendanceMenu.UPDATE) {
+            String nickname = inputView.readNicknameForUpdate();
+            LocalDate date = nowDate.withDayOfMonth(inputView.readDateForUpdate());
+            LocalTime newArrivalTime = inputView.readArrivalTimeForUpdate();
+            UpdateResult updateResult = attendanceSystem.updateAttendanceRecord(nickname, date, newArrivalTime);
+            outputView.printAttendUpdateResult(updateResult);
+        }
+    }
+
+    private void searchAttendanceRecordsByCrew(AttendanceMenu menu) {
+        LocalDate nowDate = LocalDate.now();
+        if (menu == AttendanceMenu.SEARCH) {
+            String nickname = inputView.readNickname();
+            List<AttendanceRecord> records = attendanceSystem.searchAttendanceRecordsByCrew(
+                    nickname, nowDate.getYear(), nowDate.getMonth());
+            RiskStatistic state = attendanceSystem.searchRiskStatistic(
+                    nickname, makeFistDateInMonth(nowDate), makeLastDateInMonth(nowDate));
+            outputView.printRecordsInMonth(records);
+            outputView.printAttendanceState(state);
+        }
+    }
+
+    private void searchRiskStatistics(AttendanceMenu menu) {
+        LocalDate nowDate = LocalDate.now();
+        if (menu == AttendanceMenu.RISK) {
+            List<RiskStatistic> riskStatistics =
+                    attendanceSystem.searchRiskStatistics(makeFistDateInMonth(nowDate), makeLastDateInMonth(nowDate));
+            outputView.printRiskStatistics(riskStatistics);
+        }
+    }
+
+    private LocalDate makeFistDateInMonth(LocalDate nowDate) {
+        return nowDate.withDayOfMonth(1);
+    }
+
+    private LocalDate makeLastDateInMonth(LocalDate nowDate) {
+        return nowDate.withDayOfMonth(nowDate.getMonthValue());
+    }
+
 }

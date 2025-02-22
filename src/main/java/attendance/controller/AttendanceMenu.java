@@ -3,10 +3,10 @@ package attendance.controller;
 import java.util.Arrays;
 
 public enum AttendanceMenu {
-    CHECK("1"),
+    ADD("1"),
     UPDATE("2"),
     SEARCH("3"),
-    WARNED_CREW("4"),
+    RISK("4"),
     QUIT("Q");
 
     private final String command;
@@ -15,7 +15,7 @@ public enum AttendanceMenu {
         this.command = command;
     }
 
-    public static AttendanceMenu find(String input) {
+    public static AttendanceMenu parse(String input) {
         return Arrays.stream(values())
                 .filter(menu -> menu.command.equals(input.toUpperCase()))
                 .findFirst()

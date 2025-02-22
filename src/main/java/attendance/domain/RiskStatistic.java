@@ -20,6 +20,18 @@ public final class RiskStatistic {
         return nickname;
     }
 
+    public int getAttendanceCount() {
+        return attendanceCount;
+    }
+
+    public int getExpulsionCount() {
+        return expulsionCount;
+    }
+
+    public int getLateCount() {
+        return lateCount;
+    }
+
     public RiskType getRiskType() {
         return riskType;
     }

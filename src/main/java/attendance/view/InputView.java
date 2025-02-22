@@ -2,9 +2,12 @@ package attendance.view;
 
 import static attendance.view.InputValidator.validateIsNumeric;
 
+import attendance.utility.DateTimeParser;
+import attendance.view.message.InputMessage;
+import java.time.LocalTime;
 import java.util.Scanner;
 
-public class InputView { // todo : 상수 분리, 최소한의 검증 후 반환
+public class InputView {
 
     private static final Scanner console = new Scanner(System.in);
 
@@ -12,32 +15,29 @@ public class InputView { // todo : 상수 분리, 최소한의 검증 후 반환
         return console.nextLine();
     }
 
-    public String readNickname(boolean isForUpdated) {
-        if (!isForUpdated) {
-            System.out.println("닉네임을 입력해 주세요.");
-        }
-
-        if (isForUpdated) {
-            System.out.println("출석을 수정하려는 크루의 닉네임을 입력해 주세요.");
-        }
+    public String readNickname() {
+        System.out.println(InputMessage.NICK_NAME.getContent());
         return console.nextLine();
     }
 
-    public String readAttendanceTime(boolean isForUpdated) {
-        if (!isForUpdated) {
-            System.out.println("등교 시간을 입력해 주세요");
-        }
+    public LocalTime readArrivalTime() {
+        System.out.println(InputMessage.ARRIVAL_TIME.getContent());
+        return DateTimeParser.parseTime(console.nextLine());
+    }
 
-        if (isForUpdated) {
-            System.out.println("언제로 변경하겠습니까?");
-        }
+    public String readNicknameForUpdate() {
+        System.out.println(InputMessage.NICK_NAME_FOR_UPDATE.getContent());
         return console.nextLine();
+    }
+
+    public LocalTime readArrivalTimeForUpdate() {
+        System.out.println(InputMessage.ARRIVAL_TIME_FOR_UPDATE.getContent());
+        return DateTimeParser.parseTime(console.nextLine());
     }
 
     public int readDateForUpdate() {
-        System.out.println("수정하려는 날짜(일)를 입력해 주세요.");
+        System.out.println(InputMessage.DATE_FOR_UPDATE.getContent());
         String input = console.nextLine();
-
         validateIsNumeric(input);
         return Integer.parseInt(input);
     }

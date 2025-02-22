@@ -1,98 +1,60 @@
 package attendance.view;
 
-import attendance.dto.AttendanceGroupByStatus;
-import attendance.dto.AttendanceResponse;
-import attendance.dto.AttendanceSearchResult;
-import attendance.dto.AttendanceUpdateResult;
-import attendance.dto.WarnedStudentResponse;
-import attendance.dto.WarnedStudentResponses;
+import attendance.domain.AttendanceRecord;
+import attendance.domain.RiskStatistic;
+import attendance.domain.RiskType;
+import attendance.dto.UpdateResult;
+import attendance.view.message.OutputMessage;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
+import java.time.Month;
 import java.time.format.TextStyle;
 import java.util.List;
 import java.util.Locale;
 
-public class OutputView { // todo : 상수 분리 적용 필요, response 파라미터 네이밍 통일, 메서드 순서 정렬
+public class OutputView {
 
-    private static final String OUTPUT_MENU = """
-            오늘은 %d월 %d일 %s입니다. 기능을 선택해 주세요.
-            1. 출석 확인
-            2. 출석 수정
-            3. 크루별 출석 기록 확인
-            4. 제적 위험자 확인
-            Q. 종료
-            """;
-
-    public void printMenu(LocalDate today) { // todo : 파라미터가 today 적절한가?
-        System.out.printf(OUTPUT_MENU,
-                today.getMonthValue(),
-                today.getDayOfMonth(),
-                today.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.KOREA) // todo : 요일 반환 메서드 분리 필요
-        );
+    public void printMenu(LocalDate today) {
+        String menuContent = makeMenuContent(today);
+        System.out.println(menuContent);
     }
 
-    public void printAttendanceRecord(AttendanceResponse response) {
-        LocalDateTime dateTime = response.dateTime();
-
-        String timeContent = dateTime.toLocalTime().toString(); // todo : 파싱 메서드 분리 고려
-        if (dateTime.toLocalTime().equals(LocalTime.MIN)) {
-            timeContent = "--:--";
-        }
-
-        System.out.printf("%d월 %d일 %s %s (%s)\n",
-                dateTime.getMonthValue(),
-                dateTime.getDayOfMonth(),
-                dateTime.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.KOREA),
-                timeContent,
-                response.status()
-        );
-    }
-
-    public void printAttendUpdateResult(AttendanceUpdateResult result) {
-        printAttendanceRecord(result.before());
-        System.out.printf(" -> %s (%s) 수정 완료\n",
-                result.after().dateTime().toLocalTime(),
-                result.after().status()
-        );
+    public void printAttendanceRecord(AttendanceRecord record) {
+        String content = makeRecordContent(record);
+        System.out.println(content);
         printBlankLine();
     }
 
-    public void printAttendUpdateResult(AttendanceSearchResult result) {
-        System.out.printf("이번 달 %s의 출석 기록입니다.\n", result.nickname());
-        List<AttendanceResponse> response = result.recordUntilToday().responses();
-
-        response.forEach(this::printAttendanceRecord);
-        System.out.println();
-
-        AttendanceGroupByStatus groupByStatus = result.groupByStatus();
-
-        System.out.printf("""
-                        출석: %d회
-                        지각: %d회
-                        결석: %d회
-                        """,
-                groupByStatus.attendance(),
-                groupByStatus.late(),
-                groupByStatus.expulsion()
-        );
-
-        System.out.println();
-        System.out.printf("%s 대상자입니다.\n", groupByStatus.warning()); // todo : 출력 순서랑 이후 날짜 중재
+    public void printAttendUpdateResult(UpdateResult updateResult) {
+        String oldRecordContent = makeRecordContent(updateResult.oldRecord());
+        String updateContent = makeUpdateContent(updateResult.newRecord());
+        System.out.println(oldRecordContent + updateContent);
         printBlankLine();
     }
 
-    public void printWarnedStudents(WarnedStudentResponses response) {
-        System.out.println("제적 위험자 조회 결과");
-        List<WarnedStudentResponse> warnedStudents = response.responses();
-        warnedStudents.forEach(student -> {
-            System.out.printf("- %s: 결석 %d회, 지각 %d회 (%s)\n",
-                    student.name(),
-                    student.attendanceGroupByStatus().expulsion(),
-                    student.attendanceGroupByStatus().late(),
-                    student.attendanceGroupByStatus().warning()
-            );
-        });
+    public void printRecordsInMonth(List<AttendanceRecord> records) {
+        String header = makeMonthlyRecordHeader(records.getFirst().getDate().getMonth());
+        System.out.println(header);
+        printBlankLine();
+
+        records.stream()
+                .map(this::makeRecordContent)
+                .forEach(System.out::println);
+        printBlankLine();
+    }
+
+    public void printAttendanceState(RiskStatistic riskStatistic) {
+        String content = makeStateContent(riskStatistic);
+        System.out.println(content);
+        printBlankLine();
+
+        String resultContent = makeStateResultContent(riskStatistic.getRiskType());
+        System.out.println(resultContent);
+        printBlankLine();
+    }
+
+    public void printRiskStatistics(List<RiskStatistic> riskStatistics) {
+        System.out.println(OutputMessage.RISK_HEADER.getContent());
+        riskStatistics.forEach(this::makeRiskStatisticContent);
         printBlankLine();
     }
 
@@ -103,5 +65,54 @@ public class OutputView { // todo : 상수 분리 적용 필요, response 파라
 
     private void printBlankLine() {
         System.out.println();
+    }
+
+    private String makeMenuContent(LocalDate today) {
+        return String.format(
+                OutputMessage.MENU.getContent(),
+                today.getMonthValue(),
+                today.getDayOfMonth(),
+                today.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.KOREA));
+    }
+
+    private String makeRecordContent(AttendanceRecord record) {
+        LocalDate date = record.getDate();
+        return String.format(
+                OutputMessage.RECORD.getContent(),
+                date.getMonthValue(),
+                date.getDayOfMonth(),
+                date.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.KOREA),
+                record.getTime().toString(),
+                record.getType().getName());
+    }
+
+    private String makeUpdateContent(AttendanceRecord newRecord) {
+        return String.format(
+                OutputMessage.UPDATED.getContent(),
+                newRecord.getTime(),
+                newRecord.getType().getName());
+    }
+
+    private String makeMonthlyRecordHeader(Month month) {
+        return String.format(OutputMessage.MONTHLY_RECORD_HEADER.getContent(), month.getValue());
+    }
+
+    private String makeStateContent(RiskStatistic riskStatistic) {
+        return String.format(OutputMessage.ATTENDANCE_STATE.getContent(),
+                riskStatistic.getAttendanceCount(),
+                riskStatistic.getLateCount(),
+                riskStatistic.getExpulsionCount());
+    }
+
+    private String makeStateResultContent(RiskType riskType) {
+        return String.format(OutputMessage.ATTENDANCE_STATE_RESULT.getContent(), riskType.getName());
+    }
+
+    private String makeRiskStatisticContent(RiskStatistic statistic) {
+        return String.format(OutputMessage.RISK_INFO.getContent(),
+                statistic.getNickname(),
+                statistic.getExpulsionCount(),
+                statistic.getLateCount(),
+                statistic.getRiskType().getName());
     }
 }
