@@ -11,28 +11,26 @@ class MenuOptionTest {
     @Test
     void functionInputErrorTest() {
         String testRawInput = "q";
-        Assertions.assertThrows(IllegalArgumentException.class, () -> new MenuOption(testRawInput));
+        Assertions.assertThrows(IllegalArgumentException.class, () -> MenuOption.getMenuOption(testRawInput));
     }
 
     @DisplayName("올바른 사용자 입력을 테스트합니다.")
     @ParameterizedTest
     @ValueSource(strings = {"1", "2", "3", "4", "Q"})
     void functionInputTest(String input) {
-        Assertions.assertDoesNotThrow(() -> new MenuOption(input));
+        Assertions.assertDoesNotThrow(() -> MenuOption.getMenuOption(input));
     }
 
     @DisplayName("입력한 기능이 동일한지 확인합니다.")
-    @ParameterizedTest
-    @ValueSource(strings = {"1", "2", "3", "4", "Q"})
-    void functionEqualTest(String input) {
-        MenuOption menuOption = new MenuOption(input);
-        Assertions.assertTrue(menuOption.equals(input));
+    @Test
+    void functionEqualTest() {
+        MenuOption menuOption = MenuOption.getMenuOption("1");
+        Assertions.assertEquals(menuOption, MenuOption.CHECK_ATTENDANCE);
     }
 
     @DisplayName("Q 입력 시 true를 반환합니다.")
     @Test
     void functionTrueTest() {
-        MenuOption menuOption = new MenuOption("Q");
-        Assertions.assertTrue(menuOption.isExit());
+        Assertions.assertTrue(MenuOption.isExit("Q"));
     }
 }

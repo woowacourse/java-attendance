@@ -1,27 +1,32 @@
 package domain;
 
-import java.util.List;
+import java.util.Arrays;
 
-public class MenuOption {
-    private static final List<String> menuOptions = List.of("1", "2", "3", "4", "Q");
-    private final String menuOption;
+public enum MenuOption {
+    CHECK_ATTENDANCE("1"),
+    CHANGE_ATTENDANCE("2"),
+    SHOW_CREW_ATTENDANCES("3"),
+    SHOW_ALERT_CREW("4"),
+    EXIT("Q");
 
-    public MenuOption(String menuOption) {
-        validateMenuOption(menuOption);
+    final String menuOption;
+
+    MenuOption(String menuOption) {
         this.menuOption = menuOption;
     }
 
-    public boolean equals(String menuOption) {
-        return this.menuOption.equals(menuOption);
+    public static MenuOption getMenuOption(String menuOption) {
+        return Arrays.stream(MenuOption.values())
+                .filter(option -> option.menuOption.equals(menuOption))
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException("올바른 기능 입력이 아닙니다."));
     }
 
-    public boolean isExit() {
-        return menuOption.equals("Q");
-    }
 
-    private void validateMenuOption(String menuOption) {
-        if (!menuOptions.contains(menuOption)) {
-            throw new IllegalArgumentException("올바른 기능 입력이 아닙니다.");
+    public static boolean isExit(String menuOption) {
+        if (menuOption.equals(EXIT.menuOption)) {
+            return true;
         }
+        return false;
     }
 }

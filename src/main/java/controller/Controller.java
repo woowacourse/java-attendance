@@ -1,5 +1,11 @@
 package controller;
 
+import static domain.MenuOption.CHECK_ATTENDANCE;
+import static domain.MenuOption.SHOW_ALERT_CREW;
+import static domain.MenuOption.SHOW_CREW_ATTENDANCES;
+import static domain.MenuOption.getMenuOption;
+import static domain.MenuOption.isExit;
+
 import domain.Attendance;
 import domain.Crew;
 import domain.CrewGroup;
@@ -40,26 +46,26 @@ public class Controller {
 
     private void runCycle(LocalDateTime today, CrewGroup crewGroup) {
         while (true) {
-            String rawOption = inputView.insertMenuOption(today);
-            MenuOption menuOption = new MenuOption(rawOption);
-            if (menuOption.isExit()) {
+            String option = inputView.insertMenuOption(today);
+            if (isExit(option)) {
                 return;
             }
-            operateMenuOption(menuOption, crewGroup, today);
+            operateMenuOption(option, crewGroup, today);
         }
     }
 
-    private void operateMenuOption(MenuOption menuOption, CrewGroup crewGroup, LocalDateTime today) {
-        if (menuOption.equals("1")) {
+    private void operateMenuOption(String option, CrewGroup crewGroup, LocalDateTime today) {
+        MenuOption menuOption = getMenuOption(option);
+        if (menuOption.equals(CHECK_ATTENDANCE)) {
             attendanceCheck(crewGroup, today);
         }
-        if (menuOption.equals("2")) {
+        if (menuOption.equals(CHECK_ATTENDANCE)) {
             changeAttendance(crewGroup, today);
         }
-        if (menuOption.equals("3")) {
+        if (menuOption.equals(SHOW_CREW_ATTENDANCES)) {
             showCrewAttendance(crewGroup);
         }
-        if (menuOption.equals("4")) {
+        if (menuOption.equals(SHOW_ALERT_CREW)) {
             showAlertCrews(crewGroup);
         }
     }
