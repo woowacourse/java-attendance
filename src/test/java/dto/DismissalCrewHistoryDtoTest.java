@@ -9,7 +9,7 @@ import model.SubjectType;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-class DismissalCrewDtoTest {
+class DismissalCrewHistoryDtoTest {
 
     // 제적 위험자 조회 결과
     //- 빙티: 결석 3회, 지각 4회 (면담) // 결석 4회, 지각 1회

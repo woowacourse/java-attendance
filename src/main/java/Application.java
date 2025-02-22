@@ -1,6 +1,6 @@
 import controller.AttendanceController;
 import model.Campus;
-import model.Crews;
+import model.CrewHistories;
 import model.Initializer;
 import util.FileReader;
 import view.InputValidator;
@@ -14,9 +14,9 @@ public class Application {
         ResultView resultView = new ResultView();
         Campus campus = new Campus();
         Initializer initializer = new Initializer(campus);
-        Crews crews = initializer.initialize(FileReader.readFile());
+        CrewHistories crewHistories = initializer.initialize(FileReader.readFile());
 
         AttendanceController controller = new AttendanceController(inputView, resultView, campus);
-        controller.start(crews);
+        controller.start(crewHistories);
     }
 }

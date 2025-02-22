@@ -15,36 +15,36 @@ public class Initializer {
     private static final String SPLITTER = ",";
 
     private final Campus campus;
-    private final Map<Integer, LocalDateTime> initialMap;
+    private final Map<Integer, LocalDateTime> attendance;
 
     public Initializer(final Campus campus) {
         this.campus = campus;
-        this.initialMap = createInitialAttendance();
+        this.attendance = createInitialAttendance();
     }
 
-    public Crews initialize(final List<String> inputs) {
-        Map<String, Crew> crewsMap = new HashMap<>();
+    public CrewHistories initialize(final List<String> inputs) {
+        Map<String, CrewHistory> crewsMap = new HashMap<>();
         for (String line : inputs) {
-            loadAttendanceHistory(line, crewsMap);
+            loadHistory(line, crewsMap);
         }
-        return new Crews(crewsMap);
+        return new CrewHistories(crewsMap);
     }
 
-    private void loadAttendanceHistory(String input, Map<String, Crew> crewsMap) {
+    private void loadHistory(String input, Map<String, CrewHistory> crewsMap) {
         String[] tokens = input.split(SPLITTER);
         String nickname = tokens[0];
         LocalDateTime attendanceDateTime = StringParser.parseLocalDateTime(tokens[1]);
-        Crew crew = getCrew(crewsMap, nickname);
-        crew.loadAttendanceHistory(attendanceDateTime);
+        CrewHistory crewHistory = getCrew(crewsMap, nickname);
+        crewHistory.loadHistory(attendanceDateTime);
     }
 
-    private Crew getCrew(final Map<String, Crew> crewsMap, final String nickname) {
+    private CrewHistory getCrew(final Map<String, CrewHistory> crewsMap, final String nickname) {
         if (crewsMap.containsKey(nickname)) {
             return crewsMap.get(nickname);
         }
-        Crew crew = new Crew(nickname, new HashMap<>(initialMap));
-        crewsMap.put(nickname, crew);
-        return crew;
+        CrewHistory crewHistory = new CrewHistory(nickname, new HashMap<>(attendance));
+        crewsMap.put(nickname, crewHistory);
+        return crewHistory;
     }
 
     private Map<Integer, LocalDateTime> createInitialAttendance() {

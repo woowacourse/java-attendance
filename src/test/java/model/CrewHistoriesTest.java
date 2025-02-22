@@ -11,7 +11,7 @@ import java.util.Map;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-public class CrewsTest {
+public class CrewHistoriesTest {
 
     private static final String hotteok = "호떡";
     private static final String mint = "밍트";
@@ -20,29 +20,29 @@ public class CrewsTest {
     @DisplayName("크루 이름으로 크루를 조회한다")
     @Test
     void findCrewNicknameTest() {
-        Crew crew1 = new Crew(hotteok, new HashMap<>());
-        Crew crew2 = new Crew(mint, new HashMap<>());
+        CrewHistory crewHistory1 = new CrewHistory(hotteok, new HashMap<>());
+        CrewHistory crewHistory2 = new CrewHistory(mint, new HashMap<>());
         // Given
-        Crews crews = new Crews(
-                Map.of(hotteok, crew1, mint, crew2)
+        CrewHistories crewHistories = new CrewHistories(
+                Map.of(hotteok, crewHistory1, mint, crewHistory2)
         );
 
         // When & Then
-        assertThat(crews.findCrewByNickname(hotteok)).isEqualTo(crew1);
+        assertThat(crewHistories.findCrewByNickname(hotteok)).isEqualTo(crewHistory1);
     }
 
     @DisplayName("크루가 존재하지 않는다면 예외를 발생시킨다")
     @Test
     void crewNotExistTest() {
-        Crew crew1 = new Crew(hotteok, new HashMap<>());
-        Crew crew2 = new Crew(mint, new HashMap<>());
+        CrewHistory crewHistory1 = new CrewHistory(hotteok, new HashMap<>());
+        CrewHistory crewHistory2 = new CrewHistory(mint, new HashMap<>());
         // Given
-        Crews crews = new Crews(
-                Map.of(hotteok, crew1, mint, crew2)
+        CrewHistories crewHistories = new CrewHistories(
+                Map.of(hotteok, crewHistory1, mint, crewHistory2)
         );
 
         // When & Then
-        assertThatThrownBy(() -> crews.findCrewByNickname("사바"))
+        assertThatThrownBy(() -> crewHistories.findCrewByNickname("사바"))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("[ERROR] 등록되지 않은 닉네임입니다.");
     }
@@ -52,7 +52,7 @@ public class CrewsTest {
     void findDismissalCrewsTest() {
         // Given
         LocalDate todayDate = LocalDate.of(2024, 12, 10);
-        Crew crew1 = new Crew(hotteok, Map.of(
+        CrewHistory crewHistory1 = new CrewHistory(hotteok, Map.of(
                 2, LocalDateTime.of(LocalDate.of(2024, 12, 2), DEFAULT_TIME),
                 3, LocalDateTime.of(LocalDate.of(2024, 12, 3), DEFAULT_TIME),
                 4, LocalDateTime.of(2024, 12, 4, 9, 30),
@@ -60,7 +60,7 @@ public class CrewsTest {
                 6, LocalDateTime.of(2024, 12, 6, 9, 30),
                 9, LocalDateTime.of(2024, 12, 9, 9, 30)
         ));
-        Crew crew2 = new Crew(mint, Map.of(
+        CrewHistory crewHistory2 = new CrewHistory(mint, Map.of(
                 2, LocalDateTime.of(LocalDate.of(2024, 12, 2), DEFAULT_TIME),
                 3, LocalDateTime.of(LocalDate.of(2024, 12, 3), DEFAULT_TIME),
                 4, LocalDateTime.of(LocalDate.of(2024, 12, 4), DEFAULT_TIME),
@@ -69,7 +69,7 @@ public class CrewsTest {
                 9, LocalDateTime.of(2024, 12, 9, 9, 30)
         ));
 
-        Crew crew3 = new Crew(wilson, Map.of(
+        CrewHistory crewHistory3 = new CrewHistory(wilson, Map.of(
                 2, LocalDateTime.of(LocalDate.of(2024, 12, 2), DEFAULT_TIME),
                 3, LocalDateTime.of(LocalDate.of(2024, 12, 3), DEFAULT_TIME),
                 4, LocalDateTime.of(LocalDate.of(2024, 12, 4), DEFAULT_TIME),
@@ -77,9 +77,9 @@ public class CrewsTest {
                 6, LocalDateTime.of(LocalDate.of(2024, 12, 6), DEFAULT_TIME),
                 9, LocalDateTime.of(LocalDate.of(2024, 12, 9), DEFAULT_TIME)
         ));
-        Crews crews = new Crews(Map.of(hotteok, crew1, mint, crew2, wilson, crew3));
+        CrewHistories crewHistories = new CrewHistories(Map.of(hotteok, crewHistory1, mint, crewHistory2, wilson, crewHistory3));
 
         // When & Then
-        assertThat(crews.findDismissalCrews(todayDate)).containsOnly(crew1, crew2, crew3);
+        assertThat(crewHistories.findDismissalCrews(todayDate)).containsOnly(crewHistory1, crewHistory2, crewHistory3);
     }
 }

@@ -17,7 +17,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
-public class CrewTest {
+public class CrewHistoryTest {
 
     private static final String CREW_NAME = "밍트";
 
@@ -25,26 +25,26 @@ public class CrewTest {
     @Test
     void checkAttendanceTest() {
         // Given
-        Crew crew = new Crew(CREW_NAME, new HashMap<>());
+        CrewHistory crewHistory = new CrewHistory(CREW_NAME, new HashMap<>());
         LocalDateTime attendanceTime = LocalDateTime.of(2024, 12, 3, 9, 0);
 
         // When
-        crew.doAttendance(attendanceTime);
+        crewHistory.attend(attendanceTime);
 
         // Then
-        assertThat(crew.getAttendance()).containsEntry(3, attendanceTime);
+        assertThat(crewHistory.getAttendance()).containsEntry(3, attendanceTime);
     }
 
     @DisplayName("이미 출석한 경우 예외가 발생한다")
     @Test
     void alreadyAttendanceTest() {
         // Given
-        Crew crew = new Crew(CREW_NAME, new HashMap<>());
+        CrewHistory crewHistory = new CrewHistory(CREW_NAME, new HashMap<>());
         LocalDateTime attendanceTime = LocalDateTime.of(2024, 12, 3, 9, 0);
-        crew.doAttendance(attendanceTime);
+        crewHistory.attend(attendanceTime);
 
         // When & Then
-        assertThatThrownBy(() -> crew.doAttendance(attendanceTime))
+        assertThatThrownBy(() -> crewHistory.attend(attendanceTime))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("[ERROR] 이미 출석했습니다. 수정 기능을 이용해주세요.");
     }
@@ -54,19 +54,19 @@ public class CrewTest {
     @Test
     void modifyAttendanceTest() {
         // Given
-        Crew crew = new Crew(CREW_NAME, new HashMap<>());
+        CrewHistory crewHistory = new CrewHistory(CREW_NAME, new HashMap<>());
         LocalDateTime attendanceTime = LocalDateTime.of(2024, 12, 3, 9, 0);
-        crew.doAttendance(attendanceTime);
+        crewHistory.attend(attendanceTime);
 
         LocalDateTime modifyTime = LocalDateTime.of(2024, 12, 3, 9, 50);
         LocalDate todayDate = LocalDate.now();
 
         // When
-        LocalDateTime previousDateTime = crew.doModify(modifyTime, todayDate);
+        LocalDateTime previousDateTime = crewHistory.modify(modifyTime, todayDate);
 
         // Then
         assertAll(
-                () -> assertThat(crew.getAttendance()).containsEntry(3, modifyTime),
+                () -> assertThat(crewHistory.getAttendance()).containsEntry(3, modifyTime),
                 () -> assertThat(previousDateTime).isEqualTo(attendanceTime)
         );
     }
@@ -79,11 +79,11 @@ public class CrewTest {
     })
     void invalidModifyDateTest(LocalDate todayDate) {
         // Given
-        Crew crew = new Crew(CREW_NAME, new HashMap<>());
+        CrewHistory crewHistory = new CrewHistory(CREW_NAME, new HashMap<>());
         LocalDateTime modifyTime = LocalDateTime.of(2024, 12, 4, 9, 50);
 
         // When & Then
-        assertThatThrownBy(() -> crew.doModify(modifyTime, todayDate))
+        assertThatThrownBy(() -> crewHistory.modify(modifyTime, todayDate))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("[ERROR] 수정 일자는 어제 기록까지만 수정할 수 있습니다.");
     }
@@ -97,10 +97,10 @@ public class CrewTest {
         LocalDateTime dateTime1 = LocalDateTime.of(2024, 12, 3, 9, 0);
         LocalDateTime dateTime2 = LocalDateTime.of(2024, 12, 4, 9, 0);
         LocalDateTime todayDateTime = LocalDateTime.of(2024, 12, 19, 9, 0);
-        Crew crew = new Crew(CREW_NAME, Map.of(3, dateTime1, 12, dateTime2, 19, todayDateTime));
+        CrewHistory crewHistory = new CrewHistory(CREW_NAME, Map.of(3, dateTime1, 12, dateTime2, 19, todayDateTime));
 
         // When
-        List<LocalDateTime> attendanceHistory = crew.getAttendanceHistory(today);
+        List<LocalDateTime> attendanceHistory = crewHistory.getAttendanceHistory(today);
 
         // Then
         assertThat(attendanceHistory).contains(dateTime1, dateTime2);
@@ -116,10 +116,10 @@ public class CrewTest {
         LocalDateTime dateTime3 = LocalDateTime.of(2024, 12, 4, 10, 31);
         LocalDateTime dateTime4 = LocalDateTime.of(LocalDate.of(2024, 12, 5), DEFAULT_TIME);
         LocalDateTime dateTime5 = LocalDateTime.of(2024, 12, 6, 9, 30);
-        Crew crew = new Crew(CREW_NAME, Map.of(2, dateTime1, 3, dateTime2, 4, dateTime3, 5, dateTime4, 9, dateTime5));
+        CrewHistory crewHistory = new CrewHistory(CREW_NAME, Map.of(2, dateTime1, 3, dateTime2, 4, dateTime3, 5, dateTime4, 9, dateTime5));
 
         // When
-        Map<AttendanceType, Integer> result = crew.countAttendanceType(todayDate);
+        Map<AttendanceType, Integer> result = crewHistory.countAttendanceType(todayDate);
 
         // Then
         Assertions.assertThat(result).containsExactly(

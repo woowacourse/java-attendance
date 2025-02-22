@@ -41,5 +41,4 @@ public class Campus {
     private boolean isHoliday(final LocalDate date) {
         return date.getDayOfMonth() == CHRISTMAS_DAY;
     }
-
 }

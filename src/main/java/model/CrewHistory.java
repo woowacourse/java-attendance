@@ -9,17 +9,22 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.IntStream;
 
-public class Crew {
+public class CrewHistory {
 
     private final String nickname;
     private final Map<Integer, LocalDateTime> attendance;
 
-    public Crew(final String nickname, final Map<Integer, LocalDateTime> attendance) {
+    public CrewHistory(final String nickname, final Map<Integer, LocalDateTime> attendance) {
         this.nickname = nickname;
         this.attendance = new HashMap<>(attendance);
     }
 
-    public void doAttendance(final LocalDateTime attendanceTime) {
+    public void loadHistory(final LocalDateTime attendanceTime) {
+        int day = attendanceTime.getDayOfMonth();
+        attendance.put(day, attendanceTime);
+    }
+
+    public void attend(final LocalDateTime attendanceTime) {
         int day = attendanceTime.getDayOfMonth();
         if (attendance.containsKey(day)) {
             throw new IllegalArgumentException("[ERROR] 이미 출석했습니다. 수정 기능을 이용해주세요.");
@@ -27,7 +32,7 @@ public class Crew {
         attendance.put(day, attendanceTime);
     }
 
-    public LocalDateTime doModify(final LocalDateTime modifyDateTime, final LocalDate todayDate) {
+    public LocalDateTime modify(final LocalDateTime modifyDateTime, final LocalDate todayDate) {
         LocalDate modifyDate = LocalDate.from(modifyDateTime);
         if (modifyDate.isEqual(todayDate) || modifyDate.isAfter(todayDate)) {
             throw new IllegalArgumentException("[ERROR] 수정 일자는 어제 기록까지만 수정할 수 있습니다.");
@@ -36,19 +41,6 @@ public class Crew {
         LocalDateTime previousTime = attendance.get(modifyDay);
         attendance.put(modifyDay, modifyDateTime);
         return previousTime;
-    }
-
-    public List<LocalDateTime> getAttendanceHistory(final LocalDate todayDate) {
-        int today = todayDate.getDayOfMonth();
-        return IntStream.range(1, today)
-                .filter(attendance::containsKey)
-                .mapToObj(attendance::get)
-                .toList();
-    }
-
-    public void loadAttendanceHistory(final LocalDateTime attendanceTime) {
-        int day = attendanceTime.getDayOfMonth();
-        attendance.put(day, attendanceTime);
     }
 
     public Map<AttendanceType, Integer> countAttendanceType(final LocalDate todayDate) {
@@ -70,6 +62,14 @@ public class Crew {
 
     public String getNickname() {
         return nickname;
+    }
+
+    public List<LocalDateTime> getAttendanceHistory(final LocalDate todayDate) {
+        int today = todayDate.getDayOfMonth();
+        return IntStream.range(1, today)
+                .filter(attendance::containsKey)
+                .mapToObj(attendance::get)
+                .toList();
     }
 
     public Map<Integer, LocalDateTime> getAttendance() {
