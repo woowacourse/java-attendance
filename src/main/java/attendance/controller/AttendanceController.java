@@ -10,7 +10,6 @@ import attendance.file.AttendanceFileReader.FileContents;
 import attendance.util.DateUtil;
 import attendance.view.InputView;
 import attendance.view.OutputView;
-import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -23,7 +22,7 @@ public class AttendanceController {
     private Attendances attendances;
     private Crews crews;
 
-    public AttendanceController() throws IOException {
+    public AttendanceController() {
         String path = "src/main/resources/attendances.csv";
         FileContents fileContents = AttendanceFileReader.read(path);
         attendances = fileContents.attendances();

@@ -1,11 +1,10 @@
 package attendance;
 
 import attendance.controller.AttendanceController;
-import java.io.IOException;
 
 public class Application {
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) {
         AttendanceController attendanceController = new AttendanceController();
         attendanceController.run();
     }
