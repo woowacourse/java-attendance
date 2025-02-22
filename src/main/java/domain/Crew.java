@@ -7,6 +7,10 @@ import java.util.Comparator;
 import java.util.List;
 
 public class Crew {
+    private final static int LATE_COUNT_FOR_ABSENCE = 3;
+    private final static int SATURDAY = 6;
+    private final static int SUNDAY = 7;
+
     private final String nickName;
     private final List<Attendance> attendances;
 
@@ -29,7 +33,7 @@ public class Crew {
     }
 
     private Integer calculateNonAttendanceCount() {
-        return calculateAbsentCount() + calculateLateCount() / 3;
+        return calculateAbsentCount() + calculateLateCount() / LATE_COUNT_FOR_ABSENCE;
     }
 
     private Integer calculateLateCount() {
@@ -61,7 +65,7 @@ public class Crew {
         LocalDate today = LocalDate.now();
 
         for (LocalDate date = today.withDayOfMonth(1); date.isBefore(today); date = date.plusDays(1)) {
-            if (date.getDayOfWeek().getValue() == 6 || date.getDayOfWeek().getValue() == 7) {
+            if (date.getDayOfWeek().getValue() == SATURDAY || date.getDayOfWeek().getValue() == SUNDAY) {
                 continue;
             }
             if (!isAlreadyAttend(date)) {
