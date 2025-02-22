@@ -21,8 +21,8 @@ class AttendanceManagerTest {
     void 크루가_추가될때_기본_출석이_생성된다() {
         // given
         String name = "랜디";
-        Holiday holiday = new Holiday();
-        AttendanceManager attendanceManager = new AttendanceManager(holiday, dateGenerator);
+        HolidayChecker holidayChecker = new HolidayChecker();
+        AttendanceManager attendanceManager = new AttendanceManager(holidayChecker, dateGenerator);
 
         // when
         attendanceManager.addCrew(name);

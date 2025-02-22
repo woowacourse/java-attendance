@@ -13,12 +13,12 @@ import java.util.stream.IntStream;
 public class AttendanceManager {
 
     private final Map<String, Attendances> attendances;
-    private final Holiday holiday;
+    private final HolidayChecker holidayChecker;
     private final DateGenerator dateGenerator;
 
-    public AttendanceManager(Holiday holiday, DateGenerator dateGenerator) {
+    public AttendanceManager(HolidayChecker holidayChecker, DateGenerator dateGenerator) {
         this.attendances = new HashMap<>();
-        this.holiday = holiday;
+        this.holidayChecker = holidayChecker;
         this.dateGenerator = dateGenerator;
     }
 
@@ -28,7 +28,7 @@ public class AttendanceManager {
         Attendances newAttendances = new Attendances();
         IntStream.range(1, dayAllCount + 1)
                 .mapToObj(index -> dateGenerator.now().withDayOfMonth(index))
-                .filter(date -> !holiday.isHoliday(date))
+                .filter(date -> !holidayChecker.isHoliday(date))
                 .forEach(date -> newAttendances.add(new Attendance(date)));
 
         attendances.put(name, newAttendances);

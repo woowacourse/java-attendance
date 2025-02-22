@@ -1,7 +1,7 @@
 package attendance.config;
 
 import attendance.domain.AttendanceManager;
-import attendance.domain.Holiday;
+import attendance.domain.HolidayChecker;
 import attendance.service.AttendanceInitService;
 import attendance.service.AttendanceService;
 import attendance.utility.CurrentDateGeneratorImpl;
@@ -13,7 +13,7 @@ public class AppConfig {
 
     private final InputView inputView;
     private final OutputView outputView;
-    private final Holiday holiday;
+    private final HolidayChecker holidayChecker;
     private final DateGenerator dateGenerator;
     private final AttendanceManager attendanceManager;
     private final AttendanceInitService attendanceInitService;
@@ -22,9 +22,9 @@ public class AppConfig {
     public AppConfig() {
         this.inputView = new InputView();
         this.outputView = new OutputView();
-        this.holiday = new Holiday();
+        this.holidayChecker = new HolidayChecker();
         this.dateGenerator = new CurrentDateGeneratorImpl();
-        this.attendanceManager = new AttendanceManager(holiday, dateGenerator);
+        this.attendanceManager = new AttendanceManager(holidayChecker, dateGenerator);
         this.attendanceInitService = new AttendanceInitService(attendanceManager);
         this.attendanceService = new AttendanceService(inputView, attendanceManager);
     }
