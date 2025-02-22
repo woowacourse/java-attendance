@@ -1,19 +1,18 @@
-import domain.AttendanceDateTime;
-import domain.AttendanceState;
+package domain;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatCode;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.util.stream.Stream;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
-
-import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.util.stream.Stream;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatCode;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 public class AttendanceTimeTest {
 
@@ -176,4 +175,18 @@ public class AttendanceTimeTest {
         }
     }
 
+    @Nested
+    @DisplayName("날짜 일치 테스트")
+    class DayEqualsTest {
+        @Test
+        @DisplayName("날짜 일치 여부를 테스트할 수 있다.")
+        void isDaySameTest() {
+            //given
+            AttendanceDateTime attendanceDatetime = AttendanceDateTime.from(LocalDateTime.of(2024, 12, 13, 10, 10));
+            AttendanceSheet attendanceSheet = new AttendanceSheet("링크", attendanceDatetime);
+
+            //when
+            assertThat(attendanceDatetime.isSame(attendanceSheet)).isTrue();
+        }
+    }
 }
