@@ -32,9 +32,9 @@ public class DateInfos {
         int late = 0;
         int attendance = 0;
         for (DateInfo dateInfo : dateInfos) {
-            absence += dateInfo.checkAbsenceStatus();
-            late += dateInfo.checkLateStatus();
-            attendance += dateInfo.checkAttendanceStatus();
+            absence += dateInfo.isAbsence();
+            late += dateInfo.isLate();
+            attendance += dateInfo.isAttendance();
         }
         this.absence = absence;
         this.late = late;

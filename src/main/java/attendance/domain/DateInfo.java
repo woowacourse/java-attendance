@@ -36,19 +36,19 @@ public class DateInfo {
         this.attendanceStatus = calculateStatus();
     }
 
-    public int checkAbsenceStatus() {
+    public int isAbsence() {
         if (this.attendanceStatus.equals(AttendanceStatus.ABSENCE)) {
             return 1;
         }
         return 0;
     }
-    public int checkLateStatus() {
+    public int isLate() {
         if (this.attendanceStatus.equals(AttendanceStatus.LATE)) {
             return 1;
         }
         return 0;
     }
-    public int checkAttendanceStatus() {
+    public int isAttendance() {
         if (this.attendanceStatus.equals(AttendanceStatus.ATTENDANCE)) {
             return 1;
         }
