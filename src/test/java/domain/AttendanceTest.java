@@ -4,9 +4,12 @@ import dto.result.AttendResult;
 import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import util.exception.IllegalAttendTimeException;
 import util.exception.WeekendAttendException;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 
@@ -208,6 +211,24 @@ public class AttendanceTest {
             ).containsExactly(
                     LocalDateTime.of(2024, 12, 3, 10, 6), AttendanceStatus.지각
             );
+        }
+    }
+    
+    @Nested
+    class 출석_날짜_동일_여부_판단_테스트 {
+        
+        @ParameterizedTest
+        @ValueSource(strings = {"2024-12-03", "2025-01-23", "2025-05-19"})
+        void 출석_날짜가_동일한지_판단한다(String date) {
+            // given
+            Attendance attendance = new Attendance(LocalDateTime.of(LocalDate.parse(date), LocalTime.of(9, 45)));
+            LocalDate sameDay = LocalDate.parse(date);
+            
+            // when
+            boolean result = attendance.isSameDay(sameDay);
+            
+            // then
+            assertThat(result).isTrue();
         }
     }
 }
