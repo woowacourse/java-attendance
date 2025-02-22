@@ -1,7 +1,6 @@
 package attendance.model;
 
 import java.time.LocalDate;
-import java.util.stream.Stream;
 
 public class Crew {
 
@@ -15,11 +14,8 @@ public class Crew {
     }
 
     private void validate(String name) {
-        if (name == null || name.isBlank()) {
-            throw new IllegalArgumentException("크루의 이름은 1자 이상 5자 이하여야 합니다.");
-        }
-        if (name.length() >= 5) {
-            throw new IllegalArgumentException("크루의 이름은 1자 이상 5자 이하여야 합니다.");
+        if (name == null || name.isBlank() || name.length() > 4) {
+            throw new IllegalArgumentException("크루의 이름은 1자 이상 4자 이하여야 합니다.");
         }
     }
 

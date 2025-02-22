@@ -15,7 +15,7 @@ import org.junit.jupiter.api.Test;
 class CrewTest {
 
     @Test
-    void 크루의_이름이_5자_이하가_아니라면_예외가_발생한다() {
+    void 크루의_이름이_4자_이하가_아니라면_예외가_발생한다() {
         assertThatThrownBy(() -> new Crew("멍멍멍멍멍"))
                 .isInstanceOf(IllegalArgumentException.class);
     }
