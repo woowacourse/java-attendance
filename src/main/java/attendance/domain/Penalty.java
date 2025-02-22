@@ -29,5 +29,4 @@ public enum Penalty {
         }
         return Penalty.NONE;
     }
-
 }
