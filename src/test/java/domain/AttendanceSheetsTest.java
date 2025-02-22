@@ -12,6 +12,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Nested;
 
+@DisplayName("출석 추가, 수정, 목록 확인 테스트")
 class AttendanceSheetsTest {
     AttendanceSheets attendanceSheets;
 

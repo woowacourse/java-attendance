@@ -72,7 +72,7 @@ public class AttendanceController {
         int day = InputParser.dayParser(inputView.inputUpdateDate());
 
         AttendanceSheet attendanceSheetByNicknameAndDay = attendanceByNickname.stream()
-                .filter(attendanceSheet -> attendanceSheet.getAttendanceDateTime().getAttendanceDateTime().getDayOfMonth() == day)
+                .filter(attendanceSheet -> attendanceSheet.isCorrectDay(day))
                 .findFirst()
                 .orElseThrow();
 

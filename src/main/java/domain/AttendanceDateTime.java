@@ -97,8 +97,12 @@ public class AttendanceDateTime {
         }
     }
 
-    public boolean isSame(AttendanceSheet attendanceSheet) {
+    public boolean isCorrectDay(AttendanceSheet attendanceSheet) {
         return this.attendanceDateTime.toLocalDate().equals(attendanceSheet.getAttendanceDateTime().attendanceDateTime.toLocalDate());
+    }
+
+    public boolean isCorrectDay(int day) {
+        return attendanceDateTime.getDayOfMonth() == day;
     }
 
     public LocalDateTime getAttendanceDateTime() {

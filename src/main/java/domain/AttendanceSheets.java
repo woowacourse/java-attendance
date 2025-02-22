@@ -23,7 +23,7 @@ public class AttendanceSheets {
 
     private boolean isAlreadyAttendance(AttendanceSheet attendanceSheet) {
         return findAttendanceByNickname(attendanceSheet.getNickname()).stream()
-                .anyMatch(attendanceSheet1 -> attendanceSheet1.isSame(attendanceSheet));
+                .anyMatch(attendanceSheet1 -> attendanceSheet1.isCorrectDay(attendanceSheet));
     }
 
     public List<AttendanceSheet> findAttendanceByNickname(String nickname) {

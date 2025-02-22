@@ -15,6 +15,7 @@ import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.jupiter.params.provider.ValueSource;
 
+@DisplayName("출석 가능 날짜와 시간 테스트")
 public class AttendanceDateTimeTest {
 
     @Nested
@@ -181,14 +182,25 @@ public class AttendanceDateTimeTest {
     @DisplayName("날짜 일치 테스트")
     class DayEqualsTest {
         @Test
-        @DisplayName("날짜 일치 여부를 테스트할 수 있다.")
-        void isDaySameTest() {
+        @DisplayName("출석부를 비교하여 날짜 일치 여부를 테스트할 수 있다.")
+        void isDayCorrectTestFromSheet() {
             //given
             AttendanceDateTime attendanceDatetime = AttendanceDateTime.from(LocalDateTime.of(2024, 12, 13, 10, 10));
             AttendanceSheet attendanceSheet = new AttendanceSheet("링크", attendanceDatetime);
 
-            //when
-            assertThat(attendanceDatetime.isSame(attendanceSheet)).isTrue();
+            //when-then
+            assertThat(attendanceDatetime.isCorrectDay(attendanceSheet)).isTrue();
+        }
+
+        @Test
+        @DisplayName("날짜를 입력받아 날짜 일치 여부를 테스트할 수 있다.")
+        void isDayCorrectTestFromDay() {
+            //given
+            AttendanceDateTime attendanceDatetime = AttendanceDateTime.from(LocalDateTime.of(2024, 12, 13, 10, 10));
+
+            //when-then
+            assertThat(attendanceDatetime.isCorrectDay(13)).isTrue();
         }
     }
+
 }

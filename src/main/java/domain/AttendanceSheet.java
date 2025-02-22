@@ -22,7 +22,11 @@ public class AttendanceSheet {
         return attendanceDateTime;
     }
 
-    public boolean isSame(AttendanceSheet attendanceSheet) {
-        return this.attendanceDateTime.isSame(attendanceSheet);
+    public boolean isCorrectDay(AttendanceSheet attendanceSheet) {
+        return this.attendanceDateTime.isCorrectDay(attendanceSheet);
+    }
+
+    public boolean isCorrectDay(int day) {
+        return attendanceDateTime.isCorrectDay(day);
     }
 }
