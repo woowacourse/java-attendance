@@ -7,6 +7,7 @@ import attendance.domain.AttendanceStatus;
 import attendance.domain.Attendances;
 import attendance.domain.PenaltyCrew;
 import attendance.dto.AttendanceInfoDto;
+import attendance.dto.CrewAttendanceDto;
 import attendance.dto.EditResponseDto;
 import attendance.dto.FileRequestDto;
 import attendance.dto.PenaltyCrewDto;
@@ -61,7 +62,14 @@ public class AttendanceService {
         return new EditResponseDto(date, oldTime, editTime, oldStatus, editStatus);
     }
 
-    public Map<LocalDate, AttendanceInfoDto> getAttendanceInfos(String name, LocalDate today) {
+    public CrewAttendanceDto getCrewAttendance(String name, LocalDate today) {
+        Map<LocalDate, AttendanceInfoDto> attendanceInfos = getAttendanceInfos(name, today);
+        List<Integer> counts = getAttendanceCounts(name, today);
+        AttendancePenalty penalty = AttendancePenalty.find(counts);
+        return CrewAttendanceDto.of(name, attendanceInfos, counts, penalty, today);
+    }
+
+    private Map<LocalDate, AttendanceInfoDto> getAttendanceInfos(String name, LocalDate today) {
         Map<LocalDate, AttendanceInfoDto> map = new HashMap<>();
         List<Attendance> attendanceList = attendances.findByNameAndDateWithAscend(name, today);
 
@@ -73,13 +81,8 @@ public class AttendanceService {
         return map;
     }
 
-    public List<Integer> getAttendanceCounts(String name, LocalDate today) {
+    private List<Integer> getAttendanceCounts(String name, LocalDate today) {
         return attendances.calculateByNameAndDate(name, today);
-    }
-
-    public String getAttendancePenalty(List<Integer> counts) {
-        return AttendancePenalty.find(counts)
-                .getMessage();
     }
 
     public List<PenaltyCrewDto> getCrewsName(LocalDate today) {

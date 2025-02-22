@@ -7,6 +7,7 @@ import static attendance.common.Constants.LINE_SEPARATOR;
 import static attendance.common.Constants.PRESENCE_INDEX;
 
 import attendance.dto.AttendanceInfoDto;
+import attendance.dto.CrewAttendanceDto;
 import attendance.dto.EditResponseDto;
 import attendance.dto.PenaltyCrewDto;
 import attendance.utils.DateConverter;
@@ -43,20 +44,19 @@ public class OutputView {
         System.out.println(sb);
     }
 
-    public void attendanceResult(String nickName, Map<LocalDate, AttendanceInfoDto> infoDtoMap, List<Integer> counts,
-                                 String penalty, LocalDate today) {
-        System.out.println("이번 달 " + nickName + "의 출석 기록입니다." + LINE_SEPARATOR);
+    public void attendanceResult(CrewAttendanceDto crewAttendanceDto) {
+        System.out.println("이번 달 " + crewAttendanceDto.name() + "의 출석 기록입니다." + LINE_SEPARATOR);
 
         LocalDate currentDate = DECEMBER_START_DATE;
 
-        while (currentDate.isBefore(today)) {
-            currentDate = processDailyAttendance(currentDate, infoDtoMap);
+        while (currentDate.isBefore(crewAttendanceDto.today())) {
+            currentDate = processDailyAttendance(currentDate, crewAttendanceDto.dtoMap());
         }
 
-        formatCounts(counts);
+        formatCounts(crewAttendanceDto.counts());
 
-        if (penalty != null) {
-            System.out.println(penalty + " 대상자입니다.");
+        if (crewAttendanceDto.penalty() != null) {
+            System.out.println(crewAttendanceDto.penalty() + " 대상자입니다.");
         }
     }
 

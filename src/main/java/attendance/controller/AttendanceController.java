@@ -1,6 +1,7 @@
 package attendance.controller;
 
 import attendance.dto.AttendanceInfoDto;
+import attendance.dto.CrewAttendanceDto;
 import attendance.dto.EditResponseDto;
 import attendance.dto.PenaltyCrewDto;
 import attendance.service.AttendanceService;
@@ -85,11 +86,8 @@ public class AttendanceController {
         String nickname = inputView.readNickname();
         service.findName(nickname);
 
-        Map<LocalDate, AttendanceInfoDto> dtoMap = service.getAttendanceInfos(nickname, today);
-        List<Integer> counts = service.getAttendanceCounts(nickname, today);
-        String penalty = service.getAttendancePenalty(counts);
-
-        outputView.attendanceResult(nickname, dtoMap, counts, penalty, today);
+        CrewAttendanceDto crewAttendance = service.getCrewAttendance(nickname, today);
+        outputView.attendanceResult(crewAttendance);
     }
 
     private void checkExpulsion(LocalDate today) {
