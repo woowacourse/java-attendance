@@ -65,6 +65,7 @@ public class AttendanceService {
         List<AttendanceRecord> attendanceRecords = new ArrayList<>();
         List<LocalDate> notOffDates = IntStream.range(1, today.getDayOfMonth())
                 .mapToObj(today::withDayOfMonth)
+                .filter(date -> !DateTimeUtil.isOffDay(date))
                 .toList();
         notOffDates.forEach(date ->
                 attendanceRecords.add(new AttendanceRecord(date, crew.getAttendanceTimeByDate(date)))
@@ -77,6 +78,7 @@ public class AttendanceService {
         initializeStatusCounter(statusCounter);
         List<LocalDate> notOffDates = IntStream.range(1, today.getDayOfMonth())
                 .mapToObj(today::withDayOfMonth)
+                .filter(date -> !DateTimeUtil.isOffDay(date))
                 .toList();
         notOffDates.forEach(date -> {
             AttendanceStatus attendanceStatus = crew.getAttendanceStatusByDate(date);

@@ -16,7 +16,7 @@ public class DateTimeUtil {
     }
 
     private static boolean isHoliday(LocalDate date) {
-        return !Holiday.from(date).equals(Holiday.NONE);
+        return !Holiday.from(date).equals(Holiday.NOT_HOLIDAY);
     }
 
     public static LocalDate nowDate() {

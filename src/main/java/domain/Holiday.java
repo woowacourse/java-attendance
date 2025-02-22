@@ -5,7 +5,7 @@ import java.util.Arrays;
 
 public enum Holiday {
     CHRISTMAS("크리스마스", 12, 25),
-    NONE("공휴일이 아닌 경우", 0, 0),
+    NOT_HOLIDAY("공휴일이 아닌 경우", 0, 0),
     ;
 
     private final String description;
@@ -22,6 +22,6 @@ public enum Holiday {
         return Arrays.stream(values())
                 .filter(holiday -> holiday.month == date.getMonthValue() && holiday.day == date.getDayOfMonth())
                 .findAny()
-                .orElse(NONE);
+                .orElse(NOT_HOLIDAY);
     }
 }

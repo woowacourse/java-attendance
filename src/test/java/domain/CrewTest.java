@@ -83,7 +83,7 @@ public class CrewTest {
     @DisplayName("출석 상태별 횟수를 계산한다")
     void getAttendanceStatusCounterTest() {
         // given
-        Crew crew = new Crew("pobi");
+        Crew crew = new Crew("cube");
         // LATE
         crew.insertAttendanceTime(LocalDate.of(2025, 2, 3), LocalTime.of(13, 6));
         // ATTENDANCE
