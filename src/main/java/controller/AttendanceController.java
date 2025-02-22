@@ -110,7 +110,7 @@ public class AttendanceController {
         int absentCount = attendanceSheets.getStateCount(name, AttendanceState.ABSENT);
 
         AbsentPolicy absentPolicy = AbsentPolicy.calculateAbsentPolicy(absentCount, lateCount);
-        if (AbsentPolicy.isRiskOfExpulsion(absentPolicy)) {
+        if (AbsentPolicy.isNotRiskOfExpulsion(absentPolicy)) {
             return;
         }
 

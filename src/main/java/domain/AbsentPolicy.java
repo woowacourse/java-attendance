@@ -18,7 +18,7 @@ public enum AbsentPolicy {
         this.absentCount = absentCount;
     }
 
-    public static boolean isRiskOfExpulsion(AbsentPolicy absentPolicy) {
+    public static boolean isNotRiskOfExpulsion(AbsentPolicy absentPolicy) {
         return absentPolicy == AbsentPolicy.NONE || absentPolicy == AbsentPolicy.EXPULSION;
     }
 
