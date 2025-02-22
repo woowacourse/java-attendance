@@ -3,6 +3,7 @@ package domain;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 
 public class Attendance {
@@ -30,8 +31,9 @@ public class Attendance {
         return new Attendance(dateTime, false);
     }
 
-    public static Attendance empty(final LocalDateTime dateTime) {
-        return new Attendance(dateTime, true);
+    public static Attendance empty(final LocalDate date) {
+        final LocalTime emptyTime = LocalTime.MAX;
+        return new Attendance(LocalDateTime.of(date, emptyTime), true);
     }
 
     public Attendance(final Attendance attendance) {

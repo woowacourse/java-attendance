@@ -1,63 +1,80 @@
 package domain;
 
+import domain.constants.ErrorMessage;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
 public class AttendanceSystem {
-    private static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+    private static final LocalDate CHRISTMAS_DAY = LocalDate.of(2024, 12, 25);
+    private static final String DELIMITER = ",";
     private final List<Crew> crews;
+    private final DateTimeGenerator dateTimeGenerator;
 
-    public AttendanceSystem(final List<Crew> crews) {
-        this.crews = crews;
+    public AttendanceSystem(final List<Crew> crews, final DateTimeGenerator dateTimeGenerator) {
+        this.crews = new ArrayList<>(crews);
+        this.dateTimeGenerator = dateTimeGenerator;
     }
 
-    public static AttendanceSystem of(final List<String> data, final LocalDate today) {
+    public static AttendanceSystem of(final List<String> data, final DateTimeGenerator dateTimeGenerator) {
+        final LocalDate today = dateTimeGenerator.generateDate();
         final List<Crew> crews = data.stream()
-                .map(d -> d.split(",")[0])
+                .map(d -> d.split(DELIMITER)[0])
                 .distinct()
                 .map(d -> Crew.of(d, today))
                 .toList();
         data.forEach(d -> initAttendance(crews, d));
-        return new AttendanceSystem(crews);
+        return new AttendanceSystem(crews, dateTimeGenerator);
     }
 
-    public Attendance attendance(final String name, final LocalDateTime localDateTime) {
+    private static void initAttendance(final List<Crew> crews, final String input) {
+        final String[] data = input.split(DELIMITER);
+        crews.stream()
+                .filter(crew -> crew.isSameName(data[0]))
+                .findAny()
+                .ifPresent(crew -> crew.updateAttendanceByDateTime(data[1]));
+    }
+
+    public Attendance attendance(final String name, final LocalTime time) {
         final Crew crew = findCrewByName(name);
-        return crew.addAttendance(localDateTime.format(DATE_TIME_FORMATTER));
+        final LocalDateTime dateTime = LocalDateTime.of(dateTimeGenerator.generateDate(), time);
+        return crew.addAttendance(dateTime);
     }
 
     public boolean isAlreadyTodayAttendance(final String crewName) {
         final Crew crew = this.findCrewByName(crewName);
-        return crew.isAlreadyTodayAttendance(LocalDate.now().withYear(2024).withMonth(12));
+        return crew.isAlreadyTodayAttendance(dateTimeGenerator.generateDate());
     }
 
     public void validateCrewByName(final String name) {
         if (!existCrewByName(name)) {
-            throw new IllegalArgumentException("크루가 존재하지 않습니다.");
+            throw new IllegalArgumentException(ErrorMessage.CREW_NOT_FOUND.getMessage());
         }
     }
 
     public void validateUpdateAttendanceDay(final String crewName, final int dayOfMonth) {
         if (!isAlreadyTodayAttendanceByCrewName(crewName, convertDayOfMonthToLocalDate(dayOfMonth))) {
-            throw new IllegalArgumentException("유효하지 않은 날짜입니다.");
+            throw new IllegalArgumentException(ErrorMessage.INVALID_DATE.getMessage());
         }
     }
 
-    public List<Crew> calculateExpulsionCrews() {
+    public List<Crew> calculateRiskOfExpulsionCrews() {
         return crews.stream()
                 .filter(this::isRiskOfExpulsionCrew)
                 .sorted()
                 .toList();
     }
 
-    public boolean isNotAttendanceDay(final LocalDate localDate) {
-        return localDate.getDayOfWeek() == DayOfWeek.SUNDAY || localDate.getDayOfWeek() == DayOfWeek.SATURDAY
-                || localDate.equals(LocalDate.of(2024, 12, 25));
+    public boolean isNotAttendanceDay() {
+        final LocalDate today = dateTimeGenerator.generateDate();
+        return today.getDayOfWeek() == DayOfWeek.SUNDAY || today.getDayOfWeek() == DayOfWeek.SATURDAY
+                || today.equals(CHRISTMAS_DAY);
     }
 
     private boolean isRiskOfExpulsionCrew(final Crew crew) {
@@ -81,11 +98,12 @@ public class AttendanceSystem {
         return crews.stream()
                 .filter(crew -> crew.isSameName(name))
                 .findAny()
-                .orElseThrow(IllegalArgumentException::new);
+                .orElseThrow(() -> new IllegalArgumentException(ErrorMessage.CREW_NOT_FOUND.getMessage()));
     }
 
     private LocalDate convertDayOfMonthToLocalDate(final int dayOfMonth) {
-        return LocalDate.of(2024, 12, dayOfMonth);
+        return dateTimeGenerator.generateDate()
+                .withDayOfMonth(dayOfMonth);
     }
 
     private boolean existCrewByName(final String name) {
@@ -97,15 +115,11 @@ public class AttendanceSystem {
         return findCrewByName(name).isAlreadyTodayAttendance(today);
     }
 
-    private static void initAttendance(final List<Crew> crews, final String input) {
-        final String[] data = input.split(",");
-        crews.stream()
-                .filter(crew -> crew.isSameName(data[0]))
-                .findAny()
-                .ifPresent(crew -> crew.updateAttendanceByDateTime(data[1]));
+    public List<Crew> getCrews() {
+        return new ArrayList<>(crews);
     }
 
-    public List<Crew> getCrews() {
-        return crews;
+    public LocalDate today() {
+        return dateTimeGenerator.generateDate();
     }
 }

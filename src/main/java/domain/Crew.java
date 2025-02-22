@@ -8,40 +8,43 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.IntStream;
 
 public class Crew implements Comparable<Crew> {
+    private static final LocalDate CHRISTMAS_DATE = LocalDate.of(2024, 12, 25);
     private final CrewName name;
     private final List<Attendance> attendances;
 
     public Crew(final String name, final List<Attendance> attendances) {
         this.name = new CrewName(name);
-        this.attendances = attendances;
+        this.attendances = new ArrayList<>(attendances);
     }
 
-    public static Crew of(final String name, final LocalDate inputLocalDate) {
-        final List<Attendance> attendances = new ArrayList<>();
-        final LocalDate christmas = LocalDate.of(2024, 12, 25);
-        final int dayOfMonth = inputLocalDate.getDayOfMonth();
-        for (int i = 1; i < dayOfMonth; i++) {
-            addAttendance(i, christmas, attendances);
-        }
+    public static Crew of(final String name, final LocalDate today) {
+        List<Attendance> attendances = IntStream.range(1, today.getDayOfMonth())
+                .mapToObj(today::withDayOfMonth)
+                .filter(day -> isAvailableForAttendance(day))
+                .map(Attendance::empty)
+                .toList();
         return new Crew(name, attendances);
-
     }
 
-    private static void addAttendance(final int i, final LocalDate christmas, final List<Attendance> attendances) {
-        final LocalDateTime localDateTime = LocalDateTime.of(LocalDate.of(2024, 12, i), LocalTime.MAX);
-        final LocalDate localDate = LocalDate.of(localDateTime.getYear(), localDateTime.getMonthValue(),
-                localDateTime.getDayOfMonth());
-        if (localDateTime.getDayOfWeek() == DayOfWeek.SATURDAY || localDateTime.getDayOfWeek() == DayOfWeek.SUNDAY
-                || localDate.equals(christmas)) {
-            return;
+    private static boolean isAvailableForAttendance(final LocalDate today) {
+        if (today.getDayOfWeek() == DayOfWeek.SATURDAY || today.getDayOfWeek() == DayOfWeek.SUNDAY
+                || today.equals(CHRISTMAS_DATE)) {
+            return true;
         }
-        attendances.add(Attendance.empty(localDateTime));
+        return false;
     }
 
     public Attendance addAttendance(final String attendanceTime) {
         final Attendance attendance = new Attendance(attendanceTime);
+        attendances.add(attendance);
+        return attendance;
+    }
+
+    public Attendance addAttendance(final LocalDateTime localDateTime) {
+        final Attendance attendance = new Attendance(localDateTime, false);
         attendances.add(attendance);
         return attendance;
     }

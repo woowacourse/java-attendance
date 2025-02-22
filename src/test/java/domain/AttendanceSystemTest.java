@@ -6,7 +6,6 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.ArrayList;
 import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -93,7 +92,7 @@ public class AttendanceSystemTest {
             final AttendanceSystem attendanceSystem = AttendanceSystem.of(data, today);
 
             // when
-            final List<Crew> crews = attendanceSystem.calculateExpulsionCrews();
+            final List<Crew> crews = attendanceSystem.calculateRiskOfExpulsionCrews();
 
             // then
             assertThat(crews).isNotEmpty();

@@ -4,8 +4,10 @@ import domain.AnswerCommand;
 import domain.Attendance;
 import domain.AttendanceStatus;
 import domain.AttendanceSystem;
+import domain.AttendanceSystemFactory;
 import domain.Crew;
 import domain.ExpulsionStatus;
+import domain.DateTimeGenerator;
 import domain.UserCommand;
 import dto.AttendanceResponse;
 import dto.ExpulsionCrewResponse;
@@ -14,67 +16,66 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
 import java.util.Map;
-import util.FileManager;
 import util.LoopTemplate;
 import view.InputView;
 import view.OutputView;
 
 public class AttendanceController {
-    private static final String ATTENDANCE_HISTORY_FILE_NAME = "attendances.csv";
-
     private final InputView inputView;
     private final OutputView outputView;
-    private final AttendanceSystem attendanceSystem;
+    private final AttendanceSystemFactory attendanceSystemFactory;
 
-    public AttendanceController(final InputView inputView, final OutputView outputView) {
+    public AttendanceController(final InputView inputView, final OutputView outputView,
+                                final AttendanceSystemFactory attendanceSystemFactory) {
         this.inputView = inputView;
         this.outputView = outputView;
-        final List<String> attendanceLines = FileManager.readFileLines(ATTENDANCE_HISTORY_FILE_NAME);
-        attendanceLines.remove(0);
-        attendanceSystem = AttendanceSystem.of(attendanceLines, LocalDate.now().withYear(2024).withMonth(12));
+        this.attendanceSystemFactory = attendanceSystemFactory;
     }
 
     public void run() {
-        retryUntilOperationQuit();
+        final AttendanceSystem attendanceSystem = attendanceSystemFactory.createAttendanceSystem();
+        retryUntilOperationQuit(attendanceSystem);
     }
 
-    public UserCommand selectOperation() {
-        outputView.printToday(LocalDate.now().withYear(2024).withMonth(12));
+    public UserCommand selectOperation(final AttendanceSystem attendanceSystem) {
+        outputView.printToday(attendanceSystem.today());
         outputView.printIntroduceOperation();
         final UserCommand userCommand = inputView.readChoiceOperation();
         if (userCommand == UserCommand.ADD_ATTENDANCE) {
-            addAttendance();
+            addAttendance(attendanceSystem);
         } else if (userCommand == UserCommand.UPDATE_ATTENDANCE) {
-            updateAttendance();
+            updateAttendance(attendanceSystem);
         } else if (userCommand == UserCommand.LOOKUP_CREW_ATTENDANCE) {
-            responseCrewAttendanceHistory();
+            responseCrewAttendanceHistory(attendanceSystem);
         } else if (userCommand == UserCommand.LOOKUP_EXPULSION_CREWS) {
-            responseExpulsionCrews();
+            responseExpulsionCrews(attendanceSystem);
         }
         return userCommand;
     }
 
-    private void retryUntilOperationQuit() {
-        while (selectOperation() != UserCommand.QUIT) {
+    private void retryUntilOperationQuit(final AttendanceSystem attendanceSystem) {
+        while (selectOperation(attendanceSystem) != UserCommand.QUIT) {
         }
     }
 
-    private void addAttendance() {
-        if (attendanceSystem.isNotAttendanceDay(LocalDate.now().withYear(2024).withMonth(12))) {
+    private void addAttendance(final AttendanceSystem attendanceSystem) {
+        if (attendanceSystem.isNotAttendanceDay()) {
             outputView.printNotAttendanceDay();
             return;
         }
-        final String crewName = LoopTemplate.tryCatchLoop(this::inputCrewName, outputView);
+        final String crewName = LoopTemplate.tryCatchLoop(this::inputCrewName, attendanceSystem, outputView);
         if (!attendanceSystem.isAlreadyTodayAttendance(crewName)) {
-            final Attendance attendance = LoopTemplate.tryCatchLoop(this::attendance, crewName, outputView);
+            final Attendance attendance = LoopTemplate.tryCatchLoop(this::attendance, crewName, attendanceSystem
+                    , outputView);
             final AttendanceResponse attendanceResponse = convertAttendanceToResponse(attendance);
             outputView.printCrewAttendances(List.of(attendanceResponse));
             return;
         }
-        updateAttendanceForDuplicateAttendance(crewName);
+        updateAttendanceForDuplicateAttendance(crewName, attendanceSystem);
     }
 
-    private void updateAttendanceForDuplicateAttendance(final String crewName) {
+    private void updateAttendanceForDuplicateAttendance(final String crewName,
+                                                        final AttendanceSystem attendanceSystem) {
         outputView.printIntroduceAnswerCommand();
         final AnswerCommand answerCommand = inputView.readAnswerCommand();
         if (answerCommand == AnswerCommand.YES) {
@@ -88,27 +89,24 @@ public class AttendanceController {
         }
     }
 
-    private Attendance attendance(final String crewName) {
+    private Attendance attendance(final String crewName, final AttendanceSystem attendanceSystem) {
         outputView.printAddAttendanceDate();
-        final LocalTime localDateTime = inputView.readTime();
-        final Attendance attendance = attendanceSystem.attendance(crewName, convertLocalDateTime(localDateTime));
+        final LocalTime attendanceTime = inputView.readTime();
+        final Attendance attendance = attendanceSystem.attendance(crewName, attendanceTime);
         return attendance;
     }
 
-    private String inputCrewName() {
+    private String inputCrewName(final AttendanceSystem attendanceSystem) {
         outputView.printAddAttendanceCrewName();
         final String crewName = inputView.readCrewName();
         attendanceSystem.validateCrewByName(crewName);
         return crewName;
     }
 
-    private LocalDateTime convertLocalDateTime(final LocalTime time) {
-        return LocalDateTime.of(LocalDate.of(2024, 12, LocalDate.now().getDayOfMonth()), time);
-    }
-
-    private void updateAttendance() {
-        final String crewName = LoopTemplate.tryCatchLoop(this::inputCrewNameForUpdate, outputView);
-        final int dayOfMonth = LoopTemplate.tryCatchLoop(this::inputDayOfMonthForUpdate, crewName, outputView);
+    private void updateAttendance(final AttendanceSystem attendanceSystem) {
+        final String crewName = LoopTemplate.tryCatchLoop(this::inputCrewNameForUpdate, attendanceSystem, outputView);
+        final int dayOfMonth = LoopTemplate.tryCatchLoop(this::inputDayOfMonthForUpdate, crewName, attendanceSystem,
+                outputView);
         final LocalTime targetTime = LoopTemplate.tryCatchLoop(this::inputUpdateTime, outputView);
         final Attendance beforeAttendance = attendanceSystem.findAttendanceByDate(crewName, dayOfMonth);
         final Attendance afterAttendance = attendanceSystem.updateAttendanceByCrewNameAndDay(targetTime, crewName,
@@ -123,22 +121,22 @@ public class AttendanceController {
         return targetTime;
     }
 
-    private int inputDayOfMonthForUpdate(final String crewName) {
+    private int inputDayOfMonthForUpdate(final String crewName, final AttendanceSystem attendanceSystem) {
         outputView.printUpdateAttendanceDayOfMonth();
         final int dayOfMonth = inputView.readDayOfMonth();
         attendanceSystem.validateUpdateAttendanceDay(crewName, dayOfMonth);
         return dayOfMonth;
     }
 
-    private String inputCrewNameForUpdate() {
+    private String inputCrewNameForUpdate(final AttendanceSystem attendanceSystem) {
         outputView.printUpdateAttendanceCrewName();
         final String crewName = inputView.readCrewName();
         attendanceSystem.validateCrewByName(crewName);
         return crewName;
     }
 
-    private void responseCrewAttendanceHistory() {
-        final String crewName = LoopTemplate.tryCatchLoop(this::inputCrewName, outputView);
+    private void responseCrewAttendanceHistory(final AttendanceSystem attendanceSystem) {
+        final String crewName = LoopTemplate.tryCatchLoop(this::inputCrewName, attendanceSystem, outputView);
         final Crew crew = attendanceSystem.findCrewByName(crewName);
         outputView.printAttendanceHistoryTitle(crewName);
         final List<AttendanceResponse> attendanceResponses = convertAttendancesToResponses(crew.getAttendances());
@@ -150,10 +148,9 @@ public class AttendanceController {
 
     }
 
-    private void responseExpulsionCrews() {
-        final List<Crew> crews = attendanceSystem.calculateExpulsionCrews();
+    private void responseExpulsionCrews(final AttendanceSystem attendanceSystem) {
+        final List<Crew> crews = attendanceSystem.calculateRiskOfExpulsionCrews();
         outputView.printExpulsionCrewResponses(convertExpulsionCrewResponses(crews));
-
     }
 
     private List<AttendanceResponse> convertAttendancesToResponses(final List<Attendance> attendances) {
