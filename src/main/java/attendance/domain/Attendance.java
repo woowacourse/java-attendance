@@ -11,7 +11,8 @@ public class Attendance {
     }
 
     public AttendanceTime getAttendanceTime() {
-        return attendanceTime;
+        return new AttendanceTime(attendanceTime.date(), attendanceTime.hour(),
+                attendanceTime.minute(), attendanceTime.isAbsent());
     }
 
     public String getCrewName() {
