@@ -1,9 +1,11 @@
 package dto.result;
 
+import domain.ExpelRisk;
+
 public record ExpelMeasurementResult(
         String targetName,
         int lateCount,
         int absentCount,
-        String measurementName
+        ExpelRisk expelRisk
 ) {
 }

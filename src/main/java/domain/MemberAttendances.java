@@ -27,7 +27,12 @@ public class MemberAttendances {
         int lateCount = calculateLateCount();
         int absentCount = calculateAbsentCount();
         
-        return new ExpelMeasurementResult(name, lateCount, absentCount, checkStatus(lateCount, absentCount));
+        return new ExpelMeasurementResult(
+                name,
+                lateCount,
+                absentCount,
+                ExpelRisk.of(absentCount, lateCount)
+        );
     }
     
     public MemberAttendResult getAttendanceResult() {
@@ -40,7 +45,7 @@ public class MemberAttendances {
                 attendCount,
                 lateCount,
                 absentCount,
-                checkStatus(lateCount, absentCount)
+                ExpelRisk.of(absentCount, lateCount)
         );
     }
     
@@ -87,14 +92,6 @@ public class MemberAttendances {
             }
         }
         return count;
-    }
-    
-    public String checkStatus(int lateCount, int absentCount) {
-        int expelRiskMeasurement = absentCount + lateCount / 3;
-        if (expelRiskMeasurement > 5) return "제적";
-        if (expelRiskMeasurement >= 3) return "면담";
-        if (expelRiskMeasurement >= 2) return "경고";
-        return null;
     }
     
     public AttendResult attend(LocalDateTime attendDateTime) {

@@ -1,5 +1,7 @@
 package dto.result;
 
+import domain.ExpelRisk;
+
 import java.util.List;
 
 public record MemberAttendResult(
@@ -8,6 +10,6 @@ public record MemberAttendResult(
         int attendCount,
         int lateCount,
         int absentCount,
-        String interviewee
+        ExpelRisk expelRisk
 ) {
 }

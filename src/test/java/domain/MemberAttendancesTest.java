@@ -121,7 +121,7 @@ public class MemberAttendancesTest {
             var result = attendances.measureExpelRisk();
             
             // then
-            assertThat(result).isEqualTo(new ExpelMeasurementResult("Lemon", 3, 1, "경고"));
+            assertThat(result).isEqualTo(new ExpelMeasurementResult("Lemon", 3, 1, ExpelRisk.경고));
         }
         
         @Test
@@ -139,7 +139,7 @@ public class MemberAttendancesTest {
             var result = attendances.measureExpelRisk();
             
             // then
-            assertThat(result).isEqualTo(new ExpelMeasurementResult("Lemon", 3, 2, "면담"));
+            assertThat(result).isEqualTo(new ExpelMeasurementResult("Lemon", 3, 2, ExpelRisk.면담));
         }
         
         @Test
@@ -158,7 +158,7 @@ public class MemberAttendancesTest {
             var result = attendances.measureExpelRisk();
             
             // then
-            assertThat(result).isEqualTo(new ExpelMeasurementResult("Lemon", 0, 6, "제적"));
+            assertThat(result).isEqualTo(new ExpelMeasurementResult("Lemon", 0, 6, ExpelRisk.제적));
         }
     }
 }

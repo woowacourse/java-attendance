@@ -46,7 +46,7 @@ public class AttendanceControllerImpl implements AttendanceController {
                     outputView.handleMemberAttendanceResult(attendanceResult);
                     break;
                 case "4":
-                    var expelMeasurementResults = attendanceBook.checkExpelWarnings();
+                    var expelMeasurementResults = attendanceBook.createExpelWarnings();
                     outputView.handleExpelMeasurementResults(expelMeasurementResults);
                     break;
                 case "Q":

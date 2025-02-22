@@ -5,27 +5,10 @@ import dto.result.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 
 public class AttendanceBook {
-    
-    private static final class ExpelMeasurementComparator implements Comparator<ExpelMeasurementResult> {
-        @Override
-        public int compare(ExpelMeasurementResult o1, ExpelMeasurementResult o2) {
-            if (!o1.measurementName().equals(o2.measurementName())) {
-                return -o1.measurementName().compareTo(o2.measurementName());
-            }
-            if (o1.lateCount() + o1.absentCount() != o2.lateCount() + o2.absentCount()) {
-                return -Integer.compare(o1.lateCount() + o1.absentCount(), o2.lateCount() + o2.absentCount());
-            }
-            if (o1.absentCount() != o2.absentCount()) {
-                return -Integer.compare(o1.absentCount(), o2.absentCount());
-            }
-            return o1.targetName().compareTo(o2.targetName());
-        }
-    }
     
     private final Map<String, MemberAttendances> memberAttendances;
     
@@ -57,11 +40,9 @@ public class AttendanceBook {
         return oneMemberAttendances.getAttendanceResult();
     }
     
-    public List<ExpelMeasurementResult> checkExpelWarnings() {
+    public List<ExpelMeasurementResult> createExpelWarnings() {
         return memberAttendances.values().stream()
                 .map(MemberAttendances::measureExpelRisk)
-                .filter(dto -> dto.measurementName() != null)
-                .sorted(new ExpelMeasurementComparator())
                 .toList();
     }
 }

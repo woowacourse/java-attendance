@@ -193,7 +193,7 @@ public class AttendanceBookTest {
                     new AttendResult(LocalDateTime.of(2024, 12, 6, 10, 15), AttendanceStatus.지각, true),
                     new AttendResult(LocalDateTime.of(2024, 12, 10, 10, 30), AttendanceStatus.지각, true),
                     new AttendResult(LocalDateTime.of(2024, 12, 11, 10, 31), AttendanceStatus.결석, true)
-            ), 0, 2, 1, null
+            ), 0, 2, 1, ExpelRisk.정상
             ));
         }
         
@@ -218,7 +218,7 @@ public class AttendanceBookTest {
                     new AttendResult(LocalDateTime.of(2024, 12, 10, 10, 30), AttendanceStatus.지각, true),
                     new AttendResult(LocalDateTime.of(2024, 12, 11, 10, 31), AttendanceStatus.결석, true),
                     new AttendResult(LocalDateTime.of(2024, 12, 12, 10, 32), AttendanceStatus.결석, true)
-            ), 0, 2, 2, "경고"
+            ), 0, 2, 2, ExpelRisk.경고
             ));
         }
         
@@ -245,7 +245,7 @@ public class AttendanceBookTest {
                     new AttendResult(LocalDateTime.of(2024, 12, 11, 10, 31), AttendanceStatus.결석, true),
                     new AttendResult(LocalDateTime.of(2024, 12, 12, 10, 32), AttendanceStatus.결석, true),
                     new AttendResult(LocalDateTime.of(2024, 12, 13, 10, 33), AttendanceStatus.결석, true)
-            ), 0, 2, 3, "면담"
+            ), 0, 2, 3, ExpelRisk.면담
             ));
         }
         
@@ -278,7 +278,7 @@ public class AttendanceBookTest {
                     new AttendResult(LocalDateTime.of(2024, 12, 17, 10, 34), AttendanceStatus.결석, true),
                     new AttendResult(LocalDateTime.of(2024, 12, 18, 10, 35), AttendanceStatus.결석, true),
                     new AttendResult(LocalDateTime.of(2024, 12, 19, 10, 35), AttendanceStatus.결석, true)
-            ), 0, 2, 6, "제적"
+            ), 0, 2, 6, ExpelRisk.제적
             ));
         }
     }
@@ -317,79 +317,14 @@ public class AttendanceBookTest {
                     )));
             
             // when
-            List<ExpelMeasurementResult> result = attendanceBook.checkExpelWarnings();
+            List<ExpelMeasurementResult> result = attendanceBook.createExpelWarnings();
             
             // then
             assertThat(result).containsExactlyInAnyOrder(
-                    new ExpelMeasurementResult("Dompoo_경고", 2, 2, "경고"),
-                    new ExpelMeasurementResult("Dompoo_면담", 2, 3, "면담"),
-                    new ExpelMeasurementResult("Dompoo_제적", 2, 6, "제적")
-            );
-        }
-        
-        @Test
-        void 제적_위험자를_정렬하여_반환한다() {
-            // given
-            AttendanceBook attendanceBook = new AttendanceBook(Map.of(
-                    "빙티", new MemberAttendances("빙티", List.of(
-                            new Attendance(LocalDateTime.of(2024, 12, 6, 10, 15)),
-                            new Attendance(LocalDateTime.of(2024, 12, 10, 10, 15)),
-                            new Attendance(LocalDateTime.of(2024, 12, 11, 10, 15)),
-                            new Attendance(LocalDateTime.of(2024, 12, 12, 10, 15)),
-                            new Attendance(LocalDateTime.of(2024, 12, 13, 10, 31)),
-                            new Attendance(LocalDateTime.of(2024, 12, 17, 10, 31)),
-                            new Attendance(LocalDateTime.of(2024, 12, 18, 10, 31)))
-                    ), "이든", new MemberAttendances("이든", List.of(
-                            new Attendance(LocalDateTime.of(2024, 12, 6, 10, 15)),
-                            new Attendance(LocalDateTime.of(2024, 12, 10, 10, 15)),
-                            new Attendance(LocalDateTime.of(2024, 12, 11, 10, 15)),
-                            new Attendance(LocalDateTime.of(2024, 12, 12, 10, 15)),
-                            new Attendance(LocalDateTime.of(2024, 12, 13, 10, 15)),
-                            new Attendance(LocalDateTime.of(2024, 12, 17, 10, 32)),
-                            new Attendance(LocalDateTime.of(2024, 12, 18, 10, 32)))
-                    ), "빙봉", new MemberAttendances("빙봉", List.of(
-                            new Attendance(LocalDateTime.of(2024, 12, 6, 10, 15)),
-                            new Attendance(LocalDateTime.of(2024, 12, 10, 10, 15)),
-                            new Attendance(LocalDateTime.of(2024, 12, 11, 10, 15)),
-                            new Attendance(LocalDateTime.of(2024, 12, 12, 10, 15)),
-                            new Attendance(LocalDateTime.of(2024, 12, 13, 10, 15)),
-                            new Attendance(LocalDateTime.of(2024, 12, 17, 10, 15)),
-                            new Attendance(LocalDateTime.of(2024, 12, 18, 10, 33)))
-                    ), "쿠키", new MemberAttendances("쿠키", List.of(
-                            new Attendance(LocalDateTime.of(2024, 12, 6, 10, 15)),
-                            new Attendance(LocalDateTime.of(2024, 12, 10, 10, 15)),
-                            new Attendance(LocalDateTime.of(2024, 12, 11, 10, 15)),
-                            new Attendance(LocalDateTime.of(2024, 12, 18, 10, 35)),
-                            new Attendance(LocalDateTime.of(2024, 12, 19, 10, 35)))
-                    ), "장수", new MemberAttendances("장수", List.of(
-                            new Attendance(LocalDateTime.of(2024, 12, 11, 10, 15)),
-                            new Attendance(LocalDateTime.of(2024, 12, 12, 10, 15)),
-                            new Attendance(LocalDateTime.of(2024, 12, 13, 10, 15)),
-                            new Attendance(LocalDateTime.of(2024, 12, 17, 10, 15)),
-                            new Attendance(LocalDateTime.of(2024, 12, 18, 10, 15)),
-                            new Attendance(LocalDateTime.of(2024, 12, 19, 10, 15)))
-                    ), "양수", new MemberAttendances("양수", List.of(
-                            new Attendance(LocalDateTime.of(2024, 12, 11, 10, 15)),
-                            new Attendance(LocalDateTime.of(2024, 12, 12, 10, 15)),
-                            new Attendance(LocalDateTime.of(2024, 12, 13, 10, 15)),
-                            new Attendance(LocalDateTime.of(2024, 12, 17, 10, 15)),
-                            new Attendance(LocalDateTime.of(2024, 12, 18, 10, 15)),
-                            new Attendance(LocalDateTime.of(2024, 12, 19, 10, 15)))
-                    )
-            ));
-            
-            // when
-            List<ExpelMeasurementResult> result = attendanceBook.checkExpelWarnings();
-            
-            // then
-            assertThat(result).containsExactly(
-                    new ExpelMeasurementResult("빙티", 4, 3, "면담"),
-                    new ExpelMeasurementResult("이든", 5, 2, "면담"),
-                    new ExpelMeasurementResult("빙봉", 6, 1, "면담"),
-                    new ExpelMeasurementResult("쿠키", 3, 2, "면담"),
-                    new ExpelMeasurementResult("양수", 6, 0, "경고"),
-                    new ExpelMeasurementResult("장수", 6, 0, "경고")
-            
+                    new ExpelMeasurementResult("Dompoo", 2, 1, ExpelRisk.정상),
+                    new ExpelMeasurementResult("Dompoo_경고", 2, 2, ExpelRisk.경고),
+                    new ExpelMeasurementResult("Dompoo_면담", 2, 3, ExpelRisk.면담),
+                    new ExpelMeasurementResult("Dompoo_제적", 2, 6, ExpelRisk.제적)
             );
         }
     }

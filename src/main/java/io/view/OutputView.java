@@ -1,6 +1,7 @@
 package io.view;
 
 import domain.AttendanceStatus;
+import domain.ExpelRisk;
 import dto.result.AttendResult;
 import dto.result.ExpelMeasurementResult;
 import dto.result.MemberAttendResult;
@@ -13,6 +14,7 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.TextStyle;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
 
@@ -99,7 +101,7 @@ public class OutputView {
                 attendanceResult.attendCount(),
                 attendanceResult.lateCount(),
                 attendanceResult.absentCount(),
-                parseInterviewTarget(attendanceResult)
+                parseExpelRisk(attendanceResult.expelRisk())
         );
         
         outputHandler.handle(result);
@@ -121,9 +123,7 @@ public class OutputView {
             
             if (!isExist) {
                 attendResultsToAdd.add(new AttendResult(LocalDateTime.of(now.withDayOfMonth(i), LocalTime.of(12, 0)), AttendanceStatus.결석, false));
-                
             }
-            
         }
         
         results.addAll(attendResultsToAdd);
@@ -132,27 +132,38 @@ public class OutputView {
                 .map(OutputView::parseAttendResultValue)
                 .reduce((str1, str2) -> str1 + "\n" + str2)
                 .orElse("");
-        
     }
     
-    private static String parseInterviewTarget(MemberAttendResult attendanceResult) {
-        return attendanceResult.interviewee() != null ? String.format("%s 대상자입니다.", attendanceResult.interviewee()) : "";
+    private static String parseExpelRisk(ExpelRisk expelRisk) {
+        if (expelRisk == ExpelRisk.정상) {
+            return "";
+        }
+        return String.format("%s 대상자입니다.", expelRisk.name());
     }
     
     public void handleExpelMeasurementResults(List<ExpelMeasurementResult> expelMeasurementResults) {
         StringBuilder sb = new StringBuilder("제적 위험자 조회 결과\n");
         
-        for (ExpelMeasurementResult expelMeasurementResult : expelMeasurementResults) {
-            sb.append(String.format("""
-                            - %s: 결석 %d회, 지각 %d회 (%s)
-                            """,
-                    expelMeasurementResult.targetName(),
-                    expelMeasurementResult.absentCount(),
-                    expelMeasurementResult.lateCount(),
-                    expelMeasurementResult.measurementName()
-            ));
-        }
+        expelMeasurementResults.stream()
+                .sorted(new ExpelMeasurementResultComparator())
+                .forEach(o -> sb.append(String.format("- %s: 결석 %d회, 지각 %d회 (%s)", o.targetName(), o.absentCount(), o.lateCount(), o.expelRisk().name())));
         outputHandler.handle(sb.toString());
+    }
+    
+    private static final class ExpelMeasurementResultComparator implements Comparator<ExpelMeasurementResult> {
+        @Override
+        public int compare(ExpelMeasurementResult o1, ExpelMeasurementResult o2) {
+            if (o1.expelRisk() != o2.expelRisk()) {
+                return -Integer.compare(o1.expelRisk().getSeriousness(), o2.expelRisk().getSeriousness());
+            }
+            if (o1.lateCount() + o1.absentCount() != o2.lateCount() + o2.absentCount()) {
+                return -Integer.compare(o1.lateCount() + o1.absentCount(), o2.lateCount() + o2.absentCount());
+            }
+            if (o1.absentCount() != o2.absentCount()) {
+                return -Integer.compare(o1.absentCount(), o2.absentCount());
+            }
+            return o1.targetName().compareTo(o2.targetName());
+        }
     }
     
     public void handleMissDecision() {
