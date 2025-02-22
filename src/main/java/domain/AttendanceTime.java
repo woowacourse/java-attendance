@@ -10,10 +10,13 @@ public enum AttendanceTime {
             List.of(Calender.MON),
             List.of(LocalTime.of(13, 5),
                     LocalTime.of(13, 30))),
-    ELSE_TIME(
+    OTHER_TIME(
             List.of(Calender.TUE, Calender.WED, Calender.THU, Calender.FRI),
             List.of(LocalTime.of(10, 5),
                     LocalTime.of(10, 30)));
+
+    private static final LocalTime IN_TIME = LocalTime.of(8, 0);
+    private static final LocalTime OUT_TIME = LocalTime.of(23, 0);
 
     private final List<Calender> calenders;
     private final List<LocalTime> localTimes;
@@ -24,7 +27,7 @@ public enum AttendanceTime {
     }
 
     public static void validateCampusTime(final LocalTime localTime) {
-        if (localTime.isBefore(LocalTime.of(8, 0)) || localTime.isAfter(LocalTime.of(23, 0))) {
+        if (localTime.isBefore(IN_TIME) || localTime.isAfter(OUT_TIME)) {
             throw new IllegalArgumentException("캠퍼스 운영 시간은 매일 08:00~23:00입니다.");
         }
     }

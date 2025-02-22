@@ -9,6 +9,8 @@ public enum AbsencePolicy {
     DISMISSED(6, "제적"),
     PASS(Integer.MAX_VALUE, "통과");
 
+    private static final int ABSENCE_CONVERSION_RATE = 3;
+
     private final int value;
     private final String description;
 
@@ -17,17 +19,17 @@ public enum AbsencePolicy {
         this.description = description;
     }
 
-    public int getValue() {
-        return value;
-    }
-
-    public static String getAbsencePolicy(int absentCount, int lateCount) { //지각, 결석
-        int totalAbsentCount = absentCount + (lateCount / 3);
+    public static String getAbsencePolicy(int absentCount, int lateCount) {
+        int totalAbsentCount = absentCount + (lateCount / ABSENCE_CONVERSION_RATE);
 
         return Stream.of(DISMISSED, INTERVIEW, WARNING)
                 .filter(policy -> totalAbsentCount >= policy.value)
                 .findFirst()
                 .map(policy -> policy.description)
                 .orElse(PASS.description);
+    }
+
+    public int getValue() {
+        return value;
     }
 }

@@ -16,6 +16,7 @@ public class FileManager {
 
     private static final String ATTENDANCE_FILE_PATH = "src/main/resources/attendances.csv";
     private static final DateTimeFormatter DATE_TIME_FORMAT = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+    private static final String SPLIT_DELIMITER = ",";
 
     public static Attendance readFile() {
         try {
@@ -26,7 +27,7 @@ public class FileManager {
             Map<Crew, List<LocalDateTime>> attendances = new LinkedHashMap<>();
 
             while ((line = br.readLine()) != null) {
-                String[] lineSplit = line.split(",");
+                String[] lineSplit = line.split(SPLIT_DELIMITER);
 
                 String name = lineSplit[0];
                 Crew crew = Crew.from(name);
