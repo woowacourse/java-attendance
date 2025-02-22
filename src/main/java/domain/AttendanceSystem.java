@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Objects;
 
 public class AttendanceSystem {
+    private static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
     private final List<Crew> crews;
 
     public AttendanceSystem(final List<Crew> crews) {
@@ -27,12 +28,12 @@ public class AttendanceSystem {
 
     public Attendance attendance(final String name, final LocalDateTime localDateTime) {
         final Crew crew = findCrewByName(name);
-        return crew.addAttendance(localDateTime.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")));
+        return crew.addAttendance(localDateTime.format(DATE_TIME_FORMATTER));
     }
 
     public boolean isAlreadyTodayAttendance(final String crewName) {
         final Crew crew = this.findCrewByName(crewName);
-        return crew.existTodayAttendance(LocalDate.now().withYear(2024).withMonth(12));
+        return crew.isAlreadyTodayAttendance(LocalDate.now().withYear(2024).withMonth(12));
     }
 
     public void validateCrewByName(final String name) {
@@ -42,23 +43,24 @@ public class AttendanceSystem {
     }
 
     public void validateUpdateAttendanceDay(final String crewName, final int dayOfMonth) {
-        if (!existTodayAttendanceByCrewName(crewName, LocalDate.of(2024, 12, dayOfMonth))) {
+        if (!isAlreadyTodayAttendanceByCrewName(crewName, LocalDate.of(2024, 12, dayOfMonth))) {
             throw new IllegalArgumentException("유효하지 않은 날짜입니다.");
         }
     }
 
     public List<Crew> calculateExpulsionCrews() {
         return crews.stream()
-                .filter(this::isExpulsionCrew)
+                .filter(this::isRiskOfExpulsionCrew)
                 .sorted()
                 .toList();
     }
 
     public boolean isNotAttendanceDay(final LocalDate localDate) {
-        return localDate.getDayOfWeek() == DayOfWeek.SUNDAY || localDate.getDayOfWeek() == DayOfWeek.SATURDAY || localDate.equals(LocalDate.of(2024, 12, 25));
+        return localDate.getDayOfWeek() == DayOfWeek.SUNDAY || localDate.getDayOfWeek() == DayOfWeek.SATURDAY
+                || localDate.equals(LocalDate.of(2024, 12, 25));
     }
 
-    private boolean isExpulsionCrew(final Crew crew) {
+    private boolean isRiskOfExpulsionCrew(final Crew crew) {
         final ExpulsionStatus expulsionStatus = crew.calculateExpulsionStatus();
         return !Objects.equals(expulsionStatus, ExpulsionStatus.NORMAL);
     }
@@ -81,9 +83,9 @@ public class AttendanceSystem {
         return crews.stream().anyMatch(crew -> crew.isSameName(name));
     }
 
-    private boolean existTodayAttendanceByCrewName(final String name, final LocalDate today) {
+    private boolean isAlreadyTodayAttendanceByCrewName(final String name, final LocalDate today) {
         final Crew crew = findCrewByName(name);
-        return crew.existTodayAttendance(today);
+        return crew.isAlreadyTodayAttendance(today);
     }
 
     private static void initAttendance(final List<Crew> crews, final String input) {

@@ -110,7 +110,7 @@ public class CrewTest {
             crew.addAttendance(absencedTime);
 
             //then
-            assertThat(crew.existTodayAttendance(today)).isTrue();
+            assertThat(crew.isAlreadyTodayAttendance(today)).isTrue();
         }
 
         @Test

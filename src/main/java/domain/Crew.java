@@ -46,7 +46,7 @@ public class Crew implements Comparable<Crew> {
         return attendance;
     }
 
-    public boolean existTodayAttendance(final LocalDate localDate) {
+    public boolean isAlreadyTodayAttendance(final LocalDate localDate) {
         return attendances.stream().anyMatch(attendance -> attendance.matchDate(localDate));
     }
 
