@@ -1,5 +1,7 @@
 package domain;
 
+import static constants.NumberConstants.END_DAY_OF_DECEMBER;
+
 import java.util.List;
 import view.ErrorCode;
 
@@ -27,5 +29,9 @@ public class Calendar {
 
     public static boolean checkIsWorkingDay(int date) {
         return !SATURDAYS.contains(date) && !SUNDAYS.contains(date) && !HOLIDAYS.contains(date);
+    }
+
+    public static int countWorkingDay() {
+        return END_DAY_OF_DECEMBER - SATURDAYS.size() - SUNDAYS.size() - HOLIDAYS.size();
     }
 }

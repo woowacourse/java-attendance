@@ -75,9 +75,9 @@ public class Crew {
             if (!Calendar.checkIsWorkingDay(day)) {
                 continue;
             }
-            LocalTime time = dailyAttendances.get(LocalDate.now().withYear(2024).withMonth(12).withDayOfMonth(day));
+            LocalTime time = getTimeByDate(LocalDate.of(2024, 12, day));
 
-            if (time == null) {
+            if (time == null) { // 해당 날짜에 대한 기록이 없는 경우, 결석 처리 (현재는 2025년이므로)
                 records.add(new AttendanceRecordResponse(LocalDate.of(2024, 12, day), null,
                         AttendanceStatus.ABSENT));
                 continue;

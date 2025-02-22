@@ -1,6 +1,5 @@
 package domain;
 
-import static constants.NumberConstants.END_DAY_OF_DECEMBER;
 import static constants.NumberConstants.LATE_TO_ABSENCE_CONVERSION_CRITERIA;
 import static constants.TimeConstants.OPERATION_TIME_END;
 import static constants.TimeConstants.OPERATION_TIME_START;
@@ -111,7 +110,8 @@ public class AttendanceBook {
             if (status == AttendanceStatus.LATE) {
                 lateCount++;
             }
-            absentCount = END_DAY_OF_DECEMBER - lateCount - attendanceCount;
+
+            absentCount = Calendar.countWorkingDay() - lateCount - attendanceCount;
         }
 
         return new TotalRecordsResponse(attendanceCount, lateCount, absentCount);
