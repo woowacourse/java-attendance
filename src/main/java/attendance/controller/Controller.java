@@ -61,20 +61,36 @@ public class Controller {
     private void processModifyAttendance() {
         process(() -> {
             Crew crew = crews.findCrew(inputView.inputModifyAttendanceCrewName());
-            WoowaDate modifyDate = new WoowaDate(
-                    DateUtil.parseDate(inputView.inputModifyAttendanceDate()),
-                    fixedCustomClock
-            );
+            WoowaDate modifyDate = parseModifyDate();
 
-            AttendanceDetail attendanceDetail = crew.findAttendanceDetail(modifyDate.getLocalDate());
-            AttendanceDetail beforeModify = new AttendanceDetail(attendanceDetail.getAttendanceDate(),
-                    attendanceDetail.getAttendanceTime());
-            attendanceDetail.modify(DateFormatUtil.parseTime(inputView.inputModifyAttendanceTime()));
-            outputView.printModifyResult(
-                    AttendanceDetailDto.from(beforeModify),
-                    AttendanceDetailDto.from(attendanceDetail)
-            );
+            modifyAttendanceAndDisplayResult(crew, modifyDate);
         });
+    }
+
+    private WoowaDate parseModifyDate() {
+        return new WoowaDate(
+                DateUtil.parseDate(inputView.inputModifyAttendanceDate()),
+                fixedCustomClock
+        );
+    }
+
+    private void modifyAttendanceAndDisplayResult(Crew crew, WoowaDate modifyDate) {
+        AttendanceDetail attendanceDetail = crew.findAttendanceDetail(modifyDate.getLocalDate());
+        AttendanceDetail beforeModify = copyAttendanceDetail(attendanceDetail);
+
+        attendanceDetail.modify(DateFormatUtil.parseTime(inputView.inputModifyAttendanceTime()));
+
+        outputView.printModifyResult(
+                AttendanceDetailDto.from(beforeModify),
+                AttendanceDetailDto.from(attendanceDetail)
+        );
+    }
+
+    private AttendanceDetail copyAttendanceDetail(AttendanceDetail attendanceDetail) {
+        return new AttendanceDetail(
+                attendanceDetail.getAttendanceDate(),
+                attendanceDetail.getAttendanceTime()
+        );
     }
 
     private void processDisplayAttendanceHistory() {
