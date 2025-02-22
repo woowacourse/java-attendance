@@ -7,7 +7,7 @@ import java.util.Objects;
 
 public class Attendance {
 
-    private static final LocalTime ABSENT_TIME = LocalTime.of(23, 0);
+    public static final LocalTime ABSENT_TIME = LocalTime.of(23, 0);
 
     private final AttendanceDate attendanceDate;
     private final AttendanceTime attendanceTime;

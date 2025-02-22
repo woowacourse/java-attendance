@@ -21,7 +21,7 @@ import attendance.view.OutputView;
 
 public class AttendanceController {
 
-    private static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+    private static final DateTimeFormatter FILE_DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
     public static final String attendanceFilePath = "src/main/resources/";
     public static final String attendanceFileName = "attendances.csv";
     public static final String attendanceFileDelimiter = ",";
@@ -67,7 +67,7 @@ public class AttendanceController {
         for (String line : firstSkippedLines) {
             String[] tokens = line.split(attendanceFileDelimiter);
             Crew crew = new Crew(tokens[0]);
-            LocalDateTime attendanceDateTime = LocalDateTime.parse(tokens[1], DATE_TIME_FORMATTER);
+            LocalDateTime attendanceDateTime = LocalDateTime.parse(tokens[1], FILE_DATE_TIME_FORMATTER);
             crewAttendanceDateTimes.computeIfAbsent(crew, value -> new ArrayList<>()).add(attendanceDateTime);
         }
         return crewAttendanceDateTimes;
@@ -117,7 +117,7 @@ public class AttendanceController {
     }
 
     private void modifyAttendance() {
-        Crew crew = createCrewByNickname(inputView.readCrewNickname());
+        Crew crew = createCrewByNickname(inputView.readModificationCrewNickname());
         LocalDate modificationDate = inputView.readModificationDay(LocalDate.now());
         LocalTime modificationTime = inputView.readModificationTime();
         Attendances attendances = crewAttendances.get(crew);

@@ -45,8 +45,7 @@ public class InputView {
 
     public LocalDate readModificationDay(LocalDate today) {
         System.out.println("수정하려는 날짜(일)를 입력해 주세요.");
-        String dayText = scanner.nextLine();
-        int day = Integer.parseInt(dayText);
+        int day = Integer.parseInt(scanner.nextLine());
         try {
             LocalDate modificationDate = LocalDate.of(today.getYear(), today.getMonth(), day);
             validateFutureDate(today, modificationDate);
