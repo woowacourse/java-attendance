@@ -91,8 +91,7 @@ public class OutputView {
         // Collections.sort()는 머지소트 기반이므로 O(nLog(n)) 보장
         List<CrewAlmostExpelledResult> sorted = new ArrayList<>(result);
         Collections.sort(sorted);
-        result.forEach(crew ->
-                System.out.printf("- %s: %s %d회, %s %d회 (%s)%n%n",
+        sorted.forEach(crew -> System.out.printf("- %s: %s %d회, %s %d회 (%s)%n%n",
                         crew.nickname(),
                         AttendanceStatus.ABSENT_LATE.getTitle(),
                         crew.attendanceStatusStatistics()
