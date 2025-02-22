@@ -2,6 +2,7 @@ package controller;
 
 import domain.Attendance;
 import domain.AttendanceBook;
+import domain.MenuOption;
 import dto.ModifyResult;
 import java.util.function.Supplier;
 import util.DateTimeManager;
@@ -36,27 +37,23 @@ public class AttendanceSystem {
         while (onRunning) {
             String menu = inputView.askMenu();
             handleWithExceptionMessage(() -> InputValidator.validateMenu(menu));
-            onRunning = isNotStoppedInput(menu);
+            onRunning = MenuOption.onRunning(menu);
             executeMenu(menu);
         }
     }
 
-    private boolean isNotStoppedInput(String menu) {
-        return !menu.matches("[Qq]");
-    }
-
     private void executeMenu(String menu) {
-        if (menu.equals("1")) {
+        if (MenuOption.isCheckAttendance(menu)) {
             checkAttendance();
         }
-        if (menu.equals("2")) {
+        if (MenuOption.isModifyAttendance(menu)) {
             modifyAttendance();
         }
-        if (menu.equals("3")) {
-            checkCrewAttendanceHistory();
+        if (MenuOption.isPrintAttendanceHistory(menu)) {
+            showAttendanceHistory();
         }
-        if (menu.equals("4")) {
-            checkPenaltyCrew();
+        if (MenuOption.isPenaltyAttendance(menu)) {
+            showPenaltyCrew();
         }
     }
 
@@ -109,12 +106,12 @@ public class AttendanceSystem {
         return time;
     }
 
-    private void checkCrewAttendanceHistory() {
+    private void showAttendanceHistory() {
         String name = handleWithRetry(this::processName);
         outputView.printAttendanceHistory(attendanceBook, name);
     }
 
-    private void checkPenaltyCrew() {
+    private void showPenaltyCrew() {
         outputView.printPenaltyCrew(attendanceBook);
     }
 
