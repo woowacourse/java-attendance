@@ -1,5 +1,6 @@
 package domain;
 
+import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
@@ -7,8 +8,13 @@ import java.util.Objects;
 
 public class Attend {
 
-    public LocalDate date;
-    public LocalTime time;
+    private final LocalDate date;
+    private final LocalTime time;
+
+    private Attend(LocalDate date, LocalTime time) {
+        this.date = date;
+        this.time = time;
+    }
 
     public static Attend fromDay(final int day) {
         return new Attend(LocalDate.of(2024, 12, day), null);
@@ -16,15 +22,23 @@ public class Attend {
 
     public static Attend of(final String day, final String time) {
         return new Attend(DateUtil.parseDate(day), DateUtil.parsetime(time));
+    public static Attend fromTime(LocalTime time) {
+        return new Attend(LocalDate.of(2024, 12, Current.TODAY.getDay()), time);
     }
 
     public static Attend of(String time) {
         return new Attend(LocalDate.of(2024, 12, Current.TODAY.getDay()), DateUtil.parsetime(time));
+    public static Attend of(final LocalDate day, final LocalTime time) {
+        return new Attend(day, time);
     }
 
-    public Attend(LocalDate date, LocalTime time) {
-        this.date = date;
-        this.time = time;
+    public boolean isDayOff() {
+        return this.date.getDayOfWeek().getValue() >= DayOfWeek.SATURDAY.getValue()
+                || this.date.getDayOfMonth() == Current.CHRISTMAS;
+    }
+
+    public boolean isTimeOff(LocalTime startTime, LocalTime endTime) {
+        return hasTime() && (this.time.isBefore(startTime) || this.time.isAfter(endTime));
     }
 
     public boolean isDayEqual(Attend attend) {
@@ -32,7 +46,23 @@ public class Attend {
     }
 
     public boolean isDayEqual(final int day) {
-        return DateUtil.isDayEqual(day, date);
+        return this.date.getDayOfMonth() == day;
+    }
+
+    public boolean isBefore(final LocalTime targetTime) {
+        return hasTime() && this.time.isBefore(targetTime);
+    }
+
+    public boolean isEqual(final LocalTime targetTime) {
+        return hasTime() && this.time.equals(targetTime);
+    }
+
+    public boolean isAfter(final LocalTime targetTime) {
+        return hasTime() && this.time.isAfter(targetTime);
+    }
+
+    public boolean hasTime() {
+        return this.time != null;
     }
 
     public String formatDate(DateTimeFormatter dateTimeFormatter) {
@@ -44,15 +74,21 @@ public class Attend {
     }
 
     public int getDay() {
-        return date.getDayOfMonth();
+        return this.date.getDayOfMonth();
     }
 
     public int getHour() {
-        return time.getHour();
+        if (!hasTime()) {
+            return 0;
+        }
+        return this.time.getHour();
     }
 
     public int getMinute() {
-        return time.getMinute();
+        if (!hasTime()) {
+            return 0;
+        }
+        return this.time.getMinute();
     }
 
     @Override
