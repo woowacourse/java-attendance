@@ -1,15 +1,13 @@
 package view;
 
-import static util.LocalDateTimePrintFormatter.dateTimeFormatterForHourMin;
-
 import java.time.DateTimeException;
-import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Scanner;
-import model.AttendanceCalculatorByDay;
+import model.StudentRecordRepository;
+import model.TodayDate;
 
 public class InputView {
     private final static String ATTENDANCE_CHECK_MENU = "1. 출석 확인";
@@ -24,15 +22,8 @@ public class InputView {
     private final static String PROMPT_START_TIME_INPUT = "등교 시간을 입력해 주세요.";
     private final static String MENU_OPTION = "[1-4]|Q";
     private final static String PRINT_TODAY_FORMAT = "오늘은 %d월 %d일 %s입니다. 기능을 선택해 주세요.\n";
+    private static final DateTimeFormatter dateTimeFormatterForHourMin = DateTimeFormatter.ofPattern("HH:mm");
     private final static Scanner scanner = new Scanner(System.in);
-
-    public static void printTodayAndSelectFunction(LocalDate localDate) {
-        int month = localDate.getMonthValue();
-        int date = localDate.getDayOfMonth();
-        DayOfWeek dayOfWeek = localDate.getDayOfWeek();
-        String day = AttendanceCalculatorByDay.findDayByDayOfWeekValue(dayOfWeek.getValue());
-        System.out.printf(String.format(PRINT_TODAY_FORMAT,month,date,day));
-    }
 
     private static void printMenu() {
         System.out.println(ATTENDANCE_CHECK_MENU);
@@ -45,6 +36,7 @@ public class InputView {
     public static String userInput(){
         return scanner.nextLine();
     }
+
     public static String getUserInputString(){
         printMenu();
         String input = userInput();
@@ -106,6 +98,65 @@ public class InputView {
     public static void isNotOpeningHour(LocalDateTime localDateTime) {
         if (localDateTime.getHour() < 8 || localDateTime.getHour() >= 23) {
             throw new IllegalArgumentException("[ERROR] 캠퍼스 운영 시간이 아닙니다.");
+        }
+    }
+
+    public static LocalDateTime getLocalDateTimeToModify() {
+        int modifyDate = InputView.inputDateForModify();
+        InputView.printTimeForModify();
+        LocalDate localDate = LocalDate.of(2024, 12, modifyDate);
+        return getTimeUntilValidate(localDate);
+    }
+
+    public static String getStudentNameForModifyUntilValidate(StudentRecordRepository studentRepository) {
+        try {
+            InputView.printInputNicName();
+            return getStudentNameUntilExist(studentRepository);
+        } catch (IllegalArgumentException e) {
+            return getStudentNameForModifyUntilValidate(studentRepository);
+        }
+    }
+
+    public static LocalDateTime getLocalDateTimeUntilValidate(TodayDate todayDate) {
+        try {
+            InputView.printStartTime();
+            return getTimeUntilValidate(todayDate.getTodayDate());
+        } catch (IllegalArgumentException e) {
+            return getLocalDateTimeUntilValidate(todayDate);
+        }
+    }
+
+    public static String getStudentForAttendanceCheckUntilExist(StudentRecordRepository studentRepository) {
+        InputView.printInputNicName();
+        try {
+            return getStudentNameUntilExist(studentRepository);
+        }
+        catch (IllegalArgumentException e) {
+            return getStudentForAttendanceCheckUntilExist(studentRepository);
+        }
+    }
+
+    public static String getStudentNameUntilExist(StudentRecordRepository studentRecordRepository) {
+        String userName = InputView.userInput();
+        try{
+            if(!studentRecordRepository.isExistStudentByName(userName)) {
+                throw new IllegalArgumentException("[ERROR] 존재하지 않는 학생입니다.");
+            }
+            return userName;
+        }catch (IllegalArgumentException e){
+            System.out.println(e.getMessage());
+            throw new IllegalArgumentException();
+        }
+    }
+
+    public static LocalDateTime getTimeUntilValidate(LocalDate localDate) {
+        try{
+            LocalDateTime localDateTimeToAttendanceCheck = InputView.makeLocalDateToLocalDateTime(localDate);
+            InputView.isNotOpeningHour(localDateTimeToAttendanceCheck);
+            return localDateTimeToAttendanceCheck;
+        }catch (IllegalArgumentException e){
+            System.out.println(e.getMessage());
+            throw new IllegalArgumentException();
         }
     }
 
