@@ -50,7 +50,9 @@ class AttendanceSystemTest {
 
         attendanceSystem.saveAttendanceRecord("쿠키", dateTime);
 
-        AttendanceRecord savedRecord = attendanceSystem.searchAttendanceRecordsByCrew("쿠키", Month.DECEMBER).getFirst();
+        AttendanceRecord savedRecord =
+                attendanceSystem.searchAttendanceRecordsByCrew("쿠키", 2024, Month.DECEMBER)
+                        .getFirst();
         assertThat(savedRecord)
                 .isEqualTo(new AttendanceRecord("쿠키", dateTime, ATTENDANCE));
     }
@@ -63,7 +65,8 @@ class AttendanceSystemTest {
 
         attendanceSystem.saveAttendanceRecord("쿠키", dateTime);
 
-        List<AttendanceRecord> savedRecords = attendanceSystem.searchAttendanceRecordsByCrew("쿠키", Month.DECEMBER);
+        List<AttendanceRecord> savedRecords =
+                attendanceSystem.searchAttendanceRecordsByCrew("쿠키", 2024, Month.DECEMBER);
         assertThat(savedRecords).isEmpty();
     }
 
@@ -119,7 +122,8 @@ class AttendanceSystemTest {
 
         attendanceSystem.updateAttendanceRecord("쿠키", NOT_HOIlDAY, ATTENDANCE_TIME);
 
-        AttendanceRecord records = attendanceSystem.searchAttendanceRecordsByCrew("쿠키", Month.DECEMBER).getFirst();
+        AttendanceRecord records =
+                attendanceSystem.searchAttendanceRecordsByCrew("쿠키", 2024, Month.DECEMBER).getFirst();
         assertThat(records)
                 .isEqualTo(new AttendanceRecord("쿠키", LocalDateTime.of(NOT_HOIlDAY, ATTENDANCE_TIME), ATTENDANCE));
     }
@@ -131,7 +135,8 @@ class AttendanceSystemTest {
 
         attendanceSystem.updateAttendanceRecord("쿠키", NOT_HOIlDAY, EXPULSION_TIME);
 
-        List<AttendanceRecord> records = attendanceSystem.searchAttendanceRecordsByCrew("쿠키", Month.DECEMBER);
+        List<AttendanceRecord> records =
+                attendanceSystem.searchAttendanceRecordsByCrew("쿠키", 2024, Month.DECEMBER);
         assertThat(records).isEmpty();
     }
 
@@ -170,7 +175,7 @@ class AttendanceSystemTest {
         saveRecord("쿠키", NOT_HOIlDAY.plusDays(1), LATE_TIME);
         saveRecord("쿠키", NOT_HOIlDAY.minusDays(1), LATE_TIME);
 
-        List<AttendanceRecord> records = attendanceSystem.searchAttendanceRecordsByCrew("쿠키", Month.DECEMBER);
+        List<AttendanceRecord> records = attendanceSystem.searchAttendanceRecordsByCrew("쿠키", 2024, Month.DECEMBER);
         assertThat(records).hasSize(3);
     }
 
@@ -178,7 +183,7 @@ class AttendanceSystemTest {
     @Test
     void 출석_조회_등록되지_않은_닉네임의_경우_예외_발생() {
         assertThatIllegalArgumentException()
-                .isThrownBy(() -> attendanceSystem.searchAttendanceRecordsByCrew("빙봉", Month.DECEMBER))
+                .isThrownBy(() -> attendanceSystem.searchAttendanceRecordsByCrew("빙봉", 2024, Month.DECEMBER))
                 .withMessage("[ERROR] 등록되지 않은 닉네임입니다.");
     }
 

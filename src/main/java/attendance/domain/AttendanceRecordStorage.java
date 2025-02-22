@@ -32,9 +32,9 @@ public class AttendanceRecordStorage {
                 .findAny();
     }
 
-    public List<AttendanceRecord> findUnmodifiedRecordsByNickname(String nickname, Month month) {
+    public List<AttendanceRecord> findUnmodifiedRecordsByNickname(String nickname, int year, Month month) {
         List<AttendanceRecord> records = findRecordsByNickname(nickname);
-        return records.stream().filter(record -> record.isInMonth(month)).toList();
+        return records.stream().filter(record -> record.isInMonth(year, month)).toList();
     }
 
     public int calculateAttendanceCount(String nickname, LocalDate startDate, LocalDate endDate) { // TODO: 테스트 추가

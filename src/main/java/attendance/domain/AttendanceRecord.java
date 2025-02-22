@@ -25,8 +25,8 @@ public final class AttendanceRecord {
         return type == AttendanceType.EXPULSION;
     }
 
-    public boolean isInMonth(Month month) {
-        return arrivalDateTime.getMonth() == month;
+    public boolean isInMonth(int year, Month month) {
+        return arrivalDateTime.getYear() == year && arrivalDateTime.getMonth() == month;
     }
 
     public boolean isInPeriod(LocalDate startDate, LocalDate endDate) {

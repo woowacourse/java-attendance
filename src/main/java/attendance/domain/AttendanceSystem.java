@@ -45,9 +45,9 @@ public class AttendanceSystem {
         return new UpdateResult(oldRecord.get(), newRecord);
     }
 
-    public List<AttendanceRecord> searchAttendanceRecordsByCrew(String nickname, Month month) {
+    public List<AttendanceRecord> searchAttendanceRecordsByCrew(String nickname, int year, Month month) {
         validateCrew(nickname);
-        return recordStorage.findUnmodifiedRecordsByNickname(nickname, month);
+        return recordStorage.findUnmodifiedRecordsByNickname(nickname, year, month);
     }
 
     public List<RiskStatistics> searchRiskStatistics(LocalDate startDate, LocalDate endDate) {

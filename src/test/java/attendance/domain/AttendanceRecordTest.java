@@ -16,7 +16,7 @@ class AttendanceRecordTest {
     @Test
     void 크루에_대한_출석_기록을_추가한다() {
         String nickname = "쿠키";
-        LocalDateTime arrivalDateTime = LocalDateTime.of(2025, 12, 10, 8, 0, 0);
+        LocalDateTime arrivalDateTime = LocalDateTime.of(2024, 12, 10, 8, 0, 0);
         AttendanceRecord record = new AttendanceRecord(nickname, arrivalDateTime, AttendanceType.ATTENDANCE);
 
         LocalDate correctDate = arrivalDateTime.toLocalDate();
@@ -39,10 +39,10 @@ class AttendanceRecordTest {
     @Test
     void 현재_출석_기록의_월을_확인한다() {
         String nickname = "쿠키";
-        LocalDateTime arrivalDateTime = LocalDateTime.of(2025, 12, 10, 8, 0, 0);
+        LocalDateTime arrivalDateTime = LocalDateTime.of(2024, 12, 10, 8, 0, 0);
         AttendanceRecord record = new AttendanceRecord(nickname, arrivalDateTime, AttendanceType.ATTENDANCE);
 
-        assertThat(record.isInMonth(Month.DECEMBER)).isTrue();
+        assertThat(record.isInMonth(2024, Month.DECEMBER)).isTrue();
     }
 
     @DisplayName("현재 출석이 기간내의 기록인지 확인한다.")
@@ -50,11 +50,11 @@ class AttendanceRecordTest {
     @CsvSource({"9,false", "10,true", "11,true", "12,true", "13,false"})
     void 현재_출석_기록의_월을_확인한다(int dayOfMonth, boolean isInPeriod) {
         String nickname = "쿠키";
-        LocalDateTime arrivalDateTime = LocalDateTime.of(2025, 12, dayOfMonth, 8, 0, 0);
+        LocalDateTime arrivalDateTime = LocalDateTime.of(2024, 12, dayOfMonth, 8, 0, 0);
         AttendanceRecord record = new AttendanceRecord(nickname, arrivalDateTime, AttendanceType.ATTENDANCE);
 
         boolean actualResult =
-                record.isInPeriod(LocalDate.of(2025, 12, 10), LocalDate.of(2025, 12, 12));
+                record.isInPeriod(LocalDate.of(2024, 12, 10), LocalDate.of(2024, 12, 12));
         assertThat(actualResult).isEqualTo(isInPeriod);
     }
 

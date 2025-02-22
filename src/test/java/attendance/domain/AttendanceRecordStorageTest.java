@@ -94,7 +94,7 @@ class AttendanceRecordStorageTest {
         recordStorage.add(makeRecord("쿠키", LocalDateTime.of(2024, 12, 10, 8, 10, 0)));
         recordStorage.add(makeRecord("쿠키", LocalDateTime.of(2024, 12, 11, 8, 10, 0)));
 
-        assertThat(recordStorage.findUnmodifiedRecordsByNickname("쿠키", Month.DECEMBER)).hasSize(3);
+        assertThat(recordStorage.findUnmodifiedRecordsByNickname("쿠키", 2024, Month.DECEMBER)).hasSize(3);
     }
 
     @DisplayName("출석 횟수를 계산할 수 있다.")
