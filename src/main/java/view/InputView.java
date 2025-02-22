@@ -37,14 +37,15 @@ public class InputView {
         return scanner.nextLine();
     }
 
-    public static String getUserInputString(){
+    public static String getUserInputString(TodayDate todayDate){
+        System.out.printf(String.format(PRINT_TODAY_FORMAT,todayDate.getTodayDate().getMonth().getValue(),todayDate.getTodayDate().getDayOfMonth(),todayDate.getTodayDay()));
         printMenu();
         String input = userInput();
         try{
             return isQOrOneOrTwoOrThreeOrFour(input);
         } catch (IllegalArgumentException e){
             System.out.println(e.getMessage());
-            return getUserInputString();
+            return getUserInputString(todayDate);
         }
     }
 
