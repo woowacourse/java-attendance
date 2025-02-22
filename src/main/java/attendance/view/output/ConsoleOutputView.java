@@ -26,12 +26,13 @@ public class ConsoleOutputView implements OutputView {
     @Override
     public void printUpdateAttendanceResponse(final UpdateAttendanceResponse updateAttendanceResponse) {
         final LocalDate date = updateAttendanceResponse.getPreviousDateTime().toLocalDate();
-        final LocalTime time = updateAttendanceResponse.getPreviousDateTime().toLocalTime();
+        final LocalTime previousTime = updateAttendanceResponse.getPreviousDateTime().toLocalTime();
+        final LocalTime updatedTime = updateAttendanceResponse.getUpdatedDateTime().toLocalTime();
 
         final String message = String.format("%s (%s) -> %s (%s) 수정 완료!",
-                formatDateTimeWithDayOfWeek(date, time),
+                formatDateTimeWithDayOfWeek(date, previousTime),
                 updateAttendanceResponse.getPreviousStatus(),
-                formatTime(time),
+                formatTime(updatedTime),
                 updateAttendanceResponse.getUpdatedStatus());
         System.out.println(message);
     }
