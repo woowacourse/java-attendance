@@ -39,7 +39,6 @@ public class OutputView {
     }
 
     public static void printAttendanceStatistics(int attendCount, int latCount, int absentCount) {
-
         System.out.printf(ViewMessage.STATISTICS_FORMAT, attendCount, latCount, absentCount);
     }
 

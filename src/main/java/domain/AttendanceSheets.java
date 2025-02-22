@@ -20,12 +20,9 @@ public class AttendanceSheets {
                 .anyMatch(attendanceSheet1 -> attendanceSheet1.isSame(attendanceSheet))) {
             throw new IllegalArgumentException("[ERROR] 이미 출석했습니다. 수정 기능을 이용하세요");
         }
-
     }
 
-
     public List<AttendanceSheet> findAttendanceByNickname(String nickname) {
-
         List<AttendanceSheet> foundAttendance = attendanceSheets.stream()
                 .filter(attendanceSheet -> attendanceSheet.hasNickname(nickname))
                 .toList();
@@ -42,5 +39,12 @@ public class AttendanceSheets {
                 .map(AttendanceSheet::getNickname)
                 .distinct()
                 .toList();
+    }
+
+    public int getStateCount(String name, AttendanceState requireState) {
+        return Math.toIntExact(findAttendanceByNickname(name).stream()
+                .map(AttendanceSheet -> AttendanceSheet.getAttendanceDateTime().check())
+                .filter(state -> state==requireState)
+                .count());
     }
 }

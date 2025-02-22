@@ -1,4 +1,4 @@
-package domain.constant;
+package constant;
 
 public class Command {
     public static final String CREATE_ATTENDANCE = "1";

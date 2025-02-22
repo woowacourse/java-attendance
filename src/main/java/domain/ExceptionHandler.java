@@ -1,6 +1,6 @@
-package util;
+package domain;
 
-import static domain.constant.Command.QUIT;
+import static constant.Command.QUIT;
 
 import java.util.function.Supplier;
 
