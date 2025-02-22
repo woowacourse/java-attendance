@@ -8,7 +8,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 public class AttendanceTypeTest {
-    @DisplayName("기능: 출석 날짜와 시간에 대한 알맞은 AttendanceType 반환 확인")
+    @DisplayName("출석 날짜와 시간에 대한 알맞은 AttendanceType을 확인한다.")
     @Test
     void createAttendanceTypeOfLocalDateTime() {
         List<LocalDateTime> localDateTime =

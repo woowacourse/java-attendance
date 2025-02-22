@@ -13,7 +13,7 @@ import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
 public class AttendanceTest {
-    @DisplayName("기능: 이름이 동일한 Crew 객체로 해당 Attendance 확인")
+    @DisplayName("이름이 동일한 Crew 객체로 해당 Attendance을 확인한다.")
     @MethodSource("provideAttendanceInstances")
     @ParameterizedTest
     void findCrewInfoFromAttendance(List<Attendance> attendances) {
@@ -41,7 +41,7 @@ public class AttendanceTest {
         );
     }
 
-    @DisplayName("기능: 출석 시간이 바뀌면 그에 맞게 AttendanceType 갱신")
+    @DisplayName("출석 시간이 바뀌면 그에 맞게 AttendanceType을 갱신한다.")
     @Test
     void changeAttendanceTypeForModifiedTime() {
         Attendance attendance = new Attendance(
