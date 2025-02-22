@@ -12,6 +12,7 @@ import org.junit.jupiter.api.Test;
 import repository.CrewRepository;
 
 public class CrewTest {
+    private static final LocalDate TUESDAY = LocalDate.of(2025, 2, 4);
 
     @BeforeEach
     void initCrewRepository() {
@@ -23,16 +24,16 @@ public class CrewTest {
     void attendanceTest() {
         CrewRepository.addCrew(new Crew("pobi"));
         Crew crew = CrewRepository.findByNickname("pobi");
-        crew.addAttendanceTime(LocalDate.now(), LocalTime.of(10, 1));
+        crew.insertAttendanceTime(TUESDAY, LocalTime.of(10, 1));
     }
 
     @Test
     @DisplayName("이미_출석한_경우_예외를_던진다")
     void attendanceExceptionTest() {
         Crew crew = new Crew("pobi");
-        crew.addAttendanceTime(LocalDate.now(), LocalTime.of(10, 0));
+        crew.insertAttendanceTime(TUESDAY, LocalTime.of(10, 0));
         assertThatThrownBy(() -> {
-            crew.addAttendanceTime(LocalDate.now(), LocalTime.of(10, 1));
+            crew.insertAttendanceTime(TUESDAY, LocalTime.of(10, 1));
         }).isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -41,7 +42,7 @@ public class CrewTest {
     void offdayExceptionTest() {
         Crew crew = new Crew("pobi");
         assertThatThrownBy(() -> {
-            crew.addAttendanceTime(LocalDate.of(2025, 12, 25), LocalTime.of(10, 0));
+            crew.insertAttendanceTime(LocalDate.of(2025, 12, 25), LocalTime.of(10, 0));
         }).isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -50,9 +51,9 @@ public class CrewTest {
     void modifyAttendanceTest() {
         CrewRepository.addCrew(new Crew("pobi"));
         Crew crew = CrewRepository.findByNickname("pobi");
-        crew.addAttendanceTime(LocalDate.now(), LocalTime.of(10, 0));
-        crew.modifyAttendanceTime(LocalDate.now(), LocalTime.of(10, 10));
-        assertThat(crew.getAttendanceTimeByDate(LocalDate.now())).isEqualTo(LocalTime.of(10, 10));
+        crew.insertAttendanceTime(TUESDAY, LocalTime.of(10, 0));
+        crew.modifyAttendanceTime(TUESDAY, LocalTime.of(10, 10));
+        assertThat(crew.getAttendanceTimeByDate(TUESDAY)).isEqualTo(LocalTime.of(10, 10));
     }
 
     @Test
@@ -60,9 +61,9 @@ public class CrewTest {
     void getAttendanceStatusByDateTest() {
         CrewRepository.addCrew(new Crew("pobi"));
         Crew crew = CrewRepository.findByNickname("pobi");
-        crew.addAttendanceTime(LocalDate.of(2025, 2, 17), LocalTime.of(13, 6));
-        crew.addAttendanceTime(LocalDate.of(2025, 2, 18), LocalTime.of(10, 5));
-        crew.addAttendanceTime(LocalDate.of(2025, 2, 19), LocalTime.of(10, 31));
+        crew.insertAttendanceTime(LocalDate.of(2025, 2, 17), LocalTime.of(13, 6));
+        crew.insertAttendanceTime(LocalDate.of(2025, 2, 18), LocalTime.of(10, 5));
+        crew.insertAttendanceTime(LocalDate.of(2025, 2, 19), LocalTime.of(10, 31));
 
         SoftAssertions.assertSoftly(softly -> {
             softly.assertThat(crew.getAttendanceStatusByDate(LocalDate.of(2025, 2, 3)))
@@ -82,11 +83,11 @@ public class CrewTest {
         // given
         Crew crew = new Crew("pobi");
         // LATE
-        crew.addAttendanceTime(LocalDate.of(2025, 2, 3), LocalTime.of(13, 6));
+        crew.insertAttendanceTime(LocalDate.of(2025, 2, 3), LocalTime.of(13, 6));
         // ATTENDANCE
-        crew.addAttendanceTime(LocalDate.of(2025, 2, 4), LocalTime.of(10, 5));
+        crew.insertAttendanceTime(LocalDate.of(2025, 2, 4), LocalTime.of(10, 5));
         // ABSENT_LATE
-        crew.addAttendanceTime(LocalDate.of(2025, 2, 5), LocalTime.of(10, 31));
+        crew.insertAttendanceTime(LocalDate.of(2025, 2, 5), LocalTime.of(10, 31));
         // 2월6일, 2월7일 -> ABSENT
         // when
         AttendanceStatusStatistics attendanceStatusStatistics = crew.getAttendanceStatusStatistics(
