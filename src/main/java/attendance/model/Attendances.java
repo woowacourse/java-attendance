@@ -1,13 +1,10 @@
 package attendance.model;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.time.Month;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class Attendances {
@@ -45,11 +42,11 @@ public class Attendances {
         return newAttendance;
     }
 
-    public Optional<Attendance> findByCrewAndDate(Crew crew, LocalDate date) {
+    public Attendance findByCrewAndDate(Crew crew, LocalDate date) {
         return attendances.stream()
-                .filter(attendance -> attendance.isAlreadyAttendance(
-                        new Attendance(crew, LocalDateTime.of(date, LocalTime.MIN))))
-                .findFirst();
+                .filter(attendance -> attendance.isAlreadyAttendance(crew, date))
+                .findFirst()
+                .orElse(Attendance.absent(crew, date));
     }
 
     public List<Attendance> findAllByCrewAndMonth(Crew crew, Month findMonth) {

@@ -1,41 +1,57 @@
 package attendance.model;
 
 import attendance.util.DateUtils;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.Month;
 import java.util.Objects;
 
 public class Attendance {
 
     private final Crew crew;
-    private final LocalDateTime attendanceDateTime;
+    private final LocalDate attendanceDate;
+    private final LocalTime attendanceTime;
 
     public Attendance(Crew crew, LocalDateTime attendanceDateTime) {
-        validateAttendantDateTime(attendanceDateTime);
+        this(crew, attendanceDateTime.toLocalDate(), attendanceDateTime.toLocalTime());
+    }
+
+    public Attendance(Crew crew, LocalDate attendanceDate, LocalTime attendanceTime) {
+        validateAttendantDateTime(attendanceDate);
         this.crew = crew;
-        this.attendanceDateTime = attendanceDateTime;
+        this.attendanceDate = attendanceDate;
+        this.attendanceTime = attendanceTime;
+    }
+
+    public static Attendance absent(Crew crew, LocalDate attendanceDate) {
+        return new Attendance(crew, attendanceDate, null);
     }
 
     public boolean isCrewAttendanceInMonth(Crew crew, Month findMonth) {
-        return this.crew.equals(crew) && attendanceDateTime.getMonth() == findMonth;
+        return this.crew.equals(crew) && attendanceDate.getMonth() == findMonth;
     }
 
     public boolean isAlreadyAttendance(Attendance attendance) {
         return this.crew.equals(attendance.crew) &&
-                this.attendanceDateTime.toLocalDate().equals(attendance.attendanceDateTime.toLocalDate());
+                this.attendanceDate.equals(attendance.attendanceDate);
+    }
+
+    public boolean isAlreadyAttendance(Crew crew, LocalDate attendanceDate) {
+        return this.crew.equals(crew) &&
+                this.attendanceDate.equals(attendanceDate);
+    }
+
+    public AttendanceType getAttendanceType() {
+        return AttendanceType.judge(AttendanceStartTime.findDayOfWeek(attendanceDate.getDayOfWeek()), attendanceTime);
+    }
+
+    public LocalTime getAttendanceTime() {
+        return attendanceTime;
     }
 
     public LocalDateTime getAttendanceDateTime() {
-        return attendanceDateTime;
-    }
-
-    private void validateAttendantDateTime(LocalDateTime attendanceDateTime) {
-        if (DateUtils.isWeekend(attendanceDateTime.getDayOfWeek())) {
-            throw new IllegalArgumentException("주말인 경우 출석할 수 없습니다.");
-        }
-        if (Holiday.isHoliday(attendanceDateTime.toLocalDate())) {
-            throw new IllegalArgumentException("법정 공휴일에는 출석할 수 없습니다.");
-        }
+        return LocalDateTime.of(attendanceDate, attendanceTime);
     }
 
     @Override
@@ -57,5 +73,14 @@ public class Attendance {
         int result = Objects.hashCode(crew);
         result = 31 * result + Objects.hashCode(getAttendanceDateTime());
         return result;
+    }
+
+    private void validateAttendantDateTime(LocalDate attendanceDate) {
+        if (DateUtils.isWeekend(attendanceDate.getDayOfWeek())) {
+            throw new IllegalArgumentException("주말인 경우 출석할 수 없습니다.");
+        }
+        if (Holiday.isHoliday(attendanceDate)) {
+            throw new IllegalArgumentException("법정 공휴일에는 출석할 수 없습니다.");
+        }
     }
 }

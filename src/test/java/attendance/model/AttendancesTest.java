@@ -7,7 +7,6 @@ import java.time.LocalDateTime;
 import java.time.Month;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.Set;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
@@ -71,12 +70,11 @@ class AttendancesTest {
         LocalDateTime now = LocalDateTime.of(2024, 12, 13, 10, 1);
         Attendance attendance = new Attendance(crew, now);
         Attendances attendances = new Attendances(crewGroup, List.of(attendance));
-
         LocalDate findDate = LocalDate.of(2024, 12, 13);
-        Optional<Attendance> optionalAttendance = attendances.findByCrewAndDate(crew, findDate);
 
-        assertThat(optionalAttendance)
-                .hasValue(attendance);
+        Attendance actual = attendances.findByCrewAndDate(crew, findDate);
+
+        assertThat(actual).isEqualTo(attendance);
     }
 
     @DisplayName("크루가 찾으려는 날짜에 출석하지 않은 경우 닉네임과 날짜로 기존 출석을 찾을 수 없다.")
@@ -87,10 +85,9 @@ class AttendancesTest {
         Attendances attendances = new Attendances(crewGroup, List.of());
 
         LocalDate findDate = LocalDate.of(2024, 12, 13);
-        Optional<Attendance> optionalAttendance = attendances.findByCrewAndDate(crew, findDate);
+        Attendance attendance = attendances.findByCrewAndDate(crew, findDate);
 
-        assertThat(optionalAttendance)
-                .isNotPresent();
+        assertThat(attendance.getAttendanceTime()).isNull();
     }
 
     @DisplayName("크루의 해당 달의 출석 기록을 조회할 수 있다.")

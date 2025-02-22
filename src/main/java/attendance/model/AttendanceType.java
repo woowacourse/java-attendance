@@ -20,6 +20,10 @@ public enum AttendanceType {
     }
 
     public static AttendanceType judge(LocalTime startTime, LocalTime attendanceTime) {
+        if (attendanceTime == null) {
+            return AttendanceType.ABSENCE;
+        }
+
         return Arrays.stream(values())
                 .filter(attendanceType -> attendanceType.isMatch.apply(calculateDifMinutes(startTime, attendanceTime)))
                 .findFirst()

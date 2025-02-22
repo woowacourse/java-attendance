@@ -17,12 +17,12 @@ public enum Holiday {
         this.date = date;
     }
 
-    private boolean isSame(Month month, int date) {
-        return this.month == month && this.date == date;
-    }
-
     public static boolean isHoliday(LocalDate date) {
         return Arrays.stream(values())
-                .anyMatch(holiday -> holiday.isSame(date.getMonth(), date.getDayOfMonth()));
+                .anyMatch(holiday -> holiday.isSame(date));
+    }
+
+    private boolean isSame(LocalDate date) {
+        return this.month == date.getMonth() && this.date == date.getDayOfMonth();
     }
 }

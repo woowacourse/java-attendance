@@ -20,7 +20,6 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.function.Function;
 
 public class AttendanceController {
@@ -99,9 +98,9 @@ public class AttendanceController {
     private void doUpdateAttendance(LocalDateTime now) {
         Crew crew = new Crew(inputExistNicknameForUpdate());
         LocalDateTime updateDateTime = inputUpdateDateTime(now);
-        Optional<Attendance> beforeAttendance = findAttendanceByCrewAndDate(crew, updateDateTime);
+        Attendance beforeAttendance = findAttendanceByCrewAndDate(crew, updateDateTime);
         Attendance modifidedAttendance = attendances.update(new Attendance(crew, updateDateTime));
-        printModifiedAttendance(beforeAttendance.orElse(null), modifidedAttendance);
+        outputView.printModifiedAttendance(beforeAttendance, modifidedAttendance);
     }
 
     private String inputExistNicknameForUpdate() {
@@ -126,22 +125,8 @@ public class AttendanceController {
         }
     }
 
-    private Optional<Attendance> findAttendanceByCrewAndDate(Crew crew, LocalDateTime updateDateTime) {
+    private Attendance findAttendanceByCrewAndDate(Crew crew, LocalDateTime updateDateTime) {
         return attendances.findByCrewAndDate(crew, updateDateTime.toLocalDate());
-    }
-
-    private void printModifiedAttendance(Attendance beforeAttendance, Attendance modifidedAttendance) {
-        outputView.printModifiedAttendance(beforeAttendance, modifidedAttendance,
-                getAttendanceType(beforeAttendance),
-                getAttendanceType(modifidedAttendance)
-        );
-    }
-
-    private AttendanceType getAttendanceType(Attendance attendance) {
-        if (attendance == null) {
-            return AttendanceType.ABSENCE;
-        }
-        return calculateAttendanceType(attendance.getAttendanceDateTime());
     }
 
     private AttendanceType calculateAttendanceType(LocalDateTime dateTime) {
