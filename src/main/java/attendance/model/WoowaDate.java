@@ -8,16 +8,16 @@ import java.time.LocalDate;
 
 public class WoowaDate {
     private final LocalDate localDate;
-    private final FixedCustomClock fixedCustomClock;
+    private final CustomClock clock;
 
-    public WoowaDate(LocalDate localDate, FixedCustomClock fixedCustomClock) {
+    public WoowaDate(LocalDate localDate, CustomClock clock) {
         this.localDate = localDate;
-        this.fixedCustomClock = fixedCustomClock;
+        this.clock = clock;
         validateWeekendOrHoliday();
     }
 
     private void validateWeekendOrHoliday() {
-        if (DateUtil.isWeekend(localDate) || fixedCustomClock.isHoliday(localDate)) {
+        if (DateUtil.isWeekendOrHoliday(localDate, clock)) {
             throw new IllegalArgumentException(localDate.format(NOT_ATTENDABLE_FORMATTER));
         }
     }

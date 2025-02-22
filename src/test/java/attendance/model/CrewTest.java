@@ -1,7 +1,6 @@
 package attendance.model;
 
 import static attendance.error.ErrorMessage.ERROR_NAME_LENGTH;
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import attendance.TestUtil;
@@ -24,19 +23,6 @@ class CrewTest {
         assertThatThrownBy(() -> new Crew(" "))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage(ERROR_NAME_LENGTH);
-    }
-
-    @Test
-    void 크루가_가지고_있는_출석_기록을_확인한다() {
-        //given
-        Crew crew = new Crew("멍구");
-        crew.attend(TestUtil.creatAttendanceDetail(2024, 12, 10, 10, 0));
-
-        //when
-        long attendanceCount = crew.getAttendanceHistory().getAttendanceCount();
-
-        //then
-        assertThat(attendanceCount).isEqualTo(1);
     }
 
     @Test

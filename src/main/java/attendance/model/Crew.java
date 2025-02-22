@@ -21,6 +21,14 @@ public class Crew {
         }
     }
 
+    public AttendanceDetail findAttendanceDetail(LocalDate findDate) {
+        return attendanceHistory.findAttendanceDetail(findDate);
+    }
+
+    public void attend(AttendanceDetail attendanceDetail) {
+        attendanceHistory.addAttendanceDetail(attendanceDetail);
+    }
+
     public String getName() {
         return name;
     }
@@ -29,11 +37,4 @@ public class Crew {
         return attendanceHistory;
     }
 
-    public AttendanceDetail findAttendanceDetail(LocalDate findDate) {
-        return attendanceHistory.findAttendanceDetail(findDate);
-    }
-
-    public void attend(AttendanceDetail attendanceDetail) {
-        attendanceHistory.addAttendanceDetail(attendanceDetail);
-    }
 }

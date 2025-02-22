@@ -3,29 +3,69 @@ package attendance.view;
 import attendance.dto.AttendanceDto;
 import attendance.dto.AttendanceDto.AttendanceDetailDto;
 import attendance.dto.WarningCrewsDto;
+import attendance.model.Attendance;
+import attendance.model.CustomClock;
+import attendance.util.DateUtil;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Comparator;
+import java.util.Optional;
 
 public class OutputView {
 
     private static final DateTimeFormatter normalFormatter = DateTimeFormatter.ofPattern("MM월 dd일 EEEE HH:mm");
     private static final DateTimeFormatter absenceFormatter = DateTimeFormatter.ofPattern("MM월 dd일 EEEE --:--");
 
-    public void printAttendanceHistory(AttendanceDto attendanceDTO) {
-        CustomStringBuilder stringBuilder = new CustomStringBuilder();
-        stringBuilder.appendLine(String.format("이번 달 %s의 출석 기록입니다.", attendanceDTO.crewName()));
-        attendanceDTO.attendanceDetailDtos().stream()
-                .sorted(Comparator.comparing(AttendanceDetailDto::attendanceDateTime))
-                .forEach(attendanceDetail -> stringBuilder.appendLine(generateAttendanceDetail(
-                        attendanceDetail.attendanceDateTime(),
-                        attendanceDetail.attendanceType()
-                )));
-        stringBuilder.appendLine(String.format("출석: %d회", attendanceDTO.attendanceCount()));
-        stringBuilder.appendLine(String.format("지각: %d회", attendanceDTO.lateCount()));
-        stringBuilder.appendLine(String.format("결석: %d회", attendanceDTO.absenceCount()));
-        stringBuilder.appendLine(String.format("%s 대상자입니다.", attendanceDTO.warningType()));
-        stringBuilder.print();
+//    public void printAttendanceHistory(AttendanceDto attendanceDTO) {
+//        CustomStringBuilder stringBuilder = new CustomStringBuilder();
+//        stringBuilder.appendLine(String.format("이번 달 %s의 출석 기록입니다.", attendanceDTO.crewName()));
+//
+//        attendanceDTO.attendanceDetailDtos().stream()
+//                .sorted(Comparator.comparing(AttendanceDetailDto::attendanceDateTime))
+//                .forEach(attendanceDetail -> stringBuilder.appendLine(generateAttendanceDetail(
+//                        attendanceDetail.attendanceDateTime(),
+//                        attendanceDetail.attendanceType()
+//                )));
+//        stringBuilder.appendLine(String.format("출석: %d회", attendanceDTO.attendanceCount()));
+//        stringBuilder.appendLine(String.format("지각: %d회", attendanceDTO.lateCount()));
+//        stringBuilder.appendLine(String.format("결석: %d회", attendanceDTO.absenceCount()));
+//        stringBuilder.appendLine(String.format("%s 대상자입니다.", attendanceDTO.warningType()));
+//        stringBuilder.print();
+//    }
+
+    public void printAttendanceHistory(AttendanceDto attendanceDTO, LocalDate monthStart, CustomClock clock) {
+        CustomStringBuilder sb = new CustomStringBuilder();
+        sb.appendLine(String.format("이번 달 %s의 출석 기록입니다.", attendanceDTO.crewName()));
+
+        appendAttendanceLines(sb, attendanceDTO, monthStart, clock);
+
+        sb.appendLine(String.format("출석: %d회", attendanceDTO.attendanceCount()));
+        sb.appendLine(String.format("지각: %d회", attendanceDTO.lateCount()));
+        sb.appendLine(String.format("결석: %d회", attendanceDTO.absenceCount()));
+        sb.appendLine(String.format("%s 대상자입니다.", attendanceDTO.warningType()));
+        sb.print();
+    }
+
+    private void appendAttendanceLines(CustomStringBuilder sb, AttendanceDto attendanceDTO, LocalDate monthStart,
+                                       CustomClock clock) {
+        for (LocalDate date = monthStart; !date.isAfter(clock.nowDate()); date = date.plusDays(1)) {
+            if (DateUtil.isWeekendOrHoliday(date, clock)) {
+                continue;
+            }
+            sb.appendLine(buildAttendanceLine(date, attendanceDTO));
+        }
+    }
+
+    private String buildAttendanceLine(LocalDate date, AttendanceDto attendanceDTO) {
+        Optional<AttendanceDetailDto> maybeDetail = attendanceDTO.attendanceDetailDtos().stream()
+                .filter(dto -> dto.attendanceDateTime().toLocalDate().equals(date))
+                .findFirst();
+
+        if (maybeDetail.isPresent()) {
+            AttendanceDetailDto detail = maybeDetail.get();
+            return detail.attendanceDateTime().format(normalFormatter) + " (" + detail.attendanceType() + ")";
+        }
+        return date.format(absenceFormatter) + " (" + Attendance.ABSENT.name() + ")";
     }
 
     public void printAttendanceDetail(AttendanceDetailDto attendanceDetailDTO) {

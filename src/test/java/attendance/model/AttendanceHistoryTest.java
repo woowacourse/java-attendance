@@ -49,20 +49,6 @@ public class AttendanceHistoryTest {
     }
 
     @Test
-    void 출석기록에서_전체출석횟수를_계산한다() {
-        //given
-        AttendanceHistory attendanceHistory = new AttendanceHistory();
-
-        //when
-        attendanceHistory.addAttendanceDetail(TestUtil.creatAttendanceDetail(2024, 12, 2, 13, 0));
-        attendanceHistory.addAttendanceDetail(TestUtil.creatAttendanceDetail(2024, 12, 3, 9, 58));
-        attendanceHistory.addAttendanceDetail(TestUtil.creatAttendanceDetail(2024, 12, 4, 10, 2));
-
-        //then
-        assertThat(attendanceHistory.getAttendanceCount()).isEqualTo(3);
-    }
-
-    @Test
     void 해당_날짜의_출석기록이_존재하면_true를_반환한다() {
         //given
         AttendanceHistory attendanceHistory = new AttendanceHistory();

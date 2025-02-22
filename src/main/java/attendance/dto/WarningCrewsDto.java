@@ -1,14 +1,22 @@
 package attendance.dto;
 
+import attendance.model.AttendanceReport;
 import attendance.model.AttendanceWarning;
 import attendance.model.Crew;
 import attendance.model.Crews;
+import attendance.model.CustomClock;
+import java.time.LocalDate;
 import java.util.List;
 
 public record WarningCrewsDto(List<WarningCrewDetailDto> warningCrewDetailDTO) {
 
-    public static WarningCrewsDto from(Crews crews) {
-        return new WarningCrewsDto(crews.getCrews().stream().map(WarningCrewDetailDto::from)
+    public static WarningCrewsDto from(Crews crews, CustomClock clock, LocalDate trainingStartDate) {
+        return new WarningCrewsDto(crews.getCrews().stream()
+                .map(crew -> {
+                    AttendanceReport report = new AttendanceReport(clock, crew.getAttendanceHistory(),
+                            trainingStartDate);
+                    return WarningCrewDetailDto.from(crew, report);
+                })
                 .filter(dto -> !dto.warningType.equals(AttendanceWarning.NONE.name()))
                 .toList());
     }
@@ -20,13 +28,14 @@ public record WarningCrewsDto(List<WarningCrewDetailDto> warningCrewDetailDTO) {
             long convertLateCount,
             String warningType
     ) {
-        public static WarningCrewDetailDto from(Crew crew) {
+        public static WarningCrewDetailDto from(Crew crew, AttendanceReport report) {
             return new WarningCrewDetailDto(
                     crew.getName(),
-                    crew.getAttendanceHistory().getAbsenceCount(),
-                    crew.getAttendanceHistory().getLateCount(),
-                    crew.getAttendanceHistory().getLateCount() + crew.getAttendanceHistory().getAbsenceCount() * 3,
-                    AttendanceWarning.from(crew).name());
+                    report.calculateAbsenceCount(),
+                    report.calculateLateCount(),
+                    report.calculateAbsenceCount(),
+                    report.calculateWarning().name()
+            );
         }
     }
 

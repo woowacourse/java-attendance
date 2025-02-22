@@ -1,6 +1,7 @@
 package attendance;
 
 import attendance.model.AttendanceDetail;
+import attendance.model.CustomClock;
 import attendance.model.FixedCustomClock;
 import attendance.model.WoowaDate;
 import java.time.LocalDate;
@@ -8,9 +9,10 @@ import java.time.LocalTime;
 import java.util.Set;
 
 public class TestUtil {
-    private static final FixedCustomClock FIXED_CUSTOM_CLOCK = new FixedCustomClock(
+    private static final CustomClock FIXED_CUSTOM_CLOCK = new FixedCustomClock(
             Set.of(LocalDate.of(2024, 12, 25))
     );
+    private static final LocalDate startDate = LocalDate.of(2024, 12, 1);
 
     public static WoowaDate createTestWoowaDate(LocalDate localDate) {
         return new WoowaDate(localDate, FIXED_CUSTOM_CLOCK); // CustomClock 없이 기본 생성
@@ -21,4 +23,11 @@ public class TestUtil {
         return new AttendanceDetail(woowaDate, LocalTime.of(hour, minute));
     }
 
+    public static CustomClock getClock() {
+        return FIXED_CUSTOM_CLOCK;
+    }
+
+    public static LocalDate getTrainingStartDate() {
+        return startDate;
+    }
 }

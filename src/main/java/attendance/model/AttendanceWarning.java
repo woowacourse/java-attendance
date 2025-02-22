@@ -14,8 +14,7 @@ public enum AttendanceWarning {
         this.absenceCount = absenceCount;
     }
 
-    public static AttendanceWarning from(Crew crew) {
-        long absenceCount = getAbsenceCount(crew);
+    public static AttendanceWarning from(long absenceCount) {
         if (absenceCount > OUT.absenceCount) {
             return OUT;
         }
@@ -27,15 +26,5 @@ public enum AttendanceWarning {
         }
         return NONE;
     }
-
-    private static long getAbsenceCount(Crew crew) {
-        return calculateAbsenceCount(
-                crew.getAttendanceHistory().getAbsenceCount(),
-                crew.getAttendanceHistory().getLateCount()
-        );
-    }
-
-    public static long calculateAbsenceCount(long absenceCount, long lateCount) {
-        return absenceCount + lateCount / LATES_PER_ABSENCE;
-    }
+    
 }
