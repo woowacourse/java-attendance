@@ -6,7 +6,7 @@ import domain.AttendanceStatus;
 import domain.AttendanceSystem;
 import domain.Crew;
 import domain.ExpulsionStatus;
-import domain.Operation;
+import domain.UserCommand;
 import dto.AttendanceResponse;
 import dto.ExpulsionCrewResponse;
 import java.time.LocalDate;
@@ -38,24 +38,24 @@ public class AttendanceController {
         retryUntilOperationQuit();
     }
 
-    public Operation selectOperation() {
+    public UserCommand selectOperation() {
         outputView.printToday(LocalDate.now().withYear(2024).withMonth(12));
         outputView.printIntroduceOperation();
-        final Operation operation = inputView.readChoiceOperation();
-        if (operation == Operation.ADD_ATTENDANCE) {
+        final UserCommand userCommand = inputView.readChoiceOperation();
+        if (userCommand == UserCommand.ADD_ATTENDANCE) {
             addAttendance();
-        } else if (operation == Operation.UPDATE_ATTENDANCE) {
+        } else if (userCommand == UserCommand.UPDATE_ATTENDANCE) {
             updateAttendance();
-        } else if (operation == Operation.LOOKUP_CREW_ATTENDANCE) {
+        } else if (userCommand == UserCommand.LOOKUP_CREW_ATTENDANCE) {
             responseCrewAttendanceHistory();
-        } else if (operation == Operation.LOOKUP_EXPULSION_CREWS) {
+        } else if (userCommand == UserCommand.LOOKUP_EXPULSION_CREWS) {
             responseExpulsionCrews();
         }
-        return operation;
+        return userCommand;
     }
 
     private void retryUntilOperationQuit() {
-        while (selectOperation() != Operation.QUIT) {
+        while (selectOperation() != UserCommand.QUIT) {
         }
     }
 

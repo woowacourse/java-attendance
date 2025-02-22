@@ -1,7 +1,7 @@
 package view;
 
 import domain.AnswerCommand;
-import domain.Operation;
+import domain.UserCommand;
 import java.time.LocalTime;
 import java.time.format.DateTimeParseException;
 import java.util.Scanner;
@@ -35,8 +35,8 @@ public class InputView {
         }
     }
 
-    public Operation readChoiceOperation() {
-        return Operation.of(scanner.nextLine());
+    public UserCommand readChoiceOperation() {
+        return UserCommand.of(scanner.nextLine());
     }
 
     public AnswerCommand readAnswerCommand() {
