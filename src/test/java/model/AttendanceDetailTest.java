@@ -1,15 +1,27 @@
 package model;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import attendance.model.Attendance;
 import attendance.model.AttendanceDetail;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.Test;
 
 public class AttendanceDetailTest {
+    private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM월 dd일 EEEE은 등교일이 아닙니다.");
+
+    @Test
+    void 등교일이_아닐때_출석상세_생성시_예외가_발생한다() {
+        LocalDateTime attendanceDateTime = LocalDateTime.of(2024, 12, 1, 10, 0);
+
+        assertThatThrownBy(() -> new AttendanceDetail(attendanceDateTime))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage(attendanceDateTime.format(formatter));
+    }
 
     @Test
     void 같은_출석상태일때_true를_반환한다() {

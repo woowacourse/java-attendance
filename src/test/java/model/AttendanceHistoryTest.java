@@ -1,5 +1,6 @@
 package model;
 
+import static attendance.error.ErrorMessage.ERROR_ATTENDANCE_DETAIL_NOT_FOUND;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
@@ -88,7 +89,7 @@ public class AttendanceHistoryTest {
     }
 
     @Test
-    void 등교일이_아닌_날짜로_출석상세를_찾으려고할때_예외가_발생한다() {
+    void 출석기록에_없는_날짜로_출석상세를_찾으려고할때_예외가_발생한다() {
         // given
         AttendanceHistory attendanceHistory = new AttendanceHistory();
 
@@ -99,6 +100,8 @@ public class AttendanceHistoryTest {
 
         // when & then
         assertThatThrownBy(() -> attendanceHistory.findAttendanceDetail(wantDate))
-                .isInstanceOf(IllegalArgumentException.class);
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage(ERROR_ATTENDANCE_DETAIL_NOT_FOUND);
     }
+
 }

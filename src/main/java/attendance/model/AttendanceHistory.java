@@ -1,5 +1,7 @@
 package attendance.model;
 
+import static attendance.error.ErrorMessage.ERROR_ATTENDANCE_DETAIL_NOT_FOUND;
+
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -38,20 +40,13 @@ public class AttendanceHistory {
     }
 
     public AttendanceDetail findAttendanceDetail(LocalDate attendanceDate) {
-        validateHoliday(attendanceDate);
         return attendanceHistory.stream()
                 .filter(attendanceDetail -> attendanceDetail.getAttendanceDate().equals(attendanceDate))
-                .findFirst().orElseThrow(() -> new IllegalArgumentException("존재하지 않는 날짜입니다."));
+                .findFirst().orElseThrow(() -> new IllegalArgumentException(ERROR_ATTENDANCE_DETAIL_NOT_FOUND));
     }
 
     public Stream<AttendanceDetail> stream() {
         return attendanceHistory.stream();
-    }
-
-    private void validateHoliday(LocalDate attendanceDate) {
-        if (CustomLocalDateTime.isHoliday(attendanceDate)) {
-            throw new IllegalArgumentException(attendanceDate.format(formatter));
-        }
     }
 
 }

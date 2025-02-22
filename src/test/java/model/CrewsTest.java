@@ -1,12 +1,11 @@
 package model;
 
+import static attendance.error.ErrorMessage.ERROR_CREW_NOT_FOUND;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import attendance.model.Crew;
 import attendance.model.Crews;
-import org.assertj.core.api.Assertions;
-import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 class CrewsTest {
@@ -15,7 +14,8 @@ class CrewsTest {
     void 등록되지_않은_닉네임으로_찾으면_예외가_발생한다() {
         Crews crews = new Crews();
         assertThatThrownBy(() -> crews.findCrew("빙티"))
-                .isInstanceOf(IllegalArgumentException.class);
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage(ERROR_CREW_NOT_FOUND);
     }
 
     @Test

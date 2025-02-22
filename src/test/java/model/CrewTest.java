@@ -1,5 +1,6 @@
 package model;
 
+import static attendance.error.ErrorMessage.ERROR_NAME_LENGTH;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
@@ -17,13 +18,15 @@ class CrewTest {
     @Test
     void 크루의_이름이_4자_이하가_아니라면_예외가_발생한다() {
         assertThatThrownBy(() -> new Crew("멍멍멍멍멍"))
-                .isInstanceOf(IllegalArgumentException.class);
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage(ERROR_NAME_LENGTH);
     }
 
     @Test
     void 크루의_이름이_공백인_경우_예외가_발생한다() {
         assertThatThrownBy(() -> new Crew(" "))
-                .isInstanceOf(IllegalArgumentException.class);
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage(ERROR_NAME_LENGTH);
     }
 
     @Test

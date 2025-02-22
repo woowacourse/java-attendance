@@ -1,5 +1,7 @@
 package attendance.model;
 
+import static attendance.error.ErrorMessage.ERROR_NAME_LENGTH;
+
 import java.time.LocalDate;
 
 public class Crew {
@@ -15,7 +17,7 @@ public class Crew {
 
     private void validate(String name) {
         if (name == null || name.isBlank() || name.length() > 4) {
-            throw new IllegalArgumentException("크루의 이름은 1자 이상 4자 이하여야 합니다.");
+            throw new IllegalArgumentException(ERROR_NAME_LENGTH);
         }
     }
 

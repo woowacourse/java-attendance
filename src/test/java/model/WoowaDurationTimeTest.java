@@ -1,6 +1,8 @@
 package model;
 
-import attendance.model.CustomLocalDateTime;
+import static attendance.error.ErrorMessage.ERROR_NOT_WOOWA_OPEN;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+
 import attendance.model.WoowaDurationTime;
 import java.time.LocalDateTime;
 import org.assertj.core.api.Assertions;
@@ -10,7 +12,15 @@ class WoowaDurationTimeTest {
 
     @Test
     void 현재_시간이_출석_가능_시작_시간부터_몇분_차이나는지_확인한다() {
-        LocalDateTime localDateTime = CustomLocalDateTime.now();
-        Assertions.assertThat(WoowaDurationTime.calculateDuration(localDateTime)).isEqualTo(-60);
+        LocalDateTime localDateTime = LocalDateTime.of(2024, 12, 3, 11, 0);
+        Assertions.assertThat(WoowaDurationTime.calculateDuration(localDateTime)).isEqualTo(60);
+    }
+
+    @Test
+    void 차이를_계산하려는_날짜가_운영시간이_아니면_예외가_발생한다() {
+        LocalDateTime notOpenDateTime = LocalDateTime.of(2024, 12, 1, 10, 0);
+        assertThatThrownBy(() -> WoowaDurationTime.calculateDuration(notOpenDateTime))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage(ERROR_NOT_WOOWA_OPEN);
     }
 }

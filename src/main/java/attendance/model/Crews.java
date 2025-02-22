@@ -1,8 +1,9 @@
 package attendance.model;
 
+import static attendance.error.ErrorMessage.ERROR_CREW_NOT_FOUND;
+
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Stream;
 
 public class Crews {
     private final List<Crew> crews;
@@ -23,7 +24,7 @@ public class Crews {
         return crews.stream()
                 .filter(crew -> crew.getName().equals(name))
                 .findFirst()
-                .orElseThrow(() -> new IllegalArgumentException("등록되지 않은 닉네임입니다."));
+                .orElseThrow(() -> new IllegalArgumentException(ERROR_CREW_NOT_FOUND));
     }
 
     public boolean containsCrew(String name) {

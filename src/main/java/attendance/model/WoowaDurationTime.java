@@ -1,5 +1,7 @@
 package attendance.model;
 
+import static attendance.error.ErrorMessage.ERROR_NOT_WOOWA_OPEN;
+
 import java.time.DayOfWeek;
 import java.time.Duration;
 import java.time.LocalDateTime;
@@ -29,6 +31,6 @@ public enum WoowaDurationTime {
         return Arrays.stream(WoowaDurationTime.values())
                 .filter(woowaDurationTime -> woowaDurationTime.dayOfWeek == dayOfWeek)
                 .findFirst()
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 운영시간입니다.")).startTime;
+                .orElseThrow(() -> new IllegalArgumentException(ERROR_NOT_WOOWA_OPEN)).startTime;
     }
 }
