@@ -1,25 +1,24 @@
 package domain;
 
+import java.util.Arrays;
+
 public record AttendCount(long attend, long late, long absence) {
+
+    private static final int ABSENCE_LATE_RATIO = 3;
+
     public WarningStatus judgeWarning() {
         long totalAbsenceCount = calculateTotalAbsenceCount();
-        if (totalAbsenceCount > 5) {
-            return WarningStatus.EXPEL;
-        }
-        if (totalAbsenceCount >= 3) {
-            return WarningStatus.INTERVIEW;
-        }
-        if (totalAbsenceCount >= 2) {
-            return WarningStatus.WARNING;
-        }
-        return WarningStatus.CLEAR;
+        return Arrays.stream(WarningStatus.values())
+                .filter(warningStatus -> warningStatus.match(totalAbsenceCount))
+                .findAny()
+                .orElseThrow(IllegalArgumentException::new);
     }
 
     public long calculateRank() {
-        return absence * 3 + late;
+        return absence * ABSENCE_LATE_RATIO + late;
     }
 
     private long calculateTotalAbsenceCount() {
-        return late / 3 + absence;
+        return late / ABSENCE_LATE_RATIO + absence;
     }
 }
