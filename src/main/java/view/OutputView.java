@@ -19,6 +19,7 @@ public class OutputView {
         System.out.print(" -> ");
         System.out.print(formatAttendAndStatus(after, afterStatus));
         System.out.println(" 수정 완료!");
+        System.out.println();
     }
 
     public void printAttendResult(Attend attend, AttendStatus attendStatus) {
@@ -26,10 +27,10 @@ public class OutputView {
     }
 
     private String formatAttendAndStatus(Attend attend, AttendStatus attendStatus) {
-        String date = attend.date.format(DateTimeFormatter.ofPattern("MM월 dd일 E요일"));
+        String date = attend.formatDate(DateTimeFormatter.ofPattern("MM월 dd일 E요일"));
         String time = "--:--";
-        if (attend.time != null) {
-            time = attend.time.format(DateTimeFormatter.ofPattern("HH:mm"));
+        if (attend.hasTime()) {
+            time = attend.formatTime(DateTimeFormatter.ofPattern("HH:mm"));
         }
         String status = formatAttendStatus(attendStatus);
         return String.format("%s %s (%s)", date, time, status);

@@ -2,8 +2,8 @@ package domain;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Objects;
-import util.DateUtil;
 
 public class Attend {
 
@@ -33,6 +33,14 @@ public class Attend {
 
     public boolean isDayEqual(final int day) {
         return DateUtil.isDayEqual(day, date);
+    }
+
+    public String formatDate(DateTimeFormatter dateTimeFormatter) {
+        return this.date.format(dateTimeFormatter);
+    }
+
+    public String formatTime(DateTimeFormatter dateTimeFormatter) {
+        return this.time.format(dateTimeFormatter);
     }
 
     public int getDay() {
