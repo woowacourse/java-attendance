@@ -1,11 +1,9 @@
 package domain.attendance;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
-
 import domain.crew.Crew;
 import domain.date.AttendanceDateTime;
 import java.util.List;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -36,8 +34,8 @@ class AttendanceHistoriesTest {
         List<AttendanceHistory> crewAHistories = histories.findAllHistoriesOf(crewA);
         List<AttendanceHistory> crewBHistories = histories.findAllHistoriesOf(crewB);
 
-        assertThat(crewAHistories).hasSize(1);
-        assertThat(crewBHistories).hasSize(1);
+        Assertions.assertThat(crewAHistories).hasSize(1);
+        Assertions.assertThat(crewBHistories).hasSize(1);
     }
 
     @Test
@@ -51,13 +49,13 @@ class AttendanceHistoriesTest {
         histories.update(originalHistory, updatedHistory);
 
         AttendanceHistory foundHistory = histories.findHistoryBy(updatedHistory);
-        assertThat(foundHistory).isEqualTo(updatedHistory);
+        Assertions.assertThat(foundHistory).isEqualTo(updatedHistory);
     }
 
     @Test
     void findHistoryByThrowsExceptionWhenNotFoundTest() {
         AttendanceHistory nonExistentHistory = AttendanceHistory.of(crewA, day1Morning);
-        assertThatThrownBy(() -> histories.findHistoryBy(nonExistentHistory))
+        Assertions.assertThatThrownBy(() -> histories.findHistoryBy(nonExistentHistory))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("해당 출석 기록이 존재하지 않습니다.");
     }
@@ -74,6 +72,6 @@ class AttendanceHistoriesTest {
         histories.add(crewB, day1);
 
         List<AttendanceHistory> pastHistories = histories.findHistoriesBefore(crewA, 3);
-        assertThat(pastHistories).hasSize(2);
+        Assertions.assertThat(pastHistories).hasSize(2);
     }
 }
