@@ -141,7 +141,7 @@ public class AttendanceController {
     private LocalDate askDayToModify(AttendanceBook attendanceBook, String name) {
         try {
             LocalDate modifiedDay = LocalDate.now().withDayOfMonth(inputView.askDayForModify().getDayOfMonth());
-            attendanceBook.validateDateAlreadyExistsByCrewName(name, modifiedDay);
+            attendanceBook.validateAttendanceAlreadyExistsByCrewName(name, modifiedDay);
             return modifiedDay;
         } catch (DateTimeException | NumberFormatException e) {
             throw new IllegalArgumentException("[ERROR] 날짜(일) 입력이 올바르지 않습니다.");

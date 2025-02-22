@@ -15,8 +15,6 @@ import utils.TimeUtils;
 import view.ErrorCode;
 
 public class Crew {
-
-
     private final String name;
     private final Map<LocalDate, LocalTime> dailyAttendances;
 
@@ -37,14 +35,14 @@ public class Crew {
         return dailyAttendances.get(date);
     }
 
-    public void validateDateAlreadyExists(LocalDate date) {
+    public void validateRecordNotExists(LocalDate date) {
         if (!dailyAttendances.containsKey(date)) {
             throw new IllegalArgumentException(
                     ErrorCode.ATTENDANCE_RECORD_NOT_EXISTS_FORMAT.format(date.getDayOfMonth()));
         }
     }
 
-    private void validateIsNotAlreadyAttended(LocalDate date) {
+    public void validateAttendanceAlreadyExists(LocalDate date) {
         if (dailyAttendances.containsKey(date)) {
             throw new IllegalArgumentException(ErrorCode.CHECK_ATTENDANCE_ALREADY_EXISTS.getFormat());
         }
@@ -53,14 +51,14 @@ public class Crew {
     public void addDailyAttendance(Map<LocalDate, LocalTime> dateAndTime) {
         LocalDate date = TimeUtils.getDateFromDateAndTime(dateAndTime);
 
-        validateIsNotAlreadyAttended(date);
+        validateAttendanceAlreadyExists(date);
 
         dailyAttendances.putAll(dateAndTime);
     }
 
     public void modifyDailyAttendance(Map<LocalDate, LocalTime> dateAndTime) {
         LocalDate date = TimeUtils.getDateFromDateAndTime(dateAndTime);
-        validateDateAlreadyExists(date);
+        validateRecordNotExists(date);
 
         dailyAttendances.putAll(dateAndTime);
     }

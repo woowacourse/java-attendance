@@ -69,7 +69,7 @@ public class ModifyAttendanceTest {
     @DisplayName("출석_수정_시_캠퍼스_운영_시간이_아닌_경우_예외를_출력한다")
     void 출석_수정_시_캠퍼스_운영_시간이_아닌_경우_예외를_출력한다() {
         assertThatThrownBy(
-                () -> attendanceBook.modifyAttendance("쿠키", Map.of(LocalDate.of(2024, 12, 2), NON_OPERATING_TIME)))
+                () -> attendanceBook.modifyAttendance("쿠키", Map.of(LocalDate.of(2024, 12, 4), NON_OPERATING_TIME)))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage(ErrorCode.TIME_NOT_IN_OPERATION_HOUR.getFormat());
     }

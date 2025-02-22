@@ -36,9 +36,14 @@ public class AttendanceBook {
         }
     }
 
-    public void validateDateAlreadyExistsByCrewName(String name, LocalDate date) {
+    public void validateAttendanceAlreadyExistsByCrewName(String name, LocalDate date) {
         Crew foundCrew = findCrewByName(name);
-        foundCrew.validateDateAlreadyExists(date);
+        foundCrew.validateAttendanceAlreadyExists(date);
+    }
+
+    public void validateRecordNotExistsByCrewName(String name, LocalDate date) {
+        Crew foundCrew = findCrewByName(name);
+        foundCrew.validateRecordNotExists(date);
     }
 
     public void validateIsInOperationHour(LocalTime time) {
@@ -78,7 +83,7 @@ public class AttendanceBook {
         validateNameAlreadyExists(name);
 
         LocalDate date = TimeUtils.getDateFromDateAndTime(dateAndTimeToModify);
-        validateDateAlreadyExistsByCrewName(name, date);
+        validateRecordNotExistsByCrewName(name, date);
 
         LocalTime modifiedTime = TimeUtils.getTimeFromDateAndTime(dateAndTimeToModify);
         validateIsInOperationHour(modifiedTime);
