@@ -41,29 +41,29 @@ class AttendanceDateTest {
         Assertions.assertThat(dayOfWeek).isEqualTo(6);
     }
 
-//    @Test
-//    void restDayTest() {
-//        boolean isRestDay = new AttendanceDate(1).isRestDay();
-//        Assertions.assertThat(isRestDay).isTrue();
-//    }
-//
-//    @Test
-//    void restDayTest1() {
-//        boolean isRestDay = new AttendanceDate(2).isRestDay();
-//        Assertions.assertThat(isRestDay).isFalse();
-//    }
-//
-//    @Test
-//    void restDayTest2() {
-//        boolean isRestDay = new AttendanceDate(8).isRestDay();
-//        Assertions.assertThat(isRestDay).isTrue();
-//    }
-//
-//    @Test
-//    void restDayTest3() {
-//        boolean isRestDay = new AttendanceDate(25).isRestDay();
-//        Assertions.assertThat(isRestDay).isTrue();
-//    }
+    @Test
+    void restDayTest() {
+        boolean isRestDay = AttendanceDate.isRestDay(1);
+        Assertions.assertThat(isRestDay).isTrue();
+    }
+
+    @Test
+    void restDayTest1() {
+        boolean isRestDay = AttendanceDate.isRestDay(2);
+        Assertions.assertThat(isRestDay).isFalse();
+    }
+
+    @Test
+    void restDayTest2() {
+        boolean isRestDay = AttendanceDate.isRestDay(8);
+        Assertions.assertThat(isRestDay).isTrue();
+    }
+
+    @Test
+    void restDayTest3() {
+        boolean isRestDay = AttendanceDate.isRestDay(25);
+        Assertions.assertThat(isRestDay).isTrue();
+    }
 
     @Test
     void exceptionTest1() {
