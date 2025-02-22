@@ -1,11 +1,19 @@
 package controller;
 
+import static domain.constant.Command.ATTENDANCE_SHEET;
+import static domain.constant.Command.CREATE_ATTENDANCE;
+import static domain.constant.Command.QUIT;
+import static domain.constant.Command.RISK_OF_EXPLUSTION;
+import static domain.constant.Command.UPDATE_ATTENDANCE;
+import static util.ExceptionHandler.runInputCommand;
+
 import domain.AbsentPolicy;
 import domain.AttendanceDateTime;
 import domain.AttendanceSheet;
 import domain.AttendanceSheets;
 import domain.AttendanceSheetsFactory;
 import domain.AttendanceState;
+
 import util.FileReaderUtil;
 import view.InputView;
 import view.OutputView;
@@ -25,43 +33,25 @@ public class AttendanceController {
         this.inputView = inputView;
     }
 
-    public void run() {
+    public void start() {
         LocalDate date = LocalDate.of(2024, 12, 13);
 
         AttendanceSheetsFactory attendanceSheetsFactory = new AttendanceSheetsFactory(new FileReaderUtil());
         AttendanceSheets attendanceSheets = attendanceSheetsFactory.create();
 
-        while (true) {
-            try {
-                String select = inputView.inputMenu(date);
+        runInputCommand(() -> inputCommand(date, attendanceSheets));
+    }
 
-                if (select.equals("1")) {
-                    attend(date, attendanceSheets);
-                    continue;
-                }
-
-                if (select.equals("2")) {
-                    updateAttendance(attendanceSheets);
-                    continue;
-                }
-
-                if (select.equals("3")) {
-                    printAttendance(attendanceSheets, date);
-                    continue;
-                }
-
-                if (select.equals("4")) {
-                    printRiskOfExpulsion(attendanceSheets);
-                    continue;
-                }
-
-                if (select.equals("Q")) {
-                    return;
-                }
-            } catch (Exception e){
-                System.out.println(e.getMessage());
-            }
+    private String inputCommand(LocalDate date, AttendanceSheets attendanceSheets) {
+        String select = inputView.inputMenu(date);
+        switch (select) {
+            case CREATE_ATTENDANCE -> attend(date, attendanceSheets);
+            case UPDATE_ATTENDANCE -> updateAttendance(attendanceSheets);
+            case ATTENDANCE_SHEET -> printAttendance(attendanceSheets, date);
+            case RISK_OF_EXPLUSTION -> printRiskOfExpulsion(attendanceSheets);
+            case QUIT -> { return QUIT; }
         }
+        throw new IllegalArgumentException("[ERROR] 잘못된 형식입니다. 기능을 다시 선택해 주세요.");
     }
 
     private void printRiskOfExpulsion(AttendanceSheets attendanceSheets) {
