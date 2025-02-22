@@ -1,27 +1,51 @@
 package domain;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.Objects;
+import java.util.Optional;
 
 public class Attendance {
-    private final LocalDateTime time;
+    private final LocalDate date;
+    private final LocalTime time;
     private final AttendanceStatus status;
 
-    public Attendance(LocalDateTime time) {
+    private Attendance(LocalDate date, LocalTime time, AttendanceStatus status) {
+        this.date = date;
         this.time = time;
-        this.status = AttendanceStatus.of(time);
+        this.status = status;
     }
 
-    public LocalDateTime getTime() {
-        return time;
+    public static Attendance empty(LocalDate date) {
+        return new Attendance(date, null, AttendanceStatus.TRUANCY);
+    }
+
+    public static Attendance of(LocalDate date, LocalTime time) {
+        return new Attendance(date, time, AttendanceStatus.of(LocalDateTime.of(date, time)));
+    }
+
+    public boolean isEmpty() {
+        return status == AttendanceStatus.TRUANCY;
+    }
+
+    public LocalDate getDate() {
+        return date;
+    }
+
+    public Optional<LocalTime> getTime() {
+        if (time == null) {
+            return Optional.empty();
+        }
+        return Optional.of(time);
     }
 
     public AttendanceStatus getStatus() {
         return status;
     }
 
-    public Attendance modify(int newHour, int newMinutes) {
-        return new Attendance(time.withHour(newHour).withMinute(newMinutes));
+    public Attendance modify(LocalTime updatedTime) {
+        return new Attendance(date, updatedTime, AttendanceStatus.of(LocalDateTime.of(date, updatedTime)));
     }
 
     @Override
@@ -31,11 +55,11 @@ public class Attendance {
             return false;
         }
         Attendance other = (Attendance) obj;
-        return time.isEqual(other.getTime());
+        return date.isEqual(other.getDate());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(time);
+        return Objects.hash(date);
     }
 }

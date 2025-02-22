@@ -2,6 +2,7 @@ package service;
 
 import domain.AttendanceCustomDate;
 import domain.Crew;
+import exception.CrewNotExistException;
 import repository.AttendanceRepository;
 
 import java.io.*;
@@ -22,17 +23,17 @@ public class AttendanceStoreService {
         for (String line : lines) {
             String[] parsed = line.split(",");;
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
-            Crew crew = new Crew(parsed[0]);
-            LocalDateTime attendanceTime = LocalDateTime.parse(parsed[1], formatter);
             LocalDateTime now = AttendanceCustomDate.now();
             try {
-                attendanceRepository.save(crew, now.getYear(), now.getMonthValue());
-            } catch (RuntimeException ignored) {
+                attendanceRepository.findCrewByName(parsed[0]);
+            } catch (CrewNotExistException e) {
+                attendanceRepository.save(new Crew(parsed[0]), now.getYear(), now.getMonthValue());
             }
-            attendanceRepository.createNewAttendance(parsed[0]
-                    , attendanceTime.getDayOfMonth()
-                    , attendanceTime.getHour()
-                    , attendanceTime.getMinute()
+            LocalDateTime attendanceTime = LocalDateTime.parse(parsed[1], formatter);
+            attendanceRepository.createNewAttendance(
+                    parsed[0],
+                    attendanceTime.toLocalDate(),
+                    attendanceTime.toLocalTime()
             );
         }
     }

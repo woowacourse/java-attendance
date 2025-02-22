@@ -1,5 +1,3 @@
-import constants.DateConstants;
-import domain.Attendance;
 import domain.AttendanceCustomDate;
 import domain.Crew;
 import exception.DuplicateAttendanceException;
@@ -9,8 +7,12 @@ import org.junit.jupiter.api.Test;
 import repository.AttendanceRepository;
 import repository.AttendanceRepositoryImpl;
 import service.AttendanceCheckService;
+import service.dto.AttendanceRegisterResponse;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.*;
 
@@ -34,20 +36,15 @@ public class AttendanceCheckServiceTest {
     void test2() {
         // given
         String name = "이든";
-        LocalDateTime time = LocalDateTime.of(
-                DateConstants.YEAR,
-                DateConstants.MONTH.getValue(),
-                18,
-                15,
-                52
-        );
-        Attendance original = new Attendance(time);
+        LocalDate date = LocalDate.of(AttendanceCustomDate.YEAR, AttendanceCustomDate.MONTH.getValue(), 18);
+        LocalTime time = LocalTime.of(15, 52);
 
         // when
-        Attendance attendance = attendanceCheckService.register(name, time);
+        AttendanceRegisterResponse response = attendanceCheckService.register(name, date, time);
 
         // then
-        assertThat(attendance).isEqualTo(original);
+        assertThat(response.date()).isEqualTo(date);
+        assertThat(response.time()).isEqualTo(Optional.of(time));
     }
 
     @DisplayName("이미 출석이 존재하는 경우에는 예외를 발생시킨다.")
@@ -55,18 +52,13 @@ public class AttendanceCheckServiceTest {
     void test3() {
         // given
         String name = "이든";
-        attendanceRepository.createNewAttendance(name, 18, 15, 52);
-        LocalDateTime inputTime = LocalDateTime.of(
-                DateConstants.YEAR,
-                DateConstants.MONTH.getValue(),
-                18,
-                16,
-                55
-        );
+        LocalDate date = LocalDate.of(AttendanceCustomDate.YEAR, AttendanceCustomDate.MONTH.getValue(), 18);
+        LocalTime time = LocalTime.of(16, 55);
+        attendanceRepository.createNewAttendance(name, date, time);
 
         // when & then
         assertThatThrownBy(() -> {
-            attendanceCheckService.register(name, inputTime);
+            attendanceCheckService.register(name, date, LocalTime.of(10, 0));
         }).isInstanceOf(DuplicateAttendanceException.class);
     }
 }

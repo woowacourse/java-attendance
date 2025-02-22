@@ -2,11 +2,11 @@ package repository;
 
 import domain.Attendance;
 import domain.AttendanceBook;
-import domain.AttendanceCustomDate;
 import domain.Crew;
 import exception.CrewNotExistException;
 
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.*;
 
 public class AttendanceRepositoryImpl implements AttendanceRepository {
@@ -25,10 +25,11 @@ public class AttendanceRepositoryImpl implements AttendanceRepository {
     }
 
     @Override
-    public void createNewAttendance(String crewName, int date, int hour, int minute) {
+    public void createNewAttendance(String crewName, LocalDate date, LocalTime time) {
         Crew crew = findCrewByName(crewName);
         AttendanceBook attendanceBook = crewAttendances.get(crew);
-        attendanceBook.create(date, hour, minute);
+        attendanceBook.replace(date, time);
+        crewAttendances.replace(crew, attendanceBook);
     }
 
     @Override
@@ -38,15 +39,15 @@ public class AttendanceRepositoryImpl implements AttendanceRepository {
     }
 
     @Override
-    public Optional<Attendance> findByCrewAndDate(String crewName, int date) {
+    public Attendance findByCrewAndDate(String crewName, LocalDate date) {
         AttendanceBook attendanceBook = findByCrewName(crewName);
         return attendanceBook.findAttendanceByDate(date);
     }
 
     @Override
-    public void modifyAttendance(String crewName, Attendance beforeAttendance, Attendance afterAttendance) {
+    public void modifyAttendance(String crewName, LocalDate date, LocalTime time) {
         AttendanceBook attendanceBook = findByCrewName(crewName);
-        attendanceBook.replace(beforeAttendance, afterAttendance);
+        attendanceBook.replace(date, time);
     }
 
     @Override

@@ -1,7 +1,9 @@
 package view;
 
 import controller.Menu;
+import domain.AttendanceCustomDate;
 
+import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Scanner;
@@ -27,9 +29,12 @@ public class InputView {
         return Menu.of(scanner.nextLine());
     }
 
-    public int readModifyDate() {
+    public LocalDate readModifyDate() {
         System.out.println("수정하려는 날짜(일)를 입력해 주세요.");
-        return Integer.parseInt(scanner.nextLine());
+        final int day = Integer.parseInt(scanner.nextLine());
+        return AttendanceCustomDate.now()
+                .withDayOfMonth(day)
+                .toLocalDate();
     }
 
     public LocalTime readModifyTime() {

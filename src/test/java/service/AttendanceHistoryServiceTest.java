@@ -1,6 +1,5 @@
 package service;
 
-import constants.DateConstants;
 import domain.AttendanceCustomDate;
 import domain.AttendanceStatus;
 import domain.Crew;
@@ -20,29 +19,27 @@ import java.util.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
 class AttendanceHistoryServiceTest {
-    int year = DateConstants.YEAR;
-    int month = DateConstants.MONTH.getValue();
+    LocalDateTime now = AttendanceCustomDate.now();
+    int year = now.getYear();
+    int month = now.getMonthValue();
     String name = "빙티";
-    Crew crew = new Crew(name);
     List<AttendanceHistoryResponse> attendanceHistoryResponses = new ArrayList<>(Arrays.asList(
-            new AttendanceHistoryResponse(LocalDate.of(year, month, 2), Optional.of(LocalTime.of(13, 0)), AttendanceStatus.ATTENDANCE),
-            new AttendanceHistoryResponse(LocalDate.of(year, month, 3), Optional.of(LocalTime.of(10, 7)), AttendanceStatus.LATE),
-            new AttendanceHistoryResponse(LocalDate.of(year, month, 4), Optional.of(LocalTime.of(10, 31)), AttendanceStatus.ABSENCE),
-            new AttendanceHistoryResponse(LocalDate.of(year, month, 5), Optional.empty(), AttendanceStatus.ABSENCE)
+            new AttendanceHistoryResponse(LocalDate.of(year, month, 2), Optional.of(LocalTime.of(13, 0)), AttendanceStatus.ATTENDANCE.getExpression()),
+            new AttendanceHistoryResponse(LocalDate.of(year, month, 3), Optional.of(LocalTime.of(10, 7)), AttendanceStatus.LATE.getExpression()),
+            new AttendanceHistoryResponse(LocalDate.of(year, month, 4), Optional.of(LocalTime.of(10, 31)), AttendanceStatus.ABSENCE.getExpression()),
+            new AttendanceHistoryResponse(LocalDate.of(year, month, 5), Optional.empty(), AttendanceStatus.TRUANCY.getExpression())
     ));
     AttendanceRepository attendanceRepository;
     AttendanceHistoryService attendanceHistoryService;
 
     @BeforeEach
     void setUp() {
-        LocalDateTime now = AttendanceCustomDate.now();
-
         attendanceRepository = new AttendanceRepositoryImpl();
-        attendanceRepository.save(crew, now.getYear(), now.getMonthValue());
+        attendanceRepository.save(new Crew(name), now.getYear(), now.getMonthValue());
 
-        attendanceRepository.createNewAttendance(name, 2, 13, 0);
-        attendanceRepository.createNewAttendance(name, 3, 10, 7);
-        attendanceRepository.createNewAttendance(name, 4, 10, 31);
+        attendanceRepository.createNewAttendance(name, now.withDayOfMonth(2).toLocalDate(), LocalTime.of(13, 0));
+        attendanceRepository.createNewAttendance(name, now.withDayOfMonth(3).toLocalDate(), LocalTime.of(10, 7));
+        attendanceRepository.createNewAttendance(name, now.withDayOfMonth(4).toLocalDate(), LocalTime.of(10, 31));
 
         attendanceHistoryService = new AttendanceHistoryService(attendanceRepository);
     }
@@ -104,12 +101,13 @@ class AttendanceHistoryServiceTest {
     @Test
     void test5() {
         //given
-        attendanceRepository.createNewAttendance(name, 5, 10, 6);
-        attendanceRepository.createNewAttendance(name, 6, 10, 6);
-        attendanceRepository.createNewAttendance(name, 9, 13, 6);
-        attendanceRepository.createNewAttendance(name, 10, 10, 6);
-        attendanceRepository.createNewAttendance(name, 11, 10, 6);
-        attendanceRepository.createNewAttendance(name, 12, 10, 6);
+        LocalTime lateTime = LocalTime.of(10, 6);
+        attendanceRepository.createNewAttendance(name, now.withDayOfMonth(5).toLocalDate(), lateTime);
+        attendanceRepository.createNewAttendance(name, now.withDayOfMonth(6).toLocalDate(), lateTime);
+        attendanceRepository.createNewAttendance(name, now.withDayOfMonth(9).toLocalDate(), lateTime);
+        attendanceRepository.createNewAttendance(name, now.withDayOfMonth(10).toLocalDate(), lateTime);
+        attendanceRepository.createNewAttendance(name, now.withDayOfMonth(11).toLocalDate(), lateTime);
+        attendanceRepository.createNewAttendance(name, now.withDayOfMonth(12).toLocalDate(), lateTime);
 
         LocalDate date = LocalDate.of(year, month, 13);
 

@@ -19,12 +19,12 @@ public class AttendanceHistoryService {
 
     public List<AttendanceHistoryResponse> getHistoriesOf(String name, LocalDate date) {
         AttendanceBook attendanceBook = attendanceRepository.findByCrewName(name);
-        return attendanceBook.getAllAttendanceHistory(date.getDayOfMonth())
+        return attendanceBook.getAllAttendances(date.getDayOfMonth())
                 .stream()
-                .map(attendanceHistory -> new AttendanceHistoryResponse(
-                        attendanceHistory.date(),
-                        attendanceHistory.time(),
-                        attendanceHistory.status())
+                .map(attendance -> new AttendanceHistoryResponse(
+                        attendance.getDate(),
+                        attendance.getTime(),
+                        attendance.getStatus().getExpression())
                 )
                 .toList();
     }

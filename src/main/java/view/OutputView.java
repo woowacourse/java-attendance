@@ -1,15 +1,16 @@
 package view;
 
 import controller.Menu;
-import domain.Attendance;
 import domain.AttendanceCustomDate;
 import domain.AttendanceStatus;
 import domain.CrewStatus;
 import service.dto.AttendanceHistoryResponse;
 import service.dto.AttendanceModifyResponse;
+import service.dto.AttendanceRegisterResponse;
 import service.dto.DisenrollmentCheckResponse;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 
@@ -26,13 +27,19 @@ public class OutputView {
         });
     }
 
-    public void printAttendanceResult(Attendance attendance) {
-        LocalDateTime time = attendance.getTime();
-        String formattedDate = time.format(
-                DateTimeFormatter.ofPattern("MM월 dd일 E요일 HH:mm").withLocale(Locale.forLanguageTag("ko"))
+    public void printAttendanceResult(AttendanceRegisterResponse response) {
+        String formattedDate = response.date().format(
+                DateTimeFormatter.ofPattern("MM월 dd일 E요일").withLocale(Locale.forLanguageTag("ko"))
         );
-        String formattedStatus = "(" + attendance.getStatus().getExpression() + ")";
-        System.out.println(formattedDate + " " + formattedStatus);
+        String formattedTime = "--:--";
+        if (response.time().isPresent()) {
+            LocalTime time = response.time().get();
+            formattedTime = time.format(
+                    DateTimeFormatter.ofPattern("HH:mm").withLocale(Locale.forLanguageTag("ko"))
+            );
+        }
+        String formattedStatus = "(" + response.status() + ")";
+        System.out.println(formattedDate + " " + formattedTime + " " + formattedStatus);
     }
 
     public void printExceptionMessage(String message) {
@@ -44,18 +51,25 @@ public class OutputView {
     }
 
     public void printModifyResult(AttendanceModifyResponse response) {
-        String formattedBeforeDate = response.beforeTime().format(
-                DateTimeFormatter.ofPattern("MM월 dd일 E요일 HH:mm").withLocale(Locale.forLanguageTag("ko"))
-        );
-        String formattedAfterDate = response.afterTime().format(
-                DateTimeFormatter.ofPattern("HH:mm").withLocale(Locale.forLanguageTag("ko"))
-        );
+        String formattedDate = getFormattedDate(response.date());
 
-        System.out.printf("%s (%s) -> %s (%s) 수정 완료!\n",
-                formattedBeforeDate,
-                response.beforeStatus().getExpression(),
-                formattedAfterDate,
-                response.afterStatus().getExpression()
+        String formattedBeforeTime = "--:--";
+        if (response.beforeTime().isPresent()) {
+            formattedBeforeTime = getFormattedTime(response.beforeTime().get());
+        }
+
+        String formattedAfterTime = "--:--";
+        if (response.afterTime().isPresent()) {
+            formattedAfterTime = getFormattedTime(response.afterTime().get());
+        }
+
+        System.out.printf("%s %s (%s) -> %s %s (%s) 수정 완료!\n",
+                formattedDate,
+                formattedBeforeTime,
+                response.beforeStatus(),
+                formattedDate,
+                formattedAfterTime,
+                response.afterStatus()
         );
     }
 
@@ -71,6 +85,18 @@ public class OutputView {
         printCrewStatus(crewStatus);
     }
 
+    private String getFormattedDate(LocalDate date) {
+        return date.format(
+                DateTimeFormatter.ofPattern("MM월 dd일 E요일").withLocale(Locale.forLanguageTag("ko"))
+        );
+    }
+
+    private String getFormattedTime(LocalTime time) {
+        return time.format(
+                DateTimeFormatter.ofPattern("HH:mm").withLocale(Locale.forLanguageTag("ko"))
+        );
+    }
+
     private void printHistories(List<AttendanceHistoryResponse> histories) {
         histories.forEach(response -> {
             String formattedDate = response.date().format(
@@ -82,7 +108,7 @@ public class OutputView {
                         DateTimeFormatter.ofPattern("HH:mm").withLocale(Locale.forLanguageTag("ko"))
                 );
             }
-            String status = response.status().getExpression();
+            String status = response.status();
             System.out.printf("%s %s (%s)\n", formattedDate, formattedTime, status);
         });
     }

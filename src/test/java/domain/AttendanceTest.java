@@ -3,7 +3,8 @@ package domain;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
+import java.time.LocalTime;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -12,7 +13,9 @@ class AttendanceTest {
     @Test
     void test1() {
         // given
-        Attendance attendance = new Attendance(LocalDateTime.of(2025, 2, 17, 13, 5));
+        LocalDate date = LocalDate.of(2025, 2, 17);
+        LocalTime time = LocalTime.of(13, 5);
+        Attendance attendance = Attendance.of(date, time);
 
         // when
         AttendanceStatus status = attendance.getStatus();
@@ -25,7 +28,9 @@ class AttendanceTest {
     @Test
     void test2() {
         // given
-        Attendance attendance = new Attendance(LocalDateTime.of(2025, 2, 17, 13, 30));
+        LocalDate date = LocalDate.of(2025, 2, 17);
+        LocalTime time = LocalTime.of(13, 30);
+        Attendance attendance = Attendance.of(date, time);
 
         // when
         AttendanceStatus status = attendance.getStatus();
@@ -38,7 +43,9 @@ class AttendanceTest {
     @Test
     void test3() {
         // given
-        Attendance attendance = new Attendance(LocalDateTime.of(2025, 2, 17, 13, 31));
+        LocalDate date = LocalDate.of(2025, 2, 17);
+        LocalTime time = LocalTime.of(13, 31);
+        Attendance attendance = Attendance.of(date, time);
 
         // when
         AttendanceStatus status = attendance.getStatus();

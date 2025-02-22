@@ -1,6 +1,5 @@
 package domain;
 
-import constants.DateConstants;
 import exception.InvalidMonthValueException;
 
 import java.time.DayOfWeek;
@@ -44,7 +43,8 @@ public enum Month {
                 return true;
             }
         }
-        DayOfWeek dayOfWeek = LocalDate.of(DateConstants.YEAR, DateConstants.MONTH.getValue(), day).getDayOfWeek();
+        DayOfWeek dayOfWeek = LocalDate.of(AttendanceCustomDate.YEAR, AttendanceCustomDate.MONTH.getValue(), day)
+                .getDayOfWeek();
         return dayOfWeek == DayOfWeek.SATURDAY || dayOfWeek == DayOfWeek.SUNDAY;
     }
 

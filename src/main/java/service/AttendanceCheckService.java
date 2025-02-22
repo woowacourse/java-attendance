@@ -3,8 +3,10 @@ package service;
 import domain.Attendance;
 import domain.AttendanceBook;
 import repository.AttendanceRepository;
+import service.dto.AttendanceRegisterResponse;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
+import java.time.LocalTime;
 
 public class AttendanceCheckService {
     private final AttendanceRepository attendanceRepository;
@@ -13,8 +15,13 @@ public class AttendanceCheckService {
         this.attendanceRepository = attendanceRepository;
     }
 
-    public Attendance register(String crewName, LocalDateTime time) {
+    public AttendanceRegisterResponse register(String crewName, LocalDate date, LocalTime time) {
         AttendanceBook attendanceBook = attendanceRepository.findByCrewName(crewName);
-        return attendanceBook.create(time.getDayOfMonth(), time.getHour(), time.getMinute());
+        Attendance attendance = attendanceBook.create(date, time);
+        return new AttendanceRegisterResponse(
+                attendance.getDate(),
+                attendance.getTime(),
+                attendance.getStatus().getExpression()
+        );
     }
 }

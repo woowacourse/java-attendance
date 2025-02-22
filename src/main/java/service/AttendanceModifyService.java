@@ -1,9 +1,11 @@
 package service;
 
 import domain.Attendance;
-import exception.AttendanceNotExistException;
 import repository.AttendanceRepository;
 import service.dto.AttendanceModifyResponse;
+
+import java.time.LocalDate;
+import java.time.LocalTime;
 
 public class AttendanceModifyService {
     private final AttendanceRepository attendanceRepository;
@@ -12,16 +14,16 @@ public class AttendanceModifyService {
         this.attendanceRepository = attendanceRepository;
     }
 
-    public AttendanceModifyResponse modify(String name, int date, int newHour, int newMinutes) {
-        Attendance beforeAttendance = attendanceRepository.findByCrewAndDate(name, date)
-                .orElseThrow(AttendanceNotExistException::new);
-        Attendance afterAttendance = beforeAttendance.modify(newHour, newMinutes);
-        attendanceRepository.modifyAttendance(name, beforeAttendance, afterAttendance);
+    public AttendanceModifyResponse modify(String name, LocalDate date, LocalTime time) {
+        Attendance beforeAttendance = attendanceRepository.findByCrewAndDate(name, date);
+        Attendance afterAttendance = beforeAttendance.modify(time);
+        attendanceRepository.modifyAttendance(name, date, time);
         return new AttendanceModifyResponse(
+                date,
                 beforeAttendance.getTime(),
-                beforeAttendance.getStatus(),
+                beforeAttendance.getStatus().getExpression(),
                 afterAttendance.getTime(),
-                afterAttendance.getStatus()
+                afterAttendance.getStatus().getExpression()
         );
     }
 }

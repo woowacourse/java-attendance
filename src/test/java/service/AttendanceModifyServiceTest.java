@@ -1,6 +1,5 @@
 package service;
 
-import constants.DateConstants;
 import domain.AttendanceCustomDate;
 import domain.AttendanceStatus;
 import domain.Crew;
@@ -10,7 +9,10 @@ import org.junit.jupiter.api.Test;
 import repository.*;
 import service.dto.AttendanceModifyResponse;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -30,31 +32,22 @@ class AttendanceModifyServiceTest {
         attendanceRepository.save(crew, now.getYear(), now.getMonthValue());
     }
 
-    @DisplayName("수정한다.")
+    @DisplayName("기존 출석 기록을 수정한다.")
     @Test
     void test() {
         //given
-        LocalDateTime before = LocalDateTime.of(
-                DateConstants.YEAR,
-                DateConstants.MONTH.getValue(),
-                19,
-                10,
-                30
-        );
-        attendanceRepository.createNewAttendance(name, before.getDayOfMonth(), before.getHour(), before.getMinute());
+        LocalDate date = LocalDate.of(AttendanceCustomDate.YEAR, AttendanceCustomDate.MONTH.getValue(), 19);
+        LocalTime beforeTime = LocalTime.of(10, 30);
+        LocalTime afterTime = LocalTime.of(10, 0);
+        attendanceRepository.createNewAttendance(name, date, beforeTime);
 
         //when
-        int date = 19;
-        int hour = 10;
-        int minutes = 0;
-        LocalDateTime after = LocalDateTime.of(DateConstants.YEAR, DateConstants.MONTH.getValue(), date, hour, minutes);
-
-        AttendanceModifyResponse response = attendanceModifyService.modify(name, date, hour, minutes);
+        AttendanceModifyResponse response = attendanceModifyService.modify(name, date, afterTime);
 
         //then
-        assertThat(response.beforeTime()).isEqualTo(before);
-        assertThat(response.beforeStatus()).isSameAs(AttendanceStatus.LATE);
-        assertThat(response.afterTime()).isEqualTo(after);
-        assertThat(response.afterStatus()).isSameAs(AttendanceStatus.ATTENDANCE);
+        assertThat(response.beforeTime()).isEqualTo(Optional.of(beforeTime));
+        assertThat(response.beforeStatus()).isEqualTo(AttendanceStatus.LATE.getExpression());
+        assertThat(response.afterTime()).isEqualTo(Optional.of(afterTime));
+        assertThat(response.afterStatus()).isEqualTo(AttendanceStatus.ATTENDANCE.getExpression());
     }
 }

@@ -1,15 +1,16 @@
 package controller;
 
-import domain.Attendance;
 import domain.AttendanceCustomDate;
 import exception.CrewNotExistException;
 import exception.DuplicateAttendanceException;
 import service.AttendanceCheckService;
+import service.dto.AttendanceRegisterResponse;
 import view.InputView;
 import view.OutputView;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 
 public class AttendanceCheckController implements Controller {
     private final InputView inputView;
@@ -33,20 +34,20 @@ public class AttendanceCheckController implements Controller {
         String timeInput = inputView.readTime();
         LocalDate now = AttendanceCustomDate.now().toLocalDate();
         String[] minuteAndHour = timeInput.split(":");
-        LocalDateTime time = LocalDateTime.of(
+        LocalDateTime dateTime = LocalDateTime.of(
                 now.getYear(),
                 now.getMonthValue(),
                 now.getDayOfMonth(),
                 Integer.parseInt(minuteAndHour[0]),
                 Integer.parseInt(minuteAndHour[1])
         );
-        registerAttendance(name, time);
+        registerAttendance(name, dateTime.toLocalDate(), dateTime.toLocalTime());
     }
 
-    private void registerAttendance(String name, LocalDateTime time) {
+    private void registerAttendance(String name, LocalDate date, LocalTime time) {
         try {
-            Attendance attendance = attendanceCheckService.register(name, time);//출석등록
-            outputView.printAttendanceResult(attendance);
+            AttendanceRegisterResponse response = attendanceCheckService.register(name, date, time);//출석등록
+            outputView.printAttendanceResult(response);
         } catch (DuplicateAttendanceException e) {
             // TODO: 에러 잘 뜨는지 보기
             outputView.recommendModifyFunction(e.getMessage());
