@@ -74,10 +74,8 @@ public class AttendanceController {
 
             AbsentPolicy absentPolicy = AbsentPolicy.calculateAbsentPolicy(absentCount, lateCount);
             if (AbsentPolicy.isRiskOfExpulsion(absentPolicy)) {
-                continue;
+                OutputView.printRiskOfExpulsion(name, lateCount, absentCount, absentPolicy);
             }
-
-            OutputView.printRiskOfExpulsion(name, lateCount, absentCount, absentPolicy);
         }
         System.out.print(System.lineSeparator());
     }

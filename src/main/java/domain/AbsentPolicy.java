@@ -19,7 +19,7 @@ public enum AbsentPolicy {
     }
 
     public static boolean isRiskOfExpulsion(AbsentPolicy absentPolicy) {
-        return absentPolicy == AbsentPolicy.NONE || absentPolicy == AbsentPolicy.EXPULSION;
+        return absentPolicy == AbsentPolicy.WARNING || absentPolicy == AbsentPolicy.INTERVIEW;
     }
 
     public static AbsentPolicy calculateAbsentPolicy(int absentCount, int lateCount) {
