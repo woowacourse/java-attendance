@@ -11,6 +11,13 @@ import java.util.Map;
 
 public class AttendanceFunctionExecutor {
 
+    private final static String CHECK_FUNCTION = "1";
+    private final static String MODIFY_FUNCTION = "2";
+    private final static String HISTORY_FUNCTION = "3";
+    private final static String RISK_OF_EXPULSION_FUNCTION = "4";
+    private final static String QUIT_FUNCTION = "Q";
+
+
     private final AttendanceController attendanceController;
     private final Map<String, AttendanceFunction> functions;
 
@@ -21,11 +28,11 @@ public class AttendanceFunctionExecutor {
 
     private Map<String, AttendanceFunction> initializeFunctions() {
         return Map.of(
-                "1", new AttendanceCheckFunction(attendanceController),
-                "2", new AttendanceModifyFunction(attendanceController),
-                "3", new AttendanceHistoryFunction(attendanceController),
-                "4", new RiskOfExpulsionFunction(attendanceController),
-                "Q", new QuitFunction()
+                CHECK_FUNCTION, new AttendanceCheckFunction(attendanceController),
+                MODIFY_FUNCTION, new AttendanceModifyFunction(attendanceController),
+                HISTORY_FUNCTION, new AttendanceHistoryFunction(attendanceController),
+                RISK_OF_EXPULSION_FUNCTION, new RiskOfExpulsionFunction(attendanceController),
+                QUIT_FUNCTION, new QuitFunction()
         );
     }
 

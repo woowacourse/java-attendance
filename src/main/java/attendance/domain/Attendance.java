@@ -1,6 +1,13 @@
 package attendance.domain;
 
 public class Attendance {
+
+    private final static String MONDAY = "월요일";
+    private final static int MONDAY_EDUCATION_HOUR = 13;
+    private final static int EDUCATION_HOUR = 10;
+    private final static int LATE_MINUTE = 5;
+    private final static int ABSENT_MINUTE = 30;
+
     private final String crewName;
     private Time attendanceTime;
 
@@ -10,12 +17,13 @@ public class Attendance {
     }
 
     public String getAttendanceStatus() {
-        if (attendanceTime.getDayOfWeek().equals("월요일")) { // 월요일
+        if (attendanceTime.getDayOfWeek().equals(MONDAY)) {
 
-            return AttendanceStatus.checkStatusWithCondition(attendanceTime, 13, 5, 30);
+            return AttendanceStatus.checkStatusWithCondition(attendanceTime, MONDAY_EDUCATION_HOUR, LATE_MINUTE,
+                    ABSENT_MINUTE);
         }
 
-        return AttendanceStatus.checkStatusWithCondition(attendanceTime, 10, 5, 30);
+        return AttendanceStatus.checkStatusWithCondition(attendanceTime, EDUCATION_HOUR, LATE_MINUTE, ABSENT_MINUTE);
     }
 
     public boolean isAlreadyAttendance(final Attendance currentAttendance) {
