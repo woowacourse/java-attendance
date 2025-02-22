@@ -36,11 +36,6 @@ public class AttendanceBook {
         }
     }
 
-    public void validateAttendanceAlreadyExistsByCrewName(String name, LocalDate date) {
-        Crew foundCrew = findCrewByName(name);
-        foundCrew.validateAttendanceAlreadyExists(date);
-    }
-
     public void validateRecordNotExistsByCrewName(String name, LocalDate date) {
         Crew foundCrew = findCrewByName(name);
         foundCrew.validateRecordNotExists(date);

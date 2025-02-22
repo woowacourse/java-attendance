@@ -36,15 +36,6 @@ class AttendanceBookTest {
     }
 
     @Test
-    @DisplayName("이미_해당_날짜에_출석한_경우_예외를_출력한다")
-    void 이미_해당_날짜에_출석한_경우_예외를_출력한다() {
-        assertThatThrownBy(
-                () -> attendanceBook.validateAttendanceAlreadyExistsByCrewName("쿠키", LocalDate.of(2024, 12, 2)))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage(ErrorCode.CHECK_ATTENDANCE_ALREADY_EXISTS.getFormat());
-    }
-
-    @Test
     @DisplayName("캠퍼스_운영_시간이_아닌_경우_예외를_출력한다")
     void 캠퍼스_운영_시간이_아닌_경우_예외를_출력한다() {
         assertThatThrownBy(

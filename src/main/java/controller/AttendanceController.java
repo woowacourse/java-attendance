@@ -132,20 +132,20 @@ public class AttendanceController {
         return parsedTime;
     }
 
-    private LocalTime askTimeToModify(AttendanceBook attendanceBook) {
-        LocalTime modifiedTime = inputView.askTimeForModify();
-        attendanceBook.validateIsInOperationHour(modifiedTime);
-        return modifiedTime;
-    }
-
     private LocalDate askDayToModify(AttendanceBook attendanceBook, String name) {
         try {
             LocalDate modifiedDay = LocalDate.now().withDayOfMonth(inputView.askDayForModify().getDayOfMonth());
-            attendanceBook.validateAttendanceAlreadyExistsByCrewName(name, modifiedDay);
+            attendanceBook.validateRecordNotExistsByCrewName(name, modifiedDay);
             return modifiedDay;
         } catch (DateTimeException | NumberFormatException e) {
             throw new IllegalArgumentException("[ERROR] 날짜(일) 입력이 올바르지 않습니다.");
         }
+    }
+
+    private LocalTime askTimeToModify(AttendanceBook attendanceBook) {
+        LocalTime modifiedTime = inputView.askTimeForModify();
+        attendanceBook.validateIsInOperationHour(modifiedTime);
+        return modifiedTime;
     }
 
     private String askNameToModify(AttendanceBook attendanceBook) {
