@@ -37,14 +37,14 @@ public class OutputView {
 
     public void printAttendanceResult(String name, AttendanceResults attendResult) {
         System.out.printf("이번 달 %s의 출석 기록입니다.%n%n", name);
-        // 한줄씩 다 출력하는 것.
+        // 출석 현황 출력
         for (AttendanceResult attendanceResult : attendResult.getAttendanceResults()) {
             Attend attend = attendanceResult.attend();
             System.out.println(formatAttendAndStatus(attend, attendanceResult.attendStatus()));
         }
         System.out.println();
 
-        // 출석 지각 결석 출력
+        // 출석 지각 결석 횟수 출력
         AttendCount attendCount = attendResult.countAttendStatus();
         System.out.println(formatAttendCount(attendResult.countAttendStatus()));
         System.out.println();
