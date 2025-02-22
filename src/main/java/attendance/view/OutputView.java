@@ -1,42 +1,49 @@
 package attendance.view;
 
-import attendance.controller.AttendanceController.CrewAttendanceSummary;
+import static attendance.util.DateTimeUtil.TIME_NOT_RECORDED;
+import static attendance.util.DateTimeUtil.formatDate;
+import static attendance.util.DateTimeUtil.formatDateTime;
+import static attendance.util.DateTimeUtil.formatTime;
+
+import attendance.dto.CrewAttendanceSummary;
 import attendance.model.Attendance;
 import attendance.model.AttendanceTimeline;
 import attendance.model.AttendanceTimeline.AttendanceLog;
 import attendance.model.AttendanceType;
 import attendance.model.AttendanceWarningLevel;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 public class OutputView {
 
-    public static final String ERROR_PREFIX = "[ERROR] ";
+    private static final String ERROR_PREFIX = "[ERROR] ";
+
+    public void printDate(LocalDate date) {
+        System.out.printf("오늘은 %s입니다. ", formatDate(date));
+    }
 
     public void printCheckAttendance(LocalDateTime dateTime, AttendanceType type) {
-        System.out.printf("%s (%s)%n",
-                dateTime.format(DateTimeFormatter.ofPattern("MM월 dd일 E요일 HH:mm")),
-                displayAttendanceType(type)
-        );
+        System.out.printf("%s (%s)%n", formatDateTime(dateTime), getAttendanceTypeLabel(type));
     }
 
     public void printModifiedAttendance(Attendance beforeAttendance, Attendance afterAttendance,
                                         AttendanceType beforeType, AttendanceType afterType) {
         if (beforeAttendance != null) {
             System.out.printf("%s (%s) -> %s (%s) 수정 완료!%n",
-                    beforeAttendance.getDateTime().format(DateTimeFormatter.ofPattern("MM월 dd일 E요일 HH:mm")),
-                    displayAttendanceType(beforeType),
-                    afterAttendance.getDateTime().format(DateTimeFormatter.ofPattern("HH:mm")),
-                    displayAttendanceType(afterType)
+                    formatDateTime(beforeAttendance.getDateTime()),
+                    getAttendanceTypeLabel(beforeType),
+                    formatDateTime(afterAttendance.getDateTime()),
+                    getAttendanceTypeLabel(afterType)
             );
             return;
         }
-        System.out.printf("%s (%s) -> %s (%s) 수정 완료!%n",
-                afterAttendance.getDateTime().format(DateTimeFormatter.ofPattern("MM월 dd일 E요일 --:--")),
-                displayAttendanceType(null),
-                afterAttendance.getDateTime().format(DateTimeFormatter.ofPattern("HH:mm")),
-                displayAttendanceType(afterType)
+        System.out.printf("%s %s (%s) -> %s (%s) 수정 완료!%n",
+                formatDate(afterAttendance.getDateTime().toLocalDate()),
+                TIME_NOT_RECORDED,
+                getAttendanceTypeLabel(null),
+                formatTime(afterAttendance.getDateTime().toLocalTime()),
+                getAttendanceTypeLabel(afterType)
         );
     }
 
@@ -44,15 +51,16 @@ public class OutputView {
         System.out.printf("이번달 %s의 출석 기록입니다.%n%n", nickname);
         for (AttendanceLog attendanceLog : attendanceTimeline.attendanceLogs()) {
             if (attendanceLog.time() == null) {
-                System.out.printf("%s --:-- (%s)%n",
-                        attendanceLog.date().format(DateTimeFormatter.ofPattern("MM월 dd일 E요일")),
-                        displayAttendanceType(attendanceLog.attendanceType()));
+                System.out.printf("%s %s (%s)%n",
+                        formatDate(attendanceLog.date()),
+                        TIME_NOT_RECORDED,
+                        getAttendanceTypeLabel(attendanceLog.attendanceType()));
                 continue;
             }
             System.out.printf("%s %s (%s)%n",
-                    attendanceLog.date().format(DateTimeFormatter.ofPattern("MM월 dd일 E요일")),
-                    attendanceLog.time().format(DateTimeFormatter.ofPattern("HH:mm")),
-                    displayAttendanceType(attendanceLog.attendanceType()));
+                    formatDate(attendanceLog.date()),
+                    formatTime(attendanceLog.time()),
+                    getAttendanceTypeLabel(attendanceLog.attendanceType()));
         }
     }
 
@@ -62,7 +70,7 @@ public class OutputView {
 
     public void printWarningLevel(AttendanceWarningLevel level) {
         if (level != AttendanceWarningLevel.CLEAN) {
-            System.out.printf("%n%s 대상자입니다.", level.getLabel());
+            System.out.printf("%n%s 대상자입니다.%n", level.getLabel());
         }
     }
 
@@ -81,7 +89,7 @@ public class OutputView {
         System.out.println(ERROR_PREFIX + message);
     }
 
-    private String displayAttendanceType(AttendanceType type) {
+    private String getAttendanceTypeLabel(AttendanceType type) {
         if (type == null) {
             return AttendanceType.ABSENCE.getLabel();
         }
