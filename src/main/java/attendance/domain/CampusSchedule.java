@@ -1,6 +1,8 @@
 package attendance.domain;
 
 import attendance.exception.ExceptionMessage;
+import java.time.DayOfWeek;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 
 public enum CampusSchedule {
@@ -17,8 +19,17 @@ public enum CampusSchedule {
         this.time = time;
     }
 
-    public static AttendanceType checkAttendance(boolean isMonday, LocalTime time) {
-        CampusSchedule.validateIsInCampusTime(time);
+    public static AttendanceType calculateAttendanceType(LocalDateTime dateTime) {
+        boolean isMonday = dateTime.getDayOfWeek() == DayOfWeek.MONDAY;
+        return checkAttendance(isMonday, dateTime.toLocalTime());
+    }
+
+    public LocalTime getTime() {
+        return time;
+    }
+
+    private static AttendanceType checkAttendance(boolean isMonday, LocalTime time) {
+        validateIsInCampusTime(time);
         if (isMonday) {
             return AttendanceType.parse(MONDAY_EDUCATION_START_TIME.getTime(), time);
         }
@@ -30,9 +41,5 @@ public enum CampusSchedule {
         if (isNotInCampusTime) {
             throw new IllegalArgumentException(ExceptionMessage.NOT_CAMPUS_TIME.getContent());
         }
-    }
-
-    public LocalTime getTime() {
-        return time;
     }
 }

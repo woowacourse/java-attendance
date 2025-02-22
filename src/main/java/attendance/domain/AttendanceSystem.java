@@ -1,15 +1,11 @@
 package attendance.domain;
 
 import attendance.dto.UpdateResult;
-import attendance.exception.ExceptionMessage;
-import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.Month;
-import java.time.format.TextStyle;
 import java.util.List;
-import java.util.Locale;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -31,18 +27,18 @@ public class AttendanceSystem {
     }
 
     public AttendanceRecord saveAttendanceRecord(String nickname, LocalDateTime arrivalDateTime) {
-        validateCrew(nickname);
-        validateHoliday(arrivalDateTime.toLocalDate());
+        crewStorage.validateCrew(nickname);
+        holidayChecker.validateHoliday(arrivalDateTime.toLocalDate());
 
-        AttendanceType attendanceType = calculateAttendanceType(arrivalDateTime);
+        AttendanceType attendanceType = CampusSchedule.calculateAttendanceType(arrivalDateTime);
         AttendanceRecord newRecord = new AttendanceRecord(nickname, arrivalDateTime, attendanceType);
         recordStorage.add(newRecord);
         return newRecord;
     }
 
     public UpdateResult updateAttendanceRecord(String nickname, LocalDate date, LocalTime newTime) {
-        validateCrew(nickname);
-        validateHoliday(date);
+        crewStorage.validateCrew(nickname);
+        holidayChecker.validateHoliday(date);
 
         AttendanceRecord oldRecord = recordStorage.find(nickname, date)
                 .orElse(makeExpulsionRecord(nickname, date));
@@ -52,7 +48,7 @@ public class AttendanceSystem {
     }
 
     public List<AttendanceRecord> searchAttendanceRecordsByCrew(String nickname, int year, Month month) {
-        validateCrew(nickname);
+        crewStorage.validateCrew(nickname);
 
         int lastDay = LocalDate.of(year, month.getValue(), 1).lengthOfMonth();
         return IntStream.range(1, lastDay + 1)
@@ -63,7 +59,7 @@ public class AttendanceSystem {
     }
 
     public RiskStatistic searchRiskStatistic(String nickname, LocalDate startDate, LocalDate endDate) {
-        validateCrew(nickname);
+        crewStorage.validateCrew(nickname);
         return calculateRiskStatisticsByCrew(nickname, startDate, endDate);
     }
 
@@ -75,53 +71,25 @@ public class AttendanceSystem {
                 .toList();
     }
 
-    private void validateCrew(String nickname) {
-        boolean isNotContained = !crewStorage.isContained(nickname);
-        if (isNotContained) {
-            throw new IllegalArgumentException(ExceptionMessage.NOT_FOUND_CREW.getContent());
-        }
-    }
-
-    private void validateHoliday(LocalDate date) {
-        boolean isHoliday = holidayChecker.isHoliday(date);
-        if (isHoliday) {
-            String message = String.format(ExceptionMessage.HOLIDAY.getContent(),
-                    date.getMonth().getValue(), date.getDayOfMonth(),
-                    date.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.KOREA));
-            throw new IllegalArgumentException(message);
-        }
-    }
-
-    private AttendanceType calculateAttendanceType(LocalDateTime dateTime) {
-        boolean isMonday = dateTime.getDayOfMonth() == DayOfWeek.MONDAY.getValue();
-        return CampusSchedule.checkAttendance(isMonday, dateTime.toLocalTime());
-    }
-
-    private int calculateNotHolidayCount(LocalDate startDate, LocalDate endDate) {
-        return (int) startDate.minusDays(1).datesUntil(endDate)
-                .filter(date -> !holidayChecker.isHoliday(date))
-                .count();
-    }
-
     private RiskStatistic calculateRiskStatisticsByCrew(
             String nickName, LocalDate startDate, LocalDate endDate
     ) {
-        int notHolidayCount = calculateNotHolidayCount(startDate, endDate);
+        int notHolidayCount = holidayChecker.calculateNotHolidayCount(startDate, endDate);
         int attendanceCount = recordStorage.calculateAttendanceCount(nickName, startDate, endDate);
         int lateCount = recordStorage.calculateLateCount(nickName, startDate, endDate);
         int expulsionCount = notHolidayCount - attendanceCount - lateCount;
         return new RiskStatistic(nickName, attendanceCount, expulsionCount, lateCount);
     }
 
+    private AttendanceRecord makeNewRecord(String nickname, LocalDate date, LocalTime newTime) {
+        LocalDateTime newDateTime = LocalDateTime.of(date, newTime);
+        AttendanceType attendanceType = CampusSchedule.calculateAttendanceType(newDateTime);
+        return new AttendanceRecord(nickname, newDateTime, attendanceType);
+    }
+
     private AttendanceRecord findRecord(String nickname, LocalDate date) {
         Optional<AttendanceRecord> record = recordStorage.find(nickname, date);
         return record.orElseGet(() -> makeExpulsionRecord(nickname, date));
-    }
-
-    private AttendanceRecord makeNewRecord(String nickname, LocalDate date, LocalTime newTime) {
-        LocalDateTime newDateTime = LocalDateTime.of(date, newTime);
-        AttendanceType attendanceType = calculateAttendanceType(newDateTime);
-        return new AttendanceRecord(nickname, newDateTime, attendanceType);
     }
 
     private AttendanceRecord makeExpulsionRecord(String nickname, LocalDate date) {

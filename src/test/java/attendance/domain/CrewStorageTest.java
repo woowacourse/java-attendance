@@ -1,7 +1,10 @@
 package attendance.domain;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatCode;
+import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 
+import attendance.exception.ExceptionMessage;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -48,5 +51,17 @@ class CrewStorageTest {
         assertThat(allCrew)
                 .extracting(Crew::getName)
                 .containsExactlyInAnyOrder("쿠키1", "쿠키2", "쿠키3");
+    }
+
+    @DisplayName("등록된 크루인지 검증할 수 있다.")
+    @Test
+    void 등록된_크루인지_검증할_수_있다() {
+        crewStorage.add(new Crew("쿠키"));
+
+        assertThatCode(() -> crewStorage.validateCrew("쿠키"))
+                .doesNotThrowAnyException();
+        assertThatIllegalArgumentException()
+                .isThrownBy(() -> crewStorage.validateCrew("빙봉"))
+                .withMessage(ExceptionMessage.NOT_FOUND_CREW.getContent());
     }
 }

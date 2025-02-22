@@ -7,6 +7,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 
 import attendance.exception.ExceptionMessage;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.stream.Stream;
 import org.junit.jupiter.api.DisplayName;
@@ -30,11 +32,9 @@ class CampusScheduleTest {
     @ParameterizedTest
     @MethodSource()
     void 캠퍼스_운영시간이_아닌_경우_예외를_발생시킨다(LocalTime time) {
+        LocalDateTime dateTime = LocalDateTime.of(LocalDate.of(2024, 12, 7), time);
         assertThatIllegalArgumentException()
-                .isThrownBy(() -> CampusSchedule.checkAttendance(true, time))
-                .withMessage(ExceptionMessage.NOT_CAMPUS_TIME.getContent());
-        assertThatIllegalArgumentException()
-                .isThrownBy(() -> CampusSchedule.checkAttendance(false, time))
+                .isThrownBy(() -> CampusSchedule.calculateAttendanceType(dateTime))
                 .withMessage(ExceptionMessage.NOT_CAMPUS_TIME.getContent());
     }
 
@@ -51,7 +51,8 @@ class CampusScheduleTest {
     void 월요일인_경우의_출석여부를_구한다(
             LocalTime arriveTime, AttendanceType expectedType
     ) {
-        AttendanceType actualType = CampusSchedule.checkAttendance(true, arriveTime);
+        LocalDateTime dateTime = LocalDateTime.of(LocalDate.of(2024, 12, 9), arriveTime);
+        AttendanceType actualType = CampusSchedule.calculateAttendanceType(dateTime);
         assertThat(actualType).isEqualTo(expectedType);
     }
 
@@ -73,7 +74,8 @@ class CampusScheduleTest {
     void 월요일이_아닌_경우의_출석여부를_구한다(
             LocalTime arriveTime, AttendanceType expectedType
     ) {
-        AttendanceType actualType = CampusSchedule.checkAttendance(false, arriveTime);
+        LocalDateTime dateTime = LocalDateTime.of(LocalDate.of(2024, 12, 10), arriveTime);
+        AttendanceType actualType = CampusSchedule.calculateAttendanceType(dateTime);
         assertThat(actualType).isEqualTo(expectedType);
     }
 

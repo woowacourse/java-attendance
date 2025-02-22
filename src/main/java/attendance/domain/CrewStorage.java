@@ -1,5 +1,6 @@
 package attendance.domain;
 
+import attendance.exception.ExceptionMessage;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -18,5 +19,12 @@ public class CrewStorage {
 
     public List<Crew> findAll() {
         return crews.stream().toList();
+    }
+
+    public void validateCrew(String nickname) {
+        boolean isNotContained = crews.stream().noneMatch(crew -> crew.isSameName(nickname));
+        if (isNotContained) {
+            throw new IllegalArgumentException(ExceptionMessage.NOT_FOUND_CREW.getContent());
+        }
     }
 }
