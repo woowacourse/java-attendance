@@ -10,9 +10,9 @@ public class FixedCustomClock implements CustomClock {
     private final Clock clock;
     private final Set<LocalDate> holidayDate;
 
-    public FixedCustomClock(Set<LocalDate> holidayDate) {
+    public FixedCustomClock(LocalDate setTime, Set<LocalDate> holidayDate) {
         this.clock = Clock.fixed(
-                LocalDate.of(2024, 12, 16).atStartOfDay(ZoneId.of("Asia/Seoul")).toInstant(),
+                setTime.atStartOfDay(ZoneId.of("Asia/Seoul")).toInstant(),
                 ZoneId.of("Asia/Seoul")
         );
         this.holidayDate = holidayDate;

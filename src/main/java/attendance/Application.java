@@ -31,7 +31,9 @@ public class Application {
         Set<LocalDate> holidays = Set.of(
                 LocalDate.of(2024, 12, 25)
         );
-        return new FixedCustomClock(holidays);
+
+        LocalDate setTime = LocalDate.of(2024, 12, 16);
+        return new FixedCustomClock(setTime, holidays);
     }
 
     private static void loadAttendance(AttendanceLoader attendanceLoader, FixedCustomClock fixedCustomClock,
