@@ -10,7 +10,6 @@ import attendance.exception.ExceptionMessage;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.time.Month;
 import java.time.format.TextStyle;
 import java.util.List;
 import java.util.Locale;
@@ -182,10 +181,10 @@ class AttendanceSystemTest {
         saveRecord("쿠키", NOT_HOIlDAY.plusDays(1), LATE_TIME);
         saveRecord("쿠키", NOT_HOIlDAY.minusDays(1), LATE_TIME);
 
-        List<AttendanceRecord> records = attendanceSystem.searchAttendanceRecordsByCrew("쿠키", 2024, Month.DECEMBER);
+        List<AttendanceRecord> records = attendanceSystem.searchAttendanceRecordsByCrew("쿠키", NOT_HOIlDAY.plusDays(1));
         long lateCount = records.stream().filter(record -> record.getType() == LATE).count();
 
-        assertThat(records).hasSize(22);
+        assertThat(records).hasSize(10);
         assertThat(lateCount).isEqualTo(3);
     }
 
@@ -193,7 +192,7 @@ class AttendanceSystemTest {
     @Test
     void 출석_조회_등록되지_않은_닉네임의_경우_예외_발생() {
         assertThatIllegalArgumentException()
-                .isThrownBy(() -> attendanceSystem.searchAttendanceRecordsByCrew("빙봉", 2024, Month.DECEMBER))
+                .isThrownBy(() -> attendanceSystem.searchAttendanceRecordsByCrew("빙봉", NOT_HOIlDAY.plusDays(1)))
                 .withMessage(ExceptionMessage.NOT_FOUND_CREW.getContent());
     }
 

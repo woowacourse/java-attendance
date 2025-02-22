@@ -4,7 +4,6 @@ import attendance.dto.UpdateResult;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.time.Month;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -47,26 +46,25 @@ public class AttendanceSystem {
         return new UpdateResult(oldRecord, newRecord);
     }
 
-    public List<AttendanceRecord> searchAttendanceRecordsByCrew(String nickname, int year, Month month) {
+    public List<AttendanceRecord> searchAttendanceRecordsByCrew(String nickname, LocalDate today) {
         crewStorage.validateCrew(nickname);
 
-        int lastDay = LocalDate.of(year, month.getValue(), 1).lengthOfMonth();
-        return IntStream.range(1, lastDay + 1)
-                .mapToObj(day -> LocalDate.of(year, month.getValue(), day))
+        return IntStream.range(1, today.getDayOfMonth() + 1)
+                .mapToObj(day -> LocalDate.of(today.getYear(), today.getMonth(), day))
                 .filter(date -> !holidayChecker.isHoliday(date))
                 .map(date -> findRecord(nickname, date))
                 .collect(Collectors.toList());
     }
 
-    public RiskStatistic searchRiskStatistic(String nickname, LocalDate startDate, LocalDate endDate) {
+    public RiskStatistic searchRiskStatistic(String nickname, LocalDate startDate, LocalDate today) {
         crewStorage.validateCrew(nickname);
-        return calculateRiskStatisticsByCrew(nickname, startDate, endDate);
+        return calculateRiskStatisticsByCrew(nickname, startDate, today);
     }
 
-    public List<RiskStatistic> searchRiskStatistics(LocalDate startDate, LocalDate endDate) {
+    public List<RiskStatistic> searchRiskStatistics(LocalDate startDate, LocalDate today) {
         List<Crew> allCrew = crewStorage.findAll();
         return allCrew.stream()
-                .map(crew -> calculateRiskStatisticsByCrew(crew.getName(), startDate, endDate))
+                .map(crew -> calculateRiskStatisticsByCrew(crew.getName(), startDate, today))
                 .filter(statistic -> statistic.getRiskType() != RiskType.NONE)
                 .toList();
     }

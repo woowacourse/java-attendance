@@ -76,10 +76,9 @@ public class AttendanceController {
         LocalDate nowDate = LocalDate.now();
         if (menu == AttendanceMenu.SEARCH) {
             String nickname = inputView.readNickname();
-            List<AttendanceRecord> records = attendanceSystem.searchAttendanceRecordsByCrew(
-                    nickname, nowDate.getYear(), nowDate.getMonth());
+            List<AttendanceRecord> records = attendanceSystem.searchAttendanceRecordsByCrew(nickname, nowDate);
             RiskStatistic state = attendanceSystem.searchRiskStatistic(
-                    nickname, makeFistDateInMonth(nowDate), makeLastDateInMonth(nowDate));
+                    nickname, makeFistDateInMonth(nowDate), nowDate);
             outputView.printRecordsInMonth(records);
             outputView.printAttendanceState(state);
         }
@@ -89,16 +88,12 @@ public class AttendanceController {
         LocalDate nowDate = LocalDate.now();
         if (menu == AttendanceMenu.RISK) {
             List<RiskStatistic> riskStatistics =
-                    attendanceSystem.searchRiskStatistics(makeFistDateInMonth(nowDate), makeLastDateInMonth(nowDate));
+                    attendanceSystem.searchRiskStatistics(makeFistDateInMonth(nowDate), nowDate);
             outputView.printRiskStatistics(riskStatistics);
         }
     }
 
     private LocalDate makeFistDateInMonth(LocalDate nowDate) {
         return nowDate.withDayOfMonth(1);
-    }
-
-    private LocalDate makeLastDateInMonth(LocalDate nowDate) {
-        return nowDate.withDayOfMonth(nowDate.lengthOfMonth());
     }
 }
