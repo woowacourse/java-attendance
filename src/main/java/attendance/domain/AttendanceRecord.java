@@ -2,6 +2,7 @@ package attendance.domain;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.Month;
 import java.util.Objects;
 
 public final class AttendanceRecord {
@@ -22,6 +23,10 @@ public final class AttendanceRecord {
 
     public boolean isExpulsion() {
         return type == AttendanceStatusType.EXPULSION;
+    }
+
+    public boolean isInMonth(Month month) {
+        return arrivalDateTime.getMonth() == month;
     }
 
     @Override
