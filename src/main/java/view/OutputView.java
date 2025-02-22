@@ -8,6 +8,7 @@ import domain.AttendanceResults;
 import domain.WarningCrew;
 import domain.WarningStatus;
 import java.time.format.DateTimeFormatter;
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 
@@ -32,19 +33,6 @@ public class OutputView {
         }
         String status = formatAttendStatus(attendStatus);
         return String.format("%s %s (%s)", date, time, status);
-    }
-
-    private String formatAttendStatus(AttendStatus attendStatus) {
-        if (attendStatus == AttendStatus.ATTEND) {
-            return "출석";
-        }
-        if (attendStatus == AttendStatus.LATE) {
-            return "지각";
-        }
-        if (attendStatus == AttendStatus.ABSENCE) {
-            return "결석";
-        }
-        return "";
     }
 
     public void printAttendanceResult(String name, AttendanceResults attendResult) {
@@ -78,6 +66,14 @@ public class OutputView {
             return "제적 대상자입니다.";
         }
         return "";
+    }
+
+    private String formatAttendStatus(AttendStatus attendStatus) {
+        return Arrays.stream(AttendMessage.values())
+                .filter(attendMessage -> attendMessage.match(attendStatus))
+                .findAny()
+                .orElseThrow(() -> new IllegalArgumentException("출석 상태 판정 실패"))
+                .getMessage();
     }
 
     private String formatAttendCount(AttendCount attendCount) {
