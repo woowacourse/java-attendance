@@ -45,11 +45,11 @@ public class FileController {
 
     private Map<String, List<LocalDateTime>> createRecords(Scanner attendaceScanner) {
         Map<String, List<LocalDateTime>> result = new HashMap<>();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+
         while (attendaceScanner.hasNextLine()) {
             String[] attr = attendaceScanner.nextLine().split(",");
             String name = attr[0];
-
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
             LocalDateTime dateTime = LocalDateTime.parse(attr[1], formatter);
 
             result.putIfAbsent(name, new ArrayList<>());
