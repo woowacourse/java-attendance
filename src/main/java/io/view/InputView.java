@@ -3,7 +3,6 @@ package io.view;
 import dto.requeset.AttendRequest;
 import dto.requeset.AttendanceBookDecision;
 import dto.requeset.AttendanceModifyRequest;
-import dto.requeset.AttendanceResultFindRequest;
 import util.dataProvider.DateProvider;
 import util.inputProvider.InputProvider;
 import util.outputHandler.OutputHandler;
@@ -69,9 +68,9 @@ public class InputView {
         return new AttendanceModifyRequest(name, date, time);
     }
     
-    public AttendanceResultFindRequest getAttendanceResultFindRequest() {
+    public String getAttendanceResultFindRequest() {
         System.out.println("닉네임을 입력해 주세요.");
-        return new AttendanceResultFindRequest(inputProvider.get());
+        return inputProvider.get();
     }
     
 }

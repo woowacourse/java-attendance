@@ -63,8 +63,8 @@ public class AttendanceControllerImpl implements AttendanceController {
     }
     
     private void handleAttendanceResultFind(AttendanceBook attendanceBook) {
-        var resultFindRequest = inputView.getAttendanceResultFindRequest();
-        var attendanceResult = attendanceBook.getAttendanceResult(resultFindRequest.name());
+        var name = inputView.getAttendanceResultFindRequest();
+        var attendanceResult = attendanceBook.getAttendanceResult(name);
         outputView.handleMemberAttendanceResult(attendanceResult);
     }
     
