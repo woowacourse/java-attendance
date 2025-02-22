@@ -14,6 +14,10 @@ public class Crew {
         return new Crew(name);
     }
 
+    public boolean isSame(final String name) {
+        return this.name.equals(name);
+    }
+
     public String getName() {
         return this.name;
     }

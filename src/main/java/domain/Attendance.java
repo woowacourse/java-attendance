@@ -21,7 +21,7 @@ public class Attendance {
     public Crew getCrewByName(String name) {
         return attendanceMap.keySet()
                 .stream()
-                .filter(crew -> crew.getName().equals(name))
+                .filter(crew -> crew.isSame(name))
                 .findFirst()
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 크루 입니다."));
     }
