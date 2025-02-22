@@ -13,8 +13,9 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
+import org.junit.jupiter.params.provider.ValueSource;
 
-public class AttendanceTimeTest {
+public class AttendanceDateTimeTest {
 
     @Nested
     @DisplayName("출석 시간 확인 테스트")
@@ -117,11 +118,12 @@ public class AttendanceTimeTest {
                     .hasMessage("[ERROR] 출석 시간이 아닙니다.");
         }
 
-        @Test
+        @ParameterizedTest
         @DisplayName("주말에 출석하면 예외가 발생한다")
-        void attendance_weekend_then_exception() {
+        @ValueSource(ints = {7,8})
+        void attendance_weekend_then_exception(int dayOfMonth) {
             // given
-            LocalDateTime attendanceDateTime = LocalDateTime.of(2024, 12, 8, 10, 10);
+            LocalDateTime attendanceDateTime = LocalDateTime.of(2024, 12, dayOfMonth, 10, 10);
 
             // when-then
             assertThatThrownBy(() -> AttendanceDateTime.from(attendanceDateTime))
