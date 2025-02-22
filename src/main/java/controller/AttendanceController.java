@@ -17,12 +17,13 @@ public class AttendanceController {
 
     public void run() {
         boolean isRunning = true;
-        while (isRunning) {
-            isRunning = executeMainMenu(isRunning);
-        }
+        do {
+            isRunning = executeMainMenu();
+        } while (isRunning);
     }
 
-    private boolean executeMainMenu(boolean isRunning) {
+    private boolean executeMainMenu() {
+        boolean isRunning = true;
         OptionRequest optionRequest = InputView.scanOption();
         switch (optionRequest.option()) {
             case "1" -> insertAttendanceRecord();

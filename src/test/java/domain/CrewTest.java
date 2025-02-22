@@ -10,9 +10,11 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import repository.CrewRepository;
+import service.AttendanceService;
 
 public class CrewTest {
     private static final LocalDate TUESDAY = LocalDate.of(2025, 2, 4);
+    private final AttendanceService attendanceService = new AttendanceService();
 
     @BeforeEach
     void initCrewRepository() {
@@ -38,22 +40,22 @@ public class CrewTest {
     }
 
     @Test
-    @DisplayName("주말 혹은 공휴일에는 출석 기록을 남길 수 없다")
-    void offdayExceptionTest() {
-        Crew crew = new Crew("pobi");
-        assertThatThrownBy(() -> {
-            crew.insertAttendanceTime(LocalDate.of(2025, 12, 25), LocalTime.of(10, 0));
-        }).isInstanceOf(IllegalArgumentException.class);
-    }
-
-    @Test
     @DisplayName("닉네임과 수정날짜와 등교시간으로 기록을 수정한다")
     void modifyAttendanceTest() {
+        // given
         CrewRepository.addCrew(new Crew("pobi"));
         Crew crew = CrewRepository.findByNickname("pobi");
         crew.insertAttendanceTime(TUESDAY, LocalTime.of(10, 0));
+
+        // when
         crew.modifyAttendanceTime(TUESDAY, LocalTime.of(10, 10));
-        assertThat(crew.getAttendanceTimeByDate(TUESDAY)).isEqualTo(LocalTime.of(10, 10));
+        AttendanceTime attendanceTime = crew.getAttendanceTimeByDate(TUESDAY);
+
+        // then
+        assertThat(attendanceTime.time())
+                .isEqualTo(LocalTime.of(10, 10));
+        assertThat(attendanceTime.status())
+                .isEqualTo(AttendanceStatus.LATE);
     }
 
     @Test
@@ -90,7 +92,8 @@ public class CrewTest {
         crew.insertAttendanceTime(LocalDate.of(2025, 2, 5), LocalTime.of(10, 31));
         // 2월6일, 2월7일 -> ABSENT
         // when
-        AttendanceStatusStatistics attendanceStatusStatistics = crew.getAttendanceStatusStatistics(
+        AttendanceStatusStatistics attendanceStatusStatistics = attendanceService.getAttendanceStatusStatistics(
+                crew,
                 LocalDate.of(2025, 2, 10)
         );
 

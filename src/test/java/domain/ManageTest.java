@@ -6,8 +6,10 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import service.AttendanceService;
 
 public class ManageTest {
+    private final AttendanceService attendanceService = new AttendanceService();
 
     @Test
     @DisplayName("결석 2회 미만인 경우 어떤 관리 대상자도 아니다")
@@ -21,7 +23,7 @@ public class ManageTest {
         // ABSENT_LATE
         crew.insertAttendanceTime(LocalDate.of(2025, 2, 5), LocalTime.of(10, 31));
         AttendanceStatusStatistics attendanceStatusStatistics =
-                crew.getAttendanceStatusStatistics(LocalDate.of(2025, 2, 6));
+                attendanceService.getAttendanceStatusStatistics(crew, LocalDate.of(2025, 2, 6));
 
         // when
         Manage manage = Manage.of(attendanceStatusStatistics);
@@ -42,7 +44,7 @@ public class ManageTest {
         // LATE
         crew.insertAttendanceTime(LocalDate.of(2025, 2, 5), LocalTime.of(10, 30));
         AttendanceStatusStatistics attendanceStatusStatistics =
-                crew.getAttendanceStatusStatistics(LocalDate.of(2025, 2, 7));
+                attendanceService.getAttendanceStatusStatistics(crew, LocalDate.of(2025, 2, 7));
 
         // when
         Manage manage = Manage.of(attendanceStatusStatistics);
@@ -57,9 +59,9 @@ public class ManageTest {
         // given
         Crew crew = new Crew("pobi");
         // LATE
-        crew.insertAttendanceTime(LocalDate.of(2025, 02, 3), LocalTime.of(13, 10));
+        crew.insertAttendanceTime(LocalDate.of(2025, 2, 3), LocalTime.of(13, 10));
         AttendanceStatusStatistics attendanceStatusStatistics =
-                crew.getAttendanceStatusStatistics(LocalDate.of(2025, 02, 7));
+                attendanceService.getAttendanceStatusStatistics(crew, LocalDate.of(2025, 2, 7));
 
         // when
         Manage manage = Manage.of(attendanceStatusStatistics);
@@ -74,7 +76,7 @@ public class ManageTest {
         // given
         Crew crew = new Crew("pobi");
         AttendanceStatusStatistics attendanceStatusStatistics =
-                crew.getAttendanceStatusStatistics(LocalDate.of(2025, 2, 11));
+                attendanceService.getAttendanceStatusStatistics(crew, LocalDate.of(2025, 2, 11));
 
         // when
         Manage manage = Manage.of(attendanceStatusStatistics);

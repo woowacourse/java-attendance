@@ -12,7 +12,7 @@ public enum AttendanceStatus {
     LATE("지각", "출석 시간 5분 초과해서 지각", 5),
     ABSENT_LATE("결석", "출석 시간 30분 초과해서 결석", 30),
     ABSENT("결석", "출석 기록을 하지 않아서 결석", Integer.MAX_VALUE),
-    NONE("쉬는 날", "출석 상태를 정의할 수 없음", Integer.MAX_VALUE),
+    OFF_DAY("쉬는 날", "출석 상태를 정의할 수 없음", Integer.MAX_VALUE),
     ;
 
     private final String title;
@@ -31,7 +31,7 @@ public enum AttendanceStatus {
         return Arrays.stream(values())
                 .filter(attendanceStatus -> attendanceStatus.elapsedMinutesLimit < elapsedMinutes)
                 .max(Comparator.comparing(AttendanceStatus::getElapsedMinutesLimit))
-                .orElse(AttendanceStatus.NONE);
+                .orElse(AttendanceStatus.OFF_DAY);
     }
 
     public int getElapsedMinutesLimit() {

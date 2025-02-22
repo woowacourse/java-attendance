@@ -3,6 +3,7 @@ package service;
 import constant.CampusConstant;
 import domain.AttendanceRecord;
 import domain.AttendanceStatus;
+import domain.AttendanceStatusStatistics;
 import domain.Crew;
 import domain.Manage;
 import dto.AttendanceModifyRequest;
@@ -15,17 +16,32 @@ import dto.MonthAttendanceRecordsResult;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.EnumMap;
 import java.util.List;
+import java.util.Map;
 import repository.CrewRepository;
 import util.DateTimeUtil;
 
 public class AttendanceService {
     public AttendanceResult insertAttendanceRecord(AttendanceRequest request) {
         validateCampusTime(request.time());
+        LocalDate nowDate = DateTimeUtil.nowDate();
+        validateOffDay(nowDate);
 
         Crew crew = CrewRepository.findByNickname(request.nickname());
-        AttendanceStatus status = crew.insertAttendanceTime(DateTimeUtil.nowDate(), request.time());
+        if (crew.attendanceTimeExists(nowDate)) {
+            throw new IllegalArgumentException(nowDate + ": 이미 출석 기록이 존재합니다. 수정 기능을 이용해 주세요.");
+        }
+
+        AttendanceStatus status = crew.insertAttendanceTime(nowDate, request.time());
         return AttendanceResult.of(DateTimeUtil.nowDate(), request.time(), status);
+    }
+
+    private void validateOffDay(LocalDate date) {
+        if (DateTimeUtil.isOffDay(date)) {
+            throw new IllegalArgumentException(date + ": 주말 및 공휴일에는 출석을 받지 않습니다.");
+        }
     }
 
     public ModifiedResult modifyAttendanceRecord(AttendanceModifyRequest request) {
@@ -45,9 +61,9 @@ public class AttendanceService {
         Crew crew = CrewRepository.findByNickname(nickname);
         LocalDate now = DateTimeUtil.nowDate();
         List<AttendanceRecord> attendanceRecords = getMonthAttendanceRecords(crew, now);
-        Manage manage = Manage.of(crew.getAttendanceStatusStatistics(now));
+        Manage manage = Manage.of(getAttendanceStatusStatistics(crew, now));
         return new MonthAttendanceRecordsResult(
-                crew.getNickname(), attendanceRecords, crew.getAttendanceStatusStatistics(now), manage
+                crew.getNickname(), attendanceRecords, getAttendanceStatusStatistics(crew, now), manage
         );
     }
 
@@ -59,19 +75,35 @@ public class AttendanceService {
             }
             LocalDate date = today.withDayOfMonth(day);
             attendanceRecords.add(
-                    new AttendanceRecord(date, crew.getAttendanceTimeByDate(date),
-                            crew.getAttendanceStatusByDate(date)));
+                    new AttendanceRecord(date, crew.getAttendanceTimeByDate(date)));
         }
         return attendanceRecords;
     }
 
+    public AttendanceStatusStatistics getAttendanceStatusStatistics(Crew crew, LocalDate today) {
+        Map<AttendanceStatus, Integer> statusCounter = new EnumMap<>(AttendanceStatus.class);
+        initializeStatusCounter(statusCounter);
+        for (int day = 1; day < today.getDayOfMonth(); day++) {
+            if (DateTimeUtil.isOffDay(today.withDayOfMonth(day))) {
+                continue;
+            }
+            AttendanceStatus attendanceStatus = crew.getAttendanceStatusByDate(
+                    LocalDate.of(today.getYear(), today.getMonth(), day));
+            statusCounter.put(attendanceStatus, statusCounter.getOrDefault(attendanceStatus, 0) + 1);
+        }
+        return new AttendanceStatusStatistics(statusCounter);
+    }
+
+    private void initializeStatusCounter(Map<AttendanceStatus, Integer> result) {
+        Arrays.stream(AttendanceStatus.values()).forEach(status -> result.put(status, 0));
+    }
 
     public List<CrewAlmostExpelledResult> getCrewsAlmostExpelled() {
         List<Crew> crews = CrewRepository.findAll();
         return crews.stream()
                 .map(crew -> {
                     var attendanceStatusStatistics
-                            = crew.getAttendanceStatusStatistics(DateTimeUtil.nowDate());
+                            = getAttendanceStatusStatistics(crew, DateTimeUtil.nowDate());
                     return new CrewAlmostExpelledResult(
                             crew.getNickname(), attendanceStatusStatistics, Manage.of(attendanceStatusStatistics));
                 })

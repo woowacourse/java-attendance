@@ -8,14 +8,14 @@ import java.time.format.TextStyle;
 import java.util.Locale;
 import java.util.Scanner;
 import util.DateTimeUtil;
-import util.RetryHandler;
+import util.ExceptionHandler;
 
 public class InputView {
 
     private static final Scanner scanner = new Scanner(System.in);
 
     public static OptionRequest scanOption() {
-        return RetryHandler.retryUntilSuccessWithReturn(() -> {
+        return ExceptionHandler.retryUntilSuccessWithReturn(() -> {
             LocalDate now = DateTimeUtil.nowDate();
             System.out.printf("""
                             오늘은 %d월 %d일 %s요일입니다. 기능을 선택해 주세요.
@@ -36,7 +36,7 @@ public class InputView {
     }
 
     public static AttendanceRequest scanAttendance() {
-        return RetryHandler.retryUntilSuccessWithReturn(() -> {
+        return ExceptionHandler.retryUntilSuccessWithReturn(() -> {
             System.out.println("닉네임을 입력해 주세요.");
             String nickname = scanner.nextLine();
             System.out.println("등교 시간을 입력해 주세요.");
@@ -47,7 +47,7 @@ public class InputView {
     }
 
     public static AttendanceModifyRequest scanModify() {
-        return RetryHandler.retryUntilSuccessWithReturn(() -> {
+        return ExceptionHandler.retryUntilSuccessWithReturn(() -> {
             System.out.println("출석을 수정하려는 크루의 닉네임을 입력해 주세요.");
             String nickname = scanner.nextLine();
             System.out.println("수정하려는 날짜(일)를 입력해 주세요.");
@@ -60,7 +60,7 @@ public class InputView {
     }
 
     public static String scanNickname() {
-        return RetryHandler.retryUntilSuccessWithReturn(() -> {
+        return ExceptionHandler.retryUntilSuccessWithReturn(() -> {
             System.out.println("닉네임을 입력해 주세요.");
             String nickname = scanner.nextLine();
             System.out.println();

@@ -21,7 +21,7 @@ public record ModifiedResult(
             }
 
             return new TimeAttendanceStatus(
-                    crew.getAttendanceTimeByDate(date).format(Formatter.TIME_FORMATTER),
+                    crew.getAttendanceTimeByDate(date).time().format(Formatter.TIME_FORMATTER),
                     crew.getAttendanceStatusByDate(date)
             );
         }

@@ -40,7 +40,7 @@ public class OutputView {
             message.append(attendanceRecord.date().format(Formatter.DATE_FORMATTER));
             message.append(" ");
             message.append(convertToTime(attendanceRecord));
-            message.append(String.format(" (%s)%n", attendanceRecord.status().getTitle()));
+            message.append(String.format(" (%s)%n", attendanceRecord.attendanceTime().status().getTitle()));
         });
         System.out.println(message);
 
@@ -60,10 +60,11 @@ public class OutputView {
     }
 
     private static String convertToTime(AttendanceRecord attendanceRecord) {
-        if (attendanceRecord.status() == AttendanceStatus.ABSENT) {
+        if (attendanceRecord.attendanceTime().status() == AttendanceStatus.ABSENT
+                || attendanceRecord.attendanceTime().status() == AttendanceStatus.OFF_DAY) {
             return "--:--";
         }
-        return attendanceRecord.time()
+        return attendanceRecord.attendanceTime().time()
                 .format(Formatter.TIME_FORMATTER);
     }
 
