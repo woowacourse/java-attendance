@@ -5,7 +5,7 @@ import static constant.Command.CREATE_ATTENDANCE;
 import static constant.Command.QUIT;
 import static constant.Command.RISK_OF_EXPLUSTION;
 import static constant.Command.UPDATE_ATTENDANCE;
-import static domain.ExceptionHandler.runInputCommand;
+import static util.ExceptionHandler.runInputCommand;
 
 import domain.AbsentPolicy;
 import domain.AttendanceDateTime;

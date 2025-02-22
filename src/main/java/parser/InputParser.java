@@ -12,6 +12,4 @@ public class InputParser {
         return LocalTime.of(hour,minute);
     }
 
-
-
 }
