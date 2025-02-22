@@ -51,7 +51,6 @@ public final class OutputView {
     public static void printCrewAttendances(final Crew crew) {
         final Nickname nickname = crew.getNickname();
         final Attendances attendances = crew.getAttendances();
-        attendances.sort();
 
         final AttendanceCounter attendanceCounter = AttendanceCounter.of(attendances);
         final int attendanceCount = attendanceCounter.getAttendanceCount();

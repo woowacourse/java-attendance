@@ -2,13 +2,14 @@ package domain;
 
 import error.CustomIllegalArgumentException;
 import java.time.LocalDateTime;
+import java.util.LinkedList;
 import java.util.List;
 
 public class Attendances {
 
-    private static List<Attendance> attendances;
+    private LinkedList<Attendance> attendances;
 
-    public Attendances(final List<Attendance> attendances) {
+    public Attendances(final LinkedList<Attendance> attendances) {
         this.attendances = attendances;
     }
 
@@ -31,8 +32,15 @@ public class Attendances {
                 .anyMatch(attendance -> attendance.localDateTime.equals(dateTime));
     }
 
-    public void add(Attendance attendance) {
-        attendances.add(attendance);
+    public void addSorted(Attendance newAttendance) {
+        int index = 0;
+        for (Attendance attendance : attendances) {
+            if (newAttendance.getLocalDateTime().isBefore(attendance.getLocalDateTime())) {
+                break;
+            }
+            index++;
+        }
+        attendances.add(index, newAttendance);
     }
 
     public Attendance findAttendance(final LocalDateTime dateTime) {
@@ -54,9 +62,5 @@ public class Attendances {
 
     public void remove(final Attendance oldAttendance) {
         attendances.remove(oldAttendance);
-    }
-
-    public void sort() {
-        attendances.sort((a, b) -> a.getDateOfMonth() - b.getDateOfMonth());
     }
 }

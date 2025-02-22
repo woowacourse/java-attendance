@@ -12,7 +12,9 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -28,18 +30,18 @@ public final class CrewGenerator {
     }
 
     public static Crews generate(final List<String[]> parsedCrewsData, LocalDate nowDate) {
-        Map<Nickname, List<Attendance>> crewData = new HashMap<>();
+        Map<Nickname, LinkedList<Attendance>> crewData = new HashMap<>();
         for (String[] parsedCrewData : parsedCrewsData) {
             String nickname = parsedCrewData[NICKNAME_IDX];
             String localDateTime = parsedCrewData[LOCAL_DATE_TIME_IDX];
             final Nickname name = new Nickname(nickname);
             final Attendance attendance = Attendance.of(localDateTime);
-            crewData.computeIfAbsent(name, k -> new ArrayList<>()).add(attendance);
+            crewData.computeIfAbsent(name, k -> new LinkedList<>()).add(attendance);
         }
 
         final List<Integer> validDates = getValidDates(nowDate);
         List<Crew> crews = new ArrayList<>();
-        for (Entry<Nickname, List<Attendance>> nicknameListEntry : crewData.entrySet()) {
+        for (Entry<Nickname, LinkedList<Attendance>> nicknameListEntry : crewData.entrySet()) {
             final Attendances attendances = getAttendances(nicknameListEntry, validDates);
             crews.add(new Crew(nicknameListEntry.getKey(), attendances, AttendanceCounter.of(attendances)));
 
@@ -47,9 +49,11 @@ public final class CrewGenerator {
         return new Crews(crews);
     }
 
-    private static Attendances getAttendances(final Entry<Nickname, List<Attendance>> nicknameListEntry,
+    private static Attendances getAttendances(final Entry<Nickname, LinkedList<Attendance>> nicknameListEntry,
                                               final List<Integer> validDates) {
-        final Attendances attendances = new Attendances(nicknameListEntry.getValue());
+        LinkedList<Attendance> attendancesData = nicknameListEntry.getValue();
+        attendancesData.sort(Comparator.comparing(Attendance::getLocalDateTime));
+        final Attendances attendances = new Attendances(attendancesData);
         List<Integer> alreadyAttendanceDates = attendances.getDates();
 
         List<Integer> noPresentAttendanceDates = new ArrayList<>(validDates);
@@ -58,7 +62,7 @@ public final class CrewGenerator {
             LocalDateTime dateTime = LocalDateTime.of(LocalDate.of(Constants.FIXED_YEAR, Constants.FIXED_MONTH, attendanceDate),
                     Constants.ABSENCE_TIME);
             Attendance attendance = new Attendance(dateTime);
-            attendances.add(attendance);
+            attendances.addSorted(attendance);
         }
         return attendances;
     }

@@ -24,7 +24,7 @@ public class Crew implements Comparable<Crew> {
     }
 
     public void add(final Attendance attendance) {
-        attendances.add(attendance);
+        attendances.addSorted(attendance);
     }
 
     public Attendance getAttendance(final LocalDateTime dateTime) {
@@ -33,7 +33,7 @@ public class Crew implements Comparable<Crew> {
 
     public void updateAttendance(final Attendance oldAttendance, final Attendance attendance) {
         attendances.remove(oldAttendance);
-        attendances.add(attendance);
+        attendances.addSorted(attendance);
     }
 
     public Attendances getAttendances() {
