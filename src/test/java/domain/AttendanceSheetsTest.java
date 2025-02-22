@@ -75,4 +75,29 @@ class AttendanceSheetsTest {
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("[ERROR] 해당 닉네임은 출석 기록이 존재하지 않습니다.");
     }
+
+    @Test
+    @DisplayName("출석 기록을 추가할 수 있다.")
+    void add_attendance_sheet() {
+        // given
+        AttendanceSheet attendanceSheet = new AttendanceSheet("율무", AttendanceDateTime.from(LocalDateTime.of(2024, 12, 9, 10, 3)));
+
+        // when
+        // then
+        Assertions.assertThatCode(() -> attendanceSheets.add(attendanceSheet))
+                .doesNotThrowAnyException();
+    }
+
+    @Test
+    @DisplayName("중복된 출석 기록은 예외를 발생한다.")
+    void add_duplicate_attendance_sheet() {
+        // given
+        AttendanceSheet attendanceSheet = new AttendanceSheet("율무", AttendanceDateTime.from(LocalDateTime.of(2024, 12, 6, 10, 3)));
+
+        // when
+        // then
+        Assertions.assertThatThrownBy(() -> attendanceSheets.add(attendanceSheet))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("[ERROR] 이미 출석했습니다. 수정 기능을 이용하세요.");
+    }
 }
