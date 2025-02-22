@@ -37,6 +37,10 @@ public class Attendance implements Comparable<Attendance> {
         return attendanceDateTime.getLocalDateTime();
     }
 
+    public AttendanceStatus getAttendanceStatus() {
+        return attendanceStatus;
+    }
+
     @Override
     public int compareTo(final Attendance object) {
         return this.getDayOfMonth() - object.getDayOfMonth();

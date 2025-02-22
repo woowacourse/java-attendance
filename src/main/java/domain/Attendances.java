@@ -15,13 +15,13 @@ public class Attendances {
 
     public AttendanceDto calculateAttendanceCount() {
         final long attendanceCount = attendances.stream()
-                .filter(attendance -> attendance.attendanceStatus.equals(AttendanceStatus.ATTENDANCE))
+                .filter(attendance -> attendance.getAttendanceStatus().equals(AttendanceStatus.ATTENDANCE))
                 .count();
         final long tardinessCount = attendances.stream()
-                .filter(attendance -> attendance.attendanceStatus.equals(AttendanceStatus.TARDINESS))
+                .filter(attendance -> attendance.getAttendanceStatus().equals(AttendanceStatus.TARDINESS))
                 .count();
         final long absence = attendances.stream()
-                .filter(attendance -> attendance.attendanceStatus.equals(AttendanceStatus.ABSENCE))
+                .filter(attendance -> attendance.getAttendanceStatus().equals(AttendanceStatus.ABSENCE))
                 .count();
 
         return new AttendanceDto((int) attendanceCount, (int) tardinessCount, (int) absence);
