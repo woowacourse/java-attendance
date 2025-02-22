@@ -44,7 +44,7 @@ public class AttendanceDetail {
     }
 
     public boolean isSameAs(Attendance attendance) {
-        return attendance.equals(this.attendance);
+        return attendance == this.attendance;
     }
 
 }
