@@ -3,7 +3,7 @@ package repository;
 import domain.attendance.Attendance;
 import domain.attendance.AttendanceBook;
 import domain.crew.Crew;
-import exception.CrewNotExistException;
+import exception.sub.CrewNotExistException;
 
 import java.util.*;
 

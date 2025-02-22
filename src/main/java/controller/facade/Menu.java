@@ -1,6 +1,6 @@
 package controller.facade;
 
-import exception.InvalidMenuException;
+import exception.sub.InvalidMenuException;
 
 import java.util.Arrays;
 

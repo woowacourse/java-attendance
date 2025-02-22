@@ -48,13 +48,9 @@ public class AttendanceStoreService {
     }
 
     private List<String> readLine(BufferedReader reader) throws IOException {
-        reader.readLine();
+        String line = reader.readLine();
         List<String> lines = new ArrayList<>();
-        while (true){
-            String line = reader.readLine();
-            if (line == null) {
-                break; //TODO : 개선할 수 있는 방법 없나?
-            }
+        while ((line = reader.readLine()) != null) {
             lines.add(line);
         }
         return lines;

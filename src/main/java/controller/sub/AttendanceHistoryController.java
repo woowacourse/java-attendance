@@ -34,7 +34,7 @@ public class AttendanceHistoryController implements SubController {
     @Override
     public void run() {
         Crew crew = readCrew();
-        LocalDate nowDate = CustomDate.now().toLocalDate(); //TODO : now
+        LocalDate nowDate = CustomDate.now().toLocalDate();
         List<AttendanceHistoryResponse> histories = attendanceHistoryService.getHistoriesOf(crew, nowDate);
         Map<AttendanceStatus, Integer> attendanceResult = attendanceHistoryService.getAttendanceResultOf(crew, nowDate);
         CrewStatus crewStatus = attendanceHistoryService.getCrewStatus(crew, nowDate);

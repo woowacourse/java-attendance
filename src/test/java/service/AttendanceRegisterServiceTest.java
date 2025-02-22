@@ -3,7 +3,7 @@ package service;
 import domain.attendance.Attendance;
 import domain.crew.Crew;
 import domain.date.CustomDate;
-import exception.DuplicateAttendanceException;
+import exception.sub.DuplicateAttendanceException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

@@ -1,6 +1,6 @@
 package domain.date;
 
-import exception.CannotRegisterAttendanceException;
+import exception.sub.CannotRegisterAttendanceException;
 import java.time.LocalDateTime;
 
 public class CustomDate {

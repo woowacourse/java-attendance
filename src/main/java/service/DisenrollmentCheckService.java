@@ -25,8 +25,8 @@ public class DisenrollmentCheckService {
                 .filter(entry -> {
                     AttendanceBook attendanceBook = entry.getValue();
                     CrewStatus status = CrewStatus.from(
-                            attendanceBook.getLateCountAt(now),
-                            attendanceBook.getAbsenceCountAt(now)
+                            attendanceBook.getLateCountUntilBefore(now),
+                            attendanceBook.getAbsenceCountUntilBefore(now)
                     );
                     return status != CrewStatus.NORMAL;
                 }).toList();
@@ -35,8 +35,8 @@ public class DisenrollmentCheckService {
                 .map(entry -> {
                     String name = entry.getKey().getName();
                     AttendanceBook attendanceBook = entry.getValue();
-                    int absenceCount = attendanceBook.getAbsenceCountAt(now);
-                    int lateCount = attendanceBook.getLateCountAt(now);
+                    int absenceCount = attendanceBook.getAbsenceCountUntilBefore(now);
+                    int lateCount = attendanceBook.getLateCountUntilBefore(now);
                     int convertedAbsenceCount = absenceCount + lateCount / 3;
                     String status = CrewStatus.from(lateCount, absenceCount).getExpression();
                     return new DisenrollmentCheckResponse(name, absenceCount, lateCount, convertedAbsenceCount, status);

@@ -2,7 +2,7 @@ package domain.attendance;
 
 import domain.date.CustomDate;
 import domain.date.CustomMonth;
-import exception.DuplicateAttendanceException;
+import exception.sub.DuplicateAttendanceException;
 import java.util.stream.IntStream;
 import service.dto.AttendanceHistoryResponse;
 
@@ -49,64 +49,63 @@ public class AttendanceBook {
         attendances.replace(date, beforeAttendance, afterAttendance);
     }
 
-    //TODO : 인덴트 어떻게 줄이지...
-    public List<AttendanceHistoryResponse> getAllAttendance(LocalDate limitDate) {
+    public List<AttendanceHistoryResponse> getAllAttendanceUntilBefore(LocalDate limitDate) {
         List<AttendanceHistoryResponse> histories = new ArrayList<>();
-        IntStream.range(1, limitDate.getDayOfMonth())
-                .filter(date -> !CUSTOM_MONTH.isHolidayAt(date))
-                .forEach(date -> {
-                    if (attendances.containsKey(date)) {
-                        Attendance attendance = attendances.get(date);
-                        histories.add(new AttendanceHistoryResponse(
-                                attendance.getTime().toLocalDate(),
-                                Optional.of(attendance.getTime().toLocalTime()),
-                                attendance.getStatus())
-                        );
-                    }
-                    else {
-                        histories.add(new AttendanceHistoryResponse(
-                                LocalDate.of(year, CUSTOM_MONTH.getValue(), date),
-                                Optional.empty(),
-                                AttendanceStatus.ABSENCE)
-                        );
-                    }
-                });
+
+        extractDatesExceptHolidayUntil(limitDate).forEach(date -> {
+            if (attendances.containsKey(date)) {
+                Attendance attendance = attendances.get(date);
+                histories.add(new AttendanceHistoryResponse(
+                        attendance.getTime().toLocalDate(),
+                        Optional.of(attendance.getTime().toLocalTime()),
+                        attendance.getStatus())
+                );
+                return;
+            }
+            histories.add(new AttendanceHistoryResponse(
+                    LocalDate.of(year, CUSTOM_MONTH.getValue(), date),
+                    Optional.empty(),
+                    AttendanceStatus.ABSENCE)
+            );
+        });
         return histories;
     }
 
-    public Map<AttendanceStatus, Integer> calculateAttendanceResult(LocalDate limitDate) {
-        Map<AttendanceStatus, Integer> result = new HashMap<>();
-        result.put(AttendanceStatus.ATTENDANCE, 0);
-        result.put(AttendanceStatus.LATE, 0);
-        result.put(AttendanceStatus.ABSENCE, 0);
-        IntStream.range(1, limitDate.getDayOfMonth())
-                .filter(date -> !CUSTOM_MONTH.isHolidayAt(date))
-                .forEach(date -> {
-                    if (attendances.containsKey(date)) {
-                        Attendance attendance = attendances.get(date);
-                        AttendanceStatus status = attendance.getStatus();
-                        result.replace(status, result.get(status) + 1);
-                    }
-                    else {
-                        result.replace(AttendanceStatus.ABSENCE, result.get(AttendanceStatus.ABSENCE) + 1);
-                    }
+    public Map<AttendanceStatus, Integer> findAttendanceResultUntilBefore(LocalDate limitDate) {
+        Map<AttendanceStatus, Integer> result = new HashMap<>(Map.of(
+                AttendanceStatus.ATTENDANCE, 0,
+                AttendanceStatus.LATE, 0,
+                AttendanceStatus.ABSENCE, 0
+        ));
+        extractDatesExceptHolidayUntil(limitDate).forEach(date -> {
+            if (attendances.containsKey(date)) {
+                Attendance attendance = attendances.get(date);
+                AttendanceStatus status = attendance.getStatus();
+                result.replace(status, result.get(status) + 1);
+                return;
+            }
+            result.replace(AttendanceStatus.ABSENCE, result.get(AttendanceStatus.ABSENCE) + 1);
         });
         return result;
     }
 
-    public int getLateCountAt(LocalDate limitDate) {
-        return (int) IntStream.range(1, limitDate.getDayOfMonth())
-                .filter(date -> !CUSTOM_MONTH.isHolidayAt(date))
+    public int getLateCountUntilBefore(LocalDate limitDate) {
+        return (int) extractDatesExceptHolidayUntil(limitDate).stream()
                 .filter(attendances::containsKey)
                 .filter(date -> attendances.get(date).getStatus().equals(AttendanceStatus.LATE))
                 .count();
     }
 
-    public int getAbsenceCountAt(LocalDate limitDate) {
-        return (int) IntStream.range(1, limitDate.getDayOfMonth())
-                .filter(date -> !CUSTOM_MONTH.isHolidayAt(date))
+    public int getAbsenceCountUntilBefore(LocalDate limitDate) {
+        return (int) extractDatesExceptHolidayUntil(limitDate).stream()
                 .filter(date -> !attendances.containsKey(date)
                         || attendances.get(date).getStatus().equals(AttendanceStatus.ABSENCE))
                 .count();
+    }
+
+    private List<Integer> extractDatesExceptHolidayUntil(LocalDate limitDate) {
+        return IntStream.range(1, limitDate.getDayOfMonth())
+                .filter(date -> !CUSTOM_MONTH.isHolidayAt(date))
+                .boxed().toList();
     }
 }

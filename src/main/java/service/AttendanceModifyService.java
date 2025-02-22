@@ -2,7 +2,7 @@ package service;
 
 import domain.attendance.Attendance;
 import domain.crew.Crew;
-import exception.AttendanceNotExistException;
+import exception.sub.AttendanceNotExistException;
 import repository.AttendanceRepository;
 import service.dto.AttendanceModifyResponse;
 

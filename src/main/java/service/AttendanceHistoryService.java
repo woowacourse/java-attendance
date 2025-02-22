@@ -20,18 +20,18 @@ public class AttendanceHistoryService {
 
     public List<AttendanceHistoryResponse> getHistoriesOf(Crew crew, LocalDate date) {
         AttendanceBook attendanceBook = attendanceRepository.findByCrew(crew);
-        return attendanceBook.getAllAttendance(date);
+        return attendanceBook.getAllAttendanceUntilBefore(date);
     }
 
     public Map<AttendanceStatus, Integer> getAttendanceResultOf(Crew crew, LocalDate date) {
         AttendanceBook attendanceBook = attendanceRepository.findByCrew(crew);
-        return attendanceBook.calculateAttendanceResult(date);
+        return attendanceBook.findAttendanceResultUntilBefore(date);
     }
 
     public CrewStatus getCrewStatus(Crew crew, LocalDate date) {
         AttendanceBook attendanceBook = attendanceRepository.findByCrew(crew);
-        int lateCount = attendanceBook.getLateCountAt(date);
-        int absenceCount = attendanceBook.getAbsenceCountAt(date);
+        int lateCount = attendanceBook.getLateCountUntilBefore(date);
+        int absenceCount = attendanceBook.getAbsenceCountUntilBefore(date);
         return CrewStatus.from(lateCount, absenceCount);
     }
 }

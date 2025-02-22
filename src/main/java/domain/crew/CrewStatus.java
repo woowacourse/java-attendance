@@ -1,6 +1,6 @@
 package domain.crew;
 
-import exception.InvalidAbsenceCountException;
+import exception.sub.InvalidAbsenceCountException;
 
 import java.util.Arrays;
 import java.util.Comparator;

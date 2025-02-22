@@ -4,7 +4,6 @@ import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.util.Arrays;
 
-//TODO : java api Month와 맞았으면...
 public enum CustomMonth {
     JANUARY(31, 1),
     FEBRUARY(29, 2),

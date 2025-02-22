@@ -21,7 +21,6 @@ public class DisenrollmentCheckController implements SubController {
 
     @Override
     public void run() {
-        //TODO : now 어딨음
         List<DisenrollmentCheckResponse> responses = disenrollmentCheckService.getDisenrollmentCheckResult();
         outputView.printDisenrollmentCheckResult(responses);
     }

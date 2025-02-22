@@ -1,13 +1,12 @@
 package controller.sub;
 
-import exception.InvalidTimeException;
+import exception.sub.InvalidTimeException;
 import exception.handler.ExceptionHandler;
 import controller.sub.parent.SubController;
 import domain.attendance.Attendance;
 import domain.crew.Crew;
 import domain.date.CustomDate;
-import exception.CannotRegisterAttendanceException;
-import exception.DuplicateAttendanceException;
+import exception.sub.DuplicateAttendanceException;
 import java.time.LocalTime;
 import java.time.format.DateTimeParseException;
 import repository.AttendanceRepository;
@@ -15,7 +14,6 @@ import service.AttendanceRegisterService;
 import view.InputView;
 import view.OutputView;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 public class AttendanceRegisterController implements SubController {
@@ -36,11 +34,11 @@ public class AttendanceRegisterController implements SubController {
 
     @Override
     public void run() {
-        LocalDateTime now = CustomDate.now(); //NOW에 대한 책임소재도 Config에 넣으면 좋을듯!!!
+        LocalDateTime now = CustomDate.now();
         CustomDate.throwIfHolidy(now);
         Crew crew = readCrewName();
         LocalTime timeInput = readTime();
-        LocalDateTime time = LocalDateTime.of( //TODO: 한곳에서 생성
+        LocalDateTime time = LocalDateTime.of(
                 now.getYear(),
                 now.getMonthValue(),
                 now.getDayOfMonth(),
