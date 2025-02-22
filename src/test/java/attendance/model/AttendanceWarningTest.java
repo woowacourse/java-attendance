@@ -5,7 +5,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
-class WarningTest {
+class AttendanceWarningTest {
 
     @Test
     void 크루가_2번_결석한_경우_경고를_받는다() {

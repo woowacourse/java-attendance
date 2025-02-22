@@ -20,16 +20,4 @@ class WoowaDurationTimeTest {
         Assertions.assertThat(duration).isEqualTo(60);
     }
 
-//    @Test
-//    void 차이를_계산하려는_날짜가_운영시간이_아니면_예외가_발생한다() {
-//        //given
-//        WoowaDate notOpenDate = TestUtil.createTestWoowaDate(LocalDate.of(2024, 12, 1));
-//        LocalTime testTime = LocalTime.of(11, 0);
-//
-//        //when & then
-//        assertThatThrownBy(() -> WoowaDurationTime.calculateDuration(notOpenDate, testTime))
-//                .isInstanceOf(IllegalArgumentException.class)
-//                .hasMessage(ERROR_NOT_WOOWA_OPEN);
-//    }
-
 }
