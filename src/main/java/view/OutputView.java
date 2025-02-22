@@ -42,14 +42,17 @@ public class OutputView {
 
     private static String printDayAttendance(AttendanceResultDto attendanceResultDto) {
         if (attendanceResultDto.localDateTime().getHour() != 0) {
-            return String.format("12월 %02d일 %s %02d:%02d (%s)\n", attendanceResultDto.localDateTime().getDayOfMonth(),
-                    Calender.findBy(attendanceResultDto.localDateTime().getDayOfMonth()),
-                    attendanceResultDto.localDateTime().getHour(), attendanceResultDto.localDateTime().getMinute(),
-                    attendanceResultDto.attendanceState());
+            return String.format("12월 %02d일 %s %02d:%02d (%s)\n",
+                    attendanceResultDto.localDateTime().getDayOfMonth(),
+                    Calender.findBy(attendanceResultDto.localDateTime().getDayOfMonth()).getDescription(),
+                    attendanceResultDto.localDateTime().getHour(),
+                    attendanceResultDto.localDateTime().getMinute(),
+                    attendanceResultDto.attendanceState().getDescription());
         }
-        return String.format("12월 %02d일 %s --:-- (%s)\n", attendanceResultDto.localDateTime().getDayOfMonth(),
-                Calender.findBy(attendanceResultDto.localDateTime().getDayOfMonth()),
-                attendanceResultDto.attendanceState());
+        return String.format("12월 %02d일 %s --:-- (%s)\n",
+                attendanceResultDto.localDateTime().getDayOfMonth(),
+                Calender.findBy(attendanceResultDto.localDateTime().getDayOfMonth()).getDescription(),
+                attendanceResultDto.attendanceState().getDescription());
     }
 
     public static void printAbsenceHistory(AbsenceResultDto absenceResultDto) {
