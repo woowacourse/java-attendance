@@ -11,27 +11,43 @@ class CustomLocalDateTimeTest {
 
     @Test
     void 커스텀_LocalDateTIme을_받아온다() {
-        assertThat(CustomLocalDateTime.now()).isEqualTo(LocalDateTime.of(2024, 12, 16, 12, 0));
+        assertThat(CustomLocalDateTime.now())
+                .isEqualTo(LocalDateTime.of(2024, 12, 16, 12, 0));
     }
 
     @Test
     void 평일은_쉬는날이_아니다() {
+        //given
         LocalDate localDate = LocalDate.of(2024, 12, 10);
 
-        Assertions.assertThat(CustomLocalDateTime.isHoliday(localDate)).isFalse();
+        //when
+        boolean holiday = CustomLocalDateTime.isHoliday(localDate);
+
+        //then
+        Assertions.assertThat(holiday).isFalse();
     }
 
     @Test
     void 공휴일로_지정된_날짜는_쉬는날이다() {
+        //given
         LocalDate localDate = LocalDate.of(2024, 12, 25);
 
-        Assertions.assertThat(CustomLocalDateTime.isHoliday(localDate)).isTrue();
+        //when
+        boolean holiday = CustomLocalDateTime.isHoliday(localDate);
+
+        //then
+        Assertions.assertThat(holiday).isTrue();
     }
 
     @Test
     void 주말은_쉬는날이다() {
+        //given
         LocalDate localDate = LocalDate.of(2024, 12, 8);
 
-        Assertions.assertThat(CustomLocalDateTime.isHoliday(localDate)).isTrue();
+        //when
+        boolean holiday = CustomLocalDateTime.isHoliday(localDate);
+
+        //then
+        Assertions.assertThat(holiday).isTrue();
     }
 }

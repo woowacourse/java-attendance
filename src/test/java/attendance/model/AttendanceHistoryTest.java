@@ -7,15 +7,21 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 public class AttendanceHistoryTest {
 
     @Test
     void 출석상세가_출석기록에_정상적으로_추가된다() {
+        //given
         AttendanceHistory attendanceHistory = new AttendanceHistory();
-        attendanceHistory.addAttendanceDetail(new AttendanceDetail(LocalDateTime.of(2024, 12, 2, 13, 0)));
+
+        //when
+        attendanceHistory.addAttendanceDetail(
+                new AttendanceDetail(LocalDateTime.of(2024, 12, 2, 13, 0))
+        );
+
+        //then
         assertThat(attendanceHistory.stream()).hasSize(1);
     }
 
@@ -24,8 +30,8 @@ public class AttendanceHistoryTest {
         // given
         AttendanceHistory attendanceHistory = new AttendanceHistory();
 
-        AttendanceDetail attendanceDetail1 = new AttendanceDetail(LocalDateTime.of(2024, 12, 2, 13, 0));
-        attendanceHistory.addAttendanceDetail(attendanceDetail1);
+        AttendanceDetail originalAttendanceDetail = new AttendanceDetail(LocalDateTime.of(2024, 12, 2, 13, 0));
+        attendanceHistory.addAttendanceDetail(originalAttendanceDetail);
 
         attendanceHistory.addAttendanceDetail(new AttendanceDetail(LocalDateTime.of(2024, 12, 3, 9, 58)));
         attendanceHistory.addAttendanceDetail(new AttendanceDetail(LocalDateTime.of(2024, 12, 4, 10, 2)));
@@ -33,39 +39,58 @@ public class AttendanceHistoryTest {
         LocalDate modifyDate = LocalDate.of(2024, 12, 2);
 
         // when
-        AttendanceDetail attendanceDetail = attendanceHistory.findAttendanceDetail(modifyDate);
-        attendanceDetail.modify(LocalTime.of(13, 10));
-        Assertions.assertThat(attendanceDetail.getAttendanceDateTime().toLocalTime()).isEqualTo(LocalTime.of(13, 10));
-        Assertions.assertThat(attendanceDetail.getAttendance()).isEqualTo(Attendance.LATE);
+        AttendanceDetail targetAttendanceDetail = attendanceHistory.findAttendanceDetail(modifyDate);
+        targetAttendanceDetail.modify(LocalTime.of(13, 10));
 
         // then
-        assertThat(attendanceDetail).isEqualTo(attendanceDetail1);
+        assertThat(targetAttendanceDetail.getAttendanceDateTime().toLocalTime()).isEqualTo(LocalTime.of(13, 10));
+        assertThat(targetAttendanceDetail.getAttendance()).isEqualTo(Attendance.LATE);
+        assertThat(targetAttendanceDetail).isEqualTo(originalAttendanceDetail);
     }
 
     @Test
     void 출석기록에서_전체출석횟수를_계산한다() {
+        //given
         AttendanceHistory attendanceHistory = new AttendanceHistory();
+
+        //when
         attendanceHistory.addAttendanceDetail(new AttendanceDetail(LocalDateTime.of(2024, 12, 2, 13, 0)));
         attendanceHistory.addAttendanceDetail(new AttendanceDetail(LocalDateTime.of(2024, 12, 3, 9, 58)));
         attendanceHistory.addAttendanceDetail(new AttendanceDetail(LocalDateTime.of(2024, 12, 4, 10, 2)));
 
+        //then
         assertThat(attendanceHistory.getAttendanceCount()).isEqualTo(3);
     }
 
     @Test
     void 해당_날짜의_출석기록이_존재하면_true를_반환한다() {
+        //given
         AttendanceHistory attendanceHistory = new AttendanceHistory();
-        attendanceHistory.addAttendanceDetail(new AttendanceDetail(LocalDateTime.of(2024, 12, 2, 13, 0)));
+        LocalDate targetDate = LocalDate.of(2024, 12, 2);
 
-        assertThat(attendanceHistory.containsDate(LocalDate.of(2024, 12, 2))).isTrue();
+        attendanceHistory.addAttendanceDetail(
+                new AttendanceDetail(LocalDateTime.of(targetDate, LocalTime.of(13, 0)))
+        );
+
+        //when
+        boolean containsDate = attendanceHistory.containsDate(targetDate);
+        assertThat(containsDate).isTrue();
     }
 
     @Test
     void 해당_날짜의_출석기록이_존재하지않으면_false를_반환한다() {
+        //given
         AttendanceHistory attendanceHistory = new AttendanceHistory();
-        attendanceHistory.addAttendanceDetail(new AttendanceDetail(LocalDateTime.of(2024, 12, 2, 13, 0)));
+        LocalDate targetDate = LocalDate.of(2024, 12, 2);
 
-        assertThat(attendanceHistory.containsDate(LocalDate.of(2024, 12, 3))).isFalse();
+        attendanceHistory.addAttendanceDetail(
+                new AttendanceDetail(LocalDateTime.of(targetDate, LocalTime.of(13, 0)))
+        );
+
+        //when
+        LocalDate otherDate = LocalDate.of(2024, 12, 3);
+        boolean containsDate = attendanceHistory.containsDate(otherDate);
+        assertThat(containsDate).isFalse();
     }
 
     @Test

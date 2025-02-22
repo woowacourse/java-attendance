@@ -28,20 +28,35 @@ class CrewTest {
 
     @Test
     void 크루가_가지고_있는_출석_기록을_확인한다() {
+        //given
         Crew crew = new Crew("멍구");
         crew.attend(new AttendanceDetail(LocalDateTime.of(2024, 12, 10, 10, 0)));
-        assertThat(crew.getAttendanceHistory().getAttendanceCount()).isEqualTo(1);
+
+        //when
+        long attendanceCount = crew.getAttendanceHistory().getAttendanceCount();
+
+        //then
+        assertThat(attendanceCount).isEqualTo(1);
     }
 
     @Test
     void 크루가_가지고_있는_기록을_수정한_후_반영되었는지_확인한다() {
+        //given
         Crew crew = new Crew("멍구");
-        crew.attend(new AttendanceDetail(LocalDateTime.of(2024, 12, 10, 10, 0)));
+        LocalDate targetDate = LocalDate.of(2024, 12, 10);
+        crew.attend(new AttendanceDetail(
+                LocalDateTime.of(targetDate, LocalTime.of(10, 0))
+        ));
+
+        //when
         crew.getAttendanceHistory()
-                .findAttendanceDetail(LocalDate.of(2024, 12, 10))
+                .findAttendanceDetail(targetDate)
                 .modify(LocalTime.of(10, 6));
+
+        //then
         AttendanceDetail attendanceDetail = crew.getAttendanceHistory()
-                .findAttendanceDetail(LocalDate.of(2024, 12, 10));
+                .findAttendanceDetail(targetDate);
+
         SoftAssertions softly = new SoftAssertions();
         softly.assertThat(attendanceDetail.getAttendanceDateTime().toLocalTime()).isEqualTo(LocalTime.of(10, 6));
         softly.assertThat(attendanceDetail.getAttendance()).isEqualTo(Attendance.LATE);
