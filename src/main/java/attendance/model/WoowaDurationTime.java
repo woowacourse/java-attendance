@@ -8,11 +8,11 @@ import java.time.LocalTime;
 import java.util.Arrays;
 
 public enum WoowaDurationTime {
-    월요일(DayOfWeek.MONDAY, LocalTime.of(13, 0)),
-    화요일(DayOfWeek.TUESDAY, LocalTime.of(10, 0)),
-    수요일(DayOfWeek.WEDNESDAY, LocalTime.of(10, 0)),
-    목요일(DayOfWeek.THURSDAY, LocalTime.of(10, 0)),
-    금요일(DayOfWeek.FRIDAY, LocalTime.of(10, 0));
+    MON(DayOfWeek.MONDAY, LocalTime.of(13, 0)),
+    TUE(DayOfWeek.TUESDAY, LocalTime.of(10, 0)),
+    WED(DayOfWeek.WEDNESDAY, LocalTime.of(10, 0)),
+    THU(DayOfWeek.THURSDAY, LocalTime.of(10, 0)),
+    FRI(DayOfWeek.FRIDAY, LocalTime.of(10, 0));
 
     private final DayOfWeek dayOfWeek;
     private final LocalTime startTime;
@@ -34,4 +34,5 @@ public enum WoowaDurationTime {
                 .findFirst()
                 .orElseThrow(() -> new IllegalArgumentException(ERROR_NOT_WOOWA_OPEN)).startTime;
     }
+
 }

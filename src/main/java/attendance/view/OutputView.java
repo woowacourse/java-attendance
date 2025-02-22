@@ -16,23 +16,6 @@ public class OutputView {
     private static final DateTimeFormatter normalFormatter = DateTimeFormatter.ofPattern("MM월 dd일 EEEE HH:mm");
     private static final DateTimeFormatter absenceFormatter = DateTimeFormatter.ofPattern("MM월 dd일 EEEE --:--");
 
-//    public void printAttendanceHistory(AttendanceDto attendanceDTO) {
-//        CustomStringBuilder stringBuilder = new CustomStringBuilder();
-//        stringBuilder.appendLine(String.format("이번 달 %s의 출석 기록입니다.", attendanceDTO.crewName()));
-//
-//        attendanceDTO.attendanceDetailDtos().stream()
-//                .sorted(Comparator.comparing(AttendanceDetailDto::attendanceDateTime))
-//                .forEach(attendanceDetail -> stringBuilder.appendLine(generateAttendanceDetail(
-//                        attendanceDetail.attendanceDateTime(),
-//                        attendanceDetail.attendanceType()
-//                )));
-//        stringBuilder.appendLine(String.format("출석: %d회", attendanceDTO.attendanceCount()));
-//        stringBuilder.appendLine(String.format("지각: %d회", attendanceDTO.lateCount()));
-//        stringBuilder.appendLine(String.format("결석: %d회", attendanceDTO.absenceCount()));
-//        stringBuilder.appendLine(String.format("%s 대상자입니다.", attendanceDTO.warningType()));
-//        stringBuilder.print();
-//    }
-
     public void printAttendanceHistory(AttendanceDto attendanceDTO, LocalDate monthStart, CustomClock clock) {
         CustomStringBuilder sb = new CustomStringBuilder();
         sb.appendLine(String.format("이번 달 %s의 출석 기록입니다.", attendanceDTO.crewName()));
@@ -65,7 +48,7 @@ public class OutputView {
             AttendanceDetailDto detail = maybeDetail.get();
             return detail.attendanceDateTime().format(normalFormatter) + " (" + detail.attendanceType() + ")";
         }
-        return date.format(absenceFormatter) + " (" + Attendance.ABSENT.name() + ")";
+        return date.format(absenceFormatter) + " (" + Attendance.ABSENT.getTitle() + ")";
     }
 
     public void printAttendanceDetail(AttendanceDetailDto attendanceDetailDTO) {

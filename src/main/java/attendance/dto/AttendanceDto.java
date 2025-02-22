@@ -18,7 +18,7 @@ public record AttendanceDto(
         return new AttendanceDto(
                 crew.getName(),
                 crew.getAttendanceHistory().stream().map(AttendanceDetailDto::from).toList(),
-                report.calculateWarning().name(),
+                report.calculateWarning().getTitle(),
                 report.calculateAttendanceCount(),
                 report.calculateLateCount(),
                 report.calculateAbsenceCount()
@@ -32,7 +32,7 @@ public record AttendanceDto(
         public static AttendanceDetailDto from(AttendanceDetail attendanceDetail) {
             return new AttendanceDetailDto(
                     attendanceDetail.getAttendanceDateTime(),
-                    attendanceDetail.getAttendance().name()
+                    attendanceDetail.getAttendance().getTitle()
             );
         }
     }

@@ -3,14 +3,16 @@ package attendance.model;
 import java.time.LocalTime;
 
 public enum Attendance {
-    PRESENT(0),
-    LATE(5),
-    ABSENT(30),
+    PRESENT("출석", 0),
+    LATE("지각", 5),
+    ABSENT("결석", 30),
     ;
 
+    private final String title;
     private final int lateMinute;
 
-    Attendance(int lateMinute) {
+    Attendance(String title, int lateMinute) {
+        this.title = title;
         this.lateMinute = lateMinute;
     }
 
@@ -23,5 +25,9 @@ public enum Attendance {
             return LATE;
         }
         return PRESENT;
+    }
+
+    public String getTitle() {
+        return title;
     }
 }

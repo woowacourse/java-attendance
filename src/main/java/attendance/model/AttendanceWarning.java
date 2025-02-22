@@ -1,16 +1,19 @@
 package attendance.model;
 
 public enum AttendanceWarning {
-    OUT(5),
-    NEED_MEETING(3),
-    WARNING(2),
-    NONE(0),
+    OUT("제적", 5),
+    NEED_MEETING("면담", 3),
+    WARNING("경고", 2),
+    NONE("해당없음", 0),
     ;
 
     public static final int LATES_PER_ABSENCE = 3;
+
+    private final String title;
     private final int absenceCount;
 
-    AttendanceWarning(int absenceCount) {
+    AttendanceWarning(String title, int absenceCount) {
+        this.title = title;
         this.absenceCount = absenceCount;
     }
 
@@ -26,5 +29,8 @@ public enum AttendanceWarning {
         }
         return NONE;
     }
-    
+
+    public String getTitle() {
+        return title;
+    }
 }

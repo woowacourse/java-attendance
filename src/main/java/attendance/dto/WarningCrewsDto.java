@@ -17,7 +17,7 @@ public record WarningCrewsDto(List<WarningCrewDetailDto> warningCrewDetailDTO) {
                             trainingStartDate);
                     return WarningCrewDetailDto.from(crew, report);
                 })
-                .filter(dto -> !dto.warningType.equals(AttendanceWarning.NONE.name()))
+                .filter(dto -> !dto.warningType.equals(AttendanceWarning.NONE.getTitle()))
                 .toList());
     }
 
@@ -34,7 +34,7 @@ public record WarningCrewsDto(List<WarningCrewDetailDto> warningCrewDetailDTO) {
                     report.calculateAbsenceCount(),
                     report.calculateLateCount(),
                     report.calculateAbsenceCount(),
-                    report.calculateWarning().name()
+                    report.calculateWarning().getTitle()
             );
         }
     }
