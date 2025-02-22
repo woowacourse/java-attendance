@@ -2,9 +2,6 @@ package attendance.domain;
 
 import attendance.exception.CustomException;
 import attendance.exception.ErrorMessage;
-import java.time.LocalDate;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Set;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -56,27 +53,6 @@ class CrewsTest {
         Assertions.assertThatThrownBy(() -> crews.findCrew("제프리"))
                 .isInstanceOf(CustomException.class)
                 .hasMessage(ErrorMessage.NICKNAME_NOT_PRESENCE.getMessage());
-    }
-
-    @Test
-    void 크루_출결_등록() {
-        // given
-        String crewName1 = "빙봉";
-        String crewName2 = "우가";
-        String crewName3 = "밍티";
-        Set<String> tempCrews = Set.of(crewName1, crewName2, crewName3);
-        Crews crews = Crews.fromCrewsFile(tempCrews);
-
-        LocalDate now = LocalDate.of(2025, 2, 19);
-        DateInfos dateInfos = DateInfos.fromDefaultValue(now);
-
-        Map<Crew, DateInfos> register = new HashMap<>();
-
-        // when
-        crews.register(register, dateInfos);
-
-        // then
-        Assertions.assertThat(register.size()).isEqualTo(3);
     }
 
 }

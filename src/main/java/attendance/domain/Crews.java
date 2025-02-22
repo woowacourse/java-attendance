@@ -3,7 +3,6 @@ package attendance.domain;
 import attendance.exception.CustomException;
 import attendance.exception.ErrorMessage;
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
 
 public class Crews {
@@ -33,11 +32,6 @@ public class Crews {
         return this.crews;
     }
 
-    public void register(Map<Crew, DateInfos> register, DateInfos dateInfos) {
-        for (Crew crew : crews) {
-            register.put(crew, dateInfos);
-        }
-    }
 }
 
 

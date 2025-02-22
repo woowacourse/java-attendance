@@ -12,7 +12,9 @@ public class Register {
 
     public Register(Crews crews, LocalDate now) {
         register = new HashMap<>();
-        crews.register(register, DateInfos.fromDefaultValue(now));
+        for (Crew crew : crews.getCrews()) {
+            register.put(crew, DateInfos.fromDefaultValue(now));
+        }
     }
 
     public DateInfo modifyInfo(Crew crew, int date, Time modifyTime) {
