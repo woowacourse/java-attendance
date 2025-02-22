@@ -6,6 +6,12 @@ public enum Penalty {
     WARNING("경고"),
     NONE(null);
 
+    private static final int REMOVAL_THRESHOLD = 5;
+    private static final int INTERVIEW_THRESHOLD = 2;
+    private static final int WARNING_THRESHOLD = 1;
+
+    private static final int LATE_TO_ABSENCE_RATIO = 3;
+
     private final String name;
 
     Penalty(String name) {
@@ -17,14 +23,14 @@ public enum Penalty {
     }
 
     public static Penalty determine(int absenceCount, int lateCount) {
-        absenceCount = absenceCount + lateCount / 3;
-        if (absenceCount > 5) {
+        absenceCount = absenceCount + lateCount / LATE_TO_ABSENCE_RATIO;
+        if (absenceCount > REMOVAL_THRESHOLD) {
             return Penalty.REMOVAL;
         }
-        if (absenceCount >= 3) {
+        if (absenceCount > INTERVIEW_THRESHOLD) {
             return Penalty.INTERVIEW;
         }
-        if (absenceCount >= 2) {
+        if (absenceCount > WARNING_THRESHOLD) {
             return Penalty.WARNING;
         }
         return Penalty.NONE;
