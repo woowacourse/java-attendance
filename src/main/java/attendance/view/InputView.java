@@ -1,9 +1,11 @@
 package attendance.view;
 
+import java.time.DateTimeException;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
+import java.util.InputMismatchException;
 import java.util.Scanner;
 
 public class InputView {
@@ -36,18 +38,18 @@ public class InputView {
         }
     }
 
-    public static LocalDate inputModifyDate(LocalDate localDate) {
+    public static LocalDate inputModifyDate(LocalDate today) {
         System.out.println("수정하려는 날짜(일)를 입력해 주세요.");
-        int endDate = localDate.lengthOfMonth();
-        String userInput = userInput();
-        if (!userInput.matches("\\d+")) {
-            throw new IllegalArgumentException("숫자가 아님");
-        }
-        int date = Integer.parseInt(userInput);
-        if (date < 1 || date > endDate) {
+        try {
+            int modifyDate = scanner.nextInt();
+            int year = today.getYear();
+            int month = today.getMonthValue();
+            return LocalDate.of(year, month, modifyDate);
+        } catch (InputMismatchException e) {
+            throw new IllegalArgumentException("숫자가 아닙니다.");
+        } catch (DateTimeException e) {
             throw new IllegalArgumentException("잘못된 날짜입니다.");
         }
-        return LocalDate.of(localDate.getYear(), localDate.getMonthValue(), date);
     }
 
     private static LocalTime parseStringToLocalTime(String userInput) {
