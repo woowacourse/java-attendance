@@ -20,6 +20,7 @@ import java.util.Arrays;
 import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.IntStream;
 import repository.CrewRepository;
 import util.DateTimeUtil;
 
@@ -28,7 +29,6 @@ public class AttendanceService {
         validateCampusTime(request.time());
         LocalDate nowDate = DateTimeUtil.nowDate();
         validateOffDay(nowDate);
-
         Crew crew = CrewRepository.findByNickname(request.nickname());
         if (crew.attendanceTimeExists(nowDate)) {
             throw new IllegalArgumentException(nowDate + ": 이미 출석 기록이 존재합니다. 수정 기능을 이용해 주세요.");
@@ -49,9 +49,7 @@ public class AttendanceService {
 
         Crew crew = CrewRepository.findByNickname(request.nickname());
         TimeAttendanceStatus before = TimeAttendanceStatus.of(crew, request.date());
-
         crew.modifyAttendanceTime(request.date(), request.time());
-
         TimeAttendanceStatus after = TimeAttendanceStatus.of(crew, request.date());
 
         return new ModifiedResult(request.date(), before, after);
@@ -69,28 +67,25 @@ public class AttendanceService {
 
     private List<AttendanceRecord> getMonthAttendanceRecords(Crew crew, LocalDate today) {
         List<AttendanceRecord> attendanceRecords = new ArrayList<>();
-        for (int day = 1; day < today.getDayOfMonth(); day++) {
-            if (DateTimeUtil.isOffDay(today.withDayOfMonth(day))) {
-                continue;
-            }
-            LocalDate date = today.withDayOfMonth(day);
-            attendanceRecords.add(
-                    new AttendanceRecord(date, crew.getAttendanceTimeByDate(date)));
-        }
+        List<LocalDate> notOffDates = IntStream.range(1, today.getDayOfMonth())
+                .mapToObj(today::withDayOfMonth)
+                .toList();
+        notOffDates.forEach(date ->
+                attendanceRecords.add(new AttendanceRecord(date, crew.getAttendanceTimeByDate(date)))
+        );
         return attendanceRecords;
     }
 
     public AttendanceStatusStatistics getAttendanceStatusStatistics(Crew crew, LocalDate today) {
         Map<AttendanceStatus, Integer> statusCounter = new EnumMap<>(AttendanceStatus.class);
         initializeStatusCounter(statusCounter);
-        for (int day = 1; day < today.getDayOfMonth(); day++) {
-            if (DateTimeUtil.isOffDay(today.withDayOfMonth(day))) {
-                continue;
-            }
-            AttendanceStatus attendanceStatus = crew.getAttendanceStatusByDate(
-                    LocalDate.of(today.getYear(), today.getMonth(), day));
+        List<LocalDate> notOffDates = IntStream.range(1, today.getDayOfMonth())
+                .mapToObj(today::withDayOfMonth)
+                .toList();
+        notOffDates.forEach(date -> {
+            AttendanceStatus attendanceStatus = crew.getAttendanceStatusByDate(date);
             statusCounter.put(attendanceStatus, statusCounter.getOrDefault(attendanceStatus, 0) + 1);
-        }
+        });
         return new AttendanceStatusStatistics(statusCounter);
     }
 
