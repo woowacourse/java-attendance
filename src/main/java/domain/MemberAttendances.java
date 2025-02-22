@@ -22,8 +22,8 @@ public class MemberAttendances {
     }
     
     public ExpelMeasurementResult measureExpelRisk() {
-        int lateCount = calculateLateCount();
-        int absentCount = calculateAbsentCount();
+        int lateCount = calculateAttendCountOf(AttendanceStatus.지각);
+        int absentCount = calculateAttendCountOf(AttendanceStatus.결석);
         
         return new ExpelMeasurementResult(
                 name,
@@ -34,9 +34,9 @@ public class MemberAttendances {
     }
     
     public MemberAttendResult getAttendanceResult() {
-        int attendCount = calculateAttendCount();
-        int lateCount = calculateLateCount();
-        int absentCount = calculateAbsentCount();
+        int attendCount = calculateAttendCountOf(AttendanceStatus.출석);
+        int lateCount = calculateAttendCountOf(AttendanceStatus.지각);
+        int absentCount = calculateAttendCountOf(AttendanceStatus.결석);
         
         return new MemberAttendResult(name,
                 attendances.stream().map(Attendance::createAttendanceResult).toList(),
@@ -47,7 +47,7 @@ public class MemberAttendances {
         );
     }
     
-    public int calculateAttendCount() {
+    public int calculateAttendCountOf(AttendanceStatus attendanceStatus) {
         int count = 0;
         
         List<AttendResult> attendanceResults = attendances.stream()
@@ -55,39 +55,14 @@ public class MemberAttendances {
                 .toList();
         
         for (AttendResult attendanceResult : attendanceResults) {
-            if (attendanceResult.attendanceStatus() == AttendanceStatus.출석) {
-                count++;
-            }
+            count = getAddedCountIfIsSame(attendanceResult, attendanceStatus, count);
         }
         return count;
     }
     
-    public int calculateLateCount() {
-        int count = 0;
-        
-        List<AttendResult> attendanceResults = attendances.stream()
-                .map(Attendance::createAttendanceResult)
-                .toList();
-        
-        for (AttendResult attendanceResult : attendanceResults) {
-            if (attendanceResult.attendanceStatus() == AttendanceStatus.지각) {
-                count++;
-            }
-        }
-        return count;
-    }
-    
-    public int calculateAbsentCount() {
-        int count = 0;
-        
-        List<AttendResult> attendanceResults = attendances.stream()
-                .map(Attendance::createAttendanceResult)
-                .toList();
-        
-        for (AttendResult attendanceResult : attendanceResults) {
-            if (attendanceResult.attendanceStatus() == AttendanceStatus.결석) {
-                count++;
-            }
+    private static int getAddedCountIfIsSame(AttendResult attendanceResult, AttendanceStatus attendanceStatus, int count) {
+        if (attendanceResult.attendanceStatus() == attendanceStatus) {
+            return count + 1;
         }
         return count;
     }
@@ -99,23 +74,26 @@ public class MemberAttendances {
     }
     
     public AttendanceModifyResult modifyAttendance(LocalDate date, LocalTime time) {
-        for (int index = 0; index < attendances.size(); index++) {
-            Attendance attendance = attendances.get(index);
-            if (attendance.isSameDay(date)) {
-                var newAttendance = replaceOldAttendanceAndGet(time, index);
-                AttendResult oldAttendanceResult = attendance.createAttendanceResult();
-                AttendResult newAttendanceResult = newAttendance.createAttendanceResult();
-                return new AttendanceModifyResult(
-                        oldAttendanceResult.attendanceDateTime().toLocalDate(),
-                        oldAttendanceResult.attendanceDateTime().toLocalTime(), oldAttendanceResult.attendanceStatus(),
-                        newAttendanceResult.attendanceDateTime().toLocalTime(), newAttendanceResult.attendanceStatus()
-                );
-            }
-        }
-        
-        Attendance newAttendance = new Attendance(LocalDateTime.of(date, time));
-        attendances.add(newAttendance);
-        return new AttendanceModifyResult(date, null, null, time, newAttendance.createAttendanceResult().attendanceStatus());
+        return attendances.stream()
+                .filter(attendance -> attendance.isSameDay(date))
+                .findFirst()
+                .map(attendance -> {
+                    var newAttendance = replaceOldAttendanceAndGet(time, attendances.indexOf(attendance));
+                    AttendResult oldAttendanceResult = attendance.createAttendanceResult();
+                    AttendResult newAttendanceResult = newAttendance.createAttendanceResult();
+                    return new AttendanceModifyResult(
+                            oldAttendanceResult.attendanceDateTime().toLocalDate(),
+                            oldAttendanceResult.attendanceDateTime().toLocalTime(),
+                            oldAttendanceResult.attendanceStatus(),
+                            newAttendanceResult.attendanceDateTime().toLocalTime(),
+                            newAttendanceResult.attendanceStatus()
+                    );
+                })
+                .orElseGet(() -> {
+                    Attendance newAttendance = new Attendance(LocalDateTime.of(date, time));
+                    attendances.add(newAttendance);
+                    return new AttendanceModifyResult(date, null, null, time, newAttendance.createAttendanceResult().attendanceStatus());
+                });
     }
     
     private Attendance replaceOldAttendanceAndGet(LocalTime time, int index) {
