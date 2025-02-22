@@ -1,12 +1,10 @@
 package view;
 
 import domain.Attendance;
-import domain.AttendanceCounter;
+import domain.AttendanceDateTime;
 import domain.AttendanceStatus;
-import domain.Attendances;
-import domain.Crew;
+import domain.AttendanceSummary;
 import domain.CrewSummary;
-import domain.Nickname;
 import domain.Punishment;
 import domain.Week;
 import java.time.DayOfWeek;
@@ -17,6 +15,8 @@ import util.Constants;
 
 public final class OutputView {
 
+    private static final int ABSENCE_HOUR = 0;
+
     private OutputView() {
     }
 
@@ -24,7 +24,7 @@ public final class OutputView {
         final LocalDateTime localDateTime = attendance.getLocalDateTime();
         final AttendanceStatus attendanceStatus = attendance.getAttendanceStatus();
         final int day = localDateTime.getDayOfMonth();
-        final String dayName = Week.findKoreanName(localDateTime.getDayOfWeek());
+        final DayOfWeek dayName = localDateTime.getDayOfWeek();
         final LocalTime localTime = localDateTime.toLocalTime();
 
         System.out.println(
@@ -36,7 +36,7 @@ public final class OutputView {
         final LocalDateTime oldLocalDateTime = oldAttendance.getLocalDateTime();
         final AttendanceStatus oldAttendanceStatus = oldAttendance.getAttendanceStatus();
         final int oldDay = oldLocalDateTime.getDayOfMonth();
-        final String oldDayName = Week.findKoreanName(oldLocalDateTime.getDayOfWeek());
+        final DayOfWeek oldDayName = oldLocalDateTime.getDayOfWeek();
         final LocalTime oldLocalTime = oldLocalDateTime.toLocalTime();
 
         final LocalDateTime newLocalDateTime = newAttendance.getLocalDateTime();
@@ -49,46 +49,43 @@ public final class OutputView {
                         oldAttendanceStatus.getKoreanName(), newLocalTime, newAttendanceStatus.getKoreanName()));
     }
 
-    public static void printCrewAttendances(Crew crew) {
-        final Nickname nickname = crew.getNickname();
-        final Attendances attendances = crew.getAttendances();
-        attendances.sort();
+    public static void printCrewAttendances(final CrewSummary crewSummaries,
+                                            List<AttendanceSummary> attendanceSummaries) {
+        final String nickname = crewSummaries.nickname();
+        final Punishment punishment = crewSummaries.punishment();
+        final String titleFormat = "이번 달 %s의 출석 기록입니다.";
 
-        final AttendanceCounter attendanceCounter = AttendanceCounter.of(attendances);
-        final int attendanceCount = attendanceCounter.getAttendanceCount();
-        final int tardiness = attendanceCounter.getTardiness();
-        final int absence = attendanceCounter.getAbsence();
+        printMessageWithLineSeparator(String.format(titleFormat, nickname));
+        printAttendances(attendanceSummaries);
+        printCountAboutAttendance(crewSummaries);
+        printMessageWithLineSeparator(String.format("%s 대상자입니다.", punishment.getPunishmentName()));
+    }
 
-        final Punishment punishment = Punishment.findByAbsenceCount(absence);
-
-        System.out.println(String.format("이번 달 %s의 출석 기록입니다.", nickname.getNickname()));
-        System.out.println();
-
-        for (Attendance attendance : attendances.getAttendances()) {
-            final AttendanceStatus attendanceStatus = attendance.getAttendanceStatus();
-            final LocalDateTime localDateTime = attendance.getLocalDateTime();
-            final int day = localDateTime.getDayOfMonth();
-            final DayOfWeek dayOfWeek = localDateTime.getDayOfWeek();
-            final LocalTime localTime = localDateTime.toLocalTime();
-            String timeFormat = String.valueOf(localTime);
-            if (localTime.equals(LocalTime.of(0, 0))) {
-                timeFormat = "--:--";
-            }
-            System.out.printf("%d월 %02d일 %s %s (%s)",
-                    Constants.FIXED_MONTH,
-                    day,
-                    Week.findKoreanName(dayOfWeek),
-                    timeFormat,
-                    attendanceStatus.getKoreanName());
+    private static void printAttendances(List<AttendanceSummary> attendanceSummaries) {
+        for (AttendanceSummary attendanceSummary : attendanceSummaries) {
+            final AttendanceDateTime attendanceDateTime = attendanceSummary.attendanceDateTime();
+            String formattedDateTime = adjustFormat(attendanceDateTime.getLocalDateTime());
+            printMessage(formattedDateTime);
         }
-        System.out.println();
+    }
 
-        System.out.println(String.format("%s: %d회", AttendanceStatus.ATTENDANCE.getKoreanName(), attendanceCount));
-        System.out.println(String.format("%s: %d회", AttendanceStatus.TARDINESS.getKoreanName(), tardiness));
-        System.out.println(String.format("%s: %d회", AttendanceStatus.ABSENCE.getKoreanName(), absence));
-        System.out.println();
+    private static String adjustFormat(LocalDateTime localDateTime) {
+        if (localDateTime.getHour() == ABSENCE_HOUR) {
+            return localDateTime.format(Week.ABSENCE_FORMAT);
+        }
+        return localDateTime.format(Week.KOREAN_DATE_TIME_FORMAT);
+    }
 
-        System.out.println(String.format("%s 대상자입니다.", punishment.getPunishmentName()));
+    private static void printCountAboutAttendance(final CrewSummary crewSummaries) {
+        final String countFormmat = "%s: %d회";
+        printMessage(
+                String.format(countFormmat, AttendanceStatus.ATTENDANCE.getKoreanName(),
+                        crewSummaries.attendanceCount()));
+        printMessage(
+                String.format(countFormmat, AttendanceStatus.TARDINESS.getKoreanName(),
+                        crewSummaries.tardinessCount()));
+        printMessage(
+                String.format(countFormmat, AttendanceStatus.ABSENCE.getKoreanName(), crewSummaries.absenceCount()));
     }
 
     public static void printAllExpulsion(final List<CrewSummary> crewSummaries) {
@@ -114,6 +111,6 @@ public final class OutputView {
     }
 
     private static void printMessageWithLineSeparator(String message) {
-        System.out.println("\n" + message);
+        System.out.println("\n" + message + "\n");
     }
 }

@@ -64,11 +64,9 @@ public class AttendanceDateTime {
     }
 
     private void validateHoliday(LocalDateTime localDateTime) {
-        final int day = localDateTime.getDayOfMonth();
-        if (Constants.HOLIDAYS.contains(day)) {
+        if (Constants.HOLIDAYS.contains(localDateTime.getDayOfMonth())) {
             throw new CustomIllegalArgumentException(
-                    String.format("%d월 %d일 %s은 등교일이 아닙니다.", Constants.FIXED_MONTH, localDateTime.getDayOfMonth(),
-                            Week.findKoreanName(localDateTime.getDayOfWeek())));
+                    String.format(localDateTime.format(Week.NON_SCHOOL_DAY_FORMAT) + "은 등교일이 아닙니다."));
         }
     }
 
