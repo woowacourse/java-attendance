@@ -15,7 +15,7 @@ import java.util.stream.Stream;
 
 public class Attendances {
 
-    private Map<Crew, List<Attendance>> attendances = new HashMap<>();
+    private final Map<Crew, List<Attendance>> attendances = new HashMap<>();
 
     public void addAttendance(Crew crew, Attendance attendance) {
         if (!attendances.containsKey(crew)) {

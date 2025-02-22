@@ -20,8 +20,8 @@ import java.util.Locale;
 
 public class AttendanceController {
 
-    private Attendances attendances;
-    private Crews crews;
+    private final Attendances attendances;
+    private final Crews crews;
 
     public AttendanceController() throws IOException {
         String path = "src/main/resources/attendances.csv";

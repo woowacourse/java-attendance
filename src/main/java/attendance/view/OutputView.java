@@ -64,7 +64,7 @@ public class OutputView {
 
         Penalty penalty = Penalty.determine(absenceCount, lateCount);
         if (penalty != Penalty.NONE) {
-            System.out.printf("%n%s 대상자입니다.%n", penalty.getKoreanName());
+            System.out.printf("%n%s 대상자입니다.%n", penalty.getName());
         }
     }
 
@@ -116,7 +116,7 @@ public class OutputView {
             System.out.printf("- %s: %s %d회, %s %d회 (%s)", penaltyResult.nickName(),
                 AttendanceStatus.ABSENCE.getName(),
                 penaltyResult.absenceCount, AttendanceStatus.LATE.getName(),
-                penaltyResult.lateCount, penaltyResult.penalty.getKoreanName());
+                penaltyResult.lateCount, penaltyResult.penalty.getName());
             System.out.println();
         }
     }

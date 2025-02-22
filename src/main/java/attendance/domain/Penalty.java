@@ -4,16 +4,16 @@ public enum Penalty {
     REMOVAL("제적"),
     INTERVIEW("면담"),
     WARNING("경고"),
-    NONE("");
+    NONE(null);
 
-    private String koreanName;
+    private final String name;
 
-    Penalty(String koreanName) {
-        this.koreanName = koreanName;
+    Penalty(String name) {
+        this.name = name;
     }
 
-    public String getKoreanName() {
-        return koreanName;
+    public String getName() {
+        return name;
     }
 
     public static Penalty determine(int absenceCount, int lateCount) {

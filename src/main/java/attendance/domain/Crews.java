@@ -7,7 +7,7 @@ import java.util.Set;
 
 public class Crews {
 
-    private Set<Crew> crews = new HashSet<>();
+    private final Set<Crew> crews = new HashSet<>();
 
     public void addCrew(Crew crew) {
         crews.add(crew);
