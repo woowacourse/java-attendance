@@ -24,6 +24,7 @@ public class Crew {
     }
 
     public void modifyAttendanceTime(LocalDate date, LocalTime time) {
+        // TODO: 같은 time으로 수정하려고 하는 경우 처리
         attendanceTimes.put(date, new AttendanceTime(time, AttendanceStatus.of(date, time)));
     }
 
