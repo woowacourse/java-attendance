@@ -9,21 +9,25 @@ public class PenaltyCrew implements Comparable<PenaltyCrew> {
     private final String name;
     private final int absenceCount;
     private final int lateCount;
-    private final Integer point;
+    private final Integer totalCount;
     private final AttendancePenalty attendanceStatus;
 
     public PenaltyCrew(String name, int absenceCount, int lateCount) {
         this.lateCount = lateCount;
         this.absenceCount = absenceCount;
         this.name = name;
-        this.point = absenceCount * LATE_TO_ABSENCE_RATIO + lateCount;
+        this.totalCount = calculateTotalCount(absenceCount, lateCount);
         this.attendanceStatus = AttendancePenalty.find(absenceCount, lateCount);
+    }
+
+    private static int calculateTotalCount(int absenceCount, int lateCount) {
+        return absenceCount * LATE_TO_ABSENCE_RATIO + lateCount;
     }
 
     @Override
     public int compareTo(PenaltyCrew o) {
         int attendanceComparison = this.attendanceStatus.compareTo(o.attendanceStatus);
-        int pointComparison = this.point.compareTo(o.point);
+        int pointComparison = this.totalCount.compareTo(o.totalCount);
 
         if (attendanceComparison != 0) {
             return attendanceComparison;
@@ -53,11 +57,11 @@ public class PenaltyCrew implements Comparable<PenaltyCrew> {
         }
         PenaltyCrew that = (PenaltyCrew) o;
         return absenceCount == that.absenceCount && lateCount == that.lateCount && Objects.equals(name, that.name)
-                && Objects.equals(point, that.point) && attendanceStatus == that.attendanceStatus;
+                && Objects.equals(totalCount, that.totalCount) && attendanceStatus == that.attendanceStatus;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(name, absenceCount, lateCount, point, attendanceStatus);
+        return Objects.hash(name, absenceCount, lateCount, totalCount, attendanceStatus);
     }
 }
