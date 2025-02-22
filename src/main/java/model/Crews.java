@@ -4,6 +4,7 @@ import dto.DismissalCrewDto;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -13,7 +14,7 @@ public class Crews {
     private final Map<String, Crew> crews;
 
     public Crews(final Map<String, Crew> crews) {
-        this.crews = crews;
+        this.crews = new HashMap<>(crews);
     }
 
     public Crew findCrewByNickname(final String nickname) {
@@ -31,8 +32,8 @@ public class Crews {
         return dtos;
     }
 
-    private static void addDismissalCrewDto(LocalDate todayDate, Entry<String, Crew> entry,
-                                            List<DismissalCrewDto> dtos) {
+    private void addDismissalCrewDto(LocalDate todayDate, Entry<String, Crew> entry,
+                                     List<DismissalCrewDto> dtos) {
         List<LocalDateTime> attendanceHistory = entry.getValue().getAttendanceHistory(todayDate);
         Map<AttendanceType, Integer> result = AttendanceType.countAttendanceType(attendanceHistory);
         SubjectType subjectType = SubjectType.from(result);
@@ -42,6 +43,4 @@ public class Crews {
         dtos.add(new DismissalCrewDto(entry.getKey(), result.get(AttendanceType.결석),
                 result.get(AttendanceType.지각), subjectType));
     }
-
-
 }
