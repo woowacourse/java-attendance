@@ -32,30 +32,34 @@ public class AttendanceController {
         AttendanceSheets attendanceSheets = attendanceSheetsFactory.create();
 
         while (true) {
-            String select = inputView.inputMenu(LocalDate.now());
+            try {
+                String select = inputView.inputMenu(date);
 
-            if (select.equals("1")) {
-                attend(date, attendanceSheets);
-                continue;
-            }
+                if (select.equals("1")) {
+                    attend(date, attendanceSheets);
+                    continue;
+                }
 
-            if (select.equals("2")) {
-                updateAttendance(attendanceSheets);
-                continue;
-            }
+                if (select.equals("2")) {
+                    updateAttendance(attendanceSheets);
+                    continue;
+                }
 
-            if (select.equals("3")) {
-                printAttendance(attendanceSheets, date);
-                continue;
-            }
+                if (select.equals("3")) {
+                    printAttendance(attendanceSheets, date);
+                    continue;
+                }
 
-            if (select.equals("4")) {
-                printRiskOfExpulsion(attendanceSheets);
-                continue;
-            }
+                if (select.equals("4")) {
+                    printRiskOfExpulsion(attendanceSheets);
+                    continue;
+                }
 
-            if (select.equals("Q")) {
-                return;
+                if (select.equals("Q")) {
+                    return;
+                }
+            } catch (Exception e){
+                System.out.println(e.getMessage());
             }
         }
     }
