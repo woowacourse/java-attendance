@@ -50,7 +50,9 @@ public class DateInfos {
     }
 
     private static void addWeekdayDateInfo(LocalDate currentDay, List<DateInfo> dateInfos) {
-        if (checkHoliday(currentDay)) return;
+        if (checkHoliday(currentDay)) {
+            return;
+        }
 
         dateInfos.add(DateInfo.makeDefaultValue(currentDay.getMonthValue(),
                 currentDay.getDayOfMonth(),

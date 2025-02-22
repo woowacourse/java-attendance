@@ -35,7 +35,7 @@ public class Register {
 
     public void fromCrewAttendanceTimeFile(Crews crews, List<String> attendanceTimes) {
         for (String attendanceTime : attendanceTimes) {
-            String crewName = make(attendanceTime, ",", 0); 
+            String crewName = make(attendanceTime, ",", 0);
             Crew crew = crews.findCrew(crewName);
             String dateTime = make(attendanceTime, ",", 1);
             String date = make(dateTime, " ", 0);
@@ -45,7 +45,7 @@ public class Register {
             modifyInfo(crew, Integer.parseInt(day), time);
         }
     }
-    
+
     private String make(String standard, String delimiter, int findIndex) {
         return List.of(standard.split(delimiter)).get(findIndex);
     }

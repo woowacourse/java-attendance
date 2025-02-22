@@ -15,7 +15,7 @@ class CrewTest {
     }
 
     @Test
-    void 동일한_이름_검사_참값_반환(){
+    void 동일한_이름_검사_참값_반환() {
         //given
         String crewName1 = "밍티";
         String crewName2 = "밍티";

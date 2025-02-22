@@ -42,12 +42,14 @@ public class DateInfo {
         }
         return 0;
     }
+
     public int checkLateStatus() {
         if (this.attendanceStatus.equals(AttendanceStatus.LATE)) {
             return 1;
         }
         return 0;
     }
+
     public int checkAttendanceStatus() {
         if (this.attendanceStatus.equals(AttendanceStatus.ATTENDANCE)) {
             return 1;
@@ -62,7 +64,6 @@ public class DateInfo {
         }
         return parsedNumber;
     }
-    //TODO : 리뷰 : 라인 수 궁금, 메서드 분리 궁금
 
     private AttendanceStatus calculateStatus() {
         if (checkDefault()) {

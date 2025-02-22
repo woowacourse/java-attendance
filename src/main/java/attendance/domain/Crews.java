@@ -3,7 +3,6 @@ package attendance.domain;
 import attendance.exception.CustomException;
 import attendance.exception.ErrorMessage;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -25,7 +24,7 @@ public class Crews {
 
     public Crew findCrew(String crewName) {
         return crews.stream().filter(crew ->
-                crew.checkSameName(crewName))
+                        crew.checkSameName(crewName))
                 .findFirst()
                 .orElseThrow(() -> CustomException.from(ErrorMessage.NICKNAME_NOT_PRESENCE));
     }

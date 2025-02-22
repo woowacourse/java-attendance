@@ -21,7 +21,7 @@ class CrewStatusTest {
     }
 
     @Test
-    void 제적_경고_학생_없음(){
+    void 제적_경고_학생_없음() {
 
         // given
         int lateCounts = 0;

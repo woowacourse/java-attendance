@@ -11,7 +11,7 @@ import org.junit.jupiter.api.Test;
 class TimeTest {
 
     @Test
-    void 등교_시간_객체_반환(){
+    void 등교_시간_객체_반환() {
         //given
         String originTime = "09:59";
         Time time = Time.from(originTime);
@@ -46,7 +46,7 @@ class TimeTest {
     }
 
     @Test
-    void 분이_숫자가_아닐_경우(){
+    void 분이_숫자가_아닐_경우() {
         //given
         String invalidTime = "03:ab";
 
