@@ -1,5 +1,6 @@
 package domain;
 
+import domain.constants.ExpulsionStatus;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -23,7 +24,7 @@ public class Crew implements Comparable<Crew> {
     public static Crew of(final String name, final LocalDate today) {
         List<Attendance> attendances = IntStream.range(1, today.getDayOfMonth())
                 .mapToObj(today::withDayOfMonth)
-                .filter(day -> isAvailableForAttendance(day))
+                .filter(Crew::isAvailableForAttendance)
                 .map(Attendance::empty)
                 .toList();
         return new Crew(name, attendances);

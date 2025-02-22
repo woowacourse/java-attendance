@@ -1,6 +1,5 @@
-package domain;
+package domain.constants;
 
-import domain.constants.ErrorMessage;
 import java.util.Arrays;
 import java.util.Objects;
 

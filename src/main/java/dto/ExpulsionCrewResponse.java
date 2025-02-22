@@ -1,7 +1,7 @@
 package dto;
 
 import domain.AttendanceStatus;
-import domain.ExpulsionStatus;
+import domain.constants.ExpulsionStatus;
 import java.util.Map;
 
 public record ExpulsionCrewResponse(

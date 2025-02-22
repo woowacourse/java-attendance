@@ -1,7 +1,7 @@
 package view;
 
 import domain.AttendanceStatus;
-import domain.ExpulsionStatus;
+import domain.constants.ExpulsionStatus;
 import dto.AttendanceResponse;
 import dto.ExpulsionCrewResponse;
 import java.time.LocalDate;

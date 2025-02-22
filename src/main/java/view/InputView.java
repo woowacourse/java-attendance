@@ -1,7 +1,7 @@
 package view;
 
-import domain.AnswerCommand;
-import domain.UserCommand;
+import domain.constants.AnswerCommand;
+import domain.constants.UserCommand;
 import java.time.LocalTime;
 import java.time.format.DateTimeParseException;
 import java.util.Scanner;

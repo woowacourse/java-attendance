@@ -1,18 +1,16 @@
 package controller;
 
-import domain.AnswerCommand;
+import domain.constants.AnswerCommand;
 import domain.Attendance;
 import domain.AttendanceStatus;
 import domain.AttendanceSystem;
 import domain.AttendanceSystemFactory;
 import domain.Crew;
-import domain.ExpulsionStatus;
-import domain.DateTimeGenerator;
-import domain.UserCommand;
+import domain.constants.ExpulsionStatus;
+import domain.constants.UserCommand;
 import dto.AttendanceResponse;
 import dto.ExpulsionCrewResponse;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
 import java.util.Map;
