@@ -93,7 +93,7 @@ class AttendanceTest {
                 .hasMessage("이미 출석한 크루입니다.");
     }
 
-    @DisplayName("이미 출석한 크루가 다시 출석하면 예외가 발생한다.")
+    @DisplayName("출석하지 않은 크루가 출석하면 예외가 발생하지 않는다.")
     @Test
     void nonDuplicateSave() {
         //given
