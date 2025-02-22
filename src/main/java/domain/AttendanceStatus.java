@@ -17,10 +17,11 @@ public enum AttendanceStatus {
         this.boundary = boundary;
     }
 
-    public static AttendanceStatus of(final LocalDateTime dateTime, final int boundaryHour, final int boundaryMinute) {
+    public static AttendanceStatus of(final LocalDateTime dateTime) {
+        final ClassTime classTime = ClassTime.findClassTimeByDateTime(dateTime.toLocalDate());
         final LocalDateTime timeBoundary = dateTime
-                .withHour(boundaryHour)
-                .withMinute(boundaryMinute);
+                .withHour(classTime.getStartTime().getHour())
+                .withMinute(classTime.getStartTime().getMinute());
         return Arrays.stream(values())
                 .sorted((o1, o2) -> o2.boundary - o1.boundary)
                 .filter(status -> dateTime.isAfter(timeBoundary.plusMinutes(status.boundary)))

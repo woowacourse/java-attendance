@@ -114,24 +114,9 @@ public class AttendanceBookTest {
             Attendance attendance = attendanceBook.updateAttendanceByCrewNameAndDay(time, "쿠키", 13);
 
             // then
-            assertThat(attendance.getDateTime().toLocalTime()).isEqualTo(time);
+            assertThat(attendance.getDateTime().toLocalTime()).isEqualTo(LocalTime.of(11, 8));
         }
 
-
-        @Test
-        @DisplayName("크루 이름과 날짜에 해당하는 출석을 반환한다.")
-        void findAttendanceByDate() {
-            // given
-            final LocalDate today = LocalDate.of(2024, 12, 13);
-            final List<String> data = List.of("쿠키,2024-12-13 11:08", "쿠키,2024-12-12 11:08", "쿠키,2024-12-11 11:08");
-            final AttendanceBook attendanceBook = AttendanceBook.of(data, today);
-
-            // when
-            Attendance attendance = attendanceBook.findAttendanceByDate("쿠키", 13);
-
-            // then
-            assertThat(attendance.getDateTime().toLocalDate().getDayOfMonth()).isEqualTo(13);
-        }
 
         @Test
         @DisplayName("크루 이름에 해당하는 크루를 반환한다.")

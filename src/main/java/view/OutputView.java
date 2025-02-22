@@ -6,6 +6,7 @@ import dto.AttendanceResponse;
 import dto.ExpulsionCrewResponse;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.format.TextStyle;
 import java.util.List;
 import java.util.Locale;
@@ -52,17 +53,15 @@ public class OutputView {
         System.out.println("언제로 변경하겠습니까?");
     }
 
-    public void printUpdateAttendanceResult(final AttendanceResponse beforeAttendance,
-                                            final AttendanceResponse afterAttendance) {
+    public void printUpdateAttendanceResult(final AttendanceResponse beforeAttendance, final LocalTime localTime, final AttendanceStatus attendanceStatus) {
         final LocalDateTime before = beforeAttendance.attendanceDate();
-        final LocalDateTime after = afterAttendance.attendanceDate();
         System.out.printf(System.lineSeparator() + "%02d월 %02d일 %s %s (%s) -> %s (%s) 수정 완료!" + System.lineSeparator(),
                 before.getMonthValue(), before.getDayOfMonth(),
                 before.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.KOREA),
                 formatAttendanceTimeByEmpty(before, beforeAttendance.isEmpty()),
                 beforeAttendance.attendanceStatus().getName(),
-                formatAttendanceTimeByEmpty(after, afterAttendance.isEmpty()),
-                afterAttendance.attendanceStatus().getName()
+                localTime.toString(),
+                attendanceStatus.getName()
         );
     }
 

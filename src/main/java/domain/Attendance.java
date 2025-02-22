@@ -1,9 +1,7 @@
 package domain;
 
-import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import util.DateTimeParser;
 
 public class Attendance {
@@ -44,11 +42,7 @@ public class Attendance {
     }
 
     public AttendanceStatus calculateStatus() {
-        if (dateTime.getDayOfWeek() == DayOfWeek.MONDAY) {
-            return AttendanceStatus.of(dateTime, 13, 0);
-        }
-        return AttendanceStatus.of(dateTime, 10, 0);
-
+        return AttendanceStatus.of(dateTime);
     }
 
     public boolean matchDate(final LocalDate localDate) {

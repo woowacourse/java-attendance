@@ -58,12 +58,11 @@ public class Crew implements Comparable<Crew> {
         attendances.add(updatedAttendance);
     }
 
-    public Attendance updateAttendanceByDateAndTime(final LocalTime attendanceTime, final LocalDate localDate) {
+    public void updateAttendanceByDateAndTime(final LocalTime attendanceTime, final LocalDate localDate) {
         final LocalDateTime newAttendanceDateAndTime = LocalDateTime.of(localDate, attendanceTime);
         final Attendance updatedAttendance = Attendance.of(newAttendanceDateAndTime);
         attendances.remove(updatedAttendance);
         attendances.add(updatedAttendance);
-        return updatedAttendance;
     }
 
     public Map<AttendanceStatus, Integer> calculateAttendanceStatistics() {

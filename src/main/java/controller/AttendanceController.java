@@ -2,8 +2,8 @@ package controller;
 
 import domain.AnswerCommand;
 import domain.Attendance;
-import domain.AttendanceStatus;
 import domain.AttendanceBook;
+import domain.AttendanceStatus;
 import domain.Crew;
 import domain.ExpulsionStatus;
 import domain.Operation;
@@ -83,12 +83,7 @@ public class AttendanceController {
         final AnswerCommand answerCommand = inputView.readAnswerCommand();
         if (answerCommand == AnswerCommand.YES) {
             final int dayOfMonth = LocalDate.now().getDayOfMonth();
-            final LocalTime targetTime = LoopTemplate.tryCatchLoop(this::inputUpdateTime, outputView);
-            final Attendance beforeAttendance = attendanceBook.findAttendanceByDate(crewName, dayOfMonth);
-            final Attendance afterAttendance = attendanceBook.updateAttendanceByCrewNameAndDay(targetTime, crewName,
-                    dayOfMonth);
-            outputView.printUpdateAttendanceResult(convertAttendanceToResponse(beforeAttendance),
-                    convertAttendanceToResponse(afterAttendance));
+            modifyAttendance(crewName, dayOfMonth);
         }
     }
 
@@ -112,12 +107,15 @@ public class AttendanceController {
     private void updateAttendance() {
         final String crewName = LoopTemplate.tryCatchLoop(this::inputCrewNameForUpdate, outputView);
         final int dayOfMonth = LoopTemplate.tryCatchLoop(this::inputDayOfMonthForUpdate, crewName, outputView);
+        modifyAttendance(crewName, dayOfMonth);
+    }
+
+    private void modifyAttendance(final String crewName, final int dayOfMonth) {
         final LocalTime targetTime = LoopTemplate.tryCatchLoop(this::inputUpdateTime, outputView);
-        final Attendance beforeAttendance = attendanceBook.findAttendanceByDate(crewName, dayOfMonth);
-        final Attendance afterAttendance = attendanceBook.updateAttendanceByCrewNameAndDay(targetTime, crewName,
+        final Attendance beforeAttendance = attendanceBook.updateAttendanceByCrewNameAndDay(targetTime, crewName,
                 dayOfMonth);
-        outputView.printUpdateAttendanceResult(convertAttendanceToResponse(beforeAttendance),
-                convertAttendanceToResponse(afterAttendance));
+        final LocalDateTime localDateTime = LocalDateTime.of(LocalDate.of(2024, 12, dayOfMonth), targetTime);
+        outputView.printUpdateAttendanceResult(convertAttendanceToResponse(beforeAttendance), targetTime, AttendanceStatus.of(localDateTime));
     }
 
     private LocalTime inputUpdateTime() {

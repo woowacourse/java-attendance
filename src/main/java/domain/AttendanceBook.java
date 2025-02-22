@@ -77,12 +77,21 @@ public class AttendanceBook {
 
     public Attendance updateAttendanceByCrewNameAndDay(final LocalTime targetTime, final String crewName,
                                                        final int dayOfMonth) {
+        final LocalDate localDate = LocalDate.of(2024, 12, dayOfMonth);
+        validateAttendanceDate(localDate);
+        final Attendance beforeAttendance = findAttendanceByDate(crewName, dayOfMonth);
         final Crew crew = findCrewByName(crewName);
-        final LocalDate targetDate = LocalDate.of(2024, 12, dayOfMonth);
-        return crew.updateAttendanceByDateAndTime(targetTime, targetDate);
+        crew.updateAttendanceByDateAndTime(targetTime, localDate);
+        return beforeAttendance;
     }
 
-    public Attendance findAttendanceByDate(final String crewName, final int dayOfMonth) {
+    private void validateAttendanceDate(final LocalDate localDate) {
+        if (Holiday.isHoliday(localDate)) {
+            throw new IllegalArgumentException("주말 또는 휴일은 등교일이 아닙니다.");
+        }
+    }
+
+    private Attendance findAttendanceByDate(final String crewName, final int dayOfMonth) {
         final Crew crew = findCrewByName(crewName);
         final LocalDate targetDate = LocalDate.of(2024, 12, dayOfMonth);
         return crew.findAttendanceByDate(targetDate);

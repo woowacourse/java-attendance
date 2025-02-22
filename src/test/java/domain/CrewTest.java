@@ -58,8 +58,8 @@ public class CrewTest {
             //given
             final String name = "윌슨";
             final String attendancedTime = "2024-12-13 10:05";
-            final String latedTime = "2024-12-14 10:30";
-            final String absencedTime = "2024-12-15 10:35";
+            final String latedTime = "2024-12-17 10:30";
+            final String absencedTime = "2024-12-18 10:35";
             final Crew crew = new Crew(name, new ArrayList<>());
 
             //when
@@ -143,7 +143,7 @@ public class CrewTest {
             final String latedTime1 = "2024-12-17 10:30";
             final String latedTime2 = "2024-12-18 10:30";
             final String latedTime3 = "2024-12-19 10:30";
-            final String absencedTime = "2024-12-15 10:35";
+            final String absencedTime = "2024-12-20 10:35";
             final Crew crew = new Crew(name, new ArrayList<>());
 
             //when
