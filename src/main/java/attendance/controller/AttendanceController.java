@@ -2,6 +2,7 @@ package attendance.controller;
 
 import attendance.config.AppConfig;
 import attendance.domain.AttendanceSystem;
+import attendance.domain.AttendanceSystemInitializer;
 import attendance.view.InputView;
 import attendance.view.OutputView;
 
@@ -10,11 +11,14 @@ public class AttendanceController {
     private final InputView inputView;
     private final OutputView outputView;
     private final AttendanceSystem attendanceSystem;
+    private final AttendanceSystemInitializer initializer;
 
     public AttendanceController(AppConfig appConfig) {
         this.inputView = appConfig.getInputView();
         this.outputView = appConfig.getOutputView();
         this.attendanceSystem = appConfig.getAttendanceSystem();
+        this.initializer = appConfig.getInitializer();
+        initializer.initialize();
     }
 
     public void run() {
