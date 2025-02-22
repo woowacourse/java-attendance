@@ -4,7 +4,7 @@ import attendance.exception.CustomException;
 import attendance.exception.ErrorMessage;
 import java.util.Arrays;
 
-public enum Function {
+public enum CommandOption {
 
     ONE("1"),
     TWO("2"),
@@ -14,12 +14,12 @@ public enum Function {
 
     private final String number;
 
-    Function(final String number) {
+    CommandOption(final String number) {
         this.number = number;
     }
 
-    public static Function of(String function) {
-        return Arrays.stream(Function.values())
+    public static CommandOption of(String function) {
+        return Arrays.stream(CommandOption.values())
                 .filter(func -> func.number.equals(function))
                 .findFirst()
                 .orElseThrow(() -> CustomException.from(ErrorMessage.FUNCTION_NOT_PRESENCE));

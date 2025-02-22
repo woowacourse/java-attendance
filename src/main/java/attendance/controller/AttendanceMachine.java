@@ -7,7 +7,7 @@ import attendance.domain.DateInfos;
 import attendance.domain.Register;
 import attendance.domain.Time;
 import attendance.domain.constant.DayOfWeek;
-import attendance.domain.constant.Function;
+import attendance.domain.constant.CommandOption;
 import attendance.exception.CustomException;
 import attendance.util.FileReader;
 import attendance.view.InputView;
@@ -37,33 +37,33 @@ public class AttendanceMachine {
 
         boolean isRunning = true;
         while (isRunning) {
-            Function function = readFunction(now);
-            isRunning = mappingFunction(function, now, crews, register);
+            CommandOption commandOption = readCommand(now);
+            isRunning = mappingCommand(commandOption, now, crews, register);
         }
         inputView.closeScanner();
     }
 
-    private boolean mappingFunction(Function function, LocalDate now, Crews crews, Register register) {
-        if (function.equals(Function.ONE)) {
-            functionOne(now, crews, register);
+    private boolean mappingCommand(CommandOption commandOption, LocalDate now, Crews crews, Register register) {
+        if (commandOption.equals(CommandOption.ONE)) {
+            confirmAttendance(now, crews, register);
             return true;
         }
-        if (function.equals(Function.TWO)) {
-            functionTwo(crews, register);
+        if (commandOption.equals(CommandOption.TWO)) {
+            modifyAttendance(crews, register);
             return true;
         }
-        if (function.equals(Function.THREE)) {
-            functionThree(crews, register);
+        if (commandOption.equals(CommandOption.THREE)) {
+            showAttendanceHistory(crews, register);
             return true;
         }
-        if (function.equals(Function.FOUR)) {
-            functionFour(register);
+        if (commandOption.equals(CommandOption.FOUR)) {
+            showExclusionCrews(register);
             return true;
         }
         return false;
     }
 
-    private void functionFour(Register register) {
+    private void showExclusionCrews(Register register) {
         try {
             outputView.writeDismissCrewCheck(register.findAllExpertRiskCrews());
         } catch (CustomException customException) {
@@ -71,13 +71,13 @@ public class AttendanceMachine {
         }
     }
 
-    private void functionThree(Crews crews, Register register) {
+    private void showAttendanceHistory(Crews crews, Register register) {
         Crew crew = findCrew(crews);
         DateInfos dateInfos = register.checkAttendanceHistory(crew);
         outputView.writeAttendanceHistory(crew, dateInfos);
     }
 
-    private void functionTwo(Crews crews, Register register) {
+    private void modifyAttendance(Crews crews, Register register) {
         Crew crew = findModifiyCrew(crews);
         int modifyDate = readModifyDay();
         Time modifyTime = findModifyTime();
@@ -90,7 +90,7 @@ public class AttendanceMachine {
 
     }
 
-    private void functionOne(LocalDate now, Crews crews, Register register) {
+    private void confirmAttendance(LocalDate now, Crews crews, Register register) {
         Crew crew = findCrew(crews);
         Time attendanceTime = findAttendanceTime();
         DayOfWeek dayOfWeek = DayOfWeek.from(now.getDayOfWeek().getValue());
@@ -119,8 +119,8 @@ public class AttendanceMachine {
         return retryUntilValidInput(() -> Integer.parseInt(inputView.readModifyDay()));
     }
 
-    private Function readFunction(LocalDate now) {
-        return retryUntilValidInput(() -> Function.of(inputView.readFunctionChoose(now)));
+    private CommandOption readCommand(LocalDate now) {
+        return retryUntilValidInput(() -> CommandOption.of(inputView.readFunctionChoose(now)));
     }
 
     private <T> T retryUntilValidInput(final Supplier<T> supplier) {
