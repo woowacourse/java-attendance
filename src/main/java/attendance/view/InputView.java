@@ -2,10 +2,9 @@ package attendance.view;
 
 import attendance.common.ErrorMessage;
 import attendance.utils.DateConverter;
-import attendance.utils.Option;
+import attendance.controller.AttendanceOption;
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
 import java.util.Scanner;
 
 public class InputView {
@@ -18,9 +17,9 @@ public class InputView {
             "Q. 종료%n";
     private static final Scanner scanner = new Scanner(System.in);
 
-    public Option readOption(LocalDate now) {
+    public AttendanceOption readOption(LocalDate now) {
         System.out.printf(OPTION_INPUT_MESSAGE, DateConverter.convertToString(now));
-        return Option.find(scanner.nextLine());
+        return AttendanceOption.find(scanner.nextLine());
     }
 
     public String readNickname() {

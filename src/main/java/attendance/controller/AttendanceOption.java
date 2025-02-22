@@ -1,25 +1,25 @@
-package attendance.utils;
+package attendance.controller;
 
 import attendance.common.ErrorMessage;
 import java.util.Arrays;
 
-public enum Option {
+public enum AttendanceOption {
 
-    ONE("1"),
-    TWO("2"),
-    THREE("3"),
-    FOUR("4"),
+    MARK("1"),
+    EDIT("2"),
+    CHECK("3"),
+    WARNING("4"),
     QUIT("Q");
 
     private final String input;
 
-    Option(String input) {
+    AttendanceOption(String input) {
         this.input = input;
     }
 
-    public static Option find(String input) {
+    public static AttendanceOption find(String input) {
         return Arrays.stream(values())
-                .filter(option -> input.equals(option.input))
+                .filter(attendanceOption -> input.equals(attendanceOption.input))
                 .findFirst()
                 .orElseThrow(() -> new IllegalArgumentException(ErrorMessage.INVALID_OPTION_INPUT.getMessage()));
     }

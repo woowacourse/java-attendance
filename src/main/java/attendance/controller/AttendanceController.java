@@ -6,7 +6,6 @@ import attendance.dto.PenaltyCrewDto;
 import attendance.service.AttendanceService;
 import attendance.service.DateGenerator;
 import attendance.utils.HolidayChecker;
-import attendance.utils.Option;
 import attendance.view.InputView;
 import attendance.view.OutputView;
 import java.time.LocalDate;
@@ -32,28 +31,28 @@ public class AttendanceController {
     public void run() {
         service.init();
         LocalDate now = dateGenerator.generate();
-        Option option = null;
+        AttendanceOption attendanceOption = null;
 
-        while (option != Option.QUIT) {
-            option = inputView.readOption(now);
-            chooseOption(option, now);
+        while (attendanceOption != AttendanceOption.QUIT) {
+            attendanceOption = inputView.readOption(now);
+            chooseOption(attendanceOption, now);
         }
     }
 
-    private void chooseOption(Option option, LocalDate today) {
-        if (option == Option.ONE) {
+    private void chooseOption(AttendanceOption attendanceOption, LocalDate today) {
+        if (attendanceOption == AttendanceOption.MARK) {
             optionOne(today);
         }
 
-        if (option == Option.TWO) {
+        if (attendanceOption == AttendanceOption.EDIT) {
             optionTwo();
         }
 
-        if (option == Option.THREE) {
+        if (attendanceOption == AttendanceOption.CHECK) {
             optionThree(today);
         }
 
-        if (option == Option.FOUR) {
+        if (attendanceOption == AttendanceOption.WARNING) {
             optionFour(today);
         }
     }
