@@ -8,6 +8,17 @@ import java.time.MonthDay;
 
 public class AttendanceDateTime {
 
+    private static final int MONDAY_STANDARD_HOUR = 13;
+    private static final int DEFAULT_STANDARD_HOUR = 10;
+
+    private static final int LATE_MINUTE_THRESHOLD = 5;
+    private static final int ABSENT_MINUTE_THRESHOLD = 30;
+
+    private static final int POSSIBLE_ATTENDANCE_START_HOUR = 8;
+    private static final int POSSIBLE_ATTENDANCE_END_HOUR = 23;
+
+    public static final MonthDay CHRISTMAS = MonthDay.of(12, 25);
+
     private LocalDateTime attendanceDateTime;
 
     private AttendanceDateTime(LocalDateTime attendanceDateTime) {
@@ -39,40 +50,39 @@ public class AttendanceDateTime {
         int hour = attendanceDateTime.getHour();
         int minute = attendanceDateTime.getMinute();
 
-        if (dayOfWeek == DayOfWeek.MONDAY) {
-            return decisionByHour(hour, minute, 13);
-        }
-        return decisionByHour(hour, minute, 10);
+        return decideAttendanceState(dayOfWeek, hour, minute);
     }
 
-    private static void validateOperatingTime(LocalTime time) {
-        if (time.getHour() < 8 || time.getHour() == 23) {
-            throw new IllegalArgumentException("[ERROR] 출석 시간이 아닙니다.");
-        }
-    }
+    private AttendanceState decideAttendanceState(DayOfWeek dayOfWeek, int hour, int minute) {
+        int standardHour = getStandardHour(dayOfWeek);
 
-    private AttendanceState decisionByHour(int hour, int minute, int standardHour) {
-        if (hour == standardHour) {
-            return decisionByMinute(minute);
-        }
-
-        if (hour > standardHour) {
+        if (isAbsent(hour, minute, standardHour)) {
             return AttendanceState.ABSENT;
         }
 
-        return AttendanceState.ATTEND;
-    }
-
-    private AttendanceState decisionByMinute(int minute) {
-        if (minute > 30) {
-            return AttendanceState.ABSENT;
-        }
-
-        if (minute > 5) {
+        if (isLate(hour, minute, standardHour)) {
             return AttendanceState.LATE;
         }
 
         return AttendanceState.ATTEND;
+    }
+
+    private int getStandardHour(DayOfWeek dayOfWeek) {
+        return dayOfWeek == DayOfWeek.MONDAY ? MONDAY_STANDARD_HOUR : DEFAULT_STANDARD_HOUR;
+    }
+
+    private boolean isAbsent(int hour, int minute, int standardHour) {
+        return hour > standardHour || (hour == standardHour && minute > ABSENT_MINUTE_THRESHOLD);
+    }
+
+    private boolean isLate(int hour, int minute, int standardHour) {
+        return hour == standardHour && minute > LATE_MINUTE_THRESHOLD;
+    }
+
+    private static void validateOperatingTime(LocalTime time) {
+        if (time.getHour() < POSSIBLE_ATTENDANCE_START_HOUR || time.getHour() == POSSIBLE_ATTENDANCE_END_HOUR) {
+            throw new IllegalArgumentException("[ERROR] 출석 시간이 아닙니다.");
+        }
     }
 
     private static void validateWeekend(DayOfWeek dayOfWeek) {
@@ -82,7 +92,7 @@ public class AttendanceDateTime {
     }
 
     private static void validateHoliday(LocalDate date) {
-        if (MonthDay.from(date).equals(MonthDay.of(12, 25))) {
+        if (MonthDay.from(date).equals(CHRISTMAS)) {
             throw new IllegalArgumentException("[ERROR] 공휴일에는 출석할 수 없습니다.");
         }
     }
