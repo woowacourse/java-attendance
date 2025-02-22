@@ -3,25 +3,24 @@ package attendance.domain;
 import java.util.Arrays;
 
 public enum AttendanceWarningType {
-    EXPULSION("제적", 6),
+    EXPULSION("제적", 6), //TODO: 이름변경
     COUNSELING("면담", 3),
     WARNING("경고", 2),
-    NONE("해당없음", 0)
-    ;
+    NONE("해당없음", 0);
 
     private final String name;
-    private final int threshold;
+    private final int score;
 
-    AttendanceWarningType(String name, int threshold) {
+    AttendanceWarningType(String name, int score) {
         this.name = name;
-        this.threshold = threshold;
+        this.score = score;
     }
 
-    public static AttendanceWarningType find(final int absence, final int late) { // todo : findBy~~ 네이밍 의논
-        int allAbsence = absence + (late / 3);
+    public static AttendanceWarningType find(final int expulsionCount, final int late) { // TODO: 이름변경
+        int allScore = expulsionCount + (late / 3);
         return Arrays.stream(AttendanceWarningType.values())
-                .filter(type -> type.threshold <= allAbsence)
-                .findFirst()
+                .filter(type -> type.score <= allScore)
+                .findAny()
                 .orElse(NONE);
     }
 

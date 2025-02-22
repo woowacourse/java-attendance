@@ -2,6 +2,7 @@ package attendance.domain;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -35,5 +36,17 @@ class CrewStorageTest {
 
         assertThat(crewStorage.isContained(isContainedName)).isTrue();
         assertThat(crewStorage.isContained(isNotContainedName)).isFalse();
+    }
+
+    @DisplayName("모든 크루를 조회할 수 있다.")
+    @Test
+    void 모든_크루를_조회할_수_있다() {
+        List<String> nicknames = List.of("쿠키1", "쿠키2", "쿠키3");
+        nicknames.forEach(nickname -> crewStorage.add(new Crew(nickname)));
+
+        List<Crew> allCrew = crewStorage.findAll();
+        assertThat(allCrew)
+                .extracting(Crew::getName)
+                .containsExactlyInAnyOrder("쿠키1", "쿠키2", "쿠키3");
     }
 }

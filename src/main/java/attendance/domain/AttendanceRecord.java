@@ -29,6 +29,13 @@ public final class AttendanceRecord {
         return arrivalDateTime.getMonth() == month;
     }
 
+    public boolean isInPeriod(LocalDate startDate, LocalDate endDate) {
+        LocalDate date = arrivalDateTime.toLocalDate();
+        boolean isAfterOrEqual = date.isAfter(startDate) || date.equals(startDate);
+        boolean isBeforeOrEqual = date.isBefore(endDate) || date.equals(endDate);
+        return isAfterOrEqual && isBeforeOrEqual;
+    }
+
     @Override
     public boolean equals(Object object) {
         if (this == object) {

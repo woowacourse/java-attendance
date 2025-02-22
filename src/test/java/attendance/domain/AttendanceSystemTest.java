@@ -182,6 +182,20 @@ class AttendanceSystemTest {
                 .withMessage("[ERROR] 등록되지 않은 닉네임입니다.");
     }
 
+    @DisplayName("제적 위험자 조회 - 제적 위험자를 조회할 수 있다.")
+    @Test
+    void 제적_위험자_조회_제적_위험자를_조회할_수_있다() {
+        saveRiskRecord(List.of("쿠키1", "쿠키2", "쿠키3"));
+        saveNotRiskRecord(List.of("쿠키4", "쿠키5"));
+
+        List<RiskStatistics> riskStatistics = attendanceSystem.searchRiskStatistics(
+                LocalDate.of(2024, 12, 9),
+                LocalDate.of(2024, 12, 13));
+        assertThat(riskStatistics)
+                .extracting(RiskStatistics::getNickname)
+                .containsExactlyInAnyOrder("쿠키1", "쿠키2", "쿠키3");
+    }
+
 
     private void saveRecord(String nickName, LocalDate date, LocalTime time) {
         if (!crewStorage.isContained(nickName)) {
@@ -189,5 +203,36 @@ class AttendanceSystemTest {
         }
         LocalDateTime dateTime = LocalDateTime.of(date, time);
         attendanceSystem.saveAttendanceRecord("쿠키", dateTime);
+    }
+
+    private void saveRiskRecord(List<String> nicknames) {
+        nicknames.forEach(this::saveRiskRecord);
+    }
+
+    private void saveRiskRecord(String nickname) {
+        if (!crewStorage.isContained(nickname)) {
+            crewStorage.add(new Crew(nickname));
+        }
+    }
+
+    private void saveNotRiskRecord(List<String> nicknames) {
+        nicknames.forEach(this::saveNotRiskRecord);
+    }
+
+    private void saveNotRiskRecord(String nickname) {
+        if (!crewStorage.isContained(nickname)) {
+            crewStorage.add(new Crew(nickname));
+        }
+        attendanceRecordStorage.add(makeRecord(nickname, LocalDateTime.of(2024, 12, 9, 8, 10, 0), ATTENDANCE));
+        attendanceRecordStorage.add(makeRecord(nickname, LocalDateTime.of(2024, 12, 10, 8, 10, 0), ATTENDANCE));
+        attendanceRecordStorage.add(makeRecord(nickname, LocalDateTime.of(2024, 12, 11, 8, 10, 0), ATTENDANCE));
+        attendanceRecordStorage.add(makeRecord(nickname, LocalDateTime.of(2024, 12, 12, 8, 10, 0), ATTENDANCE));
+        attendanceRecordStorage.add(makeRecord(nickname, LocalDateTime.of(2024, 12, 13, 8, 10, 0), ATTENDANCE));
+    }
+
+    private AttendanceRecord makeRecord(
+            String nickname, LocalDateTime arrivalDateTime, AttendanceStatusType attendanceType
+    ) {
+        return new AttendanceRecord(nickname, arrivalDateTime, attendanceType);
     }
 }

@@ -37,6 +37,23 @@ public class AttendanceRecordStorage {
         return records.stream().filter(record -> record.isInMonth(month)).toList();
     }
 
+    public int calculateAttendanceCount(String nickname, LocalDate startDate, LocalDate endDate) { // TODO: 테스트 추가
+        List<AttendanceRecord> records = findRecordsByNickname(nickname);
+        List<AttendanceRecord> inPeriod = records.stream()
+                .filter(record -> record.isInPeriod(startDate, endDate)).toList();
+        return (int) inPeriod.stream()
+                .filter(record -> record.getType() == AttendanceStatusType.ATTENDANCE).count();
+    }
+
+    public int calculateLateCount(String nickname, LocalDate startDate, LocalDate endDate) {// TODO: 테스트 추가
+        List<AttendanceRecord> records = findRecordsByNickname(nickname);
+        List<AttendanceRecord> inPeriod = records.stream()
+                .filter(record -> record.isInPeriod(startDate, endDate)).toList();
+        return (int) inPeriod.stream()
+                .filter(record -> record.getType() == AttendanceStatusType.LATE).count();
+    }
+
+
     private void remove(String nickname, LocalDate date) {
         Optional<AttendanceRecord> originRecord = find(nickname, date);
         if (originRecord.isPresent()) {

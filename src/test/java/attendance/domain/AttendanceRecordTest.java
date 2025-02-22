@@ -7,6 +7,8 @@ import java.time.LocalDateTime;
 import java.time.Month;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 
 class AttendanceRecordTest {
 
@@ -41,6 +43,19 @@ class AttendanceRecordTest {
         AttendanceRecord record = new AttendanceRecord(nickname, arrivalDateTime, AttendanceStatusType.ATTENDANCE);
 
         assertThat(record.isInMonth(Month.DECEMBER)).isTrue();
+    }
+
+    @DisplayName("현재 출석이 기간내의 기록인지 확인한다.")
+    @ParameterizedTest
+    @CsvSource({"9,false", "10,true", "11,true", "12,true", "13,false"})
+    void 현재_출석_기록의_월을_확인한다(int dayOfMonth, boolean isInPeriod) {
+        String nickname = "쿠키";
+        LocalDateTime arrivalDateTime = LocalDateTime.of(2025, 12, dayOfMonth, 8, 0, 0);
+        AttendanceRecord record = new AttendanceRecord(nickname, arrivalDateTime, AttendanceStatusType.ATTENDANCE);
+
+        boolean actualResult =
+                record.isInPeriod(LocalDate.of(2025, 12, 10), LocalDate.of(2025, 12, 12));
+        assertThat(actualResult).isEqualTo(isInPeriod);
     }
 
     public static AttendanceRecord makeRecord(

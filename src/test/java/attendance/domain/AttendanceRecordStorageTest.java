@@ -1,5 +1,8 @@
 package attendance.domain;
 
+import static attendance.domain.AttendanceStatusType.ATTENDANCE;
+import static attendance.domain.AttendanceStatusType.EXPULSION;
+import static attendance.domain.AttendanceStatusType.LATE;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 
@@ -22,7 +25,7 @@ class AttendanceRecordStorageTest {
     @DisplayName("크루에 대한 출석 기록을 추가한다.")
     @Test
     void 크루에_대한_출석_기록을_추가한다() {
-        AttendanceRecord record = makeRecord("쿠키", AttendanceStatusType.ATTENDANCE);
+        AttendanceRecord record = makeRecord("쿠키", ATTENDANCE);
 
         recordStorage.add(record);
 
@@ -33,7 +36,7 @@ class AttendanceRecordStorageTest {
     @DisplayName("결석일 경우에는 출석 기록 추가가 불가능하다.")
     @Test
     void 결석일_경우에는_출석_기록_추가가_불가능하다() {
-        AttendanceRecord record = makeRecord("쿠키", AttendanceStatusType.EXPULSION);
+        AttendanceRecord record = makeRecord("쿠키", EXPULSION);
 
         recordStorage.add(record);
 
@@ -43,10 +46,10 @@ class AttendanceRecordStorageTest {
     @DisplayName("이미 출석을 완료한 경우 출석을 새롭게 저장할 수 없다.")
     @Test
     void 이미_출석을_완료한_경우_출석을_새롭게_저장할_수_없다() {
-        AttendanceRecord record = makeRecord("쿠키", AttendanceStatusType.ATTENDANCE);
+        AttendanceRecord record = makeRecord("쿠키", ATTENDANCE);
         recordStorage.add(record);
 
-        AttendanceRecord newRecord = makeRecord("쿠키", AttendanceStatusType.LATE);
+        AttendanceRecord newRecord = makeRecord("쿠키", LATE);
         assertThatIllegalArgumentException()
                 .isThrownBy(() -> recordStorage.add(newRecord))
                 .withMessage("[ERROR] 이미 출석을 완료하셨습니다. 수정 기능을 이용해주세요.");
@@ -58,10 +61,10 @@ class AttendanceRecordStorageTest {
         String nickname = "쿠키";
         LocalDate date = LocalDate.of(2024, 12, 10);
 
-        AttendanceRecord originRecord = makeRecord(nickname, date.atTime(8, 50), AttendanceStatusType.ATTENDANCE);
+        AttendanceRecord originRecord = makeRecord(nickname, date.atTime(8, 50), ATTENDANCE);
         recordStorage.add(originRecord);
 
-        AttendanceRecord newRecord = makeRecord(nickname, date.atTime(9, 20), AttendanceStatusType.LATE);
+        AttendanceRecord newRecord = makeRecord(nickname, date.atTime(9, 20), LATE);
         recordStorage.update(newRecord);
 
         assertThat(recordStorage.find(nickname, date).get()).isEqualTo(newRecord);
@@ -74,10 +77,10 @@ class AttendanceRecordStorageTest {
         LocalDate date = LocalDate.of(2024, 12, 10);
 
         AttendanceRecord originRecord = makeRecord(nickname, date.atTime(8, 50),
-                AttendanceStatusType.ATTENDANCE);
+                ATTENDANCE);
         recordStorage.add(originRecord);
 
-        AttendanceRecord newRecord = makeRecord(nickname, date.atTime(9, 50), AttendanceStatusType.EXPULSION);
+        AttendanceRecord newRecord = makeRecord(nickname, date.atTime(9, 50), EXPULSION);
         recordStorage.update(newRecord);
 
         assertThat(recordStorage.find(nickname, date)).isEmpty();
@@ -94,6 +97,32 @@ class AttendanceRecordStorageTest {
         assertThat(recordStorage.findUnmodifiedRecordsByNickname("쿠키", Month.DECEMBER)).hasSize(3);
     }
 
+    @DisplayName("출석 횟수를 계산할 수 있다.")
+    @Test
+    void 출석_횟수를_계산할_수_있다() {
+        recordStorage.add(makeRecord("쿠키", LocalDateTime.of(2024, 12, 10, 8, 10, 0), ATTENDANCE));
+        recordStorage.add(makeRecord("쿠키", LocalDateTime.of(2024, 12, 11, 8, 10, 0), LATE));
+        recordStorage.add(makeRecord("쿠키", LocalDateTime.of(2024, 12, 13, 8, 10, 0), ATTENDANCE));
+        recordStorage.add(makeRecord("쿠키", LocalDateTime.of(2024, 12, 14, 8, 10, 0), ATTENDANCE));
+
+        int attendanceCount = recordStorage.calculateAttendanceCount(
+                "쿠키", LocalDate.of(2024, 12, 10), LocalDate.of(2024, 12, 14));
+        assertThat(attendanceCount).isEqualTo(3);
+    }
+
+    @DisplayName("지각 횟수를 계산할 수 있다.")
+    @Test
+    void 지각_횟수를_계산할_수_있다() {
+        recordStorage.add(makeRecord("쿠키", LocalDateTime.of(2024, 12, 10, 8, 10, 0), LATE));
+        recordStorage.add(makeRecord("쿠키", LocalDateTime.of(2024, 12, 11, 8, 10, 0), LATE));
+        recordStorage.add(makeRecord("쿠키", LocalDateTime.of(2024, 12, 13, 8, 10, 0), ATTENDANCE));
+        recordStorage.add(makeRecord("쿠키", LocalDateTime.of(2024, 12, 14, 8, 10, 0), LATE));
+
+        int lateCount = recordStorage.calculateLateCount(
+                "쿠키", LocalDate.of(2024, 12, 10), LocalDate.of(2024, 12, 14));
+        assertThat(lateCount).isEqualTo(3);
+    }
+
     public static AttendanceRecord makeRecord(
             String nickname, AttendanceStatusType attendanceType
     ) {
@@ -104,7 +133,7 @@ class AttendanceRecordStorageTest {
     public static AttendanceRecord makeRecord(
             String nickname, LocalDateTime arrivalDateTime
     ) {
-        return new AttendanceRecord(nickname, arrivalDateTime, AttendanceStatusType.ATTENDANCE);
+        return new AttendanceRecord(nickname, arrivalDateTime, ATTENDANCE);
     }
 
     public static AttendanceRecord makeRecord(

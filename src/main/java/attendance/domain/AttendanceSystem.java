@@ -50,6 +50,15 @@ public class AttendanceSystem {
         return recordStorage.findUnmodifiedRecordsByNickname(nickname, month);
     }
 
+    public List<RiskStatistics> searchRiskStatistics(LocalDate startDate, LocalDate endDate) {
+        int notHolidayCount = calculateNotHolidayCount(startDate, endDate);
+        List<Crew> allCrew = crewStorage.findAll();
+        return allCrew.stream()
+                .map(crew -> calculateRiskStatisticsByCrew(crew, notHolidayCount, startDate, endDate))
+                .filter(statistic -> statistic.getWarningType() != AttendanceWarningType.NONE)
+                .toList();
+    }
+
     private void validateCrew(String nickname) {
         boolean isNotContained = !crewStorage.isContained(nickname);
         if (isNotContained) {
@@ -73,5 +82,18 @@ public class AttendanceSystem {
         LocalDateTime newDateTime = LocalDateTime.of(date, newTime);
         AttendanceStatusType attendanceType = calculateAttendanceType(newDateTime);
         return new AttendanceRecord(nickname, newDateTime, attendanceType);
+    }
+
+    private int calculateNotHolidayCount(LocalDate startDate, LocalDate endDate) {
+        return (int) startDate.datesUntil(endDate)
+                .filter(date -> !holidayChecker.isHoliday(date))
+                .count();
+    }
+
+    private RiskStatistics calculateRiskStatisticsByCrew(Crew crew, int notHolidayCount, LocalDate startDate,
+            LocalDate endDate) {
+        int attendanceCount = recordStorage.calculateAttendanceCount(crew.getName(), startDate, endDate);
+        int lateCount = recordStorage.calculateLateCount(crew.getName(), startDate, endDate);
+        return new RiskStatistics(crew.getName(), notHolidayCount - attendanceCount, lateCount);
     }
 }
