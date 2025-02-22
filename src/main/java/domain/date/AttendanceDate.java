@@ -1,6 +1,5 @@
 package domain.date;
 
-import java.time.DayOfWeek;
 import java.util.List;
 
 public class AttendanceDate {
