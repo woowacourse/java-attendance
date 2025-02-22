@@ -27,13 +27,17 @@ public class AttendanceHistoryLoader {
         Map<String, Crew> crewMap = new HashMap<>();
 
         try (BufferedReader reader = new BufferedReader(new FileReader("src/main/resources/attendances.csv"))) {
-            reader.readLine();
+            skipItemTitle(reader);
             loadAttendanceHistory(reader, crewMap, crews);
         } catch (IOException e) {
             throw new IllegalStateException("크루원들의 출석 기록을 읽는 중 오류가 발생했습니다.", e);
         }
 
         return new Crews(crews);
+    }
+
+    private void skipItemTitle(BufferedReader reader) throws IOException {
+        reader.readLine();
     }
 
     private void loadAttendanceHistory(BufferedReader reader, Map<String, Crew> crewMap, List<Crew> crews) throws IOException {
