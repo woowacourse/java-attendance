@@ -66,9 +66,11 @@ public class AttendanceController {
 
         Crew crew = crews.findByNickname(inputView.getEditNickname());
         Attendance attendance = crew.findByDate(Converter.convertStringToInteger(inputView.getEditDayOfMonth()));
+        AttendanceDto originalAttendanceDto = attendance.toDto();
         attendance.updateAttendanceTime(Converter.convertStringToLocalTime(inputView.getNewTime()));
+        AttendanceDto editedAttendanceDto = attendance.toDto();
 
-        outputView.printUpdatedAttendanceHistory(attendance.toDto(), attendance.toDto());
+        outputView.printUpdatedAttendanceHistory(originalAttendanceDto, editedAttendanceDto);
     }
 
     public void processAttendanceHistory(String option) {
@@ -103,6 +105,3 @@ public class AttendanceController {
         }
     }
 }
-
-
-
