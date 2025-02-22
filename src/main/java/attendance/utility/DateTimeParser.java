@@ -1,5 +1,6 @@
 package attendance.utility;
 
+import attendance.exception.ExceptionMessage;
 import java.time.DateTimeException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -18,7 +19,8 @@ public final class DateTimeParser {
         try {
             return LocalDateTime.parse(input, FORMATTER);
         } catch (DateTimeParseException e) {
-            throw new IllegalArgumentException("[ERROR] 잘못된 날짜와 시간 형식입니다.");
+            String message = ExceptionMessage.INVALID_DATE_TIME_FORMAT.getContent();
+            throw new IllegalArgumentException(message);
         }
     }
 
@@ -26,7 +28,8 @@ public final class DateTimeParser {
         try {
             return date.withDayOfMonth(day);
         } catch (DateTimeException e) {
-            throw new IllegalArgumentException("[ERROR] 잘못된 날짜 형식입니다.");
+            String message = ExceptionMessage.INVALID_DATE_FORMAT.getContent();
+            throw new IllegalArgumentException(message);
         }
     }
 
@@ -34,7 +37,8 @@ public final class DateTimeParser {
         try {
             return LocalTime.parse(input);
         } catch (DateTimeParseException e) {
-            throw new IllegalArgumentException("[ERROR] 잘못된 시간 형식입니다.");
+            String message = ExceptionMessage.INVALID_TIME_FORMAT.getContent();
+            throw new IllegalArgumentException(message);
         }
     }
 

@@ -1,5 +1,6 @@
 package attendance.domain;
 
+import attendance.exception.ExceptionMessage;
 import java.time.LocalDate;
 import java.time.Month;
 import java.util.ArrayList;
@@ -37,7 +38,7 @@ public class AttendanceRecordStorage {
         return records.stream().filter(record -> record.isInMonth(year, month)).toList();
     }
 
-    public int calculateAttendanceCount(String nickname, LocalDate startDate, LocalDate endDate) { // TODO: 테스트 추가
+    public int calculateAttendanceCount(String nickname, LocalDate startDate, LocalDate endDate) {
         List<AttendanceRecord> records = findRecordsByNickname(nickname);
         List<AttendanceRecord> inPeriod = records.stream()
                 .filter(record -> record.isInPeriod(startDate, endDate)).toList();
@@ -45,14 +46,13 @@ public class AttendanceRecordStorage {
                 .filter(record -> record.getType() == AttendanceType.ATTENDANCE).count();
     }
 
-    public int calculateLateCount(String nickname, LocalDate startDate, LocalDate endDate) {// TODO: 테스트 추가
+    public int calculateLateCount(String nickname, LocalDate startDate, LocalDate endDate) {
         List<AttendanceRecord> records = findRecordsByNickname(nickname);
         List<AttendanceRecord> inPeriod = records.stream()
                 .filter(record -> record.isInPeriod(startDate, endDate)).toList();
         return (int) inPeriod.stream()
                 .filter(record -> record.getType() == AttendanceType.LATE).count();
     }
-
 
     private void remove(String nickname, LocalDate date) {
         Optional<AttendanceRecord> originRecord = find(nickname, date);
@@ -69,7 +69,7 @@ public class AttendanceRecordStorage {
     private void validateNotSaved(String nickname, LocalDate date) {
         Optional<AttendanceRecord> record = find(nickname, date);
         if (record.isPresent()) {
-            throw new IllegalArgumentException("[ERROR] 이미 출석을 완료하셨습니다. 수정 기능을 이용해주세요.");
+            throw new IllegalArgumentException(ExceptionMessage.ALREADY_ATTENDANCE.getContent());
         }
     }
 }

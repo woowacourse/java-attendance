@@ -6,6 +6,7 @@ import static attendance.domain.AttendanceType.LATE;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 
+import attendance.exception.ExceptionMessage;
 import java.time.LocalTime;
 import java.util.stream.Stream;
 import org.junit.jupiter.api.DisplayName;
@@ -31,10 +32,10 @@ class CampusScheduleTest {
     void 캠퍼스_운영시간이_아닌_경우_예외를_발생시킨다(LocalTime time) {
         assertThatIllegalArgumentException()
                 .isThrownBy(() -> CampusSchedule.checkAttendance(true, time))
-                .withMessage("[ERROR] 캠퍼스 운영시간이 아닙니다.");
+                .withMessage(ExceptionMessage.NOT_CAMPUS_TIME.getContent());
         assertThatIllegalArgumentException()
                 .isThrownBy(() -> CampusSchedule.checkAttendance(false, time))
-                .withMessage("[ERROR] 캠퍼스 운영시간이 아닙니다.");
+                .withMessage(ExceptionMessage.NOT_CAMPUS_TIME.getContent());
     }
 
     static Stream<Arguments> 캠퍼스_운영시간이_아닌_경우_예외를_발생시킨다() {

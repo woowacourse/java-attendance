@@ -1,5 +1,6 @@
 package attendance.controller;
 
+import attendance.exception.ExceptionMessage;
 import java.util.Arrays;
 
 public enum AttendanceMenu {
@@ -19,6 +20,6 @@ public enum AttendanceMenu {
         return Arrays.stream(values())
                 .filter(menu -> menu.command.equals(input.toUpperCase()))
                 .findFirst()
-                .orElseThrow(() -> new IllegalArgumentException("[ERROR] 메뉴의 알맞은 커맨드를 입력해주세요."));
+                .orElseThrow(() -> new IllegalArgumentException(ExceptionMessage.INVALID_MENU_COMMAND.getContent()));
     }
 }

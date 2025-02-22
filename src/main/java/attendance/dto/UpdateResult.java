@@ -7,5 +7,4 @@ public record UpdateResult(
         AttendanceRecord newRecord
 ) {
 
-
 }

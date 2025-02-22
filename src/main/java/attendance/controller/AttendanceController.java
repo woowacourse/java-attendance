@@ -101,5 +101,4 @@ public class AttendanceController {
     private LocalDate makeLastDateInMonth(LocalDate nowDate) {
         return nowDate.withDayOfMonth(nowDate.lengthOfMonth());
     }
-
 }

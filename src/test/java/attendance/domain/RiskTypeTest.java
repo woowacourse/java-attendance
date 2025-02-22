@@ -19,10 +19,8 @@ class RiskTypeTest {
     @MethodSource()
     @DisplayName("출결 상황에 따라 알맞은 경고를 반환한다.")
     void 출결_상황에_따라_알맞은_경고를_반환한다(int absence, int late, RiskType type) {
-        // when
         RiskType result = find(absence, late);
 
-        // then
         assertThat(result)
                 .isEqualTo(type);
     }

@@ -39,9 +39,6 @@ public class AttendanceSystemInitializer {
     }
 
     private void addAttendance(String nickname, LocalDateTime dateTime) {
-//        System.out.print("nickname = " + nickname);
-//        System.out.print("dateTime = " + dateTime);
-//        System.out.println();
         attendanceSystem.saveAttendanceRecord(nickname, dateTime);
     }
 }

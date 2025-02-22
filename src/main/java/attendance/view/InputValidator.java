@@ -1,12 +1,15 @@
 package attendance.view;
 
+import attendance.exception.ExceptionMessage;
+
 public class InputValidator {
 
     public static void validateIsNumeric(String input) {
         try {
             Integer.parseInt(input);
         } catch (NumberFormatException e) {
-            throw new IllegalArgumentException("[ERROR] 숫자만 입력 가능합니다.");
+            String message = ExceptionMessage.NOT_NUMERIC_INPUT.getContent();
+            throw new IllegalArgumentException(message);
         }
     }
 }

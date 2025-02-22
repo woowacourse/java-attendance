@@ -1,5 +1,6 @@
 package attendance.domain;
 
+import attendance.exception.ExceptionMessage;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -11,7 +12,8 @@ public class HolidayChecker {
 
     public void addHoliday(LocalDate holiday) {
         if (publicHolidays.contains(holiday)) {
-            throw new IllegalArgumentException("[ERROR] 이미 추가된 휴일입니다.");
+            String content = ExceptionMessage.ALREADY_EXIST_HOLIDAY.getContent();
+            throw new IllegalArgumentException(content);
         }
         publicHolidays.add(holiday);
     }

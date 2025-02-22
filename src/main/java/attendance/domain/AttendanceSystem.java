@@ -1,12 +1,15 @@
 package attendance.domain;
 
 import attendance.dto.UpdateResult;
+import attendance.exception.ExceptionMessage;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.Month;
+import java.time.format.TextStyle;
 import java.util.List;
+import java.util.Locale;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -75,14 +78,17 @@ public class AttendanceSystem {
     private void validateCrew(String nickname) {
         boolean isNotContained = !crewStorage.isContained(nickname);
         if (isNotContained) {
-            throw new IllegalArgumentException("[ERROR] 등록되지 않은 닉네임입니다.");
+            throw new IllegalArgumentException(ExceptionMessage.NOT_FOUND_CREW.getContent());
         }
     }
 
-    private void validateHoliday(LocalDate localDate) {
-        boolean isHoliday = holidayChecker.isHoliday(localDate);
+    private void validateHoliday(LocalDate date) {
+        boolean isHoliday = holidayChecker.isHoliday(date);
         if (isHoliday) {
-            throw new IllegalArgumentException("[ERROR] 12월 7일 토요일은 등교일이 아닙니다.");
+            String message = String.format(ExceptionMessage.HOLIDAY.getContent(),
+                    date.getMonth().getValue(), date.getDayOfMonth(),
+                    date.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.KOREA));
+            throw new IllegalArgumentException(message);
         }
     }
 

@@ -1,5 +1,6 @@
 package attendance.domain;
 
+import attendance.exception.ExceptionMessage;
 import java.time.LocalTime;
 
 public enum CampusSchedule {
@@ -27,7 +28,7 @@ public enum CampusSchedule {
     private static void validateIsInCampusTime(LocalTime time) {
         boolean isNotInCampusTime = time.isBefore(CAMPUS_OPEN_TIME.time) || time.isAfter(CAMPUS_CLOSE_TIME.time);
         if (isNotInCampusTime) {
-            throw new IllegalArgumentException("[ERROR] 캠퍼스 운영시간이 아닙니다.");
+            throw new IllegalArgumentException(ExceptionMessage.NOT_CAMPUS_TIME.getContent());
         }
     }
 

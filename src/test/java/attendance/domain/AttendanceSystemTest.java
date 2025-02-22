@@ -6,11 +6,14 @@ import static attendance.domain.AttendanceType.LATE;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 
+import attendance.exception.ExceptionMessage;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.Month;
+import java.time.format.TextStyle;
 import java.util.List;
+import java.util.Locale;
 import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -78,7 +81,7 @@ class AttendanceSystemTest {
 
         assertThatIllegalArgumentException()
                 .isThrownBy(() -> attendanceSystem.saveAttendanceRecord("쿠키", dateTime))
-                .withMessage("[ERROR] 캠퍼스 운영시간이 아닙니다.");
+                .withMessage(ExceptionMessage.NOT_CAMPUS_TIME.getContent());
     }
 
     @DisplayName("출석 저장 - 이미 출석을 완료한 경우 예외 발생")
@@ -90,7 +93,7 @@ class AttendanceSystemTest {
 
         assertThatIllegalArgumentException()
                 .isThrownBy(() -> attendanceSystem.saveAttendanceRecord("쿠키", dateTime))
-                .withMessage("[ERROR] 이미 출석을 완료하셨습니다. 수정 기능을 이용해주세요.");
+                .withMessage(ExceptionMessage.ALREADY_ATTENDANCE.getContent());
     }
 
     @DisplayName("출석 저장 - 휴일의 경우 예외 발생")
@@ -99,9 +102,12 @@ class AttendanceSystemTest {
         crewStorage.add(new Crew("쿠키"));
         LocalDateTime dateTime = LocalDateTime.of(HOLIDAY, ATTENDANCE_TIME);
 
+        String exceptionMessage = String.format(ExceptionMessage.HOLIDAY.getContent(),
+                HOLIDAY.getMonth().getValue(), HOLIDAY.getDayOfMonth(),
+                HOLIDAY.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.KOREA));
         assertThatIllegalArgumentException()
                 .isThrownBy(() -> attendanceSystem.saveAttendanceRecord("쿠키", dateTime))
-                .withMessage("[ERROR] 12월 7일 토요일은 등교일이 아닙니다.");
+                .withMessage(exceptionMessage);
     }
 
     @DisplayName("출석 저장 - 등록되지 않은 닉네임의 경우 예외 발생")
@@ -112,7 +118,7 @@ class AttendanceSystemTest {
 
         assertThatIllegalArgumentException()
                 .isThrownBy(() -> attendanceSystem.saveAttendanceRecord("빙봉", dateTime))
-                .withMessage("[ERROR] 등록되지 않은 닉네임입니다.");
+                .withMessage(ExceptionMessage.NOT_FOUND_CREW.getContent());
     }
 
     @DisplayName("출석 수정 - 출석 기록을 수정한다.")
@@ -145,16 +151,20 @@ class AttendanceSystemTest {
 
         assertThatIllegalArgumentException()
                 .isThrownBy(() -> attendanceSystem.updateAttendanceRecord("쿠키", NOT_HOIlDAY, NOT_CAMPUS_TIME))
-                .withMessage("[ERROR] 캠퍼스 운영시간이 아닙니다.");
+                .withMessage(ExceptionMessage.NOT_CAMPUS_TIME.getContent());
     }
 
     @DisplayName("출석 수정 - 휴일의 출석 기록 수정시 예외 발생")
     @Test
     void 출석_수정_휴일의_출석_기록_수정시_예외_발생() {
         crewStorage.add(new Crew("쿠키"));
+
+        String exceptionMessage = String.format(ExceptionMessage.HOLIDAY.getContent(),
+                HOLIDAY.getMonth().getValue(), HOLIDAY.getDayOfMonth(),
+                HOLIDAY.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.KOREA));
         assertThatIllegalArgumentException()
                 .isThrownBy(() -> attendanceSystem.updateAttendanceRecord("쿠키", HOLIDAY, ATTENDANCE_TIME))
-                .withMessage("[ERROR] 12월 7일 토요일은 등교일이 아닙니다.");
+                .withMessage(exceptionMessage);
     }
 
     @DisplayName("출석 수정 - 등록되지 않은 닉네임의 경우 예외 발생")
@@ -162,7 +172,7 @@ class AttendanceSystemTest {
     void 출석_수정_등록되지_않은_닉네임의_경우_예외_발생() {
         assertThatIllegalArgumentException()
                 .isThrownBy(() -> attendanceSystem.updateAttendanceRecord("빙봉", HOLIDAY, ATTENDANCE_TIME))
-                .withMessage("[ERROR] 등록되지 않은 닉네임입니다.");
+                .withMessage(ExceptionMessage.NOT_FOUND_CREW.getContent());
     }
 
     @DisplayName("출석 조회 - 크루별 출석을 조회할 수 있다.")
@@ -184,7 +194,7 @@ class AttendanceSystemTest {
     void 출석_조회_등록되지_않은_닉네임의_경우_예외_발생() {
         assertThatIllegalArgumentException()
                 .isThrownBy(() -> attendanceSystem.searchAttendanceRecordsByCrew("빙봉", 2024, Month.DECEMBER))
-                .withMessage("[ERROR] 등록되지 않은 닉네임입니다.");
+                .withMessage(ExceptionMessage.NOT_FOUND_CREW.getContent());
     }
 
     @DisplayName("출석 상태 조회 - 해당 크루의 제적 위험 정보를 조회한다.")
@@ -206,7 +216,7 @@ class AttendanceSystemTest {
         LocalDate endDate = LocalDate.of(2024, 12, 13);
         assertThatIllegalArgumentException()
                 .isThrownBy(() -> attendanceSystem.searchRiskStatistic("빙봉", startDate, endDate))
-                .withMessage("[ERROR] 등록되지 않은 닉네임입니다.");
+                .withMessage(ExceptionMessage.NOT_FOUND_CREW.getContent());
     }
 
     @DisplayName("제적 위험자 조회 - 제적 위험자를 조회할 수 있다.")
