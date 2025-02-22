@@ -1,5 +1,7 @@
 package domain;
 
+import static constants.NumberConstants.END_DAY_OF_DECEMBER;
+import static constants.NumberConstants.LATE_TO_ABSENCE_CONVERSION_CRITERIA;
 import static constants.TimeConstants.OPERATION_TIME_END;
 import static constants.TimeConstants.OPERATION_TIME_START;
 
@@ -111,7 +113,7 @@ public class AttendanceBook {
             if (status == AttendanceStatus.LATE) {
                 lateCount++;
             }
-            absentCount = 31 - lateCount - attendanceCount;
+            absentCount = END_DAY_OF_DECEMBER - lateCount - attendanceCount;
         }
 
         return new TotalRecordsResponse(attendanceCount, lateCount, absentCount);
@@ -141,6 +143,6 @@ public class AttendanceBook {
     }
 
     public int getPenaltyCount(TotalRecordsResponse totalRecords) {
-        return totalRecords.absentCount() + (totalRecords.lateCount() / 3);
+        return totalRecords.absentCount() + (totalRecords.lateCount() / LATE_TO_ABSENCE_CONVERSION_CRITERIA);
     }
 }

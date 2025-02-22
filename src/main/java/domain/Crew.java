@@ -1,5 +1,8 @@
 package domain;
 
+import static constants.NumberConstants.END_DAY_OF_DECEMBER;
+import static constants.NumberConstants.START_DAY_OF_DECEMBER;
+
 import dto.AttendanceRecordResponse;
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -12,8 +15,7 @@ import utils.TimeUtils;
 import view.ErrorCode;
 
 public class Crew {
-    private static final int END_DAY_OF_DECEMBER = 31;
-    private static final int START_DAY_OF_DECEMBER = 1;
+
 
     private final String name;
     private final Map<LocalDate, LocalTime> dailyAttendances;

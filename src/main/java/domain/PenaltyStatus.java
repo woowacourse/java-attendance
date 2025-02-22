@@ -1,5 +1,9 @@
 package domain;
 
+import static constants.NumberConstants.EXPULSION_COUNT;
+import static constants.NumberConstants.INTERVIEW_COUNT;
+import static constants.NumberConstants.WARNING_COUNT;
+
 public enum PenaltyStatus {
     NONE(""),
     EXPULSION("제적"),
@@ -13,13 +17,13 @@ public enum PenaltyStatus {
     }
 
     public static PenaltyStatus getByPenaltyCount(int penaltyCount) {
-        if (penaltyCount > 5) {
+        if (penaltyCount > EXPULSION_COUNT) {
             return EXPULSION;
         }
-        if (penaltyCount >= 3) {
+        if (penaltyCount >= INTERVIEW_COUNT) {
             return INTERVIEW;
         }
-        if (penaltyCount >= 2) {
+        if (penaltyCount >= WARNING_COUNT) {
             return WARNING;
         }
         return NONE;
@@ -28,6 +32,4 @@ public enum PenaltyStatus {
     public String getMessage() {
         return message;
     }
-
-
 }
