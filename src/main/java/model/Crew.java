@@ -53,13 +53,18 @@ public class Crew {
 
     public Map<AttendanceType, Integer> countAttendanceType(final LocalDate todayDate) {
         List<LocalDateTime> history = getAttendanceHistory(todayDate);
+        Map<AttendanceType, Integer> result = initialize();
+        for (LocalDateTime attendanceTime : history) {
+            result.merge(AttendanceType.from(attendanceTime), 1, Integer::sum);
+        }
+        return result;
+    }
+
+    private Map<AttendanceType, Integer> initialize() {
         Map<AttendanceType, Integer> result = new EnumMap<>(AttendanceType.class);
         result.put(AttendanceType.출석, 0);
         result.put(AttendanceType.지각, 0);
         result.put(AttendanceType.결석, 0);
-        for (LocalDateTime attendanceTime : history) {
-            result.merge(AttendanceType.from(attendanceTime), 1, Integer::sum);
-        }
         return result;
     }
 
