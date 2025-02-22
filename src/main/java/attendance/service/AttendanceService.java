@@ -69,22 +69,6 @@ public class AttendanceService {
         return CrewAttendanceDto.of(name, attendanceInfos, counts, penalty, today);
     }
 
-    private Map<LocalDate, AttendanceInfoDto> getAttendanceInfos(String name, LocalDate today) {
-        Map<LocalDate, AttendanceInfoDto> map = new HashMap<>();
-        List<Attendance> attendanceList = attendances.findByNameAndDateWithAscend(name, today);
-
-        for (Attendance attendance : attendanceList) {
-            AttendanceInfoDto dto = AttendanceInfoDto.toDto(attendance);
-            map.put(dto.attendanceDate(), dto);
-        }
-
-        return map;
-    }
-
-    private List<Integer> getAttendanceCounts(String name, LocalDate today) {
-        return attendances.calculateByNameAndDate(name, today);
-    }
-
     public List<PenaltyCrewDto> getCrewsName(LocalDate today) {
         List<String> crewNames = attendances.getCrewNames();
         List<PenaltyCrew> penaltyCrews = new ArrayList<>();
@@ -113,5 +97,21 @@ public class AttendanceService {
         penaltyCrews.add(
                 new PenaltyCrew(crewName, counts.get(Constants.ABSENCE_INDEX), counts.get(Constants.LATE_INDEX))
         );
+    }
+
+    private Map<LocalDate, AttendanceInfoDto> getAttendanceInfos(String name, LocalDate today) {
+        Map<LocalDate, AttendanceInfoDto> map = new HashMap<>();
+        List<Attendance> attendanceList = attendances.findByNameAndDateWithAscend(name, today);
+
+        for (Attendance attendance : attendanceList) {
+            AttendanceInfoDto dto = AttendanceInfoDto.toDto(attendance);
+            map.put(dto.attendanceDate(), dto);
+        }
+
+        return map;
+    }
+
+    private List<Integer> getAttendanceCounts(String name, LocalDate today) {
+        return attendances.calculateByNameAndDate(name, today);
     }
 }
