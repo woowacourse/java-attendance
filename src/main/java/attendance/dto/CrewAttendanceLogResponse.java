@@ -3,9 +3,9 @@ package attendance.dto;
 import attendance.model.domain.attendance.AttendanceStatus;
 import attendance.model.domain.attendance.CrewAttendance;
 import attendance.model.domain.crew.Crew;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.stream.Collectors;
 
 public class CrewAttendanceLogResponse {
@@ -31,39 +31,24 @@ public class CrewAttendanceLogResponse {
     public static CrewAttendanceLogResponse of(
             final Crew crew,
             final List<AttendanceLogResponse> attendanceLogResponse,
-            final CrewAttendance crewAttendance
+            final CrewAttendance crewAttendance,
+            final Map<AttendanceStatus, Integer> attendanceStatusStatistics
     ) {
+
+        final Map<String, Integer> simplifiedStatistics = attendanceStatusStatistics.entrySet().stream()
+                .collect(
+                        Collectors.toMap(
+                                entry -> entry.getKey().getName(),
+                                Entry::getValue
+                        )
+                );
 
         return new CrewAttendanceLogResponse(
                 crew.getName(),
                 attendanceLogResponse,
                 crewAttendance.getManagementStatusName(),
-                getAttendanceStatusStatistics(attendanceLogResponse)
+                simplifiedStatistics
         );
-    }
-
-    private static Map<String, Integer> getAttendanceStatusStatistics(
-            final List<AttendanceLogResponse> attendanceLogResponses
-    ) {
-
-        return AttendanceStatus.getNames().stream()
-                .collect(Collectors.toMap(
-                        status -> status,
-                        status -> Math.toIntExact(getAttendanceStatusCount(attendanceLogResponses, status)),
-                        (oldStatus, newStatus) -> oldStatus,
-                        LinkedHashMap::new)
-                );
-    }
-
-    private static long getAttendanceStatusCount(
-            final List<AttendanceLogResponse> attendanceLogResponses,
-            final String status
-    ) {
-
-        return attendanceLogResponses.stream()
-                .map(AttendanceLogResponse::getAttendanceStatus)
-                .filter(status::equals)
-                .count();
     }
 
     public String getCrewName() {

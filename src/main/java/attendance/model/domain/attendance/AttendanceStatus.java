@@ -4,7 +4,10 @@ import attendance.model.Calendar;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.Arrays;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 public enum AttendanceStatus {
 
@@ -34,6 +37,13 @@ public enum AttendanceStatus {
         return ATTENDANCE;
     }
 
+    public static AttendanceStatus fromName(final String name) {
+        return Arrays.stream(values())
+                .filter(status -> status.getName().equals(name))
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException("해당하는 출석 상태가 없습니다."));
+    }
+
     public static boolean isAbsence(final LocalDateTime dateTime) {
         final LocalTime time = dateTime.toLocalTime();
         if (Calendar.isMonday(dateTime.toLocalDate())) {
@@ -49,14 +59,31 @@ public enum AttendanceStatus {
         return isTimeBetween(dateTime.toLocalTime(), WEEKDAY_LATE_TIME, WEEKDAY_ABSENCE_TIME.plusMinutes(1));
     }
 
-    public static List<String> getNames() {
+    public static Map<AttendanceStatus, Integer> calculateStatistics(
+            final List<AttendanceStatus> attendanceStatuses
+    ) {
+
         return Arrays.stream(values())
-                .map(AttendanceStatus::getName)
-                .toList();
+                .collect(Collectors.toMap(
+                                status -> status,
+                                status -> Math.toIntExact(getFrequency(attendanceStatuses, status)),
+                                (oldValue, newValue) -> oldValue,
+                                LinkedHashMap::new
+                        )
+                );
     }
 
     private static boolean isTimeBetween(final LocalTime time, final LocalTime startTime, final LocalTime endTime) {
         return time.isAfter(startTime) && time.isBefore(endTime);
+    }
+
+    private static long getFrequency(
+            final List<AttendanceStatus> attendanceStatuses,
+            final AttendanceStatus status
+    ) {
+        return attendanceStatuses.stream()
+                .filter(attendanceStatus -> attendanceStatus.equals(status))
+                .count();
     }
 
     public String getName() {

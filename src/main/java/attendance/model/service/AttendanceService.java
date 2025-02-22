@@ -14,6 +14,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Stream;
 
 public class AttendanceService {
@@ -53,10 +54,16 @@ public class AttendanceService {
     public CrewAttendanceLogResponse getAttendanceLog(final Crew crew) {
         final List<LocalDateTime> attendanceLogs = attendanceRepository.findByCrew(crew);
 
+        final List<AttendanceLogResponse> attendanceLogResponses = mergeAndSotTimeLogResponses(attendanceLogs);
+        final CrewAttendance crewAttendance = CrewAttendance.of(crew, attendanceLogs);
+        final Map<AttendanceStatus, Integer> attendanceStatusStatistics =
+                calculateAttendanceStatusStatistics(attendanceLogResponses);
+
         return CrewAttendanceLogResponse.of(
                 crew,
-                mergeAndSotTimeLogResponses(attendanceLogs),
-                CrewAttendance.of(crew, attendanceLogs)
+                attendanceLogResponses,
+                crewAttendance,
+                attendanceStatusStatistics
         );
     }
 
@@ -102,4 +109,15 @@ public class AttendanceService {
                 .toList();
     }
 
+    private Map<AttendanceStatus, Integer> calculateAttendanceStatusStatistics(
+            final List<AttendanceLogResponse> attendanceLogResponses
+    ) {
+
+        final List<AttendanceStatus> attendanceStatuses = attendanceLogResponses.stream()
+                .map(AttendanceLogResponse::getAttendanceStatus)
+                .map(AttendanceStatus::fromName)
+                .toList();
+
+        return AttendanceStatus.calculateStatistics(attendanceStatuses);
+    }
 }
