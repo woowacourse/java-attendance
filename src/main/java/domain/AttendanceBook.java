@@ -5,18 +5,27 @@ import dto.ModifyResult;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 public class AttendanceBook {
-    private final Map<String, AttendanceInfo> attendanceBook;
+    private final Map<String, AttendanceHistory> attendanceBook;
 
     public AttendanceBook() {
         this.attendanceBook = new HashMap<>();
     }
 
-    public Map<String, AttendanceInfo> getAttendanceBook() {
-        return Collections.unmodifiableMap(attendanceBook);
+    public List<Entry<String, AttendanceHistory>> getSorted() {
+        return attendanceBook.entrySet().stream()
+                .sorted(Comparator
+                        .comparingInt((Entry<String, AttendanceHistory> entry) ->
+                                entry.getValue().getAbsentCount()).reversed()
+                        .thenComparing(Entry::getKey)
+                )
+                .toList();
     }
 
     public boolean contains(String name) {
@@ -24,7 +33,7 @@ public class AttendanceBook {
     }
 
     public void enter(String name) {
-        attendanceBook.put(name, new AttendanceInfo());
+        attendanceBook.put(name, new AttendanceHistory());
     }
 
     public Attendance add(String name, LocalDateTime dateAndTime) {

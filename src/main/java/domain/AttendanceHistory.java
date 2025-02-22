@@ -11,10 +11,10 @@ import java.util.List;
 import java.util.Optional;
 import util.DateTimeManager;
 
-public class AttendanceInfo {
+public class AttendanceHistory {
     private final List<Attendance> attendanceInfo;
 
-    public AttendanceInfo() {
+    public AttendanceHistory() {
         this.attendanceInfo = new ArrayList<>();
     }
 

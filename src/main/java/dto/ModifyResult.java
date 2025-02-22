@@ -16,7 +16,7 @@ public class ModifyResult {
         return originalAttendance.dateAndTime();
     }
 
-    public LocalDateTime getNewTime() {
+    public LocalDateTime getNewDateAndTime() {
         return newAttendance.dateAndTime();
     }
 }

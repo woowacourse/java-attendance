@@ -4,7 +4,6 @@ import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 import domain.AttendanceBook;
-import domain.AttendanceInfo;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -32,7 +31,7 @@ public class InputValidatorTest {
         String name = "미미";
 
         AttendanceBook attendanceBook = new AttendanceBook();
-        attendanceBook.add(new AttendanceInfo(name));
+        attendanceBook.enter(name);
 
         assertDoesNotThrow(() -> InputValidator.validateName(name, attendanceBook));
     }

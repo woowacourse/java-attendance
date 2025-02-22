@@ -2,7 +2,7 @@ package view;
 
 import domain.Attendance;
 import domain.AttendanceBook;
-import domain.AttendanceInfo;
+import domain.AttendanceHistory;
 import domain.Status;
 import domain.Penalty;
 import dto.AttendanceData;
@@ -15,7 +15,6 @@ import java.time.format.TextStyle;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 import java.util.Map.Entry;
 import java.util.stream.Collectors;
 
@@ -32,7 +31,7 @@ public class OutputView {
 
     public void printModifiedAttendance(ModifyResult modifyResult) {
         LocalDateTime originalDateAndTime = modifyResult.getOriginalDateAndTime();
-        LocalDateTime newDateAndTime = modifyResult.getNewTime();
+        LocalDateTime newDateAndTime = modifyResult.getNewDateAndTime();
 
         String originalOutput = formatDate(originalDateAndTime);
         String newOutput = formatTimeAndState(newDateAndTime);
@@ -73,12 +72,12 @@ public class OutputView {
                 .toList();
     }
 
-    private String formatStatus(Entry<String, AttendanceInfo> data) {
-        AttendanceInfo attendanceInfo = data.getValue();
+    private String formatStatus(Entry<String, AttendanceHistory> data) {
+        AttendanceHistory attendanceHistory = data.getValue();
         String nameAndCount = data.getKey() + ": "
-                + "결석 " + attendanceInfo.getOriginalAbsentCount() + "회, "
-                + "지각 " + attendanceInfo.getLateCount() + "회 ";
-        Penalty penalty = Penalty.from(attendanceInfo.getAbsentCount());
+                + "결석 " + attendanceHistory.getOriginalAbsentCount() + "회, "
+                + "지각 " + attendanceHistory.getLateCount() + "회 ";
+        Penalty penalty = Penalty.from(attendanceHistory.getAbsentCount());
         if (penalty == Penalty.NONE) {
             return nameAndCount;
         }
@@ -122,21 +121,11 @@ public class OutputView {
 
     private String formatPenaltyInfo(AttendanceBook attendanceBook) {
         StringBuilder result = new StringBuilder();
-        for(Entry<String, AttendanceInfo> data : sortPenaltyCrew(attendanceBook)) {
+        for(Entry<String, AttendanceHistory> data : attendanceBook.getSorted()) {
             if (Penalty.from(data.getValue().getAbsentCount()) != Penalty.NONE) {
                 result.append("- ").append(formatStatus(data)).append("\n");
             }
         }
         return result.toString();
-    }
-
-    private List<Entry<String, AttendanceInfo>> sortPenaltyCrew(AttendanceBook attendanceBook) {
-        return attendanceBook.getAttendanceBook().entrySet().stream()
-                .sorted(Comparator
-                        .comparingInt((Entry<String, AttendanceInfo> entry) ->
-                                entry.getValue().getAbsentCount()).reversed()
-                        .thenComparing(Entry::getKey)
-                )
-                .toList();
     }
 }
