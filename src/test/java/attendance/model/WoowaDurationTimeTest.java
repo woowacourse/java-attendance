@@ -1,9 +1,8 @@
-package model;
+package attendance.model;
 
 import static attendance.error.ErrorMessage.ERROR_NOT_WOOWA_OPEN;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-import attendance.model.WoowaDurationTime;
 import java.time.LocalDateTime;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;

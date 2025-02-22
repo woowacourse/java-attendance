@@ -1,9 +1,7 @@
-package model;
+package attendance.model;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-import attendance.model.Attendance;
-import attendance.model.AttendanceDetail;
 import java.time.LocalDateTime;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;

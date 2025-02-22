@@ -1,12 +1,9 @@
-package model;
+package attendance.model;
 
 import static attendance.error.ErrorMessage.ERROR_ATTENDANCE_DETAIL_NOT_FOUND;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-import attendance.model.Attendance;
-import attendance.model.AttendanceDetail;
-import attendance.model.AttendanceHistory;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;

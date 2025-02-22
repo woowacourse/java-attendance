@@ -1,12 +1,9 @@
-package model;
+package attendance.model;
 
 import static attendance.error.ErrorMessage.ERROR_NAME_LENGTH;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-import attendance.model.Attendance;
-import attendance.model.AttendanceDetail;
-import attendance.model.Crew;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;

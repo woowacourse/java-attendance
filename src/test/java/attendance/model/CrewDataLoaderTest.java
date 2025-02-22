@@ -1,16 +1,12 @@
-package input;
+package attendance.model;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import attendance.model.Crew;
-import attendance.model.CrewDataLoader;
-import attendance.model.Crews;
-import attendance.model.CustomLocalDateTime;
 import java.time.LocalDate;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-public class LoadCrewDataTest {
+class CrewDataLoaderTest {
 
     private Crews crews;
     private CrewDataLoader loader;

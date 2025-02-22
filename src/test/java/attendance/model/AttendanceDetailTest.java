@@ -1,10 +1,8 @@
-package model;
+package attendance.model;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-import attendance.model.Attendance;
-import attendance.model.AttendanceDetail;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;

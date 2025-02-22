@@ -1,11 +1,9 @@
-package model;
+package attendance.model;
 
 import static attendance.error.ErrorMessage.ERROR_CREW_NOT_FOUND;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-import attendance.model.Crew;
-import attendance.model.Crews;
 import org.junit.jupiter.api.Test;
 
 class CrewsTest {

@@ -1,8 +1,5 @@
-package model;
+package attendance.model;
 
-import attendance.model.AttendanceDetail;
-import attendance.model.AttendanceWarning;
-import attendance.model.Crew;
 import java.time.LocalDateTime;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
