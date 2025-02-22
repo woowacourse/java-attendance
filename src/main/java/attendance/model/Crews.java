@@ -2,6 +2,7 @@ package attendance.model;
 
 import static attendance.error.ErrorMessage.ERROR_CREW_NOT_FOUND;
 
+import java.util.Collections;
 import java.util.List;
 
 public class Crews {
@@ -16,7 +17,7 @@ public class Crews {
     }
 
     public List<Crew> getCrews() {
-        return crews;
+        return Collections.unmodifiableList(crews);
     }
 
     public Crew findCrew(String name) {
