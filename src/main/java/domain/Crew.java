@@ -1,6 +1,7 @@
 package domain;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Objects;
 
 public class Crew implements Comparable<Crew> {
@@ -37,7 +38,7 @@ public class Crew implements Comparable<Crew> {
     }
 
     /**
-     * 지각 횟수 / 결석 횟수 / 보정된 결석 횟수(지각 3회는 결석 1회로 간주), 처벌(제적, 면담, 경고)
+     * 출석 횟수 / 지각 횟수 / 결석 횟수 / 보정된 결석 횟수(지각 3회는 결석 1회로 간주), 처벌(제적, 면담, 경고)
      *
      * @return CrewSummary
      */
@@ -45,14 +46,15 @@ public class Crew implements Comparable<Crew> {
         final String displayName = this.nickname.getNickname();
         final int absence = attendanceCounter.getAbsence();
         final int tardiness = attendanceCounter.getTardiness();
+        final int attendanceCount = attendanceCounter.getAttendanceCount();
         final int adjustedAbsenceCount = attendanceCounter.calculateAdjustedAbsenceCountWithTardinessCount();
         final Punishment punishment = Punishment.findByAbsenceCount(adjustedAbsenceCount);
 
-        return new CrewSummary(displayName, absence, tardiness, adjustedAbsenceCount, punishment);
+        return new CrewSummary(displayName, absence, tardiness, attendanceCount, adjustedAbsenceCount, punishment);
     }
 
-    public Attendances getAttendances() {
-        return attendances;
+    public List<AttendanceSummary> getAttendancesSummary() {
+        return attendances.getAttendanceSummary();
     }
 
     public AttendanceCounter getAttendanceCounter() {
