@@ -98,13 +98,32 @@ public class AttendanceBook {
         );
     }
 
+    public static TotalRecordsResponse fromAttendanceRecords(List<AttendanceRecordResponse> records) {
+        List<AttendanceStatus> statuses = records.stream().map(AttendanceRecordResponse::attendanceStatus).toList();
+        int attendanceCount = 0;
+        int lateCount = 0;
+        int absentCount = 0;
+
+        for (AttendanceStatus status : statuses) {
+            if (status == AttendanceStatus.ATTEND) {
+                attendanceCount++;
+            }
+            if (status == AttendanceStatus.LATE) {
+                lateCount++;
+            }
+            absentCount = 31 - lateCount - attendanceCount;
+        }
+
+        return new TotalRecordsResponse(attendanceCount, lateCount, absentCount);
+    }
+
     // 기능 4. 제적 위험자 확인
     public List<CrewPenaltyResponse> checkPenaltyCrew() {
         List<CrewPenaltyResponse> crewPenaltyResponses = new ArrayList<>();
 
         for (Crew crew : crews) {
             List<AttendanceRecordResponse> attendanceRecords = crew.getAttendanceRecords();
-            TotalRecordsResponse totalRecords = TotalRecordsResponse.fromAttendanceRecords(attendanceRecords);
+            TotalRecordsResponse totalRecords = fromAttendanceRecords(attendanceRecords);
 
             int penaltyCount = getPenaltyCount(totalRecords);
 

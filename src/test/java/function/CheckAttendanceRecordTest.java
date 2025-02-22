@@ -2,6 +2,7 @@ package function;
 
 import static constants.TestTimeMaker.EXCEPT_MONDAY_ATTEND;
 import static constants.TestTimeMaker.MONDAY_ATTEND;
+import static domain.AttendanceBook.fromAttendanceRecords;
 
 import domain.AttendanceBook;
 import domain.Crew;
@@ -26,6 +27,6 @@ public class CheckAttendanceRecordTest {
 
         List<AttendanceRecordResponse> attendanceRecords = crew1.getAttendanceRecords();
 
-        TotalRecordsResponse totalRecordsResponse = TotalRecordsResponse.fromAttendanceRecords(attendanceRecords);
+        TotalRecordsResponse totalRecordsResponse = fromAttendanceRecords(attendanceRecords);
     }
 }
