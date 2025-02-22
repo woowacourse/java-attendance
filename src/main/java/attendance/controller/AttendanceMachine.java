@@ -6,8 +6,8 @@ import attendance.domain.DateInfo;
 import attendance.domain.DateInfos;
 import attendance.domain.Register;
 import attendance.domain.Time;
-import attendance.domain.constant.DayOfWeek;
 import attendance.domain.constant.CommandOption;
+import attendance.domain.constant.Weekday;
 import attendance.exception.CustomException;
 import attendance.util.FileReader;
 import attendance.view.InputView;
@@ -87,14 +87,13 @@ public class AttendanceMachine {
         String beforeStatus = beforeInfo.getAttendanceStatus();
         DateInfo modifiedInfo = register.modifyInfo(crew, modifyDate, modifyTime);
         outputView.writeAttendanceModifyCheck(beforeHour, beforeMinute, beforeStatus, modifiedInfo);
-
     }
 
     private void confirmAttendance(LocalDate now, Crews crews, Register register) {
         Crew crew = findCrew(crews);
         Time attendanceTime = findAttendanceTime();
-        DayOfWeek dayOfWeek = DayOfWeek.from(now.getDayOfWeek().getValue());
-        DateInfo dateInfo = DateInfo.of(now.getMonthValue(), now.getDayOfMonth(), dayOfWeek, attendanceTime);
+        Weekday weekday = Weekday.from(now.getDayOfWeek());
+        DateInfo dateInfo = DateInfo.of(now.getMonthValue(), now.getDayOfMonth(), weekday, attendanceTime);
         register.modifyInfo(crew, Integer.parseInt(dateInfo.getDay()), attendanceTime);
         outputView.writeAttendanceCheck(dateInfo);
     }

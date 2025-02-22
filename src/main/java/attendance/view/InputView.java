@@ -1,6 +1,6 @@
 package attendance.view;
 
-import attendance.domain.constant.DayOfWeek;
+import attendance.domain.constant.Weekday;
 import java.time.LocalDate;
 import java.util.Scanner;
 
@@ -23,8 +23,8 @@ public class InputView {
     public String readFunctionChoose(final LocalDate now) {
         int month = now.getMonthValue();
         int day = now.getDayOfMonth();
-        DayOfWeek dayOfWeek = DayOfWeek.from(now.getDayOfWeek().getValue());
-        System.out.println(String.format(CHOOSE_FUNCTION, month, day, dayOfWeek.getDayOfWeek()));
+        Weekday weekday = Weekday.from(now.getDayOfWeek());
+        System.out.println(String.format(CHOOSE_FUNCTION, month, day, weekday.getDayOfWeek()));
         System.out.println(ATTENDANCE_CHECK);
         System.out.println(ATTENDANCE_MODIFY);
         System.out.println(ATTENDANCE_HISTORY_EACH_CREW);

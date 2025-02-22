@@ -1,34 +1,34 @@
 package attendance.domain;
 
 import attendance.domain.constant.AttendanceStatus;
-import attendance.domain.constant.DayOfWeek;
+import attendance.domain.constant.Weekday;
 
 public class DateInfo {
 
     private final String month;
     private final String day;
-    private final DayOfWeek dayOfWeek;
+    private final Weekday weekday;
     private Time time;
     private AttendanceStatus attendanceStatus;
 
-    private DateInfo(String month, String day, DayOfWeek dayOfWeek, Time time) {
+    private DateInfo(String month, String day, Weekday weekday, Time time) {
         this.month = month;
         this.day = day;
-        this.dayOfWeek = dayOfWeek;
+        this.weekday = weekday;
         this.time = time;
         this.attendanceStatus = calculateStatus();
     }
 
-    public static DateInfo of(int month, int day, DayOfWeek dayOfWeek, Time time) {
+    public static DateInfo of(int month, int day, Weekday weekday, Time time) {
         String parsedMonth = formatWithLeadingZero(month);
         String parsedDay = formatWithLeadingZero(day);
-        return new DateInfo(parsedMonth, parsedDay, dayOfWeek, time);
+        return new DateInfo(parsedMonth, parsedDay, weekday, time);
     }
 
-    public static DateInfo makeDefaultValue(int month, int day, DayOfWeek dayOfWeek) {
+    public static DateInfo makeDefaultValue(int month, int day, Weekday weekday) {
         String parsedMonth = formatWithLeadingZero(month);
         String parsedDay = formatWithLeadingZero(day);
-        return new DateInfo(parsedMonth, parsedDay, dayOfWeek, Time.makeAbsentValue());
+        return new DateInfo(parsedMonth, parsedDay, weekday, Time.makeAbsentValue());
     }
 
     public void modifyAttendanceTime(Time modifyTime) {
@@ -78,11 +78,11 @@ public class DateInfo {
     }
 
     private boolean checkMonday() {
-        return dayOfWeek.getDayOfWeek().equals("월요일");
+        return weekday.getDayOfWeek().equals("월요일");
     }
 
     private boolean checkHoliday() {
-        return dayOfWeek.getDayOfWeek().equals("토요일") || dayOfWeek.getDayOfWeek().equals("일요일");
+        return weekday.getDayOfWeek().equals("토요일") || weekday.getDayOfWeek().equals("일요일");
     }
 
     private boolean checkDefault() {
@@ -115,7 +115,7 @@ public class DateInfo {
     }
 
     public String getDayOfWeek() {
-        return dayOfWeek.getDayOfWeek();
+        return weekday.getDayOfWeek();
     }
 
     public Time getTime() {

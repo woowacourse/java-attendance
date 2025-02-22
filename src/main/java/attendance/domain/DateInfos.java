@@ -1,7 +1,7 @@
 package attendance.domain;
 
 import attendance.domain.constant.AttendanceStatus;
-import attendance.domain.constant.DayOfWeek;
+import attendance.domain.constant.Weekday;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -55,7 +55,7 @@ public class DateInfos {
 
         dateInfos.add(DateInfo.makeDefaultValue(currentDay.getMonthValue(),
                 currentDay.getDayOfMonth(),
-                DayOfWeek.from(currentDay.getDayOfWeek().getValue())));
+                Weekday.from(currentDay.getDayOfWeek())));
     }
 
     private static boolean checkHoliday(LocalDate currentDay) {
