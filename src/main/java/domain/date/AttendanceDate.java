@@ -18,14 +18,6 @@ public class AttendanceDate {
         }
     }
 
-    public static boolean isOpenDay(DayOfWeek dayOfWeek) {
-        if (dayOfWeek == DayOfWeek.SATURDAY || dayOfWeek == DayOfWeek.SUNDAY) {
-            return false;
-        }
-
-        return true;
-    }
-
     public int getDay() {
         return day;
     }
@@ -42,7 +34,6 @@ public class AttendanceDate {
         return ((day + 5) % 7) + 1;
     }
 
-    // TODO: 정적 선언이 맞을까 고민
     public static boolean isRestDay(int day) {
         List<Integer> restDays = List.of(1, 7, 8, 14, 15, 21, 22, 25, 28, 29);
         return restDays.contains(day);

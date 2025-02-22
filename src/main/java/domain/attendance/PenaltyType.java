@@ -15,7 +15,6 @@ public enum PenaltyType {
         this.absenceCount = absenceCount;
     }
 
-    // TODO: Enum 상수 선언 순서에 영향받지 않는 더 나은 방법 고려
     public static PenaltyType getPenaltyType(int absenceCount) {
         return Arrays.stream(PenaltyType.values())
                 .filter(type -> type.absenceCount <= absenceCount)

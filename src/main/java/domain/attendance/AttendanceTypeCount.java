@@ -5,6 +5,8 @@ import domain.date.AttendanceDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 public class AttendanceTypeCount {
 
@@ -16,11 +18,8 @@ public class AttendanceTypeCount {
 
     public static AttendanceTypeCount from(int day, List<AttendanceHistory> attendanceHistories) {
         Map<AttendanceType, Integer> attendanceTypeCount = new HashMap<>();
-        Map<Integer, AttendanceHistory> historyOfDay = new HashMap<>();
-
-        for (AttendanceHistory history : attendanceHistories) {
-            historyOfDay.put(history.getDay(), history);
-        }
+        Map<Integer, AttendanceHistory> historyOfDay = attendanceHistories.stream()
+                .collect(Collectors.toMap(AttendanceHistory::getDay, Function.identity()));
 
         for (int currentDay = 1; currentDay < day; currentDay++) {
             if (AttendanceDate.isRestDay(currentDay)) {
@@ -55,7 +54,6 @@ public class AttendanceTypeCount {
     public int getAbsenceCount() {
         return attendanceTypeCount.getOrDefault(AttendanceType.ABSENCE, 0);
     }
-
 
     public int getLateCount() {
         return attendanceTypeCount.getOrDefault(AttendanceType.LATE, 0);

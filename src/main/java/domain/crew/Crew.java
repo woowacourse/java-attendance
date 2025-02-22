@@ -9,16 +9,16 @@ public class Crew {
         this.name = name;
     }
 
-    public static Crew of(String name) {
+    public static Crew from(String name) {
         return new Crew(name);
-    }
-
-    public boolean hasSame(String nickname) {
-        return Objects.equals(this.name, nickname);
     }
 
     public String getName() {
         return name;
+    }
+
+    public boolean hasSame(String nickname) {
+        return Objects.equals(this.name, nickname);
     }
 
     @Override

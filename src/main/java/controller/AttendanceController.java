@@ -33,7 +33,9 @@ public class AttendanceController {
             readConfigFile();
             today = InputView.readToday();
             while (true) {
-                OutputView.printTodayMessage(SERVICE_ABLE_MONTH, today, DayOfWeek.of(new AttendanceDate(today).getDayOfWeek()).getDisplayName(TextStyle.FULL, Locale.KOREAN));
+                OutputView.printTodayMessage(SERVICE_ABLE_MONTH, today,
+                        DayOfWeek.of(new AttendanceDate(today).getDayOfWeek())
+                                .getDisplayName(TextStyle.FULL, Locale.KOREAN));
                 Function function = InputView.readOption();
                 if (function == Function.QUIT) {
                     break;
@@ -102,7 +104,7 @@ public class AttendanceController {
 
     private boolean validateDayForApply(int day) {
         int rawDayOfWeek = AttendanceDate.getDayOfWeek(day);
-        if (DayOfWeek.of(rawDayOfWeek) == DayOfWeek.SATURDAY || DayOfWeek.of(rawDayOfWeek) == DayOfWeek.SUNDAY) {
+        if (AttendanceDate.isRestDay(day)) {
             OutputView.printAttendanceDayErrorMessage(12, today, DayOfWeek.of(rawDayOfWeek));
             return true;
         }

@@ -15,7 +15,7 @@ public class Crews {
     }
 
     public void add(String nickname) {
-        crews.add(Crew.of(nickname));
+        crews.add(Crew.from(nickname));
     }
 
     public Crew findCrewBy(String nickname) {

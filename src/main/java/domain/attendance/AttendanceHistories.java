@@ -23,7 +23,7 @@ public class AttendanceHistories {
 
     public AttendanceHistory findHistoryBy(AttendanceHistory newAttendanceHistory) {
         return attendanceHistories.stream()
-                .filter(history -> history.hasSameDay(newAttendanceHistory) && history.isSameCrew(newAttendanceHistory))
+                .filter(history -> history.isSameDayAndCrew(newAttendanceHistory))
                 .findAny()
                 .orElseThrow(() -> new IllegalArgumentException("해당 출석 기록이 존재하지 않습니다."));
     }
