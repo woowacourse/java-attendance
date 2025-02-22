@@ -1,10 +1,10 @@
 package attendance.domain;
 
-import static org.assertj.core.api.Assertions.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
 
 import org.junit.jupiter.api.Test;
@@ -89,6 +89,21 @@ class AttendancesTest {
                 , LocalDateTime.of(2025, 2, 4, 10, 0));
 
         assertThat(attendances.calculateTotalAbsentCount()).isEqualTo(1);
+    }
+
+    @Test
+    void 제거할_출석과_수정할_출석을_알려주면_수정해준다() {
+        Attendances attendances = new Attendances(List.of(LocalDateTime.of(2025, 2, 3, 13, 31)),
+                LocalDateTime.of(2025, 2, 4, 10, 0));
+        Attendance removedAttendance = new Attendance(new AttendanceDate(LocalDate.of(2025, 2, 3)), new AttendanceTime(
+                LocalTime.of(13, 31)));
+        Attendance modifiedAttendance = new Attendance(new AttendanceDate(LocalDate.of(2025, 2, 3)), new AttendanceTime(
+                LocalTime.of(10, 30)));
+
+        attendances.modifyAttendance(removedAttendance, modifiedAttendance);
+
+        assertThat(attendances).isEqualTo(new Attendances(List.of(LocalDateTime.of(2025, 2, 3, 10, 30))
+                , LocalDateTime.of(2025, 2, 4, 10, 0)));
     }
 
 }

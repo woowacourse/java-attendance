@@ -6,6 +6,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 public class Attendances {
@@ -60,8 +61,9 @@ public class Attendances {
                 .anyMatch(attendance -> attendance.isSameDate(localDate));
     }
 
-    public void remove(Attendance attendance) {
-        this.attendances.remove(attendance);
+    public void modifyAttendance(final Attendance removedAttendance, final Attendance modifiedAttendance) {
+        this.attendances.remove(removedAttendance);
+        this.attendances.add(modifiedAttendance);
     }
 
     public Map<String, Integer> calculateStatusCount() {
@@ -99,6 +101,22 @@ public class Attendances {
                 .map(Attendance::calculateStatus)
                 .filter(AttendanceStatus::isAbsent)
                 .count();
+    }
+
+    @Override
+    public boolean equals(final Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof Attendances that)) {
+            return false;
+        }
+        return Objects.equals(getAttendances(), that.getAttendances());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(getAttendances());
     }
 
 }
