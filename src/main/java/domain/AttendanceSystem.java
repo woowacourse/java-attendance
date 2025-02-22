@@ -77,16 +77,14 @@ public class AttendanceSystem {
                 || today.equals(CHRISTMAS_DAY);
     }
 
-    public Attendance updateAttendanceByCrewNameAndDay(final LocalTime targetTime, final String crewName,
-                                                       final int dayOfMonth) {
+    public UpdatedAttendanceSnapshot updateAttendanceByCrewNameAndDay(
+            final LocalTime targetTime,
+            final String crewName,
+            final int dayOfMonth
+    ) {
         final LocalDate targetDate = convertDayOfMonthToLocalDate(dayOfMonth);
         return findCrewByName(crewName)
                 .updateAttendanceByDateAndTime(targetTime, targetDate);
-    }
-
-    public Attendance findAttendanceByDate(final String crewName, final int dayOfMonth) {
-        final LocalDate targetDate = convertDayOfMonthToLocalDate(dayOfMonth);
-        return findCrewByName(crewName).findAttendanceByDate(targetDate);
     }
 
     public ExpulsionStatus calculateExpulsionStatusByCrew(final String crewName) {

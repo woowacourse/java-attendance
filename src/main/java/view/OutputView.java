@@ -4,6 +4,7 @@ import domain.AttendanceStatus;
 import domain.constants.ExpulsionStatus;
 import dto.AttendanceResponse;
 import dto.ExpulsionCrewResponse;
+import dto.UpdatedAttendanceSnapshotResponse;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.TextStyle;
@@ -28,7 +29,7 @@ public class OutputView {
         System.out.println("Q. 종료");
     }
 
-    public void printIntroduceAnswerCommand(){
+    public void printIntroduceAnswerCommand() {
         System.out.println("이미 출석이 존재합니다. 수정하시겠습니까? (Y/N)");
     }
 
@@ -52,17 +53,16 @@ public class OutputView {
         System.out.println("언제로 변경하겠습니까?");
     }
 
-    public void printUpdateAttendanceResult(final AttendanceResponse beforeAttendance,
-                                            final AttendanceResponse afterAttendance) {
-        final LocalDateTime before = beforeAttendance.attendanceDate();
-        final LocalDateTime after = afterAttendance.attendanceDate();
+    public void printUpdateAttendanceResult(final UpdatedAttendanceSnapshotResponse updatedAttendanceSnapshotResponse) {
+        final AttendanceResponse before = updatedAttendanceSnapshotResponse.before();
+        final AttendanceResponse after = updatedAttendanceSnapshotResponse.after();
         System.out.printf(System.lineSeparator() + "%02d월 %02d일 %s %s (%s) -> %s (%s) 수정 완료!" + System.lineSeparator(),
-                before.getMonthValue(), before.getDayOfMonth(),
-                before.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.KOREA),
-                formatAttendanceTimeByEmpty(before, beforeAttendance.isEmpty()),
-                beforeAttendance.attendanceStatus().getName(),
-                formatAttendanceTimeByEmpty(after, afterAttendance.isEmpty()),
-                afterAttendance.attendanceStatus().getName()
+                before.attendanceDate().getMonthValue(), before.attendanceDate().getDayOfMonth(),
+                before.attendanceDate().getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.KOREA),
+                formatAttendanceTimeByEmpty(before.attendanceDate(), before.isEmpty()),
+                before.attendanceStatus().getName(),
+                formatAttendanceTimeByEmpty(after.attendanceDate(), after.isEmpty()),
+                after.attendanceStatus().getName()
         );
     }
 

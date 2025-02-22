@@ -1,5 +1,6 @@
 package controller;
 
+import domain.UpdatedAttendanceSnapshot;
 import domain.constants.AnswerCommand;
 import domain.Attendance;
 import domain.AttendanceStatus;
@@ -10,6 +11,7 @@ import domain.constants.ExpulsionStatus;
 import domain.constants.UserCommand;
 import dto.AttendanceResponse;
 import dto.ExpulsionCrewResponse;
+import dto.UpdatedAttendanceSnapshotResponse;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
@@ -77,13 +79,13 @@ public class AttendanceController {
         outputView.printIntroduceAnswerCommand();
         final AnswerCommand answerCommand = inputView.readAnswerCommand();
         if (answerCommand == AnswerCommand.YES) {
-            final int dayOfMonth = LocalDate.now().getDayOfMonth();
+            final int dayOfMonth = LoopTemplate.tryCatchLoop(this::inputDayOfMonthForUpdate, crewName, attendanceSystem,
+                    outputView);
             final LocalTime targetTime = LoopTemplate.tryCatchLoop(this::inputUpdateTime, outputView);
-            final Attendance beforeAttendance = attendanceSystem.findAttendanceByDate(crewName, dayOfMonth);
-            final Attendance afterAttendance = attendanceSystem.updateAttendanceByCrewNameAndDay(targetTime, crewName,
-                    dayOfMonth);
-            outputView.printUpdateAttendanceResult(convertAttendanceToResponse(beforeAttendance),
-                    convertAttendanceToResponse(afterAttendance));
+            final UpdatedAttendanceSnapshot updatedAttendanceSnapshot =
+                    attendanceSystem.updateAttendanceByCrewNameAndDay(targetTime, crewName, dayOfMonth);
+            outputView.printUpdateAttendanceResult(
+                    convertUpdatedAttendanceSnapshotToResponse(updatedAttendanceSnapshot));
         }
     }
 
@@ -106,11 +108,9 @@ public class AttendanceController {
         final int dayOfMonth = LoopTemplate.tryCatchLoop(this::inputDayOfMonthForUpdate, crewName, attendanceSystem,
                 outputView);
         final LocalTime targetTime = LoopTemplate.tryCatchLoop(this::inputUpdateTime, outputView);
-        final Attendance beforeAttendance = attendanceSystem.findAttendanceByDate(crewName, dayOfMonth);
-        final Attendance afterAttendance = attendanceSystem.updateAttendanceByCrewNameAndDay(targetTime, crewName,
-                dayOfMonth);
-        outputView.printUpdateAttendanceResult(convertAttendanceToResponse(beforeAttendance),
-                convertAttendanceToResponse(afterAttendance));
+        final UpdatedAttendanceSnapshot updatedAttendanceSnapshot =
+                attendanceSystem.updateAttendanceByCrewNameAndDay(targetTime, crewName, dayOfMonth);
+        outputView.printUpdateAttendanceResult(convertUpdatedAttendanceSnapshotToResponse(updatedAttendanceSnapshot));
     }
 
     private LocalTime inputUpdateTime() {
@@ -151,6 +151,16 @@ public class AttendanceController {
         final List<Crew> crews = attendanceSystem.calculateRiskOfExpulsionCrews();
         outputView.printExpulsionCrewResponses(convertExpulsionCrewResponses(crews));
     }
+
+    private UpdatedAttendanceSnapshotResponse convertUpdatedAttendanceSnapshotToResponse(
+            final UpdatedAttendanceSnapshot updatedAttendanceSnapshot
+    ) {
+        return new UpdatedAttendanceSnapshotResponse(
+                convertAttendanceToResponse(updatedAttendanceSnapshot.getBefore()),
+                convertAttendanceToResponse(updatedAttendanceSnapshot.getAfter())
+        );
+    }
+
 
     private List<AttendanceResponse> convertAttendancesToResponses(final List<Attendance> attendances) {
         return attendances.stream()
