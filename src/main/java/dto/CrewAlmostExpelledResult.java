@@ -17,7 +17,7 @@ public record CrewAlmostExpelledResult(
         if (totalCount == opponentTotalCount) {
             return nickname.compareTo(o.nickname);
         }
-        return opponentTotalCount - totalCount;
+        return totalCount - opponentTotalCount;
     }
 
     public int calculateTotalAbsentCount() {
