@@ -9,6 +9,9 @@ import java.util.Arrays;
 import java.util.List;
 
 public class FileReader {
+    private static final String FILE_READ_ERROR_MESSAGE = "[ERROR] 파일을 읽는 데 실패했습니다.";
+    private static final String FILE_CONTENT_ERROR_MESSAGE = "[ERROR] 파일 내용이 없습니다.";
+
     public List<List<String>> readResource(final String fileName) {
         try (InputStream resource = getClass()
                 .getClassLoader()
@@ -17,7 +20,7 @@ public class FileReader {
 
             return convertResource(reader);
         } catch (IOException e) {
-            throw new IllegalStateException("[ERROR] 파일을 읽는 데 실패했습니다.");
+            throw new IllegalStateException(FILE_READ_ERROR_MESSAGE);
         }
     }
 
@@ -35,7 +38,7 @@ public class FileReader {
 
     private void validateFileContent(final String firstLine) {
         if (firstLine == null) {
-            throw new IllegalStateException("[ERROR] 파일 내용이 없습니다.");
+            throw new IllegalStateException(FILE_CONTENT_ERROR_MESSAGE);
         }
     }
 }
