@@ -1,28 +1,39 @@
 package attendance.domain;
 
-import java.util.Arrays;
+import java.time.LocalTime;
 
 public enum AttendanceStatusType {
-    EXPULSION("결석", 30),
+    ATTENDANCE("출석", 0),
     LATE("지각", 5),
-    ATTENDANCE("출석", 0);
+    EXPULSION("결석", 30);
 
     private final String name;
-    private final int threshold;
+    private final int overMinutes;
 
-    AttendanceStatusType(String name, int threshold) {
+    AttendanceStatusType(String name, int overMinutes) {
         this.name = name;
-        this.threshold = threshold;
+        this.overMinutes = overMinutes;
     }
 
-    public static AttendanceStatusType find(int overTime) { // todo : findBy~~ 네이밍 의논, static 선언, 필터 인자 status는 어떤지
-        return Arrays.stream(AttendanceStatusType.values())
-                .filter(type -> type.threshold < overTime)
-                .findFirst()
-                .orElse(ATTENDANCE);
+    public static AttendanceStatusType parse(LocalTime startTime, LocalTime arriveTime) {
+        if (arriveTime.getHour() < startTime.getHour()) {
+            return ATTENDANCE;
+        }
+        int overMinute = arriveTime.getMinute() - startTime.getMinute();
+        if (arriveTime.getHour() == startTime.getHour() && overMinute < LATE.overMinutes) {
+            return ATTENDANCE;
+        }
+        if (arriveTime.getHour() == startTime.getHour() && overMinute < EXPULSION.overMinutes) {
+            return LATE;
+        }
+        return EXPULSION;
     }
 
     public String getName() {
         return name;
+    }
+
+    public int getOverMinutes() {
+        return overMinutes;
     }
 }

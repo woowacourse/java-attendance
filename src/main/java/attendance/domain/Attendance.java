@@ -26,7 +26,7 @@ public class Attendance {
     public void updateTime(LocalTime givenTime) {
         LocalDateTime newDateTime = LocalDateTime.of(dateTime.toLocalDate(), givenTime);
         dateTime = newDateTime;
-        status = AttendanceStatusType.find(EducationTime.calculateOverTime(newDateTime));
+        status = AttendanceStatusType.EXPULSION; // TODO: 이후 수정 필요
     }
 
     public boolean isEqualsStatus(AttendanceStatusType status) {
