@@ -39,7 +39,8 @@ public class OutputView {
                 continue;
             }
 
-            System.out.printf("12월 %02d일 %s --:-- (결석)", date, December.getDayByDate(date));
+            System.out.printf("12월 %02d일 %s --:-- (결석)", date, December.
+                    getDayByDate(date));
             System.out.println();
         }
 

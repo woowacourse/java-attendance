@@ -17,7 +17,7 @@ public enum December {
 
     public static final int DEFAULT_YEAR = 2024;
     public static final int DEFAULT_MONTH = 12;
-    
+
     private final List<Integer> dates;
     private final String dayOfWeek;
 
@@ -27,12 +27,10 @@ public enum December {
     }
 
     public static December findDayOfWeek(int dayOfMonth) {
-        for (December day : December.values()) {
-            if (day.dates.contains(dayOfMonth)) {
-                return day;
-            }
-        }
-        throw new IllegalArgumentException();
+        return Arrays.stream(values())
+                .filter(a -> a.dates.contains(dayOfMonth))
+                .findFirst()
+                .orElseThrow(IllegalArgumentException::new);
     }
 
     public static List<Integer> getWeekDays() {
@@ -42,12 +40,11 @@ public enum December {
     }
 
     public static String getDayByDate(int dayOfMonth) {
-        for (December day : December.values()) {
-            if (day.dates.contains(dayOfMonth)) {
-                return day.dayOfWeek;
-            }
-        }
-        return null;
+        return Arrays.stream(values())
+                .filter(a -> a.dates.contains(dayOfMonth))
+                .findFirst()
+                .map(a -> a.dayOfWeek)
+                .orElseThrow(IllegalArgumentException::new);
     }
 
     public static void checkWeekday(LocalDateTime attendTime) {
