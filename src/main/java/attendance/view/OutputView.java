@@ -3,14 +3,13 @@ package attendance.view;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
 import java.time.format.TextStyle;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-import attendance.domain.AttendanceHistory;
+import attendance.dto.AttendanceHistoryDto;
 
 import static attendance.view.ViewConstants.*;
 
@@ -83,21 +82,21 @@ public class OutputView {
         System.out.printf("%s 대상자입니다.%n", expulsionStatus);
     }
 
-    public void printExpulsionCrews(Map<String, AttendanceHistory> attendanceHistories) {
+    public void printExpulsionCrews(Map<String, AttendanceHistoryDto> attendanceHistories) {
         System.out.println("제적 위험자 조회 결과");
         ArrayList<String> keys = new ArrayList<>(attendanceHistories.keySet());
         keys.sort((o1, o2) -> {
-            int firstAbsentCount = attendanceHistories.get(o1).getAbsentCount();
-            int secondAbsentCount = attendanceHistories.get(o2).getAbsentCount();
+            int firstAbsentCount = attendanceHistories.get(o1).absentCount();
+            int secondAbsentCount = attendanceHistories.get(o2).absentCount();
             if (firstAbsentCount != secondAbsentCount) {
                 return secondAbsentCount - firstAbsentCount;
             }
             return o1.compareTo(o2);
         });
         for (String key : keys) {
-            AttendanceHistory attendanceHistory = attendanceHistories.get(key);
-            System.out.printf("- %s: 결석 %d회, 지각 %d회 (%s)%n", key, attendanceHistory.getAbsentCount(),
-                    attendanceHistory.getLateCount(), attendanceHistory.getExpulsionStatus());
+            AttendanceHistoryDto attendanceHistoryDto = attendanceHistories.get(key);
+            System.out.printf("- %s: 결석 %d회, 지각 %d회 (%s)%n", key, attendanceHistoryDto.absentCount(),
+                    attendanceHistoryDto.lateCount(), attendanceHistoryDto.expulsionStatus());
         }
     }
 

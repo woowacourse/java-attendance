@@ -8,7 +8,7 @@ import java.util.*;
 
 import attendance.domain.Attendance;
 import attendance.domain.AttendanceDate;
-import attendance.domain.AttendanceHistory;
+import attendance.dto.AttendanceHistoryDto;
 import attendance.domain.AttendanceStatus;
 import attendance.domain.AttendanceTime;
 import attendance.domain.Attendances;
@@ -170,14 +170,14 @@ public class AttendanceController {
     }
 
     private void checkExpulsionCrews() {
-        Map<String, AttendanceHistory> attendanceHistories = new HashMap<>();
+        Map<String, AttendanceHistoryDto> attendanceHistories = new HashMap<>();
         for (Map.Entry<Crew, Attendances> entry : crewAttendances.entrySet()) {
             Attendances attendances = entry.getValue();
             Map<String, Integer> attendanceStatusCounts = attendances.calculateStatusCount();
             ExpulsionStatus expulsionStatus = attendances.calculateExpulsionStatus();
-            AttendanceHistory attendanceHistory = new AttendanceHistory(attendanceStatusCounts.get("결석"),
-                    attendanceStatusCounts.get("지각"), expulsionStatus.getText());
-            attendanceHistories.put(entry.getKey().getNickname(), attendanceHistory);
+            AttendanceHistoryDto attendanceHistoryDto = new AttendanceHistoryDto(attendanceStatusCounts.get(AttendanceStatus.ABSENT.getText()),
+                    attendanceStatusCounts.get(AttendanceStatus.LATE.getText()), expulsionStatus.getText());
+            attendanceHistories.put(entry.getKey().getNickname(), attendanceHistoryDto);
         }
         outputView.printExpulsionCrews(attendanceHistories);
     }
