@@ -1,5 +1,6 @@
 package controller.facade;
 
+import exception.handler.ExceptionHandler;
 import controller.sub.parent.SubController;
 import view.InputView;
 import view.OutputView;
@@ -26,6 +27,7 @@ public class MainController {
         this.inputView = inputView;
         this.outputView = outputView;
         this.storeController = storeController;
+
         controllerMapper.put(Menu.ATTENDANCE_CHECK, attendanceController);
         controllerMapper.put(Menu.ATTENDANCE_MODIFY, modifyController);
         controllerMapper.put(Menu.ATTENDANCE_HISTORY_CHECK, historyController);
@@ -35,12 +37,18 @@ public class MainController {
     public void run() {
         storeController.run();
         while (true) {
-            outputView.printDateAndMenus();
-            Menu menu = inputView.readMenu();
+            Menu menu = readMenu();
             if (menu == Menu.QUIT) {
                 return;
             }
             controllerMapper.get(menu).run();
         }
+    }
+
+    private Menu readMenu() {
+        return ExceptionHandler.retryIfIllegalArgumentAndReturn(() -> {
+            outputView.printDateAndMenus();
+            return inputView.readMenu();
+        });
     }
 }

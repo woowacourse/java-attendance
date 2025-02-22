@@ -2,6 +2,7 @@ package service;
 
 import domain.attendance.Attendance;
 import domain.attendance.AttendanceBook;
+import domain.crew.Crew;
 import repository.AttendanceRepository;
 
 import java.time.LocalDateTime;
@@ -13,8 +14,8 @@ public class AttendanceRegisterService {
         this.attendanceRepository = attendanceRepository;
     }
 
-    public Attendance register(String crewName, LocalDateTime time) {
-        AttendanceBook attendanceBook = attendanceRepository.findByCrewName(crewName);
+    public Attendance register(Crew crew, LocalDateTime time) {
+        AttendanceBook attendanceBook = attendanceRepository.findByCrew(crew);
         return attendanceBook.create(time.getDayOfMonth(), time.getHour(), time.getMinute());
     }
 }

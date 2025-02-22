@@ -12,11 +12,11 @@ public interface AttendanceRepository {
 
     void createNewAttendance(String crewName, int date, int hour, int minute);
 
-    AttendanceBook findByCrewName(String crewName);
+    AttendanceBook findByCrew(Crew crew);
 
-    Optional<Attendance> findByCrewAndDate(String crewName, int date);
+    Optional<Attendance> findByCrewAndDate(Crew crew, int date);
 
-    void modifyAttendance(String crewName, Attendance beforeAttendance, Attendance afterAttendance);
+    void modifyAttendance(Crew crew, Attendance beforeAttendance, Attendance afterAttendance);
 
     Crew findCrewByName(String crewName);
 

@@ -48,7 +48,7 @@ public class AttendanceRegisterServiceTest {
         String name = "이든";
         LocalDateTime time = LocalDateTime.of(
                 CustomDate.YEAR,
-                CustomDate.MONTH.getValue(),
+                CustomDate.CUSTOM_MONTH.getValue(),
                 18,
                 15,
                 52
@@ -70,7 +70,7 @@ public class AttendanceRegisterServiceTest {
         attendanceRepository.createNewAttendance(name, 18, 15, 52);
         LocalDateTime inputTime = LocalDateTime.of(
                 CustomDate.YEAR,
-                CustomDate.MONTH.getValue(),
+                CustomDate.CUSTOM_MONTH.getValue(),
                 18,
                 16,
                 55

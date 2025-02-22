@@ -2,6 +2,7 @@ package view;
 
 import controller.facade.Menu;
 import domain.attendance.Attendance;
+import domain.crew.Crew;
 import domain.date.CustomDate;
 import domain.attendance.AttendanceStatus;
 import domain.crew.CrewStatus;
@@ -54,12 +55,12 @@ public class OutputView {
     }
 
     public void printHistoryResult(
-            String name,
+            Crew crew,
             List<AttendanceHistoryResponse> histories,
             Map<AttendanceStatus, Integer> attendanceResult,
             CrewStatus crewStatus
     ) {
-        System.out.printf("이번 달 %s의 출석 기록입니다.\n", name);
+        System.out.printf("이번 달 %s의 출석 기록입니다.\n", crew.getName());
         printHistories(histories);
         printAttendanceCount(attendanceResult);
         printCrewStatus(crewStatus);

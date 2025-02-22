@@ -2,6 +2,7 @@ package service;
 
 import domain.attendance.AttendanceBook;
 import domain.attendance.AttendanceStatus;
+import domain.crew.Crew;
 import domain.crew.CrewStatus;
 import repository.AttendanceRepository;
 import service.dto.AttendanceHistoryResponse;
@@ -17,18 +18,18 @@ public class AttendanceHistoryService {
         this.attendanceRepository = attendanceRepository;
     }
 
-    public List<AttendanceHistoryResponse> getHistoriesOf(String name, LocalDate date) {
-        AttendanceBook attendanceBook = attendanceRepository.findByCrewName(name);
+    public List<AttendanceHistoryResponse> getHistoriesOf(Crew crew, LocalDate date) {
+        AttendanceBook attendanceBook = attendanceRepository.findByCrew(crew);
         return attendanceBook.getAllAttendance(date);
     }
 
-    public Map<AttendanceStatus, Integer> getAttendanceResultOf(String name, LocalDate date) {
-        AttendanceBook attendanceBook = attendanceRepository.findByCrewName(name);
+    public Map<AttendanceStatus, Integer> getAttendanceResultOf(Crew crew, LocalDate date) {
+        AttendanceBook attendanceBook = attendanceRepository.findByCrew(crew);
         return attendanceBook.calculateAttendanceResult(date);
     }
 
-    public CrewStatus getCrewStatus(String name, LocalDate date) {
-        AttendanceBook attendanceBook = attendanceRepository.findByCrewName(name);
+    public CrewStatus getCrewStatus(Crew crew, LocalDate date) {
+        AttendanceBook attendanceBook = attendanceRepository.findByCrew(crew);
         int lateCount = attendanceBook.getLateCountAt(date);
         int absenceCount = attendanceBook.getAbsenceCountAt(date);
         return CrewStatus.from(lateCount, absenceCount);

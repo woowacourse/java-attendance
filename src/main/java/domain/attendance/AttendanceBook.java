@@ -1,7 +1,7 @@
 package domain.attendance;
 
 import domain.date.CustomDate;
-import domain.date.Month;
+import domain.date.CustomMonth;
 import exception.DuplicateAttendanceException;
 import java.util.stream.IntStream;
 import service.dto.AttendanceHistoryResponse;
@@ -12,7 +12,7 @@ import java.util.*;
 
 public class AttendanceBook {
     private static final int year = CustomDate.YEAR;
-    private static final Month month = CustomDate.MONTH;
+    private static final CustomMonth CUSTOM_MONTH = CustomDate.CUSTOM_MONTH;
 
     private final Map<Integer, Attendance> attendances;
 
@@ -27,7 +27,7 @@ public class AttendanceBook {
         Attendance attendance = new Attendance(
                 LocalDateTime.of(
                         year,
-                        month.getValue(),
+                        CUSTOM_MONTH.getValue(),
                         date,
                         hour,
                         minute
@@ -53,7 +53,7 @@ public class AttendanceBook {
     public List<AttendanceHistoryResponse> getAllAttendance(LocalDate limitDate) {
         List<AttendanceHistoryResponse> histories = new ArrayList<>();
         IntStream.range(1, limitDate.getDayOfMonth())
-                .filter(date -> !month.isHoliday(date))
+                .filter(date -> !CUSTOM_MONTH.isHoliday(date))
                 .forEach(date -> {
                     if (attendances.containsKey(date)) {
                         Attendance attendance = attendances.get(date);
@@ -65,7 +65,7 @@ public class AttendanceBook {
                     }
                     else {
                         histories.add(new AttendanceHistoryResponse(
-                                LocalDate.of(year, month.getValue(), date),
+                                LocalDate.of(year, CUSTOM_MONTH.getValue(), date),
                                 Optional.empty(),
                                 AttendanceStatus.ABSENCE)
                         );
@@ -80,7 +80,7 @@ public class AttendanceBook {
         result.put(AttendanceStatus.LATE, 0);
         result.put(AttendanceStatus.ABSENCE, 0);
         IntStream.range(1, limitDate.getDayOfMonth())
-                .filter(date -> !month.isHoliday(date))
+                .filter(date -> !CUSTOM_MONTH.isHoliday(date))
                 .forEach(date -> {
                     if (attendances.containsKey(date)) {
                         Attendance attendance = attendances.get(date);
@@ -96,7 +96,7 @@ public class AttendanceBook {
 
     public int getLateCountAt(LocalDate limitDate) {
         return (int) IntStream.range(1, limitDate.getDayOfMonth())
-                .filter(date -> !month.isHoliday(date))
+                .filter(date -> !CUSTOM_MONTH.isHoliday(date))
                 .filter(attendances::containsKey)
                 .filter(date -> attendances.get(date).getStatus().equals(AttendanceStatus.LATE))
                 .count();
@@ -104,7 +104,7 @@ public class AttendanceBook {
 
     public int getAbsenceCountAt(LocalDate limitDate) {
         return (int) IntStream.range(1, limitDate.getDayOfMonth())
-                .filter(date -> !month.isHoliday(date))
+                .filter(date -> !CUSTOM_MONTH.isHoliday(date))
                 .filter(date -> !attendances.containsKey(date)
                         || attendances.get(date).getStatus().equals(AttendanceStatus.ABSENCE))
                 .count();

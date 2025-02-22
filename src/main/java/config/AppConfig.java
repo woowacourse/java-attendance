@@ -49,7 +49,8 @@ public class AppConfig {
         return new AttendanceModifyController(
                 getInputView(),
                 getOutputView(),
-                new AttendanceModifyService(getAttendanceRepository())
+                new AttendanceModifyService(getAttendanceRepository()),
+                getAttendanceRepository()
         );
     }
 
@@ -63,7 +64,8 @@ public class AppConfig {
         return new AttendanceRegisterController(
                 getInputView(),
                 getOutputView(),
-                new AttendanceRegisterService(getAttendanceRepository())
+                new AttendanceRegisterService(getAttendanceRepository()),
+                getAttendanceRepository()
         );
     }
 

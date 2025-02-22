@@ -2,10 +2,9 @@ package domain.date;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
-import java.util.List;
-import java.util.stream.IntStream;
 
-public enum Month {
+//TODO : java api Month와 맞았으면...
+public enum CustomMonth {
     JANUARY(31, 1),
     FEBRUARY(29, 2),
     MARCH(31, 3),
@@ -24,7 +23,7 @@ public enum Month {
 
     private final int value;
 
-    Month(int lastDay, int value) {
+    CustomMonth(int lastDay, int value) {
         this.lastDay = lastDay;
         this.value = value;
     }
@@ -33,7 +32,7 @@ public enum Month {
         if (this == DECEMBER && day == 25) {
             return true;
         }
-        DayOfWeek dayOfWeek = LocalDate.of(CustomDate.YEAR, CustomDate.MONTH.getValue(), day).getDayOfWeek();
+        DayOfWeek dayOfWeek = LocalDate.of(CustomDate.YEAR, CustomDate.CUSTOM_MONTH.getValue(), day).getDayOfWeek();
         return dayOfWeek == DayOfWeek.SATURDAY || dayOfWeek == DayOfWeek.SUNDAY;
     }
 

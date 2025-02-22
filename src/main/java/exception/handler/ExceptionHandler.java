@@ -1,4 +1,4 @@
-package controller;
+package exception.handler;
 
 import java.util.function.Supplier;
 

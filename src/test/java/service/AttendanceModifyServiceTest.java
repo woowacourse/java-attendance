@@ -33,7 +33,7 @@ class AttendanceModifyServiceTest {
         //given
         LocalDateTime before = LocalDateTime.of(
                 CustomDate.YEAR,
-                CustomDate.MONTH.getValue(),
+                CustomDate.CUSTOM_MONTH.getValue(),
                 19,
                 10,
                 30
@@ -44,7 +44,7 @@ class AttendanceModifyServiceTest {
         int date = 19;
         int hour = 10;
         int minutes = 0;
-        LocalDateTime after = LocalDateTime.of(CustomDate.YEAR, CustomDate.MONTH.getValue(), date, hour, minutes);
+        LocalDateTime after = LocalDateTime.of(CustomDate.YEAR, CustomDate.CUSTOM_MONTH.getValue(), date, hour, minutes);
 
         AttendanceModifyResponse response = attendanceModifyService.modify(name, date, hour, minutes);
 

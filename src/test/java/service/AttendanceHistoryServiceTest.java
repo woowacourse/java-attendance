@@ -19,7 +19,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 class AttendanceHistoryServiceTest {
     int year = CustomDate.YEAR;
-    int month = CustomDate.MONTH.getValue();
+    int month = CustomDate.CUSTOM_MONTH.getValue();
     String name = "빙티";
     Crew crew = new Crew(name);
     List<AttendanceHistoryResponse> attendanceHistoryResponses = new ArrayList<>(Arrays.asList(

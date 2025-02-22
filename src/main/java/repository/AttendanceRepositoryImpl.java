@@ -30,20 +30,23 @@ public class AttendanceRepositoryImpl implements AttendanceRepository{
     }
 
     @Override
-    public AttendanceBook findByCrewName(String crewName) {
-        Crew crew = findCrewByName(crewName);
+    public AttendanceBook findByCrew(Crew crew) {
+        //TODO : 여기서 크루가 없다면, 이상한 상황인거임 (사용자 잘못 x)
+        if (!crewAttendances.containsKey(crew)) {
+            throw new RuntimeException("크루가 존재하지 않습니다.");
+        }
         return crewAttendances.get(crew);
     }
 
     @Override
-    public Optional<Attendance> findByCrewAndDate(String crewName, int date) {
-        AttendanceBook attendanceBook = findByCrewName(crewName);
+    public Optional<Attendance> findByCrewAndDate(Crew crew, int date) {
+        AttendanceBook attendanceBook = findByCrew(crew);
         return attendanceBook.findAttendanceByDate(date);
     }
 
     @Override
-    public void modifyAttendance(String crewName, Attendance beforeAttendance, Attendance afterAttendance) {
-        AttendanceBook attendanceBook = findByCrewName(crewName);
+    public void modifyAttendance(Crew crew, Attendance beforeAttendance, Attendance afterAttendance) {
+        AttendanceBook attendanceBook = findByCrew(crew);
         attendanceBook.replace(beforeAttendance, afterAttendance);
     }
 

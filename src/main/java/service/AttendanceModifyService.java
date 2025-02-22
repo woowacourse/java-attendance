@@ -1,6 +1,7 @@
 package service;
 
 import domain.attendance.Attendance;
+import domain.crew.Crew;
 import exception.AttendanceNotExistException;
 import repository.AttendanceRepository;
 import service.dto.AttendanceModifyResponse;
@@ -12,11 +13,11 @@ public class AttendanceModifyService {
         this.attendanceRepository = attendanceRepository;
     }
 
-    public AttendanceModifyResponse modify(String name, int date, int newHour, int newMinutes) {
-        Attendance beforeAttendance = attendanceRepository.findByCrewAndDate(name, date)
+    public AttendanceModifyResponse modify(Crew crew, int date, int newHour, int newMinutes) {
+        Attendance beforeAttendance = attendanceRepository.findByCrewAndDate(crew, date)
                 .orElseThrow(AttendanceNotExistException::new);
         Attendance afterAttendance = beforeAttendance.createModifiedAttendance(newHour, newMinutes);
-        attendanceRepository.modifyAttendance(name, beforeAttendance, afterAttendance);
+        attendanceRepository.modifyAttendance(crew, beforeAttendance, afterAttendance);
         return new AttendanceModifyResponse(
                 beforeAttendance.getTime(),
                 beforeAttendance.getStatus(),
