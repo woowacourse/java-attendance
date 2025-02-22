@@ -8,13 +8,23 @@ import java.time.LocalDateTime;
 public class Attendance {
 
     private LocalDateTime attendedTime;
-    private AttendanceStatus status;
 
     private Attendance(LocalDateTime attendedAt) {
         validateDayOfWeek(attendedAt);
         validateHoliday(attendedAt);
         this.attendedTime = attendedAt;
-        this.status = AttendanceStatus.compute(attendedAt);
+    }
+
+    public void modify(LocalDateTime modifiedDateTime) {
+        this.attendedTime = modifiedDateTime;
+    }
+
+    public LocalDateTime getAttendedTime() {
+        return attendedTime;
+    }
+
+    public AttendanceStatus getStatus() {
+        return AttendanceStatus.compute(attendedTime);
     }
 
     public static Attendance of(LocalDateTime attendedAt) {
@@ -23,19 +33,6 @@ public class Attendance {
 
     public static Attendance ofAbsence(LocalDate attendedAt) {
         return new Attendance(attendedAt.atStartOfDay());
-    }
-
-    public void modify(LocalDateTime modifiedDateTime) {
-        this.attendedTime = modifiedDateTime;
-        this.status = AttendanceStatus.compute(modifiedDateTime);
-    }
-
-    public LocalDateTime getAttendedTime() {
-        return attendedTime;
-    }
-
-    public AttendanceStatus getStatus() {
-        return status;
     }
 
     private void validateDayOfWeek(LocalDateTime attendedAt) {

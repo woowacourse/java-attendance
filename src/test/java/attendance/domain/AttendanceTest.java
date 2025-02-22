@@ -14,17 +14,6 @@ import org.junit.jupiter.params.provider.CsvSource;
 public class AttendanceTest {
 
     @Test
-    void 등교날짜가_주말이면_예외가_발생한다() {
-        LocalTime time = LocalTime.of(9, 59);
-
-        LocalDate saturday = LocalDate.of(2024, 12, 14);
-        LocalDateTime localDateTime = LocalDateTime.of(saturday, time);
-
-        assertThatThrownBy(() -> Attendance.of(localDateTime))
-            .isInstanceOf(IllegalArgumentException.class);
-    }
-
-    @Test
     void 주말이나_휴일이아니면_출석객체를_생성할수있다() {
         LocalTime time = LocalTime.of(13, 4);
 
@@ -36,13 +25,18 @@ public class AttendanceTest {
     }
 
     @Test
+    void 등교날짜가_주말이면_예외가_발생한다() {
+        LocalDateTime saturday = LocalDateTime.of(2024,12,14,10,0);
+
+        assertThatThrownBy(() -> Attendance.of(saturday))
+            .isInstanceOf(IllegalArgumentException.class);
+    }
+
+    @Test
     void 등교날짜가_공휴일이면_예외가_발생한다() {
-        LocalTime time = LocalTime.of(9, 59);
+        LocalDateTime thursday_christmas = LocalDateTime.of(2025,12,25,10,0);
 
-        LocalDate holiday = LocalDate.of(2025, 12, 25);
-        LocalDateTime localDateTime = LocalDateTime.of(holiday, time);
-
-        assertThatThrownBy(() -> Attendance.of(localDateTime))
+        assertThatThrownBy(() -> Attendance.of(thursday_christmas))
             .isInstanceOf(IllegalArgumentException.class);
     }
 
