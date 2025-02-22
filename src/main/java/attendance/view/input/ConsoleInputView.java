@@ -1,7 +1,7 @@
 package attendance.view.input;
 
 import attendance.controller.Command;
-import attendance.model.Calender;
+import attendance.model.Calendar;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -36,7 +36,7 @@ public class ConsoleInputView implements InputView {
     public LocalDateTime inputAttendanceTime() {
         try {
             System.out.println("등교 시간을 입력해주세요.");
-            return LocalDateTime.of(Calender.TODAY, LocalTime.parse(SCANNER.nextLine()));
+            return LocalDateTime.of(Calendar.TODAY, LocalTime.parse(SCANNER.nextLine()));
         } catch (final DateTimeParseException e) {
             throw new IllegalArgumentException("올바른 시간 형식이 아닙니다.");
         }
@@ -61,10 +61,10 @@ public class ConsoleInputView implements InputView {
     }
 
     private String getToday() {
-        final KoreaDayOfWeek dayOfWeek = KoreaDayOfWeek.fromDayOfWeek(Calender.TODAY.getDayOfWeek());
+        final KoreaDayOfWeek dayOfWeek = KoreaDayOfWeek.fromDayOfWeek(Calendar.TODAY.getDayOfWeek());
         return String.format("오늘은 %02d월 %02d일 %s입니다.",
-                Calender.NOW_MONTH,
-                Calender.NOW_DAY,
+                Calendar.NOW_MONTH,
+                Calendar.NOW_DAY,
                 dayOfWeek.getName()
         );
     }

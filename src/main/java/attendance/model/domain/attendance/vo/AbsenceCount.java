@@ -1,6 +1,6 @@
 package attendance.model.domain.attendance.vo;
 
-import attendance.model.Calender;
+import attendance.model.Calendar;
 import attendance.model.domain.attendance.AttendanceStatus;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -22,7 +22,7 @@ public class AbsenceCount {
                 .count();
 
         final int notExistingDateCount =
-                Calender.getNotExistsDatesCountBeforeToday(convertToDateTimesToDates(dateTimes));
+                Calendar.getNotExistsDatesCountBeforeToday(convertToDateTimesToDates(dateTimes));
 
         return new AbsenceCount(Math.toIntExact(existingDateCount + notExistingDateCount));
     }

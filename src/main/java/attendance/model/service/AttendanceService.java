@@ -4,7 +4,7 @@ import attendance.dto.AttendanceLogResponse;
 import attendance.dto.CrewAttendanceLogResponse;
 import attendance.dto.RequiresManagementCrewResponse;
 import attendance.dto.UpdateAttendanceResponse;
-import attendance.model.Calender;
+import attendance.model.Calendar;
 import attendance.model.domain.attendance.AttendanceStatus;
 import attendance.model.domain.attendance.CrewAttendance;
 import attendance.model.domain.crew.Crew;
@@ -90,7 +90,7 @@ public class AttendanceService {
                 .map(LocalDateTime::toLocalDate)
                 .toList();
 
-        return Calender.getNotExistsDatesBeforeToday(dateLogs).stream()
+        return Calendar.getNotExistsDatesBeforeToday(dateLogs).stream()
                 .map(AttendanceLogResponse::fromAbsenceDate)
                 .toList();
     }

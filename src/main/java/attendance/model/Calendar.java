@@ -5,7 +5,7 @@ import java.time.Month;
 import java.util.List;
 import java.util.Set;
 
-public enum Calender {
+public enum Calendar {
 
     MONDAY(List.of(2, 9, 16, 23, 30)),
     WEEKDAY(List.of(2, 3, 4, 5, 6, 9, 10, 11, 12, 13, 16, 17, 18, 19, 20, 23, 24, 26, 27, 30, 31)),
@@ -18,14 +18,14 @@ public enum Calender {
     public static final LocalDate TODAY = LocalDate.of(NOW_YEAR, NOW_MONTH, NOW_DAY);
     private final List<Integer> days;
 
-    Calender(final List<Integer> days) {
+    Calendar(final List<Integer> days) {
         this.days = days;
     }
 
     public static List<LocalDate> getNotExistsDatesBeforeToday(final List<LocalDate> dates) {
         final Set<LocalDate> datesSet = Set.copyOf(dates);
 
-        return getDatesBefore(Calender.TODAY).stream()
+        return getDatesBefore(Calendar.TODAY).stream()
                 .filter(date -> !datesSet.contains(date))
                 .toList();
     }

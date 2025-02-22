@@ -1,6 +1,6 @@
 package attendance.model.domain.attendance;
 
-import attendance.model.Calender;
+import attendance.model.Calendar;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.Arrays;
@@ -36,14 +36,14 @@ public enum AttendanceStatus {
 
     public static boolean isAbsence(final LocalDateTime dateTime) {
         final LocalTime time = dateTime.toLocalTime();
-        if (Calender.isMonday(dateTime.toLocalDate())) {
+        if (Calendar.isMonday(dateTime.toLocalDate())) {
             return time.isAfter(MONDAY_ABSENCE_TIME);
         }
         return time.isAfter(WEEKDAY_ABSENCE_TIME);
     }
 
     public static boolean isLate(final LocalDateTime dateTime) {
-        if (Calender.isMonday(dateTime.toLocalDate())) {
+        if (Calendar.isMonday(dateTime.toLocalDate())) {
             return isTimeBetween(dateTime.toLocalTime(), MONDAY_LATE_TIME, MONDAY_ABSENCE_TIME.plusMinutes(1));
         }
         return isTimeBetween(dateTime.toLocalTime(), WEEKDAY_LATE_TIME, WEEKDAY_ABSENCE_TIME.plusMinutes(1));
