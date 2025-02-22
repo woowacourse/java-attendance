@@ -8,7 +8,6 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 import domain.AttendanceBook;
 import domain.AttendanceStatus;
 import domain.Calendar;
-import domain.Crew;
 import dto.AttendanceRecordResponse;
 import dto.TotalRecordsResponse;
 import java.time.LocalDate;
@@ -25,10 +24,7 @@ public class CheckAttendanceRecordTest {
     @BeforeEach
     void setup() {
         attendanceBook = new AttendanceBook();
-        Crew crew1 = Crew.createByName("쿠키");
-        crew1.addDailyAttendance(Map.of(LocalDate.of(2024, 12, 2), MONDAY_ATTEND));
-        attendanceBook.addNewCrew(crew1);
-
+        attendanceBook.initialize("쿠키", Map.of(LocalDate.of(2024, 12, 2), MONDAY_ATTEND));
         attendanceBook.initialize("쿠키", Map.of(LocalDate.of(2024, 12, 3), EXCEPT_MONDAY_ATTEND));
         attendanceBook.initialize("쿠키", Map.of(LocalDate.of(2024, 12, 4), EXCEPT_MONDAY_ATTEND));
     }
