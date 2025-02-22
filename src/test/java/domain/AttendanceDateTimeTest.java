@@ -1,5 +1,5 @@
-import domain.AttendanceDateTime;
-import domain.AttendanceState;
+package domain;
+
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -15,13 +15,13 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-public class AttendanceTimeTest {
+public class AttendanceDateTimeTest {
 
-    @Test
+    @ParameterizedTest
     @DisplayName("출석 시간을 입력하면 출석할 수 있다")
-    void input_enterTime_then_attendance() {
+    @MethodSource("getDateTimeForAttend")
+    void input_enterTime_then_attendance(LocalDateTime attendanceDateTime) {
         // given
-        LocalDateTime attendanceDateTime = LocalDateTime.of(2024, 12, 9, 10, 10);
         AttendanceDateTime attendanceTime = AttendanceDateTime.from(attendanceDateTime);
 
         // when
@@ -31,9 +31,57 @@ public class AttendanceTimeTest {
         assertThat(attendanceState).isEqualTo(AttendanceState.ATTEND);
     }
 
+    private static Stream<Arguments> getDateTimeForAttend() {
+        return Stream.of(
+                Arguments.of(
+                        LocalDateTime.of(2024, 12, 10, 10, 0)
+                ),
+                Arguments.of(
+                        LocalDateTime.of(2024, 12, 9, 12, 10)
+                ),
+                Arguments.of(
+                        LocalDateTime.of(2024, 12, 9, 13, 3)
+                ),
+                Arguments.of(
+                        LocalDateTime.of(2024, 12, 10, 10, 2)
+                )
+        );
+    }
+
+    @ParameterizedTest
+    @DisplayName("출석 시간으로부터 5분 초과는 지각이다")
+    @MethodSource("getDateTimeForLate")
+    void over_enterTime_then_late(LocalDateTime attendanceDateTime) {
+        // given
+        AttendanceDateTime attendanceTime = AttendanceDateTime.from(attendanceDateTime);
+
+        // when
+        AttendanceState attendanceState = attendanceTime.check();
+
+        // then
+        assertThat(attendanceState).isEqualTo(AttendanceState.LATE);
+    }
+
+    private static Stream<Arguments> getDateTimeForLate() {
+        return Stream.of(
+                Arguments.of(
+                        LocalDateTime.of(2024, 12, 10, 10, 6)
+                ),
+                Arguments.of(
+                        LocalDateTime.of(2024, 12, 9, 13, 7)
+                ),
+                Arguments.of(
+                        LocalDateTime.of(2024, 12, 9, 13, 30)
+                ),
+                Arguments.of(
+                        LocalDateTime.of(2024, 12, 10, 10, 30)
+                )
+        );
+    }
+
     @ParameterizedTest
     @DisplayName("출석 시간으로부터 30분 초과는 결석이다")
-    @MethodSource("provideDateTimeForAbsent")
+    @MethodSource("getDateTimeForAbsent")
     void over_enterTime_then_absent(LocalDateTime attendanceDateTime) {
         // given
         AttendanceDateTime attendanceTime = AttendanceDateTime.from(attendanceDateTime);
@@ -45,7 +93,7 @@ public class AttendanceTimeTest {
         assertThat(attendanceState).isEqualTo(AttendanceState.ABSENT);
     }
 
-    private static Stream<Arguments> provideDateTimeForAbsent() {
+    private static Stream<Arguments> getDateTimeForAbsent() {
         return Stream.of(
                 Arguments.of(
                         LocalDateTime.of(2024, 12, 10, 10, 31)
