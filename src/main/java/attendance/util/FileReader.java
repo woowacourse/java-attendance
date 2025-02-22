@@ -12,21 +12,6 @@ import java.util.Set;
 
 public class FileReader {
 
-    public static Set<String> fileReadCrewNames(String fileName) {
-        try {
-            List<String> fileLines = fileReadLine(fileName);
-            Set<String> crewNames = new HashSet<>();
-            for (String fileLine : fileLines) {
-                String crewName = List.of(fileLine.split(",")).get(0);
-                crewNames.add(crewName);
-            }
-            return crewNames;
-        } catch (IOException e) {
-            e.getMessage();
-        }
-        return null;
-    }
-
     public static List<String> fileReadLine(String fileName) throws IOException {
         List<String> items = new ArrayList<>();
         BufferedReader bufferedReader = loadFile(fileName);
@@ -45,4 +30,5 @@ public class FileReader {
         }
         return new BufferedReader(new InputStreamReader(inputStream));
     }
+
 }

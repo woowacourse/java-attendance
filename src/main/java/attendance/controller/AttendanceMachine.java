@@ -14,6 +14,7 @@ import attendance.view.InputView;
 import attendance.view.OutputView;
 import java.io.IOException;
 import java.time.LocalDate;
+import java.util.List;
 import java.util.function.Supplier;
 
 public class AttendanceMachine {
@@ -27,15 +28,16 @@ public class AttendanceMachine {
     }
 
     public void start() throws IOException {
-        Crews crews = Crews.fromCrewsFile(FileReader.fileReadCrewNames("attendances.csv"));
+        List<String> lines = FileReader.fileReadLine("attendances.csv");
+        Crews crews = Crews.fromCrewsFile(lines);
         LocalDate now = LocalDate.now();
         Register register = new Register(crews, now);
-        register.fromCrewAttendanceTimeFile(crews, FileReader.fileReadLine("attendances.csv"));
+        register.fromCrewAttendanceTimeFile(crews, lines);
 
-        boolean flag = true;
-        while (flag) {
+        boolean isRunning = true;
+        while (isRunning) {
             Function function = readFunction(now);
-            flag = mappingFunction(function, now, crews, register);
+            isRunning = mappingFunction(function, now, crews, register);
         }
         inputView.closeScanner();
     }
@@ -84,6 +86,7 @@ public class AttendanceMachine {
         String beforeStatus = beforeInfo.getAttendanceStatus();
         DateInfo modifiedInfo = register.modifyInfo(crew, modifyDate, modifyTime);
         outputView.writeAttendanceModifyCheck(beforeHour, beforeMinute, beforeStatus, modifiedInfo);
+
     }
 
     private void functionOne(LocalDate now, Crews crews, Register register) {

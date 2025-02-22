@@ -4,6 +4,7 @@ import attendance.domain.constant.AttendanceStatus;
 import attendance.domain.constant.DayOfWeek;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class DateInfos {
@@ -74,7 +75,7 @@ public class DateInfos {
     }
 
     public List<DateInfo> getDateInfos() {
-        return dateInfos;
+        return Collections.unmodifiableList(dateInfos);
     }
 
     public int getAbsence() {

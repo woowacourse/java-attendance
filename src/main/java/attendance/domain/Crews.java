@@ -2,6 +2,7 @@ package attendance.domain;
 
 import attendance.exception.CustomException;
 import attendance.exception.ErrorMessage;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -15,10 +16,10 @@ public class Crews {
         this.crews = crews;
     }
 
-    public static Crews fromCrewsFile(Set<String> crews) {
+    public static Crews fromCrewsFile(List<String> lines) {
         Set<Crew> crewNames = new HashSet<>();
-        for (String crewName : crews) {
-            crewNames.add(Crew.from(crewName));
+        for (String line : lines) {
+            crewNames.add(Crew.from(List.of(line.split(",")).get(0)));
         }
         return new Crews(crewNames);
     }
