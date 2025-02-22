@@ -13,6 +13,7 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 public class CheckPenaltyCrewTest {
@@ -41,6 +42,7 @@ public class CheckPenaltyCrewTest {
     }
 
     @Test
+    @DisplayName("전날까지의_크루_출석_기록을_바탕으로_제적_위험자를_파악한다")
     void 전날까지의_크루_출석_기록을_바탕으로_제적_위험자를_파악한다() {
         List<CrewPenaltyResponse> penaltyCrews = attendanceBook.checkPenaltyCrew();
 
