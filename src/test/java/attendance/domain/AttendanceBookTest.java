@@ -3,7 +3,6 @@ package attendance.domain;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import attendance.dto.CrewNameAndAcademicStatusDTO;
 import attendance.repository.AttendanceRepository;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -50,14 +49,14 @@ class AttendanceBookTest {
         AttendanceRepository attendanceRepository = new AttendanceRepository(attendances);
 
         // when
-        List<CrewNameAndAcademicStatusDTO> attendanceCountAndAcademicStatusDTOS = attendanceBook.getCrewAtRiskOfExpulsion(
+        List<CrewAttendanceInformation> attendanceCountAndCrewAttendanceInformationDTOS = attendanceBook.getCrewAtRiskOfExpulsion(
                 attendanceRepository, academicStatus);
 
         // then
         assertAll(() -> {
 
-            assertEquals(attendanceCountAndAcademicStatusDTOS.size(), 1);
-            assertEquals(attendanceCountAndAcademicStatusDTOS.getFirst().crewName(), name);
+            assertEquals(attendanceCountAndCrewAttendanceInformationDTOS.size(), 1);
+            assertEquals(attendanceCountAndCrewAttendanceInformationDTOS.getFirst().crewName(), name);
         });
     }
 

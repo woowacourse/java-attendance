@@ -2,22 +2,22 @@ package attendance.view;
 
 import attendance.domain.Attendance;
 import attendance.domain.AttendanceTime;
-import attendance.dto.CrewNameAndAcademicStatusDTO;
+import attendance.domain.CrewAttendanceInformation;
 import java.util.List;
 
 public class OutputView {
 
-    public void printAcademicStatusResult(CrewNameAndAcademicStatusDTO attendanceCountAndAcademicStatusDTO) {
+    public void printAcademicStatusResult(CrewAttendanceInformation crewAttendanceInformation) {
 
-        System.out.println("출석: " + attendanceCountAndAcademicStatusDTO.attend() + "회");
-        System.out.println("지각: " + attendanceCountAndAcademicStatusDTO.late() + "회");
-        System.out.println("결석: " + attendanceCountAndAcademicStatusDTO.absent() + "회");
+        System.out.println("출석: " + crewAttendanceInformation.attend() + "회");
+        System.out.println("지각: " + crewAttendanceInformation.late() + "회");
+        System.out.println("결석: " + crewAttendanceInformation.absent() + "회");
 
-        if (attendanceCountAndAcademicStatusDTO.academicStatus().equals("X")) {
+        if (crewAttendanceInformation.academicStatus().equals("X")) {
             System.out.println("대상자가 아닙니다.");
             return;
         }
-        System.out.println(attendanceCountAndAcademicStatusDTO.academicStatus() + " 대상자입니다.");
+        System.out.println(crewAttendanceInformation.academicStatus() + " 대상자입니다.");
         printNewLine();
     }
 
@@ -59,13 +59,13 @@ public class OutputView {
         System.out.println("제적 위험자 조회 결과");
     }
 
-    public void printCrewsAtRiskOfExpulsion(List<CrewNameAndAcademicStatusDTO> crewNameAndAcademicStatusDTOList) {
+    public void printCrewsAtRiskOfExpulsion(List<CrewAttendanceInformation> crewAttendanceHistories) {
 
-        for (CrewNameAndAcademicStatusDTO crewNameAndAcademicStatusDTO : crewNameAndAcademicStatusDTOList) {
-            System.out.print("- " + crewNameAndAcademicStatusDTO.crewName() + ": ");
-            System.out.print("결석: " + crewNameAndAcademicStatusDTO.absent() + "회, ");
-            System.out.print("지각: " + crewNameAndAcademicStatusDTO.late() + "회 ");
-            System.out.println("(" + crewNameAndAcademicStatusDTO.academicStatus() + ")");
+        for (CrewAttendanceInformation crewAttendanceInformation : crewAttendanceHistories) {
+            System.out.print("- " + crewAttendanceInformation.crewName() + ": ");
+            System.out.print("결석: " + crewAttendanceInformation.absent() + "회, ");
+            System.out.print("지각: " + crewAttendanceInformation.late() + "회 ");
+            System.out.println("(" + crewAttendanceInformation.academicStatus() + ")");
         }
     }
 

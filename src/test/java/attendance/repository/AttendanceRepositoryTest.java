@@ -7,7 +7,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import attendance.domain.Attendance;
 import attendance.domain.AttendanceTime;
-import attendance.dto.CrewNameAndAcademicStatusDTO;
+import attendance.domain.CrewAttendanceInformation;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -107,13 +107,13 @@ class AttendanceRepositoryTest {
     @DisplayName("해당 닉네임을 가진 크루의 출석 상태를 가져온다.")
     @ParameterizedTest
     @MethodSource("name")
-    void 해당_닉네임을_가진_크루의_출석_상태를_가져온다(List<Attendance> attendances, CrewNameAndAcademicStatusDTO expectedResult) {
+    void 해당_닉네임을_가진_크루의_출석_상태를_가져온다(List<Attendance> attendances, CrewAttendanceInformation expectedResult) {
 
         // given
         AttendanceRepository attendanceRepository = new AttendanceRepository(attendances);
 
         // when
-        CrewNameAndAcademicStatusDTO result = attendanceRepository.getAcademicStatusByName("체체");
+        CrewAttendanceInformation result = attendanceRepository.getAcademicStatusByName("체체");
 
         // then
         assertAll(() -> {
@@ -129,18 +129,18 @@ class AttendanceRepositoryTest {
         return Stream.of(
                 Arguments.of(
                         List.of(makeAbsentAttendance(crewName, 2025, 2, 20)),
-                        new CrewNameAndAcademicStatusDTO(crewName, 0, 0, 1, "X")
+                        new CrewAttendanceInformation(crewName, 0, 0, 1, "X")
                 ),
                 Arguments.of(
                         List.of(makeAbsentAttendance(crewName, 2025, 2, 10),
                                 makeAbsentAttendance(crewName, 2025, 2, 11)),
-                        new CrewNameAndAcademicStatusDTO(crewName, 0, 0, 2, "경고")
+                        new CrewAttendanceInformation(crewName, 0, 0, 2, "경고")
                 ),
                 Arguments.of(
                         List.of(makeAbsentAttendance(crewName, 2025, 2, 10),
                                 makeAbsentAttendance(crewName, 2025, 2, 11),
                                 makeAbsentAttendance(crewName, 2025, 2, 12)),
-                        new CrewNameAndAcademicStatusDTO(crewName, 0, 0, 3, "면담")
+                        new CrewAttendanceInformation(crewName, 0, 0, 3, "면담")
                 ),
                 Arguments.of(
                         List.of(makeAbsentAttendance(crewName, 2025, 2, 10),
@@ -149,7 +149,7 @@ class AttendanceRepositoryTest {
                                 makeAbsentAttendance(crewName, 2025, 2, 13),
                                 makeAbsentAttendance(crewName, 2025, 2, 14),
                                 makeAbsentAttendance(crewName, 2025, 2, 17)),
-                        new CrewNameAndAcademicStatusDTO(crewName, 0, 0, 6, "제적")
+                        new CrewAttendanceInformation(crewName, 0, 0, 6, "제적")
                 )
         );
     }

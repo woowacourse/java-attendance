@@ -1,6 +1,5 @@
 package attendance.domain;
 
-import attendance.dto.CrewNameAndAcademicStatusDTO;
 import attendance.repository.AttendanceRepository;
 import java.util.Comparator;
 import java.util.List;
@@ -28,13 +27,13 @@ public class AttendanceBook {
         }
     }
 
-    public List<CrewNameAndAcademicStatusDTO> getCrewAtRiskOfExpulsion(final AttendanceRepository attendanceRepository,
-                                                                       final String academicStatus) {
+    public List<CrewAttendanceInformation> getCrewAtRiskOfExpulsion(final AttendanceRepository attendanceRepository,
+                                                                    final String academicStatus) {
 
         return names.stream()
                 .map(attendanceRepository::getAcademicStatusByName)
-                .filter(dto -> dto.academicStatus().equals(academicStatus))
-                .sorted(Comparator.comparing(CrewNameAndAcademicStatusDTO::crewName))
+                .filter(info -> info.academicStatus().equals(academicStatus))
+                .sorted(Comparator.comparing(CrewAttendanceInformation::crewName))
                 .toList();
     }
 }

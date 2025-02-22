@@ -7,7 +7,7 @@ import static attendance.domain.AttendanceStatus.LATE;
 import attendance.domain.AcademicStatus;
 import attendance.domain.Attendance;
 import attendance.domain.AttendanceTime;
-import attendance.dto.CrewNameAndAcademicStatusDTO;
+import attendance.domain.CrewAttendanceInformation;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.util.Comparator;
@@ -86,7 +86,7 @@ public class AttendanceRepository {
         }
     }
 
-    public CrewNameAndAcademicStatusDTO getAcademicStatusByName(final String name) {
+    public CrewAttendanceInformation getAcademicStatusByName(final String name) {
 
         List<Attendance> attendances = findAllAttendanceByName(name);
 
@@ -97,7 +97,7 @@ public class AttendanceRepository {
         int late = counts.getOrDefault(LATE.getValue(), 0L).intValue();
         int absent = counts.getOrDefault(ABSENT.getValue(), 0L).intValue();
 
-        return new CrewNameAndAcademicStatusDTO(name, attend, late, absent,
+        return new CrewAttendanceInformation(name, attend, late, absent,
                 AcademicStatus.getAcademicStatus(late, absent));
     }
 }

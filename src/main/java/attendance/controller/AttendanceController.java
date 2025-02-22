@@ -4,9 +4,11 @@ import static attendance.domain.AcademicStatus.EXPELLED;
 import static attendance.domain.AcademicStatus.INTERVIEW;
 import static attendance.domain.AcademicStatus.WARNING;
 
+import attendance.domain.AcademicStatus;
 import attendance.domain.Attendance;
 import attendance.domain.AttendanceBook;
 import attendance.domain.AttendanceTime;
+import attendance.domain.CrewAttendanceInformation;
 import attendance.domain.Function;
 import attendance.dto.AttendanceContentDTO;
 import attendance.repository.AttendanceRepository;
@@ -193,20 +195,24 @@ public class AttendanceController {
         List<Attendance> attendances = attendanceRepository.findAllAttendanceByName(crewName);
 
         outputView.printNameAndAttendances(crewName, attendances);
-        outputView.printAcademicStatusResult(attendanceRepository.getAcademicStatusByName(crewName));
+        CrewAttendanceInformation academicStatusByName = attendanceRepository.getAcademicStatusByName(crewName);
+        outputView.printAcademicStatusResult(academicStatusByName);
     }
 
     private void crewAtRiskOfExpulsion() {
 
         outputView.printCrewsAtRiskOfExpulsionStartMessage();
 
-        outputView.printCrewsAtRiskOfExpulsion(
-                attendanceBook.getCrewAtRiskOfExpulsion(attendanceRepository, EXPELLED.getValue()));
-        outputView.printCrewsAtRiskOfExpulsion(
-                attendanceBook.getCrewAtRiskOfExpulsion(attendanceRepository, INTERVIEW.getValue()));
-        outputView.printCrewsAtRiskOfExpulsion(
-                attendanceBook.getCrewAtRiskOfExpulsion(attendanceRepository, WARNING.getValue()));
+        printTargetCrews(EXPELLED);
+        printTargetCrews(INTERVIEW);
+        printTargetCrews(WARNING);
         outputView.printNewLine();
+    }
+
+    private void printTargetCrews(AcademicStatus status) {
+        List<CrewAttendanceInformation> targetCrews = attendanceBook.getCrewAtRiskOfExpulsion(
+                attendanceRepository, status.getValue());
+        outputView.printCrewsAtRiskOfExpulsion(targetCrews);
     }
 
     private <T> T retryInput(Supplier<T> supplier) {
