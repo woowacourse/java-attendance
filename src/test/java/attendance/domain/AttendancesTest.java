@@ -1,6 +1,7 @@
 package attendance.domain;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
 import attendance.util.FileReader;
@@ -72,11 +73,18 @@ class AttendancesTest {
 
 //        대신 모든 출석기록의 이름이 빙봉인지 확인하기
         bingbongRecords.forEach(record -> assertThat(record)
-                        .extracting("crew")
-                        .extracting("crewName")
-                        .isEqualTo("빙봉")
+                .extracting("crew")
+                .extracting("crewName")
+                .isEqualTo("빙봉")
         );
+    }
 
-
+    @DisplayName("출석 기록이 없는 크루의 기록을 조회하는 경우 에러를 발생시킨다.")
+    @Test
+    void findWrongRecordByCrewAndDate() {
+        assertThatThrownBy(
+                () -> attendances.findMatchCrewDate(new Crew("엠제이"), LocalDate.of(2025, 2, 22)))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("[ERROR] 해당 날짜에 해당 크루의 출석 기록이 존재하지 않습니다.");
     }
 }
