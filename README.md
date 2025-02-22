@@ -11,11 +11,11 @@
 
 **예외**
 
-- [ ] 닉네임이 2글자에서 4글자 사이가 아닌 경우
-- [ ] 닉네임이 존재하지 않는 경우
-- [ ] 주말과 공휴일에 출석을 하는 경우
-- [ ] 등원 시간이 아닌 경우
-- [ ] 이미 출석한 경우에는 다시 출석할 수 없으며 수정 기능을 이용하도록 안내
+- [x] 닉네임이 2글자에서 4글자 사이가 아닌 경우
+- [x] 닉네임이 존재하지 않는 경우
+- [x] 주말과 공휴일에 출석을 하는 경우
+- [x] 등원 시간이 아닌 경우
+- [x] 이미 출석한 경우에는 다시 출석할 수 없으며 수정 기능을 이용하도록 안내
 
 ### 2. 출석 수정
 
@@ -24,8 +24,8 @@
 
 **예외**
 
-- [ ] 수정하려는 날짜가 미래인 경우
-- [ ] 입력한 닉네임이 존재하지 않는 경우
+- [x] 수정하려는 날짜가 미래인 경우
+- [x] 입력한 닉네임이 존재하지 않는 경우
 
 ### 3. 크루별 출석 기록 확인
 
@@ -36,7 +36,7 @@
 
 **예외**
 
-- [ ] 닉네임이 존재하지 않는 경우
+- [x] 닉네임이 존재하지 않는 경우
 
 ### 4. 제적 위험자 확인
 
@@ -44,29 +44,3 @@
 - 제적 위험자는 제적 대상자, 면담 대상자, 경고 대상자순으로 출력하며
 - 대상 항목별 정렬 순서는 지각을 결석으로 간주하여 내림차순한다.
 - 출석 상태가 같으면 닉네임으로 오름차순 정렬한다.
-
-## 예상 도메인
-
-```java
-class Crew {
-    private final String name;
-}
-
-class CheckInTime {
-    private LocalDateTime time;
-}
-
-class CheckInTimes {
-    private final List<CheckInTime> ts;
-}
-
-class Attendance {
-    private final Crew crew;
-    private final CheckInTimes checkInTimes;
-}
-
-class Attendances {
-    List<Attendance> attendanceList;
-}
-
-```
