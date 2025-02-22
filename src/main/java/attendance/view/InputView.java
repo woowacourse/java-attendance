@@ -45,11 +45,13 @@ public class InputView {
 
     public LocalDate readModificationDay(LocalDate today) {
         System.out.println("수정하려는 날짜(일)를 입력해 주세요.");
-        int day = Integer.parseInt(scanner.nextLine());
         try {
+            int day = Integer.parseInt(scanner.nextLine());
             LocalDate modificationDate = LocalDate.of(today.getYear(), today.getMonth(), day);
             validateFutureDate(today, modificationDate);
             return modificationDate;
+        } catch (NumberFormatException numberFormatException) {
+            throw new IllegalArgumentException("올바른 숫자를 입력해 주세요.");
         } catch (DateTimeException exception) {
             throw new IllegalArgumentException("잘못된 날짜입니다.");
         }

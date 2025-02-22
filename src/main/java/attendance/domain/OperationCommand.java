@@ -19,7 +19,7 @@ public enum OperationCommand {
 
     public static OperationCommand from(final String commandText) {
         return Arrays.stream(values())
-                .filter(operationCommand -> operationCommand.commandText.equals(commandText))
+                .filter(operationCommand -> operationCommand.commandText.equals(commandText.toUpperCase()))
                 .findAny()
                 .orElseThrow(() -> new IllegalArgumentException("제공되지 않는 기능입니다."));
     }
