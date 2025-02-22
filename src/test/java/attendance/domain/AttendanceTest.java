@@ -14,15 +14,6 @@ import org.junit.jupiter.params.provider.CsvSource;
 public class AttendanceTest {
 
     @Test
-    void 닉네임과_등교시간으로_출석을_한다() {
-        LocalTime time = LocalTime.of(9, 59);
-        LocalDateTime localDateTime = LocalDateTime.of(LocalDate.now(), time);
-
-        assertThatCode(() -> Attendance.of(localDateTime))
-            .doesNotThrowAnyException();
-    }
-
-    @Test
     void 등교날짜가_주말이면_예외가_발생한다() {
         LocalTime time = LocalTime.of(9, 59);
 
@@ -34,7 +25,7 @@ public class AttendanceTest {
     }
 
     @Test
-    void 등교날짜가_주말이아니면_출석을_한다() {
+    void 주말이나_휴일이아니면_출석객체를_생성할수있다() {
         LocalTime time = LocalTime.of(13, 4);
 
         LocalDate monday = LocalDate.of(2024, 12, 9);
@@ -42,30 +33,6 @@ public class AttendanceTest {
 
         assertThatCode(() -> Attendance.of(localDateTime))
             .doesNotThrowAnyException();
-    }
-
-    @CsvSource(value = {"13:5:CHECKIN", "13:6:LATE", "13:31:ABSENCE"}, delimiterString = ":")
-    @ParameterizedTest
-    void 월요일의_시간에따라_다른출석상태를_반환한다(int hour, int minute, AttendanceStatus expectedStatus) {
-        LocalTime time = LocalTime.of(hour, minute);
-
-        LocalDate monday = LocalDate.of(2024, 12, 9);
-        LocalDateTime localDateTime = LocalDateTime.of(monday, time);
-        Attendance attendance = Attendance.of(localDateTime);
-
-        assertThat(attendance.getStatus()).isEqualTo(expectedStatus);
-    }
-
-    @CsvSource(value = {"10:5:CHECKIN", "10:6:LATE", "10:31:ABSENCE"}, delimiterString = ":")
-    @ParameterizedTest
-    void 화요일의_시간에따라_다른출석상태를_반환한다(int hour, int minute, AttendanceStatus expectedStatus) {
-        LocalTime time = LocalTime.of(hour, minute);
-
-        LocalDate tuesday = LocalDate.of(2024, 12, 10);
-        LocalDateTime localDateTime = LocalDateTime.of(tuesday, time);
-        Attendance attendance = Attendance.of(localDateTime);
-
-        assertThat(attendance.getStatus()).isEqualTo(expectedStatus);
     }
 
     @Test
@@ -79,15 +46,19 @@ public class AttendanceTest {
             .isInstanceOf(IllegalArgumentException.class);
     }
 
-    @Test
-    void 출석시간을_수정할수있고_수정된_시간에따라_상태가_변경된다() {
-        LocalDate previousDate = LocalDate.of(2024, 12, 3);
-        LocalTime previousTime = LocalTime.of(10, 7);
-        LocalTime modifiedTime = LocalTime.of(9, 58);
-        Attendance attendance = Attendance.of(LocalDateTime.of(previousDate, previousTime));
+    @ParameterizedTest(name = "[전] {0} -> [후] {1} : {2}")
+    @CsvSource({
+        "2025-02-17T13:31:00,2025-02-17T13:00:00,CHECKIN",
+        "2025-02-18T10:31:00,2025-02-18T10:06:00,LATE",
+        "2025-02-19T10:06:00,2025-02-19T10:00:00,CHECKIN",
+        "2025-02-20T10:06:00,2025-02-20T10:31:00,ABSENCE",
+        "2025-02-21T10:00:00,2025-02-21T10:06:00,LATE",
+    })
+    void 출석시간을_수정할수있고_수정된_시간에따라_상태가_변경된다(LocalDateTime before, LocalDateTime after, AttendanceStatus expected) {
+        Attendance attendance = Attendance.of(before);
+        attendance.modify(after);
 
-        attendance.modify(LocalDateTime.of(previousDate, modifiedTime));
-
-        assertThat(attendance.getStatus()).isEqualTo(AttendanceStatus.CHECKIN);
+        assertThat(attendance.getAttendedTime()).isEqualTo(after);
+        assertThat(attendance.getStatus()).isEqualTo(expected);
     }
 }

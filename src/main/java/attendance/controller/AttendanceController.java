@@ -94,7 +94,7 @@ public class AttendanceController {
 
         Attendance attendance = attendances.getAttendance(crew, modifyingCheckinDate);
 
-        Attendance previousAttendance = Attendance.of(attendance.getDateTime());
+        Attendance previousAttendance = Attendance.of(attendance.getAttendedTime());
         attendance.modify(LocalDateTime.of(modifyingCheckinDate, modifyingCheckinTime));
         OutputView.printModifyingResult(previousAttendance, attendance);
     }

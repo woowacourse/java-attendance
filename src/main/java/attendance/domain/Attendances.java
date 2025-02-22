@@ -3,7 +3,6 @@ package attendance.domain;
 import attendance.util.DateUtil;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -32,7 +31,7 @@ public class Attendances {
     }
 
     private void validateAlreadyAttended(Attendance attendance, Attendance existAttendance) {
-        if (existAttendance.getDateTime().getDayOfMonth() == attendance.getDateTime().getDayOfMonth()) {
+        if (existAttendance.getAttendedTime().getDayOfMonth() == attendance.getAttendedTime().getDayOfMonth()) {
             throw new IllegalArgumentException("\n[ERROR] 이미 출석을 완료했습니다. 수정 기능을 이용해주세요.");
         }
     }
@@ -40,7 +39,7 @@ public class Attendances {
     public Attendance getAttendance(Crew targetCrew, LocalDate targetDate) {
         return attendances.getOrDefault(targetCrew, new ArrayList<>())
             .stream()
-            .filter(attendance -> attendance.getDateTime().getDayOfMonth() == targetDate.getDayOfMonth())
+            .filter(attendance -> attendance.getAttendedTime().getDayOfMonth() == targetDate.getDayOfMonth())
             .findAny()
             .orElse(Attendance.ofAbsence(targetDate));
     }
@@ -51,13 +50,13 @@ public class Attendances {
 
         return Stream.of(attendancesOfCrew, absencesOfCrew)
             .flatMap(List::stream)
-            .sorted(Comparator.comparing(Attendance::getDateTime))
+            .sorted(Comparator.comparing(Attendance::getAttendedTime))
             .collect(Collectors.toList());
     }
 
     private List<Attendance> generateAbsences(List<Attendance> attendances, LocalDate untilDate) {
         List<Integer> attendedDays = attendances.stream()
-            .map(Attendance::getDateTime)
+            .map(Attendance::getAttendedTime)
             .map(LocalDateTime::getDayOfMonth)
             .toList();
 
