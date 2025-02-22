@@ -1,10 +1,12 @@
 package controller.sub;
 
 import domain.date.CustomDate;
+import exception.InvalidTimeException;
 import exception.handler.ExceptionHandler;
 import controller.sub.parent.SubController;
 import domain.crew.Crew;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeParseException;
 import java.util.Date;
 import repository.AttendanceRepository;
 import service.AttendanceModifyService;
@@ -60,8 +62,11 @@ public class AttendanceModifyController implements SubController {
 
     private LocalTime readModifyTime() {
         return ExceptionHandler.retryIfIllegalArgumentAndReturn(() -> {
-            LocalTime modifyTime = inputView.readModifyTime();
-            return modifyTime; //TODO : 검증추가
+            try {
+                return inputView.readModifyTime();
+            } catch (DateTimeParseException e) {
+                throw new InvalidTimeException();
+            }
         });
     }
 }

@@ -1,5 +1,6 @@
 package controller.sub;
 
+import exception.InvalidTimeException;
 import exception.handler.ExceptionHandler;
 import controller.sub.parent.SubController;
 import domain.attendance.Attendance;
@@ -8,6 +9,7 @@ import domain.date.CustomDate;
 import exception.CannotRegisterAttendanceException;
 import exception.DuplicateAttendanceException;
 import java.time.LocalTime;
+import java.time.format.DateTimeParseException;
 import repository.AttendanceRepository;
 import service.AttendanceRegisterService;
 import view.InputView;
@@ -57,7 +59,11 @@ public class AttendanceRegisterController implements SubController {
 
     private LocalTime readTime() {
         return ExceptionHandler.retryIfIllegalArgumentAndReturn(() -> {
-            return inputView.readTime(); //TODO : 파싱 실패 예외 추가
+            try {
+                return inputView.readTime();
+            } catch (DateTimeParseException e) {
+                throw new InvalidTimeException();
+            }
         });
     }
 
