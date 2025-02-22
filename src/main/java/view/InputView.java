@@ -1,0 +1,68 @@
+package view;
+
+import domain.MenuOption;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
+import java.util.List;
+import java.util.Scanner;
+
+public class InputView {
+
+    private final static Scanner scanner = new Scanner(System.in);
+
+    public String readOption(List<MenuOption> options) {
+        StringBuilder stringBuilder = new StringBuilder();
+        for (MenuOption option : options) {
+            stringBuilder.append(System.lineSeparator())
+                    .append(option.getCommand())
+                    .append(". ")
+                    .append(option.getOption());
+        }
+        return prompt(stringBuilder.toString());
+    }
+
+    public String readNickname() {
+        return prompt("\n닉네임을 입력해 주세요.");
+    }
+
+    public LocalTime readArrivalTime() {
+        String response = prompt("등교 시간을 입력해 주세요.");
+        return parseTime(response);
+    }
+
+    public String readEditNickname() {
+        return prompt("출석을 수정하려는 크루의 닉네임을 입력해 주세요.");
+    }
+
+    public int readEditArrivalDate() {
+        String response = prompt("수정하려는 날짜(일)를 입력해 주세요.");
+        return parseDay(response);
+    }
+
+    public LocalTime readEditArrivalTime() {
+        String response = prompt("언제로 변경하겠습니까?");
+        return parseTime(response);
+    }
+
+    private String prompt(String message) {
+        System.out.println(message);
+        return scanner.nextLine();
+    }
+
+    private LocalTime parseTime(String response) {
+        try {
+            return LocalTime.parse(response, DateTimeFormatter.ofPattern("HH:mm"));
+        } catch (DateTimeParseException e) {
+            throw new IllegalArgumentException("[ERROR] 시간 형식이 올바르지 않습니다.");
+        }
+    }
+
+    private int parseDay(String response) {
+        try {
+            return Integer.parseInt(response);
+        } catch (NumberFormatException e) {
+            throw new IllegalArgumentException("[ERROR] 날짜 형식이 올바르지 않습니다.");
+        }
+    }
+}
