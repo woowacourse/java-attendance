@@ -1,5 +1,6 @@
 package domain;
 
+import controller.AttendanceCommandController;
 import error.CustomIllegalArgumentException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -35,6 +36,13 @@ public class AttendanceDateTime {
     public static AttendanceDateTime of(final String desiredUpdateDate, final String desiredUpdateTime) {
         final LocalDate localDate = parseLocalDate(desiredUpdateDate);
         final LocalTime localTime = parseLocalTime(desiredUpdateTime);
+
+        return new AttendanceDateTime(LocalDateTime.of(localDate, localTime));
+    }
+
+    public static AttendanceDateTime generateTodayAttendance(final AttendanceTime attendanceTime) {
+        final LocalDate localDate = AttendanceCommandController.FIX_DATE_TIME.toLocalDate();
+        final LocalTime localTime = attendanceTime.getLocalTime();
 
         return new AttendanceDateTime(LocalDateTime.of(localDate, localTime));
     }
