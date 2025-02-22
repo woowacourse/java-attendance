@@ -47,10 +47,11 @@ public class Attendance {
     }
 
     public AttendanceStatus calculateStatus() {
+        final LocalTime time = dateTime.toLocalTime();
         if (dateTime.getDayOfWeek() == DayOfWeek.MONDAY) {
-            return AttendanceStatus.of(dateTime, 13, 0);
+            return AttendanceStatus.of(time, 13, 0);
         }
-        return AttendanceStatus.of(dateTime, 10, 0);
+        return AttendanceStatus.of(time, 10, 0);
 
     }
 

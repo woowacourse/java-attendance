@@ -112,7 +112,7 @@ public class AttendanceController {
     private void updateAttendanceForDuplicateAttendance(final String crewName,
                                                         final AttendanceSystem attendanceSystem) {
         outputView.printIntroduceAnswerCommand();
-        final AnswerCommand answerCommand = inputView.readAnswerCommand();
+        final AnswerCommand answerCommand = LoopTemplate.tryCatchLoop(inputView::readAnswerCommand, outputView);
         if (answerCommand == AnswerCommand.YES) {
             updateAttendance(attendanceSystem);
         }

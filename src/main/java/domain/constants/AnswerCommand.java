@@ -13,10 +13,10 @@ public enum AnswerCommand {
         this.command = command;
     }
 
-    public static AnswerCommand findByCommand(final String command) {
+    public static AnswerCommand of(final String command) {
         return Arrays.stream(AnswerCommand.values())
                 .filter(answerCommand -> Objects.equals(answerCommand.command, command))
                 .findAny()
-                .orElseThrow(IllegalArgumentException::new);
+                .orElseThrow(() -> new IllegalArgumentException(ErrorMessage.USER_COMMAND_NOT_FOUND.getMessage()));
     }
 }
