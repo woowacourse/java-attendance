@@ -54,6 +54,8 @@ class AbsentPolicyTest {
     @DisplayName("결석 횟수와 지각 횟수에 따라 대상자가 아님을 확인한다.")
     @MethodSource("getNoneCounts")
     void absent_count_late_count_then_none(int absentCount, int lateCount) {
+        // when
+        // then
         Assertions.assertThat(AbsentPolicy.calculateAbsentPolicy(absentCount, lateCount))
                 .isEqualTo(AbsentPolicy.NONE);
     }
@@ -62,6 +64,8 @@ class AbsentPolicyTest {
     @DisplayName("결석 횟수와 지각 횟수에 따라 경고 대상자임을 계산한다.")
     @MethodSource("getWarningCounts")
     void absent_count_late_count_then_warning(int absentCount, int lateCount) {
+        // when
+        // then
         Assertions.assertThat(AbsentPolicy.calculateAbsentPolicy(absentCount, lateCount))
                 .isEqualTo(AbsentPolicy.WARNING);
     }
@@ -70,6 +74,8 @@ class AbsentPolicyTest {
     @DisplayName("결석 횟수와 지각 횟수에 따라 면담 대상자임을 계산한다.")
     @MethodSource("getInterviewCounts")
     void absent_count_late_count_then_interview(int absentCount, int lateCount) {
+        // when
+        // then
         Assertions.assertThat(AbsentPolicy.calculateAbsentPolicy(absentCount, lateCount))
                 .isEqualTo(AbsentPolicy.INTERVIEW);
     }
@@ -78,6 +84,8 @@ class AbsentPolicyTest {
     @DisplayName("결석 횟수와 지각 횟수에 따라 제적 대상자임을 계산한다.")
     @MethodSource("getExpulsionCounts")
     void absent_count_late_count_then_expulsion(int absentCount, int lateCount) {
+        // when
+        // then
         Assertions.assertThat(AbsentPolicy.calculateAbsentPolicy(absentCount, lateCount))
                 .isEqualTo(AbsentPolicy.EXPULSION);
     }
@@ -94,6 +102,8 @@ class AbsentPolicyTest {
     @Test
     @DisplayName("제적 위험자임을 확인한다.")
     void check_risk_of_expulsion() {
+        // when
+        // then
         Assertions.assertThat(AbsentPolicy.isRiskOfExpulsion(AbsentPolicy.INTERVIEW))
                 .isTrue();
         Assertions.assertThat(AbsentPolicy.isRiskOfExpulsion(AbsentPolicy.WARNING))
