@@ -1,84 +1,97 @@
-//package attendance.domain;
-//
-//import attendance.domain.constant.AttendanceStatus;
-//import attendance.domain.constant.DayOfWeek;
-//import org.assertj.core.api.Assertions;
-//import org.junit.Test;
-//import org.junit.jupiter.params.ParameterizedTest;
-//import org.junit.jupiter.params.provider.CsvSource;
-//
-//class DateInfoTest {
-//
-//    @ParameterizedTest
-//    @CsvSource(value = {"2,19,3,10:31,결석",
-//    "2,20,4,10:05,출석",
-//    "2,21,5,10:06,지각"})
-//    void 결석_출석_지각_확인(int month, int day, int dayNumber, String timeNumber, String expectedStatus) {
-//        //given
-//        DayOfWeek dayOfWeek = DayOfWeek.from(dayNumber);
-//        Time time = Time.from(timeNumber);
-//        DateInfo dateInfo = DateInfo.of(month, day, dayOfWeek, time);
-//
-//        //when
-//        String attendanceStatus = dateInfo.getAttendanceStatus();
-//
-//        //then
-//        Assertions.assertThat(attendanceStatus).isEqualTo(expectedStatus);
-//    }
-//
-//    @ParameterizedTest
-//    @CsvSource(value = {"2,19,3,10:31,09:59,출석",
-//    "2,19,3,10:31,10:11,지각",
-//    "2,19,3,10:11,10:31,결석",
-//    "2,19,3,10:11,09:50,출석",
-//    "2,19,3,09:59,10:11,지각",
-//    "2,19,3,09:59,10:31,결석"})
-//    void 결석_출석으로_수정_확인(int month, int day, int dayNumber, String beforeTime, String afterTime, String expectedStatus) {
-//        //given
-//        DayOfWeek dayOfWeek = DayOfWeek.from(dayNumber);
-//        Time prevTime = Time.from(beforeTime);
-//        DateInfo dateInfo = DateInfo.of(month, day, dayOfWeek, prevTime);
-//        Time modifyTime = Time.from(afterTime);
-//        //when
-//        dateInfo.modifyAttendanceTime(modifyTime);
-//
-//        //then
-//        Assertions.assertThat(dateInfo.getAttendanceStatus()).isEqualTo(expectedStatus);
-//    }
-//
-//    @ParameterizedTest
-//    @CsvSource(value = {"2,19,3,10:31,1", "2,19,3,09:59,0", "2,19,3,10:11,0"})
-//    void 결석_개수_반환(int month, int day, int dayNumber, String timeNumber, int expectedStatus) {
-//        //given
-//        DayOfWeek dayOfWeek = DayOfWeek.from(dayNumber);
-//        Time time = Time.from(timeNumber);
-//        DateInfo dateInfo = DateInfo.of(month, day, dayOfWeek, time);
-//
-//        //when & then
-//        Assertions.assertThat(dateInfo.checkAbsenceStatus()).isEqualTo(expectedStatus);
-//    }
-//
-//    @ParameterizedTest
-//    @CsvSource(value = {"2,19,3,10:11,1", "2,19,3,09:59,0", "2,19,3,10:31,0"})
-//    void 지각_개수_반환(int month, int day, int dayNumber, String timeNumber, int expectedStatus) {
-//        //given
-//        DayOfWeek dayOfWeek = DayOfWeek.from(dayNumber);
-//        Time time = Time.from(timeNumber);
-//        DateInfo dateInfo = DateInfo.of(month, day, dayOfWeek, time);
-//
-//        //when & then
-//        Assertions.assertThat(dateInfo.checkLateStatus()).isEqualTo(expectedStatus);
-//    }
-//
-//    @ParameterizedTest
-//    @CsvSource(value = {"2,19,3,10:11,0", "2,19,3,09:59,1", "2,19,3,10:31,0"})
-//    void 출석_개수_반환(int month, int day, int dayNumber, String timeNumber, int expectedStatus) {
-//        //given
-//        DayOfWeek dayOfWeek = DayOfWeek.from(dayNumber);
-//        Time time = Time.from(timeNumber);
-//        DateInfo dateInfo = DateInfo.of(month, day, dayOfWeek, time);
-//
-//        //when & then
-//        Assertions.assertThat(dateInfo.checkAttendanceStatus()).isEqualTo(expectedStatus);
-//    }
-//}
+package attendance.domain;
+
+import attendance.domain.constant.Weekday;
+import java.time.LocalDateTime;
+import java.util.List;
+import org.assertj.core.api.Assertions;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
+
+class DateInfoTest {
+
+    @ParameterizedTest
+    @CsvSource(value = {"2025,2,19,10:31,결석",
+            "2025,2,20,10:05,출석",
+            "2025,2,21,10:06,지각"})
+    void 결석_출석_지각_확인(int year, int month, int day, String timeNumber, String expectedStatus) {
+        //given
+        List<String> timeNumbers = List.of(timeNumber.split(":"));
+        LocalDateTime localDateTime = LocalDateTime.of(year, month, day, Integer.parseInt(timeNumbers.get(0)),
+                Integer.parseInt(timeNumbers.get(1)));
+        Weekday weekday = Weekday.from(localDateTime.getDayOfWeek());
+        DateInfo dateInfo = DateInfo.of(localDateTime);
+
+        //when
+        String attendanceStatus = dateInfo.getAttendanceStatus();
+
+        //then
+        Assertions.assertThat(attendanceStatus).isEqualTo(expectedStatus);
+    }
+
+
+    @ParameterizedTest
+    @CsvSource(value = {"2025,2,19,10:31,09:59,출석",
+            "2025,2,19,10:31,10:11,지각",
+            "2025,2,19,10:11,10:31,결석",
+            "2025,2,19,10:11,09:50,출석",
+            "2025,2,19,09:59,10:11,지각",
+            "2025,2,19,09:59,10:31,결석"})
+    void 결석_출석_지각으로_수정_확인(int year, int month, int day, String beforeTime, String afterTime, String expectedStatus) {
+        //given
+        List<String> beforeTimeNumbers = List.of(beforeTime.split(":"));
+        List<String> afterTimeNumbers = List.of(afterTime.split(":"));
+        LocalDateTime beforeLocalDateTime = LocalDateTime.of(year, month, day,
+                Integer.parseInt(beforeTimeNumbers.get(0)), Integer.parseInt(beforeTimeNumbers.get(1)));
+        LocalDateTime affterLocalDateTime = LocalDateTime.of(year, month, day,
+                Integer.parseInt(afterTimeNumbers.get(0)), Integer.parseInt(afterTimeNumbers.get(1)));
+        DateInfo dateInfo = DateInfo.of(beforeLocalDateTime);
+        //when
+        dateInfo.modifyAttendanceTime(affterLocalDateTime);
+
+        //then
+        Assertions.assertThat(dateInfo.getAttendanceStatus()).isEqualTo(expectedStatus);
+    }
+
+
+    @ParameterizedTest
+    @CsvSource(value = {"2025,2,19,10:31,1", "2025,2,19,09:59,0", "2025,2,19,10:11,0"})
+    void 결석_개수_반환(int year, int month, int day, String timeNumber, int expectedStatus) {
+        //given
+        List<String> timeNumbers = List.of(timeNumber.split(":"));
+        LocalDateTime localDateTime = LocalDateTime.of(year, month, day, Integer.parseInt(timeNumbers.get(0)),
+                Integer.parseInt(timeNumbers.get(1)));
+
+        DateInfo dateInfo = DateInfo.of(localDateTime);
+
+        //when & then
+        Assertions.assertThat(dateInfo.isAbsence()).isEqualTo(expectedStatus);
+    }
+
+
+    @ParameterizedTest
+    @CsvSource(value = {"2025,2,19,10:11,1", "2025,2,19,09:59,0", "2025,2,19,10:31,0"})
+    void 지각_개수_반환(int year, int month, int day, String timeNumber, int expectedStatus) {
+        //given
+        List<String> timeNumbers = List.of(timeNumber.split(":"));
+        LocalDateTime localDateTime = LocalDateTime.of(year, month, day, Integer.parseInt(timeNumbers.get(0)),
+                Integer.parseInt(timeNumbers.get(1)));
+
+        DateInfo dateInfo = DateInfo.of(localDateTime);
+
+        //when & then
+        Assertions.assertThat(dateInfo.isLate()).isEqualTo(expectedStatus);
+    }
+
+    @ParameterizedTest
+    @CsvSource(value = {"2025,2,19,10:11,0", "2025,2,19,09:59,1", "2025,2,19,10:31,0"})
+    void 출석_개수_반환(int year, int month, int day, String timeNumber, int expectedStatus) {
+        //given
+        List<String> timeNumbers = List.of(timeNumber.split(":"));
+        LocalDateTime localDateTime = LocalDateTime.of(year, month, day, Integer.parseInt(timeNumbers.get(0)),
+                Integer.parseInt(timeNumbers.get(1)));
+
+        DateInfo dateInfo = DateInfo.of(localDateTime);
+        //when & then
+        Assertions.assertThat(dateInfo.isAttendance()).isEqualTo(expectedStatus);
+    }
+}

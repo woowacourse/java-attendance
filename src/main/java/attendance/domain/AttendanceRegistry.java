@@ -53,9 +53,8 @@ public class AttendanceRegistry {
     private static void addWeekdayDateInfo(LocalDate currentDay, List<DateInfo> dateInfos) {
         if (checkHoliday(currentDay)) return;
 
-        dateInfos.add(DateInfo.makeDefaultValue(currentDay.getMonthValue(),
-                currentDay.getDayOfMonth(),
-                Weekday.from(currentDay.getDayOfWeek())));
+        dateInfos.add(DateInfo.makeDefaultValue(currentDay.getYear(),currentDay.getMonthValue(),
+                currentDay.getDayOfMonth()));
     }
 
     private static boolean checkHoliday(LocalDate currentDay) {
@@ -63,7 +62,7 @@ public class AttendanceRegistry {
     }
 
     public DateInfo findByDate(int date) {
-        return dateInfos.stream().filter(dateInfo -> Integer.parseInt(dateInfo.getDay()) == date)
+        return dateInfos.stream().filter(dateInfo -> dateInfo.getLocalDateTime().getDayOfMonth() == date)
                 .findFirst()
                 .orElseThrow();
     }

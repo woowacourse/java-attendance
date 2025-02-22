@@ -2,6 +2,7 @@ package attendance.domain;
 
 import attendance.domain.constant.AttendanceStatus;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -21,16 +22,16 @@ public class Register {
         crews.register(register, AttendanceRegistry.fromDefaultValue(now));
     }
 
-    public DateInfo modifyInfo(Crew crew, int date, Time modifyTime) {
+    public DateInfo modifyInfo(Crew crew, LocalDateTime localDateTime) {
         AttendanceRegistry attendanceRegistry = register.get(crew);
-        DateInfo dateInfo = attendanceRegistry.findByDate(date);
-        dateInfo.modifyAttendanceTime(modifyTime);
+        DateInfo dateInfo = attendanceRegistry.findByDate(localDateTime.getDayOfMonth());
+        dateInfo.modifyAttendanceTime(localDateTime);
         return dateInfo;
     }
 
-    public DateInfo findInfo(Crew crew, int modifyDate) {
+    public DateInfo findInfo(Crew crew, LocalDateTime modifyDate) {
         AttendanceRegistry attendanceRegistry = register.get(crew);
-        return attendanceRegistry.findByDate(modifyDate);
+        return attendanceRegistry.findByDate(modifyDate.getDayOfMonth());
     }
 
     public AttendanceRegistry checkAttendanceHistory(Crew crew) {
@@ -46,9 +47,14 @@ public class Register {
             String dateTime = make(attendanceTime, COMMA, POSITION_ONE);
             String date = make(dateTime, SPACE, POSITION_ZERO);
             String timeNumber = make(dateTime, SPACE, POSITION_ONE);
-            String day = make(date, HYPHEN, POSITION_TWO);
-            Time time = Time.from(timeNumber);
-            modifyInfo(crew, Integer.parseInt(day), time);
+            int hour = Integer.parseInt(make(timeNumber, ":", POSITION_ZERO));
+            int minute = Integer.parseInt(make(timeNumber, ":", POSITION_ONE));
+            int year = Integer.parseInt(make(date, HYPHEN, POSITION_ZERO));
+            int month = Integer.parseInt(make(date, HYPHEN, POSITION_ONE));
+            int day = Integer.parseInt(make(date, HYPHEN, POSITION_TWO));
+
+            LocalDateTime localDateTime = LocalDateTime.of(year,month,day,hour,minute);
+            modifyInfo(crew, localDateTime);
         }
     }
     

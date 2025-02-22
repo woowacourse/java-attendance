@@ -2,37 +2,30 @@ package attendance.domain;
 
 import attendance.domain.constant.AttendanceStatus;
 import attendance.domain.constant.Weekday;
+import java.time.LocalDateTime;
 
 public class DateInfo {
 
-    private final String month;
-    private final String day;
-    private final Weekday weekday;
-    private Time time;
+    private LocalDateTime localDateTime;
     private AttendanceStatus attendanceStatus;
 
-    private DateInfo(String month, String day, Weekday weekday, Time time) {
-        this.month = month;
-        this.day = day;
-        this.weekday = weekday;
-        this.time = time;
+    private DateInfo(LocalDateTime localDateTime) {
+        this.localDateTime = localDateTime;
         this.attendanceStatus = calculateStatus();
     }
 
-    public static DateInfo of(int month, int day, Weekday weekday, Time time) {
-        String parsedMonth = formatWithLeadingZero(month);
-        String parsedDay = formatWithLeadingZero(day);
-        return new DateInfo(parsedMonth, parsedDay, weekday, time);
+    public static DateInfo of(LocalDateTime localDateTime) {
+        return new DateInfo(localDateTime);
     }
 
-    public static DateInfo makeDefaultValue(int month, int day, Weekday weekday) {
-        String parsedMonth = formatWithLeadingZero(month);
-        String parsedDay = formatWithLeadingZero(day);
-        return new DateInfo(parsedMonth, parsedDay, weekday, Time.makeAbsentValue());
+    public static DateInfo makeDefaultValue(int year, int month, int day) {
+        LocalDateTime dateTime = LocalDateTime.of(year, month, day, 0, 0);
+        return new DateInfo(dateTime);
     }
 
-    public void modifyAttendanceTime(Time modifyTime) {
-        this.time = modifyTime;
+    public void modifyAttendanceTime(LocalDateTime localDateTime) {
+        this.localDateTime = this.localDateTime.withHour(localDateTime.getHour())
+                .withMinute(localDateTime.getMinute());
         this.attendanceStatus = calculateStatus();
     }
 
@@ -55,15 +48,6 @@ public class DateInfo {
         return 0;
     }
 
-    private static String formatWithLeadingZero(int number) {
-        String parsedNumber = String.valueOf(number);
-        if (number < 10) {
-            parsedNumber = "0" + number;
-        }
-        return parsedNumber;
-    }
-    //TODO : 리뷰 : 라인 수 궁금, 메서드 분리 궁금
-
     private AttendanceStatus calculateStatus() {
         if (checkDefault()) {
             return AttendanceStatus.ABSENCE;
@@ -78,19 +62,19 @@ public class DateInfo {
     }
 
     private boolean checkMonday() {
-        return weekday.equals(Weekday.MONDAY);
+        return Weekday.from(localDateTime.getDayOfWeek()).equals(Weekday.MONDAY);
     }
 
     private boolean checkHoliday() {
-        return weekday.equals(Weekday.SATURDAY) || weekday.equals(Weekday.SUNDAY);
+        return Weekday.from(localDateTime.getDayOfWeek()).equals(Weekday.SATURDAY) || Weekday.from(localDateTime.getDayOfWeek()).equals(Weekday.SUNDAY);
     }
 
     private boolean checkDefault() {
-        return time.getHour().equals("--");
+        return localDateTime.getHour() == 0;
     }
 
     private AttendanceStatus checkAttendanceStatus(String hourLimit) {
-        int hourMinute = Integer.parseInt(time.getHour() + time.getMinute());
+        int hourMinute = Integer.parseInt(localDateTime.getHour() + addZero(localDateTime.getMinute()));
         int absentTime = Integer.parseInt(hourLimit + "30");
         int lateTime = Integer.parseInt(hourLimit + "05");
         if (hourMinute > absentTime) {
@@ -101,24 +85,19 @@ public class DateInfo {
         }
         return AttendanceStatus.ATTENDANCE;
     }
-
-    public String getMonth() {
-        return month;
+    private String addZero(int time) {
+        if (time < 10) {
+            return "0" + time;
+        }
+        return String.valueOf(time);
     }
 
-    public String getDay() {
-        return day;
+    public LocalDateTime getLocalDateTime() {
+        return localDateTime;
     }
 
     public String getAttendanceStatus() {
         return attendanceStatus.getName();
     }
 
-    public String getDayOfWeek() {
-        return weekday.getDayOfWeek();
-    }
-
-    public Time getTime() {
-        return time;
-    }
 }

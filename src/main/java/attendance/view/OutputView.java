@@ -4,26 +4,27 @@ import attendance.domain.Crew;
 import attendance.domain.DateInfo;
 import attendance.domain.AttendanceRegistry;
 import attendance.domain.constant.CrewStatus;
+import attendance.domain.constant.Weekday;
 import java.util.List;
 import java.util.Map;
 
 public class OutputView {
     public void writeAttendanceCheck(DateInfo dateInfo) {
-        String month = dateInfo.getMonth();
-        String day = dateInfo.getDay();
-        String dayOfWeek = dateInfo.getDayOfWeek();
-        String hour = dateInfo.getTime().getHour();
-        String minute = dateInfo.getTime().getMinute();
+        int month = dateInfo.getLocalDateTime().getMonthValue();
+        int day = dateInfo.getLocalDateTime().getDayOfMonth();
+        String dayOfWeek = Weekday.from(dateInfo.getLocalDateTime().getDayOfWeek()).getDayOfWeek();
+        int hour = dateInfo.getLocalDateTime().getHour();
+        int minute = dateInfo.getLocalDateTime().getMinute();
         String status = dateInfo.getAttendanceStatus();
         System.out.println(String.format("%s월 %s일 %s %s:%s (%s)", month, day, dayOfWeek, hour, minute, status));
     }
 
-    public void writeAttendanceModifyCheck(String beforeHour, String beforeMinute, String beforeStatus, DateInfo modifiedInfo) {
-        String month = modifiedInfo.getMonth();
-        String day = modifiedInfo.getDay();
-        String dayOfWeek = modifiedInfo.getDayOfWeek();
-        String hour = modifiedInfo.getTime().getHour();
-        String minute = modifiedInfo.getTime().getMinute();
+    public void writeAttendanceModifyCheck(int beforeHour, int beforeMinute, String beforeStatus, DateInfo modifiedInfo) {
+        int month = modifiedInfo.getLocalDateTime().getMonthValue();
+        int day = modifiedInfo.getLocalDateTime().getDayOfMonth();
+        String dayOfWeek = Weekday.from(modifiedInfo.getLocalDateTime().getDayOfWeek()).getDayOfWeek();
+        int hour = modifiedInfo.getLocalDateTime().getHour();
+        int minute = modifiedInfo.getLocalDateTime().getMinute();
         String status = modifiedInfo.getAttendanceStatus();
         System.out.println(String.format("%s월 %s일 %s %s:%s (%s) -> %s:%s (%s) 수정 완료!", month, day, dayOfWeek, beforeHour,beforeMinute, beforeStatus, hour, minute, status));
     }
