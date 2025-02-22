@@ -20,6 +20,21 @@ import java.util.List;
 import java.util.Locale;
 
 public class AttendanceController {
+    private static final String WEEKEND_ERROR_MESSAGE = "[ERROR] 주말에는 출석을 할 수 없습니다.";
+    private static final String TIME_FORMAT_ERROR_MESSAGE = "[ERROR] 올바르지 않은 시간 형식을 입력했습니다.";
+    private static final String DATE_FORMAT_ERROR_MESSAGE = "[ERROR] 올바른 날짜 형식을 입력해주세요.";
+
+    private static final String FILE_NAME = "attendances.csv";
+
+    private static final String TIME_PATTERN = "(2[0-3]|[01][0-9]):[0-5][0-9]";
+    private static final String DATE_PATTERN = "^([1-2][0-8])|([1-9])$";
+
+    private static final int YEAR_VALUE = 2025;
+    private static final int MONTH_VALUE = 2;
+    private static final int WEEKEND_VALUE = 5;
+
+    private static final LocalDate LOCAL_DATE_TODAY = LocalDate.now();
+
     private final InputView inputView;
     private final OutputView outputView;
     private final Crews crews;
@@ -36,40 +51,59 @@ public class AttendanceController {
         initDataFromCSV();
 
         MenuCommand command = null;
-        while (!MenuCommand.QUIT.equals(command)) {
-            command = MenuCommand.toCommand(getMenuOption());
-            executeCommand(command);
-        }
+        do {
+            command = repeatMenuCommand(command);
+        } while (executeMenuCommand(command));
     }
 
     private void initDataFromCSV() {
         FileReader reader = new FileReader();
-        List<List<String>> attendanceRecords = reader.readResource("attendances.csv");
+        List<List<String>> attendanceRecords = reader.readResource(FILE_NAME);
 
         crews.initCrews(attendanceRecords);
         attendances.initAttendances(crews, attendanceRecords);
+    }
 
+    private MenuCommand repeatMenuCommand(final MenuCommand command) {
+        try {
+            return MenuCommand.toCommand(getMenuOption());
+        } catch (IllegalArgumentException e) {
+            System.out.println(e.getMessage());
+        }
+        return command;
     }
 
     private String getMenuOption() {
-        LocalDate currentDate = LocalDate.now();
-
-        String month = String.valueOf(currentDate.getMonthValue());
-        String day = String.valueOf(currentDate.getDayOfMonth());
-        String dayOfWeek = currentDate.getDayOfWeek().getDisplayName(TextStyle.NARROW, Locale.KOREAN);
+        String month = String.valueOf(LOCAL_DATE_TODAY.getMonthValue());
+        String day = String.valueOf(LOCAL_DATE_TODAY.getDayOfMonth());
+        String dayOfWeek = LOCAL_DATE_TODAY.getDayOfWeek().getDisplayName(TextStyle.NARROW, Locale.KOREAN);
 
         return inputView.readCommand(month, day, dayOfWeek);
     }
 
-    private void executeCommand(final MenuCommand command) {
+    private boolean executeMenuCommand(final MenuCommand command) {
+        if (command == null) {
+            return true;
+        }
+        if (command.equals(MenuCommand.QUIT)) {
+            return false;
+        }
+        executeCommandOptions(command);
+        return true;
+    }
+
+    private void executeCommandOptions(final MenuCommand command) {
         if (command.equals(MenuCommand.ATTEND)) {
             checkCrewAttendance();
+            return;
         }
         if (command.equals(MenuCommand.MODIFY)) {
             modifyCrewAttendance();
+            return;
         }
         if (command.equals(MenuCommand.LOOKUP)) {
             lookupCrewAttendanceHistory();
+            return;
         }
         if (command.equals(MenuCommand.EXPEL)) {
             lookupCrewsExpelStatus();
@@ -81,60 +115,68 @@ public class AttendanceController {
         return crews.findCrew(crewName);
     }
 
+    private void validateWeekend() {
+        if (LOCAL_DATE_TODAY.getDayOfWeek().getValue() > WEEKEND_VALUE) {
+            throw new IllegalArgumentException(WEEKEND_ERROR_MESSAGE);
+        }
+    }
+
+    private LocalDateTime createLocalDateTime(final LocalDate localDate, final String localTime) {
+        return LocalDateTime.of(localDate, LocalTime.parse(localTime));
+    }
+
     private void checkCrewAttendance() {
+        validateWeekend();
         Crew crew = findCrewByCrewName();
+        attendances.hasCheckedAttendance(crew, LOCAL_DATE_TODAY);
 
-        String presentTime = inputView.readPresentTime();
-        validateTimeFormat(presentTime);
-
-        LocalTime localTime = LocalTime.parse(presentTime);
-        LocalDate localDate = LocalDate.now();
-        LocalDateTime localDateTime = LocalDateTime.of(localDate, localTime);
-
+        LocalDateTime localDateTime = validatePresentTime();
         AttendanceType status = AttendanceType.of(localDateTime);
         Attendance todayAttendance = new Attendance(crew, localDateTime, status);
         attendances.add(todayAttendance);
+
         outputView.printTodayAttendance(todayAttendance.getInfo());
     }
 
+    private LocalDateTime validatePresentTime() {
+        String presentTime = inputView.readPresentTime();
+        validateTimeFormat(presentTime);
+        return createLocalDateTime(LOCAL_DATE_TODAY, presentTime);
+    }
+
     private void validateTimeFormat(final String presentTime) {
-        final String TIME_PATTERN = "(2[0-3]|[01][0-9]):[0-5][0-9]";
         if (!presentTime.matches(TIME_PATTERN)) {
-            throw new IllegalArgumentException(("[ERROR] 올바르지 않은 시간 형식을 입력했습니다."));
+            throw new IllegalArgumentException((TIME_FORMAT_ERROR_MESSAGE));
         }
     }
 
     private void modifyCrewAttendance() {
         Crew crew = findCrewByCrewName();
-
-        String date = inputView.readModifyDate();
-        validateDateFormat(date);
-        LocalDate localDate = LocalDate.of(2025, 2, Integer.parseInt(date));
-
+        LocalDate localDate = validateModifyDate();
         String originalTime = attendances.findOriginalTime(crew, localDate);
         AttendanceType originalType = attendances.findOriginalType(crew, localDate);
 
         String modifyTime = inputView.readModifyTime();
-        LocalTime localTime = LocalTime.parse(modifyTime);
-        LocalDateTime localDateTime = LocalDateTime.of(localDate, localTime);
-
+        LocalDateTime localDateTime = createLocalDateTime(localDate, modifyTime);
         attendances.modifyAttendances(crew, localDateTime);
         Attendance newAttendance = attendances.findMatchCrewDate(crew, localDate);
-
         outputView.printModifiedAttendance(originalTime, originalType.toString(), newAttendance.getInfo());
     }
 
     private void validateDateFormat(final String date) {
-        final String DATE_PATTERN = "^([1-2][0-8])|([1-9])$";
-
         if (!date.matches(DATE_PATTERN)) {
-            throw new IllegalArgumentException("[ERROR] 올바른 형식의 날짜가 아닙니다.");
+            throw new IllegalArgumentException(DATE_FORMAT_ERROR_MESSAGE);
         }
+    }
+
+    private LocalDate validateModifyDate() {
+        String date = inputView.readModifyDate();
+        validateDateFormat(date);
+        return LocalDate.of(YEAR_VALUE, MONTH_VALUE, Integer.parseInt(date));
     }
 
     private void lookupCrewAttendanceHistory() {
         Crew crew = findCrewByCrewName();
-
         List<Attendance> crewAttendances = attendances.findCrewAttendances(crew);
         CrewStatistic crewStatistic = new CrewStatistic(crew, crewAttendances);
 
@@ -142,8 +184,8 @@ public class AttendanceController {
         crewStatistic.initCrewsStatus();
         crewStatistic.calculatePenalty();
 
-        outputView.printCrewAttendanceHistory(crew.getName(), crewStatistic.getCrewAttendanceHistory());
-        outputView.printCrewStatisticStatus(crewStatistic.getCrewStatisticStatus());
+        outputView.printCrewAttendanceHistory(crew.getName(), crewStatistic.crewAttendanceHistoryInfo());
+        outputView.printCrewStatisticStatus(crewStatistic.crewStatisticStatusInfo());
     }
 
     private void lookupCrewsExpelStatus() {
@@ -152,19 +194,20 @@ public class AttendanceController {
         for (Crew crew : crews.getCrews()) {
             List<Attendance> crewAttendances = attendances.findCrewAttendances(crew);
             CrewStatistic crewStatistic = new CrewStatistic(crew, crewAttendances);
-
-            crewStatistic.resetCrewStatus();
-            crewStatistic.initCrewsStatus();
-            crewStatistic.calculatePenalty();
-
+            checkCrewStatistic(crewStatistic);
             crewStatistics.add(crewStatistic);
         }
-
-        List<CrewStatistic> sortedCrewStatistics = getSortedCrewStatistics(crewStatistics);
+        List<CrewStatistic> sortedCrewStatistics = sortCrewStatistics(crewStatistics);
         printExpelCrew(sortedCrewStatistics);
     }
 
-    private static List<CrewStatistic> getSortedCrewStatistics(final List<CrewStatistic> crewStatistics) {
+    private void checkCrewStatistic(CrewStatistic crewStatistic) {
+        crewStatistic.resetCrewStatus();
+        crewStatistic.initCrewsStatus();
+        crewStatistic.calculatePenalty();
+    }
+
+    private List<CrewStatistic> sortCrewStatistics(final List<CrewStatistic> crewStatistics) {
         return crewStatistics.stream()
                 .sorted(Comparator.comparing(CrewStatistic::getPenaltyCount)
                         .reversed()
@@ -175,7 +218,7 @@ public class AttendanceController {
     private void printExpelCrew(final List<CrewStatistic> sortedCrewStatistics) {
         outputView.printExpelCrewHead();
         for (CrewStatistic sortedCrewStatistic : sortedCrewStatistics) {
-            outputView.printExpelCrew(sortedCrewStatistic.crewExpelExpectedInfo());
+            outputView.printExpelCrewBody(sortedCrewStatistic.crewExpelExpectedInfo());
         }
         outputView.printNewLine();
     }
