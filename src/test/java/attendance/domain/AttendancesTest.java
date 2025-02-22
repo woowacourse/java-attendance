@@ -1,25 +1,22 @@
 package attendance.domain;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
-import attendance.file.AttendanceFileReader;
-import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.CsvSource;
 
 public class AttendancesTest {
 
-    private static String path = "src/test/resources/testAttendances.csv";
     private Attendances attendances;
 
     @BeforeEach
-    void setUp() throws IOException {
-        attendances = AttendanceFileReader.read(path).attendances();
+    void setUp() {
+        attendances = new Attendances();
     }
 
     @Test
@@ -31,7 +28,7 @@ public class AttendancesTest {
         Attendance saved = attendances.getAttendance(crew, LocalDate.of(2025, 2, 21));
         assertThat(saved).isEqualTo(attendance);
     }
-    
+
     @Test
     void 크루의_특정날짜에_대한_출석기록을_얻을수있다() {
         Crew crew = new Crew("크루");
@@ -47,7 +44,8 @@ public class AttendancesTest {
         attendances.addAttendance(crew, attendance1);
         attendances.addAttendance(crew, attendance2);
 
-        List<Attendance> savedAttendances = attendances.getAttendances(crew, LocalDate.of(2025, 2, 21));
+        List<Attendance> savedAttendances = attendances.getAttendances(crew,
+            LocalDate.of(2025, 2, 21));
         assertThat(savedAttendances).contains(attendance1, attendance2);
     }
 
@@ -68,15 +66,26 @@ public class AttendancesTest {
         assertThat(attendances.getAttendances(crew, localDate)).hasSize(10);
     }
 
-    @ParameterizedTest
-    @CsvSource(value = {"빙티:INTERVIEW", "쿠키:REMOVAL"}, delimiterString = ":")
-    void 지각횟수와_결석횟수로_제적위험자를_판단한다(String nickName, Penalty expected) {
-        Crew crew = new Crew(nickName);
-        LocalDate localDate = LocalDate.of(2024, 12, 14);
-        int absenceCount = attendances.countAttendanceStatus(crew, localDate,
-            AttendanceStatus.ABSENCE);
-        int lateCount = attendances.countAttendanceStatus(crew, localDate, AttendanceStatus.LATE);
-        Penalty penalty = Penalty.determine(absenceCount, lateCount);
-        assertThat(penalty).isEqualTo(expected);
+    @Test
+    void 크루의_특정날짜까지_출석상태를_헤아릴수_있다() {
+        Crew crew = new Crew("크루");
+        LocalDate _20250207Friday = LocalDate.of(2025, 2, 7);
+
+        Attendance monday_checkIn = Attendance.of(LocalDateTime.of(2025, 2, 3, 13, 0));
+        Attendance tuesday_late = Attendance.of(LocalDateTime.of(2025, 2, 4, 10, 6));
+        attendances.addAttendance(crew, monday_checkIn);
+        attendances.addAttendance(crew, tuesday_late);
+
+        Map<AttendanceStatus, Integer> countsOfStatus =
+            attendances.countAttendanceStatus(crew, _20250207Friday);
+
+        int checkInCount = countsOfStatus.get(AttendanceStatus.CHECKIN);
+        int lateCount = countsOfStatus.get(AttendanceStatus.LATE);
+        int absenceCount = countsOfStatus.get(AttendanceStatus.ABSENCE);
+        assertAll(
+            () -> assertThat(checkInCount).isEqualTo(1),
+            () -> assertThat(lateCount).isEqualTo(1),
+            () -> assertThat(absenceCount).isEqualTo(2)
+        );
     }
 }

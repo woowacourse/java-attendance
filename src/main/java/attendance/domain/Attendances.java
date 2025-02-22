@@ -1,5 +1,10 @@
 package attendance.domain;
 
+import static java.util.stream.Collectors.collectingAndThen;
+import static java.util.stream.Collectors.counting;
+import static java.util.stream.Collectors.groupingBy;
+import static java.util.stream.Collectors.toList;
+
 import attendance.util.DateUtil;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -9,7 +14,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Predicate;
-import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
@@ -51,7 +55,7 @@ public class Attendances {
         return Stream.of(attendancesOfCrew, absencesOfCrew)
             .flatMap(List::stream)
             .sorted(Comparator.comparing(Attendance::getAttendedTime))
-            .collect(Collectors.toList());
+            .collect(toList());
     }
 
     private List<Attendance> generateAbsences(List<Attendance> attendances, LocalDate untilDate) {
@@ -69,14 +73,12 @@ public class Attendances {
             .toList();
     }
 
-    public int countAttendanceStatus(Crew crew, LocalDate date, AttendanceStatus status) {
-        List<Attendance> attendancesOfCrew = getAttendances(crew, date);
-        int absenceCount = 0;
-        for (Attendance attendance : attendancesOfCrew) {
-            if (attendance.getStatus().equals(status)) {
-                absenceCount++;
-            }
-        }
-        return absenceCount;
+    public Map<AttendanceStatus, Integer> countAttendanceStatus(Crew crew, LocalDate untilDate) {
+        List<Attendance> attendancesOfCrew = getAttendances(crew, untilDate);
+        return attendancesOfCrew.stream()
+            .collect(
+                groupingBy(Attendance::getStatus,
+                collectingAndThen(counting(),Long::intValue))
+            );
     }
 }
