@@ -159,7 +159,6 @@ public class AttendanceController {
         List<Attendance> crewAttendances = attendances.findCrewAttendances(crew);
         CrewStatistic crewStatistic = new CrewStatistic(crew, crewAttendances);
 
-        crewStatistic.resetCrewStatus();
         crewStatistic.initCrewsStatus();
         crewStatistic.calculatePenalty();
 
@@ -174,7 +173,6 @@ public class AttendanceController {
             List<Attendance> crewAttendances = attendances.findCrewAttendances(crew);
             CrewStatistic crewStatistic = new CrewStatistic(crew, crewAttendances);
 
-            crewStatistic.resetCrewStatus();
             crewStatistic.initCrewsStatus();
             crewStatistic.calculatePenalty();
 
