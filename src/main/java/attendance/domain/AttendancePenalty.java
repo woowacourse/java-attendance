@@ -1,5 +1,7 @@
 package attendance.domain;
 
+import attendance.common.Constants;
+
 import static attendance.common.Constants.ABSENCE_INDEX;
 import static attendance.common.Constants.COUNSELING_MINIMUM;
 import static attendance.common.Constants.EXPULSION_MINIMUM;
@@ -30,7 +32,7 @@ public enum AttendancePenalty {
     }
 
     public static AttendancePenalty find(int absenceCount, int lateCount) {
-        int totalCount = absenceCount + lateCount / 3;
+        int totalCount = absenceCount + lateCount / Constants.LATE_TO_ABSENCE_RATIO;
 
         return Arrays.stream(values())
                 .filter(penalty -> penalty.rule.test(totalCount))
