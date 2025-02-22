@@ -13,6 +13,8 @@ import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 import utils.TimeUtils;
 import view.ErrorCode;
 
@@ -98,19 +100,13 @@ public class AttendanceBook {
     }
 
     public TotalRecordsResponse checkAttendanceCountByCrew(List<AttendanceRecordResponse> records) {
-        List<AttendanceStatus> statuses = records.stream().map(AttendanceRecordResponse::attendanceStatus).toList();
-        int attendanceCount = 0;
-        int lateCount = 0;
+        Map<AttendanceStatus, Long> statusCount = records.stream()
+                .map(AttendanceRecordResponse::attendanceStatus)
+                .collect(Collectors.groupingBy(Function.identity(), Collectors.counting()));
 
-        for (AttendanceStatus status : statuses) {
-            if (status == AttendanceStatus.ATTEND) {
-                attendanceCount++;
-            }
-            if (status == AttendanceStatus.LATE) {
-                lateCount++;
-            }
-        }
-        int absentCount = Calendar.countWorkingDay() - lateCount - attendanceCount;
+        int attendanceCount = statusCount.getOrDefault(AttendanceStatus.ATTEND, 0L).intValue();
+        int lateCount = statusCount.getOrDefault(AttendanceStatus.LATE, 0L).intValue();
+        int absentCount = Calendar.countWorkingDay() - attendanceCount - lateCount;
 
         return new TotalRecordsResponse(attendanceCount, lateCount, absentCount);
     }
@@ -142,7 +138,7 @@ public class AttendanceBook {
         return totalRecords.absentCount() + (totalRecords.lateCount() / LATE_TO_ABSENCE_CONVERSION_CRITERIA);
     }
 
-    // 보조 메서
+    // 보조 메서드
     private Crew findCrewByName(String name) {
         return crews.stream()
                 .filter(crew -> crew.matchesName(name))
