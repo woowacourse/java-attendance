@@ -1,33 +1,39 @@
 package domain;
 
-import java.util.Arrays;
-
 public enum ExpelRisk {
     
-    정상(1, (absentCount, lateCount) -> absentCount + lateCount / 3 < 2),
-    경고(2, (absentCount, lateCount) -> absentCount + lateCount / 3 == 2),
-    면담(3, (absentCount, lateCount) -> absentCount + lateCount / 3 > 2 && absentCount + lateCount / 3 < 5),
-    제적(4, (absentCount, lateCount) -> absentCount + lateCount / 3 > 5),
+    정상(1),
+    경고(2),
+    면담(3),
+    제적(4),
     ;
     
     private final int seriousness;
-    private final ExpelRiskMeasurement expelRiskMeasurement;
     
-    ExpelRisk(int seriousness, ExpelRiskMeasurement expelRiskMeasurement) {
+    ExpelRisk(int seriousness) {
         this.seriousness = seriousness;
-        this.expelRiskMeasurement = expelRiskMeasurement;
     }
+    
+    public static final int NORMAL_THRESHOLD = 1;
+    public static final int WARNING_THRESHOLD = 2;
+    public static final int INTERVIEW_THRESHOLD = 5;
     
     public static ExpelRisk of(int absentCount, int lateCount) {
-        return Arrays.stream(ExpelRisk.values())
-                .filter(risk -> risk.expelRiskMeasurement.measure(absentCount, lateCount))
-                .findFirst()
-                .orElseThrow(() -> new IllegalArgumentException("제적 위험도를 생성할 수 없습니다."));
+        int expelRiskMeasureValue = calculateExpelRiskMeasureValue(absentCount, lateCount);
+        if (expelRiskMeasureValue <= NORMAL_THRESHOLD) {
+            return 정상;
+        }
+        if (expelRiskMeasureValue <= WARNING_THRESHOLD) {
+            return 경고;
+        }
+        if (expelRiskMeasureValue <= INTERVIEW_THRESHOLD) {
+            return 면담;
+        }
+        return 제적;
     }
     
-    @FunctionalInterface
-    private interface ExpelRiskMeasurement {
-        boolean measure(int absentCount, int lateCount);
+    private static int calculateExpelRiskMeasureValue(int absentCount, int lateCount) {
+        return absentCount + lateCount / 3;
     }
     
     public int getSeriousness() {
