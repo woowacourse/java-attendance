@@ -4,8 +4,8 @@ import java.time.LocalTime;
 
 public class TimeAndStatus {
 
-    private LocalTime time;
-    private String status;
+    private final LocalTime time;
+    private final String status;
 
     public TimeAndStatus(LocalTime time, String dayOfWeek) {
         this.time = time;

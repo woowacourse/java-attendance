@@ -7,8 +7,8 @@ import java.util.Locale;
 public enum Holiday {
     CHRISTMAS(12, 25);
 
-    public int month;
-    public int day;
+    public final int month;
+    public final int day;
 
     Holiday(int month, int day) {
         this.month = month;
@@ -31,5 +31,4 @@ public enum Holiday {
         }
         return false;
     }
-
 }

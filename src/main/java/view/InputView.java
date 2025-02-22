@@ -7,13 +7,13 @@ import java.util.Scanner;
 
 public class InputView {
 
-    private final String INPUT_NAME_MESSAGE = "닉네임을 입력해 주세요.";
-    private final String INPUT_TIME_MESSAGE = "등교 시간을 입력해 주세요.";
-    private final String INPUT_EDIT_NAME_MESSAGE = "출석을 수정하려는 크루의 닉네임을 입력해 주세요.";
-    private final String INPUT_EDIT_DAY_MESSAGE = "수정하려는 날짜(일)를 입력해 주세요.";
-    private final String INPUT_EDIT_TIME_MESSAGE = "언제로 변경하겠습니까?";
-    private final String FUNCTION_MESSAGE = "오늘은 %s입니다. 기능을 선택해 주세요.%n";
-    private final String DATE_FORMAT = "%d월 %02d일 %s";
+    private static final String INPUT_NAME_MESSAGE = "닉네임을 입력해 주세요.";
+    private static final String INPUT_TIME_MESSAGE = "등교 시간을 입력해 주세요.";
+    private static final String INPUT_EDIT_NAME_MESSAGE = "출석을 수정하려는 크루의 닉네임을 입력해 주세요.";
+    private static final String INPUT_EDIT_DAY_MESSAGE = "수정하려는 날짜(일)를 입력해 주세요.";
+    private static final String INPUT_EDIT_TIME_MESSAGE = "언제로 변경하겠습니까?";
+    private static final String FUNCTION_MESSAGE = "오늘은 %s입니다. 기능을 선택해 주세요.%n";
+    private static final String DATE_FORMAT = "%d월 %02d일 %s";
 
     public String readName() {
         return basicInput(INPUT_NAME_MESSAGE);

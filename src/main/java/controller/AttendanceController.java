@@ -16,17 +16,18 @@ import view.OutputView;
 
 public class AttendanceController {
 
-    private final int DEFAULT_YEAR = 2024;
-    private final int DEFAULT_MONTH = 12;
-    private final int DEFAULT_DAY = 13;
-    private final String INPUT_DATE_FORMAT = "%04d-%02d-%02d";
-    private final String INPUT_TIME_FORMAT = "%02d:%02d";
+    private static final int DEFAULT_YEAR = 2024;
+    private static final int DEFAULT_MONTH = 12;
+    private static final int DEFAULT_DAY = 13;
+    private static final String INPUT_DATE_FORMAT = "%04d-%02d-%02d";
+    private static final String INPUT_TIME_FORMAT = "%02d:%02d";
+
     private final InputView inputView;
     private final OutputView outputView;
     private final AttendanceManager attendanceManager;
 
     public AttendanceController(InputView inputView, OutputView outputView,
-        AttendanceManager attendanceManager) {
+                                AttendanceManager attendanceManager) {
         this.inputView = inputView;
         this.outputView = outputView;
         this.attendanceManager = attendanceManager;
@@ -62,7 +63,7 @@ public class AttendanceController {
             List<String> time = List.of(inputView.readTime().split(":"));
 
             String dateForm = String.format(INPUT_DATE_FORMAT, DEFAULT_YEAR, DEFAULT_MONTH,
-                DEFAULT_DAY);
+                    DEFAULT_DAY);
             String timeForm = formatTime(time);
             LocalDateTime dateTime = formatDateTime(dateForm, timeForm);
 
@@ -81,13 +82,13 @@ public class AttendanceController {
             List<String> time = List.of(inputView.readEditTime().split(":"));
 
             String dateForm = String.format(INPUT_DATE_FORMAT, DEFAULT_YEAR, DEFAULT_MONTH,
-                Integer.parseInt(dayOfMonth));
+                    Integer.parseInt(dayOfMonth));
             String timeForm = formatTime(time);
             LocalDateTime localDateTime = formatDateTime(dateForm, timeForm);
             LocalDate localDate = localDateTime.toLocalDate();
 
             TimeAndStatus oldTimeAndStatus = attendanceManager.findByName(name)
-                .findByDate(localDate);
+                    .findByDate(localDate);
             TimeAndStatus newTimeAndStatus = attendanceManager.editCrew(name, localDateTime);
             outputView.printEditResult(localDate, oldTimeAndStatus, newTimeAndStatus);
         } catch (IllegalArgumentException e) {
@@ -104,7 +105,7 @@ public class AttendanceController {
             Records records = attendanceManager.findByName(name);
 
             StatisticsResult statisticsResult = AttendanceStatistics.countStatus(localDate,
-                records);
+                    records);
 
             int attendanceCount = statisticsResult.getAttendanceCount();
             int latenessCount = statisticsResult.getLatenessCount();
@@ -127,9 +128,8 @@ public class AttendanceController {
 
     private String formatTime(List<String> time) {
         return String.format(INPUT_TIME_FORMAT, Integer.parseInt(time.get(0)),
-            Integer.parseInt(time.get(1)));
+                Integer.parseInt(time.get(1)));
     }
-
 
     private LocalDate formatDate() {
         String date = DEFAULT_YEAR + "-" + DEFAULT_MONTH + "-" + DEFAULT_DAY;
@@ -141,5 +141,4 @@ public class AttendanceController {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
         return LocalDateTime.parse(dateForm + " " + timeForm, formatter);
     }
-
 }

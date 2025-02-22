@@ -16,18 +16,18 @@ public class OutputView {
     private static final int COUNT_START_MONTH = 12;
     private static final int COUNT_START_DAY = 1;
 
-    private final String RECORD_FORMAT = "%s %s%n";
-    private final String EDIT_FORMAT = "%s %s -> %s 수정 완료!%n";
-    private final String DATE_FORMAT = "%d월 %02d일 %s";
-    private final String TIME_FORMAT = "%02d:%02d (%s)";
-    private final String ABSENCE_FORMAT = "--:-- (결석)";
-    private final String RECORD_CHECK_MESSAGE = "이번 달 %s의 출석 기록입니다.%n";
-    private final String ATTEND_CHECK_FORMAT = "출석: %s회%n";
-    private final String LATENESS_CHECK_FORMAT = "지각: %s회%n";
-    private final String ABSENCE_CHECK_FORMAT = "결석: %s회%n";
-    private final String PENALTY_FORMAT = "%s 대상자입니다.%n";
-    private final String WARNING_CREW_MESSAGE = "제적 위험자 조회 결과";
-    private final String WARNING_CREW_FORMAT = "- %s: 결석 %d회, 지각 %d회 (%s)%n";
+    private static final String RECORD_FORMAT = "%s %s%n";
+    private static final String EDIT_FORMAT = "%s %s -> %s 수정 완료!%n";
+    private static final String DATE_FORMAT = "%d월 %02d일 %s";
+    private static final String TIME_FORMAT = "%02d:%02d (%s)";
+    private static final String ABSENCE_FORMAT = "--:-- (결석)";
+    private static final String RECORD_CHECK_MESSAGE = "이번 달 %s의 출석 기록입니다.%n";
+    private static final String ATTEND_CHECK_FORMAT = "출석: %s회%n";
+    private static final String LATENESS_CHECK_FORMAT = "지각: %s회%n";
+    private static final String ABSENCE_CHECK_FORMAT = "결석: %s회%n";
+    private static final String PENALTY_FORMAT = "%s 대상자입니다.%n";
+    private static final String WARNING_CREW_MESSAGE = "제적 위험자 조회 결과";
+    private static final String WARNING_CREW_FORMAT = "- %s: 결석 %d회, 지각 %d회 (%s)%n";
 
     public void printAttendanceRecord(LocalDate localDate, TimeAndStatus timeAndStatus) {
         String date = dateFormatting(localDate);

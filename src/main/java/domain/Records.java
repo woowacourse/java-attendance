@@ -11,7 +11,7 @@ import java.util.Map;
 
 public class Records {
 
-    private Map<LocalDate, TimeAndStatus> records;
+    private final Map<LocalDate, TimeAndStatus> records;
 
     public Records(List<LocalDateTime> localDateTimes) {
         this.records = initializeRecords(localDateTimes);

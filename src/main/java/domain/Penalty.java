@@ -6,8 +6,8 @@ public enum Penalty {
     WARNING("경고", 2),
     NONE("패스", 0);
 
-    public String penalty;
-    public int count;
+    public final String penalty;
+    public final int count;
 
     Penalty(String penalty, int count) {
         this.penalty = penalty;
