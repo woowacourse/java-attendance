@@ -6,18 +6,18 @@ import attendance.model.Crew;
 import java.time.LocalDateTime;
 import java.util.List;
 
-public record AttendanceDTO(
+public record AttendanceDto(
         String crewName,
-        List<AttendanceDetailDTO> attendanceDetailDTOs,
+        List<AttendanceDetailDto> attendanceDetailDtos,
         String warningType,
         long attendanceCount,
         long lateCount,
         long absenceCount
 ) {
-    public static AttendanceDTO from(Crew crew) {
-        return new AttendanceDTO(
+    public static AttendanceDto from(Crew crew) {
+        return new AttendanceDto(
                 crew.getName(),
-                crew.getAttendanceHistory().stream().map(AttendanceDetailDTO::from).toList(),
+                crew.getAttendanceHistory().stream().map(AttendanceDetailDto::from).toList(),
                 AttendanceWarning.from(crew).name(),
                 crew.getAttendanceHistory().getAttendanceCount(),
                 crew.getAttendanceHistory().getLateCount(),
@@ -25,12 +25,12 @@ public record AttendanceDTO(
         );
     }
 
-    public record AttendanceDetailDTO(
+    public record AttendanceDetailDto(
             LocalDateTime attendanceDateTime,
             String attendanceType
     ) {
-        public static AttendanceDetailDTO from(AttendanceDetail attendanceDetail) {
-            return new AttendanceDetailDTO(
+        public static AttendanceDetailDto from(AttendanceDetail attendanceDetail) {
+            return new AttendanceDetailDto(
                     attendanceDetail.getAttendanceDateTime(),
                     attendanceDetail.getAttendance().name()
             );

@@ -5,23 +5,23 @@ import attendance.model.Crew;
 import attendance.model.Crews;
 import java.util.List;
 
-public record WarningCrewsDTO(List<WarningCrewDetailDTO> warningCrewDetailDTO) {
+public record WarningCrewsDto(List<WarningCrewDetailDto> warningCrewDetailDTO) {
 
-    public static WarningCrewsDTO from(Crews crews) {
-        return new WarningCrewsDTO(crews.getCrews().stream().map(WarningCrewDetailDTO::from)
+    public static WarningCrewsDto from(Crews crews) {
+        return new WarningCrewsDto(crews.getCrews().stream().map(WarningCrewDetailDto::from)
                 .filter(dto -> !dto.warningType.equals(AttendanceWarning.NONE.name()))
                 .toList());
     }
 
-    public record WarningCrewDetailDTO(
+    public record WarningCrewDetailDto(
             String crewName,
             long absenceCount,
             long lateCount,
             long convertLateCount,
             String warningType
     ) {
-        public static WarningCrewDetailDTO from(Crew crew) {
-            return new WarningCrewDetailDTO(
+        public static WarningCrewDetailDto from(Crew crew) {
+            return new WarningCrewDetailDto(
                     crew.getName(),
                     crew.getAttendanceHistory().getAbsenceCount(),
                     crew.getAttendanceHistory().getLateCount(),

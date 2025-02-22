@@ -1,8 +1,8 @@
 package attendance.controller;
 
-import attendance.dto.AttendanceDTO;
-import attendance.dto.AttendanceDTO.AttendanceDetailDTO;
-import attendance.dto.WarningCrewsDTO;
+import attendance.dto.AttendanceDto;
+import attendance.dto.AttendanceDto.AttendanceDetailDto;
+import attendance.dto.WarningCrewsDto;
 import attendance.model.AttendanceDetail;
 import attendance.model.Crew;
 import attendance.model.CrewDataLoader;
@@ -57,7 +57,7 @@ public class Controller {
                     CustomLocalDateTime.parseTime(inputView.inputEntryTime())
             ));
             crew.attend(attendanceDetail);
-            outputView.printAttendanceDetail(AttendanceDetailDTO.from(attendanceDetail));
+            outputView.printAttendanceDetail(AttendanceDetailDto.from(attendanceDetail));
         });
     }
 
@@ -70,20 +70,20 @@ public class Controller {
             AttendanceDetail beforeModify = new AttendanceDetail(attendanceDetail.getAttendanceDateTime());
             attendanceDetail.modify(CustomLocalDateTime.parseTime(inputView.inputModifyAttendanceTime()));
             outputView.printModifyResult(
-                    AttendanceDetailDTO.from(beforeModify),
-                    AttendanceDetailDTO.from(attendanceDetail)
+                    AttendanceDetailDto.from(beforeModify),
+                    AttendanceDetailDto.from(attendanceDetail)
             );
         });
     }
 
     private void processDisplayAttendanceHistory() {
         process(() -> outputView.printAttendanceHistory(
-                AttendanceDTO.from(crews.findCrew(inputView.inputCrewName())))
+                AttendanceDto.from(crews.findCrew(inputView.inputCrewName())))
         );
     }
 
     private void processDisplayWarningCrew() {
-        process(() -> outputView.printWarningCrews(WarningCrewsDTO.from(crews)));
+        process(() -> outputView.printWarningCrews(WarningCrewsDto.from(crews)));
     }
 
     private void process(Runnable runnable) {

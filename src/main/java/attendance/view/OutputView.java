@@ -1,8 +1,8 @@
 package attendance.view;
 
-import attendance.dto.AttendanceDTO;
-import attendance.dto.AttendanceDTO.AttendanceDetailDTO;
-import attendance.dto.WarningCrewsDTO;
+import attendance.dto.AttendanceDto;
+import attendance.dto.AttendanceDto.AttendanceDetailDto;
+import attendance.dto.WarningCrewsDto;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Comparator;
@@ -12,11 +12,11 @@ public class OutputView {
     private final DateTimeFormatter normalFormatter = DateTimeFormatter.ofPattern("MM월 dd일 EEEE HH:mm");
     private final DateTimeFormatter absenceFormatter = DateTimeFormatter.ofPattern("MM월 dd일 EEEE --:--");
 
-    public void printAttendanceHistory(AttendanceDTO attendanceDTO) {
+    public void printAttendanceHistory(AttendanceDto attendanceDTO) {
         CustomStringBuilder stringBuilder = new CustomStringBuilder();
         stringBuilder.appendLine(String.format("이번 달 %s의 출석 기록입니다.", attendanceDTO.crewName()));
-        attendanceDTO.attendanceDetailDTOs().stream()
-                .sorted(Comparator.comparing(AttendanceDetailDTO::attendanceDateTime))
+        attendanceDTO.attendanceDetailDtos().stream()
+                .sorted(Comparator.comparing(AttendanceDetailDto::attendanceDateTime))
                 .forEach(attendanceDetail -> stringBuilder.appendLine(generateAttendanceDetail(
                         attendanceDetail.attendanceDateTime(),
                         attendanceDetail.attendanceType()
@@ -28,14 +28,14 @@ public class OutputView {
         stringBuilder.print();
     }
 
-    public void printAttendanceDetail(AttendanceDetailDTO attendanceDetailDTO) {
+    public void printAttendanceDetail(AttendanceDetailDto attendanceDetailDTO) {
         System.out.println(generateAttendanceDetail(
                 attendanceDetailDTO.attendanceDateTime(),
                 attendanceDetailDTO.attendanceType()
         ));
     }
 
-    public void printModifyResult(AttendanceDetailDTO before, AttendanceDetailDTO after) {
+    public void printModifyResult(AttendanceDetailDto before, AttendanceDetailDto after) {
         String beforeDetail = generateAttendanceDetail(before.attendanceDateTime(), before.attendanceType());
         String afterDetail = generateAttendanceDetail(after.attendanceDateTime(), after.attendanceType());
         System.out.println(String.format("%s -> %s 수정 완료!", beforeDetail, afterDetail));
@@ -49,7 +49,7 @@ public class OutputView {
         return String.format("%s (%s)", dateTime, attendanceType);
     }
 
-    public void printWarningCrews(WarningCrewsDTO warningCrewsDTO) {
+    public void printWarningCrews(WarningCrewsDto warningCrewsDTO) {
         CustomStringBuilder stringBuilder = new CustomStringBuilder();
         stringBuilder.appendLine("제적 위험자 조회 결과");
         warningCrewsDTO.warningCrewDetailDTO().stream()
