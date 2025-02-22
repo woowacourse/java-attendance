@@ -3,7 +3,7 @@ package attendance.controller;
 import attendance.domain.Crew;
 import attendance.domain.Crews;
 import attendance.domain.DateInfo;
-import attendance.domain.DateInfos;
+import attendance.domain.AttendanceRegistry;
 import attendance.domain.Register;
 import attendance.domain.Time;
 import attendance.domain.constant.CommandOption;
@@ -73,8 +73,8 @@ public class AttendanceMachine {
 
     private void showAttendanceHistory(Crews crews, Register register) {
         Crew crew = findCrew(crews);
-        DateInfos dateInfos = register.checkAttendanceHistory(crew);
-        outputView.writeAttendanceHistory(crew, dateInfos);
+        AttendanceRegistry attendanceRegistry = register.checkAttendanceHistory(crew);
+        outputView.writeAttendanceHistory(crew, attendanceRegistry);
     }
 
     private void modifyAttendance(Crews crews, Register register) {

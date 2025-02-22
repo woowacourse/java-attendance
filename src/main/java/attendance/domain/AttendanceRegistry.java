@@ -7,24 +7,24 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class DateInfos {
+public class AttendanceRegistry {
 
     private final List<DateInfo> dateInfos;
     private int absence;
     private int late;
     private int attendance;
 
-    private DateInfos(List<DateInfo> dateInfos) {
+    private AttendanceRegistry(List<DateInfo> dateInfos) {
         this.dateInfos = dateInfos;
     }
 
-    public static DateInfos fromDefaultValue(LocalDate now) {
+    public static AttendanceRegistry fromDefaultValue(LocalDate now) {
         List<DateInfo> dateInfos = makeDefaultDateInfos(now);
-        return new DateInfos(dateInfos);
+        return new AttendanceRegistry(dateInfos);
     }
 
-    public static DateInfos from(List<DateInfo> dateInfos) {
-        return new DateInfos(dateInfos);
+    public static AttendanceRegistry from(List<DateInfo> dateInfos) {
+        return new AttendanceRegistry(dateInfos);
     }
 
     public void calculateAttendanceHistory() {

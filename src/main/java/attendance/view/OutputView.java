@@ -2,7 +2,7 @@ package attendance.view;
 
 import attendance.domain.Crew;
 import attendance.domain.DateInfo;
-import attendance.domain.DateInfos;
+import attendance.domain.AttendanceRegistry;
 import attendance.domain.constant.CrewStatus;
 import java.util.List;
 import java.util.Map;
@@ -28,20 +28,20 @@ public class OutputView {
         System.out.println(String.format("%s월 %s일 %s %s:%s (%s) -> %s:%s (%s) 수정 완료!", month, day, dayOfWeek, beforeHour,beforeMinute, beforeStatus, hour, minute, status));
     }
 
-    public void writeAttendanceHistory(Crew crew, DateInfos dateInfos) {
+    public void writeAttendanceHistory(Crew crew, AttendanceRegistry attendanceRegistry) {
         System.out.println(String.format("이번 달 %s의 출석 기록입니다.", crew.getCrewName()));
-        for (DateInfo dateInfo : dateInfos.getDateInfos()) {
+        for (DateInfo dateInfo : attendanceRegistry.getDateInfos()) {
             writeAttendanceCheck(dateInfo);
         }
         System.out.println();
-        System.out.println(String.format("출석: %d회", dateInfos.getAttendance()));
-        System.out.println(String.format("지각: %d회", dateInfos.getLate()));
-        System.out.println(String.format("결석: %d회", dateInfos.getAbsence()));
-        writeWarningMessage(dateInfos);
+        System.out.println(String.format("출석: %d회", attendanceRegistry.getAttendance()));
+        System.out.println(String.format("지각: %d회", attendanceRegistry.getLate()));
+        System.out.println(String.format("결석: %d회", attendanceRegistry.getAbsence()));
+        writeWarningMessage(attendanceRegistry);
     }
 
-    private void writeWarningMessage(DateInfos dateInfos) {
-        int absence = dateInfos.getAbsence() + dateInfos.getLate()/3;
+    private void writeWarningMessage(AttendanceRegistry attendanceRegistry) {
+        int absence = attendanceRegistry.getAbsence() + attendanceRegistry.getLate()/3;
         if (absence > 5) {
             System.out.println("제적 대상자입니다.");
             return;

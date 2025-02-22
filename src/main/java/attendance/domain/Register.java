@@ -14,29 +14,29 @@ public class Register {
     private static final int POSITION_ZERO = 0;
     private static final int POSITION_ONE = 1;
     private static final int POSITION_TWO = 2;
-    private final Map<Crew, DateInfos> register;
+    private final Map<Crew, AttendanceRegistry> register;
 
     public Register(Crews crews, LocalDate now) {
         register = new HashMap<>();
-        crews.register(register, DateInfos.fromDefaultValue(now));
+        crews.register(register, AttendanceRegistry.fromDefaultValue(now));
     }
 
     public DateInfo modifyInfo(Crew crew, int date, Time modifyTime) {
-        DateInfos dateInfos = register.get(crew);
-        DateInfo dateInfo = dateInfos.findByDate(date);
+        AttendanceRegistry attendanceRegistry = register.get(crew);
+        DateInfo dateInfo = attendanceRegistry.findByDate(date);
         dateInfo.modifyAttendanceTime(modifyTime);
         return dateInfo;
     }
 
     public DateInfo findInfo(Crew crew, int modifyDate) {
-        DateInfos dateInfos = register.get(crew);
-        return dateInfos.findByDate(modifyDate);
+        AttendanceRegistry attendanceRegistry = register.get(crew);
+        return attendanceRegistry.findByDate(modifyDate);
     }
 
-    public DateInfos checkAttendanceHistory(Crew crew) {
-        DateInfos dateInfos = register.get(crew);
-        dateInfos.calculateAttendanceHistory();
-        return dateInfos;
+    public AttendanceRegistry checkAttendanceHistory(Crew crew) {
+        AttendanceRegistry attendanceRegistry = register.get(crew);
+        attendanceRegistry.calculateAttendanceHistory();
+        return attendanceRegistry;
     }
 
     public void fromCrewAttendanceTimeFile(Crews crews, List<String> attendanceTimes) {
@@ -59,15 +59,15 @@ public class Register {
     public Map<Crew, List<Integer>> findAllExpertRiskCrews() {
         Map<Crew, List<Integer>> riskCrews = new HashMap<>();
         for (Crew crew : register.keySet()) {
-            DateInfos dateInfos = register.get(crew);
-            findRiskCrews(crew, riskCrews, dateInfos);
+            AttendanceRegistry attendanceRegistry = register.get(crew);
+            findRiskCrews(crew, riskCrews, attendanceRegistry);
         }
         return riskCrews;
     }
 
-    private void findRiskCrews(Crew crew, Map<Crew, List<Integer>> riskCrews, DateInfos dateInfos) {
-        int absenceCounts = dateInfos.findStatusCounts(AttendanceStatus.ABSENCE);
-        int lateCounts = dateInfos.findStatusCounts(AttendanceStatus.LATE);
+    private void findRiskCrews(Crew crew, Map<Crew, List<Integer>> riskCrews, AttendanceRegistry attendanceRegistry) {
+        int absenceCounts = attendanceRegistry.findStatusCounts(AttendanceStatus.ABSENCE);
+        int lateCounts = attendanceRegistry.findStatusCounts(AttendanceStatus.LATE);
         int limitCount = lateCounts / 3 + absenceCounts;
         if (limitCount >= 2) {
             riskCrews.put(crew, List.of(absenceCounts, lateCounts));
