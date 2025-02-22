@@ -22,7 +22,7 @@ public class AttendanceController {
 
     public void start() {
         while (true) {
-            LocalDateTime fixedDateTime = LocalDateTime.of(Constants.FIXED_YEAR, Constants.FIXED_MONTH, 16, 0, 0, 0, 0);
+            LocalDateTime fixedDateTime = LocalDateTime.of(Constants.FIXED_YEAR, Constants.FIXED_MONTH, Constants.FIXED_DATE, 0, 0, 0, 0);
             final String input = InputView.readCommand(fixedDateTime);
             Command command = Command.findByCommandNumber(input);
             Crews crews = CrewGenerator.generate(CsvReader.readFile(CSV_PATH),
@@ -37,6 +37,8 @@ public class AttendanceController {
     }
 
     public static void processCheckAttendees(final Crews crews, final LocalDateTime fixDateTime) {
+
+
         String inputNickName = InputView.readNickName();
         Nickname nickname = new Nickname(inputNickName);
         Crew crew = crews.findByNickname(nickname);
