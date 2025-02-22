@@ -34,7 +34,9 @@ public class AbsenceHistory {
     }
 
     private int calculateAbsence(AttendanceState state) {
-        return (int) attendanceResultDtos.stream().filter(dto -> dto.attendanceState().equals(state.getDescription()))
+        return (int) attendanceResultDtos.stream()
+                .filter(dto ->
+                        dto.attendanceState().getDescription().equals(state.getDescription()))
                 .count();
     }
 }
