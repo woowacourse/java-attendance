@@ -5,7 +5,6 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 
 public class FileLoader {
 
@@ -19,18 +18,22 @@ public class FileLoader {
         List<Attendance> attendances = new ArrayList<>();
         datas.forEach(data -> {
             List<String> seperatedData = Arrays.stream(data.split(",")).toList();
+            String name = seperatedData.get(0);
             LocalDateTime localDateTime = LocalDateTime.parse(seperatedData.get(1).replace(" ", "T"));
 
-            Optional<Attendance> crewAttendance = attendances.stream()
-                    .filter(a -> a.isNameMatch(seperatedData.get(0)))
-                    .findFirst();
-
-            if (crewAttendance.isEmpty()) {
-                attendances.add(createAttendance(seperatedData.get(0), localDateTime));
-                return;
-            }
-            crewAttendance.get().add(localDateTime);
+            findAttendanceByName(attendances, name, localDateTime).add(localDateTime);
         });
         return attendances;
+    }
+
+    private static Attendance findAttendanceByName(List<Attendance> attendances, String name,
+                                                   LocalDateTime localDateTime) {
+        return attendances.stream()
+                .filter(attendance -> attendance.isNameMatch(name))
+                .findFirst()
+                .orElseGet(() -> {
+                    Attendance newAttendance = createAttendance(name, localDateTime);
+                    return newAttendance;
+                });
     }
 }
