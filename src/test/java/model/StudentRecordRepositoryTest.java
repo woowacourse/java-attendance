@@ -42,5 +42,4 @@ class StudentRecordRepositoryTest {
                 .getTimeRecords()
                 .contains(LocalDateTime.of(2024,12,3,10,6)));
     }
-
 }
