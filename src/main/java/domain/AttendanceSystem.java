@@ -43,7 +43,7 @@ public class AttendanceSystem {
     }
 
     public void validateUpdateAttendanceDay(final String crewName, final int dayOfMonth) {
-        if (!isAlreadyTodayAttendanceByCrewName(crewName, LocalDate.of(2024, 12, dayOfMonth))) {
+        if (!isAlreadyTodayAttendanceByCrewName(crewName, convertDayOfMonthToLocalDate(dayOfMonth))) {
             throw new IllegalArgumentException("유효하지 않은 날짜입니다.");
         }
     }
@@ -67,25 +67,34 @@ public class AttendanceSystem {
 
     public Attendance updateAttendanceByCrewNameAndDay(final LocalTime targetTime, final String crewName,
                                                        final int dayOfMonth) {
-        final Crew crew = findCrewByName(crewName);
-        final LocalDate targetDate = LocalDate.of(2024, 12, dayOfMonth);
-        final Attendance afterAttendance = crew.updateAttendanceByDateAndTime(targetTime, targetDate);
-        return afterAttendance;
+        final LocalDate targetDate = convertDayOfMonthToLocalDate(dayOfMonth);
+        return findCrewByName(crewName)
+                .updateAttendanceByDateAndTime(targetTime, targetDate);
     }
 
     public Attendance findAttendanceByDate(final String crewName, final int dayOfMonth) {
-        final Crew crew = findCrewByName(crewName);
-        final LocalDate targetDate = LocalDate.of(2024, 12, dayOfMonth);
-        return crew.findAttendanceByDate(targetDate);
+        final LocalDate targetDate = convertDayOfMonthToLocalDate(dayOfMonth);
+        return findCrewByName(crewName).findAttendanceByDate(targetDate);
+    }
+
+    public Crew findCrewByName(final String name) {
+        return crews.stream()
+                .filter(crew -> crew.isSameName(name))
+                .findAny()
+                .orElseThrow(IllegalArgumentException::new);
+    }
+
+    private LocalDate convertDayOfMonthToLocalDate(final int dayOfMonth) {
+        return LocalDate.of(2024, 12, dayOfMonth);
     }
 
     private boolean existCrewByName(final String name) {
-        return crews.stream().anyMatch(crew -> crew.isSameName(name));
+        return crews.stream()
+                .anyMatch(crew -> crew.isSameName(name));
     }
 
     private boolean isAlreadyTodayAttendanceByCrewName(final String name, final LocalDate today) {
-        final Crew crew = findCrewByName(name);
-        return crew.isAlreadyTodayAttendance(today);
+        return findCrewByName(name).isAlreadyTodayAttendance(today);
     }
 
     private static void initAttendance(final List<Crew> crews, final String input) {
@@ -94,13 +103,6 @@ public class AttendanceSystem {
                 .filter(crew -> crew.isSameName(data[0]))
                 .findAny()
                 .ifPresent(crew -> crew.updateAttendanceByDateTime(data[1]));
-    }
-
-    public Crew findCrewByName(final String name) {
-        return crews.stream()
-                .filter(crew -> crew.isSameName(name))
-                .findAny()
-                .orElseThrow(IllegalArgumentException::new);
     }
 
     public List<Crew> getCrews() {
