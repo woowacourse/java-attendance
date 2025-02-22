@@ -1,16 +1,9 @@
 package model;
 
-import static java.util.Map.entry;
-import static model.AttendanceType.DEFAULT_TIME;
 import static org.assertj.core.api.Assertions.assertThat;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Map;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
@@ -35,28 +28,5 @@ class AttendanceTypeTest {
 
         // Then
         assertThat(attendanceType.name()).isEqualTo(attendanceTypeName);
-    }
-
-    @DisplayName("출석 타입별 횟수를 계산한다")
-    @Test
-    void countAttendanceTypeTest() {
-        // Given
-        List<LocalDateTime> attendanceTimes = List.of(
-                LocalDateTime.of(2024, 12, 2, 9, 0),
-                LocalDateTime.of(2024, 12, 3, 10, 6),
-                LocalDateTime.of(2024, 12, 4, 10, 31),
-                LocalDateTime.of(LocalDate.of(2024, 12, 5), DEFAULT_TIME),
-                LocalDateTime.of(2024, 12, 6, 9, 30)
-        );
-
-        // When
-        Map<AttendanceType, Integer> result = AttendanceType.countAttendanceType(attendanceTimes);
-
-        // Then
-        Assertions.assertThat(result).containsExactly(
-                entry(AttendanceType.출석, 2),
-                entry(AttendanceType.지각, 1),
-                entry(AttendanceType.결석, 2)
-        );
     }
 }

@@ -108,15 +108,16 @@ public class AttendanceController {
         Crew crew = crews.findCrewByNickname(nickname);
 
         List<LocalDateTime> attendanceHistory = crew.getAttendanceHistory(getTodayDate());
-        Map<AttendanceType, Integer> result = AttendanceType.countAttendanceType(attendanceHistory);
+        Map<AttendanceType, Integer> result = crew.countAttendanceType(getTodayDate());
         SubjectType subjectType = SubjectType.from(result);
 
         resultView.printAttendanceHistoryResultByCrew(nickname, attendanceHistory, result, subjectType);
     }
 
     private void checkDismissalCrews(final Crews crews) {
-        List<DismissalCrewDto> dtos = crews.findDismissalCrewDtos(getTodayDate());
-        Collections.sort(dtos);
-        resultView.printDismissalResult(dtos);
+        List<Crew> dismissalCrews = crews.findDismissalCrews(getTodayDate());
+        List<DismissalCrewDto> dismissalCrewDtos = DismissalCrewDto.of(getTodayDate(), dismissalCrews);
+        Collections.sort(dismissalCrewDtos);
+        resultView.printDismissalResult(dismissalCrewDtos);
     }
 }

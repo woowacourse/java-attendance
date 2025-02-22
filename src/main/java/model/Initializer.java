@@ -44,7 +44,7 @@ public class Initializer {
         if (crewsMap.containsKey(nickname)) {
             return crewsMap.get(nickname);
         }
-        Crew crew = new Crew(new HashMap<>(initialMap));
+        Crew crew = new Crew(nickname, new HashMap<>(initialMap));
         crewsMap.put(nickname, crew);
         return crew;
     }

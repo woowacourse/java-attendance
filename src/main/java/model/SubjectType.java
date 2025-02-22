@@ -37,6 +37,11 @@ public enum SubjectType {
         return Integer.compare(type2.threshold, type1.threshold);
     }
 
+    public static boolean isApplicable(final Map<AttendanceType, Integer> result) {
+        SubjectType subjectType = from(result);
+        return !subjectType.equals(SubjectType.해당없음);
+    }
+
     private static int calculateTotalAbsentCount(final int lateCount, final int absentCount) {
         return absentCount + lateCount / CONVERTED_ABSENT_UNIT;
     }

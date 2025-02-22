@@ -1,5 +1,7 @@
 package model;
 
+import static java.util.Map.entry;
+import static model.AttendanceType.DEFAULT_TIME;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -9,6 +11,7 @@ import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -16,11 +19,13 @@ import org.junit.jupiter.params.provider.CsvSource;
 
 public class CrewTest {
 
+    private static final String CREW_NAME = "밍트";
+
     @DisplayName("출석을 한다")
     @Test
     void checkAttendanceTest() {
         // Given
-        Crew crew = new Crew(new HashMap<>());
+        Crew crew = new Crew(CREW_NAME, new HashMap<>());
         LocalDateTime attendanceTime = LocalDateTime.of(2024, 12, 3, 9, 0);
 
         // When
@@ -34,7 +39,7 @@ public class CrewTest {
     @Test
     void alreadyAttendanceTest() {
         // Given
-        Crew crew = new Crew(new HashMap<>());
+        Crew crew = new Crew(CREW_NAME, new HashMap<>());
         LocalDateTime attendanceTime = LocalDateTime.of(2024, 12, 3, 9, 0);
         crew.doAttendance(attendanceTime);
 
@@ -49,7 +54,7 @@ public class CrewTest {
     @Test
     void modifyAttendanceTest() {
         // Given
-        Crew crew = new Crew(new HashMap<>());
+        Crew crew = new Crew(CREW_NAME, new HashMap<>());
         LocalDateTime attendanceTime = LocalDateTime.of(2024, 12, 3, 9, 0);
         crew.doAttendance(attendanceTime);
 
@@ -74,7 +79,7 @@ public class CrewTest {
     })
     void invalidModifyDateTest(LocalDate todayDate) {
         // Given
-        Crew crew = new Crew(new HashMap<>());
+        Crew crew = new Crew(CREW_NAME, new HashMap<>());
         LocalDateTime modifyTime = LocalDateTime.of(2024, 12, 4, 9, 50);
 
         // When & Then
@@ -92,12 +97,35 @@ public class CrewTest {
         LocalDateTime dateTime1 = LocalDateTime.of(2024, 12, 3, 9, 0);
         LocalDateTime dateTime2 = LocalDateTime.of(2024, 12, 4, 9, 0);
         LocalDateTime todayDateTime = LocalDateTime.of(2024, 12, 19, 9, 0);
-        Crew crew = new Crew(Map.of(3, dateTime1, 12, dateTime2, 19, todayDateTime));
+        Crew crew = new Crew(CREW_NAME, Map.of(3, dateTime1, 12, dateTime2, 19, todayDateTime));
 
         // When
         List<LocalDateTime> attendanceHistory = crew.getAttendanceHistory(today);
 
         // Then
         assertThat(attendanceHistory).contains(dateTime1, dateTime2);
+    }
+
+    @DisplayName("출석 타입별 횟수를 계산한다")
+    @Test
+    void countAttendanceTypeTest() {
+        // Given
+        LocalDate todayDate = LocalDate.of(2024, 12, 13);
+        LocalDateTime dateTime1 = LocalDateTime.of(2024, 12, 2, 9, 0);
+        LocalDateTime dateTime2 = LocalDateTime.of(2024, 12, 3, 10, 6);
+        LocalDateTime dateTime3 = LocalDateTime.of(2024, 12, 4, 10, 31);
+        LocalDateTime dateTime4 = LocalDateTime.of(LocalDate.of(2024, 12, 5), DEFAULT_TIME);
+        LocalDateTime dateTime5 = LocalDateTime.of(2024, 12, 6, 9, 30);
+        Crew crew = new Crew(CREW_NAME, Map.of(2, dateTime1, 3, dateTime2, 4, dateTime3, 5, dateTime4, 9, dateTime5));
+
+        // When
+        Map<AttendanceType, Integer> result = crew.countAttendanceType(todayDate);
+
+        // Then
+        Assertions.assertThat(result).containsExactly(
+                entry(AttendanceType.출석, 2),
+                entry(AttendanceType.지각, 1),
+                entry(AttendanceType.결석, 2)
+        );
     }
 }

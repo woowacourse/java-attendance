@@ -3,6 +3,7 @@ package model;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Collections;
+import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -10,9 +11,11 @@ import java.util.stream.IntStream;
 
 public class Crew {
 
+    private final String nickname;
     private final Map<Integer, LocalDateTime> attendance;
 
-    public Crew(final Map<Integer, LocalDateTime> attendance) {
+    public Crew(final String nickname, final Map<Integer, LocalDateTime> attendance) {
+        this.nickname = nickname;
         this.attendance = new HashMap<>(attendance);
     }
 
@@ -46,6 +49,22 @@ public class Crew {
     public void loadAttendanceHistory(final LocalDateTime attendanceTime) {
         int day = attendanceTime.getDayOfMonth();
         attendance.put(day, attendanceTime);
+    }
+
+    public Map<AttendanceType, Integer> countAttendanceType(final LocalDate todayDate) {
+        List<LocalDateTime> history = getAttendanceHistory(todayDate);
+        Map<AttendanceType, Integer> result = new EnumMap<>(AttendanceType.class);
+        result.put(AttendanceType.출석, 0);
+        result.put(AttendanceType.지각, 0);
+        result.put(AttendanceType.결석, 0);
+        for (LocalDateTime attendanceTime : history) {
+            result.merge(AttendanceType.from(attendanceTime), 1, Integer::sum);
+        }
+        return result;
+    }
+
+    public String getNickname() {
+        return nickname;
     }
 
     public Map<Integer, LocalDateTime> getAttendance() {
