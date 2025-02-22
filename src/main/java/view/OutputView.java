@@ -24,6 +24,7 @@ public class OutputView {
 
     public void printAttendResult(Attend attend, AttendStatus attendStatus) {
         System.out.println(formatAttendAndStatus(attend, attendStatus));
+        System.out.println();
     }
 
     private String formatAttendAndStatus(Attend attend, AttendStatus attendStatus) {
