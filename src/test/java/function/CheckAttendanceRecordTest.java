@@ -7,6 +7,7 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 
 import domain.AttendanceBook;
 import domain.AttendanceStatus;
+import domain.Calendar;
 import domain.Crew;
 import dto.AttendanceRecordResponse;
 import dto.TotalRecordsResponse;
@@ -58,7 +59,7 @@ public class CheckAttendanceRecordTest {
 
         assertThat(count.attendanceCount()).isEqualTo(3);
         assertThat(count.lateCount()).isEqualTo(0);
-        assertThat(count.absentCount()).isEqualTo(31 - 3);
+        assertThat(count.absentCount()).isEqualTo(Calendar.countWorkingDay() - 3);
     }
 
     @Test
