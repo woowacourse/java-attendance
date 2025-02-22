@@ -101,7 +101,6 @@ public class AttendanceBook {
         List<AttendanceStatus> statuses = records.stream().map(AttendanceRecordResponse::attendanceStatus).toList();
         int attendanceCount = 0;
         int lateCount = 0;
-        int absentCount = 0;
 
         for (AttendanceStatus status : statuses) {
             if (status == AttendanceStatus.ATTEND) {
@@ -110,9 +109,8 @@ public class AttendanceBook {
             if (status == AttendanceStatus.LATE) {
                 lateCount++;
             }
-
-            absentCount = Calendar.countWorkingDay() - lateCount - attendanceCount;
         }
+        int absentCount = Calendar.countWorkingDay() - lateCount - attendanceCount;
 
         return new TotalRecordsResponse(attendanceCount, lateCount, absentCount);
     }
