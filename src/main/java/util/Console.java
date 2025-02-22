@@ -12,13 +12,6 @@ public class Console {
         return getInstance().nextLine();
     }
 
-    public static void close() {
-        if (scanner != null) {
-            scanner.close();
-            scanner = null;
-        }
-    }
-
     private static Scanner getInstance() {
         if (scanner == null) {
             scanner = new Scanner(System.in);
