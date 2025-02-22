@@ -14,6 +14,7 @@ import attendance.view.InputView;
 import attendance.view.OutputView;
 import java.io.IOException;
 import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.List;
 import java.util.function.Supplier;
 
@@ -30,7 +31,7 @@ public class AttendanceMachine {
     public void start() throws IOException {
         List<String> lines = FileReader.fileReadLine("attendances.csv");
         Crews crews = Crews.fromCrewsFile(lines);
-        LocalDate now = LocalDate.now();
+        LocalDate now = LocalDate.now(ZoneId.of("Asia/Seoul"));
         Register register = new Register(crews, now);
         register.fromCrewAttendanceTimeFile(crews, lines);
 
