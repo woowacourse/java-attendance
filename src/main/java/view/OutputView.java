@@ -55,17 +55,17 @@ public class OutputView {
         System.out.println(warningMessage);
     }
 
-    private String formatWarningStatus(WarningStatus warningStatus) {
-        if (warningStatus == WarningStatus.WARNING) {
-            return "경고 대상자입니다.";
+    public void printWarningCrews(List<WarningCrew> warningCrews) {
+        System.out.println("제적 위험자 조회 결과");
+        List<WarningCrew> sorted = warningCrews.stream()
+                .sorted(Comparator.comparing(warningCrew -> ((WarningCrew) warningCrew).attendCount().calculateRank())
+                        .reversed())
+                .toList();
+        for (WarningCrew warningCrew : sorted) {
+            String message = formatWarningCrew(warningCrew);
+            System.out.println(message);
         }
-        if (warningStatus == WarningStatus.INTERVIEW) {
-            return "면담 대상자입니다.";
-        }
-        if (warningStatus == WarningStatus.EXPEL) {
-            return "제적 대상자입니다.";
-        }
-        return "";
+        System.out.println();
     }
 
     private String formatAttendStatus(AttendStatus attendStatus) {
@@ -82,16 +82,12 @@ public class OutputView {
                 + "결석: %d회", attendCount.attend(), attendCount.late(), attendCount.absence());
     }
 
-    public void printWarningCrews(List<WarningCrew> warningCrews) {
-        System.out.println("제적 위험자 조회 결과");
-        List<WarningCrew> sorted = warningCrews.stream()
-                .sorted(Comparator.comparing(a -> ((WarningCrew) a).attendCount().calculateRank()).reversed()
-                        .thenComparing(Comparator.comparing(a -> ((WarningCrew) a).name()))).toList();
-        for (WarningCrew warningCrew : sorted) {
-            String message = formatWarningCrew(warningCrew);
-            System.out.println(message);
-        }
-        System.out.println();
+    private String formatWarningStatus(WarningStatus warningStatus) {
+        return Arrays.stream(WarningMessage.values())
+                .filter(warningMessage -> warningMessage.match(warningStatus))
+                .findAny()
+                .orElseThrow(() -> new IllegalArgumentException("경고 대상자 판정에 실패함"))
+                .getLongMessage();
     }
 
     private String formatWarningCrew(WarningCrew warningCrew) {
@@ -104,17 +100,10 @@ public class OutputView {
     }
 
     private String formatWarningStatusShort(WarningStatus warningStatus) {
-        if (warningStatus == WarningStatus.WARNING) {
-            return "경고";
-        }
-        if (warningStatus == WarningStatus.INTERVIEW) {
-            return "면담";
-        }
-        if (warningStatus == WarningStatus.EXPEL) {
-            return "제적";
-        }
-        return "";
+        return Arrays.stream(WarningMessage.values())
+                .filter(warningMessage -> warningMessage.match(warningStatus))
+                .findAny()
+                .orElseThrow(() -> new IllegalArgumentException("경고 판정에 실패함"))
+                .getMessage();
     }
-
-
 }
