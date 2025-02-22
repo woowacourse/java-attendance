@@ -78,11 +78,11 @@ public class DateInfo {
     }
 
     private boolean checkMonday() {
-        return weekday.getDayOfWeek().equals("월요일");
+        return weekday.equals(Weekday.MONDAY);
     }
 
     private boolean checkHoliday() {
-        return weekday.getDayOfWeek().equals("토요일") || weekday.getDayOfWeek().equals("일요일");
+        return weekday.equals(Weekday.SATURDAY) || weekday.equals(Weekday.SUNDAY);
     }
 
     private boolean checkDefault() {

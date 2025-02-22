@@ -32,4 +32,5 @@ public enum Weekday {
     public String getDayOfWeek() {
         return dayOfWeek;
     }
+
 }
