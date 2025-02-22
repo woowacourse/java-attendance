@@ -8,13 +8,10 @@ import java.util.function.Function;
 public class MenuTemplate {
 
     public static void run(Consumer<AttendanceMenu> method, AttendanceMenu menu, OutputView outputView) {
-        while (true) {
-            try {
-                method.accept(menu);
-                return;
-            } catch (IllegalArgumentException e) {
-                outputView.printErrorMessage(e.getMessage());
-            }
+        try {
+            method.accept(menu);
+        } catch (IllegalArgumentException e) {
+            outputView.printErrorMessage(e.getMessage());
         }
     }
 

@@ -11,6 +11,7 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.Month;
 import java.util.List;
+import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -50,11 +51,11 @@ class AttendanceSystemTest {
 
         attendanceSystem.saveAttendanceRecord("쿠키", dateTime);
 
-        AttendanceRecord savedRecord =
-                attendanceSystem.searchAttendanceRecordsByCrew("쿠키", 2024, Month.DECEMBER)
-                        .getFirst();
-        assertThat(savedRecord)
-                .isEqualTo(new AttendanceRecord("쿠키", dateTime, ATTENDANCE));
+        AttendanceRecord record = attendanceRecordStorage.find("쿠키", NOT_HOIlDAY).get();
+        assertThat(record.getNickname()).isEqualTo("쿠키");
+        assertThat(record.getDate()).isEqualTo(NOT_HOIlDAY);
+        assertThat(record.getTime()).isEqualTo(ATTENDANCE_TIME);
+        assertThat(record.getType()).isEqualTo(ATTENDANCE);
     }
 
     @DisplayName("출석 저장 - 결석 기록은 저장되지 않는다.")
@@ -65,9 +66,8 @@ class AttendanceSystemTest {
 
         attendanceSystem.saveAttendanceRecord("쿠키", dateTime);
 
-        List<AttendanceRecord> savedRecords =
-                attendanceSystem.searchAttendanceRecordsByCrew("쿠키", 2024, Month.DECEMBER);
-        assertThat(savedRecords).isEmpty();
+        Optional<AttendanceRecord> record = attendanceRecordStorage.find("쿠키", NOT_HOIlDAY);
+        assertThat(record).isEmpty();
     }
 
     @DisplayName("출석 저장 - 캠퍼스 운영시간이 아닌 경우 예외 발생")
@@ -122,10 +122,8 @@ class AttendanceSystemTest {
 
         attendanceSystem.updateAttendanceRecord("쿠키", NOT_HOIlDAY, ATTENDANCE_TIME);
 
-        AttendanceRecord records =
-                attendanceSystem.searchAttendanceRecordsByCrew("쿠키", 2024, Month.DECEMBER).getFirst();
-        assertThat(records)
-                .isEqualTo(new AttendanceRecord("쿠키", LocalDateTime.of(NOT_HOIlDAY, ATTENDANCE_TIME), ATTENDANCE));
+        AttendanceRecord record = attendanceRecordStorage.find("쿠키", NOT_HOIlDAY).get();
+        assertThat(record.getTime()).isEqualTo(ATTENDANCE_TIME);
     }
 
     @DisplayName("출석 수정 - 결석 기록으로 수정할 시 출석 기록이 제거된다.")
@@ -135,9 +133,8 @@ class AttendanceSystemTest {
 
         attendanceSystem.updateAttendanceRecord("쿠키", NOT_HOIlDAY, EXPULSION_TIME);
 
-        List<AttendanceRecord> records =
-                attendanceSystem.searchAttendanceRecordsByCrew("쿠키", 2024, Month.DECEMBER);
-        assertThat(records).isEmpty();
+        Optional<AttendanceRecord> record = attendanceRecordStorage.find("쿠키", NOT_HOIlDAY);
+        assertThat(record).isEmpty();
     }
 
 
@@ -176,7 +173,10 @@ class AttendanceSystemTest {
         saveRecord("쿠키", NOT_HOIlDAY.minusDays(1), LATE_TIME);
 
         List<AttendanceRecord> records = attendanceSystem.searchAttendanceRecordsByCrew("쿠키", 2024, Month.DECEMBER);
-        assertThat(records).hasSize(3);
+        long lateCount = records.stream().filter(record -> record.getType() == LATE).count();
+
+        assertThat(records).hasSize(22);
+        assertThat(lateCount).isEqualTo(3);
     }
 
     @DisplayName("출석 조회 - 등록되지 않은 닉네임의 경우 예외 발생")

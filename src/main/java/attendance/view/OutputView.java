@@ -6,7 +6,7 @@ import attendance.domain.RiskType;
 import attendance.dto.UpdateResult;
 import attendance.view.message.OutputMessage;
 import java.time.LocalDate;
-import java.time.Month;
+import java.time.LocalTime;
 import java.time.format.TextStyle;
 import java.util.List;
 import java.util.Locale;
@@ -32,7 +32,7 @@ public class OutputView {
     }
 
     public void printRecordsInMonth(List<AttendanceRecord> records) {
-        String header = makeMonthlyRecordHeader(records.getFirst().getDate().getMonth());
+        String header = makeMonthlyRecordHeader(records.getFirst().getNickname());
         System.out.println(header);
         printBlankLine();
 
@@ -47,14 +47,18 @@ public class OutputView {
         System.out.println(content);
         printBlankLine();
 
-        String resultContent = makeStateResultContent(riskStatistic.getRiskType());
-        System.out.println(resultContent);
-        printBlankLine();
+        if (riskStatistic.getRiskType() != RiskType.NONE) {
+            String resultContent = makeStateResultContent(riskStatistic.getRiskType());
+            System.out.println(resultContent);
+            printBlankLine();
+        }
     }
 
     public void printRiskStatistics(List<RiskStatistic> riskStatistics) {
         System.out.println(OutputMessage.RISK_HEADER.getContent());
-        riskStatistics.forEach(this::makeRiskStatisticContent);
+        riskStatistics.stream()
+                .map(this::makeRiskStatisticContent)
+                .forEach(System.out::println);
         printBlankLine();
     }
 
@@ -82,7 +86,7 @@ public class OutputView {
                 date.getMonthValue(),
                 date.getDayOfMonth(),
                 date.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.KOREA),
-                record.getTime().toString(),
+                makeTimeContent(record.getTime()),
                 record.getType().getName());
     }
 
@@ -93,8 +97,8 @@ public class OutputView {
                 newRecord.getType().getName());
     }
 
-    private String makeMonthlyRecordHeader(Month month) {
-        return String.format(OutputMessage.MONTHLY_RECORD_HEADER.getContent(), month.getValue());
+    private String makeMonthlyRecordHeader(String nickname) {
+        return String.format(OutputMessage.MONTHLY_RECORD_HEADER.getContent(), nickname);
     }
 
     private String makeStateContent(RiskStatistic riskStatistic) {
@@ -114,5 +118,12 @@ public class OutputView {
                 statistic.getExpulsionCount(),
                 statistic.getLateCount(),
                 statistic.getRiskType().getName());
+    }
+
+    private String makeTimeContent(LocalTime time) {
+        if (time.equals(LocalTime.MIN)) {
+            return OutputMessage.BLANK_TIME.getContent();
+        }
+        return time.toString();
     }
 }

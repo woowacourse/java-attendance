@@ -17,7 +17,8 @@ public enum OutputMessage {
             결석: %d회"""),
     ATTENDANCE_STATE_RESULT("%s 대상자입니다."),
     RISK_HEADER("제적 위험자 조회 결과"),
-    RISK_INFO("- %s: 결석 %d회, 지각 %d회 (%s)");
+    RISK_INFO("- %s: 결석 %d회, 지각 %d회 (%s)"),
+    BLANK_TIME("--:--");
 
 
     private final String content;
