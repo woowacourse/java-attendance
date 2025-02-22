@@ -26,8 +26,7 @@ public class AttendanceController {
     private final OutputView outputView;
     private final AttendanceManager attendanceManager;
 
-    public AttendanceController(InputView inputView, OutputView outputView,
-                                AttendanceManager attendanceManager) {
+    public AttendanceController(InputView inputView, OutputView outputView, AttendanceManager attendanceManager) {
         this.inputView = inputView;
         this.outputView = outputView;
         this.attendanceManager = attendanceManager;
@@ -62,8 +61,7 @@ public class AttendanceController {
             attendanceManager.findByName(name);
             List<String> time = List.of(inputView.readTime().split(":"));
 
-            String dateForm = String.format(INPUT_DATE_FORMAT, DEFAULT_YEAR, DEFAULT_MONTH,
-                    DEFAULT_DAY);
+            String dateForm = String.format(INPUT_DATE_FORMAT, DEFAULT_YEAR, DEFAULT_MONTH, DEFAULT_DAY);
             String timeForm = formatTime(time);
             LocalDateTime dateTime = formatDateTime(dateForm, timeForm);
 
@@ -87,8 +85,7 @@ public class AttendanceController {
             LocalDateTime localDateTime = formatDateTime(dateForm, timeForm);
             LocalDate localDate = localDateTime.toLocalDate();
 
-            TimeAndStatus oldTimeAndStatus = attendanceManager.findByName(name)
-                    .findByDate(localDate);
+            TimeAndStatus oldTimeAndStatus = attendanceManager.findByName(name).findByDate(localDate);
             TimeAndStatus newTimeAndStatus = attendanceManager.editCrew(name, localDateTime);
             outputView.printEditResult(localDate, oldTimeAndStatus, newTimeAndStatus);
         } catch (IllegalArgumentException e) {
@@ -104,8 +101,7 @@ public class AttendanceController {
             LocalDate localDate = formatDate();
             Records records = attendanceManager.findByName(name);
 
-            StatisticsResult statisticsResult = AttendanceStatistics.countStatus(localDate,
-                    records);
+            StatisticsResult statisticsResult = AttendanceStatistics.countStatus(localDate, records);
 
             int attendanceCount = statisticsResult.getAttendanceCount();
             int latenessCount = statisticsResult.getLatenessCount();
@@ -127,8 +123,7 @@ public class AttendanceController {
     }
 
     private String formatTime(List<String> time) {
-        return String.format(INPUT_TIME_FORMAT, Integer.parseInt(time.get(0)),
-                Integer.parseInt(time.get(1)));
+        return String.format(INPUT_TIME_FORMAT, Integer.parseInt(time.get(0)), Integer.parseInt(time.get(1)));
     }
 
     private LocalDate formatDate() {
