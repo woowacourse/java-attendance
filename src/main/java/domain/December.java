@@ -17,6 +17,7 @@ public enum December {
 
     public static final int DEFAULT_YEAR = 2024;
     public static final int DEFAULT_MONTH = 12;
+    public static final int DECEMBER_WEEKDAY_COUNTS=21;
     
     private final List<Integer> dates;
     private final String dayOfWeek;

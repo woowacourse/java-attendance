@@ -44,7 +44,7 @@ public class AttendanceHistory {
                 total += 1;
             }
         }
-        total += 21 - attendTimes.size();
+        total += December.DECEMBER_WEEKDAY_COUNTS - attendTimes.size();
 
         return total;
     }
