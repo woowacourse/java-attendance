@@ -42,7 +42,7 @@ public class CrewAttendanceLogResponse {
         );
     }
 
-    public static Map<String, Integer> getAttendanceStatusStatistics(
+    private static Map<String, Integer> getAttendanceStatusStatistics(
             final List<AttendanceLogResponse> attendanceLogResponses
     ) {
 
