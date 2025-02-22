@@ -61,7 +61,6 @@ public class AttendanceController {
         }
     }
 
-
     private void addAttendance() {
         final LocalDate today = LocalDate.now().withYear(2024).withMonth(12);
         if (attendanceBook.isNotAttendanceDay(today)) {
@@ -70,7 +69,9 @@ public class AttendanceController {
         }
         final String crewName = LoopTemplate.tryCatchLoop(this::inputCrewName, outputView);
         if (!attendanceBook.isAlreadyTodayAttendance(crewName, today)) {
-            final Attendance attendance = LoopTemplate.tryCatchLoop(this::attendance, crewName, outputView);
+            final LocalTime localTime = LoopTemplate.tryCatchLoop(this::readAttendanceTime, outputView);
+            final Attendance attendance = LoopTemplate.tryCatchLoop(
+                    () -> attendanceBook.attendance(crewName, convertLocalDateTime(localTime)), outputView);
             final AttendanceResponse attendanceResponse = convertAttendanceToResponse(attendance);
             outputView.printCrewAttendances(List.of(attendanceResponse));
             return;
@@ -87,10 +88,9 @@ public class AttendanceController {
         }
     }
 
-    private Attendance attendance(final String crewName) {
+    private LocalTime readAttendanceTime() {
         outputView.printAddAttendanceDate();
-        final LocalTime localDateTime = inputView.readTime();
-        return attendanceBook.attendance(crewName, convertLocalDateTime(localDateTime));
+        return inputView.readTime();
     }
 
     private String inputCrewName() {
@@ -115,7 +115,8 @@ public class AttendanceController {
         final Attendance beforeAttendance = attendanceBook.updateAttendanceByCrewNameAndDay(targetTime, crewName,
                 dayOfMonth);
         final LocalDateTime localDateTime = LocalDateTime.of(LocalDate.of(2024, 12, dayOfMonth), targetTime);
-        outputView.printUpdateAttendanceResult(convertAttendanceToResponse(beforeAttendance), targetTime, AttendanceStatus.of(localDateTime));
+        outputView.printUpdateAttendanceResult(convertAttendanceToResponse(beforeAttendance), targetTime,
+                AttendanceStatus.of(localDateTime));
     }
 
     private LocalTime inputUpdateTime() {
