@@ -31,29 +31,33 @@ public enum AttendanceStatus {
     }
 
     public static AttendanceStatus getInMonday(LocalTime time) {
-        if (!time.isBefore(OPERATION_TIME_START) && !time.isAfter(MONDAY_ATTEND_TIME_END)) {
+        if (isTimeInRange(time, OPERATION_TIME_START, MONDAY_ATTEND_TIME_END)) {
             return ATTEND;
         }
-        if (!time.isBefore(MONDAY_ATTEND_TIME_END) && !time.isAfter(MONDAY_LATE_TIME_END)) {
+        if (isTimeInRange(time, MONDAY_ATTEND_TIME_END, MONDAY_LATE_TIME_END)) {
             return LATE;
         }
-        if (!time.isBefore(MONDAY_LATE_TIME_END) && !time.isAfter(OPERATION_TIME_END)) {
+        if (isTimeInRange(time, MONDAY_LATE_TIME_END, OPERATION_TIME_END)) {
             return ABSENT;
         }
         return NONE;
     }
 
     public static AttendanceStatus getExceptMonday(LocalTime time) {
-        if (!time.isBefore(OPERATION_TIME_START) && !time.isAfter(EXCEPT_MONDAY_ATTEND_TIME_END)) {
+        if (isTimeInRange(time, OPERATION_TIME_START, EXCEPT_MONDAY_ATTEND_TIME_END)) {
             return ATTEND;
         }
-        if (!time.isBefore(EXCEPT_MONDAY_ATTEND_TIME_END) && !time.isAfter(EXCEPT_MONDAY_LATE_TIME_END)) {
+        if (isTimeInRange(time, EXCEPT_MONDAY_ATTEND_TIME_END, EXCEPT_MONDAY_LATE_TIME_END)) {
             return LATE;
         }
-        if (!time.isBefore(EXCEPT_MONDAY_LATE_TIME_END) && !time.isAfter(OPERATION_TIME_END)) {
+        if (isTimeInRange(time, EXCEPT_MONDAY_LATE_TIME_END, OPERATION_TIME_END)) {
             return ABSENT;
         }
         return NONE;
+    }
+
+    private static boolean isTimeInRange(LocalTime time, LocalTime startTime, LocalTime endTime) {
+        return !time.isBefore(startTime) && !time.isAfter(endTime);
     }
 
     public String getMessage() {
