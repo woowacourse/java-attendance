@@ -25,18 +25,16 @@ public class AttendanceFactory {
                 FileReader fileReader = new FileReader("./src/main/resources/attendances.csv");
                 BufferedReader reader = new BufferedReader(fileReader)
         ) {
-            String str;
-            reader.readLine();
-            while ((str = reader.readLine()) != null) {
-                insertAttendance(str);
-            }
+            reader.lines()
+                    .skip(1)
+                    .forEach(AttendanceFactory::insertAttendance);
             return buildAttendanceBook();
         }
     }
     
-    private static void insertAttendance(String str) {
-        String name = str.split(",")[0];
-        LocalDateTime dateTime = LocalDateTime.parse(str.split(",")[1], DATE_TIME_FORMATTER);
+    private static void insertAttendance(String line) {
+        String name = line.split(",")[0];
+        LocalDateTime dateTime = LocalDateTime.parse(line.split(",")[1], DATE_TIME_FORMATTER);
         
         if (!LocalDate.now().getMonth().equals(dateTime.getMonth())) {
             return;
