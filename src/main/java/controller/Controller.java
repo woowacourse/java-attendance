@@ -3,12 +3,12 @@ package controller;
 import domain.Attendance;
 import domain.Crew;
 import domain.CrewGroup;
-import util.DateValidator;
-import domain.Function;
+import domain.MenuOption;
 import domain.Time;
 import java.time.LocalDateTime;
 import java.util.List;
 import service.CrewLoader;
+import util.DateValidator;
 import view.InputView;
 import view.OutputView;
 import view.dto.AlertCrewDTO;
@@ -30,40 +30,45 @@ public class Controller {
         LocalDateTime today = LocalDateTime.of(2024, 12, 18, 10, 0);
         CrewLoader crewLoader = new CrewLoader();
         CrewGroup crewGroup = crewLoader.loadCrews(today);
+
         try {
-            while (true) {
-                String rawFunction = inputView.insertFunction(today);
-                Function function = new Function(rawFunction);
-                runCycle(function, crewGroup, today);
-                if (function.equals("Q")) {
-                    return;
-                }
-            }
+            runCycle(today, crewGroup);
         } catch (Exception e) {
             outputView.printError(e.getMessage());
         }
     }
 
-    private void runCycle(Function function, CrewGroup crewGroup, LocalDateTime today) {
-        if (function.equals("1")) {
+    private void runCycle(LocalDateTime today, CrewGroup crewGroup) {
+        while (true) {
+            String rawOption = inputView.insertMenuOption(today);
+            MenuOption menuOption = new MenuOption(rawOption);
+            if (menuOption.isExit()) {
+                return;
+            }
+            operateMenuOption(menuOption, crewGroup, today);
+        }
+    }
+
+    private void operateMenuOption(MenuOption menuOption, CrewGroup crewGroup, LocalDateTime today) {
+        if (menuOption.equals("1")) {
             attendanceCheck(crewGroup, today);
         }
-        if (function.equals("2")) {
+        if (menuOption.equals("2")) {
             changeAttendance(crewGroup, today);
         }
-        if (function.equals("3")) {
+        if (menuOption.equals("3")) {
             showCrewAttendance(crewGroup);
         }
-        if (function.equals("4")) {
+        if (menuOption.equals("4")) {
             showAlertCrews(crewGroup);
         }
     }
 
     private void attendanceCheck(CrewGroup crewGroup, LocalDateTime today) {
         DateValidator.validateAttendanceCheckDate(today);
+
         String rawName = inputView.insertNickname();
         Crew crew = crewGroup.searchCrew(rawName);
-
         if (crew.isAlreadyChecked(today)) {
             outputView.printGuide();
             return;
@@ -71,9 +76,9 @@ public class Controller {
 
         String rawTime = inputView.insertTime();
         Time time = new Time(rawTime);
-        LocalDateTime attendanceTime = LocalDateTime.of(today.getYear(), today.getMonth(), today.getDayOfMonth(),
-                time.getHour(), time.getMinute());
-        Attendance attendance = crew.addAttendance(attendanceTime);
+        Attendance attendance = crew.addAttendance(
+                LocalDateTime.of(today.getYear(), today.getMonth(), today.getDayOfMonth(),
+                        time.getHour(), time.getMinute()));
 
         outputView.printAttendanceLog(AttendanceLogDTO.from(attendance));
     }
@@ -84,14 +89,14 @@ public class Controller {
 
         int date = inputView.insertChangeDate();
         DateValidator.validateAttendanceChangeDate(date, today);
+
         String rawTime = inputView.insertChangeTime();
         Time time = new Time(rawTime);
 
-        Attendance originalAttendance = crew.getSpecificAttendance(date);
-        Attendance copy = new Attendance(originalAttendance.getDate());
+        Attendance originalAttendanceCopy = new Attendance(crew.getSpecificAttendance(date).getDate());
         Attendance changedAttendance = crew.changeAttendance(date, time);
 
-        outputView.printChangeLog(ChangeAttendanceLogDTO.from(copy, changedAttendance));
+        outputView.printChangeLog(ChangeAttendanceLogDTO.from(originalAttendanceCopy, changedAttendance));
     }
 
     private void showCrewAttendance(CrewGroup crewGroup) {

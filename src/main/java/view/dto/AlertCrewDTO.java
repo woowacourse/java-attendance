@@ -10,7 +10,8 @@ public record AlertCrewDTO(String nickName, int absent, int late, String AlertLe
     public static AlertCrewDTO from(Crew crew) {
         AttendanceStatusCount attendanceStatusCount = crew.getAttendanceCount();
         Map<AttendanceStatus, Integer> statuses = attendanceStatusCount.getStatuses();
-        return new AlertCrewDTO(crew.getNickname(), statuses.get(AttendanceStatus.ABSENT), statuses.get(AttendanceStatus.LATE),
+        return new AlertCrewDTO(crew.getNickname(), statuses.get(AttendanceStatus.ABSENT),
+                statuses.get(AttendanceStatus.LATE),
                 attendanceStatusCount.calculateAttendanceAlertLevel().getName());
     }
 

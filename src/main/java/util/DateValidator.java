@@ -14,11 +14,11 @@ public class DateValidator {
     }
 
     public static void validateAttendanceCheckDate(LocalDateTime today) {
-       checkHoliday(today.getDayOfMonth(), today);
+        checkHoliday(today.getDayOfMonth(), today);
     }
 
     private static void checkFuture(int date, LocalDateTime today) {
-        if(today.getDayOfMonth() < date){
+        if (today.getDayOfMonth() < date) {
             throw new IllegalArgumentException("미래 날짜는 수정할 수 없습니다.");
         }
     }
@@ -26,12 +26,12 @@ public class DateValidator {
     private static void checkHoliday(int date, LocalDateTime today) {
         String message = String.format("%d월 %d일 %s은 등교일이 아닙니다.", today.getMonth().getValue(), date,
                 DayOfWeekConverter.convertDayOfWeek(date, today));
-        if(isHoliday(date, today)) {
+        if (isHoliday(date, today)) {
             throw new IllegalArgumentException(message);
         }
     }
 
-    public static boolean isHoliday (int date, LocalDateTime today) {
+    public static boolean isHoliday(int date, LocalDateTime today) {
         LocalDate targetDate = LocalDate.of(today.getYear(), today.getMonth(), date);
         if (date == CHRISTMAS) {
             return true;

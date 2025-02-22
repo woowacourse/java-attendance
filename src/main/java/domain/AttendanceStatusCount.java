@@ -5,11 +5,19 @@ import java.util.Map;
 
 public class AttendanceStatusCount {
     public static final int LATE_TO_ABSENT_THRESHOLD = 3;
-    private final Map<AttendanceStatus, Integer> statuses = new HashMap<>();
+    private final Map<AttendanceStatus, Integer> statuses = initStatuses();
 
     public void updateStatus(Attendance attendance) {
         AttendanceStatus status = attendance.calculateAttendanceStatus();
-        statuses.put(status, statuses.getOrDefault(status, 0) + 1);
+        statuses.put(status, statuses.get(status) + 1);
+    }
+
+    private Map<AttendanceStatus, Integer> initStatuses() {
+        Map<AttendanceStatus, Integer> statuses = new HashMap<>();
+        for (AttendanceStatus status : AttendanceStatus.values()) {
+            statuses.put(status, 0);
+        }
+        return statuses;
     }
 
     public void deleteStatus(Attendance attendance) {

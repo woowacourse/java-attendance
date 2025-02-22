@@ -43,7 +43,7 @@ public class InputView {
         return Integer.parseInt(input);
     }
 
-    public String insertFunction(LocalDateTime today) {
+    public String insertMenuOption(LocalDateTime today) {
         String dayOfWeekKorean = today.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.KOREAN);
         System.out.println(
                 String.format("오늘은 %d월 %d일 %s입니다. 기능을 선택해 주세요.", today.getMonth().getValue(), today.getDayOfMonth(),
