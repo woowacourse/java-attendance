@@ -1,21 +1,18 @@
 package controller;
 
 import domain.Attend;
+import domain.AttendReader;
 import domain.AttendStatus;
 import domain.AttendanceBook;
 import domain.AttendanceResults;
 import domain.Current;
 import domain.WarningCrew;
-import java.net.URL;
 import java.util.List;
 import util.DateUtil;
-import util.FileUtil;
 import view.InputView;
 import view.OutputView;
 
 public class AttendanceController {
-
-    private static final String CSV_PATH = "attendances.csv";
 
     private final InputView inputView;
     private final OutputView outputView;
@@ -26,9 +23,8 @@ public class AttendanceController {
     }
 
     public void run() {
-        List<String> rows = readCsv();
-        AttendanceBook attendanceBook = loadAttendanceBook(rows);
         while (true) {
+        AttendanceBook attendanceBook = loadAttendanceBook();
             try {
 
                 String command = inputView.inputCommand(Current.TODAY.getLocalDate());
@@ -74,33 +70,18 @@ public class AttendanceController {
                 System.out.println(e.getMessage());
             }
         }
+    }
+
+    private AttendanceBook loadAttendanceBook() {
+        AttendReader attendReader = new AttendReader();
+        return attendReader.loadAttendanceBook();
+    }
 
     }
 
-    private AttendanceBook loadAttendanceBook(List<String> data) {
-        AttendanceBook attendanceBook = new AttendanceBook();
-        for (String row : data) {
-            final String name = parseName(row);
-            final Attend attend = parseAttend(row);
-            attendanceBook.registerName(name);
-            attendanceBook.attend(name, attend);
-        }
-        return attendanceBook;
     }
 
-    private Attend parseAttend(String row) {
-        String dateTime = row.split(",")[1];
-        String day = dateTime.substring(8, 10);
-        String time = dateTime.substring(11);
-        return Attend.of(day, time);
     }
 
-    private String parseName(String row) {
-        return row.split(",")[0];
-    }
-
-    private List<String> readCsv() {
-        URL fileURL = AttendanceController.class.getClassLoader().getResource(CSV_PATH);
-        return FileUtil.readFile(fileURL);
     }
 }
