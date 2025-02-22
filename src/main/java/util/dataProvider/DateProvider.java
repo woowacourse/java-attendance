@@ -1,8 +1,8 @@
-package util.dataTimeProvider;
+package util.dataProvider;
 
 import java.time.LocalDate;
 
 public interface DateProvider {
     
-    LocalDate getCurrentDate();
+    LocalDate getDate();
 }

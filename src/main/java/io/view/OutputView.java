@@ -6,7 +6,7 @@ import dto.result.AttendResult;
 import dto.result.ExpelMeasurementResult;
 import dto.result.MemberAttendResult;
 import dto.result.MemberAttendanceModifyResult;
-import util.dataTimeProvider.DateProvider;
+import util.dataProvider.DateProvider;
 import util.outputHandler.OutputHandler;
 
 import java.time.LocalDate;
@@ -97,7 +97,7 @@ public class OutputView {
                         %s
                         """,
                 attendanceResult.name(),
-                parseAttendResults(attendanceResult.attendanceResults(), dateProvider.getCurrentDate()),
+                parseAttendResults(attendanceResult.attendanceResults(), dateProvider.getDate()),
                 attendanceResult.attendCount(),
                 attendanceResult.lateCount(),
                 attendanceResult.absentCount(),

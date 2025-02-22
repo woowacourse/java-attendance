@@ -1,6 +1,6 @@
 package testUtil;
 
-import util.dataTimeProvider.DateProvider;
+import util.dataProvider.DateProvider;
 
 import java.time.LocalDate;
 
@@ -13,7 +13,7 @@ public class DateProviderStub implements DateProvider {
     }
     
     @Override
-    public LocalDate getCurrentDate() {
+    public LocalDate getDate() {
         return localDate;
     }
 }

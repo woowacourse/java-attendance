@@ -4,7 +4,7 @@ import dto.requeset.AttendRequest;
 import dto.requeset.AttendanceBookDecision;
 import dto.requeset.AttendanceModifyRequest;
 import dto.requeset.AttendanceResultFindRequest;
-import util.dataTimeProvider.DateProvider;
+import util.dataProvider.DateProvider;
 import util.inputProvider.InputProvider;
 import util.outputHandler.OutputHandler;
 
@@ -26,7 +26,7 @@ public class InputView {
     }
     
     public AttendanceBookDecision inputDecision() {
-        LocalDate now = dateProvider.getCurrentDate();
+        LocalDate now = dateProvider.getDate();
         int monthOfYear = now.getMonth().getValue();
         int todayOfMonth = now.getDayOfMonth();
         String todayOfWeek = checkToday(now);
@@ -62,7 +62,7 @@ public class InputView {
         String name = inputProvider.get();
         System.out.println("수정하려는 날짜(일)를 입력해 주세요.");
         
-        LocalDate date = dateProvider.getCurrentDate().withDayOfMonth(Integer.parseInt(inputProvider.get()));
+        LocalDate date = dateProvider.getDate().withDayOfMonth(Integer.parseInt(inputProvider.get()));
         System.out.println("언제로 변경하겠습니까?");
         LocalTime time = LocalTime.parse(inputProvider.get());
         

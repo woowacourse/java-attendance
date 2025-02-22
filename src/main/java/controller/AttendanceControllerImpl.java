@@ -5,7 +5,7 @@ import dto.requeset.AttendanceBookDecision;
 import io.AttendanceFactory;
 import io.view.InputView;
 import io.view.OutputView;
-import util.dataTimeProvider.DateProvider;
+import util.dataProvider.DateProvider;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
@@ -52,7 +52,7 @@ public class AttendanceControllerImpl implements AttendanceController {
     
     private void handleAttend(AttendanceBook attendanceBook) {
         var attendRequest = inputView.getAttendRequest();
-        var attendResult = attendanceBook.addAttendance(attendRequest.name(), LocalDateTime.of(dateProvider.getCurrentDate(), attendRequest.attendTime()));
+        var attendResult = attendanceBook.addAttendance(attendRequest.name(), LocalDateTime.of(dateProvider.getDate(), attendRequest.attendTime()));
         outputView.handleAttendResult(attendResult);
     }
     
