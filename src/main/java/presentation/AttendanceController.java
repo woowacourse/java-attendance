@@ -44,10 +44,10 @@ public class AttendanceController {
         repeatCommand(crewGroup);
     }
 
-    private boolean repeatCommand(CrewGroup crewGroup) {
+    private void repeatCommand(CrewGroup crewGroup) {
         while (true) {
             if (controlCommand(crewGroup)) {
-                return true;
+                break;
             }
         }
     }
@@ -68,10 +68,7 @@ public class AttendanceController {
             if (command.equals(CREWS_WARNING_COMMAND)) {
                 attendanceWarningCommand(crewGroup);
             }
-            if (command.equalsIgnoreCase(EXIT_COMMAND)) {
-                return true;
-            }
-            return false;
+            return command.equalsIgnoreCase(EXIT_COMMAND);
         } catch (IllegalArgumentException e) {
             OutputView.printError(e.getMessage());
             return false;
