@@ -17,11 +17,8 @@ public class OutputView {
         for (AttendanceLogDTO attendanceLogDTO : crewAttendancesDTO.attendanceLogDTOs()) {
             stringBuilder.append(makeAttendanceLog(attendanceLogDTO));
         }
-
         stringBuilder.append("\n");
-
         makeAttendanceStatistics(crewAttendancesDTO, stringBuilder);
-
         System.out.println(stringBuilder);
     }
 
@@ -38,17 +35,16 @@ public class OutputView {
 
     private String makeAttendanceLog(AttendanceLogDTO attendanceLogDTO) {
         StringBuilder stringBuilder = new StringBuilder();
-        LocalDateTime dateTime = attendanceLogDTO.localDateTime();
-        String time = String.format("%02d:%02d", dateTime.getHour(), dateTime.getMinute());
-        if (attendanceLogDTO.attendanceStatus().equals(AttendanceStatus.ABSENT)) {
-            time = "--:--";
-        }
 
+        LocalDateTime dateTime = attendanceLogDTO.localDateTime();
         String dayOfWeekKorean = DayOfWeekConverter.convertDayOfWeek(dateTime);
+        String timeFormat = makeTimeFormat(attendanceLogDTO.attendanceStatus(), dateTime);
+
         stringBuilder.append(
                 String.format(("%d월 %02d일 %s %s (%s)"), dateTime.getMonth().getValue(), dateTime.getDayOfMonth(),
-                        dayOfWeekKorean, time, attendanceLogDTO.attendanceStatus().getName())
+                        dayOfWeekKorean, timeFormat, attendanceLogDTO.attendanceStatus().getName())
         );
+
         stringBuilder.append("\n");
         return stringBuilder.toString();
     }
@@ -71,14 +67,24 @@ public class OutputView {
     public void printChangeLog(ChangeAttendanceLogDTO changeAttendanceLogDTO) {
         LocalDateTime originalTime = changeAttendanceLogDTO.originalTime();
         LocalDateTime changeTime = changeAttendanceLogDTO.changeTime();
-        String dayOfWeekKorean = DayOfWeekConverter.convertDayOfWeek(originalTime);
-        String time = String.format("%02d:%02d", originalTime.getHour(), originalTime.getMinute());
-        String cTime = String.format("%02d:%02d", changeTime.getHour(), changeTime.getMinute());
-        System.out.println(String.format("%d월 %02d일 %s %s (%s) -> %s (%s) 수정 완료!",
-                originalTime.getMonth().getValue(),
+
+        String originalTimeFormat = makeTimeFormat(changeAttendanceLogDTO.originalStatus(), originalTime);
+        String changeTimeFormat = makeTimeFormat(changeAttendanceLogDTO.changeStatus(), changeTime);
+
+        System.out.printf("%d월 %02d일 %s %s (%s) -> %s (%s) 수정 완료!%n",
+                originalTime.getMonthValue(),
                 originalTime.getDayOfMonth(),
-                dayOfWeekKorean, time, changeAttendanceLogDTO.originalStatus().getName(), cTime,
-                changeAttendanceLogDTO.changeStatus().getName()));
+                DayOfWeekConverter.convertDayOfWeek(originalTime), originalTimeFormat,
+                changeAttendanceLogDTO.originalStatus().getName(),
+                changeTimeFormat,
+                changeAttendanceLogDTO.changeStatus().getName());
+    }
+
+    private String makeTimeFormat(AttendanceStatus status, LocalDateTime time) {
+        if (status.equals(AttendanceStatus.ABSENT)) {
+            return "--:--";
+        }
+        return String.format("%02d:%02d", time.getHour(), time.getMinute());
     }
 
     public void printGuide() {

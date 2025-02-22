@@ -24,7 +24,7 @@ public class DateValidator {
     }
 
     private static void checkHoliday(int date, LocalDateTime today) {
-        String message = String.format("%d월 %d일 %s은 등교일이 아닙니다.", today.getMonth().getValue(), date,
+        String message = String.format("%d월 %d일 %s은 등교일이 아닙니다.", today.getMonthValue(), date,
                 DayOfWeekConverter.convertDayOfWeek(date, today));
         if (isHoliday(date, today)) {
             throw new IllegalArgumentException(message);

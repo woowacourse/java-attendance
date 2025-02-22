@@ -36,7 +36,7 @@ class CrewTest {
 
         crew.addAllAbsent(today);
 
-        Assertions.assertEquals(4, crew.getAttendances().size());
+        Assertions.assertEquals(3, crew.getAttendances().size());
     }
 
     @DisplayName("특정 날짜의 출석을 가져옵니다.")

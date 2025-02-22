@@ -10,7 +10,7 @@ public class DayOfWeekConverter {
     }
 
     public static String convertDayOfWeek(int date, LocalDateTime dateTime) {
-        LocalDateTime changeDateTime = LocalDateTime.of(dateTime.getYear(), dateTime.getMonth().getValue(), date,
+        LocalDateTime changeDateTime = LocalDateTime.of(dateTime.getYear(), dateTime.getMonthValue(), date,
                 dateTime.getHour(), dateTime.getMinute());
 
         return convertDayOfWeek(changeDateTime);
