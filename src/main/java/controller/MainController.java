@@ -31,7 +31,6 @@ public class MainController {
         prepareToday();
         String feature;
         do {
-            //TODO if문 제거 (다형성 활용 해보기)
             feature = InputView.inputFeature(todayMonth, todayDay, todayDayOfWeek);
             if (feature.equals("1")) {
                 attendanceCheck();
@@ -73,7 +72,7 @@ public class MainController {
 
     private void attendanceUpdate() {
         String nickname = InputView.inputUpdateNickName();
-        int date = Integer.parseInt(InputView.inputUpdateDate());
+        int date = InputView.inputUpdateDate();
         String time = InputView.inputUpdateTime();
 
         Crew crew = attendance.getCrewByName(nickname);

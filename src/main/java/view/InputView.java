@@ -64,11 +64,10 @@ public class InputView {
         return input;
     }
 
-    public static String inputUpdateDate() {
+    public static int inputUpdateDate() {
         System.out.println("수정하려는 날짜(일)를 입력해 주세요.");
         String input = Console.readLine();
-        validateParseDate(input);
-        return input;
+        return validateParseDate(input);
     }
 
     public static String inputUpdateTime() {
@@ -78,18 +77,19 @@ public class InputView {
         return input;
     }
 
-    private static void validateParseDate(final String inputDate) {
+    private static int validateParseDate(final String inputDate) {
         try {
             int date = Integer.parseInt(inputDate);
-            validateSize(date);
+            return validateSize(date);
         } catch (NumberFormatException e) {
             throw new IllegalArgumentException("날짜는 숫자만 입력할 수 있습니다.");
         }
     }
 
-    private static void validateSize(final int date) {
+    private static int validateSize(final int date) {
         if (date < START_DATE || date > END_DATE) {
             throw new IllegalArgumentException("날짜는 1부터 31일까지의 숫자만 입력할 수 있습니다.");
         }
+        return date;
     }
 }
