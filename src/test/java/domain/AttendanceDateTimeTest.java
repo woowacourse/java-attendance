@@ -17,20 +17,6 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 public class AttendanceDateTimeTest {
 
-    @ParameterizedTest
-    @DisplayName("출석 시간을 입력하면 출석할 수 있다")
-    @MethodSource("getDateTimeForAttend")
-    void input_enterTime_then_attendance(LocalDateTime attendanceDateTime) {
-        // given
-        AttendanceDateTime attendanceTime = AttendanceDateTime.from(attendanceDateTime);
-
-        // when
-        AttendanceState attendanceState = attendanceTime.check();
-
-        // then
-        assertThat(attendanceState).isEqualTo(AttendanceState.ATTEND);
-    }
-
     private static Stream<Arguments> getDateTimeForAttend() {
         return Stream.of(
                 Arguments.of(
@@ -46,20 +32,6 @@ public class AttendanceDateTimeTest {
                         LocalDateTime.of(2024, 12, 10, 10, 2)
                 )
         );
-    }
-
-    @ParameterizedTest
-    @DisplayName("출석 시간으로부터 5분 초과는 지각이다")
-    @MethodSource("getDateTimeForLate")
-    void over_enterTime_then_late(LocalDateTime attendanceDateTime) {
-        // given
-        AttendanceDateTime attendanceTime = AttendanceDateTime.from(attendanceDateTime);
-
-        // when
-        AttendanceState attendanceState = attendanceTime.check();
-
-        // then
-        assertThat(attendanceState).isEqualTo(AttendanceState.LATE);
     }
 
     private static Stream<Arguments> getDateTimeForLate() {
@@ -79,20 +51,6 @@ public class AttendanceDateTimeTest {
         );
     }
 
-    @ParameterizedTest
-    @DisplayName("출석 시간으로부터 30분 초과는 결석이다")
-    @MethodSource("getDateTimeForAbsent")
-    void over_enterTime_then_absent(LocalDateTime attendanceDateTime) {
-        // given
-        AttendanceDateTime attendanceTime = AttendanceDateTime.from(attendanceDateTime);
-
-        // when
-        AttendanceState attendanceState = attendanceTime.check();
-
-        // then
-        assertThat(attendanceState).isEqualTo(AttendanceState.ABSENT);
-    }
-
     private static Stream<Arguments> getDateTimeForAbsent() {
         return Stream.of(
                 Arguments.of(
@@ -108,6 +66,48 @@ public class AttendanceDateTimeTest {
                         LocalDateTime.of(2024, 12, 10, 11, 31)
                 )
         );
+    }
+
+    @ParameterizedTest
+    @DisplayName("출석 시간을 입력하면 출석할 수 있다")
+    @MethodSource("getDateTimeForAttend")
+    void input_enterTime_then_attendance(LocalDateTime attendanceDateTime) {
+        // given
+        AttendanceDateTime attendanceTime = AttendanceDateTime.from(attendanceDateTime);
+
+        // when
+        AttendanceState attendanceState = attendanceTime.check();
+
+        // then
+        assertThat(attendanceState).isEqualTo(AttendanceState.ATTEND);
+    }
+
+    @ParameterizedTest
+    @DisplayName("출석 시간으로부터 5분 초과는 지각이다")
+    @MethodSource("getDateTimeForLate")
+    void over_enterTime_then_late(LocalDateTime attendanceDateTime) {
+        // given
+        AttendanceDateTime attendanceTime = AttendanceDateTime.from(attendanceDateTime);
+
+        // when
+        AttendanceState attendanceState = attendanceTime.check();
+
+        // then
+        assertThat(attendanceState).isEqualTo(AttendanceState.LATE);
+    }
+
+    @ParameterizedTest
+    @DisplayName("출석 시간으로부터 30분 초과는 결석이다")
+    @MethodSource("getDateTimeForAbsent")
+    void over_enterTime_then_absent(LocalDateTime attendanceDateTime) {
+        // given
+        AttendanceDateTime attendanceTime = AttendanceDateTime.from(attendanceDateTime);
+
+        // when
+        AttendanceState attendanceState = attendanceTime.check();
+
+        // then
+        assertThat(attendanceState).isEqualTo(AttendanceState.ABSENT);
     }
 
     @Nested
@@ -163,19 +163,6 @@ public class AttendanceDateTimeTest {
 
     @Nested
     class Update {
-        @ParameterizedTest
-        @DisplayName("출석 기록을 수정할 수 있다")
-        @MethodSource("provideOriginDateTimeForUpdate")
-        void updateTest(LocalDateTime originDateTime, LocalTime updateTime) {
-            // given
-            AttendanceDateTime attendanceTime = AttendanceDateTime.from(originDateTime);
-
-            // when
-            // then
-            assertThatCode(() -> attendanceTime.update(updateTime))
-                    .doesNotThrowAnyException();
-        }
-
         private static Stream<Arguments> provideOriginDateTimeForUpdate() {
             return Stream.of(
                     Arguments.of(
@@ -191,6 +178,19 @@ public class AttendanceDateTimeTest {
                             LocalTime.of(9, 59)
                     )
             );
+        }
+
+        @ParameterizedTest
+        @DisplayName("출석 기록을 수정할 수 있다")
+        @MethodSource("provideOriginDateTimeForUpdate")
+        void updateTest(LocalDateTime originDateTime, LocalTime updateTime) {
+            // given
+            AttendanceDateTime attendanceTime = AttendanceDateTime.from(originDateTime);
+
+            // when
+            // then
+            assertThatCode(() -> attendanceTime.update(updateTime))
+                    .doesNotThrowAnyException();
         }
     }
 
