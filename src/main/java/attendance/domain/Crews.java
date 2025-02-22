@@ -13,12 +13,12 @@ public class Crews {
         this.crews = crews;
     }
 
-    public static Crews fromCrewsFile(Set<String> crews) {
-        Set<Crew> crewNames = new HashSet<>();
-        for (String crewName : crews) {
-            crewNames.add(Crew.from(crewName));
+    public static Crews fromCrewNames(Set<String> crewNames) {
+        Set<Crew> crews = new HashSet<>();
+        for (String crewName : crewNames) {
+            crews.add(Crew.from(crewName));
         }
-        return new Crews(crewNames);
+        return new Crews(crews);
     }
 
     public Crew findCrew(String crewName) {

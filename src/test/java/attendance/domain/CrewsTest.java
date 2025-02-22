@@ -17,7 +17,7 @@ class CrewsTest {
         Set<String> tempCrews = Set.of(crewName1, crewName2, crewName3);
 
         //when
-        Crews crews = Crews.fromCrewsFile(tempCrews);
+        Crews crews = Crews.fromCrewNames(tempCrews);
 
         //then
         Assertions.assertThat(crews.getCrews()).hasSize(3);
@@ -31,7 +31,7 @@ class CrewsTest {
         String crewName2 = "우가";
         String crewName3 = "밍티";
         Set<String> tempCrews = Set.of(crewName1, crewName2, crewName3);
-        Crews crews = Crews.fromCrewsFile(tempCrews);
+        Crews crews = Crews.fromCrewNames(tempCrews);
 
         //when
         Crew crew = crews.findCrew("우가");
@@ -47,7 +47,7 @@ class CrewsTest {
         String crewName2 = "우가";
         String crewName3 = "밍티";
         Set<String> tempCrews = Set.of(crewName1, crewName2, crewName3);
-        Crews crews = Crews.fromCrewsFile(tempCrews);
+        Crews crews = Crews.fromCrewNames(tempCrews);
 
         //when & then
         Assertions.assertThatThrownBy(() -> crews.findCrew("제프리"))

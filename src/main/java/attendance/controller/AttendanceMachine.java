@@ -27,7 +27,7 @@ public class AttendanceMachine {
     }
 
     public void start() throws IOException {
-        Crews crews = Crews.fromCrewsFile(FileReader.fileReadCrewNames("attendances.csv"));
+        Crews crews = Crews.fromCrewNames(FileReader.fileReadCrewNames("attendances.csv"));
         LocalDate now = LocalDate.now();
         Register register = new Register(crews, now);
         register.fromCrewAttendanceTimeFile(crews, FileReader.fileReadLine("attendances.csv"));
