@@ -12,37 +12,34 @@ import java.util.Set;
 
 public class FileReader {
 
-    public static Set<String> fileReadCrewNames(String fileName) {
-        try {
-            List<String> fileLines = fileReadLine(fileName);
-            Set<String> crewNames = new HashSet<>();
-            for (String fileLine : fileLines) {
-                String crewName = List.of(fileLine.split(",")).get(0);
-                crewNames.add(crewName);
-            }
-            return crewNames;
-        } catch (IOException e) {
-            e.getMessage();
+    public static Set<String> fileReadCrewNames(String fileName) throws IOException {
+        List<String> fileLines = fileReadLine(fileName);
+        Set<String> crewNames = new HashSet<>();
+        for (String fileLine : fileLines) {
+            String crewName = List.of(fileLine.split(",")).get(0);
+            crewNames.add(crewName);
         }
-        return null;
+        return crewNames;
     }
 
     public static List<String> fileReadLine(String fileName) throws IOException {
-        List<String> items = new ArrayList<>();
-        BufferedReader bufferedReader = loadFile(fileName);
-        String line;
-        bufferedReader.readLine();
-        while ((line = bufferedReader.readLine()) != null) {
-            items.add(line);
+        try (BufferedReader br = loadFile(fileName)) {
+            List<String> items = new ArrayList<>();
+            String line;
+            br.readLine();
+            while ((line = br.readLine()) != null) {
+                items.add(line);
+            }
+            return items;
         }
-        return items;
     }
 
-    private static BufferedReader loadFile(String fileName) {
-        InputStream inputStream = FileReader.class.getClassLoader().getResourceAsStream(fileName);
-        if (inputStream == null) {
-            throw new IllegalArgumentException(ErrorMessage.FILE_NOT_PRESENCE.getMessage());
+    private static BufferedReader loadFile(String fileName) throws IOException {
+        try (InputStream inputStream = FileReader.class.getClassLoader().getResourceAsStream(fileName)) {
+            if (inputStream == null) {
+                throw new IllegalArgumentException(ErrorMessage.FILE_NOT_PRESENCE.getMessage());
+            }
+            return new BufferedReader(new InputStreamReader(inputStream));
         }
-        return new BufferedReader(new InputStreamReader(inputStream));
     }
 }
