@@ -48,7 +48,7 @@ class AttendanceHistoryServiceTest {
         LocalDate date = LocalDate.of(year, month, 6);
 
         // when
-        List<AttendanceHistoryResponse> responses = attendanceHistoryService.getHistoriesOf(name, date);
+        List<AttendanceHistoryResponse> responses = attendanceHistoryService.getHistoriesOf(crew, date);
 
         // then
         assertThat(responses).containsExactlyElementsOf(attendanceHistoryResponses);
@@ -72,7 +72,7 @@ class AttendanceHistoryServiceTest {
         LocalDate date = LocalDate.of(year, month, 6);
 
         // when
-        Map<AttendanceStatus, Integer> attendanceCount = attendanceHistoryService.getAttendanceResultOf(name, date);
+        Map<AttendanceStatus, Integer> attendanceCount = attendanceHistoryService.getAttendanceResultOf(crew, date);
 
         // then
         assertThat(attendanceCount.get(AttendanceStatus.ATTENDANCE)).isEqualTo(1);
@@ -88,7 +88,7 @@ class AttendanceHistoryServiceTest {
         LocalDate date = LocalDate.of(year, month, 6);
 
         // when
-        CrewStatus crewStatus = attendanceHistoryService.getCrewStatus(name, date);
+        CrewStatus crewStatus = attendanceHistoryService.getCrewStatus(crew, date);
 
         // then
         assertThat(crewStatus).isSameAs(CrewStatus.WARNING);
@@ -108,7 +108,7 @@ class AttendanceHistoryServiceTest {
         LocalDate date = LocalDate.of(year, month, 13);
 
         //when
-        CrewStatus crewStatus = attendanceHistoryService.getCrewStatus(name, date);
+        CrewStatus crewStatus = attendanceHistoryService.getCrewStatus(crew, date);
 
         //then
         assertThat(crewStatus).isSameAs(CrewStatus.CONSULTANT);
@@ -121,7 +121,7 @@ class AttendanceHistoryServiceTest {
         LocalDate date = LocalDate.of(year, month, 12);
 
         //when
-        CrewStatus crewStatus = attendanceHistoryService.getCrewStatus(name, date);
+        CrewStatus crewStatus = attendanceHistoryService.getCrewStatus(crew, date);
 
         //then
         assertThat(crewStatus).isSameAs(CrewStatus.DISENROLLMENT);

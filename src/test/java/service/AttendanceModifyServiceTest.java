@@ -46,7 +46,7 @@ class AttendanceModifyServiceTest {
         int minutes = 0;
         LocalDateTime after = LocalDateTime.of(CustomDate.YEAR, CustomDate.CUSTOM_MONTH.getValue(), date, hour, minutes);
 
-        AttendanceModifyResponse response = attendanceModifyService.modify(name, date, hour, minutes);
+        AttendanceModifyResponse response = attendanceModifyService.modify(crew, date, hour, minutes);
 
         //then
         assertThat(response.beforeTime()).isEqualTo(before);

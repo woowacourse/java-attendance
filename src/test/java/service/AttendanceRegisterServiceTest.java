@@ -17,10 +17,11 @@ import static org.assertj.core.api.Assertions.*;
 public class AttendanceRegisterServiceTest {
     AttendanceRepository attendanceRepository;
     AttendanceRegisterService attendanceCheckService;
+    String name = "이든";
+    Crew crew = new Crew(name);
 
     @BeforeEach
     void setUp() {
-        Crew crew = new Crew("이든");
         attendanceRepository = new AttendanceRepositoryImpl();
         attendanceCheckService = new AttendanceRegisterService(attendanceRepository);
 
@@ -45,7 +46,6 @@ public class AttendanceRegisterServiceTest {
     @Test
     void test2() {
         // given
-        String name = "이든";
         LocalDateTime time = LocalDateTime.of(
                 CustomDate.YEAR,
                 CustomDate.CUSTOM_MONTH.getValue(),
@@ -56,7 +56,7 @@ public class AttendanceRegisterServiceTest {
         Attendance original = new Attendance(time);
 
         // when
-        Attendance attendance = attendanceCheckService.register(name, time);
+        Attendance attendance = attendanceCheckService.register(crew, time);
 
         // then
         assertThat(attendance).isEqualTo(original);
@@ -78,7 +78,7 @@ public class AttendanceRegisterServiceTest {
 
         // when & then
         assertThatThrownBy(() -> {
-            attendanceCheckService.register(name, inputTime);
+            attendanceCheckService.register(crew, inputTime);
         }).isInstanceOf(DuplicateAttendanceException.class);
     }
 }

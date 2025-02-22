@@ -1,10 +1,13 @@
 package controller.sub;
 
 import domain.date.CustomDate;
+import exception.InvalidDateException;
 import exception.InvalidTimeException;
 import exception.handler.ExceptionHandler;
 import controller.sub.parent.SubController;
 import domain.crew.Crew;
+import java.time.DateTimeException;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeParseException;
 import java.util.Date;
@@ -53,10 +56,15 @@ public class AttendanceModifyController implements SubController {
 
     private int readModifyDate() {
         return ExceptionHandler.retryIfIllegalArgumentAndReturn(() -> {
-            int modifyDate = inputView.readModifyDate(); //TODO : 검증 추가
-            CustomDate.throwIfHolidy(LocalDateTime.of(
-                    CustomDate.YEAR, CustomDate.CUSTOM_MONTH.getValue(), modifyDate, 0, 0));
-            return modifyDate;
+            try {
+                int modifyDate = inputView.readModifyDate(); //TODO : 검증 추가
+                LocalDateTime now = LocalDateTime.of(
+                        CustomDate.YEAR, CustomDate.CUSTOM_MONTH.getValue(), modifyDate, 0, 0);
+                CustomDate.throwIfHolidy(now);
+                return modifyDate;
+            } catch (NumberFormatException | DateTimeException e) {
+                throw new InvalidDateException();
+            }
         });
     }
 
@@ -64,7 +72,7 @@ public class AttendanceModifyController implements SubController {
         return ExceptionHandler.retryIfIllegalArgumentAndReturn(() -> {
             try {
                 return inputView.readModifyTime();
-            } catch (DateTimeParseException e) {
+            } catch (DateTimeException e) {
                 throw new InvalidTimeException();
             }
         });

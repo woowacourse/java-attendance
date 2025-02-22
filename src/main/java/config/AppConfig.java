@@ -34,7 +34,8 @@ public class AppConfig {
         return new AttendanceHistoryController(
                 getInputView(),
                 getOutputView(),
-                new AttendanceHistoryService(getAttendanceRepository())
+                new AttendanceHistoryService(getAttendanceRepository()),
+                getAttendanceRepository()
         );
     }
 
