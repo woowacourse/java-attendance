@@ -20,14 +20,10 @@ public class Attend {
         return new Attend(LocalDate.of(2024, 12, day), null);
     }
 
-    public static Attend of(final String day, final String time) {
-        return new Attend(DateUtil.parseDate(day), DateUtil.parsetime(time));
     public static Attend fromTime(LocalTime time) {
         return new Attend(LocalDate.of(2024, 12, Current.TODAY.getDay()), time);
     }
 
-    public static Attend of(String time) {
-        return new Attend(LocalDate.of(2024, 12, Current.TODAY.getDay()), DateUtil.parsetime(time));
     public static Attend of(final LocalDate day, final LocalTime time) {
         return new Attend(day, time);
     }
