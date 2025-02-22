@@ -28,7 +28,9 @@ public class OutputView {
         System.out.println();
     }
 
-    public void printCrewAttendance(Crew crew) {
+    public void printCrewAttendance(Crew crew, String nickname) {
+        System.out.printf("이번 달 %s의 출석 기록입니다.%n", nickname);
+        System.out.println();
         for (int date : December.getWeekDays()) {
             AttendTime attendTime = crew.findAttendanceByDate(date);
             if (attendTime != null) {
@@ -105,4 +107,9 @@ public class OutputView {
     }
 
 
+    public void printErrorMessage(Exception e) {
+        System.out.println();
+        System.out.println(e.getMessage());
+        System.out.println();
+    }
 }
