@@ -21,15 +21,16 @@ class AttendancesTest {
 
         // when
 
-        AttendanceDto attendanceDto = attendances.calculateAttendanceCount();
+        attendanceStatusCounts attendanceStatusCounts = attendances.calculateAttendanceCount();
         int expectedAttendance = 2;
         int expectedTardiness = 1;
         int expectedAbsence = 3;
 
-        AttendanceDto expectedDto = new AttendanceDto(expectedAttendance, expectedTardiness, expectedAbsence);
+        attendanceStatusCounts expectedDto = new attendanceStatusCounts(expectedAttendance, expectedTardiness,
+                expectedAbsence);
 
         // then
-        Assertions.assertThat(attendanceDto).isEqualTo(expectedDto);
+        Assertions.assertThat(attendanceStatusCounts).isEqualTo(expectedDto);
     }
 
 }

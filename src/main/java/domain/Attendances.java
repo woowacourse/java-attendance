@@ -13,7 +13,7 @@ public class Attendances {
         this.attendances = attendances;
     }
 
-    public AttendanceDto calculateAttendanceCount() {
+    public attendanceStatusCounts calculateAttendanceCount() {
         final long attendanceCount = attendances.stream()
                 .filter(attendance -> attendance.getAttendanceStatus().equals(AttendanceStatus.ATTENDANCE))
                 .count();
@@ -24,7 +24,7 @@ public class Attendances {
                 .filter(attendance -> attendance.getAttendanceStatus().equals(AttendanceStatus.ABSENCE))
                 .count();
 
-        return new AttendanceDto((int) attendanceCount, (int) tardinessCount, (int) absence);
+        return new attendanceStatusCounts((int) attendanceCount, (int) tardinessCount, (int) absence);
     }
 
     public boolean isAttended(final LocalDateTime dateTime) {

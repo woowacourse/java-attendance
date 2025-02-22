@@ -9,8 +9,8 @@ public class AttendanceCounter {
     private final int absenceCount;
 
     public static AttendanceCounter of(final Attendances attendances) {
-        AttendanceDto dto = attendances.calculateAttendanceCount();
-        return new AttendanceCounter(dto.attendanceCount(), dto.tardinessCount(), dto.absenceCount());
+        attendanceStatusCounts counts = attendances.calculateAttendanceCount();
+        return new AttendanceCounter(counts.attendanceCount(), counts.tardinessCount(), counts.absenceCount());
     }
 
     public AttendanceCounter(final int attendanceCount, final int tardinessCount, final int absenceCount) {
