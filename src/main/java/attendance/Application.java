@@ -17,7 +17,7 @@ public class Application {
             new InputView(),
             new OutputView(),
             new AttendanceService(new AttendanceFileParser("src/main/java/resources/attendances.csv")),
-            () -> LocalDate.of(2024,12,13)
+            new DateGeneratorImpl()
         );
 
         ErrorUtils.executeWithError(controller::run);

@@ -5,7 +5,6 @@ import static attendance.common.Constants.DECEMBER_START_DATE;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.Arrays;
 import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
@@ -50,12 +49,12 @@ public enum AttendanceStatus {
     }
 
     public static Map<AttendanceStatus, Integer> initMap() {
-        Map<AttendanceStatus, Integer> map = new EnumMap<>(AttendanceStatus.class);
+        Map<AttendanceStatus, Integer> counts = new EnumMap<>(AttendanceStatus.class);
 
-        Arrays.stream(values()).forEach(
-                key -> map.putIfAbsent(key, 0));
-
-        return map;
+        for (AttendanceStatus status : values()) {
+            counts.put(status, 0);
+        }
+        return counts;
     }
 
     public static Map<AttendanceStatus, Integer> calculateAbsencesUntil(LocalDate today, List<Attendance> attendances) {
