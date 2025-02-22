@@ -119,8 +119,8 @@ public class AttendanceTest {
     @Test
     void test10() {
         // given
-        LocalDateTime todayDateTime = LocalDateTime.now();
-        Attendance attendance = new Attendance(AttendanceDate.DEFAULT_START_DATE, LocalDate.now());
+        LocalDateTime todayDateTime = LocalDateTime.of(2025, 2, 21, 10, 0);
+        Attendance attendance = new Attendance(AttendanceDate.DEFAULT_START_DATE, todayDateTime.toLocalDate());
         attendance.attend(todayDateTime);
 
         // when & then
