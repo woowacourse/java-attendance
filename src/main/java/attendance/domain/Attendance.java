@@ -20,12 +20,11 @@ public class Attendance {
 
     public String getAttendanceStatus() {
 
-        if (attendanceTime.getDayOfWeek().equals("월요일")) { // 월요일
-
-            return AttendanceStatus.checkStatusWithCondition(attendanceTime, 13, 5, 30);
+        if (attendanceTime.getDayOfWeek().equals("월요일")) {
+            return AttendanceStatus.getAttendanceStatusWithCondition(attendanceTime, 13, 5, 30).getValue();
         }
 
-        return AttendanceStatus.checkStatusWithCondition(attendanceTime, 10, 5, 30);
+        return AttendanceStatus.getAttendanceStatusWithCondition(attendanceTime, 10, 5, 30).getValue();
     }
 
     public boolean isAlreadyAttendance(final Attendance currentAttendance) {

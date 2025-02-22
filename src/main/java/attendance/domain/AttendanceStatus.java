@@ -18,23 +18,22 @@ public enum AttendanceStatus {
         return value;
     }
 
-    public static String checkStatusWithCondition(AttendanceTime attendanceTime, int hour, int lateMinute,
-                                                  int absentMinute) {
+    public static AttendanceStatus getAttendanceStatusWithCondition(AttendanceTime attendanceTime, int hour,
+                                                                    int lateMinute,
+                                                                    int absentMinute) {
 
-        if (!attendanceTime.isAfter(
-                LocalDateTime.of(attendanceTime.getYear(), attendanceTime.getMonth(), attendanceTime.getDay(),
-                        hour,
-                        lateMinute))) {
-            return ATTEND.getValue();
+        LocalDateTime attendDeadlineTime = LocalDateTime.of(attendanceTime.getYear(), attendanceTime.getMonth(),
+                attendanceTime.getDay(), hour, lateMinute);
+        if (!attendanceTime.isAfter(attendDeadlineTime)) {
+            return ATTEND;
         }
 
-        if (!attendanceTime.isAfter(
-                LocalDateTime.of(attendanceTime.getYear(), attendanceTime.getMonth(), attendanceTime.getDay(),
-                        hour,
-                        absentMinute))) {
-            return LATE.getValue();
+        LocalDateTime lateDeadlineTime = LocalDateTime.of(attendanceTime.getYear(), attendanceTime.getMonth(),
+                attendanceTime.getDay(), hour, absentMinute);
+        if (!attendanceTime.isAfter(lateDeadlineTime)) {
+            return LATE;
         }
 
-        return ABSENT.getValue();
+        return ABSENT;
     }
 }
