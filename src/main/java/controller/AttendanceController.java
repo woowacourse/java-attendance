@@ -53,7 +53,7 @@ public class AttendanceController {
             case RISK_OF_EXPLUSTION -> printRiskOfExpulsion(attendanceSheets);
             case QUIT -> { return QUIT; }
         }
-        throw new IllegalArgumentException("[ERROR] 잘못된 형식입니다. 기능을 다시 선택해 주세요.");
+        return select;
     }
 
     private void attend(AttendanceSheets attendanceSheets) {
