@@ -53,6 +53,19 @@ public class AttendanceDateTime {
         return decideAttendanceState(dayOfWeek, hour, minute);
     }
 
+    public boolean isCorrectDay(AttendanceSheet attendanceSheet) {
+        return this.attendanceDateTime.toLocalDate()
+                .equals(attendanceSheet.getAttendanceDateTime().attendanceDateTime.toLocalDate());
+    }
+
+    public boolean isCorrectDay(int day) {
+        return attendanceDateTime.getDayOfMonth() == day;
+    }
+
+    public LocalDateTime getAttendanceDateTime() {
+        return attendanceDateTime;
+    }
+
     private AttendanceState decideAttendanceState(DayOfWeek dayOfWeek, int hour, int minute) {
         int standardHour = getStandardHour(dayOfWeek);
 
@@ -97,15 +110,4 @@ public class AttendanceDateTime {
         }
     }
 
-    public boolean isCorrectDay(AttendanceSheet attendanceSheet) {
-        return this.attendanceDateTime.toLocalDate().equals(attendanceSheet.getAttendanceDateTime().attendanceDateTime.toLocalDate());
-    }
-
-    public boolean isCorrectDay(int day) {
-        return attendanceDateTime.getDayOfMonth() == day;
-    }
-
-    public LocalDateTime getAttendanceDateTime() {
-        return attendanceDateTime;
-    }
 }

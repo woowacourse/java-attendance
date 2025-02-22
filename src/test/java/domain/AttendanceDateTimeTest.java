@@ -121,7 +121,7 @@ public class AttendanceDateTimeTest {
 
         @ParameterizedTest
         @DisplayName("주말에 출석하면 예외가 발생한다")
-        @ValueSource(ints = {7,8})
+        @ValueSource(ints = {7, 8})
         void attendance_weekend_then_exception(int dayOfMonth) {
             // given
             LocalDateTime attendanceDateTime = LocalDateTime.of(2024, 12, dayOfMonth, 10, 10);

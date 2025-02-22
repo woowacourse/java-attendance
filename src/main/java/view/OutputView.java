@@ -2,7 +2,6 @@ package view;
 
 import domain.AbsentPolicy;
 import domain.AttendanceDateTime;
-
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.TextStyle;
@@ -27,12 +26,14 @@ public class OutputView {
         System.out.print(System.lineSeparator());
     }
 
-    private static void printAttendanceSheet(Map<Integer, AttendanceDateTime> dayToAttendanceDateTime, int day, String koreanDayOfWeek) {
+    private static void printAttendanceSheet(Map<Integer, AttendanceDateTime> dayToAttendanceDateTime, int day,
+                                             String koreanDayOfWeek) {
         if (dayToAttendanceDateTime.containsKey(day)) {
             AttendanceDateTime attendanceDateTime = dayToAttendanceDateTime.get(day);
             LocalDateTime dateTime = attendanceDateTime.getAttendanceDateTime();
 
-            System.out.printf(ViewMessage.ATTENDANCE_FORMAT, day, koreanDayOfWeek, dateTime.getHour(), dateTime.getMinute(), attendanceDateTime.check().description);
+            System.out.printf(ViewMessage.ATTENDANCE_FORMAT, day, koreanDayOfWeek, dateTime.getHour(),
+                    dateTime.getMinute(), attendanceDateTime.check().description);
             return;
         }
         System.out.printf(ViewMessage.ABSENT_FORMAT, day, koreanDayOfWeek);

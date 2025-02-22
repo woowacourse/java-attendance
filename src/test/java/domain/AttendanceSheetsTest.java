@@ -2,15 +2,15 @@ package domain;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.api.Test;
 
 @DisplayName("출석 추가, 수정, 목록 확인 테스트")
 class AttendanceSheetsTest {
@@ -27,12 +27,12 @@ class AttendanceSheetsTest {
                         new AttendanceSheet("우택호",
                                 AttendanceDateTime.from(LocalDateTime.of(2024, 12, 12, 10, 10)))
                 )
-        ));
+                ));
     }
 
     @Nested
     @DisplayName("출석 확인 추가 테스트")
-    class addAttendanceTest{
+    class addAttendanceTest {
         @Test
         @DisplayName("출석 확인을 추가할 수 있다.")
         void addTest() {

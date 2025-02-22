@@ -22,7 +22,7 @@ public class InputParser {
         int hour = validateRange(time[0], MIN_HOUR, MAX_HOUR);
         int minute = validateRange(time[1], MIN_MINUTE, MAX_MINUTE);
 
-        return LocalTime.of(hour,minute);
+        return LocalTime.of(hour, minute);
     }
 
     public static int dayParser(String day) {
@@ -31,7 +31,7 @@ public class InputParser {
 
     private static int validateRange(String input, int minRange, int maxRange) {
         int time = validateInteger(input);
-        if(time < minRange || time > maxRange){
+        if (time < minRange || time > maxRange) {
             throw new IllegalArgumentException("[ERROR] 범위에 맞게 입력해주세요.");
         }
 
@@ -47,7 +47,7 @@ public class InputParser {
     }
 
     private static void validateTimeFormat(String[] time) {
-        if(time.length!= TIME_DELIMITER_COUNT){
+        if (time.length != TIME_DELIMITER_COUNT) {
             throw new IllegalArgumentException("[ERROR] 시간 입력 형식이 잘못되었습니다.");
         }
     }

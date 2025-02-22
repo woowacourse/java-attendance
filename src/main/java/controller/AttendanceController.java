@@ -8,18 +8,16 @@ import domain.AttendanceSheet;
 import domain.AttendanceSheets;
 import domain.AttendanceSheetsFactory;
 import domain.AttendanceState;
-
-import parser.InputParser;
-import util.FileReaderUtil;
-import view.InputView;
-import view.OutputView;
-
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import parser.InputParser;
+import util.FileReaderUtil;
+import view.InputView;
+import view.OutputView;
 
 public class AttendanceController {
 
@@ -51,7 +49,9 @@ public class AttendanceController {
             case UPDATE_ATTENDANCE -> updateAttendance(attendanceSheets);
             case ATTENDANCE_SHEET -> printAttendance(attendanceSheets);
             case RISK_OF_EXPLUSTION -> printRiskOfExpulsion(attendanceSheets);
-            case QUIT -> { return QUIT; }
+            case QUIT -> {
+                return QUIT;
+            }
         }
         return select;
     }
