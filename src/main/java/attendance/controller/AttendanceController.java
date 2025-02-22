@@ -19,6 +19,7 @@ import java.time.LocalDateTime;
 import java.time.format.TextStyle;
 import java.util.List;
 import java.util.Locale;
+import java.util.stream.Stream;
 
 
 public class AttendanceController {
@@ -115,15 +116,11 @@ public class AttendanceController {
     }
 
     public void crewAtRiskOfExpulsion() {
-
         outputView.printCrewsAtRiskOfExpulsionStartMessage();
 
-        outputView.printCrewsAtRiskOfExpulsion(
-                attendanceBook.getCrewAtRiskOfExpulsion(attendanceRepository, EXPELLED.getValue()));
-        outputView.printCrewsAtRiskOfExpulsion(
-                attendanceBook.getCrewAtRiskOfExpulsion(attendanceRepository, INTERVIEW.getValue()));
-        outputView.printCrewsAtRiskOfExpulsion(
-                attendanceBook.getCrewAtRiskOfExpulsion(attendanceRepository, WARNING.getValue()));
+        Stream.of(EXPELLED.getValue(), INTERVIEW.getValue(), WARNING.getValue())
+                .map(value -> attendanceBook.getCrewAtRiskOfExpulsion(attendanceRepository, value))
+                .forEach(outputView::printCrewsAtRiskOfExpulsion);
     }
 
     public void printErrorMessage(String message) {
