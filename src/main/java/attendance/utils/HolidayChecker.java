@@ -23,7 +23,8 @@ public final class HolidayChecker {
 
     public static void validWeekDay(LocalDate today) {
         if (HolidayChecker.check(today)) {
-            throw new IllegalArgumentException(ErrorMessage.getFormattedMessage(today));
+            throw new IllegalArgumentException(
+                ErrorMessage.NOT_OPEN_DAY.formatMessage(DateConverter.convertToString(today)));
         }
     }
 }

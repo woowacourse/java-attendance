@@ -5,6 +5,7 @@ import attendance.dto.FileRequestDto;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.UncheckedIOException;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
@@ -25,7 +26,7 @@ public class FileParser {
             generateFileRequestDto(br, fileRequestDtos);
             return fileRequestDtos;
         } catch (IOException e) {
-            throw new RuntimeException(ErrorMessage.FILE_READ_FAIL.getMessage());
+            throw new UncheckedIOException(ErrorMessage.FILE_READ_FAIL.formatMessage(path), e);
         }
     }
 
