@@ -11,7 +11,7 @@ import view.InputView;
 
 public class AttendanceCommandController {
 
-    private static final LocalDateTime FIX_DATE_TIME = LocalDateTime.of(Constants.FIXED_YEAR, Constants.FIXED_MONTH,
+    public static final LocalDateTime FIX_DATE_TIME = LocalDateTime.of(Constants.FIXED_YEAR, Constants.FIXED_MONTH,
             Constants.FIXED_DAY, 0, 0, 0, 0);
 
     public void run() {
