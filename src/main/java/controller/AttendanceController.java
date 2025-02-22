@@ -9,12 +9,12 @@ import java.util.List;
 import java.util.Map;
 import model.AttendanceType;
 import model.Campus;
-import model.Command;
 import model.Crew;
 import model.Crews;
 import model.SubjectType;
 import util.StringParser;
 import util.TimeFormatter;
+import view.Command;
 import view.InputView;
 import view.ResultView;
 
