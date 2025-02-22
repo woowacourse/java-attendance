@@ -119,7 +119,7 @@ public class OutputView {
         }
     }
 
-    public record PenaltyResult(String nickName, int absenceCount, int lateCount,
+    private record PenaltyResult(String nickName, int absenceCount, int lateCount,
                                 Penalty penalty) implements Comparable<PenaltyResult> {
 
         @Override
