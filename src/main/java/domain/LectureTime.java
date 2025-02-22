@@ -25,9 +25,9 @@ public enum LectureTime {
 
     public static LectureTime from(LocalDate date) {
         return Arrays.stream(values())
-                .filter(lectureTime -> lectureTime.dayOfWeek.equals(date.getDayOfWeek()))
+                .filter(lectureTime -> lectureTime.dayOfWeek == date.getDayOfWeek())
                 .findAny()
-                .orElseThrow(() -> new IllegalArgumentException("교육 시간이 아닙니다."));
+                .orElseThrow(() -> new IllegalArgumentException(date + ": 교육이 있는 날이 아닙니다."));
     }
 
     public LocalTime getStartTime() {
