@@ -1,9 +1,9 @@
-import controller.AttendanceController;
+import controller.AttendanceCommandController;
 
 public class Application {
 
     public static void main(String[] args) {
-        AttendanceController attendanceController = new AttendanceController();
-        attendanceController.start();
+        AttendanceCommandController attendanceCommandController = new AttendanceCommandController();
+        attendanceCommandController.run();
     }
 }
