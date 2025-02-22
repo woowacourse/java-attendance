@@ -1,9 +1,7 @@
 package controller;
 
 import domain.AttendanceBook;
-import dto.requeset.AttendRequest;
-import dto.requeset.AttendanceModifyRequest;
-import dto.requeset.AttendanceResultFindRequest;
+import dto.requeset.AttendanceBookDecision;
 import io.AttendanceFactory;
 import io.view.InputView;
 import io.view.OutputView;
@@ -27,34 +25,51 @@ public class AttendanceControllerImpl implements AttendanceController {
     @Override
     public void run() throws IOException {
         AttendanceBook attendanceBook = AttendanceFactory.createAttendanceBook();
-        boolean continueFlag = true;
-        while (continueFlag) {
-            switch (inputView.inputDecision()) {
-                case "1":
-                    AttendRequest attendRequest = inputView.getAttendRequest();
-                    var attendResult = attendanceBook.addAttendance(attendRequest.name(), LocalDateTime.of(dateProvider.getCurrentDate(), attendRequest.attendTime()));
-                    outputView.handleAttendResult(attendResult);
-                    break;
-                case "2":
-                    AttendanceModifyRequest modifyRequest = inputView.getAttendanceModifyRequest();
-                    var memberAttendanceModifyResult = attendanceBook.editAttendance(modifyRequest.name(), modifyRequest.targetDate(), modifyRequest.modifyTo());
-                    outputView.handleAttendanceModifyResult(memberAttendanceModifyResult);
-                    break;
-                case "3":
-                    AttendanceResultFindRequest resultFindRequest = inputView.getAttendanceResultFindRequest();
-                    var attendanceResult = attendanceBook.getAttendanceResult(resultFindRequest.name());
-                    outputView.handleMemberAttendanceResult(attendanceResult);
-                    break;
-                case "4":
-                    var expelMeasurementResults = attendanceBook.createExpelWarnings();
-                    outputView.handleExpelMeasurementResults(expelMeasurementResults);
-                    break;
-                case "Q":
-                    continueFlag = false;
-                    break;
-                default:
-                    outputView.handleMissDecision();
+        while (true) {
+            AttendanceBookDecision decision = inputView.inputDecision();
+            
+            if (decision == AttendanceBookDecision.출석) {
+                handleAttend(attendanceBook);
+                continue;
+            }
+            if (decision == AttendanceBookDecision.출석_기록_수정) {
+                handleAttendanceModify(attendanceBook);
+                continue;
+            }
+            if (decision == AttendanceBookDecision.출석_기록_확인) {
+                handleAttendanceResultFind(attendanceBook);
+                continue;
+            }
+            if (decision == AttendanceBookDecision.제적_위험자_확인) {
+                handleExpelWarnings(attendanceBook);
+                continue;
+            }
+            if (decision == AttendanceBookDecision.종료) {
+                break;
             }
         }
+    }
+    
+    private void handleAttend(AttendanceBook attendanceBook) {
+        var attendRequest = inputView.getAttendRequest();
+        var attendResult = attendanceBook.addAttendance(attendRequest.name(), LocalDateTime.of(dateProvider.getCurrentDate(), attendRequest.attendTime()));
+        outputView.handleAttendResult(attendResult);
+    }
+    
+    private void handleAttendanceModify(AttendanceBook attendanceBook) {
+        var modifyRequest = inputView.getAttendanceModifyRequest();
+        var memberAttendanceModifyResult = attendanceBook.editAttendance(modifyRequest.name(), modifyRequest.targetDate(), modifyRequest.modifyTo());
+        outputView.handleAttendanceModifyResult(memberAttendanceModifyResult);
+    }
+    
+    private void handleAttendanceResultFind(AttendanceBook attendanceBook) {
+        var resultFindRequest = inputView.getAttendanceResultFindRequest();
+        var attendanceResult = attendanceBook.getAttendanceResult(resultFindRequest.name());
+        outputView.handleMemberAttendanceResult(attendanceResult);
+    }
+    
+    private void handleExpelWarnings(AttendanceBook attendanceBook) {
+        var expelMeasurementResults = attendanceBook.createExpelWarnings();
+        outputView.handleExpelMeasurementResults(expelMeasurementResults);
     }
 }

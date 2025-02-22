@@ -165,8 +165,4 @@ public class OutputView {
             return o1.targetName().compareTo(o2.targetName());
         }
     }
-    
-    public void handleMissDecision() {
-        outputHandler.handle("잘못 입력하셨습니다.");
-    }
 }

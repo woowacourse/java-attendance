@@ -1,6 +1,7 @@
 package io.view;
 
 import dto.requeset.AttendRequest;
+import dto.requeset.AttendanceBookDecision;
 import dto.requeset.AttendanceModifyRequest;
 import dto.requeset.AttendanceResultFindRequest;
 import util.dataTimeProvider.DateProvider;
@@ -24,7 +25,7 @@ public class InputView {
         this.dateProvider = dateProvider;
     }
     
-    public String inputDecision() {
+    public AttendanceBookDecision inputDecision() {
         LocalDate now = dateProvider.getCurrentDate();
         int monthOfYear = now.getMonth().getValue();
         int todayOfMonth = now.getDayOfMonth();
@@ -40,7 +41,7 @@ public class InputView {
                 """, monthOfYear, todayOfMonth, todayOfWeek);
         
         outputHandler.handle(decision);
-        return inputProvider.get();
+        return AttendanceBookDecision.from(inputProvider.get());
     }
     
     private String checkToday(LocalDate localDate) {
