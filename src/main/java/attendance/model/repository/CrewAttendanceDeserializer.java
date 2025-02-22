@@ -50,4 +50,3 @@ public class CrewAttendanceDeserializer {
         return new SimpleImmutableEntry<>(Crew.fromName(crewName), dateTime);
     }
 }
-
