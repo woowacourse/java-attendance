@@ -22,22 +22,21 @@ public class Attendances {
     private final Map<Crew, List<Attendance>> attendances = new HashMap<>();
 
     public void addAttendance(Crew crew, Attendance attendance) {
-        if (!attendances.containsKey(crew)) {
-            attendances.put(crew, new ArrayList<>(List.of(attendance)));
-            return;
-        }
+        attendances.putIfAbsent(crew, new ArrayList<>());
+        LocalDate date = attendance.getAttendedTime().toLocalDate();
 
-        for (Attendance existAttendance : attendances.get(crew)) {
-            validateAlreadyAttended(attendance, existAttendance);
+        if (alreadyAttendedAt(date, crew)) {
+            throw new IllegalArgumentException("\n[ERROR] 이미 출석을 완료했습니다. 수정 기능을 이용해주세요.");
         }
 
         attendances.get(crew).add(attendance);
     }
 
-    private void validateAlreadyAttended(Attendance attendance, Attendance existAttendance) {
-        if (existAttendance.getAttendedTime().getDayOfMonth() == attendance.getAttendedTime().getDayOfMonth()) {
-            throw new IllegalArgumentException("\n[ERROR] 이미 출석을 완료했습니다. 수정 기능을 이용해주세요.");
-        }
+    private boolean alreadyAttendedAt(LocalDate dateToAttend, Crew crew) {
+        return attendances.get(crew).stream()
+            .map(Attendance::getAttendedTime)
+            .map(LocalDateTime::toLocalDate)
+            .anyMatch(dateToAttend::equals);
     }
 
     public Attendance getAttendance(Crew targetCrew, LocalDate targetDate) {
