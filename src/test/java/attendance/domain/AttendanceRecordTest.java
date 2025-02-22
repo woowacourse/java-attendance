@@ -17,7 +17,7 @@ class AttendanceRecordTest {
     void 크루에_대한_출석_기록을_추가한다() {
         String nickname = "쿠키";
         LocalDateTime arrivalDateTime = LocalDateTime.of(2025, 12, 10, 8, 0, 0);
-        AttendanceRecord record = new AttendanceRecord(nickname, arrivalDateTime, AttendanceStatusType.ATTENDANCE);
+        AttendanceRecord record = new AttendanceRecord(nickname, arrivalDateTime, AttendanceType.ATTENDANCE);
 
         LocalDate correctDate = arrivalDateTime.toLocalDate();
         assertThat(record.checkSameDate(correctDate)).isTrue();
@@ -28,8 +28,8 @@ class AttendanceRecordTest {
     @DisplayName("현재 출석 기록이 결석기록인지 확인한다.")
     @Test
     void 현재_출석_기록이_결석기록인지_확인한다() {
-        AttendanceRecord attendanceRecord = makeRecord("쿠키", AttendanceStatusType.ATTENDANCE);
-        AttendanceRecord expulsionRecord = makeRecord("쿠키", AttendanceStatusType.EXPULSION);
+        AttendanceRecord attendanceRecord = makeRecord("쿠키", AttendanceType.ATTENDANCE);
+        AttendanceRecord expulsionRecord = makeRecord("쿠키", AttendanceType.EXPULSION);
 
         assertThat(attendanceRecord.isExpulsion()).isFalse();
         assertThat(expulsionRecord.isExpulsion()).isTrue();
@@ -40,7 +40,7 @@ class AttendanceRecordTest {
     void 현재_출석_기록의_월을_확인한다() {
         String nickname = "쿠키";
         LocalDateTime arrivalDateTime = LocalDateTime.of(2025, 12, 10, 8, 0, 0);
-        AttendanceRecord record = new AttendanceRecord(nickname, arrivalDateTime, AttendanceStatusType.ATTENDANCE);
+        AttendanceRecord record = new AttendanceRecord(nickname, arrivalDateTime, AttendanceType.ATTENDANCE);
 
         assertThat(record.isInMonth(Month.DECEMBER)).isTrue();
     }
@@ -51,7 +51,7 @@ class AttendanceRecordTest {
     void 현재_출석_기록의_월을_확인한다(int dayOfMonth, boolean isInPeriod) {
         String nickname = "쿠키";
         LocalDateTime arrivalDateTime = LocalDateTime.of(2025, 12, dayOfMonth, 8, 0, 0);
-        AttendanceRecord record = new AttendanceRecord(nickname, arrivalDateTime, AttendanceStatusType.ATTENDANCE);
+        AttendanceRecord record = new AttendanceRecord(nickname, arrivalDateTime, AttendanceType.ATTENDANCE);
 
         boolean actualResult =
                 record.isInPeriod(LocalDate.of(2025, 12, 10), LocalDate.of(2025, 12, 12));
@@ -59,7 +59,7 @@ class AttendanceRecordTest {
     }
 
     public static AttendanceRecord makeRecord(
-            String nickname, AttendanceStatusType attendanceType
+            String nickname, AttendanceType attendanceType
     ) {
         LocalDateTime arrivalDateTime = LocalDateTime.of(2024, 12, 9, 8, 10, 0);
         return new AttendanceRecord(nickname, arrivalDateTime, attendanceType);

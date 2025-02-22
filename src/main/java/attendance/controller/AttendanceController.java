@@ -1,8 +1,7 @@
 package attendance.controller;
 
 import attendance.config.AppConfig;
-import attendance.service.AttendanceInitService;
-import attendance.utility.DateGenerator;
+import attendance.domain.AttendanceSystem;
 import attendance.view.InputView;
 import attendance.view.OutputView;
 
@@ -10,19 +9,15 @@ public class AttendanceController {
 
     private final InputView inputView;
     private final OutputView outputView;
-    private final DateGenerator dateGenerator;
-    private final AttendanceInitService attendanceInitService;
+    private final AttendanceSystem attendanceSystem;
 
     public AttendanceController(AppConfig appConfig) {
         this.inputView = appConfig.getInputView();
         this.outputView = appConfig.getOutputView();
-        this.dateGenerator = appConfig.getDateGenerator();
-        this.attendanceInitService = appConfig.getAttendanceInitService();
+        this.attendanceSystem = appConfig.getAttendanceSystem();
     }
 
     public void run() {
-//        attendanceInitService.initAttendances();
-//
 //        while (true) {
 //            LocalDate today = dateGenerator.now();
 //            AttendanceMenu menu = selectMenu(today);

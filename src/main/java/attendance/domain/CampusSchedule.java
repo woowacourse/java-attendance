@@ -16,12 +16,12 @@ public enum CampusSchedule {
         this.time = time;
     }
 
-    public static AttendanceStatusType checkAttendance(boolean isMonday, LocalTime time) {
+    public static AttendanceType checkAttendance(boolean isMonday, LocalTime time) {
         CampusSchedule.validateIsInCampusTime(time);
         if (isMonday) {
-            return AttendanceStatusType.parse(MONDAY_EDUCATION_START_TIME.getTime(), time);
+            return AttendanceType.parse(MONDAY_EDUCATION_START_TIME.getTime(), time);
         }
-        return AttendanceStatusType.parse(NOT_MONDAY_EDUCATION_START_TIME.getTime(), time);
+        return AttendanceType.parse(NOT_MONDAY_EDUCATION_START_TIME.getTime(), time);
     }
 
     private static void validateIsInCampusTime(LocalTime time) {

@@ -1,8 +1,8 @@
 package attendance.domain;
 
-import static attendance.domain.AttendanceStatusType.ATTENDANCE;
-import static attendance.domain.AttendanceStatusType.EXPULSION;
-import static attendance.domain.AttendanceStatusType.LATE;
+import static attendance.domain.AttendanceType.ATTENDANCE;
+import static attendance.domain.AttendanceType.EXPULSION;
+import static attendance.domain.AttendanceType.LATE;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 
@@ -231,7 +231,7 @@ class AttendanceSystemTest {
     }
 
     private AttendanceRecord makeRecord(
-            String nickname, LocalDateTime arrivalDateTime, AttendanceStatusType attendanceType
+            String nickname, LocalDateTime arrivalDateTime, AttendanceType attendanceType
     ) {
         return new AttendanceRecord(nickname, arrivalDateTime, attendanceType);
     }

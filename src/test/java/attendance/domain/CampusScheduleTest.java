@@ -1,8 +1,8 @@
 package attendance.domain;
 
-import static attendance.domain.AttendanceStatusType.ATTENDANCE;
-import static attendance.domain.AttendanceStatusType.EXPULSION;
-import static attendance.domain.AttendanceStatusType.LATE;
+import static attendance.domain.AttendanceType.ATTENDANCE;
+import static attendance.domain.AttendanceType.EXPULSION;
+import static attendance.domain.AttendanceType.LATE;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 
@@ -48,9 +48,9 @@ class CampusScheduleTest {
     @ParameterizedTest
     @MethodSource()
     void 월요일인_경우의_출석여부를_구한다(
-            LocalTime arriveTime, AttendanceStatusType expectedType
+            LocalTime arriveTime, AttendanceType expectedType
     ) {
-        AttendanceStatusType actualType = CampusSchedule.checkAttendance(true, arriveTime);
+        AttendanceType actualType = CampusSchedule.checkAttendance(true, arriveTime);
         assertThat(actualType).isEqualTo(expectedType);
     }
 
@@ -70,9 +70,9 @@ class CampusScheduleTest {
     @ParameterizedTest
     @MethodSource()
     void 월요일이_아닌_경우의_출석여부를_구한다(
-            LocalTime arriveTime, AttendanceStatusType expectedType
+            LocalTime arriveTime, AttendanceType expectedType
     ) {
-        AttendanceStatusType actualType = CampusSchedule.checkAttendance(false, arriveTime);
+        AttendanceType actualType = CampusSchedule.checkAttendance(false, arriveTime);
         assertThat(actualType).isEqualTo(expectedType);
     }
 

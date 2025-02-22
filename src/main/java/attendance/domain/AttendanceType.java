@@ -2,7 +2,7 @@ package attendance.domain;
 
 import java.time.LocalTime;
 
-public enum AttendanceStatusType {
+public enum AttendanceType {
     ATTENDANCE("출석", 0),
     LATE("지각", 5),
     EXPULSION("결석", 30);
@@ -10,12 +10,12 @@ public enum AttendanceStatusType {
     private final String name;
     private final int overMinutes;
 
-    AttendanceStatusType(String name, int overMinutes) {
+    AttendanceType(String name, int overMinutes) {
         this.name = name;
         this.overMinutes = overMinutes;
     }
 
-    public static AttendanceStatusType parse(LocalTime startTime, LocalTime arriveTime) {
+    public static AttendanceType parse(LocalTime startTime, LocalTime arriveTime) {
         if (arriveTime.getHour() < startTime.getHour()) {
             return ATTENDANCE;
         }

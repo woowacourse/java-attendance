@@ -5,20 +5,20 @@ public final class RiskStatistics {
     private final String nickname;
     private final int expulsionCount;
     private final int lateCount;
-    private final AttendanceWarningType warningType;
+    private final RiskType warningType;
 
     public RiskStatistics(String nickname, int expulsionCount, int lateCount) {
         this.nickname = nickname;
         this.expulsionCount = expulsionCount;
         this.lateCount = lateCount;
-        this.warningType = AttendanceWarningType.find(expulsionCount, lateCount);
+        this.warningType = RiskType.find(expulsionCount, lateCount);
     }
 
     public String getNickname() {
         return nickname;
     }
 
-    public AttendanceWarningType getWarningType() {
+    public RiskType getWarningType() {
         return warningType;
     }
 }

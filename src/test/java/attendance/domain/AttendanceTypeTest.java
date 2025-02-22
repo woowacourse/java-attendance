@@ -1,8 +1,8 @@
 package attendance.domain;
 
-import static attendance.domain.AttendanceStatusType.ATTENDANCE;
-import static attendance.domain.AttendanceStatusType.EXPULSION;
-import static attendance.domain.AttendanceStatusType.LATE;
+import static attendance.domain.AttendanceType.ATTENDANCE;
+import static attendance.domain.AttendanceType.EXPULSION;
+import static attendance.domain.AttendanceType.LATE;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.time.LocalTime;
@@ -12,7 +12,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
-public class AttendanceStatusTypeTest {
+public class AttendanceTypeTest {
 
     final static LocalTime START_TIME = LocalTime.of(10, 0, 0);
     final static LocalTime LATE_START_TIME = LocalTime.of(10, LATE.getOverMinutes(), 0);
@@ -22,9 +22,9 @@ public class AttendanceStatusTypeTest {
     @ParameterizedTest
     @MethodSource()
     void 기준_시간과_실제_도착_시간을_통해_출석_상태를_확인한다(
-            LocalTime arriveTime, AttendanceStatusType expectedType
+            LocalTime arriveTime, AttendanceType expectedType
     ) {
-        AttendanceStatusType actualType = AttendanceStatusType.parse(START_TIME, arriveTime);
+        AttendanceType actualType = AttendanceType.parse(START_TIME, arriveTime);
         assertThat(actualType).isEqualTo(expectedType);
     }
 

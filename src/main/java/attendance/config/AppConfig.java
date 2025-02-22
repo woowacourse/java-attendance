@@ -1,10 +1,9 @@
 package attendance.config;
 
-import attendance.domain.AttendanceManager;
+import attendance.domain.AttendanceRecordStorage;
+import attendance.domain.AttendanceSystem;
+import attendance.domain.CrewStorage;
 import attendance.domain.HolidayChecker;
-import attendance.service.AttendanceInitService;
-import attendance.utility.CurrentDateGeneratorImpl;
-import attendance.utility.DateGenerator;
 import attendance.view.InputView;
 import attendance.view.OutputView;
 
@@ -12,18 +11,18 @@ public class AppConfig {
 
     private final InputView inputView;
     private final OutputView outputView;
+    private final CrewStorage crewStorage;
+    private final AttendanceRecordStorage recordStorage;
     private final HolidayChecker holidayChecker;
-    private final DateGenerator dateGenerator;
-    private final AttendanceManager attendanceManager;
-    private final AttendanceInitService attendanceInitService;
+    private final AttendanceSystem attendanceSystem;
 
     public AppConfig() {
         this.inputView = new InputView();
         this.outputView = new OutputView();
+        this.recordStorage = new AttendanceRecordStorage();
+        this.crewStorage = new CrewStorage();
         this.holidayChecker = new HolidayChecker();
-        this.dateGenerator = new CurrentDateGeneratorImpl();
-        this.attendanceManager = new AttendanceManager(holidayChecker, dateGenerator);
-        this.attendanceInitService = new AttendanceInitService(attendanceManager);
+        this.attendanceSystem = new AttendanceSystem(crewStorage, recordStorage, holidayChecker);
     }
 
     public InputView getInputView() {
@@ -34,11 +33,7 @@ public class AppConfig {
         return outputView;
     }
 
-    public DateGenerator getDateGenerator() {
-        return dateGenerator;
-    }
-
-    public AttendanceInitService getAttendanceInitService() {
-        return attendanceInitService;
+    public AttendanceSystem getAttendanceSystem() {
+        return attendanceSystem;
     }
 }

@@ -9,9 +9,9 @@ public final class AttendanceRecord {
 
     private final String nickname;
     private final LocalDateTime arrivalDateTime;
-    private final AttendanceStatusType type;
+    private final AttendanceType type;
 
-    public AttendanceRecord(String nickname, LocalDateTime arrivalDateTime, AttendanceStatusType type) {
+    public AttendanceRecord(String nickname, LocalDateTime arrivalDateTime, AttendanceType type) {
         this.nickname = nickname;
         this.arrivalDateTime = arrivalDateTime;
         this.type = type;
@@ -22,7 +22,7 @@ public final class AttendanceRecord {
     }
 
     public boolean isExpulsion() {
-        return type == AttendanceStatusType.EXPULSION;
+        return type == AttendanceType.EXPULSION;
     }
 
     public boolean isInMonth(Month month) {
@@ -62,7 +62,7 @@ public final class AttendanceRecord {
         return arrivalDateTime.toLocalDate();
     }
 
-    public AttendanceStatusType getType() {
+    public AttendanceType getType() {
         return type;
     }
 }

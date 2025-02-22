@@ -1,9 +1,9 @@
 package attendance.domain;
 
-import static attendance.domain.AttendanceWarningType.COUNSELING;
-import static attendance.domain.AttendanceWarningType.EXPULSION;
-import static attendance.domain.AttendanceWarningType.NONE;
-import static attendance.domain.AttendanceWarningType.WARNING;
+import static attendance.domain.RiskType.COUNSELING;
+import static attendance.domain.RiskType.NONE;
+import static attendance.domain.RiskType.WARNING;
+import static attendance.domain.RiskType.WITHDRAWAL;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.stream.Stream;
@@ -17,7 +17,7 @@ class RiskStatisticsTest {
     @DisplayName("결석 횟수와 지각 횟수로 제적 위험도를 계산한다")
     @ParameterizedTest
     @MethodSource()
-    void 결석_횟수와_지각_횟수로_제적_위험도를_계산한다(int expulsion, int late, AttendanceWarningType type) {
+    void 결석_횟수와_지각_횟수로_제적_위험도를_계산한다(int expulsion, int late, RiskType type) {
         RiskStatistics statistic = new RiskStatistics("쿠키", expulsion, late);
 
         assertThat(statistic.getWarningType())
@@ -32,8 +32,8 @@ class RiskStatisticsTest {
                 Arguments.of(0, 8, WARNING),
                 Arguments.of(3, 0, COUNSELING),
                 Arguments.of(0, 15, COUNSELING),
-                Arguments.of(6, 0, EXPULSION),
-                Arguments.of(0, 18, EXPULSION)
+                Arguments.of(6, 0, WITHDRAWAL),
+                Arguments.of(0, 18, WITHDRAWAL)
         );
     }
 }

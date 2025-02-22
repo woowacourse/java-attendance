@@ -42,7 +42,7 @@ public class AttendanceRecordStorage {
         List<AttendanceRecord> inPeriod = records.stream()
                 .filter(record -> record.isInPeriod(startDate, endDate)).toList();
         return (int) inPeriod.stream()
-                .filter(record -> record.getType() == AttendanceStatusType.ATTENDANCE).count();
+                .filter(record -> record.getType() == AttendanceType.ATTENDANCE).count();
     }
 
     public int calculateLateCount(String nickname, LocalDate startDate, LocalDate endDate) {// TODO: 테스트 추가
@@ -50,7 +50,7 @@ public class AttendanceRecordStorage {
         List<AttendanceRecord> inPeriod = records.stream()
                 .filter(record -> record.isInPeriod(startDate, endDate)).toList();
         return (int) inPeriod.stream()
-                .filter(record -> record.getType() == AttendanceStatusType.LATE).count();
+                .filter(record -> record.getType() == AttendanceType.LATE).count();
     }
 
 

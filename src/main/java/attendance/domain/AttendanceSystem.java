@@ -29,7 +29,7 @@ public class AttendanceSystem {
         validateCrew(nickname);
         validateHoliday(arrivalDateTime.toLocalDate());
 
-        AttendanceStatusType attendanceType = calculateAttendanceType(arrivalDateTime);
+        AttendanceType attendanceType = calculateAttendanceType(arrivalDateTime);
         AttendanceRecord newRecord = new AttendanceRecord(nickname, arrivalDateTime, attendanceType);
         recordStorage.add(newRecord);
         return newRecord;
@@ -55,7 +55,7 @@ public class AttendanceSystem {
         List<Crew> allCrew = crewStorage.findAll();
         return allCrew.stream()
                 .map(crew -> calculateRiskStatisticsByCrew(crew, notHolidayCount, startDate, endDate))
-                .filter(statistic -> statistic.getWarningType() != AttendanceWarningType.NONE)
+                .filter(statistic -> statistic.getWarningType() != RiskType.NONE)
                 .toList();
     }
 
@@ -73,14 +73,14 @@ public class AttendanceSystem {
         }
     }
 
-    private AttendanceStatusType calculateAttendanceType(LocalDateTime dateTime) {
+    private AttendanceType calculateAttendanceType(LocalDateTime dateTime) {
         boolean isMonday = dateTime.getDayOfMonth() == DayOfWeek.MONDAY.getValue();
         return CampusSchedule.checkAttendance(isMonday, dateTime.toLocalTime());
     }
 
     private AttendanceRecord makeNewRecord(String nickname, LocalDate date, LocalTime newTime) {
         LocalDateTime newDateTime = LocalDateTime.of(date, newTime);
-        AttendanceStatusType attendanceType = calculateAttendanceType(newDateTime);
+        AttendanceType attendanceType = calculateAttendanceType(newDateTime);
         return new AttendanceRecord(nickname, newDateTime, attendanceType);
     }
 
