@@ -1,4 +1,4 @@
-package attendance.view;
+package attendance.domain;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;

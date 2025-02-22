@@ -10,10 +10,11 @@ import java.util.stream.Collectors;
 
 public class Attendances {
 
+    public static final int START_DAY_OF_MONTH = 1;
     private final List<Attendance> attendances = new ArrayList<>();
 
     public Attendances(List<LocalDateTime> attendanceDateTimes, LocalDateTime today) {
-        for (int day = 1; day < today.getDayOfMonth(); day++) {
+        for (int day = START_DAY_OF_MONTH; day < today.getDayOfMonth(); day++) {
             LocalDate localDate = LocalDate.of(today.getYear(), today.getMonth(), day);
             DayOfWeek dayOfWeek = localDate.getDayOfWeek();
             if (dayOfWeek.equals(DayOfWeek.SUNDAY) || dayOfWeek.equals(DayOfWeek.SATURDAY) || Holiday.isExists(

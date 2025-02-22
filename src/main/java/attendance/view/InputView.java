@@ -1,15 +1,17 @@
 package attendance.view;
 
+import attendance.domain.OperationCommand;
+
 import java.time.DateTimeException;
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.Scanner;
 
+import static attendance.view.ViewConstants.*;
+
 public class InputView {
 
-    private static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("HH:mm");
     private Scanner scanner = new Scanner(System.in);
 
     public OperationCommand readOperationCommand() {
@@ -30,7 +32,7 @@ public class InputView {
     private LocalTime parseLocalTime() {
         try {
             String input = scanner.nextLine();
-            return LocalTime.parse(input, DATE_TIME_FORMATTER);
+            return LocalTime.parse(input, TIME_FORMATTER);
         } catch (DateTimeParseException e) {
             throw new IllegalArgumentException("올바른 시간 입력 형식이 아닙니다.");
         }

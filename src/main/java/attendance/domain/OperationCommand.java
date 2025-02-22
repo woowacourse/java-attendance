@@ -1,4 +1,4 @@
-package attendance.view;
+package attendance.domain;
 
 import java.util.Arrays;
 
