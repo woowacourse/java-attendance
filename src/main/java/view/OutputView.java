@@ -91,16 +91,21 @@ public class OutputView {
         // Collections.sort()는 머지소트 기반이므로 O(nLog(n)) 보장
         List<CrewAlmostExpelledResult> sorted = new ArrayList<>(result);
         Collections.sort(sorted);
-        sorted.forEach(crew -> System.out.printf("- %s: %s %d회, %s %d회 (%s)%n%n",
+        sorted.forEach(crew -> System.out.printf("- %s: %s (%s)%n",
                         crew.nickname(),
-                        AttendanceStatus.ABSENT_LATE.getTitle(),
-                        crew.attendanceStatusStatistics()
-                                .getCountByStatus(AttendanceStatus.ABSENT_LATE, AttendanceStatus.ABSENT),
-                        AttendanceStatus.LATE.getTitle(),
-                        crew.attendanceStatusStatistics()
-                                .getCountByStatus(AttendanceStatus.LATE),
+                        convertToCountFormat(crew.attendanceStatusStatistics()),
                         crew.manage().getDescription()
                 )
+        );
+        System.out.println();
+    }
+
+    private static String convertToCountFormat(AttendanceStatusStatistics statistics) {
+        return String.format("%s %d회, %s %d회",
+                AttendanceStatus.ABSENT_LATE.getTitle(),
+                statistics.getCountByStatus(AttendanceStatus.ABSENT_LATE, AttendanceStatus.ABSENT),
+                AttendanceStatus.LATE.getTitle(),
+                statistics.getCountByStatus(AttendanceStatus.LATE)
         );
     }
 }
