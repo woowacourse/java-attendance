@@ -1,7 +1,5 @@
 package controller;
 
-import static domain.AttendanceBook.fromAttendanceRecords;
-
 import domain.AttendanceBook;
 import domain.PenaltyStatus;
 import dto.AttendanceRecordResponse;
@@ -107,7 +105,7 @@ public class AttendanceController {
             String name = retryUntilValid(() -> askName(attendanceBook));
 
             List<AttendanceRecordResponse> records = attendanceBook.getCrewByName(name).getAttendanceRecords();
-            TotalRecordsResponse totalRecord = fromAttendanceRecords(records);
+            TotalRecordsResponse totalRecord = AttendanceBook.fromAttendanceRecords(records);
             PenaltyStatus penalty = PenaltyStatus.getByPenaltyCount(attendanceBook.getPenaltyCount(totalRecord));
             outputView.displayAttendanceRecordByName(name, records, totalRecord, penalty.getMessage());
         }
