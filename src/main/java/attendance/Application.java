@@ -7,10 +7,10 @@ import static attendance.view.InputView.inputModifyDate;
 import static attendance.view.InputView.inputOption;
 import static attendance.view.OutputView.printAttendanceHistories;
 import static attendance.view.OutputView.printAttendanceHistory;
-import static attendance.view.OutputView.printAttendanceResult;
+import static attendance.view.OutputView.printAttendanceStatistics;
 import static attendance.view.OutputView.printDangerousCrews;
 import static attendance.view.OutputView.printInterviewTarget;
-import static attendance.view.OutputView.printModifyAttendanceResult;
+import static attendance.view.OutputView.printModifyAttendanceHistory;
 
 import attendance.domain.AttendanceHistory;
 import attendance.domain.AttendancePolicy;
@@ -80,14 +80,14 @@ public class Application {
         AttendanceHistory attendanceHistory = crew.getAttendanceHistory(modifyDate);
         AttendanceHistoryDto beforeAttendanceHistoryDto = AttendanceHistoryDto.of(attendanceHistory);
         AttendanceHistory afterAttendanceHistory = crew.modifyAttendanceResult(attendanceHistory, modifyTime);
-        printModifyAttendanceResult(beforeAttendanceHistoryDto, afterAttendanceHistory);
+        printModifyAttendanceHistory(beforeAttendanceHistoryDto, afterAttendanceHistory);
     }
 
     private static void checkAttendanceHistoriesByCrew(CrewManager crewManager, LocalDate today) {
         Crew crew = findCrew(crewManager);
         Map<AttendanceType, Integer> attendanceResult = crew.calculateAttendanceResult(today);
         printAttendanceHistories(today, crew);
-        printAttendanceResult(attendanceResult);
+        printAttendanceStatistics(attendanceResult);
         if (crew.calculateCrewStatus(attendanceResult) == INTERVIEW) {
             printInterviewTarget();
         }
