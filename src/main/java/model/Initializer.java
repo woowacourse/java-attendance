@@ -8,7 +8,6 @@ import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import util.FileReader;
 import util.StringParser;
 
 public class Initializer {
@@ -23,17 +22,16 @@ public class Initializer {
         this.initialMap = createInitialAttendance();
     }
 
-    public Crews initialize() {
+    public Crews initialize(final List<String> inputs) {
         Map<String, Crew> crewsMap = new HashMap<>();
-        List<String> lines = FileReader.readFile();
-        for (String line : lines) {
+        for (String line : inputs) {
             loadAttendanceHistory(line, crewsMap);
         }
         return new Crews(crewsMap);
     }
 
-    private void loadAttendanceHistory(String line, Map<String, Crew> crewsMap) {
-        String[] tokens = line.split(SPLITTER);
+    private void loadAttendanceHistory(String input, Map<String, Crew> crewsMap) {
+        String[] tokens = input.split(SPLITTER);
         String nickname = tokens[0];
         LocalDateTime attendanceDateTime = StringParser.parseLocalDateTime(tokens[1]);
         Crew crew = getCrew(crewsMap, nickname);
