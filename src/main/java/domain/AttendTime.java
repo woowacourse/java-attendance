@@ -1,17 +1,9 @@
 package domain;
 
-import static domain.December.DEFAULT_MONTH;
-import static domain.December.DEFAULT_YEAR;
-
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 public class AttendTime {
-
-    public static final String ABSENT = "결석";
-    public static final String LATE = "지각";
-    public static final String ATTENDED = "출석";
-    public static final int LATE_TO_ABSENT_COUNT = 3;
 
     private final LocalDateTime attendTime;
     public static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
@@ -20,23 +12,8 @@ public class AttendTime {
         this.attendTime = LocalDateTime.parse(attendTime, FORMATTER);
     }
 
-    public String checkTime() {
-        final LocalDateTime lateTime = LocalDateTime.of(DEFAULT_YEAR, DEFAULT_MONTH, attendTime.getDayOfMonth(),
-                getDayInfo(attendTime.getDayOfMonth()), 5, 0);
-        final LocalDateTime absentTime = LocalDateTime.of(DEFAULT_YEAR, DEFAULT_MONTH, attendTime.getDayOfMonth(),
-                getDayInfo(attendTime.getDayOfMonth()), 30, 0);
-        if (attendTime.isAfter(absentTime)) {
-            return ABSENT;
-        }
-        if (attendTime.isAfter(lateTime)) {
-            return LATE;
-        }
-
-        return ATTENDED;
-    }
-
-    public int getDayInfo(int dayOfMonth) {
-        return StartTime.findStartTime(dayOfMonth);
+    public AttendanceType checkTime() {
+        return AttendanceType.checkTime(attendTime);
     }
 
     public LocalDateTime getAttendTime() {

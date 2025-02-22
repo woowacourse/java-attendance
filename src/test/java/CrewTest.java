@@ -1,12 +1,10 @@
-import static domain.AttendTime.ABSENT;
-import static domain.AttendTime.ATTENDED;
-import static domain.AttendTime.LATE;
-import static org.assertj.core.api.Assertions.assertThat;
-
 import domain.AttendTime;
 import domain.Crew;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+
+import static domain.AttendanceType.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class CrewTest {
 
@@ -35,7 +33,7 @@ public class CrewTest {
     void test4() {
         Crew crew = new Crew("폰트", "2024-12-13 10:08");
         var i = crew.attend("2024-12-13 10:06");
-        assertThat(i).isEqualTo(LATE);
+        assertThat(i).isEqualTo(LATE.getType());
     }
 
     @DisplayName("크루의 출석이 결석인지를 판별 할 수 있다")
@@ -43,7 +41,7 @@ public class CrewTest {
     void test5() {
         Crew crew = new Crew("폰트", "2024-12-13 10:08");
         var i = crew.attend("2024-12-13 10:31");
-        assertThat(i).isEqualTo(ABSENT);
+        assertThat(i).isEqualTo(ABSENT.getType());
     }
 
     @DisplayName("크루의 출석이 잘 되었는지를 판별 할 수 있다")
@@ -51,7 +49,7 @@ public class CrewTest {
     void test6() {
         Crew crew = new Crew("폰트", "2024-12-13 10:08");
         var i = crew.attend("2024-12-13 09:59");
-        assertThat(i).isEqualTo(ATTENDED);
+        assertThat(i).isEqualTo(ATTENDED.getType());
     }
 
     @DisplayName("크루의 출석이 잘 기록되었는지 확인 할 수 있다")

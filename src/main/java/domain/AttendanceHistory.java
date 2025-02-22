@@ -1,10 +1,8 @@
 package domain;
 
-import static domain.AttendTime.ABSENT;
-import static domain.AttendTime.ATTENDED;
-import static domain.AttendTime.LATE;
-
 import java.util.List;
+
+import static domain.AttendanceType.*;
 
 public class AttendanceHistory {
 

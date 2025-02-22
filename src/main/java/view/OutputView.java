@@ -1,14 +1,12 @@
 package view;
 
-import static domain.AttendTime.LATE_TO_ABSENT_COUNT;
 
-import domain.AttendTime;
-import domain.AttendanceHistory;
-import domain.AttendanceStatus;
-import domain.Crew;
-import domain.December;
+import domain.*;
+
 import java.util.Comparator;
 import java.util.List;
+
+import static domain.AttendanceType.LATE_TO_ABSENT_COUNT;
 
 public class OutputView {
 

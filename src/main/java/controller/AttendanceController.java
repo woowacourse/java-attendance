@@ -1,19 +1,18 @@
 package controller;
 
-import static domain.AttendanceStatus.DISMISSAL;
-import static domain.AttendanceStatus.INTERVIEW;
-import static domain.AttendanceStatus.WARNING;
-import static domain.December.DEFAULT_MONTH;
-import static domain.December.DEFAULT_YEAR;
-
 import domain.AttendTime;
 import domain.AttendanceFileReader;
 import domain.Crews;
 import domain.December;
-import java.time.LocalDateTime;
-import java.util.List;
 import view.InputView;
 import view.OutputView;
+
+import java.time.LocalDateTime;
+import java.util.List;
+
+import static domain.WarningStatusType.*;
+import static domain.December.DEFAULT_MONTH;
+import static domain.December.DEFAULT_YEAR;
 
 public class AttendanceController {
 
