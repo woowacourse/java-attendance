@@ -112,7 +112,7 @@ public class AttendanceService {
 
     private void validateCampusTime(LocalTime time) {
         if (time.isBefore(CampusConstant.START_TIME) || time.isAfter(CampusConstant.END_TIME)) {
-            throw new IllegalArgumentException("캠퍼스 운영시간이 아닙니다.");
+            throw new IllegalArgumentException(time + ": 캠퍼스 운영시간이 아닙니다.");
         }
     }
 }
