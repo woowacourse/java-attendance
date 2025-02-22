@@ -1,14 +1,14 @@
-import static domain.AttendanceStatus.DISMISSAL;
-import static org.assertj.core.api.Assertions.assertThat;
-
 import domain.AttendTime;
 import domain.AttendanceHistory;
 import domain.AttendanceStatus;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+
 import java.util.ArrayList;
 import java.util.List;
 
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import static domain.WarningStatusType.DISMISSAL;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class AttendanceStatusTest {
 

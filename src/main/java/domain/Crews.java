@@ -49,10 +49,10 @@ public class Crews {
         return attendTime;
     }
 
-    public List<Crew> getDangerousCrews(String type) {
+    public List<Crew> getDangerousCrews(WarningStatusType type) {
         List<Crew> dismissalCrews = new ArrayList<>();
         crews.forEach(crew -> {
-            String status = crew.getAttendanceHistory().getAttendanceStatus().getStatus();
+            WarningStatusType status = crew.getAttendanceHistory().getAttendanceStatus().getStatus();
             if (status.equals(type)) {
                 dismissalCrews.add(crew);
             }

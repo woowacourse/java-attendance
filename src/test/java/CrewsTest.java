@@ -1,10 +1,8 @@
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 
-import domain.AttendTime;
-import domain.Crew;
-import domain.Crews;
-import domain.December;
+import domain.*;
+
 import java.util.List;
 
 import org.junit.jupiter.api.DisplayName;
@@ -71,7 +69,7 @@ public class CrewsTest {
     void test7() {
         Crews crews = new Crews(List.of("폰트,2024-12-13 10:08", "슬링키,2024-12-09 13:03"));
 
-        List<Crew> dismissalCrews = crews.getDangerousCrews("제적");
+        List<Crew> dismissalCrews = crews.getDangerousCrews(WarningStatusType.DISMISSAL);
 
         assertThat(dismissalCrews.size()).isEqualTo(2);
     }
@@ -80,7 +78,7 @@ public class CrewsTest {
     void test8() {
         Crews crews = new Crews(List.of("폰트,2024-12-13 10:08", "슬링키,2024-12-09 13:03", "포비,2024-12-09 13:03"));
 
-        List<Crew> dismissalCrews = crews.getDangerousCrews("제적");
+        List<Crew> dismissalCrews = crews.getDangerousCrews(WarningStatusType.DISMISSAL);
 
         assertThat(dismissalCrews.size()).isEqualTo(3);
     }
