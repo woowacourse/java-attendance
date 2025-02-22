@@ -4,6 +4,7 @@ import dto.AttendanceModifyRequest;
 import dto.AttendanceRequest;
 import dto.OptionRequest;
 import service.AttendanceService;
+import util.ExceptionHandler;
 import view.InputView;
 import view.OutputView;
 
@@ -37,21 +38,29 @@ public class AttendanceController {
     }
 
     private void insertAttendanceRecord() {
-        AttendanceRequest request = InputView.scanAttendance();
-        OutputView.printAttendanceResult(attendanceService.insertAttendanceRecord(request));
+        ExceptionHandler.printErrorMessageWithoutExitSystem(() -> {
+            AttendanceRequest request = InputView.scanAttendance();
+            OutputView.printAttendanceResult(attendanceService.insertAttendanceRecord(request));
+        });
     }
 
     private void modifyAttendanceRecord() {
-        AttendanceModifyRequest request = InputView.scanModify();
-        OutputView.printModifiedResult(attendanceService.modifyAttendanceRecord(request));
+        ExceptionHandler.printErrorMessageWithoutExitSystem(() -> {
+            AttendanceModifyRequest request = InputView.scanModify();
+            OutputView.printModifiedResult(attendanceService.modifyAttendanceRecord(request));
+        });
     }
 
     private void printMonthAttendanceRecords() {
-        String nickname = InputView.scanNickname();
-        OutputView.printMonthAttendanceRecords(attendanceService.getMonthAttendanceRecordsResult(nickname));
+        ExceptionHandler.printErrorMessageWithoutExitSystem(() -> {
+            String nickname = InputView.scanNickname();
+            OutputView.printMonthAttendanceRecords(attendanceService.getMonthAttendanceRecordsResult(nickname));
+        });
     }
 
     private void printCrewsAlmostExpelled() {
-        OutputView.printCrewsAlmostExpelled(attendanceService.getCrewsAlmostExpelled());
+        ExceptionHandler.printErrorMessageWithoutExitSystem(() -> {
+            OutputView.printCrewsAlmostExpelled(attendanceService.getCrewsAlmostExpelled());
+        });
     }
 }
