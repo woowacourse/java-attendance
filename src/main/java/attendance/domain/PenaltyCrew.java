@@ -10,14 +10,14 @@ public class PenaltyCrew implements Comparable<PenaltyCrew> {
     private final String name;
     private final int absenceCount;
     private final int lateCount;
-    private final Integer totalCount;
+    private final Integer weightedLateAbsencePoint;
     private final AttendancePenalty attendanceStatus;
 
     public PenaltyCrew(String name, int absenceCount, int lateCount) {
         this.lateCount = lateCount;
         this.absenceCount = absenceCount;
         this.name = name;
-        this.totalCount = calculateTotalCount(absenceCount, lateCount);
+        this.weightedLateAbsencePoint = calculateTotalCount(absenceCount, lateCount);
         this.attendanceStatus = AttendancePenalty.find(absenceCount, lateCount);
     }
 
@@ -28,7 +28,7 @@ public class PenaltyCrew implements Comparable<PenaltyCrew> {
     @Override
     public int compareTo(PenaltyCrew o) {
         return Comparator.comparing(PenaltyCrew::getAttendanceStatus)
-            .thenComparing(PenaltyCrew::getTotalCount, Comparator.reverseOrder())
+            .thenComparing(PenaltyCrew::getWeightedLateAbsencePoint, Comparator.reverseOrder())
             .thenComparing(PenaltyCrew::getName)
             .compare(this, o);
     }
@@ -41,7 +41,7 @@ public class PenaltyCrew implements Comparable<PenaltyCrew> {
         return lateCount;
     }
 
-    public Integer getTotalCount() { return totalCount; }
+    public Integer getWeightedLateAbsencePoint() { return weightedLateAbsencePoint; }
 
     public int getAbsenceCount() {
         return absenceCount;
@@ -53,11 +53,15 @@ public class PenaltyCrew implements Comparable<PenaltyCrew> {
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
         PenaltyCrew that = (PenaltyCrew) o;
-        return absenceCount == that.absenceCount && lateCount == that.lateCount && Objects.equals(name, that.name) && Objects.equals(totalCount, that.totalCount) && attendanceStatus == that.attendanceStatus;
+        return absenceCount == that.absenceCount
+            && lateCount == that.lateCount
+            && Objects.equals(name, that.name)
+            && Objects.equals(weightedLateAbsencePoint, that.weightedLateAbsencePoint)
+            && attendanceStatus == that.attendanceStatus;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(name, absenceCount, lateCount, totalCount, attendanceStatus);
+        return Objects.hash(name, absenceCount, lateCount, weightedLateAbsencePoint, attendanceStatus);
     }
 }
