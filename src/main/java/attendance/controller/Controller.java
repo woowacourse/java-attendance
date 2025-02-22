@@ -12,6 +12,7 @@ import attendance.view.InputView;
 import attendance.view.OutputView;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Map;
 
 public class Controller {
     public static final String FILE_NAME = "attendances.csv";
@@ -33,33 +34,31 @@ public class Controller {
     }
 
     public void run() {
-        String s = inputView.inputCommand();
-        if (s.equals("1")) {
-            processAddAttendance();
-        }
-        if (s.equals("2")) {
-            processModifyAttendance();
-        }
-        if (s.equals("3")) {
-            processDisplayAttendanceHistory();
-        }
-        if (s.equals(("4"))) {
-            processDisplayWarningCrew();
-        }
-        if (s.equals("Q")) {
-            System.exit(1);
-        }
-        run();
-    }
-
-    private void processDisplayWarningCrew() {
-        process(() -> outputView.printWarningCrews(WarningCrewsDTO.from(crews)));
-    }
-
-    private void processDisplayAttendanceHistory() {
-        process(() -> outputView.printAttendanceHistory(
-                AttendanceDTO.from(crews.findCrew(inputView.inputCrewName())))
+        Map<String, Runnable> commands = Map.of(
+                "1", this::processAddAttendance,
+                "2", this::processModifyAttendance,
+                "3", this::processDisplayAttendanceHistory,
+                "4", this::processDisplayWarningCrew,
+                "Q", () -> System.exit(0)
         );
+
+        Runnable action = commands.getOrDefault(inputView.inputCommand(), this::run);
+        action.run();
+    }
+
+    private void processAddAttendance() {
+        process(() -> {
+            if (CustomLocalDateTime.isHoliday(CustomLocalDateTime.nowDate())) {
+                throw new IllegalArgumentException(CustomLocalDateTime.nowDate().format(NOT_ATTENDABLE_FORMATTER));
+            }
+            Crew crew = crews.findCrew(inputView.inputCrewName());
+            AttendanceDetail attendanceDetail = new AttendanceDetail(LocalDateTime.of(
+                    CustomLocalDateTime.nowDate(),
+                    CustomLocalDateTime.parseTime(inputView.inputEntryTime())
+            ));
+            crew.attend(attendanceDetail);
+            outputView.printAttendanceDetail(AttendanceDetailDTO.from(attendanceDetail));
+        });
     }
 
     private void processModifyAttendance() {
@@ -77,19 +76,14 @@ public class Controller {
         });
     }
 
-    private void processAddAttendance() {
-        process(() -> {
-            if (CustomLocalDateTime.isHoliday(CustomLocalDateTime.nowDate())) {
-                throw new IllegalArgumentException(CustomLocalDateTime.nowDate().format(NOT_ATTENDABLE_FORMATTER));
-            }
-            Crew crew = crews.findCrew(inputView.inputCrewName());
-            AttendanceDetail attendanceDetail = new AttendanceDetail(LocalDateTime.of(
-                    CustomLocalDateTime.nowDate(),
-                    CustomLocalDateTime.parseTime(inputView.inputEntryTime())
-            ));
-            crew.attend(attendanceDetail);
-            outputView.printAttendanceDetail(AttendanceDetailDTO.from(attendanceDetail));
-        });
+    private void processDisplayAttendanceHistory() {
+        process(() -> outputView.printAttendanceHistory(
+                AttendanceDTO.from(crews.findCrew(inputView.inputCrewName())))
+        );
+    }
+
+    private void processDisplayWarningCrew() {
+        process(() -> outputView.printWarningCrews(WarningCrewsDTO.from(crews)));
     }
 
     private void process(Runnable runnable) {
