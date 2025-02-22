@@ -5,10 +5,13 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
 import java.util.Map;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 
 public class AttendancesTest {
 
@@ -59,11 +62,25 @@ public class AttendancesTest {
         assertThat(savedAttendances).hasSize(4);
     }
 
-    @Test
-    void _12월14일_기준으로_빙티의_출석기록은_10개이다() {
-        Crew crew = new Crew("빙티");
-        LocalDate localDate = LocalDate.of(2024, 12, 14);
-        assertThat(attendances.getAttendances(crew, localDate)).hasSize(10);
+    @ParameterizedTest(name = "[전] {0} -> [후] {1} ({2})")
+    @CsvSource({
+        "2025-02-17T13:31:00,13:00:00,CHECKIN",
+        "2025-02-18T10:31:00,10:06:00,LATE",
+        "2025-02-19T10:06:00,10:00:00,CHECKIN",
+        "2025-02-20T10:06:00,10:31:00,ABSENCE",
+        "2025-02-21T10:00:00,10:06:00,LATE",
+    })
+    void 출석시간을_수정할수있다(LocalDateTime beforeAttendedTime, LocalTime timeToModify, AttendanceStatus expected) {
+        Crew crew = new Crew("크루");
+        Attendance attendance = Attendance.of(beforeAttendedTime);
+        attendances.addAttendance(crew, attendance);
+
+        LocalDate dateToBeModified = beforeAttendedTime.toLocalDate();
+        attendances.modifyAttendance(crew, dateToBeModified, timeToModify);
+        Attendance afterAttendance = attendances.getAttendance(crew, dateToBeModified);
+
+        assertThat(afterAttendance.getAttendedTime().toLocalTime()).isEqualTo(timeToModify);
+        assertThat(afterAttendance.getStatus()).isEqualTo(expected);
     }
 
     @Test

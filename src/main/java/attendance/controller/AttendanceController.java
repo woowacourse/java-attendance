@@ -62,8 +62,9 @@ public class AttendanceController {
 
     private void validateAttendanceDate() {
         if (DateUtil.isWeekend(LocalDate.now()) || Holiday.isHoliday(LocalDate.now())) {
-            throw new IllegalArgumentException(String.format("%n[ERROR] %s은 등교일이 아닙니다.", LocalDate.now().format(
-                DateTimeFormatter.ofPattern(OutputView.DATE_FORMATTER, Locale.KOREAN))));
+            throw new IllegalArgumentException(
+                String.format("%n[ERROR] %s은 등교일이 아닙니다.", LocalDate.now().format(
+                    DateTimeFormatter.ofPattern(OutputView.DATE_FORMATTER, Locale.KOREAN))));
         }
     }
 
@@ -89,14 +90,14 @@ public class AttendanceController {
     private void modifyAttendance() {
         String nickName = InputView.readModifyingNickName();
         Crew crew = crews.getByNickName(nickName);
-        LocalDate modifyingCheckinDate = getModifyingCheckinDate();
-        LocalTime modifyingCheckinTime = getModifyingCheckinTime();
+        LocalDate toBeModified = getModifyingCheckinDate();
+        LocalTime toModify = getModifyingCheckinTime();
 
-        Attendance attendance = attendances.getAttendance(crew, modifyingCheckinDate);
+        Attendance beforeAttendance = attendances.getAttendance(crew, toBeModified);
+        attendances.modifyAttendance(crew, toBeModified, toModify);
+        Attendance afterAttendance = attendances.getAttendance(crew, toBeModified);
 
-        Attendance previousAttendance = Attendance.of(attendance.getAttendedTime());
-        attendance.modify(LocalDateTime.of(modifyingCheckinDate, modifyingCheckinTime));
-        OutputView.printModifyingResult(previousAttendance, attendance);
+        OutputView.printModifyingResult(beforeAttendance, afterAttendance);
     }
 
     private LocalTime getModifyingCheckinTime() {

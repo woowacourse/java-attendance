@@ -8,6 +8,7 @@ import static java.util.stream.Collectors.toList;
 import attendance.util.DateUtil;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -70,6 +71,17 @@ public class Attendances {
             .filter(DateUtil::isWeekday)
             .map(Attendance::ofAbsence)
             .toList();
+    }
+
+    public void modifyAttendance(Crew crew, LocalDate toBeModified, LocalTime toModify) {
+        Attendance before = getAttendance(crew, toBeModified);
+        Attendance after = Attendance.of(LocalDateTime.of(toBeModified, toModify));
+
+        List<Attendance> attendancesOfCrew = attendances.get(crew);
+        attendancesOfCrew.remove(before);
+
+        attendances.putIfAbsent(crew, new ArrayList<>());
+        attendances.get(crew).add(after);
     }
 
     public Map<AttendanceStatus, Integer> countAttendanceStatus(Crew crew, LocalDate untilDate) {

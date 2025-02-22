@@ -7,16 +7,12 @@ import java.time.LocalDateTime;
 
 public class Attendance {
 
-    private LocalDateTime attendedTime;
+    private final LocalDateTime attendedTime;
 
     private Attendance(LocalDateTime attendedAt) {
         validateDayOfWeek(attendedAt);
         validateHoliday(attendedAt);
         this.attendedTime = attendedAt;
-    }
-
-    public void modify(LocalDateTime modifiedDateTime) {
-        this.attendedTime = modifiedDateTime;
     }
 
     public LocalDateTime getAttendedTime() {
