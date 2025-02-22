@@ -22,6 +22,7 @@ import java.util.Locale;
 
 
 public class AttendanceController {
+
     private final InputView inputView;
     private final OutputView outputView;
 
@@ -71,11 +72,13 @@ public class AttendanceController {
     }
 
     private String functionInput(final LocalDateTime today) {
+
         return inputView.inputFunction(today.getMonthValue(), today.getDayOfMonth(),
                 today.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.KOREAN));
     }
 
     private void initAttendanceSystem() {
+
         AttendanceContentDTO attendanceRecordContent = AttendanceReader.getAttendanceRecordContent(
                 FileReader.parseToFile("src/main/resources/attendances.csv"));
 
@@ -98,6 +101,7 @@ public class AttendanceController {
     }
 
     private Time createTime(final LocalDate date, final String attendanceTime) {
+
         String[] split = attendanceTime.split(":");
         return new Time(date, split[0], split[1], false);
     }
@@ -112,6 +116,7 @@ public class AttendanceController {
     }
 
     private void modifyAttendance(int modifyDay, final String modifyTime, final String crewName) {
+
         int year = LocalDate.now().getYear();
         int month = LocalDate.now().getMonthValue();
         Time modifyDateTime = createTime(LocalDate.of(year, month, modifyDay), modifyTime);
@@ -150,5 +155,4 @@ public class AttendanceController {
         outputView.printCrewsAtRiskOfExpulsion(
                 attendanceBook.getCrewAtRiskOfExpulsion(attendanceRepository, WARNING.getValue()));
     }
-
 }

@@ -12,10 +12,12 @@ import java.util.List;
 import java.util.Set;
 
 public final class AttendanceReader {
+    
     private AttendanceReader() {
     }
 
     public static AttendanceContentDTO getAttendanceRecordContent(final List<String> attendanceContents) {
+
         attendanceContents.removeFirst();
         final List<Attendance> attendances = new ArrayList<>();
         final Set<String> names = new HashSet<>();

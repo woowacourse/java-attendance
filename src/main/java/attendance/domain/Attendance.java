@@ -1,6 +1,7 @@
 package attendance.domain;
 
 public class Attendance {
+
     private final String crewName;
     private Time attendanceTime;
 
@@ -18,6 +19,7 @@ public class Attendance {
     }
 
     public String getAttendanceStatus() {
+
         if (attendanceTime.getDayOfWeek().equals("월요일")) { // 월요일
 
             return AttendanceStatus.checkStatusWithCondition(attendanceTime, 13, 5, 30);
@@ -37,6 +39,7 @@ public class Attendance {
 
 
     public boolean isSameByNameAndLocalDate(final String name, int year, int month, int day) {
+
         return crewName.equals(name) && day == attendanceTime.getDay() && year == attendanceTime.getYear()
                 && month == attendanceTime.getMonth();
     }

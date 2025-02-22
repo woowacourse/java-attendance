@@ -6,10 +6,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 public final class FileReader {
+    
     private FileReader() {
     }
 
     public static List<String> parseToFile(final String filePath) {
+
         try (BufferedReader reader = new BufferedReader(new java.io.FileReader(filePath))) {
 
             List<String> readingFileResult = new ArrayList<>();

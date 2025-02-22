@@ -3,6 +3,7 @@ package attendance.domain;
 import java.util.Arrays;
 
 public enum Function {
+    
     ATTEND("1"),
     MODIFY_ATTENDANCE("2"),
     GET_ATTENDANCES("3"),

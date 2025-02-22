@@ -1,10 +1,12 @@
 package attendance.utils;
 
 public final class Parser {
+    
     private Parser() {
     }
 
     public static int parseInt(final String input) {
+
         try {
             return Integer.parseInt(input);
         } catch (NumberFormatException e) {

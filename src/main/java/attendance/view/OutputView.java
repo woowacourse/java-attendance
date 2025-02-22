@@ -22,6 +22,7 @@ public class OutputView {
 
     public void printModifyAttendanceResult(Time originTime, String originAttendanceStatus,
                                             Time modifyTime, String modifyAttendanceStatus) {
+
         System.out.printf("%02d월 %02d일 %s %s:%s (%s)", originTime.getMonth(), originTime.getDay(),
                 originTime.getDayOfWeek(), originTime.hour(), originTime.minute(), originAttendanceStatus);
 
@@ -52,6 +53,7 @@ public class OutputView {
     }
 
     public void printCrewsAtRiskOfExpulsionStartMessage() {
+
         System.out.println("제적 위험자 조회 결과");
     }
 
@@ -67,6 +69,7 @@ public class OutputView {
     }
 
     public void printErrorMessage(String message) {
+        
         System.out.println(message);
     }
 }

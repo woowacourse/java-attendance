@@ -9,7 +9,6 @@ public enum AcademicStatus {
     EXPELLED("제적"),
     NOT("X");
 
-
     private final String value;
 
     AcademicStatus(String value) {
@@ -21,6 +20,7 @@ public enum AcademicStatus {
     }
 
     public static String getAcademicStatus(int late, int absent) {
+
         return Stream.of(late / 3 + absent)
                 .map(count -> {
                     if (count > 5) {
