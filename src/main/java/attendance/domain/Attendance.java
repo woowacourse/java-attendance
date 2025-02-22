@@ -8,6 +8,8 @@ import java.util.List;
 import java.util.Locale;
 
 public class Attendance {
+    private static final String TIME_FORMAT = "HH:mm";
+
     private final Crew crew;
     private LocalDateTime presentTime;
     private AttendanceType attendanceType;
@@ -18,22 +20,16 @@ public class Attendance {
         this.attendanceType = attendanceType;
     }
 
+    public boolean isSameTime(final LocalDateTime localDateTime) {
+        return this.presentTime.equals(localDateTime);
+    }
+
     public boolean isSameCrew(final Crew crew) {
         return this.crew.equals(crew);
     }
 
     public boolean isSameCrewDate(final Crew crew, final LocalDate localDate) {
         return this.crew.equals(crew) && this.presentTime.toLocalDate().equals(localDate);
-    }
-
-    public List<String> getInfo() {
-        return List.of(
-                String.valueOf(presentTime.getMonthValue()),
-                String.valueOf(presentTime.getDayOfMonth()),
-                presentTime.getDayOfWeek().getDisplayName(TextStyle.NARROW, Locale.KOREAN),
-                presentTime.format(DateTimeFormatter.ofPattern("HH:mm")),
-                this.attendanceType.toString()
-        );
     }
 
     public void modifyLocalDateTime(final LocalDateTime changedPresentTime) {
@@ -50,10 +46,20 @@ public class Attendance {
     }
 
     public String getTimeValue() {
-        return presentTime.format(DateTimeFormatter.ofPattern("HH:mm"));
+        return presentTime.format(DateTimeFormatter.ofPattern(TIME_FORMAT));
     }
 
     public AttendanceType getType() {
         return attendanceType;
+    }
+
+    public List<String> getInfo() {
+        return List.of(
+                String.valueOf(presentTime.getMonthValue()),
+                String.valueOf(presentTime.getDayOfMonth()),
+                presentTime.getDayOfWeek().getDisplayName(TextStyle.NARROW, Locale.KOREAN),
+                presentTime.format(DateTimeFormatter.ofPattern(TIME_FORMAT)),
+                this.attendanceType.toString()
+        );
     }
 }
