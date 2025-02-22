@@ -1,6 +1,5 @@
-package domain;
+package domain.crew;
 
-import domain.crew.Crews;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;

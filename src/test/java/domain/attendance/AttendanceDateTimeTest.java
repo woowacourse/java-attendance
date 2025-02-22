@@ -1,6 +1,5 @@
-package domain;
+package domain.attendance;
 
-import domain.attendance.AttendanceType;
 import domain.date.AttendanceDateTime;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;

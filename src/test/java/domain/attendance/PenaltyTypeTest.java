@@ -1,6 +1,5 @@
-package domain;
+package domain.attendance;
 
-import domain.attendance.PenaltyType;
 import java.util.stream.Stream;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.params.ParameterizedTest;
