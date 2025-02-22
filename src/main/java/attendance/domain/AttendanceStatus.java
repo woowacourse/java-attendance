@@ -2,7 +2,6 @@ package attendance.domain;
 
 import static attendance.common.Constants.DECEMBER_START_DATE;
 
-import attendance.utils.HolidayChecker;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalTime;

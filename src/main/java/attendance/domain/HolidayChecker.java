@@ -1,6 +1,8 @@
-package attendance.utils;
+package attendance.domain;
 
 import attendance.common.ErrorMessage;
+import attendance.utils.DateConverter;
+
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 

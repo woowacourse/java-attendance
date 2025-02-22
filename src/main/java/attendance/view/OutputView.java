@@ -10,7 +10,7 @@ import attendance.dto.AttendanceInfoDto;
 import attendance.dto.EditResponseDto;
 import attendance.dto.PenaltyCrewDto;
 import attendance.utils.DateConverter;
-import attendance.utils.HolidayChecker;
+import attendance.domain.HolidayChecker;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;

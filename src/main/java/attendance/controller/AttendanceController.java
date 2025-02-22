@@ -5,7 +5,7 @@ import attendance.dto.EditResponseDto;
 import attendance.dto.PenaltyCrewDto;
 import attendance.service.AttendanceService;
 import attendance.service.DateGenerator;
-import attendance.utils.HolidayChecker;
+import attendance.domain.HolidayChecker;
 import attendance.view.InputView;
 import attendance.view.OutputView;
 import java.time.LocalDate;
