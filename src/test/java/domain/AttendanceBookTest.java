@@ -7,8 +7,9 @@ import dto.result.MemberAttendanceModifyResult;
 import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-import util.exception.IllegalAttendDateException;
+import util.exception.CrewNotExistException;
 import util.exception.IllegalAttendTimeException;
+import util.exception.WeekendAttendException;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -72,12 +73,12 @@ public class AttendanceBookTest {
             
             // expected
             assertThatThrownBy(() -> attendanceBook.addAttendance(inputName, attendDateTime))
-                    .isExactlyInstanceOf(IllegalArgumentException.class)
-                    .hasMessage("해당 멤버는 존재하지 않습니다.");
+                    .isExactlyInstanceOf(CrewNotExistException.class)
+                    .hasMessage("WANNI는 존재하는 크루가 아닙니다.");
         }
         
         @Test
-        void 공휴일에_출석시_예외가_발생한다() {
+        void 주말에_출석시_예외가_발생한다() {
             // given
             String inputName = "Lemon";
             LocalDateTime attendDateTime = LocalDateTime.of(2024, 12, 1, 10, 2);
@@ -85,8 +86,8 @@ public class AttendanceBookTest {
             
             // expected
             assertThatThrownBy(() -> attendanceBook.addAttendance(inputName, attendDateTime))
-                    .isExactlyInstanceOf(IllegalAttendDateException.class)
-                    .hasMessage("출석 가능한 날짜가 아닙니다.");
+                    .isExactlyInstanceOf(WeekendAttendException.class)
+                    .hasMessage("주말에는 출석할 수 없습니다.");
         }
         
         @Test
@@ -99,7 +100,7 @@ public class AttendanceBookTest {
             // expected
             assertThatThrownBy(() -> attendanceBook.addAttendance(inputName, attendDateTime))
                     .isExactlyInstanceOf(IllegalAttendTimeException.class)
-                    .hasMessage("출석 가능한 시간이 아닙니다.");
+                    .hasMessage("출석 가능한 시간이 아닙니다. (출석 가능 시간 : 08:00 ~ 23:00)");
         }
     }
     
@@ -138,8 +139,8 @@ public class AttendanceBookTest {
             
             // expected
             assertThatThrownBy(() -> attendanceBook.editAttendance(name, date, time))
-                    .isExactlyInstanceOf(IllegalArgumentException.class)
-                    .hasMessage("해당 멤버는 존재하지 않습니다.");
+                    .isExactlyInstanceOf(CrewNotExistException.class)
+                    .hasMessage("Moko는 존재하는 크루가 아닙니다.");
         }
         
         @Test
@@ -152,8 +153,8 @@ public class AttendanceBookTest {
             
             // expected
             assertThatThrownBy(() -> attendanceBook.editAttendance(name, date, time))
-                    .isExactlyInstanceOf(IllegalAttendDateException.class)
-                    .hasMessage("수정 가능한 날짜가 아닙니다.");
+                    .isExactlyInstanceOf(WeekendAttendException.class)
+                    .hasMessage("주말에는 출석할 수 없습니다.");
         }
         
         @Test
@@ -167,7 +168,7 @@ public class AttendanceBookTest {
             // expected
             assertThatThrownBy(() -> attendanceBook.editAttendance(name, date, time))
                     .isExactlyInstanceOf(IllegalAttendTimeException.class)
-                    .hasMessage("수정 가능한 시간이 아닙니다.");
+                    .hasMessage("출석 가능한 시간이 아닙니다. (출석 가능 시간 : 08:00 ~ 23:00)");
         }
     }
     

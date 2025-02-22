@@ -1,8 +1,8 @@
 package domain;
 
 import dto.result.AttendResult;
-import util.exception.IllegalAttendDateException;
 import util.exception.IllegalAttendTimeException;
+import util.exception.WeekendAttendException;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
@@ -30,13 +30,13 @@ public class Attendance {
     
     private void validateDate(LocalDate date) {
         if (WEEKEND.contains(date.getDayOfWeek())) {
-            throw new IllegalAttendDateException();
+            throw new WeekendAttendException();
         }
     }
     
     private void validateTime(LocalTime time) {
-        if (time.isAfter(MAX_ATTENDANCE_TIME) || time.isBefore(MIN_ATTENDANCE_TIME)) {
-            throw new IllegalAttendTimeException();
+        if (time.isBefore(MIN_ATTENDANCE_TIME) || time.isAfter(MAX_ATTENDANCE_TIME)) {
+            throw new IllegalAttendTimeException(MIN_ATTENDANCE_TIME.toString(), MAX_ATTENDANCE_TIME.toString());
         }
     }
     

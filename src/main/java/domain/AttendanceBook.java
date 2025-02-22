@@ -1,6 +1,7 @@
 package domain;
 
 import dto.result.*;
+import util.exception.CrewNotExistException;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -31,7 +32,7 @@ public class AttendanceBook {
     
     private void validateName(String name) {
         if (memberAttendances.get(name) == null) {
-            throw new IllegalArgumentException("해당 멤버는 존재하지 않습니다.");
+            throw new CrewNotExistException(name);
         }
     }
     

@@ -1,5 +1,6 @@
 package view;
 
+import dto.requeset.AttendanceBookDecision;
 import io.view.InputView;
 import org.junit.jupiter.api.Test;
 import testUtil.DateProviderStub;
@@ -24,7 +25,7 @@ class InputViewTest {
         
         var result = inputView.inputDecision();
         
-        assertThat(result).isEqualTo("1");
+        assertThat(result).isEqualTo(AttendanceBookDecision.출석);
         
         assertThat(outputHandler.getResult()).isEqualTo("""
                 오늘은 2월 20일 목요일입니다. 기능을 선택해 주세요.

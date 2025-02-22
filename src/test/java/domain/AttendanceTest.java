@@ -4,8 +4,8 @@ import dto.result.AttendResult;
 import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-import util.exception.IllegalAttendDateException;
 import util.exception.IllegalAttendTimeException;
+import util.exception.WeekendAttendException;
 
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -155,8 +155,8 @@ public class AttendanceTest {
             
             // expected
             assertThatThrownBy(() -> new Attendance(localDateTime))
-                    .isExactlyInstanceOf(IllegalAttendDateException.class)
-                    .hasMessage("출석 가능한 날짜가 아닙니다.");
+                    .isExactlyInstanceOf(WeekendAttendException.class)
+                    .hasMessage("주말에는 출석할 수 없습니다.");
         }
         
         @Test
@@ -167,7 +167,7 @@ public class AttendanceTest {
             // expected
             assertThatThrownBy(() -> new Attendance(localDateTime))
                     .isExactlyInstanceOf(IllegalAttendTimeException.class)
-                    .hasMessage("출석 가능한 시간이 아닙니다.");
+                    .hasMessage("출석 가능한 시간이 아닙니다. (출석 가능 시간 : 08:00 ~ 23:00)");
         }
     }
     
