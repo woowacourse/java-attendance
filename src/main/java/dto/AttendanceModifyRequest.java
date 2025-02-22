@@ -24,7 +24,7 @@ public record AttendanceModifyRequest(
         try {
             return Integer.parseInt(day);
         } catch (NumberFormatException e) {
-            throw new IllegalArgumentException("정수가 아닙니다.");
+            throw new IllegalArgumentException(day + ": 정수가 아닙니다.");
         }
     }
 }
