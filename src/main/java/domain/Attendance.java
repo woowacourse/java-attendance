@@ -42,9 +42,9 @@ public class Attendance {
     
     private AttendanceStatus determineAttendanceStatus(LocalDateTime attendanceDateTime) {
         if (attendanceDateTime.getDayOfWeek() == DayOfWeek.MONDAY) {
-            return AttendanceStatus.of(attendanceDateTime.toLocalTime(), MONDAY_ATTENDANCE_TIME);
+            return AttendanceStatus.of(MONDAY_ATTENDANCE_TIME, attendanceDateTime.toLocalTime());
         }
-        return AttendanceStatus.of(attendanceDateTime.toLocalTime(), NOT_MONDAY_ATTENDANCE_TIME);
+        return AttendanceStatus.of(NOT_MONDAY_ATTENDANCE_TIME, attendanceDateTime.toLocalTime());
     }
     
     public AttendResult createAttendanceResult() {
