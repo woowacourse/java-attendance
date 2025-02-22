@@ -16,10 +16,14 @@ public class AttendanceSheets {
     }
 
     private void validateIsAlreadyAttendance(AttendanceSheet attendanceSheet) {
-        if (findAttendanceByNickname(attendanceSheet.getNickname()).stream()
-                .anyMatch(attendanceSheet1 -> attendanceSheet1.isSame(attendanceSheet))) {
+        if (isAlreadyAttendance(attendanceSheet)) {
             throw new IllegalArgumentException("[ERROR] 이미 출석했습니다. 수정 기능을 이용하세요");
         }
+    }
+
+    private boolean isAlreadyAttendance(AttendanceSheet attendanceSheet) {
+        return findAttendanceByNickname(attendanceSheet.getNickname()).stream()
+                .anyMatch(attendanceSheet1 -> attendanceSheet1.isSame(attendanceSheet));
     }
 
     public List<AttendanceSheet> findAttendanceByNickname(String nickname) {
