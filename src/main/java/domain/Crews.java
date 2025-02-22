@@ -14,7 +14,7 @@ public class Crews {
 
     public Crew findByNickname(final Nickname nickname) {
         return crews.stream()
-                .filter(o -> o.nickname.equals(nickname))
+                .filter(o -> o.getNickname().equals(nickname))
                 .findFirst()
                 .orElseThrow(() -> new CustomIllegalArgumentException("크루가 존재하지 않습니다."));
     }
@@ -30,8 +30,15 @@ public class Crews {
                 .toList();
     }
 
+    public List<CrewSummary> getCrewSummary() {
+        return getSortedCrews().stream()
+                .map(Crew::getCrewSummary)
+                .toList();
+    }
+
     private final Comparator<Crew> punishmentOrder = Comparator
-            .comparingInt((Crew crew) -> Punishment.findByAbsenceCount(getPunishment(crew)).getAbsenceCount())
+            .comparingInt((Crew crew) -> Punishment.findByAbsenceCount(getPunishment(crew))
+                    .getAbsenceCount())
             .reversed();
 
     private static int getPunishment(final Crew crew) {

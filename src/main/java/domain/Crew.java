@@ -5,9 +5,9 @@ import java.util.Objects;
 
 public class Crew implements Comparable<Crew> {
 
-    Nickname nickname;
-    Attendances attendances;
-    AttendanceCounter attendanceCounter;
+    private final Nickname nickname;
+    private final Attendances attendances;
+    private final AttendanceCounter attendanceCounter;
 
     public Crew(final Nickname nickname, Attendances attendances, AttendanceCounter attendanceCounter) {
         this.nickname = nickname;
@@ -34,6 +34,21 @@ public class Crew implements Comparable<Crew> {
     public void updateAttendance(final Attendance oldAttendance, final Attendance attendance) {
         attendances.remove(oldAttendance);
         attendances.add(attendance);
+    }
+
+    /**
+     * 지각 횟수 / 결석 횟수 / 보정된 결석 횟수(지각 3회는 결석 1회로 간주), 처벌(제적, 면담, 경고)
+     *
+     * @return CrewSummary
+     */
+    public CrewSummary getCrewSummary() {
+        final String displayName = this.nickname.getNickname();
+        final int absence = attendanceCounter.getAbsence();
+        final int tardiness = attendanceCounter.getTardiness();
+        final int adjustedAbsenceCount = attendanceCounter.calculateAdjustedAbsenceCountWithTardinessCount();
+        final Punishment punishment = Punishment.findByAbsenceCount(adjustedAbsenceCount);
+
+        return new CrewSummary(displayName, absence, tardiness, adjustedAbsenceCount, punishment);
     }
 
     public Attendances getAttendances() {
