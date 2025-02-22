@@ -11,16 +11,16 @@ public class AttendanceResults {
     }
 
     public AttendCount countAttendStatus() {
-        long attendCount = attendanceResults.stream()
-                .filter(attendanceResult -> attendanceResult.attendStatus() == AttendStatus.ATTEND)
-                .count();
-        long lateCount = attendanceResults.stream()
-                .filter(attendanceResult -> attendanceResult.attendStatus() == AttendStatus.LATE)
-                .count();
-        long absenceCount = attendanceResults.stream()
-                .filter(attendanceResult -> attendanceResult.attendStatus() == AttendStatus.ABSENCE)
-                .count();
+        long attendCount = countStatus(AttendStatus.ATTEND);
+        long lateCount = countStatus(AttendStatus.LATE);
+        long absenceCount = countStatus(AttendStatus.ABSENCE);
         return new AttendCount(attendCount, lateCount, absenceCount);
+    }
+
+    private long countStatus(AttendStatus attendStatus) {
+        return attendanceResults.stream()
+                .filter(attendanceResult -> attendanceResult.attendStatus() == attendStatus)
+                .count();
     }
 
     public List<AttendanceResult> getAttendanceResults() {
