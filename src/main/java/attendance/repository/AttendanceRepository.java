@@ -98,6 +98,6 @@ public class AttendanceRepository {
         int absent = counts.getOrDefault(ABSENT.getValue(), 0L).intValue();
 
         return new CrewAttendanceInformation(name, attend, late, absent,
-                AcademicStatus.getAcademicStatus(late, absent));
+                AcademicStatus.getAcademicStatus(late, absent).getValue());
     }
 }

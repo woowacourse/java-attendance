@@ -19,22 +19,22 @@ public enum AcademicStatus {
         return value;
     }
 
-    public static String getAcademicStatus(int late, int absent) {
+    public static AcademicStatus getAcademicStatus(int late, int absent) {
 
         return Stream.of(late / 3 + absent)
                 .map(count -> {
                     if (count > 5) {
-                        return EXPELLED.getValue();
+                        return EXPELLED;
                     }
                     if (count >= 3) {
-                        return INTERVIEW.getValue();
+                        return INTERVIEW;
                     }
                     if (count == 2) {
-                        return WARNING.getValue();
+                        return WARNING;
                     }
-                    return NOT.getValue();
+                    return NOT;
                 })
                 .findFirst()
-                .orElse(NOT.getValue());
+                .orElse(NOT);
     }
 }
