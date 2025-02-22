@@ -59,7 +59,7 @@ public class CrewDataLoader {
     }
 
     private boolean canAttend(AttendanceHistory attendanceHistory, LocalDate currentDate) {
-        return !(attendanceHistory.containsDate(currentDate) || CustomLocalDateTime.isHoliday(currentDate));
+        return !(attendanceHistory.containsDate(currentDate) || CustomLocalDateTime.isWeekendOrHoliday(currentDate));
     }
 
     private void addCrew(Crew crew, LocalDateTime dateTime) {

@@ -12,13 +12,13 @@ public class AttendanceDetail {
     private Attendance attendance;
 
     public AttendanceDetail(LocalDateTime localDateTime) {
-        validateHoliday(localDateTime);
+        validateWeekendOrHoliday(localDateTime);
         this.localDateTime = localDateTime;
         this.attendance = Attendance.from(localDateTime);
     }
 
-    private void validateHoliday(LocalDateTime localDateTime) {
-        if (CustomLocalDateTime.isHoliday(localDateTime.toLocalDate())) {
+    private void validateWeekendOrHoliday(LocalDateTime localDateTime) {
+        if (CustomLocalDateTime.isWeekendOrHoliday(localDateTime.toLocalDate())) {
             throw new IllegalArgumentException(localDateTime.format(NOT_ATTENDABLE_FORMATTER));
         }
     }

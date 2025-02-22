@@ -29,7 +29,7 @@ public class CustomLocalDateTime {
         return LocalDate.of(2024, 12, Parser.parseInt(day));
     }
 
-    public static boolean isHoliday(LocalDate localDate) {
+    public static boolean isWeekendOrHoliday(LocalDate localDate) {
         return localDate.getDayOfWeek().equals(DayOfWeek.SATURDAY) ||
                 localDate.getDayOfWeek().equals(DayOfWeek.SUNDAY) ||
                 holidayDate.contains(localDate);

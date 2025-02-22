@@ -48,7 +48,7 @@ public class Controller {
 
     private void processAddAttendance() {
         process(() -> {
-            if (CustomLocalDateTime.isHoliday(CustomLocalDateTime.nowDate())) {
+            if (CustomLocalDateTime.isWeekendOrHoliday(CustomLocalDateTime.nowDate())) {
                 throw new IllegalArgumentException(CustomLocalDateTime.nowDate().format(NOT_ATTENDABLE_FORMATTER));
             }
             Crew crew = crews.findCrew(inputView.inputCrewName());

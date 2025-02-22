@@ -21,7 +21,7 @@ class CustomLocalDateTimeTest {
         LocalDate localDate = LocalDate.of(2024, 12, 10);
 
         //when
-        boolean holiday = CustomLocalDateTime.isHoliday(localDate);
+        boolean holiday = CustomLocalDateTime.isWeekendOrHoliday(localDate);
 
         //then
         Assertions.assertThat(holiday).isFalse();
@@ -33,7 +33,7 @@ class CustomLocalDateTimeTest {
         LocalDate localDate = LocalDate.of(2024, 12, 25);
 
         //when
-        boolean holiday = CustomLocalDateTime.isHoliday(localDate);
+        boolean holiday = CustomLocalDateTime.isWeekendOrHoliday(localDate);
 
         //then
         Assertions.assertThat(holiday).isTrue();
@@ -45,7 +45,7 @@ class CustomLocalDateTimeTest {
         LocalDate localDate = LocalDate.of(2024, 12, 8);
 
         //when
-        boolean holiday = CustomLocalDateTime.isHoliday(localDate);
+        boolean holiday = CustomLocalDateTime.isWeekendOrHoliday(localDate);
 
         //then
         Assertions.assertThat(holiday).isTrue();
