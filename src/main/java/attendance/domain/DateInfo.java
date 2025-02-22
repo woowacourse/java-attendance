@@ -75,8 +75,8 @@ public class DateInfo {
 
     private AttendanceStatus checkAttendanceStatus(String hourLimit) {
         int hourMinute = Integer.parseInt(localDateTime.getHour() + addZero(localDateTime.getMinute()));
-        int absentTime = Integer.parseInt(hourLimit + "30");
-        int lateTime = Integer.parseInt(hourLimit + "05");
+        int absentTime = Integer.parseInt(hourLimit + AttendanceStatus.ABSENT_LIMIT);
+        int lateTime = Integer.parseInt(hourLimit + AttendanceStatus.LATE_LIMIT);
         if (hourMinute > absentTime) {
             return AttendanceStatus.ABSENCE;
         }

@@ -7,6 +7,8 @@ public enum AttendanceStatus {
     ABSENCE("결석"),
     HOLIDAY("주말");
 
+    public static final String LATE_LIMIT = "05";
+    public static final String ABSENT_LIMIT = "30";
     private final String name;
 
     AttendanceStatus(final String name) {
@@ -16,5 +18,7 @@ public enum AttendanceStatus {
     public String getName() {
         return name;
     }
+
+
 
 }
