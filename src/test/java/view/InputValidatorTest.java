@@ -22,7 +22,8 @@ class InputValidatorTest {
     @ParameterizedTest
     @ValueSource(strings = {"호떡", "밍트"})
     void validateInputTest(final String input) {
-        assertThatCode(() -> inputValidator.validateIsNullOrEmpty(input));
+        assertThatCode(() -> inputValidator.validateIsNullOrEmpty(input))
+                .doesNotThrowAnyException();
     }
 
     @DisplayName("입력이 null이거나 공백이라면 예외가 발생한다")
