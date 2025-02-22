@@ -1,6 +1,6 @@
 package util;
 
-import static constant.Command.QUIT;
+import static controller.AttendanceController.QUIT;
 
 import java.util.function.Supplier;
 

@@ -1,10 +1,5 @@
 package controller;
 
-import static constant.Command.ATTENDANCE_SHEET;
-import static constant.Command.CREATE_ATTENDANCE;
-import static constant.Command.QUIT;
-import static constant.Command.RISK_OF_EXPLUSTION;
-import static constant.Command.UPDATE_ATTENDANCE;
 import static util.ExceptionHandler.runInputCommand;
 
 import domain.AbsentPolicy;
@@ -27,6 +22,12 @@ import java.util.List;
 import java.util.Map;
 
 public class AttendanceController {
+
+    public static final String CREATE_ATTENDANCE = "1";
+    public static final String UPDATE_ATTENDANCE = "2";
+    public static final String ATTENDANCE_SHEET = "3";
+    public static final String RISK_OF_EXPLUSTION = "4";
+    public static final String QUIT = "Q";
 
     public static final LocalDate DATE = LocalDate.of(2024, 12, 13);
 

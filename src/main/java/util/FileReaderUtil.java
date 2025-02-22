@@ -6,7 +6,6 @@ import java.util.List;
 
 public class FileReaderUtil {
 
-    // TODO 인자로 받아서 생성자에서 사용하도록...
     private static final String ATTENDANCE_DATA_PATH = "src/main/resources/attendance.csv";
     private static final int HEADER = 1;
 
