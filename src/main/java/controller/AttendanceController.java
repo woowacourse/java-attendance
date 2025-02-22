@@ -47,6 +47,7 @@ public class AttendanceController {
         processAttendance(crews, command);
         if (command.equals(Command.CHECK_ATTENDANCE_BY_CREW)) {
             checkAttendanceHistoryByCrew(crews);
+            return;
         }
         if (command.equals(Command.CHECK_DISMISSAL_CREW)) {
             checkDismissalCrews(crews);
@@ -56,6 +57,7 @@ public class AttendanceController {
     private void processAttendance(Crews crews, Command command) {
         if (command.equals(Command.CHECK_ATTENDANCE)) {
             checkAttendance(crews);
+            return;
         }
         if (command.equals(Command.MODIFY_ATTENDANCE)) {
             modifyAttendance(crews);
