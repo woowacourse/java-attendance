@@ -22,7 +22,7 @@ public class InputView {
                 "Q. 종료%n", date.getMonthValue(), date.getDayOfMonth(), Day.getDay(date).getName());
         String input = scanner.nextLine();
         validateMenuInput(input);
-        return input;
+        return input.toUpperCase();
     }
 
     public Crew readNickname() {

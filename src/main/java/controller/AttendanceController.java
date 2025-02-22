@@ -12,13 +12,15 @@ import java.util.function.Supplier;
 
 public class AttendanceController {
     private final static int START_DATE_INDEX = 0;
-    private static final String QUIT_MENU = "[Qq]";
+    private static final String QUIT_MENU = "Q";
 
     private final Map<String, Runnable> menu = Map.of(
             "1", this::checkIn,
             "2", this::updateAttendance,
             "3", this::checkAttendanceRecords,
-            "4", this::checkDisciplinaryStatus);
+            "4", this::checkDisciplinaryStatus,
+            "Q", () -> {
+            });
     private final InputView inputView = new InputView();
     private final OutputView outputView = new OutputView();
     private final DateGenerator currentDateGenerator;
@@ -77,6 +79,8 @@ public class AttendanceController {
                 return supplier.get();
             } catch (IllegalArgumentException e) {
                 System.out.println(e.getMessage());
+            } catch (NullPointerException e) {
+                System.out.println("[ERROR] 존재하지 않는 메뉴입니다.");
             }
         }
     }
