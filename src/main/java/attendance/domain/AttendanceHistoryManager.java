@@ -43,7 +43,7 @@ public class AttendanceHistoryManager {
         for (int i = 1; i < localDate.getDayOfMonth(); i++) {
             LocalDate date = LocalDate.of(localDate.getYear(), localDate.getMonthValue(), i);
             try {
-                AttendancePolicy.checkHoliday(date);
+                AttendancePolicy.ifHolidayOrWeekendsThrowException(date);
             } catch (IllegalArgumentException e) {
                 continue;
             }

@@ -1,6 +1,9 @@
 package attendance.domain;
 
+import java.time.LocalDate;
 import java.time.LocalTime;
+import java.time.format.TextStyle;
+import java.util.Locale;
 
 public enum DayOfWeek {
 
@@ -8,7 +11,9 @@ public enum DayOfWeek {
     TUESDAY("화요일", LocalTime.of(10, 0), LocalTime.of(18, 0)),
     WEDNESDAY("수요일", LocalTime.of(10, 0), LocalTime.of(18, 0)),
     THURSDAY("목요일", LocalTime.of(10, 0), LocalTime.of(18, 0)),
-    FRIDAY("금요일", LocalTime.of(10, 0), LocalTime.of(18, 0));
+    FRIDAY("금요일", LocalTime.of(10, 0), LocalTime.of(18, 0)),
+    SATURDAY("토요일", LocalTime.of(0, 0), LocalTime.of(0, 0)),
+    SUNDAY("일요일", LocalTime.of(0, 0), LocalTime.of(0, 0));
 
     private static final int ABSENCE_TIME = 31;
 
@@ -27,6 +32,12 @@ public enum DayOfWeek {
             return ABSENCE_TIME;
         }
         return attendanceTime.getMinute() - startTime.getMinute();
+    }
+
+    public static DayOfWeek calculateDayOfWeek(LocalDate localDate) {
+        java.time.DayOfWeek dayOfWeek = localDate.getDayOfWeek();
+        String displayName = dayOfWeek.getDisplayName(TextStyle.FULL, Locale.US);
+        return DayOfWeek.valueOf(displayName.toUpperCase());
     }
 
     public String getName() {

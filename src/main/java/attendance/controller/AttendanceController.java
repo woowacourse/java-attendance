@@ -3,8 +3,8 @@ package attendance.controller;
 import static attendance.domain.CrewStatus.INTERVIEW;
 
 import attendance.CurrentDate;
-import attendance.domain.AttendancePolicy;
 import attendance.domain.AttendanceHistory;
+import attendance.domain.AttendancePolicy;
 import attendance.domain.dto.AttendanceHistoryDto;
 import attendance.domain.AttendanceType;
 import attendance.domain.Crew;
@@ -83,7 +83,7 @@ public class AttendanceController {
     }
 
     private void doAttendance(LocalDate now) {
-        AttendancePolicy.checkHoliday(now);
+        AttendancePolicy.ifHolidayOrWeekendsThrowException(now);
         Crew crew = findCrew();
         LocalTime attendanceTime = inputView.inputAttendanceTime();
         AttendanceType attendanceType = AttendancePolicy.checkAttendanceType(now, attendanceTime);

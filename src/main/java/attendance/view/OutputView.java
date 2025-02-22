@@ -4,9 +4,9 @@ import static attendance.domain.AttendanceType.ABSENCE;
 import static attendance.domain.AttendanceType.LATE;
 
 import attendance.domain.AttendanceHistory;
+import attendance.domain.AttendancePolicy;
 import attendance.domain.CrewStatus;
 import attendance.domain.dto.AttendanceHistoryDto;
-import attendance.domain.AttendancePolicy;
 import attendance.domain.AttendanceType;
 import attendance.domain.Crew;
 import java.time.DayOfWeek;
@@ -61,7 +61,7 @@ public class OutputView {
             int month = now.getMonthValue();
             LocalDate date = LocalDate.of(year, month, day);
             try {
-                AttendancePolicy.checkHoliday(date);
+                AttendancePolicy.ifHolidayOrWeekendsThrowException(date);
             } catch (IllegalArgumentException e) {
                 continue;
             }
