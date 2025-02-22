@@ -18,7 +18,8 @@ public enum AttendanceStatus {
         return value;
     }
 
-    public static String checkStatusWithCondition(Time attendanceTime, int hour, int lateMinute, int absentMinute) {
+    public static String checkStatusWithCondition(AttendanceTime attendanceTime, int hour, int lateMinute,
+                                                  int absentMinute) {
 
         if (!attendanceTime.isAfter(
                 LocalDateTime.of(attendanceTime.getYear(), attendanceTime.getMonth(), attendanceTime.getDay(),

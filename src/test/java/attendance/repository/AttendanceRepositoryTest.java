@@ -6,7 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import attendance.domain.Attendance;
-import attendance.domain.Time;
+import attendance.domain.AttendanceTime;
 import attendance.dto.CrewNameAndAcademicStatusDTO;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -35,8 +35,8 @@ class AttendanceRepositoryTest {
         minute = "00";
         localDate2 = LocalDate.of(2025, 2, 18);
 
-        attendance1 = new Attendance("체체", new Time(localDate1, hour, minute, false));
-        attendance2 = new Attendance("체체", new Time(localDate2, hour, minute, false));
+        attendance1 = new Attendance("체체", new AttendanceTime(localDate1, hour, minute, false));
+        attendance2 = new Attendance("체체", new AttendanceTime(localDate2, hour, minute, false));
 
 
     }
@@ -46,7 +46,7 @@ class AttendanceRepositoryTest {
     void 출결_기록을_추가한다() {
 
         // given
-        Attendance attendance = new Attendance("피글렛", new Time(localDate1, hour, minute, false));
+        Attendance attendance = new Attendance("피글렛", new AttendanceTime(localDate1, hour, minute, false));
         AttendanceRepository attendanceRepository = new AttendanceRepository(new ArrayList<>());
 
         // when
@@ -61,7 +61,7 @@ class AttendanceRepositoryTest {
     void 해당_날짜에_출결_기록이_있는_크루를_추가할_시_예외가_발생한다() {
 
         // given
-        Attendance attendance = new Attendance("체체", new Time(localDate1, hour, minute, false));
+        Attendance attendance = new Attendance("체체", new AttendanceTime(localDate1, hour, minute, false));
         AttendanceRepository attendanceRepository = new AttendanceRepository(new ArrayList<>());
         attendanceRepository.add(attendance);
 
@@ -76,7 +76,7 @@ class AttendanceRepositoryTest {
     void 입력_받은_날짜의_크루_출석_기록을_가져온다() {
 
         // given
-        Attendance attendance = new Attendance("체체", new Time(localDate1, hour, minute, false));
+        Attendance attendance = new Attendance("체체", new AttendanceTime(localDate1, hour, minute, false));
         AttendanceRepository attendanceRepository = new AttendanceRepository(new ArrayList<>());
         attendanceRepository.add(attendance);
 
@@ -94,8 +94,8 @@ class AttendanceRepositoryTest {
 
         // given
         int today = LocalDate.now().getDayOfMonth();
-        Attendance attendance1 = new Attendance("체체", new Time(localDate1, hour, minute, false));
-        Attendance attendance2 = new Attendance("체체", new Time(localDate2, hour, minute, false));
+        Attendance attendance1 = new Attendance("체체", new AttendanceTime(localDate1, hour, minute, false));
+        Attendance attendance2 = new Attendance("체체", new AttendanceTime(localDate2, hour, minute, false));
 
         // when
         AttendanceRepository attendanceRepository = new AttendanceRepository(new ArrayList<>(
@@ -155,6 +155,6 @@ class AttendanceRepositoryTest {
     }
 
     private static Attendance makeAbsentAttendance(String name, int year, int month, int day) {
-        return new Attendance(name, new Time(LocalDate.of(year, month, day), "18", "00", true));
+        return new Attendance(name, new AttendanceTime(LocalDate.of(year, month, day), "18", "00", true));
     }
 }

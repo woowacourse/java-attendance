@@ -25,8 +25,8 @@ class AttendanceTest {
         minute = "00";
         localDate2 = LocalDate.of(2025, 2, 18);
 
-        attendance1 = new Attendance("체체", new Time(localDate1, hour, minute, false));
-        attendance2 = new Attendance("체체", new Time(localDate2, hour, minute, false));
+        attendance1 = new Attendance("체체", new AttendanceTime(localDate1, hour, minute, false));
+        attendance2 = new Attendance("체체", new AttendanceTime(localDate2, hour, minute, false));
 
 
     }
@@ -36,7 +36,7 @@ class AttendanceTest {
     void 주어진_출결_기록과_같은_날짜라면_true를_반환한다() {
 
         //given
-        Attendance attendance3 = new Attendance("체체", new Time(localDate1, hour, minute, false));
+        Attendance attendance3 = new Attendance("체체", new AttendanceTime(localDate1, hour, minute, false));
         //when
         boolean isEqual = attendance1.isAlreadyAttendance(attendance3);
 
@@ -62,12 +62,12 @@ class AttendanceTest {
     void 주어진_시간으로_출석_기록을_변경한다() {
 
         // given
-        Time time = new Time(localDate1, "11", "00", false);
+        AttendanceTime attendanceTime = new AttendanceTime(localDate1, "11", "00", false);
 
         // when
-        attendance1.modifyAttendanceTime(time);
+        attendance1.modifyAttendanceTime(attendanceTime);
         // then
-        assertThat(attendance1.getAttendanceTime()).isEqualTo(time);
+        assertThat(attendance1.getAttendanceTime()).isEqualTo(attendanceTime);
     }
 
     @ParameterizedTest
@@ -77,7 +77,7 @@ class AttendanceTest {
 
         // given
         LocalDate localDate = LocalDate.of(year, month, day);
-        Attendance attendance = new Attendance("체체", new Time(localDate, hour, minute, false));
+        Attendance attendance = new Attendance("체체", new AttendanceTime(localDate, hour, minute, false));
 
         // when && then
         assertThat(attendance.getAttendanceStatus()).isEqualTo(result);

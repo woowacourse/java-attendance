@@ -3,14 +3,14 @@ package attendance.domain;
 public class Attendance {
 
     private final String crewName;
-    private Time attendanceTime;
+    private AttendanceTime attendanceTime;
 
-    public Attendance(final String crewName, final Time attendanceTime) {
+    public Attendance(final String crewName, final AttendanceTime attendanceTime) {
         this.crewName = crewName;
         this.attendanceTime = attendanceTime;
     }
 
-    public Time getAttendanceTime() {
+    public AttendanceTime getAttendanceTime() {
         return attendanceTime;
     }
 
@@ -44,7 +44,7 @@ public class Attendance {
                 && month == attendanceTime.getMonth();
     }
 
-    public void modifyAttendanceTime(final Time modifyTime) {
-        this.attendanceTime = modifyTime;
+    public void modifyAttendanceTime(final AttendanceTime modifyAttendanceTime) {
+        this.attendanceTime = modifyAttendanceTime;
     }
 }

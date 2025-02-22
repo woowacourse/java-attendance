@@ -6,7 +6,7 @@ import static attendance.domain.AttendanceStatus.LATE;
 
 import attendance.domain.AcademicStatus;
 import attendance.domain.Attendance;
-import attendance.domain.Time;
+import attendance.domain.AttendanceTime;
 import attendance.dto.CrewNameAndAcademicStatusDTO;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
@@ -67,7 +67,7 @@ public class AttendanceRepository {
                 .mapToObj(day -> LocalDate.of(currentYear, currentMonth, day))
                 .filter(date -> !isWeekend(date))
                 .filter(date -> isAbsent(name, date))
-                .forEach(date -> attendances.add(new Attendance(name, new Time(date, "--", "--", true))));
+                .forEach(date -> attendances.add(new Attendance(name, new AttendanceTime(date, "--", "--", true))));
     }
 
     private boolean isWeekend(final LocalDate date) {

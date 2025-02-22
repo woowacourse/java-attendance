@@ -33,7 +33,7 @@ class AttendanceBookTest {
     }
 
     private static Attendance makeAbsentAttendance(String name, int year, int month, int day) {
-        return new Attendance(name, new Time(LocalDate.of(year, month, day), "18", "00", true));
+        return new Attendance(name, new AttendanceTime(LocalDate.of(year, month, day), "18", "00", true));
     }
 
 

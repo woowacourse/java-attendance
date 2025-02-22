@@ -8,7 +8,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
-class TimeTest {
+class AttendanceTimeTest {
 
     @DisplayName("캠퍼스 운영 시간에만 출석한다.")
     @ParameterizedTest
@@ -22,7 +22,7 @@ class TimeTest {
         LocalDate localDate = LocalDate.of(2025, 2, 19);
 
         // when & then
-        assertThatThrownBy(() -> new Time(localDate, hour, minute, false))
+        assertThatThrownBy(() -> new AttendanceTime(localDate, hour, minute, false))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("[ERROR] 출석 가능한 시간이 아닙니다.");
     }
@@ -35,7 +35,7 @@ class TimeTest {
         LocalDate localDate = LocalDate.of(2025, 2, 15);
 
         // when & then
-        assertThatThrownBy(() -> new Time(localDate, "10", "10", false))
+        assertThatThrownBy(() -> new AttendanceTime(localDate, "10", "10", false))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("[ERROR] 02월 15일 토요일은 등교일이 아닙니다.");
     }

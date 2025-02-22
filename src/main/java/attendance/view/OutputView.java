@@ -1,7 +1,7 @@
 package attendance.view;
 
 import attendance.domain.Attendance;
-import attendance.domain.Time;
+import attendance.domain.AttendanceTime;
 import attendance.dto.CrewNameAndAcademicStatusDTO;
 import java.util.List;
 
@@ -20,15 +20,16 @@ public class OutputView {
         System.out.println(attendanceCountAndAcademicStatusDTO.academicStatus() + " 대상자입니다.");
     }
 
-    public void printModifyAttendanceResult(Time originTime, String originAttendanceStatus,
-                                            Time modifyTime, String modifyAttendanceStatus) {
+    public void printModifyAttendanceResult(AttendanceTime originAttendanceTime, String originAttendanceStatus,
+                                            AttendanceTime modifyAttendanceTime, String modifyAttendanceStatus) {
 
-        System.out.printf("%02d월 %02d일 %s %s:%s (%s)", originTime.getMonth(), originTime.getDay(),
-                originTime.getDayOfWeek(), originTime.hour(), originTime.minute(), originAttendanceStatus);
+        System.out.printf("%02d월 %02d일 %s %s:%s (%s)", originAttendanceTime.getMonth(), originAttendanceTime.getDay(),
+                originAttendanceTime.getDayOfWeek(), originAttendanceTime.hour(), originAttendanceTime.minute(),
+                originAttendanceStatus);
 
         System.out.print(" -> ");
 
-        System.out.printf("%s:%s (%s)", modifyTime.hour(), modifyTime.minute(),
+        System.out.printf("%s:%s (%s)", modifyAttendanceTime.hour(), modifyAttendanceTime.minute(),
                 modifyAttendanceStatus);
 
         System.out.println(" 수정 완료!");
@@ -44,7 +45,7 @@ public class OutputView {
         }
     }
 
-    public void printAttendance(Time attendanceTime, String attendanceStatus) {
+    public void printAttendance(AttendanceTime attendanceTime, String attendanceStatus) {
 
         System.out.println(
                 String.format("%02d월 %02d일 %s %s:%s (%s)", attendanceTime.getMonth(), attendanceTime.getDay(),
@@ -69,7 +70,7 @@ public class OutputView {
     }
 
     public void printErrorMessage(String message) {
-        
+
         System.out.println(message);
     }
 }

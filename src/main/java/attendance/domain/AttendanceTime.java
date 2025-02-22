@@ -6,10 +6,10 @@ import java.time.LocalDateTime;
 import java.time.format.TextStyle;
 import java.util.Locale;
 
-public record Time(LocalDate date, String hour, String minute, boolean isAbsent) {
+public record AttendanceTime(LocalDate date, String hour, String minute, boolean isAbsent) {
 
-    public Time {
-        
+    public AttendanceTime {
+
         if (!isAbsent) {
             validatePossibleTime(date, hour, minute);
             validateInRangeTime(hour, minute);

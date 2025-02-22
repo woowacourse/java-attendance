@@ -1,7 +1,7 @@
 package attendance.utils;
 
 import attendance.domain.Attendance;
-import attendance.domain.Time;
+import attendance.domain.AttendanceTime;
 import attendance.dto.AttendanceContentDTO;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.Set;
 
 public final class AttendanceReader {
-    
+
     private AttendanceReader() {
     }
 
@@ -34,7 +34,7 @@ public final class AttendanceReader {
             String minute = String.format("%02d", attendanceTime.getMinute());
 
             names.add(crewName);
-            attendances.add(new Attendance(crewName, new Time(localDate, hour, minute, false)));
+            attendances.add(new Attendance(crewName, new AttendanceTime(localDate, hour, minute, false)));
         }
         return new AttendanceContentDTO(attendances, names);
     }

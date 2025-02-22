@@ -6,8 +6,8 @@ import static attendance.domain.AcademicStatus.WARNING;
 
 import attendance.domain.Attendance;
 import attendance.domain.AttendanceBook;
+import attendance.domain.AttendanceTime;
 import attendance.domain.Function;
-import attendance.domain.Time;
 import attendance.dto.AttendanceContentDTO;
 import attendance.repository.AttendanceRepository;
 import attendance.utils.AttendanceReader;
@@ -92,18 +92,18 @@ public class AttendanceController {
 
         String crewName = inputView.inputCrewName();
         attendanceBook.checkName(inputView.inputCrewName());
-        Time todayDateTime = createTime(LocalDate.now(), inputView.inputTime());
+        AttendanceTime todayDateAttendanceTime = createTime(LocalDate.now(), inputView.inputTime());
 
-        Attendance attendance = new Attendance(crewName, todayDateTime);
+        Attendance attendance = new Attendance(crewName, todayDateAttendanceTime);
         attendanceRepository.add(attendance);
 
-        outputView.printAttendance(todayDateTime, attendance.getAttendanceStatus());
+        outputView.printAttendance(todayDateAttendanceTime, attendance.getAttendanceStatus());
     }
 
-    private Time createTime(final LocalDate date, final String attendanceTime) {
+    private AttendanceTime createTime(final LocalDate date, final String attendanceTime) {
 
         String[] split = attendanceTime.split(":");
-        return new Time(date, split[0], split[1], false);
+        return new AttendanceTime(date, split[0], split[1], false);
     }
 
     private void attendanceModifyFunction() {
@@ -119,16 +119,17 @@ public class AttendanceController {
 
         int year = LocalDate.now().getYear();
         int month = LocalDate.now().getMonthValue();
-        Time modifyDateTime = createTime(LocalDate.of(year, month, modifyDay), modifyTime);
+        AttendanceTime modifyDateAttendanceTime = createTime(LocalDate.of(year, month, modifyDay), modifyTime);
 
         Attendance attendance = attendanceRepository.findAttendanceByNameAndLocalDate(crewName, year, month, modifyDay);
 
-        Time previousDateTime = attendance.getAttendanceTime();
+        AttendanceTime previousDateAttendanceTime = attendance.getAttendanceTime();
         String previousAttendanceStatus = attendance.getAttendanceStatus();
 
-        attendance.modifyAttendanceTime(modifyDateTime);
+        attendance.modifyAttendanceTime(modifyDateAttendanceTime);
 
-        outputView.printModifyAttendanceResult(previousDateTime, previousAttendanceStatus, modifyDateTime,
+        outputView.printModifyAttendanceResult(previousDateAttendanceTime, previousAttendanceStatus,
+                modifyDateAttendanceTime,
                 attendance.getAttendanceStatus());
     }
 
