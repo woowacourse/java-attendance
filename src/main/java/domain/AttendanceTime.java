@@ -15,12 +15,12 @@ public class AttendanceTime {
         this.localTime = localTime;
     }
 
-    public static AttendanceTime of(String inputTime) {
+    public static AttendanceTime of(final String inputTime) {
         final LocalTime localTime = parseTime(inputTime);
         return new AttendanceTime(localTime);
     }
 
-    private static LocalTime parseTime(String inputTime) {
+    private static LocalTime parseTime(final String inputTime) {
         try {
             return LocalTime.parse(inputTime, TIME_FORMATTER);
         } catch (DateTimeParseException e) {

@@ -16,8 +16,8 @@ public enum Command {
     CONFIRMATION_OF_THOSE_AT_RISK_OF_EXPULSION("제적 위험자 확인", "4", ConfirmationOfThoseAtRiskOfExpulsion::new),
     QUIT("종료", "Q", null);
 
-    private String commandName;
-    private String commandNumber;
+    private final String commandName;
+    private final String commandNumber;
     private final CommandMapper mapper;
 
     Command(final String commandName, final String commandNumber, final CommandMapper mapper) {
@@ -48,7 +48,7 @@ public enum Command {
     public String getCommandName() {
         return commandName;
     }
-    
+
     @FunctionalInterface
     public interface CommandMapper {
         AttendanceCommand apply();

@@ -6,11 +6,11 @@ import util.Constants;
 
 public class Attendance implements Comparable<Attendance> {
 
-    AttendanceDateTime attendanceDateTime;
-    AttendanceStatus attendanceStatus;
+    private final AttendanceDateTime attendanceDateTime;
+    private final AttendanceStatus attendanceStatus;
 
     public Attendance(final AttendanceDateTime attendanceDateTime) {
-        Week day = Week.findByAttendanceTime(attendanceDateTime.getLocalDateTime());
+        final Week day = Week.findByAttendanceTime(attendanceDateTime.getLocalDateTime());
         this.attendanceDateTime = attendanceDateTime;
         this.attendanceStatus = AttendanceStatus.findByAttendanceTime(day, attendanceDateTime.toLocalTime());
     }
@@ -19,7 +19,7 @@ public class Attendance implements Comparable<Attendance> {
         return new Attendance(AttendanceDateTime.of(inputTime));
     }
 
-    public static Attendance generateAbsentAttendance(Integer attendanceDate) {
+    public static Attendance generateAbsentAttendance(final Integer attendanceDate) {
         final LocalDate localDate = LocalDate.of(Constants.FIXED_YEAR, Constants.FIXED_MONTH, attendanceDate);
         final LocalDateTime dateTime = LocalDateTime.of(localDate, Constants.ABSENCE_TIME);
         return new Attendance(AttendanceDateTime.of(dateTime));
@@ -35,10 +35,6 @@ public class Attendance implements Comparable<Attendance> {
 
     public LocalDateTime getLocalDateTime() {
         return attendanceDateTime.getLocalDateTime();
-    }
-
-    public AttendanceStatus getAttendanceStatus() {
-        return attendanceStatus;
     }
 
     @Override

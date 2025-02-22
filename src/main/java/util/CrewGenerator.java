@@ -24,18 +24,18 @@ public final class CrewGenerator {
     private CrewGenerator() {
     }
 
-    public static Crews generate(List<String[]> parsedCrewsData, LocalDate nowDate) {
-        Map<Nickname, TreeSet<Attendance>> crewData = new HashMap<>();
+    public static Crews generate(final List<String[]> parsedCrewsData, final LocalDate nowDate) {
+        final Map<Nickname, TreeSet<Attendance>> crewData = new HashMap<>();
         for (String[] parsedCrewData : parsedCrewsData) {
-            String nickname = parsedCrewData[0];
-            String localDateTime = parsedCrewData[1];
+            final String nickname = parsedCrewData[0];
+            final String localDateTime = parsedCrewData[1];
             final Nickname name = new Nickname(nickname);
             final Attendance attendance = Attendance.of(localDateTime);
             crewData.computeIfAbsent(name, k -> new TreeSet<>()).add(attendance);
         }
 
         final List<Integer> validDates = getValidDates(nowDate);
-        List<Crew> crews = new ArrayList<>();
+        final List<Crew> crews = new ArrayList<>();
         for (Entry<Nickname, TreeSet<Attendance>> nicknameListEntry : crewData.entrySet()) {
             final Attendances attendances = getAttendances(nicknameListEntry, validDates);
             crews.add(new Crew(nicknameListEntry.getKey(), attendances, AttendanceCounter.of(attendances)));
@@ -47,9 +47,9 @@ public final class CrewGenerator {
     private static Attendances getAttendances(final Entry<Nickname, TreeSet<Attendance>> nicknameListEntry,
                                               final List<Integer> validDates) {
         final Attendances attendances = new Attendances(nicknameListEntry.getValue());
-        List<Integer> alreadyAttendanceDates = attendances.getDayOfMonth();
+        final List<Integer> alreadyAttendanceDates = attendances.getDayOfMonth();
 
-        List<Integer> noPresentAttendanceDates = new ArrayList<>(validDates);
+        final List<Integer> noPresentAttendanceDates = new ArrayList<>(validDates);
         noPresentAttendanceDates.removeAll(alreadyAttendanceDates);
         for (Integer attendanceDate : noPresentAttendanceDates) {
             Attendance attendance = Attendance.generateAbsentAttendance(attendanceDate);
@@ -58,17 +58,17 @@ public final class CrewGenerator {
         return attendances;
     }
 
-    public static List<Integer> getValidDates(LocalDate localDate) {
+    public static List<Integer> getValidDates(final LocalDate localDate) {
         final int today = localDate.getDayOfMonth();
 
-        List<Integer> allDays = IntStream.range(1, today).boxed().collect(Collectors.toList());
+        final List<Integer> allDays = IntStream.range(1, today).boxed().collect(Collectors.toList());
         allDays.removeAll(getExcludeNotAttendanceDays());
 
         return allDays;
     }
 
     public static List<Integer> getExcludeNotAttendanceDays() {
-        List<Integer> excludeNotAttendanceDays = new ArrayList<>();
+        final List<Integer> excludeNotAttendanceDays = new ArrayList<>();
         excludeNotAttendanceDays.addAll(getWeekendDays());
         excludeNotAttendanceDays.addAll(Constants.HOLIDAYS);
 
@@ -82,8 +82,8 @@ public final class CrewGenerator {
                 .toList();
     }
 
-    public static boolean excludeNotAttendanceDays(int day) {
-        DayOfWeek dayOfWeek = LocalDate.of(Constants.FIXED_YEAR, Constants.FIXED_MONTH, day).getDayOfWeek();
+    public static boolean excludeNotAttendanceDays(final int day) {
+        final DayOfWeek dayOfWeek = LocalDate.of(Constants.FIXED_YEAR, Constants.FIXED_MONTH, day).getDayOfWeek();
         return dayOfWeek == DayOfWeek.SATURDAY || dayOfWeek == DayOfWeek.SUNDAY;
     }
 }
