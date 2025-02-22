@@ -33,31 +33,31 @@ public class AttendanceController {
         LocalDate now = dateGenerator.generate();
         AttendanceOption attendanceOption = null;
 
-        while (attendanceOption != AttendanceOption.QUIT) {
+        do {
             attendanceOption = inputView.readOption(now);
-            chooseOption(attendanceOption, now);
-        }
+            executeOption(attendanceOption, now);
+        } while (attendanceOption != AttendanceOption.QUIT);
     }
 
-    private void chooseOption(AttendanceOption attendanceOption, LocalDate today) {
+    private void executeOption(AttendanceOption attendanceOption, LocalDate today) {
         if (attendanceOption == AttendanceOption.MARK) {
-            optionOne(today);
+            remarkAttendance(today);
         }
 
         if (attendanceOption == AttendanceOption.EDIT) {
-            optionTwo();
+            editAttendance();
         }
 
         if (attendanceOption == AttendanceOption.CHECK) {
-            optionThree(today);
+            checkAttendance(today);
         }
 
         if (attendanceOption == AttendanceOption.WARNING) {
-            optionFour(today);
+            checkExpulsion(today);
         }
     }
 
-    private void optionOne(LocalDate today) {
+    private void remarkAttendance(LocalDate today) {
         HolidayChecker.validWeekDay(today);
 
         String nickname = inputView.readNickname();
@@ -70,7 +70,7 @@ public class AttendanceController {
         outputView.addResult(new AttendanceInfoDto(today, localTime, attendanceStatus));
     }
 
-    private void optionTwo() {
+    private void editAttendance() {
         String nickName = inputView.readEditNickName();
         service.findName(nickName);
         LocalDate date = inputView.readEditDate();
@@ -81,7 +81,7 @@ public class AttendanceController {
         outputView.editResult(responseDto);
     }
 
-    private void optionThree(LocalDate today) {
+    private void checkAttendance(LocalDate today) {
         String nickname = inputView.readNickname();
         service.findName(nickname);
 
@@ -92,7 +92,7 @@ public class AttendanceController {
         outputView.attendanceResult(nickname, dtoMap, counts, penalty, today);
     }
 
-    private void optionFour(LocalDate today) {
+    private void checkExpulsion(LocalDate today) {
         List<PenaltyCrewDto> crewsInfos = service.getCrewsName(today);
         outputView.penaltyCrews(crewsInfos);
     }
