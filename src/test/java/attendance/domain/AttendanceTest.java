@@ -27,8 +27,6 @@ class AttendanceTest {
 
         attendance1 = new Attendance("체체", new AttendanceTime(localDate1, hour, minute, false));
         attendance2 = new Attendance("체체", new AttendanceTime(localDate2, hour, minute, false));
-
-
     }
 
     @DisplayName("주어진 출결 기록과 같은 날짜라면 true를 반환한다")
@@ -70,6 +68,7 @@ class AttendanceTest {
         assertThat(attendance1.getAttendanceTime()).isEqualTo(attendanceTime);
     }
 
+    @DisplayName("시간에 맞는 출결 상태를 갖는다.")
     @ParameterizedTest
     @CsvSource(value = {"2024,12,13,10,00,출석", "2024,12,13,10,05,출석", "2024,12,13,10,06,지각", "2024,12,13,10,31,결석",
             "2024,12,9,12,30,출석", "2024,12,9,13,06,지각", "2024,12,9,13,31,결석"})
@@ -81,5 +80,20 @@ class AttendanceTest {
 
         // when && then
         assertThat(attendance.getAttendanceStatus()).isEqualTo(result);
+    }
+
+    @DisplayName("해당 닉네임의 크루가 해당 날에 대한 출석 정보가 있는지 반환한다.")
+    @ParameterizedTest
+    @CsvSource(value = {
+            "2025, 2, 17, true",
+            "2025, 2, 18, false"
+    }, delimiter = ',')
+    void 해당_닉네임의_크루가_해당_날에_대한_출석_정보가_있는지_반환한다(int year, int month, int day, boolean expectedResult) {
+
+        // given
+        // when
+        boolean result = attendance1.isSameByNameAndLocalDate("체체", year, month, day);
+        // then
+        assertThat(result).isEqualTo(expectedResult);
     }
 }
