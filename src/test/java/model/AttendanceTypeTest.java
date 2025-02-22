@@ -15,6 +15,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
 class AttendanceTypeTest {
+
     @DisplayName("출석 타입을 결정한다")
     @ParameterizedTest
     @CsvSource({

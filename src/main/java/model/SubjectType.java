@@ -11,6 +11,7 @@ public enum SubjectType {
     해당없음(0);
 
     private static final int CONVERTED_ABSENT_UNIT = 3;
+
     private final int threshold;
 
     SubjectType(final int threshold) {
@@ -32,11 +33,11 @@ public enum SubjectType {
         return lateCount + absentCount * CONVERTED_ABSENT_UNIT;
     }
 
-    private static int calculateTotalAbsentCount(final int lateCount, final int absentCount) {
-        return absentCount + lateCount / CONVERTED_ABSENT_UNIT;
-    }
-
     public static int compare(final SubjectType type1, final SubjectType type2) {
         return Integer.compare(type2.threshold, type1.threshold);
+    }
+
+    private static int calculateTotalAbsentCount(final int lateCount, final int absentCount) {
+        return absentCount + lateCount / CONVERTED_ABSENT_UNIT;
     }
 }

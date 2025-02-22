@@ -39,5 +39,4 @@ class TimeFormatterTest {
         // When & Then
         assertThat(TimeFormatter.formatTime(localTime)).isEqualTo("09:50");
     }
-
 }

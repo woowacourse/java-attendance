@@ -11,7 +11,6 @@ import org.junit.jupiter.params.provider.CsvSource;
 
 public class CampusTest {
 
-    // 날짜 O -> 운영 시간
     @DisplayName("주말이나 공휴일이 아닌지 검증한다")
     @ParameterizedTest
     @CsvSource({
@@ -44,7 +43,6 @@ public class CampusTest {
         }).doesNotThrowAnyException();
     }
 
-    // 날짜 X (운영 일자)
     @DisplayName("주말이나 공휴일이면 예외가 발생한다")
     @ParameterizedTest
     @CsvSource({
@@ -61,7 +59,6 @@ public class CampusTest {
                 .hasMessageContainingAll("[ERROR]", "등교일이 아닙니다.");
     }
 
-    // 날짜 O -> 운영 시간
     @DisplayName("운영일이나 운영 시간이 아니라면 예외가 발생한다")
     @ParameterizedTest
     @CsvSource({

@@ -8,7 +8,7 @@ import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 
 public class TimeFormatter {
-    // 12월 05일 화요일 09:59
+
     private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("MM월 dd일 E요일");
     private static final DateTimeFormatter TIME_FORMATTER = DateTimeFormatter.ofPattern("HH:mm");
     private static final String DEFAULT_TIME_FORMAT = "--:--";
