@@ -18,6 +18,7 @@ public class OutputView {
             return;
         }
         System.out.println(attendanceCountAndAcademicStatusDTO.academicStatus() + " 대상자입니다.");
+        System.out.println();
     }
 
     public void printModifyAttendanceResult(AttendanceTime originAttendanceTime, String originAttendanceStatus,
@@ -33,7 +34,7 @@ public class OutputView {
                 modifyAttendanceStatus);
 
         System.out.println(" 수정 완료!");
-
+        System.out.println();
     }
 
     public void printNameAndAttendances(String name, List<Attendance> attendances) {
@@ -43,14 +44,14 @@ public class OutputView {
             String attendanceStatus = attendance.getAttendanceStatus();
             printAttendance(attendance.getAttendanceTime(), attendanceStatus);
         }
+        System.out.println();
     }
 
     public void printAttendance(AttendanceTime attendanceTime, String attendanceStatus) {
 
-        System.out.println(
-                String.format("%02d월 %02d일 %s %s:%s (%s)", attendanceTime.getMonth(), attendanceTime.getDay(),
-                        attendanceTime.getDayOfWeek(), attendanceTime.hour(), attendanceTime.minute(),
-                        attendanceStatus));
+        System.out.printf("%02d월 %02d일 %s %s:%s (%s)%n", attendanceTime.getMonth(), attendanceTime.getDay(),
+                attendanceTime.getDayOfWeek(), attendanceTime.hour(), attendanceTime.minute(),
+                attendanceStatus);
     }
 
     public void printCrewsAtRiskOfExpulsionStartMessage() {
@@ -65,7 +66,6 @@ public class OutputView {
             System.out.print("결석: " + crewNameAndAcademicStatusDTO.absent() + "회, ");
             System.out.print("지각: " + crewNameAndAcademicStatusDTO.late() + "회 ");
             System.out.println("(" + crewNameAndAcademicStatusDTO.academicStatus() + ")");
-
         }
     }
 
