@@ -20,7 +20,7 @@ public class EditAttendanceCommand implements AttendanceCommand {
         final Attendance newAttendance = new Attendance(desiredUpdateDateTime);
 
         crew.updateAttendance(oldAttendance, newAttendance);
-        OutputView.printUpdateAttendance(oldAttendance, newAttendance);
+        OutputView.printUpdateAttendance(oldAttendance.getSummary(), newAttendance.getSummary());
     }
 
     private Nickname readNicknameForEditAttendance() {

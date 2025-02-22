@@ -25,7 +25,7 @@ public class CheckAttendanceCommand implements AttendanceCommand {
 
         final Attendance attendance = attend(crew, attendanceDateTime);
 
-        OutputView.printAttendance(attendance);
+        OutputView.printAttendance(attendance.getSummary());
     }
 
     private Nickname readNickname() {
