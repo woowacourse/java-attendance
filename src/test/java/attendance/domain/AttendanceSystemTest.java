@@ -191,11 +191,11 @@ class AttendanceSystemTest {
     @Test
     void 출석_상태_조회_해당_크루의_제적_위험_정보를_조회한다() {
         saveRiskRecord("쿠키");
-        RiskStatistics riskStatistic = attendanceSystem.searchRiskStatistic(
+        RiskStatistic riskStatistic = attendanceSystem.searchRiskStatistic(
                 "쿠키",
                 LocalDate.of(2024, 12, 9),
                 LocalDate.of(2024, 12, 13));
-        assertThat(riskStatistic.getWarningType()).isEqualTo(RiskType.COUNSELING);
+        assertThat(riskStatistic.getRiskType()).isEqualTo(RiskType.COUNSELING);
     }
 
 
@@ -215,11 +215,11 @@ class AttendanceSystemTest {
         saveRiskRecord(List.of("쿠키1", "쿠키2", "쿠키3"));
         saveNotRiskRecord(List.of("쿠키4", "쿠키5"));
 
-        List<RiskStatistics> riskStatistics = attendanceSystem.searchRiskStatistics(
+        List<RiskStatistic> riskStatistics = attendanceSystem.searchRiskStatistics(
                 LocalDate.of(2024, 12, 9),
                 LocalDate.of(2024, 12, 13));
         assertThat(riskStatistics)
-                .extracting(RiskStatistics::getNickname)
+                .extracting(RiskStatistic::getNickname)
                 .containsExactlyInAnyOrder("쿠키1", "쿠키2", "쿠키3");
     }
 

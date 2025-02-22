@@ -51,16 +51,16 @@ public class AttendanceSystem {
         return recordStorage.findUnmodifiedRecordsByNickname(nickname, year, month);
     }
 
-    public RiskStatistics searchRiskStatistic(String nickname, LocalDate startDate, LocalDate endDate) { // TODO: 테스트 필요
+    public RiskStatistic searchRiskStatistic(String nickname, LocalDate startDate, LocalDate endDate) {
         validateCrew(nickname);
         return calculateRiskStatisticsByCrew(nickname, startDate, endDate);
     }
 
-    public List<RiskStatistics> searchRiskStatistics(LocalDate startDate, LocalDate endDate) {
+    public List<RiskStatistic> searchRiskStatistics(LocalDate startDate, LocalDate endDate) {
         List<Crew> allCrew = crewStorage.findAll();
         return allCrew.stream()
                 .map(crew -> calculateRiskStatisticsByCrew(crew.getName(), startDate, endDate))
-                .filter(statistic -> statistic.getWarningType() != RiskType.NONE)
+                .filter(statistic -> statistic.getRiskType() != RiskType.NONE)
                 .toList();
     }
 
@@ -95,12 +95,13 @@ public class AttendanceSystem {
                 .count();
     }
 
-    private RiskStatistics calculateRiskStatisticsByCrew(
+    private RiskStatistic calculateRiskStatisticsByCrew(
             String nickName, LocalDate startDate, LocalDate endDate
     ) {
         int notHolidayCount = calculateNotHolidayCount(startDate, endDate);
         int attendanceCount = recordStorage.calculateAttendanceCount(nickName, startDate, endDate);
+        int expulsionCount = notHolidayCount - attendanceCount;
         int lateCount = recordStorage.calculateLateCount(nickName, startDate, endDate);
-        return new RiskStatistics(nickName, notHolidayCount - attendanceCount, lateCount);
+        return new RiskStatistic(nickName, attendanceCount, expulsionCount, lateCount);
     }
 }

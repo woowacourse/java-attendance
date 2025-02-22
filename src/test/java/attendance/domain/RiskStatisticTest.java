@@ -12,15 +12,15 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
-class RiskStatisticsTest {
+class RiskStatisticTest {
 
     @DisplayName("결석 횟수와 지각 횟수로 제적 위험도를 계산한다")
     @ParameterizedTest
     @MethodSource()
     void 결석_횟수와_지각_횟수로_제적_위험도를_계산한다(int expulsion, int late, RiskType type) {
-        RiskStatistics statistic = new RiskStatistics("쿠키", expulsion, late);
+        RiskStatistic statistic = new RiskStatistic("쿠키", 10, expulsion, late);
 
-        assertThat(statistic.getWarningType())
+        assertThat(statistic.getRiskType())
                 .isEqualTo(type);
     }
 
