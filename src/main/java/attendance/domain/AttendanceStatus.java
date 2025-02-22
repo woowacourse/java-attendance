@@ -7,13 +7,8 @@ import java.time.LocalTime;
 public enum AttendanceStatus {
     CHECKIN("출석"),
     ABSENCE("결석"),
-    LATE("지각");
-
-    private static final int CHECKIN_HOUR = 10;
-    private static final int CHECKIN_HOUR_OF_MONDAY = 13;
-    private static final int CHECKIN_MINUTE = 5;
-    private static final int LATE_MINUTE = 30;
-    private static final LocalTime OPERATING_TIME = LocalTime.of(8, 0);
+    LATE("지각")
+    ;
 
     private final String status;
 
@@ -27,22 +22,21 @@ public enum AttendanceStatus {
 
     public static AttendanceStatus determineStatus(LocalDateTime attendanceDateTime) {
         LocalTime attendanceTime = attendanceDateTime.toLocalTime();
+        DayOfWeek dayOfWeek = attendanceDateTime.getDayOfWeek();
 
-        if (attendanceDateTime.getDayOfWeek() == DayOfWeek.MONDAY) {
-            return determineStatusByDayOfWeek(attendanceTime, CHECKIN_HOUR_OF_MONDAY);
+        if (dayOfWeek == DayOfWeek.MONDAY) {
+            return determineStatusByDayOfWeek(dayOfWeek, attendanceTime);
         }
 
-        return determineStatusByDayOfWeek(attendanceTime, CHECKIN_HOUR);
+        return determineStatusByDayOfWeek(dayOfWeek, attendanceTime);
     }
 
-    private static AttendanceStatus determineStatusByDayOfWeek(LocalTime time, int hour) {
-        LocalTime checkInLimitTime = LocalTime.of(hour, CHECKIN_MINUTE);
-        LocalTime lateLimitTime = LocalTime.of(hour, LATE_MINUTE);
-
-        if ((time.isAfter(OPERATING_TIME) && time.isBefore(checkInLimitTime)) || time.equals(checkInLimitTime)) {
+    private static AttendanceStatus determineStatusByDayOfWeek(DayOfWeek dayOfWeek, LocalTime attendanceTime) {
+        if (AttendancePolicy.isCheckIn(dayOfWeek, attendanceTime)) {
             return CHECKIN;
         }
-        if (time.isAfter(OPERATING_TIME) && time.isBefore(lateLimitTime) || time.equals(lateLimitTime)) {
+
+        if (AttendancePolicy.isLate(dayOfWeek, attendanceTime)) {
             return LATE;
         }
 

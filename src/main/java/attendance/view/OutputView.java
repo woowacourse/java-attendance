@@ -44,8 +44,8 @@ public class OutputView {
             date, beforeTime, beforeStatus, afterTime, afterStatus);
     }
 
-    public static void printAttendanceRecordAndPenalty(List<Attendance> attendancesOfCrew) {
-        System.out.printf("%n이번 달 빙티의 출석 기록입니다.%n");
+    public static void printAttendanceRecordAndPenalty(List<Attendance> attendancesOfCrew, Crew crew) {
+        System.out.printf("%n이번 달 %s의 출석 기록입니다.%n", crew.getNickName());
         for (Attendance attendance : attendancesOfCrew) {
             System.out.println(getFormattedAttendanceRecord(attendance));
         }
@@ -68,8 +68,7 @@ public class OutputView {
         }
     }
 
-    private static int countAttendanceStatus(List<Attendance> attendances,
-        AttendanceStatus attendanceStatus) {
+    private static int countAttendanceStatus(List<Attendance> attendances, AttendanceStatus attendanceStatus) {
         return Math.toIntExact(
             attendances.stream()
                 .filter(attendance -> attendance.getStatus() == attendanceStatus)
@@ -98,8 +97,7 @@ public class OutputView {
         }
     }
 
-    private static List<PenaltyResult> getPenaltyResults(List<Crew> crews,
-        Attendances attendances) {
+    private static List<PenaltyResult> getPenaltyResults(List<Crew> crews, Attendances attendances) {
         return crews.stream()
             .map(crew -> {
                 List<Attendance> attendanceOfCrew = attendances.getByCrew(crew, LocalDate.now());

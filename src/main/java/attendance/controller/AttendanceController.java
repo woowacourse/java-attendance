@@ -112,6 +112,6 @@ public class AttendanceController {
     private void checkAttendanceRecordOfCrew() {
         Crew crew = getCrew();
         List<Attendance> attendancesOfCrew = attendances.getByCrew(crew, LocalDate.now());
-        OutputView.printAttendanceRecordAndPenalty(attendancesOfCrew);
+        OutputView.printAttendanceRecordAndPenalty(attendancesOfCrew, crew);
     }
 }

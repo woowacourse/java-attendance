@@ -23,7 +23,7 @@ public class Attendance {
     }
 
     private void validateDayOfWeek(LocalDateTime attendanceDateTime) {
-        if (DateUtil.isWeekend(attendanceDateTime)) {
+        if (DateUtil.isWeekend(attendanceDateTime.toLocalDate())) {
             throw new IllegalArgumentException();
         }
     }
