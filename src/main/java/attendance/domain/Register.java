@@ -8,6 +8,12 @@ import java.util.Map;
 
 public class Register {
 
+    private static final String COMMA = ",";
+    private static final String SPACE = " ";
+    private static final String HYPHEN = "-";
+    private static final int POSITION_ZERO = 0;
+    private static final int POSITION_ONE = 1;
+    private static final int POSITION_TWO = 2;
     private final Map<Crew, DateInfos> register;
 
     public Register(Crews crews, LocalDate now) {
@@ -35,12 +41,12 @@ public class Register {
 
     public void fromCrewAttendanceTimeFile(Crews crews, List<String> attendanceTimes) {
         for (String attendanceTime : attendanceTimes) {
-            String crewName = make(attendanceTime, ",", 0); 
+            String crewName = make(attendanceTime, COMMA, POSITION_ZERO);
             Crew crew = crews.findCrew(crewName);
-            String dateTime = make(attendanceTime, ",", 1);
-            String date = make(dateTime, " ", 0);
-            String timeNumber = make(dateTime, " ", 1);
-            String day = make(date, "-", 2);
+            String dateTime = make(attendanceTime, COMMA, POSITION_ONE);
+            String date = make(dateTime, SPACE, POSITION_ZERO);
+            String timeNumber = make(dateTime, SPACE, POSITION_ONE);
+            String day = make(date, HYPHEN, POSITION_TWO);
             Time time = Time.from(timeNumber);
             modifyInfo(crew, Integer.parseInt(day), time);
         }
