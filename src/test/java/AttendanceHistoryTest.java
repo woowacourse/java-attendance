@@ -1,5 +1,6 @@
 import domain.AttendTime;
 import domain.AttendanceHistory;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
@@ -9,6 +10,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class AttendanceHistoryTest {
 
+    @DisplayName("정상적인 출석을 계산할 수 있다")
     @Test
     void test1(){
         List<AttendTime> attendTimes = new ArrayList<>();
@@ -17,6 +19,8 @@ public class AttendanceHistoryTest {
 
         assertThat(attendanceHistory.calculateOnTime()).isEqualTo(1);
     }
+
+    @DisplayName("지각을 한 경우를 계산할 수 있다")
     @Test
     void test2(){
         List<AttendTime> attendTimes = new ArrayList<>();
@@ -25,6 +29,8 @@ public class AttendanceHistoryTest {
 
         assertThat(attendanceHistory.calculateLate()).isEqualTo(1);
     }
+
+    @DisplayName("결석을 한 경우를 계산할 수 있다")
     @Test
     void test3(){
         List<AttendTime> attendTimes = new ArrayList<>();

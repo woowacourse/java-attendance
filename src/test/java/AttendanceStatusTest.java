@@ -6,37 +6,17 @@ import domain.AttendanceHistory;
 import domain.AttendanceStatus;
 import java.util.ArrayList;
 import java.util.List;
+
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 public class AttendanceStatusTest {
 
-    @Test
-    void test1() {
-        List<AttendTime> attendTimes = new ArrayList<>();
-        attendTimes.add(new AttendTime("2024-12-13 09:59"));
-        AttendanceHistory attendanceHistory = new AttendanceHistory(attendTimes);
-
-        AttendanceStatus attendanceStatus = new AttendanceStatus(attendanceHistory.calculateOnTime(),
-                attendanceHistory.calculateLate(), attendanceHistory.calculateAbsent());
-        assertThat(attendanceStatus.getStatus()).isEqualTo(DISMISSAL);
-    }
-
+    @DisplayName("제적 대상자인지 확인 할 수 있다")
     @Test
     void test2() {
         List<AttendTime> attendTimes = new ArrayList<>();
         attendTimes.add(new AttendTime("2024-12-13 09:59"));
-        AttendanceHistory attendanceHistory = new AttendanceHistory(attendTimes);
-
-        AttendanceStatus attendanceStatus = new AttendanceStatus(attendanceHistory.calculateOnTime(),
-                attendanceHistory.calculateLate(), attendanceHistory.calculateAbsent());
-        assertThat(attendanceStatus.getStatus()).isEqualTo(DISMISSAL);
-    }
-
-    @Test
-    void test3() {
-        List<AttendTime> attendTimes = new ArrayList<>();
-        attendTimes.add(new AttendTime("2024-12-13 09:59"));
-
         AttendanceHistory attendanceHistory = new AttendanceHistory(attendTimes);
 
         AttendanceStatus attendanceStatus = new AttendanceStatus(attendanceHistory.calculateOnTime(),

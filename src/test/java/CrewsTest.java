@@ -6,10 +6,13 @@ import domain.Crew;
 import domain.Crews;
 import domain.December;
 import java.util.List;
+
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 public class CrewsTest {
 
+    @DisplayName("크루의 이름을 통해서 크루를 찾아낼 수 있다")
     @Test
     void test1() {
 
@@ -20,6 +23,7 @@ public class CrewsTest {
         assertThat(crew.getName()).isEqualTo("폰트");
     }
 
+    @DisplayName("크루의 이름을 통해서 크루를 찾아낼 수 있다")
     @Test
     void test2() {
         Crews crews = new Crews(List.of("폰트,2024-12-13 10:08", "슬링키,2024-12-09 13:03"));
@@ -28,6 +32,7 @@ public class CrewsTest {
         assertThat(crew.getName()).isEqualTo("슬링키");
     }
 
+    @DisplayName("크루의 출석을 추가할 수 있다")
     @Test
     void test3() {
         Crews crews = new Crews(List.of("폰트,2024-12-13 10:08", "슬링키,2024-12-09 13:03"));
