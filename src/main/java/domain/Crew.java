@@ -1,5 +1,6 @@
 package domain;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
@@ -27,8 +28,8 @@ public class Crew implements Comparable<Crew> {
         attendances.addSorted(attendance);
     }
 
-    public Attendance getAttendance(final LocalDateTime dateTime) {
-        return attendances.findAttendance(dateTime);
+    public Attendance getAttendance(final LocalDate localDate) {
+        return attendances.findAttendance(localDate);
     }
 
     public void updateAttendance(final Attendance oldAttendance, final Attendance attendance) {

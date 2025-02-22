@@ -1,6 +1,7 @@
 package domain;
 
 import error.CustomIllegalArgumentException;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
@@ -39,8 +40,9 @@ public class Attendance {
         }
     }
 
-    public boolean equals(final LocalDateTime dateTime) {
-        return localDateTime.equals(dateTime);
+    public boolean equals(final LocalDate findLocalDate) {
+        return AttendanceDateTime.getLocalDateByLocalDateTime(localDateTime)
+                .equals(findLocalDate);
     }
 
     public int getDateOfMonth() {

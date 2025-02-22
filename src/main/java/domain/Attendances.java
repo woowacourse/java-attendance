@@ -1,6 +1,7 @@
 package domain;
 
 import error.CustomIllegalArgumentException;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.LinkedList;
 import java.util.List;
@@ -43,9 +44,9 @@ public class Attendances {
         attendances.add(index, newAttendance);
     }
 
-    public Attendance findAttendance(final LocalDateTime dateTime) {
+    public Attendance findAttendance(final LocalDate finalLocalDate) {
         return attendances.stream()
-                .filter(attendance -> attendance.equals(dateTime))
+                .filter(attendance -> attendance.equals(finalLocalDate))
                 .findFirst()
                 .orElseThrow(() -> new CustomIllegalArgumentException("수정하는 일자를 찾을 수 없습니다."));
     }
