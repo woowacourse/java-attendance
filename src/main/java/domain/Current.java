@@ -40,8 +40,4 @@ public enum Current {
     public int getDay() {
         return day;
     }
-
-    public int getYesterday() {
-        return day - 1;
-    }
 }
