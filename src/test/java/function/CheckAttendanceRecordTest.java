@@ -3,6 +3,7 @@ package function;
 import static constants.TestTimeMaker.EXCEPT_MONDAY_ATTEND;
 import static constants.TestTimeMaker.MONDAY_ATTEND;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 
 import domain.AttendanceBook;
 import domain.AttendanceStatus;
@@ -15,6 +16,7 @@ import java.util.Map;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import view.ErrorCode;
 
 public class CheckAttendanceRecordTest {
     private AttendanceBook attendanceBook;
@@ -53,9 +55,18 @@ public class CheckAttendanceRecordTest {
     void 닉네임을_입력하면_전날까지의_크루_출석_기록_상태별_총_횟수를_출력해야_한다() {
         List<AttendanceRecordResponse> record = attendanceBook.checkAttendanceHistoryByCrew("쿠키");
         TotalRecordsResponse count = attendanceBook.checkAttendanceCountByCrew(record);
-        
+
         assertThat(count.attendanceCount()).isEqualTo(3);
         assertThat(count.lateCount()).isEqualTo(0);
         assertThat(count.absentCount()).isEqualTo(31 - 3);
+    }
+
+    @Test
+    @DisplayName("출석_기록_확인시_등록되지_않는_닉네임의_경우_예외를_출력한다")
+    void 출석_기록_확인시_등록되지_않는_닉네임의_경우_예외를_출력한다() {
+        assertThatThrownBy(
+                () -> attendanceBook.checkAttendanceHistoryByCrew("없음"))
+                .isInstanceOf(IllegalArgumentException.class) // 토요일
+                .hasMessage(ErrorCode.NICKNAME_NOT_FOUND.getFormat());
     }
 }
