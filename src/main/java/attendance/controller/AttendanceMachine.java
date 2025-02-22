@@ -7,7 +7,7 @@ import attendance.domain.DateInfos;
 import attendance.domain.Register;
 import attendance.domain.Time;
 import attendance.domain.constant.DayOfWeek;
-import attendance.domain.constant.Function;
+import attendance.domain.constant.AttendanceOperation;
 import attendance.exception.CustomException;
 import attendance.util.FileReader;
 import attendance.view.InputView;
@@ -34,26 +34,26 @@ public class AttendanceMachine {
 
         boolean flag = true;
         while (flag) {
-            Function function = readFunction(now);
-            flag = mappingFunction(function, now, crews, register);
+            AttendanceOperation attendanceOperation = readFunction(now);
+            flag = mappingFunction(attendanceOperation, now, crews, register);
         }
         inputView.closeScanner();
     }
 
-    private boolean mappingFunction(Function function, LocalDate now, Crews crews, Register register) {
-        if (function.equals(Function.ONE)) {
+    private boolean mappingFunction(AttendanceOperation attendanceOperation, LocalDate now, Crews crews, Register register) {
+        if (attendanceOperation.equals(AttendanceOperation.ONE)) {
             functionOne(now, crews, register);
             return true;
         }
-        if (function.equals(Function.TWO)) {
+        if (attendanceOperation.equals(AttendanceOperation.TWO)) {
             functionTwo(crews, register);
             return true;
         }
-        if (function.equals(Function.THREE)) {
+        if (attendanceOperation.equals(AttendanceOperation.THREE)) {
             functionThree(crews, register);
             return true;
         }
-        if (function.equals(Function.FOUR)) {
+        if (attendanceOperation.equals(AttendanceOperation.FOUR)) {
             functionFour(register);
             return true;
         }
@@ -115,8 +115,8 @@ public class AttendanceMachine {
         return retryUntilValidInput(() -> Integer.parseInt(inputView.readModifyDay()));
     }
 
-    private Function readFunction(LocalDate now) {
-        return retryUntilValidInput(() -> Function.of(inputView.readFunctionChoose(now)));
+    private AttendanceOperation readFunction(LocalDate now) {
+        return retryUntilValidInput(() -> AttendanceOperation.of(inputView.readFunctionChoose(now)));
     }
 
     private <T> T retryUntilValidInput(final Supplier<T> supplier) {
