@@ -56,10 +56,10 @@ public class Attendance {
         Calender.validateHolyDay(date);
 
         List<LocalDateTime> localDateTimes = attendanceMap.get(crew);
-        int i;
+        int attendanceRecordIndex;
         LocalDateTime beforeLocalDateTime = null;
-        for (i = 0; i < localDateTimes.size(); i++) {
-            LocalDateTime localDateTime = localDateTimes.get(i);
+        for (attendanceRecordIndex = 0; attendanceRecordIndex < localDateTimes.size(); attendanceRecordIndex++) {
+            LocalDateTime localDateTime = localDateTimes.get(attendanceRecordIndex);
             int dayOfMonth = localDateTime.getDayOfMonth();
             if (dayOfMonth == date) {
                 beforeLocalDateTime = localDateTime;
@@ -72,7 +72,7 @@ public class Attendance {
         String today = String.format("2024-12-%02d %s", date, updateTime);
         LocalDateTime todayLocalDateTime = LocalDateTime.parse(today, formatter);
 
-        localDateTimes.set(i, todayLocalDateTime);
+        localDateTimes.set(attendanceRecordIndex, todayLocalDateTime);
 
         return beforeLocalDateTime;
     }
