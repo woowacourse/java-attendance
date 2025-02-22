@@ -18,14 +18,6 @@ public class AttendanceDate {
         }
     }
 
-    public static boolean isOpenDay(DayOfWeek dayOfWeek) {
-        if (dayOfWeek == DayOfWeek.SATURDAY || dayOfWeek == DayOfWeek.SUNDAY) {
-            return false;
-        }
-
-        return true;
-    }
-
     public int getDay() {
         return day;
     }
