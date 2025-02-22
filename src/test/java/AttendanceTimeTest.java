@@ -62,6 +62,31 @@ public class AttendanceTimeTest {
         );
     }
 
+    @ParameterizedTest
+    @DisplayName("출석 시간으로부터 5분 초과는 지각이다")
+    @MethodSource("provideDateTimeForLate")
+    void over_enterTime_then_late(LocalDateTime attendanceDateTime) {
+        // given
+        AttendanceDateTime attendanceTime = AttendanceDateTime.from(attendanceDateTime);
+
+        // when
+        AttendanceState attendanceState = attendanceTime.check();
+
+        // then
+        assertThat(attendanceState).isEqualTo(AttendanceState.LATE);
+    }
+
+    private static Stream<Arguments> provideDateTimeForLate() {
+        return Stream.of(
+                Arguments.of(
+                        LocalDateTime.of(2024, 12, 10, 10, 6)
+                ),
+                Arguments.of(
+                        LocalDateTime.of(2024, 12, 9, 13, 6)
+                )
+        );
+    }
+
     @Nested
     class AttendanceTimeExceptionTest {
         @Test
