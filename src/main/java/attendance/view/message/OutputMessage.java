@@ -20,7 +20,6 @@ public enum OutputMessage {
     RISK_INFO("- %s: 결석 %d회, 지각 %d회 (%s)"),
     BLANK_TIME("--:--");
 
-
     private final String content;
 
     OutputMessage(String content) {
