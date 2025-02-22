@@ -12,7 +12,7 @@ class AttendanceTest {
     @DisplayName("주말인 경우 출석을 생성할때 예외가 발생한다.")
     @Test
     void shouldThrowException_WhenWeekendAttendance() {
-        Crew crew = new Crew("포비");
+        Crew crew = new Crew(new Nickname("포비"));
         LocalDateTime sunday = LocalDateTime.parse("2024-12-01 11:01", DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
         Assertions.assertThatThrownBy(() -> new Attendance(crew, sunday))
                 .isInstanceOf(IllegalArgumentException.class)
@@ -22,7 +22,7 @@ class AttendanceTest {
     @DisplayName("법정 공휴일인 경우 출석을 생성할때 예외가 발생한다.")
     @Test
     void shouldThrowException_WhenHolidayAttendance() {
-        Crew crew = new Crew("포비");
+        Crew crew = new Crew(new Nickname("포비"));
         LocalDateTime christmas = LocalDateTime.parse("2024-12-25 11:01", DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
         Assertions.assertThatThrownBy(() -> new Attendance(crew, christmas))
                 .isInstanceOf(IllegalArgumentException.class)
@@ -32,8 +32,9 @@ class AttendanceTest {
     @DisplayName("크루와 출석 날짜가 같은지 비교할 수 있다.")
     @Test
     void equalsTest() {
-        Attendance attendance1 = new Attendance(new Crew("포비"), LocalDateTime.now());
-        Attendance attendance2 = new Attendance(new Crew("포비"), LocalDateTime.now());
+        LocalDateTime monday = LocalDateTime.parse("2024-12-02 10:01", DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
+        Attendance attendance1 = new Attendance(new Crew(new Nickname("포비")), monday);
+        Attendance attendance2 = new Attendance(new Crew(new Nickname("포비")), monday);
         Assertions.assertThat(attendance1).isEqualTo(attendance2);
     }
 }

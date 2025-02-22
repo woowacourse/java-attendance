@@ -20,7 +20,7 @@ public class Attendances {
         this.attendances = new HashSet<>(attendances);
     }
 
-    public void validateExistNickname(String nickname) {
+    public void validateExistNickname(Nickname nickname) {
         boolean isNotExistsCrew = !crewGroup.contains(nickname);
         if (isNotExistsCrew) {
             throw new IllegalArgumentException("등록되지 않은 닉네임입니다.");

@@ -10,7 +10,7 @@ public class CrewGroup {
         this.crews = Set.copyOf(crews);
     }
 
-    public boolean contains(String nickname) {
+    public boolean contains(Nickname nickname) {
         return crews.stream()
                 .anyMatch(crew -> crew.isEqualsNickname(nickname));
     }

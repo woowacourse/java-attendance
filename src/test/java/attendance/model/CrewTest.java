@@ -14,9 +14,9 @@ class CrewTest {
             "neo, pobi, false"
     })
     void hasEqualsNicknameTest(String crewNickname, String checkNickname, boolean expected) {
-        Crew neo = new Crew(crewNickname);
+        Crew neo = new Crew(new Nickname(crewNickname));
 
-        Assertions.assertThat(neo.isEqualsNickname(checkNickname))
+        Assertions.assertThat(neo.isEqualsNickname(new Nickname(checkNickname)))
                 .isEqualTo(expected);
     }
 
@@ -27,9 +27,9 @@ class CrewTest {
             "neo, pobi, false"
     })
     void equalsTest(String crewNickname, String checkNickname, boolean expected) {
-        Crew neo = new Crew(crewNickname);
+        Crew neo = new Crew(new Nickname(crewNickname));
 
-        Assertions.assertThat(neo.equals(new Crew(checkNickname)))
+        Assertions.assertThat(neo.equals(new Crew(new Nickname(checkNickname))))
                 .isEqualTo(expected);
     }
 }

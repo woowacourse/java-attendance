@@ -4,18 +4,18 @@ import java.util.Objects;
 
 public class Crew {
 
-    private final String nickname;
+    private final Nickname nickname;
 
-    public Crew(String nickname) {
+    public Crew(Nickname nickname) {
         this.nickname = nickname;
     }
 
-    public boolean isEqualsNickname(String nickname) {
+    public boolean isEqualsNickname(Nickname nickname) {
         return this.nickname.equals(nickname);
     }
 
     public String getNickname() {
-        return nickname;
+        return nickname.get();
     }
 
     @Override

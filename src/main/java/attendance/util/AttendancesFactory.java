@@ -6,6 +6,7 @@ import attendance.model.Attendance;
 import attendance.model.Attendances;
 import attendance.model.Crew;
 import attendance.model.CrewGroup;
+import attendance.model.Nickname;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -25,11 +26,15 @@ public class AttendancesFactory {
         Set<Attendance> attendances = new HashSet<>();
         for (String line : lines) {
             String[] split = line.split(",");
-            Crew crew = new Crew(split[CREW_NICKNAME_INDEX]);
+            Crew crew = new Crew(getNickname(split));
             crews.add(crew);
             attendances.add(new Attendance(crew, parseDateTime(split[DATE_TIME_INDEX])));
         }
         return new Attendances(new CrewGroup(crews), attendances);
+    }
+
+    private Nickname getNickname(String[] split) {
+        return new Nickname(split[CREW_NICKNAME_INDEX]);
     }
 
     private List<String> readLinesWithoutHeader() {

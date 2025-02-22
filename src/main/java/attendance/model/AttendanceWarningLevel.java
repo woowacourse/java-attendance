@@ -11,6 +11,8 @@ public enum AttendanceWarningLevel {
     EXPULSION("제적", totalAbsentCount -> totalAbsentCount > 5),
     ;
 
+    private static final int LATE_TO_ABSENT_THRESHOLD = 3;
+
     private final String label;
     private final Function<Integer, Boolean> isMatch;
 
@@ -28,7 +30,7 @@ public enum AttendanceWarningLevel {
     }
 
     public static int calculateLateToAbsent(int lateCount) {
-        return lateCount / 3;
+        return lateCount / LATE_TO_ABSENT_THRESHOLD;
     }
 
     public String getLabel() {

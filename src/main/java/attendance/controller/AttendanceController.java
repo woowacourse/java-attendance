@@ -2,6 +2,7 @@ package attendance.controller;
 
 import static attendance.util.DateTimeUtil.parseTime;
 
+import attendance.model.Nickname;
 import attendance.util.AttendancesFactory;
 import attendance.dto.CrewAttendanceSummary;
 import attendance.model.Attendance;
@@ -90,8 +91,8 @@ public class AttendanceController {
         return new Attendance(crew, attendanceDateTime);
     }
 
-    private String readExistingNickname() {
-        String nickname = inputView.inputNickname();
+    private Nickname readExistingNickname() {
+        Nickname nickname = new Nickname(inputView.inputNickname());
         attendances.validateExistNickname(nickname);
         return nickname;
     }
@@ -109,8 +110,8 @@ public class AttendanceController {
         displayUpdatedAttendance(beforeAttendance.orElse(null), modifidedAttendance);
     }
 
-    private String readExistingNicknameForUpdate() {
-        String nickname = inputView.inputNicknameForUpdateAttendance();
+    private Nickname readExistingNicknameForUpdate() {
+        Nickname nickname = new Nickname(inputView.inputNicknameForUpdateAttendance());
         attendances.validateExistNickname(nickname);
         return nickname;
     }

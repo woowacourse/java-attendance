@@ -5,6 +5,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.Month;
+import java.time.format.DateTimeFormatter;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
@@ -18,11 +19,11 @@ class AttendancesTest {
     @DisplayName("크루는 같은 날에 또 출석할 경우 예외가 발생한다")
     @Test
     void shouldThrowException_WhenCrewAgainAttendanceInToday() {
-        Crew crew = new Crew("포비");
+        Crew crew = new Crew(new Nickname("포비"));
         CrewGroup crewGroup = new CrewGroup(Set.of(crew));
-        LocalDateTime now = LocalDateTime.now();
-        Attendance beforeAttendance = new Attendance(crew, now);
-        Attendance afterAttendance = new Attendance(crew, now);
+        LocalDateTime monday = LocalDateTime.parse("2024-12-02 10:01", DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
+        Attendance beforeAttendance = new Attendance(crew, monday);
+        Attendance afterAttendance = new Attendance(crew, monday);
         Attendances attendances = new Attendances(crewGroup, Set.of(beforeAttendance));
 
         Assertions.assertThatThrownBy(() -> attendances.add(afterAttendance))
@@ -33,13 +34,13 @@ class AttendancesTest {
     @DisplayName("등록되지 않은 닉네임을 사용하려고 하는 경우 예외가 발생한다.")
     @Test
     void shouldThrowException_WhenUseNotExistNickname() {
-        Crew crew = new Crew("포비");
+        Crew crew = new Crew(new Nickname("포비"));
         CrewGroup crewGroup = new CrewGroup(Set.of(crew));
-        LocalDateTime now = LocalDateTime.now();
-        Attendance attendance = new Attendance(crew, now);
+        LocalDateTime monday = LocalDateTime.parse("2024-12-02 10:01", DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
+        Attendance attendance = new Attendance(crew, monday);
         Attendances attendances = new Attendances(crewGroup, Set.of(attendance));
 
-        String notExistNickname = "네오";
+        Nickname notExistNickname = new Nickname("네오");
         Assertions.assertThatThrownBy(() -> attendances.validateExistNickname(notExistNickname))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("등록되지 않은 닉네임입니다.");
@@ -48,7 +49,7 @@ class AttendancesTest {
     @DisplayName("출석 기록을 수정할 수 있다.")
     @Test
     void attendanceUpdateTest() {
-        Crew crew = new Crew("포비");
+        Crew crew = new Crew(new Nickname("포비"));
         CrewGroup crewGroup = new CrewGroup(Set.of(crew));
         LocalDateTime now = LocalDateTime.of(2024, 12, 13, 10, 1);
         Attendance attendance = new Attendance(crew, now);
@@ -65,7 +66,7 @@ class AttendancesTest {
     @DisplayName("크루가 찾으려는 날짜에 출석한 경우 닉네임과 날짜로 기존 출석을 찾을 수 있다.")
     @Test
     void attendanceFindTest() {
-        Crew crew = new Crew("포비");
+        Crew crew = new Crew(new Nickname("포비"));
         CrewGroup crewGroup = new CrewGroup(Set.of(crew));
         LocalDateTime now = LocalDateTime.of(2024, 12, 13, 10, 1);
         Attendance attendance = new Attendance(crew, now);
@@ -81,7 +82,7 @@ class AttendancesTest {
     @DisplayName("크루가 찾으려는 날짜에 출석하지 않은 경우 닉네임과 날짜로 기존 출석을 찾을 수 없다.")
     @Test
     void attendanceNotFoundTest() {
-        Crew crew = new Crew("포비");
+        Crew crew = new Crew(new Nickname("포비"));
         CrewGroup crewGroup = new CrewGroup(Set.of(crew));
         Attendances attendances = new Attendances(crewGroup, Set.of());
 
@@ -95,7 +96,7 @@ class AttendancesTest {
     @DisplayName("크루의 해당 달의 출석 기록을 조회할 수 있다.")
     @Test
     void attendanceHistoryByCrewTest() {
-        Crew crew = new Crew("포비");
+        Crew crew = new Crew(new Nickname("포비"));
         CrewGroup crewGroup = new CrewGroup(Set.of(crew));
         Attendances attendances = new Attendances(crewGroup, Set.of(
                 new Attendance(crew, LocalDateTime.of(2024, 11, 1, 10, 1)),
@@ -116,8 +117,8 @@ class AttendancesTest {
     @DisplayName("모든 크루의 해당 달의 출석 기록을 조회할 수 있다.")
     @Test
     void attendanceHistoryTest() {
-        Crew pobi = new Crew("포비");
-        Crew neo = new Crew("네오");
+        Crew pobi = new Crew(new Nickname("포비"));
+        Crew neo = new Crew(new Nickname("네오"));
         CrewGroup crewGroup = new CrewGroup(Set.of(pobi, neo));
         Attendances attendances = new Attendances(crewGroup, Set.of(
                 new Attendance(pobi, LocalDateTime.of(2024, 11, 1, 10, 1)),

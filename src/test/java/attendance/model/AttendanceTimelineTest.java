@@ -20,7 +20,7 @@ class AttendanceTimelineTest {
     @DisplayName("크루의 전날까지 출석 기록을 생성할 수 있다.")
     @Test
     void createTimelineUntilNowTest() {
-        Crew crew = new Crew("포비");
+        Crew crew = new Crew(new Nickname("포비"));
         Set<Attendance> attendances = Set.of(
                 new Attendance(crew, LocalDateTime.of(2024, 12, 2, 10, 1)),
                 new Attendance(crew, LocalDateTime.of(2024, 12, 3, 10, 6))
@@ -54,7 +54,7 @@ class AttendanceTimelineTest {
             "ABSENCE, 1"
     })
     void countAttendanceTypeTest(AttendanceType attendanceType, int expected) {
-        Crew crew = new Crew("포비");
+        Crew crew = new Crew(new Nickname("포비"));
         Set<Attendance> attendances = Set.of(
                 new Attendance(crew, LocalDateTime.of(2024, 12, 2, 10, 1)),
                 new Attendance(crew, LocalDateTime.of(2024, 12, 3, 10, 6))
