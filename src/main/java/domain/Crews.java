@@ -32,5 +32,14 @@ public class Crews {
         return crewDtos;
     }
 
-
+    public Crew getOrRegisterCrew(String nickname) {
+        return crews.stream()
+                .filter(crew -> crew.isEqualTo(nickname))
+                .findFirst()
+                .orElseGet(() -> {
+                    Crew newCrew = new Crew(nickname);
+                    crews.add(newCrew);
+                    return newCrew;
+                });
+    }
 }
