@@ -4,7 +4,6 @@ import attendance.config.AppConfig;
 import attendance.domain.Attendance;
 import attendance.domain.AttendanceInit;
 import attendance.domain.AttendanceManager;
-import attendance.domain.AttendanceSystem;
 import attendance.domain.Attendances;
 import attendance.domain.Holiday;
 import attendance.dto.response.AttendanceGroupByStatus;
@@ -37,7 +36,6 @@ public class AttendanceController {
     private final DateGenerator dateGenerator;
     private final Holiday holiday;
     private final AttendanceManager attendanceManager;
-    private final AttendanceSystem attendanceSystem;
 
     public AttendanceController(AppConfig appConfig) {
         this.inputView = appConfig.getInputView();
@@ -45,7 +43,6 @@ public class AttendanceController {
         this.dateGenerator = appConfig.getDateGenerator();
         this.holiday = appConfig.getHoliday();
         this.attendanceManager = appConfig.getAttendanceManager();
-        this.attendanceSystem = appConfig.getAttendanceSystem();
     }
 
     public void run() {
@@ -75,11 +72,11 @@ public class AttendanceController {
             holiday.validateHoliday(today);
 
             String nickname = inputView.readNickname(false);
-            attendanceSystem.validateNicknameExists(nickname);
+            attendanceManager.validateNicknameExists(nickname);
 
             LocalDateTime dateTime = LocalDateTime.of(dateGenerator.now(), parseTime(false));
 
-            Attendance attendance = attendanceSystem.processAttendanceCheck(dateTime, nickname);
+            Attendance attendance = attendanceManager.processAttendanceCheck(dateTime, nickname);
             outputView.printAttendanceRecord(attendance);
         }
     }
