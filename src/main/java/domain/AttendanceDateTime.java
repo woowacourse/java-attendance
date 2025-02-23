@@ -24,7 +24,7 @@ public class AttendanceDateTime {
             LocalDateTime dateTime = LocalDateTime.parse(inputDateTime, formatter);
             return new AttendanceDateTime(dateTime);
         } catch (DateTimeParseException e) {
-            throw new CustomIllegalArgumentException("올바른 날짜 및 시간형식이 아닙니다.");
+            throw new CustomIllegalArgumentException("올바른 날짜 및 시간형식이 아닙니다. 예시와 같은 형식으로 작성해주세요 ex) 2024-12-10 10:00");
         }
     }
 
@@ -48,13 +48,10 @@ public class AttendanceDateTime {
 
     private static LocalDate parseLocalDate(final String inputDate) {
         try {
-            return LocalDate.of(
-                    AttendanceCommandController.REFERENCE_YEAR,
-                    AttendanceCommandController.REFERENCE_MONTH,
-                    Integer.parseInt(inputDate)
-            );
+            return LocalDate.of(AttendanceCommandController.REFERENCE_YEAR, AttendanceCommandController.REFERENCE_MONTH,
+                    Integer.parseInt(inputDate));
         } catch (DateTimeParseException | NumberFormatException e) {
-            throw new CustomIllegalArgumentException("올바른 형식이 아닙니다.");
+            throw new CustomIllegalArgumentException("올바른 형식이 아닙니다. 날짜 하루만 숫자로 작성해주세요 ex) 23");
         }
     }
 
@@ -62,7 +59,7 @@ public class AttendanceDateTime {
         try {
             return LocalTime.parse(inputTime);
         } catch (DateTimeParseException e) {
-            throw new CustomIllegalArgumentException("올바른 형식이 아닙니다.");
+            throw new CustomIllegalArgumentException("올바른 형식이 아닙니다. 이와 같은 형식으로 시간을 적어주세요 ex) 10:00");
         }
     }
 
