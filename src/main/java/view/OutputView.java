@@ -120,6 +120,10 @@ public final class OutputView {
     }
 
     private static void printMessageWithLineSeparator(String message) {
-        System.out.println("\n" + message + "\n");
+        System.out.println(separateLine() + message + separateLine());
+    }
+    
+    private static String separateLine() {
+        return System.lineSeparator();
     }
 }
