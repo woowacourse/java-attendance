@@ -36,7 +36,7 @@ public enum AttendanceStatus {
         if (isMonday(localDateTime)) {
             return checkAttendanceStatus(MONDAY_HOUR_LIMIT, localDateTime);
         }
-        return checkAttendanceStatus(MONDAY_HOUR_LIMIT, localDateTime);
+        return checkAttendanceStatus(OTHER_DAY_HOUR_LIMIT, localDateTime);
     }
 
     private static boolean isMonday(LocalDateTime localDateTime) {

@@ -76,12 +76,12 @@ public class OutputView {
     private int calculateTotalAbsence(List<Integer> absenceCounts) {
         int absence = absenceCounts.get(0);
         int late = absenceCounts.get(1);
-        return absence + (late / 3);
+        return absence + late;
     }
 
     private Set<Crew> orderByAbsence(List<Entry<Crew, List<Integer>>> crewList) {
         Set<Crew> excludedCrews = new HashSet<>();
-        int maxAbsence = calculateTotalAbsence(crewList.get(0).getValue());
+        int maxAbsence = calculateTotalAbsence(crewList.getFirst().getValue());
         Iterator<Entry<Crew, List<Integer>>> iterator = crewList.iterator();
         while (iterator.hasNext()) {
             Entry<Crew, List<Integer>> entry = iterator.next();
