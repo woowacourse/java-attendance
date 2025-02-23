@@ -78,4 +78,8 @@ public class OutputView {
                         absenceResult.lateness(),
                         absenceResult.status().getDescription()));
     }
+
+    public static void printExit() {
+        System.out.println("프로그램을 종료합니다.");
+    }
 }
