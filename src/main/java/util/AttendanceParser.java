@@ -14,26 +14,26 @@ public class AttendanceParser {
     public static Attendances registerAttendances(String fileName, DateTimeFormatter formatter) {
         List<List<String>> rawAttendances = CsvParser.readFile(fileName);
 
-        List<Attendance> attendances = new ArrayList<>();
+        List<Attendance> attendanceLog = new ArrayList<>();
 
-        Attendances entity = Attendances.of(attendances);
+        Attendances attendances = Attendances.of(attendanceLog);
 
         for (List<String> line : rawAttendances) {
             String crewName = line.get(0);
             try {
-                Attendance attendanceByName = entity.findAttendanceByName(crewName);
+                Attendance attendance = attendances.findAttendanceByName(crewName);
                 LocalDateTime time = getLocalDateTime(line.get(1), formatter);
-                attendanceByName.checkIn(time);
+                attendance.checkIn(time);
             } catch (IllegalArgumentException e) {
                 Crew crew = Crew.of(crewName);
                 Attendance newAttendance = Attendance.of(crew, CheckInTimes.of(List.of()));
                 LocalDateTime time = getLocalDateTime(line.get(1), formatter);
                 newAttendance.checkIn(time);
-                attendances.add(newAttendance);
+                attendanceLog.add(newAttendance);
             }
         }
 
-        return entity;
+        return attendances;
     }
 
     private static LocalDateTime getLocalDateTime(String rawDateTime, DateTimeFormatter formatter) {
