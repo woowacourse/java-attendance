@@ -5,7 +5,6 @@ import org.junit.jupiter.api.Test;
 
 import java.util.Iterator;
 import java.util.List;
-import java.util.function.Supplier;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
@@ -18,7 +17,7 @@ class RepeatUntilUserQuitSelectUtilTest {
         List<Boolean> responses = List.of(true, true, false);
         Iterator<Boolean> iterator = responses.iterator();
 
-        Supplier<Boolean> supplier = iterator::next;
+        RepeatUntilUserQuitSelectUtil.ThrowingSupplier<Boolean, FileReadException> supplier = iterator::next;
 
         // when
         // then
@@ -29,7 +28,7 @@ class RepeatUntilUserQuitSelectUtilTest {
     @DisplayName("일반 예외 발생 시, 예외 메시지를 출력한 후 다시 던진다 (종료)")
     void shouldThrowExceptionWhenOtherExceptionOccurs() {
         // given
-        Supplier<Boolean> supplier = () -> {
+        RepeatUntilUserQuitSelectUtil.ThrowingSupplier<Boolean, FileReadException> supplier = () -> {
             throw new RuntimeException("예상치 못한 오류 발생");
         };
 
