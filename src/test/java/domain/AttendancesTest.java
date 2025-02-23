@@ -1,7 +1,6 @@
 package domain;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.TreeSet;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -10,7 +9,7 @@ class AttendancesTest {
     @Test
     void 출석_상태_갯수_측정() {
         // given (출석 : 2, 지각 : 1, 결석: 3)
-        List<Attendance> attendanceList = new ArrayList<>();
+        TreeSet<Attendance> attendanceList = new TreeSet<>();
         attendanceList.add(Attendance.of("2024-12-13 10:05"));
         attendanceList.add(Attendance.of("2024-12-16 13:05"));
         attendanceList.add(Attendance.of("2024-12-17 10:08"));

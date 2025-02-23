@@ -18,18 +18,36 @@ public enum AttendanceStatus {
     }
 
     public static AttendanceStatus findByAttendanceTime(Week day, LocalTime attendanceTime) {
-        if (attendanceTime.isBefore(START_TIME) || attendanceTime.isAfter(END_TIME)) {
+        if (isAbsence(attendanceTime)) {
             return ABSENCE;
         }
-        if (attendanceTime.isBefore(day.getAttendanceTime().plusMinutes(5)) || attendanceTime.equals(
-                day.getAttendanceTime().plusMinutes(5))) {
+        if (isAttendance(day, attendanceTime)) {
             return ATTENDANCE;
         }
-        if (attendanceTime.isBefore(day.getAttendanceTime().plusMinutes(30)) || attendanceTime.equals(
-                day.getAttendanceTime().plusMinutes(30))) {
+        if (isTardiness(day, attendanceTime)) {
             return TARDINESS;
         }
         return ABSENCE;
+    }
+
+    private static boolean isAbsence(final LocalTime attendanceTime) {
+        return attendanceTime.isBefore(START_TIME) || attendanceTime.isAfter(END_TIME);
+    }
+
+    private static boolean isAttendance(final Week day, final LocalTime attendanceTime) {
+        return isWithinTimeRange(attendanceTime, day.getAttendanceTime(), 5);
+    }
+
+    private static boolean isTardiness(final Week day, final LocalTime attendanceTime) {
+        final LocalTime attendanceDeadline = day.getAttendanceTime().plusMinutes(5);
+        return attendanceTime.isAfter(attendanceDeadline)
+                && isWithinTimeRange(attendanceTime, day.getAttendanceTime(), 30);
+    }
+
+    private static boolean isWithinTimeRange(final LocalTime attendanceTime, final LocalTime baseTime,
+                                             int rangeMinutes) {
+        final LocalTime adjustedTime = baseTime.plusMinutes(rangeMinutes);
+        return !attendanceTime.isAfter(adjustedTime);
     }
 
     public String getKoreanName() {
