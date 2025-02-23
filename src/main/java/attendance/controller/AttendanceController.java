@@ -7,6 +7,7 @@ import java.util.*;
 
 import attendance.domain.*;
 import attendance.dto.AttendanceHistoryDto;
+import attendance.dto.ChangeAttendanceDto;
 import attendance.dto.ConfirmAttendanceDto;
 import attendance.view.InputView;
 import attendance.view.OutputView;
@@ -37,17 +38,12 @@ public class AttendanceController {
 
     private void branchByOperationCommand() {
         try {
-            OperationCommand operationCommand = requestOperationCommand();
+            outputView.printOperations();
+            OperationCommand operationCommand = inputView.readOperationCommand();
             operationMapper.get(operationCommand).run();
         } catch (IllegalArgumentException e) {
             outputView.printErrorMessage(e.getMessage());
         }
-    }
-
-    private OperationCommand requestOperationCommand() {
-        outputView.printOperations();
-        OperationCommand operationCommand = inputView.readOperationCommand();
-        return operationCommand;
     }
 
     private void confirmAttendance() {
@@ -56,8 +52,7 @@ public class AttendanceController {
         try {
             ConfirmAttendanceDto confirmAttendanceDto = crewAttendances.saveTodayAttendance(crew, attendanceTime);
             Attendance attendance = confirmAttendanceDto.attendance();
-            AttendanceStatus attendanceStatus = AttendanceStatus.findByAttendanceDateAndTime(
-                    attendance.getAttendanceDate(), attendance.getAttendanceTime());
+            AttendanceStatus attendanceStatus = AttendanceStatus.findByAttendance(attendance);
             outputView.printAttendance(attendance.getAttendanceDateTime(), attendanceStatus.getText());
         } catch (IllegalStateException exception) {
             outputView.printUsingAttendanceModification();
@@ -68,21 +63,13 @@ public class AttendanceController {
         Crew crew = createCrewByNickname(inputView.readModificationCrewNickname());
         LocalDate modificationDate = inputView.readModificationDay(LocalDate.now());
         LocalTime modificationTime = inputView.readModificationTime();
-        Attendances attendances = crewAttendances.get(crew);
-        exchangeOldAttendanceToNew(attendances, modificationDate, modificationTime);
-    }
-
-    private void exchangeOldAttendanceToNew(Attendances attendances, LocalDate modificationDate, LocalTime modificationTime) {
-        Attendance originAttendance = attendances.findAttendanceByLocalDate(modificationDate);
-        Attendance newAttendance = originAttendance.changeAttendanceTime(modificationTime);
-        attendances.remove(originAttendance);
-        attendances.addAttendance(newAttendance);
-        String originAttendanceStatus = AttendanceStatus.findByAttendanceDateAndTime(
-                originAttendance.getAttendanceDate(), originAttendance.getAttendanceTime()).getText();
-        String newAttendanceStatus = AttendanceStatus.findByAttendanceDateAndTime(new AttendanceDate(modificationDate),
-                new AttendanceTime(modificationTime)).getText();
-        outputView.printModificationResult(originAttendance.getAttendanceDateTime(), originAttendanceStatus,
-                newAttendance.getAttendanceDateTime(), newAttendanceStatus);
+        ChangeAttendanceDto changeAttendanceDto = crewAttendances.changeAttendanceTime(crew, modificationDate, modificationTime);
+        Attendance originAttendance = changeAttendanceDto.originAttendance();
+        Attendance newAttendance = changeAttendanceDto.newAttendance();
+        AttendanceStatus originAttendanceStatus = AttendanceStatus.findByAttendance(originAttendance);
+        AttendanceStatus newAttendanceStatus = AttendanceStatus.findByAttendance(newAttendance);
+        outputView.printModificationResult(originAttendance.getAttendanceDateTime(), originAttendanceStatus.getText(),
+                newAttendance.getAttendanceDateTime(), newAttendanceStatus.getText());
     }
 
     private void checkCrewAttendances() {

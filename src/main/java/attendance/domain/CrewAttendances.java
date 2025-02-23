@@ -1,5 +1,6 @@
 package attendance.domain;
 
+import attendance.dto.ChangeAttendanceDto;
 import attendance.dto.ConfirmAttendanceDto;
 import attendance.view.FileLineReader;
 
@@ -71,5 +72,14 @@ public class CrewAttendances {
         if (attendances.existsByLocalDate(today)) {
             throw new IllegalStateException("이미 해당 날짜에 출석했습니다.");
         }
+    }
+
+    public ChangeAttendanceDto changeAttendanceTime(Crew crew, LocalDate changeDate, LocalTime changeTime) {
+        Attendances attendances = crewAttendances.get(crew);
+        Attendance originAttendance = attendances.findAttendanceByLocalDate(changeDate);
+        Attendance newAttendance = originAttendance.changeAttendanceTime(changeTime);
+        attendances.remove(originAttendance);
+        attendances.addAttendance(newAttendance);
+        return new ChangeAttendanceDto(originAttendance, newAttendance);
     }
 }
