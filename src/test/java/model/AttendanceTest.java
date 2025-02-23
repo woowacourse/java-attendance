@@ -1,40 +1,25 @@
 package model;
 
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import attendance.model.Attendance;
-import attendance.model.AttendanceDetail;
 import global.BaseTest;
-import java.time.LocalDateTime;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 class AttendanceTest extends BaseTest {
 
     @Test
-    void 정시에_도착한_경우_출석이다() {
-        LocalDateTime dateTime = LocalDateTime.of(2024, 12, 10, 10, 0);
-        Attendance attendance = Attendance.from(dateTime);
-        Assertions.assertThat(attendance).isEqualTo(Attendance.출석);
-    }
-
-    @Test
     void _5분_초과로_늦게온_경우_지각이다() {
-        LocalDateTime dateTime = LocalDateTime.of(2024, 12, 10, 10, 6);
-        Attendance attendance = Attendance.from(dateTime);
-        Assertions.assertThat(attendance).isEqualTo(Attendance.지각);
+        assertThat(Attendance.from(6)).isEqualTo(Attendance.LATE);
     }
 
     @Test
-    void _31분_초과로_늦게온_경우_결석이다() {
-        LocalDateTime dateTime = LocalDateTime.of(2024, 12, 10, 10, 31);
-        Attendance attendance = Attendance.from(dateTime);
-        Assertions.assertThat(attendance).isEqualTo(Attendance.결석);
+    void _30분_초과로_늦게온_경우_결석이다() {
+        assertThat(Attendance.from(31)).isEqualTo(Attendance.ABSENCE);
     }
 
     @Test
-    void 출석상세가_등교날짜가_아니라면_예외가_발생한다() {
-        assertThatThrownBy(() -> new AttendanceDetail(LocalDateTime.of(2024, 12, 1, 13, 0)))
-                .isInstanceOf(IllegalArgumentException.class);
+    void _5분_이내로_들어온_경우는_출석이다() {
+        assertThat(Attendance.from(5)).isEqualTo(Attendance.ATTEND);
     }
 }

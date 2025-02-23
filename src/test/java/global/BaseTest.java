@@ -16,8 +16,6 @@ public class BaseTest {
                 LocalDateTime.of(2024, 12, 16, 12, 0).toInstant(ZoneOffset.UTC),
                 ZoneId.of("UTC")
         );
-        Field clockField = CustomLocalDateTime.class.getDeclaredField("clock");
-        clockField.setAccessible(true);
-        clockField.set(null, fixedClock);
+        CustomLocalDateTime.setClock(fixedClock);
     }
 }

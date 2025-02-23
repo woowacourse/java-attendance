@@ -3,103 +3,199 @@ package model;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-import attendance.model.Attendance;
-import attendance.model.AttendanceDetail;
+import attendance.model.AttendanceDate;
+import attendance.model.AttendanceDateTime;
 import attendance.model.AttendanceHistory;
+import attendance.model.AttendanceTime;
+import attendance.model.AttendanceWarning;
 import global.BaseTest;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
-import org.assertj.core.api.Assertions;
+import java.util.ArrayList;
+import java.util.List;
 import org.junit.jupiter.api.Test;
 
 class AttendanceHistoryTest extends BaseTest {
 
     @Test
-    void 출석상세가_출석기록에_정상적으로_추가된다() {
-        AttendanceHistory attendanceHistory = new AttendanceHistory();
-        attendanceHistory.addAttendanceDetail(new AttendanceDetail(LocalDateTime.of(2024, 12, 2, 13, 0)));
-        assertThat(attendanceHistory.stream()).hasSize(1);
+    void 출석_시간이_출석기록에_정상적으로_추가된다() {
+        AttendanceHistory attendanceHistory = new AttendanceHistory(new ArrayList<>());
+        attendanceHistory.addAttendanceDateTime(new AttendanceDateTime(
+                new AttendanceDate(LocalDate.of(2024, 12, 2)),
+                new AttendanceTime(LocalTime.of(9, 58))
+        ));
+        assertThat(attendanceHistory.computeAttendanceCount()).isEqualTo(1);
     }
 
     @Test
-    void 출석_수정_후_기록에_결과가_반영된다() {
-        // given
-        AttendanceHistory attendanceHistory = new AttendanceHistory();
-
-        AttendanceDetail attendanceDetail1 = new AttendanceDetail(LocalDateTime.of(2024, 12, 2, 13, 0));
-        attendanceHistory.addAttendanceDetail(attendanceDetail1);
-
-        attendanceHistory.addAttendanceDetail(new AttendanceDetail(LocalDateTime.of(2024, 12, 3, 9, 58)));
-        attendanceHistory.addAttendanceDetail(new AttendanceDetail(LocalDateTime.of(2024, 12, 4, 10, 2)));
-
-        LocalDate modifyDate = LocalDate.of(2024, 12, 2);
-
-        // when
-        AttendanceDetail attendanceDetail = attendanceHistory.findAttendanceDetail(modifyDate);
-        attendanceDetail.modify(LocalTime.of(13, 10));
-        Assertions.assertThat(attendanceDetail.getAttendanceDateTime().toLocalTime()).isEqualTo(LocalTime.of(13, 10));
-        Assertions.assertThat(attendanceDetail.getAttendance()).isEqualTo(Attendance.지각);
-
-        // then
-        assertThat(attendanceDetail).isEqualTo(attendanceDetail1);
+    void 특정_날짜의_출석_기록을_조회한다() {
+        AttendanceHistory attendanceHistory = new AttendanceHistory(new ArrayList<>());
+        AttendanceDate attendanceDate = new AttendanceDate(LocalDate.of(2024, 12, 2));
+        AttendanceTime attendanceTime = new AttendanceTime(LocalTime.of(9, 58));
+        AttendanceDateTime attendanceDateTime = new AttendanceDateTime(
+                attendanceDate,
+                attendanceTime
+        );
+        attendanceHistory.addAttendanceDateTime(attendanceDateTime);
+        assertThat(attendanceHistory.findAttendanceDateTime(attendanceDate)).isEqualTo(attendanceDateTime);
     }
 
     @Test
-    void 출석기록에서_전체출석횟수를_계산한다() {
-        AttendanceHistory attendanceHistory = new AttendanceHistory();
-        attendanceHistory.addAttendanceDetail(new AttendanceDetail(LocalDateTime.of(2024, 12, 2, 13, 0)));
-        attendanceHistory.addAttendanceDetail(new AttendanceDetail(LocalDateTime.of(2024, 12, 3, 9, 58)));
-        attendanceHistory.addAttendanceDetail(new AttendanceDetail(LocalDateTime.of(2024, 12, 4, 10, 2)));
-
-        assertThat(attendanceHistory.getAttendanceCount()).isEqualTo(3);
+    void 출석_기록이_없는_날짜로_조회할_경우_예외가_발생한다() {
+        AttendanceHistory attendanceHistory = new AttendanceHistory(new ArrayList<>());
+        AttendanceDate attendanceDate = new AttendanceDate(LocalDate.of(2024, 12, 2));
+        AttendanceTime attendanceTime = new AttendanceTime(LocalTime.of(9, 58));
+        AttendanceDateTime attendanceDateTime = new AttendanceDateTime(
+                attendanceDate,
+                attendanceTime
+        );
+        attendanceHistory.addAttendanceDateTime(attendanceDateTime);
+        assertThatThrownBy(() -> attendanceHistory.findAttendanceDateTime(
+                new AttendanceDate(LocalDate.of(2024, 12, 3))
+        )).isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
-    void 해당_날짜의_출석기록이_존재하면_true를_반환한다() {
-        AttendanceHistory attendanceHistory = new AttendanceHistory();
-        attendanceHistory.addAttendanceDetail(new AttendanceDetail(LocalDateTime.of(2024, 12, 2, 13, 0)));
-
-        assertThat(attendanceHistory.containsDate(LocalDate.of(2024, 12, 2))).isTrue();
+    void 출석_기록에서_지각_횟수를_조회한다() {
+        AttendanceHistory attendanceHistory = new AttendanceHistory(new ArrayList<>());
+        AttendanceDateTime attendance = new AttendanceDateTime(
+                new AttendanceDate(LocalDate.of(2024, 12, 2)),
+                new AttendanceTime(LocalTime.of(9, 58))
+        );
+        AttendanceDateTime late1 = new AttendanceDateTime(
+                new AttendanceDate(LocalDate.of(2024, 12, 3)),
+                new AttendanceTime(LocalTime.of(10, 6))
+        );
+        AttendanceDateTime late2 = new AttendanceDateTime(
+                new AttendanceDate(LocalDate.of(2024, 12, 4)),
+                new AttendanceTime(LocalTime.of(10, 7))
+        );
+        attendanceHistory.addAttendanceDateTime(attendance);
+        attendanceHistory.addAttendanceDateTime(late1);
+        attendanceHistory.addAttendanceDateTime(late2);
+        assertThat(attendanceHistory.computeLateCount()).isEqualTo(2);
     }
 
     @Test
-    void 해당_날짜의_출석기록이_존재하지않으면_false를_반환한다() {
-        AttendanceHistory attendanceHistory = new AttendanceHistory();
-        attendanceHistory.addAttendanceDetail(new AttendanceDetail(LocalDateTime.of(2024, 12, 2, 13, 0)));
-
-        assertThat(attendanceHistory.containsDate(LocalDate.of(2024, 12, 3))).isFalse();
+    void 출석_기록에서_결석_횟수를_조회한다() {
+        AttendanceHistory attendanceHistory = new AttendanceHistory(new ArrayList<>());
+        AttendanceDateTime attendance = new AttendanceDateTime(
+                new AttendanceDate(LocalDate.of(2024, 12, 2)),
+                new AttendanceTime(LocalTime.of(9, 58))
+        );
+        AttendanceDateTime late1 = new AttendanceDateTime(
+                new AttendanceDate(LocalDate.of(2024, 12, 3)),
+                new AttendanceTime(LocalTime.of(10, 31))
+        );
+        AttendanceDateTime late2 = new AttendanceDateTime(
+                new AttendanceDate(LocalDate.of(2024, 12, 4)),
+                new AttendanceTime(LocalTime.of(10, 7))
+        );
+        attendanceHistory.addAttendanceDateTime(attendance);
+        attendanceHistory.addAttendanceDateTime(late1);
+        attendanceHistory.addAttendanceDateTime(late2);
+        assertThat(attendanceHistory.computeAbsenceCount()).isEqualTo(9);
     }
 
     @Test
-    void 특정_날짜에_해당하는_출석_상세를_찾을_수_있다() {
-        // given
-        AttendanceHistory attendanceHistory = new AttendanceHistory();
-
-        AttendanceDetail attendanceDetail = new AttendanceDetail(LocalDateTime.of(2024, 12, 2, 13, 0));
-        attendanceHistory.addAttendanceDetail(attendanceDetail);
-
-        LocalDate wantDate = LocalDate.of(2024, 12, 2);
-
-        // when
-        AttendanceDetail find = attendanceHistory.findAttendanceDetail(wantDate);
-
-        // then
-        assertThat(find).isEqualTo(attendanceDetail);
+    void 출석_기록에의_해당없음_상태를_조회한다() {
+        AttendanceHistory attendanceHistory = new AttendanceHistory(new ArrayList<>());
+        List<Integer> attendDay = List.of(3, 4, 5, 6, 10, 11, 12 ,13);
+        List<Integer> mondayAttendDay = List.of(2, 9, 16);
+        attendDay.forEach(day -> attendanceHistory.addAttendanceDateTime(new AttendanceDateTime(
+                new AttendanceDate(LocalDate.of(2024, 12, day)),
+                new AttendanceTime(LocalTime.of(10, 0))
+        )));
+        mondayAttendDay.forEach(day -> attendanceHistory.addAttendanceDateTime(new AttendanceDateTime(
+                new AttendanceDate(LocalDate.of(2024, 12, day)),
+                new AttendanceTime(LocalTime.of(10, 0))
+        )));
+        AttendanceWarning warning = attendanceHistory.getAttendanceWarning();
+        assertThat(warning).isEqualTo(AttendanceWarning.NONE);
     }
 
     @Test
-    void 등교일이_아닌_날짜로_출석상세를_찾으려고할때_예외가_발생한다() {
-        // given
-        AttendanceHistory attendanceHistory = new AttendanceHistory();
+    void 출석_기록에의_경고_상태를_조회한다() {
+        AttendanceHistory attendanceHistory = new AttendanceHistory(new ArrayList<>());
+        List<Integer> attendDay = List.of(3, 4, 5, 6, 10, 11);
+        List<Integer> absenceDay = List.of(12 ,13);
+        List<Integer> attendMondayAttendDay = List.of(2, 9, 16);
+        attendDay.forEach(day -> attendanceHistory.addAttendanceDateTime(new AttendanceDateTime(
+                new AttendanceDate(LocalDate.of(2024, 12, day)),
+                new AttendanceTime(LocalTime.of(10, 0))
+        )));
+        absenceDay.forEach(day -> attendanceHistory.addAttendanceDateTime(new AttendanceDateTime(
+                new AttendanceDate(LocalDate.of(2024, 12, day)),
+                new AttendanceTime(LocalTime.of(10, 31))
+        )));
+        attendMondayAttendDay.forEach(day -> attendanceHistory.addAttendanceDateTime(new AttendanceDateTime(
+                new AttendanceDate(LocalDate.of(2024, 12, day)),
+                new AttendanceTime(LocalTime.of(10, 0))
+        )));
+        AttendanceWarning warning = attendanceHistory.getAttendanceWarning();
+        assertThat(warning).isEqualTo(AttendanceWarning.WARNING);
+    }
 
-        AttendanceDetail attendanceDetail = new AttendanceDetail(LocalDateTime.of(2024, 12, 2, 13, 0));
-        attendanceHistory.addAttendanceDetail(attendanceDetail);
+    @Test
+    void 출석_기록에의_면담_상태를_조회한다() {
+        AttendanceHistory attendanceHistory = new AttendanceHistory(new ArrayList<>());
+        List<Integer> attendDay = List.of(3, 4, 5, 6);
+        List<Integer> absenceDay = List.of(6, 10, 11, 12 ,13);
+        List<Integer> attendMondayAttendDay = List.of(2, 9, 16);
+        attendDay.forEach(day -> attendanceHistory.addAttendanceDateTime(new AttendanceDateTime(
+                new AttendanceDate(LocalDate.of(2024, 12, day)),
+                new AttendanceTime(LocalTime.of(10, 0))
+        )));
+        absenceDay.forEach(day -> attendanceHistory.addAttendanceDateTime(new AttendanceDateTime(
+                new AttendanceDate(LocalDate.of(2024, 12, day)),
+                new AttendanceTime(LocalTime.of(10, 31))
+        )));
+        attendMondayAttendDay.forEach(day -> attendanceHistory.addAttendanceDateTime(new AttendanceDateTime(
+                new AttendanceDate(LocalDate.of(2024, 12, day)),
+                new AttendanceTime(LocalTime.of(10, 0))
+        )));
+        AttendanceWarning warning = attendanceHistory.getAttendanceWarning();
+        assertThat(warning).isEqualTo(AttendanceWarning.COUNSELING);
+    }
 
-        LocalDate wantDate = LocalDate.of(2024, 12, 1);
+    @Test
+    void 출석_기록에의_제적_상태를_조회한다() {
+        AttendanceHistory attendanceHistory = new AttendanceHistory(new ArrayList<>());
+        List<Integer> attendDay = List.of(3, 4, 5, 6);
+        List<Integer> absenceDay = List.of(6, 10, 11, 12 ,13);
+        List<Integer> attendMondayAttendDay = List.of(2, 9, 16);
+        attendDay.forEach(day -> attendanceHistory.addAttendanceDateTime(new AttendanceDateTime(
+                new AttendanceDate(LocalDate.of(2024, 12, day)),
+                new AttendanceTime(LocalTime.of(10, 31))
+        )));
+        absenceDay.forEach(day -> attendanceHistory.addAttendanceDateTime(new AttendanceDateTime(
+                new AttendanceDate(LocalDate.of(2024, 12, day)),
+                new AttendanceTime(LocalTime.of(10, 31))
+        )));
+        attendMondayAttendDay.forEach(day -> attendanceHistory.addAttendanceDateTime(new AttendanceDateTime(
+                new AttendanceDate(LocalDate.of(2024, 12, day)),
+                new AttendanceTime(LocalTime.of(10, 0))
+        )));
+        AttendanceWarning warning = attendanceHistory.getAttendanceWarning();
+        assertThat(warning).isEqualTo(AttendanceWarning.EXPULSION);
+    }
 
-        // when & then
-        assertThatThrownBy(() -> attendanceHistory.findAttendanceDetail(wantDate))
-                .isInstanceOf(IllegalArgumentException.class);
+    @Test
+    void 특정_날짜에_출석_기록이_있는지_확인한다() {
+        AttendanceHistory attendanceHistory = new AttendanceHistory(new ArrayList<>());
+        AttendanceDate attendanceDate = new AttendanceDate(LocalDate.of(2024, 12, 2));
+        AttendanceDateTime attendance = new AttendanceDateTime(
+                attendanceDate,
+                new AttendanceTime(LocalTime.of(9, 58))
+        );
+        attendanceHistory.addAttendanceDateTime(attendance);
+        assertThat(attendanceHistory.containsAttendance(attendanceDate)).isTrue();
+    }
+
+    @Test
+    void 마지막_출석_가능_날짜를_계산한다() {
+        AttendanceHistory attendanceHistory = new AttendanceHistory(new ArrayList<>());
+        LocalDate lastAttendableDate = attendanceHistory.computeLastAttendableDate();
+        assertThat(lastAttendableDate).isEqualTo(LocalDate.of(2024, 12, 16));
     }
 }

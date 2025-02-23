@@ -1,16 +1,17 @@
 package attendance.dto;
 
-import attendance.model.AttendanceWarning;
-import attendance.model.Crew;
-import attendance.model.Crews;
+import attendance.model.AttendanceHistory;
+import attendance.model.AttendanceRegister;
 import java.util.List;
 
 public record WarningCrewsDTO(List<WarningCrewDetailDTO> warningCrewDetailDTO) {
 
-    public static WarningCrewsDTO from(Crews crews) {
-        return new WarningCrewsDTO(crews.getCrews().stream().map(WarningCrewDetailDTO::from)
-                .filter(dto -> !dto.warningType.equals(AttendanceWarning.해당없음.name()))
-                .toList());
+    public static WarningCrewsDTO from(AttendanceRegister attendanceRegister) {
+        return new WarningCrewsDTO(
+                attendanceRegister.entryStream()
+                        .map(entry -> WarningCrewDetailDTO.of(entry.getKey(), entry.getValue()))
+                        .toList()
+        );
     }
 
     public record WarningCrewDetailDTO(
@@ -20,13 +21,14 @@ public record WarningCrewsDTO(List<WarningCrewDetailDTO> warningCrewDetailDTO) {
             long convertLateCount,
             String warningType
     ) {
-        public static WarningCrewDetailDTO from(Crew crew) {
+        public static WarningCrewDetailDTO of(String crewName, AttendanceHistory attendanceHistory) {
             return new WarningCrewDetailDTO(
-                    crew.getName(),
-                    crew.getAttendanceHistory().getAbsenceCount(),
-                    crew.getAttendanceHistory().getLateCount(),
-                    crew.getAttendanceHistory().getLateCount() + crew.getAttendanceHistory().getAbsenceCount() * 3,
-                    AttendanceWarning.from(crew).name());
+                    crewName,
+                    attendanceHistory.computeAbsenceCount(),
+                    attendanceHistory.computeLateCount(),
+                    attendanceHistory.computeLateCount() + attendanceHistory.computeAbsenceCount() * 3,
+                    attendanceHistory.getAttendanceWarning().name()
+            );
         }
     }
 

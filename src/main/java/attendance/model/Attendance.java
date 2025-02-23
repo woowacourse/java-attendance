@@ -1,11 +1,9 @@
 package attendance.model;
 
-import java.time.LocalDateTime;
-
 public enum Attendance {
-    출석(0),
-    지각(5),
-    결석(30),
+    ATTEND(0),
+    LATE(5),
+    ABSENCE(30),
     ;
 
     private final int lateMinute;
@@ -14,14 +12,13 @@ public enum Attendance {
         this.lateMinute = lateMinute;
     }
 
-    public static Attendance from(LocalDateTime dateTime) {
-        long duration = WoowaDurationTime.calculateDuration(dateTime);
-        if (duration > 결석.lateMinute) {
-            return 결석;
+    public static Attendance from(long minuteDelta) {
+        if (minuteDelta > ABSENCE.lateMinute) {
+            return ABSENCE;
         }
-        if (duration > 지각.lateMinute) {
-            return 지각;
+        if (minuteDelta > LATE.lateMinute) {
+            return LATE;
         }
-        return 출석;
+        return ATTEND;
     }
 }

@@ -1,57 +1,72 @@
 package attendance.model;
 
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Stream;
 
-public class AttendanceHistory {
-    private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM월 dd일 EEEE은 등교일이 아닙니다.");
-    private final List<AttendanceDetail> attendanceHistory = new ArrayList<>();
-
-    public void addAttendanceDetail(AttendanceDetail attendanceDetail) {
-        attendanceHistory.add(attendanceDetail);
+public record AttendanceHistory(
+        List<AttendanceDateTime> attendanceDateTimes
+) {
+    public void addAttendanceDateTime(AttendanceDateTime attendanceDateTime) {
+        attendanceDateTimes.add(attendanceDateTime);
     }
 
-    public long getAttendanceCount() {
-        return attendanceHistory.stream()
-                .filter(attendanceDetail -> attendanceDetail.getAttendance().equals(Attendance.출석))
+    public AttendanceDateTime findAttendanceDateTime(AttendanceDate attendanceDate) {
+        return attendanceDateTimes.stream()
+                .filter(attendanceDateTime -> attendanceDateTime.getAttendanceDate().equals(attendanceDate))
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException("수정할 출석이 존재하지 않습니다."));
+    }
+
+    public long computeLateCount() {
+        return attendanceDateTimes.stream()
+                .filter(attendanceDateTime -> attendanceDateTime.getAttendanceType() == Attendance.LATE)
                 .count();
     }
 
-    public long getLateCount() {
-        return attendanceHistory.stream()
-                .filter(attendanceDetail -> attendanceDetail.isSameAs(Attendance.지각))
+    public long computeAttendanceCount() {
+        return attendanceDateTimes.stream()
+                .filter(attendanceDateTime -> attendanceDateTime.getAttendanceType() == Attendance.ATTEND)
                 .count();
     }
 
-    public long getAbsenceCount() {
-        return attendanceHistory.stream()
-                .filter(attendanceDetail -> attendanceDetail.isSameAs(Attendance.결석))
-                .count();
+    public long computeAbsenceCount() {
+        LocalDate attendanceStartDate = LocalDate.of(2024, 12, 1);
+        LocalDate attendanceEndDate = computeLastAttendableDate();
+        return Stream.iterate(attendanceStartDate, date -> date.plusDays(1))
+                .limit(ChronoUnit.DAYS.between(attendanceStartDate, attendanceEndDate) + 1)
+                .filter(WoowaDurationTime::isDurationDay)
+                .count() - computeLateCount() - computeAttendanceCount();
     }
 
-    public boolean containsDate(LocalDate date) {
-        return attendanceHistory.stream()
-                .anyMatch(attendanceDetail -> attendanceDetail.getAttendanceDate().equals(date));
+    public boolean containsAttendance(AttendanceDate attendanceDate) {
+        return attendanceDateTimes.stream()
+                .anyMatch(attendanceDateTime -> Objects.equals(
+                        attendanceDateTime.getAttendanceDate(),
+                        attendanceDate
+                ));
     }
 
-    public AttendanceDetail findAttendanceDetail(LocalDate attendanceDate) {
-        validateHoliday(attendanceDate);
-        return attendanceHistory.stream()
-                .filter(attendanceDetail -> attendanceDetail.getAttendanceDate().equals(attendanceDate))
-                .findFirst().orElseThrow(() -> new IllegalArgumentException("존재하지 않는 날짜입니다."));
-    }
-
-    public Stream<AttendanceDetail> stream() {
-        return attendanceHistory.stream();
-    }
-
-    private void validateHoliday(LocalDate attendanceDate) {
-        if (CustomLocalDateTime.isHoliday(attendanceDate)) {
-            throw new IllegalArgumentException(attendanceDate.format(formatter));
+    public AttendanceWarning getAttendanceWarning() {
+        long absenceCount = computeLateCount() / 3 + computeAbsenceCount();
+        if (absenceCount > AttendanceWarning.EXPULSION.getAbsenceCount()) {
+            return AttendanceWarning.EXPULSION;
         }
+        if (absenceCount >= AttendanceWarning.COUNSELING.getAbsenceCount()) {
+            return AttendanceWarning.COUNSELING;
+        }
+        if (absenceCount >= AttendanceWarning.WARNING.getAbsenceCount()) {
+            return AttendanceWarning.WARNING;
+        }
+        return AttendanceWarning.NONE;
     }
 
+    public LocalDate computeLastAttendableDate() {
+        if (CustomLocalDateTime.nowDate().getYear() > 2024) {
+            return LocalDate.of(2024, 12, 31);
+        }
+        return CustomLocalDateTime.nowDate();
+    }
 }
