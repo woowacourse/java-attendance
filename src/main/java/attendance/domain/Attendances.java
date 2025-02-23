@@ -21,7 +21,7 @@ public class Attendances {
         return attendances.stream()
                 .filter(attendance -> attendance.isEqualDate(date))
                 .findFirst()
-                .orElseThrow(() -> new IllegalArgumentException("[ERROR] 서버 오류가 발생했습니다."));
+                .orElseThrow(() -> new IllegalArgumentException("[ERROR] 수정하려는 날짜는 출석할 수 없습니다."));
     }
 
     public Attendance checkAndUpdateAttendance(LocalDateTime dateTime) {
