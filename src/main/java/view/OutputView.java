@@ -1,10 +1,14 @@
 package view;
 
-import domain.*;
-import util.Converter;
-
+import domain.Attendance;
+import domain.AttendanceDto;
+import domain.Crew;
+import domain.CrewDto;
+import domain.DayOfWeek;
 import java.time.LocalDate;
+import java.util.Comparator;
 import java.util.List;
+import util.Converter;
 
 public class OutputView {
     private static final String ATTENDANCE_HISTORY_MESSAGE = "이번 달 %s의 출석 기록입니다.";
@@ -34,7 +38,8 @@ public class OutputView {
         String dayOfWeekName = DayOfWeek.getNameById(today.getDayOfWeek().getValue());
         String attendanceTime = Converter.covertLocalTimeToString(attendanceDto.getAttendanceTime());
         String attendanceStatusName = getAttendanceStatusName(attendanceDto);
-        System.out.printf("%d월 %02d일 %s %s (%s)\n", today.getMonth().getValue(), today.getDayOfMonth(), dayOfWeekName, attendanceTime, attendanceStatusName);
+        System.out.printf("%d월 %02d일 %s %s (%s)\n", today.getMonth().getValue(), today.getDayOfMonth(), dayOfWeekName,
+                attendanceTime, attendanceStatusName);
     }
 
     public void printUpdatedAttendanceHistory(AttendanceDto originalAttendanceDto, AttendanceDto editedAttendanceDto) {
@@ -76,7 +81,8 @@ public class OutputView {
                 attendanceTime = Converter.covertLocalTimeToString(dto.getAttendanceTime());
             }
 
-            System.out.printf(ATTENDANCE_HISTORY_WITH_DATE, date.getMonth().getValue(), date.getDayOfMonth(), dayOfWeekName, attendanceTime, attendanceStatusName);
+            System.out.printf(ATTENDANCE_HISTORY_WITH_DATE, date.getMonth().getValue(), date.getDayOfMonth(),
+                    dayOfWeekName, attendanceTime, attendanceStatusName);
         }
 
         System.out.println();
@@ -100,14 +106,21 @@ public class OutputView {
         return attendanceStatusName;
     }
 
-    public void printPenaltyCrews(CrewDtos crewDtos) {
+    public void printPenaltyCrews(List<CrewDto> crewDtos) {
         System.out.println(PENALTY_CREW_READ_RESULT_PREFIX);
-        List<CrewDto> dtos = crewDtos.getCrewDtos();
-        for (CrewDto dto : dtos) {
-            System.out.printf(PENALTY_CREW_READ_RESULT, dto.getNickName(), dto.getAbsentCount(), dto.getLateCount(), dto.getPenaltyStatus().getName());
+        sortCrewDtos(crewDtos);
+        for (CrewDto dto : crewDtos) {
+            System.out.printf(PENALTY_CREW_READ_RESULT, dto.getNickName(), dto.getAbsentCount(), dto.getLateCount(),
+                    dto.getPenaltyStatus().getName());
         }
         System.out.println();
 
     }
 
+    private void sortCrewDtos(List<CrewDto> crewDtos) {
+        crewDtos.sort(
+                Comparator.comparing((CrewDto dto) -> dto.getPenaltyStatus().getThreshold(), Comparator.reverseOrder())
+                        .thenComparing(dto -> dto.getLateCount() + dto.getAbsentCount(), Comparator.reverseOrder())
+                        .thenComparing(CrewDto::getNickName));
+    }
 }

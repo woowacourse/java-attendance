@@ -4,7 +4,6 @@ import domain.Attendance;
 import domain.AttendanceDto;
 import domain.Crew;
 import domain.CrewDto;
-import domain.CrewDtos;
 import domain.Crews;
 import domain.Day;
 import domain.DayOfWeek;
@@ -98,7 +97,7 @@ public class AttendanceController {
                 .filter(crewDto -> crewDto.getPenaltyStatus() != PenaltyStatus.NONE)
                 .collect(Collectors.toCollection(ArrayList::new));
 
-        outputView.printPenaltyCrews(new CrewDtos(penaltyCrewDtos));
+        outputView.printPenaltyCrews(penaltyCrewDtos);
 
     }
 
