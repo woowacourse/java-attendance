@@ -35,20 +35,20 @@ public class AttendanceController {
     }
 
     public void run() {
+        CrewGroup crewGroup = initCrewData();
+        repeatCommand(crewGroup);
+    }
+
+    private CrewGroup initCrewData() {
         Map<String, List<String>> attendanceFileInfo = fileInputView.getFileInput();
         Map<String, List<LocalDateTime>> crewInitAttendanceDates = InputParser.getFileAttendanceInfo(
                 attendanceFileInfo);
 
-        CrewGroup crewGroup = attendanceService.createCrewGroup(crewInitAttendanceDates);
-
-        repeatCommand(crewGroup);
+        return attendanceService.createCrewGroup(crewInitAttendanceDates);
     }
 
     private void repeatCommand(CrewGroup crewGroup) {
-        while (true) {
-            if (controlCommand(crewGroup)) {
-                break;
-            }
+        while (controlCommand(crewGroup)) {
         }
     }
 

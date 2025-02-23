@@ -70,7 +70,7 @@ public class OutputView {
     }
 
     private static void printAttendanceWarningCrew(ResponseWarningCrewDto warningCrewDto) {
-        System.out.println("- "+ warningCrewDto.crewName() + ": 결석 " + warningCrewDto.absenceCount() + "회, 지각 "
+        System.out.println("- " + warningCrewDto.crewName() + ": 결석 " + warningCrewDto.absenceCount() + "회, 지각 "
                 + warningCrewDto.tardyCount() + "회"
                 + " (" + (warningCrewDto.attendanceWarning().getStatus()) + ")");
     }

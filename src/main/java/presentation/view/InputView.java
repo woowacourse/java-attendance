@@ -8,17 +8,15 @@ public class InputView {
     private static final Scanner scanner = new Scanner(System.in);
 
     public static String inputCommand() {
-        StringBuilder commandDiscription = new StringBuilder();
-        commandDiscription
-                .append("오늘은 ")
-                .append(DateTimeUtil.convertLocalDateToString(LocalDate.now()))
-                .append("입니다. 기능을 선택해주세요.\n")
-                .append("1. 출석 확인\n")
-                .append("2. 출석 수정\n")
-                .append("3. 크루별 출석 기록 확인\n")
-                .append("4. 제적 위험자 확인\n")
-                .append("Q. 종료\n");
-        System.out.print(commandDiscription.toString());
+        String commandDiscription = "오늘은 "
+                + DateTimeUtil.convertLocalDateToString(LocalDate.now())
+                + "입니다. 기능을 선택해주세요.\n"
+                + "1. 출석 확인\n"
+                + "2. 출석 수정\n"
+                + "3. 크루별 출석 기록 확인\n"
+                + "4. 제적 위험자 확인\n"
+                + "Q. 종료\n";
+        System.out.print(commandDiscription);
 
         return getInput();
     }
