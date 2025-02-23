@@ -43,6 +43,23 @@ class AttendanceTest {
                 .isEqualTo(expected);
     }
 
+    @Test
+    void 출석의_시간을_비교해_반환한다() {
+        // given
+        LocalDateTime firstDateTime = LocalDateTime.of(2024, 12, 7, 10, 0);
+        LocalDateTime secondDateTime = LocalDateTime.of(2024, 12, 6, 10, 0);
+
+        Attendance firstAttendance = new Attendance(firstDateTime);
+        Attendance secondAttendance = new Attendance(secondDateTime);
+
+        // when
+        int result = firstAttendance.compareTo(secondAttendance);
+
+        // then
+        assertThat(result)
+                .isEqualTo(1);
+    }
+
     private static class MockingDateGenerator implements DateGenerator {
 
         @Override
