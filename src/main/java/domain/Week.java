@@ -23,7 +23,6 @@ public enum Week {
             Locale.KOREAN);
     public static final DateTimeFormatter ABSENCE_FORMAT = DateTimeFormatter.ofPattern("M월 dd일 --:-- EEEE",
             Locale.KOREAN);
-    public static final int LENGTH_OF_MONTH = 31;
     public static final List<Integer> HOLIDAYS = List.of(25);
 
     private final LocalTime attendanceTime;
