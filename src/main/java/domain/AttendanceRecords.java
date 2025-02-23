@@ -6,11 +6,7 @@ import java.util.TreeSet;
 public class AttendanceRecords {
     private static final LocalDate FILL_START_DATE = LocalDate.of(2024, 11, 30);
 
-    private final TreeSet<AttendanceRecord> attendanceRecords;
-
-    public AttendanceRecords() {
-        this.attendanceRecords = new TreeSet<>();
-    }
+    private final TreeSet<AttendanceRecord> attendanceRecords = new TreeSet<>();
 
     public void addRecord(AttendanceRecord attendanceRecord) {
         attendanceRecords.add(attendanceRecord);
