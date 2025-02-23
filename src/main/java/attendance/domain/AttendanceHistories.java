@@ -2,42 +2,67 @@ package attendance.domain;
 
 import static attendance.domain.AttendanceType.*;
 import static attendance.domain.CrewStatus.*;
+import static attendance.error.ErrorMessage.ALREADY_EXIST_ATTENDANCE;
+import static attendance.error.ErrorMessage.NOT_EXIST_ATTENDANCE;
 
 import java.time.LocalDate;
-import java.time.LocalTime;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
-public class AttendanceHistoryManager {
-    private final Set<AttendanceHistory> attendanceHistories = new HashSet<>();
+public class AttendanceHistories {
+
+    private final List<AttendanceHistory> attendanceHistories;
+
+    private AttendanceHistories() {
+        this.attendanceHistories = new ArrayList<>();
+    }
+
+    public static AttendanceHistories create() {
+        return new AttendanceHistories();
+    }
 
     public void addAttendanceHistory(AttendanceHistory attendanceHistory) {
-        if (!attendanceHistories.add(attendanceHistory)) {
-            throw new IllegalArgumentException("해당 날짜에 이미 출석하셨습니다.");
+        validateDuplicateHistory(attendanceHistory);
+        attendanceHistories.add(attendanceHistory);
+    }
+
+    public List<AttendanceHistory> getAttendanceHistories() {
+        return Collections.unmodifiableList(attendanceHistories);
+    }
+
+    public AttendanceHistory getAttendanceHistoryByDate(LocalDate localDate) {
+        return attendanceHistories.stream()
+            .filter(history -> history.findAttendanceTimeByDate(localDate))
+            .findAny()
+            .orElseThrow(() -> new IllegalArgumentException(NOT_EXIST_ATTENDANCE.getMessage()));
+    }
+
+    /***
+     *  .줄이는 리팩토링 필요
+     */
+    private void validateDuplicateHistory(AttendanceHistory attendanceHistory) {
+        boolean isSame = attendanceHistories.stream()
+            .anyMatch(result -> result.getAttendanceTime().
+                getAttendanceTime().toLocalDate().isEqual(attendanceHistory.getAttendanceTime().getAttendanceTime().toLocalDate()));
+        if (isSame) {
+            throw new IllegalArgumentException(ALREADY_EXIST_ATTENDANCE.getMessage());
         }
     }
 
-    public Set<AttendanceHistory> getAttendanceHistories() {
-        return Collections.unmodifiableSet(attendanceHistories);
-    }
-
-    public AttendanceHistory getAttendanceHistory(LocalDate localDate) {
-        return attendanceHistories.stream()
-                .filter(history -> history.getAttendanceTime().toLocalDate().equals(localDate))
-                .findAny()
-                .orElseThrow(() -> new IllegalArgumentException("출석 기록이 존재하지 않습니다."));
-    }
-
-    public AttendanceHistory modifyAttendanceResult(AttendanceHistory modifyAttendanceHistory, LocalTime localTime) {
-        AttendanceType attendanceType = AttendancePolicy.checkAttendanceType(
-                modifyAttendanceHistory.getAttendanceTime().toLocalDate(), localTime);
-        modifyAttendanceHistory.modify(localTime, attendanceType);
+    public AttendanceHistory modifyAttendanceResult(LocalDateTime modifyDateTime) {
+        AttendanceHistory attendanceHistory = getAttendanceHistoryByDate(
+            modifyDateTime.toLocalDate());
+        AttendanceHistory modifyAttendanceHistory = AttendanceHistory.from(modifyDateTime);
+        attendanceHistories.remove(attendanceHistory);
+        attendanceHistories.add(modifyAttendanceHistory);
         return modifyAttendanceHistory;
     }
 
+    /*
     public Map<AttendanceType, Integer> calculateAttendanceResult(LocalDate localDate) {
         Map<AttendanceType, Integer> attendanceResult = initializeAttendanceResult();
         for (int i = 1; i < localDate.getDayOfMonth(); i++) {
@@ -60,8 +85,11 @@ public class AttendanceHistoryManager {
             }
         }
         return attendanceResult;
+
+
     }
 
+     */
     public CrewStatus calculateCrewStatus(Map<AttendanceType, Integer> attendanceResult) {
         int validateValue = 0;
         validateValue += attendanceResult.get(ABSENCE);

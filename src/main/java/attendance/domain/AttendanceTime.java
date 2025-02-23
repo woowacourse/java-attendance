@@ -7,6 +7,7 @@ import static attendance.error.ErrorMessage.NOT_OPERATING_WEEKEND;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.Objects;
 
 public class AttendanceTime {
 
@@ -25,6 +26,15 @@ public class AttendanceTime {
         DayOfWeek dayOfWeek = getDayOfWeek(attendanceTime.toLocalDate());
         int lateTime = dayOfWeek.calculateLateTime(attendanceTime.toLocalTime());
         return AttendanceType.decideType(lateTime);
+    }
+
+    public boolean isSameDate(LocalDate findDate) {
+        LocalDate currentDate = attendanceTime.toLocalDate();
+        return currentDate.isEqual(findDate);
+    }
+
+    public LocalDateTime getAttendanceTime() {
+        return attendanceTime;
     }
 
     private void validateAttendanceTime(LocalDateTime attendanceTime) {
@@ -59,5 +69,19 @@ public class AttendanceTime {
 
     private DayOfWeek getDayOfWeek(LocalDate currentDate) {
         return DayOfWeek.calculateDayOfWeek(currentDate);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        AttendanceTime that = (AttendanceTime) o;
+        return Objects.equals(attendanceTime, that.attendanceTime);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(attendanceTime);
     }
 }

@@ -1,5 +1,6 @@
 package attendance.domain;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
@@ -21,12 +22,12 @@ public class AttendanceHistory {
         return attendanceTime;
     }
 
-    public AttendanceType getAttendanceType() {
-        return attendanceType;
+    public boolean findAttendanceTimeByDate(LocalDate findDate) {
+        return attendanceTime.isSameDate(findDate);
     }
 
-    public AttendanceHistory modify(LocalDateTime modifyDateTime) {
-        return new AttendanceHistory(modifyDateTime);
+    public AttendanceType getAttendanceType() {
+        return attendanceType;
     }
 
     @Override
