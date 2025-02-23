@@ -1,6 +1,9 @@
 package domain.attendance;
 
 import java.time.LocalDateTime;
+import java.util.Arrays;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 public enum AttendanceTime {
     MON(13, 5, 1),
@@ -24,22 +27,23 @@ public enum AttendanceTime {
     }
 
     public static boolean isAttendance(int dayOfWeek, LocalDateTime dateTime) {
-        for (AttendanceTime value : values()) {
-            if (value.dayOfWeek == dayOfWeek) {
-                return value.hour > dateTime.getHour() || (value.hour == dateTime.getHour()
-                        && value.minute >= dateTime.getMinute());
-            }
+        AttendanceTime attendanceTime = attendanceTimeMap.get(dayOfWeek);
+        if (attendanceTime == null) {
+            return false;
         }
-        return false;
+        return attendanceTime.hour > dateTime.getHour() ||
+                (attendanceTime.hour == dateTime.getHour() && attendanceTime.minute >= dateTime.getMinute());
     }
 
     public static boolean isAbsence(int dayOfWeek, LocalDateTime dateTime) {
-        for (AttendanceTime value : values()) {
-            if (value.dayOfWeek == dayOfWeek) {
-                return value.hour < dateTime.getHour() || (value.hour == dateTime.getHour()
-                        && value.minute + 25 < dateTime.getMinute());
-            }
+        AttendanceTime attendanceTime = attendanceTimeMap.get(dayOfWeek);
+        if (attendanceTime == null) {
+            return false;
         }
-        return false;
+        return attendanceTime.hour < dateTime.getHour() || (attendanceTime.hour == dateTime.getHour()
+                && attendanceTime.minute + 25 < dateTime.getMinute());
     }
+
+    private static final Map<Integer, AttendanceTime> attendanceTimeMap = Arrays.stream(values())
+            .collect(Collectors.toMap(attendance -> attendance.dayOfWeek, attendance -> attendance));
 }
