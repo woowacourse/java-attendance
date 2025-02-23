@@ -30,8 +30,20 @@ public class AttendanceController {
 
     public void run() {
         while (true) {
-            AttendanceMenu menu = MenuTemplate.run(this::selectMenu, LocalDate.now(), outputView);
-            processMenuFunction(menu);
+            LocalDate nowDate = LocalDate.now();
+            AttendanceMenu menu = selectMenu(nowDate);
+            if (menu == AttendanceMenu.ADD) {
+                saveAttendanceRecord(nowDate);
+            }
+            if (menu == AttendanceMenu.UPDATE) {
+                updateAttendanceRecord(nowDate);
+            }
+            if (menu == AttendanceMenu.SEARCH) {
+                searchAttendanceRecordsByCrew(nowDate);
+            }
+            if (menu == AttendanceMenu.RISK) {
+                searchRiskStatistics(nowDate);
+            }
             if (menu == AttendanceMenu.QUIT) {
                 return;
             }
@@ -39,57 +51,60 @@ public class AttendanceController {
     }
 
     private AttendanceMenu selectMenu(LocalDate nowDate) {
-        outputView.printMenu(nowDate);
-        return AttendanceMenu.parse(inputView.readMenuCommand());
+        while (true) {
+            try {
+                outputView.printMenu(nowDate);
+                return AttendanceMenu.parse(inputView.readMenuCommand());
+            } catch (IllegalArgumentException e) {
+                outputView.printErrorMessage(e.getMessage());
+            }
+        }
     }
 
-    private void processMenuFunction(AttendanceMenu menu) {
-        MenuTemplate.run(this::saveAttendanceRecord, menu, outputView);
-        MenuTemplate.run(this::updateAttendanceRecord, menu, outputView);
-        MenuTemplate.run(this::searchAttendanceRecordsByCrew, menu, outputView);
-        MenuTemplate.run(this::searchRiskStatistics, menu, outputView);
-    }
-
-    private void saveAttendanceRecord(AttendanceMenu menu) {
-        LocalDate nowDate = LocalDate.now();
-        if (menu == AttendanceMenu.ADD) {
+    private void saveAttendanceRecord(LocalDate nowDate) {
+        try {
             String nickname = inputView.readNickname();
             LocalTime arrivalTime = inputView.readArrivalTime();
             LocalDateTime arrivalDateTime = LocalDateTime.of(nowDate, arrivalTime);
             AttendanceRecord savedRecord = attendanceSystem.saveAttendanceRecord(nickname, arrivalDateTime);
             outputView.printAttendanceRecord(savedRecord);
+        } catch (IllegalArgumentException e) {
+            outputView.printErrorMessage(e.getMessage());
         }
     }
 
-    private void updateAttendanceRecord(AttendanceMenu menu) {
-        LocalDate nowDate = LocalDate.now();
-        if (menu == AttendanceMenu.UPDATE) {
+    private void updateAttendanceRecord(LocalDate nowDate) {
+        try {
             String nickname = inputView.readNicknameForUpdate();
             LocalDate date = nowDate.withDayOfMonth(inputView.readDateForUpdate());
             LocalTime newArrivalTime = inputView.readArrivalTimeForUpdate();
             UpdateResult updateResult = attendanceSystem.updateAttendanceRecord(nickname, date, newArrivalTime);
             outputView.printAttendUpdateResult(updateResult);
+        } catch (IllegalArgumentException e) {
+            outputView.printErrorMessage(e.getMessage());
         }
     }
 
-    private void searchAttendanceRecordsByCrew(AttendanceMenu menu) {
-        LocalDate nowDate = LocalDate.now();
-        if (menu == AttendanceMenu.SEARCH) {
+    private void searchAttendanceRecordsByCrew(LocalDate nowDate) {
+        try {
             String nickname = inputView.readNickname();
             List<AttendanceRecord> records = attendanceSystem.searchAttendanceRecordsByCrew(nickname, nowDate);
             RiskStatistic state = attendanceSystem.searchRiskStatistic(
                     nickname, makeFistDateInMonth(nowDate), nowDate);
             outputView.printRecordsInMonth(records);
             outputView.printAttendanceState(state);
+        } catch (IllegalArgumentException e) {
+            outputView.printErrorMessage(e.getMessage());
         }
     }
 
-    private void searchRiskStatistics(AttendanceMenu menu) {
-        LocalDate nowDate = LocalDate.now();
-        if (menu == AttendanceMenu.RISK) {
+    private void searchRiskStatistics(LocalDate nowDate) {
+        try {
             List<RiskStatistic> riskStatistics =
                     attendanceSystem.searchRiskStatistics(makeFistDateInMonth(nowDate), nowDate);
             outputView.printRiskStatistics(riskStatistics);
+        } catch (IllegalArgumentException e) {
+            outputView.printErrorMessage(e.getMessage());
         }
     }
 
