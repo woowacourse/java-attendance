@@ -17,12 +17,12 @@ public class Crew {
 
     public Map<AttendanceStatus, Integer> getAttendanceStatus(AttendanceTimes attendanceTimes) {
         countAttendanceStatus(attendanceTimes);
-        return attendanceStatuses;
+        return this.attendanceStatuses;
     }
 
     public boolean getExpelStatus(AttendanceTimes attendanceTimes) {
         countAttendanceStatus(attendanceTimes);
-        return ExpelStatus.determineExpelStatus(attendanceStatuses) != ExpelStatus.NONE;
+        return ExpelStatus.determineExpelStatus(this.attendanceStatuses) != ExpelStatus.NONE;
     }
 
     private void countAttendanceStatus(AttendanceTimes attendanceTimes) {
@@ -46,11 +46,11 @@ public class Crew {
             return false;
         }
         Crew crew = (Crew) o;
-        return Objects.equals(name, crew.name);
+        return Objects.equals(this.name, crew.name);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(name);
+        return Objects.hashCode(this.name);
     }
 }

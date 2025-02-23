@@ -35,11 +35,11 @@ public class AttendanceTimes {
     }
 
     public int getAbsentCount() {
-        int absentCount = (int) attendanceTimes.stream()
+        int absentCount = (int) this.attendanceTimes.stream()
                 .filter(e -> e.getAttendanceStatus().equals(AttendanceStatus.ABSENT) || e.getAttendanceStatus().equals(AttendanceStatus.UNATTEND))
                 .count();
 
-        int lateCount = (int) attendanceTimes.stream()
+        int lateCount = (int) this.attendanceTimes.stream()
                 .filter(e -> e.getAttendanceStatus().equals(AttendanceStatus.LATE))
                 .count();
 
@@ -47,7 +47,7 @@ public class AttendanceTimes {
     }
 
     public int getLateCount() {
-        return (int) attendanceTimes.stream()
+        return (int) this.attendanceTimes.stream()
                 .filter(e -> e.getAttendanceStatus().equals(AttendanceStatus.LATE))
                 .count();
     }
@@ -57,7 +57,7 @@ public class AttendanceTimes {
         for (AttendanceStatus attendanceStatus : AttendanceStatus.values()) {
             attendanceStatuses.put(attendanceStatus, 0);
         }
-        for (AttendanceTime attendanceTime : attendanceTimes) {
+        for (AttendanceTime attendanceTime : this.attendanceTimes) {
             attendanceStatuses.put(attendanceTime.getAttendanceStatus(), attendanceStatuses.get(attendanceTime.getAttendanceStatus()) + 1);
         }
         return attendanceStatuses;
@@ -76,7 +76,7 @@ public class AttendanceTimes {
     }
 
     public AttendanceTime getAttendanceTime(LocalDate attendanceDate) {
-        return attendanceTimes.stream()
+        return this.attendanceTimes.stream()
                 .filter(attendance -> attendance.getAttendanceDateTime().toLocalDate().equals(attendanceDate))
                 .filter(attendance -> attendance.getAttendanceStatus() != AttendanceStatus.UNATTEND)
                 .findAny()
@@ -95,7 +95,7 @@ public class AttendanceTimes {
 
     private void addUnattended(Set<LocalDate> attendanceDates, LocalDate date) {
         if (!(attendanceDates.contains(date) || isClosed(date))) {
-            attendanceTimes.add(new AttendanceTime(date, AttendanceStatus.UNATTEND));
+            this.attendanceTimes.add(new AttendanceTime(date, AttendanceStatus.UNATTEND));
         }
     }
 

@@ -20,11 +20,11 @@ public class AttendanceTime {
     }
 
     public LocalDateTime getAttendanceDateTime() {
-        return attendanceDateTime;
+        return this.attendanceDateTime;
     }
 
     public AttendanceStatus getAttendanceStatus() {
-        return attendanceStatus;
+        return this.attendanceStatus;
     }
 
     public boolean checkAttended(LocalDate attendanceDate) {
@@ -32,8 +32,8 @@ public class AttendanceTime {
     }
 
     public void updateAttendanceDateTime(LocalTime newTime) {
-        this.attendanceDateTime = LocalDateTime.of(attendanceDateTime.getYear(), attendanceDateTime.getMonth(),
-                attendanceDateTime.getDayOfMonth(), newTime.getHour(), newTime.getMinute());
-        this.attendanceStatus = AttendanceStatus.findStatus(attendanceDateTime);
+        this.attendanceDateTime = LocalDateTime.of(this.attendanceDateTime.getYear(), this.attendanceDateTime.getMonth(),
+                this.attendanceDateTime.getDayOfMonth(), newTime.getHour(), newTime.getMinute());
+        this.attendanceStatus = AttendanceStatus.findStatus(this.attendanceDateTime);
     }
 }

@@ -32,13 +32,13 @@ public class Attendance {
     }
 
     public AttendanceTimes getAttendanceTimes(String name) {
-        return attendance.get(crews.findCrew(name));
+        return this.attendance.get(this.crews.findCrew(name));
     }
 
     public void attend(String crewName, LocalDateTime attendanceDateTime) {
         validateAttended(crewName, attendanceDateTime);
         validateOpenHours(attendanceDateTime);
-        attendance.get(crews.findCrew(crewName)).addAttendance(new AttendanceTime(attendanceDateTime));
+        this.attendance.get(this.crews.findCrew(crewName)).addAttendance(new AttendanceTime(attendanceDateTime));
     }
 
     public void edit(String crewName, int attendanceDay, LocalTime newAttendanceTime) {
@@ -51,7 +51,7 @@ public class Attendance {
     public List<String> checkExpelledCrew() {
         List<String> expelledCrew = new ArrayList<>();
 
-        attendance.keySet().stream()
+        this.attendance.keySet().stream()
                 .filter(crew -> crew.getExpelStatus(this.attendance.get(crew)))
                 .forEach(crew -> expelledCrew.add(crew.getName()));
 
@@ -59,12 +59,12 @@ public class Attendance {
     }
 
     public AttendanceTime findAttendanceTime(String nickName, LocalDate attendanceDate) {
-        AttendanceTimes attendanceTimes = this.attendance.get(crews.findCrew(nickName));
+        AttendanceTimes attendanceTimes = this.attendance.get(this.crews.findCrew(nickName));
         return attendanceTimes.getAttendanceTime(attendanceDate);
     }
 
     public void validateNickName(String nickName) {
-        crews.findCrew(nickName);
+        this.crews.findCrew(nickName);
     }
 
     public void validateCampusOpenDate(LocalDate nowDate) {
@@ -75,16 +75,16 @@ public class Attendance {
     }
 
     public int getAbsentCount(String nickName) {
-        return this.attendance.get(crews.findCrew(nickName)).getAbsentCount();
+        return this.attendance.get(this.crews.findCrew(nickName)).getAbsentCount();
     }
 
     public int getLateCountForSort(String nickName) {
-        return this.attendance.get(crews.findCrew(nickName)).getLateCount() % CampusConstant.LATE_TO_ABSENT_UNIT;
+        return this.attendance.get(this.crews.findCrew(nickName)).getLateCount() % CampusConstant.LATE_TO_ABSENT_UNIT;
     }
 
     public Map<AttendanceStatus, Integer> getCrewAttendanceStatus(String nickName) {
-        Crew crew = crews.findCrew(nickName);
-        return crew.getAttendanceStatus(attendance.get(crew));
+        Crew crew = this.crews.findCrew(nickName);
+        return crew.getAttendanceStatus(this.attendance.get(crew));
     }
 
     private void validateAttended(String crewName, LocalDateTime attendanceDateTime) {
@@ -103,6 +103,6 @@ public class Attendance {
     }
 
     private boolean checkAttended(String crewName, LocalDate attendanceDate) {
-        return attendance.get(crews.findCrew(crewName)).checkAttended(attendanceDate);
+        return this.attendance.get(this.crews.findCrew(crewName)).checkAttended(attendanceDate);
     }
 }
