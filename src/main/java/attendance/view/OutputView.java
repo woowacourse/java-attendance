@@ -12,6 +12,8 @@ public class OutputView {
     private final String INPUT_ATTENDANCE_TIME = "등교 시간을 입력해 주세요.";
     private final String INPUT_ATTENDANCE_MODIFY_DATE = "수정하려는 날짜(일)를 입력해 주세요.";
 
+    // public static final String TODAY_FORMAT = "오늘은 MM월 dd일 E요일입니다. 기능을 선택해 주세요.";
+    
     public void printMethod() {
         println(METHOD);
     }

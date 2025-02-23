@@ -5,8 +5,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class Attendances {
-    private static final String DUPLICATE_ATTENDANCE_DATE = "이미 출석되었습니다. 수정 기능을 이용해주세요.";
-    private static final String NOT_EXIST_ATTENDANCE = "해당 날짜에 출석이 존재하지 않습니다.";
 
     private final Map<LocalDate, Attendance> attendances = new HashMap<>();
 
