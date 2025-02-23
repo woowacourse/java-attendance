@@ -2,15 +2,14 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 
 import domain.AttendanceBook;
 import domain.Crew;
+import domain.ErrorCode;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.Map;
-import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 public class CheckAttendanceTest {
 
-    @DisplayName("출석하기 위해서는 닉네임과 등교 시간을 입력 받아야 한다.")
     @Test
     void 출석하기_위해서는_닉네임과_등교_시간을_입력_받아야_한다() {
         AttendanceBook attendanceBook = new AttendanceBook();
@@ -45,7 +44,6 @@ public class CheckAttendanceTest {
     }
 
     @Test
-    @DisplayName("주말 및 공휴일에는 출석을 받지 않는다.")
     void 주말_및_공휴일에는_출석을_받지_않는다() {
         AttendanceBook attendanceBook = new AttendanceBook();
         Crew crew1 = Crew.createByName("쿠키");
@@ -67,7 +65,6 @@ public class CheckAttendanceTest {
     }
 
     @Test
-    @DisplayName("등록되지 않는 닉네임의 경우 예외를 출력한다.")
     void 등록되지_않는_닉네임의_경우_예외를_출력한다() {
         AttendanceBook attendanceBook = new AttendanceBook();
         Crew crew1 = Crew.createByName("쿠키");

@@ -12,7 +12,6 @@ import org.junit.jupiter.api.Test;
 class AttendanceBookTest {
 
     @Test
-    @DisplayName("출석부에_기존이름이_존재여부_확인")
     void 출석부에_기존이름이_존재여부_확인() {
         AttendanceBook attendanceBook = new AttendanceBook();
         Crew crew1 = Crew.createByName("쿠키");

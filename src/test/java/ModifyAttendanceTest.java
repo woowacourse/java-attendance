@@ -11,7 +11,6 @@ import org.junit.jupiter.api.Test;
 public class ModifyAttendanceTest {
 
     @Test
-    @DisplayName("출석을 수정하기 위해서는 닉네임, 수정하려는 날짜, 등교시간을 입력해야 한다.")
     void 출석을_수정하기_위해서는_닉네임_수정하려는_날짜_등교시간을_입력해야_한다() {
         AttendanceBook attendanceBook = new AttendanceBook();
 
@@ -27,7 +26,6 @@ public class ModifyAttendanceTest {
     }
 
     @Test
-    @DisplayName("등록되지 않는 닉네임의 경우 예외를 출력한다.")
     void 등록되지_않는_닉네임의_경우_예외를_출력한다() {
         AttendanceBook attendanceBook = new AttendanceBook();
 
@@ -42,7 +40,6 @@ public class ModifyAttendanceTest {
     }
 
     @Test
-    @DisplayName("수정하려는 날짜의 기록이 존재하지 않을 경우, 에러를 출력한다.")
     void 수정하려는_날짜의_기록이_존재하지_않을_경우_에러를_출력한다() {
         AttendanceBook attendanceBook = new AttendanceBook();
 
