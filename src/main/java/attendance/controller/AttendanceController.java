@@ -25,7 +25,15 @@ public class AttendanceController {
         initOperations(attendanceRepository);
         char option;
         while ((option = getInputOption()) != QUIT_APPLICATION_OPERATION) {
+            runCommand(option);
+        }
+    }
+
+    private void runCommand(char option) {
+        try {
             operations.get(option).run();
+        } catch (IllegalArgumentException e) {
+            OutputView.printErrorMessage(e);
         }
     }
 
@@ -42,13 +50,27 @@ public class AttendanceController {
 
     private char getInputOption() {
         OutputView.printOptions();
-        return InputView.readOption();
+        try {
+            char option = InputView.readOption();
+            validateOption(option);
+            return option;
+        } catch (IllegalArgumentException e) {
+            OutputView.printErrorMessage(e);
+            return getInputOption();
+        }
+    }
+
+    private void validateOption(char option) {
+        if (!operations.containsKey(option)) {
+            throw new IllegalArgumentException(("존재하지 않는 기능입니다. 다시 입력해 주세요."));
+        }
     }
 
     private void registerAttendance(AttendanceRepository attendanceRepository) {
         String name = InputView.readNickName();
-        final LocalTime localTime = InputView.readAttendanceTime();
-        LocalDateTime localDateTime = LocalDateTime.of(LocalDateTime.now().toLocalDate(), localTime);
+        LocalTime localTime = InputView.readAttendanceTime();
+        LocalDateTime localDateTime = LocalDateTime.of(LocalDate.of(2024, 12, LocalDate.now().getDayOfMonth()),
+                localTime);
         attendanceRepository.add(name, localDateTime);
         OutputView.printAddedAttendance(localDateTime);
     }

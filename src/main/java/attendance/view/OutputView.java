@@ -29,6 +29,7 @@ public class OutputView {
     private static final String WARNING_CREW_HEADER_FORMAT = "제적 위험자 조회 결과\n";
     private static final String WARNING_CREW_RESULT_FORMAT = "- %s: 결석 %d회, 지각 %d회 (%s)\n";
     private static final String TODAY_IS = "\n오늘은 %s입니다. 기능을 선택해 주세요.\n";
+    private static final String ERROR_MESSAGE_PREFIX = "[ERROR] ";
     private static final String OPERATION_OPTION_MESSAGE =
             """
                     1. 출석 확인
@@ -145,4 +146,7 @@ public class OutputView {
         }).toList();
     }
 
+    public static void printErrorMessage(Exception exception){
+        System.out.println(ERROR_MESSAGE_PREFIX + exception.getMessage());
+    }
 }

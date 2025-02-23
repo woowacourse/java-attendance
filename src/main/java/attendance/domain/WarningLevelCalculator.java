@@ -34,7 +34,7 @@ public class WarningLevelCalculator {
         return CALCULATE_LEVEL.entrySet().stream()
                 .filter(entry -> entry.getKey().test(calculateTotalAbsence(attendanceStatuses)))
                 .findFirst()
-                .orElseThrow(() -> new IllegalArgumentException("[ERROR] 결석 정보가 올바르지 않습니다."))
+                .orElseThrow(() -> new IllegalArgumentException("결석 정보가 올바르지 않습니다."))
                 .getValue()
                 .get();
     }

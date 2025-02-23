@@ -21,7 +21,7 @@ public class AttendanceRepository {
         return attendances.stream()
                 .filter(attendance -> attendance.isNameMatch(name))
                 .findAny()
-                .orElseThrow(() -> new IllegalArgumentException("[ERROR] 유효하지 않은 닉네임입니다."));
+                .orElseThrow(() -> new IllegalArgumentException("유효하지 않은 닉네임입니다."));
     }
 
     public HourMinute update(final String name, final LocalDateTime newLocalDateTime) {
