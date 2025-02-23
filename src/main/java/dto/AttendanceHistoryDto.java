@@ -1,8 +1,6 @@
 package dto;
 
-import domain.Crew;
-import java.util.List;
+import java.time.LocalDateTime;
 
-public record AttendanceHistoryDto(Crew crew, List<AttendanceRecord> records,
-                                   AttendanceStatus attendanceStatus) {
+public record AttendanceHistoryDto(LocalDateTime localDateTime, String attendanceState) {
 }
