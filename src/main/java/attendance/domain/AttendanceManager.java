@@ -16,25 +16,30 @@ import java.util.stream.IntStream;
 public class AttendanceManager {
 
     private final Map<String, Attendances> attendances;
+    private final Map<String, AttendanceStatus> attendanceStatus;
     private final Holiday holiday;
     private final DateGenerator dateGenerator;
 
     public AttendanceManager(Holiday holiday, DateGenerator dateGenerator) {
         this.attendances = new HashMap<>();
+        this.attendanceStatus = new HashMap<>();
         this.holiday = holiday;
         this.dateGenerator = dateGenerator;
     }
 
     public void addCrew(String name) {
-        int dayAllCount = dateGenerator.now().lengthOfMonth();
+        int day = dateGenerator.now().getDayOfMonth();
 
         Attendances newAttendances = new Attendances();
-        IntStream.range(1, dayAllCount + 1)
+        IntStream.range(1, day)
                 .mapToObj(index -> LocalDateTime.of(dateGenerator.now().withDayOfMonth(index), LocalTime.MIN))
                 .filter(dateTime -> !holiday.isHoliday(dateTime.toLocalDate()))
                 .forEach(newAttendances::addAttendance);
 
         attendances.put(name, newAttendances);
+
+        AttendanceStatus newAttendanceStatus = new AttendanceStatus(newAttendances);
+        attendanceStatus.put(name, newAttendanceStatus);
     }
 
     public Attendance processAttendanceCheck(final LocalDateTime dateTime, final String nickname) {
@@ -54,9 +59,13 @@ public class AttendanceManager {
         return List.of(oldAttendance, newAttendance);
     }
 
-    public List<Attendance> processAttendanceSearch(final String nickname) {
+    public List<Attendance> getAttendanceRecord(final String nickname) {
         Attendances attendances = findCrewAttendance(nickname);
         return attendances.getAttendancesUntilYesterday(dateGenerator.now());
+    }
+
+    public AttendanceStatus getAttendanceStatus(final String nickname) {
+        return attendanceStatus.get(nickname);
     }
 
     public void validateNicknameExists(String nickname) {

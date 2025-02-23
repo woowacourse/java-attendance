@@ -63,6 +63,12 @@ public class Attendances {
         }
     }
 
+    public int calculateStatusUntilYesterday(AttendanceStatusType status) {
+        return (int) attendances.stream()
+                .filter(attendance -> attendance.isEqualsStatus(status))
+                .count();
+    }
+
     private int calculateStatusUntilYesterday(AttendanceStatusType status, LocalDate date) {
         return (int) attendances.stream()
                 .filter(attendance -> attendance.isBefore(date))
