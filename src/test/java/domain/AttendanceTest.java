@@ -24,8 +24,8 @@ class AttendanceTest {
     @Test
     void nonExistenceCrew() {
         //given
-        Attendance attendance = FileManager.readFile();
-        String name = "도기";
+        Attendance attendance = creatAttendance();
+        String name = "포라";
 
         //when & then
         assertThatThrownBy(() -> attendance.getCrewByName(name))
@@ -33,36 +33,26 @@ class AttendanceTest {
                 .hasMessage("존재하지 않는 크루 입니다.");
     }
 
-    @DisplayName("입력받은 크루가 존재하는 크루를 반환한다.")
+    @DisplayName("입력받은 크루가 존재한다면 크루를 반환한다.")
     @Test
     void existenceCrew() {
         //given
-        Attendance attendance = FileManager.readFile();
-        String name = "빙티";
+        Attendance attendance = creatAttendance();
+        String name = "도기";
 
         //when
         Crew actual = attendance.getCrewByName(name);
 
         //then
-        assertThat(actual.getName()).isEqualTo("빙티");
-
+        assertThat(actual.getName()).isEqualTo("도기");
     }
 
     @DisplayName("특정 크루의 오늘 출석 시간을 저장한다.")
     @Test
     void save() {
         //given
+        Attendance attendance = creatAttendance();
         Crew crew = new Crew("도기");
-        List<LocalDateTime> localDateTimes = new ArrayList<>();
-        localDateTimes.add(LocalDateTime.of(2024, 12, 2, 10, 00));
-        localDateTimes.add(LocalDateTime.of(2024, 12, 3, 10, 06));
-        localDateTimes.add(LocalDateTime.of(2024, 12, 4, 10, 11));
-        localDateTimes.add(LocalDateTime.of(2024, 12, 5, 10, 14));
-
-        Map<Crew, List<LocalDateTime>> attendances = new LinkedHashMap<>();
-        attendances.put(crew, localDateTimes);
-
-        Attendance attendance = new Attendance(attendances);
 
         //when
         attendance.save(crew, "10:20", 6);
@@ -75,17 +65,8 @@ class AttendanceTest {
     @Test
     void duplicateSave() {
         //given
+        Attendance attendance = creatAttendance();
         Crew crew = new Crew("도기");
-        List<LocalDateTime> localDateTimes = new ArrayList<>();
-        localDateTimes.add(LocalDateTime.of(2024, 12, 2, 10, 00));
-        localDateTimes.add(LocalDateTime.of(2024, 12, 3, 10, 06));
-        localDateTimes.add(LocalDateTime.of(2024, 12, 4, 10, 11));
-        localDateTimes.add(LocalDateTime.of(2024, 12, 5, 10, 14));
-
-        Map<Crew, List<LocalDateTime>> attendances = new LinkedHashMap<>();
-        attendances.put(crew, localDateTimes);
-
-        Attendance attendance = new Attendance(attendances);
 
         //when & then
         assertThatThrownBy(() -> attendance.save(crew, "09:55", 2))
@@ -97,17 +78,8 @@ class AttendanceTest {
     @Test
     void nonDuplicateSave() {
         //given
+        Attendance attendance = creatAttendance();
         Crew crew = new Crew("도기");
-        List<LocalDateTime> localDateTimes = new ArrayList<>();
-        localDateTimes.add(LocalDateTime.of(2024, 12, 2, 10, 00));
-        localDateTimes.add(LocalDateTime.of(2024, 12, 3, 10, 06));
-        localDateTimes.add(LocalDateTime.of(2024, 12, 4, 10, 11));
-        localDateTimes.add(LocalDateTime.of(2024, 12, 5, 10, 14));
-
-        Map<Crew, List<LocalDateTime>> attendances = new LinkedHashMap<>();
-        attendances.put(crew, localDateTimes);
-
-        Attendance attendance = new Attendance(attendances);
 
         //when & then
         assertThatCode(() -> attendance.save(crew, "09:55", 6))
@@ -118,21 +90,12 @@ class AttendanceTest {
     @Test
     void update() {
         // given
+        Attendance attendance = creatAttendance();
         Crew crew = new Crew("도기");
-        List<LocalDateTime> localDateTimes = new ArrayList<>();
-        localDateTimes.add(LocalDateTime.of(2024, 12, 2, 10, 00));
-        localDateTimes.add(LocalDateTime.of(2024, 12, 3, 10, 06));
-        localDateTimes.add(LocalDateTime.of(2024, 12, 4, 10, 11));
-        localDateTimes.add(LocalDateTime.of(2024, 12, 5, 10, 14));
-
-        Map<Crew, List<LocalDateTime>> attendances = new LinkedHashMap<>();
-        attendances.put(crew, localDateTimes);
-
-        Attendance attendance = new Attendance(attendances);
 
         //when
         attendance.update(crew, "10:02", 4);
-        List<LocalDateTime> actual = attendances.get(crew);
+        List<LocalDateTime> actual = attendance.getAttendances().get(crew);
 
         //then
         assertThat(actual).containsExactly(
@@ -147,18 +110,8 @@ class AttendanceTest {
     @Test
     void readRecord() {
         //given
+        Attendance attendance = creatAttendance();
         Crew crew = new Crew("도기");
-        List<LocalDateTime> localDateTimes = new ArrayList<>();
-        localDateTimes.add(LocalDateTime.of(2024, 12, 2, 10, 00));
-        localDateTimes.add(LocalDateTime.of(2024, 12, 3, 10, 06));
-        localDateTimes.add(LocalDateTime.of(2024, 12, 4, 10, 11));
-        localDateTimes.add(LocalDateTime.of(2024, 12, 5, 10, 14));
-
-        Map<Crew, List<LocalDateTime>> attendances = new LinkedHashMap<>();
-        attendances.put(crew, localDateTimes);
-
-        Attendance attendance = new Attendance(attendances);
-
         int todayDay = 10;
 
         //when
@@ -172,7 +125,8 @@ class AttendanceTest {
     @Test
     void getAbsence() {
         //given
-        Attendance attendance = FileManager.readFile();
+        String filePath = "src/main/resources/attendances.csv";
+        Attendance attendance = FileManager.readFile(filePath);
 
         //when
         Map<Crew, AbsenceResultDto> actual = attendance.getAbsence(14);
@@ -186,6 +140,16 @@ class AttendanceTest {
     @ValueSource(ints = {1, 7, 8, 14, 15, 21, 22, 25, 28, 29})
     void updateHoliday(int dayOfMonth) {
         // given
+        Attendance attendance = creatAttendance();
+        Crew crew = new Crew("도기");
+
+        // when & then
+        Assertions.assertThatThrownBy(() -> attendance.update(crew, "09:55", dayOfMonth))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("공휴일에는 출석을 할 수 없습니다.");
+    }
+
+    private Attendance creatAttendance() {
         Crew crew = new Crew("도기");
         List<LocalDateTime> localDateTimes = new ArrayList<>();
         localDateTimes.add(LocalDateTime.of(2024, 12, 2, 10, 00));
@@ -196,11 +160,6 @@ class AttendanceTest {
         Map<Crew, List<LocalDateTime>> attendances = new LinkedHashMap<>();
         attendances.put(crew, localDateTimes);
 
-        Attendance attendance = new Attendance(attendances);
-
-        // when & then
-        Assertions.assertThatThrownBy(() -> attendance.update(crew, "09:55", dayOfMonth))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage("공휴일에는 출석을 할 수 없습니다.");
+        return new Attendance(attendances);
     }
 }
