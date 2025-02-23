@@ -27,8 +27,14 @@ public class DateTimeUtil {
         return localDate.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.KOREAN);
     }
 
+    public static void validateHolyDay(final int date) {
+        LocalDate localDate = LocalDate.of(2024, 12, date);
+        if (DateTimeUtil.isHoliday(localDate)) {
+            throw new IllegalArgumentException("공휴일에는 출석을 할 수 없습니다.");
+        }
+    }
+
     public static boolean isHoliday(LocalDate localDate) {
         return localDate.getDayOfWeek().equals(DayOfWeek.SATURDAY) || localDate.getDayOfWeek().equals(DayOfWeek.SUNDAY);
     }
-
 }
