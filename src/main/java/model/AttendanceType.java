@@ -19,11 +19,11 @@ public enum AttendanceType {
     }
 
     public static AttendanceType calculateType(LocalDateTime localDateTime) {
-        long millisDifference = AttendanceTime.calculateMillisDifferenceFromStartTime(localDateTime);
-        if (millisDifference > Duration.of(ABSENCE.standardMinute, ChronoUnit.MINUTES).toMillis()) {
+        long nanosDifference = AttendanceTime.calculateNanosDifferenceFromStartTime(localDateTime);
+        if (nanosDifference > Duration.of(ABSENCE.standardMinute, ChronoUnit.MINUTES).toNanos()) {
             return ABSENCE;
         }
-        if (millisDifference > Duration.of(BE_LATE.standardMinute, ChronoUnit.MINUTES).toMillis()) {
+        if (nanosDifference > Duration.of(BE_LATE.standardMinute, ChronoUnit.MINUTES).toNanos()) {
             return BE_LATE;
         }
         return SUCCESS;

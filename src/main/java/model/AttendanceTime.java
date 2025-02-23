@@ -28,18 +28,17 @@ public enum AttendanceTime {
         this.educationStartTime = educationStartTime;
     }
 
-    public static boolean isNotInOperation(LocalDateTime localDateTime) {
-        AttendanceTime attendanceTime = findAttendanceTime(localDateTime);
-        return localDateTime.toLocalTime().isBefore(attendanceTime.operationStartTime) || localDateTime.toLocalTime()
-                .isAfter(attendanceTime.operationEndTime);
+    public static boolean isInOperation(LocalDateTime dateTime) {
+        AttendanceTime attendanceTime = findAttendanceTime(dateTime);
+        return dateTime.toLocalTime().isAfter(attendanceTime.operationStartTime.minusNanos(1)) &&
+                dateTime.toLocalTime().isBefore(attendanceTime.operationEndTime.plusNanos(1));
     }
 
-    // 5 < 체크인 타임 <= 30
-    public static long calculateMillisDifferenceFromStartTime(LocalDateTime dateTime) {
+    public static long calculateNanosDifferenceFromStartTime(LocalDateTime dateTime) {
         AttendanceTime attendanceTime = findAttendanceTime(dateTime);
         LocalTime time = dateTime.toLocalTime();
 
-        return Duration.between(attendanceTime.educationStartTime, time).toMillis();
+        return Duration.between(attendanceTime.educationStartTime, time).toNanos();
     }
 
     private static AttendanceTime findAttendanceTime(LocalDateTime time) {

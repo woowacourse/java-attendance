@@ -66,7 +66,7 @@ public class Attendance {
     }
 
     private static void validateOperationTime(LocalDateTime checkInTime) {
-        if (AttendanceTime.isNotInOperation(checkInTime)) {
+        if (!AttendanceTime.isInOperation(checkInTime)) {
             throw new IllegalArgumentException("지금은 운영 시간이 아닙니다.");
         }
     }
