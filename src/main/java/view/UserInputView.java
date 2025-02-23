@@ -3,6 +3,8 @@ package view;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.TextStyle;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Locale;
 import java.util.Scanner;
 
@@ -43,9 +45,9 @@ public class UserInputView {
         return new Scanner(System.in).nextLine();
     }
 
-    public String[] askAttendanceTimeForCheckAttendance() {
+    public ArrayList<String> askAttendanceTimeForCheckAttendance() {
         System.out.println("등교 시간을 입력해 주세요.");
-        return new Scanner(System.in).nextLine().split(":");
+        return new ArrayList<>(Arrays.asList(new Scanner(System.in).nextLine().split(":")));
     }
 
     public String askNickNameForModifyAttendanceInfo() {
@@ -58,8 +60,8 @@ public class UserInputView {
         return Integer.parseInt(new Scanner(System.in).nextLine());
     }
 
-    public String[] askAttendanceTimeForModifyAttendance() {
+    public ArrayList<String> askAttendanceTimeForModifyAttendance() {
         System.out.println("언제로 변경하겠습니까?");
-        return new Scanner(System.in).nextLine().split(":");
+        return new ArrayList<>(Arrays.asList(new Scanner(System.in).nextLine().split(":")));
     }
 }

@@ -3,6 +3,7 @@ package controller;
 import domain.AllCrew;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.regex.Pattern;
 
 import view.FileInputView;
@@ -68,23 +69,23 @@ public class AttendanceSystem {
 
     private void checkAttendance() {
         String name = userInputView.askNickNameForCheckAttendance();
-        String[] time = userInputView.askAttendanceTimeForCheckAttendance();
+        ArrayList<String> time = userInputView.askAttendanceTimeForCheckAttendance();
         System.out.println(outputView.printCheckedAttendance(allCrew.addCrewAttendanceByName(name, LocalDateTime.of(todayDate.getYear(),
                 todayDate.getMonthValue(),
                 todayDate.getDayOfMonth(),
-                Integer.parseInt(time[0]),
-                Integer.parseInt(time[1])))));
+                Integer.parseInt(time.get(0)),
+                Integer.parseInt(time.get(1))))));
     }
 
     private void modifyAttendance() {
         String name = userInputView.askNickNameForModifyAttendanceInfo();
         int day = userInputView.askDayForModifyAttendanceInfo();
-        String[] time = userInputView.askAttendanceTimeForModifyAttendance();
+        ArrayList<String> time = userInputView.askAttendanceTimeForModifyAttendance();
         LocalDateTime dateTime = LocalDateTime.of(todayDate.getYear(),
                 todayDate.getMonthValue(),
                 day,
-                Integer.parseInt(time[0]),
-                Integer.parseInt(time[1]));
+                Integer.parseInt(time.get(0)),
+                Integer.parseInt(time.get(1)));
         outputView.printModifyAttendance(allCrew, name, dateTime);
     }
 }
