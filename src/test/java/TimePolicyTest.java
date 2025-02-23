@@ -1,9 +1,7 @@
 import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @DisplayName("시간 정책 테스트")
@@ -30,6 +28,14 @@ public class TimePolicyTest {
     @ValueSource(strings = {"12/34", "12:12:12"})
     void validateTimeFormatTest(String time) {
         assertThatThrownBy(() -> TimePolicy.validateTimeFormat(time))
+                .isInstanceOf(IllegalArgumentException.class);
+    }
+
+    @ParameterizedTest
+    @DisplayName("캠퍼스 운영 시간이 아니면 예외가 발생한다")
+    @ValueSource(strings = {"07:59", "23:01"})
+    void validateOperatingTimeTest(String time) {
+        assertThatThrownBy(() -> TimePolicy.validateOperatingTime(time))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 

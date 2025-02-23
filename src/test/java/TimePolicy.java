@@ -30,4 +30,7 @@ public class TimePolicy {
             throw new IllegalArgumentException(TIME_FORMAT_ERROR);
         }
     }
+
+    public static void validateOperatingTime(String time) {
+    }
 }
