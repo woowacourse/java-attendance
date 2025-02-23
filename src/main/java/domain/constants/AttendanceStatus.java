@@ -4,6 +4,7 @@ import java.time.LocalTime;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public enum AttendanceStatus {
     ATTENDANCE("출석", 0),
@@ -22,11 +23,24 @@ public enum AttendanceStatus {
         final LocalTime timeBoundary = time
                 .withHour(boundaryHour)
                 .withMinute(boundaryMinute);
-        return Arrays.stream(values())
-                .sorted((o1, o2) -> o2.matchTimeMinuteBoundary - o1.matchTimeMinuteBoundary)
-                .filter(status -> time.isAfter(timeBoundary.plusMinutes(status.matchTimeMinuteBoundary)))
+        return sortedDescStatusForMatchingTimeMinuteBoundary().stream()
+                .filter(status -> isNowOverThanTimeMinuteBoundaryPlusTodayBoundary(time, timeBoundary, status))
                 .findFirst()
                 .orElse(ATTENDANCE);
+    }
+
+    private static boolean isNowOverThanTimeMinuteBoundaryPlusTodayBoundary(
+            final LocalTime now,
+            final LocalTime todayBoundary,
+            final AttendanceStatus attendanceStatus
+    ) {
+        return now.isAfter(todayBoundary.plusMinutes(attendanceStatus.matchTimeMinuteBoundary));
+    }
+
+    private static List<AttendanceStatus> sortedDescStatusForMatchingTimeMinuteBoundary() {
+        return Arrays.stream(values())
+                .sorted(Comparator.comparingInt(AttendanceStatus::getMatchTimeMinuteBoundary).reversed())
+                .collect(Collectors.toList());
     }
 
     public static List<AttendanceStatus> sortedStatus() {
