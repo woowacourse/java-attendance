@@ -10,20 +10,17 @@ public class Attendance {
     private final Crew crew;
     private LocalDateTime checkInTime;
     private AttendanceType attendanceType;
-    private final boolean isCome;
 
     private Attendance(Crew crew, LocalDateTime checkInTime, AttendanceType attendanceType) {
         this.crew = crew;
         this.checkInTime = checkInTime;
         this.attendanceType = attendanceType;
-        this.isCome = true;
     }
 
     private Attendance(Crew crew, LocalDate date) {
         this.crew = crew;
         this.checkInTime = LocalDateTime.of(date, LocalTime.of(0, 0));
         this.attendanceType = AttendanceType.ABSENCE;
-        this.isCome = false;
     }
 
     public static Attendance of(Crew crew, LocalDateTime checkInTime) {
@@ -36,10 +33,6 @@ public class Attendance {
     public static Attendance createTimeNullAbsence(Crew crew, LocalDate date) {
         validateHolidayAndWeekend(date);
         return new Attendance(crew, date);
-    }
-
-    public Attendance clone(Attendance attendance) {
-        return Attendance.of(attendance.crew, attendance.checkInTime);
     }
 
     public boolean isSameDateAndCrew(Attendance attendance) {
@@ -105,9 +98,5 @@ public class Attendance {
 
     public AttendanceType getAttendanceType() {
         return attendanceType;
-    }
-
-    public boolean isCome() {
-        return isCome;
     }
 }
