@@ -30,10 +30,11 @@ public record Attendance(LocalDateTime dateTime, AttendanceStatus attendanceStat
     }
 
     private static void validateIsHoliday(LocalDateTime dateTime) {
-        for (int i : datOfHoliday) {
-            if (dateTime.getDayOfMonth() == i) {
-                throw new AttendanceArgumentException(CANNOT_ATTENDANCE_WEEKEND_FORMAT, dateTime);
-            }
+        boolean isHoliday = datOfHoliday.stream()
+            .anyMatch(day -> dateTime.getDayOfMonth() == day);
+
+        if (isHoliday) {
+            throw new AttendanceArgumentException(CANNOT_ATTENDANCE_WEEKEND_FORMAT, dateTime);
         }
     }
 
