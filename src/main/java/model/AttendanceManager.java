@@ -13,23 +13,26 @@ public class AttendanceManager {
         //updateLocalDateTime을 통해서 만약 기존 정보에 LocalDate에 관한 정보가 있다면 업데이트하고 없다면 결석처리
         int day = updateLocalDateTime.getDayOfWeek().getValue();
         checkHoliday(updateLocalDateTime, day);
-        AttendanceStatus newAttendanceStatus = AttendanceRuleByDay.
-                calculateAttendance(day, LocalTime.from(updateLocalDateTime));
-        Map<LocalDate, AttendanceRecord> studentAttendanceRecord = record.get(student);
-        for (LocalDate recordLocalDate : studentAttendanceRecord.keySet()) {
-            if (compareDayIsSame(updateLocalDateTime, recordLocalDate)) {
-                modifyAttendanceRecord(updateLocalDateTime, recordLocalDate, newAttendanceStatus, student);
-                return;
-            }
-        }
-        record.get(student).put(LocalDate.from(updateLocalDateTime), new AttendanceRecord(null, AttendanceStatus.ABSENT));
-    }
+        AttendanceStatus newAttendanceStatus = AttendanceRuleByDay
+                .calculateAttendance(day, LocalTime.from(updateLocalDateTime));
 
+        record.get(student).entrySet().stream()
+                .filter(e -> compareDayIsSame(updateLocalDateTime, e.getKey()))
+                .findFirst()
+                .ifPresentOrElse(
+                        e -> modifyAttendanceRecord(updateLocalDateTime, e.getKey(), newAttendanceStatus, student),
+                        () -> addAbsentRecordForStudent(student, updateLocalDateTime)
+                );
+    }
 
     private void modifyAttendanceRecord(LocalDateTime updateLocalDateTime, LocalDate recordLocalDate,
                                            AttendanceStatus newAttendanceStatus, Student student) {
         LocalTime localTime = LocalTime.from(updateLocalDateTime);
         record.get(student).put(recordLocalDate, new AttendanceRecord(localTime, newAttendanceStatus));
+    }
+
+    private void addAbsentRecordForStudent(Student student, LocalDateTime updateLocalDateTime) {
+        record.get(student).put(LocalDate.from(updateLocalDateTime), new AttendanceRecord(null, AttendanceStatus.ABSENT));
     }
 
     private void checkHoliday(LocalDateTime localDateTime, int day) {
