@@ -138,6 +138,31 @@ class AttendanceManagerTest {
     }
 
     @Test
+    void 제적_위험자가_아닌_크루는_제외하고_반환한다() {
+        // given
+        String nickname = "이든";
+        attendanceManager.addCrew(nickname);
+
+        List<LocalDateTime> dateTimes = List.of(
+                LocalDateTime.of(2024, 12, 2, 13, 0),
+                LocalDateTime.of(2024, 12, 3, 10, 0),
+                LocalDateTime.of(2024, 12, 4, 10, 0),
+                LocalDateTime.of(2024, 12, 5, 10, 0),
+                LocalDateTime.of(2024, 12, 6, 10, 0)
+        );
+
+        for (LocalDateTime dateTime : dateTimes) {
+            attendanceManager.processAttendanceUpdate(dateTime, nickname);
+        }
+
+        // when
+        Map<String, AttendanceStatus> result = attendanceManager.getAttendanceWarnedCrews();
+
+        // then
+        assertThat(result).doesNotContainKey(nickname);
+    }
+
+    @Test
     void 등록되지_않은_닉네임으로_출석시_에러가_발생한다() {
         // given
         String nickname = "이든";
@@ -160,7 +185,7 @@ class AttendanceManagerTest {
 
         @Override
         public LocalDate now() {
-            return LocalDate.of(2024, 12, 20);
+            return LocalDate.of(2024, 12, 10);
         }
     }
 }
