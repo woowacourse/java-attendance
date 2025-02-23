@@ -61,15 +61,13 @@ public class Crew {
     public void recordAbsence() {
         LocalDate today = LocalDate.now();
 
-        for (LocalDate date = today.withDayOfMonth(1); date.isBefore(today); date = date.plusDays(1)) {
-            if (date.getDayOfWeek().getValue() == 6 || date.getDayOfWeek().getValue() == 7) {
-                continue;
-            }
-            if (!isAlreadyAttend(date)) {
-                addAttendance(new Attendance(new Day(date), null));
-            }
-        }
+        today.withDayOfMonth(1)
+                .datesUntil(today)
+                .filter(date -> date.getDayOfWeek().getValue() < 6)
+                .filter(date -> !isAlreadyAttend(date))
+                .forEach(date -> addAttendance(new Attendance(new Day(date), null)));
     }
+
 
     public Attendance findByDate(Integer dayOfMonth) {
         LocalDate today = LocalDate.now();
