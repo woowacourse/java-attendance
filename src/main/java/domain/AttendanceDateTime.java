@@ -49,8 +49,8 @@ public class AttendanceDateTime {
     private static LocalDate parseLocalDate(final String inputDate) {
         try {
             return LocalDate.of(
-                    AttendanceCommandController.FIXED_YEAR,
-                    AttendanceCommandController.FIXED_MONTH,
+                    AttendanceCommandController.REFERENCE_YEAR,
+                    AttendanceCommandController.REFERENCE_MONTH,
                     Integer.parseInt(inputDate)
             );
         } catch (DateTimeParseException | NumberFormatException e) {

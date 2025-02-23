@@ -21,8 +21,8 @@ public class Attendance implements Comparable<Attendance> {
 
     public static Attendance generateAbsentAttendance(final Integer attendanceDate) {
         final LocalDate localDate = LocalDate.of(
-                AttendanceCommandController.FIXED_YEAR,
-                AttendanceCommandController.FIXED_MONTH,
+                AttendanceCommandController.REFERENCE_YEAR,
+                AttendanceCommandController.REFERENCE_MONTH,
                 attendanceDate
         );
         final LocalDateTime dateTime = LocalDateTime.of(localDate, Punishment.ABSENCE_TIME);

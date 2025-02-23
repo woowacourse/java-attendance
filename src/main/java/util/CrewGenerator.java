@@ -93,8 +93,8 @@ public final class CrewGenerator {
 
     private static Collection<Integer> getWeekendDays() {
         final YearMonth yearMonth = YearMonth.of(
-                AttendanceCommandController.FIXED_YEAR,
-                AttendanceCommandController.FIXED_MONTH
+                AttendanceCommandController.REFERENCE_YEAR,
+                AttendanceCommandController.REFERENCE_MONTH
         );
         final int lengthOfMonth = yearMonth.lengthOfMonth();
 
@@ -106,8 +106,8 @@ public final class CrewGenerator {
 
     public static boolean excludeNotAttendanceDays(final int day) {
         final DayOfWeek dayOfWeek = LocalDate.of(
-                AttendanceCommandController.FIXED_YEAR,
-                AttendanceCommandController.FIXED_MONTH,
+                AttendanceCommandController.REFERENCE_YEAR,
+                AttendanceCommandController.REFERENCE_MONTH,
                 day
         ).getDayOfWeek();
 
