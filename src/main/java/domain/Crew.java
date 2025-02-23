@@ -7,7 +7,6 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -47,7 +46,7 @@ public class Crew {
     }
 
     public Attendance addAttendance(final LocalDateTime localDateTime) {
-        final Attendance attendance = new Attendance(localDateTime, false);
+        final Attendance attendance = Attendance.of(localDateTime);
         attendances.add(attendance);
         return attendance;
     }
