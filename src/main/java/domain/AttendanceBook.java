@@ -20,10 +20,7 @@ public class AttendanceBook {
     }
 
     public void registerName(String name) {
-        if (attendsPerCrew.containsKey(name)) {
-            return;
-        }
-        attendsPerCrew.put(name, new Attends(new ArrayList<>()));
+        attendsPerCrew.putIfAbsent(name, new Attends(new ArrayList<>()));
     }
 
     public void attend(String name, Attend attend) {
