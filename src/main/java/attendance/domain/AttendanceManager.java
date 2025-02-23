@@ -1,16 +1,12 @@
 package attendance.domain;
 
-import attendance.dto.response.WarnedStudent;
-import attendance.dto.response.WarnedStudents;
 import attendance.utility.DateGenerator;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -81,18 +77,6 @@ public class AttendanceManager {
         if (!containsNickname(nickname)) {
             throw new IllegalArgumentException("[ERROR] 등록되지 않은 닉네임입니다.");
         }
-    }
-
-    public WarnedStudents searchWarnedCrews(LocalDate date) {
-        Set<String> nicknames = attendances.keySet();
-        List<WarnedStudent> responses = nicknames.stream()
-                .map(nickname -> new WarnedStudent(nickname,
-                        attendances.get(nickname).createCountUntilYesterday(date)))
-                .filter(response -> !response.groupByStatus().warning()
-                        .equals(AttendanceWarningType.NONE.getName()))
-                .toList();
-
-        return new WarnedStudents(responses.stream().sorted().toList());
     }
 
     public boolean containsNickname(String nickname) {

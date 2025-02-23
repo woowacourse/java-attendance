@@ -6,7 +6,6 @@ import attendance.domain.AttendanceInit;
 import attendance.domain.AttendanceManager;
 import attendance.domain.AttendanceStatus;
 import attendance.domain.Holiday;
-import attendance.dto.response.WarnedStudents;
 import attendance.utility.DateGenerator;
 import attendance.utility.DateTimeParser;
 import attendance.view.InputView;
@@ -21,7 +20,6 @@ import static attendance.controller.AttendanceMenu.CHECK;
 import static attendance.controller.AttendanceMenu.QUIT;
 import static attendance.controller.AttendanceMenu.SEARCH;
 import static attendance.controller.AttendanceMenu.UPDATE;
-import static attendance.controller.AttendanceMenu.WARNED_CREW;
 import static attendance.controller.AttendanceMenu.find;
 import static attendance.utility.DateTimeParser.parseDateByDay;
 
@@ -59,8 +57,7 @@ public class AttendanceController {
     private void processAttendance(AttendanceMenu menu, LocalDate today) {
         processAttendanceCheck(menu, today);
         processAttendanceUpdate(menu, today);
-        processAttendanceSearch(menu, today);
-        processAttendanceWarnedCrew(menu, today);
+        processAttendanceSearch(menu);
     }
 
     private void processAttendanceCheck(AttendanceMenu menu, LocalDate today) {
@@ -93,7 +90,7 @@ public class AttendanceController {
         }
     }
 
-    private void processAttendanceSearch(AttendanceMenu menu, LocalDate today) {
+    private void processAttendanceSearch(AttendanceMenu menu) {
         if (menu == SEARCH) {
             String nickname = inputView.readNickname(false);
             attendanceManager.validateNicknameExists(nickname);
@@ -106,20 +103,9 @@ public class AttendanceController {
         }
     }
 
-    private void processAttendanceWarnedCrew(AttendanceMenu menu, LocalDate today) {
-        if (menu == WARNED_CREW) {
-            WarnedStudents response = processWarnedStudent(today);
-            outputView.printWarnedStudents(response);
-        }
-    }
-
     private AttendanceMenu selectMenu(LocalDate today) {
         outputView.printMenu(today);
         return find(inputView.readMenuCommand());
-    }
-
-    public WarnedStudents processWarnedStudent(LocalDate today) {
-        return attendanceManager.searchWarnedCrews(today);
     }
 
     private LocalTime parseTime(boolean isForUpdated) {

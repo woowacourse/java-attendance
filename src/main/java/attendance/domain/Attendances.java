@@ -1,7 +1,5 @@
 package attendance.domain;
 
-import attendance.dto.response.AttendanceGroupByStatus;
-
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -39,40 +37,13 @@ public class Attendances {
                 .subList(0, attendances.size() - 1);
     }
 
-    public AttendanceGroupByStatus createCountUntilYesterday(LocalDate date) {
-        int expulsion = calculateStatusUntilYesterday(AttendanceStateType.EXPULSION, date);
-        int late = calculateStatusUntilYesterday(AttendanceStateType.LATE, date);
-        int attendance = calculateStatusUntilYesterday(AttendanceStateType.ATTENDANCE, date);
-        AttendanceWarningType warning = AttendanceWarningType.find(expulsion, late);
-
-        return new AttendanceGroupByStatus(
-                expulsion,
-                late,
-                attendance,
-                warning.getName()
-        );
-    }
-
-    public int size() {
-        return attendances.size();
-    }
-
     public void validateAlreadyAttendance(LocalDate date) {
         if (find(date).isAlreadyCheck()) {
             throw new IllegalArgumentException("[ERROR] 이미 출석을 완료하셨습니다. 수정 기능을 이용해주세요.");
         }
     }
 
-    public int calculateStatusUntilYesterday(AttendanceStateType status) {
-        return (int) attendances.stream()
-                .filter(attendance -> attendance.isEqualsStatus(status))
-                .count();
-    }
-
-    private int calculateStatusUntilYesterday(AttendanceStateType status, LocalDate date) {
-        return (int) attendances.stream()
-                .filter(attendance -> attendance.isBefore(date))
-                .filter(attendance -> attendance.isEqualsStatus(status))
-                .count();
+    public List<Attendance> getAttendances() {
+        return attendances;
     }
 }

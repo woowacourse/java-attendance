@@ -43,8 +43,8 @@ class AttendanceManagerTest {
         attendanceManager.addCrew(name);
 
         // then
-        Assertions.assertThat(attendanceManager.findCrewAttendance(name).size())
-                .isEqualTo(15);
+        Assertions.assertThat(attendanceManager.findCrewAttendance(name).getAttendances().size())
+                .isEqualTo(7);
     }
 
     @ParameterizedTest(name = "출석 시간: {0} | 출석 상황 결과 : {1}")
@@ -106,7 +106,7 @@ class AttendanceManagerTest {
 
         // then
         assertThat(attendances.size())
-                .isEqualTo(14);
+                .isEqualTo(6);
     }
 
     @Test

@@ -3,8 +3,6 @@ package attendance.view;
 import attendance.domain.Attendance;
 import attendance.domain.AttendanceStateType;
 import attendance.domain.AttendanceStatus;
-import attendance.dto.response.WarnedStudent;
-import attendance.dto.response.WarnedStudents;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -82,22 +80,5 @@ public class OutputView { // todo : 상수 분리 적용 필요, response 파라
 
         System.out.println();
         System.out.printf(NEW_LINE + "%s 대상자입니다.", attendanceStatus.getWarningType().getName());
-    }
-
-    public void printWarnedStudents(WarnedStudents response) {
-        System.out.print(NEW_LINE + "제적 위험자 조회 결과");
-        List<WarnedStudent> warnedStudents = response.students();
-        warnedStudents.forEach(student -> {
-            System.out.printf("\n- %s: 결석 %d회, 지각 %d회 (%s)",
-                    student.name(),
-                    student.groupByStatus().expulsion(),
-                    student.groupByStatus().late(),
-                    student.groupByStatus().warning()
-            );
-        });
-    }
-
-    public void printErrorMessage(String message) {
-        System.out.println(System.lineSeparator() + message);
     }
 }
