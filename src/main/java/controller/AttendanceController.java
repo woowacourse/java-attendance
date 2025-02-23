@@ -37,22 +37,38 @@ public class AttendanceController {
         while (true) {
             String rawCommand = inputView.readCommand();
             Command command = stringConverter.convertToCommand(rawCommand);
-            if (command.equals(Command.ONE)) {
-                Attendance attendance = checkInAttendance(attendances);
-                outputView.printCheckInResult(attendance);
-            }
-            if (command.equals(Command.TWO)) {
-                modifyAttendance(attendances);
-            }
-            if (command.equals(Command.THREE)) {
-                checkAttendance(attendances);
-            }
-            if (command.equals(Command.FOUR)) {
-                checkPunishment(crews, attendances);
-            }
+            processOptionOne(command, attendances);
+            processOptionTwo(command, attendances);
+            processOptionThree(command, attendances);
+            processOptionFour(command, crews, attendances);
             if (command.equals(Command.QUIT)) {
                 break;
             }
+        }
+    }
+
+    private void processOptionOne(Command command, Attendances attendances) {
+        if (command.equals(Command.ONE)) {
+            Attendance attendance = checkInAttendance(attendances);
+            outputView.printCheckInResult(attendance);
+        }
+    }
+
+    private void processOptionTwo(Command command, Attendances attendances) {
+        if (command.equals(Command.TWO)) {
+            modifyAttendance(attendances);
+        }
+    }
+
+    private void processOptionThree(Command command, Attendances attendances) {
+        if (command.equals(Command.THREE)) {
+            checkAttendance(attendances);
+        }
+    }
+
+    private void processOptionFour(Command command, Crews crews, Attendances attendances) {
+        if (command.equals(Command.FOUR)) {
+            checkPunishment(crews, attendances);
         }
     }
 
