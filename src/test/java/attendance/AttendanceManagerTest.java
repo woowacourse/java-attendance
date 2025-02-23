@@ -5,7 +5,6 @@ import static org.assertj.core.api.AssertionsForClassTypes.*;
 import java.time.LocalDateTime;
 import java.util.stream.Stream;
 
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -14,6 +13,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
+import attendance.common.exception.AttendanceArgumentException;
 import attendance.common.exception.AttendanceFileException;
 import attendance.domain.Attendance;
 import attendance.domain.AttendanceManager;
@@ -68,19 +68,25 @@ public class AttendanceManagerTest {
 
             manager.addAttendance(nickname, attendance);
 
-            Assertions.assertThat(manager.findAttendance(nickname, attendance)).isEqualTo(attendance);
+            assertThat(manager.findAttendance(nickname, attendance)).isEqualTo(attendance);
         }
 
         @Test
         @DisplayName("등록되지 않은 닉네임을 입력하면, 예외가 발생된다.")
         void error_notRegisteredNickname() {
+            var nickname = "고든";
+            var time = LocalDateTime.of(2024, 12, 13, 10, 1);
 
+            var attendance = new Attendance(time);
+            assertThatThrownBy(() -> manager.addAttendance(nickname, attendance))
+                .isInstanceOf(AttendanceArgumentException.class)
+                .hasMessageContaining("등록되지 않은 닉네임");
         }
 
         @Test
         @DisplayName("다시 출석할 경우, 예외가 발생한다.")
         void error_retireAttendance() {
-
+            
         }
 
         private static Stream<Arguments> getSourceForAttendanceInfo() {

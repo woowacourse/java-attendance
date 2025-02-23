@@ -16,6 +16,7 @@ import attendance.common.exception.AttendanceArgumentException;
 import attendance.common.exception.AttendanceFileException;
 
 public class AttendanceManager {
+    private static final int csvInfo = 1;
     private final Map<String, List<Attendance>> attendances = new HashMap<>();
 
     public AttendanceManager(String fileName) throws AttendanceFileException {
@@ -35,7 +36,7 @@ public class AttendanceManager {
         try (BufferedReader bufferedReader = new BufferedReader(
             new FileReader(resourceUrl.getFile()))) {
             bufferedReader.lines()
-                .skip(1)
+                .skip(csvInfo)
                 .forEach(this::addAttendance);
         } catch (IOException e) {
             throw new AttendanceFileException(Error.INVALID_FILE.getMessage(), e);
@@ -55,7 +56,11 @@ public class AttendanceManager {
     }
 
     public void addAttendance(String nickname, Attendance attendance) {
-        attendances.get(nickname).add(attendance);
+        try {
+            attendances.get(nickname).add(attendance);
+        } catch (NullPointerException e) {
+            throw new AttendanceArgumentException(Error.NOT_REGISTERED_NICKNAME.getMessage());
+        }
     }
 
     public Attendance findAttendance(String nickname, Attendance attendance) {
@@ -72,7 +77,7 @@ public class AttendanceManager {
         DUPLICATE_DATE("이미 출석되었습니다. 수정 기능을 이용해주세요."),
         CANT_FIND_INFO("출석 정보를 찾을 수 없습니다."),
 
-        CANNOT_BE_EMPTY_NICKNAME("닉네임은 공백일 수 없습니다."),
+        NOT_REGISTERED_NICKNAME("등록되지 않은 닉네임입니다."),
 
         NOT_EXIST_FILE("존재하지 않은 파일입니다."),
         INVALID_FILE("유효하지 않은 파일입니다."),
