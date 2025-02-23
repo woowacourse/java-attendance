@@ -11,10 +11,10 @@ public enum AttendanceStatus {
     private static final LocalTime START_TIME = LocalTime.of(8, 0);
     private static final LocalTime END_TIME = LocalTime.of(23, 0);
 
-    private final String koreanName;
+    private final String displayName;
 
-    AttendanceStatus(String koreanName) {
-        this.koreanName = koreanName;
+    AttendanceStatus(String displayName) {
+        this.displayName = displayName;
     }
 
     public static AttendanceStatus findByAttendanceTime(Week day, LocalTime attendanceTime) {
@@ -50,7 +50,7 @@ public enum AttendanceStatus {
         return !attendanceTime.isAfter(adjustedTime);
     }
 
-    public String getKoreanName() {
-        return koreanName;
+    public String getDisplayName() {
+        return displayName;
     }
 }

@@ -20,7 +20,7 @@ public final class OutputView {
         final LocalDateTime localDateTime = attendanceSummary.attendanceDateTime().getLocalDateTime();
         final AttendanceStatus attendanceStatus = attendanceSummary.attendanceStatus();
         final String format = String.format("%s (%s)", localDateTime.format(Week.KOREAN_DATE_TIME_FORMAT),
-                attendanceStatus.getKoreanName());
+                attendanceStatus.getDisplayName());
 
         printMessageWithLineSeparator(format);
     }
@@ -28,9 +28,9 @@ public final class OutputView {
     public static void printUpdateAttendance(final AttendanceSummary oldAttendanceSummary,
                                              final AttendanceSummary newAttendanceSummary) {
         final LocalDateTime oldDateTime = oldAttendanceSummary.attendanceDateTime().getLocalDateTime();
-        final String oldStatus = oldAttendanceSummary.attendanceStatus().getKoreanName();
+        final String oldStatus = oldAttendanceSummary.attendanceStatus().getDisplayName();
         final LocalDateTime newDateTime = newAttendanceSummary.attendanceDateTime().getLocalDateTime();
-        final String newStatus = newAttendanceSummary.attendanceStatus().getKoreanName();
+        final String newStatus = newAttendanceSummary.attendanceStatus().getDisplayName();
 
         final String oldFormat = String.format("%s (%s)", oldDateTime.format(Week.KOREAN_DATE_TIME_FORMAT), oldStatus);
         final String newFormat = String.format("%s (%s)", newDateTime.toLocalDate(), newStatus);
@@ -73,14 +73,15 @@ public final class OutputView {
         printMessage(
                 String.format(
                         countFormat,
-                        AttendanceStatus.ATTENDANCE.getKoreanName(),
+                        AttendanceStatus.ATTENDANCE.getDisplayName(),
                         crewSummaries.attendanceCount()
                 )
         );
         printMessage(
-                String.format(countFormat, AttendanceStatus.TARDINESS.getKoreanName(), crewSummaries.tardinessCount()));
+                String.format(countFormat, AttendanceStatus.TARDINESS.getDisplayName(),
+                        crewSummaries.tardinessCount()));
         printMessage(
-                String.format(countFormat, AttendanceStatus.ABSENCE.getKoreanName(), crewSummaries.absenceCount()));
+                String.format(countFormat, AttendanceStatus.ABSENCE.getDisplayName(), crewSummaries.absenceCount()));
     }
 
     public static void printAllExpulsion(final List<CrewSummary> crewSummaries) {
