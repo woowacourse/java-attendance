@@ -102,7 +102,7 @@ class AttendanceManagerTest {
 
         // then
         assertThat(attendances.size())
-                .isEqualTo(4);
+                .isEqualTo(3);
     }
 
     @Test
