@@ -1,4 +1,4 @@
-package controller;
+package domain;
 
 @FunctionalInterface
 public interface Command {

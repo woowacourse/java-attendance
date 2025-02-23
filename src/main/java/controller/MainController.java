@@ -4,6 +4,7 @@ import domain.AbsenceHistory;
 import domain.Attendance;
 import domain.AttendanceState;
 import domain.Calender;
+import domain.Command;
 import domain.Crew;
 import domain.FeatureType;
 import dto.AbsenceResultDto;
