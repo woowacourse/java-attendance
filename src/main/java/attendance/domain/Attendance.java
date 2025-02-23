@@ -11,6 +11,7 @@ public record Attendance(LocalDateTime dateTime, AttendanceStatus attendanceStat
     private static final LocalTime MONDAY_SCHEDULE = LocalTime.of(13, 0);
 
     private static final String CANNOT_ATTENDANCE_WEEKEND_FORMAT = "MM월 dd일 E요일은 등교일이 아닙니다.";
+    private static final String OUT_OF_SCHOOL_SCHEDULE = "등교시간에만 출석 가능합니다.";
 
     private static final int ABSENCE = 30;
     private static final int LATE = 5;
@@ -29,6 +30,10 @@ public record Attendance(LocalDateTime dateTime, AttendanceStatus attendanceStat
     private static void validate(LocalDateTime dateTime) {
         if (dateTime.getDayOfWeek().getValue() >= WEEKENDER) {
             throw new AttendanceArgumentException(CANNOT_ATTENDANCE_WEEKEND_FORMAT, dateTime);
+        }
+        if (dateTime.toLocalTime().isBefore(LocalTime.of(8, 0))
+            || dateTime.toLocalTime().isAfter(LocalTime.of(23, 0))) {
+            throw new AttendanceArgumentException(OUT_OF_SCHOOL_SCHEDULE);
         }
     }
 
