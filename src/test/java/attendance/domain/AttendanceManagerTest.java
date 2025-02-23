@@ -106,6 +106,21 @@ class AttendanceManagerTest {
     }
 
     @Test
+    void 크루의_출결_상태를_반환한다() {
+        // given
+        String nickname = "이든";
+        attendanceManager.addCrew(nickname);
+
+        // when
+        AttendanceStatus result = attendanceManager.getAttendanceStatus(nickname);
+
+        // then
+        assertThat(result.getExpulsion()).isEqualTo(3);
+        assertThat(result.getLate()).isEqualTo(0);
+        assertThat(result.getAttendance()).isEqualTo(0);
+    }
+
+    @Test
     void 등록되지_않은_닉네임으로_출석시_에러가_발생한다() {
         // given
         String nickname = "이든";
