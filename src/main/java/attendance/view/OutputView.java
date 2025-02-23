@@ -1,6 +1,8 @@
 package attendance.view;
 
 import attendance.domain.Attendance;
+import attendance.domain.AttendanceStateType;
+import attendance.domain.AttendanceStatus;
 import attendance.dto.response.WarnedStudent;
 import attendance.dto.response.WarnedStudents;
 
@@ -8,8 +10,10 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.TextStyle;
+import java.util.EnumMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 public class OutputView { // todo : 상수 분리 적용 필요, response 파라미터 네이밍 통일, 메서드 순서 정렬
 
@@ -35,7 +39,7 @@ public class OutputView { // todo : 상수 분리 적용 필요, response 파라
         LocalDateTime dateTime = attendance.getDateTime();
 
         String timeContent = dateTime.toLocalTime().toString(); // todo : 파싱 메서드 분리 고려
-        if (dateTime.toLocalTime().equals(LocalTime.MIN)) {
+        if (dateTime.toLocalTime().equals(LocalTime.MAX)) {
             timeContent = "--:--";
         }
 
@@ -64,19 +68,20 @@ public class OutputView { // todo : 상수 분리 적용 필요, response 파라
 
         attendances.forEach(this::printAttendanceRecord);
         System.out.println();
+    }
 
-//        System.out.printf(NEW_LINE + """
-//                        출석: %d회
-//                        지각: %d회
-//                        결석: %d회
-//                        """,
-//                groupByStatus.attendance(),
-//                groupByStatus.late(),
-//                groupByStatus.expulsion()
-//        );
-//
-//        System.out.println();
-//        System.out.printf("%s 대상자입니다.", groupByStatus.warning()); // todo : 출력 순서랑 이후 날짜 중재
+    public void printAttendanceStatus(final AttendanceStatus attendanceStatus) {
+        EnumMap<AttendanceStateType, Integer> status = attendanceStatus.getStatus();
+
+        for (Map.Entry<AttendanceStateType, Integer> entry : status.entrySet()) {
+            System.out.printf(NEW_LINE + "%s: %d회",
+                    entry.getKey().getName(),
+                    entry.getValue()
+            );
+        }
+
+        System.out.println();
+        System.out.printf(NEW_LINE + "%s 대상자입니다.", attendanceStatus.getWarningType().getName());
     }
 
     public void printWarnedStudents(WarnedStudents response) {

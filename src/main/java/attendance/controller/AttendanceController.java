@@ -4,6 +4,7 @@ import attendance.config.AppConfig;
 import attendance.domain.Attendance;
 import attendance.domain.AttendanceInit;
 import attendance.domain.AttendanceManager;
+import attendance.domain.AttendanceStatus;
 import attendance.domain.Holiday;
 import attendance.dto.response.WarnedStudents;
 import attendance.utility.DateGenerator;
@@ -97,8 +98,11 @@ public class AttendanceController {
             String nickname = inputView.readNickname(false);
             attendanceManager.validateNicknameExists(nickname);
 
-            List<Attendance> attendances = attendanceManager.processAttendanceSearch(nickname);
+            List<Attendance> attendances = attendanceManager.getAttendanceRecord(nickname);
             outputView.printAttendanceSearch(attendances, nickname);
+
+            AttendanceStatus attendanceStatus = attendanceManager.getAttendanceStatus(nickname);
+            outputView.printAttendanceStatus(attendanceStatus);
         }
     }
 
