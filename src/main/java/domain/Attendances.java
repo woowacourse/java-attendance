@@ -15,17 +15,17 @@ public class Attendances {
     }
 
     public AttendanceDto calculateAttendanceCount() {
-        final long attendanceCount = attendances.stream()
-                .filter(attendance -> attendance.attendanceStatus.equals(AttendanceStatus.ATTENDANCE))
-                .count();
-        final long tardinessCount = attendances.stream()
-                .filter(attendance -> attendance.attendanceStatus.equals(AttendanceStatus.TARDINESS))
-                .count();
-        final long absence = attendances.stream()
-                .filter(attendance -> attendance.attendanceStatus.equals(AttendanceStatus.ABSENCE))
-                .count();
+        final long attendanceCount =getCountByStatus(AttendanceStatus.ATTENDANCE);
+        final long tardinessCount = getCountByStatus(AttendanceStatus.TARDINESS);
+        final long absence = getCountByStatus(AttendanceStatus.ABSENCE);
 
         return new AttendanceDto((int) attendanceCount, (int) tardinessCount, (int) absence);
+    }
+
+    public int getCountByStatus(AttendanceStatus status) {
+        return (int) attendances.stream()
+                .filter(attendance -> attendance.attendanceStatus.equals(status))
+                .count();
     }
 
     public boolean isAttended(final LocalDateTime dateTime) {
