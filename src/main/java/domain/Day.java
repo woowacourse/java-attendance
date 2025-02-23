@@ -15,10 +15,6 @@ public class Day {
         this.date = date;
     }
 
-    private DayOfWeek getDayOfWeek() {
-        return DayOfWeek.getInstance(date);
-    }
-
     public Boolean isEqualTo(LocalDate date) {
         return this.date.equals(date);
     }
@@ -28,8 +24,8 @@ public class Day {
     }
 
     public boolean isLate(LocalTime attendanceTime) {
-        LocalTime standardTime = getDayOfWeek().getStandardTime();
-        if (standardTime == null) {
+        LocalTime standardTime = getStandardTime();
+        if (standardTime == null || attendanceTime == null) {
             return false;
         }
         long betweenMinutes = Duration.between(standardTime, attendanceTime).toMinutes();
@@ -37,9 +33,13 @@ public class Day {
     }
 
     public boolean isAbsent(LocalTime attendanceTime) {
-        LocalTime standardTime = getDayOfWeek().getStandardTime();
+        LocalTime standardTime = getStandardTime();
         if (standardTime == null) {
             return false;
+        }
+
+        if (attendanceTime == null) {
+            return true;
         }
         long betweenMinutes = Duration.between(standardTime, attendanceTime).toMinutes();
         return betweenMinutes > STANDARD_ABSENT_MINUTE;
@@ -47,5 +47,13 @@ public class Day {
 
     public LocalDate getDate() {
         return date;
+    }
+
+    private LocalTime getStandardTime() {
+        return getDayOfWeek().getStandardTime();
+    }
+
+    private DayOfWeek getDayOfWeek() {
+        return DayOfWeek.getInstance(date);
     }
 }
