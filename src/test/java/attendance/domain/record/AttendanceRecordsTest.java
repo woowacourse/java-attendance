@@ -3,6 +3,7 @@ package attendance.domain.record;
 import static attendance.domain.record.AttendanceType.ATTENDANCE;
 import static attendance.domain.record.AttendanceType.EXPULSION;
 import static attendance.domain.record.AttendanceType.LATE;
+import static attendance.fixer.RecordFixer.makeRecord;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 
@@ -121,24 +122,5 @@ class AttendanceRecordsTest {
                 LocalDate.of(2024, 12, 11), LocalDate.of(2024, 12, 14));
 
         assertThat(attendanceCount).isEqualTo(2);
-    }
-
-    public static AttendanceRecord makeRecord(
-            String nickname, AttendanceType attendanceType
-    ) {
-        LocalDateTime arrivalDateTime = LocalDateTime.of(2024, 12, 9, 8, 10, 0);
-        return new AttendanceRecord(nickname, arrivalDateTime, attendanceType);
-    }
-
-    public static AttendanceRecord makeRecord(
-            String nickname, LocalDateTime arrivalDateTime
-    ) {
-        return new AttendanceRecord(nickname, arrivalDateTime, ATTENDANCE);
-    }
-
-    public static AttendanceRecord makeRecord(
-            String nickname, LocalDateTime arrivalDateTime, AttendanceType attendanceType
-    ) {
-        return new AttendanceRecord(nickname, arrivalDateTime, attendanceType);
     }
 }

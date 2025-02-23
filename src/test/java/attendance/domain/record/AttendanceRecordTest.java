@@ -1,7 +1,9 @@
 package attendance.domain.record;
 
+import static attendance.fixer.RecordFixer.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
+import attendance.fixer.RecordFixer;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.Month;
@@ -56,12 +58,5 @@ class AttendanceRecordTest {
         boolean actualResult =
                 record.isInPeriod(LocalDate.of(2024, 12, 10), LocalDate.of(2024, 12, 12));
         assertThat(actualResult).isEqualTo(isInPeriod);
-    }
-
-    public static AttendanceRecord makeRecord(
-            String nickname, AttendanceType attendanceType
-    ) {
-        LocalDateTime arrivalDateTime = LocalDateTime.of(2024, 12, 9, 8, 10, 0);
-        return new AttendanceRecord(nickname, arrivalDateTime, attendanceType);
     }
 }

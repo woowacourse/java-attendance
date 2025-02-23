@@ -3,12 +3,10 @@ package attendance.domain.record;
 import static attendance.domain.record.AttendanceType.ATTENDANCE;
 import static attendance.domain.record.AttendanceType.EXPULSION;
 import static attendance.domain.record.AttendanceType.LATE;
+import static attendance.fixer.RecordFixer.makeRecord;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 
-import attendance.domain.record.AttendanceRecord;
-import attendance.domain.record.AttendanceRecordStorage;
-import attendance.domain.record.AttendanceType;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.Month;
@@ -124,24 +122,5 @@ class AttendanceRecordStorageTest {
         int lateCount = recordStorage.calculateLateCount(
                 "쿠키", LocalDate.of(2024, 12, 10), LocalDate.of(2024, 12, 14));
         assertThat(lateCount).isEqualTo(3);
-    }
-
-    public static AttendanceRecord makeRecord(
-            String nickname, AttendanceType attendanceType
-    ) {
-        LocalDateTime arrivalDateTime = LocalDateTime.of(2024, 12, 9, 8, 10, 0);
-        return new AttendanceRecord(nickname, arrivalDateTime, attendanceType);
-    }
-
-    public static AttendanceRecord makeRecord(
-            String nickname, LocalDateTime arrivalDateTime
-    ) {
-        return new AttendanceRecord(nickname, arrivalDateTime, ATTENDANCE);
-    }
-
-    public static AttendanceRecord makeRecord(
-            String nickname, LocalDateTime arrivalDateTime, AttendanceType attendanceType
-    ) {
-        return new AttendanceRecord(nickname, arrivalDateTime, attendanceType);
     }
 }
