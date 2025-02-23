@@ -9,6 +9,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -31,6 +32,10 @@ public class AttendanceHistories {
     }
 
     public List<AttendanceHistory> getAttendanceHistories() {
+
+        Collections.sort(attendanceHistories, Comparator.comparing(
+            history -> history.getAttendanceTime().getAttendanceTime().toLocalDate()
+        ));
         return Collections.unmodifiableList(attendanceHistories);
     }
 
@@ -47,7 +52,8 @@ public class AttendanceHistories {
     private void validateDuplicateHistory(AttendanceHistory attendanceHistory) {
         boolean isSame = attendanceHistories.stream()
             .anyMatch(result -> result.getAttendanceTime().
-                getAttendanceTime().toLocalDate().isEqual(attendanceHistory.getAttendanceTime().getAttendanceTime().toLocalDate()));
+                getAttendanceTime().toLocalDate()
+                .isEqual(attendanceHistory.getAttendanceTime().getAttendanceTime().toLocalDate()));
         if (isSame) {
             throw new IllegalArgumentException(ALREADY_EXIST_ATTENDANCE.getMessage());
         }

@@ -1,25 +1,21 @@
 package attendance.view;
 
-import static attendance.domain.AttendanceType.ABSENCE;
-import static attendance.domain.AttendanceType.LATE;
-
 import attendance.domain.AttendanceHistory;
-import attendance.domain.AttendancePolicy;
-import attendance.domain.CrewStatus;
-import attendance.domain.dto.AttendanceHistoryDto;
+import attendance.domain.AttendanceTime;
 import attendance.domain.AttendanceType;
-import attendance.domain.Crew;
-import java.time.DayOfWeek;
+import attendance.domain.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.Comparator;
-import java.util.List;
+import java.time.LocalTime;
+import java.time.Month;
 import java.util.Map;
 
 public class OutputView {
-    private static final String ATTENDANCE_RESULT_MESSAGE = "\n%d월 %d일 %s %02d:%02d (%s)\n";
+
+    private static final String ATTENDANCE_RESULT_MESSAGE = "%d월 %d일 %s %02d:%02d (%s)";
     private static final String MODIFY_ATTENDANCE_RESULT_MESSAGE = "\n%d월 %d일 %s %02d:%02d (%s) -> %02d:%02d (%s) 수정 완료!\n";
 
+    /*
     public void printAttendanceResult(AttendanceHistory attendanceHistory) {
         LocalDateTime attendanceTime = attendanceHistory.getAttendanceTime();
         DayOfWeek dayOfWeek = attendanceTime.getDayOfWeek();
@@ -34,6 +30,9 @@ public class OutputView {
         );
     }
 
+     */
+
+    /*
     public void printModifyAttendanceResult(AttendanceHistoryDto beforeAttendanceHistoryDto,
                                             AttendanceHistory afterAttendanceHistory) {
         LocalDateTime beforeAttendanceTime = beforeAttendanceHistoryDto.getAttendanceTime();
@@ -54,6 +53,9 @@ public class OutputView {
         );
     }
 
+
+     */
+    /*
     public void printAttendanceHistories(LocalDate now, Crew crew) {
         System.out.println("\n이번 달 %s의 출석 기록입니다.\n".formatted(crew.getName()));
         for (int day = 1; day < now.getDayOfMonth(); day++) {
@@ -88,13 +90,21 @@ public class OutputView {
         System.out.println();
     }
 
-    public void printAttendanceResult(Map<AttendanceType, Integer> attendanceResult) {
-        for (AttendanceType attendanceType : attendanceResult.keySet()) {
-            System.out.println("%s: %d회".formatted(
-                    attendanceType,
-                    attendanceResult.get(attendanceType))
-            );
-        }
+     */
+
+    public void printAttendanceResult(AttendanceHistory attendanceHistory) {
+        AttendanceTime attendanceTime = attendanceHistory.getAttendanceTime();
+        AttendanceType attendanceType = attendanceHistory.getAttendanceType();
+
+        LocalDateTime localDateTime = attendanceTime.getAttendanceTime();
+        LocalDate localDate = localDateTime.toLocalDate();
+        LocalTime localTime = localDateTime.toLocalTime();
+        int month = localDate.getMonthValue();
+        int day = localDate.getDayOfMonth();
+        DayOfWeek dayOfWeek = DayOfWeek.calculateDayOfWeek(localDate);
+
+        System.out.printf(ATTENDANCE_RESULT_MESSAGE, month, day, dayOfWeek.getName(), localTime.getHour(),
+            localTime.getMinute(), attendanceType.getName());
         System.out.println();
     }
 
@@ -102,6 +112,7 @@ public class OutputView {
         System.out.println("면담 대상자입니다.\n");
     }
 
+    /*
     public void printDangerousCrews(LocalDate now, List<Crew> dangerousCrews) {
         System.out.println("\n제적 위험자 조회 결과");
         sortDangerousCrews(now, dangerousCrews);
@@ -118,6 +129,9 @@ public class OutputView {
         System.out.println();
     }
 
+     */
+    /*
+
     private void sortDangerousCrews(LocalDate now, List<Crew> dangerousCrews) {
         dangerousCrews.sort(new Comparator<Crew>() {
             @Override
@@ -131,4 +145,6 @@ public class OutputView {
             }
         });
     }
+
+     */
 }

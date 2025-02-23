@@ -1,33 +1,30 @@
 package attendance.controller;
 
-import static attendance.domain.CrewStatus.INTERVIEW;
-
 import attendance.CurrentDate;
 import attendance.domain.AttendanceHistory;
-import attendance.domain.AttendancePolicy;
-import attendance.domain.dto.AttendanceHistoryDto;
-import attendance.domain.AttendanceType;
 import attendance.domain.Crew;
-import attendance.domain.CrewManager;
+import attendance.domain.CrewAttendanceManager;
+import attendance.domain.Crews;
 import attendance.view.InputView;
 import attendance.view.OutputView;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.List;
-import java.util.Map;
 
 public class AttendanceController {
     private final InputView inputView;
-    private final CrewManager crewManager;
+    private final Crews crews;
     private final OutputView outputView;
     private final CurrentDate currentDate;
+    private final CrewAttendanceManager crewAttendanceManager;
 
-    public AttendanceController(InputView inputView, CrewManager crewManager, OutputView outputView, CurrentDate currentDate) {
+    public AttendanceController(InputView inputView, Crews crews, OutputView outputView, CurrentDate currentDate,
+        CrewAttendanceManager crewAttendanceManager) {
         this.inputView = inputView;
-        this.crewManager = crewManager;
+        this.crews = crews;
         this.outputView = outputView;
         this.currentDate = currentDate;
+        this.crewAttendanceManager = crewAttendanceManager;
     }
 
     public void start() {
@@ -38,6 +35,7 @@ public class AttendanceController {
                 doAttendance(now);
                 continue;
             }
+            /*
             if (option.equals("2")) {
                 modifyAttendance(now);
                 continue;
@@ -53,15 +51,18 @@ public class AttendanceController {
             if (option.equals("Q")) {
                 continue;
             }
+             */
             throw new IllegalArgumentException("잘못된 입력 입니다.");
         }
     }
 
+    /*
     private void checkDangerousCrews(LocalDate now) {
         List<Crew> dangerousCrews = crewManager.getDangerousCrews(now);
         outputView.printDangerousCrews(now, dangerousCrews);
     }
-
+     */
+    /*
     private void checkAttendanceHistoriesByCrew(LocalDate now) {
         Crew crew = findCrew();
         Map<AttendanceType, Integer> attendanceResult = crew.calculateAttendanceResult(now);
@@ -71,7 +72,8 @@ public class AttendanceController {
             outputView.printInterviewTarget();
         }
     }
-
+     */
+    /*
     private void modifyAttendance(LocalDate now) {
         Crew crew = findCrew();
         LocalDate modifyDate = inputView.inputModifyDate(now);
@@ -82,20 +84,24 @@ public class AttendanceController {
         outputView.printModifyAttendanceResult(beforeAttendanceHistoryDto, afterAttendanceHistory);
     }
 
+     */
+
     private void doAttendance(LocalDate now) {
-        AttendancePolicy.ifHolidayOrWeekendsThrowException(now);
-        Crew crew = findCrew();
+        String crewName = inputView.inputCrewName();
+        Crew crew = crews.findByCrewName(crewName);
         LocalTime attendanceTime = inputView.inputAttendanceTime();
-        AttendanceType attendanceType = AttendancePolicy.checkAttendanceType(now, attendanceTime);
-        AttendanceHistory attendanceHistory = new AttendanceHistory(LocalDateTime.of(now, attendanceTime),
-                attendanceType);
-        crew.addAttendanceResult(attendanceHistory);
+        LocalDateTime currentDateTime = LocalDateTime.of(now, attendanceTime);
+        AttendanceHistory attendanceHistory = AttendanceHistory.from(currentDateTime);
+        crewAttendanceManager.addCrewAttendanceInfo(crew, attendanceHistory);
         outputView.printAttendanceResult(attendanceHistory);
     }
 
+    /*
     private Crew findCrew() {
         String crewName = inputView.inputCrewName();
         Crew crew = crewManager.findByCrewName(crewName);
         return crew;
     }
+
+     */
 }

@@ -7,7 +7,7 @@ import org.junit.jupiter.api.Test;
 public class CrewTest {
     @Test
     void create_crew() {
-        Crew crew = new Crew("젠슨");
+        Crew crew = Crew.from("젠슨");
         assertThat(crew.getName()).isEqualTo("젠슨");
     }
 }

@@ -1,16 +1,21 @@
  package attendance.domain;
 
-import static attendance.domain.CrewStatus.CLEAR;
+import static attendance.error.ErrorMessage.INVALID_CREW_NAME;
 
-import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
- public class CrewManager {
-    private final Set<Crew> crews = new HashSet<>();
+ public class Crews {
+
+     private final Set<Crew> crews;
+
+     private Crews() {
+         crews = new HashSet<>();
+     }
+
+     public static Crews create() {
+         return new Crews();
+     }
 
     public boolean addCrew(Crew crew) {
         return crews.add(crew);
@@ -22,12 +27,12 @@ import java.util.Set;
 
     public Crew findByCrewName(String name){
         return crews.stream()
-                .filter(crew -> crew.getName().equals(name))
+                .filter(crew -> crew.isSameCrew(name))
                 .findAny()
-                .orElseThrow(() -> new IllegalArgumentException("해당 이름을 가진 크루는 없음"));
+                .orElseThrow(() -> new IllegalArgumentException(INVALID_CREW_NAME.getMessage()));
     }
 
-    public List<Crew> getDangerousCrews(LocalDate localDate) {
+    /*public List<Crew> getDangerousCrews(LocalDate localDate) {
         List<Crew> dangerousCrews = new ArrayList<>();
         for (Crew crew : crews) {
             Map<AttendanceType, Integer> attendanceResult = crew.calculateAttendanceResult(localDate);
@@ -38,5 +43,5 @@ import java.util.Set;
             dangerousCrews.add(crew);
         }
         return dangerousCrews;
-    }
+    }*/
 }
