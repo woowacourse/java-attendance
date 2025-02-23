@@ -27,11 +27,10 @@ public class Records {
 
     public TimeAndStatus attend(LocalDateTime localDateTime) {
         LocalDate localDate = localDateTime.toLocalDate();
-        TimeAndStatus oldStatus = records.get(localDate);
-        TimeAndStatus newStatus = createTimeAndStatus(localDateTime);
+        TimeAndStatus timeAndStatus = createTimeAndStatus(localDateTime);
 
-        records.put(localDate, newStatus);
-        return oldStatus;
+        records.put(localDate, timeAndStatus);
+        return timeAndStatus;
     }
 
     public TimeAndStatus edit(LocalDateTime newDateTime) {

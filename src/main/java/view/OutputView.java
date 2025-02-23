@@ -53,7 +53,7 @@ public class OutputView {
         LocalDate startDate = LocalDate.of(START_YEAR, START_MONTH, START_DAY);
         while (startDate.isBefore(nowDate)) {
             TimeAndStatus status = records.findByDate(startDate);
-            if (!Holiday.isHoliday(startDate)) {
+            if (!Holiday.isHoliday(startDate) && !Holiday.isWeekend(startDate)) {
                 if (status == null || status.getStatus() == null) {
                     String date = dateFormatting(startDate);
                     System.out.printf(ATTENDANCE_RECORD_FORMAT, date, ABSENCE_RECORD_FORMAT);

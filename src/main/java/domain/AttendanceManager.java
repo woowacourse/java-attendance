@@ -91,7 +91,7 @@ public class AttendanceManager {
         LocalTime start = DateTimeParser.parseIntegerToTime(CAMPUS_START_HOUR, CAMPUS_START_MINUTE);
         LocalTime end = DateTimeParser.parseIntegerToTime(CAMPUS_END_HOUR, CAMPUS_END_MINUTE);
 
-        return (time.isAfter(start) || time.equals(start)) && (time.isBefore(end) || time.equals(
-            end));
+        return (time.isAfter(start) || time.equals(start))
+            && (time.isBefore(end) || time.equals(end));
     }
 }

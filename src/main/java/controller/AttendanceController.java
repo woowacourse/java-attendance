@@ -50,68 +50,84 @@ public class AttendanceController {
     }
 
     private void attendCrew() {
-        String name = inputView.readName();
-        InputValidator.checkNull(name);
+        handleException(() -> {
+            String name = inputView.readName();
+            InputValidator.checkNull(name);
 
-        String time = inputView.readTime();
-        InputValidator.checkNull(time);
+            String time = inputView.readTime();
+            InputValidator.checkNull(time);
 
-        LocalDate currentDate = DateTimeParser.parseIntegerToDate(NOW_YEAR, NOW_MONTH, NOW_DAY);
-        LocalTime attendedTime = DateTimeParser.parseStringToTime(time);
-        LocalDateTime dateTime = LocalDateTime.of(currentDate, attendedTime);
+            LocalDate currentDate = DateTimeParser.parseIntegerToDate(NOW_YEAR, NOW_MONTH, NOW_DAY);
+            LocalTime attendedTime = DateTimeParser.parseStringToTime(time);
+            LocalDateTime dateTime = LocalDateTime.of(currentDate, attendedTime);
 
-        attendanceManager.attendCrew(name, dateTime);
-        TimeAndStatus timeAndStatus = attendanceManager.findByName(name).findByDate(currentDate);
-        outputView.printAttendanceRecord(currentDate, timeAndStatus);
+            attendanceManager.attendCrew(name, dateTime);
+            TimeAndStatus timeAndStatus = attendanceManager.findByName(name).findByDate(currentDate);
+            outputView.printAttendanceRecord(currentDate, timeAndStatus);
+        });
     }
 
     private void editCrewRecord() {
-        String name = inputView.readEditName();
-        InputValidator.checkNull(name);
+        handleException(() -> {
+            String name = inputView.readEditName();
+            InputValidator.checkNull(name);
 
-        String dayOfMonth = inputView.readEditDayOfMonth();
-        InputValidator.checkNull(dayOfMonth);
-        InputValidator.checkInteger(dayOfMonth);
+            String dayOfMonth = inputView.readEditDayOfMonth();
+            InputValidator.checkNull(dayOfMonth);
+            InputValidator.checkInteger(dayOfMonth);
 
-        String time = inputView.readEditTime();
-        InputValidator.checkNull(time);
+            String time = inputView.readEditTime();
+            InputValidator.checkNull(time);
 
-        LocalDate editedDate = DateTimeParser.parseIntegerToDate(NOW_YEAR, NOW_MONTH, Integer.parseInt(dayOfMonth));
-        LocalTime attendedTime = DateTimeParser.parseStringToTime(time);
-        LocalDateTime dateTime = LocalDateTime.of(editedDate, attendedTime);
+            LocalDate editedDate = DateTimeParser.parseIntegerToDate(NOW_YEAR, NOW_MONTH, Integer.parseInt(dayOfMonth));
+            LocalTime attendedTime = DateTimeParser.parseStringToTime(time);
+            LocalDateTime dateTime = LocalDateTime.of(editedDate, attendedTime);
 
-        TimeAndStatus oldStatus = attendanceManager.editCrew(name, dateTime);
-        TimeAndStatus newStatus = attendanceManager.findByName(name).findByDate(editedDate);
-        outputView.printEditResult(editedDate, oldStatus, newStatus);
+            TimeAndStatus oldStatus = attendanceManager.editCrew(name, dateTime);
+            TimeAndStatus newStatus = attendanceManager.findByName(name).findByDate(editedDate);
+            outputView.printEditResult(editedDate, oldStatus, newStatus);
+        });
     }
 
     private void checkCrewRecords() {
-        String name = inputView.readName();
-        InputValidator.checkNull(name);
+        handleException(() -> {
+            String name = inputView.readName();
+            InputValidator.checkNull(name);
 
-        LocalDate currentDate = DateTimeParser.parseIntegerToDate(NOW_YEAR, NOW_MONTH, NOW_DAY);
-        Records records = attendanceManager.findByName(name);
+            LocalDate currentDate = DateTimeParser.parseIntegerToDate(NOW_YEAR, NOW_MONTH, NOW_DAY);
+            Records records = attendanceManager.findByName(name);
 
-        StatisticsResult statistics = AttendanceStatistics.countStatus(currentDate, records);
-        int attendanceCount = statistics.getAttendanceCount();
-        int latenessCount = statistics.getLatenessCount();
-        int absenceCount = statistics.getAbsenceCount();
-        Penalty penaltyResult = statistics.getPenalty();
+            StatisticsResult statistics = AttendanceStatistics.countStatus(currentDate, records);
+            int attendanceCount = statistics.getAttendanceCount();
+            int latenessCount = statistics.getLatenessCount();
+            int absenceCount = statistics.getAbsenceCount();
+            Penalty penaltyResult = statistics.getPenalty();
 
-        outputView.printRecords(name, currentDate, records);
-        outputView.printStatistics(attendanceCount, latenessCount, absenceCount, penaltyResult);
+            outputView.printRecords(name, currentDate, records);
+            outputView.printStatistics(attendanceCount, latenessCount, absenceCount, penaltyResult);
+        });
     }
 
     private void checkExpelledWarningCrews() {
-        LocalDate currentDate = DateTimeParser.parseIntegerToDate(NOW_YEAR, NOW_MONTH, NOW_DAY);
+        handleException(() -> {
+            LocalDate currentDate = DateTimeParser.parseIntegerToDate(NOW_YEAR, NOW_MONTH, NOW_DAY);
 
-        Map<String, StatisticsResult> sortedResult = attendanceManager.sortCrew(currentDate);
-        outputView.printExpelledWarningResult(sortedResult);
+            Map<String, StatisticsResult> sortedResult = attendanceManager.sortCrew(currentDate);
+            outputView.printExpelledWarningResult(sortedResult);
+        });
     }
 
     private void validateFunctions(String functionNumber, Set<String> functions) {
         try {
             InputValidator.checkFunctions(functionNumber, functions);
+        } catch (IllegalArgumentException e) {
+            outputView.printErrorMessage(e);
+        }
+    }
+
+    private void handleException(Runnable action) {
+        try {
+            action.run();
         } catch (IllegalArgumentException e) {
             outputView.printErrorMessage(e);
         }

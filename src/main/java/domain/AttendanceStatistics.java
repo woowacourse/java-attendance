@@ -20,7 +20,7 @@ public class AttendanceStatistics {
             TimeAndStatus status = records.findByDate(startDate);
             startDate = startDate.plusDays(1);
 
-            if (!Holiday.isHoliday(startDate.minusDays(1))) {
+            if (!Holiday.isHoliday(startDate.minusDays(1)) && !Holiday.isWeekend(startDate.minusDays(1))) {
                 if (status == null || status.getStatus() == null) {
                     absenceCount++;
                     continue;
