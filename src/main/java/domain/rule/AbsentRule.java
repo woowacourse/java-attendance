@@ -1,5 +1,7 @@
 package domain.rule;
 
+import domain.AttendanceStatistics;
+
 public enum AbsentRule {
     EXPULSION("제적", 5),
     INTERVIEW("면담", 3),
@@ -17,12 +19,8 @@ public enum AbsentRule {
         this.absentCount = absentCount;
     }
 
-    public static boolean isRiskOfExpulsion(AbsentRule absentRule) {
-        return absentRule == AbsentRule.NONE || absentRule == AbsentRule.EXPULSION;
-    }
-
-    public static AbsentRule calculateAbsentPolicy(int absentCount, int lateCount) {
-        absentCount += lateCount / LATE_TO_ABSENT_RATIO;
+    public static AbsentRule calculateAbsentPolicy(AttendanceStatistics attendanceStatistics) {
+        int absentCount = attendanceStatistics.getAdjustedAbsentCount();
 
         if (absentCount > EXPULSION.absentCount) {
             return AbsentRule.EXPULSION;
@@ -32,10 +30,14 @@ public enum AbsentRule {
             return AbsentRule.INTERVIEW;
         }
 
-        if (absentCount == WARNING.absentCount) {
+        if (absentCount >= WARNING.absentCount) {
             return AbsentRule.WARNING;
         }
 
         return AbsentRule.NONE;
+    }
+
+    public boolean isRiskOfExpulsion() {
+        return this == AbsentRule.WARNING || this == AbsentRule.INTERVIEW;
     }
 }
