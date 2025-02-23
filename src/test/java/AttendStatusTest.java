@@ -10,26 +10,23 @@ import org.junit.jupiter.params.provider.MethodSource;
 
 public class AttendStatusTest {
 
-    private final LocalTime lateTime = LocalTime.of(10, 5);
-    private final LocalTime absenceTime = LocalTime.of(10, 30);
-
     private static Stream<Arguments> provideStatusAndResult() {
         return Stream.of(
-                Arguments.of(AttendStatus.ATTEND, LocalTime.of(10, 0), true),
-                Arguments.of(AttendStatus.LATE, LocalTime.of(10, 6), true),
-                Arguments.of(AttendStatus.ABSENCE, LocalTime.of(10, 31), true)
+                Arguments.of(AttendStatus.ATTEND, LocalTime.of(10, 0)),
+                Arguments.of(AttendStatus.LATE, LocalTime.of(10, 6)),
+                Arguments.of(AttendStatus.ABSENCE, LocalTime.of(10, 31))
         );
     }
 
     @ParameterizedTest
     @MethodSource("provideStatusAndResult")
     @DisplayName("출석 시간을 기반으로 출결을 판정하는 기능")
-    void test(AttendStatus attendStatus, LocalTime time, boolean actual) {
+    void test(AttendStatus actual, LocalTime time) {
         //given
         Attend attend = Attend.fromTime(time);
 
         //when
-        boolean result = attendStatus.match(attend, lateTime, absenceTime);
+        AttendStatus result = AttendStatus.findAttendStatus(attend);
 
         //then
         Assertions.assertThat(result).isEqualTo(actual);

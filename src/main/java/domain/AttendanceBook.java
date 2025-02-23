@@ -1,7 +1,6 @@
 package domain;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -78,17 +77,13 @@ public class AttendanceBook {
     }
 
     public AttendStatus checkAttendance(Attend attend) {
-        return Arrays.stream(AttendStatus.values())
-                .filter(attendStatus -> attendStatus.match(attend, OperationTime.LATE_TIME.getTime(),
-                        OperationTime.ABSENCE_TIME.getTime()))
-                .findAny()
-                .orElseThrow(() -> new IllegalArgumentException("출석 상태 판정 실패"));
+        return AttendStatus.findAttendStatus(attend);
     }
 
     private AttendanceResult getAttendanceResult(Attends attends, int day) {
         if (attends.hasDayEqualsAttend(day)) {
             Attend attend = attends.findByDay(day);
-            return new AttendanceResult(attend, checkAttendance(attend));
+            return new AttendanceResult(attend, AttendStatus.findAttendStatus(attend));
         }
         Attend attend = Attend.fromDay(day);
         return new AttendanceResult(attend, AttendStatus.ABSENCE);

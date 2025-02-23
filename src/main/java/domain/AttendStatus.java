@@ -1,27 +1,27 @@
 package domain;
 
-import java.time.LocalTime;
+import java.util.Arrays;
+import java.util.function.Predicate;
 
 public enum AttendStatus {
-    ATTEND {
-        @Override
-        public boolean match(Attend attend, LocalTime lateTime, LocalTime absenceTime) {
-            return attend.hasTime() && attend.isBefore(lateTime);
-        }
-    },
-    LATE {
-        @Override
-        public boolean match(Attend attend, LocalTime lateTime, LocalTime absenceTime) {
-            return attend.hasTime() && (attend.isEqual(lateTime) || attend.isAfter(lateTime))
-                    && attend.isBefore(absenceTime);
-        }
-    },
-    ABSENCE {
-        @Override
-        public boolean match(Attend attend, LocalTime lateTime, LocalTime absenceTime) {
-            return !attend.hasTime() || attend.isEqual(absenceTime) || attend.isAfter(absenceTime);
-        }
-    };
+    ATTEND((attend) -> attend.hasTime() && attend.isBefore(OperationTime.LATE_TIME.getTime())),
+    LATE((attend) -> attend.hasTime()
+            && (attend.isEqual(OperationTime.LATE_TIME.getTime()) || attend.isAfter(OperationTime.LATE_TIME.getTime()))
+            && attend.isBefore(OperationTime.ABSENCE_TIME.getTime())),
+    ABSENCE((attend) -> !attend.hasTime()
+            || attend.isEqual(OperationTime.ABSENCE_TIME.getTime())
+            || attend.isAfter(OperationTime.ABSENCE_TIME.getTime()));
 
-    abstract public boolean match(Attend attend, LocalTime lateTime, LocalTime absenceTime);
+    private final Predicate<Attend> matchCondition;
+
+    AttendStatus(Predicate<Attend> matchCondition) {
+        this.matchCondition = matchCondition;
+    }
+
+    public static AttendStatus findAttendStatus(Attend attend) {
+        return Arrays.stream(AttendStatus.values())
+                .filter(attendStatus -> attendStatus.matchCondition.test(attend))
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException("출석 상태 판정 실패"));
+    }
 }
