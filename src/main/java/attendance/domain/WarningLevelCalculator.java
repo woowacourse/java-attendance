@@ -26,7 +26,7 @@ public class WarningLevelCalculator {
         CALCULATE_LEVEL.put(absenceCountPredicate(NONE_ABSENCE_BOUND), () -> NONE);
     }
 
-    private static Predicate<Integer> absenceCountPredicate(int absenceCount){
+    private static Predicate<Integer> absenceCountPredicate(int absenceCount) {
         return count -> count >= absenceCount;
     }
 
