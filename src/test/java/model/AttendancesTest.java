@@ -1,10 +1,12 @@
 package model;
 
 import converter.StringConverter;
+import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.IntStream;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -110,11 +112,17 @@ class AttendancesTest {
     @DisplayName("크루의 출석을 모두 조회한다.")
     void test9() {
         //given
+        LocalDate now = LocalDate.now();
+
+        long weekdays = IntStream.rangeClosed(1, now.getDayOfMonth())
+                .mapToObj(day -> LocalDate.of(now.getYear(), now.getMonth(), day))
+                .filter(date -> date.getDayOfWeek() != DayOfWeek.SATURDAY && date.getDayOfWeek() != DayOfWeek.SUNDAY)
+                .count();
 
         //when
         Map<Crew, Attendances> crewsAttendances = attendances.findAll(crews, LocalDate.now().getMonthValue());
 
         //then
-        Assertions.assertThat(crewsAttendances.get(Crew.of("쿠키")).getAttendances()).hasSize(13);
+        Assertions.assertThat(crewsAttendances.get(Crew.of("쿠키")).getAttendances()).hasSize((int) weekdays);
     }
 }
