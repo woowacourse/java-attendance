@@ -5,23 +5,31 @@ import attendance.controller.util.CrewAttendanceParser;
 import attendance.controller.util.TimeFormatter;
 import attendance.controller.validator.HolidayValidator;
 import attendance.controller.validator.OperatingHoursValidator;
-import attendance.domain.Attendance;
-import attendance.domain.Crew;
-import attendance.domain.Crews;
-import attendance.domain.Menu;
-import attendance.domain.Warning;
+import attendance.domain.*;
 import attendance.dto.AttendanceResultResponse;
 import attendance.dto.UpdateAfterAttendanceResponse;
 import attendance.dto.UpdateBeforeAttendanceResponse;
 import attendance.view.InputView;
 import attendance.view.OutputView;
+
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.function.Consumer;
 
 public class AttendanceController {
     private final InputView inputView;
     private final OutputView outputView;
     private final LocalDate today;
+
+    private final Map<Menu, Consumer<Crews>> menuProcesses =
+            new HashMap<>() {{
+                put(Menu.CHECK_ATTEND, crews -> checkAttendance(crews));
+                put(Menu.UPDATE_ATTEND, crews -> updateAttendance(crews));
+                put(Menu.PRINT_ATTEND_BY_CREW, crews -> printAttendanceByCrew(crews));
+                put(Menu.PRINT_WARNING, crews -> printWarningCrews(crews));
+            }};
 
     public AttendanceController(LocalDate today) {
         this.inputView = new InputView();
@@ -44,10 +52,7 @@ public class AttendanceController {
 
     public void runMenu(String selectedMenuInput, Crews crews) {
         Menu selectedMenu = Menu.of(selectedMenuInput);
-        if (selectedMenu.equals(Menu.CHECK_ATTEND)) checkAttendance(crews);
-        if (selectedMenu.equals(Menu.UPDATE_ATTEND)) updateAttendance(crews);
-        if (selectedMenu.equals(Menu.PRINT_ATTEND_BY_CREW)) printAttendanceByCrew(crews);
-        if (selectedMenu.equals(Menu.PRINT_WARNING)) printWarningCrews(crews);
+        menuProcesses.get(selectedMenu).accept(crews);
     }
 
     private void checkAttendance(final Crews crews) {
