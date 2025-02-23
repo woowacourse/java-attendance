@@ -10,7 +10,6 @@ import java.util.Scanner;
 
 public class InputView {
     private static final String TODAY_INFO = "오늘은 %d월 %d일 %s입니다. 기능을 선택해 주세요.";
-
     private static final Scanner scanner = new Scanner(System.in);
 
     public static String inputOption(LocalDate localDate) {
@@ -58,6 +57,8 @@ public class InputView {
     }
 
     private static String userInput() {
-        return scanner.nextLine();
+        String input = scanner.nextLine();
+        System.out.println("hhh" + input);
+        return input;
     }
 }

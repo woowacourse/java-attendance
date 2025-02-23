@@ -22,45 +22,49 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 public class Application {
+    private static final Map<String, Runnable> optionMenu = new HashMap<>();
+    private static final CrewManager crewManager = new CrewManager();
+    private static final CurrentDate currentDate = new SystemCurrentDate();
+
+    static {
+        optionMenu.put("1", Application::doAttendance);
+        optionMenu.put("2", Application::modifyAttendance);
+        optionMenu.put("3", Application::checkAttendanceHistoriesByCrew);
+        optionMenu.put("4", Application::checkDangerousCrews);
+    }
+
     public static void main(String[] args) throws IOException {
-        CrewManager crewManager = new CrewManager();
-        LocalDate today = new SystemCurrentDate().now();
-        initializeCrewsAndAttendances(crewManager);
+        LocalDate today = currentDate.now();
+        initializeCrewsAndAttendances();
         while (true) {
             String option = inputOption(today);
-            if (option.equals("1")) {
-                doAttendance(crewManager, today);
-                continue;
-            }
-            if (option.equals("2")) {
-                modifyAttendance(crewManager, today);
-                continue;
-            }
-            if (option.equals("3")) {
-                checkAttendanceHistoriesByCrew(crewManager, today);
-                continue;
-            }
-            if (option.equals("4")) {
-                checkDangerousCrews(crewManager, today);
-                continue;
-            }
             if (option.equals("Q")) {
-                continue;
+                break;
             }
-            throw new IllegalArgumentException("잘못된 입력 입니다.");
+            run(option);
         }
     }
 
-    private static void initializeCrewsAndAttendances(CrewManager crewManager) throws IOException {
+    private static void run(String option) {
+        Runnable runnable = optionMenu.getOrDefault(option, null);
+        if (runnable == null) {
+            throw new IllegalArgumentException("잘못된 입력 입니다.");
+        }
+        runnable.run();
+    }
+
+    private static void initializeCrewsAndAttendances() throws IOException {
         BufferedReader file = AttendanceFileReader.read();
         AttendanceFileReader.initializeAttendances(file, crewManager);
     }
 
-    private static void doAttendance(CrewManager crewManager, LocalDate today) {
+    private static void doAttendance() {
+        LocalDate today = currentDate.now();
         AttendancePolicy.checkNotWeekendAndHoliday(today);
         Crew crew = findCrew(crewManager);
         LocalTime attendanceTime = inputAttendanceTime();
@@ -68,7 +72,8 @@ public class Application {
         printAttendanceHistory(attendanceHistory);
     }
 
-    private static void modifyAttendance(CrewManager crewManager, LocalDate today) {
+    private static void modifyAttendance() {
+        LocalDate today = currentDate.now();
         Crew crew = findCrew(crewManager);
         LocalDate modifyDate = inputModifyDate(today);
         LocalTime modifyTime = inputAttendanceTime();
@@ -77,7 +82,8 @@ public class Application {
         printModifyAttendanceHistory(beforeAttendanceHistory, afterAttendanceHistory);
     }
 
-    private static void checkAttendanceHistoriesByCrew(CrewManager crewManager, LocalDate today) {
+    private static void checkAttendanceHistoriesByCrew() {
+        LocalDate today = currentDate.now();
         Crew crew = findCrew(crewManager);
         Map<AttendanceType, Integer> attendanceResult = crew.calculateAttendanceResult(today);
         printAttendanceHistories(today, crew);
@@ -87,7 +93,8 @@ public class Application {
         }
     }
 
-    private static void checkDangerousCrews(CrewManager crewManager, LocalDate today) {
+    private static void checkDangerousCrews() {
+        LocalDate today = currentDate.now();
         List<Crew> dangerousCrews = crewManager.getDangerousCrews(today);
         printDangerousCrews(today, dangerousCrews);
     }
