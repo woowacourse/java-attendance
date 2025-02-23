@@ -1,7 +1,6 @@
 package domain;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatNoException;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.time.LocalDate;
@@ -58,5 +57,13 @@ class CrewTest {
         assertThatThrownBy(() -> {
             crew.validateAvailableAttendanceDate(LocalDate.of(2024, 12, 5));
         }).isInstanceOf(IllegalArgumentException.class);
+    }
+
+    @Test
+    void 크루의_닉네임이_일치하는지_확인한다() {
+        String name = "시소";
+        Crew crew = new Crew(name);
+
+        assertThat(crew.isNameMatch(name)).isEqualTo(true);
     }
 }
