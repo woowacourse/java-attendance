@@ -1,6 +1,5 @@
 package attendance.domain;
 
-import java.time.LocalTime;
 
 public enum AttendanceType {
     ATTENDANCE("출석", 5),
