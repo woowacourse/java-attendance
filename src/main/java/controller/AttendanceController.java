@@ -71,11 +71,10 @@ public class AttendanceController {
         Attendances attendances = attendanceBook.findAllByNickname(nickname);
 
         int day = inputView.inputUpdateDate();
-        AttendanceDate attendanceDate = AttendanceDate.from(LocalDate.of(TimeMachine.dateOfNow().getYear(), TimeMachine.dateOfNow().getMonth(), day));
+        AttendanceDate attendanceDate = AttendanceDate.from(LocalDate.of(TimeMachine.FIXED_YEAR, TimeMachine.FIXED_MONTH, day));
         AttendanceTime attendanceTimeForUpdate = AttendanceTime.from(LocalTime.parse(inputView.inputUpdateTime(), FormatUtil.TIME_FORMATTER));
 
-        Attendance originalAttendance = Attendance.from(
-                AttendanceDate.from(TimeMachine.dateOfNow()), attendances.findByDate(attendanceDate));
+        Attendance originalAttendance = Attendance.from(attendanceDate, attendances.findByDate(attendanceDate));
         Attendance updatedAttendance = attendances.update(attendanceDate, attendanceTimeForUpdate);
 
         outputView.printAttendanceUpdate(originalAttendance, updatedAttendance);

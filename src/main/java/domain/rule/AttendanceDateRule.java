@@ -23,7 +23,7 @@ public enum AttendanceDateRule {
     }
 
     public LocalDate toLocalDate() {
-        return LocalDate.of(TimeMachine.dateOfNow().getYear(), this.month, this.dayOfMonth);
+        return LocalDate.of(TimeMachine.FIXED_YEAR, this.month, this.dayOfMonth);
     }
 
     public static boolean canAttendDay(LocalDate date) {
