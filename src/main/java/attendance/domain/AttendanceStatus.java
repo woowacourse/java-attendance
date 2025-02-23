@@ -48,7 +48,7 @@ public class AttendanceStatus {
 
     private int calculateStateCount(final List<Attendance> attendances, final AttendanceStateType status) {
         return (int) attendances.stream()
-                .filter(attendance -> attendance.isEqualsStatus(status))
+                .filter(attendance -> attendance.hasState(status))
                 .count();
     }
 }

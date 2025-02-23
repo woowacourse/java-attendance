@@ -11,7 +11,7 @@ public class Attendances {
 
     public Attendance find(LocalDate date) {
         return attendances.stream()
-                .filter(attendance -> attendance.isEqualDate(date))
+                .filter(attendance -> attendance.isSameDate(date))
                 .findFirst()
                 .orElseThrow(() -> new IllegalArgumentException("[ERROR] 수정하려는 날짜는 출석할 수 없습니다."));
     }
@@ -38,7 +38,7 @@ public class Attendances {
     }
 
     public void validateAlreadyAttendance(LocalDate date) {
-        if (find(date).isAlreadyCheck()) {
+        if (find(date).isAlreadyChecked()) {
             throw new IllegalArgumentException("[ERROR] 이미 출석을 완료하셨습니다. 수정 기능을 이용해주세요.");
         }
     }

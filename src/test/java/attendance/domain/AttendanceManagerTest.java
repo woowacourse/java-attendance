@@ -62,7 +62,7 @@ class AttendanceManagerTest {
 
         // then
         assertThat(result.getDateTime()).isEqualTo(dateTime);
-        assertThat(result.getStatus()).isEqualTo(expected);
+        assertThat(result.getState()).isEqualTo(expected);
     }
 
     @Test
@@ -78,7 +78,7 @@ class AttendanceManagerTest {
 
         // then
         assertThat(result.getLast().getDateTime()).isEqualTo(updateDateTime);
-        assertThat(result.getLast().getStatus()).isEqualTo(ATTENDANCE);
+        assertThat(result.getLast().getState()).isEqualTo(ATTENDANCE);
     }
 
     @Test

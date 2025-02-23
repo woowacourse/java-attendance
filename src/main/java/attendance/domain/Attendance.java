@@ -7,34 +7,34 @@ import java.time.LocalTime;
 public class Attendance {
 
     private final LocalDateTime dateTime;
-    private final AttendanceStateType status;
+    private final AttendanceStateType state;
 
-    public Attendance(LocalDateTime dateTime) {
+    public Attendance(final LocalDateTime dateTime) {
         this.dateTime = dateTime;
-        this.status = AttendanceStateType.find(EducationTime.calculateOverTime(dateTime));
+        this.state = AttendanceStateType.find(EducationTime.calculateOverTime(dateTime));
     }
 
-    public boolean isEqualDate(LocalDate date) {
+    public boolean isSameDate(final LocalDate date) {
         return dateTime.toLocalDate().isEqual(date);
     }
 
-    public boolean isAlreadyCheck() {
+    public boolean isAlreadyChecked() {
         return !dateTime.toLocalTime().equals(LocalTime.MAX);
     }
 
-    public boolean isEqualsStatus(AttendanceStateType status) {
-        return this.status == status;
+    public boolean hasState(final AttendanceStateType state) {
+        return this.state == state;
+    }
+
+    public int compareTo(final Attendance other) {
+        return dateTime.compareTo(other.dateTime);
     }
 
     public LocalDateTime getDateTime() {
         return dateTime;
     }
 
-    public AttendanceStateType getStatus() {
-        return status;
-    }
-
-    public int compareTo(Attendance other) {
-        return dateTime.compareTo(other.dateTime);
+    public AttendanceStateType getState() {
+        return state;
     }
 }

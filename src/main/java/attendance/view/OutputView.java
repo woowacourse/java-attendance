@@ -46,7 +46,7 @@ public class OutputView { // todo : 상수 분리 적용 필요, response 파라
                 dateTime.getDayOfMonth(),
                 dateTime.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.KOREA),
                 timeContent,
-                attendance.getStatus().getName()
+                attendance.getState().getName()
         );
     }
 
@@ -57,7 +57,7 @@ public class OutputView { // todo : 상수 분리 적용 필요, response 파라
         printAttendanceRecord(oldAttendance);
         System.out.printf(" -> %s (%s) 수정 완료!",
                 updateAttendance.getDateTime().toLocalTime(),
-                updateAttendance.getStatus().getName()
+                updateAttendance.getState().getName()
         );
     }
 
