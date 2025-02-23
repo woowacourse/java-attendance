@@ -1,39 +1,36 @@
 package attendance;
 
-import org.junit.jupiter.api.AfterEach;
+import java.time.LocalDateTime;
+
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import attendance.domain.AttendanceManager;
+import attendance.domain.Attendance;
+import attendance.domain.AttendanceStatus;
 
 public class AttendanceTest {
 
-    @AfterEach
-    void afterTest() {
-        AttendanceManager.initiateInstance();
-    }
-
     @Test
-    @DisplayName("닉네임과 등교 시간을 입력하면, 출석할 수 있다.")
+    @DisplayName("등교 시간을 입력하면, 출석할 수 있다.")
     void test_attendance() {
+        var time = LocalDateTime.of(2024, 12, 14, 10, 1);
+        var expected = AttendanceStatus.ATTENDANCE;
+        var attendance = new Attendance(time);
 
-    }
-
-    @Test
-    @DisplayName("등록되지 않은 닉네임을 입력하면, 예외가 발생된다.")
-    void error_notRegisteredNickname() {
-
-    }
-
-    @Test
-    @DisplayName("올바르지 않은 시간 형식에 대한, 예외가 발생한다.")
-    void error_wrongTimeFormat() {
-
+        Assertions.assertThat(attendance.attendanceStatus()).isEqualTo(expected);
     }
 
     @Test
     @Disabled
+    @DisplayName("올바르지 않은 시간 형식에 대한, 예외가 발생한다.")
+    void error_wrongTimeFormat() {
+        // 입력 받는 형식에 책임은 입력해주는, 즉 전달하는 측이 처리되어야 한다.
+        // 때문에, Attendance는 LocalDateTime 만 입력받는다.
+    }
+
+    @Test
     @DisplayName("출석 시간보다 5분 초과되어 출석할 때, 지각 처리된다.")
     void test_attendanceOfLate() {
 

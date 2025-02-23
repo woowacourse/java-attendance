@@ -1,17 +1,9 @@
 package attendance;
 
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import attendance.domain.AttendanceManager;
-
 public class SanctionLevelTest {
-
-    @AfterEach
-    void afterTest() {
-        AttendanceManager.initiateInstance();
-    }
 
     @Test
     @DisplayName("모든 크루원의 제재 통계를 출력한다.")

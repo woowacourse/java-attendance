@@ -1,17 +1,9 @@
 package attendance;
 
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import attendance.domain.AttendanceManager;
-
 public class AttendanceHistoryTest {
-
-    @AfterEach
-    void afterTest() {
-        AttendanceManager.initiateInstance();
-    }
 
     @Test
     @DisplayName("닉네임을 입력하면 전날까지의 크루 출석 기록을 확인할 수 있다.")

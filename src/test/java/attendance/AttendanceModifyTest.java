@@ -1,17 +1,9 @@
 package attendance;
 
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import attendance.domain.AttendanceManager;
-
 public class AttendanceModifyTest {
-
-    @AfterEach
-    void afterTest() {
-        AttendanceManager.initiateInstance();
-    }
 
     @Test
     @DisplayName("닉네임과 날짜, 수정 시간을 입력한 후, 출석을 수정한다.")
