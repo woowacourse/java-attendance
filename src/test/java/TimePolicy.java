@@ -13,7 +13,7 @@ public class TimePolicy {
     }
 
     public static void validateMinute(String minute) {
-        if(Integer.parseInt(minute) > MAX_MINUTE){
+        if(Integer.parseInt(minute) > MAX_MINUTE || Integer.parseInt(minute) < 0){
             throw new IllegalArgumentException(TIME_FORMAT_ERROR);
         }
     }
