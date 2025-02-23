@@ -30,12 +30,12 @@ class AttendanceSystemTest {
 
     @ParameterizedTest(name = "출석 시간: {0} | 출석 상황 결과 : {1}")
     @MethodSource
-    void 크루_출석_데이터로_출석_체크한다(LocalTime time, AttendanceStatusType expected) {
+    void 크루의_출석_데이터로_출석_체크한다(LocalTime time, AttendanceStatusType expected) {
         // given
         String nickname = "이든";
-        LocalDate nowDate = dateGenerator.now();
-
         attendanceManager.addCrew(nickname);
+
+        LocalDate nowDate = dateGenerator.now();
         LocalDateTime dateTime = LocalDateTime.of(nowDate, time);
 
         // when
@@ -57,7 +57,23 @@ class AttendanceSystemTest {
                 .withMessage("[ERROR] 등록되지 않은 닉네임입니다.");
     }
 
-    static Stream<Arguments> 크루_출석_데이터로_출석_체크한다() {
+    @Test
+    void 크루의_출석_데이터를_수정한다() {
+        // given
+        String nickname = "이든";
+        attendanceManager.addCrew(nickname);
+
+        LocalDateTime updateDateTime = LocalDateTime.of(2024, 12, 2, 10, 0);
+
+        // when
+        Attendance result = attendanceSystem.processAttendanceUpdate(updateDateTime, nickname);
+
+        // then
+        assertThat(result.getDateTime()).isEqualTo(updateDateTime);
+        assertThat(result.getStatus()).isEqualTo(AttendanceStatusType.ATTENDANCE);
+    }
+
+    static Stream<Arguments> 크루의_출석_데이터로_출석_체크한다() {
         return Stream.of(
                 Arguments.of(LocalTime.of(10, 5), AttendanceStatusType.ATTENDANCE),
                 Arguments.of(LocalTime.of(10, 30), AttendanceStatusType.LATE),
