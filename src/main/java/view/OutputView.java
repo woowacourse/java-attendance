@@ -62,7 +62,7 @@ public class OutputView {
 
         System.out.println();
 
-        System.out.printf("%s 대상자입니다.\n", absenceResultDto.status());
+        System.out.printf("%s 대상자입니다.\n", absenceResultDto.status().getDescription());
     }
 
     public static void printAbsenceResult(final Map<Crew, AbsenceResultDto> result) {
@@ -71,6 +71,6 @@ public class OutputView {
                 crew.getName(),
                 absenceResult.absence(),
                 absenceResult.lateness(),
-                absenceResult.status()));
+                absenceResult.status().getDescription()));
     }
 }

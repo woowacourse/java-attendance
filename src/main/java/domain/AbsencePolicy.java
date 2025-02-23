@@ -19,13 +19,16 @@ public enum AbsencePolicy {
         this.description = description;
     }
 
-    public static String getAbsencePolicy(int absentCount, int lateCount) {
+    public static AbsencePolicy getAbsencePolicy(int absentCount, int lateCount) {
         int totalAbsentCount = absentCount + (lateCount / ABSENCE_CONVERSION_RATE);
 
         return Stream.of(DISMISSED, INTERVIEW, WARNING)
                 .filter(policy -> totalAbsentCount >= policy.lateCount)
                 .findFirst()
-                .map(policy -> policy.description)
-                .orElse(PASS.description);
+                .orElse(PASS);
+    }
+
+    public String getDescription() {
+        return description;
     }
 }

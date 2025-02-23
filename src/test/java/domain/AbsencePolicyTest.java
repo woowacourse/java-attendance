@@ -14,9 +14,9 @@ class AbsencePolicyTest {
         int absenceCount = 2;
 
         //when
-        String actual = AbsencePolicy.getAbsencePolicy(absenceCount, lateCount);
+        AbsencePolicy actual = AbsencePolicy.getAbsencePolicy(absenceCount, lateCount);
 
         //then
-        Assertions.assertThat(actual).isEqualTo("면담");
+        Assertions.assertThat(actual.getDescription()).isEqualTo("면담");
     }
 }
