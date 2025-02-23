@@ -12,6 +12,8 @@ public class TimePolicy {
     }
 
     public static void validateMinute(String minute) {
-
+        if(Integer.parseInt(minute) >= 60){
+            throw new IllegalArgumentException(TIME_FORMAT_ERROR);
+        }
     }
 }
