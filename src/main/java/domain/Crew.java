@@ -37,11 +37,15 @@ public class Crew {
     }
 
     private Integer calculateLateCount() {
-        return (int) attendances.stream().filter(attendance -> attendance.toDto().getLate().equals(true)).count();
+        return (int) attendances.stream()
+                .filter(Attendance::isLate)
+                .count();
     }
 
     private Integer calculateAbsentCount() {
-        return (int) attendances.stream().filter(attendance -> attendance.toDto().getAbsent().equals(true)).count();
+        return (int) attendances.stream()
+                .filter(Attendance::isAbsent)
+                .count();
     }
 
     public Boolean isEqualTo(String nickname) {
