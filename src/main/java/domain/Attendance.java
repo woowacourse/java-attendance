@@ -10,8 +10,8 @@ public class Attendance {
 
     private static final String DATE_TIME_FORMAT = "yyyy-MM-dd HH:mm";
 
-    LocalDateTime localDateTime;
-    AttendanceStatus attendanceStatus;
+    private final LocalDateTime localDateTime;
+    private final AttendanceStatus attendanceStatus;
 
     public Attendance(final LocalDateTime localDateTime) {
         Week day = Week.findByAttendanceTime(localDateTime);
@@ -19,10 +19,10 @@ public class Attendance {
         this.attendanceStatus = AttendanceStatus.findByAttendanceTime(day, localDateTime.toLocalTime());
     }
 
-    public static Attendance of(final String inputTime) {
+    public static Attendance of(final String dateTimeInput) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern(DATE_TIME_FORMAT);
         try {
-            LocalDateTime dateTime = LocalDateTime.parse(inputTime, formatter);
+            LocalDateTime dateTime = LocalDateTime.parse(dateTimeInput, formatter);
             return new Attendance(dateTime);
         } catch (DateTimeParseException e) {
             throw new CustomIllegalArgumentException("올바른 형식이 아닙니다.");
