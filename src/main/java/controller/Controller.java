@@ -17,7 +17,7 @@ import view.OutputView;
 public class Controller {
 
     public void start() {
-        TodayDate todayDate = new TodayDate(LocalDate.of(2024,12,14));
+        TodayDate todayDate = new TodayDate(LocalDate.of(2024,12,12));
         StudentRecordRepository studentRecordRepository = FileInput.createStudentRepository();
         studentRecordRepository.updateEveryStudentNoInformationInFile(todayDate.getTodayDateTIme());
 
@@ -33,7 +33,14 @@ public class Controller {
                 }catch (IllegalArgumentException e) {
                     continue;
                 }
+
                 String name = InputView.getStudentForAttendanceCheckUntilExist(studentRecordRepository);
+                try {
+                    studentRecordRepository.isAlreadyAttendanceDate(name,todayDate);
+                } catch (IllegalArgumentException e) {
+                    System.out.println(e.getMessage());
+                    continue;
+                }
                 LocalDateTime localDateTime = InputView.getLocalDateTimeUntilValidate(todayDate);
 
                 studentRecordRepository.addRecord(name, localDateTime);
