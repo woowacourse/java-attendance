@@ -22,7 +22,6 @@ public class Crew {
     }
 
     public boolean isAlreadyChecked(LocalDateTime today) {
-        // 이미 해당 날짜를 체크했다면 true
         return attendances.getSpecificAttendance(today.getDayOfMonth()).isPresent();
     }
 
@@ -41,7 +40,7 @@ public class Crew {
     public void addAbsent(LocalDateTime today) {
         attendances.addAbsent(today);
     }
-    
+
     public Attendances getAttendances() {
         return attendances;
     }

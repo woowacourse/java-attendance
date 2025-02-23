@@ -1,6 +1,5 @@
-package service;
+package util;
 
-import util.Day;
 import java.time.LocalDateTime;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;

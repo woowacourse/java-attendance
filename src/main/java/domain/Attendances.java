@@ -36,9 +36,7 @@ public class Attendances {
                 .filter(attendance -> attendance.calculateAttendanceStatus().equals(AttendanceStatus.ABSENT))
                 .count());
     }
-
-
-    // 특정 날짜가 존재하는지 확인 없으면 null
+    
     public Optional<Attendance> getSpecificAttendance(int testDay) {
         return attendanceLog.stream()
                 .filter(attendance -> attendance.isSameDay(testDay))
@@ -64,9 +62,8 @@ public class Attendances {
 
     public Attendance changeAttendance(int date, Time time) {
         Attendance targetAttendance = getSpecificAttendance(date).get();
-        targetAttendance.updateAttendance(time); // 원하는 시간으로 바꿈
-
-        return targetAttendance; // 바꾼 시간 리턴
+        targetAttendance.updateAttendance(time);
+        return targetAttendance;
     }
 
     public List<Attendance> getAttendanceLog() {
