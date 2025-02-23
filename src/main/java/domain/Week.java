@@ -5,9 +5,8 @@ import java.time.DayOfWeek;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
 import util.Constants;
+import util.DayOfWeekKorean;
 
 public enum Week {
 
@@ -24,26 +23,13 @@ public enum Week {
         this.attendanceTime = localTime;
     }
 
-    private static Map<DayOfWeek, String> initWeekNames() {
-        final Map<DayOfWeek, String> weekNames = new HashMap<>();
-        weekNames.put(DayOfWeek.MONDAY, "월요일");
-        weekNames.put(DayOfWeek.TUESDAY, "화요일");
-        weekNames.put(DayOfWeek.WEDNESDAY, "수요일");
-        weekNames.put(DayOfWeek.THURSDAY, "목요일");
-        weekNames.put(DayOfWeek.FRIDAY, "금요일");
-        weekNames.put(DayOfWeek.SATURDAY, "토요일");
-        weekNames.put(DayOfWeek.SUNDAY, "일요일");
-
-        return weekNames;
-    }
-
     public LocalTime getAttendanceTime() {
         return attendanceTime;
     }
 
     public static Week findByAttendanceTime(final LocalDateTime localDateTime) {
         DayOfWeek day = localDateTime.getDayOfWeek();
-        final String dayOfWeek = Week.findKoreanName(localDateTime.getDayOfWeek());
+        final String dayOfWeek = DayOfWeekKorean.getKoreanName(localDateTime.getDayOfWeek());
 
         return Arrays.stream(Week.values())
                 .filter(week -> week.name().equals(day.name()))
@@ -51,9 +37,5 @@ public enum Week {
                 .orElseThrow(() -> new CustomIllegalArgumentException(
                         String.format("%d월 %d일 %s은 등교일이 아닙니다.", Constants.FIXED_MONTH,
                                 localDateTime.getDayOfMonth(), dayOfWeek)));
-    }
-
-    public static String findKoreanName(final DayOfWeek day) {
-        return initWeekNames().get(day);
     }
 }

@@ -7,9 +7,9 @@ import domain.AttendanceStatus;
 import domain.Attendances;
 import domain.Crew;
 import domain.Crews;
+import util.DayOfWeekKorean;
 import domain.Nickname;
 import domain.Punishment;
-import domain.Week;
 import java.time.DayOfWeek;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -24,7 +24,7 @@ public final class OutputView {
         final LocalDateTime localDateTime = attendance.getLocalDateTime();
         final AttendanceStatus attendanceStatus = attendance.getAttendanceStatus();
         final int day = localDateTime.getDayOfMonth();
-        final String dayName = Week.findKoreanName(localDateTime.getDayOfWeek());
+        final String dayName = DayOfWeekKorean.getKoreanName(localDateTime.getDayOfWeek());
         final LocalTime localTime = AttendanceDateTime.getLocalTimeByLocalDateTime(localDateTime);
 
         System.out.println(
@@ -36,7 +36,7 @@ public final class OutputView {
         final LocalDateTime oldLocalDateTime = oldAttendance.getLocalDateTime();
         final AttendanceStatus oldAttendanceStatus = oldAttendance.getAttendanceStatus();
         final int oldDay = oldLocalDateTime.getDayOfMonth();
-        final String oldDayName = Week.findKoreanName(oldLocalDateTime.getDayOfWeek());
+        final String oldDayName = DayOfWeekKorean.getKoreanName(oldLocalDateTime.getDayOfWeek());
         final LocalTime oldLocalTime = AttendanceDateTime.getLocalTimeByLocalDateTime(oldLocalDateTime);
 
         final LocalDateTime newLocalDateTime = newAttendance.getLocalDateTime();
@@ -75,7 +75,7 @@ public final class OutputView {
                 timeFormat = "--:--";
             }
             System.out.println(
-                    String.format("%d월 %02d일 %s %s (%s)", Constants.FIXED_MONTH, day, Week.findKoreanName(dayOfWeek),
+                    String.format("%d월 %02d일 %s %s (%s)", Constants.FIXED_MONTH, day, DayOfWeekKorean.getKoreanName(dayOfWeek),
                             timeFormat,
                             attendanceStatus.getDisplayName()));
         }

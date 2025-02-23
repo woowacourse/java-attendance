@@ -6,6 +6,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import util.Constants;
+import util.DayOfWeekKorean;
 
 public class Attendance {
 
@@ -36,7 +37,7 @@ public class Attendance {
         if (Constants.HOLIDAYS.contains(day)) {
             throw new CustomIllegalArgumentException(
                     String.format("%d월 %d일 %s은 등교일이 아닙니다.", Constants.FIXED_MONTH, localDateTime.getDayOfMonth(),
-                            Week.findKoreanName(localDateTime.getDayOfWeek())));
+                            DayOfWeekKorean.getKoreanName(localDateTime.getDayOfWeek())));
         }
     }
 
