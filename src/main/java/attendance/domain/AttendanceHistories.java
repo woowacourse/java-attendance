@@ -8,7 +8,9 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 public class AttendanceHistories {
@@ -57,7 +59,6 @@ public class AttendanceHistories {
     }
 
     public List<AttendanceHistory> getAttendanceHistories() {
-
         Collections.sort(attendanceHistories, Comparator.comparing(
             history -> history.getAttendanceTime().getAttendanceTime().toLocalDate()
         ));
@@ -103,59 +104,19 @@ public class AttendanceHistories {
         return modifyAttendanceHistory;
     }
 
-    /*
-    public Map<AttendanceType, Integer> calculateAttendanceResult(LocalDate localDate) {
-        Map<AttendanceType, Integer> attendanceResult = initializeAttendanceResult();
-        for (int i = 1; i < localDate.getDayOfMonth(); i++) {
-            LocalDate date = LocalDate.of(localDate.getYear(), localDate.getMonthValue(), i);
-            try {
-                AttendancePolicy.ifHolidayOrWeekendsThrowException(date);
-            } catch (IllegalArgumentException e) {
-                continue;
-            }
-            boolean flag = false;
-            for (AttendanceHistory attendanceHistory : attendanceHistories) {
-                if (attendanceHistory.getAttendanceTime().toLocalDate().equals(date)) {
-                    AttendanceType attendanceType = attendanceHistory.getAttendanceType();
-                    attendanceResult.put(attendanceType, attendanceResult.get(attendanceType) + 1);
-                    flag = true;
-                }
-            }
-            if (!flag) {
-                attendanceResult.put(ABSENCE, attendanceResult.get(ABSENCE) + 1);
-            }
+    public Map<AttendanceType, Integer> calculateAttendanceResult() {
+        Map<AttendanceType, Integer> attendanceResult = new LinkedHashMap<>();
+        initAttendanceResult(attendanceResult);
+        for (AttendanceHistory attendanceHistory : attendanceHistories) {
+            AttendanceType attendanceType = attendanceHistory.getAttendanceType();
+            attendanceResult.put(attendanceType, attendanceResult.get(attendanceType) + 1);
         }
         return attendanceResult;
-
-
     }
 
-    /*
-    public CrewStatus calculateCrewStatus(Map<AttendanceType, Integer> attendanceResult) {
-        int validateValue = 0;
-        validateValue += attendanceResult.get(ABSENCE);
-        validateValue += attendanceResult.get(LATE) / 3;
-        if (validateValue > 5) {
-            return FIRE;
-        }
-        if (validateValue >= 3) {
-            return INTERVIEW;
-        }
-        if (validateValue >= 2) {
-            return WARNING;
-        }
-        return CLEAR;
-    }
-
-     */
-    /*
-
-    private Map<AttendanceType, Integer> initializeAttendanceResult() {
-        Map<AttendanceType, Integer> attendanceResult = new HashMap<>();
+    private void initAttendanceResult(Map<AttendanceType, Integer> attendanceResult) {
         for (AttendanceType attendanceType : AttendanceType.values()) {
             attendanceResult.put(attendanceType, 0);
         }
-        return attendanceResult;
     }
-     */
 }

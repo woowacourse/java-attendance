@@ -7,11 +7,11 @@ import attendance.domain.AttendanceHistory;
 import attendance.domain.AttendanceTime;
 import attendance.domain.AttendanceType;
 import attendance.domain.Crew;
+import attendance.domain.CrewStatus;
 import attendance.domain.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.time.Month;
 import java.util.Map;
 
 public class OutputView {
@@ -20,6 +20,10 @@ public class OutputView {
     private static final String ATTENDANCE_ABSENCE_MESSAGE = "%d월 %d일 %s --:-- (%s)";
     private static final String ATTENDANCE_INFO_MESSAGE = "이번 달 %s의 출석 기록입니다.";
     private static final String MODIFY_ATTENDANCE_RESULT_MESSAGE = "%d월 %d일 %s %02d:%02d (%s) -> %02d:%02d (%s) 수정 완료!";
+    private static final String ATTENDANCE_TYPE_RESULT_MESSAGE = "%s: %s회";
+    private static final String INTERVIEW_TARGET_MESSAGE = "면담 대상자입니다.";
+    private static final String DANGEROUS_CREW_INFO_MESSAGE = "제적 위험자 조회 결과";
+    private static final String DANGEROUS_CREW_INFO = "- %s: 결석 %s회 지각 %s회 (%s)";
 
     /*
     public void printAttendanceResult(AttendanceHistory attendanceHistory) {
@@ -75,7 +79,7 @@ public class OutputView {
             AttendanceType attendanceType = attendanceHistory.getAttendanceType();
             if (hour == 0 && minute == 0) {
                 System.out.println(ATTENDANCE_ABSENCE_MESSAGE.formatted(
-                    month, day, dayOfWeek.getName(), ABSENCE.getName()));
+                    month, day, dayOfWeek.getName(), attendanceType.getName()));
                 continue;
             }
 
@@ -103,27 +107,30 @@ public class OutputView {
     }
 
     public void printInterviewTarget() {
-        System.out.println("면담 대상자입니다.\n");
-    }
-    
-    /*
-    public void printDangerousCrews(LocalDate now, List<Crew> dangerousCrews) {
-        System.out.println("\n제적 위험자 조회 결과");
-        sortDangerousCrews(now, dangerousCrews);
-        for (Crew crew : dangerousCrews) {
-            Map<AttendanceType, Integer> attendanceResult = crew.calculateAttendanceResult(now);
-            CrewStatus crewStatus = crew.calculateCrewStatus(attendanceResult);
-            System.out.println("- %s: 결석 %d회, 지각 %d회 (%s)".formatted(
-                    crew.getName(),
-                    attendanceResult.get(ABSENCE),
-                    attendanceResult.get(LATE),
-                    crewStatus.getName())
-            );
-        }
-        System.out.println();
+        System.out.println(INTERVIEW_TARGET_MESSAGE);
     }
 
-     */
+    public void printAttendanceTypeResult(Map<AttendanceType, Integer> attendanceResult) {
+        for (AttendanceType attendanceType : attendanceResult.keySet()) {
+            System.out.println(ATTENDANCE_TYPE_RESULT_MESSAGE.formatted(
+                attendanceType.getName(), attendanceResult.get(attendanceType))
+            );
+        }
+    }
+
+    public void printDangerousMessage() {
+        System.out.println(DANGEROUS_CREW_INFO_MESSAGE);
+    }
+
+
+    public void printDangerousCrews(Crew crew, Map<AttendanceType, Integer> attendanceResult,
+        CrewStatus crewStatus) {
+        System.out.println(DANGEROUS_CREW_INFO.formatted(
+            crew.getName(), attendanceResult.get(ABSENCE), attendanceResult.get(LATE),
+            crewStatus.getName()));
+    }
+
+
     /*
 
     private void sortDangerousCrews(LocalDate now, List<Crew> dangerousCrews) {

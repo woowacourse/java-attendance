@@ -3,14 +3,18 @@ package attendance.controller;
 import attendance.CurrentDate;
 import attendance.domain.AttendanceHistories;
 import attendance.domain.AttendanceHistory;
+import attendance.domain.AttendanceType;
 import attendance.domain.Crew;
 import attendance.domain.CrewAttendanceManager;
+import attendance.domain.CrewStatus;
 import attendance.domain.Crews;
 import attendance.view.InputView;
 import attendance.view.OutputView;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.List;
+import java.util.Map;
 
 public class AttendanceController {
 
@@ -45,35 +49,46 @@ public class AttendanceController {
             }
 
             if (option.equals("3")) {
-                checkAttendanceHistoriesByCrew(now);
+                checkAttendanceHistoriesByCrew();
                 continue;
             }
-            /*
+
             if (option.equals("4")) {
-                checkDangerousCrews(now);
+                checkDangerousCrews();
                 continue;
             }
             if (option.equals("Q")) {
                 continue;
             }
-             */
             throw new IllegalArgumentException("잘못된 입력 입니다.");
         }
     }
 
-    /*
-    private void checkDangerousCrews(LocalDate now) {
-        List<Crew> dangerousCrews = crewManager.getDangerousCrews(now);
-        outputView.printDangerousCrews(now, dangerousCrews);
+    private void checkDangerousCrews() {
+        List<Crew> dangerousCrew = crews.findDangerousCrew(crewAttendanceManager);
+        outputView.printDangerousMessage();
+        for (Crew crew : dangerousCrew) {
+            AttendanceHistories attendanceHistories = crewAttendanceManager.findAttendanceHistoriesByCrew(
+                crew);
+            Map<AttendanceType, Integer> attendanceResult = attendanceHistories.calculateAttendanceResult();
+            CrewStatus crewStatus = CrewStatus.calculateCrewStatus(attendanceResult);
+            outputView.printDangerousCrews(crew, attendanceResult, crewStatus);
+        }
     }
-     */
 
-    private void checkAttendanceHistoriesByCrew(LocalDate now) {
+    private void checkAttendanceHistoriesByCrew() {
         String crewName = inputView.inputCrewName();
         Crew crew = crews.findByCrewName(crewName);
         AttendanceHistories attendanceHistories = crewAttendanceManager.findAttendanceHistoriesByCrew(
             crew);
+        Map<AttendanceType, Integer> attendanceResult = attendanceHistories.calculateAttendanceResult();
         outputView.printAttendanceHistories(crew, attendanceHistories);
+        outputView.printAttendanceTypeResult(attendanceResult);
+
+        CrewStatus crewStatus = CrewStatus.calculateCrewStatus(attendanceResult);
+        if (crewStatus == CrewStatus.INTERVIEW) {
+            outputView.printInterviewTarget();
+        }
     }
 
     private void modifyAttendance(LocalDate now) {
