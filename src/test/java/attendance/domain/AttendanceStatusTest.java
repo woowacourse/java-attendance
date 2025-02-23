@@ -4,6 +4,7 @@ import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.List;
 
@@ -16,7 +17,7 @@ class AttendanceStatusTest {
     @Test
     void 전날까지의_출석_기록으로_객체를_생성한다() {
         // given
-        Attendances attendances = createAttendances(List.of(
+        List<Attendance> attendances = createAttendances(List.of(
                 LocalDateTime.of(2024, 12, 3, 10, 0),
                 LocalDateTime.of(2024, 12, 3, 10, 6),
                 LocalDateTime.of(2024, 12, 3, 10, 31)
@@ -32,11 +33,11 @@ class AttendanceStatusTest {
         Assertions.assertThat(result.get(ATTENDANCE)).isEqualTo(1);
     }
 
-    private Attendances createAttendances(List<LocalDateTime> dateTimes) {
-        Attendances attendances = new Attendances();
+    private List<Attendance> createAttendances(List<LocalDateTime> dateTimes) {
+        List<Attendance> attendances = new ArrayList<>();
 
         for (LocalDateTime dateTime : dateTimes) {
-            attendances.addAttendance(dateTime);
+            attendances.add(new Attendance(dateTime));
         }
         return attendances;
     }
