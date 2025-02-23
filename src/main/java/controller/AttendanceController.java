@@ -44,6 +44,7 @@ public class AttendanceController {
                 case "2" -> modifyAttendanceTime(crews);
                 case "3" -> findAttendanceHistory(crews);
                 case "4" -> findDangerousCrews(crews);
+                default -> throw new IllegalArgumentException("[ERROR] 올바른 명령어를 입력해주세요.");
             }
         } catch (Exception e) {
             System.out.println();
@@ -90,8 +91,6 @@ public class AttendanceController {
 
     private void findAttendanceHistory(final Crews crews) {
         String nickname = inputView.readNickname();
-        System.out.printf("이번 달 %s의 출석 기록입니다.%n", nickname);
-        System.out.println();
         outputView.printCrewAttendance(crews.findCrew(nickname));
     }
 
