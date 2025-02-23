@@ -40,7 +40,7 @@ public class Crew implements Comparable<Crew> {
     }
 
     public Attendance addAttendance(final String attendanceTime) {
-        final Attendance attendance = new Attendance(attendanceTime);
+        final Attendance attendance = Attendance.of(attendanceTime);
         attendances.add(attendance);
         return attendance;
     }

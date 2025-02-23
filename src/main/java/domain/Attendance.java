@@ -12,20 +12,14 @@ public class Attendance {
     private final LocalDateTime dateTime;
     private final boolean isEmpty;
 
-    // 실제 생성
-    public Attendance(final String time) {
-        this.dateTime = LocalDateTime.parse(time, FORMATTER);
-        isEmpty = false;
-    }
-
-    // 초기화
     public Attendance(final LocalDateTime dateTime, final boolean isEmpty) {
         this.dateTime = dateTime;
         this.isEmpty = isEmpty;
     }
 
     public static Attendance of(final String dateTime) {
-        return new Attendance(dateTime);
+        LocalDateTime parsedDateTime = LocalDateTime.parse(dateTime, FORMATTER);
+        return new Attendance(parsedDateTime, false);
     }
 
     public static Attendance of(final LocalDateTime dateTime) {
@@ -43,10 +37,6 @@ public class Attendance {
         this.isEmpty = attendance.isEmpty;
     }
 
-    public LocalDateTime getDateTime() {
-        return LocalDateTime.of(dateTime.toLocalDate(), dateTime.toLocalTime());
-    }
-
     public AttendanceStatus calculateStatus() {
         final LocalTime time = dateTime.toLocalTime();
         if (dateTime.getDayOfWeek() == DayOfWeek.MONDAY) {
@@ -62,6 +52,10 @@ public class Attendance {
 
     public boolean isEmpty() {
         return isEmpty;
+    }
+
+    public LocalDateTime getDateTime() {
+        return LocalDateTime.of(dateTime.toLocalDate(), dateTime.toLocalTime());
     }
 
     @Override

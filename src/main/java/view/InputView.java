@@ -40,7 +40,7 @@ public class InputView {
     }
 
     public AnswerCommand readAnswerCommand() {
-        return AnswerCommand.findByCommand(scanner.nextLine());
+        return AnswerCommand.of(scanner.nextLine());
     }
 
 }
