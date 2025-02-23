@@ -26,10 +26,10 @@ public class Attendances {
 
     public Attendance checkAndUpdateAttendance(LocalDateTime dateTime) {
         validateAlreadyAttendance(dateTime.toLocalDate());
-        return this.update(dateTime);
+        return updateAttendance(dateTime);
     }
 
-    public Attendance update(LocalDateTime dateTime) {
+    public Attendance updateAttendance(LocalDateTime dateTime) {
         Attendance oldAttendance = find(dateTime.toLocalDate());
         attendances.remove(oldAttendance);
 
