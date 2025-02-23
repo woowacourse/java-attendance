@@ -19,7 +19,7 @@ public class Crews {
     public static Crews fromCrewsFile(List<String> lines) {
         Set<Crew> crewNames = new HashSet<>();
         for (String line : lines) {
-            crewNames.add(Crew.from(List.of(line.split(",")).get(0)));
+            crewNames.add(Crew.from(List.of(line.split(",")).getFirst()));
         }
         return new Crews(crewNames);
     }
