@@ -53,6 +53,20 @@ public class Attendance {
         return attendanceType;
     }
 
+    public void updateCrewAttendanceCount(AttendanceCount attendanceCount) {
+        if (attendanceType.equals(AttendanceType.SAFE)) {
+            attendanceCount.incrementSafeCount();
+            return;
+        }
+        if (attendanceType.equals(AttendanceType.LATE)) {
+            attendanceCount.incrementLateCount();
+            return;
+        }
+        if (attendanceType.equals(AttendanceType.ABSENT)) {
+            attendanceCount.incrementAbsentCount();
+        }
+    }
+
     public List<String> getInfo() {
         return List.of(
                 String.valueOf(presentTime.getMonthValue()),
