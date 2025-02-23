@@ -2,7 +2,6 @@ package domain;
 
 import static global.util.DateUtil.FIXED_REFERENCE_DATE;
 import static global.util.DateUtil.assembleDateAndTime;
-import static global.util.Validator.validateIsFutureDate;
 import static global.util.Validator.validateIsInOperationTime;
 
 import dto.CrewResponse;
@@ -34,14 +33,7 @@ public class Crew {
     }
 
     public AttendanceStatus editAttendStatus(final LocalDateTime target) {
-        validateIsInOperationTime(target.toLocalTime());
-        LocalDate date = target.toLocalDate();
-        if (!attendanceBook.containsKey(date)) {
-            throw new IllegalArgumentException("출석 기록이 없어 수정할 수 없습니다.");
-        }
-        LocalTime time = target.toLocalTime();
-        attendanceBook.put(date, time);
-
+        addAttendStatus(target);
         return AttendanceStatus.attend(target);
     }
 
@@ -49,11 +41,38 @@ public class Crew {
         return attendanceBook.getOrDefault(date, LocalTime.of(0, 0));
     }
 
-    public void validateAvailableAttendanceDate(LocalDate date) {
+    public void validateAvailableAttendanceDate(final LocalDate date) {
         validateIsFutureDate(date);
         if (attendanceBook.containsKey(date)) {
             throw new IllegalArgumentException("이미 출석하여 다시 출석할 수 없습니다. 수정 기능을 이용해주세요.");
         }
+    }
+
+    public void validateAvailableEditAttendanceDate(final LocalDate date) {
+        validateIsFutureDate(date);
+        if (!attendanceBook.containsKey(date)) {
+            throw new IllegalArgumentException("출석 기록이 없어 수정할 수 없습니다.");
+        }
+    }
+
+    public RiskStatus calculateRiskStatus() {
+        return RiskStatus.getRiskStatus(calculateAbsenceCount(), calculateTardyCount());
+    }
+
+    public CrewResponse createCrewResponse() {
+        int tardyCount = calculateTardyCount();
+        int absenceCount = calculateAbsenceCount();
+        return new CrewResponse(name, attendanceBook, calculateAttendanceCount(), absenceCount, tardyCount, calculateRiskStatus());
+    }
+
+    public CrewResponse createCrewRiskStatusResponse() {
+        int tardyCount = calculateTardyCount();
+        int absenceCount = calculateAbsenceCount();
+        return new CrewResponse(name, calculateAttendanceCount(), absenceCount, tardyCount, calculateRiskStatus());
+    }
+
+    public AttendanceStatus getAttendanceStatusByDate(final LocalDateTime target) {
+        return AttendanceStatus.attend(target);
     }
 
     private int calculateAttendanceCount() {
@@ -87,7 +106,7 @@ public class Crew {
         return tardyCount;
     }
 
-    private boolean isNowAbsence(LocalDate localDate) {
+    private boolean isNowAbsence(final LocalDate localDate) {
         if (!attendanceBook.containsKey(localDate) && DateUtil.isWeekday(localDate)) {
             return true;
         }
@@ -99,7 +118,7 @@ public class Crew {
         return attend == AttendanceStatus.ABSENCE;
     }
 
-    private boolean isNowTardy(LocalDate localDate) {
+    private boolean isNowTardy(final LocalDate localDate) {
         if (attendanceBook.containsKey(localDate)) {
             LocalTime localTime = attendanceBook.get(localDate);
             AttendanceStatus attend = AttendanceStatus.attend(assembleDateAndTime(localDate, localTime));
@@ -108,23 +127,9 @@ public class Crew {
         return false;
     }
 
-    public RiskStatus calculateRiskStatus() {
-        return RiskStatus.getRiskStatus(calculateAbsenceCount(), calculateTardyCount());
-    }
-
-    public CrewResponse createCrewResponse() {
-        int tardyCount = calculateTardyCount();
-        int absenceCount = calculateAbsenceCount();
-        return new CrewResponse(name, attendanceBook, calculateAttendanceCount(), absenceCount, tardyCount, calculateRiskStatus());
-    }
-
-    public CrewResponse createCrewRiskStatusResponse() {
-        int tardyCount = calculateTardyCount();
-        int absenceCount = calculateAbsenceCount();
-        return new CrewResponse(name, calculateAttendanceCount(), absenceCount, tardyCount, calculateRiskStatus());
-    }
-
-    public AttendanceStatus getAttendanceStatusByDate(LocalDateTime target) {
-        return AttendanceStatus.attend(target);
+    private void validateIsFutureDate(LocalDate targetDate) {
+        if (targetDate.isAfter(DateUtil.FIXED_REFERENCE_DATE.toLocalDate())) {
+            throw new IllegalArgumentException("미래 날짜는 출석할 수 없습니다.");
+        }
     }
 }

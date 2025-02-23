@@ -18,10 +18,4 @@ public class Validator {
             throw new IllegalArgumentException("캠퍼스 운영 시간이 아닙니다.");
         }
     }
-
-    public static void validateIsFutureDate(LocalDate targetDate) {
-        if (targetDate.isAfter(DateUtil.FIXED_REFERENCE_DATE.toLocalDate())) {
-            throw new IllegalArgumentException("미래 날짜는 출석할 수 없습니다.");
-        }
-    }
 }

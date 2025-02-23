@@ -2,7 +2,6 @@ package controller;
 
 import static global.util.DateUtil.FIXED_REFERENCE_DATE;
 import static global.util.DateUtil.assembleDateAndTime;
-import static global.util.Validator.validateIsFutureDate;
 import static global.util.Validator.validateIsNotWorkingDay;
 
 import domain.AttendanceStatus;
@@ -90,7 +89,7 @@ public class AttendanceController {
         String name = inputView.inputEditCrewName();
         Crew crew = crews.findCrewByName(name);
         LocalDate date = DateUtil.getDateByInputDay(Integer.parseInt(inputView.inputEditDay()));
-        validateIsFutureDate(date);
+        crew.validateAvailableEditAttendanceDate(date);
         LocalTime beforeTime = crew.getAttendanceTime(date);
         AttendanceStatus beforAttendanceStatus = crew.getAttendanceStatusByDate(DateUtil.assembleDateAndTime(date, beforeTime));
         LocalTime time = LocalTime.parse(inputView.inputEditTime());
