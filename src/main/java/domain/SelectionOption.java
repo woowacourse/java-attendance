@@ -15,10 +15,6 @@ public enum SelectionOption {
         this.option = option;
     }
 
-    public String getOption() {
-        return option;
-    }
-
     public static SelectionOption getSelectOption(String input){
         return Arrays.stream(SelectionOption.values()).filter(select -> select.option.equals(input))
                 .findAny().orElseThrow(()->new IllegalArgumentException("[ERROR] 잘못된 입력입니다."));

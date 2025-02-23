@@ -25,16 +25,6 @@ public class Histories {
         this.histories = copy.stream().map(History::new).collect(Collectors.toList());
     }
 
-    public Map<String, Integer> getAttendanceResultCount(LocalDateTime standard) {
-        Map<String, Integer> results = new HashMap<>();
-        histories.stream().filter(history -> history.isBeforeHistory(standard))
-                .forEach(history -> {
-                    String result = history.getAttendanceResult();
-                    results.put(result, results.getOrDefault(result, 0) + 1);
-                });
-        return results;
-    }
-
     public AbsenceLevel classifyAbsenceLevel(LocalDateTime standard) {
         Map<String, Integer> results = getAttendanceResultCount(standard);
         int absentCount = results.getOrDefault(ABSENCE.getResult(), 0);
@@ -56,13 +46,6 @@ public class Histories {
         histories.remove(findHistory);
     }
 
-    public List<History> getSortedHistories(LocalDateTime standard) {
-        return histories.stream()
-                .filter(history -> history.isBeforeHistory(standard))
-                .sorted()
-                .toList();
-    }
-
     public void editHistory(LocalDateTime time) {
         deleteHistory(time);
         histories.add(new History(time));
@@ -73,6 +56,23 @@ public class Histories {
             throw new IllegalArgumentException("[ERROR] 이미 출석하셨습니다.");
         }
         histories.add(new History(time));
+    }
+
+    public Map<String, Integer> getAttendanceResultCount(LocalDateTime standard) {
+        Map<String, Integer> results = new HashMap<>();
+        histories.stream().filter(history -> history.isBeforeHistory(standard))
+                .forEach(history -> {
+                    String result = history.getAttendanceResult();
+                    results.put(result, results.getOrDefault(result, 0) + 1);
+                });
+        return results;
+    }
+
+    public List<History> getSortedHistories(LocalDateTime standard) {
+        return histories.stream()
+                .filter(history -> history.isBeforeHistory(standard))
+                .sorted()
+                .toList();
     }
 
     public String getHistoryResult(LocalDateTime time) {
