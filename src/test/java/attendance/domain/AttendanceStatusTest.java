@@ -5,30 +5,39 @@ import org.junit.jupiter.api.Test;
 
 import java.time.LocalDateTime;
 import java.util.EnumMap;
+import java.util.List;
+
+import static attendance.domain.AttendanceStatusType.ATTENDANCE;
+import static attendance.domain.AttendanceStatusType.EXPULSION;
+import static attendance.domain.AttendanceStatusType.LATE;
 
 class AttendanceStatusTest {
 
     @Test
     void 전날까지의_출석_기록으로_객체를_생성한다() {
         // given
-        Attendances attendances = new Attendances();
-
-        LocalDateTime firstDateTime = LocalDateTime.of(2024, 12, 3, 10, 0);
-        LocalDateTime secondDateTime = LocalDateTime.of(2024, 12, 3, 10, 6);
-        LocalDateTime thirdDateTime = LocalDateTime.of(2024, 12, 3, 10, 31);
-
-        attendances.addAttendance(firstDateTime);
-        attendances.addAttendance(secondDateTime);
-        attendances.addAttendance(thirdDateTime);
+        Attendances attendances = createAttendances(List.of(
+                LocalDateTime.of(2024, 12, 3, 10, 0),
+                LocalDateTime.of(2024, 12, 3, 10, 6),
+                LocalDateTime.of(2024, 12, 3, 10, 31)
+        ));
 
         // when
         AttendanceStatus attendanceStatus = new AttendanceStatus(attendances);
         EnumMap<AttendanceStatusType, Integer> result = attendanceStatus.getStatus();
 
         // then
-        Assertions.assertThat(result.get(AttendanceStatusType.EXPULSION)).isEqualTo(1);
-        Assertions.assertThat(result.get(AttendanceStatusType.LATE)).isEqualTo(1);
-        Assertions.assertThat(result.get(AttendanceStatusType.ATTENDANCE)).isEqualTo(1);
-        ;
+        Assertions.assertThat(result.get(EXPULSION)).isEqualTo(1);
+        Assertions.assertThat(result.get(LATE)).isEqualTo(1);
+        Assertions.assertThat(result.get(ATTENDANCE)).isEqualTo(1);
+    }
+
+    private Attendances createAttendances(List<LocalDateTime> dateTimes) {
+        Attendances attendances = new Attendances();
+
+        for (LocalDateTime dateTime : dateTimes) {
+            attendances.addAttendance(dateTime);
+        }
+        return attendances;
     }
 }
