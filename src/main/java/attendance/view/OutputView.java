@@ -4,7 +4,6 @@ import attendance.domain.Attendance;
 import attendance.dto.response.AttendanceGroupByStatus;
 import attendance.dto.response.AttendanceRecord;
 import attendance.dto.response.AttendanceSearchResult;
-import attendance.dto.response.AttendanceUpdateResult;
 import attendance.dto.response.WarnedStudent;
 import attendance.dto.response.WarnedStudents;
 
@@ -69,11 +68,14 @@ public class OutputView { // todo : 상수 분리 적용 필요, response 파라
         );
     }
 
-    public void printAttendUpdateResult(AttendanceUpdateResult result) {
-        printAttendanceRecord(result.before());
+    public void printAttendUpdateResult(List<Attendance> attendances) {
+        Attendance oldAttendance = attendances.getFirst();
+        Attendance updateAttendance = attendances.getLast();
+
+        printAttendanceRecord(oldAttendance);
         System.out.printf(" -> %s (%s) 수정 완료!",
-                result.after().dateTime().toLocalTime(),
-                result.after().status()
+                updateAttendance.getDateTime().toLocalTime(),
+                updateAttendance.getStatus().getName()
         );
     }
 
