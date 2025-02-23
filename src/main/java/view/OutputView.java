@@ -2,8 +2,8 @@ package view;
 
 import domain.AttendanceState;
 import domain.Crew;
-import dto.AbsenceResultDto;
-import dto.AttendanceResultDto;
+import dto.AbsenceHistoryDto;
+import dto.AttendanceHistoryDto;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -42,13 +42,13 @@ public class OutputView {
                 afterAttendanceState);
     }
 
-    public static void printRecordAttendance(List<AttendanceResultDto> attendanceResultDtos) {
-        for (AttendanceResultDto attendanceResultDto : attendanceResultDtos) {
+    public static void printRecordAttendance(List<AttendanceHistoryDto> attendanceResultDtos) {
+        for (AttendanceHistoryDto attendanceResultDto : attendanceResultDtos) {
             System.out.printf(printDayAttendance(attendanceResultDto));
         }
     }
 
-    private static String printDayAttendance(AttendanceResultDto attendanceResultDto) {
+    private static String printDayAttendance(AttendanceHistoryDto attendanceResultDto) {
         if (attendanceResultDto.localDateTime().getHour() != 0) {
             return String.format("%02d월 %02d일 %s %02d:%02d (%s)\n",
                     DateTimeUtil.getMonthBy(attendanceResultDto.localDateTime().toLocalDate()),
@@ -65,7 +65,7 @@ public class OutputView {
                 attendanceResultDto.attendanceState());
     }
 
-    public static void printAbsenceHistory(AbsenceResultDto absenceResultDto) {
+    public static void printAbsenceHistory(AbsenceHistoryDto absenceResultDto) {
         System.out.printf("출석: %d회\n", absenceResultDto.attendance());
         System.out.printf("지각: %d회\n", absenceResultDto.lateness());
         System.out.printf("결석: %d회\n", absenceResultDto.absence());
@@ -75,7 +75,7 @@ public class OutputView {
         System.out.printf("%s 대상자입니다.\n", absenceResultDto.status());
     }
 
-    public static void printAbsenceResult(final Map<Crew, AbsenceResultDto> result) {
+    public static void printAbsenceResult(final Map<Crew, AbsenceHistoryDto> result) {
         System.out.println("제적 위험자 조회 결과");
         result.forEach((crew, absenceResult) -> System.out.printf("- %s: 결석 %d회, 지각 %d회 (%s)\n",
                 crew.getName(),

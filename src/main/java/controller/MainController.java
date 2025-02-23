@@ -4,14 +4,13 @@ import domain.AbsenceHistory;
 import domain.Attendance;
 import domain.AttendanceState;
 import domain.Crew;
-import dto.AbsenceResultDto;
-import dto.AttendanceResultDto;
+import dto.AbsenceHistoryDto;
+import dto.AttendanceHistoryDto;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
-import java.util.Map;
 import util.DateTimeUtil;
 import util.FileManager;
 import view.InputView;
@@ -33,10 +32,10 @@ public class MainController {
                 attendanceUpdate();
             }
             if ("3".equals(feature)) {
-                attendanceRecord();
+                attendanceHistory();
             }
             if ("4".equals(feature)) {
-                readAbsence();
+                absenceHistory();
             }
 
         } while (!"Q".equals(feature));
@@ -83,22 +82,22 @@ public class MainController {
         OutputView.printUpdateAttendance(beforeDateTime, afterLocalDateTime);
     }
 
-    private void attendanceRecord() {
+    private void attendanceHistory() {
         String nickname = InputView.inputNickName();
         Crew crew = attendance.getCrewByName(nickname);
 
-        List<AttendanceResultDto> attendanceResultDtos = attendance.readRecord(crew);
-        OutputView.printRecordAttendance(attendanceResultDtos);
+        List<AttendanceHistoryDto> attendanceHistoryDtos = attendance.getAttendanceHistory(crew);
+        OutputView.printRecordAttendance(attendanceHistoryDtos);
 
-        AbsenceHistory absenceHistory = new AbsenceHistory(attendanceResultDtos);
+        AbsenceHistory absenceHistory = new AbsenceHistory(attendanceHistoryDtos);
 
-        AbsenceResultDto absenceResultDto = absenceHistory.calculate();
+        AbsenceHistoryDto absenceResultDto = absenceHistory.calculate();
 
         OutputView.printAbsenceHistory(absenceResultDto);
     }
 
-    private void readAbsence() {
-        Map<Crew, AbsenceResultDto> result = attendance.getAbsence();
-        OutputView.printAbsenceResult(result);
+    private void absenceHistory() {
+//        Map<Crew, AbsenceHistoryDto> result = attendance.getAbsenceHistory();
+//        OutputView.printAbsenceResult(result);
     }
 }
