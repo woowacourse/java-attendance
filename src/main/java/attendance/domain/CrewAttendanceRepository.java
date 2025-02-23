@@ -22,10 +22,8 @@ public class CrewAttendanceRepository {
         Optional<CrewAttendance> crewAttendance = crewAttendances.stream()
                 .filter(attendance -> attendance.isNameMatch(name))
                 .findAny();
-        if (crewAttendance.isEmpty()) {
-            throw new IllegalArgumentException("[ERROR] 유효하지 않은 닉네임입니다.");
-        }
-        return crewAttendance.get();
+
+        return crewAttendance.orElseThrow(() -> new IllegalArgumentException("[ERROR] 유효하지 않은 닉네임입니다."));
     }
 
     public AttendanceTimeStatus update(final String name, final LocalDateTime newLocalDateTime) {

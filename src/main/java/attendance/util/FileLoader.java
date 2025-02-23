@@ -16,14 +16,11 @@ public class FileLoader {
             LocalDateTime localDateTime = LocalDateTime.parse(seperatedContent.get(1).replace(" ", "T"));
 
             Optional<CrewAttendance> crewAttendance = crewAttendances.stream()
-                    .filter(crew -> crew.isNameMatch(seperatedContent.get(0)))
+                    .filter(crew -> crew.isNameMatch(seperatedContent.getFirst()))
                     .findFirst();
 
-            if (crewAttendance.isEmpty()) {
-                crewAttendances.add(createCrewAttendance(seperatedContent.get(0), localDateTime));
-                return;
-            }
-            crewAttendance.get().add(localDateTime);
+            crewAttendance.ifPresentOrElse(presentCrewAttendance -> presentCrewAttendance.add(localDateTime),
+                    () -> crewAttendances.add(createCrewAttendance(seperatedContent.getFirst(), localDateTime)));
         });
         return crewAttendances;
     }
