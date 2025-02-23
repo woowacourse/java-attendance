@@ -35,8 +35,6 @@ class CrewGroupTest {
         crewGroup.addCrew("아마", LocalDateTime.of(2024, 12, 3, 10, 45));
         crewGroup.addCrew("아마", LocalDateTime.of(2024, 12, 4, 10, 31));
 
-        crewGroup.calculateAllAttendanceCount();
-
         List<Crew> alertCrews = crewGroup.getAllAttendanceAlertLevel();
         Assertions.assertTrue(alertCrews.contains(new Crew("아마")));
     }

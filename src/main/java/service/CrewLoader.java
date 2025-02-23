@@ -19,7 +19,6 @@ public class CrewLoader {
         CrewGroup crewGroup = getCrewGroup(lines);
 
         crewGroup.addAllAbsent(today);
-        crewGroup.calculateAllAttendanceCount();
         return crewGroup;
     }
 

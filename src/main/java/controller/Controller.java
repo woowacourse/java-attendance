@@ -3,12 +3,12 @@ package controller;
 import domain.Attendance;
 import domain.Crew;
 import domain.CrewGroup;
-import util.Day;
 import domain.Function;
 import domain.Time;
 import java.time.LocalDateTime;
 import java.util.List;
 import service.CrewLoader;
+import util.Day;
 import view.InputView;
 import view.OutputView;
 import view.dto.AlertCrewDTO;
@@ -27,7 +27,7 @@ public class Controller {
     }
 
     public void run() {
-        LocalDateTime today = LocalDateTime.of(2024, 12, 7, 10, 0);
+        LocalDateTime today = LocalDateTime.of(2024, 12, 13, 10, 0);
         CrewLoader crewLoader = new CrewLoader();
         CrewGroup crewGroup = crewLoader.loadCrews(today);
         try {

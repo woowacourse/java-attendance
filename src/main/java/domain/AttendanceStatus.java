@@ -5,9 +5,9 @@ public enum AttendanceStatus {
     LATE(5, 30, "지각"),
     ABSENT(30, 0, "결석");
 
-    int lowerBound;
-    int upperBound;
-    String name;
+    final int lowerBound;
+    final int upperBound;
+    final String name;
 
     AttendanceStatus(int lowerBound, int upperBound, String name) {
         this.lowerBound = lowerBound;

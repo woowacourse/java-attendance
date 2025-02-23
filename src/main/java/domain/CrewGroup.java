@@ -26,15 +26,10 @@ public class CrewGroup {
                 .forEach(crew -> crew.addAbsent(today));
     }
 
-    public void calculateAllAttendanceCount() {
-        crews.values()
-                .forEach(Crew::updateAttendanceCount);
-    }
-
     public List<Crew> getAllAttendanceAlertLevel() {
         return crews.values()
                 .stream()
-                .filter(crew -> !crew.calculateAttendanceAlertLevel().equals(AttendanceAlertLevel.NORMAL))
+                .filter(crew -> !crew.getAttendanceAlertLevel().equals(AttendanceAlertLevel.NORMAL))
                 .toList();
     }
 }

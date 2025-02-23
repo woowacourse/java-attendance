@@ -7,8 +7,8 @@ public enum AttendanceAlertLevel {
     NORMAL(0, "일반"),
     ;
 
-    int absenceLimit;
-    String name;
+    final int absenceLimit;
+    final String name;
 
     AttendanceAlertLevel(int absenceLimit, String name) {
         this.absenceLimit = absenceLimit;

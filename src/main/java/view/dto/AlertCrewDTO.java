@@ -1,14 +1,14 @@
 package view.dto;
 
-import domain.AttendanceCount;
+import domain.Attendances;
 import domain.Crew;
 
 public record AlertCrewDTO(String nickName, int absent, int late, String AlertLevel) implements
         Comparable<AlertCrewDTO> {
     public static AlertCrewDTO from(Crew crew) {
-        AttendanceCount attendanceCount = crew.getAttendanceCount();
-        return new AlertCrewDTO(crew.getNickname(), attendanceCount.getAbsent(), attendanceCount.getLate(),
-                attendanceCount.calculateAttendanceAlertLevel().getName());
+        Attendances attendances = crew.getAttendances();
+        return new AlertCrewDTO(crew.getNickname(), attendances.countAbsent(), attendances.countLate(),
+                attendances.calculateAttendanceAlertLevel().getName());
     }
 
     @Override
