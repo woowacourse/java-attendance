@@ -12,12 +12,10 @@ public class Crews {
     }
 
     public Crew findByNickname(String nickname) {
-        for (Crew crew : crews) {
-            if (crew.isEqualTo(nickname)) {
-                return crew;
-            }
-        }
-        throw new IllegalArgumentException("[ERROR] 등록되지 않은 닉네임입니다.");
+        return crews.stream()
+                .filter(crew -> crew.isEqualTo(nickname))
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException("[ERROR] 등록되지 않은 닉네임입니다."));
     }
 
     public void recordAllAbsence() {
