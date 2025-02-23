@@ -1,7 +1,10 @@
 package dto;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.stream.Collectors;
 import model.Attendance;
 import model.AttendanceType;
 import model.Attendances;
@@ -31,15 +34,11 @@ public class AttendanceResult {
             attendanceTypesCount.put(type, 0);
         }
 
-        for (Attendance attendance : attendances.getAttendances()) {
-            if (!attendance.isCome()) {
-                attendanceTypesCount.put(AttendanceType.ABSENCE,
-                        attendanceTypesCount.get(AttendanceType.ABSENCE) + 1);
-                continue;
-            }
-            AttendanceType type = attendance.getAttendanceType();
-            attendanceTypesCount.put(type, attendanceTypesCount.get(type) + 1);
-        }
+        attendances.getAttendances()
+                .forEach(attendance -> {
+                    AttendanceType type = attendance.isCome() ? attendance.getAttendanceType() : AttendanceType.ABSENCE;
+                    attendanceTypesCount.put(type, attendanceTypesCount.get(type) + 1);
+                });
 
         return attendanceTypesCount;
     }
