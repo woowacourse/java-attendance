@@ -1,20 +1,19 @@
 package controller;
 
-import domain.AttendanceStatus;
-import domain.Crew;
-import domain.Crews;
-import global.util.DateUtil;
-import view.InputView;
-import view.OutputView;
-
-import java.time.LocalDate;
-import java.time.LocalTime;
-import java.time.format.DateTimeParseException;
-
 import static global.util.DateUtil.FIXED_REFERENCE_DATE;
 import static global.util.DateUtil.assembleDateAndTime;
 import static global.util.Validator.validateIsFutureDate;
 import static global.util.Validator.validateIsNotWorkingDay;
+
+import domain.AttendanceStatus;
+import domain.Crew;
+import domain.Crews;
+import global.util.DateUtil;
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.format.DateTimeParseException;
+import view.InputView;
+import view.OutputView;
 
 public class AttendanceController {
     InputView inputView;

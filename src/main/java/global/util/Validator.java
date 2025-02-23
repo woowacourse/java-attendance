@@ -1,9 +1,8 @@
 package global.util;
 
-import view.ViewUtil;
-
 import java.time.LocalDate;
 import java.time.LocalTime;
+import view.ViewUtil;
 
 public class Validator {
     public static void validateIsNotWorkingDay(LocalDate targetDate) {

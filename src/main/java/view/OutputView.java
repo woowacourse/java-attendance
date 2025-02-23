@@ -1,18 +1,17 @@
 package view;
 
+import static view.ViewUtil.getAttendanceStatusMessage;
+import static view.ViewUtil.getRiskStatusMessage;
+
 import domain.AttendanceStatus;
 import domain.RiskStatus;
 import dto.CrewResponse;
 import global.util.DateUtil;
-
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Map;
-
-import static view.ViewUtil.getAttendanceStatusMessage;
-import static view.ViewUtil.getRiskStatusMessage;
 
 public class OutputView {
     public void printCrewAttendanceRecord(CrewResponse crewResponse) {

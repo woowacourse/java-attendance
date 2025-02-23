@@ -2,7 +2,6 @@ package view;
 
 import domain.AttendanceStatus;
 import domain.RiskStatus;
-
 import java.time.DayOfWeek;
 
 public class ViewUtil {

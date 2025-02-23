@@ -1,7 +1,8 @@
 package view;
 
-import domain.Crews;
+import static global.util.DateUtil.FIXED_REFERENCE_DATE;
 
+import domain.Crews;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -9,8 +10,6 @@ import java.io.InputStreamReader;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Scanner;
-
-import static global.util.DateUtil.FIXED_REFERENCE_DATE;
 
 public class InputView {
     Scanner scanner;

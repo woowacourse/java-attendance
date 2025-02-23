@@ -1,18 +1,17 @@
 package domain;
 
+import static global.util.DateUtil.FIXED_REFERENCE_DATE;
+import static global.util.DateUtil.assembleDateAndTime;
+import static global.util.Validator.validateIsFutureDate;
+import static global.util.Validator.validateIsInOperationTime;
+
 import dto.CrewResponse;
 import global.util.DateUtil;
-
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.HashMap;
 import java.util.Map;
-
-import static global.util.DateUtil.FIXED_REFERENCE_DATE;
-import static global.util.DateUtil.assembleDateAndTime;
-import static global.util.Validator.validateIsFutureDate;
-import static global.util.Validator.validateIsInOperationTime;
 
 public class Crew {
     private final String name;
