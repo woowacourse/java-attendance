@@ -38,4 +38,8 @@ public class AttendanceSheet {
     public int hashCode() {
         return Objects.hash(getNickname(), getAttendanceDateTime());
     }
+
+    public boolean isSameDay(int day) {
+        return attendanceDateTime.isSameDay(day);
+    }
 }

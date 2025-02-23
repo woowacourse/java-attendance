@@ -105,4 +105,8 @@ public class AttendanceDateTime {
     public int hashCode() {
         return Objects.hashCode(getAttendanceDateTime());
     }
+
+    public boolean isSameDay(int day) {
+        return attendanceDateTime.getDayOfMonth() == day;
+    }
 }

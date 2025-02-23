@@ -1,7 +1,10 @@
 package domain;
 
+import java.time.DayOfWeek;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.IntStream;
 
 public class AttendanceSheets {
 
@@ -53,5 +56,69 @@ public class AttendanceSheets {
                 .map(AttendanceSheet::getNickname)
                 .distinct()
                 .toList();
+    }
+
+    public int calculateAttendCountBy(String nickname) {
+        return calculateCountByNicknameAndState(nickname, AttendanceState.ATTEND);
+    }
+
+    public int calculateLateCountBy(String nickname) {
+        return calculateCountByNicknameAndState(nickname, AttendanceState.LATE);
+    }
+
+    private int calculateCountByNicknameAndState(String nickname, AttendanceState state) {
+        List<AttendanceSheet> attendanceByNickname = findAttendanceByNickname(nickname);
+        int count = 0;
+
+        for (AttendanceSheet attendanceSheet : attendanceByNickname) {
+            AttendanceDateTime attendanceDateTime = attendanceSheet.getAttendanceDateTime();
+
+            count += countStateByAttendanceDateTime(attendanceDateTime, state);
+        }
+
+        return count;
+    }
+
+    public int calculateAbsentCount(String nickname, LocalDate today) {
+        List<AttendanceSheet> attendanceByNickname = findAttendanceByNickname(nickname);
+        return IntStream.range(Calendar.DECEMBER.startDay, today.getDayOfMonth())
+                .boxed()
+                .mapToInt(day ->
+                {
+                    AttendanceSheet attendanceSheet = attendanceByNickname.stream()
+                            .filter(sheet -> sheet.isSameDay(day))
+                            .findAny()
+                            .orElse(null);
+                    return countAbsentByDay(attendanceSheet, day);
+                })
+                .sum();
+    }
+
+    private int countAbsentByDay(AttendanceSheet attendanceSheet, int day) {
+        if (attendanceSheet == null) {
+            return calculateCountByDayOfWeek(day);
+        }
+
+        return countStateByAttendanceDateTime(attendanceSheet.getAttendanceDateTime(), AttendanceState.ABSENT);
+    }
+
+    private int countStateByAttendanceDateTime(AttendanceDateTime datetime, AttendanceState state) {
+        if (datetime.check() == state) {
+            return 1;
+        }
+
+        return 0;
+    }
+
+    private int calculateCountByDayOfWeek(int day) {
+        LocalDate localDate = LocalDate.of(2024, 12, day);
+        DayOfWeek week = localDate.getDayOfWeek();
+
+        if (week == DayOfWeek.SATURDAY || week == DayOfWeek.SUNDAY || localDate.isEqual(
+                LocalDate.of(2024, 12, 25))) {
+            return 0;
+        }
+
+        return 1;
     }
 }
