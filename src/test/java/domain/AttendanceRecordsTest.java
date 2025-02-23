@@ -21,23 +21,23 @@ class AttendanceRecordsTest {
     }
 
     @Test
-    @DisplayName("날짜를 입력 받아서 출석 기록을 삭제하고 반환한다.")
+    @DisplayName("입력 받은 날짜에 해당하는 출석 기록을 삭제한다.")
     void removeRecordTest() {
         AttendanceRecords attendanceRecords = new AttendanceRecords();
-        attendanceRecords.addRecord(AttendanceRecord.parse("2024-12-03 10:07"));
-        AttendanceRecord expectedRecord = AttendanceRecord.parse("2024-12-03 10:07");
-        AttendanceRecord attendanceRecord = attendanceRecords.removeRecord(LocalDate.of(2024, 12, 3));
+        AttendanceRecord attendanceRecord = AttendanceRecord.parse("2024-12-03 10:07");
+        attendanceRecords.addRecord(attendanceRecord);
+        attendanceRecords.removeRecord(attendanceRecord);
 
-        assertThat(attendanceRecord).isEqualTo(expectedRecord);
+        assertThat(attendanceRecords.hasRecordOfDate(attendanceRecord.getDate())).isFalse();
     }
 
     @Test
-    @DisplayName("출석 기록이 없는 날짜를 삭제하려고 할 경우 예외가 발생한다.")
-    void removeRecordExceptionTest() {
+    @DisplayName("출석 기록이 없는 날짜를 가져오려고 할 경우 예외가 발생한다.")
+    void getRecordAtDateExceptionTest() {
         AttendanceRecords attendanceRecords = new AttendanceRecords();
-        attendanceRecords.addRecord(AttendanceRecord.parse("2024-12-03 10:00"));
+        AttendanceRecord attendanceRecord = AttendanceRecord.parse("2024-12-03 10:00");
 
-        assertThatThrownBy(() -> attendanceRecords.removeRecord(LocalDate.of(2024, 12, 4)))
+        assertThatThrownBy(() -> attendanceRecords.getRecordAtDate(attendanceRecord.getDate()))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("[ERROR] 출석 기록이 없는 날짜는 수정할 수 없습니다.\n");
     }
@@ -94,8 +94,8 @@ class AttendanceRecordsTest {
     }
 
     @Test
-    @DisplayName("출결 기록을 날짜순으로 정렬해서 반환한다.")
-    void getSortedRecordsTest() {
+    @DisplayName("출결 기록을 날짜순으로 저장한다.")
+    void getAttendanceRecordsTest() {
         AttendanceRecords actualRecords = new AttendanceRecords();
         actualRecords.addRecord(AttendanceRecord.parse("2024-12-12 11:00"));
         actualRecords.addRecord(AttendanceRecord.parse("2024-12-11 11:00"));
@@ -118,7 +118,7 @@ class AttendanceRecordsTest {
                 AttendanceRecord.parse("2024-12-11 11:00"),
                 AttendanceRecord.parse("2024-12-12 11:00"));
 
-        assertThat(actualRecords.getSortedRecords()).isEqualTo(expectedRecords);
+        assertThat(actualRecords.getAttendanceRecords().stream().toList()).isEqualTo(expectedRecords);
     }
 
     @Test
