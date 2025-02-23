@@ -6,7 +6,6 @@ import domain.Command;
 import domain.Crew;
 import domain.Crews;
 import domain.Nickname;
-import error.CustomIllegalArgumentException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -25,28 +24,21 @@ public class AttendanceController {
             final String input = InputView.readCommand(fixedDateTime);
             Command command = Command.findByCommandNumber(input);
             Crews crews = CrewGenerator.generate(CsvReader.readFile(CSV_PATH), fixedDateTime.toLocalDate());
-
             if (command.equals(Command.QUIT)) {
                 break;
             }
-
             command.execute(crews, fixedDateTime);
         }
     }
 
     public static void processCheckAttendees(final Crews crews, final LocalDateTime fixDateTime) {
-        String inputNickName = InputView.readNickName();
-        Nickname nickname = new Nickname(inputNickName);
-        Crew crew = crews.findByNickname(nickname);
-
+        Crew crew = findCrew(crews);
         String inputTime = InputView.readDateTime();
 
         LocalDate fixedDate = AttendanceDateTime.getLocalDateByLocalDateTime(fixDateTime);
         AttendanceDateTime attendanceDateTime = AttendanceDateTime.ofTimeString(fixedDate, inputTime);
         LocalDateTime dateTime = attendanceDateTime.getDateTime();
-        if (crew.isAttended(dateTime)) {
-            throw new CustomIllegalArgumentException("이미 출석했습니다. 다음에는 수정기능을 이용해주세요.");
-        }
+        crew.validateAttended(dateTime);
         final Attendance attendance = new Attendance(dateTime);
         crew.add(attendance);
         OutputView.printAttendance(attendance);
@@ -71,10 +63,14 @@ public class AttendanceController {
     }
 
     public static void processAttendanceRecordByCrew(final Crews crews) {
+        Crew crew = findCrew(crews);
+        OutputView.printCrewAttendances(crew);
+    }
+
+    private static Crew findCrew(Crews crews) {
         String inputNickName = InputView.readNickName();
         Nickname nickname = new Nickname(inputNickName);
         Crew crew = crews.findByNickname(nickname);
-
-        OutputView.printCrewAttendances(crew);
+        return crew;
     }
 }
