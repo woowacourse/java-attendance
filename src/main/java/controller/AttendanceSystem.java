@@ -3,9 +3,13 @@ package controller;
 import domain.AllCrew;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.regex.Pattern;
+
 import view.FileInputView;
 import view.OutputView;
 import view.UserInputView;
+
+import static constant.MenuOption.*;
 
 public class AttendanceSystem {
     private final FileInputView fileInputView;
@@ -13,6 +17,8 @@ public class AttendanceSystem {
     private final OutputView outputView;
     private final AllCrew allCrew;
     private final LocalDate todayDate;
+
+    private static final Pattern quitPattern = Pattern.compile(QUIT_REGEX.getValue());
 
     public AttendanceSystem(LocalDate todayDate) {
         this.todayDate = todayDate;
@@ -33,19 +39,22 @@ public class AttendanceSystem {
     }
 
     private boolean executeMenu(String menuInput) {
-        if (menuInput.equals("1")) {
+        if (menuInput.equals(CHECK_ATTENDANCE.getValue())) {
             checkAttendance();
         }
-        if (menuInput.equals("2")) {
+        if (menuInput.equals(MODIFY_ATTENDANCE.getValue())) {
             modifyAttendance();
         }
-        if (menuInput.equals("3")) {
+        if (menuInput.equals(CHECK_CREW_ATTENDANCE_HISTORY.getValue())) {
             checkCrewAttendanceHistory();
         }
-        if (menuInput.equals("4")) {
+        if (menuInput.equals(CHECK_DANGEROUS_CREW.getValue())) {
             checkDangerousCrew();
         }
-        return !menuInput.matches("[Qq]");
+        if (quitPattern.matcher(menuInput).matches()){
+            return false;
+        }
+        return true;
     }
 
     private void checkDangerousCrew() {
@@ -76,7 +85,7 @@ public class AttendanceSystem {
                 day,
                 Integer.parseInt(time[0]),
                 Integer.parseInt(time[1]));
-        outputView.printModifyAttendance(allCrew, name, dateTime); // 여기서 출력된것을 넘겨야 함.
+        outputView.printModifyAttendance(allCrew, name, dateTime);
     }
 }
 
