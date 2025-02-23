@@ -4,10 +4,11 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 public class Attendances {
 
@@ -44,43 +45,31 @@ public class Attendances {
     }
 
     public Map<Crew, Attendances> findAll(Crews crews, int month) {
-        Map<Crew, Attendances> crewsAttendances = new HashMap<>();
-        for (Crew crew : crews.getCrews()) {
-            Attendances attendances = findByCrewAndMonth(crew, month);
-            crewsAttendances.put(crew, attendances);
-        }
-        return crewsAttendances;
+        return crews.getCrews().stream()
+                .collect(Collectors.toMap(
+                        crew -> crew,
+                        crew -> findByCrewAndMonth(crew, month)
+                ));
     }
 
     public Attendances findByCrewAndMonth(Crew crew, int month) {
         LocalDate today = LocalDate.now();
-        List<Attendance> attendances = new ArrayList<>();
 
-        for (int i = 1; i < today.getDayOfMonth(); i++) {
-            LocalDate date = LocalDate.of(today.getYear(), month, i);
-            if (Holiday.isHolidayOrWeekend(date)) {
-                continue;
-            }
-
-            Optional<Attendance> foundAttendance = find(crew, date);
-            if (foundAttendance.isEmpty()) {
-                attendances.add(Attendance.createTimeNullAbsence(crew, date));
-                continue;
-            }
-            attendances.add(foundAttendance.get());
-        }
+        List<Attendance> attendances = IntStream.rangeClosed(1, today.getDayOfMonth() - 1)
+                .mapToObj(day -> LocalDate.of(today.getYear(), month, day))
+                .filter(date -> !Holiday.isHolidayOrWeekend(date))
+                .map(date -> find(crew, date)
+                        .orElseGet(() -> Attendance.createTimeNullAbsence(crew, date)))
+                .toList();
 
         return Attendances.of(attendances);
     }
 
     public Optional<Attendance> find(Crew crew, LocalDate localDate) {
-        for (Attendance attendance : attendances) {
-            if (attendance.isSame(crew, localDate)) {
-                Attendance copy = attendance.clone(attendance);
-                return Optional.of(copy);
-            }
-        }
-        return Optional.empty();
+        return attendances.stream()
+                .filter(attendance -> attendance.isSame(crew, localDate))
+                .findFirst()
+                .map(attendance -> attendance.clone(attendance));
     }
 
     private void validateExistAttendance(Attendance newAttendance) {
