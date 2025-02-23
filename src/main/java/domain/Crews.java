@@ -6,7 +6,7 @@ import java.util.List;
 
 public class Crews {
 
-    private List<Crew> crews;
+    private final List<Crew> crews;
 
     public Crews(final List<Crew> crews) {
         this.crews = crews;
@@ -14,20 +14,9 @@ public class Crews {
 
     public Crew findByNickname(final Nickname nickname) {
         return crews.stream()
-                .filter(o -> o.getNickname().equals(nickname))
+                .filter(crew -> crew.getNickname().equals(nickname))
                 .findFirst()
                 .orElseThrow(() -> new CustomIllegalArgumentException("크루가 존재하지 않습니다."));
-    }
-
-    public List<Crew> getSortedCrews() {
-        return crews.stream().
-                sorted(
-                        punishmentOrder
-                                .thenComparing(absenceOrder)
-                                .thenComparing(tardinessOrder)
-                                .thenComparing(nameOrder)
-                )
-                .toList();
     }
 
     public List<CrewSummary> getCrewSummary() {
@@ -36,14 +25,30 @@ public class Crews {
                 .toList();
     }
 
+    private List<Crew> getSortedCrews() {
+        return crews.stream().
+                sorted(sortCrew())
+                .toList();
+    }
+
+    private Comparator<Crew> sortCrew() {
+        return punishmentOrder.thenComparing(absenceOrder)
+                .thenComparing(tardinessOrder)
+                .thenComparing(nameOrder);
+    }
+
+
     private final Comparator<Crew> punishmentOrder = Comparator
-            .comparingInt((Crew crew) -> Punishment.findByAbsenceCount(getPunishment(crew))
-                    .getAbsenceCount())
+            .comparingInt((Crew crew) -> getPunishment(crew).getAbsenceCount())
             .reversed();
 
-    private static int getPunishment(final Crew crew) {
-        final AttendanceCounter attendanceCounter = crew.getAttendanceCounter();
-        return (attendanceCounter.getTardiness() * 3) + attendanceCounter.getAbsence();
+    private static Punishment getPunishment(final Crew crew) {
+        return Punishment.findByAbsenceCount(getAdjustedAbsenceCount(crew));
+    }
+
+    private static int getAdjustedAbsenceCount(final Crew crew) {
+        return crew.getCrewSummary().
+                adjustedAbsenceCount();
     }
 
     private final Comparator<Crew> absenceOrder = Comparator
