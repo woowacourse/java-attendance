@@ -60,7 +60,7 @@ public class AttendanceController {
     }
 
     private void addAttendance(final AttendanceSystem attendanceSystem) {
-        if (attendanceSystem.isNotAttendanceDay()) {
+        if (!attendanceSystem.isAttendanceDay()) {
             outputView.printNotAttendanceDay();
             return;
         }

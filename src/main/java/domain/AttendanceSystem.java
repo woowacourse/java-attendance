@@ -72,10 +72,10 @@ public class AttendanceSystem {
                 .toList();
     }
 
-    public boolean isNotAttendanceDay() {
+    public boolean isAttendanceDay() {
         final LocalDate today = dateTimeGenerator.generateDate();
-        return today.getDayOfWeek() == DayOfWeek.SUNDAY || today.getDayOfWeek() == DayOfWeek.SATURDAY
-                || today.equals(CHRISTMAS_DAY);
+        return !(today.getDayOfWeek() == DayOfWeek.SUNDAY || today.getDayOfWeek() == DayOfWeek.SATURDAY
+                || today.equals(CHRISTMAS_DAY));
     }
 
     public UpdatedAttendanceSnapshot updateAttendanceByCrewNameAndDay(
