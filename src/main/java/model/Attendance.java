@@ -43,8 +43,8 @@ public class Attendance {
     }
 
     public boolean isSameDateAndCrew(Attendance attendance) {
-        return checkInTime.toLocalDate().equals(attendance.checkInTime.toLocalDate()) && attendance.crew.isEqualName(
-                crew.getNickname());
+        return checkInTime.toLocalDate().isEqual(attendance.checkInTime.toLocalDate())
+                && crew.isEqualName(attendance.crew.getNickname());
     }
 
     public void modify(LocalTime modifiedTime) {
