@@ -2,6 +2,7 @@ package model;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
+import java.util.Arrays;
 
 public enum Holiday {
 
@@ -24,12 +25,8 @@ public enum Holiday {
         int month = date.getMonthValue();
         int day = date.getDayOfMonth();
 
-        for (Holiday holiday : Holiday.values()) {
-            if (holiday.month == month && holiday.day == day) {
-                return true;
-            }
-        }
-        return false;
+        return Arrays.stream(Holiday.values())
+                .anyMatch(holiday -> holiday.month == month && holiday.day == day);
     }
 
     private static boolean isWeekend(LocalDate date) {
