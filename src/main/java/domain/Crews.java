@@ -50,14 +50,11 @@ public class Crews {
     }
 
     public List<Crew> getDangerousCrews(String type) {
-        List<Crew> dismissalCrews = new ArrayList<>();
-        crews.forEach(crew -> {
-            String status = crew.getAttendanceHistory().getAttendanceStatus().getStatus();
-            if (status.equals(type)) {
-                dismissalCrews.add(crew);
-            }
-        });
-        return dismissalCrews;
+        List<Crew> getDangerousCrews = new ArrayList<>();
+        crews.stream()
+                .filter(crew -> crew.isSameType(type))
+                .forEach(getDangerousCrews::add);
+        return getDangerousCrews;
     }
 
     public List<Crew> getCrews() {

@@ -41,15 +41,19 @@ public class Crew {
         }
     }
 
-    public String getName() {
-        return name;
-    }
-
     public List<AttendTime> getAttendTimes() {
         return attendanceHistory.getAttendTimes();
     }
 
     public AttendanceHistory getAttendanceHistory() {
         return attendanceHistory;
+    }
+
+    public boolean isSameType(final String type) {
+        return attendanceHistory.getAttendanceStatus().getStatus().equals(type);
+    }
+
+    public String getName() {
+        return name;
     }
 }
