@@ -56,16 +56,16 @@ public class Attends {
                 .collect(Collectors.toList());
     }
 
-    public boolean hasDayEqualsAttend(int day) {
-        return attends.stream()
-                .anyMatch(attend -> attend.isDayEqual(day));
-    }
-
     public List<Attend> getAttends(List<Integer> dayOfWeek) {
         List<Attend> result = new ArrayList<>();
         dayOfWeek.stream()
                 .filter(this::hasDayEqualsAttend)
                 .forEach(day -> result.add(findByDay(day)));
         return result;
+    }
+
+    public boolean hasDayEqualsAttend(int day) {
+        return attends.stream()
+                .anyMatch(attend -> attend.isDayEqual(day));
     }
 }

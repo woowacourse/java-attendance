@@ -47,12 +47,6 @@ public class AttendanceBook {
         return attendsPerCrew.get(name);
     }
 
-    public Attend findByNameAndDay(String name, int day) {
-        Attends attends = attendsPerCrew.get(name);
-        return attends.findByDay(day);
-    }
-
-
     public List<Attend> getAttends(String name) {
         validateIsNameExist(name);
         List<Integer> days = Current.TODAY.getAttendUntilDay();
@@ -60,21 +54,29 @@ public class AttendanceBook {
                 .getAttends(days);
     }
 
-    public AttendStatus checkAttendance(Attend attend) {
-        return Arrays.stream(AttendStatus.values())
-                .filter(attendStatus -> attendStatus.match(attend, LATE_TIME, ABSENCE_TIME))
-                .findAny()
-                .orElseThrow(IllegalArgumentException::new);
+    private void validateIsNameExist(String name) {
+        if (!attendsPerCrew.containsKey(name)) {
+            throw new IllegalArgumentException("출석부에 존재하지 않는 크루입니다.");
+        }
     }
 
-    public AttendanceResults checkAttendance(String name, List<Integer> days) {
-        List<AttendanceResult> result = new ArrayList<>();
-        Attends attends = findByName(name);
-        for (int day : days) {
-            result.add(getAttendanceResult(attends, day));
+    private void validateAttendableDay(Attend attend) {
+        if (attend.isDayOff()) {
+            throw new IllegalArgumentException("쉬는날은 출석할 수 없음");
         }
-        return new AttendanceResults(result);
     }
+
+    private void validateAttendableTime(Attend attend) {
+        if (attend.isTimeOff(START_TIME, END_TIME)) {
+            throw new IllegalArgumentException("운영 시간 외에는 출석할 수 없음");
+        }
+    }
+
+    public Attend findByNameAndDay(String name, int day) {
+        Attends attends = attendsPerCrew.get(name);
+        return attends.findByDay(day);
+    }
+
 
     public List<WarningCrew> checkWarningCrews(List<Integer> days) {
         List<WarningCrew> result = new ArrayList<>();
@@ -87,16 +89,20 @@ public class AttendanceBook {
         return result;
     }
 
-    private void validateAttendableTime(Attend attend) {
-        if (attend.isTimeOff(START_TIME, END_TIME)) {
-            throw new IllegalArgumentException("운영 시간 외에는 출석할 수 없음");
+    public AttendanceResults checkAttendance(String name, List<Integer> days) {
+        List<AttendanceResult> result = new ArrayList<>();
+        Attends attends = findByName(name);
+        for (int day : days) {
+            result.add(getAttendanceResult(attends, day));
         }
+        return new AttendanceResults(result);
     }
 
-    private void validateAttendableDay(Attend attend) {
-        if (attend.isDayOff()) {
-            throw new IllegalArgumentException("쉬는날은 출석할 수 없음");
-        }
+    public AttendStatus checkAttendance(Attend attend) {
+        return Arrays.stream(AttendStatus.values())
+                .filter(attendStatus -> attendStatus.match(attend, LATE_TIME, ABSENCE_TIME))
+                .findAny()
+                .orElseThrow(IllegalArgumentException::new);
     }
 
     private AttendanceResult getAttendanceResult(Attends attends, int day) {
@@ -106,12 +112,6 @@ public class AttendanceBook {
         }
         Attend attend = Attend.fromDay(day);
         return new AttendanceResult(attend, AttendStatus.ABSENCE);
-    }
-
-    private void validateIsNameExist(String name) {
-        if (!attendsPerCrew.containsKey(name)) {
-            throw new IllegalArgumentException("출석부에 존재하지 않는 크루입니다.");
-        }
     }
 
     private void addWarningCrew(List<WarningCrew> result, WarningCrew warningCrew, WarningStatus warningStatus) {
