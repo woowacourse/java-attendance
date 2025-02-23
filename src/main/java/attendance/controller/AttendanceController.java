@@ -2,14 +2,17 @@ package attendance.controller;
 
 import attendance.constant.Holiday;
 import attendance.domain.Attendance;
+import attendance.domain.AttendanceStatus;
 import attendance.domain.AttendancesBook;
 import attendance.domain.Crew;
 import attendance.domain.Crews;
+import attendance.domain.Penalty;
 import attendance.file.AttendanceFileReader;
 import attendance.file.AttendanceFileReader.FileContents;
 import attendance.util.DateUtil;
 import attendance.view.InputView;
 import attendance.view.OutputView;
+
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -19,8 +22,8 @@ import java.util.Locale;
 
 public class AttendanceController {
 
-    private AttendancesBook attendancesBook;
-    private Crews crews;
+    private final AttendancesBook attendancesBook;
+    private final Crews crews;
 
     public AttendanceController() {
         String path = "src/main/resources/attendances.csv";
@@ -108,7 +111,11 @@ public class AttendanceController {
 
     private void checkAttendanceRecordOfCrew() {
         Crew crew = getCrew();
-        List<Attendance> attendancesOfCrew = attendancesBook.getByCrew(crew, LocalDate.now());
-        OutputView.printAttendanceRecordAndPenalty(attendancesOfCrew, crew);
+        List<Attendance> attendancesOfCrew = attendancesBook.getAttendancesOfCrew(crew, LocalDate.now());
+        int attendanceCount = attendancesBook.countAttendanceStatus(attendancesOfCrew, AttendanceStatus.CHECKIN);
+        int lateCount = attendancesBook.countAttendanceStatus(attendancesOfCrew, AttendanceStatus.LATE);
+        int absenceCount = attendancesBook.countAttendanceStatus(attendancesOfCrew, AttendanceStatus.ABSENCE);
+        Penalty penalty = Penalty.determine(absenceCount, lateCount);
+        OutputView.printAttendancesAndPenalty(attendancesOfCrew, crew, attendanceCount, lateCount, absenceCount, penalty);
     }
 }

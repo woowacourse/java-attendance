@@ -1,8 +1,12 @@
 package attendance.domain;
 
+import attendance.util.DateUtil;
+
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 public class Attendances {
@@ -42,10 +46,58 @@ public class Attendances {
                 .filter(attendance -> attendance.getAttendanceDateTime().toLocalDate() == modifyingDate)
                 .peek(attendance -> attendance.modify(LocalDateTime.of(modifyingDate, modifyingTime)))
                 .findFirst()
-                .orElseGet(() -> Attendance.of(LocalDateTime.of(modifyingDate, modifyingTime)));
+                .orElseGet(() -> {
+                    Attendance newAttendance = Attendance.of(LocalDateTime.of(modifyingDate, modifyingTime));
+                    attendances.sort(Comparator.comparing(Attendance::getAttendanceDateTime));
+                    int insertIndex = findInsertIndex(newAttendance);
+                    attendances.add(insertIndex, newAttendance);
+                    return newAttendance;
+                });
     }
 
-    public List<Attendance> getAttendances() {
-        return attendances;
+    private int findInsertIndex(Attendance newAttendance) {
+        for (int i = 0; i < attendances.size(); i++) {
+            if (attendances.get(i).getAttendanceDateTime().isAfter(newAttendance.getAttendanceDateTime())) {
+                return i;
+            }
+        }
+        return attendances.size();
+    }
+
+    public List<Attendance> getAddAbsenceAttendances(LocalDate today) {
+        int day = today.getDayOfMonth();
+        List<Attendance> copiedAttendances = new ArrayList<>(attendances);
+        copiedAttendances.removeIf(attendance -> attendance.getAttendanceDateTime().getDayOfMonth() == day);
+        int sequence = 0;
+        for (int i = 1; i < day; i++) {
+            LocalDate currentDay = LocalDate.of(today.getYear(), today.getMonth(), i);
+            if (DateUtil.isWeekend(currentDay)) {
+                continue;
+            }
+            addAbsenceRecord(sequence, copiedAttendances, currentDay);
+            sequence++;
+        }
+        return copiedAttendances;
+    }
+
+    private void addAbsenceRecord(int sequence, List<Attendance> copiedAttendancesOfCrew, LocalDate currentDay) {
+        Attendance attendance;
+        if (sequence >= copiedAttendancesOfCrew.size()) {
+            attendance = Attendance.of(LocalDateTime.of(currentDay, LocalTime.MIN));
+            copiedAttendancesOfCrew.add(attendance);
+            return;
+        }
+        attendance = copiedAttendancesOfCrew.get(sequence);
+        if (attendance.getAttendanceDateTime().getDayOfMonth() > currentDay.getDayOfMonth()) {
+            copiedAttendancesOfCrew.add(sequence,
+                    Attendance.of(LocalDateTime.of(currentDay, LocalTime.MIN)));
+        }
+    }
+
+    @Override
+    public String toString() {
+        return "Attendances{" +
+                "attendances=" + attendances +
+                '}';
     }
 }

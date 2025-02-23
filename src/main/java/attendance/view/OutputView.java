@@ -44,36 +44,18 @@ public class OutputView {
             date, beforeTime, beforeStatus, afterTime, afterStatus);
     }
 
-    public static void printAttendanceRecordAndPenalty(List<Attendance> attendancesOfCrew, Crew crew) {
+    public static void printAttendancesAndPenalty(List<Attendance> attendancesOfCrew, Crew crew,
+                                                  int attendanceCount, int lateCount, int absenceCount, Penalty penalty) {
         System.out.printf("%n이번 달 %s의 출석 기록입니다.%n", crew.getNickName());
-        for (Attendance attendance : attendancesOfCrew) {
-            System.out.println(getFormattedAttendanceRecord(attendance));
-        }
+        attendancesOfCrew.forEach(attendance -> System.out.println(getFormattedAttendanceRecord(attendance)));
 
-        int attendanceCount = countAttendanceStatus(attendancesOfCrew, AttendanceStatus.CHECKIN);
-        int lateCount = countAttendanceStatus(attendancesOfCrew, AttendanceStatus.LATE);
-        int absenceCount = countAttendanceStatus(attendancesOfCrew, AttendanceStatus.ABSENCE);
-        printPenaltyOfAttendanceStatus(attendanceCount, lateCount, absenceCount);
-    }
-
-    private static void printPenaltyOfAttendanceStatus(int attendanceCount, int lateCount,
-        int absenceCount) {
         System.out.printf("%n출석: %d회%n", attendanceCount);
         System.out.printf("지각: %d회%n", lateCount);
         System.out.printf("결석: %d회%n", absenceCount);
 
-        Penalty penalty = Penalty.determine(absenceCount, lateCount);
         if (penalty != Penalty.NONE) {
             System.out.printf("%n%s 대상자입니다.%n", penalty.getStatus());
         }
-    }
-
-    private static int countAttendanceStatus(List<Attendance> attendances, AttendanceStatus attendanceStatus) {
-        return Math.toIntExact(
-            attendances.stream()
-                .filter(attendance -> attendance.getStatus() == attendanceStatus)
-                .count()
-        );
     }
 
     private static String getFormattedAttendanceRecord(Attendance attendance) {
@@ -100,9 +82,9 @@ public class OutputView {
     private static List<PenaltyResult> getPenaltyResults(List<Crew> crews, AttendancesBook attendancesBook) {
         return crews.stream()
             .map(crew -> {
-                List<Attendance> attendanceOfCrew = attendancesBook.getByCrew(crew, LocalDate.now());
-                int absenceCount = countAttendanceStatus(attendanceOfCrew, AttendanceStatus.ABSENCE);
-                int lateCount = countAttendanceStatus(attendanceOfCrew, AttendanceStatus.LATE);
+                List<Attendance> attendanceOfCrew = attendancesBook.getAttendancesOfCrew(crew, LocalDate.now());
+                int absenceCount = attendancesBook.countAttendanceStatus(attendanceOfCrew, AttendanceStatus.ABSENCE);
+                int lateCount = attendancesBook.countAttendanceStatus(attendanceOfCrew, AttendanceStatus.LATE);
                 Penalty penalty = Penalty.determine(absenceCount, lateCount);
                 return new PenaltyResult(crew.getNickName(), absenceCount, lateCount, penalty);
             })
