@@ -29,23 +29,14 @@ public class AttendanceChecker {
         this.attendanceStatus = calculateStatus();
     }
 
-    public int isAbsence() {
-        if (this.attendanceStatus.equals(AttendanceStatus.ABSENCE)) {
-            return 1;
-        }
-        return 0;
+    public boolean isAbsence() {
+        return this.attendanceStatus.equals(AttendanceStatus.ABSENCE);
     }
-    public int isLate() {
-        if (this.attendanceStatus.equals(AttendanceStatus.LATE)) {
-            return 1;
-        }
-        return 0;
+    public boolean isLate() {
+        return this.attendanceStatus.equals(AttendanceStatus.LATE);
     }
-    public int isAttendance() {
-        if (this.attendanceStatus.equals(AttendanceStatus.ATTENDANCE)) {
-            return 1;
-        }
-        return 0;
+    public boolean isAttendance() {
+        return this.attendanceStatus.equals(AttendanceStatus.ATTENDANCE);
     }
 
     private AttendanceStatus calculateStatus() {

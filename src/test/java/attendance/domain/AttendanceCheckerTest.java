@@ -54,8 +54,8 @@ class AttendanceCheckerTest {
 
 
     @ParameterizedTest
-    @CsvSource(value = {"2025,2,19,10:31,1", "2025,2,19,09:59,0", "2025,2,19,10:11,0"})
-    void 결석_개수_반환(int year, int month, int day, String timeNumber, int expectedStatus) {
+    @CsvSource(value = {"2025,2,19,10:31,true", "2025,2,19,09:59,false", "2025,2,19,10:11,false"})
+    void 결석_개수_반환(int year, int month, int day, String timeNumber, boolean expectedStatus) {
         //given
         List<String> timeNumbers = List.of(timeNumber.split(":"));
         LocalDateTime localDateTime = LocalDateTime.of(year, month, day, Integer.parseInt(timeNumbers.get(0)),
@@ -69,8 +69,8 @@ class AttendanceCheckerTest {
 
 
     @ParameterizedTest
-    @CsvSource(value = {"2025,2,19,10:11,1", "2025,2,19,09:59,0", "2025,2,19,10:31,0"})
-    void 지각_개수_반환(int year, int month, int day, String timeNumber, int expectedStatus) {
+    @CsvSource(value = {"2025,2,19,10:11,true", "2025,2,19,09:59,false", "2025,2,19,10:31,false"})
+    void 지각_개수_반환(int year, int month, int day, String timeNumber, boolean expectedStatus) {
         //given
         List<String> timeNumbers = List.of(timeNumber.split(":"));
         LocalDateTime localDateTime = LocalDateTime.of(year, month, day, Integer.parseInt(timeNumbers.get(0)),
@@ -83,8 +83,8 @@ class AttendanceCheckerTest {
     }
 
     @ParameterizedTest
-    @CsvSource(value = {"2025,2,19,10:11,0", "2025,2,19,09:59,1", "2025,2,19,10:31,0"})
-    void 출석_개수_반환(int year, int month, int day, String timeNumber, int expectedStatus) {
+    @CsvSource(value = {"2025,2,19,10:11,false", "2025,2,19,09:59,true", "2025,2,19,10:31,false"})
+    void 출석_개수_반환(int year, int month, int day, String timeNumber, boolean expectedStatus) {
         //given
         List<String> timeNumbers = List.of(timeNumber.split(":"));
         LocalDateTime localDateTime = LocalDateTime.of(year, month, day, Integer.parseInt(timeNumbers.get(0)),

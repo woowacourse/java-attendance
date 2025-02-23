@@ -31,13 +31,20 @@ public class AttendanceRegistry {
         int late = 0;
         int attendance = 0;
         for (AttendanceChecker attendanceChecker : attendanceCheckers) {
-            absence += attendanceChecker.isAbsence();
-            late += attendanceChecker.isLate();
-            attendance += attendanceChecker.isAttendance();
+            absence += mappingStatusToNumber(attendanceChecker.isAbsence());
+            late += mappingStatusToNumber(attendanceChecker.isLate());
+            attendance += mappingStatusToNumber(attendanceChecker.isAttendance());
         }
         this.absence = absence;
         this.late = late;
         this.attendance = attendance;
+    }
+
+    private int mappingStatusToNumber(final boolean attendanceStatus) {
+        if (attendanceStatus) {
+            return 1;
+        }
+        return 0;
     }
 
     private static List<AttendanceChecker> makeDefaultDateInfos(LocalDate now) {
