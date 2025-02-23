@@ -1,6 +1,6 @@
 package view;
 
-import domain.Parser;
+import util.Parser;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.Scanner;

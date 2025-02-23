@@ -1,5 +1,5 @@
 import controller.AttendanceController;
-import domain.CsvReader;
+import util.CsvReader;
 import view.InputView;
 import view.OutputView;
 

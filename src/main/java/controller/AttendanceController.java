@@ -1,8 +1,9 @@
 package controller;
 
 import domain.AttendanceBook;
-import domain.CsvReader;
-import domain.Parser;
+import domain.Crew;
+import domain.ErrorCode;
+import util.FileReader;
 import domain.PenaltyStatus;
 import domain.UserInput;
 import dto.AttendanceRecordResponse;
@@ -14,23 +15,23 @@ import java.time.LocalTime;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Supplier;
+import util.Parser;
 import view.InputView;
 import view.OutputView;
 
 public class AttendanceController {
-    private final CsvReader csvFileReader;
+    private final FileReader fileReader;
     private final OutputView outputView;
     private final InputView inputView;
 
-    public AttendanceController(CsvReader csvFileReader, OutputView outputView, InputView inputView) {
-        this.csvFileReader = csvFileReader;
+    public AttendanceController(FileReader fileReader, OutputView outputView, InputView inputView) {
+        this.fileReader = fileReader;
         this.outputView = outputView;
         this.inputView = inputView;
     }
 
     public void start() {
-        String dataPath = "src/main/resources/attendances.csv";
-        List<String> fileData = csvFileReader.readCsv(dataPath);
+        List<String> fileData = fileReader.readFile();
 
         List<String> removedData = Parser.parse(fileData);
         List<List<String>> seperatedData = Parser.parseName(removedData);
@@ -44,8 +45,7 @@ public class AttendanceController {
         }
 
         while (true) {
-
-            outputView.displayPrompt(); // 기능 선택창
+            outputView.displayPrompt();
             UserInput selection = retryUntilValid(this::getUserInput);
 
             try {
