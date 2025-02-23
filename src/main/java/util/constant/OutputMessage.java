@@ -2,6 +2,7 @@ package util.constant;
 
 public class OutputMessage {
 
+    public static final String ERROR_PREFIX = "[ERROR] ";
     public static final String ATTENDANCE_RECORD_FORMAT = "%s %s%n";
     public static final String ABSENCE_RECORD_FORMAT = "--:-- (결석)";
     public static final String ATTENDANCE_EDIT_FORMAT = "%s %s -> %s 수정 완료!%n";

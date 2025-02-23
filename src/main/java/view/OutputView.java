@@ -5,6 +5,7 @@ import static util.constant.OutputMessage.ATTENDANCE_EDIT_FORMAT;
 import static util.constant.OutputMessage.ATTENDANCE_RECORD_FORMAT;
 import static util.constant.OutputMessage.CREW_ATTENDANCE_LIST_MESSAGE;
 import static util.constant.OutputMessage.DATE_PRINT_FORMAT;
+import static util.constant.OutputMessage.ERROR_PREFIX;
 import static util.constant.OutputMessage.PENALTY_FORMAT;
 import static util.constant.OutputMessage.TIME_PRINT_FORMAT;
 import static util.constant.OutputMessage.TOTAL_ABSENCE_FORMAT;
@@ -29,7 +30,7 @@ import java.util.Map;
 public class OutputView {
 
     public void printErrorMessage(IllegalArgumentException e) {
-        System.out.println(e.getMessage());
+        System.out.println(ERROR_PREFIX + e.getMessage());
     }
 
     public void printAttendanceRecord(LocalDate localDate, TimeAndStatus timeAndStatus) {
