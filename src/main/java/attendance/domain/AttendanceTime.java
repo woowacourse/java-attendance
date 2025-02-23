@@ -8,6 +8,17 @@ import java.util.Locale;
 
 public record AttendanceTime(LocalDate date, String hour, String minute, boolean isAbsent) {
 
+    private static final int HOUR_MAX = 24;
+    private static final int HOUR_MIN = 0;
+    private static final int MINUTE_MAX = 60;
+    private static final int MINUTE_MIN = 0;
+
+    private static final int CAMPUS_OPEN_HOUR = 8;
+    private static final int CAMPUS_CLOSE_HOUR = 8;
+
+    private static final String SATURDAY = "SATURDAY";
+    private static final String SUNDAY = "SUNDAY";
+
     public AttendanceTime {
 
         if (!isAbsent) {
@@ -20,8 +31,8 @@ public record AttendanceTime(LocalDate date, String hour, String minute, boolean
 
         int parsingHour = Parser.parseInt(hour);
         int parsingMinute = Parser.parseInt(minute);
-        if (parsingHour >= 24 || parsingHour < 0 || parsingMinute >= 60
-                || parsingMinute < 0) {
+        if (parsingHour >= HOUR_MAX || parsingHour < HOUR_MIN || parsingMinute >= MINUTE_MAX
+                || parsingMinute < MINUTE_MIN) {
             throw new IllegalArgumentException("[ERROR] 올바른 시간을 입력해주세요.");
         }
     }
@@ -37,7 +48,7 @@ public record AttendanceTime(LocalDate date, String hour, String minute, boolean
         int parsingHour = Parser.parseInt(hour);
         int parsingMinute = Parser.parseInt(minute);
 
-        if (parsingHour < 8 || parsingHour == 23 && parsingMinute > 0) {
+        if (parsingHour < CAMPUS_OPEN_HOUR || parsingHour == CAMPUS_CLOSE_HOUR && parsingMinute > MINUTE_MIN) {
             throw new IllegalArgumentException("[ERROR] 출석 가능한 시간이 아닙니다.");
         }
     }
@@ -46,7 +57,7 @@ public record AttendanceTime(LocalDate date, String hour, String minute, boolean
 
         String day = date.getDayOfWeek().name();
 
-        if (day.equals("SATURDAY") || day.equals("SUNDAY")) {
+        if (day.equals(SATURDAY) || day.equals(SUNDAY)) {
             String message = String.format("[ERROR] %02d월 %02d일 %s은 등교일이 아닙니다.",
                     date.getMonthValue(), date.getDayOfMonth(),
                     date.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.KOREAN));

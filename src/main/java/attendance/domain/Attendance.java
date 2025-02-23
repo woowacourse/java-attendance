@@ -5,6 +5,12 @@ public class Attendance {
     private final String crewName;
     private AttendanceTime attendanceTime;
 
+    private static final String MONDAY = "월요일";
+    private static final int MONDAY_ATTEND_HOUR = 13;
+    private static final int NORMAL_ATTEND_HOUR = 10;
+    private static final int LATE_DEADLINE_MINUTE = 5;
+    private static final int ABSENT_DEADLINE_MINUTE = 30;
+
     public Attendance(final String crewName, final AttendanceTime attendanceTime) {
 
         this.crewName = crewName;
@@ -24,11 +30,13 @@ public class Attendance {
 
     public String getAttendanceStatus() {
 
-        if (attendanceTime.getDayOfWeek().equals("월요일")) {
-            return AttendanceStatus.getAttendanceStatusWithCondition(attendanceTime, 13, 5, 30).getValue();
+        if (attendanceTime.getDayOfWeek().equals(MONDAY)) {
+            return AttendanceStatus.getAttendanceStatusWithCondition(attendanceTime, MONDAY_ATTEND_HOUR,
+                    LATE_DEADLINE_MINUTE, ABSENT_DEADLINE_MINUTE).getValue();
         }
 
-        return AttendanceStatus.getAttendanceStatusWithCondition(attendanceTime, 10, 5, 30).getValue();
+        return AttendanceStatus.getAttendanceStatusWithCondition(attendanceTime, NORMAL_ATTEND_HOUR,
+                LATE_DEADLINE_MINUTE, ABSENT_DEADLINE_MINUTE).getValue();
     }
 
     public boolean isAlreadyAttendance(final Attendance currentAttendance) {
