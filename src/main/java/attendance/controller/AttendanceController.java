@@ -4,11 +4,7 @@ import attendance.config.AppConfig;
 import attendance.domain.Attendance;
 import attendance.domain.AttendanceInit;
 import attendance.domain.AttendanceManager;
-import attendance.domain.Attendances;
 import attendance.domain.Holiday;
-import attendance.dto.response.AttendanceGroupByStatus;
-import attendance.dto.response.AttendanceRecordUntilToday;
-import attendance.dto.response.AttendanceSearchResult;
 import attendance.dto.response.WarnedStudents;
 import attendance.utility.DateGenerator;
 import attendance.utility.DateTimeParser;
@@ -96,6 +92,16 @@ public class AttendanceController {
         }
     }
 
+    private void processAttendanceSearch(AttendanceMenu menu, LocalDate today) {
+        if (menu == SEARCH) {
+            String nickname = inputView.readNickname(false);
+            attendanceManager.validateNicknameExists(nickname);
+
+            List<Attendance> attendances = attendanceManager.processAttendanceSearch(nickname);
+            outputView.printAttendanceSearch(attendances, nickname);
+        }
+    }
+
     private void processAttendanceWarnedCrew(AttendanceMenu menu, LocalDate today) {
         if (menu == WARNED_CREW) {
             WarnedStudents response = processWarnedStudent(today);
@@ -103,25 +109,9 @@ public class AttendanceController {
         }
     }
 
-    private void processAttendanceSearch(AttendanceMenu menu, LocalDate today) {
-        if (menu == SEARCH) {
-            AttendanceSearchResult response = processAttendanceSearch(today);
-            outputView.printAttendUpdateResult(response);
-        }
-    }
-
     private AttendanceMenu selectMenu(LocalDate today) {
         outputView.printMenu(today);
         return find(inputView.readMenuCommand());
-    }
-
-    public AttendanceSearchResult processAttendanceSearch(LocalDate today) {
-        String nickname = inputView.readNickname(false);
-        Attendances attendance = attendanceManager.findCrewAttendance(nickname);
-
-        AttendanceRecordUntilToday recordUntilToday = attendance.createRecordUntilTodayResponse(today);
-        AttendanceGroupByStatus groupByStatus = attendance.createCountUntilYesterday(today);
-        return new AttendanceSearchResult(nickname, recordUntilToday, groupByStatus);
     }
 
     public WarnedStudents processWarnedStudent(LocalDate today) {
