@@ -91,13 +91,8 @@ public class AttendanceRecords {
     }
 
     private boolean isExistLocalDate(Map<LocalDate, AttendanceRecord> recordClone, LocalDateTime localDateTime) {
-        List<LocalDate> localDateTimes = new ArrayList<>(recordClone.keySet());
-        for (LocalDate recordLocalDate : localDateTimes) {
-            if (compareDayIsSame(localDateTime,recordLocalDate)) {
-                return true;
-            }
-        }
-        return false;
+        return recordClone.keySet().stream()
+                .anyMatch(date -> compareDayIsSame(localDateTime, date));
     }
 
     public Map<LocalDate, AttendanceRecord> makeRecordClone() {
