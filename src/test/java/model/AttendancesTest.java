@@ -99,10 +99,10 @@ class AttendancesTest {
         Crew crew = Crew.of("쿠키");
         Attendance attendance1 = Attendance.createTimeNullAbsence(crew, LocalDate.of(2024, 10, 2));
         Attendance attendance2 = Attendance.of(crew, LocalDateTime.of(2024, 12, 2, 9, 30));
-        Attendance attendance3 = Attendance.of(crew, LocalDateTime.of(2024, 12, 3, 9, 30));
+        Attendance attendance3 = Attendance.of(crew, LocalDateTime.of(2024, 12, 3, 10, 30));
         Attendances attendances = Attendances.of(List.of(attendance1, attendance2, attendance3));
         AttendanceStatistics expected = AttendanceStatistics.of(crew,
-                Map.of(AttendanceType.SUCCESS, 2, AttendanceType.BE_LATE, 1, AttendanceType.ABSENCE, 0));
+                Map.of(AttendanceType.SUCCESS, 1, AttendanceType.BE_LATE, 1, AttendanceType.ABSENCE, 0));
 
         //when
         AttendanceStatistics actual = attendances.createStatistics(crew, LocalDate.of(2024, 12, 4));
