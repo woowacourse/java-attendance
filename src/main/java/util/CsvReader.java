@@ -8,6 +8,7 @@ import java.util.List;
 public final class CsvReader {
 
     private static final String DELIMITER = ",";
+    // 첫째줄은 열이 무엇을 의미하는지 표기하는 위치라 제외
     private static final int LINES_TO_SKIP = 1;
 
     private CsvReader() {
