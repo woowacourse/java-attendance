@@ -17,6 +17,7 @@ public class AttendanceController {
 
     private final InputView inputView;
     private final OutputView outputView;
+    private Attendances attendances;
 
     public AttendanceController(InputView inputView,
                                 OutputView outputView) {
@@ -26,46 +27,46 @@ public class AttendanceController {
 
     public void run() {
         String filePath = "src/main/resources/attendances.csv";
-        Attendances attendances = AttendanceParser.registerAttendances(
+        attendances = AttendanceParser.registerAttendances(
                 filePath,
                 DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")
         );
-        readFeature(attendances);
+        readFeature();
     }
 
-    private void readFeature(Attendances attendances) {
+    private void readFeature() {
         String featureNumber = "";
         while (!featureNumber.equals("Q")) {
             featureNumber = inputView.readFeatureNumber();
             try {
-                selectFeature(attendances, featureNumber);
+                selectFeature(featureNumber);
             } catch (IllegalArgumentException e) {
                 System.out.println(e.getMessage());
             }
         }
     }
 
-    private void selectFeature(Attendances attendances, String featureNumber) {
+    private void selectFeature(String featureNumber) {
         if (featureNumber.equals("1")) {
-            checkIn(attendances);
+            checkIn();
             return;
         }
         if (featureNumber.equals("2")) {
-            modifyCheckInTime(attendances);
+            modifyCheckInTime();
             return;
         }
         if (featureNumber.equals("3")) {
-            readCheckInTime(attendances);
+            readCheckInTime();
             return;
         }
         if (featureNumber.equals("4")) {
-            readDangerCrews(attendances);
+            readDangerCrews();
             return;
         }
         throw new IllegalArgumentException("[ERROR] 1, 2, 3, 4, Q 만 입력해주세요.");
     }
 
-    private void checkIn(Attendances attendances) {
+    private void checkIn() {
         String name = inputView.readNickName();
         Attendance attendance = attendances.findAttendanceByName(name)
                 .orElseThrow(() -> new IllegalArgumentException("[ERROR] 출석부에 해당하는 이름이 없습니다."));
@@ -84,7 +85,7 @@ public class AttendanceController {
     }
 
 
-    private void modifyCheckInTime(Attendances attendances) {
+    private void modifyCheckInTime() {
         String name = inputView.readNickNameForModify();
         Attendance attendance = attendances.findAttendanceByName(name)
                 .orElseThrow(() -> new IllegalArgumentException("[ERROR] 출석부에 해당하는 이름이 없습니다."));
@@ -105,14 +106,14 @@ public class AttendanceController {
     }
 
 
-    private void readCheckInTime(Attendances attendances) {
+    private void readCheckInTime() {
         String name = inputView.readNickName();
         Attendance attendance = attendances.findAttendanceByName(name)
                 .orElseThrow(() -> new IllegalArgumentException("[ERROR] 출석부에 해당하는 이름이 없습니다."));
         outputView.printAttendanceLog(attendance);
     }
 
-    private void readDangerCrews(Attendances attendances) {
+    private void readDangerCrews() {
         List<Attendance> dangerCrew = attendances.findDangerCrew();
         List<Attendance> sorted = dangerCrew.stream().sorted().toList();
         outputView.printDangerCrews(sorted);
