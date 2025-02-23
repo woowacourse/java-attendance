@@ -6,6 +6,7 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import model.Attendance;
 import model.Attendances;
 import model.Crew;
@@ -14,13 +15,12 @@ import model.Crews;
 public class StringConverter {
 
     public Crews convertToCrews(List<String> rawAttendances) {
-        List<Crew> crews = new ArrayList<>();
-        for (String rawAttendance : rawAttendances) {
-            String rawNickname = rawAttendance.split(",")[0];
-            validateNullOrBlank(rawNickname);
+        List<Crew> crews = rawAttendances.stream()
+                .map(rawAttendance -> rawAttendance.split(",")[0])
+                .peek(this::validateNullOrBlank)
+                .map(Crew::of)
+                .toList();
 
-            crews.add(Crew.of(rawNickname));
-        }
         return Crews.of(crews);
     }
 
