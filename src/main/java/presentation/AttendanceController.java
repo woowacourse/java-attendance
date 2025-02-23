@@ -84,10 +84,10 @@ public class AttendanceController {
         List<ResponseWarningCrewDto> warningCrewDtos = warningCrews.stream()
                 .map(warningCrew -> new ResponseWarningCrewDto(
                         warningCrew.getName(),
-                        warningCrew.getAttendance().countAbsence(),
-                        warningCrew.getAttendance().countTardy(),
+                        warningCrew.countAbsence(),
+                        warningCrew.countTardy(),
                         AttendanceWarning.determineAttendanceWarning(
-                                warningCrew.getAttendance().countAbsenceIncludingTardy())))
+                                warningCrew.countAbsenceIncludingTardy())))
                 .toList();
         OutputView.printAttendanceWarningCrews(warningCrewDtos);
     }
@@ -123,8 +123,7 @@ public class AttendanceController {
     private ResponseAttendanceEditStateDto getBeforeEditState(Crew crew, int attendanceDay) {
         LocalDate findLocalDate = LocalDate.of(LocalDate.now().getYear(), LocalDateTime.now().getMonthValue(),
                 attendanceDay);
-        Attendance attendance = crew.getAttendance();
-        AttendanceDate attendanceDate = attendance.findAttendanceDate(findLocalDate);
+        AttendanceDate attendanceDate = crew.findAttendanceDate(findLocalDate);
 
         String beforeEditDate = DateTimeUtil.convertLocalDateTimeToString(attendanceDate.checkAttendanceTime());
         AttendanceState beforeState = attendanceDate.calculateAttendanceState();
@@ -135,8 +134,7 @@ public class AttendanceController {
     private ResponseAttendanceEditStateDto getAfterEditState(Crew crew, int attendanceDay, String textAttendanceTime) {
         LocalDate findLocalDate = LocalDate.of(LocalDate.now().getYear(), LocalDateTime.now().getMonthValue(),
                 attendanceDay);
-        Attendance attendance = crew.getAttendance();
-        AttendanceDate attendanceDate = attendance.findAttendanceDate(findLocalDate);
+        AttendanceDate attendanceDate = crew.findAttendanceDate(findLocalDate);
 
         LocalDateTime afterEditDateTime = DateTimeUtil.convertStringToLocalDateTime(findLocalDate, textAttendanceTime);
         String afterEditTime = DateTimeUtil.convertLocalDateTimeToTimeString(afterEditDateTime);

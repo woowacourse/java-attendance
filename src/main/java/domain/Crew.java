@@ -36,6 +36,22 @@ public class Crew implements Comparable<Crew> {
         return attendance;
     }
 
+    public int countAbsence() {
+        return attendance.countAbsence();
+    }
+
+    public int countTardy() {
+        return attendance.countTardy();
+    }
+
+    public int countAbsenceIncludingTardy() {
+        return attendance.countAbsenceIncludingTardy();
+    }
+
+    public AttendanceDate findAttendanceDate(LocalDate localDate) {
+        return attendance.findAttendanceDate(localDate);
+    }
+
     public boolean isAttendanceWarning() {
         return AttendanceWarning.determineAttendanceWarning(this.attendance.countAbsenceIncludingTardy())
                 != AttendanceWarning.NONE;
