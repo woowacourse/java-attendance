@@ -15,7 +15,7 @@ public class Crew {
         this.attendanceHistoryManager = new AttendanceHistoryManager();
     }
 
-    public AttendanceHistory addAttendanceHistory(LocalDate attendanceDate, LocalTime attendanceTime) {
+    public AttendanceHistory doAttendance(LocalDate attendanceDate, LocalTime attendanceTime) {
         return attendanceHistoryManager.doAttendance(attendanceDate, attendanceTime);
     }
 

@@ -64,7 +64,7 @@ public class Application {
         AttendancePolicy.checkNotWeekendAndHoliday(today);
         Crew crew = findCrew(crewManager);
         LocalTime attendanceTime = inputAttendanceTime();
-        AttendanceHistory attendanceHistory = crew.addAttendanceHistory(today, attendanceTime);
+        AttendanceHistory attendanceHistory = crew.doAttendance(today, attendanceTime);
         printAttendanceHistory(attendanceHistory);
     }
 
