@@ -14,11 +14,11 @@ public class Attendances {
     private final List<Attendance> attendances;
 
     private Attendances(List<Attendance> attendances) {
-        this.attendances = attendances;
+        this.attendances = new ArrayList<>(attendances);
     }
 
     public static Attendances of(List<Attendance> attendances) {
-        return new Attendances(attendances);
+        return new Attendances(new ArrayList<>(attendances));
     }
 
     public boolean contains(Attendance attendance) {
