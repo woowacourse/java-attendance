@@ -38,10 +38,10 @@ public class AttendanceController {
     public void run() {
         LocalDate currentDate = DateTimeParser.parseIntegerToDate(NOW_YEAR, NOW_MONTH, NOW_DAY);
         Map<String, Runnable> functions = Map.of(
-            "1", this::attend,
-            "2", this::edit,
-            "3", this::check,
-            "4", this::checkExpelledWarning
+            "1", this::attendCrew,
+            "2", this::editCrewRecord,
+            "3", this::checkCrewRecords,
+            "4", this::checkExpelledWarningCrews
         );
 
         String functionNumber = "";
@@ -52,7 +52,7 @@ public class AttendanceController {
         }
     }
 
-    private void attend() {
+    private void attendCrew() {
         try {
             String name = inputView.readName();
             attendanceManager.findByName(name);
@@ -70,7 +70,7 @@ public class AttendanceController {
         }
     }
 
-    private void edit() {
+    private void editCrewRecord() {
         try {
             String name = inputView.readEditName();
             attendanceManager.findByName(name);
@@ -92,7 +92,7 @@ public class AttendanceController {
         }
     }
 
-    private void check() {
+    private void checkCrewRecords() {
         try {
             String name = inputView.readName();
             attendanceManager.findByName(name);
@@ -115,7 +115,7 @@ public class AttendanceController {
         }
     }
 
-    private void checkExpelledWarning() {
+    private void checkExpelledWarningCrews() {
         LocalDate localDate = DateTimeParser.parseIntegerToDate(NOW_YEAR, NOW_MONTH, NOW_DAY);
 
         Map<String, StatisticsResult> sortedResult = attendanceManager.sortCrew(localDate);
