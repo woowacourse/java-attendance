@@ -30,7 +30,7 @@ public class MainController {
     private String todayDayOfWeek;
     private Attendance attendance;
 
-    private final Map<FeatureType, Command> featureMap = Map.of(
+    private final Map<FeatureType, Command> features = Map.of(
             FeatureType.ATTENDANCE_CHECK, this::attendanceCheck,
             FeatureType.ATTENDANCE_UPDATE, this::attendanceUpdate,
             FeatureType.ATTENDANCE_RECORD, this::attendanceRecord,
@@ -109,7 +109,7 @@ public class MainController {
 
     private void executeFeature(String feature) {
         FeatureType featureType = FeatureType.findBy(feature);
-        featureMap.getOrDefault(featureType, OutputView::printExit).execute();
+        features.getOrDefault(featureType, OutputView::printExit).execute();
     }
 
     private boolean isExit(final String feature) {
