@@ -1,17 +1,12 @@
 package domain;
 
-import java.util.Arrays;
-
 public record AttendCount(long attend, long late, long absence) {
 
     private static final int ABSENCE_LATE_RATIO = 3;
 
     public WarningStatus judgeWarning() {
         long totalAbsenceCount = calculateTotalAbsenceCount();
-        return Arrays.stream(WarningStatus.values())
-                .filter(warningStatus -> warningStatus.match(totalAbsenceCount))
-                .findAny()
-                .orElseThrow(IllegalArgumentException::new);
+        return WarningStatus.judgeWarningStatus(totalAbsenceCount);
     }
 
     public long calculateRank() {

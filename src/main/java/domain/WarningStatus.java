@@ -1,30 +1,24 @@
 package domain;
 
-public enum WarningStatus {
-    CLEAR {
-        @Override
-        public boolean match(long totalAbsenceCount) {
-            return totalAbsenceCount < 2;
-        }
-    },
-    WARNING {
-        @Override
-        public boolean match(long totalAbsenceCount) {
-            return totalAbsenceCount == 2;
-        }
-    },
-    INTERVIEW {
-        @Override
-        public boolean match(long totalAbsenceCount) {
-            return totalAbsenceCount >= 3 && totalAbsenceCount <= 5;
-        }
-    },
-    EXPEL {
-        @Override
-        public boolean match(long totalAbsenceCount) {
-            return totalAbsenceCount > 5;
-        }
-    };
+import java.util.Arrays;
+import java.util.function.Predicate;
 
-    abstract public boolean match(long totalAbsenceCount);
+public enum WarningStatus {
+    CLEAR((totalAbsenceCount) -> totalAbsenceCount < 2),
+    WARNING((totalAbsenceCount) -> totalAbsenceCount == 2),
+    INTERVIEW((totalAbsenceCount) -> totalAbsenceCount >= 3 && totalAbsenceCount <= 5),
+    EXPEL((totalAbsenceCount) -> totalAbsenceCount > 5);
+
+    private final Predicate<Long> matchCondition;
+
+    WarningStatus(Predicate<Long> matchCondition) {
+        this.matchCondition = matchCondition;
+    }
+
+    public static WarningStatus judgeWarningStatus(long totalAbsenceCount) {
+        return Arrays.stream(WarningStatus.values())
+                .filter(warningStatus -> warningStatus.matchCondition.test(totalAbsenceCount))
+                .findAny()
+                .orElseThrow(() -> new IllegalArgumentException("경고 상태 판정 실패"));
+    }
 }
