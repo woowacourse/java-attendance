@@ -3,34 +3,44 @@ package attendance.domain;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 class CrewManagerTest {
+    @DisplayName("크루를_저장할_수_있다")
     @Test
-    void add() {
+    void addCrew() {
+        //given
         CrewManager crewManager = new CrewManager();
-        Crew crew1 = new Crew("젠슨");
-        Crew crew2 = new Crew("레오");
+        String crewName = "젠슨";
+        Crew crew = new Crew(crewName);
 
-        crewManager.addCrew(crew1);
-        crewManager.addCrew(crew2);
+        //when
+        boolean result = crewManager.addCrew(crew);
 
-        assertThat(crewManager.contains(crew1)).isTrue();
-        assertThat(crewManager.contains(crew2)).isTrue();
+        //then
+        assertThat(result).isTrue();
+        assertThat(crewManager.findByCrewName(crewName)).isEqualTo(crew);
     }
 
+    @DisplayName("크루의_이름으로_크루를_찾아올_수_있다")
     @Test
-    void findCrew() {
+    void findByCrewName() {
+        //given
         CrewManager crewManager = new CrewManager();
         Crew crew = new Crew("젠슨");
         crewManager.addCrew(crew);
 
-        Crew findCrew = crewManager.findByCrewName("젠슨");
-        assertThat(findCrew).isEqualTo(crew);
+        //when
+        Crew result = crewManager.findByCrewName(crew.getName());
+
+        //then
+        assertThat(result).isEqualTo(crew);
     }
 
+    @DisplayName("존재하지_않는_크루_이름이면_예외를_던진다")
     @Test
-    void findCrew1() {
+    void should_ThrowException_WhenNotExistsCrewName() {
         CrewManager crewManager = new CrewManager();
         assertThatThrownBy(() -> crewManager.findByCrewName("젠슨"))
                 .isInstanceOf(IllegalArgumentException.class)

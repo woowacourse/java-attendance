@@ -10,91 +10,43 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.stream.Stream;
 import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Nested;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
 public class AttendancePolicyTest {
+    @DisplayName("요일과_등교_시간에_따라서_출석_상태를_반환할_수_있다")
+    @MethodSource("returnDateAndAttendanceTimeAndExpectedType")
+    @ParameterizedTest
+    void checkAttendanceType(LocalDate attendanceDate, LocalTime attendanceTime, AttendanceType expected) {
+        //when
+        AttendanceType result = AttendancePolicy.checkAttendanceType(attendanceDate, attendanceTime);
 
-    private final LocalDate TUESDAY = LocalDate.of(2024, 12, 26);
-    private final LocalDate MONDAY = LocalDate.of(2024, 12, 23);
+        //then
+        assertThat(result).isEqualTo(expected);
+    }
 
-    @Nested
-    class CheckAttendanceHistory {
-        @Test
-        void checkAttendanceResult7() {
-            AttendanceType result = AttendancePolicy.checkAttendanceType(TUESDAY, LocalTime.of(8, 12));
-            assertThat(result).isEqualTo(ATTENDANCE);
-        }
-
-        @Test
-        void checkAttendanceResult8() {
-            AttendanceType result = AttendancePolicy.checkAttendanceType(TUESDAY, LocalTime.of(10, 5));
-            assertThat(result).isEqualTo(ATTENDANCE);
-        }
-
-        @Test
-        void checkAttendanceResult9() {
-            AttendanceType result = AttendancePolicy.checkAttendanceType(TUESDAY, LocalTime.of(10, 6));
-            assertThat(result).isEqualTo(LATE);
-        }
-
-        @Test
-        void checkAttendanceResult10() {
-            AttendanceType result = AttendancePolicy.checkAttendanceType(TUESDAY, LocalTime.of(10, 30));
-            assertThat(result).isEqualTo(LATE);
-        }
-
-
-        @Test
-        void checkAttendanceResult11() {
-            AttendanceType result = AttendancePolicy.checkAttendanceType(TUESDAY, LocalTime.of(10, 31));
-            assertThat(result).isEqualTo(ABSENCE);
-        }
-
-        @Test
-        void checkAttendanceResult12() {
-            AttendanceType result = AttendancePolicy.checkAttendanceType(TUESDAY, LocalTime.of(10, 31));
-            assertThat(result).isEqualTo(ABSENCE);
-        }
-
-        @Test
-        void checkAttendanceResult13() {
-            AttendanceType result = AttendancePolicy.checkAttendanceType(MONDAY, LocalTime.of(12, 30));
-            assertThat(result).isEqualTo(ATTENDANCE);
-        }
-
-        @Test
-        void checkAttendanceResult133() {
-            AttendanceType result = AttendancePolicy.checkAttendanceType(MONDAY, LocalTime.of(13, 5));
-            assertThat(result).isEqualTo(ATTENDANCE);
-        }
-
-        @Test
-        void checkAttendanceResult14() {
-            AttendanceType result = AttendancePolicy.checkAttendanceType(MONDAY, LocalTime.of(13, 6));
-            assertThat(result).isEqualTo(LATE);
-        }
-
-        @Test
-        void checkAttendanceResult144() {
-            AttendanceType result = AttendancePolicy.checkAttendanceType(MONDAY, LocalTime.of(13, 30));
-            assertThat(result).isEqualTo(LATE);
-        }
-
-        @Test
-        void checkAttendanceResult15() {
-            AttendanceType result = AttendancePolicy.checkAttendanceType(MONDAY, LocalTime.of(13, 31));
-            assertThat(result).isEqualTo(ABSENCE);
-        }
+    private static Stream<Arguments> returnDateAndAttendanceTimeAndExpectedType() {
+        LocalDate TUESDAY = LocalDate.of(2024, 12, 26);
+        LocalDate MONDAY = LocalDate.of(2024, 12, 23);
+        return Stream.of(Arguments.arguments(MONDAY, LocalTime.of(12, 30), ATTENDANCE),
+                Arguments.arguments(MONDAY, LocalTime.of(13, 5), ATTENDANCE),
+                Arguments.arguments(MONDAY, LocalTime.of(13, 6), LATE),
+                Arguments.arguments(MONDAY, LocalTime.of(13, 30), LATE),
+                Arguments.arguments(MONDAY, LocalTime.of(13, 31), ABSENCE),
+                Arguments.arguments(TUESDAY, LocalTime.of(8, 12), ATTENDANCE),
+                Arguments.arguments(TUESDAY, LocalTime.of(10, 5), ATTENDANCE),
+                Arguments.arguments(TUESDAY, LocalTime.of(10, 6), LATE),
+                Arguments.arguments(TUESDAY, LocalTime.of(10, 30), LATE),
+                Arguments.arguments(TUESDAY, LocalTime.of(10, 31), ABSENCE));
     }
 
     @DisplayName("날짜가_주말_또는_공휴일이면_예외를_던진다")
     @MethodSource("returnWeekendOrHoliday")
     @ParameterizedTest
     void should_ThrowException_WhenDateIsWeekendOrHoliday(LocalDate date) {
+        //when
+        //then
         assertThatThrownBy(() -> AttendancePolicy.checkNotWeekendAndHoliday(date))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("등교일이 아닙니다");

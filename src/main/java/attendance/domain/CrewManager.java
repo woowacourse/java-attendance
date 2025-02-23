@@ -16,10 +16,6 @@ import java.util.Set;
         return crews.add(crew);
     }
 
-    public boolean contains(Crew crew) {
-        return crews.contains(crew);
-    }
-
     public Crew findByCrewName(String name){
         return crews.stream()
                 .filter(crew -> crew.getName().equals(name))

@@ -1,6 +1,5 @@
 package attendance.domain;
 
-import static attendance.domain.AttendanceType.ABSENCE;
 import static attendance.domain.AttendanceType.ATTENDANCE;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -11,50 +10,30 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 public class AttendanceHistoryTest {
+    @DisplayName("출석_시간과_출석_타입으로_Attendance_객체를_생성할_수_있다")
     @Test
     void create() {
-        AttendanceHistory result = new AttendanceHistory(
-                LocalDateTime.of(2024, 12, 26, 10, 00),
-                ATTENDANCE
-        );
-
-        assertThat(result).isNotNull();
-        assertThat(result.getAttendanceDateTime()).isEqualTo(LocalDateTime.of(2024, 12, 26, 10, 00));
-        assertThat(result.getAttendanceType()).isEqualTo(ATTENDANCE);
-    }
-
-    @Test
-    void modify_attendance_result() {
         //given
-        LocalDate localDate = LocalDate.of(2024, 12, 26);
-        LocalTime localTime = LocalTime.of(11, 00);
-        LocalDateTime dateTime = LocalDateTime.of(localDate, localTime);
-        AttendanceHistory attendanceHistory = new AttendanceHistory(dateTime, ABSENCE);
-
-        LocalTime modifyTime = LocalTime.of(10, 00);
-        AttendanceType modifyAttendanceType = AttendancePolicy.checkAttendanceType(dateTime.toLocalDate(), modifyTime);
+        LocalDateTime attendanceDateTime = LocalDateTime.of(2024, 12, 26, 10, 00);
+        AttendanceType attendanceType = ATTENDANCE;
 
         //when
-        attendanceHistory.modify(modifyTime, modifyAttendanceType);
+        AttendanceHistory result = new AttendanceHistory(attendanceDateTime, attendanceType);
 
         //then
-        assertThat(attendanceHistory.getAttendanceDateTime()).isEqualTo(LocalDateTime.of(localDate, modifyTime));
-        assertThat(attendanceHistory.getAttendanceType()).isEqualTo(modifyAttendanceType);
+        assertThat(result.getAttendanceDateTime()).isEqualTo(attendanceDateTime);
+        assertThat(result.getAttendanceType()).isEqualTo(attendanceType);
     }
 
     @DisplayName("주어진_날짜와_출석_날짜가_같은지_여부를_반환할_수_있다")
     @Test
-    void 주어진_날짜와_출석_날짜가_같은지_여부를_반환할_수_있다() {
+    void isAttendanceDateEquals() {
         //given
-        LocalDate attendanceDate = LocalDate.of(2024, 12, 26);
-        LocalTime attendanceTime = LocalTime.of(11, 00);
-        AttendanceHistory attendanceHistory = new AttendanceHistory(
-                LocalDateTime.of(attendanceDate, attendanceTime),
-                ATTENDANCE
-        );
+        LocalDateTime attendanceDateTime = LocalDateTime.of(2024, 12, 26, 11, 00);
+        AttendanceHistory attendanceHistory = new AttendanceHistory(attendanceDateTime, ATTENDANCE);
 
         //when
-        boolean result = attendanceHistory.isAttendanceDateEquals(attendanceDate);
+        boolean result = attendanceHistory.isAttendanceDateEquals(attendanceDateTime.toLocalDate());
 
         //then
         assertThat(result).isTrue();

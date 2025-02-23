@@ -2,12 +2,11 @@ package attendance.domain;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.util.Objects;
 
 public class AttendanceHistory {
-    private LocalDateTime attendanceDateTime;
-    private AttendanceType attendanceType;
+    private final LocalDateTime attendanceDateTime;
+    private final AttendanceType attendanceType;
 
     public AttendanceHistory(LocalDateTime attendanceDateTime, AttendanceType attendanceType) {
         this.attendanceDateTime = attendanceDateTime;
@@ -24,11 +23,6 @@ public class AttendanceHistory {
      */
     public AttendanceType getAttendanceType() {
         return attendanceType;
-    }
-
-    public void modify(LocalTime modifyTime, AttendanceType attendanceType) {
-        this.attendanceDateTime = LocalDateTime.of(attendanceDateTime.toLocalDate(), modifyTime);
-        this.attendanceType = attendanceType;
     }
 
     public boolean isAttendanceDateEquals(LocalDate date) {
