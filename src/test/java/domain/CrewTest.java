@@ -7,20 +7,23 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import view.OutputView;
 
 public class CrewTest {
+    OutputView outputView;
+
     @DisplayName("정상 출석")
     @Test
     void test1() {
         Crew crew = new Crew("띠용");
-
-        assertEquals("12월 05일 목요일 09:59 (출석)", crew.addAttendance(LocalDateTime.of(2024, 12, 5, 9, 59)).getFormattedAttended());
+        outputView = new OutputView(LocalDate.of(2024, 12, 5));
+        assertEquals("12월 05일 목요일 09:59 (출석)", outputView.printCheckedAttendance(crew.addAttendance(LocalDateTime.of(2024, 12, 5, 9, 59))));
     }
+    // 언제 다 바꾸냐?
     @DisplayName("지각")
     @Test
     void test2() {
         Crew crew = new Crew("띠용");
-
         assertEquals("12월 05일 목요일 10:06 (지각)", crew.addAttendance(LocalDateTime.of(2024, 12, 5, 10, 6)).getFormattedAttended());
     }
     @DisplayName("결석")
@@ -68,7 +71,8 @@ public class CrewTest {
         Crew crew = new Crew("미미");
         crew.addAttendance(LocalDateTime.of(2024, 12, 2, 13,0));
         crew.addAttendance(LocalDateTime.of(2024, 12, 3, 10,7));
-        assertThat(crew.getFormatedAttendanceInfo(LocalDate.of(2024, 12, 3))).isEqualTo("12월 02일 월요일 13:00 (출석)\n12월 03일 화요일 10:07 (지각)\n");
+        outputView = new OutputView(LocalDate.of(2024, 12, 3));
+        assertThat(outputView.getFormatedAttendanceInfo(crew)).isEqualTo("12월 02일 월요일 13:00 (출석)\n12월 03일 화요일 10:07 (지각)\n");
     }
 
     @DisplayName("특정 크루 빈 출석 기록 포함 출력하기")
@@ -78,7 +82,8 @@ public class CrewTest {
         crew.addAttendance(LocalDateTime.of(2024, 12, 2, 13,0));
         crew.addAttendance(LocalDateTime.of(2024, 12, 3, 10,7));
         crew.addAttendance(LocalDateTime.of(2024, 12, 5, 10,7));
-        assertThat(crew.getFormatedAttendanceInfo(LocalDate.of(2024, 12, 5))).isEqualTo("12월 02일 월요일 13:00 (출석)\n12월 03일 화요일 10:07 (지각)\n12월 04일 수요일 --:-- (결석)\n12월 05일 목요일 10:07 (지각)\n");
+        outputView = new OutputView(LocalDate.of(2024, 12, 5));
+        assertThat(outputView.getFormatedAttendanceInfo(crew)).isEqualTo("12월 02일 월요일 13:00 (출석)\n12월 03일 화요일 10:07 (지각)\n12월 04일 수요일 --:-- (결석)\n12월 05일 목요일 10:07 (지각)\n");
     }
 
     @DisplayName("특정 크루 빈 출석 기록 포함 출력하기2")
@@ -128,7 +133,9 @@ public class CrewTest {
         crew.addAttendance(LocalDateTime.of(2024, 12, 5, 10,6));
         crew.addAttendance(LocalDateTime.of(2024, 12, 6, 10,1));
         crew.addAttendance(LocalDateTime.of(2024, 12, 10, 10,8));
-        assertThat(crew.getFormatedWarningStatus(LocalDate.of(2024, 12, 13))).isEqualTo("면담 대상자입니다.");
+        OutputVie
+        assertThat(
+                crew.getFormatedWarningStatus(LocalDate.of(2024, 12, 13))).isEqualTo("면담 대상자입니다.");
     }
 
     @DisplayName("특정 크루 출석 상태 현황 출력_경고 대상자 여부 판별")

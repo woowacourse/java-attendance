@@ -60,11 +60,11 @@ public class AttendanceSystem {
     private void checkAttendance() {
         String name = userInputView.askNickNameForCheckAttendance();
         String[] time = userInputView.askAttendanceTimeForCheckAttendance();
-        outputView.printCheckedAttendance(allCrew.addCrewAttendanceByName(name, LocalDateTime.of(todayDate.getYear(),
+        System.out.println(outputView.printCheckedAttendance(allCrew.addCrewAttendanceByName(name, LocalDateTime.of(todayDate.getYear(),
                 todayDate.getMonthValue(),
                 todayDate.getDayOfMonth(),
                 Integer.parseInt(time[0]),
-                Integer.parseInt(time[1]))));
+                Integer.parseInt(time[1])))));
     }
 
     private void modifyAttendance() {
