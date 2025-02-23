@@ -3,8 +3,7 @@ package attendance.domain;
 public enum CrewStatus {
     EXPEL("제적"),
     MEETING("면담"),
-    WARNING("경고"),
-    NONE("");
+    WARNING("경고");
 
     private final String status;
 
