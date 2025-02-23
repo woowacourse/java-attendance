@@ -1,4 +1,4 @@
-package attendance.domain;
+package attendance.domain.record;
 
 import attendance.exception.ExceptionMessage;
 import java.time.LocalDate;

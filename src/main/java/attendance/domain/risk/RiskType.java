@@ -1,4 +1,4 @@
-package attendance.domain;
+package attendance.domain.risk;
 
 import java.util.Arrays;
 

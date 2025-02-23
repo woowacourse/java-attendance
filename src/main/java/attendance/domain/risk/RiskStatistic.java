@@ -1,4 +1,4 @@
-package attendance.domain;
+package attendance.domain.risk;
 
 public final class RiskStatistic {
 

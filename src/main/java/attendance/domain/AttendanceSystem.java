@@ -1,5 +1,14 @@
 package attendance.domain;
 
+import attendance.domain.crew.Crew;
+import attendance.domain.crew.CrewStorage;
+import attendance.domain.datetime.CampusSchedule;
+import attendance.domain.datetime.HolidayChecker;
+import attendance.domain.record.AttendanceRecord;
+import attendance.domain.record.AttendanceRecordStorage;
+import attendance.domain.record.AttendanceType;
+import attendance.domain.risk.RiskStatistic;
+import attendance.domain.risk.RiskType;
 import attendance.dto.UpdateResult;
 import java.time.LocalDate;
 import java.time.LocalDateTime;

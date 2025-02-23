@@ -1,5 +1,8 @@
-package attendance.domain;
+package attendance.domain.intializer;
 
+import attendance.domain.AttendanceSystem;
+import attendance.domain.crew.Crew;
+import attendance.domain.crew.CrewStorage;
 import attendance.utility.DateTimeParser;
 import attendance.utility.FileUtility;
 import java.time.LocalDateTime;

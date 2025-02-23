@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 
+import attendance.domain.datetime.HolidayChecker;
 import attendance.exception.ExceptionMessage;
 import java.time.LocalDate;
 import java.time.format.TextStyle;

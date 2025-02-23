@@ -1,4 +1,4 @@
-package attendance.domain;
+package attendance.domain.datetime;
 
 import attendance.exception.ExceptionMessage;
 import java.time.DayOfWeek;

@@ -1,4 +1,4 @@
-package attendance.view;
+package attendance.view.validator;
 
 import attendance.exception.ExceptionMessage;
 

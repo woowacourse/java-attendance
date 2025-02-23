@@ -1,6 +1,6 @@
 package attendance.view;
 
-import static attendance.view.InputValidator.validateIsNumeric;
+import static attendance.view.validator.InputValidator.validateIsNumeric;
 
 import attendance.utility.DateTimeParser;
 import attendance.view.message.InputMessage;

@@ -1,11 +1,13 @@
 package attendance.domain;
 
-import static attendance.domain.AttendanceType.ATTENDANCE;
-import static attendance.domain.AttendanceType.EXPULSION;
-import static attendance.domain.AttendanceType.LATE;
+import static attendance.domain.record.AttendanceType.ATTENDANCE;
+import static attendance.domain.record.AttendanceType.EXPULSION;
+import static attendance.domain.record.AttendanceType.LATE;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 
+import attendance.domain.datetime.CampusSchedule;
+import attendance.domain.record.AttendanceType;
 import attendance.exception.ExceptionMessage;
 import java.time.LocalDate;
 import java.time.LocalDateTime;

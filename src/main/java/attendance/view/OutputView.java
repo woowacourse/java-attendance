@@ -1,8 +1,8 @@
 package attendance.view;
 
-import attendance.domain.AttendanceRecord;
-import attendance.domain.RiskStatistic;
-import attendance.domain.RiskType;
+import attendance.domain.record.AttendanceRecord;
+import attendance.domain.risk.RiskStatistic;
+import attendance.domain.risk.RiskType;
 import attendance.dto.UpdateResult;
 import attendance.view.message.OutputMessage;
 import java.time.LocalDate;

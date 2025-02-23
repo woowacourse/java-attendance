@@ -1,10 +1,10 @@
 package attendance.controller;
 
 import attendance.config.AppConfig;
-import attendance.domain.AttendanceRecord;
 import attendance.domain.AttendanceSystem;
-import attendance.domain.AttendanceSystemInitializer;
-import attendance.domain.RiskStatistic;
+import attendance.domain.intializer.AttendanceSystemInitializer;
+import attendance.domain.record.AttendanceRecord;
+import attendance.domain.risk.RiskStatistic;
 import attendance.dto.UpdateResult;
 import attendance.view.InputView;
 import attendance.view.OutputView;

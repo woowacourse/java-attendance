@@ -1,5 +1,6 @@
-package attendance.domain;
+package attendance.domain.datetime;
 
+import attendance.domain.record.AttendanceType;
 import attendance.exception.ExceptionMessage;
 import java.time.DayOfWeek;
 import java.time.LocalDateTime;
