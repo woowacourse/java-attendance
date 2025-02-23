@@ -28,7 +28,7 @@ public enum December {
 
     public static December findDayOfWeek(int dayOfMonth) {
         return Arrays.stream(values())
-                .filter(a -> a.dates.contains(dayOfMonth))
+                .filter(day -> contains(dayOfMonth, day))
                 .findFirst()
                 .orElseThrow(IllegalArgumentException::new);
     }
@@ -41,10 +41,14 @@ public enum December {
 
     public static String getDayByDate(int dayOfMonth) {
         return Arrays.stream(values())
-                .filter(a -> a.dates.contains(dayOfMonth))
+                .filter(a -> contains(dayOfMonth, a))
                 .findFirst()
                 .map(a -> a.dayOfWeek)
                 .orElseThrow(IllegalArgumentException::new);
+    }
+
+    private static boolean contains(final int dayOfMonth, final December day) {
+        return day.dates.contains(dayOfMonth);
     }
 
     public static void checkWeekday(LocalDateTime attendTime) {
