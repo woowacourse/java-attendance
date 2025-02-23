@@ -8,7 +8,7 @@ public class HolidayManager {
     private static final Set<Integer> HOLIDAYS = new HashSet<>();
 
     static {
-        HOLIDAYS.add(Constants.FIXED_DATE);
+        HOLIDAYS.add(25);
     }
 
     public static boolean isHoliday(Integer dayOfMonth) {

@@ -5,9 +5,6 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
-import util.Constants;
-import util.DayOfWeekKorean;
-import util.HolidayManager;
 
 public class Attendance {
 
@@ -17,7 +14,6 @@ public class Attendance {
     AttendanceStatus attendanceStatus;
 
     public Attendance(final LocalDateTime localDateTime) {
-        validateHoliday(localDateTime);
         Week day = Week.findByAttendanceTime(localDateTime);
         this.localDateTime = localDateTime;
         this.attendanceStatus = AttendanceStatus.findByAttendanceTime(day, localDateTime.toLocalTime());
@@ -30,17 +26,6 @@ public class Attendance {
             return new Attendance(dateTime);
         } catch (DateTimeParseException e) {
             throw new CustomIllegalArgumentException("올바른 형식이 아닙니다.");
-        }
-    }
-
-    private void validateHoliday(final LocalDateTime dateTime) {
-        Integer dayOfMonth = AttendanceDateTime.getDayOfMonth(dateTime);
-        if (HolidayManager.isHoliday(dayOfMonth)) {
-            throw new CustomIllegalArgumentException(
-                    String.format("%d월 %d일 %s은 등교일이 아닙니다.",
-                            Constants.FIXED_MONTH,
-                            dateTime.getDayOfMonth(),
-                            DayOfWeekKorean.getKoreanName(dateTime.getDayOfWeek())));
         }
     }
 
