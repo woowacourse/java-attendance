@@ -19,4 +19,12 @@ public class TimePolicy {
             throw new IllegalArgumentException(TIME_FORMAT_ERROR);
         }
     }
+
+    public static void validateTimeFormat(String time) {
+        String[] splitTime = time.split(":");
+
+        if(splitTime.length != 2){
+            throw new IllegalArgumentException(TIME_FORMAT_ERROR);
+        }
+    }
 }
