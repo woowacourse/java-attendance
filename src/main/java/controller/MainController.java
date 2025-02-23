@@ -28,33 +28,20 @@ public class MainController {
     private String todayDayOfWeek;
     private Attendance attendance;
 
+    private final Map<String, Command> featureMap = Map.of(
+            "1", this::attendanceCheck,
+            "2", this::attendanceUpdate,
+            "3", this::attendanceRecord,
+            "4", this::readAbsence
+    );
+
     public void run() {
         prepareToday();
         String feature;
         do {
             feature = InputView.inputFeature(todayMonth, todayDay, todayDayOfWeek);
-            if (feature.equals("1")) {
-                attendanceCheck();
-            }
-            if (feature.equals("2")) {
-                attendanceUpdate();
-            }
-            if (feature.equals("3")) {
-                attendanceRecord();
-            }
-            if (feature.equals("4")) {
-                readAbsence();
-            }
-
+            executeFeature(feature);
         } while (!feature.equals("Q"));
-    }
-
-    private void prepareToday() {
-        attendance = FileManager.readFile(FILE_PATH);
-        today = LocalDate.now();
-        todayMonth = 12;
-        todayDay = today.getDayOfMonth();
-        todayDayOfWeek = Calender.findBy(todayDay).getDescription();
     }
 
     private void attendanceCheck() {
@@ -87,6 +74,10 @@ public class MainController {
         OutputView.printUpdateAttendance(beforeDateTime, afterLocalDateTime);
     }
 
+    private LocalTime parseToLocalTime(final String schoolStartTime) {
+        return LocalTime.parse(schoolStartTime, DATE_TIME_FORMATTER);
+    }
+
     private void attendanceRecord() {
         String nickname = InputView.inputNickName();
         Crew crew = attendance.getCrewByName(nickname);
@@ -106,7 +97,16 @@ public class MainController {
         OutputView.printAbsenceResult(result);
     }
 
-    private LocalTime parseToLocalTime(final String schoolStartTime) {
-        return LocalTime.parse(schoolStartTime, DATE_TIME_FORMATTER);
+    private void prepareToday() {
+        attendance = FileManager.readFile(FILE_PATH);
+        today = LocalDate.now();
+        todayMonth = 12;
+        todayDay = today.getDayOfMonth();
+        todayDayOfWeek = Calender.findBy(todayDay).getDescription();
     }
+
+    private void executeFeature(String feature) {
+        featureMap.getOrDefault(feature, OutputView::printExit).execute();
+    }
+
 }
