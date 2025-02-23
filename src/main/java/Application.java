@@ -1,5 +1,5 @@
-import config.AttendanceHistoryLoader;
 import controller.AttendanceController;
+import domain.AttendanceHistoryLoader;
 import domain.Crews;
 import view.InputView;
 import view.OutputView;

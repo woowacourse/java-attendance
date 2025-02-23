@@ -1,9 +1,4 @@
-package config;
-
-import domain.Attendance;
-import domain.Crew;
-import domain.Crews;
-import domain.Day;
+package domain;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
@@ -21,7 +16,7 @@ public class AttendanceHistoryLoader {
     public Crews loadCrews() {
         Crews crews = new Crews(new ArrayList<>());
 
-        try (BufferedReader reader = new BufferedReader(new FileReader("src/main/resources/attendances.csv"))) {
+        try (BufferedReader reader = new BufferedReader(new FileReader("src/main/resources/attendances12.csv"))) {
             skipItemTitle(reader);
             loadAttendanceHistory(reader, crews);
         } catch (IOException e) {
