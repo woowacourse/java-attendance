@@ -8,6 +8,9 @@ public class InputView {
     private static final int START_DATE = 1;
     private static final int END_DATE = 31;
 
+    private static final String TIME_PATTERN = "2[0-3]|[01][0-9]:[0-5][0-9]";
+    private static final Pattern TIME_REGEX_PATTERN = Pattern.compile(TIME_PATTERN);
+
     public static String inputFeature(int month, int day, String dayOfWeek) {
         System.out.printf("오늘은 %d월 %02d일 %s입니다. 기능을 선택해 주세요.\n" + "1. 출석 확인\n" + "2. 출석 수정\n" + "3. 크루별 출석 기록 확인\n"
                 + "4. 제적 위험자 확인\n" + "Q. 종료\n", month, day, dayOfWeek);
@@ -51,10 +54,7 @@ public class InputView {
     }
 
     private static boolean isCorrectFormat(final String input) {
-        String datePattern = "2[0-3]|[01][0-9]:[0-5][0-9]";
-        Pattern correctPattern = Pattern.compile(datePattern);
-
-        return correctPattern.matcher(input).find();
+        return TIME_REGEX_PATTERN.matcher(input).find();
     }
 
     public static String inputUpdateNickName() {
