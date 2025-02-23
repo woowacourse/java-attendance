@@ -13,9 +13,9 @@ public enum AttendanceTimeRule {
     CAMPUS_CLOSE_TIME("캠퍼스 출입 가능 끝 시간", 23, 0),
     ;
 
-    public final String description;
-    public final int hour;
-    public final int minute;
+    private final String description;
+    private final int hour;
+    private final int minute;
 
     AttendanceTimeRule(String description, int hour, int minute) {
         this.description = description;

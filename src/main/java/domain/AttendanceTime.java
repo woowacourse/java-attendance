@@ -20,11 +20,11 @@ public record AttendanceTime(LocalTime time) {
         LocalTime AttendLimitTime = AttendanceTimeRule.getAttendLimitTime(isSpecialDay);
         long timeDifference = Duration.between(AttendLimitTime, time).toMinutes();
 
-        if (timeDifference > AttendanceStateRule.ABSENT.limit) {
+        if (timeDifference > AttendanceStateRule.ABSENT.getLimit()) {
             return AttendanceStateRule.ABSENT;
         }
 
-        if (timeDifference > AttendanceStateRule.LATE.limit) {
+        if (timeDifference > AttendanceStateRule.LATE.getLimit()) {
             return AttendanceStateRule.LATE;
         }
 

@@ -6,11 +6,19 @@ public enum AttendanceStateRule {
     ABSENT("결석", 30),
     ;
 
-    public final String description;
-    public final int limit;
+    private final String description;
+    private final int limit;
 
     AttendanceStateRule(String description, int limit) {
         this.description = description;
         this.limit = limit;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public int getLimit() {
+        return limit;
     }
 }

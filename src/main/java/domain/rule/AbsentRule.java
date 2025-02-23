@@ -11,8 +11,8 @@ public enum AbsentRule {
 
     public static final int LATE_TO_ABSENT_RATIO = 3;
 
-    public final String description;
-    public final int absentCount;
+    private final String description;
+    private final int absentCount;
 
     AbsentRule(String description, int absentCount) {
         this.description = description;
@@ -39,5 +39,9 @@ public enum AbsentRule {
 
     public boolean isRiskOfExpulsion() {
         return this == AbsentRule.WARNING || this == AbsentRule.INTERVIEW;
+    }
+
+    public String getDescription() {
+        return description;
     }
 }
