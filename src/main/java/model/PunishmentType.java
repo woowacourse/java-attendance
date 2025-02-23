@@ -1,25 +1,32 @@
 package model;
 
-import java.util.Map;
-
 public enum PunishmentType {
 
-    WARNING,
-    MEETING,
-    EXPULSION,
-    NONE;
+    WARNING(3),
+    MEETING(2),
+    EXPULSION(1),
+    NONE(4);
 
-    public static PunishmentType calculateType(Map<AttendanceType, Integer> counts) {
-        int absenceCount = counts.get(AttendanceType.ABSENCE) + counts.get(AttendanceType.BE_LATE) / 3;
-        if (absenceCount > 5) {
+    private final int priority;
+
+    PunishmentType(int priority) {
+        this.priority = priority;
+    }
+
+    public static PunishmentType calculateType(int convertedAbsenceCount) {
+        if (convertedAbsenceCount > 5) {
             return EXPULSION;
         }
-        if (absenceCount >= 3) {
+        if (convertedAbsenceCount >= 3) {
             return MEETING;
         }
-        if (absenceCount >= 2) {
+        if (convertedAbsenceCount >= 2) {
             return WARNING;
         }
         return NONE;
+    }
+
+    public int comparePriority(PunishmentType o) {
+        return priority - o.priority;
     }
 }

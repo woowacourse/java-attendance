@@ -1,6 +1,7 @@
 package model;
 
 import java.time.LocalDateTime;
+import java.util.Map;
 
 public enum AttendanceType {
 
@@ -23,5 +24,9 @@ public enum AttendanceType {
             return ABSENCE;
         }
         return SUCCESS;
+    }
+
+    public static int calculateConvertedAbsenceCount(Map<AttendanceType, Integer> counts) {
+        return counts.getOrDefault(BE_LATE, 0) / 3 + counts.getOrDefault(ABSENCE, 0);
     }
 }

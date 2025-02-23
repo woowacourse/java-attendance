@@ -1,8 +1,5 @@
 package view;
 
-import dto.AttendanceResult;
-import dto.CrewsAttendanceResult;
-import dto.CrewsAttendanceResult.CrewAttendanceResult;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.TextStyle;
@@ -12,6 +9,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Optional;
 import model.Attendance;
+import model.AttendanceStatistics;
 import model.AttendanceType;
 import model.Attendances;
 import model.Crew;
@@ -79,12 +77,12 @@ public class OutputView {
         );
     }
 
-    public void printAttendanceRecord(Crew crew, AttendanceResult result) {
+    public void printAttendanceRecord(Crew crew, Attendances attendances, AttendanceStatistics result) {
         LocalDate today = LocalDate.now();
         System.out.printf(ATTENDANCE_RECORD_HEADER_FORMAT, crew.getNickname());
-        Attendances attendances = result.getAttendances();
+        System.out.println(attendances.getAttendances().size());
         for (Attendance attendance : attendances.getAttendances()) {
-            if (!attendance.isCome()) {
+            if (attendance.getAttendanceType().equals(AttendanceType.ABSENCE)) {
                 System.out.printf(
                         ATTENDANCE_RECORD_ABSENCE_FORMAT,
                         today.getMonthValue(),
@@ -103,7 +101,7 @@ public class OutputView {
             );
         }
 
-        Map<AttendanceType, Integer> counts = result.getCounts();
+        Map<AttendanceType, Integer> counts = result.getStatistics();
         for (Entry<AttendanceType, Integer> countsEntry : counts.entrySet()) {
             System.out.printf(
                     ATTENDANCE_COUNT,
@@ -117,19 +115,17 @@ public class OutputView {
         }
     }
 
-    public void printAllCrewPunishment(CrewsAttendanceResult result) {
+    public void printAllCrewPunishment(List<AttendanceStatistics> dangerCrews) {
         System.out.println(EXPULSION_LIST_HEADER);
-        List<CrewAttendanceResult> attendanceResults = result.getCrewsAttendanceResult();
-        for (CrewAttendanceResult crewAttendanceResult : attendanceResults) {
+        for (AttendanceStatistics crewAttendanceResult : dangerCrews) {
             Crew crew = crewAttendanceResult.getCrew();
-            AttendanceResult attendanceResult = crewAttendanceResult.getAttendanceResult();
-            Map<AttendanceType, Integer> attendanceTypeCount = attendanceResult.getCounts();
+            Map<AttendanceType, Integer> attendanceTypeCount = crewAttendanceResult.getStatistics();
             System.out.printf(
                     PUNISHMENT_FORMAT,
                     crew.getNickname(),
                     attendanceTypeCount.get(AttendanceType.ABSENCE),
                     attendanceTypeCount.get(AttendanceType.BE_LATE),
-                    convertToPunishmentTypeString(attendanceResult.getPunishmentType())
+                    convertToPunishmentTypeString(crewAttendanceResult.getPunishmentType())
             );
         }
         printEmptyLine();

@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -92,14 +93,21 @@ class AttendancesTest {
         Assertions.assertThat(filteredAttendances).isEqualTo(attendances2);
     }
 
-    /*@Test
-    void 크루의_출석을_모두_조회한다() {
-        //given & when
-        Attendances attendances = Attendances.of(new ArrayList<>());
-        Crews crews = Crews.of(new ArrayList<>());
-        Map<Crew, Attendances> crewsAttendances = attendances.findAll(crews, LocalDate.now().getMonthValue());
+    @Test
+    void 전체_출석_통계를_생성할_수_있다() {
+        //given
+        Crew crew = Crew.of("쿠키");
+        Attendance attendance1 = Attendance.createTimeNullAbsence(crew, LocalDate.of(2024, 10, 2));
+        Attendance attendance2 = Attendance.of(crew, LocalDateTime.of(2024, 12, 2, 9, 30));
+        Attendance attendance3 = Attendance.of(crew, LocalDateTime.of(2024, 12, 3, 9, 30));
+        Attendances attendances = Attendances.of(List.of(attendance1, attendance2, attendance3));
+        AttendanceStatistics expected = AttendanceStatistics.of(crew,
+                Map.of(AttendanceType.SUCCESS, 2, AttendanceType.BE_LATE, 1, AttendanceType.ABSENCE, 0));
+
+        //when
+        AttendanceStatistics actual = attendances.createStatistics(crew, LocalDate.of(2024, 12, 4));
 
         //then
-        Assertions.assertThat(crewsAttendances.get(Crew.of("쿠키")).getAttendances()).hasSize(13);
-    }*/
+        Assertions.assertThat(expected).isEqualTo(actual);
+    }
 }

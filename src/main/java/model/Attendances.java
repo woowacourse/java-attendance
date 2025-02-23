@@ -3,12 +3,14 @@ package model;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 public class Attendances {
 
@@ -34,23 +36,28 @@ public class Attendances {
 
     public Attendance modify(Crew crew, LocalDateTime modifiedCheckInTime) {
         Optional<Attendance> existAttendance = find(crew, modifiedCheckInTime.toLocalDate());
-        if (existAttendance.isPresent()) {
-            existAttendance.get().modify(modifiedCheckInTime.toLocalTime());
-            return existAttendance.get();
-        }
-        Attendance attendance = Attendance.of(crew, modifiedCheckInTime);
-        checkIn(attendance);
+        existAttendance.ifPresent(attendances::remove);
+        Attendance newAttendance = Attendance.of(crew, modifiedCheckInTime);
+        checkIn(newAttendance);
 
-        return attendance;
+        return newAttendance;
     }
 
-    public Map<Crew, Attendances> findAll(Crews crews, int month) {
-        Map<Crew, Attendances> crewsAttendances = new HashMap<>();
-        for (Crew crew : crews.getCrews()) {
-            Attendances attendances = findByCrewThisMonth(crew, LocalDate.now());
-            crewsAttendances.put(crew, attendances);
+    public AttendanceStatistics createStatistics(Crew crew, LocalDate today) {
+        Attendances filteredAttendance = findByCrewThisMonth(crew, today);
+        return AttendanceStatistics.of(crew, filteredAttendance.createAttendanceTypeCounts());
+    }
+
+    private Map<AttendanceType, Integer> createAttendanceTypeCounts() {
+        Map<AttendanceType, Integer> attendanceTypesCount = Arrays.stream(AttendanceType.values())
+                .collect(Collectors.toMap(Function.identity(), type -> 0));
+
+        for (Attendance attendance : attendances) {
+            AttendanceType type = attendance.getAttendanceType();
+            attendanceTypesCount.put(type, attendanceTypesCount.get(type) + 1);
         }
-        return crewsAttendances;
+
+        return attendanceTypesCount;
     }
 
     public Attendances findByCrewThisMonth(Crew crew, LocalDate today) {
@@ -75,8 +82,7 @@ public class Attendances {
     public Optional<Attendance> find(Crew crew, LocalDate date) {
         for (Attendance attendance : attendances) {
             if (attendance.isSame(crew, date)) {
-                Attendance copy = attendance.clone(attendance);
-                return Optional.of(copy);
+                return Optional.of(attendance);
             }
         }
         return Optional.empty();

@@ -2,14 +2,12 @@ package controller;
 
 import constant.Command;
 import converter.StringConverter;
-import dto.AttendanceResult;
-import dto.CrewsAttendanceResult;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import model.Attendance;
+import model.AttendanceStatistics;
 import model.Attendances;
 import model.Crew;
 import model.Crews;
@@ -88,16 +86,14 @@ public class AttendanceController {
         String rawNickname = inputView.readNickname();
         Crew crew = stringConverter.convertToNickname(rawNickname);
 
-        Attendances filteredAttendances = attendances.findByCrewThisMonth(crew, LocalDate.now());
-
-        AttendanceResult attendanceResult = AttendanceResult.of(filteredAttendances);
-        outputView.printAttendanceRecord(crew, attendanceResult);
+        LocalDate today = LocalDate.now();
+        Attendances filteredAttendances = attendances.findByCrewThisMonth(crew, today);
+        AttendanceStatistics attendanceResult = attendances.createStatistics(crew, today);
+        outputView.printAttendanceRecord(crew, filteredAttendances, attendanceResult);
     }
 
     private void checkPunishment(Crews crews, Attendances attendances) {
-        Map<Crew, Attendances> crewsAttendance = attendances.findAll(crews, LocalDate.now().getMonthValue());
-        CrewsAttendanceResult crewsAttendanceResult = CrewsAttendanceResult.of(crewsAttendance);
-
-        outputView.printAllCrewPunishment(crewsAttendanceResult);
+        List<AttendanceStatistics> dangerCrews = crews.findDangerCrews(attendances, LocalDate.now());
+        outputView.printAllCrewPunishment(dangerCrews);
     }
 }
