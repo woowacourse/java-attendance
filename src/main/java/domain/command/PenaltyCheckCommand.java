@@ -1,7 +1,6 @@
 package domain.command;
 
 import domain.CrewDto;
-import domain.CrewDtos;
 import domain.Crews;
 import domain.PenaltyStatus;
 import view.OutputView;
@@ -26,6 +25,6 @@ public class PenaltyCheckCommand implements Command {
                 .filter(crewDto -> crewDto.getPenaltyStatus() != PenaltyStatus.NONE)
                 .collect(Collectors.toCollection(ArrayList::new));
 
-        outputView.printPenaltyCrews(new CrewDtos(penaltyCrewDtos));
+        outputView.printPenaltyCrews(penaltyCrewDtos);
     }
 }

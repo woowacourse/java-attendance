@@ -4,6 +4,7 @@ import domain.*;
 import util.Converter;
 
 import java.time.LocalDate;
+import java.util.Comparator;
 import java.util.List;
 
 public class OutputView {
@@ -105,14 +106,21 @@ public class OutputView {
         return ATTENDANCE_STATUS_NAME;
     }
 
-    public void printPenaltyCrews(CrewDtos crewDtos) {
+    public void printPenaltyCrews(List<CrewDto> penaltyCrewDtos) {
         System.out.println(PENALTY_CREW_READ_RESULT_PREFIX);
-        List<CrewDto> dtos = crewDtos.getCrewDtos();
-        for (CrewDto dto : dtos) {
+
+        sortCrewDtos(penaltyCrewDtos);
+        for (CrewDto dto : penaltyCrewDtos) {
             System.out.printf(PENALTY_CREW_READ_RESULT, dto.getNickName(), dto.getAbsentCount(), dto.getLateCount(), dto.getPenaltyStatus().getName());
         }
         System.out.println();
 
     }
 
+    private void sortCrewDtos(List<CrewDto> crewDtos) {
+        crewDtos.sort(
+                Comparator.comparing((CrewDto dto) -> dto.getPenaltyStatus().getThreshold(), Comparator.reverseOrder())
+                        .thenComparing(dto -> dto.getLateCount() + dto.getAbsentCount(), Comparator.reverseOrder())
+                        .thenComparing(CrewDto::getNickName));
+    }
 }
