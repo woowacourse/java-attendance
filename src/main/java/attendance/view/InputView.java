@@ -41,6 +41,7 @@ public class InputView {
         System.out.println("수정하려는 날짜(일)를 입력해 주세요.");
         try {
             int modifyDate = scanner.nextInt();
+            scanner.nextLine();
             int year = today.getYear();
             int month = today.getMonthValue();
             return LocalDate.of(year, month, modifyDate);
@@ -58,7 +59,6 @@ public class InputView {
 
     private static String userInput() {
         String input = scanner.nextLine();
-        System.out.println("hhh" + input);
         return input;
     }
 }
