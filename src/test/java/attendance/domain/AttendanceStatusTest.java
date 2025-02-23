@@ -21,7 +21,7 @@ class AttendanceStatusTest {
     })
     @ParameterizedTest
     void 출석_날짜와_시간을_알려주면_출석_상태를_알려준다(int day, int hour, int minute, AttendanceStatus expected) {
-        AttendanceStatus status = AttendanceStatus.findByAttendanceDateTime(
+        AttendanceStatus status = AttendanceStatus.findByAttendanceDateAndTime(
                 new AttendanceDate(LocalDate.of(2025, 2, day)),
                 new AttendanceTime(LocalTime.of(hour, minute)));
 

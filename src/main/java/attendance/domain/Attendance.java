@@ -30,7 +30,7 @@ public class Attendance {
     }
 
     public AttendanceStatus calculateStatus() {
-        return AttendanceStatus.findByAttendanceDateTime(attendanceDate, attendanceTime);
+        return AttendanceStatus.findByAttendanceDateAndTime(attendanceDate, attendanceTime);
     }
 
     public LocalDateTime getAttendanceDateTime() {

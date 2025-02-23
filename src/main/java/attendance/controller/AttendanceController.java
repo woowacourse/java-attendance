@@ -3,31 +3,19 @@ package attendance.controller;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
 import java.util.*;
 
-import attendance.domain.Attendance;
-import attendance.domain.AttendanceDate;
+import attendance.domain.*;
 import attendance.dto.AttendanceHistoryDto;
-import attendance.domain.AttendanceStatus;
-import attendance.domain.AttendanceTime;
-import attendance.domain.Attendances;
-import attendance.domain.Crew;
-import attendance.domain.ExpulsionStatus;
-import attendance.view.FileLineReader;
+import attendance.dto.ConfirmAttendanceDto;
 import attendance.view.InputView;
-import attendance.domain.OperationCommand;
 import attendance.view.OutputView;
 
 public class AttendanceController {
 
-    private static final DateTimeFormatter FILE_DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
-    public static final String attendanceFilePath = "src/main/resources/";
-    public static final String attendanceFileName = "attendances.csv";
-    public static final String attendanceFileDelimiter = ",";
     private final InputView inputView;
     private final OutputView outputView;
-    private final Map<Crew, Attendances> crewAttendances;
+    private final CrewAttendances crewAttendances;
     private final Map<OperationCommand, Runnable> operationMapper = Map.of(
             OperationCommand.ATTENDANCE_CONFIRMATION, this::confirmAttendance
             , OperationCommand.ATTENDANCE_MODIFICATION, this::modifyAttendance
@@ -38,45 +26,12 @@ public class AttendanceController {
     public AttendanceController(final InputView inputView, final OutputView outputView) {
         this.inputView = inputView;
         this.outputView = outputView;
-        this.crewAttendances = new HashMap<>();
+        this.crewAttendances = new CrewAttendances();
     }
 
     public void run() {
-        initializeCrewAttendances();
         while(true) {
             branchByOperationCommand();
-        }
-    }
-
-    private void initializeCrewAttendances() {
-        List<String> firstSkippedLines = readAttendanceFileLinesWithoutFirstLine();
-        Map<Crew, List<LocalDateTime>> crewAttendanceDateTimes = createAttendanceDateTimes(firstSkippedLines);
-        createCrewAttendances(crewAttendanceDateTimes);
-    }
-
-    private List<String> readAttendanceFileLinesWithoutFirstLine() {
-        FileLineReader fileLineReader = new FileLineReader();
-        List<String> lines = fileLineReader.readAllLines(attendanceFilePath, attendanceFileName);
-        return lines.stream()
-                .skip(1L)
-                .toList();
-    }
-
-    private Map<Crew, List<LocalDateTime>> createAttendanceDateTimes(final List<String> firstSkippedLines) {
-        Map<Crew, List<LocalDateTime>> crewAttendanceDateTimes = new HashMap<>();
-        for (String line : firstSkippedLines) {
-            String[] tokens = line.split(attendanceFileDelimiter);
-            Crew crew = new Crew(tokens[0]);
-            LocalDateTime attendanceDateTime = LocalDateTime.parse(tokens[1], FILE_DATE_TIME_FORMATTER);
-            crewAttendanceDateTimes.computeIfAbsent(crew, value -> new ArrayList<>()).add(attendanceDateTime);
-        }
-        return crewAttendanceDateTimes;
-    }
-
-    private void createCrewAttendances(final Map<Crew, List<LocalDateTime>> crewAttendanceDateTimes) {
-        for (Crew crew : crewAttendanceDateTimes.keySet()) {
-            Attendances attendances = new Attendances(crewAttendanceDateTimes.get(crew), LocalDateTime.now());
-            crewAttendances.put(crew, attendances);
         }
     }
 
@@ -96,24 +51,17 @@ public class AttendanceController {
     }
 
     private void confirmAttendance() {
-        LocalDate today = LocalDate.now();
         Crew crew = createCrewByNickname(inputView.readCrewNickname());
         LocalTime attendanceTime = inputView.readAttendanceTime();
-        Attendances attendances = crewAttendances.get(crew);
-        if (attendances.existsByLocalDate(today)) {
+        try {
+            ConfirmAttendanceDto confirmAttendanceDto = crewAttendances.saveTodayAttendance(crew, attendanceTime);
+            Attendance attendance = confirmAttendanceDto.attendance();
+            AttendanceStatus attendanceStatus = AttendanceStatus.findByAttendanceDateAndTime(
+                    attendance.getAttendanceDate(), attendance.getAttendanceTime());
+            outputView.printAttendance(attendance.getAttendanceDateTime(), attendanceStatus.getText());
+        } catch (IllegalStateException exception) {
             outputView.printUsingAttendanceModification();
         }
-        saveTodayAttendance(attendances, LocalDateTime.of(today, attendanceTime));
-    }
-
-    private void saveTodayAttendance(final Attendances attendances, final LocalDateTime attendanceDateTime) {
-        AttendanceDate attendanceDate = new AttendanceDate(attendanceDateTime.toLocalDate());
-        AttendanceTime attendanceTime = new AttendanceTime(attendanceDateTime.toLocalTime());
-        Attendance attendance = new Attendance(attendanceDate, attendanceTime);
-        attendances.addAttendance(attendance);
-        String attendanceStatus = AttendanceStatus.findByAttendanceDateTime(attendanceDate, attendanceTime)
-                .getText();
-        outputView.printAttendance(attendance.getAttendanceDateTime(), attendanceStatus);
     }
 
     private void modifyAttendance() {
@@ -129,9 +77,9 @@ public class AttendanceController {
         Attendance newAttendance = originAttendance.changeAttendanceTime(modificationTime);
         attendances.remove(originAttendance);
         attendances.addAttendance(newAttendance);
-        String originAttendanceStatus = AttendanceStatus.findByAttendanceDateTime(
+        String originAttendanceStatus = AttendanceStatus.findByAttendanceDateAndTime(
                 originAttendance.getAttendanceDate(), originAttendance.getAttendanceTime()).getText();
-        String newAttendanceStatus = AttendanceStatus.findByAttendanceDateTime(new AttendanceDate(modificationDate),
+        String newAttendanceStatus = AttendanceStatus.findByAttendanceDateAndTime(new AttendanceDate(modificationDate),
                 new AttendanceTime(modificationTime)).getText();
         outputView.printModificationResult(originAttendance.getAttendanceDateTime(), originAttendanceStatus,
                 newAttendance.getAttendanceDateTime(), newAttendanceStatus);
@@ -150,7 +98,7 @@ public class AttendanceController {
                 .map(Attendance::getAttendanceDateTime)
                 .toList();
         List<AttendanceStatus> attendanceStatus = attendanceTimes.stream()
-                .map(dateTime -> AttendanceStatus.findByAttendanceDateTime(new AttendanceDate(dateTime.toLocalDate()),
+                .map(dateTime -> AttendanceStatus.findByAttendanceDateAndTime(new AttendanceDate(dateTime.toLocalDate()),
                         new AttendanceTime(dateTime.toLocalTime())))
                 .toList();
         List<String> attendanceStatusTexts = attendanceStatus.stream()
