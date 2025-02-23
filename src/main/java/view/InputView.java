@@ -29,7 +29,7 @@ public class InputView {
                 Q. 종료""", TODAY.getMonth().getValue(), TODAY.getDayOfMonth(), ViewUtil.getDayOfWeekToMessage(TODAY.getDayOfWeek())));
     }
 
-    public String inputByMessage(String message) {
+    private String inputByMessage(String message) {
         System.out.println(message);
         return scanner.nextLine();
     }
@@ -48,15 +48,19 @@ public class InputView {
             BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
             Crews crews = new Crews();
             bufferedReader.readLine();
-            String line;
-            while ((line = bufferedReader.readLine()) != null) {
-                String[] tokens = line.split(",");
-                validateName(tokens[0]);
-                crews.initAttendStatus(tokens[0], LocalDateTime.parse(tokens[1], DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")));
-            }
+            getFileInput(bufferedReader, crews);
             return crews;
         } catch (IOException e) {
             throw new IllegalArgumentException("출석 파일을 불러올 수 없습니다.");
+        }
+    }
+
+    private void getFileInput(final BufferedReader bufferedReader, final Crews crews) throws IOException {
+        String line;
+        while ((line = bufferedReader.readLine()) != null) {
+            String[] tokens = line.split(",");
+            validateName(tokens[0]);
+            crews.initAttendStatus(tokens[0], LocalDateTime.parse(tokens[1], DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")));
         }
     }
 

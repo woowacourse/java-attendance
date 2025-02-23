@@ -17,13 +17,11 @@ import static view.ViewUtil.getRiskStatusMessage;
 public class OutputView {
     public void printCrewAttendanceRecord(final CrewResponse crewResponse) {
         System.out.printf("이번 달 %s의 출석 기록입니다.\n", crewResponse.name());
-        Map<LocalDate, LocalTime> map = crewResponse.attendanceBook();
+        Map<LocalDate, LocalTime> attendanceBook = crewResponse.attendanceBook();
         LocalDate currentDate = Date.getFirstDateOfMonth();
 
         while (!currentDate.isAfter(Date.TODAY.toLocalDate())) {
-            if (Date.isWeekday(currentDate)) {
-                System.out.println(getEachDateAttendanceMessage(currentDate, map));
-            }
+            printAttendanceMessageIfWeekday(currentDate, attendanceBook);
             currentDate = currentDate.plusDays(1);
         }
 
@@ -35,6 +33,12 @@ public class OutputView {
 
         if (!riskStatus.equals(RiskStatus.NONE)) {
             System.out.println(getRiskStatusMessage(riskStatus) + " 대상자입니다.");
+        }
+    }
+
+    private void printAttendanceMessageIfWeekday(LocalDate currentDate, Map<LocalDate, LocalTime> attendanceBook) {
+        if (Date.isWeekday(currentDate)) {
+            System.out.println(getEachDateAttendanceMessage(currentDate, attendanceBook));
         }
     }
 

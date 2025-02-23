@@ -28,23 +28,36 @@ public class AttendanceController {
 
     public void start() {
         crews = initCrews();
-        while (true) {
-            String menu;
-            try {
-                menu = inputView.inputMenu();
-                if (menu.equals("Q")) {
-                    break;
-                }
-                selectMenu(menu);
-            } catch (DateTimeParseException | IllegalArgumentException e) {
-                outputView.printErrorMessage(e);
-            }
-
-        }
+        startMenuLoop();
     }
 
     private Crews initCrews() {
         return inputView.getFile();
+    }
+
+    private void startMenuLoop() {
+        boolean continueLoop = true;
+        while(continueLoop) {
+            continueLoop = processMenu();
+        }
+    }
+
+    private boolean processMenu() {
+        try {
+            return handleMenuSelection();
+        } catch (DateTimeParseException | IllegalArgumentException e) {
+            outputView.printErrorMessage(e);
+            return true;
+        }
+    }
+
+    private boolean handleMenuSelection() {
+        String menu = inputView.inputMenu();
+        if (menu.equals("Q")) {
+            return false;
+        }
+        selectMenu(menu);
+        return true;
     }
 
     private void selectMenu(final String menu) {
