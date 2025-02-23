@@ -7,6 +7,7 @@ import java.time.LocalTime;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Consumer;
 import model.AttendanceType;
 import model.Campus;
 import model.CrewHistories;
@@ -25,6 +26,7 @@ public class AttendanceController {
     private final ResultView resultView;
     private final Campus campus;
     private final TodayClock todayClock;
+    private final Map<Command, Consumer<CrewHistories>> commands = initializeCommands();
 
     public AttendanceController(final InputView inputView, final ResultView resultView, final Campus campus,
                                 final TodayClock todayClock) {
@@ -43,29 +45,18 @@ public class AttendanceController {
         start(crewHistories);
     }
 
-    private LocalDate getTodayDate() {
-        return todayClock.getTodayDate();
+    private Map<Command, Consumer<CrewHistories>> initializeCommands() {
+        return Map.of(
+                Command.CHECK_ATTENDANCE, this::checkAttendance,
+                Command.MODIFY_ATTENDANCE, this::modifyAttendance,
+                Command.CHECK_ATTENDANCE_BY_CREW, this::checkAttendanceHistoryByCrew,
+                Command.CHECK_DISMISSAL_CREW, this::checkDismissalCrews
+        );
     }
 
     private void process(final CrewHistories crewHistories, final Command command) {
-        processAttendance(crewHistories, command);
-        if (command.equals(Command.CHECK_ATTENDANCE_BY_CREW)) {
-            checkAttendanceHistoryByCrew(crewHistories);
-            return;
-        }
-        if (command.equals(Command.CHECK_DISMISSAL_CREW)) {
-            checkDismissalCrews(crewHistories);
-        }
-    }
-
-    private void processAttendance(CrewHistories crewHistories, Command command) {
-        if (command.equals(Command.CHECK_ATTENDANCE)) {
-            checkAttendance(crewHistories);
-            return;
-        }
-        if (command.equals(Command.MODIFY_ATTENDANCE)) {
-            modifyAttendance(crewHistories);
-        }
+        Consumer<CrewHistories> consumer = commands.get(command);
+        consumer.accept(crewHistories);
     }
 
     private void checkAttendance(final CrewHistories crewHistories) {
@@ -123,5 +114,9 @@ public class AttendanceController {
         List<DismissalCrewDto> dismissalCrewDtos = DismissalCrewDto.of(getTodayDate(), dismissalCrewHistories);
         Collections.sort(dismissalCrewDtos);
         resultView.printDismissalResult(dismissalCrewDtos);
+    }
+
+    private LocalDate getTodayDate() {
+        return todayClock.getTodayDate();
     }
 }
