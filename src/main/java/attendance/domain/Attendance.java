@@ -43,4 +43,8 @@ public class Attendance {
     public AttendanceStatusType getStatus() {
         return status;
     }
+
+    public int compareTo(Attendance other) {
+        return dateTime.compareTo(other.dateTime);
+    }
 }
