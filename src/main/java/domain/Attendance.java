@@ -38,12 +38,6 @@ public class Attendance {
         return new Attendance(LocalDateTime.of(date, emptyTime), true);
     }
 
-    public Attendance(final Attendance attendance) {
-        final LocalDateTime targetDateTime = attendance.dateTime;
-        this.dateTime = LocalDateTime.of(targetDateTime.toLocalDate(), targetDateTime.toLocalTime());
-        this.isEmpty = attendance.isEmpty;
-    }
-
     public AttendanceStatus calculateStatus() {
         final LocalTime time = dateTime.toLocalTime();
         if (dateTime.getDayOfWeek() == DayOfWeek.MONDAY) {
