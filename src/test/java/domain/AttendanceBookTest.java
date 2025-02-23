@@ -87,7 +87,7 @@ class AttendanceBookTest {
         AttendanceData attendanceData = attendanceBook.getAttendanceData(name, LocalDate.of(2024, 12, 12));
         AttendanceCount attendanceCount = Status.getCount(attendanceData);
 
-        assertEquals(Penalty.경고, Penalty.from(attendanceCount.absentCount()));
+        assertEquals(Penalty.WARNING, Penalty.from(attendanceCount.absentCount()));
     }
 
     @DisplayName("면담 대상자를 판별할 수 있다.")
@@ -106,7 +106,7 @@ class AttendanceBookTest {
         AttendanceData attendanceData = attendanceBook.getAttendanceData(name, LocalDate.of(2024, 12, 12));
         AttendanceCount attendanceCount = Status.getCount(attendanceData);
 
-        assertEquals(Penalty.면담, Penalty.from(attendanceCount.absentCount()));
+        assertEquals(Penalty.INTERVIEW, Penalty.from(attendanceCount.absentCount()));
     }
 
     @DisplayName("제적 대상자를 판별할 수 있다.")
@@ -121,7 +121,7 @@ class AttendanceBookTest {
         AttendanceData attendanceData = attendanceBook.getAttendanceData(name, LocalDate.of(2024, 12, 12));
         AttendanceCount attendanceCount = Status.getCount(attendanceData);
 
-        assertEquals(Penalty.제적, Penalty.from(attendanceCount.absentCount()));
+        assertEquals(Penalty.EXPULSION, Penalty.from(attendanceCount.absentCount()));
     }
 
     @DisplayName("(경고, 면담, 제적) 비대상자를 판별할 수 있다.")

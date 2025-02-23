@@ -4,6 +4,8 @@ import java.time.DayOfWeek;
 import java.time.LocalDateTime;
 
 public record Attendance(LocalDateTime dateAndTime) {
+    private static final String HOLIDAY_MESSAGE = "주말 또는 공휴일은 캠퍼스 휴장입니다.";
+
     public Attendance {
         validateRunningTime(dateAndTime);
     }
@@ -26,7 +28,7 @@ public record Attendance(LocalDateTime dateAndTime) {
         if (dayOfWeek == DayOfWeek.SATURDAY
                 || dayOfWeek == DayOfWeek.SUNDAY
                 || dateAndTime.getDayOfMonth() == 25) {
-            throw new IllegalArgumentException("주말 또는 공휴일은 캠퍼스 휴장입니다.");
+            throw new IllegalArgumentException(HOLIDAY_MESSAGE);
         }
     }
 }

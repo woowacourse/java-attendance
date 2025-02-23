@@ -1,11 +1,14 @@
 package util;
 
+import static util.Constants.HOLIDAY;
+
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 
 public class DateTimeManager {
+    private static final String TIME_UNIT = ":";
     private final LocalDate today;
 
     public DateTimeManager(int year, int month, int day) {
@@ -16,7 +19,7 @@ public class DateTimeManager {
         DayOfWeek dayOfWeek = date.getDayOfWeek();
         return dayOfWeek == DayOfWeek.SATURDAY
                 || dayOfWeek == DayOfWeek.SUNDAY
-                || date.getDayOfMonth() == 25;
+                || date.getDayOfMonth() == HOLIDAY;
     }
 
     public LocalDate getToday() {
@@ -44,7 +47,7 @@ public class DateTimeManager {
 
     private LocalTime getTime(String formattedTime) {
         return LocalTime.of(
-                Integer.parseInt(formattedTime.split(":")[0]),
-                Integer.parseInt(formattedTime.split(":")[1]));
+                Integer.parseInt(formattedTime.split(TIME_UNIT)[0]),
+                Integer.parseInt(formattedTime.split(TIME_UNIT)[1]));
     }
 }

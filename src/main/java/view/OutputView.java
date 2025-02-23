@@ -81,7 +81,7 @@ public class OutputView {
         if (penalty == Penalty.NONE) {
             return nameAndCount;
         }
-        nameAndCount += "(" + penalty + ")";
+        nameAndCount += "(" + penalty.getMessage() + ")";
         return nameAndCount;
     }
 
@@ -96,7 +96,7 @@ public class OutputView {
         if (penalty == Penalty.NONE) {
             return "";
         }
-        return penalty + " 대상자입니다.\n";
+        return penalty.getMessage() + " 대상자입니다.\n";
     }
 
     public void printExceptionMessage(String message) {
@@ -113,10 +113,10 @@ public class OutputView {
     private String formatTimeAndState(LocalDateTime dateAndTime) {
         Status status = Status.of(dateAndTime);
         if (status == Status.ABSENCE) {
-            return "--:-- " + "(" + status.getResult() + ")";
+            return "--:-- " + "(" + status.getMessage() + ")";
         }
         return dateAndTime.format(DateTimeFormatter.ofPattern(
-                "HH:mm ", Locale.KOREAN)) + "(" + status.getResult() + ")";
+                "HH:mm ", Locale.KOREAN)) + "(" + status.getMessage() + ")";
     }
 
     private String formatPenaltyInfo(AttendanceBook attendanceBook) {

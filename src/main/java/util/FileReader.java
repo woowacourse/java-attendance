@@ -7,6 +7,9 @@ import java.util.Scanner;
 
 public class FileReader {
     private static final String PATH = "src/main/attendance.csv";
+    private static final String PATH_NOT_EXISTED = "파일 경로가 유효하지 않습니다.";
+    private static final String NAME_UNIT = ",";
+    private static final String DATE_UNIT = " ";
 
     public static AttendanceBook readExistedAttendanceData() {
         AttendanceBook attendanceBook = new AttendanceBook();
@@ -15,7 +18,7 @@ public class FileReader {
             Scanner scanner = new Scanner(fileReader);
             readPerLine(attendanceBook, scanner);
         } catch (FileNotFoundException e) {
-            System.out.println("파일 경로가 유효하지 않습니다.");
+            System.out.println(PATH_NOT_EXISTED);
         }
         return attendanceBook;
     }
@@ -23,7 +26,7 @@ public class FileReader {
     private static void readPerLine(AttendanceBook attendanceBook, Scanner scanner) {
         while (scanner.hasNextLine()) {
             String line = scanner.nextLine();
-            String crewName = line.split(",")[0];
+            String crewName = line.split(NAME_UNIT)[0];
             addNewCrewWhenNotExisted(attendanceBook, crewName);
             initializeCrewInfo(attendanceBook, line, crewName);
         }
@@ -36,7 +39,7 @@ public class FileReader {
     }
 
     private static void initializeCrewInfo(AttendanceBook attendanceBook, String line, String name) {
-        String[] dateAndTime = line.split(",")[1].split(" ");
+        String[] dateAndTime = line.split(NAME_UNIT)[1].split(DATE_UNIT);
         LocalDateTime localDateTime = LocalDateTime.of(Integer.parseInt(dateAndTime[0]),
                 Integer.parseInt(dateAndTime[1]),
                 Integer.parseInt(dateAndTime[2]),

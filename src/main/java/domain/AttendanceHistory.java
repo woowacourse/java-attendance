@@ -12,6 +12,9 @@ import java.util.Optional;
 import util.DateTimeManager;
 
 public class AttendanceHistory {
+    private static final String ALREADY_ATTENDANCE = "이미 출석되었습니다.";
+    private static final String NO_ATTENDANCE = "기존의 출석 기록이 없습니다.";
+
     private final List<Attendance> attendanceInfo;
 
     public AttendanceHistory() {
@@ -87,13 +90,13 @@ public class AttendanceHistory {
     private void validateNotExisted(LocalDateTime localDateTime) {
         Attendance isAlreadyExisted = getAlreadyExistAttendance(localDateTime);
         if (isAlreadyExisted != null) {
-            throw new IllegalArgumentException("이미 출석되었습니다.");
+            throw new IllegalArgumentException(ALREADY_ATTENDANCE);
         }
     }
 
     private void validateExisted(Attendance oldAttendance) {
         if (oldAttendance == null) {
-            throw new IllegalArgumentException("기존의 출석 기록이 없습니다.");
+            throw new IllegalArgumentException(NO_ATTENDANCE);
         }
     }
 }

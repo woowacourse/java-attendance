@@ -1,8 +1,6 @@
 package domain;
 
-
-import static util.Constants.ABSENT_CONDITION;
-import static util.Constants.LATE_CONDITION;
+import static util.Constants.*;
 
 import dto.AttendanceCount;
 import dto.AttendanceData;
@@ -12,14 +10,14 @@ import java.time.LocalDateTime;
 public enum Status {
     ATTEND("출석"), LATE("지각"), ABSENCE("결석");
 
-    private final String result;
+    private final String message;
 
-    Status(String result) {
-        this.result = result;
+    Status(String message) {
+        this.message = message;
     }
 
-    public String getResult() {
-        return result;
+    public String getMessage() {
+        return message;
     }
 
     public static AttendanceCount getCount(AttendanceData attendanceData) {
@@ -47,9 +45,9 @@ public enum Status {
     }
 
     public static Status of(int hour, int minute, DayOfWeek dayOfWeek) {
-        int startHour = 10;
+        int startHour = COMMON_START_HOUR;
         if (dayOfWeek == DayOfWeek.MONDAY) {
-            startHour = 13;
+            startHour = MONDAY_START_HOUR;
         }
         if (hour < startHour || (hour == startHour && minute < LATE_CONDITION)) {
             return ATTEND;

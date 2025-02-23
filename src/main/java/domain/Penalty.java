@@ -1,18 +1,33 @@
 package domain;
 
+import static util.Constants.*;
+
 public enum Penalty {
-    제적, 면담, 경고, NONE;
+    EXPULSION("제적"),
+    INTERVIEW("면담"),
+    WARNING("경고"),
+    NONE("비대상자");
+
+    private final String message;
+
+    Penalty(String message) {
+        this.message = message;
+    }
 
     public static Penalty from(int absentCount) {
-        if (absentCount > 5) {
-            return 제적;
+        if (absentCount > EXPULSION_COUNT) {
+            return EXPULSION;
         }
-        if (absentCount >= 3) {
-            return 면담;
+        if (absentCount >= INTERVIEW_COUNT) {
+            return INTERVIEW;
         }
-        if (absentCount == 2) {
-            return 경고;
+        if (absentCount == WARNING_COUNT) {
+            return WARNING;
         }
         return NONE;
+    }
+
+    public String getMessage() {
+        return message;
     }
 }
