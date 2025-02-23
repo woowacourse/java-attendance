@@ -17,7 +17,7 @@ public enum AttendanceState {
     }
 
     public static AttendanceState findStateBy(final LocalTime localTime, final LocalDate localDate) {
-        Calender.validateHolyDay(DateTimeUtil.getDateBy(localDate)); // 크리스마스 고려 안 됨...
+        DateTimeUtil.validateHolyDay(DateTimeUtil.getDateBy(localDate)); // 크리스마스 고려 안 됨...
         AttendanceTime.validateCampusTime(localTime);
 
         String dayOfWeek = DateTimeUtil.getDayOfWeekBy(
@@ -41,10 +41,10 @@ public enum AttendanceState {
         return null;
     }
 
-    private static AttendanceState determineAttendanceStatus(LocalTime localTime, AttendanceTime monTime) {
-        if (localTime.isAfter(monTime.getLocalTimes().get(1))) {
+    private static AttendanceState determineAttendanceStatus(LocalTime localTime, AttendanceTime time) {
+        if (localTime.isAfter(time.getLocalTimes().get(1))) {
             return ABSENCE;
-        } else if (localTime.isAfter(monTime.getLocalTimes().get(0))) {
+        } else if (localTime.isAfter(time.getLocalTimes().get(0))) {
             return LATENESS;
         }
         return ATTENDANCE;
