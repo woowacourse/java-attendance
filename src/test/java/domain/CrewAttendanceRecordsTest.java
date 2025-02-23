@@ -31,21 +31,21 @@ class CrewAttendanceRecordsTest {
         LocalDate date = LocalDate.of(2024, 12, 3);
         LocalTime time = LocalTime.of(9, 58);
         AttendanceRecord newAttendanceRecord = AttendanceRecord.of(date, time);
-        AttendanceRecord oldAttendanceRecord = crewAttendanceRecords.updateAttendanceRecord(crew, newAttendanceRecord);
+        AttendanceRecord oldAttendanceRecord = crewAttendanceRecords.getRecordAtDate(crew, date);
 
-        assertThat(oldAttendanceRecord).isEqualTo(AttendanceRecord.parse("2024-12-03 10:07"));
+        crewAttendanceRecords.updateAttendanceRecord(crew, oldAttendanceRecord, newAttendanceRecord);
+
+        assertThat(crewAttendanceRecords.getRecordAtDate(crew, date)).isEqualTo(newAttendanceRecord);
     }
 
     @Test
-    @DisplayName("수정할 때 기록이 없는 닉네임을 입력하면 예외가 발생한다.")
-    void updateAttendanceRecordExceptionTest() {
+    @DisplayName("기록이 없는 닉네임의 출석 기록을 가져오려 하면 예외가 발생한다.")
+    void getRecordAtDateExceptionTest() {
         CrewAttendanceRecords crewAttendanceRecords = new CrewAttendanceRecords(new CsvParsingGenerator(), () -> LocalDate.of(2024, 12, 13));
         Crew crew = new Crew("포비");
         LocalDate date = LocalDate.of(2024, 12, 3);
-        LocalTime time = LocalTime.of(9, 58);
-        AttendanceRecord newAttendanceRecord = AttendanceRecord.of(date, time);
 
-        assertThatThrownBy(() -> crewAttendanceRecords.updateAttendanceRecord(crew, newAttendanceRecord))
+        assertThatThrownBy(() -> crewAttendanceRecords.getRecordAtDate(crew, date))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("[ERROR] 등록되지 않은 닉네임입니다.\n");
     }
@@ -120,27 +120,6 @@ class CrewAttendanceRecordsTest {
         assertThatThrownBy(() -> crewAttendanceRecords.checkIn(crew, time, () -> LocalDate.of(2024, 12, 13)))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("[ERROR] 이미 출석을 확인하였습니다. 필요한 경우 수정 기능을 이용해 주세요.\n");
-    }
-
-    @Test
-    @DisplayName("입력 받은 크루의 출결 기록을 날짜순으로 정렬해서 반환한다.")
-    void getSortedRecordsTest() {
-        CrewAttendanceRecords crewAttendanceRecords = new CrewAttendanceRecords(new CsvParsingGenerator(), () -> LocalDate.of(2024, 12, 13));
-        Crew crew = new Crew("빙티");
-        List<AttendanceRecord> actualRecords = crewAttendanceRecords.getSortedRecords(crew);
-        List<AttendanceRecord> expectedRecords = List.of(
-                AttendanceRecord.parse("2024-12-02 13:00"),
-                AttendanceRecord.parse("2024-12-03 10:07"),
-                AttendanceRecord.parse("2024-12-04 10:02"),
-                AttendanceRecord.parse("2024-12-05 10:06"),
-                AttendanceRecord.parse("2024-12-06 10:01"),
-                AttendanceRecord.asAbsent(LocalDate.of(2024, 12, 9)),
-                AttendanceRecord.parse("2024-12-10 10:08"),
-                AttendanceRecord.asAbsent(LocalDate.of(2024, 12, 11)),
-                AttendanceRecord.asAbsent(LocalDate.of(2024, 12, 12)),
-                AttendanceRecord.parse("2024-12-13 10:07"));
-
-        assertThat(actualRecords).isEqualTo(expectedRecords);
     }
 
     @Test
