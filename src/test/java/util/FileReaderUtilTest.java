@@ -26,7 +26,7 @@ class FileReaderUtilTest {
 
     @Test
     @DisplayName("출석 CSV 파일이 존재하지 않으면 예외를 발생시킨다")
-    void whenFileNotFound() throws IOException {
+    void whenFileNotFound() {
         // given
         String invalidPath = "iWannabePATH";
 

@@ -19,7 +19,7 @@ public class RepeatUntilUserQuitSelectUtil {
         }
     }
 
-    private static boolean isExitCommand (Supplier <Boolean> supplier) {
+    private static boolean isExitCommand(Supplier<Boolean> supplier) {
         return !supplier.get();
     }
 }

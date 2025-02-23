@@ -6,7 +6,6 @@ import org.junit.jupiter.api.Test;
 import util.FormatUtil;
 import util.TimeMachine;
 
-import java.time.LocalDate;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
