@@ -13,6 +13,10 @@ import java.util.List;
 public class AttendReader {
 
     private static final String CSV_PATH = "attendances.csv";
+    private static final String CSV_DELIMITER = ",";
+    private static final String DATE_TIME_DELIMITER = " ";
+    private static final int NAME_INDEX = 0;
+    private static final int DATE_TIME_INDEX = 1;
 
     public AttendanceBook loadAttendanceBook() {
         List<String> data = readCsv();
@@ -27,13 +31,14 @@ public class AttendReader {
     }
 
     private Attend parseAttend(String row) {
-        String dateTime = row.split(",")[1];
-        String[] dateTimeParse = dateTime.split(" ");
-        return Attend.of(LocalDate.parse(dateTimeParse[0].strip()), LocalTime.parse(dateTimeParse[1].strip()));
+        String dateTime = row.split(CSV_DELIMITER)[DATE_TIME_INDEX];
+        String[] dateTimeParse = dateTime.split(DATE_TIME_DELIMITER);
+        return Attend.of(LocalDate.parse(dateTimeParse[DATE_TIME_INDEX].strip()),
+                LocalTime.parse(dateTimeParse[NAME_INDEX].strip()));
     }
 
     private String parseName(String row) {
-        return row.split(",")[0];
+        return row.split(CSV_DELIMITER)[NAME_INDEX];
     }
 
     private List<String> readCsv() {
