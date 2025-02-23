@@ -11,6 +11,6 @@ public class StoreController implements Controller {
 
     @Override
     public void run() {
-        attendanceStoreService.save();
+        attendanceStoreService.save("src/main/resources/attendances.csv");
     }
 }

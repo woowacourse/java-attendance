@@ -29,7 +29,7 @@ public class AttendanceBook {
             throw new DuplicateAttendanceException();
         }
         Attendance attendance = Attendance.of(date, time);
-        attendances.add(attendance);
+        addAttendance(attendance);
         return attendance;
     }
 
@@ -46,10 +46,7 @@ public class AttendanceBook {
                 .findFirst()
                 .orElseThrow(AttendanceNotExistException::new);
         Attendance modifiedAttendance = oldAttendance.modify(time);
-        if (!attendances.add(modifiedAttendance)) {
-            attendances.remove(modifiedAttendance);
-            attendances.add(modifiedAttendance);
-        }
+        addAttendance(modifiedAttendance);
     }
 
     public List<Attendance> getAllAttendances(final int limitDay) {
@@ -97,5 +94,25 @@ public class AttendanceBook {
             }
         }
         return count;
+    }
+
+    @Override
+    public boolean equals(Object object) {
+        if (this == object) return true;
+        if (object == null || getClass() != object.getClass()) return false;
+        AttendanceBook that = (AttendanceBook) object;
+        return attendances.containsAll(that.attendances);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(attendances);
+    }
+
+    private void addAttendance(Attendance attendance) {
+        if (!attendances.add(attendance)) {
+            attendances.remove(attendance);
+            attendances.add(attendance);
+        }
     }
 }

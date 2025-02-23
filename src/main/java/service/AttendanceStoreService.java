@@ -18,8 +18,8 @@ public class AttendanceStoreService {
         this.attendanceRepository = attendanceRepository;
     }
 
-    public void save() {
-        List<String> lines = loadLines("src/main/resources/attendances.csv");
+    public void save(String file) {
+        List<String> lines = loadLines(file);
         for (String line : lines) {
             String[] parsed = line.split(",");;
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
