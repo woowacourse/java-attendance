@@ -1,3 +1,5 @@
+package policy;
+
 import java.time.LocalTime;
 
 public class TimePolicy {
