@@ -56,7 +56,7 @@ public class AttendanceManager {
 
     public List<Attendance> getAttendanceRecord(final String nickname) {
         Attendances attendances = findCrewAttendance(nickname);
-        return attendances.getAttendancesUntilYesterday(dateGenerator.now());
+        return attendances.getAttendancesUntilYesterday();
     }
 
     public AttendanceStatus getAttendanceStatus(final String nickname) {

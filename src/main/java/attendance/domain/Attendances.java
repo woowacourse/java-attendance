@@ -32,10 +32,10 @@ public class Attendances {
         return attendance;
     }
 
-    public List<Attendance> getAttendancesUntilYesterday(LocalDate date) {
-        return attendances.stream()
+    public List<Attendance> getAttendancesUntilYesterday() {
+        List<Attendance> attendancesUntilYesterday = attendances.subList(0, attendances.size() - 1);
+        return attendancesUntilYesterday.stream()
                 .sorted(Attendance::compareTo)
-                .filter(attendance -> attendance.isBefore(date))
                 .toList();
     }
 
