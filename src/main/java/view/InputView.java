@@ -166,6 +166,7 @@ public class InputView {
             todayDate.isHoliday();
         } catch (IllegalArgumentException e) {
             System.out.println(e.getMessage());
+            throw new IllegalArgumentException();
         }
     }
 
