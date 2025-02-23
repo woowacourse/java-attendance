@@ -52,6 +52,7 @@ public enum AttendanceTime {
     private static AttendanceTime findAttendanceTime(LocalDateTime localDateTime) {
         return Arrays.stream(AttendanceTime.values())
                 .filter(attendanceTime -> attendanceTime.dayOfWeek.equals(localDateTime.toLocalDate().getDayOfWeek()))
-                .findAny().orElseThrow(() -> new IllegalArgumentException("주말 및 공휴일에는 출석할 수 없습니다."));
+                .findAny()
+                .orElseThrow(() -> new IllegalArgumentException("주말 및 공휴일에는 출석할 수 없습니다."));
     }
 }
