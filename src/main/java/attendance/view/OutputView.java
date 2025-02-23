@@ -1,9 +1,5 @@
 package attendance.view;
 
-import java.time.LocalDate;
-
-import attendance.common.utill.DateTimeFormatterWrapper;
-
 public class OutputView {
 
     private final String METHOD = "1. 출석 확인\n"
@@ -17,7 +13,6 @@ public class OutputView {
     private final String INPUT_ATTENDANCE_MODIFY_DATE = "수정하려는 날짜(일)를 입력해 주세요.";
 
     public void printMethod() {
-        println(DateTimeFormatterWrapper.formattingToday(LocalDate.now()));
         println(METHOD);
     }
 
@@ -27,21 +22,5 @@ public class OutputView {
 
     public void printError(String message) {
         println(message);
-    }
-
-    public void printAttendanceModifyNicknameInput() {
-        println(INPUT_ATTENDANCE_MODIFY_NICKNAME);
-    }
-
-    public void printAttendanceModifyDateInput() {
-        println(INPUT_ATTENDANCE_MODIFY_DATE);
-    }
-
-    public void printNicknameInput() {
-        println(INPUT_NICKNAME);
-    }
-
-    public void printAttendanceTimeInput() {
-        println(INPUT_ATTENDANCE_TIME);
     }
 }
