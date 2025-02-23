@@ -1,9 +1,5 @@
-package loader;
+package domain;
 
-import domain.Attendance;
-import domain.Crew;
-import domain.Crews;
-import domain.Day;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
