@@ -17,7 +17,7 @@ import view.OutputView;
 public class Controller {
 
     public void start() {
-        TodayDate todayDate = new TodayDate(LocalDate.of(2024,12,12));
+        TodayDate todayDate = new TodayDate(LocalDate.of(2024,12,14));
         StudentRecordRepository studentRecordRepository = FileInput.createStudentRepository();
         studentRecordRepository.updateEveryStudentNoInformationInFile(todayDate.getTodayDateTIme());
 
@@ -28,6 +28,7 @@ public class Controller {
                 break;
             }
             if (Integer.parseInt(userInput) == 1) {
+                InputView.checkAttendanceAvailable(todayDate);
                 String name = InputView.getStudentForAttendanceCheckUntilExist(studentRecordRepository);
                 LocalDateTime localDateTime = InputView.getLocalDateTimeUntilValidate(todayDate);
 
