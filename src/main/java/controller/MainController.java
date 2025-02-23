@@ -5,6 +5,7 @@ import domain.Attendance;
 import domain.AttendanceState;
 import domain.Calender;
 import domain.Crew;
+import domain.FeatureType;
 import dto.AbsenceResultDto;
 import dto.AttendanceResultDto;
 import java.time.LocalDate;
@@ -28,11 +29,11 @@ public class MainController {
     private String todayDayOfWeek;
     private Attendance attendance;
 
-    private final Map<String, Command> featureMap = Map.of(
-            "1", this::attendanceCheck,
-            "2", this::attendanceUpdate,
-            "3", this::attendanceRecord,
-            "4", this::readAbsence
+    private final Map<FeatureType, Command> featureMap = Map.of(
+            FeatureType.ATTENDANCE_CHECK, this::attendanceCheck,
+            FeatureType.ATTENDANCE_UPDATE, this::attendanceUpdate,
+            FeatureType.ATTENDANCE_RECORD, this::attendanceRecord,
+            FeatureType.READ_ABSENCE, this::readAbsence
     );
 
     public void run() {
@@ -41,7 +42,7 @@ public class MainController {
         do {
             feature = InputView.inputFeature(todayMonth, todayDay, todayDayOfWeek);
             executeFeature(feature);
-        } while (!feature.equals("Q"));
+        } while (isExit(feature));
     }
 
     private void attendanceCheck() {
@@ -106,7 +107,11 @@ public class MainController {
     }
 
     private void executeFeature(String feature) {
-        featureMap.getOrDefault(feature, OutputView::printExit).execute();
+        FeatureType featureType = FeatureType.findBy(feature);
+        featureMap.getOrDefault(featureType, OutputView::printExit).execute();
     }
 
+    private boolean isExit(final String feature) {
+        return !FeatureType.isExitType(feature);
+    }
 }
