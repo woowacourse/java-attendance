@@ -1,20 +1,38 @@
 package controller;
 
-import domain.*;
-import util.Converter;
-import view.InputView;
-import view.OutputView;
-
+import domain.Attendance;
+import domain.AttendanceDto;
+import domain.Crew;
+import domain.CrewDto;
+import domain.CrewDtos;
+import domain.Crews;
+import domain.Day;
+import domain.DayOfWeek;
+import domain.PenaltyStatus;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
+import util.Converter;
+import view.InputView;
+import view.OutputView;
 
 public class AttendanceController {
+    private static final String EXIT_OPTION = "Q";
+
     private final Crews crews;
     private final InputView inputView;
     private final OutputView outputView;
+    private final Map<Option, Runnable> options = Map.of(
+            Option.ATTEND, this::processAttendance,
+            Option.EDIT_ATTENDANCE, this::processAttendanceEdit,
+            Option.SHOW_ATTENDANCE_HISTORY, this::processAttendanceHistory,
+            Option.SHOW_PENALTY_CREWS, this::processPenaltyCheck,
+            Option.EXIT, this::exitApplication
+    );
+
 
     public AttendanceController(Crews crews, InputView inputView, OutputView outputView) {
         this.crews = crews;
@@ -23,25 +41,18 @@ public class AttendanceController {
     }
 
     public void run() {
-        String option = "";
         crews.recordAllAbsence();
-        while (!option.equals("Q")) {
+        while (true) {
             outputView.printOptionMessage();
-            option = inputView.getOption();
-
-            processAttendanceTasks(option);
+            processAttendanceTasks(inputView.getOption());
         }
     }
 
-    private void processAttendanceTasks(String option) {
-        processAttendance(option);
-        processAttendanceEdit(option);
-        processAttendanceHistory(option);
-        processPenaltyCheck(option);
+    private void processAttendanceTasks(String optionChoice) {
+        options.get(Option.validateValue(optionChoice)).run();
     }
 
-    public void processAttendance(String option) {
-        if (!option.equals("1")) return;
+    public void processAttendance() {
         checkHoliday(LocalDate.now());
         Crew crew = crews.findByNickname(inputView.getNickname());
 
@@ -60,8 +71,7 @@ public class AttendanceController {
         outputView.printAttendanceInformation(attendance.toDto());
     }
 
-    public void processAttendanceEdit(String option) {
-        if (!option.equals("2")) return;
+    public void processAttendanceEdit() {
 
         Crew crew = crews.findByNickname(inputView.getEditNickname());
         Attendance attendance = crew.findByDate(Converter.convertStringToInteger(inputView.getEditDayOfMonth()));
@@ -73,8 +83,7 @@ public class AttendanceController {
         outputView.printUpdatedAttendanceHistory(originalAttendanceDto, editedAttendanceDto);
     }
 
-    public void processAttendanceHistory(String option) {
-        if (!option.equals("3")) return;
+    public void processAttendanceHistory() {
 
         String nickname = inputView.getNickname();
         Crew crew = crews.findByNickname(nickname);
@@ -83,8 +92,7 @@ public class AttendanceController {
         outputView.printAttendanceHistoryWithCrew(crew);
     }
 
-    public void processPenaltyCheck(String option) {
-        if (!option.equals("4")) return;
+    public void processPenaltyCheck() {
 
         List<CrewDto> crewDtos = crews.createCrewDtos();
         List<CrewDto> penaltyCrewDtos = crewDtos.stream()
@@ -95,14 +103,19 @@ public class AttendanceController {
 
     }
 
+    private void exitApplication() {
+        System.exit(0);
+    }
+
     private void checkHoliday(LocalDate todayDate) {
         Day today = new Day(todayDate);
         int month = todayDate.getMonth().getValue();
         int dayOfMonth = todayDate.getDayOfMonth();
         String dayOfWeekName = DayOfWeek.getNameById(todayDate.getDayOfWeek().getValue());
-        
+
         if (today.checkHoliday()) {
-            throw new IllegalArgumentException("[ERROR] " + month + "월 " + dayOfMonth + "일 " + dayOfWeekName + "은 등교일이 아닙니다.");
+            throw new IllegalArgumentException(
+                    "[ERROR] " + month + "월 " + dayOfMonth + "일 " + dayOfWeekName + "은 등교일이 아닙니다.");
         }
     }
 }
