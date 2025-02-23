@@ -26,12 +26,6 @@ public enum AttendanceTime {
         this.localTimes = localTimes;
     }
 
-    public static void validateCampusTime(final LocalTime localTime) {
-        if (localTime.isBefore(IN_TIME) || localTime.isAfter(OUT_TIME)) {
-            throw new IllegalArgumentException("캠퍼스 운영 시간은 매일 08:00~23:00입니다.");
-        }
-    }
-
     public static AttendanceTime findBy(final Calender calender) {
         return Arrays.stream(AttendanceTime.values())
                 .filter(value -> value.calenders.contains(calender))
@@ -39,8 +33,10 @@ public enum AttendanceTime {
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 요일 입니다."));
     }
 
-    public List<Calender> getCalenders() {
-        return calenders;
+    public static void validateCampusTime(final LocalTime localTime) {
+        if (localTime.isBefore(IN_TIME) || localTime.isAfter(OUT_TIME)) {
+            throw new IllegalArgumentException("캠퍼스 운영 시간은 매일 08:00~23:00입니다.");
+        }
     }
 
     public List<LocalTime> getLocalTimes() {

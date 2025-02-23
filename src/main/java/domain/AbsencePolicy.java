@@ -20,12 +20,16 @@ public enum AbsencePolicy {
     }
 
     public static AbsencePolicy getAbsencePolicy(int absentCount, int lateCount) {
-        int totalAbsentCount = absentCount + (lateCount / ABSENCE_CONVERSION_RATE);
+        int totalAbsentCount = calculateTotalAbsentCount(absentCount, lateCount);
 
         return Stream.of(DISMISSED, INTERVIEW, WARNING)
                 .filter(policy -> totalAbsentCount >= policy.lateCount)
                 .findFirst()
                 .orElse(PASS);
+    }
+
+    private static int calculateTotalAbsentCount(final int absentCount, final int lateCount) {
+        return absentCount + (lateCount / ABSENCE_CONVERSION_RATE);
     }
 
     public String getDescription() {

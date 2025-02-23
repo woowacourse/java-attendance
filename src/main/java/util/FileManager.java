@@ -23,26 +23,43 @@ public class FileManager {
             BufferedReader br = new BufferedReader(new FileReader(filePath));
             br.readLine();
 
-            String line;
-            Map<Crew, List<LocalDateTime>> attendances = new LinkedHashMap<>();
-
-            while ((line = br.readLine()) != null) {
-                String[] lineSplit = line.split(SPLIT_DELIMITER);
-
-                String name = lineSplit[0];
-                Crew crew = Crew.from(name);
-                String dateTime = lineSplit[1];
-
-                LocalDateTime localDateTime = LocalDateTime.parse(dateTime, DATE_TIME_FORMAT);
-                List<LocalDateTime> localDateTimes = attendances.getOrDefault(crew, new ArrayList<>());
-                localDateTimes.add(localDateTime);
-
-                attendances.put(crew, localDateTimes);
-            }
-
-            return new Attendance(attendances);
+            return createAttendances(br);
         } catch (IOException e) {
             throw new IllegalArgumentException("잘못된 파일 입니다.");
         }
+    }
+
+    private static Attendance createAttendances(final BufferedReader br) throws IOException {
+        String line;
+        Map<Crew, List<LocalDateTime>> attendances = new LinkedHashMap<>();
+
+        while ((line = br.readLine()) != null) {
+            String[] lineSplit = line.split(SPLIT_DELIMITER);
+
+            Crew crew = createCrew(lineSplit);
+            LocalDateTime localDateTime = createLocalDateTime(lineSplit);
+
+            List<LocalDateTime> localDateTimes = insertLocalDateTime(attendances, crew, localDateTime);
+            attendances.put(crew, localDateTimes);
+        }
+
+        return new Attendance(attendances);
+    }
+
+    private static Crew createCrew(final String[] lineSplit) {
+        String name = lineSplit[0];
+        return Crew.from(name);
+    }
+
+    private static LocalDateTime createLocalDateTime(final String[] lineSplit) {
+        String dateTime = lineSplit[1];
+        return LocalDateTime.parse(dateTime, DATE_TIME_FORMAT);
+    }
+
+    private static List<LocalDateTime> insertLocalDateTime(final Map<Crew, List<LocalDateTime>> attendances,
+                                                           final Crew crew, final LocalDateTime localDateTime) {
+        List<LocalDateTime> localDateTimes = attendances.getOrDefault(crew, new ArrayList<>());
+        localDateTimes.add(localDateTime);
+        return localDateTimes;
     }
 }
