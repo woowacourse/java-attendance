@@ -4,11 +4,13 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import util.Day;
 
 public class Attendances {
     public static final int ABSENT_HOUR = 23;
     public static final int ABSENT_MINUTE = 59;
+
     public final List<Attendance> attendanceLog = new ArrayList<>();
 
     public void addAttendance(Attendance attendance) {
@@ -36,7 +38,7 @@ public class Attendances {
                 .filter(attendance -> attendance.calculateAttendanceStatus().equals(AttendanceStatus.ABSENT))
                 .count());
     }
-    
+
     public Optional<Attendance> getSpecificAttendance(int testDay) {
         return attendanceLog.stream()
                 .filter(attendance -> attendance.isSameDay(testDay))
@@ -45,18 +47,24 @@ public class Attendances {
 
     public void addAbsent(LocalDateTime today) {
         int dayOfMonth = today.getDayOfMonth();
-        List<Integer> attendanceDays = attendanceLog.stream().map(Attendance::getDay).toList();
+        List<Integer> attendanceDays = attendanceLog.stream()
+                .map(Attendance::getDay)
+                .toList();
         List<Integer> weekDays = new ArrayList<>();
+
         for (int day = 1; day < dayOfMonth; day++) {
-            if (Day.isHoliday(day, today)) {
-                continue;
-            }
             weekDays.add(day);
         }
+
+        weekDays = weekDays.stream()
+                .filter(day -> !Day.isHoliday(day, today))
+                .collect(Collectors.toList());
+
         weekDays.removeAll(attendanceDays);
         for (int day : weekDays) {
-            attendanceLog.add(new Attendance(LocalDateTime.of(today.getYear(), today.getMonth(), day, ABSENT_HOUR,
-                    ABSENT_MINUTE)));
+            attendanceLog.add(
+                    new Attendance(
+                            LocalDateTime.of(today.getYear(), today.getMonth(), day, ABSENT_HOUR, ABSENT_MINUTE)));
         }
     }
 
