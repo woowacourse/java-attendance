@@ -125,7 +125,7 @@ class AttendancesTest {
     @DisplayName("크루의 출석을 모두 조회한다.")
     void test7() {
         //given
-        LocalDate now = LocalDate.now();
+        LocalDate now = LocalDate.of(2024, 2, 21);
 
         long weekdays = IntStream.rangeClosed(1, now.getDayOfMonth())
                 .mapToObj(day -> LocalDate.of(now.getYear(), now.getMonth(), day))

@@ -48,7 +48,8 @@ public class Attendances {
         return crews.getCrews().stream()
                 .collect(Collectors.toMap(
                         crew -> crew,
-                        crew -> findByCrewAndMonth(crew, month)
+                        crew -> findByCrewAndMonth(crew, month),
+                        (existing, replacement) -> existing
                 ));
     }
 
