@@ -16,13 +16,11 @@ import java.util.stream.IntStream;
 public class AttendanceManager {
 
     private final Map<String, Attendances> attendances;
-    private final Map<String, AttendanceStatus> attendanceStatus;
     private final Holiday holiday;
     private final DateGenerator dateGenerator;
 
     public AttendanceManager(Holiday holiday, DateGenerator dateGenerator) {
         this.attendances = new HashMap<>();
-        this.attendanceStatus = new HashMap<>();
         this.holiday = holiday;
         this.dateGenerator = dateGenerator;
     }
@@ -31,15 +29,12 @@ public class AttendanceManager {
         int day = dateGenerator.now().getDayOfMonth();
 
         Attendances newAttendances = new Attendances();
-        IntStream.range(1, day)
-                .mapToObj(index -> LocalDateTime.of(dateGenerator.now().withDayOfMonth(index), LocalTime.MIN))
+        IntStream.range(1, day + 1)
+                .mapToObj(index -> LocalDateTime.of(dateGenerator.now().withDayOfMonth(index), LocalTime.MAX))
                 .filter(dateTime -> !holiday.isHoliday(dateTime.toLocalDate()))
                 .forEach(newAttendances::addAttendance);
 
         attendances.put(name, newAttendances);
-
-        AttendanceStatus newAttendanceStatus = new AttendanceStatus(newAttendances);
-        attendanceStatus.put(name, newAttendanceStatus);
     }
 
     public Attendance processAttendanceCheck(final LocalDateTime dateTime, final String nickname) {
@@ -65,7 +60,8 @@ public class AttendanceManager {
     }
 
     public AttendanceStatus getAttendanceStatus(final String nickname) {
-        return attendanceStatus.get(nickname);
+        Attendances attendances = findCrewAttendance(nickname);
+        return AttendanceStatus.of(attendances);
     }
 
     public void validateNicknameExists(String nickname) {
