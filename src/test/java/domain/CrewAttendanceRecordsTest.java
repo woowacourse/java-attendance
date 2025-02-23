@@ -16,7 +16,7 @@ class CrewAttendanceRecordsTest {
     @Test
     @DisplayName("출석 기록 존재 여부를 반환한다.")
     void hasRecordTest() {
-        CrewAttendanceRecords crewAttendanceRecords = new CrewAttendanceRecords(new CsvParsingGenerator(), () -> LocalDate.of(2024, 12, 13));
+        CrewAttendanceRecords crewAttendanceRecords = new CrewAttendanceRecords(new CsvParsingGenerator(), LocalDate.of(2024, 12, 13));
         Crew crew = new Crew("쿠키");
         LocalDate date = LocalDate.of(2024, 12, 13);
         boolean hasRecord = crewAttendanceRecords.hasRecord(crew, date);
@@ -27,7 +27,7 @@ class CrewAttendanceRecordsTest {
     @Test
     @DisplayName("수정하려는 크루의 닉네임, 날짜, 시간을 입력 받아서 출석 기록을 갱신한다.")
     void updateAttendanceRecordTest() {
-        CrewAttendanceRecords crewAttendanceRecords = new CrewAttendanceRecords(new CsvParsingGenerator(), () -> LocalDate.of(2024, 12, 13));
+        CrewAttendanceRecords crewAttendanceRecords = new CrewAttendanceRecords(new CsvParsingGenerator(), LocalDate.of(2024, 12, 13));
         Crew crew = new Crew("빙티");
         LocalDate date = LocalDate.of(2024, 12, 3);
         LocalTime time = LocalTime.of(9, 58);
@@ -42,7 +42,7 @@ class CrewAttendanceRecordsTest {
     @Test
     @DisplayName("기록이 없는 닉네임의 출석 기록을 가져오려 하면 예외가 발생한다.")
     void getRecordAtDateExceptionTest() {
-        CrewAttendanceRecords crewAttendanceRecords = new CrewAttendanceRecords(new CsvParsingGenerator(), () -> LocalDate.of(2024, 12, 13));
+        CrewAttendanceRecords crewAttendanceRecords = new CrewAttendanceRecords(new CsvParsingGenerator(), LocalDate.of(2024, 12, 13));
         Crew crew = new Crew("포비");
         LocalDate date = LocalDate.of(2024, 12, 3);
 
@@ -54,7 +54,7 @@ class CrewAttendanceRecordsTest {
     @Test
     @DisplayName("입력 받은 크루의 총 출석 횟수를 반환한다.")
     void getPresentCountTest() {
-        CrewAttendanceRecords crewAttendanceRecords = new CrewAttendanceRecords(new CsvParsingGenerator(), () -> LocalDate.of(2024, 12, 13));
+        CrewAttendanceRecords crewAttendanceRecords = new CrewAttendanceRecords(new CsvParsingGenerator(), LocalDate.of(2024, 12, 13));
         Crew crew = new Crew("빙티");
         assertThat(crewAttendanceRecords.getAttendanceCount(crew, Attendance.PRESENT)).isEqualTo(3);
     }
@@ -62,7 +62,7 @@ class CrewAttendanceRecordsTest {
     @Test
     @DisplayName("입력 받은 크루의 총 지각 횟수를 반환한다.")
     void getTardyCountTest() {
-        CrewAttendanceRecords crewAttendanceRecords = new CrewAttendanceRecords(new CsvParsingGenerator(), () -> LocalDate.of(2024, 12, 13));
+        CrewAttendanceRecords crewAttendanceRecords = new CrewAttendanceRecords(new CsvParsingGenerator(), LocalDate.of(2024, 12, 13));
         Crew crew = new Crew("빙티");
         assertThat(crewAttendanceRecords.getAttendanceCount(crew, Attendance.TARDY)).isEqualTo(4);
     }
@@ -70,7 +70,7 @@ class CrewAttendanceRecordsTest {
     @Test
     @DisplayName("입력 받은 크루의 총 결석 횟수를 반환한다.")
     void getAbsentCountTest() {
-        CrewAttendanceRecords crewAttendanceRecords = new CrewAttendanceRecords(new CsvParsingGenerator(), () -> LocalDate.of(2024, 12, 13));
+        CrewAttendanceRecords crewAttendanceRecords = new CrewAttendanceRecords(new CsvParsingGenerator(), LocalDate.of(2024, 12, 13));
         Crew crew = new Crew("빙티");
         assertThat(crewAttendanceRecords.getAttendanceCount(crew, Attendance.ABSENT)).isEqualTo(3);
     }
@@ -78,7 +78,7 @@ class CrewAttendanceRecordsTest {
     @Test
     @DisplayName("출석 횟수 기록을 확인할 때 기록이 없는 닉네임을 입력하면 예외가 발생한다.")
     void getAttendanceCountExceptionTest() {
-        CrewAttendanceRecords crewAttendanceRecords = new CrewAttendanceRecords(new CsvParsingGenerator(), () -> LocalDate.of(2024, 12, 13));
+        CrewAttendanceRecords crewAttendanceRecords = new CrewAttendanceRecords(new CsvParsingGenerator(), LocalDate.of(2024, 12, 13));
         Crew crew = new Crew("포비");
         assertAll(
                 () -> assertThatThrownBy(() -> crewAttendanceRecords.getAttendanceCount(crew, Attendance.PRESENT)).isInstanceOf(IllegalArgumentException.class).hasMessage("[ERROR] 등록되지 않은 닉네임입니다.\n"),
@@ -90,10 +90,10 @@ class CrewAttendanceRecordsTest {
     @Test
     @DisplayName("닉네임과 등교 시간을 입력하면 출석할 수 있다.")
     void checkInTest() {
-        CrewAttendanceRecords crewAttendanceRecords = new CrewAttendanceRecords(new CsvParsingGenerator(), () -> LocalDate.of(2024, 12, 13));
+        CrewAttendanceRecords crewAttendanceRecords = new CrewAttendanceRecords(new CsvParsingGenerator(), LocalDate.of(2024, 12, 13));
         Crew crew = new Crew("짱수");
         LocalTime time = LocalTime.of(10, 0);
-        AttendanceRecord attendanceRecord = crewAttendanceRecords.checkIn(crew, time, () -> LocalDate.of(2024, 12, 13));
+        AttendanceRecord attendanceRecord = crewAttendanceRecords.checkIn(crew, time, LocalDate.of(2024, 12, 13));
 
         assertAll(
                 () -> assertThat(attendanceRecord).isEqualTo(AttendanceRecord.parse("2024-12-13 10:00")),
@@ -104,10 +104,10 @@ class CrewAttendanceRecordsTest {
     @Test
     @DisplayName("출석할 때 기록이 없는 닉네임을 입력하면 예외가 발생한다.")
     void checkInExceptionTest() {
-        CrewAttendanceRecords crewAttendanceRecords = new CrewAttendanceRecords(new CsvParsingGenerator(), () -> LocalDate.of(2024, 12, 13));
+        CrewAttendanceRecords crewAttendanceRecords = new CrewAttendanceRecords(new CsvParsingGenerator(), LocalDate.of(2024, 12, 13));
         Crew crew = new Crew("포비");
         LocalTime time = LocalTime.of(10, 0);
-        assertThatThrownBy(() -> crewAttendanceRecords.checkIn(crew, time, () -> LocalDate.of(2024, 12, 13)))
+        assertThatThrownBy(() -> crewAttendanceRecords.checkIn(crew, time, LocalDate.of(2024, 12, 13)))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("[ERROR] 등록되지 않은 닉네임입니다.\n");
     }
@@ -115,10 +115,10 @@ class CrewAttendanceRecordsTest {
     @Test
     @DisplayName("이미 출석을 하였는데 다시 출석 확인을 하는 경우 예외를 발생시킨다.")
     void validatePresenceTest() {
-        CrewAttendanceRecords crewAttendanceRecords = new CrewAttendanceRecords(new CsvParsingGenerator(), () -> LocalDate.of(2024, 12, 13));
+        CrewAttendanceRecords crewAttendanceRecords = new CrewAttendanceRecords(new CsvParsingGenerator(), LocalDate.of(2024, 12, 13));
         Crew crew = new Crew("쿠키");
         LocalTime time = LocalTime.of(10, 0);
-        assertThatThrownBy(() -> crewAttendanceRecords.checkIn(crew, time, () -> LocalDate.of(2024, 12, 13)))
+        assertThatThrownBy(() -> crewAttendanceRecords.checkIn(crew, time, LocalDate.of(2024, 12, 13)))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("[ERROR] 이미 출석을 확인하였습니다. 필요한 경우 수정 기능을 이용해 주세요.\n");
     }
@@ -128,7 +128,7 @@ class CrewAttendanceRecordsTest {
     void getWarnedCrewsTest() {
         class TestCrewAttendanceRecordsGenerator implements CrewAttendanceRecordsGenerator {
             @Override
-            public Map<Crew, AttendanceRecords> generate(DateGenerator dateGenerator) {
+            public Map<Crew, AttendanceRecords> generate(LocalDate currentDate) {
                 Crew crew1 = new Crew("포비");
                 AttendanceRecords crew1Records = new AttendanceRecords();
                 crew1Records.addRecord(AttendanceRecord.parse("2024-12-02 13:00"));
@@ -160,7 +160,7 @@ class CrewAttendanceRecordsTest {
             }
         }
 
-        CrewAttendanceRecords crewAttendanceRecords = new CrewAttendanceRecords(new TestCrewAttendanceRecordsGenerator(), () -> LocalDate.of(2024, 12, 14));
+        CrewAttendanceRecords crewAttendanceRecords = new CrewAttendanceRecords(new TestCrewAttendanceRecordsGenerator(), LocalDate.of(2024, 12, 14));
         List<Crew> actualCrews = crewAttendanceRecords.getWarnedCrews();
         List<Crew> expectedCrews = List.of(new Crew("네오"), new Crew("솔라"), new Crew("포비"));
 
