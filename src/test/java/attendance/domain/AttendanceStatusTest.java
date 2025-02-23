@@ -7,9 +7,9 @@ import java.time.LocalDateTime;
 import java.util.EnumMap;
 import java.util.List;
 
-import static attendance.domain.AttendanceStatusType.ATTENDANCE;
-import static attendance.domain.AttendanceStatusType.EXPULSION;
-import static attendance.domain.AttendanceStatusType.LATE;
+import static attendance.domain.AttendanceStateType.ATTENDANCE;
+import static attendance.domain.AttendanceStateType.EXPULSION;
+import static attendance.domain.AttendanceStateType.LATE;
 
 class AttendanceStatusTest {
 
@@ -24,7 +24,7 @@ class AttendanceStatusTest {
 
         // when
         AttendanceStatus attendanceStatus = new AttendanceStatus(attendances);
-        EnumMap<AttendanceStatusType, Integer> result = attendanceStatus.getStatus();
+        EnumMap<AttendanceStateType, Integer> result = attendanceStatus.getStatus();
 
         // then
         Assertions.assertThat(result.get(EXPULSION)).isEqualTo(1);

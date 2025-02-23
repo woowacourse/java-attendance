@@ -3,17 +3,17 @@ package attendance.domain;
 import java.util.Arrays;
 import java.util.EnumMap;
 
-import static attendance.domain.AttendanceStatusType.EXPULSION;
-import static attendance.domain.AttendanceStatusType.LATE;
-import static attendance.domain.AttendanceStatusType.values;
+import static attendance.domain.AttendanceStateType.EXPULSION;
+import static attendance.domain.AttendanceStateType.LATE;
+import static attendance.domain.AttendanceStateType.values;
 
 public class AttendanceStatus {
 
-    private final EnumMap<AttendanceStatusType, Integer> status;
+    private final EnumMap<AttendanceStateType, Integer> status;
     private final AttendanceWarningType warningType;
 
     public AttendanceStatus(final Attendances attendances) {
-        status = new EnumMap<>(AttendanceStatusType.class);
+        status = new EnumMap<>(AttendanceStateType.class);
 
         Arrays.stream(values())
                 .forEach(statusType -> {
@@ -31,7 +31,7 @@ public class AttendanceStatus {
         return new AttendanceStatus(attendances);
     }
 
-    public EnumMap<AttendanceStatusType, Integer> getStatus() {
+    public EnumMap<AttendanceStateType, Integer> getStatus() {
         return status;
     }
 

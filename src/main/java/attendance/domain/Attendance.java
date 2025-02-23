@@ -9,11 +9,11 @@ import java.time.LocalTime;
 public class Attendance {
 
     private final LocalDateTime dateTime;
-    private final AttendanceStatusType status;
+    private final AttendanceStateType status;
 
     public Attendance(LocalDateTime dateTime) {
         this.dateTime = dateTime;
-        this.status = AttendanceStatusType.find(EducationTime.calculateOverTime(dateTime));
+        this.status = AttendanceStateType.find(EducationTime.calculateOverTime(dateTime));
     }
 
     public boolean isEqualDate(LocalDate date) {
@@ -24,7 +24,7 @@ public class Attendance {
         return !dateTime.toLocalTime().equals(LocalTime.MAX);
     }
 
-    public boolean isEqualsStatus(AttendanceStatusType status) {
+    public boolean isEqualsStatus(AttendanceStateType status) {
         return this.status == status;
     }
 
@@ -40,7 +40,7 @@ public class Attendance {
         return dateTime;
     }
 
-    public AttendanceStatusType getStatus() {
+    public AttendanceStateType getStatus() {
         return status;
     }
 

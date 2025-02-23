@@ -22,7 +22,7 @@ class AttendancesTest {
 
         // than
         assertThat(result.getDateTime()).isEqualTo(dateTime);
-        assertThat(result.getStatus()).isEqualTo(AttendanceStatusType.ATTENDANCE);
+        assertThat(result.getStatus()).isEqualTo(AttendanceStateType.ATTENDANCE);
     }
 
     @DisplayName("해당 날짜의 출석을 찾을 수 있다.")

@@ -40,9 +40,9 @@ public class Attendances {
     }
 
     public AttendanceGroupByStatus createCountUntilYesterday(LocalDate date) {
-        int expulsion = calculateStatusUntilYesterday(AttendanceStatusType.EXPULSION, date);
-        int late = calculateStatusUntilYesterday(AttendanceStatusType.LATE, date);
-        int attendance = calculateStatusUntilYesterday(AttendanceStatusType.ATTENDANCE, date);
+        int expulsion = calculateStatusUntilYesterday(AttendanceStateType.EXPULSION, date);
+        int late = calculateStatusUntilYesterday(AttendanceStateType.LATE, date);
+        int attendance = calculateStatusUntilYesterday(AttendanceStateType.ATTENDANCE, date);
         AttendanceWarningType warning = AttendanceWarningType.find(expulsion, late);
 
         return new AttendanceGroupByStatus(
@@ -63,13 +63,13 @@ public class Attendances {
         }
     }
 
-    public int calculateStatusUntilYesterday(AttendanceStatusType status) {
+    public int calculateStatusUntilYesterday(AttendanceStateType status) {
         return (int) attendances.stream()
                 .filter(attendance -> attendance.isEqualsStatus(status))
                 .count();
     }
 
-    private int calculateStatusUntilYesterday(AttendanceStatusType status, LocalDate date) {
+    private int calculateStatusUntilYesterday(AttendanceStateType status, LocalDate date) {
         return (int) attendances.stream()
                 .filter(attendance -> attendance.isBefore(date))
                 .filter(attendance -> attendance.isEqualsStatus(status))

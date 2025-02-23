@@ -14,6 +14,9 @@ import java.time.LocalTime;
 import java.util.List;
 import java.util.stream.Stream;
 
+import static attendance.domain.AttendanceStateType.ATTENDANCE;
+import static attendance.domain.AttendanceStateType.EXPULSION;
+import static attendance.domain.AttendanceStateType.LATE;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 
@@ -40,12 +43,12 @@ class AttendanceManagerTest {
 
         // then
         Assertions.assertThat(attendanceManager.findCrewAttendance(name).size())
-                .isEqualTo(22);
+                .isEqualTo(4);
     }
 
     @ParameterizedTest(name = "출석 시간: {0} | 출석 상황 결과 : {1}")
     @MethodSource
-    void 크루의_출석_데이터로_출석_체크한다(LocalTime time, AttendanceStatusType expected) {
+    void 크루의_출석_데이터로_출석_체크한다(LocalTime time, AttendanceStateType expected) {
         // given
         String nickname = "이든";
         attendanceManager.addCrew(nickname);
@@ -74,7 +77,7 @@ class AttendanceManagerTest {
 
         // then
         assertThat(result.getLast().getDateTime()).isEqualTo(updateDateTime);
-        assertThat(result.getLast().getStatus()).isEqualTo(AttendanceStatusType.ATTENDANCE);
+        assertThat(result.getLast().getStatus()).isEqualTo(ATTENDANCE);
     }
 
     @Test
@@ -98,7 +101,7 @@ class AttendanceManagerTest {
         attendanceManager.addCrew(nickname);
 
         // when
-        List<Attendance> attendances = attendanceManager.processAttendanceSearch(nickname);
+        List<Attendance> attendances = attendanceManager.getAttendanceRecord(nickname);
 
         // then
         assertThat(attendances.size())
@@ -115,9 +118,8 @@ class AttendanceManagerTest {
         AttendanceStatus result = attendanceManager.getAttendanceStatus(nickname);
 
         // then
-        assertThat(result.getExpulsion()).isEqualTo(3);
-        assertThat(result.getLate()).isEqualTo(0);
-        assertThat(result.getAttendance()).isEqualTo(0);
+        assertThat(result.getStatus().size()).isEqualTo(3);
+        assertThat(result.getWarningType()).isEqualTo(AttendanceWarningType.COUNSELING);
     }
 
     @Test
@@ -133,9 +135,9 @@ class AttendanceManagerTest {
 
     static Stream<Arguments> 크루의_출석_데이터로_출석_체크한다() {
         return Stream.of(
-                Arguments.of(LocalTime.of(10, 5), AttendanceStatusType.ATTENDANCE),
-                Arguments.of(LocalTime.of(10, 30), AttendanceStatusType.LATE),
-                Arguments.of(LocalTime.MAX, AttendanceStatusType.EXPULSION)
+                Arguments.of(LocalTime.of(10, 5), ATTENDANCE),
+                Arguments.of(LocalTime.of(10, 30), LATE),
+                Arguments.of(LocalTime.MAX, EXPULSION)
         );
     }
 
