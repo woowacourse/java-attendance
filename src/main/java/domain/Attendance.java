@@ -55,43 +55,17 @@ public class Attendance {
             }
         }
 
-        String today = String.format(TODAY_FORMAT, date, updateTime);
-        LocalDateTime todayLocalDateTime = parseToLocalDateTime(today);
-
-        localDateTimes.set(attendanceRecordIndex, todayLocalDateTime);
+        updateRecord(updateTime, date, localDateTimes, attendanceRecordIndex);
 
         return beforeLocalDateTime;
     }
 
     public List<AttendanceResultDto> readRecord(final Crew crew, int todayDay) {
-        List<LocalDateTime> localDateTimes = attendances.get(crew); //해당 크루의 출석 기록
-        localDateTimes.sort(Comparator.comparing((LocalDateTime::getDayOfMonth)));
+        List<LocalDateTime> localDateTimes = attendances.get(crew);
+        sortRecord(localDateTimes);
 
         List<AttendanceResultDto> attendanceResultDtos = new ArrayList<>();
-
-        int idx = 0;
-        for (int dayIndex = 1; dayIndex < todayDay; dayIndex++) {
-            if (Calender.isHolyDay(dayIndex)) {
-                continue;
-            }
-
-            if (idx >= localDateTimes.size()) {
-                checkAbsence(dayIndex, attendanceResultDtos);
-                continue;
-            }
-
-            LocalDateTime localDateTime = localDateTimes.get(idx);
-            int dayOfMonth = localDateTime.getDayOfMonth();
-
-            if (dayIndex == dayOfMonth) {
-                AttendanceState state = AttendanceState.findStateBy(localDateTime.toLocalTime(), dayOfMonth);
-                AttendanceResultDto attendanceResultDto = new AttendanceResultDto(localDateTime, state);
-                attendanceResultDtos.add(attendanceResultDto);
-                idx++;
-                continue;
-            }
-            checkAbsence(dayIndex, attendanceResultDtos);
-        }
+        checkRecord(todayDay, localDateTimes, attendanceResultDtos);
         return attendanceResultDtos;
     }
 
@@ -102,15 +76,9 @@ public class Attendance {
 
             AbsenceHistory absenceHistory = new AbsenceHistory(attendanceResultDtos);
             AbsenceResultDto absenceResultDto = absenceHistory.calculate();
-
             absenceMap.put(crew, absenceResultDto);
         }
-
         return absenceMap;
-    }
-
-    public Map<Crew, List<LocalDateTime>> getAttendances() {
-        return attendances;
     }
 
     private void validateDuplicateSave(final int todayDay, final List<LocalDateTime> localDateTimes) {
@@ -123,6 +91,43 @@ public class Attendance {
         }
     }
 
+    private void updateRecord(final String updateTime, final int date, final List<LocalDateTime> localDateTimes,
+                              final int attendanceRecordIndex) {
+        String today = String.format(TODAY_FORMAT, date, updateTime);
+        LocalDateTime todayLocalDateTime = parseToLocalDateTime(today);
+        localDateTimes.set(attendanceRecordIndex, todayLocalDateTime);
+    }
+
+    private void sortRecord(final List<LocalDateTime> localDateTimes) {
+        localDateTimes.sort(Comparator.comparing((LocalDateTime::getDayOfMonth)));
+    }
+
+    private void checkRecord(final int todayDay, final List<LocalDateTime> localDateTimes,
+                             final List<AttendanceResultDto> attendanceResultDtos) {
+        int idx = 0;
+        for (int dayIndex = 1; dayIndex < todayDay; dayIndex++) {
+            if (Calender.isHolyDay(dayIndex)) {
+                continue;
+            }
+            if (hasRecord(idx, localDateTimes, dayIndex)) {
+                LocalDateTime localDateTime = localDateTimes.get(idx++);
+                insertRecord(localDateTime, dayIndex, attendanceResultDtos);
+                continue;
+            }
+            checkAbsence(dayIndex, attendanceResultDtos);
+        }
+    }
+
+    private boolean hasRecord(final int idx, final List<LocalDateTime> localDateTimes, final int dayIndex) {
+        return idx < localDateTimes.size() && localDateTimes.get(idx).getDayOfMonth() == dayIndex;
+    }
+
+    private void insertRecord(final LocalDateTime localDateTime, final int dayIndex,
+                              final List<AttendanceResultDto> attendanceResultDtos) {
+        AttendanceState state = AttendanceState.findStateBy(localDateTime.toLocalTime(), dayIndex);
+        attendanceResultDtos.add(new AttendanceResultDto(localDateTime, state));
+    }
+
     private void checkAbsence(final int dayIndex, final List<AttendanceResultDto> attendanceResultDtos) {
         AttendanceState state = AttendanceState.ABSENCE;
         LocalDateTime newLocalDateTime = LocalDateTime.of(2024, 12, dayIndex, 0, 0);
@@ -132,5 +137,9 @@ public class Attendance {
 
     private LocalDateTime parseToLocalDateTime(final String today) {
         return LocalDateTime.parse(today, DATE_TIME_FORMATTER);
+    }
+
+    public Map<Crew, List<LocalDateTime>> getAttendances() {
+        return attendances;
     }
 }
