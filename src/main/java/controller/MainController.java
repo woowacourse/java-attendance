@@ -23,6 +23,7 @@ public class MainController {
 
     private static final String FILE_PATH = "src/main/resources/attendances.csv";
     private static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("HH:mm");
+    private static final int MONTH = 12;
 
     private LocalDate today;
     private int todayMonth;
@@ -102,7 +103,7 @@ public class MainController {
     private void prepareToday() {
         attendance = FileManager.readFile(FILE_PATH);
         today = LocalDate.now();
-        todayMonth = 12;
+        todayMonth = MONTH;
         todayDay = today.getDayOfMonth();
         todayDayOfWeek = Calender.findBy(todayDay).getDescription();
     }
