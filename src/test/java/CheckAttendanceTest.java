@@ -53,15 +53,15 @@ public class CheckAttendanceTest {
         assertThatThrownBy(
                 () -> attendanceBook.checkAttendance("쿠키", Map.of(LocalDate.of(2024, 12, 25), LocalTime.of(10, 7))))
                 .isInstanceOf(IllegalArgumentException.class) // 공휴일
-                .hasMessage("[ERROR] 12월 25일 공휴일은 등교일이 아닙니다.");
+                .hasMessage(String.format(ErrorCode.HOLIDAY_NOT_WORKING_DAY_FORMAT.getMessage(), 25));
         assertThatThrownBy(
                 () -> attendanceBook.checkAttendance("쿠키", Map.of(LocalDate.of(2024, 12, 1), LocalTime.of(10, 7))))
                 .isInstanceOf(IllegalArgumentException.class) // 일요일
-                .hasMessage("[ERROR] 12월 01일 일요일은 등교일이 아닙니다.");
+                .hasMessage(String.format(ErrorCode.SUNDAY_NOT_WORKING_DAY_FORMAT.getMessage(), 1));
         assertThatThrownBy(
                 () -> attendanceBook.checkAttendance("쿠키", Map.of(LocalDate.of(2024, 12, 7), LocalTime.of(10, 7))))
                 .isInstanceOf(IllegalArgumentException.class) // 토요일
-                .hasMessage("[ERROR] 12월 07일 토요일은 등교일이 아닙니다.");
+                .hasMessage(String.format(ErrorCode.SATURDAY_NOT_WORKING_DAY_FORMAT.getMessage(), 7));
     }
 
     @Test
@@ -74,7 +74,7 @@ public class CheckAttendanceTest {
         assertThatThrownBy(
                 () -> attendanceBook.checkAttendance("우유", Map.of(LocalDate.of(2024, 12, 4), LocalTime.of(10, 7))))
                 .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage("[ERROR] 등록되지 않은 닉네임입니다.");
+                .hasMessage(ErrorCode.NICKNAME_NOT_FOUND.getMessage());
 
     }
 
@@ -88,6 +88,6 @@ public class CheckAttendanceTest {
         assertThatThrownBy(
                 () -> attendanceBook.checkAttendance("쿠키", Map.of(LocalDate.of(2024, 12, 4), LocalTime.of(7, 7))))
                 .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage("[ERROR] 캠퍼스 운영 시간은 08:00~23:00 입니다.");
+                .hasMessage(ErrorCode.TIME_NOT_IN_OPERATION_HOUR.getMessage());
     }
 }
