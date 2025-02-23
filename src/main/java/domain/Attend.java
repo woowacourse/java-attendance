@@ -18,7 +18,7 @@ public class Attend {
     }
 
     public static Attend fromDay(final int day) {
-        validateDay(day);
+        OperationTime.validateDay(day);
         return new Attend(LocalDate.of(2024, 12, day), null);
     }
 
@@ -28,13 +28,6 @@ public class Attend {
 
     public static Attend of(final LocalDate day, final LocalTime time) {
         return new Attend(day, time);
-    }
-
-    private static void validateDay(int day) {
-        int lengthOfMonth = Current.TODAY.getLengthOfMonth();
-        if (day < 1 || day > lengthOfMonth) {
-            throw new IllegalArgumentException(String.format("day는 1 이상 %d 이하여야 함", lengthOfMonth));
-        }
     }
 
     private void validateDateIsNotNull(LocalDate date) {

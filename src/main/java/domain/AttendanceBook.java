@@ -1,6 +1,5 @@
 package domain;
 
-import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -8,10 +7,6 @@ import java.util.List;
 import java.util.Map;
 
 public class AttendanceBook {
-    private static final LocalTime START_TIME = LocalTime.of(8, 0);
-    private static final LocalTime LATE_TIME = LocalTime.of(10, 5);
-    private static final LocalTime ABSENCE_TIME = LocalTime.of(10, 30);
-    private static final LocalTime END_TIME = LocalTime.of(23, 0);
 
     private final Map<String, Attends> attendsPerCrew;
 
@@ -25,16 +20,16 @@ public class AttendanceBook {
 
     public void attend(String name, Attend attend) {
         validateIsNameExist(name);
-        validateAttendableDay(attend);
-        validateAttendableTime(attend);
+        OperationTime.validateAttendableDay(attend);
+        OperationTime.validateAttendableTime(attend);
         Attends attends = attendsPerCrew.get(name);
         attends.addAttend(attend);
     }
 
     public void edit(String name, Attend attend) {
         validateIsNameExist(name);
-        validateAttendableDay(attend);
-        validateAttendableTime(attend);
+        OperationTime.validateAttendableDay(attend);
+        OperationTime.validateAttendableTime(attend);
         Attends attends = attendsPerCrew.get(name);
         attends.edit(attend);
     }
@@ -57,23 +52,10 @@ public class AttendanceBook {
         }
     }
 
-    private void validateAttendableDay(Attend attend) {
-        if (attend.isDayOff()) {
-            throw new IllegalArgumentException("쉬는날은 출석할 수 없음");
-        }
-    }
-
-    private void validateAttendableTime(Attend attend) {
-        if (attend.isTimeOff(START_TIME, END_TIME)) {
-            throw new IllegalArgumentException("운영 시간 외에는 출석할 수 없음");
-        }
-    }
-
     public Attend findByNameAndDay(String name, int day) {
         Attends attends = attendsPerCrew.get(name);
         return attends.findByDay(day);
     }
-
 
     public List<WarningCrew> checkWarningCrews(List<Integer> days) {
         List<WarningCrew> result = new ArrayList<>();
@@ -97,9 +79,10 @@ public class AttendanceBook {
 
     public AttendStatus checkAttendance(Attend attend) {
         return Arrays.stream(AttendStatus.values())
-                .filter(attendStatus -> attendStatus.match(attend, LATE_TIME, ABSENCE_TIME))
+                .filter(attendStatus -> attendStatus.match(attend, OperationTime.LATE_TIME.getTime(),
+                        OperationTime.ABSENCE_TIME.getTime()))
                 .findAny()
-                .orElseThrow(IllegalArgumentException::new);
+                .orElseThrow(() -> new IllegalArgumentException("출석 상태 판정 실패"));
     }
 
     private AttendanceResult getAttendanceResult(Attends attends, int day) {
