@@ -22,7 +22,5 @@ public class DisenrollmentCheckController implements Controller{
     public void run() {
         List<DisenrollmentCheckResponse> responses = disenrollmentCheckService.getDisenrollmentCheckResult();
         outputView.printDisenrollmentCheckResult(responses);
-
-
     }
 }
