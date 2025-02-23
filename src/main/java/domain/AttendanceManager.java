@@ -1,5 +1,6 @@
 package domain;
 
+import static util.constant.ErrorMessage.NOT_ATTEND_ERROR_MESSAGE;
 import static util.constant.ErrorMessage.NOT_CREW_ERROR_MESSAGE;
 import static util.constant.ErrorMessage.DUPLICATE_ATTEND_ERROR_MESSAGE;
 import static util.constant.ErrorMessage.NOT_OPERATING_TIME_ERROR_MESSAGE;
@@ -38,12 +39,9 @@ public class AttendanceManager {
     }
 
     public TimeAndStatus editCrew(String name, LocalDateTime newLocalDateTime) {
+        validateEditPossibility(name, newLocalDateTime);
+
         Records records = findByName(name);
-
-        if (!records.isAlreadyAttended(newLocalDateTime.toLocalDate())) {
-            throw new IllegalArgumentException("수정 기능은 출석 후 이용 가능합니다.");
-        }
-
         return records.edit(newLocalDateTime);
     }
 
@@ -66,20 +64,27 @@ public class AttendanceManager {
     }
 
     public Records findByName(String name) {
-        return crews.get(name);
+        try {
+            return crews.get(name);
+        } catch (NullPointerException e) {
+            throw new IllegalArgumentException(NOT_CREW_ERROR_MESSAGE);
+        }
     }
 
     private void validateAttendancePossibility(String name, LocalDateTime dateTime) {
-        if (!crews.containsKey(name)) {
-            throw new IllegalArgumentException(NOT_CREW_ERROR_MESSAGE);
-        }
-
-        Records records = findByName(name);
-        if (records.isAlreadyAttended(dateTime.toLocalDate())) {
+        if (findByName(name).isAlreadyAttended(dateTime.toLocalDate())) {
             throw new IllegalArgumentException(DUPLICATE_ATTEND_ERROR_MESSAGE);
         }
-
         if (!isOperatingTime(dateTime.toLocalTime())) {
+            throw new IllegalArgumentException(NOT_OPERATING_TIME_ERROR_MESSAGE);
+        }
+    }
+
+    private void validateEditPossibility(String name, LocalDateTime newDateTime) {
+        if (!findByName(name).isAlreadyAttended(newDateTime.toLocalDate())) {
+            throw new IllegalArgumentException(NOT_ATTEND_ERROR_MESSAGE);
+        }
+        if (!isOperatingTime(newDateTime.toLocalTime())) {
             throw new IllegalArgumentException(NOT_OPERATING_TIME_ERROR_MESSAGE);
         }
     }
@@ -88,6 +93,6 @@ public class AttendanceManager {
         LocalTime start = DateTimeParser.parseIntegerToTime(CAMPUS_START_HOUR, CAMPUS_START_MINUTE);
         LocalTime end = DateTimeParser.parseIntegerToTime(CAMPUS_END_HOUR, CAMPUS_END_MINUTE);
 
-        return time.isAfter(start) && time.isBefore(end);
+        return (time.isAfter(start) || time.equals(start)) && (time.isBefore(end) || time.equals(end));
     }
 }

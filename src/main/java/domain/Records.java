@@ -27,18 +27,20 @@ public class Records {
 
     public TimeAndStatus attend(LocalDateTime localDateTime) {
         LocalDate localDate = localDateTime.toLocalDate();
-        TimeAndStatus timeAndStatus = createTimeAndStatus(localDateTime);
-        records.put(localDate, timeAndStatus);
+        TimeAndStatus oldStatus = records.get(localDate);
+        TimeAndStatus newStatus = createTimeAndStatus(localDateTime);
 
-        return timeAndStatus;
+        records.put(localDate, newStatus);
+        return oldStatus;
     }
 
     public TimeAndStatus edit(LocalDateTime newDateTime) {
         LocalDate localDate = newDateTime.toLocalDate();
-        TimeAndStatus timeAndStatus = createTimeAndStatus(newDateTime);
-        records.put(localDate, timeAndStatus);
+        TimeAndStatus oldStatus = records.get(localDate);
+        TimeAndStatus newStatus = createTimeAndStatus(newDateTime);
 
-        return timeAndStatus;
+        records.put(localDate, newStatus);
+        return oldStatus;
     }
 
     public boolean isAlreadyAttended(LocalDate localDate) {
