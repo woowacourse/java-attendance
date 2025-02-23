@@ -89,11 +89,8 @@ public class Crew {
     }
 
     private boolean isNowAbsence(LocalDate localDate) {
-        if (!attendanceBook.containsKey(localDate) && Date.isWeekday(localDate)) {
-            return true;
-        }
         if (!attendanceBook.containsKey(localDate)) {
-            return false;
+            return Date.isWeekday(localDate);
         }
         LocalTime localTime = attendanceBook.get(localDate);
         AttendanceStatus attend = AttendanceStatus.attend(assembleDateAndTime(localDate, localTime));
