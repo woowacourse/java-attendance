@@ -28,7 +28,7 @@ public class AttendanceController {
     public void run() {
         LocalDate date = LocalDate.of(2024, 12, 13);
 
-        AttendanceSheetsFactory attendanceSheetsFactory = new AttendanceSheetsFactory(new FileReaderUtil());
+        AttendanceSheetsFactory attendanceSheetsFactory = new AttendanceSheetsFactory(new FileReaderUtil("src/main/resources/attendance.csv"));
         AttendanceSheets attendanceSheets = attendanceSheetsFactory.create();
 
         while (true) {

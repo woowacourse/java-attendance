@@ -6,13 +6,17 @@ import java.io.IOException;
 import java.util.List;
 
 public class FileReaderUtil {
-
-    // TODO 인자로 받아서 생성자에서 사용하도록...
-    private static final String ATTENDANCE_DATA_PATH = "src/main/resources/attendance.csv";
+    
     private static final int HEADER = 1;
 
+    private final String filePath;
+
+    public FileReaderUtil(String filePath) {
+        this.filePath = filePath;
+    }
+
     public List<String> read() {
-        try (BufferedReader reader = new BufferedReader(new FileReader(ATTENDANCE_DATA_PATH))) {
+        try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
 
             return reader.lines()
                     .skip(HEADER)
