@@ -3,7 +3,6 @@ package controller;
 import domain.AttendanceBook;
 import domain.Crew;
 import domain.ErrorCode;
-import util.FileReader;
 import domain.PenaltyStatus;
 import domain.UserInput;
 import dto.AttendanceRecordResponse;
@@ -15,7 +14,9 @@ import java.time.LocalTime;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Supplier;
+import util.FileReader;
 import util.Parser;
+import util.Parser.NameParsedData;
 import view.InputView;
 import view.OutputView;
 
@@ -32,15 +33,14 @@ public class AttendanceController {
 
     public void start() {
         List<String> fileData = fileReader.readFile();
-
         List<String> removedData = Parser.parse(fileData);
-        List<List<String>> seperatedData = Parser.parseName(removedData);
+        List<NameParsedData> seperatedData = Parser.parseName(removedData);
 
         AttendanceBook attendanceBook = new AttendanceBook();
 
-        for (List<String> data : seperatedData) {
-            String name = data.getFirst();
-            Map<LocalDate, LocalTime> dateAndTime = Parser.parseDate(data.getLast());
+        for (NameParsedData data : seperatedData) {
+            String name = data.namePart();
+            Map<LocalDate, LocalTime> dateAndTime = Parser.parseDate(data.dateTimePart());
             attendanceBook.initialize(name, dateAndTime);
         }
 
@@ -64,7 +64,6 @@ public class AttendanceController {
                 if (selection == UserInput.QUIT) {
                     break;
                 }
-
             } catch (IllegalArgumentException e) {
                 outputView.displayErrorMessage(e.getMessage());
             }
@@ -83,11 +82,8 @@ public class AttendanceController {
 
     private void modifyAttendance(AttendanceBook attendanceBook) {
         String name = retryUntilValid(() -> askNameToModify(attendanceBook));
-
         LocalDate modifiedDay = retryUntilValid(() -> askDayToModify(attendanceBook, name));
-
         LocalTime modifiedTime = retryUntilValid(() -> askTimeToModify(attendanceBook));
-
         ModifyAttendanceResponse response = attendanceBook.modifyAttendance(name,
                 Map.of(modifiedDay, modifiedTime));
         outputView.displayModifyAttendanceResult(response);
@@ -117,9 +113,7 @@ public class AttendanceController {
 
     private void checkAttendance(AttendanceBook attendanceBook) {
         String name = retryUntilValid(() -> askNameToCheckAttendance(attendanceBook));
-
         LocalTime parsedTime = retryUntilValid(() -> getTime(attendanceBook));
-
         outputView.displayCheckAttendanceResult(
                 attendanceBook.checkAttendance(name, Map.of(LocalDate.now(), parsedTime)));
     }

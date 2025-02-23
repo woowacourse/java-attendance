@@ -13,17 +13,23 @@ public class Parser {
 
     private static final String DATE_DELIMITER = " ";
     private static final String NAME_DELIMITER = ",";
+    private static final int NAME_PART_INDEX = 0;
+    private static final int DATE_TIME_PART_INDEX = 1;
 
     public static List<String> parse(List<String> loadedData) {
         loadedData.removeFirst();
         return loadedData;
     }
 
-    public static List<List<String>> parseName(List<String> removedData) {
-        List<List<String>> result = new ArrayList<>();
-        for (String data: removedData) {
-            List<String> nameSeperatedData = Arrays.asList(data.split(NAME_DELIMITER));
-            result.add(nameSeperatedData);
+    public static List<NameParsedData> parseName(List<String> removedData) {
+        List<NameParsedData> result = new ArrayList<>();
+        for (String data : removedData) {
+            String[] splitData = data.split(NAME_DELIMITER);
+            result.add(new NameParsedData(
+                            splitData[NAME_PART_INDEX],
+                            splitData[DATE_TIME_PART_INDEX]
+                    )
+            );
         }
         return result;
     }
@@ -37,7 +43,7 @@ public class Parser {
         return Map.of(date, time);
     }
 
-    public static LocalDate parseInputDay(String input){
+    public static LocalDate parseInputDay(String input) {
         try {
             return LocalDate.now().withDayOfMonth(Integer.parseInt(input));
         } catch (DateTimeException | NumberFormatException e) {
@@ -45,11 +51,14 @@ public class Parser {
         }
     }
 
-    public static LocalTime parseInputTime(String input){
+    public static LocalTime parseInputTime(String input) {
         try {
             return LocalTime.parse(input);
         } catch (DateTimeException | NumberFormatException e) {
             throw new IllegalArgumentException(ErrorCode.TIME_INPUT_NOT_VALID.getMessage());
         }
+    }
+
+    public record NameParsedData(String namePart, String dateTimePart) {
     }
 }
