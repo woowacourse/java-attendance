@@ -18,7 +18,7 @@ public class TimePolicyTest {
 
     @ParameterizedTest
     @DisplayName("분의 범위를 벗어나면 예외가 발생한다")
-    @ValueSource(strings = {"60", "-1"})
+    @ValueSource(strings = {"60", "-1", "a"})
     void validateMinuteTest(String minute){
         assertThatThrownBy(() -> TimePolicy.validateMinute(minute))
                 .isInstanceOf(IllegalArgumentException.class);
