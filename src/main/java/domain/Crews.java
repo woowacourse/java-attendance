@@ -60,7 +60,7 @@ public class Crews {
     private Crew getCrew(String username) {
         return crews.stream()
                 .filter(crew -> crew.getUserName().equals(username)).findAny()
-                .orElseThrow(() -> new IllegalArgumentException("[ERROR] 존재하지 않은 크루입니다."));
+                .orElseThrow(() -> new IllegalArgumentException("[ERROR] 존재하지 않은 크루입니다. 존재하는 크루 이름을 입력해주세요"));
     }
 
 }

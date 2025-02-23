@@ -36,7 +36,7 @@ public enum Holiday {
     private static void validateWeekend(LocalDateTime time) {
         if ((time.getDayOfWeek() == SATURDAY) || (time.getDayOfWeek() == SUNDAY)) {
             throw new IllegalArgumentException(
-                    String.format("[ERROR] %s은 등교일이 아닙니다.", Convertor.dateFormattingForInput(time))
+                    String.format("[ERROR] %s은 등교일이 아닙니다. 출석 확인은 등교일에만 가능합니다. ", Convertor.dateFormattingForInput(time))
             );
         }
     }
@@ -46,7 +46,7 @@ public enum Holiday {
                 .anyMatch(holiday -> holiday.month == time.getMonthValue() && holiday.day == time.getDayOfMonth());
         if (isHoliday) {
             throw new IllegalArgumentException(
-                    String.format("[ERROR] %s은 등교일이 아닙니다.", Convertor.dateFormattingForInput(time))
+                    String.format("[ERROR] %s은 등교일이 아닙니다. 출석 확인은 등교일에만 가능합니다.", Convertor.dateFormattingForInput(time))
             );
         }
     }

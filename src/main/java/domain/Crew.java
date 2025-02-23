@@ -17,7 +17,7 @@ public class Crew {
 
     public void validateName(String userName) {
         if (userName.length() >= 5) {
-            throw new IllegalArgumentException("이름은 네 글자 이하여야 합니다.");
+            throw new IllegalArgumentException("[ERROR ]이름은 네 글자 이하여야 합니다. 네 글자 이하로 입력해 주세요.");
         }
     }
 

@@ -51,7 +51,7 @@ public class History implements Comparable<History> {
                 (attendanceTime.isAfter(LocalDateTime.of(attendanceTime.getYear(), attendanceTime.getMonthValue(),
                         attendanceTime.getDayOfMonth(), END_TIME, 0)))
         )) {
-            throw new IllegalArgumentException("[ERROR] 캠퍼스 운영 시간은 08:00~23:00 입니다.");
+            throw new IllegalArgumentException("[ERROR] 캠퍼스 운영 시간은 08:00~23:00 입니다. 해당 시간 내의 시간을 입력해 주세요.");
         }
     }
 }

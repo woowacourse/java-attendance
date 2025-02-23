@@ -42,7 +42,7 @@ public class Histories {
         History findHistory = histories.stream()
                 .filter(history -> (history.getAttendanceTime().getDayOfMonth() == time.getDayOfMonth()) &&
                         (history.getAttendanceTime().getMonthValue() == time.getMonthValue())).findFirst()
-                .orElseThrow(() -> new IllegalArgumentException("[ERROR] 해당 날짜 출석 기록이 없습니다."));
+                .orElseThrow(() -> new IllegalArgumentException("[ERROR] 해당 날짜 출석 기록이 없습니다. 출석 기록이 있는 날짜를 입력해 주세요."));
         histories.remove(findHistory);
     }
 
@@ -79,7 +79,7 @@ public class Histories {
         History findHistory = histories.stream()
                 .filter(history -> (history.getAttendanceTime().getDayOfMonth() == time.getDayOfMonth()) &&
                         (history.getAttendanceTime().getMonthValue() == time.getMonthValue())).findFirst()
-                .orElseThrow(() -> new IllegalArgumentException("[ERROR] 해당 날짜 출석 기록이 없습니다."));
+                .orElseThrow(() -> new IllegalArgumentException("[ERROR] 해당 날짜 출석 기록이 없습니다. 출석 기록이 있는 날짜를 입력해 주세요."));
         return findHistory.getAttendanceResult();
     }
 
@@ -87,7 +87,7 @@ public class Histories {
         History findHistory = histories.stream()
                 .filter(history -> (history.getAttendanceTime().getDayOfMonth() == time.getDayOfMonth()) &&
                         (history.getAttendanceTime().getMonthValue() == time.getMonthValue())).findFirst()
-                .orElseThrow(() -> new IllegalArgumentException("[ERROR] 해당 날짜 출석 기록이 없습니다."));
+                .orElseThrow(() -> new IllegalArgumentException("[ERROR] 해당 날짜 출석 기록이 없습니다. 출석 기록이 있는 날짜를 입력해 주세요."));
         return findHistory.getAttendanceTime();
     }
 
