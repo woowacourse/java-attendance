@@ -29,10 +29,6 @@ public class AttendanceRecord {
         return new AttendanceRecord(date, time);
     }
 
-    public static AttendanceRecord checkIn(LocalTime time, LocalDate today) {
-        return new AttendanceRecord(today, time);
-    }
-
     public static AttendanceRecord asAbsent(LocalDate date) {
         return new AttendanceRecord(date, ABSENT_TIME);
     }

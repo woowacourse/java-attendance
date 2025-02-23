@@ -55,7 +55,7 @@ public class CrewAttendanceRecords {
         validateCrewPresence(crew);
         AttendanceRecords attendanceRecords = crewAttendanceRecords.get(crew);
         validatePresence(attendanceRecords, today);
-        AttendanceRecord attendanceRecord = AttendanceRecord.checkIn(time, today);
+        AttendanceRecord attendanceRecord = AttendanceRecord.of(today, time);
         attendanceRecords.addRecord(attendanceRecord);
         return attendanceRecord;
     }

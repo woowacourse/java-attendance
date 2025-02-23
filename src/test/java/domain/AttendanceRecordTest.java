@@ -27,7 +27,7 @@ class AttendanceRecordTest {
     @Test
     @DisplayName("시간 입력값이 등교일이 아닐 경우 예외를 발생한다.")
     public void validateLocalTimeTest() {
-        assertThatThrownBy(() -> AttendanceRecord.checkIn(LocalTime.of(10, 0), LocalDate.of(2024, 12, 25)))
+        assertThatThrownBy(() -> AttendanceRecord.of(LocalDate.of(2024, 12, 25), LocalTime.of(10, 0)))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("[ERROR] 12월 25일 수요일은 등교일이 아닙니다.");
     }
