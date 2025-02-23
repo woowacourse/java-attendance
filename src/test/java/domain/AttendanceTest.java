@@ -11,7 +11,7 @@ class AttendanceTest {
     void attendancePresentTest() {
         LocalDateTime originalTime = LocalDateTime.of(2024, 12, 2, 13, 0);
         Attendance attendance = new Attendance(originalTime);
-        Assertions.assertSame(attendance.calculateAttendanceStatus(), AttendanceStatus.PRESENT);
+        Assertions.assertSame(AttendanceStatus.PRESENT, attendance.calculateAttendanceStatus());
     }
 
     @DisplayName("출석 시간이 5분 초과, 30분 이하면 지각입니다.")
@@ -19,7 +19,7 @@ class AttendanceTest {
     void attendanceLateTest() {
         LocalDateTime originalTime = LocalDateTime.of(2024, 12, 2, 13, 6);
         Attendance attendance = new Attendance(originalTime);
-        Assertions.assertSame(attendance.calculateAttendanceStatus(), AttendanceStatus.LATE);
+        Assertions.assertSame(AttendanceStatus.LATE, attendance.calculateAttendanceStatus());
     }
 
     @DisplayName("출석 시간이 30분 초과면 결석입니다.")
@@ -27,7 +27,7 @@ class AttendanceTest {
     void attendanceAbsentTest() {
         LocalDateTime originalTime = LocalDateTime.of(2024, 12, 2, 13, 31);
         Attendance attendance = new Attendance(originalTime);
-        Assertions.assertSame(attendance.calculateAttendanceStatus(), AttendanceStatus.ABSENT);
+        Assertions.assertSame(AttendanceStatus.ABSENT, attendance.calculateAttendanceStatus());
     }
 
     @DisplayName("날짜가 일치하면 true를 반환합니다.")

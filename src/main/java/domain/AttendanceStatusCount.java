@@ -7,7 +7,7 @@ public class AttendanceStatusCount {
     public static final int LATE_TO_ABSENT_THRESHOLD = 3;
     private final Map<AttendanceStatus, Integer> statuses = initStatuses();
 
-    public void updateStatus(Attendance attendance) {
+    public void addStatus(Attendance attendance) {
         AttendanceStatus status = attendance.calculateAttendanceStatus();
         statuses.put(status, statuses.get(status) + 1);
     }

@@ -62,14 +62,14 @@ public class Crew {
         Attendance targetAttendance = getSpecificAttendance(date);
         attendanceStatusCount.deleteStatus(targetAttendance);
         targetAttendance.updateAttendance(time);
-        attendanceStatusCount.updateStatus(targetAttendance);
+        attendanceStatusCount.addStatus(targetAttendance);
 
         return targetAttendance;
     }
 
     public void saveAttendanceCount() {
         for (Attendance attendance : attendances) {
-            attendanceStatusCount.updateStatus(attendance);
+            attendanceStatusCount.addStatus(attendance);
         }
     }
 

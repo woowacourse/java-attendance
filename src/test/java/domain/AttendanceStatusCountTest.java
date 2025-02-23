@@ -19,18 +19,18 @@ class AttendanceStatusCountTest {
         Attendance attendance4 = new Attendance(LocalDateTime.of(2024, 12, 5, 10, 20));
         Attendance attendance5 = new Attendance(LocalDateTime.of(2024, 12, 6, 12, 0));
 
-        attendanceStatusCount.updateStatus(attendance1);
-        attendanceStatusCount.updateStatus(attendance2);
-        attendanceStatusCount.updateStatus(attendance3);
-        attendanceStatusCount.updateStatus(attendance4);
-        attendanceStatusCount.updateStatus(attendance5);
+        attendanceStatusCount.addStatus(attendance1);
+        attendanceStatusCount.addStatus(attendance2);
+        attendanceStatusCount.addStatus(attendance3);
+        attendanceStatusCount.addStatus(attendance4);
+        attendanceStatusCount.addStatus(attendance5);
     }
 
     @DisplayName("출석에 따른 상태 횟수를 업데이트합니다.")
     @Test
     void test1() {
         Attendance attendanceLate = new Attendance(LocalDateTime.of(2024, 12, 9, 13, 6));
-        attendanceStatusCount.updateStatus(attendanceLate);
+        attendanceStatusCount.addStatus(attendanceLate);
 
         Map<AttendanceStatus, Integer> statuses = attendanceStatusCount.getStatuses();
         Assertions.assertEquals(2, statuses.get(AttendanceStatus.LATE));

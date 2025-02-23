@@ -1,5 +1,6 @@
 package controller;
 
+import static domain.MenuOption.CHANGE_ATTENDANCE;
 import static domain.MenuOption.CHECK_ATTENDANCE;
 import static domain.MenuOption.SHOW_ALERT_CREW;
 import static domain.MenuOption.SHOW_CREW_ATTENDANCES;
@@ -17,11 +18,11 @@ import service.CrewLoader;
 import util.DateValidator;
 import view.InputView;
 import view.OutputView;
-import view.dto.AlertCrewDTO;
-import view.dto.AlertCrewsDTO;
-import view.dto.AttendanceLogDTO;
-import view.dto.ChangeAttendanceLogDTO;
-import view.dto.CrewAttendancesDTO;
+import view.dto.AlertCrewDto;
+import view.dto.AlertCrewsDto;
+import view.dto.AttendanceLogDto;
+import view.dto.ChangeAttendanceLogDto;
+import view.dto.CrewAttendancesDto;
 
 public class Controller {
     private final InputView inputView;
@@ -59,7 +60,7 @@ public class Controller {
         if (menuOption.equals(CHECK_ATTENDANCE)) {
             attendanceCheck(crewGroup, today);
         }
-        if (menuOption.equals(CHECK_ATTENDANCE)) {
+        if (menuOption.equals(CHANGE_ATTENDANCE)) {
             changeAttendance(crewGroup, today);
         }
         if (menuOption.equals(SHOW_CREW_ATTENDANCES)) {
@@ -76,7 +77,7 @@ public class Controller {
         String rawName = inputView.insertNickname();
         Crew crew = crewGroup.searchCrew(rawName);
         if (crew.isAlreadyChecked(today)) {
-            outputView.printGuide();
+            outputView.printAlreadyCheckedGuide();
             return;
         }
 
@@ -86,7 +87,7 @@ public class Controller {
                 LocalDateTime.of(today.getYear(), today.getMonth(), today.getDayOfMonth(),
                         time.getHour(), time.getMinute()));
 
-        outputView.printAttendanceLog(AttendanceLogDTO.from(attendance));
+        outputView.printAttendanceLog(AttendanceLogDto.from(attendance));
     }
 
     private void changeAttendance(CrewGroup crewGroup, LocalDateTime today) {
@@ -102,25 +103,25 @@ public class Controller {
         Attendance originalAttendanceCopy = new Attendance(crew.getSpecificAttendance(date).getDate());
         Attendance changedAttendance = crew.changeAttendance(date, time);
 
-        outputView.printChangeLog(ChangeAttendanceLogDTO.from(originalAttendanceCopy, changedAttendance));
+        outputView.printChangeLog(ChangeAttendanceLogDto.from(originalAttendanceCopy, changedAttendance));
     }
 
     private void showCrewAttendance(CrewGroup crewGroup) {
         String rawName = inputView.insertNickname();
         Crew crew = crewGroup.searchCrew(rawName);
 
-        CrewAttendancesDTO crewAttendancesDTO = CrewAttendancesDTO.from(crew);
+        CrewAttendancesDto crewAttendancesDTO = CrewAttendancesDto.from(crew);
 
         outputView.printAttendancesLog(crewAttendancesDTO);
     }
 
     private void showAlertCrews(CrewGroup crewGroup) {
-        List<AlertCrewDTO> alertCrewDTDs = crewGroup.getAllAttendanceAlertLevel()
+        List<AlertCrewDto> alertCrewDTDs = crewGroup.getAllAttendanceAlertLevel()
                 .stream()
-                .map(AlertCrewDTO::from)
+                .map(AlertCrewDto::from)
                 .toList();
 
-        AlertCrewsDTO alertCrewsDTO = AlertCrewsDTO.from(alertCrewDTDs);
+        AlertCrewsDto alertCrewsDTO = AlertCrewsDto.from(alertCrewDTDs);
 
         outputView.printAlertCrews(alertCrewsDTO);
     }

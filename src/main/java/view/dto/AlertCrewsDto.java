@@ -4,29 +4,29 @@ import domain.AttendanceAlertLevel;
 import java.util.ArrayList;
 import java.util.List;
 
-public record AlertCrewsDTO(
-        List<AlertCrewDTO> alertCrews
+public record AlertCrewsDto(
+        List<AlertCrewDto> alertCrews
 ) {
-    public static AlertCrewsDTO from(List<AlertCrewDTO> alertCrews) {
-        List<AlertCrewDTO> dismissedCrews = alertCrews.stream()
+    public static AlertCrewsDto from(List<AlertCrewDto> alertCrews) {
+        List<AlertCrewDto> dismissedCrews = alertCrews.stream()
                 .filter(crew -> crew.AlertLevel().equals(AttendanceAlertLevel.DISMISSED.getName()))
                 .sorted()
                 .toList();
 
-        List<AlertCrewDTO> counselCrews = alertCrews.stream()
+        List<AlertCrewDto> counselCrews = alertCrews.stream()
                 .filter(crew -> crew.AlertLevel().equals(AttendanceAlertLevel.COUNSEL_REQUIRED.getName()))
                 .sorted()
                 .toList();
 
-        List<AlertCrewDTO> cautionCrews = alertCrews.stream()
+        List<AlertCrewDto> cautionCrews = alertCrews.stream()
                 .filter(crew -> crew.AlertLevel().equals(AttendanceAlertLevel.CAUTION.getName()))
                 .sorted()
                 .toList();
 
-        List<AlertCrewDTO> result = new ArrayList<>();
+        List<AlertCrewDto> result = new ArrayList<>();
         result.addAll(dismissedCrews);
         result.addAll(counselCrews);
         result.addAll(cautionCrews);
-        return new AlertCrewsDTO(result);
+        return new AlertCrewsDto(result);
     }
 }

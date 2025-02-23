@@ -8,8 +8,8 @@ public enum AttendanceStatus {
     LATE(5, 30, "지각"),
     ABSENT(30, 0, "결석");
 
-    private static final int MONDAY_START_HOUR = 10;
-    private static final int REST_DAY_START_HOUR = 13;
+    private static final int MONDAY_START_HOUR = 13;
+    private static final int REST_DAY_START_HOUR = 10;
     private static final int ABSENT_LIMIT_MINUTE = 30;
     private static final int LATE_LIMIT_MINUTE = 5;
     private static final int MONDAY = 1;
@@ -38,10 +38,10 @@ public enum AttendanceStatus {
 
     private static LocalDateTime calculateStartTime(LocalDateTime date, int dayOfWeek) {
         if (dayOfWeek == MONDAY) {
-            return LocalDateTime.of(date.getYear(), date.getMonth(), date.getDayOfMonth(), REST_DAY_START_HOUR, 0);
+            return LocalDateTime.of(date.getYear(), date.getMonth(), date.getDayOfMonth(), MONDAY_START_HOUR, 0);
         }
         return LocalDateTime.of(date.getYear(), date.getMonth(), date.getDayOfMonth(),
-                MONDAY_START_HOUR, 0);
+                REST_DAY_START_HOUR, 0);
     }
 
     public String getName() {
