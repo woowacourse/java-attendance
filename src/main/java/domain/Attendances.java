@@ -15,8 +15,7 @@ public class Attendances {
         this.attendances = attendances;
     }
 
-    // TODO:: 로직 더 공부하기
-    public attendanceStatusCounts calculateAttendanceCount() {
+    public AttendanceStatusCounts calculateAttendanceCount() {
         Map<AttendanceStatus, Long> counts = attendances.stream()
                 .collect(Collectors.groupingBy(
                         Attendance::getAttendanceStatus,
@@ -27,7 +26,7 @@ public class Attendances {
         final long tardinessCount = counts.getOrDefault(AttendanceStatus.TARDINESS, 0L);
         final long absenceCount = counts.getOrDefault(AttendanceStatus.ABSENCE, 0L);
 
-        return new attendanceStatusCounts((int) attendanceCount, (int) tardinessCount, (int) absenceCount);
+        return new AttendanceStatusCounts((int) attendanceCount, (int) tardinessCount, (int) absenceCount);
     }
 
     public boolean isAttended(final LocalDateTime dateTime) {
