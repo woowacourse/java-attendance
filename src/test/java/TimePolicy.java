@@ -11,7 +11,11 @@ public class TimePolicy {
     private static final String TIME_SEPARATOR = ":";
     private static final int TIME_FORMAT_LENGTH = 2;
 
+    private static final LocalTime OPERATING_START_TIME = LocalTime.of(8, 0);
+    private static final LocalTime OPERATING_END_TIME = LocalTime.of(23, 0);
+
     private static final String TIME_FORMAT_ERROR = "[ERROR] 시간 입력 형식이 잘못되었습니다";
+    private static final String OPERATING_TIME_ERROR = "[ERROR] 캠퍼스 운영 시간이 아닙니다";
 
     public static int validateHour(String hour){
         if(Integer.parseInt(hour)> MAX_HOUR || Integer.parseInt(hour)< MIN_HOUR){
@@ -43,11 +47,10 @@ public class TimePolicy {
         int hour = validateHour(splitTime[0]);
         int minute = validateMinute(splitTime[1]);
 
-        if(LocalTime.of(hour,minute).isBefore(LocalTime.of(8,0))
-        || LocalTime.of(hour,minute).isAfter(LocalTime.of(23,0)))
+        if(LocalTime.of(hour,minute).isBefore(OPERATING_START_TIME)
+        || LocalTime.of(hour,minute).isAfter(OPERATING_END_TIME))
         {
-            throw new IllegalArgumentException("[ERROR] 캠퍼스 운영 시간이 아닙니다");
+            throw new IllegalArgumentException(OPERATING_TIME_ERROR);
         }
-
     }
 }
