@@ -13,6 +13,9 @@ import util.RetryHandler;
 
 public class InputView {
 
+    private InputView() {
+    }
+
     private static final Scanner scanner = new Scanner(System.in);
 
     public static OptionRequest scanOption() {

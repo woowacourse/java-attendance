@@ -9,6 +9,9 @@ import constant.FormatterConstant;
 
 public class DateTimeUtil {
 
+    private DateTimeUtil() {
+    }
+
     public static LocalDate nowDate() {
         return LocalDate.now();
     }

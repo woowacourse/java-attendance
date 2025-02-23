@@ -12,6 +12,9 @@ import java.util.List;
 
 public class FileParser {
 
+    private FileParser() {
+    }
+
     private static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
     public static final String FILE_PATH = "src/main/resources/attendances.csv";
     public static final String DELIMITER = ",";
