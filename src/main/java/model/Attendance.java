@@ -56,10 +56,7 @@ public class Attendance {
     }
 
     public boolean isSame(Crew crew, LocalDate localDate) {
-        if (this.crew.equals(crew) && checkInTime.toLocalDate().equals(localDate)) {
-            return true;
-        }
-        return false;
+        return this.crew.equals(crew) && checkInTime.toLocalDate().equals(localDate);
     }
 
     public boolean findByCrewAndMonth(Crew crew, int month) {
