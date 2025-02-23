@@ -19,7 +19,10 @@ class AttendanceTypeTest {
             "10:00, 10:31, ABSENCE",
     })
     void judgeTest(LocalTime startTime, LocalTime attendanceTime, AttendanceType expected) {
+        // when
         AttendanceType type = AttendanceType.judge(startTime, attendanceTime);
+
+        // then
         assertThat(type)
                 .isEqualTo(expected);
     }

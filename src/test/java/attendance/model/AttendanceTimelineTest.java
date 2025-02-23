@@ -1,14 +1,13 @@
 package attendance.model;
 
+import static attendance.model.AttendanceTestFixtures.createAttendanceInRawDateTime;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import attendance.model.AttendanceTimeline.AttendanceLog;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
 import java.util.Set;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -20,26 +19,33 @@ class AttendanceTimelineTest {
     @DisplayName("크루의 전날까지 출석 기록을 생성할 수 있다.")
     @Test
     void createTimelineUntilNowTest() {
-        Crew crew = new Crew(new Nickname("포비"));
+        // given
+        Crew pobi = AttendanceTestFixtures.POBI;
         Set<Attendance> attendances = Set.of(
-                new Attendance(crew, LocalDateTime.of(2024, 12, 2, 10, 1)),
-                new Attendance(crew, LocalDateTime.of(2024, 12, 3, 10, 6))
+                createAttendanceInRawDateTime(pobi, "2024-12-02 10:01"),
+                createAttendanceInRawDateTime(pobi, "2024-12-03 10:06")
         );
         LocalDate now = LocalDate.of(2024, 12, 5);
+
+        // when
         final var attendanceTimeline = AttendanceTimeline.generateAttendanceTimelineUntilDate(attendances, now);
 
+        // then
         assertThat(attendanceTimeline)
                 .extracting("attendanceLogs")
                 .isEqualTo(List.of(
-                        new AttendanceLog(LocalDate.of(2024, 12, 2),
+                        new AttendanceLog(
+                                LocalDate.of(2024, 12, 2),
                                 LocalTime.of(10, 1),
                                 AttendanceType.OK
                         ),
-                        new AttendanceLog(LocalDate.of(2024, 12, 3),
+                        new AttendanceLog(
+                                LocalDate.of(2024, 12, 3),
                                 LocalTime.of(10, 6),
                                 AttendanceType.LATE
                         ),
-                        new AttendanceLog(LocalDate.of(2024, 12, 4),
+                        new AttendanceLog(
+                                LocalDate.of(2024, 12, 4),
                                 null,
                                 AttendanceType.ABSENCE
                         )
@@ -54,18 +60,20 @@ class AttendanceTimelineTest {
             "ABSENCE, 1"
     })
     void countAttendanceTypeTest(AttendanceType attendanceType, int expected) {
-        Crew crew = new Crew(new Nickname("포비"));
+        // given
+        Crew pobi = AttendanceTestFixtures.POBI;
         Set<Attendance> attendances = Set.of(
-                new Attendance(crew, LocalDateTime.of(2024, 12, 2, 10, 1)),
-                new Attendance(crew, LocalDateTime.of(2024, 12, 3, 10, 6))
+                createAttendanceInRawDateTime(pobi, "2024-12-02 10:01"),
+                createAttendanceInRawDateTime(pobi, "2024-12-03 10:06")
         );
-
         LocalDate now = LocalDate.of(2024, 12, 5);
-        final var attendanceTimeline = AttendanceTimeline.generateAttendanceTimelineUntilDate(attendances, now);
 
+        // when
+        final var attendanceTimeline = AttendanceTimeline.generateAttendanceTimelineUntilDate(attendances, now);
         int count = attendanceTimeline.countByAttendanceType(attendanceType);
 
-        Assertions.assertThat(count)
+        // then
+        assertThat(count)
                 .isEqualTo(expected);
     }
 }

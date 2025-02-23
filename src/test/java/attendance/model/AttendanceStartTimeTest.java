@@ -22,7 +22,10 @@ class AttendanceStartTimeTest {
             "FRIDAY, 10:00",
     })
     void findDayOfWeekTest(DayOfWeek dayOfWeek, LocalTime startTime) {
+        // when
         LocalTime attendanceStartTime = AttendanceStartTime.findDayOfWeek(dayOfWeek);
+
+        // then
         assertThat(attendanceStartTime)
                 .isEqualTo(startTime);
     }
@@ -34,6 +37,7 @@ class AttendanceStartTimeTest {
             "SUNDAY"
     })
     void shouldThrowException_WhenFindStartTimeOfWeekend(DayOfWeek dayOfWeek) {
+        // when & then
         assertThatThrownBy(() -> AttendanceStartTime.findDayOfWeek(dayOfWeek))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("해당하는 요일의 출석 시작 시간을 찾을 수 없습니다.");

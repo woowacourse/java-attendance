@@ -25,8 +25,10 @@ class AttendanceWarningLevelTest {
             "5, 5, EXPULSION"
     })
     void attendanceWarningLevelJudgeTest(int lateCount, int absenceCount, AttendanceWarningLevel expected) {
+        // when
         AttendanceWarningLevel level = AttendanceWarningLevel.judge(lateCount, absenceCount);
 
+        // then
         assertThat(level)
                 .isEqualTo(expected);
     }

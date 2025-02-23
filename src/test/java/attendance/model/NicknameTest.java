@@ -14,6 +14,7 @@ class NicknameTest {
     @ParameterizedTest
     @ValueSource(strings = {"네오", "워니", "브라운"})
     void doesNotThrowException_WhenValidNickname(String validNickname) {
+        // when & then
         assertThatCode(() -> new Nickname(validNickname))
                 .doesNotThrowAnyException();
     }
@@ -22,6 +23,7 @@ class NicknameTest {
     @ParameterizedTest
     @NullAndEmptySource
     void shouldThrowException_WhenNicknameIsNullAndEmpty(String invalidNickname) {
+        // when & then
         assertThatCode(() -> new Nickname(invalidNickname))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("닉네임이 비어있습니다.");
@@ -31,6 +33,7 @@ class NicknameTest {
     @ParameterizedTest
     @ValueSource(strings = {"a", "brown"})
     void shouldThrowException_WhenInValidLengthNickname(String invalidNickname) {
+        // when & then
         assertThatCode(() -> new Nickname(invalidNickname))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("닉네임은 2~4 사이의 글자수여야 합니다.");
