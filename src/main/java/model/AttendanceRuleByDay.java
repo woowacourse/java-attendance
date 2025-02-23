@@ -1,5 +1,6 @@
 package model;
 
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.Arrays;
 
@@ -20,7 +21,9 @@ public enum AttendanceRuleByDay {
         this.dayOfWeekValue = dayOfWeekValue;
         this.day = day;
     }
-    public static AttendanceStatus calculateAttendance(int day, LocalTime arrivalTime) {
+    public static AttendanceStatus calculateAttendance(LocalDateTime localDateTime) {
+        int day = localDateTime.getDayOfWeek().getValue();
+        LocalTime arrivalTime = LocalTime.from(localDateTime);
         if (arrivalTime.equals(LocalTime.of(0, 0))) {
             return AttendanceStatus.ABSENT;
         }
