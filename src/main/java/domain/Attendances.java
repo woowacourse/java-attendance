@@ -32,7 +32,7 @@ public class Attendances {
 
     public boolean isAttended(final LocalDateTime dateTime) {
         return attendances.stream()
-                .anyMatch(attendance -> attendance.getLocalDateTime().equals(dateTime));
+                .anyMatch(attendance -> attendance.equalsToLocalDateTime(dateTime));
     }
 
     public void add(Attendance attendance) {
