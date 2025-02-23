@@ -17,7 +17,7 @@ import java.util.Map;
 import presentation.view.FileInputView;
 import presentation.view.InputView;
 import presentation.view.OutputView;
-import service.AttendanceService;
+import service.CrewService;
 import util.DateTimeUtil;
 
 public class AttendanceController {
@@ -28,9 +28,9 @@ public class AttendanceController {
     private final static String EXIT_COMMAND = "Q";
 
     private final FileInputView fileInputView;
-    private final AttendanceService attendanceService;
+    private final CrewService attendanceService;
 
-    public AttendanceController(FileInputView fileInputView, AttendanceService attendanceService) {
+    public AttendanceController(FileInputView fileInputView, CrewService attendanceService) {
         this.fileInputView = fileInputView;
         this.attendanceService = attendanceService;
     }

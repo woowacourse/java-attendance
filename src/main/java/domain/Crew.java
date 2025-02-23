@@ -4,6 +4,8 @@ import domain.attendance.Attendance;
 import domain.attendance.AttendanceDate;
 import domain.attendance.AttendanceWarning;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.List;
 
 public class Crew implements Comparable<Crew> {
     private final String name;
@@ -12,6 +14,18 @@ public class Crew implements Comparable<Crew> {
     public Crew(String name) {
         this.name = name;
         this.attendance = new Attendance(AttendanceDate.DEFAULT_START_DATE, LocalDate.now());
+
+        this.attendance.fillAttendanceDate();
+    }
+
+    public void initializeAttendance(List<LocalDateTime> localDateTimes) {
+        attendance.fillAttendanceDate();
+        localDateTimes.forEach(this::editAttendanceDateTime);
+    }
+
+    private void editAttendanceDateTime(LocalDateTime localDateTime) {
+        AttendanceDate attendanceDate = attendance.findAttendanceDate(localDateTime.toLocalDate());
+        attendanceDate.editDateTime(localDateTime);
     }
 
     public String getName() {

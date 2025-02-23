@@ -17,7 +17,7 @@ class AttendanceServiceTest {
         // given
         FileInputView fileInputView = new FileInputView();
         Map<String, List<String>> attendanceFileInfo = fileInputView.getFileInput();
-        AttendanceService attendanceService = new AttendanceService();
+        CrewService attendanceService = new CrewService();
         Map<String, List<LocalDateTime>> map = InputParser.getFileAttendanceInfo(attendanceFileInfo);
 
         // when
