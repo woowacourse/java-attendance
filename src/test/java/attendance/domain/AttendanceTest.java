@@ -43,12 +43,14 @@ class AttendanceTest {
                 .isEqualTo(expected);
     }
 
-    @Test
-    void 출석의_시간을_비교해_반환한다() {
+    @ParameterizedTest
+    @CsvSource({
+            "2024-12-07T10:00, 2024-12-06T10:00, 1",
+            "2024-12-07T10:00, 2024-12-08T10:00, -1",
+            "2024-12-07T10:00, 2024-12-07T10:00, 0"
+    })
+    void 출석의_시간을_비교해_반환한다(LocalDateTime firstDateTime, LocalDateTime secondDateTime, int excepted) {
         // given
-        LocalDateTime firstDateTime = LocalDateTime.of(2024, 12, 7, 10, 0);
-        LocalDateTime secondDateTime = LocalDateTime.of(2024, 12, 6, 10, 0);
-
         Attendance firstAttendance = new Attendance(firstDateTime);
         Attendance secondAttendance = new Attendance(secondDateTime);
 
@@ -57,7 +59,7 @@ class AttendanceTest {
 
         // then
         assertThat(result)
-                .isEqualTo(1);
+                .isEqualTo(excepted);
     }
 
     private static class MockingDateGenerator implements DateGenerator {
