@@ -82,7 +82,7 @@ public class AttendanceMachine {
         Crew crew = findModifiyCrew(crews);
         int modifyDate = readModifyDay();
         List<String> modifyTime = List.of(findModifyTime().split(":"));
-        LocalDateTime localDateTime = LocalDateTime.of(now.getYear(), now.getMonthValue(), modifyDate, Integer.parseInt(modifyTime.get(0)), Integer.parseInt(modifyTime.get(1)));
+        LocalDateTime localDateTime = LocalDateTime.of(now.getYear(), now.getMonthValue(), modifyDate, Integer.parseInt(modifyTime.getFirst()), Integer.parseInt(modifyTime.getLast()));
         DateInfo beforeInfo = register.findInfo(crew, localDateTime);
         int beforeHour = beforeInfo.getLocalDateTime().getHour();
         int beforeMinute = beforeInfo.getLocalDateTime().getMinute();
@@ -94,7 +94,7 @@ public class AttendanceMachine {
     private void confirmAttendance(LocalDate now, Crews crews, Register register) {
         Crew crew = findCrew(crews);
         List<String> attendanceTime = List.of(findAttendanceTime().split(":"));
-        LocalDateTime localDateTime = LocalDateTime.of(now.getYear(), now.getMonthValue(), now.getDayOfMonth(), Integer.parseInt(attendanceTime.get(0)), Integer.parseInt(attendanceTime.get(1)));
+        LocalDateTime localDateTime = now.atTime(Integer.parseInt(attendanceTime.getFirst()), Integer.parseInt(attendanceTime.getLast()));
         DateInfo dateInfo = DateInfo.of(localDateTime);
         register.modifyInfo(crew, localDateTime);
         outputView.writeAttendanceCheck(dateInfo);
