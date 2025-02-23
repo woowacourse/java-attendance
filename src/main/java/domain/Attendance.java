@@ -13,6 +13,7 @@ import java.util.Map;
 public class Attendance {
 
     private static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+    private static final String TODAY_FORMAT = "2024-12-%02d %s";
 
     private final Map<Crew, List<LocalDateTime>> attendances;
 
@@ -31,7 +32,7 @@ public class Attendance {
     public void save(final Crew crew, final String schoolStartTime, final int todayDay) {
         List<LocalDateTime> localDateTimes = attendances.get(crew);
 
-        String today = String.format("2024-12-%02d %s", todayDay, schoolStartTime);
+        String today = String.format(TODAY_FORMAT, todayDay, schoolStartTime);
         LocalDateTime todayLocalDateTime = parseToLocalDateTime(today);
 
         validateDuplicateSave(todayDay, localDateTimes);
@@ -54,7 +55,7 @@ public class Attendance {
             }
         }
 
-        String today = String.format("2024-12-%02d %s", date, updateTime);
+        String today = String.format(TODAY_FORMAT, date, updateTime);
         LocalDateTime todayLocalDateTime = parseToLocalDateTime(today);
 
         localDateTimes.set(attendanceRecordIndex, todayLocalDateTime);
@@ -98,7 +99,6 @@ public class Attendance {
 
     public Map<Crew, AbsenceResultDto> getAbsence(final int todayDay) {
         Map<Crew, AbsenceResultDto> absenceMap = new HashMap<>();
-
         for (Crew crew : attendances.keySet()) {
             List<AttendanceResultDto> attendanceResultDtos = readRecord(crew, todayDay);
 
