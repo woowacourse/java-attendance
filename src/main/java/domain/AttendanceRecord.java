@@ -26,8 +26,8 @@ public class AttendanceRecord implements Comparable {
         return new AttendanceRecord(LocalDateTime.of(date, time));
     }
 
-    public static AttendanceRecord checkIn(LocalTime time, DateGenerator dateGenerator) {
-        return new AttendanceRecord(LocalDateTime.of(dateGenerator.generate(), time));
+    public static AttendanceRecord checkIn(LocalTime time, LocalDate currentDate) {
+        return new AttendanceRecord(LocalDateTime.of(currentDate, time));
     }
 
     public static AttendanceRecord asAbsent(LocalDate date) {

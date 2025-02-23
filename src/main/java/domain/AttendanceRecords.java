@@ -28,8 +28,8 @@ public class AttendanceRecords {
                 .orElseThrow(() -> new IllegalArgumentException("[ERROR] 출석 기록이 없는 날짜는 수정할 수 없습니다.\n"));
     }
 
-    public void fillAbsences(DateGenerator dateGenerator) {
-        for (LocalDate date = dateGenerator.generate().minusDays(1); date.isAfter(FILL_START_DATE); date = date.minusDays(1)) {
+    public void fillAbsences(LocalDate currentDate) {
+        for (LocalDate date = currentDate.minusDays(1); date.isAfter(FILL_START_DATE); date = date.minusDays(1)) {
             fillAbsence(date);
         }
     }

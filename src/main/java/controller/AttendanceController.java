@@ -1,12 +1,14 @@
 package controller;
 
-import domain.*;
+import domain.AttendanceRecord;
+import domain.Crew;
+import domain.CrewAttendanceRecords;
+import domain.CsvParsingGenerator;
 import view.InputView;
 import view.OutputView;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.time.format.DateTimeParseException;
 import java.util.Map;
 import java.util.function.Supplier;
 
@@ -23,27 +25,19 @@ public class AttendanceController {
             });
     private final InputView inputView = new InputView();
     private final OutputView outputView = new OutputView();
-    private final DateGenerator currentDateGenerator;
+    private final LocalDate currentDate;
     private final CrewAttendanceRecords crewAttendanceRecords;
 
     public AttendanceController(String[] args) {
-        this.currentDateGenerator = () -> {
-            try {
-                return LocalDate.parse(args[START_DATE_INDEX]);
-            } catch (DateTimeParseException e) {
-                throw new IllegalArgumentException("[ERROR] 프로그램 인수를 YYYY-MM-DD 형식으로 입력해 주세요.");
-            } catch (ArrayIndexOutOfBoundsException e) {
-                throw new IllegalArgumentException("[ERROR] 프로그램 인수를 YYYY-MM-DD 형식으로 입력해 주세요.");
-            }
-        };
-        this.crewAttendanceRecords = new CrewAttendanceRecords(new CsvParsingGenerator(), currentDateGenerator);
+        this.currentDate = LocalDate.parse(args[START_DATE_INDEX]);
+        this.crewAttendanceRecords = new CrewAttendanceRecords(new CsvParsingGenerator(), currentDate);
     }
 
     public void run() {
         String menuInput;
         do {
             menuInput = retryUntilSuccess(() -> {
-                String input = inputView.readMenu(currentDateGenerator.generate());
+                String input = inputView.readMenu(currentDate);
                 menu.get(input).run();
                 return input;
             });
@@ -53,7 +47,7 @@ public class AttendanceController {
     public void checkIn() {
         Crew crew = inputView.readNickname();
         LocalTime time = inputView.readCheckInTime();
-        AttendanceRecord attendanceRecord = crewAttendanceRecords.checkIn(crew, time, currentDateGenerator);
+        AttendanceRecord attendanceRecord = crewAttendanceRecords.checkIn(crew, time, currentDate);
         outputView.displayAttendanceRecord(attendanceRecord);
     }
 
