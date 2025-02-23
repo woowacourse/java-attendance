@@ -7,6 +7,8 @@ import java.util.Comparator;
 import java.util.List;
 
 public class Crew {
+    private static final Integer LATE_COUNT_FOR_ABSENT = 3;
+
     private final String nickName;
     private List<Attendance> attendances;
 
@@ -28,7 +30,7 @@ public class Crew {
     }
 
     private Integer calculateNonAttendanceCount() {
-        return calculateAbsentCount() + calculateLateCount() / 3;
+        return calculateAbsentCount() + calculateLateCount() / LATE_COUNT_FOR_ABSENT;
     }
 
     private Integer calculateLateCount() {
