@@ -5,6 +5,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 public class Attendances {
@@ -24,6 +25,10 @@ public class Attendances {
 
     public Attendances() {
         this.attendances = new ArrayList<>();
+    }
+
+    public Attendances(List<Attendance> attendances) {
+        this.attendances = attendances;
     }
 
     public void initAttendances(final Crews crews, final List<List<String>> attendanceRecords) {
@@ -134,5 +139,15 @@ public class Attendances {
         if (attendance.isSameTime(localDateTime)) {
             throw new IllegalArgumentException(SAME_TIME_ERROR_MESSAGE);
         }
+    }
+
+    public List<Attendance> sortCrewAttendances() {
+        return attendances.stream()
+                .sorted(Comparator.comparing(Attendance::getDate))
+                .toList();
+    }
+
+    public List<Attendance> getAttendances() {
+        return attendances;
     }
 }
