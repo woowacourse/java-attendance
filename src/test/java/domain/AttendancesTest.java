@@ -49,4 +49,11 @@ class AttendancesTest {
         Assertions.assertEquals(attendances.getSpecificAttendance(testDay).get().getDay(),
                 testDay);
     }
+
+    @DisplayName("현재 출석 상태가 어떤 제적 상태인지 확인합니다.")
+    @Test
+    void calculateAttendanceAlertLevel() {
+        Assertions.assertEquals(attendances.calculateAttendanceAlertLevel(),
+                AttendanceAlertLevel.CAUTION);
+    }
 }
