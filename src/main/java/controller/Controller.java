@@ -15,7 +15,7 @@ import domain.Time;
 import java.time.LocalDateTime;
 import java.util.List;
 import service.CrewLoader;
-import util.DateValidator;
+import service.DateValidator;
 import view.InputView;
 import view.OutputView;
 import view.dto.AlertCrewDto;
@@ -25,43 +25,45 @@ import view.dto.ChangeAttendanceLogDto;
 import view.dto.CrewAttendancesDto;
 
 public class Controller {
+    private static final LocalDateTime today = LocalDateTime.of(2024, 12, 18, 10, 0);
+    private final DateValidator dateValidator;
     private final InputView inputView;
     private final OutputView outputView;
 
-    public Controller(InputView inputView, OutputView outputView) {
+    public Controller(DateValidator dateValidator, InputView inputView, OutputView outputView) {
+        this.dateValidator = dateValidator;
         this.inputView = inputView;
         this.outputView = outputView;
     }
 
     public void run() {
-        LocalDateTime today = LocalDateTime.of(2024, 12, 18, 10, 0);
         CrewLoader crewLoader = new CrewLoader();
         CrewGroup crewGroup = crewLoader.loadCrews(today);
 
         try {
-            runCycle(today, crewGroup);
+            runCycle(crewGroup);
         } catch (Exception e) {
             outputView.printError(e.getMessage());
         }
     }
 
-    private void runCycle(LocalDateTime today, CrewGroup crewGroup) {
+    private void runCycle(CrewGroup crewGroup) {
         while (true) {
             String option = inputView.insertMenuOption(today);
             if (isExit(option)) {
                 return;
             }
-            operateMenuOption(option, crewGroup, today);
+            operateMenuOption(option, crewGroup);
         }
     }
 
-    private void operateMenuOption(String option, CrewGroup crewGroup, LocalDateTime today) {
+    private void operateMenuOption(String option, CrewGroup crewGroup) {
         MenuOption menuOption = getMenuOption(option);
         if (menuOption.equals(CHECK_ATTENDANCE)) {
-            attendanceCheck(crewGroup, today);
+            attendanceCheck(crewGroup);
         }
         if (menuOption.equals(CHANGE_ATTENDANCE)) {
-            changeAttendance(crewGroup, today);
+            changeAttendance(crewGroup);
         }
         if (menuOption.equals(SHOW_CREW_ATTENDANCES)) {
             showCrewAttendance(crewGroup);
@@ -71,8 +73,8 @@ public class Controller {
         }
     }
 
-    private void attendanceCheck(CrewGroup crewGroup, LocalDateTime today) {
-        DateValidator.validateAttendanceCheckDate(today);
+    private void attendanceCheck(CrewGroup crewGroup) {
+        dateValidator.validateAttendanceCheckDate(today);
 
         String rawName = inputView.insertNickname();
         Crew crew = crewGroup.searchCrew(rawName);
@@ -90,12 +92,12 @@ public class Controller {
         outputView.printAttendanceLog(AttendanceLogDto.from(attendance));
     }
 
-    private void changeAttendance(CrewGroup crewGroup, LocalDateTime today) {
+    private void changeAttendance(CrewGroup crewGroup) {
         String rawName = inputView.insertChangeDateNickname();
         Crew crew = crewGroup.searchCrew(rawName);
 
         int date = inputView.insertChangeDate();
-        DateValidator.validateAttendanceChangeDate(date, today);
+        dateValidator.validateAttendanceChangeDate(date, today);
 
         String rawTime = inputView.insertChangeTime();
         Time time = new Time(rawTime);

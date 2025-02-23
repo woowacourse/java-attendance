@@ -4,7 +4,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import util.DateValidator;
+import service.DateValidator;
 
 public class Crew {
     public static final int ABSENT_HOUR = 23;
@@ -38,13 +38,14 @@ public class Crew {
     }
 
     private List<Integer> calculateAbsentDates(LocalDateTime today, List<Integer> attendanceDays) {
+        DateValidator dateValidator = new DateValidator();
         List<Integer> days = new ArrayList<>();
         for (int day = 1; day < today.getDayOfMonth(); day++) {
             days.add(day);
         }
 
         List<Integer> weekDays = new ArrayList<>(days.stream()
-                .filter(day -> !DateValidator.isHoliday(day, today))
+                .filter(day -> !dateValidator.isHoliday(day, today))
                 .toList());
 
         weekDays.removeAll(attendanceDays);
