@@ -6,6 +6,7 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.Arrays;
 import java.util.List;
+import java.util.TreeSet;
 
 public class OutputView {
     public void displayAttendanceRecord(AttendanceRecord attendanceRecord) {
@@ -28,9 +29,9 @@ public class OutputView {
         System.out.printf(" -> %s (%s) 수정 완료!%n", newTime, newAttendance.getName());
     }
 
-    public void displayAttendanceRecords(Crew crew, CrewAttendanceRecords crewAttendanceRecords) {
+    public void displayRecords(Crew crew, CrewAttendanceRecords crewAttendanceRecords) {
         System.out.printf("%n이번 달 %s의 출석 기록입니다.%n%n", crew.name());
-        displaySortedRecords(crew, crewAttendanceRecords);
+        displayAttendanceRecords(crew, crewAttendanceRecords);
         displayAttendanceCount(crew, crewAttendanceRecords);
         displayDisciplinaryStatus(crew, crewAttendanceRecords);
     }
@@ -45,9 +46,9 @@ public class OutputView {
         }
     }
 
-    private void displaySortedRecords(Crew crew, CrewAttendanceRecords crewAttendanceRecords) {
-        List<AttendanceRecord> sortedRecords = crewAttendanceRecords.getSortedRecords(crew);
-        sortedRecords.forEach((record) -> {
+    private void displayAttendanceRecords(Crew crew, CrewAttendanceRecords crewAttendanceRecords) {
+        TreeSet<AttendanceRecord> attendanceRecords = crewAttendanceRecords.getAttendanceRecords(crew);
+        attendanceRecords.forEach((record) -> {
             displayAttendanceRecord(record);
             System.out.println();
         });

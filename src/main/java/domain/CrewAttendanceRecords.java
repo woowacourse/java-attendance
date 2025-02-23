@@ -2,10 +2,7 @@ package domain;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class CrewAttendanceRecords {
     private final Map<Crew, AttendanceRecords> crewAttendanceRecords;
@@ -57,8 +54,8 @@ public class CrewAttendanceRecords {
         return attendanceRecord;
     }
 
-    public List<AttendanceRecord> getSortedRecords(Crew crew) {
-        return crewAttendanceRecords.get(crew).getSortedRecords();
+    public TreeSet<AttendanceRecord> getAttendanceRecords(Crew crew) {
+        return crewAttendanceRecords.get(crew).getAttendanceRecords();
     }
 
     public List<Crew> getWarnedCrews() {

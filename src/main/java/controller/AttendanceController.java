@@ -66,7 +66,7 @@ public class AttendanceController {
 
     public void checkAttendanceRecords() {
         Crew crew = inputView.readNickname();
-        outputView.displayAttendanceRecords(crew, crewAttendanceRecords);
+        outputView.displayRecords(crew, crewAttendanceRecords);
     }
 
     public void checkDisciplinaryStatus() {

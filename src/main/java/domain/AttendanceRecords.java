@@ -1,17 +1,15 @@
 package domain;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
+import java.util.TreeSet;
 
 public class AttendanceRecords {
     private static final LocalDate FILL_START_DATE = LocalDate.of(2024, 11, 30);
 
-    private final List<AttendanceRecord> attendanceRecords;
+    private final TreeSet<AttendanceRecord> attendanceRecords;
 
     public AttendanceRecords() {
-        this.attendanceRecords = new ArrayList<>();
+        this.attendanceRecords = new TreeSet<>();
     }
 
     public void addRecord(AttendanceRecord attendanceRecord) {
@@ -56,16 +54,14 @@ public class AttendanceRecords {
                 .count();
     }
 
-    public List<AttendanceRecord> getSortedRecords() {
-        return attendanceRecords.stream()
-                .sorted(Comparator.comparing(AttendanceRecord::getDate))
-                .toList();
-    }
-
     public DisciplinaryStatus getDisciplinaryStatus() {
         int absentCount = getAbsentCount();
         int tardyCount = getTardyCount();
         return DisciplinaryStatus.getStatus(absentCount, tardyCount);
+    }
+
+    public TreeSet<AttendanceRecord> getAttendanceRecords() {
+        return attendanceRecords;
     }
 
     private void fillAbsence(LocalDate date) {

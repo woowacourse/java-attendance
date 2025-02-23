@@ -6,7 +6,7 @@ import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Objects;
 
-public class AttendanceRecord {
+public class AttendanceRecord implements Comparable {
     public static final LocalTime ABSENT_TIME = LocalTime.of(14, 0);
 
     private final LocalDateTime dateTime;
@@ -72,5 +72,17 @@ public class AttendanceRecord {
     @Override
     public int hashCode() {
         return Objects.hash(dateTime, attendance);
+    }
+
+    @Override
+    public int compareTo(Object o) {
+        AttendanceRecord that = (AttendanceRecord) o;
+        if (that.dateTime.isBefore(dateTime)) {
+            return 1;
+        }
+        if (that.dateTime.equals(dateTime)) {
+            return 0;
+        }
+        return -1;
     }
 }
