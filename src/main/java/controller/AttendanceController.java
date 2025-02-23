@@ -37,7 +37,7 @@ public class AttendanceController {
         while (true) {
             String rawCommand = inputView.readCommand();
             Command command = stringConverter.convertToCommand(rawCommand);
-            processOptionOne(command, attendances);
+            processOptionOne(command, crews, attendances);
             processOptionTwo(command, attendances);
             processOptionThree(command, attendances);
             processOptionFour(command, crews, attendances);
@@ -47,10 +47,9 @@ public class AttendanceController {
         }
     }
 
-    private void processOptionOne(Command command, Attendances attendances) {
+    private void processOptionOne(Command command, Crews crews, Attendances attendances) {
         if (command.equals(Command.ONE)) {
-            Attendance attendance = checkInAttendance(attendances);
-            outputView.printCheckInResult(attendance);
+            checkInAttendance(crews, attendances);
         }
     }
 
@@ -72,14 +71,14 @@ public class AttendanceController {
         }
     }
 
-    private Attendance checkInAttendance(Attendances attendances) {
+    private void checkInAttendance(Crews crews, Attendances attendances) {
         String rawNickname = inputView.readNickname();
         String rawCheckInTime = inputView.readCheckInTime();
+        Attendance attendance = stringConverter.convertToAttendance(crews, rawNickname, rawCheckInTime);
 
-        Attendance attendance = stringConverter.convertToAttendance(rawNickname, rawCheckInTime);
         attendances.checkIn(attendance);
 
-        return attendance;
+        outputView.printCheckInResult(attendance);
     }
 
     private void modifyAttendance(Attendances attendances) {

@@ -4,9 +4,8 @@ import constant.Command;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
+import java.util.Optional;
 import model.Attendance;
 import model.Attendances;
 import model.Crew;
@@ -25,32 +24,35 @@ public class StringConverter {
     }
 
     public Attendances convertToAttendances(List<String> rawAttendances, Crews crews) {
-        List<Attendance> attendances = new ArrayList<>();
-        for (String rawAttendance : rawAttendances) {
-            String[] attendanceInfo = rawAttendance.split(",");
+        List<Attendance> attendances = rawAttendances.stream()
+                .map(rawAttendance -> rawAttendance.split(","))
+                .peek(attendanceInfo -> validateNullOrBlank(attendanceInfo[0]))
+                .peek(attendanceInfo -> validateNullOrBlank(attendanceInfo[1]))
+                .peek(attendanceInfo -> validateLocalDateTimeFormat(attendanceInfo[1]))
+                .map(attendanceInfo -> {
+                    Optional<Crew> byNickname = crews.findByNickname(attendanceInfo[0]);
+                    if (byNickname.isEmpty()) {
+                        System.out.println("hello");
+                    }
+                    Crew crew = crews.findByNickname(attendanceInfo[0])
+                            .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 크루입니다."));
+                    LocalDateTime checkInTime = convertToLocalDateTime(attendanceInfo[1]);
 
-            String rawNickname = attendanceInfo[0];
-            validateNullOrBlank(rawNickname);
-            Crew crew = crews.findByNickname(rawNickname)
-                    .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 크루입니다."));
-
-            String rawCheckInDateTime = attendanceInfo[1];
-            validateNullOrBlank(rawCheckInDateTime);
-            validateLocalDateTimeFormat(rawCheckInDateTime);
-
-            String rawCheckInDate = rawCheckInDateTime.split(" ")[0];
-            String rawCheckInTime = rawCheckInDateTime.split(" ")[1] + ":00";
-
-            LocalDateTime checkInTime = LocalDateTime.of(LocalDate.parse(rawCheckInDate),
-                    LocalTime.parse(rawCheckInTime));
-
-            attendances.add(Attendance.of(crew, checkInTime));
-        }
+                    return Attendance.of(crew, checkInTime);
+                })
+                .toList();
 
         return Attendances.of(attendances);
     }
 
-    public Attendance convertToAttendance(String rawNickname, String rawCheckInTime) {
+    private LocalDateTime convertToLocalDateTime(String rawCheckInDateTime) {
+        String[] dateTimeParts = rawCheckInDateTime.split(" ");
+        return LocalDateTime.of(LocalDate.parse(dateTimeParts[0]),
+                LocalTime.parse(dateTimeParts[1] + ":00"));
+    }
+
+    public Attendance convertToAttendance(Crews crews, String rawNickname, String rawCheckInTime) {
+        validateExistCrew(crews, rawNickname);
         validateNullOrBlank(rawNickname);
         Crew crew = Crew.of(rawNickname);
 
@@ -97,6 +99,11 @@ public class StringConverter {
         if (day < 1 || day > lastDay) {
             throw new IllegalArgumentException("잘못된 날짜입니다.");
         }
+    }
+
+    private void validateExistCrew(Crews crews, String rawNickname) {
+        crews.findByNickname(rawNickname)
+                .orElseThrow(() -> new IllegalArgumentException("등록되지 않은 크루입니다."));
     }
 
     private void validateLocalDateTimeFormat(String dateTime) {
