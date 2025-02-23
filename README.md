@@ -36,3 +36,32 @@
 - [X] 수정하려는 날짜(일)가 없는 날짜인 경우 예외가 발생한다.
 
 - [X] 만약 예외가 발생할 시, 사용자로부터 다시 입력을 받는다.
+
+### 설계
+**controller**
+  - AttendanceSystem: 서비스 흐름 제어
+
+**domain**
+  - Attendance: 출석 날짜 및 시간 관리
+  - AttendanceHistory: Attendance를 모아서 관리
+  - AttendanceBook: 출석부, 크루 이름과 해당 크루의 AttendanceHistory를 매핑하여 관리
+  - MenuOption: 선택할 수 있는 기능들의 옵션 관리
+  - Penalty: [경고, 면담, 제적]의 위험 상태 관리
+  - Status: [출석, 지각, 결석]의 출석 상태 관리
+  
+**dto**
+  - AttendanceCount: [출석, 지각, 결석] 횟수 저장
+  - AttendanceData: 출석 기록을 모아서 저장
+  - ModifyResult: 기존 출석 기록과 업데이트된 출석 기록을 저장
+
+**util**
+  - Constants: 상수 관리
+  - DateTimeManager: 출석 시스템 내에서 사용하는 날짜 및 시간 관리
+  - FileReader: 파일 출력
+
+**view**
+  - InputValidator: 입력 값과 관련한 검증 수행
+  - InputView: 입력 안내 문구 출력 및 사용자 입력 저장
+  - OutputView: 출력 형식에 맞는 결과 출력
+
+- AttendanceApplication: 필요한 값, 클래스 생성 및 AttendanceSystem 실행
