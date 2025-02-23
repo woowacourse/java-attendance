@@ -47,17 +47,6 @@ class AttendanceSystemTest {
     }
 
     @Test
-    void 등록되지_않은_닉네임으로_출석_체크시_에러가_발생한다() {
-        // given
-        String nickname = "이든";
-
-        // when & then
-        assertThatIllegalArgumentException()
-                .isThrownBy(() -> attendanceSystem.validateNicknameExists(nickname))
-                .withMessage("[ERROR] 등록되지 않은 닉네임입니다.");
-    }
-
-    @Test
     void 크루의_출석_데이터를_수정한다() {
         // given
         String nickname = "이든";
@@ -71,6 +60,31 @@ class AttendanceSystemTest {
         // then
         assertThat(result.getDateTime()).isEqualTo(updateDateTime);
         assertThat(result.getStatus()).isEqualTo(AttendanceStatusType.ATTENDANCE);
+    }
+
+    @Test
+    void 출석할_날짜에_데이터가_없는_경우_에러가_발생한다() {
+        // given
+        String nickname = "이든";
+        attendanceManager.addCrew(nickname);
+
+        LocalDateTime updateDateTime = LocalDateTime.of(2024, 12, 1, 10, 0);
+
+        // when & then
+        assertThatIllegalArgumentException()
+                .isThrownBy(() -> attendanceSystem.processAttendanceUpdate(updateDateTime, nickname))
+                .withMessage("[ERROR] 수정하려는 날짜는 출석할 수 없습니다.");
+    }
+
+    @Test
+    void 등록되지_않은_닉네임으로_출석시_에러가_발생한다() {
+        // given
+        String nickname = "이든";
+
+        // when & then
+        assertThatIllegalArgumentException()
+                .isThrownBy(() -> attendanceSystem.validateNicknameExists(nickname))
+                .withMessage("[ERROR] 등록되지 않은 닉네임입니다.");
     }
 
     static Stream<Arguments> 크루의_출석_데이터로_출석_체크한다() {
