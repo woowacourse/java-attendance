@@ -1,6 +1,6 @@
 package domain;
 
-import controller.AttendanceCommand;
+import controller.command.AttendanceCommand;
 import controller.command.AttendanceRecordByCrewCommand;
 import controller.command.CheckAttendanceCommand;
 import controller.command.ConfirmationOfThoseAtRiskOfExpulsion;

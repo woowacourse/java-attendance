@@ -1,6 +1,5 @@
 package controller.command;
 
-import controller.AttendanceCommand;
 import domain.Crew;
 import domain.Crews;
 import domain.Nickname;
