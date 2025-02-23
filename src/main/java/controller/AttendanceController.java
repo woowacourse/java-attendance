@@ -58,9 +58,10 @@ public class AttendanceController {
     public void updateAttendance() {
         Crew crew = inputView.readUpdateNickname();
         LocalDate date = inputView.readUpdateDate();
+        AttendanceRecord oldRecord = crewAttendanceRecords.getRecordAtDate(crew, date);
         LocalTime time = inputView.readUpdateTime();
         AttendanceRecord newRecord = AttendanceRecord.of(date, time);
-        AttendanceRecord oldRecord = crewAttendanceRecords.updateAttendanceRecord(crew, newRecord);
+        crewAttendanceRecords.updateAttendanceRecord(crew, oldRecord, newRecord);
         outputView.displayUpdatedRecord(oldRecord, newRecord);
     }
 

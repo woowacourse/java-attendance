@@ -23,11 +23,15 @@ public class CrewAttendanceRecords {
         return records.hasRecordOfDate(date);
     }
 
-    public AttendanceRecord updateAttendanceRecord(Crew crew, AttendanceRecord newAttendanceRecord) {
+    public void updateAttendanceRecord(Crew crew, AttendanceRecord oldRecord, AttendanceRecord newRecord) {
         validateCrewPresence(crew);
         AttendanceRecords records = crewAttendanceRecords.get(crew);
-        records.addRecord(newAttendanceRecord);
-        return records.removeRecord(newAttendanceRecord.getDate());
+        records.updateRecord(oldRecord, newRecord);
+    }
+
+    public AttendanceRecord getRecordAtDate(Crew crew, LocalDate date) {
+        AttendanceRecords attendanceRecords = crewAttendanceRecords.get(crew);
+        return attendanceRecords.getRecordAtDate(date);
     }
 
     public int getTardyCount(Crew crew) {

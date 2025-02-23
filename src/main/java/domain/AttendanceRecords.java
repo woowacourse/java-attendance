@@ -21,19 +21,26 @@ public class AttendanceRecords {
                 .anyMatch((record) -> record.getDate().equals(date));
     }
 
+    public AttendanceRecord getRecordAtDate(LocalDate date) {
+        return attendanceRecords.stream()
+                .filter(record -> record.getDate().equals(date))
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException("[ERROR] 출석 기록이 없는 날짜는 수정할 수 없습니다.\n"));
+    }
+
     public void fillAbsences(DateGenerator dateGenerator) {
         for (LocalDate date = dateGenerator.generate().minusDays(1); date.isAfter(FILL_START_DATE); date = date.minusDays(1)) {
             fillAbsence(date);
         }
     }
 
-    public AttendanceRecord removeRecord(LocalDate date) {
-        AttendanceRecord attendanceRecord = attendanceRecords.stream()
-                .filter(record -> record.getDate().equals(date))
-                .findFirst()
-                .orElseThrow(() -> new IllegalArgumentException("[ERROR] 출석 기록이 없는 날짜는 수정할 수 없습니다.\n"));
-        attendanceRecords.remove(attendanceRecord);
-        return attendanceRecord;
+    public void removeRecord(AttendanceRecord record) {
+        attendanceRecords.remove(record);
+    }
+
+    public void updateRecord(AttendanceRecord oldRecord, AttendanceRecord newRecord) {
+        removeRecord(oldRecord);
+        addRecord(newRecord);
     }
 
     public int getTardyCount() {
