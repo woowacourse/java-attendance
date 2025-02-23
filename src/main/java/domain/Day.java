@@ -12,10 +12,11 @@ public class Day {
     private final LocalDate date;
 
     public Day(LocalDate date) {
+        checkOffDay(date);
         this.date = date;
     }
 
-    private DayOfWeek getDayOfWeek() {
+    private DayOfWeek getDayOfWeek(LocalDate date) {
         return DayOfWeek.getInstance(date);
     }
 
@@ -23,12 +24,22 @@ public class Day {
         return this.date.equals(date);
     }
 
-    public Boolean checkHoliday() {
-        return getDayOfWeek().equals(DayOfWeek.SATURDAY) || getDayOfWeek().equals(DayOfWeek.SUNDAY);
+    public void checkOffDay(LocalDate date) {
+        if (checkWeekend(date) || checkHoliday(date)) {
+            throw new IllegalArgumentException("[ERROR] 휴일 객체는 생성할 수 없습니다.");
+        }
+    }
+
+    private boolean checkWeekend(LocalDate date) {
+        return getDayOfWeek(date).equals(DayOfWeek.SATURDAY) || getDayOfWeek(date).equals(DayOfWeek.SUNDAY);
+    }
+
+    private boolean checkHoliday(LocalDate date) {
+        return Holiday.isHoliday(date);
     }
 
     public boolean isLate(LocalTime attendanceTime) {
-        LocalTime standardTime = getDayOfWeek().getStandardTime();
+        LocalTime standardTime = getDayOfWeek(date).getStandardTime();
         if (standardTime == null) {
             return false;
         }
@@ -37,7 +48,7 @@ public class Day {
     }
 
     public boolean isAbsent(LocalTime attendanceTime) {
-        LocalTime standardTime = getDayOfWeek().getStandardTime();
+        LocalTime standardTime = getDayOfWeek(date).getStandardTime();
         if (standardTime == null) {
             return false;
         }
