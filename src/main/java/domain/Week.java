@@ -34,12 +34,12 @@ public enum Week {
     }
 
     public static Week findByAttendanceTime(final LocalDateTime localDateTime) {
-        DayOfWeek day = localDateTime.getDayOfWeek();
+        final String format = String.format(localDateTime.format(NON_SCHOOL_DAY_FORMAT) + "은 등교일이 아닙니다.");
+        final DayOfWeek day = localDateTime.getDayOfWeek();
 
         return Arrays.stream(Week.values())
                 .filter(week -> week.name().equals(day.name()))
                 .findFirst()
-                .orElseThrow(() -> new CustomIllegalArgumentException(
-                        String.format(localDateTime.format(NON_SCHOOL_DAY_FORMAT) + "은 등교일이 아닙니다.")));
+                .orElseThrow(() -> new CustomIllegalArgumentException(format));
     }
 }
