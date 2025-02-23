@@ -40,17 +40,18 @@ public class InputView {
     }
 
     public String printFunction(LocalDate localDate) {
-        System.out.printf(CHOOSE_FUNCTION_MESSAGE, localDate.getMonthValue(),
-            localDate.getDayOfMonth(),
-            localDate.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.KOREAN));
-
-        System.out.println(FUNCTION_1_MESSAGE);
-        System.out.println(FUNCTION_2_MESSAGE);
-        System.out.println(FUNCTION_3_MESSAGE);
-        System.out.println(FUNCTION_4_MESSAGE);
-        System.out.println(FUNCTION_Q_MESSAGE);
-
         Scanner sc = new Scanner(System.in);
+        System.out.printf(CHOOSE_FUNCTION_MESSAGE,
+            localDate.getMonthValue(),
+            localDate.getDayOfMonth(),
+            localDate.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.KOREAN)
+        );
+        printMessage(FUNCTION_1_MESSAGE);
+        printMessage(FUNCTION_2_MESSAGE);
+        printMessage(FUNCTION_3_MESSAGE);
+        printMessage(FUNCTION_4_MESSAGE);
+        printMessage(FUNCTION_Q_MESSAGE);
+
         return sc.nextLine();
     }
 

@@ -1,19 +1,18 @@
 package domain;
 
+import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.time.format.TextStyle;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 
-public class Records {
+public class Crew {
 
     private final Map<LocalDate, TimeAndStatus> records;
 
-    public Records(List<LocalDateTime> localDateTimes) {
+    public Crew(List<LocalDateTime> localDateTimes) {
         this.records = initializeRecords(localDateTimes);
     }
 
@@ -59,7 +58,7 @@ public class Records {
     private TimeAndStatus createTimeAndStatus(LocalDateTime localDateTime) {
         LocalDate localDate = localDateTime.toLocalDate();
         LocalTime localTime = localDateTime.toLocalTime();
-        String dayOfWeek = localDate.getDayOfWeek().getDisplayName(TextStyle.SHORT, Locale.KOREAN);
+        DayOfWeek dayOfWeek = localDate.getDayOfWeek();
         return new TimeAndStatus(localTime, dayOfWeek);
     }
 }

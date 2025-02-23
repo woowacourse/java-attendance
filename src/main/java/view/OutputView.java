@@ -18,7 +18,7 @@ import static util.constant.Value.START_YEAR;
 
 import domain.Holiday;
 import domain.Penalty;
-import domain.Records;
+import domain.Crew;
 import domain.StatisticsResult;
 import domain.TimeAndStatus;
 import java.time.LocalDate;
@@ -47,23 +47,22 @@ public class OutputView {
         System.out.printf(ATTENDANCE_EDIT_FORMAT, date, beforeInfo, afterInfo);
     }
 
-    public void printRecords(String name, LocalDate nowDate, Records records) {
+    public void printRecords(String name, LocalDate nowDate, Crew crew) {
         System.out.printf(CREW_ATTENDANCE_LIST_MESSAGE, name);
 
         LocalDate startDate = LocalDate.of(START_YEAR, START_MONTH, START_DAY);
-        while (startDate.isBefore(nowDate)) {
-            TimeAndStatus status = records.findByDate(startDate);
-            if (!Holiday.isHoliday(startDate) && !Holiday.isWeekend(startDate)) {
-                if (status == null || status.getStatus() == null) {
-                    String date = dateFormatting(startDate);
-                    System.out.printf(ATTENDANCE_RECORD_FORMAT, date, ABSENCE_RECORD_FORMAT);
-                    startDate = startDate.plusDays(1);
-                    continue;
-                }
-                printAttendanceRecord(startDate, status);
-            }
-            startDate = startDate.plusDays(1);
+        startDate.datesUntil(nowDate)
+            .filter(date -> !Holiday.isHoliday(date) && !Holiday.isWeekend(date))
+            .forEach(date -> printCrewAttendance(date, crew));
+    }
+
+    private void printCrewAttendance(LocalDate date, Crew crew) {
+        TimeAndStatus status = crew.findByDate(date);
+        if (status == null || status.getStatus() == null) {
+            System.out.printf(ATTENDANCE_RECORD_FORMAT, dateFormatting(date), ABSENCE_RECORD_FORMAT);
+            return;
         }
+        printAttendanceRecord(date, status);
     }
 
     public void printStatistics(int attendanceCount, int latenessCount, int absenceCount,
@@ -86,7 +85,9 @@ public class OutputView {
         System.out.println(WARNING_CREW_LIST_MESSAGE);
         for (String name : sortedResult.keySet()) {
             StatisticsResult statisticsResult = sortedResult.get(name);
-            System.out.printf(WARNING_CREW_FORMAT, name, statisticsResult.getAbsenceCount()
+            System.out.printf(WARNING_CREW_FORMAT
+                , name
+                , statisticsResult.getAbsenceCount()
                 , statisticsResult.getLatenessCount()
                 , statisticsResult.getPenalty().penalty
             );
@@ -94,12 +95,15 @@ public class OutputView {
     }
 
     private String timeFormatting(TimeAndStatus timeAndStatus) {
-        return String.format(TIME_PRINT_FORMAT, timeAndStatus.getTime().getHour(),
-            timeAndStatus.getTime().getMinute(), timeAndStatus.getStatus());
+        return String.format(TIME_PRINT_FORMAT
+            , timeAndStatus.getTime().getHour()
+            , timeAndStatus.getTime().getMinute()
+            , timeAndStatus.getStatus());
     }
 
     private String dateFormatting(LocalDate localDate) {
-        return String.format(DATE_PRINT_FORMAT, localDate.getMonthValue(),
+        return String.format(DATE_PRINT_FORMAT
+            , localDate.getMonthValue(),
             localDate.getDayOfMonth(),
             localDate.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.KOREAN));
     }

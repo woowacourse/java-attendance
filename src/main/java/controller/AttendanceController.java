@@ -7,7 +7,7 @@ import static util.constant.Value.NOW_YEAR;
 import domain.AttendanceManager;
 import domain.AttendanceStatistics;
 import domain.Penalty;
-import domain.Records;
+import domain.Crew;
 import domain.StatisticsResult;
 import domain.TimeAndStatus;
 import java.time.LocalDate;
@@ -95,15 +95,15 @@ public class AttendanceController {
             InputValidator.checkNull(name);
 
             LocalDate currentDate = DateTimeParser.parseIntegerToDate(NOW_YEAR, NOW_MONTH, NOW_DAY);
-            Records records = attendanceManager.findByName(name);
+            Crew crew = attendanceManager.findByName(name);
 
-            StatisticsResult statistics = AttendanceStatistics.countStatus(currentDate, records);
+            StatisticsResult statistics = AttendanceStatistics.countStatus(currentDate, crew);
             int attendanceCount = statistics.getAttendanceCount();
             int latenessCount = statistics.getLatenessCount();
             int absenceCount = statistics.getAbsenceCount();
             Penalty penaltyResult = statistics.getPenalty();
 
-            outputView.printRecords(name, currentDate, records);
+            outputView.printRecords(name, currentDate, crew);
             outputView.printStatistics(attendanceCount, latenessCount, absenceCount, penaltyResult);
         });
     }

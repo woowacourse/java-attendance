@@ -3,7 +3,7 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import domain.AttendanceManager;
 import domain.AttendanceStatistics;
 import domain.Penalty;
-import domain.Records;
+import domain.Crew;
 import domain.StatisticsResult;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -35,18 +35,18 @@ public class AttendanceRecordCheckTest {
     @Test
     void 출석_기록_조회() {
         String name = "빙티";
-        Records expectedRecords = attendanceManager.findByName(name);
-        assertThat(expectedRecords.getAttendanceCount()).isEqualTo(records.size());
+        Crew expectedCrew = attendanceManager.findByName(name);
+        assertThat(expectedCrew.getAttendanceCount()).isEqualTo(records.size());
     }
 
     @DisplayName("출석 통계를 정확하게 계산한다.")
     @Test
     void 출석_통계_계산() {
         String name = "빙티";
-        Records records = attendanceManager.findByName(name);
+        Crew crew = attendanceManager.findByName(name);
 
         LocalDate nowDate = LocalDate.of(2024, 12, 7);
-        StatisticsResult statisticsResult = AttendanceStatistics.countStatus(nowDate, records);
+        StatisticsResult statisticsResult = AttendanceStatistics.countStatus(nowDate, crew);
         int attendanceCount = statisticsResult.getAttendanceCount();
         int latenessCount = statisticsResult.getLatenessCount();
         int absenceCount = statisticsResult.getAbsenceCount();
@@ -60,10 +60,10 @@ public class AttendanceRecordCheckTest {
     @Test
     void 경고_기준_계산() {
         String name = "빙티";
-        Records records = attendanceManager.findByName(name);
+        Crew crew = attendanceManager.findByName(name);
 
         LocalDate nowDate = LocalDate.of(2024, 12, 7);
-        StatisticsResult statisticsResult = AttendanceStatistics.countStatus(nowDate, records);
+        StatisticsResult statisticsResult = AttendanceStatistics.countStatus(nowDate, crew);
 
         assertThat(Penalty.WARNING).isEqualTo(statisticsResult.getPenalty());
     }
@@ -81,10 +81,10 @@ public class AttendanceRecordCheckTest {
 
         String name = "빙티";
         attendanceManager.createCrew(name, counselingRecords);
-        Records records = attendanceManager.findByName(name);
+        Crew crew = attendanceManager.findByName(name);
 
         LocalDate nowDate = LocalDate.of(2024, 12, 10);
-        StatisticsResult statisticsResult = AttendanceStatistics.countStatus(nowDate, records);
+        StatisticsResult statisticsResult = AttendanceStatistics.countStatus(nowDate, crew);
 
         assertThat(Penalty.COUNSELING).isEqualTo(statisticsResult.getPenalty());
     }
@@ -105,10 +105,10 @@ public class AttendanceRecordCheckTest {
 
         String name = "빙티";
         attendanceManager.createCrew(name, expelledRecords);
-        Records records = attendanceManager.findByName(name);
+        Crew crew = attendanceManager.findByName(name);
 
         LocalDate nowDate = LocalDate.of(2024, 12, 13);
-        StatisticsResult statisticsResult = AttendanceStatistics.countStatus(nowDate, records);
+        StatisticsResult statisticsResult = AttendanceStatistics.countStatus(nowDate, crew);
 
         assertThat(Penalty.EXPELLED).isEqualTo(statisticsResult.getPenalty());
     }

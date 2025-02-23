@@ -2,7 +2,7 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 
 import domain.AttendanceManager;
-import domain.Records;
+import domain.Crew;
 import domain.TimeAndStatus;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -63,7 +63,7 @@ public class AttendanceEditTest {
     }
 
     private TimeAndStatus findTimeAndStatus(String name, LocalDate localDate) {
-        Records records = attendanceManager.findByName(name);
-        return records.findByDate(localDate);
+        Crew crew = attendanceManager.findByName(name);
+        return crew.findByDate(localDate);
     }
 }

@@ -21,28 +21,28 @@ import util.parser.DateTimeParser;
 
 public class AttendanceManager {
 
-    private final Map<String, Records> crews;
+    private final Map<String, Crew> crews;
 
     public AttendanceManager() {
         this.crews = new HashMap<>();
     }
 
     public void createCrew(String name, List<LocalDateTime> localDateTimes) {
-        crews.put(name, new Records(localDateTimes));
+        crews.put(name, new Crew(localDateTimes));
     }
 
     public TimeAndStatus attendCrew(String name, LocalDateTime localDateTime) {
         validateAttendancePossibility(name, localDateTime);
 
-        Records records = findByName(name);
-        return records.attend(localDateTime);
+        Crew crew = findByName(name);
+        return crew.attend(localDateTime);
     }
 
     public TimeAndStatus editCrew(String name, LocalDateTime newLocalDateTime) {
         validateEditPossibility(name, newLocalDateTime);
 
-        Records records = findByName(name);
-        return records.edit(newLocalDateTime);
+        Crew crew = findByName(name);
+        return crew.edit(newLocalDateTime);
     }
 
     public Map<String, StatisticsResult> sortCrew(LocalDate nowDate) {
@@ -61,7 +61,7 @@ public class AttendanceManager {
         return AttendanceStatistics.calculateExpelledWarning(nowDate, crews);
     }
 
-    public Records findByName(String name) {
+    public Crew findByName(String name) {
         try {
             return crews.get(name);
         } catch (NullPointerException e) {
