@@ -8,12 +8,12 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
-public class ConvertorTest {
+public class DayOfWeekConvertorTest {
 
     @ParameterizedTest
     @MethodSource("generateDayOfWeek")
     void 요일_변환_테스트(DayOfWeek dayOfWeek, String expected) {
-        assertThat(Convertor.convertDayOfWeekToKorean(dayOfWeek)).isEqualTo(expected);
+        assertThat(DayOfWeekConvertor.convertDayOfWeekToKorean(dayOfWeek)).isEqualTo(expected);
     }
 
     private static Stream<Arguments> generateDayOfWeek() {

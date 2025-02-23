@@ -3,7 +3,7 @@ package util;
 import java.time.DayOfWeek;
 import java.util.List;
 
-public class Convertor {
+public class DayOfWeekConvertor {
 
     private static List<String> days = List.of("일", "월", "화", "수", "목", "금", "토");
 
