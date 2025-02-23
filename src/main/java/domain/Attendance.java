@@ -15,6 +15,10 @@ public class Attendance {
         state = checkAttendanceState(localDateTime);
     }
 
+    public LocalDateTime getDateAndTime() {
+        return dateAndTime;
+    }
+
     public int getDayOfMonth() {
         return dateAndTime.getDayOfMonth();
     }
@@ -23,18 +27,7 @@ public class Attendance {
         return state;
     }
 
-    public String getFormattedTimeAndState() {
-        if (this.state.equals("결석")) {
-            return "--:-- " + "(" + this.state + ")";
-        }
-        return dateAndTime.format(DateTimeFormatter.ofPattern("HH:mm ", Locale.KOREAN)) + "(" + this.state + ")";
-    }
 
-    public String getFormattedAttended() {
-        return dateAndTime.format(DateTimeFormatter.ofPattern("MM월 dd일 "))
-                + dateAndTime.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.KOREAN) + " "
-                + getFormattedTimeAndState();
-    }
 
     private String checkAttendanceState(LocalDateTime localDateTime) {
         int hour = localDateTime.getHour();

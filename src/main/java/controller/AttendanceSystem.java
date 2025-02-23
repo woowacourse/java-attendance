@@ -60,14 +60,23 @@ public class AttendanceSystem {
     private void checkAttendance() {
         String name = userInputView.askNickNameForCheckAttendance();
         String[] time = userInputView.askAttendanceTimeForCheckAttendance();
-        outputView.printCheckedAttendance(allCrew, name, time);
+        outputView.printCheckedAttendance(allCrew.addCrewAttendanceByName(name, LocalDateTime.of(todayDate.getYear(),
+                todayDate.getMonthValue(),
+                todayDate.getDayOfMonth(),
+                Integer.parseInt(time[0]),
+                Integer.parseInt(time[1]))));
     }
 
     private void modifyAttendance() {
         String name = userInputView.askNickNameForModifyAttendanceInfo();
         int day = userInputView.askDayForModifyAttendanceInfo();
         String[] time = userInputView.askAttendanceTimeForModifyAttendance();
-        outputView.printModifyAttendance(allCrew, name, day, time);
+        LocalDateTime dateTime = LocalDateTime.of(todayDate.getYear(),
+                todayDate.getMonthValue(),
+                day,
+                Integer.parseInt(time[0]),
+                Integer.parseInt(time[1]));
+        outputView.printModifyAttendance(allCrew, name, dateTime); // 여기서 출력된것을 넘겨야 함.
     }
 }
 

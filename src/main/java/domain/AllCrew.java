@@ -22,19 +22,20 @@ public class AllCrew {
                 .anyMatch(crew -> crew.getName().equals(crewName));
     }
 
-    public String addCrewAttendanceByName(String name, LocalDateTime dateTime) {
+    public Attendance addCrewAttendanceByName(String name, LocalDateTime dateTime) {
         Crew crew = findCrewByName(name);
-        return crew.addAttendance(dateTime).getFormattedAttended();
+        return crew.addAttendance(dateTime);
     }
 
-    public String modifyCrewAttendanceByName(String name, LocalDateTime dateTime) {
+    public List<Attendance> modifyCrewAttendanceByName(String name, LocalDateTime dateTime) {
         Crew crew = findCrewByName(name);
         return crew.update(dateTime);
     }
 
-    public String printAttendanceHistory(String name, LocalDate lastDate) {
+    public Crew getUpdatedCrew(String name, LocalDate lastDate) {
         Crew crew = findCrewByName(name);
-        return crew.getAttendanceHistory(lastDate);
+        crew.updateUntil(lastDate);
+        return crew;
     }
 
     private Crew findCrewByName(String name) {
