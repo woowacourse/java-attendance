@@ -7,9 +7,9 @@ import static domain.December.DEFAULT_MONTH;
 import static domain.December.DEFAULT_YEAR;
 
 import domain.AttendTime;
-import domain.AttendanceFileReader;
 import domain.Crews;
 import domain.December;
+import infrastructure.AttendanceFileReader;
 import java.time.LocalDateTime;
 import java.util.List;
 import view.InputView;
@@ -20,14 +20,14 @@ public class AttendanceController {
     private final InputView inputView;
     private final OutputView outputView;
 
-    public AttendanceController(final InputView inputView, OutputView outputView) {
+    public AttendanceController(final InputView inputView, final OutputView outputView) {
         this.inputView = inputView;
         this.outputView = outputView;
     }
 
-    public void run() {
-        List<String> students = AttendanceFileReader.readFile("src/main/resources/attendances.csv");
-        Crews crews = new Crews(students);
+    public void run(AttendanceFileReader attendanceFileReader) {
+        List<String> rawCrews = attendanceFileReader.readFile("src/main/resources/attendances.csv");
+        Crews crews = new Crews(rawCrews);
 
         String command;
         do {
