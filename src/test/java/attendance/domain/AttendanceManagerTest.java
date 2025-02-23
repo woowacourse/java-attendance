@@ -11,6 +11,7 @@ import org.junit.jupiter.params.provider.MethodSource;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.List;
 import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -69,11 +70,11 @@ class AttendanceManagerTest {
         LocalDateTime updateDateTime = LocalDateTime.of(2024, 12, 2, 10, 0);
 
         // when
-        Attendance result = attendanceManager.processAttendanceUpdate(updateDateTime, nickname);
+        List<Attendance> result = attendanceManager.processAttendanceUpdate(updateDateTime, nickname);
 
         // then
-        assertThat(result.getDateTime()).isEqualTo(updateDateTime);
-        assertThat(result.getStatus()).isEqualTo(AttendanceStatusType.ATTENDANCE);
+        assertThat(result.getLast().getDateTime()).isEqualTo(updateDateTime);
+        assertThat(result.getLast().getStatus()).isEqualTo(AttendanceStatusType.ATTENDANCE);
     }
 
     @Test
