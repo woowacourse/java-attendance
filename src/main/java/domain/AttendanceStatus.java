@@ -1,7 +1,6 @@
 package domain;
 
 import global.util.DateUtil;
-
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -10,6 +9,9 @@ public enum AttendanceStatus {
     ATTENDANCE,
     TARDY,
     ABSENCE;
+
+    private static final int ABSENCE_THRESHOLD_MINUTES = 30;
+    private static final int TARDY_THRESHOLD_MINUTES = 5;
 
     public static AttendanceStatus attend(LocalDateTime target) {
         LocalDate targetDate = target.toLocalDate();
@@ -29,13 +31,17 @@ public enum AttendanceStatus {
 
     private static AttendanceStatus getAttendanceStatusByTime(LocalTime attendanceTime, LocalTime targetTime) {
         if (targetTime.isAfter(attendanceTime)) {
-            if (attendanceTime.plusMinutes(30).isBefore(targetTime)) {
-                return ABSENCE;
-            }
-            if (attendanceTime.plusMinutes(5).isBefore(targetTime)) {
-                return TARDY;
-            }
-            return ATTENDANCE;
+            compareToSpecificTime(attendanceTime, targetTime);
+        }
+        return ATTENDANCE;
+    }
+
+    private static AttendanceStatus compareToSpecificTime(LocalTime attendanceTime, LocalTime targetTime) {
+        if (attendanceTime.plusMinutes(ABSENCE_THRESHOLD_MINUTES).isBefore(targetTime)) {
+            return ABSENCE;
+        }
+        if (attendanceTime.plusMinutes(TARDY_THRESHOLD_MINUTES).isBefore(targetTime)) {
+            return TARDY;
         }
         return ATTENDANCE;
     }
