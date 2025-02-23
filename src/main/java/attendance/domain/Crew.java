@@ -10,6 +10,7 @@ public class Crew {
     private final AttendanceHistoryManager attendanceHistoryManager;
 
     public Crew(String name) {
+        validateName(name);
         this.name =  name;
         this.attendanceHistoryManager = new AttendanceHistoryManager();
     }
@@ -36,6 +37,12 @@ public class Crew {
 
     public CrewStatus calculateCrewStatus(Map<AttendanceType, Integer> attendanceResult) {
         return attendanceHistoryManager.calculateCrewStatus(attendanceResult);
+    }
+
+    private static void validateName(String name) {
+        if (name == null || name.isBlank()) {
+            throw new IllegalArgumentException("크루 이름은 공백일 수 없습니다.");
+        }
     }
 
     @Override
