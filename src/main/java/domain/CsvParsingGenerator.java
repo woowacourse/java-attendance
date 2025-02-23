@@ -35,10 +35,9 @@ public class CsvParsingGenerator implements CrewAttendanceRecordsGenerator {
 
     private AttendanceRecord parseAttendanceRecord(String row) {
         String record = row.split(CREW_RECORD_SEPARATOR)[RECORD_INDEX];
-        String dateRecord = record.split(DATE_TIME_SEPARATOR)[DATE_INDEX];
-        String timeRecord = record.split(DATE_TIME_SEPARATOR)[TIME_INDEX];
-        LocalDate date = LocalDate.parse(dateRecord);
-        LocalTime time = LocalTime.parse(timeRecord);
+        String[] dateTimeSplit = record.split(DATE_TIME_SEPARATOR);
+        LocalDate date = LocalDate.parse(dateTimeSplit[DATE_INDEX]);
+        LocalTime time = LocalTime.parse(dateTimeSplit[TIME_INDEX]);
         return AttendanceRecord.of(date, time);
     }
 

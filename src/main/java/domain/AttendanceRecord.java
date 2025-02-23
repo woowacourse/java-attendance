@@ -5,8 +5,6 @@ import java.time.LocalTime;
 import java.util.Objects;
 
 public class AttendanceRecord {
-    private static final int DATE_INDEX = 0;
-    private static final int TIME_INDEX = 1;
     public static final LocalTime ABSENT_TIME = LocalTime.of(14, 0);
 
     private final LocalDate date;
