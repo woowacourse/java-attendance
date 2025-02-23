@@ -7,6 +7,7 @@ import domain.CrewDto;
 import domain.Crews;
 import domain.Day;
 import domain.DayOfWeek;
+import domain.Holiday;
 import domain.PenaltyStatus;
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -106,12 +107,11 @@ public class AttendanceController {
     }
 
     private void checkHoliday(LocalDate todayDate) {
-        Day today = new Day(todayDate);
         int month = todayDate.getMonth().getValue();
         int dayOfMonth = todayDate.getDayOfMonth();
         String dayOfWeekName = DayOfWeek.getNameById(todayDate.getDayOfWeek().getValue());
 
-        if (today.checkHoliday()) {
+        if (Holiday.isHoliday(todayDate)) {
             throw new IllegalArgumentException(
                     "[ERROR] " + month + "월 " + dayOfMonth + "일 " + dayOfWeekName + "은 등교일이 아닙니다.");
         }

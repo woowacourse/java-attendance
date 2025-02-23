@@ -64,6 +64,7 @@ public class Crew {
         today.withDayOfMonth(1)
                 .datesUntil(today)
                 .filter(date -> date.getDayOfWeek().getValue() < 6)
+                .filter(date -> !Holiday.isHoliday(date))
                 .filter(date -> !isAlreadyAttend(date))
                 .forEach(date -> addAttendance(new Attendance(new Day(date), null)));
     }
