@@ -6,7 +6,6 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 public class CrewLoader {
-
     public static final String DELIMITER_COMMA = ",";
     public static final String DATETIME_FORMAT = "yyyy-MM-dd HH:mm";
 

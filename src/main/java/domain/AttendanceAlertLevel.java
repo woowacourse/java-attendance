@@ -28,10 +28,6 @@ public enum AttendanceAlertLevel {
         return NORMAL;
     }
 
-    public int getAbsenceLimit() {
-        return absenceLimit;
-    }
-
     public String getName() {
         return name;
     }
