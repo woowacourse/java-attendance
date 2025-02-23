@@ -16,13 +16,13 @@ import java.util.stream.Collectors;
 public class AttendanceHistories {
     private final List<AttendanceHistory> histories;
 
-    public AttendanceHistories(List<LocalDateTime> histories, LocalDate standard) {
-        List<LocalDateTime> copy = new ArrayList<>(histories);
+    public AttendanceHistories(List<LocalDateTime> originalHistories, LocalDate standard) {
+        List<LocalDateTime> copyOfHistories = new ArrayList<>(originalHistories);
         int day = standard.getDayOfMonth();
         for (int i = 1; i < day; i++) {
-            addAbsenceHistory(standard, i, copy);
+            addAbsenceHistory(standard, i, copyOfHistories);
         }
-        this.histories = copy.stream().map(AttendanceHistory::new).collect(Collectors.toList());
+        this.histories = copyOfHistories.stream().map(AttendanceHistory::new).collect(Collectors.toList());
     }
 
     public AbsenceLevel classifyAbsenceLevel(LocalDateTime standard) {
