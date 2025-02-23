@@ -15,7 +15,7 @@ public class InputView {
     private final static String ATTENDANCE_MODIFY_MENU = "2. 출석 수정";
     private final static String RECORD_PRINT_FOR_EACH_CREW_MENU = "3. 크루별 출석 기록 확인";
     private final static String DISMISSAL_CREW_CHECK_MENU = "4. 제적 위험자 확인";
-    private final static String QUICK = "Q";
+    private final static String QUIT = "종료";
     private final static String PROMPT_TIME_INPUT_TO_MODIFY = "언제로 변경하겠습니까?";
     private final static String PROMPT_DAY_INPUT_TO_MODIFY = "수정하려는 날짜(일)를 입력해 주세요.";
     private final static String PROMPT_STUDENT_NAME_INPUT_TO_MODIFY = "출석을 수정하려는 크루의 닉네임을 입력해 주세요.";
@@ -38,7 +38,7 @@ public class InputView {
         System.out.println(ATTENDANCE_MODIFY_MENU);
         System.out.println(RECORD_PRINT_FOR_EACH_CREW_MENU);
         System.out.println(DISMISSAL_CREW_CHECK_MENU);
-        System.out.println(QUICK);
+        System.out.println(QUIT);
     }
 
     public static String userInput(){
