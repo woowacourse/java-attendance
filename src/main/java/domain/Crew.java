@@ -10,8 +10,8 @@ import java.util.Map;
 import java.util.Objects;
 
 public class Crew {
-    private static final int END_DAY_OF_DECEMBER = 31;
     private static final int START_DAY_OF_DECEMBER = 1;
+    private static final int END_DAY_OF_DECEMBER = 31;
 
     private final String name;
     private final Map<LocalDate, LocalTime> dailyAttendances;
@@ -35,20 +35,6 @@ public class Crew {
         dailyAttendances.putAll(dateAndTime);
     }
 
-    private void validateIsNotAlreadyAttended(LocalDate date) {
-        if (dailyAttendances.containsKey(date)) {
-            throw new IllegalArgumentException(ErrorCode.CHECK_ATTENDANCE_ALREADY_EXISTS.getMessage());
-        }
-    }
-
-    public boolean hasName(String value) {
-        return Objects.equals(name, value);
-    }
-
-    public String getName() {
-        return name;
-    }
-
     public void modifyDailyAttendance(Map<LocalDate, LocalTime> dateAndTime) {
         LocalDate date = dateAndTime.keySet().stream()
                 .findAny()
@@ -63,6 +49,12 @@ public class Crew {
         if (!dailyAttendances.containsKey(date)) {
             throw new IllegalArgumentException(
                     String.format(ErrorCode.ATTENDANCE_RECORD_NOT_EXISTS_FORMAT.getMessage(), date.getDayOfMonth()));
+        }
+    }
+
+    private void validateIsNotAlreadyAttended(LocalDate date) {
+        if (dailyAttendances.containsKey(date)) {
+            throw new IllegalArgumentException(ErrorCode.CHECK_ATTENDANCE_ALREADY_EXISTS.getMessage());
         }
     }
 
@@ -95,5 +87,13 @@ public class Crew {
 
     public LocalTime getTimeByDate(LocalDate date) {
         return dailyAttendances.get(date);
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public boolean hasName(String value) {
+        return Objects.equals(name, value);
     }
 }
