@@ -4,7 +4,8 @@ public enum Penalty {
     REMOVAL("제적"),
     INTERVIEW("면담"),
     WARNING("경고"),
-    NONE("");
+    NONE("")
+    ;
 
     private static final int LATE_PER_ABSENCE = 3;
     private static final int WARNING_LIMIT = 2;
@@ -29,7 +30,7 @@ public enum Penalty {
         if (absenceCount >= INTERVIEW_LIMIT) {
             return Penalty.INTERVIEW;
         }
-        if (absenceCount >= WARNING_LIMIT) {
+        if (absenceCount == WARNING_LIMIT) {
             return Penalty.WARNING;
         }
         return Penalty.NONE;
