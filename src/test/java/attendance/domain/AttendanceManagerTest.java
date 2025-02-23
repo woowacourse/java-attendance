@@ -92,6 +92,20 @@ class AttendanceManagerTest {
     }
 
     @Test
+    void 크루의_전날까지의_출석_기록을_반환한다() {
+        // given
+        String nickname = "이든";
+        attendanceManager.addCrew(nickname);
+
+        // when
+        List<Attendance> attendances = attendanceManager.processAttendanceSearch(nickname);
+
+        // then
+        assertThat(attendances.size())
+                .isEqualTo(4);
+    }
+
+    @Test
     void 등록되지_않은_닉네임으로_출석시_에러가_발생한다() {
         // given
         String nickname = "이든";
