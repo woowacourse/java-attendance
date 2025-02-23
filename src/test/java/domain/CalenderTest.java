@@ -24,6 +24,32 @@ class CalenderTest {
         assertThat(result.getDescription()).isEqualTo("목요일");
     }
 
+    @DisplayName("날짜가 공휴일이라면 true를 반환한다.")
+    @ParameterizedTest
+    @ValueSource(ints = {1, 7, 8, 14, 15, 21, 22, 25, 28, 29})
+    void isHolyDay(int dayOfMonth) {
+        //given
+
+        //when
+        boolean actual = Calender.isHolyDay(dayOfMonth);
+
+        //then
+        assertThat(actual).isTrue();
+    }
+
+    @DisplayName("날짜가 공휴일이 아니라면 false를 반환한다.")
+    @ParameterizedTest
+    @ValueSource(ints = {2, 3, 4, 5, 9, 10, 11, 12, 13, 16, 17, 18, 19, 20, 23, 24, 26, 27, 30, 31})
+    void isNotHolyDay(int dayOfMonth) {
+        //given
+
+        //when
+        boolean actual = Calender.isHolyDay(dayOfMonth);
+
+        //then
+        assertThat(actual).isFalse();
+    }
+
     @DisplayName("공휴일에 출석확인을 하면 예외가 발생한다.")
     @ParameterizedTest
     @ValueSource(ints = {1, 7, 8, 14, 15, 21, 22, 25, 28, 29})

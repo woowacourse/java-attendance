@@ -27,6 +27,10 @@ public enum Calender {
                 .orElseThrow(() -> new IllegalArgumentException("존재하는 요일이 없습니다."));
     }
 
+    public static boolean isHolyDay(final int dayIndex) {
+        return HOLY.date.contains(dayIndex);
+    }
+
     public static void validateHolyDay(final int dayOfWeekValue) {
         Calender dayOfWeek = findBy(dayOfWeekValue);
         if (dayOfWeek.description.equals("공휴일")) {

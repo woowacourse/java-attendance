@@ -71,7 +71,7 @@ public class Attendance {
 
         int idx = 0;
         for (int dayIndex = 1; dayIndex < todayDay; dayIndex++) {
-            if (Calender.findBy(dayIndex).getDescription().equals("공휴일")) {
+            if (Calender.isHolyDay(dayIndex)) {
                 continue;
             }
 
