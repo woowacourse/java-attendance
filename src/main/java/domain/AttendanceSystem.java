@@ -88,6 +88,15 @@ public class AttendanceSystem {
                 .updateAttendanceByDateAndTime(targetTime, targetDate);
     }
 
+    public UpdatedAttendanceSnapshot updateTodayAttendance(
+            final String crewName,
+            final LocalTime targetTime
+    ) {
+        final LocalDate today = dateTimeGenerator.generateDate();
+        return findCrewByName(crewName)
+                .updateAttendanceByDateAndTime(targetTime, today);
+    }
+
     public ExpulsionStatus calculateExpulsionStatusByCrew(final String crewName) {
         return findCrewByName(crewName).calculateExpulsionStatus();
     }

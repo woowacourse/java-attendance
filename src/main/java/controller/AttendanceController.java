@@ -72,20 +72,26 @@ public class AttendanceController {
         }
         final String crewName = LoopTemplate.tryCatchLoop(this::inputCrewName, attendanceSystem, outputView);
         if (attendanceSystem.isAlreadyTodayAttendance(crewName)) {
-            updateAttendanceForDuplicateAttendance(crewName, attendanceSystem);
+            updateAttendanceIfAlreadyTodayAttendance(attendanceSystem, crewName);
             return;
         }
         final Attendance attendance = LoopTemplate.tryCatchLoop(this::attendance, crewName, attendanceSystem
                 , outputView);
         final AttendanceResponse attendanceResponse = responseConverter.convertAttendanceToResponse(attendance);
         outputView.printCrewAttendances(List.of(attendanceResponse));
-
-
     }
 
     private void updateAttendance(final AttendanceSystem attendanceSystem) {
         final String crewName = LoopTemplate.tryCatchLoop(this::inputCrewNameForUpdate, attendanceSystem, outputView);
         updateByDateAndCrewName(crewName, attendanceSystem);
+    }
+
+    private void updateAttendanceByToday(final AttendanceSystem attendanceSystem, final String crewName) {
+        final LocalTime targetTime = LoopTemplate.tryCatchLoop(this::inputUpdateTime, outputView);
+        final UpdatedAttendanceSnapshot updatedAttendanceSnapshot = attendanceSystem.updateTodayAttendance(crewName,
+                targetTime);
+        outputView.printUpdateAttendanceResult(
+                responseConverter.convertUpdatedAttendanceSnapshotToResponse(updatedAttendanceSnapshot));
     }
 
     private void responseCrewAttendanceHistory(final AttendanceSystem attendanceSystem) {
@@ -112,12 +118,14 @@ public class AttendanceController {
                 responseConverter.convertUpdatedAttendanceSnapshotToResponse(updatedAttendanceSnapshot));
     }
 
-    private void updateAttendanceForDuplicateAttendance(final String crewName,
-                                                        final AttendanceSystem attendanceSystem) {
+    private void updateAttendanceIfAlreadyTodayAttendance(
+            final AttendanceSystem attendanceSystem,
+            final String crewName
+    ) {
         outputView.printIntroduceAnswerCommand();
         final AnswerCommand answerCommand = LoopTemplate.tryCatchLoop(inputView::readAnswerCommand, outputView);
         if (answerCommand == AnswerCommand.YES) {
-            updateAttendance(attendanceSystem);
+            updateAttendanceByToday(attendanceSystem, crewName);
         }
     }
 
