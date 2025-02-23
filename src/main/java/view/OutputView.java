@@ -27,16 +27,28 @@ public final class OutputView {
 
     public static void printUpdateAttendance(final AttendanceSummary oldAttendanceSummary,
                                              final AttendanceSummary newAttendanceSummary) {
-        final LocalDateTime oldDateTime = oldAttendanceSummary.attendanceDateTime().getLocalDateTime();
-        final String oldStatus = oldAttendanceSummary.attendanceStatus().getDisplayName();
-        final LocalDateTime newDateTime = newAttendanceSummary.attendanceDateTime().getLocalDateTime();
-        final String newStatus = newAttendanceSummary.attendanceStatus().getDisplayName();
+        final LocalDateTime oldDateTime = getLocalDateTime(oldAttendanceSummary);
+        final String oldStatus = getStatusDisplayName(oldAttendanceSummary);
+        final LocalDateTime newDateTime = getLocalDateTime(newAttendanceSummary);
+        final String newStatus = getStatusDisplayName(newAttendanceSummary);
 
         final String oldFormat = String.format("%s (%s)", oldDateTime.format(Week.KOREAN_DATE_TIME_FORMAT), oldStatus);
         final String newFormat = String.format("%s (%s)", newDateTime.toLocalDate(), newStatus);
         final String finalFormat = String.format("%s -> %s 수정 완료!", oldFormat, newFormat);
 
         printMessageWithLineSeparator(finalFormat);
+    }
+
+    private static String getStatusDisplayName(final AttendanceSummary oldAttendanceSummary) {
+        final AttendanceStatus attendanceStatus = oldAttendanceSummary.attendanceStatus();
+
+        return attendanceStatus.getDisplayName();
+    }
+
+    private static LocalDateTime getLocalDateTime(AttendanceSummary attendanceSummary) {
+        final AttendanceDateTime attendanceDateTime = attendanceSummary.attendanceDateTime();
+
+        return attendanceDateTime.getLocalDateTime();
     }
 
     public static void printCrewAttendances(final CrewSummary crewSummaries,
