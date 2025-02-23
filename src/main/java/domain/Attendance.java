@@ -75,14 +75,12 @@ public class Attendance {
                 continue;
             }
 
-            LocalDateTime localDateTime = null;
-            try {
-                localDateTime = localDateTimes.get(idx);
-            } catch (IndexOutOfBoundsException e) {
+            if (idx >= localDateTimes.size()) {
                 checkAbsence(dayIndex, attendanceResultDtos);
                 continue;
             }
 
+            LocalDateTime localDateTime = localDateTimes.get(idx);
             int dayOfMonth = localDateTime.getDayOfMonth();
 
             if (dayIndex == dayOfMonth) {
