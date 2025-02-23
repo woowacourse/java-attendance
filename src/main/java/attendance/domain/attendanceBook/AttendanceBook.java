@@ -1,4 +1,4 @@
-package attendance.domain;
+package attendance.domain.attendanceBook;
 
 import static attendance.common.utill.DateTimeFormatterWrapper.*;
 

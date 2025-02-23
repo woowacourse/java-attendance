@@ -11,8 +11,8 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
 import attendance.common.exception.AttendanceArgumentException;
-import attendance.domain.Attendance;
 import attendance.domain.AttendanceStatus;
+import attendance.domain.attendanceBook.Attendance;
 
 public class AttendanceTest {
 

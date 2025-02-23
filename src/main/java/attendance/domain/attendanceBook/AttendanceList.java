@@ -1,4 +1,4 @@
-package attendance.domain;
+package attendance.domain.attendanceBook;
 
 import java.util.ArrayList;
 import java.util.List;

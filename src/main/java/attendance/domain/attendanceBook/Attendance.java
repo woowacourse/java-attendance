@@ -1,4 +1,4 @@
-package attendance.domain;
+package attendance.domain.attendanceBook;
 
 import java.time.DayOfWeek;
 import java.time.LocalDateTime;
@@ -6,6 +6,7 @@ import java.time.LocalTime;
 import java.util.List;
 
 import attendance.common.exception.AttendanceArgumentException;
+import attendance.domain.AttendanceStatus;
 
 public record Attendance(LocalDateTime dateTime, AttendanceStatus attendanceStatus) {
     private static final List<Integer> datOfHoliday = List.of(25);

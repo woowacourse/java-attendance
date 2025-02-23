@@ -1,4 +1,9 @@
-package attendance.domain;
+package attendance.domain.attendanceManager;
+
+import java.time.LocalDate;
+import java.time.LocalTime;
+
+import attendance.domain.attendanceBook.AttendanceBook;
 
 public abstract class AttendanceManager {
     protected final AttendanceBook attendanceBook;
@@ -7,11 +12,7 @@ public abstract class AttendanceManager {
         this.attendanceBook = attendanceBook;
     }
 
-    public abstract void manage(String nickname, Attendance attendance);
-
-    public Attendance findAttendance(String nickname, Attendance attendance) {
-        return attendanceBook.findAttendance(nickname, attendance);
-    }
+    public abstract void manage(String nickname, LocalDate date, LocalTime time);
 
     protected enum Error {
         ATTENDANCE_NOT_AVAILABLE("출석 시스템은 2024년 12월 동안만 유효합니다"),

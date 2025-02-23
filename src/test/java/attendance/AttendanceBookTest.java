@@ -12,9 +12,9 @@ import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
 import attendance.common.exception.AttendanceFileException;
-import attendance.domain.Attendance;
-import attendance.domain.AttendanceBook;
 import attendance.domain.AttendanceFileReader;
+import attendance.domain.attendanceBook.Attendance;
+import attendance.domain.attendanceBook.AttendanceBook;
 
 public class AttendanceBookTest {
     private AttendanceBook manager;
