@@ -1,8 +1,8 @@
 package domain;
 
 import error.CustomIllegalArgumentException;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -15,7 +15,7 @@ public class Attendances {
     }
 
     public AttendanceDto calculateAttendanceCount() {
-        final long attendanceCount =getCountByStatus(AttendanceStatus.ATTENDANCE);
+        final long attendanceCount = getCountByStatus(AttendanceStatus.ATTENDANCE);
         final long tardinessCount = getCountByStatus(AttendanceStatus.TARDINESS);
         final long absence = getCountByStatus(AttendanceStatus.ABSENCE);
 
@@ -44,11 +44,19 @@ public class Attendances {
         attendances.add(index, newAttendance);
     }
 
-    public Attendance findAttendance(final LocalDate finalLocalDate) {
+    public Attendance findAttendance(final int findDayOfMonth) {
         return attendances.stream()
-                .filter(attendance -> attendance.equals(finalLocalDate))
+                .filter(attendance -> attendance.equals(findDayOfMonth))
                 .findFirst()
                 .orElseThrow(() -> new CustomIllegalArgumentException("수정하는 일자를 찾을 수 없습니다."));
+    }
+
+    public void updateTime(Attendance findAttendance, LocalTime updateTime) {
+        attendances.remove(findAttendance);
+        LocalDateTime dateTime = findAttendance.getLocalDateTime();
+        LocalDateTime newDateTime = LocalDateTime.of(dateTime.toLocalDate(), updateTime);
+        Attendance newAttendance = new Attendance(newDateTime);
+        addSorted(newAttendance);
     }
 
     public List<Integer> getDates() {
@@ -59,9 +67,5 @@ public class Attendances {
 
     public List<Attendance> getAttendances() {
         return attendances;
-    }
-
-    public void remove(final Attendance oldAttendance) {
-        attendances.remove(oldAttendance);
     }
 }

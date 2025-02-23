@@ -2,6 +2,7 @@ package controller;
 
 import domain.Attendance;
 import domain.AttendanceDateTime;
+import domain.Attendances;
 import domain.Command;
 import domain.Crew;
 import domain.Crews;
@@ -37,7 +38,7 @@ public class AttendanceController {
 
     public static void processCheckAttendees(final Crews crews, final LocalDateTime fixDateTime) {
         validateHoliday(fixDateTime);
-        Crew crew = findCrew(crews);
+        Crew crew = findCrewByNickNameInput(crews);
         String inputTime = InputView.readDateTime();
         LocalDate fixedDate = AttendanceDateTime.getDate(fixDateTime);
         AttendanceDateTime attendanceDateTime = AttendanceDateTime.ofTimeString(fixedDate, inputTime);
@@ -53,25 +54,26 @@ public class AttendanceController {
         Nickname nickname = new Nickname(inputNickName);
         Crew crew = crews.findByNickname(nickname);
 
-        String inputUpdateDate = InputView.readUpdateDate();
-        LocalDate updateDate = AttendanceDateTime.parsedLocalDateByDateOfMonth(Integer.parseInt(inputUpdateDate));
+        String oldDayOfMonthInput = InputView.readUpdateDate();
+        int dayOfMonth = Integer.parseInt(oldDayOfMonthInput);
+        Attendances attendances = crew.getAttendances();
+        Attendance findAttendance = attendances.findAttendance(dayOfMonth);
 
         String inputUpdateTime = InputView.readUpdateDateTime();
         final LocalTime updateTime = LocalTime.parse(inputUpdateTime);
-        AttendanceDateTime updateDateTime = AttendanceDateTime.of(updateDate, updateTime);
 
-        Attendance oldAttendance = crew.getAttendance(updateDate);
-        Attendance newAttendance = new Attendance(updateDateTime.getDateTime());
-        crew.updateAttendance(oldAttendance, newAttendance);
-        OutputView.printUpdateAttendance(oldAttendance, newAttendance);
+        attendances.updateTime(findAttendance, updateTime);
+        Attendance newAttendance = attendances.findAttendance(dayOfMonth);
+
+        OutputView.printUpdateAttendance(findAttendance, newAttendance);
     }
 
     public static void processAttendanceRecordByCrew(final Crews crews) {
-        Crew crew = findCrew(crews);
+        Crew crew = findCrewByNickNameInput(crews);
         OutputView.printCrewAttendances(crew);
     }
 
-    private static Crew findCrew(Crews crews) {
+    private static Crew findCrewByNickNameInput(Crews crews) {
         String inputNickName = InputView.readNickName();
         Nickname nickname = new Nickname(inputNickName);
         Crew crew = crews.findByNickname(nickname);
