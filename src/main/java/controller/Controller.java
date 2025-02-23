@@ -28,7 +28,11 @@ public class Controller {
                 break;
             }
             if (Integer.parseInt(userInput) == 1) {
-                InputView.checkAttendanceAvailable(todayDate);
+                try {
+                    InputView.checkAttendanceAvailable(todayDate);
+                }catch (IllegalArgumentException e) {
+                    continue;
+                }
                 String name = InputView.getStudentForAttendanceCheckUntilExist(studentRecordRepository);
                 LocalDateTime localDateTime = InputView.getLocalDateTimeUntilValidate(todayDate);
 
