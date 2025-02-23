@@ -1,6 +1,8 @@
 package attendance.domain;
 
 import attendance.domain.constant.AttendanceStatus;
+import attendance.exception.CustomException;
+import attendance.exception.ErrorMessage;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.HashMap;
@@ -16,19 +18,19 @@ public class Register {
     }
 
     public AttendanceChecker modifyInfo(Crew crew, LocalDateTime localDateTime) {
-        AttendanceRegistry attendanceRegistry = register.get(crew);
+        AttendanceRegistry attendanceRegistry = register.get(findValidatedCrew(crew));
         AttendanceChecker attendanceChecker = attendanceRegistry.findByDate(localDateTime.getDayOfMonth());
         attendanceChecker.modifyAttendanceTime(localDateTime);
         return attendanceChecker;
     }
 
     public AttendanceChecker findInfo(Crew crew, LocalDateTime modifyDate) {
-        AttendanceRegistry attendanceRegistry = register.get(crew);
+        AttendanceRegistry attendanceRegistry = register.get(findValidatedCrew(crew));
         return attendanceRegistry.findByDate(modifyDate.getDayOfMonth());
     }
 
     public AttendanceRegistry checkAttendanceHistory(Crew crew) {
-        AttendanceRegistry attendanceRegistry = register.get(crew);
+        AttendanceRegistry attendanceRegistry = register.get(findValidatedCrew(crew));
         attendanceRegistry.calculateAttendanceHistory();
         return attendanceRegistry;
     }
@@ -48,10 +50,17 @@ public class Register {
     public Map<Crew, List<Integer>> findAllExpertRiskCrews() {
         Map<Crew, List<Integer>> riskCrews = new HashMap<>();
         for (Crew crew : register.keySet()) {
-            AttendanceRegistry attendanceRegistry = register.get(crew);
+            AttendanceRegistry attendanceRegistry = register.get(findValidatedCrew(crew));
             findRiskCrews(crew, riskCrews, attendanceRegistry);
         }
         return riskCrews;
+    }
+
+    private Crew findValidatedCrew(Crew crew) {
+        return register.keySet().stream()
+                .filter(crewName -> crewName.equals(crew))
+                .findFirst()
+                .orElseThrow(() -> CustomException.from(ErrorMessage.NICKNAME_NOT_PRESENCE));
     }
 
     private void findRiskCrews(Crew crew, Map<Crew, List<Integer>> riskCrews, AttendanceRegistry attendanceRegistry) {
