@@ -5,6 +5,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.MonthDay;
+import java.util.Objects;
 
 public class AttendanceDateTime {
 
@@ -93,5 +94,19 @@ public class AttendanceDateTime {
 
     public LocalDateTime getAttendanceDateTime() {
         return attendanceDateTime;
+    }
+
+    @Override
+    public boolean equals(Object object) {
+        if (object == null || getClass() != object.getClass()) {
+            return false;
+        }
+        AttendanceDateTime that = (AttendanceDateTime) object;
+        return Objects.equals(getAttendanceDateTime(), that.getAttendanceDateTime());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(getAttendanceDateTime());
     }
 }

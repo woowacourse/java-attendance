@@ -1,5 +1,7 @@
 package domain;
 
+import java.util.Objects;
+
 public class AttendanceSheet {
 
     private final String nickname;
@@ -22,7 +24,18 @@ public class AttendanceSheet {
         return attendanceDateTime;
     }
 
-    public boolean isSame(AttendanceSheet attendanceSheet) {
-        return this.attendanceDateTime.isSame(attendanceSheet);
+    @Override
+    public boolean equals(Object object) {
+        if (object == null || getClass() != object.getClass()) {
+            return false;
+        }
+        AttendanceSheet that = (AttendanceSheet) object;
+        return Objects.equals(getNickname(), that.getNickname()) && Objects.equals(
+                getAttendanceDateTime(), that.getAttendanceDateTime());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getNickname(), getAttendanceDateTime());
     }
 }
