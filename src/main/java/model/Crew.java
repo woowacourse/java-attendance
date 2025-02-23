@@ -15,7 +15,7 @@ public class Crew {
     }
 
     public boolean isEqualName(String nickname) {
-        return nickname.equals(nickname);
+        return this.nickname.equals(nickname);
     }
 
     @Override
