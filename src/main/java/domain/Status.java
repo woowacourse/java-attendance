@@ -24,14 +24,14 @@ public enum Status {
         int attendanceCount = 0;
         int lateCount = 0;
         int absentCount = 0;
-        for(Attendance attendance : attendanceData.value()) {
-            if(Status.of(attendance) == ATTEND) {
+        for (Attendance attendance : attendanceData.value()) {
+            if (Status.of(attendance) == ATTEND) {
                 attendanceCount++;
             }
-            if(Status.of(attendance) == LATE) {
+            if (Status.of(attendance) == LATE) {
                 lateCount++;
             }
-            if(Status.of(attendance) == ABSENCE) {
+            if (Status.of(attendance) == ABSENCE) {
                 absentCount++;
             }
         }

@@ -20,11 +20,11 @@ class AttendanceBookTest {
         AttendanceBook attendanceBook = new AttendanceBook();
         attendanceBook.enter(name);
         attendanceBook.add(name, LocalDateTime.of(2024, 12, 2, 13, 0));
-        attendanceBook.add(name, LocalDateTime.of(2024, 12, 3, 9,58));
-        attendanceBook.add(name, LocalDateTime.of(2024, 12, 4, 10,2));
-        attendanceBook.add(name, LocalDateTime.of(2024, 12, 5, 10,6));
-        attendanceBook.add(name, LocalDateTime.of(2024, 12, 6, 10,1));
-        attendanceBook.add(name, LocalDateTime.of(2024, 12, 10, 10,8));
+        attendanceBook.add(name, LocalDateTime.of(2024, 12, 3, 9, 58));
+        attendanceBook.add(name, LocalDateTime.of(2024, 12, 4, 10, 2));
+        attendanceBook.add(name, LocalDateTime.of(2024, 12, 5, 10, 6));
+        attendanceBook.add(name, LocalDateTime.of(2024, 12, 6, 10, 1));
+        attendanceBook.add(name, LocalDateTime.of(2024, 12, 10, 10, 8));
 
         AttendanceData attendanceData = attendanceBook.getAttendanceData(name, LocalDate.of(2024, 12, 12));
         AttendanceCount attendanceCount = Status.getCount(attendanceData);
@@ -39,11 +39,11 @@ class AttendanceBookTest {
         AttendanceBook attendanceBook = new AttendanceBook();
         attendanceBook.enter(name);
         attendanceBook.add(name, LocalDateTime.of(2024, 12, 2, 13, 0));
-        attendanceBook.add(name, LocalDateTime.of(2024, 12, 3, 9,58));
-        attendanceBook.add(name, LocalDateTime.of(2024, 12, 4, 10,2));
-        attendanceBook.add(name, LocalDateTime.of(2024, 12, 5, 10,6));
-        attendanceBook.add(name, LocalDateTime.of(2024, 12, 6, 10,1));
-        attendanceBook.add(name, LocalDateTime.of(2024, 12, 10, 10,8));
+        attendanceBook.add(name, LocalDateTime.of(2024, 12, 3, 9, 58));
+        attendanceBook.add(name, LocalDateTime.of(2024, 12, 4, 10, 2));
+        attendanceBook.add(name, LocalDateTime.of(2024, 12, 5, 10, 6));
+        attendanceBook.add(name, LocalDateTime.of(2024, 12, 6, 10, 1));
+        attendanceBook.add(name, LocalDateTime.of(2024, 12, 10, 10, 8));
 
         AttendanceData attendanceData = attendanceBook.getAttendanceData(name, LocalDate.of(2024, 12, 12));
         AttendanceCount attendanceCount = Status.getCount(attendanceData);
@@ -58,11 +58,11 @@ class AttendanceBookTest {
         AttendanceBook attendanceBook = new AttendanceBook();
         attendanceBook.enter(name);
         attendanceBook.add(name, LocalDateTime.of(2024, 12, 2, 13, 0));
-        attendanceBook.add(name, LocalDateTime.of(2024, 12, 3, 9,58));
-        attendanceBook.add(name, LocalDateTime.of(2024, 12, 4, 10,2));
-        attendanceBook.add(name, LocalDateTime.of(2024, 12, 5, 10,6));
-        attendanceBook.add(name, LocalDateTime.of(2024, 12, 6, 10,1));
-        attendanceBook.add(name, LocalDateTime.of(2024, 12, 10, 10,8));
+        attendanceBook.add(name, LocalDateTime.of(2024, 12, 3, 9, 58));
+        attendanceBook.add(name, LocalDateTime.of(2024, 12, 4, 10, 2));
+        attendanceBook.add(name, LocalDateTime.of(2024, 12, 5, 10, 6));
+        attendanceBook.add(name, LocalDateTime.of(2024, 12, 6, 10, 1));
+        attendanceBook.add(name, LocalDateTime.of(2024, 12, 10, 10, 8));
 
         AttendanceData attendanceData = attendanceBook.getAttendanceData(name, LocalDate.of(2024, 12, 12));
         AttendanceCount attendanceCount = Status.getCount(attendanceData);
@@ -77,12 +77,12 @@ class AttendanceBookTest {
         AttendanceBook attendanceBook = new AttendanceBook();
         attendanceBook.enter(name);
         attendanceBook.add(name, LocalDateTime.of(2024, 12, 2, 13, 0));
-        attendanceBook.add(name, LocalDateTime.of(2024, 12, 3, 9,58));
-        attendanceBook.add(name, LocalDateTime.of(2024, 12, 4, 10,2));
-        attendanceBook.add(name, LocalDateTime.of(2024, 12, 5, 10,6));
-        attendanceBook.add(name, LocalDateTime.of(2024, 12, 6, 10,1));
-        attendanceBook.add(name, LocalDateTime.of(2024, 12, 9, 9,8));
-        attendanceBook.add(name, LocalDateTime.of(2024, 12, 10, 10,8));
+        attendanceBook.add(name, LocalDateTime.of(2024, 12, 3, 9, 58));
+        attendanceBook.add(name, LocalDateTime.of(2024, 12, 4, 10, 2));
+        attendanceBook.add(name, LocalDateTime.of(2024, 12, 5, 10, 6));
+        attendanceBook.add(name, LocalDateTime.of(2024, 12, 6, 10, 1));
+        attendanceBook.add(name, LocalDateTime.of(2024, 12, 9, 9, 8));
+        attendanceBook.add(name, LocalDateTime.of(2024, 12, 10, 10, 8));
 
         AttendanceData attendanceData = attendanceBook.getAttendanceData(name, LocalDate.of(2024, 12, 12));
         AttendanceCount attendanceCount = Status.getCount(attendanceData);
@@ -97,11 +97,11 @@ class AttendanceBookTest {
         AttendanceBook attendanceBook = new AttendanceBook();
         attendanceBook.enter(name);
         attendanceBook.add(name, LocalDateTime.of(2024, 12, 2, 13, 0));
-        attendanceBook.add(name, LocalDateTime.of(2024, 12, 3, 9,58));
-        attendanceBook.add(name, LocalDateTime.of(2024, 12, 4, 10,2));
-        attendanceBook.add(name, LocalDateTime.of(2024, 12, 5, 10,6));
-        attendanceBook.add(name, LocalDateTime.of(2024, 12, 6, 10,1));
-        attendanceBook.add(name, LocalDateTime.of(2024, 12, 10, 10,8));
+        attendanceBook.add(name, LocalDateTime.of(2024, 12, 3, 9, 58));
+        attendanceBook.add(name, LocalDateTime.of(2024, 12, 4, 10, 2));
+        attendanceBook.add(name, LocalDateTime.of(2024, 12, 5, 10, 6));
+        attendanceBook.add(name, LocalDateTime.of(2024, 12, 6, 10, 1));
+        attendanceBook.add(name, LocalDateTime.of(2024, 12, 10, 10, 8));
 
         AttendanceData attendanceData = attendanceBook.getAttendanceData(name, LocalDate.of(2024, 12, 12));
         AttendanceCount attendanceCount = Status.getCount(attendanceData);
@@ -116,8 +116,8 @@ class AttendanceBookTest {
         AttendanceBook attendanceBook = new AttendanceBook();
         attendanceBook.enter(name);
         attendanceBook.add(name, LocalDateTime.of(2024, 12, 2, 13, 0));
-        attendanceBook.add(name, LocalDateTime.of(2024, 12, 3, 9,58));
-        attendanceBook.add(name, LocalDateTime.of(2024, 12, 4, 10,2));
+        attendanceBook.add(name, LocalDateTime.of(2024, 12, 3, 9, 58));
+        attendanceBook.add(name, LocalDateTime.of(2024, 12, 4, 10, 2));
         AttendanceData attendanceData = attendanceBook.getAttendanceData(name, LocalDate.of(2024, 12, 12));
         AttendanceCount attendanceCount = Status.getCount(attendanceData);
 
@@ -131,13 +131,13 @@ class AttendanceBookTest {
         AttendanceBook attendanceBook = new AttendanceBook();
         attendanceBook.enter(name);
         attendanceBook.add(name, LocalDateTime.of(2024, 12, 2, 13, 0));
-        attendanceBook.add(name, LocalDateTime.of(2024, 12, 3, 9,58));
-        attendanceBook.add(name, LocalDateTime.of(2024, 12, 4, 10,2));
-        attendanceBook.add(name, LocalDateTime.of(2024, 12, 5, 10,6));
-        attendanceBook.add(name, LocalDateTime.of(2024, 12, 6, 10,1));
-        attendanceBook.add(name, LocalDateTime.of(2024, 12, 9, 9,55));
-        attendanceBook.add(name, LocalDateTime.of(2024, 12, 10, 10,8));
-        attendanceBook.add(name, LocalDateTime.of(2024, 12, 11, 10,8));
+        attendanceBook.add(name, LocalDateTime.of(2024, 12, 3, 9, 58));
+        attendanceBook.add(name, LocalDateTime.of(2024, 12, 4, 10, 2));
+        attendanceBook.add(name, LocalDateTime.of(2024, 12, 5, 10, 6));
+        attendanceBook.add(name, LocalDateTime.of(2024, 12, 6, 10, 1));
+        attendanceBook.add(name, LocalDateTime.of(2024, 12, 9, 9, 55));
+        attendanceBook.add(name, LocalDateTime.of(2024, 12, 10, 10, 8));
+        attendanceBook.add(name, LocalDateTime.of(2024, 12, 11, 10, 8));
 
         AttendanceData attendanceData = attendanceBook.getAttendanceData(name, LocalDate.of(2024, 12, 12));
         AttendanceCount attendanceCount = Status.getCount(attendanceData);
@@ -152,20 +152,20 @@ class AttendanceBookTest {
         String name1 = "빙티";
         attendanceBook.enter(name1);
         attendanceBook.add(name1, LocalDateTime.of(2024, 12, 2, 13, 0));
-        attendanceBook.add(name1, LocalDateTime.of(2024, 12, 3, 9,58));
-        attendanceBook.add(name1, LocalDateTime.of(2024, 12, 4, 10,2));
-        attendanceBook.add(name1, LocalDateTime.of(2024, 12, 5, 10,6));
-        attendanceBook.add(name1, LocalDateTime.of(2024, 12, 6, 10,1));
-        attendanceBook.add(name1, LocalDateTime.of(2024, 12, 10, 10,8));
+        attendanceBook.add(name1, LocalDateTime.of(2024, 12, 3, 9, 58));
+        attendanceBook.add(name1, LocalDateTime.of(2024, 12, 4, 10, 2));
+        attendanceBook.add(name1, LocalDateTime.of(2024, 12, 5, 10, 6));
+        attendanceBook.add(name1, LocalDateTime.of(2024, 12, 6, 10, 1));
+        attendanceBook.add(name1, LocalDateTime.of(2024, 12, 10, 10, 8));
         String name2 = "이든";
         attendanceBook.enter(name2);
-        attendanceBook.add(name2, LocalDateTime.of(2024, 12, 3, 10,7));
-        attendanceBook.add(name2, LocalDateTime.of(2024, 12, 4, 10,8));
-        attendanceBook.add(name2, LocalDateTime.of(2024, 12, 5, 10,29));
-        attendanceBook.add(name2, LocalDateTime.of(2024, 12, 6, 10,6));
-        attendanceBook.add(name2, LocalDateTime.of(2024, 12, 9, 10,31));
-        attendanceBook.add(name2, LocalDateTime.of(2024, 12, 10, 10,2));
-        attendanceBook.add(name2, LocalDateTime.of(2024, 12, 11, 10,1));
+        attendanceBook.add(name2, LocalDateTime.of(2024, 12, 3, 10, 7));
+        attendanceBook.add(name2, LocalDateTime.of(2024, 12, 4, 10, 8));
+        attendanceBook.add(name2, LocalDateTime.of(2024, 12, 5, 10, 29));
+        attendanceBook.add(name2, LocalDateTime.of(2024, 12, 6, 10, 6));
+        attendanceBook.add(name2, LocalDateTime.of(2024, 12, 9, 10, 31));
+        attendanceBook.add(name2, LocalDateTime.of(2024, 12, 10, 10, 2));
+        attendanceBook.add(name2, LocalDateTime.of(2024, 12, 11, 10, 1));
 
         List<Entry<String, AttendanceHistory>> sortedAttendanceBook = attendanceBook.getSorted();
 

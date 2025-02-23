@@ -121,7 +121,7 @@ public class OutputView {
 
     private String formatPenaltyInfo(AttendanceBook attendanceBook) {
         StringBuilder result = new StringBuilder();
-        for(Entry<String, AttendanceHistory> data : attendanceBook.getSorted()) {
+        for (Entry<String, AttendanceHistory> data : attendanceBook.getSorted()) {
             if (Penalty.from(data.getValue().getAbsentCount()) != Penalty.NONE) {
                 result.append("- ").append(formatStatus(data)).append("\n");
             }

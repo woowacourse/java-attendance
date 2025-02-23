@@ -60,13 +60,14 @@ public class AttendanceTest {
 
     @Nested
     @DisplayName("주말 및 공휴일 출석")
-    class HollyDays{
+    class HollyDays {
         @Test
         @DisplayName("성탄절은 공휴일이라 출석을 시도할 경우 예외가 발생한다.")
         void test5() {
             assertThatThrownBy(() -> new Attendance(LocalDateTime.of(2024, 12, 25, 9, 55)))
                     .isInstanceOf(IllegalArgumentException.class);
         }
+
         @Test
         @DisplayName("주말에 출석을 시도할 경우 예외가 발생한다.")
         void test6() {

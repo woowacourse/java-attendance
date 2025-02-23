@@ -8,9 +8,11 @@ import java.util.Scanner;
 
 public class InputView {
     private final LocalDate today;
+    private final Scanner scanner;
 
-    public InputView(LocalDate today) {
+    public InputView(LocalDate today, Scanner scanner) {
         this.today = today;
+        this.scanner = scanner;
     }
 
     public String askMenu() {
@@ -25,32 +27,31 @@ public class InputView {
                 + "Q. 종료";
         System.out.println(menu);
 
-        Scanner sc = new Scanner(System.in);
-        return sc.nextLine();
+        return scanner.nextLine();
     }
 
     public String askNickNameForCheckAttendance() {
         System.out.println("\n닉네임을 입력해 주세요.");
-        return new Scanner(System.in).nextLine();
+        return scanner.nextLine();
     }
 
     public String askAttendanceTimeForCheckAttendance() {
         System.out.println("등교 시간을 입력해 주세요.");
-        return new Scanner(System.in).nextLine();
+        return scanner.nextLine();
     }
 
     public String askNickNameForModifyAttendanceInfo() {
         System.out.println("\n출석을 수정하려는 크루의 닉네임을 입력해 주세요.");
-        return new Scanner(System.in).nextLine();
+        return scanner.nextLine();
     }
 
     public String askDayForModifyAttendanceInfo() {
         System.out.println("수정하려는 날짜(일)를 입력해 주세요.");
-        return new Scanner(System.in).nextLine();
+        return scanner.nextLine();
     }
 
     public String askAttendanceTimeForModifyAttendance() {
         System.out.println("언제로 변경하겠습니까?");
-        return new Scanner(System.in).nextLine();
+        return scanner.nextLine();
     }
 }

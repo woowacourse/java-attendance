@@ -63,7 +63,7 @@ public class AttendanceHistory {
             if (!containsDayOfMonth(i)) {
                 attendanceInfo.add(new Attendance(
                         LocalDateTime.of(date,
-                        LocalTime.of(15, 0))));
+                                LocalTime.of(15, 0))));
             }
         }
     }
