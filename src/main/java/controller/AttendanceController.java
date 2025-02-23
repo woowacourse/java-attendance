@@ -88,7 +88,7 @@ public class AttendanceController {
         Crew crew = crews.findByNickname(nickname);
 
         outputView.printCrewAttendanceHistoryMessage(nickname);
-        outputView.printAttendanceHistoryWithCrew(crew);
+        outputView.printAttendanceHistoryWithCrew(crew.toDto());
     }
 
     public void processPenaltyCheck() {
