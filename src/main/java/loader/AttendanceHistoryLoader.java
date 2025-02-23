@@ -1,10 +1,9 @@
-package config;
+package loader;
 
 import domain.Attendance;
 import domain.Crew;
 import domain.Crews;
 import domain.Day;
-
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
@@ -36,7 +35,8 @@ public class AttendanceHistoryLoader {
         return new Crews(crews);
     }
 
-    private void loadAttendanceHistory(BufferedReader reader, Map<String, Crew> crewMap, List<Crew> crews) throws IOException {
+    private void loadAttendanceHistory(BufferedReader reader, Map<String, Crew> crewMap, List<Crew> crews)
+            throws IOException {
         String line;
         while ((line = reader.readLine()) != null) {
             String[] values = line.split(",");
@@ -46,7 +46,8 @@ public class AttendanceHistoryLoader {
 
             Crew crew = getCrew(crewMap, crews, values[0]);
 
-            crew.addAttendance(new Attendance(new Day(LocalDate.parse(date, dateFormatter)), LocalTime.parse(time, timeFormatter)));
+            crew.addAttendance(new Attendance(new Day(LocalDate.parse(date, dateFormatter)),
+                    LocalTime.parse(time, timeFormatter)));
         }
     }
 
