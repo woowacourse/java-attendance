@@ -12,22 +12,22 @@ class AttendanceRecordTest {
     @Test
     @DisplayName("출결 기록을 예외 없이 생성한다.")
     public void attendanceRecordConstructorTest() {
-        assertThatCode(() -> AttendanceRecord.parse("2024-12-02 13:00"))
+        // given
+        LocalDate date = LocalDate.of(2024, 12, 2);
+        LocalTime time = LocalTime.of(13, 0);
+        // when & then
+        assertThatCode(() -> AttendanceRecord.of(date, time))
                 .doesNotThrowAnyException();
     }
 
     @Test
-    @DisplayName("문자열 입력값이 등교일이 아닐 경우 예외를 발생시킨다.")
+    @DisplayName("등교일이 아닐 경우 예외를 발생시킨다.")
     public void validateDateStringTest() {
-        assertThatThrownBy(() -> AttendanceRecord.parse("2024-12-25 10:00"))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage("[ERROR] 12월 25일 수요일은 등교일이 아닙니다.");
-    }
-
-    @Test
-    @DisplayName("시간 입력값이 등교일이 아닐 경우 예외를 발생한다.")
-    public void validateLocalTimeTest() {
-        assertThatThrownBy(() -> AttendanceRecord.of(LocalDate.of(2024, 12, 25), LocalTime.of(10, 0)))
+        // given
+        LocalDate date = LocalDate.of(2024, 12, 25);
+        LocalTime time = LocalTime.of(10, 0);
+        // when & then
+        assertThatThrownBy(() -> AttendanceRecord.of(date, time))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("[ERROR] 12월 25일 수요일은 등교일이 아닙니다.");
     }
