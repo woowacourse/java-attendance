@@ -32,6 +32,4 @@ public class Attendances {
         }
         return dangerAttendances;
     }
-
-
 }
