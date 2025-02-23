@@ -20,10 +20,10 @@ public class AttendanceRecord {
         this.attendance = Attendance.getAttendanceStatus(Day.getDay(date), time);
     }
 
-    public static AttendanceRecord parse(String dateTime) {
-        return new AttendanceRecord(LocalDate.parse(dateTime.split(" ")[DATE_INDEX]),
-                LocalTime.parse(dateTime.split(" ")[TIME_INDEX]));
-    }
+//    public static AttendanceRecord parse(String dateTime) {
+//        return new AttendanceRecord(LocalDate.parse(dateTime.split(" ")[DATE_INDEX]),
+//                LocalTime.parse(dateTime.split(" ")[TIME_INDEX]));
+//    }
 
     public static AttendanceRecord of(LocalDate date, LocalTime time) {
         return new AttendanceRecord(date, time);
