@@ -46,7 +46,6 @@ public class OutputView {
 
     public static void printAddedAttendance(LocalDateTime localDateTime) {
         LocalTime time = localDateTime.toLocalTime();
-        System.out.println();
         System.out.printf(ATTENDANCE_RESULT_FORMAT,
                 convertDate(localDateTime),
                 time.toString(),
@@ -146,7 +145,7 @@ public class OutputView {
         }).toList();
     }
 
-    public static void printErrorMessage(Exception exception){
+    public static void printErrorMessage(Exception exception) {
         System.out.println(ERROR_MESSAGE_PREFIX + exception.getMessage());
     }
 }
