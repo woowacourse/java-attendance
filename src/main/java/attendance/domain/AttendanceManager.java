@@ -61,7 +61,9 @@ public class AttendanceManager {
 
     public AttendanceStatus getAttendanceStatus(final String nickname) {
         Attendances attendances = findCrewAttendance(nickname);
-        return AttendanceStatus.of(attendances);
+
+        List<Attendance> attendancesUntilYesterday = attendances.getAttendancesUntilYesterday();
+        return AttendanceStatus.of(attendancesUntilYesterday);
     }
 
     public void validateNicknameExists(String nickname) {
