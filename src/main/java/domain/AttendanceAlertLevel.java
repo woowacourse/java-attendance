@@ -7,15 +7,30 @@ public enum AttendanceAlertLevel {
     NORMAL(0, "일반"),
     ;
 
-    final int absenceLimit;
+    final int limit;
     final String name;
+    public static final int LATE_TO_ABSENT_THRESHOLD = 3;
 
     AttendanceAlertLevel(int absenceLimit, String name) {
-        this.absenceLimit = absenceLimit;
+        this.limit = absenceLimit;
         this.name = name;
     }
 
     public String getName() {
         return name;
+    }
+
+    public static AttendanceAlertLevel calculateAttendanceAlertLevel(int absent, int late) {
+        int absentTotal = absent + (late / LATE_TO_ABSENT_THRESHOLD);
+        if (absentTotal >= DISMISSED.limit) {
+            return DISMISSED;
+        }
+        if (absentTotal >= COUNSEL_REQUIRED.limit) {
+            return COUNSEL_REQUIRED;
+        }
+        if (absentTotal >= CAUTION.limit) {
+            return CAUTION;
+        }
+        return NORMAL;
     }
 }

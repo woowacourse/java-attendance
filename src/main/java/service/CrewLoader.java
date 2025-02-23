@@ -8,10 +8,10 @@ import util.FileReader;
 
 public class CrewLoader {
 
-    public static final String DELIMITER_COMMA = ",";
-    public static final String DATETIME_FORMAT = "yyyy-MM-dd HH:mm";
-    public static final int HOUR_INDEX = 0;
-    public static final int MINUTE_INDEX = 1;
+    private static final String DELIMITER_COMMA = ",";
+    private static final String DATETIME_FORMAT = "yyyy-MM-dd HH:mm";
+    private static final int HOUR_INDEX = 0;
+    private static final int MINUTE_INDEX = 1;
 
     public CrewGroup loadCrews(LocalDateTime today) {
         FileReader fileReader = new FileReader();

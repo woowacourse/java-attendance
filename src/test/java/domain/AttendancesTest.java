@@ -42,7 +42,7 @@ class AttendancesTest {
         Assertions.assertEquals(2, attendances.countAbsent());
     }
 
-    @DisplayName("특정 날짜의 출석이 있는지 확인합니다.")
+    @DisplayName("특정 날짜의 출석이 존재하는지 확인합니다.")
     @Test
     void checkAlreadyExistTest() {
         int testDay = 3;

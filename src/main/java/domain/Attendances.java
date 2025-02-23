@@ -7,32 +7,16 @@ import java.util.Optional;
 import util.Day;
 
 public class Attendances {
-    public static final int LATE_TO_ABSENT_THRESHOLD = 3;
     public static final int ABSENT_HOUR = 23;
     public static final int ABSENT_MINUTE = 59;
-
     public final List<Attendance> attendanceLog = new ArrayList<>();
-
-    public Attendances() {
-
-    }
 
     public void addAttendance(Attendance attendance) {
         attendanceLog.add(attendance);
     }
 
     public AttendanceAlertLevel calculateAttendanceAlertLevel() {
-        int absentTotal = countAbsent() + (countLate() / LATE_TO_ABSENT_THRESHOLD);
-        if (absentTotal >= AttendanceAlertLevel.DISMISSED.absenceLimit) {
-            return AttendanceAlertLevel.DISMISSED;
-        }
-        if (absentTotal >= AttendanceAlertLevel.COUNSEL_REQUIRED.absenceLimit) {
-            return AttendanceAlertLevel.COUNSEL_REQUIRED;
-        }
-        if (absentTotal >= AttendanceAlertLevel.CAUTION.absenceLimit) {
-            return AttendanceAlertLevel.CAUTION;
-        }
-        return AttendanceAlertLevel.NORMAL;
+        return AttendanceAlertLevel.calculateAttendanceAlertLevel(countAbsent(), countLate());
     }
 
     public int countPresent() {
@@ -72,7 +56,6 @@ public class Attendances {
             weekDays.add(day);
         }
         weekDays.removeAll(attendanceDays);
-
         for (int day : weekDays) {
             attendanceLog.add(new Attendance(LocalDateTime.of(today.getYear(), today.getMonth(), day, ABSENT_HOUR,
                     ABSENT_MINUTE)));
