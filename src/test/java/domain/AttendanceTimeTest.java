@@ -50,7 +50,7 @@ class AttendanceTimeTest {
     void determineAttendanceState_AsLate() {
         // given
         LocalTime lateTime = AttendanceTimeRule.NORMAL_ATTEND_LIMIT_TIME.toLocalTime()
-                .plusMinutes(AttendanceStateRule.LATE.limit + 1);
+                .plusMinutes(AttendanceStateRule.LATE.getLimit() + 1);
         AttendanceTime attendanceTime = AttendanceTime.from(lateTime);
 
         // when
@@ -65,7 +65,7 @@ class AttendanceTimeTest {
     void determineAttendanceState_AsAbsent() {
         // given
         LocalTime absentTime = AttendanceTimeRule.NORMAL_ATTEND_LIMIT_TIME.toLocalTime()
-                .plusMinutes(AttendanceStateRule.ABSENT.limit + 1);
+                .plusMinutes(AttendanceStateRule.ABSENT.getLimit() + 1);
         AttendanceTime attendanceTime = AttendanceTime.from(absentTime);
 
         // when

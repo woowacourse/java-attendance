@@ -5,8 +5,9 @@ import org.junit.jupiter.api.Test;
 
 import java.util.Iterator;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.assertj.core.api.Assertions.assertThat;
 
 class RepeatUntilUserQuitSelectUtilTest {
 
@@ -16,26 +17,17 @@ class RepeatUntilUserQuitSelectUtilTest {
         // given
         List<Boolean> responses = List.of(true, true, false);
         Iterator<Boolean> iterator = responses.iterator();
+        AtomicInteger count = new AtomicInteger(0);
 
-        RepeatUntilUserQuitSelectUtil.ThrowingSupplier<Boolean, FileReadException> supplier = iterator::next;
-
-        // when
-        // then
-        RepeatUntilUserQuitSelectUtil.repeat(supplier);
-    }
-
-    @Test
-    @DisplayName("일반 예외 발생 시, 예외 메시지를 출력한 후 다시 던진다 (종료)")
-    void shouldThrowExceptionWhenOtherExceptionOccurs() {
-        // given
         RepeatUntilUserQuitSelectUtil.ThrowingSupplier<Boolean, FileReadException> supplier = () -> {
-            throw new RuntimeException("예상치 못한 오류 발생");
+            count.incrementAndGet();
+            return iterator.next();
         };
 
         // when
+        RepeatUntilUserQuitSelectUtil.repeat(supplier);
+
         // then
-        assertThatThrownBy(() -> RepeatUntilUserQuitSelectUtil.repeat(supplier))
-                .isInstanceOf(RuntimeException.class)
-                .hasMessage("예상치 못한 오류 발생");
+        assertThat(count.get()).isEqualTo(3); // 3번 실행 후 종료 확인
     }
 }

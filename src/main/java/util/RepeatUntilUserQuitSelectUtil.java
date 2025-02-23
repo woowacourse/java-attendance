@@ -27,7 +27,7 @@ public class RepeatUntilUserQuitSelectUtil {
 
     private static boolean handleExecution(ThrowingSupplier<Boolean, FileReadException> supplier) throws FileReadException {
         try {
-            return !supplier.get();
+            return supplier.get();
         } catch (IllegalArgumentException e) {
             System.out.println("[ERROR] " + e.getMessage());
         } catch (Exception e) {

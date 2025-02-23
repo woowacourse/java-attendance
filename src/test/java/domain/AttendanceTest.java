@@ -23,10 +23,10 @@ class AttendanceTest {
 
         AttendanceTime onTime = AttendanceTime.from(normalAttendanceTime);
         AttendanceTime lateTime = AttendanceTime.from(normalAttendanceTime
-                .plusMinutes(AttendanceStateRule.LATE.limit)
+                .plusMinutes(AttendanceStateRule.LATE.getLimit())
                 .plusMinutes(1));
         AttendanceTime absentTime = AttendanceTime.from(normalAttendanceTime
-                .plusMinutes(AttendanceStateRule.ABSENT.limit)
+                .plusMinutes(AttendanceStateRule.ABSENT.getLimit())
                 .plusMinutes(1));
 
         Attendance attendanceOnTime = Attendance.from(date, onTime);
