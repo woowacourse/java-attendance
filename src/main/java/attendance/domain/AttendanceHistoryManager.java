@@ -27,6 +27,12 @@ public class AttendanceHistoryManager {
         return attendanceHistory;
     }
 
+    public AttendanceHistory modifyAttendance(LocalDate attendanceDate, LocalTime modifyTime) {
+        AttendanceHistory attendanceHistory = getAttendanceHistoryByDate(attendanceDate);
+        attendanceHistories.remove(attendanceHistory);
+        return doAttendance(attendanceDate, modifyTime);
+    }
+
     public Set<AttendanceHistory> getAttendanceHistories() {
         return Collections.unmodifiableSet(attendanceHistories);
     }
@@ -36,13 +42,6 @@ public class AttendanceHistoryManager {
                 .filter(history -> history.isAttendanceDateEquals(attendanceDate))
                 .findAny()
                 .orElseThrow(() -> new IllegalArgumentException("출석 기록이 존재하지 않습니다."));
-    }
-
-    public AttendanceHistory modifyAttendanceResult(AttendanceHistory modifyAttendanceHistory, LocalTime modifyTime) {
-        LocalDateTime modifyDateTime = modifyAttendanceHistory.getAttendanceDateTime();
-        AttendanceType attendanceType = AttendancePolicy.checkAttendanceType(modifyDateTime.toLocalDate(), modifyTime);
-        modifyAttendanceHistory.modify(modifyTime, attendanceType);
-        return modifyAttendanceHistory;
     }
 
     public Map<AttendanceType, Integer> calculateAttendanceResult(LocalDate today) {
@@ -79,8 +78,7 @@ public class AttendanceHistoryManager {
         }
     }
 
-    private void addAttendanceTypeCount(Map<AttendanceType, Integer> attendanceResult,
-                                        AttendanceType attendanceType) {
+    private void addAttendanceTypeCount(Map<AttendanceType, Integer> attendanceResult, AttendanceType attendanceType) {
         attendanceResult.put(attendanceType, attendanceResult.get(attendanceType) + 1);
     }
 }

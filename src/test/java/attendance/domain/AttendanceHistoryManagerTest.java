@@ -26,26 +26,6 @@ public class AttendanceHistoryManagerTest {
                 .hasMessage("해당 날짜에 이미 출석하셨습니다.");
     }
 
-//    @Test
-//    void modify_attendance_result() {
-//        //given
-//        AttendanceHistoryManager attendanceHistoryManager = new AttendanceHistoryManager();
-//        LocalDate localDate = LocalDate.of(2024, 12, 26);
-//        LocalTime localTime = LocalTime.of(11, 00);
-//        AttendanceHistory attendanceHistory = new AttendanceHistory(LocalDateTime.of(localDate, localTime), ABSENCE);
-//        attendanceHistoryManager.doAttendance(attendanceHistory);
-//
-//        LocalTime modifyTime = LocalTime.of(10, 00);
-//
-//        //when
-//        AttendanceHistory result = attendanceHistoryManager.modifyAttendanceResult(attendanceHistory, modifyTime);
-//
-//        //then
-//        assertThat(attendanceHistory).isEqualTo(result);
-//        assertThat(result.getAttendanceDateTime()).isEqualTo(LocalDateTime.of(localDate, modifyTime));
-//        assertThat(attendanceHistory.getAttendanceType()).isEqualTo(ATTENDANCE);
-//    }
-
     @DisplayName("주어진_날짜에_출석_기록이_존재하지_않으면_예외를_발생한다")
     @Test
     void should_ThrowException_WhenAttendanceNotExistByDate() {
@@ -74,6 +54,28 @@ public class AttendanceHistoryManagerTest {
         //then
         assertThat(result).isEqualTo(attendanceHistoryManager.getAttendanceHistoryByDate(attendanceDate));
         assertThat(result.getAttendanceDateTime()).isEqualTo(LocalDateTime.of(attendanceDate, attendanceTime));
-        assertThat(result.isAbsence()).isTrue();
+        AttendanceType expectedType = AttendancePolicy.checkAttendanceType(attendanceDate, attendanceTime);
+        assertThat(result.getAttendanceType()).isEqualTo(expectedType);
     }
+
+    @DisplayName("주어진_날짜의_출석_시간을_변경할_수_있다")
+    @Test
+    void modifyAttendanceTime() {
+        //given
+        AttendanceHistoryManager attendanceHistoryManager = new AttendanceHistoryManager();
+        LocalDate attendanceDate = LocalDate.of(2024, 12, 26);
+        LocalTime attendanceTime = LocalTime.of(11, 00);
+        attendanceHistoryManager.doAttendance(attendanceDate, attendanceTime);
+
+        //when
+        LocalTime modifyTime = LocalTime.of(10, 00);
+        AttendanceHistory result = attendanceHistoryManager.modifyAttendance(attendanceDate, modifyTime);
+
+        //then
+        assertThat(result).isEqualTo(attendanceHistoryManager.getAttendanceHistoryByDate(attendanceDate));
+        assertThat(result.getAttendanceDateTime()).isEqualTo(LocalDateTime.of(attendanceDate, modifyTime));
+        AttendanceType expectedType = AttendancePolicy.checkAttendanceType(attendanceDate, modifyTime);
+        assertThat(result.getAttendanceType()).isEqualTo(expectedType);
+    }
+
 }

@@ -17,7 +17,6 @@ import attendance.domain.AttendancePolicy;
 import attendance.domain.AttendanceType;
 import attendance.domain.Crew;
 import attendance.domain.CrewManager;
-import attendance.domain.dto.AttendanceHistoryDto;
 import attendance.utils.AttendanceFileReader;
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -73,10 +72,9 @@ public class Application {
         Crew crew = findCrew(crewManager);
         LocalDate modifyDate = inputModifyDate(today);
         LocalTime modifyTime = inputAttendanceTime();
-        AttendanceHistory attendanceHistory = crew.getAttendanceHistory(modifyDate);
-        AttendanceHistoryDto beforeAttendanceHistoryDto = AttendanceHistoryDto.of(attendanceHistory);
-        AttendanceHistory afterAttendanceHistory = crew.modifyAttendanceResult(attendanceHistory, modifyTime);
-        printModifyAttendanceHistory(beforeAttendanceHistoryDto, afterAttendanceHistory);
+        AttendanceHistory beforeAttendanceHistory = crew.getAttendanceHistoryByDate(modifyDate);
+        AttendanceHistory afterAttendanceHistory = crew.modifyAttendance(modifyDate, modifyTime);
+        printModifyAttendanceHistory(beforeAttendanceHistory, afterAttendanceHistory);
     }
 
     private static void checkAttendanceHistoriesByCrew(CrewManager crewManager, LocalDate today) {

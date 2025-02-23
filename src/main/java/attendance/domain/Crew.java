@@ -19,16 +19,16 @@ public class Crew {
         return attendanceHistoryManager.doAttendance(attendanceDate, attendanceTime);
     }
 
-    public AttendanceHistory modifyAttendanceResult(AttendanceHistory attendanceHistory, LocalTime localTime) {
-        return attendanceHistoryManager.modifyAttendanceResult(attendanceHistory, localTime);
+    public AttendanceHistory modifyAttendance(LocalDate attendanceDate, LocalTime modifyTime) {
+        return attendanceHistoryManager.modifyAttendance(attendanceDate, modifyTime);
     }
 
     public String getName() {
         return name;
     }
 
-    public AttendanceHistory getAttendanceHistory(LocalDate localDate) {
-        return attendanceHistoryManager.getAttendanceHistoryByDate(localDate);
+    public AttendanceHistory getAttendanceHistoryByDate(LocalDate attendanceDate) {
+        return attendanceHistoryManager.getAttendanceHistoryByDate(attendanceDate);
     }
 
     public Map<AttendanceType, Integer> calculateAttendanceResult(LocalDate localDate) {

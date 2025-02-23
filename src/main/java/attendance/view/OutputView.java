@@ -35,11 +35,11 @@ public class OutputView {
         System.out.println(message);
     }
 
-    public static void printModifyAttendanceHistory(AttendanceHistoryDto beforeAttendanceHistoryDto,
+    public static void printModifyAttendanceHistory(AttendanceHistory beforeAttendanceHistory,
                                                     AttendanceHistory afterAttendanceHistory) {
-        LocalDateTime beforeAttendanceTime = beforeAttendanceHistoryDto.getAttendanceTime();
+        LocalDateTime beforeAttendanceTime = beforeAttendanceHistory.getAttendanceDateTime();
         LocalDateTime afterAttendanceTime = afterAttendanceHistory.getAttendanceDateTime();
-        AttendanceType beforeAttendanceType = beforeAttendanceHistoryDto.getAttendanceType();
+        AttendanceType beforeAttendanceType = beforeAttendanceHistory.getAttendanceType();
         AttendanceType afterAttendanceType = afterAttendanceHistory.getAttendanceType();
         String message = MODIFY_ATTENDANCE_HISTORY_MESSAGE.formatted(beforeAttendanceTime.getMonthValue(),
                 beforeAttendanceTime.getDayOfMonth(), beforeAttendanceTime.getDayOfWeek(),
@@ -88,7 +88,7 @@ public class OutputView {
             return;
         }
         try {
-            printAttendanceHistory(crew.getAttendanceHistory(attendanceDate));
+            printAttendanceHistory(crew.getAttendanceHistoryByDate(attendanceDate));
         } catch (IllegalArgumentException e) {
             printNoAttendanceHistory(attendanceDate);
         }
