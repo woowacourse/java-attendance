@@ -1,7 +1,5 @@
 package attendance.domain;
 
-import static attendance.domain.AttendanceTimeStatus.NULL_TIME;
-
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Collections;
@@ -25,12 +23,11 @@ public class CrewAttendance {
         if (attendances.containsKey(date)) {
             throw new IllegalArgumentException("[ERROR] 출석 기록이 존재합니다. 출석 수정 기능을 이용하세요.");
         }
-
         attendances.put(date, attendanceTimeStatus);
     }
 
-    public AttendanceTimeStatus modify(final LocalDate localDate, final AttendanceTimeStatus attendanceTImeStatus) {
-        return attendances.put(localDate, attendanceTImeStatus);
+    public AttendanceTimeStatus modify(final LocalDate localDate, final AttendanceTimeStatus attendanceTimeStatus) {
+        return attendances.put(localDate, attendanceTimeStatus);
     }
 
     private void updateAttendanceUntil(int today) {
@@ -42,7 +39,7 @@ public class CrewAttendance {
 
     private void createAbsence(final int day, final LocalDate date) {
         if (AttendanceChecker.isCampusDay(day) && !hasAttendanceOn(date)) {
-            attendances.put(date, new AttendanceTimeStatus(NULL_TIME, NULL_TIME, AttendanceStatus.ABSENCE));
+            attendances.put(date, new AttendanceTimeStatus());
         }
     }
 

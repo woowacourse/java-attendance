@@ -50,8 +50,7 @@ public class CrewAttendanceTest {
         AttendanceTimeStatus prevAttendanceTimeStatus = crewAttendance.modify(newLocalDateTime.toLocalDate(),
                 newAttendanceTimeStatus);
 
-        assertThat(prevAttendanceTimeStatus.hour()).isEqualTo(prevlocalDateTime.getHour());
-        assertThat(prevAttendanceTimeStatus.minute()).isEqualTo(prevlocalDateTime.getMinute());
+        assertThat(prevAttendanceTimeStatus.time().orElseThrow()).isEqualTo(prevlocalDateTime.toLocalTime());
     }
 
     @DisplayName("출석 날짜가 존재하지 않는 경우 false 반환")

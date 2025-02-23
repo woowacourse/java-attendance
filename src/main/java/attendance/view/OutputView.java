@@ -16,6 +16,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Optional;
 
 public class OutputView {
     private static final String DATE_FORMAT = "%02d월 %02d일 %s";
@@ -25,40 +26,50 @@ public class OutputView {
     private static final String ATTENDANCE_STATUS_FORMAT = "%s: %d회\n";
     private static final String ABSENCE_TIME_FORMAT = "--:--";
     private static final String WARNING_FORMAT = "%s 대상자입니다.\n";
-    private static final String WARNING_CREW_HEADER_FORMAT = "제적 위험자 조회 결과\n";
+    private static final String WARNING_CREW_HEADER_FORMAT = "\n제적 위험자 조회 결과\n";
     private static final String WARNING_CREW_RESULT_FORMAT = "- %s: 결석 %d회, 지각 %d회 (%s)\n";
     private static final String TODAY_IS = "\n오늘은 %s입니다. 기능을 선택해 주세요.\n";
     private static final String OPERATION_OPTION_MESSAGE =
             """
-            1. 출석 확인
-            2. 출석 수정
-            3. 크루별 출석 기록 확인
-            4. 제적 위험자 확인
-            Q. 종료
-            """;
+                    1. 출석 확인
+                    2. 출석 수정
+                    3. 크루별 출석 기록 확인
+                    4. 제적 위험자 확인
+                    Q. 종료
+                    """;
 
     public static void printOptions() {
         System.out.printf(TODAY_IS, convertDate(LocalDateTime.now()));
         System.out.print(OPERATION_OPTION_MESSAGE);
     }
 
-    public static void printAddedAttendance(LocalDateTime localDateTime) {
+    public static void printAttendance(LocalDateTime localDateTime) {
         LocalTime time = localDateTime.toLocalTime();
-        System.out.println();
         System.out.printf(ATTENDANCE_RESULT_FORMAT,
                 convertDate(localDateTime),
                 time.toString(),
                 AttendanceChecker.checkAttendance(localDateTime).getDisplayName());
     }
 
-    public static void printModifiedAttendance(AttendanceTimeStatus prevAttendanceTimeStatus, LocalDateTime newAttendanceTime) {
-        LocalTime prevTime = LocalTime.of(prevAttendanceTimeStatus.hour(), prevAttendanceTimeStatus.minute());
-        System.out.printf(MODIFY_SUCCESS_FORMAT,
-                convertDate(newAttendanceTime),
-                prevTime.toString(),
-                prevAttendanceTimeStatus.status().getDisplayName(),
-                newAttendanceTime.toLocalTime().toString(),
-                AttendanceChecker.checkAttendance(newAttendanceTime).getDisplayName());
+    public static void printModifiedAttendance(
+            AttendanceTimeStatus prevAttendanceTimeStatus,
+            LocalDateTime newAttendanceTime
+    ) {
+        Optional<LocalTime> localTime = prevAttendanceTimeStatus.time();
+
+        localTime.ifPresentOrElse(time ->
+                        System.out.printf(MODIFY_SUCCESS_FORMAT,
+                                convertDate(newAttendanceTime),
+                                time,
+                                prevAttendanceTimeStatus.status().getDisplayName(),
+                                newAttendanceTime.toLocalTime().toString(),
+                                AttendanceChecker.checkAttendance(newAttendanceTime).getDisplayName()),
+                () -> System.out.printf(MODIFY_SUCCESS_FORMAT,
+                        convertDate(newAttendanceTime),
+                        ABSENCE_TIME_FORMAT,
+                        prevAttendanceTimeStatus.status().getDisplayName(),
+                        newAttendanceTime.toLocalTime().toString(),
+                        AttendanceChecker.checkAttendance(newAttendanceTime).getDisplayName()));
     }
 
     private static String convertDate(LocalDateTime localDateTime) {
@@ -70,7 +81,8 @@ public class OutputView {
 
     public static void printQueryAttendance(String name, CrewAttendanceRepository crewAttendanceRepository) {
         int today = LocalDate.now().getDayOfMonth();
-        Map<LocalDate, AttendanceTimeStatus> crewAttendances = crewAttendanceRepository.queryCrewAttendance(name, today);
+        Map<LocalDate, AttendanceTimeStatus> crewAttendances = crewAttendanceRepository.queryCrewAttendance(name,
+                today);
 
         System.out.printf(QUERY_ATTENDANCE_HEADER_FORMAT, name);
 
@@ -79,39 +91,45 @@ public class OutputView {
         printCrewWarningLevel(name, crewAttendanceRepository, today);
     }
 
-    private static void printCrewAttendances(final int today, final Map<LocalDate, AttendanceTimeStatus> crewAttendances) {
+    private static void printCrewAttendances(final int today,
+                                             final Map<LocalDate, AttendanceTimeStatus> crewAttendances) {
         for (int day = 1; day < today; day++) {
             LocalDate date = LocalDate.of(2024, 12, day);
-            printAttendances(crewAttendances, date, day);
+            printAttendances(crewAttendances, date);
         }
         System.out.println();
     }
 
-    private static void printAttendances(final Map<LocalDate, AttendanceTimeStatus> crewAttendances, final LocalDate date,
-                                         final int day) {
+    private static void printAttendances(
+            final Map<LocalDate, AttendanceTimeStatus> crewAttendances, final LocalDate date
+    ) {
         if (!crewAttendances.containsKey(date)) {
             return;
         }
-        AttendanceTimeStatus attendanceTImeStatus = crewAttendances.get(date);
 
-        if (attendanceTImeStatus.hour() == AttendanceTimeStatus.NULL_TIME && attendanceTImeStatus.minute() == AttendanceTimeStatus.NULL_TIME) {
-            System.out.printf("%s %s (%s)\n", convertDate(LocalDateTime.of(date, LocalTime.of(0, 0))), ABSENCE_TIME_FORMAT,
-                    attendanceTImeStatus.status().getDisplayName());
-            return;
-        }
-        printAddedAttendance(LocalDateTime.of(2024, 12, day, attendanceTImeStatus.hour(), attendanceTImeStatus.minute()));
+        AttendanceTimeStatus attendanceTimeStatus = crewAttendances.get(date);
+        Optional<LocalTime> attendanceTime = attendanceTimeStatus.time();
+
+        attendanceTime.ifPresentOrElse(time -> printAttendance(LocalDateTime.of(date, time)),
+                () -> System.out.printf("%s %s (%s)\n",
+                        convertDate(LocalDateTime.of(date, LocalTime.of(0, 0))),
+                        ABSENCE_TIME_FORMAT,
+                        attendanceTimeStatus.status().getDisplayName()));
     }
 
-    private static void printAttendanceStatus(String name, CrewAttendanceRepository crewAttendanceRepository, int today) {
-        Map<AttendanceStatus, Integer> statuses = crewAttendanceRepository.queryCrewAttendanceStatus(name, today);
+    private static void printAttendanceStatus(String name, CrewAttendanceRepository crewAttendanceRepository,
+                                              int today) {
+        Map<AttendanceStatus, Integer> attendanceStatusCounts =
+                crewAttendanceRepository.queryCrewAttendanceStatus(name, today);
 
-        statuses.keySet().forEach(status -> {
-            System.out.printf(ATTENDANCE_STATUS_FORMAT, status.getDisplayName(), statuses.get(status));
-        });
+        for (AttendanceStatus status : attendanceStatusCounts.keySet()) {
+            System.out.printf(ATTENDANCE_STATUS_FORMAT, status.getDisplayName(), attendanceStatusCounts.get(status));
+        }
         System.out.println();
     }
 
-    private static void printCrewWarningLevel(String name, CrewAttendanceRepository crewAttendanceRepository, int today) {
+    private static void printCrewWarningLevel(String name, CrewAttendanceRepository crewAttendanceRepository,
+                                              int today) {
         WarningLevel level = crewAttendanceRepository.queryWarningLevelByName(name, today);
         if (level == WarningLevel.NONE) {
             return;
@@ -130,8 +148,11 @@ public class OutputView {
         });
     }
 
-    private static List<String> formatStatusCount(final CrewAttendanceRepository crewAttendanceRepository, final List<String> names,
-                                                  final int today) {
+    private static List<String> formatStatusCount(
+            final CrewAttendanceRepository crewAttendanceRepository,
+            final List<String> names,
+            final int today
+    ) {
         return names.stream().map(name -> {
             final Map<AttendanceStatus, Integer> crewStatuses = crewAttendanceRepository.queryCrewAttendanceStatus(
                     name, today);
@@ -141,5 +162,4 @@ public class OutputView {
                     crewStatuses.get(LATENESS), level.getDisplayName());
         }).toList();
     }
-
 }

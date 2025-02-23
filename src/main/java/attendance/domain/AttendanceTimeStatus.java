@@ -1,11 +1,18 @@
 package attendance.domain;
 
-import java.time.LocalDateTime;
+import static attendance.domain.AttendanceStatus.ABSENCE;
 
-public record AttendanceTimeStatus(int hour, int minute, AttendanceStatus status) {
-    public static final int NULL_TIME = -1;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.util.Optional;
+
+public record AttendanceTimeStatus(Optional<LocalTime> time, AttendanceStatus status) {
 
     public AttendanceTimeStatus(LocalDateTime localDateTime) {
-        this(localDateTime.getHour(), localDateTime.getMinute(), AttendanceChecker.checkAttendance(localDateTime));
+        this(Optional.of(localDateTime.toLocalTime()), AttendanceChecker.checkAttendance(localDateTime));
+    }
+
+    public AttendanceTimeStatus() {
+        this(Optional.empty(), ABSENCE);
     }
 }
