@@ -46,8 +46,8 @@ public class AttendanceManager {
         return crew.edit(newLocalDateTime);
     }
 
-    public Map<String, StatisticsResult> sortCrew(LocalDate nowDate) {
-        return findWarningCrews(nowDate)
+    public Map<String, StatisticsResult> findWarningCrews(LocalDate nowDate) {
+        return AttendanceStatistics.calculateExpelledWarning(nowDate, crews)
             .entrySet().stream()
             .sorted(Comparator.comparing((Map.Entry<String, StatisticsResult> entry)
                     -> entry.getValue().getPenalty(), Comparator.naturalOrder())
@@ -56,10 +56,6 @@ public class AttendanceManager {
                 .thenComparing(Map.Entry::getKey))
             .collect(LinkedHashMap::new, (map, entry)
                 -> map.put(entry.getKey(), entry.getValue()), Map::putAll);
-    }
-
-    public Map<String, StatisticsResult> findWarningCrews(LocalDate nowDate) {
-        return AttendanceStatistics.calculateExpelledWarning(nowDate, crews);
     }
 
     public Crew findByName(String name) {

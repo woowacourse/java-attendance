@@ -117,7 +117,7 @@ public class AttendanceController {
         handleException(() -> {
             LocalDate currentDate = DateTimeParser.parseIntegerToDate(NOW_YEAR, NOW_MONTH, NOW_DAY);
 
-            Map<String, StatisticsResult> sortedResult = attendanceManager.sortCrew(currentDate);
+            Map<String, StatisticsResult> sortedResult = attendanceManager.findWarningCrews(currentDate);
             outputView.printExpelledWarningResult(sortedResult);
         });
     }

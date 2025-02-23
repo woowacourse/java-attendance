@@ -3,25 +3,24 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import domain.AttendanceManager;
 import domain.AttendanceStatistics;
 import domain.AttendanceStatus;
-import domain.Penalty;
 import domain.Crew;
+import domain.Penalty;
 import domain.StatisticsResult;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
-import org.junit.jupiter.api.BeforeEach;
+import java.util.Map;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-public class AttendanceRecordCheckTest {
+public class AttendanceStatisticsTest {
 
     AttendanceManager attendanceManager = new AttendanceManager();
-    List<LocalDateTime> records = new ArrayList<>();
 
-    @BeforeEach
-    void setUp() {
-        records = List.of(
+    @DisplayName("출석 통계를 정확하게 계산한다.")
+    @Test
+    void countStatusTest_1() {
+        List<LocalDateTime> records = List.of(
             LocalDateTime.of(2024, 12, 2, 13, 0), // 출석
             LocalDateTime.of(2024, 12, 3, 9, 59), // 출석
             LocalDateTime.of(2024, 12, 4, 10, 6), // 지각
@@ -30,20 +29,6 @@ public class AttendanceRecordCheckTest {
 
         String name = "빙티"; // 경고 대상자
         attendanceManager.createCrew(name, records);
-    }
-
-    @DisplayName("크루 출석 기록을 전날까지 조회한다.")
-    @Test
-    void 출석_기록_조회() {
-        String name = "빙티";
-        Crew expectedCrew = attendanceManager.findByName(name);
-        assertThat(expectedCrew.getAttendanceCount()).isEqualTo(records.size());
-    }
-
-    @DisplayName("출석 통계를 정확하게 계산한다.")
-    @Test
-    void 출석_통계_계산() {
-        String name = "빙티";
         Crew crew = attendanceManager.findByName(name);
 
         LocalDate nowDate = LocalDate.of(2024, 12, 7);
@@ -59,8 +44,16 @@ public class AttendanceRecordCheckTest {
 
     @DisplayName("경고 기준을 정확하게 계산한다.")
     @Test
-    void 경고_기준_계산() {
-        String name = "빙티";
+    void countStatusTest_2() {
+        List<LocalDateTime> records = List.of(
+            LocalDateTime.of(2024, 12, 2, 13, 0), // 출석
+            LocalDateTime.of(2024, 12, 3, 9, 59), // 출석
+            LocalDateTime.of(2024, 12, 4, 10, 6), // 지각
+            LocalDateTime.of(2024, 12, 5, 10, 31),// 결석
+            LocalDateTime.of(2024, 12, 6, 10, 40)); // 결석
+
+        String name = "빙티"; // 경고 대상자
+        attendanceManager.createCrew(name, records);
         Crew crew = attendanceManager.findByName(name);
 
         LocalDate nowDate = LocalDate.of(2024, 12, 7);
@@ -71,7 +64,7 @@ public class AttendanceRecordCheckTest {
 
     @DisplayName("면담 기준을 정확하게 계산한다.")
     @Test
-    void 면담_기준_계산() {
+    void countStatusTest_3() {
         List<LocalDateTime> counselingRecords = List.of(
             LocalDateTime.of(2024, 12, 2, 13, 0), // 출석
             LocalDateTime.of(2024, 12, 3, 9, 59), // 출석
@@ -92,7 +85,7 @@ public class AttendanceRecordCheckTest {
 
     @DisplayName("제적 기준을 정확하게 계산한다.")
     @Test
-    void 제적_기준_계산() {
+    void countStatusTest_4() {
         List<LocalDateTime> expelledRecords = List.of(
             LocalDateTime.of(2024, 12, 2, 13, 0), // 출석
             LocalDateTime.of(2024, 12, 3, 9, 59), // 출석
@@ -112,5 +105,36 @@ public class AttendanceRecordCheckTest {
         StatisticsResult statisticsResult = AttendanceStatistics.countStatus(nowDate, crew);
 
         assertThat(Penalty.EXPELLED).isEqualTo(statisticsResult.getPenalty());
+    }
+
+    @DisplayName("크루 출석 기록을 바탕으로 제적 위험자를 파악한다.")
+    @Test
+    void calculateExpelledWarning_1() {
+        List<LocalDateTime> testRecords1 = List.of(
+            LocalDateTime.of(2024, 12, 2, 13, 6), // 지각
+            LocalDateTime.of(2024, 12, 3, 9, 7), // 지각
+            LocalDateTime.of(2024, 12, 4, 10, 8), // 지각
+            LocalDateTime.of(2024, 12, 5, 10, 9),// 지각
+            LocalDateTime.of(2024, 12, 6, 10, 10),// 지각
+            LocalDateTime.of(2024, 12, 9, 13, 40),// 결석
+            LocalDateTime.of(2024, 12, 10, 10, 40) // 결석
+        );
+
+        List<LocalDateTime> testRecords2 = List.of(
+            LocalDateTime.of(2024, 12, 2, 13, 8), // 지각
+            LocalDateTime.of(2024, 12, 3, 10, 5), // 지각
+            LocalDateTime.of(2024, 12, 4, 10, 6), // 지각
+            LocalDateTime.of(2024, 12, 5, 10, 7),// 지각
+            LocalDateTime.of(2024, 12, 6, 10, 6),// 지각
+            LocalDateTime.of(2024, 12, 9, 13, 6),// 지각
+            LocalDateTime.of(2024, 12, 10, 10, 40) // 결석
+        );
+
+        attendanceManager.createCrew("이든", testRecords1); // 면담 대상자
+        attendanceManager.createCrew("빙봉", testRecords2); // 면담 대상자
+        LocalDate nowDate = LocalDate.of(2024, 12, 11);
+        Map<String, StatisticsResult> warningCrews = attendanceManager.findWarningCrews(nowDate);
+
+        assertThat(warningCrews.size()).isEqualTo(2);
     }
 }
