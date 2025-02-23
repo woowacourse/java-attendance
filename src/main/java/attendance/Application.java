@@ -38,7 +38,7 @@ public class Application {
         optionMenu.put("4", Application::checkDangerousCrews);
     }
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) {
         LocalDate today = currentDate.now();
         initializeCrewsAndAttendances();
         while (true) {
@@ -58,9 +58,13 @@ public class Application {
         runnable.run();
     }
 
-    private static void initializeCrewsAndAttendances() throws IOException {
-        BufferedReader file = AttendanceFileReader.read();
-        AttendanceFileReader.initializeAttendances(file, crewManager);
+    private static void initializeCrewsAndAttendances() {
+        try {
+            BufferedReader file = AttendanceFileReader.read();
+            AttendanceFileReader.initializeAttendances(file, crewManager);
+        } catch (IOException e) {
+            throw new IllegalArgumentException("파일 읽기를 실패했습니다.");
+        }
     }
 
     private static void doAttendance() {
