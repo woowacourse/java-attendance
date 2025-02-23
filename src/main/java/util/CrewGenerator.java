@@ -77,7 +77,9 @@ public final class CrewGenerator {
 
     private static List<Integer> getValidDates(final LocalDate localDate) {
         final int today = localDate.getDayOfMonth();
-        final List<Integer> allDays = IntStream.range(1, today).boxed().collect(Collectors.toList());
+        final List<Integer> allDays = IntStream.range(1, today)
+                .boxed()
+                .collect(Collectors.toList());
         allDays.removeAll(getExcludeNotAttendanceDays());
 
         return allDays;
