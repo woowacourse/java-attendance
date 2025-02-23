@@ -21,19 +21,15 @@ public class FileParser {
 
     public static List<AttendanceData> loadAttendanceData() {
         File file = new File(FILE_PATH);
-        BufferedReader br = null;
-        String line;
-
         List<AttendanceData> result = new ArrayList<>();
-        try {
-            br = new BufferedReader(new FileReader(file));
+        try(BufferedReader br = new BufferedReader(new FileReader(file))) {
+            String line;
             while ((line = br.readLine()) != null) {
                 result.add(parseAttendanceHistory(line));
             }
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new IllegalStateException("파일 파싱 중 문제가 발생했습니다.");
         }
-
         return result;
     }
 

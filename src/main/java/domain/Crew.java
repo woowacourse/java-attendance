@@ -2,12 +2,13 @@ package domain;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import dto.HistoryDto;
 
@@ -58,30 +59,24 @@ public class Crew {
     }
 
     public List<HistoryDto> getAllHistory(LocalDate today) {
-        List<HistoryDto> histories = new ArrayList<>();
-        for (int day = 1; day < today.getDayOfMonth(); day++) {
-            if (Holiday.isOffDay(today.withDayOfMonth(day))) {
-                continue;
-            }
-            LocalDate date = today.withDayOfMonth(day);
-            LocalTime time = attendanceTimes.get(date);
-            histories.add(new HistoryDto(date, time, getAttendanceStatusByDate(date), time == null));
-        }
-        return histories;
+        return IntStream.range(1, today.getDayOfMonth())
+            .filter(day -> !Holiday.isOffDay(today.withDayOfMonth(day)))
+            .mapToObj(day -> {
+                LocalDate date = today.withDayOfMonth(day);
+                LocalTime time = attendanceTimes.get(date);
+                return new HistoryDto(date, time, getAttendanceStatusByDate(date), time == null);
+            }).toList();
     }
 
     public Map<AttendanceStatus, Integer> getAttendanceStatusCounter(LocalDate today) {
-        Map<AttendanceStatus, Integer> statusCounter = new EnumMap<>(AttendanceStatus.class);
-        initializeStatusCounter(statusCounter);
-        for (int day = 1; day < today.getDayOfMonth(); day++) {
-            if (Holiday.isOffDay(today.withDayOfMonth(day))) {
-                continue;
-            }
-            AttendanceStatus attendanceStatus = getAttendanceStatusByDate(LocalDate.of(today.getYear(),
-                today.getMonth(), day));
-            statusCounter.put(attendanceStatus, statusCounter.getOrDefault(attendanceStatus, 0) + 1);
-        }
-        return statusCounter;
+        EnumMap<AttendanceStatus, Integer> result = new EnumMap<>(AttendanceStatus.class);
+        initializeStatusCounter(result);
+        Map<AttendanceStatus, Integer> counter = IntStream.range(1, today.getDayOfMonth())
+            .filter(day -> !Holiday.isOffDay(today.withDayOfMonth(day)))
+            .mapToObj(day -> LocalDate.of(today.getYear(), today.getMonth(), day))
+            .collect(Collectors.toMap(this::getAttendanceStatusByDate, day -> 1, Integer::sum));
+        counter.forEach((status, count) -> result.merge(status, count, Integer::sum));
+        return result;
     }
 
     private void initializeStatusCounter(Map<AttendanceStatus, Integer> result) {

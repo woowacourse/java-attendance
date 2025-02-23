@@ -26,7 +26,6 @@ public enum AttendanceStatus {
         if (attendanceTime == null) {
             return AttendanceStatus.ABSENT;
         }
-
         LectureTime lectureTime = LectureTime.from(date);
         long difference = MINUTES.between(lectureTime.getStartTime(), attendanceTime);
         return Arrays.stream(values()).filter(attendanceStatus -> attendanceStatus.minLateMinute <= difference)

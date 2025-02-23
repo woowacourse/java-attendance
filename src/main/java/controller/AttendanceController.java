@@ -30,15 +30,22 @@ public class AttendanceController {
         boolean isRunning = true;
         while (isRunning) {
             OptionRequest optionRequest = InputView.scanOption();
-            switch (optionRequest.option()) {
-                case "1" -> attendanceCheck();
-                case "2" -> attendanceModify();
-                case "3" -> checkAttendanceHistory();
-                case "4" -> checkCrewsAlmostExpelled();
-                case "q", "Q" -> isRunning = false;
-                default -> throw new IllegalArgumentException("존재하지 않는 기능입니다.");
-            }
+            isRunning = processMenu(optionRequest.option());
         }
+    }
+
+    private boolean processMenu(String option) {
+        switch (option) {
+            case "1" -> attendanceCheck();
+            case "2" -> attendanceModify();
+            case "3" -> checkAttendanceHistory();
+            case "4" -> checkCrewsAlmostExpelled();
+            case "q", "Q" -> {
+                return false;
+            }
+            default -> throw new IllegalArgumentException("존재하지 않는 기능입니다.");
+        }
+        return true;
     }
 
     private void attendanceCheck() {
@@ -54,7 +61,6 @@ public class AttendanceController {
         validateCampusTime(request.time());
         Crew crew = crewRepository.get(request.nickname());
         validateAttendanceTime(crew, request.date());
-
         ModifiedResult.InnerStatus before = generateInnerStatus(crew, request);
         crew.modifyAttendance(request.date(), request.time());
         ModifiedResult.InnerStatus after = generateInnerStatus(crew, request);
@@ -78,28 +84,24 @@ public class AttendanceController {
         LocalDate now = DateTimeUtil.nowDate();
         List<HistoryDto> historyDto = crew.getAllHistory(now);
         Manage manage = Manage.of(crew.getAttendanceStatusCounter(now));
-
         OutputView.printHistory(
             new AttendanceHistoryResult(
                 crew.getNickname(),
                 historyDto,
                 crew.getAttendanceStatusCounter(now),
-                manage
-            ));
+                manage));
     }
 
     private void checkCrewsAlmostExpelled() {
         List<Crew> crews = crewRepository.getAll();
         List<CrewAlmostExpelledResult> result = crews.stream()
             .map(crew -> {
-                Map<AttendanceStatus, Integer> statusCounter
-                    = crew.getAttendanceStatusCounter(DateTimeUtil.nowDate());
+                Map<AttendanceStatus, Integer> statusCounter = crew.getAttendanceStatusCounter(DateTimeUtil.nowDate());
                 return new CrewAlmostExpelledResult(
                     crew.getNickname(),
                     statusCounter,
                     Manage.of(statusCounter));
-            })
-            .toList();
+            }).toList();
         OutputView.printCrewsAlmostExpelled(result);
     }
 
