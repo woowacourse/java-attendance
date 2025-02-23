@@ -6,6 +6,8 @@ import domain.AttendanceSheet;
 import domain.AttendanceSheets;
 import domain.AttendanceSheetsFactory;
 import domain.AttendanceState;
+import domain.Calandar;
+import java.time.DayOfWeek;
 import util.FileReaderUtil;
 import view.InputView;
 import view.OutputView;
@@ -71,9 +73,11 @@ public class AttendanceController {
 
         for (String name : allNames) {
             List<AttendanceSheet> attendanceByNickname = attendanceSheets.findAttendanceByNickname(name);
+            Map<Integer, AttendanceDateTime> map = attendanceSheetListToDayOfAttendanceTimeMap(
+                    attendanceByNickname);
 
-            int lateCount = getLateCount(attendanceByNickname);
-            int absentCount = getAbsentCount(attendanceByNickname);
+            int lateCount = calculateLateCount(attendanceByNickname);
+            int absentCount = calculateAbsentCount(map);
 
             AbsentPolicy absentPolicy = AbsentPolicy.calculateAbsentPolicy(absentCount, lateCount);
             if (AbsentPolicy.isRiskOfExpulsion(absentPolicy)) {
@@ -89,21 +93,28 @@ public class AttendanceController {
         OutputView.printAttendanceSheetIntro(nickname);
 
         List<AttendanceSheet> attendancesByNickname = attendanceSheets.findAttendanceByNickname(nickname);
+        Map<Integer, AttendanceDateTime> dayToAttendanceDateTime = attendanceSheetListToDayOfAttendanceTimeMap(
+                attendancesByNickname);
+
+        OutputView.printAttendanceSheets(dayToAttendanceDateTime, today.getDayOfMonth());
+
+        int attendCount = calculateAttendCount(attendancesByNickname);
+        int lateCount = calculateLateCount(attendancesByNickname);
+        int absentCount = calculateAbsentCount(dayToAttendanceDateTime);
+        OutputView.printAttendanceStatistics(attendCount, lateCount, absentCount);
+
+        OutputView.printAbsentPolicy(AbsentPolicy.calculateAbsentPolicy(absentCount, lateCount));
+        System.out.print(System.lineSeparator());
+    }
+
+    private Map<Integer, AttendanceDateTime> attendanceSheetListToDayOfAttendanceTimeMap(
+            List<AttendanceSheet> attendancesByNickname) {
         Map<Integer, AttendanceDateTime> dayToAttendanceDateTime = new HashMap<>();
         attendancesByNickname.forEach(attendance ->
                 dayToAttendanceDateTime.put(
                         attendance.getAttendanceDateTime().getAttendanceDateTime().getDayOfMonth(),
                         attendance.getAttendanceDateTime()));
-
-        OutputView.printAttendanceSheets(dayToAttendanceDateTime, date.getDayOfMonth());
-
-        int attendCount = getAttendCount(attendancesByNickname);
-        int lateCount = getLateCount(attendancesByNickname);
-        int absentCount = getAbsentCount(attendancesByNickname);
-        OutputView.printAttendanceStatistics(attendCount, lateCount, absentCount);
-
-        OutputView.printAbsentPolicy(AbsentPolicy.calculateAbsentPolicy(absentCount, lateCount));
-        System.out.print(System.lineSeparator());
+        return dayToAttendanceDateTime;
     }
 
     private void updateAttendance(AttendanceSheets attendanceSheets) {
@@ -114,7 +125,8 @@ public class AttendanceController {
         int day = Integer.parseInt(inputView.inputUpdateDate());
 
         AttendanceSheet attendanceSheetByNicknameAndDay = attendanceByNickname.stream()
-                .filter(attendanceSheet -> attendanceSheet.getAttendanceDateTime().getAttendanceDateTime().getDayOfMonth() == day)
+                .filter(attendanceSheet ->
+                        attendanceSheet.getAttendanceDateTime().getAttendanceDateTime().getDayOfMonth() == day)
                 .findFirst()
                 .orElseThrow();
 
@@ -137,45 +149,67 @@ public class AttendanceController {
     }
 
 
-    private int getLateCount(List<AttendanceSheet> attendanceByNickname) {
+    private int calculateAttendCount(List<AttendanceSheet> attendanceByNickname) {
+        int attendCount = 0;
+
+        for (AttendanceSheet attendanceSheet : attendanceByNickname) {
+            AttendanceDateTime attendanceDateTime = attendanceSheet.getAttendanceDateTime();
+
+            attendCount += countStateByAttendanceDateTime(attendanceDateTime, AttendanceState.ATTEND);
+        }
+
+        return attendCount;
+    }
+
+    private int calculateLateCount(List<AttendanceSheet> attendanceByNickname) {
         int lateCount = 0;
 
         for (AttendanceSheet attendanceSheet : attendanceByNickname) {
-            AttendanceState state = attendanceSheet.getAttendanceDateTime().check();
+            AttendanceDateTime attendanceDateTime = attendanceSheet.getAttendanceDateTime();
 
-            if (state == AttendanceState.LATE) {
-                lateCount++;
-            }
+            lateCount += countStateByAttendanceDateTime(attendanceDateTime, AttendanceState.LATE);
         }
 
         return lateCount;
     }
 
-    private int getAbsentCount(List<AttendanceSheet> attendanceByNickname) {
+    private int calculateAbsentCount(Map<Integer, AttendanceDateTime> attendanceDateTimes) {
         int absentCount = 0;
 
-        for (AttendanceSheet attendanceSheet : attendanceByNickname) {
-            AttendanceState state = attendanceSheet.getAttendanceDateTime().check();
-
-            if (state == AttendanceState.ABSENT) {
-                absentCount++;
-            }
+        for (int day = Calandar.DECEMBER.startDay; day < today.getDayOfMonth(); day++) {
+            absentCount += countAbsentByDay(attendanceDateTimes, day);
         }
 
         return absentCount;
     }
 
-    private int getAttendCount(List<AttendanceSheet> attendanceByNickname) {
-        int attendCount = 0;
+    private int countAbsentByDay(Map<Integer, AttendanceDateTime> attendanceDateTimes, int day) {
+        AttendanceDateTime datetime = attendanceDateTimes.getOrDefault(day, null);
 
-        for (AttendanceSheet attendanceSheet : attendanceByNickname) {
-            AttendanceState state = attendanceSheet.getAttendanceDateTime().check();
-
-            if (state == AttendanceState.ATTEND) {
-                attendCount++;
-            }
+        if (datetime == null) {
+            return calculateCountByDayOfWeek(day);
         }
 
-        return attendCount;
+        return countStateByAttendanceDateTime(datetime, AttendanceState.ABSENT);
+    }
+
+    private int countStateByAttendanceDateTime(AttendanceDateTime datetime, AttendanceState state) {
+        if (datetime.check() == state) {
+            return 1;
+        }
+
+        return 0;
+    }
+
+    private int calculateCountByDayOfWeek(int day) {
+        LocalDate localDate = LocalDate.of(2024, 12, day);
+        DayOfWeek week = localDate.getDayOfWeek();
+
+        if (week == DayOfWeek.SATURDAY || week == DayOfWeek.SUNDAY || localDate.isEqual(
+                LocalDate.of(2024, 12, 25))) {
+            return 0;
+        }
+
+        return 1;
     }
 }

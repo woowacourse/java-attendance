@@ -3,6 +3,7 @@ package view;
 import domain.AbsentPolicy;
 import domain.AttendanceDateTime;
 
+import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.TextStyle;
@@ -20,23 +21,27 @@ public class OutputView {
 
         for (int day = 1; day < todayDate; day++) {
             LocalDate date = LocalDate.of(2024, 12, day);
-            String koreanDayOfWeek = date.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.KOREAN);
-
-            printAttendanceSheet(dayToAttendanceDateTime, day, koreanDayOfWeek);
+            printAttendanceSheet(dayToAttendanceDateTime, date);
         }
 
         System.out.print(System.lineSeparator());
     }
 
-    private static void printAttendanceSheet(Map<Integer, AttendanceDateTime> dayToAttendanceDateTime, int day, String koreanDayOfWeek) {
-        if (dayToAttendanceDateTime.containsKey(day)) {
-            AttendanceDateTime attendanceDateTime = dayToAttendanceDateTime.get(day);
-            LocalDateTime dateTime = attendanceDateTime.getAttendanceDateTime();
-
-            System.out.printf(ViewMessage.ATTENDANCE_FORMAT, day, koreanDayOfWeek, dateTime.getHour(), dateTime.getMinute(), attendanceDateTime.check().description);
+    private static void printAttendanceSheet(Map<Integer, AttendanceDateTime> dayToAttendanceDateTime, LocalDate date) {
+        if (date.getDayOfWeek() == DayOfWeek.SATURDAY || date.getDayOfWeek() == DayOfWeek.SUNDAY) {
             return;
         }
-        System.out.printf(ViewMessage.ABSENT_FORMAT, day, koreanDayOfWeek);
+
+        String koreanDayOfWeek = date.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.KOREAN);
+        if (dayToAttendanceDateTime.containsKey(date.getDayOfMonth())) {
+            AttendanceDateTime attendanceDateTime = dayToAttendanceDateTime.get(date.getDayOfMonth());
+            LocalDateTime dateTime = attendanceDateTime.getAttendanceDateTime();
+
+            System.out.printf(ViewMessage.ATTENDANCE_FORMAT, date.getDayOfMonth(), koreanDayOfWeek, dateTime.getHour(),
+                    dateTime.getMinute(), attendanceDateTime.check().description);
+            return;
+        }
+        System.out.printf(ViewMessage.ABSENT_FORMAT, date.getDayOfMonth(), koreanDayOfWeek);
     }
 
     public static void printAttendanceStatistics(int attendCount, int latCount, int absentCount) {
