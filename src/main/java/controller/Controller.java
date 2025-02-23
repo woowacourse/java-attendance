@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 import model.Student;
 import model.StudentRepository;
 import util.FileInput;
@@ -22,9 +23,8 @@ public class Controller {
 
     private StudentRepository readFileAndCreateStudentRepository() throws IOException {
         FileInput fileInput = new FileInput();
-        StudentRepository studentRepository = new StudentRepository();
-        studentRepository.createStudent(fileInput.readAttendanceFile());
-        return studentRepository;
+        List<Student> students = fileInput.createStudents();
+        return new StudentRepository(students);
     }
 
     public StudentRepository createStudentRepository(){

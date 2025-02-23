@@ -3,9 +3,7 @@ package model;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -53,6 +51,24 @@ public class AttendanceRecords {
         record.put(recordLocalDate, new AttendanceRecord(localTime, newAttendanceStatus));
     }
 
+    public void createAttendanceRecords(LocalDateTime today){
+        AttendanceStatus attendanceStatus = AttendanceRuleByDay.calculateAttendance(today);
+        record.put(LocalDate.from(today), new AttendanceRecord(LocalTime.from(today), attendanceStatus));
+    }
+
+    public void updateStateNotExistInFile(LocalDateTime today) {
+        LocalDateTime standard = LocalDateTime.of(2024,12,1,0,0);
+        Map<LocalDate, AttendanceRecord> recordClone = makeRecordClone();
+        while (!compareDayIsSame(standard,LocalDate.from(today))) {
+            if (isExistLocalDate(recordClone,standard)) {
+                standard = standard.plusDays(1);
+                continue;
+            }
+            addAbsentRecordForStudent(standard);
+            standard = standard.plusDays(1);
+        }
+    }
+
     private void addAbsentRecordForStudent(LocalDateTime updateLocalDateTime) {
         record.put(LocalDate.from(updateLocalDateTime), new AttendanceRecord(null, AttendanceStatus.ABSENT));
     }
@@ -77,25 +93,12 @@ public class AttendanceRecords {
         return LocalDate.from(localDateTime).equals(localDate);
     }
 
-    public void updateStateNotExistInFile(LocalDateTime today) {
-        LocalDateTime standard = LocalDateTime.of(2024,12,1,0,0);
-        Map<LocalDate, AttendanceRecord> recordClone = makeRecordClone();
-        while (!compareDayIsSame(standard,LocalDate.from(today))) {
-            if (isExistLocalDate(recordClone,standard)) {
-                standard = standard.plusDays(1);
-                continue;
-            }
-            addAbsentRecordForStudent(standard);
-            standard = standard.plusDays(1);
-        }
-    }
-
     private boolean isExistLocalDate(Map<LocalDate, AttendanceRecord> recordClone, LocalDateTime localDateTime) {
         return recordClone.keySet().stream()
                 .anyMatch(date -> compareDayIsSame(localDateTime, date));
     }
 
-    public Map<LocalDate, AttendanceRecord> makeRecordClone() {
+    private Map<LocalDate, AttendanceRecord> makeRecordClone() {
         Map<LocalDate, AttendanceRecord> clonedMap = new HashMap<>();
         for (Map.Entry<LocalDate, AttendanceRecord> entry : record.entrySet()) {
             clonedMap.put(entry.getKey(), new AttendanceRecord(entry.getValue()));

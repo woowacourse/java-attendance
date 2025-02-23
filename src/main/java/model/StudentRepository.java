@@ -7,17 +7,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class StudentRepository {
-    private final List<Student> students = new ArrayList<>();
+    private final List<Student> students;
+
+    public StudentRepository(List<Student> students) {
+        this.students = students;
+    }
 
     public List<Student> getStudents() {
         return students;
-    }
-
-    public void createStudent(ArrayList<String> fileInformation) {
-        for (String information : fileInformation) {
-            String[] studentNameAndAttendanceTime = information.split(",");
-            createStudentByName(studentNameAndAttendanceTime);
-        }
     }
 
     public void notExistStudent(String studentName) {
@@ -32,24 +29,4 @@ public class StudentRepository {
                 .findFirst()
                 .orElse(null);
     }
-
-    private void createStudentByName(String[] studentNameAndAttendanceTime) {
-        String name = studentNameAndAttendanceTime[0];
-        String timeInformation = studentNameAndAttendanceTime[1];
-        if (findStudentByName(name) == null) {
-            Student student = new Student(name);
-            students.add(student);
-            makeDateTimeFormatAndUpdateStudentState(student, timeInformation);
-            return;
-        }
-        Student student = findStudentByName(name);
-        makeDateTimeFormatAndUpdateStudentState(student, timeInformation);
-    }
-
-    private static void makeDateTimeFormatAndUpdateStudentState(Student student, String studentNameAndAttendanceTime) {
-        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern(DateFormatInformation.LOCAL_DATE_TIME_FORMATTER);
-        LocalDateTime localDateTime = LocalDateTime.parse(studentNameAndAttendanceTime, dateTimeFormatter);
-        student.updateState(localDateTime);
-    }
-
 }
