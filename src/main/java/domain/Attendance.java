@@ -31,16 +31,8 @@ public class Attendance {
             isAbsent = true;
             return;
         }
-        isLate = isLate();
-        isAbsent = isAbsent();
-    }
-
-    private boolean isLate() {
-        return day.isLate(attendanceTime);
-    }
-
-    private boolean isAbsent() {
-        return day.isAbsent(attendanceTime);
+        isLate = day.isLate(attendanceTime);
+        isAbsent = day.isAbsent(attendanceTime);
     }
 
     public AttendanceDto toDto() {
