@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import model.AttendanceCalculator;
 import model.AttendanceStatus;
+import model.StudentPunishment;
 import util.LocalDateTimePrintFormatter;
 
 public class OutputView {
@@ -39,19 +40,19 @@ public class OutputView {
     }
 
     public static void printResult(HashMap<String, Integer> studentRecord) {
-        int riskLevel = studentRecord.get("결석") + studentRecord.get("지각") / 3;
+        int riskLevel = studentRecord.get(AttendanceStatus.ATTENDANCE.getState()) + studentRecord.get(AttendanceStatus.LATE.getState()) / 3;
         for (String state : studentRecord.keySet()) {
             System.out.printf(String.format(STATE_FORMATTER,state,studentRecord.get(state)));
         }
-        if (riskLevel >= 5) {
+        if (riskLevel >= StudentPunishment.DISMISSAL.getStandard()) {
             System.out.println(DISMISSAL_SUBJECT);
             return;
         }
-        if (riskLevel >= 3) {
+        if (riskLevel >= StudentPunishment.INTERVIEW.getStandard()) {
             System.out.println(INTERVIEW_SUBJECT);
             return;
         }
-        if (riskLevel >= 2) {
+        if (riskLevel >= StudentPunishment.WARNING.getStandard()) {
             System.out.println(WARNING_SUBJECT);
         }
     }
@@ -61,17 +62,17 @@ public class OutputView {
     }
 
     public static void printDismissalSubject(HashMap<String, Integer> studentRecord, String name) {
-        int riskLevel = studentRecord.get("결석") + studentRecord.get("지각") / 3;
-        if (riskLevel >= 5) {
-            System.out.printf(String.format(DISMISSAL_LABEL_FORMATTER,name,studentRecord.get("결석"),studentRecord.get("지각")));
+        int riskLevel = studentRecord.get(AttendanceStatus.ABSENT.getState()) + studentRecord.get(AttendanceStatus.LATE.getState()) / 3;
+        if (riskLevel >= StudentPunishment.DISMISSAL.getStandard()) {
+            System.out.printf(String.format(DISMISSAL_LABEL_FORMATTER,name,studentRecord.get(AttendanceStatus.ABSENT.getState()),studentRecord.get(AttendanceStatus.LATE.getState())));
             return;
         }
-        if (riskLevel >= 3) {
-            System.out.printf(String.format(INTERVIEW_LABEL_FORMATTER,name,studentRecord.get("결석"),studentRecord.get("지각")));
+        if (riskLevel >= StudentPunishment.INTERVIEW.getStandard()) {
+            System.out.printf(String.format(INTERVIEW_LABEL_FORMATTER,name,studentRecord.get(AttendanceStatus.ABSENT.getState()),studentRecord.get(AttendanceStatus.LATE.getState())));
             return;
         }
-        if (riskLevel >= 2) {
-            System.out.printf(String.format(WARNING_LABEL_FORMATTER,name,studentRecord.get("결석"),studentRecord.get("지각")));
+        if (riskLevel >= StudentPunishment.WARNING.getStandard()) {
+            System.out.printf(String.format(WARNING_LABEL_FORMATTER,name,studentRecord.get(AttendanceStatus.ABSENT.getState()),studentRecord.get(AttendanceStatus.LATE.getState())));
         }
     }
 
