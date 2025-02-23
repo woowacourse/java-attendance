@@ -14,6 +14,10 @@ public class StatisticsResult {
         this.penalty = Penalty.check(absenceCount, latenessCount);
     }
 
+    public boolean hasPenalty(){
+        return penalty != Penalty.NONE;
+    }
+
     public int getAttendanceCount() {
         return attendanceCount;
     }

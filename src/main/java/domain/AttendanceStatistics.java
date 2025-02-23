@@ -46,11 +46,9 @@ public class AttendanceStatistics {
                                                                          Map<String, Records> crews) {
         Map<String, StatisticsResult> result = new LinkedHashMap<>();
         for (String crewName : crews.keySet()) {
-            StatisticsResult statisticsResult = AttendanceStatistics.countStatus(nowDate,
-                    crews.get(crewName));
+            StatisticsResult statisticsResult = AttendanceStatistics.countStatus(nowDate, crews.get(crewName));
 
-            Penalty penalty = statisticsResult.getPenalty();
-            if (penalty != Penalty.NONE) {
+            if (statisticsResult.hasPenalty()) {
                 result.put(crewName, statisticsResult);
             }
         }
