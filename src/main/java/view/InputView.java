@@ -23,6 +23,8 @@ public class InputView {
     private final static String MENU_OPTION = "[1-4]|Q";
     private final static String PRINT_TODAY_FORMAT = "오늘은 %d월 %d일 %s입니다. 기능을 선택해 주세요.\n";
     private static final DateTimeFormatter dateTimeFormatterForHourMin = DateTimeFormatter.ofPattern("HH:mm");
+    private static final int startTime = 8;
+    private static final int endTime = 23;
     private final static Scanner scanner = new Scanner(System.in);
 
     private static void printMenu() {
@@ -97,7 +99,7 @@ public class InputView {
     }
 
     public static void isNotOpeningHour(LocalDateTime localDateTime) {
-        if (localDateTime.getHour() < 8 || localDateTime.getHour() >= 23) {
+        if (localDateTime.getHour() < startTime || localDateTime.getHour() >= endTime) {
             throw new IllegalArgumentException("[ERROR] 캠퍼스 운영 시간이 아닙니다.");
         }
     }
