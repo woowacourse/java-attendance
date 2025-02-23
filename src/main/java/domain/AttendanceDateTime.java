@@ -70,6 +70,10 @@ public class AttendanceDateTime {
         }
     }
 
+    public boolean hasSameDate(final LocalDate localDate) {
+        return localDateTime.toLocalDate().equals(localDate);
+    }
+
     public LocalTime toLocalTime() {
         return localDateTime.toLocalTime();
     }

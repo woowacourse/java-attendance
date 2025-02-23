@@ -41,7 +41,7 @@ public class Attendances {
 
     public Attendance findAttendance(final LocalDateTime dateTime) {
         return attendances.stream()
-                .filter(attendance -> attendance.getLocalDateTime().toLocalDate().equals(dateTime.toLocalDate()))
+                .filter(attendance -> attendance.hasSameDate(dateTime.toLocalDate()))
                 .findFirst()
                 .orElseThrow(() -> new CustomIllegalArgumentException("수정하는 일자를 찾을 수 없습니다."));
     }

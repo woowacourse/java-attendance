@@ -29,6 +29,10 @@ public class Attendance implements Comparable<Attendance> {
         return new Attendance(AttendanceDateTime.of(dateTime));
     }
 
+    public boolean hasSameDate(final LocalDate localDate) {
+        return attendanceDateTime.hasSameDate(localDate);
+    }
+
     public AttendanceSummary getSummary() {
         return new AttendanceSummary(attendanceDateTime, attendanceStatus);
     }
