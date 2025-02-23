@@ -9,10 +9,10 @@ public enum AttendanceStatus {
     LATE("(지각)"),
     NONE("");
 
-    private static final LocalTime OPERATION_HOUR_START = LocalTime.of(8, 0);
+    public static final LocalTime OPERATION_HOUR_START = LocalTime.of(8, 0);
+    public static final LocalTime OPERATION_HOUR_END = LocalTime.of(23, 0);
     private static final LocalTime MONDAY_ATTEND_TIME_END = LocalTime.of(13, 5);
     private static final LocalTime MONDAY_LATE_TIME_END = LocalTime.of(13, 30);
-    private static final LocalTime OPERATION_TIME_END = LocalTime.of(23, 0);
     private static final LocalTime EXCEPT_MONDAY_ATTEND_TIME_START = LocalTime.of(8, 0);
     private static final LocalTime EXCEPT_MONDAY_ATTEND_TIME_END = LocalTime.of(10, 5);
     private static final LocalTime EXCEPT_MONDAY_LATE_TIME_END = LocalTime.of(10, 30);
@@ -37,7 +37,7 @@ public enum AttendanceStatus {
         if (!time.isBefore(MONDAY_ATTEND_TIME_END) && !time.isAfter(MONDAY_LATE_TIME_END)) {
             return LATE;
         }
-        if (!time.isBefore(MONDAY_LATE_TIME_END) && !time.isAfter(OPERATION_TIME_END)) {
+        if (!time.isBefore(MONDAY_LATE_TIME_END) && !time.isAfter(OPERATION_HOUR_END)) {
             return ABSENT;
         }
         return NONE;
@@ -50,7 +50,7 @@ public enum AttendanceStatus {
         if (!time.isBefore(EXCEPT_MONDAY_ATTEND_TIME_END) && !time.isAfter(EXCEPT_MONDAY_LATE_TIME_END)) {
             return LATE;
         }
-        if (!time.isBefore(EXCEPT_MONDAY_LATE_TIME_END) && !time.isAfter(OPERATION_TIME_END)) {
+        if (!time.isBefore(EXCEPT_MONDAY_LATE_TIME_END) && !time.isAfter(OPERATION_HOUR_END)) {
             return ABSENT;
         }
         return NONE;

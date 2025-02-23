@@ -104,7 +104,7 @@ public class AttendanceController {
             attendanceBook.validateDateAlreadyExistsByCrewName(name, modifiedDay);
             return modifiedDay;
         } catch (DateTimeException | NumberFormatException e) {
-            throw new IllegalArgumentException("[ERROR] 날짜(일) 입력이 올바르지 않습니다.");
+            throw new IllegalArgumentException(ErrorCode.DAY_INPUT_NOT_VALID.getMessage());
         }
     }
 

@@ -8,6 +8,9 @@ public record TotalRecordsResponse(
         int lateCount,
         int absentCount
 ) {
+
+    public static final int DECEMBER_DAYS_COUNT = 31;
+
     public static TotalRecordsResponse fromAttendanceRecords(List<AttendanceRecordResponse> records) {
         List<AttendanceStatus> statuses = records.stream().map(AttendanceRecordResponse::attendanceStatus).toList();
         int attendanceCount = 0;

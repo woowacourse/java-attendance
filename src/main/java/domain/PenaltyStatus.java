@@ -6,6 +6,10 @@ public enum PenaltyStatus {
     INTERVIEW("면담"),
     WARNING("경고");
 
+    private static final int EXPULSION_COUNT = 5;
+    private static final int INTERVIEW_COUNT = 3;
+    private static final int WARNING_COUNT = 2;
+
     private final String message;
 
     PenaltyStatus(String message) {
@@ -13,13 +17,13 @@ public enum PenaltyStatus {
     }
 
     public static PenaltyStatus getByPenaltyCount(int penaltyCount) {
-        if (penaltyCount > 5) {
+        if (penaltyCount > EXPULSION_COUNT) {
             return EXPULSION;
         }
-        if (penaltyCount >= 3) {
+        if (penaltyCount >= INTERVIEW_COUNT) {
             return INTERVIEW;
         }
-        if (penaltyCount >= 2) {
+        if (penaltyCount >= WARNING_COUNT) {
             return WARNING;
         }
         return NONE;
@@ -28,6 +32,4 @@ public enum PenaltyStatus {
     public String getMessage() {
         return message;
     }
-
-
 }

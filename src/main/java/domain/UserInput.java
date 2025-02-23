@@ -19,7 +19,7 @@ public enum UserInput {
         return Arrays.stream(UserInput.values())
                 .filter(userInput -> userInput.getInput().equals(input))
                 .findAny()
-                .orElseThrow(() -> new IllegalArgumentException("[ERROR] 입력이 올바르지 않습니다."));
+                .orElseThrow(() -> new IllegalArgumentException(ErrorCode.INPUT_NOT_VALID.getMessage()));
     }
 
     public String getInput() {

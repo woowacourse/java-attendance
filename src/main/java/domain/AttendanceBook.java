@@ -1,5 +1,8 @@
 package domain;
 
+import static domain.AttendanceStatus.OPERATION_HOUR_START;
+import static domain.AttendanceStatus.OPERATION_HOUR_END;
+
 import dto.AttendanceRecordResponse;
 import dto.CrewPenaltyResponse;
 import dto.ModifyAttendanceResponse;
@@ -11,6 +14,7 @@ import java.util.List;
 import java.util.Map;
 
 public class AttendanceBook {
+    private static final int LATE_TO_ABSENT_COUNT_UNIT = 3;
     private final List<Crew> crews;
 
     public AttendanceBook() {
@@ -126,11 +130,11 @@ public class AttendanceBook {
     }
 
     public int getPenaltyCount(TotalRecordsResponse totalRecords) {
-        return totalRecords.absentCount() + (totalRecords.lateCount() / 3);
+        return totalRecords.absentCount() + (totalRecords.lateCount() / LATE_TO_ABSENT_COUNT_UNIT);
     }
 
     public void validateIsInOperationHour(LocalTime time) {
-        if (!time.isAfter(LocalTime.of(8, 0)) || !time.isBefore(LocalTime.of(23, 0))) {
+        if (!time.isAfter(OPERATION_HOUR_START) || !time.isBefore(OPERATION_HOUR_END)) {
             throw new IllegalArgumentException(ErrorCode.TIME_NOT_IN_OPERATION_HOUR.getMessage());
         }
     }

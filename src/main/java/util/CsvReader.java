@@ -8,9 +8,13 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public class CsvReader {
-    public List<String> readCsv(String csvFilePath) {
-        Path path = Path.of(csvFilePath);
+public class CsvReader implements FileReader {
+
+    private static final String CSV_FILE_PATH = "src/main/resources/attendances.csv";
+
+    @Override
+    public List<String> readFile() {
+        Path path = Path.of(CSV_FILE_PATH);
         validateFilePath(path);
 
         try (Stream<String> lines = Files.lines(path)) {
