@@ -6,16 +6,19 @@ public class Attendance {
     private AttendanceTime attendanceTime;
 
     public Attendance(final String crewName, final AttendanceTime attendanceTime) {
+
         this.crewName = crewName;
         this.attendanceTime = attendanceTime;
     }
 
     public AttendanceTime getAttendanceTime() {
+
         return new AttendanceTime(attendanceTime.date(), attendanceTime.hour(),
                 attendanceTime.minute(), attendanceTime.isAbsent());
     }
 
     public String getCrewName() {
+
         return crewName;
     }
 
@@ -45,6 +48,7 @@ public class Attendance {
     }
 
     public void modifyAttendanceTime(final AttendanceTime modifyAttendanceTime) {
+
         this.attendanceTime = modifyAttendanceTime;
     }
 }

@@ -64,18 +64,22 @@ public record AttendanceTime(LocalDate date, String hour, String minute, boolean
     }
 
     public int getYear() {
+
         return date.getYear();
     }
 
     public int getMonth() {
+
         return date.getMonthValue();
     }
 
     public int getDay() {
+
         return date.getDayOfMonth();
     }
 
     public String getDayOfWeek() {
+
         return date.getDayOfWeek().getDisplayName(
                 TextStyle.FULL, Locale.KOREAN);
     }

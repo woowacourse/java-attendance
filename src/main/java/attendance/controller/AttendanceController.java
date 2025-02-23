@@ -79,6 +79,7 @@ public class AttendanceController {
     }
 
     private void runFunction(final Function function) {
+
         if (function == Function.ATTEND) {
             attendanceCheckFunction();
         }
@@ -109,6 +110,7 @@ public class AttendanceController {
     }
 
     private boolean isNotAttendanceDate() {
+
         try {
             AttendanceTime.validateAttendanceDate(LocalDate.now());
             return false;
@@ -183,6 +185,7 @@ public class AttendanceController {
     }
 
     private Attendance getTargetDateAttendance(String crewName, AttendanceTime modifiedAttendanceTime) {
+
         int year = modifiedAttendanceTime.getYear();
         int month = modifiedAttendanceTime.getMonth();
         int modifyDay = modifiedAttendanceTime.getDay();
@@ -210,12 +213,14 @@ public class AttendanceController {
     }
 
     private void printTargetCrews(AcademicStatus status) {
+
         List<CrewAttendanceInformation> targetCrews = attendanceBook.getCrewAtRiskOfExpulsion(
                 attendanceRepository, status.getValue());
         outputView.printCrewsAtRiskOfExpulsion(targetCrews);
     }
 
     private <T> T retryInput(Supplier<T> supplier) {
+
         try {
             return supplier.get();
         } catch (IllegalArgumentException e) {
