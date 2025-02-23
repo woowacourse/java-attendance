@@ -1,11 +1,13 @@
 package controller.command;
 
+import controller.AttendanceCommandController;
 import domain.Attendance;
 import domain.AttendanceDateTime;
 import domain.AttendanceTime;
 import domain.Crew;
 import domain.Crews;
 import domain.Nickname;
+import domain.Week;
 import error.CustomIllegalArgumentException;
 import view.InputView;
 import view.OutputView;
@@ -14,6 +16,8 @@ public class CheckAttendanceCommand implements AttendanceCommand {
 
     @Override
     public void execute(final Crews crews) {
+        Week.validateToday(AttendanceCommandController.SYSTEM_DATE_TIME);
+
         final Nickname nickname = readNickname();
         final Crew crew = crews.findByNickname(nickname);
         final AttendanceDateTime attendanceDateTime = AttendanceDateTime.generateTodayAttendance(readLocalTime());
@@ -33,7 +37,7 @@ public class CheckAttendanceCommand implements AttendanceCommand {
     }
 
     private AttendanceTime readLocalTime() {
-        return AttendanceTime.of(InputView.readDateTime());
+        return AttendanceTime.of(InputView.readTime());
     }
 
     private Attendance attend(Crew crew, AttendanceDateTime attendedDateTime) {

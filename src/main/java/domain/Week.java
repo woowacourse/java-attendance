@@ -44,4 +44,17 @@ public enum Week {
                 .findFirst()
                 .orElseThrow(() -> new CustomIllegalArgumentException(format));
     }
+
+    public static void validateToday(final LocalDateTime localDateTime) {
+        final String format = String.format(localDateTime.format(NON_SCHOOL_DAY_FORMAT) + "은 등교일이 아닙니다.");
+        final DayOfWeek day = localDateTime.getDayOfWeek();
+        final int dayOfMonth = localDateTime.getDayOfMonth();
+        boolean isValidDay = Arrays.stream(Week.values())
+                .anyMatch(week -> week.name().equals(day.name()));
+
+        if (!isValidDay || HOLIDAYS.contains(dayOfMonth)) {
+            throw new CustomIllegalArgumentException(format);
+        }
+        
+    }
 }
