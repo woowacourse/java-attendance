@@ -14,8 +14,8 @@ public class Crew {
         return this.nickname.equals(nickname);
     }
 
-    public String getNickname() {
-        return nickname.get();
+    public Nickname getNickname() {
+        return nickname;
     }
 
     @Override

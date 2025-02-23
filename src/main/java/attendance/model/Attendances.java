@@ -1,12 +1,9 @@
 package attendance.model;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.time.Month;
 import java.util.HashSet;
 import java.util.Map;
-import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -40,23 +37,18 @@ public class Attendances {
         return attendance;
     }
 
-    public Optional<Attendance> findByCrewAndDate(Crew crew, LocalDate date) {
+    public Attendance findByCrewAndDate(Crew crew, LocalDate date) {
         return attendances.stream()
-                .filter(attendance -> attendance.equals(new Attendance(crew, LocalDateTime.of(date, LocalTime.MIN))))
-                .findFirst();
+                .filter(attendance -> attendance.isCrewAttendanceInDate(crew, date))
+                .findFirst()
+                .orElseGet(() -> new Attendance(crew, date, null));
     }
 
     public Set<Attendance> findAllByCrewAndMonth(Crew crew, Month findMonth) {
-        validateExistCrew(crew);
+        validateExistNickname(crew.getNickname());
         return attendances.stream()
                 .filter(attendance -> attendance.isCrewAttendanceInMonth(crew, findMonth))
                 .collect(Collectors.toUnmodifiableSet());
-    }
-
-    private void validateExistCrew(Crew crew) {
-        if (!crewGroup.contains(crew)) {
-            throw new IllegalArgumentException("등록되지 않은 크루입니다.");
-        }
     }
 
     public Map<Crew, Set<Attendance>> findAllByMonth(Month findMonth) {

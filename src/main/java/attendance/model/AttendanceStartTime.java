@@ -13,6 +13,9 @@ public enum AttendanceStartTime {
     FRIDAY(DayOfWeek.FRIDAY, LocalTime.of(10, 0)),
     ;
 
+    private static final int CAMPUS_START_HOUR = 8;
+    private static final int CAMPUS_END_HOUR = 23;
+
     private final DayOfWeek dayOfWeek;
     private final LocalTime startTime;
 
@@ -31,5 +34,10 @@ public enum AttendanceStartTime {
                 .findFirst()
                 .orElseThrow(() -> new IllegalArgumentException("해당하는 요일의 출석 시작 시간을 찾을 수 없습니다."))
                 .startTime;
+    }
+
+    public static boolean isCampusOpen(LocalTime time) {
+        return time.getHour() >= CAMPUS_START_HOUR
+                && time.getHour() < CAMPUS_END_HOUR;
     }
 }

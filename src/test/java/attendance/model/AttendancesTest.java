@@ -9,7 +9,6 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.Month;
 import java.util.Map;
-import java.util.Optional;
 import java.util.Set;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -77,16 +76,13 @@ class AttendancesTest {
         Attendance attendance = createAttendanceInRawDateTime(pobi, "2024-12-13 10:01");
         Attendances attendances = new Attendances(crewGroup, Set.of(attendance));
 
-        // when
+        // when & then
         LocalDate findDate = LocalDate.of(2024, 12, 13);
-        Optional<Attendance> optionalAttendance = attendances.findByCrewAndDate(pobi, findDate);
-
-        // then
-        assertThat(optionalAttendance)
-                .hasValue(attendance);
+        assertThat(attendances.findByCrewAndDate(pobi, findDate))
+                .isEqualTo(attendance);
     }
 
-    @DisplayName("크루가 찾으려는 날짜에 출석하지 않은 경우 닉네임과 날짜로 기존 출석을 찾을 수 없다.")
+    @DisplayName("크루가 찾으려는 날짜에 출석하지 않은 경우 닉네임과 날짜로 시간이 기록되지 않은 출석을 찾을 수 있다.")
     @Test
     void attendanceNotFoundTest() {
         // given
@@ -94,13 +90,10 @@ class AttendancesTest {
         CrewGroup crewGroup = createCrewGroup(pobi);
         Attendances attendances = new Attendances(crewGroup, Set.of());
 
-        // when
+        // when & then
         LocalDate findDate = LocalDate.of(2024, 12, 13);
-        Optional<Attendance> optionalAttendance = attendances.findByCrewAndDate(pobi, findDate);
-
-        // then
-        assertThat(optionalAttendance)
-                .isNotPresent();
+        assertThat(attendances.findByCrewAndDate(pobi, findDate))
+                .isEqualTo(new Attendance(pobi, findDate, null));
     }
 
     @DisplayName("크루의 해당 달의 출석 기록을 조회할 수 있다.")

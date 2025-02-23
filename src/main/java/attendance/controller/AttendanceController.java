@@ -23,7 +23,6 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.Set;
 import java.util.function.Function;
 
@@ -105,9 +104,9 @@ public class AttendanceController {
     private void doUpdateAttendance(LocalDateTime baseDateTime) {
         Crew crew = new Crew(readExistingNicknameForUpdate());
         LocalDateTime updateDateTime = readValidUpdateDateTime(baseDateTime);
-        Optional<Attendance> beforeAttendance = findAttendanceByCrewAndDate(crew, updateDateTime);
-        Attendance modifidedAttendance = attendances.update(new Attendance(crew, updateDateTime));
-        displayUpdatedAttendance(beforeAttendance.orElse(null), modifidedAttendance);
+        Attendance beforeAttendance = attendances.findByCrewAndDate(crew, updateDateTime.toLocalDate());
+        Attendance modifiedAttendance = attendances.update(new Attendance(crew, updateDateTime));
+        displayUpdatedAttendance(beforeAttendance, modifiedAttendance);
     }
 
     private Nickname readExistingNicknameForUpdate() {
@@ -136,12 +135,8 @@ public class AttendanceController {
         }
     }
 
-    private Optional<Attendance> findAttendanceByCrewAndDate(Crew crew, LocalDateTime updateDateTime) {
-        return attendances.findByCrewAndDate(crew, updateDateTime.toLocalDate());
-    }
-
     private AttendanceType determineAttendanceType(Attendance attendance) {
-        if (attendance == null) {
+        if (attendance.isNotRecordedTime()) {
             return AttendanceType.ABSENCE;
         }
         return calculateAttendanceType(attendance.getDateTime());
@@ -220,7 +215,7 @@ public class AttendanceController {
     }
 
     private void displayAttendanceTimeline(Crew crew, AttendanceTimeline attendanceTimeline) {
-        outputView.printAttendanceTimelineInMonth(crew.getNickname(), attendanceTimeline);
+        outputView.printAttendanceTimelineInMonth(crew.getNickname().getValue(), attendanceTimeline);
         displayAttendanceCounts(attendanceTimeline);
         outputView.printWarningLevel(determineWarningLevel(attendanceTimeline));
     }
@@ -258,6 +253,6 @@ public class AttendanceController {
     }
 
     private Function<CrewAttendanceSummary, String> getCrewNickname() {
-        return summary -> summary.crew().getNickname();
+        return summary -> summary.crew().getNickname().getValue();
     }
 }

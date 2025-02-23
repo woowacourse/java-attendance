@@ -4,6 +4,7 @@ import static attendance.model.AttendanceTestFixtures.createAttendanceInRawDateT
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -51,5 +52,20 @@ class AttendanceTest {
         // then
         assertThat(attendance1)
                 .isEqualTo(attendance2);
+    }
+
+    @DisplayName("출석 기록이 없는 경우를 확인할 수 있다.")
+    @Test
+    void attendanceTimeIsNullTest() {
+        // given
+        Crew pobi = AttendanceTestFixtures.POBI;
+        LocalDate date = LocalDate.of(2024, 12, 2);
+
+        // when
+        Attendance attendance = new Attendance(pobi, date, null);
+
+        // then
+        assertThat(attendance.isNotRecordedTime())
+                .isTrue();
     }
 }

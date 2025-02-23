@@ -24,7 +24,7 @@ public class Nickname {
         }
     }
 
-    public String get() {
+    public String getValue() {
         return value;
     }
 

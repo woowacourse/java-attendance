@@ -29,20 +29,20 @@ public class OutputView {
 
     public void printModifiedAttendance(Attendance beforeAttendance, Attendance afterAttendance,
                                         AttendanceType beforeType, AttendanceType afterType) {
-        if (beforeAttendance != null) {
-            System.out.printf("%s (%s) -> %s (%s) 수정 완료!%n",
-                    formatDateTime(beforeAttendance.getDateTime()),
-                    getAttendanceTypeLabel(beforeType),
-                    formatDateTime(afterAttendance.getDateTime()),
+        if (beforeAttendance.isNotRecordedTime()) {
+            System.out.printf("%s %s (%s) -> %s (%s) 수정 완료!%n",
+                    formatDate(afterAttendance.getDate()),
+                    TIME_NOT_RECORDED,
+                    getAttendanceTypeLabel(null),
+                    formatTime(afterAttendance.getTime()),
                     getAttendanceTypeLabel(afterType)
             );
             return;
         }
-        System.out.printf("%s %s (%s) -> %s (%s) 수정 완료!%n",
-                formatDate(afterAttendance.getDateTime().toLocalDate()),
-                TIME_NOT_RECORDED,
-                getAttendanceTypeLabel(null),
-                formatTime(afterAttendance.getDateTime().toLocalTime()),
+        System.out.printf("%s (%s) -> %s (%s) 수정 완료!%n",
+                formatDateTime(beforeAttendance.getDateTime()),
+                getAttendanceTypeLabel(beforeType),
+                formatDateTime(afterAttendance.getDateTime()),
                 getAttendanceTypeLabel(afterType)
         );
     }
@@ -79,7 +79,7 @@ public class OutputView {
         sortedList.stream()
                 .filter(summary -> summary.level() != AttendanceWarningLevel.CLEAN)
                 .forEach(summary -> System.out.printf("- %s: 결석 %d회, 지각 %d회 (%s)%n",
-                        summary.crew().getNickname(),
+                        summary.crew().getNickname().getValue(),
                         summary.absenceCount(),
                         summary.lateCount(),
                         summary.level().getLabel()));

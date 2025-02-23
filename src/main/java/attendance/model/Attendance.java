@@ -1,38 +1,81 @@
 package attendance.model;
 
+import static attendance.model.AttendanceStartTime.isCampusOpen;
+
 import java.time.DayOfWeek;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.Month;
 import java.util.Objects;
 
 public class Attendance {
 
     private final Crew crew;
-    private final LocalDateTime dateTime;
+    private final LocalDate date;
+    private final LocalTime time;
 
     public Attendance(Crew crew, LocalDateTime dateTime) {
-        validateDateTime(dateTime);
+        validateDate(dateTime.toLocalDate());
+        validateTime(dateTime.toLocalTime());
         this.crew = crew;
-        this.dateTime = dateTime;
+        this.date = dateTime.toLocalDate();
+        this.time = dateTime.toLocalTime();
     }
 
-    private void validateDateTime(LocalDateTime dateTime) {
-        boolean isWeekend = dateTime.getDayOfWeek() == DayOfWeek.SATURDAY
-                || dateTime.getDayOfWeek() == DayOfWeek.SUNDAY;
+    public Attendance(Crew crew, LocalDate date, LocalTime time) {
+        validateDate(date);
+        validateTime(time);
+        this.crew = crew;
+        this.date = date;
+        this.time = time;
+    }
+
+    private void validateDate(LocalDate date) {
+        boolean isWeekend = date.getDayOfWeek() == DayOfWeek.SATURDAY
+                || date.getDayOfWeek() == DayOfWeek.SUNDAY;
         if (isWeekend) {
             throw new IllegalArgumentException("주말인 경우 출석할 수 없습니다.");
         }
-        if (Holiday.isHoliday(dateTime.toLocalDate())) {
+        if (Holiday.isHoliday(date)) {
             throw new IllegalArgumentException("법정 공휴일에는 출석할 수 없습니다.");
         }
     }
 
+    private void validateTime(LocalTime time) {
+        if (time == null) {
+            return;
+        }
+        if (!isCampusOpen(time)) {
+            throw new IllegalArgumentException("캠퍼스 운영 시간이 아닙니다.");
+        }
+    }
+
     public boolean isCrewAttendanceInMonth(Crew crew, Month findMonth) {
-        return this.crew.equals(crew) && dateTime.getMonth() == findMonth;
+        return this.crew.equals(crew) && date.getMonth() == findMonth;
+    }
+
+    public boolean isCrewAttendanceInDate(Crew crew, LocalDate date) {
+        return this.crew.equals(crew) && date == this.date;
+    }
+
+    public boolean isNotRecordedTime() {
+        return time == null;
+    }
+
+    public LocalDate getDate() {
+        return date;
+    }
+
+    public LocalTime getTime() {
+        return time;
     }
 
     public LocalDateTime getDateTime() {
-        return dateTime;
+        if (time == null) {
+            throw new IllegalArgumentException("출석 시간이 없습니다.");
+        }
+        return LocalDateTime.of(date, time);
     }
 
     @Override
@@ -41,11 +84,11 @@ public class Attendance {
             return false;
         }
         Attendance that = (Attendance) o;
-        return Objects.equals(crew, that.crew) && Objects.equals(dateTime.toLocalDate(), that.dateTime.toLocalDate());
+        return Objects.equals(crew, that.crew) && Objects.equals(date, that.date);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(crew, dateTime.toLocalDate());
+        return Objects.hash(crew, date);
     }
 }

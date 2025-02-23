@@ -40,7 +40,7 @@ public record AttendanceTimeline(
 
     private static boolean isCloseDay(LocalDate date) {
         boolean isWeekend = date.getDayOfWeek() == DayOfWeek.SATURDAY || date.getDayOfWeek() == DayOfWeek.SUNDAY;
-        return isWeekend || Holiday.isHoliday(LocalDate.of(date.getYear(), date.getMonth(), date.getDayOfMonth()));
+        return isWeekend || Holiday.isHoliday(date);
     }
 
     private static void addAttendanceLog(Map<LocalDate, LocalTime> map,
