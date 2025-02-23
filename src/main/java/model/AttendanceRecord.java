@@ -11,6 +11,11 @@ public class AttendanceRecord {
         this.attendanceStatus = attendanceStatus;
     }
 
+    public AttendanceRecord(AttendanceRecord other) {
+        this.attendanceTime = other.attendanceTime;
+        this.attendanceStatus = other.attendanceStatus;
+    }
+
     public LocalTime getAttendanceTime() {
         return attendanceTime;
     }
