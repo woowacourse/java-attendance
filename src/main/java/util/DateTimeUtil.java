@@ -1,37 +1,21 @@
 package util;
 
 import java.time.DateTimeException;
-import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeParseException;
 
-import domain.Holiday;
-import dto.Formatter;
+import constant.FormatterConstant;
 
 public class DateTimeUtil {
-
-    public static boolean isOffDay(LocalDate date) {
-        boolean isWeekend = date.getDayOfWeek().equals(DayOfWeek.SATURDAY) ||
-            date.getDayOfWeek().equals(DayOfWeek.SUNDAY);
-        return isWeekend || isHoliday(date);
-    }
-
-    private static boolean isHoliday(LocalDate date) {
-        return !Holiday.from(date).equals(Holiday.NONE);
-    }
 
     public static LocalDate nowDate() {
         return LocalDate.now();
     }
 
-    public static LocalTime nowTime() {
-        return LocalTime.now();
-    }
-
     public static LocalTime convertToTime(String time) {
         try {
-            return LocalTime.parse(time, Formatter.TIME_FORMATTER);
+            return LocalTime.parse(time, FormatterConstant.TIME_FORMATTER);
         } catch (DateTimeParseException e) {
             throw new IllegalArgumentException("올바른 시간 형식이 아닙니다.");
         }

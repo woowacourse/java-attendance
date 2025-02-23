@@ -9,7 +9,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import util.DateTimeUtil;
+import dto.HistoryDto;
 
 public class Crew {
 
@@ -30,7 +30,7 @@ public class Crew {
         if (attendanceTimes.containsKey(date)) {
             throw new IllegalArgumentException("이미 출석 처리되어 있습니다. 수정 기능을 이용해주세요.");
         }
-        if (DateTimeUtil.isOffDay(date)) {
+        if (Holiday.isOffDay(date)) {
             throw new IllegalArgumentException("주말 및 공휴일에는 출석을 받지 않습니다.");
         }
     }
@@ -48,7 +48,7 @@ public class Crew {
     }
 
     public AttendanceStatus getAttendanceStatusByDate(LocalDate date) {
-        if (DateTimeUtil.isOffDay(date)) {
+        if (Holiday.isOffDay(date)) {
             return AttendanceStatus.NONE;
         }
         if (!attendanceTimes.containsKey(date)) {
@@ -57,15 +57,15 @@ public class Crew {
         return AttendanceStatus.of(date, attendanceTimes.get(date));
     }
 
-    public List<History> getAllHistory(LocalDate today) {
-        List<History> histories = new ArrayList<>();
+    public List<HistoryDto> getAllHistory(LocalDate today) {
+        List<HistoryDto> histories = new ArrayList<>();
         for (int day = 1; day < today.getDayOfMonth(); day++) {
-            if (DateTimeUtil.isOffDay(today.withDayOfMonth(day))) {
+            if (Holiday.isOffDay(today.withDayOfMonth(day))) {
                 continue;
             }
             LocalDate date = today.withDayOfMonth(day);
             LocalTime time = attendanceTimes.get(date);
-            histories.add(new History(date, time, getAttendanceStatusByDate(date), time == null));
+            histories.add(new HistoryDto(date, time, getAttendanceStatusByDate(date), time == null));
         }
         return histories;
     }
@@ -74,7 +74,7 @@ public class Crew {
         Map<AttendanceStatus, Integer> statusCounter = new EnumMap<>(AttendanceStatus.class);
         initializeStatusCounter(statusCounter);
         for (int day = 1; day < today.getDayOfMonth(); day++) {
-            if (DateTimeUtil.isOffDay(today.withDayOfMonth(day))) {
+            if (Holiday.isOffDay(today.withDayOfMonth(day))) {
                 continue;
             }
             AttendanceStatus attendanceStatus = getAttendanceStatusByDate(LocalDate.of(today.getYear(),

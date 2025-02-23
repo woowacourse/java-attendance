@@ -9,7 +9,7 @@ import constant.CampusConstant;
 import domain.AttendanceStatus;
 import domain.Crew;
 import domain.CrewRepository;
-import domain.History;
+import dto.HistoryDto;
 import domain.Manage;
 import dto.AttendanceHistoryResult;
 import dto.AttendanceModifyRequest;
@@ -24,7 +24,7 @@ import view.OutputView;
 
 public class AttendanceController {
 
-    private CrewRepository crewRepository = new CrewRepository(true);
+    private final CrewRepository crewRepository = CrewRepository.fromFile();
 
     public void run() {
         boolean isRunning = true;
@@ -76,13 +76,13 @@ public class AttendanceController {
     private void checkAttendanceHistory() {
         Crew crew = crewRepository.get(InputView.scanNickname());
         LocalDate now = DateTimeUtil.nowDate();
-        List<History> history = crew.getAllHistory(now);
+        List<HistoryDto> historyDto = crew.getAllHistory(now);
         Manage manage = Manage.of(crew.getAttendanceStatusCounter(now));
 
         OutputView.printHistory(
-            AttendanceHistoryResult.of(
+            new AttendanceHistoryResult(
                 crew.getNickname(),
-                history,
+                historyDto,
                 crew.getAttendanceStatusCounter(now),
                 manage
             ));

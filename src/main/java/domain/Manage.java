@@ -26,7 +26,7 @@ public enum Manage {
         return Arrays.stream(values())
             .filter(manage -> manage.absentThreshold <= absentCount)
             .max(Comparator.comparing(Manage::getAbsentThreshold))
-            .orElseThrow(() -> new IllegalStateException("잘못된 상황입니다."));
+            .orElseThrow(() -> new IllegalStateException("결석 횟수에 맞는 적절한 Manage가 존재하지 않습니다."));
     }
 
     public int getAbsentThreshold() {

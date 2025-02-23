@@ -11,16 +11,19 @@ public class CrewRepository {
 
     private final List<Crew> crews = new ArrayList<>();
 
-    public CrewRepository(boolean initiailize) {
-        if (!initiailize) {
-            return;
-        }
+    public static CrewRepository generate() {
+        return new CrewRepository();
+    }
+
+    public static CrewRepository fromFile() {
+        CrewRepository generated = new CrewRepository();
         FileParser.loadAttendanceRecords()
-            .forEach(record -> add(
+            .forEach(record -> generated.add(
                 record.nickname(),
                 record.date(),
                 record.time()
             ));
+        return generated;
     }
 
     public void add(Crew crew) {

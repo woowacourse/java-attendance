@@ -12,7 +12,7 @@ import java.util.List;
 
 public class FileParser {
 
-    private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+    private static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
 
     public static List<AttendanceRecord> loadAttendanceRecords() {
         File file = new File("src/main/resources/attendances.csv");
@@ -34,7 +34,7 @@ public class FileParser {
 
     public static AttendanceRecord parseAttendanceHistory(String attendanceData) {
         List<String> parsed = Arrays.stream(attendanceData.split(",", -1)).toList();
-        LocalDateTime dateTime = LocalDateTime.parse(parsed.get(1), FORMATTER);
+        LocalDateTime dateTime = LocalDateTime.parse(parsed.get(1), DATE_TIME_FORMATTER);
 
         return new AttendanceRecord(
             parsed.get(0),

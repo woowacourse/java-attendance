@@ -16,7 +16,7 @@ public class CrewTest {
     @Test
     @DisplayName("닉네임과 등교 시간으로 출석한다")
     void attendanceTest() {
-        CrewRepository crewRepository = new CrewRepository(false);
+        CrewRepository crewRepository = CrewRepository.generate();
         crewRepository.add(new Crew("pobi"));
         Crew crew = crewRepository.get("pobi");
         crew.attendance(LocalDate.now(), LocalTime.of(10, 1));
@@ -44,7 +44,7 @@ public class CrewTest {
     @Test
     @DisplayName("닉네임과 수정날짜와 등교시간으로 기록을 수정한다")
     void modifyAttendanceTest() {
-        CrewRepository crewRepository = new CrewRepository(false);
+        CrewRepository crewRepository = CrewRepository.generate();
         crewRepository.add(new Crew("pobi"));
         Crew crew = crewRepository.get("pobi");
         crew.attendance(LocalDate.now(), LocalTime.of(10, 00));
@@ -55,7 +55,7 @@ public class CrewTest {
     @Test
     @DisplayName("날짜와 시간으로 출석 상태를 계산한다")
     void getAttendanceStatusByDateTest() {
-        CrewRepository crewRepository = new CrewRepository(false);
+        CrewRepository crewRepository = CrewRepository.generate();
         crewRepository.add(new Crew("pobi"));
         Crew crew = crewRepository.get("pobi");
         crew.attendance(LocalDate.of(2025, 02, 17), LocalTime.of(13, 06));

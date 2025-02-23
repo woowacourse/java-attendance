@@ -1,9 +1,9 @@
-package dto;
+package constant;
 
 import java.time.format.DateTimeFormatter;
 import java.util.Locale;
 
-public class Formatter {
+public class FormatterConstant {
 
     public static final DateTimeFormatter TIME_FORMATTER = DateTimeFormatter.ofPattern("HH:mm", Locale.KOREAN);
     public static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("MM월 dd일 E요일", Locale.KOREAN);
