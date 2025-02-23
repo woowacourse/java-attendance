@@ -6,6 +6,9 @@ public class TimePolicy {
     private static final int MAX_MINUTE = 59;
     private static final int MIN_MINUTE = 0;
 
+    private static final String TIME_SEPARATOR = ":";
+    private static final int TIME_FORMAT_LENGTH = 2;
+
     private static final String TIME_FORMAT_ERROR = "[ERROR] 시간 입력 형식이 잘못되었습니다.";
 
     public static void validateHour(String hour){
@@ -21,9 +24,9 @@ public class TimePolicy {
     }
 
     public static void validateTimeFormat(String time) {
-        String[] splitTime = time.split(":");
+        String[] splitTime = time.split(TIME_SEPARATOR);
 
-        if(splitTime.length != 2){
+        if(splitTime.length != TIME_FORMAT_LENGTH){
             throw new IllegalArgumentException(TIME_FORMAT_ERROR);
         }
     }

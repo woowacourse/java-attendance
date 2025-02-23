@@ -25,13 +25,10 @@ public class TimePolicyTest {
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
-    @Test
+    @ParameterizedTest
     @DisplayName("시간 입력 형식이 다르면 예외가 발생한다")
-    void validateTimeFormatTest() {
-        //given
-        String time = "12/34";
-
-        //when-then
+    @ValueSource(strings = {"12/34"})
+    void validateTimeFormatTest(String time) {
         assertThatThrownBy(() -> TimePolicy.validateTimeFormat(time))
                 .isInstanceOf(IllegalArgumentException.class);
     }
