@@ -1,6 +1,7 @@
 package util;
 
 import java.time.DayOfWeek;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.TextStyle;
@@ -21,5 +22,16 @@ public class LocalDateTimePrintFormatter {
         return localDateTime.format(DateTimeFormatter.ofPattern("MM월 dd일 " + dayOfWeek.getDisplayName(
                 TextStyle.FULL, Locale.KOREAN) + " HH:mm"));
     }
+
+    public static String isNotAttendanceAvailable(LocalDate localDate) {
+        DayOfWeek dayOfWeek = localDate.getDayOfWeek();
+
+        String formattedDate = localDate.format(DateTimeFormatter.ofPattern("MM월 dd일"));
+
+        return "[ERROR] " + formattedDate + " " +
+                dayOfWeek.getDisplayName(TextStyle.FULL, Locale.KOREAN) +
+                "은 등교일이 아닙니다.";
+    }
+
 
 }
