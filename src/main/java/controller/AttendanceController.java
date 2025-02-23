@@ -35,9 +35,11 @@ public class AttendanceController {
     }
 
     private void readFeature() {
-        String featureNumber = "";
-        while (!featureNumber.equals("Q")) {
-            featureNumber = inputView.readFeatureNumber();
+        while (true) {
+            String featureNumber = inputView.readFeatureNumber();
+            if (featureNumber.equals("Q")) {
+                break ;
+            }
             try {
                 selectFeature(featureNumber);
             } catch (IllegalArgumentException e) {
