@@ -21,7 +21,7 @@ public class Attendance {
     }
 
     public boolean isAlreadyCheck() {
-        return !dateTime.toLocalTime().equals(LocalTime.MIN);
+        return !dateTime.toLocalTime().equals(LocalTime.MAX);
     }
 
     public boolean isEqualsStatus(AttendanceStatusType status) {
