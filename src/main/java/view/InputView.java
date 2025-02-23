@@ -161,4 +161,12 @@ public class InputView {
         }
     }
 
+    public static void checkAttendanceAvailable(TodayDate todayDate) {
+        try {
+            todayDate.isHoliday();
+        } catch (IllegalArgumentException e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
 }
