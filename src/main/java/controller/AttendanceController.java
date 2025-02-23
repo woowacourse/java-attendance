@@ -32,6 +32,8 @@ public class AttendanceController {
                 return LocalDate.parse(args[START_DATE_INDEX]);
             } catch (DateTimeParseException e) {
                 throw new IllegalArgumentException("[ERROR] 프로그램 인수를 YYYY-MM-DD 형식으로 입력해 주세요.");
+            } catch (ArrayIndexOutOfBoundsException e) {
+                throw new IllegalArgumentException("[ERROR] 프로그램 인수를 YYYY-MM-DD 형식으로 입력해 주세요.");
             }
         };
         this.crewAttendanceRecords = new CrewAttendanceRecords(new CsvParsingGenerator(), currentDateGenerator);
