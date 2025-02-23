@@ -17,7 +17,6 @@ public enum Punishment {
         this.absenceCount = absenceCount;
     }
 
-
     public static Punishment findByAbsenceCount(int absenceCount) {
         return Arrays.stream(Punishment.values())
                 .filter(punishment -> punishment.absenceCount < absenceCount)
