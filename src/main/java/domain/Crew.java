@@ -6,6 +6,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Objects;
 
 public class Crew {
     private final String name;
@@ -23,6 +24,10 @@ public class Crew {
         Attendance attendance = new Attendance(localDateTime);
         attendanceInfo.add(attendance);
         return attendance;
+    }
+
+    public boolean isSameName(String name) {
+        return name.equals(this.name);
     }
 
     public List<Attendance> getAttendanceInfo() {

@@ -40,7 +40,7 @@ public class AllCrew {
 
     private Crew findCrewByName(String name) {
         return allCrew.stream()
-                .filter(crew -> crew.getName().equals(name))
+                .filter(crew -> crew.isSameName(name))
                 .findFirst()
                 .orElseThrow(() -> new IllegalArgumentException("Crew not found"));
     }
