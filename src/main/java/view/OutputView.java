@@ -30,13 +30,13 @@ public class OutputView {
     private static final String ABSENT_STATUS_NAME = "결석";
 
     public void printOptionMessage(LocalDate today) {
-        String dayOfWeekName = DayOfWeek.getNameById(today.getDayOfWeek().getValue());
+        String dayOfWeekName = AttendanceStandard.getNameByDayOfWeek(today.getDayOfWeek());
         System.out.printf(APPLICATION_START_MESSAGE, today.getMonth().getValue(), today.getDayOfMonth(), dayOfWeekName);
     }
 
     public void printAttendanceInformation(AttendanceDto attendanceDto) {
         LocalDate today = StandardDate.DATE;
-        String dayOfWeekName = DayOfWeek.getNameById(today.getDayOfWeek().getValue());
+        String dayOfWeekName = AttendanceStandard.getNameByDayOfWeek(today.getDayOfWeek());
         String attendanceTime = Converter.covertLocalTimeToString(attendanceDto.getAttendanceTime());
         String attendanceStatusName = getAttendanceStatusName(attendanceDto);
         System.out.printf("%d월 %02d일 %s %s (%s)\n", today.getMonth().getValue(), today.getDayOfMonth(), dayOfWeekName, attendanceTime, attendanceStatusName);
@@ -44,7 +44,7 @@ public class OutputView {
 
     public void printUpdatedAttendanceHistory(AttendanceDto originalAttendanceDto, AttendanceDto editedAttendanceDto) {
         LocalDate date = editedAttendanceDto.getDate();
-        String dayOfWeekName = DayOfWeek.getNameById(date.getDayOfWeek().getValue());
+        String dayOfWeekName = AttendanceStandard.getNameByDayOfWeek(date.getDayOfWeek());
 
         String originalAttendanceTime = Converter.covertLocalTimeToString(originalAttendanceDto.getAttendanceTime());
         String editedAttendanceTime = Converter.covertLocalTimeToString(editedAttendanceDto.getAttendanceTime());
@@ -78,7 +78,7 @@ public class OutputView {
             AttendanceDto dto = attendance.toDto();
             LocalDate date = dto.getDate();
             String attendanceTime = "--:--";
-            String dayOfWeekName = DayOfWeek.getNameById(date.getDayOfWeek().getValue());
+            String dayOfWeekName = AttendanceStandard.getNameByDayOfWeek(date.getDayOfWeek());
             String attendanceStatusName = getAttendanceStatusName(dto);
 
             if (dto.getAttendanceTime() != null) {

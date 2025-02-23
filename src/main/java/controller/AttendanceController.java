@@ -76,7 +76,7 @@ public class AttendanceController {
         Day today = new Day(todayDate);
         int month = todayDate.getMonth().getValue();
         int dayOfMonth = todayDate.getDayOfMonth();
-        String dayOfWeekName = DayOfWeek.getNameById(todayDate.getDayOfWeek().getValue());
+        String dayOfWeekName = AttendanceStandard.getNameByDayOfWeek(todayDate.getDayOfWeek());
 
         if (today.checkHoliday()) {
             throw new IllegalArgumentException("[ERROR] " + month + "월 " + dayOfMonth + "일 " + dayOfWeekName + "은 등교일이 아닙니다.");
