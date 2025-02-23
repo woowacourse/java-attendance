@@ -83,7 +83,7 @@ public class OutputView {
 
     private static void printAttendanceHistoryByDate(Crew crew, LocalDate attendanceDate) {
         try {
-            AttendancePolicy.checkHoliday(attendanceDate);
+            AttendancePolicy.checkNotWeekendAndHoliday(attendanceDate);
         } catch (IllegalArgumentException e) {
             return;
         }

@@ -63,7 +63,7 @@ public class Application {
     }
 
     private static void doAttendance(CrewManager crewManager, LocalDate today) {
-        AttendancePolicy.checkHoliday(today);
+        AttendancePolicy.checkNotWeekendAndHoliday(today);
         Crew crew = findCrew(crewManager);
         LocalTime attendanceTime = inputAttendanceTime();
         AttendanceType attendanceType = AttendancePolicy.checkAttendanceType(today, attendanceTime);

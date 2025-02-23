@@ -4,20 +4,22 @@ import static attendance.domain.AttendanceType.ABSENCE;
 import static attendance.domain.AttendanceType.ATTENDANCE;
 import static attendance.domain.AttendanceType.LATE;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.stream.Stream;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 
 public class AttendancePolicyTest {
 
     private final LocalDate TUESDAY = LocalDate.of(2024, 12, 26);
     private final LocalDate MONDAY = LocalDate.of(2024, 12, 23);
-    private final LocalDate WEEKEND = LocalDate.of(2024, 12, 22);
-    private final LocalDate HOLIDAY = LocalDate.of(2024, 12, 25);
 
     @Nested
     class CheckAttendanceHistory {
@@ -89,24 +91,18 @@ public class AttendancePolicyTest {
         }
     }
 
-    @Test
-    void check_weekday() {
-        assertThatCode(() -> AttendancePolicy.checkHoliday(LocalDate.of(2024, 12, 26)))
-                .doesNotThrowAnyException();
-    }
-
-    @Test
-    void check_holiday_1() {
-        assertThatThrownBy(() -> AttendancePolicy.checkHoliday(LocalDate.of(2024, 12, 22)))
+    @DisplayName("날짜가_주말_또는_공휴일이면_예외를_던진다")
+    @MethodSource("returnWeekendOrHoliday")
+    @ParameterizedTest
+    void should_ThrowException_WhenDateIsWeekendOrHoliday(LocalDate date) {
+        assertThatThrownBy(() -> AttendancePolicy.checkNotWeekendAndHoliday(date))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("등교일이 아닙니다");
     }
 
-    @Test
-    void check_holiday_2() {
-        assertThatThrownBy(() -> AttendancePolicy.checkHoliday(LocalDate.of(2024, 12, 25)))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage("등교일이 아닙니다");
+    private static Stream<Arguments> returnWeekendOrHoliday() {
+        return Stream.of(Arguments.arguments(LocalDate.of(2024, 12, 21)),
+                Arguments.arguments(LocalDate.of(2024, 12, 22)),
+                Arguments.arguments(LocalDate.of(2024, 12, 25)));
     }
-
 }

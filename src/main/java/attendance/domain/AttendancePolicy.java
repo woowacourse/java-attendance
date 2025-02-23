@@ -30,13 +30,21 @@ public class AttendancePolicy {
         return checkGeneralAttendanceType(localTime);
     }
 
-    public static void checkHoliday(LocalDate localDate) {
-        DayOfWeek dayOfWeek = localDate.getDayOfWeek();
-        if (dayOfWeek != DayOfWeek.SATURDAY && dayOfWeek != DayOfWeek.SUNDAY &&
-                !localDate.equals(CHRISTMAS)) {
+    public static void checkNotWeekendAndHoliday(LocalDate date) {
+        DayOfWeek dayOfWeek = date.getDayOfWeek();
+        if (isNotWeekend(dayOfWeek) && isNotHoliday(date)) {
             return;
         }
         throw new IllegalArgumentException("등교일이 아닙니다");
+    }
+
+    private static boolean isNotWeekend(DayOfWeek dayOfWeek) {
+        return dayOfWeek != DayOfWeek.SATURDAY &&
+                dayOfWeek != DayOfWeek.SUNDAY;
+    }
+
+    private static boolean isNotHoliday(LocalDate date) {
+        return !date.equals(CHRISTMAS);
     }
 
     private static AttendanceType checkMondayAttendanceType(LocalTime localTime) {

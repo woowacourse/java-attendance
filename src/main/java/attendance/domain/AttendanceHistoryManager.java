@@ -46,7 +46,7 @@ public class AttendanceHistoryManager {
         for (int date = 1; date < today.getDayOfMonth(); date++) {
             LocalDate attendanceDate = LocalDate.of(today.getYear(), today.getMonthValue(), date);
             try {
-                AttendancePolicy.checkHoliday(attendanceDate);
+                AttendancePolicy.checkNotWeekendAndHoliday(attendanceDate);
             } catch (IllegalArgumentException e) {
                 continue;
             }
