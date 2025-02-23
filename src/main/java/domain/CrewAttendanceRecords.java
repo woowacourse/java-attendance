@@ -3,6 +3,8 @@ package domain;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class CrewAttendanceRecords {
     private final Map<Crew, AttendanceRecords> crewAttendanceRecords;
@@ -64,12 +66,21 @@ public class CrewAttendanceRecords {
     }
 
     public List<Crew> getWarnedCrews() {
+        List<Crew> expelledCrews = getCrewsByDisciplinaryStatus(DisciplinaryStatus.EXPELLED);
+        List<Crew> oneOnOneCrews = getCrewsByDisciplinaryStatus(DisciplinaryStatus.ONE_ON_ONE);
+        List<Crew> warningCrews = getCrewsByDisciplinaryStatus(DisciplinaryStatus.WARNING);
+        return Stream.of(expelledCrews, oneOnOneCrews, warningCrews)
+                .flatMap(List::stream)
+                .collect(Collectors.toList());
+    }
+
+    private List<Crew> getCrewsByDisciplinaryStatus(DisciplinaryStatus targetStatus) {
         List<Crew> warnedCrews = new ArrayList<>();
         for (Map.Entry<Crew, AttendanceRecords> recordsEntry : crewAttendanceRecords.entrySet()) {
             Crew crew = recordsEntry.getKey();
             AttendanceRecords attendanceRecords = recordsEntry.getValue();
             DisciplinaryStatus status = attendanceRecords.getDisciplinaryStatus();
-            if (status != DisciplinaryStatus.NONE) {
+            if (status == targetStatus) {
                 warnedCrews.add(crew);
             }
         }
@@ -77,31 +88,13 @@ public class CrewAttendanceRecords {
     }
 
     private List<Crew> sortWarnedCrews(List<Crew> crews) {
-        sortCrewsByName(crews);
-        sortCrewsByAttendanceCount(crews);
-        sortCrewsByDisciplinaryStatus(crews);
-        return crews;
-    }
-
-    private void sortCrewsByName(List<Crew> crews) {
-        crews.sort(Comparator.comparing(Crew::name));
-    }
-
-    private void sortCrewsByAttendanceCount(List<Crew> crews) {
-        crews.sort(Comparator.comparing(crew -> {
+        crews.sort(Comparator.comparing((Crew crew) -> {
             int absentCount = crewAttendanceRecords.get(crew).getAbsentCount();
             int tardyCount = crewAttendanceRecords.get(crew).getTardyCount();
-            absentCount += (tardyCount / 3);
-            return (absentCount + tardyCount % 3) * -1;
-        }));
-    }
-
-    private void sortCrewsByDisciplinaryStatus(List<Crew> crews) {
-        crews.sort(Comparator.comparing(crew -> {
-            AttendanceRecords attendanceRecords = crewAttendanceRecords.get(crew);
-            DisciplinaryStatus status = attendanceRecords.getDisciplinaryStatus();
-            return status.ordinal() * -1;
-        }));
+            int convertedAbsencesAndTardies = DisciplinaryStatus.getConvertedAbsencesAndTardies(absentCount, tardyCount);
+            return convertedAbsencesAndTardies * -1;
+        }).thenComparing(Crew::name));
+        return crews;
     }
 
     private void validatePresence(AttendanceRecords attendanceRecords, DateGenerator dateGenerator) {

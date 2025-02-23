@@ -1,10 +1,12 @@
 package domain;
 
+import java.util.Arrays;
+
 public enum DisciplinaryStatus {
-    NONE("해당 사항 없음", 1),
-    WARNING("경고", 2),
-    ONE_ON_ONE("면담", 3),
-    EXPELLED("제적", 6);
+    NONE("해당 사항 없음", 2),
+    WARNING("경고", 3),
+    ONE_ON_ONE("면담", 6),
+    EXPELLED("제적", 31);
 
     private final String name;
     private final int thresholdCount;
@@ -15,20 +17,20 @@ public enum DisciplinaryStatus {
     }
 
     public static DisciplinaryStatus getStatus(int absentCount, int tardyCount) {
-        if (convertTardyToAbsent(absentCount, tardyCount) >= EXPELLED.thresholdCount) {
-            return EXPELLED;
-        }
-        if (convertTardyToAbsent(absentCount, tardyCount) >= ONE_ON_ONE.thresholdCount) {
-            return ONE_ON_ONE;
-        }
-        if (convertTardyToAbsent(absentCount, tardyCount) >= WARNING.thresholdCount) {
-            return WARNING;
-        }
-        return NONE;
+        final int convertedAbsences = convertTardyToAbsent(absentCount, tardyCount);
+        return Arrays.stream(DisciplinaryStatus.values())
+                .filter(status -> convertedAbsences < status.thresholdCount)
+                .findFirst()
+                .orElse(NONE);
     }
 
     public String getName() {
         return name;
+    }
+
+    public static int getConvertedAbsencesAndTardies(int absentCount, int tardyCount) {
+        int convertedAbsences = convertTardyToAbsent(absentCount, tardyCount);
+        return convertedAbsences + tardyCount % 3;
     }
 
     private static int convertTardyToAbsent(int absentCount, int tardyCount) {
