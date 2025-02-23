@@ -4,8 +4,7 @@ import attendance.util.FileLoader;
 import java.util.ArrayList;
 import java.util.List;
 
-public class AttendanceTestFixture
-{
+public class AttendanceTestFixture {
     public static List<Attendance> createAttendances() {
         List<String> datas = new ArrayList<>();
         datas.add("쿠키,2024-12-13 10:08");

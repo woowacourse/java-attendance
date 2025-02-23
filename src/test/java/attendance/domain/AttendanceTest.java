@@ -11,23 +11,25 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Map;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.DisplayNameGeneration;
+import org.junit.jupiter.api.DisplayNameGenerator;
 import org.junit.jupiter.api.Test;
 
+@DisplayName("출석 정보")
+@DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
 public class AttendanceTest {
 
 
-    @DisplayName("출석 정보 저장 성공 ")
     @Test
-    void test14() {
+    void Attendance_객체를_생성한다() {
         LocalDateTime localDateTime = LocalDateTime.of(2024, 12, 23, 13, 3);
         Attendance attendance = new Attendance("빙봉");
 
         assertThatCode(() -> attendance.add(localDateTime)).doesNotThrowAnyException();
     }
 
-    @DisplayName("출석 정보 저장 실패")
     @Test
-    void test15() {
+    void 출석_기록이_존재하면_예외가_발생한다() {
         LocalDateTime localDateTime = LocalDateTime.of(2024, 12, 23, 13, 3);
         Attendance attendance = new Attendance("빙봉");
 
@@ -35,16 +37,14 @@ public class AttendanceTest {
 
         assertThatThrownBy(() -> attendance.add(localDateTime))
                 .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage("[ERROR] 출석 기록이 존재합니다. 출석 수정 기능을 이용하세요.");
+                .hasMessage("출석 기록이 존재합니다. 출석 수정 기능을 이용하세요.");
     }
 
-    @DisplayName("출석 정보 수정 시 기존 시간, 분 반환")
     @Test
-    void test16() {
+    void 출석_정보를_수정하면_기존_출석_시간을_반환한다() {
         LocalDateTime localDateTime = LocalDateTime.of(2024, 12, 23, 13, 3);
         Attendance attendance = new Attendance("빙봉");
         attendance.add(localDateTime);
-
         LocalDateTime newLocalDateTime = LocalDateTime.of(2024, 12, 23, 13, 1);
         HourMinute hourMinute = new HourMinute(newLocalDateTime);
 
@@ -54,9 +54,8 @@ public class AttendanceTest {
         assertThat(prevHourMinute.minute()).isEqualTo(localDateTime.getMinute());
     }
 
-    @DisplayName("출석 날짜가 존재하지 않는 경우 false 반환")
     @Test
-    void test17() {
+    void 해당_날짜의_출석_기록이_없으면_false를_반환한다() {
         LocalDateTime localDateTime = LocalDateTime.of(2024, 12, 23, 13, 3);
         Attendance attendance = new Attendance("빙봉");
         attendance.add(localDateTime);
@@ -69,10 +68,9 @@ public class AttendanceTest {
                 .isFalse();
     }
 
-    @DisplayName("출석 날짜가 존재하는 경우 true 반환")
     @Test
-    void test18() {
-        LocalDateTime localDateTime = LocalDateTime.of(2024, 12, 23,13, 3);
+    void 해당_날짜의_출석_기록이_있으면_true를_반환한다() {
+        LocalDateTime localDateTime = LocalDateTime.of(2024, 12, 23, 13, 3);
         Attendance attendance = new Attendance("빙봉");
         attendance.add(localDateTime);
 
@@ -84,19 +82,18 @@ public class AttendanceTest {
                 .isTrue();
     }
 
-    @DisplayName("출석, 지각, 결석 횟수 조회")
     @Test
-    void test19() {
-        LocalDateTime localDateTime1 = LocalDateTime.of(2024, 12, 3, 9, 58);
-        LocalDateTime localDateTime2 = LocalDateTime.of(2024, 12, 4, 10, 2);
-        LocalDateTime localDateTime3 = LocalDateTime.of(2024, 12, 5, 10, 6);
-        LocalDateTime localDateTime4 = LocalDateTime.of(2024, 12, 6, 10, 1);
+    void 출석_지각_결석_횟수를_반환한다() {
+        LocalDateTime present1 = LocalDateTime.of(2024, 12, 3, 9, 58);
+        LocalDateTime present2 = LocalDateTime.of(2024, 12, 4, 10, 2);
+        LocalDateTime present3 = LocalDateTime.of(2024, 12, 6, 10, 1);
+        LocalDateTime lateness1 = LocalDateTime.of(2024, 12, 5, 10, 6);
 
         Attendance attendance = new Attendance("빙티");
-        attendance.add(localDateTime1);
-        attendance.add(localDateTime2);
-        attendance.add(localDateTime3);
-        attendance.add(localDateTime4);
+        attendance.add(present1);
+        attendance.add(present2);
+        attendance.add(present3);
+        attendance.add(lateness1);
 
         Map<AttendanceStatus, Integer> attendanceStatuses = attendance.countAttendanceStatus(6);
 

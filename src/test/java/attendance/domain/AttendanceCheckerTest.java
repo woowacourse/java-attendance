@@ -1,118 +1,92 @@
 package attendance.domain;
 
-import static attendance.domain.AttendanceStatus.ABSENCE;
-import static attendance.domain.AttendanceStatus.LATENESS;
-import static attendance.domain.AttendanceStatus.PRESENT;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.format.TextStyle;
+import java.util.Locale;
 import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.DisplayNameGeneration;
+import org.junit.jupiter.api.DisplayNameGenerator;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
+import org.junit.jupiter.params.provider.ValueSource;
 
+@DisplayName("출석 상태를 판별")
+@DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
 class AttendanceCheckerTest {
-    @DisplayName("출석")
-    @Test
-    void test1() {
-        LocalDateTime localDateTime1 = LocalDateTime.of(2024, 12, 24, 10, 5);
-        LocalDateTime localDateTime2 = LocalDateTime.of(2024, 12, 24, 9, 5);
-        AttendanceStatus result1 = AttendanceChecker.checkAttendance(localDateTime1);
-        AttendanceStatus result2 = AttendanceChecker.checkAttendance(localDateTime2);
-        assertThat(result1).isEqualTo(PRESENT);
-        assertThat(result2).isEqualTo(PRESENT);
+    @ParameterizedTest
+    @CsvSource({
+            "10, 5, PRESENT",
+            "9, 5, PRESENT",
+            "10, 6, LATENESS",
+            "10, 30, LATENESS",
+            "10, 31, ABSENCE",
+            "12, 50, ABSENCE"
+    })
+    void 평일_출석_시간으로_출석_정보를_반환한다(int hour, int minute, AttendanceStatus expected) {
+        LocalDateTime attendanceTime = LocalDateTime.of(2024, 12, 24, hour, minute);
+        AttendanceStatus actual = AttendanceChecker.checkAttendance(attendanceTime);
+
+        assertThat(actual).isEqualTo(expected);
     }
 
+    @ParameterizedTest
+    @CsvSource({
+            "13, 5, PRESENT",
+            "10, 5, PRESENT",
+            "13, 6, LATENESS",
+            "13, 30, LATENESS",
+            "13, 31, ABSENCE",
+            "15, 50, ABSENCE"
+    })
+    void 월요일_출석_시간으로_출석_정보를_반환한다(int hour, int minute, AttendanceStatus expected) {
+        LocalDateTime attendanceTime = LocalDateTime.of(2024, 12, 23, hour, minute);
+        AttendanceStatus actual = AttendanceChecker.checkAttendance(attendanceTime);
 
-
-    @DisplayName("지각")
-    @Test
-    void test2() {
-        LocalDateTime localDateTime = LocalDateTime.of(2024, 12, 24, 10, 6);
-        AttendanceStatus result = AttendanceChecker.checkAttendance(localDateTime);
-        assertThat(result).isEqualTo(LATENESS);
+        assertThat(actual).isEqualTo(expected);
     }
 
-    @DisplayName("결석")
-    @Test
-    void test3() {
-        LocalDateTime localDateTime = LocalDateTime.of(2024, 12, 24, 10, 31);
-        AttendanceStatus result = AttendanceChecker.checkAttendance(localDateTime);
-        assertThat(result).isEqualTo(ABSENCE);
-    }
-
-    @DisplayName("월요일 출석")
-    @Test
-    void test4() {
-        LocalDateTime localDateTime = LocalDateTime.of(2024, 12, 23, 13, 5);
-        AttendanceStatus result = AttendanceChecker.checkAttendance(localDateTime);
-        assertThat(result).isEqualTo(PRESENT);
-    }
-
-    @DisplayName("월요일 지각")
-    @Test
-    void test5() {
-        LocalDateTime localDateTime = LocalDateTime.of(2024, 12, 23, 13, 6);
-        AttendanceStatus result = AttendanceChecker.checkAttendance(localDateTime);
-        assertThat(result).isEqualTo(LATENESS);
-    }
-
-    @DisplayName("월요일 결석")
-    @Test
-    void test6() {
-        LocalDateTime localDateTime = LocalDateTime.of(2024, 12, 24, 13, 31);
-        AttendanceStatus result = AttendanceChecker.checkAttendance(localDateTime);
-        assertThat(result).isEqualTo(ABSENCE);
-    }
-
-    @DisplayName("캠퍼스 운영 시작 시간 전 출석 시 예외 발생")
-    @Test
-    void test7() {
-        assertThatThrownBy(() -> AttendanceChecker.checkCampusHour(7, 59))
+    @ParameterizedTest
+    @CsvSource({
+            "6, 0",
+            "7, 59",
+            "23, 1"
+    })
+    void 캠퍼스의_운영_시간이_아니면_예외가_발생한다(int hour, int minute) {
+        assertThatThrownBy(() -> AttendanceChecker.checkCampusHour(hour, minute))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("[ERROR] 현재 캠퍼스 운영시간이 아닙니다.");
     }
 
-    @DisplayName("캠퍼스 운영 시작 시간 이후 출석 시 통과")
-    @Test
-    void test8() {
-        assertThatCode(() -> AttendanceChecker.checkCampusHour(8, 0)).doesNotThrowAnyException();
+    @ParameterizedTest
+    @CsvSource({
+            "8, 0",
+            "12, 0",
+            "18, 0",
+            "23, 0"
+    })
+    void 캠퍼스의_운영_시간이면_예외가_발생하지_않는다(int hour, int minute) {
+        assertThatCode(() -> AttendanceChecker.checkCampusHour(hour, minute)).doesNotThrowAnyException();
     }
 
-    @DisplayName("캠퍼스 운영 종료 시간 이후 출석 시 예외 발생")
-    @Test
-    void test9() {
-        assertThatThrownBy(() -> AttendanceChecker.checkCampusHour(23, 1))
+    @ParameterizedTest
+    @ValueSource(ints = {25, 22, 29, 21, 28})
+    void 캠퍼스가_휴일이면_예외가_발생한다(int day) {
+        String displayName = LocalDate.of(2024, 12, day).getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.KOREA);
+
+        assertThatThrownBy(() -> AttendanceChecker.validateCampusDay(day))
                 .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage("[ERROR] 현재 캠퍼스 운영시간이 아닙니다.");
+                .hasMessage(String.format("[ERROR] 12월 %02d일 %s은 등교일이 아닙니다.", day, displayName));
     }
 
-    @DisplayName("캠퍼스 운영 종료 시간 이전 출석 시 통과")
-    @Test
-    void test10() {
-        assertThatCode(() -> AttendanceChecker.checkCampusHour(23, 0)).doesNotThrowAnyException();
-    }
-
-    @DisplayName("공휴일 출석 실패")
-    @Test
-    void test11() {
-        assertThatThrownBy(() -> AttendanceChecker.validateCampusDay(25))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage("[ERROR] 12월 25일 수요일은 등교일이 아닙니다.");
-    }
-
-    @DisplayName("주말 출석 실패")
-    @Test
-    void test12() {
-        assertThatThrownBy(() -> AttendanceChecker.validateCampusDay(22))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage("[ERROR] 12월 22일 일요일은 등교일이 아닙니다.");
-    }
-
-    @DisplayName("평일 출석 통과")
-    @Test
-    void test13() {
-        assertThatCode(() -> AttendanceChecker.validateCampusDay(24)).doesNotThrowAnyException();
+    @ParameterizedTest
+    @ValueSource(ints = {2, 3, 24, 20, 23})
+    void 캠퍼스가_운영일이면_예외가_발생하지_않는다(int day) {
+        assertThatCode(() -> AttendanceChecker.validateCampusDay(day)).doesNotThrowAnyException();
     }
 
 }
