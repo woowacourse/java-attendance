@@ -1,6 +1,7 @@
 package model;
 
 import java.time.DayOfWeek;
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.Arrays;
@@ -34,24 +35,16 @@ public enum AttendanceTime {
     }
 
     // 5 < 체크인 타임 <= 30
-    public static boolean isLate(LocalDateTime localDateTime, int beLateMinute, int absenceMinute) {
-        AttendanceTime attendanceTime = findAttendanceTime(localDateTime);
-        LocalTime localTime = localDateTime.toLocalTime();
+    public static long calculateMillisDifferenceFromStartTime(LocalDateTime dateTime) {
+        AttendanceTime attendanceTime = findAttendanceTime(dateTime);
+        LocalTime time = dateTime.toLocalTime();
 
-        return localTime.isAfter(attendanceTime.educationStartTime.plusMinutes(beLateMinute)) &&
-                localTime.isBefore(attendanceTime.educationStartTime.plusMinutes(absenceMinute + 1));
+        return Duration.between(attendanceTime.educationStartTime, time).toMillis();
     }
 
-    public static boolean isAbsence(LocalDateTime localDateTime, int absenceMinute) {
-        AttendanceTime attendanceTime = findAttendanceTime(localDateTime);
-        LocalTime localTime = localDateTime.toLocalTime();
-
-        return localTime.isAfter(attendanceTime.educationStartTime.plusMinutes(absenceMinute));
-    }
-
-    private static AttendanceTime findAttendanceTime(LocalDateTime localDateTime) {
+    private static AttendanceTime findAttendanceTime(LocalDateTime time) {
         return Arrays.stream(AttendanceTime.values())
-                .filter(attendanceTime -> attendanceTime.dayOfWeek.equals(localDateTime.toLocalDate().getDayOfWeek()))
+                .filter(attendanceTime -> attendanceTime.dayOfWeek.equals(time.toLocalDate().getDayOfWeek()))
                 .findAny().orElseThrow(() -> new IllegalArgumentException("주말 및 공휴일에는 출석할 수 없습니다."));
     }
 }

@@ -1,6 +1,8 @@
 package model;
 
+import java.time.Duration;
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.Map;
 
 public enum AttendanceType {
@@ -17,11 +19,12 @@ public enum AttendanceType {
     }
 
     public static AttendanceType calculateType(LocalDateTime localDateTime) {
-        if (AttendanceTime.isLate(localDateTime, BE_LATE.standardMinute, ABSENCE.standardMinute)) {
-            return BE_LATE;
-        }
-        if (AttendanceTime.isAbsence(localDateTime, ABSENCE.standardMinute)) {
+        long millisDifference = AttendanceTime.calculateMillisDifferenceFromStartTime(localDateTime);
+        if (millisDifference > Duration.of(ABSENCE.standardMinute, ChronoUnit.MINUTES).toMillis()) {
             return ABSENCE;
+        }
+        if (millisDifference > Duration.of(BE_LATE.standardMinute, ChronoUnit.MINUTES).toMillis()) {
+            return BE_LATE;
         }
         return SUCCESS;
     }
