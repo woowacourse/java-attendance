@@ -1,6 +1,7 @@
 package attendance.controller;
 
 import attendance.CurrentDate;
+import attendance.domain.AttendanceHistories;
 import attendance.domain.AttendanceHistory;
 import attendance.domain.Crew;
 import attendance.domain.CrewAttendanceManager;
@@ -35,11 +36,11 @@ public class AttendanceController {
                 doAttendance(now);
                 continue;
             }
-            /*
             if (option.equals("2")) {
                 modifyAttendance(now);
                 continue;
             }
+            /*
             if (option.equals("3")) {
                 checkAttendanceHistoriesByCrew(now);
                 continue;
@@ -73,18 +74,25 @@ public class AttendanceController {
         }
     }
      */
-    /*
+
     private void modifyAttendance(LocalDate now) {
-        Crew crew = findCrew();
+        String crewName = inputView.inputCrewName();
+        Crew crew = crews.findByCrewName(crewName);
         LocalDate modifyDate = inputView.inputModifyDate(now);
         LocalTime modifyTime = inputView.inputAttendanceTime();
-        AttendanceHistory attendanceHistory = crew.getAttendanceHistory(modifyDate);
-        AttendanceHistoryDto beforeAttendanceHistoryDto = AttendanceHistoryDto.of(attendanceHistory);
-        AttendanceHistory afterAttendanceHistory = crew.modifyAttendanceResult(attendanceHistory, modifyTime);
-        outputView.printModifyAttendanceResult(beforeAttendanceHistoryDto, afterAttendanceHistory);
+
+        AttendanceHistories attendanceHistories = crewAttendanceManager.findAttendanceHistoriesByCrew(
+            crew);
+        AttendanceHistory attendanceHistory = attendanceHistories.getAttendanceHistoryByDate(
+            modifyDate);
+
+        AttendanceHistory modifyAttendanceHistory = attendanceHistories.modifyAttendanceResult(
+            LocalDateTime.of(modifyDate, modifyTime));
+
+        outputView.printModifyAttendanceResult(attendanceHistory, modifyAttendanceHistory);
     }
 
-     */
+
 
     private void doAttendance(LocalDate now) {
         String crewName = inputView.inputCrewName();
