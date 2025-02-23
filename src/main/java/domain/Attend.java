@@ -21,7 +21,7 @@ public class Attend {
     }
 
     public static Attend fromTime(LocalTime time) {
-        return new Attend(LocalDate.of(2024, 12, Current.TODAY.getDay()), time);
+        return new Attend(Current.TODAY.getLocalDate(), time);
     }
 
     public static Attend of(final LocalDate day, final LocalTime time) {
