@@ -38,24 +38,30 @@ public class AttendanceController {
 
     public void run() {
         final AttendanceSystem attendanceSystem = attendanceSystemFactory.createAttendanceSystem();
-        retryUntilOperationQuit(attendanceSystem);
+        retryUntilCommandQuit(attendanceSystem);
     }
 
-    private void retryUntilOperationQuit(final AttendanceSystem attendanceSystem) {
-        while (selectOperation(attendanceSystem) != UserCommand.QUIT) {
+    private void retryUntilCommandQuit(final AttendanceSystem attendanceSystem) {
+        UserCommand command = inputUserCommand(attendanceSystem);
+        while (command != UserCommand.QUIT) {
+            selectOperation(attendanceSystem, command);
+            command = inputUserCommand(attendanceSystem);
         }
     }
 
-    public UserCommand selectOperation(final AttendanceSystem attendanceSystem) {
-        outputView.printToday(attendanceSystem.today());
-        outputView.printIntroduceOperation();
-        final UserCommand userCommand = inputView.readChoiceOperation();
+    public void selectOperation(final AttendanceSystem attendanceSystem, final UserCommand userCommand) {
         switch (userCommand) {
             case ADD_ATTENDANCE -> addAttendance(attendanceSystem);
             case UPDATE_ATTENDANCE -> updateAttendance(attendanceSystem);
             case LOOKUP_CREW_ATTENDANCE -> responseCrewAttendanceHistory(attendanceSystem);
             case LOOKUP_EXPULSION_CREWS -> responseExpulsionCrews(attendanceSystem);
         }
+    }
+
+    private UserCommand inputUserCommand(final AttendanceSystem attendanceSystem) {
+        outputView.printToday(attendanceSystem.today());
+        outputView.printIntroduceOperation();
+        final UserCommand userCommand = inputView.readChoiceOperation();
         return userCommand;
     }
 
