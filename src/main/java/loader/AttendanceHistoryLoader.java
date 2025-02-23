@@ -26,13 +26,17 @@ public class AttendanceHistoryLoader {
         Map<String, Crew> crewMap = new HashMap<>();
 
         try (BufferedReader reader = new BufferedReader(new FileReader("src/main/resources/attendances.csv"))) {
-            reader.readLine();
+            skipHeader(reader);
             loadAttendanceHistory(reader, crewMap, crews);
         } catch (IOException e) {
             e.printStackTrace();
         }
 
         return new Crews(crews);
+    }
+
+    private void skipHeader(BufferedReader reader) throws IOException {
+        reader.readLine();
     }
 
     private void loadAttendanceHistory(BufferedReader reader, Map<String, Crew> crewMap, List<Crew> crews)
