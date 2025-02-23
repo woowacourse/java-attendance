@@ -2,43 +2,18 @@ package attendance.domain;
 
 import static attendance.common.utill.DateTimeFormatterWrapper.*;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
-import java.net.URL;
 import java.time.LocalDateTime;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import attendance.common.exception.AttendanceArgumentException;
-import attendance.common.exception.AttendanceFileException;
 
 public class AttendanceManager {
-    private static final int csvInfo = 1;
     private final Map<String, AttendanceList> attendances = new HashMap<>();
 
-    public AttendanceManager(String fileName) throws AttendanceFileException {
-        URL resourceUrl = getUrl(fileName);
-        readFile(resourceUrl);
-    }
-
-    private URL getUrl(String fileName) throws AttendanceFileException {
-        URL resourceUrl = getClass().getResource(fileName);
-        if (resourceUrl == null) {
-            throw new AttendanceFileException(Error.NOT_EXIST_FILE.getMessage());
-        }
-        return resourceUrl;
-    }
-
-    private void readFile(URL resourceUrl) throws AttendanceFileException {
-        try (BufferedReader bufferedReader = new BufferedReader(
-            new FileReader(resourceUrl.getFile()))) {
-            bufferedReader.lines()
-                .skip(csvInfo)
-                .forEach(this::addAttendance);
-        } catch (IOException e) {
-            throw new AttendanceFileException(Error.INVALID_FILE.getMessage(), e);
-        }
+    public AttendanceManager(List<String> lines) {
+        lines.forEach(this::addAttendance);
     }
 
     private void addAttendance(String line) {
@@ -51,6 +26,11 @@ public class AttendanceManager {
         var attendance = new Attendance(dateTime);
 
         attendanceList.add(attendance);
+    }
+
+    public Attendance findAttendance(String nickname, Attendance attendance) {
+        var attendanceList = attendances.get(nickname);
+        return attendanceList.findAttendance(attendance);
     }
 
     public void addAttendance(String nickname, Attendance attendance) {
@@ -67,11 +47,6 @@ public class AttendanceManager {
         if (attendanceList.contains(attendance)) {
             throw new AttendanceArgumentException(Error.DUPLICATE_DATE.getMessage());
         }
-    }
-
-    public Attendance findAttendance(String nickname, Attendance attendance) {
-        var attendanceList = attendances.get(nickname);
-        return attendanceList.findAttendance(attendance);
     }
 
     private enum Error {

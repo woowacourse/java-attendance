@@ -8,9 +8,7 @@ public class AttendanceModifyTest {
     @Test
     @DisplayName("닉네임과 날짜, 수정 시간을 입력한 후, 출석을 수정한다.")
     void test_modifyAttendance() {
-        //given&when
 
-        //then
     }
 
     @Test

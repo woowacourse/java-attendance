@@ -78,15 +78,24 @@ public record Attendance(LocalDateTime dateTime, AttendanceStatus attendanceStat
         private static final LocalTime MONDAY = LocalTime.of(13, 0);
         private static final LocalTime CAMPUS_OPEN = LocalTime.of(8, 0);
         private static final LocalTime CAMPUS_CLOSE = LocalTime.of(23, 0);
+
+        private Schedule() {
+        }
     }
 
     private static class Penalty {
         private static final int ABSENCE = 30;
         private static final int LATE = 5;
+
+        private Penalty() {
+        }
     }
 
     private static class Message {
         private static final String CANNOT_ATTENDANCE_WEEKEND_FORMAT = "MM월 dd일 E요일은 등교일이 아닙니다.";
         private static final String OUT_OF_SCHOOL_SCHEDULE = "등교시간에만 출석 가능합니다.";
+
+        private Message() {
+        }
     }
 }
