@@ -69,12 +69,16 @@ public final class OutputView {
 
     private static void printCountAboutAttendance(final CrewSummary crewSummaries) {
         final String countFormat = "%s: %d회";
+
         printMessage(
-                String.format(countFormat, AttendanceStatus.ATTENDANCE.getKoreanName(),
-                        crewSummaries.attendanceCount()));
+                String.format(
+                        countFormat,
+                        AttendanceStatus.ATTENDANCE.getKoreanName(),
+                        crewSummaries.attendanceCount()
+                )
+        );
         printMessage(
-                String.format(countFormat, AttendanceStatus.TARDINESS.getKoreanName(),
-                        crewSummaries.tardinessCount()));
+                String.format(countFormat, AttendanceStatus.TARDINESS.getKoreanName(), crewSummaries.tardinessCount()));
         printMessage(
                 String.format(countFormat, AttendanceStatus.ABSENCE.getKoreanName(), crewSummaries.absenceCount()));
     }
