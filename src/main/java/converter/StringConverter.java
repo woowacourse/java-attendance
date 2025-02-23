@@ -45,12 +45,6 @@ public class StringConverter {
         return Attendances.of(attendances);
     }
 
-    private LocalDateTime convertToLocalDateTime(String rawCheckInDateTime) {
-        String[] dateTimeParts = rawCheckInDateTime.split(" ");
-        return LocalDateTime.of(LocalDate.parse(dateTimeParts[0]),
-                LocalTime.parse(dateTimeParts[1] + ":00"));
-    }
-
     public Attendance convertToAttendance(Crews crews, String rawNickname, String rawCheckInTime) {
         validateExistCrew(crews, rawNickname);
         validateNullOrBlank(rawNickname);
@@ -99,6 +93,12 @@ public class StringConverter {
         if (day < 1 || day > lastDay) {
             throw new IllegalArgumentException("잘못된 날짜입니다.");
         }
+    }
+
+    private LocalDateTime convertToLocalDateTime(String rawCheckInDateTime) {
+        String[] dateTimeParts = rawCheckInDateTime.split(" ");
+        return LocalDateTime.of(LocalDate.parse(dateTimeParts[0]),
+                LocalTime.parse(dateTimeParts[1] + ":00"));
     }
 
     private void validateExistCrew(Crews crews, String rawNickname) {
