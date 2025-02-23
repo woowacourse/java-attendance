@@ -2,6 +2,7 @@ package domain;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public class Attendances {
     private final List<Attendance> attendances;
@@ -14,13 +15,10 @@ public class Attendances {
         return new Attendances(attendances);
     }
 
-    public Attendance findAttendanceByName(String name) {
+    public Optional<Attendance> findAttendanceByName(String name) {
         return attendances.stream()
                 .filter(attendance -> attendance.isSameName(name))
-                .findAny()
-                .orElseThrow(
-                        () -> new IllegalArgumentException("[ERROR] 출석부에 해당하는 이름이 없습니다.")
-                );
+                .findAny();
     }
 
     public List<Attendance> findDangerCrew() {

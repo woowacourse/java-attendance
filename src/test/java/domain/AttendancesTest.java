@@ -1,5 +1,6 @@
 package domain;
 
+import java.util.Optional;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -18,7 +19,8 @@ class AttendancesTest {
         Attendances attendances = Attendances.of(List.of(attendance));
 
         //when
-        Attendance found = attendances.findAttendanceByName("조로");
+        Attendance found = attendances.findAttendanceByName("조로")
+                .orElseThrow(() -> new IllegalArgumentException("[ERROR] 출석부에 해당하는 이름이 없습니다."));
 
         //then
         assertThat(found).isEqualTo(attendance);
@@ -32,9 +34,10 @@ class AttendancesTest {
         Attendance attendance = Attendance.of(Crew.of(name), CheckInTimes.of(List.of()));
         Attendances attendances = Attendances.of(List.of(attendance));
 
-        //when , then
-        assertThatThrownBy(() -> attendances.findAttendanceByName("차니"))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining("[ERROR]");
+        //when
+        Optional<Attendance> found = attendances.findAttendanceByName("차니");
+
+        // then
+        assertThat(found.isEmpty()).isTrue();
     }
 }

@@ -67,10 +67,11 @@ public class AttendanceController {
 
     private void checkIn(Attendances attendances) {
         String name = inputView.readNickName();
-        Attendance attendanceByName = attendances.findAttendanceByName(name);
+        Attendance attendance = attendances.findAttendanceByName(name)
+                .orElseThrow(() -> new IllegalArgumentException("[ERROR] 출석부에 해당하는 이름이 없습니다."));
 
         LocalDateTime checkInTime = getCheckInTime();
-        attendanceByName.checkIn(checkInTime);
+        attendance.checkIn(checkInTime);
 
         outputView.printTodayCheckInTime(CheckInTime.of(checkInTime));
     }
@@ -85,10 +86,11 @@ public class AttendanceController {
 
     private void modifyCheckInTime(Attendances attendances) {
         String name = inputView.readNickNameForModify();
-        Attendance attendanceByName = attendances.findAttendanceByName(name);
+        Attendance attendance = attendances.findAttendanceByName(name)
+                .orElseThrow(() -> new IllegalArgumentException("[ERROR] 출석부에 해당하는 이름이 없습니다."));
 
         LocalDateTime newCheckInTime = getNewCheckInTime();
-        LocalDateTime previousCheckInTime = attendanceByName.modify(newCheckInTime);
+        LocalDateTime previousCheckInTime = attendance.modify(newCheckInTime);
 
         outputView.printModifyCheckInTime(CheckInTime.of(previousCheckInTime), CheckInTime.of(newCheckInTime));
     }
@@ -105,8 +107,9 @@ public class AttendanceController {
 
     private void readCheckInTime(Attendances attendances) {
         String name = inputView.readNickName();
-        Attendance attendanceByName = attendances.findAttendanceByName(name);
-        outputView.printAttendanceLog(attendanceByName);
+        Attendance attendance = attendances.findAttendanceByName(name)
+                .orElseThrow(() -> new IllegalArgumentException("[ERROR] 출석부에 해당하는 이름이 없습니다."));
+        outputView.printAttendanceLog(attendance);
     }
 
     private void readDangerCrews(Attendances attendances) {
