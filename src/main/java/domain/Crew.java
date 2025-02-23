@@ -1,5 +1,8 @@
 package domain;
 
+import constant.AttendanceStatus;
+import constant.Warning;
+
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -7,6 +10,9 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
+
+import static constant.AttendanceStatus.*;
+import static constant.Warning.*;
 
 public class Crew {
     private final String name;
@@ -67,13 +73,13 @@ public class Crew {
     }
 
     public void updateUntil(LocalDate lastDate) {
-        for (int i = 1; i <= lastDate.getDayOfMonth(); i++) {
-            DayOfWeek todayDayOfWeek = LocalDate.of(2024, 12, i).getDayOfWeek();
-            if (todayDayOfWeek == DayOfWeek.SATURDAY || todayDayOfWeek == DayOfWeek.SUNDAY || i == 25) {
+        for (int date = 1; date <= lastDate.getDayOfMonth(); date++) {
+            DayOfWeek todayDayOfWeek = LocalDate.of(2024, 12, date).getDayOfWeek();
+            if (todayDayOfWeek == DayOfWeek.SATURDAY || todayDayOfWeek == DayOfWeek.SUNDAY || date == 25) {
                 continue;
             }
-            if (!containsDayOfMonth(i)) {
-                attendanceInfo.add(new Attendance(LocalDateTime.of(2024, 12, i, 15, 0)));
+            if (!containsDayOfMonth(date)) {
+                attendanceInfo.add(new Attendance(LocalDateTime.of(2024, 12, date, 15, 0)));
             }
         }
     }
@@ -82,7 +88,7 @@ public class Crew {
         updateUntil(lastDate.minusDays(1));
         int lateCount = getLateCount();
         int originalAbsentCount = getOriginalAbsentCount();
-        String nameAndCount = name + ": 결석 " + originalAbsentCount + "회, 지각 " + lateCount + "회 ";
+        String nameAndCount = name + ": " + ABSENT + " " + originalAbsentCount + "회, " + LATE + " " + lateCount + "회 ";
         String warningStatus = calculateWarningStatus(getAbsentCount());
         if (warningStatus.isEmpty()) {
             return nameAndCount;
@@ -92,28 +98,28 @@ public class Crew {
     }
 
     public String calculateWarningStatus(int absentCount) {
-        if (absentCount > 5) {
-            return "제적";
+        if (absentCount > EXPEL.getAbsentCount()) {
+            return EXPEL.getPenalty();
         }
-        if (absentCount >= 3) {
-            return "면담";
+        if (absentCount >= COUNSELING.getAbsentCount()) {
+            return COUNSELING.getPenalty();
         }
-        if (absentCount >= 2) {
-            return "경고";
+        if (absentCount >= WARNING.getAbsentCount()) {
+            return WARNING.getPenalty();
         }
         return "";
     }
 
     public int getAttendanceCount() {
-        return getStateCount("출석");
+        return getStateCount(ATTENDED.getStatus());
     }
 
     public int getLateCount() {
-        return getStateCount("지각");
+        return getStateCount(LATE.getStatus());
     }
 
     private int getOriginalAbsentCount() {
-        return getStateCount("결석");
+        return getStateCount(ABSENT.getStatus());
     }
 
     private int getStateCount(String state) {
@@ -122,8 +128,8 @@ public class Crew {
                 .count();
     }
 
-    private boolean containsDayOfMonth(int i) {
+    private boolean containsDayOfMonth(int date) {
         return attendanceInfo.stream()
-                .anyMatch(a -> a.getDayOfMonth() == i);
+                .anyMatch(a -> a.getDayOfMonth() == date);
     }
 }
