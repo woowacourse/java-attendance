@@ -55,8 +55,8 @@ public final class OutputView {
 
         final AttendanceCounter attendanceCounter = AttendanceCounter.of(attendances);
         final int attendanceCount = attendanceCounter.getAttendanceCount();
-        final int tardiness = attendanceCounter.getTardiness();
-        final int absence = attendanceCounter.getAbsence();
+        final int tardiness = attendanceCounter.getTardinessCount();
+        final int absence = attendanceCounter.getAbsenceCount();
 
         int sum = (tardiness * 3) + absence;
         final Punishment punishment = Punishment.findByAbsenceCount(sum);
@@ -95,8 +95,8 @@ public final class OutputView {
             final String nickname = crew.getNickname().getNickname();
             final Attendances attendances = crew.getAttendances();
             final AttendanceCounter attendanceCounter = AttendanceCounter.of(attendances);
-            final int absence = attendanceCounter.getAbsence();
-            final int tardiness = attendanceCounter.getTardiness();
+            final int absence = attendanceCounter.getAbsenceCount();
+            final int tardiness = attendanceCounter.getTardinessCount();
             final int sum = (tardiness * 3) + absence;
             final Punishment punishment = Punishment.findByAbsenceCount(sum);
 

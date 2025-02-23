@@ -6,7 +6,7 @@ public class AttendanceCounter {
     private final int tardinessCount;
     private final int absenceCount;
 
-    public AttendanceCounter(final int attendanceCount, final int tardinessCount, final int absenceCount) {
+    private AttendanceCounter(final int attendanceCount, final int tardinessCount, final int absenceCount) {
         this.attendanceCount = attendanceCount;
         this.tardinessCount = tardinessCount;
         this.absenceCount = absenceCount;
@@ -21,11 +21,11 @@ public class AttendanceCounter {
         return attendanceCount;
     }
 
-    public int getTardiness() {
+    public int getTardinessCount() {
         return tardinessCount;
     }
 
-    public int getAbsence() {
+    public int getAbsenceCount() {
         return absenceCount;
     }
 }

@@ -24,13 +24,13 @@ public class Attendances {
 
     public int getCountByStatus(AttendanceStatus status) {
         return (int) attendances.stream()
-                .filter(attendance -> attendance.attendanceStatus.equals(status))
+                .filter(attendance -> attendance.getAttendanceStatus().equals(status))
                 .count();
     }
 
     public boolean isAttended(final LocalDateTime dateTime) {
         return attendances.stream()
-                .anyMatch(attendance -> attendance.localDateTime.equals(dateTime));
+                .anyMatch(attendance -> attendance.getLocalDateTime().equals(dateTime));
     }
 
     public void addSorted(Attendance newAttendance) {
