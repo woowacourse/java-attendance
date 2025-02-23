@@ -45,7 +45,7 @@ public class AttendanceController {
     }
 
     private void confirmAttendance() {
-        Crew crew = createCrewByNickname(inputView.readCrewNickname());
+        Crew crew = crewAttendances.createRegisteredCrew(inputView.readCrewNickname());
         LocalTime attendanceTime = inputView.readAttendanceTime();
         try {
             ConfirmAttendanceDto confirmAttendanceDto = crewAttendances.saveTodayAttendance(crew, attendanceTime);
@@ -58,7 +58,7 @@ public class AttendanceController {
     }
 
     private void modifyAttendance() {
-        Crew crew = createCrewByNickname(inputView.readModificationCrewNickname());
+        Crew crew = crewAttendances.createRegisteredCrew(inputView.readModificationCrewNickname());
         LocalDate modificationDate = inputView.readModificationDay(LocalDate.now());
         LocalTime modificationTime = inputView.readModificationTime();
         ChangeAttendanceDto changeAttendanceDto = crewAttendances.changeAttendanceTime(crew, modificationDate, modificationTime);
@@ -71,7 +71,7 @@ public class AttendanceController {
     }
 
     private void checkCrewAttendances() {
-        Crew crew = createCrewByNickname(inputView.readCrewNickname());
+        Crew crew = crewAttendances.createRegisteredCrew(inputView.readCrewNickname());
         CheckCrewAttendanceRecordsDto checkCrewAttendanceRecordsDto =
                 crewAttendances.checkCrewAttendanceRecords(crew);
         outputView.printAttendances(crew, checkCrewAttendanceRecordsDto.attendanceDateTimes(),
@@ -84,29 +84,8 @@ public class AttendanceController {
     }
 
     private void checkExpulsionCrews() {
-        Map<String, AttendanceHistoryDto> attendanceHistories = new HashMap<>();
-        for (Map.Entry<Crew, Attendances> entry : crewAttendances.entrySet()) {
-            Attendances attendances = entry.getValue();
-            Map<String, Integer> attendanceStatusCounts = attendances.calculateStatusCount();
-            ExpulsionStatus expulsionStatus = attendances.calculateExpulsionStatus();
-            AttendanceHistoryDto attendanceHistoryDto = new AttendanceHistoryDto(attendanceStatusCounts.get(AttendanceStatus.ABSENT.getText()),
-                    attendanceStatusCounts.get(AttendanceStatus.LATE.getText()), expulsionStatus.getText());
-            attendanceHistories.put(entry.getKey().getNickname(), attendanceHistoryDto);
-        }
+        Map<String, AttendanceHistoryDto> attendanceHistories = crewAttendances.calculateAllCrewAttendanceHistories();
         outputView.printExpulsionCrews(attendanceHistories);
-    }
-
-    private Crew createCrewByNickname(String nickname) {
-        Crew crew = new Crew(nickname);
-        validateCrewExistence(crew);
-        return crew;
-    }
-
-
-    private void validateCrewExistence(final Crew crew) {
-        if (!crewAttendances.containsKey(crew)) {
-            throw new IllegalArgumentException("등록되지 않은 닉네임입니다.");
-        }
     }
 
 }

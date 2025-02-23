@@ -103,4 +103,25 @@ public class CrewAttendances {
         ExpulsionStatus expulsionStatus = crewAttendances.get(crew).calculateExpulsionStatus();
         return new CheckExpulsionStatusDto(expulsionStatus);
     }
+
+    public Map<String, AttendanceHistoryDto> calculateAllCrewAttendanceHistories() {
+        Map<String, AttendanceHistoryDto> attendanceHistories = new HashMap<>();
+        for (Map.Entry<Crew, Attendances> entry : crewAttendances.entrySet()) {
+            Attendances attendances = entry.getValue();
+            Map<String, Integer> attendanceStatusCounts = attendances.calculateStatusCount();
+            ExpulsionStatus expulsionStatus = attendances.calculateExpulsionStatus();
+            AttendanceHistoryDto attendanceHistoryDto = new AttendanceHistoryDto(attendanceStatusCounts.get(AttendanceStatus.ABSENT.getText()),
+                    attendanceStatusCounts.get(AttendanceStatus.LATE.getText()), expulsionStatus.getText());
+            attendanceHistories.put(entry.getKey().getNickname(), attendanceHistoryDto);
+        }
+        return attendanceHistories;
+    }
+
+    public Crew createRegisteredCrew(final String nickname) {
+        Crew crew = new Crew(nickname);
+        if (!crewAttendances.containsKey(crew)) {
+            throw new IllegalArgumentException("등록되지 않은 닉네임입니다.");
+        }
+        return crew;
+    }
 }
