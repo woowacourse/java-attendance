@@ -40,6 +40,13 @@ public enum DayOfWeek {
         return DayOfWeek.valueOf(displayName.toUpperCase());
     }
 
+    public static boolean isWeekday(LocalDate localDate) {
+        if (calculateDayOfWeek(localDate) == SATURDAY || calculateDayOfWeek(localDate) == SUNDAY) {
+            return false;
+        }
+        return true;
+    }
+
     public String getName() {
         return name;
     }

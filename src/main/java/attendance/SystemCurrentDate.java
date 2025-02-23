@@ -5,6 +5,6 @@ import java.time.LocalDate;
 public class SystemCurrentDate implements CurrentDate {
     @Override
     public LocalDate now() {
-        return LocalDate.now().minusMonths(2);
+        return LocalDate.of(2024, 12, 27);
     }
 }

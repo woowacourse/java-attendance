@@ -1,8 +1,12 @@
 package attendance.view;
 
+import static attendance.domain.AttendanceType.*;
+
+import attendance.domain.AttendanceHistories;
 import attendance.domain.AttendanceHistory;
 import attendance.domain.AttendanceTime;
 import attendance.domain.AttendanceType;
+import attendance.domain.Crew;
 import attendance.domain.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -13,6 +17,8 @@ import java.util.Map;
 public class OutputView {
 
     private static final String ATTENDANCE_RESULT_MESSAGE = "%d월 %d일 %s %02d:%02d (%s)";
+    private static final String ATTENDANCE_ABSENCE_MESSAGE = "%d월 %d일 %s --:-- (%s)";
+    private static final String ATTENDANCE_INFO_MESSAGE = "이번 달 %s의 출석 기록입니다.";
     private static final String MODIFY_ATTENDANCE_RESULT_MESSAGE = "%d월 %d일 %s %02d:%02d (%s) -> %02d:%02d (%s) 수정 완료!";
 
     /*
@@ -35,7 +41,8 @@ public class OutputView {
     public void printModifyAttendanceResult(AttendanceHistory attendanceHistory,
         AttendanceHistory modifyAttendanceHistory) {
         LocalDateTime attendanceTime = attendanceHistory.getAttendanceTime().getAttendanceTime();
-        LocalDateTime modifyAttendanceTime = modifyAttendanceHistory.getAttendanceTime().getAttendanceTime();
+        LocalDateTime modifyAttendanceTime = modifyAttendanceHistory.getAttendanceTime()
+            .getAttendanceTime();
         int month = attendanceTime.getMonthValue();
         int day = attendanceTime.getDayOfMonth();
         DayOfWeek dayOfWeek = DayOfWeek.calculateDayOfWeek(attendanceTime.toLocalDate());
@@ -53,42 +60,30 @@ public class OutputView {
         );
     }
 
-    /*
-    public void printAttendanceHistories(LocalDate now, Crew crew) {
-        System.out.println("\n이번 달 %s의 출석 기록입니다.\n".formatted(crew.getName()));
-        for (int day = 1; day < now.getDayOfMonth(); day++) {
-            int year = now.getYear();
-            int month = now.getMonthValue();
-            LocalDate date = LocalDate.of(year, month, day);
-            try {
-                AttendancePolicy.ifHolidayOrWeekendsThrowException(date);
-            } catch (IllegalArgumentException e) {
+
+    public void printAttendanceHistories(Crew crew, AttendanceHistories attendanceHistories) {
+        System.out.println(ATTENDANCE_INFO_MESSAGE.formatted(crew.getName()));
+        for (AttendanceHistory attendanceHistory : attendanceHistories.getAttendanceHistories()) {
+            LocalDateTime attendanceTime = attendanceHistory.getAttendanceTime()
+                .getAttendanceTime();
+
+            int month = attendanceTime.getMonthValue();
+            int day = attendanceTime.getDayOfMonth();
+            DayOfWeek dayOfWeek = DayOfWeek.calculateDayOfWeek(attendanceTime.toLocalDate());
+            int hour = attendanceTime.getHour();
+            int minute = attendanceTime.getMinute();
+            AttendanceType attendanceType = attendanceHistory.getAttendanceType();
+            if (hour == 0 && minute == 0) {
+                System.out.println(ATTENDANCE_ABSENCE_MESSAGE.formatted(
+                    month, day, dayOfWeek.getName(), ABSENCE.getName()));
                 continue;
             }
-            try {
-                AttendanceHistory attendanceHistory = crew.getAttendanceHistory(date);
-                LocalDateTime attendanceTime = attendanceHistory.getAttendanceTime();
-                AttendanceType attendanceType = attendanceHistory.getAttendanceType();
-                System.out.println("%02d월 %02d일 %s %02d:%02d (%s)".formatted(
-                        month,
-                        day,
-                        date.getDayOfWeek(),
-                        attendanceTime.getHour(),
-                        attendanceTime.getMinute(),
-                        attendanceType.getName())
-                );
-            } catch (IllegalArgumentException e) {
-                System.out.println("%02d월 %02d일 %s --:-- (결석)".formatted(
-                        month,
-                        day,
-                        date.getDayOfWeek())
-                );
-            }
-        }
-        System.out.println();
-    }
 
-     */
+            System.out.println(ATTENDANCE_RESULT_MESSAGE.formatted(
+                month, day, dayOfWeek.getName(), hour, minute, attendanceType.getName())
+            );
+        }
+    }
 
     public void printAttendanceResult(AttendanceHistory attendanceHistory) {
         AttendanceTime attendanceTime = attendanceHistory.getAttendanceTime();
@@ -110,7 +105,7 @@ public class OutputView {
     public void printInterviewTarget() {
         System.out.println("면담 대상자입니다.\n");
     }
-
+    
     /*
     public void printDangerousCrews(LocalDate now, List<Crew> dangerousCrews) {
         System.out.println("\n제적 위험자 조회 결과");

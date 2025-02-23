@@ -14,7 +14,13 @@ public enum OperatingTime {
         this.closingTime = closingTime;
     }
 
+    /***
+     * 0시 0분은 출석 기록이 없는 결석한 경우다.
+     */
     public static boolean isOperate(LocalTime checkTime) {
+        if (checkTime == LocalTime.of(0, 0)) {
+            return true;
+        }
         if (checkTime.isBefore(OPERATING_TIME.openingTime) ||
             checkTime.isAfter(OPERATING_TIME.closingTime)) {
             return false;

@@ -1,5 +1,6 @@
 package attendance.domain;
 
+import static attendance.domain.AttendanceType.*;
 import static attendance.error.ErrorMessage.NOT_OPERATING_HOLIDAY;
 import static attendance.error.ErrorMessage.NOT_OPERATING_TIME;
 import static attendance.error.ErrorMessage.NOT_OPERATING_WEEKEND;
@@ -23,9 +24,13 @@ public class AttendanceTime {
     }
 
     public AttendanceType calculateAttendanceType() {
+        if (checkAbsenceTime(attendanceTime)) {
+            return ABSENCE;
+        }
         DayOfWeek dayOfWeek = getDayOfWeek(attendanceTime.toLocalDate());
         int lateTime = dayOfWeek.calculateLateTime(attendanceTime.toLocalTime());
-        return AttendanceType.decideType(lateTime);
+
+        return decideType(lateTime);
     }
 
     public boolean isSameDate(LocalDate findDate) {
@@ -35,6 +40,13 @@ public class AttendanceTime {
 
     public LocalDateTime getAttendanceTime() {
         return attendanceTime;
+    }
+
+    private boolean checkAbsenceTime(LocalDateTime localDateTime) {
+        if (localDateTime.getHour() == 0 && localDateTime.getMinute() == 0) {
+            return true;
+        }
+        return false;
     }
 
     private void validateAttendanceTime(LocalDateTime attendanceTime) {
