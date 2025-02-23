@@ -14,13 +14,13 @@ import java.util.Map;
 
 public class FileManager {
 
-    private static final String ATTENDANCE_FILE_PATH = "src/main/resources/attendances.csv";
+
     private static final DateTimeFormatter DATE_TIME_FORMAT = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
     private static final String SPLIT_DELIMITER = ",";
 
-    public static Attendance readFile() {
+    public static Attendance readFile(String filePath) {
         try {
-            BufferedReader br = new BufferedReader(new FileReader(ATTENDANCE_FILE_PATH));
+            BufferedReader br = new BufferedReader(new FileReader(filePath));
             br.readLine();
 
             String line;
