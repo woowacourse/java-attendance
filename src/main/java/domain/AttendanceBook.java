@@ -1,7 +1,7 @@
 package domain;
 
-import static domain.AttendanceStatus.OPERATION_HOUR_START;
 import static domain.AttendanceStatus.OPERATION_HOUR_END;
+import static domain.AttendanceStatus.OPERATION_HOUR_START;
 
 import dto.AttendanceRecordResponse;
 import dto.CrewPenaltyResponse;
@@ -12,6 +12,8 @@ import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import util.Parser;
+import util.Parser.NameParsedData;
 
 public class AttendanceBook {
     private static final int LATE_TO_ABSENT_COUNT_UNIT = 3;
@@ -58,13 +60,6 @@ public class AttendanceBook {
     public void validateDateAlreadyExistsByCrewName(String name, LocalDate date) {
         Crew foundCrew = getCrewByName(name);
         foundCrew.validateDateAlreadyExists(date);
-    }
-
-    public void initialize(String name, Map<LocalDate, LocalTime> dateAndTime) {
-        if (!checkCrewAlreadyExists(name)) {
-            addNewCrew(Crew.createByName(name));
-        }
-        addDailyAttendanceByName(name, dateAndTime);
     }
 
     public void addNewCrew(Crew newCrew) {
@@ -143,5 +138,20 @@ public class AttendanceBook {
         if (!checkCrewAlreadyExists(name)) {
             throw new IllegalArgumentException(ErrorCode.NICKNAME_NOT_FOUND.getMessage());
         }
+    }
+
+    public void initializeAttendanceBook(List<NameParsedData> seperatedData) {
+        for (NameParsedData data : seperatedData) {
+            String name = data.namePart();
+            Map<LocalDate, LocalTime> dateAndTime = Parser.parseDate(data.dateTimePart());
+            initializeCrew(name, dateAndTime);
+        }
+    }
+
+    private void initializeCrew(String name, Map<LocalDate, LocalTime> dateAndTime) {
+        if (!checkCrewAlreadyExists(name)) {
+            addNewCrew(Crew.createByName(name));
+        }
+        addDailyAttendanceByName(name, dateAndTime);
     }
 }

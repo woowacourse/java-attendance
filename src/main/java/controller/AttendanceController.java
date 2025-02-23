@@ -35,14 +35,9 @@ public class AttendanceController {
         List<String> fileData = fileReader.readFile();
         List<String> removedData = Parser.parse(fileData);
         List<NameParsedData> seperatedData = Parser.parseName(removedData);
-
         AttendanceBook attendanceBook = new AttendanceBook();
 
-        for (NameParsedData data : seperatedData) {
-            String name = data.namePart();
-            Map<LocalDate, LocalTime> dateAndTime = Parser.parseDate(data.dateTimePart());
-            attendanceBook.initialize(name, dateAndTime);
-        }
+        attendanceBook.initializeAttendanceBook(seperatedData);
 
         while (true) {
             outputView.displayPrompt();
