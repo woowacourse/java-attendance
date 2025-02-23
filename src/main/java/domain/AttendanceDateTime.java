@@ -56,11 +56,15 @@ public class AttendanceDateTime {
         return LocalDateTime.of(Constants.FIXED_YEAR, Constants.FIXED_MONTH, Constants.FIXED_DATE, 0, 0, 0, 0);
     }
 
-    public static LocalDate getLocalDateByLocalDateTime(LocalDateTime localDateTime) {
-        return localDateTime.toLocalDate();
+    public static LocalDate getDate(LocalDateTime dateTime) {
+        return dateTime.toLocalDate();
     }
 
-    public static LocalTime getLocalTimeByLocalDateTime(LocalDateTime localDateTime) {
-        return localDateTime.toLocalTime();
+    public static LocalTime getTime(LocalDateTime dateTime) {
+        return dateTime.toLocalTime();
+    }
+
+    public static Integer getDayOfMonth(LocalDateTime dateTime) {
+        return dateTime.getDayOfMonth();
     }
 }

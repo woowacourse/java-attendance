@@ -59,7 +59,8 @@ public final class CrewGenerator {
         List<Integer> noPresentAttendanceDates = new ArrayList<>(validDates);
         noPresentAttendanceDates.removeAll(alreadyAttendanceDates);
         for (Integer attendanceDate : noPresentAttendanceDates) {
-            LocalDateTime dateTime = LocalDateTime.of(LocalDate.of(Constants.FIXED_YEAR, Constants.FIXED_MONTH, attendanceDate),
+            LocalDateTime dateTime = LocalDateTime.of(
+                    LocalDate.of(Constants.FIXED_YEAR, Constants.FIXED_MONTH, attendanceDate),
                     Constants.ABSENCE_TIME);
             Attendance attendance = new Attendance(dateTime);
             attendances.addSorted(attendance);
@@ -79,7 +80,7 @@ public final class CrewGenerator {
     public static List<Integer> getExcludeNotAttendanceDays() {
         List<Integer> excludeNotAttendanceDays = new ArrayList<>();
         excludeNotAttendanceDays.addAll(getWeekendDays());
-        excludeNotAttendanceDays.addAll(Constants.HOLIDAYS);
+        excludeNotAttendanceDays.addAll(HolidayManager.getHOLIDAYS());
 
         return excludeNotAttendanceDays;
     }

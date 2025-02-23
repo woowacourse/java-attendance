@@ -35,7 +35,7 @@ public class AttendanceController {
         Crew crew = findCrew(crews);
         String inputTime = InputView.readDateTime();
 
-        LocalDate fixedDate = AttendanceDateTime.getLocalDateByLocalDateTime(fixDateTime);
+        LocalDate fixedDate = AttendanceDateTime.getDate(fixDateTime);
         AttendanceDateTime attendanceDateTime = AttendanceDateTime.ofTimeString(fixedDate, inputTime);
         LocalDateTime dateTime = attendanceDateTime.getDateTime();
         crew.validateAttended(dateTime);

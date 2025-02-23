@@ -7,6 +7,7 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import util.Constants;
 import util.DayOfWeekKorean;
+import util.HolidayManager;
 
 public class Attendance {
 
@@ -32,19 +33,19 @@ public class Attendance {
         }
     }
 
-    private void validateHoliday(final LocalDateTime localDateTime) {
-        int day = localDateTime.getDayOfMonth();
-        if (Constants.HOLIDAYS.contains(day)) {
+    private void validateHoliday(final LocalDateTime dateTime) {
+        Integer dayOfMonth = AttendanceDateTime.getDayOfMonth(dateTime);
+        if (HolidayManager.isHoliday(dayOfMonth)) {
             throw new CustomIllegalArgumentException(
                     String.format("%d월 %d일 %s은 등교일이 아닙니다.",
                             Constants.FIXED_MONTH,
-                            localDateTime.getDayOfMonth(),
-                            DayOfWeekKorean.getKoreanName(localDateTime.getDayOfWeek())));
+                            dateTime.getDayOfMonth(),
+                            DayOfWeekKorean.getKoreanName(dateTime.getDayOfWeek())));
         }
     }
 
     public boolean equals(final LocalDate findLocalDate) {
-        return AttendanceDateTime.getLocalDateByLocalDateTime(localDateTime)
+        return AttendanceDateTime.getDate(localDateTime)
                 .equals(findLocalDate);
     }
 

@@ -25,7 +25,7 @@ public final class OutputView {
         final AttendanceStatus attendanceStatus = attendance.getAttendanceStatus();
         final int day = localDateTime.getDayOfMonth();
         final String dayName = DayOfWeekKorean.getKoreanName(localDateTime.getDayOfWeek());
-        final LocalTime localTime = AttendanceDateTime.getLocalTimeByLocalDateTime(localDateTime);
+        final LocalTime localTime = AttendanceDateTime.getTime(localDateTime);
 
         System.out.println(
                 String.format("%d월 %02d일 %s %s (%s)", Constants.FIXED_MONTH, day, dayName, localTime,
@@ -37,11 +37,11 @@ public final class OutputView {
         final AttendanceStatus oldAttendanceStatus = oldAttendance.getAttendanceStatus();
         final int oldDay = oldLocalDateTime.getDayOfMonth();
         final String oldDayName = DayOfWeekKorean.getKoreanName(oldLocalDateTime.getDayOfWeek());
-        final LocalTime oldLocalTime = AttendanceDateTime.getLocalTimeByLocalDateTime(oldLocalDateTime);
+        final LocalTime oldLocalTime = AttendanceDateTime.getTime(oldLocalDateTime);
 
         final LocalDateTime newLocalDateTime = newAttendance.getLocalDateTime();
         final AttendanceStatus newAttendanceStatus = newAttendance.getAttendanceStatus();
-        final LocalTime newLocalTime = AttendanceDateTime.getLocalTimeByLocalDateTime(newLocalDateTime);
+        final LocalTime newLocalTime = AttendanceDateTime.getTime(newLocalDateTime);
 
         System.out.println(
                 String.format("%d월 %02d일 %s %s (%s) -> %s (%s) 수정 완료!", Constants.FIXED_MONTH, oldDay, oldDayName,
@@ -69,7 +69,7 @@ public final class OutputView {
             final LocalDateTime localDateTime = attendance.getLocalDateTime();
             final int day = localDateTime.getDayOfMonth();
             final DayOfWeek dayOfWeek = localDateTime.getDayOfWeek();
-            final LocalTime localTime = AttendanceDateTime.getLocalTimeByLocalDateTime(localDateTime);
+            final LocalTime localTime = AttendanceDateTime.getTime(localDateTime);
             String timeFormat = String.valueOf(localTime);
             if (localTime.equals(Constants.ABSENCE_TIME)) {
                 timeFormat = "--:--";
