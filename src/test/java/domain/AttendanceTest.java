@@ -12,12 +12,18 @@ import java.time.LocalTime;
 import java.util.List;
 import java.util.Map;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import util.AttendancesFileHandler;
 
 public class AttendanceTest {
 
-    Attendance attendance = new Attendance(AttendancesFileHandler.generateAttendances(), LocalDate.of(2024, 12, 17));
+    Attendance attendance;
+
+    @BeforeEach
+    void setUp() {
+        this.attendance = new Attendance(AttendancesFileHandler.generateAttendances(), LocalDate.of(2024, 12, 17));
+    }
 
     @Test
     void 캠퍼스_운영_날짜_확인() {

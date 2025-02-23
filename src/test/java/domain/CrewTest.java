@@ -24,18 +24,18 @@ public class CrewTest {
         Assertions.assertThat(crew.getExpelStatus(attendanceTimes)).isEqualTo(true);
     }
 
-        @Test
+    @Test
     void 크루_제적_아닌_상태_확인() {
-            List<LocalDateTime> attendanceDateTimes = new ArrayList<>();
-            attendanceDateTimes.add(LocalDateTime.of(2024, 12, 2, 9, 0));
-            attendanceDateTimes.add(LocalDateTime.of(2024, 12, 3, 9, 0));
-            attendanceDateTimes.add(LocalDateTime.of(2024, 12, 4, 9, 0));
-            attendanceDateTimes.add(LocalDateTime.of(2024, 12, 5, 9, 58));
-            attendanceDateTimes.add(LocalDateTime.of(2024, 12, 6, 9, 58));
-            attendanceDateTimes.add(LocalDateTime.of(2024, 12, 9, 9, 58));
-            AttendanceTimes attendanceTimes = new AttendanceTimes(attendanceDateTimes, LocalDate.of(2024, 12, 10));
+        List<LocalDateTime> attendanceDateTimes = new ArrayList<>();
+        attendanceDateTimes.add(LocalDateTime.of(2024, 12, 2, 9, 0));
+        attendanceDateTimes.add(LocalDateTime.of(2024, 12, 3, 9, 0));
+        attendanceDateTimes.add(LocalDateTime.of(2024, 12, 4, 9, 0));
+        attendanceDateTimes.add(LocalDateTime.of(2024, 12, 5, 9, 58));
+        attendanceDateTimes.add(LocalDateTime.of(2024, 12, 6, 9, 58));
+        attendanceDateTimes.add(LocalDateTime.of(2024, 12, 9, 9, 58));
+        AttendanceTimes attendanceTimes = new AttendanceTimes(attendanceDateTimes, LocalDate.of(2024, 12, 10));
 
-            Crew crew = new Crew("메이");
-            Assertions.assertThat(crew.getExpelStatus(attendanceTimes)).isEqualTo(false);
+        Crew crew = new Crew("메이");
+        Assertions.assertThat(crew.getExpelStatus(attendanceTimes)).isEqualTo(false);
     }
 }
