@@ -1,4 +1,4 @@
-package attendance.exception;
+package attendance.common.exception;
 
 public class AttendanceArgumentException extends IllegalArgumentException {
 

@@ -6,7 +6,7 @@ import java.time.LocalTime;
 import java.util.HashMap;
 import java.util.Map;
 
-import attendance.exception.AttendanceArgumentException;
+import attendance.common.exception.AttendanceArgumentException;
 
 public class Attendances {
     private static final String DUPLICATE_ATTENDANCE_DATE = "이미 출석되었습니다. 수정 기능을 이용해주세요.";

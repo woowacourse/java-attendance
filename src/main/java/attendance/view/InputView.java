@@ -2,7 +2,7 @@ package attendance.view;
 
 import java.util.Scanner;
 
-public class ConsoleInputView {
+public class InputView {
     private final Scanner scanner = new Scanner(System.in);
 
     public String input() {

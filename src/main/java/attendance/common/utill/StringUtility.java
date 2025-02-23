@@ -1,4 +1,4 @@
-package attendance.utility;
+package attendance.common.utill;
 
 public class StringUtility {
 

@@ -1,12 +1,13 @@
-package attendance.repository;
+package attendance.domain;
 
-import attendance.exception.AttendanceArgumentException;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+
+import attendance.common.exception.AttendanceArgumentException;
 
 public class AttendanceFileRepository {
     private final String attendanceFileSrc;

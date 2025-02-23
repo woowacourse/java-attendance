@@ -8,8 +8,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import attendance.exception.AttendanceArgumentException;
-import attendance.utility.StringUtility;
+import attendance.common.exception.AttendanceArgumentException;
+import attendance.common.utill.DateTimeFormatterWrapper;
+import attendance.common.utill.StringUtility;
 
 public class AttendanceManager {
     private static AttendanceManager instance = null;
@@ -44,10 +45,10 @@ public class AttendanceManager {
     }
 
     private void validateAttendanceAvailable(LocalDate currentDate) {
-        if (currentDate.getDayOfWeek().getValue() >= AttendanceManagerHelper.WEEKEND_NUMBER) {
-            throw new AttendanceArgumentException(
-                DateTimeFormatterWrapper.formattingAttendanceWeekendError(currentDate));
-        }
+        // if (currentDate.getDayOfWeek().getValue() >= AttendanceManagerHelper.WEEKEND_NUMBER) {
+        //     throw new AttendanceArgumentException(
+        //         DateTimeFormatterWrapper.formattingAttendanceWeekendError(currentDate));
+        // }
         LocalDate attendanceAvailableStartDate = AttendanceManagerHelper.ATTENDANCE_AVAILABLE_START_DATE;
         LocalDate attendanceAvailableEndDate = AttendanceManagerHelper.ATTENDANCE_AVAILABLE_END_DATE;
         if (attendanceAvailableEndDate.isAfter(currentDate) || attendanceAvailableStartDate.isBefore(currentDate)) {
@@ -91,13 +92,13 @@ public class AttendanceManager {
     }
 
     public void validateIsAttendanceAvailable(LocalDate currentDate) {
-        String ATTENDANCE_WEEKEND_ERROR = DateTimeFormatterWrapper.formattingAttendanceWeekendError(currentDate);
-        if (currentDate.getDayOfWeek().getValue() >= AttendanceManagerHelper.WEEKEND_NUMBER) {
-            throw new AttendanceArgumentException(ATTENDANCE_WEEKEND_ERROR);
-        }
-        if (currentDate.getMonth().getValue() == 12 && currentDate.getDayOfMonth() == 25) {
-            throw new AttendanceArgumentException(ATTENDANCE_WEEKEND_ERROR);
-        }
+        // String ATTENDANCE_WEEKEND_ERROR = DateTimeFormatterWrapper.formattingAttendanceWeekendError(currentDate);
+        // if (currentDate.getDayOfWeek().getValue() >= AttendanceManagerHelper.WEEKEND_NUMBER) {
+        //     throw new AttendanceArgumentException(ATTENDANCE_WEEKEND_ERROR);
+        // }
+        // if (currentDate.getMonth().getValue() == 12 && currentDate.getDayOfMonth() == 25) {
+        //     throw new AttendanceArgumentException(ATTENDANCE_WEEKEND_ERROR);
+        // }
     }
 
     public AttendanceHistory crewAttendanceHistory(String nickname) {

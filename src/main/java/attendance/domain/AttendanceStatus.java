@@ -2,7 +2,7 @@ package attendance.domain;
 
 import java.util.Arrays;
 
-import attendance.exception.AttendanceArgumentException;
+import attendance.common.exception.AttendanceArgumentException;
 
 public enum AttendanceStatus {
     ATTENDANCE("출석"),
