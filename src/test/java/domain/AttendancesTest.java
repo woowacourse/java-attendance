@@ -20,12 +20,12 @@ class AttendancesTest {
 
         // when
 
-        attendanceStatusCounts attendanceStatusCounts = attendances.calculateAttendanceCount();
+        AttendanceStatusCounts attendanceStatusCounts = attendances.calculateAttendanceCount();
         int expectedAttendance = 2;
         int expectedTardiness = 1;
         int expectedAbsence = 3;
 
-        attendanceStatusCounts expectedDto = new attendanceStatusCounts(expectedAttendance, expectedTardiness,
+        AttendanceStatusCounts expectedDto = new AttendanceStatusCounts(expectedAttendance, expectedTardiness,
                 expectedAbsence);
 
         // then
