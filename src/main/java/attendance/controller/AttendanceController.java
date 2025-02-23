@@ -6,9 +6,7 @@ import java.time.LocalTime;
 import java.util.*;
 
 import attendance.domain.*;
-import attendance.dto.AttendanceHistoryDto;
-import attendance.dto.ChangeAttendanceDto;
-import attendance.dto.ConfirmAttendanceDto;
+import attendance.dto.*;
 import attendance.view.InputView;
 import attendance.view.OutputView;
 
@@ -74,34 +72,15 @@ public class AttendanceController {
 
     private void checkCrewAttendances() {
         Crew crew = createCrewByNickname(inputView.readCrewNickname());
-        Attendances attendances = crewAttendances.get(crew);
-        checkAttendanceRecords(attendances, crew);
-        checkAttendanceStatus(attendances);
-        checkExpulsionStatus(attendances);
-    }
-
-    private void checkAttendanceRecords(Attendances attendances, Crew crew) {
-        List<LocalDateTime> attendanceTimes = attendances.getAttendances().stream()
-                .map(Attendance::getAttendanceDateTime)
-                .toList();
-        List<AttendanceStatus> attendanceStatus = attendanceTimes.stream()
-                .map(dateTime -> AttendanceStatus.findByAttendanceDateAndTime(new AttendanceDate(dateTime.toLocalDate()),
-                        new AttendanceTime(dateTime.toLocalTime())))
-                .toList();
-        List<String> attendanceStatusTexts = attendanceStatus.stream()
-                .map(AttendanceStatus::getText)
-                .toList();
-        outputView.printAttendances(crew.getNickname(), attendanceTimes, attendanceStatusTexts);
-    }
-
-    private void checkAttendanceStatus(Attendances attendances) {
-        Map<String, Integer> statusCount = attendances.calculateStatusCount();
-        outputView.printStatusCounts(statusCount);
-    }
-
-    private void checkExpulsionStatus(Attendances attendances) {
-        ExpulsionStatus expulsionStatus = attendances.calculateExpulsionStatus();
-        outputView.printExpulsionStatus(expulsionStatus.getText());
+        CheckCrewAttendanceRecordsDto checkCrewAttendanceRecordsDto =
+                crewAttendances.checkCrewAttendanceRecords(crew);
+        outputView.printAttendances(crew, checkCrewAttendanceRecordsDto.attendanceDateTimes(),
+                checkCrewAttendanceRecordsDto.attendanceStatuses());
+        CheckAttendanceStatusDto checkAttendanceStatusDto =
+                crewAttendances.checkAttendanceStatus(crew);
+        outputView.printStatusCounts(checkAttendanceStatusDto.statusCount());
+        CheckExpulsionStatusDto checkExpulsionStatusDto = crewAttendances.checkExpulsionStatus(crew);
+        outputView.printExpulsionStatus(checkExpulsionStatusDto.expulsionStatus().getText());
     }
 
     private void checkExpulsionCrews() {

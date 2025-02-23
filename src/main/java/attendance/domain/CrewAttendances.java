@@ -1,7 +1,6 @@
 package attendance.domain;
 
-import attendance.dto.ChangeAttendanceDto;
-import attendance.dto.ConfirmAttendanceDto;
+import attendance.dto.*;
 import attendance.view.FileLineReader;
 
 import java.time.LocalDate;
@@ -22,10 +21,11 @@ public class CrewAttendances {
     private final Map<Crew, Attendances> crewAttendances;
 
     public CrewAttendances() {
-        this.crewAttendances = initializeCrewAttendances();
+        crewAttendances = new HashMap<>();
+        initializeCrewAttendances();
     }
 
-    private Map<Crew, Attendances> initializeCrewAttendances() {
+    private void initializeCrewAttendances() {
         List<String> firstSkippedLines = readAttendanceFileLinesWithoutFirstLine();
         Map<Crew, List<LocalDateTime>> crewAttendanceDateTimes = createAttendanceDateTimes(firstSkippedLines);
         createCrewAttendances(crewAttendanceDateTimes);
@@ -81,5 +81,26 @@ public class CrewAttendances {
         attendances.remove(originAttendance);
         attendances.addAttendance(newAttendance);
         return new ChangeAttendanceDto(originAttendance, newAttendance);
+    }
+
+    public CheckCrewAttendanceRecordsDto checkCrewAttendanceRecords(Crew crew) {
+        List<LocalDateTime> attendanceDateTimes = crewAttendances.get(crew).getAttendances().stream()
+                .map(Attendance::getAttendanceDateTime)
+                .toList();
+        List<AttendanceStatus> attendanceStatuses = attendanceDateTimes.stream()
+                .map(dateTime -> AttendanceStatus.findByAttendanceDateAndTime(new AttendanceDate(dateTime.toLocalDate()),
+                        new AttendanceTime(dateTime.toLocalTime())))
+                .toList();
+        return new CheckCrewAttendanceRecordsDto(attendanceDateTimes, attendanceStatuses);
+    }
+
+    public CheckAttendanceStatusDto checkAttendanceStatus(Crew crew) {
+        Map<String, Integer> statusCount = crewAttendances.get(crew).calculateStatusCount();
+        return new CheckAttendanceStatusDto(statusCount);
+    }
+
+    public CheckExpulsionStatusDto checkExpulsionStatus(Crew crew) {
+        ExpulsionStatus expulsionStatus = crewAttendances.get(crew).calculateExpulsionStatus();
+        return new CheckExpulsionStatusDto(expulsionStatus);
     }
 }

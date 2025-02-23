@@ -5,9 +5,11 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.TextStyle;
 import java.util.*;
+import java.util.stream.Collectors;
 
 import attendance.domain.Attendance;
 import attendance.domain.AttendanceStatus;
+import attendance.domain.Crew;
 import attendance.dto.AttendanceHistoryDto;
 
 import static attendance.view.ViewConstants.*;
@@ -57,11 +59,14 @@ public class OutputView {
                 TIME_FORMATTER.format(newDateTime), newAttendanceStatus);
     }
 
-    public void printAttendances(final String crewNickname, final List<LocalDateTime> attendanceTimes,
-                                 final List<String> attendanceStatus) {
-        System.out.printf("이번 달 %s의 출석 기록입니다.%n", crewNickname);
+    public void printAttendances(final Crew crew, final List<LocalDateTime> attendanceTimes,
+                                 final List<AttendanceStatus> attendanceStatus) {
+        List<String> attendanceStatusTexts = attendanceStatus.stream()
+                        .map(AttendanceStatus::getText)
+                        .collect(Collectors.toList());
+        System.out.printf("이번 달 %s의 출석 기록입니다.%n", crew.getNickname());
         for (int index = 0; index < attendanceTimes.size(); index++) {
-            printAttendance(attendanceTimes.get(index), attendanceStatus.get(index));
+            printAttendance(attendanceTimes.get(index), attendanceStatusTexts.get(index));
         }
         System.out.println();
     }
