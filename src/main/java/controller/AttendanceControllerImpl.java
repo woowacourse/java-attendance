@@ -31,23 +31,17 @@ public class AttendanceControllerImpl implements AttendanceController {
         while (continueFlag) {
             switch (inputView.inputDecision()) {
                 case "1":
-                    AttendRequest attendRequest = inputView.getAttendRequest();
-                    var attendResult = attendanceBook.addAttendance(attendRequest.name(), LocalDateTime.of(dateProvider.now(), attendRequest.attendTime()));
-                    outputView.handleAttendResult(attendResult);
+                    registerAttendance(attendanceBook);
                     break;
                 case "2":
-                    AttendanceModifyRequest modifyRequest = inputView.getAttendanceModifyRequest();
-                    var memberAttendanceModifyResult = attendanceBook.editAttendance(modifyRequest.name(), modifyRequest.targetDate(), modifyRequest.modifyTo());
-                    outputView.handleAttendanceModifyResult(memberAttendanceModifyResult);
+                    modifyAttendance(attendanceBook);
                     break;
                 case "3":
-                    AttendanceResultFindRequest resultFindRequest = inputView.getAttendanceResultFindRequest();
-                    var attendanceResult = attendanceBook.getAttendanceResult(resultFindRequest.name());
-                    outputView.handleMemberAttendanceResult(attendanceResult);
+                    checkCrewAttendacne(attendanceBook);
                     break;
                 case "4":
-                    var expelMeasurementResults = attendanceBook.checkExpelWarnings();
-                    outputView.handleExpelMeasurementResults(expelMeasurementResults);
+
+                    checkRiskExpelled(attendanceBook);
                     break;
                 case "Q":
                     continueFlag = false;
@@ -56,5 +50,28 @@ public class AttendanceControllerImpl implements AttendanceController {
                     outputView.handleMissDecision();
             }
         }
+    }
+
+    private void checkRiskExpelled(AttendanceBook attendanceBook) {
+        var expelMeasurementResults = attendanceBook.checkExpelWarnings();
+        outputView.handleExpelMeasurementResults(expelMeasurementResults);
+    }
+
+    private void checkCrewAttendacne(AttendanceBook attendanceBook) {
+        AttendanceResultFindRequest resultFindRequest = inputView.getAttendanceResultFindRequest();
+        var attendanceResult = attendanceBook.getAttendanceResult(resultFindRequest.name());
+        outputView.handleMemberAttendanceResult(attendanceResult);
+    }
+
+    private void modifyAttendance(AttendanceBook attendanceBook) {
+        AttendanceModifyRequest modifyRequest = inputView.getAttendanceModifyRequest();
+        var memberAttendanceModifyResult = attendanceBook.editAttendance(modifyRequest.name(), modifyRequest.targetDate(), modifyRequest.modifyTo());
+        outputView.handleAttendanceModifyResult(memberAttendanceModifyResult);
+    }
+
+    private void registerAttendance(AttendanceBook attendanceBook) {
+        AttendRequest attendRequest = inputView.getAttendRequest();
+        var attendResult = attendanceBook.addAttendance(attendRequest.name(), LocalDateTime.of(dateProvider.now(), attendRequest.attendTime()));
+        outputView.handleAttendResult(attendResult);
     }
 }
