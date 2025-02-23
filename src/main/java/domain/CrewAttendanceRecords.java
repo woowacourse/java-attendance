@@ -30,6 +30,7 @@ public class CrewAttendanceRecords {
     }
 
     public AttendanceRecord getRecordAtDate(Crew crew, LocalDate date) {
+        validateCrewPresence(crew);
         AttendanceRecords attendanceRecords = crewAttendanceRecords.get(crew);
         return attendanceRecords.getRecordAtDate(date);
     }
