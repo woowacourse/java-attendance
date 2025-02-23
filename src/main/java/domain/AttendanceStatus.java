@@ -14,12 +14,12 @@ public enum AttendanceStatus {
     NONE("", Integer.MAX_VALUE),
     ;
 
-    private final String description;
-    private final int threshold;
+    private final String name;
+    private final int minLateMinute;
 
-    AttendanceStatus(String description, int threshold) {
-        this.description = description;
-        this.threshold = threshold;
+    AttendanceStatus(String name, int minLateMinute) {
+        this.name = name;
+        this.minLateMinute = minLateMinute;
     }
 
     public static AttendanceStatus of(LocalDate date, LocalTime attendanceTime) {
@@ -29,16 +29,16 @@ public enum AttendanceStatus {
 
         LectureTime lectureTime = LectureTime.from(date);
         long difference = MINUTES.between(lectureTime.getStartTime(), attendanceTime);
-        return Arrays.stream(values()).filter(attendanceStatus -> attendanceStatus.threshold <= difference)
-            .max(Comparator.comparing(AttendanceStatus::getThreshold))
+        return Arrays.stream(values()).filter(attendanceStatus -> attendanceStatus.minLateMinute <= difference)
+            .max(Comparator.comparing(AttendanceStatus::getMinLateMinute))
             .orElse(AttendanceStatus.NONE);
     }
 
-    public int getThreshold() {
-        return threshold;
+    public int getMinLateMinute() {
+        return minLateMinute;
     }
 
-    public String getDescription() {
-        return description;
+    public String getName() {
+        return name;
     }
 }

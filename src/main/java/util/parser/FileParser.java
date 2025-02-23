@@ -16,12 +16,12 @@ public class FileParser {
     public static final String FILE_PATH = "src/main/resources/attendances.csv";
     public static final String DELIMITER = ",";
 
-    public static List<AttendanceRecord> loadAttendanceRecords() {
+    public static List<AttendanceData> loadAttendanceData() {
         File file = new File(FILE_PATH);
         BufferedReader br = null;
         String line;
 
-        List<AttendanceRecord> result = new ArrayList<>();
+        List<AttendanceData> result = new ArrayList<>();
         try {
             br = new BufferedReader(new FileReader(file));
             while ((line = br.readLine()) != null) {
@@ -34,11 +34,11 @@ public class FileParser {
         return result;
     }
 
-    public static AttendanceRecord parseAttendanceHistory(String attendanceData) {
+    public static AttendanceData parseAttendanceHistory(String attendanceData) {
         List<String> parsed = Arrays.stream(attendanceData.split(DELIMITER, -1)).toList();
         LocalDateTime dateTime = LocalDateTime.parse(parsed.get(1), DATE_TIME_FORMATTER);
 
-        return new AttendanceRecord(
+        return new AttendanceData(
             parsed.get(0),
             dateTime.toLocalDate(),
             dateTime.toLocalTime()

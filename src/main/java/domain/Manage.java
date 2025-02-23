@@ -11,29 +11,29 @@ public enum Manage {
     EXPELLED(6, "제적"),
     ;
 
-    private final int absentThreshold;
-    private final String description;
+    private final int absentMinCount;
+    private final String name;
 
-    Manage(int absentThreshold, String description) {
-        this.absentThreshold = absentThreshold;
-        this.description = description;
+    Manage(int absentMinCount, String name) {
+        this.absentMinCount = absentMinCount;
+        this.name = name;
     }
 
-    public static Manage of(Map<AttendanceStatus, Integer> attendanceStatusStatistics) {
-        int lateCount = attendanceStatusStatistics.getOrDefault(AttendanceStatus.LATE, 0);
-        int absentCount = attendanceStatusStatistics.getOrDefault(AttendanceStatus.ABSENT, 0) + lateCount / 3;
+    public static Manage of(Map<AttendanceStatus, Integer> attendanceStatusCounter) {
+        int lateCount = attendanceStatusCounter.getOrDefault(AttendanceStatus.LATE, 0);
+        int absentCount = attendanceStatusCounter.getOrDefault(AttendanceStatus.ABSENT, 0) + lateCount / 3;
 
         return Arrays.stream(values())
-            .filter(manage -> manage.absentThreshold <= absentCount)
-            .max(Comparator.comparing(Manage::getAbsentThreshold))
+            .filter(manage -> manage.absentMinCount <= absentCount)
+            .max(Comparator.comparing(Manage::getAbsentMinCount))
             .orElseThrow(() -> new IllegalStateException("결석 횟수에 맞는 적절한 Manage가 존재하지 않습니다."));
     }
 
-    public int getAbsentThreshold() {
-        return absentThreshold;
+    public int getAbsentMinCount() {
+        return absentMinCount;
     }
 
-    public String getDescription() {
-        return description;
+    public String getName() {
+        return name;
     }
 }

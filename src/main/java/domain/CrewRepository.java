@@ -17,11 +17,11 @@ public class CrewRepository {
 
     public static CrewRepository fromFile() {
         CrewRepository generated = new CrewRepository();
-        FileParser.loadAttendanceRecords()
-            .forEach(record -> generated.add(
-                record.nickname(),
-                record.date(),
-                record.time()
+        FileParser.loadAttendanceData()
+            .forEach(fileData -> generated.add(
+                fileData.nickname(),
+                fileData.date(),
+                fileData.time()
             ));
         return generated;
     }

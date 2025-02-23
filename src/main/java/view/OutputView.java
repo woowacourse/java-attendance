@@ -17,7 +17,7 @@ public class OutputView {
 
     public static void printAttendanceResult(AttendanceResult result) {
         String dateTime = LocalDateTime.of(result.date(), result.time()).format(FormatterConstant.DATETIME_FORMATTER);
-        System.out.printf(dateTime + " (%s)%n", result.status().getDescription());
+        System.out.printf(dateTime + " (%s)%n", result.status().getName());
     }
 
     public static void printModifiedResult(ModifiedResult modifiedResult) {
@@ -25,9 +25,9 @@ public class OutputView {
         message.append(
             LocalDateTime.of(modifiedResult.date(), modifiedResult.before().time())
                 .format(FormatterConstant.DATETIME_FORMATTER));
-        message.append(String.format(" (%s) -> ", modifiedResult.before().status().getDescription()));
+        message.append(String.format(" (%s) -> ", modifiedResult.before().status().getName()));
         message.append(modifiedResult.after().time().format(FormatterConstant.TIME_FORMATTER));
-        message.append(String.format(" (%s)", modifiedResult.after().status().getDescription()));
+        message.append(String.format(" (%s)", modifiedResult.after().status().getName()));
         message.append(" 수정 완료!%n%n");
 
         System.out.printf(message.toString());
@@ -40,7 +40,7 @@ public class OutputView {
             message.append(history.date().format(FormatterConstant.DATE_FORMATTER));
             message.append(" ");
             message.append(convertToTime(history));
-            message.append(String.format(" (%s)", history.status().getDescription()));
+            message.append(String.format(" (%s)", history.status().getName()));
         });
         System.out.println();
         System.out.printf("출석: %d회%n", historyResult.statusCounter().get(AttendanceStatus.ATTENDANCE));
@@ -48,8 +48,8 @@ public class OutputView {
         System.out.printf("결석: %d회%n", historyResult.statusCounter().get(AttendanceStatus.ABSENT));
         System.out.println();
 
-        if (!historyResult.manage().equals(Manage.NONE)) {
-            System.out.printf("%s 대상자입니다.%n%n", historyResult.manage().getDescription());
+        if (historyResult.manage() != Manage.NONE) {
+            System.out.printf("%s 대상자입니다.%n%n", historyResult.manage().getName());
         }
     }
 
@@ -71,11 +71,11 @@ public class OutputView {
         result.forEach(crew ->
             System.out.printf(format,
                 crew.nickname(),
-                AttendanceStatus.ABSENT.getDescription(),
+                AttendanceStatus.ABSENT.getName(),
                 crew.attendanceStatusStatistics().get(AttendanceStatus.ABSENT),
-                AttendanceStatus.LATE.getDescription(),
+                AttendanceStatus.LATE.getName(),
                 crew.attendanceStatusStatistics().get(AttendanceStatus.LATE),
-                crew.manage().getDescription()
+                crew.manage().getName()
             )
         );
     }

@@ -4,7 +4,7 @@ import java.time.LocalTime;
 import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.Test;
 
-import util.parser.AttendanceRecord;
+import util.parser.AttendanceData;
 import util.parser.FileParser;
 
 public class FileParserTest {
@@ -14,7 +14,7 @@ public class FileParserTest {
         // given
         String attendanceData = "moko,2025-02-03 13:00";
 
-        AttendanceRecord attendanceRecord = FileParser.parseAttendanceHistory(attendanceData);
+        AttendanceData attendanceRecord = FileParser.parseAttendanceHistory(attendanceData);
         SoftAssertions.assertSoftly(softly -> {
             softly.assertThat(attendanceRecord.nickname()).isEqualTo("moko");
             softly.assertThat(attendanceRecord.date()).isEqualTo(LocalDate.of(2025, 02, 03));

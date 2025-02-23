@@ -25,12 +25,12 @@ public enum Holiday {
     }
 
     public static boolean isOffDay(LocalDate date) {
-        boolean isWeekend = date.getDayOfWeek().equals(DayOfWeek.SATURDAY) ||
-            date.getDayOfWeek().equals(DayOfWeek.SUNDAY);
+        boolean isWeekend = date.getDayOfWeek() == DayOfWeek.SATURDAY ||
+            date.getDayOfWeek() == DayOfWeek.SUNDAY;
         return isWeekend || isHoliday(date);
     }
 
     private static boolean isHoliday(LocalDate date) {
-        return !from(date).equals(Holiday.NONE);
+        return from(date) != Holiday.NONE;
     }
 }

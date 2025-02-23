@@ -27,7 +27,7 @@ public enum LectureTime {
 
     public static LectureTime from(LocalDate date) {
         return Arrays.stream(values())
-            .filter(lectureTime -> lectureTime.dayOfWeek.equals(date.getDayOfWeek()))
+            .filter(lectureTime -> lectureTime.dayOfWeek == date.getDayOfWeek())
             .findAny()
             .orElseThrow(() -> new IllegalStateException("LectureTime 내에 일치하는 요일이 존재하지 않습니다."));
     }
