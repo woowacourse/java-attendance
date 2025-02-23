@@ -32,38 +32,35 @@ public class AttendanceController {
     public void run() {
         Crews crews = Crews.init(CrewAttendanceParser.parseCrewAttendances(AttendancesFileReader.read()), today);
         while (true) {
+            String selectedMenuInput = inputView.inputMenu(today);
+            if (Menu.isQuit(selectedMenuInput)) break;
             try {
-                Menu selectedMenu = inputView.inputMenu(today);
-                if (isQuit(selectedMenu)) break;
-                runMenu(selectedMenu, crews);
+                runMenu(selectedMenuInput, crews);
             } catch (IllegalArgumentException e) {
                 outputView.printExceptionMessage(e);
             }
         }
     }
 
-    public void runMenu(Menu selectedMenu, Crews crews) {
+    public void runMenu(String selectedMenuInput, Crews crews) {
+        Menu selectedMenu = Menu.of(selectedMenuInput);
         if (selectedMenu.equals(Menu.CHECK_ATTEND)) checkAttendance(crews);
         if (selectedMenu.equals(Menu.UPDATE_ATTEND)) updateAttendance(crews);
         if (selectedMenu.equals(Menu.PRINT_ATTEND_BY_CREW)) printAttendanceByCrew(crews);
         if (selectedMenu.equals(Menu.PRINT_WARNING)) printWarningCrews(crews);
     }
 
-    private static boolean isQuit(Menu selectedMenu) {
-        return selectedMenu.equals(Menu.QUIT);
-    }
-
     private void checkAttendance(final Crews crews) {
         HolidayValidator.validate(today);
 
         Crew crew = crews.findByName(inputView.inputNickname());
-        crew.getAttendances().existInAttendances(today);
+        crew.existInAttendances(today);
 
         LocalDateTime attendDateTime = TimeFormatter.format(today, inputView.inputAttendTime());
         OperatingHoursValidator.validate(attendDateTime);
         Attendance attendance = new Attendance(attendDateTime);
 
-        crew.getAttendances().addAttendance(attendance);
+        crew.addAttendance(attendance);
         outputView.printAttendanceResult(AttendanceResultResponse.from(attendance));
     }
 
@@ -76,7 +73,7 @@ public class AttendanceController {
         OperatingHoursValidator.validate(updateTime);
 
         UpdateBeforeAttendanceResponse beforeResponse = UpdateBeforeAttendanceResponse.from(crew.findAttendanceByDate(updateDate));
-        UpdateAfterAttendanceResponse afterResponse = UpdateAfterAttendanceResponse.from(crew.getAttendances().updateAttendance(updateTime));
+        UpdateAfterAttendanceResponse afterResponse = UpdateAfterAttendanceResponse.from(crew.updateAttendance(updateTime));
 
         outputView.printUpdateAttendance(beforeResponse, afterResponse);
     }

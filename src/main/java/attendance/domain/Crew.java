@@ -1,6 +1,8 @@
 package attendance.domain;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.List;
 
 public class Crew implements Comparable<Crew> {
     public static final int LATE_TO_ABSENCE_UNIT = 3;
@@ -53,11 +55,35 @@ public class Crew implements Comparable<Crew> {
         return nickname.compareTo(o.getNickname());
     }
 
+    public void existInAttendances(LocalDate today) {
+        attendances.existInAttendances(today);
+    }
+
+    public void addAttendance(Attendance attendance) {
+        attendances.addAttendance(attendance);
+    }
+
+    public Attendance updateAttendance(LocalDateTime updateTime) {
+        return attendances.updateAttendance(updateTime);
+    }
+
     public String getNickname() {
         return nickname;
     }
 
-    public Attendances getAttendances() {
-        return attendances;
+    public long countAttend() {
+        return attendances.countAttend();
+    }
+
+    public long countLate() {
+        return attendances.countLate();
+    }
+
+    public long countAbsence() {
+        return attendances.countAbsence();
+    }
+
+    public List<Attendance> getAttendances() {
+        return attendances.getAttendances();
     }
 }

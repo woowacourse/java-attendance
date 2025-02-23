@@ -23,4 +23,8 @@ public enum Menu {
                 .findFirst()
                 .orElseThrow(() -> new IllegalArgumentException(NOT_IN_MENU));
     }
+
+    public static boolean isQuit(String selectedMenu) {
+        return of(selectedMenu).equals(Menu.QUIT);
+    }
 }

@@ -16,7 +16,7 @@ class CrewTest {
         Crew crew = new Crew("훌라",
                 new Attendances(LocalDate.of(2024,12,17), List.of(LocalDateTime.of(2024, 12, 16, 11, 0))));
 
-        assertThatThrownBy(() -> crew.getAttendances().existInAttendances(LocalDate.of(2024,12,16)))
+        assertThatThrownBy(() -> crew.existInAttendances(LocalDate.of(2024,12,16)))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -25,7 +25,7 @@ class CrewTest {
         Crew crew = new Crew("훌라",
                 new Attendances(LocalDate.of(2024,12,11), List.of(LocalDateTime.of(2024, 12, 16, 11, 0))));
 
-        assertThatCode(() -> crew.getAttendances().existInAttendances(LocalDate.of(2024,12,17))).doesNotThrowAnyException();
+        assertThatCode(() -> crew.existInAttendances(LocalDate.of(2024,12,17))).doesNotThrowAnyException();
     }
 
     @Test
@@ -99,7 +99,7 @@ class CrewTest {
 
         LocalDateTime localDateTime = LocalDateTime.of(2024, 12, 20, 11, 0);
 
-        Attendance attendance = crew.getAttendances().updateAttendance(localDateTime);
+        Attendance attendance = crew.updateAttendance(localDateTime);
         assertThat(attendance.getDateTime()).isEqualTo(localDateTime);
     }
 }

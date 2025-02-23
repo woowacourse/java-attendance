@@ -8,7 +8,6 @@ import static attendance.view.message.InputMessage.INPUT_UPDATE_DATE;
 import static attendance.view.message.InputMessage.INPUT_UPDATE_TIME;
 import static attendance.view.message.InputMessage.START_MESSAGE;
 
-import attendance.domain.Menu;
 import java.time.LocalDate;
 import java.time.format.TextStyle;
 import java.util.Locale;
@@ -19,9 +18,9 @@ public class InputView {
 
     Scanner scanner = new Scanner(System.in);
 
-    public Menu inputMenu(LocalDate now) {
+    public String inputMenu(LocalDate now) {
         System.out.printf(START_MESSAGE, now.getMonthValue(), now.getDayOfMonth(), now.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.KOREA));
-        return Menu.of(scanner.nextLine());
+        return scanner.nextLine();
     }
 
     public String inputNickname() {

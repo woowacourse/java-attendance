@@ -54,7 +54,7 @@ public class OutputView {
 
     public void printAttendanceByCrew(Crew crew) {
         System.out.printf(CREW_ATTENDANCE_TITLE, crew.getNickname());
-        for (Attendance attendance : crew.getAttendances().getAttendances()) {
+        for (Attendance attendance : crew.getAttendances()) {
             LocalDateTime dateTime = attendance.getDateTime();
             AttendanceStatus status = attendance.getStatus();
             if (status == AttendanceStatus.ABSENCE) {
@@ -66,9 +66,9 @@ public class OutputView {
             }
             printAttendanceResult(AttendanceResultResponse.from(attendance));
         }
-        System.out.printf(CREW_ATTEND_COUNT, crew.getAttendances().countAttend());
-        System.out.printf(CREW_LATE_COUNT, crew.getAttendances().countLate());
-        System.out.printf(CREW_ABSENCE_COUNT, crew.getAttendances().countAbsence());
+        System.out.printf(CREW_ATTEND_COUNT, crew.countAttend());
+        System.out.printf(CREW_LATE_COUNT, crew.countLate());
+        System.out.printf(CREW_ABSENCE_COUNT, crew.countAbsence());
     }
 
     public void printWarning(Warning warning) {
@@ -80,8 +80,8 @@ public class OutputView {
         for (Crew crew : crews) {
             System.out.printf(WARNING_CREWS_ATTENDANCE_COUNT,
                     crew.getNickname(),
-                    crew.getAttendances().countAbsence(),
-                    crew.getAttendances().countLate(),
+                    crew.countAbsence(),
+                    crew.countLate(),
                     crew.checkWarning().getMessage()
             );
         }
