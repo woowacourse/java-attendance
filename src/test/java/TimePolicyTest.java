@@ -18,4 +18,15 @@ public class TimePolicyTest {
         assertThatThrownBy(() -> TimePolicy.validateHour(hour))
                 .isInstanceOf(IllegalArgumentException.class);
     }
+
+    @Test
+    @DisplayName("시의 범위를 벗어나면 예외가 발생한다")
+    void validateHourTest2(){
+        //given
+        String hour = "-1";
+
+        //when-then
+        assertThatThrownBy(() -> TimePolicy.validateHour(hour))
+                .isInstanceOf(IllegalArgumentException.class);
+    }
 }
