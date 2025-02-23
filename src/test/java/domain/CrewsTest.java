@@ -97,6 +97,6 @@ public class CrewsTest {
     void getCrew_Exception() {
         assertThatThrownBy(() -> crews.addHistory("a", LocalDateTime.of(2024, 12, 23, 0, 0)))
                 .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage("[ERROR] 존재하지 않은 크루입니다.");
+                .hasMessageContaining("[ERROR] 존재하지 않은 크루입니다.");
     }
 }

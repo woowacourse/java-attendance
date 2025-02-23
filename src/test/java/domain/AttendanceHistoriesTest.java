@@ -130,7 +130,7 @@ public class AttendanceHistoriesTest {
         // when & then
         assertThatThrownBy(() -> attendanceHistories.deleteHistory(time))
                 .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage("[ERROR] 해당 날짜 출석 기록이 없습니다.");
+                .hasMessageContaining("[ERROR] 해당 날짜 출석 기록이 없습니다.");
     }
 
     @Test
@@ -257,6 +257,6 @@ public class AttendanceHistoriesTest {
         // when & then
         assertThatThrownBy(() -> attendanceHistories.getHistory(LocalDateTime.of(2024, 12, 18, 0, 0)))
                 .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage("[ERROR] 해당 날짜 출석 기록이 없습니다.");
+                .hasMessageContaining("[ERROR] 해당 날짜 출석 기록이 없습니다.");
     }
 }

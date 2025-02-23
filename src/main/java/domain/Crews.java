@@ -5,16 +5,15 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public class Crews {
     private final List<Crew> crews;
 
     public Crews(Map<String, List<LocalDateTime>> histories, LocalDate standard) {
-        crews = new ArrayList<>();
-        for (String username : histories.keySet()) {
-            Crew crew = new Crew(username, histories.get(username), standard);
-            crews.add(crew);
-        }
+        crews = histories.entrySet().stream()
+                .map(entry -> new Crew(entry.getKey(), entry.getValue(), standard))
+                .collect(Collectors.toList());
     }
 
     public void addHistory(String username, LocalDateTime attendanceTime) {
