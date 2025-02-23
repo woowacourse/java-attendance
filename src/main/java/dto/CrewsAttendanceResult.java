@@ -1,10 +1,8 @@
 package dto;
 
-import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import model.Attendances;
 import model.Crew;
 
@@ -17,17 +15,11 @@ public class CrewsAttendanceResult {
     }
 
     public static CrewsAttendanceResult of(Map<Crew, Attendances> crewsAttendance) {
-        List<CrewAttendanceResult> result = new ArrayList<>();
-        for (Entry<Crew, Attendances> crewAttendancesEntry : crewsAttendance.entrySet()) {
-            result.add(CrewAttendanceResult.of(crewAttendancesEntry.getKey(), crewAttendancesEntry.getValue()));
-        }
+        List<CrewAttendanceResult> result = crewsAttendance.entrySet().stream()
+                .map(entry -> CrewAttendanceResult.of(entry.getKey(), entry.getValue()))
+                .sorted(Comparator.comparing(entry -> entry.crew.getNickname()))
+                .toList();
 
-        result.sort(new Comparator<CrewAttendanceResult>() {
-            @Override
-            public int compare(CrewAttendanceResult o1, CrewAttendanceResult o2) {
-                return o1.crew.getNickname().compareTo(o2.crew.getNickname());
-            }
-        });
         return new CrewsAttendanceResult(result);
     }
 
