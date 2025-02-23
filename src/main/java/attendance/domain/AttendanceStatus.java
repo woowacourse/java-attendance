@@ -7,6 +7,8 @@ import java.util.List;
 import static attendance.domain.AttendanceStateType.EXPULSION;
 import static attendance.domain.AttendanceStateType.LATE;
 import static attendance.domain.AttendanceStateType.values;
+import static attendance.domain.AttendanceWarningType.NONE;
+import static attendance.domain.AttendanceWarningType.find;
 
 public class AttendanceStatus {
 
@@ -25,11 +27,15 @@ public class AttendanceStatus {
         int expulsion = status.get(EXPULSION);
         int late = status.get(LATE);
 
-        warningType = AttendanceWarningType.find(expulsion, late);
+        warningType = find(expulsion, late);
     }
 
     public static AttendanceStatus of(final List<Attendance> attendances) {
         return new AttendanceStatus(attendances);
+    }
+
+    public boolean isNotNoneState() {
+        return warningType != NONE;
     }
 
     public EnumMap<AttendanceStateType, Integer> getStatus() {

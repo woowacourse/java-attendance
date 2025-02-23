@@ -68,13 +68,13 @@ public class AttendanceManager {
     }
 
     public Map<String, AttendanceStatus> getAttendanceWarnedCrews() {
-        Map<String, AttendanceStatus> collect = attendances.entrySet().stream()
+        return attendances.entrySet().stream()
+                .map(entry -> Map.entry(entry.getKey(), new AttendanceStatus(entry.getValue().getAttendancesUntilYesterday())))
+                .filter(entry -> entry.getValue().isNotNoneState())
                 .collect(Collectors.toMap(
                         Map.Entry::getKey,
-                        entry -> new AttendanceStatus(entry.getValue().getAttendancesUntilYesterday())
+                        Map.Entry::getValue
                 ));
-
-        return collect;
     }
 
     public void validateNicknameExists(String nickname) {
