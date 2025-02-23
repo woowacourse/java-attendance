@@ -1,14 +1,17 @@
 package util;
 
 
+import controller.AttendanceCommandController;
 import domain.Attendance;
 import domain.AttendanceCounter;
 import domain.Attendances;
 import domain.Crew;
 import domain.Crews;
 import domain.Nickname;
+import domain.Week;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
+import java.time.YearMonth;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -83,20 +86,30 @@ public final class CrewGenerator {
     private static List<Integer> getExcludeNotAttendanceDays() {
         final List<Integer> excludeNotAttendanceDays = new ArrayList<>();
         excludeNotAttendanceDays.addAll(getWeekendDays());
-        excludeNotAttendanceDays.addAll(Constants.HOLIDAYS);
+        excludeNotAttendanceDays.addAll(Week.HOLIDAYS);
 
         return excludeNotAttendanceDays;
     }
 
     private static Collection<Integer> getWeekendDays() {
-        return IntStream.rangeClosed(1, Constants.LENGTH_OF_MONTH)
+        final YearMonth yearMonth = YearMonth.of(
+                AttendanceCommandController.FIXED_YEAR,
+                AttendanceCommandController.FIXED_MONTH
+        );
+        final int lengthOfMonth = yearMonth.lengthOfMonth();
+
+        return IntStream.rangeClosed(1, lengthOfMonth)
                 .filter(CrewGenerator::excludeNotAttendanceDays)
                 .boxed()
                 .toList();
     }
 
     public static boolean excludeNotAttendanceDays(final int day) {
-        final DayOfWeek dayOfWeek = LocalDate.of(Constants.FIXED_YEAR, Constants.FIXED_MONTH, day).getDayOfWeek();
+        final DayOfWeek dayOfWeek = LocalDate.of(
+                AttendanceCommandController.FIXED_YEAR,
+                AttendanceCommandController.FIXED_MONTH,
+                day
+        ).getDayOfWeek();
 
         return dayOfWeek == DayOfWeek.SATURDAY || dayOfWeek == DayOfWeek.SUNDAY;
     }

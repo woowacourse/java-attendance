@@ -6,6 +6,7 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Locale;
 
 public enum Week {
@@ -22,6 +23,8 @@ public enum Week {
             Locale.KOREAN);
     public static final DateTimeFormatter ABSENCE_FORMAT = DateTimeFormatter.ofPattern("M월 dd일 --:-- EEEE",
             Locale.KOREAN);
+    public static final int LENGTH_OF_MONTH = 31;
+    public static final List<Integer> HOLIDAYS = List.of(25);
 
     private final LocalTime attendanceTime;
 

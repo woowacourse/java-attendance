@@ -1,8 +1,8 @@
 package domain;
 
+import controller.AttendanceCommandController;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import util.Constants;
 
 public class Attendance implements Comparable<Attendance> {
 
@@ -20,8 +20,12 @@ public class Attendance implements Comparable<Attendance> {
     }
 
     public static Attendance generateAbsentAttendance(final Integer attendanceDate) {
-        final LocalDate localDate = LocalDate.of(Constants.FIXED_YEAR, Constants.FIXED_MONTH, attendanceDate);
-        final LocalDateTime dateTime = LocalDateTime.of(localDate, Constants.ABSENCE_TIME);
+        final LocalDate localDate = LocalDate.of(
+                AttendanceCommandController.FIXED_YEAR,
+                AttendanceCommandController.FIXED_MONTH,
+                attendanceDate
+        );
+        final LocalDateTime dateTime = LocalDateTime.of(localDate, Punishment.ABSENCE_TIME);
         return new Attendance(AttendanceDateTime.of(dateTime));
     }
 

@@ -7,7 +7,6 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
-import util.Constants;
 
 public class AttendanceDateTime {
 
@@ -41,7 +40,7 @@ public class AttendanceDateTime {
     }
 
     public static AttendanceDateTime generateTodayAttendance(final AttendanceTime attendanceTime) {
-        final LocalDate localDate = AttendanceCommandController.FIX_DATE_TIME.toLocalDate();
+        final LocalDate localDate = AttendanceCommandController.SYSTEM_DATE_TIME.toLocalDate();
         final LocalTime localTime = attendanceTime.getLocalTime();
 
         return new AttendanceDateTime(LocalDateTime.of(localDate, localTime));
@@ -49,7 +48,11 @@ public class AttendanceDateTime {
 
     private static LocalDate parseLocalDate(final String inputDate) {
         try {
-            return LocalDate.of(Constants.FIXED_YEAR, Constants.FIXED_MONTH, Integer.parseInt(inputDate));
+            return LocalDate.of(
+                    AttendanceCommandController.FIXED_YEAR,
+                    AttendanceCommandController.FIXED_MONTH,
+                    Integer.parseInt(inputDate)
+            );
         } catch (DateTimeParseException | NumberFormatException e) {
             throw new CustomIllegalArgumentException("올바른 형식이 아닙니다.");
         }
@@ -64,7 +67,7 @@ public class AttendanceDateTime {
     }
 
     private void validateHoliday(final LocalDateTime localDateTime) {
-        if (Constants.HOLIDAYS.contains(localDateTime.getDayOfMonth())) {
+        if (Week.HOLIDAYS.contains(localDateTime.getDayOfMonth())) {
             throw new CustomIllegalArgumentException(
                     String.format(localDateTime.format(Week.NON_SCHOOL_DAY_FORMAT) + "은 등교일이 아닙니다."));
         }

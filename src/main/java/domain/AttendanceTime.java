@@ -4,11 +4,11 @@ import error.CustomIllegalArgumentException;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
-import util.Constants;
 
 public class AttendanceTime {
 
-    private static final DateTimeFormatter TIME_FORMATTER = DateTimeFormatter.ofPattern(Constants.TIME_FORMAT);
+    private static final String TIME_FORMAT = "HH:mm";
+    private static final DateTimeFormatter TIME_FORMATTER = DateTimeFormatter.ofPattern(TIME_FORMAT);
     private final LocalTime localTime;
 
     private AttendanceTime(final LocalTime localTime) {
