@@ -33,11 +33,11 @@ public class AttendanceController {
         SelectionOption answer;
         do {
             answer = inputView.getMenu();
-            startMenu(answer);
+            executeMenu(answer);
         } while (!(answer == SelectionOption.QUIT));
     }
 
-    private void startMenu(SelectionOption answer) {
+    private void executeMenu(SelectionOption answer) {
         if (answer == SelectionOption.ADD_ATTENDANCE) {
             addAttendance();
         }
