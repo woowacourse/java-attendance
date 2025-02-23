@@ -3,12 +3,15 @@ package attendance.domain;
 import java.time.DayOfWeek;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.List;
 
 import attendance.common.exception.AttendanceArgumentException;
 
 public record Attendance(LocalDateTime dateTime, AttendanceStatus attendanceStatus) {
     private static final String CANNOT_ATTENDANCE_WEEKEND_FORMAT = "MM월 dd일 E요일은 등교일이 아닙니다.";
     private static final String OUT_OF_SCHOOL_SCHEDULE = "등교시간에만 출석 가능합니다.";
+
+    private static final List<Integer> datOfHoliday = List.of(25);
 
     public Attendance(LocalDateTime dateTime) {
         this(dateTime, decideAttendanceStatus(dateTime));
@@ -22,7 +25,16 @@ public record Attendance(LocalDateTime dateTime, AttendanceStatus attendanceStat
 
     private static void validate(LocalDateTime dateTime) {
         validateIsWeekend(dateTime);
+        validateIsHoliday(dateTime);
         validateIsDuringCampusSchedule(dateTime);
+    }
+
+    private static void validateIsHoliday(LocalDateTime dateTime) {
+        for (int i : datOfHoliday) {
+            if (dateTime.getDayOfMonth() == i) {
+                throw new AttendanceArgumentException(CANNOT_ATTENDANCE_WEEKEND_FORMAT, dateTime);
+            }
+        }
     }
 
     private static void validateIsWeekend(LocalDateTime dateTime) {
@@ -64,7 +76,7 @@ public record Attendance(LocalDateTime dateTime, AttendanceStatus attendanceStat
     }
 
     private static class Schedule {
-        private static final LocalTime DEFAULT = LocalTime.of(10, 0);
+        private static final LocalTime DEFAULT = java.time.LocalTime.of(10, 0);
         private static final LocalTime MONDAY = LocalTime.of(13, 0);
         private static final LocalTime CAMPUS_OPEN = LocalTime.of(8, 0);
         private static final LocalTime CAMPUS_CLOSE = LocalTime.of(23, 0);
