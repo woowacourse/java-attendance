@@ -5,16 +5,16 @@ public enum StudentPunishment {
     INTERVIEW(3,"면담"),
     DISMISSAL(5,"제적");
 
-    private final int standard;
+    private final int absenceLimit;
     private final String punishmentLabel;
 
-    StudentPunishment(int standard, String punishmentLabel) {
-        this.standard = standard;
+    StudentPunishment(int absenceLimit, String punishmentLabel) {
+        this.absenceLimit = absenceLimit;
         this.punishmentLabel = punishmentLabel;
     }
 
     public int getStandard() {
-        return standard;
+        return absenceLimit;
     }
 
     public String getPunishmentLabel() {
