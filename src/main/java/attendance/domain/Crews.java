@@ -3,25 +3,14 @@ package attendance.domain;
 import attendance.exception.CustomException;
 import attendance.exception.ErrorMessage;
 import java.time.LocalDate;
-import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 public class Crews {
 
     private final Set<Crew> crews;
-
-    private Crews(Set<Crew> crews) {
+    public Crews(final Set<Crew> crews) {
         this.crews = crews;
-    }
-
-    public static Crews fromCrewsFile(List<String> lines) {
-        Set<Crew> crewNames = new HashSet<>();
-        for (String line : lines) {
-            crewNames.add(Crew.from(List.of(line.split(",")).getFirst()));
-        }
-        return new Crews(crewNames);
     }
 
     public Crew findCrew(String crewName) {
@@ -41,6 +30,7 @@ public class Crews {
             register.put(crew, attendanceRegistry);
         }
     }
+
 }
 
 

@@ -4,8 +4,8 @@ import attendance.exception.CustomException;
 import attendance.exception.ErrorMessage;
 import java.time.LocalDate;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -17,9 +17,9 @@ class CrewsTest {
         String crewName1 = "빙봉";
         String crewName2 = "우가";
         String crewName3 = "밍티";
-        List<String> crewNames = List.of(crewName1, crewName2, crewName3);
+        Set<Crew> crewNames = Set.of(Crew.from(crewName1), Crew.from(crewName2), Crew.from(crewName3));
         //when
-        Crews crews = Crews.fromCrewsFile(crewNames);
+        Crews crews = new Crews(crewNames);
 
         //then
         Assertions.assertThat(crews.getCrews()).hasSize(3);
@@ -31,8 +31,8 @@ class CrewsTest {
         String crewName1 = "빙봉";
         String crewName2 = "우가";
         String crewName3 = "밍티";
-        List<String> crewNames = List.of(crewName1, crewName2, crewName3);
-        Crews crews = Crews.fromCrewsFile(crewNames);
+        Set<Crew> crewNames = Set.of(Crew.from(crewName1), Crew.from(crewName2), Crew.from(crewName3));
+        Crews crews = new Crews(crewNames);
 
         //when
         Crew crew = crews.findCrew("우가");
@@ -47,8 +47,8 @@ class CrewsTest {
         String crewName1 = "빙봉";
         String crewName2 = "우가";
         String crewName3 = "밍티";
-        List<String> crewNames = List.of(crewName1, crewName2, crewName3);
-        Crews crews = Crews.fromCrewsFile(crewNames);
+        Set<Crew> crewNames = Set.of(Crew.from(crewName1), Crew.from(crewName2), Crew.from(crewName3));
+        Crews crews = new Crews(crewNames);
 
         //when & then
         Assertions.assertThatThrownBy(() -> crews.findCrew("제프리"))
@@ -62,8 +62,8 @@ class CrewsTest {
         String crewName1 = "빙봉";
         String crewName2 = "우가";
         String crewName3 = "밍티";
-        List<String> crewNames = List.of(crewName1, crewName2, crewName3);
-        Crews crews = Crews.fromCrewsFile(crewNames);
+        Set<Crew> crewNames = Set.of(Crew.from(crewName1), Crew.from(crewName2), Crew.from(crewName3));
+        Crews crews = new Crews(crewNames);
 
         LocalDate now = LocalDate.of(2025, 2, 19);
 

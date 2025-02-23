@@ -8,13 +8,6 @@ import java.util.List;
 import java.util.Map;
 
 public class Register {
-
-    private static final String COMMA = ",";
-    private static final String SPACE = " ";
-    private static final String HYPHEN = "-";
-    private static final int POSITION_ZERO = 0;
-    private static final int POSITION_ONE = 1;
-    private static final int POSITION_TWO = 2;
     private final Map<Crew, AttendanceRegistry> register;
 
     public Register(Crews crews, LocalDate now) {
@@ -40,25 +33,16 @@ public class Register {
         return attendanceRegistry;
     }
 
-    public void fromCrewAttendanceTimeFile(Crews crews, List<String> attendanceTimes) {
-        for (String attendanceTime : attendanceTimes) {
-            String crewName = make(attendanceTime, COMMA, POSITION_ZERO);
-            Crew crew = crews.findCrew(crewName);
-            String dateTime = make(attendanceTime, COMMA, POSITION_ONE);
-            String date = make(dateTime, SPACE, POSITION_ZERO);
-            String timeNumber = make(dateTime, SPACE, POSITION_ONE);
-            int hour = Integer.parseInt(make(timeNumber, ":", POSITION_ZERO));
-            int minute = Integer.parseInt(make(timeNumber, ":", POSITION_ONE));
-            int year = Integer.parseInt(make(date, HYPHEN, POSITION_ZERO));
-            int month = Integer.parseInt(make(date, HYPHEN, POSITION_ONE));
-            int day = Integer.parseInt(make(date, HYPHEN, POSITION_TWO));
-            LocalDateTime localDateTime = LocalDateTime.of(year,month,day,hour,minute);
-            modifyInfo(crew, localDateTime);
+    public void fromCrewAttendanceTimeFile(Map<Crew, List<LocalDateTime>> attendanceTimes) {
+        for (Crew crew : attendanceTimes.keySet()) {
+            modifyAttendanceTimeEachCrew(attendanceTimes, crew);
         }
     }
-    
-    private String make(String standard, String delimiter, int findIndex) {
-        return List.of(standard.split(delimiter)).get(findIndex);
+
+    private void modifyAttendanceTimeEachCrew(Map<Crew, List<LocalDateTime>> attendanceTimes, Crew crew) {
+        for (LocalDateTime localDateTime : attendanceTimes.get(crew)) {
+            modifyInfo(crew, localDateTime);
+        }
     }
 
     public Map<Crew, List<Integer>> findAllExpertRiskCrews() {

@@ -7,6 +7,7 @@ import attendance.domain.AttendanceRegistry;
 import attendance.domain.Register;
 import attendance.domain.constant.CommandOption;
 import attendance.exception.CustomException;
+import attendance.util.AttendanceParser;
 import attendance.util.FileReader;
 import attendance.view.InputView;
 import attendance.view.OutputView;
@@ -28,11 +29,11 @@ public class AttendanceMachine {
     }
 
     public void start() throws IOException {
-        List<String> lines = FileReader.fileReadLine("attendances.csv");
-        Crews crews = Crews.fromCrewsFile(lines);
+        AttendanceParser attendanceParser = new AttendanceParser(FileReader.fileReadLine("attendances.csv"));
+        Crews crews = attendanceParser.getCrews();
         LocalDate now = LocalDate.now(ZoneId.of("Asia/Seoul"));
         Register register = new Register(crews, now);
-        register.fromCrewAttendanceTimeFile(crews, lines);
+        register.fromCrewAttendanceTimeFile(attendanceParser.getAttendanceRecords());
 
         boolean isRunning = true;
         while (isRunning) {
