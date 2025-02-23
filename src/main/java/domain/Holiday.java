@@ -17,14 +17,6 @@ public enum Holiday {
         this.day = day;
     }
 
-    public int getMonth() {
-        return month;
-    }
-
-    public int getDay() {
-        return day;
-    }
-
     public static Holiday from(LocalDate date) {
         return Arrays.stream(values())
             .filter(holiday -> holiday.month == date.getMonthValue() && holiday.day == date.getDayOfMonth())
