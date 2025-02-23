@@ -1,175 +1,103 @@
 package controller;
 
-import domain.AbsentPolicy;
-import domain.AttendanceDateTime;
-import domain.AttendanceSheet;
-import domain.AttendanceSheets;
-import domain.AttendanceState;
+import domain.Attendance;
+import domain.AttendanceBook;
+import domain.AttendanceDate;
+import domain.AttendanceStatistics;
+import domain.AttendanceTime;
+import domain.Attendances;
+import domain.ExpulsionCandidates;
+import domain.rule.AbsentRule;
 import util.FileReaderUtil;
+import util.FormatUtil;
+import util.RepeatUntilUserQuitSelectUtil;
+import util.TimeMachine;
 import view.InputView;
 import view.OutputView;
 
+import java.io.IOException;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 public class AttendanceController {
 
+    private final String dataPath;
     private final InputView inputView;
+    private final OutputView outputView;
 
-    public AttendanceController(InputView inputView) {
+    public AttendanceController(String dataPath, InputView inputView, OutputView outputView) {
+        this.dataPath = dataPath;
         this.inputView = inputView;
+        this.outputView = outputView;
     }
 
-    public void run() {
-        LocalDate date = LocalDate.of(2024, 12, 13);
+    public void run() throws IOException {
+        TimeMachine.timeTravelAt(inputView.inputToday());
 
-        AttendanceSheetsFactory attendanceSheetsFactory = new AttendanceSheetsFactory(new FileReaderUtil());
-        AttendanceSheets attendanceSheets = attendanceSheetsFactory.create();
+        AttendanceBook attendanceBook = AttendanceBook.initialize(FileReaderUtil.read(dataPath));
 
-        while (true) {
-            String select = inputView.inputMenu(LocalDate.now());
+        RepeatUntilUserQuitSelectUtil.repeat(() -> selectMenu(attendanceBook));
+    }
 
-            if (select.equals("1")) {
-                attend(date, attendanceSheets);
-                continue;
+    private Boolean selectMenu(AttendanceBook attendanceBook) {
+        String select = inputView.inputMenu(TimeMachine.dateOfNow()).toUpperCase();
+        switch (select) {
+            case "1" -> attend(attendanceBook);
+            case "2" -> updateAttendance(attendanceBook);
+            case "3" -> displayAttendances(attendanceBook);
+            case "4" -> displayExpulsionCandidates(attendanceBook);
+            case "Q" -> {
+                return false;
             }
-
-            if (select.equals("2")) {
-                updateAttendance(attendanceSheets);
-                continue;
-            }
-
-            if (select.equals("3")) {
-                printAttendance(attendanceSheets, date);
-                continue;
-            }
-
-            if (select.equals("4")) {
-                printRiskOfExpulsion(attendanceSheets);
-                continue;
-            }
-
-            if (select.equals("Q")) {
-                return;
-            }
+            default -> throw new IllegalArgumentException("올바른 기능을 선택해주세요.");
         }
+        return true;
     }
 
-    private void printRiskOfExpulsion(AttendanceSheets attendanceSheets) {
-        List<String> allNames = attendanceSheets.findAllNames();
-
-        OutputView.printRiskOfExpulsionBanner();
-
-        for (String name : allNames) {
-            List<AttendanceSheet> attendanceByNickname = attendanceSheets.findAttendanceByNickname(name);
-
-            int lateCount = getLateCount(attendanceByNickname);
-            int absentCount = getAbsentCount(attendanceByNickname);
-
-            AbsentPolicy absentPolicy = AbsentPolicy.calculateAbsentPolicy(absentCount, lateCount);
-            if (AbsentPolicy.isRiskOfExpulsion(absentPolicy)) {
-                continue;
-            }
-
-            OutputView.printRiskOfExpulsion(name, lateCount, absentCount, absentPolicy);
-        }
-    }
-
-    private void printAttendance(AttendanceSheets attendanceSheets, LocalDate date) {
+    private void attend(AttendanceBook attendanceBook) {
         String nickname = inputView.inputNickname();
+        Attendances attendances = attendanceBook.findAllByNickname(nickname);
 
-        OutputView.printAttendanceSheetIntro(nickname);
+        AttendanceTime attendanceTime = AttendanceTime.from(LocalTime.parse(inputView.inputTime(), FormatUtil.TIME_FORMATTER));
+        AttendanceDate attendanceDate = AttendanceDate.from(TimeMachine.dateOfNow());
 
-        List<AttendanceSheet> attendancesByNickname = attendanceSheets.findAttendanceByNickname(nickname);
-        Map<Integer, AttendanceDateTime> dayToAttendanceDateTime = new HashMap<>();
-        attendancesByNickname.forEach(attendance ->
-                dayToAttendanceDateTime.put(
-                        attendance.getAttendanceDateTime().getAttendanceDateTime().getDayOfMonth(),
-                        attendance.getAttendanceDateTime()));
-
-        OutputView.printAttendanceSheets(dayToAttendanceDateTime, date.getDayOfMonth());
-
-        int attendCount = getAttendCount(attendancesByNickname);
-        int lateCount = getLateCount(attendancesByNickname);
-        int absentCount = getAbsentCount(attendancesByNickname);
-        OutputView.printAttendanceStatistics(attendCount, lateCount, absentCount);
-
-        OutputView.printAbsentPolicy(AbsentPolicy.calculateAbsentPolicy(absentCount, lateCount));
+        Attendance attendance = attendances.add(attendanceDate, attendanceTime);
+        outputView.printAttendance(attendance);
     }
 
-    private void updateAttendance(AttendanceSheets attendanceSheets) {
+    private void updateAttendance(AttendanceBook attendanceBook) {
         String nickname = inputView.inputUpdateNickname();
 
-        List<AttendanceSheet> attendanceByNickname = attendanceSheets.findAttendanceByNickname(nickname);
+        Attendances attendances = attendanceBook.findAllByNickname(nickname);
 
         int day = inputView.inputUpdateDate();
+        AttendanceDate attendanceDate = AttendanceDate.from(LocalDate.of(TimeMachine.dateOfNow().getYear(), TimeMachine.dateOfNow().getMonth(), day));
+        AttendanceTime attendanceTimeForUpdate = AttendanceTime.from(LocalTime.parse(inputView.inputUpdateTime(), FormatUtil.TIME_FORMATTER));
 
-        AttendanceSheet attendanceSheetByNicknameAndDay = attendanceByNickname.stream()
-                .filter(attendanceSheet -> attendanceSheet.getAttendanceDateTime().getAttendanceDateTime().getDayOfMonth() == day)
-                .findFirst()
-                .orElseThrow();
+        Attendance originalAttendance = Attendance.from(
+                AttendanceDate.from(TimeMachine.dateOfNow()), attendances.findByDate(attendanceDate));
+        Attendance updatedAttendance = attendances.update(attendanceDate, attendanceTimeForUpdate);
 
-        String time = inputView.inputUpdateTime();
-        int hour = Integer.parseInt(time.split(":")[0]);
-        int minute = Integer.parseInt(time.split(":")[1]);
-
-        attendanceSheetByNicknameAndDay.getAttendanceDateTime().update(LocalTime.of(hour, minute));
+        outputView.printAttendanceUpdate(originalAttendance, updatedAttendance);
     }
 
-    private void attend(LocalDate date, AttendanceSheets attendanceSheets) {
+    private void displayAttendances(AttendanceBook attendanceBook) {
         String nickname = inputView.inputNickname();
-        String time = inputView.inputTime();
-        int hour = Integer.parseInt(time.split(":")[0]);
-        int minute = Integer.parseInt(time.split(":")[1]);
+        outputView.printAttendanceIntro(nickname);
 
-        LocalDateTime localDateTime = LocalDateTime.of(date.getYear(), date.getMonth(), date.getDayOfMonth(), hour, minute);
-        attendanceSheets.add(new AttendanceSheet(nickname, AttendanceDateTime.from(localDateTime)));
+        Attendances attendances = attendanceBook.findAllByNickname(nickname);
+        outputView.printAttendances(attendances);
+
+        AttendanceStatistics attendanceStatistics = attendances.calculateStatistics(nickname, TimeMachine.dateOfNow());
+        outputView.printAttendanceStatistics(attendanceStatistics);
+
+        AbsentRule absentRule = AbsentRule.calculateAbsentPolicy(attendanceStatistics);
+        outputView.printAbsentPolicy(absentRule);
     }
 
-
-    private int getLateCount(List<AttendanceSheet> attendanceByNickname) {
-        int lateCount = 0;
-
-        for (AttendanceSheet attendanceSheet : attendanceByNickname) {
-            AttendanceState state = attendanceSheet.getAttendanceDateTime().check();
-
-            if (state == AttendanceState.LATE) {
-                lateCount++;
-            }
-        }
-
-        return lateCount;
-    }
-
-    private int getAbsentCount(List<AttendanceSheet> attendanceByNickname) {
-        int absentCount = 0;
-
-        for (AttendanceSheet attendanceSheet : attendanceByNickname) {
-            AttendanceState state = attendanceSheet.getAttendanceDateTime().check();
-
-            if (state == AttendanceState.ABSENT) {
-                absentCount++;
-            }
-        }
-
-        return absentCount;
-    }
-
-    private int getAttendCount(List<AttendanceSheet> attendanceByNickname) {
-        int attendCount = 0;
-
-        for (AttendanceSheet attendanceSheet : attendanceByNickname) {
-            AttendanceState state = attendanceSheet.getAttendanceDateTime().check();
-
-            if (state == AttendanceState.ATTEND) {
-                attendCount++;
-            }
-        }
-
-        return attendCount;
+    private void displayExpulsionCandidates(AttendanceBook attendanceBook) {
+        ExpulsionCandidates expulsionCandidates = attendanceBook.findExpulsionCandidates().orderByExpulsionRiskLevel();
+        outputView.printRiskOfExpulsionBanner();
+        outputView.printExpulsionCandidate(expulsionCandidates);
     }
 }
