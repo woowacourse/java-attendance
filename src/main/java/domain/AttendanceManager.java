@@ -46,17 +46,15 @@ public class AttendanceManager {
     }
 
     public Map<String, StatisticsResult> sortCrew(LocalDate nowDate) {
-        Map<String, StatisticsResult> sortedResult = findWarningCrews(nowDate);
-
-        return sortedResult
-            .entrySet().stream().sorted(Comparator.comparing(
-                    (Map.Entry<String, StatisticsResult> entry) -> entry.getValue().getPenalty(),
-                    Comparator.naturalOrder())
-                .thenComparing(entry -> entry.getValue().getAbsenceCount(),
-                    Comparator.reverseOrder()).thenComparing(Map.Entry::getKey)
-            )
-            .collect(LinkedHashMap::new, (map, entry) -> map.put(entry.getKey(), entry.getValue()),
-                Map::putAll);
+        return findWarningCrews(nowDate)
+            .entrySet().stream()
+            .sorted(Comparator.comparing((Map.Entry<String, StatisticsResult> entry)
+                    -> entry.getValue().getPenalty(), Comparator.naturalOrder())
+                .thenComparing(entry
+                    -> entry.getValue().getAbsenceCount(), Comparator.reverseOrder())
+                .thenComparing(Map.Entry::getKey))
+            .collect(LinkedHashMap::new, (map, entry)
+                -> map.put(entry.getKey(), entry.getValue()), Map::putAll);
     }
 
     public Map<String, StatisticsResult> findWarningCrews(LocalDate nowDate) {
@@ -93,6 +91,7 @@ public class AttendanceManager {
         LocalTime start = DateTimeParser.parseIntegerToTime(CAMPUS_START_HOUR, CAMPUS_START_MINUTE);
         LocalTime end = DateTimeParser.parseIntegerToTime(CAMPUS_END_HOUR, CAMPUS_END_MINUTE);
 
-        return (time.isAfter(start) || time.equals(start)) && (time.isBefore(end) || time.equals(end));
+        return (time.isAfter(start) || time.equals(start)) && (time.isBefore(end) || time.equals(
+            end));
     }
 }
