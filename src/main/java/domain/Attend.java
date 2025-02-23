@@ -19,7 +19,7 @@ public class Attend {
 
     public static Attend fromDay(final int day) {
         OperationTime.validateDay(day);
-        return new Attend(LocalDate.of(2024, 12, day), null);
+        return new Attend(LocalDate.of(Current.YEAR, Current.MONTH, day), null);
     }
 
     public static Attend fromTime(LocalTime time) {

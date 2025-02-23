@@ -9,7 +9,7 @@ public enum Current {
     TODAY(13);
 
     public static final int YEAR = 2024;
-    private static final int MONTH = 12;
+    public static final int MONTH = 12;
 
     private final int day;
 
