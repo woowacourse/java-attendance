@@ -39,14 +39,19 @@ public class Crews {
 
 
     private final Comparator<Crew> punishmentOrder = Comparator
-            .comparingInt((Crew crew) -> getPunishment(crew).getAbsenceCount())
+            .comparingInt(this::getCrewPunishmentAbsenceCount)
             .reversed();
 
-    private static Punishment getPunishment(final Crew crew) {
+    private int getCrewPunishmentAbsenceCount(final Crew crew) {
+        return findPunishment(crew).getAbsenceCount();
+    }
+
+
+    private Punishment findPunishment(final Crew crew) {
         return Punishment.findByAbsenceCount(getAdjustedAbsenceCount(crew));
     }
 
-    private static int getAdjustedAbsenceCount(final Crew crew) {
+    private int getAdjustedAbsenceCount(final Crew crew) {
         return crew.getCrewSummary().
                 adjustedAbsenceCount();
     }
