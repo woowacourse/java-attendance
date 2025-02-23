@@ -8,9 +8,9 @@ import attendance.domain.AttendancePolicy;
 import attendance.domain.AttendanceType;
 import attendance.domain.Crew;
 import attendance.domain.CrewStatus;
-import attendance.domain.dto.AttendanceHistoryDto;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
@@ -106,8 +106,9 @@ public class OutputView {
                 attendanceStatistics.get(LATE), crewStatus.getName()));
     }
 
-    private static void sortDangerousCrews(LocalDate today, List<Crew> dangerousCrews) {
-        dangerousCrews.sort(new Comparator<Crew>() {
+    private static List<Crew> sortDangerousCrews(LocalDate today, List<Crew> dangerousCrews) {
+        ArrayList<Crew> sortedDangerousCrews = new ArrayList<>(dangerousCrews);
+        sortedDangerousCrews.sort(new Comparator<Crew>() {
             @Override
             public int compare(Crew o1, Crew o2) {
                 CrewStatus crewStatus1 = o1.calculateCrewStatus(o1.calculateAttendanceResult(today));
@@ -118,5 +119,6 @@ public class OutputView {
                 return crewStatus2.getOrder() - crewStatus1.getOrder();
             }
         });
+        return sortedDangerousCrews;
     }
 }

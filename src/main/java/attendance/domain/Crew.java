@@ -1,5 +1,7 @@
 package attendance.domain;
 
+import static attendance.domain.CrewStatus.CLEAR;
+
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.Map;
@@ -37,6 +39,12 @@ public class Crew {
 
     public CrewStatus calculateCrewStatus(Map<AttendanceType, Integer> attendanceResult) {
         return attendanceHistoryManager.calculateCrewStatus(attendanceResult);
+    }
+
+    public boolean isCrewStatusNotClear(LocalDate today) {
+        Map<AttendanceType, Integer> attendanceResult = calculateAttendanceResult(today);
+        CrewStatus crewStatus = calculateCrewStatus(attendanceResult);
+        return !crewStatus.equals(CLEAR);
     }
 
     private static void validateName(String name) {
