@@ -16,11 +16,15 @@ import view.OutputView;
 
 public class AttendanceController {
 
-    private static final int DEFAULT_YEAR = 2024;
-    private static final int DEFAULT_MONTH = 12;
-    private static final int DEFAULT_DAY = 13;
+    private static final int ATTENDANCE_YEAR = 2024;
+    private static final int ATTENDANCE_MONTH = 12;
+    private static final int ATTENDANCE_DAY_OF_MONTH = 13;
     private static final String INPUT_DATE_FORMAT = "%04d-%02d-%02d";
     private static final String INPUT_TIME_FORMAT = "%02d:%02d";
+    private static final String TIME_DELIMITER = ":";
+
+    private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+    private static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
 
     private final InputView inputView;
     private final OutputView outputView;
@@ -33,24 +37,21 @@ public class AttendanceController {
     }
 
     public void run() {
-        LocalDate localDate = formatDate();
+        LocalDate nowDate = formatNowDate();
         String functionNumber = "";
+
         do {
-            functionNumber = inputView.printFunction(localDate);
-            if (functionNumber.equals("1")) {
-                attend();
-            }
-            if (functionNumber.equals("2")) {
-                edit();
-            }
-            if (functionNumber.equals("3")) {
-                check();
-            }
-            if (functionNumber.equals("4")) {
-                checkExpelledWarning();
-            }
-            if (!List.of("1", "2", "3", "4", "q", "Q").contains(functionNumber)) {
-                System.out.println("유효하지 않은 번호입니다.");
+            functionNumber = inputView.printFunction(nowDate);
+            switch (functionNumber) {
+                case "1" -> attend();
+                case "2" -> edit();
+                case "3" -> check();
+                case "4" -> checkExpelledWarning();
+                default -> {
+                    if (!List.of("1", "2", "3", "4", "q", "Q").contains(functionNumber)) {
+                        System.out.println("유효하지 않은 번호입니다.");
+                    }
+                }
             }
         } while (!functionNumber.equals("q"));
     }
@@ -59,14 +60,11 @@ public class AttendanceController {
         try {
             String name = inputView.readName();
             attendanceManager.findByName(name);
-            List<String> time = List.of(inputView.readTime().split(":"));
+            List<String> attendTime = List.of(inputView.readTime().split(TIME_DELIMITER));
+            LocalDateTime attendDateTime = formatDateTime(ATTENDANCE_DAY_OF_MONTH, attendTime);
 
-            String dateForm = String.format(INPUT_DATE_FORMAT, DEFAULT_YEAR, DEFAULT_MONTH, DEFAULT_DAY);
-            String timeForm = formatTime(time);
-            LocalDateTime dateTime = formatDateTime(dateForm, timeForm);
-
-            TimeAndStatus timeAndStatus = attendanceManager.attendCrew(name, dateTime);
-            outputView.printAttendanceRecord(dateTime.toLocalDate(), timeAndStatus);
+            TimeAndStatus timeAndStatus = attendanceManager.attendCrew(name, attendDateTime);
+            outputView.printAttendanceRecord(attendDateTime.toLocalDate(), timeAndStatus);
         } catch (IllegalArgumentException e) {
             System.out.println(e.getMessage());
         }
@@ -76,18 +74,14 @@ public class AttendanceController {
         try {
             String name = inputView.readEditName();
             attendanceManager.findByName(name);
-            String dayOfMonth = inputView.readEditDayOfMonth();
-            List<String> time = List.of(inputView.readEditTime().split(":"));
+            int editDayOfMonth = Integer.parseInt(inputView.readEditDayOfMonth());
+            List<String> editTime = List.of(inputView.readEditTime().split(TIME_DELIMITER));
+            LocalDateTime editDateTime = formatDateTime(editDayOfMonth, editTime);
+            LocalDate editDate = editDateTime.toLocalDate();
 
-            String dateForm = String.format(INPUT_DATE_FORMAT, DEFAULT_YEAR, DEFAULT_MONTH,
-                    Integer.parseInt(dayOfMonth));
-            String timeForm = formatTime(time);
-            LocalDateTime localDateTime = formatDateTime(dateForm, timeForm);
-            LocalDate localDate = localDateTime.toLocalDate();
-
-            TimeAndStatus oldTimeAndStatus = attendanceManager.findByName(name).findByDate(localDate);
-            TimeAndStatus newTimeAndStatus = attendanceManager.editCrew(name, localDateTime);
-            outputView.printEditResult(localDate, oldTimeAndStatus, newTimeAndStatus);
+            TimeAndStatus oldTimeAndStatus = attendanceManager.findByName(name).findByDate(editDate);
+            TimeAndStatus newTimeAndStatus = attendanceManager.editCrew(name, editDateTime);
+            outputView.printEditResult(editDate, oldTimeAndStatus, newTimeAndStatus);
         } catch (IllegalArgumentException e) {
             System.out.println(e.getMessage());
         }
@@ -97,43 +91,38 @@ public class AttendanceController {
         try {
             String name = inputView.readName();
             attendanceManager.findByName(name);
-
-            LocalDate localDate = formatDate();
+            LocalDate nowDate = formatNowDate();
             Records records = attendanceManager.findByName(name);
+            StatisticsResult statisticsResult = AttendanceStatistics.countStatus(nowDate, records);
 
-            StatisticsResult statisticsResult = AttendanceStatistics.countStatus(localDate, records);
-
-            int attendanceCount = statisticsResult.getAttendanceCount();
-            int latenessCount = statisticsResult.getLatenessCount();
-            int absenceCount = statisticsResult.getAbsenceCount();
-            Penalty penaltyResult = statisticsResult.getPenalty();
-
-            outputView.printRecords(name, localDate, records);
-            outputView.printStatistics(attendanceCount, latenessCount, absenceCount, penaltyResult);
+            outputView.printRecords(name, nowDate, records);
+            outputView.printStatistics(
+                    statisticsResult.getAttendanceCount(),
+                    statisticsResult.getLatenessCount(),
+                    statisticsResult.getAbsenceCount(),
+                    statisticsResult.getPenalty()
+            );
         } catch (IllegalArgumentException e) {
             System.out.println(e.getMessage());
         }
     }
 
     private void checkExpelledWarning() {
-        LocalDate localDate = formatDate();
+        LocalDate nowDate = formatNowDate();
 
-        Map<String, StatisticsResult> sortedResult = attendanceManager.sortCrew(localDate);
+        Map<String, StatisticsResult> sortedResult = attendanceManager.sortCrew(nowDate);
         outputView.printExpelledWarningResult(sortedResult);
     }
 
-    private String formatTime(List<String> time) {
-        return String.format(INPUT_TIME_FORMAT, Integer.parseInt(time.get(0)), Integer.parseInt(time.get(1)));
+    private LocalDate formatNowDate() {
+        String dateForm = String.format(INPUT_DATE_FORMAT, ATTENDANCE_YEAR, ATTENDANCE_MONTH, ATTENDANCE_DAY_OF_MONTH);
+        return LocalDate.parse(dateForm, DATE_FORMATTER);
     }
 
-    private LocalDate formatDate() {
-        String date = DEFAULT_YEAR + "-" + DEFAULT_MONTH + "-" + DEFAULT_DAY;
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-        return LocalDate.parse(date, formatter);
-    }
-
-    private LocalDateTime formatDateTime(String dateForm, String timeForm) {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
-        return LocalDateTime.parse(dateForm + " " + timeForm, formatter);
+    private LocalDateTime formatDateTime(int dayOfMonth, List<String> time) {
+        String dateForm = String.format(INPUT_DATE_FORMAT, ATTENDANCE_YEAR, ATTENDANCE_MONTH, dayOfMonth);
+        String timeForm = String.format(INPUT_TIME_FORMAT, Integer.parseInt(time.get(0)),
+                Integer.parseInt(time.get(1)));
+        return LocalDateTime.parse(dateForm + " " + timeForm, DATE_TIME_FORMATTER);
     }
 }
