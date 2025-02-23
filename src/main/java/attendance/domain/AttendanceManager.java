@@ -37,6 +37,22 @@ public class AttendanceManager {
         attendances.put(name, newAttendances);
     }
 
+    public Attendance processAttendanceCheck(final LocalDateTime dateTime, final String nickname) {
+        Attendances attendances = findCrewAttendance(nickname);
+        return attendances.checkAndUpdateAttendance(dateTime);
+    }
+
+    public Attendance processAttendanceUpdate(final LocalDateTime dateTime, final String nickname) {
+        Attendances attendances = findCrewAttendance(nickname);
+        return attendances.updateAttendance(dateTime);
+    }
+
+    public void validateNicknameExists(String nickname) {
+        if (!containsNickname(nickname)) {
+            throw new IllegalArgumentException("[ERROR] 등록되지 않은 닉네임입니다.");
+        }
+    }
+
     public WarnedStudents searchWarnedCrews(LocalDate date) {
         Set<String> nicknames = attendances.keySet();
         List<WarnedStudent> responses = nicknames.stream()
