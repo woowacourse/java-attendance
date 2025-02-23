@@ -7,12 +7,13 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.IntStream;
 
-public class Crew implements Comparable<Crew> {
+public class Crew {
     private static final LocalDate CHRISTMAS_DATE = LocalDate.of(2024, 12, 25);
     private final CrewName name;
     private final List<Attendance> attendances;
@@ -81,18 +82,12 @@ public class Crew implements Comparable<Crew> {
         return statistics;
     }
 
-    private Map<AttendanceStatus, Integer> initializeStatistics() {
-        final Map<AttendanceStatus, Integer> statistics = new LinkedHashMap<>();
-        AttendanceStatus.sortedStatus().forEach(status -> statistics.put(status, 0));
-        return statistics;
-    }
-
     public ExpulsionStatus calculateExpulsionStatus() {
-        final int absence = countExpulsionStatus();
+        final int absence = calculateExpulsionCount();
         return ExpulsionStatus.of(absence);
     }
 
-    public int countExpulsionStatus() {
+    public int calculateExpulsionCount() {
         final Map<AttendanceStatus, Integer> statusCount = calculateAttendanceStatistics();
         return statusCount.get(AttendanceStatus.LATE) / 3 + statusCount.get(AttendanceStatus.ABSENCE);
     }
@@ -102,6 +97,21 @@ public class Crew implements Comparable<Crew> {
                 .filter(attendance -> attendance.matchDate(date))
                 .findAny()
                 .orElseThrow(IllegalArgumentException::new);
+    }
+
+    public int compareByExpulsionCount(final Crew c) {
+        final int expulsionCount1 = this.calculateExpulsionCount();
+        final int expulsionCount2 = c.calculateExpulsionCount();
+        if (expulsionCount1 == expulsionCount2) {
+            return this.name.compareTo(c.name);
+        }
+        return Integer.compare(expulsionCount2, expulsionCount1);
+    }
+
+    private Map<AttendanceStatus, Integer> initializeStatistics() {
+        final Map<AttendanceStatus, Integer> statistics = new LinkedHashMap<>();
+        AttendanceStatus.sortedStatus().forEach(status -> statistics.put(status, 0));
+        return statistics;
     }
 
     public CrewName getName() {
@@ -114,16 +124,5 @@ public class Crew implements Comparable<Crew> {
 
     public List<Attendance> getAttendances() {
         return new ArrayList<>(attendances);
-    }
-
-    @Override
-    public int compareTo(final Crew o) {
-        final int count1 = this.countExpulsionStatus();
-        final int count2 = o.countExpulsionStatus();
-        if (count1 != count2) {
-            return count2 - count1;
-        }
-
-        return this.name.compareTo(o.name);
     }
 }

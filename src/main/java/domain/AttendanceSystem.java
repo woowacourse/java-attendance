@@ -68,7 +68,7 @@ public class AttendanceSystem {
     public List<Crew> calculateRiskOfExpulsionCrews() {
         return crews.stream()
                 .filter(this::isRiskOfExpulsionCrew)
-                .sorted()
+                .sorted(Crew::compareByExpulsionCount)
                 .toList();
     }
 

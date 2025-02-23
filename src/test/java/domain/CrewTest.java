@@ -154,7 +154,7 @@ public class CrewTest {
             crew.addAttendance(latedTime2);
             crew.addAttendance(latedTime3);
             crew.addAttendance(absencedTime);
-            final int count = crew.countExpulsionStatus();
+            final int count = crew.calculateExpulsionCount();
 
             //then
             assertThat(count).isEqualTo(2);
