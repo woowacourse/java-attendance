@@ -32,7 +32,7 @@ class FileReaderUtilTest {
 
         // when
         // then
-        assertThatThrownBy(()->FileReaderUtil.read(invalidPath))
+        assertThatThrownBy(() -> FileReaderUtil.read(invalidPath))
                 .isInstanceOf(IOException.class)
                 .hasMessage("출석 데이터를 읽어오는데 실패했습니다: " + invalidPath);
     }
