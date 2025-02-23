@@ -3,7 +3,6 @@ package attendance.domain;
 import java.time.LocalDate;
 import java.time.format.TextStyle;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
 
@@ -16,39 +15,32 @@ public class CrewStatistic {
 
     private final Crew crew;
     private final AttendanceCount attendanceCount;
-    private final List<Attendance> crewAttendances;
+    private final Attendances crewAttendances;
     private CrewStatus status;
 
     public CrewStatistic(Crew crew, List<Attendance> crewAttendances) {
         this.crew = crew;
         this.attendanceCount = new AttendanceCount();
-        this.crewAttendances = crewAttendances;
-        this.status = CrewStatus.NONE;
+        this.crewAttendances = new Attendances(crewAttendances);
     }
 
-    public void initCrewsStatus() {
-        for (Attendance crewAttendance : crewAttendances) {
-            initCrewStatus(crewAttendance);
-        }
+    public void checkCrewStatistic() {
+        resetCrewStatusCount();
+        initCrewsStatusCount();
+        calculatePenalty();
     }
 
-    private void initCrewStatus(Attendance crewAttendance) {
-        if (crewAttendance.getType() == AttendanceType.SAFE) {
-            attendanceCount.incrementSafeCount();
-        }
-        if (crewAttendance.getType() == AttendanceType.LATE) {
-            attendanceCount.incrementLateCount();
-        }
-        if (crewAttendance.getType() == AttendanceType.ABSENT) {
-            attendanceCount.incrementAbsentCount();
-        }
-    }
-
-    public void resetCrewStatus() {
+    private void resetCrewStatusCount() {
         attendanceCount.resetAttendanceCount();
     }
 
-    public void calculatePenalty() {
+    private void initCrewsStatusCount() {
+        for (Attendance crewAttendance : crewAttendances.getAttendances()) {
+            crewAttendance.updateCrewAttendanceCount(attendanceCount);
+        }
+    }
+
+    private void calculatePenalty() {
         int absentCount = attendanceCount.calculatePenalty();
         checkCrewStatus(absentCount);
     }
@@ -68,7 +60,7 @@ public class CrewStatistic {
     }
 
     public List<List<String>> crewAttendanceHistoryInfo() {
-        List<Attendance> sortedAttendances = sortCrewAttendances();
+        List<Attendance> sortedAttendances = crewAttendances.sortCrewAttendances();
         List<List<String>> crewStatisticInfo = new ArrayList<>();
 
         for (Attendance crewAttendance : sortedAttendances) {
@@ -78,12 +70,6 @@ public class CrewStatistic {
             );
         }
         return crewStatisticInfo;
-    }
-
-    private List<Attendance> sortCrewAttendances() {
-        return crewAttendances.stream()
-                .sorted(Comparator.comparing(Attendance::getDate))
-                .toList();
     }
 
     private List<String> createCrewAttendanceInfo(LocalDate crewLocalDate, Attendance crewAttendance) {
