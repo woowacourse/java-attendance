@@ -13,12 +13,21 @@ public class InputView {
         this.scanner = scanner;
     }
 
+    public int inputToday() {
+        System.out.println(ViewMessage.PROMPT_TODAY);
+
+        return Integer.parseInt(scanner.nextLine());
+    }
+
     public String inputMenu(LocalDate today) {
         String koreanDayOfWeek = today.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.KOREAN);
+        System.out.println();
         System.out.printf(ViewMessage.SELECT_MENU_INTRO, today.getMonth().getValue(), today.getDayOfMonth(), koreanDayOfWeek);
-        System.out.println(ViewMessage.SELECT_MENU);
+        System.out.print(ViewMessage.SELECT_MENU);
 
-        return scanner.nextLine();
+        String select = scanner.nextLine();
+        System.out.println();
+        return select;
     }
 
     public String inputNickname() {
@@ -42,7 +51,7 @@ public class InputView {
     public int inputUpdateDate() {
         System.out.println(ViewMessage.UPDATE_DATE);
 
-        return scanner.nextInt();
+        return Integer.parseInt(scanner.nextLine());
     }
 
     public String inputUpdateTime() {
