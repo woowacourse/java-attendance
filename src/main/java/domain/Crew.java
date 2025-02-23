@@ -9,7 +9,7 @@ import java.time.LocalTime;
 import java.util.HashMap;
 import java.util.Map;
 
-import static global.util.DateUtil.TODAY;
+import static global.util.DateUtil.FIXED_REFERENCE_DATE;
 import static global.util.DateUtil.assembleDateAndTime;
 import static global.util.Validator.validateIsFutureDate;
 import static global.util.Validator.validateIsInOperationTime;
@@ -67,7 +67,7 @@ public class Crew {
     private int calculateAbsenceCount() {
         LocalDate localDate = DateUtil.getFirstDateOfMonth();
         int absenceCount = 0;
-        while (!localDate.isAfter(TODAY.toLocalDate())) {
+        while (!localDate.isAfter(FIXED_REFERENCE_DATE.toLocalDate())) {
             if (isNowAbsence(localDate)) {
                 absenceCount++;
             }
@@ -79,7 +79,7 @@ public class Crew {
     private int calculateTardyCount() {
         LocalDate localDate = DateUtil.getFirstDateOfMonth();
         int tardyCount = 0;
-        for (int day = 0; day < TODAY.getDayOfMonth(); day++) {
+        for (int day = 0; day < FIXED_REFERENCE_DATE.getDayOfMonth(); day++) {
             if (isNowTardy(localDate)) {
                 tardyCount++;
             }

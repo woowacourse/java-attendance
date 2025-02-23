@@ -42,7 +42,7 @@ class ValidatorTest {
 
     @Test
     void 미래_날짜라면_예외가_발생한다() {
-        LocalDate future = DateUtil.TODAY.plusDays(3).toLocalDate();
+        LocalDate future = DateUtil.FIXED_REFERENCE_DATE.plusDays(3).toLocalDate();
 
         assertThatThrownBy(() -> Validator.validateIsFutureDate(future))
                 .isInstanceOf(IllegalArgumentException.class);

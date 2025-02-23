@@ -20,7 +20,7 @@ public class OutputView {
         Map<LocalDate, LocalTime> map = crewResponse.attendanceBook();
         LocalDate currentDate = DateUtil.getFirstDateOfMonth();
 
-        while (!currentDate.isAfter(DateUtil.TODAY.toLocalDate())) {
+        while (!currentDate.isAfter(DateUtil.FIXED_REFERENCE_DATE.toLocalDate())) {
             if (DateUtil.isWeekday(currentDate)) {
                 System.out.println(getEachDateAttendanceMessage(currentDate, map));
             }

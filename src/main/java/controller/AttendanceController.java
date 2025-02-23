@@ -11,7 +11,7 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeParseException;
 
-import static global.util.DateUtil.TODAY;
+import static global.util.DateUtil.FIXED_REFERENCE_DATE;
 import static global.util.DateUtil.assembleDateAndTime;
 import static global.util.Validator.validateIsFutureDate;
 import static global.util.Validator.validateIsNotWorkingDay;
@@ -49,7 +49,7 @@ public class AttendanceController {
 
     public void selectMenu(String menu) {
         if (menu.equals("1")) {
-            validateIsNotWorkingDay(TODAY.toLocalDate());
+            validateIsNotWorkingDay(FIXED_REFERENCE_DATE.toLocalDate());
             attendCrew();
             return;
         }
@@ -81,10 +81,10 @@ public class AttendanceController {
     public void attendCrew() {
         String name = inputView.inputName();
         Crew crew = crews.findCrewByName(name);
-        crew.validateAvailableAttendanceDate(TODAY.toLocalDate());
+        crew.validateAvailableAttendanceDate(FIXED_REFERENCE_DATE.toLocalDate());
         LocalTime time = LocalTime.parse(inputView.inputAttendTime());
-        crew.addAttendStatus(assembleDateAndTime(TODAY.toLocalDate(), time));
-        outputView.printAttendDateAttendanceMessage(TODAY.toLocalDate(), crews.createCrewResponse(crew).attendanceBook());
+        crew.addAttendStatus(assembleDateAndTime(FIXED_REFERENCE_DATE.toLocalDate(), time));
+        outputView.printAttendDateAttendanceMessage(FIXED_REFERENCE_DATE.toLocalDate(), crews.createCrewResponse(crew).attendanceBook());
     }
 
     private void editAttend() {

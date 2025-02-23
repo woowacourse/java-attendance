@@ -10,7 +10,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Scanner;
 
-import static global.util.DateUtil.TODAY;
+import static global.util.DateUtil.FIXED_REFERENCE_DATE;
 
 public class InputView {
     Scanner scanner;
@@ -26,7 +26,8 @@ public class InputView {
                 2. 출석 수정
                 3. 크루별 출석 기록 확인
                 4. 제적 위험자 확인
-                Q. 종료""", TODAY.getMonth().getValue(), TODAY.getDayOfMonth(), ViewUtil.getDayOfWeekToMessage(TODAY.getDayOfWeek())));
+                Q. 종료""", FIXED_REFERENCE_DATE.getMonth().getValue(), FIXED_REFERENCE_DATE.getDayOfMonth(), ViewUtil.getDayOfWeekToMessage(
+                FIXED_REFERENCE_DATE.getDayOfWeek())));
     }
 
     public String inputByMessage(String message) {

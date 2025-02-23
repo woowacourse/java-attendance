@@ -6,12 +6,12 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 
 public class DateUtil {
-    public static LocalDateTime TODAY = LocalDateTime.of(LocalDate.of(2024, 12, 17),
+    public static final LocalDateTime FIXED_REFERENCE_DATE = LocalDateTime.of(LocalDate.of(2024, 12, 17),
             LocalTime.of(10, 30, 00));
     public static final LocalDate CHRISTMAS = LocalDate.of(2024, 12, 25);
 
     public static LocalDate getFirstDateOfMonth() {
-        return TODAY.toLocalDate()
+        return FIXED_REFERENCE_DATE.toLocalDate()
                 .withDayOfMonth(1);
     }
 
@@ -32,7 +32,7 @@ public class DateUtil {
     }
 
     public static LocalDate getDateByInputDay(int day) {
-        return LocalDate.of(TODAY.getYear(), TODAY.getMonth(), day);
+        return LocalDate.of(FIXED_REFERENCE_DATE.getYear(), FIXED_REFERENCE_DATE.getMonth(), day);
     }
 
     public static boolean isMonday(LocalDate targetDate) {
