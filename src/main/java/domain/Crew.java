@@ -1,7 +1,6 @@
 package domain;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
@@ -20,7 +19,7 @@ public class Crew {
         return this.attendanceStatuses;
     }
 
-    public boolean getExpelStatus(AttendanceTimes attendanceTimes) {
+    public boolean isExpelled(AttendanceTimes attendanceTimes) {
         countAttendanceStatus(attendanceTimes);
         return ExpelStatus.determineExpelStatus(this.attendanceStatuses) != ExpelStatus.NONE;
     }

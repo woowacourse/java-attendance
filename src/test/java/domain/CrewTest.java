@@ -21,7 +21,7 @@ public class CrewTest {
         AttendanceTimes attendanceTimes = new AttendanceTimes(attendanceDateTimes, LocalDate.of(2024, 12, 10));
 
         Crew crew = new Crew("메이");
-        Assertions.assertThat(crew.getExpelStatus(attendanceTimes)).isEqualTo(true);
+        Assertions.assertThat(crew.isExpelled(attendanceTimes)).isEqualTo(true);
     }
 
     @Test
@@ -36,6 +36,8 @@ public class CrewTest {
         AttendanceTimes attendanceTimes = new AttendanceTimes(attendanceDateTimes, LocalDate.of(2024, 12, 10));
 
         Crew crew = new Crew("메이");
-        Assertions.assertThat(crew.getExpelStatus(attendanceTimes)).isEqualTo(false);
+        Assertions.assertThat(crew.isExpelled(attendanceTimes)).isEqualTo(false);
     }
+
+
 }

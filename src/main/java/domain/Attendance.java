@@ -46,7 +46,7 @@ public class Attendance {
         List<String> expelledCrew = new ArrayList<>();
 
         this.attendance.keySet().stream()
-                .filter(crew -> crew.getExpelStatus(this.attendance.get(crew)))
+                .filter(crew -> crew.isExpelled(this.attendance.get(crew)))
                 .forEach(crew -> expelledCrew.add(crew.getName()));
 
         return expelledCrew;

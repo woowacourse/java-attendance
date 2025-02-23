@@ -18,7 +18,7 @@ public enum MenuOption {
         this.option = option;
     }
 
-    public static MenuOption getMenuOption(String command) {
+    public static MenuOption findByCommand(String command) {
         return Arrays.stream(MenuOption.values())
                 .filter(option -> option.getCommand().equals(command))
                 .findAny()

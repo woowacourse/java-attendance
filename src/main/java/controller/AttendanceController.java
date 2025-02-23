@@ -45,7 +45,7 @@ public class AttendanceController {
         MenuOption menuOption;
         do {
             String option = getOptionInput(nowDate);
-            menuOption = MenuOption.getMenuOption(option);
+            menuOption = MenuOption.findByCommand(option);
             process(menuOption, attendance, nowDate);
         } while (!menuOption.equals(MenuOption.QUIT));
     }

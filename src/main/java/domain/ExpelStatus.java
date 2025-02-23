@@ -27,10 +27,10 @@ public enum ExpelStatus {
     public static ExpelStatus determineExpelStatus(Map<AttendanceStatus, Integer> attendanceStatuses) {
         int lateCount = attendanceStatuses.get(AttendanceStatus.LATE);
         int absentCount = lateCount / CampusConstant.LATE_TO_ABSENT_UNIT + attendanceStatuses.get(AttendanceStatus.ABSENT) + attendanceStatuses.get(AttendanceStatus.UNATTEND);
-        return getExpelStatus(absentCount);
+        return findByAbsentCount(absentCount);
     }
 
-    private static ExpelStatus getExpelStatus(int absentCount) {
+    private static ExpelStatus findByAbsentCount(int absentCount) {
         if (absentCount >= EXPULSION_THRESHOLD) {
             return EXPULSION;
         }

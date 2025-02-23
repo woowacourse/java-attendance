@@ -14,7 +14,7 @@ public class MenuOptionTest {
     @ParameterizedTest
     @MethodSource("generateOption")
     void 메뉴_변환(String input, MenuOption expected) {
-        Assertions.assertThat(MenuOption.getMenuOption(input))
+        Assertions.assertThat(MenuOption.findByCommand(input))
                 .isEqualTo(expected);
     }
 
@@ -30,7 +30,7 @@ public class MenuOptionTest {
 
     @Test
     void 존재하지_않는_메뉴_입력() {
-        assertThatThrownBy(() -> MenuOption.getMenuOption("1번"))
+        assertThatThrownBy(() -> MenuOption.findByCommand("1번"))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 }
