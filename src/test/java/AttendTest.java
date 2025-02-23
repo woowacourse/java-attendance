@@ -2,7 +2,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
 import domain.Attend;
-import domain.Current;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.stream.Stream;
@@ -35,19 +34,12 @@ public class AttendTest {
     void testAttendCreateUsingDate() {
         //given
         int targetDay = 3;
-        Attend attend = Attend.fromDay(targetDay);
 
         //when
-        var day = attend.getDay();
-        var hour = attend.getHour();
-        var minute = attend.getMinute();
+        Attend attend = Attend.fromDay(targetDay);
 
         //then
-        assertAll(
-                () -> assertThat(day).isEqualTo(targetDay),
-                () -> assertThat(hour).isEqualTo(0),
-                () -> assertThat(minute).isEqualTo(0)
-        );
+        assertThat(attend.getDay()).isEqualTo(3);
     }
 
     @Test
@@ -55,19 +47,12 @@ public class AttendTest {
     void testAttendCreateUsingTime() {
         //given
         LocalTime targetTime = LocalTime.of(9, 59, 0);
-        Attend attend = Attend.fromTime(targetTime);
 
         //when
-        var day = attend.getDay();
-        var hour = attend.getHour();
-        var minute = attend.getMinute();
+        Attend attend = Attend.fromTime(targetTime);
 
         //then
-        assertAll(
-                () -> assertThat(day).isEqualTo(Current.TODAY.getDay()),
-                () -> assertThat(hour).isEqualTo(9),
-                () -> assertThat(minute).isEqualTo(59)
-        );
+        assertThat(attend.isEqual(targetTime)).isTrue();
     }
 
     @Test
@@ -83,8 +68,7 @@ public class AttendTest {
         //then
         assertAll(
                 () -> assertThat(result.getDay()).isEqualTo(3),
-                () -> assertThat(result.getHour()).isEqualTo(9),
-                () -> assertThat(result.getMinute()).isEqualTo(59)
+                () -> assertThat(result.isEqual(time)).isTrue()
         );
     }
 

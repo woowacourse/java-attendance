@@ -50,7 +50,7 @@ public class Attend {
     }
 
     public boolean isDayEqual(final int day) {
-        return this.date.getDayOfMonth() == day;
+        return getDay() == day;
     }
 
     public boolean isBefore(final LocalTime targetTime) {
@@ -79,20 +79,6 @@ public class Attend {
 
     public int getDay() {
         return this.date.getDayOfMonth();
-    }
-
-    public int getHour() {
-        if (!hasTime()) {
-            return 0;
-        }
-        return this.time.getHour();
-    }
-
-    public int getMinute() {
-        if (!hasTime()) {
-            return 0;
-        }
-        return this.time.getMinute();
     }
 
     @Override
