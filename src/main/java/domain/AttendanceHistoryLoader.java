@@ -15,11 +15,11 @@ public class AttendanceHistoryLoader {
     private final DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
     private final DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm");
 
-    public Crews loadCrews() {
+    public Crews loadCrews(FileReader fileReader) {
         Crews crews = new Crews();
         Map<String, Crew> crewMap = new HashMap<>();
 
-        try (BufferedReader reader = new BufferedReader(new FileReader("src/main/resources/attendances.csv"))) {
+        try (BufferedReader reader = new BufferedReader(fileReader)) {
             skipHeader(reader);
             loadAttendanceHistory(reader, crewMap, crews);
         } catch (IOException e) {
