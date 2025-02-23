@@ -2,7 +2,7 @@ package controller;
 
 import static util.Convertor.changeStandardDate;
 
-import constants.SelectionOption;
+import domain.SelectionOption;
 import domain.AbsenceLevel;
 import domain.Crew;
 import domain.Crews;

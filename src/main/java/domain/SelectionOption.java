@@ -1,4 +1,4 @@
-package constants;
+package domain;
 
 import java.util.Arrays;
 
@@ -8,6 +8,7 @@ public enum SelectionOption {
     GET_ATTENDANCE_HISTORY("3"),
     CHECK_ABSENCE_USERS("4"),
     QUIT("Q");
+
     private final String option;
 
     SelectionOption(String option) {
