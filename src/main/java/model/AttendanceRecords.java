@@ -105,4 +105,9 @@ public class AttendanceRecords {
         }
         return clonedMap;
     }
+
+    public Map<LocalDate, AttendanceRecord> getRecord() {
+        return record;
+    }
+
 }
