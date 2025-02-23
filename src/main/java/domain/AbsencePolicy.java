@@ -11,11 +11,11 @@ public enum AbsencePolicy {
 
     private static final int ABSENCE_CONVERSION_RATE = 3;
 
-    private final int value;
+    private final int lateCount;
     private final String description;
 
-    AbsencePolicy(int value, String description) {
-        this.value = value;
+    AbsencePolicy(int lateCount, String description) {
+        this.lateCount = lateCount;
         this.description = description;
     }
 
@@ -23,13 +23,9 @@ public enum AbsencePolicy {
         int totalAbsentCount = absentCount + (lateCount / ABSENCE_CONVERSION_RATE);
 
         return Stream.of(DISMISSED, INTERVIEW, WARNING)
-                .filter(policy -> totalAbsentCount >= policy.value)
+                .filter(policy -> totalAbsentCount >= policy.lateCount)
                 .findFirst()
                 .map(policy -> policy.description)
                 .orElse(PASS.description);
-    }
-
-    public int getValue() {
-        return value;
     }
 }
