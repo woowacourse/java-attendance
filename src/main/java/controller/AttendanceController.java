@@ -5,6 +5,7 @@ import domain.Attendance;
 import domain.AttendanceStatus;
 import domain.AttendanceTime;
 import domain.AttendanceTimes;
+import domain.Campus;
 import domain.MenuOption;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -73,7 +74,7 @@ public class AttendanceController {
     }
 
     private void checkAttendance(Attendance attendance, LocalDate nowDate) {
-        attendance.validateCampusOpenDate(nowDate);
+        Campus.validateCampusOpenDate(nowDate);
 
         String nickName = processNickNameInput(attendance);
         repeatExecutor.repeatUntilSuccess(() -> {

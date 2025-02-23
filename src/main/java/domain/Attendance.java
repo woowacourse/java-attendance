@@ -1,7 +1,6 @@
 package domain;
 
 import constant.CampusConstant;
-import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -9,7 +8,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import util.DayOfWeekConvertor;
 
 public class Attendance {
 
@@ -27,23 +25,19 @@ public class Attendance {
         this.crews = new Crews(crews);
     }
 
-    public boolean isClosed(LocalDate date) {
-        return date.getDayOfWeek() == DayOfWeek.SATURDAY || date.getDayOfWeek() == DayOfWeek.SUNDAY || date.isEqual(CampusConstant.CHRISTMAS);
-    }
-
     public AttendanceTimes getAttendanceTimes(String name) {
         return this.attendance.get(this.crews.findCrew(name));
     }
 
     public void attend(String crewName, LocalDateTime attendanceDateTime) {
         validateAttended(crewName, attendanceDateTime);
-        validateOpenHours(attendanceDateTime);
+        Campus.validateOpenHours(attendanceDateTime);
         this.attendance.get(this.crews.findCrew(crewName)).addAttendance(new AttendanceTime(attendanceDateTime));
     }
 
     public void edit(String crewName, int attendanceDay, LocalTime newAttendanceTime) {
         LocalDateTime newAttendanceDateTime = LocalDateTime.of(CampusConstant.YEAR, CampusConstant.DECEMBER_MONTH, attendanceDay, newAttendanceTime.getHour(), newAttendanceTime.getMinute());
-        validateOpenHours(newAttendanceDateTime);
+        Campus.validateOpenHours(newAttendanceDateTime);
         AttendanceTime attendanceTime = findAttendanceTime(crewName, LocalDate.of(CampusConstant.YEAR, CampusConstant.DECEMBER_MONTH, attendanceDay));
         attendanceTime.updateAttendanceDateTime(newAttendanceTime);
     }
@@ -67,13 +61,6 @@ public class Attendance {
         this.crews.findCrew(nickName);
     }
 
-    public void validateCampusOpenDate(LocalDate nowDate) {
-        if (isClosed(nowDate)) {
-            throw new IllegalArgumentException(String.format("[ERROR] %d월 %d일 %s요일은 등교일이 아닙니다.", nowDate.getMonthValue(), nowDate.getDayOfMonth(),
-                    DayOfWeekConvertor.convertDayOfWeekToKorean(nowDate.getDayOfWeek())));
-        }
-    }
-
     public int getAbsentCount(String nickName) {
         return this.attendance.get(this.crews.findCrew(nickName)).getAbsentCount();
     }
@@ -90,15 +77,6 @@ public class Attendance {
     private void validateAttended(String crewName, LocalDateTime attendanceDateTime) {
         if (checkAttended(crewName, attendanceDateTime.toLocalDate())) {
             throw new IllegalArgumentException("[ERROR] 이미 출석했습니다. 수정 기능을 이용하세요.");
-        }
-    }
-
-    private void validateOpenHours(LocalDateTime attendanceDateTime) {
-        LocalTime attendanceTime = attendanceDateTime.toLocalTime();
-        LocalTime openHour = CampusConstant.CAMPUS_OPEN_TIME;
-        LocalTime closeHour = CampusConstant.CAMPUS_CLOSE_TIME;
-        if (attendanceTime.isBefore(openHour) || attendanceTime.isAfter(closeHour)) {
-            throw new IllegalArgumentException("[ERROR] 캠퍼스 운영 시간이 아닙니다.");
         }
     }
 

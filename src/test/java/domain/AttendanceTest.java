@@ -26,11 +26,6 @@ public class AttendanceTest {
     }
 
     @Test
-    void 캠퍼스_운영_날짜_확인() {
-        assertThat(attendance.isClosed(LocalDate.of(2024, 12, 25))).isEqualTo(true);
-    }
-
-    @Test
     void 크루의_출석_기능() {
         String crewName = "이든";
         LocalDateTime attendanceTime = LocalDateTime.of(2024, 12, 16, 9, 59, 0);
