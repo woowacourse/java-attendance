@@ -1,5 +1,8 @@
 package domain;
 
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import java.time.LocalDateTime;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
@@ -8,7 +11,7 @@ import org.junit.jupiter.api.Test;
 class AttendanceTest {
     @DisplayName("출석 시간이 5분 이하면 출석이다")
     @Test
-    void test1() {
+    void attendancePresentTest() {
         LocalDateTime originalTime = LocalDateTime.of(2024, 12, 2, 13, 0);
         Attendance attendance = new Attendance(originalTime);
         Assertions.assertSame(attendance.calculateAttendanceStatus(), AttendanceStatus.PRESENT);
@@ -16,7 +19,7 @@ class AttendanceTest {
 
     @DisplayName("출석 시간이 5분 초과, 30분 이하면 지각이다")
     @Test
-    void test2() {
+    void attendanceLateTest() {
         LocalDateTime originalTime = LocalDateTime.of(2024, 12, 2, 13, 6);
         Attendance attendance = new Attendance(originalTime);
         Assertions.assertSame(attendance.calculateAttendanceStatus(), AttendanceStatus.LATE);
@@ -24,36 +27,23 @@ class AttendanceTest {
 
     @DisplayName("출석 시간이 30분 초과면 결석한다")
     @Test
-    void test3() {
+    void attendanceAbsentTest() {
         LocalDateTime originalTime = LocalDateTime.of(2024, 12, 2, 13, 31);
         Attendance attendance = new Attendance(originalTime);
         Assertions.assertSame(attendance.calculateAttendanceStatus(), AttendanceStatus.ABSENT);
     }
 
+    @DisplayName("int형 정수와 날짜의 dayOfMonth가 같으면 true, 다르면 false를 반환합니다.")
     @Test
-    void test4() {
+    void isSameDayTest() {
         LocalDateTime day = LocalDateTime.of(2024, 12, 2, 13, 0);
         int sameDay = 2;
+        int differentDay = 10;
 
         Attendance attendance = new Attendance(day);
-        Assertions.assertTrue(attendance.isSameDay(sameDay));
-    }
-
-    @Test
-    void test5() {
-        LocalDateTime day = LocalDateTime.of(2024, 12, 2, 13, 0);
-        int sameDay = 10;
-
-        Attendance attendance = new Attendance(day);
-        Assertions.assertFalse(attendance.isSameDay(sameDay));
-    }
-
-    @Test
-    void test6() {
-        LocalDateTime day = LocalDateTime.of(2024, 12, 2, 13, 0);
-        int sameDay = 2;
-
-        Attendance attendance = new Attendance(day);
-        Assertions.assertEquals(sameDay, attendance.getDay());
+        Assertions.assertAll(
+                () -> Assertions.assertTrue(attendance.isSameDay(sameDay)),
+                () -> Assertions.assertFalse(attendance.isSameDay(differentDay))
+                );
     }
 }
