@@ -2,47 +2,23 @@ package domain;
 
 import java.time.LocalDate;
 import java.time.YearMonth;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
 
 public class Crew {
-    private static final Integer LATE_COUNT_FOR_ABSENT = 3;
 
     private final String nickName;
-    private List<Attendance> attendances;
+    private final Attendances attendances;
 
     public Crew(String nickName) {
         this.nickName = nickName;
-        this.attendances = new ArrayList<>();
+        this.attendances = new Attendances();
     }
 
     public CrewDto toDto() {
-        return new CrewDto(nickName, calculateLateCount(), calculateAbsentCount(), getPenaltyStatus());
+        return new CrewDto(nickName, attendances);
     }
 
     public void addAttendance(Attendance attendance) {
-        attendances.add(attendance);
-    }
-
-    private PenaltyStatus getPenaltyStatus() {
-        return PenaltyStatus.getInstance(calculateNonAttendanceCount());
-    }
-
-    private Integer calculateNonAttendanceCount() {
-        return calculateAbsentCount() + calculateLateCount() / LATE_COUNT_FOR_ABSENT;
-    }
-
-    private Integer calculateLateCount() {
-        return (int) attendances.stream()
-                .filter(attendance -> attendance.getLate().equals(true))
-                .count();
-    }
-
-    private Integer calculateAbsentCount() {
-        return (int) attendances.stream()
-                .filter(attendance -> attendance.getAbsent().equals(true))
-                .count();
+        attendances.addAttendance(attendance);
     }
 
     public Boolean isEqualTo(String nickname) {
@@ -50,23 +26,11 @@ public class Crew {
     }
 
     public Boolean isAlreadyAttend(LocalDate date) {
-        for (Attendance attendance : attendances) {
-            if (attendance.isEqualTo(date)) {
-                return true;
-            }
-        }
-        return false;
+        return attendances.isAlreadyAttended(date);
     }
 
     public void recordAbsence() {
-        LocalDate today = LocalDate.now();
-
-        today.withDayOfMonth(1)
-                .datesUntil(today)
-                .filter(date -> date.getDayOfWeek().getValue() < 6)
-                .filter(date -> !Holiday.isHoliday(date))
-                .filter(date -> !isAlreadyAttend(date))
-                .forEach(date -> addAttendance(new Attendance(new Day(date), null)));
+        attendances.recordAbsence();
     }
 
 
@@ -76,10 +40,7 @@ public class Crew {
 
         int month = today.getMonth().getValue();
         LocalDate date = LocalDate.of(today.getYear(), month, dayOfMonth);
-        return attendances.stream()
-                .filter(attendance -> attendance.isEqualTo(date))
-                .findFirst()
-                .orElseThrow(() -> new IllegalArgumentException("[ERROR] 해당 날짜는 출석일이 아닙니다."));
+        return attendances.findByDate(date);
     }
 
 
@@ -88,12 +49,5 @@ public class Crew {
         if (dayOfMonth < 1 || dayOfMonth > yearMonth.lengthOfMonth()) {
             throw new IllegalArgumentException("[ERROR] 존재하지 않는 날짜입니다.");
         }
-    }
-
-    public List<Attendance> getAttendances() {
-        attendances.sort(
-                Comparator.comparing((Attendance attendance) -> attendance.toDto().getDate())
-        );
-        return List.copyOf(attendances);
     }
 }
