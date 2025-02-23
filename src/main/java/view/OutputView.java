@@ -3,7 +3,7 @@ package view;
 import domain.AttendanceStatus;
 import domain.RiskStatus;
 import dto.CrewResponse;
-import global.util.DateUtil;
+import global.util.Date;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -18,10 +18,10 @@ public class OutputView {
     public void printCrewAttendanceRecord(CrewResponse crewResponse) {
         System.out.printf("이번 달 %s의 출석 기록입니다.\n", crewResponse.name());
         Map<LocalDate, LocalTime> map = crewResponse.attendanceBook();
-        LocalDate currentDate = DateUtil.getFirstDateOfMonth();
+        LocalDate currentDate = Date.getFirstDateOfMonth();
 
-        while (!currentDate.isAfter(DateUtil.TODAY.toLocalDate())) {
-            if (DateUtil.isWeekday(currentDate)) {
+        while (!currentDate.isAfter(Date.TODAY.toLocalDate())) {
+            if (Date.isWeekday(currentDate)) {
                 System.out.println(getEachDateAttendanceMessage(currentDate, map));
             }
             currentDate = currentDate.plusDays(1);
@@ -77,7 +77,7 @@ public class OutputView {
                     ViewUtil.getDayOfWeekToMessage(currentDate.getDayOfWeek()), ViewUtil.getNoneAttendanceMessage(), getAttendanceStatusMessage(AttendanceStatus.ABSENCE));
         }
         LocalTime attendTime = map.get(currentDate);
-        AttendanceStatus attendanceStatus = AttendanceStatus.attend(DateUtil.assembleDateAndTime(currentDate, attendTime));
+        AttendanceStatus attendanceStatus = AttendanceStatus.attend(Date.assembleDateAndTime(currentDate, attendTime));
         return String.format("%d월 %02d일 %s %s (%s)", currentDate.getMonthValue(), currentDate.getDayOfMonth(),
                 ViewUtil.getDayOfWeekToMessage(currentDate.getDayOfWeek()), attendTime, getAttendanceStatusMessage(attendanceStatus));
     }

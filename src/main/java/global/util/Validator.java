@@ -7,7 +7,7 @@ import java.time.LocalTime;
 
 public class Validator {
     public static void validateIsNotWorkingDay(LocalDate targetDate) {
-        if (DateUtil.isNotWorkingDay(targetDate)) {
+        if (Date.isNotWorkingDay(targetDate)) {
             String errorMessage = String.format("%d월 %02d일 %s은 등교일이 아닙니다.", targetDate.getMonthValue(), targetDate.getDayOfMonth(),
                     ViewUtil.getDayOfWeekToMessage(targetDate.getDayOfWeek()));
             throw new IllegalArgumentException(errorMessage);
@@ -21,7 +21,7 @@ public class Validator {
     }
 
     public static void validateIsFutureDate(LocalDate targetDate) {
-        if (targetDate.isAfter(DateUtil.TODAY.toLocalDate())) {
+        if (targetDate.isAfter(Date.TODAY.toLocalDate())) {
             throw new IllegalArgumentException("미래 날짜는 출석할 수 없습니다.");
         }
     }

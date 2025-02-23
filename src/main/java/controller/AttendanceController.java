@@ -3,7 +3,7 @@ package controller;
 import domain.AttendanceStatus;
 import domain.Crew;
 import domain.Crews;
-import global.util.DateUtil;
+import global.util.Date;
 import view.InputView;
 import view.OutputView;
 
@@ -11,8 +11,8 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeParseException;
 
-import static global.util.DateUtil.TODAY;
-import static global.util.DateUtil.assembleDateAndTime;
+import static global.util.Date.TODAY;
+import static global.util.Date.assembleDateAndTime;
 import static global.util.Validator.validateIsFutureDate;
 import static global.util.Validator.validateIsNotWorkingDay;
 
@@ -90,10 +90,10 @@ public class AttendanceController {
     private void editAttend() {
         String name = inputView.inputEditCrewName();
         Crew crew = crews.findCrewByName(name);
-        LocalDate date = DateUtil.getDateByInputDay(Integer.parseInt(inputView.inputEditDay()));
+        LocalDate date = Date.getDateByInputDay(Integer.parseInt(inputView.inputEditDay()));
         validateIsFutureDate(date);
         LocalTime beforeTime = crew.getAttendanceTime(date);
-        AttendanceStatus beforAttendanceStatus = crew.getAttendanceStatusByDate(DateUtil.assembleDateAndTime(date, beforeTime));
+        AttendanceStatus beforAttendanceStatus = crew.getAttendanceStatusByDate(Date.assembleDateAndTime(date, beforeTime));
         LocalTime time = LocalTime.parse(inputView.inputEditTime());
         AttendanceStatus afterAttendanceStatus = crew.editAttendStatus(assembleDateAndTime(date, time));
         LocalTime afterTime = crew.getAttendanceTime(date);

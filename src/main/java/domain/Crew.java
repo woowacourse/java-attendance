@@ -1,7 +1,7 @@
 package domain;
 
 import dto.CrewResponse;
-import global.util.DateUtil;
+import global.util.Date;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -9,8 +9,8 @@ import java.time.LocalTime;
 import java.util.HashMap;
 import java.util.Map;
 
-import static global.util.DateUtil.TODAY;
-import static global.util.DateUtil.assembleDateAndTime;
+import static global.util.Date.TODAY;
+import static global.util.Date.assembleDateAndTime;
 import static global.util.Validator.validateIsFutureDate;
 import static global.util.Validator.validateIsInOperationTime;
 
@@ -60,12 +60,12 @@ public class Crew {
     private int calculateAttendanceCount() {
         return (int) attendanceBook.entrySet()
                 .stream()
-                .filter(e -> AttendanceStatus.attend(DateUtil.assembleDateAndTime(e.getKey(), e.getValue())) == (AttendanceStatus.ATTENDANCE)
+                .filter(e -> AttendanceStatus.attend(Date.assembleDateAndTime(e.getKey(), e.getValue())) == (AttendanceStatus.ATTENDANCE)
                 ).count();
     }
 
     private int calculateAbsenceCount() {
-        LocalDate localDate = DateUtil.getFirstDateOfMonth();
+        LocalDate localDate = Date.getFirstDateOfMonth();
         int absenceCount = 0;
         while (!localDate.isAfter(TODAY.toLocalDate())) {
             if (isNowAbsence(localDate)) {
@@ -77,7 +77,7 @@ public class Crew {
     }
 
     private int calculateTardyCount() {
-        LocalDate localDate = DateUtil.getFirstDateOfMonth();
+        LocalDate localDate = Date.getFirstDateOfMonth();
         int tardyCount = 0;
         for (int day = 0; day < TODAY.getDayOfMonth(); day++) {
             if (isNowTardy(localDate)) {
@@ -89,7 +89,7 @@ public class Crew {
     }
 
     private boolean isNowAbsence(LocalDate localDate) {
-        if (!attendanceBook.containsKey(localDate) && DateUtil.isWeekday(localDate)) {
+        if (!attendanceBook.containsKey(localDate) && Date.isWeekday(localDate)) {
             return true;
         }
         if (!attendanceBook.containsKey(localDate)) {

@@ -1,6 +1,6 @@
 package domain;
 
-import global.util.DateUtil;
+import global.util.Date;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -16,11 +16,11 @@ public enum AttendanceStatus {
 
         LocalTime attendanceTime = LocalTime.of(10, 0);
         LocalTime targetTime = target.toLocalTime();
-        if (DateUtil.isNotWorkingDay(targetDate)) {
+        if (Date.isNotWorkingDay(targetDate)) {
             throw new IllegalArgumentException();
         }
 
-        if (DateUtil.isMonday(targetDate)) {
+        if (Date.isMonday(targetDate)) {
             attendanceTime = LocalTime.of(13, 0);
         }
         return getAttendanceStatusByTime(attendanceTime, targetTime);
