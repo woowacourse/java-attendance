@@ -1,7 +1,6 @@
 package attendance.domain;
 
 import attendance.domain.constant.AttendanceStatus;
-import attendance.domain.constant.Weekday;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -43,11 +42,11 @@ class DateInfosTest {
         AttendanceRegistry dateInfos = AttendanceRegistry.fromDefaultValue(now);
 
         //when
-        DateInfo dateInfo = dateInfos.findByDate(19);
+        AttendanceChecker attendanceChecker = dateInfos.findByDate(19);
 
         //then
-        Assertions.assertThat(dateInfo.getLocalDateTime().getMonthValue()).isEqualTo(2);
-        Assertions.assertThat(dateInfo.getLocalDateTime().getDayOfMonth()).isEqualTo(19);
+        Assertions.assertThat(attendanceChecker.getLocalDateTime().getMonthValue()).isEqualTo(2);
+        Assertions.assertThat(attendanceChecker.getLocalDateTime().getDayOfMonth()).isEqualTo(19);
     }
 
     @ParameterizedTest
@@ -59,9 +58,9 @@ class DateInfosTest {
         List<String> timeNumbers = List.of(time.split(":"));
         LocalDateTime localDateTime = LocalDateTime.of(year, month, day, Integer.parseInt(timeNumbers.get(0)), Integer.parseInt(timeNumbers.get(1)));
 
-        DateInfo dateInfo = DateInfo.of(localDateTime);
+        AttendanceChecker attendanceChecker = AttendanceChecker.of(localDateTime);
 
-        AttendanceRegistry attendanceRegistry = AttendanceRegistry.from(List.of(dateInfo));
+        AttendanceRegistry attendanceRegistry = AttendanceRegistry.from(List.of(attendanceChecker));
 
         //when
         attendanceRegistry.calculateAttendanceHistory();

@@ -8,51 +8,51 @@ import java.util.List;
 
 public class AttendanceRegistry {
 
-    private final List<DateInfo> dateInfos;
+    private final List<AttendanceChecker> attendanceCheckers;
     private int absence;
     private int late;
     private int attendance;
 
-    private AttendanceRegistry(List<DateInfo> dateInfos) {
-        this.dateInfos = dateInfos;
+    private AttendanceRegistry(List<AttendanceChecker> attendanceCheckers) {
+        this.attendanceCheckers = attendanceCheckers;
     }
 
     public static AttendanceRegistry fromDefaultValue(LocalDate now) {
-        List<DateInfo> dateInfos = makeDefaultDateInfos(now);
-        return new AttendanceRegistry(dateInfos);
+        List<AttendanceChecker> attendanceCheckers = makeDefaultDateInfos(now);
+        return new AttendanceRegistry(attendanceCheckers);
     }
 
-    public static AttendanceRegistry from(List<DateInfo> dateInfos) {
-        return new AttendanceRegistry(dateInfos);
+    public static AttendanceRegistry from(List<AttendanceChecker> attendanceCheckers) {
+        return new AttendanceRegistry(attendanceCheckers);
     }
 
     public void calculateAttendanceHistory() {
         int absence = 0;
         int late = 0;
         int attendance = 0;
-        for (DateInfo dateInfo : dateInfos) {
-            absence += dateInfo.isAbsence();
-            late += dateInfo.isLate();
-            attendance += dateInfo.isAttendance();
+        for (AttendanceChecker attendanceChecker : attendanceCheckers) {
+            absence += attendanceChecker.isAbsence();
+            late += attendanceChecker.isLate();
+            attendance += attendanceChecker.isAttendance();
         }
         this.absence = absence;
         this.late = late;
         this.attendance = attendance;
     }
 
-    private static List<DateInfo> makeDefaultDateInfos(LocalDate now) {
-        List<DateInfo> dateInfos = new ArrayList<>();
+    private static List<AttendanceChecker> makeDefaultDateInfos(LocalDate now) {
+        List<AttendanceChecker> attendanceCheckers = new ArrayList<>();
         for (int day = 1; day <= now.getDayOfMonth(); day++) {
             LocalDate currentDay = LocalDate.of(now.getYear(), now.getMonthValue(), day);
-            addWeekdayDateInfo(currentDay, dateInfos);
+            addWeekdayDateInfo(currentDay, attendanceCheckers);
         }
-        return dateInfos;
+        return attendanceCheckers;
     }
 
-    private static void addWeekdayDateInfo(LocalDate currentDay, List<DateInfo> dateInfos) {
+    private static void addWeekdayDateInfo(LocalDate currentDay, List<AttendanceChecker> attendanceCheckers) {
         if (checkHoliday(currentDay)) return;
 
-        dateInfos.add(DateInfo.makeDefaultValue(currentDay.getYear(),currentDay.getMonthValue(),
+        attendanceCheckers.add(AttendanceChecker.makeDefaultValue(currentDay.getYear(),currentDay.getMonthValue(),
                 currentDay.getDayOfMonth()));
     }
 
@@ -60,20 +60,20 @@ public class AttendanceRegistry {
         return currentDay.getDayOfWeek().getValue() >= 6;
     }
 
-    public DateInfo findByDate(int date) {
-        return dateInfos.stream().filter(dateInfo -> dateInfo.getLocalDateTime().getDayOfMonth() == date)
+    public AttendanceChecker findByDate(int date) {
+        return attendanceCheckers.stream().filter(dateInfo -> dateInfo.getLocalDateTime().getDayOfMonth() == date)
                 .findFirst()
                 .orElseThrow();
     }
 
     public int findStatusCounts(AttendanceStatus attendanceStatus) {
-        return (int) dateInfos.stream()
+        return (int) attendanceCheckers.stream()
                 .filter(dateInfo -> dateInfo.getAttendanceStatus().equals(attendanceStatus.getName()))
                 .count();
     }
 
-    public List<DateInfo> getDateInfos() {
-        return Collections.unmodifiableList(dateInfos);
+    public List<AttendanceChecker> getDateInfos() {
+        return Collections.unmodifiableList(attendanceCheckers);
     }
 
     public int getAbsence() {

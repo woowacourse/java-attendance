@@ -15,14 +15,14 @@ public class Register {
         crews.register(register, now);
     }
 
-    public DateInfo modifyInfo(Crew crew, LocalDateTime localDateTime) {
+    public AttendanceChecker modifyInfo(Crew crew, LocalDateTime localDateTime) {
         AttendanceRegistry attendanceRegistry = register.get(crew);
-        DateInfo dateInfo = attendanceRegistry.findByDate(localDateTime.getDayOfMonth());
-        dateInfo.modifyAttendanceTime(localDateTime);
-        return dateInfo;
+        AttendanceChecker attendanceChecker = attendanceRegistry.findByDate(localDateTime.getDayOfMonth());
+        attendanceChecker.modifyAttendanceTime(localDateTime);
+        return attendanceChecker;
     }
 
-    public DateInfo findInfo(Crew crew, LocalDateTime modifyDate) {
+    public AttendanceChecker findInfo(Crew crew, LocalDateTime modifyDate) {
         AttendanceRegistry attendanceRegistry = register.get(crew);
         return attendanceRegistry.findByDate(modifyDate.getDayOfMonth());
     }

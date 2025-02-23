@@ -1,14 +1,12 @@
 package attendance.view;
 
 import attendance.domain.Crew;
-import attendance.domain.DateInfo;
+import attendance.domain.AttendanceChecker;
 import attendance.domain.AttendanceRegistry;
 import attendance.domain.constant.CrewStatus;
 import attendance.domain.constant.Weekday;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -17,16 +15,17 @@ import java.util.Map.Entry;
 import java.util.Set;
 
 public class OutputView {
-    public void writeAttendanceCheck(DateInfo dateInfo) {
-        String month = addZero(dateInfo.getLocalDateTime().getMonthValue());
-        String day = addZero(dateInfo.getLocalDateTime().getDayOfMonth());
-        String dayOfWeek = Weekday.from(dateInfo.getLocalDateTime().getDayOfWeek()).getDayOfWeek();
-        String time = convertZeroToHyphen(dateInfo.getLocalDateTime().getHour(), dateInfo.getLocalDateTime().getMinute());
-        String status = dateInfo.getAttendanceStatus();
+    public void writeAttendanceCheck(AttendanceChecker attendanceChecker) {
+        String month = addZero(attendanceChecker.getLocalDateTime().getMonthValue());
+        String day = addZero(attendanceChecker.getLocalDateTime().getDayOfMonth());
+        String dayOfWeek = Weekday.from(attendanceChecker.getLocalDateTime().getDayOfWeek()).getDayOfWeek();
+        String time = convertZeroToHyphen(
+                attendanceChecker.getLocalDateTime().getHour(), attendanceChecker.getLocalDateTime().getMinute());
+        String status = attendanceChecker.getAttendanceStatus();
         System.out.println(String.format("%s월 %s일 %s %s (%s)", month, day, dayOfWeek, time, status));
     }
 
-    public void writeAttendanceModifyCheck(int beforeHour, int beforeMinute, String beforeStatus, DateInfo modifiedInfo) {
+    public void writeAttendanceModifyCheck(int beforeHour, int beforeMinute, String beforeStatus, AttendanceChecker modifiedInfo) {
         String month = addZero(modifiedInfo.getLocalDateTime().getMonthValue());
         String day = addZero(modifiedInfo.getLocalDateTime().getDayOfMonth());
         String dayOfWeek = Weekday.from(modifiedInfo.getLocalDateTime().getDayOfWeek()).getDayOfWeek();
@@ -38,8 +37,8 @@ public class OutputView {
 
     public void writeAttendanceHistory(Crew crew, AttendanceRegistry attendanceRegistry) {
         System.out.println(String.format("이번 달 %s의 출석 기록입니다.", crew.getCrewName()));
-        for (DateInfo dateInfo : attendanceRegistry.getDateInfos()) {
-            writeAttendanceCheck(dateInfo);
+        for (AttendanceChecker attendanceChecker : attendanceRegistry.getDateInfos()) {
+            writeAttendanceCheck(attendanceChecker);
         }
         System.out.println();
         System.out.println(String.format("출석: %d회", attendanceRegistry.getAttendance()));

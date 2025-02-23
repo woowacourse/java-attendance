@@ -4,23 +4,23 @@ import attendance.domain.constant.AttendanceStatus;
 import attendance.domain.constant.Weekday;
 import java.time.LocalDateTime;
 
-public class DateInfo {
+public class AttendanceChecker {
 
     private LocalDateTime localDateTime;
     private AttendanceStatus attendanceStatus;
 
-    private DateInfo(LocalDateTime localDateTime) {
+    private AttendanceChecker(LocalDateTime localDateTime) {
         this.localDateTime = localDateTime;
         this.attendanceStatus = calculateStatus();
     }
 
-    public static DateInfo of(LocalDateTime localDateTime) {
-        return new DateInfo(localDateTime);
+    public static AttendanceChecker of(LocalDateTime localDateTime) {
+        return new AttendanceChecker(localDateTime);
     }
 
-    public static DateInfo makeDefaultValue(int year, int month, int day) {
+    public static AttendanceChecker makeDefaultValue(int year, int month, int day) {
         LocalDateTime dateTime = LocalDateTime.of(year, month, day, 0, 0);
-        return new DateInfo(dateTime);
+        return new AttendanceChecker(dateTime);
     }
 
     public void modifyAttendanceTime(LocalDateTime localDateTime) {

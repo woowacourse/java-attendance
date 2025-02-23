@@ -2,7 +2,7 @@ package attendance.controller;
 
 import attendance.domain.Crew;
 import attendance.domain.Crews;
-import attendance.domain.DateInfo;
+import attendance.domain.AttendanceChecker;
 import attendance.domain.AttendanceRegistry;
 import attendance.domain.Register;
 import attendance.domain.constant.CommandOption;
@@ -83,11 +83,11 @@ public class AttendanceMachine {
         int modifyDate = readModifyDay();
         List<String> modifyTime = List.of(findModifyTime().split(":"));
         LocalDateTime localDateTime = LocalDateTime.of(now.getYear(), now.getMonthValue(), modifyDate, Integer.parseInt(modifyTime.getFirst()), Integer.parseInt(modifyTime.getLast()));
-        DateInfo beforeInfo = register.findInfo(crew, localDateTime);
+        AttendanceChecker beforeInfo = register.findInfo(crew, localDateTime);
         int beforeHour = beforeInfo.getLocalDateTime().getHour();
         int beforeMinute = beforeInfo.getLocalDateTime().getMinute();
         String beforeStatus = beforeInfo.getAttendanceStatus();
-        DateInfo modifiedInfo = register.modifyInfo(crew, localDateTime);
+        AttendanceChecker modifiedInfo = register.modifyInfo(crew, localDateTime);
         outputView.writeAttendanceModifyCheck(beforeHour, beforeMinute, beforeStatus, modifiedInfo);
     }
 
@@ -95,9 +95,9 @@ public class AttendanceMachine {
         Crew crew = findCrew(crews);
         List<String> attendanceTime = List.of(findAttendanceTime().split(":"));
         LocalDateTime localDateTime = now.atTime(Integer.parseInt(attendanceTime.getFirst()), Integer.parseInt(attendanceTime.getLast()));
-        DateInfo dateInfo = DateInfo.of(localDateTime);
+        AttendanceChecker attendanceChecker = AttendanceChecker.of(localDateTime);
         register.modifyInfo(crew, localDateTime);
-        outputView.writeAttendanceCheck(dateInfo);
+        outputView.writeAttendanceCheck(attendanceChecker);
     }
 
     private Crew findCrew(Crews crews) {

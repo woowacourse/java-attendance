@@ -7,7 +7,7 @@ import org.assertj.core.api.Assertions;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
-class DateInfoTest {
+class AttendanceCheckerTest {
 
     @ParameterizedTest
     @CsvSource(value = {"2025,2,19,10:31,결석",
@@ -19,10 +19,10 @@ class DateInfoTest {
         LocalDateTime localDateTime = LocalDateTime.of(year, month, day, Integer.parseInt(timeNumbers.get(0)),
                 Integer.parseInt(timeNumbers.get(1)));
         Weekday weekday = Weekday.from(localDateTime.getDayOfWeek());
-        DateInfo dateInfo = DateInfo.of(localDateTime);
+        AttendanceChecker attendanceChecker = AttendanceChecker.of(localDateTime);
 
         //when
-        String attendanceStatus = dateInfo.getAttendanceStatus();
+        String attendanceStatus = attendanceChecker.getAttendanceStatus();
 
         //then
         Assertions.assertThat(attendanceStatus).isEqualTo(expectedStatus);
@@ -44,12 +44,12 @@ class DateInfoTest {
                 Integer.parseInt(beforeTimeNumbers.get(0)), Integer.parseInt(beforeTimeNumbers.get(1)));
         LocalDateTime affterLocalDateTime = LocalDateTime.of(year, month, day,
                 Integer.parseInt(afterTimeNumbers.get(0)), Integer.parseInt(afterTimeNumbers.get(1)));
-        DateInfo dateInfo = DateInfo.of(beforeLocalDateTime);
+        AttendanceChecker attendanceChecker = AttendanceChecker.of(beforeLocalDateTime);
         //when
-        dateInfo.modifyAttendanceTime(affterLocalDateTime);
+        attendanceChecker.modifyAttendanceTime(affterLocalDateTime);
 
         //then
-        Assertions.assertThat(dateInfo.getAttendanceStatus()).isEqualTo(expectedStatus);
+        Assertions.assertThat(attendanceChecker.getAttendanceStatus()).isEqualTo(expectedStatus);
     }
 
 
@@ -61,10 +61,10 @@ class DateInfoTest {
         LocalDateTime localDateTime = LocalDateTime.of(year, month, day, Integer.parseInt(timeNumbers.get(0)),
                 Integer.parseInt(timeNumbers.get(1)));
 
-        DateInfo dateInfo = DateInfo.of(localDateTime);
+        AttendanceChecker attendanceChecker = AttendanceChecker.of(localDateTime);
 
         //when & then
-        Assertions.assertThat(dateInfo.isAbsence()).isEqualTo(expectedStatus);
+        Assertions.assertThat(attendanceChecker.isAbsence()).isEqualTo(expectedStatus);
     }
 
 
@@ -76,10 +76,10 @@ class DateInfoTest {
         LocalDateTime localDateTime = LocalDateTime.of(year, month, day, Integer.parseInt(timeNumbers.get(0)),
                 Integer.parseInt(timeNumbers.get(1)));
 
-        DateInfo dateInfo = DateInfo.of(localDateTime);
+        AttendanceChecker attendanceChecker = AttendanceChecker.of(localDateTime);
 
         //when & then
-        Assertions.assertThat(dateInfo.isLate()).isEqualTo(expectedStatus);
+        Assertions.assertThat(attendanceChecker.isLate()).isEqualTo(expectedStatus);
     }
 
     @ParameterizedTest
@@ -90,8 +90,8 @@ class DateInfoTest {
         LocalDateTime localDateTime = LocalDateTime.of(year, month, day, Integer.parseInt(timeNumbers.get(0)),
                 Integer.parseInt(timeNumbers.get(1)));
 
-        DateInfo dateInfo = DateInfo.of(localDateTime);
+        AttendanceChecker attendanceChecker = AttendanceChecker.of(localDateTime);
         //when & then
-        Assertions.assertThat(dateInfo.isAttendance()).isEqualTo(expectedStatus);
+        Assertions.assertThat(attendanceChecker.isAttendance()).isEqualTo(expectedStatus);
     }
 }
