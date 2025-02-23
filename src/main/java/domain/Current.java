@@ -6,24 +6,24 @@ import java.util.List;
 import java.util.stream.IntStream;
 
 public enum Current {
-    TODAY(2024, 12, 13);
+    TODAY(12, 13);
 
-    public static final int CHRISTMAS = 25;
+    public static final int YEAR = 2024;
 
     private final int year;
     private final int month;
     private final int day;
 
-    Current(final int year, final int month, final int day) {
-        this.year = year;
+    Current(final int month, final int day) {
+        this.year = YEAR;
         this.month = month;
         this.day = day;
     }
 
     public static boolean isDayOff(int day) {
-        LocalDate targetDate = LocalDate.of(2024, 12, day);
+        LocalDate targetDate = LocalDate.of(YEAR, 12, day);
         return targetDate.getDayOfWeek().getValue() >= DayOfWeek.SATURDAY.getValue()
-                || targetDate.getDayOfMonth() == CHRISTMAS;
+                || Holiday.isHoliday(targetDate);
     }
 
     public List<Integer> getAttendUntilDay() {

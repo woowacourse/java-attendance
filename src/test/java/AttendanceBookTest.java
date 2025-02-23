@@ -10,6 +10,7 @@ import domain.AttendanceResult;
 import domain.AttendanceResults;
 import domain.Attends;
 import domain.Current;
+import domain.Holiday;
 import domain.WarningCrew;
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -28,7 +29,7 @@ public class AttendanceBookTest {
     private static Stream<Arguments> provideDateAndTime() {
         return Stream.of(
                 Arguments.of(LocalDate.of(2024, 12, 1), LocalTime.of(10, 0)),
-                Arguments.of(LocalDate.of(2024, 12, Current.CHRISTMAS), LocalTime.of(10, 0))
+                Arguments.of(Holiday.CHRISTMAS.getLocalDate(), LocalTime.of(10, 0))
         );
     }
 

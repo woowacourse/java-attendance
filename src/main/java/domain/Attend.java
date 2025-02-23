@@ -30,7 +30,7 @@ public class Attend {
 
     public boolean isDayOff() {
         return this.date.getDayOfWeek().getValue() >= DayOfWeek.SATURDAY.getValue()
-                || this.date.getDayOfMonth() == Current.CHRISTMAS;
+                || Holiday.isHoliday(this.date);
     }
 
     public boolean isTimeOff(LocalTime startTime, LocalTime endTime) {
