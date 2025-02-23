@@ -7,7 +7,6 @@ import domain.AttendanceResult;
 import domain.AttendanceResults;
 import domain.WarningCrew;
 import domain.WarningStatus;
-import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 
@@ -52,7 +51,7 @@ public class OutputView {
 
         // 경고 메시지 출력
         WarningStatus warningStatus = attendCount.judgeWarning();
-        String warningMessage = formatWarningStatus(warningStatus);
+        String warningMessage = WarningMessage.formatWarningStatus(warningStatus);
         System.out.println(warningMessage);
     }
 
@@ -75,28 +74,12 @@ public class OutputView {
                 + "결석: %d회", attendCount.attend(), attendCount.late(), attendCount.absence());
     }
 
-    private String formatWarningStatus(WarningStatus warningStatus) {
-        return Arrays.stream(WarningMessage.values())
-                .filter(warningMessage -> warningMessage.match(warningStatus))
-                .findAny()
-                .orElseThrow(() -> new IllegalArgumentException("경고 대상자 판정에 실패함"))
-                .getLongMessage();
-    }
-
     private String formatWarningCrew(WarningCrew warningCrew) {
         WarningStatus warningStatus = warningCrew.attendCount().judgeWarning();
         return String.format("- %s: 결석 %d회, 지각 %d회 (%s)"
                 , warningCrew.name()
                 , warningCrew.attendCount().absence()
                 , warningCrew.attendCount().late()
-                , formatWarningStatusShort(warningStatus));
-    }
-
-    private String formatWarningStatusShort(WarningStatus warningStatus) {
-        return Arrays.stream(WarningMessage.values())
-                .filter(warningMessage -> warningMessage.match(warningStatus))
-                .findAny()
-                .orElseThrow(() -> new IllegalArgumentException("경고 판정에 실패함"))
-                .getMessage();
+                , WarningMessage.formatWarningStatusShort(warningStatus));
     }
 }
