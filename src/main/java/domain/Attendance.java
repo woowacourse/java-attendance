@@ -22,6 +22,14 @@ public class Attendance {
         }
     }
 
+    public Boolean getLate() {
+        return isLate;
+    }
+
+    public Boolean getAbsent() {
+        return isAbsent;
+    }
+
     public Boolean isEqualTo(LocalDate date) {
         return day.isEqualTo(date);
     }

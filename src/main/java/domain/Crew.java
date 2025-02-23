@@ -35,13 +35,13 @@ public class Crew {
 
     private Integer calculateLateCount() {
         return (int) attendances.stream()
-                .filter(attendance -> attendance.toDto().getLate().equals(true))
+                .filter(attendance -> attendance.getLate().equals(true))
                 .count();
     }
 
     private Integer calculateAbsentCount() {
         return (int) attendances.stream()
-                .filter(attendance -> attendance.toDto().getAbsent().equals(true))
+                .filter(attendance -> attendance.getAbsent().equals(true))
                 .count();
     }
 
