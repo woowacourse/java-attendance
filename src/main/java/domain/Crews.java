@@ -26,14 +26,9 @@ public class Crews {
         addAttendStatus(name, target);
     }
 
-    public void addAttendStatus(final String name, final LocalDateTime target) {
+    private void addAttendStatus(final String name, final LocalDateTime target) {
         Crew crew = findCrewByName(name);
         crew.addAttendStatus(target);
-    }
-
-    public void editAttendStatus(final String name, final LocalDateTime target) {
-        Crew crew = findCrewByName(name);
-        crew.editAttendStatus(target);
     }
 
     public LocalTime getAttendanceTime(final String name, final LocalDate date) {
