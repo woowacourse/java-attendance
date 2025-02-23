@@ -12,8 +12,11 @@ public record Attendance(LocalDateTime dateTime, AttendanceStatus attendanceStat
     }
 
     static AttendanceStatus decideAttendanceStatus(LocalDateTime dateTime) {
-        var date = dateTime.toLocalDate();
         var time = dateTime.toLocalTime();
+        if (time.isAfter(defaultSchedule.plusMinutes(30))) {
+            return AttendanceStatus.ABSENCE;
+        }
+
         if (time.isAfter(defaultSchedule.plusMinutes(5))) {
             return AttendanceStatus.LATE;
         }

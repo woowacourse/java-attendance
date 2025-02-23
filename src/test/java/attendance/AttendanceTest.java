@@ -33,9 +33,13 @@ public class AttendanceTest {
     }
 
     @Test
-    @DisplayName("출석 시간보다 30분 초과되어 출석할 때, 결석 처리된다.")
+    @DisplayName("출석 시간보다 30분 초과되어 출석할 때, 결석 처리한다.")
     void test_attendanceOfAbsence() {
+        var time = LocalDateTime.of(2024, 12, 14, 10, 31);
+        var attendance = new Attendance(time);
 
+        Assertions.assertThat(attendance.attendanceStatus())
+            .isEqualTo(AttendanceStatus.ABSENCE);
     }
 
     @Test
