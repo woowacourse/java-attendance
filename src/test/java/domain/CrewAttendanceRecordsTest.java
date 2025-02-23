@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Test;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
+import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -123,12 +124,46 @@ class CrewAttendanceRecordsTest {
     }
 
     @Test
-    @DisplayName("제적 위험자 리스트를 반환한다.")
+    @DisplayName("제적 위험자 리스트를 제적, 면담, 경고 대상 순으로 반환한다.")
     void getWarnedCrewsTest() {
-        CrewAttendanceRecords crewAttendanceRecords = new CrewAttendanceRecords(new CsvParsingGenerator(), () -> LocalDate.of(2024, 12, 13));
-        List<Crew> actualCrews = crewAttendanceRecords.getWarnedCrews();
-        List<Crew> expected = List.of(new Crew("빙티"), new Crew("이든"), new Crew("빙봉"), new Crew("쿠키"));
+        class TestCrewAttendanceRecordsGenerator implements CrewAttendanceRecordsGenerator {
+            @Override
+            public Map<Crew, AttendanceRecords> generate(DateGenerator dateGenerator) {
+                Crew crew1 = new Crew("포비");
+                AttendanceRecords crew1Records = new AttendanceRecords();
+                crew1Records.addRecord(AttendanceRecord.parse("2024-12-02 13:00"));
+                crew1Records.addRecord(AttendanceRecord.parse("2024-12-03 10:00"));
+                crew1Records.addRecord(AttendanceRecord.parse("2024-12-04 14:00"));
+                crew1Records.addRecord(AttendanceRecord.parse("2024-12-05 14:00"));
+                crew1Records.addRecord(AttendanceRecord.parse("2024-12-06 10:00"));
+                crew1Records.addRecord(AttendanceRecord.parse("2024-12-09 13:10"));
 
-        assertThat(actualCrews).isEqualTo(expected);
+                Crew crew2 = new Crew("네오");
+                AttendanceRecords crew2Records = new AttendanceRecords();
+                crew2Records.addRecord(AttendanceRecord.parse("2024-12-02 14:00"));
+                crew2Records.addRecord(AttendanceRecord.parse("2024-12-03 14:00"));
+                crew2Records.addRecord(AttendanceRecord.parse("2024-12-04 14:00"));
+                crew2Records.addRecord(AttendanceRecord.parse("2024-12-05 14:00"));
+                crew2Records.addRecord(AttendanceRecord.parse("2024-12-06 14:00"));
+                crew2Records.addRecord(AttendanceRecord.parse("2024-12-09 14:00"));
+
+                Crew crew3 = new Crew("솔라");
+                AttendanceRecords crew3Records = new AttendanceRecords();
+                crew3Records.addRecord(AttendanceRecord.parse("2024-12-02 14:00"));
+                crew3Records.addRecord(AttendanceRecord.parse("2024-12-03 10:10"));
+                crew3Records.addRecord(AttendanceRecord.parse("2024-12-04 14:00"));
+                crew3Records.addRecord(AttendanceRecord.parse("2024-12-05 14:00"));
+                crew3Records.addRecord(AttendanceRecord.parse("2024-12-06 14:00"));
+                crew3Records.addRecord(AttendanceRecord.parse("2024-12-09 13:00"));
+
+                return Map.of(crew1, crew1Records, crew2, crew2Records, crew3, crew3Records);
+            }
+        }
+
+        CrewAttendanceRecords crewAttendanceRecords = new CrewAttendanceRecords(new TestCrewAttendanceRecordsGenerator(), () -> LocalDate.of(2024, 12, 14));
+        List<Crew> actualCrews = crewAttendanceRecords.getWarnedCrews();
+        List<Crew> expectedCrews = List.of(new Crew("네오"), new Crew("솔라"), new Crew("포비"));
+
+        assertThat(actualCrews).isEqualTo(expectedCrews);
     }
 }
