@@ -15,7 +15,7 @@ import java.time.format.TextStyle;
 import java.util.List;
 import java.util.Locale;
 import service.AttendanceService;
-import view.Function;
+import view.FeatureType;
 import view.InputView;
 import view.OutputView;
 
@@ -30,21 +30,54 @@ public class AttendanceController {
 
     public void run() {
         try {
-            readConfigFile();
-            today = InputView.readToday();
-            while (true) {
-                OutputView.printTodayMessage(SERVICE_ABLE_MONTH, today,
-                        DayOfWeek.of(new AttendanceDate(today).getDayOfWeek())
-                                .getDisplayName(TextStyle.FULL, Locale.KOREAN));
-                Function function = InputView.readOption();
-                if (function == Function.QUIT) {
-                    break;
-                }
-                runFunction(function);
-            }
+            configProgram();
+            startProgram();
         } catch (Exception exception) {
             OutputView.printErrorMessage(exception.getMessage());
         }
+    }
+
+    public void runFeature(FeatureType featureType) {
+        if (featureType == FeatureType.APPLY_ATTENDANCE) {
+            applyAttendance();
+            return;
+        }
+        if (featureType == FeatureType.EDIT_ATTENDANCE) {
+            editAttendance();
+            return;
+        }
+        if (featureType == FeatureType.CHECK_ATTENDANCE_OF_CREW) {
+            checkAttendanceOfCrew();
+            return;
+        }
+        if (featureType == FeatureType.CHECK_WARNING_CREW) {
+            checkWarningCrew();
+            return;
+        }
+    }
+
+    private void configProgram() throws FileNotFoundException {
+        readConfigFile();
+        today = InputView.readToday();
+    }
+
+    private void startProgram() {
+        while (true) {
+            printTodayMessage();
+            FeatureType featureType = InputView.readFeatureType();
+            if (featureType == FeatureType.QUIT) {
+                break;
+            }
+
+            runFeature(featureType);
+        }
+    }
+
+    private void printTodayMessage() {
+        DayOfWeek dayOfWeek = DayOfWeek.of(AttendanceDate.getDayOfWeek(today));
+        String parsedDayOfWeek = dayOfWeek.getDisplayName(TextStyle.FULL, Locale.KOREAN);
+
+        OutputView.printTodayMessage(SERVICE_ABLE_MONTH, today, parsedDayOfWeek);
     }
 
     private void readConfigFile() throws FileNotFoundException {
@@ -55,23 +88,6 @@ public class AttendanceController {
         attendanceService.initializeAttendanceHistories(attendanceRequestDtos);
     }
 
-    public void runFunction(Function function) {
-        if (function == Function.APPLY_ATTENDANCE) {
-            applyAttendance();
-            return;
-        }
-        if (function == Function.EDIT_ATTENDANCE) {
-            editAttendance();
-            return;
-        }
-        if (function == Function.CHECK_ATTENDANCE_OF_CREW) {
-            checkAttendanceOfCrew();
-            return;
-        }
-        if (function == Function.CHECK_WARNING_CREW) {
-            checkWarningCrew();
-        }
-    }
 
     private void applyAttendance() {
         if (validateDayForApply(today)) {
@@ -129,15 +145,13 @@ public class AttendanceController {
     private AttendanceDateTime getAttendanceDateTime(int day) {
         AttendanceTimeDto attendanceTimeDto = InputView.readAttendanceTime();
 
-        return AttendanceDateTime.of(day, attendanceTimeDto.hour(),
-                attendanceTimeDto.minute());
+        return AttendanceDateTime.of(day, attendanceTimeDto.hour(), attendanceTimeDto.minute());
     }
 
     private AttendanceDateTime getAttendanceDateTimeWillEditHistory() {
         int day = InputView.readDay();
         AttendanceTimeDto attendanceTimeDto = InputView.readAttendanceTimeWillEditHistory();
 
-        return AttendanceDateTime.of(day, attendanceTimeDto.hour(),
-                attendanceTimeDto.minute());
+        return AttendanceDateTime.of(day, attendanceTimeDto.hour(), attendanceTimeDto.minute());
     }
 }

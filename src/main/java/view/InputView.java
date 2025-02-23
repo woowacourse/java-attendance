@@ -5,10 +5,10 @@ import java.util.Arrays;
 import java.util.Scanner;
 
 public class InputView {
-    public static Function readOption() {
+    public static FeatureType readFeatureType() {
         System.out.println("기능을 선택해 주세요.");
-        Arrays.stream(Function.values()).forEach(function -> System.out.println(function.toString()));
-        return Function.getFunction(scan());
+        Arrays.stream(FeatureType.values()).forEach(featureType -> System.out.println(featureType.toString()));
+        return FeatureType.getFunction(scan());
     }
 
     public static String readNickname() {
