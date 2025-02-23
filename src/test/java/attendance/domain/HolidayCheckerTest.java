@@ -40,6 +40,17 @@ class HolidayCheckerTest {
         assertThat(isHoliday).isTrue();
     }
 
+    @DisplayName("공휴일을 중복으로 추가할 수 없다.")
+    @Test
+    void 공휴일을_중복으로_추가할_수_없다() {
+        LocalDate publicHoliday = LocalDate.of(2024, 12, 24);
+        holidayChecker.addHoliday(publicHoliday);
+
+        assertThatIllegalArgumentException()
+                .isThrownBy(() -> holidayChecker.addHoliday(publicHoliday))
+                .withMessage(ExceptionMessage.ALREADY_EXIST_HOLIDAY.getContent());
+    }
+
     @DisplayName("주말인 경우 휴일로 간주한다.")
     @ParameterizedTest
     @CsvSource({"2024-12-07", "2024-12-08"})
