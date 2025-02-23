@@ -4,7 +4,7 @@ import java.util.Arrays;
 
 public enum MenuOption {
 
-    ATTENDANCE_CHECK("1", "출석 확인"),
+    ATTENDANCE_REGISTER("1", "출석 확인"),
     ATTENDANCE_CORRECTION("2", "출석 수정"),
     CREW_ATTENDANCE_CHECK("3", "크루별 출석 기록 확인"),
     CHECK_EXPELLED_CREW("4", "제적 위험자 확인"),

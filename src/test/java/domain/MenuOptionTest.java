@@ -20,7 +20,7 @@ public class MenuOptionTest {
 
     private static Stream<Arguments> generateOption() {
         return Stream.of(
-                Arguments.arguments("1", MenuOption.ATTENDANCE_CHECK),
+                Arguments.arguments("1", MenuOption.ATTENDANCE_REGISTER),
                 Arguments.arguments("2", MenuOption.ATTENDANCE_CORRECTION),
                 Arguments.arguments("3", MenuOption.CREW_ATTENDANCE_CHECK),
                 Arguments.arguments("4", MenuOption.CHECK_EXPELLED_CREW),
