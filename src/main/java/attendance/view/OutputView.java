@@ -92,19 +92,19 @@ public class OutputView {
         printNewLine();
     }
 
-    public void printExpelCrewHead() {
+    public void printExpelExpectedCrews(List<List<String>> crewExpelExpectedInfo) {
         System.out.println(EXPEL_CREWS_HEAD_STRING);
-    }
-
-    public void printExpelCrewBody(List<String> crewExpelExpectedInfo) {
-        System.out.println(
-                EXPEL_CREW_BODY_STRING.formatted(
-                        crewExpelExpectedInfo.get(0),
-                        crewExpelExpectedInfo.get(1),
-                        crewExpelExpectedInfo.get(2),
-                        crewExpelExpectedInfo.get(3)
-                )
-        );
+        for (List<String> crewExpelExpected : crewExpelExpectedInfo) {
+            System.out.println(
+                    EXPEL_CREW_BODY_STRING.formatted(
+                            crewExpelExpected.get(0),
+                            crewExpelExpected.get(1),
+                            crewExpelExpected.get(2),
+                            crewExpelExpected.get(3)
+                    )
+            );
+        }
+        printNewLine();
     }
 
     public void printNewLine() {
