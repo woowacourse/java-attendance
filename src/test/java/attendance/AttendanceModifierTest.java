@@ -3,7 +3,7 @@ package attendance;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-public class AttendanceModifyTest {
+public class AttendanceModifierTest {
 
     @Test
     @DisplayName("닉네임과 날짜, 수정 시간을 입력한 후, 출석을 수정한다.")

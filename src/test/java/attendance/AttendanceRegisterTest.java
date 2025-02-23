@@ -3,37 +3,30 @@ package attendance;
 import static org.assertj.core.api.AssertionsForClassTypes.*;
 
 import java.time.LocalDateTime;
-import java.util.stream.Stream;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.Arguments;
-import org.junit.jupiter.params.provider.MethodSource;
 
 import attendance.common.exception.AttendanceArgumentException;
 import attendance.common.exception.AttendanceFileException;
 import attendance.domain.Attendance;
+import attendance.domain.AttendanceBook;
 import attendance.domain.AttendanceFileReader;
 import attendance.domain.AttendanceManager;
+import attendance.domain.AttendanceRegister;
 
-public class AttendanceManagerTest {
-    private AttendanceManager manager;
+public class AttendanceRegisterTest {
+    private AttendanceManager attendanceManager;
     private static final String TEST_FILE = "/attendances.csv";
 
     @BeforeEach
     void setUp() throws AttendanceFileException {
         var repository = new AttendanceFileReader(TEST_FILE);
         var lines = repository.getLines();
-        manager = new AttendanceManager(lines);
-    }
+        var attendanceBook = AttendanceBook.from(lines);
 
-    @ParameterizedTest
-    @MethodSource("getSourceForAttendanceInfo")
-    @DisplayName("csv 파일로부터 출석 정보를 불러온다.")
-    void test_getAttendanceInfoFromCSV(String nickname, Attendance attendance) {
-        assertThat(manager.findAttendance(nickname, attendance)).isEqualTo(attendance);
+        attendanceManager = new AttendanceRegister(attendanceBook);
     }
 
     @Test
@@ -44,9 +37,9 @@ public class AttendanceManagerTest {
 
         var attendance = new Attendance(time);
 
-        manager.addAttendance(nickname, attendance);
+        attendanceManager.manage(nickname, attendance);
 
-        assertThat(manager.findAttendance(nickname, attendance)).isEqualTo(attendance);
+        assertThat(attendanceManager.findAttendance(nickname, attendance)).isEqualTo(attendance);
     }
 
     @Test
@@ -57,7 +50,7 @@ public class AttendanceManagerTest {
 
         var attendance = new Attendance(time);
 
-        assertThatThrownBy(() -> manager.addAttendance(nickname, attendance))
+        assertThatThrownBy(() -> attendanceManager.manage(nickname, attendance))
             .isInstanceOf(AttendanceArgumentException.class)
             .hasMessageContaining("등록되지 않은 닉네임");
     }
@@ -70,26 +63,9 @@ public class AttendanceManagerTest {
 
         var attendance = new Attendance(time);
 
-        assertThatThrownBy(() -> manager.addAttendance(nickname, attendance))
+        assertThatThrownBy(() -> attendanceManager.manage(nickname, attendance))
             .isInstanceOf(AttendanceArgumentException.class)
             .hasMessageContaining("이미 출석되었습니다. 수정 기능을 이용해주세요.");
-    }
-
-    private static Stream<Arguments> getSourceForAttendanceInfo() {
-        return Stream.of(
-            Arguments.arguments(
-                "이든",
-                new Attendance(LocalDateTime.of(2024, 12, 3, 10, 6))
-            ),
-            Arguments.arguments(
-                "빙티",
-                new Attendance(LocalDateTime.of(2024, 12, 5, 10, 6))
-            ),
-            Arguments.arguments(
-                "짱수",
-                new Attendance(LocalDateTime.of(2024, 12, 3, 10, 0))
-            )
-        );
     }
 
 }

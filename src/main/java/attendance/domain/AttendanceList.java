@@ -5,10 +5,12 @@ import java.util.List;
 
 import attendance.common.exception.AttendanceArgumentException;
 
-public class AttendanceList {
+public record AttendanceList(List<Attendance> attendances) {
     private static final String CANT_FIND_INFO = "출석 정보를 찾을 수 없습니다.";
 
-    private final List<Attendance> attendances = new ArrayList<>();
+    public AttendanceList() {
+        this(new ArrayList<>());
+    }
 
     public void add(Attendance attendance) {
         attendances.add(attendance);
