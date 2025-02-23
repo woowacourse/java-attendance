@@ -2,6 +2,7 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 
 import domain.AttendanceManager;
+import domain.AttendanceStatus;
 import domain.Records;
 import domain.TimeAndStatus;
 import java.time.LocalDate;
@@ -29,7 +30,7 @@ public class AttendanceEditTest {
 
         TimeAndStatus timeAndStatus = findTimeAndStatus(name, localDate);
 
-        assertThat(timeAndStatus.getStatus()).isEqualTo("지각");
+        assertThat(timeAndStatus.getStatus()).isEqualTo(AttendanceStatus.LATENESS);
     }
 
     @Test
@@ -45,7 +46,7 @@ public class AttendanceEditTest {
 
         TimeAndStatus timeAndStatus = findTimeAndStatus(name, localDate);
 
-        assertThat(timeAndStatus.getStatus()).isEqualTo("출석");
+        assertThat(timeAndStatus.getStatus()).isEqualTo(AttendanceStatus.ATTENDANCE);
     }
 
     @Test

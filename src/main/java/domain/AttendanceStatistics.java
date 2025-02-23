@@ -26,13 +26,15 @@ public class AttendanceStatistics {
                     continue;
                 }
 
-                if (status.getStatus().equals("출석")) {
+                AttendanceStatus attendanceStatus = status.getStatus();
+
+                if (attendanceStatus == AttendanceStatus.ATTENDANCE) {
                     attendanceCount++;
                 }
-                if (status.getStatus().equals("지각")) {
+                if (attendanceStatus == AttendanceStatus.LATENESS) {
                     latenessCount++;
                 }
-                if (status.getStatus().equals("결석")) {
+                if (attendanceStatus == AttendanceStatus.ABSENCE) {
                     absenceCount++;
                 }
             }
@@ -41,11 +43,11 @@ public class AttendanceStatistics {
     }
 
     public static Map<String, StatisticsResult> calculateExpelledWarning(LocalDate nowDate,
-        Map<String, Records> crews) {
+                                                                         Map<String, Records> crews) {
         Map<String, StatisticsResult> result = new LinkedHashMap<>();
         for (String crewName : crews.keySet()) {
             StatisticsResult statisticsResult = AttendanceStatistics.countStatus(nowDate,
-                crews.get(crewName));
+                    crews.get(crewName));
 
             Penalty penalty = statisticsResult.getPenalty();
             if (penalty != Penalty.NONE) {

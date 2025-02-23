@@ -5,37 +5,38 @@ import java.time.LocalTime;
 public class TimeAndStatus {
 
     private final LocalTime time;
-    private final String status;
+    private final AttendanceStatus status;
 
     public TimeAndStatus(LocalTime time, String dayOfWeek) {
         this.time = time;
         this.status = checkStatus(dayOfWeek);
     }
 
-    private String checkStatus(String dayOfWeek) {
+    private AttendanceStatus checkStatus(String dayOfWeek) {
         if (dayOfWeek.equals("월")) {
             if (time.isAfter(LocalTime.of(13, 30))) {
-                return "결석";
+                return AttendanceStatus.ABSENCE;
             }
             if (time.isAfter(LocalTime.of(13, 5))) {
-                return "지각";
+                return AttendanceStatus.LATENESS;
             }
-            return "출석";
+            return AttendanceStatus.ATTENDANCE;
         }
         if (time.isAfter(LocalTime.of(10, 30))) {
-            return "결석";
+            return AttendanceStatus.ABSENCE;
         }
         if (time.isAfter(LocalTime.of(10, 5))) {
-            return "지각";
+            return AttendanceStatus.LATENESS;
         }
-        return "출석";
+        return AttendanceStatus.ATTENDANCE;
+
     }
 
     public LocalTime getTime() {
         return time;
     }
 
-    public String getStatus() {
+    public AttendanceStatus getStatus() {
         return status;
     }
 }

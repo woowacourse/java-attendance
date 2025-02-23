@@ -92,7 +92,7 @@ public class OutputView {
 
     private String timeFormatting(TimeAndStatus timeAndStatus) {
         return String.format(TIME_FORMAT, timeAndStatus.getTime().getHour(),
-            timeAndStatus.getTime().getMinute(), timeAndStatus.getStatus());
+            timeAndStatus.getTime().getMinute(), timeAndStatus.getStatus().getDescription());
     }
 
     private String dateFormatting(LocalDate localDate) {
