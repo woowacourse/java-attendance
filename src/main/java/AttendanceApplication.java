@@ -8,7 +8,8 @@ public class AttendanceApplication {
         final OutputView outputView = new OutputView();
 
         final AttendanceController attendanceController = new AttendanceController(
-                inputView, outputView
+                inputView,
+                outputView
         );
 
         attendanceController.run();

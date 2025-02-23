@@ -9,7 +9,8 @@ public class Attendance implements Comparable<Attendance> {
     private final Crew crew;
     private final CheckInTimes checkInTimes;
 
-    private Attendance(Crew crew, CheckInTimes checkInTimes) {
+    private Attendance(Crew crew,
+                       CheckInTimes checkInTimes) {
         this.crew = crew;
         this.checkInTimes = checkInTimes;
     }
