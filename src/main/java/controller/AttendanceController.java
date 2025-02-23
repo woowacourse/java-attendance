@@ -19,8 +19,6 @@ import view.InputView;
 import view.OutputView;
 
 public class AttendanceController {
-    private static final String EXIT_OPTION = "Q";
-
     private final Crews crews;
     private final InputView inputView;
     private final OutputView outputView;

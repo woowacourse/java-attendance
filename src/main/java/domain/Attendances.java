@@ -1,6 +1,7 @@
 package domain;
 
 import java.time.LocalDate;
+import java.time.YearMonth;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -37,7 +38,13 @@ public class Attendances {
                 .anyMatch(attendance -> attendance.isEqualTo(date));
     }
 
-    public Attendance findByDate(LocalDate date) {
+    public Attendance findByDate(Integer dayOfMonth) {
+        LocalDate today = LocalDate.now();
+
+        int month = today.getMonth().getValue();
+        LocalDate date = LocalDate.of(today.getYear(), month, dayOfMonth);
+        validateDayOfMonth(dayOfMonth, today);
+
         return attendances.stream()
                 .filter(attendance -> attendance.isEqualTo(date))
                 .findFirst()
@@ -61,5 +68,12 @@ public class Attendances {
                 .filter(date -> !Holiday.isHoliday(date))
                 .filter(date -> !isAlreadyAttended(date))
                 .forEach(date -> addAttendance(new Attendance(new Day(date), null)));
+    }
+    
+    private void validateDayOfMonth(Integer dayOfMonth, LocalDate today) {
+        YearMonth yearMonth = YearMonth.of(today.getYear(), today.getMonth().getValue());
+        if (dayOfMonth < 1 || dayOfMonth > yearMonth.lengthOfMonth()) {
+            throw new IllegalArgumentException("[ERROR] 존재하지 않는 날짜입니다.");
+        }
     }
 }

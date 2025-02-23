@@ -1,7 +1,6 @@
 package domain;
 
 import java.time.LocalDate;
-import java.time.YearMonth;
 
 public class Crew {
 
@@ -35,19 +34,8 @@ public class Crew {
 
 
     public Attendance findByDate(Integer dayOfMonth) {
-        LocalDate today = LocalDate.now();
-        validateDayOfMonth(dayOfMonth, today);
-
-        int month = today.getMonth().getValue();
-        LocalDate date = LocalDate.of(today.getYear(), month, dayOfMonth);
-        return attendances.findByDate(date);
+        return attendances.findByDate(dayOfMonth);
     }
 
 
-    private void validateDayOfMonth(Integer dayOfMonth, LocalDate today) {
-        YearMonth yearMonth = YearMonth.of(today.getYear(), today.getMonth().getValue());
-        if (dayOfMonth < 1 || dayOfMonth > yearMonth.lengthOfMonth()) {
-            throw new IllegalArgumentException("[ERROR] 존재하지 않는 날짜입니다.");
-        }
-    }
 }
