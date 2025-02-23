@@ -10,7 +10,7 @@ public class InputValidator {
     }
 
     public void validateInteger(String input) {
-        String timeFormatRegexp = "[0-9]{2}";
+        String timeFormatRegexp = "[0-9]{1,2}";
         if (!input.matches(timeFormatRegexp)) {
             throw new IllegalArgumentException("날짜 형식이 잘못되었습니다.");
         }
