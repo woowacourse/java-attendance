@@ -5,12 +5,6 @@ import java.util.Scanner;
 import util.Converter;
 
 public class InputView {
-    private static final String NICKNAME_INPUT_MESSAGE = "닉네임을 입력해 주세요.";
-    private static final String ATTENDANCE_INPUT_MESSAGE = "등교 시간을 입력해 주세요.";
-    private static final String EDIT_NICKNAME_INPUT_MESSAGE = "출석을 수정하려는 크루의 닉네임을 입력해 주세요.";
-    private static final String EDIT_DAY_OF_MONTH_INPUT_MESSAGE = "수정하려는 날짜(일)를 입력해 주세요.";
-    private static final String ASK_NEW_TIME_FOR_CHANGE = "언제로 변경하겠습니까?";
-
 
     private Scanner scanner = new Scanner(System.in);
 
