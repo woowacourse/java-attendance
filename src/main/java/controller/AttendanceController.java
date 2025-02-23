@@ -96,7 +96,7 @@ public class AttendanceController {
     }
 
     private void displayExpulsionCandidates(AttendanceBook attendanceBook) {
-        ExpulsionCandidates expulsionCandidates = attendanceBook.findExpulsionCandidates().orderByExpulsionRiskLevel();
+        ExpulsionCandidates expulsionCandidates = attendanceBook.findExpulsionCandidates().orderByExpulsionRiskLevelAndNickname();
         outputView.printRiskOfExpulsionBanner();
         outputView.printExpulsionCandidate(expulsionCandidates);
     }

@@ -11,9 +11,10 @@ public record ExpulsionCandidates(
         return new ExpulsionCandidates(attendanceStatistics);
     }
 
-    public ExpulsionCandidates orderByExpulsionRiskLevel() {
+    public ExpulsionCandidates orderByExpulsionRiskLevelAndNickname() {
         List<AttendanceStatistics> sortedList = new ArrayList<>(attendanceStatistics);
-        sortedList.sort(Comparator.comparingInt(AttendanceStatistics::getExpulsionRiskLevel).reversed());
+        sortedList.sort(Comparator.comparingInt(AttendanceStatistics::getExpulsionRiskLevel).reversed()
+                .thenComparing(AttendanceStatistics::nickname));
 
         return ExpulsionCandidates.from(sortedList);
     }
