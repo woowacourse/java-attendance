@@ -7,9 +7,11 @@ public enum MenuCommand {
     MODIFY("2"),
     LOOKUP("3"),
     EXPEL("4"),
-    QUIT("Q");
+    QUIT("Q"),
+    NONE("None");
 
     private static final String MENU_COMMAND_ERROR_MESSAGE = "[ERROR] 지원하지 않는 기능 값입니다.";
+    private static final String COMMAND_PATTERN = "^[1-4|Q]$";
 
     private final String command;
 
@@ -18,7 +20,7 @@ public enum MenuCommand {
     }
 
     public static MenuCommand toCommand(final String input) {
-        if (input == null) {
+        if (input == null || !input.matches(COMMAND_PATTERN)) {
             throw new IllegalArgumentException(MENU_COMMAND_ERROR_MESSAGE);
         }
         return Arrays.stream(values())
