@@ -6,9 +6,7 @@ import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public class AttendanceHistoryLoader {
@@ -18,7 +16,7 @@ public class AttendanceHistoryLoader {
     private final DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm");
 
     public Crews loadCrews() {
-        List<Crew> crews = new ArrayList<>();
+        Crews crews = new Crews();
         Map<String, Crew> crewMap = new HashMap<>();
 
         try (BufferedReader reader = new BufferedReader(new FileReader("src/main/resources/attendances.csv"))) {
@@ -28,14 +26,14 @@ public class AttendanceHistoryLoader {
             e.printStackTrace();
         }
 
-        return new Crews(crews);
+        return crews;
     }
 
     private void skipHeader(BufferedReader reader) throws IOException {
         reader.readLine();
     }
 
-    private void loadAttendanceHistory(BufferedReader reader, Map<String, Crew> crewMap, List<Crew> crews)
+    private void loadAttendanceHistory(BufferedReader reader, Map<String, Crew> crewMap, Crews crews)
             throws IOException {
         String line;
         while ((line = reader.readLine()) != null) {
@@ -43,7 +41,7 @@ public class AttendanceHistoryLoader {
         }
     }
 
-    private void parseAndAddAttendance(Map<String, Crew> crewMap, List<Crew> crews, String line) {
+    private void parseAndAddAttendance(Map<String, Crew> crewMap, Crews crews, String line) {
         String[] values = line.split(",");
         String[] datetimeValues = values[1].split(" ");
         String date = datetimeValues[0];
@@ -55,10 +53,10 @@ public class AttendanceHistoryLoader {
                 LocalTime.parse(time, timeFormatter)));
     }
 
-    private Crew getCrew(Map<String, Crew> crewMap, List<Crew> crews, String nickname) {
+    private Crew getCrew(Map<String, Crew> crewMap, Crews crews, String nickname) {
         return crewMap.computeIfAbsent(nickname, key -> {
             Crew newCrew = new Crew(nickname);
-            crews.add(newCrew);
+            crews.addCrew(newCrew);
             return newCrew;
         });
     }

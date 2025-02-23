@@ -5,10 +5,13 @@ import java.util.List;
 
 public class Crews {
 
-    private final List<Crew> crews;
+    private final List<Crew> crews = new ArrayList<>();
 
-    public Crews(List<Crew> crews) {
-        this.crews = crews;
+    public Crews() {
+    }
+
+    public void addCrew(Crew crew) {
+        crews.add(crew);
     }
 
     public Crew findByNickname(String nickname) {
