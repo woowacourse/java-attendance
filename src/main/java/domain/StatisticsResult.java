@@ -1,39 +1,41 @@
 package domain;
 
+import static domain.AttendanceStatus.ABSENCE;
+import static domain.AttendanceStatus.ATTENDANCE;
+import static domain.AttendanceStatus.LATENESS;
+
+import java.util.HashMap;
+import java.util.Map;
+
 public class StatisticsResult {
 
-    private final int attendanceCount;
-    private final int latenessCount;
-    private final int absenceCount;
+    private final Map<AttendanceStatus, Integer> result;
     private final Penalty penalty;
 
     public StatisticsResult(int attendanceCount, int latenessCount, int absenceCount) {
-        this.attendanceCount = attendanceCount;
-        this.latenessCount = latenessCount;
-        this.absenceCount = absenceCount;
+        this.result = initializeResult(attendanceCount, latenessCount, absenceCount);
         this.penalty = Penalty.check(absenceCount, latenessCount);
-    }
-
-    public int getAttendanceCount() {
-        return attendanceCount;
-    }
-
-    public int getLatenessCount() {
-        return latenessCount;
-    }
-
-    public int getAbsenceCount() {
-        return absenceCount;
     }
 
     public Penalty getPenalty() {
         return penalty;
     }
 
+    public int getCount(AttendanceStatus attendanceStatus) {
+        return result.get(attendanceStatus);
+    }
+
     public boolean hasPenalty() {
-        if(penalty != Penalty.NONE) {
-            return true;
-        }
-        return false;
+        return penalty != Penalty.NONE;
+    }
+
+    private Map<AttendanceStatus, Integer> initializeResult
+        (int attendanceCount, int latenessCount, int absenceCount) {
+        Map<AttendanceStatus, Integer> result = new HashMap<>();
+        result.put(ATTENDANCE, attendanceCount);
+        result.put(LATENESS, latenessCount);
+        result.put(ABSENCE, absenceCount);
+
+        return result;
     }
 }

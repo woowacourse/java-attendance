@@ -28,7 +28,7 @@ public enum Holiday {
     public static boolean isHoliday(LocalDate localDate) {
         return Arrays.stream(values())
             .anyMatch(holiday ->
-                localDate.getMonthValue() == holiday.month &&
-                localDate.getDayOfMonth() == holiday.day);
+                localDate.getMonthValue() == holiday.month
+                    && localDate.getDayOfMonth() == holiday.day);
     }
 }

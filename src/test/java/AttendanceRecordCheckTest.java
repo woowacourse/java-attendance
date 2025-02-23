@@ -2,6 +2,7 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 import domain.AttendanceManager;
 import domain.AttendanceStatistics;
+import domain.AttendanceStatus;
 import domain.Penalty;
 import domain.Crew;
 import domain.StatisticsResult;
@@ -47,9 +48,9 @@ public class AttendanceRecordCheckTest {
 
         LocalDate nowDate = LocalDate.of(2024, 12, 7);
         StatisticsResult statisticsResult = AttendanceStatistics.countStatus(nowDate, crew);
-        int attendanceCount = statisticsResult.getAttendanceCount();
-        int latenessCount = statisticsResult.getLatenessCount();
-        int absenceCount = statisticsResult.getAbsenceCount();
+        int attendanceCount = statisticsResult.getCount(AttendanceStatus.ATTENDANCE);
+        int latenessCount = statisticsResult.getCount(AttendanceStatus.LATENESS);
+        int absenceCount = statisticsResult.getCount(AttendanceStatus.ABSENCE);
 
         assertThat(attendanceCount).isEqualTo(2);
         assertThat(latenessCount).isEqualTo(1);

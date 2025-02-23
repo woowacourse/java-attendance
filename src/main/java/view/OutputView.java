@@ -17,6 +17,7 @@ import static util.constant.Value.START_DAY;
 import static util.constant.Value.START_MONTH;
 import static util.constant.Value.START_YEAR;
 
+import domain.AttendanceStatus;
 import domain.Holiday;
 import domain.Penalty;
 import domain.Crew;
@@ -60,7 +61,9 @@ public class OutputView {
     private void printCrewAttendance(LocalDate date, Crew crew) {
         TimeAndStatus status = crew.findByDate(date);
         if (status == null || status.getStatus() == null) {
-            System.out.printf(ATTENDANCE_RECORD_FORMAT, dateFormatting(date), ABSENCE_RECORD_FORMAT);
+            System.out.printf(ATTENDANCE_RECORD_FORMAT
+                , dateFormatting(date)
+                , ABSENCE_RECORD_FORMAT);
             return;
         }
         printAttendanceRecord(date, status);
@@ -88,8 +91,8 @@ public class OutputView {
             StatisticsResult statisticsResult = sortedResult.get(name);
             System.out.printf(WARNING_CREW_FORMAT
                 , name
-                , statisticsResult.getAbsenceCount()
-                , statisticsResult.getLatenessCount()
+                , statisticsResult.getCount(AttendanceStatus.ABSENCE)
+                , statisticsResult.getCount(AttendanceStatus.LATENESS)
                 , statisticsResult.getPenalty().penalty
             );
         }

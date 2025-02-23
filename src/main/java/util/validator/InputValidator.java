@@ -18,7 +18,7 @@ public class InputValidator {
     }
 
     public static void checkNull(String input) {
-        if(input.isBlank()) {
+        if (input.isBlank()) {
             throw new IllegalArgumentException(NULL_INPUT_ERROR_MESSAGE);
         }
     }

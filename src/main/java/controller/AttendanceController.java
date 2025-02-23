@@ -1,5 +1,8 @@
 package controller;
 
+import static domain.AttendanceStatus.ABSENCE;
+import static domain.AttendanceStatus.ATTENDANCE;
+import static domain.AttendanceStatus.LATENESS;
 import static util.constant.Value.NOW_DAY;
 import static util.constant.Value.NOW_MONTH;
 import static util.constant.Value.NOW_YEAR;
@@ -41,11 +44,12 @@ public class AttendanceController {
             "4", this::checkExpelledWarningCrews
         );
 
-        String functionNumber = "";
-        while (!functionNumber.equalsIgnoreCase("Q")) {
-            functionNumber = inputView.printFunction(currentDate);
-            validateFunctions(functionNumber, functions.keySet());
-            functions.getOrDefault(functionNumber, () -> {}).run();
+        String function = "";
+        while (!function.equalsIgnoreCase("Q")) {
+            function = inputView.printFunction(currentDate);
+            validateFunctions(function, functions.keySet());
+            functions.getOrDefault(function, () -> {
+            }).run();
         }
     }
 
@@ -57,13 +61,13 @@ public class AttendanceController {
             String time = inputView.readTime();
             InputValidator.checkNull(time);
 
-            LocalDate currentDate = DateTimeParser.parseIntegerToDate(NOW_YEAR, NOW_MONTH, NOW_DAY);
+            LocalDate today = DateTimeParser.parseIntegerToDate(NOW_YEAR, NOW_MONTH, NOW_DAY);
             LocalTime attendedTime = DateTimeParser.parseStringToTime(time);
-            LocalDateTime dateTime = LocalDateTime.of(currentDate, attendedTime);
+            LocalDateTime dateTime = LocalDateTime.of(today, attendedTime);
 
             attendanceManager.attendCrew(name, dateTime);
-            TimeAndStatus timeAndStatus = attendanceManager.findByName(name).findByDate(currentDate);
-            outputView.printAttendanceRecord(currentDate, timeAndStatus);
+            TimeAndStatus timeAndStatus = attendanceManager.findByName(name).findByDate(today);
+            outputView.printAttendanceRecord(today, timeAndStatus);
         });
     }
 
@@ -79,7 +83,8 @@ public class AttendanceController {
             String time = inputView.readEditTime();
             InputValidator.checkNull(time);
 
-            LocalDate editedDate = DateTimeParser.parseIntegerToDate(NOW_YEAR, NOW_MONTH, Integer.parseInt(dayOfMonth));
+            LocalDate editedDate = DateTimeParser
+                .parseIntegerToDate(NOW_YEAR, NOW_MONTH, Integer.parseInt(dayOfMonth));
             LocalTime attendedTime = DateTimeParser.parseStringToTime(time);
             LocalDateTime dateTime = LocalDateTime.of(editedDate, attendedTime);
 
@@ -98,9 +103,9 @@ public class AttendanceController {
             Crew crew = attendanceManager.findByName(name);
 
             StatisticsResult statistics = AttendanceStatistics.countStatus(currentDate, crew);
-            int attendanceCount = statistics.getAttendanceCount();
-            int latenessCount = statistics.getLatenessCount();
-            int absenceCount = statistics.getAbsenceCount();
+            int attendanceCount = statistics.getCount(ATTENDANCE);
+            int latenessCount = statistics.getCount(LATENESS);
+            int absenceCount = statistics.getCount(ABSENCE);
             Penalty penaltyResult = statistics.getPenalty();
 
             outputView.printRecords(name, currentDate, crew);

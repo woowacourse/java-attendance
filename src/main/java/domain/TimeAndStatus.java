@@ -1,11 +1,11 @@
 package domain;
 
+import static domain.AttendanceStatus.ABSENCE;
+import static domain.AttendanceStatus.ATTENDANCE;
+import static domain.AttendanceStatus.LATENESS;
 import static util.constant.Value.ABSENCE_MINUTE;
-import static util.constant.Value.ABSENCE_STRING;
-import static util.constant.Value.ATTENDANCE_STRING;
 import static util.constant.Value.DEFAULT_START_HOUR;
 import static util.constant.Value.LATENESS_MINUTE;
-import static util.constant.Value.LATENESS_STRING;
 import static util.constant.Value.MONDAY_START_HOUR;
 
 import java.time.DayOfWeek;
@@ -16,14 +16,14 @@ import util.parser.DateTimeParser;
 public class TimeAndStatus {
 
     private final LocalTime time;
-    private final String status;
+    private final AttendanceStatus status;
 
     public TimeAndStatus(LocalTime time, DayOfWeek dayOfWeek) {
         this.time = time;
         this.status = checkStatus(dayOfWeek);
     }
 
-    private String checkStatus(DayOfWeek dayOfWeek) {
+    private AttendanceStatus checkStatus(DayOfWeek dayOfWeek) {
         Map<DayOfWeek, LocalTime> lateTimes = Map.of(DayOfWeek.MONDAY,
             DateTimeParser.parseIntegerToTime(MONDAY_START_HOUR, LATENESS_MINUTE));
         Map<DayOfWeek, LocalTime> absentTimes = Map.of(DayOfWeek.MONDAY,
@@ -35,19 +35,19 @@ public class TimeAndStatus {
             DateTimeParser.parseIntegerToTime(DEFAULT_START_HOUR, ABSENCE_MINUTE));
 
         if (time.isAfter(absentTime)) {
-            return ABSENCE_STRING;
+            return ABSENCE;
         }
         if (time.isAfter(lateTime)) {
-            return LATENESS_STRING;
+            return LATENESS;
         }
-        return ATTENDANCE_STRING;
+        return ATTENDANCE;
     }
 
     public LocalTime getTime() {
         return time;
     }
 
-    public String getStatus() {
+    public AttendanceStatus getStatus() {
         return status;
     }
 }

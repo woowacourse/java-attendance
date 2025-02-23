@@ -1,5 +1,6 @@
 package domain;
 
+import static domain.AttendanceStatus.ABSENCE;
 import static util.constant.ErrorMessage.NOT_ATTEND_ERROR_MESSAGE;
 import static util.constant.ErrorMessage.NOT_CREW_ERROR_MESSAGE;
 import static util.constant.ErrorMessage.DUPLICATE_ATTEND_ERROR_MESSAGE;
@@ -51,7 +52,7 @@ public class AttendanceManager {
             .sorted(Comparator.comparing((Map.Entry<String, StatisticsResult> entry)
                     -> entry.getValue().getPenalty(), Comparator.naturalOrder())
                 .thenComparing(entry
-                    -> entry.getValue().getAbsenceCount(), Comparator.reverseOrder())
+                    -> entry.getValue().getCount(ABSENCE), Comparator.reverseOrder())
                 .thenComparing(Map.Entry::getKey))
             .collect(LinkedHashMap::new, (map, entry)
                 -> map.put(entry.getKey(), entry.getValue()), Map::putAll);
