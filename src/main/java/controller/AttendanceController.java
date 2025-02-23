@@ -18,9 +18,10 @@ import view.OutputView;
 
 public class AttendanceController {
 
+    private final static String CSV_PATH = "attendance.csv";
+
     private final InputView inputView;
     private final OutputView outputView;
-
     private final Map<Command, Consumer<AttendanceBook>> commands;
 
     public AttendanceController(InputView inputView, OutputView outputView) {
@@ -44,7 +45,7 @@ public class AttendanceController {
     }
 
     private AttendanceBook loadAttendanceBook() {
-        AttendReader attendReader = new AttendReader();
+        AttendReader attendReader = new AttendReader(CSV_PATH);
         return attendReader.loadAttendanceBook();
     }
 
