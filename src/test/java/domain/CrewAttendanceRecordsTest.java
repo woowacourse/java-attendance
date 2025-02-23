@@ -14,14 +14,15 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 
 class CrewAttendanceRecordsTest {
     @Test
-    @DisplayName("출석 기록 존재 여부를 반환한다.")
-    void hasRecordTest() {
+    @DisplayName("입력 받은 날짜에 존재하는 기록을 반환한다.")
+    void getRecordAtDateTest() {
         CrewAttendanceRecords crewAttendanceRecords = new CrewAttendanceRecords(new CsvParsingGenerator(), LocalDate.of(2024, 12, 13));
         Crew crew = new Crew("쿠키");
         LocalDate date = LocalDate.of(2024, 12, 13);
-        boolean hasRecord = crewAttendanceRecords.hasRecord(crew, date);
+        AttendanceRecord actualRecord = AttendanceRecord.parse("2024-12-13 10:08");
+        AttendanceRecord expectedRecord = crewAttendanceRecords.getRecordAtDate(crew, date);
 
-        assertThat(hasRecord).isTrue();
+        assertThat(actualRecord).isEqualTo(expectedRecord);
     }
 
     @Test
@@ -97,7 +98,7 @@ class CrewAttendanceRecordsTest {
 
         assertAll(
                 () -> assertThat(attendanceRecord).isEqualTo(AttendanceRecord.parse("2024-12-13 10:00")),
-                () -> assertThat(crewAttendanceRecords.hasRecord(crew, LocalDate.of(2024, 12, 13))).isTrue()
+                () -> assertThat(crewAttendanceRecords.getRecordAtDate(crew, LocalDate.of(2024, 12, 13))).isEqualTo(attendanceRecord)
         );
     }
 

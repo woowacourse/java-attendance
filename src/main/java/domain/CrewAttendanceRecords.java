@@ -17,14 +17,6 @@ public class CrewAttendanceRecords {
         return this.crewAttendanceRecords.containsKey(crew);
     }
 
-    public boolean hasRecord(Crew crew, LocalDate date) {
-        if (!hasCrew(crew)) {
-            return false;
-        }
-        AttendanceRecords records = this.crewAttendanceRecords.get(crew);
-        return records.hasRecordOfDate(date);
-    }
-
     public void updateAttendanceRecord(Crew crew, AttendanceRecord oldRecord, AttendanceRecord newRecord) {
         validateCrewPresence(crew);
         AttendanceRecords records = crewAttendanceRecords.get(crew);
