@@ -48,7 +48,7 @@ public class AttendanceController {
 
     private void performFunction(String inputFunction) {
         if (inputFunction.equals("1")) {
-            validateAttendanceDate();
+            validateAttendanceDate(LocalDate.now());
             recordAttendance();
         }
         if (inputFunction.equals("2")) {
@@ -62,9 +62,9 @@ public class AttendanceController {
         }
     }
 
-    private void validateAttendanceDate() {
-        if (DateUtil.isWeekend(LocalDate.now()) || Holiday.isHoliday(LocalDate.now())) {
-            throw new IllegalArgumentException(String.format("%n[ERROR] %s은 등교일이 아닙니다.", LocalDate.now().format(
+    private void validateAttendanceDate(LocalDate attendDate) {
+        if (DateUtil.isWeekend(attendDate) || Holiday.isHoliday(attendDate)) {
+            throw new IllegalArgumentException(String.format("%n[ERROR] %s은 등교일이 아닙니다.", attendDate.format(
                 DateTimeFormatter.ofPattern(OutputView.DATE_FORMATTER, Locale.KOREAN))));
         }
     }
@@ -92,6 +92,7 @@ public class AttendanceController {
         String nickName = InputView.readModifyingNickName();
         Crew crew = crews.getCrew(nickName);
         LocalDate modifyingCheckInDate = getModifyingCheckInDate();
+        validateAttendanceDate(modifyingCheckInDate);
         LocalTime modifyingCheckInTime = getModifyingCheckInTime();
 
         Attendance previousAttendance = attendancesBook.getExistAttendanceOfCrew(crew, modifyingCheckInDate);
