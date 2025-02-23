@@ -34,6 +34,12 @@ public class Attendances {
         return attendance;
     }
 
+    public List<Attendance> getAttendancesUntilYesterday(LocalDate date) {
+        return attendances.stream()
+                .filter(attendance -> attendance.isBefore(date))
+                .toList();
+    }
+
     public AttendanceGroupByStatus createCountUntilYesterday(LocalDate date) {
         int expulsion = calculateStatusUntilYesterday(AttendanceStatusType.EXPULSION, date);
         int late = calculateStatusUntilYesterday(AttendanceStatusType.LATE, date);

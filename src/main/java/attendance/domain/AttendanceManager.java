@@ -54,6 +54,11 @@ public class AttendanceManager {
         return List.of(oldAttendance, newAttendance);
     }
 
+    public List<Attendance> processAttendanceSearch(final String nickname) {
+        Attendances attendances = findCrewAttendance(nickname);
+        return attendances.getAttendancesUntilYesterday(dateGenerator.now());
+    }
+
     public void validateNicknameExists(String nickname) {
         if (!containsNickname(nickname)) {
             throw new IllegalArgumentException("[ERROR] 등록되지 않은 닉네임입니다.");
