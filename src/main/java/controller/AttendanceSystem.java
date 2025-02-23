@@ -2,6 +2,7 @@ package controller;
 
 import domain.AllCrew;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import view.FileInputView;
 import view.OutputView;
 import view.UserInputView;
@@ -11,20 +12,19 @@ public class AttendanceSystem {
     private final UserInputView userInputView;
     private final OutputView outputView;
     private final AllCrew allCrew;
-    private final LocalDate date;
+    private final LocalDate todayDate;
 
-    public AttendanceSystem(LocalDate date) {
-        this.date = date;
-        this.userInputView = new UserInputView(date);
-        this.outputView = new OutputView(date);
+    public AttendanceSystem(LocalDate todayDate) {
+        this.todayDate = todayDate;
+        this.userInputView = new UserInputView(todayDate);
+        this.outputView = new OutputView(todayDate);
         this.fileInputView = new FileInputView();
         this.allCrew = new AllCrew();
     }
 
     public void start() {
         fileInputView.readAttendanceFile(allCrew);
-        LocalDate today = date;
-        allCrew.updateAbsentHistory(today.minusDays(1));
+        allCrew.updateAbsentHistory(todayDate.minusDays(1));
         boolean onRunning = true;
         while (onRunning) {
             String menuInput = userInputView.askMenu();
