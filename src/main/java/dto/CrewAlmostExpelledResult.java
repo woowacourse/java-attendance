@@ -11,8 +11,10 @@ public record CrewAlmostExpelledResult(
     Manage manage
 ) {
 
+    public static final int ABSENT_WEIGHT = 3;
+
     public int calculateTotalCount() {
         return attendanceStatusStatistics.get(AttendanceStatus.LATE)
-            + attendanceStatusStatistics.get(AttendanceStatus.ABSENT) * 3;
+            + attendanceStatusStatistics.get(AttendanceStatus.ABSENT) * ABSENT_WEIGHT;
     }
 }
