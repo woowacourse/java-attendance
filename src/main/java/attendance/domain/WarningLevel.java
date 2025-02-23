@@ -8,7 +8,7 @@ import java.util.Map;
 public enum WarningLevel {
     EXPELLED("제적"), SUPERVISED("면담"), WARNING("경고"), NONE("해당 없음");
 
-    private String displayName;
+    private final String displayName;
 
     WarningLevel(final String displayName) {
         this.displayName = displayName;
