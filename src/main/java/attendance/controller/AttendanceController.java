@@ -23,7 +23,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.function.Supplier;
 
-
 public class AttendanceController {
 
     private final InputView inputView;

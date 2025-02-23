@@ -56,7 +56,6 @@ public class AttendanceRepository {
                 .orElseThrow(() -> new IllegalArgumentException("[ERROR] 존재하지 않는 출석 기록입니다."));
     }
 
-
     public void initAbsent(final String name) {
 
         int currentYear = LocalDate.now().getYear();

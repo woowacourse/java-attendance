@@ -14,7 +14,6 @@ public class InputView {
         System.out.println("Q. 종료");
 
         return Console.readLine();
-
     }
 
     public String inputCrewName() {
@@ -46,6 +45,4 @@ public class InputView {
         System.out.println("수정하려는 날짜(일)을 입력해 주세요.");
         return Console.readInt();
     }
-
-
 }
