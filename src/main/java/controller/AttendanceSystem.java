@@ -4,6 +4,7 @@ import domain.Attendance;
 import domain.AttendanceBook;
 import domain.MenuOption;
 import dto.ModifyResult;
+import java.util.Scanner;
 import java.util.function.Supplier;
 import util.DateTimeManager;
 import view.InputValidator;
@@ -16,9 +17,9 @@ public class AttendanceSystem {
     private final DateTimeManager dateTimeManager;
     private final AttendanceBook attendanceBook;
 
-    public AttendanceSystem(AttendanceBook attendanceBook, DateTimeManager dateTimeManager) {
+    public AttendanceSystem(AttendanceBook attendanceBook, DateTimeManager dateTimeManager, Scanner scanner) {
         this.dateTimeManager = dateTimeManager;
-        this.inputView = new InputView(dateTimeManager.getToday());
+        this.inputView = new InputView(dateTimeManager.getToday(), scanner);
         this.outputView = new OutputView(dateTimeManager.getToday());
         this.attendanceBook = attendanceBook;
     }
