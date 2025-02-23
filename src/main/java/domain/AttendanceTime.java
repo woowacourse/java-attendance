@@ -1,23 +1,24 @@
 package domain;
 
+import java.time.DayOfWeek;
 import java.time.LocalTime;
 import java.util.List;
 
 public enum AttendanceTime {
 
     MON_TIME(
-            List.of(Calender.MON),
+            List.of(DayOfWeek.MONDAY),
             List.of(LocalTime.of(13, 5),
                     LocalTime.of(13, 30))),
     ELSE_TIME(
-            List.of(Calender.TUE, Calender.WED, Calender.THU, Calender.FRI),
+            List.of(DayOfWeek.TUESDAY, DayOfWeek.WEDNESDAY, DayOfWeek.THURSDAY, DayOfWeek.FRIDAY),
             List.of(LocalTime.of(10, 5),
                     LocalTime.of(10, 30)));
 
-    private final List<Calender> calenders;
+    private final List<DayOfWeek> calenders;
     private final List<LocalTime> localTimes;
 
-    AttendanceTime(final List<Calender> calenders, final List<LocalTime> localTimes) {
+    AttendanceTime(final List<DayOfWeek> calenders, final List<LocalTime> localTimes) {
         this.calenders = calenders;
         this.localTimes = localTimes;
     }

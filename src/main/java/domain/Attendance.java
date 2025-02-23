@@ -33,6 +33,7 @@ public class Attendance {
     }
 
     public void save(final Crew crew, final String schoolStartTime, LocalDate localDate) {
+
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
         List<LocalDateTime> localDateTimes = attendanceMap.get(crew);
 
@@ -61,10 +62,9 @@ public class Attendance {
     }
 
     public LocalDateTime update(final Crew crew, final String updateTime, final int date) {
-        Calender.validateHolyDay(date);
+        DateTimeUtil.validateHolyDay(date);
 
         List<LocalDateTime> localDateTimes = attendanceMap.get(crew);
-        System.out.println(localDateTimes.size());
         int i;
         LocalDateTime beforeLocalDateTime = null;
         for (i = 0; i < localDateTimes.size(); i++) {
@@ -95,7 +95,7 @@ public class Attendance {
 
         int idx = 0;
         for (int dayIndex = 1; dayIndex < DateTimeUtil.getDateBy(LocalDate.now()); dayIndex++) {
-            if (Calender.findBy(dayIndex).equals("공휴일")) {
+            if (DateTimeUtil.isHoliday(LocalDate.of(2024, 12, dayIndex))) {
                 continue;
             }
 
@@ -125,7 +125,7 @@ public class Attendance {
     }
 
     private void checkAbsence(final int dayIndex, final List<AttendanceResultDto> attendanceResultDtos) {
-        String state = "결석";
+        String state = AttendanceState.ABSENCE.getDescription();
         LocalDateTime newLocalDateTime = LocalDateTime.of(2024, 12, dayIndex, 0, 0);
         AttendanceResultDto attendanceResultDto = new AttendanceResultDto(newLocalDateTime, state);
         attendanceResultDtos.add(attendanceResultDto);

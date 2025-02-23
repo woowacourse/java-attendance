@@ -4,10 +4,12 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+import java.time.LocalDate;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
+import util.DateTimeUtil;
 
 class CalenderTest {
 
@@ -18,7 +20,7 @@ class CalenderTest {
         int dayOfMonth = 19;
 
         // when
-        String result = Calender.findBy(dayOfMonth);
+        String result = DateTimeUtil.getDayOfWeekBy(LocalDate.of(2024, 12, dayOfMonth));
 
         // then
         assertThat(result).isEqualTo("목요일");
@@ -29,7 +31,7 @@ class CalenderTest {
     @ValueSource(ints = {1, 7, 8, 14, 15, 21, 22, 25, 28, 29})
     void validateHolyDay(int dayOfMonth) {
         // when & then
-        assertThatThrownBy(() -> Calender.validateHolyDay(dayOfMonth))
+        assertThatThrownBy(() -> DateTimeUtil.validateHolyDay(dayOfMonth))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("공휴일에는 출석을 할 수 없습니다.");
     }
@@ -40,7 +42,7 @@ class CalenderTest {
     void holyDay(int dayOfMonth) {
 
         // when & then
-        assertThatCode(() -> Calender.validateHolyDay(dayOfMonth))
+        assertThatCode(() -> DateTimeUtil.validateHolyDay(dayOfMonth))
                 .doesNotThrowAnyException();
     }
 }
