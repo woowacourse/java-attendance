@@ -1,5 +1,7 @@
 package attendance;
 
+import static org.assertj.core.api.AssertionsForClassTypes.*;
+
 import java.time.LocalDateTime;
 
 import org.assertj.core.api.Assertions;
@@ -7,6 +9,7 @@ import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import attendance.common.exception.AttendanceArgumentException;
 import attendance.domain.Attendance;
 import attendance.domain.AttendanceStatus;
 
@@ -18,7 +21,7 @@ public class AttendanceTest {
         var time = LocalDateTime.of(2024, 12, 13, 10, 1);
         var attendance = new Attendance(time);
 
-        Assertions.assertThat(attendance.attendanceStatus())
+        assertThat(attendance.attendanceStatus())
             .isEqualTo(AttendanceStatus.ATTENDANCE);
     }
 
@@ -28,7 +31,7 @@ public class AttendanceTest {
         var time = LocalDateTime.of(2024, 12, 13, 10, 6);
         var attendance = new Attendance(time);
 
-        Assertions.assertThat(attendance.attendanceStatus())
+        assertThat(attendance.attendanceStatus())
             .isEqualTo(AttendanceStatus.LATE);
     }
 
@@ -38,7 +41,7 @@ public class AttendanceTest {
         var time = LocalDateTime.of(2024, 12, 13, 10, 31);
         var attendance = new Attendance(time);
 
-        Assertions.assertThat(attendance.attendanceStatus())
+        assertThat(attendance.attendanceStatus())
             .isEqualTo(AttendanceStatus.ABSENCE);
     }
 
@@ -48,7 +51,7 @@ public class AttendanceTest {
         var time = LocalDateTime.of(2024, 12, 16, 13, 4);
         var attendance = new Attendance(time);
 
-        Assertions.assertThat(attendance.attendanceStatus())
+        assertThat(attendance.attendanceStatus())
             .isEqualTo(AttendanceStatus.ATTENDANCE);
     }
 
@@ -59,7 +62,7 @@ public class AttendanceTest {
         var time = LocalDateTime.of(2024, 12, 16, 13, 14);
         var attendance = new Attendance(time);
 
-        Assertions.assertThat(attendance.attendanceStatus())
+        assertThat(attendance.attendanceStatus())
             .isEqualTo(AttendanceStatus.ATTENDANCE);
     }
 
@@ -70,20 +73,25 @@ public class AttendanceTest {
         var time = LocalDateTime.of(2024, 12, 16, 13, 34);
         var attendance = new Attendance(time);
 
-        Assertions.assertThat(attendance.attendanceStatus())
+        assertThat(attendance.attendanceStatus())
             .isEqualTo(AttendanceStatus.ATTENDANCE);
     }
 
     @Test
+    @Disabled
     @DisplayName("출석할 때, 시간의 형식은 24시간 형식이다.")
     void test_attendanceTimeFormat() {
-
+        // 출력 형식에 대한 검증은 도메인에서 진행하지 않는다.
     }
 
     @Test
     @DisplayName("출석하는 날짜가 주말인 경우, 예외가 발생한다.")
     void error_attendanceOnWeekend() {
+        var time = LocalDateTime.of(2024, 12, 14, 10, 34);
 
+        Assertions.assertThatThrownBy(() -> new Attendance(time))
+            .isInstanceOf(AttendanceArgumentException.class)
+            .hasMessage("[ERROR] 12월 14일 토요일은 등교일이 아닙니다.");
     }
 
     @Test

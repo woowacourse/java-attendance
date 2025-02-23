@@ -4,20 +4,32 @@ import java.time.DayOfWeek;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 
+import attendance.common.exception.AttendanceArgumentException;
+
 public record Attendance(LocalDateTime dateTime, AttendanceStatus attendanceStatus) {
     private static final LocalTime DEFAULT_SCHEDULE = LocalTime.of(10, 0);
     private static final LocalTime MONDAY_SCHEDULE = LocalTime.of(13, 0);
 
+    private static final String CANNOT_ATTENDANCE_WEEKEND_FORMAT = "MM월 dd일 E요일은 등교일이 아닙니다.";
+
     private static final int ABSENCE = 30;
     private static final int LATE = 5;
+    private static final int WEEKENDER = 6;
 
     public Attendance(LocalDateTime dateTime) {
         this(dateTime, decideAttendanceStatus(dateTime));
     }
 
     private static AttendanceStatus decideAttendanceStatus(LocalDateTime dateTime) {
+        validate(dateTime);
         LocalTime baseSchedule = getScheduleForDay(dateTime);
         return decideOnDefaultDay(dateTime.toLocalTime(), baseSchedule);
+    }
+
+    private static void validate(LocalDateTime dateTime) {
+        if (dateTime.getDayOfWeek().getValue() >= WEEKENDER) {
+            throw new AttendanceArgumentException(CANNOT_ATTENDANCE_WEEKEND_FORMAT, dateTime);
+        }
     }
 
     private static LocalTime getScheduleForDay(LocalDateTime dateTime) {
