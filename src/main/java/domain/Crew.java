@@ -34,9 +34,9 @@ public class Crew {
     private static boolean canDateAttendance(final LocalDate today) {
         if (today.getDayOfWeek() == DayOfWeek.SATURDAY || today.getDayOfWeek() == DayOfWeek.SUNDAY
                 || today.equals(CHRISTMAS_DATE)) {
-            return true;
+            return false;
         }
-        return false;
+        return true;
     }
 
     public Attendance addAttendance(final String attendanceTime) {
