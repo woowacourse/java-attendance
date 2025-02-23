@@ -2,11 +2,12 @@ package domain;
 
 import java.time.Duration;
 import java.time.LocalTime;
+import java.util.Arrays;
 
 public enum Attendance {
-    PRESENT("출석", Duration.ofMinutes(0)),
-    TARDY("지각", Duration.ofMinutes(5)),
-    ABSENT("결석", Duration.ofMinutes(30));
+    PRESENT("출석", Duration.ofMinutes(5)),
+    TARDY("지각", Duration.ofMinutes(30)),
+    ABSENT("결석", Duration.ofMinutes(0));
 
     private static final LocalTime OPEN_HOUR = LocalTime.of(8, 0);
     private static final LocalTime CLOSE_HOUR = LocalTime.of(23, 0);
@@ -22,14 +23,11 @@ public enum Attendance {
     public static Attendance getAttendanceStatus(Day day, LocalTime time) {
         validateOpenTime(time);
         LocalTime start = day.getStart();
-        Duration between = Duration.between(start, time);
-        if (between.compareTo(TARDY.thresholdInMinutes) < 0) {
-            return PRESENT;
-        }
-        if (between.compareTo(ABSENT.thresholdInMinutes) < 0) {
-            return TARDY;
-        }
-        return ABSENT;
+        Duration duration = Duration.between(start, time);
+        return Arrays.stream(Attendance.values())
+                .filter(attendance -> attendance.isWithinThreshold(duration))
+                .findFirst()
+                .orElse(ABSENT);
     }
 
     public String getName() {
@@ -40,5 +38,9 @@ public enum Attendance {
         if (time.isBefore(OPEN_HOUR) || time.isAfter(CLOSE_HOUR)) {
             throw new IllegalArgumentException("[ERROR] 캠퍼스 운영 시간에만 출석이 가능합니다.\n");
         }
+    }
+
+    private boolean isWithinThreshold(Duration duration) {
+        return duration.compareTo(thresholdInMinutes) < 0;
     }
 }
