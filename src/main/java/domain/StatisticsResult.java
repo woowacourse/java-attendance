@@ -29,4 +29,11 @@ public class StatisticsResult {
     public Penalty getPenalty() {
         return penalty;
     }
+
+    public boolean hasPenalty() {
+        if(penalty != Penalty.NONE) {
+            return true;
+        }
+        return false;
+    }
 }

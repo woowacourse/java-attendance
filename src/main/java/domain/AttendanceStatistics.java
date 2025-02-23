@@ -22,10 +22,13 @@ public class AttendanceStatistics {
 
         Map<String, Long> statusCounts = startDate.datesUntil(nowDate)
             .filter(date -> !Holiday.isHoliday(date) && !Holiday.isWeekend(date))
-            .map(crew::findByDate)
-            .filter(Objects::nonNull)
-            .map(TimeAndStatus::getStatus)
-            .filter(Objects::nonNull)
+            .map(date -> {
+                TimeAndStatus status = crew.findByDate(date);
+                if (status == null) {
+                    return ABSENCE_STRING;
+                }
+                return status.getStatus();
+            })
             .collect(Collectors.groupingBy(Function.identity(), Collectors.counting()));
 
         return new StatisticsResult(
@@ -40,7 +43,7 @@ public class AttendanceStatistics {
         return crews.entrySet().stream()
             .map(entry -> Map.entry(entry.getKey(),
                 AttendanceStatistics.countStatus(nowDate, entry.getValue())))
-            .filter(entry -> entry.getValue().getPenalty() != Penalty.NONE)
+            .filter(entry -> entry.getValue().hasPenalty())
             .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue,
                 (a, b) -> b, LinkedHashMap::new));
     }

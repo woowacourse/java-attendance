@@ -17,7 +17,10 @@ public class Crew {
     }
 
     public TimeAndStatus findByDate(LocalDate localDate) {
-        return records.get(localDate);
+        if(records.containsKey(localDate)) {
+            return records.get(localDate);
+        }
+        return null;
     }
 
     public int getAttendanceCount() {
