@@ -1,9 +1,13 @@
 package view;
 
 import domain.AbsentPolicy;
+import domain.AttendanceDate;
 import domain.AttendanceDateTime;
 import domain.AttendanceSheet;
+import domain.AttendanceSheets;
+import domain.AttendanceState;
 import domain.AttendanceTime;
+import domain.Calendar;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.format.TextStyle;
@@ -22,6 +26,26 @@ public class OutputView {
                 attendanceDate.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.KOREAN),
                 hour, minute,
                 attendanceDateTime.check().description
+        );
+        System.out.print(System.lineSeparator());
+    }
+
+    public static void printUpdateInformation(AttendanceTime beforeAttendanceTime,
+                                              AttendanceDateTime afterAttendanceDateTime,
+                                              AttendanceState beforeState,
+                                              AttendanceState afterState) {
+        AttendanceTime afterDateTime = afterAttendanceDateTime.getAttendanceTime();
+
+        System.out.print(System.lineSeparator());
+        System.out.printf("%02d월 %02d일 %s %02d:%02d (%s) -> %02d:%02d (%s) 수정 완료!%n",
+                Calendar.DECEMBER.month,
+                afterAttendanceDateTime.getAttendanceDate().getDayOfMonth(),
+                afterAttendanceDateTime.getAttendanceDate().getDayOfWeek()
+                        .getDisplayName(TextStyle.FULL, Locale.KOREAN),
+                beforeAttendanceTime.getHour(), beforeAttendanceTime.getMinute(),
+                beforeState.description,
+                afterDateTime.getHour(), afterDateTime.getMinute(),
+                afterState.description
         );
         System.out.print(System.lineSeparator());
     }

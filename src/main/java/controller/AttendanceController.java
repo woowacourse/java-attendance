@@ -5,6 +5,8 @@ import domain.AttendanceDateTime;
 import domain.AttendanceSheet;
 import domain.AttendanceSheets;
 import domain.AttendanceSheetsFactory;
+import domain.AttendanceState;
+import domain.AttendanceTime;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -45,7 +47,7 @@ public class AttendanceController {
             }
 
             if (select.equals("3")) {
-                printAttendance(attendanceSheets);
+                printAttendanceSheetsByCrew(attendanceSheets);
                 continue;
             }
 
@@ -85,21 +87,27 @@ public class AttendanceController {
 
     private void updateAttendance(AttendanceSheets attendanceSheets) {
         String nickname = inputView.inputUpdateNickname();
-
-        List<AttendanceSheet> attendanceByNickname = attendanceSheets.findAttendanceByNickname(nickname);
-
         int day = Integer.parseInt(inputView.inputUpdateDate());
 
-        AttendanceSheet attendanceSheetByNicknameAndDay = attendanceByNickname.stream()
-                .filter(attendanceSheet -> attendanceSheet.isSameDay(day))
-                .findFirst()
-                .orElseThrow();
+        AttendanceSheet attendanceSheet = attendanceSheets.findAttendanceSheetByNicknameAndDay(nickname,
+                day);
 
         String time = inputView.inputUpdateTime();
         int hour = Integer.parseInt(time.split(":")[0]);
         int minute = Integer.parseInt(time.split(":")[1]);
 
-        attendanceSheetByNicknameAndDay.getAttendanceDateTime().update(LocalTime.of(hour, minute));
+        AttendanceDateTime attendanceDateTime = attendanceSheet.getAttendanceDateTime();
+        AttendanceTime beforeAttendanceTime = new AttendanceTime(
+                LocalTime.of(
+                        attendanceDateTime.getAttendanceTime().getHour(),
+                        attendanceDateTime.getAttendanceTime().getMinute())
+        );
+
+        AttendanceState beforeState = attendanceDateTime.check();
+        attendanceDateTime.update(LocalTime.of(hour, minute));
+        AttendanceState afterState = attendanceDateTime.check();
+
+        OutputView.printUpdateInformation(beforeAttendanceTime, attendanceDateTime, beforeState, afterState);
     }
 
     private void attend(AttendanceSheets attendanceSheets) {

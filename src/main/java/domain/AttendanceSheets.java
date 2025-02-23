@@ -36,7 +36,23 @@ public class AttendanceSheets {
                 .anyMatch(sheet -> sheet.equals(attendanceSheet))) {
             throw new IllegalArgumentException("[ERROR] 이미 출석했습니다. 수정 기능을 이용하세요.");
         }
+    }
 
+    public AttendanceSheet findAttendanceSheetByNicknameAndDay(String nickname, int day) {
+        List<AttendanceSheet> attendanceByNickname = findAttendanceByNickname(nickname);
+
+        AttendanceSheet attendanceSheet = attendanceByNickname.stream()
+                .filter(sheet -> sheet.isSameDay(day))
+                .findFirst()
+                .orElse(null);
+        validateHasAttendanceSheet(attendanceSheet);
+        return attendanceSheet;
+    }
+
+    private static void validateHasAttendanceSheet(AttendanceSheet attendanceSheet) {
+        if (attendanceSheet == null) {
+            throw new IllegalArgumentException("[ERROR] 출석 기록이 없는 날짜입니다.");
+        }
     }
 
     public List<AttendanceSheet> findAttendanceByNickname(String nickname) {
