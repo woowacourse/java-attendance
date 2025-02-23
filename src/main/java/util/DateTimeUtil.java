@@ -1,10 +1,13 @@
 package util;
 
+import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
+import java.time.format.TextStyle;
+import java.util.Locale;
 import presentation.InputValidator;
 
 public class DateTimeUtil {
@@ -16,7 +19,8 @@ public class DateTimeUtil {
         try {
             String parsedLocalDate = localDateTime.format(localDateFormatter);
             String parsedLocalTime = localDateTime.format(localTimeKoreanFormatter);
-            return parsedLocalDate + " " + convertDayOfWeekToString(localDateTime.getDayOfWeek().getValue()) + " " +
+            String parsedDayOfWeek = convertDayOfWeekToString(localDateTime.getDayOfWeek());
+            return parsedLocalDate + " " + parsedDayOfWeek + " " +
                     parsedLocalTime;
         } catch (DateTimeParseException exception) {
             throw new IllegalArgumentException(InputValidator.INVALID_DATETIME_ARGUMENT_EXCEPTION);
@@ -26,7 +30,8 @@ public class DateTimeUtil {
     public static String convertLocalDateToString(LocalDate localDate) {
         try {
             String parsedLocalDate = localDate.format(localDateFormatter);
-            return parsedLocalDate + " " + convertDayOfWeekToString(localDate.getDayOfWeek().getValue());
+            String parsedDayOfWeek = convertDayOfWeekToString(localDate.getDayOfWeek());
+            return parsedLocalDate + " " + parsedDayOfWeek;
         } catch (DateTimeParseException exception) {
             throw new IllegalArgumentException(InputValidator.INVALID_DATETIME_ARGUMENT_EXCEPTION);
         }
@@ -40,26 +45,8 @@ public class DateTimeUtil {
         }
     }
 
-    private static String convertDayOfWeekToString(int dayOfWeek) {
-        if (dayOfWeek == 1) {
-            return "월요일";
-        }
-        if (dayOfWeek == 2) {
-            return "화요일";
-        }
-        if (dayOfWeek == 3) {
-            return "수요일";
-        }
-        if (dayOfWeek == 4) {
-            return "목요일";
-        }
-        if (dayOfWeek == 5) {
-            return "금요일";
-        }
-        if (dayOfWeek == 6) {
-            return "토요일";
-        }
-        return "일요일";
+    private static String convertDayOfWeekToString(DayOfWeek dayOfWeek) {
+        return dayOfWeek.getDisplayName(TextStyle.FULL, Locale.KOREAN);
     }
 
     public static LocalDateTime convertStringToLocalDateTime(LocalDate localDate, String textLocalTime) {
