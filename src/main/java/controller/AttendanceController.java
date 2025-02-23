@@ -34,6 +34,13 @@ public class AttendanceController {
         LocalDate nowDate = LocalDate.now();
         Attendance attendance = new Attendance(AttendancesFileHandler.generateAttendances(), nowDate);
 
+        repeatExecutor.repeatUntilSuccess(() -> {
+            processUntilQuitInput(nowDate, attendance);
+            return RepeatExecutor.SUCCESS;
+        });
+    }
+
+    private void processUntilQuitInput(LocalDate nowDate, Attendance attendance) {
         MenuOption menuOption;
         do {
             String option = getOptionInput(nowDate);
@@ -72,7 +79,7 @@ public class AttendanceController {
         repeatExecutor.repeatUntilSuccess(() -> {
             LocalTime arrivalTime = processArrivalTimeInput();
             attendance.attend(nickName, LocalDateTime.of(nowDate, arrivalTime));
-            return null;
+            return RepeatExecutor.SUCCESS;
         });
 
         AttendanceTime attendanceTime = attendance.findAttendanceTime(nickName, nowDate);
@@ -122,7 +129,7 @@ public class AttendanceController {
         repeatExecutor.repeatUntilSuccess(() -> {
             LocalTime editArrivalTime = inputView.readEditArrivalTime();
             attendance.edit(nickName, editArrivalDate, editArrivalTime);
-            return null;
+            return RepeatExecutor.SUCCESS;
         });
     }
 
