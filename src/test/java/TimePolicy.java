@@ -16,19 +16,22 @@ public class TimePolicy {
 
     private static final String TIME_FORMAT_ERROR = "[ERROR] 시간 입력 형식이 잘못되었습니다";
     private static final String OPERATING_TIME_ERROR = "[ERROR] 캠퍼스 운영 시간이 아닙니다";
+    private static final String INTEGER_FORMAT_ERROR = "[ERROR] 정수로 입력해 주세요";
 
-    public static int validateHour(String hour){
-        if(Integer.parseInt(hour)> MAX_HOUR || Integer.parseInt(hour)< MIN_HOUR){
+    public static int validateHour(String inputHour){
+        int hour = validateInteger(inputHour);
+        if(hour > MAX_HOUR || hour < MIN_HOUR){
             throw new IllegalArgumentException(TIME_FORMAT_ERROR);
         }
-        return Integer.parseInt(hour);
+        return hour;
     }
 
-    public static int validateMinute(String minute) {
-        if(Integer.parseInt(minute) > MAX_MINUTE || Integer.parseInt(minute) < MIN_MINUTE){
+    public static int validateMinute(String inputMinute) {
+        int minute = validateInteger(inputMinute);
+        if(minute > MAX_MINUTE || minute < MIN_MINUTE){
             throw new IllegalArgumentException(TIME_FORMAT_ERROR);
         }
-        return Integer.parseInt(minute);
+        return minute;
     }
 
     public static String[] validateTimeFormat(String time) {
@@ -51,6 +54,14 @@ public class TimePolicy {
         || LocalTime.of(hour,minute).isAfter(OPERATING_END_TIME))
         {
             throw new IllegalArgumentException(OPERATING_TIME_ERROR);
+        }
+    }
+
+    private static int validateInteger(String input) {
+        try{
+            return Integer.parseInt(input);
+        }catch (NumberFormatException e){
+            throw new IllegalArgumentException(INTEGER_FORMAT_ERROR);
         }
     }
 }
