@@ -40,7 +40,7 @@ public final class InputView {
         return input;
     }
 
-    public static String readDateTime() {
+    public static String readTime() {
         System.out.println("등교 시간을 입력해 주세요.");
         String input = scanner.nextLine();
         validateInput(input);
