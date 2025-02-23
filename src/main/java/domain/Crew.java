@@ -55,7 +55,11 @@ public class Crew {
     public void recordAbsence() {
         LocalDate today = LocalDate.now();
 
-        today.withDayOfMonth(1).datesUntil(today).filter(date -> date.getDayOfWeek().getValue() != SATURDAY && date.getDayOfWeek().getValue() != SUNDAY).filter(date -> !isAlreadyAttend(date)).forEach(date -> addAttendance(new Attendance(new Day(date), null)));
+        today.withDayOfMonth(1)
+                .datesUntil(today)
+                .filter(date -> date.getDayOfWeek().getValue() != SATURDAY && date.getDayOfWeek().getValue() != SUNDAY)
+                .filter(date -> !isAlreadyAttend(date))
+                .forEach(date -> addAttendance(new Attendance(new Day(date), null)));
     }
 
     public Attendance findByDate(Integer dayOfMonth) {
