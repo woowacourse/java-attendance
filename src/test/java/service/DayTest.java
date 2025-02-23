@@ -1,6 +1,6 @@
 package service;
 
-import domain.Day;
+import util.Day;
 import java.time.LocalDateTime;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
@@ -25,21 +25,21 @@ class DayTest {
         Assertions.assertTrue(Day.isFuture(day, today));
     }
 
-    @DisplayName("객체 생성 시, 미래 시점이면 에러가 발생합니다.")
+    @DisplayName("미래 시점이면 에러가 발생합니다.")
     @ParameterizedTest
     @ValueSource(ints = {3, 9, 10})
     void isFutureErrorTest(int value) {
         LocalDateTime today = LocalDateTime.of(2024, 12, 2, 10, 0);
 
-        Assertions.assertThrows(IllegalArgumentException.class, () -> new Day(value, today));
+        Assertions.assertThrows(IllegalArgumentException.class, () -> Day.validateDay(value, today));
     }
 
-    @DisplayName("객체 생성 시, 휴일이면 에러가 발생합니다.")
+    @DisplayName("휴일이면 에러가 발생합니다.")
     @ParameterizedTest
     @ValueSource(ints = {25, 14, 15})
     void isHolidayErrorTest(int value) {
         LocalDateTime today = LocalDateTime.of(2024, 12, 2, 10, 0);
 
-        Assertions.assertThrows(IllegalArgumentException.class, () -> new Day(value, today));
+        Assertions.assertThrows(IllegalArgumentException.class, () -> Day.validateDay(value, today));
     }
 }

@@ -15,10 +15,6 @@ public enum AttendanceAlertLevel {
         this.name = name;
     }
 
-    public int getAbsenceLimit() {
-        return absenceLimit;
-    }
-
     public String getName() {
         return name;
     }

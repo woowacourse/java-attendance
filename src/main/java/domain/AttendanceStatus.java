@@ -15,14 +15,6 @@ public enum AttendanceStatus {
         this.name = name;
     }
 
-    public int getLowerBound() {
-        return lowerBound;
-    }
-
-    public int getUpperBound() {
-        return upperBound;
-    }
-
     public String getName() {
         return name;
     }

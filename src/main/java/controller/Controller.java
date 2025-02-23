@@ -3,13 +3,12 @@ package controller;
 import domain.Attendance;
 import domain.Crew;
 import domain.CrewGroup;
-import domain.Day;
+import util.Day;
 import domain.Function;
 import domain.Time;
 import java.time.LocalDateTime;
 import java.util.List;
 import service.CrewLoader;
-import util.DayOfWeekConverter;
 import view.InputView;
 import view.OutputView;
 import view.dto.AlertCrewDTO;
@@ -28,7 +27,7 @@ public class Controller {
     }
 
     public void run() {
-        LocalDateTime today = LocalDateTime.of(2024, 12, 18, 10, 0);
+        LocalDateTime today = LocalDateTime.of(2024, 12, 7, 10, 0);
         CrewLoader crewLoader = new CrewLoader();
         CrewGroup crewGroup = crewLoader.loadCrews(today);
         try {
@@ -61,11 +60,7 @@ public class Controller {
     }
 
     private void attendanceCheck(CrewGroup crewGroup, LocalDateTime today) {
-        if (Day.isHoliday(today)) {
-            throw new IllegalArgumentException(
-                    String.format("%d월 %d일 %s은 등교일이 아닙니다.", today.getMonthValue(), today.getDayOfMonth(),
-                            DayOfWeekConverter.convertDayOfWeek(today)));
-        }
+        Day.validateDay(today.getDayOfMonth(), today);
         String rawName = inputView.insertNickname();
         Crew crew = crewGroup.searchCrew(rawName);
 

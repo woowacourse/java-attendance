@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import util.Day;
 
 public class Crew {
     public static final int ABSENT_HOUR = 23;
