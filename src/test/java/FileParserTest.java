@@ -4,8 +4,8 @@ import java.time.LocalTime;
 import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.Test;
 
-import util.AttendanceRecord;
-import util.FileParser;
+import util.parser.AttendanceRecord;
+import util.parser.FileParser;
 
 public class FileParserTest {
     
