@@ -39,12 +39,6 @@ public class Crew {
         return true;
     }
 
-    public Attendance addAttendance(final String attendanceTime) {
-        final Attendance attendance = Attendance.of(attendanceTime);
-        attendances.add(attendance);
-        return attendance;
-    }
-
     public Attendance addAttendance(final LocalDateTime localDateTime) {
         final Attendance attendance = Attendance.of(localDateTime);
         attendances.add(attendance);

@@ -135,10 +135,6 @@ public class AttendanceSystem {
         return findCrewByName(crewName).getAttendances();
     }
 
-    public List<Crew> getCrews() {
-        return new ArrayList<>(crews);
-    }
-
     public LocalDate today() {
         return dateTimeGenerator.generateDate();
     }
