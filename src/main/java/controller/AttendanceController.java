@@ -1,71 +1,80 @@
 package controller;
 
+import controller.feature.Feature;
 import domain.attendance.Attendance;
 import domain.attendance.Attendances;
 import domain.checkin.CheckInTime;
-import util.AttendanceParser;
-import view.input.InputView;
-import view.output.OutputView;
-
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Map;
+import util.AttendanceParser;
+import view.input.InputView;
+import view.output.OutputView;
 
 public class AttendanceController {
 
+    public static final DateTimeFormatter TIME_FORMATTER = DateTimeFormatter.ofPattern("HH:mm");
+    public static final DateTimeFormatter CSV_DATE_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+    public static final String CSV_PATH = "src/main/resources/attendances.csv";
+
     private final InputView inputView;
     private final OutputView outputView;
+    private final Map<Feature, Runnable> features;
     private Attendances attendances;
 
     public AttendanceController(InputView inputView,
                                 OutputView outputView) {
         this.inputView = inputView;
         this.outputView = outputView;
+        this.features = Map.of(
+                Feature.CHECK_IN, this::checkIn,
+                Feature.MODIFY_CHECK_IN, this::modifyCheckInTime,
+                Feature.READ_CHECK_IN, this::readCheckInTime,
+                Feature.READ_DANGER_CREWS, this::readDangerCrews
+        );
     }
 
     public void run() {
-        String filePath = "src/main/resources/attendances.csv";
         attendances = AttendanceParser.registerAttendances(
-                filePath,
-                DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")
+                CSV_PATH,
+                CSV_DATE_FORMATTER
         );
-        readFeature();
+        selectFeature();
     }
 
-    private void readFeature() {
-        while (true) {
+    private void selectFeature() {
+        while (runFeature()) {
+            // continue running
+        }
+    }
+
+    private boolean runFeature() {
+        Feature feature = getFeature();
+        if (feature == null) {
+            return true;
+        }
+        if (feature == Feature.QUIT) {
+            return false;
+        }
+        try {
+            features.get(feature).run();
+        } catch (IllegalArgumentException e) {
+            System.out.println(e.getMessage());
+        }
+        return true;
+    }
+
+    private Feature getFeature() {
+        try {
             String featureNumber = inputView.readFeatureNumber();
-            if (featureNumber.equals("Q")) {
-                break ;
-            }
-            try {
-                selectFeature(featureNumber);
-            } catch (IllegalArgumentException e) {
-                System.out.println(e.getMessage());
-            }
+            return Feature.from(featureNumber);
+        } catch (IllegalArgumentException e) {
+            System.out.println(e.getMessage());
         }
-    }
-
-    private void selectFeature(String featureNumber) {
-        if (featureNumber.equals("1")) {
-            checkIn();
-            return;
-        }
-        if (featureNumber.equals("2")) {
-            modifyCheckInTime();
-            return;
-        }
-        if (featureNumber.equals("3")) {
-            readCheckInTime();
-            return;
-        }
-        if (featureNumber.equals("4")) {
-            readDangerCrews();
-            return;
-        }
-        throw new IllegalArgumentException("[ERROR] 1, 2, 3, 4, Q 만 입력해주세요.");
+        return null;
     }
 
     private void checkIn() {
@@ -81,7 +90,7 @@ public class AttendanceController {
 
     private LocalDateTime getCheckInTime() {
         String timeString = inputView.readTimeForCheckIn();
-        LocalTime parsedTime = LocalTime.parse(timeString, DateTimeFormatter.ofPattern("HH:mm"));
+        LocalTime parsedTime = LocalTime.parse(timeString, TIME_FORMATTER);
 
         return LocalDateTime.of(LocalDate.now(), parsedTime);
     }
@@ -102,7 +111,7 @@ public class AttendanceController {
         int day = Integer.parseInt(inputView.readDateForModify());
         LocalDate date = LocalDate.of(2024, 12, day);
         String timeString = inputView.readTimeForModify();
-        LocalTime time = LocalTime.parse(timeString, DateTimeFormatter.ofPattern("HH:mm"));
+        LocalTime time = LocalTime.parse(timeString, TIME_FORMATTER);
 
         return LocalDateTime.of(date, time);
     }
@@ -117,7 +126,9 @@ public class AttendanceController {
 
     private void readDangerCrews() {
         List<Attendance> dangerCrew = attendances.findDangerCrew();
-        List<Attendance> sorted = dangerCrew.stream().sorted().toList();
+        List<Attendance> sorted = dangerCrew.stream()
+                .sorted()
+                .toList();
         outputView.printDangerCrews(sorted);
     }
 }
