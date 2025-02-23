@@ -48,9 +48,13 @@ public class AttendReader {
 
     private List<String> readFile(URL fileURL) {
         try (BufferedReader reader = Files.newBufferedReader(Paths.get(fileURL.toURI()))) {
-            return reader.lines().skip(1).toList();
+            return removeTitleRow(reader);
         } catch (IOException | URISyntaxException e) {
             throw new IllegalStateException(String.format("경로 문제: %s", fileURL.getPath()));
         }
+    }
+
+    private List<String> removeTitleRow(BufferedReader reader) {
+        return reader.lines().skip(1).toList();
     }
 }
