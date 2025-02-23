@@ -62,7 +62,7 @@ public class AttendanceManagerTest {
         @DisplayName("닉네임과 출석 정보을 입력하면, 출석 정보를 저장한다.")
         void test_attendance() {
             var nickname = "이든";
-            var time = LocalDateTime.of(2024, 12, 13, 10, 1);
+            var time = LocalDateTime.of(2024, 12, 20, 10, 1);
 
             var attendance = new Attendance(time);
 

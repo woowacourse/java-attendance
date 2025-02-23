@@ -8,9 +8,6 @@ import java.util.List;
 import attendance.common.exception.AttendanceArgumentException;
 
 public record Attendance(LocalDateTime dateTime, AttendanceStatus attendanceStatus) {
-    private static final String CANNOT_ATTENDANCE_WEEKEND_FORMAT = "MM월 dd일 E요일은 등교일이 아닙니다.";
-    private static final String OUT_OF_SCHOOL_SCHEDULE = "등교시간에만 출석 가능합니다.";
-
     private static final List<Integer> datOfHoliday = List.of(25);
 
     public Attendance(LocalDateTime dateTime) {
@@ -34,20 +31,20 @@ public record Attendance(LocalDateTime dateTime, AttendanceStatus attendanceStat
             .anyMatch(day -> dateTime.getDayOfMonth() == day);
 
         if (isHoliday) {
-            throw new AttendanceArgumentException(CANNOT_ATTENDANCE_WEEKEND_FORMAT, dateTime);
+            throw new AttendanceArgumentException(Message.CANNOT_ATTENDANCE_WEEKEND_FORMAT, dateTime);
         }
     }
 
     private static void validateIsWeekend(LocalDateTime dateTime) {
         if (dateTime.getDayOfWeek().getValue() >= DayOfWeek.SATURDAY.getValue()) {
-            throw new AttendanceArgumentException(CANNOT_ATTENDANCE_WEEKEND_FORMAT, dateTime);
+            throw new AttendanceArgumentException(Message.CANNOT_ATTENDANCE_WEEKEND_FORMAT, dateTime);
         }
     }
 
     private static void validateIsDuringCampusSchedule(LocalDateTime dateTime) {
         LocalTime time = dateTime.toLocalTime();
         if (isDuringCampusSchedule(time)) {
-            throw new AttendanceArgumentException(OUT_OF_SCHOOL_SCHEDULE);
+            throw new AttendanceArgumentException(Message.OUT_OF_SCHOOL_SCHEDULE);
         }
     }
 
@@ -88,4 +85,8 @@ public record Attendance(LocalDateTime dateTime, AttendanceStatus attendanceStat
         private static final int LATE = 5;
     }
 
+    private static class Message {
+        private static final String CANNOT_ATTENDANCE_WEEKEND_FORMAT = "MM월 dd일 E요일은 등교일이 아닙니다.";
+        private static final String OUT_OF_SCHOOL_SCHEDULE = "등교시간에만 출석 가능합니다.";
+    }
 }

@@ -7,9 +7,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.net.URL;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import attendance.common.exception.AttendanceArgumentException;
@@ -17,7 +15,7 @@ import attendance.common.exception.AttendanceFileException;
 
 public class AttendanceManager {
     private static final int csvInfo = 1;
-    private final Map<String, List<Attendance>> attendances = new HashMap<>();
+    private final Map<String, AttendanceList> attendances = new HashMap<>();
 
     public AttendanceManager(String fileName) throws AttendanceFileException {
         URL resourceUrl = getUrl(fileName);
@@ -47,7 +45,7 @@ public class AttendanceManager {
         var lines = line.split(Format.REGEX);
         var nickname = lines[0];
 
-        List<Attendance> attendanceList = attendances.computeIfAbsent(nickname, k -> new ArrayList<>());
+        AttendanceList attendanceList = attendances.computeIfAbsent(nickname, k -> new AttendanceList());
 
         var dateTime = LocalDateTime.parse(lines[1], getFormatter(Format.DATETIME_FORMAT));
         var attendance = new Attendance(dateTime);
@@ -58,22 +56,22 @@ public class AttendanceManager {
     public void addAttendance(String nickname, Attendance attendance) {
         try {
             var attendanceList = attendances.get(nickname);
-            if (attendanceList.contains(attendance)) {
-                throw new AttendanceArgumentException(Error.DUPLICATE_DATE.getMessage());
-            }
+            isDuplicateAttendance(attendance, attendanceList);
             attendanceList.add(attendance);
         } catch (NullPointerException e) {
             throw new AttendanceArgumentException(Error.NOT_REGISTERED_NICKNAME.getMessage());
         }
     }
 
+    private void isDuplicateAttendance(Attendance attendance, AttendanceList attendanceList) {
+        if (attendanceList.contains(attendance)) {
+            throw new AttendanceArgumentException(Error.DUPLICATE_DATE.getMessage());
+        }
+    }
+
     public Attendance findAttendance(String nickname, Attendance attendance) {
         var attendanceList = attendances.get(nickname);
-
-        return attendanceList.stream()
-            .filter((i) -> i.equals(attendance))
-            .findFirst()
-            .orElseThrow(() -> new AttendanceArgumentException(Error.CANT_FIND_INFO.getMessage()));
+        return attendanceList.findAttendance(attendance);
     }
 
     private enum Error {
