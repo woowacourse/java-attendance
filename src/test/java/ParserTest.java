@@ -8,6 +8,7 @@ import java.util.Map;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import util.Parser;
+import util.Parser.NameParsedData;
 
 public class ParserTest {
     List<String> loadedData;
@@ -20,7 +21,6 @@ public class ParserTest {
     @Test
     public void 카테고리를_나타내는_첫_줄을_제거한다() {
         List<String> parsedData = Parser.parse(loadedData);
-
         List<String> expectedData = List.of("쿠키,2024-12-13 10:08", "빙봉,2024-12-13 10:07");
 
         assertThat(parsedData).isEqualTo(expectedData);
@@ -29,10 +29,10 @@ public class ParserTest {
     @Test
     public void 이름_별로_분리한다() {
         List<String> removedData = List.of("쿠키,2024-12-13 10:08", "빙봉,2024-12-13 10:07");
-        List<List<String>> expectedNameSeperatedData = List.of(
-                List.of("쿠키", "2024-12-13 10:08"),
-                List.of("빙봉", "2024-12-13 10:07"));
-
+        List<NameParsedData> expectedNameSeperatedData = List.of(
+                new NameParsedData("쿠키", "2024-12-13 10:08"),
+                new NameParsedData("빙봉", "2024-12-13 10:07")
+        );
         assertThat(Parser.parseName(removedData)).isEqualTo(expectedNameSeperatedData);
     }
 
