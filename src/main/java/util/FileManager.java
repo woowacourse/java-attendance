@@ -42,7 +42,7 @@ public class FileManager {
 
             return new Attendance(attendances);
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new IllegalArgumentException("잘못된 파일 입니다.");
         }
     }
 }
