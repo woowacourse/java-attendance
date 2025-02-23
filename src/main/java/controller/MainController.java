@@ -16,7 +16,7 @@ public class MainController {
     private final InputView inputView;
     private final OutputView outputView;
     private final RepeatExecutor repeatExecutor;
-    private Map<MenuOption, AttendanceController> options;
+    private final Map<MenuOption, AttendanceController> options;
 
     public MainController(final InputView inputView, final OutputView outputView) {
         this.inputView = inputView;
