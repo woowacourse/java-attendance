@@ -8,4 +8,5 @@ public record AttendanceRecord(
     LocalDate date,
     LocalTime time
 ) {
+
 }

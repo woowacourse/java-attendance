@@ -10,6 +10,7 @@ public record AttendanceResult(
     LocalTime time,
     AttendanceStatus status
 ) {
+
     public static AttendanceResult of(LocalDate date, LocalTime time, AttendanceStatus status) {
         return new AttendanceResult(date, time, status);
     }

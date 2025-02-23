@@ -3,6 +3,7 @@ package util;
 import java.util.function.Supplier;
 
 public class RetryHandler {
+
     public static <T> T retryUntilSuccessWithReturn(Supplier<T> supplier) {
         while(true) {
             try {
