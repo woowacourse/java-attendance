@@ -1,6 +1,7 @@
 package view;
 
 import domain.*;
+import domain.constant.StandardDate;
 import util.Converter;
 
 import java.time.LocalDate;
@@ -28,14 +29,13 @@ public class OutputView {
     private static final String LATE_STATUS_NAME = "지각";
     private static final String ABSENT_STATUS_NAME = "결석";
 
-    public void printOptionMessage() {
-        LocalDate today = LocalDate.now();
+    public void printOptionMessage(LocalDate today) {
         String dayOfWeekName = DayOfWeek.getNameById(today.getDayOfWeek().getValue());
         System.out.printf(APPLICATION_START_MESSAGE, today.getMonth().getValue(), today.getDayOfMonth(), dayOfWeekName);
     }
 
     public void printAttendanceInformation(AttendanceDto attendanceDto) {
-        LocalDate today = LocalDate.now();
+        LocalDate today = StandardDate.DATE;
         String dayOfWeekName = DayOfWeek.getNameById(today.getDayOfWeek().getValue());
         String attendanceTime = Converter.covertLocalTimeToString(attendanceDto.getAttendanceTime());
         String attendanceStatusName = getAttendanceStatusName(attendanceDto);

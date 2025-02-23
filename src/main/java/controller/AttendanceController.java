@@ -2,6 +2,7 @@ package controller;
 
 import domain.Crews;
 import domain.command.CommandHandler;
+import domain.constant.StandardDate;
 import view.InputView;
 import view.OutputView;
 
@@ -19,13 +20,13 @@ public class AttendanceController {
     }
 
     public void run() {
-        crews.recordAllAbsence();
+        crews.recordAllAbsence(StandardDate.DATE);
 
         String option = "";
         CommandHandler commandHandler = new CommandHandler(crews, inputView, outputView);
 
         while (!option.equals(EXIT_OPTION)) {
-            outputView.printOptionMessage();
+            outputView.printOptionMessage(StandardDate.DATE);
             option = inputView.getOption();
 
             commandHandler.handle(option);

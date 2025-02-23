@@ -1,6 +1,7 @@
 package domain.command;
 
 import domain.*;
+import domain.constant.StandardDate;
 import util.Converter;
 import view.InputView;
 import view.OutputView;
@@ -22,10 +23,10 @@ public class AttendanceCheckCommand implements Command {
 
     @Override
     public void execute() {
-        checkHoliday(LocalDate.now());
+        checkHoliday(StandardDate.DATE);
 
         Crew crew = crews.findByNickname(inputView.getNickname());
-        if (crew.isAlreadyAttend(LocalDate.now())) {
+        if (crew.isAlreadyAttend(StandardDate.DATE)) {
             System.out.println("이미 출석 완료되었습니다. 수정 기능을 이용해주세요.");
             return;
         }
@@ -35,7 +36,7 @@ public class AttendanceCheckCommand implements Command {
 
     private void registerAttendance(Crew crew) {
         LocalTime attendanceTime = Converter.convertStringToLocalTime(inputView.getAttendanceTime());
-        Attendance attendance = new Attendance(new Day(LocalDate.now()), attendanceTime);
+        Attendance attendance = new Attendance(new Day(StandardDate.DATE), attendanceTime);
         crew.addAttendance(attendance);
         outputView.printAttendanceInformation(attendance.toDto());
     }
