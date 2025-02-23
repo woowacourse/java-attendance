@@ -17,11 +17,11 @@ import static global.util.Validator.validateIsFutureDate;
 import static global.util.Validator.validateIsNotWorkingDay;
 
 public class AttendanceController {
-    private InputView inputView;
-    private OutputView outputView;
+    private final InputView inputView;
+    private final OutputView outputView;
     private Crews crews;
 
-    public AttendanceController(InputView inputView, OutputView outputView) {
+    public AttendanceController(final InputView inputView, final OutputView outputView) {
         this.inputView = inputView;
         this.outputView = outputView;
     }
@@ -47,7 +47,7 @@ public class AttendanceController {
         return inputView.getFile();
     }
 
-    private void selectMenu(String menu) {
+    private void selectMenu(final String menu) {
         if (menu.equals("1")) {
             validateIsNotWorkingDay(TODAY.toLocalDate());
             attendCrew();

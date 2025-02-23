@@ -13,9 +13,9 @@ import java.util.Scanner;
 import static global.util.Date.TODAY;
 
 public class InputView {
-    Scanner scanner;
+    private final Scanner scanner;
 
-    public InputView(Scanner scanner) {
+    public InputView(final Scanner scanner) {
         this.scanner = scanner;
     }
 
@@ -72,7 +72,7 @@ public class InputView {
         return inputByMessage("언제로 변경하겠습니까?");
     }
 
-    public void validateName(String name) {
+    private void validateName(final String name) {
         if (name.length() > 4 || name.length() < 2) {
             throw new IllegalArgumentException("크루 닉네임은 2자 이상, 4자 이하만 입력할 수 있습니다.");
         }

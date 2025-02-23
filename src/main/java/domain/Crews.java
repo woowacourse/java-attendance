@@ -47,7 +47,7 @@ public class Crews {
                 .orElseThrow(() -> new IllegalArgumentException("등록되지 않은 닉네임입니다."));
     }
 
-    public CrewResponse createCrewResponse(Crew crew) {
+    public CrewResponse createCrewResponse(final Crew crew) {
         return crew.createCrewResponse();
     }
 

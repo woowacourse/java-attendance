@@ -50,7 +50,7 @@ public class Crew {
         return attendanceBook.getOrDefault(date, LocalTime.of(0, 0));
     }
 
-    public void validateAvailableAttendanceDate(LocalDate date) {
+    public void validateAvailableAttendanceDate(final LocalDate date) {
         validateIsFutureDate(date);
         if (attendanceBook.containsKey(date)) {
             throw new IllegalArgumentException("이미 출석하여 다시 출석할 수 없습니다. 수정 기능을 이용해주세요.");
@@ -88,7 +88,7 @@ public class Crew {
         return tardyCount;
     }
 
-    private boolean isNowAbsence(LocalDate localDate) {
+    private boolean isNowAbsence(final LocalDate localDate) {
         if (!attendanceBook.containsKey(localDate)) {
             return Date.isWeekday(localDate);
         }
@@ -97,7 +97,7 @@ public class Crew {
         return attend == AttendanceStatus.ABSENCE;
     }
 
-    private boolean isNowTardy(LocalDate localDate) {
+    private boolean isNowTardy(final LocalDate localDate) {
         if (attendanceBook.containsKey(localDate)) {
             LocalTime localTime = attendanceBook.get(localDate);
             AttendanceStatus attend = AttendanceStatus.attend(assembleDateAndTime(localDate, localTime));
@@ -122,7 +122,7 @@ public class Crew {
         return new CrewResponse(name, calculateAttendanceCount(), absenceCount, tardyCount, calculateRiskStatus());
     }
 
-    public AttendanceStatus getAttendanceStatusByDate(LocalDateTime target) {
+    public AttendanceStatus getAttendanceStatusByDate(final LocalDateTime target) {
         return AttendanceStatus.attend(target);
     }
 }

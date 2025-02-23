@@ -1,9 +1,10 @@
 package domain;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import org.junit.jupiter.api.Test;
 
 import java.time.LocalDateTime;
-import org.junit.jupiter.api.Test;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 class AttendanceTest {
 
@@ -52,7 +53,7 @@ class AttendanceTest {
     void 크루의_제적_위험_여부를_확인한다() {
         Crew crew = new Crew("시소");
 
-        for(int day = 3; day <= 6; day ++) {
+        for (int day = 3; day <= 6; day++) {
             crew.addAttendStatus(LocalDateTime.of(2024, 12, day, 10, 35, 0));
         }
 

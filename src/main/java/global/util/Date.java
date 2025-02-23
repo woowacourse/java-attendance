@@ -6,7 +6,7 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 
 public class Date {
-    public static LocalDateTime TODAY = LocalDateTime.of(LocalDate.of(2024, 12, 17),
+    public static final LocalDateTime TODAY = LocalDateTime.of(LocalDate.of(2024, 12, 17),
             LocalTime.of(10, 30, 0));
     private static final LocalDate CHRISTMAS = LocalDate.of(2024, 12, 25);
 
@@ -15,27 +15,27 @@ public class Date {
                 .withDayOfMonth(1);
     }
 
-    public static boolean isNotWorkingDay(LocalDate localDate) {
+    public static boolean isNotWorkingDay(final LocalDate localDate) {
         return localDate.isEqual(CHRISTMAS) || isWeekend(localDate);
     }
 
-    private static boolean isWeekend(LocalDate localDate) {
+    private static boolean isWeekend(final LocalDate localDate) {
         return localDate.getDayOfWeek() == DayOfWeek.SATURDAY || localDate.getDayOfWeek() == DayOfWeek.SUNDAY;
     }
 
-    public static boolean isWeekday(LocalDate localDate) {
+    public static boolean isWeekday(final LocalDate localDate) {
         return !isNotWorkingDay(localDate);
     }
 
-    public static LocalDateTime assembleDateAndTime(LocalDate localDate, LocalTime localTime) {
+    public static LocalDateTime assembleDateAndTime(final LocalDate localDate, final LocalTime localTime) {
         return LocalDateTime.of(localDate, localTime);
     }
 
-    public static LocalDate getDateByInputDay(int day) {
+    public static LocalDate getDateByInputDay(final int day) {
         return LocalDate.of(TODAY.getYear(), TODAY.getMonth(), day);
     }
 
-    public static boolean isMonday(LocalDate targetDate) {
+    public static boolean isMonday(final LocalDate targetDate) {
         return targetDate.getDayOfWeek() == DayOfWeek.MONDAY;
     }
 }
