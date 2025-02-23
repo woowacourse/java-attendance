@@ -51,7 +51,10 @@ public class AttendanceController {
 
     private void attendCrew() {
         String name = inputView.readName();
+        InputValidator.checkNull(name);
+
         String time = inputView.readTime();
+        InputValidator.checkNull(time);
 
         LocalDate currentDate = DateTimeParser.parseIntegerToDate(NOW_YEAR, NOW_MONTH, NOW_DAY);
         LocalTime attendedTime = DateTimeParser.parseStringToTime(time);

@@ -10,6 +10,8 @@ public class Value {
     public static final int NOW_MONTH = 12;
     public static final int NOW_DAY = 13;
 
-    public static final String DATE_FORMAT = "%04d-%02d-%02d";
-    public static final String TIME_FORMAT = "%02d:%02d";
+    public static final int CAMPUS_START_HOUR = 13;
+    public static final int CAMPUS_START_MINUTE = 0;
+    public static final int CAMPUS_END_HOUR = 18;
+    public static final int CAMPUS_END_MINUTE = 0;
 }

@@ -1,12 +1,22 @@
 package domain;
 
+import static util.constant.ErrorMessage.NOT_CREW_ERROR_MESSAGE;
+import static util.constant.ErrorMessage.DUPLICATE_ATTEND_ERROR_MESSAGE;
+import static util.constant.ErrorMessage.NOT_OPERATING_TIME_ERROR_MESSAGE;
+import static util.constant.Value.CAMPUS_END_HOUR;
+import static util.constant.Value.CAMPUS_END_MINUTE;
+import static util.constant.Value.CAMPUS_START_HOUR;
+import static util.constant.Value.CAMPUS_START_MINUTE;
+
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import util.parser.DateTimeParser;
 
 public class AttendanceManager {
 
@@ -21,19 +31,16 @@ public class AttendanceManager {
     }
 
     public TimeAndStatus attendCrew(String name, LocalDateTime localDateTime) {
+        validateAttendancePossibility(name, localDateTime);
+
         Records records = findByName(name);
-
-        if (records.isSameDate(localDateTime)) {
-            throw new IllegalArgumentException("이미 출석한 경우 수정 기능을 사용하세요.");
-        }
-
         return records.attend(localDateTime);
     }
 
     public TimeAndStatus editCrew(String name, LocalDateTime newLocalDateTime) {
         Records records = findByName(name);
 
-        if (!records.isSameDate(newLocalDateTime)) {
+        if (!records.isAlreadyAttended(newLocalDateTime.toLocalDate())) {
             throw new IllegalArgumentException("수정 기능은 출석 후 이용 가능합니다.");
         }
 
@@ -59,9 +66,28 @@ public class AttendanceManager {
     }
 
     public Records findByName(String name) {
-        if (crews.get(name) == null) {
-            throw new IllegalArgumentException("존재하지 않는 크루입니다.");
-        }
         return crews.get(name);
+    }
+
+    private void validateAttendancePossibility(String name, LocalDateTime dateTime) {
+        if (!crews.containsKey(name)) {
+            throw new IllegalArgumentException(NOT_CREW_ERROR_MESSAGE);
+        }
+
+        Records records = findByName(name);
+        if (records.isAlreadyAttended(dateTime.toLocalDate())) {
+            throw new IllegalArgumentException(DUPLICATE_ATTEND_ERROR_MESSAGE);
+        }
+
+        if (!isOperatingTime(dateTime.toLocalTime())) {
+            throw new IllegalArgumentException(NOT_OPERATING_TIME_ERROR_MESSAGE);
+        }
+    }
+
+    private boolean isOperatingTime(LocalTime time) {
+        LocalTime start = DateTimeParser.parseIntegerToTime(CAMPUS_START_HOUR, CAMPUS_START_MINUTE);
+        LocalTime end = DateTimeParser.parseIntegerToTime(CAMPUS_END_HOUR, CAMPUS_END_MINUTE);
+
+        return time.isAfter(start) && time.isBefore(end);
     }
 }

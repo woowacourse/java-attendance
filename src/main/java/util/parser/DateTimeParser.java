@@ -1,7 +1,8 @@
 package util.parser;
 
-import static util.constant.Value.DATE_FORMAT;
+import static util.constant.ErrorMessage.DATE_TIME_FORMAT_ERROR_MESSAGE;
 
+import java.time.DateTimeException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -16,15 +17,34 @@ public class DateTimeParser {
     }
 
     public static LocalDateTime parseStringToDateTime(String dateTime) {
-        return LocalDateTime.parse(dateTime, dateTimeFormatter);
+        try {
+            return LocalDateTime.parse(dateTime, dateTimeFormatter);
+        } catch (DateTimeException e) {
+            throw new IllegalArgumentException(DATE_TIME_FORMAT_ERROR_MESSAGE);
+        }
     }
 
     public static LocalTime parseStringToTime(String time) {
-        return LocalTime.parse(time, timeFormatter);
+        try {
+            return LocalTime.parse(time, timeFormatter);
+        } catch (DateTimeException e) {
+            throw new IllegalArgumentException(DATE_TIME_FORMAT_ERROR_MESSAGE);
+        }
     }
 
     public static LocalDate parseIntegerToDate(int year, int month, int day) {
-        return LocalDate.of(year, month, day);
+        try {
+            return LocalDate.of(year, month, day);
+        } catch (DateTimeException e) {
+            throw new IllegalArgumentException(DATE_TIME_FORMAT_ERROR_MESSAGE);
+        }
     }
 
+    public static LocalTime parseIntegerToTime(int hour, int minute) {
+        try {
+            return LocalTime.of(hour, minute);
+        } catch (DateTimeException e) {
+            throw new IllegalArgumentException(DATE_TIME_FORMAT_ERROR_MESSAGE);
+        }
+    }
 }
