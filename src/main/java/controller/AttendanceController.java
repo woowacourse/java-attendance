@@ -46,35 +46,28 @@ public class AttendanceController {
     }
 
     private void selectFeature() {
-        while (runFeature()) {
-            // continue running
+        while (true) {
+            Feature feature;
+            try {
+                feature = Feature.from(inputView.readFeatureNumber());
+            } catch (IllegalArgumentException e) {
+                System.out.println(e.getMessage());
+                continue;
+            }
+            if (feature == Feature.QUIT) {
+                return;
+            }
+            runFeature(feature);
         }
     }
 
-    private boolean runFeature() {
-        Feature feature = getFeature();
-        if (feature == null) {
-            return true;
-        }
-        if (feature == Feature.QUIT) {
-            return false;
-        }
+    private void runFeature(Feature feature) {
         try {
-            features.get(feature).run();
+            Runnable action = features.get(feature);
+            action.run();
         } catch (IllegalArgumentException e) {
             System.out.println(e.getMessage());
         }
-        return true;
-    }
-
-    private Feature getFeature() {
-        try {
-            String featureNumber = inputView.readFeatureNumber();
-            return Feature.from(featureNumber);
-        } catch (IllegalArgumentException e) {
-            System.out.println(e.getMessage());
-        }
-        return null;
     }
 
     private void checkIn() {
