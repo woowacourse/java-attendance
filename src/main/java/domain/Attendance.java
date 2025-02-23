@@ -35,11 +35,11 @@ public class Attendance {
         isAbsent = isAbsent();
     }
 
-    private boolean isLate() {
+    public boolean isLate() {
         return day.isLate(attendanceTime);
     }
 
-    private boolean isAbsent() {
+    public boolean isAbsent() {
         return day.isAbsent(attendanceTime);
     }
 
