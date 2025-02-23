@@ -2,10 +2,10 @@ package domain;
 
 public class StatisticsResult {
 
-    private int attendanceCount;
-    private int latenessCount;
-    private int absenceCount;
-    private Penalty penalty;
+    private final int attendanceCount;
+    private final int latenessCount;
+    private final int absenceCount;
+    private final Penalty penalty;
 
     public StatisticsResult(int attendanceCount, int latenessCount, int absenceCount) {
         this.attendanceCount = attendanceCount;
