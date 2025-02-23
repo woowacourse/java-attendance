@@ -5,6 +5,7 @@ import java.time.LocalDate;
 import java.time.MonthDay;
 import java.time.format.TextStyle;
 import java.util.Locale;
+import java.util.Objects;
 
 public class AttendanceDate {
 
@@ -40,5 +41,19 @@ public class AttendanceDate {
 
     public DayOfWeek getDayOfWeek() {
         return date.getDayOfWeek();
+    }
+
+    @Override
+    public boolean equals(Object object) {
+        if (object == null || getClass() != object.getClass()) {
+            return false;
+        }
+        AttendanceDate that = (AttendanceDate) object;
+        return Objects.equals(date, that.date);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(date);
     }
 }

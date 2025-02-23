@@ -62,7 +62,7 @@ class AttendanceSheetsTest {
         // then
         Assertions.assertThatThrownBy(() -> attendanceSheets.findAttendanceByNickname(nickname))
                 .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage("[ERROR] 해당 닉네임은 존재하지 않습니다.");
+                .hasMessage("[ERROR] 등록되지 않은 닉네임입니다.");
     }
 
     @ParameterizedTest
@@ -80,7 +80,8 @@ class AttendanceSheetsTest {
     @DisplayName("출석 기록을 추가할 수 있다.")
     void add_attendance_sheet() {
         // given
-        AttendanceSheet attendanceSheet = new AttendanceSheet("율무", AttendanceDateTime.from(LocalDateTime.of(2024, 12, 9, 10, 3)));
+        AttendanceSheet attendanceSheet = new AttendanceSheet("율무",
+                AttendanceDateTime.from(LocalDateTime.of(2024, 12, 9, 10, 3)));
 
         // when
         // then
@@ -92,7 +93,8 @@ class AttendanceSheetsTest {
     @DisplayName("중복된 출석 기록은 예외를 발생한다.")
     void add_duplicate_attendance_sheet() {
         // given
-        AttendanceSheet attendanceSheet = new AttendanceSheet("율무", AttendanceDateTime.from(LocalDateTime.of(2024, 12, 6, 10, 3)));
+        AttendanceSheet attendanceSheet = new AttendanceSheet("율무",
+                AttendanceDateTime.from(LocalDateTime.of(2024, 12, 6, 10, 3)));
 
         // when
         // then

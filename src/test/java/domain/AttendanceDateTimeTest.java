@@ -1,19 +1,20 @@
 package domain;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatCode;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.format.TextStyle;
+import java.util.Locale;
+import java.util.stream.Stream;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
-
-import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.util.stream.Stream;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatCode;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 public class AttendanceDateTimeTest {
 
@@ -145,7 +146,10 @@ public class AttendanceDateTimeTest {
             // when-then
             assertThatThrownBy(() -> AttendanceDateTime.from(attendanceDateTime))
                     .isInstanceOf(IllegalArgumentException.class)
-                    .hasMessage("[ERROR] 주말에는 출석할 수 없습니다.");
+                    .hasMessage(String.format("[ERROR] %02d월 %02d일 %s은 등교일이 아닙니다.",
+                            attendanceDateTime.getMonth().getValue(),
+                            attendanceDateTime.getDayOfMonth(),
+                            attendanceDateTime.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.KOREAN)));
         }
 
         @Test
@@ -157,7 +161,10 @@ public class AttendanceDateTimeTest {
             // when-then
             assertThatThrownBy(() -> AttendanceDateTime.from(attendanceDateTime))
                     .isInstanceOf(IllegalArgumentException.class)
-                    .hasMessage("[ERROR] 공휴일에는 출석할 수 없습니다.");
+                    .hasMessage(String.format("[ERROR] %02d월 %02d일 %s은 등교일이 아닙니다.",
+                            attendanceDateTime.getMonth().getValue(),
+                            attendanceDateTime.getDayOfMonth(),
+                            attendanceDateTime.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.KOREAN)));
         }
     }
 

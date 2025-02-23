@@ -1,6 +1,7 @@
 package domain;
 
 import java.time.LocalTime;
+import java.util.Objects;
 
 public class AttendanceTime {
 
@@ -25,7 +26,7 @@ public class AttendanceTime {
     }
 
     public int compareMinute(int minute) {
-        return Integer.compare(time.getHour(), minute);
+        return Integer.compare(time.getMinute(), minute);
     }
 
     public int getHour() {
@@ -34,5 +35,19 @@ public class AttendanceTime {
 
     public int getMinute() {
         return time.getMinute();
+    }
+
+    @Override
+    public boolean equals(Object object) {
+        if (object == null || getClass() != object.getClass()) {
+            return false;
+        }
+        AttendanceTime that = (AttendanceTime) object;
+        return Objects.equals(time, that.time);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(time);
     }
 }

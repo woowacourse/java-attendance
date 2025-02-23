@@ -3,6 +3,7 @@ package domain;
 import java.time.DayOfWeek;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.Objects;
 
 public class AttendanceDateTime {
 
@@ -39,7 +40,7 @@ public class AttendanceDateTime {
             return decisionByMinute();
         }
 
-        if (attendanceTime.compareHour(standardHour) >= 1) {
+        if (attendanceTime.compareHour(standardHour) > 0) {
             return AttendanceState.ABSENT;
         }
 
@@ -47,11 +48,11 @@ public class AttendanceDateTime {
     }
 
     private AttendanceState decisionByMinute() {
-        if (attendanceTime.compareMinute(30) >= 1) {
+        if (attendanceTime.compareMinute(30) > 0) {
             return AttendanceState.ABSENT;
         }
 
-        if (attendanceTime.compareMinute(5) >= 1) {
+        if (attendanceTime.compareMinute(5) > 0) {
             return AttendanceState.LATE;
         }
 
@@ -64,5 +65,20 @@ public class AttendanceDateTime {
 
     public AttendanceTime getAttendanceTime() {
         return attendanceTime;
+    }
+
+    @Override
+    public boolean equals(Object object) {
+        if (object == null || getClass() != object.getClass()) {
+            return false;
+        }
+        AttendanceDateTime dateTime = (AttendanceDateTime) object;
+        return Objects.equals(attendanceDate, dateTime.attendanceDate) && Objects.equals(
+                getAttendanceTime(), dateTime.getAttendanceTime());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(attendanceDate, getAttendanceTime());
     }
 }
