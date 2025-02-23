@@ -31,8 +31,9 @@ public class Attend {
     }
 
     private static void validateDay(int day) {
-        if (day < 1 || day > 31) {
-            throw new IllegalArgumentException("day는 1 이상 31 이하여야 함");
+        int lengthOfMonth = Current.TODAY.getLengthOfMonth();
+        if (day < 1 || day > lengthOfMonth) {
+            throw new IllegalArgumentException(String.format("day는 1 이상 %d 이하여야 함", lengthOfMonth));
         }
     }
 

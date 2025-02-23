@@ -40,4 +40,8 @@ public enum Current {
     public int getDay() {
         return day;
     }
+
+    public int getLengthOfMonth() {
+        return getLocalDate().lengthOfMonth();
+    }
 }
