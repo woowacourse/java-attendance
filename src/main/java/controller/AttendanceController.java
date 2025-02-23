@@ -17,9 +17,9 @@ import static global.util.Validator.validateIsFutureDate;
 import static global.util.Validator.validateIsNotWorkingDay;
 
 public class AttendanceController {
-    InputView inputView;
-    OutputView outputView;
-    Crews crews;
+    private InputView inputView;
+    private OutputView outputView;
+    private Crews crews;
 
     public AttendanceController(InputView inputView, OutputView outputView) {
         this.inputView = inputView;
@@ -43,11 +43,11 @@ public class AttendanceController {
         }
     }
 
-    public Crews initCrews() {
+    private Crews initCrews() {
         return inputView.getFile();
     }
 
-    public void selectMenu(String menu) {
+    private void selectMenu(String menu) {
         if (menu.equals("1")) {
             validateIsNotWorkingDay(TODAY.toLocalDate());
             attendCrew();
@@ -78,7 +78,7 @@ public class AttendanceController {
         outputView.printCrewAttendanceRecord(crews.createCrewResponse(crew));
     }
 
-    public void attendCrew() {
+    private void attendCrew() {
         String name = inputView.inputName();
         Crew crew = crews.findCrewByName(name);
         crew.validateAvailableAttendanceDate(TODAY.toLocalDate());
