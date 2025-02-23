@@ -12,11 +12,13 @@ public class Attend {
     private final LocalTime time;
 
     private Attend(LocalDate date, LocalTime time) {
+        validateDateIsNotNull(date);
         this.date = date;
         this.time = time;
     }
 
     public static Attend fromDay(final int day) {
+        validateDay(day);
         return new Attend(LocalDate.of(2024, 12, day), null);
     }
 
@@ -26,6 +28,18 @@ public class Attend {
 
     public static Attend of(final LocalDate day, final LocalTime time) {
         return new Attend(day, time);
+    }
+
+    private static void validateDay(int day) {
+        if (day < 1 || day > 31) {
+            throw new IllegalArgumentException("day는 1 이상 31 이하여야 함");
+        }
+    }
+
+    private void validateDateIsNotNull(LocalDate date) {
+        if (date == null) {
+            throw new IllegalArgumentException("date는 null이 될 수 없음");
+        }
     }
 
     public boolean isDayOff() {
