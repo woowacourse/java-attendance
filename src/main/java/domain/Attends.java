@@ -43,14 +43,10 @@ public class Attends {
     }
 
     public List<Attend> getAttends(List<Integer> dayOfWeek) {
-        List<Integer> existAttendDay = dayOfWeek.stream()
-                .filter(this::hasDayEqualsAttend)
-                .toList();
-
         List<Attend> result = new ArrayList<>();
-        for (int day : existAttendDay) {
-            result.add(findByDay(day));
-        }
+        dayOfWeek.stream()
+                .filter(this::hasDayEqualsAttend)
+                .forEach(day -> result.add(findByDay(day)));
         return result;
     }
 
