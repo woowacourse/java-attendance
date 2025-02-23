@@ -20,7 +20,7 @@ public class Day {
     }
 
     public Boolean checkHoliday() {
-        return getDayOfWeek().equals(DayOfWeek.SATURDAY) || getDayOfWeek().equals(DayOfWeek.SUNDAY);
+        return Holiday.isHoliday(date) || getDayOfWeek().equals(DayOfWeek.SATURDAY) || getDayOfWeek().equals(DayOfWeek.SUNDAY);
     }
 
     public boolean isLate(LocalTime attendanceTime) {

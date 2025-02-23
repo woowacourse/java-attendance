@@ -1,5 +1,7 @@
 package domain;
 
+import domain.constant.StandardDate;
+
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.YearMonth;
@@ -55,18 +57,17 @@ public class Crew {
         return attendances.stream().anyMatch(attendance -> attendance.isEqualTo(date));
     }
 
-    public void recordAbsence() {
-        LocalDate today = LocalDate.now();
-
+    public void recordAbsence(LocalDate today) {
         today.withDayOfMonth(1)
                 .datesUntil(today)
                 .filter(date -> date.getDayOfWeek() != DayOfWeek.SATURDAY && date.getDayOfWeek() != DayOfWeek.SUNDAY)
+                .filter(date -> !Holiday.isHoliday(date))
                 .filter(date -> !isAlreadyAttend(date))
                 .forEach(date -> addAttendance(new Attendance(new Day(date), null)));
     }
 
     public Attendance findByDate(Integer dayOfMonth) {
-        LocalDate today = LocalDate.now();
+        LocalDate today = StandardDate.DATE;
         validateDayOfMonth(dayOfMonth, today);
 
         int month = today.getMonth().getValue();
