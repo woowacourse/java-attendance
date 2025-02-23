@@ -28,15 +28,20 @@ public enum AttendanceStatus {
     }
 
     private static AttendanceStatus getAttendanceStatusByTime(LocalTime attendanceTime, LocalTime targetTime) {
-        if (targetTime.isAfter(attendanceTime)) {
-            if (attendanceTime.plusMinutes(30).isBefore(targetTime)) {
-                return ABSENCE;
-            }
-            if (attendanceTime.plusMinutes(5).isBefore(targetTime)) {
-                return TARDY;
-            }
-            return ATTENDANCE;
+        if (isAbsenceTime(attendanceTime, targetTime)) {
+            return ABSENCE;
+        }
+        if (isTardyTime(attendanceTime, targetTime)) {
+            return TARDY;
         }
         return ATTENDANCE;
+    }
+
+    private static boolean isAbsenceTime(LocalTime attendanceTime, LocalTime targetTime) {
+        return attendanceTime.plusMinutes(30).isBefore(targetTime) && targetTime.isAfter(attendanceTime);
+    }
+
+    private static boolean isTardyTime(LocalTime attendanceTime, LocalTime targetTime) {
+        return attendanceTime.plusMinutes(5).isBefore(targetTime) && targetTime.isAfter(attendanceTime);
     }
 }
