@@ -22,7 +22,7 @@ public class Controller {
         studentRecordRepository.updateEveryStudentNoInformationInFile(todayDate.getTodayDateTIme());
 
         while (true){
-            String userInput = InputView.getUserInputString(todayDate);
+            String userInput = InputView.getUserWantMenu(todayDate);
 
             if (userInput.equals("Q")) {
                 break;
