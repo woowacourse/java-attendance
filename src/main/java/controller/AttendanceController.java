@@ -62,7 +62,7 @@ public class AttendanceController {
         String rawNickname = inputView.readNickname();
         String rawCheckInTime = inputView.readCheckInTime();
 
-        Attendance attendance = stringConverter.convertToAttendance(rawNickname, rawCheckInTime);
+        Attendance attendance = stringConverter.convertToAttendance(rawNickname, rawCheckInTime, LocalDate.now());
         attendances.checkIn(attendance);
 
         return attendance;
@@ -74,7 +74,7 @@ public class AttendanceController {
         String rawChangeTime = inputView.readChangeTime();
 
         Crew crew = stringConverter.convertToNickname(rawNickname);
-        LocalDateTime changeTime = stringConverter.convertToLocalDateTime(rawDay, rawChangeTime);
+        LocalDateTime changeTime = stringConverter.convertToLocalDateTime(rawDay, rawChangeTime, LocalDate.now());
 
         Optional<Attendance> existAttendance = attendances.find(crew, changeTime.toLocalDate());
         Attendance modifedAttendance = attendances.modify(crew, changeTime);

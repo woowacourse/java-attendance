@@ -16,17 +16,20 @@ import org.junit.jupiter.api.Test;
 class StringConverterTest {
 
     @Test
-    void test1() {
+    void 닉네임과_시간을_오늘의_출석으로_변환한다() {
         //given
+        String nickname = "쿠키";
         StringConverter stringConverter = new StringConverter();
+        Crew crew = Crew.of(nickname);
+        LocalDate today = LocalDate.of(2024, 12, 2);
+        LocalDateTime time = LocalDateTime.of(today, LocalTime.of(9, 44));
+        Attendance expected = Attendance.of(crew, time);
 
         //when
-        Attendance attendance = stringConverter.convertToAttendance("이름", "09:44");
+        Attendance actual = stringConverter.convertToAttendance(nickname, "09:44", today);
 
         //then
-        Assertions.assertThat(attendance.getCrew().getNickname()).isEqualTo("이름");
-        Assertions.assertThat(attendance.getCheckInTime())
-                .isEqualTo(LocalDateTime.of(LocalDate.now(), LocalTime.of(9, 44)));
+        Assertions.assertThat(actual).isEqualTo(expected);
     }
 
     @Test

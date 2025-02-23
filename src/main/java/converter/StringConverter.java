@@ -52,13 +52,13 @@ public class StringConverter {
         return Attendances.of(attendances);
     }
 
-    public Attendance convertToAttendance(String rawNickname, String rawCheckInTime) {
+    public Attendance convertToAttendance(String rawNickname, String rawCheckInTime, LocalDate today) {
         validateNullOrBlank(rawNickname);
         Crew crew = Crew.of(rawNickname);
 
         validateNullOrBlank(rawCheckInTime);
         validateTimeFormat(rawCheckInTime);
-        LocalDateTime checkInTime = LocalDateTime.of(LocalDate.now(), LocalTime.parse(rawCheckInTime));
+        LocalDateTime checkInTime = LocalDateTime.of(today, LocalTime.parse(rawCheckInTime));
 
         return Attendance.of(crew, checkInTime);
     }
@@ -73,28 +73,28 @@ public class StringConverter {
         return Crew.of(rawNickname);
     }
 
-    public LocalDateTime convertToLocalDateTime(String rawDay, String rawTime) {
+    public LocalDateTime convertToLocalDateTime(String rawDay, String rawTime, LocalDate today) {
         validateDayFormat(rawDay);
-        LocalDate now = LocalDate.now();
-        LocalDate nowDate = LocalDate.of(now.getYear(), now.getMonthValue(), Integer.parseInt(rawDay));
+        validateLastDayOfMonth(Integer.parseInt(rawDay), today);
+        LocalDate date = LocalDate.of(today.getYear(), today.getMonthValue(), Integer.parseInt(rawDay));
 
         validateTimeFormat(rawTime);
         String[] split = rawTime.split(":");
-        LocalTime nowTime = LocalTime.of(Integer.parseInt(split[0]), Integer.parseInt(split[1]));
+        LocalTime time = LocalTime.of(Integer.parseInt(split[0]), Integer.parseInt(split[1]));
 
-        return LocalDateTime.of(nowDate, nowTime);
+        return LocalDateTime.of(date, time);
     }
 
     private void validateDayFormat(String rawDay) {
-        int day;
         try {
-            day = Integer.parseInt(rawDay);
+            Integer.parseInt(rawDay);
         } catch (NumberFormatException e) {
             throw new IllegalArgumentException("날짜 형식이 아닙니다.");
         }
+    }
 
-        LocalDate now = LocalDate.now();
-        int lastDay = now.withDayOfMonth(now.lengthOfMonth()).getDayOfMonth();
+    private void validateLastDayOfMonth(int day, LocalDate today) {
+        int lastDay = today.withDayOfMonth(today.lengthOfMonth()).getDayOfMonth();
 
         if (day < 1 || day > lastDay) {
             throw new IllegalArgumentException("잘못된 날짜입니다.");
