@@ -23,15 +23,15 @@ public class Crew implements Comparable<Crew> {
     }
 
     public static Crew of(final String name, final LocalDate today) {
-        List<Attendance> attendances = IntStream.range(1, today.getDayOfMonth())
+        final List<Attendance> attendances = IntStream.range(1, today.getDayOfMonth())
                 .mapToObj(today::withDayOfMonth)
-                .filter(Crew::isAvailableForAttendance)
+                .filter(Crew::canDateAttendance)
                 .map(Attendance::empty)
                 .toList();
         return new Crew(name, attendances);
     }
 
-    private static boolean isAvailableForAttendance(final LocalDate today) {
+    private static boolean canDateAttendance(final LocalDate today) {
         if (today.getDayOfWeek() == DayOfWeek.SATURDAY || today.getDayOfWeek() == DayOfWeek.SUNDAY
                 || today.equals(CHRISTMAS_DATE)) {
             return true;
@@ -113,9 +113,7 @@ public class Crew implements Comparable<Crew> {
     }
 
     public List<Attendance> getAttendances() {
-        return attendances.stream()
-                .map(Attendance::new)
-                .toList();
+        return new ArrayList<>(attendances);
     }
 
     @Override
