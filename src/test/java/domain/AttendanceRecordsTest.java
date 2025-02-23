@@ -15,9 +15,10 @@ class AttendanceRecordsTest {
     void fillAbsencesTest() {
         CrewAttendanceRecords crewAttendanceRecords = new CrewAttendanceRecords(new CsvParsingGenerator(), LocalDate.of(2024, 12, 13));
         Crew crew = new Crew("쿠키");
-        boolean hasRecord = crewAttendanceRecords.hasRecord(crew, LocalDate.of(2024, 12, 12));
+        LocalDate missingDate = LocalDate.of(2024, 12, 12);
+        AttendanceRecord expectedRecord = AttendanceRecord.asAbsent(missingDate);
 
-        assertThat(hasRecord).isTrue();
+        assertThat(crewAttendanceRecords.getRecordAtDate(crew, missingDate)).isEqualTo(expectedRecord);
     }
 
     @Test
