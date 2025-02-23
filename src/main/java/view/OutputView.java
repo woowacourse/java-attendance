@@ -7,7 +7,6 @@ import domain.AttendanceResult;
 import domain.AttendanceResults;
 import domain.WarningCrew;
 import domain.WarningStatus;
-import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
@@ -28,10 +27,10 @@ public class OutputView {
     }
 
     private String formatAttendAndStatus(Attend attend, AttendStatus attendStatus) {
-        String date = attend.formatDate(DateTimeFormatter.ofPattern("MM월 dd일 E요일"));
+        String date = attend.formatDate(DateTimeFormat.DATE.getDateTimeFormatter());
         String time = "--:--";
         if (attend.hasTime()) {
-            time = attend.formatTime(DateTimeFormatter.ofPattern("HH:mm"));
+            time = attend.formatTime(DateTimeFormat.TIME.getDateTimeFormatter());
         }
         String status = formatAttendStatus(attendStatus);
         return String.format("%s %s (%s)", date, time, status);
