@@ -33,10 +33,10 @@ public class Attendances {
     }
 
     public List<Attendance> getAttendancesUntilYesterday() {
-        List<Attendance> attendancesUntilYesterday = attendances.subList(0, attendances.size() - 1);
-        return attendancesUntilYesterday.stream()
+        return attendances.stream()
                 .sorted(Attendance::compareTo)
-                .toList();
+                .toList()
+                .subList(0, attendances.size() - 1);
     }
 
     public AttendanceGroupByStatus createCountUntilYesterday(LocalDate date) {
