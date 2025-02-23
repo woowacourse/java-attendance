@@ -42,8 +42,17 @@ public class AttendanceBook {
         nicknameToAttendances.get(nickname).add(attendanceDate, attendanceTime);
     }
 
+    public Attendance add(String nickname, Attendance attendance) {
+        if (!existsByNickname(nickname)) {
+            attendanceBook.put(nickname, Attendances.create());
+        }
+
+        Attendances attendances = attendanceBook.get(nickname);
+        return attendances.add(attendance.attendanceDate(), attendance.attendanceTime());
+    }
+
     public Attendances findAllByNickname(String nickname) {
-        if (attendanceBook.containsKey(nickname)) {
+        if (existsByNickname(nickname)) {
             return attendanceBook.get(nickname);
         }
         throw new IllegalArgumentException("해당 닉네임으로 출석된 기록이 없습니다.");
@@ -55,5 +64,9 @@ public class AttendanceBook {
                         expulsionCandidateAttendances.getValue().calculateStatistics(expulsionCandidateAttendances.getKey(), TimeMachine.dateOfNow()))
                 .filter(attendanceStatistics -> AbsentRule.calculateAbsentPolicy(attendanceStatistics).isRiskOfExpulsion())
                 .toList());
+    }
+
+    private boolean existsByNickname(String nickname) {
+        return attendanceBook.containsKey(nickname);
     }
 }

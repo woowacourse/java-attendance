@@ -56,18 +56,16 @@ public class AttendanceController {
 
     private void attend(AttendanceBook attendanceBook) {
         String nickname = inputView.inputNickname();
-        Attendances attendances = attendanceBook.findAllByNickname(nickname);
 
         AttendanceTime attendanceTime = AttendanceTime.from(LocalTime.parse(inputView.inputTime(), FormatUtil.TIME_FORMATTER));
         AttendanceDate attendanceDate = AttendanceDate.from(TimeMachine.dateOfNow());
+        Attendance attendance = Attendance.from(attendanceDate, attendanceTime);
 
-        Attendance attendance = attendances.add(attendanceDate, attendanceTime);
-        outputView.printAttendance(attendance);
+        outputView.printAttendance(attendanceBook.add(nickname, attendance));
     }
 
     private void updateAttendance(AttendanceBook attendanceBook) {
         String nickname = inputView.inputUpdateNickname();
-
         Attendances attendances = attendanceBook.findAllByNickname(nickname);
 
         int day = inputView.inputUpdateDate();
@@ -82,9 +80,9 @@ public class AttendanceController {
 
     private void displayAttendances(AttendanceBook attendanceBook) {
         String nickname = inputView.inputNickname();
-        outputView.printAttendanceIntro(nickname);
-
         Attendances attendances = attendanceBook.findAllByNickname(nickname);
+
+        outputView.printAttendanceIntro(nickname);
         outputView.printAttendances(attendances);
 
         AttendanceStatistics attendanceStatistics = attendances.calculateStatistics(nickname, TimeMachine.dateOfNow());

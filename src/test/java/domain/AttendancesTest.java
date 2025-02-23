@@ -52,14 +52,14 @@ class AttendancesTest {
     }
 
     @Test
-    @DisplayName("출석을 수정할 수 있다")
-    void updateAttendance() {
+    @DisplayName("이전에 출석 확인을 했다면, 그 출석을 수정할 수 있다")
+    void updateAttendanceWhenExists() {
         // given
         AttendanceDate date = AttendanceDate.from(LocalDate.of(2024, 12, 10));
         AttendanceTime oldTime = AttendanceTime.from(LocalTime.of(9, 0));
-        AttendanceTime newTime = AttendanceTime.from(LocalTime.of(9, 30));
-
         attendances.add(date, oldTime);
+
+        AttendanceTime newTime = AttendanceTime.from(LocalTime.of(9, 30));
 
         // when
         Attendance updatedAttendance = attendances.update(date, newTime);
@@ -67,6 +67,19 @@ class AttendancesTest {
         // then
         assertThat(updatedAttendance).isNotNull();
         assertThat(attendances.findByDate(date)).isEqualTo(newTime);
+    }
+
+    @Test
+    @DisplayName("이전에 출석 확인을 하지 않았다면, 그 출석을 수정할 수 없다")
+    void updateAttendanceWhenNotExists() {
+        // given
+        AttendanceDate date = AttendanceDate.from(LocalDate.of(2024, 12, 10));
+        AttendanceTime newTime = AttendanceTime.from(LocalTime.of(9, 30));
+
+        // when
+        // then
+        assertThatThrownBy(() -> attendances.update(date, newTime))
+                .hasMessage("출석하지 않은 경우, 수정 기능을 이용할 수 없습니다.");
     }
 
     @Test

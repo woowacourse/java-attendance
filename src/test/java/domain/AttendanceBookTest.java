@@ -6,9 +6,11 @@ import org.junit.jupiter.api.Test;
 import util.FormatUtil;
 import util.TimeMachine;
 
+import java.time.LocalTime;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
@@ -45,6 +47,32 @@ class AttendanceBookTest {
                 () -> assertThat(attendanceBook.findAllByNickname("강산")).isNotNull(),
                 () -> assertThat(attendanceBook.findAllByNickname("고양이")).isNotNull()
         );
+    }
+
+    @Test
+    @DisplayName("기존에 없던 닉네임의 크루도 출석 시간 이용해 출석을 추가할 수 있다")
+    void addWhenExists() {
+        // given
+        AttendanceDate attendanceDate = AttendanceDate.from(TimeMachine.dateOfNow());
+        AttendanceTime attendanceTime = AttendanceTime.from(LocalTime.of(10, 0));
+
+        // when
+        // then
+        assertThatCode(() -> attendanceBook.add("이런이름은위에서정말없었습니다", Attendance.from(attendanceDate, attendanceTime)))
+                .doesNotThrowAnyException();
+    }
+
+    @Test
+    @DisplayName("닉네임과 출석 시간 이용해 출석을 추가할 수 있다")
+    void addWhenNotExists() {
+        // given
+        AttendanceDate attendanceDate = AttendanceDate.from(TimeMachine.dateOfNow());
+        AttendanceTime attendanceTime = AttendanceTime.from(LocalTime.of(10, 0));
+
+        // when
+        // then
+        assertThatCode(() -> attendanceBook.add("강산", Attendance.from(attendanceDate, attendanceTime)))
+                .doesNotThrowAnyException();
     }
 
     @Test
