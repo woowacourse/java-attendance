@@ -12,6 +12,34 @@ import java.util.Locale;
 
 public class OutputView {
 
+    public static void printAddInformation(int hour, int minute, AttendanceDateTime attendanceDateTime) {
+        AttendanceDate attendanceDate = attendanceDateTime.getAttendanceDate();
+
+        System.out.print(System.lineSeparator());
+        System.out.printf("%02d월 %02d일 %s %02d:%02d (%s)%n",
+                Calendar.DECEMBER.month,
+                attendanceDate.getDayOfMonth(),
+                attendanceDate.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.KOREAN),
+                hour, minute,
+                attendanceDateTime.check().description
+        );
+        System.out.print(System.lineSeparator());
+    }
+
+    public static void printAttendanceSheetsByCrew(String nickname, List<AttendanceSheet> attendancesByNickname,
+                                                   AttendanceSheets attendanceSheets, LocalDate today) {
+        int attendCount = attendanceSheets.calculateAttendCountBy(nickname);
+        int lateCount = attendanceSheets.calculateLateCountBy(nickname);
+        int absentCount = attendanceSheets.calculateAbsentCount(nickname, today);
+
+        printAttendanceSheetIntro(nickname);
+        printAttendanceSheets(attendancesByNickname, today.getDayOfMonth());
+        printAttendanceStatistics(attendCount, lateCount, absentCount);
+
+        printAbsentPolicy(AbsentPolicy.calculateAbsentPolicy(absentCount, lateCount));
+        System.out.print(System.lineSeparator());
+    }
+
     public static void printAttendanceSheetIntro(String nickname) {
         System.out.print(System.lineSeparator());
         System.out.printf(ViewMessage.CURRENT_MONTH_ATTENDANCE_SHEET, nickname);

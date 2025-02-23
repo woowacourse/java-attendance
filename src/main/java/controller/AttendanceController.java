@@ -77,21 +77,10 @@ public class AttendanceController {
         System.out.print(System.lineSeparator());
     }
 
-    private void printAttendance(AttendanceSheets attendanceSheets) {
+    private void printAttendanceSheetsByCrew(AttendanceSheets attendanceSheets) {
         String nickname = inputView.inputNickname();
-
         List<AttendanceSheet> attendancesByNickname = attendanceSheets.findAttendanceByNickname(nickname);
-
-        int attendCount = attendanceSheets.calculateAttendCountBy(nickname);
-        int lateCount = attendanceSheets.calculateLateCountBy(nickname);
-        int absentCount = attendanceSheets.calculateAbsentCount(nickname, today);
-
-        OutputView.printAttendanceSheetIntro(nickname);
-        OutputView.printAttendanceSheets(attendancesByNickname, today.getDayOfMonth());
-        OutputView.printAttendanceStatistics(attendCount, lateCount, absentCount);
-
-        OutputView.printAbsentPolicy(AbsentPolicy.calculateAbsentPolicy(absentCount, lateCount));
-        System.out.print(System.lineSeparator());
+        OutputView.printAttendanceSheetsByCrew(nickname, attendancesByNickname, attendanceSheets, today);
     }
 
     private void updateAttendance(AttendanceSheets attendanceSheets) {
@@ -119,8 +108,10 @@ public class AttendanceController {
         int hour = Integer.parseInt(time.split(":")[0]);
         int minute = Integer.parseInt(time.split(":")[1]);
 
-        LocalDateTime localDateTime = LocalDateTime.of(today.getYear(), today.getMonth(), today.getDayOfMonth(), hour,
-                minute);
-        attendanceSheets.add(new AttendanceSheet(nickname, AttendanceDateTime.from(localDateTime)));
+        AttendanceDateTime attendanceDateTime = AttendanceDateTime.from(
+                LocalDateTime.of(today.getYear(), today.getMonth(), today.getDayOfMonth(), hour,
+                        minute));
+        attendanceSheets.add(new AttendanceSheet(nickname, attendanceDateTime));
+        OutputView.printAddInformation(hour, minute, attendanceDateTime);
     }
 }

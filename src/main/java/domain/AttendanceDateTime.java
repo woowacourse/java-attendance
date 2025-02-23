@@ -67,6 +67,10 @@ public class AttendanceDateTime {
         return attendanceTime;
     }
 
+    public AttendanceDate getAttendanceDate() {
+        return attendanceDate;
+    }
+
     @Override
     public boolean equals(Object object) {
         if (object == null || getClass() != object.getClass()) {

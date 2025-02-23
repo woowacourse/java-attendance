@@ -56,4 +56,8 @@ public class AttendanceDate {
     public int hashCode() {
         return Objects.hashCode(date);
     }
+
+    public int getDayOfMonth() {
+        return date.getDayOfMonth();
+    }
 }
