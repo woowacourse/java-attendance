@@ -55,7 +55,9 @@ class AttendancesTest {
         Attendances attendances = new Attendances(crewGroup, List.of(attendance));
 
         LocalDateTime updateDateTime = LocalDateTime.of(2024, 12, 13, 11, 1);
-        Attendance modifidedAttendance = attendances.update(new Attendance(crew, updateDateTime));
+        Attendance modifidedAttendance = attendances.update(
+                now.toLocalDate(),
+                new Attendance(crew, updateDateTime));
 
         assertThat(attendances)
                 .extracting("attendances")
@@ -92,7 +94,7 @@ class AttendancesTest {
 
     @DisplayName("크루의 해당 달의 출석 기록을 조회할 수 있다.")
     @Test
-    void attendanceHistoryByCrewTest() {
+    void findMonthlyAttendance() {
         Crew crew = new Crew("포비");
         CrewGroup crewGroup = new CrewGroup(Set.of(crew));
         Attendances attendances = new Attendances(crewGroup, List.of(
@@ -102,18 +104,22 @@ class AttendancesTest {
         ));
 
         Month findMonth = Month.DECEMBER;
-        List<Attendance> attendanceHistory = attendances.findAllByCrewAndMonth(crew, findMonth);
+        MonthlyAttendance monthlyAttendance = attendances.findMonthlyAttendance(crew, findMonth);
 
-        assertThat(attendanceHistory)
-                .isEqualTo(List.of(
-                        new Attendance(crew, LocalDateTime.of(2024, 12, 2, 10, 1)),
-                        new Attendance(crew, LocalDateTime.of(2024, 12, 3, 10, 12))
+        assertThat(monthlyAttendance)
+                .isEqualTo(new MonthlyAttendance(
+                        Month.DECEMBER,
+                        crew,
+                        List.of(
+                                new Attendance(crew, LocalDateTime.of(2024, 12, 2, 10, 1)),
+                                new Attendance(crew, LocalDateTime.of(2024, 12, 3, 10, 12))
+                        )
                 ));
     }
 
-    @DisplayName("모든 크루의 해당 달의 출석 기록을 조회할 수 있다.")
+    @DisplayName("모든 크루의 출석 결과를 조회할 수 있다.")
     @Test
-    void attendanceHistoryTest() {
+    void attendanceResultTest() {
         Crew pobi = new Crew("포비");
         Crew neo = new Crew("네오");
         CrewGroup crewGroup = new CrewGroup(Set.of(pobi, neo));
@@ -125,16 +131,22 @@ class AttendancesTest {
                 new Attendance(neo, LocalDateTime.of(2024, 12, 2, 10, 1)),
                 new Attendance(neo, LocalDateTime.of(2024, 12, 3, 10, 12))
         ));
+        LocalDate endDate = LocalDate.of(2024, 12, 3);
 
-        Month findMonth = Month.DECEMBER;
-        Map<Crew, List<Attendance>> attendanceHistory = attendances.findAllByMonth(findMonth);
+        List<AttendanceResult> attendanceResults = attendances.findAllCrewAttendanceResultUntilDate(endDate);
 
-        assertThat(attendanceHistory)
-                .isEqualTo(Map.of(
-                        pobi, List.of(new Attendance(pobi, LocalDateTime.of(2024, 12, 2, 10, 1)),
-                                new Attendance(pobi, LocalDateTime.of(2024, 12, 3, 10, 12))),
-                        neo, List.of(new Attendance(neo, LocalDateTime.of(2024, 12, 2, 10, 1)),
-                                new Attendance(neo, LocalDateTime.of(2024, 12, 3, 10, 12)))
-                ));
+        assertThat(attendanceResults)
+                .contains(
+                        new AttendanceResult(
+                                pobi,
+                                Map.of(AttendanceType.OK, 1, AttendanceType.LATE, 1),
+                                List.of(new Attendance(pobi, LocalDateTime.of(2024, 12, 2, 10, 1)),
+                                        new Attendance(pobi, LocalDateTime.of(2024, 12, 3, 10, 12)))),
+                        new AttendanceResult(
+                                neo,
+                                Map.of(AttendanceType.OK, 1, AttendanceType.LATE, 1),
+                                List.of(new Attendance(neo, LocalDateTime.of(2024, 12, 2, 10, 1)),
+                                        new Attendance(neo, LocalDateTime.of(2024, 12, 3, 10, 12))))
+                );
     }
 }

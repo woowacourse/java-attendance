@@ -46,6 +46,10 @@ public class Attendance {
         return AttendanceType.judge(AttendanceStartTime.findDayOfWeek(attendanceDate.getDayOfWeek()), attendanceTime);
     }
 
+    public LocalDate getAttendanceDate() {
+        return attendanceDate;
+    }
+
     public LocalTime getAttendanceTime() {
         return attendanceTime;
     }
@@ -64,14 +68,15 @@ public class Attendance {
         }
 
         Attendance that = (Attendance) object;
-        return Objects.equals(crew, that.crew) && Objects.equals(getAttendanceDateTime(),
-                that.getAttendanceDateTime());
+        return Objects.equals(crew, that.crew) && Objects.equals(getAttendanceDate(),
+                that.getAttendanceDate()) && Objects.equals(getAttendanceTime(), that.getAttendanceTime());
     }
 
     @Override
     public int hashCode() {
         int result = Objects.hashCode(crew);
-        result = 31 * result + Objects.hashCode(getAttendanceDateTime());
+        result = 31 * result + Objects.hashCode(getAttendanceDate());
+        result = 31 * result + Objects.hashCode(getAttendanceTime());
         return result;
     }
 
@@ -82,5 +87,9 @@ public class Attendance {
         if (Holiday.isHoliday(attendanceDate)) {
             throw new IllegalArgumentException("법정 공휴일에는 출석할 수 없습니다.");
         }
+    }
+
+    public boolean isAfter(LocalDate now) {
+        return this.attendanceDate.isAfter(now);
     }
 }

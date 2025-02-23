@@ -4,7 +4,6 @@ import java.time.LocalDate;
 import java.time.Month;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 public class Attendances {
@@ -31,7 +30,10 @@ public class Attendances {
         attendances.add(attendance);
     }
 
-    public Attendance update(Attendance newAttendance) {
+    public Attendance update(LocalDate now, Attendance newAttendance) {
+        if (newAttendance.isAfter(now)) {
+            throw new IllegalArgumentException("미래날짜의 출석을 수정할 수 없습니다.");
+        }
         for (Attendance attendance : attendances) {
             if (attendance.isAlreadyAttendance(newAttendance)) {
                 attendances.remove(attendance);
@@ -49,19 +51,19 @@ public class Attendances {
                 .orElse(Attendance.absent(crew, date));
     }
 
-    public List<Attendance> findAllByCrewAndMonth(Crew crew, Month findMonth) {
+    public MonthlyAttendance findMonthlyAttendance(Crew crew, Month findMonth) {
         validateExistCrew(crew);
-        return attendances.stream()
+        List<Attendance> monthlyAttendance = attendances.stream()
                 .filter(attendance -> attendance.isCrewAttendanceInMonth(crew, findMonth))
                 .toList();
+        return new MonthlyAttendance(findMonth, crew, monthlyAttendance);
     }
 
-    public Map<Crew, List<Attendance>> findAllByMonth(Month findMonth) {
+    public List<AttendanceResult> findAllCrewAttendanceResultUntilDate(LocalDate endDate) {
         return crewGroup.getCrews().stream()
-                .collect(Collectors.toMap(
-                        crew -> crew,
-                        crew -> findAllByCrewAndMonth(crew, findMonth)
-                ));
+                .map(crew -> findMonthlyAttendance(crew, endDate.getMonth()))
+                .map(monthlyAttendance -> monthlyAttendance.calculateAttendanceResultUntilDate(endDate))
+                .collect(Collectors.toList());
     }
 
     private boolean isAlreadyAttendance(Attendance attendanceToCheck) {
