@@ -32,19 +32,26 @@ public class AttendanceManager {
         IntStream.range(1, dayAllCount + 1)
                 .mapToObj(index -> LocalDateTime.of(dateGenerator.now().withDayOfMonth(index), LocalTime.MIN))
                 .filter(dateTime -> !holiday.isHoliday(dateTime.toLocalDate()))
-                .forEach(dateTime -> newAttendances.add(new Attendance(dateTime)));
+                .forEach(newAttendances::addAttendance);
 
         attendances.put(name, newAttendances);
     }
 
     public Attendance processAttendanceCheck(final LocalDateTime dateTime, final String nickname) {
         Attendances attendances = findCrewAttendance(nickname);
-        return attendances.checkAndUpdateAttendance(dateTime);
+        attendances.validateAlreadyAttendance(dateTime.toLocalDate());
+
+        attendances.deleteAttendance(dateTime.toLocalDate());
+        return attendances.addAttendance(dateTime);
     }
 
-    public Attendance processAttendanceUpdate(final LocalDateTime dateTime, final String nickname) {
+    public List<Attendance> processAttendanceUpdate(final LocalDateTime dateTime, final String nickname) {
         Attendances attendances = findCrewAttendance(nickname);
-        return attendances.updateAttendance(dateTime);
+
+        Attendance oldAttendance = attendances.deleteAttendance(dateTime.toLocalDate());
+        Attendance newAttendance = attendances.addAttendance(dateTime);
+
+        return List.of(oldAttendance, newAttendance);
     }
 
     public void validateNicknameExists(String nickname) {

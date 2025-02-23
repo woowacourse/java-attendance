@@ -40,6 +40,8 @@ public class AttendanceInit {
 
     private void insertAttendance(String nickname, LocalDateTime dateTime) {
         Attendances attendances = attendanceManager.findCrewAttendance(nickname);
-        attendances.updateAttendance(dateTime);
+
+        attendances.deleteAttendance(dateTime.toLocalDate());
+        attendances.addAttendance(dateTime);
     }
 }
