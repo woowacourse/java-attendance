@@ -1,6 +1,11 @@
 package attendance.domain;
 
+import java.util.Arrays;
 import java.util.EnumMap;
+
+import static attendance.domain.AttendanceStatusType.EXPULSION;
+import static attendance.domain.AttendanceStatusType.LATE;
+import static attendance.domain.AttendanceStatusType.values;
 
 public class AttendanceStatus {
 
@@ -10,14 +15,20 @@ public class AttendanceStatus {
     public AttendanceStatus(final Attendances attendances) {
         status = new EnumMap<>(AttendanceStatusType.class);
 
-        int expulsion = attendances.calculateStatusUntilYesterday(AttendanceStatusType.EXPULSION);
-        int late = attendances.calculateStatusUntilYesterday(AttendanceStatusType.LATE);
+        Arrays.stream(values())
+                .forEach(statusType -> {
+                    int statusCount = attendances.calculateStatusUntilYesterday(statusType);
+                    status.put(statusType, statusCount);
+                });
 
-        status.put(AttendanceStatusType.EXPULSION, expulsion);
-        status.put(AttendanceStatusType.LATE, late);
-        status.put(AttendanceStatusType.ATTENDANCE, attendances.calculateStatusUntilYesterday(AttendanceStatusType.ATTENDANCE));
+        int expulsion = status.get(EXPULSION);
+        int late = status.get(LATE);
 
         warningType = AttendanceWarningType.find(expulsion, late);
+    }
+
+    public static AttendanceStatus of(final Attendances attendances) {
+        return new AttendanceStatus(attendances);
     }
 
     public EnumMap<AttendanceStatusType, Integer> getStatus() {
