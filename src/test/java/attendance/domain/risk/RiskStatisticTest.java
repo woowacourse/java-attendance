@@ -1,4 +1,4 @@
-package attendance.domain;
+package attendance.domain.risk;
 
 import static attendance.domain.risk.RiskType.COUNSELING;
 import static attendance.domain.risk.RiskType.NONE;
@@ -6,8 +6,6 @@ import static attendance.domain.risk.RiskType.WARNING;
 import static attendance.domain.risk.RiskType.WITHDRAWAL;
 import static org.assertj.core.api.Assertions.assertThat;
 
-import attendance.domain.risk.RiskStatistic;
-import attendance.domain.risk.RiskType;
 import java.util.stream.Stream;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;

@@ -1,4 +1,4 @@
-package attendance.domain;
+package attendance.domain.record;
 
 import static attendance.domain.record.AttendanceType.ATTENDANCE;
 import static attendance.domain.record.AttendanceType.EXPULSION;

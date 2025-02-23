@@ -1,11 +1,9 @@
-package attendance.domain;
+package attendance.domain.crew;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 
-import attendance.domain.crew.Crew;
-import attendance.domain.crew.CrewStorage;
 import attendance.exception.ExceptionMessage;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;

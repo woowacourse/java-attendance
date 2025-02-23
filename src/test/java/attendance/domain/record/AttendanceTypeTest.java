@@ -1,11 +1,10 @@
-package attendance.domain;
+package attendance.domain.record;
 
 import static attendance.domain.record.AttendanceType.ATTENDANCE;
 import static attendance.domain.record.AttendanceType.EXPULSION;
 import static attendance.domain.record.AttendanceType.LATE;
 import static org.assertj.core.api.Assertions.assertThat;
 
-import attendance.domain.record.AttendanceType;
 import java.time.LocalTime;
 import java.util.stream.Stream;
 import org.junit.jupiter.api.DisplayName;

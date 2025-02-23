@@ -1,9 +1,7 @@
-package attendance.domain;
+package attendance.domain.record;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import attendance.domain.record.AttendanceRecord;
-import attendance.domain.record.AttendanceType;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.Month;
