@@ -7,7 +7,7 @@ import util.CsvReader;
 import view.InputView;
 import view.OutputVIew;
 
-public class Configure {
+public class AttendanceControllerFactory {
     private static AttendanceController attendanceController;
     private static OutputVIew outputVIew;
     private static InputView inputView;
