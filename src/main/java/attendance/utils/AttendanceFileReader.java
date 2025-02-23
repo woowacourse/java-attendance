@@ -1,7 +1,5 @@
 package attendance.utils;
 
-import attendance.domain.AttendanceHistory;
-import attendance.domain.AttendancePolicy;
 import attendance.domain.Crew;
 import attendance.domain.CrewManager;
 import java.io.BufferedReader;
@@ -25,13 +23,11 @@ public class AttendanceFileReader {
             String nickname = split[0];
             Crew crew = new Crew(nickname);
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
-            LocalDateTime dateTime = LocalDateTime.parse(split[1], formatter);
-            AttendanceHistory attendanceHistory = new AttendanceHistory(dateTime,
-                    AttendancePolicy.checkAttendanceType(dateTime.toLocalDate(), dateTime.toLocalTime()));
+            LocalDateTime attendanceDateTime = LocalDateTime.parse(split[1], formatter);
             if (!crewManager.addCrew(crew)) {
                 crew = crewManager.findByCrewName(nickname);
             }
-            crew.addAttendanceHistory(attendanceHistory);
+            crew.addAttendanceHistory(attendanceDateTime.toLocalDate(), attendanceDateTime.toLocalTime());
         }
     }
 }

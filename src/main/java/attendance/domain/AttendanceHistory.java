@@ -14,10 +14,14 @@ public class AttendanceHistory {
         this.attendanceType = attendanceType;
     }
 
-    public LocalDateTime getAttendanceTime() {
+    public LocalDateTime getAttendanceDateTime() {
         return attendanceDateTime;
     }
 
+    /**
+     * TODO
+     * 내부에서 boolean을 반환할 수 있겠다
+     */
     public AttendanceType getAttendanceType() {
         return attendanceType;
     }

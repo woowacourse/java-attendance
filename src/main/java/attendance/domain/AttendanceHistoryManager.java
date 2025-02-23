@@ -16,18 +16,22 @@ public class AttendanceHistoryManager {
 
     private final Set<AttendanceHistory> attendanceHistories = new HashSet<>();
 
-    public void addAttendanceHistory(AttendanceHistory attendanceHistory) {
+    public AttendanceHistory doAttendance(LocalDate attendanceDate, LocalTime attendanceTime) {
+        AttendanceType attendanceType = AttendancePolicy.checkAttendanceType(attendanceDate, attendanceTime);
+        LocalDateTime attendanceDateTime = LocalDateTime.of(attendanceDate, attendanceTime);
+        AttendanceHistory attendanceHistory = new AttendanceHistory(attendanceDateTime, attendanceType);
         boolean isAttendanceExists = attendanceHistories.add(attendanceHistory);
         if (!isAttendanceExists) {
             throw new IllegalArgumentException("해당 날짜에 이미 출석하셨습니다.");
         }
+        return attendanceHistory;
     }
 
     public Set<AttendanceHistory> getAttendanceHistories() {
         return Collections.unmodifiableSet(attendanceHistories);
     }
 
-    public AttendanceHistory getAttendanceHistory(LocalDate attendanceDate) {
+    public AttendanceHistory getAttendanceHistoryByDate(LocalDate attendanceDate) {
         return attendanceHistories.stream()
                 .filter(history -> history.isAttendanceDateEquals(attendanceDate))
                 .findAny()
@@ -35,7 +39,7 @@ public class AttendanceHistoryManager {
     }
 
     public AttendanceHistory modifyAttendanceResult(AttendanceHistory modifyAttendanceHistory, LocalTime modifyTime) {
-        LocalDateTime modifyDateTime = modifyAttendanceHistory.getAttendanceTime();
+        LocalDateTime modifyDateTime = modifyAttendanceHistory.getAttendanceDateTime();
         AttendanceType attendanceType = AttendancePolicy.checkAttendanceType(modifyDateTime.toLocalDate(), modifyTime);
         modifyAttendanceHistory.modify(modifyTime, attendanceType);
         return modifyAttendanceHistory;

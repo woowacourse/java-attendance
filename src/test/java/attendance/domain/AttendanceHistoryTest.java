@@ -19,7 +19,7 @@ public class AttendanceHistoryTest {
         );
 
         assertThat(result).isNotNull();
-        assertThat(result.getAttendanceTime()).isEqualTo(LocalDateTime.of(2024, 12, 26, 10, 00));
+        assertThat(result.getAttendanceDateTime()).isEqualTo(LocalDateTime.of(2024, 12, 26, 10, 00));
         assertThat(result.getAttendanceType()).isEqualTo(ATTENDANCE);
     }
 
@@ -38,7 +38,7 @@ public class AttendanceHistoryTest {
         attendanceHistory.modify(modifyTime, modifyAttendanceType);
 
         //then
-        assertThat(attendanceHistory.getAttendanceTime()).isEqualTo(LocalDateTime.of(localDate, modifyTime));
+        assertThat(attendanceHistory.getAttendanceDateTime()).isEqualTo(LocalDateTime.of(localDate, modifyTime));
         assertThat(attendanceHistory.getAttendanceType()).isEqualTo(modifyAttendanceType);
     }
 

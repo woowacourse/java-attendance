@@ -15,8 +15,8 @@ public class Crew {
         this.attendanceHistoryManager = new AttendanceHistoryManager();
     }
 
-    public void addAttendanceHistory(AttendanceHistory attendanceHistory) {
-        attendanceHistoryManager.addAttendanceHistory(attendanceHistory);
+    public AttendanceHistory addAttendanceHistory(LocalDate attendanceDate, LocalTime attendanceTime) {
+        return attendanceHistoryManager.doAttendance(attendanceDate, attendanceTime);
     }
 
     public AttendanceHistory modifyAttendanceResult(AttendanceHistory attendanceHistory, LocalTime localTime) {
@@ -28,7 +28,7 @@ public class Crew {
     }
 
     public AttendanceHistory getAttendanceHistory(LocalDate localDate) {
-        return attendanceHistoryManager.getAttendanceHistory(localDate);
+        return attendanceHistoryManager.getAttendanceHistoryByDate(localDate);
     }
 
     public Map<AttendanceType, Integer> calculateAttendanceResult(LocalDate localDate) {

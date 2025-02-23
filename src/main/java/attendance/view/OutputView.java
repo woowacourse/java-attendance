@@ -27,7 +27,7 @@ public class OutputView {
     private static final String DANGEROUS_CREW_MESSAGE_BODY = "- %s: 결석 %d회, 지각 %d회 (%s)";
 
     public static void printAttendanceHistory(AttendanceHistory attendanceHistory) {
-        LocalDateTime attendanceTime = attendanceHistory.getAttendanceTime();
+        LocalDateTime attendanceTime = attendanceHistory.getAttendanceDateTime();
         AttendanceType attendanceType = attendanceHistory.getAttendanceType();
         String message = ATTENDANCE_HISTORY_MESSAGE.formatted(attendanceTime.getMonthValue(),
                 attendanceTime.getDayOfMonth(), attendanceTime.getDayOfWeek(), attendanceTime.getHour(),
@@ -38,7 +38,7 @@ public class OutputView {
     public static void printModifyAttendanceHistory(AttendanceHistoryDto beforeAttendanceHistoryDto,
                                                     AttendanceHistory afterAttendanceHistory) {
         LocalDateTime beforeAttendanceTime = beforeAttendanceHistoryDto.getAttendanceTime();
-        LocalDateTime afterAttendanceTime = afterAttendanceHistory.getAttendanceTime();
+        LocalDateTime afterAttendanceTime = afterAttendanceHistory.getAttendanceDateTime();
         AttendanceType beforeAttendanceType = beforeAttendanceHistoryDto.getAttendanceType();
         AttendanceType afterAttendanceType = afterAttendanceHistory.getAttendanceType();
         String message = MODIFY_ATTENDANCE_HISTORY_MESSAGE.formatted(beforeAttendanceTime.getMonthValue(),

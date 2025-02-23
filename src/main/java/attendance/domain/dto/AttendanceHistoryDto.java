@@ -14,7 +14,7 @@ public class AttendanceHistoryDto {
     }
 
     public static AttendanceHistoryDto of(AttendanceHistory attendanceHistory) {
-        return new AttendanceHistoryDto(attendanceHistory.getAttendanceTime(), attendanceHistory.getAttendanceType());
+        return new AttendanceHistoryDto(attendanceHistory.getAttendanceDateTime(), attendanceHistory.getAttendanceType());
     }
 
     public LocalDateTime getAttendanceTime() {

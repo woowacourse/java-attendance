@@ -22,7 +22,6 @@ import attendance.utils.AttendanceFileReader;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
 import java.util.Map;
@@ -66,10 +65,7 @@ public class Application {
         AttendancePolicy.checkNotWeekendAndHoliday(today);
         Crew crew = findCrew(crewManager);
         LocalTime attendanceTime = inputAttendanceTime();
-        AttendanceType attendanceType = AttendancePolicy.checkAttendanceType(today, attendanceTime);
-        LocalDateTime attedanceDateTime = LocalDateTime.of(today, attendanceTime);
-        AttendanceHistory attendanceHistory = new AttendanceHistory(attedanceDateTime, attendanceType);
-        crew.addAttendanceHistory(attendanceHistory);
+        AttendanceHistory attendanceHistory = crew.addAttendanceHistory(today, attendanceTime);
         printAttendanceHistory(attendanceHistory);
     }
 
