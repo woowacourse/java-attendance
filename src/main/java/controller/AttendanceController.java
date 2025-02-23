@@ -6,6 +6,8 @@ import view.InputView;
 import view.OutputView;
 
 public class AttendanceController {
+    private static final String EXIT_OPTION = "Q";
+
     private final Crews crews;
     private final InputView inputView;
     private final OutputView outputView;
@@ -22,7 +24,7 @@ public class AttendanceController {
         String option = "";
         CommandHandler commandHandler = new CommandHandler(crews, inputView, outputView);
 
-        while (!option.equals("Q")) {
+        while (!option.equals(EXIT_OPTION)) {
             outputView.printOptionMessage();
             option = inputView.getOption();
 
