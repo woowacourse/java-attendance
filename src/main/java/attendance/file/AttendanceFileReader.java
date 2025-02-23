@@ -1,7 +1,7 @@
 package attendance.file;
 
 import attendance.domain.Attendance;
-import attendance.domain.Attendances;
+import attendance.domain.AttendancesBook;
 import attendance.domain.Crew;
 import attendance.domain.Crews;
 import java.io.BufferedReader;
@@ -19,15 +19,15 @@ public class AttendanceFileReader {
 
     public static FileContents read(String path) {
         List<String> contentsByLine = readContents(path);
-        Attendances attendances = new Attendances(new HashMap<>());
+        AttendancesBook attendancesBook = new AttendancesBook(new HashMap<>());
         Crews crews = new Crews(new HashSet<>());
         for (String line : contentsByLine) {
             Crew crew = new Crew(line.split(",")[0]);
             crews.addCrew(crew);
             LocalDateTime attendanceDateTime = LocalDateTime.parse(line.split(",")[1], FORMATTER);
-            attendances.addAttendance(crew, Attendance.of(attendanceDateTime));
+            attendancesBook.addAttendance(crew, Attendance.of(attendanceDateTime));
         }
-        return new FileContents(attendances, crews);
+        return new FileContents(attendancesBook, crews);
     }
 
     private static List<String> readContents(String path) {
@@ -45,5 +45,5 @@ public class AttendanceFileReader {
         return contentsByLine;
     }
 
-    public record FileContents(Attendances attendances, Crews crews) {}
+    public record FileContents(AttendancesBook attendancesBook, Crews crews) {}
 }

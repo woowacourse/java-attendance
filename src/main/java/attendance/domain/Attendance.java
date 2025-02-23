@@ -5,6 +5,7 @@ import attendance.util.DateUtil;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 public class Attendance {
 
@@ -46,5 +47,25 @@ public class Attendance {
 
     public LocalDateTime getAttendanceDateTime() {
         return attendanceDateTime;
+    }
+
+    @Override
+    public boolean equals(Object object) {
+        if (object == null || getClass() != object.getClass()) return false;
+        Attendance that = (Attendance) object;
+        return Objects.equals(attendanceDateTime, that.attendanceDateTime) && status == that.status;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(attendanceDateTime, status);
+    }
+
+    @Override
+    public String toString() {
+        return "Attendance{" +
+                "attendanceDateTime=" + attendanceDateTime +
+                ", status=" + status +
+                '}';
     }
 }

@@ -2,7 +2,7 @@ package attendance.view;
 
 import attendance.domain.Attendance;
 import attendance.domain.AttendanceStatus;
-import attendance.domain.Attendances;
+import attendance.domain.AttendancesBook;
 import attendance.domain.Crew;
 import attendance.domain.Penalty;
 import java.time.LocalDate;
@@ -88,19 +88,19 @@ public class OutputView {
         return attendanceDateTime + status;
     }
 
-    public static void printPenaltyOfCrews(List<Crew> crews, Attendances attendances) {
+    public static void printPenaltyOfCrews(List<Crew> crews, AttendancesBook attendancesBook) {
         System.out.println("제적 위험자 조회 결과");
-        List<PenaltyResult> penaltyResults = getPenaltyResults(crews, attendances);
+        List<PenaltyResult> penaltyResults = getPenaltyResults(crews, attendancesBook);
         Collections.sort(penaltyResults);
         for (PenaltyResult penaltyResult : penaltyResults) {
             printPenaltyResult(penaltyResult);
         }
     }
 
-    private static List<PenaltyResult> getPenaltyResults(List<Crew> crews, Attendances attendances) {
+    private static List<PenaltyResult> getPenaltyResults(List<Crew> crews, AttendancesBook attendancesBook) {
         return crews.stream()
             .map(crew -> {
-                List<Attendance> attendanceOfCrew = attendances.getByCrew(crew, LocalDate.now());
+                List<Attendance> attendanceOfCrew = attendancesBook.getByCrew(crew, LocalDate.now());
                 int absenceCount = countAttendanceStatus(attendanceOfCrew, AttendanceStatus.ABSENCE);
                 int lateCount = countAttendanceStatus(attendanceOfCrew, AttendanceStatus.LATE);
                 Penalty penalty = Penalty.determine(absenceCount, lateCount);
