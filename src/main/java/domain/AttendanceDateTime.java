@@ -9,104 +9,63 @@ import java.util.Objects;
 
 public class AttendanceDateTime {
 
-    private LocalDateTime attendanceDateTime;
+    private final AttendanceDate attendanceDate;
+    private AttendanceTime attendanceTime;
 
-    private AttendanceDateTime(LocalDateTime attendanceDateTime) {
-        this.attendanceDateTime = attendanceDateTime;
+    private AttendanceDateTime(AttendanceDate attendanceDate, AttendanceTime attendanceTime) {
+        this.attendanceDate = attendanceDate;
+        this.attendanceTime = attendanceTime;
     }
 
     public static AttendanceDateTime from(LocalDateTime attendanceDateTime) {
-        validate(attendanceDateTime);
-        return new AttendanceDateTime(attendanceDateTime);
-    }
-
-    public static void validate(LocalDateTime attendanceDateTime) {
-        LocalDate date = attendanceDateTime.toLocalDate();
-        LocalTime time = attendanceDateTime.toLocalTime();
-        DayOfWeek dayOfWeek = date.getDayOfWeek();
-
-        validateHoliday(date);
-        validateWeekend(dayOfWeek);
-        validateOperatingTime(time);
+        return new AttendanceDateTime(
+                new AttendanceDate(attendanceDateTime.toLocalDate()),
+                new AttendanceTime(attendanceDateTime.toLocalTime())
+        );
     }
 
     public void update(LocalTime updateTime) {
-        validateOperatingTime(updateTime);
-        this.attendanceDateTime = LocalDateTime.of(this.attendanceDateTime.toLocalDate(), updateTime);
+        this.attendanceTime = new AttendanceTime(updateTime);
     }
 
     public AttendanceState check() {
-        DayOfWeek dayOfWeek = attendanceDateTime.getDayOfWeek();
-        int hour = attendanceDateTime.getHour();
-        int minute = attendanceDateTime.getMinute();
+        DayOfWeek dayOfWeek = attendanceDate.getDayOfWeek();
 
         if (dayOfWeek == DayOfWeek.MONDAY) {
-            return decisionByHour(hour, minute, 13);
+            return decisionByHour(13);
         }
-        return decisionByHour(hour, minute, 10);
+        return decisionByHour(10);
     }
 
-    private static void validateOperatingTime(LocalTime time) {
-        if (time.getHour() < 8 || time.getHour() == 23) {
-            throw new IllegalArgumentException("[ERROR] 출석 시간이 아닙니다.");
-        }
-    }
-
-    private AttendanceState decisionByHour(int hour, int minute, int standardHour) {
-        if (hour == standardHour) {
-            return decisionByMinute(minute);
+    private AttendanceState decisionByHour(int standardHour) {
+        if (attendanceTime.compareHour(standardHour) == 0) {
+            return decisionByMinute();
         }
 
-        if (hour > standardHour) {
+        if (attendanceTime.compareHour(standardHour) >= 1) {
             return AttendanceState.ABSENT;
         }
 
         return AttendanceState.ATTEND;
     }
 
-    private AttendanceState decisionByMinute(int minute) {
-        if (minute > 30) {
+    private AttendanceState decisionByMinute() {
+        if (attendanceTime.compareMinute(30) >= 1) {
             return AttendanceState.ABSENT;
         }
 
-        if (minute > 5) {
+        if (attendanceTime.compareMinute(5) >= 1) {
             return AttendanceState.LATE;
         }
 
         return AttendanceState.ATTEND;
     }
 
-    private static void validateWeekend(DayOfWeek dayOfWeek) {
-        if (dayOfWeek == DayOfWeek.SATURDAY || dayOfWeek == DayOfWeek.SUNDAY) {
-            throw new IllegalArgumentException("[ERROR] 주말에는 출석할 수 없습니다.");
-        }
-    }
-
-    private static void validateHoliday(LocalDate date) {
-        if (MonthDay.from(date).equals(MonthDay.of(12, 25))) {
-            throw new IllegalArgumentException("[ERROR] 공휴일에는 출석할 수 없습니다.");
-        }
-    }
-
-    public LocalDateTime getAttendanceDateTime() {
-        return attendanceDateTime;
-    }
-
-    @Override
-    public boolean equals(Object object) {
-        if (object == null || getClass() != object.getClass()) {
-            return false;
-        }
-        AttendanceDateTime that = (AttendanceDateTime) object;
-        return Objects.equals(getAttendanceDateTime(), that.getAttendanceDateTime());
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hashCode(getAttendanceDateTime());
-    }
-
     public boolean isSameDay(int day) {
-        return attendanceDateTime.getDayOfMonth() == day;
+        return attendanceDate.isSameDay(day);
+    }
+
+    public AttendanceTime getAttendanceTime() {
+        return attendanceTime;
     }
 }

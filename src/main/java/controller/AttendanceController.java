@@ -84,29 +84,17 @@ public class AttendanceController {
         String nickname = inputView.inputNickname();
 
         List<AttendanceSheet> attendancesByNickname = attendanceSheets.findAttendanceByNickname(nickname);
-        Map<Integer, AttendanceDateTime> dayToAttendanceDateTime = attendanceSheetListToDayOfAttendanceTimeMap(
-                attendancesByNickname);
 
         int attendCount = attendanceSheets.calculateAttendCountBy(nickname);
         int lateCount = attendanceSheets.calculateLateCountBy(nickname);
         int absentCount = attendanceSheets.calculateAbsentCount(nickname, today);
 
         OutputView.printAttendanceSheetIntro(nickname);
-        OutputView.printAttendanceSheets(dayToAttendanceDateTime, today.getDayOfMonth());
+        OutputView.printAttendanceSheets(attendancesByNickname, today.getDayOfMonth());
         OutputView.printAttendanceStatistics(attendCount, lateCount, absentCount);
 
         OutputView.printAbsentPolicy(AbsentPolicy.calculateAbsentPolicy(absentCount, lateCount));
         System.out.print(System.lineSeparator());
-    }
-
-    private Map<Integer, AttendanceDateTime> attendanceSheetListToDayOfAttendanceTimeMap(
-            List<AttendanceSheet> attendancesByNickname) {
-        Map<Integer, AttendanceDateTime> dayToAttendanceDateTime = new HashMap<>();
-        attendancesByNickname.forEach(attendance ->
-                dayToAttendanceDateTime.put(
-                        attendance.getAttendanceDateTime().getAttendanceDateTime().getDayOfMonth(),
-                        attendance.getAttendanceDateTime()));
-        return dayToAttendanceDateTime;
     }
 
     private void updateAttendance(AttendanceSheets attendanceSheets) {
@@ -117,8 +105,7 @@ public class AttendanceController {
         int day = Integer.parseInt(inputView.inputUpdateDate());
 
         AttendanceSheet attendanceSheetByNicknameAndDay = attendanceByNickname.stream()
-                .filter(attendanceSheet ->
-                        attendanceSheet.getAttendanceDateTime().getAttendanceDateTime().getDayOfMonth() == day)
+                .filter(attendanceSheet -> attendanceSheet.isSameDay(day))
                 .findFirst()
                 .orElseThrow();
 

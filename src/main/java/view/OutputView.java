@@ -1,12 +1,16 @@
 package view;
 
 import domain.AbsentPolicy;
+import domain.AttendanceDate;
 import domain.AttendanceDateTime;
 
+import domain.AttendanceSheet;
+import domain.AttendanceTime;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.TextStyle;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
@@ -17,31 +21,36 @@ public class OutputView {
         System.out.printf(ViewMessage.CURRENT_MONTH_ATTENDANCE_SHEET, nickname);
     }
 
-    public static void printAttendanceSheets(Map<Integer, AttendanceDateTime> dayToAttendanceDateTime, int todayDate) {
-
+    public static void printAttendanceSheets(List<AttendanceSheet> attendanceSheets, int todayDate) {
         for (int day = 1; day < todayDate; day++) {
             LocalDate date = LocalDate.of(2024, 12, day);
-            printAttendanceSheet(dayToAttendanceDateTime, date);
+            printAttendanceSheet(attendanceSheets, date);
         }
 
         System.out.print(System.lineSeparator());
     }
 
-    private static void printAttendanceSheet(Map<Integer, AttendanceDateTime> dayToAttendanceDateTime, LocalDate date) {
+    private static void printAttendanceSheet(List<AttendanceSheet> attendanceSheets, LocalDate date) {
         if (date.getDayOfWeek() == DayOfWeek.SATURDAY || date.getDayOfWeek() == DayOfWeek.SUNDAY) {
             return;
         }
 
         String koreanDayOfWeek = date.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.KOREAN);
-        if (dayToAttendanceDateTime.containsKey(date.getDayOfMonth())) {
-            AttendanceDateTime attendanceDateTime = dayToAttendanceDateTime.get(date.getDayOfMonth());
-            LocalDateTime dateTime = attendanceDateTime.getAttendanceDateTime();
+        AttendanceSheet attendanceSheet = attendanceSheets.stream()
+                .filter(sheet -> sheet.isSameDay(date.getDayOfMonth()))
+                .findAny()
+                .orElse(null);
 
-            System.out.printf(ViewMessage.ATTENDANCE_FORMAT, date.getDayOfMonth(), koreanDayOfWeek, dateTime.getHour(),
-                    dateTime.getMinute(), attendanceDateTime.check().description);
+        if (attendanceSheet == null) {
+            System.out.printf(ViewMessage.ABSENT_FORMAT, date.getDayOfMonth(), koreanDayOfWeek);
             return;
         }
-        System.out.printf(ViewMessage.ABSENT_FORMAT, date.getDayOfMonth(), koreanDayOfWeek);
+
+        AttendanceDateTime attendanceDateTime = attendanceSheet.getAttendanceDateTime();
+        AttendanceTime attendanceTime = attendanceDateTime.getAttendanceTime();
+        System.out.printf(ViewMessage.ATTENDANCE_FORMAT, date.getDayOfMonth(), koreanDayOfWeek,
+                attendanceTime.getHour(),
+                attendanceTime.getMinute(), attendanceDateTime.check().description);
     }
 
     public static void printAttendanceStatistics(int attendCount, int latCount, int absentCount) {
