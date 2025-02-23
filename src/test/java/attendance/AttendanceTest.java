@@ -13,27 +13,23 @@ import attendance.domain.AttendanceStatus;
 public class AttendanceTest {
 
     @Test
-    @DisplayName("등교 시간을 입력하면, 출석할 수 있다.")
+    @DisplayName("등교 시간을 입력하면, 출석한다.")
     void test_attendance() {
         var time = LocalDateTime.of(2024, 12, 14, 10, 1);
-        var expected = AttendanceStatus.ATTENDANCE;
         var attendance = new Attendance(time);
 
-        Assertions.assertThat(attendance.attendanceStatus()).isEqualTo(expected);
+        Assertions.assertThat(attendance.attendanceStatus())
+            .isEqualTo(AttendanceStatus.ATTENDANCE);
     }
 
     @Test
-    @Disabled
-    @DisplayName("올바르지 않은 시간 형식에 대한, 예외가 발생한다.")
-    void error_wrongTimeFormat() {
-        // 입력 받는 형식에 책임은 입력해주는, 즉 전달하는 측이 처리되어야 한다.
-        // 때문에, Attendance는 LocalDateTime 만 입력받는다.
-    }
-
-    @Test
-    @DisplayName("출석 시간보다 5분 초과되어 출석할 때, 지각 처리된다.")
+    @DisplayName("출석 시간보다 5분 초과되어 출석할 때, 지각 처리한다.")
     void test_attendanceOfLate() {
+        var time = LocalDateTime.of(2024, 12, 14, 10, 6);
+        var attendance = new Attendance(time);
 
+        Assertions.assertThat(attendance.attendanceStatus())
+            .isEqualTo(AttendanceStatus.LATE);
     }
 
     @Test
