@@ -4,8 +4,8 @@ import java.time.Duration;
 import java.time.LocalDateTime;
 
 public class Attendance {
-    public static final int MONDAY_START_HOUR = 10;
-    public static final int REST_DAY_START_HOUR = 13;
+    public static final int MONDAY_START_HOUR = 13;
+    public static final int REST_DAY_START_HOUR = 10;
     public static final int ABSENT_LIMIT_MINUTE = 30;
     public static final int LATE_LIMIT_MINUTE = 5;
     public static final int MONDAY = 1;
@@ -19,9 +19,9 @@ public class Attendance {
     public AttendanceStatus calculateAttendanceStatus() {
         int dayOfWeek = date.getDayOfWeek().getValue();
         LocalDateTime startDate = LocalDateTime.of(date.getYear(), date.getMonth(), date.getDayOfMonth(),
-                MONDAY_START_HOUR, 0);
+                REST_DAY_START_HOUR, 0);
         if (dayOfWeek == MONDAY) {
-            startDate = LocalDateTime.of(date.getYear(), date.getMonth(), date.getDayOfMonth(), REST_DAY_START_HOUR, 0);
+            startDate = LocalDateTime.of(date.getYear(), date.getMonth(), date.getDayOfMonth(), MONDAY_START_HOUR, 0);
         }
 
         Duration duration = Duration.between(startDate, date);

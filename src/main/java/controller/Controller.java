@@ -7,6 +7,7 @@ import static domain.UserCommandType.ATTENDANCE_SHOW;
 import static domain.UserCommandType.QUIT;
 import static domain.UserCommandType.getUserCommand;
 import static domain.UserCommandType.validateUserCommand;
+import static util.Day.validateDay;
 
 import domain.Attendance;
 import domain.Crew;
@@ -16,7 +17,6 @@ import domain.UserCommandType;
 import java.time.LocalDateTime;
 import java.util.List;
 import service.CrewLoader;
-import util.Day;
 import view.InputView;
 import view.OutputView;
 import view.dto.AlertCrewDTO;
@@ -58,7 +58,7 @@ public class Controller {
             checkAttendance(crewGroup, today);
         }
         if (userCommandType.equals(ATTENDANCE_CHANGE)) {
-            changeAttendance(crewGroup);
+            changeAttendance(crewGroup, today);
         }
         if (userCommandType.equals(ATTENDANCE_SHOW)) {
             showCrewAttendance(crewGroup);
@@ -69,7 +69,7 @@ public class Controller {
     }
 
     private void checkAttendance(CrewGroup crewGroup, LocalDateTime today) {
-        Day.validateDay(today.getDayOfMonth(), today);
+        validateDay(today.getDayOfMonth(), today);
         String rawName = inputView.insertNickname();
         Crew crew = crewGroup.searchCrew(rawName);
 
@@ -87,11 +87,13 @@ public class Controller {
         outputView.printAttendanceLog(AttendanceLogDTO.from(attendance));
     }
 
-    private void changeAttendance(CrewGroup crewGroup) {
+    private void changeAttendance(CrewGroup crewGroup, LocalDateTime today) {
         String rawName = inputView.insertChangeDateNickname();
         Crew crew = crewGroup.searchCrew(rawName);
 
         int changeDate = inputView.insertChangeDate();
+
+        validateDay(changeDate, today);
         String rawTime = inputView.insertChangeTime();
         Time time = new Time(rawTime);
 
