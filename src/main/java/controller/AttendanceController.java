@@ -1,10 +1,8 @@
 package controller;
 
-import static util.constant.Value.DATE_FORMAT;
 import static util.constant.Value.NOW_DAY;
 import static util.constant.Value.NOW_MONTH;
 import static util.constant.Value.NOW_YEAR;
-import static util.constant.Value.TIME_FORMAT;
 
 import domain.AttendanceManager;
 import domain.AttendanceStatistics;
@@ -14,8 +12,7 @@ import domain.StatisticsResult;
 import domain.TimeAndStatus;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.List;
+import java.time.LocalTime;
 import java.util.Map;
 import java.util.Set;
 import util.parser.DateTimeParser;
@@ -53,83 +50,51 @@ public class AttendanceController {
     }
 
     private void attendCrew() {
-        try {
-            String name = inputView.readName();
-            attendanceManager.findByName(name);
-            List<String> time = List.of(inputView.readTime().split(":"));
+        String name = inputView.readName();
+        String time = inputView.readTime();
 
-            String dateForm = String.format(DATE_FORMAT, NOW_YEAR, NOW_MONTH,
-                NOW_DAY);
-            String timeForm = formatTime(time);
-            LocalDateTime dateTime = formatDateTime(dateForm, timeForm);
+        LocalDate currentDate = DateTimeParser.parseIntegerToDate(NOW_YEAR, NOW_MONTH, NOW_DAY);
+        LocalTime attendedTime = DateTimeParser.parseStringToTime(time);
+        LocalDateTime dateTime = LocalDateTime.of(currentDate, attendedTime);
 
-            TimeAndStatus timeAndStatus = attendanceManager.attendCrew(name, dateTime);
-            outputView.printAttendanceRecord(dateTime.toLocalDate(), timeAndStatus);
-        } catch (IllegalArgumentException e) {
-            System.out.println(e.getMessage());
-        }
+        TimeAndStatus timeAndStatus = attendanceManager.attendCrew(name, dateTime);
+        outputView.printAttendanceRecord(currentDate, timeAndStatus);
     }
 
     private void editCrewRecord() {
-        try {
-            String name = inputView.readEditName();
-            attendanceManager.findByName(name);
-            String dayOfMonth = inputView.readEditDayOfMonth();
-            List<String> time = List.of(inputView.readEditTime().split(":"));
+        String name = inputView.readEditName();
+        String dayOfMonth = inputView.readEditDayOfMonth();
+        String time = inputView.readEditTime();
 
-            String dateForm = String.format(DATE_FORMAT, NOW_YEAR, NOW_MONTH,
-                Integer.parseInt(dayOfMonth));
-            String timeForm = formatTime(time);
-            LocalDateTime localDateTime = formatDateTime(dateForm, timeForm);
-            LocalDate localDate = localDateTime.toLocalDate();
+        LocalDate editedDate = DateTimeParser.parseIntegerToDate(NOW_YEAR, NOW_MONTH, Integer.parseInt(dayOfMonth));
+        LocalTime attendedTime = DateTimeParser.parseStringToTime(time);
+        LocalDateTime dateTime = LocalDateTime.of(editedDate, attendedTime);
 
-            TimeAndStatus oldTimeAndStatus = attendanceManager.findByName(name)
-                .findByDate(localDate);
-            TimeAndStatus newTimeAndStatus = attendanceManager.editCrew(name, localDateTime);
-            outputView.printEditResult(localDate, oldTimeAndStatus, newTimeAndStatus);
-        } catch (IllegalArgumentException e) {
-            System.out.println(e.getMessage());
-        }
+        TimeAndStatus oldStatus = attendanceManager.findByName(name).findByDate(editedDate);
+        TimeAndStatus newStatus = attendanceManager.editCrew(name, dateTime);
+        outputView.printEditResult(editedDate, oldStatus, newStatus);
     }
 
     private void checkCrewRecords() {
-        try {
-            String name = inputView.readName();
-            attendanceManager.findByName(name);
+        String name = inputView.readName();
+        LocalDate currentDate = DateTimeParser.parseIntegerToDate(NOW_YEAR, NOW_MONTH, NOW_DAY);
+        Records records = attendanceManager.findByName(name);
 
-            LocalDate localDate = DateTimeParser.parseIntegerToDate(NOW_YEAR, NOW_MONTH, NOW_DAY);
-            Records records = attendanceManager.findByName(name);
+        StatisticsResult statistics = AttendanceStatistics.countStatus(currentDate, records);
+        int attendanceCount = statistics.getAttendanceCount();
+        int latenessCount = statistics.getLatenessCount();
+        int absenceCount = statistics.getAbsenceCount();
+        Penalty penaltyResult = statistics.getPenalty();
 
-            StatisticsResult statisticsResult = AttendanceStatistics.countStatus(localDate,
-                records);
-
-            int attendanceCount = statisticsResult.getAttendanceCount();
-            int latenessCount = statisticsResult.getLatenessCount();
-            int absenceCount = statisticsResult.getAbsenceCount();
-            Penalty penaltyResult = statisticsResult.getPenalty();
-
-            outputView.printRecords(name, localDate, records);
-            outputView.printStatistics(attendanceCount, latenessCount, absenceCount, penaltyResult);
-        } catch (IllegalArgumentException e) {
-            System.out.println(e.getMessage());
-        }
+        outputView.printRecords(name, currentDate, records);
+        outputView.printStatistics(attendanceCount, latenessCount, absenceCount, penaltyResult);
     }
 
     private void checkExpelledWarningCrews() {
-        LocalDate localDate = DateTimeParser.parseIntegerToDate(NOW_YEAR, NOW_MONTH, NOW_DAY);
+        LocalDate currentDate = DateTimeParser.parseIntegerToDate(NOW_YEAR, NOW_MONTH, NOW_DAY);
 
-        Map<String, StatisticsResult> sortedResult = attendanceManager.sortCrew(localDate);
+        Map<String, StatisticsResult> sortedResult = attendanceManager.sortCrew(currentDate);
         outputView.printExpelledWarningResult(sortedResult);
-    }
-
-    private String formatTime(List<String> time) {
-        return String.format(TIME_FORMAT, Integer.parseInt(time.get(0)),
-            Integer.parseInt(time.get(1)));
-    }
-
-    private LocalDateTime formatDateTime(String dateForm, String timeForm) {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
-        return LocalDateTime.parse(dateForm + " " + timeForm, formatter);
     }
 
     private void validateFunctions(String functionNumber, Set<String> functions) {

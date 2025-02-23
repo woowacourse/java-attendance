@@ -4,12 +4,13 @@ import static util.constant.Value.DATE_FORMAT;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 
 public class DateTimeParser {
 
     private static final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
-    private static final DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+    private static final DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm");
 
     private DateTimeParser() {
     }
@@ -18,9 +19,12 @@ public class DateTimeParser {
         return LocalDateTime.parse(dateTime, dateTimeFormatter);
     }
 
+    public static LocalTime parseStringToTime(String time) {
+        return LocalTime.parse(time, timeFormatter);
+    }
+
     public static LocalDate parseIntegerToDate(int year, int month, int day) {
-        String date = String.format(DATE_FORMAT, year, month, day);
-        return LocalDate.parse(date, dateFormatter);
+        return LocalDate.of(year, month, day);
     }
 
 }
