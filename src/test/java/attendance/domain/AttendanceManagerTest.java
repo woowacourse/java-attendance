@@ -12,6 +12,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Stream;
 
 import static attendance.domain.AttendanceStateType.ATTENDANCE;
@@ -43,7 +44,7 @@ class AttendanceManagerTest {
 
         // then
         Assertions.assertThat(attendanceManager.findCrewAttendance(name).size())
-                .isEqualTo(4);
+                .isEqualTo(15);
     }
 
     @ParameterizedTest(name = "출석 시간: {0} | 출석 상황 결과 : {1}")
@@ -105,7 +106,7 @@ class AttendanceManagerTest {
 
         // then
         assertThat(attendances.size())
-                .isEqualTo(3);
+                .isEqualTo(14);
     }
 
     @Test
@@ -119,7 +120,21 @@ class AttendanceManagerTest {
 
         // then
         assertThat(result.getStatus().size()).isEqualTo(3);
-        assertThat(result.getWarningType()).isEqualTo(AttendanceWarningType.COUNSELING);
+        assertThat(result.getWarningType()).isEqualTo(AttendanceWarningType.EXPULSION);
+    }
+
+    @Test
+    void 제적_위험자의_크루를_반환한다() {
+        // given
+        attendanceManager.addCrew("이든");
+        attendanceManager.addCrew("레오");
+        attendanceManager.addCrew("랜디");
+
+        // when
+        Map<String, AttendanceStatus> result = attendanceManager.getAttendanceWarnedCrews();
+
+        // then
+        assertThat(result.size()).isEqualTo(3);
     }
 
     @Test
@@ -145,7 +160,7 @@ class AttendanceManagerTest {
 
         @Override
         public LocalDate now() {
-            return LocalDate.of(2024, 12, 5);
+            return LocalDate.of(2024, 12, 20);
         }
     }
 }
