@@ -18,8 +18,7 @@ public final class InputView {
 
     public static String readCommand(final LocalDateTime dateTime) {
         System.out.println(
-                String.format("오늘은 %s월 %s일 %s입니다. 기능을 선택해주세요.", FIXED_MONTH, dateTime.getDayOfMonth(),
-                        DayOfWeekKorean.getKoreanName(dateTime.getDayOfWeek())));
+                getMessageFormat(dateTime));
         for (Command command : Command.values()) {
             System.out.println(String.format("%s. %s", command.getCommandNumber(), command.getCommandName()));
 
@@ -69,5 +68,10 @@ public final class InputView {
         if (input.isBlank()) {
             throw new CustomIllegalArgumentException("값을 입력해주세요.");
         }
+    }
+
+    private static String getMessageFormat(LocalDateTime dateTime) {
+        return String.format("오늘은 %s월 %s일 %s입니다. 기능을 선택해주세요.", FIXED_MONTH, dateTime.getDayOfMonth(),
+                DayOfWeekKorean.getKoreanName(dateTime.getDayOfWeek()));
     }
 }
