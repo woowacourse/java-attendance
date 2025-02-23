@@ -13,7 +13,11 @@ public class OutputView {
 
     public static void printTodayAttendance(final int todayDay, final String todayDayOfWeek,
                                             final String schoolStartTime, final AttendanceState attendanceResult) {
-        System.out.printf("12월 %02d일 %s %s (%s)", todayDay, todayDayOfWeek, schoolStartTime, attendanceResult);
+        System.out.printf("\n12월 %02d일 %s %s (%s)\n",
+                todayDay,
+                todayDayOfWeek,
+                schoolStartTime,
+                attendanceResult.getDescription());
     }
 
     public static void printUpdateAttendance(final LocalDateTime beforeDateTime, final LocalDateTime afterDateTime) {
@@ -24,13 +28,13 @@ public class OutputView {
         AttendanceState afterAttendanceState = AttendanceState.findStateBy(afterDateTime.toLocalTime(),
                 afterDateTime.getDayOfMonth());
 
-        System.out.printf("12월 %02d일 %s %02d:%02d (%s) -> %02d:%02d (%s) 수정 완료!\n", beforeDateTime.getDayOfMonth(),
-                Calender.findBy(beforeDateTime.getDayOfMonth()),
+        System.out.printf("12월 %02d일 %s %02d:%02d (%s) -> %02d:%02d (%s) 수정 완료!\n",
+                beforeDateTime.getDayOfMonth(),
+                Calender.findBy(beforeDateTime.getDayOfMonth()).getDescription(),
                 beforeDateTime.getHour(),
                 beforeDateTime.getMinute(),
                 beforeAttendanceState.getDescription(),
-                afterDateTime.getHour(),
-                afterDateTime.getMinute(),
+                afterDateTime.getHour(), afterDateTime.getMinute(),
                 afterAttendanceState.getDescription());
     }
 
@@ -67,10 +71,11 @@ public class OutputView {
 
     public static void printAbsenceResult(final Map<Crew, AbsenceResultDto> result) {
         System.out.println("제적 위험자 조회 결과");
-        result.forEach((crew, absenceResult) -> System.out.printf("- %s: 결석 %d회, 지각 %d회 (%s)\n",
-                crew.getName(),
-                absenceResult.absence(),
-                absenceResult.lateness(),
-                absenceResult.status().getDescription()));
+        result.forEach((crew, absenceResult) ->
+                System.out.printf("- %s: 결석 %d회, 지각 %d회 (%s)\n",
+                        crew.getName(),
+                        absenceResult.absence(),
+                        absenceResult.lateness(),
+                        absenceResult.status().getDescription()));
     }
 }
