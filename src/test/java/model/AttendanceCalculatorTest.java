@@ -2,6 +2,7 @@ package model;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
@@ -47,6 +48,27 @@ class AttendanceCalculatorTest {
     void test7() {
         Assertions.assertThat(AttendanceCalculator.calculateAttendance(1, LocalTime.of(0,0)))
                 .isEqualTo(AttendanceStatus.ABSENT);
+    }
+    @Test
+    @DisplayName("주말 및 공휴일을 검사하는 메서드 테스트")
+    void test8() {
+        org.junit.jupiter.api.Assertions.assertTrue(AttendanceCalculator.checkHoliday(LocalDateTime.of(2024,12,25,0,0)));
+    }
+    @Test
+    @DisplayName("주말 및 공휴일을 검사하는 메서드 테스트")
+    void test9() {
+        org.junit.jupiter.api.Assertions.assertTrue(AttendanceCalculator.checkHoliday(LocalDateTime.of(2024,12,14,0,0)));
+    }
+    @Test
+    @DisplayName("주말 및 공휴일을 검사하는 메서드 테스트")
+    void test10() {
+        org.junit.jupiter.api.Assertions.assertTrue(AttendanceCalculator.checkHoliday(LocalDateTime.of(2024,12,15,0,0)));
+    }
+    @Test
+    @DisplayName("주말 및 공휴일을 검사하는 메서드 테스트")
+    void test11() {
+        org.junit.jupiter.api.Assertions.assertFalse(AttendanceCalculator.checkHoliday(LocalDateTime.of(2024,12,16,0,0)));
+
     }
 
 }
