@@ -32,7 +32,7 @@ public class OutputView {
         if (attend.hasTime()) {
             time = attend.formatTime(DateTimeFormat.TIME.getDateTimeFormatter());
         }
-        String status = formatAttendStatus(attendStatus);
+        String status = AttendMessage.formatAttendStatus(attendStatus);
         return String.format("%s %s (%s)", date, time, status);
     }
 
@@ -67,14 +67,6 @@ public class OutputView {
             System.out.println(message);
         }
         System.out.println();
-    }
-
-    private String formatAttendStatus(AttendStatus attendStatus) {
-        return Arrays.stream(AttendMessage.values())
-                .filter(attendMessage -> attendMessage.match(attendStatus))
-                .findAny()
-                .orElseThrow(() -> new IllegalArgumentException("출석 상태 판정 실패"))
-                .getMessage();
     }
 
     private String formatAttendCount(AttendCount attendCount) {
