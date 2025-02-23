@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
+import java.util.Set;
 import model.Attendance;
 import model.Attendances;
 import model.Crew;
@@ -38,7 +39,7 @@ class StringConverterTest {
                 "쿠키,2024-12-13 10:08"
         );
         Crew crew1 = Crew.of("쿠키");
-        Crews crews = Crews.of(List.of(crew1));
+        Crews crews = Crews.of(Set.of(crew1));
 
         Attendance attendance1 = Attendance.of(crew1, LocalDateTime.of(2024, 12, 13, 10, 8));
 

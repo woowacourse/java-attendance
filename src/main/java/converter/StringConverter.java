@@ -5,7 +5,9 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import model.Attendance;
 import model.Attendances;
 import model.Crew;
@@ -14,11 +16,10 @@ import model.Crews;
 public class StringConverter {
 
     public Crews convertToCrews(List<String> rawAttendances) {
-        List<Crew> crews = new ArrayList<>();
+        Set<Crew> crews = new HashSet<>();
         for (String rawAttendance : rawAttendances) {
             String rawNickname = rawAttendance.split(",")[0];
             validateNullOrBlank(rawNickname);
-
             crews.add(Crew.of(rawNickname));
         }
         return Crews.of(crews);
@@ -44,7 +45,8 @@ public class StringConverter {
             LocalDateTime checkInTime = LocalDateTime.of(LocalDate.parse(rawCheckInDate),
                     LocalTime.parse(rawCheckInTime));
 
-            attendances.add(Attendance.of(crew, checkInTime));
+            Attendance attendance = Attendance.of(crew, checkInTime);
+            attendances.add(attendance);
         }
 
         return Attendances.of(attendances);
