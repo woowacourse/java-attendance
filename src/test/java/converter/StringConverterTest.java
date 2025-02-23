@@ -1,8 +1,6 @@
 package converter;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.util.List;
 import model.Attendance;
 import model.Attendances;
@@ -15,22 +13,8 @@ import org.junit.jupiter.api.Test;
 class StringConverterTest {
 
     @Test
-    void test1() {
-        //given
-        StringConverter stringConverter = new StringConverter();
-
-        //when
-        Attendance attendance = stringConverter.convertToAttendance("이름", "09:44");
-
-        //then
-        Assertions.assertThat(attendance.getCrew().getNickname()).isEqualTo("이름");
-        Assertions.assertThat(attendance.getCheckInTime())
-                .isEqualTo(LocalDateTime.of(LocalDate.now(), LocalTime.of(9, 44)));
-    }
-
-    @Test
     @DisplayName("평일 출석 확인 테스트")
-    void test2() {
+    void test1() {
         //given
         StringConverter stringConverter = new StringConverter();
 

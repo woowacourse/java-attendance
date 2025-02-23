@@ -57,8 +57,21 @@ class AttendancesTest {
     }
 
     @Test
-    @DisplayName("출석 시간을 수정한다.")
+    @DisplayName("등록되지 않은 크루는 출석할 수 없다,")
     void test3() {
+        //given
+        String nickname = "미소";
+        String rawCheckInTime = "10:00";
+
+        //when & then
+        Assertions.assertThatThrownBy(() -> stringConverter.convertToAttendance(crews, nickname, rawCheckInTime))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("등록되지 않은 크루입니다.");
+    }
+
+    @Test
+    @DisplayName("출석 시간을 수정한다.")
+    void test4() {
         //given
         Crew crew = Crew.of("쿠키");
         LocalDateTime checkInTime = LocalDateTime.of(2025, 2, 27, 10, 31);
@@ -78,7 +91,7 @@ class AttendancesTest {
 
     @Test
     @DisplayName("출석 시간을 수정할 때 출석이 없으면 새로 생성한다.")
-    void test4() {
+    void test5() {
         //given
         Crew crew = Crew.of("쿠키");
         LocalDateTime modifiedCheckInTime = LocalDateTime.of(2024, 12, 3, 10, 0);
@@ -92,7 +105,7 @@ class AttendancesTest {
 
     @Test
     @DisplayName("크루의 출석 기록을 조회한다.")
-    void test8() {
+    void test6() {
         //given
         Crew crew = Crew.of("쿠키");
 
@@ -110,7 +123,7 @@ class AttendancesTest {
 
     @Test
     @DisplayName("크루의 출석을 모두 조회한다.")
-    void test9() {
+    void test7() {
         //given
         LocalDate now = LocalDate.now();
 
