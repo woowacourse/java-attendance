@@ -6,6 +6,7 @@ import domain.attendance.Attendance;
 import domain.attendance.AttendanceDate;
 import domain.attendance.AttendanceState;
 import domain.attendance.AttendanceWarning;
+import dto.AttendanceEditInputDto;
 import dto.ResponseAttendanceEditStateDto;
 import dto.ResponseCrewAttendanceStateDto;
 import dto.ResponseWarningCrewDto;
@@ -48,7 +49,10 @@ public class AttendanceController {
     }
 
     private void repeatCommand(CrewGroup crewGroup) {
-        while (controlCommand(crewGroup)) {
+        while (true) {
+            if (controlCommand(crewGroup)) {
+                return;
+            }
         }
     }
 
@@ -97,32 +101,56 @@ public class AttendanceController {
     }
 
     private void attendanceEditCommand(CrewGroup crewGroup) {
+        AttendanceEditInputDto editInput = getEditInput();
+        Crew crew = crewGroup.findCrew(editInput.nickname());
+
+        ResponseAttendanceEditStateDto beforeEditState = getBeforeEditState(crew, editInput.attendanceDay());
+        ResponseAttendanceEditStateDto afterEditState = getAfterEditState(crew, editInput.attendanceDay(),
+                editInput.attendanceTime());
+
+        applyAttendanceEdit(beforeEditState, afterEditState);
+    }
+
+    private AttendanceEditInputDto getEditInput() {
         String nickname = InputView.inputNickname();
         String textAttendanceDay = InputView.inputAttendanceDay();
         String textAttendanceTime = InputView.inputAttendanceTime();
-
         int attendanceDay = InputParser.parseInt(textAttendanceDay);
-        Crew crew = crewGroup.findCrew(nickname);
 
-        LocalDate findLocalDate = LocalDate.of(LocalDate.now().getYear(),
-                LocalDateTime.now().getMonthValue(), attendanceDay);
+        return new AttendanceEditInputDto(nickname, attendanceDay, textAttendanceTime);
+    }
 
-        // beforeDate
+    private ResponseAttendanceEditStateDto getBeforeEditState(Crew crew, int attendanceDay) {
+        LocalDate findLocalDate = LocalDate.of(LocalDate.now().getYear(), LocalDateTime.now().getMonthValue(),
+                attendanceDay);
         Attendance attendance = crew.getAttendance();
         AttendanceDate attendanceDate = attendance.findAttendanceDate(findLocalDate);
-        String beforeEditDate = DateTimeUtil.convertLocalDateTimeToString(
-                attendanceDate.checkAttendanceTime());
+
+        String beforeEditDate = DateTimeUtil.convertLocalDateTimeToString(attendanceDate.checkAttendanceTime());
         AttendanceState beforeState = attendanceDate.calculateAttendanceState();
 
-        // afterDate
-        LocalDateTime afterEditDateTime = DateTimeUtil.convertStringToLocalDateTime(findLocalDate,
-                textAttendanceTime);
+        return new ResponseAttendanceEditStateDto(beforeEditDate, beforeState, null, null);
+    }
+
+    private ResponseAttendanceEditStateDto getAfterEditState(Crew crew, int attendanceDay, String textAttendanceTime) {
+        LocalDate findLocalDate = LocalDate.of(LocalDate.now().getYear(), LocalDateTime.now().getMonthValue(),
+                attendanceDay);
+        Attendance attendance = crew.getAttendance();
+        AttendanceDate attendanceDate = attendance.findAttendanceDate(findLocalDate);
+
+        LocalDateTime afterEditDateTime = DateTimeUtil.convertStringToLocalDateTime(findLocalDate, textAttendanceTime);
         String afterEditTime = DateTimeUtil.convertLocalDateTimeToTimeString(afterEditDateTime);
+
         attendanceDate.editDateTime(afterEditDateTime);
         AttendanceState afterState = attendanceDate.calculateAttendanceState();
 
-        OutputView.printEditState(
-                new ResponseAttendanceEditStateDto(beforeEditDate, beforeState, afterEditTime, afterState));
+        return new ResponseAttendanceEditStateDto(null, null, afterEditTime, afterState);
+    }
+
+    private void applyAttendanceEdit(ResponseAttendanceEditStateDto before, ResponseAttendanceEditStateDto after) {
+        OutputView.printEditState(new ResponseAttendanceEditStateDto(
+                before.beforeDateTime(), before.beforeState(), after.afterDateTime(), after.afterState()
+        ));
     }
 
     private void attendCommand(CrewGroup crewGroup) {
