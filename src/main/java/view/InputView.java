@@ -37,7 +37,7 @@ public class InputView {
         return scanner.nextLine();
     }
 
-    public static String getUserInputString(TodayDate todayDate){
+    public static String getUserWantMenu(TodayDate todayDate){
         System.out.printf(String.format(PRINT_TODAY_FORMAT,todayDate.getTodayDate().getMonth().getValue(),todayDate.getTodayDate().getDayOfMonth(),todayDate.getTodayDay()));
         printMenu();
         String input = userInput();
@@ -45,11 +45,11 @@ public class InputView {
             return isQOrOneOrTwoOrThreeOrFour(input);
         } catch (IllegalArgumentException e){
             System.out.println(e.getMessage());
-            return getUserInputString(todayDate);
+            return getUserWantMenu(todayDate);
         }
     }
 
-    private static String isQOrOneOrTwoOrThreeOrFour(String input){
+    public static String isQOrOneOrTwoOrThreeOrFour(String input){
         if (!input.matches(MENU_OPTION)) {
             throw new IllegalArgumentException("[ERROR] 메뉴에 없는 선택지 입니다.");
         }
