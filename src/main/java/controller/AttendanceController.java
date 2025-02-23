@@ -19,24 +19,27 @@ import java.util.Map;
 
 public class AttendanceController {
 
+    public static final String ATTENDANCE_FILE_PATH = "src/main/resources/attendance.csv";
+
+    private final LocalDate today;
     private final InputView inputView;
 
-    public AttendanceController(InputView inputView) {
+    public AttendanceController(LocalDate today, InputView inputView) {
+        this.today = today;
         this.inputView = inputView;
     }
 
     public void run() {
-        LocalDate date = LocalDate.of(2024, 12, 13);
-
-        AttendanceSheetsFactory attendanceSheetsFactory = new AttendanceSheetsFactory(new FileReaderUtil("src/main/resources/attendance.csv"));
+        AttendanceSheetsFactory attendanceSheetsFactory = new AttendanceSheetsFactory(new FileReaderUtil(
+                ATTENDANCE_FILE_PATH));
         AttendanceSheets attendanceSheets = attendanceSheetsFactory.create();
 
         while (true) {
-            String select = inputView.inputMenu(date);
+            String select = inputView.inputMenu(today);
             System.out.print(System.lineSeparator());
 
             if (select.equals("1")) {
-                attend(date, attendanceSheets);
+                attend(attendanceSheets);
                 continue;
             }
 
@@ -46,7 +49,7 @@ public class AttendanceController {
             }
 
             if (select.equals("3")) {
-                printAttendance(attendanceSheets, date);
+                printAttendance(attendanceSheets);
                 continue;
             }
 
@@ -80,7 +83,7 @@ public class AttendanceController {
         System.out.print(System.lineSeparator());
     }
 
-    private void printAttendance(AttendanceSheets attendanceSheets, LocalDate date) {
+    private void printAttendance(AttendanceSheets attendanceSheets) {
         String nickname = inputView.inputNickname();
 
         OutputView.printAttendanceSheetIntro(nickname);
@@ -122,13 +125,14 @@ public class AttendanceController {
         attendanceSheetByNicknameAndDay.getAttendanceDateTime().update(LocalTime.of(hour, minute));
     }
 
-    private void attend(LocalDate date, AttendanceSheets attendanceSheets) {
+    private void attend(AttendanceSheets attendanceSheets) {
         String nickname = inputView.inputNickname();
         String time = inputView.inputTime();
         int hour = Integer.parseInt(time.split(":")[0]);
         int minute = Integer.parseInt(time.split(":")[1]);
 
-        LocalDateTime localDateTime = LocalDateTime.of(date.getYear(), date.getMonth(), date.getDayOfMonth(), hour, minute);
+        LocalDateTime localDateTime = LocalDateTime.of(today.getYear(), today.getMonth(), today.getDayOfMonth(), hour,
+                minute);
         attendanceSheets.add(new AttendanceSheet(nickname, AttendanceDateTime.from(localDateTime)));
     }
 
