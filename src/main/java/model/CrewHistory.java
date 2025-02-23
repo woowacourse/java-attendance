@@ -45,11 +45,23 @@ public class CrewHistory {
 
     public Map<AttendanceType, Integer> countAttendanceType(final LocalDate todayDate) {
         List<LocalDateTime> history = getAttendanceHistory(todayDate);
+        return countAttendanceType(history);
+    }
+
+    public Map<AttendanceType, Integer> countAttendanceType(final List<LocalDateTime> history) {
         Map<AttendanceType, Integer> result = initialize();
         for (LocalDateTime attendanceTime : history) {
             result.merge(AttendanceType.from(attendanceTime), 1, Integer::sum);
         }
-        return result;
+        return Collections.unmodifiableMap(result);
+    }
+
+    public List<LocalDateTime> getAttendanceHistory(final LocalDate todayDate) {
+        int today = todayDate.getDayOfMonth();
+        return IntStream.range(1, today)
+                .filter(attendance::containsKey)
+                .mapToObj(attendance::get)
+                .toList();
     }
 
     private Map<AttendanceType, Integer> initialize() {
@@ -66,14 +78,6 @@ public class CrewHistory {
 
     public String getNickname() {
         return nickname;
-    }
-
-    public List<LocalDateTime> getAttendanceHistory(final LocalDate todayDate) {
-        int today = todayDate.getDayOfMonth();
-        return IntStream.range(1, today)
-                .filter(attendance::containsKey)
-                .mapToObj(attendance::get)
-                .toList();
     }
 
     public Map<Integer, LocalDateTime> getAttendance() {
