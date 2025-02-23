@@ -43,16 +43,20 @@ public class AttendanceHistoryLoader {
             throws IOException {
         String line;
         while ((line = reader.readLine()) != null) {
-            String[] values = line.split(",");
-            String[] datetimeValues = values[1].split(" ");
-            String date = datetimeValues[0];
-            String time = datetimeValues[1];
-
-            Crew crew = getCrew(crewMap, crews, values[0]);
-
-            crew.addAttendance(new Attendance(new Day(LocalDate.parse(date, dateFormatter)),
-                    LocalTime.parse(time, timeFormatter)));
+            parseAndAddAttendance(crewMap, crews, line);
         }
+    }
+
+    private void parseAndAddAttendance(Map<String, Crew> crewMap, List<Crew> crews, String line) {
+        String[] values = line.split(",");
+        String[] datetimeValues = values[1].split(" ");
+        String date = datetimeValues[0];
+        String time = datetimeValues[1];
+
+        Crew crew = getCrew(crewMap, crews, values[0]);
+
+        crew.addAttendance(new Attendance(new Day(LocalDate.parse(date, dateFormatter)),
+                LocalTime.parse(time, timeFormatter)));
     }
 
     private Crew getCrew(Map<String, Crew> crewMap, List<Crew> crews, String nickname) {
