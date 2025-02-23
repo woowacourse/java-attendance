@@ -57,7 +57,11 @@ public class AttendanceManager {
 
     public void addAttendance(String nickname, Attendance attendance) {
         try {
-            attendances.get(nickname).add(attendance);
+            var attendanceList = attendances.get(nickname);
+            if (attendanceList.contains(attendance)) {
+                throw new AttendanceArgumentException(Error.DUPLICATE_DATE.getMessage());
+            }
+            attendanceList.add(attendance);
         } catch (NullPointerException e) {
             throw new AttendanceArgumentException(Error.NOT_REGISTERED_NICKNAME.getMessage());
         }

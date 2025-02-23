@@ -78,6 +78,7 @@ public class AttendanceManagerTest {
             var time = LocalDateTime.of(2024, 12, 13, 10, 1);
 
             var attendance = new Attendance(time);
+
             assertThatThrownBy(() -> manager.addAttendance(nickname, attendance))
                 .isInstanceOf(AttendanceArgumentException.class)
                 .hasMessageContaining("등록되지 않은 닉네임");
@@ -86,7 +87,14 @@ public class AttendanceManagerTest {
         @Test
         @DisplayName("다시 출석할 경우, 예외가 발생한다.")
         void error_retireAttendance() {
-            
+            var nickname = "이든";
+            var time = LocalDateTime.of(2024, 12, 2, 13, 2);
+
+            var attendance = new Attendance(time);
+
+            assertThatThrownBy(() -> manager.addAttendance(nickname, attendance))
+                .isInstanceOf(AttendanceArgumentException.class)
+                .hasMessageContaining("이미 출석되었습니다. 수정 기능을 이용해주세요.");
         }
 
         private static Stream<Arguments> getSourceForAttendanceInfo() {
