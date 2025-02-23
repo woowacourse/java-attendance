@@ -1,13 +1,19 @@
 package attendance.domain;
 
+import static attendance.common.utill.DateTimeFormatterWrapper.*;
+
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.net.URL;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import attendance.common.exception.AttendanceArgumentException;
 import attendance.common.exception.AttendanceFileException;
 
 public class AttendanceManager {
@@ -23,7 +29,7 @@ public class AttendanceManager {
     private static final String FILE_DOESNT_EXISTS = "존재하지 않은 파일입니다.";
     private static final String FILE_INVALID = "유효하지 않은 파일입니다.";
 
-    private Map<String, List<Attendance>> Attendances;
+    private final Map<String, List<Attendance>> attendances = new HashMap<>();
 
     public AttendanceManager(String fileName) throws AttendanceFileException {
         URL resourceUrl = getUrl(fileName);
@@ -33,7 +39,7 @@ public class AttendanceManager {
     private URL getUrl(String fileName) throws AttendanceFileException {
         URL resourceUrl = getClass().getResource(fileName);
         if (resourceUrl == null) {
-            throw new AttendanceFileException(FILE_DOESNT_EXISTS);// 또는 예외 throw
+            throw new AttendanceFileException(FILE_DOESNT_EXISTS);
         }
         return resourceUrl;
     }
@@ -50,9 +56,27 @@ public class AttendanceManager {
     }
 
     private void addAttendance(String line) {
+        var lines = line.split(",");
+        var nickname = lines[0];
+
+        List<Attendance> attendanceList = attendances.computeIfAbsent(nickname, k -> new ArrayList<>());
+
+        var dateTime = LocalDateTime.parse(lines[1], getFormatter("yyyy-MM-dd HH:mm"));
+        var attendance = new Attendance(dateTime);
+
+        attendanceList.add(attendance);
     }
 
-    public boolean findAttendance(String nickname) {
-        return false;
+    public void addAttendance(String nickname, Attendance attendance) {
+        attendances.get(nickname).add(attendance);
+    }
+
+    public Attendance findAttendance(String nickname, Attendance attendance) {
+        var attendanceList = attendances.get(nickname);
+
+        return attendanceList.stream()
+            .filter((i) -> i.equals(attendance))
+            .findFirst()
+            .orElseThrow(() -> new AttendanceArgumentException("출석 정보를 찾을 수 없습니다."));
     }
 }

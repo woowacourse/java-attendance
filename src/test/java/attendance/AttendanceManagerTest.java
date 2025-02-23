@@ -20,7 +20,7 @@ import attendance.domain.AttendanceManager;
 
 public class AttendanceManagerTest {
     private AttendanceManager manager;
-    private static final String TEST_FILE = "test_attendance.csv";
+    private static final String TEST_FILE = "/attendances.csv";
 
     @Nested
     @DisplayName("잘못된 File에 대한 예외 케이스 테스트")
@@ -44,7 +44,8 @@ public class AttendanceManagerTest {
 
     @Nested
     @DisplayName("기능에 대한 테스트")
-    class TestForAttendanceManager {
+    class TestForAttendanceManaging {
+
         @BeforeEach
         void setUp() throws AttendanceFileException {
             manager = new AttendanceManager(TEST_FILE);
@@ -54,20 +55,20 @@ public class AttendanceManagerTest {
         @MethodSource("getSourceForAttendanceInfo")
         @DisplayName("csv 파일로부터 출석 정보를 불러온다.")
         void test_getAttendanceInfoFromCSV(String nickname, Attendance attendance) {
-            assertThat(manager.findAttendance(nickname)).isEqualTo(attendance);
+            assertThat(manager.findAttendance(nickname, attendance)).isEqualTo(attendance);
         }
 
         @Test
         @DisplayName("닉네임과 출석 정보을 입력하면, 출석 정보를 저장한다.")
         void test_attendance() {
             var nickname = "이든";
-            var time = LocalDateTime.of(2024, 12, 14, 10, 1);
+            var time = LocalDateTime.of(2024, 12, 13, 10, 1);
 
             var attendance = new Attendance(time);
 
-            // manager.addAttendance(nickname, attendance);
+            manager.addAttendance(nickname, attendance);
 
-            Assertions.assertThat(manager.findAttendance(nickname)).isEqualTo(attendance);
+            Assertions.assertThat(manager.findAttendance(nickname, attendance)).isEqualTo(attendance);
         }
 
         @Test
