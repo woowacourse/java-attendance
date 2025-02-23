@@ -11,6 +11,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 public class AttendanceManager {
@@ -64,6 +65,16 @@ public class AttendanceManager {
 
         List<Attendance> attendancesUntilYesterday = attendances.getAttendancesUntilYesterday();
         return AttendanceStatus.of(attendancesUntilYesterday);
+    }
+
+    public Map<String, AttendanceStatus> getAttendanceWarnedCrews() {
+        Map<String, AttendanceStatus> collect = attendances.entrySet().stream()
+                .collect(Collectors.toMap(
+                        Map.Entry::getKey,
+                        entry -> new AttendanceStatus(entry.getValue().getAttendancesUntilYesterday())
+                ));
+
+        return collect;
     }
 
     public void validateNicknameExists(String nickname) {
