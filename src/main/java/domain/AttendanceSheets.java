@@ -22,7 +22,7 @@ public class AttendanceSheets {
 
     private static void validateHasNickname(String nickname) {
         if (nickname == null || nickname.isEmpty()) {
-            throw new IllegalArgumentException("[ERROR] 해당 닉네임은 존재하지 않습니다.");
+            throw new IllegalArgumentException("[ERROR] 등록되지 않은 닉네임입니다.");
         }
     }
 

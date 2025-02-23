@@ -6,7 +6,7 @@ import java.io.IOException;
 import java.util.List;
 
 public class FileReaderUtil {
-    
+
     private static final int HEADER = 1;
 
     private final String filePath;
@@ -17,7 +17,6 @@ public class FileReaderUtil {
 
     public List<String> read() {
         try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
-
             return reader.lines()
                     .skip(HEADER)
                     .toList();

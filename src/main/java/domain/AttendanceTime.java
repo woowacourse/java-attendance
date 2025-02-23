@@ -22,7 +22,6 @@ public class AttendanceTime {
 
     public int compareHour(int hour) {
         return Integer.compare(time.getHour(), hour);
-
     }
 
     public int compareMinute(int minute) {

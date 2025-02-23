@@ -1,18 +1,14 @@
 package view;
 
 import domain.AbsentPolicy;
-import domain.AttendanceDate;
 import domain.AttendanceDateTime;
-
 import domain.AttendanceSheet;
 import domain.AttendanceTime;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.format.TextStyle;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 
 public class OutputView {
 

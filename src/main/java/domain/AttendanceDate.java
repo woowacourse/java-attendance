@@ -19,7 +19,8 @@ public class AttendanceDate {
     private static void validateWeekend(LocalDate date) {
         if (date.getDayOfWeek() == DayOfWeek.SATURDAY || date.getDayOfWeek() == DayOfWeek.SUNDAY) {
             throw new IllegalArgumentException(
-                    String.format("[ERROR] %02d월 %02d일 %s은 등교일이 아닙니다.", date.getMonth().getValue(), date.getDayOfMonth(),
+                    String.format("[ERROR] %02d월 %02d일 %s은 등교일이 아닙니다.", date.getMonth().getValue(),
+                            date.getDayOfMonth(),
                             date.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.KOREAN)));
         }
     }
@@ -27,7 +28,8 @@ public class AttendanceDate {
     private static void validateHoliday(LocalDate date) {
         if (MonthDay.from(date).equals(MonthDay.of(12, 25))) {
             throw new IllegalArgumentException(
-                    String.format("[ERROR] %02d월 %02d일 %s은 등교일이 아닙니다.", date.getMonth().getValue(), date.getDayOfMonth(),
+                    String.format("[ERROR] %02d월 %02d일 %s은 등교일이 아닙니다.", date.getMonth().getValue(),
+                            date.getDayOfMonth(),
                             date.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.KOREAN)));
         }
     }

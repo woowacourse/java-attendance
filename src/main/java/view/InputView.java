@@ -15,7 +15,8 @@ public class InputView {
 
     public String inputMenu(LocalDate today) {
         String koreanDayOfWeek = today.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.KOREAN);
-        System.out.printf(ViewMessage.SELECT_MENU_INTRO, today.getMonth().getValue(), today.getDayOfMonth(), koreanDayOfWeek);
+        System.out.printf(ViewMessage.SELECT_MENU_INTRO, today.getMonth().getValue(), today.getDayOfMonth(),
+                koreanDayOfWeek);
         System.out.print(ViewMessage.SELECT_MENU);
 
         return scanner.nextLine();
