@@ -11,7 +11,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.ValueSource;
 
-public class HistoryTest {
+public class AttendanceHistoryTest {
 
     @ParameterizedTest
     @CsvSource({"5,출석", "10,지각", "30,지각", "31,결석"})
@@ -19,9 +19,9 @@ public class HistoryTest {
     void attendanceResultTest(int minutes, String expected) {
         // given
         LocalDateTime time = LocalDateTime.of(2025, 2, 18, 10, minutes);
-        History history = new History(time);
+        AttendanceHistory attendanceHistory = new AttendanceHistory(time);
         // when
-        String result = history.getAttendanceResult();
+        String result = attendanceHistory.getAttendanceResult();
         // then
         assertThat(result).isEqualTo(expected);
     }
@@ -32,7 +32,7 @@ public class HistoryTest {
         // given
         LocalDateTime time = LocalDateTime.of(2025, 2, 15, 10, 7);
         // when & then
-        assertThatThrownBy(() -> new History(time))
+        assertThatThrownBy(() -> new AttendanceHistory(time))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("등교일이 아닙니다.");
     }
@@ -44,7 +44,7 @@ public class HistoryTest {
         // given
         LocalDateTime time = LocalDateTime.of(2024, 2, 16, hour, 7);
         // when & then
-        assertThatThrownBy(() -> new History(time))
+        assertThatThrownBy(() -> new AttendanceHistory(time))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("[ERROR] 캠퍼스 운영 시간은 08:00~23:00 입니다.");
     }
@@ -55,12 +55,12 @@ public class HistoryTest {
     void isBeforeHistoryTest() {
         // given
         LocalDateTime time = LocalDateTime.of(2024, 12, 17, 10, 7);
-        History history = new History(time);
+        AttendanceHistory attendanceHistory = new AttendanceHistory(time);
         LocalDateTime testTime1 = LocalDateTime.of(2024, 12, 17, 10, 7);
         LocalDateTime testTime2 = LocalDateTime.of(2024, 12, 18, 10, 7);
         // when
-        boolean check1 = history.isBeforeHistory(testTime1);
-        boolean check2 = history.isBeforeHistory(testTime2);
+        boolean check1 = attendanceHistory.isBeforeHistory(testTime1);
+        boolean check2 = attendanceHistory.isBeforeHistory(testTime2);
         // then
         assertThat(check1).isFalse();
         assertThat(check2).isTrue();

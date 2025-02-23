@@ -1,7 +1,7 @@
 package util;
 
-import static domain.History.ABSENT_DEFAULT_HOUR;
-import static domain.History.ABSENT_DEFAULT_MINUTE;
+import static domain.AttendanceHistory.ABSENT_DEFAULT_HOUR;
+import static domain.AttendanceHistory.ABSENT_DEFAULT_MINUTE;
 
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;

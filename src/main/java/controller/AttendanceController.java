@@ -2,11 +2,11 @@ package controller;
 
 import static util.Convertor.changeStandardDate;
 
+import domain.AttendanceHistory;
 import domain.SelectionOption;
 import domain.AbsenceLevel;
 import domain.Crew;
 import domain.Crews;
-import domain.History;
 import dto.AbsenceCrewDto;
 import dto.AbsenceCrewsDto;
 import dto.HistoriesDto;
@@ -72,10 +72,10 @@ public class AttendanceController {
     private void getAllAttendance() {
         String username = inputView.getName();
         LocalDateTime newDate = changeStandardDate(LocalDateTime.now());
-        List<History> beforeHistory = crews.getBeforeHistory(username, newDate);
+        List<AttendanceHistory> beforeAttendanceHistory = crews.getBeforeHistory(username, newDate);
         Map<String, Integer> attendanceAllResult = crews.getAttendanceAllResult(username, newDate);
         AbsenceLevel classifyAbsenceLevel = crews.getClassifyAbsenceLevel(username, newDate);
-        HistoriesDto historiesDto = HistoriesDto.of(username, beforeHistory, attendanceAllResult, classifyAbsenceLevel);
+        HistoriesDto historiesDto = HistoriesDto.of(username, beforeAttendanceHistory, attendanceAllResult, classifyAbsenceLevel);
         outputVIew.printHistories(historiesDto);
     }
 

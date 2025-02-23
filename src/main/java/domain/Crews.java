@@ -38,7 +38,7 @@ public class Crews {
                 .filter(crew -> !crew.getClassifyAbsenceLevel(localDateTime).equals(AbsenceLevel.NORMAL)).toList();
     }
 
-    public List<History> getBeforeHistory(String username, LocalDateTime standard) {
+    public List<AttendanceHistory> getBeforeHistory(String username, LocalDateTime standard) {
         Crew findCrew = getCrew(username);
         return findCrew.getBeforeHistories(standard);
     }

@@ -44,8 +44,8 @@ public class CrewsTest {
                 LocalDateTime.of(2024, 12, 3, 9, 59),
                 LocalDateTime.of(2024, 12, 4, 9, 59));
         // when
-        List<History> result = crews.getBeforeHistory("쿠키", standard);
-        List<LocalDateTime> resultTime = result.stream().map(History::getAttendanceTime).toList();
+        List<AttendanceHistory> result = crews.getBeforeHistory("쿠키", standard);
+        List<LocalDateTime> resultTime = result.stream().map(AttendanceHistory::getAttendanceTime).toList();
         assertThat(resultTime).isEqualTo(expected);
     }
 
@@ -58,8 +58,8 @@ public class CrewsTest {
                 LocalDateTime.of(2024, 12, 3, 10, 35),
                 LocalDateTime.of(2024, 12, 4, 10, 35));
         // when
-        List<History> result = crews.getBeforeHistory("빙봉", standard);
-        List<LocalDateTime> resultTime = result.stream().map(History::getAttendanceTime).toList();
+        List<AttendanceHistory> result = crews.getBeforeHistory("빙봉", standard);
+        List<LocalDateTime> resultTime = result.stream().map(AttendanceHistory::getAttendanceTime).toList();
         // then
         assertThat(resultTime).isEqualTo(expected);
     }
@@ -73,8 +73,8 @@ public class CrewsTest {
         crews.addHistory(username, attendanceTime);
         LocalDateTime standardTime = LocalDateTime.of(2024, 12, 20, 10, 35);
         // when
-        List<History> result = crews.getBeforeHistory(username, standardTime);
-        List<LocalDateTime> resultTime = result.stream().map(History::getAttendanceTime).toList();
+        List<AttendanceHistory> result = crews.getBeforeHistory(username, standardTime);
+        List<LocalDateTime> resultTime = result.stream().map(AttendanceHistory::getAttendanceTime).toList();
         // then
         boolean check = resultTime.contains(attendanceTime);
         assertThat(check).isTrue();

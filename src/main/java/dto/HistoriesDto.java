@@ -1,7 +1,7 @@
 package dto;
 
 import domain.AbsenceLevel;
-import domain.History;
+import domain.AttendanceHistory;
 import java.util.List;
 import java.util.Map;
 
@@ -12,7 +12,7 @@ public record HistoriesDto(
         String classifyAbsenceLevel
 ) {
 
-    public static HistoriesDto of(String username, List<History> histories, Map<String, Integer> attendanceAllResult,
+    public static HistoriesDto of(String username, List<AttendanceHistory> histories, Map<String, Integer> attendanceAllResult,
                                   AbsenceLevel classifyAbsenceLevel) {
         List<HistoryDto> historyDtoList = histories.stream().map(history -> {
             return new HistoryDto(history.getAttendanceTime(), history.getAttendanceResult());

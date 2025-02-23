@@ -36,10 +36,10 @@
 <!-- 리뷰어가 효과적으로 피드백할 수 있도록 중점적으로 피드백받고 싶은 내용을 공유해주세요.  
 예를 들어, 가장 고민했던 점이나 여전히 어려운 부분, 그리고 이에 대한 생각을 적을 수 있습니다. -->
 
-1. 현재 제 도메인들의 관계는 제일 바깥에 Crews 가 있고 그 안에 Crew, 그리고 Crew 안에 histories, <br>
+1. 현재 제 도메인들의 관계는 제일 바깥에 Crews 가 있고 그 안에 Crew, 그리고 Crew 안에 attendanceHistories, <br>
    Histories 안에 History 와 같은 자료 구조로 되어있습니다. <br>
    위와 같이 설계한 이유는 일급 컬렉션 형태를 지키기 위해서였습니다. <br>
-   그런데 이제 문제는 워낙 예를 들어 history 내부의 값이 필요할 때 메소드를 만들고 <br>
+   그런데 이제 문제는 워낙 예를 들어 attendanceHistory 내부의 값이 필요할 때 메소드를 만들고 <br>
    불필요하게 계속 꺼내는 형태로 해당 내부의 값을 꺼내는 역할만 하는 메소드들을 만들어야 했습니다. <br>
    이에 따라 뭔가 불필요한 코드들이 늘어난 것 같은데 일급 컬렉션을 사용하기 위해서는 어쩔 수 없는 부분일까요?
    아니면 좀 더 다른 설계로 했어야할까요? <br>
@@ -47,15 +47,15 @@
 
   ```java
     public void editHistory(LocalDateTime attendanceTime) {
-    histories.editHistory(attendanceTime);
+    attendanceHistories.editHistory(attendanceTime);
 }
 
 public LocalDateTime getHistoryDate(LocalDateTime time) {
-    return histories.getHistory(time);
+    return attendanceHistories.getHistory(time);
 }
 
 public AbsenceLevel getClassifyAbsenceLevel(LocalDateTime time) {
-    return histories.classifyAbsenceLevel(time);
+    return attendanceHistories.classifyAbsenceLevel(time);
 }
   ```
 

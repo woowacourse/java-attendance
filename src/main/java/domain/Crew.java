@@ -7,12 +7,12 @@ import java.util.Map;
 
 public class Crew {
     private final String userName;
-    private final Histories histories;
+    private final AttendanceHistories attendanceHistories;
 
     public Crew(String userName, List<LocalDateTime> histories, LocalDate standard) {
         validateName(userName);
         this.userName = userName;
-        this.histories = new Histories(histories, standard);
+        this.attendanceHistories = new AttendanceHistories(histories, standard);
     }
 
     public void validateName(String userName) {
@@ -22,15 +22,15 @@ public class Crew {
     }
 
     public void addAttendance(LocalDateTime history) {
-        histories.addHistory(history);
+        attendanceHistories.addHistory(history);
     }
 
-    public List<History> getBeforeHistories(LocalDateTime standard) {
-        return histories.getSortedHistories(standard);
+    public List<AttendanceHistory> getBeforeHistories(LocalDateTime standard) {
+        return attendanceHistories.getSortedHistories(standard);
     }
 
     public String getHistoryResult(LocalDateTime attendanceTime) {
-        return histories.getHistoryResult(attendanceTime);
+        return attendanceHistories.getHistoryResult(attendanceTime);
     }
 
     public String getUserName() {
@@ -38,18 +38,18 @@ public class Crew {
     }
 
     public void editHistory(LocalDateTime attendanceTime) {
-        histories.editHistory(attendanceTime);
+        attendanceHistories.editHistory(attendanceTime);
     }
 
     public LocalDateTime getHistoryDate(LocalDateTime time) {
-        return histories.getHistory(time);
+        return attendanceHistories.getHistory(time);
     }
 
     public AbsenceLevel getClassifyAbsenceLevel(LocalDateTime time) {
-        return histories.classifyAbsenceLevel(time);
+        return attendanceHistories.classifyAbsenceLevel(time);
     }
 
     public Map<String, Integer> getAttendanceAllResult(LocalDateTime time) {
-        return histories.getAttendanceResultCount(time);
+        return attendanceHistories.getAttendanceResultCount(time);
     }
 }
