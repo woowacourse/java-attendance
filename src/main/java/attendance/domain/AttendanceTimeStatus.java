@@ -2,10 +2,10 @@ package attendance.domain;
 
 import java.time.LocalDateTime;
 
-public record HourMinute(int hour, int minute, AttendanceStatus attendanceStatus) {
+public record AttendanceTimeStatus(int hour, int minute, AttendanceStatus status) {
     public static final int NULL_TIME = -1;
 
-    public HourMinute(LocalDateTime localDateTime) {
+    public AttendanceTimeStatus(LocalDateTime localDateTime) {
         this(localDateTime.getHour(), localDateTime.getMinute(), AttendanceChecker.checkAttendance(localDateTime));
     }
 }

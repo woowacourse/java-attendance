@@ -1,37 +1,40 @@
 package attendance.domain;
 
+import static attendance.domain.AttendanceStatus.ABSENCE;
+import static attendance.domain.AttendanceStatus.LATENESS;
+
 import java.util.Map;
 
 public enum WarningLevel {
-    REMOVE("제적"), COUNSELING("면담"), WARNING("경고"), NONE("해당 없음");
+    EXPELLED("제적"), SUPERVISED("면담"), WARNING("경고"), NONE("해당 없음");
 
-    private String level;
+    private String displayName;
 
-    WarningLevel(final String level){
-        this.level = level;
+    WarningLevel(final String displayName) {
+        this.displayName = displayName;
     }
 
-    public static WarningLevel calculateLevel(final Map<AttendanceStatus, Integer> attendanceStatuses) {
-        int absenceCount = attendanceStatuses.get(AttendanceStatus.ABSENCE);
-        absenceCount += convertLateness(attendanceStatuses.get(AttendanceStatus.LATENESS));
-        if(absenceCount >= 6) {
-            return WarningLevel.REMOVE;
+    public static WarningLevel calculateLevel(final Map<AttendanceStatus, Integer> attendanceStatusCounts) {
+        int absenceCount = attendanceStatusCounts.get(ABSENCE);
+        absenceCount += countAsAbsence(attendanceStatusCounts.get(LATENESS));
+        if (absenceCount >= 6) {
+            return EXPELLED;
         }
-        if(absenceCount >= 3) {
-            return WarningLevel.COUNSELING;
+        if (absenceCount >= 3) {
+            return SUPERVISED;
         }
-        if(absenceCount >= 2) {
-            return WarningLevel.WARNING;
+        if (absenceCount >= 2) {
+            return WARNING;
         }
         return WarningLevel.NONE;
     }
 
-    private static int convertLateness(int latenessCount) {
+    private static int countAsAbsence(int latenessCount) {
         return latenessCount / 3;
     }
 
-    public String getLevel() {
-        return level;
+    public String getDisplayName() {
+        return displayName;
     }
 
 }

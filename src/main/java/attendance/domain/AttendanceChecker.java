@@ -3,6 +3,7 @@ package attendance.domain;
 import static attendance.domain.AttendanceStatus.ABSENCE;
 import static attendance.domain.AttendanceStatus.LATENESS;
 import static attendance.domain.AttendanceStatus.PRESENT;
+import static java.time.DayOfWeek.MONDAY;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
@@ -15,13 +16,13 @@ public class AttendanceChecker {
         int hour = localDateTime.getHour();
         int minute = localDateTime.getMinute();
 
-        if (localDateTime.getDayOfWeek().equals(DayOfWeek.MONDAY)) {
-            return checkAttendance(hour, minute);
+        if (localDateTime.getDayOfWeek().equals(MONDAY)) {
+            return checkMondayAttendance(hour, minute);
         }
         return checkRegularAttendance(hour, minute);
     }
 
-    public static AttendanceStatus checkRegularAttendance(final int hour, final int minute) {
+    private static AttendanceStatus checkRegularAttendance(final int hour, final int minute) {
         if ((hour == 10 && minute <= 5) || hour < 10) {
             return PRESENT;
         }
@@ -31,7 +32,7 @@ public class AttendanceChecker {
         return ABSENCE;
     }
 
-    public static AttendanceStatus checkAttendance(final int hour, final int minute) {
+    private static AttendanceStatus checkMondayAttendance(final int hour, final int minute) {
         if (hour <= 13 && minute <= 5) {
             return PRESENT;
         }
@@ -41,7 +42,7 @@ public class AttendanceChecker {
         return ABSENCE;
     }
 
-    public static void checkCampusHour(final int hour, final int minute) {
+    public static void validateCampusHour(final int hour, final int minute) {
         if (hour < 8 || (hour >= 23 && minute > 0)) {
             throw new IllegalArgumentException("[ERROR] 현재 캠퍼스 운영시간이 아닙니다.");
         }
@@ -52,9 +53,10 @@ public class AttendanceChecker {
         DayOfWeek dayOfWeek = localDate.getDayOfWeek();
         if (!isCampusDay(day)) {
             throw new IllegalArgumentException(
-                    String.format("[ERROR] %d월 %d일 %s은 등교일이 아닙니다.", localDate.getMonthValue(), day,
-                            dayOfWeek.getDisplayName(
-                                    TextStyle.FULL, Locale.KOREA)));
+                    String.format("[ERROR] %d월 %d일 %s은 등교일이 아닙니다.",
+                            localDate.getMonthValue(),
+                            day,
+                            dayOfWeek.getDisplayName(TextStyle.FULL, Locale.KOREA)));
         }
     }
 

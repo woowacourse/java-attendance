@@ -1,7 +1,7 @@
 package attendance.controller;
 
-import attendance.domain.AttendanceRepository;
-import attendance.domain.HourMinute;
+import attendance.domain.AttendanceTimeStatus;
+import attendance.domain.CrewAttendanceRepository;
 import attendance.util.FileLoader;
 import attendance.view.DataFileReader;
 import attendance.view.InputView;
@@ -16,23 +16,23 @@ public class AttendanceController {
     private static final Map<String, Runnable> operations = new HashMap<>();
 
     public void run() {
-        AttendanceRepository attendanceRepository = initData();
-        initOperations(attendanceRepository);
+        CrewAttendanceRepository crewAttendanceRepository = initData();
+        initOperations(crewAttendanceRepository);
         String option;
         while (!(option = getInputOption()).equals("Q")) {
             operations.get(option).run();
         }
     }
 
-    private AttendanceRepository initData(){
-        return new AttendanceRepository(FileLoader.loadAll(DataFileReader.read()));
+    private CrewAttendanceRepository initData() {
+        return new CrewAttendanceRepository(FileLoader.loadAll(DataFileReader.read()));
     }
 
-    private void initOperations(AttendanceRepository attendanceRepository) {
-        operations.put("1", () -> registerAttendance(attendanceRepository));
-        operations.put("2", () -> modifyAttendance(attendanceRepository));
-        operations.put("3", () -> queryAttendance(attendanceRepository));
-        operations.put("4", () -> queryWarningCrews(attendanceRepository));
+    private void initOperations(CrewAttendanceRepository crewAttendanceRepository) {
+        operations.put("1", () -> registerAttendance(crewAttendanceRepository));
+        operations.put("2", () -> modifyAttendance(crewAttendanceRepository));
+        operations.put("3", () -> queryAttendance(crewAttendanceRepository));
+        operations.put("4", () -> queryWarningCrews(crewAttendanceRepository));
     }
 
     private String getInputOption() {
@@ -40,29 +40,29 @@ public class AttendanceController {
         return InputView.readOption();
     }
 
-    private void registerAttendance(AttendanceRepository attendanceRepository) {
+    private void registerAttendance(CrewAttendanceRepository crewAttendanceRepository) {
         String name = InputView.readNickName();
         final LocalTime localTime = InputView.readAttendanceTime();
         LocalDateTime localDateTime = LocalDateTime.of(LocalDateTime.now().toLocalDate(), localTime);
-        attendanceRepository.add(name, localDateTime);
+        crewAttendanceRepository.add(name, localDateTime);
         OutputView.printAddedAttendance(localDateTime);
     }
 
-    private void modifyAttendance(AttendanceRepository attendanceRepository) {
+    private void modifyAttendance(CrewAttendanceRepository crewAttendanceRepository) {
         String name = InputView.readModifyNickName();
         final int day = InputView.readModifyDay();
         LocalTime newTime = InputView.readModifyTime();
-        LocalDateTime localDateTime = LocalDateTime.of(LocalDate.of(2024, 12, day), newTime);
-        HourMinute prevHourMinute = attendanceRepository.update(name, localDateTime);
-        OutputView.printModifiedAttendance(prevHourMinute, localDateTime);
+        LocalDateTime newLocalDateTime = LocalDateTime.of(LocalDate.of(2024, 12, day), newTime);
+        AttendanceTimeStatus prevAttendanceTimeStatus = crewAttendanceRepository.update(name, newLocalDateTime);
+        OutputView.printModifiedAttendance(prevAttendanceTimeStatus, newLocalDateTime);
     }
 
-    private void queryAttendance(AttendanceRepository attendanceRepository) {
+    private void queryAttendance(CrewAttendanceRepository crewAttendanceRepository) {
         String name = InputView.readNickName();
-        OutputView.printQueryAttendance(name, attendanceRepository);
+        OutputView.printQueryAttendance(name, crewAttendanceRepository);
     }
 
-    private void queryWarningCrews(AttendanceRepository attendanceRepository) {
-        OutputView.printWarningCrews(attendanceRepository);
+    private void queryWarningCrews(CrewAttendanceRepository crewAttendanceRepository) {
+        OutputView.printWarningCrews(crewAttendanceRepository);
     }
 }

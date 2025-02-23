@@ -1,6 +1,6 @@
 package attendance.util;
 
-import attendance.domain.Attendance;
+import attendance.domain.CrewAttendance;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -9,28 +9,28 @@ import java.util.Optional;
 
 public class FileLoader {
 
-    public static Attendance createAttendance(final String name, final LocalDateTime localDateTime) {
-        Attendance attendance = new Attendance(name);
-        attendance.add(localDateTime);
-        return attendance;
-    }
+    public static List<CrewAttendance> loadAll(final List<String> contents) {
+        List<CrewAttendance> crewAttendances = new ArrayList<>();
+        contents.forEach(content -> {
+            List<String> seperatedContent = Arrays.stream(content.split(",")).toList();
+            LocalDateTime localDateTime = LocalDateTime.parse(seperatedContent.get(1).replace(" ", "T"));
 
-    public static List<Attendance> loadAll(final List<String> datas) {
-        List<Attendance> attendances = new ArrayList<>();
-        datas.forEach(data -> {
-            List<String> seperatedData = Arrays.stream(data.split(",")).toList();
-            LocalDateTime localDateTime = LocalDateTime.parse(seperatedData.get(1).replace(" ", "T"));
-
-            Optional<Attendance> crewAttendance = attendances.stream()
-                    .filter(a -> a.isNameMatch(seperatedData.get(0)))
+            Optional<CrewAttendance> crewAttendance = crewAttendances.stream()
+                    .filter(crew -> crew.isNameMatch(seperatedContent.get(0)))
                     .findFirst();
 
             if (crewAttendance.isEmpty()) {
-                attendances.add(createAttendance(seperatedData.get(0), localDateTime));
+                crewAttendances.add(createCrewAttendance(seperatedContent.get(0), localDateTime));
                 return;
             }
             crewAttendance.get().add(localDateTime);
         });
-        return attendances;
+        return crewAttendances;
+    }
+
+    public static CrewAttendance createCrewAttendance(final String name, final LocalDateTime localDateTime) {
+        CrewAttendance crewAttendance = new CrewAttendance(name);
+        crewAttendance.add(localDateTime);
+        return crewAttendance;
     }
 }

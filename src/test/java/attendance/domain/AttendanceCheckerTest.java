@@ -23,8 +23,6 @@ class AttendanceCheckerTest {
         assertThat(result2).isEqualTo(PRESENT);
     }
 
-
-
     @DisplayName("지각")
     @Test
     void test2() {
@@ -68,7 +66,7 @@ class AttendanceCheckerTest {
     @DisplayName("캠퍼스 운영 시작 시간 전 출석 시 예외 발생")
     @Test
     void test7() {
-        assertThatThrownBy(() -> AttendanceChecker.checkCampusHour(7, 59))
+        assertThatThrownBy(() -> AttendanceChecker.validateCampusHour(7, 59))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("[ERROR] 현재 캠퍼스 운영시간이 아닙니다.");
     }
@@ -76,13 +74,13 @@ class AttendanceCheckerTest {
     @DisplayName("캠퍼스 운영 시작 시간 이후 출석 시 통과")
     @Test
     void test8() {
-        assertThatCode(() -> AttendanceChecker.checkCampusHour(8, 0)).doesNotThrowAnyException();
+        assertThatCode(() -> AttendanceChecker.validateCampusHour(8, 0)).doesNotThrowAnyException();
     }
 
     @DisplayName("캠퍼스 운영 종료 시간 이후 출석 시 예외 발생")
     @Test
     void test9() {
-        assertThatThrownBy(() -> AttendanceChecker.checkCampusHour(23, 1))
+        assertThatThrownBy(() -> AttendanceChecker.validateCampusHour(23, 1))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("[ERROR] 현재 캠퍼스 운영시간이 아닙니다.");
     }
@@ -90,7 +88,7 @@ class AttendanceCheckerTest {
     @DisplayName("캠퍼스 운영 종료 시간 이전 출석 시 통과")
     @Test
     void test10() {
-        assertThatCode(() -> AttendanceChecker.checkCampusHour(23, 0)).doesNotThrowAnyException();
+        assertThatCode(() -> AttendanceChecker.validateCampusHour(23, 0)).doesNotThrowAnyException();
     }
 
     @DisplayName("공휴일 출석 실패")
@@ -114,5 +112,4 @@ class AttendanceCheckerTest {
     void test13() {
         assertThatCode(() -> AttendanceChecker.validateCampusDay(24)).doesNotThrowAnyException();
     }
-
 }
