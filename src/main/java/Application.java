@@ -12,14 +12,18 @@ import view.ResultView;
 public class Application {
 
     public static void main(String[] args) {
-        InputView inputView = new InputView(new InputValidator());
-        ResultView resultView = new ResultView();
         Campus campus = new Campus();
         TodayClock todayClock = new AttendanceTodayClock();
         Initializer initializer = new Initializer(campus, todayClock);
         CrewHistories crewHistories = initializer.initialize(FileReader.readFile());
 
-        AttendanceController controller = new AttendanceController(inputView, resultView, campus, todayClock);
+        AttendanceController controller = makeController(campus, todayClock);
         controller.start(crewHistories);
+    }
+
+    private static AttendanceController makeController(final Campus campus, final TodayClock todayClock) {
+        InputView inputView = new InputView(new InputValidator());
+        ResultView resultView = new ResultView();
+        return new AttendanceController(inputView, resultView, campus, todayClock);
     }
 }
