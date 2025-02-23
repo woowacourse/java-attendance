@@ -15,7 +15,15 @@ public class Crew {
     }
 
     public boolean isEqualName(String nickname) {
-        return nickname.equals(nickname);
+        return this.nickname.equals(nickname);
+    }
+
+    public int compareTo(Crew o) {
+        return nickname.compareTo(o.nickname);
+    }
+
+    public String getNickname() {
+        return nickname;
     }
 
     @Override
@@ -33,9 +41,5 @@ public class Crew {
     @Override
     public int hashCode() {
         return Objects.hashCode(nickname);
-    }
-
-    public String getNickname() {
-        return nickname;
     }
 }
