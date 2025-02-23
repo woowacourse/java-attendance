@@ -17,6 +17,12 @@ public class Attends {
         attends.add(attend);
     }
 
+    private void validateDuplicate(Attend targetAttend) {
+        if (hasDayEqualsAttend(targetAttend)) {
+            throw new IllegalArgumentException("같은 날짜에 출석할 수 없다.");
+        }
+    }
+
     public Attend findByDay(int day) {
         return attends.stream()
                 .filter(attend -> attend.isDayEqual(day))
@@ -37,25 +43,6 @@ public class Attends {
         addAttend(attend);
     }
 
-    public boolean hasDayEqualsAttend(int day) {
-        return attends.stream()
-                .anyMatch(attend -> attend.isDayEqual(day));
-    }
-
-    public List<Attend> getAttends(List<Integer> dayOfWeek) {
-        List<Attend> result = new ArrayList<>();
-        dayOfWeek.stream()
-                .filter(this::hasDayEqualsAttend)
-                .forEach(day -> result.add(findByDay(day)));
-        return result;
-    }
-
-    private void validateDuplicate(Attend targetAttend) {
-        if (hasDayEqualsAttend(targetAttend)) {
-            throw new IllegalArgumentException("같은 날짜에 출석할 수 없다.");
-        }
-    }
-
     private Attend findByAttend(Attend target) {
         return attends.stream()
                 .filter(target::isDayEqual)
@@ -67,5 +54,18 @@ public class Attends {
         attends = attends.stream()
                 .filter(before -> !before.isDayEqual(target))
                 .collect(Collectors.toList());
+    }
+
+    public boolean hasDayEqualsAttend(int day) {
+        return attends.stream()
+                .anyMatch(attend -> attend.isDayEqual(day));
+    }
+
+    public List<Attend> getAttends(List<Integer> dayOfWeek) {
+        List<Attend> result = new ArrayList<>();
+        dayOfWeek.stream()
+                .filter(this::hasDayEqualsAttend)
+                .forEach(day -> result.add(findByDay(day)));
+        return result;
     }
 }
