@@ -110,13 +110,13 @@ public class OutputView {
         ArrayList<Crew> sortedDangerousCrews = new ArrayList<>(dangerousCrews);
         sortedDangerousCrews.sort(new Comparator<Crew>() {
             @Override
-            public int compare(Crew o1, Crew o2) {
-                CrewStatus crewStatus1 = o1.calculateCrewStatus(o1.calculateAttendanceResult(today));
-                CrewStatus crewStatus2 = o2.calculateCrewStatus(o2.calculateAttendanceResult(today));
-                if (crewStatus1 == crewStatus2) {
-                    return o1.getName().compareTo(o2.getName());
+            public int compare(Crew firstCrew, Crew secondCrew) {
+                CrewStatus firstStatus = firstCrew.calculateCrewStatus(firstCrew.calculateAttendanceResult(today));
+                CrewStatus secondStatus = secondCrew.calculateCrewStatus(secondCrew.calculateAttendanceResult(today));
+                if (firstStatus == secondStatus) {
+                    return firstCrew.getName().compareTo(secondCrew.getName());
                 }
-                return crewStatus2.getOrder() - crewStatus1.getOrder();
+                return secondStatus.getOrder() - firstStatus.getOrder();
             }
         });
         return sortedDangerousCrews;
