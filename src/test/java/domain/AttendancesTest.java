@@ -1,6 +1,5 @@
 package domain;
 
-import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import org.assertj.core.api.Assertions;
@@ -32,5 +31,4 @@ class AttendancesTest {
         // then
         Assertions.assertThat(attendanceDto).isEqualTo(expectedDto);
     }
-
 }
