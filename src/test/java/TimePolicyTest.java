@@ -10,12 +10,12 @@ public class TimePolicyTest {
 
     @Test
     @DisplayName("시의 범위를 벗어나면 예외가 발생한다")
-    void timeFormatTest(){
+    void validateHourTest(){
         //given
-        String hour = "25";
+        String hour = "24";
 
         //when-then
-        assertThatThrownBy(() -> Integer.parseInt(hour))
+        assertThatThrownBy(() -> TimePolicy.validateHour(hour))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 }
