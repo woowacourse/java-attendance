@@ -1,6 +1,6 @@
 import controller.AttendanceController;
-import view.InputView;
-import view.OutputView;
+import view.input.InputView;
+import view.output.OutputView;
 
 public class AttendanceApplication {
     public static void main(String[] args) {

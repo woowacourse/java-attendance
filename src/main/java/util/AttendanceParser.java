@@ -1,9 +1,9 @@
 package util;
 
-import domain.Attendance;
-import domain.Attendances;
-import domain.CheckInTimes;
-import domain.Crew;
+import domain.attendance.Attendance;
+import domain.attendance.Attendances;
+import domain.checkin.CheckInTimes;
+import domain.crew.Crew;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;

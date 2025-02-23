@@ -1,9 +1,9 @@
-package view;
+package view.output;
 
-import domain.Attendance;
-import domain.AttendanceStatus;
-import domain.CheckInTime;
-import domain.PenaltyStatus;
+import domain.attendance.Attendance;
+import domain.attendance.AttendanceStatus;
+import domain.checkin.CheckInTime;
+import domain.penalty.PenaltyStatus;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;

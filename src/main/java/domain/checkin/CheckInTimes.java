@@ -1,13 +1,14 @@
-package domain;
+package domain.checkin;
 
+import domain.attendance.AttendanceStatus;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-import static domain.AttendanceStatus.LATE;
-import static domain.AttendanceStatus.PRESENCE;
+import static domain.attendance.AttendanceStatus.LATE;
+import static domain.attendance.AttendanceStatus.PRESENCE;
 
 public class CheckInTimes {
     private List<CheckInTime> checkInTimes;

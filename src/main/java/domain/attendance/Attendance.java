@@ -1,9 +1,12 @@
-package domain;
+package domain.attendance;
 
+import domain.checkin.CheckInTime;
+import domain.checkin.CheckInTimes;
+import domain.crew.Crew;
 import java.time.LocalDateTime;
 import java.util.List;
 
-import static domain.PenaltyStatus.LATE_TO_ABSENCE_UNIT;
+import static domain.penalty.PenaltyStatus.LATE_TO_ABSENCE_UNIT;
 
 public class Attendance implements Comparable<Attendance> {
     private final Crew crew;

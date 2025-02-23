@@ -1,4 +1,4 @@
-package view;
+package view.input;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;

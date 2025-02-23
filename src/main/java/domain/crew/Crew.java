@@ -1,4 +1,4 @@
-package domain;
+package domain.crew;
 
 public class Crew implements Comparable<Crew> {
     private final String name;

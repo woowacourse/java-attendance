@@ -1,11 +1,11 @@
 package controller;
 
-import domain.Attendance;
-import domain.Attendances;
-import domain.CheckInTime;
+import domain.attendance.Attendance;
+import domain.attendance.Attendances;
+import domain.checkin.CheckInTime;
 import util.AttendanceParser;
-import view.InputView;
-import view.OutputView;
+import view.input.InputView;
+import view.output.OutputView;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;

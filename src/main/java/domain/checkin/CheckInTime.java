@@ -1,5 +1,7 @@
-package domain;
+package domain.checkin;
 
+import domain.workingtime.WorkingTime;
+import domain.attendance.AttendanceStatus;
 import java.time.DayOfWeek;
 import java.time.LocalDateTime;
 

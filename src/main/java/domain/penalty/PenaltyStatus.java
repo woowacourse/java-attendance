@@ -1,4 +1,4 @@
-package domain;
+package domain.penalty;
 
 public enum PenaltyStatus {
 

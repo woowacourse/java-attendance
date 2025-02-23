@@ -1,5 +1,6 @@
-package domain;
+package domain.attendance;
 
+import domain.penalty.PenaltyStatus;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
