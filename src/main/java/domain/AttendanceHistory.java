@@ -17,14 +17,6 @@ public class AttendanceHistory implements Comparable<AttendanceHistory> {
         attendanceResult = getAttendanceResult(attendanceTime);
     }
 
-    public LocalDateTime getAttendanceTime() {
-        return attendanceTime;
-    }
-
-    public String getAttendanceResult() {
-        return attendanceResult.getResult();
-    }
-
     public boolean isBeforeHistory(LocalDateTime time) {
         LocalDateTime standardTime = LocalDateTime.of(time.getYear(), time.getMonthValue(), time.getDayOfMonth(), 0, 0);
         return attendanceTime.isBefore(standardTime);
@@ -33,6 +25,14 @@ public class AttendanceHistory implements Comparable<AttendanceHistory> {
     @Override
     public int compareTo(AttendanceHistory o) {
         return this.attendanceTime.compareTo(o.attendanceTime);
+    }
+
+    public LocalDateTime getAttendanceTime() {
+        return attendanceTime;
+    }
+
+    public String getAttendanceResult() {
+        return attendanceResult.getResult();
     }
 
     private AttendanceResult getAttendanceResult(LocalDateTime attendanceTime) {

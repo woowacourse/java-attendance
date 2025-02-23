@@ -11,18 +11,27 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class AttendanceHistories {
     private final List<AttendanceHistory> histories;
 
     public AttendanceHistories(List<LocalDateTime> originalHistories, LocalDate standard) {
-        List<LocalDateTime> copyOfHistories = new ArrayList<>(originalHistories);
+        List<LocalDateTime> attendanceTimes = new ArrayList<>(originalHistories);
+
         int day = standard.getDayOfMonth();
         for (int i = 1; i < day; i++) {
-            addAbsenceHistory(standard, i, copyOfHistories);
+            createAbsenceHistory(standard, i).ifPresent(absenceHistory -> {
+                if (!checkHasAttendanceTime(attendanceTimes, absenceHistory.toLocalDate())) {
+                    attendanceTimes.add(absenceHistory);
+                }
+            });
         }
-        this.histories = copyOfHistories.stream().map(AttendanceHistory::new).collect(Collectors.toList());
+
+        this.histories = attendanceTimes.stream()
+                .map(AttendanceHistory::new)
+                .collect(Collectors.toList());
     }
 
     public AbsenceLevel classifyAbsenceLevel(LocalDateTime standard) {
@@ -104,5 +113,14 @@ public class AttendanceHistories {
         return histories.stream()
                 .map(LocalDateTime::toLocalDate)
                 .anyMatch(date -> date.equals(standard));
+    }
+
+    private Optional<LocalDateTime> createAbsenceHistory(LocalDate standard, int day) {
+        LocalDate time = LocalDate.of(standard.getYear(), standard.getMonthValue(), day);
+        if (Holiday.isHoliday(time)) {
+            return Optional.empty();
+        }
+        return Optional.of(LocalDateTime.of(standard.getYear(), standard.getMonthValue(), day,
+                ABSENT_DEFAULT_HOUR, ABSENT_DEFAULT_MINUTE));
     }
 }
