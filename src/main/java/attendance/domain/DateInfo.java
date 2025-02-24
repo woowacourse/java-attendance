@@ -1,39 +1,33 @@
 package attendance.domain;
 
 import attendance.domain.constant.AttendanceStatus;
-import attendance.domain.constant.DayOfWeek;
+import java.time.LocalDate;
 
 public class DateInfo {
 
-    private final String month;
-    private final String day;
-    private final DayOfWeek dayOfWeek;
+    private final LocalDate date;
     private CampusTime campusTime;
     private AttendanceStatus attendanceStatus;
 
-    private DateInfo(String month, String day, DayOfWeek dayOfWeek, CampusTime campusTime) {
-        this.month = month;
-        this.day = day;
-        this.dayOfWeek = dayOfWeek;
+    private DateInfo(LocalDate date, CampusTime campusTime) {
+        this.date = date;
         this.campusTime = campusTime;
-        this.attendanceStatus = calculateStatus();
+        this.attendanceStatus = AttendanceStatus.calculateAttendanceStatus(date, campusTime);
     }
 
-    public static DateInfo of(int month, int day, DayOfWeek dayOfWeek, CampusTime campusTime) {
-        String parsedMonth = formatWithLeadingZero(month);
-        String parsedDay = formatWithLeadingZero(day);
-        return new DateInfo(parsedMonth, parsedDay, dayOfWeek, campusTime);
+    public static DateInfo fromCampusTime(LocalDate localDate, CampusTime campusTime) {
+        return new DateInfo(localDate, campusTime);
     }
 
-    public static DateInfo makeDefaultValue(int month, int day, DayOfWeek dayOfWeek) {
-        String parsedMonth = formatWithLeadingZero(month);
-        String parsedDay = formatWithLeadingZero(day);
-        return new DateInfo(parsedMonth, parsedDay, dayOfWeek, CampusTime.makeAbsentValue());
+    // TODO(fix) : 삭제 고민하기...
+    public static DateInfo ofDefaultValue(int year, int month, int day) {
+        LocalDate date = LocalDate.of(year, month, day);
+        return new DateInfo(date, null);
     }
 
     public void modifyAttendanceTime(CampusTime modifyCampusTime) {
         this.campusTime = modifyCampusTime;
-        this.attendanceStatus = calculateStatus();
+        this.attendanceStatus = AttendanceStatus.calculateAttendanceStatus(date, modifyCampusTime);
     }
 
     public int checkAbsenceStatus() {
@@ -57,69 +51,28 @@ public class DateInfo {
         return 0;
     }
 
-    private static String formatWithLeadingZero(int number) {
-        String parsedNumber = String.valueOf(number);
-        if (number < 10) {
-            parsedNumber = "0" + number;
-        }
-        return parsedNumber;
+    public int getMonth() {
+        return date.getMonthValue();
     }
 
-    private AttendanceStatus calculateStatus() {
-        if (checkDefault()) {
-            return AttendanceStatus.ABSENCE;
-        }
-        if (checkHoliday()) {
-            return AttendanceStatus.HOLIDAY;
-        }
-        if (checkMonday()) {
-            return checkAttendanceStatus("13");
-        }
-        return checkAttendanceStatus("10");
+    public int getDay() {
+        return date.getDayOfMonth();
     }
 
-    private boolean checkMonday() {
-        return dayOfWeek.getDayOfWeek().equals("월요일");
-    }
-
-    private boolean checkHoliday() {
-        return dayOfWeek.getDayOfWeek().equals("토요일") || dayOfWeek.getDayOfWeek().equals("일요일");
-    }
-
-    private boolean checkDefault() {
-        return campusTime.getHour().equals("--");
-    }
-
-    private AttendanceStatus checkAttendanceStatus(String hourLimit) {
-        int hourMinute = Integer.parseInt(campusTime.getHour() + campusTime.getMinute());
-        int absentTime = Integer.parseInt(hourLimit + "30");
-        int lateTime = Integer.parseInt(hourLimit + "05");
-        if (hourMinute > absentTime) {
-            return AttendanceStatus.ABSENCE;
-        }
-        if (hourMinute > lateTime) {
-            return AttendanceStatus.LATE;
-        }
-        return AttendanceStatus.ATTENDANCE;
-    }
-
-    public String getMonth() {
-        return month;
-    }
-
-    public String getDay() {
-        return day;
+    public int getDayOfWeek() {
+        return date.getDayOfWeek().getValue();
     }
 
     public String getAttendanceStatus() {
-        return attendanceStatus.getName();
+        return attendanceStatus.getStatus();
     }
 
-    public String getDayOfWeek() {
-        return dayOfWeek.getDayOfWeek();
+    public int getCampusHour() {
+        return campusTime.getHour();
     }
 
-    public CampusTime getTime() {
-        return campusTime;
+    public int getCampusMinute() {
+        return campusTime.getMinute();
     }
+
 }
