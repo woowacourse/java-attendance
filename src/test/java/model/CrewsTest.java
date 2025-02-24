@@ -31,5 +31,4 @@ class CrewsTest {
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("등록되지 않은 닉네임입니다.");
     }
-
 }
