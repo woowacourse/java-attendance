@@ -11,7 +11,7 @@ import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-public class CrewTest {
+class CrewTest {
 
     @Test
     @DisplayName("닉네임과 등교 시간으로 출석한다")

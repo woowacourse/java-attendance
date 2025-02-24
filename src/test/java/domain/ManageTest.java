@@ -8,7 +8,7 @@ import java.util.Map;
 
 import org.junit.jupiter.api.Test;
 
-public class ManageTest {
+class ManageTest {
 
     @Test
     void 결석_2회_미만인_경우_아무_관리_대상자가_아니다() {

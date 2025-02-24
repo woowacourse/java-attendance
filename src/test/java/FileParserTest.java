@@ -7,7 +7,7 @@ import org.junit.jupiter.api.Test;
 import util.parser.AttendanceData;
 import util.parser.FileParser;
 
-public class FileParserTest {
+class FileParserTest {
     
     @Test
     void 출석_기록을_정상적으로_파싱한다() {
