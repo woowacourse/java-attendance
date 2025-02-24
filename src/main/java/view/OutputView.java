@@ -5,6 +5,7 @@ import domain.Attendance;
 import domain.AttendanceStatus;
 import domain.CheckInTime;
 import domain.PenaltyStatus;
+import dto.AttendanceLogDetailsDTO;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
@@ -40,11 +41,11 @@ public class OutputView {
         System.out.printf("%s (%s) -> %s (%s) 수정 완료! \n", beforeDateTime, beforeStatus, afterTime, afterStatus);
     }
 
-    public void printAttendanceLog(Attendance attendance) {
-        System.out.printf("이번 달 %s의 출석 기록입니다.\n", attendance.getName());
+    public void printAttendanceLog(AttendanceLogDetailsDTO attendanceLogDetails) {
+        System.out.printf("이번 달 %s의 출석 기록입니다.\n", attendanceLogDetails.getName());
 
-        List<LocalDateTime> attendanceLog = attendance.getAttendanceLog();
-        List<Integer> list = attendanceLog.stream().map(LocalDateTime::getDayOfMonth).toList();
+        List<LocalDateTime> attendanceTimes = attendanceLogDetails.getAttendanceTimes();
+        List<Integer> attendanceDays = attendanceLogDetails.getAttendanceDays();
 
         for (int i = 1; i < LocalDate.now().getDayOfMonth(); i++) {
             LocalDate localDate = LocalDate.of(2024, 12, i);
@@ -53,8 +54,8 @@ public class OutputView {
                     || i == 25) {
                 continue;
             }
-            if (list.contains(i)) {
-                LocalDateTime localDateTime = attendanceLog.get(list.indexOf(i));
+            if (attendanceDays.contains(i)) {
+                LocalDateTime localDateTime = attendanceTimes.get(attendanceLogDetails.getAttendanceDays().indexOf(i));
                 String dateTime = formatDateTime(localDateTime);
                 String status = attendanceStatusToString(CheckInTime.of(localDateTime).getAttendanceStatus());
                 System.out.printf("%s (%s)\n", dateTime, status);
@@ -64,10 +65,10 @@ public class OutputView {
             System.out.printf("%s --:-- (결석)\n", datePart);
         }
 
-        int presenceCount = attendance.countPresence();
-        int lateCount = attendance.countLate();
-        int absenceCount = attendance.countAbsence();
-        PenaltyStatus penaltyStatus = PenaltyStatus.getPenaltyStatus(absenceCount, lateCount);
+        int presenceCount = attendanceLogDetails.getPresenceCount();
+        int lateCount = attendanceLogDetails.getLateCount();
+        int absenceCount = attendanceLogDetails.getAbsenceCount();
+        PenaltyStatus penaltyStatus = attendanceLogDetails.getPenaltyStatus();
         String status = penaltyStatusToString(penaltyStatus);
 
         System.out.println();

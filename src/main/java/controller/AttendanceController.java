@@ -3,6 +3,8 @@ package controller;
 import domain.Attendance;
 import domain.Attendances;
 import domain.CheckInTime;
+import domain.PenaltyStatus;
+import dto.AttendanceLogDetailsDTO;
 import util.AttendanceParser;
 import view.InputView;
 import view.OutputView;
@@ -109,12 +111,27 @@ public class AttendanceController {
     private void readCheckInTime(Attendances attendances) {
         String name = inputView.readNickName();
         Attendance attendanceByName = attendances.findAttendanceByName(name);
-        outputView.printAttendanceLog(attendanceByName);
+        AttendanceLogDetailsDTO attendanceLogDetails = getAttendanceLogDetails(attendanceByName);
+        outputView.printAttendanceLog(attendanceLogDetails);
+    }
+
+    private AttendanceLogDetailsDTO getAttendanceLogDetails(Attendance attendance) {
+        List<LocalDateTime> attendanceTimes = attendance.getAttendanceLog();
+        List<Integer> attendanceDays = attendanceTimes.stream().map(LocalDateTime::getDayOfMonth).toList();
+
+        int presenceCount = attendance.countPresence();
+        int lateCount = attendance.countLate();
+        int absenceCount = attendance.countAbsence();
+        PenaltyStatus penaltyStatus = PenaltyStatus.getPenaltyStatus(absenceCount, lateCount);
+
+        return new AttendanceLogDetailsDTO(attendance.getName(), attendanceTimes, attendanceDays, presenceCount, lateCount, absenceCount, penaltyStatus);
     }
 
     private void readDangerCrews(Attendances attendances) {
-        List<Attendance> dangerCrew = attendances.findDangerCrew();
-        List<Attendance> sorted = dangerCrew.stream().sorted().toList();
-        outputView.printDangerCrews(sorted);
+        List<Attendance> dangerCrews = attendances.findDangerCrews()
+                .stream()
+                .sorted()
+                .toList();
+        outputView.printDangerCrews(dangerCrews);
     }
 }

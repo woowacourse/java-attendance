@@ -23,7 +23,7 @@ public class Attendances {
                 );
     }
 
-    public List<Attendance> findDangerCrew() {
+    public List<Attendance> findDangerCrews() {
         List<Attendance> dangerAttendances = new ArrayList<>();
         for (Attendance attendance : attendances) {
             int late = attendance.countLate();
