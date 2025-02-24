@@ -23,7 +23,7 @@ public class Attendances {
         }
     }
 
-    public void add(Attendance attendance) {
+    public void attend(Attendance attendance) {
         if (isAlreadyAttendance(attendance)) {
             throw new IllegalArgumentException("크루는 같은 날에 또 출석할 수 없습니다.");
         }

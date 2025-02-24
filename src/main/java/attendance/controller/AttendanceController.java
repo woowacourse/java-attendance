@@ -52,22 +52,22 @@ public class AttendanceController {
 
     private void startCommand(Command command, LocalDateTime startDateTime) {
         if (command == Command.ATTENDANCE) {
-            doAttendance(startDateTime);
+            attend(startDateTime);
         }
         if (command == Command.ATTENDANCE_UPDATE) {
-            doUpdateAttendance(startDateTime);
+            updateAttendance(startDateTime);
         }
-        if (command == Command.ATTENDANCE_TIMELINE) {
-            doAttendanceTimeline(startDateTime);
+        if (command == Command.ATTENDANCE_RESULT) {
+            showAttendanceResult(startDateTime);
         }
-        if (command == Command.EMERGENCY_CHECK) {
-            doEmergencyCheck(startDateTime);
+        if (command == Command.EMERGENCY_SUBJECTS) {
+            showEmergencySubjects(startDateTime);
         }
     }
 
-    private void doAttendance(LocalDateTime today) {
+    private void attend(LocalDateTime today) {
         Attendance attendance = createAttendance(today);
-        attendances.add(attendance);
+        attendances.attend(attendance);
         outputView.printCheckAttendance(attendance);
     }
 
@@ -83,7 +83,7 @@ public class AttendanceController {
         return LocalDateTime.of(attendanceDate, attendanceTime);
     }
 
-    private void doUpdateAttendance(LocalDateTime today) {
+    private void updateAttendance(LocalDateTime today) {
         Crew crew = new Crew(inputExistNicknameForUpdate());
         LocalDateTime updateDateTime = createUpdateDateTime(today.getYear(), today.getMonth());
         Attendance beforeAttendance = attendances.findByCrewAndDate(crew, updateDateTime.toLocalDate());
@@ -109,7 +109,7 @@ public class AttendanceController {
         return LocalTime.parse(rawTime, DateTimeFormatter.ofPattern("HH:mm"));
     }
 
-    private void doAttendanceTimeline(LocalDateTime today) {
+    private void showAttendanceResult(LocalDateTime today) {
         LocalDate yesterday = today.toLocalDate().minusDays(1);
 
         Crew crew = createCrew();
@@ -124,7 +124,7 @@ public class AttendanceController {
         return new Crew(nickname);
     }
 
-    private void doEmergencyCheck(LocalDateTime today) {
+    private void showEmergencySubjects(LocalDateTime today) {
         LocalDate yesterday = today.toLocalDate().minusDays(1);
         List<AttendanceResult> attendanceResults = attendances.findAllCrewAttendanceResultUntilDate(yesterday);
         outputView.printEmergencyCrews(attendanceResults);

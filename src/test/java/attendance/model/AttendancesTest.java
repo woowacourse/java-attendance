@@ -25,7 +25,7 @@ class AttendancesTest {
         Attendance afterAttendance = new Attendance(crew, now);
         Attendances attendances = new Attendances(crewGroup, List.of(beforeAttendance));
 
-        Assertions.assertThatThrownBy(() -> attendances.add(afterAttendance))
+        Assertions.assertThatThrownBy(() -> attendances.attend(afterAttendance))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("크루는 같은 날에 또 출석할 수 없습니다.");
     }

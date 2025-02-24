@@ -6,8 +6,8 @@ public enum Command {
 
     ATTENDANCE("1"),
     ATTENDANCE_UPDATE("2"),
-    ATTENDANCE_TIMELINE("3"),
-    EMERGENCY_CHECK("4"),
+    ATTENDANCE_RESULT("3"),
+    EMERGENCY_SUBJECTS("4"),
     QUIT("Q"),
     ;
 
