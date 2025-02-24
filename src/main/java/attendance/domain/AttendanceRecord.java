@@ -35,4 +35,8 @@ public final class AttendanceRecord {
     public int hashCode() {
         return Objects.hash(nickname, arrivalDateTime);
     }
+
+    public AttendanceType getAttendanceType() {
+        return AttendanceType.ABSENCE;
+    }
 }
