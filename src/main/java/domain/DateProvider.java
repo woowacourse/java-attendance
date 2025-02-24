@@ -18,14 +18,13 @@ public class DateProvider {
         return new DateProvider(year, month, today);
     }
 
-    public LocalDateTime creatLocalDateTimeBy(final LocalTime localTime) {
-        return LocalDateTime.of(localDate.getYear(), getTodayMonth(), getToday(), localTime.getHour(),
-                localTime.getMinute());
+    public LocalDateTime createLocalDateTimeBy(final LocalTime localTime, final int day) {
+        return LocalDateTime.of(localDate.getYear(), getTodayMonth(), day,
+                localTime.getHour(), localTime.getMinute());
     }
 
-    public LocalDateTime creatLocalDateTimeBy(final LocalTime localTime, final int day) {
-        return LocalDateTime.of(localDate.getYear(), getTodayMonth(), day, localTime.getHour(),
-                localTime.getMinute());
+    public LocalDateTime createLocalDateTimeBy(final LocalTime localTime) {
+        return createLocalDateTimeBy(localTime, getToday());
     }
 
     public int getTodayMonth() {

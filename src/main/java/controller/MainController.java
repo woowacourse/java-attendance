@@ -60,8 +60,9 @@ public class MainController {
         String nickname = inputView.inputNickName();
         LocalTime attendanceTime = inputView.inputGoTime();
 
-        LocalDateTime attendanceLocalDateTime = provider.creatLocalDateTimeBy(attendanceTime);
-        AttendanceState attendanceState = AttendanceState.findStateBy(attendanceTime, provider.getToday());
+        LocalDateTime attendanceLocalDateTime = provider.createLocalDateTimeBy(attendanceTime);
+
+        AttendanceState attendanceState = AttendanceState.findStateBy(attendanceLocalDateTime);
 
         Crew crew = attendance.getCrewByName(nickname);
         attendance.save(crew, attendanceLocalDateTime);
@@ -78,7 +79,7 @@ public class MainController {
         int date = inputView.inputUpdateDate();
         LocalTime updateTime = inputView.inputUpdateTime();
 
-        LocalDateTime updateLocalDateTime = provider.creatLocalDateTimeBy(updateTime, date);
+        LocalDateTime updateLocalDateTime = provider.createLocalDateTimeBy(updateTime, date);
 
         Crew crew = attendance.getCrewByName(nickname);
         LocalDateTime beforeDateTime = attendance.update(crew, updateLocalDateTime);

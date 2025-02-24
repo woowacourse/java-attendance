@@ -86,7 +86,7 @@ class DateProviderTest {
         DateProvider dateProvider = creatLocalDate();
 
         //when
-        LocalDateTime localDateTime = dateProvider.creatLocalDateTimeBy(localTime);
+        LocalDateTime localDateTime = dateProvider.createLocalDateTimeBy(localTime);
 
         //then
         assertThat(localDateTime).isEqualTo(LocalDateTime.of(2024, 12, 24, 10, 0));
