@@ -7,16 +7,25 @@ public enum Holiday {
     CHRISTMAS(12, 25);
 
     private final int month;
-    private final int date;
+    private final int day;
+    private final LocalDate date;
 
-    Holiday(int month, int date) {
+    Holiday(int month, int day) {
         this.month = month;
-        this.date = date;
+        this.day = day;
+        this.date = createDate();
+    }
+
+    private LocalDate createDate() {
+        return LocalDate.of(Current.YEAR, this.month, this.day);
     }
 
     public static boolean isHoliday(LocalDate targetDate) {
         return Arrays.stream(Holiday.values())
-                .map(holiday -> LocalDate.of(Current.YEAR, holiday.month, holiday.date))
-                .anyMatch(targetDate::equals);
+                .anyMatch(holiday -> holiday.isEqualDate(targetDate));
+    }
+
+    private boolean isEqualDate(LocalDate localDate) {
+        return this.date.isEqual(localDate);
     }
 }
