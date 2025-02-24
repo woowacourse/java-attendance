@@ -159,4 +159,19 @@ class AttendanceRecordsTest {
 
         assertThat(actualAttendance).isEqualTo(Attendance.ABSENT);
     }
+
+    @Test
+    @DisplayName("결석으로 변환된 지각 횟수의 나머지를 포함한 총 결석 및 지각 횟수를 반환한다.")
+    void getConvertedAbsencesAndTardiesTest() {
+        AttendanceRecords actualRecords = new AttendanceRecords();
+        actualRecords.addRecord(AttendanceRecord.parse("2024-12-13 10:08"));
+        actualRecords.addRecord(AttendanceRecord.parse("2024-12-12 10:00"));
+        actualRecords.addRecord(AttendanceRecord.parse("2024-12-11 10:35"));
+        actualRecords.addRecord(AttendanceRecord.parse("2024-12-10 10:10"));
+        actualRecords.addRecord(AttendanceRecord.parse("2024-12-09 13:10"));
+        actualRecords.addRecord(AttendanceRecord.parse("2024-12-06 11:00"));
+        actualRecords.addRecord(AttendanceRecord.parse("2024-12-05 10:20"));
+
+        assertThat(actualRecords.getConvertedAbsencesAndTardies()).isEqualTo(4);
+    }
 }
