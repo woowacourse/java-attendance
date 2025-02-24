@@ -26,4 +26,8 @@ public class Attendances {
     public int hashCode() {
         return Objects.hashCode(attendances);
     }
+
+    public Attendance update(Attendance newAttendance) {
+        return null;
+    }
 }
