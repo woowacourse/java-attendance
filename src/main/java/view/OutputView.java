@@ -7,6 +7,7 @@ import controller.dto.AttendanceUpdateResultDto;
 import domain.attendance.AttendanceType;
 import domain.attendance.PenaltyType;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -45,30 +46,17 @@ public class OutputView {
     }
 
     public static void printAttendanceHistories(AttendanceHistoryWithPenaltyTypeDto dto) {
-        int attendanceCount = 0;
-        int lateCount = 0;
-        int absenceCount = 0;
-
+        Map<AttendanceType, Integer> attendanceTypeCount = new HashMap<>();
         for (Map.Entry<Integer, AttendanceHistoryDto> entry : dto.historyDtoOfDay().entrySet()) {
             AttendanceHistoryDto historyDto = entry.getValue();
-
-            if (historyDto.type() == AttendanceType.PRESENT) {
-                attendanceCount++;
-            }
-
-            if (historyDto.type() == AttendanceType.LATE) {
-                lateCount++;
-            }
-
-            if (historyDto.type() == AttendanceType.ABSENCE) {
-                absenceCount++;
-            }
-
+            attendanceTypeCount.merge(historyDto.type(), 1, Integer::sum);
             System.out.println(getHistoryFormat(historyDto));
         }
 
         System.out.println();
-        System.out.printf("출석: %d회%n지각: %d회%n결석: %d회%n%n", attendanceCount, lateCount, absenceCount);
+        System.out.printf("출석: %d회%n지각: %d회%n결석: %d회%n%n", attendanceTypeCount.getOrDefault(AttendanceType.PRESENT, 0),
+                attendanceTypeCount.getOrDefault(AttendanceType.LATE, 0),
+                attendanceTypeCount.getOrDefault(AttendanceType.ABSENCE, 0));
 
         if (dto.penaltyType() == PenaltyType.NONE) {
             return;
