@@ -302,4 +302,18 @@ public class AttendanceRegisterTest {
         assertThatThrownBy(() -> December.validateHoliday(LocalDate.of(2024, 12, 15)))
                 .isInstanceOf(IllegalArgumentException.class);
     }
+
+    @DisplayName("입력한 날짜에 출석객체가 있는 경우, 예외를 반환한다.")
+    @Test
+    void test8() {
+        Crew crew = new Crew("빙티");
+        Crews crews = new Crews(List.of(crew));
+        Map<Crew, Attendances> initializedAttendances = AttendanceInitializer.initializeAttendanceOf(crews);
+        Attendances attendances = initializedAttendances.get(crew);
+
+        attendances.update(LocalDate.of(2024, 12, 13), LocalTime.of(10, 5));
+
+        assertThatThrownBy(() -> attendances.update(LocalDate.of(2024, 12, 13), LocalTime.of(11, 11)))
+                .isInstanceOf(IllegalArgumentException.class);
+    }
 }
