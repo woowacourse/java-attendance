@@ -28,6 +28,10 @@ public class Attendance {
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 크루 입니다."));
     }
 
+    public List<AttendanceRecord> getRecordByCrew(Crew crew) {
+        return attendanceMap.get(crew);
+    }
+
     public Map<Crew, List<AttendanceRecord>> getAttendanceMap() {
         return attendanceMap;
     }
@@ -103,37 +107,4 @@ public class Attendance {
 
         return beforeLocalTime;
     }
-
-//    public AttendanceHistoryDto getAttendanceHistory(final Crew crew) {
-//        List<LocalDateTime> localDateTimes = attendanceMap.get(crew);
-//
-//        // 모든 크루 출석기록, 출석/지각/결석 횟수, 무슨 대상자인지
-//        AbsencePolicyStatistics.calculateAttendanceHistory(crew, localDateTimes);
-//
-//        return localDateTimes.stream()
-//                .map(localDateTime -> {
-//                    String state = AttendanceState.findStateBy(localDateTime.toLocalTime(),
-//                            localDateTime.toLocalDate()).getDescription();
-//                    // dto에서 초기화 시켜준 후 나중에 추가도 가능??
-//                    return new AttendanceHistoryDto(crew.getName(), localDateTime, state);
-//                })
-//                .toList();
-//    }
-
-//    // 모든 크루 지각/결석 조회
-//    public Map<Crew, AbsenceHistoryDto> getAbsenceHistory() {
-//        Map<Crew, AbsenceHistoryDto> absenceMap = new HashMap<>();
-//
-//        for (Crew crew : attendanceMap.keySet()) {
-////           List<AttendanceHistoryDto> attendanceHistory = getAttendanceHistory(crew);
-//
-////            AbsenceHistory absenceHistory = new AbsenceHistory(attendanceHistoryDtos);
-////            AbsenceHistoryDto absenceHistoryDto = absenceHistory.calculate();
-//            AbsenceHistoryDto absenceHistoryDto = new AbsenceHistoryDto(attendanceHistory.calculateAbsence())
-//
-//            absenceMap.put(crew, absenceHistoryDto);
-//        }
-//
-//        return absenceMap;
-//    }
 }

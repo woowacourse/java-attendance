@@ -1,9 +1,13 @@
 package view;
 
 import domain.AttendanceState;
+import dto.AttendanceHistoryDto;
+import dto.AttendanceRecord;
+import dto.AttendanceStatus;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.List;
 import util.DateTimeUtil;
 
 public class OutputView {
@@ -39,38 +43,30 @@ public class OutputView {
                 afterAttendanceState);
     }
 
-//    public static void printRecordAttendance(AttendanceHistoryDto attendanceResultDto) {
-//        for (AttendanceHistoryDto dto : attendanceResultDto.localDateTimes()) {
-//            System.out.printf(printDayAttendance(dto));
-//        }
-//    }
-//
-//    private static String printDayAttendance(AttendanceHistoryDto attendanceResultDto) {
-//        if (attendanceResultDto.localDateTime().getHour() != 0) {
-//            return String.format("%02d월 %02d일 %s %02d:%02d (%s)\n",
-//                    DateTimeUtil.getMonthBy(attendanceResultDto.localDateTime().toLocalDate()),
-//                    DateTimeUtil.getDateBy(attendanceResultDto.localDateTime().toLocalDate()),
-//                    DateTimeUtil.getDayOfWeekBy(attendanceResultDto.localDateTime().toLocalDate()),
-//                    attendanceResultDto.localDateTime().getHour(),
-//                    attendanceResultDto.localDateTime().getMinute(),
-//                    attendanceResultDto.attendanceState());
-//        }
-//        return String.format("%02d월 %02d일 %s --:-- (%s)\n",
-//                DateTimeUtil.getMonthBy(attendanceResultDto.localDateTime().toLocalDate()),
-//                DateTimeUtil.getDateBy(attendanceResultDto.localDateTime().toLocalDate()),
-//                DateTimeUtil.getDayOfWeekBy(attendanceResultDto.localDateTime().toLocalDate()),
-//                attendanceResultDto.attendanceState());
-//    }
-//
-//    public static void printAbsenceHistory(AbsenceHistoryDto absenceHistoryDto) {
-//        System.out.printf("출석: %d회\n", absenceHistoryDto.attendance());
-//        System.out.printf("지각: %d회\n", absenceHistoryDto.lateness());
-//        System.out.printf("결석: %d회\n", absenceHistoryDto.absence());
-//
-//        System.out.println();
-//
-//        System.out.printf("%s 대상자입니다.\n", absenceHistoryDto.status());
-//    }
+    public static void printRecordAttendance(AttendanceHistoryDto attendanceHistoryDto) {
+        System.out.printf("이번 달 %s의 출석 기록입니다.\n", attendanceHistoryDto.crew().getName());
+        System.out.println();
+
+        List<AttendanceRecord> records = attendanceHistoryDto.records();
+        for (AttendanceRecord record : records) {
+            System.out.printf(
+                    String.format("%02d월 %02d일 %s %02d:%02d (%s)\n",
+                            DateTimeUtil.getMonthBy(record.date()),
+                            DateTimeUtil.getDateBy(record.date()),
+                            DateTimeUtil.getDayOfWeekBy(record.date()),
+                            record.time().time().getHour(),
+                            record.time().time().getMinute(),
+                            record.time().state().getDescription()));
+        }
+
+        AttendanceStatus attendanceStatus = attendanceHistoryDto.attendanceStatus();
+        System.out.printf("출석: %d회\n", attendanceStatus.absenceHistory().attendance());
+        System.out.printf("지각: %d회\n", attendanceStatus.absenceHistory().lateness());
+        System.out.printf("결석: %d회\n", attendanceStatus.absenceHistory().absence());
+        System.out.println();
+
+        System.out.printf("%s 대상자입니다.\n", attendanceStatus.absencePolicy().getDescription());
+    }
 //
 //    public static void printAbsenceResult(final Map<Crew, AbsenceHistoryDto> result) {
 //        System.out.println("제적 위험자 조회 결과");
