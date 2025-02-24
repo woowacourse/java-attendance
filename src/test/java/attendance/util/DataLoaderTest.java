@@ -10,7 +10,7 @@ import org.junit.jupiter.api.Test;
 
 @DisplayName("파일 데이터 불러오기")
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
-public class FileLoaderTest {
+public class DataLoaderTest {
 
     @Test
     void 문자열_데이터를_Attendance_객체로_변환한다() {
@@ -21,7 +21,7 @@ public class FileLoaderTest {
                 "이든,2024-12-13 10:07"
         );
 
-        List<Attendance> attendances = FileLoader.loadAll(datas);
+        List<Attendance> attendances = DataLoader.loadAll(datas);
 
         Assertions.assertThat(attendances)
                 .hasSize(4)

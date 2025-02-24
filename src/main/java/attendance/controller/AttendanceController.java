@@ -2,7 +2,7 @@ package attendance.controller;
 
 import attendance.domain.AttendanceRepository;
 import attendance.domain.HourMinute;
-import attendance.util.FileLoader;
+import attendance.util.DataLoader;
 import attendance.view.DataFileReader;
 import attendance.view.InputView;
 import attendance.view.OutputView;
@@ -38,7 +38,7 @@ public class AttendanceController {
     }
 
     private AttendanceRepository initData() {
-        return new AttendanceRepository(FileLoader.loadAll(DataFileReader.read()));
+        return new AttendanceRepository(DataLoader.loadAll(DataFileReader.read()));
     }
 
     private void initOperations(AttendanceRepository attendanceRepository) {

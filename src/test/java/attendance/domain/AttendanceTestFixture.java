@@ -1,6 +1,6 @@
 package attendance.domain;
 
-import attendance.util.FileLoader;
+import attendance.util.DataLoader;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -49,6 +49,6 @@ public class AttendanceTestFixture {
         datas.add("빙티,2024-12-02 13:00");
         datas.add("짱수,2024-12-02 13:00");
 
-        return FileLoader.loadAll(datas);
+        return DataLoader.loadAll(datas);
     }
 }

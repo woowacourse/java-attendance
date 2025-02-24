@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class FileLoader {
+public class DataLoader {
 
     public static List<Attendance> loadAll(final List<String> datas) {
         List<Attendance> attendances = new ArrayList<>();
