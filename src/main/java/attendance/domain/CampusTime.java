@@ -6,8 +6,8 @@ import java.time.LocalTime;
 
 public class CampusTime {
 
-    private static final int CAMPUS_OPEN = 800;
-    private static final int CAMPUS_CLOSE = 2300;
+    private static final LocalTime CAMPUS_OPEN = LocalTime.of(8, 0);
+    private static final LocalTime CAMPUS_CLOSE = LocalTime.of(23, 0);
     private static final String COLON = ":";
 
     private final LocalTime time;
@@ -53,8 +53,10 @@ public class CampusTime {
     }
 
     private void validateCampusTimeRange(String timeString) {
-        int hourMinute = Integer.parseInt(timeString.replace(COLON, ""));
-        if (hourMinute < CAMPUS_OPEN || hourMinute > CAMPUS_CLOSE) {
+        int hour = Integer.parseInt(timeString.split(COLON)[0]);
+        int minute = Integer.parseInt(timeString.split(COLON)[1]);
+        LocalTime time = LocalTime.of(hour, minute);
+        if (time.isBefore(CAMPUS_OPEN) || time.isAfter(CAMPUS_CLOSE)) {
             throw CustomException.from(ErrorMessage.OUT_OF_CAMPUS_TIME_RANGE);
         }
     }
