@@ -82,6 +82,24 @@ class AttendanceTest {
         assertThat(result).isEqualTo(excepted);
     }
 
+    @ParameterizedTest
+    @CsvSource({
+            "2024-12-03, false",
+            "2024-12-05, true"
+    })
+    void 날짜를_비교해_반환한다(LocalDate compare, boolean excepted) {
+        // given
+        LocalDateTime dateTime = LocalDateTime.of(2024, 12, 4, 13, 0);
+
+        Attendance attendance = new Attendance(dateTime);
+
+        // when
+        boolean result = attendance.isBefore(compare);
+
+        // then
+        assertThat(result).isEqualTo(excepted);
+    }
+
     static Stream<Arguments> 날짜와_시간으로_출석을_생성한다() {
         return Stream.of(
                 Arguments.of(LocalDateTime.of(2024, 12, 3, 10, 0), AttendanceStateType.ATTENDANCE),
