@@ -12,6 +12,11 @@ public class Attendance {
         this.dateTime = dateTime;
     }
 
+    public Attendance(Crew crew, LocalDateTime dateTime, AttendanceType type) {
+        this.crew = crew;
+        this.dateTime = dateTime;
+        this.type = type;
+    }
 
     public void calculateAttendanceType() {
         this.type = AttendanceType.of(dateTime);

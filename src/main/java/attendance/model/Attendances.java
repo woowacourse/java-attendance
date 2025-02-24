@@ -1,6 +1,8 @@
 package attendance.model;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
@@ -34,5 +36,14 @@ public class Attendances {
                 .filter(attendance -> attendance.isSameDateTime(dateTime))
                 .findAny()
                 .orElseThrow(() -> new IllegalArgumentException("크루와 날짜, 시간에 해당하는 출석 기록이 없습니다."));
+    }
+
+    public void attendToday(Crew crew, LocalTime time) {
+        LocalDateTime dateTime = LocalDateTime.of(LocalDate.now(), time);
+        attendances.add(new Attendance(
+                crew,
+                dateTime,
+                AttendanceType.of(dateTime))
+        );
     }
 }

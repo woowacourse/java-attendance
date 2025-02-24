@@ -6,7 +6,9 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 import attendance.util.CSVReader;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -42,6 +44,26 @@ public class AttendancesTest {
                 () -> assertThat(findAttendance).extracting("dateTime").isEqualTo(dateTime),
                 () -> assertThat(findAttendance).extracting("type").isEqualTo(AttendanceType.ABSENT)
         );
+    }
 
+    @DisplayName("크루와 시간으로 오늘 출석 기록을 추가한다.")
+    @Test
+    void test() {
+        attendances.attendToday(
+                new Crew("빙티"),
+                LocalTime.of(9, 58)
+        );
+
+        Attendance findAttendance = attendances.findAttendance(
+                new Crew("빙티"),
+                LocalDateTime.of(LocalDate.now(), LocalTime.of(9, 58))
+        );
+
+        assertAll(
+                () -> assertThat(findAttendance).extracting("crew").isEqualTo(new Crew("빙티")),
+                () -> assertThat(findAttendance).extracting("dateTime")
+                        .isEqualTo(LocalDateTime.of(LocalDate.now(), LocalTime.of(9, 58))),
+                () -> assertThat(findAttendance).extracting("type").isEqualTo(AttendanceType.PRESENT)
+        );
     }
 }
