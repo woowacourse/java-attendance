@@ -13,9 +13,6 @@ public class AttendanceSystem {
     }
 
     public void attendance(String name, LocalTime time) {
-        if (isNotOperatingHours(time)) {
-            throw new IllegalArgumentException();
-        }
         if (!attendanceBooks.containsKey(name)) {
             attendanceBooks.put(name, new AttendanceBook());
         }
@@ -25,9 +22,6 @@ public class AttendanceSystem {
         attendanceBooks.get(name).attendance(TODAY, time);
     }
 
-    private boolean isNotOperatingHours(LocalTime time) {
-        return time.isBefore(LocalTime.of(8, 0)) || time.isAfter(LocalTime.of(23, 0));
-    }
 
     public LocalDateTime getAttendanceRecord(String name, LocalDate date) {
         return attendanceBooks.get(name).getAttendanceDateTimeByDate(date);

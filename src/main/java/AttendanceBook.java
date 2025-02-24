@@ -16,11 +16,17 @@ public class AttendanceBook {
     }
 
     public void attendance(LocalDate today, LocalTime time) {
-
+        if(isNotOperatingHours(time)) {
+            throw new IllegalArgumentException();
+        }
         attendanceBook.put(today, time);
     }
 
     public boolean hasAttendanceRecord(LocalDate date) {
         return attendanceBook.containsKey(date);
+    }
+
+    private boolean isNotOperatingHours(LocalTime time) {
+        return time.isBefore(LocalTime.of(8, 0)) || time.isAfter(LocalTime.of(23, 0));
     }
 }

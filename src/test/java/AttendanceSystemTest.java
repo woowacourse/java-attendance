@@ -58,4 +58,14 @@ public class AttendanceSystemTest {
         assertThat(attendanceSystem.getAttendanceRecord(name, attendanceSystem.TODAY))
                 .isEqualTo(LocalDateTime.of(attendanceSystem.TODAY, LocalTime.of(10, 0)));
     }
+
+    @DisplayName("수정하려는 시간이 캠퍼스 운영 시간이 아닌 경우 에러를 출력한다")
+    @Test
+    void edit_attendance_in_non_operating_hour() {
+        String name = "두리";
+        attendanceSystem.attendance(name, LocalTime.of(10, 30));
+        assertThatThrownBy(() -> {
+            attendanceSystem.editAttendance(name, attendanceSystem.TODAY, LocalTime.of(23, 55));
+        }).isInstanceOf(IllegalArgumentException.class);
+    }
 }
