@@ -38,10 +38,9 @@ public class AttendanceHistoryReadTest {
 
     @Test
     void 출석횟수를_계산한다() {
-
         final var attendanceCount = attendances.stream()
-                .filter(attendance -> attendance.toDto().getLate().equals(false))
-                .filter(attendance -> attendance.toDto().getAbsent().equals(false))
+                .filter(attendance -> !attendance.isLate())
+                .filter(attendance -> !attendance.isAbsent())
                 .count();
         assertThat(attendanceCount).isEqualTo(3);
     }
@@ -50,7 +49,7 @@ public class AttendanceHistoryReadTest {
     void 지각횟수를_계산한다() {
 
         final var lateCount = attendances.stream()
-                .filter(attendance -> attendance.toDto().getLate().equals(true))
+                .filter(Attendance::isLate)
                 .count();
         assertThat(lateCount).isEqualTo(3);
     }
@@ -59,7 +58,7 @@ public class AttendanceHistoryReadTest {
     void 결석횟수를_계산한다() {
 
         final var absentCount = attendances.stream()
-                .filter(attendance -> attendance.toDto().getAbsent().equals(true))
+                .filter(Attendance::isAbsent)
                 .count();
         assertThat(absentCount).isEqualTo(3);
     }

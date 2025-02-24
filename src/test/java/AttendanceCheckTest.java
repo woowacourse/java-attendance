@@ -59,7 +59,7 @@ public class AttendanceCheckTest {
     @MethodSource("getDayOfWeekAndAttendanceTime")
     void 날짜에_따른_출석_기준_시간을_적용한다(LocalDate date, LocalTime attendanceTime, Boolean isLate, Boolean isAbsent) {
         Attendance attendance = new Attendance(new Day(date), attendanceTime);
-        AttendanceDto dto = attendance.toDto();
+        AttendanceDto dto = Converter.convertAttendanceToDto(attendance);
 
         Boolean actualIsLate = dto.getLate();
         Boolean actualIsAbsent = dto.getAbsent();

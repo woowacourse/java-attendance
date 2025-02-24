@@ -50,29 +50,13 @@ public class OutputView {
     }
 
     public void printAttendanceHistoryWithCrew(Crew crew) {
-        CrewDto crewDto = crew.toDto();
 
         printTotalAttendanceHistory(crew);
         System.out.println();
-        printCountWithAttendanceStatus(crewDto.getAttendanceCount(), crewDto.getLateCount(), crewDto.getAbsentCount());
+        printCountWithAttendanceStatus(crew.calculateAttendanceCount(), crew.calculateLateCount(), crew.calculateAbsentCount());
 
-        if (crewDto.getPenaltyStatus() != PenaltyStatus.NONE) {
-            System.out.println(crewDto.getPenaltyStatus().getName() + " 대상자입니다.\n");
-        }
-    }
-
-    private void printTotalAttendanceHistory(Crew crew) {
-        for (Attendance attendance : crew.getAttendances()) {
-            AttendanceDto dto = attendance.toDto();
-            LocalDate date = dto.getDate();
-            String attendanceTime = "--:--";
-            String dayOfWeekName = AttendanceStandard.getNameByDayOfWeek(date.getDayOfWeek());
-            String attendanceStatusName = getAttendanceStatusName(dto);
-
-            if (dto.getAttendanceTime() != null) {
-                attendanceTime = Converter.covertLocalTimeToString(dto.getAttendanceTime());
-            }
-            System.out.printf("%d월 %02d일 %s %s (%s)\n", date.getMonth().getValue(), date.getDayOfMonth(), dayOfWeekName, attendanceTime, attendanceStatusName);
+        if (crew.getPenaltyStatus() != PenaltyStatus.NONE) {
+            System.out.println(crew.getPenaltyStatus().getName() + " 대상자입니다.\n");
         }
     }
 
@@ -80,6 +64,25 @@ public class OutputView {
         System.out.printf("출석: %d회\n", attendanceCount);
         System.out.printf("지각: %d회\n", lateCount);
         System.out.printf("결석: %d회\n\n", absentCount);
+    }
+
+    private void printTotalAttendanceHistory(Crew crew) {
+        for (Attendance attendance : crew.getAttendances()) {
+            printAttendanceHistory(attendance);
+        }
+    }
+
+    private void printAttendanceHistory(Attendance attendance) {
+        LocalDate date = attendance.getDate();
+        String attendanceTime = "--:--";
+        String dayOfWeekName = AttendanceStandard.getNameByDayOfWeek(date.getDayOfWeek());
+        String attendanceStatusName = getAttendanceStatusName(Converter.convertAttendanceToDto(attendance));
+
+        if (attendance.getAttendanceTime() != null) {
+            attendanceTime = Converter.covertLocalTimeToString(attendance.getAttendanceTime());
+        }
+
+        System.out.printf("%d월 %02d일 %s %s (%s)\n", date.getMonth().getValue(), date.getDayOfMonth(), dayOfWeekName, attendanceTime, attendanceStatusName);
     }
 
     private String getAttendanceStatusName(AttendanceDto attendanceDto) {

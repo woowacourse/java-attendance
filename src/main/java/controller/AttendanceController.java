@@ -2,6 +2,7 @@ package controller;
 
 import domain.*;
 import domain.constant.StandardDate;
+import util.Converter;
 import view.InputView;
 import view.OutputView;
 
@@ -65,15 +66,15 @@ public class AttendanceController {
     private void registerAttendance(Crew crew) {
         Attendance attendance = new Attendance(StandardDate.TODAY, inputView.getAttendanceTime());
         crew.addAttendance(attendance);
-        outputView.printAttendanceInformation(attendance.toDto());
+        outputView.printAttendanceInformation(Converter.convertAttendanceToDto(attendance));
     }
 
     public void processAttendanceUpdate() {
         Crew crew = crews.findByNickname(inputView.getEditNickname());
         Attendance attendance = crew.findByDate(inputView.getEditDayOfMonth());
-        AttendanceDto originalAttendanceDto = attendance.toDto();
+        AttendanceDto originalAttendanceDto = Converter.convertAttendanceToDto(attendance);
         attendance.updateAttendanceTime(inputView.getNewTime());
-        AttendanceDto editedAttendanceDto = attendance.toDto();
+        AttendanceDto editedAttendanceDto = Converter.convertAttendanceToDto(attendance);
 
         outputView.printUpdatedAttendanceHistory(originalAttendanceDto, editedAttendanceDto);
     }
@@ -86,12 +87,21 @@ public class AttendanceController {
     }
 
     public void processPenaltyCheck() {
-        List<CrewDto> crewDtos = crews.createCrewDtos();
-        List<CrewDto> penaltyCrewDtos = crewDtos.stream()
+        List<CrewDto> penaltyCrewDtos = createCrewDtos().stream()
                 .filter(crewDto -> crewDto.getPenaltyStatus() != PenaltyStatus.NONE)
                 .collect(Collectors.toCollection(ArrayList::new));
 
         outputView.printPenaltyCrews(penaltyCrewDtos);
+    }
+
+    public List<CrewDto> createCrewDtos() {
+        return crews.getAllCrews().stream()
+                .map(crew -> new CrewDto(
+                        crew.getNickName(),
+                        crew.calculateLateCount(),
+                        crew.calculateAbsentCount(),
+                        crew.getPenaltyStatus()))
+                .toList();
     }
 }
 

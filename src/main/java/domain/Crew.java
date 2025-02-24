@@ -19,30 +19,17 @@ public class Crew {
         this.attendances = new ArrayList<>();
     }
 
-    public CrewDto toDto() {
-        int attendancesSize = attendances.size();
-        return new CrewDto(nickName, attendancesSize, calculateLateCount(), calculateAbsentCount(), getPenaltyStatus());
-    }
-
     public void addAttendance(Attendance attendance) {
         attendances.add(attendance);
     }
 
-    private PenaltyStatus getPenaltyStatus() {
-        return PenaltyStatus.getInstance(calculateNonAttendanceCount());
-    }
-
-    private Integer calculateNonAttendanceCount() {
-        return calculateAbsentCount() + calculateLateCount() / LATE_COUNT_FOR_ABSENCE;
-    }
-
-    private Integer calculateLateCount() {
+    public Integer calculateLateCount() {
         return (int) attendances.stream()
                 .filter(Attendance::isLate)
                 .count();
     }
 
-    private Integer calculateAbsentCount() {
+    public Integer calculateAbsentCount() {
         return (int) attendances.stream()
                 .filter(Attendance::isAbsent)
                 .count();
@@ -77,7 +64,23 @@ public class Crew {
     }
 
     public List<Attendance> getAttendances() {
-        attendances.sort(Comparator.comparing((Attendance attendance) -> attendance.toDto().getDate()));
+        attendances.sort(Comparator.comparing((Attendance attendance) -> attendance.getDate()));
         return List.copyOf(attendances);
+    }
+
+    public String getNickName() {
+        return nickName;
+    }
+
+    public int calculateAttendanceCount() {
+        return attendances.size() - calculateLateCount() - calculateAbsentCount();
+    }
+
+    public PenaltyStatus getPenaltyStatus() {
+        return PenaltyStatus.getInstance(calculateNonAttendanceCount());
+    }
+
+    private Integer calculateNonAttendanceCount() {
+        return calculateAbsentCount() + calculateLateCount() / LATE_COUNT_FOR_ABSENCE;
     }
 }

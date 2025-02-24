@@ -1,5 +1,8 @@
 package util;
 
+import domain.Attendance;
+import domain.AttendanceDto;
+
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 
@@ -33,5 +36,14 @@ public class Converter {
         } catch (NumberFormatException e) {
             throw new IllegalArgumentException("숫자만 입력 가능합니다.");
         }
+    }
+
+    public static AttendanceDto convertAttendanceToDto(Attendance attendance) {
+        return new AttendanceDto(
+                attendance.getDate(),
+                attendance.isLate(),
+                attendance.isAbsent(),
+                attendance.getAttendanceTime()
+        );
     }
 }

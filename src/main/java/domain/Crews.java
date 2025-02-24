@@ -1,6 +1,5 @@
 package domain;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class Crews {
@@ -22,14 +21,6 @@ public class Crews {
         crews.forEach(crew -> crew.recordAbsence(today.getDate()));
     }
 
-    public List<CrewDto> createCrewDtos() {
-        List<CrewDto> crewDtos = new ArrayList<>();
-        for (Crew crew : crews) {
-            crewDtos.add(crew.toDto());
-        }
-        return crewDtos;
-    }
-
     public Crew getOrRegisterCrew(String nickname) {
         return crews.stream()
                 .filter(crew -> crew.isEqualTo(nickname))
@@ -39,5 +30,9 @@ public class Crews {
                     crews.add(newCrew);
                     return newCrew;
                 });
+    }
+
+    public List<Crew> getAllCrews() {
+        return List.copyOf(crews);
     }
 }

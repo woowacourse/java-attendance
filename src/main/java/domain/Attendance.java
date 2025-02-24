@@ -43,14 +43,16 @@ public class Attendance {
         return day.isAbsent(attendanceTime);
     }
 
-    public AttendanceDto toDto() {
-        LocalDate date = day.getDate();
-        return new AttendanceDto(date, isLate, isAbsent, attendanceTime);
-    }
-
     public void updateAttendanceTime(LocalTime attendanceTime) {
         this.attendanceTime = attendanceTime;
         updateStatus();
     }
 
+    public LocalTime getAttendanceTime() {
+        return attendanceTime;
+    }
+
+    public LocalDate getDate() {
+        return day.getDate();
+    }
 }

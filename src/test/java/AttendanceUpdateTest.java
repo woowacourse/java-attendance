@@ -1,5 +1,4 @@
 import domain.Attendance;
-import domain.AttendanceDto;
 import domain.Day;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -40,9 +39,7 @@ public class AttendanceUpdateTest {
 
         attendance.updateAttendanceTime(modifiedTime);
 
-        AttendanceDto attendanceDto = attendance.toDto();
-
-        assertThat(attendanceDto.getAttendanceTime()).isEqualTo(LocalTime.of(9, 58));
+        assertThat(attendance.getAttendanceTime()).isEqualTo(LocalTime.of(9, 58));
     }
 
     @ParameterizedTest
@@ -56,9 +53,7 @@ public class AttendanceUpdateTest {
 
         attendance.updateAttendanceTime(modifiedTime);
 
-        AttendanceDto attendanceDto = attendance.toDto();
-
-        assertThat(attendanceDto.getLate()).isEqualTo(isLate);
+        assertThat(attendance.isLate()).isEqualTo(isLate);
     }
 
     @ParameterizedTest
@@ -72,8 +67,6 @@ public class AttendanceUpdateTest {
 
         attendance.updateAttendanceTime(modifiedTime);
 
-        AttendanceDto attendanceDto = attendance.toDto();
-
-        assertThat(attendanceDto.getAbsent()).isEqualTo(isAbsent);
+        assertThat(attendance.isAbsent()).isEqualTo(isAbsent);
     }
 }
