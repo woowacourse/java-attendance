@@ -17,4 +17,7 @@ public class FileReaderPolicy {
             throw new RuntimeException("[ERROR] 파일 위치가 올바르지 않습니다");
         }
     }
+
+    public void validateFileFormat() {
+    }
 }
