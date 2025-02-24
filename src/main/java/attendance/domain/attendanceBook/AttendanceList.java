@@ -3,6 +3,7 @@ package attendance.domain.attendanceBook;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import attendance.common.exception.AttendanceArgumentException;
 
@@ -21,11 +22,10 @@ public class AttendanceList {
             .orElseThrow(() -> new AttendanceArgumentException(CANT_FIND_INFO));
     }
 
-    public Attendance findAttendance(LocalDate date) {
+    public Optional<Attendance> findAttendance(LocalDate date) {
         return attendances.stream()
             .filter((i) -> i.isEqualDate(date))
-            .findFirst()
-            .orElseThrow(() -> new AttendanceArgumentException(CANT_FIND_INFO));
+            .findFirst();
     }
 
     public void remove(Attendance attendance) {

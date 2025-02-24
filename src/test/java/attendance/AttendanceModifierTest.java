@@ -69,13 +69,15 @@ public class AttendanceModifierTest {
     @DisplayName("출석하지 않은 날에 대한 출석을 수정한다.")
     void test_modifyNonAttendanceDay() {
         var nickname = "이든";
-        var date = LocalDate.of(2024, 12, 3);
+        var date = LocalDate.of(2024, 12, 24);
         var time = LocalTime.of(10, 1);
 
         var attendance = new Attendance(LocalDateTime.of(date, time));
+        assertThatThrownBy(() -> attendanceBook.findAttendance(nickname, attendance))
+            .isInstanceOf(AttendanceArgumentException.class)
+            .hasMessageContaining("출석 정보를 찾을 수 없습니다.");
 
         attendanceModifier.manage(nickname, date, time);
-
         assertThat(attendanceBook.findAttendance(nickname, attendance)).isEqualTo(attendance);
     }
 

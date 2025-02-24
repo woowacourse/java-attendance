@@ -7,6 +7,7 @@ import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import attendance.common.exception.AttendanceArgumentException;
 
@@ -38,12 +39,12 @@ public record AttendanceBook(Map<String, AttendanceList> attendances) {
         return attendanceList.findAttendance(attendance);
     }
 
-    public Attendance findAttendance(String nickname, LocalDate date) {
+    public Optional<Attendance> findAttendance(String nickname, LocalDate date) {
         var attendanceList = getAttendanceList(nickname);
         return attendanceList.findAttendance(date);
     }
 
-    private AttendanceList getAttendanceList(String nickname) {
+    public AttendanceList getAttendanceList(String nickname) {
         var attendanceList = attendances.get(nickname);
         if (attendanceList == null) {
             throw new AttendanceArgumentException(NOT_REGISTERED_NICKNAME);

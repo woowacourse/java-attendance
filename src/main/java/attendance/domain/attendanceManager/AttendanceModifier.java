@@ -18,11 +18,12 @@ public class AttendanceModifier extends AttendanceManager {
     public void manage(String nickname, LocalDate date, LocalTime time) {
         var dateTime = LocalDateTime.of(date, time);
         var attendance = new Attendance(dateTime);
+        
+        AttendanceList attendanceList = attendanceBook.getAttendanceList(nickname);
 
-        Attendance preAttendance = attendanceBook.findAttendance(nickname, date);
-        AttendanceList attendanceList = attendanceBook.attendances().get(nickname);
+        attendanceBook.findAttendance(nickname, date)
+            .ifPresent(attendanceList::remove);
 
-        attendanceList.remove(preAttendance);
         attendanceList.add(attendance);
     }
 }
