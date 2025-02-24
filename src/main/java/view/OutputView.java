@@ -1,10 +1,11 @@
 package view;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import model.AttendanceStatus;
+import java.util.Map.Entry;
+import model.AttendanceRecord;
 import model.Student;
 import model.StudentPunishment;
 import model.StudentRepository;
@@ -23,55 +24,51 @@ public class OutputView {
     private static final String DISMISSAL_LABEL_FORMATTER = "- %s: 결석 %d회, 지각 %d회 (제적)\n";
     private static final String PARENTHESES_FORMATTER = "( %s )\n";
 
-
-
-
     public static void printTodayAttendanceResult(Student student, LocalDateTime localDateTime) {
-        for (LocalDateTime localDateTimeIn : student.getRecord().keySet()) {
-            makeLocalDateTimeFormatAndPrint(student, localDateTime, localDateTimeIn);
-        }
-    }
-
-    private static void makeLocalDateTimeFormatAndPrint(Student student, LocalDateTime localDateTime, LocalDateTime localDateTimeIn) {
-        if (localDateTimeIn.isEqual(localDateTime)) {
-            String dateAndTime = LocalDateTimePrintFormatter.LocalDateTimeToLocalTime(localDateTimeIn);
-            String state = student.getRecord().get(localDateTimeIn).getState();
-            System.out.printf(dateAndTime);
-            System.out.printf(String.format(PARENTHESES_FORMATTER,state));
-        }
+        Entry<LocalDate, AttendanceRecord> findResult = student.getAttendanceRecords().getRecord().entrySet().stream()
+                .filter(e-> e.getKey().equals(LocalDate.from(localDateTime)))
+                .findFirst()
+                .orElseThrow();
+        String dateAndTime = LocalDateTimePrintFormatter
+                .LocalDateTimeToLocalTime(findResult.getKey(), findResult.getValue());
+        String state = findResult.getValue().getAttendanceStatus().getState();
+        System.out.printf(dateAndTime);
+        System.out.printf(String.format(PARENTHESES_FORMATTER,state));
     }
 
     public static void printSecondMenu(String recordBeforeModify, String localDateTimeFormat3) {
         System.out.println(recordBeforeModify + " -> " + localDateTimeFormat3);
     }
 
-    public static void printAttendanceRecord(Map<LocalDateTime, AttendanceStatus> record) {
-        List<Map.Entry<LocalDateTime, AttendanceStatus>> entries =
+    public static void printAttendanceRecord(Map<LocalDate, AttendanceRecord> record) {
+        List<Map.Entry<LocalDate, AttendanceRecord>> entries =
                 record.entrySet().stream()
                         .sorted(Map.Entry.comparingByKey())
                         .toList();
-        for (Map.Entry<LocalDateTime,AttendanceStatus> entry : entries) {
-            System.out.printf(LocalDateTimePrintFormatter.LocalDateTimeToLocalTime(entry.getKey()));
-            System.out.printf(String.format(PARENTHESES_FORMATTER, entry.getValue().getState()));
+
+        for (Map.Entry<LocalDate,AttendanceRecord> entry : entries) {
+            System.out.printf(LocalDateTimePrintFormatter.LocalDateTimeToLocalTime(entry.getKey(), entry.getValue()));
+            System.out.printf(String.format(PARENTHESES_FORMATTER, entry.getValue().getAttendanceStatus().getState()));
         }
     }
 
     public static void printStudentState(Student student) {
+        student.updateAttendanceCount();
         System.out.println(ATTENDANCE + student.getAttendance() + COUNT);
         System.out.println(LATE + student.getLate() + COUNT);
         System.out.println(ABSENT + student.getAbsent() + COUNT);
     }
 
     public static void printStudentPunishmentLabel(Student student) {
-        if (student.calculateAbsent() > StudentPunishment.DISMISSAL.getStandard()) {
+        if (student.calculateAbsent() > StudentPunishment.DISMISSAL.getAbsenceLimit()) {
             System.out.println(DISMISSAL_SUBJECT);
             return;
         }
-        if (student.calculateAbsent() >= StudentPunishment.INTERVIEW.getStandard()) {
+        if (student.calculateAbsent() >= StudentPunishment.INTERVIEW.getAbsenceLimit()) {
             System.out.println(INTERVIEW_SUBJECT);
             return;
         }
-        if (student.calculateAbsent() >= StudentPunishment.WARNING.getStandard()) {
+        if (student.calculateAbsent() >= StudentPunishment.WARNING.getAbsenceLimit()) {
             System.out.println(WARNING_SUBJECT);
         }
     }
@@ -83,15 +80,15 @@ public class OutputView {
     }
 
     private static void printStudentPunishmentLabelAndPrint(Student student) {
-        if (student.calculateAbsent() > StudentPunishment.DISMISSAL.getStandard()) {
+        if (student.calculateAbsent() > StudentPunishment.DISMISSAL.getAbsenceLimit()) {
             System.out.printf(String.format(DISMISSAL_LABEL_FORMATTER,student.getName(),student.getAbsent(),student.getLate()));
             return;
         }
-        if (student.calculateAbsent() >= StudentPunishment.INTERVIEW.getStandard()) {
+        if (student.calculateAbsent() >= StudentPunishment.INTERVIEW.getAbsenceLimit()) {
             System.out.printf(String.format(INTERVIEW_LABEL_FORMATTER,student.getName(),student.getAbsent(),student.getLate()));
             return;
         }
-        if (student.calculateAbsent() >= StudentPunishment.WARNING.getStandard()) {
+        if (student.calculateAbsent() >= StudentPunishment.WARNING.getAbsenceLimit()) {
             System.out.printf(String.format(WARNING_LABEL_FORMATTER,student.getName(),student.getAbsent(),student.getLate()));
         }
     }
