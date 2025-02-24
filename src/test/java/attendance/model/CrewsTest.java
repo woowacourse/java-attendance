@@ -1,6 +1,7 @@
 package attendance.model;
 
 import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import attendance.util.CSVReader;
@@ -35,5 +36,15 @@ public class CrewsTest {
                 () -> assertTrue(crews.contains(new Crew("이든"))),
                 () -> assertTrue(crews.contains(new Crew("짱수")))
         );
+    }
+
+    @DisplayName("등록되지 않은 크루를 조회하면 에러를 발생한다.")
+    @Test
+    void checkUnregisteredCrews() {
+        assertAll(
+                () -> assertFalse(crews.contains(new Crew("엠제이"))),
+                () -> assertFalse(crews.contains(new Crew("포비")))
+        );
+
     }
 }
