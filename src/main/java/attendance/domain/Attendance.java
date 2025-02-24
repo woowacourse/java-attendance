@@ -34,7 +34,7 @@ public class Attendance {
     }
 
     public LocalDateTime getAttendanceDateTime() {
-        return LocalDateTime.of(attendanceDate.getAttendanceDate(), attendanceTime.getAttendanceTime());
+        return LocalDateTime.of(attendanceDate.getLocalDate(), attendanceTime.getAttendanceTime());
     }
 
     public AttendanceDate getAttendanceDate() {

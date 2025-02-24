@@ -41,7 +41,7 @@ public class AttendanceDate {
         return this.attendanceDate.getDayOfWeek().equals(MONDAY);
     }
 
-    public LocalDate getAttendanceDate() {
+    public LocalDate getLocalDate() {
         return attendanceDate;
     }
 
@@ -53,12 +53,12 @@ public class AttendanceDate {
         if (!(o instanceof AttendanceDate that)) {
             return false;
         }
-        return Objects.equals(getAttendanceDate(), that.getAttendanceDate());
+        return Objects.equals(getLocalDate(), that.getLocalDate());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(getAttendanceDate());
+        return Objects.hashCode(getLocalDate());
     }
 
 }

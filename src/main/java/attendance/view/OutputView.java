@@ -99,8 +99,10 @@ public class OutputView {
 
     private static Comparator<String> comparateExpulsionCrews(Map<String, AttendanceHistoryDto> attendanceHistories) {
         return (o1, o2) -> {
-            int firstAbsentCount = attendanceHistories.get(o1).absentCount();
-            int secondAbsentCount = attendanceHistories.get(o2).absentCount();
+            int firstAbsentCount = attendanceHistories.get(o1).absentCount()
+                    + (attendanceHistories.get(o1).lateCount() / AttendanceStatus.ABSENT.getLateCount());
+            int secondAbsentCount = attendanceHistories.get(o2).absentCount()
+                    + (attendanceHistories.get(o2).lateCount() / AttendanceStatus.ABSENT.getLateCount());
             if (firstAbsentCount != secondAbsentCount) {
                 return secondAbsentCount - firstAbsentCount;
             }
