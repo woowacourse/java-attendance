@@ -3,10 +3,15 @@ package controller;
 import domain.Attendance;
 import domain.AttendanceState;
 import domain.Crew;
+import domain.HistoryCalculator;
+import dto.AttendanceHistoryDto;
+import dto.AttendanceRecord;
+import dto.AttendanceStatus;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 import util.FileManager;
 import view.InputView;
 import view.OutputView;
@@ -77,11 +82,17 @@ public class MainController {
     }
 
     private void attendanceHistory() {
-//        String nickname = InputView.inputNickName();
-//        Crew crew = attendance.getCrewByName(nickname);
-//
+        String nickname = InputView.inputNickName();
+        Crew crew = attendance.getCrewByName(nickname);
+
+        List<AttendanceRecord> attendanceRecords = attendance.getRecordByCrew(crew);
+
+        AttendanceStatus attendanceStatus = HistoryCalculator.calculateBy(attendanceRecords);
+
+        AttendanceHistoryDto attendanceHistoryDto = new AttendanceHistoryDto(crew, attendanceRecords, attendanceStatus);
+
 //        AttendanceHistoryDto attendanceHistoryDto = attendance.getAttendanceHistory(crew);
-//        OutputView.printRecordAttendance(attendanceHistoryDto);
+        OutputView.printRecordAttendance(attendanceHistoryDto);
 //
 //        AbsenceHistory absenceHistory = new AbsenceHistory(attendanceHistoryDto);
 //

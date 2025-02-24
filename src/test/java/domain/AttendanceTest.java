@@ -4,8 +4,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-import dto.AbsenceResultDto;
-import dto.AttendanceResultDto;
+import dto.AbsenceHistoryDto;
+import dto.AttendanceHistoryDto;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -163,7 +163,7 @@ class AttendanceTest {
         int todayDay = 10;
 
         // when
-        List<AttendanceResultDto> actual = attendance.readRecord(crew);
+        List<AttendanceHistoryDto> actual = attendance.readRecord(crew);
 
         // then
         assertThat(actual).hasSize(6);
@@ -176,7 +176,7 @@ class AttendanceTest {
         Attendance attendance = FileManager.readFile();
 
         // when
-        Map<Crew, AbsenceResultDto> actual = attendance.getAbsence();
+        Map<Crew, AbsenceHistoryDto> actual = attendance.getAbsenceHistory();
 
         // then
         assertThat(actual).hasSize(5);
