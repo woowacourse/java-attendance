@@ -27,10 +27,20 @@ public class AttendanceSystemTest {
 
     @DisplayName("이미 출석한 경우 다시 출석할 수 없다")
     @Test
-    void cannot_attendance_if_already_attend() {
+    void cannot_attend_if_already_attend() {
         String name = "두리";
         LocalTime time = LocalTime.of(10, 0);
         attendanceSystem.attendance(name, time);
+        Assertions.assertThatThrownBy(() -> {
+            attendanceSystem.attendance(name, time);
+        }).isInstanceOf(IllegalArgumentException.class);
+    }
+
+    @DisplayName("출석하려는 시간이 캠퍼스 운영시간이 아닌 경우 예외를 던진다")
+    @Test
+    void cannon_attend_if_is_not_operating_hours() {
+        String name = "두리";
+        LocalTime time = LocalTime.of(7, 0);
         Assertions.assertThatThrownBy(() -> {
             attendanceSystem.attendance(name, time);
         }).isInstanceOf(IllegalArgumentException.class);
