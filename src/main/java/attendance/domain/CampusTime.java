@@ -12,9 +12,8 @@ public enum CampusTime {
         this.time = time;
     }
 
-    public static void validateOperationTime(LocalTime target) { // todo : 파라미터 네이밍, 내부 코드 개선, 에러 분리
-        boolean isNotOperationTime = target.isBefore(START_TIME.time) || target.isAfter(END_TIME.time);
-        if (isNotOperationTime) {
+    public static void validateOperationTime(LocalTime time) {
+        if (time.isBefore(START_TIME.time) || time.isAfter(END_TIME.time)) {
             throw new IllegalArgumentException("[ERROR] 캠퍼스 운영시간이 아닙니다.");
         }
     }
