@@ -31,6 +31,10 @@ public class Attendance implements Comparable<Attendance> {
         return dateTime.compareTo(other.dateTime);
     }
 
+    public boolean isBefore(final LocalDate date) {
+        return dateTime.toLocalDate().isBefore(date);
+    }
+
     public LocalDateTime getDateTime() {
         return dateTime;
     }
