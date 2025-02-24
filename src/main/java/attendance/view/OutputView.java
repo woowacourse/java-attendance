@@ -1,0 +1,103 @@
+package attendance.view;
+
+import attendance.common.CommonConstants;
+import attendance.domain.AttendanceStatus;
+import attendance.dto.AttendanceInfoDto;
+import attendance.dto.CrewAttendanceDto;
+import attendance.dto.EditResponseDto;
+import attendance.dto.PenaltyCrewDto;
+import attendance.utils.DateConverter;
+import attendance.domain.HolidayChecker;
+import java.time.LocalDate;
+import java.util.List;
+import java.util.Map;
+
+public class OutputView {
+
+    public static final String LINE_SEPARATOR = System.lineSeparator();
+
+    public static void printError(Exception e) {
+        System.out.println(e.getMessage());
+    }
+
+    public void addResult(AttendanceInfoDto infoDto) {
+        formatAttendanceInfo(infoDto);
+    }
+
+    private void formatAttendanceInfo(AttendanceInfoDto infoDto) {
+        String time = DateConverter.convertToString(infoDto.attendanceDate(), infoDto.attendanceTime());
+        System.out.println(time + " " + wrapping(infoDto.statusMessage()));
+    }
+
+    public void editResult(EditResponseDto responseDto) {
+        String oldTime = DateConverter.convertToString(responseDto.attendanceDate(), responseDto.oldTime());
+        StringBuilder sb = new StringBuilder();
+        sb.append(oldTime)
+                .append(" ")
+                .append(wrapping(responseDto.oldStatus()))
+                .append(" -> ")
+                .append(DateConverter.convertToString(responseDto.editTime()))
+                .append(wrapping(responseDto.editStatus()))
+                .append(" 수정완료!");
+        System.out.println(sb);
+    }
+
+    public void attendanceResult(CrewAttendanceDto crewAttendanceDto) {
+        System.out.println("이번 달 " + crewAttendanceDto.name() + "의 출석 기록입니다." + LINE_SEPARATOR);
+
+        LocalDate currentDate = CommonConstants.DECEMBER_START_DATE;
+
+        while (currentDate.isBefore(crewAttendanceDto.today())) {
+            currentDate = processDailyAttendance(currentDate, crewAttendanceDto.dtoMap());
+        }
+
+        formatCounts(crewAttendanceDto.statusCounts());
+
+        if (crewAttendanceDto.penalty() != null) {
+            System.out.println(crewAttendanceDto.penalty() + " 대상자입니다.");
+        }
+    }
+
+    public void penaltyCrews(List<PenaltyCrewDto> crewsInfos) {
+        for (PenaltyCrewDto crewsInfo : crewsInfos) {
+            System.out.printf("- %s: 결석 %d회, 지각 %d회 %s%n",
+                crewsInfo.name(), crewsInfo.absenceCount(), crewsInfo.lateCount(), wrapping(crewsInfo.penaltyMessage()));
+        }
+    }
+
+    private LocalDate processDailyAttendance(LocalDate currentDate, Map<LocalDate, AttendanceInfoDto> infoDtoMap) {
+        AttendanceInfoDto infoDto = infoDtoMap.get(currentDate);
+        if (HolidayChecker.check(currentDate)) {
+            return currentDate.plusDays(1);
+        }
+
+        if (infoDto == null) {
+            absenceAttendance(currentDate);
+            return currentDate.plusDays(1);
+        }
+
+        formatAttendanceInfo(infoDto);
+
+        return currentDate.plusDays(1);
+    }
+
+    private void absenceAttendance(LocalDate localDate) {
+        System.out.println(DateConverter.convertToString(localDate) + " --:-- (결석)");
+    }
+
+    private void formatCounts(Map<AttendanceStatus, Integer> statusCounts) {
+        int presenceCount = statusCounts.get(AttendanceStatus.PRESENCE);
+        int lateCount = statusCounts.get(AttendanceStatus.LATE);
+        int absenceCount = statusCounts.get(AttendanceStatus.ABSENCE);
+
+        System.out.println();
+        System.out.println("출석 : " + presenceCount + "회");
+        System.out.println("지각 : " + lateCount + "회");
+        System.out.println("결석 : " + absenceCount + "회");
+        System.out.println();
+    }
+
+    private String wrapping(String text) {
+        return "(" + text + ")";
+    }
+}
