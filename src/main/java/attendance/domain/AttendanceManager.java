@@ -64,11 +64,6 @@ public class AttendanceManager {
         }
     }
 
-    public Attendances findAttendances(String nickname) {
-        validateAttendanceExist(nickname);
-        return attendanceManager.get(nickname);
-    }
-
     public void validateNickname(String nickname) {
         if (nickname == null || nickname.isBlank() || nickname.isEmpty()) {
             throw new AttendanceArgumentException(CANNOT_BE_EMPTY_NICKNAME);
