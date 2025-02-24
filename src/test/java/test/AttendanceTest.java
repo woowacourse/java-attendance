@@ -1,13 +1,21 @@
 package test;
 
+import static org.assertj.core.api.Assertions.as;
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import javax.swing.text.html.Option;
+import model.AttendanceAdministrator;
 import model.Crew;
 import model.CrewGenerator;
 import model.Crews;
+import net.bytebuddy.asm.Advice.Local;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -61,7 +69,6 @@ public class AttendanceTest {
         //given
         List<String> crewNames = List.of("쿠키", "빙봉", "빙티", "이든");
 
-
         //when
         Crews crews = Crews.of(crewNames);
 
@@ -92,4 +99,50 @@ public class AttendanceTest {
         //then
         assertThat(crew.get()).isEqualTo(new Crew(name));
     }
+
+    @DisplayName("출석 기록을 읽어서 LocalDateTime 객체로 변환한다.")
+    @Test
+
+    void test5() {
+        //given
+        String crewInput = """
+                쿠키,2024-12-13 10:08
+                빙봉,2024-12-13 10:07
+                이든,2024-12-13 10:07
+                빙티,2024-12-12 10:07
+                """;
+        Map<String, LocalDateTime> times = AttendanceAdministrator.findAttendanceInfo(crewInput);
+
+        assertThat(times.get("쿠키")).isEqualTo(LocalDateTime.of(2024, 12, 13, 10, 8));
+        assertThat(times.get("빙봉")).isEqualTo(LocalDateTime.of(2024, 12, 13, 10, 7));
+        assertThat(times.get("이든")).isEqualTo(LocalDateTime.of(2024, 12, 13, 10, 7));
+        assertThat(times.get("빙티")).isEqualTo(LocalDateTime.of(2024, 12, 12, 10, 7));
+    }
+
+//    @DisplayName("입력한 날짜에 해당하는 출석 기록이 있는지 확인한다.")
+//    @Test
+//    void test5() {
+//        //given
+//        Crew crew = new Crew("빙티");
+//        LocalDate date = LocalDate.of(2024, 12, 13);
+//        LocalTime time = LocalTime.of(10, 0);
+//        AttendanceAdministrator.registerAttendance(crew, date, time); //관심사가 2개임
+//
+//        //when
+//        Optional<Attendance> attendance = AttendanceAdministrator.findAttendanceByCrewAndDate(crew, date);
+//
+//        //then
+//        assertThat()
+//
+//    }
+
+//    @DisplayName("오늘 날짜와 입력한 시간에 맞는 출석 객체를 등록한다.")
+//    @Test
+//    void test5() {
+//        //given
+//        Crew crew = new Crew("빙티");
+//
+//        Attendance attendance = new Attendance(); //이미 출석했는지 확인해야 함
+//
+//    }
 }
