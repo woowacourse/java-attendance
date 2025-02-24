@@ -80,14 +80,4 @@ public class CrewTest {
         assertThat(attendTime.getAttendTime().getDayOfMonth()).isEqualTo(13);
     }
 
-    @DisplayName("해당 날짜의 출석 데이터를 삭제한다.")
-    @Test
-    void test9() {
-        Crew crew = new Crew("폰트", "2024-12-13 10:08");
-
-        crew.deleteAttendance(13);
-
-        assertThat(crew.getAttendTimes().size()).isEqualTo(0);
-    }
-
 }

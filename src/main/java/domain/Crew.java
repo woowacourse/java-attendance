@@ -29,15 +29,6 @@ public class Crew {
         return attendanceHistory.findAttendTimeByDate(date);
     }
 
-    public void deleteAttendance(int date) {
-        List<AttendTime> attendTimes = attendanceHistory.getAttendTimes();
-        for (int i = 0; i < attendTimes.size(); i++) {
-            if (attendTimes.get(i).getAttendTime().getDayOfMonth() == date) {
-                attendTimes.remove(i);
-            }
-        }
-    }
-
     public List<AttendTime> getAttendTimes() {
         return attendanceHistory.getAttendTimes();
     }
@@ -57,5 +48,5 @@ public class Crew {
     public String getName() {
         return name;
     }
-    
+
 }
