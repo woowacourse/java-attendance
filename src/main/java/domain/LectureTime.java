@@ -11,8 +11,8 @@ public enum LectureTime {
     WEDNESDAY(DayOfWeek.WEDNESDAY, LocalTime.of(10, 00), LocalTime.of(18, 00)),
     THURSDAY(DayOfWeek.THURSDAY, LocalTime.of(10, 00), LocalTime.of(18, 00)),
     FRIDAY(DayOfWeek.FRIDAY, LocalTime.of(10, 00), LocalTime.of(18, 00)),
-    SATURDAY(DayOfWeek.SATURDAY, LocalTime.of(0, 00), LocalTime.of(0, 00)),
-    SUNDAY(DayOfWeek.SUNDAY, LocalTime.of(0, 00), LocalTime.of(0, 00)),
+    SATURDAY(DayOfWeek.SATURDAY, null, null),
+    SUNDAY(DayOfWeek.SUNDAY, null, null),
     ;
 
     private final DayOfWeek dayOfWeek;
