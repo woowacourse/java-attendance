@@ -1,5 +1,6 @@
 package model;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
@@ -18,9 +19,10 @@ public class AttendanceInitializer {
                 .toList();
     }
 
-    public static LocalDateTime parseLocalDateTimeFrom(String combinedData) {
+    public static Attendance parseAttendanceFrom(String combinedData) {
         String dateAndTime = combinedData.split(",")[1];
         DateTimeFormatter yearMonthDateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
-        return LocalDateTime.parse(dateAndTime, yearMonthDateTimeFormatter);
+        LocalDateTime attendanceTime = LocalDateTime.parse(dateAndTime, yearMonthDateTimeFormatter);
+        return new Attendance(attendanceTime.toLocalDate(), attendanceTime.toLocalTime());
     }
 }
