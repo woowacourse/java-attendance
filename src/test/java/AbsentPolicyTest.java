@@ -1,8 +1,10 @@
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.EnumSource;
 import org.junit.jupiter.params.provider.ValueSource;
 
+import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
@@ -21,14 +23,13 @@ import static org.assertj.core.api.Assertions.*;
 public class AbsentPolicyTest {
     @ParameterizedTest
     @DisplayName("주말에 출석하려고 하는 경우 예외가 발생한다")
-    @ValueSource(ints = {7,8})
-    public void validateWeekendTest(int dayOfMonth){
+    @EnumSource(value = DayOfWeek.class, names = {"SATURDAY", "SUNDAY"})
+    public void validateWeekendTest(DayOfWeek dayOfWeek){
         //given
         AbsentPolicy absentPolicy = new AbsentPolicy();
-        LocalDate attendanceDate = LocalDate.of(2024,12,dayOfMonth);
 
         //when-then
-        assertThatThrownBy(() -> absentPolicy.validateIsWeekend(attendanceDate))
+        assertThatThrownBy(() -> absentPolicy.validateIsWeekend(dayOfWeek))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
