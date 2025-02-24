@@ -4,9 +4,9 @@ import static global.util.DateUtil.FIXED_REFERENCE_DATE;
 import static global.util.DateUtil.assembleDateAndTime;
 import static global.util.Validator.validateIsNotWorkingDay;
 
-import domain.AttendanceStatus;
 import domain.Crew;
 import domain.Crews;
+import dto.CrewAttendanceStatusResponse;
 import global.util.DateUtil;
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -89,12 +89,8 @@ public class AttendanceController {
         String name = inputView.inputEditCrewName();
         Crew crew = crews.findCrewByName(name);
         LocalDate date = DateUtil.getDateByInputDay(Integer.parseInt(inputView.inputEditDay()));
-        crew.validateAvailableEditAttendanceDate(date);
-        LocalTime beforeTime = crew.getAttendanceTime(date);
-        AttendanceStatus beforAttendanceStatus = crew.getAttendanceStatusByDate(DateUtil.assembleDateAndTime(date, beforeTime));
-        LocalTime time = LocalTime.parse(inputView.inputEditTime());
-        AttendanceStatus afterAttendanceStatus = crew.editAttendStatus(assembleDateAndTime(date, time));
-        LocalTime afterTime = crew.getAttendanceTime(date);
-        outputView.printAttendEditMessage(date, beforAttendanceStatus, beforeTime, afterAttendanceStatus, afterTime);
+        CrewAttendanceStatusResponse originalResponse = crew.createCrewAttendanceStatusResponse(date);
+        CrewAttendanceStatusResponse editedResponse = crew.editAttendStatus(assembleDateAndTime(date, LocalTime.parse(inputView.inputEditTime())));
+        outputView.printAttendEditMessage(date, originalResponse, editedResponse);
     }
 }

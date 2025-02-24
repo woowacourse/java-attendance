@@ -4,6 +4,7 @@ import static global.util.DateUtil.FIXED_REFERENCE_DATE;
 import static global.util.DateUtil.assembleDateAndTime;
 import static global.util.Validator.validateIsInOperationTime;
 
+import dto.CrewAttendanceStatusResponse;
 import dto.CrewResponse;
 import global.util.DateUtil;
 import java.time.LocalDate;
@@ -23,18 +24,17 @@ public class Crew {
 
     public void addAttendStatus(final LocalDateTime target) {
         validateIsInOperationTime(target.toLocalTime());
-        LocalDate date = target.toLocalDate();
-        LocalTime time = target.toLocalTime();
-        attendanceBook.put(date, time);
+        attendanceBook.put(target.toLocalDate(), target.toLocalTime());
     }
 
     public boolean isNameMatch(final String name) {
         return this.name.equals(name);
     }
 
-    public AttendanceStatus editAttendStatus(final LocalDateTime target) {
+    public CrewAttendanceStatusResponse editAttendStatus(final LocalDateTime target) {
+        validateAvailableEditAttendanceDate(target.toLocalDate());
         addAttendStatus(target);
-        return AttendanceStatus.attend(target);
+        return createCrewAttendanceStatusResponse(target.toLocalDate());
     }
 
     public LocalTime getAttendanceTime(final LocalDate date) {
@@ -71,8 +71,18 @@ public class Crew {
         return new CrewResponse(name, calculateAttendanceCount(), absenceCount, tardyCount, calculateRiskStatus());
     }
 
+    public CrewAttendanceStatusResponse createCrewAttendanceStatusResponse(LocalDate target) {
+        LocalTime originalTime = getOriginalTime(target);
+        return new CrewAttendanceStatusResponse(originalTime, getAttendanceStatusByDate(DateUtil.assembleDateAndTime(target, originalTime)));
+    }
+
     public AttendanceStatus getAttendanceStatusByDate(final LocalDateTime target) {
         return AttendanceStatus.attend(target);
+    }
+
+    private LocalTime getOriginalTime(LocalDate target) {
+        validateAvailableEditAttendanceDate(target);
+        return attendanceBook.get(target);
     }
 
     private int calculateAttendanceCount() {
@@ -82,7 +92,7 @@ public class Crew {
                 ).count();
     }
 
-    private int calculateAbsenceCount() {
+    private int calculateAbsenceCount2() {
         LocalDate localDate = DateUtil.getFirstDateOfMonth();
         int absenceCount = 0;
         while (!localDate.isAfter(FIXED_REFERENCE_DATE.toLocalDate())) {
@@ -94,7 +104,19 @@ public class Crew {
         return absenceCount;
     }
 
+    private int calculateAbsenceCount() {
+        return (int) DateUtil.getFirstDateOfMonth().datesUntil(FIXED_REFERENCE_DATE.toLocalDate().plusDays(1))
+                .filter(this::isNowAbsence)
+                .count();
+    }
+
     private int calculateTardyCount() {
+        return (int) DateUtil.getFirstDateOfMonth().datesUntil(FIXED_REFERENCE_DATE.toLocalDate().plusDays(1))
+                .filter(this::isNowTardy)
+                .count();
+    }
+
+    private int calculateTardyCount2() {
         LocalDate localDate = DateUtil.getFirstDateOfMonth();
         int tardyCount = 0;
         for (int day = 0; day < FIXED_REFERENCE_DATE.getDayOfMonth(); day++) {
@@ -105,6 +127,8 @@ public class Crew {
         }
         return tardyCount;
     }
+
+//    private int determinex
 
     private boolean isNowAbsence(final LocalDate localDate) {
         if (!attendanceBook.containsKey(localDate) && DateUtil.isWeekday(localDate)) {

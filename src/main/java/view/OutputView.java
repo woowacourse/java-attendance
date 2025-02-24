@@ -5,6 +5,7 @@ import static view.ViewUtil.getRiskStatusMessage;
 
 import domain.AttendanceStatus;
 import domain.RiskStatus;
+import dto.CrewAttendanceStatusResponse;
 import dto.CrewResponse;
 import global.util.DateUtil;
 import java.time.LocalDate;
@@ -61,13 +62,13 @@ public class OutputView {
         System.out.println(getEachDateAttendanceMessage(currentDate, map));
     }
 
-    public void printAttendEditMessage(LocalDate date, AttendanceStatus beforeAttendanceStatus, LocalTime beforeTime, AttendanceStatus afterAttendanceStatus, LocalTime afterTime) {
+    public void printAttendEditMessage(LocalDate date, CrewAttendanceStatusResponse originalResponse, CrewAttendanceStatusResponse currentResponse) {
         System.out.printf("%s %s (%s) -> %s (%s) 수정 완료!\n",
                 DateTimeFormatter.ofPattern("MM월 dd일 E요일").format(date),
-                DateTimeFormatter.ofPattern("hh:mm").format(beforeTime),
-                ViewUtil.getAttendanceStatusMessage(beforeAttendanceStatus),
-                DateTimeFormatter.ofPattern("hh:mm").format(afterTime),
-                ViewUtil.getAttendanceStatusMessage(afterAttendanceStatus));
+                DateTimeFormatter.ofPattern("hh:mm").format(originalResponse.time()),
+                ViewUtil.getAttendanceStatusMessage(originalResponse.attendanceStatus()),
+                DateTimeFormatter.ofPattern("hh:mm").format(currentResponse.time()),
+                ViewUtil.getAttendanceStatusMessage(currentResponse.attendanceStatus()));
     }
 
     private String getEachDateAttendanceMessage(LocalDate currentDate, Map<LocalDate, LocalTime> map) {
