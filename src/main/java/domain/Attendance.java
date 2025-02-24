@@ -5,9 +5,9 @@ import java.util.List;
 import java.util.Map;
 
 public class Attendance {
-    private final Map<Date, Time> dateTimes;
+    private final Map<WorkDate, WorkTime> dateTimes;
 
-    public Attendance(Map<Date, Time> dateTimes) {
+    public Attendance(Map<WorkDate, WorkTime> dateTimes) {
         this.dateTimes = new HashMap<>(dateTimes);
     }
 
@@ -26,13 +26,13 @@ public class Attendance {
     }
 
     private boolean isAlreadyExists(DateTime dateTime) {
-        Time time = dateTimes.get(dateTime.getDate());
+        WorkTime workTime = dateTimes.get(dateTime.getDate());
 
-        return !time.isNull();
+        return !workTime.isNull();
     }
 
-    public DateTime retrieveDateTime(Date date) {
-        return new DateTime(date, dateTimes.get(date));
+    public DateTime retrieveDateTime(WorkDate workDate) {
+        return new DateTime(workDate, dateTimes.get(workDate));
     }
 
     public List<DateTime> retrieveDateTimes() {
@@ -41,8 +41,8 @@ public class Attendance {
                 .toList();
     }
 
-    public AttendanceStatus calculateAttendanceStatus(Date date) {
-        DateTime dateTime = new DateTime(date, dateTimes.get(date));
+    public AttendanceStatus calculateAttendanceStatus(WorkDate workDate) {
+        DateTime dateTime = new DateTime(workDate, dateTimes.get(workDate));
 
         return AttendanceStatus.from(dateTime);
     }

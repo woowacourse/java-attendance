@@ -4,12 +4,12 @@ import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.util.Objects;
 
-public class Date implements Comparable<Date> {
+public class WorkDate implements Comparable<WorkDate> {
     private final int year;
     private final int month;
     private final int day;
 
-    public Date(int year, int month, int day) {
+    public WorkDate(int year, int month, int day) {
         validateSize(year, month, day);
         validateDate(year, month, day);
         this.year = year;
@@ -40,8 +40,8 @@ public class Date implements Comparable<Date> {
         return isPublicHoliday(LocalDate.of(2024, month, day));
     }
 
-    public static Date from(LocalDate localDate) {
-        return new Date(localDate.getYear(), localDate.getMonthValue(), localDate.getDayOfMonth());
+    public static WorkDate from(LocalDate localDate) {
+        return new WorkDate(localDate.getYear(), localDate.getMonthValue(), localDate.getDayOfMonth());
     }
 
     public static boolean isWeekend(LocalDate date) {
@@ -66,7 +66,7 @@ public class Date implements Comparable<Date> {
     }
 
     @Override
-    public int compareTo(Date other) {
+    public int compareTo(WorkDate other) {
         return LocalDate.of(this.year, this.month, this.day)
                 .compareTo(LocalDate.of(other.year, other.month, other.day));
     }
@@ -76,8 +76,8 @@ public class Date implements Comparable<Date> {
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        Date date = (Date) o;
-        return year == date.year && month == date.month && day == date.day;
+        WorkDate workDate = (WorkDate) o;
+        return year == workDate.year && month == workDate.month && day == workDate.day;
     }
 
     @Override

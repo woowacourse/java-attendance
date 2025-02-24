@@ -45,7 +45,7 @@ public class CrewAttendanceRepository {
 
     private static Map<String, CrewAttendance> createInitialAttendance(LocalDate currentDate, String filePath) {
         Set<String> crewNames = AttendanceFileParser.loadCrewNames(filePath);
-        Map<Date, Time> initialAttendanceRecords = generateInitialAttendance(currentDate);
+        Map<WorkDate, WorkTime> initialAttendanceRecords = generateInitialAttendance(currentDate);
 
         return crewNames.stream()
                 .collect(Collectors.toMap(
@@ -54,8 +54,8 @@ public class CrewAttendanceRepository {
                 ));
     }
 
-    private static Map<Date, Time> generateInitialAttendance(LocalDate currentDate) {
-        Map<Date, Time> attendanceRecords = new HashMap<>();
+    private static Map<WorkDate, WorkTime> generateInitialAttendance(LocalDate currentDate) {
+        Map<WorkDate, WorkTime> attendanceRecords = new HashMap<>();
         LocalDate attendanceDate = START_DATE;
 
         while (!attendanceDate.isAfter(currentDate)) {
@@ -66,13 +66,13 @@ public class CrewAttendanceRepository {
         return attendanceRecords;
     }
 
-    private static void addNonHolidayDate(Map<Date, Time> attendanceRecords, LocalDate localDate) {
-        if (Date.isWeekend(localDate) || Date.isPublicHoliday(localDate)) {
+    private static void addNonHolidayDate(Map<WorkDate, WorkTime> attendanceRecords, LocalDate localDate) {
+        if (WorkDate.isWeekend(localDate) || WorkDate.isPublicHoliday(localDate)) {
             return;
         }
 
-        Date date = Date.from(localDate);
-        attendanceRecords.put(date, new Time(null, null));
+        WorkDate workDate = WorkDate.from(localDate);
+        attendanceRecords.put(workDate, new WorkTime(null, null));
     }
 
     private static void loadAttendance(CrewAttendanceRepository crewAttendanceRepository, String filePath) {

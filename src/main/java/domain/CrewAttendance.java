@@ -20,8 +20,8 @@ public class CrewAttendance {
         attendance.updateDateTime(updateDateTime);
     }
 
-    public DateTime retrieveDateTime(Date date) {
-        return attendance.retrieveDateTime(date);
+    public DateTime retrieveDateTime(WorkDate workDate) {
+        return attendance.retrieveDateTime(workDate);
     }
 
     public List<DateTime> retrieveDateTimesOrderByDate() {  // TODO. 정렬 조건을 이용한 추상화
@@ -30,8 +30,8 @@ public class CrewAttendance {
                 .toList();
     }
 
-    public AttendanceStatus calculateAttendanceStatus(Date date) {
-        return attendance.calculateAttendanceStatus(date);
+    public AttendanceStatus calculateAttendanceStatus(WorkDate workDate) {
+        return attendance.calculateAttendanceStatus(workDate);
     }
 
     public List<AttendanceStatus> calculateAttendanceStatuses() {

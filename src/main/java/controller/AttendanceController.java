@@ -6,10 +6,10 @@ import controller.dto.PenaltyCrewDto;
 import domain.AttendanceStatus;
 import domain.CrewAttendance;
 import domain.CrewAttendanceRepository;
-import domain.Date;
 import domain.DateTime;
 import domain.MenuOption;
-import domain.Time;
+import domain.WorkDate;
+import domain.WorkTime;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
@@ -72,8 +72,8 @@ public class AttendanceController {
 
     private void handleCheckAttendance(LocalDate currentDate) {
         CrewAttendance crewAttendance = getCrewAttendance(inputView.readNickName());
-        Date date = Date.from(currentDate);
-        DateTime dateTime = createDateTime(date, inputView.readArriveTime());
+        WorkDate currnetWorkDate = WorkDate.from(currentDate);
+        DateTime dateTime = createDateTime(currnetWorkDate, inputView.readArriveTime());
 
         crewAttendance.addAttendance(dateTime);
         AttendanceStatus attendanceStatus = crewAttendance.calculateAttendanceStatus(dateTime.getDate());
@@ -96,10 +96,11 @@ public class AttendanceController {
 
     private DateTime getUpdatedDateTime(LocalDate currentDate) {
         int updateDayValue = inputView.readUpdateDate();
-        Date updateDate = Date.from(LocalDate.of(currentDate.getYear(), currentDate.getMonth(), updateDayValue));
+        WorkDate updateWorkDate = WorkDate.from(
+                LocalDate.of(currentDate.getYear(), currentDate.getMonth(), updateDayValue));
         LocalTime updateArriveTime = inputView.readUpdateArriveTime();
 
-        return createDateTime(updateDate, updateArriveTime);
+        return createDateTime(updateWorkDate, updateArriveTime);
     }
 
     private DateTime getBeforeDateTime(CrewAttendance crewAttendance, DateTime afterDateTime) {
@@ -131,7 +132,7 @@ public class AttendanceController {
         outputView.printPenaltyCrews(penaltyCrews);
     }
 
-    private DateTime createDateTime(Date date, LocalTime localTime) {
-        return new DateTime(date, new Time(localTime.getHour(), localTime.getMinute()));
+    private DateTime createDateTime(WorkDate workDate, LocalTime localTime) {
+        return new DateTime(workDate, new WorkTime(localTime.getHour(), localTime.getMinute()));
     }
 }

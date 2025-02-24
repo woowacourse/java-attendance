@@ -3,11 +3,11 @@ package domain;
 import java.util.Objects;
 import java.util.Optional;
 
-public class Time implements Comparable<Time> {
+public class WorkTime implements Comparable<WorkTime> {
     private final Integer hour;
     private final Integer minute;
 
-    public Time(Integer hour, Integer minute) {
+    public WorkTime(Integer hour, Integer minute) {
         validateSize(hour, minute);
         validateCampusTime(hour);
         this.hour = hour;
@@ -43,7 +43,7 @@ public class Time implements Comparable<Time> {
     }
 
     @Override
-    public int compareTo(Time other) {
+    public int compareTo(WorkTime other) {
         if (this.getHour().isEmpty() && other.getHour().isEmpty()) {
             return 0;
         }
@@ -68,8 +68,8 @@ public class Time implements Comparable<Time> {
             return false;
         }
 
-        Time time = (Time) o;
-        return Objects.equals(hour, time.hour) && Objects.equals(minute, time.minute);
+        WorkTime workTime = (WorkTime) o;
+        return Objects.equals(hour, workTime.hour) && Objects.equals(minute, workTime.minute);
     }
 
     @Override

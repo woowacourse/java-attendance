@@ -4,37 +4,37 @@ import java.time.LocalDateTime;
 import java.util.Objects;
 
 public class DateTime implements Comparable<DateTime> {
-    private final Date date;
-    private final Time time;
+    private final WorkDate workDate;
+    private final WorkTime workTime;
 
-    public DateTime(Date date, Time time) {
-        this.date = date;
-        this.time = time;
+    public DateTime(WorkDate workDate, WorkTime workTime) {
+        this.workDate = workDate;
+        this.workTime = workTime;
     }
 
     public static DateTime from(LocalDateTime localDateTime) {
         return new DateTime(
-                new Date(localDateTime.toLocalDate().getYear(), localDateTime.toLocalDate().getMonthValue(),
+                new WorkDate(localDateTime.toLocalDate().getYear(), localDateTime.toLocalDate().getMonthValue(),
                         localDateTime.toLocalDate().getDayOfMonth()),
-                new Time(localDateTime.toLocalTime().getHour(), localDateTime.toLocalTime().getMinute()));
+                new WorkTime(localDateTime.toLocalTime().getHour(), localDateTime.toLocalTime().getMinute()));
     }
 
-    public Date getDate() {
-        return date;
+    public WorkDate getDate() {
+        return workDate;
     }
 
-    public Time getTime() {
-        return time;
+    public WorkTime getTime() {
+        return workTime;
     }
 
     @Override
     public int compareTo(DateTime other) {
-        int dateDiff = this.date.compareTo(other.date);
+        int dateDiff = this.workDate.compareTo(other.workDate);
         if (dateDiff != 0) {
             return dateDiff;
         }
 
-        return this.time.compareTo(other.time);
+        return this.workTime.compareTo(other.workTime);
     }
 
     @Override
@@ -43,11 +43,11 @@ public class DateTime implements Comparable<DateTime> {
             return false;
         }
         DateTime dateTime = (DateTime) o;
-        return Objects.equals(date, dateTime.date) && Objects.equals(time, dateTime.time);
+        return Objects.equals(workDate, dateTime.workDate) && Objects.equals(workTime, dateTime.workTime);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(date, time);
+        return Objects.hash(workDate, workTime);
     }
 }

@@ -3,51 +3,51 @@ package view;
 import controller.dto.AttendanceRecodeDto;
 import controller.dto.AttendanceResultDto;
 import controller.dto.PenaltyCrewDto;
-import domain.Date;
 import domain.DateTime;
 import domain.Penalty;
-import domain.Time;
+import domain.WorkDate;
 import domain.WorkDay;
+import domain.WorkTime;
 import java.util.List;
 import java.util.Objects;
 
 public class OutputView {
     public void printArriveResult(DateTime dateTime, String attendanceStatusName) {
-        Date date = dateTime.getDate();
-        WorkDay workDay = date.getWorkDay();
-        Time time = dateTime.getTime();
+        WorkDate workDate = dateTime.getDate();
+        WorkDay workDay = workDate.getWorkDay();
+        WorkTime workTime = dateTime.getTime();
 
-        System.out.printf("%s월 %s일 %s요일 %s:%s (%s)\n", date.getMonth(),
-                date.getDay(), workDay.getDayOfWeekKorean(),
-                convertTime(time.getHour().orElse(null)), convertTime(time.getMinute().orElse(null)),
+        System.out.printf("%s월 %s일 %s요일 %s:%s (%s)\n", workDate.getMonth(),
+                workDate.getDay(), workDay.getDayOfWeekKorean(),
+                convertTime(workTime.getHour().orElse(null)), convertTime(workTime.getMinute().orElse(null)),
                 attendanceStatusName);
     }
 
     public void printUpdateResult(DateTime beforeDateTime, String beforeAttendanceStatusName,
                                   DateTime afterDateTime, String afterAttendanceStatusName) {
-        Date date = beforeDateTime.getDate();
-        WorkDay workDay = date.getWorkDay();
-        Time beforeTime = beforeDateTime.getTime();
-        Time afterTime = afterDateTime.getTime();
+        WorkDate workDate = beforeDateTime.getDate();
+        WorkDay workDay = workDate.getWorkDay();
+        WorkTime beforeWorkTime = beforeDateTime.getTime();
+        WorkTime afterWorkTime = afterDateTime.getTime();
         System.out.printf("%s월 %s일 %s요일 %s:%s (%s) -> %s:%s (%s) 수정 완료!\n",
-                date.getMonth(), date.getDay(), workDay.getDayOfWeekKorean(),
-                convertTime(beforeTime.getHour().orElse(null)),
-                convertTime(beforeTime.getMinute().orElse(null)), beforeAttendanceStatusName,
-                convertTime(afterTime.getHour().orElse(null)),
-                convertTime(afterTime.getMinute().orElse(null)), afterAttendanceStatusName);
+                workDate.getMonth(), workDate.getDay(), workDay.getDayOfWeekKorean(),
+                convertTime(beforeWorkTime.getHour().orElse(null)),
+                convertTime(beforeWorkTime.getMinute().orElse(null)), beforeAttendanceStatusName,
+                convertTime(afterWorkTime.getHour().orElse(null)),
+                convertTime(afterWorkTime.getMinute().orElse(null)), afterAttendanceStatusName);
     }
 
     public void printTotalAttendanceStatus(List<AttendanceRecodeDto> attendanceRecodeDto,
                                            AttendanceResultDto attendanceResultDto) {
         System.out.printf("이번 달 %s의 출석 기록입니다.\n", attendanceResultDto.name());
         attendanceRecodeDto.forEach(attendanceRecode -> {
-            Date date = attendanceRecode.dateTime().getDate();
-            WorkDay workDay = date.getWorkDay();
-            Time time = attendanceRecode.dateTime().getTime();
+            WorkDate workDate = attendanceRecode.dateTime().getDate();
+            WorkDay workDay = workDate.getWorkDay();
+            WorkTime workTime = attendanceRecode.dateTime().getTime();
 
-            System.out.printf("%s월 %s일 %s요일 %s:%s (%s)\n", date.getMonth(),
-                    date.getDay(), workDay.getDayOfWeekKorean(),
-                    convertTime(time.getHour().orElse(null)), convertTime(time.getMinute().orElse(null)),
+            System.out.printf("%s월 %s일 %s요일 %s:%s (%s)\n", workDate.getMonth(),
+                    workDate.getDay(), workDay.getDayOfWeekKorean(),
+                    convertTime(workTime.getHour().orElse(null)), convertTime(workTime.getMinute().orElse(null)),
                     attendanceRecode.attendanceStatusName());
         });
 
