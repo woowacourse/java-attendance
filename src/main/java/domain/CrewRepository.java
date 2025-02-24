@@ -10,6 +10,10 @@ import util.parser.FileParser;
 public class CrewRepository {
 
     private final List<Crew> crews = new ArrayList<>();
+    private boolean unmodifiable = false;
+
+    private CrewRepository() {
+    }
 
     public static CrewRepository generate() {
         return new CrewRepository();
@@ -23,20 +27,29 @@ public class CrewRepository {
                 fileData.date(),
                 fileData.time()
             ));
+        generated.unmodifiable = true;
         return generated;
     }
 
     public void add(Crew crew) {
+        validateUnmodifiable();
         crews.add(crew);
     }
 
     public void add(String nickname, LocalDate date, LocalTime time) {
         Crew crew = find(nickname);
         if (crew == null) {
+            validateUnmodifiable();
             crew = new Crew(nickname);
             crews.add(crew);
         }
         crew.attendance(date, time);
+    }
+
+    private void validateUnmodifiable() {
+        if (unmodifiable) {
+            throw new IllegalArgumentException("crew를 추가할 수 없습니다");
+        }
     }
 
     private Crew find(String nickname) {
