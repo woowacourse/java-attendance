@@ -51,7 +51,7 @@ public class AttendanceController {
 
         attendanceRepository = new AttendanceRepository(attendanceRecordContent.attendances());
         attendanceBook = new AttendanceBook(attendanceRecordContent.names());
-        attendanceBook.initAbsent(attendanceRepository);
+        attendanceRepository.initAbsent(attendanceBook.getNames());
     }
 
     private void attendanceSystemStart() {

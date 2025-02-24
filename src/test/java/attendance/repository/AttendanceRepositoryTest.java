@@ -170,11 +170,15 @@ class AttendanceRepositoryTest {
         AttendanceRepository attendanceRepository = new AttendanceRepository(new ArrayList<>());
 
         // when
-        attendanceRepository.initAbsent("피글렛");
+        attendanceRepository.initAbsent(Set.of("피글렛", "체체"));
 
         // then
-        List<Attendance> attendances = attendanceRepository.findAllAttendanceByName("피글렛");
-        assertThat(attendances.size()).isEqualTo(countWeekDays());
+        assertAll(() ->
+                {
+                    assertEquals(countWeekDays(), attendanceRepository.findAllAttendanceByName("피글렛").size());
+                    assertEquals(countWeekDays(), attendanceRepository.findAllAttendanceByName("체체").size());
+                }
+        );
     }
 
     private int countWeekDays() {

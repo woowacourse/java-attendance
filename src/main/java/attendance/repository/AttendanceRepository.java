@@ -21,6 +21,8 @@ public class AttendanceRepository {
 
     private final List<Attendance> attendances;
 
+    private static final String ABSENT_MARK = "--";
+
     public AttendanceRepository(final List<Attendance> attendances) {
         this.attendances = attendances;
     }
@@ -57,17 +59,22 @@ public class AttendanceRepository {
                 .orElseThrow(() -> new IllegalArgumentException("[ERROR] 존재하지 않는 출석 기록입니다."));
     }
 
-    public void initAbsent(final String name) {
+    public void initAbsent(final Set<String> names) {
 
         int currentYear = LocalDate.now().getYear();
         int currentMonth = LocalDate.now().getMonthValue();
         int currentDay = LocalDate.now().getDayOfMonth();
 
+        names.forEach(name -> initStudentAbsent(name, currentDay, currentYear, currentMonth));
+    }
+
+    private void initStudentAbsent(String name, int currentDay, int currentYear, int currentMonth) {
         IntStream.range(1, currentDay)
                 .mapToObj(day -> LocalDate.of(currentYear, currentMonth, day))
                 .filter(date -> !isWeekend(date))
                 .filter(date -> isAbsent(name, date))
-                .forEach(date -> attendances.add(new Attendance(name, new AttendanceTime(date, "--", "--", true))));
+                .forEach(date -> attendances.add(
+                        new Attendance(name, new AttendanceTime(date, ABSENT_MARK, ABSENT_MARK, true))));
     }
 
     private boolean isWeekend(final LocalDate date) {

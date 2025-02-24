@@ -1,6 +1,5 @@
 package attendance.domain;
 
-import attendance.repository.AttendanceRepository;
 import java.util.Set;
 
 public class AttendanceBook {
@@ -18,14 +17,8 @@ public class AttendanceBook {
         }
     }
 
-    public void initAbsent(final AttendanceRepository attendanceRepository) {
-
-        for (String name : names) {
-            attendanceRepository.initAbsent(name);
-        }
-    }
-
     public Set<String> getNames() {
+
         return Set.copyOf(names);
     }
 }
