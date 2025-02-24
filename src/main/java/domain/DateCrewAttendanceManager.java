@@ -8,9 +8,9 @@ import java.util.Map;
 import strategy.NowDateStrategy;
 
 public class DateCrewAttendanceManager {
+    
     private final Map<LocalDate, CrewAttendance> dateCrewAttendances;
     private final NowDateStrategy nowDateStrategy;
-
     private final AttendanceDateHelper attendanceDateHelper;
 
     public DateCrewAttendanceManager(NowDateStrategy nowDateStrategy) {
