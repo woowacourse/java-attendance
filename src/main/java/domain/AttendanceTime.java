@@ -10,14 +10,26 @@ public class AttendanceTime {
     private LocalTime time;
 
     private AttendanceTime(LocalDate date, LocalTime time) {
-        if (date.getDayOfWeek() == DayOfWeek.SATURDAY || date.getDayOfWeek() == DayOfWeek.SUNDAY) {
-            throw new IllegalArgumentException();
-        }
-        if (date.getDayOfMonth() == 25) {
-            throw new IllegalArgumentException();
-        }
+        validate(date);
         this.date = date;
         this.time = time;
+    }
+
+    private void validate(LocalDate date) {
+        validateNotWeekend(date);
+        validateNotHoliday(date);
+    }
+
+    private void validateNotWeekend(LocalDate date) {
+        if (date.getDayOfWeek() == DayOfWeek.SATURDAY || date.getDayOfWeek() == DayOfWeek.SUNDAY) {
+            throw new IllegalArgumentException("주말에는 출석할 수 없습니다.");
+        }
+    }
+
+    private void validateNotHoliday(LocalDate date) {
+        if (Holiday.isHoliday(date)) {
+            throw new IllegalArgumentException("공휴일에는 출석할 수 없습니다.");
+        }
     }
 
     public static AttendanceTime of(LocalDate date, LocalTime time) {
@@ -29,10 +41,7 @@ public class AttendanceTime {
     }
 
     public boolean isSameDate(LocalDate date) {
-        if (this.date.equals(date)) {
-            return true;
-        }
-        return false;
+        return this.date.equals(date);
     }
 
     @Override

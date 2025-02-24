@@ -34,7 +34,8 @@ class AttendanceTimeTest {
 
         // when, then
         assertThatThrownBy(() -> AttendanceTime.of(date, time))
-                .isInstanceOf(IllegalArgumentException.class); // TODO: Check Exception Message
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("주말에는 출석할 수 없습니다.");
     }
 
     @Test
@@ -46,7 +47,8 @@ class AttendanceTimeTest {
 
         // when, then
         assertThatThrownBy(() -> AttendanceTime.of(date, time))
-                .isInstanceOf(IllegalArgumentException.class); // TODO: Check Exception Message
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("공휴일에는 출석할 수 없습니다.");
     }
 
     @Test
