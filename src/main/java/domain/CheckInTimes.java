@@ -51,14 +51,14 @@ public class CheckInTimes {
                 .filter(time -> time.isSameDate(checkInTime))
                 .findAny()
                 .ifPresent(time -> {
-                    throw new IllegalArgumentException("[ERROR] CheckInTime is already in the list]");
+                    throw new IllegalArgumentException("[ERROR] 이미 체크인을 완료했습니다.");
                 });
     }
 
     private void validateModifiable(CheckInTime checkInTime) {
         LocalDateTime now = LocalDateTime.now();
         if (checkInTime.isNotModifiable(now)) {
-            throw new IllegalArgumentException("[ERROR] CheckInTime is not modifiable");
+            throw new IllegalArgumentException("[ERROR] 출석 가능한 시간이 아닙니다.");
         }
     }
 
