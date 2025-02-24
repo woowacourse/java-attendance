@@ -25,7 +25,9 @@ public class DateCrewAttendanceManager {
     public void addAttendance(LocalTime attendanceTime) {
         LocalDate attendanceDate = nowDateStrategy.now();
         validateAttendanceDate(attendanceDate);
-        dateCrewAttendances.put(attendanceDate, new CrewAttendance(attendanceTime, AttendanceStatus.ATTENDANCE));
+        AttendanceStatus attendanceStatus = AttendanceStatus.calculateAttendanceStatus(attendanceTime,
+                AttendanceDateHelper.schoolOpenTime(attendanceDate));
+        dateCrewAttendances.put(attendanceDate, new CrewAttendance(attendanceTime, attendanceStatus));
     }
 
     private void validateAttendanceDate(LocalDate attendanceDate) {

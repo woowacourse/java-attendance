@@ -21,7 +21,7 @@ public class CrewAttendancesTest {
         @DisplayName("5분 초과 지각시 지각이다")
         void addAttendanceLate() {
             String nickname = "투다";
-            LocalTime time = LocalTime.of(8, 6);
+            LocalTime time = LocalTime.of(10, 6);
             LocalDate date = LocalDate.of(2024, 12, 3);
             CrewAttendances crewAttendances = new CrewAttendances(new TestAttendanceNowDateStrategy(date));
             crewAttendances.addAttendance(nickname, time);
