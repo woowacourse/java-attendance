@@ -2,7 +2,6 @@ package test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import model.Crew;
@@ -52,8 +51,14 @@ public class AttendanceTest {
                 new Crew("빙티"),
                 new Crew("이든")
         );
+        List<Crew> targetCrewsInput = List.of(
+                new Crew("쿠키"),
+                new Crew("빙봉"),
+                new Crew("빙티"),
+                new Crew("이든")
+        );
         Crews crews = CrewGenerator.wrapCrews(crewsInput);
-        assertThat(crews).isSameAs(new Crews(crewsInput));
+        assertThat(crews).isEqualTo(new Crews(targetCrewsInput)); //TODO : isSameAs로 하면 안됨
     }
 
 //    @DisplayName("입력한 닉네임에 맞는 크루 정보를 가져온다.")

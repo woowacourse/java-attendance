@@ -20,6 +20,6 @@ public class CrewGenerator {
     }
 
     public static Crews wrapCrews(List<Crew> crewsInput) {
-        return null;
+        return new Crews(crewsInput);
     }
 }
