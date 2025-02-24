@@ -32,6 +32,10 @@ public class AttendanceController {
     public void run() {
         List<String> rows = readCsv();
         AttendanceBook attendanceBook = loadAttendanceBook(rows);
+        runCommandLoop(attendanceBook);
+    }
+
+    private void runCommandLoop(AttendanceBook attendanceBook) {
         while (true) {
             try {
                 String command = inputView.inputCommand(Current.TODAY.getLocalDate());
