@@ -21,13 +21,13 @@ public class Attendance {
     }
 
     private void createAttendanceDate(LocalDate cursorDate) {
-        if (validate(cursorDate)) {
+        if (isHolidayOrWeekend(cursorDate)) {
             return;
         }
         addAttendanceDate(cursorDate);
     }
 
-    private boolean validate(LocalDate date) {
+    private boolean isHolidayOrWeekend(LocalDate date) {
         return date.getDayOfWeek().getValue() >= AttendanceDate.SATURDAY || Holiday.has(date);
     }
 
