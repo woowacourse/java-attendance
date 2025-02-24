@@ -44,6 +44,15 @@ public class AbsentPolicyTest {
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
+    @Test
+    @DisplayName("결석 처리를 할 수 있다")
+    public void checkAttendanceStatusTest(){
+        AbsentPolicy absentPolicy = new AbsentPolicy();
+        LocalDateTime educationDateTime = LocalDateTime.of(2024,12,10,10,31);
+
+        assertThat(absentPolicy.checkAttendanceStatus(educationDateTime)).isEqualTo("결석");
+    }
+
 //    @Test
 //    @DisplayName("교육 시작 시간으로부터 5분 초과는 지각으로 간주한다")
 //    public void checkAttendanceStatusTest() {
