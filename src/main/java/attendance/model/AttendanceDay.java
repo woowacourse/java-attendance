@@ -4,7 +4,7 @@ import java.time.DayOfWeek;
 import java.time.LocalTime;
 import java.util.Arrays;
 
-public enum AttendanceStartTime {
+public enum AttendanceDay {
 
     MON(DayOfWeek.MONDAY, LocalTime.of(13, 0)),
     TUE(DayOfWeek.TUESDAY, LocalTime.of(10, 0)),
@@ -16,7 +16,7 @@ public enum AttendanceStartTime {
     private final DayOfWeek dayOfWeek;
     private final LocalTime startTime;
 
-    AttendanceStartTime(DayOfWeek dayOfWeek, LocalTime startTime) {
+    AttendanceDay(DayOfWeek dayOfWeek, LocalTime startTime) {
         this.dayOfWeek = dayOfWeek;
         this.startTime = startTime;
     }
@@ -25,7 +25,7 @@ public enum AttendanceStartTime {
         return this.dayOfWeek == dayOfWeek;
     }
 
-    public static LocalTime findDayOfWeek(DayOfWeek dayOfWeek) {
+    public static LocalTime findStartTime(DayOfWeek dayOfWeek) {
         return Arrays.stream(values())
                 .filter(startTime -> startTime.isSameDayOfWeek(dayOfWeek))
                 .findFirst()

@@ -43,7 +43,7 @@ public class Attendance {
     }
 
     public AttendanceType getAttendanceType() {
-        return AttendanceType.judge(AttendanceStartTime.findDayOfWeek(attendanceDate.getDayOfWeek()), attendanceTime);
+        return AttendanceType.judge(AttendanceDay.findStartTime(attendanceDate.getDayOfWeek()), attendanceTime);
     }
 
     public LocalDate getAttendanceDate() {
