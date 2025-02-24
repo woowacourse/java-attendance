@@ -39,7 +39,7 @@ public class CrewAttendance {
     }
 
     public boolean isPenalty() {
-        return !calculatePenalty().equals(Penalty.NONE);
+        return !calculatePenalty().isNone();
     }
 
     public Penalty calculatePenalty() {

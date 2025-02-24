@@ -3,15 +3,17 @@ package domain;
 import java.util.List;
 
 public enum Penalty {
-    NONE("없음"),
-    WARNING("경고"),
-    INTERVIEW("면담"),
-    WEEDING("제적");
+    NONE("없음", 0),
+    WARNING("경고", 2),
+    INTERVIEW("면담", 3),
+    WEEDING("제적", 5);
 
     private final String name;
+    private final int absenceCount;
 
-    Penalty(String name) {
+    Penalty(String name, int absenceCount) {
         this.name = name;
+        this.absenceCount = absenceCount;
     }
 
     public static Penalty from(List<AttendanceStatus> attendanceStatuses) {
@@ -62,19 +64,23 @@ public enum Penalty {
     }
 
     private static Penalty determinePenalty(int absenceCount) {
-        if (absenceCount > 5) {
+        if (absenceCount > WEEDING.absenceCount) {
             return WEEDING;
         }
 
-        if (absenceCount >= 3) {
+        if (absenceCount >= INTERVIEW.absenceCount) {
             return INTERVIEW;
         }
 
-        if (absenceCount >= 2) {
+        if (absenceCount >= WARNING.absenceCount) {
             return WARNING;
         }
 
         return NONE;
+    }
+
+    public boolean isNone() {
+        return this == NONE;
     }
 
     public String getName() {
