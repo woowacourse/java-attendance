@@ -10,7 +10,7 @@ class FileInputViewTest {
     @DisplayName("csv 파일을 읽어서 Map으로 변환한다")
     @Test
     void test() {
-        FileInputView inputView = new FileInputView();
+        AttendanceFileInputView inputView = new AttendanceFileInputView();
         Map<String, List<String>> fileInput = inputView.getFileInput();
 
         Assertions.assertThat(fileInput.get("쿠키")).hasSize(8);

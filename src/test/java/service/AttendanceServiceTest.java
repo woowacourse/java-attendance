@@ -8,14 +8,14 @@ import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import presentation.InputParser;
-import presentation.view.FileInputView;
+import presentation.view.AttendanceFileInputView;
 
 class AttendanceServiceTest {
     @DisplayName("크루원 정보를 초기화한다.")
     @Test
     void test() {
         // given
-        FileInputView fileInputView = new FileInputView();
+        AttendanceFileInputView fileInputView = new AttendanceFileInputView();
         Map<String, List<String>> attendanceFileInfo = fileInputView.getFileInput();
         CrewService attendanceService = new CrewService();
         Map<String, List<LocalDateTime>> map = InputParser.getFileAttendanceInfo(attendanceFileInfo);

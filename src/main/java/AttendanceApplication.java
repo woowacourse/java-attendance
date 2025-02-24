@@ -1,10 +1,10 @@
 import presentation.AttendanceController;
-import presentation.view.FileInputView;
+import presentation.view.AttendanceFileInputView;
 import service.CrewService;
 
 public class AttendanceApplication {
     public static void main(String[] args) {
-        FileInputView fileInputView = new FileInputView();
+        AttendanceFileInputView fileInputView = new AttendanceFileInputView();
         CrewService attendanceService = new CrewService();
         AttendanceController attendanceController = new AttendanceController(fileInputView, attendanceService);
         attendanceController.run();

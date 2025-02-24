@@ -14,17 +14,17 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
-import presentation.view.FileInputView;
+import presentation.view.AttendanceFileInputView;
 import presentation.view.InputView;
 import presentation.view.OutputView;
 import service.CrewService;
 import util.DateTimeUtil;
 
 public class AttendanceController {
-    private final FileInputView fileInputView;
+    private final AttendanceFileInputView fileInputView;
     private final CrewService attendanceService;
 
-    public AttendanceController(FileInputView fileInputView, CrewService attendanceService) {
+    public AttendanceController(AttendanceFileInputView fileInputView, CrewService attendanceService) {
         this.fileInputView = fileInputView;
         this.attendanceService = attendanceService;
     }

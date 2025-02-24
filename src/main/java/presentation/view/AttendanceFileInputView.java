@@ -8,7 +8,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class FileInputView {
+public class AttendanceFileInputView {
     private static final int NAME_INDEX = 0;
     private static final int ATTENDANCE_DATE_INDEX = 1;
     private static final String FILE_NAME = "attendances.csv";
