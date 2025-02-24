@@ -6,8 +6,7 @@ public enum AttendanceWarningType {
     EXPULSION("제적", 6),
     COUNSELING("면담", 3),
     WARNING("경고", 2),
-    NONE("해당없음", 0)
-    ;
+    NONE("해당없음", 0);
 
     private final String name;
     private final int threshold;
@@ -17,9 +16,9 @@ public enum AttendanceWarningType {
         this.threshold = threshold;
     }
 
-    public static AttendanceWarningType find(final int absence, final int late) { // todo : findBy~~ 네이밍 의논
+    public static AttendanceWarningType find(final int absence, final int late) {
         int allAbsence = absence + (late / 3);
-        return Arrays.stream(AttendanceWarningType.values())
+        return Arrays.stream(values())
                 .filter(type -> type.threshold <= allAbsence)
                 .findFirst()
                 .orElse(NONE);
