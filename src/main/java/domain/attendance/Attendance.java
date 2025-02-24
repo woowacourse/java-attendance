@@ -111,7 +111,7 @@ public class Attendance {
     }
 
     public List<AttendanceDate> getAttendanceDates() {
-        return attendanceDates;
+        return Collections.unmodifiableList(attendanceDates);
     }
 
     public int countAbsenceIncludingTardy() {
