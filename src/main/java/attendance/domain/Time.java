@@ -51,10 +51,10 @@ public record Time(LocalDate date, String hour, String minute, boolean isAbsent)
 
     public boolean isAfter(LocalDateTime localDateTime) {
         if (!isAbsent) {
-            return date.atTime(Parser.parseInt(hour), Parser.parseInt(minute)).isAfter(localDateTime);
+            return !date.atTime(Parser.parseInt(hour), Parser.parseInt(minute)).isAfter(localDateTime);
         }
 
-        return true;
+        return false;
     }
 
     public int getYear() {
