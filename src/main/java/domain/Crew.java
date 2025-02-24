@@ -4,7 +4,6 @@ import domain.constant.StandardDate;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
-import java.time.YearMonth;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -67,11 +66,11 @@ public class Crew {
     }
 
     public Attendance findByDate(Integer dayOfMonth) {
-        LocalDate today = StandardDate.DATE;
+        Day today = new Day(StandardDate.DATE);
         validateDayOfMonth(dayOfMonth, today);
 
-        int month = today.getMonth().getValue();
-        LocalDate date = LocalDate.of(today.getYear(), month, dayOfMonth);
+        int month = StandardDate.DATE.getMonth().getValue();
+        LocalDate date = LocalDate.of(StandardDate.DATE.getYear(), month, dayOfMonth);
         return attendances.stream()
                 .filter(attendance -> attendance.isEqualTo(date))
                 .findFirst()
@@ -79,9 +78,8 @@ public class Crew {
     }
 
 
-    private void validateDayOfMonth(Integer dayOfMonth, LocalDate today) {
-        YearMonth yearMonth = YearMonth.of(today.getYear(), today.getMonth().getValue());
-        if (dayOfMonth < 1 || dayOfMonth > yearMonth.lengthOfMonth()) {
+    private void validateDayOfMonth(Integer dayOfMonth, Day today) {
+        if (!today.containsDayOfMonth(dayOfMonth)) {
             throw new IllegalArgumentException("[ERROR] 존재하지 않는 날짜입니다.");
         }
     }

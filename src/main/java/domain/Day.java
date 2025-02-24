@@ -1,8 +1,6 @@
 package domain;
 
-import java.time.Duration;
-import java.time.LocalDate;
-import java.time.LocalTime;
+import java.time.*;
 
 public class Day {
 
@@ -20,7 +18,7 @@ public class Day {
     }
 
     public Boolean checkHoliday() {
-        return Holiday.isHoliday(date) || getDayOfWeek().equals(AttendanceStandard.SATURDAY) || getDayOfWeek().equals(AttendanceStandard.SUNDAY);
+        return Holiday.isHoliday(date) || getDayOfWeek() == DayOfWeek.SATURDAY || getDayOfWeek() == DayOfWeek.SUNDAY;
     }
 
     public boolean isLate(LocalTime attendanceTime) {
@@ -45,15 +43,19 @@ public class Day {
         return betweenMinutes > STANDARD_ABSENT_MINUTE;
     }
 
+    public boolean containsDayOfMonth(Integer dayOfMonth) {
+        return YearMonth.from(date).isValidDay(dayOfMonth);
+    }
+
     public LocalDate getDate() {
         return date;
     }
 
     private LocalTime getStandardTime() {
-        return getDayOfWeek().getStandardTime();
+        return AttendanceStandard.getInstance(date).getStandardTime();
     }
 
-    private AttendanceStandard getDayOfWeek() {
-        return AttendanceStandard.getInstance(date);
+    public DayOfWeek getDayOfWeek() {
+        return date.getDayOfWeek();
     }
 }
