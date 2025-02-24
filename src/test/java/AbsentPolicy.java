@@ -1,7 +1,14 @@
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 
 public class AbsentPolicy {
+
+    public void validateIsWeekend(LocalDate attendanceDate) {
+        return;
+    }
+
+
     public String checkAttendanceStatus(LocalDateTime educationDateTime) {
         LocalTime educationTime = educationDateTime.toLocalTime();
 
@@ -10,4 +17,5 @@ public class AbsentPolicy {
         }
         return "출석";
     }
+
 }
