@@ -8,42 +8,49 @@ import static java.time.DayOfWeek.MONDAY;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.format.TextStyle;
 import java.util.Locale;
 
 public class AttendanceChecker {
+    private static final LocalTime CAMPUS_START_TIME = LocalTime.of(8, 0);
+    private static final LocalTime CAMPUS_END_TIME = LocalTime.of(23, 0);
+    private static final LocalTime REGULAR_START_TIME = LocalTime.of(10, 0);
+    private static final LocalTime MONDAY_START_TIME = LocalTime.of(13, 0);
+    private static final int MINUTE_TO_PRESENT = 5;
+    private static final int MINUTE_TO_LATE = 30;
+
     public static AttendanceStatus checkAttendance(LocalDateTime localDateTime) {
-        int hour = localDateTime.getHour();
-        int minute = localDateTime.getMinute();
+        final LocalTime time = localDateTime.toLocalTime() ;
 
         if (localDateTime.getDayOfWeek().equals(MONDAY)) {
-            return checkMondayAttendance(hour, minute);
+            return checkMondayAttendance(time);
         }
-        return checkRegularAttendance(hour, minute);
+        return checkRegularAttendance(time);
     }
 
-    private static AttendanceStatus checkRegularAttendance(final int hour, final int minute) {
-        if ((hour == 10 && minute <= 5) || hour < 10) {
-            return PRESENT;
+    private static AttendanceStatus checkRegularAttendance(final LocalTime localTime) {
+        if (localTime.isAfter(REGULAR_START_TIME.plusMinutes(MINUTE_TO_LATE))) {
+            return ABSENCE;
         }
-        if (hour == 10 && (minute <= 30)) {
+        if (localTime.isAfter(REGULAR_START_TIME.plusMinutes(MINUTE_TO_PRESENT))) {
             return LATENESS;
         }
-        return ABSENCE;
+        return PRESENT;
     }
 
-    private static AttendanceStatus checkMondayAttendance(final int hour, final int minute) {
-        if (hour <= 13 && minute <= 5) {
-            return PRESENT;
+    private static AttendanceStatus checkMondayAttendance(final LocalTime localTime) {
+        if (localTime.isAfter(MONDAY_START_TIME.plusMinutes(MINUTE_TO_LATE))) {
+            return ABSENCE;
         }
-        if (hour == 13 && (minute <= 30)) {
+        if (localTime.isAfter(MONDAY_START_TIME.plusMinutes(MINUTE_TO_PRESENT))) {
             return LATENESS;
         }
-        return ABSENCE;
+        return PRESENT;
     }
 
-    public static void validateCampusHour(final int hour, final int minute) {
-        if (hour < 8 || (hour >= 23 && minute > 0)) {
+    public static void validateCampusHour(final LocalTime localTime) {
+        if (localTime.isBefore(CAMPUS_START_TIME) || localTime.isAfter(CAMPUS_END_TIME)) {
             throw new IllegalArgumentException("[ERROR] 현재 캠퍼스 운영시간이 아닙니다.");
         }
     }

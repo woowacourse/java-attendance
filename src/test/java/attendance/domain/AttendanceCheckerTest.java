@@ -8,6 +8,7 @@ import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -66,7 +67,7 @@ class AttendanceCheckerTest {
     @DisplayName("캠퍼스 운영 시작 시간 전 출석 시 예외 발생")
     @Test
     void test7() {
-        assertThatThrownBy(() -> AttendanceChecker.validateCampusHour(7, 59))
+        assertThatThrownBy(() -> AttendanceChecker.validateCampusHour(LocalTime.of(7, 59)))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("[ERROR] 현재 캠퍼스 운영시간이 아닙니다.");
     }
@@ -74,13 +75,13 @@ class AttendanceCheckerTest {
     @DisplayName("캠퍼스 운영 시작 시간 이후 출석 시 통과")
     @Test
     void test8() {
-        assertThatCode(() -> AttendanceChecker.validateCampusHour(8, 0)).doesNotThrowAnyException();
+        assertThatCode(() -> AttendanceChecker.validateCampusHour(LocalTime.of(8,0))).doesNotThrowAnyException();
     }
 
     @DisplayName("캠퍼스 운영 종료 시간 이후 출석 시 예외 발생")
     @Test
     void test9() {
-        assertThatThrownBy(() -> AttendanceChecker.validateCampusHour(23, 1))
+        assertThatThrownBy(() -> AttendanceChecker.validateCampusHour(LocalTime.of(23, 1)))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("[ERROR] 현재 캠퍼스 운영시간이 아닙니다.");
     }
@@ -88,7 +89,7 @@ class AttendanceCheckerTest {
     @DisplayName("캠퍼스 운영 종료 시간 이전 출석 시 통과")
     @Test
     void test10() {
-        assertThatCode(() -> AttendanceChecker.validateCampusHour(23, 0)).doesNotThrowAnyException();
+        assertThatCode(() -> AttendanceChecker.validateCampusHour(LocalTime.of(23, 0))).doesNotThrowAnyException();
     }
 
     @DisplayName("공휴일 출석 실패")
