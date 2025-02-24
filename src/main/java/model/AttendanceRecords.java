@@ -5,13 +5,15 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Map.Entry;
 
 public class AttendanceRecords {
-    private Map<LocalDate, AttendanceRecord> record = new HashMap<>();
+    private final Map<LocalDate, AttendanceRecord> record;
+
+    public AttendanceRecords(Map<LocalDate, AttendanceRecord> record) {
+        this.record = record;
+    }
 
     public void updateAttendanceStatusByLocalDate(LocalDateTime updateLocalDateTime) {
-        //updateLocalDateTime을 통해서 만약 기존 정보에 LocalDate에 관한 정보가 있다면 업데이트하고 없다면 결석처리
         checkHoliday(updateLocalDateTime);
         checkOpeningHours(updateLocalDateTime);
         AttendanceStatus newAttendanceStatus = AttendanceRuleByDay
@@ -36,13 +38,22 @@ public class AttendanceRecords {
         record.put(localDate, attendanceRecord);
     }
 
-    public AttendanceStatus findAttendanceStatusFromRecordsByLocalDate(LocalDate localDate){
-        return record.entrySet().stream()
-                .filter(e -> e.getKey().equals(localDate))
-                .map(Entry::getValue)
-                .findFirst()
-                .orElseThrow()
-                .getAttendanceStatus();
+    public int findTotalAttendanceCount(){
+        return (int) record.entrySet().stream()
+                .filter(e-> e.getValue().getAttendanceStatus().equals(AttendanceStatus.ATTENDANCE))
+                .count();
+    }
+
+    public int findTotalLateCount(){
+        return (int) record.entrySet().stream()
+                .filter(e-> e.getValue().getAttendanceStatus().equals(AttendanceStatus.LATE))
+                .count();
+    }
+
+    public int findTotalAbsentCount(){
+        return (int) record.entrySet().stream()
+                .filter(e-> e.getValue().getAttendanceStatus().equals(AttendanceStatus.ABSENT))
+                .count();
     }
 
     private void modifyAttendanceRecord(LocalDateTime updateLocalDateTime, LocalDate recordLocalDate,
@@ -56,7 +67,7 @@ public class AttendanceRecords {
         record.put(LocalDate.from(today), new AttendanceRecord(LocalTime.from(today), attendanceStatus));
     }
 
-    public void updateStateNotExistInFile(LocalDateTime today) {
+    public void updateStateNotExistInFile(LocalDate today) {
         LocalDateTime standard = LocalDateTime.of(2024,12,1,0,0);
         Map<LocalDate, AttendanceRecord> recordClone = makeRecordClone();
         while (!compareDayIsSame(standard,LocalDate.from(today))) {
@@ -79,6 +90,28 @@ public class AttendanceRecords {
             throw new IllegalArgumentException("[주말 및 공휴일에는 등교일이 아닙니다]");
         };
     }
+
+    public LocalDateTime findLocalDateTime(LocalDateTime localDateTime) {
+        return record.entrySet().stream()
+                .filter(e -> compareDayIsSame(localDateTime, e.getKey()))
+                .map(e-> LocalDateTime.of(e.getKey(), e.getValue().getAttendanceTime()))
+                .findFirst()
+                .orElse(null);
+//        for (LocalDate localDate : record.keySet()) {
+//            if (compareDayIsSame(localDateTime, localDate)) {
+//                LocalTime localTime = record.get(localDate).getAttendanceTime();
+//                return LocalDateTime.of(localDate, localTime);
+//            }
+//        }
+//        return null;
+    }
+    public AttendanceStatus findAttendanceStatusByLocalDateTime(LocalDateTime localDateTime){
+        return record.entrySet().stream()
+                .filter(e -> compareDayIsSame(localDateTime, e.getKey()))
+                .map(e -> e.getValue().getAttendanceStatus())
+                .findFirst().orElse(null);
+    }
+
 
     private void checkOpeningHours(LocalDateTime localDateTime){
         LocalTime localTime = LocalTime.from(localDateTime);
