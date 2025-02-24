@@ -1,7 +1,6 @@
 package attendance.domain;
 
 import attendance.dto.*;
-import attendance.view.FileLineReader;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -15,33 +14,21 @@ import java.util.Map;
 public class CrewAttendances {
 
     private static final DateTimeFormatter FILE_DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
-    public static final String attendanceFilePath = "src/main/resources/";
-    public static final String attendanceFileName = "attendances.csv";
     public static final String attendanceFileDelimiter = ",";
     private final Map<Crew, Attendances> crewAttendances;
 
     public CrewAttendances() {
         crewAttendances = new HashMap<>();
-        initializeCrewAttendances();
     }
 
-    private void initializeCrewAttendances() {
-        List<String> firstSkippedLines = readAttendanceFileLinesWithoutFirstLine();
-        Map<Crew, List<LocalDateTime>> crewAttendanceDateTimes = createAttendanceDateTimes(firstSkippedLines);
+    public void initializeCrewAttendances(List<String> previousAttendanceLines) {
+        Map<Crew, List<LocalDateTime>> crewAttendanceDateTimes = createAttendanceDateTimes(previousAttendanceLines);
         createCrewAttendances(crewAttendanceDateTimes);
     }
 
-    private List<String> readAttendanceFileLinesWithoutFirstLine() {
-        FileLineReader fileLineReader = new FileLineReader();
-        List<String> lines = fileLineReader.readAllLines(attendanceFilePath, attendanceFileName);
-        return lines.stream()
-                .skip(1L)
-                .toList();
-    }
-
-    private Map<Crew, List<LocalDateTime>> createAttendanceDateTimes(final List<String> firstSkippedLines) {
+    private Map<Crew, List<LocalDateTime>> createAttendanceDateTimes(final List<String> previousAttendanceLines) {
         Map<Crew, List<LocalDateTime>> crewAttendanceDateTimes = new HashMap<>();
-        for (String line : firstSkippedLines) {
+        for (String line : previousAttendanceLines) {
             String[] tokens = line.split(attendanceFileDelimiter);
             Crew crew = new Crew(tokens[0]);
             LocalDateTime attendanceDateTime = LocalDateTime.parse(tokens[1], FILE_DATE_TIME_FORMATTER);
@@ -110,14 +97,15 @@ public class CrewAttendances {
             Attendances attendances = entry.getValue();
             Map<String, Integer> attendanceStatusCounts = attendances.calculateStatusCount();
             ExpulsionStatus expulsionStatus = attendances.calculateExpulsionStatus();
-            AttendanceHistoryDto attendanceHistoryDto = new AttendanceHistoryDto(attendanceStatusCounts.get(AttendanceStatus.ABSENT.getText()),
+            AttendanceHistoryDto attendanceHistoryDto = new AttendanceHistoryDto(
+                    attendanceStatusCounts.get(AttendanceStatus.ABSENT.getText()),
                     attendanceStatusCounts.get(AttendanceStatus.LATE.getText()), expulsionStatus.getText());
             attendanceHistories.put(entry.getKey().getNickname(), attendanceHistoryDto);
         }
         return attendanceHistories;
     }
 
-    public Crew createRegisteredCrew(final String nickname) {
+    public Crew findRegisteredCrew(final String nickname) {
         Crew crew = new Crew(nickname);
         if (!crewAttendances.containsKey(crew)) {
             throw new IllegalArgumentException("등록되지 않은 닉네임입니다.");

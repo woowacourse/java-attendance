@@ -1,17 +1,19 @@
 package attendance.controller;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.*;
 
 import attendance.domain.*;
 import attendance.dto.*;
+import attendance.view.FileLineReader;
 import attendance.view.InputView;
 import attendance.view.OutputView;
 
 public class AttendanceController {
 
+    private static final String attendanceFilePath = "src/main/resources/";
+    private static final String attendanceFileName = "attendances.csv";
     private final InputView inputView;
     private final OutputView outputView;
     private final CrewAttendances crewAttendances;
@@ -29,9 +31,19 @@ public class AttendanceController {
     }
 
     public void run() {
+        List<String> firstSkippedLines = readAttendanceFileLinesWithoutFirstLine();
+        crewAttendances.initializeCrewAttendances(firstSkippedLines);
         while(true) {
             branchByOperationCommand();
         }
+    }
+
+    private List<String> readAttendanceFileLinesWithoutFirstLine() {
+        FileLineReader fileLineReader = new FileLineReader();
+        List<String> lines = fileLineReader.readAllLines(attendanceFilePath, attendanceFileName);
+        return lines.stream()
+                .skip(1L)
+                .toList();
     }
 
     private void branchByOperationCommand() {
@@ -45,7 +57,7 @@ public class AttendanceController {
     }
 
     private void confirmAttendance() {
-        Crew crew = crewAttendances.createRegisteredCrew(inputView.readCrewNickname());
+        Crew crew = crewAttendances.findRegisteredCrew(inputView.readCrewNickname());
         LocalTime attendanceTime = inputView.readAttendanceTime();
         try {
             ConfirmAttendanceDto confirmAttendanceDto = crewAttendances.saveTodayAttendance(crew, attendanceTime);
@@ -58,7 +70,7 @@ public class AttendanceController {
     }
 
     private void modifyAttendance() {
-        Crew crew = crewAttendances.createRegisteredCrew(inputView.readModificationCrewNickname());
+        Crew crew = crewAttendances.findRegisteredCrew(inputView.readModificationCrewNickname());
         LocalDate modificationDate = inputView.readModificationDay(LocalDate.now());
         LocalTime modificationTime = inputView.readModificationTime();
         ChangeAttendanceDto changeAttendanceDto = crewAttendances.changeAttendanceTime(crew, modificationDate, modificationTime);
@@ -71,7 +83,7 @@ public class AttendanceController {
     }
 
     private void checkCrewAttendances() {
-        Crew crew = crewAttendances.createRegisteredCrew(inputView.readCrewNickname());
+        Crew crew = crewAttendances.findRegisteredCrew(inputView.readCrewNickname());
         CheckCrewAttendanceRecordsDto checkCrewAttendanceRecordsDto =
                 crewAttendances.checkCrewAttendanceRecords(crew);
         outputView.printAttendances(crew, checkCrewAttendanceRecordsDto.attendanceDateTimes(),
