@@ -35,14 +35,14 @@ public class Crews {
     public TimeAndStatus attendCrew(String name, LocalDateTime localDateTime) {
         validateAttendancePossibility(name, localDateTime);
 
-        Crew crew = findByName(name);
+        Crew crew = findCrewByName(name);
         return crew.attend(localDateTime);
     }
 
     public TimeAndStatus editCrew(String name, LocalDateTime newLocalDateTime) {
         validateEditPossibility(name, newLocalDateTime);
 
-        Crew crew = findByName(name);
+        Crew crew = findCrewByName(name);
         return crew.edit(newLocalDateTime);
     }
 
@@ -58,7 +58,7 @@ public class Crews {
                 -> map.put(entry.getKey(), entry.getValue()), Map::putAll);
     }
 
-    public Crew findByName(String name) {
+    public Crew findCrewByName(String name) {
         try {
             return crews.get(name);
         } catch (NullPointerException e) {
@@ -67,7 +67,7 @@ public class Crews {
     }
 
     private void validateAttendancePossibility(String name, LocalDateTime dateTime) {
-        if (findByName(name).isAlreadyAttended(dateTime.toLocalDate())) {
+        if (findCrewByName(name).isAlreadyAttended(dateTime.toLocalDate())) {
             throw new IllegalArgumentException(DUPLICATE_ATTEND_ERROR_MESSAGE);
         }
         if (!isOperatingTime(dateTime.toLocalTime())) {
@@ -76,7 +76,7 @@ public class Crews {
     }
 
     private void validateEditPossibility(String name, LocalDateTime newDateTime) {
-        if (!findByName(name).isAlreadyAttended(newDateTime.toLocalDate())) {
+        if (!findCrewByName(name).isAlreadyAttended(newDateTime.toLocalDate())) {
             throw new IllegalArgumentException(NOT_ATTEND_ERROR_MESSAGE);
         }
         if (!isOperatingTime(newDateTime.toLocalTime())) {

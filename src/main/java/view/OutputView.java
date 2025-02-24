@@ -59,7 +59,7 @@ public class OutputView {
     }
 
     private void printCrewAttendance(LocalDate date, Crew crew) {
-        TimeAndStatus status = crew.findByDate(date);
+        TimeAndStatus status = crew.findTimeByDate(date);
         if (status == null || status.getStatus() == null) {
             System.out.printf(ATTENDANCE_RECORD_FORMAT
                 , dateFormatting(date)

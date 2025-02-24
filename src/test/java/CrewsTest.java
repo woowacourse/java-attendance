@@ -28,7 +28,7 @@ public class CrewsTest {
         crews.createCrew(name, List.of(initialDateAndTime));
         crews.attendCrew(name, attendDateAndTime);
 
-        assertThat(crews.findByName(name).getAttendanceCount()).isEqualTo(2);
+        assertThat(crews.findCrewByName(name).getAttendanceCount()).isEqualTo(2);
     }
 
     @Test
@@ -41,8 +41,8 @@ public class CrewsTest {
         crews.createCrew(name, List.of());
         TimeAndStatus timeStatus = crews.attendCrew(name, dateAndTime);
 
-        Crew crew = crews.findByName(name);
-        TimeAndStatus expectedTimeStatus = crew.findByDate(localDate);
+        Crew crew = crews.findCrewByName(name);
+        TimeAndStatus expectedTimeStatus = crew.findTimeByDate(localDate);
 
         assertThat(expectedTimeStatus).isEqualTo(timeStatus);
     }
@@ -92,8 +92,8 @@ public class CrewsTest {
     }
 
     private TimeAndStatus findTimeAndStatus(String name, LocalDate localDate) {
-        Crew crew = crews.findByName(name);
-        return crew.findByDate(localDate);
+        Crew crew = crews.findCrewByName(name);
+        return crew.findTimeByDate(localDate);
     }
 
     @DisplayName("제적 위험자를 기준에 맞게 정렬한다.")

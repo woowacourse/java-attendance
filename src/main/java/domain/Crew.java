@@ -16,7 +16,7 @@ public class Crew {
         this.records = initializeRecords(localDateTimes);
     }
 
-    public TimeAndStatus findByDate(LocalDate localDate) {
+    public TimeAndStatus findTimeByDate(LocalDate localDate) {
         if(records.containsKey(localDate)) {
             return records.get(localDate);
         }

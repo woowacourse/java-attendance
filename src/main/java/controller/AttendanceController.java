@@ -66,7 +66,7 @@ public class AttendanceController {
             LocalDateTime dateTime = LocalDateTime.of(today, attendedTime);
 
             crews.attendCrew(name, dateTime);
-            TimeAndStatus timeAndStatus = crews.findByName(name).findByDate(today);
+            TimeAndStatus timeAndStatus = crews.findCrewByName(name).findTimeByDate(today);
             outputView.printAttendanceRecord(today, timeAndStatus);
         });
     }
@@ -89,7 +89,7 @@ public class AttendanceController {
             LocalDateTime dateTime = LocalDateTime.of(editedDate, attendedTime);
 
             TimeAndStatus oldStatus = crews.editCrew(name, dateTime);
-            TimeAndStatus newStatus = crews.findByName(name).findByDate(editedDate);
+            TimeAndStatus newStatus = crews.findCrewByName(name).findTimeByDate(editedDate);
             outputView.printEditResult(editedDate, oldStatus, newStatus);
         });
     }
@@ -100,7 +100,7 @@ public class AttendanceController {
             InputValidator.checkNull(name);
 
             LocalDate currentDate = DateTimeParser.parseIntegerToDate(NOW_YEAR, NOW_MONTH, NOW_DAY);
-            Crew crew = crews.findByName(name);
+            Crew crew = crews.findCrewByName(name);
 
             StatisticsResult statistics = AttendanceStatistics.countStatus(currentDate, crew);
             int attendanceCount = statistics.getCount(ATTENDANCE);

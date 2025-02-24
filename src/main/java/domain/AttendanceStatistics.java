@@ -22,7 +22,7 @@ public class AttendanceStatistics {
         Map<AttendanceStatus, Long> statusCounts = startDate.datesUntil(nowDate)
             .filter(date -> !Holiday.isHoliday(date) && !Holiday.isWeekend(date))
             .map(date -> {
-                TimeAndStatus status = crew.findByDate(date);
+                TimeAndStatus status = crew.findTimeByDate(date);
                 if (status == null) {
                     return ABSENCE;
                 }

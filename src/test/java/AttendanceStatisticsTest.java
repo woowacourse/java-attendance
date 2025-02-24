@@ -29,7 +29,7 @@ public class AttendanceStatisticsTest {
 
         String name = "빙티"; // 경고 대상자
         crews.createCrew(name, records);
-        Crew crew = crews.findByName(name);
+        Crew crew = crews.findCrewByName(name);
 
         LocalDate nowDate = LocalDate.of(2024, 12, 7);
         StatisticsResult statisticsResult = AttendanceStatistics.countStatus(nowDate, crew);
@@ -54,7 +54,7 @@ public class AttendanceStatisticsTest {
 
         String name = "빙티"; // 경고 대상자
         crews.createCrew(name, records);
-        Crew crew = crews.findByName(name);
+        Crew crew = crews.findCrewByName(name);
 
         LocalDate nowDate = LocalDate.of(2024, 12, 7);
         StatisticsResult statisticsResult = AttendanceStatistics.countStatus(nowDate, crew);
@@ -75,7 +75,7 @@ public class AttendanceStatisticsTest {
 
         String name = "빙티";
         crews.createCrew(name, counselingRecords);
-        Crew crew = crews.findByName(name);
+        Crew crew = crews.findCrewByName(name);
 
         LocalDate nowDate = LocalDate.of(2024, 12, 10);
         StatisticsResult statisticsResult = AttendanceStatistics.countStatus(nowDate, crew);
@@ -99,7 +99,7 @@ public class AttendanceStatisticsTest {
 
         String name = "빙티";
         crews.createCrew(name, expelledRecords);
-        Crew crew = crews.findByName(name);
+        Crew crew = crews.findCrewByName(name);
 
         LocalDate nowDate = LocalDate.of(2024, 12, 13);
         StatisticsResult statisticsResult = AttendanceStatistics.countStatus(nowDate, crew);
