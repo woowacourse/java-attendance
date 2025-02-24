@@ -12,21 +12,20 @@ import dto.HistoryDto;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
-import util.Convertor;
 
 public class OutputVIew {
 
     private static final String LINE_SEPARATOR = System.lineSeparator();
 
     public void printAttendanceConfirmation(LocalDateTime attendanceTime, String attendanceResult) {
-        String time = Convertor.dateFormattingForOutput(attendanceTime);
+        String time = DateTimeViewConverter.dateFormattingForOutput(attendanceTime);
         System.out.printf("%s (%s)\n", time, attendanceResult);
     }
 
     public void printEditAttendance(LocalDateTime before, String beforeResult, LocalDateTime edit,
                                     String editResult) {
-        String beforeTime = Convertor.dateFormattingForOutput(before);
-        String editTime = Convertor.timeFormattingForOutput(edit);
+        String beforeTime = DateTimeViewConverter.dateFormattingForOutput(before);
+        String editTime = DateTimeViewConverter.timeFormattingForOutput(edit);
         System.out.printf("%s (%s) -> %s (%s) 수정 완료!\n", beforeTime, beforeResult, editTime, editResult);
     }
 
@@ -52,7 +51,7 @@ public class OutputVIew {
     private void printAttendanceHistory(HistoriesDto historiesDto) {
         System.out.printf("이번 달 %s의 출석 기록입니다.\n", historiesDto.username());
         for (HistoryDto history : historiesDto.histories()) {
-            String time = Convertor.dateFormattingForOutput(history.time());
+            String time = DateTimeViewConverter.dateFormattingForOutput(history.time());
             System.out.printf("%s (%s)\n", time, history.attendanceResult());
         }
     }

@@ -27,18 +27,6 @@ public class AttendanceHistory implements Comparable<AttendanceHistory> {
         return this.attendanceTime.compareTo(o.attendanceTime);
     }
 
-    public LocalDateTime getAttendanceTime() {
-        return attendanceTime;
-    }
-
-    public String getAttendanceResult() {
-        return attendanceResult.getResult();
-    }
-
-    private AttendanceResult getAttendanceResult(LocalDateTime attendanceTime) {
-        return AttendanceResult.findAttendanceResult(attendanceTime);
-    }
-
     private void validateHistory(LocalDateTime attendanceTime) {
         Holiday.validate(attendanceTime);
         validateOpeningHours(attendanceTime);
@@ -53,5 +41,17 @@ public class AttendanceHistory implements Comparable<AttendanceHistory> {
         )) {
             throw new IllegalArgumentException("[ERROR] 캠퍼스 운영 시간은 08:00~23:00 입니다. 해당 시간 내의 시간을 입력해 주세요.");
         }
+    }
+
+    public LocalDateTime getAttendanceTime() {
+        return attendanceTime;
+    }
+
+    public String getAttendanceResult() {
+        return attendanceResult.getResult();
+    }
+
+    private AttendanceResult getAttendanceResult(LocalDateTime attendanceTime) {
+        return AttendanceResult.findAttendanceResult(attendanceTime);
     }
 }

@@ -1,6 +1,6 @@
 package controller;
 
-import static util.Convertor.changeStandardDate;
+import static view.DateTimeViewConverter.changeStandardDate;
 
 import domain.AbsenceLevel;
 import domain.AttendanceHistory;
