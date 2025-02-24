@@ -3,10 +3,10 @@ package domain;
 import java.util.Arrays;
 
 public enum DisciplinaryStatus {
-    NONE("해당 사항 없음", 2),
-    WARNING("경고", 3),
-    ONE_ON_ONE("면담", 6),
-    EXPELLED("제적", 31);
+    EXPELLED("제적", 6),
+    ONE_ON_ONE("면담", 3),
+    WARNING("경고", 2),
+    NONE("해당 사항 없음", 1);
 
     private final String name;
     private final int thresholdCount;
@@ -19,7 +19,7 @@ public enum DisciplinaryStatus {
     public static DisciplinaryStatus getStatus(int absentCount, int tardyCount) {
         final int convertedAbsences = convertTardyToAbsent(absentCount, tardyCount);
         return Arrays.stream(DisciplinaryStatus.values())
-                .filter(status -> convertedAbsences < status.thresholdCount)
+                .filter(status -> convertedAbsences >= status.thresholdCount)
                 .findFirst()
                 .orElse(NONE);
     }
