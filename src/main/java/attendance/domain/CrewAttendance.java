@@ -67,21 +67,21 @@ public class CrewAttendance {
     }
 
     public Map<LocalDate, AttendanceTimeStatus> queryAttendancesBefore(LocalDate localDate) {
-        updateAttendanceBefore(localDate.getDayOfMonth());
+        updateAttendanceBefore(localDate);
         return attendances.entrySet().stream()
                 .filter(entry -> entry.getKey().isBefore(localDate))
                 .collect(Collectors.toUnmodifiableMap(Entry::getKey, Entry::getValue));
     }
 
-    private void updateAttendanceBefore(int today) {
-        for (int day = 1; day < today; day++) {
+    private void updateAttendanceBefore(LocalDate endDay) {
+        for (int day = 1; day < endDay.getDayOfMonth(); day++) {
             LocalDate date = LocalDate.of(2024, 12, day);
             addAbsenceIfEmptyOn(date);
         }
     }
 
     private void addAbsenceIfEmptyOn(final LocalDate date) {
-        if (AttendanceChecker.isCampusDay(date.getDayOfMonth()) && isEmptyOn(date)) {
+        if (AttendanceChecker.isCampusDay(date) && isEmptyOn(date)) {
             attendances.put(date, new AttendanceTimeStatus());
         }
     }
