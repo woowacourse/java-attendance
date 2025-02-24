@@ -32,12 +32,11 @@ public class OptionCheckAttendance extends MenuOption {
         Crew crew = findCrewByCrewName();
         attendances.hasCheckedAttendance(crew, LOCAL_DATE_TODAY);
         LocalDateTime localDateTime = validatePresentTime();
-
         AttendanceType status = AttendanceType.of(localDateTime);
         Attendance todayAttendance = new Attendance(crew, localDateTime, status);
         attendances.add(todayAttendance);
-
-        outputView.printTodayAttendance(todayAttendance.getInfo());
+        InfoCheckAttendance checkAttendanceInfo = new InfoCheckAttendance(todayAttendance.getInfo());
+        outputView.printTodayAttendance(checkAttendanceInfo);
     }
 
     private void validateWeekend() {
