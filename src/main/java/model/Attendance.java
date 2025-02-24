@@ -17,22 +17,15 @@ public class Attendance {
         this.attendanceType = attendanceType;
     }
 
-    private Attendance(Crew crew, LocalDate date) {
-        this.crew = crew;
-        this.checkInTime = LocalDateTime.of(date, LocalTime.of(0, 0));
-        this.attendanceType = AttendanceType.ABSENCE;
-    }
-
     public static Attendance of(Crew crew, LocalDateTime checkInTime) {
         validateHolidayAndWeekend(checkInTime.toLocalDate());
         validateOperationTime(checkInTime);
-
         return new Attendance(crew, checkInTime, AttendanceType.calculateType(checkInTime));
     }
 
     public static Attendance createTimeNullAbsence(Crew crew, LocalDate date) {
         validateHolidayAndWeekend(date);
-        return new Attendance(crew, date);
+        return new Attendance(crew, LocalDateTime.of(date, LocalTime.of(0, 0)), AttendanceType.ABSENCE);
     }
 
     public boolean isSameDateAndCrew(Attendance attendance) {
