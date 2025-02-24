@@ -17,11 +17,11 @@ public class PenaltyCrew implements Comparable<PenaltyCrew> {
         this.lateCount = lateCount;
         this.absenceCount = absenceCount;
         this.name = name;
-        this.weightedLateAbsencePoint = calculateTotalCount(absenceCount, lateCount);
+        this.weightedLateAbsencePoint = calculateWeightedLateAbsencePoint(absenceCount, lateCount);
         this.attendanceStatus = AttendancePenalty.find(absenceCount, lateCount);
     }
 
-    private static int calculateTotalCount(int absenceCount, int lateCount) {
+    private static int calculateWeightedLateAbsencePoint(int absenceCount, int lateCount) {
         return absenceCount * Constants.LATE_TO_ABSENCE_RATIO + lateCount;
     }
 
