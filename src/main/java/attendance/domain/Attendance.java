@@ -48,7 +48,6 @@ public class Attendance {
         return attendanceTime.date().isEqual(currentAttendance.attendanceTime.date());
     }
 
-
     public boolean isSameByNameAndLocalDate(final String name, int year, int month, int day) {
 
         return crewName.equals(name) && day == attendanceTime.getDay() && year == attendanceTime.getYear()

@@ -31,8 +31,8 @@ public record AttendanceTime(LocalDate date, String hour, String minute, boolean
 
         int parsingHour = Parser.parseInt(hour);
         int parsingMinute = Parser.parseInt(minute);
-        if (parsingHour >= HOUR_MAX || parsingHour < HOUR_MIN || parsingMinute >= MINUTE_MAX
-                || parsingMinute < MINUTE_MIN) {
+        if (parsingHour >= HOUR_MAX || parsingHour < HOUR_MIN
+                || parsingMinute >= MINUTE_MAX || parsingMinute < MINUTE_MIN) {
             throw new IllegalArgumentException("[ERROR] 올바른 시간을 입력해주세요.");
         }
     }
