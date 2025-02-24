@@ -107,14 +107,18 @@ public class AttendanceController {
         LocalDate findLocalDate = LocalDate.of(LocalDate.now().getYear(),
                 LocalDateTime.now().getMonthValue(), attendanceDay);
 
-        // beforeDate
+        editCrewLocalDate(crew,findLocalDate,textAttendanceTime);
+    }
+
+    private void editCrewLocalDate(Crew crew,
+                                   LocalDate findLocalDate,
+                                   String textAttendanceTime){
         Attendance attendance = crew.getAttendance();
         AttendanceDate attendanceDate = attendance.findAttendanceDate(findLocalDate);
         String beforeEditDate = DateTimeUtil.convertLocalDateTimeToString(
                 attendanceDate.checkAttendanceTime());
         AttendanceState beforeState = attendanceDate.calculateAttendanceState();
 
-        // afterDate
         LocalDateTime afterEditDateTime = DateTimeUtil.convertStringToLocalDateTime(findLocalDate,
                 textAttendanceTime);
         String afterEditTime = DateTimeUtil.convertLocalDateTimeToTimeString(afterEditDateTime);
