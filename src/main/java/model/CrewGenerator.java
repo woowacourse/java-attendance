@@ -13,13 +13,13 @@ public class CrewGenerator {
         return crewNames;
     }
 
-    public static List<Crew> registerCrew(List<String> crewNames) {
-        return crewNames.stream()
-                .map(Crew::new)
-                .toList();
-    }
-
-    public static Crews wrapCrews(List<Crew> crewsInput) {
-        return new Crews(crewsInput);
-    }
+//    public static List<Crew> registerCrew(List<String> crewNames) {
+//        return crewNames.stream()
+//                .map(Crew::new)
+//                .toList();
+//    }
+//
+//    public static Crews wrapCrews(List<Crew> crewsInput) {
+//        return new Crews(crewsInput);
+//    }
 }

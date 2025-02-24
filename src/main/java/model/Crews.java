@@ -7,6 +7,13 @@ import java.util.Optional;
 public class Crews {
     private final List<Crew> crews;
 
+    public static Crews of(List<String> crewNames) {
+        List<Crew> crews = crewNames.stream()
+                .map(Crew::new)
+                .toList();
+        return new Crews(crews);
+    }
+
     public Crews(List<Crew> crews) {
         this.crews = crews;
     }
