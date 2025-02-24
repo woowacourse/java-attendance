@@ -61,9 +61,9 @@ public class AttendanceController {
         validateCampusTime(request.time());
         Crew crew = crewRepository.get(request.nickname());
         validateAttendanceTime(crew, request.date());
-        ModifiedResponseDto.InnerStatus before = generateInnerStatus(crew, request);
+        ModifiedResponseDto.InnerModifiedDetail before = generateInnerStatus(crew, request);
         crew.modifyAttendance(request.date(), request.time());
-        ModifiedResponseDto.InnerStatus after = generateInnerStatus(crew, request);
+        ModifiedResponseDto.InnerModifiedDetail after = generateInnerStatus(crew, request);
         OutputView.printModifiedResult(new ModifiedResponseDto(request.date(), before, after));
     }
 
@@ -73,8 +73,8 @@ public class AttendanceController {
         }
     }
 
-    private ModifiedResponseDto.InnerStatus generateInnerStatus(Crew crew, AttendanceModifyRequestDto request) {
-        return new ModifiedResponseDto.InnerStatus(
+    private ModifiedResponseDto.InnerModifiedDetail generateInnerStatus(Crew crew, AttendanceModifyRequestDto request) {
+        return new ModifiedResponseDto.InnerModifiedDetail(
             crew.getAttendanceTimeByDate(request.date()),
             crew.getAttendanceStatusByDate(request.date()));
     }
