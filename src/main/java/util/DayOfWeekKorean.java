@@ -5,9 +5,12 @@ import java.util.Collections;
 import java.util.EnumMap;
 import java.util.Map;
 
-public class DayOfWeekKorean {
+public final class DayOfWeekKorean {
 
     private static final Map<DayOfWeek, String> KOREAN_DAY_NAMES;
+
+    private DayOfWeekKorean() {
+    }
 
     static {
         final Map<DayOfWeek, String> map = new EnumMap<>(DayOfWeek.class);

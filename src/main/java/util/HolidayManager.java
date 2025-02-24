@@ -3,9 +3,12 @@ package util;
 import java.util.HashSet;
 import java.util.Set;
 
-public class HolidayManager {
+public final class HolidayManager {
 
     private static final Set<Integer> HOLIDAYS = new HashSet<>();
+
+    private HolidayManager() {
+    }
 
     static {
         HOLIDAYS.add(25);
