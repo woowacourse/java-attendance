@@ -85,7 +85,7 @@ public class AttendanceModifierTest {
     }
 
     // 해당 테스트는 attendance에 의해 출석 상태가 결정되기에, modifier의 핵심 기능과는 다소 거리가 있다.
-    // 때문에, 기존의 단위 테스트와 다른 면이 있어, 테스트 케이스를 크게 세분화하진 않겠다.
+    // 때문에, 기존의 단위 테스트와 다른 면이 있어,성공 테스트 케이스에 대해선 크게 세분화하진 않겠다.
     @ParameterizedTest
     @DisplayName("출석이 수정될 경우, 출석 상태도 수정한다")
     @CsvSource({
@@ -119,39 +119,40 @@ public class AttendanceModifierTest {
     void error_outOfRangeOnCampusSchedule() {
         var nickname = "이든";
         var date = LocalDate.of(2024, 12, 2);
-        var time = LocalTime.of(13, 2);
-
-        var attendance = new Attendance(LocalDateTime.of(date, time));
-
-        assertThat(attendanceBook.findAttendance(nickname, attendance).attendanceStatus())
-            .isEqualTo(AttendanceStatus.ATTENDANCE);
-
         var modifiedTime = LocalTime.of(7, 2);
-        var modifiedAttendance = new Attendance(LocalDateTime.of(date, modifiedTime));
-        attendanceModifier.manage(nickname, date, modifiedTime);
 
-        assertThatThrownBy(() -> attendanceBook.findAttendance(nickname, attendance))
+        assertThatThrownBy(() -> attendanceModifier.manage(nickname, date, modifiedTime))
             .isInstanceOf(AttendanceArgumentException.class)
-            .hasMessageContaining("출석 정보를 찾을 수 없습니다.");
-        assertThat(attendanceBook.findAttendance(nickname, modifiedAttendance).attendanceStatus())
-            .isEqualTo(AttendanceStatus.ABSENCE);
+            .hasMessageContaining("등교시간에만 출석 가능합니다.");
     }
 
     @Test
     @DisplayName("수정 날짜가 주말일 경우, 예외를 발생한다.")
     void error_modifyOnWeekend() {
+        var nickname = "이든";
+        var date = LocalDate.of(2024, 12, 14);
+        var modifiedTime = LocalTime.of(10, 2);
 
-    }
-
-    @Test
-    @DisplayName("미래 날짜에 대해 수정할 경우, 예외가 발생한다.")
-    void error_modifyFutureAttendance() {
-
+        assertThatThrownBy(() -> attendanceModifier.manage(nickname, date, modifiedTime))
+            .isInstanceOf(AttendanceArgumentException.class)
+            .hasMessageContaining("12월 14일 토요일은 등교일이 아닙니다.");
     }
 
     @Test
     @DisplayName("수정하는 날짜가 공휴일인 경우, 예외를 발생한다.")
     void error_modifyOnHoliday() {
+        var nickname = "이든";
+        var date = LocalDate.of(2024, 12, 25);
+        var modifiedTime = LocalTime.of(10, 2);
+
+        assertThatThrownBy(() -> attendanceModifier.manage(nickname, date, modifiedTime))
+            .isInstanceOf(AttendanceArgumentException.class)
+            .hasMessageContaining("12월 25일 수요일은 등교일이 아닙니다.");
+    }
+
+    @Test
+    @DisplayName("미래 날짜에 대해 수정할 경우, 예외가 발생한다.")
+    void error_modifyFutureAttendance() {
 
     }
 }
