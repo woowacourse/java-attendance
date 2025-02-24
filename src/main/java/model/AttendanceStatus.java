@@ -5,10 +5,16 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 
 public enum AttendanceStatus {
-    NORMAL,
-    LATE,
-    ABSENCE
+    NORMAL("출석"),
+    LATE("지각"),
+    ABSENCE("결석")
     ;
+
+    private final String meaning;
+
+    AttendanceStatus(String meaning) {
+        this.meaning = meaning;
+    }
 
     public static AttendanceStatus findByAttendanceTime(LocalDate date, LocalTime time) {
         int startTime = 10;
@@ -22,5 +28,9 @@ public enum AttendanceStatus {
             return LATE;
         }
         return ABSENCE;
+    }
+
+    public String getMeaning() {
+        return meaning;
     }
 }

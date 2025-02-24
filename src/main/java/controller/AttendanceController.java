@@ -3,9 +3,12 @@ package controller;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import model.Attendance;
 import model.AttendanceInitializer;
 import model.Attendances;
 import model.Crew;
@@ -30,7 +33,7 @@ public class AttendanceController {
 
         String functionChoice = inputView.readFunctionChoice();
         if (functionChoice.equals("1")) {
-            doCheckService(attendances);
+            doRegisterService(attendances, crews);
         }
     }
 
@@ -49,8 +52,14 @@ public class AttendanceController {
         }
     }
 
-    private void doCheckService(Map<Crew, Attendances> attendances) {
-//        String name = inputView.readCrewName();
-//        Crew crew = crews.of()
+    private void doRegisterService(Map<Crew, Attendances> attendances, Crews crews) {
+        String name = inputView.readCrewName();
+        Crew crew = crews.findCrewByName(name).orElseThrow(IllegalArgumentException::new);
+
+        LocalDate date = LocalDate.of(2024, 12, 13); //TODO : 오늘
+        LocalTime time = inputView.readAttendanceTime();
+        Attendances crewAttendances = attendances.get(crew);
+        Attendance newAttendance = crewAttendances.update(date, time);
+        outputView.printAttendanceRegisterResult(newAttendance);
     }
 }

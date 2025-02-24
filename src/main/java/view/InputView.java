@@ -1,21 +1,15 @@
 package view;
 
-import java.time.LocalDate;
-import java.time.format.TextStyle;
-import java.util.Locale;
+import common.Common;
+import java.time.LocalTime;
 import java.util.Scanner;
 
 public class InputView {
     Scanner sc = new Scanner(System.in);
-    TextStyle textStyle = TextStyle.FULL;
-    Locale locale = Locale.of("ko", "KR");
-    LocalDate nowDate = LocalDate.of(2024, 12, 13);
 
     public String readFunctionChoice() {
-        System.out.printf("오늘은 %d월 %d일 %s입니다. 가능을 선택해주세요.\n",
-                nowDate.getMonthValue(),
-                nowDate.getDayOfMonth(),
-                nowDate.getDayOfWeek().getDisplayName(textStyle, locale)
+        System.out.printf("오늘은 %s입니다. 가능을 선택해주세요.\n",
+                Common.nowDate.format(Common.monthDateDayFormatter)
         );
         System.out.print("""
                 1. 출석 확인
@@ -30,5 +24,10 @@ public class InputView {
     public String readCrewName() {
         System.out.println("닉네임을 입력해 주세요.");
         return sc.nextLine();
+    }
+
+    public LocalTime readAttendanceTime() {
+        System.out.println("등교 시간을 입력해 주세요.");
+        return LocalTime.parse(sc.nextLine());
     }
 }

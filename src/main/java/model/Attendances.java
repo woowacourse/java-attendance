@@ -1,5 +1,7 @@
 package model;
 
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.List;
 import java.util.Objects;
 
@@ -27,16 +29,17 @@ public class Attendances {
         return Objects.hashCode(attendances);
     }
 
-    public Attendance update(Attendance newAttendance) {
-        Attendance beforeAttendance = findByDate(newAttendance);
-        this.attendances.remove(beforeAttendance);
+    public Attendance update(LocalDate date, LocalTime time) {
+        Attendance oldAttendance = findByDate(date);
+        Attendance newAttendance = new Attendance(date, time);
+        this.attendances.remove(oldAttendance);
         this.attendances.add(newAttendance);
-        return findByDate(newAttendance);
+        return newAttendance;
     }
 
-    private Attendance findByDate(Attendance newAttendance) {
+    private Attendance findByDate(LocalDate date) {
         return this.attendances.stream()
-                .filter(attendance -> attendance.isSameDateWith(newAttendance))
+                .filter(attendance -> attendance.isSameDateWith(date))
                 .findAny()
                 .orElseThrow(RuntimeException::new); //TODO : 다른 예외로 교체
     }
