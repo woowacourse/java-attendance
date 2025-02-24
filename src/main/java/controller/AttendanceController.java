@@ -51,34 +51,35 @@ public class AttendanceController {
     private void processCommand(Command command, Crews crews, Attendances attendances) {
         LocalDate today = LocalDate.now();
         if (command.isOne()) {
-            checkInAttendance(attendances, today);
+            checkInAttendance(crews, attendances, today);
         }
         if (command.isTwo()) {
-            modifyAttendance(attendances, today);
+            modifyAttendance(attendances, crews, today);
         }
         if (command.isThree()) {
-            checkAttendance(attendances);
+            checkAttendance(attendances, crews);
         }
         if (command.isFour()) {
-            checkPunishment(crews, attendances);
+            checkPunishment(crews, attendances, today);
         }
     }
 
-    private void checkInAttendance(Attendances attendances, LocalDate today) {
+    private void checkInAttendance(Crews crews, Attendances attendances, LocalDate today) {
         String rawNickname = inputView.readNickname();
         String rawCheckInTime = inputView.readCheckInTime();
 
-        Attendance attendance = stringConverter.convertToAttendance(rawNickname, rawCheckInTime, today);
+        Crew crew = crews.findByNickname(rawNickname);
+
+        Attendance attendance = stringConverter.convertToAttendance(crew, rawCheckInTime, today);
         attendances.checkIn(attendance);
 
         outputView.printCheckInResult(attendance);
     }
 
-    private void modifyAttendance(Attendances attendances, LocalDate today) {
-        String rawNickname = inputView.readNickname();
+    private void modifyAttendance(Attendances attendances, Crews crews, LocalDate today) {
+        Crew crew = crews.findByNickname(inputView.readNickname());
         String rawDay = inputView.readDay();
         String rawChangeTime = inputView.readChangeTime();
-        Crew crew = stringConverter.convertToNickname(rawNickname);
         LocalDateTime changeTime = stringConverter.convertToLocalDateTime(rawDay, rawChangeTime, today);
 
         Optional<Attendance> existAttendance = attendances.find(crew, changeTime.toLocalDate());
@@ -87,9 +88,8 @@ public class AttendanceController {
         outputView.printModifiedResult(existAttendance, modifedAttendance);
     }
 
-    private void checkAttendance(Attendances attendances) {
-        String rawNickname = inputView.readNickname();
-        Crew crew = stringConverter.convertToNickname(rawNickname);
+    private void checkAttendance(Attendances attendances, Crews crews) {
+        Crew crew = crews.findByNickname(inputView.readNickname());
 
         LocalDate today = LocalDate.now();
         Attendances filteredAttendances = attendances.findByCrewThisMonth(crew, today);
@@ -97,8 +97,8 @@ public class AttendanceController {
         outputView.printAttendanceRecord(crew, filteredAttendances, attendanceResult);
     }
 
-    private void checkPunishment(Crews crews, Attendances attendances) {
-        List<AttendanceStatistics> dangerCrews = crews.findDangerCrews(attendances, LocalDate.now());
+    private void checkPunishment(Crews crews, Attendances attendances, LocalDate today) {
+        List<AttendanceStatistics> dangerCrews = crews.findDangerCrews(attendances, today);
         outputView.printAllCrewPunishment(dangerCrews);
     }
 }

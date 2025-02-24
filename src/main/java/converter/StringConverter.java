@@ -34,23 +34,14 @@ public class StringConverter {
             String rawNickname = attendanceInfo[0];
             String rawCheckInDateTime = attendanceInfo[1];
 
-            Crew crew = convertToCrew(rawNickname, crews);
+            Crew crew = crews.findByNickname(rawNickname);
             attendances.add(Attendance.of(crew, convertToLocalDateTime(rawCheckInDateTime)));
         }
 
         return Attendances.of(attendances);
     }
 
-    public Crew convertToCrew(String rawNickname, Crews crews) {
-        validateNullOrBlank(rawNickname);
-        return crews.findByNickname(rawNickname)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 크루입니다."));
-    }
-
-    public Attendance convertToAttendance(String rawNickname, String rawCheckInTime, LocalDate today) {
-        validateNullOrBlank(rawNickname);
-        Crew crew = Crew.of(rawNickname);
-
+    public Attendance convertToAttendance(Crew crew, String rawCheckInTime, LocalDate today) {
         validateNullOrBlank(rawCheckInTime);
         validateTimeFormat(rawCheckInTime);
         LocalDateTime checkInTime = LocalDateTime.of(today, LocalTime.parse(rawCheckInTime));
@@ -60,12 +51,6 @@ public class StringConverter {
 
     public Command convertToCommand(String rawCommand) {
         return Command.find(rawCommand);
-    }
-
-    public Crew convertToNickname(String rawNickname) {
-        validateNullOrBlank(rawNickname);
-
-        return Crew.of(rawNickname);
     }
 
     public LocalDateTime convertToLocalDateTime(String rawDateTime) {

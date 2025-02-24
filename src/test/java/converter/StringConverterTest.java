@@ -26,7 +26,7 @@ class StringConverterTest {
         Attendance expected = Attendance.of(crew, time);
 
         //when
-        Attendance actual = stringConverter.convertToAttendance(nickname, "09:44", today);
+        Attendance actual = stringConverter.convertToAttendance(crew, "09:44", today);
 
         //then
         Assertions.assertThat(actual).isEqualTo(expected);

@@ -4,7 +4,6 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 import java.util.Set;
 
 public class Crews {
@@ -19,10 +18,10 @@ public class Crews {
         return new Crews(crews);
     }
 
-    public Optional<Crew> findByNickname(String nickname) {
+    public Crew findByNickname(String nickname) {
         return crews.stream()
                 .filter(crew -> crew.isEqualName(nickname))
-                .findFirst();
+                .findFirst().orElseThrow(() -> new IllegalArgumentException("등록되지 않은 닉네임입니다."));
     }
 
     public List<AttendanceStatistics> findDangerCrews(Attendances attendances, LocalDate today) {
