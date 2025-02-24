@@ -105,7 +105,8 @@
     - LocalTime 출석 시각.
     - AttendanceStatus 출석 상태.
 - **생성**
-    - 기본 생성자를 사용한다.
+    - LocalDate, LocalTime, CampusOperationPolicy 을 받아 생성된다.
+    - LocalDate 를 받아 결석 객체가 생성된다.
 - **동작**
     - 없음.
 
