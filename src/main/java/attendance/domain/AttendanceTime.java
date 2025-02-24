@@ -14,7 +14,7 @@ public record AttendanceTime(LocalDate date, String hour, String minute, boolean
     private static final int MINUTE_MIN = 0;
 
     private static final int CAMPUS_OPEN_HOUR = 8;
-    private static final int CAMPUS_CLOSE_HOUR = 8;
+    private static final int CAMPUS_CLOSE_HOUR = 23;
 
     private static final String SATURDAY = "SATURDAY";
     private static final String SUNDAY = "SUNDAY";
@@ -48,7 +48,7 @@ public record AttendanceTime(LocalDate date, String hour, String minute, boolean
         int parsingHour = Parser.parseInt(hour);
         int parsingMinute = Parser.parseInt(minute);
 
-        if (parsingHour < CAMPUS_OPEN_HOUR || parsingHour == CAMPUS_CLOSE_HOUR && parsingMinute > MINUTE_MIN) {
+        if (parsingHour < CAMPUS_OPEN_HOUR || (parsingHour == CAMPUS_CLOSE_HOUR && parsingMinute > MINUTE_MIN)) {
             throw new IllegalArgumentException("[ERROR] 출석 가능한 시간이 아닙니다.");
         }
     }
