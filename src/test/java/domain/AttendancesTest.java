@@ -15,7 +15,7 @@ public class AttendancesTest {
     class AddAttendance {
         @Test
         @DisplayName("닉네임과 등교 시간을 입력해 출석할 수 있다")
-        void addAttendanceCollect() {
+        void addAttendance() {
             String nickname = "투다";
             LocalTime time = LocalTime.of(8, 0);
             LocalDate date = LocalDate.of(2024, 12, 3);
@@ -29,7 +29,20 @@ public class AttendancesTest {
 
         @Test
         @DisplayName("휴일에 출석시 예외가 발생한다.")
-        void addAttendanceWeekend() {
+        void addAttendanceAtWeekend() {
+            String nickname = "투다";
+            LocalTime time = LocalTime.of(8, 0);
+            LocalDate date = LocalDate.of(2024, 12, 1);
+            CrewAttendances crewAttendances = new CrewAttendances(new TestAttendanceNowDateStrategy(date));
+
+            Assertions.assertThatThrownBy(() -> crewAttendances.addAttendance(nickname, time))
+                    .hasMessageContaining("휴일에는 출석할 수 없습니다.")
+                    .isInstanceOf(AttendanceException.class);
+        }
+
+        @Test
+        @DisplayName("휴일에 출석시 예외가 발생한다.")
+        void addAttendanceNotSchoolRunning() {
             String nickname = "투다";
             LocalTime time = LocalTime.of(8, 0);
             LocalDate date = LocalDate.of(2024, 12, 1);
