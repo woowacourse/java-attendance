@@ -4,6 +4,7 @@ import constant.Command;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -31,25 +32,19 @@ public class StringConverter {
             String[] attendanceInfo = rawAttendance.split(",");
 
             String rawNickname = attendanceInfo[0];
-            validateNullOrBlank(rawNickname);
-            Crew crew = crews.findByNickname(rawNickname)
-                    .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 크루입니다."));
-
             String rawCheckInDateTime = attendanceInfo[1];
-            validateNullOrBlank(rawCheckInDateTime);
-            validateLocalDateTimeFormat(rawCheckInDateTime);
 
-            String rawCheckInDate = rawCheckInDateTime.split(" ")[0];
-            String rawCheckInTime = rawCheckInDateTime.split(" ")[1] + ":00";
-
-            LocalDateTime checkInTime = LocalDateTime.of(LocalDate.parse(rawCheckInDate),
-                    LocalTime.parse(rawCheckInTime));
-
-            Attendance attendance = Attendance.of(crew, checkInTime);
-            attendances.add(attendance);
+            Crew crew = convertToCrew(rawNickname, crews);
+            attendances.add(Attendance.of(crew, convertToLocalDateTime(rawCheckInDateTime)));
         }
 
         return Attendances.of(attendances);
+    }
+
+    public Crew convertToCrew(String rawNickname, Crews crews) {
+        validateNullOrBlank(rawNickname);
+        return crews.findByNickname(rawNickname)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 크루입니다."));
     }
 
     public Attendance convertToAttendance(String rawNickname, String rawCheckInTime, LocalDate today) {
@@ -71,6 +66,12 @@ public class StringConverter {
         validateNullOrBlank(rawNickname);
 
         return Crew.of(rawNickname);
+    }
+
+    public LocalDateTime convertToLocalDateTime(String rawDateTime) {
+        validateLocalDateTimeFormat(rawDateTime);
+
+        return LocalDateTime.parse(rawDateTime, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
     }
 
     public LocalDateTime convertToLocalDateTime(String rawDay, String rawTime, LocalDate today) {
@@ -102,6 +103,7 @@ public class StringConverter {
     }
 
     private void validateLocalDateTimeFormat(String dateTime) {
+        validateNullOrBlank(dateTime);
         String regExpression = "^\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}$";
         if (!dateTime.matches(regExpression)) {
             throw new IllegalArgumentException("시간 형식이 올바르지 않습니다.");
