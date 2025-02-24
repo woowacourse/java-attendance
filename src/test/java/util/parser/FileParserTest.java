@@ -13,6 +13,7 @@ class FileParserTest {
         // given
         String attendanceData = "moko,2025-02-03 13:00";
 
+        // when then
         AttendanceData attendanceRecord = FileParser.parseAttendanceHistory(attendanceData);
         SoftAssertions.assertSoftly(softly -> {
             softly.assertThat(attendanceRecord.nickname()).isEqualTo("moko");
