@@ -9,6 +9,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import attendance.common.exception.AttendanceArgumentException;
 import attendance.common.exception.AttendanceFileException;
 import attendance.domain.AttendanceFileReader;
 import attendance.domain.attendanceBook.AttendanceBook;
@@ -38,16 +39,27 @@ public class AttendanceStatisticianTest {
         assertThat(attenanceStatistician.getResult())
             .contains("12월 2일 월요일 13:12 (출석)\n"
                 + "12월 3일 화요일 10:12 (지각)\n"
-                + "12월 4일 수요일 10:12 (지각)\n"
-                + "12월 5일 목요일 --:-- (결석)");
+                + "12월 4일 수요일 10:12 (지각)\n");
+    }
+
+    @Test
+    @DisplayName("등교하지 않은 날에 대해서도 출석 기록에 포함한다.")
+    void test_shouldIncludeAbsentDaysInAttendanceHistory() {
+        var nickname = "이든";
+        attenanceStatistician.manage(nickname, LocalDate.now(), LocalTime.now());
+
+        assertThat(attenanceStatistician.getResult())
+            .contains("12월 5일 목요일 --:-- (결석)");
     }
 
     @Test
     @DisplayName("등록되지 않은 닉네임을 입력할 경우, 예외가 발생한다.")
     void error_notRegisteredNickname() {
-        //given&when
-
-        //then
+        var nickname = "믹든";
+        ;
+        assertThatThrownBy(() -> attenanceStatistician.manage(nickname, LocalDate.now(), LocalTime.now()))
+            .isInstanceOf(AttendanceArgumentException.class)
+            .hasMessageContaining("등록되지 않은 닉네임");
     }
 
     @Test
@@ -66,11 +78,4 @@ public class AttendanceStatisticianTest {
         //then
     }
 
-    @Test
-    @DisplayName("등교하지 않은 날에 대해서도 출석 기록에 포함한다.")
-    void test_shouldIncludeAbsentDaysInAttendanceHistory() {
-        //given&when
-
-        //then
-    }
 }
