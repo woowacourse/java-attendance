@@ -1,11 +1,12 @@
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.assertj.core.api.Assertions.*;
 
 /*
 // 테스트 코드 순서
@@ -18,12 +19,13 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
     5-1 월요일일 경우 13시
  */
 public class AbsentPolicyTest {
-    @Test
+    @ParameterizedTest
     @DisplayName("주말에 출석하려고 하는 경우 예외가 발생한다")
-    public void checkAttendanceStatusTest(){
+    @ValueSource(ints = {7,8})
+    public void checkAttendanceStatusTest(int dayOfMonth){
         //given
         AbsentPolicy absentPolicy = new AbsentPolicy();
-        LocalDate attendanceDate = LocalDate.of(2024,12,8);
+        LocalDate attendanceDate = LocalDate.of(2024,12,dayOfMonth);
 
         //when-then
         assertThatThrownBy(() -> absentPolicy.validateIsWeekend(attendanceDate))
