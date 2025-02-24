@@ -1,5 +1,6 @@
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import domain.AttendanceManager;
 import domain.Records;
@@ -8,6 +9,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -74,5 +76,21 @@ public class AttendanceCheckTest {
         assertThatThrownBy(() -> {
             attendanceManager.attendCrew(name, attendDateAndTime);
         }).isInstanceOf(IllegalArgumentException.class);
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {"2024-12-16 23:01", "2024-12-16 07:59"})
+    @DisplayName("캠퍼스 운영시간이 아닌 경우 예외를 발생한다.")
+    void should_ThrowException_When_OutsideOperatingHours(String attendDateTime) {
+        LocalDateTime initialDateAndTime = LocalDateTime.parse("2024-12-13 13:00", formatter);
+        LocalDateTime attendDateAndTime = LocalDateTime.parse(attendDateTime, formatter);
+        String name = "빙봉";
+
+        attendanceManager.createCrew(name, List.of(initialDateAndTime));
+
+        Exception exception = assertThrows(IllegalArgumentException.class, () -> {
+            attendanceManager.attendCrew(name, attendDateAndTime);
+        });
+        Assertions.assertThat(exception.getMessage()).isEqualTo("캠퍼스 운영시간이 아닙니다.");
     }
 }

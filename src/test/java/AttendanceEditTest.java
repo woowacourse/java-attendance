@@ -82,6 +82,22 @@ public class AttendanceEditTest {
         Assertions.assertThat(exception.getMessage()).isEqualTo("등교일이 아닙니다.");
     }
 
+    @ParameterizedTest
+    @ValueSource(strings = {"2024-12-13 23:01", "2024-12-13 07:59"})
+    @DisplayName("캠퍼스 운영시간이 아닌 경우 예외를 발생한다.")
+    void should_ThrowException_When_OutsideOperatingHours(String attendDateTime) {
+        LocalDateTime initialDateAndTime = LocalDateTime.parse("2024-12-13 13:00", formatter);
+        LocalDateTime attendDateAndTime = LocalDateTime.parse(attendDateTime, formatter);
+        String name = "빙봉";
+
+        attendanceManager.createCrew(name, List.of(initialDateAndTime));
+
+        Exception exception = assertThrows(IllegalArgumentException.class, () -> {
+            attendanceManager.editCrew(name, attendDateAndTime);
+        });
+        Assertions.assertThat(exception.getMessage()).isEqualTo("캠퍼스 운영시간이 아닙니다.");
+    }
+
     private TimeAndStatus findTimeAndStatus(String name, LocalDate localDate) {
         Records records = attendanceManager.findByName(name);
         return records.findByDate(localDate);

@@ -2,12 +2,15 @@ package domain;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.Comparator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
 public class AttendanceManager {
+    private static final LocalTime CAMPUS_OPEN_TIME = LocalTime.of(8,0);
+    private static final LocalTime CAMPUS_CLOSE_TIME = LocalTime.of(23,0);
 
     private final Crews crews;
 
@@ -23,6 +26,7 @@ public class AttendanceManager {
         if(Holiday.isHoliday(localDateTime.toLocalDate())){
             throw new IllegalArgumentException("등교일이 아닙니다.");
         }
+        validateTime(localDateTime.toLocalTime());
         if (crews.hasAlreadyAttended(name, localDateTime)) {
             throw new IllegalArgumentException("이미 출석한 경우 수정 기능을 사용하세요.");
         }
@@ -33,6 +37,7 @@ public class AttendanceManager {
         if(Holiday.isHoliday(newLocalDateTime.toLocalDate())){
             throw new IllegalArgumentException("등교일이 아닙니다.");
         }
+        validateTime(newLocalDateTime.toLocalTime());
         if (!crews.hasAlreadyAttended(name, newLocalDateTime)) {
             throw new IllegalArgumentException("수정 기능은 출석 후 이용 가능합니다.");
         }
@@ -63,5 +68,11 @@ public class AttendanceManager {
 
     public void hasCrew(String name){
         crews.hasCrew(name);
+    }
+
+    private void validateTime(LocalTime time){
+        if(time.isBefore(CAMPUS_OPEN_TIME) || time.isAfter(CAMPUS_CLOSE_TIME)){
+            throw new IllegalArgumentException("캠퍼스 운영시간이 아닙니다.");
+        }
     }
 }
