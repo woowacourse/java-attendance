@@ -1,6 +1,6 @@
 import controller.AttendanceController;
 import domain.CrewAttendanceRepository;
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import util.DataInitializer;
 import view.InputView;
@@ -8,23 +8,24 @@ import view.OutputView;
 
 public class AttendanceApplication {
     public static void main(String[] args) {
-        LocalDateTime today = parseDateTime(args);
+        LocalDate currentDate = parseDate(args);
 
         InputView inputView = new InputView();
         OutputView outputView = new OutputView();
         DataInitializer dataInitializer = new DataInitializer();
-        dataInitializer.initialize(today, "src/main/resources/attendances.csv");
+        dataInitializer.initialize(currentDate, "src/main/resources/attendances.csv");
         AttendanceController controller = new AttendanceController(inputView, outputView,
                 CrewAttendanceRepository.getInstance());
-        controller.run(today);
+        
+        controller.run(currentDate);
     }
 
-    private static LocalDateTime parseDateTime(String[] args) {
+    private static LocalDate parseDate(String[] args) {
         try {
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
-            return LocalDateTime.parse(args[0], formatter);
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+            return LocalDate.parse(args[0], formatter);
         } catch (Exception e) {
-            return LocalDateTime.of(2024, 12, 13, 0, 0);
+            return LocalDate.of(2024, 12, 13);
         }
     }
 }

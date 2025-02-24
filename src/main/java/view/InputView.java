@@ -2,7 +2,7 @@ package view;
 
 import domain.MenuOption;
 import domain.WorkDay;
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
@@ -12,10 +12,10 @@ public class InputView {
     private static final Scanner scanner = new Scanner(System.in);
     private static final DateTimeFormatter TIME_FORMATTER = DateTimeFormatter.ofPattern("HH:mm");
 
-    public MenuOption readMenuOption(LocalDateTime localDateTime) {
+    public MenuOption readMenuOption(LocalDate localDate) {
         System.out.printf("오늘은 %d월 %d일 %s요일입니다. 기능을 선택해 주세요.%n",
-                localDateTime.getMonth().getValue(), localDateTime.getDayOfMonth(),
-                WorkDay.from(localDateTime.getDayOfWeek()).getDayOfWeekKorean());
+                localDate.getMonth().getValue(), localDate.getDayOfMonth(),
+                WorkDay.from(localDate.getDayOfWeek()).getDayOfWeekKorean());
         MenuOption.findAll()
                 .forEach(menuOption -> System.out.println(menuOption.getCode() + ". " + menuOption.getDescription()));
 

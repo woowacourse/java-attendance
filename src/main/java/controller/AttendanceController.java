@@ -12,7 +12,6 @@ import domain.DateTime;
 import domain.MenuOption;
 import domain.Time;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
 import view.InputView;
@@ -30,18 +29,18 @@ public class AttendanceController {
         this.crewAttendanceRepository = crewAttendanceRepository;
     }
 
-    public void run(LocalDateTime localDateTime) {
+    public void run(LocalDate currentDate) {
         boolean isRunning = true;
 
         while (isRunning) {
-            isRunning = processMenu(localDateTime);
+            isRunning = processMenu(currentDate);
         }
     }
 
-    private boolean processMenu(LocalDateTime localDateTime) {
+    private boolean processMenu(LocalDate currentDate) {
         try {
-            MenuOption menuOption = inputView.readMenuOption(localDateTime);
-            executeMenu(menuOption, localDateTime);
+            MenuOption menuOption = inputView.readMenuOption(currentDate);
+            executeMenu(menuOption, currentDate);
 
             return menuOption.isExit();
         } catch (IllegalArgumentException e) {
@@ -51,14 +50,14 @@ public class AttendanceController {
         }
     }
 
-    private void executeMenu(MenuOption menuOption, LocalDateTime localDateTime) {
+    private void executeMenu(MenuOption menuOption, LocalDate currentDate) {
         if (menuOption.isCheck()) {
-            handleCheckAttendance(localDateTime);
+            handleCheckAttendance(currentDate);
             return;
         }
 
         if (menuOption.isEdit()) {
-            handleEditAttendance(localDateTime);
+            handleEditAttendance(currentDate);
             return;
         }
 
@@ -72,9 +71,9 @@ public class AttendanceController {
         }
     }
 
-    private void handleCheckAttendance(LocalDateTime localDateTime) {
+    private void handleCheckAttendance(LocalDate currentDate) {
         CrewAttendance crewAttendance = getCrewAttendanceByNickName(inputView.readNickName());
-        DateTime dateTime = createDateTime(localDateTime.toLocalDate(), inputView.readArriveTime());
+        DateTime dateTime = createDateTime(currentDate, inputView.readArriveTime());
 
         crewAttendance.addAttendance(dateTime);
         AttendanceStatus attendanceStatus = crewAttendance.calculateAttendanceStatus(dateTime.getDate());
@@ -82,9 +81,9 @@ public class AttendanceController {
         outputView.printArriveResult(dateTime, attendanceStatus.getName());
     }
 
-    private void handleEditAttendance(LocalDateTime localDateTime) {
+    private void handleEditAttendance(LocalDate currentDate) {
         CrewAttendance crewAttendance = getCrewAttendanceByNickName(inputView.readUpdateNickName());
-        DateTime afterDateTime = getUpdatedDateTime(localDateTime);
+        DateTime afterDateTime = getUpdatedDateTime(currentDate);
 
         DateTime beforeDateTime = getBeforeDateTime(crewAttendance, afterDateTime);
         AttendanceStatus beforeStatus = crewAttendance.calculateAttendanceStatus(beforeDateTime.getDate());
@@ -95,11 +94,11 @@ public class AttendanceController {
         outputView.printUpdateResult(beforeDateTime, beforeStatus.getName(), afterDateTime, afterStatus.getName());
     }
 
-    private DateTime getUpdatedDateTime(LocalDateTime localDateTime) {
+    private DateTime getUpdatedDateTime(LocalDate currentDate) {
         int updateDate = inputView.readUpdateDate();
         LocalTime updateArriveTime = inputView.readUpdateArriveTime();
         return createDateTime(
-                LocalDate.of(localDateTime.getYear(), localDateTime.getMonth(), updateDate), updateArriveTime);
+                LocalDate.of(currentDate.getYear(), currentDate.getMonth(), updateDate), updateArriveTime);
     }
 
     private DateTime getBeforeDateTime(CrewAttendance crewAttendance, DateTime afterDateTime) {

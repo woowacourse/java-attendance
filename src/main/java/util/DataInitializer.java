@@ -23,15 +23,15 @@ public class DataInitializer {
     private static final DateTimeFormatter DEFAULT_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
     private static final LocalDate START_DATE = LocalDate.of(2024, 12, 2);
 
-    public void initialize(LocalDateTime todayLocalDateTime, String filePath) {
-        validateDecember2024(todayLocalDateTime);
+    public void initialize(LocalDate currentDate, String filePath) {
+        validateDecember2024(currentDate);
         Set<String> crewNames = extractCrewNames(filePath);
-        Map<Date, Time> initialDateTimes = createInitialAttendanceMap(todayLocalDateTime);
-        registerCrewData(crewNames, initialDateTimes, filePath, todayLocalDateTime);
+        Map<Date, Time> initialDateTimes = createInitialAttendance(currentDate);
+        registerCrewData(crewNames, initialDateTimes, filePath, currentDate);
     }
 
-    private void validateDecember2024(LocalDateTime todayLocalDateTime) {
-        if (todayLocalDateTime.getYear() != 2024 || todayLocalDateTime.getMonthValue() != 12) {
+    private void validateDecember2024(LocalDate currentDate) {
+        if (currentDate.getYear() != 2024 || currentDate.getMonthValue() != 12) {
             throw new IllegalArgumentException("입력된 날짜는 2024년 12월이어야 합니다");
         }
     }
@@ -52,14 +52,15 @@ public class DataInitializer {
         return splitItems(line)[0];
     }
 
-    private Map<Date, Time> createInitialAttendanceMap(LocalDateTime todayLocalDateTime) {
+    private Map<Date, Time> createInitialAttendance(LocalDate currentDate) {
         Map<Date, Time> dateTimes = new HashMap<>();
-        LocalDate currentDate = START_DATE;
+        LocalDate attendanceDate = START_DATE;
 
-        while (!currentDate.isAfter(todayLocalDateTime.toLocalDate())) {
-            addNonHolidayDate(dateTimes, currentDate);
-            currentDate = currentDate.plusDays(1);
+        while (!attendanceDate.isAfter(currentDate)) {
+            addNonHolidayDate(dateTimes, attendanceDate);
+            attendanceDate = attendanceDate.plusDays(1);
         }
+
         return dateTimes;
     }
 
@@ -71,39 +72,39 @@ public class DataInitializer {
     }
 
     private void registerCrewData(Set<String> crewNames, Map<Date, Time> initialDateTimes,
-                                  String filePath, LocalDateTime todayLocalDateTime) {
+                                  String filePath, LocalDate currentDate) {
         CrewAttendanceRepository crewAttendanceRepository = CrewAttendanceRepository.getInstance();
 
         crewNames.forEach(name -> {
             Crew crew = new Crew(name);
             CrewAttendance crewAttendance = new CrewAttendance(crew, new Attendance(new HashMap<>(initialDateTimes)));
 
-            loadAndApplyAttendance(crewAttendance, filePath, todayLocalDateTime);
+            loadAndApplyAttendance(crewAttendance, filePath, currentDate);
             crewAttendanceRepository.save(crewAttendance);
         });
     }
 
     private void loadAndApplyAttendance(CrewAttendance crewAttendance, String filePath,
-                                        LocalDateTime todayLocalDateTime) {
+                                        LocalDate currentDate) {
         List<String> lines = FileDataLoader.loadLines(filePath);
 
         lines.stream()
                 .skip(1)
                 .map(this::parseAttendanceData)
-                .filter(data -> isValidAttendance(data, crewAttendance, todayLocalDateTime))
+                .filter(data -> isValidAttendance(data, crewAttendance, currentDate))
                 .forEach(data -> crewAttendance.addAttendance(data.dateTime));
     }
 
     private AttendanceData parseAttendanceData(String line) {
         String[] items = splitItems(line);
         validateSize(items);
-        return new AttendanceData(items[0], parseToDate(items[1]));
+        return new AttendanceData(items[0], parseToDateTime(items[1]));
     }
 
     private boolean isValidAttendance(AttendanceData data, CrewAttendance crewAttendance,
-                                      LocalDateTime todayLocalDateTime) {
+                                      LocalDate currentDate) {
         return crewAttendance.getCrew().getName().equals(data.name) &&
-                !data.dateTime.getDate().isAfter(new Date(todayLocalDateTime.toLocalDate())) &&
+                !data.dateTime.getDate().isAfter(new Date(currentDate)) &&
                 !data.dateTime.getDate().isHoliday();
     }
 
@@ -119,7 +120,7 @@ public class DataInitializer {
         }
     }
 
-    private LocalDateTime parseToDate(String dateString) {
+    private LocalDateTime parseToDateTime(String dateString) {
         try {
             return LocalDateTime.parse(dateString, DEFAULT_FORMATTER);
         } catch (DateTimeParseException e) {
