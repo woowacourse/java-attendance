@@ -1,4 +1,4 @@
-package attendance.controller;
+package attendance;
 
 import attendance.config.AppConfig;
 import attendance.domain.Attendance;
@@ -16,15 +16,15 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
 
-import static attendance.controller.AttendanceMenu.CHECK;
-import static attendance.controller.AttendanceMenu.QUIT;
-import static attendance.controller.AttendanceMenu.SEARCH;
-import static attendance.controller.AttendanceMenu.UPDATE;
-import static attendance.controller.AttendanceMenu.WARNED_CREW;
-import static attendance.controller.AttendanceMenu.find;
+import static attendance.AttendanceMenu.CHECK;
+import static attendance.AttendanceMenu.QUIT;
+import static attendance.AttendanceMenu.SEARCH;
+import static attendance.AttendanceMenu.UPDATE;
+import static attendance.AttendanceMenu.WARNED_CREW;
+import static attendance.AttendanceMenu.find;
 import static attendance.utility.DateTimeParser.parseDateByDay;
 
-public class AttendanceController {
+public class AttendanceSystem {
 
     private final InputView inputView;
     private final OutputView outputView;
@@ -32,7 +32,7 @@ public class AttendanceController {
     private final Holiday holiday;
     private final AttendanceManager attendanceManager;
 
-    public AttendanceController(AppConfig appConfig) {
+    public AttendanceSystem(AppConfig appConfig) {
         this.inputView = appConfig.getInputView();
         this.outputView = appConfig.getOutputView();
         this.dateGenerator = appConfig.getDateGenerator();
