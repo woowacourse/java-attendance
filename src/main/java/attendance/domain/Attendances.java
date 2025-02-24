@@ -10,23 +10,29 @@ public class Attendances {
     private final Map<LocalDate, Attendance> attendances = new HashMap<>();
     private static final String DUPLICATE_ATTENDANCE_DATE = "이미 출석되었습니다. 수정 기능을 이용해주세요.";
     private static final String NOT_EXIST_ATTENDANCE = "해당 날짜에 출석이 존재하지 않습니다.";
+    static final int MONDAY = 1;
+    static final LocalTime MONDAY_START_TIME = LocalTime.of(13, 0);
+    static final LocalTime NORMAL_START_TIME = LocalTime.of(10, 0);
+    static final int LATE_MINUTE = 5;
+    static final int ABSENCE_MINUTE = 30;
+
 
     private AttendanceStatus determineAttendanceStatus(LocalDate currentDate, LocalTime currentTime) {
         LocalTime startTime = determineAttendanceStartTime(currentDate);
-        if (currentTime.isAfter(startTime.plusMinutes(AttendanceManagerHelper.ABSENCE_MINUTE))) {
+        if (currentTime.isAfter(startTime.plusMinutes(ABSENCE_MINUTE))) {
             return AttendanceStatus.ABSENCE;
         }
-        if (currentTime.isAfter(startTime.plusMinutes(AttendanceManagerHelper.LATE_MINUTE))) {
+        if (currentTime.isAfter(startTime.plusMinutes(LATE_MINUTE))) {
             return AttendanceStatus.LATE;
         }
         return AttendanceStatus.ATTENDANCE;
     }
 
     private LocalTime determineAttendanceStartTime(LocalDate currentDate) {
-        if (currentDate.getDayOfWeek().getValue() == AttendanceManagerHelper.MONDAY) {
-            return AttendanceManagerHelper.MONDAY_START_TIME;
+        if (currentDate.getDayOfWeek().getValue() == MONDAY) {
+            return MONDAY_START_TIME;
         }
-        return AttendanceManagerHelper.NORMAL_START_TIME;
+        return NORMAL_START_TIME;
     }
 
     public void addAttendance(LocalTime currentTime, LocalDate currentDate) {
@@ -51,11 +57,11 @@ public class Attendances {
 
     public void modifyAttendance(LocalDate modifyDate, LocalTime afterModifyTime) {
         validateIsExistAttendanceHistory(modifyDate);
-        Attendance prevAttendance = attendances.remove(modifyDate);
+        Attendance previousAttendance = attendances.remove(modifyDate);
         try {
             addAttendance(afterModifyTime, modifyDate);
         } catch (AttendanceArgumentException e) {
-            attendances.put(modifyDate, prevAttendance);
+            attendances.put(modifyDate, previousAttendance);
             throw e;
         }
     }
@@ -64,5 +70,9 @@ public class Attendances {
         if (attendances.get(date) == null) {
             throw new AttendanceArgumentException(NOT_EXIST_ATTENDANCE);
         }
+    }
+
+    public Attendance getAttendance(LocalDate date) {
+        return attendances.get(date);
     }
 }

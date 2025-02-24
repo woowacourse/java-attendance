@@ -1,6 +1,7 @@
 package attendance.domain;
 
 public enum AttendanceDismissStatus {
+    
     NEED_MEETING("면담"),
     WARNING("경고"),
     DISMISS("제적"),

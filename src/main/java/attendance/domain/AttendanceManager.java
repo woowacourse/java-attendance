@@ -1,7 +1,6 @@
 package attendance.domain;
 
 import attendance.exception.AttendanceArgumentException;
-import attendance.utility.StringUtility;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -9,23 +8,35 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public class AttendanceManager {
 
-    private static AttendanceManager instance = null;
+    static final LocalTime SCHOOL_OPEN_TIME = LocalTime.of(8, 0);
+    static final LocalTime SCHOOL_CLOSE_TIME = LocalTime.of(23, 0);
+    static final String OUT_OF_SCHOOL_SCHEDULE = "등교시간에만 출석 가능합니다.";
+    static final LocalDate ATTENDANCE_AVAILABLE_START_DATE = LocalDate.of(2024, 12, 1);
+    static final LocalDate ATTENDANCE_AVAILABLE_END_DATE = LocalDate.of(2024, 12, 31);
+    static final String NICKNAME_NOT_EXISTS = "출석 정보가 존재하지 않습니다.";
+    static final String CANNOT_BE_EMPTY_NICKNAME = "닉네임은 공백일 수 없습니다.";
+    static final String ATTENDANCE_NOT_AVAILABLE = "출석 시스템은 2024년 12월 동안만 유효합니다";
+    static final int WEEKEND_NUMBER = 6;
 
-    private AttendanceManager() {
+    public AttendanceManager() {
+
     }
 
-    public static AttendanceManager getInstance() {
-        if (instance == null) {
-            instance = new AttendanceManager();
+    public AttendanceManager(List<String> attendanceLines) {
+        loadAttendances(attendanceLines);
+    }
+
+    private void loadAttendances(List<String> attendanceLines) {
+        for (String attendanceLine : attendanceLines) {
+            String[] attendanceUnits = attendanceLine.split(",");
+            String nickname = attendanceUnits[0];
+            LocalDateTime datetime = DateTimeFormatterWrapper.parsingAttendanceDateTime(attendanceUnits[1]);
+            addAttendance(nickname, datetime);
         }
-        return instance;
-    }
-
-    public static void initiateInstance() {
-        instance = null;
     }
 
     private HashMap<String, Attendances> attendanceManager = new HashMap<>();
@@ -36,43 +47,31 @@ public class AttendanceManager {
         LocalTime currentTime = time.toLocalTime();
         LocalDate currentDate = time.toLocalDate();
         validateIsSchoolOpen(currentTime);
-        validateAttendanceAvailable(currentDate);
+        validateIsAttendanceAvailable(currentDate);
         Attendances attendances = attendanceManager.getOrDefault(nickname, new Attendances());
         attendanceManager.put(nickname, attendances);
         attendances.addAttendance(currentTime, currentDate);
     }
 
-    private void validateAttendanceAvailable(LocalDate currentDate) {
-        if (currentDate.getDayOfWeek().getValue() >= AttendanceManagerHelper.WEEKEND_NUMBER) {
-            throw new AttendanceArgumentException(
-                    DateTimeFormatterWrapper.formattingAttendanceWeekendError(currentDate));
-        }
-        LocalDate attendanceAvailableStartDate = AttendanceManagerHelper.ATTENDANCE_AVAILABLE_START_DATE;
-        LocalDate attendanceAvailableEndDate = AttendanceManagerHelper.ATTENDANCE_AVAILABLE_END_DATE;
-        if (attendanceAvailableEndDate.isAfter(currentDate) || attendanceAvailableStartDate.isBefore(currentDate)) {
-            return;
-        }
-        throw new AttendanceArgumentException(AttendanceManagerHelper.ATTENDANCE_NOT_AVAILABLE);
+    public Attendance getAttendance(String nickname, LocalDate date) {
+        Attendances attendances = attendanceManager.getOrDefault(nickname, new Attendances());
+        return attendances.getAttendance(date);
     }
 
     public void validateIsSchoolOpen(LocalTime currentTime) {
-        if (currentTime.isBefore(AttendanceManagerHelper.SCHOOL_OPEN_TIME) || currentTime.isAfter(
-                AttendanceManagerHelper.SCHOOL_CLOSE_TIME)) {
-            throw new AttendanceArgumentException(AttendanceManagerHelper.OUT_OF_SCHOOL_SCHEDULE);
+        if (currentTime.isBefore(SCHOOL_OPEN_TIME) || currentTime.isAfter(SCHOOL_CLOSE_TIME)) {
+            throw new AttendanceArgumentException(OUT_OF_SCHOOL_SCHEDULE);
         }
     }
 
     public Attendances findAttendances(String nickname) {
-        Attendances attendances = attendanceManager.get(nickname);
-        if (attendances == null) {
-            throw new AttendanceArgumentException(AttendanceManagerHelper.NICKNAME_NOT_EXISTS);
-        }
-        return attendances;
+        validateAttendanceExist(nickname);
+        return attendanceManager.get(nickname);
     }
 
     public void validateNickname(String nickname) {
-        if (StringUtility.isEmpty(nickname)) {
-            throw new AttendanceArgumentException(AttendanceManagerHelper.CANNOT_BE_EMPTY_NICKNAME);
+        if (nickname == null || nickname.isBlank() || nickname.isEmpty()) {
+            throw new AttendanceArgumentException(CANNOT_BE_EMPTY_NICKNAME);
         }
     }
 
@@ -82,34 +81,42 @@ public class AttendanceManager {
         attendances.modifyAttendance(modifyDate, afterModifyTime);
     }
 
-    private void validateAttendanceExist(String nickname) {
+    public void validateAttendanceExist(String nickname) {
         Attendances attendances = attendanceManager.get(nickname);
         if (attendances == null) {
-            throw new AttendanceArgumentException(AttendanceManagerHelper.NICKNAME_NOT_EXISTS);
+            throw new AttendanceArgumentException(NICKNAME_NOT_EXISTS);
         }
     }
 
     public void validateIsAttendanceAvailable(LocalDate currentDate) {
-        String ATTENDANCE_WEEKEND_ERROR = DateTimeFormatterWrapper.formattingAttendanceWeekendError(currentDate);
-        if (currentDate.getDayOfWeek().getValue() >= AttendanceManagerHelper.WEEKEND_NUMBER) {
+        validateIsAttendanceWeekend(currentDate);
+        if (ATTENDANCE_AVAILABLE_START_DATE.isAfter(currentDate) || ATTENDANCE_AVAILABLE_END_DATE.isBefore(
+                currentDate)) {
+            throw new AttendanceArgumentException(ATTENDANCE_NOT_AVAILABLE);
+        }
+    }
+
+    private void validateIsAttendanceWeekend(LocalDate currentDate) {
+        String ATTENDANCE_WEEKEND_ERROR = DateTimeFormatterWrapper.formattingAttendanceDateError(currentDate);
+        if (currentDate.getMonth().getValue() == 12 && currentDate.getDayOfMonth() == 25) {
             throw new AttendanceArgumentException(ATTENDANCE_WEEKEND_ERROR);
         }
-        if (currentDate.getMonth().getValue() == 12 && currentDate.getDayOfMonth() == 25) {
+        if (currentDate.getDayOfWeek().getValue() >= WEEKEND_NUMBER) {
             throw new AttendanceArgumentException(ATTENDANCE_WEEKEND_ERROR);
         }
     }
 
     public AttendanceHistory crewAttendanceHistory(String nickname) {
         validateCrewNameExist(nickname);
-        LocalDate startDate = AttendanceManagerHelper.ATTENDANCE_AVAILABLE_START_DATE;
-        LocalDate endDate = AttendanceManagerHelper.ATTENDANCE_AVAILABLE_END_DATE;
+        LocalDate startDate = ATTENDANCE_AVAILABLE_START_DATE;
+        LocalDate endDate = ATTENDANCE_AVAILABLE_END_DATE;
         List<String> attendanceHistories = new ArrayList<>();
         Map<String, Integer> attendanceStatusMap = new HashMap<>();
         Attendances attendances = attendanceManager.get(nickname);
         for (LocalDate currentDate = startDate; !currentDate.isAfter(endDate); currentDate = currentDate.plusDays(1)) {
             appendAttendanceHistories(attendances, currentDate, attendanceHistories, attendanceStatusMap);
         }
-        return new AttendanceHistory(attendanceHistories, attendanceStatusMap);
+        return new AttendanceHistory(nickname, attendanceHistories, attendanceStatusMap);
     }
 
     private void validateCrewNameExist(String nickname) {
@@ -172,4 +179,13 @@ public class AttendanceManager {
     public List<String> attendancesNicknames() {
         return attendanceManager.keySet().stream().toList();
     }
+
+    public List<AttendanceHistory> crewDismissHistory() {
+        return attendancesNicknames()
+                .stream()
+                .map(this::crewAttendanceHistory)
+                .collect(Collectors.toList());
+    }
 }
+
+

@@ -1,10 +1,7 @@
 package attendance;
 
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-
 import attendance.domain.AttendanceManager;
 import attendance.repository.AttendanceFileRepository;
-import attendance.service.AttendanceManagerService;
 import java.util.stream.Stream;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
@@ -57,6 +54,7 @@ public class AttendanceHistoryTest {
     @MethodSource("attendanceTest")
     @DisplayName("출석 데이터 내역 확인 테스트")
     void testAttendances(String src, String name, String formattedResult) {
+        AttendanceManager attendanceManager = new AttendanceManager();
         AttendanceManagerService attendanceManagerService = new AttendanceManagerService(
                 AttendanceManager.getInstance(),
                 new AttendanceFileRepository(src));

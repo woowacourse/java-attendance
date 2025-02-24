@@ -17,6 +17,10 @@ public final class DateTimeFormatterWrapper {
             Locale.KOREA);
     private static final DateTimeFormatter parsingAttendanceTime = DateTimeFormatter.ofPattern("HH:mm");
     private static final DateTimeFormatter parsingAttendanceDate = DateTimeFormatter.ofPattern("yyyy MM dd");
+    public static final String TODAY_FORMAT = "오늘은 MM월 dd일 E요일입니다. 기능을 선택해 주세요.";
+    public static final String ATTENDANCE_ABSENCE_HISTORY = "MM월 dd일 E요일 --:-- (결석)";
+    static final String CANNOT_ATTENDANCE_WEEKEND_FORMAT = "MM월 dd일 E요일은 등교일이 아닙니다.";
+
 
     private DateTimeFormatterWrapper() {
         throw new IllegalStateException(INVALID_STATE);
@@ -62,18 +66,18 @@ public final class DateTimeFormatterWrapper {
         }
     }
 
-    public static String formattingAttendanceWeekendError(LocalDate currentDate) {
+    public static String formattingAttendanceDateError(LocalDate currentDate) {
         return currentDate.format(
-                DateTimeFormatter.ofPattern(AttendanceManagerHelper.CANNOT_ATTENDANCE_WEEKEND_FORMAT, Locale.KOREA));
+                DateTimeFormatter.ofPattern(CANNOT_ATTENDANCE_WEEKEND_FORMAT, Locale.KOREA));
     }
 
     public static String formattingAttendanceAbsenceHistory(LocalDate currentDate) {
         return currentDate.format(
-                DateTimeFormatter.ofPattern(AttendanceManagerHelper.ATTENDANCE_ABSENCE_HISTORY, Locale.KOREA));
+                DateTimeFormatter.ofPattern(ATTENDANCE_ABSENCE_HISTORY, Locale.KOREA));
     }
 
     public static String formattingToday(LocalDate date) {
         return date.format(
-                DateTimeFormatter.ofPattern(AttendanceManagerHelper.TODAY_FORMAT, Locale.KOREA));
+                DateTimeFormatter.ofPattern(TODAY_FORMAT, Locale.KOREA));
     }
 }
