@@ -1,6 +1,6 @@
 package attendance.domain;
 
-import static attendance.domain.Attendance.DECEMBER_START_DATE;
+import attendance.common.CommonConstants;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
@@ -59,7 +59,7 @@ public enum AttendanceStatus {
 
     public static Map<AttendanceStatus, Integer> calculateAbsencesUntil(LocalDate today, List<Attendance> attendances) {
         Map<AttendanceStatus, Integer> map = initMap();
-        LocalDate currentDate = DECEMBER_START_DATE;
+        LocalDate currentDate = CommonConstants.DECEMBER_START_DATE;
 
         while (currentDate.isBefore(today)) {
             currentDate = processAbsenceCount(currentDate, attendances, map);
