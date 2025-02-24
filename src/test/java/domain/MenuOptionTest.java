@@ -33,4 +33,11 @@ class MenuOptionTest {
     void functionTrueTest() {
         Assertions.assertTrue(MenuOption.isExit("Q"));
     }
+
+    @DisplayName("Q가 아닌 경우 입력 시 false를 반환합니다.")
+    @ParameterizedTest
+    @ValueSource(strings = {"q", "1", "2", "3", "4"})
+    void functionFalseTest() {
+        Assertions.assertFalse(MenuOption.isExit("Q"));
+    }
 }

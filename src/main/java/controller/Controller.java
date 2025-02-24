@@ -25,7 +25,8 @@ import view.dto.ChangeAttendanceLogDto;
 import view.dto.CrewAttendancesDto;
 
 public class Controller {
-    private static final LocalDateTime today = LocalDateTime.of(2024, 12, 18, 10, 0);
+    private static final LocalDateTime TODAY = LocalDateTime.of(2024, 12, 18, 10, 0);
+
     private final DateValidator dateValidator;
     private final InputView inputView;
     private final OutputView outputView;
@@ -38,7 +39,7 @@ public class Controller {
 
     public void run() {
         CrewLoader crewLoader = new CrewLoader();
-        CrewGroup crewGroup = crewLoader.loadCrews(today);
+        CrewGroup crewGroup = crewLoader.loadCrews(TODAY);
 
         try {
             runCycle(crewGroup);
@@ -49,7 +50,7 @@ public class Controller {
 
     private void runCycle(CrewGroup crewGroup) {
         while (true) {
-            String option = inputView.insertMenuOption(today);
+            String option = inputView.insertMenuOption(TODAY);
             if (isExit(option)) {
                 return;
             }
@@ -74,11 +75,11 @@ public class Controller {
     }
 
     private void attendanceCheck(CrewGroup crewGroup) {
-        dateValidator.validateAttendanceCheckDate(today);
+        dateValidator.validateAttendanceCheckDate(TODAY);
 
         String rawName = inputView.insertNickname();
         Crew crew = crewGroup.searchCrew(rawName);
-        if (crew.isAlreadyChecked(today)) {
+        if (crew.isAlreadyChecked(TODAY)) {
             outputView.printAlreadyCheckedGuide();
             return;
         }
@@ -86,7 +87,7 @@ public class Controller {
         String rawTime = inputView.insertTime();
         Time time = new Time(rawTime);
         Attendance attendance = crew.addAttendance(
-                LocalDateTime.of(today.getYear(), today.getMonth(), today.getDayOfMonth(),
+                LocalDateTime.of(TODAY.getYear(), TODAY.getMonth(), TODAY.getDayOfMonth(),
                         time.getHour(), time.getMinute()));
 
         outputView.printAttendanceLog(AttendanceLogDto.from(attendance));
@@ -97,7 +98,7 @@ public class Controller {
         Crew crew = crewGroup.searchCrew(rawName);
 
         int date = inputView.insertChangeDate();
-        dateValidator.validateAttendanceChangeDate(date, today);
+        dateValidator.validateAttendanceChangeDate(date, TODAY);
 
         String rawTime = inputView.insertChangeTime();
         Time time = new Time(rawTime);
@@ -112,19 +113,20 @@ public class Controller {
         String rawName = inputView.insertNickname();
         Crew crew = crewGroup.searchCrew(rawName);
 
-        CrewAttendancesDto crewAttendancesDTO = CrewAttendancesDto.from(crew);
+        CrewAttendancesDto crewAttendancesDto = CrewAttendancesDto.from(crew);
 
-        outputView.printAttendancesLog(crewAttendancesDTO);
+        outputView.printAttendancesLog(crewAttendancesDto);
     }
 
     private void showAlertCrews(CrewGroup crewGroup) {
-        List<AlertCrewDto> alertCrewDTDs = crewGroup.getAllAttendanceAlertLevel()
+        //TODO
+        List<AlertCrewDto> alertCrewDtos = crewGroup.getAllAttendanceAlertLevel()
                 .stream()
                 .map(AlertCrewDto::from)
                 .toList();
 
-        AlertCrewsDto alertCrewsDTO = AlertCrewsDto.from(alertCrewDTDs);
+        AlertCrewsDto alertCrewsDto = AlertCrewsDto.from(alertCrewDtos);
 
-        outputView.printAlertCrews(alertCrewsDTO);
+        outputView.printAlertCrews(alertCrewsDto);
     }
 }
