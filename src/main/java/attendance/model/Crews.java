@@ -21,4 +21,11 @@ public class Crews {
     public boolean contains(Crew crew) {
         return crews.contains(crew);
     }
+
+    public Crew findCrew(String name) {
+        return crews.stream()
+                .filter(crew -> crew.isName(name))
+                .findAny()
+                .orElseThrow(() -> new IllegalArgumentException("입력하신 크루가 존재하지 않습니다."));
+    }
 }

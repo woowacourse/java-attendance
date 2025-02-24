@@ -25,4 +25,8 @@ public class Crew {
     public int hashCode() {
         return Objects.hash(name);
     }
+
+    public boolean isName(String name) {
+        return this.name.equals(name);
+    }
 }

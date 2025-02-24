@@ -20,4 +20,12 @@ public class Attendance {
     public AttendanceType getType() {
         return type;
     }
+
+    public boolean isCrewAttendance(Crew crew) {
+        return crew.equals(crew);
+    }
+
+    public boolean isSameDateTime(LocalDateTime dateTime) {
+        return this.dateTime.equals(dateTime);
+    }
 }
