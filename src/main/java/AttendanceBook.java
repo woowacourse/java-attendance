@@ -5,7 +5,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class AttendanceBook {
-    Map<LocalDate, LocalTime> attendanceBook;
+    private final Map<LocalDate, LocalTime> attendanceBook;
 
     public AttendanceBook() {
         attendanceBook = new HashMap<>();
@@ -16,9 +16,11 @@ public class AttendanceBook {
     }
 
     public void attendance(LocalDate today, LocalTime time) {
-        if(attendanceBook.containsKey(today)) {
-            throw new IllegalArgumentException();
-        }
+
         attendanceBook.put(today, time);
+    }
+
+    public boolean hasAttendanceRecord(LocalDate date) {
+        return attendanceBook.containsKey(date);
     }
 }

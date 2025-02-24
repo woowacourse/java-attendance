@@ -13,11 +13,14 @@ public class AttendanceSystem {
     }
 
     public void attendance(String name, LocalTime time) {
-        if(isNotOperatingHours(time)) {
+        if (isNotOperatingHours(time)) {
             throw new IllegalArgumentException();
         }
-        if(!attendanceBooks.containsKey(name)) {
+        if (!attendanceBooks.containsKey(name)) {
             attendanceBooks.put(name, new AttendanceBook());
+        }
+        if(attendanceBooks.get(name).hasAttendanceRecord(TODAY)) {
+            throw new IllegalArgumentException();
         }
         attendanceBooks.get(name).attendance(TODAY, time);
     }
@@ -27,6 +30,10 @@ public class AttendanceSystem {
     }
 
     public LocalDateTime getAttendanceRecord(String name, LocalDate date) {
-        return  attendanceBooks.get(name).getAttendanceDateTimeByDate(date);
+        return attendanceBooks.get(name).getAttendanceDateTimeByDate(date);
+    }
+
+    public void editAttendance(String name, LocalDate date, LocalTime time) {
+        attendanceBooks.get(name).attendance(date, time);
     }
 }
