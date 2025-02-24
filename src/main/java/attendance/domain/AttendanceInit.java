@@ -1,10 +1,13 @@
 package attendance.domain;
 
+import attendance.utility.DateGenerator;
 import attendance.utility.DateTimeParser;
 import attendance.utility.FileUtil;
 
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
+import java.util.stream.IntStream;
 
 public class AttendanceInit {
 
@@ -12,9 +15,13 @@ public class AttendanceInit {
     private static final String INFO_DELIMITER = ",";
 
     private final AttendanceManager attendanceManager;
+    private final DateGenerator dateGenerator;
+    private final Holiday holiday;
 
-    public AttendanceInit(AttendanceManager attendanceManager) {
+    public AttendanceInit(final AttendanceManager attendanceManager, final Holiday holiday, final DateGenerator dateGenerator) {
         this.attendanceManager = attendanceManager;
+        this.dateGenerator = dateGenerator;
+        this.holiday = holiday;
     }
 
     public void initAttendances() {
@@ -34,7 +41,16 @@ public class AttendanceInit {
 
     private void addNewCrew(String nickname) {
         if (!attendanceManager.containsNickname(nickname)) {
-            attendanceManager.addCrew(nickname);
+
+            int day = dateGenerator.now().getDayOfMonth();
+
+            Attendances newAttendances = new Attendances();
+            IntStream.range(1, day + 1)
+                    .mapToObj(index -> LocalDateTime.of(dateGenerator.now().withDayOfMonth(index), LocalTime.MAX))
+                    .filter(dateTime -> !holiday.isHoliday(dateTime.toLocalDate()))
+                    .forEach(newAttendances::addAttendance);
+
+            attendanceManager.addCrew(nickname, newAttendances);
         }
     }
 

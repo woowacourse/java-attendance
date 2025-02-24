@@ -1,38 +1,22 @@
 package attendance.domain;
 
-import attendance.utility.DateGenerator;
-
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 public class AttendanceManager {
 
-    private final Map<String, Attendances> attendances;
-    private final Holiday holiday;
-    private final DateGenerator dateGenerator;
+    private final Map<String, Attendances> crewAttendances;
 
-    public AttendanceManager(Holiday holiday, DateGenerator dateGenerator) {
-        this.attendances = new HashMap<>();
-        this.holiday = holiday;
-        this.dateGenerator = dateGenerator;
+    public AttendanceManager() {
+        this.crewAttendances = new HashMap<>();
     }
 
-    public void addCrew(String name) {
-        int day = dateGenerator.now().getDayOfMonth();
-
-        Attendances newAttendances = new Attendances();
-        IntStream.range(1, day + 1)
-                .mapToObj(index -> LocalDateTime.of(dateGenerator.now().withDayOfMonth(index), LocalTime.MAX))
-                .filter(dateTime -> !holiday.isHoliday(dateTime.toLocalDate()))
-                .forEach(newAttendances::addAttendance);
-
-        attendances.put(name, newAttendances);
+    public void addCrew(String name, Attendances attendances) {
+        crewAttendances.put(name, attendances);
     }
 
     public Attendance processAttendanceCheck(final LocalDateTime dateTime, final String nickname) {
@@ -64,7 +48,7 @@ public class AttendanceManager {
         return AttendanceStatus.of(attendancesUntilYesterday);
     }
 
-    public Map<String, AttendanceStatus> getAttendanceWarnedCrews() {
+    public Map<String, AttendanceStatus> getAttendanceRiskCrew() {
         return createWarnedCrews().entrySet().stream()
                 .filter(entry -> entry.getValue().isNotNoneState())
                 .sorted(Map.Entry.<String, AttendanceStatus>comparingByValue()
@@ -78,7 +62,7 @@ public class AttendanceManager {
     }
 
     private LinkedHashMap<String, AttendanceStatus> createWarnedCrews() {
-        return attendances.entrySet().stream()
+        return crewAttendances.entrySet().stream()
                 .collect(Collectors.toMap(
                         Map.Entry::getKey,
                         entry -> new AttendanceStatus(entry.getValue().getAttendancesUntilYesterday()),
@@ -94,10 +78,10 @@ public class AttendanceManager {
     }
 
     public boolean containsNickname(String nickname) {
-        return attendances.containsKey(nickname);
+        return crewAttendances.containsKey(nickname);
     }
 
     public Attendances findCrewAttendance(String nickname) {
-        return attendances.get(nickname);
+        return crewAttendances.get(nickname);
     }
 }
