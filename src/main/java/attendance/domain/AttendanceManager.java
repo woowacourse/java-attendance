@@ -1,5 +1,6 @@
 package attendance.domain;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -36,20 +37,20 @@ public class AttendanceManager {
         return List.of(oldAttendance, newAttendance);
     }
 
-    public List<Attendance> getAttendanceRecord(final String nickname) {
+    public List<Attendance> getAttendanceRecord(final LocalDate today, final String nickname) {
         Attendances attendances = findCrewAttendance(nickname);
-        return attendances.getAttendancesUntilYesterday();
+        return attendances.getAttendancesBefore(today);
     }
 
-    public AttendanceStatus getAttendanceStatus(final String nickname) {
+    public AttendanceStatus getAttendanceStatus(final LocalDate today, final String nickname) {
         Attendances attendances = findCrewAttendance(nickname);
 
-        List<Attendance> attendancesUntilYesterday = attendances.getAttendancesUntilYesterday();
-        return AttendanceStatus.of(attendancesUntilYesterday);
+        List<Attendance> attendancesBeforeToday = attendances.getAttendancesBefore(today);
+        return AttendanceStatus.of(attendancesBeforeToday);
     }
 
-    public Map<String, AttendanceStatus> getAttendanceRiskCrew() {
-        return createWarnedCrews().entrySet().stream()
+    public Map<String, AttendanceStatus> getAttendanceRiskCrew(final LocalDate today) {
+        return createWarnedCrews(today).entrySet().stream()
                 .filter(entry -> entry.getValue().isNotNoneState())
                 .sorted(Map.Entry.<String, AttendanceStatus>comparingByValue()
                         .thenComparing(Map.Entry.comparingByKey()))
@@ -61,11 +62,11 @@ public class AttendanceManager {
                 ));
     }
 
-    private LinkedHashMap<String, AttendanceStatus> createWarnedCrews() {
+    private LinkedHashMap<String, AttendanceStatus> createWarnedCrews(final LocalDate today) {
         return crewAttendances.entrySet().stream()
                 .collect(Collectors.toMap(
                         Map.Entry::getKey,
-                        entry -> new AttendanceStatus(entry.getValue().getAttendancesUntilYesterday()),
+                        entry -> new AttendanceStatus(entry.getValue().getAttendancesBefore(today)),
                         (existing, replacement) -> existing,
                         LinkedHashMap::new
                 ));

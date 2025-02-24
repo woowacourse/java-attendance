@@ -125,7 +125,7 @@ class AttendanceManagerTest {
         attendanceManager.addCrew(nickname, attendances);
 
         // when
-        List<Attendance> result = attendanceManager.getAttendanceRecord(nickname);
+        List<Attendance> result = attendanceManager.getAttendanceRecord(nowDate, nickname);
 
         // then
         assertThat(result.size()).isEqualTo(dayOfMonth - 1);
@@ -135,14 +135,15 @@ class AttendanceManagerTest {
     void 출결_상태를_반환한다() {
         // given
         String nickname = "이든";
+        LocalDate nowDate = dateGenerator.now();
 
         Attendances attendances = new Attendances();
-        attendances.addAttendance(LocalDateTime.of(dateGenerator.now(), LocalTime.MIDNIGHT));
+        attendances.addAttendance(LocalDateTime.of(nowDate, LocalTime.MIDNIGHT));
 
         attendanceManager.addCrew(nickname, attendances);
 
         // when
-        AttendanceStatus result = attendanceManager.getAttendanceStatus(nickname);
+        AttendanceStatus result = attendanceManager.getAttendanceStatus(nowDate, nickname);
 
         // then
         assertThat(result.getStatus().size()).isEqualTo(3);
@@ -170,7 +171,7 @@ class AttendanceManagerTest {
         }
 
         // when
-        Map<String, AttendanceStatus> result = attendanceManager.getAttendanceRiskCrew();
+        Map<String, AttendanceStatus> result = attendanceManager.getAttendanceRiskCrew(nowDate);
 
         // then
         assertThat(result.size()).isEqualTo(3);
@@ -188,7 +189,7 @@ class AttendanceManagerTest {
         attendanceManager.addCrew(nickname, attendances);
 
         // when
-        Map<String, AttendanceStatus> result = attendanceManager.getAttendanceRiskCrew();
+        Map<String, AttendanceStatus> result = attendanceManager.getAttendanceRiskCrew(nowDate);
 
         // then
         assertThat(result).doesNotContainKey(nickname);
@@ -215,7 +216,7 @@ class AttendanceManagerTest {
         addAttendancesForCrew(randiDateTimes, "랜디");
 
         // when
-        Map<String, AttendanceStatus> result = attendanceManager.getAttendanceRiskCrew();
+        Map<String, AttendanceStatus> result = attendanceManager.getAttendanceRiskCrew(nowDate);
 
         // then
         List<String> sortedKeys = new ArrayList<>(result.keySet());
@@ -242,7 +243,7 @@ class AttendanceManagerTest {
         addAttendancesForCrew(randiDateTimes, "랜디");
 
         // when
-        Map<String, AttendanceStatus> result = attendanceManager.getAttendanceRiskCrew();
+        Map<String, AttendanceStatus> result = attendanceManager.getAttendanceRiskCrew(nowDate);
 
         // then
         List<String> sortedKeys = new ArrayList<>(result.keySet());
@@ -278,7 +279,7 @@ class AttendanceManagerTest {
         }
 
         // when
-        Map<String, AttendanceStatus> result = attendanceManager.getAttendanceRiskCrew();
+        Map<String, AttendanceStatus> result = attendanceManager.getAttendanceRiskCrew(nowDate);
 
         // then
         List<String> sortedKeys = new ArrayList<>(result.keySet());

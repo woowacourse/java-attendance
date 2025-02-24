@@ -9,32 +9,23 @@ public class Attendances {
 
     private final List<Attendance> attendances = new ArrayList<>();
 
-    public Attendance find(LocalDate date) {
-        return attendances.stream()
-                .filter(attendance -> attendance.isSameDate(date))
-                .findFirst()
-                .orElseThrow(() -> new IllegalArgumentException("[ERROR] 수정하려는 날짜는 출석할 수 없습니다."));
-    }
-
     public Attendance addAttendance(LocalDateTime dateTime) {
         Attendance attendance = new Attendance(dateTime);
         attendances.add(attendance);
-
         return attendance;
     }
 
     public Attendance deleteAttendance(LocalDate date) {
         Attendance attendance = find(date);
         attendances.remove(attendance);
-
         return attendance;
     }
 
-    public List<Attendance> getAttendancesUntilYesterday() {
+    public Attendance find(LocalDate date) {
         return attendances.stream()
-                .sorted(Attendance::compareTo)
-                .toList()
-                .subList(0, attendances.size() - 1);
+                .filter(attendance -> attendance.isSameDate(date))
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException("[ERROR] 수정하려는 날짜는 출석할 수 없습니다."));
     }
 
     public void validateAlreadyAttendance(LocalDate date) {
@@ -43,7 +34,10 @@ public class Attendances {
         }
     }
 
-    public List<Attendance> getAttendances() {
-        return attendances;
+    public List<Attendance> getAttendancesBefore(LocalDate date) {
+        return attendances.stream()
+                .sorted(Attendance::compareTo)
+                .filter(attendance -> attendance.isBefore(date))
+                .toList();
     }
 }

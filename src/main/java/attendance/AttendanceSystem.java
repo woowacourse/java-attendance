@@ -63,8 +63,8 @@ public class AttendanceSystem {
     private void processSystem(final AttendanceMenu menu, final LocalDate today) {
         processCheck(menu, today);
         processUpdate(menu, today);
-        processRecordSearch(menu);
-        processRiskSearch(menu);
+        processRecordSearch(menu, today);
+        processRiskSearch(menu, today);
     }
 
     private void processCheck(final AttendanceMenu menu, final LocalDate today) {
@@ -94,21 +94,21 @@ public class AttendanceSystem {
         }
     }
 
-    private void processRecordSearch(final AttendanceMenu menu) {
+    private void processRecordSearch(final AttendanceMenu menu, final LocalDate today) {
         if (menu == RECORD_SEARCH) {
             String nickname = validateAndReadNickname(false);
 
-            List<Attendance> attendanceRecords = attendanceManager.getAttendanceRecord(nickname);
+            List<Attendance> attendanceRecords = attendanceManager.getAttendanceRecord(today, nickname);
             outputView.printAttendanceRecords(attendanceRecords, nickname);
 
-            AttendanceStatus attendanceStatus = attendanceManager.getAttendanceStatus(nickname);
+            AttendanceStatus attendanceStatus = attendanceManager.getAttendanceStatus(today, nickname);
             outputView.printAttendanceStatus(attendanceStatus);
         }
     }
 
-    private void processRiskSearch(final AttendanceMenu menu) {
+    private void processRiskSearch(final AttendanceMenu menu, final LocalDate today) {
         if (menu == RISK_SEARCH) {
-            Map<String, AttendanceStatus> riskCrews = attendanceManager.getAttendanceRiskCrew();
+            Map<String, AttendanceStatus> riskCrews = attendanceManager.getAttendanceRiskCrew(today);
             outputView.printAttendanceRiskCrews(riskCrews);
         }
     }
