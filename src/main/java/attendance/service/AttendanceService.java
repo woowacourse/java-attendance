@@ -1,6 +1,5 @@
 package attendance.service;
 
-import attendance.common.Constants;
 import attendance.domain.Attendance;
 import attendance.domain.AttendancePenalty;
 import attendance.domain.AttendanceStatus;
@@ -64,9 +63,9 @@ public class AttendanceService {
 
     public CrewAttendanceDto getCrewAttendance(String name, LocalDate today) {
         Map<LocalDate, AttendanceInfoDto> attendanceInfos = getAttendanceInfos(name, today);
-        List<Integer> counts = getAttendanceCounts(name, today);
-        AttendancePenalty penalty = AttendancePenalty.find(counts);
-        return CrewAttendanceDto.of(name, attendanceInfos, counts, penalty, today);
+        Map<AttendanceStatus, Integer> attendanceCounts = getAttendanceCounts(name, today);
+        AttendancePenalty penalty = AttendancePenalty.find(attendanceCounts);
+        return CrewAttendanceDto.of(name, attendanceInfos, attendanceCounts, penalty, today);
     }
 
     public List<PenaltyCrewDto> getCrewsName(LocalDate today) {
@@ -90,12 +89,15 @@ public class AttendanceService {
     }
 
     private void addPenaltyCrew(String crewName, LocalDate today, List<PenaltyCrew> penaltyCrews) {
-        List<Integer> counts = attendances.calculateByNameAndDate(crewName, today);
-        if (AttendancePenalty.find(counts) == AttendancePenalty.NONE) {
+        Map<AttendanceStatus, Integer> attendanceStatusCounts = attendances.countAttendanceStatusByNameAndDate(crewName, today);
+        if (AttendancePenalty.find(attendanceStatusCounts) == AttendancePenalty.NONE) {
             return;
         }
         penaltyCrews.add(
-                new PenaltyCrew(crewName, counts.get(Constants.ABSENCE_INDEX), counts.get(Constants.LATE_INDEX))
+                new PenaltyCrew(
+                    crewName,
+                    attendanceStatusCounts.get(AttendanceStatus.ABSENCE),
+                    attendanceStatusCounts.get(AttendanceStatus.LATE))
         );
     }
 
@@ -111,7 +113,7 @@ public class AttendanceService {
         return map;
     }
 
-    private List<Integer> getAttendanceCounts(String name, LocalDate today) {
-        return attendances.calculateByNameAndDate(name, today);
+    private Map<AttendanceStatus, Integer> getAttendanceCounts(String name, LocalDate today) {
+        return attendances.countAttendanceStatusByNameAndDate(name, today);
     }
 }

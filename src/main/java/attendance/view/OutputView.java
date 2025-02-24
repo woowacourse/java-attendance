@@ -1,11 +1,9 @@
 package attendance.view;
 
-import static attendance.common.Constants.ABSENCE_INDEX;
 import static attendance.common.Constants.DECEMBER_START_DATE;
-import static attendance.common.Constants.LATE_INDEX;
 import static attendance.common.Constants.LINE_SEPARATOR;
-import static attendance.common.Constants.PRESENCE_INDEX;
 
+import attendance.domain.AttendanceStatus;
 import attendance.dto.AttendanceInfoDto;
 import attendance.dto.CrewAttendanceDto;
 import attendance.dto.EditResponseDto;
@@ -53,7 +51,7 @@ public class OutputView {
             currentDate = processDailyAttendance(currentDate, crewAttendanceDto.dtoMap());
         }
 
-        formatCounts(crewAttendanceDto.counts());
+        formatCounts(crewAttendanceDto.statusCounts());
 
         if (crewAttendanceDto.penalty() != null) {
             System.out.println(crewAttendanceDto.penalty() + " 대상자입니다.");
@@ -87,10 +85,10 @@ public class OutputView {
         System.out.println(DateConverter.convertToString(localDate) + " --:-- (결석)");
     }
 
-    private void formatCounts(List<Integer> counts) {
-        int presenceCount = counts.get(PRESENCE_INDEX);
-        int lateCount = counts.get(LATE_INDEX);
-        int absenceCount = counts.get(ABSENCE_INDEX);
+    private void formatCounts(Map<AttendanceStatus, Integer> statusCounts) {
+        int presenceCount = statusCounts.get(AttendanceStatus.PRESENCE);
+        int lateCount = statusCounts.get(AttendanceStatus.LATE);
+        int absenceCount = statusCounts.get(AttendanceStatus.ABSENCE);
 
         System.out.println();
         System.out.println("출석 : " + presenceCount + "회");

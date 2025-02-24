@@ -2,14 +2,12 @@ package attendance.domain;
 
 import attendance.common.Constants;
 
-import static attendance.common.Constants.ABSENCE_INDEX;
 import static attendance.common.Constants.COUNSELING_MINIMUM;
 import static attendance.common.Constants.EXPULSION_MINIMUM;
-import static attendance.common.Constants.LATE_INDEX;
 import static attendance.common.Constants.WARING_MAXIMUM;
 
 import java.util.Arrays;
-import java.util.List;
+import java.util.Map;
 import java.util.function.Predicate;
 
 public enum AttendancePenalty {
@@ -27,8 +25,8 @@ public enum AttendancePenalty {
         this.rule = rule;
     }
 
-    public static AttendancePenalty find(List<Integer> result) {
-        return find(result.get(ABSENCE_INDEX), result.get(LATE_INDEX));
+    public static AttendancePenalty find(Map<AttendanceStatus, Integer> statusCount) {
+        return find(statusCount.get(AttendanceStatus.ABSENCE), statusCount.get(AttendanceStatus.LATE));
     }
 
     public static AttendancePenalty find(int absenceCount, int lateCount) {

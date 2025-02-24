@@ -9,6 +9,8 @@ import attendance.common.ErrorMessage;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
+import java.util.Map;
+
 import org.junit.jupiter.api.Test;
 
 class AttendancesTest {
@@ -123,9 +125,9 @@ class AttendancesTest {
 
         Attendances attendances = new Attendances(attendancesData);
 
-        List<Integer> expect = List.of(1, 1, 10);
+        Map<AttendanceStatus, Integer> expect = Map.of(AttendanceStatus.PRESENCE, 1, AttendanceStatus.LATE, 1, AttendanceStatus.ABSENCE, 10);
 
-        assertThat(attendances.calculateByNameAndDate("쿠키", today)).isEqualTo(expect);
+        assertThat(attendances.countAttendanceStatusByNameAndDate("쿠키", today)).isEqualTo(expect);
     }
 
     @Test

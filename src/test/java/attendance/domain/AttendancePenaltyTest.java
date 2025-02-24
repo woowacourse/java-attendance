@@ -2,7 +2,7 @@ package attendance.domain;
 
 import org.junit.jupiter.api.Test;
 
-import java.util.List;
+import java.util.Map;
 
 import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
 
@@ -10,28 +10,31 @@ class AttendancePenaltyTest {
 
     @Test
     void 면담_대상자를_확인한다() {
-        List<Integer> result1 = List.of(3, 5, 2);
-        List<Integer> result2 = List.of(0, 7, 1);
-
-        assertThat(AttendancePenalty.find(result1).getMessage()).isEqualTo("면담");
-        assertThat(AttendancePenalty.find(result2).getMessage()).isEqualTo("면담");
+        Map<AttendanceStatus, Integer> result = Map.of(
+            AttendanceStatus.PRESENCE,3,
+            AttendanceStatus.LATE,5 ,
+            AttendanceStatus.ABSENCE,2);
+        
+        assertThat(AttendancePenalty.find(result).getMessage()).isEqualTo("면담");
     }
 
     @Test
     void 제적_대상자를_확인한다() {
-        List<Integer> result1 = List.of(3, 15, 1);
-        List<Integer> result2 = List.of(0, 2, 6);
+        Map<AttendanceStatus, Integer> result = Map.of(
+            AttendanceStatus.PRESENCE,3,
+            AttendanceStatus.LATE,15 ,
+            AttendanceStatus.ABSENCE,1);
 
-        assertThat(AttendancePenalty.find(result1).getMessage()).isEqualTo("제적");
-        assertThat(AttendancePenalty.find(result2).getMessage()).isEqualTo("제적");
+        assertThat(AttendancePenalty.find(result).getMessage()).isEqualTo("제적");
     }
 
     @Test
     void 경고_대상자를_확인한다() {
-        List<Integer> result1 = List.of(3, 6, 0);
-        List<Integer> result2 = List.of(0, 2, 2);
+        Map<AttendanceStatus, Integer> result = Map.of(
+            AttendanceStatus.PRESENCE,3,
+            AttendanceStatus.LATE,6 ,
+            AttendanceStatus.ABSENCE,0);
 
-        assertThat(AttendancePenalty.find(result1).getMessage()).isEqualTo("경고");
-        assertThat(AttendancePenalty.find(result2).getMessage()).isEqualTo("경고");
+        assertThat(AttendancePenalty.find(result).getMessage()).isEqualTo("경고");
     }
 }
