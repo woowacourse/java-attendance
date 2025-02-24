@@ -77,14 +77,21 @@ public class AbsentPolicyTest {
         );
     }
 
-//    @Test
-//    @DisplayName("교육 시작 시간으로부터 5분 초과는 지각으로 간주한다")
-//    public void checkAttendanceStatusTest() {
-//        //given
-//        AbsentPolicy absentPolicy = new AbsentPolicy();
-//        LocalDateTime educationDateTime = LocalDateTime.of(2024,12,10,10,6);
-//
-//        //when-then
-//        assertThat(absentPolicy.checkAttendanceStatus(educationDateTime)).isEqualTo("지각");
-//    }
+    @ParameterizedTest
+    @DisplayName("시작 시간부터 5분 초과 30분 이하이면 지각이다")
+    @MethodSource("provideDateTimeForLatePolicy")
+    public void checkLateStatusTest(LocalDateTime educationDateTime){
+        //given
+        AbsentPolicy absentPolicy = new AbsentPolicy();
+
+        //when-then
+        assertThat(absentPolicy.checkAttendanceStatus(educationDateTime)).isEqualTo("지각");
+    }
+
+    private static Stream<Arguments> provideDateTimeForLatePolicy(){
+        return Stream.of(
+                Arguments.of(LocalDateTime.of(2024,12,10, 9,6))
+        );
+    }
+
 }
