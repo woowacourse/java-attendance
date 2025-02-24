@@ -13,6 +13,8 @@ public class AbsentPolicy {
         }
     }
 
+    public void validateIsHoliday(LocalDate attendanceDate) {
+    }
 
     public String checkAttendanceStatus(LocalDateTime educationDateTime) {
         LocalTime educationTime = educationDateTime.toLocalTime();

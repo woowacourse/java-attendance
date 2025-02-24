@@ -10,7 +10,7 @@ import static org.assertj.core.api.Assertions.*;
 
 /*
 // 테스트 코드 순서
-1. 주말일 경우 예외 발생
+1. 주말일 경우 예외 발생 [x]
 2. 공휴일일 경우 예외 발생
 3. 모든 시간 결석 처리
 4. 시작 시간부터 5분 내면 출석(10시)
@@ -22,7 +22,7 @@ public class AbsentPolicyTest {
     @ParameterizedTest
     @DisplayName("주말에 출석하려고 하는 경우 예외가 발생한다")
     @ValueSource(ints = {7,8})
-    public void checkAttendanceStatusTest(int dayOfMonth){
+    public void validateWeekendTest(int dayOfMonth){
         //given
         AbsentPolicy absentPolicy = new AbsentPolicy();
         LocalDate attendanceDate = LocalDate.of(2024,12,dayOfMonth);
@@ -31,6 +31,19 @@ public class AbsentPolicyTest {
         assertThatThrownBy(() -> absentPolicy.validateIsWeekend(attendanceDate))
                 .isInstanceOf(IllegalArgumentException.class);
     }
+
+    @Test
+    @DisplayName("공휴일에 출석하려고 하는 경우 예외가 발생한다")
+    public void validateHolidayTest(){
+        //given
+        AbsentPolicy absentPolicy = new AbsentPolicy();
+        LocalDate attendanceDate = LocalDate.of(2024,12,25);
+
+        //when-then
+        assertThatThrownBy(() -> absentPolicy.validateIsHoliday(attendanceDate))
+                .isInstanceOf(IllegalArgumentException.class);
+    }
+
 //    @Test
 //    @DisplayName("교육 시작 시간으로부터 5분 초과는 지각으로 간주한다")
 //    public void checkAttendanceStatusTest() {
