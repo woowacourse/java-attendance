@@ -11,14 +11,16 @@ class AttendanceAlertLevelTest {
     @ParameterizedTest
     @ValueSource(ints = {6, 7, 9})
     void dismissedTest(int absentTotal) {
-        Assertions.assertEquals(AttendanceAlertLevel.DISMISSED, AttendanceAlertLevel.calculateAttendanceAlertLevel(absentTotal));
+        Assertions.assertEquals(AttendanceAlertLevel.DISMISSED,
+                AttendanceAlertLevel.calculateAttendanceAlertLevel(absentTotal));
     }
 
     @DisplayName("결석 수가 3회 이상 6회 미만인 경우 면담입니다.")
     @ParameterizedTest
     @ValueSource(ints = {3, 4, 5})
     void counselRequiredTest(int absentTotal) {
-        Assertions.assertEquals(AttendanceAlertLevel.COUNSEL_REQUIRED, AttendanceAlertLevel.calculateAttendanceAlertLevel(absentTotal));
+        Assertions.assertEquals(AttendanceAlertLevel.COUNSEL_REQUIRED,
+                AttendanceAlertLevel.calculateAttendanceAlertLevel(absentTotal));
     }
 
     @DisplayName("결석 수가 2회 이상 3회 미만인 경우 경고입니다.")
@@ -31,6 +33,7 @@ class AttendanceAlertLevelTest {
     @ParameterizedTest
     @ValueSource(ints = {0, 1})
     void normalTest(int absentTotal) {
-        Assertions.assertEquals(AttendanceAlertLevel.NORMAL, AttendanceAlertLevel.calculateAttendanceAlertLevel(absentTotal));
+        Assertions.assertEquals(AttendanceAlertLevel.NORMAL,
+                AttendanceAlertLevel.calculateAttendanceAlertLevel(absentTotal));
     }
 }

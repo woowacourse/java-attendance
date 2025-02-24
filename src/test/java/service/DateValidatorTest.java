@@ -9,6 +9,7 @@ import org.junit.jupiter.params.provider.ValueSource;
 
 class DateValidatorTest {
     DateValidator dateValidator = new DateValidator();
+
     @DisplayName("출석 변경 날짜가 평일이고 미래가 아닌지 검사합니다.")
     @ParameterizedTest
     @ValueSource(ints = {2, 3, 23, 24})

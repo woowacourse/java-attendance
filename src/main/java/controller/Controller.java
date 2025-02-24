@@ -119,7 +119,6 @@ public class Controller {
     }
 
     private void showAlertCrews(CrewGroup crewGroup) {
-        //TODO
         List<AlertCrewDto> alertCrewDtos = crewGroup.getAllAttendanceAlertLevel()
                 .stream()
                 .map(AlertCrewDto::from)
