@@ -8,7 +8,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import attendance.common.exception.AttendanceArgumentException;
+
 public record AttendanceBook(Map<String, AttendanceList> attendances) {
+    private static final String NOT_REGISTERED_NICKNAME = "등록되지 않은 닉네임입니다.";
 
     public static AttendanceBook from(List<String> lines) {
         Map<String, AttendanceList> attendances = new HashMap<>();
@@ -43,7 +46,7 @@ public record AttendanceBook(Map<String, AttendanceList> attendances) {
     private AttendanceList getAttendanceList(String nickname) {
         var attendanceList = attendances.get(nickname);
         if (attendanceList == null) {
-            throw new NullPointerException();
+            throw new AttendanceArgumentException(NOT_REGISTERED_NICKNAME);
         }
         return attendanceList;
     }

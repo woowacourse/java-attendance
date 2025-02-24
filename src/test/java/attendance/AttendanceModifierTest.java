@@ -56,7 +56,13 @@ public class AttendanceModifierTest {
     @Test
     @DisplayName("등록되지 않은 닉네임을 입력할 경우, 예외가 발생한다.")
     void error_notRegisteredNickname() {
+        var nickname = "고든";
+        var date = LocalDate.of(2024, 12, 2);
+        var time = LocalTime.of(10, 1);
 
+        assertThatThrownBy(() -> attendanceModifier.manage(nickname, date, time))
+            .isInstanceOf(AttendanceArgumentException.class)
+            .hasMessageContaining("등록되지 않은 닉네임");
     }
 
     @Test
