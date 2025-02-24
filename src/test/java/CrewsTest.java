@@ -5,7 +5,7 @@ import domain.Crews;
 import domain.AttendanceStatus;
 import domain.Crew;
 import domain.StatisticsResult;
-import domain.TimeAndStatus;
+import domain.DailyRecord;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -39,10 +39,10 @@ public class CrewsTest {
         String name = "빙봉";
 
         crews.createCrew(name, List.of());
-        TimeAndStatus timeStatus = crews.attendCrew(name, dateAndTime);
+        DailyRecord timeStatus = crews.attendCrew(name, dateAndTime);
 
         Crew crew = crews.findCrewByName(name);
-        TimeAndStatus expectedTimeStatus = crew.findTimeByDate(localDate);
+        DailyRecord expectedTimeStatus = crew.findTimeByDate(localDate);
 
         assertThat(expectedTimeStatus).isEqualTo(timeStatus);
     }
@@ -72,9 +72,9 @@ public class CrewsTest {
         crews.createCrew(name, List.of(initialDateAndTime));
         crews.editCrew(name, editedDateAndTime);
 
-        TimeAndStatus timeAndStatus = findTimeAndStatus(name, localDate);
+        DailyRecord dailyRecord = findTimeAndStatus(name, localDate);
 
-        assertThat(timeAndStatus.getStatus()).isEqualTo(AttendanceStatus.LATENESS);
+        assertThat(dailyRecord.getStatus()).isEqualTo(AttendanceStatus.LATENESS);
     }
 
     @Test
@@ -91,7 +91,7 @@ public class CrewsTest {
         }).isInstanceOf(IllegalArgumentException.class);
     }
 
-    private TimeAndStatus findTimeAndStatus(String name, LocalDate localDate) {
+    private DailyRecord findTimeAndStatus(String name, LocalDate localDate) {
         Crew crew = crews.findCrewByName(name);
         return crew.findTimeByDate(localDate);
     }

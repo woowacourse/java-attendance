@@ -10,13 +10,13 @@ import java.util.Map;
 
 public class Crew {
 
-    private final Map<LocalDate, TimeAndStatus> records;
+    private final Map<LocalDate, DailyRecord> records;
 
     public Crew(List<LocalDateTime> localDateTimes) {
         this.records = initializeRecords(localDateTimes);
     }
 
-    public TimeAndStatus findTimeByDate(LocalDate localDate) {
+    public DailyRecord findTimeByDate(LocalDate localDate) {
         if(records.containsKey(localDate)) {
             return records.get(localDate);
         }
@@ -27,18 +27,18 @@ public class Crew {
         return records.size();
     }
 
-    public TimeAndStatus attend(LocalDateTime localDateTime) {
+    public DailyRecord attend(LocalDateTime localDateTime) {
         LocalDate localDate = localDateTime.toLocalDate();
-        TimeAndStatus timeAndStatus = createTimeAndStatus(localDateTime);
+        DailyRecord dailyRecord = createTimeAndStatus(localDateTime);
 
-        records.put(localDate, timeAndStatus);
-        return timeAndStatus;
+        records.put(localDate, dailyRecord);
+        return dailyRecord;
     }
 
-    public TimeAndStatus edit(LocalDateTime newDateTime) {
+    public DailyRecord edit(LocalDateTime newDateTime) {
         LocalDate localDate = newDateTime.toLocalDate();
-        TimeAndStatus oldStatus = records.get(localDate);
-        TimeAndStatus newStatus = createTimeAndStatus(newDateTime);
+        DailyRecord oldStatus = records.get(localDate);
+        DailyRecord newStatus = createTimeAndStatus(newDateTime);
 
         records.put(localDate, newStatus);
         return oldStatus;
@@ -48,20 +48,20 @@ public class Crew {
         return records.containsKey(localDate);
     }
 
-    private Map<LocalDate, TimeAndStatus> initializeRecords(List<LocalDateTime> localDateTimes) {
-        Map<LocalDate, TimeAndStatus> result = new HashMap<>();
+    private Map<LocalDate, DailyRecord> initializeRecords(List<LocalDateTime> localDateTimes) {
+        Map<LocalDate, DailyRecord> result = new HashMap<>();
         for (LocalDateTime localDateTime : localDateTimes) {
             LocalDate localDate = localDateTime.toLocalDate();
-            TimeAndStatus timeStatus = createTimeAndStatus(localDateTime);
+            DailyRecord timeStatus = createTimeAndStatus(localDateTime);
             result.put(localDate, timeStatus);
         }
         return result;
     }
 
-    private TimeAndStatus createTimeAndStatus(LocalDateTime localDateTime) {
+    private DailyRecord createTimeAndStatus(LocalDateTime localDateTime) {
         LocalDate localDate = localDateTime.toLocalDate();
         LocalTime localTime = localDateTime.toLocalTime();
         DayOfWeek dayOfWeek = localDate.getDayOfWeek();
-        return new TimeAndStatus(localTime, dayOfWeek);
+        return new DailyRecord(localTime, dayOfWeek);
     }
 }

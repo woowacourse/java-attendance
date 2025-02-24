@@ -12,7 +12,7 @@ import domain.AttendanceStatistics;
 import domain.Penalty;
 import domain.Crew;
 import domain.StatisticsResult;
-import domain.TimeAndStatus;
+import domain.DailyRecord;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -66,8 +66,8 @@ public class AttendanceController {
             LocalDateTime dateTime = LocalDateTime.of(today, attendedTime);
 
             crews.attendCrew(name, dateTime);
-            TimeAndStatus timeAndStatus = crews.findCrewByName(name).findTimeByDate(today);
-            outputView.printAttendanceRecord(today, timeAndStatus);
+            DailyRecord dailyRecord = crews.findCrewByName(name).findTimeByDate(today);
+            outputView.printAttendanceRecord(today, dailyRecord);
         });
     }
 
@@ -88,8 +88,8 @@ public class AttendanceController {
             LocalTime attendedTime = DateTimeParser.parseStringToTime(time);
             LocalDateTime dateTime = LocalDateTime.of(editedDate, attendedTime);
 
-            TimeAndStatus oldStatus = crews.editCrew(name, dateTime);
-            TimeAndStatus newStatus = crews.findCrewByName(name).findTimeByDate(editedDate);
+            DailyRecord oldStatus = crews.editCrew(name, dateTime);
+            DailyRecord newStatus = crews.findCrewByName(name).findTimeByDate(editedDate);
             outputView.printEditResult(editedDate, oldStatus, newStatus);
         });
     }

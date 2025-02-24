@@ -13,12 +13,12 @@ import java.time.LocalTime;
 import java.util.Map;
 import util.parser.DateTimeParser;
 
-public class TimeAndStatus {
+public class DailyRecord {
 
     private final LocalTime time;
     private final AttendanceStatus status;
 
-    public TimeAndStatus(LocalTime time, DayOfWeek dayOfWeek) {
+    public DailyRecord(LocalTime time, DayOfWeek dayOfWeek) {
         this.time = time;
         this.status = checkStatus(dayOfWeek);
     }

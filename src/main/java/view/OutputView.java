@@ -22,7 +22,7 @@ import domain.Holiday;
 import domain.Penalty;
 import domain.Crew;
 import domain.StatisticsResult;
-import domain.TimeAndStatus;
+import domain.DailyRecord;
 import java.time.LocalDate;
 import java.time.format.TextStyle;
 import java.util.Locale;
@@ -34,14 +34,14 @@ public class OutputView {
         System.out.println(ERROR_PREFIX + e.getMessage());
     }
 
-    public void printAttendanceRecord(LocalDate localDate, TimeAndStatus timeAndStatus) {
+    public void printAttendanceRecord(LocalDate localDate, DailyRecord dailyRecord) {
         String date = dateFormatting(localDate);
-        String time = timeFormatting(timeAndStatus);
+        String time = timeFormatting(dailyRecord);
 
         System.out.printf(ATTENDANCE_RECORD_FORMAT, date, time);
     }
 
-    public void printEditResult(LocalDate localDate, TimeAndStatus before, TimeAndStatus after) {
+    public void printEditResult(LocalDate localDate, DailyRecord before, DailyRecord after) {
         String date = dateFormatting(localDate);
         String beforeInfo = timeFormatting(before);
         String afterInfo = timeFormatting(after);
@@ -59,7 +59,7 @@ public class OutputView {
     }
 
     private void printCrewAttendance(LocalDate date, Crew crew) {
-        TimeAndStatus status = crew.findTimeByDate(date);
+        DailyRecord status = crew.findTimeByDate(date);
         if (status == null || status.getStatus() == null) {
             System.out.printf(ATTENDANCE_RECORD_FORMAT
                 , dateFormatting(date)
@@ -98,11 +98,11 @@ public class OutputView {
         }
     }
 
-    private String timeFormatting(TimeAndStatus timeAndStatus) {
+    private String timeFormatting(DailyRecord dailyRecord) {
         return String.format(TIME_PRINT_FORMAT
-            , timeAndStatus.getTime().getHour()
-            , timeAndStatus.getTime().getMinute()
-            , timeAndStatus.getStatus());
+            , dailyRecord.getTime().getHour()
+            , dailyRecord.getTime().getMinute()
+            , dailyRecord.getStatus());
     }
 
     private String dateFormatting(LocalDate localDate) {

@@ -32,14 +32,14 @@ public class Crews {
         crews.put(name, new Crew(localDateTimes));
     }
 
-    public TimeAndStatus attendCrew(String name, LocalDateTime localDateTime) {
+    public DailyRecord attendCrew(String name, LocalDateTime localDateTime) {
         validateAttendancePossibility(name, localDateTime);
 
         Crew crew = findCrewByName(name);
         return crew.attend(localDateTime);
     }
 
-    public TimeAndStatus editCrew(String name, LocalDateTime newLocalDateTime) {
+    public DailyRecord editCrew(String name, LocalDateTime newLocalDateTime) {
         validateEditPossibility(name, newLocalDateTime);
 
         Crew crew = findCrewByName(name);
