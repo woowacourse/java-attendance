@@ -2,7 +2,7 @@ package attendance.domain;
 
 import java.util.Map;
 
-import attendance.domain.attendanceBook.AttendanceList;
+import attendance.domain.attendance.AttendanceList;
 
 public class StatusStatistic implements Comparable<StatusStatistic> {
     private static final String FORMAT_STATE = "%s: %d회\n";
@@ -11,14 +11,13 @@ public class StatusStatistic implements Comparable<StatusStatistic> {
     private final Map<AttendanceStatus, Integer> statistic;
     private final String nickname;
 
-    public StatusStatistic(Map<AttendanceStatus, Integer> statistic, String nickName) {
-        this.statistic = statistic;
-        this.nickname = nickName;
+    public static StatusStatistic of(AttendanceList attendanceList, String nickName) {
+        return new StatusStatistic(attendanceList.produceStatistic(), nickName);
     }
 
-    public StatusStatistic(AttendanceList attendanceList, String nickName) {
-        this.statistic = attendanceList.produceStatistic();
-        this.nickname = nickName;
+    public StatusStatistic(Map<AttendanceStatus, Integer> statistic, String nickname) {
+        this.statistic = statistic;
+        this.nickname = nickname;
     }
 
     public String getReportDetail() {

@@ -4,13 +4,13 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 
-import attendance.domain.attendanceBook.Attendance;
-import attendance.domain.attendanceBook.AttendanceBook;
-import attendance.domain.attendanceBook.AttendanceList;
+import attendance.domain.attendance.Attendance;
+import attendance.domain.attendance.AttendanceBook;
+import attendance.domain.attendance.AttendanceList;
 
-public class AttendanceModifier extends AttendanceManager {
+public class ModifyManager extends AttendanceManager {
 
-    public AttendanceModifier(AttendanceBook attendanceBook) {
+    public ModifyManager(AttendanceBook attendanceBook) {
         super(attendanceBook);
     }
 

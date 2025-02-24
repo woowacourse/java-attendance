@@ -13,12 +13,12 @@ import org.junit.jupiter.api.Test;
 import attendance.common.exception.AttendanceArgumentException;
 import attendance.common.exception.AttendanceFileException;
 import attendance.domain.AttendanceFileReader;
-import attendance.domain.attendanceBook.Attendance;
-import attendance.domain.attendanceBook.AttendanceBook;
+import attendance.domain.attendance.Attendance;
+import attendance.domain.attendance.AttendanceBook;
 import attendance.domain.attendanceManager.AttendanceManager;
-import attendance.domain.attendanceManager.AttendanceRegister;
+import attendance.domain.attendanceManager.RegisterManager;
 
-public class AttendanceRegisterTest {
+public class RegisterManagerTest {
     private static final String TEST_FILE = "/attendances.csv";
 
     private AttendanceManager attendanceRegister;
@@ -26,10 +26,10 @@ public class AttendanceRegisterTest {
 
     @BeforeEach
     void setUp() throws AttendanceFileException {
-        var repository = new AttendanceFileReader(TEST_FILE);
+        var repository = AttendanceFileReader.from(TEST_FILE);
         var lines = repository.getLines();
         attendanceBook = AttendanceBook.from(lines);
-        attendanceRegister = new AttendanceRegister(attendanceBook);
+        attendanceRegister = new RegisterManager(attendanceBook);
     }
 
     @Test

@@ -3,7 +3,7 @@ package attendance.domain.attendanceManager;
 import java.time.LocalDate;
 import java.time.LocalTime;
 
-import attendance.domain.attendanceBook.AttendanceBook;
+import attendance.domain.attendance.AttendanceBook;
 
 public abstract class AttendanceManager {
     protected final AttendanceBook attendanceBook;

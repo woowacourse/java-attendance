@@ -12,7 +12,7 @@ import org.junit.jupiter.params.provider.ValueSource;
 
 import attendance.common.exception.AttendanceArgumentException;
 import attendance.domain.AttendanceStatus;
-import attendance.domain.attendanceBook.Attendance;
+import attendance.domain.attendance.Attendance;
 
 public class AttendanceTest {
 

@@ -5,11 +5,10 @@ import java.time.LocalTime;
 import java.util.List;
 
 import attendance.domain.StatusStatistic;
-import attendance.domain.attendanceBook.AttendanceBook;
+import attendance.domain.attendance.AttendanceBook;
 
-public class AttendanceStatistician extends AttendanceManager {
-
-    public AttendanceStatistician(AttendanceBook attendanceBook) {
+public class StatisticManger extends AttendanceManager {
+    public StatisticManger(AttendanceBook attendanceBook) {
         super(attendanceBook);
     }
 
@@ -17,7 +16,7 @@ public class AttendanceStatistician extends AttendanceManager {
     public void manage(String nickname, LocalDate date, LocalTime time) {
         var attendanceList = attendanceBook.getAttendanceList(nickname);
 
-        StatusStatistic statistic = new StatusStatistic(attendanceList.produceStatistic(), nickname);
+        StatusStatistic statistic = StatusStatistic.of(attendanceList, nickname);
         List<String> history = attendanceList.getHistory();
 
         writeReport(nickname, history, statistic);

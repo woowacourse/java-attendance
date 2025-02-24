@@ -1,4 +1,4 @@
-package attendance.domain.attendanceBook;
+package attendance.domain.attendance;
 
 import static attendance.common.utill.DateTimeFormatterWrapper.*;
 
@@ -15,7 +15,6 @@ import attendance.common.exception.AttendanceArgumentException;
 import attendance.domain.StatusStatistic;
 
 public record AttendanceBook(Map<String, AttendanceList> attendances, List<StatusStatistic> statusStatistics) {
-    private static final String NOT_REGISTERED_NICKNAME = "등록되지 않은 닉네임입니다.";
 
     public static AttendanceBook from(List<String> lines) {
         Map<String, AttendanceList> attendances = new HashMap<>();
@@ -26,12 +25,12 @@ public record AttendanceBook(Map<String, AttendanceList> attendances, List<Statu
     }
 
     private static void addAttendance(String line, Map<String, AttendanceList> attendances) {
-        var lines = line.split(Format.REGEX);
+        var lines = line.split(Constant.REGEX);
         var nickname = lines[0];
 
         AttendanceList attendanceList = attendances.computeIfAbsent(nickname, k -> new AttendanceList());
 
-        var dateTime = LocalDateTime.parse(lines[1], getFormatter(Format.DATETIME_FORMAT));
+        var dateTime = LocalDateTime.parse(lines[1], getFormatter(Constant.DATETIME_FORMAT));
         var attendance = new Attendance(dateTime);
 
         attendanceList.add(attendance);
@@ -50,25 +49,26 @@ public record AttendanceBook(Map<String, AttendanceList> attendances, List<Statu
     public AttendanceList getAttendanceList(String nickname) {
         var attendanceList = attendances.get(nickname);
         if (attendanceList == null) {
-            throw new AttendanceArgumentException(NOT_REGISTERED_NICKNAME);
+            throw new AttendanceArgumentException(Constant.NOT_REGISTERED_NICKNAME);
         }
         return attendanceList;
     }
 
     public void updateStatusStatistics() {
         for (String name : attendances.keySet()) {
-            var statistic = new StatusStatistic(attendances.get(name), name);
+            var statistic = StatusStatistic.of(attendances.get(name), name);
             statusStatistics.add(statistic);
         }
-        
+
         Collections.sort(statusStatistics);
     }
 
-    private static final class Format {
-        public static final String DATETIME_FORMAT = "yyyy-MM-dd HH:mm";
-        public static final String REGEX = ",";
+    private static final class Constant {
+        private static final String DATETIME_FORMAT = "yyyy-MM-dd HH:mm";
+        private static final String REGEX = ",";
+        private static final String NOT_REGISTERED_NICKNAME = "등록되지 않은 닉네임입니다.";
 
-        private Format() {
+        private Constant() {
         }
     }
 }

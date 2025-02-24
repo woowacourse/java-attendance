@@ -13,8 +13,8 @@ import org.junit.jupiter.params.provider.MethodSource;
 
 import attendance.common.exception.AttendanceFileException;
 import attendance.domain.AttendanceFileReader;
-import attendance.domain.attendanceBook.Attendance;
-import attendance.domain.attendanceBook.AttendanceBook;
+import attendance.domain.attendance.Attendance;
+import attendance.domain.attendance.AttendanceBook;
 
 public class AttendanceBookTest {
     private AttendanceBook manager;
@@ -22,7 +22,7 @@ public class AttendanceBookTest {
 
     @BeforeEach
     void setUp() throws AttendanceFileException {
-        var repository = new AttendanceFileReader(TEST_FILE);
+        var repository = AttendanceFileReader.from(TEST_FILE);
         var lines = repository.getLines();
         manager = AttendanceBook.from(lines);
     }

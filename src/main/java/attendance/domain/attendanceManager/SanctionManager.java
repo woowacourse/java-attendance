@@ -5,12 +5,12 @@ import java.time.LocalTime;
 import java.util.List;
 
 import attendance.domain.StatusStatistic;
-import attendance.domain.attendanceBook.AttendanceBook;
+import attendance.domain.attendance.AttendanceBook;
 
-public class AttendanceSanctionManager extends AttendanceManager {
+public class SanctionManager extends AttendanceManager {
     public static final String INIT_MESSAGE = "\n제적 위험자 조회 결과\n";
 
-    public AttendanceSanctionManager(AttendanceBook attendanceBook) {
+    public SanctionManager(AttendanceBook attendanceBook) {
         super(attendanceBook);
     }
 

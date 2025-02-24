@@ -13,7 +13,7 @@ public class AttendanceFileReaderTest {
     @Test
     @DisplayName("잘못된 파일 주소가 있을 경우, 예외를 발생한다.")
     void error_wrongFileURL() {
-        var repository = new AttendanceFileReader("/invalid");
+        var repository = AttendanceFileReader.from("/invalid");
 
         assertThatThrownBy(repository::getLines)
             .isInstanceOf(AttendanceFileException.class)
@@ -23,7 +23,7 @@ public class AttendanceFileReaderTest {
     @Test
     @DisplayName("유효하지 않은 파일일 경우, 예외를 발생한다.")
     void error_invalidFile() {
-        var repository = new AttendanceFileReader("");
+        var repository = AttendanceFileReader.from("");
 
         assertThatThrownBy(repository::getLines)
             .isInstanceOf(AttendanceFileException.class)

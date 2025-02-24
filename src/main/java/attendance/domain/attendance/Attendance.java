@@ -1,6 +1,6 @@
-package attendance.domain.attendanceBook;
+package attendance.domain.attendance;
 
-import static attendance.common.BusinessRuleConfig.*;
+import static attendance.common.SystemDateConfig.*;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;

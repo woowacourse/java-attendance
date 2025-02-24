@@ -5,13 +5,15 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 
 import attendance.common.exception.AttendanceArgumentException;
-import attendance.domain.attendanceBook.Attendance;
-import attendance.domain.attendanceBook.AttendanceBook;
-import attendance.domain.attendanceBook.AttendanceList;
+import attendance.domain.attendance.Attendance;
+import attendance.domain.attendance.AttendanceBook;
+import attendance.domain.attendance.AttendanceList;
 
-public class AttendanceRegister extends AttendanceManager {
+public class RegisterManager extends AttendanceManager {
+    public static final String DUPLICATE_DATE = "이미 출석되었습니다. 수정 기능을 이용해주세요.";
+    public static final String NOT_REGISTERED_NICKNAME = "등록되지 않은 닉네임입니다.";
 
-    public AttendanceRegister(AttendanceBook attendanceBook) {
+    public RegisterManager(AttendanceBook attendanceBook) {
         super(attendanceBook);
     }
 
@@ -24,7 +26,7 @@ public class AttendanceRegister extends AttendanceManager {
             isDuplicateAttendance(attendance, attendanceList);
             attendanceList.add(attendance);
         } catch (NullPointerException e) {
-            throw new AttendanceArgumentException(Error.NOT_REGISTERED_NICKNAME.getMessage());
+            throw new AttendanceArgumentException(NOT_REGISTERED_NICKNAME);
         }
     }
 
@@ -35,23 +37,8 @@ public class AttendanceRegister extends AttendanceManager {
 
     private void isDuplicateAttendance(Attendance attendance, AttendanceList attendanceList) {
         if (attendanceList.contains(attendance)) {
-            throw new AttendanceArgumentException(Error.DUPLICATE_DATE.getMessage());
+            throw new AttendanceArgumentException(DUPLICATE_DATE);
         }
     }
 
-    protected enum Error {
-        DUPLICATE_DATE("이미 출석되었습니다. 수정 기능을 이용해주세요."),
-
-        NOT_REGISTERED_NICKNAME("등록되지 않은 닉네임입니다."),
-        ;
-        private final String message;
-
-        Error(String message) {
-            this.message = message;
-        }
-
-        public String getMessage() {
-            return message;
-        }
-    }
 }

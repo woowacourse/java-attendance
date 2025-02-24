@@ -7,7 +7,6 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -17,12 +16,12 @@ import attendance.common.exception.AttendanceArgumentException;
 import attendance.common.exception.AttendanceFileException;
 import attendance.domain.AttendanceFileReader;
 import attendance.domain.AttendanceStatus;
-import attendance.domain.attendanceBook.Attendance;
-import attendance.domain.attendanceBook.AttendanceBook;
+import attendance.domain.attendance.Attendance;
+import attendance.domain.attendance.AttendanceBook;
 import attendance.domain.attendanceManager.AttendanceManager;
-import attendance.domain.attendanceManager.AttendanceModifier;
+import attendance.domain.attendanceManager.ModifyManager;
 
-public class AttendanceModifierTest {
+public class ModifyManagerTest {
     private static final String TEST_FILE = "/attendances.csv";
 
     private AttendanceManager attendanceModifier;
@@ -30,10 +29,10 @@ public class AttendanceModifierTest {
 
     @BeforeEach
     void setUp() throws AttendanceFileException {
-        var repository = new AttendanceFileReader(TEST_FILE);
+        var repository = AttendanceFileReader.from(TEST_FILE);
         var lines = repository.getLines();
         attendanceBook = AttendanceBook.from(lines);
-        attendanceModifier = new AttendanceModifier(attendanceBook);
+        attendanceModifier = new ModifyManager(attendanceBook);
     }
 
     @Test
@@ -149,12 +148,5 @@ public class AttendanceModifierTest {
         assertThatThrownBy(() -> attendanceModifier.manage(nickname, date, modifiedTime))
             .isInstanceOf(AttendanceArgumentException.class)
             .hasMessageContaining("12월 25일 수요일은 등교일이 아닙니다.");
-    }
-
-    @Test
-    @Disabled
-    @DisplayName("미래 날짜에 대해 수정할 경우, 예외가 발생한다.")
-    void error_modifyFutureAttendance() {
-        //현재 날짜 설정은 일단 보류,,
     }
 }

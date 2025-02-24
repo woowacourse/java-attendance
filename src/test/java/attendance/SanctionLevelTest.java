@@ -10,9 +10,9 @@ import org.junit.jupiter.api.Test;
 
 import attendance.common.exception.AttendanceFileException;
 import attendance.domain.AttendanceFileReader;
-import attendance.domain.attendanceBook.AttendanceBook;
+import attendance.domain.attendance.AttendanceBook;
 import attendance.domain.attendanceManager.AttendanceManager;
-import attendance.domain.attendanceManager.AttendanceSanctionManager;
+import attendance.domain.attendanceManager.SanctionManager;
 
 public class SanctionLevelTest {
     private static final String TEST_FILE = "/attendances.csv";
@@ -21,10 +21,10 @@ public class SanctionLevelTest {
 
     @BeforeEach
     void setUp() throws AttendanceFileException {
-        var repository = new AttendanceFileReader(TEST_FILE);
+        var repository = AttendanceFileReader.from(TEST_FILE);
         var lines = repository.getLines();
         AttendanceBook attendanceBook = AttendanceBook.from(lines);
-        attendanceStatistician = new AttendanceSanctionManager(attendanceBook);
+        attendanceStatistician = new SanctionManager(attendanceBook);
     }
 
     @Test

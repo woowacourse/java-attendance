@@ -16,8 +16,12 @@ public class AttendanceFileReader {
 
     private final String fileName;
 
-    public AttendanceFileReader(String fileName) {
+    private AttendanceFileReader(String fileName) {
         this.fileName = fileName;
+    }
+
+    public static AttendanceFileReader from(String fileName) {
+        return new AttendanceFileReader(fileName);
     }
 
     public List<String> getLines() throws AttendanceFileException {
