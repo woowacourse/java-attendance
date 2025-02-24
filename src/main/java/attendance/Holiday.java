@@ -11,4 +11,8 @@ public enum Holiday {
     Holiday(LocalDate date) {
         this.date = date;
     }
+
+    public static boolean isHoliday(LocalDate date) {
+        return false;
+    }
 }
