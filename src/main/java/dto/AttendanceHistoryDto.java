@@ -1,6 +1,8 @@
 package dto;
 
-import java.time.LocalDateTime;
+import domain.AbsencePolicyStatistics;
+import java.util.List;
 
-public record AttendanceHistoryDto(LocalDateTime localDateTime, String attendanceState) {
+public record AttendanceHistoryDto(String name, List<AttendanceRecord> records,
+                                   AbsencePolicyStatistics absencePolicyStatistics, String attendanceState) {
 }

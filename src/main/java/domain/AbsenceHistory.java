@@ -1,24 +1,24 @@
 package domain;
 
-import dto.AbsenceResultDto;
-import dto.AttendanceResultDto;
+import dto.AbsenceHistoryDto;
+import dto.AttendanceHistoryDto;
 import java.util.List;
 
 public class AbsenceHistory {
 
-    private final List<AttendanceResultDto> attendanceResultDtos;
+    private final List<AttendanceHistoryDto> attendanceResultDtos;
 
-    public AbsenceHistory(final List<AttendanceResultDto> attendanceResultDtos) {
+    public AbsenceHistory(final List<AttendanceHistoryDto> attendanceResultDtos) {
         this.attendanceResultDtos = attendanceResultDtos;
     }
 
-    public AbsenceResultDto calculate() {
+    public AbsenceHistoryDto calculate() {
         int attendance = attendanceCalculate();
         int lateness = lateCalculate();
         int absence = absenceCalculate();
 
         AbsencePolicy absenceStatus = AbsencePolicy.getAbsencePolicy(absence, lateness);
-        return new AbsenceResultDto(attendance, lateness, absence, absenceStatus.getDescription());
+        return new AbsenceHistoryDto("이름??", lateness, absence, absenceStatus.getDescription());
     }
 
     private int lateCalculate() {
