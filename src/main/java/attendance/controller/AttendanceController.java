@@ -61,7 +61,7 @@ public class AttendanceController {
     }
 
     private void validateOption(char option) {
-        if (!operations.containsKey(option)) {
+        if (option != QUIT_APPLICATION_OPERATION && !operations.containsKey(option)) {
             throw new IllegalArgumentException(("존재하지 않는 기능입니다. 다시 입력해 주세요."));
         }
     }
