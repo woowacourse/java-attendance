@@ -1,6 +1,7 @@
 package attendance.domain;
 
 import attendance.domain.constant.AttendanceStatus;
+import java.time.DayOfWeek;
 import java.time.LocalDate;
 
 public class DateInfo {
@@ -36,8 +37,8 @@ public class DateInfo {
         return date.getDayOfMonth();
     }
 
-    public int getDayOfWeek() {
-        return date.getDayOfWeek().getValue();
+    public DayOfWeek getDayOfWeek() {
+        return date.getDayOfWeek();
     }
 
     public AttendanceStatus getAttendanceStatus() {

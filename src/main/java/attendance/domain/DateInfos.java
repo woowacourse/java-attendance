@@ -22,29 +22,23 @@ public class DateInfos {
         return new DateInfos(dateInfos);
     }
 
-    public void addInfo(final DateInfo dateInfo) {
+    public void addDateInfo(final DateInfo dateInfo) {
         this.dateInfos.add(dateInfo);
     }
 
-    public DateInfo findDateInfoByDay(int day) {
+    public DateInfo findDateInfoByDay(final int day) {
         return dateInfos.stream().filter(dateInfo -> dateInfo.isAttendanceDay(day))
                 .findFirst()
                 .orElseThrow(() -> CustomException.from(ErrorMessage.NOT_HAVE_ATTENDANCE));
     }
 
-    public AttendanceStatus findAttendanceStatusByDay(int day) {
+    public AttendanceStatus findAttendanceStatusByDay(final int day) {
         for (DateInfo dateInfo : dateInfos) {
             if (dateInfo.isAttendanceDay(day)) {
                 return dateInfo.getAttendanceStatus();
             }
         }
         return AttendanceStatus.ABSENCE;
-    }
-
-    public int findStatusCounts(AttendanceStatus attendanceStatus) {
-        return (int) dateInfos.stream()
-                .filter(dateInfo -> dateInfo.getAttendanceStatus().equals(attendanceStatus.getName()))
-                .count();
     }
 
     public List<DateInfo> getDateInfos() {
