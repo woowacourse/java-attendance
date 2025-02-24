@@ -1,5 +1,7 @@
 package attendance.model;
 
+import java.util.Objects;
+
 public class Crew {
     private final String name;
 
@@ -17,5 +19,10 @@ public class Crew {
         }
         Crew crew = (Crew) o;
         return name.equals(crew.name);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(name);
     }
 }
