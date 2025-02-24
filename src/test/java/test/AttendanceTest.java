@@ -167,22 +167,25 @@ public class AttendanceTest {
         );
     }
 
-//    @DisplayName("새로운 출석 객체를 입력하면 크루에 맞는 출석 객체를 갱신한다.")
-//    @Test
-//    void test5_2() {
-//        //given
-//        Crew crew = new Crew("빙티");
-//        Crews crews = new Crews(List.of(crew));
-//        Attendance attendance = new Attendance(
-//                LocalDate.of(2024, 12, 14),
-//                LocalTime.of(10, 10)
-//        );
-//        Map<Crew, List<Attendance>> initializedAttendances = AttendanceInitializer.initializeAttendanceOf(crews);
-//
-//        AttendanceInitializer.addAttendance(crew, attendance, initializedAttendances);
-//
-//        assertThat(initializedAttendances.get(crew).);
-//    }
+    @DisplayName("새로운 출석 객체를 입력하면 크루에 맞는 출석 객체를 갱신한다.")
+    @Test
+    void test5_2() {
+        //given
+        Crew crew = new Crew("빙티");
+        Crews crews = new Crews(List.of(crew));
+        Attendance newAttendance = new Attendance(
+                LocalDate.of(2024, 12, 14),
+                LocalTime.of(10, 10)
+        );
+        Map<Crew, Attendances> initializedAttendances = AttendanceInitializer.initializeAttendanceOf(crews);
+
+        //when
+        Attendances attendancesOfCrew = initializedAttendances.get(crew);
+        Attendance attendance = attendancesOfCrew.update(newAttendance);
+
+        assertThat(attendance).isEqualTo(newAttendance);
+        //findByDate도 하면 좋을듯
+    }
 
 //    @DisplayName("출석 기록을 읽어서 LocalDateTime 객체로 변환한다.")
 //    @Test
