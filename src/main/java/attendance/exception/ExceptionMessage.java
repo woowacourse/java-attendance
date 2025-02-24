@@ -1,7 +1,8 @@
 package attendance.exception;
 
 public enum ExceptionMessage {
-    ALREADY_ATTENDANCE("[ERROR] 이미 출석을 완료했습니다! 수정 기능을 활용해주세요!");
+    ALREADY_ATTENDANCE("[ERROR] 이미 출석을 완료했습니다! 수정 기능을 활용해주세요!"),
+    INVALID_CREW("[ERROR] 등록되지 않은 닉네임입니다.");
 
     private final String message;
 

@@ -6,6 +6,7 @@ import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException
 import attendance.domain.AttendanceRecord;
 import attendance.domain.AttendanceSystem;
 import attendance.domain.AttendanceType;
+import attendance.domain.CrewStorage;
 import attendance.exception.ExceptionMessage;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -20,17 +21,23 @@ import org.junit.jupiter.params.provider.MethodSource;
 
 class AttendanceSystemTest {
 
+    static final String VALID_CREW_NICKNAME = "쿠키";
+    static final String INVALID_CREW_NICKNAME = "빙봉";
+
     AttendanceSystem attendanceSystem;
+    CrewStorage crewStorage;
 
     @BeforeEach
     void beforeEach() {
-        attendanceSystem = new AttendanceSystem();
+        crewStorage = new CrewStorage();
+        crewStorage.add(VALID_CREW_NICKNAME);
+        attendanceSystem = new AttendanceSystem(crewStorage);
     }
 
     @DisplayName("닉네임과 출석 시간으로 출석 기록을 추가할 수 있다")
     @Test
     void 닉네임과_출석_시간으로_출석_기록을_추가할_수_있다() {
-        String crewNickname = "쿠키";
+        String crewNickname = VALID_CREW_NICKNAME;
         LocalDateTime arrivalDateTime = LocalDateTime.of(2025, 2, 4, 8, 50, 0);
 
         attendanceSystem.addAttendanceRecord(crewNickname, arrivalDateTime);
@@ -46,7 +53,7 @@ class AttendanceSystemTest {
     @ParameterizedTest
     @MethodSource()
     void 교육시간과_출석정책을_기준으로_월요일의_출석_상태를_결정한다(LocalDateTime arrivalDateTime, AttendanceType attendanceType) {
-        String crewNickname = "쿠키";
+        String crewNickname = VALID_CREW_NICKNAME;
         attendanceSystem.addAttendanceRecord(crewNickname, arrivalDateTime);
 
         AttendanceRecord actualRecord = attendanceSystem.findAttendanceRecord(
@@ -70,7 +77,7 @@ class AttendanceSystemTest {
     @ParameterizedTest
     @MethodSource()
     void 교육시간과_출석정책을_기준으로_화요일에서_금요일의_출석_상태를_결정한다(LocalDateTime arrivalDateTime, AttendanceType attendanceType) {
-        String crewNickname = "쿠키";
+        String crewNickname = VALID_CREW_NICKNAME;
         attendanceSystem.addAttendanceRecord(crewNickname, arrivalDateTime);
 
         AttendanceRecord actualRecord = attendanceSystem.findAttendanceRecord(
@@ -93,7 +100,7 @@ class AttendanceSystemTest {
     @DisplayName("이미 출석한 경우, 다시 출석할 수 없으며 수정 기능을 이용하도록 안내한다")
     @Test
     void 이미_출석한_경우_다시_출석할_수_없으며_수정_기능을_이용하도록_안내한다() {
-        String crewNickname = "쿠키";
+        String crewNickname = VALID_CREW_NICKNAME;
         LocalDate arrivalDate = LocalDate.of(2525, 2, 4);
         LocalDateTime arrivalDateTime = LocalDateTime.of(arrivalDate, LocalTime.of(8, 50, 0));
         attendanceSystem.addAttendanceRecord(crewNickname, arrivalDateTime);
@@ -101,5 +108,16 @@ class AttendanceSystemTest {
         assertThatIllegalArgumentException()
                 .isThrownBy(() -> attendanceSystem.addAttendanceRecord(crewNickname, arrivalDateTime))
                 .withMessage(ExceptionMessage.ALREADY_ATTENDANCE.getMessage());
+    }
+
+    @DisplayName("네임이 등록되지 않은 경우 예외 메세지를 출력한다")
+    @Test
+    void 네임이_등록되지_않은_경우_예외_메세지를_출력한다() {
+        String crewNickname = INVALID_CREW_NICKNAME;
+        LocalDateTime arrivalDateTime = LocalDateTime.of(2025, 2, 4, 8, 50, 0);
+
+        assertThatIllegalArgumentException()
+                .isThrownBy(() -> attendanceSystem.addAttendanceRecord(crewNickname, arrivalDateTime))
+                .withMessage(ExceptionMessage.INVALID_CREW.getMessage());
     }
 }

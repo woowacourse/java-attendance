@@ -11,7 +11,10 @@ import java.util.Optional;
 
 public class AttendanceSystem {
 
-    private List<AttendanceRecord> records = new ArrayList<>();
+    private final List<AttendanceRecord> records = new ArrayList<>();
+
+    public AttendanceSystem(CrewStorage crewStorage) {
+    }
 
     public void addAttendanceRecord(String crewNickname, LocalDateTime arrivalDateTime) {
         Optional<AttendanceRecord> originRecord = findAttendanceRecord(crewNickname, arrivalDateTime.toLocalDate());
