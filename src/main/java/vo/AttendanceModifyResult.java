@@ -6,7 +6,7 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.Optional;
 
-public record AttendanceModify(
+public record AttendanceModifyResult(
         LocalDate date,
         Optional<LocalTime> oldAttendTime,
         Optional<AttendanceStatus> oldStatus,

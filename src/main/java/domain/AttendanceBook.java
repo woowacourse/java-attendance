@@ -1,7 +1,7 @@
 package domain;
 
-import vo.Attendance;
-import vo.AttendanceModify;
+import vo.AttendResult;
+import vo.AttendanceModifyResult;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -18,13 +18,13 @@ public class AttendanceBook {
                 .collect(Collectors.toMap(crew -> crew, crew -> new CrewAttendance(today)));
     }
     
-    public Attendance attend(final String nickname, final LocalDate date, final LocalTime time) {
+    public AttendResult attend(final String nickname, final LocalDate date, final LocalTime time) {
         validateNicknameExist(nickname);
         
         return crewAttendances.get(nickname).attend(date, time);
     }
     
-    public AttendanceModify modify(final String nickname, final LocalDate targetDate, final LocalTime newTime) {
+    public AttendanceModifyResult modify(final String nickname, final LocalDate targetDate, final LocalTime newTime) {
         validateNicknameExist(nickname);
         
         return crewAttendances.get(nickname).modify(targetDate, newTime);

@@ -1,7 +1,7 @@
 package domain;
 
-import vo.Attendance;
-import vo.AttendanceModify;
+import vo.AttendResult;
+import vo.AttendanceModifyResult;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
@@ -30,24 +30,24 @@ public class CrewAttendance {
                 .collect(Collectors.toMap(date -> date, date -> Optional.empty()));
     }
     
-    public Attendance attend(final LocalDate date, final LocalTime time) {
+    public AttendResult attend(final LocalDate date, final LocalTime time) {
         validateIsDateAvailable(date);
         validateCampusOpen(time);
         validateHasAlreadyAttended(date);
         
         calendar.put(date, Optional.of(time));
         
-        return new Attendance(date, time, AttendanceStatus.of(date.getDayOfWeek(), time));
+        return new AttendResult(date, time, AttendanceStatus.of(date.getDayOfWeek(), time));
     }
     
-    public AttendanceModify modify(final LocalDate targetDate, final LocalTime newTime) {
+    public AttendanceModifyResult modify(final LocalDate targetDate, final LocalTime newTime) {
         validateIsDateAvailable(targetDate);
         validateCampusOpen(newTime);
         
         final var targetDateDayOfWeek = targetDate.getDayOfWeek();
         final var oldTime = calendar.put(targetDate, Optional.of(newTime)).orElse(null);
         
-        return new AttendanceModify(
+        return new AttendanceModifyResult(
                 targetDate,
                 Optional.ofNullable(oldTime),
                 Optional.ofNullable(oldTime).map(time -> AttendanceStatus.of(targetDateDayOfWeek, time)),
