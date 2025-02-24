@@ -42,7 +42,7 @@ public class AttendanceSystem {
     }
 
     public void run() {
-        attendanceInit.initAttendances();
+        attendanceInit.initSystem();
 
         while (true) {
             LocalDate today = dateGenerator.now();

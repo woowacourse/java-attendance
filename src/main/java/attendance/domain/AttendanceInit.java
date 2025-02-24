@@ -4,6 +4,7 @@ import attendance.utility.DateGenerator;
 import attendance.utility.DateTimeParser;
 import attendance.utility.FileUtil;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
@@ -24,9 +25,18 @@ public class AttendanceInit {
         this.holiday = holiday;
     }
 
-    public void initAttendances() {
+    public void initSystem() {
+        initAttendances();
+        initHoliday();
+    }
+
+    private void initAttendances() {
         List<String> lines = FileUtil.readFile(INIT_FILE_NAME);
         lines.forEach(this::initAttendance);
+    }
+
+    public void initHoliday() {
+        holiday.addHoliday(LocalDate.of(2024, 12, 25));
     }
 
     private void initAttendance(String line) {
