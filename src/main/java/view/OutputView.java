@@ -6,6 +6,7 @@ import domain.AttendStatus;
 import domain.AttendanceResult;
 import domain.WarningCrew;
 import domain.WarningStatus;
+import dto.AttendResultDto;
 import java.util.Comparator;
 import java.util.List;
 

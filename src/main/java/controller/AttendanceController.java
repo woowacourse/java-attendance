@@ -8,6 +8,7 @@ import domain.AttendanceResults;
 import domain.Command;
 import domain.Current;
 import domain.WarningCrew;
+import dto.AttendResultDto;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;

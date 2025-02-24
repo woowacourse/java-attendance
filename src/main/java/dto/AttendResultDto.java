@@ -1,4 +1,4 @@
-package view;
+package dto;
 
 import domain.AttendCount;
 import domain.AttendanceResult;
