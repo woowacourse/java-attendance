@@ -15,50 +15,65 @@ public enum Penalty {
     }
 
     public static Penalty calculatePenalty(List<AttendanceStatus> attendanceStatuses) {
-        int absenceCount = countTotalAbsences(attendanceStatuses);
-        return determinePenalty(absenceCount);
-    }
-
-    private static int countTotalAbsences(List<AttendanceStatus> attendanceStatuses) {
         int absenceCount = 0;
         int perceptionCount = 0;
 
         for (AttendanceStatus status : attendanceStatuses) {
             absenceCount += countAbsence(status);
-            perceptionCount = updatePerceptionCount(status, perceptionCount);
+            perceptionCount += countPerception(status);
 
             absenceCount += convertPerceptionToAbsence(perceptionCount);
             perceptionCount = resetPerceptionIfConverted(perceptionCount);
         }
-        return absenceCount;
+
+        return determinePenalty(absenceCount);
     }
 
     private static int countAbsence(AttendanceStatus status) {
-        return status.isAbsence() ? 1 : 0;
+        if (status.isAbsence()) {
+            return 1;
+        }
+
+        return 0;
     }
 
-    private static int updatePerceptionCount(AttendanceStatus status, int perceptionCount) {
-        return status.isPerception() ? perceptionCount + 1 : perceptionCount;
+    private static int countPerception(AttendanceStatus status) {
+        if (status.isPerception()) {
+            return 1;
+        }
+
+        return 0;
     }
 
     private static int convertPerceptionToAbsence(int perceptionCount) {
-        return perceptionCount >= 3 ? 1 : 0;
+        if (perceptionCount >= 3) {
+            return 1;
+        }
+
+        return 0;
     }
 
     private static int resetPerceptionIfConverted(int perceptionCount) {
-        return perceptionCount >= 3 ? 0 : perceptionCount;
+        if (perceptionCount >= 3) {
+            return 0;
+        }
+        
+        return perceptionCount;
     }
 
     private static Penalty determinePenalty(int absenceCount) {
         if (absenceCount > 5) {
             return WEEDING;
         }
+
         if (absenceCount >= 3) {
             return INTERVIEW;
         }
+
         if (absenceCount >= 2) {
             return WARNING;
         }
+
         return NONE;
     }
 

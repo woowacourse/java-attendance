@@ -31,8 +31,7 @@ public class CrewAttendanceRepository {
     public Optional<CrewAttendance> findOptionalByCrew(Crew crew) {
         return Optional.ofNullable(crewAttendance.get(crew));
     }
-
-
+    
     public List<CrewAttendance> findAll() {
         return crewAttendance.values().stream()
                 .toList();

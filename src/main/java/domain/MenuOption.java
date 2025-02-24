@@ -13,12 +13,12 @@ public enum MenuOption {
     private final String code;
     private final String description;
 
-    MenuOption(final String code, final String description) {
+    MenuOption(String code, String description) {
         this.code = code;
         this.description = description;
     }
 
-    public static MenuOption findByCode(final String code) {
+    public static MenuOption findByCode(String code) {
         return Arrays.stream(values())
                 .filter(option -> option.code.equals(code))
                 .findFirst()
@@ -27,6 +27,22 @@ public enum MenuOption {
 
     public static List<MenuOption> findAll() {
         return Arrays.stream(MenuOption.values()).toList();
+    }
+
+    public boolean isCheck() {
+        return this == CHECK;
+    }
+
+    public boolean isEdit() {
+        return this == EDIT;
+    }
+
+    public boolean isRecord() {
+        return this == RECORD;
+    }
+
+    public boolean isRisk() {
+        return this == RISK;
     }
 
     public boolean isExit() {

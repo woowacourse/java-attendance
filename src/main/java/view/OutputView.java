@@ -36,20 +36,6 @@ public class OutputView {
                 convertTime(afterTime.getMinute()), afterAttendanceStatusName);
     }
 
-    private String convertTime(Integer time) {
-        if (time == null) {
-            return "--";
-        }
-
-        String before = String.valueOf(time);
-
-        if (before.length() < 2) {
-            return "0" + before;
-        }
-
-        return before;
-    }
-
     public void printTotalAttendanceStatus(List<AttendanceRecodeDto> attendanceRecodeDto,
                                            AttendanceResultDto attendanceResultDto) {
         System.out.printf("이번 달 %s의 출석 기록입니다.\n", attendanceResultDto.name());
@@ -72,6 +58,20 @@ public class OutputView {
         if (!Objects.equals(attendanceResultDto.penaltyName(), Penalty.NONE.getName())) {
             System.out.printf("%s 대상자입니다.\n", attendanceResultDto.penaltyName());
         }
+    }
+
+    private String convertTime(Integer time) {
+        if (time == null) {
+            return "--";
+        }
+
+        String before = String.valueOf(time);
+
+        if (before.length() < 2) {
+            return "0" + before;
+        }
+
+        return before;
     }
 
     public void printPenaltyCrews(List<PenaltyCrewDto> penaltyCrewDtos) {

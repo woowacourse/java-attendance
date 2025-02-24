@@ -107,19 +107,19 @@ public class DataInitializer {
                 !data.dateTime.getDate().isHoliday();
     }
 
-    private String[] splitItems(final String input) {
+    private String[] splitItems(String input) {
         return Arrays.stream(input.split(",", -1))
                 .map(String::trim)
                 .toArray(String[]::new);
     }
 
-    private void validateSize(final String[] inputs) {
+    private void validateSize(String[] inputs) {
         if (inputs.length != 2) {
             throw new IllegalArgumentException("잘못된 데이터 형식: " + Arrays.toString(inputs));
         }
     }
 
-    private LocalDateTime parseToDate(final String dateString) {
+    private LocalDateTime parseToDate(String dateString) {
         try {
             return LocalDateTime.parse(dateString, DEFAULT_FORMATTER);
         } catch (DateTimeParseException e) {

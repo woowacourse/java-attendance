@@ -27,18 +27,12 @@ public class Attendance {
 
     private boolean isAlreadyExists(DateTime dateTime) {
         Time time = dateTimes.get(dateTime.getDate());
+
         return !time.isNull();
     }
 
     public DateTime retrieveDateTime(Date date) {
         return new DateTime(date, dateTimes.get(date));
-    }
-
-    public List<DateTime> retrieveDateTimesOrderByDate() {
-        return dateTimes.keySet().stream()
-                .map(date -> new DateTime(date, dateTimes.get(date)))
-                .sorted()
-                .toList();
     }
 
     public List<DateTime> retrieveDateTimes() {
@@ -49,7 +43,16 @@ public class Attendance {
 
     public AttendanceStatus calculateAttendanceStatus(Date date) {
         DateTime dateTime = new DateTime(date, dateTimes.get(date));
-        return AttendanceStatus.findByDateTime(dateTime);
+
+        return AttendanceStatus.from(dateTime);
+    }
+
+    public List<AttendanceStatus> calculateAttendanceStatuses() {
+        return retrieveDateTimes().stream()
+                .map(dateTime -> new DateTime(dateTime.getDate(),
+                        dateTimes.get(dateTime.getDate())))
+                .map(AttendanceStatus::from)
+                .toList();
     }
 
     public Map<AttendanceStatus, Integer> calculateAttendanceStatusCount() {

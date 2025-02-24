@@ -43,15 +43,16 @@ public enum AttendanceStatus {
         }
     }
 
-    private static AttendanceStatus determineAttendanceStatus(WorkDay today, int hour, int minute) {
+    private static AttendanceStatus determineAttendanceStatus(WorkDay today, Integer hour, Integer minute) {
         Integer startHour = today.getStartHour();
 
-        if (hour > startHour || (hour == startHour && minute > ABSENCE.limitTime)) {
+        if (hour > startHour || (hour.equals(startHour) && minute > ABSENCE.limitTime)) {
             return ABSENCE;
         }
-        if (hour == startHour && minute > PERCEPTION.limitTime) {
+        if (hour.equals(startHour) && minute > PERCEPTION.limitTime) {
             return PERCEPTION;
         }
+
         return ATTENDANCE;
     }
 
@@ -59,6 +60,7 @@ public enum AttendanceStatus {
             List<AttendanceStatus> attendanceStatuses) {
         Map<AttendanceStatus, Integer> attendanceStatusCount = initializeAttendanceMap();
         attendanceStatuses.forEach(status -> attendanceStatusCount.put(status, attendanceStatusCount.get(status) + 1));
+
         return attendanceStatusCount;
     }
 
@@ -70,12 +72,12 @@ public enum AttendanceStatus {
         ));
     }
 
-    public boolean isAbsence() {
-        return this == ABSENCE;
-    }
-
     public boolean isPerception() {
         return this == PERCEPTION;
+    }
+
+    public boolean isAbsence() {
+        return this == ABSENCE;
     }
 
     public String getName() {

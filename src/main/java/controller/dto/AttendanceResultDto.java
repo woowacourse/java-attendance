@@ -1,8 +1,8 @@
 package controller.dto;
 
 import domain.AttendanceStatus;
+import domain.CrewAttendance;
 import domain.Penalty;
-import java.util.List;
 import java.util.Map;
 
 public record AttendanceResultDto(
@@ -12,16 +12,16 @@ public record AttendanceResultDto(
         int perceptionCount,
         String penaltyName
 ) {
-    public static AttendanceResultDto of(String name, List<AttendanceStatus> attendanceStatuses) {
-        Map<AttendanceStatus, Integer> attendanceStatusCount = AttendanceStatus.calculateAttendanceStatusCount(
-                attendanceStatuses);
+    public static AttendanceResultDto from(CrewAttendance crewAttendance) {
+        Map<AttendanceStatus, Integer> attendanceStatusCount = crewAttendance.calculateAttendanceStatusCount();
+        Penalty penalty = crewAttendance.calculatePenalty();
+
         return new AttendanceResultDto(
-                name,
+                crewAttendance.getCrew().getName(),
                 attendanceStatusCount.get(AttendanceStatus.ATTENDANCE),
                 attendanceStatusCount.get(AttendanceStatus.ABSENCE),
                 attendanceStatusCount.get(AttendanceStatus.PERCEPTION),
-                Penalty.calculatePenalty(attendanceStatuses).getName()
+                penalty.getName()
         );
     }
-
 }

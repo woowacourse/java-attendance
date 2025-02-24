@@ -31,6 +31,7 @@ public class DateTime implements Comparable<DateTime> {
             return false;
         }
         DateTime dateTime = (DateTime) o;
+        
         return Objects.equals(date, dateTime.date) && Objects.equals(time, dateTime.time);
     }
 
