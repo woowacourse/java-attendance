@@ -15,8 +15,8 @@ import static org.assertj.core.api.Assertions.*;
 1. 주말일 경우 예외 발생 [x]
 2. 공휴일일 경우 예외 발생 [x]
 3. 모든 시간 결석 처리 [x]
-4. 시작 시간부터 5분 내면 출석(10시)
-    4-1 월요일일 경우 13시
+4. 시작 시간부터 5분 내면 출석(10시) [x]
+    4-1 월요일일 경우 13시 [x]
 5. 시작 시간부터 30분 내면 지각
     5-1 월요일일 경우 13시
  */
@@ -60,9 +60,13 @@ public class AbsentPolicyTest {
         AbsentPolicy absentPolicy = new AbsentPolicy();
         LocalDateTime educationDateTime = LocalDateTime.of(2024,12,10, 10,5);
         LocalDateTime educationDateTime2 = LocalDateTime.of(2024,12,9, 13,5);
+        LocalDateTime educationDateTime3 = LocalDateTime.of(2024,12,11, 9,0);
+        LocalDateTime educationDateTime4 = LocalDateTime.of(2024,12,2, 9,0);
 
         assertThat(absentPolicy.checkAttendanceStatus(educationDateTime)).isEqualTo("출석");
         assertThat(absentPolicy.checkAttendanceStatus(educationDateTime2)).isEqualTo("출석");
+        assertThat(absentPolicy.checkAttendanceStatus(educationDateTime3)).isEqualTo("출석");
+        assertThat(absentPolicy.checkAttendanceStatus(educationDateTime4)).isEqualTo("출석");
     }
 
 //    @Test
