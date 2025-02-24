@@ -11,8 +11,8 @@ import java.util.Map;
 
 public class OutputView {
 
-    public static void printTodayAttendance(final int todayDay, final String todayDayOfWeek,
-                                            final String schoolStartTime, final AttendanceState attendanceResult) {
+    public void printTodayAttendance(final int todayDay, final String todayDayOfWeek,
+                                     final String schoolStartTime, final AttendanceState attendanceResult) {
         System.out.printf("\n12월 %02d일 %s %s (%s)\n",
                 todayDay,
                 todayDayOfWeek,
@@ -20,7 +20,7 @@ public class OutputView {
                 attendanceResult.getDescription());
     }
 
-    public static void printUpdateAttendance(final LocalDateTime beforeDateTime, final LocalDateTime afterDateTime) {
+    public void printUpdateAttendance(final LocalDateTime beforeDateTime, final LocalDateTime afterDateTime) {
 
         AttendanceState beforeAttendanceState = AttendanceState.findStateBy(beforeDateTime.toLocalTime(),
                 beforeDateTime.getDayOfMonth());
@@ -38,13 +38,13 @@ public class OutputView {
                 afterAttendanceState.getDescription());
     }
 
-    public static void printRecordAttendance(List<AttendanceResultDto> attendanceResultDtos) {
+    public void printRecordAttendance(List<AttendanceResultDto> attendanceResultDtos) {
         for (AttendanceResultDto attendanceResultDto : attendanceResultDtos) {
             System.out.printf(printDayAttendance(attendanceResultDto));
         }
     }
 
-    private static String printDayAttendance(AttendanceResultDto attendanceResultDto) {
+    private String printDayAttendance(AttendanceResultDto attendanceResultDto) {
         if (attendanceResultDto.localDateTime().getHour() != 0) {
             return String.format("12월 %02d일 %s %02d:%02d (%s)\n",
                     attendanceResultDto.localDateTime().getDayOfMonth(),
@@ -59,7 +59,7 @@ public class OutputView {
                 attendanceResultDto.attendanceState().getDescription());
     }
 
-    public static void printAbsenceHistory(AbsenceResultDto absenceResultDto) {
+    public void printAbsenceHistory(AbsenceResultDto absenceResultDto) {
         System.out.printf("출석: %d회\n", absenceResultDto.attendance());
         System.out.printf("지각: %d회\n", absenceResultDto.lateness());
         System.out.printf("결석: %d회\n", absenceResultDto.absence());
@@ -69,7 +69,7 @@ public class OutputView {
         System.out.printf("%s 대상자입니다.\n", absenceResultDto.status().getDescription());
     }
 
-    public static void printAbsenceResult(final Map<Crew, AbsenceResultDto> result) {
+    public void printAbsenceResult(final Map<Crew, AbsenceResultDto> result) {
         System.out.println("제적 위험자 조회 결과");
         result.forEach((crew, absenceResult) ->
                 System.out.printf("- %s: 결석 %d회, 지각 %d회 (%s)\n",
@@ -79,7 +79,7 @@ public class OutputView {
                         absenceResult.status().getDescription()));
     }
 
-    public static void printExit() {
+    public void printExit() {
         System.out.println("프로그램을 종료합니다.");
     }
 }
