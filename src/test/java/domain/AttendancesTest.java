@@ -41,15 +41,15 @@ public class AttendancesTest {
         }
 
         @Test
-        @DisplayName("휴일에 출석시 예외가 발생한다.")
+        @DisplayName("2024년 12월이 아닐시 예외가 발생한다")
         void addAttendanceNotSchoolRunning() {
             String nickname = "투다";
             LocalTime time = LocalTime.of(8, 0);
-            LocalDate date = LocalDate.of(2024, 12, 1);
+            LocalDate date = LocalDate.of(2025, 3, 24);
             CrewAttendances crewAttendances = new CrewAttendances(new TestAttendanceNowDateStrategy(date));
 
             Assertions.assertThatThrownBy(() -> crewAttendances.addAttendance(nickname, time))
-                    .hasMessageContaining("휴일에는 출석할 수 없습니다.")
+                    .hasMessageContaining("2024년 12월에만 출석할 수 있습니다.")
                     .isInstanceOf(AttendanceException.class);
         }
     }

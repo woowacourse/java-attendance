@@ -8,10 +8,13 @@ import java.util.Map;
 import strategy.NowDateStrategy;
 
 public class DateCrewAttendanceManager {
-    
+
     private final Map<LocalDate, CrewAttendance> dateCrewAttendances;
     private final NowDateStrategy nowDateStrategy;
     private final AttendanceDateHelper attendanceDateHelper;
+    private static final String OUT_OF_SCHOOL_OPEN_DATE = "2024년 12월에만 출석할 수 있습니다.";
+    private static final String NOT_SCHOOL_RUNNING_DAY = "휴일에는 출석할 수 없습니다.";
+
 
     public DateCrewAttendanceManager(NowDateStrategy nowDateStrategy) {
         this.nowDateStrategy = nowDateStrategy;
@@ -27,7 +30,10 @@ public class DateCrewAttendanceManager {
 
     private void validateAttendanceDate(LocalDate attendanceDate) {
         if (AttendanceDateHelper.isWeekend(attendanceDate)) {
-            throw new AttendanceException(AttendanceDateHelper.NOT_SCHOOL_RUNNING_DAY);
+            throw new AttendanceException(NOT_SCHOOL_RUNNING_DAY);
+        }
+        if (AttendanceDateHelper.isOutOfSchoolOpenDate(attendanceDate)) {
+            throw new AttendanceException(OUT_OF_SCHOOL_OPEN_DATE);
         }
     }
 
