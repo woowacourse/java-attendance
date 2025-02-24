@@ -15,11 +15,11 @@ public enum AttendanceStatus {
     ;
 
     private final String name;
-    private final int minLateMinute;
+    private final int minLatenessMinute;
 
-    AttendanceStatus(String name, int minLateMinute) {
+    AttendanceStatus(String name, int minLatenessMinute) {
         this.name = name;
-        this.minLateMinute = minLateMinute;
+        this.minLatenessMinute = minLatenessMinute;
     }
 
     public static AttendanceStatus of(LocalDate date, LocalTime attendanceTime) {
@@ -28,13 +28,13 @@ public enum AttendanceStatus {
         }
         LectureTime lectureTime = LectureTime.from(date);
         long difference = MINUTES.between(lectureTime.getStartTime(), attendanceTime);
-        return Arrays.stream(values()).filter(attendanceStatus -> attendanceStatus.minLateMinute <= difference)
-            .max(Comparator.comparing(AttendanceStatus::getMinLateMinute))
+        return Arrays.stream(values()).filter(attendanceStatus -> attendanceStatus.minLatenessMinute <= difference)
+            .max(Comparator.comparing(AttendanceStatus::getMinLatenessMinute))
             .orElse(AttendanceStatus.NONE);
     }
 
-    public int getMinLateMinute() {
-        return minLateMinute;
+    public int getMinLatenessMinute() {
+        return minLatenessMinute;
     }
 
     public String getName() {
