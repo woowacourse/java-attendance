@@ -14,10 +14,6 @@ import java.util.stream.IntStream;
 
 public class AttendanceInitializer {
 
-    public static List<String> readCrewAndAttendanceData(String data) {
-        return Arrays.stream(data.split("\n")).toList();
-    }
-
     public static List<String> extractUniqueCrewData(List<String> combinedData) {
         return combinedData.stream()
                 .map(data -> data.split(",")[0])
