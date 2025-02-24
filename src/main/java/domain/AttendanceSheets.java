@@ -99,11 +99,18 @@ public class AttendanceSheets {
 
     public int calculateAbsentCount(String nickname, LocalDate today) {
         List<AttendanceSheet> attendanceByNickname = findAttendanceByNickname(nickname);
-        return IntStream.range(Calendar.DECEMBER.startDay, today.getDayOfMonth()).boxed().mapToInt(day -> {
-            AttendanceSheet attendanceSheet = attendanceByNickname.stream().filter(sheet -> sheet.isSameDay(day))
-                    .findAny().orElse(null);
-            return countAbsentByDay(attendanceSheet, day);
-        }).sum();
+        return IntStream.range(Calendar.DECEMBER.startDay, today.getDayOfMonth())
+                .boxed()
+                .mapToInt(day -> countAbsentState(attendanceByNickname, day))
+                .sum();
+    }
+
+    private int countAbsentState(List<AttendanceSheet> attendanceByNickname, int day) {
+        AttendanceSheet attendanceSheet = attendanceByNickname.stream()
+                .filter(sheet -> sheet.isSameDay(day))
+                .findAny()
+                .orElse(null);
+        return countAbsentByDay(attendanceSheet, day);
     }
 
     private int countAbsentByDay(AttendanceSheet attendanceSheet, int day) {
