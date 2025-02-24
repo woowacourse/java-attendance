@@ -4,7 +4,6 @@ import controller.dto.AttendanceRecodeDto;
 import controller.dto.AttendanceResultDto;
 import controller.dto.PenaltyCrewDto;
 import domain.AttendanceStatus;
-import domain.Crew;
 import domain.CrewAttendance;
 import domain.CrewAttendanceRepository;
 import domain.Date;
@@ -97,6 +96,7 @@ public class AttendanceController {
     private DateTime getUpdatedDateTime(LocalDate currentDate) {
         int updateDate = inputView.readUpdateDate();
         LocalTime updateArriveTime = inputView.readUpdateArriveTime();
+
         return createDateTime(
                 LocalDate.of(currentDate.getYear(), currentDate.getMonth(), updateDate), updateArriveTime);
     }
@@ -126,7 +126,7 @@ public class AttendanceController {
     }
 
     private CrewAttendance getCrewAttendanceByNickName(String nickName) {
-        return crewAttendanceRepository.findByEqualsCrew(new Crew(nickName));
+        return crewAttendanceRepository.findByName(nickName);
     }
 
     private DateTime createDateTime(LocalDate localDate, LocalTime arriveTime) {

@@ -1,92 +1,78 @@
 package domain;
 
 import java.time.LocalDate;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.assertj.core.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 class CrewAttendanceRepositoryTest {
 
-    @BeforeEach
-    void setUp() {
-        CrewAttendanceRepository crewAttendanceRepository = CrewAttendanceRepository.getInstance();
-        crewAttendanceRepository.clear();
-    }
-
-    @Test
-    void 출석을_저장한다() {
-        // given
-        CrewAttendanceRepository crewAttendanceRepository = CrewAttendanceRepository.getInstance();
-        Crew crew = new Crew("이름");
-        CrewAttendance crewAttendance = new CrewAttendance(
-                crew,
-                new Attendance(Map.of(new Date(LocalDate.of(2024, 12, 13)), new Time(10, 0)))
-        );
-
-        // when
-        crewAttendanceRepository.save(crewAttendance);
-
-        // then
-        CrewAttendance savedCrewAttendance = crewAttendanceRepository.findByEqualsCrew(crew);
-        Assertions.assertThat(crewAttendance)
-                .isEqualTo(savedCrewAttendance);
-    }
-
     @Test
     void 출석을_찾는다() {
         // given
-        CrewAttendanceRepository crewAttendanceRepository = CrewAttendanceRepository.getInstance();
-        Crew crew = new Crew("이름");
+        String crewName = "이름";
+        Crew crew = new Crew(crewName);
         CrewAttendance crewAttendance = new CrewAttendance(
                 crew,
                 new Attendance(Map.of(new Date(LocalDate.of(2024, 12, 13)), new Time(10, 0)))
         );
-        crewAttendanceRepository.save(crewAttendance);
+
+        Map<String, CrewAttendance> attendanceRecords = new HashMap<>();
+        attendanceRecords.put(crewName, crewAttendance);
+
+        CrewAttendanceRepository crewAttendanceRepository = new CrewAttendanceRepository(attendanceRecords);
 
         // when
-        CrewAttendance foundCrewAttendance = crewAttendanceRepository.findByEqualsCrew(crew);
+        CrewAttendance foundCrewAttendance = crewAttendanceRepository.findByName(crewName);
 
         // then
         Assertions.assertThat(crewAttendance)
                 .isEqualTo(foundCrewAttendance);
     }
 
-
     @Test
     void 출석을_모두_찾는다() {
         // given
-        CrewAttendanceRepository crewAttendanceRepository = CrewAttendanceRepository.getInstance();
-        Crew crew = new Crew("이름");
-        CrewAttendance crewAttendance = new CrewAttendance(
-                crew,
+        String crewName1 = "이름";
+        String crewName2 = "이름2";
+
+        Crew crew1 = new Crew(crewName1);
+        Crew crew2 = new Crew(crewName2);
+
+        CrewAttendance crewAttendance1 = new CrewAttendance(
+                crew1,
                 new Attendance(Map.of(new Date(LocalDate.of(2024, 12, 13)), new Time(10, 0)))
         );
-        Crew crew2 = new Crew("이름2");
         CrewAttendance crewAttendance2 = new CrewAttendance(
                 crew2,
                 new Attendance(Map.of(new Date(LocalDate.of(2024, 12, 14)), new Time(10, 0)))
         );
 
-        crewAttendanceRepository.save(crewAttendance);
-        crewAttendanceRepository.save(crewAttendance2);
+        Map<String, CrewAttendance> attendanceRecords = new HashMap<>();
+        attendanceRecords.put(crewName1, crewAttendance1);
+        attendanceRecords.put(crewName2, crewAttendance2);
+
+        CrewAttendanceRepository crewAttendanceRepository = new CrewAttendanceRepository(attendanceRecords);
 
         // when
         List<CrewAttendance> crewAttendances = crewAttendanceRepository.findAll();
 
         // then
         Assertions.assertThat(crewAttendances)
-                .containsExactlyInAnyOrder(crewAttendance, crewAttendance2);
+                .containsExactlyInAnyOrder(crewAttendance1, crewAttendance2);
     }
 
     @Test
     void 존재하지_않는_크루는_찾지_못한다() {
         // given
-        CrewAttendanceRepository crewAttendanceRepository = CrewAttendanceRepository.getInstance();
+        CrewAttendanceRepository crewAttendanceRepository = new CrewAttendanceRepository(new HashMap<>());
+
+        String crewName = "없는이름";
 
         // when & then
-        Assertions.assertThatThrownBy(() -> crewAttendanceRepository.findByEqualsCrew(new Crew("이름")))
+        Assertions.assertThatThrownBy(() -> crewAttendanceRepository.findByName(crewName))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("해당 이름의 출석 정보가 없습니다.");
     }
