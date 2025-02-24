@@ -6,13 +6,13 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 public class AttendanceLogDetailsDTO {
-    private String name;
-    private List<LocalDateTime> attendanceTimes;
-    private List<Integer> attendanceDays;
-    private int presenceCount;
-    private int lateCount;
-    private int absenceCount;
-    private PenaltyStatus penaltyStatus;
+    private final String name;
+    private final List<LocalDateTime> attendanceTimes;
+    private final List<Integer> attendanceDays;
+    private final int presenceCount;
+    private final int lateCount;
+    private final int absenceCount;
+    private final PenaltyStatus penaltyStatus;
 
     public AttendanceLogDetailsDTO(String name, List<LocalDateTime> attendanceTimes, List<Integer> attendanceDays, int presenceCount, int lateCount, int absenceCount, PenaltyStatus penaltyStatus) {
         this.name = name;
