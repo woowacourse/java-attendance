@@ -8,7 +8,8 @@ public enum CrewStatus {
 
     DISMISS("제적", 6),
     COUNSELING("면담", 3),
-    WARNING("경고", 2);
+    WARNING("경고", 2),
+    NORMAL("정상", 0);
 
     private final String status;
     private final int limitCount;
