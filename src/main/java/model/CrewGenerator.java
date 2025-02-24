@@ -14,6 +14,8 @@ public class CrewGenerator {
     }
 
     public static List<Crew> registerCrew(List<String> crewNames) {
-        return null;
+        return crewNames.stream()
+                .map(Crew::new)
+                .toList();
     }
 }
