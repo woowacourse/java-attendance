@@ -10,4 +10,11 @@ public class RegisterCrewTest {
                 CrewRegistration.readExistedRecords("src/main/resources/attendances.csv");
 
     }
+
+    @Test
+    @DisplayName("읽어온 출석 기록을 크루 이름, 시간 로그 데이터로 분리한다.")
+    void parse_Existed_Attendance_Records_To_Name_And_Date() {
+        String existedRecord = "빙봉,2024-12-13 10:07";
+        List<String> parsedRecord = CrewRegistration.parseRecordToNameAndDate(existedRecord);
+    }
 }
