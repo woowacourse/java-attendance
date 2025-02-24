@@ -14,26 +14,22 @@ public class AttendanceRegisterController implements AttendanceController {
     public void process(Attendance attendance, LocalDate nowDate) {
         Campus.validateCampusOpenDate(nowDate);
 
-        String nickName = processNickNameInput(attendance);
-        repeatExecutor.repeatUntilSuccess(() -> {
-            LocalTime arrivalTime = processArrivalTimeInput();
-            attendance.attend(nickName, LocalDateTime.of(nowDate, arrivalTime));
-            return RepeatExecutor.SUCCESS;
-        });
+        String nickName = RepeatExecutor.repeatUntilSuccess(this::processNickNameInput, outputView::printErrorMessage, attendance);
+        RepeatExecutor.repeatUntilSuccess(() -> processAttend(attendance, nowDate, nickName), outputView::printErrorMessage);
 
         AttendanceTime attendanceTime = attendance.findAttendanceTime(nickName, nowDate);
         outputView.printCheckAttendanceMessage(attendanceTime);
     }
 
-    private String processNickNameInput(Attendance attendance) {
-        return repeatExecutor.repeatUntilSuccess(() -> {
-            String nickName = inputView.readNickname();
-            attendance.validateNickName(nickName);
-            return nickName;
-        });
+    private void processAttend(Attendance attendance, LocalDate nowDate, String nickName) {
+        LocalTime arrivalTime = inputView.readArrivalTime();
+        LocalDateTime arrivalDateTime = LocalDateTime.of(nowDate, arrivalTime);
+        attendance.attend(nickName, arrivalDateTime);
     }
 
-    private LocalTime processArrivalTimeInput() {
-        return repeatExecutor.repeatUntilSuccess(inputView::readArrivalTime);
+    private String processNickNameInput(Attendance attendance) {
+        String nickName = inputView.readNickname();
+        attendance.validateNickName(nickName);
+        return nickName;
     }
 }

@@ -13,22 +13,16 @@ public class MainController {
 
     private final InputView inputView;
     private final OutputView outputView;
-    private final RepeatExecutor repeatExecutor;
 
     public MainController(final InputView inputView, final OutputView outputView) {
         this.inputView = inputView;
         this.outputView = outputView;
-        this.repeatExecutor = new RepeatExecutor(outputView);
     }
 
     public void run() {
         LocalDate nowDate = LocalDate.now();
         Attendance attendance = new Attendance(AttendancesFileHandler.generateAttendances(), nowDate);
-
-        repeatExecutor.repeatUntilSuccess(() -> {
-            processUntilQuitInput(nowDate, attendance);
-            return RepeatExecutor.SUCCESS;
-        });
+        RepeatExecutor.repeatUntilSuccess(this::processUntilQuitInput, outputView::printErrorMessage, nowDate, attendance);
     }
 
     private void processUntilQuitInput(LocalDate nowDate, Attendance attendance) {

@@ -8,12 +8,13 @@ import java.time.LocalDate;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
+import util.RepeatExecutor;
 
 public class AttendanceCheckController implements AttendanceController {
 
     @Override
     public void process(Attendance attendance, LocalDate nowDate) {
-        String nickName = processNickNameInput(attendance);
+        String nickName = RepeatExecutor.repeatUntilSuccess(this::processNickNameInput, outputView::printErrorMessage, attendance);
         outputView.printCrewAttendanceHeader(nickName);
 
         AttendanceTimes crewAttendances = attendance.getAttendanceTimes(nickName);
@@ -23,11 +24,9 @@ public class AttendanceCheckController implements AttendanceController {
     }
 
     private String processNickNameInput(Attendance attendance) {
-        return repeatExecutor.repeatUntilSuccess(() -> {
-            String nickName = inputView.readNickname();
-            attendance.validateNickName(nickName);
-            return nickName;
-        });
+        String nickName = inputView.readNickname();
+        attendance.validateNickName(nickName);
+        return nickName;
     }
 
     private void printCrewAttendances(Attendance attendance, List<AttendanceTime> attendanceTimes, String nickName) {

@@ -11,8 +11,8 @@ public class AttendanceEditController implements AttendanceController {
 
     @Override
     public void process(Attendance attendance, LocalDate nowDate) {
-        String nickName = processEditNickNameInput(attendance);
-        AttendanceTime oldAttendanceTime = processOldAttendanceTime(attendance, nickName);
+        String nickName = RepeatExecutor.repeatUntilSuccess(this::processEditNickNameInput, outputView::printErrorMessage, attendance);
+        AttendanceTime oldAttendanceTime = RepeatExecutor.repeatUntilSuccess(this::processOldAttendanceTime, outputView::printErrorMessage, attendance, nickName);
 
         int editArrivalDate = oldAttendanceTime.getAttendanceDateTime().getDayOfMonth();
         LocalDate editDate = LocalDate.of(CampusConstant.YEAR, CampusConstant.DECEMBER_MONTH, editArrivalDate);
@@ -23,26 +23,21 @@ public class AttendanceEditController implements AttendanceController {
     }
 
     private String processEditNickNameInput(Attendance attendance) {
-        return repeatExecutor.repeatUntilSuccess(() -> {
-            String nickName = inputView.readEditNickname();
-            attendance.validateNickName(nickName);
-            return nickName;
-        });
+        String nickName = inputView.readEditNickname();
+        attendance.validateNickName(nickName);
+        return nickName;
     }
 
     private AttendanceTime processOldAttendanceTime(Attendance attendance, String nickName) {
-        return repeatExecutor.repeatUntilSuccess(() -> {
-            int editArrivalDate = processEditArrivalDateInput();
-            return attendance.findAttendanceTime(nickName, LocalDate.of(CampusConstant.YEAR, CampusConstant.DECEMBER_MONTH, editArrivalDate));
-        });
+        int editArrivalDate = processEditArrivalDateInput();
+        return attendance.findAttendanceTime(nickName, LocalDate.of(CampusConstant.YEAR, CampusConstant.DECEMBER_MONTH, editArrivalDate));
     }
 
     private void editAttendanceTime(Attendance attendance, String nickName, int editArrivalDate) {
-        repeatExecutor.repeatUntilSuccess(() -> {
+        RepeatExecutor.repeatUntilSuccess(() -> {
             LocalTime editArrivalTime = inputView.readEditArrivalTime();
             attendance.edit(nickName, editArrivalDate, editArrivalTime);
-            return RepeatExecutor.SUCCESS;
-        });
+        }, outputView::printErrorMessage);
     }
 
     private int processEditArrivalDateInput() {
