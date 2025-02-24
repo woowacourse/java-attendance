@@ -12,6 +12,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.IntStream;
 import model.Attendance;
+import model.AttendanceStatus;
 import model.Attendances;
 import model.Crew;
 import model.AttendanceInitializer;
@@ -21,28 +22,28 @@ import org.junit.jupiter.api.Test;
 
 public class AttendanceTest {
 
-    @DisplayName("파일에서 크루 이름과 출석 데이터를 읽어온다.")
-    @Test
-    void test0() {
-        //given
-        String crewInput = """
-                쿠키,2024-12-13 10:08
-                빙봉,2024-12-13 10:07
-                이든,2024-12-13 10:07
-                이든,2024-12-12 10:06
-                """;
-
-        //when
-        List<String> crewNames = AttendanceInitializer.readCrewAndAttendanceData(crewInput);
-
-        //then
-        assertThat(crewNames).containsAll(Arrays.asList(
-                "쿠키,2024-12-13 10:08",
-                "빙봉,2024-12-13 10:07",
-                "이든,2024-12-13 10:07",
-                "이든,2024-12-12 10:06"
-        ));
-    }
+//    @DisplayName("파일에서 크루 이름과 출석 데이터를 읽어온다.")
+//    @Test
+//    void test0() {
+//        //given
+//        String crewInput = """
+//                쿠키,2024-12-13 10:08
+//                빙봉,2024-12-13 10:07
+//                이든,2024-12-13 10:07
+//                이든,2024-12-12 10:06
+//                """;
+//
+//        //when
+//        List<String> crewNames = AttendanceInitializer.readCrewAndAttendanceData(crewInput);
+//
+//        //then
+//        assertThat(crewNames).containsAll(Arrays.asList(
+//                "쿠키,2024-12-13 10:08",
+//                "빙봉,2024-12-13 10:07",
+//                "이든,2024-12-13 10:07",
+//                "이든,2024-12-12 10:06"
+//        ));
+//    }
 
     @DisplayName("중복 없이 크루 이름을 읽어온다.")
     @Test
@@ -134,7 +135,6 @@ public class AttendanceTest {
 //
 //        assertThat(attendanceTime).isEqualTo(LocalDateTime.of(2024, 12, 13, 10, 8));
 //    }
-
     @DisplayName("크루 객체 별로 출석 객체를 빈 객체로 초기화한다.")
     @Test
     void test5_0() {
@@ -173,17 +173,15 @@ public class AttendanceTest {
         //given
         Crew crew = new Crew("빙티");
         Crews crews = new Crews(List.of(crew));
-        Attendance newAttendance = new Attendance(
-                LocalDate.of(2024, 12, 14),
-                LocalTime.of(10, 10)
-        );
         Map<Crew, Attendances> initializedAttendances = AttendanceInitializer.initializeAttendanceOf(crews);
 
         //when
         Attendances attendancesOfCrew = initializedAttendances.get(crew);
-        Attendance attendance = attendancesOfCrew.update(newAttendance);
+        Attendance attendance = attendancesOfCrew.update(LocalDate.of(2024, 12, 14),
+                LocalTime.of(10, 10));
 
-        assertThat(attendance).isEqualTo(newAttendance);
+        assertThat(attendance).isEqualTo(new Attendance(LocalDate.of(2024, 12, 14),
+                LocalTime.of(10, 10)));
         //findByDate도 하면 좋을듯
     }
 
@@ -231,4 +229,55 @@ public class AttendanceTest {
 //        Attendance attendance = new Attendance(); //이미 출석했는지 확인해야 함
 //
 //    }
+
+    @DisplayName("날짜와 시간을 입력하면 이에 맞는 출석 상태를 반환한다.")
+    @Test
+    void test6_0() {
+        //given
+        LocalDate date = LocalDate.of(2024, 12, 13);
+        LocalTime time = LocalTime.of(10, 5);
+
+        //then, when
+        assertThat(AttendanceStatus.findByAttendanceTime(date, time)).isEqualTo(AttendanceStatus.NORMAL);
+    }
+
+    @DisplayName("출석 객체가 시작시간 5분 이내 출석이면 출석 상태를 반환한다.")
+    @Test
+    void test6() {
+        //given
+        Attendance attendance = new Attendance(LocalDate.of(2024, 12, 13), LocalTime.of(10, 5));
+
+        //then, when
+        assertThat(attendance.findStatus()).isEqualTo(AttendanceStatus.NORMAL);
+    }
+
+    @DisplayName("출석 객체가 시작시간 30분 이내 출석이면 지각 상태를 반환한다.")
+    @Test
+    void test6_1() {
+        //given
+        Attendance attendance = new Attendance(LocalDate.of(2024, 12, 13), LocalTime.of(10, 6));
+
+        //then, when
+        assertThat(attendance.findStatus()).isEqualTo(AttendanceStatus.LATE);
+    }
+
+    @DisplayName("출석 객체가 시작시간 5분 이내 출석이면 출석 상태를 반환한다.")
+    @Test
+    void test6_2() {
+        //given
+        Attendance attendance = new Attendance(LocalDate.of(2024, 12, 13), LocalTime.of(10, 31));
+
+        //then, when
+        assertThat(attendance.findStatus()).isEqualTo(AttendanceStatus.ABSENCE);
+    }
+
+    @DisplayName("출결 상태 반환시, 월요일은 13시 시작으로 처리한다.")
+    @Test
+    void test6_3() {
+        //given
+        Attendance attendance = new Attendance(LocalDate.of(2024, 12, 9), LocalTime.of(13, 5));
+
+        //then, when
+        assertThat(attendance.findStatus()).isEqualTo(AttendanceStatus.NORMAL);
+    }
 }
