@@ -1,5 +1,8 @@
 package view;
 
+import static constant.AttendanceStatus.ABSENT;
+import static constant.AttendanceStatus.LATE;
+
 import domain.AllCrew;
 import domain.Attendance;
 import domain.Crew;
@@ -17,9 +20,26 @@ public class OutputView {
         this.today = today;
     }
 
-    public void printDangerousCrew(AllCrew allCrew) {
+
+    public void printAllDangerousCrew(AllCrew allCrew) {
         System.out.println("\n제적 위험자 조회 결과");
-        System.out.println(allCrew.printAllCrewWarningInfo(today));
+        allCrew.sortAllCrewOrderByWarningInfo(today); // 기준에 따라 정렬
+        List<Crew> allWarningCrew = allCrew.getAllWarningCrew();
+        for (Crew crew : allWarningCrew) {
+            System.out.print("- ");
+            printWarningInfo(crew, today);
+            System.out.println();
+        }
+    }
+
+    public void printWarningInfo(Crew crew, LocalDate lastDate) {
+        String nameAndCountFormat = crew.getName() + ": " + ABSENT.getStatus() + " " + crew.getAbsentCount() + "회, " + LATE.getStatus() + " " + crew.getLateCount() + "회 ";
+        String warningStatus = crew.calculateWarningStatus();
+        if (warningStatus.isEmpty()) {
+            System.out.println(nameAndCountFormat);
+            return;
+        }
+        System.out.println(nameAndCountFormat + "(" + warningStatus + ")");
     }
 
     public void printAttendanceHistory(AllCrew allCrew, String name) {
@@ -34,7 +54,7 @@ public class OutputView {
     }
 
     public String getFormatedWarningStatus(Crew crew) {
-        String warningStatus = crew.calculateWarningStatus(crew.getAbsentCount());
+        String warningStatus = crew.calculateWarningStatus();
         if (warningStatus.isEmpty()) {
             return "";
         }

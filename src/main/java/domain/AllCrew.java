@@ -45,28 +45,32 @@ public class AllCrew {
                 .orElseThrow(() -> new IllegalArgumentException("Crew not found"));
     }
 
-    public String printAllCrewWarningInfo(LocalDate date) {
+    public void sortAllCrewOrderByWarningInfo(LocalDate date) {
         updateAbsentHistory(date);
-        allCrew.sort(
-                Comparator.comparing(Crew::getAbsentCount).reversed()
-                        .thenComparing(Crew::getName)
-        );
-        String result = "";
-        for (Crew crew : allCrew) {
-            result = scanWarningCrew(date, crew, result);
-        }
-        return result;
-    }
-
-    private static String scanWarningCrew(LocalDate date, Crew crew, String result) {
-        if (crew.calculateWarningStatus(crew.getAbsentCount()).isEmpty()) {
-            return "";
-        }
-        result += "- " + crew.printWarningInfo(date) + "\n";
-        return result;
+        allCrew.sort(new Comparator<Crew>() {
+            @Override
+            public int compare(Crew o1, Crew o2) {
+                int result =
+                        (o1.getAbsentCount() + o1.getLateCount() / 3) - (o2.getAbsentCount() + o2.getLateCount() / 3);
+                if (result != 0) {
+                    return result;
+                }
+                return o2.getName().compareTo(o1.getName());    // 같으면 이름 역순 정렬
+            }
+        });
     }
 
     public void updateAbsentHistory(LocalDate date) {
-        allCrew.forEach(crew -> crew.updateUntil(date));
+        allCrew.forEach(crew -> crew.updateAbsentUntil(date));
+    }
+
+    public List<Crew> getAllWarningCrew() {
+        List<Crew> allWarningCrew = new ArrayList<>();
+        for (Crew crew : allCrew) {
+            if (crew.calculateWarningStatus().isEmpty()){
+                allWarningCrew.add(crew);
+            }
+        }
+        return allWarningCrew;
     }
 }

@@ -84,20 +84,9 @@ public class Crew {
         }
     }
 
-    public String printWarningInfo(LocalDate lastDate) {
-        updateUntil(lastDate.minusDays(1));
-        int lateCount = getLateCount();
-        int originalAbsentCount = getOriginalAbsentCount();
-        String nameAndCount = name + ": " + ABSENT + " " + originalAbsentCount + "회, " + LATE + " " + lateCount + "회 ";
-        String warningStatus = calculateWarningStatus(getAbsentCount());
-        if (warningStatus.isEmpty()) {
-            return nameAndCount;
-        }
-        nameAndCount += "(" + warningStatus + ")";
-        return nameAndCount;
-    }
-
-    public String calculateWarningStatus(int absentCount) {
+    // 인자 : 지각 3회를 결석 1회로 간주한 결석 횟수
+    public String calculateWarningStatus() {
+        int absentCount = getAbsentCount() + getLateCount() / 3;
         if (absentCount > EXPEL.getAbsentCount()) {
             return EXPEL.getPenalty();
         }

@@ -59,7 +59,7 @@ public class AttendanceSystem {
     }
 
     private void checkDangerousCrew() {
-        outputView.printDangerousCrew(allCrew);
+        outputView.printAllDangerousCrew(allCrew);
     }
 
     private void checkCrewAttendanceHistory() {
