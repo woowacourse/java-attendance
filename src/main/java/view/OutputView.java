@@ -51,14 +51,14 @@ public class OutputView {
 
     public void printAttendanceHistoryWithCrew(Crew crew) {
         CrewDto crewDto = crew.toDto();
-        int attendanceCount = crewDto.getAttendanceCount();
-        int lateCount = crewDto.getLateCount();
-        int absentCount = crewDto.getAbsentCount();
 
         printTotalAttendanceHistory(crew);
         System.out.println();
-        printCountWithAttendanceStatus(attendanceCount, lateCount, absentCount);
-        System.out.println(crewDto.getPenaltyStatus().getName() + " 대상자입니다.\n");
+        printCountWithAttendanceStatus(crewDto.getAttendanceCount(), crewDto.getLateCount(), crewDto.getAbsentCount());
+
+        if (crewDto.getPenaltyStatus() != PenaltyStatus.NONE) {
+            System.out.println(crewDto.getPenaltyStatus().getName() + " 대상자입니다.\n");
+        }
     }
 
     private void printTotalAttendanceHistory(Crew crew) {
