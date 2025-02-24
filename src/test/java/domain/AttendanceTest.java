@@ -53,7 +53,7 @@ class AttendanceTest {
     void save() {
         //given
         Attendance attendance = creatAttendance();
-        Crew crew = new Crew("도기");
+        Crew crew = Crew.from("도기");
         LocalDateTime attendanceTime = LocalDateTime.of(2024, 12, 6, 10, 20);
 
         //when
@@ -68,7 +68,7 @@ class AttendanceTest {
     void duplicateSave() {
         //given
         Attendance attendance = creatAttendance();
-        Crew crew = new Crew("도기");
+        Crew crew = Crew.from("도기");
         LocalDateTime attendanceTime = LocalDateTime.of(2024, 12, 2, 9, 55);
 
         //when & then
@@ -82,7 +82,7 @@ class AttendanceTest {
     void nonDuplicateSave() {
         //given
         Attendance attendance = creatAttendance();
-        Crew crew = new Crew("도기");
+        Crew crew = Crew.from("도기");
         LocalDateTime attendanceTime = LocalDateTime.of(2024, 12, 6, 9, 55);
 
         //when & then
@@ -95,7 +95,7 @@ class AttendanceTest {
     void update() {
         // given
         Attendance attendance = creatAttendance();
-        Crew crew = new Crew("도기");
+        Crew crew = Crew.from("도기");
         LocalDateTime updateTime = LocalDateTime.of(2024, 12, 4, 10, 2);
 
         //when
@@ -116,7 +116,7 @@ class AttendanceTest {
     void readRecord() {
         //given
         Attendance attendance = creatAttendance();
-        Crew crew = new Crew("도기");
+        Crew crew = Crew.from("도기");
         int todayDay = 10;
 
         //when
@@ -146,7 +146,7 @@ class AttendanceTest {
     void updateHoliday(LocalDateTime localDateTime) {
         // given
         Attendance attendance = creatAttendance();
-        Crew crew = new Crew("도기");
+        Crew crew = Crew.from("도기");
 
         // when & then
         Assertions.assertThatThrownBy(() -> attendance.update(crew, localDateTime))
@@ -155,7 +155,7 @@ class AttendanceTest {
     }
 
     private Attendance creatAttendance() {
-        Crew crew = new Crew("도기");
+        Crew crew = Crew.from("도기");
         List<LocalDateTime> localDateTimes = new ArrayList<>();
         localDateTimes.add(LocalDateTime.of(2024, 12, 2, 10, 00));
         localDateTimes.add(LocalDateTime.of(2024, 12, 3, 10, 06));
