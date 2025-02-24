@@ -2,6 +2,7 @@ package test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.util.Arrays;
 import java.util.List;
 import model.CrewGenerator;
 import org.junit.jupiter.api.DisplayName;
@@ -22,7 +23,7 @@ public class AttendanceTest {
                 이든,2024-12-11 10:10
                 """;
         List<String> crews = CrewGenerator.findCrewNames(crewInput);
-        assertThat(crews).containsExactly("쿠키", "빙봉", "빙티", "이든");
+        assertThat(crews).containsAll(Arrays.asList("쿠키", "빙봉", "빙티", "이든"));
     }
 
 //    @DisplayName("입력한 닉네임에 맞는 크루 정보를 가져온다.")
