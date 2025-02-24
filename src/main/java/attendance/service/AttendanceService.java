@@ -39,14 +39,14 @@ public class AttendanceService {
         attendances.checkName(name);
     }
 
-    public void checkByNameAndDate(String name, LocalDate today) {
-        attendances.findLocalTimeByNameAndDate(name, today);
-    }
-
     public void insertAttendance(String name, LocalDate today, LocalTime time) {
         checkByNameAndDate(name, today);
         Attendance attendance = new Attendance(name, today, time);
         this.attendances = attendances.add(attendance);
+    }
+
+    private void checkByNameAndDate(String name, LocalDate today) {
+        attendances.findLocalTimeByNameAndDate(name, today);
     }
 
     public String getAttendanceStatus(LocalDate date, LocalTime time) {
