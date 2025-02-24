@@ -1,6 +1,10 @@
 package attendance.view;
 
-import java.util.List;
+import attendance.domain.InfoCheckAttendance;
+import attendance.domain.InfoLookupAttendance;
+import attendance.domain.InfoLookupExpelRecord;
+import attendance.domain.InfoLookupExpulsion;
+import attendance.domain.InfoModifyAttendance;
 
 public class OutputView {
     private static final String ATTENDANCE_STRING = "%s월 %s일 %s요일 %s (%s)";
@@ -18,89 +22,88 @@ public class OutputView {
     private static final String ABSENT_TIME_VALUE = "00:00";
     private static final String ABSENT_TIME_FORMAT = "--:--";
 
-    public void printTodayAttendance(final List<String> attendanceInfo) {
+    public void printTodayAttendance(final InfoCheckAttendance attendanceInfo) {
         System.out.println(
                 ATTENDANCE_STRING.formatted(
-                        attendanceInfo.get(0),
-                        attendanceInfo.get(1),
-                        attendanceInfo.get(2),
-                        attendanceInfo.get(3),
-                        attendanceInfo.get(4)
+                        attendanceInfo.getMonth(),
+                        attendanceInfo.getDay(),
+                        attendanceInfo.getDayOfWeek(),
+                        attendanceInfo.getAttendanceTime(),
+                        attendanceInfo.getAttendanceType()
                 )
         );
         printNewLine();
     }
 
-    public void printModifiedAttendance(String originalTime, String originalType, List<String> newAttendanceInfo) {
+    public void printModifiedAttendance(final InfoModifyAttendance attendanceModifiedInfo) {
         System.out.print(
                 ATTENDANCE_STRING.formatted(
-                        newAttendanceInfo.get(0),
-                        newAttendanceInfo.get(1),
-                        newAttendanceInfo.get(2),
-                        originalTime,
-                        originalType
+                        attendanceModifiedInfo.getMonth(),
+                        attendanceModifiedInfo.getDay(),
+                        attendanceModifiedInfo.getDayOfWeek(),
+                        attendanceModifiedInfo.getOriginalTime(),
+                        attendanceModifiedInfo.getOriginalType()
                 )
         );
-        System.out.println(formatModifiedNotice(newAttendanceInfo));
+        System.out.println(formatModifiedNotice(attendanceModifiedInfo));
         printNewLine();
     }
 
-    private String formatModifiedNotice(List<String> newAttendanceInfo) {
+    private String formatModifiedNotice(final InfoModifyAttendance attendanceModifiedInfo) {
         return MODIFIED_ATTENDANCE_STRING.formatted(
-                newAttendanceInfo.get(3),
-                newAttendanceInfo.get(4)
+                attendanceModifiedInfo.getNewTime(),
+                attendanceModifiedInfo.getNewType()
         );
     }
 
-    public void printCrewAttendanceHistory(String crewName, List<List<String>> crewAttendanceHistory) {
+    public void printCrewAttendanceHistory(final InfoLookupAttendance infoLookupAttendance) {
         System.out.println(
-                CREW_ATTENDANCE_HISTORY_STRING.formatted(crewName)
+                CREW_ATTENDANCE_HISTORY_STRING.formatted(infoLookupAttendance.getCrewName())
         );
-        for (List<String> crewStatistic : crewAttendanceHistory) {
+        for (InfoCheckAttendance infoLookupRecord : infoLookupAttendance.getCrewAttendanceRecords()) {
             System.out.println(
                     ATTENDANCE_STRING.formatted(
-                            crewStatistic.get(0),
-                            crewStatistic.get(1),
-                            crewStatistic.get(2),
-                            formatAbsentTimeString(crewStatistic),
-                            crewStatistic.get(4)
+                            infoLookupRecord.getMonth(),
+                            infoLookupRecord.getDay(),
+                            infoLookupRecord.getDayOfWeek(),
+                            formatAbsentTimeString(infoLookupRecord.getAttendanceTime()),
+                            infoLookupRecord.getAttendanceType()
                     )
             );
         }
         printNewLine();
     }
 
-    private String formatAbsentTimeString(List<String> crewStatistic) {
-        String absentTime = crewStatistic.get(3);
+    private String formatAbsentTimeString(String absentTime) {
         if (absentTime.equals(ABSENT_TIME_VALUE)) {
             absentTime = ABSENT_TIME_FORMAT;
         }
         return absentTime;
     }
 
-    public void printCrewStatisticStatus(List<String> crewStatisticStatus) {
+    public void printCrewStatisticStatus(final InfoLookupAttendance infoLookupAttendance) {
         System.out.println(
                 CREW_STATISTICS_STRING.formatted(
-                        crewStatisticStatus.get(0),
-                        crewStatisticStatus.get(1),
-                        crewStatisticStatus.get(2)
+                        infoLookupAttendance.getCrewStatisticSafe(),
+                        infoLookupAttendance.getCrewStatisticLate(),
+                        infoLookupAttendance.getCrewStatisticAbsent()
                 )
         );
         System.out.println(
-                CREW_STATUS_STRING.formatted(crewStatisticStatus.get(3))
+                CREW_STATUS_STRING.formatted(infoLookupAttendance.getCrewStatisticPenalty())
         );
         printNewLine();
     }
 
-    public void printExpelExpectedCrews(List<List<String>> crewExpelExpectedInfo) {
+    public void printExpelExpectedCrews(final InfoLookupExpulsion infoLookupExpulsion) {
         System.out.println(EXPEL_CREWS_HEAD_STRING);
-        for (List<String> crewExpelExpected : crewExpelExpectedInfo) {
+        for (InfoLookupExpelRecord infoLookupExpelRecord : infoLookupExpulsion.getCrewExpelRecords()) {
             System.out.println(
                     EXPEL_CREW_BODY_STRING.formatted(
-                            crewExpelExpected.get(0),
-                            crewExpelExpected.get(1),
-                            crewExpelExpected.get(2),
-                            crewExpelExpected.get(3)
+                            infoLookupExpelRecord.getCrewName(),
+                            infoLookupExpelRecord.getAbsentCount(),
+                            infoLookupExpelRecord.getLateCount(),
+                            infoLookupExpelRecord.getExpectedPenalty()
                     )
             );
         }
