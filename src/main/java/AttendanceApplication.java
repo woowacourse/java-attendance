@@ -9,6 +9,7 @@ public class AttendanceApplication {
 
     public static void main(String[] args) {
         final AttendanceController controller = new AttendanceController(new InputView(), new OutputView(),
+                new TodayDateTimeGenerator(),
                 new AttendanceSystemFactory(), new ResponseConverter());
         controller.run();
     }

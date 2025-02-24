@@ -1,5 +1,6 @@
 package controller;
 
+import domain.DateTimeGenerator;
 import domain.ResponseConverter;
 import domain.UpdatedAttendanceSnapshot;
 import domain.constants.AnswerCommand;
@@ -21,31 +22,35 @@ import view.OutputView;
 public class AttendanceController {
     private final InputView inputView;
     private final OutputView outputView;
+    private final DateTimeGenerator dateTimeGenerator;
     private final AttendanceSystemFactory attendanceSystemFactory;
     private final ResponseConverter responseConverter;
 
     public AttendanceController(
             final InputView inputView,
             final OutputView outputView,
+            final DateTimeGenerator dateTimeGenerator,
             final AttendanceSystemFactory attendanceSystemFactory,
             final ResponseConverter responseConverter
     ) {
         this.inputView = inputView;
         this.outputView = outputView;
+        this.dateTimeGenerator = dateTimeGenerator;
         this.attendanceSystemFactory = attendanceSystemFactory;
         this.responseConverter = responseConverter;
     }
 
     public void run() {
-        final AttendanceSystem attendanceSystem = attendanceSystemFactory.createAttendanceSystem();
+        final AttendanceSystem attendanceSystem =
+                attendanceSystemFactory.createAttendanceSystem(dateTimeGenerator.generateDate());
         retryUntilCommandQuit(attendanceSystem);
     }
 
     private void retryUntilCommandQuit(final AttendanceSystem attendanceSystem) {
-        UserCommand command = inputUserCommand(attendanceSystem);
+        UserCommand command = inputUserCommand();
         while (command != UserCommand.QUIT) {
             selectOperation(attendanceSystem, command);
-            command = inputUserCommand(attendanceSystem);
+            command = inputUserCommand();
         }
     }
 
@@ -59,12 +64,12 @@ public class AttendanceController {
     }
 
     private void addAttendance(final AttendanceSystem attendanceSystem) {
-        if (!attendanceSystem.isAttendanceDay()) {
+        if (!attendanceSystem.isAttendanceDay(dateTimeGenerator.generateDate())) {
             outputView.printNotAttendanceDay();
             return;
         }
         final String crewName = LoopTemplate.tryCatchLoop(this::inputCrewName, attendanceSystem, outputView);
-        if (attendanceSystem.isAlreadyTodayAttendance(crewName)) {
+        if (attendanceSystem.isAlreadyTodayAttendance(crewName, dateTimeGenerator.generateDate())) {
             updateAttendanceIfAlreadyTodayAttendance(attendanceSystem, crewName);
             return;
         }
@@ -77,14 +82,15 @@ public class AttendanceController {
     private Attendance attendance(final String crewName, final AttendanceSystem attendanceSystem) {
         outputView.printAddAttendanceDate();
         final LocalTime attendanceTime = inputView.readTime();
-        final Attendance attendance = attendanceSystem.attendance(crewName, attendanceTime);
+        final Attendance attendance =
+                attendanceSystem.attendance(crewName, attendanceTime, dateTimeGenerator.generateDate());
         return attendance;
     }
 
     private void updateAttendanceByToday(final AttendanceSystem attendanceSystem, final String crewName) {
         final LocalTime targetTime = LoopTemplate.tryCatchLoop(this::inputUpdateTime, outputView);
-        final UpdatedAttendanceSnapshot updatedAttendanceSnapshot = attendanceSystem.updateTodayAttendance(crewName,
-                targetTime);
+        final UpdatedAttendanceSnapshot updatedAttendanceSnapshot =
+                attendanceSystem.updateTodayAttendance(crewName, targetTime, dateTimeGenerator.generateDate());
         outputView.printUpdateAttendanceResult(
                 responseConverter.convertUpdatedAttendanceSnapshotToResponse(updatedAttendanceSnapshot));
     }
@@ -106,7 +112,8 @@ public class AttendanceController {
                 outputView);
         final LocalTime targetTime = LoopTemplate.tryCatchLoop(this::inputUpdateTime, outputView);
         final UpdatedAttendanceSnapshot updatedAttendanceSnapshot =
-                attendanceSystem.updateAttendanceByCrewNameAndDay(targetTime, crewName, dayOfMonth);
+                attendanceSystem.updateAttendanceByCrewNameAndDay(targetTime, crewName, dayOfMonth,
+                        dateTimeGenerator.generateDate());
         outputView.printUpdateAttendanceResult(
                 responseConverter.convertUpdatedAttendanceSnapshotToResponse(updatedAttendanceSnapshot));
     }
@@ -142,8 +149,8 @@ public class AttendanceController {
         outputView.printExpulsionCrewResponses(responseConverter.convertExpulsionCrewResponses(crews));
     }
 
-    private UserCommand inputUserCommand(final AttendanceSystem attendanceSystem) {
-        outputView.printToday(attendanceSystem.today());
+    private UserCommand inputUserCommand() {
+        outputView.printToday(dateTimeGenerator.generateDate());
         outputView.printIntroduceOperation();
         final UserCommand userCommand = inputView.readChoiceOperation();
         return userCommand;
@@ -165,7 +172,7 @@ public class AttendanceController {
     private int inputDayOfMonthForUpdate(final String crewName, final AttendanceSystem attendanceSystem) {
         outputView.printUpdateAttendanceDayOfMonth();
         final int dayOfMonth = inputView.readDayOfMonth();
-        attendanceSystem.validateUpdateAttendanceDay(crewName, dayOfMonth);
+        attendanceSystem.validateUpdateAttendanceDay(crewName, dayOfMonth, dateTimeGenerator.generateDate());
         return dayOfMonth;
     }
 

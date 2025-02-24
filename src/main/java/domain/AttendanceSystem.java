@@ -16,25 +16,28 @@ public class AttendanceSystem {
     private static final LocalDate CHRISTMAS_DAY = LocalDate.of(2024, 12, 25);
     private static final String DELIMITER = ",";
     private final List<Crew> crews;
-    private final DateTimeGenerator dateTimeGenerator;
 
-    public AttendanceSystem(final List<Crew> crews, final DateTimeGenerator dateTimeGenerator) {
+    public AttendanceSystem(final List<Crew> crews) {
         this.crews = new ArrayList<>(crews);
-        this.dateTimeGenerator = dateTimeGenerator;
     }
 
-    public static AttendanceSystem of(final List<String> data, final DateTimeGenerator dateTimeGenerator) {
-        final LocalDate today = dateTimeGenerator.generateDate();
+    public static AttendanceSystem of(
+            final List<String> data,
+            final LocalDate today
+    ) {
         final List<Crew> crews = data.stream()
                 .map(d -> d.split(DELIMITER)[0])
                 .distinct()
                 .map(d -> Crew.of(d, today))
                 .toList();
         data.forEach(d -> initAttendance(crews, d));
-        return new AttendanceSystem(crews, dateTimeGenerator);
+        return new AttendanceSystem(crews);
     }
 
-    private static void initAttendance(final List<Crew> crews, final String input) {
+    private static void initAttendance(
+            final List<Crew> crews,
+            final String input
+    ) {
         final String[] data = input.split(DELIMITER);
         crews.stream()
                 .filter(crew -> crew.isSameName(data[0]))
@@ -42,15 +45,22 @@ public class AttendanceSystem {
                 .ifPresent(crew -> crew.updateAttendanceByDateTime(data[1]));
     }
 
-    public Attendance attendance(final String name, final LocalTime time) {
+    public Attendance attendance(
+            final String name,
+            final LocalTime time,
+            final LocalDate date
+    ) {
         final Crew crew = findCrewByName(name);
-        final LocalDateTime dateTime = LocalDateTime.of(dateTimeGenerator.generateDate(), time);
+        final LocalDateTime dateTime = LocalDateTime.of(date, time);
         return crew.addAttendance(dateTime);
     }
 
-    public boolean isAlreadyTodayAttendance(final String crewName) {
+    public boolean isAlreadyTodayAttendance(
+            final String crewName,
+            final LocalDate today
+    ) {
         final Crew crew = this.findCrewByName(crewName);
-        return crew.isAlreadyTodayAttendance(dateTimeGenerator.generateDate());
+        return crew.isAlreadyTodayAttendance(today);
     }
 
     public void validateCrewByName(final String name) {
@@ -59,8 +69,12 @@ public class AttendanceSystem {
         }
     }
 
-    public void validateUpdateAttendanceDay(final String crewName, final int dayOfMonth) {
-        if (!isAlreadyTodayAttendanceByCrewName(crewName, convertDayOfMonthToLocalDate(dayOfMonth))) {
+    public void validateUpdateAttendanceDay(
+            final String crewName,
+            final int dayOfMonth,
+            final LocalDate date
+    ) {
+        if (!isAlreadyTodayAttendanceByCrewName(crewName, convertDayOfMonthToLocalDate(dayOfMonth, date))) {
             throw new IllegalArgumentException(ErrorMessage.INVALID_DATE.getMessage());
         }
     }
@@ -72,29 +86,29 @@ public class AttendanceSystem {
                 .toList();
     }
 
-    public boolean isAttendanceDay() {
-        final LocalDate today = dateTimeGenerator.generateDate();
-        return !(today.getDayOfWeek() == DayOfWeek.SUNDAY || today.getDayOfWeek() == DayOfWeek.SATURDAY
-                || today.equals(CHRISTMAS_DAY));
+    public boolean isAttendanceDay(final LocalDate date) {
+        return !(date.getDayOfWeek() == DayOfWeek.SUNDAY || date.getDayOfWeek() == DayOfWeek.SATURDAY
+                || date.equals(CHRISTMAS_DAY));
     }
 
     public UpdatedAttendanceSnapshot updateAttendanceByCrewNameAndDay(
             final LocalTime targetTime,
             final String crewName,
-            final int dayOfMonth
+            final int dayOfMonth,
+            final LocalDate date
     ) {
-        final LocalDate targetDate = convertDayOfMonthToLocalDate(dayOfMonth);
+        final LocalDate targetDate = convertDayOfMonthToLocalDate(dayOfMonth, date);
         return findCrewByName(crewName)
                 .updateAttendanceByDateAndTime(targetTime, targetDate);
     }
 
     public UpdatedAttendanceSnapshot updateTodayAttendance(
             final String crewName,
-            final LocalTime targetTime
+            final LocalTime targetTime,
+            final LocalDate date
     ) {
-        final LocalDate today = dateTimeGenerator.generateDate();
         return findCrewByName(crewName)
-                .updateAttendanceByDateAndTime(targetTime, today);
+                .updateAttendanceByDateAndTime(targetTime, date);
     }
 
     public ExpulsionStatus calculateExpulsionStatusByCrew(final String crewName) {
@@ -117,9 +131,11 @@ public class AttendanceSystem {
         return !Objects.equals(expulsionStatus, ExpulsionStatus.NORMAL);
     }
 
-    private LocalDate convertDayOfMonthToLocalDate(final int dayOfMonth) {
-        return dateTimeGenerator.generateDate()
-                .withDayOfMonth(dayOfMonth);
+    private LocalDate convertDayOfMonthToLocalDate(
+            final int dayOfMonth,
+            final LocalDate date
+    ) {
+        return date.withDayOfMonth(dayOfMonth);
     }
 
     private boolean existCrewByName(final String name) {
@@ -127,15 +143,14 @@ public class AttendanceSystem {
                 .anyMatch(crew -> crew.isSameName(name));
     }
 
-    private boolean isAlreadyTodayAttendanceByCrewName(final String name, final LocalDate today) {
+    private boolean isAlreadyTodayAttendanceByCrewName(
+            final String name,
+            final LocalDate today
+    ) {
         return findCrewByName(name).isAlreadyTodayAttendance(today);
     }
 
     public List<Attendance> getAttendancesByCrew(final String crewName) {
         return findCrewByName(crewName).getAttendances();
-    }
-
-    public LocalDate today() {
-        return dateTimeGenerator.generateDate();
     }
 }
