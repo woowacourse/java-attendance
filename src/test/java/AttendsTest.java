@@ -9,6 +9,7 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.IntStream;
 import java.util.stream.Stream;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -104,44 +105,33 @@ public class AttendsTest {
         );
     }
 
+    private List<Attend> createAttendsUntilDay(int day) {
+        List<Attend> result = new ArrayList<>();
+        IntStream.range(1, day).forEach(i -> result.add(Attend.fromDay(i)));
+        return result;
+    }
+
+    private List<Attend> createAttendsByTargetDay(List<Integer> days) {
+        List<Attend> result = new ArrayList<>();
+        days.forEach(day -> result.add(Attend.fromDay(day)));
+        return result;
+    }
+
     @Test
     @DisplayName("출석 대상 날짜들이 들어있는 리스트를 토대로 출석 객체들을 반환한다")
     void shouldReturnAttendsByDayOfWeek() {
         // given
         List<Integer> dayOfWeek = Current.TODAY.getAttendUntilDay();
-        List<Attend> attendsInitValue = List.of(
-                Attend.of(LocalDate.of(2024, 12, 2), LocalTime.of(13, 0)),
-                Attend.of(LocalDate.of(2024, 12, 3), LocalTime.of(10, 7)),
-                Attend.of(LocalDate.of(2024, 12, 4), LocalTime.of(10, 7)),
-                Attend.of(LocalDate.of(2024, 12, 5), LocalTime.of(10, 7)),
-                Attend.of(LocalDate.of(2024, 12, 6), LocalTime.of(10, 0)),
-                Attend.of(LocalDate.of(2024, 12, 7), LocalTime.of(10, 0)),
-                Attend.of(LocalDate.of(2024, 12, 8), LocalTime.of(10, 0)),
-                Attend.of(LocalDate.of(2024, 12, 9), LocalTime.of(13, 0)),
-                Attend.of(LocalDate.of(2024, 12, 10), LocalTime.of(13, 0)),
-                Attend.of(LocalDate.of(2024, 12, 11), LocalTime.of(13, 0)),
-                Attend.of(LocalDate.of(2024, 12, 12), LocalTime.of(13, 0)),
-                Attend.of(LocalDate.of(2024, 12, 13), LocalTime.of(13, 0))
-        );
-        Attend weekEndAttend = Attend.of(LocalDate.of(2024, 12, 7), LocalTime.of(13, 0));
-        Attend futureAttend = Attend.of(LocalDate.of(2024, 12, 13), LocalTime.of(13, 0));
+        List<Attend> attendsInitValue = createAttendsUntilDay(Current.TODAY.getDay());
+        Attend weekEndAttend = Attend.fromDay(7);
+        Attend futureAttend = Attend.fromDay(13);
         Attends attends = new Attends(new ArrayList<>(attendsInitValue));
 
         // when
         List<Attend> result = attends.getAttends(dayOfWeek);
 
-        // than
-        List<Attend> actual = List.of(
-                Attend.of(LocalDate.of(2024, 12, 2), LocalTime.of(13, 0)),
-                Attend.of(LocalDate.of(2024, 12, 3), LocalTime.of(10, 7)),
-                Attend.of(LocalDate.of(2024, 12, 4), LocalTime.of(10, 7)),
-                Attend.of(LocalDate.of(2024, 12, 5), LocalTime.of(10, 7)),
-                Attend.of(LocalDate.of(2024, 12, 6), LocalTime.of(10, 0)),
-                Attend.of(LocalDate.of(2024, 12, 9), LocalTime.of(13, 0)),
-                Attend.of(LocalDate.of(2024, 12, 10), LocalTime.of(13, 0)),
-                Attend.of(LocalDate.of(2024, 12, 11), LocalTime.of(13, 0)),
-                Attend.of(LocalDate.of(2024, 12, 12), LocalTime.of(13, 0))
-        );
+        // then
+        List<Attend> actual = createAttendsByTargetDay(dayOfWeek);
 
         assertAll(
                 () -> assertThat(result).doesNotContain(weekEndAttend),
