@@ -6,7 +6,6 @@ import domain.AbsenceLevel;
 import domain.AttendanceHistory;
 import domain.Crew;
 import domain.Crews;
-import domain.SelectionOption;
 import dto.AbsenceCrewDto;
 import dto.AbsenceCrewsDto;
 import dto.HistoriesDto;
@@ -16,6 +15,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import view.InputView;
 import view.OutputVIew;
+import view.SelectionOption;
 
 public class AttendanceController {
 

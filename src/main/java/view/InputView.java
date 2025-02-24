@@ -1,6 +1,5 @@
 package view;
 
-import domain.SelectionOption;
 import java.time.LocalDateTime;
 import java.util.Scanner;
 
