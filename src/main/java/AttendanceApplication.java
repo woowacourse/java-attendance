@@ -1,11 +1,11 @@
 import presentation.AttendanceController;
 import presentation.view.AttendanceFileInputView;
-import service.CrewService;
+import domain.CrewFactory;
 
 public class AttendanceApplication {
     public static void main(String[] args) {
         AttendanceFileInputView fileInputView = new AttendanceFileInputView();
-        CrewService attendanceService = new CrewService();
+        CrewFactory attendanceService = new CrewFactory();
         AttendanceController attendanceController = new AttendanceController(fileInputView, attendanceService);
         attendanceController.run();
     }

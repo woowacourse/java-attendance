@@ -1,5 +1,6 @@
 package service;
 
+import domain.CrewFactory;
 import domain.CrewGroup;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -17,11 +18,11 @@ class AttendanceServiceTest {
         // given
         AttendanceFileInputView fileInputView = new AttendanceFileInputView();
         Map<String, List<String>> attendanceFileInfo = fileInputView.getAttendanceFileInput();
-        CrewService attendanceService = new CrewService();
+        CrewFactory attendanceService = new CrewFactory();
         Map<String, List<LocalDateTime>> map = InputParser.getFileAttendanceInfo(attendanceFileInfo);
 
         // when
-        CrewGroup crewGroup = attendanceService.createCrewGroup(map);
+        CrewGroup crewGroup = attendanceService.crewGroupOf(map);
 
         //then
         Assertions.assertThat(crewGroup.findCrew("빙봉").getName()).isEqualTo("빙봉");

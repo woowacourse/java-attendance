@@ -17,14 +17,14 @@ import java.util.Map;
 import presentation.view.AttendanceFileInputView;
 import presentation.view.InputView;
 import presentation.view.OutputView;
-import service.CrewService;
+import domain.CrewFactory;
 import util.DateTimeUtil;
 
 public class AttendanceController {
     private final AttendanceFileInputView fileInputView;
-    private final CrewService attendanceService;
+    private final CrewFactory attendanceService;
 
-    public AttendanceController(AttendanceFileInputView fileInputView, CrewService attendanceService) {
+    public AttendanceController(AttendanceFileInputView fileInputView, CrewFactory attendanceService) {
         this.fileInputView = fileInputView;
         this.attendanceService = attendanceService;
     }
@@ -39,7 +39,7 @@ public class AttendanceController {
         Map<String, List<LocalDateTime>> crewInitAttendanceDates = InputParser.getFileAttendanceInfo(
                 attendanceFileInfo);
 
-        return attendanceService.createCrewGroup(crewInitAttendanceDates);
+        return attendanceService.crewGroupOf(crewInitAttendanceDates);
     }
 
     private void repeatCommand(CrewGroup crewGroup) {
