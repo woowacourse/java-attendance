@@ -5,19 +5,41 @@ import java.util.List;
 
 public class Crews {
 
-    private final List<Crew> crews;
+    private List<Crew> crews;
 
-    public Crews(List<String> inputCrews) {
-        crews = new ArrayList<>();
-        inputCrews.forEach(inputCrew -> {
-            String[] s = inputCrew.split(",");
-            initializeAttendTime(s[0], s[1]);
-        });
+    public void loadCrews(List<String> crewsInFile) {
+        this.crews = new ArrayList<>();
+        crewsInFile.forEach(crewInFile ->
+                loadCrew(crewInFile.split(",")[0], crewInFile.split(",")[1])
+        );
+    }
+
+    private void loadCrew(final String nickname, final String attendTime) {
+        boolean exists = existsByNickname(nickname);
+        if (exists) {
+            Crew crew = findByNickname(nickname);
+            crew.addAttendTime(attendTime);
+            return;
+        }
+        Crew crew = new Crew(nickname, attendTime);
+        crews.add(crew);
+    }
+
+    private Crew findByNickname(final String nickname) {
+        return crews.stream()
+                .filter(crew -> crew.isSameName(nickname))
+                .findAny()
+                .orElseThrow(() -> new IllegalArgumentException("[ERROR] 등록되지 않은 닉네임입니다."));
+    }
+
+    private boolean existsByNickname(final String nickname) {
+        return crews.stream()
+                .anyMatch(crew -> crew.isSameName(nickname));
     }
 
     public Crew findCrew(String nickname) {
         return crews.stream()
-                .filter(c -> c.getName().equals(nickname))
+                .filter(c -> c.isSameName(nickname))
                 .findAny()
                 .orElse(null);
     }

@@ -53,6 +53,10 @@ public class Crew {
         return attendanceHistory.getAttendanceStatus().getStatus().equals(type);
     }
 
+    public boolean isSameName(final String name) {
+        return this.name.equals(name);
+    }
+
     public String getName() {
         return name;
     }

@@ -16,7 +16,8 @@ public class CrewsTest {
     @ParameterizedTest
     @CsvSource({"폰트,폰트", "슬링키,슬링키"})
     void test1(String nickname, String expected) {
-        Crews crews = new Crews(List.of("폰트,2024-12-13 10:08", "슬링키,2024-12-09 13:03"));
+        Crews crews = new Crews();
+        crews.loadCrews(List.of("폰트,2024-12-13 10:08", "슬링키,2024-12-09 13:03"));
         Crew crew = crews.findCrew(nickname);
 
         assertThat(crew.getName()).isEqualTo(expected);
@@ -25,7 +26,8 @@ public class CrewsTest {
     @DisplayName("출석 데이터를 추가한다.")
     @Test
     void test3() {
-        Crews crews = new Crews(List.of("폰트,2024-12-13 10:08", "슬링키,2024-12-09 13:03"));
+        Crews crews = new Crews();
+        crews.loadCrews(List.of("폰트,2024-12-13 10:08", "슬링키,2024-12-09 13:03"));
 
         crews.initializeAttendTime("슬링키", "2024-12-09 13:03");
 
@@ -35,7 +37,8 @@ public class CrewsTest {
 
     @Test
     void test4() {
-        Crews crews = new Crews(List.of("폰트,2024-12-13 10:08", "슬링키,2024-12-09 13:03"));
+        Crews crews = new Crews();
+        crews.loadCrews(List.of("폰트,2024-12-13 10:08", "슬링키,2024-12-09 13:03"));
 
         crews.initializeAttendTime("포비", "2024-12-09 13:03");
 
@@ -46,7 +49,8 @@ public class CrewsTest {
     @DisplayName("해당 날짜의 출석 데이터를 삭제한다.")
     @Test
     void test5() {
-        Crews crews = new Crews(List.of("폰트,2024-12-13 10:08", "슬링키,2024-12-09 13:03"));
+        Crews crews = new Crews();
+        crews.loadCrews(List.of("폰트,2024-12-13 10:08", "슬링키,2024-12-09 13:03"));
         AttendTime attendTime = crews.deleteAttendance("슬링키", 9);
 
         assertThat(attendTime.getAttendTime().getHour()).isEqualTo(13);
@@ -56,7 +60,8 @@ public class CrewsTest {
     @DisplayName("제적된 크루를 반환한다.")
     @Test
     void test7() {
-        Crews crews = new Crews(List.of("폰트,2024-12-13 10:08", "슬링키,2024-12-09 13:03"));
+        Crews crews = new Crews();
+        crews.loadCrews(List.of("폰트,2024-12-13 10:08", "슬링키,2024-12-09 13:03"));
 
         List<Crew> dismissalCrews = crews.getDangerousCrews("제적");
 
@@ -66,7 +71,8 @@ public class CrewsTest {
     @DisplayName("등록되지 않은 닉네임을 입력하면 예외를 발생시킨다.")
     @Test
     void test9() {
-        Crews crews = new Crews(List.of("폰트,2024-12-13 10:08", "슬링키,2024-12-09 13:03", "포비,2024-12-09 13:03"));
+        Crews crews = new Crews();
+        crews.loadCrews(List.of("폰트,2024-12-13 10:08", "슬링키,2024-12-09 13:03", "포비,2024-12-09 13:03"));
 
         assertThatThrownBy(() -> crews.ifFindNameAddTime("벨로"))
                 .isInstanceOf(IllegalArgumentException.class);
