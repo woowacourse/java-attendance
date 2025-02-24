@@ -11,12 +11,15 @@ import java.util.Optional;
 
 public class AttendanceSystem {
 
+    private final CrewStorage crewStorage;
     private final List<AttendanceRecord> records = new ArrayList<>();
 
     public AttendanceSystem(CrewStorage crewStorage) {
+        this.crewStorage = crewStorage;
     }
 
     public void addAttendanceRecord(String crewNickname, LocalDateTime arrivalDateTime) {
+        crewStorage.validateIsNotContained(crewNickname);
         Optional<AttendanceRecord> originRecord = findAttendanceRecord(crewNickname, arrivalDateTime.toLocalDate());
         if (originRecord.isPresent()) {
             throw new IllegalArgumentException(ExceptionMessage.ALREADY_ATTENDANCE.getMessage());
