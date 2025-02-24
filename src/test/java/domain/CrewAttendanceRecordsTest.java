@@ -14,6 +14,17 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 
 class CrewAttendanceRecordsTest {
     @Test
+    @DisplayName("객체 생성 시 출석 기록이 없는 날짜가 결석으로 기록되었는지 확인한다.")
+    void instanceTest() {
+        CrewAttendanceRecords crewAttendanceRecords = new CrewAttendanceRecords(new CsvParsingGenerator(), LocalDate.of(2024, 12, 13));
+        Crew crew = new Crew("쿠키");
+        LocalDate missingDate = LocalDate.of(2024, 12, 12);
+        AttendanceRecord expectedRecord = AttendanceRecord.asAbsent(missingDate);
+
+        assertThat(crewAttendanceRecords.getRecordAtDate(crew, missingDate)).isEqualTo(expectedRecord);
+    }
+
+    @Test
     @DisplayName("입력 받은 날짜에 존재하는 기록을 반환한다.")
     void getRecordAtDateTest() {
         CrewAttendanceRecords crewAttendanceRecords = new CrewAttendanceRecords(new CsvParsingGenerator(), LocalDate.of(2024, 12, 13));

@@ -3,24 +3,12 @@ package domain;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import java.time.LocalDate;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class AttendanceRecordsTest {
-    @Test
-    @DisplayName("출석 기록이 없는 날짜가 결석으로 기록되었는지 확인한다.")
-    void fillAbsencesTest() {
-        CrewAttendanceRecords crewAttendanceRecords = new CrewAttendanceRecords(new CsvParsingGenerator(), LocalDate.of(2024, 12, 13));
-        Crew crew = new Crew("쿠키");
-        LocalDate missingDate = LocalDate.of(2024, 12, 12);
-        AttendanceRecord expectedRecord = AttendanceRecord.asAbsent(missingDate);
-
-        assertThat(crewAttendanceRecords.getRecordAtDate(crew, missingDate)).isEqualTo(expectedRecord);
-    }
-
     @Test
     @DisplayName("입력 받은 날짜에 해당하는 출석 기록을 삭제한다.")
     void removeRecordTest() {
