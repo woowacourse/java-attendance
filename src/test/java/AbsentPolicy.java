@@ -22,7 +22,13 @@ public class AbsentPolicy {
     }
 
     public String checkAttendanceStatus(LocalDateTime educationDateTime) {
-        return null;
+        LocalDate educationDate = educationDateTime.toLocalDate();
+        LocalTime educationTime = educationDateTime.toLocalTime();
+
+        validateIsWeekend(educationDate);
+        validateIsHoliday(educationDate);
+
+        return "결석";
     }
 
 }
