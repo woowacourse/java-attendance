@@ -17,10 +17,31 @@ import util.Parser.NameParsedData;
 
 public class AttendanceBook {
     private static final int LATE_TO_ABSENT_COUNT_UNIT = 3;
+
     private final List<Crew> crews;
 
     public AttendanceBook() {
         this.crews = new ArrayList<>();
+    }
+
+    public TotalRecordsResponse TotalRecordsResponseFromAttendanceRecords(List<AttendanceRecordResponse> records) {
+        int attendanceCount = 0;
+        int lateCount = 0;
+        int absentCount = 0;
+
+        for (AttendanceRecordResponse record : records) {
+            AttendanceStatus status = record.attendanceStatus();
+
+            if (status == AttendanceStatus.ATTEND) {
+                attendanceCount++;
+            }
+            if (status == AttendanceStatus.LATE) {
+                lateCount++;
+            }
+            absentCount = Calendar.calculateDecemberWorkingDayCount() - lateCount - attendanceCount;
+        }
+
+        return new TotalRecordsResponse(attendanceCount, lateCount, absentCount);
     }
 
     public List<CrewPenaltyResponse> checkPenaltyCrew() {
@@ -28,7 +49,7 @@ public class AttendanceBook {
 
         for (Crew crew : crews) {
             List<AttendanceRecordResponse> attendanceRecords = crew.getAttendanceRecords();
-            TotalRecordsResponse totalRecords = TotalRecordsResponse.fromAttendanceRecords(attendanceRecords);
+            TotalRecordsResponse totalRecords = TotalRecordsResponseFromAttendanceRecords(attendanceRecords);
 
             int penaltyCount = getPenaltyCount(totalRecords);
 

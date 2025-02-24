@@ -3,6 +3,7 @@ package domain;
 import java.util.List;
 
 public class Calendar {
+    private static final int DECEMBER_DAYS_COUNT = 31;
     private static final List<Integer> SATURDAYS = List.of(7, 14, 21, 28);
     private static final List<Integer> SUNDAYS = List.of(1, 8, 15, 22, 29);
     private static final List<Integer> HOLIDAYS = List.of(25);
@@ -29,5 +30,9 @@ public class Calendar {
 
     public static boolean checkIsWorkingDay(int date) {
         return !SATURDAYS.contains(date) && !SUNDAYS.contains(date) && !HOLIDAYS.contains(date);
+    }
+
+    public static int calculateDecemberWorkingDayCount() {
+        return DECEMBER_DAYS_COUNT - MONDAYS.size() - SUNDAYS.size() - HOLIDAYS.size();
     }
 }

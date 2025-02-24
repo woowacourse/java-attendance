@@ -79,7 +79,7 @@ public class AttendanceController {
         String name = retryUntilValid(() -> askNameToCheckAttendance(attendanceBook));
         Crew foundCrew = attendanceBook.getCrewByName(name);
         List<AttendanceRecordResponse> records = foundCrew.getAttendanceRecords();
-        TotalRecordsResponse totalRecord = TotalRecordsResponse.fromAttendanceRecords(records);
+        TotalRecordsResponse totalRecord = attendanceBook.TotalRecordsResponseFromAttendanceRecords(records);
         PenaltyStatus penalty = PenaltyStatus.getByPenaltyCount(attendanceBook.getPenaltyCount(totalRecord));
 
         outputView.displayAttendanceRecordByName(name, records, totalRecord, penalty.getMessage());

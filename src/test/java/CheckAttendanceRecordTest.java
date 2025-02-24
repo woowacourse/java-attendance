@@ -22,6 +22,7 @@ public class CheckAttendanceRecordTest {
 
         List<AttendanceRecordResponse> attendanceRecords = crew1.getAttendanceRecords();
 
-        TotalRecordsResponse totalRecordsResponse = TotalRecordsResponse.fromAttendanceRecords(attendanceRecords);
+        TotalRecordsResponse totalRecordsResponse = attendanceBook.TotalRecordsResponseFromAttendanceRecords(
+                attendanceRecords);
     }
 }

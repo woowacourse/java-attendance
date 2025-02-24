@@ -94,7 +94,7 @@ class AttendanceBookTest {
 
         assertThat(penaltyResponses).anyMatch(response ->
                 response.name().equals("쿠키") &&
-                        response.absentCount() == 28 &&
+                        response.absentCount() == 17 &&
                         response.lateCount() == 1 &&
                         response.penaltyStatus() == PenaltyStatus.EXPULSION
         );
