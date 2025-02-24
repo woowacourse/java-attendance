@@ -13,15 +13,12 @@ import static attendance.domain.AttendanceStateType.LATE;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class AttendanceStateTypeTest {
+
     @ParameterizedTest
-    @MethodSource()
+    @MethodSource
     @DisplayName("임계값에 해당하는 출결 상태를 반환한다.")
     void 임계값에_해당하는_출결_상태를_반환한다(int threshold, AttendanceStateType type) {
-        // when
-        AttendanceStateType result = AttendanceStateType.find(threshold);
-
-        // then
-        assertThat(result)
+        assertThat(AttendanceStateType.find(threshold))
                 .isEqualTo(type);
     }
 
