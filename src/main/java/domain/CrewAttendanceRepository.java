@@ -12,6 +12,7 @@ import java.util.stream.Collectors;
 import util.AttendanceFileParser;
 
 public class CrewAttendanceRepository {
+    public static final WorkDate START_DATE = new WorkDate(2024, 12, 2);
     private final Map<String, CrewAttendance> crewAttendance;
 
     public CrewAttendanceRepository(Map<String, CrewAttendance> crewAttendance) {
@@ -47,7 +48,7 @@ public class CrewAttendanceRepository {
 
     private static Map<WorkDate, WorkTime> generateInitialAttendance(LocalDate currentDate) {
         Map<WorkDate, WorkTime> attendanceRecords = new HashMap<>();
-        WorkDate attendanceDate = new WorkDate(2024, 12, 2);
+        WorkDate attendanceDate = START_DATE;
 
         while (!attendanceDate.isAfter(currentDate)) {
             attendanceRecords.put(attendanceDate, new WorkTime(null, null));
@@ -58,7 +59,7 @@ public class CrewAttendanceRepository {
     }
 
     private static void loadAttendance(CrewAttendanceRepository crewAttendanceRepository, String filePath) {
-        Map<String, List<DateTime>> attendanceRecords = AttendanceFileParser.loadAttendanceRecords(filePath);
+        Map<String, List<WorkDateTime>> attendanceRecords = AttendanceFileParser.loadAttendanceRecords(filePath);
 
         attendanceRecords.forEach((name, dateTimes) -> {
             crewAttendanceRepository.findByName(name)
