@@ -2,6 +2,7 @@ package domain;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.Objects;
 
@@ -38,6 +39,10 @@ public class AttendanceTime {
 
     public void modify(LocalTime time) {
         this.time = time;
+    }
+
+    public LocalDateTime toLocalDateTime() {
+        return LocalDateTime.of(this.date, this.time);
     }
 
     public boolean isSameDate(LocalDate date) {

@@ -5,6 +5,7 @@ import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.HashSet;
 import java.util.Set;
@@ -121,5 +122,21 @@ class AttendanceTimeTest {
                 date, LocalTime.of(10, 20)
         );
         assertThat(attendanceTime).isEqualTo(afterModified);
+    }
+
+    @Test
+    @DisplayName("AttendanceTime을 LocalDateTime 으로 변환해서  반환")
+    void AttendnaceTimeToLocalDateTimeTest() {
+        // given
+        LocalDate date = LocalDate.of(2024, 12, 10);
+        LocalTime time = LocalTime.of(9, 30);
+        AttendanceTime attendanceTime = AttendanceTime.of(date, time);
+
+        // when
+        LocalDateTime converted = attendanceTime.toLocalDateTime();
+
+        // then
+        LocalDateTime expected = LocalDateTime.of(date, time);
+        assertThat(converted).isEqualTo(expected);
     }
 }
