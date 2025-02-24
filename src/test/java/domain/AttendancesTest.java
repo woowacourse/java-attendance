@@ -31,12 +31,10 @@ public class AttendancesTest {
             ).isEqualTo(AttendanceStatus.ATTENDANCE);
         }
 
-        @Test
+        @ParameterizedTest
+        @MethodSource("weekendDate")
         @DisplayName("휴일에 출석시 예외가 발생한다.")
-        void addAttendanceAtWeekend() {
-            String nickname = "투다";
-            LocalTime time = LocalTime.of(8, 0);
-            LocalDate date = LocalDate.of(2024, 12, 1);
+        void addAttendanceAtWeekend(LocalTime time, LocalDate date, String nickname) {
             CrewAttendances crewAttendances = new CrewAttendances(new TestAttendanceNowDateStrategy(date));
 
             Assertions.assertThatThrownBy(() -> crewAttendances.addAttendance(nickname, time))
@@ -44,14 +42,20 @@ public class AttendancesTest {
                     .isInstanceOf(AttendanceException.class);
         }
 
-//        private static Stream<Arguments> attendanceTest() {
-//            return Stream.of(
-//                    Arguments.arguments(
-//                            "/test.csv",
-//                            "투다",
-//                            LocalDate.of(2024, 12, 13),
-//                            AttendanceStatus.ATTENDANCE.getStatus()
-//                    ),
+        private static Stream<Arguments> weekendDate() {
+            return Stream.of(
+                    Arguments.arguments(
+                            LocalTime.of(8, 0),
+                            LocalDate.of(2024, 12, 1),
+                            "투다"
+                    ),
+                    Arguments.arguments(
+                            LocalTime.of(8, 0),
+                            LocalDate.of(2024, 12, 21),
+                            "투다"
+                    )
+            );
+        }
 
         private static Stream<Arguments> notSchoolRunningDate() {
             return Stream.of(
