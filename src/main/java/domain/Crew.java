@@ -1,15 +1,11 @@
 package domain;
 
-import constant.AttendanceStatus;
-import constant.Warning;
-
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Objects;
 
 import static constant.AttendanceStatus.*;
 import static constant.Warning.*;
@@ -68,17 +64,14 @@ public class Crew {
         return List.of(oldAttendance, attendance);
     }
 
-    public int getAbsentCount() {
-        return getOriginalAbsentCount() + (getLateCount() / 3);
-    }
-
-    public void updateUntil(LocalDate lastDate) {
+    public void updateAbsentUntil(LocalDate lastDate) {
         for (int date = 1; date <= lastDate.getDayOfMonth(); date++) {
             DayOfWeek todayDayOfWeek = LocalDate.of(2024, 12, date).getDayOfWeek();
             if (todayDayOfWeek == DayOfWeek.SATURDAY || todayDayOfWeek == DayOfWeek.SUNDAY || date == 25) {
                 continue;
             }
             if (!containsDayOfMonth(date)) {
+                // absentTime - 15:00
                 attendanceInfo.add(new Attendance(LocalDateTime.of(2024, 12, date, 15, 0)));
             }
         }
@@ -107,7 +100,7 @@ public class Crew {
         return getStateCount(LATE.getStatus());
     }
 
-    private int getOriginalAbsentCount() {
+    public int getAbsentCount() {
         return getStateCount(ABSENT.getStatus());
     }
 

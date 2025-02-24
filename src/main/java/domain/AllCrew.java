@@ -34,7 +34,7 @@ public class AllCrew {
 
     public Crew getUpdatedCrew(String name, LocalDate lastDate) {
         Crew crew = findCrewByName(name);
-        crew.updateUntil(lastDate);
+        crew.updateAbsentUntil(lastDate);
         return crew;
     }
 
