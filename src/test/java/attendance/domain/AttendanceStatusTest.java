@@ -51,4 +51,16 @@ class AttendanceStatusTest {
         assertThat(calculateTotalAbsentCount(statuses)).isEqualTo(2);
     }
 
+    @Test
+    void 시간들을_알려주면_출석_상태들을_알려준다() {
+        // Given
+        List<LocalDateTime> localDateTimes = List.of(
+                LocalDateTime.of(2025, 2, 24, 13, 5),
+                LocalDateTime.of(2025, 2, 21, 10, 35));
+
+        // When & Then
+        assertThat(AttendanceStatus.findAllStatusesByLocalDateTimes(localDateTimes))
+                .isEqualTo(List.of(AttendanceStatus.OK, AttendanceStatus.ABSENT));
+    }
+
 }

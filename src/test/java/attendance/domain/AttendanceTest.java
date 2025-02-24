@@ -6,6 +6,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 
 import org.junit.jupiter.api.Test;
@@ -75,6 +76,20 @@ class AttendanceTest {
                 new AttendanceTime(LocalTime.of(10, minute)));
 
         assertThat(attendance.calculateStatus()).isEqualTo(expected);
+    }
+
+    @CsvSource(value = {"2025, 1, 15, 10, 15",
+                        "2024, 12, 31, 15, 30"})
+    @ParameterizedTest
+    void 출석_시간을_LocalDateTime으로_파싱해서_알려준다(int year, int month, int day, int hour, int minute) {
+        // Given
+        Attendance attendance = new Attendance(
+                new AttendanceDate(of(year, month, day)),
+                new AttendanceTime(LocalTime.of(hour, minute)));
+
+        // When & Then
+        assertThat(attendance.getAttendanceDateTime())
+                .isEqualTo(LocalDateTime.of(year, month, day, hour, minute));
     }
 
 }

@@ -1,5 +1,6 @@
 package attendance.domain;
 
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.Arrays;
 import java.util.List;
@@ -42,6 +43,13 @@ public enum AttendanceStatus {
                 .orElse(ABSENT);
     }
 
+    public static List<AttendanceStatus> findAllStatusesByLocalDateTimes(List<LocalDateTime> localDateTimes) {
+        return localDateTimes.stream()
+                .map(dateTime -> findByAttendanceDateAndTime(new AttendanceDate(dateTime.toLocalDate()),
+                        new AttendanceTime(dateTime.toLocalTime())))
+                .toList();
+    }
+
     public static int calculateTotalAbsentCount(final List<AttendanceStatus> statuses) {
         int totalLateCount = statuses.stream()
                 .mapToInt(status -> status.lateCount)
@@ -53,4 +61,7 @@ public enum AttendanceStatus {
         return text;
     }
 
+    public int getLateCount() {
+        return lateCount;
+    }
 }

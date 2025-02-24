@@ -6,6 +6,7 @@ import java.util.*;
 
 import attendance.domain.*;
 import attendance.dto.*;
+import attendance.service.CrewAttendanceService;
 import attendance.view.FileLineReader;
 import attendance.view.InputView;
 import attendance.view.OutputView;
@@ -17,6 +18,7 @@ public class AttendanceController {
     private final InputView inputView;
     private final OutputView outputView;
     private final CrewAttendances crewAttendances;
+    private final CrewAttendanceService crewAttendanceService;
     private final Map<OperationCommand, Runnable> operationMapper = Map.of(
             OperationCommand.ATTENDANCE_CONFIRMATION, this::confirmAttendance
             , OperationCommand.ATTENDANCE_MODIFICATION, this::modifyAttendance
@@ -28,11 +30,12 @@ public class AttendanceController {
         this.inputView = inputView;
         this.outputView = outputView;
         this.crewAttendances = new CrewAttendances();
+        List<String> firstSkippedLines = readAttendanceFileLinesWithoutFirstLine();
+        crewAttendances.initializeCrewAttendances(firstSkippedLines);
+        this.crewAttendanceService = new CrewAttendanceService(crewAttendances);
     }
 
     public void run() {
-        List<String> firstSkippedLines = readAttendanceFileLinesWithoutFirstLine();
-        crewAttendances.initializeCrewAttendances(firstSkippedLines);
         while(true) {
             branchByOperationCommand();
         }
@@ -57,10 +60,10 @@ public class AttendanceController {
     }
 
     private void confirmAttendance() {
-        Crew crew = crewAttendances.findRegisteredCrew(inputView.readCrewNickname());
+        Crew crew = crewAttendanceService.findRegisteredCrew(inputView.readCrewNickname());
         LocalTime attendanceTime = inputView.readAttendanceTime();
         try {
-            ConfirmAttendanceDto confirmAttendanceDto = crewAttendances.saveTodayAttendance(crew, attendanceTime);
+            ConfirmAttendanceDto confirmAttendanceDto = crewAttendanceService.saveCrewTodayAttendance(crew, attendanceTime);
             Attendance attendance = confirmAttendanceDto.attendance();
             AttendanceStatus attendanceStatus = AttendanceStatus.findByAttendance(attendance);
             outputView.printAttendance(attendance.getAttendanceDateTime(), attendanceStatus.getText());
@@ -70,10 +73,10 @@ public class AttendanceController {
     }
 
     private void modifyAttendance() {
-        Crew crew = crewAttendances.findRegisteredCrew(inputView.readModificationCrewNickname());
+        Crew crew = crewAttendanceService.findRegisteredCrew(inputView.readModificationCrewNickname());
         LocalDate modificationDate = inputView.readModificationDay(LocalDate.now());
         LocalTime modificationTime = inputView.readModificationTime();
-        ChangeAttendanceDto changeAttendanceDto = crewAttendances.changeAttendanceTime(crew, modificationDate, modificationTime);
+        ChangeAttendanceDto changeAttendanceDto = crewAttendanceService.changeAttendanceTime(crew, modificationDate, modificationTime);
         Attendance originAttendance = changeAttendanceDto.originAttendance();
         Attendance newAttendance = changeAttendanceDto.newAttendance();
         AttendanceStatus originAttendanceStatus = AttendanceStatus.findByAttendance(originAttendance);
@@ -83,20 +86,20 @@ public class AttendanceController {
     }
 
     private void checkCrewAttendances() {
-        Crew crew = crewAttendances.findRegisteredCrew(inputView.readCrewNickname());
+        Crew crew = crewAttendanceService.findRegisteredCrew(inputView.readCrewNickname());
         CheckCrewAttendanceRecordsDto checkCrewAttendanceRecordsDto =
-                crewAttendances.checkCrewAttendanceRecords(crew);
+                crewAttendanceService.checkCrewAttendanceRecords(crew);
         outputView.printAttendances(crew, checkCrewAttendanceRecordsDto.attendanceDateTimes(),
                 checkCrewAttendanceRecordsDto.attendanceStatuses());
-        CheckAttendanceStatusDto checkAttendanceStatusDto =
-                crewAttendances.checkAttendanceStatus(crew);
-        outputView.printStatusCounts(checkAttendanceStatusDto.statusCount());
-        CheckExpulsionStatusDto checkExpulsionStatusDto = crewAttendances.checkExpulsionStatus(crew);
-        outputView.printExpulsionStatus(checkExpulsionStatusDto.expulsionStatus().getText());
+        Map<String, Integer> statusCount = crewAttendances.getAttendancesByCrew(crew).calculateStatusCount();
+        outputView.printStatusCounts(statusCount);
+        ExpulsionStatus expulsionStatus = crewAttendances.getAttendancesByCrew(crew).calculateExpulsionStatus();
+        outputView.printExpulsionStatus(expulsionStatus.getText());
     }
 
     private void checkExpulsionCrews() {
-        Map<String, AttendanceHistoryDto> attendanceHistories = crewAttendances.calculateAllCrewAttendanceHistories();
+        Map<String, AttendanceHistoryDto> attendanceHistories =
+                crewAttendanceService.calculateAllCrewAttendanceHistories();
         outputView.printExpulsionCrews(attendanceHistories);
     }
 
