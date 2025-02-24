@@ -82,9 +82,9 @@ public class AttendanceStatisticianTest {
 
         assertThat(attendanceStatistician.getResult())
             .contains("""
-                출석: 3회
+                출석: 11회
                 지각: 5회
-                결석: 10회
+                결석: 2회
                 """);
     }
 
@@ -95,6 +95,6 @@ public class AttendanceStatisticianTest {
         attendanceStatistician.manage(nickname, LocalDate.now(), LocalTime.now());
 
         assertThat(attendanceStatistician.getResult())
-            .contains("제적 대상자입니다.");
+            .contains("면담 대상자입니다.");
     }
 }

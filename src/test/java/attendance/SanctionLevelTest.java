@@ -33,7 +33,7 @@ public class SanctionLevelTest {
         attendanceStatistician.manage("", LocalDate.now(), LocalTime.now());
         Assertions.assertThat(attendanceStatistician.getResult())
             .contains("제적 위험자 조회 결과")
-            .contains("- 빙봉: 결석 1회, 지각 6회 (면담)")
+            .contains("- 빙봉: 결석 4회, 지각 6회 (제적)")
             .contains("- 이든: 결석 2회, 지각 5회 (면담)")
             .contains("- 빙티: 결석 3회, 지각 4회 (면담)");
     }
@@ -41,25 +41,29 @@ public class SanctionLevelTest {
     @Test
     @DisplayName("제재 통계가 제재 수준 순으로 정렬된다.")
     void test_orderBySanctionLevel() {
-        // 제적 위험자는 제적 대상자, 면담 대상자, 경고 대상자순으로 출력한다.
-        //given&when
-
-        //then
+        attendanceStatistician.manage("", LocalDate.now(), LocalTime.now());
+        Assertions.assertThat(attendanceStatistician.getResult())
+            .contains("- 빙봉: 결석 4회, 지각 6회 (제적)\n"
+                + "- 빙티: 결석 3회, 지각 4회 (면담)")
+            .contains("- 쿠키: 결석 2회, 지각 3회 (면담)\n"
+                + "- 짱수: 결석 2회, 지각 0회 (경고)");
     }
 
     @Test
     @DisplayName("제재 수준이 같을 경우, 출석 상태 통계를 내림차순으로 정렬한다.")
     void test_orderByAttendanceStateStatisticsDescending() {
-        //given&when
-
-        //then
+        attendanceStatistician.manage("", LocalDate.now(), LocalTime.now());
+        Assertions.assertThat(attendanceStatistician.getResult())
+            .contains("- 이든: 결석 2회, 지각 5회 (면담)\n"
+                + "- 쿠키: 결석 2회, 지각 3회 (면담)");
     }
 
     @Test
     @DisplayName("출석 상태 통계가 같을 경우, 닉네임을 오름차순을 정렬한다.")
     void test_orderByNickNameAscending() {
-        //given&when
-
-        //then
+        attendanceStatistician.manage("", LocalDate.now(), LocalTime.now());
+        Assertions.assertThat(attendanceStatistician.getResult())
+            .contains("- 빙티: 결석 3회, 지각 4회 (면담)\n"
+                + "- 이든: 결석 2회, 지각 5회 (면담)");
     }
 }
