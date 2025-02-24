@@ -53,8 +53,8 @@ class AttendanceBookTest {
                 new NameParsedData("빙봉", "2024-12-13 10:08")
         ));
 
-        Crew crew1 = attendanceBook.getCrewByName("쿠키");
-        Crew crew2 = attendanceBook.getCrewByName("빙봉");
+        Crew crew1 = attendanceBook.findCrewByName("쿠키");
+        Crew crew2 = attendanceBook.findCrewByName("빙봉");
 
         assertThat(crew1.getAttendanceRecords()).containsAll(
                 List.of(new AttendanceRecordResponse(
