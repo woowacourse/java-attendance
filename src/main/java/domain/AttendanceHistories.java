@@ -1,9 +1,9 @@
 package domain;
 
-import static domain.AttendanceResult.ABSENCE;
-import static domain.AttendanceResult.LATE;
 import static domain.AttendanceHistory.ABSENT_DEFAULT_HOUR;
 import static domain.AttendanceHistory.ABSENT_DEFAULT_MINUTE;
+import static domain.AttendanceResult.ABSENCE;
+import static domain.AttendanceResult.LATE;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -98,15 +98,6 @@ public class AttendanceHistories {
                         (history.getAttendanceTime().getMonthValue() == time.getMonthValue())).findFirst()
                 .orElseThrow(() -> new IllegalArgumentException("[ERROR] 해당 날짜 출석 기록이 없습니다. 출석 기록이 있는 날짜를 입력해 주세요."));
         return findAttendanceHistory.getAttendanceTime();
-    }
-
-    private void addAbsenceHistory(LocalDate standard, int day, List<LocalDateTime> copy) {
-        LocalDate time = LocalDate.of(standard.getYear(), standard.getMonthValue(), day);
-        if (!Holiday.isHoliday(time) && !checkHasAttendanceTime(copy, time)) {
-            copy.add(LocalDateTime.of(standard.getYear(), standard.getMonthValue(), time.getDayOfMonth(),
-                    ABSENT_DEFAULT_HOUR,
-                    ABSENT_DEFAULT_MINUTE));
-        }
     }
 
     private boolean checkHasAttendanceTime(List<LocalDateTime> histories, LocalDate standard) {
