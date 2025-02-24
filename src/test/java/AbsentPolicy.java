@@ -1,3 +1,4 @@
+import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -5,7 +6,11 @@ import java.time.LocalTime;
 public class AbsentPolicy {
 
     public void validateIsWeekend(LocalDate attendanceDate) {
-        return;
+        DayOfWeek attendanceDayOfWeek = attendanceDate.getDayOfWeek();
+
+        if(attendanceDayOfWeek == DayOfWeek.SATURDAY || attendanceDayOfWeek == DayOfWeek.SUNDAY){
+            throw new IllegalArgumentException("[ERROR} 주말에는 출석할 수 없습니다");
+        }
     }
 
 
