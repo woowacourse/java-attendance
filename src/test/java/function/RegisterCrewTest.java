@@ -37,6 +37,9 @@ public class RegisterCrewTest {
     void parse_Date_To_Day_And_Time() {
         String date = "2024-12-13 10:07";
         List<String> parsedDate = ParsingUtils.parseDateToDayAndTime(date);
+
+        assertThat(parsedDate.getFirst()).isEqualTo("2024-12-13");
+        assertThat(parsedDate.get(1)).isEqualTo("10:07");
     }
 
     @Test
