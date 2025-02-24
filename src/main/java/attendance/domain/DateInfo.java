@@ -24,25 +24,8 @@ public class DateInfo {
         this.attendanceStatus = AttendanceStatus.calculateAttendanceStatus(date, modifyCampusTime);
     }
 
-    public int checkAbsenceStatus() {
-        if (this.attendanceStatus.equals(AttendanceStatus.ABSENCE)) {
-            return 1;
-        }
-        return 0;
-    }
-
-    public int checkLateStatus() {
-        if (this.attendanceStatus.equals(AttendanceStatus.LATE)) {
-            return 1;
-        }
-        return 0;
-    }
-
-    public int checkAttendanceStatus() {
-        if (this.attendanceStatus.equals(AttendanceStatus.ATTENDANCE)) {
-            return 1;
-        }
-        return 0;
+    public boolean isAttendanceDay(int day) {
+        return date.getDayOfMonth() == day;
     }
 
     public int getMonth() {
@@ -57,8 +40,8 @@ public class DateInfo {
         return date.getDayOfWeek().getValue();
     }
 
-    public String getAttendanceStatus() {
-        return attendanceStatus.getStatus();
+    public AttendanceStatus getAttendanceStatus() {
+        return attendanceStatus;
     }
 
     public int getCampusHour() {

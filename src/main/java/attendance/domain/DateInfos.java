@@ -1,6 +1,8 @@
 package attendance.domain;
 
 import attendance.domain.constant.AttendanceStatus;
+import attendance.exception.CustomException;
+import attendance.exception.ErrorMessage;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -8,9 +10,6 @@ import java.util.List;
 public class DateInfos {
 
     private final List<DateInfo> dateInfos;
-    private int absence;
-    private int late;
-    private int attendance;
 
     private DateInfos(List<DateInfo> dateInfos) {
         this.dateInfos = dateInfos;
@@ -20,25 +19,19 @@ public class DateInfos {
         return new DateInfos(dateInfos);
     }
 
-    public void calculateAttendanceHistory() {
-        int absence = 0;
-        int late = 0;
-        int attendance = 0;
-        for (DateInfo dateInfo : dateInfos) {
-            absence += dateInfo.checkAbsenceStatus();
-            late += dateInfo.checkLateStatus();
-            attendance += dateInfo.checkAttendanceStatus();
-        }
-        this.absence = absence;
-        this.late = late;
-        this.attendance = attendance;
+    public DateInfo findDateInfoByDay(int day) {
+        return dateInfos.stream().filter(dateInfo -> dateInfo.isAttendanceDay(day))
+                .findFirst()
+                .orElseThrow(() -> CustomException.from(ErrorMessage.NOT_HAVE_ATTENDANCE));
     }
 
-
-    public DateInfo findByDate(int date) {
-        return dateInfos.stream().filter(dateInfo -> Integer.parseInt(dateInfo.getDay()) == date)
-                .findFirst()
-                .orElseThrow();
+    public AttendanceStatus findAttendanceStatusByDay(int day) {
+        for (DateInfo dateInfo : dateInfos) {
+            if (dateInfo.isAttendanceDay(day)) {
+                return dateInfo.getAttendanceStatus();
+            }
+        }
+        return AttendanceStatus.ABSENCE;
     }
 
     public int findStatusCounts(AttendanceStatus attendanceStatus) {
@@ -49,18 +42,6 @@ public class DateInfos {
 
     public List<DateInfo> getDateInfos() {
         return new ArrayList<>(dateInfos);
-    }
-
-    public int getAbsence() {
-        return absence;
-    }
-
-    public int getLate() {
-        return late;
-    }
-
-    public int getAttendance() {
-        return attendance;
     }
 
 }
