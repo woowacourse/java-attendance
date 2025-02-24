@@ -13,6 +13,10 @@ public class Attendance {
         this.time = time;
     }
 
+    public boolean isSameDateWith(Attendance targetAttendance) {
+        return this.date.equals(targetAttendance.date);
+    }
+
     @Override
     public boolean equals(Object object) {
         if (this == object) {

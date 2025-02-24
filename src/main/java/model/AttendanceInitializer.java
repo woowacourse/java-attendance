@@ -9,6 +9,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 public class AttendanceInitializer {
@@ -38,7 +39,7 @@ public class AttendanceInitializer {
                     .mapToObj(date -> new Attendance(
                             LocalDate.of(2024, 12, date),
                             LocalTime.of(0, 0)))
-                    .toList();
+                    .collect(Collectors.toList()); //TODO : toList면 불변이 되어 수정 불가능해짐
             attendances.put(crew, new Attendances(defaultAttendances));
         }
         return attendances;

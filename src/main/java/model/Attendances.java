@@ -28,6 +28,16 @@ public class Attendances {
     }
 
     public Attendance update(Attendance newAttendance) {
-        return null;
+        Attendance beforeAttendance = findByDate(newAttendance);
+        this.attendances.remove(beforeAttendance);
+        this.attendances.add(newAttendance);
+        return findByDate(newAttendance);
+    }
+
+    private Attendance findByDate(Attendance newAttendance) {
+        return this.attendances.stream()
+                .filter(attendance -> attendance.isSameDateWith(newAttendance))
+                .findAny()
+                .orElseThrow(RuntimeException::new); //TODO : 다른 예외로 교체
     }
 }
