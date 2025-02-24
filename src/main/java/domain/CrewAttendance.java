@@ -1,9 +1,6 @@
 package domain;
 
-import vo.AttendResult;
-import vo.AttendanceModifyResult;
-import vo.AttendanceRecord;
-import vo.AttendanceRecordFindResults;
+import vo.*;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
@@ -89,6 +86,13 @@ public class CrewAttendance {
             return AttendanceStatus.결석;
         }
         return AttendanceStatus.of(dayOfWeek, attendTime.get());
+    }
+    
+    public ExpelWarningResult calculateExpelWarning() {
+        final var lateCount = getCountOfAttendanceStatusIs(AttendanceStatus.지각);
+        final var absentCount = getCountOfAttendanceStatusIs(AttendanceStatus.결석);
+        
+        return new ExpelWarningResult(ExpelWarning.of(lateCount, absentCount), lateCount, absentCount);
     }
     
     private void validateIsDateAvailable(final LocalDate date) {

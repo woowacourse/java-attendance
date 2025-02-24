@@ -515,4 +515,30 @@ class CrewAttendanceTest {
         }
     }
     
+    @Nested
+    class 제적_위험도_확인_테스트 {
+        
+        @Test
+        void 제적_위험도를_확인할_수_있다() {
+            //given
+            var sut = new CrewAttendance(LocalDate.of(2024, 12, 10));
+            
+            sut.attend(LocalDate.of(2024, 12, 2), LocalTime.of(13, 0));
+            sut.attend(LocalDate.of(2024, 12, 3), LocalTime.of(10, 3));
+            sut.attend(LocalDate.of(2024, 12, 5), LocalTime.of(10, 15));
+            sut.attend(LocalDate.of(2024, 12, 6), LocalTime.of(10, 40));
+            sut.attend(LocalDate.of(2024, 12, 9), LocalTime.of(13, 3));
+            sut.attend(LocalDate.of(2024, 12, 10), LocalTime.of(10, 15));
+            
+            //when
+            var result = sut.calculateExpelWarning();
+            
+            //then
+            assertAll(
+                    () -> assertThat(result.expelWarning()).isEqualTo(ExpelWarning.경고),
+                    () -> assertThat(result.lateCount()).isEqualTo(2),
+                    () -> assertThat(result.absentCount()).isEqualTo(2)
+            );
+        }
+    }
 }

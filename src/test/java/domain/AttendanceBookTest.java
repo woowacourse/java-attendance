@@ -6,14 +6,14 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import vo.AttendanceRecord;
+import vo.ExpelWarningResult;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
 import java.util.Optional;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
 public class AttendanceBookTest {
@@ -535,6 +535,53 @@ public class AttendanceBookTest {
             assertThatThrownBy(() -> sut.findRecords(nickname))
                     .isExactlyInstanceOf(IllegalArgumentException.class)
                     .hasMessage("등록되지 않은 닉네임입니다.");
+        }
+    }
+    
+    @Nested
+    class 제적_위험자_확인 {
+        
+        @Test
+        void 전체_제적_위험자를_확인한다() {
+            //given
+            var sut = new AttendanceBook(crews, LocalDate.of(2024, 12, 5));
+            sut.attend("dompoo", LocalDate.of(2024, 12, 2), LocalTime.of(13, 0));
+            sut.attend("dompoo", LocalDate.of(2024, 12, 3), LocalTime.of(10, 15));
+            sut.attend("dompoo", LocalDate.of(2024, 12, 4), LocalTime.of(10, 15));
+            sut.attend("dompoo", LocalDate.of(2024, 12, 5), LocalTime.of(10, 45));
+            sut.attend("lisa", LocalDate.of(2024, 12, 2), LocalTime.of(13, 45));
+            sut.attend("lisa", LocalDate.of(2024, 12, 3), LocalTime.of(10, 15));
+            sut.attend("lisa", LocalDate.of(2024, 12, 4), LocalTime.of(10, 15));
+            sut.attend("lisa", LocalDate.of(2024, 12, 5), LocalTime.of(10, 45));
+            sut.attend("neo", LocalDate.of(2024, 12, 2), LocalTime.of(13, 45));
+            sut.attend("neo", LocalDate.of(2024, 12, 3), LocalTime.of(10, 45));
+            sut.attend("neo", LocalDate.of(2024, 12, 4), LocalTime.of(10, 15));
+            sut.attend("neo", LocalDate.of(2024, 12, 5), LocalTime.of(10, 45));
+            
+            //when
+            var result = sut.calculateExpelWarnings();
+            
+            //then
+            assertThat(result.entrySet()).containsExactlyInAnyOrder(
+                    entry("lisa", new ExpelWarningResult(ExpelWarning.경고, 2, 2)),
+                    entry("neo", new ExpelWarningResult(ExpelWarning.면담, 1, 3))
+            );
+        }
+        
+        @Test
+        void 정상_범위의_크루는_포함되지_않는다() {
+            //given
+            var sut = new AttendanceBook(crews, LocalDate.of(2024, 12, 5));
+            sut.attend("dompoo", LocalDate.of(2024, 12, 2), LocalTime.of(13, 0));
+            sut.attend("dompoo", LocalDate.of(2024, 12, 3), LocalTime.of(10, 15));
+            sut.attend("dompoo", LocalDate.of(2024, 12, 4), LocalTime.of(10, 15));
+            sut.attend("dompoo", LocalDate.of(2024, 12, 5), LocalTime.of(10, 45));
+            
+            //when
+            var result = sut.calculateExpelWarnings();
+            
+            //then
+            assertThat(result.keySet()).doesNotContain("dompoo");
         }
     }
     

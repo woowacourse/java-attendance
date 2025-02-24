@@ -3,6 +3,7 @@ package domain;
 import vo.AttendResult;
 import vo.AttendanceModifyResult;
 import vo.AttendanceRecordFindResults;
+import vo.ExpelWarningResult;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -35,6 +36,12 @@ public class AttendanceBook {
         validateNicknameExist(nickname);
         
         return crewAttendances.get(nickname).findRecord();
+    }
+    
+    public Map<String, ExpelWarningResult> calculateExpelWarnings() {
+        return crewAttendances.entrySet().stream()
+                .filter(entry -> entry.getValue().calculateExpelWarning().expelWarning() != ExpelWarning.정상)
+                .collect(Collectors.toMap(Map.Entry::getKey, entry -> entry.getValue().calculateExpelWarning()));
     }
     
     private void validateNicknameExist(final String nickname) {
