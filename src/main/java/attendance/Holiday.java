@@ -1,6 +1,8 @@
 package attendance;
 
 import java.time.LocalDate;
+import java.util.Arrays;
+import java.util.stream.Collectors;
 
 public enum Holiday {
 
@@ -13,6 +15,9 @@ public enum Holiday {
     }
 
     public static boolean isHoliday(LocalDate date) {
-        return false;
+        return Arrays.stream(values())
+                .map(holiday -> holiday.date)
+                .collect(Collectors.toSet())
+                .contains(date);
     }
 }
