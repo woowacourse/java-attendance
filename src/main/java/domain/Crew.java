@@ -3,7 +3,7 @@ package domain;
 import java.util.Objects;
 
 public class Crew {
-    private final String name;  // 이름은 중복될 수 없다.
+    private final String name;
 
     public Crew(String name) {
         validateSize(name);
