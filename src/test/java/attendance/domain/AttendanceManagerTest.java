@@ -1,7 +1,6 @@
 package attendance.domain;
 
 import attendance.utility.DateGenerator;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -30,35 +29,23 @@ class AttendanceManagerTest {
     @BeforeEach
     void beforeEach() {
         dateGenerator = new MockingDateGenerator();
-        attendanceManager = new AttendanceManager(new Holiday(), dateGenerator);
-    }
-
-    @Test
-    void 크루가_추가될때_기본_출석이_생성된다() {
-        // given
-        String name = "랜디";
-        Holiday holiday = new Holiday();
-        AttendanceManager attendanceManager = new AttendanceManager(holiday, dateGenerator);
-
-        // when
-        attendanceManager.addCrew(name);
-
-        // then
-        Assertions.assertThat(attendanceManager.findCrewAttendance(name).getAttendances().size())
-                .isEqualTo(7);
+        attendanceManager = new AttendanceManager();
     }
 
     @ParameterizedTest(name = "출석 시간: {0} | 출석 상황 결과 : {1}")
-    @MethodSource
-    void 크루의_출석_데이터로_출석_체크한다(LocalTime time, AttendanceStateType expected) {
+    @MethodSource("기본_출석_데이터")
+    void 출석_데이터로_출석_체크한다(LocalTime time, AttendanceStateType expected) {
         // given
-        String nickname = "이든";
-        attendanceManager.addCrew(nickname);
-
+        String nickname = "비타";
         LocalDate nowDate = dateGenerator.now();
-        LocalDateTime dateTime = LocalDateTime.of(nowDate, time);
+
+        Attendances attendances = new Attendances();
+        attendances.addAttendance(LocalDateTime.of(nowDate, LocalTime.MAX));
+
+        attendanceManager.addCrew(nickname, attendances);
 
         // when
+        LocalDateTime dateTime = LocalDateTime.of(nowDate, time);
         Attendance result = attendanceManager.processAttendanceCheck(dateTime, nickname);
 
         // then
@@ -67,28 +54,53 @@ class AttendanceManagerTest {
     }
 
     @Test
-    void 크루의_출석_데이터를_수정한다() {
+    void 이미_출석한_경우_다시_출석한_경우_예외가_발생한다() {
         // given
-        String nickname = "이든";
-        attendanceManager.addCrew(nickname);
+        String nickname = "비타";
+        LocalDate nowDate = dateGenerator.now();
 
-        LocalDateTime updateDateTime = LocalDateTime.of(2024, 12, 2, 10, 0);
+        Attendances attendances = new Attendances();
+        attendances.addAttendance(LocalDateTime.of(nowDate, LocalTime.MIDNIGHT));
+
+        attendanceManager.addCrew(nickname, attendances);
 
         // when
+        LocalDateTime dateTime = LocalDateTime.of(nowDate, LocalTime.MIDNIGHT);
+
+        // then
+        assertThatIllegalArgumentException()
+                .isThrownBy(() -> attendanceManager.processAttendanceCheck(dateTime, nickname))
+                .withMessage("[ERROR] 이미 출석을 완료하셨습니다. 수정 기능을 이용해주세요.");
+    }
+
+    @ParameterizedTest(name = "변경 시간: {0} | 출석 상황 결과 : {1}")
+    @MethodSource("기본_출석_데이터")
+    void 출석_데이터를_수정한다(LocalTime time, AttendanceStateType expected) {
+        // given
+        String nickname = "비타";
+        LocalDate nowDate = dateGenerator.now();
+
+        Attendances attendances = new Attendances();
+        attendances.addAttendance(LocalDateTime.of(nowDate, LocalTime.MAX));
+
+        attendanceManager.addCrew(nickname, attendances);
+
+        // when
+        LocalDateTime updateDateTime = LocalDateTime.of(nowDate, time);
         List<Attendance> result = attendanceManager.processAttendanceUpdate(updateDateTime, nickname);
 
         // then
-        assertThat(result.getLast().getDateTime()).isEqualTo(updateDateTime);
-        assertThat(result.getLast().getState()).isEqualTo(ATTENDANCE);
+        assertThat(result.getLast().getDateTime().toLocalTime()).isEqualTo(time);
+        assertThat(result.getLast().getState()).isEqualTo(expected);
     }
 
     @Test
-    void 출석할_날짜에_데이터가_없는_경우_에러가_발생한다() {
+    void 수정할_날짜에_데이터가_없는_경우_에러가_발생한다() {
         // given
         String nickname = "이든";
-        attendanceManager.addCrew(nickname);
+        attendanceManager.addCrew(nickname, new Attendances());
 
-        LocalDateTime updateDateTime = LocalDateTime.of(2024, 12, 1, 10, 0);
+        LocalDateTime updateDateTime = LocalDateTime.MIN;
 
         // when & then
         assertThatIllegalArgumentException()
@@ -97,42 +109,68 @@ class AttendanceManagerTest {
     }
 
     @Test
-    void 크루의_전날까지의_출석_기록을_반환한다() {
+    void 전날까지의_출석_기록을_반환한다() {
         // given
         String nickname = "이든";
-        attendanceManager.addCrew(nickname);
+
+        Attendances attendances = new Attendances();
+        LocalDate nowDate = dateGenerator.now();
+        int dayOfMonth = nowDate.getDayOfMonth();
+
+        for (int day = 1; day <= dayOfMonth; day++) {
+            LocalDate date = nowDate.withDayOfMonth(day);
+            attendances.addAttendance(LocalDateTime.of(date, LocalTime.MIDNIGHT));
+        }
+
+        attendanceManager.addCrew(nickname, attendances);
 
         // when
-        List<Attendance> attendances = attendanceManager.getAttendanceRecord(nickname);
+        List<Attendance> result = attendanceManager.getAttendanceRecord(nickname);
 
         // then
-        assertThat(attendances.size())
-                .isEqualTo(6);
+        assertThat(result.size()).isEqualTo(dayOfMonth - 1);
     }
 
     @Test
-    void 크루의_출결_상태를_반환한다() {
+    void 출결_상태를_반환한다() {
         // given
         String nickname = "이든";
-        attendanceManager.addCrew(nickname);
+
+        Attendances attendances = new Attendances();
+        attendances.addAttendance(LocalDateTime.of(dateGenerator.now(), LocalTime.MIDNIGHT));
+
+        attendanceManager.addCrew(nickname, attendances);
 
         // when
         AttendanceStatus result = attendanceManager.getAttendanceStatus(nickname);
 
         // then
         assertThat(result.getStatus().size()).isEqualTo(3);
-        assertThat(result.getWarningType()).isEqualTo(AttendanceWarningType.EXPULSION);
+        assertThat(result.getWarningType()).isEqualTo(AttendanceWarningType.NONE);
     }
 
     @Test
     void 제적_위험자의_크루를_반환한다() {
         // given
-        attendanceManager.addCrew("이든");
-        attendanceManager.addCrew("레오");
-        attendanceManager.addCrew("랜디");
+        List<String> nicknames = List.of("레오", "랜디", "비타");
+        List<LocalDateTime> dateTimes = new ArrayList<>();
+        LocalDate nowDate = dateGenerator.now();
+
+        for (int day = 1; day < 8; day++) {
+            LocalDate date = nowDate.withDayOfMonth(day);
+            dateTimes.add(LocalDateTime.of(date, LocalTime.MAX));
+        }
+
+        for (String nickname : nicknames) {
+            Attendances attendances = new Attendances();
+            for (LocalDateTime dateTime : dateTimes) {
+                attendances.addAttendance(dateTime);
+            }
+            attendanceManager.addCrew(nickname, attendances);
+        }
 
         // when
-        Map<String, AttendanceStatus> result = attendanceManager.getAttendanceWarnedCrews();
+        Map<String, AttendanceStatus> result = attendanceManager.getAttendanceRiskCrew();
 
         // then
         assertThat(result.size()).isEqualTo(3);
@@ -142,22 +180,15 @@ class AttendanceManagerTest {
     void 제적_위험자가_아닌_크루는_제외하고_반환한다() {
         // given
         String nickname = "이든";
-        attendanceManager.addCrew(nickname);
 
-        List<LocalDateTime> dateTimes = List.of(
-                LocalDateTime.of(2024, 12, 2, 13, 0),
-                LocalDateTime.of(2024, 12, 3, 10, 0),
-                LocalDateTime.of(2024, 12, 4, 10, 0),
-                LocalDateTime.of(2024, 12, 5, 10, 0),
-                LocalDateTime.of(2024, 12, 6, 10, 0)
-        );
+        Attendances attendances = new Attendances();
+        LocalDate nowDate = dateGenerator.now();
+        attendances.addAttendance(LocalDateTime.of(nowDate, LocalTime.MIDNIGHT));
 
-        for (LocalDateTime dateTime : dateTimes) {
-            attendanceManager.processAttendanceUpdate(dateTime, nickname);
-        }
+        attendanceManager.addCrew(nickname, attendances);
 
         // when
-        Map<String, AttendanceStatus> result = attendanceManager.getAttendanceWarnedCrews();
+        Map<String, AttendanceStatus> result = attendanceManager.getAttendanceRiskCrew();
 
         // then
         assertThat(result).doesNotContainKey(nickname);
@@ -166,57 +197,92 @@ class AttendanceManagerTest {
     @Test
     void 제적_위험자_목록을_위험도_순서로_정렬한다() {
         // given
-        List<LocalDateTime> dateTimes = List.of(
-                LocalDateTime.of(2024, 12, 2, 13, 0),
-                LocalDateTime.of(2024, 12, 3, 10, 0)
+        LocalDate nowDate = dateGenerator.now();
+        List<LocalDateTime> leoDateTimes = List.of(
+                LocalDateTime.of(nowDate.withDayOfMonth(1), LocalTime.MAX),
+                LocalDateTime.of(nowDate.withDayOfMonth(2), LocalTime.MAX),
+                LocalDateTime.of(nowDate.withDayOfMonth(3), LocalTime.MAX),
+                LocalDateTime.of(nowDate.withDayOfMonth(4), LocalTime.MAX)
         );
 
-        attendanceManager.addCrew("이든"); // 제적
-        attendanceManager.addCrew("비타"); // 면담
+        List<LocalDateTime> randiDateTimes = List.of(
+                LocalDateTime.of(nowDate.withDayOfMonth(1), LocalTime.MAX),
+                LocalDateTime.of(nowDate.withDayOfMonth(2), LocalTime.MAX),
+                LocalDateTime.of(nowDate.withDayOfMonth(3), LocalTime.MAX)
+        );
 
-        for (LocalDateTime dateTime : dateTimes) {
-            attendanceManager.processAttendanceUpdate(dateTime, "비타");
-        }
+        addAttendancesForCrew(leoDateTimes, "레오");
+        addAttendancesForCrew(randiDateTimes, "랜디");
 
         // when
-        Map<String, AttendanceStatus> result = attendanceManager.getAttendanceWarnedCrews();
+        Map<String, AttendanceStatus> result = attendanceManager.getAttendanceRiskCrew();
 
         // then
         List<String> sortedKeys = new ArrayList<>(result.keySet());
-        assertThat(sortedKeys).containsExactly("이든", "비타");
+        assertThat(sortedKeys).containsExactly("레오", "랜디");
     }
 
     @Test
-    void 제적_위험자_목록을_출석_수치를_내림차순_정렬한다() {
+    void 제적_위험자_목록을_출석_수치로_내림차순_정렬한다() {
         // given
-        attendanceManager.addCrew("이든");
-        attendanceManager.addCrew("비타");
-        attendanceManager.addCrew("랜디");
+        LocalDate nowDate = dateGenerator.now();
+        List<LocalDateTime> leoDateTimes = List.of(
+                LocalDateTime.of(nowDate.withDayOfMonth(1), LocalTime.MAX),
+                LocalDateTime.of(nowDate.withDayOfMonth(2), LocalTime.MAX),
+                LocalDateTime.of(nowDate.withDayOfMonth(3), LocalTime.of(10, 0))
+        );
 
-        attendanceManager.processAttendanceUpdate(LocalDateTime.of(2024, 12, 2, 13, 6), "랜디");
-        attendanceManager.processAttendanceUpdate(LocalDateTime.of(2024, 12, 2, 13, 0), "이든");
+        List<LocalDateTime> randiDateTimes = List.of(
+                LocalDateTime.of(nowDate.withDayOfMonth(1), LocalTime.MAX),
+                LocalDateTime.of(nowDate.withDayOfMonth(2), LocalTime.MAX),
+                LocalDateTime.of(nowDate.withDayOfMonth(3), LocalTime.of(10, 6))
+        );
+
+        addAttendancesForCrew(leoDateTimes, "레오");
+        addAttendancesForCrew(randiDateTimes, "랜디");
 
         // when
-        Map<String, AttendanceStatus> result = attendanceManager.getAttendanceWarnedCrews();
+        Map<String, AttendanceStatus> result = attendanceManager.getAttendanceRiskCrew();
 
         // then
         List<String> sortedKeys = new ArrayList<>(result.keySet());
-        assertThat(sortedKeys).containsExactly("비타", "랜디", "이든");
+        assertThat(sortedKeys).containsExactly("랜디", "레오");
+    }
+
+    private void addAttendancesForCrew(final List<LocalDateTime> dateTimes, final String nickname) {
+        Attendances attendances = new Attendances();
+        for (LocalDateTime dateTime : dateTimes) {
+            attendances.addAttendance(dateTime);
+        }
+        attendanceManager.addCrew(nickname, attendances);
     }
 
     @Test
     void 제적_위험자_목록을_이름_오름차순으로_정렬한다() {
         // given
-        attendanceManager.addCrew("이든");
-        attendanceManager.addCrew("비타");
-        attendanceManager.addCrew("랜디");
+        List<String> nicknames = List.of("레오", "랜디", "비타");
+
+        LocalDate nowDate = dateGenerator.now();
+        List<LocalDateTime> dateTimes = List.of(
+                LocalDateTime.of(nowDate.withDayOfMonth(1), LocalTime.MAX),
+                LocalDateTime.of(nowDate.withDayOfMonth(2), LocalTime.MAX),
+                LocalDateTime.of(nowDate.withDayOfMonth(3), LocalTime.MAX)
+        );
+
+        for (String nickname : nicknames) {
+            Attendances attendances = new Attendances();
+            for (LocalDateTime dateTime : dateTimes) {
+                attendances.addAttendance(dateTime);
+            }
+            attendanceManager.addCrew(nickname, attendances);
+        }
 
         // when
-        Map<String, AttendanceStatus> result = attendanceManager.getAttendanceWarnedCrews();
+        Map<String, AttendanceStatus> result = attendanceManager.getAttendanceRiskCrew();
 
         // then
         List<String> sortedKeys = new ArrayList<>(result.keySet());
-        assertThat(sortedKeys).containsExactly("랜디", "비타", "이든");
+        assertThat(sortedKeys).containsExactly("랜디", "레오", "비타");
     }
 
     @Test
@@ -230,7 +296,7 @@ class AttendanceManagerTest {
                 .withMessage("[ERROR] 등록되지 않은 닉네임입니다.");
     }
 
-    static Stream<Arguments> 크루의_출석_데이터로_출석_체크한다() {
+    static Stream<Arguments> 기본_출석_데이터() {
         return Stream.of(
                 Arguments.of(LocalTime.of(10, 5), ATTENDANCE),
                 Arguments.of(LocalTime.of(10, 30), LATE),
