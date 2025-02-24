@@ -15,7 +15,7 @@ public class DateTimeParserTest {
         final String time = "2024-12-13 10:30";
 
         //when
-        final LocalDateTime localDateTime = DateTimeParser.parseToLocalDate(time);
+        final LocalDateTime localDateTime = DateTimeParser.parseToLocalDateTime(time);
 
         //then
         assertThat(localDateTime).isEqualTo(LocalDateTime.of(2024, 12, 13, 10, 30));

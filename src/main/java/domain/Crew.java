@@ -41,8 +41,8 @@ public class Crew implements Comparable<Crew> {
         attendances.add(Attendance.empty(localDateTime));
     }
 
-    public Attendance addAttendance(final String attendanceTime) {
-        final Attendance attendance = new Attendance(DateTimeParser.parseToLocalDate(attendanceTime));
+    public Attendance addAttendance(final LocalDateTime attendanceTime) {
+        final Attendance attendance = new Attendance(attendanceTime);
         attendances.add(attendance);
         return attendance;
     }
@@ -53,7 +53,7 @@ public class Crew implements Comparable<Crew> {
 
 
     public void updateAttendanceByDateTime(final String attendanceTime) {
-        final LocalDate localDate = DateTimeParser.parseToLocalDate(attendanceTime).toLocalDate();
+        final LocalDate localDate = DateTimeParser.parseToLocalDateTime(attendanceTime).toLocalDate();
         removePreAttendanceByDateTime(localDate);
         final Attendance updatedAttendance = Attendance.of(attendanceTime);
         attendances.add(updatedAttendance);

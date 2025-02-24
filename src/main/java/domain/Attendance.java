@@ -19,7 +19,7 @@ public class Attendance {
     }
 
     public static Attendance of(final String dateTime) {
-        return new Attendance(DateTimeParser.parseToLocalDate(dateTime));
+        return new Attendance(DateTimeParser.parseToLocalDateTime(dateTime));
     }
 
     public static Attendance of(final LocalDateTime dateTime) {

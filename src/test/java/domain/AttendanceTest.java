@@ -24,7 +24,7 @@ public class AttendanceTest {
                     DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
 
             //when
-            final Attendance attendance = new Attendance(DateTimeParser.parseToLocalDate(time));
+            final Attendance attendance = new Attendance(DateTimeParser.parseToLocalDateTime(time));
 
             //then
             assertThat(attendance.getDateTime()).isEqualTo(expectedTime);
@@ -36,7 +36,7 @@ public class AttendanceTest {
         void test2() {
             //given
             final String time = "2024-12-13 10:31";
-            final Attendance attendance = new Attendance(DateTimeParser.parseToLocalDate(time));
+            final Attendance attendance = new Attendance(DateTimeParser.parseToLocalDateTime(time));
 
             //when
             final AttendanceStatus actual = attendance.calculateStatus();

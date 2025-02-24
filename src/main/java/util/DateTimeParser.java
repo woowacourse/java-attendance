@@ -10,7 +10,7 @@ public class DateTimeParser {
     private DateTimeParser() {
     }
 
-    public static LocalDateTime parseToLocalDate(final String time) {
+    public static LocalDateTime parseToLocalDateTime(final String time) {
         return LocalDateTime.parse(time, FORMATTER);
 
     }

@@ -12,6 +12,7 @@ import java.util.Map;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import util.DateTimeParser;
 
 public class CrewTest {
 
@@ -44,7 +45,7 @@ public class CrewTest {
             final LocalDateTime expectedTime = LocalDateTime.of(2024, 12, 13, 10, 8, 0);
 
             //when
-            crew.addAttendance(time);
+            crew.addAttendance(DateTimeParser.parseToLocalDateTime(time));
             final List<Attendance> attendances = crew.getAttendances();
 
             //then
@@ -63,9 +64,9 @@ public class CrewTest {
             final Crew crew = new Crew(name, new ArrayList<>());
 
             //when
-            crew.addAttendance(attendancedTime);
-            crew.addAttendance(latedTime);
-            crew.addAttendance(absencedTime);
+            crew.addAttendance(DateTimeParser.parseToLocalDateTime(attendancedTime));
+            crew.addAttendance(DateTimeParser.parseToLocalDateTime(latedTime));
+            crew.addAttendance(DateTimeParser.parseToLocalDateTime(absencedTime));
             final Map<AttendanceStatus, Integer> actualStatistics = crew.calculateAttendanceStatistics();
 
             //then
@@ -83,7 +84,7 @@ public class CrewTest {
             final String name = "윌슨";
             final List<String> absences = List.of("2024-12-12 10:35", "2024-12-11 10:35", "2024-12-10 10:35");
             final Crew crew = new Crew(name, new ArrayList<>());
-            absences.forEach(crew::addAttendance);
+            absences.forEach(absence -> crew.addAttendance(DateTimeParser.parseToLocalDateTime(absence)));
 
             //when
             ExpulsionStatus actual = crew.calculateExpulsionStatus();
@@ -105,9 +106,9 @@ public class CrewTest {
             final Crew crew = new Crew(name, new ArrayList<>());
 
             //when
-            crew.addAttendance(attendancedTime);
-            crew.addAttendance(latedTime);
-            crew.addAttendance(absencedTime);
+            crew.addAttendance(DateTimeParser.parseToLocalDateTime(attendancedTime));
+            crew.addAttendance(DateTimeParser.parseToLocalDateTime(latedTime));
+            crew.addAttendance(DateTimeParser.parseToLocalDateTime(absencedTime));
 
             //then
             assertThat(crew.existTodayAttendance(today)).isTrue();
@@ -123,7 +124,7 @@ public class CrewTest {
             final List<Attendance> attendances = crew.getAttendances();
 
             //when
-            crew.addAttendance(time);
+            crew.addAttendance(DateTimeParser.parseToLocalDateTime(time));
             crew.updateAttendanceByDateTime(time);
             final List<Attendance> updatedAttendances = crew.getAttendances();
             final Attendance first = updatedAttendances.getFirst();
@@ -148,11 +149,11 @@ public class CrewTest {
             final Crew crew = new Crew(name, new ArrayList<>());
 
             //when
-            crew.addAttendance(attendancedTime);
-            crew.addAttendance(latedTime1);
-            crew.addAttendance(latedTime2);
-            crew.addAttendance(latedTime3);
-            crew.addAttendance(absencedTime);
+            crew.addAttendance(DateTimeParser.parseToLocalDateTime(attendancedTime));
+            crew.addAttendance(DateTimeParser.parseToLocalDateTime(latedTime1));
+            crew.addAttendance(DateTimeParser.parseToLocalDateTime(latedTime2));
+            crew.addAttendance(DateTimeParser.parseToLocalDateTime(latedTime3));
+            crew.addAttendance(DateTimeParser.parseToLocalDateTime(absencedTime));
             final int count = crew.countExpulsionStatus();
 
             //then
@@ -173,11 +174,11 @@ public class CrewTest {
             final Crew crew = new Crew(name, new ArrayList<>());
 
             //when
-            crew.addAttendance(attendancedTime);
-            crew.addAttendance(latedTime1);
-            crew.addAttendance(latedTime2);
-            crew.addAttendance(latedTime3);
-            crew.addAttendance(absencedTime);
+            crew.addAttendance(DateTimeParser.parseToLocalDateTime(attendancedTime));
+            crew.addAttendance(DateTimeParser.parseToLocalDateTime(latedTime1));
+            crew.addAttendance(DateTimeParser.parseToLocalDateTime(latedTime2));
+            crew.addAttendance(DateTimeParser.parseToLocalDateTime(latedTime3));
+            crew.addAttendance(DateTimeParser.parseToLocalDateTime(absencedTime));
             final Attendance attendanceByDate = crew.findAttendanceByDate(target);
 
             //then

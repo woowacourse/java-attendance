@@ -29,7 +29,7 @@ public class AttendanceBook {
     public Attendance attendance(final String name, final LocalDateTime localDateTime) {
         validateAttendanceDate(localDateTime);
         final Crew crew = findCrewByName(name);
-        return crew.addAttendance(localDateTime.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")));
+        return crew.addAttendance(localDateTime);
     }
 
     private void validateAttendanceDate(final LocalDateTime localDateTime) {
