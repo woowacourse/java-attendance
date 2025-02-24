@@ -1,6 +1,5 @@
 package controller;
 
-import domain.AnswerCommand;
 import domain.Attendance;
 import domain.AttendanceBook;
 import domain.AttendanceStatus;
@@ -30,7 +29,7 @@ public class AttendanceController {
         this.inputView = inputView;
         this.outputView = outputView;
         final List<String> attendanceLines = FileManager.readFileLines(ATTENDANCE_HISTORY_FILE_NAME);
-        attendanceLines.remove(0);
+        attendanceLines.removeFirst();
         attendanceBook = AttendanceBook.of(attendanceLines, LocalDate.now().withYear(2024).withMonth(12));
     }
 
@@ -40,7 +39,7 @@ public class AttendanceController {
             return;
         }
         if (operation == Operation.ADD_ATTENDANCE) {
-            addAttendance();
+            attendance();
         } else if (operation == Operation.UPDATE_ATTENDANCE) {
             updateAttendance();
         } else if (operation == Operation.LOOKUP_CREW_ATTENDANCE) {
@@ -57,31 +56,26 @@ public class AttendanceController {
         return inputView.readChoiceOperation();
     }
 
-    private void addAttendance() {
+    private void attendance() {
         final LocalDate today = LocalDate.now().withYear(2024).withMonth(12);
         if (attendanceBook.isNotAttendanceDay(today)) {
             outputView.printNotAttendanceDay();
             return;
         }
         final String crewName = LoopTemplate.tryCatchLoop(this::inputCrewName, outputView);
-        if (!attendanceBook.isAlreadyTodayAttendance(crewName, today)) {
-            final LocalTime localTime = LoopTemplate.tryCatchLoop(this::readAttendanceTime, outputView);
-            final Attendance attendance = LoopTemplate.tryCatchLoop(
-                    () -> attendanceBook.attendance(crewName, convertLocalDateTime(localTime)), outputView);
-            final AttendanceResponse attendanceResponse = convertAttendanceToResponse(attendance);
-            outputView.printCrewAttendances(List.of(attendanceResponse));
+        if (attendanceBook.isAlreadyTodayAttendance(crewName, today)) {
+            outputView.printAlreadyAttendance();
             return;
         }
-        updateAttendanceForDuplicateAttendance(crewName);
+        addAttendance(crewName);
     }
 
-    private void updateAttendanceForDuplicateAttendance(final String crewName) {
-        outputView.printIntroduceAnswerCommand();
-        final AnswerCommand answerCommand = inputView.readAnswerCommand();
-        if (answerCommand == AnswerCommand.YES) {
-            final int dayOfMonth = LocalDate.now().getDayOfMonth();
-            modifyAttendance(crewName, dayOfMonth);
-        }
+    private void addAttendance(final String crewName) {
+        final LocalTime localTime = LoopTemplate.tryCatchLoop(this::readAttendanceTime, outputView);
+        final Attendance attendance = LoopTemplate.tryCatchLoop(
+                () -> attendanceBook.attendance(crewName, convertLocalDateTime(localTime)), outputView);
+        final AttendanceResponse attendanceResponse = convertAttendanceToResponse(attendance);
+        outputView.printCrewAttendances(List.of(attendanceResponse));
     }
 
     private LocalTime readAttendanceTime() {
