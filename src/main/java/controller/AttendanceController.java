@@ -41,7 +41,7 @@ public class AttendanceController {
             MenuOption menuOption = inputView.readMenuOption(currentDate);
             executeMenu(menuOption, currentDate);
 
-            return menuOption.isExit();
+            return !menuOption.isExit();
         } catch (IllegalArgumentException e) {
             outputView.printMessage(e.getMessage());
 
@@ -72,7 +72,8 @@ public class AttendanceController {
 
     private void handleCheckAttendance(LocalDate currentDate) {
         CrewAttendance crewAttendance = getCrewAttendance(inputView.readNickName());
-        DateTime dateTime = createDateTime(currentDate, inputView.readArriveTime());
+        Date date = Date.from(currentDate);
+        DateTime dateTime = createDateTime(date, inputView.readArriveTime());
 
         crewAttendance.addAttendance(dateTime);
         AttendanceStatus attendanceStatus = crewAttendance.calculateAttendanceStatus(dateTime.getDate());
@@ -94,22 +95,23 @@ public class AttendanceController {
     }
 
     private DateTime getUpdatedDateTime(LocalDate currentDate) {
-        int updateDate = inputView.readUpdateDate();
+        int updateDayValue = inputView.readUpdateDate();
+        Date updateDate = Date.from(LocalDate.of(currentDate.getYear(), currentDate.getMonth(), updateDayValue));
         LocalTime updateArriveTime = inputView.readUpdateArriveTime();
 
-        return createDateTime(
-                LocalDate.of(currentDate.getYear(), currentDate.getMonth(), updateDate), updateArriveTime);
+        return createDateTime(updateDate, updateArriveTime);
     }
 
     private DateTime getBeforeDateTime(CrewAttendance crewAttendance, DateTime afterDateTime) {
         return crewAttendance.retrieveDateTime(afterDateTime.getDate());
     }
-    
+
     private void handleRecordAttendance() {
         CrewAttendance crewAttendance = getCrewAttendance(inputView.readNickName());
 
-        List<AttendanceRecodeDto> attendanceRecords = crewAttendance.retrieveDateTimesOrderByDate()
-                .stream().map(AttendanceRecodeDto::from).toList();
+        List<AttendanceRecodeDto> attendanceRecords = crewAttendance.retrieveDateTimesOrderByDate().stream()
+                .map(AttendanceRecodeDto::from)
+                .toList();
         AttendanceResultDto attendanceResult = AttendanceResultDto.from(crewAttendance);
 
         outputView.printTotalAttendanceStatus(attendanceRecords, attendanceResult);
@@ -129,7 +131,7 @@ public class AttendanceController {
         outputView.printPenaltyCrews(penaltyCrews);
     }
 
-    private DateTime createDateTime(LocalDate localDate, LocalTime localTime) {
-        return new DateTime(new Date(localDate), new Time(localTime.getHour(), localTime.getMinute()));
+    private DateTime createDateTime(Date date, LocalTime localTime) {
+        return new DateTime(date, new Time(localTime.getHour(), localTime.getMinute()));
     }
 }

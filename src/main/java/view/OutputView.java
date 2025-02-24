@@ -17,9 +17,10 @@ public class OutputView {
         WorkDay workDay = date.getWorkDay();
         Time time = dateTime.getTime();
 
-        System.out.printf("%s월 %s일 %s요일 %s:%s (%s)\n", date.getMonthValue(),
-                date.getDayValue(), workDay.getDayOfWeekKorean(),
-                convertTime(time.getHour()), convertTime(time.getMinute()), attendanceStatusName);
+        System.out.printf("%s월 %s일 %s요일 %s:%s (%s)\n", date.getMonth(),
+                date.getDay(), workDay.getDayOfWeekKorean(),
+                convertTime(time.getHour().orElse(null)), convertTime(time.getMinute().orElse(null)),
+                attendanceStatusName);
     }
 
     public void printUpdateResult(DateTime beforeDateTime, String beforeAttendanceStatusName,
@@ -29,11 +30,11 @@ public class OutputView {
         Time beforeTime = beforeDateTime.getTime();
         Time afterTime = afterDateTime.getTime();
         System.out.printf("%s월 %s일 %s요일 %s:%s (%s) -> %s:%s (%s) 수정 완료!\n",
-                date.getMonthValue(), date.getDayValue(), workDay.getDayOfWeekKorean(),
-                convertTime(beforeTime.getHour()),
-                convertTime(beforeTime.getMinute()), beforeAttendanceStatusName,
-                convertTime(afterTime.getHour()),
-                convertTime(afterTime.getMinute()), afterAttendanceStatusName);
+                date.getMonth(), date.getDay(), workDay.getDayOfWeekKorean(),
+                convertTime(beforeTime.getHour().orElse(null)),
+                convertTime(beforeTime.getMinute().orElse(null)), beforeAttendanceStatusName,
+                convertTime(afterTime.getHour().orElse(null)),
+                convertTime(afterTime.getMinute().orElse(null)), afterAttendanceStatusName);
     }
 
     public void printTotalAttendanceStatus(List<AttendanceRecodeDto> attendanceRecodeDto,
@@ -44,9 +45,9 @@ public class OutputView {
             WorkDay workDay = date.getWorkDay();
             Time time = attendanceRecode.dateTime().getTime();
 
-            System.out.printf("%s월 %s일 %s요일 %s:%s (%s)\n", date.getMonthValue(),
-                    date.getDayValue(), workDay.getDayOfWeekKorean(),
-                    convertTime(time.getHour()), convertTime(time.getMinute()),
+            System.out.printf("%s월 %s일 %s요일 %s:%s (%s)\n", date.getMonth(),
+                    date.getDay(), workDay.getDayOfWeekKorean(),
+                    convertTime(time.getHour().orElse(null)), convertTime(time.getMinute().orElse(null)),
                     attendanceRecode.attendanceStatusName());
         });
 
@@ -66,7 +67,6 @@ public class OutputView {
         }
 
         String before = String.valueOf(time);
-
         if (before.length() < 2) {
             return "0" + before;
         }

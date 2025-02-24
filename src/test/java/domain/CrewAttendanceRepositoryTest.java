@@ -1,6 +1,5 @@
 package domain;
 
-import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -16,7 +15,7 @@ class CrewAttendanceRepositoryTest {
         Crew crew = new Crew(crewName);
         CrewAttendance crewAttendance = new CrewAttendance(
                 crew,
-                new Attendance(Map.of(new Date(LocalDate.of(2024, 12, 13)), new Time(10, 0)))
+                new Attendance(Map.of(new Date(2024, 12, 13), new Time(10, 0)))
         );
 
         Map<String, CrewAttendance> attendanceRecords = new HashMap<>();
@@ -43,11 +42,11 @@ class CrewAttendanceRepositoryTest {
 
         CrewAttendance crewAttendance1 = new CrewAttendance(
                 crew1,
-                new Attendance(Map.of(new Date(LocalDate.of(2024, 12, 13)), new Time(10, 0)))
+                new Attendance(Map.of(new Date(2024, 12, 13), new Time(10, 0)))
         );
         CrewAttendance crewAttendance2 = new CrewAttendance(
                 crew2,
-                new Attendance(Map.of(new Date(LocalDate.of(2024, 12, 14)), new Time(10, 0)))
+                new Attendance(Map.of(new Date(2024, 12, 13), new Time(10, 0)))
         );
 
         Map<String, CrewAttendance> attendanceRecords = new HashMap<>();

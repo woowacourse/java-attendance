@@ -13,7 +13,9 @@ public class DateTime implements Comparable<DateTime> {
     }
 
     public static DateTime from(LocalDateTime localDateTime) {
-        return new DateTime(new Date(localDateTime.toLocalDate()),
+        return new DateTime(
+                new Date(localDateTime.toLocalDate().getYear(), localDateTime.toLocalDate().getMonthValue(),
+                        localDateTime.toLocalDate().getDayOfMonth()),
                 new Time(localDateTime.toLocalTime().getHour(), localDateTime.toLocalTime().getMinute()));
     }
 

@@ -66,11 +66,13 @@ public class CrewAttendanceRepository {
         return attendanceRecords;
     }
 
-    private static void addNonHolidayDate(Map<Date, Time> attendanceRecords, LocalDate date) {
-        Date attendanceDate = new Date(date);
-        if (!attendanceDate.isHoliday()) {
-            attendanceRecords.put(attendanceDate, new Time(null, null));
+    private static void addNonHolidayDate(Map<Date, Time> attendanceRecords, LocalDate localDate) {
+        if (Date.isWeekend(localDate) || Date.isPublicHoliday(localDate)) {
+            return;
         }
+
+        Date date = Date.from(localDate);
+        attendanceRecords.put(date, new Time(null, null));
     }
 
     private static void loadAttendance(CrewAttendanceRepository crewAttendanceRepository, String filePath) {

@@ -18,30 +18,15 @@ public enum AttendanceStatus {
     }
 
     public static AttendanceStatus from(DateTime dateTime) {
-        Integer hour = dateTime.getTime().getHour();
-        Integer minute = dateTime.getTime().getMinute();
+        Integer hour = dateTime.getTime().getHour().orElse(null);
+        Integer minute = dateTime.getTime().getMinute().orElse(null);
 
         if (hour == null || minute == null) {
             return ATTENDANCE;
         }
 
-        validateTime(hour);
-        WorkDay today = dateTime.getDate().getWorkDay();
-        validateWorkDay(today);
-
-        return determineAttendanceStatus(today, dateTime.getTime().getHour(), dateTime.getTime().getMinute());
-    }
-
-    private static void validateTime(Integer hour) {
-        if (hour < 8 || hour > 18) {
-            throw new IllegalArgumentException("캠퍼스 운영 시간이 아닙니다.");
-        }
-    }
-
-    private static void validateWorkDay(WorkDay workDay) {
-        if (workDay.isWeekend()) {
-            throw new IllegalArgumentException("주말에는 출석할 수 없습니다.");
-        }
+        WorkDay currentDay = dateTime.getDate().getWorkDay();
+        return determineAttendanceStatus(currentDay, hour, minute);
     }
 
     private static AttendanceStatus determineAttendanceStatus(WorkDay today, Integer hour, Integer minute) {
