@@ -33,4 +33,20 @@ public class AttendanceRegister extends AttendanceManager {
             throw new AttendanceArgumentException(Error.DUPLICATE_DATE.getMessage());
         }
     }
+
+    protected enum Error {
+        DUPLICATE_DATE("이미 출석되었습니다. 수정 기능을 이용해주세요."),
+
+        NOT_REGISTERED_NICKNAME("등록되지 않은 닉네임입니다."),
+        ;
+        private final String message;
+
+        Error(String message) {
+            this.message = message;
+        }
+
+        public String getMessage() {
+            return message;
+        }
+    }
 }

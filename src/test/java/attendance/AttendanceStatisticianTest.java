@@ -36,9 +36,11 @@ public class AttendanceStatisticianTest {
         attendanceStatistician.manage(nickname, LocalDate.now(), LocalTime.now());
 
         assertThat(attendanceStatistician.getResult())
-            .contains("12월 2일 월요일 13:12 (출석)\n"
-                + "12월 3일 화요일 10:12 (지각)\n"
-                + "12월 4일 수요일 10:12 (지각)\n");
+            .contains("""
+                12월 2일 월요일 13:12 (출석)
+                12월 3일 화요일 10:12 (지각)
+                12월 4일 수요일 10:12 (지각)
+                """);
     }
 
     @Test
@@ -66,7 +68,7 @@ public class AttendanceStatisticianTest {
     @DisplayName("등록되지 않은 닉네임을 입력할 경우, 예외가 발생한다.")
     void error_notRegisteredNickname() {
         var nickname = "믹든";
-        ;
+
         assertThatThrownBy(() -> attendanceStatistician.manage(nickname, LocalDate.now(), LocalTime.now()))
             .isInstanceOf(AttendanceArgumentException.class)
             .hasMessageContaining("등록되지 않은 닉네임");

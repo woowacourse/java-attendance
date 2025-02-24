@@ -1,16 +1,16 @@
 package attendance.domain.attendanceBook;
 
+import static attendance.common.BusinessRuleConfig.*;
+
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.List;
 
 import attendance.common.exception.AttendanceArgumentException;
 import attendance.domain.AttendanceStatus;
 
 public record Attendance(LocalDateTime dateTime, AttendanceStatus attendanceStatus) {
-    private static final List<Integer> datOfHoliday = List.of(25);
 
     public Attendance(LocalDateTime dateTime) {
         this(dateTime, decideAttendanceStatus(dateTime));
@@ -23,23 +23,24 @@ public record Attendance(LocalDateTime dateTime, AttendanceStatus attendanceStat
     }
 
     private static void validate(LocalDateTime dateTime) {
-        validateIsWeekend(dateTime);
-        validateIsHoliday(dateTime);
+        var date = dateTime.toLocalDate();
+        validateIsWeekend(date);
+        validateIsHoliday(date);
         validateIsDuringCampusSchedule(dateTime);
     }
 
-    private static void validateIsHoliday(LocalDateTime dateTime) {
-        boolean isHoliday = datOfHoliday.stream()
-            .anyMatch(day -> dateTime.getDayOfMonth() == day);
+    private static void validateIsHoliday(LocalDate date) {
+        boolean isHoliday = DAT_OF_HOLIDAY.stream()
+            .anyMatch(day -> date.getDayOfMonth() == day);
 
         if (isHoliday) {
-            throw new AttendanceArgumentException(Message.CANNOT_ATTENDANCE_WEEKEND_FORMAT, dateTime);
+            throw new AttendanceArgumentException(Message.CANNOT_ATTENDANCE_WEEKEND_FORMAT, date);
         }
     }
 
-    private static void validateIsWeekend(LocalDateTime dateTime) {
-        if (dateTime.getDayOfWeek().getValue() >= DayOfWeek.SATURDAY.getValue()) {
-            throw new AttendanceArgumentException(Message.CANNOT_ATTENDANCE_WEEKEND_FORMAT, dateTime);
+    private static void validateIsWeekend(LocalDate date) {
+        if (date.getDayOfWeek().getValue() >= DayOfWeek.SATURDAY.getValue()) {
+            throw new AttendanceArgumentException(Message.CANNOT_ATTENDANCE_WEEKEND_FORMAT, date);
         }
     }
 

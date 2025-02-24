@@ -1,7 +1,7 @@
 package attendance.common.exception;
 
 import java.time.DateTimeException;
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 import attendance.common.utill.DateTimeFormatterWrapper;
 
@@ -11,14 +11,14 @@ public class AttendanceArgumentException extends IllegalArgumentException {
         super("[ERROR] " + message);
     }
 
-    public AttendanceArgumentException(String message, LocalDateTime localDateTime) {
-        super(formatErrorMessage(message, localDateTime));
+    public AttendanceArgumentException(String message, LocalDate date) {
+        super(formatErrorMessage(message, date));
     }
 
-    private static String formatErrorMessage(String pattern, LocalDateTime dateTime) {
+    private static String formatErrorMessage(String pattern, LocalDate date) {
         try {
             var formatter = DateTimeFormatterWrapper.getFormatter(pattern);
-            return "[ERROR] " + dateTime.format(formatter);
+            return "[ERROR] " + date.format(formatter);
         } catch (DateTimeException e) {
             return "[ERROR] 잘못된 날짜 형식입니다 : " + pattern;
         }
