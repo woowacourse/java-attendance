@@ -3,7 +3,7 @@ package domain;
 import java.time.LocalDate;
 import java.util.Objects;
 
-public class Date {
+public class Date implements Comparable<Date> {
     private LocalDate localDate;
 
     public Date(LocalDate localDate) {
@@ -35,6 +35,10 @@ public class Date {
 
     public boolean isHoliday() {
         return getWorkDay().isWeekend() || getDayValue() == 25;  // TODO: 공휴일 로직 추가
+
+    @Override
+    public int compareTo(Date other) {
+        return this.localDate.compareTo(other.localDate);
     }
 
     @Override

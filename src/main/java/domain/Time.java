@@ -2,7 +2,7 @@ package domain;
 
 import java.util.Objects;
 
-public class Time {
+public class Time implements Comparable<Time> {
     private final Integer hour;
     private final Integer minute;
 
@@ -31,6 +31,26 @@ public class Time {
 
     public Integer getMinute() {
         return minute;
+    }
+
+    @Override
+    public int compareTo(Time other) {
+        if (this.isNull() && other.isNull()) {
+            return 0;
+        }
+        if (this.isNull()) {
+            return -1;
+        }
+        if (other.isNull()) {
+            return 1;
+        }
+
+        int hourDiff = Integer.compare(this.hour, other.hour);
+        if (hourDiff != 0) {
+            return hourDiff;
+        }
+
+        return Integer.compare(this.minute, other.minute);
     }
 
     @Override

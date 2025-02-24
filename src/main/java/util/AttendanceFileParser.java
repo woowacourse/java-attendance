@@ -35,7 +35,7 @@ public class AttendanceFileParser {
                 .filter(items -> items.length == 2)
                 .forEach(items -> {
                     String name = items[0].trim();
-                    DateTime dateTime = DateTime.of(parseToDateTime(items[1].trim()));
+                    DateTime dateTime = DateTime.from(parseToDateTime(items[1].trim()));
 
                     attendanceRecords.computeIfAbsent(name, k -> new ArrayList<>()).add(dateTime);
                 });
