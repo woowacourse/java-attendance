@@ -37,8 +37,10 @@ public class AttendanceTime {
         return new AttendanceTime(date, time);
     }
 
-    public void modify(LocalTime time) {
+    public AttendanceTime modify(LocalTime time) {
+        AttendanceTime previous = AttendanceTime.of(this.date, this.time);
         this.time = time;
+        return previous;
     }
 
     public LocalDateTime toLocalDateTime() {

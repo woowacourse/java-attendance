@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
+import java.util.Optional;
 
 public class AttendanceTimes {
     private final List<AttendanceTime> attendanceLog;
@@ -29,12 +30,15 @@ public class AttendanceTimes {
                 .toLocalDateTime();
     }
 
-    public boolean modifyAttendance(LocalDate date, LocalTime time) {
-        AttendanceTime toModify = attendanceLog.stream()
+    public Optional<AttendanceTime> modifyAttendance(LocalDate date, LocalTime time) {
+        Optional<AttendanceTime> currentTime = attendanceLog.stream()
                 .filter(attendanceTime -> attendanceTime.isSameDate(date))
-                .findAny()
-                .orElseThrow(() -> new IllegalArgumentException("해당 날짜의 출석기록이 존재하지 않습니다."));
-        toModify.modify(time);
-        return true;
+                .findAny();
+        Optional<AttendanceTime> previous = Optional.empty();
+        if (currentTime.isEmpty()) {
+            attendanceLog.add(AttendanceTime.of(date, time));
+            return previous;
+        }
+        return Optional.of(currentTime.get().modify(time));
     }
 }

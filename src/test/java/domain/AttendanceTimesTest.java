@@ -7,6 +7,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
+import java.util.Optional;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -65,16 +66,23 @@ class AttendanceTimesTest {
         LocalDate date = LocalDate.of(2024, 12, 11);
         LocalTime time = LocalTime.of(11, 10);
 
+        AttendanceTime previous = AttendanceTime.of( // createAttendanceLog() 에서 확인 가능
+                LocalDate.of(2024, 12, 11),
+                LocalTime.of(10, 6)
+        );
+
         // when
-        boolean b = attendanceTimes.modifyAttendance(
+        Optional<AttendanceTime> optionalAttendanceTime = attendanceTimes.modifyAttendance(
                 date,
                 time
         );
 
         // then
+        assert optionalAttendanceTime.isPresent();
+        assertThat(optionalAttendanceTime.get()).isEqualTo(previous);
+
         LocalDateTime modified = attendanceTimes.readAttendance(date);
         assertThat(modified).isEqualTo(LocalDateTime.of(date, time));
-        assertThat(b).isTrue();
     }
 
     private List<AttendanceTime> createAttendanceLog() {

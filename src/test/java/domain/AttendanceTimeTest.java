@@ -115,13 +115,14 @@ class AttendanceTimeTest {
         AttendanceTime attendanceTime = AttendanceTime.of(date, time);
 
         // when
-        attendanceTime.modify(LocalTime.of(10, 20));
+        AttendanceTime previous = attendanceTime.modify(LocalTime.of(10, 20));
 
         // then
-        AttendanceTime afterModified = AttendanceTime.of(
+        AttendanceTime expected = AttendanceTime.of(
                 date, LocalTime.of(10, 20)
         );
-        assertThat(attendanceTime).isEqualTo(afterModified);
+        assertThat(attendanceTime).isEqualTo(expected);
+        assertThat(previous).isEqualTo(AttendanceTime.of(date, time));
     }
 
     @Test
