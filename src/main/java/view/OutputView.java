@@ -68,16 +68,10 @@ public class OutputView {
     }
 
     private String formatWarningStatus(WarningStatus warningStatus) {
-        if (warningStatus == WarningStatus.WARNING) {
-            return "경고 대상자입니다.";
+        if (warningStatus == WarningStatus.CLEAR) {
+            return "";
         }
-        if (warningStatus == WarningStatus.INTERVIEW) {
-            return "면담 대상자입니다.";
-        }
-        if (warningStatus == WarningStatus.EXPEL) {
-            return "제적 대상자입니다.";
-        }
-        return "";
+        return formatWarningStatusShort(warningStatus) + " 대상자입니다.";
     }
 
     private String formatAttendCount(AttendCount attendCount) {
