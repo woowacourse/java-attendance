@@ -17,6 +17,33 @@ public enum CrewStatus {
     }
 
     public static CrewStatus froAttendanceStatuses(final List<AttendanceStatus> attendanceStatuses) {
+        final int absenceCount = calculatePolicyAppliedAbsenceCount(attendanceStatuses);
+
+        if (absenceCount > 5) {
+            return EXPULSION;
+        }
+        if (absenceCount > 2) {
+            return CONSULTATION;
+        }
+        if (absenceCount > 1) {
+            return WARNING;
+        }
         return NORMAL;
+    }
+
+    private static int calculatePolicyAppliedAbsenceCount(final List<AttendanceStatus> attendanceStatuses) {
+        return Math.toIntExact(
+                attendanceStatuses.stream()
+                        .filter(AttendanceStatus.ABSENCE::equals)
+                        .count()
+        ) + calculateAbsenceCountFromLate(attendanceStatuses);
+    }
+
+    private static int calculateAbsenceCountFromLate(final List<AttendanceStatus> attendanceStatuses) {
+        return Math.toIntExact(
+                attendanceStatuses.stream()
+                        .filter(AttendanceStatus.LATE::equals)
+                        .count()
+        ) / 3;
     }
 }
