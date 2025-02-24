@@ -1,45 +1,61 @@
 package test;
 
-import static org.assertj.core.api.Assertions.as;
 import static org.assertj.core.api.Assertions.assertThat;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
-import javax.swing.text.html.Option;
-import model.AttendanceAdministrator;
 import model.Crew;
-import model.CrewGenerator;
+import model.AttendanceInitializer;
 import model.Crews;
-import net.bytebuddy.asm.Advice.Local;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 public class AttendanceTest {
 
-    @DisplayName("중복 없이 크루 이름을 읽어온다.")
+    @DisplayName("파일에서 크루 이름과 출석 데이터를 읽어온다.")
     @Test
-    void test1() {
+    void test0() {
         //given
         String crewInput = """
                 쿠키,2024-12-13 10:08
                 빙봉,2024-12-13 10:07
                 이든,2024-12-13 10:07
-                빙봉,2024-12-12 11:11
-                빙티,2024-12-12 10:07
                 이든,2024-12-12 10:06
-                이든,2024-12-11 10:10
                 """;
 
         //when
-        List<String> crewNames = CrewGenerator.findCrewNames(crewInput);
+        List<String> crewNames = AttendanceInitializer.readCrewAndAttendanceData(crewInput);
 
         //then
-        assertThat(crewNames).containsAll(Arrays.asList("쿠키", "빙봉", "빙티", "이든"));
+        assertThat(crewNames).containsAll(Arrays.asList(
+                "쿠키,2024-12-13 10:08",
+                "빙봉,2024-12-13 10:07",
+                "이든,2024-12-13 10:07",
+                "이든,2024-12-12 10:06"
+        ));
+    }
+
+    @DisplayName("중복 없이 크루 이름을 읽어온다.")
+    @Test
+    void test1() {
+        //given
+        List<String> combinedData = List.of(
+                "쿠키,2024-12-13 10:08",
+                "빙봉,2024-12-13 10:07",
+                "이든,2024-12-13 10:07",
+                "빙봉,2024-12-12 11:11",
+                "빙티,2024-12-12 10:07",
+                "이든,2024-12-12 10:06",
+                "이든,2024-12-11 10:10"
+        );
+
+        //when
+        List<String> crewNames = AttendanceInitializer.extractUniqueCrewData(combinedData);
+
+        //then
+        assertThat(crewNames).containsExactly("쿠키", "빙봉", "이든", "빙티");
     }
 
     /**
@@ -62,7 +78,6 @@ public class AttendanceTest {
 //                new Crew("이든")
 //        ));
 //    }
-
     @DisplayName("크루 객체들을 포장한 객체를 생성한다.")
     @Test
     void test3() {
@@ -100,24 +115,33 @@ public class AttendanceTest {
         assertThat(crew.get()).isEqualTo(new Crew(name));
     }
 
-    @DisplayName("출석 기록을 읽어서 LocalDateTime 객체로 변환한다.")
+    @DisplayName("크루 이름과 날짜 객체를 입력하면 날짜와 시간을 읽어서 LocalTime 객체를 반환한다.")
     @Test
-
     void test5() {
-        //given
-        String crewInput = """
-                쿠키,2024-12-13 10:08
-                빙봉,2024-12-13 10:07
-                이든,2024-12-13 10:07
-                빙티,2024-12-12 10:07
-                """;
-        Map<String, LocalDateTime> times = AttendanceAdministrator.findAttendanceInfo(crewInput);
+        String combinedData = "쿠키,2024-12-13 10:08";
 
-        assertThat(times.get("쿠키")).isEqualTo(LocalDateTime.of(2024, 12, 13, 10, 8));
-        assertThat(times.get("빙봉")).isEqualTo(LocalDateTime.of(2024, 12, 13, 10, 7));
-        assertThat(times.get("이든")).isEqualTo(LocalDateTime.of(2024, 12, 13, 10, 7));
-        assertThat(times.get("빙티")).isEqualTo(LocalDateTime.of(2024, 12, 12, 10, 7));
+        LocalDateTime attendanceTime = AttendanceInitializer.parseLocalDateTimeFrom(combinedData);
+
+        assertThat(attendanceTime).isEqualTo(LocalDateTime.of(2024, 12, 13, 10, 8));
     }
+
+//    @DisplayName("출석 기록을 읽어서 LocalDateTime 객체로 변환한다.")
+//    @Test
+//    void test5() {
+//        //given
+//        String crewInput = """
+//                쿠키,2024-12-13 10:08
+//                빙봉,2024-12-13 10:07
+//                이든,2024-12-13 10:07
+//                빙티,2024-12-12 10:07
+//                """;
+//        Map<String, LocalDateTime> times = AttendanceAdministrator.findAttendanceInfo(crewInput);
+//
+//        assertThat(times.get("쿠키")).isEqualTo(LocalDateTime.of(2024, 12, 13, 10, 8));
+//        assertThat(times.get("빙봉")).isEqualTo(LocalDateTime.of(2024, 12, 13, 10, 7));
+//        assertThat(times.get("이든")).isEqualTo(LocalDateTime.of(2024, 12, 13, 10, 7));
+//        assertThat(times.get("빙티")).isEqualTo(LocalDateTime.of(2024, 12, 12, 10, 7));
+//    }
 
 //    @DisplayName("입력한 날짜에 해당하는 출석 기록이 있는지 확인한다.")
 //    @Test
