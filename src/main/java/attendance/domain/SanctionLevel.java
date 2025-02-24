@@ -1,6 +1,6 @@
 package attendance.domain;
 
-public enum AttendanceDismissStatus {
+public enum SanctionLevel {
     NEED_MEETING("면담"),
     WARNING("경고"),
     DISMISS("제적"),
@@ -13,7 +13,7 @@ public enum AttendanceDismissStatus {
 
     private final String status;
 
-    AttendanceDismissStatus(String status) {
+    SanctionLevel(String status) {
         this.status = status;
     }
 }

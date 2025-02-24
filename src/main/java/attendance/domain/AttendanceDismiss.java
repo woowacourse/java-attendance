@@ -2,21 +2,21 @@ package attendance.domain;
 
 public class AttendanceDismiss {
 
-    public static AttendanceDismissStatus calculateAttendanceDismiss(int absence, int late) {
+    public static SanctionLevel calculateAttendanceDismiss(int absence, int late) {
         var absenceCount = (late / 3) + absence;
         return getAttendanceDismissStatus(absenceCount);
     }
 
-    private static AttendanceDismissStatus getAttendanceDismissStatus(int absenceCount) {
+    private static SanctionLevel getAttendanceDismissStatus(int absenceCount) {
         if (absenceCount > 5) {
-            return AttendanceDismissStatus.DISMISS;
+            return SanctionLevel.DISMISS;
         }
         if (absenceCount >= 3) {
-            return AttendanceDismissStatus.NEED_MEETING;
+            return SanctionLevel.NEED_MEETING;
         }
         if (absenceCount == 2) {
-            return AttendanceDismissStatus.WARNING;
+            return SanctionLevel.WARNING;
         }
-        return AttendanceDismissStatus.NONE;
+        return SanctionLevel.NONE;
     }
 }

@@ -91,9 +91,10 @@ public class AttendanceStatisticianTest {
     @Test
     @DisplayName("해당 크루의 제재 수준을 판단한다.")
     void test_shouldJudgeSanctionLevelOfCrew() {
-        //given&when
+        var nickname = "이든";
+        attendanceStatistician.manage(nickname, LocalDate.now(), LocalTime.now());
 
-        //then
+        assertThat(attendanceStatistician.getResult())
+            .contains("제적 대상자입니다.");
     }
-
 }

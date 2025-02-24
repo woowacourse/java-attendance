@@ -4,10 +4,12 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
 
+import attendance.domain.SanctionLevel;
 import attendance.domain.StatusStatistic;
 import attendance.domain.attendanceBook.AttendanceBook;
 
 public class AttendanceStatistician extends AttendanceManager {
+
     public AttendanceStatistician(AttendanceBook attendanceBook) {
         super(attendanceBook);
     }
@@ -26,12 +28,17 @@ public class AttendanceStatistician extends AttendanceManager {
         history.forEach(builder::append);
 
         builder.append(statistic.getReport());
-        builder.append(Message.SANCTION_LEVEL.getMessage(nickname));
+
+        SanctionLevel level = statistic.judgeSanctionLevel();
+        if (level.equals(SanctionLevel.NONE)) {
+            return;
+        }
+        builder.append(Message.SANCTION_LEVEL.getMessage(statistic.judgeSanctionLevel().getStatus()));
     }
 
     protected enum Message {
         INITIALIZE("이번 달 %s의 출석 기록입니다.\n"),
-        SANCTION_LEVEL("\n\n%s 대상자입니다\n");
+        SANCTION_LEVEL("\n\n%s 대상자입니다.\n");
         private final String message;
 
         Message(String message) {
