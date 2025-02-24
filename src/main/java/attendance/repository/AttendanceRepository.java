@@ -6,6 +6,7 @@ import static attendance.domain.AttendanceStatus.LATE;
 
 import attendance.domain.AcademicStatus;
 import attendance.domain.Attendance;
+import attendance.domain.AttendanceStatus;
 import attendance.domain.Time;
 import attendance.dto.CrewNameAndAcademicStatusDTO;
 import java.time.DayOfWeek;
@@ -81,12 +82,12 @@ public class AttendanceRepository {
     public CrewNameAndAcademicStatusDTO getAcademicStatusByName(final String name, final int month) {
         List<Attendance> attendances = findAllAttendanceByName(name, month);
 
-        Map<String, Long> counts = attendances.stream()
+        Map<AttendanceStatus, Long> counts = attendances.stream()
                 .collect(Collectors.groupingBy(Attendance::getAttendanceStatus, Collectors.counting()));
 
-        int attend = counts.getOrDefault(ATTEND.getValue(), 0L).intValue();
-        int late = counts.getOrDefault(LATE.getValue(), 0L).intValue();
-        int absent = counts.getOrDefault(ABSENT.getValue(), 0L).intValue();
+        int attend = counts.getOrDefault(ATTEND, 0L).intValue();
+        int late = counts.getOrDefault(LATE, 0L).intValue();
+        int absent = counts.getOrDefault(ABSENT, 0L).intValue();
 
         return new CrewNameAndAcademicStatusDTO(name, attend, late, absent,
                 AcademicStatus.getAcademicStatus(late, absent));

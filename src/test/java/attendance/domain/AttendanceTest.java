@@ -80,6 +80,6 @@ class AttendanceTest {
         Attendance attendance = new Attendance("체체", new Time(localDate, hour, minute, false));
 
         // when && then
-        assertThat(attendance.getAttendanceStatus()).isEqualTo(result);
+        assertThat(attendance.getAttendanceStatus().getValue()).isEqualTo(result);
     }
 }

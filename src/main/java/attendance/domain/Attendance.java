@@ -16,7 +16,7 @@ public class Attendance {
         this.attendanceTime = attendanceTime;
     }
 
-    public String getAttendanceStatus() {
+    public AttendanceStatus getAttendanceStatus() {
         if (attendanceTime.getDayOfWeek().equals(MONDAY)) {
 
             return AttendanceStatus.checkStatusWithCondition(attendanceTime, MONDAY_EDUCATION_HOUR, LATE_MINUTE,

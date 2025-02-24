@@ -109,7 +109,7 @@ public class AttendanceController {
         Attendance attendance = new Attendance(crewName, todayDateTime);
         attendanceRepository.add(attendance);
 
-        outputView.printAttendance(todayDateTime, attendance.getAttendanceStatus());
+        outputView.printAttendance(todayDateTime, attendance.getAttendanceStatus().getValue());
 
         return false;
     }
@@ -138,12 +138,12 @@ public class AttendanceController {
         Attendance attendance = attendanceRepository.findAttendanceByNameAndLocalDate(crewName, year, month, modifyDay);
 
         Time previousDateTime = attendance.getAttendanceTime();
-        String previousAttendanceStatus = attendance.getAttendanceStatus();
+        String previousAttendanceStatus = attendance.getAttendanceStatus().getValue();
 
         attendance.modifyAttendanceTime(modifyDateTime);
 
         outputView.printModifyAttendanceResult(previousDateTime, previousAttendanceStatus, modifyDateTime,
-                attendance.getAttendanceStatus());
+                attendance.getAttendanceStatus().getValue());
     }
 
     public boolean attendanceHistoryByNameFunction() {

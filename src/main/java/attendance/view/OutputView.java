@@ -38,7 +38,7 @@ public class OutputView {
 
         System.out.println("이번 달 " + name + "의 출석 기록입니다.");
         for (Attendance attendance : attendances) {
-            String attendanceStatus = attendance.getAttendanceStatus();
+            String attendanceStatus = attendance.getAttendanceStatus().getValue();
             printAttendance(attendance.getAttendanceTime(), attendanceStatus);
         }
     }
