@@ -3,6 +3,7 @@ package attendance.domain;
 import attendance.domain.constant.AttendanceStatus;
 import attendance.domain.constant.Weekday;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -68,8 +69,8 @@ public class AttendanceRegistry {
         return weekday.equals(Weekday.SATURDAY) || weekday.equals(Weekday.SUNDAY);
     }
 
-    public AttendanceChecker findByDay(int day) {
-        return attendanceCheckers.stream().filter(dateInfo -> dateInfo.getLocalDateTime().getDayOfMonth() == day)
+    public AttendanceChecker findByDay(LocalDateTime day) {
+        return attendanceCheckers.stream().filter(dateInfo -> dateInfo.getLocalDateTime().getDayOfMonth() == day.getDayOfMonth())
                 .findFirst()
                 .orElseThrow();
     }
