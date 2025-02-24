@@ -50,7 +50,7 @@ public class AttendanceRegistry {
     private static List<AttendanceChecker> makeDefaultDateInfos(LocalDate now) {
         List<AttendanceChecker> attendanceCheckers = new ArrayList<>();
         for (int day = 1; day <= now.getDayOfMonth(); day++) {
-            LocalDate currentDay = LocalDate.of(now.getYear(), now.getMonthValue(), day);
+            LocalDate currentDay = now.withDayOfMonth(day);
             addWeekdayDateInfo(currentDay, attendanceCheckers);
         }
         return attendanceCheckers;
@@ -59,8 +59,7 @@ public class AttendanceRegistry {
     private static void addWeekdayDateInfo(LocalDate currentDay, List<AttendanceChecker> attendanceCheckers) {
         if (checkHoliday(currentDay)) return;
 
-        attendanceCheckers.add(AttendanceChecker.makeDefaultValue(currentDay.getYear(),currentDay.getMonthValue(),
-                currentDay.getDayOfMonth()));
+        attendanceCheckers.add(AttendanceChecker.makeDefaultValue(currentDay));
     }
 
     private static boolean checkHoliday(LocalDate currentDay) {

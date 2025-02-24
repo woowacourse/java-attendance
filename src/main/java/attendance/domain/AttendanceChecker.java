@@ -1,6 +1,7 @@
 package attendance.domain;
 
 import attendance.domain.constant.AttendanceStatus;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 public class AttendanceChecker {
@@ -18,8 +19,8 @@ public class AttendanceChecker {
         return new AttendanceChecker(localDateTime);
     }
 
-    public static AttendanceChecker makeDefaultValue(int year, int month, int day) {
-        LocalDateTime dateTime = LocalDateTime.of(year, month, day, DEFAULT_TIME, DEFAULT_TIME);
+    public static AttendanceChecker makeDefaultValue(LocalDate localDate) {
+        LocalDateTime dateTime = localDate.atTime(DEFAULT_TIME, DEFAULT_TIME);
         return new AttendanceChecker(dateTime);
     }
 
