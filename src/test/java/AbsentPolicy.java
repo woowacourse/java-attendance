@@ -5,6 +5,8 @@ import java.time.LocalTime;
 
 public class AbsentPolicy {
 
+    private static final LocalDate CHRISTMAS = LocalDate.of(2024, 12, 25);
+
     public void validateIsWeekend(LocalDate attendanceDate) {
         DayOfWeek attendanceDayOfWeek = attendanceDate.getDayOfWeek();
 
@@ -14,7 +16,7 @@ public class AbsentPolicy {
     }
 
     public void validateIsHoliday(LocalDate attendanceDate) {
-        if(attendanceDate.equals(LocalDate.of(2024, 12, 25))){
+        if(attendanceDate.equals(CHRISTMAS)){
             throw new IllegalArgumentException("[ERROR] 공휴일에는 출석할 수 없습니다");
         }
     }
