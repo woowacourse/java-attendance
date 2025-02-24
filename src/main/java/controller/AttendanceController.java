@@ -8,8 +8,9 @@ import domain.StatisticsResult;
 import domain.TimeAndStatus;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
-import java.util.List;
+import java.time.format.DateTimeParseException;
 import java.util.Map;
 import view.InputView;
 import view.OutputView;
@@ -20,11 +21,9 @@ public class AttendanceController {
     private static final int ATTENDANCE_MONTH = 12;
     private static final int ATTENDANCE_DAY_OF_MONTH = 13;
     private static final String INPUT_DATE_FORMAT = "%04d-%02d-%02d";
-    private static final String INPUT_TIME_FORMAT = "%02d:%02d";
-    private static final String TIME_DELIMITER = ":";
 
     private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-    private static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+    private static final DateTimeFormatter TIME_FORMATTER = DateTimeFormatter.ofPattern("HH:mm");
 
     private final InputView inputView;
     private final OutputView outputView;
@@ -41,11 +40,13 @@ public class AttendanceController {
             processUserCommand();
         } catch (IllegalArgumentException e) {
             System.out.println(e.getMessage());
+        } catch (DateTimeParseException e) {
+            System.out.println("시간 형식이 유효하지 않습니다.");
         }
     }
 
     private void processUserCommand() {
-        LocalDate nowDate = formatNowDate();
+        LocalDate nowDate = parseDate(ATTENDANCE_DAY_OF_MONTH);
         String functionNumber;
         do {
             functionNumber = inputView.printFunction(nowDate);
@@ -56,18 +57,20 @@ public class AttendanceController {
 
     private void executeFunction(Function function, LocalDate nowDate) {
         switch (function) {
-            case ATTEND -> attend();
+            case ATTEND -> attend(nowDate);
             case EDIT -> edit();
             case CHECK -> check(nowDate);
             case CHECK_EXPELLED_WARNING -> checkExpelledWarning(nowDate);
         }
     }
 
-    private void attend() {
+    private void attend(LocalDate nowDate) {
         String name = inputView.readAttendName();
         attendanceManager.hasCrew(name);
-        List<String> attendTime = List.of(inputView.readTime().split(TIME_DELIMITER));
-        LocalDateTime attendDateTime = formatDateTime(ATTENDANCE_DAY_OF_MONTH, attendTime);
+
+        String attendTime = inputView.readTime();
+        LocalTime parsedTime = parseTime(attendTime);
+        LocalDateTime attendDateTime = LocalDateTime.of(nowDate, parsedTime);
 
         TimeAndStatus timeAndStatus = attendanceManager.attendCrew(name, attendDateTime);
         outputView.printAttendanceRecord(attendDateTime.toLocalDate(), timeAndStatus);
@@ -77,9 +80,11 @@ public class AttendanceController {
         String name = inputView.readEditName();
         attendanceManager.hasCrew(name);
         int editDayOfMonth = Integer.parseInt(inputView.readEditDayOfMonth());
-        List<String> editTime = List.of(inputView.readEditTime().split(TIME_DELIMITER));
-        LocalDateTime editDateTime = formatDateTime(editDayOfMonth, editTime);
-        LocalDate editDate = editDateTime.toLocalDate();
+
+        String editTime = inputView.readEditTime();
+        LocalTime parsedTime = parseTime(editTime);
+        LocalDate editDate = parseDate(editDayOfMonth);
+        LocalDateTime editDateTime = LocalDateTime.of(editDate, parsedTime);
 
         TimeAndStatus oldTimeAndStatus = attendanceManager.findByName(name).findByDate(editDate);
         TimeAndStatus newTimeAndStatus = attendanceManager.editCrew(name, editDateTime);
@@ -105,15 +110,12 @@ public class AttendanceController {
         outputView.printExpelledWarningResult(sortedResult);
     }
 
-    private LocalDate formatNowDate() {
-        String dateForm = String.format(INPUT_DATE_FORMAT, ATTENDANCE_YEAR, ATTENDANCE_MONTH, ATTENDANCE_DAY_OF_MONTH);
-        return LocalDate.parse(dateForm, DATE_FORMATTER);
+    private LocalTime parseTime(String time) {
+        return LocalTime.parse(time, TIME_FORMATTER);
     }
 
-    private LocalDateTime formatDateTime(int dayOfMonth, List<String> time) {
+    private LocalDate parseDate(int dayOfMonth) {
         String dateForm = String.format(INPUT_DATE_FORMAT, ATTENDANCE_YEAR, ATTENDANCE_MONTH, dayOfMonth);
-        String timeForm = String.format(INPUT_TIME_FORMAT, Integer.parseInt(time.get(0)),
-                Integer.parseInt(time.get(1)));
-        return LocalDateTime.parse(dateForm + " " + timeForm, DATE_TIME_FORMATTER);
+        return LocalDate.parse(dateForm, DATE_FORMATTER);
     }
 }
