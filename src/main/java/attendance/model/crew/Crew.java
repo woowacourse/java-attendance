@@ -6,8 +6,15 @@ public class Crew {
 
     private final String nickName;
 
-    public Crew(String nickName) {
+    public Crew(final String nickName) {
+        validateNickName(nickName);
         this.nickName = nickName;
+    }
+
+    private void validateNickName(final String nickName) {
+        if (nickName.length() < 2 || nickName.length() > 5) {
+            throw new IllegalArgumentException("크루의 닉네임은 2 ~ 5글자 사이여야 합니다.");
+        }
     }
 
     public String getNickName() {
