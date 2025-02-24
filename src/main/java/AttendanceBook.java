@@ -16,6 +16,9 @@ public class AttendanceBook {
     }
 
     public void attendance(LocalDate today, LocalTime time) {
+        if(attendanceBook.containsKey(today)) {
+            throw new IllegalArgumentException();
+        }
         attendanceBook.put(today, time);
     }
 }
