@@ -4,7 +4,6 @@ import java.time.DayOfWeek;
 import java.time.LocalDate;
 
 public class AttendanceDateHelper {
-    public static final String NOT_SCHOOL_RUNNING_DAY = "휴일에는 출석할 수 없습니다.";
     private static final LocalDate SCHOOL_OPEN_START_DATE = LocalDate.of(2024, 12, 1);
     private static final LocalDate SCHOOL_OPEN_END_DATE = LocalDate.of(2024, 12, 31);
 
@@ -14,5 +13,9 @@ public class AttendanceDateHelper {
             return true;
         }
         return false;
+    }
+
+    public static boolean isOutOfSchoolOpenDate(LocalDate attendanceDate) {
+        return !(SCHOOL_OPEN_START_DATE.isBefore(attendanceDate) && SCHOOL_OPEN_END_DATE.isAfter(attendanceDate));
     }
 }
