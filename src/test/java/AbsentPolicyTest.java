@@ -1,12 +1,15 @@
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.EnumSource;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.jupiter.params.provider.ValueSource;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.*;
 
@@ -54,19 +57,24 @@ public class AbsentPolicyTest {
         assertThat(absentPolicy.checkAttendanceStatus(educationDateTime)).isEqualTo("결석");
     }
 
-    @Test
+    @ParameterizedTest
     @DisplayName("시작 시간부터 5분 이하이면 출석이다")
-    public void checkAttendanceStatusTest(){
+    @MethodSource("provideDateTimeForAttendancePolicy")
+    public void checkAttendanceStatusTest(LocalDateTime educationDateTime){
+        //given
         AbsentPolicy absentPolicy = new AbsentPolicy();
-        LocalDateTime educationDateTime = LocalDateTime.of(2024,12,10, 10,5);
-        LocalDateTime educationDateTime2 = LocalDateTime.of(2024,12,9, 13,5);
-        LocalDateTime educationDateTime3 = LocalDateTime.of(2024,12,11, 9,0);
-        LocalDateTime educationDateTime4 = LocalDateTime.of(2024,12,2, 9,0);
 
+        //when-then
         assertThat(absentPolicy.checkAttendanceStatus(educationDateTime)).isEqualTo("출석");
-        assertThat(absentPolicy.checkAttendanceStatus(educationDateTime2)).isEqualTo("출석");
-        assertThat(absentPolicy.checkAttendanceStatus(educationDateTime3)).isEqualTo("출석");
-        assertThat(absentPolicy.checkAttendanceStatus(educationDateTime4)).isEqualTo("출석");
+    }
+
+    private static Stream<Arguments> provideDateTimeForAttendancePolicy(){
+        return Stream.of(
+                Arguments.of(LocalDateTime.of(2024,12,2, 9,0)),
+                Arguments.of(LocalDateTime.of(2024,12,9, 13,5)),
+                Arguments.of(LocalDateTime.of(2024,12,11, 9,0)),
+                Arguments.of(LocalDateTime.of(2024,12,10, 10,5))
+        );
     }
 
 //    @Test
