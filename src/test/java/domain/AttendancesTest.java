@@ -28,7 +28,7 @@ public class AttendancesTest {
         }
 
         @Test
-        @DisplayName("주말에는 출석할 수 없다.")
+        @DisplayName("휴일에 출석시 예외가 발생한다.")
         void addAttendanceWeekend() {
             String nickname = "투다";
             LocalTime time = LocalTime.of(8, 0);
@@ -36,6 +36,7 @@ public class AttendancesTest {
             CrewAttendances crewAttendances = new CrewAttendances(new TestAttendanceNowDateStrategy(date));
 
             Assertions.assertThatThrownBy(() -> crewAttendances.addAttendance(nickname, time))
+                    .hasMessageContaining("휴일에는 출석할 수 없습니다.")
                     .isInstanceOf(AttendanceException.class);
         }
     }
