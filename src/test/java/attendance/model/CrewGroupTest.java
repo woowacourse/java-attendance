@@ -30,6 +30,6 @@ class CrewGroupTest {
         String notExistNickname = "네오";
         Assertions.assertThatThrownBy(() -> crewGroup.findCrewByNickname(notExistNickname))
                 .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage("등록되지 않은 닉네임입니다.");
+                .hasMessage("네오은(는) 등록되지 않은 닉네임입니다.");
     }
 }

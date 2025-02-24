@@ -22,6 +22,6 @@ public class CrewGroup {
         return crews.stream()
                 .filter(crew -> crew.isEqualsNickname(nickname))
                 .findFirst()
-                .orElseThrow(() -> new IllegalArgumentException("등록되지 않은 닉네임입니다."));
+                .orElseThrow(() -> new IllegalArgumentException(nickname + "은(는) 등록되지 않은 닉네임입니다."));
     }
 }
