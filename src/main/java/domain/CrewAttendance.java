@@ -2,6 +2,8 @@ package domain;
 
 import vo.AttendResult;
 import vo.AttendanceModifyResult;
+import vo.AttendanceRecord;
+import vo.AttendanceRecordFindResults;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
@@ -54,6 +56,39 @@ public class CrewAttendance {
                 newTime,
                 AttendanceStatus.of(targetDateDayOfWeek, newTime)
         );
+    }
+    
+    public AttendanceRecordFindResults findRecord() {
+        final var results = calendar.entrySet().stream()
+                .filter(entry -> !weekends.contains(entry.getKey().getDayOfWeek()))
+                .filter(entry -> !Holiday.isHoliday(entry.getKey()))
+                .map(entry -> new AttendanceRecord(
+                        entry.getKey(),
+                        entry.getValue(),
+                        determineStatus(entry.getKey().getDayOfWeek(), entry.getValue())))
+                .collect(Collectors.toSet());
+        final var lateCount = getCountOfAttendanceStatusIs(AttendanceStatus.지각);
+        final var absentCount = getCountOfAttendanceStatusIs(AttendanceStatus.결석);
+        return new AttendanceRecordFindResults(
+                results,
+                getCountOfAttendanceStatusIs(AttendanceStatus.출석), lateCount, absentCount,
+                ExpelWarning.of(lateCount, absentCount)
+        );
+    }
+    
+    private int getCountOfAttendanceStatusIs(AttendanceStatus status) {
+        return (int) calendar.entrySet().stream()
+                .filter(entry -> !weekends.contains(entry.getKey().getDayOfWeek()))
+                .filter(entry -> !Holiday.isHoliday(entry.getKey()))
+                .filter(entry -> determineStatus(entry.getKey().getDayOfWeek(), entry.getValue()) == status)
+                .count();
+    }
+    
+    private AttendanceStatus determineStatus(final DayOfWeek dayOfWeek, final Optional<LocalTime> attendTime) {
+        if (attendTime.isEmpty()) {
+            return AttendanceStatus.결석;
+        }
+        return AttendanceStatus.of(dayOfWeek, attendTime.get());
     }
     
     private void validateIsDateAvailable(final LocalDate date) {

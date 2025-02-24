@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
+import vo.AttendanceRecord;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -425,4 +426,116 @@ public class AttendanceBookTest {
                     .hasMessage("공휴일에는 출석할 수 없습니다.");
         }
     }
+    
+    @Nested
+    class 크루별_출석_기록_확인_테스트 {
+        
+        @Test
+        void 크루별_출석_기록을_확인할_수_있다() {
+            //given
+            var nickname = "dompoo";
+            sut = new AttendanceBook(crews, LocalDate.of(2024, 12, 10));
+            sut.attend("dompoo", LocalDate.of(2024, 12, 2), LocalTime.of(13, 0));
+            sut.attend("dompoo", LocalDate.of(2024, 12, 3), LocalTime.of(10, 3));
+            sut.attend("dompoo", LocalDate.of(2024, 12, 5), LocalTime.of(10, 15));
+            sut.attend("dompoo", LocalDate.of(2024, 12, 6), LocalTime.of(10, 40));
+            sut.attend("dompoo", LocalDate.of(2024, 12, 9), LocalTime.of(13, 3));
+            sut.attend("dompoo", LocalDate.of(2024, 12, 10), LocalTime.of(10, 15));
+            
+            //when
+            var result = sut.findRecords(nickname);
+            
+            //then
+            assertAll(
+                    () -> assertThat(result.attendResults())
+                            .containsExactlyInAnyOrder(
+                                    new AttendanceRecord(
+                                            LocalDate.of(2024, 12, 2),
+                                            Optional.of(LocalTime.of(13, 0)),
+                                            AttendanceStatus.출석
+                                    ),
+                                    new AttendanceRecord(
+                                            LocalDate.of(2024, 12, 3),
+                                            Optional.of(LocalTime.of(10, 3)),
+                                            AttendanceStatus.출석
+                                    ),
+                                    new AttendanceRecord(
+                                            LocalDate.of(2024, 12, 4),
+                                            Optional.empty(),
+                                            AttendanceStatus.결석
+                                    ),
+                                    new AttendanceRecord(
+                                            LocalDate.of(2024, 12, 5),
+                                            Optional.of(LocalTime.of(10, 15)),
+                                            AttendanceStatus.지각
+                                    ),
+                                    new AttendanceRecord(
+                                            LocalDate.of(2024, 12, 6),
+                                            Optional.of(LocalTime.of(10, 40)),
+                                            AttendanceStatus.결석
+                                    ),
+                                    new AttendanceRecord(
+                                            LocalDate.of(2024, 12, 9),
+                                            Optional.of(LocalTime.of(13, 3)),
+                                            AttendanceStatus.출석
+                                    ),
+                                    new AttendanceRecord(
+                                            LocalDate.of(2024, 12, 10),
+                                            Optional.of(LocalTime.of(10, 15)),
+                                            AttendanceStatus.지각
+                                    )
+                            ),
+                    () -> assertThat(result.attendCount()).isEqualTo(3),
+                    () -> assertThat(result.lateCount()).isEqualTo(2),
+                    () -> assertThat(result.absentCount()).isEqualTo(2),
+                    () -> assertThat(result.expelWarning()).isEqualTo(ExpelWarning.경고)
+            );
+        }
+        
+        @Test
+        void 크루별_출석_기록에_주말은_포함되지_않는다() {
+            //given
+            var nickname = "dompoo";
+            
+            //when
+            var result = sut.findRecords(nickname);
+            
+            //then
+            assertThat(result.attendResults()).extracting(
+                    "attendDate"
+            ).doesNotContain(
+                    LocalDate.of(2024, 12, 1),
+                    LocalDate.of(2024, 12, 7),
+                    LocalDate.of(2024, 12, 8)
+            );
+        }
+        
+        @Test
+        void 크루별_출석_기록에_공휴일은_포함되지_않는다() {
+            //given
+            var nickname = "dompoo";
+            
+            //when
+            var result = sut.findRecords(nickname);
+            
+            //then
+            assertThat(result.attendResults()).extracting(
+                    "attendDate"
+            ).doesNotContain(
+                    LocalDate.of(2024, 12, 25)
+            );
+        }
+        
+        @Test
+        void 존재하지_않는_닉네임이면_예외가_발생한다() {
+            //given
+            var nickname = "brown";
+            
+            //expected
+            assertThatThrownBy(() -> sut.findRecords(nickname))
+                    .isExactlyInstanceOf(IllegalArgumentException.class)
+                    .hasMessage("등록되지 않은 닉네임입니다.");
+        }
+    }
+    
 }
