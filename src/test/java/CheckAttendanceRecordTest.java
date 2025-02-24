@@ -1,3 +1,5 @@
+import static org.assertj.core.api.Assertions.assertThat;
+
 import domain.AttendanceBook;
 import domain.Crew;
 import dto.AttendanceRecordResponse;
@@ -22,7 +24,11 @@ public class CheckAttendanceRecordTest {
 
         List<AttendanceRecordResponse> attendanceRecords = crew1.getAttendanceRecords();
 
-        TotalRecordsResponse totalRecordsResponse = attendanceBook.TotalRecordsResponseFromAttendanceRecords(
+        TotalRecordsResponse response = attendanceBook.TotalRecordsResponseFromAttendanceRecords(
                 attendanceRecords);
+
+        TotalRecordsResponse expectedResponse = new TotalRecordsResponse(1, 1, 18);
+
+        assertThat(response).isEqualTo(expectedResponse);
     }
 }

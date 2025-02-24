@@ -1,8 +1,11 @@
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 
 import domain.AttendanceBook;
+import domain.AttendanceStatus;
 import domain.Crew;
 import domain.ErrorCode;
+import dto.AttendanceRecordResponse;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.Map;
@@ -22,7 +25,16 @@ public class CheckAttendanceTest {
         crew2.addDailyAttendance(Map.of(LocalDate.of(2024, 12, 1), LocalTime.of(10, 7)));
         attendanceBook.addNewCrew(crew2);
 
-        attendanceBook.checkAttendance("쿠키", Map.of(LocalDate.of(2024, 12, 2), LocalTime.of(10, 7))); // 정상
+        AttendanceRecordResponse response = attendanceBook.checkAttendance("쿠키",
+                Map.of(LocalDate.of(2024, 12, 2), LocalTime.of(10, 7)));// 정상
+
+        AttendanceRecordResponse expectedResponse = new AttendanceRecordResponse(
+                LocalDate.of(2024, 12, 2),
+                LocalTime.of(10, 7),
+                AttendanceStatus.ATTEND
+        );
+
+        assertThat(response).isEqualTo(expectedResponse);
     }
 
     @Test

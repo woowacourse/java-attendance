@@ -1,7 +1,12 @@
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+
 import domain.AttendanceBook;
 import domain.Crew;
+import domain.PenaltyStatus;
+import dto.CrewPenaltyResponse;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.List;
 import java.util.Map;
 import org.junit.jupiter.api.Test;
 
@@ -19,6 +24,12 @@ public class CheckPenaltyCrewTest {
         crew2.addDailyAttendance(Map.of(LocalDate.of(2024, 12, 3), LocalTime.of(10, 7)));
         attendanceBook.addNewCrew(crew2);
 
-        attendanceBook.checkPenaltyCrew();
+        List<CrewPenaltyResponse> responses = attendanceBook.checkPenaltyCrew();
+        List<CrewPenaltyResponse> expectedResponses = List.of(
+                new CrewPenaltyResponse("쿠키", 19, 1, PenaltyStatus.EXPULSION),
+                new CrewPenaltyResponse("우유", 19, 1, PenaltyStatus.EXPULSION)
+        );
+
+        assertThat(responses).isEqualTo(expectedResponses);
     }
 }
