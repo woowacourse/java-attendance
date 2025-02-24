@@ -23,7 +23,7 @@ public class AttendanceEditTest {
 
     @Test
     @DisplayName("출석 상태를 출석에서 지각으로 변경한다.")
-    void 출석_상태_지각으로_변경() {
+    void should_ChangeStatusToLateness_When_AttendanceEditedLate() {
         String name = "빙봉";
         LocalDateTime initialDateAndTime = LocalDateTime.parse("2024-12-16 13:00", formatter);
         LocalDateTime editedDateAndTime = LocalDateTime.parse("2024-12-16 13:06", formatter);
@@ -39,7 +39,7 @@ public class AttendanceEditTest {
 
     @Test
     @DisplayName("출석 상태를 지각에서 출석으로 변경한다.")
-    void 출석_상태_출석으로_변경() {
+    void should_ChangeStatusToAttendance_When_LatenessEditedAttendance() {
         String name = "빙봉";
         LocalDateTime initialDateAndTime = LocalDateTime.parse("2024-12-16 13:07", formatter);
         LocalDateTime editedDateAndTime = LocalDateTime.parse("2024-12-16 12:59", formatter);
@@ -55,7 +55,7 @@ public class AttendanceEditTest {
 
     @Test
     @DisplayName("출석하지 않고 수정하는 경우 예외메시지를 출력한다.")
-    void 출석하지_않고_수정하는_경우() {
+    void should_ThrowException_When_EditingWithoutExistingAttendance() {
         LocalDateTime initialDateAndTime = LocalDateTime.parse("2024-12-13 13:00", formatter);
         LocalDateTime editedDateAndTime = LocalDateTime.parse("2024-12-16 13:03", formatter);
         String name = "빙봉";
@@ -70,7 +70,7 @@ public class AttendanceEditTest {
     @ParameterizedTest
     @ValueSource(strings = {"2024-12-14 13:03", "2024-12-25 13:03"})
     @DisplayName("수정하려는 날짜가 등교일이 아닌 경우 예외를 발생한다.")
-    void holidayTest(String dateAndTime) {
+    void should_ThrowException_When_EditingToHoliday(String dateAndTime) {
         LocalDateTime initialDateAndTime = LocalDateTime.parse("2024-12-13 13:00", formatter);
         LocalDateTime editedDateAndTime = LocalDateTime.parse(dateAndTime, formatter);
         String name = "빙봉";

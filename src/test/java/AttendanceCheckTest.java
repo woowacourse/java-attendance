@@ -20,7 +20,7 @@ public class AttendanceCheckTest {
 
     @Test
     @DisplayName("크루 정보를 출석부에 저장한다.")
-    void 크루_정보_저장() {
+    void should_SaveCrewInfo_When_GivenNameAndDateTime() {
         LocalDateTime initialDateAndTime = LocalDateTime.parse("2024-12-13 13:00", formatter);
         LocalDateTime attendDateAndTime = LocalDateTime.parse("2024-12-16 13:00", formatter);
         String name = "빙봉";
@@ -32,8 +32,8 @@ public class AttendanceCheckTest {
     }
 
     @Test
-    @DisplayName("크루 정보를 출석 시간을 저장한다.")
-    void 크루_정보_출력() {
+    @DisplayName("크루의 출석 시간과 상태를 저장한다.")
+    void should_SaveAttendanceTimeAndStatus_When_GivenNameAndDateTime() {
         LocalDateTime dateAndTime = LocalDateTime.parse("2024-12-16 13:00", formatter);
         LocalDate localDate = dateAndTime.toLocalDate();
         String name = "빙봉";
@@ -49,7 +49,7 @@ public class AttendanceCheckTest {
 
     @Test
     @DisplayName("이미 출석한 경우 수정 기능을 안내한다.")
-    void 수정_기능_안내() {
+    void should_ThrowException_When_AttendanceAlreadyExists() {
         LocalDateTime initialDateAndTime = LocalDateTime.parse("2024-12-16 13:00", formatter);
         LocalDateTime attendDateAndTime = LocalDateTime.parse("2024-12-16 13:03", formatter);
         String name = "빙봉";
@@ -64,7 +64,7 @@ public class AttendanceCheckTest {
     @ParameterizedTest
     @ValueSource(strings = {"2024-12-14 13:03", "2024-12-25 13:03"})
     @DisplayName("등교일이 아닌 날 출석하려는 경우 예외를 발생한다.")
-    void holidayTest(String dateAndTime) {
+    void should_ThrowException_When_AttendanceIsOnHoliday(String dateAndTime) {
         LocalDateTime initialDateAndTime = LocalDateTime.parse("2024-12-16 13:00", formatter);
         LocalDateTime attendDateAndTime = LocalDateTime.parse(dateAndTime, formatter);
         String name = "빙봉";

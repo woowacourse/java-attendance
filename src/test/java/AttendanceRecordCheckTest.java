@@ -33,15 +33,14 @@ public class AttendanceRecordCheckTest {
 
     @DisplayName("크루 출석 기록을 전날까지 조회한다.")
     @Test
-    void 출석_기록_조회() {
+    void should_CheckAttendanceRecords_When_SearchingByName () {
         String name = "빙티";
         Records expectedRecords = attendanceManager.findByName(name);
         assertThat(expectedRecords.getAttendanceCount()).isEqualTo(records.size());
     }
-
     @DisplayName("출석 통계를 정확하게 계산한다.")
     @Test
-    void 출석_통계_계산() {
+    void should_CalculateAttendanceStatistics_When_GivenRecords() {
         String name = "빙티";
         Records records = attendanceManager.findByName(name);
 
@@ -58,7 +57,7 @@ public class AttendanceRecordCheckTest {
 
     @DisplayName("경고 기준을 정확하게 계산한다.")
     @Test
-    void 경고_기준_계산() {
+    void should_CalculateWarningStatistics_When_GivenRecords() {
         String name = "빙티";
         Records records = attendanceManager.findByName(name);
 
@@ -70,7 +69,7 @@ public class AttendanceRecordCheckTest {
 
     @DisplayName("면담 기준을 정확하게 계산한다.")
     @Test
-    void 면담_기준_계산() {
+    void should_CalculateCounselingStatistics_When_GivenRecords() {
         List<LocalDateTime> counselingRecords = List.of(
             LocalDateTime.of(2024, 12, 2, 13, 0), // 출석
             LocalDateTime.of(2024, 12, 3, 9, 59), // 출석
@@ -91,7 +90,7 @@ public class AttendanceRecordCheckTest {
 
     @DisplayName("제적 기준을 정확하게 계산한다.")
     @Test
-    void 제적_기준_계산() {
+    void should_CalculateExpelledStatistics_When_GivenRecords() {
         List<LocalDateTime> expelledRecords = List.of(
             LocalDateTime.of(2024, 12, 2, 13, 0), // 출석
             LocalDateTime.of(2024, 12, 3, 9, 59), // 출석

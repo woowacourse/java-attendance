@@ -20,23 +20,23 @@ public class ExpelledWarningCrewTest {
     @BeforeEach
     void setUp() {
         testRecords1 = List.of(
-            LocalDateTime.of(2024, 12, 2, 13, 6), // 지각
-            LocalDateTime.of(2024, 12, 3, 9, 7), // 지각
-            LocalDateTime.of(2024, 12, 4, 10, 8), // 지각
-            LocalDateTime.of(2024, 12, 5, 10, 9),// 지각
-            LocalDateTime.of(2024, 12, 6, 10, 10),// 지각
-            LocalDateTime.of(2024, 12, 9, 13, 40),// 결석
-            LocalDateTime.of(2024, 12, 10, 10, 40) // 결석
+                LocalDateTime.of(2024, 12, 2, 13, 6), // 지각
+                LocalDateTime.of(2024, 12, 3, 9, 7), // 지각
+                LocalDateTime.of(2024, 12, 4, 10, 8), // 지각
+                LocalDateTime.of(2024, 12, 5, 10, 9),// 지각
+                LocalDateTime.of(2024, 12, 6, 10, 10),// 지각
+                LocalDateTime.of(2024, 12, 9, 13, 40),// 결석
+                LocalDateTime.of(2024, 12, 10, 10, 40) // 결석
         );
 
         testRecords2 = List.of(
-            LocalDateTime.of(2024, 12, 2, 13, 8), // 지각
-            LocalDateTime.of(2024, 12, 3, 10, 5), // 지각
-            LocalDateTime.of(2024, 12, 4, 10, 6), // 지각
-            LocalDateTime.of(2024, 12, 5, 10, 7),// 지각
-            LocalDateTime.of(2024, 12, 6, 10, 6),// 지각
-            LocalDateTime.of(2024, 12, 9, 13, 6),// 지각
-            LocalDateTime.of(2024, 12, 10, 10, 40) // 결석
+                LocalDateTime.of(2024, 12, 2, 13, 8), // 지각
+                LocalDateTime.of(2024, 12, 3, 10, 5), // 지각
+                LocalDateTime.of(2024, 12, 4, 10, 6), // 지각
+                LocalDateTime.of(2024, 12, 5, 10, 7),// 지각
+                LocalDateTime.of(2024, 12, 6, 10, 6),// 지각
+                LocalDateTime.of(2024, 12, 9, 13, 6),// 지각
+                LocalDateTime.of(2024, 12, 10, 10, 40) // 결석
         );
 
         attendanceManager.createCrew("이든", testRecords1); // 면담 대상자
@@ -45,7 +45,7 @@ public class ExpelledWarningCrewTest {
 
     @DisplayName("크루 출석 기록을 바탕으로 제적 위험자를 파악한다.")
     @Test
-    void 제적_위험자_계산() {
+    void should_FindExpelledWarningCrew_When_ApplyingPenaltyRules() {
         LocalDate nowDate = LocalDate.of(2024, 12, 11);
         Map<String, StatisticsResult> warningCrews = attendanceManager.findWarningCrews(nowDate);
 
@@ -54,7 +54,7 @@ public class ExpelledWarningCrewTest {
 
     @DisplayName("제적 위험자를 기준에 맞게 정렬한다.")
     @Test
-    void 제적_위험자_정렬() {
+    void should_SortExpelledWarningCrew_When_ApplyingPenaltyRules() {
         LocalDate nowDate = LocalDate.of(2024, 12, 11);
         Map<String, StatisticsResult> sortedResult = attendanceManager.sortCrew(nowDate);
         List<String> names = new ArrayList<>(sortedResult.keySet());
