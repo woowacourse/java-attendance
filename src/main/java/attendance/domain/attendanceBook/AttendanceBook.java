@@ -2,6 +2,7 @@ package attendance.domain.attendanceBook;
 
 import static attendance.common.utill.DateTimeFormatterWrapper.*;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
@@ -30,8 +31,21 @@ public record AttendanceBook(Map<String, AttendanceList> attendances) {
     }
 
     public Attendance findAttendance(String nickname, Attendance attendance) {
-        var attendanceList = attendances.get(nickname);
+        var attendanceList = getAttendanceList(nickname);
         return attendanceList.findAttendance(attendance);
+    }
+
+    public Attendance findAttendance(String nickname, LocalDate date) {
+        var attendanceList = getAttendanceList(nickname);
+        return attendanceList.findAttendance(date);
+    }
+
+    private AttendanceList getAttendanceList(String nickname) {
+        var attendanceList = attendances.get(nickname);
+        if (attendanceList == null) {
+            throw new NullPointerException();
+        }
+        return attendanceList;
     }
 
     private static final class Format {

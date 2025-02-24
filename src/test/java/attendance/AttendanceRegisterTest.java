@@ -21,7 +21,7 @@ import attendance.domain.attendanceManager.AttendanceRegister;
 public class AttendanceRegisterTest {
     private static final String TEST_FILE = "/attendances.csv";
 
-    private AttendanceManager attendanceManager;
+    private AttendanceManager attendanceRegister;
     private AttendanceBook attendanceBook;
 
     @BeforeEach
@@ -29,7 +29,7 @@ public class AttendanceRegisterTest {
         var repository = new AttendanceFileReader(TEST_FILE);
         var lines = repository.getLines();
         attendanceBook = AttendanceBook.from(lines);
-        attendanceManager = new AttendanceRegister(attendanceBook);
+        attendanceRegister = new AttendanceRegister(attendanceBook);
     }
 
     @Test
@@ -41,7 +41,7 @@ public class AttendanceRegisterTest {
 
         var attendance = new Attendance(LocalDateTime.of(date, time));
 
-        attendanceManager.manage(nickname, date, time);
+        attendanceRegister.manage(nickname, date, time);
 
         assertThat(attendanceBook.findAttendance(nickname, attendance)).isEqualTo(attendance);
     }
@@ -53,7 +53,7 @@ public class AttendanceRegisterTest {
         var date = LocalDate.of(2024, 12, 20);
         var time = LocalTime.of(10, 1);
 
-        assertThatThrownBy(() -> attendanceManager.manage(nickname, date, time))
+        assertThatThrownBy(() -> attendanceRegister.manage(nickname, date, time))
             .isInstanceOf(AttendanceArgumentException.class)
             .hasMessageContaining("등록되지 않은 닉네임");
     }
@@ -65,7 +65,7 @@ public class AttendanceRegisterTest {
         var date = LocalDate.of(2024, 12, 13);
         var time = LocalTime.of(10, 1);
 
-        assertThatThrownBy(() -> attendanceManager.manage(nickname, date, time))
+        assertThatThrownBy(() -> attendanceRegister.manage(nickname, date, time))
             .isInstanceOf(AttendanceArgumentException.class)
             .hasMessageContaining("이미 출석되었습니다. 수정 기능을 이용해주세요.");
     }

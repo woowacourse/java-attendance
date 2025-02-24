@@ -1,6 +1,7 @@
 package attendance.domain.attendanceBook;
 
 import java.time.DayOfWeek;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
@@ -72,6 +73,10 @@ public record Attendance(LocalDateTime dateTime, AttendanceStatus attendanceStat
 
     private static boolean isAfter(LocalTime time, int minutesToAdd, LocalTime baseSchedule) {
         return time.isAfter(baseSchedule.plusMinutes(minutesToAdd));
+    }
+
+    public boolean isEqualDate(LocalDate date) {
+        return dateTime.toLocalDate().equals(date);
     }
 
     private static class Schedule {
