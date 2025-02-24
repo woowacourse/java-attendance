@@ -14,7 +14,7 @@ public enum Penalty {
         this.name = name;
     }
 
-    public static Penalty calculatePenalty(List<AttendanceStatus> attendanceStatuses) {
+    public static Penalty from(List<AttendanceStatus> attendanceStatuses) {
         int absenceCount = 0;
         int perceptionCount = 0;
 
@@ -57,7 +57,7 @@ public enum Penalty {
         if (perceptionCount >= 3) {
             return 0;
         }
-        
+
         return perceptionCount;
     }
 

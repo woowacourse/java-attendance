@@ -12,19 +12,19 @@ public class CrewAttendance {
         this.attendance = attendance;
     }
 
-    public void addAttendance(DateTime dateTime) {
-        attendance.addDateTime(dateTime);
+    public void addAttendance(WorkDateTime workDateTime) {
+        attendance.addDateTime(workDateTime);
     }
 
-    public void updateAttendance(DateTime updateDateTime) {
-        attendance.updateDateTime(updateDateTime);
+    public void updateAttendance(WorkDateTime updateWorkDateTime) {
+        attendance.updateDateTime(updateWorkDateTime);
     }
 
-    public DateTime retrieveDateTime(WorkDate workDate) {
+    public WorkDateTime retrieveAttendance(WorkDate workDate) {
         return attendance.retrieveDateTime(workDate);
     }
 
-    public List<DateTime> retrieveDateTimesOrderByDate() {  // TODO. 정렬 조건을 이용한 추상화
+    public List<WorkDateTime> retrieveAttendanceOrderByDate() {
         return attendance.retrieveDateTimes().stream()
                 .sorted()
                 .toList();
@@ -32,10 +32,6 @@ public class CrewAttendance {
 
     public AttendanceStatus calculateAttendanceStatus(WorkDate workDate) {
         return attendance.calculateAttendanceStatus(workDate);
-    }
-
-    public List<AttendanceStatus> calculateAttendanceStatuses() {
-        return attendance.calculateAttendanceStatuses();
     }
 
     public Map<AttendanceStatus, Integer> calculateAttendanceStatusCount() {
@@ -47,7 +43,7 @@ public class CrewAttendance {
     }
 
     public Penalty calculatePenalty() {
-        return Penalty.calculatePenalty(calculateAttendanceStatuses());
+        return attendance.calculatePenalty();
     }
 
     public Crew getCrew() {

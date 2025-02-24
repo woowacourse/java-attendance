@@ -10,7 +10,7 @@ class AttendanceStatusTest {
     void 출석_여부를_판단한다() {
         // given & when
         AttendanceStatus attendanceStatus = AttendanceStatus.from(
-                new DateTime(new WorkDate(2024, 12, 13), new WorkTime(10, 0))
+                new WorkDateTime(new WorkDate(2024, 12, 13), new WorkTime(10, 0))
         );
 
         // then
@@ -21,7 +21,7 @@ class AttendanceStatusTest {
     void 지각_여부를_판단한다() {
         // given & when
         AttendanceStatus attendanceStatus = AttendanceStatus.from(
-                new DateTime(new WorkDate(2024, 12, 13), new WorkTime(10, 10))
+                new WorkDateTime(new WorkDate(2024, 12, 13), new WorkTime(10, 10))
         );
 
         // then
@@ -32,7 +32,7 @@ class AttendanceStatusTest {
     void 결석_여부를_판단한다() {
         // given & when
         AttendanceStatus attendanceStatus = AttendanceStatus.from(
-                new DateTime(new WorkDate(2024, 12, 13), new WorkTime(10, 35))
+                new WorkDateTime(new WorkDate(2024, 12, 13), new WorkTime(10, 35))
         );
 
         // then

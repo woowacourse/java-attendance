@@ -3,17 +3,17 @@ package domain;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
-public class DateTime implements Comparable<DateTime> {
+public class WorkDateTime implements Comparable<WorkDateTime> {
     private final WorkDate workDate;
     private final WorkTime workTime;
 
-    public DateTime(WorkDate workDate, WorkTime workTime) {
+    public WorkDateTime(WorkDate workDate, WorkTime workTime) {
         this.workDate = workDate;
         this.workTime = workTime;
     }
 
-    public static DateTime from(LocalDateTime localDateTime) {
-        return new DateTime(
+    public static WorkDateTime from(LocalDateTime localDateTime) {
+        return new WorkDateTime(
                 new WorkDate(localDateTime.toLocalDate().getYear(), localDateTime.toLocalDate().getMonthValue(),
                         localDateTime.toLocalDate().getDayOfMonth()),
                 new WorkTime(localDateTime.toLocalTime().getHour(), localDateTime.toLocalTime().getMinute()));
@@ -28,7 +28,7 @@ public class DateTime implements Comparable<DateTime> {
     }
 
     @Override
-    public int compareTo(DateTime other) {
+    public int compareTo(WorkDateTime other) {
         int dateDiff = this.workDate.compareTo(other.workDate);
         if (dateDiff != 0) {
             return dateDiff;
@@ -42,8 +42,8 @@ public class DateTime implements Comparable<DateTime> {
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        DateTime dateTime = (DateTime) o;
-        return Objects.equals(workDate, dateTime.workDate) && Objects.equals(workTime, dateTime.workTime);
+        WorkDateTime workDateTime = (WorkDateTime) o;
+        return Objects.equals(workDate, workDateTime.workDate) && Objects.equals(workTime, workDateTime.workTime);
     }
 
     @Override

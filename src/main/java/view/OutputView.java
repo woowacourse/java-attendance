@@ -3,19 +3,19 @@ package view;
 import controller.dto.AttendanceRecodeDto;
 import controller.dto.AttendanceResultDto;
 import controller.dto.PenaltyCrewDto;
-import domain.DateTime;
 import domain.Penalty;
 import domain.WorkDate;
+import domain.WorkDateTime;
 import domain.WorkDay;
 import domain.WorkTime;
 import java.util.List;
 import java.util.Objects;
 
 public class OutputView {
-    public void printArriveResult(DateTime dateTime, String attendanceStatusName) {
-        WorkDate workDate = dateTime.getDate();
+    public void printArriveResult(WorkDateTime workDateTime, String attendanceStatusName) {
+        WorkDate workDate = workDateTime.getDate();
         WorkDay workDay = workDate.getWorkDay();
-        WorkTime workTime = dateTime.getTime();
+        WorkTime workTime = workDateTime.getTime();
 
         System.out.printf("%s월 %s일 %s요일 %s:%s (%s)\n", workDate.getMonth(),
                 workDate.getDay(), workDay.getDayOfWeekKorean(),
@@ -23,12 +23,12 @@ public class OutputView {
                 attendanceStatusName);
     }
 
-    public void printUpdateResult(DateTime beforeDateTime, String beforeAttendanceStatusName,
-                                  DateTime afterDateTime, String afterAttendanceStatusName) {
-        WorkDate workDate = beforeDateTime.getDate();
+    public void printUpdateResult(WorkDateTime beforeWorkDateTime, String beforeAttendanceStatusName,
+                                  WorkDateTime afterWorkDateTime, String afterAttendanceStatusName) {
+        WorkDate workDate = beforeWorkDateTime.getDate();
         WorkDay workDay = workDate.getWorkDay();
-        WorkTime beforeWorkTime = beforeDateTime.getTime();
-        WorkTime afterWorkTime = afterDateTime.getTime();
+        WorkTime beforeWorkTime = beforeWorkDateTime.getTime();
+        WorkTime afterWorkTime = afterWorkDateTime.getTime();
         System.out.printf("%s월 %s일 %s요일 %s:%s (%s) -> %s:%s (%s) 수정 완료!\n",
                 workDate.getMonth(), workDate.getDay(), workDay.getDayOfWeekKorean(),
                 convertTime(beforeWorkTime.getHour().orElse(null)),
@@ -41,9 +41,9 @@ public class OutputView {
                                            AttendanceResultDto attendanceResultDto) {
         System.out.printf("이번 달 %s의 출석 기록입니다.\n", attendanceResultDto.name());
         attendanceRecodeDto.forEach(attendanceRecode -> {
-            WorkDate workDate = attendanceRecode.dateTime().getDate();
+            WorkDate workDate = attendanceRecode.workDateTime().getDate();
             WorkDay workDay = workDate.getWorkDay();
-            WorkTime workTime = attendanceRecode.dateTime().getTime();
+            WorkTime workTime = attendanceRecode.workDateTime().getTime();
 
             System.out.printf("%s월 %s일 %s요일 %s:%s (%s)\n", workDate.getMonth(),
                     workDate.getDay(), workDay.getDayOfWeekKorean(),

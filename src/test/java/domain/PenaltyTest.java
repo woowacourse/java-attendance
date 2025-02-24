@@ -19,7 +19,7 @@ class PenaltyTest {
         );
 
         // when
-        Penalty penalty = Penalty.calculatePenalty(attendanceStatuses);
+        Penalty penalty = Penalty.from(attendanceStatuses);
 
         // then
         assertThat(penalty).isEqualTo(Penalty.WARNING);
@@ -38,7 +38,7 @@ class PenaltyTest {
         );
 
         // when
-        Penalty penalty = Penalty.calculatePenalty(attendanceStatuses);
+        Penalty penalty = Penalty.from(attendanceStatuses);
 
         // then
         assertThat(penalty).isEqualTo(Penalty.INTERVIEW);
@@ -60,7 +60,7 @@ class PenaltyTest {
         );
 
         // when
-        Penalty penalty = Penalty.calculatePenalty(attendanceStatuses);
+        Penalty penalty = Penalty.from(attendanceStatuses);
 
         // then
         assertThat(penalty).isEqualTo(Penalty.WEEDING);

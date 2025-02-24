@@ -17,15 +17,15 @@ public enum AttendanceStatus {
         this.limitTime = limitMinute;
     }
 
-    public static AttendanceStatus from(DateTime dateTime) {
-        Integer hour = dateTime.getTime().getHour().orElse(null);
-        Integer minute = dateTime.getTime().getMinute().orElse(null);
+    public static AttendanceStatus from(WorkDateTime workDateTime) {
+        Integer hour = workDateTime.getTime().getHour().orElse(null);
+        Integer minute = workDateTime.getTime().getMinute().orElse(null);
 
         if (hour == null || minute == null) {
             return ATTENDANCE;
         }
 
-        WorkDay currentDay = dateTime.getDate().getWorkDay();
+        WorkDay currentDay = workDateTime.getDate().getWorkDay();
         return determineAttendanceStatus(currentDay, hour, minute);
     }
 

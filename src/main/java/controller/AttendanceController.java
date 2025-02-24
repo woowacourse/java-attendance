@@ -6,9 +6,9 @@ import controller.dto.PenaltyCrewDto;
 import domain.AttendanceStatus;
 import domain.CrewAttendance;
 import domain.CrewAttendanceRepository;
-import domain.DateTime;
 import domain.MenuOption;
 import domain.WorkDate;
+import domain.WorkDateTime;
 import domain.WorkTime;
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -73,44 +73,45 @@ public class AttendanceController {
     private void handleCheckAttendance(LocalDate currentDate) {
         CrewAttendance crewAttendance = getCrewAttendance(inputView.readNickName());
         WorkDate currnetWorkDate = WorkDate.from(currentDate);
-        DateTime dateTime = createDateTime(currnetWorkDate, inputView.readArriveTime());
+        WorkDateTime attendance = createAttendance(currnetWorkDate, inputView.readArriveTime());
 
-        crewAttendance.addAttendance(dateTime);
-        AttendanceStatus attendanceStatus = crewAttendance.calculateAttendanceStatus(dateTime.getDate());
+        crewAttendance.addAttendance(attendance);
+        AttendanceStatus attendanceStatus = crewAttendance.calculateAttendanceStatus(attendance.getDate());
 
-        outputView.printArriveResult(dateTime, attendanceStatus.getName());
+        outputView.printArriveResult(attendance, attendanceStatus.getName());
     }
 
     private void handleEditAttendance(LocalDate currentDate) {
         CrewAttendance crewAttendance = getCrewAttendance(inputView.readUpdateNickName());
-        DateTime afterDateTime = getUpdatedDateTime(currentDate);
+        WorkDateTime afterAttendance = getAfterAttendance(currentDate);
 
-        DateTime beforeDateTime = getBeforeDateTime(crewAttendance, afterDateTime);
-        AttendanceStatus beforeStatus = crewAttendance.calculateAttendanceStatus(beforeDateTime.getDate());
+        WorkDateTime beforeAttendance = getBeforeAttendance(crewAttendance, afterAttendance);
+        AttendanceStatus beforeStatus = crewAttendance.calculateAttendanceStatus(beforeAttendance.getDate());
 
-        crewAttendance.updateAttendance(afterDateTime);
-        AttendanceStatus afterStatus = crewAttendance.calculateAttendanceStatus(afterDateTime.getDate());
+        crewAttendance.updateAttendance(afterAttendance);
+        AttendanceStatus afterStatus = crewAttendance.calculateAttendanceStatus(afterAttendance.getDate());
 
-        outputView.printUpdateResult(beforeDateTime, beforeStatus.getName(), afterDateTime, afterStatus.getName());
+        outputView.printUpdateResult(beforeAttendance, beforeStatus.getName(), afterAttendance,
+                afterStatus.getName());
     }
 
-    private DateTime getUpdatedDateTime(LocalDate currentDate) {
+    private WorkDateTime getAfterAttendance(LocalDate currentDate) {
         int updateDayValue = inputView.readUpdateDate();
         WorkDate updateWorkDate = WorkDate.from(
                 LocalDate.of(currentDate.getYear(), currentDate.getMonth(), updateDayValue));
         LocalTime updateArriveTime = inputView.readUpdateArriveTime();
 
-        return createDateTime(updateWorkDate, updateArriveTime);
+        return createAttendance(updateWorkDate, updateArriveTime);
     }
 
-    private DateTime getBeforeDateTime(CrewAttendance crewAttendance, DateTime afterDateTime) {
-        return crewAttendance.retrieveDateTime(afterDateTime.getDate());
+    private WorkDateTime getBeforeAttendance(CrewAttendance crewAttendance, WorkDateTime afterAttendance) {
+        return crewAttendance.retrieveAttendance(afterAttendance.getDate());
     }
 
     private void handleRecordAttendance() {
         CrewAttendance crewAttendance = getCrewAttendance(inputView.readNickName());
 
-        List<AttendanceRecodeDto> attendanceRecords = crewAttendance.retrieveDateTimesOrderByDate().stream()
+        List<AttendanceRecodeDto> attendanceRecords = crewAttendance.retrieveAttendanceOrderByDate().stream()
                 .map(AttendanceRecodeDto::from)
                 .toList();
         AttendanceResultDto attendanceResult = AttendanceResultDto.from(crewAttendance);
@@ -132,7 +133,7 @@ public class AttendanceController {
         outputView.printPenaltyCrews(penaltyCrews);
     }
 
-    private DateTime createDateTime(WorkDate workDate, LocalTime localTime) {
-        return new DateTime(workDate, new WorkTime(localTime.getHour(), localTime.getMinute()));
+    private WorkDateTime createAttendance(WorkDate workDate, LocalTime localTime) {
+        return new WorkDateTime(workDate, new WorkTime(localTime.getHour(), localTime.getMinute()));
     }
 }

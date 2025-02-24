@@ -1,6 +1,6 @@
 package util;
 
-import domain.DateTime;
+import domain.WorkDateTime;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
@@ -25,8 +25,8 @@ public class AttendanceFileParser {
                 .collect(Collectors.toSet());
     }
 
-    public static Map<String, List<DateTime>> loadAttendanceRecords(String filePath) {
-        Map<String, List<DateTime>> attendanceRecords = new HashMap<>();
+    public static Map<String, List<WorkDateTime>> loadAttendanceRecords(String filePath) {
+        Map<String, List<WorkDateTime>> attendanceRecords = new HashMap<>();
 
         FileDataLoader.loadLines(filePath)
                 .stream()
@@ -35,9 +35,9 @@ public class AttendanceFileParser {
                 .filter(items -> items.length == 2)
                 .forEach(items -> {
                     String name = items[0].trim();
-                    DateTime dateTime = DateTime.from(parseToDateTime(items[1].trim()));
+                    WorkDateTime workDateTime = WorkDateTime.from(parseToDateTime(items[1].trim()));
 
-                    attendanceRecords.computeIfAbsent(name, k -> new ArrayList<>()).add(dateTime);
+                    attendanceRecords.computeIfAbsent(name, k -> new ArrayList<>()).add(workDateTime);
                 });
 
         return attendanceRecords;
