@@ -9,15 +9,14 @@ import java.util.Comparator;
 
 public enum AttendanceStatus {
     ATTENDANCE("출석", Integer.MIN_VALUE),
-    LATE("지각", 6),
-    ABSENT("결석", 31),
-    NONE("", Integer.MAX_VALUE),
+    LATE("지각", 5),
+    ABSENT("결석", 30),
     ;
 
     private final String name;
-    private final int minLatenessMinute;
+    private final Integer minLatenessMinute;
 
-    AttendanceStatus(String name, int minLatenessMinute) {
+    AttendanceStatus(String name, Integer minLatenessMinute) {
         this.name = name;
         this.minLatenessMinute = minLatenessMinute;
     }
@@ -28,9 +27,10 @@ public enum AttendanceStatus {
         }
         LectureTime lectureTime = LectureTime.from(date);
         long difference = MINUTES.between(lectureTime.getStartTime(), attendanceTime);
-        return Arrays.stream(values()).filter(attendanceStatus -> attendanceStatus.minLatenessMinute <= difference)
+        return Arrays.stream(values())
+            .filter(attendanceStatus -> attendanceStatus.minLatenessMinute < difference)
             .max(Comparator.comparing(AttendanceStatus::getMinLatenessMinute))
-            .orElse(AttendanceStatus.NONE);
+            .orElse(null);
     }
 
     public int getMinLatenessMinute() {

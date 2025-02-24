@@ -50,7 +50,7 @@ public class Crew {
 
     public AttendanceStatus getAttendanceStatusByDate(LocalDate date) {
         if (Holiday.isOffDay(date)) {
-            return AttendanceStatus.NONE;
+            return null;
         }
         if (!attendanceTimes.containsKey(date)) {
             return AttendanceStatus.ABSENT;
