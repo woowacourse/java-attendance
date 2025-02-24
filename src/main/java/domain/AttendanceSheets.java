@@ -32,7 +32,7 @@ public class AttendanceSheets {
     }
 
     private void validateIsAlreadyAttendance(AttendanceSheet attendanceSheet) {
-        if (findAttendanceByNickname(attendanceSheet.getNickname()).stream()
+        if (attendanceSheets.stream()
                 .anyMatch(sheet -> sheet.equals(attendanceSheet))) {
             throw new IllegalArgumentException("[ERROR] 이미 출석했습니다. 수정 기능을 이용하세요.");
         }
