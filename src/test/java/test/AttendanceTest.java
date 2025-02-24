@@ -7,6 +7,7 @@ import java.util.Arrays;
 import java.util.List;
 import model.Crew;
 import model.CrewGenerator;
+import model.Crews;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -41,10 +42,28 @@ public class AttendanceTest {
         ));
     }
 
+    @DisplayName("크루 객체들을 포장한 객체를 생성한다.")
+    @Test
+    void test3() {
+        //given
+        List<Crew> crewsInput = List.of(
+                new Crew("쿠키"),
+                new Crew("빙봉"),
+                new Crew("빙티"),
+                new Crew("이든")
+        );
+        Crews crews = CrewGenerator.wrapCrews(crewsInput);
+        assertThat(crews).isSameAs(new Crews(crewsInput));
+    }
+
 //    @DisplayName("입력한 닉네임에 맞는 크루 정보를 가져온다.")
 //    @Test
-//    void test1() {
+//    void test3() {
+//        //given
+//        List<String> crewNames = List.of("쿠키", "빙봉", "빙티", "이든");
 //        String name = "빙티";
-//        Crews crews = new C
+//        Crews crews = CrewGenerator.generateCrews()
+//        Crew crew = crews.findCrewByName(name);
+//        assertThat(crew).isSameAs(new Crew(name));
 //    }
 }

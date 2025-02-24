@@ -18,4 +18,8 @@ public class CrewGenerator {
                 .map(Crew::new)
                 .toList();
     }
+
+    public static Crews wrapCrews(List<Crew> crewsInput) {
+        return null;
+    }
 }
