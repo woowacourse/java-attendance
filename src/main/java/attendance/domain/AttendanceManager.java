@@ -16,7 +16,7 @@ public class AttendanceManager {
         this.crewAttendances = new HashMap<>();
     }
 
-    public void addCrew(String name, Attendances attendances) {
+    public void addCrew(final String name, final Attendances attendances) {
         crewAttendances.put(name, attendances);
     }
 
@@ -62,6 +62,20 @@ public class AttendanceManager {
                 ));
     }
 
+    public void validateNicknameExists(final String nickname) {
+        if (!containsNickname(nickname)) {
+            throw new IllegalArgumentException("[ERROR] 등록되지 않은 닉네임입니다.");
+        }
+    }
+
+    public boolean containsNickname(final String nickname) {
+        return crewAttendances.containsKey(nickname);
+    }
+
+    public Attendances findCrewAttendance(final String nickname) {
+        return crewAttendances.get(nickname);
+    }
+
     private LinkedHashMap<String, AttendanceStatus> generateAttendanceRisks(final LocalDate today) {
         return crewAttendances.entrySet().stream()
                 .collect(Collectors.toMap(
@@ -70,19 +84,5 @@ public class AttendanceManager {
                         (existing, replacement) -> existing,
                         LinkedHashMap::new
                 ));
-    }
-
-    public void validateNicknameExists(String nickname) {
-        if (!containsNickname(nickname)) {
-            throw new IllegalArgumentException("[ERROR] 등록되지 않은 닉네임입니다.");
-        }
-    }
-
-    public boolean containsNickname(String nickname) {
-        return crewAttendances.containsKey(nickname);
-    }
-
-    public Attendances findCrewAttendance(String nickname) {
-        return crewAttendances.get(nickname);
     }
 }

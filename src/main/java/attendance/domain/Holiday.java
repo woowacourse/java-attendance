@@ -13,18 +13,18 @@ public class Holiday {
 
     private final List<LocalDate> holidays = new ArrayList<>();
 
-    public void addHoliday(LocalDate holiday) {
+    public void addHoliday(final LocalDate holiday) {
         if (holidays.contains(holiday)) {
             throw new IllegalArgumentException("[ERROR] 이미 추가된 휴일입니다.");
         }
         holidays.add(holiday);
     }
 
-    public boolean isHoliday(LocalDate date) {
+    public boolean isHoliday(final LocalDate date) {
         return date.getDayOfWeek() == SATURDAY || date.getDayOfWeek() == SUNDAY || holidays.contains(date);
     }
 
-    public void validateHoliday(LocalDate date) {
+    public void validateHoliday(final LocalDate date) {
         if (isHoliday(date)) {
             String formatted = String.format("[ERROR] %d월 %d일 %s은 등교일이 아닙니다.",
                     date.getMonthValue(),

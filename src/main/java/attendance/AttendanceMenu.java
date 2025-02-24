@@ -13,11 +13,11 @@ public enum AttendanceMenu {
 
     private final String command;
 
-    AttendanceMenu(String command) {
+    AttendanceMenu(final String command) {
         this.command = command;
     }
 
-    public static AttendanceMenu find(String input) {
+    public static AttendanceMenu find(final String input) {
         return Arrays.stream(values())
                 .filter(menu -> menu.command.equals(input.toUpperCase()))
                 .findFirst()

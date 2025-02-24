@@ -15,7 +15,7 @@ public enum AttendanceStateType {
         this.threshold = threshold;
     }
 
-    public static AttendanceStateType find(int overTime) {
+    public static AttendanceStateType find(final int overTime) {
         return Arrays.stream(values())
                 .filter(type -> type.threshold < overTime)
                 .findFirst()

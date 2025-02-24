@@ -10,11 +10,11 @@ public enum EducationTime {
 
     private final LocalTime startTime;
 
-    EducationTime(LocalTime startTime) {
+    EducationTime(final LocalTime startTime) {
         this.startTime = startTime;
     }
 
-    public static int calculateOverTime(LocalDateTime attendanceTime) {
+    public static int calculateOverTime(final LocalDateTime attendanceTime) {
         DayOfWeek dayOfWeek = attendanceTime.getDayOfWeek();
         LocalTime startTime = WEEKDAY.startTime;
 

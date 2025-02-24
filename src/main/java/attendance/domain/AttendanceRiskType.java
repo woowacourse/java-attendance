@@ -11,7 +11,7 @@ public enum AttendanceRiskType {
     private final String name;
     private final int threshold;
 
-    AttendanceRiskType(String name, int threshold) {
+    AttendanceRiskType(final String name, final int threshold) {
         this.name = name;
         this.threshold = threshold;
     }

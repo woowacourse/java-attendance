@@ -9,32 +9,32 @@ public class Attendances {
 
     private final List<Attendance> attendances = new ArrayList<>();
 
-    public Attendance addAttendance(LocalDateTime dateTime) {
+    public Attendance addAttendance(final LocalDateTime dateTime) {
         Attendance attendance = new Attendance(dateTime);
         attendances.add(attendance);
         return attendance;
     }
 
-    public Attendance deleteAttendance(LocalDate date) {
+    public Attendance deleteAttendance(final LocalDate date) {
         Attendance attendance = find(date);
         attendances.remove(attendance);
         return attendance;
     }
 
-    public Attendance find(LocalDate date) {
+    public Attendance find(final LocalDate date) {
         return attendances.stream()
                 .filter(attendance -> attendance.isSameDate(date))
                 .findFirst()
                 .orElseThrow(() -> new IllegalArgumentException("[ERROR] 수정하려는 날짜는 출석할 수 없습니다."));
     }
 
-    public void validateAlreadyAttendance(LocalDate date) {
+    public void validateAlreadyAttendance(final LocalDate date) {
         if (find(date).isAlreadyChecked()) {
             throw new IllegalArgumentException("[ERROR] 이미 출석을 완료하셨습니다. 수정 기능을 이용해주세요.");
         }
     }
 
-    public List<Attendance> getAttendancesBefore(LocalDate date) {
+    public List<Attendance> getAttendancesBefore(final LocalDate date) {
         return attendances.stream()
                 .sorted(Attendance::compareTo)
                 .filter(attendance -> attendance.isBefore(date))

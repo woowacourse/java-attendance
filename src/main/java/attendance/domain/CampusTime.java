@@ -8,11 +8,11 @@ public enum CampusTime {
 
     private final LocalTime time;
 
-    CampusTime(LocalTime time) {
+    CampusTime(final LocalTime time) {
         this.time = time;
     }
 
-    public static void validateOperationTime(LocalTime time) {
+    public static void validateOperationTime(final LocalTime time) {
         if (time.isBefore(START_TIME.time) || time.isAfter(END_TIME.time)) {
             throw new IllegalArgumentException("[ERROR] 캠퍼스 운영시간이 아닙니다.");
         }

@@ -39,7 +39,7 @@ public class AttendanceInit {
         holiday.addHoliday(LocalDate.of(2024, 12, 25));
     }
 
-    private void initAttendance(String line) {
+    private void initAttendance(final String line) {
         List<String> attendanceInfo = List.of(line.split(INFO_DELIMITER));
 
         String nickname = attendanceInfo.getFirst();
@@ -49,7 +49,7 @@ public class AttendanceInit {
         insertAttendance(nickname, dateTime);
     }
 
-    private void addNewCrew(String nickname) {
+    private void addNewCrew(final String nickname) {
         if (!attendanceManager.containsNickname(nickname)) {
 
             int day = dateGenerator.now().getDayOfMonth();
@@ -64,7 +64,7 @@ public class AttendanceInit {
         }
     }
 
-    private void insertAttendance(String nickname, LocalDateTime dateTime) {
+    private void insertAttendance(final String nickname, final LocalDateTime dateTime) {
         Attendances attendances = attendanceManager.findCrewAttendance(nickname);
 
         attendances.deleteAttendance(dateTime.toLocalDate());
