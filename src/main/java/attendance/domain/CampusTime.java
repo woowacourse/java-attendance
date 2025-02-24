@@ -26,7 +26,7 @@ public class CampusTime {
     }
 
     private void validateSeparatorIsColon(String time) {
-        if (!time.contains(COLON)) {
+        if (!time.contains(COLON) || time.split(COLON).length != 2) {
             throw CustomException.from(ErrorMessage.SEPARATE_WITH_COLON_ERROR);
         }
     }
