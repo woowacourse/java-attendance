@@ -4,7 +4,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 
-public class Attendance {
+public class Attendance implements Comparable<Attendance> {
 
     private final LocalDateTime dateTime;
     private final AttendanceStateType state;
@@ -26,6 +26,7 @@ public class Attendance {
         return this.state == state;
     }
 
+    @Override
     public int compareTo(final Attendance other) {
         return dateTime.compareTo(other.dateTime);
     }
