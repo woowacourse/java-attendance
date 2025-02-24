@@ -70,8 +70,8 @@ public class AttendanceDateTime {
         }
     }
 
-    public boolean equalsToLocalDateTime(final LocalDateTime localDateTime) {
-        return localDateTime.isEqual(localDateTime);
+    public boolean equalsToLocalDateTime(final LocalDateTime dateTime) {
+        return localDateTime.isEqual(dateTime);
     }
 
     public boolean hasSameDate(final LocalDate localDate) {
