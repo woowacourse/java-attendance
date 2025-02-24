@@ -15,7 +15,14 @@ public enum Holiday {
         this.day = day;
     }
 
-    public static boolean isWeekend(LocalDate localDate) {
+    public static boolean isWeekDay(LocalDate localDate) {
+        if(!Holiday.isHoliday(localDate) && !Holiday.isWeekend(localDate)) {
+            return true;
+        }
+        return false;
+    }
+
+    private static boolean isWeekend(LocalDate localDate) {
         if (localDate.getDayOfWeek() == DayOfWeek.SATURDAY) {
             return true;
         }
@@ -25,7 +32,7 @@ public enum Holiday {
         return false;
     }
 
-    public static boolean isHoliday(LocalDate localDate) {
+    private static boolean isHoliday(LocalDate localDate) {
         return Arrays.stream(values())
             .anyMatch(holiday ->
                 localDate.getMonthValue() == holiday.month

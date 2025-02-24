@@ -20,7 +20,7 @@ public class AttendanceStatistics {
         LocalDate startDate = DateTimeParser.parseIntegerToDate(START_YEAR, START_MONTH, START_DAY);
 
         Map<AttendanceStatus, Long> statusCounts = startDate.datesUntil(nowDate)
-            .filter(date -> !Holiday.isHoliday(date) && !Holiday.isWeekend(date))
+            .filter(date -> Holiday.isWeekDay(date))
             .map(date -> {
                 DailyRecord status = crew.findTimeByDate(date);
                 if (status == null) {

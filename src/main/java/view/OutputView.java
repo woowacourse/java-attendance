@@ -54,7 +54,7 @@ public class OutputView {
 
         LocalDate startDate = LocalDate.of(START_YEAR, START_MONTH, START_DAY);
         startDate.datesUntil(nowDate)
-            .filter(date -> !Holiday.isHoliday(date) && !Holiday.isWeekend(date))
+            .filter(date -> Holiday.isWeekDay(date))
             .forEach(date -> printCrewAttendance(date, crew));
     }
 
