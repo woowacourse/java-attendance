@@ -29,10 +29,10 @@ public class AttendanceSystemTest {
             final LocalTime targetTime = LocalTime.of(10, 0);
             final String crewName = "name";
             final Crew crew = Crew.of(crewName, TODAY);
-            final AttendanceSystem attendanceSystem = new AttendanceSystem(List.of(crew), new TodayDateTimeGenerator());
+            final AttendanceSystem attendanceSystem = new AttendanceSystem(List.of(crew));
 
             // when
-            final Attendance actual = attendanceSystem.attendance(crewName, targetTime);
+            final Attendance actual = attendanceSystem.attendance(crewName, targetTime, TODAY);
 
             // then
             assertThat(actual.getDateTime())
@@ -50,10 +50,10 @@ public class AttendanceSystemTest {
             // given
             final String crewName = "name";
             final Crew crew = Crew.of(crewName, TODAY);
-            final AttendanceSystem attendanceSystem = new AttendanceSystem(List.of(crew), new TodayDateTimeGenerator());
+            final AttendanceSystem attendanceSystem = new AttendanceSystem(List.of(crew));
 
             // when
-            final boolean actual = attendanceSystem.isAlreadyTodayAttendance(crewName);
+            final boolean actual = attendanceSystem.isAlreadyTodayAttendance(crewName, TODAY);
 
             // then
             assertThat(actual).isFalse();
@@ -65,7 +65,7 @@ public class AttendanceSystemTest {
             // given
             final String crewName = "name";
             final Crew crew = Crew.of(crewName, TODAY);
-            final AttendanceSystem attendanceSystem = new AttendanceSystem(List.of(crew), new TodayDateTimeGenerator());
+            final AttendanceSystem attendanceSystem = new AttendanceSystem(List.of(crew));
 
             // when
             final List<Crew> actual = attendanceSystem.calculateRiskOfExpulsionCrews();
@@ -83,10 +83,10 @@ public class AttendanceSystemTest {
             // given
             final String crewName = "name";
             final Crew crew = Crew.of(crewName, TODAY);
-            final AttendanceSystem attendanceSystem = new AttendanceSystem(List.of(crew), new TodayDateTimeGenerator());
+            final AttendanceSystem attendanceSystem = new AttendanceSystem(List.of(crew));
 
             // when
-            final boolean actual = attendanceSystem.isAttendanceDay();
+            final boolean actual = attendanceSystem.isAttendanceDay(TODAY);
 
             // then
             assertThat(actual).isTrue();
@@ -98,13 +98,13 @@ public class AttendanceSystemTest {
             // given
             final String crewName = "name";
             final Crew crew = Crew.of(crewName, TODAY);
-            final AttendanceSystem attendanceSystem = new AttendanceSystem(List.of(crew), new TodayDateTimeGenerator());
+            final AttendanceSystem attendanceSystem = new AttendanceSystem(List.of(crew));
             final LocalTime targetTime = LocalTime.of(11, 30);
             final int targetDayOfMonth = 2;
 
             // when
             final UpdatedAttendanceSnapshot actual = attendanceSystem.updateAttendanceByCrewNameAndDay(
-                    targetTime, crewName, targetDayOfMonth);
+                    targetTime, crewName, targetDayOfMonth, TODAY);
 
             // then
             assertThat(actual.getAfter().getDateTime())
@@ -125,12 +125,12 @@ public class AttendanceSystemTest {
             final Crew crew = Crew.of(crewName, TODAY);
             final LocalDateTime before = LocalDateTime.of(2024, 12, 13, 10, 0);
             crew.addAttendance(before);
-            final AttendanceSystem attendanceSystem = new AttendanceSystem(List.of(crew), new TodayDateTimeGenerator());
+            final AttendanceSystem attendanceSystem = new AttendanceSystem(List.of(crew));
             final LocalTime targetTime = LocalTime.of(11, 30);
 
             // when
             final UpdatedAttendanceSnapshot actual = attendanceSystem.updateTodayAttendance(crewName,
-                    targetTime);
+                    targetTime, TODAY);
 
             // then
             assertThat(actual.getAfter().getDateTime())
@@ -147,7 +147,7 @@ public class AttendanceSystemTest {
             // given
             final String crewName = "name";
             final Crew crew = Crew.of(crewName, TODAY);
-            final AttendanceSystem attendanceSystem = new AttendanceSystem(List.of(crew), new TodayDateTimeGenerator());
+            final AttendanceSystem attendanceSystem = new AttendanceSystem(List.of(crew));
 
             // when
             final ExpulsionStatus actual = attendanceSystem.calculateExpulsionStatusByCrew(crewName);
@@ -162,7 +162,7 @@ public class AttendanceSystemTest {
             // given
             final String crewName = "name";
             final Crew crew = Crew.of(crewName, TODAY);
-            final AttendanceSystem attendanceSystem = new AttendanceSystem(List.of(crew), new TodayDateTimeGenerator());
+            final AttendanceSystem attendanceSystem = new AttendanceSystem(List.of(crew));
 
             // when
             final Map<AttendanceStatus, Integer> actual = attendanceSystem.calculateAttendanceStatisticsByCrew(
