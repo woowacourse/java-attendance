@@ -2,7 +2,6 @@ package controller;
 
 import static global.util.DateUtil.FIXED_REFERENCE_DATE;
 import static global.util.DateUtil.assembleDateAndTime;
-import static global.util.Validator.validateIsNotWorkingDay;
 
 import domain.Crew;
 import domain.Crews;
@@ -13,6 +12,7 @@ import java.time.LocalTime;
 import java.time.format.DateTimeParseException;
 import view.InputView;
 import view.OutputView;
+import view.ViewUtil;
 
 public class AttendanceController {
     InputView inputView;
@@ -92,5 +92,12 @@ public class AttendanceController {
         CrewAttendanceStatusResponse originalResponse = crew.createCrewAttendanceStatusResponse(date);
         CrewAttendanceStatusResponse editedResponse = crew.editAttendStatus(assembleDateAndTime(date, LocalTime.parse(inputView.inputEditTime())));
         outputView.printAttendEditMessage(date, originalResponse, editedResponse);
+    }
+
+    private void validateIsNotWorkingDay(LocalDate targetDate) {
+        if (DateUtil.isNotWorkingDay(targetDate)) {
+            throw new IllegalArgumentException(String.format("%d월 %02d일 %s은 등교일이 아닙니다.", targetDate.getMonthValue(), targetDate.getDayOfMonth(),
+                    ViewUtil.getDayOfWeekToMessage(targetDate.getDayOfWeek())));
+        }
     }
 }

@@ -2,7 +2,6 @@ package domain;
 
 import static global.util.DateUtil.FIXED_REFERENCE_DATE;
 import static global.util.DateUtil.assembleDateAndTime;
-import static global.util.Validator.validateIsInOperationTime;
 
 import dto.CrewAttendanceStatusResponse;
 import dto.CrewResponse;
@@ -128,6 +127,12 @@ public class Crew {
     private void validateIsFutureDate(LocalDate targetDate) {
         if (targetDate.isAfter(DateUtil.FIXED_REFERENCE_DATE.toLocalDate())) {
             throw new IllegalArgumentException("미래 날짜는 출석할 수 없습니다.");
+        }
+    }
+
+    private void validateIsInOperationTime(LocalTime targetTime) {
+        if (targetTime.isBefore(LocalTime.of(8, 0)) || targetTime.isAfter(LocalTime.of(23, 0))) {
+            throw new IllegalArgumentException("캠퍼스 운영 시간이 아닙니다.");
         }
     }
 }
