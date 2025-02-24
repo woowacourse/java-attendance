@@ -2,10 +2,13 @@ package test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import model.Attendance;
 import model.Crew;
 import model.AttendanceInitializer;
 import model.Crews;
@@ -115,14 +118,30 @@ public class AttendanceTest {
         assertThat(crew.get()).isEqualTo(new Crew(name));
     }
 
-    @DisplayName("크루 이름과 날짜 객체를 입력하면 날짜와 시간을 읽어서 LocalTime 객체를 반환한다.")
+    /**
+     * test5_1과 통합된 기능
+     */
+//    @DisplayName("크루 이름과 날짜 객체를 입력하면 날짜와 시간을 읽어서 LocalTime 객체를 반환한다.")
+//    @Test
+//    void test5() {
+//        String combinedData = "쿠키,2024-12-13 10:08";
+//
+//        LocalDateTime attendanceTime = AttendanceInitializer.parseAttendanceFrom(combinedData);
+//
+//        assertThat(attendanceTime).isEqualTo(LocalDateTime.of(2024, 12, 13, 10, 8));
+//    }
+
+    @DisplayName("크루 이름과 날짜 객체를 입력하면 날짜와 시간을 읽어서 Attendance 객체를 반환한다.")
     @Test
-    void test5() {
+    void test5_1() {
         String combinedData = "쿠키,2024-12-13 10:08";
 
-        LocalDateTime attendanceTime = AttendanceInitializer.parseLocalDateTimeFrom(combinedData);
+        Attendance attendance = AttendanceInitializer.parseAttendanceFrom(combinedData);
 
-        assertThat(attendanceTime).isEqualTo(LocalDateTime.of(2024, 12, 13, 10, 8));
+        assertThat(attendance).isEqualTo(new Attendance(
+                LocalDate.of(2024, 12, 13),
+                LocalTime.of(10, 0))
+        );
     }
 
 //    @DisplayName("출석 기록을 읽어서 LocalDateTime 객체로 변환한다.")
