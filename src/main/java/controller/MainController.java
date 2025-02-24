@@ -6,10 +6,10 @@ import domain.AttendanceState;
 import domain.Calender;
 import domain.Command;
 import domain.Crew;
+import domain.DateProvider;
 import domain.FeatureType;
 import dto.AbsenceResultDto;
 import dto.AttendanceResultDto;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
@@ -23,16 +23,11 @@ public class MainController {
 
     private static final String FILE_PATH = "src/main/resources/attendances.csv";
     private static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("HH:mm");
-    private static final int MONTH = 12;
 
     private final InputView inputView;
     private final OutputView outputView;
-
-    private LocalDate today;
-    private int todayMonth;
-    private int todayDay;
-    private String todayDayOfWeek;
-    private Attendance attendance;
+    private final DateProvider provider;
+    private final Attendance attendance = FileManager.readFile(FILE_PATH);
 
     private final Map<FeatureType, Command> features = Map.of(
             FeatureType.ATTENDANCE_CHECK, this::attendanceCheck,
@@ -41,26 +36,18 @@ public class MainController {
             FeatureType.READ_ABSENCE, this::readAbsence
     );
 
-    public MainController(final InputView inputView, final OutputView outputView) {
+    public MainController(final InputView inputView, final OutputView outputView, final DateProvider provider) {
         this.inputView = inputView;
         this.outputView = outputView;
+        this.provider = provider;
     }
 
     public void run() {
-        prepareToday();
         String feature;
         do {
-            feature = inputView.inputFeature(todayMonth, todayDay, todayDayOfWeek);
+            feature = inputView.inputFeature(provider.getTodayMonth(), provider.getToday(), getDayOfWeek());
             executeFeature(feature);
         } while (isExit(feature));
-    }
-
-    private void prepareToday() {
-        attendance = FileManager.readFile(FILE_PATH);
-        today = LocalDate.now();
-        todayMonth = MONTH;
-        todayDay = today.getDayOfMonth();
-        todayDayOfWeek = Calender.findBy(todayDay).getDescription();
     }
 
     private void executeFeature(String feature) {
@@ -79,11 +66,15 @@ public class MainController {
 
         LocalTime dateTime = parseToLocalTime(schoolStartTime);
 
-        AttendanceState attendanceState = AttendanceState.findStateBy(dateTime, todayDay);
+        AttendanceState attendanceState = AttendanceState.findStateBy(dateTime, provider.getToday());
 
-        attendance.save(crew, schoolStartTime, todayDay);
+        attendance.save(crew, schoolStartTime, provider.getToday());
 
-        outputView.printTodayAttendance(todayDay, todayDayOfWeek, schoolStartTime, attendanceState);
+        outputView.printTodayAttendance(provider.getToday(), getDayOfWeek(), schoolStartTime, attendanceState);
+    }
+
+    private String getDayOfWeek() {
+        return Calender.findBy(provider.getToday()).getDescription();
     }
 
     private void attendanceUpdate() {
@@ -110,7 +101,7 @@ public class MainController {
         String nickname = inputView.inputNickName();
         Crew crew = attendance.getCrewByName(nickname);
 
-        List<AttendanceResultDto> attendanceResultDtos = attendance.readRecord(crew, todayDay);
+        List<AttendanceResultDto> attendanceResultDtos = attendance.readRecord(crew, provider.getToday());
         outputView.printRecordAttendance(attendanceResultDtos);
 
         AbsenceHistory absenceHistory = new AbsenceHistory(attendanceResultDtos);
@@ -121,7 +112,7 @@ public class MainController {
     }
 
     private void readAbsence() {
-        Map<Crew, AbsenceResultDto> result = attendance.getAbsence(todayDay);
+        Map<Crew, AbsenceResultDto> result = attendance.getAbsence(provider.getToday());
         outputView.printAbsenceResult(result);
     }
 }
