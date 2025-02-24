@@ -1,5 +1,7 @@
 package attendance.model.attendance;
 
+import java.time.LocalDateTime;
+
 public enum AttendanceStatus {
 
     ATTENDANCE("출석"),
@@ -10,5 +12,9 @@ public enum AttendanceStatus {
 
     AttendanceStatus(String name) {
         this.name = name;
+    }
+
+    public static AttendanceStatus from(LocalDateTime dateTime) {
+        return ATTENDANCE;
     }
 }
