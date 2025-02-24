@@ -58,8 +58,10 @@ public class AbsentPolicyTest {
     public void checkAttendanceStatusTest(){
         AbsentPolicy absentPolicy = new AbsentPolicy();
         LocalDateTime educationDateTime = LocalDateTime.of(2024,12,10, 10,5);
+        LocalDateTime educationDateTime2 = LocalDateTime.of(2024,12,9, 13,5);
 
         assertThat(absentPolicy.checkAttendanceStatus(educationDateTime)).isEqualTo("출석");
+        assertThat(absentPolicy.checkAttendanceStatus(educationDateTime2)).isEqualTo("출석");
     }
 
 //    @Test
