@@ -45,17 +45,17 @@ public class AllCrew {
                 .orElseThrow(() -> new IllegalArgumentException("Crew not found"));
     }
 
-    public void sortAllCrewOrderByWarningInfo(LocalDate date) {
-        updateAbsentHistory(date);
+    public void sortAllCrewOrderByWarningInfo() {
         allCrew.sort(new Comparator<Crew>() {
             @Override
             public int compare(Crew o1, Crew o2) {
+                // 내림차순 정렬
                 int result =
-                        (o1.getAbsentCount() + o1.getLateCount() / 3) - (o2.getAbsentCount() + o2.getLateCount() / 3);
+                        (o2.getAbsentCount() + (o2.getLateCount() / 3)) - (o1.getAbsentCount() + (o1.getLateCount() / 3));
                 if (result != 0) {
                     return result;
                 }
-                return o2.getName().compareTo(o1.getName());    // 같으면 이름 역순 정렬
+                return o1.getName().compareTo(o2.getName());    // 같으면 이름순 정렬
             }
         });
     }
@@ -67,7 +67,7 @@ public class AllCrew {
     public List<Crew> getAllWarningCrew() {
         List<Crew> allWarningCrew = new ArrayList<>();
         for (Crew crew : allCrew) {
-            if (crew.calculateWarningStatus().isEmpty()){
+            if (!crew.calculateWarningStatus().isEmpty()){
                 allWarningCrew.add(crew);
             }
         }

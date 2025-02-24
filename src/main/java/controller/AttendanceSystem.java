@@ -40,6 +40,7 @@ public class AttendanceSystem {
     }
 
     private boolean executeMenu(String menuInput) {
+        allCrew.updateAbsentHistory(todayDate.minusDays(1));
         if (menuInput.equals(CHECK_ATTENDANCE.getValue())) {
             checkAttendance();
         }
