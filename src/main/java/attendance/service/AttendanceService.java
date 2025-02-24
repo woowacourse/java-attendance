@@ -11,7 +11,7 @@ import attendance.dto.CrewAttendanceDto;
 import attendance.dto.EditResponseDto;
 import attendance.dto.FileRequestDto;
 import attendance.dto.PenaltyCrewDto;
-import attendance.utils.AttendanceReader;
+import attendance.domain.AttendanceReader;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;

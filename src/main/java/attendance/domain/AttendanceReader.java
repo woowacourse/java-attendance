@@ -1,4 +1,4 @@
-package attendance.utils;
+package attendance.domain;
 
 import attendance.dto.FileRequestDto;
 

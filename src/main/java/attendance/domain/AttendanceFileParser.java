@@ -1,7 +1,8 @@
-package attendance.utils;
+package attendance.domain;
 
 import attendance.common.ErrorMessage;
 import attendance.dto.FileRequestDto;
+import attendance.utils.DateConverter;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
@@ -14,6 +15,7 @@ import java.util.List;
 
 public class AttendanceFileParser implements AttendanceReader {
 
+    public static final String DELIMITER = ",";
     private final String path;
 
     public AttendanceFileParser(String path) {
@@ -35,7 +37,7 @@ public class AttendanceFileParser implements AttendanceReader {
         throws IOException {
         String line;
         while ((line = br.readLine()) != null) {
-            String[] inputs = line.split(",");
+            String[] inputs = line.split(DELIMITER);
             validateInput(inputs);
             String name = inputs[0];
             LocalDate date = DateConverter.convertToDate(inputs[1]);
