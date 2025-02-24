@@ -19,4 +19,8 @@ public class CrewRegistration {
     public static List<String> parseRecordToNameAndDate(String existedRecords) {
         return Arrays.asList(existedRecords.split(","));
     }
+
+    public static List<String> parseDateToDayAndTime(String date) {
+        return Arrays.asList(date.split(" "));
+    }
 }
