@@ -126,4 +126,35 @@ public class CrewsTest {
         assertThat(names.get(0)).isEqualTo("이든");
         assertThat(names.get(1)).isEqualTo("빙봉");
     }
+
+    @DisplayName("크루 출석 기록을 바탕으로 제적 위험자를 파악한다.")
+    @Test
+    void calculateExpelledWarning_1() {
+        List<LocalDateTime> testRecords1 = List.of(
+            LocalDateTime.of(2024, 12, 2, 13, 6), // 지각
+            LocalDateTime.of(2024, 12, 3, 9, 7), // 지각
+            LocalDateTime.of(2024, 12, 4, 10, 8), // 지각
+            LocalDateTime.of(2024, 12, 5, 10, 9),// 지각
+            LocalDateTime.of(2024, 12, 6, 10, 10),// 지각
+            LocalDateTime.of(2024, 12, 9, 13, 40),// 결석
+            LocalDateTime.of(2024, 12, 10, 10, 40) // 결석
+        );
+
+        List<LocalDateTime> testRecords2 = List.of(
+            LocalDateTime.of(2024, 12, 2, 13, 8), // 지각
+            LocalDateTime.of(2024, 12, 3, 10, 5), // 지각
+            LocalDateTime.of(2024, 12, 4, 10, 6), // 지각
+            LocalDateTime.of(2024, 12, 5, 10, 7),// 지각
+            LocalDateTime.of(2024, 12, 6, 10, 6),// 지각
+            LocalDateTime.of(2024, 12, 9, 13, 6),// 지각
+            LocalDateTime.of(2024, 12, 10, 10, 40) // 결석
+        );
+
+        crews.createCrew("이든", testRecords1); // 면담 대상자
+        crews.createCrew("빙봉", testRecords2); // 면담 대상자
+        LocalDate nowDate = LocalDate.of(2024, 12, 11);
+        Map<String, StatisticsResult> warningCrews = crews.findWarningCrews(nowDate);
+
+        assertThat(warningCrews.size()).isEqualTo(2);
+    }
 }

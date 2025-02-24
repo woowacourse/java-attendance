@@ -1,20 +1,46 @@
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
-import domain.Crews;
 import domain.AttendanceStatus;
 import domain.Crew;
+import domain.Crews;
 import domain.Penalty;
 import domain.StatisticsResult;
+import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
-import java.util.Map;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-public class AttendanceStatisticsTest {
+public class AttendanceStatusTest {
 
     Crews crews = new Crews();
+
+    @DisplayName("출석 상태를 반환한다.")
+    @Test
+    void getAttendanceStatus_1() {
+        LocalTime time = LocalTime.of(10, 5);
+        DayOfWeek dayOfWeek = DayOfWeek.FRIDAY;
+        Assertions.assertThat(AttendanceStatus.of(time, dayOfWeek)).isEqualTo(AttendanceStatus.ATTENDANCE);
+    }
+
+    @DisplayName("지각 상태를 반환한다.")
+    @Test
+    void getAttendanceStatus_2() {
+        LocalTime time = LocalTime.of(10, 30);
+        DayOfWeek dayOfWeek = DayOfWeek.FRIDAY;
+        Assertions.assertThat(AttendanceStatus.of(time, dayOfWeek)).isEqualTo(AttendanceStatus.LATENESS);
+    }
+
+    @DisplayName("결석 상태를 반환한다.")
+    @Test
+    void getAttendanceStatus_3() {
+        LocalTime time = LocalTime.of(10, 31);
+        DayOfWeek dayOfWeek = DayOfWeek.FRIDAY;
+        Assertions.assertThat(AttendanceStatus.of(time, dayOfWeek)).isEqualTo(AttendanceStatus.ABSENCE);
+    }
 
     @DisplayName("출석 통계를 정확하게 계산한다.")
     @Test
@@ -104,36 +130,5 @@ public class AttendanceStatisticsTest {
         StatisticsResult statisticsResult = AttendanceStatus.countStatus(nowDate, crew);
 
         assertThat(Penalty.EXPELLED).isEqualTo(statisticsResult.getPenalty());
-    }
-
-    @DisplayName("크루 출석 기록을 바탕으로 제적 위험자를 파악한다.")
-    @Test
-    void calculateExpelledWarning_1() {
-        List<LocalDateTime> testRecords1 = List.of(
-            LocalDateTime.of(2024, 12, 2, 13, 6), // 지각
-            LocalDateTime.of(2024, 12, 3, 9, 7), // 지각
-            LocalDateTime.of(2024, 12, 4, 10, 8), // 지각
-            LocalDateTime.of(2024, 12, 5, 10, 9),// 지각
-            LocalDateTime.of(2024, 12, 6, 10, 10),// 지각
-            LocalDateTime.of(2024, 12, 9, 13, 40),// 결석
-            LocalDateTime.of(2024, 12, 10, 10, 40) // 결석
-        );
-
-        List<LocalDateTime> testRecords2 = List.of(
-            LocalDateTime.of(2024, 12, 2, 13, 8), // 지각
-            LocalDateTime.of(2024, 12, 3, 10, 5), // 지각
-            LocalDateTime.of(2024, 12, 4, 10, 6), // 지각
-            LocalDateTime.of(2024, 12, 5, 10, 7),// 지각
-            LocalDateTime.of(2024, 12, 6, 10, 6),// 지각
-            LocalDateTime.of(2024, 12, 9, 13, 6),// 지각
-            LocalDateTime.of(2024, 12, 10, 10, 40) // 결석
-        );
-
-        crews.createCrew("이든", testRecords1); // 면담 대상자
-        crews.createCrew("빙봉", testRecords2); // 면담 대상자
-        LocalDate nowDate = LocalDate.of(2024, 12, 11);
-        Map<String, StatisticsResult> warningCrews = crews.findWarningCrews(nowDate);
-
-        assertThat(warningCrews.size()).isEqualTo(2);
     }
 }
