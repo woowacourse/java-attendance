@@ -2,10 +2,10 @@ package domain;
 
 public class AttendanceStatus {
 
-    int onTime;
-    int late;
-    int absent;
-    WarningStatusType status;
+    private final int onTime;
+    private final int late;
+    private final int absent;
+    private WarningStatusType status;
 
     public AttendanceStatus(int onTime, int late, int absent) {
         this.onTime = onTime;
@@ -14,7 +14,7 @@ public class AttendanceStatus {
     }
 
     public WarningStatusType getStatus() {
-        status = WarningStatusType.calculateStatus(onTime, late, absent);
+        status = WarningStatusType.calculateStatus(late, absent);
         return status;
     }
 }
