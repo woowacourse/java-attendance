@@ -68,8 +68,8 @@ public class AttendanceRegistry {
         return weekday.equals(Weekday.SATURDAY) || weekday.equals(Weekday.SUNDAY);
     }
 
-    public AttendanceChecker findByDate(int date) {
-        return attendanceCheckers.stream().filter(dateInfo -> dateInfo.getLocalDateTime().getDayOfMonth() == date)
+    public AttendanceChecker findByDay(int day) {
+        return attendanceCheckers.stream().filter(dateInfo -> dateInfo.getLocalDateTime().getDayOfMonth() == day)
                 .findFirst()
                 .orElseThrow();
     }

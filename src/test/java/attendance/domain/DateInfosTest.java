@@ -42,7 +42,7 @@ class DateInfosTest {
         AttendanceRegistry dateInfos = AttendanceRegistry.fromDefaultValue(now);
 
         //when
-        AttendanceChecker attendanceChecker = dateInfos.findByDate(19);
+        AttendanceChecker attendanceChecker = dateInfos.findByDay(19);
 
         //then
         Assertions.assertThat(attendanceChecker.getLocalDateTime().getMonthValue()).isEqualTo(2);

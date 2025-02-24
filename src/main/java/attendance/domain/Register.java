@@ -19,14 +19,14 @@ public class Register {
 
     public AttendanceChecker modifyInfo(Crew crew, LocalDateTime localDateTime) {
         AttendanceRegistry attendanceRegistry = register.get(findValidatedCrew(crew));
-        AttendanceChecker attendanceChecker = attendanceRegistry.findByDate(localDateTime.getDayOfMonth());
+        AttendanceChecker attendanceChecker = attendanceRegistry.findByDay(localDateTime.getDayOfMonth());
         attendanceChecker.modifyAttendanceTime(localDateTime);
         return attendanceChecker;
     }
 
     public AttendanceChecker findInfo(Crew crew, LocalDateTime modifyDate) {
         AttendanceRegistry attendanceRegistry = register.get(findValidatedCrew(crew));
-        return attendanceRegistry.findByDate(modifyDate.getDayOfMonth());
+        return attendanceRegistry.findByDay(modifyDate.getDayOfMonth());
     }
 
     public AttendanceRegistry checkAttendanceHistory(Crew crew) {
