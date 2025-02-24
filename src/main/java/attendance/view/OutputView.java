@@ -3,7 +3,6 @@ package attendance.view;
 import static attendance.domain.AttendanceStatus.ABSENCE;
 import static attendance.domain.AttendanceStatus.LATENESS;
 
-import attendance.domain.AttendanceChecker;
 import attendance.domain.AttendanceRepository;
 import attendance.domain.AttendanceStatus;
 import attendance.domain.HourMinute;
@@ -49,7 +48,7 @@ public class OutputView {
         System.out.printf(ATTENDANCE_RESULT_FORMAT,
                 convertDate(localDateTime),
                 time.toString(),
-                AttendanceChecker.checkAttendance(localDateTime).getStatus());
+                AttendanceStatus.checkAttendance(localDateTime).getStatus());
     }
 
     public static void printModifiedAttendance(HourMinute prevHourMinute, LocalDateTime newAttendanceTime) {
@@ -59,7 +58,7 @@ public class OutputView {
                 prevTime.toString(),
                 prevHourMinute.attendanceStatus().getStatus(),
                 newAttendanceTime.toLocalTime().toString(),
-                AttendanceChecker.checkAttendance(newAttendanceTime).getStatus());
+                AttendanceStatus.checkAttendance(newAttendanceTime).getStatus());
     }
 
     private static String convertDate(LocalDateTime localDateTime) {
