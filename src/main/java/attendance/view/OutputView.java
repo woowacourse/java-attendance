@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-public class OutputView { // todo : 상수 분리 적용 필요, response 파라미터 네이밍 통일, 메서드 순서 정렬
+public class OutputView {
 
     private static final String NEW_LINE = System.lineSeparator();
     private static final String OUTPUT_MENU = NEW_LINE + NEW_LINE + """
@@ -25,18 +25,18 @@ public class OutputView { // todo : 상수 분리 적용 필요, response 파라
             Q. 종료
             """;
 
-    public void printMenu(LocalDate today) { // todo : 파라미터가 today 적절한가?
+    public void printMenu(LocalDate today) {
         System.out.printf(OUTPUT_MENU,
                 today.getMonthValue(),
                 today.getDayOfMonth(),
-                today.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.KOREA) // todo : 요일 반환 메서드 분리 필요
+                today.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.KOREA)
         );
     }
 
-    public void printAttendanceRecords(Attendance attendance) {
+    public void printAttendanceRecord(Attendance attendance) {
         LocalDateTime dateTime = attendance.getDateTime();
 
-        String timeContent = dateTime.toLocalTime().toString(); // todo : 파싱 메서드 분리 고려
+        String timeContent = dateTime.toLocalTime().toString();
         if (dateTime.toLocalTime().equals(LocalTime.MAX)) {
             timeContent = "--:--";
         }
@@ -54,7 +54,7 @@ public class OutputView { // todo : 상수 분리 적용 필요, response 파라
         Attendance oldAttendance = attendances.getFirst();
         Attendance updateAttendance = attendances.getLast();
 
-        printAttendanceRecords(oldAttendance);
+        printAttendanceRecord(oldAttendance);
         System.out.printf(" -> %s (%s) 수정 완료!",
                 updateAttendance.getDateTime().toLocalTime(),
                 updateAttendance.getState().getName()
@@ -64,7 +64,7 @@ public class OutputView { // todo : 상수 분리 적용 필요, response 파라
     public void printAttendanceRecords(List<Attendance> attendances, String nickname) {
         System.out.printf(NEW_LINE + "이번 달 %s의 출석 기록입니다." + NEW_LINE, nickname);
 
-        attendances.forEach(this::printAttendanceRecords);
+        attendances.forEach(this::printAttendanceRecord);
         System.out.println();
     }
 

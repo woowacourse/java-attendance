@@ -76,7 +76,7 @@ public class AttendanceSystem {
             LocalDateTime dateTime = LocalDateTime.of(today, time);
 
             Attendance attendanceCheck = attendanceManager.processAttendanceCheck(dateTime, nickname);
-            outputView.printAttendanceRecords(attendanceCheck);
+            outputView.printAttendanceRecord(attendanceCheck);
         }
     }
 
