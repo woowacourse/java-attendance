@@ -23,10 +23,11 @@ class AttendanceTest {
     void 출석이_정상적으로_실행() {
         // given
         final LocalDateTime localDateTime = LocalDateTime.of(2024, 12, 2, 0, 0, 0);
+        final AttendanceDateTime attendanceDateTime = AttendanceDateTime.of(localDateTime);
 
         // when
         // then
-        assertThatCode(() -> new Attendance(localDateTime))
+        assertThatCode(() -> new Attendance(attendanceDateTime))
                 .doesNotThrowAnyException();
     }
 
@@ -34,34 +35,26 @@ class AttendanceTest {
     void 정적팩터리_메서드에서_객체_정상_생성() {
         // given
         String input = "2024-12-12 11:11";
-        LocalDateTime expected = LocalDateTime.of(2024, 12, 12, 11, 11);
+        AttendanceDateTime attendanceDateTime = AttendanceDateTime.of(input);
 
         // when
-        Attendance attendance = Attendance.of(input);
+        Attendance attendance = new Attendance(attendanceDateTime);
 
         // then
-        assertThat(attendance.getLocalDateTime()).isEqualTo(expected);
+        assertThat(attendance.getAttendanceDateTime()).isEqualTo(attendanceDateTime);
     }
 
-    @ParameterizedTest
-    @ValueSource(strings = {"2024-12-12 11", "바보", "2024-12-32 11:12", "2024-12-11 99:12"})
-    void 잘못된_포멧으로_입력했을_때_예외_처리(String input) {
-        // given
-        // when
-        // then
-        assertThatThrownBy(() -> Attendance.of(input))
-                .isInstanceOf(CustomIllegalArgumentException.class);
-    }
 
     @ParameterizedTest
     @MethodSource("methodSources")
     void 출석_일자와_찾는_일자가_동일한지_확인(LocalDate date, Boolean bool) {
         // given
         String dateTimeInput = "2024-12-16 00:00";
-        Attendance attendance = Attendance.of(dateTimeInput);
+        AttendanceDateTime attendanceDateTime = AttendanceDateTime.of(dateTimeInput);
+        Attendance attendance = new Attendance(attendanceDateTime);
 
         // when
-        boolean expected = attendance.equals(date);
+        boolean expected = attendance.equalsDate(date);
 
         // then
         Assertions.assertThat(bool).isEqualTo(expected);
@@ -78,7 +71,8 @@ class AttendanceTest {
     void 출석된_일이_잘_불러와지는_지_확인() {
         // given
         String dateTimeInput = "2024-12-16 00:00";
-        Attendance attendance = Attendance.of(dateTimeInput);
+        AttendanceDateTime attendanceDateTime = AttendanceDateTime.of(dateTimeInput);
+        Attendance attendance = new Attendance(attendanceDateTime);
         int expected = 16;
 
         // when
@@ -92,7 +86,8 @@ class AttendanceTest {
     void 출석된_LocalDateTime이_잘_불러와지는_지_확인() {
         // given
         String dateTimeInput = "2024-12-16 00:00";
-        Attendance attendance = Attendance.of(dateTimeInput);
+        AttendanceDateTime attendanceDateTime = AttendanceDateTime.of(dateTimeInput);
+        Attendance attendance = new Attendance(attendanceDateTime);
         LocalDateTime expected = LocalDateTime.of(2024, 12, 16, 0, 0);
 
         // when
@@ -106,7 +101,8 @@ class AttendanceTest {
     void 출석된_일자의_상태가_잘_불러와지는_지_확인() {
         // given
         String dateTimeInput = "2024-12-16 10:00";
-        Attendance attendance = Attendance.of(dateTimeInput);
+        AttendanceDateTime attendanceDateTime = AttendanceDateTime.of(dateTimeInput);
+        Attendance attendance = new Attendance(attendanceDateTime);
 
         AttendanceStatus expected = AttendanceStatus.ATTENDANCE;
 

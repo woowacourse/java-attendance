@@ -3,6 +3,7 @@ package util;
 
 import domain.Attendance;
 import domain.AttendanceCounter;
+import domain.AttendanceDateTime;
 import domain.Attendances;
 import domain.Crew;
 import domain.Crews;
@@ -34,8 +35,9 @@ public final class CrewGenerator {
         for (String[] parsedCrewData : parsedCrewsData) {
             String nickname = parsedCrewData[NICKNAME_IDX];
             String localDateTime = parsedCrewData[LOCAL_DATE_TIME_IDX];
+            AttendanceDateTime attendanceDateTime = AttendanceDateTime.of(localDateTime);
             final Nickname name = new Nickname(nickname);
-            final Attendance attendance = Attendance.of(localDateTime);
+            final Attendance attendance = new Attendance(attendanceDateTime);
             crewData.computeIfAbsent(name, k -> new LinkedList<>()).add(attendance);
         }
 
@@ -59,10 +61,10 @@ public final class CrewGenerator {
         List<Integer> noPresentAttendanceDates = new ArrayList<>(validDates);
         noPresentAttendanceDates.removeAll(alreadyAttendanceDates);
         for (Integer attendanceDate : noPresentAttendanceDates) {
-            LocalDateTime dateTime = LocalDateTime.of(
+            AttendanceDateTime attendanceDateTime = AttendanceDateTime.of(LocalDateTime.of(
                     LocalDate.of(Constants.FIXED_YEAR, Constants.FIXED_MONTH, attendanceDate),
-                    Constants.ABSENCE_TIME);
-            Attendance attendance = new Attendance(dateTime);
+                    Constants.ABSENCE_TIME));
+            Attendance attendance = new Attendance(attendanceDateTime);
             attendances.addSorted(attendance);
         }
         return attendances;

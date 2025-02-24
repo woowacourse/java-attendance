@@ -2,7 +2,6 @@ package domain;
 
 import error.CustomIllegalArgumentException;
 import java.time.DayOfWeek;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.Arrays;
 import util.Constants;
@@ -27,21 +26,21 @@ public enum Week {
         return attendanceTime;
     }
 
-    public static Week findByAttendanceTime(final LocalDateTime localDateTime) {
-        DayOfWeek day = localDateTime.getDayOfWeek();
-        final String dayOfWeek = DayOfWeekKorean.getKoreanName(localDateTime.getDayOfWeek());
+    public static Week findByAttendanceTime(final AttendanceDateTime attendanceDateTime) {
+        DayOfWeek dayOfWeek = attendanceDateTime.getDayOfWeek();
+        final String dayKoreanName = DayOfWeekKorean.getKoreanName(dayOfWeek);
 
         return Arrays.stream(Week.values())
-                .filter(week -> week.name().equals(day.name()))
+                .filter(week -> week.name().equals(dayOfWeek.name()))
                 .findFirst()
                 .orElseThrow(() -> new CustomIllegalArgumentException(
-                        getMessageFormat(localDateTime, dayOfWeek)));
+                        getMessageFormat(attendanceDateTime, dayKoreanName)));
     }
 
-    private static String getMessageFormat(LocalDateTime localDateTime, String dayOfWeek) {
+    private static String getMessageFormat(AttendanceDateTime attendanceDateTime, String dayOfWeek) {
         return String.format("%d월 %d일 %s은 등교일이 아닙니다.",
                 Constants.FIXED_MONTH,
-                localDateTime.getDayOfMonth(),
+                attendanceDateTime.getDayOfMonth(),
                 dayOfWeek);
     }
 }

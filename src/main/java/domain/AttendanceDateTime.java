@@ -1,6 +1,7 @@
 package domain;
 
 import error.CustomIllegalArgumentException;
+import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -10,13 +11,23 @@ import util.Constants;
 
 public class AttendanceDateTime {
 
-    //    private static final String DATE_TIME_FORMAT = "yyyy-MM-dd HH:mm";
+    private static final String DATE_TIME_FORMAT = "yyyy-MM-dd HH:mm";
     private static final String TIME_FORMAT = "HH:mm";
 
     private final LocalDateTime dateTime;
 
     private AttendanceDateTime(LocalDateTime dateTime) {
         this.dateTime = dateTime;
+    }
+
+    public static AttendanceDateTime of(final String input) {
+        try {
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern(DATE_TIME_FORMAT);
+            final LocalDateTime parsedDateTime = LocalDateTime.parse(input, formatter);
+            return new AttendanceDateTime(parsedDateTime);
+        } catch (DateTimeParseException e) {
+            throw new CustomIllegalArgumentException("형식은 yyyy-MM-dd HH:mm 입니다.");
+        }
     }
 
     public static AttendanceDateTime of(final LocalDateTime dateTime) {
@@ -39,21 +50,10 @@ public class AttendanceDateTime {
         }
     }
 
-    public static LocalDate parsedLocalDateByDateOfMonth(int dateOfMonth) {
-        try {
-            return LocalDate.of(Constants.FIXED_YEAR, Constants.FIXED_MONTH, dateOfMonth);
-        } catch (DateTimeParseException e) {
-            throw new CustomIllegalArgumentException(
-                    String.format("일은 1부터 %d사이의 숫자만 가능합니다.", Constants.LENGTH_OF_MONTH));
-        }
-    }
-
-    public LocalDateTime getDateTime() {
-        return dateTime;
-    }
-
-    public static LocalDateTime getDefaultDateTime() {
-        return LocalDateTime.of(Constants.FIXED_YEAR, Constants.FIXED_MONTH, Constants.FIXED_DATE, 0, 0, 0, 0);
+    public static AttendanceDateTime getDefaultDateTime() {
+        LocalDateTime localDateTime = LocalDateTime.of(Constants.FIXED_YEAR, Constants.FIXED_MONTH,
+                Constants.FIXED_DATE, 0, 0, 0, 0);
+        return new AttendanceDateTime(localDateTime);
     }
 
     public static LocalDate getDate(LocalDateTime dateTime) {
@@ -64,7 +64,23 @@ public class AttendanceDateTime {
         return dateTime.toLocalTime();
     }
 
-    public static Integer getDayOfMonth(LocalDateTime dateTime) {
+    public LocalDateTime getDateTime() {
+        return dateTime;
+    }
+
+    public LocalDate getDate() {
+        return dateTime.toLocalDate();
+    }
+
+    public LocalTime getTime() {
+        return dateTime.toLocalTime();
+    }
+
+    public DayOfWeek getDayOfWeek() {
+        return dateTime.getDayOfWeek();
+    }
+
+    public int getDayOfMonth() {
         return dateTime.getDayOfMonth();
     }
 }

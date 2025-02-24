@@ -2,7 +2,6 @@ package domain;
 
 import error.CustomIllegalArgumentException;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.Objects;
 
 public class Crew implements Comparable<Crew> {
@@ -21,14 +20,15 @@ public class Crew implements Comparable<Crew> {
         return nickname;
     }
 
-    public void validateAttended(final LocalDateTime dateTime) {
-        if (isAttended(dateTime)) {
+    public void validateAttended(final AttendanceDateTime attendanceDateTime) {
+        LocalDate date = attendanceDateTime.getDate();
+        if (isAttended(date)) {
             throw new CustomIllegalArgumentException("이미 출석했습니다. 다음에는 수정기능을 이용해주세요.");
         }
     }
 
-    private boolean isAttended(final LocalDateTime dateTime) {
-        return attendances.isAttended(dateTime);
+    private boolean isAttended(final LocalDate date) {
+        return attendances.existAttended(date);
     }
 
     public void add(final Attendance attendance) {

@@ -14,15 +14,20 @@ class AttendanceCounterTest {
     static void beforeAll() {
         // given (출석 : 2, 지각 : 1, 결석: 3)
         List<Attendance> attendanceList = List.of(
-                Attendance.of("2024-12-13 10:05"),
-                Attendance.of("2024-12-16 13:05"),
-                Attendance.of("2024-12-17 10:08"),
-                Attendance.of("2024-12-18 10:31"),
-                Attendance.of("2024-12-19 10:31"),
-                Attendance.of("2024-12-20 10:31")
+                fromString("2024-12-13 10:05"),
+                fromString("2024-12-16 13:05"),
+                fromString("2024-12-17 10:08"),
+                fromString("2024-12-18 10:31"),
+                fromString("2024-12-19 10:31"),
+                fromString("2024-12-20 10:31")
         );
         Attendances attendances = new Attendances(new LinkedList<>(attendanceList));
         attendanceCounter = AttendanceCounter.of(attendances);
+    }
+
+    static Attendance fromString(final String input) {
+        AttendanceDateTime attendanceDateTime = AttendanceDateTime.of(input);
+        return new Attendance(attendanceDateTime);
     }
 
     @Test

@@ -3,6 +3,7 @@ package view;
 
 import static util.Constants.FIXED_MONTH;
 
+import domain.AttendanceDateTime;
 import domain.Command;
 import util.DayOfWeekKorean;
 import error.CustomIllegalArgumentException;
@@ -16,9 +17,9 @@ public final class InputView {
     private InputView() {
     }
 
-    public static String readCommand(final LocalDateTime dateTime) {
+    public static String readCommand(final AttendanceDateTime attendanceDateTime) {
         System.out.println(
-                getMessageFormat(dateTime));
+                getMessageFormat(attendanceDateTime));
         for (Command command : Command.values()) {
             System.out.println(String.format("%s. %s", command.getCommandNumber(), command.getCommandName()));
 
@@ -70,8 +71,8 @@ public final class InputView {
         }
     }
 
-    private static String getMessageFormat(LocalDateTime dateTime) {
-        return String.format("오늘은 %s월 %s일 %s입니다. 기능을 선택해주세요.", FIXED_MONTH, dateTime.getDayOfMonth(),
-                DayOfWeekKorean.getKoreanName(dateTime.getDayOfWeek()));
+    private static String getMessageFormat(AttendanceDateTime attendanceDateTime) {
+        return String.format("오늘은 %s월 %s일 %s입니다. 기능을 선택해주세요.", FIXED_MONTH, attendanceDateTime.getDayOfMonth(),
+                DayOfWeekKorean.getKoreanName(attendanceDateTime.getDayOfWeek()));
     }
 }

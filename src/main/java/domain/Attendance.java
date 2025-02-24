@@ -1,47 +1,45 @@
 package domain;
 
-import error.CustomIllegalArgumentException;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.time.format.DateTimeParseException;
+import java.time.LocalTime;
 
 public class Attendance {
 
-    private static final String DATE_TIME_FORMAT = "yyyy-MM-dd HH:mm";
-
-    private final LocalDateTime localDateTime;
+    private final AttendanceDateTime attendanceDateTime;
     private final AttendanceStatus attendanceStatus;
 
-    public Attendance(final LocalDateTime localDateTime) {
-        Week day = Week.findByAttendanceTime(localDateTime);
-        this.localDateTime = localDateTime;
-        this.attendanceStatus = AttendanceStatus.findByAttendanceTime(day, localDateTime.toLocalTime());
-    }
-
-    public static Attendance of(final String dateTimeInput) {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern(DATE_TIME_FORMAT);
-        try {
-            LocalDateTime dateTime = LocalDateTime.parse(dateTimeInput, formatter);
-            return new Attendance(dateTime);
-        } catch (DateTimeParseException e) {
-            throw new CustomIllegalArgumentException("올바른 형식이 아닙니다.");
-        }
+    public Attendance(final AttendanceDateTime attendanceDateTime) {
+        Week day = Week.findByAttendanceTime(attendanceDateTime);
+        this.attendanceDateTime = attendanceDateTime;
+        this.attendanceStatus = AttendanceStatus.findByAttendanceTime(day, attendanceDateTime.getTime());
     }
 
     public boolean equals(final int findDayOfMonth) {
-        return AttendanceDateTime.getDayOfMonth(localDateTime)
-                .equals(findDayOfMonth);
+        return attendanceDateTime.getDayOfMonth() == findDayOfMonth;
     }
 
     public int getDateOfMonth() {
-        return localDateTime.getDayOfMonth();
+        return attendanceDateTime.getDayOfMonth();
     }
 
     public LocalDateTime getLocalDateTime() {
-        return localDateTime;
+        return attendanceDateTime.getDateTime();
+    }
+
+    public LocalTime getTime() {
+        return attendanceDateTime.getTime();
     }
 
     public AttendanceStatus getAttendanceStatus() {
         return attendanceStatus;
+    }
+
+    public AttendanceDateTime getAttendanceDateTime() {
+        return attendanceDateTime;
+    }
+
+    public boolean equalsDate(LocalDate date) {
+        return attendanceDateTime.getDate().equals(date);
     }
 }

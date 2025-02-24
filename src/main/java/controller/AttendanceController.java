@@ -8,12 +8,14 @@ import domain.Crew;
 import domain.Crews;
 import domain.Nickname;
 import error.CustomIllegalArgumentException;
+import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import util.Constants;
 import util.CrewGenerator;
 import util.CsvReader;
+import util.DayOfMonth;
 import util.DayOfWeekKorean;
 import util.HolidayManager;
 import view.InputView;
@@ -25,26 +27,25 @@ public class AttendanceController {
 
     public void start() {
         while (true) {
-            LocalDateTime fixedDateTime = AttendanceDateTime.getDefaultDateTime();
-            final String input = InputView.readCommand(fixedDateTime);
+            AttendanceDateTime fixedAttendanceDateTime = AttendanceDateTime.getDefaultDateTime();
+            final String input = InputView.readCommand(fixedAttendanceDateTime);
             Command command = Command.findByCommandNumber(input);
-            Crews crews = CrewGenerator.generate(CsvReader.readFile(CSV_PATH), fixedDateTime.toLocalDate());
+            Crews crews = CrewGenerator.generate(CsvReader.readFile(CSV_PATH), fixedAttendanceDateTime.getDate());
             if (command.equals(Command.QUIT)) {
                 break;
             }
-            command.execute(crews, fixedDateTime);
+            command.execute(crews, fixedAttendanceDateTime);
         }
     }
 
-    public static void processCheckAttendees(final Crews crews, final LocalDateTime fixDateTime) {
-        validateHoliday(fixDateTime);
+    public static void processCheckAttendees(final Crews crews, final AttendanceDateTime attendanceDateTime) {
+        validateHoliday(attendanceDateTime);
         Crew crew = findCrewByNickNameInput(crews);
         String inputTime = InputView.readDateTime();
-        LocalDate fixedDate = AttendanceDateTime.getDate(fixDateTime);
-        AttendanceDateTime attendanceDateTime = AttendanceDateTime.ofTimeString(fixedDate, inputTime);
-        LocalDateTime dateTime = attendanceDateTime.getDateTime();
-        crew.validateAttended(dateTime);
-        final Attendance attendance = new Attendance(dateTime);
+        LocalDate fixedDate = attendanceDateTime.getDate();
+        crew.validateAttended(attendanceDateTime);
+        AttendanceDateTime newAttendanceDateTime = AttendanceDateTime.ofTimeString(fixedDate, inputTime);
+        final Attendance attendance = new Attendance(newAttendanceDateTime);
         crew.add(attendance);
         OutputView.printAttendance(attendance);
     }
@@ -55,15 +56,18 @@ public class AttendanceController {
         Crew crew = crews.findByNickname(nickname);
 
         String oldDayOfMonthInput = InputView.readUpdateDate();
-        int dayOfMonth = Integer.parseInt(oldDayOfMonthInput);
+        int dayOfMonthInput = Integer.parseInt(oldDayOfMonthInput);
+        DayOfMonth dayOfMonth = new DayOfMonth(dayOfMonthInput);
+        int displayDay = dayOfMonth.getDisplayDay();
+
         Attendances attendances = crew.getAttendances();
-        Attendance findAttendance = attendances.findAttendance(dayOfMonth);
+        Attendance findAttendance = attendances.findAttendance(displayDay);
 
         String inputUpdateTime = InputView.readUpdateDateTime();
         final LocalTime updateTime = LocalTime.parse(inputUpdateTime);
 
         attendances.updateTime(findAttendance, updateTime);
-        Attendance newAttendance = attendances.findAttendance(dayOfMonth);
+        Attendance newAttendance = attendances.findAttendance(displayDay);
 
         OutputView.printUpdateAttendance(findAttendance, newAttendance);
     }
@@ -80,14 +84,14 @@ public class AttendanceController {
         return crew;
     }
 
-    private static void validateHoliday(LocalDateTime fixDateTime) {
-        Integer dayOfMonth = AttendanceDateTime.getDayOfMonth(fixDateTime);
+    private static void validateHoliday(AttendanceDateTime attendanceDateTime) {
+        int dayOfMonth = attendanceDateTime.getDayOfMonth();
         if (HolidayManager.isHoliday(dayOfMonth)) {
             throw new CustomIllegalArgumentException(
                     String.format("%d월 %d일 %s은 등교일이 아닙니다.",
                             Constants.FIXED_MONTH,
-                            fixDateTime.getDayOfMonth(),
-                            DayOfWeekKorean.getKoreanName(fixDateTime.getDayOfWeek())));
+                            dayOfMonth,
+                            DayOfWeekKorean.getKoreanName(DayOfWeek.of(dayOfMonth))));
 
         }
     }

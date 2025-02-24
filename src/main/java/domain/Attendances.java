@@ -1,6 +1,7 @@
 package domain;
 
 import error.CustomIllegalArgumentException;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.LinkedList;
@@ -28,9 +29,9 @@ public class Attendances {
                 .count();
     }
 
-    public boolean isAttended(final LocalDateTime dateTime) {
+    public boolean existAttended(final LocalDate date) {
         return attendances.stream()
-                .anyMatch(attendance -> attendance.getLocalDateTime().equals(dateTime));
+                .anyMatch(attendance -> attendance.equalsDate(date));
     }
 
     public void addSorted(Attendance newAttendance) {
@@ -54,8 +55,8 @@ public class Attendances {
     public void updateTime(Attendance findAttendance, LocalTime updateTime) {
         attendances.remove(findAttendance);
         LocalDateTime dateTime = findAttendance.getLocalDateTime();
-        LocalDateTime newDateTime = LocalDateTime.of(dateTime.toLocalDate(), updateTime);
-        Attendance newAttendance = new Attendance(newDateTime);
+        AttendanceDateTime newAttendanceDateTime = AttendanceDateTime.of(dateTime.toLocalDate(), updateTime);
+        Attendance newAttendance = new Attendance(newAttendanceDateTime);
         addSorted(newAttendance);
     }
 

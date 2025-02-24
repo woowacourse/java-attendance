@@ -7,13 +7,13 @@ import domain.AttendanceStatus;
 import domain.Attendances;
 import domain.Crew;
 import domain.Crews;
-import util.DayOfWeekKorean;
 import domain.Nickname;
 import domain.Punishment;
 import java.time.DayOfWeek;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import util.Constants;
+import util.DayOfWeekKorean;
 
 public final class OutputView {
 
@@ -25,7 +25,7 @@ public final class OutputView {
         final AttendanceStatus attendanceStatus = attendance.getAttendanceStatus();
         final int day = localDateTime.getDayOfMonth();
         final String dayName = DayOfWeekKorean.getKoreanName(localDateTime.getDayOfWeek());
-        final LocalTime localTime = AttendanceDateTime.getTime(localDateTime);
+        final LocalTime localTime = attendance.getLocalDateTime().toLocalTime();
 
         System.out.println(
                 String.format("%d월 %02d일 %s %s (%s)", Constants.FIXED_MONTH, day, dayName, localTime,
@@ -75,7 +75,8 @@ public final class OutputView {
                 timeFormat = "--:--";
             }
             System.out.println(
-                    String.format("%d월 %02d일 %s %s (%s)", Constants.FIXED_MONTH, day, DayOfWeekKorean.getKoreanName(dayOfWeek),
+                    String.format("%d월 %02d일 %s %s (%s)", Constants.FIXED_MONTH, day,
+                            DayOfWeekKorean.getKoreanName(dayOfWeek),
                             timeFormat,
                             attendanceStatus.getDisplayName()));
         }
