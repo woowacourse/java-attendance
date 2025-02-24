@@ -14,6 +14,9 @@ public class InputView {
     private static final String INPUT_EDIT_TIME_MESSAGE = "언제로 변경하겠습니까?";
     private static final String FUNCTION_MESSAGE = "오늘은 %s입니다. 기능을 선택해 주세요.%n";
     private static final String DATE_FORMAT = "%d월 %02d일 %s";
+    private static final int FIRST_DAY_OF_MONTH = 1;
+    private static final int LAST_DAY_OF_MONTH = 31;
+
 
     private final Scanner sc = new Scanner(System.in);
 
@@ -30,7 +33,10 @@ public class InputView {
     }
 
     public String readEditDayOfMonth() {
-        return basicInput(INPUT_EDIT_DAY_MESSAGE);
+        String input = basicInput(INPUT_EDIT_DAY_MESSAGE);
+        validateNumber(input);
+        validateDayOfMonth(input);
+        return input;
     }
 
     public String readEditTime() {
@@ -63,6 +69,22 @@ public class InputView {
     private void validateInput(String input) {
         if (input.isBlank()) {
             throw new IllegalArgumentException("내용을 입력해 주세요.");
+        }
+    }
+
+    private void validateNumber(String input) {
+        try {
+            Integer.parseInt(input);
+        } catch (NumberFormatException e) {
+            throw new IllegalArgumentException("숫자만 입력할 수 있습니다.");
+        }
+    }
+
+    private void validateDayOfMonth(String input) {
+        int parsedNumber = Integer.parseInt(input);
+
+        if (parsedNumber < FIRST_DAY_OF_MONTH || parsedNumber > LAST_DAY_OF_MONTH) {
+            throw new IllegalArgumentException("날짜가 유효하지 않습니다.");
         }
     }
 
