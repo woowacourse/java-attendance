@@ -1,7 +1,7 @@
 package controller;
 
 import domain.AttendTime;
-import domain.AttendanceFileReader;
+import file.AttendanceFileReader;
 import domain.Crews;
 import domain.December;
 import view.InputView;
@@ -9,7 +9,6 @@ import view.OutputView;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.SortedMap;
 
 import static domain.December.DEFAULT_MONTH;
 import static domain.December.DEFAULT_YEAR;
