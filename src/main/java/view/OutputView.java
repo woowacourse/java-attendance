@@ -11,9 +11,6 @@ import util.LocalDateTimePrintFormatter;
 
 public class OutputView {
     private static final String STATE_FORMATTER = "%s: %d회\n";
-    private static final String DISMISSAL_SUBJECT = "제적 대상자입니다.";
-    private static final String WARNING_SUBJECT = "경고 대상자입니다.";
-    private static final String INTERVIEW_SUBJECT = "면담 대상자입니다.";
     private static final String PRINT_PUNISHMENT_RESULT = "제적 위험자 조회 결과";
     private static final String INTERVIEW_LABEL_FORMATTER = "- %s: 결석 %d회, 지각 %d회 (면담)\n";
     private static final String WARNING_LABEL_FORMATTER = "- %s: 결석 %d회, 지각 %d회 (경고)\n";
@@ -40,21 +37,14 @@ public class OutputView {
     }
 
     public static void printResult(HashMap<String, Integer> studentRecord) {
-        int riskLevel = studentRecord.get(AttendanceStatus.ATTENDANCE.getState()) + studentRecord.get(AttendanceStatus.LATE.getState()) / 3;
+        int riskLevel = studentRecord.get(AttendanceStatus.ABSENT.getState()) + studentRecord.get(AttendanceStatus.LATE.getState()) / 3;
         for (String state : studentRecord.keySet()) {
             System.out.printf(String.format(STATE_FORMATTER,state,studentRecord.get(state)));
         }
-        if (riskLevel >= StudentPunishment.DISMISSAL.getStandard()) {
-            System.out.println(DISMISSAL_SUBJECT);
+        if (StudentPunishment.makeExpulsionNotice(riskLevel) == null) {
             return;
         }
-        if (riskLevel >= StudentPunishment.INTERVIEW.getStandard()) {
-            System.out.println(INTERVIEW_SUBJECT);
-            return;
-        }
-        if (riskLevel >= StudentPunishment.WARNING.getStandard()) {
-            System.out.println(WARNING_SUBJECT);
-        }
+        System.out.println(StudentPunishment.makeExpulsionNotice(riskLevel));
     }
 
     public static void displayAtRiskStudent() {
