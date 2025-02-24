@@ -65,7 +65,7 @@ public class AttendanceMachine {
         AttendanceHistories histories = AttendanceHistories.fromRegister(register);
         List<AttendanceHistory> warningAttendanceHistory = histories.findWarningAttendanceHistory();
 
-//        outputView.writeWarningHistories(warningAttendanceHistory);
+        outputView.writeWarningHistories(warningAttendanceHistory);
     }
 
     private void functionThree(LocalDate now, Register register) {

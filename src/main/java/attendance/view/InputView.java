@@ -1,6 +1,6 @@
 package attendance.view;
 
-import attendance.domain.constant.DayOfWeek;
+import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.util.Scanner;
 
@@ -23,8 +23,9 @@ public class InputView {
     public String readFunctionChoose(final LocalDate now) {
         int month = now.getMonthValue();
         int day = now.getDayOfMonth();
-        DayOfWeek dayOfWeek = DayOfWeek.from(now.getDayOfWeek().getValue());
-        System.out.println(String.format(CHOOSE_FUNCTION, month, day, dayOfWeek.getDayOfWeek()));
+        String dayOfWeek = changeDayOfWeekToKorean(now.getDayOfWeek());
+
+        System.out.println(String.format(CHOOSE_FUNCTION, month, day, dayOfWeek));
         System.out.println(ATTENDANCE_CHECK);
         System.out.println(ATTENDANCE_MODIFY);
         System.out.println(ATTENDANCE_HISTORY_EACH_CREW);
@@ -63,4 +64,25 @@ public class InputView {
         scanner.close();
     }
 
+    private String changeDayOfWeekToKorean(final DayOfWeek dayOfWeek) {
+        if (dayOfWeek == DayOfWeek.MONDAY) {
+            return "월요일";
+        }
+        if (dayOfWeek == DayOfWeek.TUESDAY) {
+            return "화요일";
+        }
+        if (dayOfWeek == DayOfWeek.WEDNESDAY) {
+            return "수요일";
+        }
+        if (dayOfWeek == DayOfWeek.THURSDAY) {
+            return "목요일";
+        }
+        if (dayOfWeek == DayOfWeek.FRIDAY) {
+            return "금요일";
+        }
+        if (dayOfWeek == DayOfWeek.SATURDAY) {
+            return "토요일";
+        }
+        return "일요일";
+    }
 }
