@@ -55,7 +55,7 @@ public class Attendance {
     }
 
     private LocalTime formatTimeInput(String timeInput) {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("[HH:mm][H:mm][HH:m][H:m]");
         return LocalTime.parse(timeInput, formatter);
     }
 
