@@ -90,8 +90,8 @@ public class AbsentPolicyTest {
 
     private static Stream<Arguments> provideDateTimeForLatePolicy(){
         return Stream.of(
-                Arguments.of(LocalDateTime.of(2024,12,10, 9,6)),
-                Arguments.of(LocalDateTime.of(2024,12,11, 9,30)),
+                Arguments.of(LocalDateTime.of(2024,12,10, 10,6)),
+                Arguments.of(LocalDateTime.of(2024,12,11, 10,30)),
                 Arguments.of(LocalDateTime.of(2024,12,2, 13,6)),
                 Arguments.of(LocalDateTime.of(2024,12,9, 13,30))
         );

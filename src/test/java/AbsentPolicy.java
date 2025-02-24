@@ -30,10 +30,11 @@ public class AbsentPolicy {
         LocalTime attendanceTime = calculateAttendanceTime(attendanceDayOfWeek);
 
         if(educationTime.isBefore(attendanceTime.plusMinutes(6))){
-            if(educationTime.isBefore(attendanceTime.plusMinutes(31))){
-                return "지각";
-            }
             return "출석";
+        }
+
+        if(educationTime.isBefore(attendanceTime.plusMinutes(31))){
+            return "지각";
         }
 
         return "결석";
