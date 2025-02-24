@@ -3,7 +3,6 @@ package domain;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -16,15 +15,7 @@ public class CrewAttendanceRepository {
     private final Map<String, CrewAttendance> crewAttendance;
 
     public CrewAttendanceRepository(Map<String, CrewAttendance> crewAttendance) {
-        validateUnique(crewAttendance);
-        this.crewAttendance = crewAttendance;
-    }
-
-    private void validateUnique(Map<String, CrewAttendance> crewAttendance) {
-        Set<String> uniqueKeys = new HashSet<>(crewAttendance.keySet());
-        if (uniqueKeys.size() != crewAttendance.size()) {
-            throw new IllegalArgumentException("중복된 크루 이름이 존재합니다.");
-        }
+        this.crewAttendance = new HashMap<>(crewAttendance);
     }
 
     public static CrewAttendanceRepository of(LocalDate currentDate, String filePath) {

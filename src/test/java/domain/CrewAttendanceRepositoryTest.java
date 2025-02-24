@@ -1,13 +1,13 @@
 package domain;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 class CrewAttendanceRepositoryTest {
-
     @Test
     void 출석을_찾는다() {
         // given
@@ -27,7 +27,7 @@ class CrewAttendanceRepositoryTest {
         CrewAttendance foundCrewAttendance = crewAttendanceRepository.findByName(crewName).get();
 
         // then
-        Assertions.assertThat(crewAttendance)
+        assertThat(crewAttendance)
                 .isEqualTo(foundCrewAttendance);
     }
 
@@ -59,7 +59,7 @@ class CrewAttendanceRepositoryTest {
         List<CrewAttendance> crewAttendances = crewAttendanceRepository.findAll();
 
         // then
-        Assertions.assertThat(crewAttendances)
+        assertThat(crewAttendances)
                 .containsExactlyInAnyOrder(crewAttendance1, crewAttendance2);
     }
 }
