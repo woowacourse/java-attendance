@@ -26,4 +26,9 @@ public class InputView {
                 """);
         return sc.nextLine();
     }
+
+    public String readCrewName() {
+        System.out.println("닉네임을 입력해 주세요.");
+        return sc.nextLine();
+    }
 }
