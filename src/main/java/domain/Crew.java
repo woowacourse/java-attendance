@@ -2,15 +2,24 @@ package domain;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
 
 public class Crew {
     private final String name;
-    private LocalDate date;
-    private LocalTime time;
+    private final Map<LocalDate, LocalTime> timeLogs;
 
-    public Crew(String name, LocalDate date, LocalTime time) {
+    public Crew(String name) {
         this.name = name;
-        this.date = date;
-        this.time = time;
+        this.timeLogs = new HashMap<>();
+    }
+
+    public void addNewTimeLog(LocalDate date, LocalTime time) {
+        timeLogs.put(date, time);
+    }
+
+    public boolean isMyName(String value) {
+        return Objects.equals(name, value);
     }
 }

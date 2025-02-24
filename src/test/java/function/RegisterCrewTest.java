@@ -3,7 +3,6 @@ package function;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import domain.AttendanceBook;
-import domain.Crew;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
@@ -51,7 +50,10 @@ public class RegisterCrewTest {
         String date = "2024-12-13";
         String time = "10:07";
 
-        Crew crew = new Crew(name, LocalDate.parse(date), LocalTime.parse(time));
+        AttendanceBook attendanceBook = new AttendanceBook();
+        attendanceBook.registerCrew(name, LocalDate.parse(date), LocalTime.parse(time));
+
+        assertThat(attendanceBook.checkCrewExisted(name)).isEqualTo(true);
     }
 
     @Test
