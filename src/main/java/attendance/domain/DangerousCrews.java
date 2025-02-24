@@ -21,18 +21,23 @@ public class DangerousCrews {
         return new DangerousCrews();
     }
 
-    public List<DangerousCrew> findDangerousCrews(CrewAttendanceManager crewAttendanceManager, Crews crews) {
+    public List<DangerousCrew> findDangerousCrewsAndSort(
+        CrewAttendanceManager crewAttendanceManager, Crews crews) {
         for (Crew crew : crews.getCrews()) {
             addDangerousCrew(crewAttendanceManager, crew);
         }
+        sortDangerousCrew();
+        return Collections.unmodifiableList(dangerousCrews);
+    }
 
+    private void sortDangerousCrew() {
         dangerousCrews.sort(Comparator.comparing(DangerousCrew::getStatusName)
             .thenComparing(DangerousCrew::getCrewName));
-        return dangerousCrews;
     }
 
     private void addDangerousCrew(CrewAttendanceManager crewAttendanceManager, Crew crew) {
-        AttendanceHistories attendanceHistories = crewAttendanceManager.findAttendanceHistoriesByCrew(crew);
+        AttendanceHistories attendanceHistories = crewAttendanceManager.findAttendanceHistoriesByCrew(
+            crew);
         Map<AttendanceType, Integer> attendanceResult = attendanceHistories.calculateAttendanceResult();
         CrewStatus crewStatus = calculateCrewStatus(attendanceResult);
         if (crewStatus != CLEAR) {

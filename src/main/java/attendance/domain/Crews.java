@@ -1,12 +1,9 @@
 package attendance.domain;
 
-import static attendance.domain.CrewStatus.CLEAR;
-import static attendance.domain.CrewStatus.calculateCrewStatus;
 import static attendance.error.ErrorMessage.INVALID_CREW_NAME;
 
+import java.util.Collections;
 import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 public class Crews {
@@ -37,6 +34,6 @@ public class Crews {
     }
 
     public Set<Crew> getCrews() {
-        return crews;
+        return Collections.unmodifiableSet(crews);
     }
 }

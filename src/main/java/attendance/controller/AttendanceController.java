@@ -98,7 +98,8 @@ public class AttendanceController {
 
     private void checkDangerousCrews() {
         DangerousCrews dangerousCrews = DangerousCrews.create();
-        List<DangerousCrew> foundDangerousCrewResults = dangerousCrews.findDangerousCrews(crewAttendanceManager, crews);
+        List<DangerousCrew> foundDangerousCrewResults = dangerousCrews.findDangerousCrewsAndSort(
+            crewAttendanceManager, crews);
         outputView.printDangerousMessage();
         for (DangerousCrew dangerousCrew : foundDangerousCrewResults) {
             outputView.printDangerousCrews(dangerousCrew);

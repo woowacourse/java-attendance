@@ -15,6 +15,8 @@ import java.util.Scanner;
 
 public class InputView {
 
+    private static final String NUMBER_REGAX = "\\d+";
+    private static final String DATE_FORMAT = "HH:mm";
     private static final String TODAY_INFO = "오늘은 %d월 %d일 %s입니다. 기능을 선택해 주세요.";
     private static final String INPUT_NICKNAME_MESSAGE = "닉네임을 입력해 주세요.";
     private static final String INPUT_MODIFY_DATE_MESSAGE = "수정하려는 날짜(일)를 입력해 주세요.";
@@ -70,11 +72,11 @@ public class InputView {
     }
 
     private void validateIsNumber(String userInput) {
-        validateInvalidDate(!userInput.matches("\\d+"), NOT_NUMBER);
+        validateInvalidDate(!userInput.matches(NUMBER_REGAX), NOT_NUMBER);
     }
 
     private static LocalTime parseStringToLocalTime(String userInput) {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern(DATE_FORMAT);
         return LocalTime.parse(userInput, formatter);
     }
 
