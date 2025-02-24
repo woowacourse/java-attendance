@@ -5,8 +5,9 @@ import java.time.format.DateTimeFormatter;
 
 public class AttendTime {
 
-    private final LocalDateTime attendTime;
     public static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+
+    private final LocalDateTime attendTime;
 
     public AttendTime(String attendTime) {
         this.attendTime = LocalDateTime.parse(attendTime, FORMATTER);
