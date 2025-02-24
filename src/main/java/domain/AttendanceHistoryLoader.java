@@ -17,7 +17,7 @@ public class AttendanceHistoryLoader {
         Crews crews = new Crews(new ArrayList<>());
 
         try (BufferedReader reader = new BufferedReader(new FileReader("src/main/resources/attendances12.csv"))) {
-            skipItemTitle(reader);
+            ignoreTitleOfFile(reader);
             loadAttendanceHistory(reader, crews);
         } catch (IOException e) {
             throw new IllegalStateException("크루원들의 출석 기록을 읽는 중 오류가 발생했습니다.", e);
@@ -26,7 +26,7 @@ public class AttendanceHistoryLoader {
         return crews;
     }
 
-    private void skipItemTitle(BufferedReader reader) throws IOException {
+    private void ignoreTitleOfFile(BufferedReader reader) throws IOException {
         reader.readLine();
     }
 
