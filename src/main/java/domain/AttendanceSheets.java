@@ -41,22 +41,14 @@ public class AttendanceSheets {
     public AttendanceSheet findAttendanceSheetByNicknameAndDay(String nickname, int day) {
         List<AttendanceSheet> attendanceByNickname = findAttendanceByNickname(nickname);
 
-        AttendanceSheet attendanceSheet = attendanceByNickname.stream()
+        return attendanceByNickname.stream()
                 .filter(sheet -> sheet.isSameDay(day))
                 .findFirst()
-                .orElse(null);
-        validateHasAttendanceSheet(attendanceSheet);
-        return attendanceSheet;
-    }
-
-    private static void validateHasAttendanceSheet(AttendanceSheet attendanceSheet) {
-        if (attendanceSheet == null) {
-            throw new IllegalArgumentException("[ERROR] 출석 기록이 없는 날짜입니다.");
-        }
+                .orElseThrow(() -> new IllegalArgumentException("[ERROR] 출석 기록이 없는 날짜입니다."));
     }
 
     public List<AttendanceSheet> findAttendanceByNickname(String nickname) {
-        validateHasNickname(nickname);
+        validateNullOrEmptyNickname(nickname);
 
         List<AttendanceSheet> foundAttendance = attendanceSheets.stream()
                 .filter(attendanceSheet -> attendanceSheet.hasNickname(nickname))

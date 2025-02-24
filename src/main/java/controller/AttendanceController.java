@@ -1,10 +1,10 @@
 package controller;
 
-import domain.AttendanceStatics;
 import domain.AttendanceDateTime;
 import domain.AttendanceSheet;
 import domain.AttendanceSheets;
 import domain.AttendanceSheetsFactory;
+import domain.AttendanceStatics;
 import dto.AttendanceStatusDTO;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
