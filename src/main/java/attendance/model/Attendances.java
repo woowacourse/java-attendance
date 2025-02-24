@@ -33,6 +33,6 @@ public class Attendances {
                 .filter(attendance -> attendance.isCrewAttendance(crew))
                 .filter(attendance -> attendance.isSameDateTime(dateTime))
                 .findAny()
-                .orElseThrow(() -> new IllegalArgumentException("크루와 시간에 해당하는 출석 기록이 없습니다."));
+                .orElseThrow(() -> new IllegalArgumentException("크루와 날짜, 시간에 해당하는 출석 기록이 없습니다."));
     }
 }

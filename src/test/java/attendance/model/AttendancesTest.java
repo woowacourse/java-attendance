@@ -29,7 +29,7 @@ public class AttendancesTest {
         attendances.calculateAttendancesType();
     }
 
-    @DisplayName("크루와 날짜로 출석 기록을 조회한다.")
+    @DisplayName("크루와 날짜, 시간으로 출석 기록을 조회한다.")
     @Test
     void findAttendanceWithCrewAndDateTime() {
         Crew crew = new Crew("쿠키");

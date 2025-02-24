@@ -11,9 +11,9 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 class CSVReaderTest {
-    @DisplayName("df")
+    @DisplayName("csv 파일로부터 중첩 리스트 객체를 반환한다.")
     @Test
-    void test() {
+    void returnListFromCSV() {
         Path path = Paths.get("src/main/resources/attendances.csv");
         assertAll(
                 () -> assertEquals(41, CSVReader.readCSV(path).size()),
