@@ -12,17 +12,18 @@ import org.junit.jupiter.api.Test;
 
 class CrewAttendanceRecordsTest {
     private static final LocalDate SYSTEM_DATE_FOR_TEST = LocalDate.of(2024, 12, 13);
-    CrewAttendanceRecords crewAttendanceRecords = new CrewAttendanceRecords(new CsvParsingGenerator(),
+
+    CrewAttendanceRecords bingTeeAttendanceRecords = new CrewAttendanceRecords(new BingTeeAttendanceRecordsGenerator(),
             SYSTEM_DATE_FOR_TEST);
 
     @Test
     @DisplayName("출석 기록 존재 여부를 반환한다.")
     void hasRecordTest() {
         // given
-        Crew crew = new Crew("쿠키");
-        LocalDate date = LocalDate.of(2024, 12, 13);
+        Crew crew = new Crew("빙티");
+        LocalDate date = LocalDate.of(2024, 12, 2);
         // when
-        boolean hasRecord = crewAttendanceRecords.hasRecord(crew, date);
+        boolean hasRecord = bingTeeAttendanceRecords.hasRecord(crew, date);
         // then
         assertThat(hasRecord).isTrue();
     }
@@ -32,13 +33,14 @@ class CrewAttendanceRecordsTest {
     void updateAttendanceRecordTest() {
         // given
         Crew crew = new Crew("빙티");
-        LocalDate date = LocalDate.of(2024, 12, 3);
-        LocalTime time = LocalTime.of(9, 58);
+        LocalDate date = LocalDate.of(2024, 12, 2);
+        LocalTime time = LocalTime.of(13, 5);
         AttendanceRecord newAttendanceRecord = AttendanceRecord.of(date, time);
         // when
-        AttendanceRecord oldAttendanceRecord = crewAttendanceRecords.updateAttendanceRecord(crew, newAttendanceRecord);
+        AttendanceRecord oldAttendanceRecord = bingTeeAttendanceRecords.updateAttendanceRecord(crew,
+                newAttendanceRecord);
         // then
-        assertThat(oldAttendanceRecord).isEqualTo(AttendanceRecord.of(date, LocalTime.of(10, 7)));
+        assertThat(oldAttendanceRecord).isEqualTo(AttendanceRecord.of(date, LocalTime.of(13, 0)));
     }
 
     @Test
@@ -50,7 +52,7 @@ class CrewAttendanceRecordsTest {
         LocalTime time = LocalTime.of(9, 58);
         AttendanceRecord newAttendanceRecord = AttendanceRecord.of(date, time);
         // when & then
-        assertThatThrownBy(() -> crewAttendanceRecords.updateAttendanceRecord(crew, newAttendanceRecord))
+        assertThatThrownBy(() -> bingTeeAttendanceRecords.updateAttendanceRecord(crew, newAttendanceRecord))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("[ERROR] 등록되지 않은 닉네임입니다.\n");
     }
@@ -61,7 +63,7 @@ class CrewAttendanceRecordsTest {
         // given
         Crew crew = new Crew("빙티");
         // when
-        int presentCount = crewAttendanceRecords.getAttendanceCount(crew, Attendance.PRESENT);
+        int presentCount = bingTeeAttendanceRecords.getAttendanceCount(crew, Attendance.PRESENT);
         // then
         assertThat(presentCount).isEqualTo(3);
     }
@@ -72,7 +74,7 @@ class CrewAttendanceRecordsTest {
         // given
         Crew crew = new Crew("빙티");
         // when
-        int tardyCount = crewAttendanceRecords.getAttendanceCount(crew, Attendance.TARDY);
+        int tardyCount = bingTeeAttendanceRecords.getAttendanceCount(crew, Attendance.TARDY);
         // then
         assertThat(tardyCount).isEqualTo(4);
     }
@@ -83,9 +85,9 @@ class CrewAttendanceRecordsTest {
         // given
         Crew crew = new Crew("빙티");
         // when
-        int absentCount = crewAttendanceRecords.getAttendanceCount(crew, Attendance.ABSENT);
+        int absentCount = bingTeeAttendanceRecords.getAttendanceCount(crew, Attendance.ABSENT);
         // then
-        assertThat(absentCount).isEqualTo(3);
+        assertThat(absentCount).isEqualTo(2);
     }
 
     @Test
@@ -96,13 +98,13 @@ class CrewAttendanceRecordsTest {
         // when & then
         assertAll(
                 () -> assertThatThrownBy(
-                        () -> crewAttendanceRecords.getAttendanceCount(crew, Attendance.PRESENT)).isInstanceOf(
+                        () -> bingTeeAttendanceRecords.getAttendanceCount(crew, Attendance.PRESENT)).isInstanceOf(
                         IllegalArgumentException.class).hasMessage("[ERROR] 등록되지 않은 닉네임입니다.\n"),
                 () -> assertThatThrownBy(
-                        () -> crewAttendanceRecords.getAttendanceCount(crew, Attendance.TARDY)).isInstanceOf(
+                        () -> bingTeeAttendanceRecords.getAttendanceCount(crew, Attendance.TARDY)).isInstanceOf(
                         IllegalArgumentException.class).hasMessage("[ERROR] 등록되지 않은 닉네임입니다.\n"),
                 () -> assertThatThrownBy(
-                        () -> crewAttendanceRecords.getAttendanceCount(crew, Attendance.ABSENT)).isInstanceOf(
+                        () -> bingTeeAttendanceRecords.getAttendanceCount(crew, Attendance.ABSENT)).isInstanceOf(
                         IllegalArgumentException.class).hasMessage("[ERROR] 등록되지 않은 닉네임입니다.\n")
         );
     }
@@ -111,15 +113,15 @@ class CrewAttendanceRecordsTest {
     @DisplayName("닉네임과 등교 시간을 입력하면 출석할 수 있다.")
     void checkInTest() {
         // given
-        Crew crew = new Crew("짱수");
+        Crew crew = new Crew("빙티");
         LocalTime time = LocalTime.of(10, 0);
         // when
-        AttendanceRecord attendanceRecord = crewAttendanceRecords.checkIn(crew, time, SYSTEM_DATE_FOR_TEST);
+        AttendanceRecord attendanceRecord = bingTeeAttendanceRecords.checkIn(crew, time, SYSTEM_DATE_FOR_TEST);
         // then
         assertAll(
                 () -> assertThat(attendanceRecord).isEqualTo(
                         AttendanceRecord.of(LocalDate.of(2024, 12, 13), LocalTime.of(10, 0))),
-                () -> assertThat(crewAttendanceRecords.hasRecord(crew, LocalDate.of(2024, 12, 13))).isTrue()
+                () -> assertThat(bingTeeAttendanceRecords.hasRecord(crew, LocalDate.of(2024, 12, 13))).isTrue()
         );
     }
 
@@ -130,7 +132,7 @@ class CrewAttendanceRecordsTest {
         Crew crew = new Crew("포비");
         LocalTime time = LocalTime.of(10, 0);
         // when & then
-        assertThatThrownBy(() -> crewAttendanceRecords.checkIn(crew, time, SYSTEM_DATE_FOR_TEST))
+        assertThatThrownBy(() -> bingTeeAttendanceRecords.checkIn(crew, time, SYSTEM_DATE_FOR_TEST))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("[ERROR] 등록되지 않은 닉네임입니다.\n");
     }
@@ -139,10 +141,10 @@ class CrewAttendanceRecordsTest {
     @DisplayName("이미 출석을 하였는데 다시 출석 확인을 하는 경우 예외를 발생시킨다.")
     void validatePresenceTest() {
         // given
-        Crew crew = new Crew("쿠키");
+        Crew crew = new Crew("빙티");
         LocalTime time = LocalTime.of(10, 0);
         // when & then
-        assertThatThrownBy(() -> crewAttendanceRecords.checkIn(crew, time, SYSTEM_DATE_FOR_TEST))
+        assertThatThrownBy(() -> bingTeeAttendanceRecords.checkIn(crew, time, SYSTEM_DATE_FOR_TEST.minusDays(1)))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("[ERROR] 이미 출석을 확인하였습니다. 필요한 경우 수정 기능을 이용해 주세요.\n");
     }
@@ -153,29 +155,35 @@ class CrewAttendanceRecordsTest {
         // given
         Crew crew = new Crew("빙티");
         // when
-        List<AttendanceRecord> actualRecords = crewAttendanceRecords.getSortedRecords(crew);
+        List<AttendanceRecord> actualRecords = bingTeeAttendanceRecords.getSortedRecords(crew);
         // then
         List<AttendanceRecord> expectedRecords = List.of(
                 AttendanceRecord.of(LocalDate.of(2024, 12, 2), LocalTime.of(13, 0)),
-                AttendanceRecord.of(LocalDate.of(2024, 12, 3), LocalTime.of(10, 7)),
-                AttendanceRecord.of(LocalDate.of(2024, 12, 4), LocalTime.of(10, 2)),
-                AttendanceRecord.of(LocalDate.of(2024, 12, 5), LocalTime.of(10, 6)),
-                AttendanceRecord.of(LocalDate.of(2024, 12, 6), LocalTime.of(10, 1)),
-                AttendanceRecord.asAbsent(LocalDate.of(2024, 12, 9)),
-                AttendanceRecord.of(LocalDate.of(2024, 12, 10), LocalTime.of(10, 8)),
-                AttendanceRecord.asAbsent(LocalDate.of(2024, 12, 11)),
-                AttendanceRecord.asAbsent(LocalDate.of(2024, 12, 12)),
-                AttendanceRecord.of(LocalDate.of(2024, 12, 13), LocalTime.of(10, 7)));
+                AttendanceRecord.of(LocalDate.of(2024, 12, 3), LocalTime.of(10, 0)),
+                AttendanceRecord.of(LocalDate.of(2024, 12, 4), LocalTime.of(10, 0)),
+                AttendanceRecord.of(LocalDate.of(2024, 12, 5), LocalTime.of(10, 15)),
+                AttendanceRecord.of(LocalDate.of(2024, 12, 6), LocalTime.of(10, 15)),
+                AttendanceRecord.of(LocalDate.of(2024, 12, 9), LocalTime.of(13, 15)),
+                AttendanceRecord.of(LocalDate.of(2024, 12, 10), LocalTime.of(10, 15)),
+                AttendanceRecord.of(LocalDate.of(2024, 12, 11), LocalTime.of(10, 31)),
+                AttendanceRecord.of(LocalDate.of(2024, 12, 12), LocalTime.of(10, 31)));
         assertThat(actualRecords).isEqualTo(expectedRecords);
     }
 
     @Test
     @DisplayName("제적 위험자 리스트를 반환한다.")
     void getWarnedCrewsTest() {
-        // given & when
-        List<Crew> actualCrews = crewAttendanceRecords.getWarnedCrews();
+        // given
+        CrewAttendanceRecords warnedCrewRecords = new CrewAttendanceRecords(new WarnedCrewRecordsGenerator(),
+                SYSTEM_DATE_FOR_TEST);
+        // when
+        List<Crew> actualCrews = warnedCrewRecords.getWarnedCrews();
         // then
-        List<Crew> expected = List.of(new Crew("빙티"), new Crew("이든"), new Crew("빙봉"), new Crew("쿠키"));
+        List<Crew> expected = List.of(new Crew("제적크루"),
+                new Crew("면담크루2"),
+                new Crew("면담크루3"),
+                new Crew("면담크루1"),
+                new Crew("경고크루"));
         assertThat(actualCrews).isEqualTo(expected);
     }
 }
