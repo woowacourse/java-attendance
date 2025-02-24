@@ -1,6 +1,6 @@
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
-import domain.AttendanceManager;
+import domain.Crews;
 import domain.AttendanceStatistics;
 import domain.AttendanceStatus;
 import domain.Crew;
@@ -15,7 +15,7 @@ import org.junit.jupiter.api.Test;
 
 public class AttendanceStatisticsTest {
 
-    AttendanceManager attendanceManager = new AttendanceManager();
+    Crews crews = new Crews();
 
     @DisplayName("출석 통계를 정확하게 계산한다.")
     @Test
@@ -28,8 +28,8 @@ public class AttendanceStatisticsTest {
             LocalDateTime.of(2024, 12, 6, 10, 40)); // 결석
 
         String name = "빙티"; // 경고 대상자
-        attendanceManager.createCrew(name, records);
-        Crew crew = attendanceManager.findByName(name);
+        crews.createCrew(name, records);
+        Crew crew = crews.findByName(name);
 
         LocalDate nowDate = LocalDate.of(2024, 12, 7);
         StatisticsResult statisticsResult = AttendanceStatistics.countStatus(nowDate, crew);
@@ -53,8 +53,8 @@ public class AttendanceStatisticsTest {
             LocalDateTime.of(2024, 12, 6, 10, 40)); // 결석
 
         String name = "빙티"; // 경고 대상자
-        attendanceManager.createCrew(name, records);
-        Crew crew = attendanceManager.findByName(name);
+        crews.createCrew(name, records);
+        Crew crew = crews.findByName(name);
 
         LocalDate nowDate = LocalDate.of(2024, 12, 7);
         StatisticsResult statisticsResult = AttendanceStatistics.countStatus(nowDate, crew);
@@ -74,8 +74,8 @@ public class AttendanceStatisticsTest {
             LocalDateTime.of(2024, 12, 9, 13, 40)); // 결석
 
         String name = "빙티";
-        attendanceManager.createCrew(name, counselingRecords);
-        Crew crew = attendanceManager.findByName(name);
+        crews.createCrew(name, counselingRecords);
+        Crew crew = crews.findByName(name);
 
         LocalDate nowDate = LocalDate.of(2024, 12, 10);
         StatisticsResult statisticsResult = AttendanceStatistics.countStatus(nowDate, crew);
@@ -98,8 +98,8 @@ public class AttendanceStatisticsTest {
             LocalDateTime.of(2024, 12, 12, 11, 40)); // 결석
 
         String name = "빙티";
-        attendanceManager.createCrew(name, expelledRecords);
-        Crew crew = attendanceManager.findByName(name);
+        crews.createCrew(name, expelledRecords);
+        Crew crew = crews.findByName(name);
 
         LocalDate nowDate = LocalDate.of(2024, 12, 13);
         StatisticsResult statisticsResult = AttendanceStatistics.countStatus(nowDate, crew);
@@ -130,10 +130,10 @@ public class AttendanceStatisticsTest {
             LocalDateTime.of(2024, 12, 10, 10, 40) // 결석
         );
 
-        attendanceManager.createCrew("이든", testRecords1); // 면담 대상자
-        attendanceManager.createCrew("빙봉", testRecords2); // 면담 대상자
+        crews.createCrew("이든", testRecords1); // 면담 대상자
+        crews.createCrew("빙봉", testRecords2); // 면담 대상자
         LocalDate nowDate = LocalDate.of(2024, 12, 11);
-        Map<String, StatisticsResult> warningCrews = attendanceManager.findWarningCrews(nowDate);
+        Map<String, StatisticsResult> warningCrews = crews.findWarningCrews(nowDate);
 
         assertThat(warningCrews.size()).isEqualTo(2);
     }

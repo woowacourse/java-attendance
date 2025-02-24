@@ -1,14 +1,14 @@
 import controller.AttendanceController;
 import controller.FileController;
-import domain.AttendanceManager;
+import domain.Crews;
 
 public class Application {
 
     public static void main(String[] args) {
-        AttendanceManager attendanceManager = new AttendanceManager();
+        Crews crews = new Crews();
 
-        FileController fileController = new FileController(attendanceManager);
-        AttendanceController attendanceController = new AttendanceController(attendanceManager);
+        FileController fileController = new FileController(crews);
+        AttendanceController attendanceController = new AttendanceController(crews);
 
         fileController.initializeFile("src/main/resources/attendances.csv");
         attendanceController.run();

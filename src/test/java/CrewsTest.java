@@ -1,7 +1,7 @@
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 
-import domain.AttendanceManager;
+import domain.Crews;
 import domain.AttendanceStatus;
 import domain.Crew;
 import domain.StatisticsResult;
@@ -14,9 +14,9 @@ import java.util.Map;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-public class AttendanceManagerTest {
+public class CrewsTest {
 
-    AttendanceManager attendanceManager = new AttendanceManager();
+    Crews crews = new Crews();
 
     @Test
     @DisplayName("크루 정보를 출석부에 저장한다.")
@@ -25,10 +25,10 @@ public class AttendanceManagerTest {
         LocalDateTime attendDateAndTime = LocalDateTime.of(2024, 12, 16, 13, 0);
         String name = "빙봉";
 
-        attendanceManager.createCrew(name, List.of(initialDateAndTime));
-        attendanceManager.attendCrew(name, attendDateAndTime);
+        crews.createCrew(name, List.of(initialDateAndTime));
+        crews.attendCrew(name, attendDateAndTime);
 
-        assertThat(attendanceManager.findByName(name).getAttendanceCount()).isEqualTo(2);
+        assertThat(crews.findByName(name).getAttendanceCount()).isEqualTo(2);
     }
 
     @Test
@@ -38,10 +38,10 @@ public class AttendanceManagerTest {
         LocalDate localDate = dateAndTime.toLocalDate();
         String name = "빙봉";
 
-        attendanceManager.createCrew(name, List.of());
-        TimeAndStatus timeStatus = attendanceManager.attendCrew(name, dateAndTime);
+        crews.createCrew(name, List.of());
+        TimeAndStatus timeStatus = crews.attendCrew(name, dateAndTime);
 
-        Crew crew = attendanceManager.findByName(name);
+        Crew crew = crews.findByName(name);
         TimeAndStatus expectedTimeStatus = crew.findByDate(localDate);
 
         assertThat(expectedTimeStatus).isEqualTo(timeStatus);
@@ -54,10 +54,10 @@ public class AttendanceManagerTest {
         LocalDateTime attendDateAndTime = LocalDateTime.of(2024, 12, 16, 13, 3);
         String name = "빙봉";
 
-        attendanceManager.createCrew(name, List.of(initialDateAndTime));
+        crews.createCrew(name, List.of(initialDateAndTime));
 
         assertThatThrownBy(() -> {
-            attendanceManager.attendCrew(name, attendDateAndTime);
+            crews.attendCrew(name, attendDateAndTime);
         }).isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -69,8 +69,8 @@ public class AttendanceManagerTest {
         LocalDateTime editedDateAndTime = LocalDateTime.of(2024, 12, 16, 13, 6);
         LocalDate localDate = editedDateAndTime.toLocalDate();
 
-        attendanceManager.createCrew(name, List.of(initialDateAndTime));
-        attendanceManager.editCrew(name, editedDateAndTime);
+        crews.createCrew(name, List.of(initialDateAndTime));
+        crews.editCrew(name, editedDateAndTime);
 
         TimeAndStatus timeAndStatus = findTimeAndStatus(name, localDate);
 
@@ -84,15 +84,15 @@ public class AttendanceManagerTest {
         LocalDateTime editedDateAndTime = LocalDateTime.of(2024, 12, 16, 13, 3);
         String name = "빙봉";
 
-        attendanceManager.createCrew(name, List.of(initialDateAndTime));
+        crews.createCrew(name, List.of(initialDateAndTime));
 
         assertThatThrownBy(() -> {
-            attendanceManager.editCrew(name, editedDateAndTime);
+            crews.editCrew(name, editedDateAndTime);
         }).isInstanceOf(IllegalArgumentException.class);
     }
 
     private TimeAndStatus findTimeAndStatus(String name, LocalDate localDate) {
-        Crew crew = attendanceManager.findByName(name);
+        Crew crew = crews.findByName(name);
         return crew.findByDate(localDate);
     }
 
@@ -117,10 +117,10 @@ public class AttendanceManagerTest {
             LocalDateTime.of(2024, 12, 10, 10, 40) // 결석
         );
 
-        attendanceManager.createCrew("이든", testRecords1); // 면담 대상자
-        attendanceManager.createCrew("빙봉", testRecords2); // 면담 대상자
+        crews.createCrew("이든", testRecords1); // 면담 대상자
+        crews.createCrew("빙봉", testRecords2); // 면담 대상자
         LocalDate nowDate = LocalDate.of(2024, 12, 11);
-        Map<String, StatisticsResult> sortedResult = attendanceManager.findWarningCrews(nowDate);
+        Map<String, StatisticsResult> sortedResult = crews.findWarningCrews(nowDate);
         List<String> names = new ArrayList<>(sortedResult.keySet());
 
         assertThat(names.get(0)).isEqualTo("이든");

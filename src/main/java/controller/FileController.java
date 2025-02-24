@@ -2,7 +2,7 @@ package controller;
 
 import static util.constant.ErrorMessage.FILE_ERROR_MESSAGE;
 
-import domain.AttendanceManager;
+import domain.Crews;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.time.LocalDateTime;
@@ -15,16 +15,16 @@ import util.parser.DateTimeParser;
 
 public class FileController {
 
-    private final AttendanceManager attendanceManager;
+    private final Crews crews;
 
-    public FileController(AttendanceManager attendanceManager) {
-        this.attendanceManager = attendanceManager;
+    public FileController(Crews crews) {
+        this.crews = crews;
     }
 
     public void initializeFile(String filePath) {
         try {
             Map<String, List<LocalDateTime>> result = createRecords(loadFile(filePath));
-            result.forEach(attendanceManager::createCrew);
+            result.forEach(crews::createCrew);
         } catch (FileNotFoundException e) {
             System.err.println(FILE_ERROR_MESSAGE);
         }

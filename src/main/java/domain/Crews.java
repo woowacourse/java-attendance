@@ -20,11 +20,11 @@ import java.util.List;
 import java.util.Map;
 import util.parser.DateTimeParser;
 
-public class AttendanceManager {
+public class Crews {
 
     private final Map<String, Crew> crews;
 
-    public AttendanceManager() {
+    public Crews() {
         this.crews = new HashMap<>();
     }
 
