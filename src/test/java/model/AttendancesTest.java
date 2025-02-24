@@ -1,0 +1,141 @@
+package model;
+
+import converter.StringConverter;
+import java.time.DayOfWeek;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.IntStream;
+import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import util.DataReader;
+
+class AttendancesTest {
+
+    private final StringConverter stringConverter = new StringConverter();
+    private Attendances attendances;
+    private Crews crews;
+
+    @BeforeEach
+    void beforeEach() {
+        List<String> rawAttendances = new DataReader().readAttendances("src/test/resources/attendances.csv");
+        crews = stringConverter.convertToCrews(rawAttendances);
+        attendances = stringConverter.convertToAttendances(rawAttendances, crews);
+    }
+
+    @Test
+    @DisplayName("닉네임과 등교 시간을 입력하면 출석할 수 있다.")
+    void test1() {
+        //given
+        Crew crew = Crew.of("쿠키");
+        LocalDateTime checkInTime = LocalDateTime.of(2024, 12, 3, 9, 35);
+        Attendance attendance = Attendance.of(crew, checkInTime);
+
+        //when
+        attendances.checkIn(attendance);
+
+        //then
+        Assertions.assertThat(attendances.contains(attendance)).isTrue();
+    }
+
+    @Test
+    @DisplayName("이미 출석한 경우에는 다시 출석할 수 없다.")
+    void test2() {
+        //given
+        Crew crew = Crew.of("쿠키");
+        LocalDateTime checkInTime = LocalDateTime.of(2024, 12, 3, 9, 35);
+        Attendance attendance = Attendance.of(crew, checkInTime);
+        attendances.checkIn(attendance);
+
+        //when & then
+        Assertions.assertThatThrownBy(() -> attendances.checkIn(attendance))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("이미 출석한 경우에는 다시 출석할 수 없습니다.");
+    }
+
+    @Test
+    @DisplayName("등록되지 않은 크루는 출석할 수 없다,")
+    void test3() {
+        //given
+        String nickname = "미소";
+        String rawCheckInTime = "10:00";
+
+        //when & then
+        Assertions.assertThatThrownBy(() -> stringConverter.convertToAttendance(crews, nickname, rawCheckInTime))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("등록되지 않은 크루입니다.");
+    }
+
+    @Test
+    @DisplayName("출석 시간을 수정한다.")
+    void test4() {
+        //given
+        Crew crew = Crew.of("쿠키");
+        LocalDateTime checkInTime = LocalDateTime.of(2025, 2, 27, 10, 31);
+        Attendance attendance = Attendance.of(crew, checkInTime);
+
+        attendances.checkIn(attendance);
+
+        LocalDateTime modifiedCheckInTime = LocalDateTime.of(2025, 2, 27, 10, 0);
+
+        //when
+        Attendance modifiedAttendance = attendances.modify(crew, modifiedCheckInTime);
+
+        //then
+        Assertions.assertThat(modifiedAttendance.getAttendanceType()).isEqualTo(AttendanceType.SUCCESS);
+        Assertions.assertThat(modifiedAttendance.getCheckInTime()).isEqualTo(modifiedCheckInTime);
+    }
+
+    @Test
+    @DisplayName("출석 시간을 수정할 때 출석이 없으면 새로 생성한다.")
+    void test5() {
+        //given
+        Crew crew = Crew.of("쿠키");
+        LocalDateTime modifiedCheckInTime = LocalDateTime.of(2024, 12, 3, 10, 0);
+
+        //when
+        attendances.modify(crew, modifiedCheckInTime);
+
+        //then
+        Assertions.assertThat(attendances.getAttendances()).contains(Attendance.of(crew, modifiedCheckInTime));
+    }
+
+    @Test
+    @DisplayName("크루의 출석 기록을 조회한다.")
+    void test6() {
+        //given
+        Crew crew = Crew.of("쿠키");
+
+        Attendance attendance1 = Attendance.of(crew, LocalDateTime.of(2025, 2, 17, 10, 0, 0));
+        Attendance attendance2 = Attendance.of(crew, LocalDateTime.of(2025, 2, 18, 10, 31, 0));
+        Attendance attendance3 = Attendance.of(crew, LocalDateTime.of(2025, 2, 19, 10, 6, 0));
+
+        //when
+        Attendances filteredAttendances = attendances.findByCrewAndMonth(crew, 2);
+
+        //then
+        Assertions.assertThat(filteredAttendances.getAttendances())
+                .contains(attendance1, attendance2, attendance3);
+    }
+
+    @Test
+    @DisplayName("크루의 출석을 모두 조회한다.")
+    void test7() {
+        //given
+        LocalDate now = LocalDate.of(2024, 2, 21);
+
+        long weekdays = IntStream.rangeClosed(1, now.getDayOfMonth())
+                .mapToObj(day -> LocalDate.of(now.getYear(), now.getMonth(), day))
+                .filter(date -> date.getDayOfWeek() != DayOfWeek.SATURDAY && date.getDayOfWeek() != DayOfWeek.SUNDAY)
+                .count();
+
+        //when
+        Map<Crew, Attendances> crewsAttendances = attendances.findAll(crews, LocalDate.now().getMonthValue());
+
+        //then
+        Assertions.assertThat(crewsAttendances.get(Crew.of("쿠키")).getAttendances()).hasSize((int) weekdays);
+    }
+}
