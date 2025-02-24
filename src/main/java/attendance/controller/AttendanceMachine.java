@@ -9,11 +9,13 @@ import attendance.domain.constant.CommandOption;
 import attendance.exception.CustomException;
 import attendance.util.AttendanceParser;
 import attendance.util.FileReader;
+import attendance.util.Parser;
 import attendance.view.InputView;
 import attendance.view.OutputView;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.ZoneId;
 import java.util.List;
 import java.util.function.Supplier;
@@ -43,7 +45,6 @@ public class AttendanceMachine {
         inputView.closeScanner();
     }
 
-    //TODO : 객체지향 생활 원칙에서 else를 사용하지 말라고 하였는데, else if도 사용하지 말아야 하는 것인지 궁금합니다.
     private boolean mappingCommand(CommandOption commandOption, LocalDate now, Crews crews, Register register) {
         if (commandOption.equals(CommandOption.ONE)) {
             confirmAttendance(now, crews, register);
@@ -80,24 +81,29 @@ public class AttendanceMachine {
 
     private void modifyAttendance(Crews crews, Register register, LocalDate now) {
         Crew crew = findModifiyCrew(crews);
-        int modifyDate = readModifyDay();
-        List<String> modifyTime = List.of(findModifyTime().split(":"));
-        LocalDateTime localDateTime = LocalDateTime.of(now.getYear(), now.getMonthValue(), modifyDate, Integer.parseInt(modifyTime.getFirst()), Integer.parseInt(modifyTime.getLast()));
-        AttendanceChecker beforeInfo = register.findInfo(crew, localDateTime);
-        int beforeHour = beforeInfo.getLocalDateTime().getHour();
-        int beforeMinute = beforeInfo.getLocalDateTime().getMinute();
+        LocalDateTime targetDateTime = readModifyDateTime(now);
+        AttendanceChecker beforeInfo = register.findInfo(crew, targetDateTime);
+        LocalTime beforeTime = LocalTime.of(beforeInfo.getLocalDateTime().getHour(), beforeInfo.getLocalDateTime().getMinute());
         String beforeStatus = beforeInfo.getAttendanceStatus();
-        AttendanceChecker modifiedInfo = register.modifyInfo(crew, localDateTime);
-        outputView.writeAttendanceModifyCheck(beforeHour, beforeMinute, beforeStatus, modifiedInfo);
+        AttendanceChecker modifiedInfo = register.modifyInfo(crew, targetDateTime);
+        outputView.writeAttendanceModifyCheck(beforeTime, beforeStatus, modifiedInfo);
+    }
+
+    private LocalDateTime readModifyDateTime(LocalDate now) {
+        int modifyDate = readModifyDay();
+        List<String> modifyTime = Parser.convertToGroup(findModifyTime());
+        return now.withDayOfMonth(modifyDate).atTime(
+                Parser.convertToNumber(modifyTime.getFirst()),
+                Parser.convertToNumber(modifyTime.getLast())
+        );
     }
 
     private void confirmAttendance(LocalDate now, Crews crews, Register register) {
         Crew crew = findCrew(crews);
-        List<String> attendanceTime = List.of(findAttendanceTime().split(":"));
-        LocalDateTime localDateTime = now.atTime(Integer.parseInt(attendanceTime.getFirst()), Integer.parseInt(attendanceTime.getLast()));
-        AttendanceChecker attendanceChecker = AttendanceChecker.of(localDateTime);
+        List<String> attendanceTime = Parser.convertToGroup(findAttendanceTime());
+        LocalDateTime localDateTime = now.atTime(Parser.convertToNumber(attendanceTime.getFirst()), Parser.convertToNumber(attendanceTime.getLast()));
         register.modifyInfo(crew, localDateTime);
-        outputView.writeAttendanceCheck(attendanceChecker);
+        outputView.writeAttendanceCheck(AttendanceChecker.of(localDateTime));
     }
 
     private Crew findCrew(Crews crews) {

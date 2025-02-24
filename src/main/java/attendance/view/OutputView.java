@@ -5,6 +5,7 @@ import attendance.domain.AttendanceChecker;
 import attendance.domain.AttendanceRegistry;
 import attendance.domain.constant.CrewStatus;
 import attendance.domain.constant.Weekday;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashSet;
@@ -25,14 +26,15 @@ public class OutputView {
         System.out.println(String.format("%s월 %s일 %s %s (%s)", month, day, dayOfWeek, time, status));
     }
 
-    public void writeAttendanceModifyCheck(int beforeHour, int beforeMinute, String beforeStatus, AttendanceChecker modifiedInfo) {
+    public void writeAttendanceModifyCheck(LocalTime beforeTime, String beforeStatus, AttendanceChecker modifiedInfo) {
         String month = addZero(modifiedInfo.getLocalDateTime().getMonthValue());
         String day = addZero(modifiedInfo.getLocalDateTime().getDayOfMonth());
         String dayOfWeek = Weekday.from(modifiedInfo.getLocalDateTime().getDayOfWeek()).getDayOfWeek();
         String hour = addZero(modifiedInfo.getLocalDateTime().getHour());
         String minute = addZero(modifiedInfo.getLocalDateTime().getMinute());
         String status = modifiedInfo.getAttendanceStatus();
-        System.out.println(String.format("%s월 %s일 %s %s (%s) -> %s:%s (%s) 수정 완료!", month, day, dayOfWeek, convertZeroToHyphen(beforeHour,beforeMinute), beforeStatus, hour, minute, status));
+        System.out.println(String.format("%s월 %s일 %s %s (%s) -> %s:%s (%s) 수정 완료!", month, day, dayOfWeek, convertZeroToHyphen(
+                beforeTime.getHour(), beforeTime.getMinute()), beforeStatus, hour, minute, status));
     }
 
     public void writeAttendanceHistory(Crew crew, AttendanceRegistry attendanceRegistry) {
