@@ -1,13 +1,13 @@
-import static org.assertj.core.api.Assertions.assertThat;
-
-import domain.AttendanceManager;
 import domain.AttendanceStatus;
+import domain.CrewAttendances;
+import java.time.LocalDate;
 import java.time.LocalTime;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
-public class AttendanceManagerTest {
+public class AttendancesTest {
 
     @Nested
     class AddAttendance {
@@ -16,10 +16,13 @@ public class AttendanceManagerTest {
         void addAttendance() {
             String nickname = "투다";
             LocalTime time = LocalTime.of(8, 0);
-            AttendanceManager attendanceManager = new AttendanceManager();
-            attendanceManager.addAttendance(nickname, time);
-            assertThat(
-                    attendanceManager.crewAttendanceHistory(nickname, time)
+            LocalDate date = LocalDate.of(2024, 12, 3);
+            CrewAttendances crewAttendances = new CrewAttendances();
+            crewAttendances.addAttendance(nickname, time);
+            System.out.println();
+
+            Assertions.assertThat(
+                    crewAttendances.crewAttendance(nickname, date).attendanceStatus()
             ).isEqualTo(AttendanceStatus.ATTENDANCE);
         }
     }

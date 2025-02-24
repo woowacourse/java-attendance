@@ -1,21 +1,30 @@
 package domain;
 
+import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.HashMap;
 import java.util.Map;
 
 public class CrewAttendances {
+    private final Map<String, DateCrewAttendanceManager> crewAttendances;
 
-    private final Map<String, CrewAttendance> crewAttendances;
-
-    public CrewAttendances(String nickname, LocalTime time) {
-        crewAttendances = new HashMap<>();
+    public CrewAttendances() {
+        this.crewAttendances = new HashMap<>();
     }
 
-    public void addAttendance(String nickname, LocalTime time) {
+    public void addAttendance(String nickname, LocalTime attendanceTime) {
+        DateCrewAttendanceManager dateCrewAttendanceManager = getDateCrewAttendanceManager(nickname);
+        LocalDate attendanceDate = LocalDate.of(2024, 12, 3);
+        dateCrewAttendanceManager.addAttendance(attendanceTime, attendanceDate);
     }
 
-    public CrewAttendanceHistory crewAttendanceHistory(String nickname, LocalTime time) {
-        return null;
+    public CrewAttendance crewAttendance(String nickname, LocalDate date) {
+        DateCrewAttendanceManager dateCrewAttendanceManager = getDateCrewAttendanceManager(nickname);
+        return dateCrewAttendanceManager.crewAttendance(date);
+    }
+
+    private DateCrewAttendanceManager getDateCrewAttendanceManager(String nickname) {
+        crewAttendances.putIfAbsent(nickname, new DateCrewAttendanceManager());
+        return crewAttendances.get(nickname);
     }
 }

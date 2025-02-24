@@ -1,4 +1,8 @@
 package domain;
 
-public class CrewAttendance {
+import java.time.LocalTime;
+
+public record CrewAttendance(LocalTime attendanceTime, AttendanceStatus attendanceStatus) {
+
 }
+
