@@ -23,7 +23,7 @@ public class Attendance {
         if (!isAlreadyExists(updateWorkDateTime)) {
             throw new IllegalArgumentException("해당 날짜의 출석 정보가 없습니다.");
         }
-        
+
         dateTimes.put(updateWorkDateTime.getDate(), updateWorkDateTime.getTime());
     }
 
@@ -40,30 +40,6 @@ public class Attendance {
     public List<WorkDateTime> retrieveDateTimes() {
         return dateTimes.keySet().stream()
                 .map(date -> new WorkDateTime(date, dateTimes.get(date)))
-                .toList();
-    }
-
-    public AttendanceStatus calculateAttendanceStatus(WorkDate workDate) {
-        return AttendanceStatus.from(retrieveDateTime(workDate));
-    }
-
-    public Map<AttendanceStatus, Integer> calculateAttendanceStatusCount() {
-        return AttendanceStatus.calculateAttendanceStatusCount(retrieveDateTimes().stream()
-                .map(dateTime -> new WorkDateTime(dateTime.getDate(),
-                        dateTimes.get(dateTime.getDate())))
-                .map(AttendanceStatus::from)
-                .toList());
-    }
-
-    public Penalty calculatePenalty() {
-        return Penalty.from(calculateAttendanceStatuses());
-    }
-
-    private List<AttendanceStatus> calculateAttendanceStatuses() {
-        return retrieveDateTimes().stream()
-                .map(dateTime -> new WorkDateTime(dateTime.getDate(),
-                        dateTimes.get(dateTime.getDate())))
-                .map(AttendanceStatus::from)
                 .toList();
     }
 }

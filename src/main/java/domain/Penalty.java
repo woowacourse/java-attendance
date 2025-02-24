@@ -1,6 +1,6 @@
 package domain;
 
-import java.util.List;
+import java.util.Map;
 
 public enum Penalty {
     NONE("없음", 0),
@@ -16,51 +16,18 @@ public enum Penalty {
         this.absenceCount = absenceCount;
     }
 
-    public static Penalty from(List<AttendanceStatus> attendanceStatuses) {
-        int absenceCount = 0;
-        int perceptionCount = 0;
-
-        for (AttendanceStatus status : attendanceStatuses) {
-            absenceCount += countAbsence(status);
-            perceptionCount += countPerception(status);
-
-            absenceCount += convertPerceptionToAbsence(perceptionCount);
-            perceptionCount = resetPerceptionIfConverted(perceptionCount);
-        }
-
+    public static Penalty from(Map<AttendanceStatus, Integer> attendanceStatusCount) {
+        int absenceCount = calculateAbsenceCount(attendanceStatusCount);
         return determinePenalty(absenceCount);
     }
 
-    private static int countAbsence(AttendanceStatus status) {
-        if (status.isAbsence()) {
-            return 1;
-        }
+    public static int calculateAbsenceCount(Map<AttendanceStatus, Integer> attendanceStatusCount) {
+        int absenceCount = attendanceStatusCount.getOrDefault(AttendanceStatus.ABSENCE, 0);
+        int perceptionCount = attendanceStatusCount.getOrDefault(AttendanceStatus.PERCEPTION, 0);
 
-        return 0;
-    }
+        absenceCount += (perceptionCount / 3);
 
-    private static int countPerception(AttendanceStatus status) {
-        if (status.isPerception()) {
-            return 1;
-        }
-
-        return 0;
-    }
-
-    private static int convertPerceptionToAbsence(int perceptionCount) {
-        if (perceptionCount >= 3) {
-            return 1;
-        }
-
-        return 0;
-    }
-
-    private static int resetPerceptionIfConverted(int perceptionCount) {
-        if (perceptionCount >= 3) {
-            return 0;
-        }
-
-        return perceptionCount;
+        return absenceCount;
     }
 
     private static Penalty determinePenalty(int absenceCount) {

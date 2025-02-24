@@ -1,7 +1,6 @@
 package domain;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -69,7 +68,31 @@ public class CrewAttendanceRepository {
         return Optional.ofNullable(crewAttendance.get(name));
     }
 
-    public List<CrewAttendance> findAll() {
-        return new ArrayList<>(crewAttendance.values());
+    public List<CrewAttendance> findAllOrderByAbsence() {  // TODO. 정렬 조건으로 다양한 요청에 대응
+        return crewAttendance.values().stream()
+                .filter(this::hasPenalty)
+                .sorted(this::compareByAbsenceAndName)
+                .toList();
+    }
+
+    private boolean hasPenalty(CrewAttendance crewAttendance) {
+        Map<AttendanceStatus, Integer> statusCount = AttendanceStatus.calculateAttendanceStatusCount(
+                crewAttendance.retrieveAttendanceOrderByDate());
+        return !Penalty.from(statusCount).equals(Penalty.NONE);
+    }
+
+    private int compareByAbsenceAndName(CrewAttendance c1, CrewAttendance c2) {
+        Map<AttendanceStatus, Integer> statusCount1 = AttendanceStatus.calculateAttendanceStatusCount(
+                c1.retrieveAttendanceOrderByDate());
+        Map<AttendanceStatus, Integer> statusCount2 = AttendanceStatus.calculateAttendanceStatusCount(
+                c2.retrieveAttendanceOrderByDate());
+
+        int absenceCount1 = Penalty.calculateAbsenceCount(statusCount1);
+        int absenceCount2 = Penalty.calculateAbsenceCount(statusCount2);
+
+        if (absenceCount1 != absenceCount2) {
+            return Integer.compare(absenceCount2, absenceCount1);
+        }
+        return c1.getCrew().getName().compareTo(c2.getCrew().getName());
     }
 }

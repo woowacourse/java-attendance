@@ -1,7 +1,6 @@
 package domain;
 
 import java.util.List;
-import java.util.Map;
 
 public class CrewAttendance {
     private final Crew crew;
@@ -24,26 +23,10 @@ public class CrewAttendance {
         return attendance.retrieveDateTime(workDate);
     }
 
-    public List<WorkDateTime> retrieveAttendanceOrderByDate() {
+    public List<WorkDateTime> retrieveAttendanceOrderByDate() { // TODO. 정렬 조건으로 다양한 요청에 대응
         return attendance.retrieveDateTimes().stream()
                 .sorted()
                 .toList();
-    }
-
-    public AttendanceStatus calculateAttendanceStatus(WorkDate workDate) {
-        return attendance.calculateAttendanceStatus(workDate);
-    }
-
-    public Map<AttendanceStatus, Integer> calculateAttendanceStatusCount() {
-        return attendance.calculateAttendanceStatusCount();
-    }
-
-    public boolean isPenalty() {
-        return !calculatePenalty().isNone();
-    }
-
-    public Penalty calculatePenalty() {
-        return attendance.calculatePenalty();
     }
 
     public Crew getCrew() {

@@ -43,9 +43,12 @@ public enum AttendanceStatus {
     }
 
     public static Map<AttendanceStatus, Integer> calculateAttendanceStatusCount(
-            List<AttendanceStatus> attendanceStatuses) {
+            List<WorkDateTime> workDateTimes) {
         Map<AttendanceStatus, Integer> attendanceStatusCount = initializeAttendanceMap();
-        attendanceStatuses.forEach(status -> attendanceStatusCount.put(status, attendanceStatusCount.get(status) + 1));
+        workDateTimes.forEach(workDateTime -> {
+            AttendanceStatus status = from(workDateTime);
+            attendanceStatusCount.put(status, attendanceStatusCount.get(status) + 1);
+        });
 
         return attendanceStatusCount;
     }

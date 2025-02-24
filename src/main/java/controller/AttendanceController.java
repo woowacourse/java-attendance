@@ -1,8 +1,7 @@
 package controller;
 
-import controller.dto.AttendanceRecodeDto;
-import controller.dto.AttendanceResultDto;
-import controller.dto.PenaltyCrewDto;
+import controller.dto.AttendanceRecordsDto;
+import controller.dto.PenaltyRecordsDto;
 import domain.AttendanceStatus;
 import domain.CrewAttendance;
 import domain.CrewAttendanceRepository;
@@ -76,7 +75,7 @@ public class AttendanceController {
         WorkDateTime attendance = createAttendance(currnetWorkDate, inputView.readArriveTime());
 
         crewAttendance.addAttendance(attendance);
-        AttendanceStatus attendanceStatus = crewAttendance.calculateAttendanceStatus(attendance.getDate());
+        AttendanceStatus attendanceStatus = AttendanceStatus.from(attendance);
 
         outputView.printArriveResult(attendance, attendanceStatus.getName());
     }
@@ -86,10 +85,10 @@ public class AttendanceController {
         WorkDateTime afterAttendance = getAfterAttendance(currentDate);
 
         WorkDateTime beforeAttendance = getBeforeAttendance(crewAttendance, afterAttendance);
-        AttendanceStatus beforeStatus = crewAttendance.calculateAttendanceStatus(beforeAttendance.getDate());
+        AttendanceStatus beforeStatus = AttendanceStatus.from(beforeAttendance);
 
         crewAttendance.updateAttendance(afterAttendance);
-        AttendanceStatus afterStatus = crewAttendance.calculateAttendanceStatus(afterAttendance.getDate());
+        AttendanceStatus afterStatus = AttendanceStatus.from(afterAttendance);
 
         outputView.printUpdateResult(beforeAttendance, beforeStatus.getName(), afterAttendance,
                 afterStatus.getName());
@@ -111,12 +110,9 @@ public class AttendanceController {
     private void handleRecordAttendance() {
         CrewAttendance crewAttendance = getCrewAttendance(inputView.readNickName());
 
-        List<AttendanceRecodeDto> attendanceRecords = crewAttendance.retrieveAttendanceOrderByDate().stream()
-                .map(AttendanceRecodeDto::from)
-                .toList();
-        AttendanceResultDto attendanceResult = AttendanceResultDto.from(crewAttendance);
+        AttendanceRecordsDto attendanceRecordsDto = AttendanceRecordsDto.from(crewAttendance);
 
-        outputView.printTotalAttendanceStatus(attendanceRecords, attendanceResult);
+        outputView.printTotalAttendanceStatus(attendanceRecordsDto);
     }
 
     private CrewAttendance getCrewAttendance(String nickName) {
@@ -125,12 +121,11 @@ public class AttendanceController {
     }
 
     private void handleRiskAttendance() {
-        List<PenaltyCrewDto> penaltyCrews = crewAttendanceRepository.findAll().stream()
-                .filter(CrewAttendance::isPenalty)
-                .map(PenaltyCrewDto::from)
-                .toList();
+        List<CrewAttendance> crewAttendances = crewAttendanceRepository.findAllOrderByAbsence();
 
-        outputView.printPenaltyCrews(penaltyCrews);
+        PenaltyRecordsDto penaltyRecordsDto = PenaltyRecordsDto.from(crewAttendances);
+
+        outputView.printPenaltyCrews(penaltyRecordsDto);
     }
 
     private WorkDateTime createAttendance(WorkDate workDate, LocalTime localTime) {
