@@ -41,8 +41,4 @@ public class DateInfos {
         return AttendanceStatus.ABSENCE;
     }
 
-    public List<DateInfo> getDateInfos() {
-        return new ArrayList<>(dateInfos);
-    }
-
 }

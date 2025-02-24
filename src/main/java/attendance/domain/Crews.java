@@ -13,14 +13,6 @@ public class Crews {
         this.crews = crews;
     }
 
-    public static Crews fromCrewNames(Set<String> crewNames) {
-        Set<Crew> crews = new HashSet<>();
-        for (String crewName : crewNames) {
-            crews.add(Crew.from(crewName));
-        }
-        return new Crews(crews);
-    }
-
     public static Crews initCrews() {
         Set<Crew> crews = new HashSet<>();
         return new Crews(crews);
