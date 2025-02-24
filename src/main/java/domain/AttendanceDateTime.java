@@ -12,6 +12,7 @@ import util.Constants;
 public class AttendanceDateTime {
 
     public static final DateTimeFormatter KOREAN_DATE_TIME_FORMAT = DateTimeFormatter.ofPattern("M월 dd일 EEEE HH:mm");
+    public static final DateTimeFormatter ABSENCE_DATE_TIME_FORMAT = DateTimeFormatter.ofPattern("M월 dd일 EEEE --:--");
 
     private static final String DATE_TIME_FORMAT = "yyyy-MM-dd HH:mm";
     private static final String TIME_FORMAT = "HH:mm";

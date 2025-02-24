@@ -11,6 +11,7 @@ import domain.Nickname;
 import domain.Punishment;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import util.Constants;
 
 public final class OutputView {
@@ -19,12 +20,7 @@ public final class OutputView {
     }
 
     public static void printAttendance(final Attendance attendance) {
-        final AttendanceDateTime attendanceDateTime = attendance.getAttendanceDateTime();
-        final AttendanceStatus attendanceStatus = attendance.getAttendanceStatus();
-        final LocalTime localTime = attendanceDateTime.getTime();
-        final String formattedTime = getFormattedTime(localTime);
-
-        printFormattedAttendance(attendanceDateTime, formattedTime, attendanceStatus);
+        printAttendanceByFormatter(attendance);
     }
 
     public static void printUpdateAttendance(final Attendance oldAttendance, final Attendance newAttendance) {
@@ -47,12 +43,12 @@ public final class OutputView {
         final int sum = sumPunishmentCount(attendanceCounter);
         final Punishment punishment = Punishment.findByAbsenceCount(sum);
 
-        printCrewAttedancesFormat(nickname, attendances, attendanceCounter, punishment);
+        printCrewAttendancesFormat(nickname, attendances, attendanceCounter, punishment);
     }
 
-    private static void printCrewAttedancesFormat(Nickname nickname, Attendances attendances,
-                                                  AttendanceCounter attendanceCounter,
-                                                  Punishment punishment) {
+    private static void printCrewAttendancesFormat(Nickname nickname, Attendances attendances,
+                                                   AttendanceCounter attendanceCounter,
+                                                   Punishment punishment) {
         System.out.println(String.format("이번 달 %s의 출석 기록입니다.", nickname.getNickname()));
         System.out.println();
 
@@ -65,33 +61,32 @@ public final class OutputView {
 
     private static void printAttendances(Attendances attendances) {
         for (Attendance attendance : attendances.getAttendances()) {
-            printAttendanceWithAbsence(attendance);
+            printAttendanceByFormatter(attendance);
         }
     }
 
-    private static void printAttendanceWithAbsence(Attendance attendance) {
+    private static void printAttendanceByFormatter(Attendance attendance) {
         final AttendanceDateTime attendanceDateTime = attendance.getAttendanceDateTime();
         final AttendanceStatus attendanceStatus = attendance.getAttendanceStatus();
-        final LocalTime localTime = attendanceDateTime.getTime();
-        final String formattedTime = getFormattedTime(localTime);
-        printFormattedAttendance(attendanceDateTime, formattedTime, attendanceStatus);
+        final LocalTime time = attendanceDateTime.getTime();
+        DateTimeFormatter formatter = adjustFormatter(time);
+        printAttendance(attendanceDateTime, attendanceStatus, formatter);
     }
 
-    private static void printFormattedAttendance(AttendanceDateTime attendanceDateTime, String formattedTime,
-                                                 AttendanceStatus attendanceStatus) {
+    private static DateTimeFormatter adjustFormatter(LocalTime time) {
+        if (time.equals(Constants.ABSENCE_TIME)) {
+            return AttendanceDateTime.ABSENCE_DATE_TIME_FORMAT;
+        }
+        return AttendanceDateTime.KOREAN_DATE_TIME_FORMAT;
+    }
+
+    private static void printAttendance(AttendanceDateTime attendanceDateTime,
+                                        AttendanceStatus attendanceStatus, DateTimeFormatter formatter) {
         final LocalDateTime localDateTime = attendanceDateTime.getDateTime();
         System.out.println(
-                String.format("%s %s (%s)",
-                        localDateTime.format(AttendanceDateTime.KOREAN_DATE_TIME_FORMAT),
-                        formattedTime,
+                String.format("%s (%s)",
+                        localDateTime.format(formatter),
                         attendanceStatus.getDisplayName()));
-    }
-
-    private static String getFormattedTime(LocalTime localTime) {
-        if (localTime.equals(Constants.ABSENCE_TIME)) {
-            return "--:--";
-        }
-        return localTime.toString();
     }
 
     public static void printAllExpulsion(final Crews crews) {
