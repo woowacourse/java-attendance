@@ -8,29 +8,29 @@ import attendance.exception.ErrorMessage;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-class TimeTest {
+class CampusTimeTest {
 
     @Test
     void 등교_시간_객체_반환() {
         //given
         String originTime = "09:59";
-        Time time = Time.from(originTime);
+        CampusTime campusTime = CampusTime.fromHourColonMinute(originTime);
         //when & then
         assertAll(
-                () -> assertEquals(time.getHour(), "09"),
-                () -> assertEquals(time.getMinute(), "59")
+                () -> assertEquals(campusTime.getHour(), "09"),
+                () -> assertEquals(campusTime.getMinute(), "59")
         );
     }
 
     @Test
     void 등교_기본값_객체_반환() {
         //given
-        Time time = Time.makeAbsentValue();
+        CampusTime campusTime = CampusTime.makeAbsentValue();
 
         //when & then
         assertAll(
-                () -> assertEquals(time.getHour(), "--"),
-                () -> assertEquals(time.getMinute(), "--")
+                () -> assertEquals(campusTime.getHour(), "--"),
+                () -> assertEquals(campusTime.getMinute(), "--")
         );
     }
 
@@ -40,9 +40,9 @@ class TimeTest {
         String timeName = "ab:30";
 
         //when & then
-        Assertions.assertThatThrownBy(() -> Time.from(timeName))
+        Assertions.assertThatThrownBy(() -> CampusTime.fromHourColonMinute(timeName))
                 .isInstanceOf(CustomException.class)
-                .hasMessage(ErrorMessage.NUMBER_FORMAT_HOUR_ERROR.getMessage());
+                .hasMessage(ErrorMessage.TIME_FORMAT_ERROR.getMessage());
     }
 
     @Test
@@ -51,7 +51,7 @@ class TimeTest {
         String invalidTime = "03:ab";
 
         //when & then
-        Assertions.assertThatThrownBy(() -> Time.from(invalidTime))
+        Assertions.assertThatThrownBy(() -> CampusTime.fromHourColonMinute(invalidTime))
                 .isInstanceOf(CustomException.class)
                 .hasMessage(ErrorMessage.NUMBER_FORMAT_MINUTE_ERROR.getMessage());
     }
@@ -62,8 +62,8 @@ class TimeTest {
         String timeName = "10;31";
 
         //when & then
-        Assertions.assertThatThrownBy(() -> Time.from(timeName))
+        Assertions.assertThatThrownBy(() -> CampusTime.fromHourColonMinute(timeName))
                 .isInstanceOf(CustomException.class)
-                .hasMessage(ErrorMessage.COLON_ERROR.getMessage());
+                .hasMessage(ErrorMessage.SEPARATE_WITH_COLON_ERROR.getMessage());
     }
 }

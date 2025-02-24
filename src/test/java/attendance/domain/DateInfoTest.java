@@ -14,8 +14,8 @@ class DateInfoTest {
     void 결석_출석_지각_확인(int month, int day, int dayNumber, String timeNumber, String expectedStatus) {
         //given
         DayOfWeek dayOfWeek = DayOfWeek.from(dayNumber);
-        Time time = Time.from(timeNumber);
-        DateInfo dateInfo = DateInfo.of(month, day, dayOfWeek, time);
+        CampusTime campusTime = CampusTime.fromHourColonMinute(timeNumber);
+        DateInfo dateInfo = DateInfo.of(month, day, dayOfWeek, campusTime);
 
         //when
         String attendanceStatus = dateInfo.getAttendanceStatus();
@@ -34,11 +34,11 @@ class DateInfoTest {
     void 결석_출석으로_수정_확인(int month, int day, int dayNumber, String beforeTime, String afterTime, String expectedStatus) {
         //given
         DayOfWeek dayOfWeek = DayOfWeek.from(dayNumber);
-        Time prevTime = Time.from(beforeTime);
-        DateInfo dateInfo = DateInfo.of(month, day, dayOfWeek, prevTime);
-        Time modifyTime = Time.from(afterTime);
+        CampusTime prevCampusTime = CampusTime.fromHourColonMinute(beforeTime);
+        DateInfo dateInfo = DateInfo.of(month, day, dayOfWeek, prevCampusTime);
+        CampusTime modifyCampusTime = CampusTime.fromHourColonMinute(afterTime);
         //when
-        dateInfo.modifyAttendanceTime(modifyTime);
+        dateInfo.modifyAttendanceTime(modifyCampusTime);
 
         //then
         Assertions.assertThat(dateInfo.getAttendanceStatus()).isEqualTo(expectedStatus);
@@ -49,8 +49,8 @@ class DateInfoTest {
     void 결석_개수_반환(int month, int day, int dayNumber, String timeNumber, int expectedStatus) {
         //given
         DayOfWeek dayOfWeek = DayOfWeek.from(dayNumber);
-        Time time = Time.from(timeNumber);
-        DateInfo dateInfo = DateInfo.of(month, day, dayOfWeek, time);
+        CampusTime campusTime = CampusTime.fromHourColonMinute(timeNumber);
+        DateInfo dateInfo = DateInfo.of(month, day, dayOfWeek, campusTime);
 
         //when & then
         Assertions.assertThat(dateInfo.checkAbsenceStatus()).isEqualTo(expectedStatus);
@@ -61,8 +61,8 @@ class DateInfoTest {
     void 지각_개수_반환(int month, int day, int dayNumber, String timeNumber, int expectedStatus) {
         //given
         DayOfWeek dayOfWeek = DayOfWeek.from(dayNumber);
-        Time time = Time.from(timeNumber);
-        DateInfo dateInfo = DateInfo.of(month, day, dayOfWeek, time);
+        CampusTime campusTime = CampusTime.fromHourColonMinute(timeNumber);
+        DateInfo dateInfo = DateInfo.of(month, day, dayOfWeek, campusTime);
 
         //when & then
         Assertions.assertThat(dateInfo.checkLateStatus()).isEqualTo(expectedStatus);
@@ -73,8 +73,8 @@ class DateInfoTest {
     void 출석_개수_반환(int month, int day, int dayNumber, String timeNumber, int expectedStatus) {
         //given
         DayOfWeek dayOfWeek = DayOfWeek.from(dayNumber);
-        Time time = Time.from(timeNumber);
-        DateInfo dateInfo = DateInfo.of(month, day, dayOfWeek, time);
+        CampusTime campusTime = CampusTime.fromHourColonMinute(timeNumber);
+        DateInfo dateInfo = DateInfo.of(month, day, dayOfWeek, campusTime);
 
         //when & then
         Assertions.assertThat(dateInfo.checkAttendanceStatus()).isEqualTo(expectedStatus);

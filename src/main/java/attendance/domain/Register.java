@@ -17,10 +17,10 @@ public class Register {
         }
     }
 
-    public DateInfo modifyInfo(Crew crew, int date, Time modifyTime) {
+    public DateInfo modifyInfo(Crew crew, int date, CampusTime modifyCampusTime) {
         DateInfos dateInfos = register.get(crew);
         DateInfo dateInfo = dateInfos.findByDate(date);
-        dateInfo.modifyAttendanceTime(modifyTime);
+        dateInfo.modifyAttendanceTime(modifyCampusTime);
         return dateInfo;
     }
 
@@ -43,8 +43,8 @@ public class Register {
             String date = make(dateTime, " ", 0);
             String timeNumber = make(dateTime, " ", 1);
             String day = make(date, "-", 2);
-            Time time = Time.from(timeNumber);
-            modifyInfo(crew, Integer.parseInt(day), time);
+            CampusTime campusTime = CampusTime.fromHourColonMinute(timeNumber);
+            modifyInfo(crew, Integer.parseInt(day), campusTime);
         }
     }
 

@@ -8,31 +8,31 @@ public class DateInfo {
     private final String month;
     private final String day;
     private final DayOfWeek dayOfWeek;
-    private Time time;
+    private CampusTime campusTime;
     private AttendanceStatus attendanceStatus;
 
-    private DateInfo(String month, String day, DayOfWeek dayOfWeek, Time time) {
+    private DateInfo(String month, String day, DayOfWeek dayOfWeek, CampusTime campusTime) {
         this.month = month;
         this.day = day;
         this.dayOfWeek = dayOfWeek;
-        this.time = time;
+        this.campusTime = campusTime;
         this.attendanceStatus = calculateStatus();
     }
 
-    public static DateInfo of(int month, int day, DayOfWeek dayOfWeek, Time time) {
+    public static DateInfo of(int month, int day, DayOfWeek dayOfWeek, CampusTime campusTime) {
         String parsedMonth = formatWithLeadingZero(month);
         String parsedDay = formatWithLeadingZero(day);
-        return new DateInfo(parsedMonth, parsedDay, dayOfWeek, time);
+        return new DateInfo(parsedMonth, parsedDay, dayOfWeek, campusTime);
     }
 
     public static DateInfo makeDefaultValue(int month, int day, DayOfWeek dayOfWeek) {
         String parsedMonth = formatWithLeadingZero(month);
         String parsedDay = formatWithLeadingZero(day);
-        return new DateInfo(parsedMonth, parsedDay, dayOfWeek, Time.makeAbsentValue());
+        return new DateInfo(parsedMonth, parsedDay, dayOfWeek, CampusTime.makeAbsentValue());
     }
 
-    public void modifyAttendanceTime(Time modifyTime) {
-        this.time = modifyTime;
+    public void modifyAttendanceTime(CampusTime modifyCampusTime) {
+        this.campusTime = modifyCampusTime;
         this.attendanceStatus = calculateStatus();
     }
 
@@ -87,11 +87,11 @@ public class DateInfo {
     }
 
     private boolean checkDefault() {
-        return time.getHour().equals("--");
+        return campusTime.getHour().equals("--");
     }
 
     private AttendanceStatus checkAttendanceStatus(String hourLimit) {
-        int hourMinute = Integer.parseInt(time.getHour() + time.getMinute());
+        int hourMinute = Integer.parseInt(campusTime.getHour() + campusTime.getMinute());
         int absentTime = Integer.parseInt(hourLimit + "30");
         int lateTime = Integer.parseInt(hourLimit + "05");
         if (hourMinute > absentTime) {
@@ -119,7 +119,7 @@ public class DateInfo {
         return dayOfWeek.getDayOfWeek();
     }
 
-    public Time getTime() {
-        return time;
+    public CampusTime getTime() {
+        return campusTime;
     }
 }

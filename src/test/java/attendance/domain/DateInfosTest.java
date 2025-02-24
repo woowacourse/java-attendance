@@ -52,17 +52,17 @@ class DateInfosTest {
     void 출결상태_통계_계산() {
         //given
 
-        Time lateTime = Time.from("10:10");
-        Time normalTime = Time.from("09:00");
-        Time absentTime = Time.from("15:30");
+        CampusTime lateCampusTime = CampusTime.fromHourColonMinute("10:10");
+        CampusTime normalCampusTime = CampusTime.fromHourColonMinute("09:00");
+        CampusTime absentCampusTime = CampusTime.fromHourColonMinute("15:30");
 
         DayOfWeek tuesday = DayOfWeek.from(2);
         DayOfWeek wednesday = DayOfWeek.from(3);
 
-        DateInfo dateInfo1 = DateInfo.of(2, 18, tuesday, normalTime);
-        DateInfo dateInfo2 = DateInfo.of(2, 18, tuesday, lateTime);
-        DateInfo dateInfo3 = DateInfo.of(2, 19, wednesday, normalTime);
-        DateInfo dateInfo4 = DateInfo.of(2, 19, wednesday, absentTime);
+        DateInfo dateInfo1 = DateInfo.of(2, 18, tuesday, normalCampusTime);
+        DateInfo dateInfo2 = DateInfo.of(2, 18, tuesday, lateCampusTime);
+        DateInfo dateInfo3 = DateInfo.of(2, 19, wednesday, normalCampusTime);
+        DateInfo dateInfo4 = DateInfo.of(2, 19, wednesday, absentCampusTime);
 
         DateInfos dateInfos = DateInfos.from(List.of(dateInfo1, dateInfo2, dateInfo3, dateInfo4));
 

@@ -5,7 +5,7 @@ import attendance.domain.Crews;
 import attendance.domain.DateInfo;
 import attendance.domain.DateInfos;
 import attendance.domain.Register;
-import attendance.domain.Time;
+import attendance.domain.CampusTime;
 import attendance.domain.constant.DayOfWeek;
 import attendance.domain.constant.AttendanceOperation;
 import attendance.exception.CustomException;
@@ -77,21 +77,21 @@ public class AttendanceMachine {
     private void functionTwo(Crews crews, Register register) {
         Crew crew = findModifiyCrew(crews);
         int modifyDate = readModifyDay();
-        Time modifyTime = findModifyTime();
+        CampusTime modifyCampusTime = findModifyTime();
         DateInfo beforeInfo = register.findInfo(crew, modifyDate);
         String beforeHour = beforeInfo.getTime().getHour();
         String beforeMinute = beforeInfo.getTime().getMinute();
         String beforeStatus = beforeInfo.getAttendanceStatus();
-        DateInfo modifiedInfo = register.modifyInfo(crew, modifyDate, modifyTime);
+        DateInfo modifiedInfo = register.modifyInfo(crew, modifyDate, modifyCampusTime);
         outputView.writeAttendanceModifyCheck(beforeHour, beforeMinute, beforeStatus, modifiedInfo);
     }
 
     private void functionOne(LocalDate now, Crews crews, Register register) {
         Crew crew = findCrew(crews);
-        Time attendanceTime = findAttendanceTime();
+        CampusTime attendanceCampusTime = findAttendanceTime();
         DayOfWeek dayOfWeek = DayOfWeek.from(now.getDayOfWeek().getValue());
-        DateInfo dateInfo = DateInfo.of(now.getMonthValue(), now.getDayOfMonth(), dayOfWeek, attendanceTime);
-        register.modifyInfo(crew, Integer.parseInt(dateInfo.getDay()), attendanceTime);
+        DateInfo dateInfo = DateInfo.of(now.getMonthValue(), now.getDayOfMonth(), dayOfWeek, attendanceCampusTime);
+        register.modifyInfo(crew, Integer.parseInt(dateInfo.getDay()), attendanceCampusTime);
         outputView.writeAttendanceCheck(dateInfo);
     }
 
@@ -103,12 +103,12 @@ public class AttendanceMachine {
         return retryUntilValidInput(() -> crews.findCrew(inputView.readModifyCrewName()));
     }
 
-    private Time findAttendanceTime() {
-        return retryUntilValidInput(() -> Time.from(inputView.readAttendanceTime()));
+    private CampusTime findAttendanceTime() {
+        return retryUntilValidInput(() -> CampusTime.fromHourColonMinute(inputView.readAttendanceTime()));
     }
 
-    private Time findModifyTime() {
-        return retryUntilValidInput(() -> Time.from(inputView.readModifyTime()));
+    private CampusTime findModifyTime() {
+        return retryUntilValidInput(() -> CampusTime.fromHourColonMinute(inputView.readModifyTime()));
     }
 
     private int readModifyDay() {
