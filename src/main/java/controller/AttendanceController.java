@@ -71,7 +71,7 @@ public class AttendanceController {
     }
 
     private void handleCheckAttendance(LocalDate currentDate) {
-        CrewAttendance crewAttendance = getCrewAttendanceByNickName(inputView.readNickName());
+        CrewAttendance crewAttendance = getCrewAttendance(inputView.readNickName());
         DateTime dateTime = createDateTime(currentDate, inputView.readArriveTime());
 
         crewAttendance.addAttendance(dateTime);
@@ -81,7 +81,7 @@ public class AttendanceController {
     }
 
     private void handleEditAttendance(LocalDate currentDate) {
-        CrewAttendance crewAttendance = getCrewAttendanceByNickName(inputView.readUpdateNickName());
+        CrewAttendance crewAttendance = getCrewAttendance(inputView.readUpdateNickName());
         DateTime afterDateTime = getUpdatedDateTime(currentDate);
 
         DateTime beforeDateTime = getBeforeDateTime(crewAttendance, afterDateTime);
@@ -104,16 +104,20 @@ public class AttendanceController {
     private DateTime getBeforeDateTime(CrewAttendance crewAttendance, DateTime afterDateTime) {
         return crewAttendance.retrieveDateTime(afterDateTime.getDate());
     }
-
-
+    
     private void handleRecordAttendance() {
-        CrewAttendance crewAttendance = getCrewAttendanceByNickName(inputView.readNickName());
+        CrewAttendance crewAttendance = getCrewAttendance(inputView.readNickName());
 
         List<AttendanceRecodeDto> attendanceRecords = crewAttendance.retrieveDateTimesOrderByDate()
                 .stream().map(AttendanceRecodeDto::from).toList();
         AttendanceResultDto attendanceResult = AttendanceResultDto.from(crewAttendance);
 
         outputView.printTotalAttendanceStatus(attendanceRecords, attendanceResult);
+    }
+
+    private CrewAttendance getCrewAttendance(String nickName) {
+        return crewAttendanceRepository.findByName(nickName).orElseThrow(
+                () -> new IllegalArgumentException("해당 이름의 크루가 존재하지 않습니다."));
     }
 
     private void handleRiskAttendance() {
@@ -125,11 +129,7 @@ public class AttendanceController {
         outputView.printPenaltyCrews(penaltyCrews);
     }
 
-    private CrewAttendance getCrewAttendanceByNickName(String nickName) {
-        return crewAttendanceRepository.findByName(nickName);
-    }
-
-    private DateTime createDateTime(LocalDate localDate, LocalTime arriveTime) {
-        return new DateTime(new Date(localDate), new Time(arriveTime.getHour(), arriveTime.getMinute()));
+    private DateTime createDateTime(LocalDate localDate, LocalTime localTime) {
+        return new DateTime(new Date(localDate), new Time(localTime.getHour(), localTime.getMinute()));
     }
 }

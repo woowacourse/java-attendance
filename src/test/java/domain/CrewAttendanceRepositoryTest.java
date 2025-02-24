@@ -25,7 +25,7 @@ class CrewAttendanceRepositoryTest {
         CrewAttendanceRepository crewAttendanceRepository = new CrewAttendanceRepository(attendanceRecords);
 
         // when
-        CrewAttendance foundCrewAttendance = crewAttendanceRepository.findByName(crewName);
+        CrewAttendance foundCrewAttendance = crewAttendanceRepository.findByName(crewName).get();
 
         // then
         Assertions.assertThat(crewAttendance)
@@ -62,18 +62,5 @@ class CrewAttendanceRepositoryTest {
         // then
         Assertions.assertThat(crewAttendances)
                 .containsExactlyInAnyOrder(crewAttendance1, crewAttendance2);
-    }
-
-    @Test
-    void 존재하지_않는_크루는_찾지_못한다() {
-        // given
-        CrewAttendanceRepository crewAttendanceRepository = new CrewAttendanceRepository(new HashMap<>());
-
-        String crewName = "없는이름";
-
-        // when & then
-        Assertions.assertThatThrownBy(() -> crewAttendanceRepository.findByName(crewName))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage("해당 이름의 출석 정보가 없습니다.");
     }
 }

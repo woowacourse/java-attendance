@@ -77,14 +77,13 @@ public class CrewAttendanceRepository {
         Map<String, List<DateTime>> attendanceRecords = AttendanceFileParser.loadAttendanceRecords(filePath);
 
         attendanceRecords.forEach((name, dateTimes) -> {
-            CrewAttendance crewAttendance = crewAttendanceRepository.findByName(name);
-            dateTimes.forEach(crewAttendance::addAttendance);
+            crewAttendanceRepository.findByName(name)
+                    .ifPresent(crewAttendance -> dateTimes.forEach(crewAttendance::addAttendance));
         });
     }
 
-    public CrewAttendance findByName(String name) {
-        return Optional.ofNullable(crewAttendance.get(name))
-                .orElseThrow(() -> new IllegalArgumentException("해당 이름의 출석 정보가 없습니다."));
+    public Optional<CrewAttendance> findByName(String name) {
+        return Optional.ofNullable(crewAttendance.get(name));
     }
 
     public List<CrewAttendance> findAll() {
