@@ -46,9 +46,9 @@ public class AttendanceFactory {
     }
     
     private static AttendanceBook buildAttendanceBook() {
-        final Map<String, MemberAttendances> map = new HashMap<>();
+        final Map<CrewName, MemberAttendances> map = new HashMap<>();
         for (Map.Entry<String, List<Attendance>> entry : attendances.entrySet()) {
-            map.put(entry.getKey(), new MemberAttendances(entry.getKey(), entry.getValue()));
+            map.put(new CrewName(entry.getKey()), new MemberAttendances(entry.getKey(), entry.getValue()));
         }
         return new AttendanceBook(map);
     }

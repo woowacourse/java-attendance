@@ -16,11 +16,11 @@ import util.status.AttendanceStatus;
 
 public class MemberAttendances {
     
-    private final String name;
+    private final CrewName crewName;
     private final List<Attendance> attendances;
     
     public MemberAttendances(String name, List<Attendance> attendances) {
-        this.name = name;
+        this.crewName = new CrewName(name);
         this.attendances = new ArrayList<>(attendances);
     }
     
@@ -28,7 +28,7 @@ public class MemberAttendances {
         int lateCount = calculateLateCount();
         int absentCount = calculateAbsentCount();
         
-        return new ExpelMeasurementResult(name, lateCount, absentCount, checkStatus(lateCount, absentCount));
+        return new ExpelMeasurementResult(crewName.getCrewName(), lateCount, absentCount, checkStatus(lateCount, absentCount));
     }
     
     public MemberAttendResult getAttendanceResult() {
@@ -36,7 +36,7 @@ public class MemberAttendances {
         int lateCount = calculateLateCount();
         int absentCount = calculateAbsentCount();
         
-        return new MemberAttendResult(name,
+        return new MemberAttendResult(crewName.getCrewName(),
                 attendances.stream().map(Attendance::createAttendanceResult).toList(),
                 attendCount,
                 lateCount,

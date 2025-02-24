@@ -2,6 +2,7 @@ package controller;
 
 import domain.AttendanceBook;
 import domain.AttendanceFactory;
+import domain.CrewName;
 import dto.requeset.AttendRequest;
 import dto.requeset.AttendanceModifyRequest;
 import dto.requeset.AttendanceResultFindRequest;
@@ -23,7 +24,7 @@ public class AttendanceControllerImpl implements AttendanceController {
         this.inputView = inputView;
         this.outputView = outputView;
     }
-    
+
     @Override
     public void run() throws IOException {
         AttendanceBook attendanceBook = AttendanceFactory.createAttendanceBook();
@@ -52,15 +53,10 @@ public class AttendanceControllerImpl implements AttendanceController {
         }
     }
 
-    private void checkRiskExpelled(AttendanceBook attendanceBook) {
-        var expelMeasurementResults = attendanceBook.checkExpelWarnings();
-        outputView.handleExpelMeasurementResults(expelMeasurementResults);
-    }
-
-    private void checkCrewAttendacne(AttendanceBook attendanceBook) {
-        AttendanceResultFindRequest resultFindRequest = inputView.getAttendanceResultFindRequest();
-        var attendanceResult = attendanceBook.getAttendanceResult(resultFindRequest.name());
-        outputView.handleMemberAttendanceResult(attendanceResult);
+    private void registerAttendance(AttendanceBook attendanceBook) {
+        AttendRequest attendRequest = inputView.getAttendRequest();
+        var attendResult = attendanceBook.addAttendance(attendRequest.name(), LocalDateTime.of(dateProvider.now(), attendRequest.attendTime()));
+        outputView.handleAttendResult(attendResult);
     }
 
     private void modifyAttendance(AttendanceBook attendanceBook) {
@@ -69,9 +65,14 @@ public class AttendanceControllerImpl implements AttendanceController {
         outputView.handleAttendanceModifyResult(memberAttendanceModifyResult);
     }
 
-    private void registerAttendance(AttendanceBook attendanceBook) {
-        AttendRequest attendRequest = inputView.getAttendRequest();
-        var attendResult = attendanceBook.addAttendance(attendRequest.name(), LocalDateTime.of(dateProvider.now(), attendRequest.attendTime()));
-        outputView.handleAttendResult(attendResult);
+    private void checkCrewAttendacne(AttendanceBook attendanceBook) {
+        AttendanceResultFindRequest resultFindRequest = inputView.getAttendanceResultFindRequest();
+        var attendanceResult = attendanceBook.getAttendanceResult(resultFindRequest.name());
+        outputView.handleMemberAttendanceResult(attendanceResult);
+    }
+
+    private void checkRiskExpelled(AttendanceBook attendanceBook) {
+        var expelMeasurementResults = attendanceBook.checkExpelWarnings();
+        outputView.handleExpelMeasurementResults(expelMeasurementResults);
     }
 }

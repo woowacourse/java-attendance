@@ -27,33 +27,36 @@ public class AttendanceBook {
         }
     }
     
-    private final Map<String, MemberAttendances> memberAttendances;
+    private final Map<CrewName, MemberAttendances> memberAttendances;
     
-    public AttendanceBook(Map<String, MemberAttendances> memberAttendances) {
+    public AttendanceBook(Map<CrewName, MemberAttendances> memberAttendances) {
         this.memberAttendances = memberAttendances;
     }
     
     public AttendResult addAttendance(String name, LocalDateTime attendDateTime) {
-        validateName(name);
-        MemberAttendances memberAttendance = memberAttendances.get(name);
+        CrewName crewName = new CrewName(name);
+        validateName(crewName);
+        MemberAttendances memberAttendance = memberAttendances.get(crewName);
         return memberAttendance.attend(attendDateTime);
+
     }
     
     public MemberAttendanceModifyResult editAttendance(String name, LocalDate date, LocalTime time) {
-        validateName(name);
-        MemberAttendances memberAttendance = memberAttendances.get(name);
+        CrewName crewName = new CrewName(name);
+        validateName(crewName);
+        MemberAttendances memberAttendance = memberAttendances.get(crewName);
         AttendanceModifyResult result = memberAttendance.modifyAttendance(date, time);
-        return new MemberAttendanceModifyResult(name, result.attendanceDate(), result.oldAttendanceTime(), result.oldAttendanceStatus(), result.newAttendanceTime(), result.newAttendanceStatus());
+        return new MemberAttendanceModifyResult(crewName.getCrewName(), result.attendanceDate(), result.oldAttendanceTime(), result.oldAttendanceStatus(), result.newAttendanceTime(), result.newAttendanceStatus());
     }
     
-    private void validateName(String name) {
-        if (memberAttendances.get(name) == null) {
+    private void validateName(CrewName crewName) {
+        if (memberAttendances.get(crewName) == null) {
             throw new IllegalArgumentException("해당 멤버는 존재하지 않습니다.");
         }
     }
     
     public MemberAttendResult getAttendanceResult(String name) {
-        MemberAttendances oneMemberAttendances = memberAttendances.get(name);
+        MemberAttendances oneMemberAttendances = memberAttendances.get(new CrewName(name));
         return oneMemberAttendances.getAttendanceResult();
     }
     

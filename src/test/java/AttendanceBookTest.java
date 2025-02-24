@@ -1,5 +1,6 @@
 import domain.Attendance;
 import domain.AttendanceBook;
+import domain.CrewName;
 import domain.MemberAttendances;
 import dto.result.AttendResult;
 import dto.result.ExpelMeasurementResult;
@@ -21,13 +22,13 @@ import static org.assertj.core.api.Assertions.*;
 
 public class AttendanceBookTest {
     
-    private final Map<String, MemberAttendances> attendancesMap = Map.of(
-            "Lemon", new MemberAttendances("Lemon", List.of(
+    private final Map<CrewName, MemberAttendances> attendancesMap = Map.of(
+            new CrewName("Lemon"), new MemberAttendances("Lemon", List.of(
                     new Attendance(LocalDateTime.of(2024, 12, 2, 10, 0)),
                     new Attendance(LocalDateTime.of(2024, 12, 3, 10, 1)),
                     new Attendance(LocalDateTime.of(2024, 12, 4, 10, 5)),
                     new Attendance(LocalDateTime.of(2024, 12, 5, 10, 6)))),
-            "Dompoo", new MemberAttendances("Dompoo", List.of(
+            new CrewName("Dompoo"), new MemberAttendances("Dompoo", List.of(
                     new Attendance(LocalDateTime.of(2024, 12, 6, 10, 15)),
                     new Attendance(LocalDateTime.of(2024, 12, 10, 10, 30)),
                     new Attendance(LocalDateTime.of(2024, 12, 11, 10, 31)),
@@ -179,7 +180,7 @@ public class AttendanceBookTest {
         void 크루별_출석기록을_확인할_수_있다() {
             //given
             String name = "Dompoo";
-            AttendanceBook attendanceBook = new AttendanceBook(Map.of("Dompoo", new MemberAttendances("Dompoo", List.of(
+            AttendanceBook attendanceBook = new AttendanceBook(Map.of(new CrewName(name), new MemberAttendances("Dompoo", List.of(
                     new Attendance(LocalDateTime.of(2024, 12, 6, 10, 15)),
                     new Attendance(LocalDateTime.of(2024, 12, 10, 10, 30)),
                     new Attendance(LocalDateTime.of(2024, 12, 11, 10, 31)))
@@ -202,7 +203,7 @@ public class AttendanceBookTest {
         void 크루별_출석기록을_확인할_수_있다_경고() {
             //given
             String name = "Dompoo";
-            AttendanceBook attendanceBook = new AttendanceBook(Map.of("Dompoo", new MemberAttendances("Dompoo", List.of(
+            AttendanceBook attendanceBook = new AttendanceBook(Map.of(new CrewName(name), new MemberAttendances("Dompoo", List.of(
                     new Attendance(LocalDateTime.of(2024, 12, 6, 10, 15)),
                     new Attendance(LocalDateTime.of(2024, 12, 10, 10, 30)),
                     new Attendance(LocalDateTime.of(2024, 12, 11, 10, 31)),
@@ -227,7 +228,7 @@ public class AttendanceBookTest {
         void 크루별_출석기록을_확인할_수_있다_면담() {
             //given
             String name = "Dompoo";
-            AttendanceBook attendanceBook = new AttendanceBook(Map.of("Dompoo", new MemberAttendances("Dompoo", List.of(
+            AttendanceBook attendanceBook = new AttendanceBook(Map.of(new CrewName(name), new MemberAttendances("Dompoo", List.of(
                     new Attendance(LocalDateTime.of(2024, 12, 6, 10, 15)),
                     new Attendance(LocalDateTime.of(2024, 12, 10, 10, 30)),
                     new Attendance(LocalDateTime.of(2024, 12, 11, 10, 31)),
@@ -254,7 +255,7 @@ public class AttendanceBookTest {
         void 크루별_출석기록을_확인할_수_있다_제적() {
             //given
             String name = "Dompoo";
-            AttendanceBook attendanceBook = new AttendanceBook(Map.of("Dompoo", new MemberAttendances("Dompoo", List.of(
+            AttendanceBook attendanceBook = new AttendanceBook(Map.of(new CrewName(name), new MemberAttendances("Dompoo", List.of(
                     new Attendance(LocalDateTime.of(2024, 12, 6, 10, 15)),
                     new Attendance(LocalDateTime.of(2024, 12, 10, 10, 30)),
                     new Attendance(LocalDateTime.of(2024, 12, 11, 10, 31)),
@@ -291,22 +292,22 @@ public class AttendanceBookTest {
         void 제적_위험자를_확인할_수_있다() {
             //given
             AttendanceBook attendanceBook = new AttendanceBook(Map.of(
-                    "Dompoo", new MemberAttendances("Dompoo", List.of(
+                    new CrewName("Dompoo"), new MemberAttendances("Dompoo", List.of(
                             new Attendance(LocalDateTime.of(2024, 12, 6, 10, 15)),
                             new Attendance(LocalDateTime.of(2024, 12, 10, 10, 30)),
                             new Attendance(LocalDateTime.of(2024, 12, 11, 10, 31)))
-                    ), "Dompoo_경고", new MemberAttendances("Dompoo_경고", List.of(
+                    ), new CrewName("Dompoo_경고"), new MemberAttendances("Dompoo_경고", List.of(
                             new Attendance(LocalDateTime.of(2024, 12, 6, 10, 15)),
                             new Attendance(LocalDateTime.of(2024, 12, 10, 10, 30)),
                             new Attendance(LocalDateTime.of(2024, 12, 11, 10, 31)),
                             new Attendance(LocalDateTime.of(2024, 12, 12, 10, 32)))
-                    ), "Dompoo_면담", new MemberAttendances("Dompoo_면담", List.of(
+                    ), new CrewName("Dompoo_면담"), new MemberAttendances("Dompoo_면담", List.of(
                             new Attendance(LocalDateTime.of(2024, 12, 6, 10, 15)),
                             new Attendance(LocalDateTime.of(2024, 12, 10, 10, 30)),
                             new Attendance(LocalDateTime.of(2024, 12, 11, 10, 31)),
                             new Attendance(LocalDateTime.of(2024, 12, 12, 10, 32)),
                             new Attendance(LocalDateTime.of(2024, 12, 13, 10, 33)))
-                    ), "Dompoo_제적", new MemberAttendances("Dompoo_제적", List.of(
+                    ), new CrewName("Dompoo_제적"), new MemberAttendances("Dompoo_제적", List.of(
                             new Attendance(LocalDateTime.of(2024, 12, 6, 10, 15)),
                             new Attendance(LocalDateTime.of(2024, 12, 10, 10, 30)),
                             new Attendance(LocalDateTime.of(2024, 12, 11, 10, 31)),
@@ -337,7 +338,7 @@ public class AttendanceBookTest {
         void 제적_위험자를_정렬하여_반환한다() {
             //given
             AttendanceBook attendanceBook = new AttendanceBook(Map.of(
-                    "빙티", new MemberAttendances("빙티", List.of(
+                    new CrewName("빙티"), new MemberAttendances("빙티", List.of(
                             new Attendance(LocalDateTime.of(2024, 12, 6, 10, 15)),
                             new Attendance(LocalDateTime.of(2024, 12, 10, 10, 15)),
                             new Attendance(LocalDateTime.of(2024, 12, 11, 10, 15)),
@@ -345,7 +346,7 @@ public class AttendanceBookTest {
                             new Attendance(LocalDateTime.of(2024, 12, 13, 10, 31)),
                             new Attendance(LocalDateTime.of(2024, 12, 17, 10, 31)),
                             new Attendance(LocalDateTime.of(2024, 12, 18, 10, 31)))
-                    ), "이든", new MemberAttendances("이든", List.of(
+                    ), new CrewName("이든"), new MemberAttendances("이든", List.of(
                             new Attendance(LocalDateTime.of(2024, 12, 6, 10, 15)),
                             new Attendance(LocalDateTime.of(2024, 12, 10, 10, 15)),
                             new Attendance(LocalDateTime.of(2024, 12, 11, 10, 15)),
@@ -353,7 +354,7 @@ public class AttendanceBookTest {
                             new Attendance(LocalDateTime.of(2024, 12, 13, 10, 15)),
                             new Attendance(LocalDateTime.of(2024, 12, 17, 10, 32)),
                             new Attendance(LocalDateTime.of(2024, 12, 18, 10, 32)))
-                    ), "빙봉", new MemberAttendances("빙봉", List.of(
+                    ), new CrewName("빙봉"), new MemberAttendances("빙봉", List.of(
                             new Attendance(LocalDateTime.of(2024, 12, 6, 10, 15)),
                             new Attendance(LocalDateTime.of(2024, 12, 10, 10, 15)),
                             new Attendance(LocalDateTime.of(2024, 12, 11, 10, 15)),
@@ -361,20 +362,20 @@ public class AttendanceBookTest {
                             new Attendance(LocalDateTime.of(2024, 12, 13, 10, 15)),
                             new Attendance(LocalDateTime.of(2024, 12, 17, 10, 15)),
                             new Attendance(LocalDateTime.of(2024, 12, 18, 10, 33)))
-                    ), "쿠키", new MemberAttendances("쿠키", List.of(
+                    ), new CrewName("쿠키"), new MemberAttendances("쿠키", List.of(
                             new Attendance(LocalDateTime.of(2024, 12, 6, 10, 15)),
                             new Attendance(LocalDateTime.of(2024, 12, 10, 10, 15)),
                             new Attendance(LocalDateTime.of(2024, 12, 11, 10, 15)),
                             new Attendance(LocalDateTime.of(2024, 12, 18, 10, 35)),
                             new Attendance(LocalDateTime.of(2024, 12, 19, 10, 35)))
-                    ), "장수", new MemberAttendances("장수", List.of(
+                    ), new CrewName("장수"), new MemberAttendances("장수", List.of(
                             new Attendance(LocalDateTime.of(2024, 12, 11, 10, 15)),
                             new Attendance(LocalDateTime.of(2024, 12, 12, 10, 15)),
                             new Attendance(LocalDateTime.of(2024, 12, 13, 10, 15)),
                             new Attendance(LocalDateTime.of(2024, 12, 17, 10, 15)),
                             new Attendance(LocalDateTime.of(2024, 12, 18, 10, 15)),
                             new Attendance(LocalDateTime.of(2024, 12, 19, 10, 15)))
-                    ), "양수", new MemberAttendances("양수", List.of(
+                    ), new CrewName("양수"), new MemberAttendances("양수", List.of(
                             new Attendance(LocalDateTime.of(2024, 12, 11, 10, 15)),
                             new Attendance(LocalDateTime.of(2024, 12, 12, 10, 15)),
                             new Attendance(LocalDateTime.of(2024, 12, 13, 10, 15)),
