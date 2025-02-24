@@ -36,7 +36,7 @@ public enum Attendance {
 
     private static void validateOpenTime(LocalTime time) {
         if (time.isBefore(OPEN_HOUR) || time.isAfter(CLOSE_HOUR)) {
-            throw new IllegalArgumentException("[ERROR] 캠퍼스 운영 시간에만 출석이 가능합니다.\n");
+            throw new IllegalArgumentException("[ERROR] 운영 시간에 해당하지 않습니다.\n");
         }
     }
 
