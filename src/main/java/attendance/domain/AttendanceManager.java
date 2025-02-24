@@ -50,7 +50,7 @@ public class AttendanceManager {
     }
 
     public Map<String, AttendanceStatus> getAttendanceRiskCrew(final LocalDate today) {
-        return createWarnedCrews(today).entrySet().stream()
+        return generateAttendanceRisks(today).entrySet().stream()
                 .filter(entry -> entry.getValue().isNotNoneState())
                 .sorted(Map.Entry.<String, AttendanceStatus>comparingByValue()
                         .thenComparing(Map.Entry.comparingByKey()))
@@ -62,7 +62,7 @@ public class AttendanceManager {
                 ));
     }
 
-    private LinkedHashMap<String, AttendanceStatus> createWarnedCrews(final LocalDate today) {
+    private LinkedHashMap<String, AttendanceStatus> generateAttendanceRisks(final LocalDate today) {
         return crewAttendances.entrySet().stream()
                 .collect(Collectors.toMap(
                         Map.Entry::getKey,
