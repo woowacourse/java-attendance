@@ -2,12 +2,14 @@ package function;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import domain.AttendanceBook;
 import domain.Crew;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import service.CrewRegistration;
 import utils.CsvReader;
 import utils.ParsingUtils;
 
@@ -43,12 +45,19 @@ public class RegisterCrewTest {
     }
 
     @Test
-    @DisplayName("분리한 데이터를 바탕으로 사용자 등록을 진행한다.")
+    @DisplayName("분리한 데이터를 바탕으로 크루 등록을 진행한다.")
     void register_Crew() {
         String name = "빙봉";
         String date = "2024-12-13";
         String time = "10:07";
 
         Crew crew = new Crew(name, LocalDate.parse(date), LocalTime.parse(time));
+    }
+
+    @Test
+    @DisplayName("csv 파일을 읽어서 크루 등록을 진행한다.")
+    void Register_Crews() {
+        CrewRegistration crewRegistration = new CrewRegistration();
+        AttendanceBook attendanceBook = crewRegistration.registerCrews("src/test/java/resources/test.csv");
     }
 }
