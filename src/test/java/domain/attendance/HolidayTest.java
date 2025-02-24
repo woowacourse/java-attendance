@@ -15,7 +15,7 @@ class HolidayTest {
         LocalDate christmasDate = LocalDate.of(2024, 12, 25);
 
         // when
-        boolean isHoliday1 = Holiday.has(christmasDateTime);
+        boolean isHoliday1 = Holiday.has(christmasDateTime.toLocalDate());
         boolean isHoliday2 = Holiday.has(christmasDate);
 
         // then
@@ -31,7 +31,7 @@ class HolidayTest {
         LocalDate christmasDate = LocalDate.of(2025, 1, 1);
 
         // when
-        boolean isHoliday1 = Holiday.has(christmasDateTime);
+        boolean isHoliday1 = Holiday.has(christmasDateTime.toLocalDate());
         boolean isHoliday2 = Holiday.has(christmasDate);
 
         // then

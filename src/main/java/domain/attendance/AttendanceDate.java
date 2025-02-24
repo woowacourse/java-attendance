@@ -24,7 +24,7 @@ public class AttendanceDate implements Comparable<AttendanceDate> {
             throw new IllegalArgumentException(
                     DateTimeUtil.convertLocalDateToString(dateTime.toLocalDate()) + "은 등교일이 아닙니다.");
         }
-        if (Holiday.has(dateTime)) {
+        if (Holiday.has(dateTime.toLocalDate())) {
             throw new IllegalArgumentException(
                     DateTimeUtil.convertLocalDateToString(dateTime.toLocalDate()) + "은 등교일이 아닙니다.");
         }
