@@ -7,9 +7,11 @@ public enum AttendanceWarningLevel {
 
     CLEAN((totalAbsentCount) -> totalAbsentCount < 2, 0),
     WARNING((totalAbsentCount) -> totalAbsentCount == 2, 1),
-    MEETING((totalAbsentCount) -> totalAbsentCount >= 3 && totalAbsentCount <= 5, 2),
+    MEETING((totalAbsentCount) -> 3 <= totalAbsentCount && totalAbsentCount <= 5, 2),
     EXPULSION((totalAbsentCount) -> totalAbsentCount > 5, 3),
     ;
+
+    private static final int LATE_TO_ABSENT_UNIT = 3;
 
     private final Function<Integer, Boolean> isMatch;
 
@@ -29,7 +31,7 @@ public enum AttendanceWarningLevel {
     }
 
     public static int calculateLateToAbsent(int lateCount) {
-        return lateCount / 3;
+        return lateCount / LATE_TO_ABSENT_UNIT;
     }
 
     public int getImportance() {
