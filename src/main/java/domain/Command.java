@@ -15,10 +15,10 @@ public enum Command {
         this.command = command;
     }
 
-    public static Command judgeCommand(String command) {
+    public static Command judgeCommand(String commandInput) {
         return Arrays.stream(Command.values())
-                .filter(com -> com.command != null)
-                .filter(com -> com.command.equals(command))
+                .filter(command -> command.command != null)
+                .filter(command -> command.command.equals(commandInput))
                 .findAny()
                 .orElse(UNKNOWN);
     }
