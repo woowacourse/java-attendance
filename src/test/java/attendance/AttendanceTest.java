@@ -28,4 +28,18 @@ public class AttendanceTest {
         assertThat(attendance.attend("모루", "10:31")).isEqualTo("결석");
     }
 
+    @Test
+    @DisplayName("출석 기록이 없으면 결석")
+    void attendance_absence_test2() {
+        Attendance attendance = new Attendance();
+        assertThat(attendance.attend("모루", "--:--")).isEqualTo("결석");
+    }
+
+    @Test
+    @DisplayName("1시간 이상 늦어도 결석")
+    void attendance_absence_test3() {
+        Attendance attendance = new Attendance();
+        assertThat(attendance.attend("모루", "11:10")).isEqualTo("결석");
+    }
+
 }
