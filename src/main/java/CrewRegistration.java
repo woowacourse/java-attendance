@@ -15,4 +15,8 @@ public class CrewRegistration {
             throw new IllegalArgumentException("파일을 읽어오는 중 오류가 발생하였습니다." + e.getMessage());
         }
     }
+
+    public static List<String> parseRecordToNameAndDate(String existedRecords) {
+        return Arrays.asList(existedRecords.split(","));
+    }
 }
