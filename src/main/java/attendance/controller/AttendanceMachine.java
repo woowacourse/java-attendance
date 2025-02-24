@@ -100,10 +100,15 @@ public class AttendanceMachine {
 
     private void confirmAttendance(LocalDate now, Crews crews, Register register) {
         Crew crew = findCrew(crews);
+        LocalDateTime attendanceTime = readAttendanceDateTime(now);
+        register.modifyInfo(crew, attendanceTime);
+        outputView.writeAttendanceCheck(AttendanceChecker.of(attendanceTime));
+    }
+
+    private LocalDateTime readAttendanceDateTime(LocalDate now) {
         List<String> attendanceTime = Parser.convertToGroup(findAttendanceTime());
-        LocalDateTime localDateTime = now.atTime(Parser.convertToNumber(attendanceTime.getFirst()), Parser.convertToNumber(attendanceTime.getLast()));
-        register.modifyInfo(crew, localDateTime);
-        outputView.writeAttendanceCheck(AttendanceChecker.of(localDateTime));
+        return now.atTime(Parser.convertToNumber(attendanceTime.getFirst()),
+                Parser.convertToNumber(attendanceTime.getLast()));
     }
 
     private Crew findCrew(Crews crews) {
