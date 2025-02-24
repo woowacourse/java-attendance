@@ -3,18 +3,50 @@ package attendance.domain;
 import attendance.domain.constant.AttendanceStatus;
 import java.time.LocalDate;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public class Register {
 
+    public static final String COMMA_OR_SPACE_REGEX = "[,\\s]+";
     private final Map<Crew, DateInfos> register;
 
-    public Register(Crews crews, LocalDate now) {
-        register = new HashMap<>();
+    private Register(Map<Crew, DateInfos> register) {
+        this.register = register;
+    }
+
+    public static Register createRegisterByCrews(Crews crews) {
+        Map<Crew, DateInfos> register = new HashMap<>();
         for (Crew crew : crews.getCrews()) {
-            register.put(crew, DateInfos.fromDefaultValue(now));
+            register.put(crew, DateInfos.initInfos());
         }
+        return new Register(register);
+    }
+
+    public static Register createRegisterByCrewAttendanceTimeFile(List<String> crewAttendanceTimeFile) {
+        Set<String> uniqueCrewName = new HashSet<>();
+        Crews crews = Crews.initCrews();
+        Map<Crew, DateInfos> register = new HashMap<>();
+
+        for (String crewAttendanceTime : crewAttendanceTimeFile) {
+            List<String> parsedString = List.of(crewAttendanceTime.split(COMMA_OR_SPACE_REGEX));
+            String crewName = parsedString.getFirst(); // 쿠키
+            LocalDate date = LocalDate.parse(parsedString.get(1)); // 2025-02-14
+            CampusTime campusTime = CampusTime.fromHourColonMinute(parsedString.get(2)); // 10:08
+
+            if (!uniqueCrewName.contains(crewName)) {
+                Crew crew = Crew.from(crewName);
+                crews.addCrew(crew);
+                register.put(crew, DateInfos.initInfos());
+            }
+
+            Crew crew = crews.findCrew(crewName);
+            DateInfos dateInfos = register.get(crew);
+            dateInfos.addInfo(DateInfo.fromCampusTime(date, campusTime));
+        }
+        return new Register(register);
     }
 
     public DateInfo modifyInfo(Crew crew, int date, CampusTime modifyCampusTime) {

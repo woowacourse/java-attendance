@@ -3,7 +3,6 @@ package attendance.domain;
 import attendance.domain.constant.AttendanceStatus;
 import attendance.exception.CustomException;
 import attendance.exception.ErrorMessage;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,8 +14,16 @@ public class DateInfos {
         this.dateInfos = dateInfos;
     }
 
+    public static DateInfos initInfos() {
+        return new DateInfos(new ArrayList<>());
+    }
+
     public static DateInfos from(final List<DateInfo> dateInfos) {
         return new DateInfos(dateInfos);
+    }
+
+    public void addInfo(final DateInfo dateInfo) {
+        this.dateInfos.add(dateInfo);
     }
 
     public DateInfo findDateInfoByDay(int day) {

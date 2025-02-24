@@ -21,9 +21,17 @@ public class Crews {
         return new Crews(crews);
     }
 
+    public static Crews initCrews() {
+        Set<Crew> crews = new HashSet<>();
+        return new Crews(crews);
+    }
+
+    public void addCrew(Crew crew) {
+        crews.add(crew);
+    }
+
     public Crew findCrew(String crewName) {
-        return crews.stream().filter(crew ->
-                        crew.checkSameName(crewName))
+        return crews.stream().filter(crew -> crew.checkSameName(crewName))
                 .findFirst()
                 .orElseThrow(() -> CustomException.from(ErrorMessage.NICKNAME_NOT_PRESENCE));
     }
