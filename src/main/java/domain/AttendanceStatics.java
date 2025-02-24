@@ -1,7 +1,5 @@
 package domain;
 
-import view.AbsentPolicy;
-
 public class AttendanceStatics {
 
     private static final int LATE_TO_ABSENT_RATIO = 3;
