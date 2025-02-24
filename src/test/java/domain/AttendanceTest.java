@@ -46,6 +46,6 @@ class AttendanceTest {
     void validateOpenTimeTest() {
         assertThatThrownBy(() -> Attendance.getAttendanceStatus(Day.MONDAY, LocalTime.of(7, 0)))
                 .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage("[ERROR] 캠퍼스 운영 시간에만 출석이 가능합니다.\n");
+                .hasMessage("[ERROR] 운영 시간에 해당하지 않습니다.\n");
     }
 }
