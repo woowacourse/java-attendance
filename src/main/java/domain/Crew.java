@@ -8,7 +8,6 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import util.DateTimeParser;
 
 public class Crew implements Comparable<Crew> {
@@ -54,30 +53,24 @@ public class Crew implements Comparable<Crew> {
 
 
     public void updateAttendanceByDateTime(final String attendanceTime) {
-        final Attendance updatedAttendance = Attendance.of(attendanceTime);
         final LocalDate localDate = DateTimeParser.parseToLocalDate(attendanceTime).toLocalDate();
-        final Attendance preAttendanceByDateTime = findPreAttendanceByDateTime(localDate);
-        if (!Objects.equals(preAttendanceByDateTime, null)) {
-            attendances.remove(preAttendanceByDateTime);
-        }
+        removePreAttendanceByDateTime(localDate);
+        final Attendance updatedAttendance = Attendance.of(attendanceTime);
         attendances.add(updatedAttendance);
     }
 
     public void updateAttendanceByDateAndTime(final LocalTime attendanceTime, final LocalDate localDate) {
         final LocalDateTime newAttendanceDateAndTime = LocalDateTime.of(localDate, attendanceTime);
-        final Attendance preAttendanceByDateTime = findPreAttendanceByDateTime(localDate);
+        removePreAttendanceByDateTime(localDate);
         final Attendance updatedAttendance = Attendance.of(newAttendanceDateAndTime);
-        if (!Objects.equals(preAttendanceByDateTime, null)) {
-            attendances.remove(preAttendanceByDateTime);
-        }
         attendances.add(updatedAttendance);
     }
 
-    private Attendance findPreAttendanceByDateTime(final LocalDate localDate) {
-        return attendances.stream()
+    private void removePreAttendanceByDateTime(final LocalDate localDate) {
+        attendances.stream()
                 .filter(attendance -> attendance.matchDate(localDate))
                 .findAny()
-                .orElse(null);
+                .ifPresent(attendances::remove);
     }
 
     public Map<AttendanceStatus, Integer> calculateAttendanceStatistics() {
