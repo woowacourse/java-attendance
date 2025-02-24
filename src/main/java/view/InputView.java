@@ -1,5 +1,8 @@
 package view;
 
+import util.Converter;
+
+import java.time.LocalTime;
 import java.util.Scanner;
 
 public class InputView {
@@ -17,9 +20,9 @@ public class InputView {
         return scanner.nextLine();
     }
 
-    public String getAttendanceTime() {
+    public LocalTime getAttendanceTime() {
         System.out.println(ATTENDANCE_INPUT_MESSAGE);
-        return scanner.nextLine();
+        return Converter.convertStringToLocalTime(scanner.nextLine());
     }
 
     public String getEditNickname() {
@@ -27,14 +30,14 @@ public class InputView {
         return scanner.nextLine();
     }
 
-    public String getEditDayOfMonth() {
+    public Integer getEditDayOfMonth() {
         System.out.println(EDIT_DAY_OF_MONTH_INPUT_MESSAGE);
-        return scanner.nextLine();
+        return Converter.convertStringToInteger(scanner.nextLine());
     }
 
-    public String getNewTime() {
+    public LocalTime getNewTime() {
         System.out.println(ASK_NEW_TIME_FOR_CHANGE);
-        return scanner.nextLine();
+        return Converter.convertStringToLocalTime(scanner.nextLine());
     }
 
     public String getOption() {

@@ -2,12 +2,10 @@ package controller;
 
 import domain.*;
 import domain.constant.StandardDate;
-import util.Converter;
 import view.InputView;
 import view.OutputView;
 
 import java.time.LocalDate;
-import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -66,8 +64,7 @@ public class AttendanceController {
     }
 
     private void registerAttendance(Crew crew) {
-        LocalTime attendanceTime = Converter.convertStringToLocalTime(inputView.getAttendanceTime());
-        Attendance attendance = new Attendance(new Day(StandardDate.DATE), attendanceTime);
+        Attendance attendance = new Attendance(new Day(StandardDate.DATE), inputView.getAttendanceTime());
         crew.addAttendance(attendance);
         outputView.printAttendanceInformation(attendance.toDto());
     }
@@ -85,9 +82,9 @@ public class AttendanceController {
 
     public void processAttendanceUpdate() {
         Crew crew = crews.findByNickname(inputView.getEditNickname());
-        Attendance attendance = crew.findByDate(Converter.convertStringToInteger(inputView.getEditDayOfMonth()));
+        Attendance attendance = crew.findByDate(inputView.getEditDayOfMonth());
         AttendanceDto originalAttendanceDto = attendance.toDto();
-        attendance.updateAttendanceTime(Converter.convertStringToLocalTime(inputView.getNewTime()));
+        attendance.updateAttendanceTime(inputView.getNewTime());
         AttendanceDto editedAttendanceDto = attendance.toDto();
 
         outputView.printUpdatedAttendanceHistory(originalAttendanceDto, editedAttendanceDto);
