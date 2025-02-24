@@ -5,31 +5,26 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 
 public enum EducationTime {
-    MONDAY(LocalTime.of(13, 0, 0), LocalTime.of(18, 0, 0)),
-    NOT_MONDAY(LocalTime.of(10, 0, 0), LocalTime.of(18, 0, 0)); // todo : 추후 네이밍 고민
-
-    private static final DayOfWeek MONDAY_DAY_OF_WEEK = DayOfWeek.MONDAY;
+    MONDAY(LocalTime.of(13, 0, 0)),
+    WEEKDAY(LocalTime.of(10, 0, 0));
 
     private final LocalTime startTime;
-    private final LocalTime endTime; // todo : 삭제 고려
 
-    EducationTime(LocalTime startTime, LocalTime endTime) {
+    EducationTime(LocalTime startTime) {
         this.startTime = startTime;
-        this.endTime = endTime;
     }
 
-    public static int calculateOverTime(LocalDateTime attendanceTime) { // todo : 리팩토링 필요
+    public static int calculateOverTime(LocalDateTime attendanceTime) {
         DayOfWeek dayOfWeek = attendanceTime.getDayOfWeek();
-        if (dayOfWeek == MONDAY_DAY_OF_WEEK) {
-            int i = attendanceTime.toLocalTime().toSecondOfDay() - MONDAY.startTime.toSecondOfDay();
-            int overTime = i / 60;
+        LocalTime startTime = WEEKDAY.startTime;
 
-            return Math.max(overTime, 0);
+        if (dayOfWeek == DayOfWeek.MONDAY) {
+            startTime = MONDAY.startTime;
         }
 
-        int i = attendanceTime.toLocalTime().toSecondOfDay() - NOT_MONDAY.startTime.toSecondOfDay();
-        int overTime = i / 60;
+        int secondsDifference = attendanceTime.toLocalTime().toSecondOfDay() - startTime.toSecondOfDay();
+        int overTimeMinutes = secondsDifference / 60;
 
-        return Math.max(overTime, 0);
+        return Math.max(overTimeMinutes, 0);
     }
 }
