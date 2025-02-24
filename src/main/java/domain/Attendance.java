@@ -8,14 +8,13 @@ public class Attendance {
     private final LocalDateTime dateTime;
     private final boolean isEmpty;
 
-    public Attendance(final LocalDateTime localDateTime) {
-        this.dateTime = localDateTime;
-        isEmpty = false;
-    }
-
     public Attendance(final LocalDateTime dateTime, final boolean isEmpty) {
         this.dateTime = dateTime;
         this.isEmpty = isEmpty;
+    }
+
+    public Attendance(final LocalDateTime localDateTime) {
+        this(localDateTime, false);
     }
 
     public static Attendance of(final String dateTime) {
@@ -31,11 +30,8 @@ public class Attendance {
     }
 
     public Attendance(final Attendance attendance) {
-        final LocalDateTime targetDateTime = attendance.dateTime;
-        this.dateTime = LocalDateTime.of(targetDateTime.toLocalDate(), targetDateTime.toLocalTime());
-        this.isEmpty = attendance.isEmpty;
+        this(attendance.dateTime, attendance.isEmpty());
     }
-
 
     public LocalDateTime getDateTime() {
         return LocalDateTime.of(dateTime.toLocalDate(), dateTime.toLocalTime());
