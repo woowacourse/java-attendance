@@ -3,8 +3,8 @@ package model;
 import java.time.LocalTime;
 
 public class AttendanceRecord {
-    private LocalTime attendanceTime;
-    private AttendanceStatus attendanceStatus;
+    private final LocalTime attendanceTime;
+    private final AttendanceStatus attendanceStatus;
 
     public AttendanceRecord(LocalTime attendanceTime, AttendanceStatus attendanceStatus) {
         this.attendanceTime = attendanceTime;
