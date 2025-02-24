@@ -25,17 +25,17 @@ public class AttendanceBook {
         attends.addAttend(attend);
     }
 
+    public Attends findByName(String name) {
+        validateIsNameExist(name);
+        return attendsPerCrew.get(name);
+    }
+
     public void edit(String name, Attend attend) {
         validateIsNameExist(name);
         OperationTime.validateAttendableDay(attend);
         OperationTime.validateAttendableTime(attend);
         Attends attends = attendsPerCrew.get(name);
         attends.edit(attend);
-    }
-
-    public Attends findByName(String name) {
-        validateIsNameExist(name);
-        return attendsPerCrew.get(name);
     }
 
     public List<Attend> getAttends(String name) {
@@ -68,30 +68,29 @@ public class AttendanceBook {
     }
 
     public AttendanceResults checkAttendance(String name, List<Integer> days) {
-        List<AttendanceResult> result = new ArrayList<>();
         Attends attends = findByName(name);
-        for (int day : days) {
-            result.add(getAttendanceResult(attends, day));
-        }
+        List<AttendanceResult> result = days.stream()
+                .map(day -> getAttendanceResult(attends, day))
+                .toList();
         return new AttendanceResults(result);
-    }
-
-    public AttendStatus checkAttendance(Attend attend) {
-        return AttendStatus.findAttendStatus(attend);
-    }
-
-    private AttendanceResult getAttendanceResult(Attends attends, int day) {
-        if (attends.hasDayEqualsAttend(day)) {
-            Attend attend = attends.findByDay(day);
-            return new AttendanceResult(attend, AttendStatus.findAttendStatus(attend));
-        }
-        Attend attend = Attend.fromDay(day);
-        return new AttendanceResult(attend, AttendStatus.ABSENCE);
     }
 
     private void addWarningCrew(List<WarningCrew> result, WarningCrew warningCrew, WarningStatus warningStatus) {
         if (warningStatus != WarningStatus.CLEAR) {
             result.add(warningCrew);
         }
+    }
+
+    private AttendanceResult getAttendanceResult(Attends attends, int day) {
+        if (attends.hasDayEqualsAttend(day)) {
+            Attend attend = attends.findByDay(day);
+            return new AttendanceResult(attend, checkAttendance(attend));
+        }
+        Attend attend = Attend.fromDay(day);
+        return new AttendanceResult(attend, AttendStatus.ABSENCE);
+    }
+
+    public AttendStatus checkAttendance(Attend attend) {
+        return AttendStatus.findAttendStatus(attend);
     }
 }

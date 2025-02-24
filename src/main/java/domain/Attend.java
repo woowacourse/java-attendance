@@ -17,23 +17,31 @@ public class Attend {
         this.time = time;
     }
 
+    private void validateDateIsNotNull(LocalDate date) {
+        if (date == null) {
+            throw new IllegalArgumentException("date는 null이 될 수 없음");
+        }
+    }
+
     public static Attend fromDay(final int day) {
         OperationTime.validateDay(day);
         return new Attend(LocalDate.of(Current.YEAR, Current.MONTH, day), null);
     }
 
     public static Attend fromTime(LocalTime time) {
-        return new Attend(Current.TODAY.getLocalDate(), time);
+        return new Attend(Current.TODAY.getDate(), time);
     }
 
     public static Attend of(final LocalDate day, final LocalTime time) {
         return new Attend(day, time);
     }
 
-    private void validateDateIsNotNull(LocalDate date) {
-        if (date == null) {
-            throw new IllegalArgumentException("date는 null이 될 수 없음");
-        }
+    public String formatDate(DateTimeFormatter dateTimeFormatter) {
+        return this.date.format(dateTimeFormatter);
+    }
+
+    public String formatTime(DateTimeFormatter dateTimeFormatter) {
+        return this.time.format(dateTimeFormatter);
     }
 
     public boolean isDayOff() {
@@ -43,14 +51,6 @@ public class Attend {
 
     public boolean isTimeOff(LocalTime startTime, LocalTime endTime) {
         return hasTime() && (this.time.isBefore(startTime) || this.time.isAfter(endTime));
-    }
-
-    public boolean isDayEqual(Attend attend) {
-        return getDay() == attend.getDay();
-    }
-
-    public boolean isDayEqual(final int day) {
-        return getDay() == day;
     }
 
     public boolean isBefore(final LocalTime targetTime) {
@@ -69,12 +69,12 @@ public class Attend {
         return this.time != null;
     }
 
-    public String formatDate(DateTimeFormatter dateTimeFormatter) {
-        return this.date.format(dateTimeFormatter);
+    public boolean isDayEqual(Attend attend) {
+        return getDay() == attend.getDay();
     }
 
-    public String formatTime(DateTimeFormatter dateTimeFormatter) {
-        return this.time.format(dateTimeFormatter);
+    public boolean isDayEqual(final int day) {
+        return getDay() == day;
     }
 
     public int getDay() {

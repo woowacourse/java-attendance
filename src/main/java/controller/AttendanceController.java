@@ -1,9 +1,11 @@
 package controller;
 
 import domain.Attend;
+import domain.AttendCount;
 import domain.AttendReader;
 import domain.AttendStatus;
 import domain.AttendanceBook;
+import domain.AttendanceResult;
 import domain.AttendanceResults;
 import domain.Command;
 import domain.Current;
@@ -34,36 +36,6 @@ public class AttendanceController {
                 Command.SEARCH_ATTEND, this::searchAttendance,
                 Command.SEARCH_WARNING_CREW, this::searchWarningCrews
         );
-    }
-
-    public void run() {
-        AttendanceBook attendanceBook = loadAttendanceBook();
-        String command = "";
-        while (!command.equals("Q")) {
-            command = inputView.inputCommand(Current.TODAY.getLocalDate());
-            findAndRunCommand(command, attendanceBook);
-        }
-    }
-
-    private AttendanceBook loadAttendanceBook() {
-        AttendReader attendReader = new AttendReader(CSV_PATH);
-        return attendReader.loadAttendanceBook();
-    }
-
-    private void findAndRunCommand(String commandInput, AttendanceBook attendanceBook) {
-        try {
-            Command command = Command.judgeCommand(commandInput);
-            runCommand(command, attendanceBook);
-        } catch (IllegalArgumentException e) {
-            System.out.println(e.getMessage());
-        }
-    }
-
-    private void runCommand(Command command, AttendanceBook attendanceBook) {
-        if (commands.containsKey(command)) {
-            Consumer<AttendanceBook> attendCommand = commands.get(command);
-            attendCommand.accept(attendanceBook);
-        }
     }
 
     private void registerAttend(AttendanceBook attendanceBook) {
@@ -103,5 +75,35 @@ public class AttendanceController {
     private void searchWarningCrews(AttendanceBook attendanceBook) {
         List<WarningCrew> warningCrews = attendanceBook.checkWarningCrews(Current.TODAY.getAttendUntilDay());
         outputView.printWarningCrews(warningCrews);
+    }
+
+    public void run() {
+        AttendanceBook attendanceBook = loadAttendanceBook();
+        String command = "";
+        while (!command.equals("Q")) {
+            command = inputView.inputCommand(Current.TODAY.getDate());
+            findAndRunCommand(command, attendanceBook);
+        }
+    }
+
+    private AttendanceBook loadAttendanceBook() {
+        AttendReader attendReader = new AttendReader(CSV_PATH);
+        return attendReader.loadAttendanceBook();
+    }
+
+    private void findAndRunCommand(String commandInput, AttendanceBook attendanceBook) {
+        try {
+            Command command = Command.judgeCommand(commandInput);
+            runCommand(command, attendanceBook);
+        } catch (IllegalArgumentException e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
+    private void runCommand(Command command, AttendanceBook attendanceBook) {
+        if (commands.containsKey(command)) {
+            Consumer<AttendanceBook> attendCommand = commands.get(command);
+            attendCommand.accept(attendanceBook);
+        }
     }
 }

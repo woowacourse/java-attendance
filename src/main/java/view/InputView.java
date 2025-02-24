@@ -66,35 +66,16 @@ public class InputView {
         return parseTime(input);
     }
 
-    private LocalDate parseDate(String input) {
-        validateDateInput(input);
-        return LocalDate.of(2024, 12, Integer.parseInt(input));
-    }
-
-    private LocalTime parseTime(String input) {
-        validateTimeInput(input);
-        String[] parse = input.split(":");
-        return LocalTime.of(Integer.parseInt(parse[0]), Integer.parseInt(parse[1]));
-    }
-
     private void validateEmptyInput(String input) {
         if (input == null || input.isBlank()) {
             throw new IllegalArgumentException("공백은 입력할 수 없습니다.");
         }
     }
 
-    private void validateIntInput(String input) {
-        if (!input.matches("\\d+")) {
-            throw new IllegalArgumentException("숫자만 입력 가능");
-        }
-    }
-
-    private void validateDateInput(String input) {
-        validateIntInput(input);
-        int day = Integer.parseInt(input);
-        if (day < 1 || day > 31) {
-            throw new IllegalArgumentException("1-31만 가능");
-        }
+    private LocalTime parseTime(String input) {
+        validateTimeInput(input);
+        String[] parse = input.split(":");
+        return LocalTime.of(Integer.parseInt(parse[0]), Integer.parseInt(parse[1]));
     }
 
     private void validateTimeInput(String input) {
@@ -108,6 +89,25 @@ public class InputView {
         int minute = Integer.parseInt(parse[1]);
         validateHour(hour);
         validateMinute(minute);
+    }
+
+    private LocalDate parseDate(String input) {
+        validateDateInput(input);
+        return LocalDate.of(2024, 12, Integer.parseInt(input));
+    }
+
+    private void validateDateInput(String input) {
+        validateIntInput(input);
+        int day = Integer.parseInt(input);
+        if (day < 1 || day > 31) {
+            throw new IllegalArgumentException("1-31만 가능");
+        }
+    }
+
+    private void validateIntInput(String input) {
+        if (!input.matches("\\d+")) {
+            throw new IllegalArgumentException("숫자만 입력 가능");
+        }
     }
 
     private void validateHour(int hour) {

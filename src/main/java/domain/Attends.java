@@ -22,11 +22,12 @@ public class Attends {
         }
     }
 
-    public Attend findByDay(int day) {
-        return attends.stream()
-                .filter(attend -> attend.isDayEqual(day))
-                .findFirst()
-                .orElse(Attend.fromDay(day));
+    public void edit(Attend attend) {
+        if (hasDayEqualsAttend(attend)) {
+            Attend before = findByAttend(attend);
+            removeContainedAttend(before);
+        }
+        addAttend(attend);
     }
 
     public boolean hasDayEqualsAttend(Attend target) {
@@ -34,12 +35,9 @@ public class Attends {
                 .anyMatch(target::isDayEqual);
     }
 
-    public void edit(Attend attend) {
-        if (hasDayEqualsAttend(attend)) {
-            Attend before = findByAttend(attend);
-            removeContainedAttend(before);
-        }
-        addAttend(attend);
+    public boolean hasDayEqualsAttend(int day) {
+        return attends.stream()
+                .anyMatch(attend -> attend.isDayEqual(day));
     }
 
     private Attend findByAttend(Attend target) {
@@ -61,8 +59,10 @@ public class Attends {
                 .toList();
     }
 
-    public boolean hasDayEqualsAttend(int day) {
+    public Attend findByDay(int day) {
         return attends.stream()
-                .anyMatch(attend -> attend.isDayEqual(day));
+                .filter(attend -> attend.isDayEqual(day))
+                .findFirst()
+                .orElse(Attend.fromDay(day));
     }
 }
