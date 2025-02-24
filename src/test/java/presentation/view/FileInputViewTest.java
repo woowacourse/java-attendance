@@ -7,7 +7,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 class FileInputViewTest {
-    @DisplayName("csv 파일을 읽어서 Map으로 변환한다")
+    @DisplayName("출석 기록 파일을 읽어서 출석 데이터를 반환한다")
     @Test
     void test() {
         AttendanceFileInputView inputView = new AttendanceFileInputView();
