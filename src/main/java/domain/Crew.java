@@ -1,5 +1,7 @@
 package domain;
 
+import static domain.AttendanceStatus.ABSENCE;
+
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -21,6 +23,14 @@ public class Crew {
             return records.get(localDate);
         }
         return null;
+    }
+
+    public AttendanceStatus findStatusByDate(LocalDate date) {
+        DailyRecord status = findTimeByDate(date);
+        if (status == null) {
+            return ABSENCE;
+        }
+        return status.getStatus();
     }
 
     public int getAttendanceCount() {

@@ -21,13 +21,7 @@ public class AttendanceStatistics {
 
         Map<AttendanceStatus, Long> statusCounts = startDate.datesUntil(nowDate)
             .filter(date -> Holiday.isWeekDay(date))
-            .map(date -> {
-                DailyRecord status = crew.findTimeByDate(date);
-                if (status == null) {
-                    return ABSENCE;
-                }
-                return status.getStatus();
-            })
+            .map(date -> crew.findStatusByDate(date))
             .collect(Collectors.groupingBy(Function.identity(), Collectors.counting()));
 
         return new StatisticsResult(
