@@ -47,6 +47,23 @@ public class MainController {
         } while (isExit(feature));
     }
 
+    private void prepareToday() {
+        attendance = FileManager.readFile(FILE_PATH);
+        today = LocalDate.now();
+        todayMonth = MONTH;
+        todayDay = today.getDayOfMonth();
+        todayDayOfWeek = Calender.findBy(todayDay).getDescription();
+    }
+
+    private void executeFeature(String feature) {
+        FeatureType featureType = FeatureType.findBy(feature);
+        features.getOrDefault(featureType, OutputView::printExit).execute();
+    }
+
+    private boolean isExit(final String feature) {
+        return !FeatureType.isExitType(feature);
+    }
+
     private void attendanceCheck() {
         String nickname = InputView.inputNickName();
         Crew crew = attendance.getCrewByName(nickname);
@@ -98,22 +115,5 @@ public class MainController {
     private void readAbsence() {
         Map<Crew, AbsenceResultDto> result = attendance.getAbsence(todayDay);
         OutputView.printAbsenceResult(result);
-    }
-
-    private void prepareToday() {
-        attendance = FileManager.readFile(FILE_PATH);
-        today = LocalDate.now();
-        todayMonth = MONTH;
-        todayDay = today.getDayOfMonth();
-        todayDayOfWeek = Calender.findBy(todayDay).getDescription();
-    }
-
-    private void executeFeature(String feature) {
-        FeatureType featureType = FeatureType.findBy(feature);
-        features.getOrDefault(featureType, OutputView::printExit).execute();
-    }
-
-    private boolean isExit(final String feature) {
-        return !FeatureType.isExitType(feature);
     }
 }
