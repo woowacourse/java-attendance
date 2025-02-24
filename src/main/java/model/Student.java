@@ -4,7 +4,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 public class Student {
-    private AttendanceRecords attendanceRecords;
+    private final AttendanceRecords attendanceRecords;
     private final String name;
     private int totalAbsent;
     private int totalAttendance;
@@ -30,66 +30,35 @@ public class Student {
         return totalLate;
     }
 
-    public Student(String name) {
+    public Student(String name, AttendanceRecords attendanceRecords) {
+        this.attendanceRecords = attendanceRecords;
         this.name = name;
     }
 
-    public void updateAttendanceRecords(LocalDateTime updateDateTime) {
-        attendanceRecords.updateAttendanceStatusByLocalDate(updateDateTime);
-        AttendanceStatus newAttendanceStatus = attendanceRecords.
-                findAttendanceStatusFromRecordsByLocalDate(LocalDate.from(updateDateTime));
-        AttendanceStatus oldAttendanceStatus = AttendanceRuleByDay.calculateAttendance(updateDateTime);
-        decrementAttendance(oldAttendanceStatus);
-        incrementAttendance(newAttendanceStatus);
+    public void updateAttendanceCount(){
+        this.totalAbsent = attendanceRecords.findTotalAbsentCount();
+        this.totalLate = attendanceRecords.findTotalLateCount();
+        this.totalAttendance = attendanceRecords.findTotalAttendanceCount();
     }
 
-    private void incrementAttendance(AttendanceStatus newAttendanceStatus) {
-        if (newAttendanceStatus.equals(AttendanceStatus.ATTENDANCE)){
-            totalAttendance++;
-        }
-        if (newAttendanceStatus.equals(AttendanceStatus.LATE)){
-            totalLate++;
-        }
-        if (newAttendanceStatus.equals(AttendanceStatus.ABSENT)){
-            totalAbsent++;
-        }
+    public void attendanceRegister(LocalDateTime localDateTime){
+        attendanceRecords.registerAttendanceRecord(localDateTime);
     }
 
-    private void decrementAttendance(AttendanceStatus oldAttendanceStatus) {
-        if (oldAttendanceStatus.equals(AttendanceStatus.ATTENDANCE)){
-            totalAttendance--;
-        }
-        if (oldAttendanceStatus.equals(AttendanceStatus.LATE)){
-            totalLate--;
-        }
-        if (oldAttendanceStatus.equals(AttendanceStatus.ABSENT)){
-            totalAbsent--;
-        }
+    public void createAttendanceRecords(LocalDateTime localDateTime){
+        attendanceRecords.createAttendanceRecords(localDateTime);
     }
 
     public boolean compareDayIsSame(LocalDateTime localDateTime1, LocalDateTime localDateTime2) {
         return LocalDate.from(localDateTime1).equals(LocalDate.from(localDateTime2));
     }
 
-    public LocalDateTime findLocalDateTime(LocalDateTime localDateTime) {
-        for (LocalDateTime localDateTime1 : record.keySet()) {
-            if (compareDayIsSame(localDateTime1,localDateTime)) {
-                return localDateTime1;
-            }
-        }
-        return null;
-    }
-
     public String findStateByLocalDateTime(LocalDateTime localDateTime) {
-        for (LocalDateTime localDateTime1 : record.keySet()) {
-            if (compareDayIsSame(localDateTime1,localDateTime)) {
-                return record.get(localDateTime1).getState();
-            }
-        }
-        return null;
+        return attendanceRecords.findAttendanceStatusByLocalDateTime(localDateTime).getState();
     }
 
     public int calculateAbsent() {
+        updateAttendanceCount();
         return totalAbsent + totalLate/3;
     }
 
