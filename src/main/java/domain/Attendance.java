@@ -37,20 +37,29 @@ public class Attendance {
         Calender.validateHolyDay(updateTime.getDayOfMonth());
 
         List<LocalDateTime> localDateTimes = attendances.get(crew);
-        int attendanceRecordIndex;
-        LocalDateTime beforeLocalDateTime = null;
-        for (attendanceRecordIndex = 0; attendanceRecordIndex < localDateTimes.size(); attendanceRecordIndex++) {
+        LocalDateTime beforeRecord = findBeforeRecord(updateTime, localDateTimes);
+
+        updateRecord(localDateTimes, updateTime);
+
+        return beforeRecord;
+    }
+
+    private LocalDateTime findBeforeRecord(final LocalDateTime updateTime, final List<LocalDateTime> localDateTimes) {
+        return localDateTimes.stream()
+                .filter(attendanceTime -> attendanceTime.toLocalDate().equals(updateTime.toLocalDate()))
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException("수정 가능한 출석 기록이 존재하지 않습니다."));
+    }
+
+    private void updateRecord(final List<LocalDateTime> localDateTimes, final LocalDateTime updateTime) {
+        for (int attendanceRecordIndex = 0; attendanceRecordIndex < localDateTimes.size(); attendanceRecordIndex++) {
             LocalDateTime localDateTime = localDateTimes.get(attendanceRecordIndex);
-            int dayOfMonth = localDateTime.getDayOfMonth();
-            if (dayOfMonth == updateTime.getDayOfMonth()) {
-                beforeLocalDateTime = localDateTime;
+
+            if (localDateTime.toLocalDate().equals(updateTime.toLocalDate())) {
+                localDateTimes.set(attendanceRecordIndex, updateTime);
                 break;
             }
         }
-
-        updateRecord(updateTime, localDateTimes, attendanceRecordIndex);
-
-        return beforeLocalDateTime;
     }
 
     public List<AttendanceResultDto> readRecord(final Crew crew, int todayDay) {
@@ -82,11 +91,6 @@ public class Attendance {
                 throw new IllegalArgumentException("이미 출석한 크루입니다.");
             }
         }
-    }
-
-    private void updateRecord(final LocalDateTime updateLocalDateTime, final List<LocalDateTime> localDateTimes,
-                              final int attendanceRecordIndex) {
-        localDateTimes.set(attendanceRecordIndex, updateLocalDateTime);
     }
 
     private void sortRecord(final List<LocalDateTime> localDateTimes) {
