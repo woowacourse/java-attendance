@@ -1,3 +1,5 @@
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -23,5 +25,15 @@ public class RegisterCrewTest {
     void parse_Date_To_Day_And_Time() {
         String date = "2024-12-13 10:07";
         List<String> parsedDate = CrewRegistration.parseDateToDayAndTime(date);
+    }
+
+    @Test
+    @DisplayName("분리한 데이터를 바탕으로 사용자 등록을 진행한다.")
+    void register_Crew() {
+        String name = "빙봉";
+        String date = "2024-12-13";
+        String time = "10:07";
+
+        Crew crew = new Crew(name, LocalDate.parse(date), LocalTime.parse(time));
     }
 }
