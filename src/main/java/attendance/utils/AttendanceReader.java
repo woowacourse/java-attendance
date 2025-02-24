@@ -12,8 +12,12 @@ import java.util.List;
 import java.util.Set;
 
 public final class AttendanceReader {
+
+    private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+
     private AttendanceReader() {
     }
+
 
     public static AttendanceContentDTO getAttendanceRecordContent(final List<String> attendanceContents) {
         attendanceContents.removeFirst();
@@ -24,8 +28,7 @@ public final class AttendanceReader {
             String[] split = content.split(",");
 
             String crewName = split[0];
-            LocalDateTime attendanceTime = LocalDateTime.parse(split[1],
-                    DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
+            LocalDateTime attendanceTime = LocalDateTime.parse(split[1], formatter);
 
             LocalDate localDate = attendanceTime.toLocalDate();
             String hour = String.format("%02d", attendanceTime.getHour());
