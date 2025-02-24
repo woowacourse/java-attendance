@@ -16,13 +16,6 @@ public class Attendances {
         this.attendances = new ArrayList<>(attendances);
     }
 
-    public void validateExistNickname(String nickname) {
-        boolean isNotExistsCrew = !crewGroup.contains(nickname);
-        if (isNotExistsCrew) {
-            throw new IllegalArgumentException("등록되지 않은 닉네임입니다.");
-        }
-    }
-
     public void attend(Attendance attendance) {
         if (isAlreadyAttendance(attendance)) {
             throw new IllegalArgumentException("크루는 같은 날에 또 출석할 수 없습니다.");
@@ -64,6 +57,10 @@ public class Attendances {
                 .map(crew -> findMonthlyAttendance(crew, endDate.getMonth()))
                 .map(monthlyAttendance -> monthlyAttendance.calculateAttendanceResultUntilDate(endDate))
                 .collect(Collectors.toList());
+    }
+
+    public Crew findCrewByNickname(String nickname) {
+        return crewGroup.findCrewByNickname(nickname);
     }
 
     private boolean isAlreadyAttendance(Attendance attendanceToCheck) {

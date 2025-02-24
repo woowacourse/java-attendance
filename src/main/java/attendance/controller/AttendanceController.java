@@ -72,7 +72,7 @@ public class AttendanceController {
     }
 
     private Attendance createAttendance(LocalDateTime today) {
-        Crew crew = createCrew();
+        Crew crew = findCrewByInputNickname();
         LocalDateTime attendanceDateTime = inputAttendanceDateTime(today.toLocalDate());
         return new Attendance(crew, attendanceDateTime);
     }
@@ -84,17 +84,16 @@ public class AttendanceController {
     }
 
     private void updateAttendance(LocalDateTime today) {
-        Crew crew = new Crew(inputExistNicknameForUpdate());
+        Crew crew = inputCrewForUpdate();
         LocalDateTime updateDateTime = createUpdateDateTime(today.getYear(), today.getMonth());
         Attendance beforeAttendance = attendances.findByCrewAndDate(crew, updateDateTime.toLocalDate());
         Attendance modifidedAttendance = attendances.update(today.toLocalDate(), new Attendance(crew, updateDateTime));
         outputView.printModifiedAttendance(beforeAttendance, modifidedAttendance);
     }
 
-    private String inputExistNicknameForUpdate() {
+    private Crew inputCrewForUpdate() {
         String nickname = inputView.inputNicknameForUpdateAttendance();
-        attendances.validateExistNickname(nickname);
-        return nickname;
+        return attendances.findCrewByNickname(nickname);
     }
 
     private LocalDateTime createUpdateDateTime(int updateYear, Month updateMonth) {
@@ -111,17 +110,15 @@ public class AttendanceController {
 
     private void showAttendanceResult(LocalDateTime today) {
         LocalDate yesterday = today.toLocalDate().minusDays(1);
-
-        Crew crew = createCrew();
+        Crew crew = findCrewByInputNickname();
         MonthlyAttendance monthlyAttendance = attendances.findMonthlyAttendance(crew, today.getMonth());
         AttendanceResult attendanceResult = monthlyAttendance.calculateAttendanceResultUntilDate(yesterday);
         outputView.printAttendanceResult(attendanceResult);
     }
 
-    private Crew createCrew() {
+    private Crew findCrewByInputNickname() {
         String nickname = inputView.inputNickname();
-        attendances.validateExistNickname(nickname);
-        return new Crew(nickname);
+        return attendances.findCrewByNickname(nickname);
     }
 
     private void showEmergencySubjects(LocalDateTime today) {

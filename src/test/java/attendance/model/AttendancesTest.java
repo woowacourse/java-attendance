@@ -30,21 +30,6 @@ class AttendancesTest {
                 .hasMessage("크루는 같은 날에 또 출석할 수 없습니다.");
     }
 
-    @DisplayName("등록되지 않은 닉네임을 사용하려고 하는 경우 예외가 발생한다.")
-    @Test
-    void shouldThrowException_WhenUseNotExistNickname() {
-        Crew crew = new Crew("포비");
-        CrewGroup crewGroup = new CrewGroup(Set.of(crew));
-        LocalDateTime now = LocalDateTime.of(2024, 12, 13, 11, 1);
-        Attendance attendance = new Attendance(crew, now);
-        Attendances attendances = new Attendances(crewGroup, List.of(attendance));
-
-        String notExistNickname = "네오";
-        Assertions.assertThatThrownBy(() -> attendances.validateExistNickname(notExistNickname))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage("등록되지 않은 닉네임입니다.");
-    }
-
     @DisplayName("출석 기록을 수정할 수 있다.")
     @Test
     void attendanceUpdateTest() {
