@@ -1,12 +1,13 @@
+package utils;
+
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public class CrewRegistration {
+public class CsvReader {
     public static List<String> readExistedRecords(String filePath) {
         Path path = Path.of(filePath);
 
@@ -15,13 +16,5 @@ public class CrewRegistration {
         } catch (IOException e) {
             throw new IllegalArgumentException("파일을 읽어오는 중 오류가 발생하였습니다." + e.getMessage());
         }
-    }
-
-    public static List<String> parseRecordToNameAndDate(String existedRecords) {
-        return Arrays.asList(existedRecords.split(","));
-    }
-
-    public static List<String> parseDateToDayAndTime(String date) {
-        return Arrays.asList(date.split(" "));
     }
 }
