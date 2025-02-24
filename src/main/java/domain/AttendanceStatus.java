@@ -31,7 +31,7 @@ public enum AttendanceStatus {
 
     private static AttendanceStatus getAttendanceStatusByTime(LocalTime attendanceTime, LocalTime targetTime) {
         if (targetTime.isAfter(attendanceTime)) {
-            compareToSpecificTime(attendanceTime, targetTime);
+            return compareToSpecificTime(attendanceTime, targetTime);
         }
         return ATTENDANCE;
     }
