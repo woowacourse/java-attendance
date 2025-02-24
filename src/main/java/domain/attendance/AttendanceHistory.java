@@ -24,10 +24,6 @@ public class AttendanceHistory {
         return this.crew.equals(crew);
     }
 
-    public boolean isSameCrew(Crew crew) {
-        return this.crew.equals(crew);
-    }
-
     public boolean hasSameDay(int day) {
         return attendanceDateTime.hasSameDay(day);
     }

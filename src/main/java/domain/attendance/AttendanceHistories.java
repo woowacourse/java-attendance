@@ -30,7 +30,7 @@ public class AttendanceHistories {
 
     public List<AttendanceHistory> findHistoriesBefore(Crew crew, int day) {
         return attendanceHistories.stream()
-                .filter(history -> history.isPastHistory(day) && history.isSameCrew(crew))
+                .filter(history -> history.isPastHistory(day) && history.aboutSameCrew(crew))
                 .toList();
     }
 }
