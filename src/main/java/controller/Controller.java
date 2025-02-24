@@ -83,11 +83,12 @@ public class Controller {
         Student student = studentRepository.findStudentByName(studentName);
         LocalDateTime modifyLocalDateTime = getLocalDateTimeToModify();
         LocalDate modifyLocalDate = LocalDate.from(modifyLocalDateTime);
-        String recordAfterModify = student.findStateByLocalDateTime(modifyLocalDateTime);
-
         String recordBeforeModify = LocalDateTimePrintFormatter
                 .LocalDateTimeToLocalTime(modifyLocalDate, student.getAttendanceRecords().getRecord().get(modifyLocalDate)) +
                 student.findStateByLocalDateTime(modifyLocalDateTime);
+
+        student.modifyAttendanceRecord(modifyLocalDateTime);
+        String recordAfterModify = student.findStateByLocalDateTime(modifyLocalDateTime);
 
         String localDateTimeFormat = modifyLocalDateTime.format(DateTimeFormatter.ofPattern(
                 DateFormatInformation.LOCAL_TIME_FORMATTER + " (" + recordAfterModify + ") 수정 완료!"));
