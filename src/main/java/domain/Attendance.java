@@ -16,18 +16,18 @@ public class Attendance {
 
     public Attendance(final AttendanceDateTime attendanceDateTime) {
         validateHoliday(attendanceDateTime);
-        Week day = Week.findByAttendanceTime(attendanceDateTime);
+        final Week day = Week.findByAttendanceTime(attendanceDateTime);
         this.attendanceDateTime = attendanceDateTime;
         this.attendanceStatus = AttendanceStatus.findByAttendanceTime(day, attendanceDateTime.getTime());
     }
 
-    public static void validate(AttendanceDateTime attendanceDateTime) {
+    public static void validate(final AttendanceDateTime attendanceDateTime) {
         validateHoliday(attendanceDateTime);
         Week.findByAttendanceTime(attendanceDateTime);
     }
 
-    private static void validateHoliday(AttendanceDateTime attendanceDateTime) {
-        int dayOfMonth = attendanceDateTime.getDayOfMonth();
+    private static void validateHoliday(final AttendanceDateTime attendanceDateTime) {
+        final int dayOfMonth = attendanceDateTime.getDayOfMonth();
         if (HolidayManager.isHoliday(dayOfMonth)) {
             throw new IllegalArgumentException(
                     String.format(AttendanceException.INVALID_ATTENDANCE_DAY.getMessage(
@@ -62,7 +62,7 @@ public class Attendance {
         return attendanceDateTime;
     }
 
-    public boolean equalsDate(LocalDate date) {
+    public boolean equalsDate(final LocalDate date) {
         return attendanceDateTime.getDate().equals(date);
     }
 }

@@ -10,7 +10,7 @@ public class DayOfWeekKorean {
     private static final Map<DayOfWeek, String> KOREAN_DAY_NAMES;
 
     static {
-        Map<DayOfWeek, String> map = new EnumMap<>(DayOfWeek.class);
+        final Map<DayOfWeek, String> map = new EnumMap<>(DayOfWeek.class);
         map.put(DayOfWeek.MONDAY, "월요일");
         map.put(DayOfWeek.TUESDAY, "화요일");
         map.put(DayOfWeek.WEDNESDAY, "수요일");
@@ -21,7 +21,7 @@ public class DayOfWeekKorean {
         KOREAN_DAY_NAMES = Collections.unmodifiableMap(map);
     }
 
-    public static String getKoreanName(DayOfWeek day) {
+    public static String getKoreanName(final DayOfWeek day) {
         return KOREAN_DAY_NAMES.get(day);
     }
 }

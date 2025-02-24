@@ -27,7 +27,7 @@ public enum Week {
     }
 
     public static Week findByAttendanceTime(final AttendanceDateTime attendanceDateTime) {
-        DayOfWeek dayOfWeek = attendanceDateTime.getDayOfWeek();
+        final DayOfWeek dayOfWeek = attendanceDateTime.getDayOfWeek();
         final String dayKoreanName = DayOfWeekKorean.getKoreanName(dayOfWeek);
 
         return Arrays.stream(Week.values())
@@ -37,7 +37,7 @@ public enum Week {
                         getMessageFormat(attendanceDateTime, dayKoreanName)));
     }
 
-    private static String getMessageFormat(AttendanceDateTime attendanceDateTime, String dayKoreanName) {
+    private static String getMessageFormat(final AttendanceDateTime attendanceDateTime, final String dayKoreanName) {
         return String.format(WeekException.INVALID_ATTENDANCE_DAY.getMessage(
                 Constants.FIXED_MONTH,
                 attendanceDateTime.getDayOfMonth(),

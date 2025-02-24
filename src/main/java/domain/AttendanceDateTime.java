@@ -19,13 +19,13 @@ public class AttendanceDateTime {
 
     private final LocalDateTime dateTime;
 
-    private AttendanceDateTime(LocalDateTime dateTime) {
+    private AttendanceDateTime(final LocalDateTime dateTime) {
         this.dateTime = dateTime;
     }
 
     public static AttendanceDateTime of(final String input) {
         try {
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern(DATE_TIME_FORMAT);
+            final DateTimeFormatter formatter = DateTimeFormatter.ofPattern(DATE_TIME_FORMAT);
             final LocalDateTime parsedDateTime = LocalDateTime.parse(input, formatter);
             return new AttendanceDateTime(parsedDateTime);
         } catch (DateTimeParseException e) {
@@ -37,16 +37,16 @@ public class AttendanceDateTime {
         return new AttendanceDateTime(dateTime);
     }
 
-    public static AttendanceDateTime of(final LocalDate localDateInput, LocalTime timeInput) {
-        LocalDateTime dateTime = LocalDateTime.of(localDateInput, timeInput);
+    public static AttendanceDateTime of(final LocalDate localDateInput, final LocalTime timeInput) {
+        final LocalDateTime dateTime = LocalDateTime.of(localDateInput, timeInput);
         return new AttendanceDateTime(dateTime);
     }
 
-    public static AttendanceDateTime ofTimeString(final LocalDate localDateInput, String timeString) {
+    public static AttendanceDateTime ofTimeString(final LocalDate localDateInput, final String timeString) {
         try {
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern(TIME_FORMAT);
+            final DateTimeFormatter formatter = DateTimeFormatter.ofPattern(TIME_FORMAT);
             final LocalTime parsedTime = LocalTime.parse(timeString, formatter);
-            LocalDateTime dateTime = LocalDateTime.of(localDateInput, parsedTime);
+            final LocalDateTime dateTime = LocalDateTime.of(localDateInput, parsedTime);
             return new AttendanceDateTime(dateTime);
         } catch (DateTimeParseException e) {
             throw new IllegalArgumentException(AttendanceDateTimeExceptionType.INVALID_TIME_TYPE.getMessage());
@@ -54,16 +54,12 @@ public class AttendanceDateTime {
     }
 
     public static AttendanceDateTime getDefaultDateTime() {
-        LocalDateTime localDateTime = LocalDateTime.of(Constants.FIXED_YEAR, Constants.FIXED_MONTH,
+        final LocalDateTime localDateTime = LocalDateTime.of(Constants.FIXED_YEAR, Constants.FIXED_MONTH,
                 Constants.FIXED_DATE, 0, 0, 0, 0);
         return new AttendanceDateTime(localDateTime);
     }
 
-    public static LocalDate getDate(LocalDateTime dateTime) {
-        return dateTime.toLocalDate();
-    }
-
-    public static LocalTime getTime(LocalDateTime dateTime) {
+    public static LocalTime getTime(final LocalDateTime dateTime) {
         return dateTime.toLocalTime();
     }
 

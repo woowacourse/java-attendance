@@ -13,7 +13,7 @@ public class AttendanceCounter {
     }
 
     public static AttendanceCounter of(final Attendances attendances) {
-        AttendanceDto dto = attendances.calculateAttendanceCount();
+        final AttendanceDto dto = attendances.calculateAttendanceCount();
         return new AttendanceCounter(dto.attendanceCount(), dto.tardinessCount(), dto.absenceCount());
     }
 

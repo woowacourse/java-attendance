@@ -11,7 +11,7 @@ public class HolidayManager {
         HOLIDAYS.add(25);
     }
 
-    public static boolean isHoliday(Integer dayOfMonth) {
+    public static boolean isHoliday(final Integer dayOfMonth) {
         return HOLIDAYS.contains(dayOfMonth);
     }
 

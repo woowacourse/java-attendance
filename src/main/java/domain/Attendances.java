@@ -23,7 +23,7 @@ public class Attendances {
         return new AttendanceDto((int) attendanceCount, (int) tardinessCount, (int) absence);
     }
 
-    public int getCountByStatus(AttendanceStatus status) {
+    public int getCountByStatus(final AttendanceStatus status) {
         return (int) attendances.stream()
                 .filter(attendance -> attendance.getAttendanceStatus().equals(status))
                 .count();
@@ -34,7 +34,7 @@ public class Attendances {
                 .anyMatch(attendance -> attendance.equalsDate(date));
     }
 
-    public void addSorted(Attendance newAttendance) {
+    public void addSorted(final Attendance newAttendance) {
         int index = 0;
         for (Attendance attendance : attendances) {
             if (newAttendance.getLocalDateTime().isBefore(attendance.getLocalDateTime())) {
@@ -55,8 +55,8 @@ public class Attendances {
 
     public void updateTime(Attendance findAttendance, LocalTime updateTime) {
         attendances.remove(findAttendance);
-        LocalDateTime dateTime = findAttendance.getLocalDateTime();
-        AttendanceDateTime newAttendanceDateTime = AttendanceDateTime.of(dateTime.toLocalDate(), updateTime);
+        final LocalDateTime dateTime = findAttendance.getLocalDateTime();
+        final AttendanceDateTime newAttendanceDateTime = AttendanceDateTime.of(dateTime.toLocalDate(), updateTime);
         Attendance newAttendance = new Attendance(newAttendanceDateTime);
         addSorted(newAttendance);
     }

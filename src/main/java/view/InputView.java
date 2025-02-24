@@ -10,7 +10,7 @@ import util.DayOfWeekKorean;
 
 public final class InputView {
 
-    private static Scanner scanner = new Scanner(System.in);
+    private static final Scanner scanner = new Scanner(System.in);
 
     private InputView() {
     }
@@ -30,35 +30,35 @@ public final class InputView {
 
     public static String readNickName() {
         System.out.println("닉네임을 입력해 주세요.");
-        String input = scanner.nextLine();
+        final String input = scanner.nextLine();
         validateInput(input);
         return input;
     }
 
     public static String readUpdateNickName() {
         System.out.println("출석을 수정하려는 크루의 닉네임을 입력해 주세요.");
-        String input = scanner.nextLine();
+        final String input = scanner.nextLine();
         validateInput(input);
         return input;
     }
 
     public static String readDateTime() {
         System.out.println("등교 시간을 입력해 주세요.");
-        String input = scanner.nextLine();
+        final String input = scanner.nextLine();
         validateInput(input);
         return input;
     }
 
     public static String readUpdateDateTime() {
         System.out.println("언제로 변경하겠습니까?");
-        String input = scanner.nextLine();
+        final String input = scanner.nextLine();
         validateInput(input);
         return input;
     }
 
     public static String readUpdateDate() {
         System.out.println("수정하려는 날짜(일)을 입력해 주세요.");
-        String input = scanner.nextLine();
+        final String input = scanner.nextLine();
         validateInput(input);
         return input;
     }
@@ -69,7 +69,7 @@ public final class InputView {
         }
     }
 
-    private static String getMessageFormat(AttendanceDateTime attendanceDateTime) {
+    private static String getMessageFormat(final AttendanceDateTime attendanceDateTime) {
         return String.format("오늘은 %s월 %s일 %s입니다. 기능을 선택해주세요.", FIXED_MONTH, attendanceDateTime.getDayOfMonth(),
                 DayOfWeekKorean.getKoreanName(attendanceDateTime.getDayOfWeek()));
     }

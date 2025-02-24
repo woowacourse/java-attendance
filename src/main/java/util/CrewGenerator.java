@@ -29,71 +29,71 @@ public final class CrewGenerator {
     private CrewGenerator() {
     }
 
-    public static Crews generate(final List<String[]> parsedCrewsData, LocalDate nowDate) {
-        Map<Nickname, LinkedList<Attendance>> crewData = new HashMap<>();
+    public static Crews generate(final List<String[]> parsedCrewsData, final LocalDate nowDate) {
+        final Map<Nickname, LinkedList<Attendance>> crewData = new HashMap<>();
         parsedCrewsData
                 .forEach(parsedCrewData -> addCrewData(parsedCrewData, crewData));
         final List<Integer> validDates = findValidDatesUntilToday(nowDate);
-        List<Crew> crews = new ArrayList<>();
+        final List<Crew> crews = new ArrayList<>();
         crewData.entrySet()
                 .forEach(nicknameListEntry -> addCrewAttendances(nicknameListEntry, validDates, crews));
         return new Crews(crews);
     }
 
-    private static void addCrewData(String[] parsedCrewData, Map<Nickname, LinkedList<Attendance>> crewData) {
-        String nickname = parsedCrewData[NICKNAME_IDX];
-        String localDateTime = parsedCrewData[LOCAL_DATE_TIME_IDX];
-        AttendanceDateTime attendanceDateTime = AttendanceDateTime.of(localDateTime);
+    private static void addCrewData(final String[] parsedCrewData, final Map<Nickname, LinkedList<Attendance>> crewData) {
+        final String nickname = parsedCrewData[NICKNAME_IDX];
+        final String localDateTime = parsedCrewData[LOCAL_DATE_TIME_IDX];
+        final AttendanceDateTime attendanceDateTime = AttendanceDateTime.of(localDateTime);
         final Nickname name = new Nickname(nickname);
         final Attendance attendance = new Attendance(attendanceDateTime);
         crewData.computeIfAbsent(name, k -> new LinkedList<>()).add(attendance);
     }
 
-    private static void addCrewAttendances(Entry<Nickname, LinkedList<Attendance>> nicknameListEntry,
-                                           List<Integer> validDates,
-                                           List<Crew> crews) {
+    private static void addCrewAttendances(final Entry<Nickname, LinkedList<Attendance>> nicknameListEntry,
+                                           final List<Integer> validDates,
+                                           final List<Crew> crews) {
         final Attendances attendances = getAttendances(nicknameListEntry, validDates);
         crews.add(new Crew(nicknameListEntry.getKey(), attendances, AttendanceCounter.of(attendances)));
     }
 
     private static Attendances getAttendances(final Entry<Nickname, LinkedList<Attendance>> nicknameListEntry,
                                               final List<Integer> validDates) {
-        LinkedList<Attendance> attendancesData = nicknameListEntry.getValue();
+        final LinkedList<Attendance> attendancesData = nicknameListEntry.getValue();
         attendancesData.sort(Comparator.comparing(Attendance::getLocalDateTime));
         final Attendances attendances = new Attendances(attendancesData);
-        List<Integer> noPresentAttendanceDates = findNoPresentAttendanceDates(validDates, attendances);
+        final List<Integer> noPresentAttendanceDates = findNoPresentAttendanceDates(validDates, attendances);
         for (Integer dayOfMonth : noPresentAttendanceDates) {
             addAttendance(dayOfMonth, attendances);
         }
         return attendances;
     }
 
-    private static List<Integer> findNoPresentAttendanceDates(List<Integer> validDates, Attendances attendances) {
-        List<Integer> alreadyAttendanceDates = attendances.getDates();
+    private static List<Integer> findNoPresentAttendanceDates(final List<Integer> validDates, final Attendances attendances) {
+        final List<Integer> alreadyAttendanceDates = attendances.getDates();
 
-        List<Integer> noPresentAttendanceDates = new ArrayList<>(validDates);
+        final List<Integer> noPresentAttendanceDates = new ArrayList<>(validDates);
         noPresentAttendanceDates.removeAll(alreadyAttendanceDates);
         return noPresentAttendanceDates;
     }
 
-    private static void addAttendance(Integer dayOfMonth, Attendances attendances) {
-        LocalDate date = LocalDate.of(Constants.FIXED_YEAR, Constants.FIXED_MONTH, dayOfMonth);
-        AttendanceDateTime attendanceDateTime = AttendanceDateTime.of(date, Constants.ABSENCE_TIME);
-        Attendance attendance = new Attendance(attendanceDateTime);
+    private static void addAttendance(final Integer dayOfMonth, final Attendances attendances) {
+        final LocalDate date = LocalDate.of(Constants.FIXED_YEAR, Constants.FIXED_MONTH, dayOfMonth);
+        final AttendanceDateTime attendanceDateTime = AttendanceDateTime.of(date, Constants.ABSENCE_TIME);
+        final Attendance attendance = new Attendance(attendanceDateTime);
         attendances.addSorted(attendance);
     }
 
     public static List<Integer> findValidDatesUntilToday(final LocalDate date) {
         final int today = date.getDayOfMonth();
 
-        List<Integer> allDays = IntStream.range(1, today).boxed().collect(Collectors.toList());
+        final List<Integer> allDays = IntStream.range(1, today).boxed().collect(Collectors.toList());
         allDays.removeAll(getExcludeNotAttendanceDays());
 
         return allDays;
     }
 
     public static List<Integer> getExcludeNotAttendanceDays() {
-        List<Integer> excludeNotAttendanceDays = new ArrayList<>();
+        final List<Integer> excludeNotAttendanceDays = new ArrayList<>();
         excludeNotAttendanceDays.addAll(getWeekendDays());
         excludeNotAttendanceDays.addAll(HolidayManager.getHOLIDAYS());
 
@@ -108,7 +108,7 @@ public final class CrewGenerator {
     }
 
     public static boolean excludeNotAttendanceDays(int day) {
-        DayOfWeek dayOfWeek = LocalDate.of(Constants.FIXED_YEAR, Constants.FIXED_MONTH, day).getDayOfWeek();
+        final DayOfWeek dayOfWeek = LocalDate.of(Constants.FIXED_YEAR, Constants.FIXED_MONTH, day).getDayOfWeek();
         return dayOfWeek == DayOfWeek.SATURDAY || dayOfWeek == DayOfWeek.SUNDAY;
     }
 }
