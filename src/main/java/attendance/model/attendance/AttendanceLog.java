@@ -1,8 +1,11 @@
 package attendance.model.attendance;
 
+import attendance.model.campus.CampusOperationPolicy;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.Objects;
+import java.util.Optional;
 
 public class AttendanceLog {
 
@@ -10,10 +13,34 @@ public class AttendanceLog {
     private final LocalTime time;
     private final AttendanceStatus attendanceStatus;
 
-    public AttendanceLog(LocalDate date, LocalTime time, AttendanceStatus attendanceStatus) {
+    private AttendanceLog(LocalDate date, LocalTime time, AttendanceStatus attendanceStatus) {
         this.date = date;
         this.time = time;
         this.attendanceStatus = attendanceStatus;
+    }
+
+    public static AttendanceLog fromAttendanceDateTime(
+            final LocalDateTime attendanceDateTime,
+            final CampusOperationPolicy campusOperationPolicy
+    ) {
+
+        return null;
+    }
+
+    public static AttendanceLog fromAbsenceDate(final LocalDate absenceDate) {
+        return null;
+    }
+
+    public LocalDate getDate() {
+        return date;
+    }
+
+    public Optional<LocalTime> getTime() {
+        return Optional.ofNullable(time);
+    }
+
+    public AttendanceStatus getAttendanceStatus() {
+        return attendanceStatus;
     }
 
     @Override
