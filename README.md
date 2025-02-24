@@ -96,7 +96,7 @@
     - 공휴일 목록
     -
 - **동작**
-    - 특정 LocalDate 가 공휴일인지 반환한다.0
+    - 특정 LocalDate 가 공휴일인지 반환한다.
 
 ### AttendanceLog (출석 기록 Class)
 
