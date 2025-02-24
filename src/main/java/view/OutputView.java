@@ -91,7 +91,7 @@ public class OutputView {
             System.out.printf("- %s: 결석 %d회, 지각 %d회 (%s)", crew.getName(),
                     crew.getAttendanceHistory().calculateAbsent(),
                     crew.getAttendanceHistory().calculateLate(),
-                    crew.getAttendanceHistory().getAttendanceStatus().getStatus());
+                    crew.getAttendanceHistory().getAttendanceStatus().getStatus().getType());
             System.out.println();
         });
     }
@@ -102,7 +102,7 @@ public class OutputView {
                 December.getDayByDate(attendTime.getAttendTime().getDayOfMonth()),
                 attendTime.getAttendTime().getHour(),
                 attendTime.getAttendTime().getMinute(),
-                attendTime.checkTime()
+                attendTime.checkTime().getType()
         );
     }
 
