@@ -1,11 +1,10 @@
+package util.parser;
+
 import java.time.LocalDate;
 import java.time.LocalTime;
 
 import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.Test;
-
-import util.parser.AttendanceData;
-import util.parser.FileParser;
 
 class FileParserTest {
     
