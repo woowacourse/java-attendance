@@ -11,13 +11,13 @@ import domain.Crew;
 import domain.CrewRepository;
 import dto.HistoryDto;
 import domain.Manage;
-import dto.AttendanceHistoryResult;
-import dto.AttendanceModifyRequest;
-import dto.AttendanceRequest;
-import dto.AttendanceResult;
-import dto.CrewAlmostExpelledResult;
-import dto.ModifiedResult;
-import dto.OptionRequest;
+import dto.AttendanceHistoryResponseDto;
+import dto.AttendanceModifyRequestDto;
+import dto.AttendanceRequestDto;
+import dto.AttendanceResponseDto;
+import dto.CrewAlmostExpelledResponseDto;
+import dto.ModifiedResponseDto;
+import dto.OptionRequestDto;
 import util.DateTimeUtil;
 import view.InputView;
 import view.OutputView;
@@ -29,8 +29,8 @@ public class AttendanceController {
     public void run() {
         boolean isRunning = true;
         while (isRunning) {
-            OptionRequest optionRequest = InputView.scanOption();
-            isRunning = processMenu(optionRequest.option());
+            OptionRequestDto optionRequestDto = InputView.scanOption();
+            isRunning = processMenu(optionRequestDto.option());
         }
     }
 
@@ -49,22 +49,22 @@ public class AttendanceController {
     }
 
     private void attendanceCheck() {
-        AttendanceRequest request = InputView.scanAttendance();
+        AttendanceRequestDto request = InputView.scanAttendance();
         validateCampusTime(request.time());
         Crew crew = crewRepository.get(request.nickname());
         AttendanceStatus status = crew.attendance(DateTimeUtil.nowDate(), request.time());
-        OutputView.printAttendanceResult(AttendanceResult.of(DateTimeUtil.nowDate(), request.time(), status));
+        OutputView.printAttendanceResult(AttendanceResponseDto.of(DateTimeUtil.nowDate(), request.time(), status));
     }
 
     private void attendanceModify() {
-        AttendanceModifyRequest request = InputView.scanModify();
+        AttendanceModifyRequestDto request = InputView.scanModify();
         validateCampusTime(request.time());
         Crew crew = crewRepository.get(request.nickname());
         validateAttendanceTime(crew, request.date());
-        ModifiedResult.InnerStatus before = generateInnerStatus(crew, request);
+        ModifiedResponseDto.InnerStatus before = generateInnerStatus(crew, request);
         crew.modifyAttendance(request.date(), request.time());
-        ModifiedResult.InnerStatus after = generateInnerStatus(crew, request);
-        OutputView.printModifiedResult(new ModifiedResult(request.date(), before, after));
+        ModifiedResponseDto.InnerStatus after = generateInnerStatus(crew, request);
+        OutputView.printModifiedResult(new ModifiedResponseDto(request.date(), before, after));
     }
 
     private void validateAttendanceTime(Crew crew, LocalDate date) {
@@ -73,8 +73,8 @@ public class AttendanceController {
         }
     }
 
-    private ModifiedResult.InnerStatus generateInnerStatus(Crew crew, AttendanceModifyRequest request) {
-        return new ModifiedResult.InnerStatus(
+    private ModifiedResponseDto.InnerStatus generateInnerStatus(Crew crew, AttendanceModifyRequestDto request) {
+        return new ModifiedResponseDto.InnerStatus(
             crew.getAttendanceTimeByDate(request.date()),
             crew.getAttendanceStatusByDate(request.date()));
     }
@@ -85,7 +85,7 @@ public class AttendanceController {
         List<HistoryDto> historyDto = crew.getAllHistory(now);
         Manage manage = Manage.of(crew.getAttendanceStatusCounter(now));
         OutputView.printHistory(
-            new AttendanceHistoryResult(
+            new AttendanceHistoryResponseDto(
                 crew.getNickname(),
                 historyDto,
                 crew.getAttendanceStatusCounter(now),
@@ -94,10 +94,10 @@ public class AttendanceController {
 
     private void checkCrewsAlmostExpelled() {
         List<Crew> crews = crewRepository.getAll();
-        List<CrewAlmostExpelledResult> result = crews.stream()
+        List<CrewAlmostExpelledResponseDto> result = crews.stream()
             .map(crew -> {
                 Map<AttendanceStatus, Integer> statusCounter = crew.getAttendanceStatusCounter(DateTimeUtil.nowDate());
-                return new CrewAlmostExpelledResult(
+                return new CrewAlmostExpelledResponseDto(
                     crew.getNickname(),
                     statusCounter,
                     Manage.of(statusCounter));

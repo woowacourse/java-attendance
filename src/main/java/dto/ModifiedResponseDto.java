@@ -5,7 +5,7 @@ import java.time.LocalTime;
 
 import domain.AttendanceStatus;
 
-public record ModifiedResult (
+public record ModifiedResponseDto(
     LocalDate date,
     InnerStatus before,
     InnerStatus after

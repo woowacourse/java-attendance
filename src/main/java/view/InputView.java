@@ -5,9 +5,9 @@ import java.time.format.TextStyle;
 import java.util.Locale;
 import java.util.Scanner;
 
-import dto.AttendanceModifyRequest;
-import dto.AttendanceRequest;
-import dto.OptionRequest;
+import dto.AttendanceModifyRequestDto;
+import dto.AttendanceRequestDto;
+import dto.OptionRequestDto;
 import util.DateTimeUtil;
 import util.RetryHandler;
 
@@ -18,7 +18,7 @@ public class InputView {
 
     private static final Scanner scanner = new Scanner(System.in);
 
-    public static OptionRequest scanOption() {
+    public static OptionRequestDto scanOption() {
         return RetryHandler.retryUntilSuccessWithReturn(() -> {
             LocalDate now = DateTimeUtil.nowDate();
             System.out.printf("""
@@ -35,20 +35,20 @@ public class InputView {
             );
             String option = scanner.nextLine();
             System.out.println();
-            return new OptionRequest(option);
+            return new OptionRequestDto(option);
         });
     }
 
-    public static AttendanceRequest scanAttendance() {
+    public static AttendanceRequestDto scanAttendance() {
         System.out.println("닉네임을 입력해 주세요.");
         String nickname = scanner.nextLine();
         System.out.println("등교 시간을 입력해 주세요.");
         String time = scanner.nextLine();
         System.out.println();
-        return AttendanceRequest.of(nickname, time);
+        return AttendanceRequestDto.of(nickname, time);
     }
 
-    public static AttendanceModifyRequest scanModify() {
+    public static AttendanceModifyRequestDto scanModify() {
         System.out.println("출석을 수정하려는 크루의 닉네임을 입력해 주세요.");
         String nickname = scanner.nextLine();
         System.out.println("수정하려는 날짜(일)를 입력해 주세요.");
@@ -56,7 +56,7 @@ public class InputView {
         System.out.println("언제로 변경하겠습니까?");
         String time = scanner.nextLine();
         System.out.println();
-        return AttendanceModifyRequest.of(nickname, day, time);
+        return AttendanceModifyRequestDto.of(nickname, day, time);
     }
 
     public static String scanNickname() {

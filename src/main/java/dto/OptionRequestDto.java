@@ -1,6 +1,6 @@
 package dto;
 
-public record OptionRequest(
+public record OptionRequestDto(
     String option
 ) {
 

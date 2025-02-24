@@ -6,15 +6,15 @@ import java.time.LocalTime;
 import constant.FormatterConstant;
 import util.DateTimeUtil;
 
-public record AttendanceModifyRequest (
+public record AttendanceModifyRequestDto(
     String nickname,
     LocalDate date,
     LocalTime time
 ){
 
-    public static AttendanceModifyRequest of(String nickname, String day, String time) {
+    public static AttendanceModifyRequestDto of(String nickname, String day, String time) {
         int parsedDay = convertToInt(day);
-        return new AttendanceModifyRequest(
+        return new AttendanceModifyRequestDto(
             nickname,
             DateTimeUtil.convertToDate(DateTimeUtil.nowDate(), parsedDay),
             LocalTime.parse(time, FormatterConstant.TIME_FORMATTER)

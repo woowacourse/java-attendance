@@ -6,37 +6,37 @@ import java.util.List;
 
 import domain.AttendanceStatus;
 import domain.Manage;
-import dto.AttendanceHistoryResult;
-import dto.AttendanceResult;
-import dto.CrewAlmostExpelledResult;
+import dto.AttendanceHistoryResponseDto;
+import dto.AttendanceResponseDto;
+import dto.CrewAlmostExpelledResponseDto;
 import constant.FormatterConstant;
 import dto.HistoryDto;
-import dto.ModifiedResult;
+import dto.ModifiedResponseDto;
 
 public class OutputView {
 
     private OutputView() {
     }
 
-    public static void printAttendanceResult(AttendanceResult result) {
+    public static void printAttendanceResult(AttendanceResponseDto result) {
         String dateTime = LocalDateTime.of(result.date(), result.time()).format(FormatterConstant.DATETIME_FORMATTER);
         System.out.printf(dateTime + " (%s)%n", result.status().getName());
     }
 
-    public static void printModifiedResult(ModifiedResult modifiedResult) {
+    public static void printModifiedResult(ModifiedResponseDto modifiedResponseDto) {
         StringBuilder message = new StringBuilder();
         message.append(
-            LocalDateTime.of(modifiedResult.date(), modifiedResult.before().time())
+            LocalDateTime.of(modifiedResponseDto.date(), modifiedResponseDto.before().time())
                 .format(FormatterConstant.DATETIME_FORMATTER));
-        message.append(String.format(" (%s) -> ", modifiedResult.before().status().getName()));
-        message.append(modifiedResult.after().time().format(FormatterConstant.TIME_FORMATTER));
-        message.append(String.format(" (%s)", modifiedResult.after().status().getName()));
+        message.append(String.format(" (%s) -> ", modifiedResponseDto.before().status().getName()));
+        message.append(modifiedResponseDto.after().time().format(FormatterConstant.TIME_FORMATTER));
+        message.append(String.format(" (%s)", modifiedResponseDto.after().status().getName()));
         message.append(" 수정 완료!%n%n");
 
         System.out.printf(message.toString());
     }
 
-    public static void printHistory(AttendanceHistoryResult historyResult) {
+    public static void printHistory(AttendanceHistoryResponseDto historyResult) {
         System.out.printf("이번 달 %s의 출석 기록입니다.%n%n", historyResult.nickname());
         historyResult.histories().forEach(history -> {
             StringBuilder message = new StringBuilder();
@@ -63,12 +63,12 @@ public class OutputView {
         return history.time().format(FormatterConstant.TIME_FORMATTER);
     }
 
-    public static void printCrewsAlmostExpelled(List<CrewAlmostExpelledResult> result) {
+    public static void printCrewsAlmostExpelled(List<CrewAlmostExpelledResponseDto> result) {
         String format = "- %s: %s %d회, %s %d회 (%s)%n";
         result = result.stream()
             .sorted(
-                Comparator.comparing(CrewAlmostExpelledResult::calculateTotalCount, Comparator.reverseOrder())
-                    .thenComparing(CrewAlmostExpelledResult::nickname))
+                Comparator.comparing(CrewAlmostExpelledResponseDto::calculateTotalCount, Comparator.reverseOrder())
+                    .thenComparing(CrewAlmostExpelledResponseDto::nickname))
             .toList();
 
         result.forEach(crew ->

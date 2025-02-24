@@ -6,7 +6,7 @@ import java.util.Map;
 import domain.AttendanceStatus;
 import domain.Manage;
 
-public record AttendanceHistoryResult(
+public record AttendanceHistoryResponseDto(
     String nickname,
     List<HistoryDto> histories,
     Map<AttendanceStatus, Integer> statusCounter,
