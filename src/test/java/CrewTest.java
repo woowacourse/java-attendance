@@ -75,7 +75,7 @@ public class CrewTest {
     void test8() {
         Crew crew = new Crew("폰트", "2024-12-13 10:08");
 
-        AttendTime attendTime = crew.findAttendanceByDate(13);
+        AttendTime attendTime = crew.findAttendTimeByDate(13);
 
         assertThat(attendTime.getAttendTime().getDayOfMonth()).isEqualTo(13);
     }

@@ -19,6 +19,13 @@ public class AttendanceHistory {
         attendTimes.add(attendTime);
     }
 
+    public AttendTime findAttendTimeByDate(final int date) {
+        return attendTimes.stream()
+                .filter(attendTime -> attendTime.getDayOfMonth() == date)
+                .findAny()
+                .orElseThrow(() -> new IllegalArgumentException("[ERROR] 크루 출석 기록에 존재하지 않는 날짜입니다."));
+    }
+
     public int calculateOnTime() {
         int total = 0;
         for (AttendTime attendTime : attendTimes) {

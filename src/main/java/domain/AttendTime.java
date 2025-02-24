@@ -35,6 +35,10 @@ public class AttendTime {
         return ATTENDED;
     }
 
+    public int getDayOfMonth() {
+        return attendTime.getDayOfMonth();
+    }
+
     public int getDayInfo(int dayOfMonth) {
         return StartTime.findStartTime(dayOfMonth);
     }

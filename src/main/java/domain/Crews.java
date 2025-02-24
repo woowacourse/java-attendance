@@ -10,26 +10,34 @@ public class Crews {
     public void loadCrews(List<String> crewsInFile) {
         this.crews = new ArrayList<>();
         crewsInFile.forEach(crewInFile ->
-                loadCrew(crewInFile.split(",")[0], crewInFile.split(",")[1])
+                saveCrew(crewInFile.split(",")[0], crewInFile.split(",")[1])
         );
     }
 
-    private void loadCrew(final String nickname, final String attendTime) {
+    private void saveCrew(final String nickname, final String attendTime) {
         boolean exists = existsByNickname(nickname);
         if (exists) {
-            Crew crew = findByNickname(nickname);
-            crew.addAttendTime(attendTime);
+            addAttendTime(nickname, attendTime);
             return;
         }
-        Crew crew = new Crew(nickname, attendTime);
-        crews.add(crew);
+        addCrew(nickname, attendTime);
     }
 
-    private Crew findByNickname(final String nickname) {
+    public Crew findByNickname(final String nickname) {
         return crews.stream()
                 .filter(crew -> crew.isSameName(nickname))
                 .findAny()
                 .orElseThrow(() -> new IllegalArgumentException("[ERROR] 등록되지 않은 닉네임입니다."));
+    }
+
+    private void addAttendTime(final String nickname, final String attendTime) {
+        Crew crew = findByNickname(nickname);
+        crew.addAttendTime(attendTime);
+    }
+
+    private void addCrew(final String nickname, final String attendTime) {
+        Crew crew = new Crew(nickname, attendTime);
+        crews.add(crew);
     }
 
     private boolean existsByNickname(final String nickname) {
@@ -66,7 +74,7 @@ public class Crews {
 
     public AttendTime deleteAttendance(String nickname, int date) {
         Crew crew = findCrew(nickname);
-        AttendTime attendTime = crew.findAttendanceByDate(date);
+        AttendTime attendTime = crew.findAttendTimeByDate(date);
         crew.deleteAttendance(date);
         return attendTime;
     }

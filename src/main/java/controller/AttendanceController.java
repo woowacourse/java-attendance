@@ -7,6 +7,7 @@ import static domain.December.DEFAULT_MONTH;
 import static domain.December.DEFAULT_YEAR;
 
 import domain.AttendTime;
+import domain.Crew;
 import domain.Crews;
 import domain.December;
 import infrastructure.AttendanceFileReader;
@@ -41,7 +42,7 @@ public class AttendanceController {
     private void execute(String command, Crews crews) {
         try {
             switch (command) {
-                case "1" -> attend(crews);
+                case "1" -> attendCrew(crews);
                 case "2" -> modifyAttendanceTime(crews);
                 case "3" -> findAttendanceHistory(crews);
                 case "4" -> findDangerousCrews(crews);
@@ -54,17 +55,16 @@ public class AttendanceController {
         }
     }
 
-    private void attend(final Crews crews) {
+    private void attendCrew(final Crews crews) {
         December.checkWeekday(LocalDateTime.now());
 
         String nickname = inputView.readNickname();
-        crews.ifFindNameAddTime(nickname);
+        Crew crew = crews.findByNickname(nickname);
 
         String time = inputView.readTime();
-        crews.initializeAttendTime(nickname, time);
+        crew.addAttendTime(time);
 
-        AttendTime attendTime = crews.findCrew(nickname)
-                .findAttendanceByDate(LocalDateTime.now().getDayOfMonth());
+        AttendTime attendTime = crew.findAttendTimeByDate(LocalDateTime.now().getDayOfMonth());
 
         outputView.printTodayAttendance(attendTime);
     }

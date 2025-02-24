@@ -35,7 +35,7 @@ public class OutputView {
         System.out.println();
 
         for (int date : December.getWeekDays()) {
-            AttendTime attendTime = crew.findAttendanceByDate(date);
+            AttendTime attendTime = crew.findAttendTimeByDate(date);
             if (attendTime != null) {
                 printAttendTime(attendTime);
                 System.out.println();

@@ -25,11 +25,8 @@ public class Crew {
         return attendTime.checkTime();
     }
 
-    public AttendTime findAttendanceByDate(int date) {
-        return attendanceHistory.getAttendTimes().stream()
-                .filter(attendTime -> attendTime.getAttendTime().getDayOfMonth() == date)
-                .findAny()
-                .orElse(null);
+    public AttendTime findAttendTimeByDate(int date) {
+        return attendanceHistory.findAttendTimeByDate(date);
     }
 
     public void deleteAttendance(int date) {
