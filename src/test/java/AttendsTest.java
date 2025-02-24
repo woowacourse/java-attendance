@@ -3,6 +3,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import domain.Attend;
 import domain.Attends;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import org.junit.jupiter.api.DisplayName;
@@ -39,6 +40,21 @@ public class AttendsTest {
 
         //then
         assertThat(result).isEqualTo(attend);
+    }
+
+    @Test
+    @DisplayName("날짜를 통해 Attend를 가져올 때 일치하는 날짜가 없는 경우 Time이 null인 Attend를 생성해 반환한다")
+    void should_return_Time_null_Attend_when_not_matched_day_by_day() {
+        // given
+        Attends attends = new Attends(new ArrayList<>());
+        final int day = 13;
+
+        // when
+        Attend attend = attends.findByDay(day);
+
+        // then
+        Attend excepted = Attend.fromDay(day);
+        assertThat(attend).isEqualTo(excepted);
     }
 
     @Test

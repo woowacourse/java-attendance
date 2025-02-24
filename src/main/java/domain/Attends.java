@@ -28,7 +28,6 @@ public class Attends {
                 .filter(attend -> attend.isDayEqual(day))
                 .findFirst()
                 .orElse(Attend.fromDay(day));
-        // TODO: 예외를 던지던 테스트 코드 수정
     }
 
     public boolean hasDayEqualsAttend(Attend target) {
