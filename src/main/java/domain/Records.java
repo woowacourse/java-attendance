@@ -41,7 +41,7 @@ public class Records {
         return timeAndStatus;
     }
 
-    public boolean isSameDate(LocalDateTime localDateTime) {
+    public boolean hasSameDate(LocalDateTime localDateTime) {
         LocalDate localDate = localDateTime.toLocalDate();
         return records.containsKey(localDate);
     }
