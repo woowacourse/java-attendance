@@ -36,23 +36,23 @@ public class AttendanceController {
     }
 
     private void runCommandLoop(AttendanceBook attendanceBook) {
-        boolean isLoopContinue = true;
-        while (isLoopContinue) {
-            isLoopContinue = processCommand(attendanceBook);
+        boolean shouldLoopContinue = true;
+        while (shouldLoopContinue) {
+            shouldLoopContinue = processCommandAndCheckLoopContinue(attendanceBook);
         }
     }
 
-    private boolean processCommand(AttendanceBook attendanceBook) {
+    private boolean processCommandAndCheckLoopContinue(AttendanceBook attendanceBook) {
         try {
             String command = inputView.inputCommand(Current.TODAY.getLocalDate());
-            return executeCommand(command, attendanceBook);
+            return executeCommandAndCheckLoopContinue(command, attendanceBook);
         } catch (IllegalArgumentException e) {
             System.out.println(e.getMessage());
             return true;
         }
     }
 
-    private boolean executeCommand(String command, AttendanceBook attendanceBook) {
+    private boolean executeCommandAndCheckLoopContinue(String command, AttendanceBook attendanceBook) {
         if (command.equals(QUITE_COMMAND)) {
             return false;
         }
