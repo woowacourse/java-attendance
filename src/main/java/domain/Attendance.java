@@ -23,9 +23,9 @@ public enum Attendance {
     public static Attendance getAttendanceStatus(Day day, LocalTime time) {
         validateOpenTime(time);
         LocalTime start = day.getStart();
-        Duration duration = Duration.between(start, time);
+        Duration lateness = Duration.between(start, time);
         return Arrays.stream(Attendance.values())
-                .filter(attendance -> attendance.isWithinThreshold(duration))
+                .filter(attendance -> attendance.isWithinThreshold(lateness))
                 .findFirst()
                 .orElse(ABSENT);
     }
