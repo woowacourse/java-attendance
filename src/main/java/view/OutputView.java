@@ -62,7 +62,7 @@ public class OutputView {
         System.out.println();
 
         // 경고 메시지 출력
-        WarningStatus warningStatus = attendCount.judgeWarning();
+        WarningStatus warningStatus = WarningStatus.judgeWarningStatus(attendCount);
         String warningMessage = formatWarningStatus(warningStatus);
         System.out.println(warningMessage);
     }
@@ -93,7 +93,7 @@ public class OutputView {
     }
 
     private String formatWarningCrew(WarningCrew warningCrew) {
-        WarningStatus warningStatus = warningCrew.attendCount().judgeWarning();
+        WarningStatus warningStatus = WarningStatus.judgeWarningStatus(warningCrew.attendCount());
         return String.format("- %s: 결석 %d회, 지각 %d회 (%s)"
                 , warningCrew.name()
                 , warningCrew.attendCount().absence()

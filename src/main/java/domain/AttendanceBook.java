@@ -105,7 +105,7 @@ public class AttendanceBook {
         List<WarningCrew> result = new ArrayList<>();
         for (final String name : map.keySet()) {
             AttendCount attendCount = checkAttendance(name, days).countAttendStatus();
-            WarningStatus warningStatus = attendCount.judgeWarning();
+            WarningStatus warningStatus = WarningStatus.judgeWarningStatus(attendCount);
             // TODO: Indent 줄이기
             if (warningStatus == WarningStatus.CLEAR) {
                 continue;

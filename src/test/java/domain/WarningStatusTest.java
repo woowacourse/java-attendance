@@ -15,8 +15,8 @@ class WarningStatusTest {
         AttendCount attendCount = new AttendCount(attend, late, absence);
 
         // when
-        WarningStatus warningStatus = attendCount.judgeWarning();
-
+        WarningStatus warningStatus = WarningStatus.judgeWarningStatus(attendCount);
+        
         // then
         Assertions.assertThat(warningStatus).isEqualTo(WarningStatus.CLEAR);
     }
@@ -31,7 +31,7 @@ class WarningStatusTest {
         AttendCount attendCount = new AttendCount(attend, late, absence);
 
         // when
-        WarningStatus warningStatus = attendCount.judgeWarning();
+        WarningStatus warningStatus = WarningStatus.judgeWarningStatus(attendCount);
 
         // then
         Assertions.assertThat(warningStatus).isEqualTo(WarningStatus.WARNING);
@@ -50,7 +50,7 @@ class WarningStatusTest {
         AttendCount attendCount = new AttendCount(attend, late, absence);
 
         // when
-        WarningStatus warningStatus = attendCount.judgeWarning();
+        WarningStatus warningStatus = WarningStatus.judgeWarningStatus(attendCount);
 
         // then
         Assertions.assertThat(warningStatus).isEqualTo(WarningStatus.INTERVIEW);
@@ -64,7 +64,7 @@ class WarningStatusTest {
         AttendCount attendCount = new AttendCount(attend, late, absence);
 
         // when
-        WarningStatus warningStatus = attendCount.judgeWarning();
+        WarningStatus warningStatus = WarningStatus.judgeWarningStatus(attendCount);
 
         // then
         Assertions.assertThat(warningStatus).isEqualTo(WarningStatus.EXPEL);
