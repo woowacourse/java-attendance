@@ -6,14 +6,18 @@ public class Crew {
     private final String nickName;
 
     private Crew(String nickName) {
+        validate(nickName);
         this.nickName = nickName;
     }
 
     public static Crew of(String nickName) {
-        if (nickName.length() < 2 || nickName.length() > 4) {
-            throw new IllegalArgumentException();
-        }
         return new Crew(nickName);
+    }
+
+    private void validate(String nickName) {
+        if (nickName.length() < 2 || nickName.length() > 4) {
+            throw new IllegalArgumentException("닉네임은 2글자 이상 4글자 이하여야 합니다.");
+        }
     }
 
     @Override

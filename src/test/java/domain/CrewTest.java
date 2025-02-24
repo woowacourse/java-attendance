@@ -43,7 +43,8 @@ class CrewTest {
 
         // when, then
         assertThatThrownBy(() -> Crew.of(nickName))
-                .isInstanceOf(IllegalArgumentException.class); // TODO : Exception Message까지 비교하기
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("닉네임은 2글자 이상 4글자 이하여야 합니다.");
     }
 
     @Test
@@ -54,6 +55,7 @@ class CrewTest {
 
         // when, then
         assertThatThrownBy(() -> Crew.of(nickName))
-                .isInstanceOf(IllegalArgumentException.class); // TODO : Exception Message까지 비교하기
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("닉네임은 2글자 이상 4글자 이하여야 합니다.");
     }
 }
