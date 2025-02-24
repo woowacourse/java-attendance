@@ -1,5 +1,7 @@
 package domain;
 
+import domain.constant.StandardDate;
+
 import java.time.*;
 
 public class Day {
@@ -18,7 +20,23 @@ public class Day {
     }
 
     public Boolean checkHoliday() {
-        return Holiday.isHoliday(date) || getDayOfWeek() == DayOfWeek.SATURDAY || getDayOfWeek() == DayOfWeek.SUNDAY;
+        return Holiday.isHoliday(date)
+                || date.getDayOfWeek() == DayOfWeek.SATURDAY
+                || date.getDayOfWeek() == DayOfWeek.SUNDAY;
+    }
+
+    public void validateNonHoliday() {
+        String dayOfWeekName = AttendanceStandard.getNameByDayOfWeek(date.getDayOfWeek());
+
+        if (checkHoliday()) {
+            throw new IllegalArgumentException("[ERROR] " + date.getMonthValue() + "월 " + date.getDayOfMonth() + "일 " + dayOfWeekName + "은 등교일이 아닙니다.");
+        }
+    }
+
+    public void validateDayOfMonth(Integer dayOfMonth) {
+        if (!StandardDate.TODAY.containsDayOfMonth(dayOfMonth)) {
+            throw new IllegalArgumentException("[ERROR] 존재하지 않는 날짜입니다.");
+        }
     }
 
     public boolean isLate(LocalTime attendanceTime) {
@@ -47,15 +65,15 @@ public class Day {
         return YearMonth.from(date).isValidDay(dayOfMonth);
     }
 
-    public LocalDate getDate() {
-        return date;
+    public Day createDay(Integer dayOfMonth) {
+        return new Day(LocalDate.of(date.getYear(), date.getMonthValue(), dayOfMonth));
     }
 
     private LocalTime getStandardTime() {
         return AttendanceStandard.getInstance(date).getStandardTime();
     }
 
-    public DayOfWeek getDayOfWeek() {
-        return date.getDayOfWeek();
+    public LocalDate getDate() {
+        return date;
     }
 }

@@ -56,9 +56,9 @@ public class Crew {
         return attendances.stream().anyMatch(attendance -> attendance.isEqualTo(date));
     }
 
-    public void recordAbsence(LocalDate today) {
-        today.withDayOfMonth(1)
-                .datesUntil(today)
+    public void recordAbsence(LocalDate todayDate) {
+        todayDate.withDayOfMonth(1)
+                .datesUntil(todayDate)
                 .filter(date -> date.getDayOfWeek() != DayOfWeek.SATURDAY && date.getDayOfWeek() != DayOfWeek.SUNDAY)
                 .filter(date -> !Holiday.isHoliday(date))
                 .filter(date -> !isAlreadyAttend(date))
@@ -66,22 +66,14 @@ public class Crew {
     }
 
     public Attendance findByDate(Integer dayOfMonth) {
-        Day today = new Day(StandardDate.DATE);
-        validateDayOfMonth(dayOfMonth, today);
+        Day day = StandardDate.TODAY.createDay(dayOfMonth);
+        day.validateDayOfMonth(dayOfMonth);
+        day.validateNonHoliday();
 
-        int month = StandardDate.DATE.getMonth().getValue();
-        LocalDate date = LocalDate.of(StandardDate.DATE.getYear(), month, dayOfMonth);
         return attendances.stream()
-                .filter(attendance -> attendance.isEqualTo(date))
+                .filter(attendance -> attendance.isEqualTo(day.getDate()))
                 .findFirst()
                 .orElseThrow(() -> new IllegalArgumentException("[ERROR] 해당 날짜는 출석일이 아닙니다."));
-    }
-
-
-    private void validateDayOfMonth(Integer dayOfMonth, Day today) {
-        if (!today.containsDayOfMonth(dayOfMonth)) {
-            throw new IllegalArgumentException("[ERROR] 존재하지 않는 날짜입니다.");
-        }
     }
 
     public List<Attendance> getAttendances() {
