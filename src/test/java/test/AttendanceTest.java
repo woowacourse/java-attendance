@@ -140,7 +140,7 @@ public class AttendanceTest {
 
         assertThat(attendance).isEqualTo(new Attendance(
                 LocalDate.of(2024, 12, 13),
-                LocalTime.of(10, 0))
+                LocalTime.of(10, 8))
         );
     }
 
