@@ -16,6 +16,9 @@ public enum AttendanceCalculator {
     private final LocalTime lateTime;
     private final LocalTime absentTime;
     private final int dayOfWeekValue;
+    private static final int saturday = 6;
+    private static final int sunday = 7;
+    private static final int christmas = 25;
 
     AttendanceCalculator(LocalTime lateTime, LocalTime absentTime, int dayOfWeekValue) {
         this.lateTime = lateTime;
@@ -24,14 +27,14 @@ public enum AttendanceCalculator {
     }
 
     public static boolean checkHoliday(LocalDateTime localDateTime) {
-        return (localDateTime.getDayOfWeek().getValue() == 6 || localDateTime.getDayOfWeek().getValue() == 7 || localDateTime.getDayOfMonth() == 25);
+        return (localDateTime.getDayOfWeek().getValue() == saturday || localDateTime.getDayOfWeek().getValue() == sunday || localDateTime.getDayOfMonth() == christmas);
     }
 
     public static HashMap<String, Integer> recordAttendanceResult(List<LocalDateTime> record) {
         HashMap<String, Integer> attendanceRecord = new HashMap<>();
-        attendanceRecord.put("결석",0);
-        attendanceRecord.put("출석",0);
-        attendanceRecord.put("지각",0);
+        attendanceRecord.put("결석", 0);
+        attendanceRecord.put("출석", 0);
+        attendanceRecord.put("지각", 0);
         for (LocalDateTime localDateTime :record) {
             int day = localDateTime.getDayOfWeek().getValue();
             attendanceRecord.put(calculateAttendance(day, LocalTime.from(localDateTime)).getState(),
