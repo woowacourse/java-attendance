@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import controller.Controller;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
@@ -46,11 +47,12 @@ public class StudentRepositoryTest {
     @DisplayName("등교 시간을 바탕으로 출석 기록 업데이트하는 기능")
     void test4() {
         String name = "짱수";
-        LocalDateTime localDateTime = LocalDateTime.of(2025, 12, 13,9,59);
+        LocalDateTime localDateTime = LocalDateTime.of(2024, 12, 13,9,59);
 
         Student student = studentRepository.findStudentByName(name);
-        student.updateState(localDateTime);
-        assertThat(student.getAttendance()).isEqualTo(2);
+        student.attendanceRegister(localDateTime);
+        student.updateAttendanceCount();
+        assertThat(student.getAttendance()).isEqualTo(3);
     }
 
     @Test
@@ -62,9 +64,11 @@ public class StudentRepositoryTest {
         LocalDateTime localDateTime = LocalDateTime.of(2025, month, day,9,59);
 
         Student student6 = studentRepository.findStudentByName(name);
-        student6.updateState(localDateTime);
-
-        assertThat(student6.getRecord().get(localDateTime)).isEqualTo(AttendanceStatus.ATTENDANCE);
+        student6.attendanceRegister(localDateTime);
+        Assertions.assertEquals(student6.getAttendanceRecords()
+                .getRecord()
+                .get(LocalDate.from(localDateTime))
+                .getAttendanceStatus(), AttendanceStatus.ATTENDANCE);
     }
 
     @Test
@@ -78,8 +82,11 @@ public class StudentRepositoryTest {
     @DisplayName("출석 기록 업데이트 하는 메서드 테스트")
     void test7() {
         Student student1 = studentRepository.findStudentByName("빙티");
-        student1.updateState(LocalDateTime.of(2024,12,3,10,0));
-        Assertions.assertTrue(student1.getRecord().get(LocalDateTime.of(2024,12,3,10,0)).equals(AttendanceStatus.ATTENDANCE));
+        student1.modifyAttendanceRecord(LocalDateTime.of(2024,12,3,10,0));
+        Assertions.assertEquals(student1.getAttendanceRecords()
+                .getRecord()
+                .get(LocalDate.of(2024, 12, 3))
+                .getAttendanceStatus(), AttendanceStatus.ATTENDANCE);
     }
 
 }

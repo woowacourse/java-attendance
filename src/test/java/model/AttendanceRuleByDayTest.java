@@ -1,5 +1,6 @@
 package model;
 
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
@@ -10,14 +11,14 @@ class AttendanceRuleByDayTest {
     @Test
     @DisplayName("요일과 시간을 기준으로 model.AttendanceStatus 객체 생성 테스트 (월요일 출석)")
     void test1() {
-        Assertions.assertThat(AttendanceRuleByDay.calculateAttendance(1, LocalTime.of(13,0)))
+        Assertions.assertThat(AttendanceRuleByDay.calculateAttendance(LocalDateTime.of(2024, 12, 2, 13, 0)))
                         .isEqualTo(AttendanceStatus.ATTENDANCE);
     }
 
     @Test
     @DisplayName("요일과 시간을 기준으로 model.AttendanceStatus 객체 생성 테스트 (금요일 결석)")
     void test2() {
-        Assertions.assertThat(AttendanceRuleByDay.calculateAttendance(5, LocalTime.of(10,31)))
+        Assertions.assertThat(AttendanceRuleByDay.calculateAttendance(LocalDateTime.of(2024, 12, 5, 10, 31)))
                 .isEqualTo(AttendanceStatus.ABSENT);
     }
 
