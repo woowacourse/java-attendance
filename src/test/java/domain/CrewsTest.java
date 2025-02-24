@@ -11,7 +11,7 @@ class CrewsTest {
     @Test
     void 크루_닉네임으로_크루를_올바르게_찾아온다() {
         TreeSet<Attendance> attendanceList = new TreeSet<>();
-        attendanceList.add(Attendance.of("2024-12-13 10:08"));
+        attendanceList.add(Attendance.from("2024-12-13 10:08"));
         Attendances attendances = new Attendances(attendanceList);
         Crew crew = new Crew(new Nickname("밍키"), attendances, AttendanceCounter.of(attendances));
 

@@ -9,13 +9,17 @@ public class Attendance implements Comparable<Attendance> {
     private final AttendanceDateTime attendanceDateTime;
     private final AttendanceStatus attendanceStatus;
 
-    public Attendance(final AttendanceDateTime attendanceDateTime) {
+    private Attendance(final AttendanceDateTime attendanceDateTime) {
         final Week day = Week.findByAttendanceTime(attendanceDateTime.getLocalDateTime());
         this.attendanceDateTime = attendanceDateTime;
         this.attendanceStatus = AttendanceStatus.findByAttendanceTime(day, attendanceDateTime.toLocalTime());
     }
 
-    public static Attendance of(final String inputTime) {
+    public static Attendance getInstance(AttendanceDateTime attendanceDateTime) {
+        return new Attendance(attendanceDateTime);
+    }
+
+    public static Attendance from(final String inputTime) {
         return new Attendance(AttendanceDateTime.of(inputTime));
     }
 

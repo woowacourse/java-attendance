@@ -41,7 +41,7 @@ public class CheckAttendanceCommand implements AttendanceCommand {
     }
 
     private Attendance attend(Crew crew, AttendanceDateTime attendedDateTime) {
-        final Attendance attendance = new Attendance(attendedDateTime);
+        final Attendance attendance = Attendance.getInstance(attendedDateTime);
         crew.add(attendance);
         return attendance;
     }

@@ -16,7 +16,7 @@ public class EditAttendanceCommand implements AttendanceCommand {
         final Crew crew = crews.findByNickname(nickname);
         final AttendanceDateTime desiredUpdateDateTime = readUpdateDateTime();
         final Attendance oldAttendance = crew.getAttendance(desiredUpdateDateTime);
-        final Attendance newAttendance = new Attendance(desiredUpdateDateTime);
+        final Attendance newAttendance = Attendance.getInstance(desiredUpdateDateTime);
 
         crew.updateAttendance(oldAttendance, newAttendance);
         OutputView.printUpdateAttendance(oldAttendance.getSummary(), newAttendance.getSummary());

@@ -19,7 +19,7 @@ class AttendanceTest {
 
         // when
         // then
-        assertThatCode(() -> new Attendance(AttendanceDateTime.of(localDateTime)))
+        assertThatCode(() -> Attendance.getInstance(AttendanceDateTime.of(localDateTime)))
                 .doesNotThrowAnyException();
     }
 
@@ -30,7 +30,7 @@ class AttendanceTest {
         LocalDateTime expected = LocalDateTime.of(2024, 12, 12, 11, 11);
 
         // when
-        Attendance attendance = Attendance.of(input);
+        Attendance attendance = Attendance.from(input);
 
         // then
         assertThat(attendance.getLocalDateTime()).isEqualTo(expected);
@@ -42,7 +42,7 @@ class AttendanceTest {
         // given
         // when
         // then
-        assertThatThrownBy(() -> Attendance.of(input))
+        assertThatThrownBy(() -> Attendance.from(input))
                 .isInstanceOf(CustomIllegalArgumentException.class);
     }
 
@@ -52,7 +52,7 @@ class AttendanceTest {
         String input = "2024-12-25 11:11";
         // when
         // then
-        assertThatThrownBy(() -> Attendance.of(input))
+        assertThatThrownBy(() -> Attendance.from(input))
                 .isInstanceOf(CustomIllegalArgumentException.class);
     }
 }

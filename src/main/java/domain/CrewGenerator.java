@@ -39,7 +39,7 @@ public class CrewGenerator {
             final String nickname = parsedCrewData[0];
             final String localDateTime = parsedCrewData[1];
             final Nickname name = new Nickname(nickname);
-            final Attendance attendance = Attendance.of(localDateTime);
+            final Attendance attendance = Attendance.from(localDateTime);
             crewData.computeIfAbsent(name, k -> new TreeSet<>()).add(attendance);
         }
 
