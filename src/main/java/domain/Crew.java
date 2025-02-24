@@ -37,20 +37,8 @@ public class Crew implements Comparable<Crew> {
         attendances.add(attendance);
     }
 
-    /**
-     * 출석 횟수 / 지각 횟수 / 결석 횟수 / 보정된 결석 횟수(지각 3회는 결석 1회로 간주), 처벌(제적, 면담, 경고)
-     *
-     * @return CrewSummary
-     */
-    public CrewSummary getCrewSummary() {
-        final String displayName = this.nickname.getNickname();
-        final int absence = attendanceCounter.getAbsence();
-        final int tardiness = attendanceCounter.getTardiness();
-        final int attendanceCount = attendanceCounter.getAttendanceCount();
-        final int adjustedAbsenceCount = attendanceCounter.calculateAdjustedAbsenceCountWithTardinessCount();
-        final Punishment punishment = Punishment.findByAbsenceCount(adjustedAbsenceCount);
-
-        return new CrewSummary(displayName, absence, tardiness, attendanceCount, adjustedAbsenceCount, punishment);
+    public int calculateAdjustedAbsenceCountWithTardinessCount() {
+        return attendanceCounter.calculateAdjustedAbsenceCountWithTardinessCount();
     }
 
     public List<AttendanceSummary> getAttendancesSummary() {

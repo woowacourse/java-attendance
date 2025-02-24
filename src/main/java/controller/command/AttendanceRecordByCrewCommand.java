@@ -1,6 +1,7 @@
 package controller.command;
 
 import domain.Crew;
+import domain.CrewDto;
 import domain.Crews;
 import domain.Nickname;
 import view.InputView;
@@ -12,7 +13,7 @@ public class AttendanceRecordByCrewCommand implements AttendanceCommand {
     public void execute(final Crews crews) {
         Nickname nickname = readNickname();
         Crew crew = crews.findByNickname(nickname);
-        OutputView.printCrewAttendances(crew.getCrewSummary(), crew.getAttendancesSummary());
+        OutputView.printCrewAttendances(CrewDto.from(crew), crew.getAttendancesSummary());
     }
 
     private Nickname readNickname() {
@@ -20,3 +21,4 @@ public class AttendanceRecordByCrewCommand implements AttendanceCommand {
         return new Nickname(inputNickName);
     }
 }
+

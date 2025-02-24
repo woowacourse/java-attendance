@@ -3,7 +3,7 @@ package view;
 import domain.AttendanceDateTime;
 import domain.AttendanceStatus;
 import domain.AttendanceSummary;
-import domain.CrewSummary;
+import domain.CrewDto;
 import domain.Punishment;
 import domain.Week;
 import java.time.LocalDateTime;
@@ -49,15 +49,15 @@ public final class OutputView {
         return attendanceDateTime.getLocalDateTime();
     }
 
-    public static void printCrewAttendances(final CrewSummary crewSummaries,
+    public static void printCrewAttendances(final CrewDto crewDto,
                                             List<AttendanceSummary> attendanceSummaries) {
-        final String nickname = crewSummaries.nickname();
-        final Punishment punishment = crewSummaries.punishment();
+        final String nickname = crewDto.nickname();
+        final Punishment punishment = crewDto.punishment();
         final String titleFormat = "이번 달 %s의 출석 기록입니다.";
 
         printMessageWithLineSeparator(String.format(titleFormat, nickname));
         printAttendances(attendanceSummaries);
-        printCountAboutAttendance(crewSummaries);
+        printCountAboutAttendance(crewDto);
         printMessageWithLineSeparator(String.format("%s 대상자입니다.", punishment.getPunishmentName()));
     }
 
@@ -77,31 +77,31 @@ public final class OutputView {
         return localDateTime.format(Week.KOREAN_DATE_TIME_FORMAT);
     }
 
-    private static void printCountAboutAttendance(final CrewSummary crewSummaries) {
+    private static void printCountAboutAttendance(final CrewDto crewDto) {
         final String countFormat = "%s: %d회";
 
         printMessage(
                 String.format(
                         countFormat,
                         AttendanceStatus.ATTENDANCE.getDisplayName(),
-                        crewSummaries.attendanceCount()
+                        crewDto.attendanceCount()
                 )
         );
         printMessage(
                 String.format(countFormat, AttendanceStatus.TARDINESS.getDisplayName(),
-                        crewSummaries.tardinessCount()));
+                        crewDto.tardinessCount()));
         printMessage(
-                String.format(countFormat, AttendanceStatus.ABSENCE.getDisplayName(), crewSummaries.absenceCount()));
+                String.format(countFormat, AttendanceStatus.ABSENCE.getDisplayName(), crewDto.absenceCount()));
     }
 
-    public static void printAllExpulsion(final List<CrewSummary> crewSummaries) {
+    public static void printAllExpulsion(final List<CrewDto> crewDtos) {
         printMessageWithLineSeparator("제적 위험자 조회");
 
-        for (CrewSummary crewSummary : crewSummaries) {
-            final String nickname = crewSummary.nickname();
-            final int absenceCount = crewSummary.absenceCount();
-            final int tardinessCount = crewSummary.tardinessCount();
-            final Punishment punishment = crewSummary.punishment();
+        for (CrewDto crewDto : crewDtos) {
+            final String nickname = crewDto.nickname();
+            final int absenceCount = crewDto.absenceCount();
+            final int tardinessCount = crewDto.tardinessCount();
+            final Punishment punishment = crewDto.punishment();
             final String punishmentDisplayName = punishment.getPunishmentName();
 
             if (punishment.equals(Punishment.NONE)) {

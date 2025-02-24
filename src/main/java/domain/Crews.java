@@ -19,13 +19,7 @@ public class Crews {
                 .orElseThrow(() -> new CustomIllegalArgumentException("크루가 존재하지 않습니다."));
     }
 
-    public List<CrewSummary> getCrewSummary() {
-        return getSortedCrews().stream()
-                .map(Crew::getCrewSummary)
-                .toList();
-    }
-
-    private List<Crew> getSortedCrews() {
+    public List<Crew> getSortedCrews() {
         return crews.stream().
                 sorted(sortCrew())
                 .toList();
@@ -45,14 +39,8 @@ public class Crews {
         return findPunishment(crew).getAbsenceCount();
     }
 
-
     private Punishment findPunishment(final Crew crew) {
-        return Punishment.findByAbsenceCount(getAdjustedAbsenceCount(crew));
-    }
-
-    private int getAdjustedAbsenceCount(final Crew crew) {
-        return crew.getCrewSummary().
-                adjustedAbsenceCount();
+        return Punishment.findByAbsenceCount(crew.calculateAdjustedAbsenceCountWithTardinessCount());
     }
 
     private final Comparator<Crew> absenceOrder = Comparator
