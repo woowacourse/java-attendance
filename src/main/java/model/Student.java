@@ -4,6 +4,8 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 public class Student {
+    private static final int LATE_CONVERSION_RATE = 3;
+
     private final AttendanceRecords attendanceRecords;
     private final String name;
     private int totalAbsent;
@@ -63,7 +65,7 @@ public class Student {
 
     public int calculateAbsent() {
         updateAttendanceCount();
-        return totalAbsent + totalLate / 3;
+        return totalAbsent + totalLate / LATE_CONVERSION_RATE;
     }
 
 }
