@@ -17,15 +17,17 @@ class AttendanceStatusTest {
     void 시간_조건에_따라_출석한_시간의_상태를_반환한다(AttendanceTime attendanceTime, AttendanceStatus expectedStatus) {
 
         // given
+
         // when
         AttendanceStatus resultStatus = AttendanceStatus.getAttendanceStatusWithCondition(
-                attendanceTime,
-                10, 5, 30);
+                attendanceTime, 10, 5, 30);
+
         // then
         assertThat(resultStatus).isEqualTo(expectedStatus);
     }
 
     private static Stream<Arguments> attendanceTimeAndStatus() {
+        
         LocalDate testDate = LocalDate.of(2025, 2, 13);
         return Stream.of(
                 Arguments.of(new AttendanceTime(testDate, "10", "05", false), AttendanceStatus.ATTEND),

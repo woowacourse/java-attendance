@@ -8,9 +8,12 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import attendance.domain.Attendance;
 import attendance.domain.AttendanceTime;
 import attendance.domain.CrewAttendanceInformation;
+import java.time.DayOfWeek;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.IntStream;
 import java.util.stream.Stream;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -37,8 +40,6 @@ class AttendanceRepositoryTest {
 
         attendance1 = new Attendance("체체", new AttendanceTime(localDate1, hour, minute, false));
         attendance2 = new Attendance("체체", new AttendanceTime(localDate2, hour, minute, false));
-
-
     }
 
     @DisplayName("출결 기록을 추가한다.")
@@ -93,13 +94,13 @@ class AttendanceRepositoryTest {
     void 해당_닉네임을_가진_크루의_그_달_출석_기록을_가져온다() {
 
         // given
-        int today = LocalDate.now().getDayOfMonth();
         Attendance attendance1 = new Attendance("체체", new AttendanceTime(localDate1, hour, minute, false));
         Attendance attendance2 = new Attendance("체체", new AttendanceTime(localDate2, hour, minute, false));
 
         // when
         AttendanceRepository attendanceRepository = new AttendanceRepository(new ArrayList<>(
                 List.of(attendance1, attendance2)));
+
         // then
         assertThat(attendanceRepository.findAllAttendanceByName("체체").size()).isEqualTo(2);
     }
@@ -156,5 +157,36 @@ class AttendanceRepositoryTest {
 
     private static Attendance makeAbsentAttendance(String name, int year, int month, int day) {
         return new Attendance(name, new AttendanceTime(LocalDate.of(year, month, day), "18", "00", true));
+    }
+
+    @DisplayName("입력 받은 크루에 대해 이번 달 출석 기록이 없는 날짜는 결석으로 처리한다")
+    @Test
+    void 입력_받은_크루에_대해_이번_달_출석_기록이_없는_날짜는_결석으로_처리한다() {
+
+        // given
+        AttendanceRepository attendanceRepository = new AttendanceRepository(new ArrayList<>());
+
+        // when
+        attendanceRepository.initAbsent("피글렛");
+
+        // then
+        List<Attendance> attendances = attendanceRepository.findAllAttendanceByName("피글렛");
+        assertThat(attendances.size()).isEqualTo(countWeekDays());
+    }
+
+    private int countWeekDays() {
+        int currentYear = LocalDate.now().getYear();
+        int currentMonth = LocalDate.now().getMonthValue();
+        int currentDay = LocalDateTime.now().getDayOfMonth();
+        return (int) IntStream.range(1, currentDay)
+                .mapToObj(day -> LocalDate.of(currentYear, currentMonth, day))
+                .filter(date -> !isWeekend(date))
+                .count();
+    }
+
+    private boolean isWeekend(final LocalDate date) {
+
+        DayOfWeek dayOfWeek = date.getDayOfWeek();
+        return dayOfWeek == DayOfWeek.SATURDAY || dayOfWeek == DayOfWeek.SUNDAY;
     }
 }

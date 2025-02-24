@@ -35,6 +35,7 @@ class AttendanceTest {
 
         //given
         Attendance attendance3 = new Attendance("체체", new AttendanceTime(localDate1, hour, minute, false));
+
         //when
         boolean isEqual = attendance1.isAlreadyAttendance(attendance3);
 
@@ -55,6 +56,20 @@ class AttendanceTest {
         assertThat(isEqual).isFalse();
     }
 
+    @DisplayName("입력 받은 출결 기록과 이름이 다른 기록이면 false를 반환한다.")
+    @Test
+    void 입력_받은_출결_기록과_이름이_다른_기록이면_false를_반환한다() {
+
+        //given
+        Attendance attendance3 = new Attendance("체글렛", new AttendanceTime(localDate1, "10", "00", false));
+
+        //when
+        boolean isEqual = attendance1.isAlreadyAttendance(attendance3);
+
+        //then
+        assertThat(isEqual).isFalse();
+    }
+
     @DisplayName("주어진 시간으로 출석 기록을 변경한다.")
     @Test
     void 주어진_시간으로_출석_기록을_변경한다() {
@@ -64,6 +79,7 @@ class AttendanceTest {
 
         // when
         attendance1.modifyAttendanceTime(attendanceTime);
+
         // then
         assertThat(attendance1.getAttendanceTime()).isEqualTo(attendanceTime);
     }
@@ -91,9 +107,25 @@ class AttendanceTest {
     void 해당_닉네임의_크루가_해당_날에_대한_출석_정보가_있는지_반환한다(int year, int month, int day, boolean expectedResult) {
 
         // given
+
         // when
         boolean result = attendance1.isSameByNameAndLocalDate("체체", year, month, day);
+
         // then
         assertThat(result).isEqualTo(expectedResult);
+    }
+
+    @DisplayName("특정 출석 정보의 출석 시간을 수정한다.")
+    @Test
+    void 특정_출석_정보의_출석_시간을_수정한다() {
+
+        // given
+        AttendanceTime modifyAttendanceTime = new AttendanceTime(localDate1, "10", "00", false);
+
+        // when
+        attendance1.modifyAttendanceTime(modifyAttendanceTime);
+
+        // then
+        assertThat(attendance1.getAttendanceTime()).isEqualTo(modifyAttendanceTime);
     }
 }

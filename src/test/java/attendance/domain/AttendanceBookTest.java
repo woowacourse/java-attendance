@@ -23,6 +23,7 @@ class AttendanceBookTest {
         //given
         Set<String> names = Set.of("a", "b", "c");
         AttendanceBook attendanceBook = new AttendanceBook(names);
+
         //when
 
         //then
@@ -32,9 +33,9 @@ class AttendanceBookTest {
     }
 
     private static Attendance makeAbsentAttendance(String name, int year, int month, int day) {
+
         return new Attendance(name, new AttendanceTime(LocalDate.of(year, month, day), "18", "00", true));
     }
-
 
     @DisplayName("제적 위험자 리스트를 가져온다.")
     @ParameterizedTest
@@ -49,14 +50,13 @@ class AttendanceBookTest {
         AttendanceRepository attendanceRepository = new AttendanceRepository(attendances);
 
         // when
-        List<CrewAttendanceInformation> attendanceCountAndCrewAttendanceInformationDTOS = attendanceBook.getCrewAtRiskOfExpulsion(
+        List<CrewAttendanceInformation> crewAttendanceInformations = attendanceBook.getCrewAtRiskOfExpulsion(
                 attendanceRepository, academicStatus);
 
         // then
         assertAll(() -> {
-
-            assertEquals(attendanceCountAndCrewAttendanceInformationDTOS.size(), 1);
-            assertEquals(attendanceCountAndCrewAttendanceInformationDTOS.getFirst().crewName(), name);
+            assertEquals(crewAttendanceInformations.size(), 1);
+            assertEquals(crewAttendanceInformations.getFirst().crewName(), name);
         });
     }
 
