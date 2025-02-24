@@ -17,10 +17,6 @@ public class CsvReader {
     private static final String DATE_TIME_DELIMITER = " ";
     private static final int TOTAL_ROW_COUNT = 2;
     private static final int TOTAL_DATE_TIME_COUNT = 2;
-    private static final int NAME_INDEX = 0;
-    private static final int DATE_TIME_INDEX = 1;
-    private static final int DATE_INDEX = 0;
-    private static final int TIME_INDEX = 1;
 
     public static List<String> readCsv(String csvPath) {
         URL fileURL = CsvReader.class.getClassLoader().getResource(csvPath);
@@ -30,16 +26,19 @@ public class CsvReader {
     public static String parseName(String row) {
         String[] split = splitRow(row);
         validRowFormat(split);
-        return split[NAME_INDEX].strip();
+        String name = split[0].strip();
+        return name;
     }
 
     public static Attend parseAttend(String row) {
         String[] split = splitRow(row);
         validRowFormat(split);
-        String dateTime = split[DATE_TIME_INDEX];
+        String dateTime = split[1];
         String[] dateTimeParse = splitTime(dateTime);
         validDateTimeFormat(dateTimeParse);
-        return Attend.of(parseDate(dateTimeParse[DATE_INDEX].strip()), parseTime(dateTimeParse[TIME_INDEX].strip()));
+        LocalDate date = parseDate(dateTimeParse[0].strip());
+        LocalTime time = parseTime(dateTimeParse[1].strip());
+        return Attend.of(date, time);
     }
 
     private static String[] splitRow(String row) {
@@ -49,6 +48,18 @@ public class CsvReader {
     private static void validRowFormat(String[] split) {
         if (split.length != TOTAL_ROW_COUNT) {
             throw new IllegalArgumentException("파일 행 구조가 잘못되었습니다.");
+        }
+    }
+
+    private static String[] splitTime(String dateTime) {
+        String[] result = dateTime.split(DATE_TIME_DELIMITER);
+        validDateTimeFormat(result);
+        return result;
+    }
+
+    private static void validDateTimeFormat(String[] dateTimeParse) {
+        if (dateTimeParse.length != TOTAL_DATE_TIME_COUNT) {
+            throw new IllegalArgumentException("datetime 형식이 잘못되었습니다.");
         }
     }
 
@@ -68,12 +79,6 @@ public class CsvReader {
         }
     }
 
-    private static String[] splitTime(String dateTime) {
-        String[] result = dateTime.split(DATE_TIME_DELIMITER);
-        validDateTimeFormat(result);
-        return result;
-    }
-
     private static List<String> readFile(URL fileURL) {
         try (BufferedReader reader = Files.newBufferedReader(Paths.get(fileURL.toURI()))) {
             return removeTitleRow(reader);
@@ -84,11 +89,5 @@ public class CsvReader {
 
     private static List<String> removeTitleRow(BufferedReader reader) {
         return reader.lines().skip(1).toList();
-    }
-
-    private static void validDateTimeFormat(String[] dateTimeParse) {
-        if (dateTimeParse.length != TOTAL_DATE_TIME_COUNT) {
-            throw new IllegalArgumentException("datetime 형식이 잘못되었습니다.");
-        }
     }
 }
