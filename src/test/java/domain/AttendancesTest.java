@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Test;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -17,7 +18,7 @@ class AttendancesTest {
         //given
         String name = "조로";
         Attendance attendance = Attendance.of(Crew.of(name), CheckInTimes.of(List.of()));
-        Attendances attendances = Attendances.of(List.of(attendance));
+        Attendances attendances = Attendances.of(Map.of(Crew.of(name), attendance));
 
         //when
         Attendance found = attendances.findAttendanceByName("조로");
@@ -32,7 +33,7 @@ class AttendancesTest {
         //given
         String name = "조로";
         Attendance attendance = Attendance.of(Crew.of(name), CheckInTimes.of(List.of()));
-        Attendances attendances = Attendances.of(List.of(attendance));
+        Attendances attendances = Attendances.of(Map.of(Crew.of(name), attendance));
 
         //when , then
         assertThatThrownBy(() -> attendances.findAttendanceByName("차니"))
@@ -65,7 +66,11 @@ class AttendancesTest {
         Attendance attendance3 = Attendance.of(crew3, checkInTimes3);
         attendance3.checkIn(LocalDateTime.of(2024, 12, 3, 9, 30));
 
-        Attendances attendances = Attendances.of(List.of(attendance1, attendance2, attendance3));
+        Attendances attendances = Attendances.of(Map.of(
+                crew1, attendance1,
+                crew2, attendance2,
+                crew3, attendance3
+        ));
 
         //when
         List<Attendance> dangerCrews = attendances.findDangerCrews();

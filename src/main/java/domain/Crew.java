@@ -38,4 +38,17 @@ public class Crew implements Comparable<Crew> {
     public int compareTo(Crew o) {
         return this.name.compareTo(o.name);
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Crew crew = (Crew) o;
+        return name.equals(crew.name);
+    }
+
+    @Override
+    public int hashCode() {
+        return name.hashCode();
+    }
 }

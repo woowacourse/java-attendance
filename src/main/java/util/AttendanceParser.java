@@ -7,14 +7,15 @@ import domain.Crew;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class AttendanceParser {
     public static Attendances registerAttendances(String fileName, DateTimeFormatter formatter) {
         List<List<String>> rawAttendances = CsvParser.readFile(fileName);
 
-        List<Attendance> attendances = new ArrayList<>();
+        Map<Crew, Attendance> attendances = new HashMap<>();
 
         Attendances entity = Attendances.of(attendances);
 
@@ -29,7 +30,7 @@ public class AttendanceParser {
                 Attendance newAttendance = Attendance.of(crew, CheckInTimes.of(List.of()));
                 LocalDateTime time = getLocalDateTime(line.get(1), formatter);
                 newAttendance.checkIn(time);
-                attendances.add(newAttendance);
+                attendances.put(crew, newAttendance);
             }
         }
 
