@@ -1,15 +1,17 @@
 package controller;
 
 import domain.AttendTime;
-import file.AttendanceFileReader;
+import domain.Command;
 import domain.Crews;
 import domain.December;
+import file.AttendanceFileReader;
 import view.InputView;
 import view.OutputView;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
+import static domain.Command.*;
 import static domain.December.DEFAULT_MONTH;
 import static domain.December.DEFAULT_YEAR;
 import static domain.WarningStatusType.*;
@@ -31,25 +33,25 @@ public class AttendanceController {
         crews = new Crews(students);
 
         while (true) {
-            String command = inputView.readCommand();
+            Command command = inputView.readCommand();
 
             try {
-                if (command.equals("1")) {
+                if (command == TODAY_ATTEND) {
                     executeAttendance();
                 }
-                if (command.equals("2")) {
+                if (command == CHANGE_CREW_ATTENDANCE) {
                     executeChangingAttendance();
                 }
 
-                if (command.equals("3")) {
+                if (command == SHOW_CREW_ATTENDANCE) {
                     executePrintCrewAttendance();
                 }
 
-                if (command.equals("4")) {
+                if (command == SHOW_DANGEROUS_CREW) {
                     executeWarningCrews();
                 }
 
-                if (command.equals("Q")) {
+                if (command == EXIT) {
                     break;
                 }
             } catch (Exception e) {

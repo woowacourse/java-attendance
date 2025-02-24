@@ -1,5 +1,7 @@
 package view;
 
+import domain.Command;
+
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.TextStyle;
@@ -15,7 +17,7 @@ public class InputView {
         this.scanner = scanner;
     }
 
-    public String readCommand() {
+    public Command readCommand() {
         LocalDateTime today = TODAY;
         System.out.printf("오늘은 %d월 %s일 %s입니다. 기능을 선택해 주세요.\n" +
                         "1. 출석 확인\n" +
@@ -25,7 +27,7 @@ public class InputView {
                         "Q. 종료\n%n", today.getMonthValue(), today.getDayOfMonth(),
                 today.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.KOREAN)
         );
-        return scanner.nextLine();
+        return Command.getCommand(scanner.nextLine());
     }
 
     public String readNickname() {
