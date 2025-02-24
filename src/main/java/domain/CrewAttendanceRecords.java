@@ -81,9 +81,7 @@ public class CrewAttendanceRecords {
 
     private List<Crew> sortWarnedCrews(List<Crew> crews) {
         crews.sort(Comparator.comparing((Crew crew) -> {
-            int absentCount = crewAttendanceRecords.get(crew).getAbsentCount();
-            int tardyCount = crewAttendanceRecords.get(crew).getTardyCount();
-            int convertedAbsencesAndTardies = DisciplinaryStatus.getConvertedAbsencesAndTardies(absentCount, tardyCount);
+            int convertedAbsencesAndTardies = crewAttendanceRecords.get(crew).getConvertedAbsencesAndTardies();
             return convertedAbsencesAndTardies * -1;
         }).thenComparing(Crew::name));
         return crews;

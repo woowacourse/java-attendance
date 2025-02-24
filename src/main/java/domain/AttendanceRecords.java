@@ -63,6 +63,12 @@ public class AttendanceRecords {
         return DisciplinaryStatus.getStatus(absentCount, tardyCount);
     }
 
+    public int getConvertedAbsencesAndTardies() {
+        int absentCount = getAbsentCount();
+        int tardyCount = getTardyCount();
+        return DisciplinaryStatus.getConvertedAbsencesAndTardies(absentCount, tardyCount);
+    }
+
     public TreeSet<AttendanceRecord> getAttendanceRecords() {
         return attendanceRecords;
     }
