@@ -19,12 +19,6 @@ public class DateInfo {
         return new DateInfo(localDate, campusTime);
     }
 
-    // TODO(fix) : 삭제 고민하기...
-    public static DateInfo ofDefaultValue(int year, int month, int day) {
-        LocalDate date = LocalDate.of(year, month, day);
-        return new DateInfo(date, null);
-    }
-
     public void modifyAttendanceTime(CampusTime modifyCampusTime) {
         this.campusTime = modifyCampusTime;
         this.attendanceStatus = AttendanceStatus.calculateAttendanceStatus(date, modifyCampusTime);
