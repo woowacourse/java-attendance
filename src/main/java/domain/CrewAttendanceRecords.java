@@ -3,8 +3,6 @@ package domain;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.*;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 public class CrewAttendanceRecords {
     private final Map<Crew, AttendanceRecords> crewAttendanceRecords;
@@ -58,21 +56,12 @@ public class CrewAttendanceRecords {
     }
 
     public List<Crew> getWarnedCrews() {
-        List<Crew> expelledCrews = getCrewsByDisciplinaryStatus(DisciplinaryStatus.EXPELLED);
-        List<Crew> oneOnOneCrews = getCrewsByDisciplinaryStatus(DisciplinaryStatus.ONE_ON_ONE);
-        List<Crew> warningCrews = getCrewsByDisciplinaryStatus(DisciplinaryStatus.WARNING);
-        return Stream.of(expelledCrews, oneOnOneCrews, warningCrews)
-                .flatMap(List::stream)
-                .collect(Collectors.toList());
-    }
-
-    private List<Crew> getCrewsByDisciplinaryStatus(DisciplinaryStatus targetStatus) {
         List<Crew> warnedCrews = new ArrayList<>();
         for (Map.Entry<Crew, AttendanceRecords> recordsEntry : crewAttendanceRecords.entrySet()) {
             Crew crew = recordsEntry.getKey();
             AttendanceRecords attendanceRecords = recordsEntry.getValue();
             DisciplinaryStatus status = attendanceRecords.getDisciplinaryStatus();
-            if (status == targetStatus) {
+            if (status != DisciplinaryStatus.NONE) {
                 warnedCrews.add(crew);
             }
         }
@@ -81,6 +70,9 @@ public class CrewAttendanceRecords {
 
     private List<Crew> sortWarnedCrews(List<Crew> crews) {
         crews.sort(Comparator.comparing((Crew crew) -> {
+            DisciplinaryStatus status = crewAttendanceRecords.get(crew).getDisciplinaryStatus();
+            return status.ordinal();
+        }).thenComparing((Crew crew) -> {
             int convertedAbsencesAndTardies = crewAttendanceRecords.get(crew).getConvertedAbsencesAndTardies();
             return convertedAbsencesAndTardies * -1;
         }).thenComparing(Crew::name));
