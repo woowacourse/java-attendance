@@ -3,7 +3,7 @@ package domain;
 import domain.constants.AttendanceStatus;
 import domain.constants.ErrorMessage;
 import domain.constants.ExpulsionStatus;
-import java.time.DayOfWeek;
+import domain.constants.Holiday;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -11,9 +11,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import util.DateUtils;
 
 public class AttendanceSystem {
-    private static final LocalDate CHRISTMAS_DAY = LocalDate.of(2024, 12, 25);
     private static final String DELIMITER = ",";
     private final List<Crew> crews;
 
@@ -87,8 +87,7 @@ public class AttendanceSystem {
     }
 
     public boolean isAttendanceDay(final LocalDate date) {
-        return !(date.getDayOfWeek() == DayOfWeek.SUNDAY || date.getDayOfWeek() == DayOfWeek.SATURDAY
-                || date.equals(CHRISTMAS_DAY));
+        return !(DateUtils.isWeekend(date.getDayOfWeek()) || Holiday.isHoliday(date));
     }
 
     public UpdatedAttendanceSnapshot updateAttendanceByCrewNameAndDay(

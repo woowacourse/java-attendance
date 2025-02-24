@@ -2,7 +2,7 @@ package domain;
 
 import domain.constants.AttendanceStatus;
 import domain.constants.ExpulsionStatus;
-import java.time.DayOfWeek;
+import domain.constants.Holiday;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -11,9 +11,9 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.IntStream;
+import util.DateUtils;
 
 public class Crew {
-    private static final LocalDate CHRISTMAS_DATE = LocalDate.of(2024, 12, 25);
     private final CrewName name;
     private final List<Attendance> attendances;
 
@@ -31,12 +31,8 @@ public class Crew {
         return new Crew(name, attendances);
     }
 
-    private static boolean canDateAttendance(final LocalDate today) {
-        if (today.getDayOfWeek() == DayOfWeek.SATURDAY || today.getDayOfWeek() == DayOfWeek.SUNDAY
-                || today.equals(CHRISTMAS_DATE)) {
-            return false;
-        }
-        return true;
+    private static boolean canDateAttendance(final LocalDate date) {
+        return !(DateUtils.isWeekend(date.getDayOfWeek()) || Holiday.isHoliday(date));
     }
 
     public Attendance addAttendance(final LocalDateTime localDateTime) {
