@@ -24,9 +24,6 @@ public enum AttendanceRuleByDay {
     public static AttendanceStatus calculateAttendance(LocalDateTime localDateTime) {
         int day = localDateTime.getDayOfWeek().getValue();
         LocalTime arrivalTime = LocalTime.from(localDateTime);
-        if (arrivalTime.equals(LocalTime.of(0, 0))) {
-            return AttendanceStatus.ABSENT;
-        }
         return Arrays.stream(values())
                 .filter(d -> d.dayOfWeekValue == day)
                 .map(d -> d.getAttendanceStatus(arrivalTime))
