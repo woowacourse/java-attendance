@@ -12,7 +12,7 @@ public class Attendances {
     private final TreeSet<Attendance> attendances;
 
     public Attendances(final TreeSet<Attendance> attendances) {
-        this.attendances = attendances;
+        this.attendances = new TreeSet<>(attendances);
     }
 
     public AttendanceStatusCounts calculateAttendanceCount() {
