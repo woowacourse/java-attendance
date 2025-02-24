@@ -1,0 +1,123 @@
+package domain;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatCode;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.util.HashSet;
+import java.util.Set;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+
+class AttendanceTimeTest {
+
+    @Test
+    @DisplayName("일과 시간으로 AttendanceTime을 생성한다.")
+    void createAttendanceTimeTest() {
+        // given
+        LocalDate date = LocalDate.of(2024, 12, 10);
+        LocalTime time = LocalTime.of(9, 30);
+
+        // when, then
+        assertThatCode(() -> AttendanceTime.of(date, time))
+                .doesNotThrowAnyException();
+    }
+
+    @Test
+    @DisplayName("주말 출석 시간 생성 시 예외 발생")
+    void givenWeekendThrowException() {
+        // given
+        LocalDate date = LocalDate.of(2024, 12, 8);
+        LocalTime time = LocalTime.of(9, 30);
+
+        // when, then
+        assertThatThrownBy(() -> AttendanceTime.of(date, time))
+                .isInstanceOf(IllegalArgumentException.class); // TODO: Check Exception Message
+    }
+
+    @Test
+    @DisplayName("공휴일 출석 시간 생성 시 예외 발생")
+    void givenHolidayThrowException() {
+        // given
+        LocalDate date = LocalDate.of(2024, 12, 25);
+        LocalTime time = LocalTime.of(9, 30);
+
+        // when, then
+        assertThatThrownBy(() -> AttendanceTime.of(date, time))
+                .isInstanceOf(IllegalArgumentException.class); // TODO: Check Exception Message
+    }
+
+    @Test
+    @DisplayName("isSameDate()에서 날짜가 같으면 true반환")
+    void isSameDateTest() {
+        // given
+        LocalDate date = LocalDate.of(2024, 12, 10);
+        AttendanceTime attendanceTime = AttendanceTime.of(
+                date, LocalTime.of(10, 5)
+        );
+
+        // when
+        boolean b1 = attendanceTime.isSameDate(LocalDate.of(2024, 12, 10));
+        boolean b2 = attendanceTime.isSameDate(LocalDate.of(2024, 12, 11));
+
+        // then
+        assertThat(b1).isTrue();
+        assertThat(b2).isFalse();
+    }
+
+    @Test
+    @DisplayName("날짜와 시간이 같으면 같은 객체로 판단")
+    void equalsAttendanceTimeTest() {
+        // given
+        AttendanceTime time = AttendanceTime.of(
+                LocalDate.of(2024, 12, 10),
+                LocalTime.of(9, 30));
+
+        AttendanceTime compared = AttendanceTime.of(
+                LocalDate.of(2024, 12, 10),
+                LocalTime.of(9, 30));
+
+        // when
+        boolean isEqual = time.equals(compared);
+
+        // then
+        assertThat(isEqual).isTrue();
+    }
+
+    @Test
+    @DisplayName("날짜와 시간이 같다면 HashSet에서 중복 제거 확인")
+    void hashSetDistinctAttendanceTimeTest() {
+        // given
+        LocalDate date = LocalDate.of(2024, 12, 10);
+        AttendanceTime time = AttendanceTime.of(date, LocalTime.of(10, 30));
+        AttendanceTime other = AttendanceTime.of(date, LocalTime.of(10, 30));
+
+        // when
+        Set<AttendanceTime> times = new HashSet<>();
+        times.add(time);
+        times.add(other);
+
+        // then
+        assertThat(times).hasSize(1);
+    }
+
+    @Test
+    @DisplayName("날짜 수정 테스트")
+    void modifyAttendanceTimeTest() {
+        // given
+        LocalDate date = LocalDate.of(2024, 12, 10);
+        LocalTime time = LocalTime.of(9, 30);
+        AttendanceTime attendanceTime = AttendanceTime.of(date, time);
+
+        // when
+        attendanceTime.modify(LocalTime.of(10, 20));
+
+        // then
+        AttendanceTime afterModified = AttendanceTime.of(
+                date, LocalTime.of(10, 20)
+        );
+        assertThat(attendanceTime).isEqualTo(afterModified);
+    }
+}
