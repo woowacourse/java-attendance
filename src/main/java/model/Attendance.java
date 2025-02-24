@@ -13,8 +13,20 @@ public class Attendance {
         this.time = time;
     }
 
-    public boolean isSameDateWith(Attendance targetAttendance) {
-        return this.date.equals(targetAttendance.date);
+    public boolean isSameDateWith(LocalDate date) {
+        return this.date.equals(date);
+    }
+
+    public AttendanceStatus findStatus() {
+        return AttendanceStatus.findByAttendanceTime(date, time);
+    }
+
+    public LocalDate getDate() {
+        return date;
+    }
+
+    public LocalTime getTime() {
+        return time;
     }
 
     @Override
