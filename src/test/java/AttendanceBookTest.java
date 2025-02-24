@@ -15,6 +15,7 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
 import java.util.Map;
+import util.status.AttendanceStatus;
 
 import static org.assertj.core.api.Assertions.*;
 
@@ -122,9 +123,10 @@ public class AttendanceBookTest {
                     LocalDate.of(2024, 12, 6),
                     LocalTime.of(10, 15),
                     "지각",
-                    LocalTime.of(10, 5),
-                    "출석"
+                    LocalTime.of(10, 5), "출석"
+
             ));
+
         }
         
         @Test

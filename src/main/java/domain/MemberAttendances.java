@@ -12,6 +12,7 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
+import util.status.AttendanceStatus;
 
 public class MemberAttendances {
     
@@ -52,7 +53,7 @@ public class MemberAttendances {
                 .toList();
         
         for (AttendResult attendanceResult : attendanceResults) {
-            if (attendanceResult.attendanceStatus().equals("출석")) {
+            if (attendanceResult.attendanceStatus().equals(AttendanceStatus.ATTENDANCE.getMessage())) {
                 count++;
             }
         }
@@ -67,7 +68,7 @@ public class MemberAttendances {
                 .toList();
         
         for (AttendResult attendanceResult : attendanceResults) {
-            if (attendanceResult.attendanceStatus().equals("지각")) {
+            if (attendanceResult.attendanceStatus().equals(AttendanceStatus.LATE.getMessage())) {
                 count++;
             }
         }
@@ -82,7 +83,7 @@ public class MemberAttendances {
                 .toList();
         
         for (AttendResult attendanceResult : attendanceResults) {
-            if (attendanceResult.attendanceStatus().equals("결석")) {
+            if (attendanceResult.attendanceStatus().equals(AttendanceStatus.ABSENT.getMessage())) {
                 count++;
             }
         }
@@ -91,9 +92,9 @@ public class MemberAttendances {
     
     public String checkStatus(int lateCount, int absentCount) {
         int expelRiskMeasurement = absentCount + lateCount / 3;
-        if (expelRiskMeasurement > 5) return "제적";
-        if (expelRiskMeasurement >= 3) return "면담";
-        if (expelRiskMeasurement >= 2) return "경고";
+        if (expelRiskMeasurement > 5) return AttendanceStatus.EXPELLED.getMessage();
+        if (expelRiskMeasurement >= 3) return AttendanceStatus.INTERVIEW.getMessage();
+        if (expelRiskMeasurement >= 2) return AttendanceStatus.DANGER.getMessage();
         return null;
     }
     
