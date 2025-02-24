@@ -52,6 +52,7 @@
     - String 닉네임
 - **생성**
     - 닉네임을 통해 생성된다.
+        - 크루의 닉네임이 2 ~ 5글자가 아니면 `IllegalArgumentException` 을 발생시킨다.
 - **동작** (getter, equals, hashCode 제외)
     - 없음
 
