@@ -1,5 +1,6 @@
 package attendance.model;
 
+import java.time.Duration;
 import java.time.LocalTime;
 import java.util.Arrays;
 import java.util.function.Function;
@@ -13,9 +14,9 @@ public enum AttendanceType {
 
     private static final int MINUTE_SCALE = 60;
 
-    private final Function<Integer, Boolean> isMatch;
+    private final Function<Long, Boolean> isMatch;
 
-    AttendanceType(Function<Integer, Boolean> isMatch) {
+    AttendanceType(Function<Long, Boolean> isMatch) {
         this.isMatch = isMatch;
     }
 
@@ -30,8 +31,8 @@ public enum AttendanceType {
                 .orElseThrow(() -> new IllegalArgumentException("판단할 수 없습니다."));
     }
 
-    private static int calculateDifMinutes(LocalTime startTime, LocalTime attendanceTime) {
-        int difSecond = attendanceTime.toSecondOfDay() - startTime.toSecondOfDay();
-        return difSecond / MINUTE_SCALE;
+    private static long calculateDifMinutes(LocalTime startTime, LocalTime attendanceTime) {
+        Duration duration = Duration.between(startTime, attendanceTime);
+        return duration.getSeconds() / MINUTE_SCALE;
     }
 }
