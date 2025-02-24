@@ -1,7 +1,5 @@
-package service;
+package domain;
 
-import domain.CrewFactory;
-import domain.CrewGroup;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
@@ -11,7 +9,7 @@ import org.junit.jupiter.api.Test;
 import presentation.InputParser;
 import presentation.view.AttendanceFileInputView;
 
-class AttendanceServiceTest {
+class CrewFactoryTest {
     @DisplayName("크루원 정보를 초기화한다.")
     @Test
     void test() {

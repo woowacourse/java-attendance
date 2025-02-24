@@ -14,8 +14,6 @@ public class Crew implements Comparable<Crew> {
     public Crew(String name) {
         this.name = name;
         this.attendance = new Attendance(AttendanceDate.DEFAULT_START_DATE, LocalDate.now());
-
-        this.attendance.fillAttendanceDate();
     }
 
     public void initializeAttendance(List<LocalDateTime> localDateTimes) {
