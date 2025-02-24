@@ -1,8 +1,10 @@
 package domain;
 
-import dto.AttendanceHistoryDto;
+import dto.AttendanceRecord;
+import dto.Time;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Map;
@@ -11,9 +13,9 @@ import util.DateTimeUtil;
 public class Attendance {
 
     //    private final AttendanceResult attendanceResult;
-    private final Map<Crew, List<LocalDateTime>> attendanceMap;
+    private final Map<Crew, List<AttendanceRecord>> attendanceMap;
 
-    public Attendance(final Map<Crew, List<LocalDateTime>> attendanceMap) {
+    public Attendance(final Map<Crew, List<AttendanceRecord>> attendanceMap) {
 //        this.attendanceResult = attendanceResult;
         this.attendanceMap = attendanceMap;
     }
@@ -26,31 +28,42 @@ public class Attendance {
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 크루 입니다."));
     }
 
-    public Map<Crew, List<LocalDateTime>> getAttendanceMap() {
+    public Map<Crew, List<AttendanceRecord>> getAttendanceMap() {
         return attendanceMap;
     }
 
     public void save(final Crew crew, final String schoolStartTime, LocalDate localDate) {
 
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
-        List<LocalDateTime> localDateTimes = attendanceMap.get(crew);
+        List<AttendanceRecord> records = attendanceMap.get(crew);
 
         String today = String.format("%d-%02d-%02d %s",
                 DateTimeUtil.getYearBy(localDate),
                 DateTimeUtil.getMonthBy(localDate),
                 DateTimeUtil.getDateBy(localDate),
                 schoolStartTime);
-        LocalDateTime todayLocalDateTime = LocalDateTime.parse(today, formatter);
+        LocalDate todayLocalDate = LocalDateTime.parse(today, formatter).toLocalDate();
+        LocalTime todayLocalTime = LocalDateTime.parse(today, formatter).toLocalTime();
+        AttendanceState state = AttendanceState.findStateBy(todayLocalTime, todayLocalDate);
 
-        validateDuplicateSave(24, localDateTimes);
+        Time time = new Time(todayLocalTime, state);
+        AttendanceRecord record = new AttendanceRecord(todayLocalDate, time);
+
+        // 수정 필요
+        validateDuplicateSave(24, records);
 //        validateDuplicateSave(DateTimeUtil.getDateBy(LocalDate.now()), localDateTimes);
-        localDateTimes.add(todayLocalDateTime);
-        attendanceMap.put(crew, localDateTimes);
+
+//        localDateTimes.add(todayLocalDateTime);
+//        attendanceMap.put(crew, localDateTimes);
+        records.add(record);
+        attendanceMap.put(crew, records);
     }
 
-    private void validateDuplicateSave(final int todayDay, final List<LocalDateTime> localDateTimes) {
-        for (LocalDateTime localDateTime : localDateTimes) {
-            int dayOfMonth = DateTimeUtil.getDateBy(localDateTime.toLocalDate());
+    private void validateDuplicateSave(final int todayDay, final List<AttendanceRecord> records) {
+
+        for (AttendanceRecord record : records) {
+            LocalDate date = record.date();
+            int dayOfMonth = DateTimeUtil.getDateBy(date);
 //            int dayOfMonth = localDateTime.getDayOfMonth();
 
             if (dayOfMonth == todayDay) {
@@ -59,18 +72,18 @@ public class Attendance {
         }
     }
 
-    public LocalDateTime update(final Crew crew, final String updateTime, final int date) {
+    public LocalTime update(final Crew crew, final String updateTime, final int date) {
         DateTimeUtil.validateHolyDay(date);
 
-        List<LocalDateTime> localDateTimes = attendanceMap.get(crew);
+        List<AttendanceRecord> attendanceRecords = attendanceMap.get(crew);
         int i;
-        LocalDateTime beforeLocalDateTime = null;
-        for (i = 0; i < localDateTimes.size(); i++) {
-            LocalDateTime localDateTime = localDateTimes.get(i);
-            int dayOfMonth = DateTimeUtil.getDateBy(localDateTime.toLocalDate());
+        LocalTime beforeLocalTime = null;
+        for (i = 0; i < attendanceRecords.size(); i++) {
+            AttendanceRecord record = attendanceRecords.get(i);
+            int dayOfMonth = DateTimeUtil.getDateBy(record.date());
 //            int dayOfMonth = localDateTime.getDayOfMonth();
             if (dayOfMonth == date) {
-                beforeLocalDateTime = localDateTime;
+                beforeLocalTime = record.time().time();
                 break;
             }
         }
@@ -80,20 +93,47 @@ public class Attendance {
         String today = String.format("2024-12-%02d %s", date, updateTime);
         LocalDateTime todayLocalDateTime = LocalDateTime.parse(today, formatter);
 
-        localDateTimes.set(i, todayLocalDateTime);
+        LocalDate todayLocalDate = todayLocalDateTime.toLocalDate();
+        LocalTime todayLocalTime = todayLocalDateTime.toLocalTime();
+        AttendanceState state = AttendanceState.findStateBy(todayLocalTime, todayLocalDate);
 
-        return beforeLocalDateTime;
+        Time time = new Time(todayLocalTime, state);
+        AttendanceRecord record = new AttendanceRecord(todayLocalDate, time);
+        attendanceRecords.set(i, record);
+
+        return beforeLocalTime;
     }
 
-    public List<AttendanceHistoryDto> getAttendanceHistory(final Crew crew) {
-        List<LocalDateTime> localDateTimes = attendanceMap.get(crew);
+//    public AttendanceHistoryDto getAttendanceHistory(final Crew crew) {
+//        List<LocalDateTime> localDateTimes = attendanceMap.get(crew);
+//
+//        // 모든 크루 출석기록, 출석/지각/결석 횟수, 무슨 대상자인지
+//        AbsencePolicyStatistics.calculateAttendanceHistory(crew, localDateTimes);
+//
+//        return localDateTimes.stream()
+//                .map(localDateTime -> {
+//                    String state = AttendanceState.findStateBy(localDateTime.toLocalTime(),
+//                            localDateTime.toLocalDate()).getDescription();
+//                    // dto에서 초기화 시켜준 후 나중에 추가도 가능??
+//                    return new AttendanceHistoryDto(crew.getName(), localDateTime, state);
+//                })
+//                .toList();
+//    }
 
-        return localDateTimes.stream()
-                .map(localDateTime -> {
-                    String state = AttendanceState.findStateBy(localDateTime.toLocalTime(),
-                            localDateTime.toLocalDate()).getDescription();
-                    return new AttendanceHistoryDto(localDateTime, state);
-                })
-                .toList();
-    }
+//    // 모든 크루 지각/결석 조회
+//    public Map<Crew, AbsenceHistoryDto> getAbsenceHistory() {
+//        Map<Crew, AbsenceHistoryDto> absenceMap = new HashMap<>();
+//
+//        for (Crew crew : attendanceMap.keySet()) {
+////           List<AttendanceHistoryDto> attendanceHistory = getAttendanceHistory(crew);
+//
+////            AbsenceHistory absenceHistory = new AbsenceHistory(attendanceHistoryDtos);
+////            AbsenceHistoryDto absenceHistoryDto = absenceHistory.calculate();
+//            AbsenceHistoryDto absenceHistoryDto = new AbsenceHistoryDto(attendanceHistory.calculateAbsence())
+//
+//            absenceMap.put(crew, absenceHistoryDto);
+//        }
+//
+//        return absenceMap;
+//    }
 }

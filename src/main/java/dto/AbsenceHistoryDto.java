@@ -1,4 +1,4 @@
 package dto;
 
-public record AbsenceHistoryDto(int attendance, int lateness, int absence) {
+public record AbsenceHistoryDto(String name, int lateness, int absence, String status) {
 }
