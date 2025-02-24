@@ -19,12 +19,12 @@ public class AttendanceController {
     private final OutputView outputView;
     private final CrewAttendances crewAttendances;
     private final CrewAttendanceService crewAttendanceService;
-    private final Map<OperationCommand, Runnable> operationMapper = Map.of(
-            OperationCommand.ATTENDANCE_CONFIRMATION, this::confirmAttendance
-            , OperationCommand.ATTENDANCE_MODIFICATION, this::modifyAttendance
-            , OperationCommand.CREW_ATTENDANCES_CHECK, this::checkCrewAttendances
-            , OperationCommand.EXPULSION_CHECK, this::checkExpulsionCrews
-            , OperationCommand.QUIT, () -> System.exit(0));
+    private final Map<String, Runnable> operationMapper = Map.of(
+            "1", this::confirmAttendance,
+            "2", this::modifyAttendance,
+            "3", this::checkCrewAttendances,
+            "4", this::checkExpulsionCrews,
+            "Q", () -> System.exit(0));
 
     public AttendanceController(final InputView inputView, final OutputView outputView) {
         this.inputView = inputView;
@@ -35,12 +35,6 @@ public class AttendanceController {
         this.crewAttendanceService = new CrewAttendanceService(crewAttendances);
     }
 
-    public void run() {
-        while(true) {
-            branchByOperationCommand();
-        }
-    }
-
     private List<String> readAttendanceFileLinesWithoutFirstLine() {
         FileLineReader fileLineReader = new FileLineReader();
         List<String> lines = fileLineReader.readAllLines(attendanceFilePath, attendanceFileName);
@@ -49,13 +43,22 @@ public class AttendanceController {
                 .toList();
     }
 
+    public void run() {
+        while(true) {
+            try {
+                branchByOperationCommand();
+            } catch (IllegalArgumentException e) {
+                outputView.printErrorMessage(e.getMessage());
+            }
+        }
+    }
+
     private void branchByOperationCommand() {
+        String operationCommand = inputView.readOperationCommand().toUpperCase();
         try {
-            outputView.printOperations();
-            OperationCommand operationCommand = inputView.readOperationCommand();
             operationMapper.get(operationCommand).run();
-        } catch (IllegalArgumentException e) {
-            outputView.printErrorMessage(e.getMessage());
+        } catch (NullPointerException exception) {
+            throw new IllegalArgumentException("제공되지 않는 기능입니다.");
         }
     }
 

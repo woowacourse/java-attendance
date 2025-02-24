@@ -21,15 +21,6 @@ public class OutputView {
         System.out.println();
     }
 
-    public void printOperations() {
-        System.out.printf("오늘은 %s입니다. 기능을 선택해 주세요.%n", DATE_FORMATTER.format(LocalDate.now()));
-        System.out.println("1. 출석 확인");
-        System.out.println("2. 출석 수정");
-        System.out.println("3. 크루별 출석 기록 확인");
-        System.out.println("4. 제적 위험자 확인");
-        System.out.println("Q. 종료");
-    }
-
     public void printUsingAttendanceModification() {
         System.out.println("오늘 출석 기록이 존재합니다.");
         System.out.println("출석 수정(2) 기능을 이용해주세요.");
