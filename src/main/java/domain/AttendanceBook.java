@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 import util.DateUtil;
 
 public class AttendanceBook {
@@ -45,7 +46,6 @@ public class AttendanceBook {
     private void validateAttendableTime(Attend attend) {
         if (DateUtil.isTimeOff(attend, START_TIME, END_TIME)) {
             throw new IllegalArgumentException("운영 시간 외에는 출석할 수 없음");
-
         }
     }
 
@@ -102,16 +102,22 @@ public class AttendanceBook {
     }
 
     public List<WarningCrew> checkWarningCrews(List<Integer> days) {
-        List<WarningCrew> result = new ArrayList<>();
-        for (final String name : map.keySet()) {
-            AttendCount attendCount = checkAttendance(name, days).countAttendStatus();
-            WarningStatus warningStatus = WarningStatus.judgeWarningStatus(attendCount);
-            // TODO: Indent 줄이기
-            if (warningStatus == WarningStatus.CLEAR) {
-                continue;
-            }
-            result.add(new WarningCrew(name, attendCount));
+        return map.keySet().stream()
+                .filter(name -> isWarningCrew(name, days))
+                .map(name -> new WarningCrew(name, checkAttendance(name, days).countAttendStatus()))
+                .collect(Collectors.toList());
+    }
+
+    private boolean isWarningCrew(String name, List<Integer> days) {
+        WarningStatus warningStatus = judgeWarningStatus(name, days);
+        if (warningStatus == WarningStatus.CLEAR) {
+            return false;
         }
-        return result;
+        return true;
+    }
+
+    private WarningStatus judgeWarningStatus(String name, List<Integer> days) {
+        AttendCount attendCount = checkAttendance(name, days).countAttendStatus();
+        return WarningStatus.judgeWarningStatus(attendCount);
     }
 }
