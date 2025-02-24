@@ -35,14 +35,10 @@ public class AttendanceController {
     }
 
     public void run() {
-        retryUntilOperationQuit();
-    }
-
-
-    public Operation selectOperation() {
-        outputView.printToday(LocalDate.now().withYear(2024).withMonth(12));
-        outputView.printIntroduceOperation();
-        final Operation operation = inputView.readChoiceOperation();
+        final Operation operation = requestOperation();
+        if (operation == Operation.QUIT) {
+            return;
+        }
         if (operation == Operation.ADD_ATTENDANCE) {
             addAttendance();
         } else if (operation == Operation.UPDATE_ATTENDANCE) {
@@ -52,13 +48,13 @@ public class AttendanceController {
         } else if (operation == Operation.LOOKUP_EXPULSION_CREWS) {
             responseExpulsionCrews();
         }
-        return operation;
+        run();
     }
 
-    private void retryUntilOperationQuit() {
-        if (selectOperation() != Operation.QUIT) {
-            retryUntilOperationQuit();
-        }
+    private Operation requestOperation() {
+        outputView.printToday(LocalDate.now().withYear(2024).withMonth(12));
+        outputView.printIntroduceOperation();
+        return inputView.readChoiceOperation();
     }
 
     private void addAttendance() {
