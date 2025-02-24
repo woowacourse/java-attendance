@@ -1,5 +1,6 @@
 package model;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -40,5 +41,9 @@ public class Crews {
     @Override
     public int hashCode() {
         return Objects.hashCode(crews);
+    }
+
+    public List<Crew> getCrews() {
+        return Collections.unmodifiableList(crews);
     }
 }

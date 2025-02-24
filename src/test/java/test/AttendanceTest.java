@@ -7,6 +7,7 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import model.Attendance;
 import model.Crew;
@@ -130,6 +131,31 @@ public class AttendanceTest {
 //
 //        assertThat(attendanceTime).isEqualTo(LocalDateTime.of(2024, 12, 13, 10, 8));
 //    }
+
+    @DisplayName("크루 객체 별로 출석 객체를 빈 객체로 초기화한다.")
+    @Test
+    void test5_0() {
+        //given
+        List<Crew> crewsInput = List.of(
+                new Crew("쿠키"),
+                new Crew("빙봉"),
+                new Crew("빙티"),
+                new Crew("이든")
+        );
+        Crews crews = new Crews(crewsInput);
+
+        //when
+        Map<Crew, List<Attendance>> attendancesPerCrew = AttendanceInitializer.initializeAttendanceOf(crews);
+
+        //then
+        for (Crew crew : crewsInput) {
+            assertThat(attendancesPerCrew.get(crew).size()).isEqualTo(31);
+            assertThat(attendancesPerCrew.get(crew).getFirst()).isEqualTo(new Attendance(
+                    LocalDate.of(0, 1, 1),
+                    LocalTime.of(0, 0)
+            ));
+        }
+    }
 
     @DisplayName("크루 이름과 날짜 객체를 입력하면 날짜와 시간을 읽어서 Attendance 객체를 반환한다.")
     @Test

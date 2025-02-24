@@ -2,9 +2,14 @@ package model;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.IntStream;
 
 public class AttendanceInitializer {
 
@@ -24,5 +29,9 @@ public class AttendanceInitializer {
         DateTimeFormatter yearMonthDateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
         LocalDateTime attendanceTime = LocalDateTime.parse(dateAndTime, yearMonthDateTimeFormatter);
         return new Attendance(attendanceTime.toLocalDate(), attendanceTime.toLocalTime());
+    }
+
+    public static Map<Crew, List<Attendance>> initializeAttendanceOf(Crews crews) {
+        return null;
     }
 }
