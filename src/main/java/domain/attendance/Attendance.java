@@ -24,9 +24,16 @@ public class Attendance {
         if (cursorDate.getDayOfWeek().getValue() >= AttendanceDate.SATURDAY || Holiday.has(cursorDate)) {
             return;
         }
-        attendanceDates.add(new AttendanceDate(
-                LocalDateTime.of(cursorDate.getYear(), cursorDate.getMonth(), cursorDate.getDayOfMonth(), ABSENCE_HOUR,
-                        ABSENCE_MINUTE)));
+
+        AttendanceDate absenceDate = new AttendanceDate(
+                LocalDateTime.of(
+                        cursorDate.getYear(),
+                        cursorDate.getMonth(),
+                        cursorDate.getDayOfMonth(),
+                        ABSENCE_HOUR,
+                        ABSENCE_MINUTE));
+
+        attendanceDates.add(absenceDate);
     }
 
     public void editAttendanceDateTime(LocalDateTime attendanceDateTime) {
