@@ -25,7 +25,7 @@ public class Attend {
 
     public static Attend fromDay(final int day) {
         OperationTime.validateDay(day);
-        return new Attend(LocalDate.of(Current.YEAR, Current.MONTH, day), null);
+        return new Attend(LocalDate.of(Current.TODAY.getYear(), Current.TODAY.getMonth(), day), null);
     }
 
     public static Attend fromTime(LocalTime time) {

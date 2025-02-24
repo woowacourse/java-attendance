@@ -17,7 +17,7 @@ public enum Holiday {
     }
 
     private LocalDate createDate() {
-        return LocalDate.of(Current.YEAR, this.month, this.day);
+        return LocalDate.of(Current.TODAY.getYear(), this.month, this.day);
     }
 
     public static boolean isHoliday(LocalDate targetDate) {
