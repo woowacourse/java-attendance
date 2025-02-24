@@ -123,6 +123,7 @@ public class CrewTest {
             final List<Attendance> attendances = crew.getAttendances();
 
             //when
+            crew.addAttendance(time);
             crew.updateAttendanceByDateTime(time);
             final List<Attendance> updatedAttendances = crew.getAttendances();
             final Attendance first = updatedAttendances.getFirst();
