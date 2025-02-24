@@ -3,10 +3,14 @@ package domain;
 import except.AttendanceException;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.stream.Stream;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import strategy.TestAttendanceNowDateStrategy;
 
 public class AttendancesTest {
@@ -40,12 +44,34 @@ public class AttendancesTest {
                     .isInstanceOf(AttendanceException.class);
         }
 
-        @Test
+//        private static Stream<Arguments> attendanceTest() {
+//            return Stream.of(
+//                    Arguments.arguments(
+//                            "/test.csv",
+//                            "투다",
+//                            LocalDate.of(2024, 12, 13),
+//                            AttendanceStatus.ATTENDANCE.getStatus()
+//                    ),
+
+        private static Stream<Arguments> notSchoolRunningDate() {
+            return Stream.of(
+                    Arguments.arguments(
+                            LocalTime.of(8, 0),
+                            LocalDate.of(2025, 3, 24),
+                            "투다"
+                    ),
+                    Arguments.arguments(
+                            LocalTime.of(8, 0),
+                            LocalDate.of(2024, 11, 1),
+                            "투다"
+                    )
+            );
+        }
+
+        @ParameterizedTest
+        @MethodSource("notSchoolRunningDate")
         @DisplayName("2024년 12월이 아닐시 예외가 발생한다")
-        void addAttendanceNotSchoolRunning() {
-            String nickname = "투다";
-            LocalTime time = LocalTime.of(8, 0);
-            LocalDate date = LocalDate.of(2025, 3, 24);
+        void addAttendanceNotSchoolRunning(LocalTime time, LocalDate date, String nickname) {
             CrewAttendances crewAttendances = new CrewAttendances(new TestAttendanceNowDateStrategy(date));
 
             Assertions.assertThatThrownBy(() -> crewAttendances.addAttendance(nickname, time))
