@@ -7,6 +7,7 @@ public class AttendanceBook {
     private final Set<String> names;
 
     public AttendanceBook(final Set<String> names) {
+
         this.names = names;
     }
 

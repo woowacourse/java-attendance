@@ -59,16 +59,17 @@ public class AttendanceRepository {
                 .orElseThrow(() -> new IllegalArgumentException("[ERROR] 존재하지 않는 출석 기록입니다."));
     }
 
-    public void initAbsent(final Set<String> names) {
+    public void initAllAbsent(final Set<String> names) {
 
         int currentYear = LocalDate.now().getYear();
         int currentMonth = LocalDate.now().getMonthValue();
         int currentDay = LocalDate.now().getDayOfMonth();
 
-        names.forEach(name -> initStudentAbsent(name, currentDay, currentYear, currentMonth));
+        names.forEach(name -> initCrewAbsent(name, currentDay, currentYear, currentMonth));
     }
 
-    private void initStudentAbsent(String name, int currentDay, int currentYear, int currentMonth) {
+    private void initCrewAbsent(String name, int currentDay, int currentYear, int currentMonth) {
+
         IntStream.range(1, currentDay)
                 .mapToObj(day -> LocalDate.of(currentYear, currentMonth, day))
                 .filter(date -> !isWeekend(date))

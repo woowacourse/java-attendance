@@ -20,6 +20,7 @@ public final class FileReader {
     }
 
     private static List<String> getFileLines(BufferedReader reader) throws IOException {
+
         List<String> readingFileResult = new ArrayList<>();
         String line;
         while ((line = reader.readLine()) != null) {

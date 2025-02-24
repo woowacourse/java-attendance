@@ -170,7 +170,7 @@ class AttendanceRepositoryTest {
         AttendanceRepository attendanceRepository = new AttendanceRepository(new ArrayList<>());
 
         // when
-        attendanceRepository.initAbsent(Set.of("피글렛", "체체"));
+        attendanceRepository.initAllAbsent(Set.of("피글렛", "체체"));
 
         // then
         assertAll(() ->

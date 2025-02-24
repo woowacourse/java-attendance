@@ -15,6 +15,7 @@ public enum AcademicStatus {
     private static final int LATE_AS_ABSENT = 3;
 
     AcademicStatus(String value) {
+
         this.value = value;
     }
 

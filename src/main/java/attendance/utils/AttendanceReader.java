@@ -13,7 +13,7 @@ import java.util.Set;
 
 public final class AttendanceReader {
 
-    private static final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+    private static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
 
     private AttendanceReader() {
     }
@@ -28,7 +28,7 @@ public final class AttendanceReader {
             String[] split = content.split(",");
 
             String crewName = split[0];
-            LocalDateTime attendanceTime = LocalDateTime.parse(split[1], dateTimeFormatter);
+            LocalDateTime attendanceTime = LocalDateTime.parse(split[1], DATE_TIME_FORMATTER);
 
             LocalDate localDate = attendanceTime.toLocalDate();
             String hour = String.format("%02d", attendanceTime.getHour());

@@ -34,6 +34,7 @@ public class AttendanceController {
     private static final String ATTENDANCE_FILE_PATH = "src/main/resources/attendances.csv";
 
     public AttendanceController(final InputView inputView, final OutputView outputView) {
+
         this.inputView = inputView;
         this.outputView = outputView;
     }
@@ -51,7 +52,7 @@ public class AttendanceController {
 
         attendanceRepository = new AttendanceRepository(attendanceRecordContent.attendances());
         attendanceBook = new AttendanceBook(attendanceRecordContent.names());
-        attendanceRepository.initAbsent(attendanceBook.getNames());
+        attendanceRepository.initAllAbsent(attendanceBook.getNames());
     }
 
     private void attendanceSystemStart() {
