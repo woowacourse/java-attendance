@@ -57,41 +57,57 @@ public class AttendanceController {
             return false;
         }
         if (command.equals(ATTEND_COMMAND)) {
-            String nickName = inputView.inputNickName();
-            String time = inputView.inputTime();
-            Attend attend = Attend.of(time);
-            attendanceBook.attend(nickName, attend);
-            AttendStatus attendStatus = attendanceBook.checkAttendance(attend);
-            outputView.printAttendResult(attend, attendStatus);
+            executeAttendCommand(attendanceBook);
             return true;
         }
         if (command.equals(EDIT_COMMAND)) {
-            String nickName = inputView.inputEditNickName();
-            String date = inputView.inputDate();
-            String time = inputView.inputEditTime();
-            Attend after = Attend.of(date, time);
-            int parsedDate = Integer.parseInt(date);
-            Attend before = attendanceBook.findByNameAndDay(nickName, parsedDate);
-            attendanceBook.edit(nickName, after);
-            AttendStatus beforeStatus = attendanceBook.checkAttendance(before);
-            AttendStatus afterStatus = attendanceBook.checkAttendance(after);
-            outputView.printEditResult(before, after, beforeStatus, afterStatus);
+            executeEditCommand(attendanceBook);
             return true;
         }
         if (command.equals(CHECK_CREW_ATTEND_COMMAND)) {
-            String nickName = inputView.inputNickName();
-            AttendanceResults attendResult = attendanceBook.checkAttendance(nickName,
-                    DateUtil.getAttendUntilDay(Current.TODAY.getYesterday()));
-            outputView.printAttendanceResult(nickName, attendResult);
+            executeCheckAttendCommand(attendanceBook);
             return true;
         }
         if (command.equals(CHECK_WARNING_CREW_COMMAND)) {
-            List<WarningCrew> warningCrews = attendanceBook.checkWarningCrews(
-                    DateUtil.getAttendUntilDay(Current.TODAY.getYesterday()));
-            outputView.printWarningCrews(warningCrews);
+            executeCheckWarningCrewsCommand(attendanceBook);
             return true;
         }
         return true;
+    }
+
+    private void executeAttendCommand(AttendanceBook attendanceBook) {
+        String nickName = inputView.inputNickName();
+        String time = inputView.inputTime();
+        Attend attend = Attend.of(time);
+        attendanceBook.attend(nickName, attend);
+        AttendStatus attendStatus = attendanceBook.checkAttendance(attend);
+        outputView.printAttendResult(attend, attendStatus);
+    }
+
+    private void executeEditCommand(AttendanceBook attendanceBook) {
+        String nickName = inputView.inputEditNickName();
+        String date = inputView.inputDate();
+        String time = inputView.inputEditTime();
+        Attend after = Attend.of(date, time);
+        int parsedDate = Integer.parseInt(date);
+        Attend before = attendanceBook.findByNameAndDay(nickName, parsedDate);
+        attendanceBook.edit(nickName, after);
+        AttendStatus beforeStatus = attendanceBook.checkAttendance(before);
+        AttendStatus afterStatus = attendanceBook.checkAttendance(after);
+        outputView.printEditResult(before, after, beforeStatus, afterStatus);
+    }
+
+    private void executeCheckAttendCommand(AttendanceBook attendanceBook) {
+        String nickName = inputView.inputNickName();
+        AttendanceResults attendResult = attendanceBook.checkAttendance(nickName,
+                DateUtil.getAttendUntilDay(Current.TODAY.getYesterday()));
+        outputView.printAttendanceResult(nickName, attendResult);
+    }
+
+    private void executeCheckWarningCrewsCommand(AttendanceBook attendanceBook) {
+        List<WarningCrew> warningCrews = attendanceBook.checkWarningCrews(
+                DateUtil.getAttendUntilDay(Current.TODAY.getYesterday()));
+        outputView.printWarningCrews(warningCrews);
     }
 
     private AttendanceBook loadAttendanceBook(List<String> data) {
