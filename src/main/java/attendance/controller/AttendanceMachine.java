@@ -1,13 +1,14 @@
 package attendance.controller;
 
-import attendance.domain.Crew;
+import attendance.domain.AttendanceHistories;
+import attendance.domain.AttendanceHistory;
 import attendance.domain.Crews;
 import attendance.domain.DateInfo;
 import attendance.domain.DateInfos;
 import attendance.domain.Register;
 import attendance.domain.CampusTime;
-import attendance.domain.constant.DayOfWeek;
 import attendance.domain.constant.AttendanceOperation;
+import attendance.domain.constant.AttendanceStatus;
 import attendance.exception.CustomException;
 import attendance.util.FileReader;
 import attendance.view.InputView;
@@ -33,23 +34,23 @@ public class AttendanceMachine {
 
         boolean flag = true;
         while (flag) {
-            AttendanceOperation attendanceOperation = readFunction(now);
-            flag = mappingFunction(attendanceOperation, now, crews, register);
+            AttendanceOperation attendanceOperation = readFunction(LocalDate.now());
+            flag = mappingFunction(attendanceOperation, LocalDate.now(), register);
         }
         inputView.closeScanner();
     }
 
-    private boolean mappingFunction(AttendanceOperation attendanceOperation, LocalDate now, Crews crews, Register register) {
+    private boolean mappingFunction(AttendanceOperation attendanceOperation, LocalDate now, Register register) {
         if (attendanceOperation.equals(AttendanceOperation.ONE)) {
-            functionOne(now, crews, register);
+            functionOne(now, register);
             return true;
         }
         if (attendanceOperation.equals(AttendanceOperation.TWO)) {
-//            functionTwo(crews, register);
+            functionTwo(register);
             return true;
         }
         if (attendanceOperation.equals(AttendanceOperation.THREE)) {
-            functionThree(crews, register);
+            functionThree(now, register);
             return true;
         }
         if (attendanceOperation.equals(AttendanceOperation.FOUR)) {
@@ -60,59 +61,51 @@ public class AttendanceMachine {
     }
 
     private void functionFour(Register register) {
-        try {
-            outputView.writeDismissCrewCheck(register.findAllExpertRiskCrews());
-        } catch (CustomException customException) {
-            outputView.errorMessagePrint(customException.getMessage());
-        }
+
+        AttendanceHistories histories = AttendanceHistories.fromRegister(register);
+        List<AttendanceHistory> warningAttendanceHistory = histories.findWarningAttendanceHistory();
+
+//        outputView.writeWarningHistories(warningAttendanceHistory);
     }
 
-    private void functionThree(Crews crews, Register register) {
-        Crew crew = findCrew(crews);
-        DateInfos dateInfos = register.checkAttendanceHistory(crew);
-        outputView.writeAttendanceHistory(crew, dateInfos);
+    private void functionThree(LocalDate now, Register register) {
+
+        String crewName = inputView.readCrewName();
+
+        DateInfos dateInfos = register.findDateInfos(crewName);
+        AttendanceHistory history = AttendanceHistory.fromDateInfos(crewName, now, dateInfos);
+
+        outputView.writeAttendanceHistory(now, dateInfos, history);
     }
 
-    private void functionTwo(Crews crews, Register register) {
-        Crew crew = findModifiyCrew(crews);
-        int modifyDate = readModifyDay();
-        CampusTime modifyCampusTime = findModifyTime();
-        DateInfo beforeInfo = register.findInfo(crew, modifyDate);
-        String beforeHour = beforeInfo.getTime().getHour();
-        String beforeMinute = beforeInfo.getTime().getMinute();
-        String beforeStatus = beforeInfo.getAttendanceStatus();
-        DateInfo modifiedInfo = register.modifyInfo(crew, modifyDate, modifyCampusTime);
-        outputView.writeAttendanceModifyCheck(beforeHour, beforeMinute, beforeStatus, modifiedInfo);
+    private void functionTwo(Register register) {
+
+        String crewName = inputView.readModifyCrewName();
+        String modifyDay = inputView.readModifyDay();
+        String modifyTime = inputView.readModifyTime();
+        CampusTime campusTime = CampusTime.fromHourColonMinute(modifyTime);
+
+        DateInfo beforeDateInfo = register.findDateInfo(crewName, modifyDay);
+        int beforeHour = beforeDateInfo.getCampusHour();
+        int beforeMinute = beforeDateInfo.getCampusMinute();
+        AttendanceStatus beforeStatus = beforeDateInfo.getAttendanceStatus();
+        DateInfo afterDateInfo = register.modifyDateInfo(crewName, modifyDay, campusTime);
+
+        outputView.writeAttendanceModifyCheck(beforeHour, beforeMinute, beforeStatus, afterDateInfo);
     }
 
-    private void functionOne(LocalDate now, Crews crews, Register register) {
-        Crew crew = findCrew(crews);
-        CampusTime attendanceCampusTime = findAttendanceTime();
-        DayOfWeek dayOfWeek = DayOfWeek.from(now.getDayOfWeek().getValue());
-        DateInfo dateInfo = DateInfo.of(now.getMonthValue(), now.getDayOfMonth(), dayOfWeek, attendanceCampusTime);
-        register.modifyInfo(crew, Integer.parseInt(dateInfo.getDay()), attendanceCampusTime);
+    private void functionOne(LocalDate now, Register register) {
+
+        String crewName = inputView.readCrewName();
+        String attendanceTime = inputView.readAttendanceTime();
+        CampusTime attendanceCampusTime = CampusTime.fromHourColonMinute(attendanceTime);
+
+        DateInfo dateInfo = DateInfo.fromCampusTime(now, attendanceCampusTime);
+        register.addDateInfo(crewName, dateInfo);
+
         outputView.writeAttendanceCheck(dateInfo);
     }
 
-    private Crew findCrew(Crews crews) {
-        return retryUntilValidInput(() -> crews.findCrew(inputView.readCrewName()));
-    }
-
-    private Crew findModifiyCrew(Crews crews) {
-        return retryUntilValidInput(() -> crews.findCrew(inputView.readModifyCrewName()));
-    }
-
-    private CampusTime findAttendanceTime() {
-        return retryUntilValidInput(() -> CampusTime.fromHourColonMinute(inputView.readAttendanceTime()));
-    }
-
-    private CampusTime findModifyTime() {
-        return retryUntilValidInput(() -> CampusTime.fromHourColonMinute(inputView.readModifyTime()));
-    }
-
-    private int readModifyDay() {
-        return retryUntilValidInput(() -> Integer.parseInt(inputView.readModifyDay()));
-    }
 
     private AttendanceOperation readFunction(LocalDate now) {
         return retryUntilValidInput(() -> AttendanceOperation.of(inputView.readFunctionChoose(now)));
