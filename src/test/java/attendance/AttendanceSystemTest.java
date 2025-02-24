@@ -1,11 +1,15 @@
 package attendance;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 
 import attendance.domain.AttendanceRecord;
 import attendance.domain.AttendanceSystem;
 import attendance.domain.AttendanceType;
+import attendance.exception.ExceptionMessage;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.stream.Stream;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -84,5 +88,18 @@ class AttendanceSystemTest {
                 Arguments.of(LocalDateTime.of(2025, 2, 7, 10, 30, 0), AttendanceType.ABSENCE),
                 Arguments.of(LocalDateTime.of(2025, 2, 7, 10, 30, 1), AttendanceType.ABSENCE)
         );
+    }
+
+    @DisplayName("이미 출석한 경우, 다시 출석할 수 없으며 수정 기능을 이용하도록 안내한다")
+    @Test
+    void 이미_출석한_경우_다시_출석할_수_없으며_수정_기능을_이용하도록_안내한다() {
+        String crewNickname = "쿠키";
+        LocalDate arrivalDate = LocalDate.of(2525, 2, 4);
+        LocalDateTime arrivalDateTime = LocalDateTime.of(arrivalDate, LocalTime.of(8, 50, 0));
+        attendanceSystem.addAttendanceRecord(crewNickname, arrivalDateTime);
+
+        assertThatIllegalArgumentException()
+                .isThrownBy(() -> attendanceSystem.addAttendanceRecord(crewNickname, arrivalDateTime))
+                .withMessage(ExceptionMessage.ALREADY_ATTENDANCE.getMessage());
     }
 }
