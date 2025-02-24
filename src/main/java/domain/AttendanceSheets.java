@@ -74,6 +74,23 @@ public class AttendanceSheets {
                 .toList();
     }
 
+    public AttendanceStatics calculateRiskOfExpulsionBy(String nickname, LocalDate today) {
+        int lateCount = calculateLateCountBy(nickname);
+        int absentCount = calculateAbsentCount(nickname, today);
+
+        AbsentPolicy absentPolicy = AbsentPolicy.calculateAbsentPolicy(absentCount, lateCount);
+        return new AttendanceStatics(0, lateCount, absentCount, absentPolicy);
+    }
+
+    public AttendanceStatics calculateAttendanceStaticsBy(String nickname, LocalDate today) {
+        int attendCount = calculateAttendCountBy(nickname);
+        int lateCount = calculateLateCountBy(nickname);
+        int absentCount = calculateAbsentCount(nickname, today);
+
+        AbsentPolicy absentPolicy = AbsentPolicy.calculateAbsentPolicy(absentCount, lateCount);
+        return new AttendanceStatics(attendCount, lateCount, absentCount, absentPolicy);
+    }
+
     public int calculateAttendCountBy(String nickname) {
         return calculateCountByNicknameAndState(nickname, AttendanceState.ATTEND);
     }

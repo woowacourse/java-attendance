@@ -68,12 +68,9 @@ public class AttendanceController {
         OutputView.printRiskOfExpulsionBanner();
 
         for (String name : allNames) {
-            int lateCount = attendanceSheets.calculateLateCountBy(name);
-            int absentCount = attendanceSheets.calculateAbsentCount(name, today);
-
-            AbsentPolicy absentPolicy = AbsentPolicy.calculateAbsentPolicy(absentCount, lateCount);
-            if (AbsentPolicy.isRiskOfExpulsion(absentPolicy)) {
-                OutputView.printRiskOfExpulsion(name, lateCount, absentCount, absentPolicy);
+            AttendanceStatics attendanceStatics = attendanceSheets.calculateRiskOfExpulsionBy(name, today);
+            if (attendanceStatics.isRiskOfExpulsion()) {
+                OutputView.printRiskOfExpulsion(name, attendanceStatics);
             }
         }
         System.out.print(System.lineSeparator());

@@ -1,6 +1,7 @@
 package view;
 
 import domain.AbsentPolicy;
+import domain.AttendanceStatics;
 import domain.AttendanceDate;
 import domain.AttendanceDateTime;
 import domain.AttendanceSheet;
@@ -52,15 +53,10 @@ public class OutputView {
 
     public static void printAttendanceSheetsByCrew(String nickname, List<AttendanceSheet> attendancesByNickname,
                                                    AttendanceSheets attendanceSheets, LocalDate today) {
-        int attendCount = attendanceSheets.calculateAttendCountBy(nickname);
-        int lateCount = attendanceSheets.calculateLateCountBy(nickname);
-        int absentCount = attendanceSheets.calculateAbsentCount(nickname, today);
-
+        AttendanceStatics attendanceStatics = attendanceSheets.calculateAttendanceStaticsBy(nickname, today);
         printAttendanceSheetIntro(nickname);
         printAttendanceSheets(attendancesByNickname, today.getDayOfMonth());
-        printAttendanceStatistics(attendCount, lateCount, absentCount);
-
-        printAbsentPolicy(AbsentPolicy.calculateAbsentPolicy(absentCount, lateCount));
+        printAttendanceStatistics(attendanceStatics);
         System.out.print(System.lineSeparator());
     }
 
@@ -70,8 +66,8 @@ public class OutputView {
     }
 
     public static void printAttendanceSheets(List<AttendanceSheet> attendanceSheets, int todayDate) {
-        for (int day = 1; day < todayDate; day++) {
-            LocalDate date = LocalDate.of(2024, 12, day);
+        for (int day = Calendar.DECEMBER.startDay; day < todayDate; day++) {
+            LocalDate date = LocalDate.of(2024, Calendar.DECEMBER.month, day);
             printAttendanceSheet(attendanceSheets, date);
         }
 
@@ -101,9 +97,10 @@ public class OutputView {
                 attendanceTime.getMinute(), attendanceDateTime.check().description);
     }
 
-    public static void printAttendanceStatistics(int attendCount, int latCount, int absentCount) {
-
-        System.out.printf(ViewMessage.STATISTICS_FORMAT, attendCount, latCount, absentCount);
+    public static void printAttendanceStatistics(AttendanceStatics attendanceStatics) {
+        System.out.printf(ViewMessage.STATISTICS_FORMAT, attendanceStatics.getAttendCount(),
+                attendanceStatics.getLateCount(), attendanceStatics.getAbsentCount());
+        printAbsentPolicy(attendanceStatics.getAbsentPolicy());
     }
 
     public static void printAbsentPolicy(AbsentPolicy absentPolicy) {
@@ -117,7 +114,8 @@ public class OutputView {
         System.out.println(ViewMessage.RISK_OF_EXPULSION_BANNER);
     }
 
-    public static void printRiskOfExpulsion(String name, int lateCount, int absentCount, AbsentPolicy absentPolicy) {
-        System.out.printf(ViewMessage.RISK_OF_EXPULSION_FORMAT, name, absentCount, lateCount, absentPolicy.description);
+    public static void printRiskOfExpulsion(String name, AttendanceStatics attendanceStatics) {
+        System.out.printf(ViewMessage.RISK_OF_EXPULSION_FORMAT, name, attendanceStatics.getAbsentCount(),
+                attendanceStatics.getLateCount(), attendanceStatics.getAbsentPolicy().description);
     }
 }
