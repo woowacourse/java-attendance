@@ -13,10 +13,11 @@ import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import strategy.TestAttendanceNowDateStrategy;
 
-public class AttendancesTest {
+public class CrewAttendancesTest {
 
     @Nested
     class AddAttendance {
+
         @Test
         @DisplayName("닉네임과 등교 시간을 입력해 출석할 수 있다")
         void addAttendance() {
@@ -30,17 +31,10 @@ public class AttendancesTest {
                     crewAttendances.crewAttendance(nickname, date).attendanceStatus()
             ).isEqualTo(AttendanceStatus.ATTENDANCE);
         }
+    }
 
-        @ParameterizedTest
-        @MethodSource("weekendDate")
-        @DisplayName("휴일에 출석시 예외가 발생한다.")
-        void addAttendanceAtWeekend(LocalTime time, LocalDate date, String nickname) {
-            CrewAttendances crewAttendances = new CrewAttendances(new TestAttendanceNowDateStrategy(date));
-
-            Assertions.assertThatThrownBy(() -> crewAttendances.addAttendance(nickname, time))
-                    .hasMessageContaining("휴일에는 출석할 수 없습니다.")
-                    .isInstanceOf(AttendanceException.class);
-        }
+    @Nested
+    class InvaliAddAttendance {
 
         private static Stream<Arguments> weekendDate() {
             return Stream.of(
@@ -70,6 +64,17 @@ public class AttendancesTest {
                             "투다"
                     )
             );
+        }
+
+        @ParameterizedTest
+        @MethodSource("weekendDate")
+        @DisplayName("휴일에 출석시 예외가 발생한다.")
+        void addAttendanceAtWeekend(LocalTime time, LocalDate date, String nickname) {
+            CrewAttendances crewAttendances = new CrewAttendances(new TestAttendanceNowDateStrategy(date));
+
+            Assertions.assertThatThrownBy(() -> crewAttendances.addAttendance(nickname, time))
+                    .hasMessageContaining("휴일에는 출석할 수 없습니다.")
+                    .isInstanceOf(AttendanceException.class);
         }
 
         @ParameterizedTest
