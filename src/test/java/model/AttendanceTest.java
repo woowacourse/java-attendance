@@ -1,5 +1,7 @@
 package model;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import org.assertj.core.api.Assertions;
@@ -52,13 +54,14 @@ public class AttendanceTest {
     void test4() {
         //given
         Crew crew = Crew.of("쿠키");
-        LocalDateTime checkInTime = LocalDateTime.of(2024, 12, 3, 10, 30);
+        LocalDateTime attendanceStandard = LocalDateTime.of(2024, 12, 3, 10, 0);
+        LocalDateTime checkInTime = attendanceStandard.plusMinutes(5).plusNanos(1);
 
         //when
         Attendance attendance = Attendance.of(crew, checkInTime);
 
         //then
-        Assertions.assertThat(attendance.getAttendanceType()).isEqualTo(AttendanceType.BE_LATE);
+        assertThat(attendance.getAttendanceType()).isEqualTo(AttendanceType.BE_LATE);
     }
 
     @Test
@@ -66,13 +69,14 @@ public class AttendanceTest {
     void test5() {
         //given
         Crew crew = Crew.of("쿠키");
-        LocalDateTime checkInTime = LocalDateTime.of(2024, 12, 3, 10, 31);
+        LocalDateTime attendanceStandard = LocalDateTime.of(2024, 12, 3, 10, 0);
+        LocalDateTime checkInTime = attendanceStandard.plusMinutes(30).plusNanos(1);
 
         //when
         Attendance attendance = Attendance.of(crew, checkInTime);
 
         //then
-        Assertions.assertThat(attendance.getAttendanceType()).isEqualTo(AttendanceType.ABSENCE);
+        assertThat(attendance.getAttendanceType()).isEqualTo(AttendanceType.ABSENCE);
     }
 
     @Test
@@ -89,7 +93,7 @@ public class AttendanceTest {
         attendance.modify(modifiedTime);
 
         //then
-        Assertions.assertThat(attendance.getCheckInTime()).isEqualTo(LocalDateTime.of(2024, 12, 3, 10, 0));
+        assertThat(attendance.getCheckInTime()).isEqualTo(LocalDateTime.of(2024, 12, 3, 10, 0));
     }
 
     @Test
@@ -122,6 +126,6 @@ public class AttendanceTest {
         boolean result = attendance.findByCrewAndMonth(crew, month);
 
         //then
-        Assertions.assertThat(result).isTrue();
+        assertThat(result).isTrue();
     }
 }
