@@ -39,14 +39,10 @@ public class CheckInTimes {
     }
 
     public List<LocalDateTime> getAttendanceLog(LocalDateTime localDateTime) {
-        List<LocalDateTime> attendanceLog = new ArrayList<>();
-
-        checkInTimes.stream()
+        return checkInTimes.stream()
                 .filter(time -> time.isBeforeDate(localDateTime))
                 .map(CheckInTime::toLocalDateTime)
-                .forEach(attendanceLog::add);
-
-        return attendanceLog;
+                .toList();
     }
 
     private void validateAddable(CheckInTime checkInTime) {
