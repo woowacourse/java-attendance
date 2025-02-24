@@ -1,8 +1,8 @@
 package domain;
 
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.Objects;
+import java.util.TreeSet;
 
 public class Crew implements Comparable<Crew> {
 
@@ -41,12 +41,12 @@ public class Crew implements Comparable<Crew> {
         return attendanceCounter.calculateAdjustedAbsenceCountWithTardinessCount();
     }
 
-    public List<AttendanceSummary> getAttendancesSummary() {
-        return attendances.getAttendanceSummary();
-    }
-
     public AttendanceCounter getAttendanceCounter() {
         return attendanceCounter;
+    }
+
+    public TreeSet<Attendance> getAttendances() {
+        return attendances.getAttendances();
     }
 
     @Override

@@ -51,13 +51,11 @@ public class Attendances {
                 .toList();
     }
 
-    public List<AttendanceSummary> getAttendanceSummary() {
-        return attendances.stream()
-                .map(Attendance::getSummary)
-                .toList();
-    }
-
     public void remove(final Attendance oldAttendance) {
         attendances.remove(oldAttendance);
+    }
+
+    public TreeSet<Attendance> getAttendances() {
+        return attendances;
     }
 }

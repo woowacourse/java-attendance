@@ -3,6 +3,7 @@ package controller.command;
 import controller.AttendanceCommandController;
 import domain.Attendance;
 import domain.AttendanceDateTime;
+import domain.AttendanceDto;
 import domain.AttendanceTime;
 import domain.Crew;
 import domain.Crews;
@@ -26,7 +27,7 @@ public class CheckAttendanceCommand implements AttendanceCommand {
             throw new CustomIllegalArgumentException("이미 출석했습니다. 다음에는 수정기능을 이용해주세요.");
         }
         final Attendance attendance = attend(crew, attendanceDateTime);
-        OutputView.printAttendance(attendance.getSummary());
+        OutputView.printAttendance(AttendanceDto.from(attendance));
     }
 
     private Nickname readNickname() {

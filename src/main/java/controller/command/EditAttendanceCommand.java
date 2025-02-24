@@ -2,6 +2,7 @@ package controller.command;
 
 import domain.Attendance;
 import domain.AttendanceDateTime;
+import domain.AttendanceDto;
 import domain.Crew;
 import domain.Crews;
 import domain.Nickname;
@@ -19,7 +20,7 @@ public class EditAttendanceCommand implements AttendanceCommand {
         final Attendance newAttendance = Attendance.getInstance(desiredUpdateDateTime);
 
         crew.updateAttendance(oldAttendance, newAttendance);
-        OutputView.printUpdateAttendance(oldAttendance.getSummary(), newAttendance.getSummary());
+        OutputView.printUpdateAttendance(AttendanceDto.from(oldAttendance), AttendanceDto.from(newAttendance));
     }
 
     private Nickname readNicknameForEditAttendance() {

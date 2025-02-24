@@ -1,8 +1,7 @@
 package view;
 
-import domain.AttendanceDateTime;
+import domain.AttendanceDto;
 import domain.AttendanceStatus;
-import domain.AttendanceSummary;
 import domain.CrewDto;
 import domain.Punishment;
 import domain.Week;
@@ -16,8 +15,8 @@ public final class OutputView {
     private OutputView() {
     }
 
-    public static void printAttendance(AttendanceSummary attendanceSummary) {
-        final LocalDateTime localDateTime = attendanceSummary.attendanceDateTime().getLocalDateTime();
+    public static void printAttendance(AttendanceDto attendanceSummary) {
+        final LocalDateTime localDateTime = attendanceSummary.attendanceDateTime();
         final AttendanceStatus attendanceStatus = attendanceSummary.attendanceStatus();
         final String format = String.format("%s (%s)", localDateTime.format(Week.KOREAN_DATE_TIME_FORMAT),
                 attendanceStatus.getDisplayName());
@@ -25,11 +24,11 @@ public final class OutputView {
         printMessageWithLineSeparator(format);
     }
 
-    public static void printUpdateAttendance(final AttendanceSummary oldAttendanceSummary,
-                                             final AttendanceSummary newAttendanceSummary) {
-        final LocalDateTime oldDateTime = getLocalDateTime(oldAttendanceSummary);
+    public static void printUpdateAttendance(final AttendanceDto oldAttendanceSummary,
+                                             final AttendanceDto newAttendanceSummary) {
+        final LocalDateTime oldDateTime = oldAttendanceSummary.attendanceDateTime();
         final String oldStatus = getStatusDisplayName(oldAttendanceSummary);
-        final LocalDateTime newDateTime = getLocalDateTime(newAttendanceSummary);
+        final LocalDateTime newDateTime = newAttendanceSummary.attendanceDateTime();
         final String newStatus = getStatusDisplayName(newAttendanceSummary);
 
         final String oldFormat = String.format("%s (%s)", oldDateTime.format(Week.KOREAN_DATE_TIME_FORMAT), oldStatus);
@@ -39,18 +38,13 @@ public final class OutputView {
         printMessageWithLineSeparator(finalFormat);
     }
 
-    private static String getStatusDisplayName(final AttendanceSummary oldAttendanceSummary) {
+    private static String getStatusDisplayName(final AttendanceDto oldAttendanceSummary) {
         final AttendanceStatus attendanceStatus = oldAttendanceSummary.attendanceStatus();
         return attendanceStatus.getDisplayName();
     }
 
-    private static LocalDateTime getLocalDateTime(AttendanceSummary attendanceSummary) {
-        final AttendanceDateTime attendanceDateTime = attendanceSummary.attendanceDateTime();
-        return attendanceDateTime.getLocalDateTime();
-    }
-
     public static void printCrewAttendances(final CrewDto crewDto,
-                                            List<AttendanceSummary> attendanceSummaries) {
+                                            List<AttendanceDto> attendanceSummaries) {
         final String nickname = crewDto.nickname();
         final Punishment punishment = crewDto.punishment();
         final String titleFormat = "이번 달 %s의 출석 기록입니다.";
@@ -61,10 +55,10 @@ public final class OutputView {
         printMessageWithLineSeparator(String.format("%s 대상자입니다.", punishment.getPunishmentName()));
     }
 
-    private static void printAttendances(List<AttendanceSummary> attendanceSummaries) {
-        for (AttendanceSummary attendanceSummary : attendanceSummaries) {
-            final AttendanceDateTime attendanceDateTime = attendanceSummary.attendanceDateTime();
-            String formattedDateTime = adjustFormat(attendanceDateTime.getLocalDateTime());
+    private static void printAttendances(List<AttendanceDto> attendanceSummaries) {
+        for (AttendanceDto attendanceSummary : attendanceSummaries) {
+            final LocalDateTime attendanceDateTime = attendanceSummary.attendanceDateTime();
+            String formattedDateTime = adjustFormat(attendanceDateTime);
 
             printMessage(formattedDateTime);
         }

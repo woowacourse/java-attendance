@@ -41,10 +41,6 @@ public class Attendance implements Comparable<Attendance> {
         return attendanceDateTime.equalsToLocalDateTime(localDateTime);
     }
 
-    public AttendanceSummary getSummary() {
-        return new AttendanceSummary(attendanceDateTime, attendanceStatus);
-    }
-
     public int getDayOfMonth() {
         return attendanceDateTime.getDayOfMonth();
     }
