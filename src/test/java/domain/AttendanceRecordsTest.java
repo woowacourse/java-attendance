@@ -3,6 +3,7 @@ package domain;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -143,5 +144,19 @@ class AttendanceRecordsTest {
         actualRecords.addRecord(AttendanceRecord.parse("2024-12-06 14:08"));
 
         assertThat(actualRecords.getDisciplinaryStatus()).isEqualTo(DisciplinaryStatus.EXPELLED);
+    }
+
+    @Test
+    @DisplayName("현재 날짜 이전까지의 출결 기록 중 기록이 없는 등교일을 결석으로 기록한다.")
+    void fillAbsencesTest() {
+        AttendanceRecords attendanceRecords = new AttendanceRecords();
+        attendanceRecords.addRecord(AttendanceRecord.parse("2024-12-02 10:00"));
+        attendanceRecords.addRecord(AttendanceRecord.parse("2024-12-03 10:03"));
+        attendanceRecords.addRecord(AttendanceRecord.parse("2024-12-04 10:06"));
+        attendanceRecords.fillAbsences(LocalDate.of(2024, 12, 6));
+        AttendanceRecord actualRecord = attendanceRecords.getRecordAtDate(LocalDate.of(2024, 12, 5));
+        Attendance actualAttendance = actualRecord.getAttendance();
+
+        assertThat(actualAttendance).isEqualTo(Attendance.ABSENT);
     }
 }
