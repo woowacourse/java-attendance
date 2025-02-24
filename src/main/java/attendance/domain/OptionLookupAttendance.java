@@ -26,10 +26,11 @@ public class OptionLookupAttendance extends MenuOption {
         Crew crew = findCrewByCrewName();
         List<Attendance> crewAttendances = attendances.findCrewAttendances(crew);
         CrewStatistic crewStatistic = new CrewStatistic(crew, crewAttendances);
-
         crewStatistic.checkCrewStatistic();
-
-        outputView.printCrewAttendanceHistory(crew.getName(), crewStatistic.crewAttendanceHistoryInfo());
-        outputView.printCrewStatisticStatus(crewStatistic.crewStatisticStatusInfo());
+        InfoLookupAttendance infoLookupAttendance = new InfoLookupAttendance(crew.getName(),
+                crewStatistic.crewAttendanceHistoryInfo(), crewStatistic.crewStatisticStatusInfo());
+        infoLookupAttendance.createCrewAttendanceRecords();
+        outputView.printCrewAttendanceHistory(infoLookupAttendance);
+        outputView.printCrewStatisticStatus(infoLookupAttendance);
     }
 }
