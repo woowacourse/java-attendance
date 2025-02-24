@@ -54,7 +54,7 @@ class AttendanceRepositoryTest {
         attendanceRepository.add(attendance);
 
         // then
-        assertThat(attendanceRepository.findAllAttendanceByName("피글렛").size()).isEqualTo(1);
+        assertThat(attendanceRepository.findAllAttendanceByName("피글렛", 2).size()).isEqualTo(1);
     }
 
     @DisplayName("해당 날짜에 출결 기록이 있는 크루를 추가할 시 예외가 발생한다.")
@@ -102,7 +102,7 @@ class AttendanceRepositoryTest {
         AttendanceRepository attendanceRepository = new AttendanceRepository(new ArrayList<>(
                 List.of(attendance1, attendance2)));
         // then
-        assertThat(attendanceRepository.findAllAttendanceByName("체체").size()).isEqualTo(2);
+        assertThat(attendanceRepository.findAllAttendanceByName("체체", 2).size()).isEqualTo(2);
     }
 
     @DisplayName("해당 닉네임을 가진 크루의 출석 상태를 가져온다.")
@@ -114,7 +114,7 @@ class AttendanceRepositoryTest {
         AttendanceRepository attendanceRepository = new AttendanceRepository(attendances);
 
         // when
-        CrewNameAndAcademicStatusDTO result = attendanceRepository.getAcademicStatusByName("체체");
+        CrewNameAndAcademicStatusDTO result = attendanceRepository.getAcademicStatusByName("체체", 2);
 
         // then
         assertAll(() -> {
@@ -130,7 +130,7 @@ class AttendanceRepositoryTest {
         return Stream.of(
                 Arguments.of(
                         List.of(makeAbsentAttendance(crewName, 2025, 2, 20)),
-                        new CrewNameAndAcademicStatusDTO(crewName, 0, 0, 1, "X")
+                        new CrewNameAndAcademicStatusDTO(crewName, 0, 0, 1, "없음")
                 ),
                 Arguments.of(
                         List.of(makeAbsentAttendance(crewName, 2025, 2, 10),

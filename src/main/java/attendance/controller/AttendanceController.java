@@ -151,11 +151,13 @@ public class AttendanceController {
         String crewName = inputView.inputCrewName();
 
         attendanceBook.checkName(crewName);
-        List<Attendance> attendances = attendanceRepository.findAllAttendanceByName(crewName);
+        List<Attendance> attendances = attendanceRepository.findAllAttendanceByName(crewName,
+                LocalDate.now().getMonthValue());
 
         outputView.printNameAndAttendances(crewName, attendances);
 
-        outputView.printAcademicStatusResult(attendanceRepository.getAcademicStatusByName(crewName));
+        outputView.printAcademicStatusResult(
+                attendanceRepository.getAcademicStatusByName(crewName, LocalDate.now().getMonthValue()));
 
         return false;
     }
@@ -164,7 +166,8 @@ public class AttendanceController {
         outputView.printCrewsAtRiskOfExpulsionStartMessage();
 
         Stream.of(EXPELLED.getValue(), INTERVIEW.getValue(), WARNING.getValue())
-                .map(value -> attendanceBook.getCrewAtRiskOfExpulsion(attendanceRepository, value))
+                .map(value -> attendanceBook.getCrewAtRiskOfExpulsion(attendanceRepository, value,
+                        LocalDate.now().getMonthValue()))
                 .forEach(outputView::printCrewsAtRiskOfExpulsion);
 
         return false;

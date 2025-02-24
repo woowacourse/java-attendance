@@ -36,10 +36,10 @@ public class AttendanceRepository {
         }
     }
 
-    public List<Attendance> findAllAttendanceByName(final String name) {
+    public List<Attendance> findAllAttendanceByName(final String name, final int month) {
         return attendances.stream()
                 .filter(attendance -> attendance.getCrewName().equals(name))
-                .filter(attendance -> attendance.getAttendanceTime().getMonth() == LocalDate.now().getMonthValue())
+                .filter(attendance -> attendance.getAttendanceTime().getMonth() == month)
                 .sorted(Comparator.comparingInt(attendance -> attendance.getAttendanceTime().getDay()))
                 .toList();
     }
@@ -78,8 +78,8 @@ public class AttendanceRepository {
         }
     }
 
-    public CrewNameAndAcademicStatusDTO getAcademicStatusByName(final String name) {
-        List<Attendance> attendances = findAllAttendanceByName(name);
+    public CrewNameAndAcademicStatusDTO getAcademicStatusByName(final String name, final int month) {
+        List<Attendance> attendances = findAllAttendanceByName(name, month);
 
         Map<String, Long> counts = attendances.stream()
                 .collect(Collectors.groupingBy(Attendance::getAttendanceStatus, Collectors.counting()));

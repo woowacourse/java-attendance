@@ -45,7 +45,7 @@ class AttendanceBookTest {
 
         // when
         List<CrewNameAndAcademicStatusDTO> attendanceCountAndAcademicStatusDTOS = attendanceBook.getCrewAtRiskOfExpulsion(
-                attendanceRepository, academicStatus);
+                attendanceRepository, academicStatus, 2);
 
         // then
         assertAll(() -> {

@@ -2,9 +2,9 @@ package attendance.domain;
 
 import attendance.dto.CrewNameAndAcademicStatusDTO;
 import attendance.repository.AttendanceRepository;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 public class AttendanceBook {
 
@@ -26,14 +26,14 @@ public class AttendanceBook {
         }
     }
 
-    public List<CrewNameAndAcademicStatusDTO> getCrewAtRiskOfExpulsion(final AttendanceRepository attendanceRepository,
-                                                                       final String academicStatus) {
+    public List<CrewNameAndAcademicStatusDTO> getCrewAtRiskOfExpulsion(
+            final AttendanceRepository attendanceRepository,
+            final String academicStatus,
+            final int month) {
 
         return names.stream()
-                .map(attendanceRepository::getAcademicStatusByName)
+                .map(name -> attendanceRepository.getAcademicStatusByName(name, month))
                 .filter(dto -> dto.academicStatus().equals(academicStatus))
-                .sorted(Comparator.comparing(CrewNameAndAcademicStatusDTO::crewName))
-                .toList();
-
+                .collect(Collectors.toList());
     }
 }
