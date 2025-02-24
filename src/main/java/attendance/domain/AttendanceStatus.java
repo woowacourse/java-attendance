@@ -34,9 +34,9 @@ public class AttendanceStatus implements Comparable<AttendanceStatus> {
             int thisScore = calculateScore();
             int otherScore = other.calculateScore();
 
-            return Integer.compare(thisScore, otherScore);
+            return Integer.compare(otherScore, thisScore);
         }
-        return this.riskType.compareTo(other.riskType);
+        return other.riskType.compareTo(this.riskType);
     }
 
     public EnumMap<AttendanceStateType, Integer> getStatus() {
