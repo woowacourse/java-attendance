@@ -9,10 +9,9 @@ import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator;
 import org.junit.jupiter.api.Test;
 
-@DisplayName("제적 상태 계산")
+@DisplayName("제적 상황 Enum")
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
-public class WarningLevelCalculatorTest {
-
+class WarningLevelTest {
     @Test
     void 결석이_2회_이상이면_경고_대상자를_반환한다() {
         Map<AttendanceStatus, Integer> attendanceStatuses = new EnumMap<>(AttendanceStatus.class);
@@ -20,8 +19,7 @@ public class WarningLevelCalculatorTest {
         attendanceStatuses.put(AttendanceStatus.PRESENT, 0);
         attendanceStatuses.put(AttendanceStatus.LATENESS, 0);
 
-        WarningLevel level = WarningLevelCalculator.calculateLevel(attendanceStatuses);
-        assertThat(level)
+        assertThat(WarningLevel.of(attendanceStatuses))
                 .isEqualTo(WarningLevel.WARNING);
     }
 
@@ -32,8 +30,7 @@ public class WarningLevelCalculatorTest {
         attendanceStatuses.put(AttendanceStatus.PRESENT, 0);
         attendanceStatuses.put(AttendanceStatus.LATENESS, 0);
 
-        WarningLevel level = WarningLevelCalculator.calculateLevel(attendanceStatuses);
-        assertThat(level)
+        assertThat(WarningLevel.of(attendanceStatuses))
                 .isEqualTo(WarningLevel.COUNSELING);
     }
 
@@ -44,8 +41,7 @@ public class WarningLevelCalculatorTest {
         attendanceStatuses.put(AttendanceStatus.PRESENT, 0);
         attendanceStatuses.put(AttendanceStatus.LATENESS, 0);
 
-        WarningLevel level = WarningLevelCalculator.calculateLevel(attendanceStatuses);
-        assertThat(level)
+        assertThat(WarningLevel.of(attendanceStatuses))
                 .isEqualTo(WarningLevel.REMOVE);
     }
 
@@ -56,8 +52,7 @@ public class WarningLevelCalculatorTest {
         attendanceStatuses.put(AttendanceStatus.PRESENT, 0);
         attendanceStatuses.put(AttendanceStatus.LATENESS, 0);
 
-        WarningLevel level = WarningLevelCalculator.calculateLevel(attendanceStatuses);
-        assertThat(level)
+        assertThat(WarningLevel.of(attendanceStatuses))
                 .isEqualTo(WarningLevel.NONE);
     }
 
@@ -68,8 +63,8 @@ public class WarningLevelCalculatorTest {
         attendanceStatuses.put(AttendanceStatus.PRESENT, 0);
         attendanceStatuses.put(AttendanceStatus.LATENESS, 5);
 
-        WarningLevel level = WarningLevelCalculator.calculateLevel(attendanceStatuses);
-        assertThat(level)
+        assertThat(WarningLevel.of(attendanceStatuses))
                 .isEqualTo(WarningLevel.REMOVE);
     }
+
 }

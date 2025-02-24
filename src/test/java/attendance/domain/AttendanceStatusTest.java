@@ -46,6 +46,4 @@ class AttendanceStatusTest {
         assertThat(actual).isEqualTo(expected);
     }
 
-
-
 }

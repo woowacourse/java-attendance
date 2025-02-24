@@ -38,7 +38,7 @@ public class AttendanceRepository {
     public WarningLevel queryWarningLevelByName(final String name, int today) {
         Attendance crewAttendance = findByName(name);
         final Map<AttendanceStatus, Integer> crewAttendanceStatuses = crewAttendance.countAttendanceStatus(today);
-        return WarningLevelCalculator.calculateLevel(crewAttendanceStatuses);
+        return WarningLevel.of(crewAttendanceStatuses);
     }
 
     public Map<LocalDate, HourMinute> queryCrewAttendance(final String name, int today) {
@@ -56,7 +56,7 @@ public class AttendanceRepository {
                 .map(Attendance::getName)
                 .filter(name -> {
                     final Map<AttendanceStatus, Integer> crewStatuses = queryCrewAttendanceStatus(name, today);
-                    WarningLevel crewWarningLevel = WarningLevelCalculator.calculateLevel(crewStatuses);
+                    WarningLevel crewWarningLevel = WarningLevel.of(crewStatuses);
                     return crewWarningLevel.equals(warningLevel);
                 }).toList();
     }
