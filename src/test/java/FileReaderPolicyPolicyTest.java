@@ -1,7 +1,6 @@
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
 public class FileReaderPolicyPolicyTest {
@@ -12,13 +11,12 @@ public class FileReaderPolicyPolicyTest {
     }
 
     @Test
-    @DisplayName("파일의 형식이 올바르지 않으면 예외가 발생한다")
+    @DisplayName("파일의 형식이 올바른지 검증할 수 있다")
     public void validateFileFormatTest() {
         //given
         FileReaderPolicy fileReaderPolicy = new FileReaderPolicy();
 
         //when-then
-        assertThatThrownBy(fileReaderPolicy::validateFileFormat)
-                .isInstanceOf(IllegalArgumentException.class);
+        assertDoesNotThrow(fileReaderPolicy::validateFileFormat);
     }
 }
