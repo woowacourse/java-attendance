@@ -14,13 +14,13 @@ public class AttendanceSheets {
         this.attendanceSheets = new ArrayList<>(attendanceSheets);
     }
 
-    private static void validateExistAttendanceSheetsByNickname(List<AttendanceSheet> foundAttendance) {
-        if (foundAttendance == null || foundAttendance.isEmpty()) {
+    private void validateExistAttendanceSheetsByNickname(List<AttendanceSheet> foundAttendance) {
+        if (foundAttendance.isEmpty()) {
             throw new IllegalArgumentException("[ERROR] 해당 닉네임은 출석 기록이 존재하지 않습니다.");
         }
     }
 
-    private static void validateNullOrEmptyNickname(String nickname) {
+    private void validateNullOrEmptyNickname(String nickname) {
         if (nickname == null || nickname.isEmpty()) {
             throw new IllegalArgumentException("[ERROR] 등록되지 않은 닉네임입니다.");
         }
@@ -41,9 +41,7 @@ public class AttendanceSheets {
     public AttendanceSheet findAttendanceSheetByNicknameAndDay(String nickname, int day) {
         List<AttendanceSheet> attendanceByNickname = findAttendanceByNickname(nickname);
 
-        return attendanceByNickname.stream()
-                .filter(sheet -> sheet.isSameDay(day))
-                .findFirst()
+        return attendanceByNickname.stream().filter(sheet -> sheet.isSameDay(day)).findFirst()
                 .orElseThrow(() -> new IllegalArgumentException("[ERROR] 출석 기록이 없는 날짜입니다."));
     }
 
@@ -60,10 +58,7 @@ public class AttendanceSheets {
     }
 
     public List<String> findAllNames() {
-        return attendanceSheets.stream()
-                .map(AttendanceSheet::getNickname)
-                .distinct()
-                .toList();
+        return attendanceSheets.stream().map(AttendanceSheet::getNickname).distinct().toList();
     }
 
     public AttendanceStatics calculateRiskOfExpulsionBy(String nickname, LocalDate today) {
@@ -104,17 +99,11 @@ public class AttendanceSheets {
 
     public int calculateAbsentCount(String nickname, LocalDate today) {
         List<AttendanceSheet> attendanceByNickname = findAttendanceByNickname(nickname);
-        return IntStream.range(Calendar.DECEMBER.startDay, today.getDayOfMonth())
-                .boxed()
-                .mapToInt(day ->
-                {
-                    AttendanceSheet attendanceSheet = attendanceByNickname.stream()
-                            .filter(sheet -> sheet.isSameDay(day))
-                            .findAny()
-                            .orElse(null);
-                    return countAbsentByDay(attendanceSheet, day);
-                })
-                .sum();
+        return IntStream.range(Calendar.DECEMBER.startDay, today.getDayOfMonth()).boxed().mapToInt(day -> {
+            AttendanceSheet attendanceSheet = attendanceByNickname.stream().filter(sheet -> sheet.isSameDay(day))
+                    .findAny().orElse(null);
+            return countAbsentByDay(attendanceSheet, day);
+        }).sum();
     }
 
     private int countAbsentByDay(AttendanceSheet attendanceSheet, int day) {
@@ -137,8 +126,7 @@ public class AttendanceSheets {
         LocalDate localDate = LocalDate.of(2024, 12, day);
         DayOfWeek week = localDate.getDayOfWeek();
 
-        if (week == DayOfWeek.SATURDAY || week == DayOfWeek.SUNDAY || localDate.isEqual(
-                LocalDate.of(2024, 12, 25))) {
+        if (week == DayOfWeek.SATURDAY || week == DayOfWeek.SUNDAY || localDate.isEqual(LocalDate.of(2024, 12, 25))) {
             return 0;
         }
 
