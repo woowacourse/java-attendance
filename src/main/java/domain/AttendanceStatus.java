@@ -42,7 +42,7 @@ public enum AttendanceStatus {
         );
     }
 
-    public static AttendanceStatus checkStatus(LocalTime time, DayOfWeek dayOfWeek) {
+    public static AttendanceStatus of(LocalTime time, DayOfWeek dayOfWeek) {
         Map<DayOfWeek, LocalTime> lateTimes = Map.of(DayOfWeek.MONDAY,
             DateTimeParser.parseIntegerToTime(MONDAY_START_HOUR, LATENESS_MINUTE));
         Map<DayOfWeek, LocalTime> absentTimes = Map.of(DayOfWeek.MONDAY,

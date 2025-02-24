@@ -14,7 +14,7 @@ public class StatisticsResult {
 
     public StatisticsResult(int attendanceCount, int latenessCount, int absenceCount) {
         this.result = initializeResult(attendanceCount, latenessCount, absenceCount);
-        this.penalty = Penalty.check(absenceCount, latenessCount);
+        this.penalty = Penalty.of(absenceCount, latenessCount);
     }
 
     public Penalty getPenalty() {

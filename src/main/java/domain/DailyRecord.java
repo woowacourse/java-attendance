@@ -1,7 +1,5 @@
 package domain;
 
-import static domain.AttendanceStatus.checkStatus;
-
 import java.time.DayOfWeek;
 import java.time.LocalTime;
 
@@ -12,7 +10,7 @@ public class DailyRecord {
 
     public DailyRecord(LocalTime time, DayOfWeek dayOfWeek) {
         this.time = time;
-        this.status = checkStatus(time, dayOfWeek);
+        this.status = AttendanceStatus.of(time, dayOfWeek);
     }
 
     public LocalTime getTime() {

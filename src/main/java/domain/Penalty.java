@@ -20,7 +20,7 @@ public enum Penalty {
         this.count = count;
     }
 
-    public static Penalty check(int absenceCount, int latenessCount) {
+    public static Penalty of(int absenceCount, int latenessCount) {
         int totalAbsences = absenceCount + latenessCount / 3;
         return Arrays.stream(values())
             .filter(penalty -> totalAbsences >= penalty.count)
