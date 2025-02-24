@@ -60,4 +60,8 @@ public class AttendanceManager {
     public Records findByName(String name) {
         return crews.findByName(name);
     }
+
+    public void hasCrew(String name){
+        crews.hasCrew(name);
+    }
 }

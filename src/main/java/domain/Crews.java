@@ -39,7 +39,7 @@ public class Crews {
         return AttendanceStatistics.calculateExpelledWarning(nowDate, crews);
     }
 
-    private void hasCrew(String name) {
+    public void hasCrew(String name) {
         if (!crews.containsKey(name)) {
             throw new IllegalArgumentException("등록되지 않은 닉네임입니다.");
         }

@@ -65,7 +65,7 @@ public class AttendanceController {
 
     private void attend() {
         String name = inputView.readAttendName();
-        attendanceManager.findByName(name);
+        attendanceManager.hasCrew(name);
         List<String> attendTime = List.of(inputView.readTime().split(TIME_DELIMITER));
         LocalDateTime attendDateTime = formatDateTime(ATTENDANCE_DAY_OF_MONTH, attendTime);
 
@@ -75,7 +75,7 @@ public class AttendanceController {
 
     private void edit() {
         String name = inputView.readEditName();
-        attendanceManager.findByName(name);
+        attendanceManager.hasCrew(name);
         int editDayOfMonth = Integer.parseInt(inputView.readEditDayOfMonth());
         List<String> editTime = List.of(inputView.readEditTime().split(TIME_DELIMITER));
         LocalDateTime editDateTime = formatDateTime(editDayOfMonth, editTime);
