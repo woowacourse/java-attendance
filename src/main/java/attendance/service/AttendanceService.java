@@ -61,44 +61,17 @@ public class AttendanceService {
         return new EditResponseDto(date, oldTime, editTime, oldStatus, editStatus);
     }
 
-    public CrewAttendanceDto getCrewAttendance(String name, LocalDate today) {
-        Map<LocalDate, AttendanceInfoDto> attendanceInfos = getAttendanceInfos(name, today);
-        Map<AttendanceStatus, Integer> attendanceCounts = getAttendanceCounts(name, today);
-        AttendancePenalty penalty = AttendancePenalty.find(attendanceCounts);
-        return CrewAttendanceDto.of(name, attendanceInfos, attendanceCounts, penalty, today);
-    }
-
-    public List<PenaltyCrewDto> getCrewsName(LocalDate today) {
-        List<String> crewNames = attendances.getCrewNames();
-        List<PenaltyCrew> penaltyCrews = new ArrayList<>();
-
-        for (String crewName : crewNames) {
-            addPenaltyCrew(crewName, today, penaltyCrews);
-        }
-
-        return penaltyCrews.stream()
-                .sorted()
-                .map(PenaltyCrewDto::toDto)
-                .toList();
-    }
-
     private LocalTime editAttendance(String name, LocalDate date, LocalTime editTime) {
         LocalTime oldTime = attendances.findLocalTimeByNameAndDate(name, date);
         this.attendances = attendances.editAttendance(name, date, editTime);
         return oldTime;
     }
 
-    private void addPenaltyCrew(String crewName, LocalDate today, List<PenaltyCrew> penaltyCrews) {
-        Map<AttendanceStatus, Integer> attendanceStatusCounts = attendances.countAttendanceStatusByNameAndDate(crewName, today);
-        if (AttendancePenalty.find(attendanceStatusCounts) == AttendancePenalty.NONE) {
-            return;
-        }
-        penaltyCrews.add(
-                new PenaltyCrew(
-                    crewName,
-                    attendanceStatusCounts.get(AttendanceStatus.ABSENCE),
-                    attendanceStatusCounts.get(AttendanceStatus.LATE))
-        );
+    public CrewAttendanceDto getCrewAttendance(String name, LocalDate today) {
+        Map<LocalDate, AttendanceInfoDto> attendanceInfos = getAttendanceInfos(name, today);
+        Map<AttendanceStatus, Integer> attendanceCounts = getAttendanceCounts(name, today);
+        AttendancePenalty penalty = AttendancePenalty.find(attendanceCounts);
+        return CrewAttendanceDto.of(name, attendanceInfos, attendanceCounts, penalty, today);
     }
 
     private Map<LocalDate, AttendanceInfoDto> getAttendanceInfos(String name, LocalDate today) {
@@ -115,5 +88,32 @@ public class AttendanceService {
 
     private Map<AttendanceStatus, Integer> getAttendanceCounts(String name, LocalDate today) {
         return attendances.countAttendanceStatusByNameAndDate(name, today);
+    }
+
+    public List<PenaltyCrewDto> getCrewsName(LocalDate today) {
+        List<String> crewNames = attendances.getCrewNames();
+        List<PenaltyCrew> penaltyCrews = new ArrayList<>();
+
+        for (String crewName : crewNames) {
+            addPenaltyCrew(crewName, today, penaltyCrews);
+        }
+
+        return penaltyCrews.stream()
+                .sorted()
+                .map(PenaltyCrewDto::toDto)
+                .toList();
+    }
+
+    private void addPenaltyCrew(String crewName, LocalDate today, List<PenaltyCrew> penaltyCrews) {
+        Map<AttendanceStatus, Integer> attendanceStatusCounts = attendances.countAttendanceStatusByNameAndDate(crewName, today);
+        if (AttendancePenalty.find(attendanceStatusCounts) == AttendancePenalty.NONE) {
+            return;
+        }
+        penaltyCrews.add(
+                new PenaltyCrew(
+                    crewName,
+                    attendanceStatusCounts.get(AttendanceStatus.ABSENCE),
+                    attendanceStatusCounts.get(AttendanceStatus.LATE))
+        );
     }
 }
