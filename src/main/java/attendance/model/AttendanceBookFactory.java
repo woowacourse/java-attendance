@@ -10,11 +10,11 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-public class AttendancesFactory {
+public class AttendanceBookFactory {
 
     private static final String ATTENDANCES_FILE_PATH = "src/main/resources/attendances.csv";
 
-    public Attendances initialize() {
+    public AttendanceBook initialize() {
         List<String> lines = readLinesWithoutHeader();
 
         List<Attendance> attendances = new ArrayList<>();
@@ -25,7 +25,7 @@ public class AttendancesFactory {
             crews.add(crew);
             attendances.add(new Attendance(crew, toLocalDateTime(split[1])));
         }
-        return new Attendances(new CrewGroup(crews), attendances);
+        return new AttendanceBook(new CrewGroup(crews), attendances);
     }
 
     private List<String> readLinesWithoutHeader() {

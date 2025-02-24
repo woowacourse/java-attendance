@@ -4,14 +4,13 @@ import java.time.LocalDate;
 import java.time.Month;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
-public class Attendances {
+public class AttendanceBook {
 
     private final CrewGroup crewGroup;
     private final List<Attendance> attendances;
 
-    public Attendances(CrewGroup crewGroup, List<Attendance> attendances) {
+    public AttendanceBook(CrewGroup crewGroup, List<Attendance> attendances) {
         this.crewGroup = crewGroup;
         this.attendances = new ArrayList<>(attendances);
     }
@@ -52,11 +51,8 @@ public class Attendances {
         return new MonthlyAttendance(findMonth, crew, monthlyAttendance);
     }
 
-    public List<AttendanceResult> findAllCrewAttendanceResultUntilDate(LocalDate endDate) {
-        return crewGroup.getCrews().stream()
-                .map(crew -> findMonthlyAttendance(crew, endDate.getMonth()))
-                .map(monthlyAttendance -> monthlyAttendance.calculateAttendanceResultUntilDate(endDate))
-                .collect(Collectors.toList());
+    public List<AttendanceResult> createAttendanceResultOfAllCrewUntilDate(LocalDate endDate) {
+        return crewGroup.createAttendanceResultOfAllCrewUntilDate(this, endDate);
     }
 
     public Crew findCrewByNickname(String nickname) {

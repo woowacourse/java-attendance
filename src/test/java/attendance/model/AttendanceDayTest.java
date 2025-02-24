@@ -10,7 +10,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
 @DisplayName("교육 시작 시간 테스트")
-class AttendanceStartTimeTest {
+class AttendanceDayTest {
 
     @DisplayName("각 요일마다 출석 시작 시간을 반환한다.")
     @ParameterizedTest
@@ -21,7 +21,7 @@ class AttendanceStartTimeTest {
             "THURSDAY, 10:00",
             "FRIDAY, 10:00",
     })
-    void findDayOfWeekTest(DayOfWeek dayOfWeek, LocalTime startTime) {
+    void findStartTime(DayOfWeek dayOfWeek, LocalTime startTime) {
         LocalTime attendanceStartTime = AttendanceDay.findStartTime(dayOfWeek);
         assertThat(attendanceStartTime)
                 .isEqualTo(startTime);

@@ -21,15 +21,15 @@ public enum AttendanceDay {
         this.startTime = startTime;
     }
 
-    public boolean isSameDayOfWeek(DayOfWeek dayOfWeek) {
-        return this.dayOfWeek == dayOfWeek;
-    }
-
     public static LocalTime findStartTime(DayOfWeek dayOfWeek) {
         return Arrays.stream(values())
                 .filter(startTime -> startTime.isSameDayOfWeek(dayOfWeek))
                 .findFirst()
                 .orElseThrow(() -> new IllegalArgumentException("해당하는 요일의 출석 시작 시간을 찾을 수 없습니다."))
                 .startTime;
+    }
+
+    private boolean isSameDayOfWeek(DayOfWeek dayOfWeek) {
+        return this.dayOfWeek == dayOfWeek;
     }
 }

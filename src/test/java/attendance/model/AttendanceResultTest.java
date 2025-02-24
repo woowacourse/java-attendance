@@ -59,6 +59,25 @@ class AttendanceResultTest {
         Assertions.assertThat(condition.test(actual)).isTrue();
     }
 
+    @DisplayName("출석 경고 레벨을 알 수 있다.")
+    @Test
+    void getAttendanceWarningLevel() {
+        //given
+        AttendanceResult attendanceResult = new AttendanceResult(
+                new Crew("pobi"),
+                Map.of(
+                        AttendanceType.ABSENCE, 3
+                ),
+                null
+        );
+
+        //when
+        AttendanceWarningLevel result = attendanceResult.getAttendanceWarningLevel();
+
+        //then
+        assertThat(result).isEqualTo(AttendanceWarningLevel.MEETING);
+    }
+
     private static Stream<Arguments> generate() {
         return Stream.of(
                 Arguments.of(

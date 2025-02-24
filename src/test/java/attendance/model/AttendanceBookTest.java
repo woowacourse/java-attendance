@@ -1,10 +1,12 @@
 package attendance.model;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.Month;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -13,7 +15,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 @DisplayName("출석 내역 테스트")
-class AttendancesTest {
+class AttendanceBookTest {
 
     @DisplayName("크루는 같은 날에 또 출석할 경우 예외가 발생한다")
     @Test
@@ -23,11 +25,29 @@ class AttendancesTest {
         LocalDateTime now = LocalDateTime.of(2024, 12, 13, 11, 1);
         Attendance beforeAttendance = new Attendance(crew, now);
         Attendance afterAttendance = new Attendance(crew, now);
-        Attendances attendances = new Attendances(crewGroup, List.of(beforeAttendance));
+        AttendanceBook attendances = new AttendanceBook(crewGroup, List.of(beforeAttendance));
 
         Assertions.assertThatThrownBy(() -> attendances.attend(afterAttendance))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("크루는 같은 날에 또 출석할 수 없습니다.");
+    }
+
+    @DisplayName("츨석을 할 수 있다.")
+    @Test
+    void attend() {
+        //given
+        Crew crew = new Crew("포비");
+        CrewGroup crewGroup = new CrewGroup(Set.of(crew));
+        LocalDateTime attendanceTime = LocalDateTime.of(2024, 12, 13, 10, 3);
+        Attendance attendance = new Attendance(crew, attendanceTime);
+        AttendanceBook attendanceBook = new AttendanceBook(crewGroup, new ArrayList<>());
+
+        //when
+        attendanceBook.attend(attendance);
+
+        //then
+        assertThat(attendanceBook).extracting("attendances")
+                .isEqualTo(List.of(attendance));
     }
 
     @DisplayName("출석 기록을 수정할 수 있다.")
@@ -37,7 +57,7 @@ class AttendancesTest {
         CrewGroup crewGroup = new CrewGroup(Set.of(crew));
         LocalDateTime now = LocalDateTime.of(2024, 12, 13, 10, 1);
         Attendance attendance = new Attendance(crew, now);
-        Attendances attendances = new Attendances(crewGroup, List.of(attendance));
+        AttendanceBook attendances = new AttendanceBook(crewGroup, List.of(attendance));
 
         LocalDateTime updateDateTime = LocalDateTime.of(2024, 12, 13, 11, 1);
         Attendance modifidedAttendance = attendances.update(
@@ -49,6 +69,22 @@ class AttendancesTest {
                 .isEqualTo(List.of(modifidedAttendance));
     }
 
+    @DisplayName("미래날짜로 출석을 수정하면 예외가 발생한다.")
+    @Test
+    void shouldThrowsException_WhenFutureDateUpdate() {
+        //given
+        Crew crew = new Crew("포비");
+        CrewGroup crewGroup = new CrewGroup(Set.of(crew));
+        LocalDateTime attendanceDateTime = LocalDateTime.of(2024, 12, 13, 10, 1);
+        AttendanceBook attendances = new AttendanceBook(crewGroup, new ArrayList<>());
+
+        //when then
+        assertThatThrownBy(
+                () -> attendances.update(LocalDate.of(2024, 12, 12), new Attendance(crew, attendanceDateTime)))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("미래날짜의 출석을 수정할 수 없습니다.");
+    }
+
     @DisplayName("크루가 찾으려는 날짜에 출석한 경우 닉네임과 날짜로 기존 출석을 찾을 수 있다.")
     @Test
     void attendanceFindTest() {
@@ -56,7 +92,7 @@ class AttendancesTest {
         CrewGroup crewGroup = new CrewGroup(Set.of(crew));
         LocalDateTime now = LocalDateTime.of(2024, 12, 13, 10, 1);
         Attendance attendance = new Attendance(crew, now);
-        Attendances attendances = new Attendances(crewGroup, List.of(attendance));
+        AttendanceBook attendances = new AttendanceBook(crewGroup, List.of(attendance));
         LocalDate findDate = LocalDate.of(2024, 12, 13);
 
         Attendance actual = attendances.findByCrewAndDate(crew, findDate);
@@ -69,7 +105,7 @@ class AttendancesTest {
     void attendanceNotFoundTest() {
         Crew crew = new Crew("포비");
         CrewGroup crewGroup = new CrewGroup(Set.of(crew));
-        Attendances attendances = new Attendances(crewGroup, List.of());
+        AttendanceBook attendances = new AttendanceBook(crewGroup, List.of());
 
         LocalDate findDate = LocalDate.of(2024, 12, 13);
         Attendance attendance = attendances.findByCrewAndDate(crew, findDate);
@@ -82,7 +118,7 @@ class AttendancesTest {
     void findMonthlyAttendance() {
         Crew crew = new Crew("포비");
         CrewGroup crewGroup = new CrewGroup(Set.of(crew));
-        Attendances attendances = new Attendances(crewGroup, List.of(
+        AttendanceBook attendances = new AttendanceBook(crewGroup, List.of(
                 new Attendance(crew, LocalDateTime.of(2024, 11, 1, 10, 1)),
                 new Attendance(crew, LocalDateTime.of(2024, 12, 2, 10, 1)),
                 new Attendance(crew, LocalDateTime.of(2024, 12, 3, 10, 12))
@@ -104,11 +140,11 @@ class AttendancesTest {
 
     @DisplayName("모든 크루의 출석 결과를 조회할 수 있다.")
     @Test
-    void attendanceResultTest() {
+    void createAttendanceResultOfAllCrewUntilDate() {
         Crew pobi = new Crew("포비");
         Crew neo = new Crew("네오");
         CrewGroup crewGroup = new CrewGroup(Set.of(pobi, neo));
-        Attendances attendances = new Attendances(crewGroup, List.of(
+        AttendanceBook attendances = new AttendanceBook(crewGroup, List.of(
                 new Attendance(pobi, LocalDateTime.of(2024, 11, 1, 10, 1)),
                 new Attendance(pobi, LocalDateTime.of(2024, 12, 2, 10, 1)),
                 new Attendance(pobi, LocalDateTime.of(2024, 12, 3, 10, 12)),
@@ -118,7 +154,7 @@ class AttendancesTest {
         ));
         LocalDate endDate = LocalDate.of(2024, 12, 3);
 
-        List<AttendanceResult> attendanceResults = attendances.findAllCrewAttendanceResultUntilDate(endDate);
+        List<AttendanceResult> attendanceResults = attendances.createAttendanceResultOfAllCrewUntilDate(endDate);
 
         assertThat(attendanceResults)
                 .contains(
@@ -133,5 +169,19 @@ class AttendancesTest {
                                 List.of(new Attendance(neo, LocalDateTime.of(2024, 12, 2, 10, 1)),
                                         new Attendance(neo, LocalDateTime.of(2024, 12, 3, 10, 12))))
                 );
+    }
+
+    @DisplayName("닉네임으로 크루를 찾을 수 있다.")
+    @Test
+    void findCrewByNickname() {
+        //given
+        Crew crew = new Crew("포비");
+        AttendanceBook attendanceBook = new AttendanceBook(new CrewGroup(Set.of(crew)), new ArrayList<>());
+
+        //when
+        Crew result = attendanceBook.findCrewByNickname("포비");
+
+        //then
+        assertThat(result).isEqualTo(crew);
     }
 }
