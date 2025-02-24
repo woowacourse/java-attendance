@@ -1,5 +1,7 @@
 package function;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import domain.Crew;
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -14,8 +16,10 @@ public class RegisterCrewTest {
     @DisplayName("제공된 파일로부터 출석 기록을 읽어온다.")
     void read_Existed_Attendance_Records_From_File() {
         List<String> existedRecords =
-                CsvReader.readExistedRecords("src/main/resources/attendances.csv");
+                CsvReader.readExistedRecords("src/test/java/resources/test.csv");
 
+        assertThat(existedRecords.getFirst()).isEqualTo("nickname,datetime");
+        assertThat(existedRecords.get(1)).isEqualTo("쿠키,2024-12-13 10:08");
     }
 
     @Test
