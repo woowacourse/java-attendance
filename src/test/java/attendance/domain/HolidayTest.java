@@ -1,14 +1,16 @@
 package attendance.domain;
 
-import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
-
-import java.time.LocalDate;
-import java.time.format.TextStyle;
-import java.util.Locale;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
+
+import java.time.LocalDate;
+import java.time.format.TextStyle;
+import java.util.Locale;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 
 class HolidayTest {
 
@@ -33,6 +35,23 @@ class HolidayTest {
         assertThatIllegalArgumentException()
                 .isThrownBy(() -> holiday.validateHoliday(date))
                 .withMessage(errorMessage);
+    }
+
+    @ParameterizedTest
+    @CsvSource({
+            "2024-12-05, false",
+            "2024-12-06, false",
+            "2024-12-07, true",
+            "2024-12-25, true",
+    })
+    void 휴일을_검사한다(LocalDate date, boolean excepted) {
+        // given
+        Holiday holiday = new Holiday();
+        holiday.addHoliday(LocalDate.of(2024, 12, 25));
+
+        // when & then
+        assertThat(holiday.isHoliday(date))
+                .isEqualTo(excepted);
     }
 
     @Test
