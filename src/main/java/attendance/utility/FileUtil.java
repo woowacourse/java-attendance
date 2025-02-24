@@ -8,8 +8,9 @@ import java.util.List;
 
 public final class FileUtil {
 
-    private static final int HEADER_LINE_INDEX = 1;
     private static final String DIRECTORY_PATH = "src/main/resources/";
+    private static final String NOT_FOUND_FILE = "[ERROR] 파일 이름을 찾을 수 없습니다. (파일이름: %s)";
+    private static final int HEADER_LINE_INDEX = 1;
 
     private FileUtil() {
     }
@@ -25,7 +26,7 @@ public final class FileUtil {
             FileReader fileReader = new FileReader(file);
             return new BufferedReader(fileReader);
         } catch (FileNotFoundException e) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException(String.format(NOT_FOUND_FILE, fileName));
         }
     }
 
