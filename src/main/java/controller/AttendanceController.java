@@ -29,11 +29,14 @@ public class AttendanceController {
         List<String> data = readAttendanceFile();
         List<String> crewNames = AttendanceInitializer.extractUniqueCrewData(data);
         Crews crews = Crews.of(crewNames);
-        Map<Crew, Attendances> attendances = AttendanceInitializer.initializeAttendanceOf(crews);
+        Map<Crew, Attendances> attendances = registerAttendances(data, crews);
 
         String functionChoice = inputView.readFunctionChoice();
         if (functionChoice.equals("1")) {
             doRegisterService(attendances, crews);
+        }
+        if (functionChoice.equals("2")) {
+            doModifyService(attendances, crews);
         }
     }
 
@@ -52,6 +55,12 @@ public class AttendanceController {
         }
     }
 
+    private Map<Crew, Attendances> registerAttendances(List<String> data, Crews crews) {
+        Map<Crew, Attendances> defaultAttendances = AttendanceInitializer.initializeAttendanceOf(crews);
+        // TODO
+        return null;
+    }
+
     private void doRegisterService(Map<Crew, Attendances> attendances, Crews crews) {
         String name = inputView.readCrewName();
         Crew crew = crews.findCrewByName(name).orElseThrow(IllegalArgumentException::new);
@@ -61,5 +70,9 @@ public class AttendanceController {
         Attendances crewAttendances = attendances.get(crew);
         Attendance newAttendance = crewAttendances.update(date, time);
         outputView.printAttendanceRegisterResult(newAttendance);
+    }
+
+    private void doModifyService(Map<Crew, Attendances> attendances, Crews crews) {
+
     }
 }

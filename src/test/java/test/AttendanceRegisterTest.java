@@ -5,8 +5,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -20,7 +19,7 @@ import model.Crews;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-public class AttendanceTest {
+public class AttendanceRegisterTest {
 
 //    @DisplayName("파일에서 크루 이름과 출석 데이터를 읽어온다.")
 //    @Test
@@ -159,18 +158,16 @@ public class AttendanceTest {
     void test5_1() {
         String combinedData = "쿠키,2024-12-13 10:08";
 
-        Attendance attendance = AttendanceInitializer.parseAttendanceFrom(combinedData);
+        LocalDateTime dateTime = AttendanceInitializer.parseAttendanceFrom(combinedData);
 
-        assertThat(attendance).isEqualTo(new Attendance(
-                LocalDate.of(2024, 12, 13),
-                LocalTime.of(10, 8))
+        assertThat(dateTime).isEqualTo(
+                LocalDateTime.of(2024, 12, 13, 10, 8)
         );
     }
 
     @DisplayName("새로운 출석 객체를 입력하면 크루에 맞는 출석 객체를 갱신한다.")
     @Test
     void test5_2() {
-        //given
         Crew crew = new Crew("빙티");
         Crews crews = new Crews(List.of(crew));
         Map<Crew, Attendances> initializedAttendances = AttendanceInitializer.initializeAttendanceOf(crews);
@@ -185,23 +182,31 @@ public class AttendanceTest {
         //findByDate도 하면 좋을듯
     }
 
-//    @DisplayName("출석 기록을 읽어서 LocalDateTime 객체로 변환한다.")
-//    @Test
-//    void test5() {
-//        //given
-//        String crewInput = """
-//                쿠키,2024-12-13 10:08
-//                빙봉,2024-12-13 10:07
-//                이든,2024-12-13 10:07
-//                빙티,2024-12-12 10:07
-//                """;
-//        Map<String, LocalDateTime> times = AttendanceAdministrator.findAttendanceInfo(crewInput);
-//
-//        assertThat(times.get("쿠키")).isEqualTo(LocalDateTime.of(2024, 12, 13, 10, 8));
-//        assertThat(times.get("빙봉")).isEqualTo(LocalDateTime.of(2024, 12, 13, 10, 7));
-//        assertThat(times.get("이든")).isEqualTo(LocalDateTime.of(2024, 12, 13, 10, 7));
-//        assertThat(times.get("빙티")).isEqualTo(LocalDateTime.of(2024, 12, 12, 10, 7));
-//    }
+    @DisplayName("출석 기록을 읽어서 Attendances 객체의 필드를 갱신한다.")
+    @Test
+    void test5_3() {
+        //given
+        Crew crew1 = new Crew("쿠키");
+        Crew crew2 = new Crew("이든");
+
+        List<String> combinedData = List.of(
+                "쿠키,2024-12-13 10:08",
+                "이든,2024-12-12 11:11"
+        );
+        Crews crews = new Crews(List.of(crew1, crew2));
+        Map<Crew, Attendances> defaultAttendances = AttendanceInitializer.initializeAttendanceOf(crews);
+
+        //when
+        AttendanceInitializer.updateAttendances(crews, combinedData, defaultAttendances);
+
+        //then
+        assertThat(defaultAttendances.get(crew1)
+                .findByDate(LocalDate.of(2024, 12, 13)))
+                .isEqualTo(new Attendance(LocalDate.of(2024, 12, 13), LocalTime.of(10, 8)));
+        assertThat(defaultAttendances.get(crew2)
+                .findByDate(LocalDate.of(2024, 12, 12)))
+                .isEqualTo(new Attendance(LocalDate.of(2024, 12, 12), LocalTime.of(11, 11)));
+    }
 
 //    @DisplayName("입력한 날짜에 해당하는 출석 기록이 있는지 확인한다.")
 //    @Test
@@ -279,5 +284,11 @@ public class AttendanceTest {
 
         //then, when
         assertThat(attendance.findStatus()).isEqualTo(AttendanceStatus.NORMAL);
+    }
+
+    @DisplayName("등교일이 아닌 경우에 예외를 반환한다.")
+    @Test
+    void test7() {
+
     }
 }
