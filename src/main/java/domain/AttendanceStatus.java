@@ -22,7 +22,7 @@ public enum AttendanceStatus {
         Integer minute = workDateTime.getTime().getMinute().orElse(null);
 
         if (hour == null || minute == null) {
-            return ATTENDANCE;
+            return ABSENCE;
         }
 
         WorkDay currentDay = workDateTime.getDate().getWorkDay();
