@@ -1,9 +1,9 @@
 package model;
 
 public enum StudentPunishment {
-    WARNING(2,"경고"),
-    INTERVIEW(3,"면담"),
-    DISMISSAL(5,"제적");
+    WARNING(2, "경고"),
+    INTERVIEW(3, "면담"),
+    DISMISSAL(5, "제적");
 
     private final int absenceLimit;
     private final String punishmentLabel;

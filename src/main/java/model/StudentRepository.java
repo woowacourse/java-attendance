@@ -18,7 +18,7 @@ public class StudentRepository {
     }
 
     public void notExistStudent(String studentName) {
-        if (findStudentByName(studentName) == null){
+        if (findStudentByName(studentName) == null) {
             throw new IllegalArgumentException("[ERROR] 등록되지 않은 닉네임입니다.");
         }
     }

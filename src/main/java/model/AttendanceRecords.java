@@ -24,11 +24,13 @@ public class AttendanceRecords {
                 .findFirst()
                 .ifPresentOrElse(
                         e -> modifyAttendanceRecord(updateLocalDateTime, e.getKey(), newAttendanceStatus),
-                        () -> {throw new IllegalArgumentException("[ERROR] 등록되지 않은 날짜입니다.");}
+                        () -> {
+                            throw new IllegalArgumentException("[ERROR] 등록되지 않은 날짜입니다.");
+                        }
                 );
     }
 
-    public void registerAttendanceRecord(LocalDateTime localDateTime){
+    public void registerAttendanceRecord(LocalDateTime localDateTime) {
         checkHoliday(localDateTime);
         checkOpeningHours(localDateTime);
         LocalDate localDate = LocalDate.from(localDateTime);
@@ -38,40 +40,40 @@ public class AttendanceRecords {
         record.put(localDate, attendanceRecord);
     }
 
-    public int findTotalAttendanceCount(){
+    public int findTotalAttendanceCount() {
         return (int) record.entrySet().stream()
-                .filter(e-> e.getValue().getAttendanceStatus().equals(AttendanceStatus.ATTENDANCE))
+                .filter(e -> e.getValue().getAttendanceStatus().equals(AttendanceStatus.ATTENDANCE))
                 .count();
     }
 
-    public int findTotalLateCount(){
+    public int findTotalLateCount() {
         return (int) record.entrySet().stream()
-                .filter(e-> e.getValue().getAttendanceStatus().equals(AttendanceStatus.LATE))
+                .filter(e -> e.getValue().getAttendanceStatus().equals(AttendanceStatus.LATE))
                 .count();
     }
 
-    public int findTotalAbsentCount(){
+    public int findTotalAbsentCount() {
         return (int) record.entrySet().stream()
-                .filter(e-> e.getValue().getAttendanceStatus().equals(AttendanceStatus.ABSENT))
+                .filter(e -> e.getValue().getAttendanceStatus().equals(AttendanceStatus.ABSENT))
                 .count();
     }
 
     private void modifyAttendanceRecord(LocalDateTime updateLocalDateTime, LocalDate recordLocalDate,
-                                           AttendanceStatus newAttendanceStatus) {
+                                        AttendanceStatus newAttendanceStatus) {
         LocalTime localTime = LocalTime.from(updateLocalDateTime);
         record.put(recordLocalDate, new AttendanceRecord(localTime, newAttendanceStatus));
     }
 
-    public void createAttendanceRecords(LocalDateTime today){
+    public void createAttendanceRecords(LocalDateTime today) {
         AttendanceStatus attendanceStatus = AttendanceRuleByDay.calculateAttendance(today);
         record.put(LocalDate.from(today), new AttendanceRecord(LocalTime.from(today), attendanceStatus));
     }
 
     public void updateStateNotExistInFile(LocalDate today) {
-        LocalDateTime standard = LocalDateTime.of(2024,12,1,0,0);
+        LocalDateTime standard = LocalDateTime.of(2024, 12, 1, 0, 0);
         Map<LocalDate, AttendanceRecord> recordClone = makeRecordClone();
-        while (!compareDayIsSame(standard,LocalDate.from(today))) {
-            if (isExistLocalDate(recordClone,standard)) {
+        while (!compareDayIsSame(standard, LocalDate.from(today))) {
+            if (isExistLocalDate(recordClone, standard)) {
                 standard = standard.plusDays(1);
                 continue;
             }
@@ -86,15 +88,16 @@ public class AttendanceRecords {
 
     private void checkHoliday(LocalDateTime localDateTime) {
         int day = localDateTime.getDayOfWeek().getValue();
-        if (day == 6 || day == 7 || localDateTime.getDayOfMonth() == 25){
+        if (day == 6 || day == 7 || localDateTime.getDayOfMonth() == 25) {
             throw new IllegalArgumentException("[주말 및 공휴일에는 등교일이 아닙니다]");
-        };
+        }
+        ;
     }
 
     public LocalDateTime findLocalDateTime(LocalDateTime localDateTime) {
         return record.entrySet().stream()
                 .filter(e -> compareDayIsSame(localDateTime, e.getKey()))
-                .map(e-> LocalDateTime.of(e.getKey(), e.getValue().getAttendanceTime()))
+                .map(e -> LocalDateTime.of(e.getKey(), e.getValue().getAttendanceTime()))
                 .findFirst()
                 .orElse(null);
 //        for (LocalDate localDate : record.keySet()) {
@@ -105,7 +108,8 @@ public class AttendanceRecords {
 //        }
 //        return null;
     }
-    public AttendanceStatus findAttendanceStatusByLocalDateTime(LocalDateTime localDateTime){
+
+    public AttendanceStatus findAttendanceStatusByLocalDateTime(LocalDateTime localDateTime) {
         return record.entrySet().stream()
                 .filter(e -> compareDayIsSame(localDateTime, e.getKey()))
                 .map(e -> e.getValue().getAttendanceStatus())
@@ -113,11 +117,11 @@ public class AttendanceRecords {
     }
 
 
-    private void checkOpeningHours(LocalDateTime localDateTime){
+    private void checkOpeningHours(LocalDateTime localDateTime) {
         LocalTime localTime = LocalTime.from(localDateTime);
-        LocalTime startTime = LocalTime.of(8,0);
-        LocalTime endTime = LocalTime.of(23,0);
-        if (localTime.isBefore(startTime) || localTime.isAfter(endTime)){
+        LocalTime startTime = LocalTime.of(8, 0);
+        LocalTime endTime = LocalTime.of(23, 0);
+        if (localTime.isBefore(startTime) || localTime.isAfter(endTime)) {
             throw new IllegalArgumentException("[캠퍼스 운영 시간이 아닙니다.]");
         }
     }

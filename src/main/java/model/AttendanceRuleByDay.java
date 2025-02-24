@@ -6,11 +6,11 @@ import java.util.Arrays;
 
 public enum AttendanceRuleByDay {
 
-    MONDAY(LocalTime.of(13,0),1,"월요일"),
-    TUESDAY(LocalTime.of(10,0),2,"화요일"),
-    WEDNESDAY(LocalTime.of(10,0),3,"수요일"),
-    THURSDAY(LocalTime.of(10,0),4,"목요일"),
-    FRIDAY(LocalTime.of(10,0),5,"금요일");
+    MONDAY(LocalTime.of(13, 0), 1, "월요일"),
+    TUESDAY(LocalTime.of(10, 0), 2, "화요일"),
+    WEDNESDAY(LocalTime.of(10, 0), 3, "수요일"),
+    THURSDAY(LocalTime.of(10, 0), 4, "목요일"),
+    FRIDAY(LocalTime.of(10, 0), 5, "금요일");
 
     private final LocalTime classStartTime;
     private final int dayOfWeekValue;
@@ -21,6 +21,7 @@ public enum AttendanceRuleByDay {
         this.dayOfWeekValue = dayOfWeekValue;
         this.day = day;
     }
+
     public static AttendanceStatus calculateAttendance(LocalDateTime localDateTime) {
         int day = localDateTime.getDayOfWeek().getValue();
         LocalTime arrivalTime = LocalTime.from(localDateTime);

@@ -41,62 +41,64 @@ public class InputView {
         System.out.println(QUIT);
     }
 
-    public static String userInput(){
+    public static String userInput() {
         return scanner.nextLine();
     }
-    public static String getUserInputString(){
+
+    public static String getUserInputString() {
         printMenu();
         String input = userInput();
-        try{
+        try {
             return isQOrOneOrTwoOrThreeOrFour(input);
-        } catch (IllegalArgumentException e){
+        } catch (IllegalArgumentException e) {
             System.out.println(e.getMessage());
             return getUserInputString();
         }
     }
 
-    private static String isQOrOneOrTwoOrThreeOrFour(String input){
+    private static String isQOrOneOrTwoOrThreeOrFour(String input) {
         if (!input.matches(MENU_OPTION)) {
             throw new IllegalArgumentException("[ERROR] 메뉴에 없는 선택지 입니다.");
         }
         return input;
     }
 
-    public static void printInputNicName(){
+    public static void printInputNicName() {
         System.out.println(PROMPT_STUDENT_NAME_INPUT);
     }
 
-    public static void printStartTime(){
+    public static void printStartTime() {
         System.out.println(PROMPT_START_TIME_INPUT);
     }
 
-    public static void printStudentNameForModify(){
+    public static void printStudentNameForModify() {
         System.out.println(PROMPT_STUDENT_NAME_INPUT_TO_MODIFY);
     }
 
-    public static int inputDateForModify(){
+    public static int inputDateForModify() {
         System.out.println(PROMPT_DAY_INPUT_TO_MODIFY);
-        try{
+        try {
             int date = Integer.parseInt(userInput());
-            if(date < 1 || date > 31){
+            if (date < 1 || date > 31) {
                 throw new IllegalArgumentException("[ERROR] 1~31 사이의 숫자만 입력해주세요");
             }
             return date;
-        }catch (IllegalArgumentException e){
+        } catch (IllegalArgumentException e) {
             System.out.println(e.getMessage());
             return inputDateForModify();
         }
     }
 
-    public static void printTimeForModify(){
+    public static void printTimeForModify() {
         System.out.println(PROMPT_TIME_INPUT_TO_MODIFY);
     }
 
     public static LocalDateTime makeLocalDateToLocalDateTime(LocalDate localDate) {
         String time = userInput();
         try {
-            DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern(DateFormatInformation.LOCAL_TIME_FORMATTER);
-            LocalTime localTime = LocalTime.parse(time,dateTimeFormatter);
+            DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern(
+                    DateFormatInformation.LOCAL_TIME_FORMATTER);
+            LocalTime localTime = LocalTime.parse(time, dateTimeFormatter);
             return localDate.atTime(localTime);
         } catch (DateTimeException e) {
             throw new IllegalArgumentException("[ERROR] 시간 형식에 맞지 않습니다.");

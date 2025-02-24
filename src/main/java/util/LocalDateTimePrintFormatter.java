@@ -21,7 +21,7 @@ public class LocalDateTimePrintFormatter {
         LocalDateTime localDateTime = LocalDateTime.of(localDate, attendanceRecord.getAttendanceTime());
         DayOfWeek dayOfWeek = localDateTime.getDayOfWeek();
         return localDateTime.format(DateTimeFormatter.ofPattern("MM월 dd일 " + dayOfWeek.getDisplayName(
-                TextStyle.FULL, Locale.KOREAN) + " " +DateFormatInformation.LOCAL_TIME_FORMATTER));
+                TextStyle.FULL, Locale.KOREAN) + " " + DateFormatInformation.LOCAL_TIME_FORMATTER));
     }
 
 

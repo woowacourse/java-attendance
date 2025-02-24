@@ -26,14 +26,14 @@ public class OutputView {
 
     public static void printTodayAttendanceResult(Student student, LocalDateTime localDateTime) {
         Entry<LocalDate, AttendanceRecord> findResult = student.getAttendanceRecords().getRecord().entrySet().stream()
-                .filter(e-> e.getKey().equals(LocalDate.from(localDateTime)))
+                .filter(e -> e.getKey().equals(LocalDate.from(localDateTime)))
                 .findFirst()
                 .orElseThrow();
         String dateAndTime = LocalDateTimePrintFormatter
                 .LocalDateTimeToLocalTime(findResult.getKey(), findResult.getValue());
         String state = findResult.getValue().getAttendanceStatus().getState();
         System.out.printf(dateAndTime);
-        System.out.printf(String.format(PARENTHESES_FORMATTER,state));
+        System.out.printf(String.format(PARENTHESES_FORMATTER, state));
     }
 
     public static void printSecondMenu(String recordBeforeModify, String localDateTimeFormat3) {
@@ -46,7 +46,7 @@ public class OutputView {
                         .sorted(Map.Entry.comparingByKey())
                         .toList();
 
-        for (Map.Entry<LocalDate,AttendanceRecord> entry : entries) {
+        for (Map.Entry<LocalDate, AttendanceRecord> entry : entries) {
             System.out.printf(LocalDateTimePrintFormatter.LocalDateTimeToLocalTime(entry.getKey(), entry.getValue()));
             System.out.printf(String.format(PARENTHESES_FORMATTER, entry.getValue().getAttendanceStatus().getState()));
         }
@@ -81,15 +81,18 @@ public class OutputView {
 
     private static void printStudentPunishmentLabelAndPrint(Student student) {
         if (student.calculateAbsent() > StudentPunishment.DISMISSAL.getAbsenceLimit()) {
-            System.out.printf(String.format(DISMISSAL_LABEL_FORMATTER,student.getName(),student.getAbsent(),student.getLate()));
+            System.out.printf(String.format(DISMISSAL_LABEL_FORMATTER, student.getName(), student.getAbsent(),
+                    student.getLate()));
             return;
         }
         if (student.calculateAbsent() >= StudentPunishment.INTERVIEW.getAbsenceLimit()) {
-            System.out.printf(String.format(INTERVIEW_LABEL_FORMATTER,student.getName(),student.getAbsent(),student.getLate()));
+            System.out.printf(String.format(INTERVIEW_LABEL_FORMATTER, student.getName(), student.getAbsent(),
+                    student.getLate()));
             return;
         }
         if (student.calculateAbsent() >= StudentPunishment.WARNING.getAbsenceLimit()) {
-            System.out.printf(String.format(WARNING_LABEL_FORMATTER,student.getName(),student.getAbsent(),student.getLate()));
+            System.out.printf(
+                    String.format(WARNING_LABEL_FORMATTER, student.getName(), student.getAbsent(), student.getLate()));
         }
     }
 

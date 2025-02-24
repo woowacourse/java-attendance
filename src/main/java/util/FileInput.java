@@ -38,10 +38,10 @@ public class FileInput {
         return students;
     }
 
-    private List<String> readAttendanceFile() throws IOException{
+    private List<String> readAttendanceFile() throws IOException {
         ArrayList<String> attendanceFile = new ArrayList<>();
         fileBr.readLine();
-        while(true) {
+        while (true) {
             String information = fileBr.readLine();
             if (information == null) {
                 break;
@@ -63,7 +63,8 @@ public class FileInput {
         Student student = findStudentByName(students, name);
         makeDateTimeFormatAndUpdateStudentState(student, timeInformation);
     }
-    private Student findStudentByName(List<Student> students, String name){
+
+    private Student findStudentByName(List<Student> students, String name) {
         return students.stream()
                 .filter(s -> s.getName().equals(name))
                 .findFirst()
@@ -71,15 +72,16 @@ public class FileInput {
     }
 
     private static LocalDateTime makeLocalDateTimeFromString(String timeInformation) {
-        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern(DateFormatInformation.LOCAL_DATE_TIME_FORMATTER);
+        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern(
+                DateFormatInformation.LOCAL_DATE_TIME_FORMATTER);
         return LocalDateTime.parse(timeInformation, dateTimeFormatter);
     }
 
-    private static void makeDateTimeFormatAndUpdateStudentState(Student student, LocalDateTime localDateTime){
+    private static void makeDateTimeFormatAndUpdateStudentState(Student student, LocalDateTime localDateTime) {
         student.createAttendanceRecords(localDateTime);
     }
 
-    private static AttendanceRecords createAttendanceRecords(LocalDateTime localDateTime){
+    private static AttendanceRecords createAttendanceRecords(LocalDateTime localDateTime) {
         Map<LocalDate, AttendanceRecord> attendanceRecords = new HashMap<>();
         LocalDate localDate = LocalDate.from(localDateTime);
         LocalTime localTime = LocalTime.from(localDateTime);

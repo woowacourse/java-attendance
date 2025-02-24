@@ -35,21 +35,21 @@ public class Student {
         this.name = name;
     }
 
-    public void updateAttendanceCount(){
+    public void updateAttendanceCount() {
         this.totalAbsent = attendanceRecords.findTotalAbsentCount();
         this.totalLate = attendanceRecords.findTotalLateCount();
         this.totalAttendance = attendanceRecords.findTotalAttendanceCount();
     }
 
-    public void modifyAttendanceRecord(LocalDateTime modifyDateTime){
+    public void modifyAttendanceRecord(LocalDateTime modifyDateTime) {
         attendanceRecords.updateAttendanceStatusByLocalDate(modifyDateTime);
     }
 
-    public void attendanceRegister(LocalDateTime localDateTime){
+    public void attendanceRegister(LocalDateTime localDateTime) {
         attendanceRecords.registerAttendanceRecord(localDateTime);
     }
 
-    public void createAttendanceRecords(LocalDateTime localDateTime){
+    public void createAttendanceRecords(LocalDateTime localDateTime) {
         attendanceRecords.createAttendanceRecords(localDateTime);
     }
 
@@ -63,7 +63,7 @@ public class Student {
 
     public int calculateAbsent() {
         updateAttendanceCount();
-        return totalAbsent + totalLate/3;
+        return totalAbsent + totalLate / 3;
     }
 
 }
