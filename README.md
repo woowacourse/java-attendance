@@ -16,7 +16,7 @@ Q. 종료
 
 #### 파일 입출력 정책
 - [x] 출석 시스템에 등록된 크루와 12월 출석 기록은 제공된 파일(attendances.csv)에서 확인할 수 있다.
-- [ ] 파일의 위치는 `src/main/resources/attendances.csv`이다.
+- [x] 파일의 위치는 `src/main/resources/attendances.csv`이다.
 - [ ] 파일의 형식은 다음과 같으며, 형식이 다를 경우 예외를 발생시킨다.
 ```
 nickname,datetime
