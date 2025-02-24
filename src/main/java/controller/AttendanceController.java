@@ -3,7 +3,6 @@ package controller;
 import domain.AttendanceManager;
 import domain.AttendanceStatistics;
 import domain.Function;
-import domain.Penalty;
 import domain.Records;
 import domain.StatisticsResult;
 import domain.TimeAndStatus;
@@ -65,7 +64,7 @@ public class AttendanceController {
     }
 
     private void attend() {
-        String name = inputView.readName();
+        String name = inputView.readAttendName();
         attendanceManager.findByName(name);
         List<String> attendTime = List.of(inputView.readTime().split(TIME_DELIMITER));
         LocalDateTime attendDateTime = formatDateTime(ATTENDANCE_DAY_OF_MONTH, attendTime);
@@ -88,7 +87,7 @@ public class AttendanceController {
     }
 
     private void check(LocalDate nowDate) {
-        String name = inputView.readName();
+        String name = inputView.readAttendName();
         Records records = attendanceManager.findByName(name);
         StatisticsResult statisticsResult = AttendanceStatistics.countStatus(nowDate, records);
 

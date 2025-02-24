@@ -15,7 +15,9 @@ public class InputView {
     private static final String FUNCTION_MESSAGE = "오늘은 %s입니다. 기능을 선택해 주세요.%n";
     private static final String DATE_FORMAT = "%d월 %02d일 %s";
 
-    public String readName() {
+    private final Scanner sc = new Scanner(System.in);
+
+    public String readAttendName() {
         return basicInput(INPUT_NAME_MESSAGE);
     }
 
@@ -39,21 +41,29 @@ public class InputView {
         String date = dateFormatting(localDate);
         System.out.printf(FUNCTION_MESSAGE, date);
         System.out.printf(
-            "1. 출석 확인%n"
-                + "2. 출석 수정%n"
-                + "3. 크루별 출석 기록 확인%n"
-                + "4. 제적 위험자 확인%n"
-                + "Q. 종료%n"
+                "1. 출석 확인%n"
+                        + "2. 출석 수정%n"
+                        + "3. 크루별 출석 기록 확인%n"
+                        + "4. 제적 위험자 확인%n"
+                        + "Q. 종료%n"
         );
 
-        Scanner sc = new Scanner(System.in);
-        return sc.nextLine();
+        String input = sc.nextLine();
+        validateInput(input);
+        return input;
     }
 
     private String basicInput(String message) {
-        Scanner sc = new Scanner(System.in);
         printMessage(message);
-        return sc.nextLine();
+        String input = sc.nextLine();
+        validateInput(input);
+        return input;
+    }
+
+    private void validateInput(String input) {
+        if (input.isBlank()) {
+            throw new IllegalArgumentException("내용을 입력해 주세요.");
+        }
     }
 
     private void printMessage(String message) {
@@ -62,7 +72,7 @@ public class InputView {
 
     private String dateFormatting(LocalDate localDate) {
         return String.format(DATE_FORMAT, localDate.getMonthValue(),
-            localDate.getDayOfMonth(),
-            localDate.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.KOREAN));
+                localDate.getDayOfMonth(),
+                localDate.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.KOREAN));
     }
 }
