@@ -31,15 +31,15 @@ public class AttendanceInitializer {
         return new Attendance(attendanceTime.toLocalDate(), attendanceTime.toLocalTime());
     }
 
-    public static Map<Crew, List<Attendance>> initializeAttendanceOf(Crews crews) {
-        Map<Crew, List<Attendance>> attendances = new HashMap<>();
+    public static Map<Crew, Attendances> initializeAttendanceOf(Crews crews) {
+        Map<Crew, Attendances> attendances = new HashMap<>();
         for (Crew crew : crews.getCrews()) {
-            List<Attendance> defaultAttendances = IntStream.range(0, 31)
+            List<Attendance> defaultAttendances = IntStream.range(1, 32)
                     .mapToObj(date -> new Attendance(
-                            LocalDate.of(0, 1, 1),
+                            LocalDate.of(2024, 12, date),
                             LocalTime.of(0, 0)))
                     .toList();
-            attendances.put(crew, defaultAttendances);
+            attendances.put(crew, new Attendances(defaultAttendances));
         }
         return attendances;
     }

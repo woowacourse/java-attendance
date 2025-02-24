@@ -5,11 +5,14 @@ import static org.assertj.core.api.Assertions.assertThat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.IntStream;
 import model.Attendance;
+import model.Attendances;
 import model.Crew;
 import model.AttendanceInitializer;
 import model.Crews;
@@ -136,25 +139,19 @@ public class AttendanceTest {
     @Test
     void test5_0() {
         //given
-        List<Crew> crewsInput = List.of(
-                new Crew("쿠키"),
-                new Crew("빙봉"),
-                new Crew("빙티"),
-                new Crew("이든")
-        );
+        Crew crew = new Crew("쿠키");
+        List<Crew> crewsInput = List.of(crew);
         Crews crews = new Crews(crewsInput);
 
         //when
-        Map<Crew, List<Attendance>> attendancesPerCrew = AttendanceInitializer.initializeAttendanceOf(crews);
+        Map<Crew, Attendances> attendancesPerCrew = AttendanceInitializer.initializeAttendanceOf(crews);
 
         //then
-        for (Crew crew : crewsInput) {
-            assertThat(attendancesPerCrew.get(crew).size()).isEqualTo(31);
-            assertThat(attendancesPerCrew.get(crew).getFirst()).isEqualTo(new Attendance(
-                    LocalDate.of(0, 1, 1),
-                    LocalTime.of(0, 0)
-            ));
-        }
+        assertThat(attendancesPerCrew.get(crew)).isEqualTo(new Attendances(
+                IntStream.range(1, 32)
+                        .mapToObj(date -> new Attendance(LocalDate.of(2024, 12, date), LocalTime.of(0, 0)))
+                        .toList()
+        ));
     }
 
     @DisplayName("크루 이름과 날짜 객체를 입력하면 날짜와 시간을 읽어서 Attendance 객체를 반환한다.")
@@ -169,6 +166,23 @@ public class AttendanceTest {
                 LocalTime.of(10, 8))
         );
     }
+
+//    @DisplayName("새로운 출석 객체를 입력하면 크루에 맞는 출석 객체를 갱신한다.")
+//    @Test
+//    void test5_2() {
+//        //given
+//        Crew crew = new Crew("빙티");
+//        Crews crews = new Crews(List.of(crew));
+//        Attendance attendance = new Attendance(
+//                LocalDate.of(2024, 12, 14),
+//                LocalTime.of(10, 10)
+//        );
+//        Map<Crew, List<Attendance>> initializedAttendances = AttendanceInitializer.initializeAttendanceOf(crews);
+//
+//        AttendanceInitializer.addAttendance(crew, attendance, initializedAttendances);
+//
+//        assertThat(initializedAttendances.get(crew).);
+//    }
 
 //    @DisplayName("출석 기록을 읽어서 LocalDateTime 객체로 변환한다.")
 //    @Test
