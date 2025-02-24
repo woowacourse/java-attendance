@@ -14,6 +14,8 @@ import java.util.Objects;
 import util.DateUtils;
 
 public class AttendanceSystem {
+    private static final int CREW_NAME = 0;
+    private static final int ATTENDANCE_DATE = 1;
     private static final String DELIMITER = ",";
     private final List<Crew> crews;
 
@@ -26,7 +28,7 @@ public class AttendanceSystem {
             final LocalDate today
     ) {
         final List<Crew> crews = data.stream()
-                .map(d -> d.split(DELIMITER)[0])
+                .map(d -> d.split(DELIMITER)[CREW_NAME])
                 .distinct()
                 .map(d -> Crew.of(d, today))
                 .toList();
@@ -40,9 +42,9 @@ public class AttendanceSystem {
     ) {
         final String[] data = input.split(DELIMITER);
         crews.stream()
-                .filter(crew -> crew.isSameName(data[0]))
+                .filter(crew -> crew.isSameName(data[CREW_NAME]))
                 .findAny()
-                .ifPresent(crew -> crew.updateAttendanceByDateTime(data[1]));
+                .ifPresent(crew -> crew.updateAttendanceByDateTime(data[ATTENDANCE_DATE]));
     }
 
     public Attendance attendance(
