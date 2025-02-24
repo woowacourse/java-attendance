@@ -20,8 +20,8 @@ public class CrewRegistration {
             String name = ParsingUtils.parseRecordToNameAndDate(existedRecord).getFirst();
             String timeLog = ParsingUtils.parseRecordToNameAndDate(existedRecord).getLast();
 
-            String date = ParsingUtils.parseDateToDayAndTime(timeLog).getFirst();
-            String time = ParsingUtils.parseDateToDayAndTime(timeLog).getLast();
+            String date = ParsingUtils.parseTimeLogToDateAndTime(timeLog).getFirst();
+            String time = ParsingUtils.parseTimeLogToDateAndTime(timeLog).getLast();
 
             crews.add(new Crew(name, LocalDate.parse(date), LocalTime.parse(time)));
         }

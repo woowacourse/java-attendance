@@ -8,7 +8,7 @@ public class ParsingUtils {
         return Arrays.asList(existedRecords.split(","));
     }
 
-    public static List<String> parseDateToDayAndTime(String date) {
+    public static List<String> parseTimeLogToDateAndTime(String date) {
         return Arrays.asList(date.split(" "));
     }
 }
