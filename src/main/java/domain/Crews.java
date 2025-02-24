@@ -1,6 +1,5 @@
 package domain;
 
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,8 +18,8 @@ public class Crews {
                 .orElseThrow(() -> new IllegalArgumentException("[ERROR] 등록되지 않은 닉네임입니다."));
     }
 
-    public void recordAllAbsence(LocalDate today) {
-        crews.forEach(crew -> crew.recordAbsence(today));
+    public void recordAllAbsence(Day today) {
+        crews.forEach(crew -> crew.recordAbsence(today.getDate()));
     }
 
     public List<CrewDto> createCrewDtos() {

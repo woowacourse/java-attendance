@@ -23,11 +23,11 @@ public class OutputView {
     }
 
     public void printAttendanceInformation(AttendanceDto attendanceDto) {
-        LocalDate today = StandardDate.DATE;
-        String dayOfWeekName = AttendanceStandard.getNameByDayOfWeek(today.getDayOfWeek());
+        LocalDate todayDate = StandardDate.TODAY.getDate();
+        String dayOfWeekName = AttendanceStandard.getNameByDayOfWeek(todayDate.getDayOfWeek());
         String attendanceTime = Converter.covertLocalTimeToString(attendanceDto.getAttendanceTime());
         String attendanceStatusName = getAttendanceStatusName(attendanceDto);
-        System.out.printf("%d월 %02d일 %s %s (%s)\n", today.getMonth().getValue(), today.getDayOfMonth(), dayOfWeekName, attendanceTime, attendanceStatusName);
+        System.out.printf("%d월 %02d일 %s %s (%s)\n", todayDate.getMonth().getValue(), todayDate.getDayOfMonth(), dayOfWeekName, attendanceTime, attendanceStatusName);
     }
 
     public void printUpdatedAttendanceHistory(AttendanceDto originalAttendanceDto, AttendanceDto editedAttendanceDto) {

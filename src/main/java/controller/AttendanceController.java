@@ -5,7 +5,6 @@ import domain.constant.StandardDate;
 import view.InputView;
 import view.OutputView;
 
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -32,12 +31,12 @@ public class AttendanceController {
     }
 
     public void run() {
-        crews.recordAllAbsence(StandardDate.DATE);
+        crews.recordAllAbsence(StandardDate.TODAY);
 
         String inputOption = "";
 
         while (!inputOption.equals(EXIT_OPTION)) {
-            outputView.printOptionMessage(StandardDate.DATE);
+            outputView.printOptionMessage(StandardDate.TODAY.getDate());
             inputOption = inputView.getOption();
 
             selectCommandAndRun(inputOption);
@@ -52,10 +51,10 @@ public class AttendanceController {
     }
 
     public void processAttendance() {
-        checkHoliday(StandardDate.DATE);
+        StandardDate.TODAY.validateNonHoliday();
         Crew crew = crews.findByNickname(inputView.getNickname());
 
-        if (crew.isAlreadyAttend(StandardDate.DATE)) {
+        if (crew.isAlreadyAttend(StandardDate.TODAY.getDate())) {
             System.out.println("이미 출석 완료되었습니다. 수정 기능을 이용해주세요.");
             return;
         }
@@ -64,20 +63,9 @@ public class AttendanceController {
     }
 
     private void registerAttendance(Crew crew) {
-        Attendance attendance = new Attendance(new Day(StandardDate.DATE), inputView.getAttendanceTime());
+        Attendance attendance = new Attendance(StandardDate.TODAY, inputView.getAttendanceTime());
         crew.addAttendance(attendance);
         outputView.printAttendanceInformation(attendance.toDto());
-    }
-
-    private void checkHoliday(LocalDate todayDate) {
-        Day today = new Day(todayDate);
-        int month = todayDate.getMonth().getValue();
-        int dayOfMonth = todayDate.getDayOfMonth();
-        String dayOfWeekName = AttendanceStandard.getNameByDayOfWeek(todayDate.getDayOfWeek());
-
-        if (today.checkHoliday()) {
-            throw new IllegalArgumentException("[ERROR] " + month + "월 " + dayOfMonth + "일 " + dayOfWeekName + "은 등교일이 아닙니다.");
-        }
     }
 
     public void processAttendanceUpdate() {
