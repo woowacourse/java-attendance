@@ -25,6 +25,22 @@ public class OutputView {
         System.out.println();
     }
 
+    public void printAttendanceResult(String name, AttendanceResults attendResult) {
+        System.out.printf("이번 달 %s의 출석 기록입니다.%n%n", name);
+        AttendCount attendCount = attendResult.countAttendStatus();
+        printAttendanceStatus(attendResult);
+        printAttendCount(attendResult);
+        printWarningMessage(attendCount);
+    }
+
+    private void printAttendanceStatus(AttendanceResults attendResult) {
+        for (AttendanceResult attendanceResult : attendResult.getAttendanceResults()) {
+            Attend attend = attendanceResult.attend();
+            System.out.println(formatAttendAndStatus(attend, attendanceResult.attendStatus()));
+        }
+        System.out.println();
+    }
+
     private String formatAttendAndStatus(Attend attend, AttendStatus attendStatus) {
         String date = attend.formatDate(DateTimeFormat.DATE.getDateTimeFormatter());
         String time = "--:--";
@@ -35,21 +51,18 @@ public class OutputView {
         return String.format("%s %s (%s)", date, time, status);
     }
 
-    public void printAttendanceResult(String name, AttendanceResults attendResult) {
-        System.out.printf("이번 달 %s의 출석 기록입니다.%n%n", name);
-        // 출석 현황 출력
-        for (AttendanceResult attendanceResult : attendResult.getAttendanceResults()) {
-            Attend attend = attendanceResult.attend();
-            System.out.println(formatAttendAndStatus(attend, attendanceResult.attendStatus()));
-        }
-        System.out.println();
-
-        // 출석 지각 결석 횟수 출력
-        AttendCount attendCount = attendResult.countAttendStatus();
+    private void printAttendCount(AttendanceResults attendResult) {
         System.out.println(formatAttendCount(attendResult.countAttendStatus()));
         System.out.println();
+    }
 
-        // 경고 메시지 출력
+    private String formatAttendCount(AttendCount attendCount) {
+        return String.format("출석: %d회%n"
+                + "지각: %d회%n"
+                + "결석: %d회", attendCount.attend(), attendCount.late(), attendCount.absence());
+    }
+
+    private static void printWarningMessage(AttendCount attendCount) {
         WarningStatus warningStatus = attendCount.judgeWarning();
         String warningMessage = WarningMessage.formatWarningStatus(warningStatus);
         System.out.println(warningMessage);
@@ -66,12 +79,6 @@ public class OutputView {
             System.out.println(message);
         }
         System.out.println();
-    }
-
-    private String formatAttendCount(AttendCount attendCount) {
-        return String.format("출석: %d회%n"
-                + "지각: %d회%n"
-                + "결석: %d회", attendCount.attend(), attendCount.late(), attendCount.absence());
     }
 
     private String formatWarningCrew(WarningCrew warningCrew) {
