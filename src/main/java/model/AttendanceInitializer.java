@@ -14,6 +14,8 @@ import java.util.stream.IntStream;
 
 public class AttendanceInitializer {
 
+    private static final LocalTime noneTime = LocalTime.of(0, 0);
+
     public static List<String> extractUniqueCrewData(List<String> combinedData) {
         return combinedData.stream()
                 .map(data -> data.split(",")[0])
@@ -34,7 +36,7 @@ public class AttendanceInitializer {
             List<Attendance> defaultAttendances = IntStream.range(1, 32)
                     .mapToObj(date -> new Attendance(
                             LocalDate.of(2024, 12, date),
-                            LocalTime.of(0, 0)))
+                            noneTime))
                     .collect(Collectors.toList()); //TODO : toList면 불변이 되어 수정 불가능해짐
             attendances.put(crew, new Attendances(defaultAttendances));
         }
