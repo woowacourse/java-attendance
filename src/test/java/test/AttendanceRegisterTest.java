@@ -6,7 +6,6 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -291,16 +290,16 @@ public class AttendanceRegisterTest {
     @DisplayName("등교일이 아닌 경우에 예외를 반환한다. - 공휴일")
     @Test
     void test7() {
-        assertThatThrownBy(() -> December.validateHolidy(LocalDate.of(2024, 12, 25)))
+        assertThatThrownBy(() -> December.validateHoliday(LocalDate.of(2024, 12, 25)))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
     @DisplayName("등교일이 아닌 경우에 예외를 반환한다. - 주말")
     @Test
     void test7_1() {
-        assertThatThrownBy(() -> December.validateHolidy(LocalDate.of(2024, 12, 14)))
+        assertThatThrownBy(() -> December.validateHoliday(LocalDate.of(2024, 12, 14)))
                 .isInstanceOf(IllegalArgumentException.class);
-        assertThatThrownBy(() -> December.validateHolidy(LocalDate.of(2024, 12, 15)))
+        assertThatThrownBy(() -> December.validateHoliday(LocalDate.of(2024, 12, 15)))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 }
