@@ -95,10 +95,9 @@ public class AttendanceBook {
         }
     }
 
-    private Attendance findAttendanceByDate(final String crewName, final int dayOfMonth) {
+    private Attendance findAttendanceByDate(final String crewName, final LocalDate localDate) {
         final Crew crew = findCrewByName(crewName);
-        final LocalDate targetDate = LocalDate.of(2024, 12, dayOfMonth);
-        return crew.findAttendanceByDate(targetDate);
+        return crew.findAttendanceByDate(localDate);
     }
 
     private boolean existCrewByName(final String name) {
