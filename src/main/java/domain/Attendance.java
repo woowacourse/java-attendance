@@ -15,6 +15,7 @@ public class Attendance {
         if (isAlreadyExists(workDateTime)) {
             throw new IllegalArgumentException("해당 날짜의 출석 정보가 이미 존재합니다.");
         }
+
         dateTimes.put(workDateTime.getDate(), workDateTime.getTime());
     }
 
@@ -22,6 +23,7 @@ public class Attendance {
         if (!isAlreadyExists(updateWorkDateTime)) {
             throw new IllegalArgumentException("해당 날짜의 출석 정보가 없습니다.");
         }
+        
         dateTimes.put(updateWorkDateTime.getDate(), updateWorkDateTime.getTime());
     }
 

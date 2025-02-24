@@ -6,6 +6,7 @@ import static org.assertj.core.api.SoftAssertions.assertSoftly;
 import org.junit.jupiter.api.Test;
 
 class AttendanceStatusTest {
+    
     @Test
     void 출석_여부를_판단한다() {
         // given & when

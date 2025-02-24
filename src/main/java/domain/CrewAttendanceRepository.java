@@ -21,7 +21,7 @@ public class CrewAttendanceRepository {
     public static CrewAttendanceRepository of(LocalDate currentDate, String filePath) {
         Map<String, CrewAttendance> initialData = createInitialAttendance(currentDate, filePath);
         CrewAttendanceRepository crewAttendanceRepository = new CrewAttendanceRepository(initialData);
-        loadAttendance(crewAttendanceRepository, filePath);
+        loadAttendance(crewAttendanceRepository, currentDate, filePath);
 
         return crewAttendanceRepository;
     }
@@ -49,12 +49,19 @@ public class CrewAttendanceRepository {
         return attendanceRecords;
     }
 
-    private static void loadAttendance(CrewAttendanceRepository crewAttendanceRepository, String filePath) {
+    private static void loadAttendance(CrewAttendanceRepository crewAttendanceRepository, LocalDate currentDate,
+                                       String filePath) {
         Map<String, List<WorkDateTime>> attendanceRecords = AttendanceFileParser.loadAttendanceRecords(filePath);
 
-        attendanceRecords.forEach((name, dateTimes) -> {
+        attendanceRecords.forEach((name, workDateTimes) -> {
             crewAttendanceRepository.findByName(name)
-                    .ifPresent(crewAttendance -> dateTimes.forEach(crewAttendance::addAttendance));
+                    .ifPresent(crewAttendance -> workDateTimes.forEach(workDateTime -> {
+                        WorkDate workDate = workDateTime.getDate();
+
+                        if (!workDate.isAfter(currentDate)) {
+                            crewAttendance.addAttendance(workDateTime);
+                        }
+                    }));
         });
     }
 

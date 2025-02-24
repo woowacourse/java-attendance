@@ -8,6 +8,7 @@ import java.util.Map;
 import org.junit.jupiter.api.Test;
 
 class CrewAttendanceRepositoryTest {
+    
     @Test
     void 출석을_찾는다() {
         // given

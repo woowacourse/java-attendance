@@ -9,6 +9,7 @@ import java.util.Map;
 import org.junit.jupiter.api.Test;
 
 class AttendanceTest {
+
     @Test
     void 출석을_여러개_생성한다() {
         // given
