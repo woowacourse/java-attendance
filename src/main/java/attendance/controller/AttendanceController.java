@@ -20,6 +20,7 @@ import static attendance.controller.AttendanceMenu.CHECK;
 import static attendance.controller.AttendanceMenu.QUIT;
 import static attendance.controller.AttendanceMenu.SEARCH;
 import static attendance.controller.AttendanceMenu.UPDATE;
+import static attendance.controller.AttendanceMenu.WARNED_CREW;
 import static attendance.controller.AttendanceMenu.find;
 import static attendance.utility.DateTimeParser.parseDateByDay;
 
@@ -58,6 +59,7 @@ public class AttendanceController {
         processAttendanceCheck(menu, today);
         processAttendanceUpdate(menu, today);
         processAttendanceSearch(menu);
+        processAttendanceWarnedCrews(menu);
     }
 
     private void processAttendanceCheck(AttendanceMenu menu, LocalDate today) {
@@ -100,6 +102,12 @@ public class AttendanceController {
 
             AttendanceStatus attendanceStatus = attendanceManager.getAttendanceStatus(nickname);
             outputView.printAttendanceStatus(attendanceStatus);
+        }
+    }
+
+    private void processAttendanceWarnedCrews(AttendanceMenu menu) {
+        if (menu == WARNED_CREW) {
+            outputView.printAttendanceWarnedCrews(attendanceManager.getAttendanceWarnedCrews());
         }
     }
 
