@@ -7,8 +7,8 @@ import org.junit.jupiter.params.provider.MethodSource;
 
 import java.util.stream.Stream;
 
+import static attendance.domain.AttendanceStateType.ABSENCE;
 import static attendance.domain.AttendanceStateType.ATTENDANCE;
-import static attendance.domain.AttendanceStateType.EXPULSION;
 import static attendance.domain.AttendanceStateType.LATE;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -26,7 +26,7 @@ public class AttendanceStateTypeTest {
         return Stream.of(
                 Arguments.of(0, ATTENDANCE),
                 Arguments.of(6, LATE),
-                Arguments.of(31, EXPULSION)
+                Arguments.of(31, ABSENCE)
         );
     }
 }

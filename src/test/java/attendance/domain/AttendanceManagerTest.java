@@ -15,8 +15,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Stream;
 
+import static attendance.domain.AttendanceStateType.ABSENCE;
 import static attendance.domain.AttendanceStateType.ATTENDANCE;
-import static attendance.domain.AttendanceStateType.EXPULSION;
 import static attendance.domain.AttendanceStateType.LATE;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
@@ -147,7 +147,7 @@ class AttendanceManagerTest {
 
         // then
         assertThat(result.getStatus().size()).isEqualTo(3);
-        assertThat(result.getWarningType()).isEqualTo(AttendanceWarningType.NONE);
+        assertThat(result.getRiskType()).isEqualTo(AttendanceRiskType.NONE);
     }
 
     @Test
@@ -301,7 +301,7 @@ class AttendanceManagerTest {
         return Stream.of(
                 Arguments.of(LocalTime.of(10, 5), ATTENDANCE),
                 Arguments.of(LocalTime.of(10, 30), LATE),
-                Arguments.of(LocalTime.MAX, EXPULSION)
+                Arguments.of(LocalTime.MAX, ABSENCE)
         );
     }
 

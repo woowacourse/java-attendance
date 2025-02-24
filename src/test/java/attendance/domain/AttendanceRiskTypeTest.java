@@ -7,21 +7,21 @@ import org.junit.jupiter.params.provider.MethodSource;
 
 import java.util.stream.Stream;
 
-import static attendance.domain.AttendanceWarningType.COUNSELING;
-import static attendance.domain.AttendanceWarningType.EXPULSION;
-import static attendance.domain.AttendanceWarningType.NONE;
-import static attendance.domain.AttendanceWarningType.WARNING;
-import static attendance.domain.AttendanceWarningType.find;
+import static attendance.domain.AttendanceRiskType.COUNSELING;
+import static attendance.domain.AttendanceRiskType.EXPULSION;
+import static attendance.domain.AttendanceRiskType.NONE;
+import static attendance.domain.AttendanceRiskType.WARNING;
+import static attendance.domain.AttendanceRiskType.find;
 import static org.assertj.core.api.Assertions.assertThat;
 
-class AttendanceWarningTypeTest {
+class AttendanceRiskTypeTest {
 
     @ParameterizedTest
     @MethodSource()
     @DisplayName("출결 상황에 따라 알맞은 경고를 반환한다.")
-    void 출결_상황에_따라_알맞은_경고를_반환한다(int absence, int late, AttendanceWarningType type) {
+    void 출결_상황에_따라_알맞은_경고를_반환한다(int absence, int late, AttendanceRiskType type) {
         // when
-        AttendanceWarningType result = find(absence, late);
+        AttendanceRiskType result = find(absence, late);
 
         // then
         assertThat(result)

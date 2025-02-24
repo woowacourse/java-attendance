@@ -104,7 +104,7 @@ class AttendanceTest {
         return Stream.of(
                 Arguments.of(LocalDateTime.of(2024, 12, 3, 10, 0), AttendanceStateType.ATTENDANCE),
                 Arguments.of(LocalDateTime.of(2024, 12, 3, 10, 6), AttendanceStateType.LATE),
-                Arguments.of(LocalDateTime.of(2024, 12, 3, 10, 31), AttendanceStateType.EXPULSION)
+                Arguments.of(LocalDateTime.of(2024, 12, 3, 10, 31), AttendanceStateType.ABSENCE)
         );
     }
 
@@ -118,7 +118,7 @@ class AttendanceTest {
     static Stream<Arguments> 출석_상태가_동일한지_검사한다() {
         return Stream.of(
                 Arguments.of(AttendanceStateType.ATTENDANCE, true),
-                Arguments.of(AttendanceStateType.EXPULSION, false)
+                Arguments.of(AttendanceStateType.ABSENCE, false)
         );
     }
 }

@@ -4,20 +4,20 @@ import java.util.Arrays;
 import java.util.EnumMap;
 import java.util.List;
 
-import static attendance.domain.AttendanceStateType.EXPULSION;
+import static attendance.domain.AttendanceRiskType.NONE;
+import static attendance.domain.AttendanceRiskType.find;
+import static attendance.domain.AttendanceStateType.ABSENCE;
 import static attendance.domain.AttendanceStateType.LATE;
 import static attendance.domain.AttendanceStateType.values;
-import static attendance.domain.AttendanceWarningType.NONE;
-import static attendance.domain.AttendanceWarningType.find;
 
 public class AttendanceStatus implements Comparable<AttendanceStatus> {
 
     private final EnumMap<AttendanceStateType, Integer> status;
-    private final AttendanceWarningType warningType;
+    private final AttendanceRiskType riskType;
 
     public AttendanceStatus(final List<Attendance> attendances) {
         status = calculateAttendanceStatus(attendances);
-        warningType = calculateAttendanceRisk();
+        riskType = calculateAttendanceRisk();
     }
 
     public static AttendanceStatus of(final List<Attendance> attendances) {
@@ -25,26 +25,26 @@ public class AttendanceStatus implements Comparable<AttendanceStatus> {
     }
 
     public boolean isNotNoneState() {
-        return warningType != NONE;
+        return riskType != NONE;
     }
 
     @Override
     public int compareTo(final AttendanceStatus other) {
-        if (warningType == other.warningType) {
+        if (riskType == other.riskType) {
             int thisScore = calculateScore();
             int otherScore = other.calculateScore();
 
             return Integer.compare(thisScore, otherScore);
         }
-        return this.warningType.compareTo(other.warningType);
+        return this.riskType.compareTo(other.riskType);
     }
 
     public EnumMap<AttendanceStateType, Integer> getStatus() {
         return status;
     }
 
-    public AttendanceWarningType getWarningType() {
-        return warningType;
+    public AttendanceRiskType getRiskType() {
+        return riskType;
     }
 
     private EnumMap<AttendanceStateType, Integer> calculateAttendanceStatus(final List<Attendance> attendances) {
@@ -63,13 +63,13 @@ public class AttendanceStatus implements Comparable<AttendanceStatus> {
                 .count();
     }
 
-    private AttendanceWarningType calculateAttendanceRisk() {
-        int expulsion = status.get(EXPULSION);
+    private AttendanceRiskType calculateAttendanceRisk() {
+        int expulsion = status.get(ABSENCE);
         int late = status.get(LATE);
         return find(expulsion, late);
     }
 
     private int calculateScore() {
-        return status.get(EXPULSION) * 3 + status.get(LATE);
+        return status.get(ABSENCE) * 3 + status.get(LATE);
     }
 }

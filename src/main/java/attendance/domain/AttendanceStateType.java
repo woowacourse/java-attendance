@@ -3,7 +3,7 @@ package attendance.domain;
 import java.util.Arrays;
 
 public enum AttendanceStateType {
-    EXPULSION("결석", 30),
+    ABSENCE("결석", 30),
     LATE("지각", 5),
     ATTENDANCE("출석", 0);
 

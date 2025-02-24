@@ -79,7 +79,7 @@ public class OutputView {
         }
 
         System.out.println();
-        System.out.printf(NEW_LINE + "%s 대상자입니다.", attendanceStatus.getWarningType().getName());
+        System.out.printf(NEW_LINE + "%s 대상자입니다.", attendanceStatus.getRiskType().getName());
     }
 
     public void printAttendanceRiskCrews(final Map<String, AttendanceStatus> CrewStatus) {
@@ -88,9 +88,9 @@ public class OutputView {
         for (Map.Entry<String, AttendanceStatus> statusEntry : CrewStatus.entrySet()) {
             System.out.printf("\n- %s: 결석 %d회, 지각 %d회 (%s)",
                     statusEntry.getKey(),
-                    statusEntry.getValue().getStatus().get(AttendanceStateType.EXPULSION),
+                    statusEntry.getValue().getStatus().get(AttendanceStateType.ABSENCE),
                     statusEntry.getValue().getStatus().get(AttendanceStateType.LATE),
-                    statusEntry.getValue().getWarningType().getName()
+                    statusEntry.getValue().getRiskType().getName()
             );
         }
     }

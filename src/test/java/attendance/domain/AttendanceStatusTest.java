@@ -8,8 +8,8 @@ import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.List;
 
+import static attendance.domain.AttendanceStateType.ABSENCE;
 import static attendance.domain.AttendanceStateType.ATTENDANCE;
-import static attendance.domain.AttendanceStateType.EXPULSION;
 import static attendance.domain.AttendanceStateType.LATE;
 
 class AttendanceStatusTest {
@@ -28,7 +28,7 @@ class AttendanceStatusTest {
         EnumMap<AttendanceStateType, Integer> result = attendanceStatus.getStatus();
 
         // then
-        Assertions.assertThat(result.get(EXPULSION)).isEqualTo(1);
+        Assertions.assertThat(result.get(ABSENCE)).isEqualTo(1);
         Assertions.assertThat(result.get(LATE)).isEqualTo(1);
         Assertions.assertThat(result.get(ATTENDANCE)).isEqualTo(1);
     }
