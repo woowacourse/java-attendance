@@ -65,7 +65,7 @@ public class AttendanceController {
         try {
             ConfirmAttendanceDto confirmAttendanceDto = crewAttendanceService.saveCrewTodayAttendance(crew, attendanceTime);
             Attendance attendance = confirmAttendanceDto.attendance();
-            AttendanceStatus attendanceStatus = AttendanceStatus.findByAttendance(attendance);
+            AttendanceStatus attendanceStatus = attendance.calculateStatus();
             outputView.printAttendance(attendance.getAttendanceDateTime(), attendanceStatus.getText());
         } catch (IllegalStateException exception) {
             outputView.printUsingAttendanceModification();
@@ -79,8 +79,8 @@ public class AttendanceController {
         ChangeAttendanceDto changeAttendanceDto = crewAttendanceService.changeAttendanceTime(crew, modificationDate, modificationTime);
         Attendance originAttendance = changeAttendanceDto.originAttendance();
         Attendance newAttendance = changeAttendanceDto.newAttendance();
-        AttendanceStatus originAttendanceStatus = AttendanceStatus.findByAttendance(originAttendance);
-        AttendanceStatus newAttendanceStatus = AttendanceStatus.findByAttendance(newAttendance);
+        AttendanceStatus originAttendanceStatus = originAttendance.calculateStatus();
+        AttendanceStatus newAttendanceStatus = newAttendance.calculateStatus();
         outputView.printModificationResult(originAttendance.getAttendanceDateTime(), originAttendanceStatus.getText(),
                 newAttendance.getAttendanceDateTime(), newAttendanceStatus.getText());
     }

@@ -47,7 +47,7 @@ public class CrewAttendances {
 
     public void addAttendance(Crew crew, Attendance attendance) {
         Attendances attendances = crewAttendances.get(crew);
-        validateDuplicateAttendance(attendances, attendance.getAttendanceDate().getLocalDate());
+        validateDuplicateAttendance(attendances, attendance.getAttendanceDateTime().toLocalDate());
         attendances.addAttendance(attendance);
     }
 

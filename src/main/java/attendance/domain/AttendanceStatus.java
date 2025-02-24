@@ -24,10 +24,6 @@ public enum AttendanceStatus {
         this.lateCount = lateCount;
     }
 
-    public static AttendanceStatus findByAttendance(final Attendance attendance) {
-        return findByAttendanceDateAndTime(attendance.getAttendanceDate(), attendance.getAttendanceTime());
-    }
-
     public static AttendanceStatus findByAttendanceDateAndTime(final AttendanceDate attendanceDate, final AttendanceTime attendanceTime) {
         if (attendanceDate.isMonday()) {
             return findStatusByStartTime(MONDAY_START_TIME, attendanceTime);

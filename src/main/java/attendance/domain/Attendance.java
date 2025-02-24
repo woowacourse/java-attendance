@@ -37,14 +37,6 @@ public class Attendance {
         return LocalDateTime.of(attendanceDate.getLocalDate(), attendanceTime.getAttendanceTime());
     }
 
-    public AttendanceDate getAttendanceDate() {
-        return attendanceDate;
-    }
-
-    public AttendanceTime getAttendanceTime() {
-        return attendanceTime;
-    }
-
     @Override
     public boolean equals(final Object o) {
         if (this == o) {
@@ -53,13 +45,12 @@ public class Attendance {
         if (!(o instanceof Attendance that)) {
             return false;
         }
-        return Objects.equals(getAttendanceDate(), that.getAttendanceDate()) && Objects.equals(
-                getAttendanceTime(), that.getAttendanceTime());
+        return getAttendanceDateTime().equals(that.getAttendanceDateTime());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getAttendanceDate(), getAttendanceTime());
+        return Objects.hash(getAttendanceDateTime());
     }
 
 }
