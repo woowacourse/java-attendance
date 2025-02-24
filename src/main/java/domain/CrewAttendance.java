@@ -1,6 +1,7 @@
 package domain;
 
 import vo.Attendance;
+import vo.AttendanceModify;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
@@ -30,15 +31,35 @@ public class CrewAttendance {
     }
     
     public Attendance attend(final LocalDate date, final LocalTime time) {
-        validateIsInCalender(date);
-        validateNotWeekend(date.getDayOfWeek());
-        validateNotHoliday(date);
-        validateHasAlreadyAttended(date);
+        validateIsDateAvailable(date);
         validateCampusOpen(time);
+        validateHasAlreadyAttended(date);
         
         calendar.put(date, Optional.of(time));
         
         return new Attendance(date, time, AttendanceStatus.of(date.getDayOfWeek(), time));
+    }
+    
+    public AttendanceModify modify(final LocalDate targetDate, final LocalTime newTime) {
+        validateIsDateAvailable(targetDate);
+        validateCampusOpen(newTime);
+        
+        final var targetDateDayOfWeek = targetDate.getDayOfWeek();
+        final var oldTime = calendar.put(targetDate, Optional.of(newTime)).orElse(null);
+        
+        return new AttendanceModify(
+                targetDate,
+                Optional.ofNullable(oldTime),
+                Optional.ofNullable(oldTime).map(time -> AttendanceStatus.of(targetDateDayOfWeek, time)),
+                newTime,
+                AttendanceStatus.of(targetDateDayOfWeek, newTime)
+        );
+    }
+    
+    private void validateIsDateAvailable(final LocalDate date) {
+        validateIsInCalender(date);
+        validateNotWeekend(date.getDayOfWeek());
+        validateNotHoliday(date);
     }
     
     private void validateIsInCalender(final LocalDate date) {

@@ -1,6 +1,7 @@
 package domain;
 
 import vo.Attendance;
+import vo.AttendanceModify;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -21,6 +22,12 @@ public class AttendanceBook {
         validateNicknameExist(nickname);
         
         return crewAttendances.get(nickname).attend(date, time);
+    }
+    
+    public AttendanceModify modify(final String nickname, final LocalDate targetDate, final LocalTime newTime) {
+        validateNicknameExist(nickname);
+        
+        return crewAttendances.get(nickname).modify(targetDate, newTime);
     }
     
     private void validateNicknameExist(final String nickname) {
