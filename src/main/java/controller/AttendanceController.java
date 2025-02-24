@@ -14,8 +14,12 @@ import view.InputView;
 import view.OutputView;
 
 public class AttendanceController {
-
     private static final String CSV_PATH = "attendances.csv";
+    private static final String QUITE_COMMAND = "Q";
+    private static final String ATTEND_COMMAND = "1";
+    private static final String EDIT_COMMAND = "2";
+    private static final String CHECK_CREW_ATTEND_COMMAND = "3";
+    private static final String CHECK_WARNING_CREW_COMMAND = "4";
 
     private final InputView inputView;
     private final OutputView outputView;
@@ -30,12 +34,11 @@ public class AttendanceController {
         AttendanceBook attendanceBook = loadAttendanceBook(rows);
         while (true) {
             try {
-
                 String command = inputView.inputCommand(Current.TODAY.getLocalDate());
-                if (command.equals("Q")) {
+                if (command.equals(QUITE_COMMAND)) {
                     break;
                 }
-                if (command.equals("1")) {
+                if (command.equals(ATTEND_COMMAND)) {
                     String nickName = inputView.inputNickName();
                     String time = inputView.inputTime();
                     Attend attend = Attend.of(time);
@@ -44,7 +47,7 @@ public class AttendanceController {
                     outputView.printAttendResult(attend, attendStatus);
                     continue;
                 }
-                if (command.equals("2")) {
+                if (command.equals(EDIT_COMMAND)) {
                     String nickName = inputView.inputEditNickName();
                     String date = inputView.inputDate();
                     String time = inputView.inputEditTime();
@@ -57,24 +60,22 @@ public class AttendanceController {
                     outputView.printEditResult(before, after, beforeStatus, afterStatus);
                     continue;
                 }
-                if (command.equals("3")) {
+                if (command.equals(CHECK_CREW_ATTEND_COMMAND)) {
                     String nickName = inputView.inputNickName();
                     AttendanceResults attendResult = attendanceBook.checkAttendance(nickName,
                             DateUtil.getAttendUntilDay(Current.TODAY.getYesterday()));
                     outputView.printAttendanceResult(nickName, attendResult);
                     continue;
                 }
-                if (command.equals("4")) {
+                if (command.equals(CHECK_WARNING_CREW_COMMAND)) {
                     List<WarningCrew> warningCrews = attendanceBook.checkWarningCrews(
                             DateUtil.getAttendUntilDay(Current.TODAY.getYesterday()));
                     outputView.printWarningCrews(warningCrews);
                 }
-
             } catch (IllegalArgumentException e) {
                 System.out.println(e.getMessage());
             }
         }
-
     }
 
     private AttendanceBook loadAttendanceBook(List<String> data) {
