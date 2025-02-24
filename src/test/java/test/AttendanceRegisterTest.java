@@ -1,6 +1,7 @@
 package test;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -16,6 +17,7 @@ import model.Attendances;
 import model.Crew;
 import model.AttendanceInitializer;
 import model.Crews;
+import model.December;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -286,9 +288,19 @@ public class AttendanceRegisterTest {
         assertThat(attendance.findStatus()).isEqualTo(AttendanceStatus.NORMAL);
     }
 
-    @DisplayName("등교일이 아닌 경우에 예외를 반환한다.")
+    @DisplayName("등교일이 아닌 경우에 예외를 반환한다. - 공휴일")
     @Test
     void test7() {
+        assertThatThrownBy(() -> December.validateHolidy(LocalDate.of(2024, 12, 25)))
+                .isInstanceOf(IllegalArgumentException.class);
+    }
 
+    @DisplayName("등교일이 아닌 경우에 예외를 반환한다. - 주말")
+    @Test
+    void test7_1() {
+        assertThatThrownBy(() -> December.validateHolidy(LocalDate.of(2024, 12, 14)))
+                .isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> December.validateHolidy(LocalDate.of(2024, 12, 15)))
+                .isInstanceOf(IllegalArgumentException.class);
     }
 }
