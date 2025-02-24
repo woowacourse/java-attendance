@@ -11,7 +11,7 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import util.CrewGenerator;
 import util.CsvReader;
-import util.DayOfMonth;
+import domain.DayOfMonth;
 import view.InputView;
 import view.OutputView;
 

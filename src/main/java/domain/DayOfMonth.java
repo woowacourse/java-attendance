@@ -1,6 +1,7 @@
-package util;
+package domain;
 
 import exception.DayOfMonthException;
+import util.Constants;
 
 public class DayOfMonth {
 
