@@ -1,33 +1,28 @@
-package util;
+package domain;
 
 
-import controller.AttendanceCommandController;
-import domain.Attendance;
-import domain.AttendanceCounter;
-import domain.Attendances;
-import domain.Crew;
-import domain.Crews;
-import domain.Nickname;
-import domain.Week;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.YearMonth;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.TreeSet;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-public final class CrewGenerator {
+public class CrewGenerator {
 
-    private CrewGenerator() {
+    private final int referenceYear;
+    private final int referenceMonth;
+
+    public CrewGenerator(int referenceYear, int referenceMonth) {
+        this.referenceYear = referenceYear;
+        this.referenceMonth = referenceMonth;
     }
 
-    public static Crews generate(final List<String[]> parsedCrewsData, final LocalDate nowDate) {
+    public Crews generate(final List<String[]> parsedCrewsData, final LocalDate nowDate) {
         final Map<Nickname, TreeSet<Attendance>> crewData = generateCrewData(parsedCrewsData);
         final List<Integer> validDates = getValidDates(nowDate);
         final List<Crew> crews = new ArrayList<>();
@@ -37,7 +32,7 @@ public final class CrewGenerator {
         return new Crews(crews);
     }
 
-    private static Map<Nickname, TreeSet<Attendance>> generateCrewData(final List<String[]> parsedCrewsData) {
+    private Map<Nickname, TreeSet<Attendance>> generateCrewData(final List<String[]> parsedCrewsData) {
         final Map<Nickname, TreeSet<Attendance>> crewData = new HashMap<>();
 
         for (String[] parsedCrewData : parsedCrewsData) {
@@ -51,18 +46,18 @@ public final class CrewGenerator {
         return crewData;
     }
 
-    private static void processCrewData(final Map<Nickname, TreeSet<Attendance>> crewData,
-                                        final List<Integer> validDates,
-                                        final List<Crew> crews) {
-        for (Entry<Nickname, TreeSet<Attendance>> nicknameListEntry : crewData.entrySet()) {
-            final Attendances attendances = getAttendances(nicknameListEntry, validDates);
-            crews.add(new Crew(nicknameListEntry.getKey(), attendances, AttendanceCounter.of(attendances)));
+    private void processCrewData(final Map<Nickname, TreeSet<Attendance>> crewData,
+                                 final List<Integer> validDates,
+                                 final List<Crew> crews) {
+        for (Map.Entry<Nickname, TreeSet<Attendance>> entry : crewData.entrySet()) {
+            final Attendances attendances = getAttendances(entry, validDates);
+            crews.add(new Crew(entry.getKey(), attendances, AttendanceCounter.of(attendances)));
         }
     }
 
-    private static Attendances getAttendances(final Entry<Nickname, TreeSet<Attendance>> nicknameListEntry,
-                                              final List<Integer> validDates) {
-        final Attendances attendances = new Attendances(nicknameListEntry.getValue());
+    private Attendances getAttendances(final Map.Entry<Nickname, TreeSet<Attendance>> entry,
+                                       final List<Integer> validDates) {
+        final Attendances attendances = new Attendances(entry.getValue());
         final List<Integer> alreadyAttendanceDates = attendances.getDayOfMonth();
         final List<Integer> noPresentAttendanceDates = new ArrayList<>(validDates);
         noPresentAttendanceDates.removeAll(alreadyAttendanceDates);
@@ -75,7 +70,7 @@ public final class CrewGenerator {
         return attendances;
     }
 
-    private static List<Integer> getValidDates(final LocalDate localDate) {
+    private List<Integer> getValidDates(final LocalDate localDate) {
         final int today = localDate.getDayOfMonth();
         final List<Integer> allDays = IntStream.range(1, today)
                 .boxed()
@@ -85,34 +80,25 @@ public final class CrewGenerator {
         return allDays;
     }
 
-    private static List<Integer> getExcludeNotAttendanceDays() {
+    private List<Integer> getExcludeNotAttendanceDays() {
         final List<Integer> excludeNotAttendanceDays = new ArrayList<>();
         excludeNotAttendanceDays.addAll(getWeekendDays());
         excludeNotAttendanceDays.addAll(Week.HOLIDAYS);
-
         return excludeNotAttendanceDays;
     }
 
-    private static Collection<Integer> getWeekendDays() {
-        final YearMonth yearMonth = YearMonth.of(
-                AttendanceCommandController.REFERENCE_YEAR,
-                AttendanceCommandController.REFERENCE_MONTH
-        );
+    private List<Integer> getWeekendDays() {
+        final YearMonth yearMonth = YearMonth.of(referenceYear, referenceMonth);
         final int lengthOfMonth = yearMonth.lengthOfMonth();
-
         return IntStream.rangeClosed(1, lengthOfMonth)
-                .filter(CrewGenerator::excludeNotAttendanceDays)
+                .filter(this::excludeNotAttendanceDays)
                 .boxed()
                 .toList();
     }
 
-    public static boolean excludeNotAttendanceDays(final int day) {
-        final DayOfWeek dayOfWeek = LocalDate.of(
-                AttendanceCommandController.REFERENCE_YEAR,
-                AttendanceCommandController.REFERENCE_MONTH,
-                day
-        ).getDayOfWeek();
-
+    public boolean excludeNotAttendanceDays(final int day) {
+        final DayOfWeek dayOfWeek = LocalDate.of(referenceYear, referenceMonth, day).getDayOfWeek();
         return dayOfWeek == DayOfWeek.SATURDAY || dayOfWeek == DayOfWeek.SUNDAY;
     }
 }
+
