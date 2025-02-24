@@ -110,11 +110,11 @@ public class Attendance {
                 .count();
     }
 
-    public List<AttendanceDate> getAttendanceDates() {
-        return Collections.unmodifiableList(attendanceDates);
-    }
-
     public int countAbsenceIncludingTardy() {
         return countAbsence() + (countTardy() / ABSENCE_PER_TARDY);
+    }
+
+    public List<AttendanceDate> getAttendanceDates() {
+        return Collections.unmodifiableList(attendanceDates);
     }
 }
