@@ -13,7 +13,6 @@ import util.AttendanceFileParser;
 
 public class CrewAttendanceRepository {
     private final Map<String, CrewAttendance> crewAttendance;
-    private static final LocalDate START_DATE = LocalDate.of(2024, 12, 2);
 
     public CrewAttendanceRepository(Map<String, CrewAttendance> crewAttendance) {
         validateUnique(crewAttendance);
@@ -28,19 +27,11 @@ public class CrewAttendanceRepository {
     }
 
     public static CrewAttendanceRepository of(LocalDate currentDate, String filePath) {
-        validateDecember2024(currentDate);
-
         Map<String, CrewAttendance> initialData = createInitialAttendance(currentDate, filePath);
         CrewAttendanceRepository crewAttendanceRepository = new CrewAttendanceRepository(initialData);
         loadAttendance(crewAttendanceRepository, filePath);
 
         return crewAttendanceRepository;
-    }
-
-    private static void validateDecember2024(LocalDate currentDate) {
-        if (currentDate.getYear() != 2024 || currentDate.getMonthValue() != 12) {
-            throw new IllegalArgumentException("입력된 날짜는 2024년 12월이어야 합니다.");
-        }
     }
 
     private static Map<String, CrewAttendance> createInitialAttendance(LocalDate currentDate, String filePath) {
@@ -56,23 +47,14 @@ public class CrewAttendanceRepository {
 
     private static Map<WorkDate, WorkTime> generateInitialAttendance(LocalDate currentDate) {
         Map<WorkDate, WorkTime> attendanceRecords = new HashMap<>();
-        LocalDate attendanceDate = START_DATE;
+        WorkDate attendanceDate = new WorkDate(2024, 12, 2);
 
         while (!attendanceDate.isAfter(currentDate)) {
-            addNonHolidayDate(attendanceRecords, attendanceDate);
-            attendanceDate = attendanceDate.plusDays(1);
+            attendanceRecords.put(attendanceDate, new WorkTime(null, null));
+            attendanceDate = attendanceDate.plusDay();
         }
 
         return attendanceRecords;
-    }
-
-    private static void addNonHolidayDate(Map<WorkDate, WorkTime> attendanceRecords, LocalDate localDate) {
-        if (WorkDate.isWeekend(localDate) || WorkDate.isPublicHoliday(localDate)) {
-            return;
-        }
-
-        WorkDate workDate = WorkDate.from(localDate);
-        attendanceRecords.put(workDate, new WorkTime(null, null));
     }
 
     private static void loadAttendance(CrewAttendanceRepository crewAttendanceRepository, String filePath) {
