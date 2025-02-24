@@ -1,7 +1,6 @@
 package attendance.domain;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatCode;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -12,7 +11,6 @@ public class CrewTest {
     void checkSameNameCrewInstance() {
         Crew crew1 = new Crew("엠제이");
 
-        assertThatCode(() -> crew1.isSameCrewName("엠제이")).doesNotThrowAnyException();
         assertThat(crew1.isSameCrewName("엠제이")).isTrue();
     }
 
@@ -22,7 +20,6 @@ public class CrewTest {
         Crew crew1 = new Crew("리원");
         Crew crew2 = new Crew("리원");
 
-        assertThatCode(() -> crew1.equals(crew2)).doesNotThrowAnyException();
         assertThat(crew1).isEqualTo(crew2);
     }
 }
