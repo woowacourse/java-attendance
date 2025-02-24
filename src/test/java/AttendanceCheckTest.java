@@ -10,6 +10,8 @@ import java.time.format.DateTimeFormatter;
 import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 
 public class AttendanceCheckTest {
 
@@ -50,6 +52,21 @@ public class AttendanceCheckTest {
     void 수정_기능_안내() {
         LocalDateTime initialDateAndTime = LocalDateTime.parse("2024-12-16 13:00", formatter);
         LocalDateTime attendDateAndTime = LocalDateTime.parse("2024-12-16 13:03", formatter);
+        String name = "빙봉";
+
+        attendanceManager.createCrew(name, List.of(initialDateAndTime));
+
+        assertThatThrownBy(() -> {
+            attendanceManager.attendCrew(name, attendDateAndTime);
+        }).isInstanceOf(IllegalArgumentException.class);
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {"2024-12-14 13:03", "2024-12-25 13:03"})
+    @DisplayName("등교일이 아닌 날 출석하려는 경우 예외를 발생한다.")
+    void holidayTest(String dateAndTime) {
+        LocalDateTime initialDateAndTime = LocalDateTime.parse("2024-12-16 13:00", formatter);
+        LocalDateTime attendDateAndTime = LocalDateTime.parse(dateAndTime, formatter);
         String name = "빙봉";
 
         attendanceManager.createCrew(name, List.of(initialDateAndTime));

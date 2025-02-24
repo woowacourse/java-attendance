@@ -45,7 +45,7 @@ public class AttendanceRecordCheckTest {
         String name = "빙티";
         Records records = attendanceManager.findByName(name);
 
-        LocalDate nowDate = LocalDate.of(2024, 12, 7);
+        LocalDate nowDate = LocalDate.of(2024, 12, 8);
         StatisticsResult statisticsResult = AttendanceStatistics.countStatus(nowDate, records);
         int attendanceCount = statisticsResult.getAttendanceCount();
         int latenessCount = statisticsResult.getLatenessCount();
