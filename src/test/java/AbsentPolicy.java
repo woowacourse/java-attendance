@@ -28,6 +28,9 @@ public class AbsentPolicy {
         validateIsWeekend(educationDate);
         validateIsHoliday(educationDate);
 
+        if(educationTime.isBefore(LocalTime.of(10,0).plusMinutes(6))){
+            return "출석";
+        }
         return "결석";
     }
 
