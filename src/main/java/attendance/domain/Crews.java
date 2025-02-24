@@ -1,9 +1,9 @@
 package attendance.domain;
 
-import static attendance.domain.CrewStatus.*;
+import static attendance.domain.CrewStatus.CLEAR;
+import static attendance.domain.CrewStatus.calculateCrewStatus;
 import static attendance.error.ErrorMessage.INVALID_CREW_NAME;
 
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -36,22 +36,7 @@ public class Crews {
             .orElseThrow(() -> new IllegalArgumentException(INVALID_CREW_NAME.getMessage()));
     }
 
-    public List<Crew> findDangerousCrew(CrewAttendanceManager crewAttendanceManager) {
-        List<Crew> dangerousCrews = new ArrayList<>();
-        for (Crew crew : crews) {
-            addDangerousCrew(crewAttendanceManager, crew, dangerousCrews);
-        }
-        return dangerousCrews;
-    }
-
-    private void addDangerousCrew(CrewAttendanceManager crewAttendanceManager, Crew crew,
-        List<Crew> dangerousCrews) {
-        AttendanceHistories attendanceHistories = crewAttendanceManager.findAttendanceHistoriesByCrew(
-            crew);
-        Map<AttendanceType, Integer> attendanceResult = attendanceHistories.calculateAttendanceResult();
-        CrewStatus crewStatus = calculateCrewStatus(attendanceResult);
-        if (crewStatus != CLEAR) {
-            dangerousCrews.add(crew);
-        }
+    public Set<Crew> getCrews() {
+        return crews;
     }
 }

@@ -8,6 +8,7 @@ import attendance.domain.AttendanceTime;
 import attendance.domain.AttendanceType;
 import attendance.domain.Crew;
 import attendance.domain.CrewStatus;
+import attendance.domain.DangerousCrew;
 import attendance.domain.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -102,10 +103,11 @@ public class OutputView {
         System.out.println(DANGEROUS_CREW_INFO_MESSAGE);
     }
 
-    public void printDangerousCrews(Crew crew, Map<AttendanceType, Integer> attendanceResult,
-        CrewStatus crewStatus) {
+    public void printDangerousCrews(DangerousCrew dangerousCrew) {
+        AttendanceHistories attendanceHistories = dangerousCrew.getAttendanceHistories();
+        Map<AttendanceType, Integer> attendanceResult = attendanceHistories.calculateAttendanceResult();
         System.out.println(DANGEROUS_CREW_INFO.formatted(
-            crew.getName(), attendanceResult.get(ABSENCE), attendanceResult.get(LATE),
-            crewStatus.getName()));
+            dangerousCrew.getCrewName(), attendanceResult.get(ABSENCE), attendanceResult.get(LATE),
+            dangerousCrew.getStatusName()));
     }
 }

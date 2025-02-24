@@ -8,6 +8,8 @@ import attendance.domain.Crew;
 import attendance.domain.CrewAttendanceManager;
 import attendance.domain.CrewStatus;
 import attendance.domain.Crews;
+import attendance.domain.DangerousCrew;
+import attendance.domain.DangerousCrews;
 import attendance.view.InputView;
 import attendance.view.OutputView;
 import java.time.LocalDate;
@@ -95,14 +97,11 @@ public class AttendanceController {
     }
 
     private void checkDangerousCrews() {
-        List<Crew> dangerousCrew = crews.findDangerousCrew(crewAttendanceManager);
+        DangerousCrews dangerousCrews = DangerousCrews.create();
+        List<DangerousCrew> foundDangerousCrewResults = dangerousCrews.findDangerousCrews(crewAttendanceManager, crews);
         outputView.printDangerousMessage();
-        for (Crew crew : dangerousCrew) {
-            AttendanceHistories attendanceHistories = crewAttendanceManager.findAttendanceHistoriesByCrew(
-                crew);
-            Map<AttendanceType, Integer> attendanceResult = attendanceHistories.calculateAttendanceResult();
-            CrewStatus crewStatus = CrewStatus.calculateCrewStatus(attendanceResult);
-            outputView.printDangerousCrews(crew, attendanceResult, crewStatus);
+        for (DangerousCrew dangerousCrew : foundDangerousCrewResults) {
+            outputView.printDangerousCrews(dangerousCrew);
         }
     }
 }
