@@ -1,5 +1,8 @@
 package attendance.model.crew;
 
+import attendance.model.attendance.AttendanceStatus;
+import java.util.List;
+
 public enum CrewStatus {
 
     WARNING("경고"),
@@ -11,5 +14,9 @@ public enum CrewStatus {
 
     CrewStatus(String name) {
         this.name = name;
+    }
+
+    public static CrewStatus froAttendanceStatuses(final List<AttendanceStatus> attendanceStatuses) {
+        return NORMAL;
     }
 }
