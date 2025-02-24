@@ -1,6 +1,5 @@
 package domain;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -57,11 +56,9 @@ public class Attends {
     }
 
     public List<Attend> getAttends(List<Integer> dayOfWeek) {
-        List<Attend> result = new ArrayList<>();
-        dayOfWeek.stream()
-                .filter(this::hasDayEqualsAttend)
-                .forEach(day -> result.add(findByDay(day)));
-        return result;
+        return dayOfWeek.stream()
+                .map(this::findByDay)
+                .toList();
     }
 
     public boolean hasDayEqualsAttend(int day) {
