@@ -32,7 +32,7 @@ public class OutputView {
         System.out.printf("이번 달 %s의 출석 기록입니다.%n", nickname);
         System.out.println();
         for (int date : December.getWeekDays()) {
-            AttendTime attendTime = crew.findAttendanceByDate(date);
+            AttendTime attendTime = crew.findAttendanceByDate(date).orElse(null);
             if (attendTime != null) {
                 printAttendTime(attendTime);
                 System.out.println();

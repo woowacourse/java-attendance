@@ -57,7 +57,7 @@ public class CrewTest {
     void test8() {
         Crew crew = new Crew("폰트", "2024-12-13 10:08");
 
-        AttendTime attendTime = crew.findAttendanceByDate(13);
+        AttendTime attendTime = crew.findAttendanceByDate(13).orElseThrow(()->new IllegalArgumentException("[Error] 이 날은 출석 기록이 없습니다."));
 
         assertThat(attendTime.getAttendTime().getDayOfMonth()).isEqualTo(13);
     }

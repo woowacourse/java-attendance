@@ -102,7 +102,7 @@ public class AttendanceController {
         crews.initializeAttendTime(nickname, time);
 
         AttendTime attendTime = crews.findCrew(nickname).orElseThrow(() -> new IllegalArgumentException("[Error] 없는 학생입니다."))
-                .findAttendanceByDate(LocalDateTime.now().getDayOfMonth());
+                .findAttendanceByDate(LocalDateTime.now().getDayOfMonth()).orElse(null);
 
         outputView.printTodayAttendance(attendTime);
     }

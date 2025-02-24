@@ -2,6 +2,7 @@ package domain;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public class Crew {
 
@@ -25,11 +26,10 @@ public class Crew {
         return attendTime.checkTime().getType();
     }
 
-    public AttendTime findAttendanceByDate(int date) {
+    public Optional<AttendTime> findAttendanceByDate(int date) {
         return attendanceHistory.getAttendTimes().stream()
                 .filter(attendTime -> attendTime.getAttendTime().getDayOfMonth() == date)
-                .findAny()
-                .orElse(null);
+                .findAny();
     }
 
     public void deleteAttendance(int date) {

@@ -41,7 +41,7 @@ public class Crews {
 
     public AttendTime deleteAttendance(String nickname, int date) {
         Crew crew = findCrew(nickname).orElseThrow(()->new IllegalArgumentException("[Error] 없는 학생입니다."));
-        AttendTime attendTime = crew.findAttendanceByDate(date);
+        AttendTime attendTime = crew.findAttendanceByDate(date).orElseThrow(()->new IllegalArgumentException("[Error] 이 날은 출석 기록이 없습니다."));
         crew.deleteAttendance(date);
         return attendTime;
     }
