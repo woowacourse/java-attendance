@@ -10,7 +10,7 @@ import static attendance.domain.AttendanceStateType.values;
 import static attendance.domain.AttendanceWarningType.NONE;
 import static attendance.domain.AttendanceWarningType.find;
 
-public class AttendanceStatus {
+public class AttendanceStatus implements Comparable<AttendanceStatus> {
 
     private final EnumMap<AttendanceStateType, Integer> status;
     private final AttendanceWarningType warningType;
@@ -44,6 +44,21 @@ public class AttendanceStatus {
 
     public AttendanceWarningType getWarningType() {
         return warningType;
+    }
+
+    @Override
+    public int compareTo(final AttendanceStatus other) {
+        if (warningType == other.warningType) {
+            if (this.calculateScore() == other.calculateScore()) {
+                return 0;
+            }
+            return Integer.compare(other.calculateScore(), this.calculateScore());
+        }
+        return this.warningType.compareTo(other.warningType);
+    }
+
+    private int calculateScore() {
+        return status.get(EXPULSION) * 3 + status.get(LATE);
     }
 
     private int calculateStateCount(final List<Attendance> attendances, final AttendanceStateType status) {

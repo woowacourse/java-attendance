@@ -5,6 +5,7 @@ import attendance.utility.DateGenerator;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -64,12 +65,25 @@ public class AttendanceManager {
     }
 
     public Map<String, AttendanceStatus> getAttendanceWarnedCrews() {
-        return attendances.entrySet().stream()
-                .map(entry -> Map.entry(entry.getKey(), new AttendanceStatus(entry.getValue().getAttendancesUntilYesterday())))
+        return createWarnedCrews().entrySet().stream()
                 .filter(entry -> entry.getValue().isNotNoneState())
+                .sorted(Map.Entry.<String, AttendanceStatus>comparingByValue()
+                        .thenComparing(Map.Entry.comparingByKey()))
                 .collect(Collectors.toMap(
                         Map.Entry::getKey,
-                        Map.Entry::getValue
+                        Map.Entry::getValue,
+                        (existing, replacement) -> existing,
+                        LinkedHashMap::new
+                ));
+    }
+
+    private LinkedHashMap<String, AttendanceStatus> createWarnedCrews() {
+        return attendances.entrySet().stream()
+                .collect(Collectors.toMap(
+                        Map.Entry::getKey,
+                        entry -> new AttendanceStatus(entry.getValue().getAttendancesUntilYesterday()),
+                        (existing, replacement) -> existing,
+                        LinkedHashMap::new
                 ));
     }
 
