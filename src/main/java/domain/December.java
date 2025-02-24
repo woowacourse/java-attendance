@@ -28,12 +28,8 @@ public enum December {
     }
 
     public static December findDayOfWeek(int dayOfMonth) {
-        for (December day : December.values()) {
-            if (day.dates.contains(dayOfMonth)) {
-                return day;
-            }
-        }
-        throw new IllegalArgumentException();
+        return Arrays.stream(December.values()).filter(day -> day.dates.contains(dayOfMonth)).findFirst().orElseThrow(() -> new IllegalArgumentException("[]"));
+
     }
 
     public static List<Integer> getWeekDays() {
@@ -43,15 +39,12 @@ public enum December {
     }
 
     public static String getDayByDate(int dayOfMonth) {
-        for (December day : December.values()) {
-            if (day.dates.contains(dayOfMonth)) {
-                return day.dayOfWeek;
-            }
-        }
-        return null;
+
+        return Arrays.stream(December.values()).filter((c) -> c.dates.contains(dayOfMonth)).map(c -> c.dayOfWeek).findFirst().orElse(null);
     }
 
     public static void checkWeekday(LocalDateTime attendTime) {
+
         if (attendTime.getYear() == DEFAULT_YEAR && attendTime.getMonthValue() == DEFAULT_MONTH) {
             if (December.getWeekDays().contains(attendTime.getDayOfMonth())) {
                 return;

@@ -20,9 +20,14 @@ public class AttendanceHistory {
     public int calculateOnTime() {
         int total = 0;
         for (AttendTime attendTime : attendTimes) {
-            if (attendTime.checkTime().equals(ATTENDED)) {
-                total += 1;
-            }
+            total = getOnTimeTotal(attendTime, total);
+        }
+        return total;
+    }
+
+    private static int getOnTimeTotal(AttendTime attendTime, int total) {
+        if (attendTime.checkTime().equals(ATTENDED)) {
+            total += 1;
         }
         return total;
     }
@@ -30,9 +35,14 @@ public class AttendanceHistory {
     public int calculateLate() {
         int total = 0;
         for (AttendTime attendTime : attendTimes) {
-            if (attendTime.checkTime().equals(LATE)) {
-                total += 1;
-            }
+            total = getLateTotal(attendTime, total);
+        }
+        return total;
+    }
+
+    private static int getLateTotal(AttendTime attendTime, int total) {
+        if (attendTime.checkTime().equals(LATE)) {
+            total += 1;
         }
         return total;
     }
@@ -40,12 +50,17 @@ public class AttendanceHistory {
     public int calculateAbsent() {
         int total = 0;
         for (AttendTime attendTime : attendTimes) {
-            if (attendTime.checkTime().equals(ABSENT)) {
-                total += 1;
-            }
+            total = getAbsentTotal(attendTime, total);
         }
         total += December.DECEMBER_WEEKDAY_COUNTS - attendTimes.size();
 
+        return total;
+    }
+
+    private static int getAbsentTotal(AttendTime attendTime, int total) {
+        if (attendTime.checkTime().equals(ABSENT)) {
+            total += 1;
+        }
         return total;
     }
 

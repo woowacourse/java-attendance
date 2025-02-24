@@ -35,9 +35,13 @@ public class Crew {
     public void deleteAttendance(int date) {
         List<AttendTime> attendTimes = attendanceHistory.getAttendTimes();
         for (int i = 0; i < attendTimes.size(); i++) {
-            if (attendTimes.get(i).getAttendTime().getDayOfMonth() == date) {
-                attendTimes.remove(i);
-            }
+            deleteAttendTime(date, attendTimes, i);
+        }
+    }
+
+    private static void deleteAttendTime(int date, List<AttendTime> attendTimes, int i) {
+        if (attendTimes.get(i).getAttendTime().getDayOfMonth() == date) {
+            attendTimes.remove(i);
         }
     }
 

@@ -1,5 +1,6 @@
 package domain;
 
+import java.util.Arrays;
 import java.util.List;
 
 import static domain.December.*;
@@ -23,10 +24,7 @@ public enum StartTime {
     }
 
     private static int getStartingTime(December dayOfMonth) {
-        for (StartTime startTime : StartTime.values()) {
-            if (startTime.days.contains(dayOfMonth))
-                return startTime.hour;
-        }
-        throw new IllegalArgumentException();
+        return Arrays.stream(StartTime.values()).filter(startTime -> startTime.days.contains(dayOfMonth)).findFirst().map(startTime -> startTime.hour).orElseThrow(() -> new IllegalArgumentException());
+
     }
 }

@@ -71,5 +71,4 @@ public class CrewTest {
 
         assertThat(crew.getAttendTimes().size()).isEqualTo(0);
     }
-
 }
