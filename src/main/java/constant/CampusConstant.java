@@ -23,6 +23,5 @@ public class CampusConstant {
     public static final LocalTime STUDY_START_TIME = LocalTime.of(10, 0);
     public static final LocalTime STUDY_START_TIME_MONDAY = LocalTime.of(13, 0);
 
-
     public static final LocalDate JANUARY_START_DATE = LocalDate.of(2025, 1, 1);
 }

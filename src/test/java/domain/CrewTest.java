@@ -39,5 +39,4 @@ public class CrewTest {
         Assertions.assertThat(crew.isExpelled(attendanceTimes)).isEqualTo(false);
     }
 
-
 }
