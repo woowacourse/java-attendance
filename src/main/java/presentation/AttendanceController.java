@@ -26,6 +26,7 @@ public class AttendanceController {
     private final static String CREW_QUERY_COMMAND = "3";
     private final static String CREWS_WARNING_COMMAND = "4";
     private final static String EXIT_COMMAND = "Q";
+    private final static String INVALID_COMMAND = "";
 
     private final FileInputView fileInputView;
     private final CrewService attendanceService;
@@ -49,14 +50,11 @@ public class AttendanceController {
     }
 
     private void repeatCommand(CrewGroup crewGroup) {
-        while (true) {
-            if (controlCommand(crewGroup)) {
-                return;
-            }
+        while (!controlCommand(crewGroup).equalsIgnoreCase(EXIT_COMMAND)) {
         }
     }
 
-    private boolean controlCommand(CrewGroup crewGroup) {
+    private String controlCommand(CrewGroup crewGroup) {
         try {
             String command = InputView.inputCommand();
             InputValidator.commandValidate(command);
@@ -72,10 +70,10 @@ public class AttendanceController {
             if (command.equals(CREWS_WARNING_COMMAND)) {
                 attendanceWarningCommand(crewGroup);
             }
-            return command.equalsIgnoreCase(EXIT_COMMAND);
+            return command;
         } catch (IllegalArgumentException e) {
             OutputView.printError(e.getMessage());
-            return false;
+            return INVALID_COMMAND;
         }
     }
 
