@@ -1,12 +1,7 @@
 package domain;
 
-import static util.constant.Value.ABSENCE_MINUTE;
-import static util.constant.Value.DEFAULT_START_HOUR;
-import static util.constant.Value.LATENESS_MINUTE;
-import static util.constant.Value.MONDAY_START_HOUR;
-import static util.constant.Value.START_DAY;
-import static util.constant.Value.START_MONTH;
-import static util.constant.Value.START_YEAR;
+import static controller.AttendanceController.NOW_MONTH;
+import static controller.AttendanceController.NOW_YEAR;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
@@ -21,6 +16,11 @@ public enum AttendanceStatus {
     LATENESS("지각"),
     ABSENCE("결석");
 
+    private static final int MONDAY_START_HOUR = 13;
+    private static final int DEFAULT_START_HOUR = 10;
+    private static final int LATENESS_MINUTE = 5;
+    private static final int ABSENCE_MINUTE = 30;
+
     public final String name;
 
     AttendanceStatus(String name) {
@@ -28,7 +28,7 @@ public enum AttendanceStatus {
     }
 
     public static StatisticsResult countStatus(LocalDate nowDate, Crew crew) {
-        LocalDate startDate = DateTimeParser.parseIntegerToDate(START_YEAR, START_MONTH, START_DAY);
+        LocalDate startDate = DateTimeParser.parseIntegerToDate(NOW_YEAR, NOW_MONTH, 1);
 
         Map<AttendanceStatus, Long> statusCounts = startDate.datesUntil(nowDate)
             .filter(date -> Holiday.isWeekDay(date))

@@ -1,23 +1,23 @@
 package view;
 
-import static util.constant.InputMessage.CHOOSE_FUNCTION_MESSAGE;
-import static util.constant.InputMessage.FUNCTION_1_MESSAGE;
-import static util.constant.InputMessage.FUNCTION_2_MESSAGE;
-import static util.constant.InputMessage.FUNCTION_3_MESSAGE;
-import static util.constant.InputMessage.FUNCTION_4_MESSAGE;
-import static util.constant.InputMessage.FUNCTION_Q_MESSAGE;
-import static util.constant.InputMessage.INPUT_EDIT_DAY_MESSAGE;
-import static util.constant.InputMessage.INPUT_EDIT_NAME_MESSAGE;
-import static util.constant.InputMessage.INPUT_EDIT_TIME_MESSAGE;
-import static util.constant.InputMessage.INPUT_NAME_MESSAGE;
-import static util.constant.InputMessage.INPUT_TIME_MESSAGE;
-
 import java.time.LocalDate;
 import java.time.format.TextStyle;
 import java.util.Locale;
 import java.util.Scanner;
 
 public class InputView {
+
+    private static final String INPUT_NAME_MESSAGE = "닉네임을 입력해 주세요.";
+    private static final String INPUT_TIME_MESSAGE = "등교 시간을 입력해 주세요.";
+    private static final String INPUT_EDIT_NAME_MESSAGE = "출석을 수정하려는 크루의 닉네임을 입력해 주세요.";
+    private static final String INPUT_EDIT_DAY_MESSAGE = "수정하려는 날짜(일)를 입력해 주세요.";
+    private static final String INPUT_EDIT_TIME_MESSAGE = "언제로 변경하겠습니까?";
+    private static final String CHOOSE_FUNCTION_MESSAGE = "오늘은 %02d월 %02d일 %s입니다. 기능을 선택해 주세요.%n";
+    private static final String FUNCTION_1_MESSAGE = "1. 출석 확인";
+    private static final String FUNCTION_2_MESSAGE = "2. 출석 수정";
+    private static final String FUNCTION_3_MESSAGE = "3. 크루별 출석 기록 확인";
+    private static final String FUNCTION_4_MESSAGE = "4. 제적 위험자 확인";
+    private static final String FUNCTION_Q_MESSAGE = "Q. 종료";
 
     public String readName() {
         return basicInput(INPUT_NAME_MESSAGE);

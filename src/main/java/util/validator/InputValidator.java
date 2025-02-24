@@ -1,12 +1,12 @@
 package util.validator;
 
-import static util.constant.ErrorMessage.FUNCTION_NUMBER_ERROR_MESSAGE;
-import static util.constant.ErrorMessage.NOT_INTEGER_ERROR_MESSAGE;
-import static util.constant.ErrorMessage.NULL_INPUT_ERROR_MESSAGE;
-
 import java.util.Set;
 
 public class InputValidator {
+
+    private static final String FUNCTION_NUMBER_ERROR_MESSAGE = "유효하지 않은 기능입니다.";
+    private static final String NULL_INPUT_ERROR_MESSAGE = "입력값이 없습니다.";
+    private static final String NOT_INTEGER_ERROR_MESSAGE = "숫자가 아닙니다.";
 
     private InputValidator() {
     }

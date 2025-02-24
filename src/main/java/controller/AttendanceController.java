@@ -3,9 +3,6 @@ package controller;
 import static domain.AttendanceStatus.ABSENCE;
 import static domain.AttendanceStatus.ATTENDANCE;
 import static domain.AttendanceStatus.LATENESS;
-import static util.constant.Value.NOW_DAY;
-import static util.constant.Value.NOW_MONTH;
-import static util.constant.Value.NOW_YEAR;
 
 import domain.AttendanceStatus;
 import domain.Crews;
@@ -24,6 +21,10 @@ import view.InputView;
 import view.OutputView;
 
 public class AttendanceController {
+
+    public static final int NOW_YEAR = 2024;
+    public static final int NOW_MONTH = 12;
+    public static final int NOW_DAY = 13;
 
     private final InputView inputView;
     private final OutputView outputView;

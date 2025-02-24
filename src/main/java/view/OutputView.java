@@ -1,21 +1,7 @@
 package view;
 
-import static util.constant.OutputMessage.ABSENCE_RECORD_FORMAT;
-import static util.constant.OutputMessage.ATTENDANCE_EDIT_FORMAT;
-import static util.constant.OutputMessage.ATTENDANCE_RECORD_FORMAT;
-import static util.constant.OutputMessage.CREW_ATTENDANCE_LIST_MESSAGE;
-import static util.constant.OutputMessage.DATE_PRINT_FORMAT;
-import static util.constant.OutputMessage.ERROR_PREFIX;
-import static util.constant.OutputMessage.PENALTY_FORMAT;
-import static util.constant.OutputMessage.TIME_PRINT_FORMAT;
-import static util.constant.OutputMessage.TOTAL_ABSENCE_FORMAT;
-import static util.constant.OutputMessage.TOTAL_ATTEND_FORMAT;
-import static util.constant.OutputMessage.TOTAL_LATENESS_FORMAT;
-import static util.constant.OutputMessage.WARNING_CREW_FORMAT;
-import static util.constant.OutputMessage.WARNING_CREW_LIST_MESSAGE;
-import static util.constant.Value.START_DAY;
-import static util.constant.Value.START_MONTH;
-import static util.constant.Value.START_YEAR;
+import static controller.AttendanceController.NOW_MONTH;
+import static controller.AttendanceController.NOW_YEAR;
 
 import domain.AttendanceStatus;
 import domain.Holiday;
@@ -29,6 +15,20 @@ import java.util.Locale;
 import java.util.Map;
 
 public class OutputView {
+
+    private static final String ERROR_PREFIX = "[ERROR] ";
+    private static final String ATTENDANCE_RECORD_FORMAT = "%s %s%n";
+    private static final String ABSENCE_RECORD_FORMAT = "--:-- (결석)";
+    private static final String ATTENDANCE_EDIT_FORMAT = "%s %s -> %s 수정 완료!%n";
+    private static final String DATE_PRINT_FORMAT = "%02d월 %02d일 %s";
+    private static final String TIME_PRINT_FORMAT = "%02d:%02d (%s)";
+    private static final String CREW_ATTENDANCE_LIST_MESSAGE = "이번 달 %s의 출석 기록입니다.%n";
+    private static final String TOTAL_ATTEND_FORMAT = "출석: %s회%n";
+    private static final String TOTAL_LATENESS_FORMAT = "지각: %s회%n";
+    private static final String TOTAL_ABSENCE_FORMAT = "결석: %s회%n";
+    private static final String PENALTY_FORMAT = "%s 대상자입니다.%n";
+    private static final String WARNING_CREW_LIST_MESSAGE = "제적 위험자 조회 결과";
+    private static final String WARNING_CREW_FORMAT = "- %s: 결석 %d회, 지각 %d회 (%s)%n";
 
     public void printErrorMessage(IllegalArgumentException e) {
         System.out.println(ERROR_PREFIX + e.getMessage());
@@ -52,7 +52,7 @@ public class OutputView {
     public void printRecords(String name, LocalDate nowDate, Crew crew) {
         System.out.printf(CREW_ATTENDANCE_LIST_MESSAGE, name);
 
-        LocalDate startDate = LocalDate.of(START_YEAR, START_MONTH, START_DAY);
+        LocalDate startDate = LocalDate.of(NOW_YEAR, NOW_MONTH, 1);
         startDate.datesUntil(nowDate)
             .filter(date -> Holiday.isWeekDay(date))
             .forEach(date -> printCrewAttendance(date, crew));

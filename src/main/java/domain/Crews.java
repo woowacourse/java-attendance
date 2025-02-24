@@ -1,14 +1,6 @@
 package domain;
 
 import static domain.AttendanceStatus.ABSENCE;
-import static util.constant.ErrorMessage.NOT_ATTEND_ERROR_MESSAGE;
-import static util.constant.ErrorMessage.NOT_CREW_ERROR_MESSAGE;
-import static util.constant.ErrorMessage.DUPLICATE_ATTEND_ERROR_MESSAGE;
-import static util.constant.ErrorMessage.NOT_OPERATING_TIME_ERROR_MESSAGE;
-import static util.constant.Value.CAMPUS_END_HOUR;
-import static util.constant.Value.CAMPUS_END_MINUTE;
-import static util.constant.Value.CAMPUS_START_HOUR;
-import static util.constant.Value.CAMPUS_START_MINUTE;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -21,6 +13,15 @@ import java.util.Map;
 import util.parser.DateTimeParser;
 
 public class Crews {
+
+    private static final String DUPLICATE_ATTEND_ERROR_MESSAGE = "이미 출석한 경우 수정 기능을 사용하세요.";
+    private static final String NOT_ATTEND_ERROR_MESSAGE = "수정 기능은 출석 후 이용 가능합니다.";
+    private static final String NOT_CREW_ERROR_MESSAGE = "등록되지 않는 크루입니다.";
+    private static final String NOT_OPERATING_TIME_ERROR_MESSAGE = "캠퍼스 운영 시간이 아닙니다.";
+    private static final int CAMPUS_START_HOUR = 8;
+    private static final int CAMPUS_START_MINUTE = 0;
+    private static final int CAMPUS_END_HOUR = 23;
+    private static final int CAMPUS_END_MINUTE = 0;
 
     private final Map<String, Crew> crews;
 

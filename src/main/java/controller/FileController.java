@@ -1,7 +1,5 @@
 package controller;
 
-import static util.constant.ErrorMessage.FILE_ERROR_MESSAGE;
-
 import domain.Crews;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -14,6 +12,8 @@ import java.util.Scanner;
 import util.parser.DateTimeParser;
 
 public class FileController {
+
+    private static final String FILE_ERROR_MESSAGE = "파일을 불러오는 데 문제가 발생했습니다. 잠시 후 다시 시도해 주세요.";
 
     private final Crews crews;
 

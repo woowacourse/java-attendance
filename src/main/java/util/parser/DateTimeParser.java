@@ -1,7 +1,5 @@
 package util.parser;
 
-import static util.constant.ErrorMessage.DATE_TIME_FORMAT_ERROR_MESSAGE;
-
 import java.time.DateTimeException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -10,6 +8,7 @@ import java.time.format.DateTimeFormatter;
 
 public class DateTimeParser {
 
+    private static final String DATE_TIME_FORMAT_ERROR_MESSAGE = "날짜 및 시간 형식이 맞지 않습니다.";
     private static final DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
     private static final DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm");
 
