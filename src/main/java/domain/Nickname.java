@@ -1,6 +1,6 @@
 package domain;
 
-import error.CustomIllegalArgumentException;
+import exception.NickNameException;
 import java.util.Objects;
 import java.util.regex.Pattern;
 
@@ -17,7 +17,7 @@ public class Nickname implements Comparable<Nickname> {
         String regex = "^[가-힣]{2,4}$";
         final boolean matches = Pattern.matches(regex, nickname);
         if (!matches) {
-            throw new CustomIllegalArgumentException("한글 이름이어야 합니다.");
+            throw new IllegalArgumentException(NickNameException.INVALID_NICKNAME_FORMAT.getMessage());
         }
     }
 

@@ -1,5 +1,6 @@
 package util;
 
+import exception.CsvReaderException;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
@@ -20,7 +21,7 @@ public final class CsvReader {
                     .map(line -> line.split(DELIMITER))
                     .toList();
         } catch (IOException e) {
-            throw new IllegalStateException("[ERROR] CSV 파일을 읽는 중 오류 발생: " + filePath, e);
+            throw new IllegalStateException(CsvReaderException.INVALID_SITUATION.getMessage(filePath, e));
         }
     }
 }

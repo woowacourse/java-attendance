@@ -1,13 +1,11 @@
 package domain;
 
 import static controller.AttendanceController.processAttendanceRecordByCrew;
-import static controller.AttendanceController.processCheckAttendees;
 import static controller.AttendanceController.processEditAttendance;
 import static view.OutputView.printAllExpulsion;
 
 import controller.AttendanceController;
-import error.CustomIllegalArgumentException;
-import java.time.LocalDateTime;
+import exception.CommandException;
 import java.util.Arrays;
 import java.util.function.BiConsumer;
 
@@ -17,7 +15,8 @@ public enum Command {
     EDIT_ATTENDANCE("출석 수정", "2", (crews, attendanceDateTime) -> processEditAttendance(crews)),
     CHECK_THE_ATTENDANCE_RECORD_BY_CREW("크루별 출석 기록 확인", "3",
             (crews, attendanceDateTime) -> processAttendanceRecordByCrew(crews)),
-    CONFIRMATION_OF_THOSE_AT_RISK_OF_EXPULSION("제적 위험자 확인", "4", (crews, attendanceDateTime) -> printAllExpulsion(crews)),
+    CONFIRMATION_OF_THOSE_AT_RISK_OF_EXPULSION("제적 위험자 확인", "4",
+            (crews, attendanceDateTime) -> printAllExpulsion(crews)),
     QUIT("종료", "Q", (crews, fixDateTime) -> {
     });
 
@@ -35,7 +34,7 @@ public enum Command {
         return Arrays.stream(Command.values())
                 .filter(c -> c.commandNumber.equals(commandNumber))
                 .findFirst()
-                .orElseThrow(() -> new CustomIllegalArgumentException("알맞은 명령어를 입력하세요."));
+                .orElseThrow(() -> new IllegalArgumentException(CommandException.INVALID_FORMAT.getMessage()));
     }
 
     public void execute(final Crews crews, final AttendanceDateTime attendanceDateTime) {

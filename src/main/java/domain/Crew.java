@@ -1,6 +1,6 @@
 package domain;
 
-import error.CustomIllegalArgumentException;
+import exception.CrewException;
 import java.time.LocalDate;
 import java.util.Objects;
 
@@ -23,7 +23,7 @@ public class Crew implements Comparable<Crew> {
     public void validateAttended(final AttendanceDateTime attendanceDateTime) {
         LocalDate date = attendanceDateTime.getDate();
         if (isAttended(date)) {
-            throw new CustomIllegalArgumentException("이미 출석했습니다. 다음에는 수정기능을 이용해주세요.");
+            throw new IllegalArgumentException(CrewException.ALREADY_ATTENDANCE.getMessage());
         }
     }
 

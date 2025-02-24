@@ -2,7 +2,6 @@ package domain;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-import error.CustomIllegalArgumentException;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
@@ -15,7 +14,7 @@ class AttendanceDateTimeTest {
         // when
         // then
         assertThatThrownBy(() -> AttendanceDateTime.of(input))
-                .isInstanceOf(CustomIllegalArgumentException.class);
+                .isInstanceOf(IllegalArgumentException.class);
     }
 
 }

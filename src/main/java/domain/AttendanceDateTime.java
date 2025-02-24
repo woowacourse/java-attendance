@@ -1,6 +1,6 @@
 package domain;
 
-import error.CustomIllegalArgumentException;
+import exception.AttendanceDateTimeExceptionType;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -26,7 +26,7 @@ public class AttendanceDateTime {
             final LocalDateTime parsedDateTime = LocalDateTime.parse(input, formatter);
             return new AttendanceDateTime(parsedDateTime);
         } catch (DateTimeParseException e) {
-            throw new CustomIllegalArgumentException("형식은 yyyy-MM-dd HH:mm 입니다.");
+            throw new IllegalArgumentException(AttendanceDateTimeExceptionType.INVALID_DATE_TIME_TYPE.getMessage());
         }
     }
 
@@ -46,7 +46,7 @@ public class AttendanceDateTime {
             LocalDateTime dateTime = LocalDateTime.of(localDateInput, parsedTime);
             return new AttendanceDateTime(dateTime);
         } catch (DateTimeParseException e) {
-            throw new CustomIllegalArgumentException("시간은 HH:mm 형식으로 들어와야 합니다.");
+            throw new IllegalArgumentException(AttendanceDateTimeExceptionType.INVALID_TIME_TYPE.getMessage());
         }
     }
 

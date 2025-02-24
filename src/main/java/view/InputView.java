@@ -5,10 +5,8 @@ import static util.Constants.FIXED_MONTH;
 
 import domain.AttendanceDateTime;
 import domain.Command;
-import util.DayOfWeekKorean;
-import error.CustomIllegalArgumentException;
-import java.time.LocalDateTime;
 import java.util.Scanner;
+import util.DayOfWeekKorean;
 
 public final class InputView {
 
@@ -67,7 +65,7 @@ public final class InputView {
 
     private static void validateInput(final String input) {
         if (input.isBlank()) {
-            throw new CustomIllegalArgumentException("값을 입력해주세요.");
+            throw new IllegalArgumentException("값을 입력해주세요.");
         }
     }
 

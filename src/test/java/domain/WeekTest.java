@@ -2,7 +2,6 @@ package domain;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-import error.CustomIllegalArgumentException;
 import java.time.LocalDateTime;
 import java.util.stream.Stream;
 import org.assertj.core.api.Assertions;
@@ -37,7 +36,7 @@ class WeekTest {
         // when
         // then
         assertThatThrownBy(() -> Week.findByAttendanceTime(attendanceDateTime))
-                .isInstanceOf(CustomIllegalArgumentException.class);
+                .isInstanceOf(IllegalArgumentException.class);
     }
 
     private static Stream<Arguments> methodSources2() {

@@ -1,6 +1,6 @@
 package domain;
 
-import error.CustomIllegalArgumentException;
+import exception.AttendancesException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -49,7 +49,8 @@ public class Attendances {
         return attendances.stream()
                 .filter(attendance -> attendance.equals(findDayOfMonth))
                 .findFirst()
-                .orElseThrow(() -> new CustomIllegalArgumentException("수정하는 일자를 찾을 수 없습니다."));
+                .orElseThrow(() -> new IllegalArgumentException(
+                        AttendancesException.NOT_FOUND_DAY_OF_MONTH.getMessage()));
     }
 
     public void updateTime(Attendance findAttendance, LocalTime updateTime) {

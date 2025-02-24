@@ -7,17 +7,11 @@ import domain.Command;
 import domain.Crew;
 import domain.Crews;
 import domain.Nickname;
-import error.CustomIllegalArgumentException;
-import java.time.DayOfWeek;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
-import util.Constants;
 import util.CrewGenerator;
 import util.CsvReader;
 import util.DayOfMonth;
-import util.DayOfWeekKorean;
-import util.HolidayManager;
 import view.InputView;
 import view.OutputView;
 
@@ -39,15 +33,15 @@ public class AttendanceController {
     }
 
     public static void processCheckAttendees(final Crews crews, final AttendanceDateTime attendanceDateTime) {
-        validateHoliday(attendanceDateTime);
+        Attendance.validate(attendanceDateTime);
         Crew crew = findCrewByNickNameInput(crews);
         String inputTime = InputView.readDateTime();
         LocalDate fixedDate = attendanceDateTime.getDate();
         crew.validateAttended(attendanceDateTime);
         AttendanceDateTime newAttendanceDateTime = AttendanceDateTime.ofTimeString(fixedDate, inputTime);
-        final Attendance attendance = new Attendance(newAttendanceDateTime);
-        crew.add(attendance);
-        OutputView.printAttendance(attendance);
+        final Attendance newAttendance = new Attendance(newAttendanceDateTime);
+        crew.add(newAttendance);
+        OutputView.printAttendance(newAttendance);
     }
 
     public static void processEditAttendance(final Crews crews) {
@@ -82,17 +76,5 @@ public class AttendanceController {
         Nickname nickname = new Nickname(inputNickName);
         Crew crew = crews.findByNickname(nickname);
         return crew;
-    }
-
-    private static void validateHoliday(AttendanceDateTime attendanceDateTime) {
-        int dayOfMonth = attendanceDateTime.getDayOfMonth();
-        if (HolidayManager.isHoliday(dayOfMonth)) {
-            throw new CustomIllegalArgumentException(
-                    String.format("%d월 %d일 %s은 등교일이 아닙니다.",
-                            Constants.FIXED_MONTH,
-                            dayOfMonth,
-                            DayOfWeekKorean.getKoreanName(DayOfWeek.of(dayOfMonth))));
-
-        }
     }
 }

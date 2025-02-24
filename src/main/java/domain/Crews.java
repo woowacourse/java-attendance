@@ -1,6 +1,6 @@
 package domain;
 
-import error.CustomIllegalArgumentException;
+import exception.CrewsException;
 import java.util.Comparator;
 import java.util.List;
 
@@ -18,7 +18,8 @@ public class Crews {
         return crews.stream()
                 .filter(o -> o.getNickname().equals(nickname))
                 .findFirst()
-                .orElseThrow(() -> new CustomIllegalArgumentException("크루가 존재하지 않습니다."));
+                .orElseThrow(
+                        () -> new IllegalArgumentException(CrewsException.INVALID_EXIST_CREW.getRawMessage()));
     }
 
     public List<Crew> getSortedCrews() {
@@ -33,12 +34,14 @@ public class Crews {
     }
 
     private final Comparator<Crew> punishmentOrder = Comparator
-            .comparingInt((Crew crew) -> Punishment.findByAbsenceCount(findPunishmentCountByCrew(crew)).getAbsenceCount())
+            .comparingInt(
+                    (Crew crew) -> Punishment.findByAbsenceCount(findPunishmentCountByCrew(crew)).getAbsenceCount())
             .reversed();
 
     private static int findPunishmentCountByCrew(final Crew crew) {
         final AttendanceCounter attendanceCounter = crew.getAttendanceCounter();
-        return (attendanceCounter.getTardinessCount() * TARDINESS_PENALTY_MULTIPLIER) + attendanceCounter.getAbsenceCount();
+        return (attendanceCounter.getTardinessCount() * TARDINESS_PENALTY_MULTIPLIER)
+                + attendanceCounter.getAbsenceCount();
     }
 
     private final Comparator<Crew> absenceOrder = Comparator

@@ -1,6 +1,6 @@
 package domain;
 
-import error.CustomIllegalArgumentException;
+import exception.WeekException;
 import java.time.DayOfWeek;
 import java.time.LocalTime;
 import java.util.Arrays;
@@ -33,14 +33,14 @@ public enum Week {
         return Arrays.stream(Week.values())
                 .filter(week -> week.name().equals(dayOfWeek.name()))
                 .findFirst()
-                .orElseThrow(() -> new CustomIllegalArgumentException(
+                .orElseThrow(() -> new IllegalArgumentException(
                         getMessageFormat(attendanceDateTime, dayKoreanName)));
     }
 
-    private static String getMessageFormat(AttendanceDateTime attendanceDateTime, String dayOfWeek) {
-        return String.format("%d월 %d일 %s은 등교일이 아닙니다.",
+    private static String getMessageFormat(AttendanceDateTime attendanceDateTime, String dayKoreanName) {
+        return String.format(WeekException.INVALID_ATTENDANCE_DAY.getMessage(
                 Constants.FIXED_MONTH,
                 attendanceDateTime.getDayOfMonth(),
-                dayOfWeek);
+                dayKoreanName));
     }
 }

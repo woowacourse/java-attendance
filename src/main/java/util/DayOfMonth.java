@@ -1,6 +1,6 @@
 package util;
 
-import error.CustomIllegalArgumentException;
+import exception.DayOfMonthException;
 
 public class DayOfMonth {
 
@@ -13,8 +13,8 @@ public class DayOfMonth {
 
     private void validateRange(int displayDay) {
         if (displayDay < 1 || displayDay > Constants.LENGTH_OF_MONTH) {
-            throw new CustomIllegalArgumentException(
-                    String.format("일은 1부터 %d사이의 숫자만 가능합니다.", Constants.LENGTH_OF_MONTH));
+            throw new IllegalArgumentException(
+                    String.format(DayOfMonthException.INVALID_DAY_RANGE.getMessage(Constants.LENGTH_OF_MONTH)));
         }
     }
 
