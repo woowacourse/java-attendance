@@ -22,6 +22,12 @@ public class InputView {
     private final static String PROMPT_STUDENT_NAME_INPUT = "닉네임을 입력해 주세요.";
     private final static String PROMPT_START_TIME_INPUT = "등교 시간을 입력해 주세요.";
     private final static String MENU_OPTION = "[1-4]|Q";
+    private final static int CAMPUS_START_TIME = 8;
+    private final static int CAMPUS_END_TIME = 23;
+    private final static int START_DATE = 1;
+    private final static int END_DATE = 31;
+
+
 
     private final static Scanner scanner = new Scanner(System.in);
 
@@ -79,7 +85,7 @@ public class InputView {
         System.out.println(PROMPT_DAY_INPUT_TO_MODIFY);
         try {
             int date = Integer.parseInt(userInput());
-            if (date < 1 || date > 31) {
+            if (date < START_DATE || date > END_DATE) {
                 throw new IllegalArgumentException("[ERROR] 1~31 사이의 숫자만 입력해주세요");
             }
             return date;
@@ -106,7 +112,7 @@ public class InputView {
     }
 
     public static void isNotOpeningHour(LocalDateTime localDateTime) {
-        if (localDateTime.getHour() < 8 || localDateTime.getHour() >= 23) {
+        if (localDateTime.getHour() < CAMPUS_START_TIME || localDateTime.getHour() >= CAMPUS_END_TIME) {
             throw new IllegalArgumentException("[ERROR] 캠퍼스 운영 시간이 아닙니다.");
         }
     }
