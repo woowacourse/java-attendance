@@ -1,7 +1,6 @@
 package attendance.view;
 
-import static attendance.domain.Attendance.DECEMBER_START_DATE;
-
+import attendance.common.CommonConstants;
 import attendance.domain.AttendanceStatus;
 import attendance.dto.AttendanceInfoDto;
 import attendance.dto.CrewAttendanceDto;
@@ -46,7 +45,7 @@ public class OutputView {
     public void attendanceResult(CrewAttendanceDto crewAttendanceDto) {
         System.out.println("이번 달 " + crewAttendanceDto.name() + "의 출석 기록입니다." + LINE_SEPARATOR);
 
-        LocalDate currentDate = DECEMBER_START_DATE;
+        LocalDate currentDate = CommonConstants.DECEMBER_START_DATE;
 
         while (currentDate.isBefore(crewAttendanceDto.today())) {
             currentDate = processDailyAttendance(currentDate, crewAttendanceDto.dtoMap());

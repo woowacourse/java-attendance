@@ -1,5 +1,6 @@
 package attendance.domain;
 
+import attendance.common.CommonConstants;
 import attendance.common.ErrorMessage;
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -10,7 +11,6 @@ public class Attendance implements Comparable<Attendance> {
 
     private static final LocalTime OPEN_TIME = LocalTime.of(8, 0);
     private static final LocalTime CLOSED_TIME = LocalTime.of(23, 0);
-    public static final LocalDate DECEMBER_START_DATE = LocalDate.of(2024, 12, 1);
     public static final LocalDate DECEMBER_END_DATE = LocalDate.of(2024, 12, 31);
 
     private final String nickName;
@@ -26,7 +26,7 @@ public class Attendance implements Comparable<Attendance> {
     }
 
     private void validateDate(LocalDate attendanceDate) {
-        if (attendanceDate.isBefore(DECEMBER_START_DATE) || attendanceDate.isAfter(DECEMBER_END_DATE)) {
+        if (attendanceDate.isBefore(CommonConstants.DECEMBER_START_DATE) || attendanceDate.isAfter(DECEMBER_END_DATE)) {
             throw new IllegalArgumentException(ErrorMessage.INVALID_DATE.getMessage());
         }
     }
