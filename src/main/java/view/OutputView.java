@@ -67,9 +67,11 @@ public class OutputView {
             return;
         }
 
-        String koreanDayOfWeek = date.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.KOREAN);
         AttendanceSheet attendanceSheet = attendanceSheets.stream()
-                .filter(sheet -> sheet.isSameDay(date.getDayOfMonth())).findAny().orElse(null);
+                .filter(sheet -> sheet.isSameDay(date.getDayOfMonth()))
+                .findAny()
+                .orElse(null);
+        String koreanDayOfWeek = date.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.KOREAN);
 
         if (attendanceSheet == null) {
             System.out.printf(ViewMessage.ABSENT_FORMAT, date.getDayOfMonth(), koreanDayOfWeek);
