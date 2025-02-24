@@ -41,6 +41,10 @@ public class Student {
         this.totalAttendance = attendanceRecords.findTotalAttendanceCount();
     }
 
+    public void modifyAttendanceRecord(LocalDateTime modifyDateTime){
+        attendanceRecords.updateAttendanceStatusByLocalDate(modifyDateTime);
+    }
+
     public void attendanceRegister(LocalDateTime localDateTime){
         attendanceRecords.registerAttendanceRecord(localDateTime);
     }
