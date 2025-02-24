@@ -81,7 +81,11 @@ public class AttendanceStatisticianTest {
         attendanceStatistician.manage(nickname, LocalDate.now(), LocalTime.now());
 
         assertThat(attendanceStatistician.getResult())
-            .contains("결석: 10회");
+            .contains("""
+                출석: 3회
+                지각: 5회
+                결석: 10회
+                """);
     }
 
     @Test
