@@ -2,6 +2,7 @@ package attendance.domain;
 
 import attendance.domain.constant.AttendanceStatus;
 import attendance.domain.constant.CrewStatus;
+import java.time.DayOfWeek;
 import java.time.LocalDate;
 
 public class AttendanceHistory {
@@ -26,7 +27,7 @@ public class AttendanceHistory {
         int lateCount = 0;
         int absenceCount = 0;
 
-        for (int day = 1; day < now.getDayOfMonth(); day++) {
+        for (int day = 1; day <= now.getDayOfMonth(); day++) {
             LocalDate currentDate = LocalDate.of(now.getYear(), now.getMonthValue(), day);
             if (isWeekend(currentDate)) {
                 continue;
@@ -43,11 +44,11 @@ public class AttendanceHistory {
                 attendanceCount++;
             }
         }
-        return new AttendanceHistory(crewName, absenceCount, lateCount, attendanceCount);
+        return new AttendanceHistory(crewName, attendanceCount, lateCount, absenceCount);
     }
 
     private static boolean isWeekend(LocalDate currentDate) {
-        return currentDate.getDayOfWeek().getValue() >= 6;
+        return currentDate.getDayOfWeek() == DayOfWeek.SATURDAY || currentDate.getDayOfWeek() == DayOfWeek.SUNDAY;
     }
 
     public boolean findByCrewName(String crewName) {
