@@ -2,12 +2,17 @@ package model;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 public class Crews {
     private final List<Crew> crews;
 
     public Crews(List<Crew> crews) {
         this.crews = crews;
+    }
+
+    public Optional<Crew> findCrewByName(String name) {
+        return Optional.empty();
     }
 
     @Override

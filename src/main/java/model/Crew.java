@@ -20,8 +20,8 @@ public class Crew {
         return name.equals(targetCrew.name);
     }
 
-    @Override
-    public int hashCode() {
-        return Objects.hashCode(name); //TODO : 성능 개선
-    }
+//    @Override
+//    public int hashCode() {
+//        return Objects.hashCode(name); //TODO : 성능 개선
+//    }
 }
