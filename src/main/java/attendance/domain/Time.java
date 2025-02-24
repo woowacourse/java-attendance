@@ -49,7 +49,7 @@ public record Time(LocalDate date, String hour, String minute, boolean isAbsent)
         }
     }
 
-    public boolean isAfter(LocalDateTime localDateTime) {
+    public boolean isBefore(LocalDateTime localDateTime) {
         if (!isAbsent) {
             return !date.atTime(Parser.parseInt(hour), Parser.parseInt(minute)).isAfter(localDateTime);
         }
@@ -73,4 +73,5 @@ public record Time(LocalDate date, String hour, String minute, boolean isAbsent)
         return date.getDayOfWeek().getDisplayName(
                 TextStyle.FULL, Locale.KOREAN);
     }
+
 }

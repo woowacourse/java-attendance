@@ -20,14 +20,14 @@ public enum AttendanceStatus {
 
     public static String checkStatusWithCondition(Time attendanceTime, int hour, int lateMinute, int absentMinute) {
 
-        if (attendanceTime.isAfter(
+        if (attendanceTime.isBefore(
                 LocalDateTime.of(attendanceTime.getYear(), attendanceTime.getMonth(), attendanceTime.getDay(),
                         hour,
                         lateMinute))) {
             return ATTEND.getValue();
         }
 
-        if (attendanceTime.isAfter(
+        if (attendanceTime.isBefore(
                 LocalDateTime.of(attendanceTime.getYear(), attendanceTime.getMonth(), attendanceTime.getDay(),
                         hour,
                         absentMinute))) {
