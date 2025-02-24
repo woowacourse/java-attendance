@@ -1,22 +1,19 @@
 package converter;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.List;
-import java.util.Set;
 import model.Attendance;
-import model.Attendances;
 import model.Crew;
-import model.Crews;
-import org.assertj.core.api.Assertions;
-import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 class StringConverterTest {
 
     @Test
-    void 닉네임과_시간을_오늘의_출석으로_변환한다() {
+    void 크루와_시간을_전달하면_오늘의_출석으로_변환한다() {
         //given
         String nickname = "쿠키";
         StringConverter stringConverter = new StringConverter();
@@ -29,30 +26,77 @@ class StringConverterTest {
         Attendance actual = stringConverter.convertToAttendance(crew, "09:44", today);
 
         //then
-        Assertions.assertThat(actual).isEqualTo(expected);
+        assertThat(actual).isEqualTo(expected);
     }
 
     @Test
-    @DisplayName("평일 출석 확인 테스트")
-    void test2() {
+    void 시간_문자열을_LocalDateTime형식으로_변환한다() {
         //given
         StringConverter stringConverter = new StringConverter();
-
-        List<String> rawAttendances = List.of(
-                "쿠키,2024-12-13 10:08"
-        );
-        Crew crew1 = Crew.of("쿠키");
-        Crews crews = Crews.of(Set.of(crew1));
-
-        Attendance attendance1 = Attendance.of(crew1, LocalDateTime.of(2024, 12, 13, 10, 8));
-
+        String rawTime = "2025-02-20 09:07";
+        LocalDateTime expected = LocalDateTime.of(2025, 2, 20, 9, 7);
         //when
-        Attendances attendances = stringConverter.convertToAttendances(rawAttendances, crews);
-
+        LocalDateTime actual = stringConverter.convertToLocalDateTime(rawTime);
         //then
-        Assertions.assertThat(attendances.getAttendances().get(0).getCrew().getNickname()).isEqualTo("쿠키");
-        Assertions.assertThat(attendances.getAttendances().get(0).getCheckInTime())
-                .isEqualTo(LocalDateTime.of(2024, 12, 13, 10, 8));
-        Assertions.assertThat(attendances.getAttendances().get(0)).isEqualTo(attendance1);
+        assertThat(actual).isEqualTo(expected);
+    }
+
+    @Test
+    void 시간_문자열이_공백일_경우_예외를_발생시킨다() {
+        //given
+        StringConverter stringConverter = new StringConverter();
+        String rawTime = "";
+        //when & then
+        assertThatThrownBy(() -> stringConverter.convertToLocalDateTime(rawTime))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("입력은 null이거나 공백일 수 없습니다.");
+    }
+
+    @Test
+    void 시간_문자열이_잘못된_형식일_경우_예외를_발생시킨다() {
+        //given
+        StringConverter stringConverter = new StringConverter();
+        String rawTime = "2025-02-20-09-07";
+        //when & then
+        assertThatThrownBy(() -> stringConverter.convertToLocalDateTime(rawTime))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("시간 형식이 올바르지 않습니다.");
+    }
+
+    @Test
+    void 일자와_시간을_LocalDateTime객체로_변환한다() {
+        //given
+        StringConverter stringConverter = new StringConverter();
+        String rawDate = "3";
+        String rawTime = "09:30";
+        LocalDateTime expected = LocalDateTime.of(2024, 12, 3, 9, 30);
+        //when
+        LocalDateTime actual = stringConverter.convertToLocalDateTime(rawDate, rawTime, LocalDate.of(2024, 12, 3));
+        //then
+        assertThat(actual).isEqualTo(expected);
+    }
+
+    @Test
+    void 잘못된_날짜형식일_경우_예외를_발생시킨다() {
+        //given
+        StringConverter converter = new StringConverter();
+        String rawDate = "a";
+        String rawTime = "09:30";
+        //when & then
+        assertThatThrownBy(() -> converter.convertToLocalDateTime(rawDate, rawTime, LocalDate.of(2024, 12, 3)))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("날짜 형식이 아닙니다.");
+    }
+
+    @Test
+    void 존재하지_않는_날짜일_경우_예외를_발생시킨다() {
+        //given
+        StringConverter converter = new StringConverter();
+        String rawDate = "32";
+        String rawTime = "09:30";
+        //when & then
+        assertThatThrownBy(() -> converter.convertToLocalDateTime(rawDate, rawTime, LocalDate.of(2024, 12, 3)))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("잘못된 날짜입니다.");
     }
 }
