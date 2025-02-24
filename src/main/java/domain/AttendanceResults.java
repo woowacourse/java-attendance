@@ -19,7 +19,7 @@ public class AttendanceResults {
 
     private long countStatus(AttendStatus attendStatus) {
         return attendanceResults.stream()
-                .filter(attendanceResult -> attendanceResult.attendStatus() == attendStatus)
+                .filter(attendanceResult -> attendanceResult.isEqualStatus(attendStatus))
                 .count();
     }
 

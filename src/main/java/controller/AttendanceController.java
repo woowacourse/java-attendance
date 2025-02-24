@@ -93,7 +93,10 @@ public class AttendanceController {
     private void searchAttendance(AttendanceBook attendanceBook) {
         String nickName = inputView.inputNickName();
         AttendanceResults attendResult = attendanceBook.checkAttendance(nickName, Current.TODAY.getAttendUntilDay());
-        outputView.printAttendanceResult(nickName, attendResult);
+        AttendCount attendCount = attendResult.countAttendStatus();
+        List<AttendanceResult> attendanceResults = attendResult.getAttendanceResults();
+        AttendResultDto attendResultDto = new AttendResultDto(nickName, attendanceResults, attendCount);
+        outputView.printAttendanceResult(attendResultDto);
     }
 
     private void searchWarningCrews(AttendanceBook attendanceBook) {

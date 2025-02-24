@@ -4,7 +4,6 @@ import domain.Attend;
 import domain.AttendCount;
 import domain.AttendStatus;
 import domain.AttendanceResult;
-import domain.AttendanceResults;
 import domain.WarningCrew;
 import domain.WarningStatus;
 import java.util.Comparator;
@@ -25,18 +24,21 @@ public class OutputView {
         System.out.println();
     }
 
-    public void printAttendanceResult(String name, AttendanceResults attendResult) {
+    public void printAttendanceResult(AttendResultDto attendResultDto) {
+        String name = attendResultDto.name();
         System.out.printf("이번 달 %s의 출석 기록입니다.%n%n", name);
-        AttendCount attendCount = attendResult.countAttendStatus();
+        List<AttendanceResult> attendResult = attendResultDto.attendanceResults();
+        AttendCount attendCount = attendResultDto.attendCount();
         printAttendanceStatus(attendResult);
-        printAttendCount(attendResult);
+        printAttendCount(attendCount);
         printWarningMessage(attendCount);
     }
 
-    private void printAttendanceStatus(AttendanceResults attendResult) {
-        for (AttendanceResult attendanceResult : attendResult.getAttendanceResults()) {
+    private void printAttendanceStatus(List<AttendanceResult> attendResult) {
+        for (AttendanceResult attendanceResult : attendResult) {
             Attend attend = attendanceResult.attend();
-            System.out.println(formatAttendAndStatus(attend, attendanceResult.attendStatus()));
+            AttendStatus attendStatus = attendanceResult.attendStatus();
+            System.out.println(formatAttendAndStatus(attend, attendStatus));
         }
         System.out.println();
     }
@@ -51,8 +53,8 @@ public class OutputView {
         return String.format("%s %s (%s)", date, time, status);
     }
 
-    private void printAttendCount(AttendanceResults attendResult) {
-        System.out.println(formatAttendCount(attendResult.countAttendStatus()));
+    private void printAttendCount(AttendCount attendCount) {
+        System.out.println(formatAttendCount(attendCount));
         System.out.println();
     }
 
