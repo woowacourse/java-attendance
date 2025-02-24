@@ -45,7 +45,7 @@ public class AttendanceController {
 
     private Command readCommand() {
         String rawCommand = inputView.readCommand();
-        return stringConverter.convertToCommand(rawCommand);
+        return Command.find(rawCommand);
     }
 
     private void processCommand(Command command, Crews crews, Attendances attendances) {

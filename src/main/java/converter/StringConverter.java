@@ -1,6 +1,5 @@
 package converter;
 
-import constant.Command;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -49,10 +48,6 @@ public class StringConverter {
         return Attendance.of(crew, checkInTime);
     }
 
-    public Command convertToCommand(String rawCommand) {
-        return Command.find(rawCommand);
-    }
-
     public LocalDateTime convertToLocalDateTime(String rawDateTime) {
         validateLocalDateTimeFormat(rawDateTime);
 
@@ -65,8 +60,7 @@ public class StringConverter {
         LocalDate date = LocalDate.of(today.getYear(), today.getMonthValue(), Integer.parseInt(rawDay));
 
         validateTimeFormat(rawTime);
-        String[] split = rawTime.split(":");
-        LocalTime time = LocalTime.of(Integer.parseInt(split[0]), Integer.parseInt(split[1]));
+        LocalTime time = LocalTime.parse(rawTime + ":00");
 
         return LocalDateTime.of(date, time);
     }
