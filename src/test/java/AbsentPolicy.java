@@ -9,11 +9,14 @@ public class AbsentPolicy {
         DayOfWeek attendanceDayOfWeek = attendanceDate.getDayOfWeek();
 
         if(attendanceDayOfWeek == DayOfWeek.SATURDAY || attendanceDayOfWeek == DayOfWeek.SUNDAY){
-            throw new IllegalArgumentException("[ERROR} 주말에는 출석할 수 없습니다");
+            throw new IllegalArgumentException("[ERROR] 주말에는 출석할 수 없습니다");
         }
     }
 
     public void validateIsHoliday(LocalDate attendanceDate) {
+        if(attendanceDate.equals(LocalDate.of(2024, 12, 25))){
+            throw new IllegalArgumentException("[ERROR] 공휴일에는 출석할 수 없습니다");
+        }
     }
 
     public String checkAttendanceStatus(LocalDateTime educationDateTime) {
