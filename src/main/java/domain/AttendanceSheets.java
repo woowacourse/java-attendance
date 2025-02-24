@@ -78,8 +78,7 @@ public class AttendanceSheets {
         int lateCount = calculateLateCountBy(nickname);
         int absentCount = calculateAbsentCount(nickname, today);
 
-        AbsentPolicy absentPolicy = AbsentPolicy.calculateAbsentPolicy(absentCount, lateCount);
-        return new AttendanceStatics(0, lateCount, absentCount, absentPolicy);
+        return new AttendanceStatics(0, lateCount, absentCount);
     }
 
     public AttendanceStatics calculateAttendanceStaticsBy(String nickname, LocalDate today) {
@@ -87,8 +86,7 @@ public class AttendanceSheets {
         int lateCount = calculateLateCountBy(nickname);
         int absentCount = calculateAbsentCount(nickname, today);
 
-        AbsentPolicy absentPolicy = AbsentPolicy.calculateAbsentPolicy(absentCount, lateCount);
-        return new AttendanceStatics(attendCount, lateCount, absentCount, absentPolicy);
+        return new AttendanceStatics(attendCount, lateCount, absentCount);
     }
 
     public int calculateAttendCountBy(String nickname) {

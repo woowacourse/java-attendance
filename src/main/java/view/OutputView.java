@@ -1,6 +1,5 @@
 package view;
 
-import domain.AbsentPolicy;
 import domain.AttendanceStatics;
 import domain.AttendanceDate;
 import domain.AttendanceDateTime;
@@ -116,6 +115,6 @@ public class OutputView {
 
     public static void printRiskOfExpulsion(String name, AttendanceStatics attendanceStatics) {
         System.out.printf(ViewMessage.RISK_OF_EXPULSION_FORMAT, name, attendanceStatics.getAbsentCount(),
-                attendanceStatics.getLateCount(), attendanceStatics.getAbsentPolicy().description);
+                attendanceStatics.getLateCount(), attendanceStatics.calculateAbsentPolicy().description);
     }
 }
