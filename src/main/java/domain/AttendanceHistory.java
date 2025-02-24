@@ -67,9 +67,5 @@ public class AttendanceHistory {
     public List<AttendTime> getAttendTimes() {
         return attendTimes;
     }
-
-    public void modifyAttendTime(final int date, final String time) {
-        AttendTime attendTime = findAttendTimeByDate(date);
-        attendTime.modifyAttendTime(time);
-    }
+    
 }

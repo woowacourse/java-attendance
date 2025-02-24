@@ -57,8 +57,5 @@ public class Crew {
     public String getName() {
         return name;
     }
-
-    public void modifyAttendTime(final int date, final String time) {
-
-    }
+    
 }

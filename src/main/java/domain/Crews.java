@@ -45,47 +45,9 @@ public class Crews {
                 .anyMatch(crew -> crew.isSameName(nickname));
     }
 
-    public Crew findCrew(String nickname) {
-        return crews.stream()
-                .filter(c -> c.isSameName(nickname))
-                .findAny()
-                .orElse(null);
-    }
-
-    public void ifFindNameAddTime(String nickname) {
-        Crew crew = findCrew(nickname);
-        if (crew == null) {
-            throw new IllegalArgumentException("[ERROR] 등록되지 않은 닉네임입니다.");
-        }
-    }
-
-    public void initializeAttendTime(String nickname, String time) {
-        Crew crew = findCrew(nickname);
-
-        if (crew != null) {
-            crew.addAttendTime(time);
-            crew.attend(time);
-            return;
-        }
-        Crew crew1 = new Crew(nickname, time);
-        crews.add(crew1);
-        crew1.attend(time);
-    }
-
-    public AttendTime deleteAttendance(String nickname, int date) {
-        Crew crew = findCrew(nickname);
-        AttendTime attendTime = crew.findAttendTimeByDate(date);
-        crew.deleteAttendance(date);
-        return attendTime;
-    }
-
     public List<Crew> getDangerousCrews(String type) {
         return crews.stream()
                 .filter(crew -> crew.isSameType(type))
                 .toList();
-    }
-
-    public List<Crew> getCrews() {
-        return crews;
     }
 }

@@ -71,7 +71,7 @@ public class AttendanceController {
 
     private void modifyAttendanceTime(final Crews crews) {
         String nickname = inputView.readNickNameForChange();
-        Crew crew = crews.findCrew(nickname);
+        Crew crew = crews.findByNickname(nickname);
         int date = inputView.readDateForChange();
         December.checkWeekday(LocalDateTime.of(DEFAULT_YEAR, DEFAULT_MONTH, date, 0, 0));
         String time = inputView.readTimeForChange();
@@ -87,7 +87,7 @@ public class AttendanceController {
 
     private void findAttendanceHistory(final Crews crews) {
         String nickname = inputView.readNickname();
-        outputView.printCrewAttendance(crews.findCrew(nickname));
+        outputView.printCrewAttendance(crews.findByNickname(nickname));
     }
 
     private void findDangerousCrews(final Crews crews) {

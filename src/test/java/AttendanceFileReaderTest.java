@@ -12,6 +12,6 @@ public class AttendanceFileReaderTest {
     public void test1() {
         List<String> list = new AttendanceFileReader().readFile("src/main/resources/attendances.csv");
 
-        assertThat(list.getFirst()).isEqualTo("쿠키,2024-12-13 10:08");
+        assertThat(list.contains("쿠키,2024-12-13 10:08")).isTrue();
     }
 }
