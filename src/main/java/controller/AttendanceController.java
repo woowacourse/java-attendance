@@ -9,6 +9,7 @@ import view.OutputView;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.SortedMap;
 
 import static domain.December.DEFAULT_MONTH;
 import static domain.December.DEFAULT_YEAR;
@@ -18,7 +19,7 @@ public class AttendanceController {
 
     private final InputView inputView;
     private final OutputView outputView;
-
+    public static final LocalDateTime TODAY=LocalDateTime.of(2024,12,16,10,0);
     public AttendanceController(final InputView inputView, OutputView outputView) {
         this.inputView = inputView;
         this.outputView = outputView;
@@ -93,16 +94,17 @@ public class AttendanceController {
     }
 
     private void executeAttendance() {
-        December.checkWeekday(LocalDateTime.now());
+        December.checkWeekday(TODAY);
 
         String nickname = inputView.readNickname();
         crews.ifFindNameAddTime(nickname);
 
         String time = inputView.readTime();
+        System.out.println(time);
         crews.initializeAttendTime(nickname, time);
 
         AttendTime attendTime = crews.findCrew(nickname).orElseThrow(() -> new IllegalArgumentException("[Error] 없는 학생입니다."))
-                .findAttendanceByDate(LocalDateTime.now().getDayOfMonth()).orElse(null);
+                .findAttendanceByDate(TODAY.getDayOfMonth()).orElse(null);
 
         outputView.printTodayAttendance(attendTime);
     }

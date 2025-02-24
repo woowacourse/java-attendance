@@ -6,6 +6,7 @@ import domain.*;
 import java.util.Comparator;
 import java.util.List;
 
+import static controller.AttendanceController.TODAY;
 import static domain.AttendanceType.LATE_TO_ABSENT_COUNT;
 
 public class OutputView {
@@ -32,6 +33,8 @@ public class OutputView {
         System.out.printf("이번 달 %s의 출석 기록입니다.%n", nickname);
         System.out.println();
         for (int date : December.getWeekDays()) {
+            if(date>TODAY.getDayOfMonth())
+                return;
             AttendTime attendTime = crew.findAttendanceByDate(date).orElse(null);
             if (attendTime != null) {
                 printAttendTime(attendTime);

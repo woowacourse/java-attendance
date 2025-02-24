@@ -6,6 +6,8 @@ import java.time.format.TextStyle;
 import java.util.Locale;
 import java.util.Scanner;
 
+import static controller.AttendanceController.TODAY;
+
 public class InputView {
     private final Scanner scanner;
 
@@ -14,7 +16,7 @@ public class InputView {
     }
 
     public String readCommand() {
-        LocalDate today = LocalDate.now();
+        LocalDateTime today = TODAY;
         System.out.printf("오늘은 %d월 %s일 %s입니다. 기능을 선택해 주세요.\n" +
                         "1. 출석 확인\n" +
                         "2. 출석 수정\n" +
@@ -33,7 +35,7 @@ public class InputView {
 
     public String readTime() {
         System.out.println("등교 시간을 입력해 주세요.");
-        LocalDateTime nowTime = LocalDateTime.now();
+        LocalDateTime nowTime = TODAY;
         String year = String.valueOf(nowTime.getYear());
         String month = String.format("%02d", nowTime.getMonthValue());
         String date = String.valueOf(nowTime.getDayOfMonth());
