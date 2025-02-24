@@ -61,7 +61,7 @@ public class AttendanceController {
         HolidayChecker.validWeekDay(today);
 
         String nickname = inputView.readNickname();
-        service.findName(nickname);
+        service.checkNameExists(nickname);
 
         LocalTime localTime = inputView.readTime();
         service.insertAttendance(nickname, today, localTime);
@@ -72,7 +72,7 @@ public class AttendanceController {
 
     private void editAttendance() {
         String nickName = inputView.readEditNickName();
-        service.findName(nickName);
+        service.checkNameExists(nickName);
         LocalDate date = inputView.readEditDate();
         LocalTime editTime = inputView.readEditTime();
 
@@ -83,7 +83,7 @@ public class AttendanceController {
 
     private void checkAttendance(LocalDate today) {
         String nickname = inputView.readNickname();
-        service.findName(nickname);
+        service.checkNameExists(nickname);
 
         CrewAttendanceDto crewAttendance = service.getCrewAttendance(nickname, today);
         outputView.attendanceResult(crewAttendance);

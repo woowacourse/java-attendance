@@ -36,7 +36,7 @@ public class AttendanceService {
         attendances = new Attendances(convertedAttendances);
     }
 
-    public void findName(String name) {
+    public void checkNameExists(String name) {
         attendances.checkName(name);
     }
 
