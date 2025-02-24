@@ -24,11 +24,8 @@ public class OutputView {
 
     public void printUpdateAttendance(final LocalDateTime beforeDateTime, final LocalDateTime afterDateTime) {
 
-        AttendanceState beforeAttendanceState = AttendanceState.findStateBy(beforeDateTime.toLocalTime(),
-                beforeDateTime.getDayOfMonth());
-
-        AttendanceState afterAttendanceState = AttendanceState.findStateBy(afterDateTime.toLocalTime(),
-                afterDateTime.getDayOfMonth());
+        AttendanceState beforeAttendanceState = AttendanceState.findStateBy(beforeDateTime);
+        AttendanceState afterAttendanceState = AttendanceState.findStateBy(afterDateTime);
 
         System.out.printf("12월 %02d일 %s %02d:%02d (%s) -> %02d:%02d (%s) 수정 완료!\n",
                 beforeDateTime.getDayOfMonth(),

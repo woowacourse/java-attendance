@@ -1,5 +1,6 @@
 package domain;
 
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 
 public enum AttendanceState {
@@ -17,11 +18,19 @@ public enum AttendanceState {
         this.description = description;
     }
 
-    public static AttendanceState findStateBy(final LocalTime localTime, final int dayOfWeekValue) {
-        Calender.validateHolyDay(dayOfWeekValue);
+    public static AttendanceState findStateBy(final LocalTime localTime, final int dayOfMonth) {
+        return findState(localTime, dayOfMonth);
+    }
+
+    public static AttendanceState findStateBy(final LocalDateTime localDateTime) {
+        return findState(localDateTime.toLocalTime(), localDateTime.getDayOfMonth());
+    }
+
+    private static AttendanceState findState(final LocalTime localTime, final int dayOfMonth) {
+        Calender.validateHolyDay(dayOfMonth);
         AttendanceTime.validateCampusTime(localTime);
 
-        Calender calender = Calender.findBy(dayOfWeekValue);
+        Calender calender = Calender.findBy(dayOfMonth);
         AttendanceTime attendanceTime = AttendanceTime.findBy(calender);
 
         return calculateStatusBy(localTime, attendanceTime);
