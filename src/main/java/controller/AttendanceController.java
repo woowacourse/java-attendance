@@ -18,6 +18,9 @@ public class AttendanceController {
     private final InputView inputView;
     private final OutputView outputView;
 
+    public static final String YEAR_MONTH_DAY_FORMAT = "yyyy-MM-dd";
+    public static final String HOUR_MINUTE_FORMAT = "HH:mm";
+
     public AttendanceController(InputView inputView,
                                 OutputView outputView) {
         this.inputView = inputView;
@@ -28,7 +31,7 @@ public class AttendanceController {
         String filePath = "src/main/resources/attendances.csv";
         Attendances attendances = AttendanceParser.registerAttendances(
                 filePath,
-                DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")
+                DateTimeFormatter.ofPattern(YEAR_MONTH_DAY_FORMAT + " " + HOUR_MINUTE_FORMAT)
         );
         readFeature(attendances);
     }
@@ -77,7 +80,7 @@ public class AttendanceController {
 
     private LocalDateTime getCheckInTime() {
         String timeString = inputView.readTimeForCheckIn();
-        LocalTime parsedTime = LocalTime.parse(timeString, DateTimeFormatter.ofPattern("HH:mm"));
+        LocalTime parsedTime = LocalTime.parse(timeString, DateTimeFormatter.ofPattern(HOUR_MINUTE_FORMAT));
 
         return LocalDateTime.of(LocalDate.now(), parsedTime);
     }
@@ -97,7 +100,7 @@ public class AttendanceController {
         int day = Integer.parseInt(inputView.readDateForModify());
         LocalDate date = LocalDate.of(2024, 12, day);
         String timeString = inputView.readTimeForModify();
-        LocalTime time = LocalTime.parse(timeString, DateTimeFormatter.ofPattern("HH:mm"));
+        LocalTime time = LocalTime.parse(timeString, DateTimeFormatter.ofPattern(HOUR_MINUTE_FORMAT));
 
         return LocalDateTime.of(date, time);
     }

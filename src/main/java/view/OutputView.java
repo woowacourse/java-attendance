@@ -1,5 +1,6 @@
 package view;
 
+import controller.AttendanceController;
 import domain.Attendance;
 import domain.AttendanceStatus;
 import domain.CheckInTime;
@@ -122,7 +123,7 @@ public class OutputView {
     }
 
     private static String formatTimePart(LocalDateTime localDateTime) {
-        DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm");
+        DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern(AttendanceController.HOUR_MINUTE_FORMAT);
         String timePart = localDateTime.format(timeFormatter);
         return timePart;
     }
