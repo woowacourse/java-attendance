@@ -8,6 +8,10 @@ public enum WarningStatusType {
     GOOD("모범");
 
     private final String type;
+    static final int LATE_TO_ABSENT_COUNT = 3;
+    static final int DISMISSAL_COUNT = 5;
+    static final int INTERVIEW_COUNT = 3;
+    static final int WARNING_COUNT = 2;
 
     WarningStatusType(String type) {
         this.type = type;
@@ -17,11 +21,7 @@ public enum WarningStatusType {
         return type;
     }
 
-    public static WarningStatusType calculateStatus(int onTime, int late, int absent) {
-        final int LATE_TO_ABSENT_COUNT = 3;
-        final int DISMISSAL_COUNT = 5;
-        final int INTERVIEW_COUNT = 3;
-        final int WARNING_COUNT = 2;
+    public static WarningStatusType calculateStatus(int late, int absent) {
 
         int total = absent + late / LATE_TO_ABSENT_COUNT;
 
