@@ -17,6 +17,6 @@ public class FileReaderPolicyPolicyTest {
         FileReaderPolicy fileReaderPolicy = new FileReaderPolicy();
 
         //when-then
-        assertDoesNotThrow(fileReaderPolicy::validateFileFormat);
+        assertDoesNotThrow(fileReaderPolicy::parseLines);
     }
 }
