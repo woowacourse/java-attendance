@@ -63,20 +63,24 @@ public class Attendances {
     public Attendances findByCrewThisMonth(Crew crew, LocalDate today) {
         List<Attendance> attendances = new ArrayList<>();
         for (int i = 1; i < today.getDayOfMonth(); i++) {
-            LocalDate date = LocalDate.of(today.getYear(), today.getMonth(), i);
-            if (Holiday.isHolidayOrWeekend(date)) {
-                continue;
-            }
-
-            Optional<Attendance> optionalAttendance = find(crew, date);
-            if (optionalAttendance.isEmpty()) {
-                attendances.add(Attendance.createTimeNullAbsence(crew, date));
-                continue;
-            }
-            attendances.add(optionalAttendance.get());
+            LocalDate day = LocalDate.of(today.getYear(), today.getMonth(), i);
+            collectAttendanceByCrewAndDay(attendances, crew, day);
         }
 
         return Attendances.of(attendances);
+    }
+
+    private void collectAttendanceByCrewAndDay(List<Attendance> attendances, Crew crew, LocalDate day) {
+        if (Holiday.isHolidayOrWeekend(day)) {
+            return;
+        }
+
+        Optional<Attendance> optionalAttendance = find(crew, day);
+        if (optionalAttendance.isPresent()) {
+            attendances.add(optionalAttendance.get());
+            return;
+        }
+        attendances.add(Attendance.createTimeNullAbsence(crew, day));
     }
 
     public Optional<Attendance> find(Crew crew, LocalDate date) {
