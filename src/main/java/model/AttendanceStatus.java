@@ -1,5 +1,6 @@
 package model;
 
+import common.Common;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -20,6 +21,9 @@ public enum AttendanceStatus {
         int startTime = 10;
         if (date.getDayOfWeek() == DayOfWeek.MONDAY) {
             startTime = 13;
+        }
+        if (time.equals(Common.noneAttendanceTime)) {
+            return ABSENCE;
         }
         if (time.isBefore(LocalTime.of(startTime, 6))) {
             return NORMAL;

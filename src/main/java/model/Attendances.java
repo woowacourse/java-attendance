@@ -37,7 +37,7 @@ public class Attendances {
         return newAttendance;
     }
 
-    private Attendance findByDate(LocalDate date) {
+    public Attendance findByDate(LocalDate date) { //TODO :private
         return this.attendances.stream()
                 .filter(attendance -> attendance.isSameDateWith(date))
                 .findAny()
