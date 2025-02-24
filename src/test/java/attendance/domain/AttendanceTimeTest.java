@@ -12,6 +12,27 @@ import org.junit.jupiter.params.provider.CsvSource;
 
 class AttendanceTimeTest {
 
+    @DisplayName("유효하지 않은 시간을 입력했을 경우 예외를 발생한다.")
+    @ParameterizedTest
+    @CsvSource(value = {
+            "25,00",
+            "-1,00",
+            "12,-1",
+            "12,61"
+    }, delimiter = ',')
+    void 유효하지_않은_시간을_입력했을_경우_예외를_발생한다(String hour, String minute) {
+
+        // given
+        LocalDate date = LocalDate.of(2025, 2, 13);
+
+        // when & then
+        assertThatThrownBy(() -> {
+            new AttendanceTime(date, hour, minute, false);
+        })
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("[ERROR] 올바른 시간을 입력해주세요.");
+    }
+
     @DisplayName("캠퍼스 운영 시간에만 출석한다.")
     @ParameterizedTest
     @CsvSource(value = {

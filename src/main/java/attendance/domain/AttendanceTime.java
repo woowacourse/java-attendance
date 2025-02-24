@@ -22,8 +22,8 @@ public record AttendanceTime(LocalDate date, String hour, String minute, boolean
     public AttendanceTime {
 
         if (!isAbsent) {
-            validatePossibleTime(date, hour, minute);
             validateInRangeTime(hour, minute);
+            validatePossibleTime(date, hour, minute);
         }
     }
 
