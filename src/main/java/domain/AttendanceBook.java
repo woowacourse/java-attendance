@@ -79,10 +79,14 @@ public class AttendanceBook {
                                                        final int dayOfMonth) {
         final LocalDate localDate = LocalDate.of(2024, 12, dayOfMonth);
         validateAttendanceDate(localDate);
-        final Attendance beforeAttendance = findAttendanceByDate(crewName, dayOfMonth);
+        final Attendance beforeAttendance = findAttendanceByDate(crewName, localDate);
+        updateAttendance(targetTime, crewName, localDate);
+        return beforeAttendance;
+    }
+
+    private void updateAttendance(final LocalTime targetTime, final String crewName, final LocalDate localDate) {
         final Crew crew = findCrewByName(crewName);
         crew.updateAttendanceByDateAndTime(targetTime, localDate);
-        return beforeAttendance;
     }
 
     private void validateAttendanceDate(final LocalDate localDate) {
