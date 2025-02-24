@@ -1,3 +1,5 @@
+package policy;
+
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
@@ -16,8 +18,8 @@ public class FileReaderPolicy {
 
     FileReader fileReader;
 
-    public FileReaderPolicy() {
-        this.fileReader = readFile();
+    public FileReaderPolicy(String filePath) {
+        this.fileReader = readFile(filePath);
     }
 
     public void parseLines() {
@@ -39,9 +41,9 @@ public class FileReaderPolicy {
                 .toList();
     }
 
-    private FileReader readFile() {
+    private FileReader readFile(String filePath) {
         try {
-            return new FileReader(FILE_PATH);
+            return new FileReader(filePath);
         } catch (FileNotFoundException e) {
             throw new RuntimeException("[ERROR] 파일 위치가 올바르지 않습니다");
         }
