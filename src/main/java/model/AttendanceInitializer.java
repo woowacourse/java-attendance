@@ -33,7 +33,12 @@ public class AttendanceInitializer {
     }
 
     public static void updateAttendances(Crews crews, List<String> combinedData, Map<Crew, Attendances> defaultAttendances) {
-
+        for (String data : combinedData) {
+            Crew crew = crews.findCrewByName(data.split(",")[0]).orElseThrow(RuntimeException::new);
+            Attendances attendances = defaultAttendances.get(crew);
+            LocalDateTime attendanceTime = parseAttendanceFrom(data);
+            attendances.update(attendanceTime.toLocalDate(), attendanceTime.toLocalTime());
+        }
     }
 
     public static LocalDateTime parseAttendanceFrom(String combinedData) {
