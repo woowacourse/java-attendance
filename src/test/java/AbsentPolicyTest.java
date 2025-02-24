@@ -46,11 +46,20 @@ public class AbsentPolicyTest {
 
     @Test
     @DisplayName("결석 처리를 할 수 있다")
-    public void checkAttendanceStatusTest(){
+    public void checkAbsentStatusTest(){
         AbsentPolicy absentPolicy = new AbsentPolicy();
         LocalDateTime educationDateTime = LocalDateTime.of(2024,12,10,10,31);
 
         assertThat(absentPolicy.checkAttendanceStatus(educationDateTime)).isEqualTo("결석");
+    }
+
+    @Test
+    @DisplayName("시작 시간부터 5분 이하이면 출석이다")
+    public void checkAttendanceStatusTest(){
+        AbsentPolicy absentPolicy = new AbsentPolicy();
+        LocalDateTime educationDateTime = LocalDateTime.of(2024,12,10,10,5);
+
+        assertThat(absentPolicy.checkAttendanceStatus(educationDateTime)).isEqualTo("출석");
     }
 
 //    @Test
