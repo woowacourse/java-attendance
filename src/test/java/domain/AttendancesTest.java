@@ -41,6 +41,7 @@ class AttendancesTest {
     }
 
     @Test
+    @DisplayName("제적 위험자 리스트 반환")
     void findDangerCrewsTest() {
         //given
         Crew crew1 = Crew.of("경고");
