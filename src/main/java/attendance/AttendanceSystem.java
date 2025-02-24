@@ -15,14 +15,13 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
+import java.util.Map;
 
 import static attendance.AttendanceMenu.CHECK;
 import static attendance.AttendanceMenu.QUIT;
-import static attendance.AttendanceMenu.SEARCH;
+import static attendance.AttendanceMenu.RECORD_SEARCH;
+import static attendance.AttendanceMenu.RISK_SEARCH;
 import static attendance.AttendanceMenu.UPDATE;
-import static attendance.AttendanceMenu.WARNED_CREW;
-import static attendance.AttendanceMenu.find;
-import static attendance.utility.DateTimeParser.parseDateByDay;
 
 public class AttendanceSystem {
 
@@ -48,75 +47,78 @@ public class AttendanceSystem {
             LocalDate today = dateGenerator.now();
             AttendanceMenu menu = selectMenu(today);
 
-            processAttendance(menu, today);
+            processSystem(menu, today);
             if (menu == QUIT) {
                 return;
             }
         }
     }
 
-    private void processAttendance(AttendanceMenu menu, LocalDate today) {
-        processAttendanceCheck(menu, today);
-        processAttendanceUpdate(menu, today);
-        processAttendanceSearch(menu);
-        processAttendanceWarnedCrews(menu);
+    private AttendanceMenu selectMenu(final LocalDate today) {
+        outputView.printMenu(today);
+        return AttendanceMenu.find(inputView.readMenuCommand());
     }
 
-    private void processAttendanceCheck(AttendanceMenu menu, LocalDate today) {
+    private void processSystem(final AttendanceMenu menu, final LocalDate today) {
+        processCheck(menu, today);
+        processUpdate(menu, today);
+        processRecordSearch(menu);
+        processRiskSearch(menu);
+    }
+
+    private void processCheck(final AttendanceMenu menu, final LocalDate today) {
         if (menu == CHECK) {
             holiday.validateHoliday(today);
 
-            String nickname = inputView.readNickname(false);
-            attendanceManager.validateNicknameExists(nickname);
+            String nickname = validateAndReadNickname(false);
+            LocalTime time = parseTime(false);
+            LocalDateTime dateTime = LocalDateTime.of(today, time);
 
-            LocalDateTime dateTime = LocalDateTime.of(dateGenerator.now(), parseTime(false));
-
-            Attendance attendance = attendanceManager.processAttendanceCheck(dateTime, nickname);
-            outputView.printAttendanceRecord(attendance);
+            Attendance attendanceCheck = attendanceManager.processAttendanceCheck(dateTime, nickname);
+            outputView.printAttendanceRecords(attendanceCheck);
         }
     }
 
-    private void processAttendanceUpdate(AttendanceMenu menu, LocalDate today) {
+    private void processUpdate(final AttendanceMenu menu, final LocalDate today) {
         if (menu == UPDATE) {
-            String nickname = inputView.readNickname(true);
-            attendanceManager.validateNicknameExists(nickname);
+            String nickname = validateAndReadNickname(true);
 
             int day = inputView.readDateForUpdate();
-            LocalDate date = parseDateByDay(today, day);
+            LocalDate date = DateTimeParser.parseDateByDay(today, day);
             LocalTime time = parseTime(true);
-
             LocalDateTime dateTime = LocalDateTime.of(date, time);
-            List<Attendance> updateAttendances = attendanceManager.processAttendanceUpdate(dateTime, nickname);
 
-            outputView.printAttendUpdateResult(updateAttendances);
+            List<Attendance> attendanceUpdate = attendanceManager.processAttendanceUpdate(dateTime, nickname);
+            outputView.printAttendUpdateResult(attendanceUpdate);
         }
     }
 
-    private void processAttendanceSearch(AttendanceMenu menu) {
-        if (menu == SEARCH) {
-            String nickname = inputView.readNickname(false);
-            attendanceManager.validateNicknameExists(nickname);
+    private void processRecordSearch(final AttendanceMenu menu) {
+        if (menu == RECORD_SEARCH) {
+            String nickname = validateAndReadNickname(false);
 
-            List<Attendance> attendances = attendanceManager.getAttendanceRecord(nickname);
-            outputView.printAttendanceSearch(attendances, nickname);
+            List<Attendance> attendanceRecords = attendanceManager.getAttendanceRecord(nickname);
+            outputView.printAttendanceRecords(attendanceRecords, nickname);
 
             AttendanceStatus attendanceStatus = attendanceManager.getAttendanceStatus(nickname);
             outputView.printAttendanceStatus(attendanceStatus);
         }
     }
 
-    private void processAttendanceWarnedCrews(AttendanceMenu menu) {
-        if (menu == WARNED_CREW) {
-            outputView.printAttendanceWarnedCrews(attendanceManager.getAttendanceWarnedCrews());
+    private void processRiskSearch(final AttendanceMenu menu) {
+        if (menu == RISK_SEARCH) {
+            Map<String, AttendanceStatus> riskCrews = attendanceManager.getAttendanceRiskCrew();
+            outputView.printAttendanceRiskCrews(riskCrews);
         }
     }
 
-    private AttendanceMenu selectMenu(LocalDate today) {
-        outputView.printMenu(today);
-        return find(inputView.readMenuCommand());
+    private String validateAndReadNickname(final boolean isForUpdated) {
+        String nickname = inputView.readNickname(isForUpdated);
+        attendanceManager.validateNicknameExists(nickname);
+        return nickname;
     }
 
-    private LocalTime parseTime(boolean isForUpdated) {
+    private LocalTime parseTime(final boolean isForUpdated) {
         String time = inputView.readAttendanceTime(isForUpdated);
         return DateTimeParser.parseTime(time);
     }

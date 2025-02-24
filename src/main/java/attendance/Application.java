@@ -8,6 +8,10 @@ class Application {
         AppConfig config = new AppConfig();
         AttendanceSystem system = new AttendanceSystem(config);
 
-        system.run();
+        try {
+            system.run();
+        } catch (IllegalArgumentException e) {
+            System.out.println(e.getMessage());
+        }
     }
 }

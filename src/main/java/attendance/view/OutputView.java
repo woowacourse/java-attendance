@@ -33,7 +33,7 @@ public class OutputView { // todo : 상수 분리 적용 필요, response 파라
         );
     }
 
-    public void printAttendanceRecord(Attendance attendance) {
+    public void printAttendanceRecords(Attendance attendance) {
         LocalDateTime dateTime = attendance.getDateTime();
 
         String timeContent = dateTime.toLocalTime().toString(); // todo : 파싱 메서드 분리 고려
@@ -54,17 +54,17 @@ public class OutputView { // todo : 상수 분리 적용 필요, response 파라
         Attendance oldAttendance = attendances.getFirst();
         Attendance updateAttendance = attendances.getLast();
 
-        printAttendanceRecord(oldAttendance);
+        printAttendanceRecords(oldAttendance);
         System.out.printf(" -> %s (%s) 수정 완료!",
                 updateAttendance.getDateTime().toLocalTime(),
                 updateAttendance.getState().getName()
         );
     }
 
-    public void printAttendanceSearch(List<Attendance> attendances, String nickname) {
+    public void printAttendanceRecords(List<Attendance> attendances, String nickname) {
         System.out.printf(NEW_LINE + "이번 달 %s의 출석 기록입니다." + NEW_LINE, nickname);
 
-        attendances.forEach(this::printAttendanceRecord);
+        attendances.forEach(this::printAttendanceRecords);
         System.out.println();
     }
 
@@ -82,7 +82,7 @@ public class OutputView { // todo : 상수 분리 적용 필요, response 파라
         System.out.printf(NEW_LINE + "%s 대상자입니다.", attendanceStatus.getWarningType().getName());
     }
 
-    public void printAttendanceWarnedCrews(final Map<String, AttendanceStatus> CrewStatus) {
+    public void printAttendanceRiskCrews(final Map<String, AttendanceStatus> CrewStatus) {
         System.out.print(NEW_LINE + "제적 위험자 조회 결과");
 
         for (Map.Entry<String, AttendanceStatus> statusEntry : CrewStatus.entrySet()) {
