@@ -8,7 +8,7 @@ public class AttendanceStatistics {
 
     private static final int COUNT_START_YEAR = 2024;
     private static final int COUNT_START_MONTH = 12;
-    private static final int COUNT_START_DAY = 2; // TODO:주말 처리하고 1로 바꾸기
+    private static final int COUNT_START_DAY = 1;
 
     public static StatisticsResult countStatus(LocalDate nowDate, Records records) {
         int attendanceCount = 0;
