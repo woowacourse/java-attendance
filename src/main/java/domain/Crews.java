@@ -37,7 +37,6 @@ public class Crews {
                 .thenComparing(nameOrder);
     }
 
-
     private final Comparator<Crew> punishmentOrder = Comparator
             .comparingInt(this::getCrewPunishmentAbsenceCount)
             .reversed();

@@ -10,7 +10,6 @@ public class ConfirmationOfThoseAtRiskOfExpulsion implements AttendanceCommand {
     @Override
     public void execute(final Crews crews) {
         final List<CrewSummary> crewSummary = crews.getCrewSummary();
-
         OutputView.printAllExpulsion(crewSummary);
     }
 }

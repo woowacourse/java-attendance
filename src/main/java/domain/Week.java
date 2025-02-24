@@ -55,6 +55,5 @@ public enum Week {
         if (!isValidDay || HOLIDAYS.contains(dayOfMonth)) {
             throw new CustomIllegalArgumentException(format);
         }
-        
     }
 }

@@ -30,7 +30,6 @@ public class EditAttendanceCommand implements AttendanceCommand {
     private AttendanceDateTime readUpdateDateTime() {
         final String desiredUpdateDate = InputView.readUpdateDate();
         final String desiredUpdateTime = InputView.readUpdateDateTime();
-
         return AttendanceDateTime.of(desiredUpdateDate, desiredUpdateTime);
     }
 }

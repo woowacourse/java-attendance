@@ -28,7 +28,6 @@ public class CrewGenerator {
         final List<Crew> crews = new ArrayList<>();
 
         processCrewData(crewData, validDates, crews);
-
         return new Crews(crews);
     }
 
@@ -42,7 +41,6 @@ public class CrewGenerator {
             final Attendance attendance = Attendance.from(localDateTime);
             crewData.computeIfAbsent(name, k -> new TreeSet<>()).add(attendance);
         }
-
         return crewData;
     }
 

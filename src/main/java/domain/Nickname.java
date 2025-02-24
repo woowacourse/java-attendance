@@ -16,6 +16,7 @@ public class Nickname implements Comparable<Nickname> {
     private void validateNickname(final String nickname) {
         final String regex = "^[가-힣]{2,4}$";
         final boolean matches = Pattern.matches(regex, nickname);
+
         if (!matches) {
             throw new CustomIllegalArgumentException("한글 이름이어야 합니다.");
         }

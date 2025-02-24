@@ -25,9 +25,7 @@ public class CheckAttendanceCommand implements AttendanceCommand {
         if (crew.isAttended(attendanceDateTime.getLocalDateTime())) {
             throw new CustomIllegalArgumentException("이미 출석했습니다. 다음에는 수정기능을 이용해주세요.");
         }
-
         final Attendance attendance = attend(crew, attendanceDateTime);
-
         OutputView.printAttendance(attendance.getSummary());
     }
 

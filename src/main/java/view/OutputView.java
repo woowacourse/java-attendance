@@ -41,13 +41,11 @@ public final class OutputView {
 
     private static String getStatusDisplayName(final AttendanceSummary oldAttendanceSummary) {
         final AttendanceStatus attendanceStatus = oldAttendanceSummary.attendanceStatus();
-
         return attendanceStatus.getDisplayName();
     }
 
     private static LocalDateTime getLocalDateTime(AttendanceSummary attendanceSummary) {
         final AttendanceDateTime attendanceDateTime = attendanceSummary.attendanceDateTime();
-
         return attendanceDateTime.getLocalDateTime();
     }
 
@@ -110,7 +108,6 @@ public final class OutputView {
                 continue;
             }
             final String outputFormat = "- %s: 결석 %d회, 지각 %d회 (%s)";
-
             printMessage(String.format(outputFormat, nickname, absenceCount, tardinessCount, punishmentDisplayName));
         }
     }
@@ -122,7 +119,7 @@ public final class OutputView {
     private static void printMessageWithLineSeparator(String message) {
         System.out.println(separateLine() + message + separateLine());
     }
-    
+
     private static String separateLine() {
         return System.lineSeparator();
     }

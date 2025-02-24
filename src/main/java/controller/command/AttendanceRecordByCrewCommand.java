@@ -12,7 +12,6 @@ public class AttendanceRecordByCrewCommand implements AttendanceCommand {
     public void execute(final Crews crews) {
         Nickname nickname = readNickname();
         Crew crew = crews.findByNickname(nickname);
-
         OutputView.printCrewAttendances(crew.getCrewSummary(), crew.getAttendancesSummary());
     }
 
