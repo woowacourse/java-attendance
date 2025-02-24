@@ -12,7 +12,10 @@ public class Crews {
     }
 
     public Optional<Crew> findCrewByName(String name) {
-        return Optional.empty();
+        return crews.stream()
+                .filter(crew -> crew.equals(new Crew(name)))
+                .findAny();
+        //TODO : getName대신 이거 써도 되나..? 메모리에반데
     }
 
     @Override
