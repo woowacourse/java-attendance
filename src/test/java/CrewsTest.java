@@ -1,4 +1,7 @@
-import domain.*;
+import domain.AttendTime;
+import domain.Crew;
+import domain.Crews;
+import domain.WarningStatusType;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -40,6 +43,7 @@ public class CrewsTest {
         assertThat(crews.findCrew("슬링키").orElseThrow(() -> new IllegalArgumentException("[Error] 없는 학생입니다.")).getAttendTimes().size()).isEqualTo(2);
     }
 
+    @DisplayName("크루의 출석을 추가할 수 있다")
     @Test
     void test4() {
         Crews crews = new Crews(List.of("폰트,2024-12-13 10:08", "슬링키,2024-12-09 13:03"));
@@ -50,6 +54,7 @@ public class CrewsTest {
                 .isEqualTo(3);
     }
 
+    @DisplayName("크루의 출석을 삭제할 수 있다")
     @Test
     void test5() {
         Crews crews = new Crews(List.of("폰트,2024-12-13 10:08", "슬링키,2024-12-09 13:03"));
@@ -59,20 +64,8 @@ public class CrewsTest {
         assertThat(attendTime.getAttendTime().getMinute()).isEqualTo(3);
     }
 
-    @Test
-    void test6() {
-        System.out.println(December.getWeekDays());
-    }
 
-    @Test
-    void test7() {
-        Crews crews = new Crews(List.of("폰트,2024-12-13 10:08", "슬링키,2024-12-09 13:03"));
-
-        List<Crew> dismissalCrews = crews.getDangerousCrews(WarningStatusType.DISMISSAL);
-
-        assertThat(dismissalCrews.size()).isEqualTo(2);
-    }
-
+    @DisplayName("제적 대상자를 확인 할 수 있다")
     @Test
     void test8() {
         Crews crews = new Crews(List.of("폰트,2024-12-13 10:08", "슬링키,2024-12-09 13:03", "포비,2024-12-09 13:03"));
@@ -82,6 +75,7 @@ public class CrewsTest {
         assertThat(dismissalCrews.size()).isEqualTo(3);
     }
 
+    @DisplayName("이름이 없는 크루의 경우 예외가 발생한다")
     @Test
     void test9() {
         Crews crews = new Crews(List.of("폰트,2024-12-13 10:08", "슬링키,2024-12-09 13:03", "포비,2024-12-09 13:03"));
