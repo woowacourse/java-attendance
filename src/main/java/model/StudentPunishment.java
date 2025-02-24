@@ -1,16 +1,14 @@
 package model;
 
 public enum StudentPunishment {
-    WARNING(2, "경고"),
-    INTERVIEW(3, "면담"),
-    DISMISSAL(5, "제적");
+    WARNING(2),
+    INTERVIEW(3),
+    DISMISSAL(5);
 
     private final int absenceLimit;
-    private final String punishmentLabel;
 
-    StudentPunishment(int absenceLimit, String punishmentLabel) {
+    StudentPunishment(int absenceLimit) {
         this.absenceLimit = absenceLimit;
-        this.punishmentLabel = punishmentLabel;
     }
 
     public int getAbsenceLimit() {
