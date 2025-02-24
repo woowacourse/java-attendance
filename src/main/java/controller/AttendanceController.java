@@ -106,8 +106,7 @@ public class AttendanceController {
         int minute = Integer.parseInt(time.split(":")[1]);
 
         AttendanceDateTime attendanceDateTime = AttendanceDateTime.from(
-                LocalDateTime.of(today.getYear(), today.getMonth(), today.getDayOfMonth(), hour,
-                        minute));
+                LocalDateTime.of(today, LocalTime.of(hour, minute)));
         attendanceSheets.add(new AttendanceSheet(nickname, attendanceDateTime));
         OutputView.printAddInformation(hour, minute, attendanceDateTime);
     }
