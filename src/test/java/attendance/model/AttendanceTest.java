@@ -30,7 +30,7 @@ public class AttendanceTest {
     }
 
     private static Stream<Arguments> provideAttendances() {
-        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd H:m");
         return Stream.of(
                 Arguments.of(
                         List.of(
@@ -44,7 +44,7 @@ public class AttendanceTest {
                                 ),
                                 new Attendance(
                                         new Crew("빙티"),
-                                        LocalDateTime.parse("2025-02-12 09:49", dateTimeFormatter)
+                                        LocalDateTime.parse("2025-02-12 9:49", dateTimeFormatter)
                                 )
                         )
                 )
