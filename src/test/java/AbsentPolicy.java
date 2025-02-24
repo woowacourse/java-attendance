@@ -7,9 +7,7 @@ public class AbsentPolicy {
 
     private static final LocalDate CHRISTMAS = LocalDate.of(2024, 12, 25);
 
-    public void validateIsWeekend(LocalDate attendanceDate) {
-        DayOfWeek attendanceDayOfWeek = attendanceDate.getDayOfWeek();
-
+    public void validateIsWeekend(DayOfWeek attendanceDayOfWeek) {
         if(attendanceDayOfWeek == DayOfWeek.SATURDAY || attendanceDayOfWeek == DayOfWeek.SUNDAY){
             throw new IllegalArgumentException("[ERROR] 주말에는 출석할 수 없습니다");
         }
@@ -24,14 +22,22 @@ public class AbsentPolicy {
     public String checkAttendanceStatus(LocalDateTime educationDateTime) {
         LocalDate educationDate = educationDateTime.toLocalDate();
         LocalTime educationTime = educationDateTime.toLocalTime();
+        DayOfWeek attendanceDayOfWeek = educationDate.getDayOfWeek();
 
-        validateIsWeekend(educationDate);
+        validateIsWeekend(attendanceDayOfWeek);
         validateIsHoliday(educationDate);
 
-        if(educationTime.isBefore(LocalTime.of(10,0).plusMinutes(6))){
+        if(educationTime.isBefore(calculateAttendanceTime(attendanceDayOfWeek))){
             return "출석";
         }
         return "결석";
+    }
+
+    private static LocalTime calculateAttendanceTime(DayOfWeek attendanceDayOfWeek) {
+        if(attendanceDayOfWeek == DayOfWeek.MONDAY){
+            return LocalTime.of(13, 0).plusMinutes(6);
+        }
+        return LocalTime.of(10, 0).plusMinutes(6);
     }
 
 }
