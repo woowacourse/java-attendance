@@ -1,6 +1,7 @@
 package attendance.domain;
 
 import attendance.domain.constant.AttendanceStatus;
+import attendance.domain.constant.Weekday;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -63,7 +64,8 @@ public class AttendanceRegistry {
     }
 
     private static boolean checkHoliday(LocalDate currentDay) {
-        return currentDay.getDayOfWeek().getValue() >= 6;
+        Weekday weekday = Weekday.from(currentDay.getDayOfWeek());
+        return weekday.equals(Weekday.SATURDAY) || weekday.equals(Weekday.SUNDAY);
     }
 
     public AttendanceChecker findByDate(int date) {
