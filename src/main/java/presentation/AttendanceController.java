@@ -35,7 +35,7 @@ public class AttendanceController {
     }
 
     private CrewGroup initCrewData() {
-        Map<String, List<String>> attendanceFileInfo = fileInputView.getFileInput();
+        Map<String, List<String>> attendanceFileInfo = fileInputView.getAttendanceFileInput();
         Map<String, List<LocalDateTime>> crewInitAttendanceDates = InputParser.getFileAttendanceInfo(
                 attendanceFileInfo);
 

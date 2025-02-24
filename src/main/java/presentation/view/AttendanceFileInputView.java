@@ -13,7 +13,7 @@ public class AttendanceFileInputView {
     private static final int ATTENDANCE_DATE_INDEX = 1;
     private static final String FILE_NAME = "attendances.csv";
 
-    public Map<String, List<String>> getFileInput() {
+    public Map<String, List<String>> getAttendanceFileInput() {
         InputStream inputStream = getClass().getClassLoader().getResourceAsStream(FILE_NAME);
         BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
 

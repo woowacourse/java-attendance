@@ -11,14 +11,15 @@ import java.util.Locale;
 import presentation.InputValidator;
 
 public class DateTimeUtil {
-    private final static DateTimeFormatter localDateFormatter = DateTimeFormatter.ofPattern("MM월 dd일");
-    private final static DateTimeFormatter localTimeFormatter = DateTimeFormatter.ofPattern("hh:mm");
-    private final static DateTimeFormatter localTimeKoreanFormatter = DateTimeFormatter.ofPattern("hh시 mm분");
+    private static final DateTimeFormatter LOCAL_DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+    private static final DateTimeFormatter LOCAL_DATE_FORMATTER = DateTimeFormatter.ofPattern("MM월 dd일");
+    private static final DateTimeFormatter LOCAL_TIME_KOREAN_FORMATTER = DateTimeFormatter.ofPattern("hh시 mm분");
+    private static final DateTimeFormatter LOCAL_TIME_FORMATTER = DateTimeFormatter.ofPattern("hh:mm");
 
     public static String convertLocalDateTimeToString(LocalDateTime localDateTime) {
         try {
-            String parsedLocalDate = localDateTime.format(localDateFormatter);
-            String parsedLocalTime = localDateTime.format(localTimeKoreanFormatter);
+            String parsedLocalDate = localDateTime.format(LOCAL_DATE_FORMATTER);
+            String parsedLocalTime = localDateTime.format(LOCAL_TIME_KOREAN_FORMATTER);
             String parsedDayOfWeek = convertDayOfWeekToString(localDateTime.getDayOfWeek());
             return parsedLocalDate + " " + parsedDayOfWeek + " " +
                     parsedLocalTime;
@@ -29,7 +30,7 @@ public class DateTimeUtil {
 
     public static String convertLocalDateToString(LocalDate localDate) {
         try {
-            String parsedLocalDate = localDate.format(localDateFormatter);
+            String parsedLocalDate = localDate.format(LOCAL_DATE_FORMATTER);
             String parsedDayOfWeek = convertDayOfWeekToString(localDate.getDayOfWeek());
             return parsedLocalDate + " " + parsedDayOfWeek;
         } catch (DateTimeParseException exception) {
@@ -39,7 +40,7 @@ public class DateTimeUtil {
 
     public static String convertLocalDateTimeToTimeString(LocalDateTime localDateTime) {
         try {
-            return localDateTime.format(localTimeFormatter);
+            return localDateTime.format(LOCAL_TIME_FORMATTER);
         } catch (DateTimeParseException exception) {
             throw new IllegalArgumentException(InputValidator.INVALID_DATETIME_ARGUMENT_EXCEPTION);
         }
@@ -51,8 +52,7 @@ public class DateTimeUtil {
 
     public static LocalDateTime convertStringToLocalDateTime(LocalDate localDate, String textLocalTime) {
         try {
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");
-            LocalTime localTime = LocalTime.parse(textLocalTime, formatter);
+            LocalTime localTime = LocalTime.parse(textLocalTime, LOCAL_TIME_FORMATTER);
             return LocalDateTime.of(localDate, localTime);
         } catch (DateTimeParseException exception) {
             throw new IllegalArgumentException(InputValidator.INVALID_DATETIME_ARGUMENT_EXCEPTION);
@@ -61,8 +61,7 @@ public class DateTimeUtil {
 
     public static LocalDateTime convertStringToLocalDateTime(String textLocalDateTime) {
         try {
-            DateTimeFormatter localDateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
-            LocalDateTime localTime = LocalDateTime.parse(textLocalDateTime, localDateTimeFormatter);
+            LocalDateTime localTime = LocalDateTime.parse(textLocalDateTime, LOCAL_DATE_TIME_FORMATTER);
             return localTime;
         } catch (DateTimeParseException exception) {
             throw new IllegalArgumentException(InputValidator.INVALID_DATETIME_ARGUMENT_EXCEPTION);

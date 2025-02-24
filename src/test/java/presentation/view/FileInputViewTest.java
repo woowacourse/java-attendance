@@ -11,7 +11,7 @@ class FileInputViewTest {
     @Test
     void test() {
         AttendanceFileInputView inputView = new AttendanceFileInputView();
-        Map<String, List<String>> fileInput = inputView.getFileInput();
+        Map<String, List<String>> fileInput = inputView.getAttendanceFileInput();
 
         Assertions.assertThat(fileInput.get("쿠키")).hasSize(8);
         Assertions.assertThat(fileInput.get("빙봉")).hasSize(11);
