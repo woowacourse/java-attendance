@@ -33,6 +33,9 @@ public class OptionLookupExpulsion extends MenuOption {
         }
         CrewStatistics crewStatistics = new CrewStatistics(crewsStatistics);
         CrewStatistics sortedCrewStatistics = crewStatistics.sortCrewStatistics();
-        outputView.printExpelExpectedCrews(sortedCrewStatistics.crewsExpelExpectedInfo());
+        InfoLookupExpulsion infoLookupExpulsion = new InfoLookupExpulsion(
+                sortedCrewStatistics.crewsExpelExpectedInfo());
+        infoLookupExpulsion.createCrewExpelRecords();
+        outputView.printExpelExpectedCrews(infoLookupExpulsion);
     }
 }
