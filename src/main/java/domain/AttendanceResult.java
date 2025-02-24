@@ -15,8 +15,8 @@ public enum AttendanceResult {
     }
 
     public static AttendanceResult findAttendanceResult(LocalDateTime localDateTime) {
-        LocalTime lateTime = AttendancePolicy.getLateTime(localDateTime.getDayOfWeek());
-        LocalTime absenceTime = AttendancePolicy.getAbsenceTime(localDateTime.getDayOfWeek());
+        LocalTime lateTime = AttendanceTimePolicy.getLateTime(localDateTime.getDayOfWeek());
+        LocalTime absenceTime = AttendanceTimePolicy.getAbsenceTime(localDateTime.getDayOfWeek());
         LocalTime currentTime = localDateTime.toLocalTime();
 
         if (currentTime.isAfter(absenceTime)) {

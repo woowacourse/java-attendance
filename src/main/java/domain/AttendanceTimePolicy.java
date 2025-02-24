@@ -5,7 +5,7 @@ import java.time.LocalTime;
 import java.util.EnumMap;
 import java.util.Map;
 
-public class AttendancePolicy {
+public class AttendanceTimePolicy {
     private static final int LATE_MINUTES = 5;
     private static final int ABSENCE_MINUTES = 30;
     private static final LocalTime DEFAULT_START_TIME = LocalTime.of(10, 0);
