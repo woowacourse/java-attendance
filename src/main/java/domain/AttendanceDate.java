@@ -12,27 +12,20 @@ public class AttendanceDate {
     private final LocalDate date;
 
     public AttendanceDate(LocalDate date) {
-        validateWeekend(date);
-        validateHoliday(date);
+        validateWeekendAndHoliday(date);
         this.date = date;
     }
 
-    private static void validateWeekend(LocalDate date) {
-        if (date.getDayOfWeek() == DayOfWeek.SATURDAY || date.getDayOfWeek() == DayOfWeek.SUNDAY) {
+    private static void validateWeekendAndHoliday(LocalDate date) {
+        if (date.getDayOfWeek() == DayOfWeek.SATURDAY || date.getDayOfWeek() == DayOfWeek.SUNDAY || isHoliday(date)) {
             throw new IllegalArgumentException(
                     String.format("[ERROR] %02d월 %02d일 %s은 등교일이 아닙니다.", date.getMonth().getValue(),
-                            date.getDayOfMonth(),
-                            date.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.KOREAN)));
+                            date.getDayOfMonth(), date.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.KOREAN)));
         }
     }
 
-    private static void validateHoliday(LocalDate date) {
-        if (MonthDay.from(date).equals(MonthDay.of(12, 25))) {
-            throw new IllegalArgumentException(
-                    String.format("[ERROR] %02d월 %02d일 %s은 등교일이 아닙니다.", date.getMonth().getValue(),
-                            date.getDayOfMonth(),
-                            date.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.KOREAN)));
-        }
+    private static boolean isHoliday(LocalDate date) {
+        return MonthDay.from(date).equals(MonthDay.of(12, 25));
     }
 
     public boolean isSameDay(int day) {
