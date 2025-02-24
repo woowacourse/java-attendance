@@ -102,15 +102,15 @@ public class AttendanceService {
     }
 
     private Map<LocalDate, AttendanceInfoDto> getAttendanceInfos(String name, LocalDate today) {
-        Map<LocalDate, AttendanceInfoDto> map = new HashMap<>();
         List<Attendance> attendanceList = attendances.findByNameAndDateWithAscend(name, today);
 
+        Map<LocalDate, AttendanceInfoDto> attendanceInfoByDate = new HashMap<>();
         for (Attendance attendance : attendanceList) {
             AttendanceInfoDto dto = AttendanceInfoDto.toDto(attendance);
-            map.put(dto.attendanceDate(), dto);
+            attendanceInfoByDate.put(dto.attendanceDate(), dto);
         }
 
-        return map;
+        return attendanceInfoByDate;
     }
 
     private Map<AttendanceStatus, Integer> getAttendanceCounts(String name, LocalDate today) {
