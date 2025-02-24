@@ -33,12 +33,13 @@ public class OptionModifyAttendance extends MenuOption {
         LocalDate localDate = validateModifyDate();
         String originalTime = attendances.findOriginalTime(crew, localDate);
         AttendanceType originalType = attendances.findOriginalType(crew, localDate);
-
         String modifyTime = inputView.readModifyTime();
         LocalDateTime localDateTime = createLocalDateTime(localDate, modifyTime);
         attendances.modifyAttendances(crew, localDateTime);
         Attendance newAttendance = attendances.findMatchCrewDate(crew, localDate);
-        outputView.printModifiedAttendance(originalTime, originalType.toString(), newAttendance.getInfo());
+        InfoModifyAttendance modifyAttendanceInfo = new InfoModifyAttendance(originalTime, originalType,
+                newAttendance.getInfo());
+        outputView.printModifiedAttendance(modifyAttendanceInfo);
     }
 
     private LocalDate validateModifyDate() {
