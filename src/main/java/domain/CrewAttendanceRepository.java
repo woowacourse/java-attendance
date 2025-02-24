@@ -78,7 +78,7 @@ public class CrewAttendanceRepository {
     private boolean hasPenalty(CrewAttendance crewAttendance) {
         Map<AttendanceStatus, Integer> statusCount = AttendanceStatus.calculateAttendanceStatusCount(
                 crewAttendance.retrieveAttendanceOrderByDate());
-        return !Penalty.from(statusCount).equals(Penalty.NONE);
+        return !Penalty.from(statusCount).isNone();
     }
 
     private int compareByAbsenceAndName(CrewAttendance c1, CrewAttendance c2) {
@@ -93,6 +93,7 @@ public class CrewAttendanceRepository {
         if (absenceCount1 != absenceCount2) {
             return Integer.compare(absenceCount2, absenceCount1);
         }
+
         return c1.getCrew().getName().compareTo(c2.getCrew().getName());
     }
 }

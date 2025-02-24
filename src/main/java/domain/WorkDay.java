@@ -32,8 +32,4 @@ public enum WorkDay {
     public Integer getStartHour() {
         return startHour;
     }
-
-    public Integer getEndHour() {
-        return endHour;
-    }
 }

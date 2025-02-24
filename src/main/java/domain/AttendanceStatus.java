@@ -61,14 +61,6 @@ public enum AttendanceStatus {
         ));
     }
 
-    public boolean isPerception() {
-        return this == PERCEPTION;
-    }
-
-    public boolean isAbsence() {
-        return this == ABSENCE;
-    }
-
     public String getName() {
         return name;
     }
