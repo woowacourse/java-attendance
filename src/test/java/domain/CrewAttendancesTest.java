@@ -18,7 +18,7 @@ public class CrewAttendancesTest {
     @Nested
     class AddAttendance {
         @Test
-        @DisplayName("5분 초과 지각시 지각이다")
+        @DisplayName("5분 초과시 지각")
         void addAttendanceLate() {
             String nickname = "투다";
             LocalTime time = LocalTime.of(10, 6);
@@ -31,6 +31,61 @@ public class CrewAttendancesTest {
             ).isEqualTo(AttendanceStatus.LATE);
         }
 
+        @Test
+        @DisplayName("10시 5분은 출석이다")
+        void addAttendanceLateTest() {
+            String nickname = "투다";
+            LocalTime time = LocalTime.of(10, 5);
+            LocalDate date = LocalDate.of(2024, 12, 3);
+            CrewAttendances crewAttendances = new CrewAttendances(new TestAttendanceNowDateStrategy(date));
+            crewAttendances.addAttendance(nickname, time);
+
+            Assertions.assertThat(
+                    crewAttendances.crewAttendance(nickname, date).attendanceStatus()
+            ).isEqualTo(AttendanceStatus.ATTENDANCE);
+        }
+
+        @Test
+        @DisplayName("10시 30분은 지각이다")
+        void addAttendanceLateTest2() {
+            String nickname = "투다";
+            LocalTime time = LocalTime.of(10, 30);
+            LocalDate date = LocalDate.of(2024, 12, 3);
+            CrewAttendances crewAttendances = new CrewAttendances(new TestAttendanceNowDateStrategy(date));
+            crewAttendances.addAttendance(nickname, time);
+
+            Assertions.assertThat(
+                    crewAttendances.crewAttendance(nickname, date).attendanceStatus()
+            ).isEqualTo(AttendanceStatus.LATE);
+        }
+
+        @Test
+        @DisplayName("10시 31분은 결석이다")
+        void addAttendanceLateTest3() {
+            String nickname = "투다";
+            LocalTime time = LocalTime.of(10, 31);
+            LocalDate date = LocalDate.of(2024, 12, 3);
+            CrewAttendances crewAttendances = new CrewAttendances(new TestAttendanceNowDateStrategy(date));
+            crewAttendances.addAttendance(nickname, time);
+
+            Assertions.assertThat(
+                    crewAttendances.crewAttendance(nickname, date).attendanceStatus()
+            ).isEqualTo(AttendanceStatus.ABSENCE);
+        }
+
+        @Test
+        @DisplayName("23시 39분은 결석이다")
+        void addAttendanceLateTest4() {
+            String nickname = "투다";
+            LocalTime time = LocalTime.of(23, 39);
+            LocalDate date = LocalDate.of(2024, 12, 3);
+            CrewAttendances crewAttendances = new CrewAttendances(new TestAttendanceNowDateStrategy(date));
+            crewAttendances.addAttendance(nickname, time);
+
+            Assertions.assertThat(
+                    crewAttendances.crewAttendance(nickname, date).attendanceStatus()
+            ).isEqualTo(AttendanceStatus.ABSENCE);
+        }
 
         @Test
         @DisplayName("닉네임과 등교 시간을 입력해 출석할 수 있다")

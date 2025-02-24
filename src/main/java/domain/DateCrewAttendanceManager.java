@@ -11,7 +11,6 @@ public class DateCrewAttendanceManager {
 
     private final Map<LocalDate, CrewAttendance> dateCrewAttendances;
     private final NowDateStrategy nowDateStrategy;
-    private final AttendanceDateHelper attendanceDateHelper;
     private static final String OUT_OF_SCHOOL_OPEN_DATE = "2024년 12월에만 출석할 수 있습니다.";
     private static final String NOT_SCHOOL_RUNNING_DAY = "휴일에는 출석할 수 없습니다.";
 
@@ -19,7 +18,6 @@ public class DateCrewAttendanceManager {
     public DateCrewAttendanceManager(NowDateStrategy nowDateStrategy) {
         this.nowDateStrategy = nowDateStrategy;
         this.dateCrewAttendances = new HashMap<>();
-        this.attendanceDateHelper = new AttendanceDateHelper();
     }
 
     public void addAttendance(LocalTime attendanceTime) {
