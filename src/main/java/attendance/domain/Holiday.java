@@ -1,6 +1,7 @@
 package attendance.domain;
 
 import java.time.LocalDate;
+import java.util.Arrays;
 
 public enum Holiday {
 
@@ -13,11 +14,7 @@ public enum Holiday {
     }
 
     public static boolean isHoliday(LocalDate compareDate) {
-        for (Holiday holiday : Holiday.values()) {
-            if (holiday.date.isEqual(compareDate)) {
-                return true;
-            }
-        }
-        return false;
+        return Arrays.stream(Holiday.values())
+            .anyMatch(holiday -> holiday.date.isEqual(compareDate));
     }
 }

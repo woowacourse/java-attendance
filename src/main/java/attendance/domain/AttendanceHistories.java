@@ -29,27 +29,8 @@ public class AttendanceHistories {
         int year = localDate.getYear();
         int month = localDate.getMonthValue();
         int day = localDate.getDayOfMonth();
-
         for (int i = 1; i < day; i++) {
-            LocalDate findDate = LocalDate.of(year, month, i);
-            if (Holiday.isHoliday(findDate)) {
-                continue;
-            }
-
-            if (!DayOfWeek.isWeekday(findDate)) {
-                continue;
-            }
-            Optional<AttendanceHistory> hasDate = getAttendanceHistoryByDate(findDate);
-            calculateAttendance(hasDate, year, month, i);
-        }
-    }
-
-    private void calculateAttendance(Optional<AttendanceHistory> hasDate, int year, int month,
-        int i) {
-        if (hasDate.isEmpty()) {
-            LocalDateTime notAttendanceTime = LocalDateTime.of(year, month, i, 0, 0);
-            AttendanceHistory attendanceHistory = AttendanceHistory.from(notAttendanceTime);
-            addAttendanceHistory(attendanceHistory);
+            validateWeekdayAndCalculateAttendance(year, month, i);
         }
     }
 
@@ -73,6 +54,49 @@ public class AttendanceHistories {
         return attendanceHistoryByDate.get();
     }
 
+    public AttendanceHistory modifyAttendanceResult(LocalDateTime modifyDateTime) {
+        Optional<AttendanceHistory> attendanceHistory = getAttendanceHistoryByDate(
+            modifyDateTime.toLocalDate());
+        if (attendanceHistories.isEmpty()) {
+            throw new IllegalArgumentException(NOT_EXIST_ATTENDANCE.getMessage());
+        }
+        AttendanceHistory modifyAttendanceHistory = AttendanceHistory.from(modifyDateTime);
+        attendanceHistories.remove(attendanceHistory.get());
+        attendanceHistories.add(modifyAttendanceHistory);
+        return modifyAttendanceHistory;
+    }
+
+    public Map<AttendanceType, Integer> calculateAttendanceResult() {
+        Map<AttendanceType, Integer> attendanceResult = new LinkedHashMap<>();
+        initAttendanceResult(attendanceResult);
+        for (AttendanceHistory attendanceHistory : attendanceHistories) {
+            AttendanceType attendanceType = attendanceHistory.getAttendanceType();
+            attendanceResult.put(attendanceType, attendanceResult.get(attendanceType) + 1);
+        }
+        return attendanceResult;
+    }
+
+    private void validateWeekdayAndCalculateAttendance(int year, int month, int i) {
+        LocalDate findDate = LocalDate.of(year, month, i);
+        if (Holiday.isHoliday(findDate)) {
+            return;
+        }
+        if (!DayOfWeek.isWeekday(findDate)) {
+            return;
+        }
+        Optional<AttendanceHistory> hasDate = getAttendanceHistoryByDate(findDate);
+        calculateAttendance(hasDate, year, month, i);
+    }
+
+    private void calculateAttendance(Optional<AttendanceHistory> hasDate, int year, int month,
+        int i) {
+        if (hasDate.isEmpty()) {
+            LocalDateTime notAttendanceTime = LocalDateTime.of(year, month, i, 0, 0);
+            AttendanceHistory attendanceHistory = AttendanceHistory.from(notAttendanceTime);
+            addAttendanceHistory(attendanceHistory);
+        }
+    }
+
     private Optional<AttendanceHistory> getAttendanceHistoryByDate(LocalDate localDate) {
         return attendanceHistories.stream()
             .filter(history -> history.findAttendanceTimeByDate(localDate))
@@ -90,28 +114,6 @@ public class AttendanceHistories {
         if (isSame) {
             throw new IllegalArgumentException(ALREADY_EXIST_ATTENDANCE.getMessage());
         }
-    }
-
-    public AttendanceHistory modifyAttendanceResult(LocalDateTime modifyDateTime) {
-        Optional<AttendanceHistory> attendanceHistory = getAttendanceHistoryByDate(
-            modifyDateTime.toLocalDate());
-        if (attendanceHistories.isEmpty()) {
-            throw new IllegalArgumentException(NOT_EXIST_ATTENDANCE.getMessage());
-        }
-        AttendanceHistory modifyAttendanceHistory = AttendanceHistory.from(modifyDateTime);
-        attendanceHistories.remove(attendanceHistory);
-        attendanceHistories.add(modifyAttendanceHistory);
-        return modifyAttendanceHistory;
-    }
-
-    public Map<AttendanceType, Integer> calculateAttendanceResult() {
-        Map<AttendanceType, Integer> attendanceResult = new LinkedHashMap<>();
-        initAttendanceResult(attendanceResult);
-        for (AttendanceHistory attendanceHistory : attendanceHistories) {
-            AttendanceType attendanceType = attendanceHistory.getAttendanceType();
-            attendanceResult.put(attendanceType, attendanceResult.get(attendanceType) + 1);
-        }
-        return attendanceResult;
     }
 
     private void initAttendanceResult(Map<AttendanceType, Integer> attendanceResult) {

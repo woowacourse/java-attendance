@@ -67,6 +67,7 @@ public class AttendanceHistoriesTest {
     @Test
     void given_modify_date_then_modify_attendance_result() {
         AttendanceHistories attendanceHistories = AttendanceHistories.create();
+
         LocalDateTime currentAttendanceTime = LocalDateTime.of(2024, 12, 11, 11, 0);
         AttendanceHistory currentAttendanceHistory = AttendanceHistory.from(currentAttendanceTime);
         attendanceHistories.addAttendanceHistory(currentAttendanceHistory);
@@ -77,6 +78,7 @@ public class AttendanceHistoriesTest {
         LocalDateTime modifyAttendanceTime = LocalDateTime.of(2024, 12, 11, 10, 0);
 
         attendanceHistories.modifyAttendanceResult(modifyAttendanceTime);
+
         AttendanceHistory afterDate = attendanceHistories.getValidationAttendanceDate(
             LocalDate.of(2024, 12, 11));
 

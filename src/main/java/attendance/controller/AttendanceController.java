@@ -25,8 +25,7 @@ public class AttendanceController {
     private final CrewAttendanceManager crewAttendanceManager;
 
     public AttendanceController(InputView inputView, Crews crews, OutputView outputView,
-        CurrentDate currentDate,
-        CrewAttendanceManager crewAttendanceManager) {
+        CurrentDate currentDate, CrewAttendanceManager crewAttendanceManager) {
         this.inputView = inputView;
         this.crews = crews;
         this.outputView = outputView;
@@ -35,32 +34,63 @@ public class AttendanceController {
     }
 
     public void start() {
-        LocalDate now = currentDate.now();
-        crewAttendanceManager.insertAbsenceIfNotExistsAttendance(now);
+        LocalDate currentDate = this.currentDate.now();
+        crewAttendanceManager.insertAbsenceIfNotExistsAttendance(currentDate);
         while (true) {
-            String option = inputView.inputOption(now);
+            String option = inputView.inputOption(currentDate);
             if (option.equals("1")) {
-                doAttendance(now);
-                continue;
+                doAttendance(currentDate);
             }
             if (option.equals("2")) {
-                modifyAttendance(now);
-                continue;
+                modifyAttendance(currentDate);
             }
-
             if (option.equals("3")) {
                 checkAttendanceHistoriesByCrew();
-                continue;
             }
-
             if (option.equals("4")) {
                 checkDangerousCrews();
-                continue;
             }
             if (option.equals("Q")) {
-                continue;
+                break;
             }
-            throw new IllegalArgumentException("잘못된 입력 입니다.");
+        }
+    }
+
+    private void doAttendance(LocalDate currentDate) {
+        String crewName = inputView.inputCrewName();
+        Crew crew = crews.findByCrewName(crewName);
+        LocalTime attendanceTime = inputView.inputAttendanceTime();
+        LocalDateTime currentDateTime = LocalDateTime.of(currentDate, attendanceTime);
+        AttendanceHistory attendanceHistory = AttendanceHistory.from(currentDateTime);
+        crewAttendanceManager.addCrewAttendanceInfo(crew, attendanceHistory);
+        outputView.printAttendanceResult(attendanceHistory);
+    }
+
+    private void modifyAttendance(LocalDate currentDate) {
+        String crewName = inputView.inputCrewName();
+        Crew crew = crews.findByCrewName(crewName);
+        LocalDate modifyDate = inputView.inputModifyDate(currentDate);
+        LocalTime modifyTime = inputView.inputAttendanceTime();
+        AttendanceHistories attendanceHistories = crewAttendanceManager.findAttendanceHistoriesByCrew(
+            crew);
+        AttendanceHistory attendanceHistory = attendanceHistories.getValidationAttendanceDate(
+            modifyDate);
+        AttendanceHistory modifyAttendanceHistory = attendanceHistories.modifyAttendanceResult(
+            LocalDateTime.of(modifyDate, modifyTime));
+        outputView.printModifyAttendanceResult(attendanceHistory, modifyAttendanceHistory);
+    }
+
+    private void checkAttendanceHistoriesByCrew() {
+        String crewName = inputView.inputCrewName();
+        Crew crew = crews.findByCrewName(crewName);
+        AttendanceHistories attendanceHistories = crewAttendanceManager.findAttendanceHistoriesByCrew(
+            crew);
+        Map<AttendanceType, Integer> attendanceResult = attendanceHistories.calculateAttendanceResult();
+        outputView.printAttendanceHistories(crew, attendanceHistories);
+        outputView.printAttendanceTypeResult(attendanceResult);
+        CrewStatus crewStatus = CrewStatus.calculateCrewStatus(attendanceResult);
+        if (crewStatus == CrewStatus.INTERVIEW) {
+            outputView.printInterviewTarget();
         }
     }
 
@@ -74,46 +104,5 @@ public class AttendanceController {
             CrewStatus crewStatus = CrewStatus.calculateCrewStatus(attendanceResult);
             outputView.printDangerousCrews(crew, attendanceResult, crewStatus);
         }
-    }
-
-    private void checkAttendanceHistoriesByCrew() {
-        String crewName = inputView.inputCrewName();
-        Crew crew = crews.findByCrewName(crewName);
-        AttendanceHistories attendanceHistories = crewAttendanceManager.findAttendanceHistoriesByCrew(
-            crew);
-        Map<AttendanceType, Integer> attendanceResult = attendanceHistories.calculateAttendanceResult();
-        outputView.printAttendanceHistories(crew, attendanceHistories);
-        outputView.printAttendanceTypeResult(attendanceResult);
-
-        CrewStatus crewStatus = CrewStatus.calculateCrewStatus(attendanceResult);
-        if (crewStatus == CrewStatus.INTERVIEW) {
-            outputView.printInterviewTarget();
-        }
-    }
-
-    private void modifyAttendance(LocalDate now) {
-        String crewName = inputView.inputCrewName();
-        Crew crew = crews.findByCrewName(crewName);
-        LocalDate modifyDate = inputView.inputModifyDate(now);
-        LocalTime modifyTime = inputView.inputAttendanceTime();
-
-        AttendanceHistories attendanceHistories = crewAttendanceManager.findAttendanceHistoriesByCrew(
-            crew);
-        AttendanceHistory attendanceHistory = attendanceHistories.getValidationAttendanceDate(
-            modifyDate);
-        AttendanceHistory modifyAttendanceHistory = attendanceHistories.modifyAttendanceResult(
-            LocalDateTime.of(modifyDate, modifyTime));
-
-        outputView.printModifyAttendanceResult(attendanceHistory, modifyAttendanceHistory);
-    }
-
-    private void doAttendance(LocalDate now) {
-        String crewName = inputView.inputCrewName();
-        Crew crew = crews.findByCrewName(crewName);
-        LocalTime attendanceTime = inputView.inputAttendanceTime();
-        LocalDateTime currentDateTime = LocalDateTime.of(now, attendanceTime);
-        AttendanceHistory attendanceHistory = AttendanceHistory.from(currentDateTime);
-        crewAttendanceManager.addCrewAttendanceInfo(crew, attendanceHistory);
-        outputView.printAttendanceResult(attendanceHistory);
     }
 }

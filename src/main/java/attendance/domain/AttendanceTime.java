@@ -29,7 +29,6 @@ public class AttendanceTime {
         }
         DayOfWeek dayOfWeek = getDayOfWeek(attendanceTime.toLocalDate());
         int lateTime = dayOfWeek.calculateLateTime(attendanceTime.toLocalTime());
-
         return decideType(lateTime);
     }
 

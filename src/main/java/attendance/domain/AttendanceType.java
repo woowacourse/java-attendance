@@ -1,6 +1,8 @@
 package attendance.domain;
 
 
+import java.util.Arrays;
+
 public enum AttendanceType {
     ATTENDANCE("출석", 5),
     LATE("지각", 30),
@@ -15,13 +17,10 @@ public enum AttendanceType {
     }
 
     public static AttendanceType decideType(int value) {
-        if (ATTENDANCE.decideValue > value) {
-            return ATTENDANCE;
-        }
-        if (LATE.decideValue > value) {
-            return LATE;
-        }
-        return ABSENCE;
+        return Arrays.stream(AttendanceType.values())
+            .filter(attendanceType -> attendanceType.decideValue > value)
+            .findFirst()
+            .orElse(ABSENCE);
     }
 
     public String getName() {

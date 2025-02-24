@@ -25,23 +25,6 @@ public class OutputView {
     private static final String DANGEROUS_CREW_INFO_MESSAGE = "제적 위험자 조회 결과";
     private static final String DANGEROUS_CREW_INFO = "- %s: 결석 %s회 지각 %s회 (%s)";
 
-    /*
-    public void printAttendanceResult(AttendanceHistory attendanceHistory) {
-        LocalDateTime attendanceTime = attendanceHistory.getAttendanceTime();
-        DayOfWeek dayOfWeek = attendanceTime.getDayOfWeek();
-        AttendanceType attendanceType = attendanceHistory.getAttendanceType();
-        System.out.println(ATTENDANCE_RESULT_MESSAGE.formatted(
-                attendanceTime.getMonthValue(),
-                attendanceTime.getDayOfMonth(),
-                dayOfWeek,
-                attendanceTime.getHour(),
-                attendanceTime.getMinute(),
-                attendanceType.getName())
-        );
-    }
-     */
-
-
     public void printModifyAttendanceResult(AttendanceHistory attendanceHistory,
         AttendanceHistory modifyAttendanceHistory) {
         LocalDateTime attendanceTime = attendanceHistory.getAttendanceTime().getAttendanceTime();
@@ -63,7 +46,6 @@ public class OutputView {
             modifyHour, modifyMinute, modifyAttendanceType.getName())
         );
     }
-
 
     public void printAttendanceHistories(Crew crew, AttendanceHistories attendanceHistories) {
         System.out.println(ATTENDANCE_INFO_MESSAGE.formatted(crew.getName()));
@@ -92,14 +74,12 @@ public class OutputView {
     public void printAttendanceResult(AttendanceHistory attendanceHistory) {
         AttendanceTime attendanceTime = attendanceHistory.getAttendanceTime();
         AttendanceType attendanceType = attendanceHistory.getAttendanceType();
-
         LocalDateTime localDateTime = attendanceTime.getAttendanceTime();
         LocalDate localDate = localDateTime.toLocalDate();
         LocalTime localTime = localDateTime.toLocalTime();
         int month = localDate.getMonthValue();
         int day = localDate.getDayOfMonth();
         DayOfWeek dayOfWeek = DayOfWeek.calculateDayOfWeek(localDate);
-
         System.out.printf(ATTENDANCE_RESULT_MESSAGE, month, day, dayOfWeek.getName(),
             localTime.getHour(),
             localTime.getMinute(), attendanceType.getName());
@@ -122,30 +102,10 @@ public class OutputView {
         System.out.println(DANGEROUS_CREW_INFO_MESSAGE);
     }
 
-
     public void printDangerousCrews(Crew crew, Map<AttendanceType, Integer> attendanceResult,
         CrewStatus crewStatus) {
         System.out.println(DANGEROUS_CREW_INFO.formatted(
             crew.getName(), attendanceResult.get(ABSENCE), attendanceResult.get(LATE),
             crewStatus.getName()));
     }
-
-
-    /*
-
-    private void sortDangerousCrews(LocalDate now, List<Crew> dangerousCrews) {
-        dangerousCrews.sort(new Comparator<Crew>() {
-            @Override
-            public int compare(Crew o1, Crew o2) {
-                CrewStatus crewStatus1 = o1.calculateCrewStatus(o1.calculateAttendanceResult(now));
-                CrewStatus crewStatus2 = o2.calculateCrewStatus(o2.calculateAttendanceResult(now));
-                if (crewStatus1 == crewStatus2) {
-                    return o1.getName().compareTo(o2.getName());
-                }
-                return crewStatus2.getOrder() - crewStatus1.getOrder();
-            }
-        });
-    }
-
-     */
 }
