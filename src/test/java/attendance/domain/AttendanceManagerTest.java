@@ -11,6 +11,7 @@ import org.junit.jupiter.params.provider.MethodSource;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Stream;
@@ -160,6 +161,62 @@ class AttendanceManagerTest {
 
         // then
         assertThat(result).doesNotContainKey(nickname);
+    }
+
+    @Test
+    void 제적_위험자_목록을_위험도_순서로_정렬한다() {
+        // given
+        List<LocalDateTime> dateTimes = List.of(
+                LocalDateTime.of(2024, 12, 2, 13, 0),
+                LocalDateTime.of(2024, 12, 3, 10, 0)
+        );
+
+        attendanceManager.addCrew("이든"); // 제적
+        attendanceManager.addCrew("비타"); // 면담
+
+        for (LocalDateTime dateTime : dateTimes) {
+            attendanceManager.processAttendanceUpdate(dateTime, "비타");
+        }
+
+        // when
+        Map<String, AttendanceStatus> result = attendanceManager.getAttendanceWarnedCrews();
+
+        // then
+        List<String> sortedKeys = new ArrayList<>(result.keySet());
+        assertThat(sortedKeys).containsExactly("이든", "비타");
+    }
+
+    @Test
+    void 제적_위험자_목록을_출석_수치를_내림차순_정렬한다() {
+        // given
+        attendanceManager.addCrew("이든");
+        attendanceManager.addCrew("비타");
+        attendanceManager.addCrew("랜디");
+
+        attendanceManager.processAttendanceUpdate(LocalDateTime.of(2024, 12, 2, 13, 6), "랜디");
+        attendanceManager.processAttendanceUpdate(LocalDateTime.of(2024, 12, 2, 13, 0), "이든");
+
+        // when
+        Map<String, AttendanceStatus> result = attendanceManager.getAttendanceWarnedCrews();
+
+        // then
+        List<String> sortedKeys = new ArrayList<>(result.keySet());
+        assertThat(sortedKeys).containsExactly("비타", "랜디", "이든");
+    }
+
+    @Test
+    void 제적_위험자_목록을_이름_오름차순으로_정렬한다() {
+        // given
+        attendanceManager.addCrew("이든");
+        attendanceManager.addCrew("비타");
+        attendanceManager.addCrew("랜디");
+
+        // when
+        Map<String, AttendanceStatus> result = attendanceManager.getAttendanceWarnedCrews();
+
+        // then
+        List<String> sortedKeys = new ArrayList<>(result.keySet());
+        assertThat(sortedKeys).containsExactly("랜디", "비타", "이든");
     }
 
     @Test
