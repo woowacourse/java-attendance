@@ -20,19 +20,19 @@ public class AttendanceTest {
         );
     }
 
-    @DisplayName("기능: 동일한 출석 시간에 대한 날짜 객체 비교 확인")
+    @DisplayName("기능: 동일한 출석 날짜 및 시간에 대한 출석 객체 비교 확인")
     @Test
     void compareSameTimeFromAttendance() {
         assertThat(attendance.isSameTime(LocalDateTime.of(2025, 2, 19, 9, 50, 0))).isTrue();
     }
 
-    @DisplayName("기능: 동일한 이름에 대한 Crew 객체 비교 확인")
+    @DisplayName("기능: 동일한 크루 이름에 대한 출석 객체 비교 확인")
     @Test
     void compareSameCrewFromAttendance() {
         assertThat(attendance.isSameCrew(new Crew("리원"))).isTrue();
     }
 
-    @DisplayName("기능: 동일한 이름 및 날짜 객체로 Crew 객체 비교 확인")
+    @DisplayName("기능: 동일한 크루 이름 및 날짜 객체에 대한 출석 객체 비교 확인")
     @Test
     void compareSameCrewDateFromAttendance() {
         assertThat(attendance.isSameCrewDate(new Crew("리원"), LocalDate.of(2025, 2, 19))).isTrue();
