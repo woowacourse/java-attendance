@@ -89,7 +89,7 @@ public class Attendance {
         }
     }
 
-    public boolean isAfter(LocalDate now) {
-        return this.attendanceDate.isAfter(now);
+    public boolean isAfter(LocalDate date) {
+        return this.attendanceDate.isAfter(date);
     }
 }

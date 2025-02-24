@@ -1,9 +1,9 @@
 package attendance.controller;
 
-import attendance.AttendancesFactory;
 import attendance.model.Attendance;
 import attendance.model.AttendanceResult;
 import attendance.model.Attendances;
+import attendance.model.AttendancesFactory;
 import attendance.model.Command;
 import attendance.model.Crew;
 import attendance.model.MonthlyAttendance;
@@ -13,6 +13,7 @@ import java.time.DateTimeException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.Month;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
@@ -36,11 +37,11 @@ public class AttendanceController {
         } while (isQuit);
     }
 
-    private boolean start(LocalDateTime now) {
+    private boolean start(LocalDateTime startDateTime) {
         Command command = null;
         try {
-            command = Command.from(inputView.inputCommand(now.toLocalDate()));
-            startCommand(command, now);
+            command = Command.from(inputView.inputCommand(startDateTime.toLocalDate()));
+            startCommand(command, startDateTime);
         } catch (DateTimeException e) {
             outputView.printDateTimeErrorMessage();
         } catch (RuntimeException e) {
@@ -49,44 +50,44 @@ public class AttendanceController {
         return command != Command.QUIT;
     }
 
-    private void startCommand(Command command, LocalDateTime now) {
+    private void startCommand(Command command, LocalDateTime startDateTime) {
         if (command == Command.ATTENDANCE) {
-            doAttendance(now);
+            doAttendance(startDateTime);
         }
         if (command == Command.ATTENDANCE_UPDATE) {
-            doUpdateAttendance(now);
+            doUpdateAttendance(startDateTime);
         }
         if (command == Command.ATTENDANCE_TIMELINE) {
-            doAttendanceTimeline(now);
+            doAttendanceTimeline(startDateTime);
         }
         if (command == Command.EMERGENCY_CHECK) {
-            doEmergencyCheck(now);
+            doEmergencyCheck(startDateTime);
         }
     }
 
-    private void doAttendance(LocalDateTime now) {
-        Attendance attendance = createAttendance(now);
+    private void doAttendance(LocalDateTime today) {
+        Attendance attendance = createAttendance(today);
         attendances.add(attendance);
         outputView.printCheckAttendance(attendance);
     }
 
-    private Attendance createAttendance(LocalDateTime now) {
+    private Attendance createAttendance(LocalDateTime today) {
         Crew crew = createCrew();
-        LocalDateTime attendanceDateTime = inputAttendanceDateTime(now);
+        LocalDateTime attendanceDateTime = inputAttendanceDateTime(today.toLocalDate());
         return new Attendance(crew, attendanceDateTime);
     }
 
-    private LocalDateTime inputAttendanceDateTime(LocalDateTime now) {
+    private LocalDateTime inputAttendanceDateTime(LocalDate attendanceDate) {
         String rawAttendanceTime = inputView.inputAttendanceTime();
         LocalTime attendanceTime = toLocalTime(rawAttendanceTime);
-        return LocalDateTime.of(now.toLocalDate(), attendanceTime);
+        return LocalDateTime.of(attendanceDate, attendanceTime);
     }
 
-    private void doUpdateAttendance(LocalDateTime now) {
+    private void doUpdateAttendance(LocalDateTime today) {
         Crew crew = new Crew(inputExistNicknameForUpdate());
-        LocalDateTime updateDateTime = createUpdateDateTime(now);
+        LocalDateTime updateDateTime = createUpdateDateTime(today.getYear(), today.getMonth());
         Attendance beforeAttendance = attendances.findByCrewAndDate(crew, updateDateTime.toLocalDate());
-        Attendance modifidedAttendance = attendances.update(now.toLocalDate(), new Attendance(crew, updateDateTime));
+        Attendance modifidedAttendance = attendances.update(today.toLocalDate(), new Attendance(crew, updateDateTime));
         outputView.printModifiedAttendance(beforeAttendance, modifidedAttendance);
     }
 
@@ -96,11 +97,11 @@ public class AttendanceController {
         return nickname;
     }
 
-    private LocalDateTime createUpdateDateTime(LocalDateTime now) {
+    private LocalDateTime createUpdateDateTime(int updateYear, Month updateMonth) {
         int targetUpdateDate = inputView.inputDateForUpdateAttendance();
         String rawTimeForUpdate = inputView.inputTimeForUpdateAttendance();
 
-        LocalDate updateDate = LocalDate.of(now.getYear(), now.getMonth(), targetUpdateDate);
+        LocalDate updateDate = LocalDate.of(updateYear, updateMonth, targetUpdateDate);
         return LocalDateTime.of(updateDate, toLocalTime(rawTimeForUpdate));
     }
 
@@ -108,11 +109,11 @@ public class AttendanceController {
         return LocalTime.parse(rawTime, DateTimeFormatter.ofPattern("HH:mm"));
     }
 
-    private void doAttendanceTimeline(LocalDateTime now) {
-        LocalDate yesterday = now.toLocalDate().minusDays(1);
+    private void doAttendanceTimeline(LocalDateTime today) {
+        LocalDate yesterday = today.toLocalDate().minusDays(1);
 
         Crew crew = createCrew();
-        MonthlyAttendance monthlyAttendance = attendances.findMonthlyAttendance(crew, now.getMonth());
+        MonthlyAttendance monthlyAttendance = attendances.findMonthlyAttendance(crew, today.getMonth());
         AttendanceResult attendanceResult = monthlyAttendance.calculateAttendanceResultUntilDate(yesterday);
         outputView.printAttendanceResult(attendanceResult);
     }
@@ -123,8 +124,8 @@ public class AttendanceController {
         return new Crew(nickname);
     }
 
-    private void doEmergencyCheck(LocalDateTime now) {
-        LocalDate yesterday = now.toLocalDate().minusDays(1);
+    private void doEmergencyCheck(LocalDateTime today) {
+        LocalDate yesterday = today.toLocalDate().minusDays(1);
         List<AttendanceResult> attendanceResults = attendances.findAllCrewAttendanceResultUntilDate(yesterday);
         outputView.printEmergencyCrews(attendanceResults);
     }

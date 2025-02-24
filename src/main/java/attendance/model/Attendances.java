@@ -30,8 +30,8 @@ public class Attendances {
         attendances.add(attendance);
     }
 
-    public Attendance update(LocalDate now, Attendance newAttendance) {
-        if (newAttendance.isAfter(now)) {
+    public Attendance update(LocalDate today, Attendance newAttendance) {
+        if (newAttendance.isAfter(today)) {
             throw new IllegalArgumentException("미래날짜의 출석을 수정할 수 없습니다.");
         }
         for (Attendance attendance : attendances) {

@@ -1,9 +1,5 @@
-package attendance;
+package attendance.model;
 
-import attendance.model.Attendance;
-import attendance.model.Attendances;
-import attendance.model.Crew;
-import attendance.model.CrewGroup;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
