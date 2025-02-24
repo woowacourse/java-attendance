@@ -4,9 +4,12 @@ import static org.assertj.core.api.Assertions.*;
 
 import domain.attendance.Attendance;
 import domain.attendance.AttendanceDate;
+import domain.attendance.AttendanceTime;
 import domain.attendance.AttendanceWarning;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -127,5 +130,43 @@ public class AttendanceTest {
         assertThatThrownBy(() -> attendance.attend(todayDateTime))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("이미 출석을 확인하였습니다. 필요한 경우 수정 기능을 이용해 주세요.");
+    }
+
+    @DisplayName("월요일의 경우 13시 5분까지 출석으로 인정된다")
+    @Test
+    void test11() {
+        boolean isAttendance = AttendanceTime.isAttendance(
+                1,
+                LocalDateTime.of(
+                    2025,
+                    2,
+                    17,
+                    13,
+                    5));
+        assertThat(isAttendance).isTrue();
+    }
+
+    @DisplayName("월요일의 경우 13시 30분 이후 부터 결석이다")
+    @Test
+    void test12() {
+        boolean isAbsence = AttendanceTime.isAbsence(1,
+                LocalDateTime.of(2025, 2, 17, 13, 31));
+        assertThat(isAbsence).isTrue();
+    }
+
+    @DisplayName("월요일을 제외한 평일은 10시 5분까지 출석해야 출석으로 인정된다")
+    @Test
+    void test13() {
+        boolean isAttendance = AttendanceTime.isAttendance(2,
+                LocalDateTime.of(2025, 2, 18, 10, 5));
+        Assertions.assertThat(isAttendance).isTrue();
+    }
+
+    @DisplayName("월요일을 제외한 평일은 10시 30분 초과 출석하면 결석이다")
+    @Test
+    void test14() {
+        boolean isAbsenceTrue = AttendanceTime.isAbsence(2,
+                LocalDateTime.of(2025, 2, 18, 10, 31));
+        Assertions.assertThat(isAbsenceTrue).isTrue();
     }
 }
