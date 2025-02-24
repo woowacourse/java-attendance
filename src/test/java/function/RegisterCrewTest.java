@@ -27,6 +27,9 @@ public class RegisterCrewTest {
     void parse_Existed_Attendance_Records_To_Name_And_Date() {
         String existedRecord = "빙봉,2024-12-13 10:07";
         List<String> parsedRecord = ParsingUtils.parseRecordToNameAndDate(existedRecord);
+
+        assertThat(parsedRecord.getFirst()).isEqualTo("빙봉");
+        assertThat(parsedRecord.get(1)).isEqualTo("2024-12-13 10:07");
     }
 
     @Test
