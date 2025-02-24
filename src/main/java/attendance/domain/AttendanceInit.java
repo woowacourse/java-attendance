@@ -35,7 +35,7 @@ public class AttendanceInit {
         lines.forEach(this::initAttendance);
     }
 
-    public void initHoliday() {
+    private void initHoliday() {
         holiday.addHoliday(LocalDate.of(2024, 12, 25));
     }
 
