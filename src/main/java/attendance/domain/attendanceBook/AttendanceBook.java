@@ -55,7 +55,6 @@ public record AttendanceBook(Map<String, AttendanceList> attendances) {
     private static final class Format {
         public static final String DATETIME_FORMAT = "yyyy-MM-dd HH:mm";
         public static final String REGEX = ",";
-        public static final String ATTENDANCE_ABSENCE_HISTORY = "MM월 dd일 E요일 --:-- (결석)";
 
         private Format() {
         }

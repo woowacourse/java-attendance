@@ -7,6 +7,7 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -151,8 +152,9 @@ public class AttendanceModifierTest {
     }
 
     @Test
+    @Disabled
     @DisplayName("미래 날짜에 대해 수정할 경우, 예외가 발생한다.")
     void error_modifyFutureAttendance() {
-
+        //현재 날짜 설정은 일단 보류,,
     }
 }

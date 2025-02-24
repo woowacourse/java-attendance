@@ -18,7 +18,6 @@ public final class DateTimeFormatterWrapper {
     }
 
     public static DateTimeFormatter getFormatter(String pattern) {
-        return DateTimeFormatter.ofPattern(pattern)
-            .withLocale(Locale.KOREAN);
+        return DateTimeFormatter.ofPattern(pattern, Locale.KOREAN);
     }
 }

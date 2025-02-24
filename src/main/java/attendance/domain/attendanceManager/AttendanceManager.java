@@ -7,12 +7,17 @@ import attendance.domain.attendanceBook.AttendanceBook;
 
 public abstract class AttendanceManager {
     protected final AttendanceBook attendanceBook;
+    protected final StringBuilder builder = new StringBuilder();
 
     public AttendanceManager(AttendanceBook attendanceBook) {
         this.attendanceBook = attendanceBook;
     }
 
     public abstract void manage(String nickname, LocalDate date, LocalTime time);
+
+    public String getResult() {
+        return builder.toString();
+    }
 
     protected enum Error {
         ATTENDANCE_NOT_AVAILABLE("출석 시스템은 2024년 12월 동안만 유효합니다"),
