@@ -23,10 +23,9 @@ public class AttendanceManager {
     }
 
     public TimeAndStatus attendCrew(String name, LocalDateTime localDateTime) {
-        if(Holiday.isHoliday(localDateTime.toLocalDate())){
-            throw new IllegalArgumentException("등교일이 아닙니다.");
-        }
+        validateDayOfMonth(localDateTime);
         validateTime(localDateTime.toLocalTime());
+
         if (crews.hasAlreadyAttended(name, localDateTime)) {
             throw new IllegalArgumentException("이미 출석한 경우 수정 기능을 사용하세요.");
         }
@@ -34,10 +33,9 @@ public class AttendanceManager {
     }
 
     public TimeAndStatus editCrew(String name, LocalDateTime newLocalDateTime) {
-        if(Holiday.isHoliday(newLocalDateTime.toLocalDate())){
-            throw new IllegalArgumentException("등교일이 아닙니다.");
-        }
+        validateDayOfMonth(newLocalDateTime);
         validateTime(newLocalDateTime.toLocalTime());
+
         if (!crews.hasAlreadyAttended(name, newLocalDateTime)) {
             throw new IllegalArgumentException("수정 기능은 출석 후 이용 가능합니다.");
         }
@@ -68,6 +66,12 @@ public class AttendanceManager {
 
     public void hasCrew(String name){
         crews.hasCrew(name);
+    }
+
+    private void validateDayOfMonth(LocalDateTime newLocalDateTime) {
+        if(Holiday.isHoliday(newLocalDateTime.toLocalDate())){
+            throw new IllegalArgumentException("등교일이 아닙니다.");
+        }
     }
 
     private void validateTime(LocalTime time){

@@ -22,12 +22,10 @@ public class Crews {
     }
 
     public TimeAndStatus attend(String name, LocalDateTime localDateTime) {
-        hasCrew(name);
         return crews.get(name).attend(localDateTime);
     }
 
     public TimeAndStatus edit(String name, LocalDateTime localDateTime) {
-        hasCrew(name);
         return crews.get(name).edit(localDateTime);
     }
 
