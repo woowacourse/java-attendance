@@ -5,7 +5,7 @@ import domain.AttendanceDate;
 import domain.AttendanceDateTime;
 import domain.AttendanceSheet;
 import domain.AttendanceSheets;
-import domain.AttendanceState;
+import dto.AttendanceStatusDTO;
 import domain.AttendanceTime;
 import domain.Calendar;
 import java.time.DayOfWeek;
@@ -30,22 +30,16 @@ public class OutputView {
         System.out.print(System.lineSeparator());
     }
 
-    public static void printUpdateInformation(AttendanceTime beforeAttendanceTime,
-                                              AttendanceDateTime afterAttendanceDateTime,
-                                              AttendanceState beforeState,
-                                              AttendanceState afterState) {
-        AttendanceTime afterDateTime = afterAttendanceDateTime.getAttendanceTime();
-
+    public static void printUpdateInformation(AttendanceStatusDTO before, AttendanceStatusDTO after) {
         System.out.print(System.lineSeparator());
         System.out.printf("%02d월 %02d일 %s %02d:%02d (%s) -> %02d:%02d (%s) 수정 완료!%n",
                 Calendar.DECEMBER.month,
-                afterAttendanceDateTime.getAttendanceDate().getDayOfMonth(),
-                afterAttendanceDateTime.getAttendanceDate().getDayOfWeek()
-                        .getDisplayName(TextStyle.FULL, Locale.KOREAN),
-                beforeAttendanceTime.getHour(), beforeAttendanceTime.getMinute(),
-                beforeState.description,
-                afterDateTime.getHour(), afterDateTime.getMinute(),
-                afterState.description
+                before.attendanceDateTime().getDay(),
+                before.attendanceDateTime().getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.KOREAN),
+                before.attendanceDateTime().getHour(), before.attendanceDateTime().getMinute(),
+                before.attendanceState().description,
+                after.attendanceDateTime().getHour(), after.attendanceDateTime().getMinute(),
+                after.attendanceState().description
         );
         System.out.print(System.lineSeparator());
     }
@@ -99,7 +93,7 @@ public class OutputView {
     public static void printAttendanceStatistics(AttendanceStatics attendanceStatics) {
         System.out.printf(ViewMessage.STATISTICS_FORMAT, attendanceStatics.getAttendCount(),
                 attendanceStatics.getLateCount(), attendanceStatics.getAbsentCount());
-        printAbsentPolicy(attendanceStatics.getAbsentPolicy());
+        printAbsentPolicy(attendanceStatics.calculateAbsentPolicy());
     }
 
     public static void printAbsentPolicy(AbsentPolicy absentPolicy) {

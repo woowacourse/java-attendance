@@ -1,5 +1,7 @@
 package domain;
 
+import dto.AttendanceStatusDTO;
+import java.time.LocalTime;
 import java.util.Objects;
 
 public class AttendanceSheet {
@@ -41,5 +43,13 @@ public class AttendanceSheet {
 
     public boolean isSameDay(int day) {
         return attendanceDateTime.isSameDay(day);
+    }
+
+    public AttendanceStatusDTO getAttendanceStatus() {
+        return new AttendanceStatusDTO(attendanceDateTime, attendanceDateTime.check());
+    }
+
+    public void updateTime(LocalTime updateTime) {
+        attendanceDateTime.update(updateTime);
     }
 }

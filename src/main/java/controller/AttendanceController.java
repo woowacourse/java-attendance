@@ -5,8 +5,7 @@ import domain.AttendanceDateTime;
 import domain.AttendanceSheet;
 import domain.AttendanceSheets;
 import domain.AttendanceSheetsFactory;
-import domain.AttendanceState;
-import domain.AttendanceTime;
+import dto.AttendanceStatusDTO;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -88,23 +87,16 @@ public class AttendanceController {
 
         AttendanceSheet attendanceSheet = attendanceSheets.findAttendanceSheetByNicknameAndDay(nickname,
                 day);
+        AttendanceStatusDTO beforeStatus = attendanceSheet.getAttendanceStatus();
 
         String time = inputView.inputUpdateTime();
         int hour = Integer.parseInt(time.split(":")[0]);
         int minute = Integer.parseInt(time.split(":")[1]);
 
-        AttendanceDateTime attendanceDateTime = attendanceSheet.getAttendanceDateTime();
-        AttendanceTime beforeAttendanceTime = new AttendanceTime(
-                LocalTime.of(
-                        attendanceDateTime.getAttendanceTime().getHour(),
-                        attendanceDateTime.getAttendanceTime().getMinute())
-        );
+        attendanceSheet.updateTime(LocalTime.of(hour, minute));
 
-        AttendanceState beforeState = attendanceDateTime.check();
-        attendanceDateTime.update(LocalTime.of(hour, minute));
-        AttendanceState afterState = attendanceDateTime.check();
-
-        OutputView.printUpdateInformation(beforeAttendanceTime, attendanceDateTime, beforeState, afterState);
+        AttendanceStatusDTO afterStatus = attendanceSheet.getAttendanceStatus();
+        OutputView.printUpdateInformation(beforeStatus, afterStatus);
     }
 
     private void attend(AttendanceSheets attendanceSheets) {

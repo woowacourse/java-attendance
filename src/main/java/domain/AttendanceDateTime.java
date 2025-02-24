@@ -85,4 +85,20 @@ public class AttendanceDateTime {
     public int hashCode() {
         return Objects.hash(attendanceDate, getAttendanceTime());
     }
+
+    public int getHour() {
+        return attendanceTime.getHour();
+    }
+
+    public int getMinute() {
+        return attendanceTime.getMinute();
+    }
+
+    public int getDay() {
+        return attendanceDate.getDayOfMonth();
+    }
+
+    public DayOfWeek getDayOfWeek() {
+        return attendanceDate.getDayOfWeek();
+    }
 }
