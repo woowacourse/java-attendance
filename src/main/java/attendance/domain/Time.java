@@ -1,6 +1,7 @@
 package attendance.domain;
 
 import attendance.utils.Parser;
+import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.TextStyle;
@@ -29,7 +30,7 @@ public record Time(LocalDate date, String hour, String minute, boolean isAbsent)
         validateAttendanceTime(hour, minute);
     }
 
-    private static void validateAttendanceTime(String hour, String minute) {
+    private void validateAttendanceTime(String hour, String minute) {
         int parsingHour = Parser.parseInt(hour);
         int parsingMinute = Parser.parseInt(minute);
 
@@ -38,13 +39,14 @@ public record Time(LocalDate date, String hour, String minute, boolean isAbsent)
         }
     }
 
-    private static void validateAttendanceDate(LocalDate date) {
-        String day = date.getDayOfWeek().name();
+    private void validateAttendanceDate(LocalDate date) {
+        DayOfWeek dayOfWeek = date.getDayOfWeek();
 
-        if (day.equals("SATURDAY") || day.equals("SUNDAY")) {
+        if (dayOfWeek == DayOfWeek.SATURDAY || dayOfWeek == DayOfWeek.SUNDAY) {
             String message = String.format("[ERROR] %02d월 %02d일 %s은 등교일이 아닙니다.",
                     date.getMonthValue(), date.getDayOfMonth(),
-                    date.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.KOREAN));
+                    dayOfWeek.getDisplayName(TextStyle.FULL, Locale.KOREAN));
+
             throw new IllegalArgumentException(message);
         }
     }
