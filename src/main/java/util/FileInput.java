@@ -4,10 +4,18 @@ import constant.DateFormatInformation;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import model.AttendanceRecord;
+import model.AttendanceRecords;
+import model.AttendanceRuleByDay;
+import model.AttendanceStatus;
 import model.Student;
 
 public class FileInput {
@@ -25,7 +33,7 @@ public class FileInput {
 
         for (String information : readAttendanceFile) {
             String[] studentNameAndAttendanceTime = information.split(",");
-            createStudentByName(students, studentNameAndAttendanceTime);
+            createStudentByFileInfo(students, studentNameAndAttendanceTime);
         }
         return students;
     }
@@ -43,11 +51,11 @@ public class FileInput {
         return attendanceFile;
     }
 
-    private void createStudentByName(List<Student> students, String[] studentNameAndAttendanceTime) {
+    private void createStudentByFileInfo(List<Student> students, String[] studentNameAndAttendanceTime) {
         String name = studentNameAndAttendanceTime[0];
-        String timeInformation = studentNameAndAttendanceTime[1];
+        LocalDateTime timeInformation = makeLocalDateTimeFromString(studentNameAndAttendanceTime[1]);
         if (findStudentByName(students, name) == null) {
-            Student student = new Student(name);
+            Student student = new Student(name, createAttendanceRecords(timeInformation));
             students.add(student);
             makeDateTimeFormatAndUpdateStudentState(student, timeInformation);
             return;
@@ -56,14 +64,29 @@ public class FileInput {
         makeDateTimeFormatAndUpdateStudentState(student, timeInformation);
     }
     private Student findStudentByName(List<Student> students, String name){
-        return students.stream().filter(s -> s.getName().equals(name)).findFirst().orElse(null);
+        return students.stream()
+                .filter(s -> s.getName().equals(name))
+                .findFirst()
+                .orElse(null);
     }
 
-    private static void makeDateTimeFormatAndUpdateStudentState(Student student, String timeInformation) {
+    private static LocalDateTime makeLocalDateTimeFromString(String timeInformation) {
         DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern(DateFormatInformation.LOCAL_DATE_TIME_FORMATTER);
-        LocalDateTime localDateTime = LocalDateTime.parse(timeInformation, dateTimeFormatter);
-        student.getAttendanceRecords().createAttendanceRecords(localDateTime);
+        return LocalDateTime.parse(timeInformation, dateTimeFormatter);
     }
 
+    private static void makeDateTimeFormatAndUpdateStudentState(Student student, LocalDateTime localDateTime){
+        student.createAttendanceRecords(localDateTime);
+    }
+
+    private static AttendanceRecords createAttendanceRecords(LocalDateTime localDateTime){
+        Map<LocalDate, AttendanceRecord> attendanceRecords = new HashMap<>();
+        LocalDate localDate = LocalDate.from(localDateTime);
+        LocalTime localTime = LocalTime.from(localDateTime);
+        AttendanceStatus attendanceStatus = AttendanceRuleByDay.calculateAttendance(localDateTime);
+        AttendanceRecord attendanceRecord = new AttendanceRecord(localTime, attendanceStatus);
+        attendanceRecords.put(localDate, attendanceRecord);
+        return new AttendanceRecords(attendanceRecords);
+    }
 
 }
