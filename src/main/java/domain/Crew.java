@@ -92,18 +92,6 @@ public class Crew {
                 ).count();
     }
 
-    private int calculateAbsenceCount2() {
-        LocalDate localDate = DateUtil.getFirstDateOfMonth();
-        int absenceCount = 0;
-        while (!localDate.isAfter(FIXED_REFERENCE_DATE.toLocalDate())) {
-            if (isNowAbsence(localDate)) {
-                absenceCount++;
-            }
-            localDate = localDate.plusDays(1);
-        }
-        return absenceCount;
-    }
-
     private int calculateAbsenceCount() {
         return (int) DateUtil.getFirstDateOfMonth().datesUntil(FIXED_REFERENCE_DATE.toLocalDate().plusDays(1))
                 .filter(this::isNowAbsence)
@@ -115,20 +103,6 @@ public class Crew {
                 .filter(this::isNowTardy)
                 .count();
     }
-
-    private int calculateTardyCount2() {
-        LocalDate localDate = DateUtil.getFirstDateOfMonth();
-        int tardyCount = 0;
-        for (int day = 0; day < FIXED_REFERENCE_DATE.getDayOfMonth(); day++) {
-            if (isNowTardy(localDate)) {
-                tardyCount++;
-            }
-            localDate = localDate.plusDays(1);
-        }
-        return tardyCount;
-    }
-
-//    private int determinex
 
     private boolean isNowAbsence(final LocalDate localDate) {
         if (!attendanceBook.containsKey(localDate) && DateUtil.isWeekday(localDate)) {
