@@ -1,5 +1,6 @@
 package domain;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -10,11 +11,16 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class CheckInTimesTest {
+    private CheckInTimes checkInTimes;
+
+    @BeforeEach
+    void setUp() {
+        checkInTimes = createCheckInTimes();
+    }
 
     @Test
     @DisplayName("출석 기록들을 확인하여 출석 횟수 카운트")
     void countPresenceTest() {
-        CheckInTimes checkInTimes = createCheckInTimes();
         int count = checkInTimes.countPresence();
         assertThat(count).isEqualTo(3);
     }
@@ -22,7 +28,6 @@ class CheckInTimesTest {
     @Test
     @DisplayName("출석 기록들을 확인하여 지각 횟수 카운트")
     void countLateTest() {
-        CheckInTimes checkInTimes = createCheckInTimes();
         int count = checkInTimes.countLate();
         assertThat(count).isEqualTo(2);
     }
@@ -30,7 +35,6 @@ class CheckInTimesTest {
     @Test
     @DisplayName("출근 시간 추가")
     void addCheckInTimeTest() {
-        CheckInTimes checkInTimes = createCheckInTimes();
         CheckInTime now = CheckInTime.of(LocalDateTime.of(2024, 12, 12, 10, 0));
 
         checkInTimes.add(now);
@@ -41,7 +45,6 @@ class CheckInTimesTest {
     @Test
     @DisplayName("이미 출근 기록이 존재하므로 출석시 예외 발생")
     void addDuplicateCheckInTimeTest() {
-        CheckInTimes checkInTimes = createCheckInTimes();
         CheckInTime now = CheckInTime.of(LocalDateTime.of(2024, 12, 3, 10, 0));
 
         assertThatThrownBy(() -> checkInTimes.add(now))
@@ -51,8 +54,6 @@ class CheckInTimesTest {
     @Test
     @DisplayName("출근 시간 수정")
     void modifyCheckInTimeTest() {
-        CheckInTimes checkInTimes = createCheckInTimes();
-
         CheckInTime modifiedTime = CheckInTime.of(LocalDateTime.of(2024, 12, 3, 10, 20));
 
         checkInTimes.modify(modifiedTime);
@@ -64,8 +65,6 @@ class CheckInTimesTest {
     @Test
     @DisplayName("특정 날짜를 기준으로 이전의 출석 기록을 반환")
     void getAttendanceLogTest() {
-        CheckInTimes checkInTimes = createCheckInTimes();
-
         LocalDateTime now = LocalDateTime.of(2024, 12, 14, 10, 20);
 
         List<LocalDateTime> log = checkInTimes.getAttendanceLog(now);
