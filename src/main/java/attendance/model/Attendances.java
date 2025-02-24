@@ -46,4 +46,12 @@ public class Attendances {
                 AttendanceType.of(dateTime))
         );
     }
+
+    public void modifyAttendance(Crew crew, LocalDateTime modifiedDateTime) {
+        attendances.stream()
+                .filter(attendance -> attendance.isCrewAttendance(crew))
+                .filter(attendance -> attendance.isSameDate(modifiedDateTime.toLocalDate()))
+                .findAny()
+                .ifPresent(attendance -> attendance.modifyTime(modifiedDateTime));
+    }
 }

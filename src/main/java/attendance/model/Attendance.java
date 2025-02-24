@@ -1,10 +1,11 @@
 package attendance.model;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 public class Attendance {
     private final Crew crew;
-    private final LocalDateTime dateTime;
+    private LocalDateTime dateTime;
     private AttendanceType type;
 
     public Attendance(Crew crew, LocalDateTime dateTime) {
@@ -32,5 +33,14 @@ public class Attendance {
 
     public boolean isSameDateTime(LocalDateTime dateTime) {
         return this.dateTime.equals(dateTime);
+    }
+
+    public boolean isSameDate(LocalDate localDate) {
+        return this.dateTime.toLocalDate().equals(localDate);
+    }
+
+    public void modifyTime(LocalDateTime modifiedDateTime) {
+        this.dateTime = modifiedDateTime;
+        this.type = AttendanceType.of(modifiedDateTime);
     }
 }

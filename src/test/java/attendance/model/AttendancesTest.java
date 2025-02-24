@@ -1,6 +1,7 @@
 package attendance.model;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
 import attendance.util.CSVReader;
@@ -48,7 +49,7 @@ public class AttendancesTest {
 
     @DisplayName("크루와 시간으로 오늘 출석 기록을 추가한다.")
     @Test
-    void test() {
+    void addAttendanceWithCrewAndDateTime() {
         attendances.attendToday(
                 new Crew("빙티"),
                 LocalTime.of(9, 58)
@@ -64,6 +65,31 @@ public class AttendancesTest {
                 () -> assertThat(findAttendance).extracting("dateTime")
                         .isEqualTo(LocalDateTime.of(LocalDate.now(), LocalTime.of(9, 58))),
                 () -> assertThat(findAttendance).extracting("type").isEqualTo(AttendanceType.PRESENT)
+        );
+    }
+
+    @DisplayName("크루와 날짜로 출석 기록을 조회해서 원하는 시간으로 수정한다.")
+    @Test
+    void modifyAttendanceWithNewTime() {
+        attendances.modifyAttendance(
+                new Crew("쿠키"),
+                LocalDateTime.of(2025, 2, 14, 10, 1, 0)
+        );
+
+        Attendance modifiedAttendance = attendances.findAttendance(
+                new Crew("쿠키"),
+                LocalDateTime.of(2025, 2, 14, 10, 1, 0)
+        );
+
+        assertAll(
+                () -> assertThatThrownBy(() -> attendances.findAttendance(
+                        new Crew("쿠키"),
+                        LocalDateTime.of(2025, 2, 14, 13, 3, 0)
+                )).isInstanceOf(IllegalArgumentException.class).hasMessage("크루와 날짜, 시간에 해당하는 출석 기록이 없습니다."),
+
+                () -> assertThat(modifiedAttendance).extracting("dateTime")
+                        .isEqualTo(LocalDateTime.of(2025, 2, 14, 10, 1, 0)),
+                () -> assertThat(modifiedAttendance).extracting("type").isEqualTo(AttendanceType.PRESENT)
         );
     }
 }
