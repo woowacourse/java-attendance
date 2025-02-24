@@ -47,7 +47,7 @@ public class Crews {
     }
 
     public Map<String, StatisticsResult> findWarningCrews(LocalDate nowDate) {
-        return AttendanceStatistics.calculateExpelledWarning(nowDate, crews)
+        return Penalty.calculateExpelledWarning(nowDate, crews)
             .entrySet().stream()
             .sorted(Comparator.comparing((Map.Entry<String, StatisticsResult> entry)
                     -> entry.getValue().getPenalty(), Comparator.naturalOrder())

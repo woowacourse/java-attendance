@@ -7,8 +7,8 @@ import static util.constant.Value.NOW_DAY;
 import static util.constant.Value.NOW_MONTH;
 import static util.constant.Value.NOW_YEAR;
 
+import domain.AttendanceStatus;
 import domain.Crews;
-import domain.AttendanceStatistics;
 import domain.Penalty;
 import domain.Crew;
 import domain.StatisticsResult;
@@ -102,7 +102,7 @@ public class AttendanceController {
             LocalDate currentDate = DateTimeParser.parseIntegerToDate(NOW_YEAR, NOW_MONTH, NOW_DAY);
             Crew crew = crews.findCrewByName(name);
 
-            StatisticsResult statistics = AttendanceStatistics.countStatus(currentDate, crew);
+            StatisticsResult statistics = AttendanceStatus.countStatus(currentDate, crew);
             int attendanceCount = statistics.getCount(ATTENDANCE);
             int latenessCount = statistics.getCount(LATENESS);
             int absenceCount = statistics.getCount(ABSENCE);

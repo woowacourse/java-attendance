@@ -1,7 +1,6 @@
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 import domain.Crews;
-import domain.AttendanceStatistics;
 import domain.AttendanceStatus;
 import domain.Crew;
 import domain.Penalty;
@@ -32,7 +31,7 @@ public class AttendanceStatisticsTest {
         Crew crew = crews.findCrewByName(name);
 
         LocalDate nowDate = LocalDate.of(2024, 12, 7);
-        StatisticsResult statisticsResult = AttendanceStatistics.countStatus(nowDate, crew);
+        StatisticsResult statisticsResult = AttendanceStatus.countStatus(nowDate, crew);
         int attendanceCount = statisticsResult.getCount(AttendanceStatus.ATTENDANCE);
         int latenessCount = statisticsResult.getCount(AttendanceStatus.LATENESS);
         int absenceCount = statisticsResult.getCount(AttendanceStatus.ABSENCE);
@@ -57,7 +56,7 @@ public class AttendanceStatisticsTest {
         Crew crew = crews.findCrewByName(name);
 
         LocalDate nowDate = LocalDate.of(2024, 12, 7);
-        StatisticsResult statisticsResult = AttendanceStatistics.countStatus(nowDate, crew);
+        StatisticsResult statisticsResult = AttendanceStatus.countStatus(nowDate, crew);
 
         assertThat(Penalty.WARNING).isEqualTo(statisticsResult.getPenalty());
     }
@@ -78,7 +77,7 @@ public class AttendanceStatisticsTest {
         Crew crew = crews.findCrewByName(name);
 
         LocalDate nowDate = LocalDate.of(2024, 12, 10);
-        StatisticsResult statisticsResult = AttendanceStatistics.countStatus(nowDate, crew);
+        StatisticsResult statisticsResult = AttendanceStatus.countStatus(nowDate, crew);
 
         assertThat(Penalty.COUNSELING).isEqualTo(statisticsResult.getPenalty());
     }
@@ -102,7 +101,7 @@ public class AttendanceStatisticsTest {
         Crew crew = crews.findCrewByName(name);
 
         LocalDate nowDate = LocalDate.of(2024, 12, 13);
-        StatisticsResult statisticsResult = AttendanceStatistics.countStatus(nowDate, crew);
+        StatisticsResult statisticsResult = AttendanceStatus.countStatus(nowDate, crew);
 
         assertThat(Penalty.EXPELLED).isEqualTo(statisticsResult.getPenalty());
     }
