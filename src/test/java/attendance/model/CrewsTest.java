@@ -45,6 +45,5 @@ public class CrewsTest {
                 () -> assertFalse(crews.contains(new Crew("엠제이"))),
                 () -> assertFalse(crews.contains(new Crew("포비")))
         );
-
     }
 }
