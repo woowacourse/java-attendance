@@ -13,12 +13,7 @@ public enum StudentPunishment {
         this.punishmentLabel = punishmentLabel;
     }
 
-    public int getStandard() {
+    public int getAbsenceLimit() {
         return absenceLimit;
     }
-
-    public String getPunishmentLabel() {
-        return punishmentLabel;
-    }
-
 }
