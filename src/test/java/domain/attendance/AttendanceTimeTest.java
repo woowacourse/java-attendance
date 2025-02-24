@@ -18,7 +18,7 @@ class AttendanceTimeTest {
     @DisplayName("월요일은 13시 6분부터 13시 30분까지 출석하면 지각이다")
     @ParameterizedTest
     @ValueSource(ints = {6, 30})
-    void test(int minute) {
+    void test1(int minute) {
         boolean isAttendanceFail = AttendanceTime.isAttendance(1, LocalDateTime.of(2025, 2, 17, 13, minute));
         Assertions.assertThat(isAttendanceFail).isFalse();
     }
@@ -37,9 +37,17 @@ class AttendanceTimeTest {
         Assertions.assertThat(isAttendanceSuccess).isTrue();
     }
 
+    @DisplayName("월요일을 제외한 평일은 10시 6분부터 10시 30분까지 출석하면 지각이다")
+    @ParameterizedTest
+    @ValueSource(ints = {6, 30})
+    void test4(int minute) {
+        boolean isAttendance = AttendanceTime.isAttendance(2, LocalDateTime.of(2025, 2, 18, 10, minute));
+        Assertions.assertThat(isAttendance).isFalse();
+    }
+
     @DisplayName("월요일을 제외한 평일은 10시 30분 초과 출석하면 결석이다")
     @Test
-    void test4() {
+    void test5() {
         boolean isAbsenceTrue = AttendanceTime.isAbsence(2, LocalDateTime.of(2025, 2, 18, 10, 31));
         Assertions.assertThat(isAbsenceTrue).isTrue();
     }

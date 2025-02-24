@@ -7,6 +7,8 @@ import domain.attendance.AttendanceState;
 import java.time.LocalDateTime;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 
 public class AttendanceDateTest {
     @DisplayName("휴일일 때 출석일자 생성이 안 된다")
@@ -69,15 +71,16 @@ public class AttendanceDateTest {
     }
 
     @DisplayName("등교시간 5분 초과 30분 이내 등교하면 지각으로 판단한다.")
-    @Test
-    void test4() {
+    @ParameterizedTest
+    @ValueSource(ints = {6, 30})
+    void test4(int minute) {
         //given
         LocalDateTime localDateTime = LocalDateTime.of(
                 2025,
                 2,
                 17,
                 13,
-                30);
+                minute);
         AttendanceDate attendanceDate = new AttendanceDate(localDateTime);
 
         //when
