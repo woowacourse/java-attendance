@@ -1,11 +1,15 @@
 package attendance.domain.attendanceBook;
 
+import java.time.DayOfWeek;
 import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import attendance.common.BusinessRuleConfig;
 import attendance.common.exception.AttendanceArgumentException;
@@ -46,11 +50,17 @@ public class AttendanceList {
     }
 
     public Map<AttendanceStatus, Integer> produceStatistic() {
-        Map<AttendanceStatus, Integer> attendanceStatusMap = new HashMap<>();
-        for (LocalDate date = START_DAY; date.isBefore(getLastDay()); date = date.plusDays(1)) {
-            processAttendanceForDate(date, attendanceStatusMap);
-        }
-        return attendanceStatusMap;
+        Map<AttendanceStatus, Integer> statistics = new HashMap<>();
+        List<LocalDate> workingDays = extractWorkingDays();
+        workingDays.forEach(date -> processAttendanceForDate(date, statistics));
+        return statistics;
+    }
+
+    private List<LocalDate> extractWorkingDays() {
+        return Stream.iterate(START_DAY, date -> date.plusDays(1))
+            .limit(ChronoUnit.DAYS.between(START_DAY, getLastDay()))
+            .filter(this::isValidWorkingDay)
+            .collect(Collectors.toList());
     }
 
     private void processAttendanceForDate(LocalDate date, Map<AttendanceStatus, Integer> attendanceStatusMap) {
@@ -60,6 +70,19 @@ public class AttendanceList {
         } catch (NullPointerException e) {
             handleAbsence(date, attendanceStatusMap);
         }
+    }
+
+    private boolean isValidWorkingDay(LocalDate date) {
+        return !isWeekend(date) && !isHoliday(date);
+    }
+
+    private boolean isHoliday(LocalDate date) {
+        return BusinessRuleConfig.DAT_OF_HOLIDAY.stream()
+            .anyMatch(day -> date.getDayOfMonth() == day);
+    }
+
+    private boolean isWeekend(LocalDate date) {
+        return date.getDayOfWeek().getValue() >= DayOfWeek.SATURDAY.getValue();
     }
 
     private void updateAttendanceRecord(Map<AttendanceStatus, Integer> attendanceStatusMap, Attendance attendance) {
