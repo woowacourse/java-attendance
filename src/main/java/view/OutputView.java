@@ -9,29 +9,17 @@ import java.util.Comparator;
 import java.util.List;
 
 public class OutputView {
-    private static final String APPLICATION_START_MESSAGE = """
-            오늘은 %d월 %d일 %s입니다. 기능을 선택해 주세요.
-            1. 출석 확인
-            2. 출석 수정
-            3. 크루별 출석 기록 확인
-            4. 제적 위험자 확인
-            Q. 종료
-            """;
-    private static final String UPDATE_COMPLETE_MESSAGE = "%d월 %02d일 %s %s (%s) -> %s (%s) 수정 완료!\n";
-    private static final String CREW_ATTENDANCE_HISTORY_MESSAGE = "이번 달 %s의 출석 기록입니다.\n\n";
-    private static final String ATTENDANCE_HISTORY_WITH_DATE = "%d월 %02d일 %s %s (%s)\n";
-    private static final String ATTENDANCE_COUNT = "출석: %d회\n";
-    private static final String LATE_COUNT = "지각: %d회\n";
-    private static final String ABSENT_COUNT = "결석: %d회\n\n";
-    private static final String PENALTY_CREW_READ_RESULT_PREFIX = "제적 위험자 조회 결과";
-    private static final String PENALTY_CREW_READ_RESULT = "- %s: 결석 %d회, 지각 %d회 (%s)\n";
-    private static final String ATTENDANCE_STATUS_NAME = "출석";
-    private static final String LATE_STATUS_NAME = "지각";
-    private static final String ABSENT_STATUS_NAME = "결석";
 
     public void printOptionMessage(LocalDate today) {
         String dayOfWeekName = AttendanceStandard.getNameByDayOfWeek(today.getDayOfWeek());
-        System.out.printf(APPLICATION_START_MESSAGE, today.getMonth().getValue(), today.getDayOfMonth(), dayOfWeekName);
+        System.out.printf("""
+                오늘은 %d월 %d일 %s입니다. 기능을 선택해 주세요.
+                1. 출석 확인
+                2. 출석 수정
+                3. 크루별 출석 기록 확인
+                4. 제적 위험자 확인
+                Q. 종료
+                """, today.getMonth().getValue(), today.getDayOfMonth(), dayOfWeekName);
     }
 
     public void printAttendanceInformation(AttendanceDto attendanceDto) {
@@ -51,14 +39,14 @@ public class OutputView {
         String originAttendanceStatusName = getAttendanceStatusName(originalAttendanceDto);
         String editedAttendanceStatusName = getAttendanceStatusName(editedAttendanceDto);
 
-        System.out.printf(UPDATE_COMPLETE_MESSAGE,
+        System.out.printf("%d월 %02d일 %s %s (%s) -> %s (%s) 수정 완료!\n",
                 date.getMonth().getValue(), date.getDayOfMonth(), dayOfWeekName,
                 originalAttendanceTime, originAttendanceStatusName,
                 editedAttendanceTime, editedAttendanceStatusName);
     }
 
     public void printCrewAttendanceHistoryMessage(String nickname) {
-        System.out.printf(CREW_ATTENDANCE_HISTORY_MESSAGE, nickname);
+        System.out.printf("이번 달 %s의 출석 기록입니다.\n\n", nickname);
     }
 
     public void printAttendanceHistoryWithCrew(Crew crew) {
@@ -84,34 +72,34 @@ public class OutputView {
             if (dto.getAttendanceTime() != null) {
                 attendanceTime = Converter.covertLocalTimeToString(dto.getAttendanceTime());
             }
-            System.out.printf(ATTENDANCE_HISTORY_WITH_DATE, date.getMonth().getValue(), date.getDayOfMonth(), dayOfWeekName, attendanceTime, attendanceStatusName);
+            System.out.printf("%d월 %02d일 %s %s (%s)\n", date.getMonth().getValue(), date.getDayOfMonth(), dayOfWeekName, attendanceTime, attendanceStatusName);
         }
     }
 
     private void printCountWithAttendanceStatus(int attendanceCount, int lateCount, int absentCount) {
-        System.out.printf(ATTENDANCE_COUNT, attendanceCount);
-        System.out.printf(LATE_COUNT, lateCount);
-        System.out.printf(ABSENT_COUNT, absentCount);
+        System.out.printf("출석: %d회\n", attendanceCount);
+        System.out.printf("지각: %d회\n", lateCount);
+        System.out.printf("결석: %d회\n\n", absentCount);
     }
 
     private String getAttendanceStatusName(AttendanceDto attendanceDto) {
         if (attendanceDto.getAbsent()) {
-            return ABSENT_STATUS_NAME;
+            return "결석";
         }
 
         if (attendanceDto.getLate()) {
-            return LATE_STATUS_NAME;
+            return "지각";
         }
 
-        return ATTENDANCE_STATUS_NAME;
+        return "출석";
     }
 
     public void printPenaltyCrews(List<CrewDto> penaltyCrewDtos) {
-        System.out.println(PENALTY_CREW_READ_RESULT_PREFIX);
+        System.out.println("제적 위험자 조회 결과");
 
         sortCrewDtos(penaltyCrewDtos);
         for (CrewDto dto : penaltyCrewDtos) {
-            System.out.printf(PENALTY_CREW_READ_RESULT, dto.getNickName(), dto.getAbsentCount(), dto.getLateCount(), dto.getPenaltyStatus().getName());
+            System.out.printf("- %s: 결석 %d회, 지각 %d회 (%s)\n", dto.getNickName(), dto.getAbsentCount(), dto.getLateCount(), dto.getPenaltyStatus().getName());
         }
         System.out.println();
 
