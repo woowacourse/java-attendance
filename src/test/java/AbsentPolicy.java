@@ -29,6 +29,10 @@ public class AbsentPolicy {
 
         LocalTime attendanceTime = calculateAttendanceTime(attendanceDayOfWeek);
 
+        return calculateAttendanceStatus(educationTime, attendanceTime);
+    }
+
+    private static String calculateAttendanceStatus(LocalTime educationTime, LocalTime attendanceTime) {
         if(educationTime.isBefore(attendanceTime.plusMinutes(6))){
             return "출석";
         }

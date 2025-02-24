@@ -20,8 +20,8 @@ import static org.assertj.core.api.Assertions.*;
 3. 모든 시간 결석 처리 [x]
 4. 시작 시간부터 5분 내면 출석(10시) [x]
     4-1 월요일일 경우 13시 [x]
-5. 시작 시간부터 30분 내면 지각
-    5-1 월요일일 경우 13시
+5. 시작 시간부터 30분 내면 지각 [x]
+    5-1 월요일일 경우 13시 [x]
  */
 public class AbsentPolicyTest {
     @ParameterizedTest
