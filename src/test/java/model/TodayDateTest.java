@@ -1,7 +1,5 @@
 package model;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 import java.time.LocalDate;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;

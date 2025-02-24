@@ -1,7 +1,5 @@
 package model;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import org.assertj.core.api.Assertions;
