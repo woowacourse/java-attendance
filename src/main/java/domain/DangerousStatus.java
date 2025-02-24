@@ -2,7 +2,7 @@ package domain;
 
 import static domain.AttendTime.LATE_TO_ABSENT_COUNT;
 
-public class AttendanceStatus {
+public class DangerousStatus {
 
     public static final String DISMISSAL = "제적";
     public static final String INTERVIEW = "면담";
@@ -17,7 +17,7 @@ public class AttendanceStatus {
     private int absent;
     private String status;
 
-    public AttendanceStatus(int onTime, int late, int absent) {
+    public DangerousStatus(int onTime, int late, int absent) {
         this.onTime = onTime;
         this.late = late;
         this.absent = absent;

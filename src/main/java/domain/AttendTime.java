@@ -13,14 +13,14 @@ public class AttendTime {
     public static final String ATTENDED = "출석";
     public static final int LATE_TO_ABSENT_COUNT = 3;
 
-    private final LocalDateTime attendTime;
+    private LocalDateTime attendTime;
     public static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
 
     public AttendTime(String attendTime) {
         this.attendTime = LocalDateTime.parse(attendTime, FORMATTER);
     }
 
-    public String checkTime() {
+    public String checkAttendanceStatus() {
         final LocalDateTime lateTime = LocalDateTime.of(DEFAULT_YEAR, DEFAULT_MONTH, attendTime.getDayOfMonth(),
                 getDayInfo(attendTime.getDayOfMonth()), 5, 0);
         final LocalDateTime absentTime = LocalDateTime.of(DEFAULT_YEAR, DEFAULT_MONTH, attendTime.getDayOfMonth(),
@@ -35,6 +35,12 @@ public class AttendTime {
         return ATTENDED;
     }
 
+    public AttendTime modifyAttendTime(final String time) {
+        this.attendTime = LocalDateTime.parse(
+                DEFAULT_YEAR + "-" + DEFAULT_MONTH + "-" + attendTime.getDayOfMonth() + " " + time, FORMATTER);
+        return this;
+    }
+
     public int getDayOfMonth() {
         return attendTime.getDayOfMonth();
     }
@@ -46,4 +52,5 @@ public class AttendTime {
     public LocalDateTime getAttendTime() {
         return attendTime;
     }
+
 }

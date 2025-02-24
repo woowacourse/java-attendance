@@ -1,8 +1,8 @@
 package controller;
 
-import static domain.AttendanceStatus.DISMISSAL;
-import static domain.AttendanceStatus.INTERVIEW;
-import static domain.AttendanceStatus.WARNING;
+import static domain.DangerousStatus.DISMISSAL;
+import static domain.DangerousStatus.INTERVIEW;
+import static domain.DangerousStatus.WARNING;
 import static domain.December.DEFAULT_MONTH;
 import static domain.December.DEFAULT_YEAR;
 
@@ -65,29 +65,24 @@ public class AttendanceController {
         crew.addAttendTime(time);
 
         AttendTime attendTime = crew.findAttendTimeByDate(LocalDateTime.now().getDayOfMonth());
-
-        outputView.printTodayAttendance(attendTime);
+        String attendanceStatus = attendTime.checkAttendanceStatus();
+        outputView.printTodayAttendance(attendTime, attendanceStatus);
     }
 
     private void modifyAttendanceTime(final Crews crews) {
         String nickname = inputView.readNickNameForChange();
+        Crew crew = crews.findCrew(nickname);
         int date = inputView.readDateForChange();
         December.checkWeekday(LocalDateTime.of(DEFAULT_YEAR, DEFAULT_MONTH, date, 0, 0));
-
         String time = inputView.readTimeForChange();
-        AttendTime attendTime = crews.deleteAttendance(nickname, date);
 
-        outputView.printBeforeChangedCrewAttendance(attendTime);
+        AttendTime beforeAttendTime = crew.findAttendTimeByDate(date);
+        String beforeAttendanceStatus = beforeAttendTime.checkAttendanceStatus();
+        outputView.printBeforeAttendTime(beforeAttendTime, beforeAttendanceStatus);
 
-        int year = attendTime.getAttendTime().getYear();
-        int month = attendTime.getAttendTime().getMonthValue();
-        int date2 = attendTime.getAttendTime().getDayOfMonth();
-
-        String inputTime = String.format("%d-%d-%d %s", year, month, date2, time);
-        crews.findCrew(nickname).addAttendTime(inputTime);
-        String status = crews.findCrew(nickname).attend(inputTime);
-
-        outputView.printChangedCrewAttendance(time, status);
+        AttendTime modifiedAttendTime = beforeAttendTime.modifyAttendTime(time);
+        String modifiedAttendanceStatus = modifiedAttendTime.checkAttendanceStatus();
+        outputView.printModifiedAttendTime(modifiedAttendTime, modifiedAttendanceStatus);
     }
 
     private void findAttendanceHistory(final Crews crews) {

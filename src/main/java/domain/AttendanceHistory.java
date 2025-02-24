@@ -9,7 +9,7 @@ import java.util.List;
 public class AttendanceHistory {
 
     private final List<AttendTime> attendTimes;
-    private AttendanceStatus attendanceStatus;
+    private DangerousStatus dangerousStatus;
 
     public AttendanceHistory(List<AttendTime> attendTimes) {
         this.attendTimes = attendTimes;
@@ -29,7 +29,7 @@ public class AttendanceHistory {
     public int calculateOnTime() {
         int total = 0;
         for (AttendTime attendTime : attendTimes) {
-            if (attendTime.checkTime().equals(ATTENDED)) {
+            if (attendTime.checkAttendanceStatus().equals(ATTENDED)) {
                 total += 1;
             }
         }
@@ -39,7 +39,7 @@ public class AttendanceHistory {
     public int calculateLate() {
         int total = 0;
         for (AttendTime attendTime : attendTimes) {
-            if (attendTime.checkTime().equals(LATE)) {
+            if (attendTime.checkAttendanceStatus().equals(LATE)) {
                 total += 1;
             }
         }
@@ -49,7 +49,7 @@ public class AttendanceHistory {
     public int calculateAbsent() {
         int total = 0;
         for (AttendTime attendTime : attendTimes) {
-            if (attendTime.checkTime().equals(ABSENT)) {
+            if (attendTime.checkAttendanceStatus().equals(ABSENT)) {
                 total += 1;
             }
         }
@@ -58,13 +58,18 @@ public class AttendanceHistory {
         return total;
     }
 
-    public AttendanceStatus getAttendanceStatus() {
-        attendanceStatus = new AttendanceStatus(
+    public DangerousStatus getAttendanceStatus() {
+        dangerousStatus = new DangerousStatus(
                 calculateOnTime(), calculateLate(), calculateAbsent());
-        return attendanceStatus;
+        return dangerousStatus;
     }
 
     public List<AttendTime> getAttendTimes() {
         return attendTimes;
+    }
+
+    public void modifyAttendTime(final int date, final String time) {
+        AttendTime attendTime = findAttendTimeByDate(date);
+        attendTime.modifyAttendTime(time);
     }
 }

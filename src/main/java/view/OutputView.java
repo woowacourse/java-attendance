@@ -4,28 +4,30 @@ import static domain.AttendTime.LATE_TO_ABSENT_COUNT;
 
 import domain.AttendTime;
 import domain.AttendanceHistory;
-import domain.AttendanceStatus;
 import domain.Crew;
+import domain.DangerousStatus;
 import domain.December;
 import java.util.Comparator;
 import java.util.List;
 
 public class OutputView {
 
-    public void printTodayAttendance(final AttendTime attendTime) {
+    public void printTodayAttendance(final AttendTime attendTime, final String status) {
         System.out.println();
-        printAttendTime(attendTime);
+        printAttendTime(attendTime, status);
         System.out.println();
         System.out.println();
     }
 
-    public void printBeforeChangedCrewAttendance(final AttendTime attendTime) {
+    public void printBeforeAttendTime(final AttendTime beforeAttendTime, final String status) {
         System.out.println();
-        printAttendTime(attendTime);
+        printAttendTime(beforeAttendTime, status);
     }
 
-    public void printChangedCrewAttendance(String time, String status) {
-        System.out.printf(" -> %s (%s) 수정 완료!", time, status);
+    public void printModifiedAttendTime(final AttendTime modifiedAttendTime, final String status) {
+        System.out.printf(" -> %02d:%02d (%s) 수정 완료!",
+                modifiedAttendTime.getAttendTime().getHour(), modifiedAttendTime.getAttendTime().getMinute(),
+                status);
         System.out.println();
         System.out.println();
     }
@@ -37,7 +39,8 @@ public class OutputView {
         for (int date : December.getWeekDays()) {
             AttendTime attendTime = crew.findAttendTimeByDate(date);
             if (attendTime != null) {
-                printAttendTime(attendTime);
+                String attendanceStatus = attendTime.checkAttendanceStatus();
+                printAttendTime(attendTime, attendanceStatus);
                 System.out.println();
                 continue;
             }
@@ -58,8 +61,8 @@ public class OutputView {
         System.out.println();
 
         System.out.println();
-        AttendanceStatus attendanceStatus = attendanceHistory.getAttendanceStatus();
-        System.out.printf("%s 대상자입니다.\n", attendanceStatus.getStatus());
+        DangerousStatus dangerousStatus = attendanceHistory.getAttendanceStatus();
+        System.out.printf("%s 대상자입니다.\n", dangerousStatus.getStatus());
         System.out.println();
     }
 
@@ -100,13 +103,13 @@ public class OutputView {
         });
     }
 
-    private void printAttendTime(final AttendTime attendTime) {
+    private void printAttendTime(final AttendTime attendTime, final String status) {
         System.out.printf("12월 %02d일 %s %02d:%02d (%s)",
                 attendTime.getAttendTime().getDayOfMonth(),
                 December.getDayByDate(attendTime.getAttendTime().getDayOfMonth()),
                 attendTime.getAttendTime().getHour(),
                 attendTime.getAttendTime().getMinute(),
-                attendTime.checkTime()
+                status
         );
     }
 

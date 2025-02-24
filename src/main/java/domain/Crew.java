@@ -22,7 +22,7 @@ public class Crew {
     public String attend(String inputTime) {
         AttendTime attendTime = new AttendTime(inputTime);
         attendanceHistory.getAttendanceStatus();
-        return attendTime.checkTime();
+        return attendTime.checkAttendanceStatus();
     }
 
     public AttendTime findAttendTimeByDate(int date) {
@@ -56,5 +56,9 @@ public class Crew {
 
     public String getName() {
         return name;
+    }
+
+    public void modifyAttendTime(final int date, final String time) {
+
     }
 }
