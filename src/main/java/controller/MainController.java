@@ -3,7 +3,6 @@ package controller;
 import domain.AbsenceHistory;
 import domain.Attendance;
 import domain.AttendanceState;
-import domain.Calender;
 import domain.Command;
 import domain.Crew;
 import domain.DateProvider;
@@ -74,7 +73,7 @@ public class MainController {
     }
 
     private String getDayOfWeek() {
-        return Calender.findBy(provider.getToday()).getDescription();
+        return provider.getDayOfWeek().getDescription();
     }
 
     private void attendanceUpdate() {

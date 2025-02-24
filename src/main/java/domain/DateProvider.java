@@ -24,6 +24,10 @@ public class DateProvider {
         return this.localDate.getDayOfMonth();
     }
 
+    public Calender getDayOfWeek() {
+        return Calender.findBy(getToday());
+    }
+
     private LocalDate validateFormat(final int year, final int month, final int today) {
         try {
             return LocalDate.of(year, month, today);

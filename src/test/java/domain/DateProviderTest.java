@@ -63,6 +63,19 @@ class DateProviderTest {
         assertThat(actual).isEqualTo(12);
     }
 
+    @DisplayName("해당 요일에 해당하는 Calender 값을 반환한다.")
+    @Test
+    void getDayOfWeek() {
+        //given
+        DateProvider dateProvider = creatLocalDate();
+
+        //when
+        Calender actual = dateProvider.getDayOfWeek();
+
+        //then
+        assertThat(actual).isEqualTo(Calender.TUE);
+    }
+
     private DateProvider creatLocalDate() {
 
         final int year = 2024;
