@@ -1,11 +1,11 @@
 package attendance.domain;
 
-import attendance.common.Constants;
-
 import java.util.Comparator;
 import java.util.Objects;
 
 public class PenaltyCrew implements Comparable<PenaltyCrew> {
+
+    public static final int LATE_TO_ABSENCE_RATIO = 3;
 
     private final String name;
     private final int absenceCount;
@@ -22,7 +22,7 @@ public class PenaltyCrew implements Comparable<PenaltyCrew> {
     }
 
     private static int calculateWeightedLateAbsencePoint(int absenceCount, int lateCount) {
-        return absenceCount * Constants.LATE_TO_ABSENCE_RATIO + lateCount;
+        return absenceCount * LATE_TO_ABSENCE_RATIO + lateCount;
     }
 
     @Override

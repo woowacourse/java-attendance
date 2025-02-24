@@ -1,6 +1,6 @@
 package attendance.domain;
 
-import static attendance.common.Constants.DECEMBER_START_DATE;
+import static attendance.domain.Attendance.DECEMBER_START_DATE;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;

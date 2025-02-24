@@ -1,7 +1,6 @@
 package attendance.view;
 
-import static attendance.common.Constants.DECEMBER_START_DATE;
-import static attendance.common.Constants.LINE_SEPARATOR;
+import static attendance.domain.Attendance.DECEMBER_START_DATE;
 
 import attendance.domain.AttendanceStatus;
 import attendance.dto.AttendanceInfoDto;
@@ -15,6 +14,8 @@ import java.util.List;
 import java.util.Map;
 
 public class OutputView {
+
+    public static final String LINE_SEPARATOR = System.lineSeparator();
 
     public static void printError(Exception e) {
         System.out.println(e.getMessage());

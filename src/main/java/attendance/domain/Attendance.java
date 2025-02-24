@@ -1,8 +1,5 @@
 package attendance.domain;
 
-import static attendance.common.Constants.DECEMBER_END_DATE;
-import static attendance.common.Constants.DECEMBER_START_DATE;
-
 import attendance.common.ErrorMessage;
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -13,6 +10,8 @@ public class Attendance implements Comparable<Attendance> {
 
     private static final LocalTime OPEN_TIME = LocalTime.of(8, 0);
     private static final LocalTime CLOSED_TIME = LocalTime.of(23, 0);
+    public static final LocalDate DECEMBER_START_DATE = LocalDate.of(2024, 12, 1);
+    public static final LocalDate DECEMBER_END_DATE = LocalDate.of(2024, 12, 31);
 
     private final String nickName;
     private final LocalDate attendanceDate;
