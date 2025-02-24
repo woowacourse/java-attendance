@@ -6,37 +6,31 @@ import java.time.LocalTime;
 import java.time.temporal.ChronoUnit;
 
 public enum WorkingTime {
-    MONDAY(13, 0, 18, 0),
-    TUESDAY(10, 0, 18, 0),
-    WEDNESDAY(10, 0, 18, 0),
-    THURSDAY(10, 0, 18, 0),
-    FRIDAY(10, 0, 18, 0),
+
+    MONDAY(LocalTime.of(13, 0), LocalTime.of(18, 0)),
+    TUESDAY(LocalTime.of(10, 0), LocalTime.of(18, 0)),
+    WEDNESDAY(LocalTime.of(10, 0), LocalTime.of(18, 0)),
+    THURSDAY(LocalTime.of(10, 0), LocalTime.of(18, 0)),
+    FRIDAY(LocalTime.of(10, 0), LocalTime.of(18, 0)),
     ;
 
-    private final int startHour;
-    private final int startMinute;
-    private final int endHour;
-    private final int endMinute;
+    private final LocalTime startTime;
+    private final LocalTime endTime;
 
-    WorkingTime(int startHour,
-                int startMinute,
-                int endHour,
-                int endMinute) {
-        this.startHour = startHour;
-        this.startMinute = startMinute;
-        this.endHour = endHour;
-        this.endMinute = endMinute;
+    WorkingTime(LocalTime startTime, LocalTime endTime) {
+        this.startTime = startTime;
+        this.endTime = endTime;
     }
 
     public static int getMinute(LocalDateTime checkInTime) {
         String name = checkInTime.getDayOfWeek().name();
         WorkingTime workingTime = WorkingTime.valueOf(name);
 
-        int hour = workingTime.startHour;
-        int minute = workingTime.startMinute;
 
-        LocalDateTime startTime = LocalDateTime.of(LocalDate.from(checkInTime), LocalTime.of(hour, minute));
+        LocalTime startTime = workingTime.startTime;
 
-        return Math.toIntExact(ChronoUnit.MINUTES.between(startTime, checkInTime));
+        LocalDateTime startDateTime = LocalDateTime.of(LocalDate.from(checkInTime), startTime);
+
+        return Math.toIntExact(ChronoUnit.MINUTES.between(startDateTime, checkInTime));
     }
 }
