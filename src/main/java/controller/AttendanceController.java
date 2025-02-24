@@ -68,7 +68,7 @@ public class AttendanceController {
 
     private void executePrintCrewAttendance() {
         String nickname = inputView.readNickname();
-        outputView.printCrewAttendance(crews.findCrew(nickname), nickname);
+        outputView.printCrewAttendance(crews.findCrew(nickname).orElseThrow(() -> new IllegalArgumentException("없는 학생입니다.")), nickname);
     }
 
     private void executeChangingAttendance() {
@@ -86,8 +86,8 @@ public class AttendanceController {
         int date2 = attendTime.getAttendTime().getDayOfMonth();
 
         String inputTime = String.format("%d-%d-%d %s", year, month, date2, time);
-        crews.findCrew(nickname).addAttendTime(inputTime);
-        String status = crews.findCrew(nickname).attend(inputTime);
+        crews.findCrew(nickname).orElseThrow(() -> new IllegalArgumentException("[Error] 없는 학생입니다.")).addAttendTime(inputTime);
+        String status = crews.findCrew(nickname).orElseThrow(() -> new IllegalArgumentException("[Error] 없는 학생입니다.")).attend(inputTime);
 
         outputView.printChangedCrewAttendance(time, status);
     }
@@ -101,7 +101,7 @@ public class AttendanceController {
         String time = inputView.readTime();
         crews.initializeAttendTime(nickname, time);
 
-        AttendTime attendTime = crews.findCrew(nickname)
+        AttendTime attendTime = crews.findCrew(nickname).orElseThrow(() -> new IllegalArgumentException("[Error] 없는 학생입니다."))
                 .findAttendanceByDate(LocalDateTime.now().getDayOfMonth());
 
         outputView.printTodayAttendance(attendTime);

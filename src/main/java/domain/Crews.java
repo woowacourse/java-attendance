@@ -2,6 +2,7 @@ package domain;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public class Crews {
 
@@ -15,22 +16,18 @@ public class Crews {
         });
     }
 
-    public Crew findCrew(String nickname) {
+    public Optional<Crew> findCrew(String nickname) {
         return crews.stream()
-                .filter(c -> c.getName().equals(nickname))
-                .findAny()
-                .orElse(null);
+                .filter(c -> c.checkNickName(nickname))
+                .findAny();
     }
 
     public void ifFindNameAddTime(String nickname) {
-        Crew crew = findCrew(nickname);
-        if (crew == null) {
-            throw new IllegalArgumentException("[ERROR] 등록되지 않은 닉네임입니다.");
-        }
+        Crew crew = findCrew(nickname).orElseThrow(() -> new IllegalArgumentException("[ERROR] 등록되지 않은 닉네임입니다."));
     }
 
     public void initializeAttendTime(String nickname, String time) {
-        Crew crew = findCrew(nickname);
+        Crew crew = findCrew(nickname).orElse(null);
 
         if (crew != null) {
             crew.addAttendTime(time);
@@ -43,7 +40,7 @@ public class Crews {
     }
 
     public AttendTime deleteAttendance(String nickname, int date) {
-        Crew crew = findCrew(nickname);
+        Crew crew = findCrew(nickname).orElseThrow(()->new IllegalArgumentException("[Error] 없는 학생입니다."));
         AttendTime attendTime = crew.findAttendanceByDate(date);
         crew.deleteAttendance(date);
         return attendTime;

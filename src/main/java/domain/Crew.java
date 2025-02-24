@@ -52,4 +52,8 @@ public class Crew {
     public AttendanceHistory getAttendanceHistory() {
         return attendanceHistory;
     }
+
+    public boolean checkNickName(String nickname) {
+        return this.name.equals(nickname);
+    }
 }

@@ -1,12 +1,11 @@
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
-
 import domain.*;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 
 public class CrewsTest {
 
@@ -16,7 +15,7 @@ public class CrewsTest {
 
         Crews crews = new Crews(List.of("폰트,2024-12-13 10:08", "슬링키,2024-12-09 13:03"));
 
-        Crew crew = crews.findCrew("폰트");
+        Crew crew = crews.findCrew("폰트").orElseThrow(() -> new IllegalArgumentException("[Error] 없는 학생입니다."));
 
         assertThat(crew.getName()).isEqualTo("폰트");
     }
@@ -25,7 +24,8 @@ public class CrewsTest {
     @Test
     void test2() {
         Crews crews = new Crews(List.of("폰트,2024-12-13 10:08", "슬링키,2024-12-09 13:03"));
-        Crew crew = crews.findCrew("슬링키");
+        Crew crew = crews.findCrew("슬링키").orElseThrow(() -> new IllegalArgumentException("[Error] 없는 학생입니다."));
+        ;
 
         assertThat(crew.getName()).isEqualTo("슬링키");
     }
@@ -37,8 +37,7 @@ public class CrewsTest {
 
         crews.initializeAttendTime("슬링키", "2024-12-09 13:03");
 
-        assertThat(crews.findCrew("슬링키").getAttendTimes().size())
-                .isEqualTo(2);
+        assertThat(crews.findCrew("슬링키").orElseThrow(() -> new IllegalArgumentException("[Error] 없는 학생입니다.")).getAttendTimes().size()).isEqualTo(2);
     }
 
     @Test
