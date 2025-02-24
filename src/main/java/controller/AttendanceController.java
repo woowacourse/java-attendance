@@ -2,11 +2,11 @@ package controller;
 
 import static util.Convertor.changeStandardDate;
 
-import domain.AttendanceHistory;
-import domain.SelectionOption;
 import domain.AbsenceLevel;
+import domain.AttendanceHistory;
 import domain.Crew;
 import domain.Crews;
+import domain.SelectionOption;
 import dto.AbsenceCrewDto;
 import dto.AbsenceCrewsDto;
 import dto.HistoriesDto;
@@ -75,7 +75,8 @@ public class AttendanceController {
         List<AttendanceHistory> beforeAttendanceHistory = crews.getBeforeHistory(username, newDate);
         Map<String, Integer> attendanceAllResult = crews.getAttendanceAllResult(username, newDate);
         AbsenceLevel classifyAbsenceLevel = crews.getClassifyAbsenceLevel(username, newDate);
-        HistoriesDto historiesDto = HistoriesDto.of(username, beforeAttendanceHistory, attendanceAllResult, classifyAbsenceLevel);
+        HistoriesDto historiesDto = HistoriesDto.of(username, beforeAttendanceHistory, attendanceAllResult,
+                classifyAbsenceLevel);
         outputVIew.printHistories(historiesDto);
     }
 
@@ -90,5 +91,6 @@ public class AttendanceController {
         AbsenceCrewsDto crewsDto = new AbsenceCrewsDto(crewDtos);
         outputVIew.printDangerous(crewsDto);
     }
+
 
 }

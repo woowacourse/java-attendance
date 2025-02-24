@@ -11,24 +11,16 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 public class AttendanceHistories {
     private final List<AttendanceHistory> histories;
 
     public AttendanceHistories(List<LocalDateTime> originalHistories, LocalDate standard) {
         List<LocalDateTime> attendanceTimes = new ArrayList<>(originalHistories);
-
-        int day = standard.getDayOfMonth();
-        for (int i = 1; i < day; i++) {
-            createAbsenceHistory(standard, i).ifPresent(absenceHistory -> {
-                if (!checkHasAttendanceTime(attendanceTimes, absenceHistory.toLocalDate())) {
-                    attendanceTimes.add(absenceHistory);
-                }
-            });
-        }
-
+        List<LocalDateTime> absenceHistories = generateAbsenceHistories(attendanceTimes, standard);
+        attendanceTimes.addAll(absenceHistories);
         this.histories = attendanceTimes.stream()
                 .map(AttendanceHistory::new)
                 .collect(Collectors.toList());
@@ -100,18 +92,25 @@ public class AttendanceHistories {
         return findAttendanceHistory.getAttendanceTime();
     }
 
-    private boolean checkHasAttendanceTime(List<LocalDateTime> histories, LocalDate standard) {
-        return histories.stream()
-                .map(LocalDateTime::toLocalDate)
-                .anyMatch(date -> date.equals(standard));
+    private List<LocalDateTime> generateAbsenceHistories(List<LocalDateTime> attendanceTimes, LocalDate standard) {
+        return getAbsentDays(attendanceTimes, standard).stream()
+                .filter(date -> !Holiday.isHoliday(date))
+                .map(date -> LocalDateTime.of(date.getYear(), date.getMonthValue(), date.getDayOfMonth(),
+                        ABSENT_DEFAULT_HOUR, ABSENT_DEFAULT_MINUTE))
+                .collect(Collectors.toList());
     }
 
-    private Optional<LocalDateTime> createAbsenceHistory(LocalDate standard, int day) {
-        LocalDate time = LocalDate.of(standard.getYear(), standard.getMonthValue(), day);
-        if (Holiday.isHoliday(time)) {
-            return Optional.empty();
-        }
-        return Optional.of(LocalDateTime.of(standard.getYear(), standard.getMonthValue(), day,
-                ABSENT_DEFAULT_HOUR, ABSENT_DEFAULT_MINUTE));
+    private List<LocalDate> getAbsentDays(List<LocalDateTime> attendanceTimes, LocalDate standard) {
+        int day = standard.getDayOfMonth();
+        return IntStream.range(1, day)
+                .mapToObj(i -> LocalDate.of(standard.getYear(), standard.getMonthValue(), i))
+                .filter(date -> !hasAttendanceForDate(attendanceTimes, date))
+                .collect(Collectors.toList());
+    }
+
+    private boolean hasAttendanceForDate(List<LocalDateTime> attendanceTimes, LocalDate date) {
+        return attendanceTimes.stream()
+                .map(LocalDateTime::toLocalDate)
+                .anyMatch(attendanceDate -> attendanceDate.equals(date));
     }
 }
