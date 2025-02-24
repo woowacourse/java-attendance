@@ -1,8 +1,6 @@
 package attendance.domain;
 
 import attendance.repository.AttendanceRepository;
-import java.util.Comparator;
-import java.util.List;
 import java.util.Set;
 
 public class AttendanceBook {
@@ -27,13 +25,7 @@ public class AttendanceBook {
         }
     }
 
-    public List<CrewAttendanceInformation> getCrewAtRiskOfExpulsion(final AttendanceRepository attendanceRepository,
-                                                                    final String academicStatus) {
-
-        return names.stream()
-                .map(attendanceRepository::getAcademicStatusByName)
-                .filter(info -> info.academicStatus().equals(academicStatus))
-                .sorted(Comparator.comparing(CrewAttendanceInformation::crewName))
-                .toList();
+    public Set<String> getNames() {
+        return Set.copyOf(names);
     }
 }

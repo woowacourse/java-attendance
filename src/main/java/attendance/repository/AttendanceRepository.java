@@ -13,6 +13,7 @@ import java.time.LocalDate;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -83,6 +84,16 @@ public class AttendanceRepository {
         } catch (IllegalArgumentException e) {
             return true;
         }
+    }
+
+    public List<CrewAttendanceInformation> getCrewAtRiskOfExpulsion(final Set<String> names,
+                                                                    final String academicStatus) {
+
+        return names.stream()
+                .map(this::getAcademicStatusByName)
+                .filter(info -> info.academicStatus().equals(academicStatus))
+                .sorted(Comparator.comparing(CrewAttendanceInformation::crewName))
+                .toList();
     }
 
     public CrewAttendanceInformation getAcademicStatusByName(final String name) {

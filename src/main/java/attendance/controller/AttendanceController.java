@@ -215,8 +215,8 @@ public class AttendanceController {
 
     private void printTargetCrews(AcademicStatus status) {
 
-        List<CrewAttendanceInformation> targetCrews = attendanceBook.getCrewAtRiskOfExpulsion(
-                attendanceRepository, status.getValue());
+        List<CrewAttendanceInformation> targetCrews = attendanceRepository.getCrewAtRiskOfExpulsion(
+                attendanceBook.getNames(), status.getValue());
         outputView.printCrewsAtRiskOfExpulsion(targetCrews);
     }
 
