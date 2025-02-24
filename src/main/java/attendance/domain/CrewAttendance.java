@@ -2,10 +2,11 @@ package attendance.domain;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.Collections;
 import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.stream.Collectors;
 
 public class CrewAttendance {
     private final String name;
@@ -26,68 +27,63 @@ public class CrewAttendance {
         attendances.put(date, attendanceTimeStatus);
     }
 
-    public AttendanceTimeStatus modify(final LocalDate localDate, final AttendanceTimeStatus attendanceTimeStatus) {
-        return attendances.put(localDate, attendanceTimeStatus);
+    public void modify(final LocalDateTime localDateTime) {
+        AttendanceTimeStatus attendanceTimeStatus = new AttendanceTimeStatus(localDateTime);
+        attendances.put(localDateTime.toLocalDate(), attendanceTimeStatus);
     }
 
-    private void updateAttendanceUntil(int today) {
-        for (int day = 1; day < today; day++) {
-            LocalDate date = LocalDate.of(2024, 12, day);
-            createAbsence(day, date);
+    public AttendanceTimeStatus getAttendanceOn(final LocalDate date) {
+        if (isEmptyOn(date)) {
+            throw new IllegalArgumentException("해당 날짜에 출석 기록이 없습니다.");
         }
+        return attendances.get(date);
     }
 
-    private void createAbsence(final int day, final LocalDate date) {
-        if (AttendanceChecker.isCampusDay(day) && !hasAttendanceOn(date)) {
-            attendances.put(date, new AttendanceTimeStatus());
-        }
+    private boolean isEmptyOn(final LocalDate localDate) {
+        return !attendances.containsKey(localDate);
     }
 
-    public boolean hasAttendanceOn(final LocalDate localDate) {
-        return attendances.containsKey(localDate);
-    }
-
-    public Map<AttendanceStatus, Integer> countAttendanceStatus(final int today) {
-        updateAttendanceUntil(today);
-
-        Map<AttendanceStatus, Integer> attendanceStatuses = calculateAttendanceStatus();
-
-        removeTodayStatus(today, attendanceStatuses);
-
-        return attendanceStatuses;
-    }
-
-    private Map<AttendanceStatus, Integer> calculateAttendanceStatus() {
-        Map<AttendanceStatus, Integer> attendanceStatuses = new EnumMap<>(AttendanceStatus.class);
-
-        for (AttendanceStatus attendanceStatus : AttendanceStatus.values()) {
-            long count = attendances.values().stream()
-                    .filter(timeStatus -> timeStatus.status().equals(attendanceStatus))
-                    .count();
-
-            attendanceStatuses.put(attendanceStatus, (int) count);
-        }
-        return attendanceStatuses;
-    }
-
-    private void removeTodayStatus(final int today, final Map<AttendanceStatus, Integer> attendanceStatuses) {
-        LocalDate dateOfToday = LocalDate.of(2024, 12, today);
-        if (!hasAttendanceOn(dateOfToday)) {
-            return;
-        }
-
-        AttendanceStatus status = attendances.get(dateOfToday).status();
-
-        attendanceStatuses.put(status, attendanceStatuses.get(status) - 1);
+    public boolean hasSameWarningLevel(WarningLevel warningLevel) {
+        Map<AttendanceStatus, Integer> attendanceStatusCounts = countAttendanceStatusBefore(LocalDate.now());
+        WarningLevel crewWarningLevel = WarningLevel.calculateLevel(attendanceStatusCounts);
+        return crewWarningLevel == warningLevel;
     }
 
     public boolean isNameMatch(String anotherName) {
         return this.name.equals(anotherName);
     }
 
-    public Map<LocalDate, AttendanceTimeStatus> getAttendances(int today) {
-        updateAttendanceUntil(today);
-        return Collections.unmodifiableMap(attendances);
+    public Map<AttendanceStatus, Integer> countAttendanceStatusBefore(LocalDate localDate) {
+        Map<LocalDate, AttendanceTimeStatus> attendances = queryAttendancesBefore(localDate);
+        Map<AttendanceStatus, Integer> attendanceStatusCounts = new EnumMap<>(AttendanceStatus.class);
+
+        for (AttendanceStatus attendanceStatus : AttendanceStatus.values()) {
+            long count = attendances.values().stream()
+                    .filter(timeStatus -> timeStatus.status().equals(attendanceStatus))
+                    .count();
+            attendanceStatusCounts.put(attendanceStatus, (int) count);
+        }
+        return attendanceStatusCounts;
+    }
+
+    public Map<LocalDate, AttendanceTimeStatus> queryAttendancesBefore(LocalDate localDate) {
+        updateAttendanceBefore(localDate.getDayOfMonth());
+        return attendances.entrySet().stream()
+                .filter(entry -> entry.getKey().isBefore(localDate))
+                .collect(Collectors.toUnmodifiableMap(Entry::getKey, Entry::getValue));
+    }
+
+    private void updateAttendanceBefore(int today) {
+        for (int day = 1; day < today; day++) {
+            LocalDate date = LocalDate.of(2024, 12, day);
+            addAbsenceIfEmptyOn(date);
+        }
+    }
+
+    private void addAbsenceIfEmptyOn(final LocalDate date) {
+        if (AttendanceChecker.isCampusDay(date.getDayOfMonth()) && isEmptyOn(date)) {
+            attendances.put(date, new AttendanceTimeStatus());
+        }
     }
 
     public String getName() {

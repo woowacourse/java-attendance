@@ -9,12 +9,12 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.Map;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 public class CrewAttendanceTest {
-
     @DisplayName("출석 정보 저장 성공 ")
     @Test
     void test14() {
@@ -37,23 +37,30 @@ public class CrewAttendanceTest {
                 .hasMessage("[ERROR] 출석 기록이 존재합니다. 출석 수정 기능을 이용하세요.");
     }
 
-    @DisplayName("출석 정보 수정 시 기존 시간, 분 반환")
+    @DisplayName("출석 정보 수정 성공")
     @Test
     void test16() {
-        LocalDateTime prevlocalDateTime = LocalDateTime.of(2024, 12, 23, 13, 3);
         CrewAttendance crewAttendance = new CrewAttendance("빙봉");
-        crewAttendance.add(prevlocalDateTime);
+        LocalDate targetDate = LocalDate.of(2024, 12, 23);
+        LocalTime prevTime = LocalTime.of(13, 3);
+        LocalTime newTime = LocalTime.of(13, 1);
 
-        LocalDateTime newLocalDateTime = LocalDateTime.of(2024, 12, 23, 13, 1);
-        AttendanceTimeStatus newAttendanceTimeStatus = new AttendanceTimeStatus(newLocalDateTime);
+        crewAttendance.add(LocalDateTime.of(targetDate, prevTime));
+        AttendanceTimeStatus prevAttendanceTimeStatus = crewAttendance.getAttendanceOn(targetDate);
+        Map<LocalDate, AttendanceTimeStatus> prevAttendances =
+                crewAttendance.queryAttendancesBefore(targetDate.plusDays(1));
 
-        AttendanceTimeStatus prevAttendanceTimeStatus = crewAttendance.modify(newLocalDateTime.toLocalDate(),
-                newAttendanceTimeStatus);
+        crewAttendance.modify(LocalDateTime.of(targetDate, newTime));
+        AttendanceTimeStatus newAttendanceTimeStatus = crewAttendance.getAttendanceOn(targetDate);
+        Map<LocalDate, AttendanceTimeStatus> newAttendances =
+                crewAttendance.queryAttendancesBefore(targetDate.plusDays(1));
 
-        assertThat(prevAttendanceTimeStatus.time().orElseThrow()).isEqualTo(prevlocalDateTime.toLocalTime());
+        assertThat(prevAttendanceTimeStatus.time().orElseThrow()).isEqualTo(prevTime);
+        assertThat(newAttendanceTimeStatus.time().orElseThrow()).isEqualTo(newTime);
+        assertThat(prevAttendances).hasSameSizeAs(newAttendances);
     }
 
-    @DisplayName("출석 날짜가 존재하지 않는 경우 false 반환")
+    @DisplayName("출석 날짜가 존재하지 않는 경우 예외 발생")
     @Test
     void test17() {
         LocalDateTime localDateTime = LocalDateTime.of(2024, 12, 23, 13, 3);
@@ -62,12 +69,12 @@ public class CrewAttendanceTest {
 
         LocalDate localDate = LocalDate.of(2024, 12, 22);
 
-        boolean result = crewAttendance.hasAttendanceOn(localDate);
-
-        assertThat(result).isFalse();
+        assertThatCode(() -> crewAttendance.getAttendanceOn(localDate))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("해당 날짜에 출석 기록이 없습니다.");
     }
 
-    @DisplayName("출석 날짜가 존재하는 경우 true 반환")
+    @DisplayName("출석 날짜가 존재하는 경우 해당 날짜의 AttendanceTimeStatus 반환")
     @Test
     void test18() {
         LocalDateTime localDateTime = LocalDateTime.of(2024, 12, 23, 13, 3);
@@ -76,9 +83,10 @@ public class CrewAttendanceTest {
 
         LocalDate localDate = LocalDate.of(2024, 12, 23);
 
-        boolean result = crewAttendance.hasAttendanceOn(localDate);
+        AttendanceTimeStatus result = crewAttendance.getAttendanceOn(localDate);
 
-        assertThat(result).isTrue();
+        assertThat(result).isNotNull().isInstanceOf(AttendanceTimeStatus.class);
+        assertThat(result.time().orElseThrow()).isEqualTo(localDateTime.toLocalTime());
     }
 
     @DisplayName("출석, 지각, 결석 횟수 조회")
@@ -95,7 +103,8 @@ public class CrewAttendanceTest {
         crewAttendance.add(localDateTime3);
         crewAttendance.add(localDateTime4);
 
-        Map<AttendanceStatus, Integer> attendanceStatusCounts = crewAttendance.countAttendanceStatus(6);
+        Map<AttendanceStatus, Integer> attendanceStatusCounts =
+                crewAttendance.countAttendanceStatusBefore(LocalDate.of(2024, 12, 6));
 
         assertThat(attendanceStatusCounts.get(PRESENT)).isEqualTo(2);
         assertThat(attendanceStatusCounts.get(LATENESS)).isEqualTo(1);
