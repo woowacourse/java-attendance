@@ -17,4 +17,11 @@ public class RegisterCrewTest {
         String existedRecord = "빙봉,2024-12-13 10:07";
         List<String> parsedRecord = CrewRegistration.parseRecordToNameAndDate(existedRecord);
     }
+
+    @Test
+    @DisplayName("시간 로그 데이터를 날짜와 시간 데이터로 분리한다.")
+    void parse_Date_To_Day_And_Time() {
+        String date = "2024-12-13 10:07";
+        List<String> parsedDate = CrewRegistration.parseDateToDayAndTime(date);
+    }
 }
