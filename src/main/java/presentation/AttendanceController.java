@@ -21,13 +21,6 @@ import service.CrewService;
 import util.DateTimeUtil;
 
 public class AttendanceController {
-    private final static String ATTEND_COMMAND = "1";
-    private final static String EDIT_COMMAND = "2";
-    private final static String CREW_QUERY_COMMAND = "3";
-    private final static String CREWS_WARNING_COMMAND = "4";
-    private final static String EXIT_COMMAND = "Q";
-    private final static String INVALID_COMMAND = "";
-
     private final FileInputView fileInputView;
     private final CrewService attendanceService;
 
@@ -50,7 +43,7 @@ public class AttendanceController {
     }
 
     private void repeatCommand(CrewGroup crewGroup) {
-        while (!controlCommand(crewGroup).equalsIgnoreCase(EXIT_COMMAND)) {
+        while (!controlCommand(crewGroup).equalsIgnoreCase(AttendanceCommand.EXIT_COMMAND.getCommand())) {
         }
     }
 
@@ -58,22 +51,22 @@ public class AttendanceController {
         try {
             String command = InputView.inputCommand();
             InputValidator.commandValidate(command);
-            if (command.equals(ATTEND_COMMAND)) {
+            if (command.equals(AttendanceCommand.ATTENDANCE_COMMAND.getCommand())) {
                 attendCommand(crewGroup);
             }
-            if (command.equals(EDIT_COMMAND)) {
+            if (command.equals(AttendanceCommand.EDIT_COMMAND.getCommand())) {
                 attendanceEditCommand(crewGroup);
             }
-            if (command.equals(CREW_QUERY_COMMAND)) {
-                crewQueryCommand(crewGroup);
+            if (command.equals(AttendanceCommand.GET_CREW_INFO_COMMAND.getCommand())) {
+                getCrewInfoCommand(crewGroup);
             }
-            if (command.equals(CREWS_WARNING_COMMAND)) {
+            if (command.equals(AttendanceCommand.CREWS_WARNING_COMMAND.getCommand())) {
                 attendanceWarningCommand(crewGroup);
             }
             return command;
         } catch (IllegalArgumentException e) {
             OutputView.printError(e.getMessage());
-            return INVALID_COMMAND;
+            return AttendanceCommand.NONE_COMMAND.getCommand();
         }
     }
 
@@ -90,7 +83,7 @@ public class AttendanceController {
         OutputView.printAttendanceWarningCrews(warningCrewDtos);
     }
 
-    private void crewQueryCommand(CrewGroup crewGroup) {
+    private void getCrewInfoCommand(CrewGroup crewGroup) {
         String nickname = InputView.inputNickname();
         Crew findCrew = crewGroup.findCrew(nickname);
 
