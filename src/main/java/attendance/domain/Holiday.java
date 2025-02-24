@@ -1,32 +1,31 @@
 package attendance.domain;
 
-import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.format.TextStyle;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
+import static java.time.DayOfWeek.SATURDAY;
+import static java.time.DayOfWeek.SUNDAY;
+
 public class Holiday {
 
-    private static final DayOfWeek SATURDAY = DayOfWeek.SATURDAY;
-    private static final DayOfWeek SUNDAY = DayOfWeek.SUNDAY;
+    private final List<LocalDate> holidays = new ArrayList<>();
 
-    private final List<LocalDate> publicHolidays = new ArrayList<>(); // todo : 공휴일 네이밍 의문, 객체 생성 과정 의문
-
-    public void addHoliday(LocalDate holiday) { // todo : 파라미터 네이밍 고민, 크리스마스 추가
-        if (publicHolidays.contains(holiday)) {
-            throw new IllegalArgumentException("[ERROR] 이미 추가된 휴일입니다."); // todo : 에러 메시지 분리
+    public void addHoliday(LocalDate holiday) {
+        if (holidays.contains(holiday)) {
+            throw new IllegalArgumentException("[ERROR] 이미 추가된 휴일입니다.");
         }
-        publicHolidays.add(holiday);
+        holidays.add(holiday);
     }
 
     public boolean isHoliday(LocalDate date) {
-        return date.getDayOfWeek() == SATURDAY || date.getDayOfWeek() == SUNDAY || publicHolidays.contains(date);
+        return date.getDayOfWeek() == SATURDAY || date.getDayOfWeek() == SUNDAY || holidays.contains(date);
     }
 
     public void validateHoliday(LocalDate date) {
-        if (date.getDayOfWeek() == SATURDAY || date.getDayOfWeek() == SUNDAY || publicHolidays.contains(date)) { // todo : 메서드 재사용
+        if (isHoliday(date)) {
             String formatted = String.format("[ERROR] %d월 %d일 %s은 등교일이 아닙니다.",
                     date.getMonthValue(),
                     date.getDayOfMonth(),
