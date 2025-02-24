@@ -43,19 +43,21 @@ public class ExpelledWarningCrewTest {
         attendanceManager.createCrew("빙봉", testRecords2); // 면담 대상자
     }
 
-    @DisplayName("크루 출석 기록을 바탕으로 제적 위험자를 파악한다.")
     @Test
+    @DisplayName("크루 출석 기록을 바탕으로 제적 위험자를 파악한다.")
     void should_FindExpelledWarningCrew_When_ApplyingPenaltyRules() {
         LocalDate nowDate = LocalDate.of(2024, 12, 11);
+
         Map<String, StatisticsResult> warningCrews = attendanceManager.findWarningCrews(nowDate);
 
         assertThat(warningCrews.size()).isEqualTo(2);
     }
 
-    @DisplayName("제적 위험자를 기준에 맞게 정렬한다.")
     @Test
+    @DisplayName("제적 위험자를 기준에 맞게 정렬한다.")
     void should_SortExpelledWarningCrew_When_ApplyingPenaltyRules() {
         LocalDate nowDate = LocalDate.of(2024, 12, 11);
+
         Map<String, StatisticsResult> sortedResult = attendanceManager.sortCrew(nowDate);
         List<String> names = new ArrayList<>(sortedResult.keySet());
 

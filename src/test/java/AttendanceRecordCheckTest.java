@@ -20,69 +20,70 @@ public class AttendanceRecordCheckTest {
 
     @BeforeEach
     void setUp() {
-        records = List.of(
-            LocalDateTime.of(2024, 12, 2, 13, 0), // 출석
-            LocalDateTime.of(2024, 12, 3, 9, 59), // 출석
-            LocalDateTime.of(2024, 12, 4, 10, 6), // 지각
-            LocalDateTime.of(2024, 12, 5, 10, 31),// 결석
-            LocalDateTime.of(2024, 12, 6, 10, 40)); // 결석
-
         String name = "빙티"; // 경고 대상자
+        records = List.of(
+                LocalDateTime.of(2024, 12, 2, 13, 0), // 출석
+                LocalDateTime.of(2024, 12, 3, 9, 59), // 출석
+                LocalDateTime.of(2024, 12, 4, 10, 6), // 지각
+                LocalDateTime.of(2024, 12, 5, 10, 31),// 결석
+                LocalDateTime.of(2024, 12, 6, 10, 40) // 결석
+        );
+
         attendanceManager.createCrew(name, records);
     }
 
-    @DisplayName("크루 출석 기록을 전날까지 조회한다.")
     @Test
-    void should_CheckAttendanceRecords_When_SearchingByName () {
+    @DisplayName("크루 출석 기록을 전날까지 조회한다.")
+    void should_CheckAttendanceRecords_When_SearchingByName() {
         String name = "빙티";
+
         Records expectedRecords = attendanceManager.findByName(name);
+
         assertThat(expectedRecords.getAttendanceCount()).isEqualTo(records.size());
     }
-    @DisplayName("출석 통계를 정확하게 계산한다.")
+
     @Test
+    @DisplayName("출석 통계를 정확하게 계산한다.")
     void should_CalculateAttendanceStatistics_When_GivenRecords() {
         String name = "빙티";
-        Records records = attendanceManager.findByName(name);
-
         LocalDate nowDate = LocalDate.of(2024, 12, 8);
-        StatisticsResult statisticsResult = AttendanceStatistics.countStatus(nowDate, records);
-        int attendanceCount = statisticsResult.getAttendanceCount();
-        int latenessCount = statisticsResult.getLatenessCount();
-        int absenceCount = statisticsResult.getAbsenceCount();
 
-        assertThat(attendanceCount).isEqualTo(2);
-        assertThat(latenessCount).isEqualTo(1);
-        assertThat(absenceCount).isEqualTo(2);
+        Records records = attendanceManager.findByName(name);
+        StatisticsResult statisticsResult = AttendanceStatistics.countStatus(nowDate, records);
+
+        assertThat(statisticsResult.getAttendanceCount()).isEqualTo(2);
+        assertThat(statisticsResult.getLatenessCount()).isEqualTo(1);
+        assertThat(statisticsResult.getAbsenceCount()).isEqualTo(2);
     }
 
-    @DisplayName("경고 기준을 정확하게 계산한다.")
     @Test
+    @DisplayName("경고 기준을 정확하게 계산한다.")
     void should_CalculateWarningStatistics_When_GivenRecords() {
         String name = "빙티";
-        Records records = attendanceManager.findByName(name);
-
         LocalDate nowDate = LocalDate.of(2024, 12, 7);
+
+        Records records = attendanceManager.findByName(name);
         StatisticsResult statisticsResult = AttendanceStatistics.countStatus(nowDate, records);
 
         assertThat(Penalty.WARNING).isEqualTo(statisticsResult.getPenalty());
     }
 
-    @DisplayName("면담 기준을 정확하게 계산한다.")
     @Test
+    @DisplayName("면담 기준을 정확하게 계산한다.")
     void should_CalculateCounselingStatistics_When_GivenRecords() {
-        List<LocalDateTime> counselingRecords = List.of(
-            LocalDateTime.of(2024, 12, 2, 13, 0), // 출석
-            LocalDateTime.of(2024, 12, 3, 9, 59), // 출석
-            LocalDateTime.of(2024, 12, 4, 10, 6), // 지각
-            LocalDateTime.of(2024, 12, 5, 10, 31),// 결석
-            LocalDateTime.of(2024, 12, 6, 10, 40), // 결석
-            LocalDateTime.of(2024, 12, 9, 13, 40)); // 결석
-
         String name = "빙티";
+        List<LocalDateTime> counselingRecords = List.of(
+                LocalDateTime.of(2024, 12, 2, 13, 0), // 출석
+                LocalDateTime.of(2024, 12, 3, 9, 59), // 출석
+                LocalDateTime.of(2024, 12, 4, 10, 6), // 지각
+                LocalDateTime.of(2024, 12, 5, 10, 31),// 결석
+                LocalDateTime.of(2024, 12, 6, 10, 40), // 결석
+                LocalDateTime.of(2024, 12, 9, 13, 40) // 결석
+        );
+        LocalDate nowDate = LocalDate.of(2024, 12, 10);
+
         attendanceManager.createCrew(name, counselingRecords);
         Records records = attendanceManager.findByName(name);
-
-        LocalDate nowDate = LocalDate.of(2024, 12, 10);
         StatisticsResult statisticsResult = AttendanceStatistics.countStatus(nowDate, records);
 
         assertThat(Penalty.COUNSELING).isEqualTo(statisticsResult.getPenalty());
@@ -91,22 +92,22 @@ public class AttendanceRecordCheckTest {
     @DisplayName("제적 기준을 정확하게 계산한다.")
     @Test
     void should_CalculateExpelledStatistics_When_GivenRecords() {
-        List<LocalDateTime> expelledRecords = List.of(
-            LocalDateTime.of(2024, 12, 2, 13, 0), // 출석
-            LocalDateTime.of(2024, 12, 3, 9, 59), // 출석
-            LocalDateTime.of(2024, 12, 4, 10, 6), // 지각
-            LocalDateTime.of(2024, 12, 5, 10, 31),// 결석
-            LocalDateTime.of(2024, 12, 6, 10, 40), // 결석
-            LocalDateTime.of(2024, 12, 9, 13, 40), // 결석
-            LocalDateTime.of(2024, 12, 10, 11, 40), // 결석
-            LocalDateTime.of(2024, 12, 11, 11, 40), // 결석
-            LocalDateTime.of(2024, 12, 12, 11, 40)); // 결석
-
         String name = "빙티";
+        List<LocalDateTime> expelledRecords = List.of(
+                LocalDateTime.of(2024, 12, 2, 13, 0), // 출석
+                LocalDateTime.of(2024, 12, 3, 9, 59), // 출석
+                LocalDateTime.of(2024, 12, 4, 10, 6), // 지각
+                LocalDateTime.of(2024, 12, 5, 10, 31),// 결석
+                LocalDateTime.of(2024, 12, 6, 10, 40), // 결석
+                LocalDateTime.of(2024, 12, 9, 13, 40), // 결석
+                LocalDateTime.of(2024, 12, 10, 11, 40), // 결석
+                LocalDateTime.of(2024, 12, 11, 11, 40), // 결석
+                LocalDateTime.of(2024, 12, 12, 11, 40) // 결석
+        );
+        LocalDate nowDate = LocalDate.of(2024, 12, 13);
+
         attendanceManager.createCrew(name, expelledRecords);
         Records records = attendanceManager.findByName(name);
-
-        LocalDate nowDate = LocalDate.of(2024, 12, 13);
         StatisticsResult statisticsResult = AttendanceStatistics.countStatus(nowDate, records);
 
         assertThat(Penalty.EXPELLED).isEqualTo(statisticsResult.getPenalty());

@@ -11,6 +11,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -21,17 +22,21 @@ public class AttendanceEditTest {
     AttendanceManager attendanceManager = new AttendanceManager();
     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
 
+    @BeforeEach
+    void setUp() {
+        String name = "빙봉";
+        LocalDateTime initialDateAndTime = LocalDateTime.parse("2024-12-16 13:00", formatter);
+        attendanceManager.createCrew(name, List.of(initialDateAndTime));
+    }
+
     @Test
     @DisplayName("출석 상태를 출석에서 지각으로 변경한다.")
     void should_ChangeStatusToLateness_When_AttendanceEditedLate() {
         String name = "빙봉";
-        LocalDateTime initialDateAndTime = LocalDateTime.parse("2024-12-16 13:00", formatter);
         LocalDateTime editedDateAndTime = LocalDateTime.parse("2024-12-16 13:06", formatter);
         LocalDate localDate = editedDateAndTime.toLocalDate();
 
-        attendanceManager.createCrew(name, List.of(initialDateAndTime));
         attendanceManager.editCrew(name, editedDateAndTime);
-
         TimeAndStatus timeAndStatus = findTimeAndStatus(name, localDate);
 
         assertThat(timeAndStatus.getStatus()).isEqualTo(AttendanceStatus.LATENESS);
@@ -47,7 +52,6 @@ public class AttendanceEditTest {
 
         attendanceManager.createCrew(name, List.of(initialDateAndTime));
         attendanceManager.editCrew(name, editedDateAndTime);
-
         TimeAndStatus timeAndStatus = findTimeAndStatus(name, localDate);
 
         assertThat(timeAndStatus.getStatus()).isEqualTo(AttendanceStatus.ATTENDANCE);
@@ -56,26 +60,22 @@ public class AttendanceEditTest {
     @Test
     @DisplayName("출석하지 않고 수정하는 경우 예외메시지를 출력한다.")
     void should_ThrowException_When_EditingWithoutExistingAttendance() {
-        LocalDateTime initialDateAndTime = LocalDateTime.parse("2024-12-13 13:00", formatter);
-        LocalDateTime editedDateAndTime = LocalDateTime.parse("2024-12-16 13:03", formatter);
         String name = "빙봉";
+        LocalDateTime editedDateAndTime = LocalDateTime.parse("2024-12-17 13:03", formatter);
 
-        attendanceManager.createCrew(name, List.of(initialDateAndTime));
-
-        assertThatThrownBy(() -> {
+        Exception exception = assertThrows(IllegalArgumentException.class, () -> {
             attendanceManager.editCrew(name, editedDateAndTime);
-        }).isInstanceOf(IllegalArgumentException.class);
+        });
+        Assertions.assertThat(exception.getMessage()).isEqualTo("수정 기능은 출석 후 이용 가능합니다.");
     }
 
     @ParameterizedTest
     @ValueSource(strings = {"2024-12-14 13:03", "2024-12-25 13:03"})
     @DisplayName("수정하려는 날짜가 등교일이 아닌 경우 예외를 발생한다.")
     void should_ThrowException_When_EditingToHoliday(String dateAndTime) {
-        LocalDateTime initialDateAndTime = LocalDateTime.parse("2024-12-13 13:00", formatter);
-        LocalDateTime editedDateAndTime = LocalDateTime.parse(dateAndTime, formatter);
         String name = "빙봉";
+        LocalDateTime editedDateAndTime = LocalDateTime.parse(dateAndTime, formatter);
 
-        attendanceManager.createCrew(name, List.of(initialDateAndTime));
         Exception exception = assertThrows(IllegalArgumentException.class, () -> {
             attendanceManager.editCrew(name, editedDateAndTime);
         });
@@ -86,11 +86,8 @@ public class AttendanceEditTest {
     @ValueSource(strings = {"2024-12-13 23:01", "2024-12-13 07:59"})
     @DisplayName("캠퍼스 운영시간이 아닌 경우 예외를 발생한다.")
     void should_ThrowException_When_OutsideOperatingHours(String attendDateTime) {
-        LocalDateTime initialDateAndTime = LocalDateTime.parse("2024-12-13 13:00", formatter);
-        LocalDateTime attendDateAndTime = LocalDateTime.parse(attendDateTime, formatter);
         String name = "빙봉";
-
-        attendanceManager.createCrew(name, List.of(initialDateAndTime));
+        LocalDateTime attendDateAndTime = LocalDateTime.parse(attendDateTime, formatter);
 
         Exception exception = assertThrows(IllegalArgumentException.class, () -> {
             attendanceManager.editCrew(name, attendDateAndTime);
