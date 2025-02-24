@@ -56,7 +56,7 @@
 - **동작** (getter, equals, hashCode 제외)
     - 없음
 
-### Campus (캠퍼스 Enum)
+### CampusOperationPolicy (캠퍼스 운영 정책 Class)
 
 - **상태**
     - 운영 시간 (08:00~23:00)
@@ -96,7 +96,7 @@
     - 공휴일 목록
     -
 - **동작**
-    - 특정 LocalDate 가 공휴일인지 반환한다.
+    - 특정 LocalDate 가 공휴일인지 반환한다.0
 
 ### AttendanceLog (출석 기록 Class)
 
