@@ -8,10 +8,12 @@ public final class AttendanceRecord {
 
     private final String nickname;
     private final LocalDateTime arrivalDateTime;
+    private final AttendanceType attendanceType;
 
-    public AttendanceRecord(String nickname, LocalDateTime arrivalDateTime) {
+    public AttendanceRecord(String nickname, LocalDateTime arrivalDateTime, AttendanceType attendanceType) {
         this.nickname = nickname;
         this.arrivalDateTime = arrivalDateTime;
+        this.attendanceType = attendanceType;
     }
 
     public boolean isSame(String name, LocalDate date) {
@@ -37,6 +39,6 @@ public final class AttendanceRecord {
     }
 
     public AttendanceType getAttendanceType() {
-        return AttendanceType.ABSENCE;
+        return attendanceType;
     }
 }
