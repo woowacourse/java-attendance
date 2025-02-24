@@ -1,8 +1,10 @@
 package domain;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import domain.constants.AttendanceStatus;
+import domain.constants.ErrorMessage;
 import domain.constants.ExpulsionStatus;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -15,12 +17,11 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 public class AttendanceSystemTest {
+    private final LocalDate TODAY = LocalDate.of(2024, 12, 13);
 
     @Nested
     @DisplayName("성공 테스트")
     class SuccessCases {
-
-        private final LocalDate TODAY = LocalDate.of(2024, 12, 13);
 
         @DisplayName("주어진 이름에 해당하는 크루를 오늘날짜, 주어진 시간으로 올바르게 출석체크한다.")
         @Test
@@ -176,6 +177,35 @@ public class AttendanceSystemTest {
     @Nested
     @DisplayName("실패 테스트")
     class FailCases {
+
+        @DisplayName("존재하지 않는 크루 이름이라면, 예외가 발생한다.")
+        @Test
+        public void validateCrewByName() throws Exception {
+            // given
+            final AttendanceSystem attendanceSystem = new AttendanceSystem(List.of());
+            final String notFoundCrewName = "crewName";
+
+            // when & then
+            assertThatThrownBy(() -> attendanceSystem.validateCrewByName(notFoundCrewName))
+                    .isInstanceOf(IllegalArgumentException.class)
+                    .hasMessageContaining(ErrorMessage.CREW_NOT_FOUND.getMessage());
+        }
+
+        @DisplayName("수정할 수 없는 출석 일자라면, 예외가 발생한다.")
+        @Test
+        public void validateUpdateAttendanceDay() throws Exception {
+            // given
+            final String crewName = "name";
+            final Crew crew = Crew.of(crewName, TODAY);
+            final AttendanceSystem attendanceSystem = new AttendanceSystem(List.of());
+            final LocalDate christmas = LocalDate.of(2024, 12, 25);
+
+            // when & then
+            assertThatThrownBy(() -> attendanceSystem.validateUpdateAttendanceDay(crewName, 25, christmas))
+                    .isInstanceOf(IllegalArgumentException.class)
+                    .hasMessageContaining(ErrorMessage.INVALID_DATE_FORMAT.getMessage());
+        }
+
     }
 
 }
