@@ -2,6 +2,8 @@ package domain;
 
 import java.time.DateTimeException;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.Objects;
 
 public class DateProvider {
@@ -14,6 +16,16 @@ public class DateProvider {
 
     public static DateProvider from(final int year, final int month, final int today) {
         return new DateProvider(year, month, today);
+    }
+
+    public LocalDateTime creatLocalDateTimeBy(final LocalTime localTime) {
+        return LocalDateTime.of(localDate.getYear(), getTodayMonth(), getToday(), localTime.getHour(),
+                localTime.getMinute());
+    }
+
+    public LocalDateTime creatLocalDateTimeBy(final LocalTime localTime, final int day) {
+        return LocalDateTime.of(localDate.getYear(), getTodayMonth(), day, localTime.getHour(),
+                localTime.getMinute());
     }
 
     public int getTodayMonth() {

@@ -11,11 +11,12 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Stream;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.ValueSource;
+import org.junit.jupiter.params.provider.MethodSource;
 import util.FileManager;
 
 class AttendanceTest {
@@ -53,9 +54,10 @@ class AttendanceTest {
         //given
         Attendance attendance = creatAttendance();
         Crew crew = new Crew("도기");
+        LocalDateTime attendanceTime = LocalDateTime.of(2024, 12, 6, 10, 20);
 
         //when
-        attendance.save(crew, "10:20", 6);
+        attendance.save(crew, attendanceTime);
 
         //then
         assertThat(attendance.getAttendances().get(crew)).hasSize(5);
@@ -67,9 +69,10 @@ class AttendanceTest {
         //given
         Attendance attendance = creatAttendance();
         Crew crew = new Crew("도기");
+        LocalDateTime attendanceTime = LocalDateTime.of(2024, 12, 2, 9, 55);
 
         //when & then
-        assertThatThrownBy(() -> attendance.save(crew, "09:55", 2))
+        assertThatThrownBy(() -> attendance.save(crew, attendanceTime))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("이미 출석한 크루입니다.");
     }
@@ -80,9 +83,10 @@ class AttendanceTest {
         //given
         Attendance attendance = creatAttendance();
         Crew crew = new Crew("도기");
+        LocalDateTime attendanceTime = LocalDateTime.of(2024, 12, 6, 9, 55);
 
         //when & then
-        assertThatCode(() -> attendance.save(crew, "09:55", 6))
+        assertThatCode(() -> attendance.save(crew, attendanceTime))
                 .doesNotThrowAnyException();
     }
 
@@ -92,9 +96,10 @@ class AttendanceTest {
         // given
         Attendance attendance = creatAttendance();
         Crew crew = new Crew("도기");
+        LocalDateTime updateTime = LocalDateTime.of(2024, 12, 4, 10, 2);
 
         //when
-        attendance.update(crew, "10:02", 4);
+        attendance.update(crew, updateTime);
         List<LocalDateTime> actual = attendance.getAttendances().get(crew);
 
         //then
@@ -137,14 +142,14 @@ class AttendanceTest {
 
     @DisplayName("출석 수정일이 공휴일일 경우 예외를 던진다.")
     @ParameterizedTest
-    @ValueSource(ints = {1, 7, 8, 14, 15, 21, 22, 25, 28, 29})
-    void updateHoliday(int dayOfMonth) {
+    @MethodSource("provideLocalDateTimes")
+    void updateHoliday(LocalDateTime localDateTime) {
         // given
         Attendance attendance = creatAttendance();
         Crew crew = new Crew("도기");
 
         // when & then
-        Assertions.assertThatThrownBy(() -> attendance.update(crew, "09:55", dayOfMonth))
+        Assertions.assertThatThrownBy(() -> attendance.update(crew, localDateTime))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("공휴일에는 출석을 할 수 없습니다.");
     }
@@ -161,5 +166,14 @@ class AttendanceTest {
         attendances.put(crew, localDateTimes);
 
         return new Attendance(attendances);
+    }
+
+    static Stream<LocalDateTime> provideLocalDateTimes() {
+        return Stream.of(
+                LocalDateTime.of(2024, 12, 1, 10, 0),
+                LocalDateTime.of(2024, 12, 7, 10, 0),
+                LocalDateTime.of(2024, 12, 8, 10, 0),
+                LocalDateTime.of(2024, 12, 14, 10, 0)
+        );
     }
 }

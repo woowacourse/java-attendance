@@ -1,15 +1,14 @@
 package view;
 
-import java.util.regex.Pattern;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import util.Console;
 
 public class InputView {
 
     private static final int START_DATE = 1;
     private static final int END_DATE = 31;
-
-    private static final String TIME_PATTERN = "2[0-3]|[01][0-9]:[0-5][0-9]";
-    private static final Pattern TIME_REGEX_PATTERN = Pattern.compile(TIME_PATTERN);
+    private static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("HH:mm");
 
     public String inputFeature(int month, int day, String dayOfWeek) {
         System.out.printf("\n오늘은 %d월 %02d일 %s입니다. 기능을 선택해 주세요.\n" + "1. 출석 확인\n" + "2. 출석 수정\n" + "3. 크루별 출석 기록 확인\n"
@@ -24,11 +23,11 @@ public class InputView {
         return input;
     }
 
-    public String inputSchoolStartTime() {
+    public LocalTime inputGoTime() {
         System.out.println("등교 시간을 입력해 주세요.");
         String input = Console.readLine();
         validateNullOrEmpty(input);
-        return input;
+        return parseToLocalTime(input);
     }
 
     private void validateNullOrEmpty(final String nickName) {
@@ -37,14 +36,8 @@ public class InputView {
         }
     }
 
-    private void validateFormat(final String input) {
-        if (!isCorrectFormat(input)) {
-            throw new IllegalArgumentException("시간은 24시간 형식만 사용합니다.");
-        }
-    }
-
-    private boolean isCorrectFormat(final String input) {
-        return TIME_REGEX_PATTERN.matcher(input).find();
+    private LocalTime parseToLocalTime(final String input) {
+        return LocalTime.parse(input, DATE_TIME_FORMATTER);
     }
 
     public String inputUpdateNickName() {
@@ -60,11 +53,11 @@ public class InputView {
         return validateParseDate(input);
     }
 
-    public String inputUpdateTime() {
+    public LocalTime inputUpdateTime() {
         System.out.println("언제로 변경하겠습니까?");
         String input = Console.readLine();
         validateNullOrEmpty(input);
-        return input;
+        return parseToLocalTime(input);
     }
 
     private int validateParseDate(final String inputDate) {

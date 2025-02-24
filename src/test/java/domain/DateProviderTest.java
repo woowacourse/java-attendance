@@ -3,6 +3,8 @@ package domain;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -74,6 +76,20 @@ class DateProviderTest {
 
         //then
         assertThat(actual).isEqualTo(Calender.TUE);
+    }
+
+    @DisplayName("시간을 받아서 LocalDateTime을 생성하여 반환한다.")
+    @Test
+    void createLocalDateTime() {
+        //given
+        LocalTime localTime = LocalTime.of(10, 0);
+        DateProvider dateProvider = creatLocalDate();
+
+        //when
+        LocalDateTime localDateTime = dateProvider.creatLocalDateTimeBy(localTime);
+
+        //then
+        assertThat(localDateTime).isEqualTo(LocalDateTime.of(2024, 12, 24, 10, 0));
     }
 
     private DateProvider creatLocalDate() {

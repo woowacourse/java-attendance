@@ -6,17 +6,19 @@ import domain.Crew;
 import dto.AbsenceResultDto;
 import dto.AttendanceResultDto;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
 import java.util.Map;
 
 public class OutputView {
 
     public void printTodayAttendance(final int todayDay, final String todayDayOfWeek,
-                                     final String schoolStartTime, final AttendanceState attendanceResult) {
-        System.out.printf("\n12월 %02d일 %s %s (%s)\n",
+                                     final LocalTime schoolStartTime, final AttendanceState attendanceResult) {
+        System.out.printf("\n12월 %02d일 %s %02d:%02d (%s)\n",
                 todayDay,
                 todayDayOfWeek,
-                schoolStartTime,
+                schoolStartTime.getHour(),
+                schoolStartTime.getMinute(),
                 attendanceResult.getDescription());
     }
 

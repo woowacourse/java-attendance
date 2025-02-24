@@ -3,7 +3,6 @@ package domain;
 import dto.AbsenceResultDto;
 import dto.AttendanceResultDto;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -11,9 +10,6 @@ import java.util.List;
 import java.util.Map;
 
 public class Attendance {
-
-    private static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
-    private static final String TODAY_FORMAT = "2024-12-%02d %s";
 
     private final Map<Crew, List<LocalDateTime>> attendances;
 
@@ -29,19 +25,16 @@ public class Attendance {
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 크루 입니다."));
     }
 
-    public void save(final Crew crew, final String schoolStartTime, final int todayDay) {
+    public void save(final Crew crew, final LocalDateTime attendanceTime) {
         List<LocalDateTime> localDateTimes = attendances.get(crew);
 
-        String today = String.format(TODAY_FORMAT, todayDay, schoolStartTime);
-        LocalDateTime todayLocalDateTime = parseToLocalDateTime(today);
-
-        validateDuplicateSave(todayDay, localDateTimes);
-        localDateTimes.add(todayLocalDateTime);
+        validateDuplicateSave(attendanceTime.getDayOfMonth(), localDateTimes);
+        localDateTimes.add(attendanceTime);
         attendances.put(crew, localDateTimes);
     }
 
-    public LocalDateTime update(final Crew crew, final String updateTime, final int date) {
-        Calender.validateHolyDay(date);
+    public LocalDateTime update(final Crew crew, final LocalDateTime updateTime) {
+        Calender.validateHolyDay(updateTime.getDayOfMonth());
 
         List<LocalDateTime> localDateTimes = attendances.get(crew);
         int attendanceRecordIndex;
@@ -49,13 +42,13 @@ public class Attendance {
         for (attendanceRecordIndex = 0; attendanceRecordIndex < localDateTimes.size(); attendanceRecordIndex++) {
             LocalDateTime localDateTime = localDateTimes.get(attendanceRecordIndex);
             int dayOfMonth = localDateTime.getDayOfMonth();
-            if (dayOfMonth == date) {
+            if (dayOfMonth == updateTime.getDayOfMonth()) {
                 beforeLocalDateTime = localDateTime;
                 break;
             }
         }
 
-        updateRecord(updateTime, date, localDateTimes, attendanceRecordIndex);
+        updateRecord(updateTime, localDateTimes, attendanceRecordIndex);
 
         return beforeLocalDateTime;
     }
@@ -91,11 +84,9 @@ public class Attendance {
         }
     }
 
-    private void updateRecord(final String updateTime, final int date, final List<LocalDateTime> localDateTimes,
+    private void updateRecord(final LocalDateTime updateLocalDateTime, final List<LocalDateTime> localDateTimes,
                               final int attendanceRecordIndex) {
-        String today = String.format(TODAY_FORMAT, date, updateTime);
-        LocalDateTime todayLocalDateTime = parseToLocalDateTime(today);
-        localDateTimes.set(attendanceRecordIndex, todayLocalDateTime);
+        localDateTimes.set(attendanceRecordIndex, updateLocalDateTime);
     }
 
     private void sortRecord(final List<LocalDateTime> localDateTimes) {
@@ -133,10 +124,6 @@ public class Attendance {
         LocalDateTime newLocalDateTime = LocalDateTime.of(2024, 12, dayIndex, 0, 0);
         AttendanceResultDto attendanceResultDto = new AttendanceResultDto(newLocalDateTime, state);
         attendanceResultDtos.add(attendanceResultDto);
-    }
-
-    private LocalDateTime parseToLocalDateTime(final String today) {
-        return LocalDateTime.parse(today, DATE_TIME_FORMATTER);
     }
 
     public Map<Crew, List<LocalDateTime>> getAttendances() {

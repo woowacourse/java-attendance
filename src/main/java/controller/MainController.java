@@ -11,7 +11,6 @@ import dto.AbsenceResultDto;
 import dto.AttendanceResultDto;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Map;
 import util.FileManager;
@@ -21,7 +20,6 @@ import view.OutputView;
 public class MainController {
 
     private static final String FILE_PATH = "src/main/resources/attendances.csv";
-    private static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("HH:mm");
 
     private final InputView inputView;
     private final OutputView outputView;
@@ -60,16 +58,15 @@ public class MainController {
 
     private void attendanceCheck() {
         String nickname = inputView.inputNickName();
+        LocalTime attendanceTime = inputView.inputGoTime();
+
+        LocalDateTime attendanceLocalDateTime = provider.creatLocalDateTimeBy(attendanceTime);
+        AttendanceState attendanceState = AttendanceState.findStateBy(attendanceTime, provider.getToday());
+
         Crew crew = attendance.getCrewByName(nickname);
-        String schoolStartTime = inputView.inputSchoolStartTime();
+        attendance.save(crew, attendanceLocalDateTime);
 
-        LocalTime dateTime = parseToLocalTime(schoolStartTime);
-
-        AttendanceState attendanceState = AttendanceState.findStateBy(dateTime, provider.getToday());
-
-        attendance.save(crew, schoolStartTime, provider.getToday());
-
-        outputView.printTodayAttendance(provider.getToday(), getDayOfWeek(), schoolStartTime, attendanceState);
+        outputView.printTodayAttendance(provider.getToday(), getDayOfWeek(), attendanceTime, attendanceState);
     }
 
     private String getDayOfWeek() {
@@ -79,21 +76,14 @@ public class MainController {
     private void attendanceUpdate() {
         String nickname = inputView.inputUpdateNickName();
         int date = inputView.inputUpdateDate();
-        String time = inputView.inputUpdateTime();
+        LocalTime updateTime = inputView.inputUpdateTime();
+
+        LocalDateTime updateLocalDateTime = provider.creatLocalDateTimeBy(updateTime, date);
 
         Crew crew = attendance.getCrewByName(nickname);
+        LocalDateTime beforeDateTime = attendance.update(crew, updateLocalDateTime);
 
-        LocalDateTime beforeDateTime = attendance.update(crew, time, date);
-
-        LocalTime afterTime = parseToLocalTime(time);
-        LocalDateTime afterLocalDateTime = LocalDateTime.of(beforeDateTime.getYear(), beforeDateTime.getMonth(),
-                beforeDateTime.getDayOfMonth(), afterTime.getHour(), afterTime.getMinute());
-
-        outputView.printUpdateAttendance(beforeDateTime, afterLocalDateTime);
-    }
-
-    private LocalTime parseToLocalTime(final String schoolStartTime) {
-        return LocalTime.parse(schoolStartTime, DATE_TIME_FORMATTER);
+        outputView.printUpdateAttendance(beforeDateTime, updateLocalDateTime);
     }
 
     private void attendanceRecord() {
