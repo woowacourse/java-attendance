@@ -4,14 +4,17 @@ import static attendance.common.utill.DateTimeFormatterWrapper.*;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
 import attendance.common.exception.AttendanceArgumentException;
+import attendance.domain.StatusStatistic;
 
-public record AttendanceBook(Map<String, AttendanceList> attendances) {
+public record AttendanceBook(Map<String, AttendanceList> attendances, List<StatusStatistic> statusStatistics) {
     private static final String NOT_REGISTERED_NICKNAME = "등록되지 않은 닉네임입니다.";
 
     public static AttendanceBook from(List<String> lines) {
@@ -19,7 +22,7 @@ public record AttendanceBook(Map<String, AttendanceList> attendances) {
         for (String line : lines) {
             addAttendance(line, attendances);
         }
-        return new AttendanceBook(attendances);
+        return new AttendanceBook(attendances, new ArrayList<>());
     }
 
     private static void addAttendance(String line, Map<String, AttendanceList> attendances) {
@@ -50,6 +53,15 @@ public record AttendanceBook(Map<String, AttendanceList> attendances) {
             throw new AttendanceArgumentException(NOT_REGISTERED_NICKNAME);
         }
         return attendanceList;
+    }
+
+    public void updateStatusStatistics() {
+        for (String name : attendances.keySet()) {
+            var statistic = new StatusStatistic(attendances.get(name), name);
+            statusStatistics.add(statistic);
+        }
+        
+        Collections.sort(statusStatistics);
     }
 
     private static final class Format {

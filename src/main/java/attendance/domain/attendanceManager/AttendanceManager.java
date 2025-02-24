@@ -15,7 +15,5 @@ public abstract class AttendanceManager {
 
     public abstract void manage(String nickname, LocalDate date, LocalTime time);
 
-    public String getResult() {
-        return builder.toString();
-    }
+    public abstract String getResult();
 }

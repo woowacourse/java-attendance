@@ -28,6 +28,11 @@ public class AttendanceRegister extends AttendanceManager {
         }
     }
 
+    @Override
+    public String getResult() {
+        return builder.toString();
+    }
+
     private void isDuplicateAttendance(Attendance attendance, AttendanceList attendanceList) {
         if (attendanceList.contains(attendance)) {
             throw new AttendanceArgumentException(Error.DUPLICATE_DATE.getMessage());
