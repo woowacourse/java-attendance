@@ -9,9 +9,9 @@ import domain.Manage;
 import dto.AttendanceHistoryResponseDto;
 import dto.AttendanceResponseDto;
 import dto.CrewAlmostExpelledResponseDto;
-import constant.FormatterConstant;
 import dto.HistoryDto;
 import dto.ModifiedResponseDto;
+import util.DateTimeUtil;
 
 public class OutputView {
 
@@ -19,7 +19,7 @@ public class OutputView {
     }
 
     public static void printAttendanceResult(AttendanceResponseDto result) {
-        String dateTime = LocalDateTime.of(result.date(), result.time()).format(FormatterConstant.DATETIME_FORMATTER);
+        String dateTime = LocalDateTime.of(result.date(), result.time()).format(DateTimeUtil.DATETIME_FORMATTER);
         System.out.printf(dateTime + " (%s)%n", result.status().getName());
     }
 
@@ -27,9 +27,9 @@ public class OutputView {
         StringBuilder message = new StringBuilder();
         message.append(
             LocalDateTime.of(modifiedResponseDto.date(), modifiedResponseDto.before().time())
-                .format(FormatterConstant.DATETIME_FORMATTER));
+                .format(DateTimeUtil.DATETIME_FORMATTER));
         message.append(String.format(" (%s) -> ", modifiedResponseDto.before().status().getName()));
-        message.append(modifiedResponseDto.after().time().format(FormatterConstant.TIME_FORMATTER));
+        message.append(modifiedResponseDto.after().time().format(DateTimeUtil.TIME_FORMATTER));
         message.append(String.format(" (%s)", modifiedResponseDto.after().status().getName()));
         message.append(" 수정 완료!%n%n");
 
@@ -40,7 +40,7 @@ public class OutputView {
         System.out.printf("이번 달 %s의 출석 기록입니다.%n%n", historyResult.nickname());
         historyResult.histories().forEach(history -> {
             StringBuilder message = new StringBuilder();
-            message.append(history.date().format(FormatterConstant.DATE_FORMATTER));
+            message.append(history.date().format(DateTimeUtil.DATE_FORMATTER));
             message.append(" ");
             message.append(convertToTime(history));
             message.append(String.format(" (%s)", history.status().getName()));
@@ -60,7 +60,7 @@ public class OutputView {
         if (!history.isChecked() || history.time() == null) {
             return "--:--";
         }
-        return history.time().format(FormatterConstant.TIME_FORMATTER);
+        return history.time().format(DateTimeUtil.TIME_FORMATTER);
     }
 
     public static void printCrewsAlmostExpelled(List<CrewAlmostExpelledResponseDto> result) {
