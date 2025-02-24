@@ -12,4 +12,8 @@ public class CrewGenerator {
                 .toList();
         return crewNames;
     }
+
+    public static List<Crew> registerCrew(List<String> crewNames) {
+        return null;
+    }
 }

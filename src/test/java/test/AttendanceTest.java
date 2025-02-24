@@ -2,8 +2,10 @@ package test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import model.Crew;
 import model.CrewGenerator;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -22,8 +24,21 @@ public class AttendanceTest {
                 이든,2024-12-12 10:06
                 이든,2024-12-11 10:10
                 """;
-        List<String> crews = CrewGenerator.findCrewNames(crewInput);
-        assertThat(crews).containsAll(Arrays.asList("쿠키", "빙봉", "빙티", "이든"));
+        List<String> crewNames = CrewGenerator.findCrewNames(crewInput);
+        assertThat(crewNames).containsAll(Arrays.asList("쿠키", "빙봉", "빙티", "이든"));
+    }
+
+    @DisplayName("닉네임을 바탕으로 크루 객체를 생성한다.")
+    @Test
+    void test2() {
+        List<String> crewNames = List.of("쿠키", "빙봉", "빙티", "이든");
+        List<Crew> crews = CrewGenerator.registerCrew(crewNames);
+        assertThat(crews).containsAll(Arrays.asList(
+                new Crew("쿠키"),
+                new Crew("빙봉"),
+                new Crew("빙티"),
+                new Crew("이든")
+        ));
     }
 
 //    @DisplayName("입력한 닉네임에 맞는 크루 정보를 가져온다.")
