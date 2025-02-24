@@ -30,7 +30,7 @@ public class Date {
     }
 
     public WorkDay getWorkDay() {
-        return WorkDay.findByDayOfWeek(localDate.getDayOfWeek());
+        return WorkDay.from(localDate.getDayOfWeek());
     }
 
     public boolean isHoliday() {

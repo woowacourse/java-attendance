@@ -25,7 +25,7 @@ public enum WorkDay {
         this.endHour = endHour;
     }
 
-    public static WorkDay findByDayOfWeek(DayOfWeek dayOfWeek) {
+    public static WorkDay from(DayOfWeek dayOfWeek) {
         return WorkDay.valueOf(dayOfWeek.name());
     }
 

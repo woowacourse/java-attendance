@@ -8,7 +8,7 @@ import view.OutputView;
 
 public class AttendanceApplication {
     public static void main(String[] args) {
-        LocalDateTime today = parseDateTimeFromArgs(args);
+        LocalDateTime today = parseDateTime(args);
 
         InputView inputView = new InputView();
         OutputView outputView = new OutputView();
@@ -19,7 +19,7 @@ public class AttendanceApplication {
         controller.run(today);
     }
 
-    private static LocalDateTime parseDateTimeFromArgs(String[] args) {
+    private static LocalDateTime parseDateTime(String[] args) {
         try {
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
             return LocalDateTime.parse(args[0], formatter);

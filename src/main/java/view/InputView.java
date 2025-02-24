@@ -15,7 +15,7 @@ public class InputView {
     public MenuOption readMenuOption(LocalDateTime localDateTime) {
         System.out.printf("오늘은 %d월 %d일 %s요일입니다. 기능을 선택해 주세요.%n",
                 localDateTime.getMonth().getValue(), localDateTime.getDayOfMonth(),
-                WorkDay.findByDayOfWeek(localDateTime.getDayOfWeek()).getDayOfWeekKorean());
+                WorkDay.from(localDateTime.getDayOfWeek()).getDayOfWeekKorean());
         MenuOption.findAll()
                 .forEach(menuOption -> System.out.println(menuOption.getCode() + ". " + menuOption.getDescription()));
 

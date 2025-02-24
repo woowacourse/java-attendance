@@ -17,9 +17,10 @@ public enum AttendanceStatus {
         this.limitTime = limitMinute;
     }
 
-    public static AttendanceStatus findByDateTime(DateTime dateTime) {
+    public static AttendanceStatus from(DateTime dateTime) {
         Integer hour = dateTime.getTime().getHour();
         Integer minute = dateTime.getTime().getMinute();
+
         if (hour == null || minute == null) {
             return ATTENDANCE;
         }

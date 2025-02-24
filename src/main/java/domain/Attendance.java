@@ -59,7 +59,7 @@ public class Attendance {
         return AttendanceStatus.calculateAttendanceStatusCount(retrieveDateTimes().stream()
                 .map(dateTime -> new DateTime(dateTime.getDate(),
                         dateTimes.get(dateTime.getDate())))
-                .map(AttendanceStatus::findByDateTime)
+                .map(AttendanceStatus::from)
                 .toList());
     }
 }

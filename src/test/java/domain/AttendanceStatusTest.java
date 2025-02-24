@@ -11,7 +11,7 @@ class AttendanceStatusTest {
     @Test
     void 출석_여부를_판단한다() {
         // given & when
-        AttendanceStatus attendanceStatus = AttendanceStatus.findByDateTime(
+        AttendanceStatus attendanceStatus = AttendanceStatus.from(
                 new DateTime(new Date(LocalDate.of(2024, 12, 13)), new Time(10, 0))
         );
 
@@ -22,7 +22,7 @@ class AttendanceStatusTest {
     @Test
     void 지각_여부를_판단한다() {
         // given & when
-        AttendanceStatus attendanceStatus = AttendanceStatus.findByDateTime(
+        AttendanceStatus attendanceStatus = AttendanceStatus.from(
                 new DateTime(new Date(LocalDate.of(2024, 12, 13)), new Time(10, 10))
         );
 
@@ -33,7 +33,7 @@ class AttendanceStatusTest {
     @Test
     void 결석_여부를_판단한다() {
         // given & when
-        AttendanceStatus attendanceStatus = AttendanceStatus.findByDateTime(
+        AttendanceStatus attendanceStatus = AttendanceStatus.from(
                 new DateTime(new Date(LocalDate.of(2024, 12, 13)), new Time(10, 35))
         );
 
@@ -44,7 +44,7 @@ class AttendanceStatusTest {
     @Test
     void 주말에_출석할_수_없다() {
         // given & when & then
-        assertThatThrownBy(() -> AttendanceStatus.findByDateTime(
+        assertThatThrownBy(() -> AttendanceStatus.from(
                         new DateTime(new Date(LocalDate.of(2024, 12, 14)), new Time(10, 0))
                 )
         )
@@ -56,7 +56,7 @@ class AttendanceStatusTest {
     void 캠퍼스_운영_시간이_아니다() {
         // given & when & then
         assertThatThrownBy(
-                () -> AttendanceStatus.findByDateTime(
+                () -> AttendanceStatus.from(
                         new DateTime(new Date(LocalDate.of(2024, 12, 14)), new Time(7, 30))
                 )
         ).isInstanceOf(IllegalArgumentException.class)

@@ -8,6 +8,6 @@ public record AttendanceRecodeDto(
         String attendanceStatusName
 ) {
     public static AttendanceRecodeDto from(DateTime dateTime) {
-        return new AttendanceRecodeDto(dateTime, AttendanceStatus.findByDateTime(dateTime).getName());
+        return new AttendanceRecodeDto(dateTime, AttendanceStatus.from(dateTime).getName());
     }
 }
