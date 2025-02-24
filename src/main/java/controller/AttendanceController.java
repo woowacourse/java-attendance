@@ -10,6 +10,7 @@ import domain.date.AttendanceDateTime;
 import io.CustomFileReader;
 import java.io.FileNotFoundException;
 import java.util.List;
+import java.util.Map;
 import service.AttendanceService;
 import view.FeatureOption;
 import view.InputView;
@@ -51,21 +52,14 @@ public class AttendanceController {
     }
 
     public void runFunction(FeatureOption featureOption) {
-        if (featureOption == FeatureOption.APPLY_ATTENDANCE) {
-            applyAttendance();
-            return;
-        }
-        if (featureOption == FeatureOption.EDIT_ATTENDANCE) {
-            editAttendance();
-            return;
-        }
-        if (featureOption == FeatureOption.CHECK_ATTENDANCE_OF_CREW) {
-            checkAttendanceOfCrew();
-            return;
-        }
-        if (featureOption == FeatureOption.CHECK_WARNING_CREW) {
-            checkWarningCrew();
-        }
+        Map<FeatureOption, Runnable> actionAccordingToFeatureOption = Map.of(
+                FeatureOption.APPLY_ATTENDANCE, this::applyAttendance,
+                FeatureOption.EDIT_ATTENDANCE, this::editAttendance,
+                FeatureOption.CHECK_ATTENDANCE_OF_CREW, this::checkAttendanceOfCrew,
+                FeatureOption.CHECK_WARNING_CREW, this::checkWarningCrew
+        );
+
+        actionAccordingToFeatureOption.get(featureOption).run();
     }
 
     private void applyAttendance() {
