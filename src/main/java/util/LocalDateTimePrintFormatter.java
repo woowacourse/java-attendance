@@ -33,5 +33,9 @@ public class LocalDateTimePrintFormatter {
                 "은 등교일이 아닙니다.";
     }
 
+    public static String modifyComplete(LocalDateTime modifyDateTime, String recordAfterModifyState) {
+        return modifyDateTime.format(dateTimeFormatterForHourMin) + " (" +recordAfterModifyState + ") 수정 완료!";
+    }
+
 
 }

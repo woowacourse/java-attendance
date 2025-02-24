@@ -80,7 +80,7 @@ public class Controller {
         int day = modifyLocalDateTime.getDayOfWeek().getValue();
 
         String recordAfterModifyState = AttendanceCalculator.calculateAttendance(day,LocalTime.from(modifyLocalDateTime)).getState();
-        String recordAfterModify = modifyLocalDateTime.format(DateTimeFormatter.ofPattern("HH:mm" + " (" + recordAfterModifyState + ") 수정 완료!"));
+        String recordAfterModify = LocalDateTimePrintFormatter.modifyComplete(modifyLocalDateTime,recordAfterModifyState);
 
         OutputView.printSecondMenu(recordBeforeModify, recordAfterModify);
         return false;
