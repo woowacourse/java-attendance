@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Test;
 import java.time.DayOfWeek;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 public class AttendanceTest {
 
@@ -63,5 +64,23 @@ public class AttendanceTest {
     void attendance_monday_test3() {
         Attendance attendance = new Attendance();
         assertThat(attendance.attend("13:36", DayOfWeek.MONDAY)).isEqualTo("결석");
+    }
+
+    @Test
+    @DisplayName("출석 시간이 8시 이전이면 예외")
+    void attendance_not_open_test1() {
+        Attendance attendance = new Attendance();
+        assertThatThrownBy(() -> attendance.attend("7:36", DayOfWeek.MONDAY))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("캠퍼스 운영 시간은 8:00 ~ 23:00입니다.");
+    }
+
+    @Test
+    @DisplayName("출석 시간이 11시 이후면 예외")
+    void attendance_not_open_test2() {
+        Attendance attendance = new Attendance();
+        assertThatThrownBy(() -> attendance.attend("23:36", DayOfWeek.MONDAY))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("캠퍼스 운영 시간은 8:00 ~ 23:00입니다.");
     }
 }
