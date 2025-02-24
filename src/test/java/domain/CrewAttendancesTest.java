@@ -17,6 +17,20 @@ public class CrewAttendancesTest {
 
     @Nested
     class AddAttendance {
+        @Test
+        @DisplayName("5분 초과 지각시 지각이다")
+        void addAttendanceLate() {
+            String nickname = "투다";
+            LocalTime time = LocalTime.of(8, 6);
+            LocalDate date = LocalDate.of(2024, 12, 3);
+            CrewAttendances crewAttendances = new CrewAttendances(new TestAttendanceNowDateStrategy(date));
+            crewAttendances.addAttendance(nickname, time);
+
+            Assertions.assertThat(
+                    crewAttendances.crewAttendance(nickname, date).attendanceStatus()
+            ).isEqualTo(AttendanceStatus.LATE);
+        }
+
 
         @Test
         @DisplayName("닉네임과 등교 시간을 입력해 출석할 수 있다")
