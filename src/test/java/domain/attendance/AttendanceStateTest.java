@@ -19,7 +19,7 @@ class AttendanceStateTest {
 
     @DisplayName("출석시간 5분 초과 30분 이내에 출석하면 지각이다")
     @ParameterizedTest
-    @ValueSource(ints = {5, 30})
+    @ValueSource(ints = {6, 30})
     void test2(int minute) {
         AttendanceState attendanceState = AttendanceState.calculateAttendanceState(1,
                 LocalDateTime.of(2025, 2, 17, 13, minute));
