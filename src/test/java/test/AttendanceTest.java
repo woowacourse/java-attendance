@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 import model.Crew;
 import model.CrewGenerator;
 import model.Crews;
@@ -61,14 +62,18 @@ public class AttendanceTest {
         assertThat(crews).isEqualTo(new Crews(targetCrewsInput)); //TODO : isSameAs로 하면 안됨
     }
 
-//    @DisplayName("입력한 닉네임에 맞는 크루 정보를 가져온다.")
-//    @Test
-//    void test3() {
-//        //given
-//        List<String> crewNames = List.of("쿠키", "빙봉", "빙티", "이든");
-//        String name = "빙티";
-//        Crews crews = CrewGenerator.generateCrews()
-//        Crew crew = crews.findCrewByName(name);
-//        assertThat(crew).isSameAs(new Crew(name));
-//    }
+    @DisplayName("입력한 닉네임에 맞는 크루 정보를 가져온다.")
+    @Test
+    void test4() {
+        //given
+        String name = "빙티";
+        Crews crews = new Crews(List.of(
+                new Crew("쿠키"),
+                new Crew("빙봉"),
+                new Crew("빙티"),
+                new Crew("이든")
+        ));
+        Optional<Crew> crew = crews.findCrewByName(name);
+        assertThat(crew.get()).isEqualTo(new Crew(name));
+    }
 }
