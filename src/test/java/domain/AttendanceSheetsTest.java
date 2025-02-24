@@ -102,4 +102,18 @@ class AttendanceSheetsTest {
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("[ERROR] 이미 출석했습니다. 수정 기능을 이용하세요.");
     }
+
+    @Test
+    @DisplayName("없는 출석 기록은 예외를 발생한다.")
+    void add_none_exist_attendance_sheet() {
+        // given
+        String nickname = "율무";
+        int day = 13;
+
+        // when
+        // then
+        Assertions.assertThatThrownBy(() -> attendanceSheets.findAttendanceSheetByNicknameAndDay(nickname, day))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("[ERROR] 출석 기록이 없는 날짜입니다.");
+    }
 }
