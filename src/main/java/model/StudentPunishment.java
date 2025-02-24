@@ -18,13 +18,13 @@ public enum StudentPunishment {
     }
 
     public static String makeExpulsionNotice(int riskLevel) {
-        if (riskLevel >= 5) {
+        if (riskLevel >= StudentPunishment.DISMISSAL.getStandard()) {
             return DISMISSAL.expulsionNotice;
         }
-        if (riskLevel >= 3) {
+        if (riskLevel >= StudentPunishment.INTERVIEW.getStandard()) {
             return INTERVIEW.expulsionNotice;
         }
-        if (riskLevel >= 2) {
+        if (riskLevel >= StudentPunishment.WARNING.getStandard()) {
             return WARNING.expulsionNotice;
         }
         return null;
