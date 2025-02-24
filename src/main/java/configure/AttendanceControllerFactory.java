@@ -3,7 +3,8 @@ package configure;
 import controller.AttendanceController;
 import domain.Crews;
 import java.time.LocalDate;
-import util.CsvReader;
+import util.AttendanceDataReader;
+import util.CsvAttendanceDataReader;
 import view.InputView;
 import view.OutputVIew;
 
@@ -37,7 +38,9 @@ public class AttendanceControllerFactory {
     private Crews crews() {
         if (crews == null) {
             LocalDate now = LocalDate.now();
-            crews = new Crews(CsvReader.loadAttendanceData(), LocalDate.of(2024, 12, now.getDayOfMonth()));
+            AttendanceDataReader attendanceDataReader = new CsvAttendanceDataReader();
+            crews = new Crews(attendanceDataReader.loadAttendanceData(),
+                    LocalDate.of(2024, 12, now.getDayOfMonth()));
         }
         return crews;
     }

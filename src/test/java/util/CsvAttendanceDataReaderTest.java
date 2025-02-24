@@ -9,7 +9,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 
-class CsvReaderTest {
+class CsvAttendanceDataReaderTest {
     @DisplayName("csvreader 값 대입 테스트")
     @Test
     void testLoadAttendanceData() {
@@ -25,7 +25,8 @@ class CsvReaderTest {
                 LocalDateTime.of(2024, 12, 2, 13, 1)
         );
         // when
-        Map<String, List<LocalDateTime>> crews = CsvReader.loadAttendanceData();
+        AttendanceDataReader attendanceDataReader = new CsvAttendanceDataReader();
+        Map<String, List<LocalDateTime>> crews = attendanceDataReader.loadAttendanceData();
         List<LocalDateTime> result = crews.get("쿠키");
         // then
         assertThat(result.size()).isEqualTo(8);
