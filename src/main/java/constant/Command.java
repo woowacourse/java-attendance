@@ -23,4 +23,24 @@ public enum Command {
         }
         throw new IllegalArgumentException("존재하지 않는 옵션입니다.");
     }
+
+    public boolean isOne() {
+        return this.equals(ONE);
+    }
+
+    public boolean isTwo() {
+        return this.equals(TWO);
+    }
+
+    public boolean isThree() {
+        return this.equals(THREE);
+    }
+
+    public boolean isFour() {
+        return this.equals(FOUR);
+    }
+
+    public boolean isQuit() {
+        return this.equals(QUIT);
+    }
 }

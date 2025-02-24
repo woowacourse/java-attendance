@@ -33,48 +33,53 @@ public class AttendanceController {
             Crews crews = stringConverter.convertToCrews(rawAttendances);
             Attendances attendances = stringConverter.convertToAttendances(rawAttendances, crews);
 
-            while (true) {
-                String rawCommand = inputView.readCommand();
-                Command command = stringConverter.convertToCommand(rawCommand);
-                if (command.equals(Command.ONE)) {
-                    Attendance attendance = checkInAttendance(attendances);
-                    outputView.printCheckInResult(attendance);
-                }
-                if (command.equals(Command.TWO)) {
-                    modifyAttendance(attendances);
-                }
-                if (command.equals(Command.THREE)) {
-                    checkAttendance(attendances);
-                }
-                if (command.equals(Command.FOUR)) {
-                    checkPunishment(crews, attendances);
-                }
-                if (command.equals(Command.QUIT)) {
-                    break;
-                }
-            }
+            Command command;
+            do {
+                command = readCommand();
+                processCommand(command, crews, attendances);
+            } while (!command.isQuit());
         } catch (RuntimeException e) {
             outputView.printErrorMessage(e);
         }
     }
 
-    private Attendance checkInAttendance(Attendances attendances) {
+    private Command readCommand() {
+        String rawCommand = inputView.readCommand();
+        return stringConverter.convertToCommand(rawCommand);
+    }
+
+    private void processCommand(Command command, Crews crews, Attendances attendances) {
+        LocalDate today = LocalDate.now();
+        if (command.isOne()) {
+            checkInAttendance(attendances, today);
+        }
+        if (command.isTwo()) {
+            modifyAttendance(attendances, today);
+        }
+        if (command.isThree()) {
+            checkAttendance(attendances);
+        }
+        if (command.isFour()) {
+            checkPunishment(crews, attendances);
+        }
+    }
+
+    private void checkInAttendance(Attendances attendances, LocalDate today) {
         String rawNickname = inputView.readNickname();
         String rawCheckInTime = inputView.readCheckInTime();
 
-        Attendance attendance = stringConverter.convertToAttendance(rawNickname, rawCheckInTime, LocalDate.now());
+        Attendance attendance = stringConverter.convertToAttendance(rawNickname, rawCheckInTime, today);
         attendances.checkIn(attendance);
 
-        return attendance;
+        outputView.printCheckInResult(attendance);
     }
 
-    private void modifyAttendance(Attendances attendances) {
+    private void modifyAttendance(Attendances attendances, LocalDate today) {
         String rawNickname = inputView.readNickname();
         String rawDay = inputView.readDay();
         String rawChangeTime = inputView.readChangeTime();
-
         Crew crew = stringConverter.convertToNickname(rawNickname);
-        LocalDateTime changeTime = stringConverter.convertToLocalDateTime(rawDay, rawChangeTime, LocalDate.now());
+        LocalDateTime changeTime = stringConverter.convertToLocalDateTime(rawDay, rawChangeTime, today);
 
         Optional<Attendance> existAttendance = attendances.find(crew, changeTime.toLocalDate());
         Attendance modifedAttendance = attendances.modify(crew, changeTime);
