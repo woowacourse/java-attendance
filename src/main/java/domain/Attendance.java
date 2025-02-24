@@ -8,6 +8,7 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
+import java.util.Objects;
 
 public class Attendance {
     private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
@@ -67,5 +68,10 @@ public class Attendance {
         }
 
         return false;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(dateTime.toLocalDate());
     }
 }
