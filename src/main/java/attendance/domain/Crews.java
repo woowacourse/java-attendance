@@ -30,6 +30,10 @@ public class Crews {
         crews.add(crew);
     }
 
+    public boolean hasCrew(String crewName) {
+        return crews.stream().anyMatch(crew -> crew.checkSameName(crewName));
+    }
+
     public Crew findCrew(String crewName) {
         return crews.stream().filter(crew -> crew.checkSameName(crewName))
                 .findFirst()
