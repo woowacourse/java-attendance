@@ -28,4 +28,13 @@ public class AttendanceBookTest {
 
         assertThat(result).isEqualTo(LocalDateTime.of(2024, 12, 16, 12, 59));
     }
+
+    @Test
+    void 이미_출석했다면_예외를_던진다() {
+        List<LocalDateTime> attendances = List.of(LocalDateTime.of(2024, 12, 13, 9, 59));
+        AttendanceBook attendanceBook = new AttendanceBook(Map.of("훌라", attendances));
+
+        assertThatThrownBy(() -> attendanceBook.attend("훌라", LocalDateTime.of(2024, 12, 13, 9, 59)))
+                .isInstanceOf(IllegalArgumentException.class);
+    }
 }
