@@ -1,0 +1,33 @@
+package attendance.domain;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+
+import java.time.LocalDate;
+
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
+
+class AttendanceDateTest {
+
+    @CsvSource(value = {
+            "2,22,토", "2,23,일", "12,25,목"
+    })
+    @ParameterizedTest
+    void 등교일이_아닌_경우_출석_날짜를_생성할_수_없다(int month, int day, String dayOfWeek) {
+        assertThatThrownBy(() -> new AttendanceDate(LocalDate.of(2025, month, day)))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("%d월 %d일 %s요일은 등교일이 아닙니다.", month, day, dayOfWeek);
+    }
+
+    @Test
+    void 등교일이면_출석_날짜를_생성한다() {
+        LocalDate localDate = LocalDate.of(2025, 2, 25);
+
+        AttendanceDate attendanceDate = new AttendanceDate(localDate);
+        
+        assertThat(attendanceDate).isEqualTo(new AttendanceDate(LocalDate.of(2025, 2, 25)));
+    }
+
+}
