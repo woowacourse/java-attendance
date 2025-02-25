@@ -8,6 +8,7 @@ import attendance.model.campus.CampusOperationPolicy;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import org.junit.jupiter.api.BeforeAll;
@@ -87,9 +88,10 @@ class AttendanceLogsTest {
         // Given
         final LocalDate from = LocalDate.of(2024, 12, 2);
         final LocalDate to = LocalDate.of(2024, 12, 5);
-        final int expectedAttendanceCount = 1;
-        final int expectedAbsenceCount = 2;
-        final int expectedLateCount = 1;
+        final Map<AttendanceStatus, Integer> expected = new LinkedHashMap<>();
+        expected.put(AttendanceStatus.ATTENDANCE, 1);
+        expected.put(AttendanceStatus.ABSENCE, 2);
+        expected.put(AttendanceStatus.LATE, 1);
 
         // When
         final Map<AttendanceStatus, Integer> actual = attendanceLogs.getAttendanceStatusStatistics(
@@ -97,15 +99,13 @@ class AttendanceLogsTest {
                 to,
                 campusOperationPolicy
         );
-        final int actualAttendanceCount = actual.get(AttendanceStatus.ATTENDANCE);
-        final int actualAbsenceCount = actual.get(AttendanceStatus.ABSENCE);
-        final int actualLateCount = actual.get(AttendanceStatus.LATE);
 
         // Then
         assertAll(
-                () -> assertThat(actualAttendanceCount).isEqualTo(expectedAttendanceCount),
-                () -> assertThat(actualAbsenceCount).isEqualTo(expectedAbsenceCount),
-                () -> assertThat(actualLateCount).isEqualTo(expectedLateCount)
+                () -> assertThat(actual).containsExactlyEntriesOf(expected), // 순서와 값 모두 검증
+                () -> assertThat(actual.get(AttendanceStatus.ATTENDANCE)).isEqualTo(1),
+                () -> assertThat(actual.get(AttendanceStatus.ABSENCE)).isEqualTo(2),
+                () -> assertThat(actual.get(AttendanceStatus.LATE)).isEqualTo(1)
         );
     }
 }
