@@ -14,7 +14,11 @@ public enum CampusTime {
 
     public static void validateOperationTime(final LocalTime time) {
         if (time.isBefore(START_TIME.time) || time.isAfter(END_TIME.time)) {
-            throw new IllegalArgumentException("[ERROR] 캠퍼스 운영시간이 아닙니다.");
+            throw new IllegalArgumentException(String.format("[ERROR] 캠퍼스 운영시간이 아닙니다. 운영시간은 %s ~ %s 입니다.", START_TIME.time, END_TIME.time));
         }
+    }
+
+    public LocalTime getTime() {
+        return time;
     }
 }
