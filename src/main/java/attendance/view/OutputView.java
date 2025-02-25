@@ -1,12 +1,14 @@
 package attendance.view;
 
+import attendance.domain.AttendanceHistory;
+import attendance.domain.AttendanceStatus;
 import attendance.domain.DateTimeFormatterWrapper;
-import attendance.dto.AttendanceHistoryDto;
 import attendance.dto.AttendanceStatusCount;
 import attendance.dto.ModifyAttendanceDto;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.List;
 
 public class OutputView {
 
@@ -60,18 +62,23 @@ public class OutputView {
         println(String.format(ATTENDANCE_RESULT_FORMAT, dateTimeFormatResult, attendanceStatus));
     }
 
-    public void printAttendanceHistory(AttendanceStatusCount attendanceStatusCount,
-                                       AttendanceHistoryDto attendanceHistoryDto) {
-        StringBuilder stringBuilder = new StringBuilder(
-                String.format(CREW_ATTENDANCE_HISTORY_PREFIX, attendanceHistoryDto.nickname()));
-        for (String attendanceHistory : attendanceHistoryDto.attendanceHistories()) {
-            stringBuilder.append(attendanceHistory).append("\n");
+    public void printAttendanceHistory(List<AttendanceHistory> attendanceHistories, String nickname) {
+        StringBuilder stringBuilder = new StringBuilder(String.format(CREW_ATTENDANCE_HISTORY_PREFIX, nickname));
+        for (AttendanceHistory attendanceHistory : attendanceHistories) {
+            String attendanceTimeHistory = formattingAttendanceHistory(attendanceHistory.attendanceStatus(),
+                    attendanceHistory.attendanceDateTime());
+            AttendanceStatus attendanceStatus = attendanceHistory.attendanceStatus();
+            stringBuilder.append(
+                    String.format(ATTENDANCE_RESULT_FORMAT, attendanceTimeHistory, attendanceStatus.getStatus()));
         }
-        stringBuilder.append(String.format(ATTENDANCE_HISTORY_STATUS_FORMAT, attendanceStatusCount.attendance(),
-                attendanceStatusCount.late(), attendanceStatusCount.absence()));
-        stringBuilder.append(
-                String.format(ATTENDANCE_DISMISS_STATUS_FORMAT, attendanceHistoryDto.attendanceDismissStatus()));
         println(stringBuilder.toString());
+    }
+
+    private String formattingAttendanceHistory(AttendanceStatus attendanceStatus, LocalDateTime localDateTime) {
+        if (attendanceStatus == AttendanceStatus.ABSENCE) {
+            return DateTimeFormatterWrapper.formattingAttendanceAbsenceHistory(localDateTime.toLocalDate());
+        }
+        return DateTimeFormatterWrapper.parsingAttendanceResult(localDateTime);
     }
 
     public String crewDismiss(String nickname, int absence, int late, String attendanceDismissStatus) {
@@ -92,5 +99,14 @@ public class OutputView {
                 previousModifyAttendance.status(),
                 afterTimeFormatResult,
                 afterModifyAttendanceDto.status()));
+    }
+
+    public void printCrewDismisses(String attendanceDismissStatus,
+                                   AttendanceStatusCount attendanceStatusCount) {
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append(String.format(ATTENDANCE_HISTORY_STATUS_FORMAT, attendanceStatusCount.attendance(),
+                attendanceStatusCount.late(), attendanceStatusCount.absence()));
+        stringBuilder.append(String.format(ATTENDANCE_DISMISS_STATUS_FORMAT, attendanceDismissStatus));
+        println(stringBuilder.toString());
     }
 }

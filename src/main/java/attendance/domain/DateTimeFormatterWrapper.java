@@ -13,11 +13,12 @@ public final class DateTimeFormatterWrapper {
     private static final String INVALID_STATE = "유효하지 않은 접근입니다.";
     private static final String INVALID_ATTENDANCE_DATE = "유효하지 않은 날짜입니다.";
     private static final DateTimeFormatter parsingAttendanceDateTime = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
-    private static final DateTimeFormatter parsingAttendanceResult = DateTimeFormatter.ofPattern("MM월 dd일 E요일 HH:mm",
-            Locale.KOREA);
     private static final DateTimeFormatter parsingAttendanceTime = DateTimeFormatter.ofPattern("HH:mm");
     private static final DateTimeFormatter parsingAttendanceDate = DateTimeFormatter.ofPattern("yyyy MM dd");
     public static final String TODAY_FORMAT = "오늘은 MM월 dd일 E요일입니다. 기능을 선택해 주세요.";
+
+    private static final DateTimeFormatter parsingAttendanceResult = DateTimeFormatter.ofPattern("MM월 dd일 E요일 HH:mm",
+            Locale.KOREA);
     public static final String ATTENDANCE_ABSENCE_HISTORY = "MM월 dd일 E요일 --:-- (결석)";
     static final String CANNOT_ATTENDANCE_WEEKEND_FORMAT = "MM월 dd일 E요일은 등교일이 아닙니다.";
 

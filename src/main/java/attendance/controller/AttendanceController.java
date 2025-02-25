@@ -2,12 +2,11 @@ package attendance.controller;
 
 import attendance.domain.Attendance;
 import attendance.domain.AttendanceDismissStatus;
+import attendance.domain.AttendanceHistories;
 import attendance.domain.AttendanceManager;
-import attendance.domain.AttendanceStatus;
 import attendance.domain.AttendanceStatuses;
 import attendance.domain.CrewAttendanceHistory;
 import attendance.domain.DateTimeFormatterWrapper;
-import attendance.dto.AttendanceHistoryDto;
 import attendance.dto.AttendanceStatusCount;
 import attendance.dto.ModifyAttendanceDto;
 import attendance.dto.RequestModifyAttendanceDto;
@@ -20,7 +19,6 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
-import java.util.Map;
 import java.util.function.Supplier;
 
 public class AttendanceController {
@@ -62,14 +60,13 @@ public class AttendanceController {
     private void handleAttendanceHistory() {
         CrewAttendanceHistory crewAttendanceHistory = requestAttendanceHistory();
         AttendanceStatuses attendanceStatuses = crewAttendanceHistory.attendanceStatuses();
-        int absenceCount = attendanceStatuses.absenceCount();
-        AttendanceDismissStatus attendanceDismissStatus = AttendanceDismissStatus.calculateAttendanceDismiss(
-                absenceCount, attendanceStatuses.lateCount());
-        AttendanceStatusCount attendanceStatusCount = new AttendanceStatusCount(attendanceStatuses.absenceCount(),
-                attendanceStatuses.lateCount(), attendanceStatuses.attendanceCount());
-        AttendanceHistoryDto attendanceHistoryDto = new AttendanceHistoryDto(crewAttendanceHistory.nickname(),
-                crewAttendanceHistory.attendanceHistories(), attendanceDismissStatus.getStatus());
-        outputView.printAttendanceHistory(attendanceStatusCount, attendanceHistoryDto);
+        AttendanceDismissStatus attendanceDismissStatus = attendanceStatuses.calculateAttendanceDismiss();
+        AttendanceStatusCount attendanceStatusCount = attendanceStatuses.attendanceStatusCount();
+        AttendanceHistories attendanceHistories = crewAttendanceHistory.attendanceHistories();
+        String nickname = crewAttendanceHistory.nickname();
+
+        outputView.printAttendanceHistory(attendanceHistories.getImmutableAttendanceHistories(), nickname);
+        outputView.printCrewDismisses(attendanceDismissStatus.getStatus(), attendanceStatusCount);
     }
 
     private CrewAttendanceHistory requestAttendanceHistory() {
@@ -89,8 +86,7 @@ public class AttendanceController {
     private void appendCrewDismissHistory(List<CrewAttendanceHistory> attendanceHistories,
                                           StringBuilder crewDismissHistoryBuilder) {
         for (CrewAttendanceHistory crewAttendanceHistory : attendanceHistories) {
-            Map<AttendanceStatus, Integer> status = crewAttendanceHistory.statusMap();
-            AttendanceStatuses attendanceStatuses = new AttendanceStatuses(status);
+            AttendanceStatuses attendanceStatuses = crewAttendanceHistory.attendanceStatuses();
             AttendanceDismissStatus attendanceDismissStatus = attendanceStatuses.calculateAttendanceDismiss();
             crewDismissHistoryBuilder.append(
                     outputView.crewDismiss(crewAttendanceHistory.nickname(), attendanceStatuses.absenceCount(),

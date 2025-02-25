@@ -20,12 +20,10 @@ public class AttendanceManager {
     private static final String CANNOT_BE_EMPTY_NICKNAME = "닉네임은 공백일 수 없습니다.";
     private static final String ATTENDANCE_NOT_AVAILABLE = "출석 시스템은 2024년 12월 동안만 유효합니다";
     private static final int WEEKEND_NUMBER = 6;
-    private static final String ATTENDANCE_RESULT_FORMAT = "%s (%s)";
 
     private final HashMap<String, Attendances> attendanceManager = new HashMap<>();
     private final int XMAS_MONTH = 12;
     private final int XMAS_DAY = 25;
-    private final int STATUS_ADD_COUNT = 1;
 
     public AttendanceManager() {
     }
@@ -146,7 +144,7 @@ public class AttendanceManager {
 
     private void addAbsenceHistory(AttendanceStatuses attendanceStatues,
                                    AttendanceHistories attendanceHistories, LocalDate currentDate) {
-        attendanceHistories.add(LocalDateTime.from(currentDate), AttendanceStatus.ABSENCE);
+        attendanceHistories.add(LocalDateTime.of(currentDate, LocalTime.MIN), AttendanceStatus.ABSENCE);
         attendanceStatues.mergeStatus(AttendanceStatus.ABSENCE);
     }
 

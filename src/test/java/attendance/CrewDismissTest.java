@@ -42,8 +42,7 @@ public class CrewDismissTest {
             Assertions.assertThat(attendanceManager.crewDismissHistory());
             CrewAttendanceHistory crewAttendanceHistory = attendanceHistories.get(i);
             String nickname = nicknames.get(i);
-            AttendanceStatuses attendances = new AttendanceStatuses(
-                    crewAttendanceHistory.statusMap());
+            AttendanceStatuses attendances = crewAttendanceHistory.attendanceStatuses();
             AttendanceDismissStatus attendanceDismissStatus = attendances.calculateAttendanceDismiss();
             Assertions.assertThat(crewAttendanceHistory.nickname()).isEqualTo(nickname);
             Assertions.assertThat(attendanceDismissStatus).isEqualTo(attendanceStatus.get(i));
