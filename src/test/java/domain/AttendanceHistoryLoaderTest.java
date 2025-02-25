@@ -21,7 +21,11 @@ public class AttendanceHistoryLoaderTest {
 
     @Test
     void 유효한_형식의_파일에_대해_Crew를_정상적으로_초기화한다() throws Exception {
-        String csvData = "nickname,datetime\n에드,2025-02-13 08:30\n제프,2025-02-14 09:15\n";
+        String csvData = """
+                nickname,datetime
+                에드,2025-02-13 08:30
+                제프,2025-02-14 09:15
+                """;
         File tempCsvFile = createTempCsvFile(csvData);
 
         AttendanceHistoryLoader loader = new AttendanceHistoryLoader();
@@ -37,13 +41,16 @@ public class AttendanceHistoryLoaderTest {
 
     @Test
     void 시간이_빠진_잘못된_형식에_대해_예외를_발생시킨다() throws Exception {
-        String csvData = "nickname,datetime\n에드,2025-02-13\n";
+        String csvData = """
+                nickname,datetime
+                에드,2025-02-13
+                """;
         File tempCsvFile = createTempCsvFile(csvData);
 
         AttendanceHistoryLoader loader = new AttendanceHistoryLoader();
         FileReader reader = new FileReader(tempCsvFile);
 
-        assertThrows(RuntimeException.class, () -> loader.loadCrews(reader));
+        assertThrows(IOException.class, () -> loader.loadCrews(reader));
 
         tempCsvFile.delete();
     }

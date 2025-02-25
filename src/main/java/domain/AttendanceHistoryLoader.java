@@ -19,7 +19,7 @@ public class AttendanceHistoryLoader {
         try (BufferedReader reader = new BufferedReader(fileReader)) {
             skipHeader(reader);
             loadAttendanceHistory(reader, crews);
-        } catch (IOException e) {
+        } catch (Exception e) {
             throw new IOException("[ERROR] 초기 출석 데이터를 로드하는 중 오류가 발생하였습니다.");
         }
 
