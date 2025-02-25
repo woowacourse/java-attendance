@@ -37,7 +37,7 @@ public class AttendanceDate {
     }
 
     public boolean isSameDayOfWeek(final DayOfWeek dayOfWeek) {
-        return false;
+        return value.getDayOfWeek().equals(dayOfWeek);
     }
 
     @Override
