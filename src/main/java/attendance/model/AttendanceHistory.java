@@ -69,4 +69,8 @@ public record AttendanceHistory(
         }
         return CustomLocalDateTime.nowDate();
     }
+
+    public long convertLateCount() {
+        return computeAbsenceCount() * 3 + computeLateCount();
+    }
 }

@@ -26,7 +26,7 @@ public record WarningCrewsDTO(List<WarningCrewDetailDTO> warningCrewDetailDTO) {
                     crewName,
                     attendanceHistory.computeAbsenceCount(),
                     attendanceHistory.computeLateCount(),
-                    attendanceHistory.computeLateCount() + attendanceHistory.computeAbsenceCount() * 3,
+                    attendanceHistory.convertLateCount(),
                     attendanceHistory.getAttendanceWarning().name()
             );
         }
