@@ -1,6 +1,7 @@
 package domain.attendance;
 
 import java.time.LocalDateTime;
+import java.util.Arrays;
 
 public enum AttendanceTime {
     MON(13, 5, 1),
@@ -25,22 +26,16 @@ public enum AttendanceTime {
     }
 
     public static boolean isAttendance(int dayOfWeek, LocalDateTime dateTime) {
-        for (AttendanceTime value : values()) {
-            if (value.dayOfWeek == dayOfWeek) {
-                return value.hour > dateTime.getHour() || (value.hour == dateTime.getHour()
-                        && value.minute >= dateTime.getMinute());
-            }
-        }
-        return false;
+        return Arrays.stream(values())
+                .filter(value -> value.dayOfWeek == dayOfWeek)
+                .anyMatch(value -> value.hour > dateTime.getHour() || (value.hour == dateTime.getHour()
+                        && value.minute >= dateTime.getMinute()));
     }
 
     public static boolean isAbsence(int dayOfWeek, LocalDateTime dateTime) {
-        for (AttendanceTime value : values()) {
-            if (value.dayOfWeek == dayOfWeek) {
-                return value.hour < dateTime.getHour() || (value.hour == dateTime.getHour()
-                        && value.minute + 25 < dateTime.getMinute());
-            }
-        }
-        return false;
+        return Arrays.stream(values())
+                .filter(value -> value.dayOfWeek == dayOfWeek)
+                .anyMatch(value ->value.hour < dateTime.getHour() || (value.hour == dateTime.getHour()
+                        && value.minute + 25 < dateTime.getMinute()));
     }
 }
