@@ -17,7 +17,7 @@ public class AttendanceCheckService {
 
     public AttendanceRegisterResponse register(String crewName, LocalDate date, LocalTime time) {
         AttendanceBook attendanceBook = crewAttendances.findByCrewName(crewName);
-        Attendance attendance = attendanceBook.create(date, time);
+        Attendance attendance = attendanceBook.register(date, time);
         return new AttendanceRegisterResponse(
                 attendance.getDate(),
                 attendance.getTime(),

@@ -23,7 +23,7 @@ public class CrewAttendances {
     public void createNewAttendance(String crewName, LocalDate date, LocalTime time) {
         Crew crew = findCrewByName(crewName);
         AttendanceBook attendanceBook = crewAttendances.get(crew);
-        attendanceBook.create(date, time);
+        attendanceBook.register(date, time);
         crewAttendances.replace(crew, attendanceBook);
     }
 

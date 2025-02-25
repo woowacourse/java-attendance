@@ -14,7 +14,7 @@ public class AttendanceBook {
         attendances = new HashSet<>();
     }
 
-    public Attendance create(LocalDate date, LocalTime time) {
+    public Attendance register(LocalDate date, LocalTime time) {
         final boolean isExist = attendances.stream().anyMatch(attendance -> attendance.isAttendedOn(date));
         if (isExist) {
             throw new DuplicateAttendanceException();

@@ -22,16 +22,16 @@ public class AttendanceStoreTest {
     @BeforeEach
     void setup() {
         AttendanceBook 쿠키_출석부 = new AttendanceBook();
-        쿠키_출석부.create(LocalDate.of(2024, 12, 13), LocalTime.of(10, 8));
+        쿠키_출석부.register(LocalDate.of(2024, 12, 13), LocalTime.of(10, 8));
 
         AttendanceBook 빙봉_출석부 = new AttendanceBook();
-        빙봉_출석부.create(LocalDate.of(2024, 12, 13), LocalTime.of(10, 7));
+        빙봉_출석부.register(LocalDate.of(2024, 12, 13), LocalTime.of(10, 7));
 
         AttendanceBook 빙티_출석부 = new AttendanceBook();
-        빙티_출석부.create(LocalDate.of(2024, 12, 13), LocalTime.of(10, 7));
+        빙티_출석부.register(LocalDate.of(2024, 12, 13), LocalTime.of(10, 7));
 
         AttendanceBook 이든_출석부 = new AttendanceBook();
-        이든_출석부.create(LocalDate.of(2024, 12, 13), LocalTime.of(10, 7));
+        이든_출석부.register(LocalDate.of(2024, 12, 13), LocalTime.of(10, 7));
 
         attendanceBooks.put("쿠키", 쿠키_출석부);
         attendanceBooks.put("빙봉", 빙봉_출석부);
