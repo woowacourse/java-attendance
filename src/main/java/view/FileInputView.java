@@ -10,7 +10,7 @@ import java.util.Scanner;
 public class FileInputView {
     public void readAttendanceFile(AllCrew allCrew) {
         try {
-            FileReader fileReader = new FileReader("src/main/java/resource/attendance.csv");
+            FileReader fileReader = new FileReader("src/main/resource/attendance.csv");
             Scanner scanner = new Scanner(fileReader);
             readFilePerLine(allCrew, scanner);
         } catch (FileNotFoundException e) {
