@@ -27,7 +27,7 @@ public class AllCrew {
         return crew.addAttendance(dateTime);
     }
 
-    public List<Attendance> modifyCrewAttendanceByName(String name, LocalDateTime dateTime) {
+    public AttendanceUpdateResult modifyCrewAttendanceByName(String name, LocalDateTime dateTime) {
         Crew crew = findCrewByName(name);
         return crew.update(dateTime);
     }
@@ -61,7 +61,7 @@ public class AllCrew {
     public List<Crew> getAllWarningCrew() {
         List<Crew> allWarningCrew = new ArrayList<>();
         for (Crew crew : allCrew) {
-            if (!crew.calculateWarningStatus().isEmpty()){
+            if (crew.getAbsentPenalty() != AbsentPenalty.NONE){
                 allWarningCrew.add(crew);
             }
         }
