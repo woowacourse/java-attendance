@@ -2,6 +2,7 @@ package domain;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -36,6 +37,20 @@ class AttendanceBookTest {
         // then
         assertThat(crewAttendance.belongsTo(crew))
                 .isTrue();
+    }
+
+    @Test
+    @DisplayName("존재하지 않는 크루 검색 시 예외 발생")
+    void findCrewAttendanceWithNonExistCrewThrowException() {
+        // given
+        List<CrewAttendance> crewAttendances = createCrewAttendances();
+        AttendanceBook attendanceBook = AttendanceBook.of(crewAttendances);
+        Crew crew = Crew.of("pobi");
+
+        // when, then
+        assertThatThrownBy(() -> attendanceBook.findCrewAttendanceByCrew(crew))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("해당하는 이름의 크루가 존재하지 않습니다.");
     }
 
     private List<CrewAttendance> createCrewAttendances() {
