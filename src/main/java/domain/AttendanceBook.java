@@ -1,18 +1,18 @@
 package domain;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import util.DateTimeConvertor;
 
 public class AttendanceBook {
 
     private final List<Crew> crews;
 
     // TODO: 변환 책임에 대해 고민해보기
-    public AttendanceBook(Map<String, List<String>> crewAttendances) {
+    public AttendanceBook(Map<String, List<LocalDateTime>> crewAttendances) {
         this.crews = new ArrayList<>();
         for (String name : crewAttendances.keySet()) {
             List<Attendance> attendances = parseAttendances(crewAttendances, name);
@@ -20,11 +20,11 @@ public class AttendanceBook {
         }
     }
 
-    private List<Attendance> parseAttendances(Map<String, List<String>> crewAttendances, String name) {
+    private List<Attendance> parseAttendances(Map<String, List<LocalDateTime>> crewAttendances, String name) {
         List<Attendance> attendances = new ArrayList<>();
-        for (String attendanceRaw : crewAttendances.get(name)) {
-            LocalDate date = DateTimeConvertor.convertToDate(attendanceRaw);
-            LocalTime time = DateTimeConvertor.convertToTime(attendanceRaw);
+        for (LocalDateTime attendanceDateTime : crewAttendances.get(name)) {
+            LocalDate date = attendanceDateTime.toLocalDate();
+            LocalTime time = attendanceDateTime.toLocalTime();
             Attendance attendance = new Attendance(new AttendanceDate(date), new AttendanceTime(time));
 
             attendances.add(attendance);
