@@ -36,7 +36,7 @@ public class AttendanceController {
 
         String inputOption = "";
 
-        while (!inputOption.equals(EXIT_OPTION)) {
+        while (!EXIT_OPTION.equals(inputOption)) {
             outputView.printOptionMessage(StandardDate.TODAY.getDate());
             inputOption = inputView.getOption();
 
