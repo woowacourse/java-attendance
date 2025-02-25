@@ -5,7 +5,7 @@ import policy.FileReaderPolicy;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
-public class FileReaderPolicyPolicyTest {
+public class FileReaderPolicyTest {
     private static final String FILE_PATH = "src/main/resources/attendances.csv";
 
     @Test
