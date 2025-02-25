@@ -1,5 +1,9 @@
-package attendance.domain;
+package attendance.controller;
 
+import attendance.domain.Attendances;
+import attendance.domain.Crew;
+import attendance.domain.Crews;
+import attendance.domain.MenuCommand;
 import attendance.view.InputView;
 import attendance.view.OutputView;
 import java.time.LocalDate;
@@ -22,8 +26,6 @@ public abstract class MenuOption {
     }
 
     public abstract void executeMenuOption(MenuCommand command);
-
-    public abstract boolean isCorrectCommand(MenuCommand command);
 
     protected LocalDateTime createLocalDateTime(final LocalDate localDate, final String localTime) {
         return LocalDateTime.of(localDate, LocalTime.parse(localTime));
