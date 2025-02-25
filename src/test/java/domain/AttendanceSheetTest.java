@@ -65,10 +65,11 @@ public class AttendanceSheetTest {
     public void attendNotFoundTest() {
         //given
         String nickname = "링크";
-        LocalDate date = LocalDate.of(2024, 12, 15);
+        int dayOfMonth = 15;
+        LocalTime updateTime = LocalTime.of(11,0);
 
         //when-then
-        assertThatThrownBy(() -> attendanceSheet.validateNotFoundAttendance(nickname, date))
+        assertThatThrownBy(() -> attendanceSheet.update(nickname, dayOfMonth, updateTime))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
