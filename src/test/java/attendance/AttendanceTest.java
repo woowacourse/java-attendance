@@ -45,6 +45,18 @@ class AttendanceTest {
     }
 
     @Test
+    @DisplayName("운영시간이 아닌 시간에 등교를 시도할 경우 예외를 반환한다")
+    void attendanceExceptionTest2() {
+        // given
+        Crew crew = new Crew("pobi");
+
+        // when then
+        assertThatThrownBy(() -> {
+            crew.attendance(DATE, LocalTime.of(07, 59));
+        }).isInstanceOf(IllegalArgumentException.class);
+    }
+
+    @Test
     @DisplayName("닉네임, 수정하려는 날짜, 등교 시간으로 출석 기록을 수정할 수 있다")
     void modifyAttendanceTest() {
         // given
