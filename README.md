@@ -35,7 +35,9 @@
 - AttendanceDate
   - [x] 출석 날짜 저장
 - AttendanceTime
-  - [ ] 출석 시간 저장
+  - [x] 출석 시간 저장
+- AttendanceDateTime
+  - [ ] 출석 날짜와 시간 저장
 - AttendanceStatus
   - [ ] 출석 상태(출석, 지각, 결석) 저장
 - Crew
