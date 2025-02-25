@@ -63,7 +63,7 @@ public class Crew {
     }
 
     public List<Attendance> getAttendances() {
-        return List.copyOf(attendances);
+        return new ArrayList<>(attendances);
     }
 
     public String getNickName() {

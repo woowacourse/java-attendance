@@ -2,7 +2,6 @@ package controller;
 
 import domain.*;
 import domain.constant.StandardDate;
-import util.Converter;
 import view.InputView;
 import view.OutputView;
 
@@ -66,17 +65,15 @@ public class AttendanceController {
     private void registerAttendance(Crew crew) {
         Attendance attendance = new Attendance(StandardDate.TODAY, inputView.getAttendanceTime());
         crew.addAttendance(attendance);
-        outputView.printAttendanceInformation(Converter.convertAttendanceToDto(attendance));
+        outputView.printAttendanceInformation(attendance);
     }
 
     public void processAttendanceUpdate() {
         Crew crew = crews.findByNickname(inputView.getEditNickname());
         Attendance attendance = crew.findByDate(inputView.getEditDayOfMonth());
-        AttendanceDto originalAttendanceDto = Converter.convertAttendanceToDto(attendance);
+        Attendance originalAttendance = new Attendance(attendance.getDay(), attendance.getAttendanceTime());
         attendance.updateAttendanceTime(inputView.getNewTime());
-        AttendanceDto editedAttendanceDto = Converter.convertAttendanceToDto(attendance);
-
-        outputView.printUpdatedAttendanceHistory(originalAttendanceDto, editedAttendanceDto);
+        outputView.printUpdatedAttendanceHistory(originalAttendance, attendance);
     }
 
     public void processAttendanceHistory() {
@@ -87,21 +84,11 @@ public class AttendanceController {
     }
 
     public void processPenaltyCheck() {
-        List<CrewDto> penaltyCrewDtos = createCrewDtos().stream()
-                .filter(crewDto -> crewDto.getPenaltyStatus() != PenaltyStatus.NONE)
+        List<Crew> penaltyCrews = crews.getAllCrews().stream()
+                .filter(crew -> crew.getPenaltyStatus() != PenaltyStatus.NONE)
                 .collect(Collectors.toCollection(ArrayList::new));
 
-        outputView.printPenaltyCrews(penaltyCrewDtos);
-    }
-
-    public List<CrewDto> createCrewDtos() {
-        return crews.getAllCrews().stream()
-                .map(crew -> new CrewDto(
-                        crew.getNickName(),
-                        crew.calculateLateCount(),
-                        crew.calculateAbsentCount(),
-                        crew.getPenaltyStatus()))
-                .toList();
+        outputView.printPenaltyCrews(penaltyCrews);
     }
 }
 
