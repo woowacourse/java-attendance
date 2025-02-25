@@ -58,16 +58,11 @@ public class OutputView {
         System.out.println();
 
         for (int day = 1; day <= now.getDayOfMonth(); day++) {
-            LocalDate currentDate = LocalDate.of(now.getYear(), now.getMonthValue(), day);
-            if (isWeekend(currentDate)) {
+            if (!dateInfos.hasDateInfo(day)) {
                 continue;
             }
-            try {
-                DateInfo dateInfo = dateInfos.findDateInfoByDay(day);
-                writeAttendanceCheck(dateInfo);
-            } catch (CustomException e) {
-                writeAbsentAttendanceCheck(currentDate);
-            }
+            DateInfo dateInfo = dateInfos.findDateInfoByDay(day);
+            writeAttendanceCheck(dateInfo);
         }
 
         System.out.println();
@@ -95,14 +90,6 @@ public class OutputView {
 
     public void errorMessagePrint(String message) {
         System.out.println(message);
-    }
-
-    private void writeAbsentAttendanceCheck(LocalDate localDate) {
-        String month = formatWithLeadingZero(localDate.getMonthValue());
-        String day = formatWithLeadingZero(localDate.getDayOfMonth());
-        String dayOfWeek = changeDayOfWeekToKorean(localDate.getDayOfWeek());
-        System.out.printf("%s월 %s일 %s %s:%s (%s)", month, day, dayOfWeek, "--", "--", "결석");
-        System.out.println();
     }
 
     private static boolean isWeekend(LocalDate currentDate) {
