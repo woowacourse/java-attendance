@@ -12,7 +12,7 @@ public class AttendanceTypeTest {
     @Test
     void value_is_5_then_return_attendance() {
         int value = 4;
-        AttendanceType attendanceType = AttendanceType.decideType(value);
+        AttendanceType attendanceType = AttendanceType.determineAttendanceTypeByLateTime(value);
         assertThat(attendanceType).isEqualTo(ATTENDANCE);
     }
 
@@ -20,7 +20,7 @@ public class AttendanceTypeTest {
     @Test
     void value_is_6_then_return_late() {
         int value = 5;
-        AttendanceType attendanceType = AttendanceType.decideType(value);
+        AttendanceType attendanceType = AttendanceType.determineAttendanceTypeByLateTime(value);
         assertThat(attendanceType).isEqualTo(LATE);
     }
 
@@ -28,7 +28,7 @@ public class AttendanceTypeTest {
     @Test
     void value_is_29_then_return_late() {
         int value = 29;
-        AttendanceType attendanceType = AttendanceType.decideType(value);
+        AttendanceType attendanceType = AttendanceType.determineAttendanceTypeByLateTime(value);
         assertThat(attendanceType).isEqualTo(LATE);
     }
 
@@ -36,7 +36,7 @@ public class AttendanceTypeTest {
     @Test
     void value_is_30_then_return_absence() {
         int value = 30;
-        AttendanceType attendanceType = AttendanceType.decideType(value);
+        AttendanceType attendanceType = AttendanceType.determineAttendanceTypeByLateTime(value);
         assertThat(attendanceType).isEqualTo(ABSENCE);
     }
 }

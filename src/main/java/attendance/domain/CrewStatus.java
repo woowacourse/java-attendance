@@ -11,29 +11,29 @@ public enum CrewStatus {
     WARNING("경고", 1),
     CLEAR("통과", 0);
 
-    private final String name;
-    private final int decideStatusValue;
+    private final String statusDescription;
+    private final int statusDecisionValue;
 
-    CrewStatus(String name, int decideStatusValue) {
-        this.name = name;
-        this.decideStatusValue = decideStatusValue;
+    CrewStatus(String statusDescription, int statusDecisionValue) {
+        this.statusDescription = statusDescription;
+        this.statusDecisionValue = statusDecisionValue;
     }
 
-    public String getName() {
-        return name;
+    public String getStatusDescription() {
+        return statusDescription;
     }
 
     public static CrewStatus calculateCrewStatus(Map<AttendanceType, Long> attendanceResult) {
         int validateValue = 0;
         validateValue += attendanceResult.get(ABSENCE);
         validateValue += attendanceResult.get(LATE) / 3;
-        if (validateValue > FIRE.decideStatusValue) {
+        if (validateValue > FIRE.statusDecisionValue) {
             return FIRE;
         }
-        if (validateValue >= INTERVIEW.decideStatusValue) {
+        if (validateValue >= INTERVIEW.statusDecisionValue) {
             return INTERVIEW;
         }
-        if (validateValue >= WARNING.decideStatusValue) {
+        if (validateValue >= WARNING.statusDecisionValue) {
             return WARNING;
         }
         return CLEAR;

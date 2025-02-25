@@ -42,8 +42,8 @@ public class OutputView {
         AttendanceType modifyAttendanceType = modifyAttendanceHistory.getAttendanceType();
 
         System.out.println(MODIFY_ATTENDANCE_RESULT_MESSAGE.formatted(
-            month, day, dayOfWeek.getName(), hour, minute, attendanceType.getName(),
-            modifyHour, modifyMinute, modifyAttendanceType.getName())
+            month, day, dayOfWeek.getName(), hour, minute, attendanceType.getTypeDescription(),
+            modifyHour, modifyMinute, modifyAttendanceType.getTypeDescription())
         );
     }
 
@@ -61,12 +61,12 @@ public class OutputView {
             AttendanceType attendanceType = attendanceHistory.getAttendanceType();
             if (hour == 0 && minute == 0) {
                 System.out.println(ATTENDANCE_ABSENCE_MESSAGE.formatted(
-                    month, day, dayOfWeek.getName(), attendanceType.getName()));
+                    month, day, dayOfWeek.getName(), attendanceType.getTypeDescription()));
                 continue;
             }
 
             System.out.println(ATTENDANCE_RESULT_MESSAGE.formatted(
-                month, day, dayOfWeek.getName(), hour, minute, attendanceType.getName())
+                month, day, dayOfWeek.getName(), hour, minute, attendanceType.getTypeDescription())
             );
         }
     }
@@ -82,7 +82,7 @@ public class OutputView {
         DayOfWeek dayOfWeek = DayOfWeek.calculateDayOfWeek(localDate);
         System.out.printf(ATTENDANCE_RESULT_MESSAGE, month, day, dayOfWeek.getName(),
             localTime.getHour(),
-            localTime.getMinute(), attendanceType.getName());
+            localTime.getMinute(), attendanceType.getTypeDescription());
         System.out.println();
     }
 
@@ -93,7 +93,7 @@ public class OutputView {
     public void printAttendanceTypeResult(Map<AttendanceType, Long> attendanceResult) {
         for (AttendanceType attendanceType : attendanceResult.keySet()) {
             System.out.println(ATTENDANCE_TYPE_RESULT_MESSAGE.formatted(
-                attendanceType.getName(), attendanceResult.get(attendanceType))
+                attendanceType.getTypeDescription(), attendanceResult.get(attendanceType))
             );
         }
     }

@@ -21,7 +21,7 @@ public class DangerousCrew {
     }
 
     public String getStatusName() {
-        return crewStatus.getName();
+        return crewStatus.getStatusDescription();
     }
 
     public AttendanceHistories getAttendanceHistories() {
