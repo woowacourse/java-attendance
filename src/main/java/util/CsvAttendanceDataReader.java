@@ -9,7 +9,6 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Stream;
@@ -36,14 +35,8 @@ public class CsvAttendanceDataReader implements AttendanceDataReader {
     }
 
     private void readLines(Stream<String> lines, Map<String, List<LocalDateTime>> crewsMap) {
-        Iterator<String> iterator = lines.iterator();
-        if (iterator.hasNext()) {
-            iterator.next();
-        }
-        while (iterator.hasNext()) {
-            String line = iterator.next();
-            processLine(line, crewsMap);
-        }
+        lines.skip(1)
+                .forEach(line -> processLine(line, crewsMap));
     }
 
     private void processLine(String line, Map<String, List<LocalDateTime>> crewsMap) {
