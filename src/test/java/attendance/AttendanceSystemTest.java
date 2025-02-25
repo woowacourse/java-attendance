@@ -222,6 +222,20 @@ class AttendanceSystemTest {
         );
     }
 
+    @DisplayName("출석 기록 수정 - 닉네임이 등록되지 않은 경우 예외 메세지를 출력한다")
+    @Test
+    void 출석_기록_수정_닉네임이_등록되지_않은_경우_예외_메세지를_출력한다() {
+        LocalDateTime newDateTime = LocalDateTime.of(
+                COMMON_ATTENDANCE_DATE_TIME.toLocalDate(), LocalTime.of(8, 50));
+        
+        assertThatIllegalArgumentException()
+                .isThrownBy(() -> attendanceSystem.updateAttendance(
+                        INVALID_CREW_NICKNAME,
+                        newDateTime.toLocalDate(),
+                        newDateTime.toLocalTime()))
+                .withMessage(ExceptionMessage.INVALID_CREW.getMessage());
+    }
+
     void checkSameRecord(
             AttendanceRecord target,
             String expectedNickname,
