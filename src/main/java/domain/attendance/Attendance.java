@@ -20,20 +20,16 @@ public class Attendance {
         }
     }
 
-    private void validateAndUpdateAttendanceDates(LocalDate cursorDate) {
-        if (cursorDate.getDayOfWeek().getValue() >= AttendanceDate.SATURDAY || Holiday.has(cursorDate)) {
-            return;
+    public AttendanceState attend(LocalDateTime attendDateTime) {
+        if (!attendDateTime.isBefore(LocalDateTime.now())) {
+            throw new IllegalArgumentException("아직 출석할 수 없습니다.");
         }
-
-        AttendanceDate absenceDate = new AttendanceDate(
-                LocalDateTime.of(
-                        cursorDate.getYear(),
-                        cursorDate.getMonth(),
-                        cursorDate.getDayOfMonth(),
-                        ABSENCE_HOUR,
-                        ABSENCE_MINUTE));
-
-        attendanceDates.add(absenceDate);
+        if (has(attendDateTime.toLocalDate())) {
+            throw new IllegalArgumentException("이미 출석을 확인하였습니다. 필요한 경우 수정 기능을 이용해 주세요.");
+        }
+        AttendanceDate attendanceDate = new AttendanceDate(attendDateTime);
+        attendanceDates.add(attendanceDate);
+        return attendanceDate.calculateAttendanceState();
     }
 
     public void editAttendanceDateTime(LocalDateTime attendanceDateTime) {
@@ -54,18 +50,6 @@ public class Attendance {
         throw new IllegalArgumentException("아직 수정할 수 없습니다.");
     }
 
-    public AttendanceState attend(LocalDateTime attendDateTime) {
-        if (!attendDateTime.isBefore(LocalDateTime.now())) {
-            throw new IllegalArgumentException("아직 출석할 수 없습니다.");
-        }
-        if (has(attendDateTime.toLocalDate())) {
-            throw new IllegalArgumentException("이미 출석을 확인하였습니다. 필요한 경우 수정 기능을 이용해 주세요.");
-        }
-        AttendanceDate attendanceDate = new AttendanceDate(attendDateTime);
-        attendanceDates.add(attendanceDate);
-        return attendanceDate.calculateAttendanceState();
-    }
-
     public void fillAttendanceDate() {
         for (LocalDate cursorCheckDate = LocalDate.now().minusDays(1); !this.has(cursorCheckDate);
              cursorCheckDate = cursorCheckDate.minusDays(1)) {
@@ -83,6 +67,22 @@ public class Attendance {
 
     private boolean has(LocalDate localDate) {
         return attendanceDates.stream().anyMatch(attendanceDate -> attendanceDate.equals(localDate));
+    }
+
+    private void validateAndUpdateAttendanceDates(LocalDate cursorDate) {
+        if (cursorDate.getDayOfWeek().getValue() >= AttendanceDate.SATURDAY || Holiday.has(cursorDate)) {
+            return;
+        }
+
+        AttendanceDate absenceDate = new AttendanceDate(
+                LocalDateTime.of(
+                        cursorDate.getYear(),
+                        cursorDate.getMonth(),
+                        cursorDate.getDayOfMonth(),
+                        ABSENCE_HOUR,
+                        ABSENCE_MINUTE));
+
+        attendanceDates.add(absenceDate);
     }
 
     public int countAbsence() {
@@ -106,11 +106,11 @@ public class Attendance {
                 .count();
     }
 
-    public List<AttendanceDate> getAttendanceDates() {
-        return attendanceDates;
-    }
-
     public int countAbsenceIncludingTardy() {
         return countAbsence() + (countTardy() / ABSENCE_PER_TARDY);
+    }
+
+    public List<AttendanceDate> getAttendanceDates() {
+        return attendanceDates;
     }
 }

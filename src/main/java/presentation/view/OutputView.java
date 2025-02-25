@@ -38,6 +38,18 @@ public class OutputView {
         System.out.println();
     }
 
+    public static void printAttendanceWarningCrews(List<ResponseWarningCrewDto> warningCrewDtos) {
+        System.out.println("제적 위험자 조회 결과");
+        warningCrewDtos.forEach(OutputView::printAttendanceWarningCrew);
+        System.out.println();
+    }
+
+    private static void printAttendanceWarningCrew(ResponseWarningCrewDto warningCrewDto) {
+        System.out.println("- "+ warningCrewDto.crewName() + ": 결석 " + warningCrewDto.absenceCount() + "회, 지각 "
+                + warningCrewDto.tardyCount() + "회"
+                + " (" + (warningCrewDto.attendanceWarning().getStatus()) + ")");
+    }
+
     private static String getAttendanceDateTimeState(String date, String time, AttendanceState state) {
         if (state == AttendanceState.ABSENCE) {
             return date + " " + "--:--" + getAttendanceStateMessage(state);
@@ -61,17 +73,5 @@ public class OutputView {
         if (responseAttendanceStateCountDto.attendanceWarning() != AttendanceWarning.NONE) {
             System.out.printf("\n%s 대상자 입니다.\n", responseAttendanceStateCountDto.attendanceWarning().getStatus());
         }
-    }
-
-    public static void printAttendanceWarningCrews(List<ResponseWarningCrewDto> warningCrewDtos) {
-        System.out.println("제적 위험자 조회 결과");
-        warningCrewDtos.forEach(OutputView::printAttendanceWarningCrew);
-        System.out.println();
-    }
-
-    private static void printAttendanceWarningCrew(ResponseWarningCrewDto warningCrewDto) {
-        System.out.println("- "+ warningCrewDto.crewName() + ": 결석 " + warningCrewDto.absenceCount() + "회, 지각 "
-                + warningCrewDto.tardyCount() + "회"
-                + " (" + (warningCrewDto.attendanceWarning().getStatus()) + ")");
     }
 }

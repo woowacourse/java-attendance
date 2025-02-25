@@ -21,6 +21,10 @@ public class AttendanceDate implements Comparable<AttendanceDate> {
         }
     }
 
+    public AttendanceState calculateAttendanceState() {
+        return AttendanceState.calculateAttendanceState(this.getDayOfWeek(), this.dateTime);
+    }
+
     public void editDateTime(LocalDateTime editDateTime) {
         this.dateTime = editDateTime;
     }
@@ -33,18 +37,10 @@ public class AttendanceDate implements Comparable<AttendanceDate> {
         return this.dateTime.toLocalDate();
     }
 
-    public AttendanceState calculateAttendanceState() {
-        return AttendanceState.calculateAttendanceState(this.getDayOfWeek(), this.dateTime);
-    }
-
     public boolean equals(LocalDate compareDate) {
         return (this.dateTime.getYear() == compareDate.getYear()
                 && this.dateTime.getMonthValue() == compareDate.getMonthValue()
                 && this.dateTime.getDayOfMonth() == compareDate.getDayOfMonth());
-    }
-
-    private int getDayOfWeek() {
-        return this.dateTime.getDayOfWeek().getValue();
     }
 
     @Override
@@ -56,5 +52,9 @@ public class AttendanceDate implements Comparable<AttendanceDate> {
             return 0;
         }
         return 1;
+    }
+
+    private int getDayOfWeek() {
+        return this.dateTime.getDayOfWeek().getValue();
     }
 }

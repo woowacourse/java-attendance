@@ -8,23 +8,23 @@ public enum AttendanceWarning {
     ;
 
     private final String status;
-    private final int absenseCount;
+    private final int absenceCount;
 
-    AttendanceWarning(String status, int absenseCount) {
+    AttendanceWarning(String status, int absenceCount) {
         this.status = status;
-        this.absenseCount = absenseCount;
-    }
-
-    public String getStatus() {
-        return status;
+        this.absenceCount = absenceCount;
     }
 
     public static AttendanceWarning determineAttendanceWarning(int absenceIncludingTardyCount) {
         for (AttendanceWarning value : values()) {
-            if (value.absenseCount <= absenceIncludingTardyCount) {
+            if (value.absenceCount <= absenceIncludingTardyCount) {
                 return value;
             }
         }
         return NONE;
+    }
+
+    public String getStatus() {
+        return status;
     }
 }

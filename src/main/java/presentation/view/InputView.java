@@ -28,10 +28,6 @@ public class InputView {
         return getInput();
     }
 
-    private static String getInput() {
-        return scanner.next().trim();
-    }
-
     public static String inputAttendanceTime() {
         System.out.println("등교 시간을 입력해 주세요.");
         return getInput();
@@ -40,5 +36,9 @@ public class InputView {
     public static String inputAttendanceDay() {
         System.out.println("수정하려는 날짜(일)를 입력해 주세요");
         return getInput();
+    }
+
+    private static String getInput() {
+        return scanner.next().trim();
     }
 }
