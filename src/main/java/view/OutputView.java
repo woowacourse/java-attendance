@@ -53,10 +53,10 @@ public class OutputView {
     }
 
     public static void printStudentState(Student student) {
-        student.updateAttendanceCount();
-        System.out.println(ATTENDANCE + student.getAttendance() + COUNT);
-        System.out.println(LATE + student.getLate() + COUNT);
-        System.out.println(ABSENT + student.getAbsent() + COUNT);
+        student.updateAttendanceTotalCount();
+        System.out.println(ATTENDANCE + student.getAttendanceCount().getAttendanceTotalCount() + COUNT);
+        System.out.println(LATE + student.getAttendanceCount().getLateTotalCount() + COUNT);
+        System.out.println(ABSENT + student.getAttendanceCount().getAbsentTotalCount() + COUNT);
     }
 
     public static void printStudentPunishmentLabel(Student student) {
@@ -81,18 +81,30 @@ public class OutputView {
 
     private static void printStudentPunishmentLabelAndPrint(Student student) {
         if (student.calculateAbsent() > StudentPunishment.DISMISSAL.getAbsenceLimit()) {
-            System.out.printf(String.format(DISMISSAL_LABEL_FORMATTER, student.getName(), student.getAbsent(),
-                    student.getLate()));
+            System.out.printf(String.format(
+                    DISMISSAL_LABEL_FORMATTER,
+                    student.getName(),
+                    student.getAttendanceCount().getAbsentTotalCount(),
+                    student.getAttendanceCount().getLateTotalCount())
+            );
             return;
         }
         if (student.calculateAbsent() >= StudentPunishment.INTERVIEW.getAbsenceLimit()) {
-            System.out.printf(String.format(INTERVIEW_LABEL_FORMATTER, student.getName(), student.getAbsent(),
-                    student.getLate()));
+            System.out.printf(String.format(
+                    INTERVIEW_LABEL_FORMATTER,
+                    student.getName(),
+                    student.getAttendanceCount().getAbsentTotalCount(),
+                    student.getAttendanceCount().getLateTotalCount())
+            );
             return;
         }
         if (student.calculateAbsent() >= StudentPunishment.WARNING.getAbsenceLimit()) {
-            System.out.printf(
-                    String.format(WARNING_LABEL_FORMATTER, student.getName(), student.getAbsent(), student.getLate()));
+            System.out.printf(String.format(
+                    WARNING_LABEL_FORMATTER,
+                    student.getName(),
+                    student.getAttendanceCount().getAbsentTotalCount(),
+                    student.getAttendanceCount().getLateTotalCount())
+            );
         }
     }
 }
