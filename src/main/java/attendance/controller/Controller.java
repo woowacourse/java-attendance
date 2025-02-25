@@ -60,10 +60,7 @@ public class Controller {
         AttendanceDateTime attendanceDateTime = attendanceHistory.findAttendanceDateTime(new AttendanceDate(
                 Parser.parseDate(inputView.inputModifyAttendanceDate())
         ));
-        AttendanceDateTime beforeModify = new AttendanceDateTime(
-                attendanceDateTime.getAttendanceDate(),
-                attendanceDateTime.getAttendanceTime()
-        );
+        AttendanceDateTime beforeModify = attendanceDateTime.copy();
         attendanceDateTime.modifyAttendanceTime(new AttendanceTime(
                 Parser.parseTime(inputView.inputModifyAttendanceTime())
         ));

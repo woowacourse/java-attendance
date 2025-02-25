@@ -49,4 +49,16 @@ class AttendanceDateTimeTest {
         );
         assertThat(attendanceDateTime.getAttendanceTime()).isEqualTo(attendanceTime);
     }
+
+    @Test
+    void 출석일시를_깊은복사한다() {
+        AttendanceDateTime attendanceDateTime = new AttendanceDateTime(
+                new AttendanceDate(LocalDate.of(2024, 12, 10)),
+                new AttendanceTime(LocalTime.of(10, 9))
+        );
+        AttendanceDateTime cloned = attendanceDateTime.copy();
+        assertThat(attendanceDateTime).isNotSameAs(cloned);
+        assertThat(attendanceDateTime.getAttendanceDate().localDate()).isEqualTo(LocalDate.of(2024, 12, 10));
+        assertThat(attendanceDateTime.getAttendanceTime().localTime()).isEqualTo(LocalTime.of(10, 9));
+    }
 }

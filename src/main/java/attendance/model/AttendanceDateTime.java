@@ -28,4 +28,11 @@ public class AttendanceDateTime {
     public AttendanceTime getAttendanceTime() {
         return attendanceTime;
     }
+
+    public AttendanceDateTime copy() {
+        return new AttendanceDateTime(
+                attendanceDate,
+                attendanceTime
+        );
+    }
 }
