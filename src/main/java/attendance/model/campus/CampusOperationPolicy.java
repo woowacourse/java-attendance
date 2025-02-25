@@ -15,7 +15,7 @@ public class CampusOperationPolicy {
         return isOpenDate(dateTime.toLocalDate()) && isOpenTime(dateTime.toLocalTime());
     }
 
-    private boolean isOpenDate(final LocalDate date) {
+    public boolean isOpenDate(final LocalDate date) {
         return isWeekDay(date) || isNotHoliday(date);
     }
 
