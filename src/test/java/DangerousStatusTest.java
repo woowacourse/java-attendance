@@ -22,27 +22,4 @@ public class DangerousStatusTest {
                 attendanceHistory.calculateLate(), attendanceHistory.calculateAbsent());
         assertThat(dangerousStatus.getStatus()).isEqualTo(DISMISSAL);
     }
-
-    @Test
-    void test2() {
-        List<AttendTime> attendTimes = new ArrayList<>();
-        attendTimes.add(new AttendTime("2024-12-13 09:59"));
-        AttendanceHistory attendanceHistory = new AttendanceHistory(attendTimes);
-
-        DangerousStatus dangerousStatus = new DangerousStatus(attendanceHistory.calculateOnTime(),
-                attendanceHistory.calculateLate(), attendanceHistory.calculateAbsent());
-        assertThat(dangerousStatus.getStatus()).isEqualTo(DISMISSAL);
-    }
-
-    @Test
-    void test3() {
-        List<AttendTime> attendTimes = new ArrayList<>();
-        attendTimes.add(new AttendTime("2024-12-13 09:59"));
-
-        AttendanceHistory attendanceHistory = new AttendanceHistory(attendTimes);
-
-        DangerousStatus dangerousStatus = new DangerousStatus(attendanceHistory.calculateOnTime(),
-                attendanceHistory.calculateLate(), attendanceHistory.calculateAbsent());
-        assertThat(dangerousStatus.getStatus()).isEqualTo(DISMISSAL);
-    }
 }
