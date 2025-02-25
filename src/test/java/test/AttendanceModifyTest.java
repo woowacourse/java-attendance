@@ -1,7 +1,9 @@
 package test;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+import exception.FutureAttendanceModifyException;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
@@ -64,4 +66,19 @@ public class AttendanceModifyTest {
         assertThat(attendances.findByDate(modifyDate)).isEqualTo(attendance);
     }
 
+    @DisplayName("미래의 날을 수정 날짜로 입력할 경우 예외를 반환한다.")
+    @Test
+    void test4() {
+        //given
+        LocalDate futureDate = LocalDate.of(2024, 12, 14);
+        LocalTime modifyTime = LocalTime.of(11, 11);
+        Attendance oldAttendance = new Attendance(futureDate, LocalTime.of(10, 10));
+        Attendances attendances = new Attendances(new ArrayList<>(Arrays.asList(
+                oldAttendance
+        )));
+
+        assertThatThrownBy(() -> {
+            attendances.modifyFrom(oldAttendance, modifyTime);
+        }).isInstanceOf(FutureAttendanceModifyException.class);
+    }
 }

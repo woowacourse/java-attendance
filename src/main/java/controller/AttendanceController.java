@@ -16,6 +16,7 @@ import model.Attendances;
 import model.Crew;
 import model.Crews;
 import model.DateGenerator;
+import model.December;
 import view.InputView;
 import view.OutputView;
 
@@ -71,6 +72,8 @@ public class AttendanceController {
                     .orElseThrow(CrewNotExistException::new);
 
             LocalDate date = LocalDate.of(2024, 12, 13); //TODO : 오늘
+            December.validateHoliday(date);
+
             LocalTime time = inputView.readAttendanceTime();
             Attendances crewAttendances = attendances.get(crew);
             Attendance newAttendance = crewAttendances.register(date, time);
