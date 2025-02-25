@@ -32,7 +32,7 @@ public class AttendanceDate {
     }
 
     public boolean isSameDate(final LocalDate date) {
-        return false;
+        return this.value.equals(date);
     }
 
     @Override
