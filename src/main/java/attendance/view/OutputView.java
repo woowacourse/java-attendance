@@ -4,13 +4,13 @@ import attendance.domain.Attendance;
 import attendance.domain.AttendanceState;
 import attendance.domain.AttendanceStatus;
 import attendance.domain.AttendanceUpdate;
+import attendance.domain.Attendances;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.TextStyle;
 import java.util.EnumMap;
-import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
@@ -59,10 +59,10 @@ public class OutputView {
         );
     }
 
-    public void printAttendanceRecords(List<Attendance> attendances, String nickname) {
+    public void printAttendanceRecords(Attendances attendances, String nickname) {
         System.out.printf(NEW_LINE + "이번 달 %s의 출석 기록입니다." + NEW_LINE, nickname);
 
-        attendances.forEach(this::printAttendanceRecord);
+        attendances.getAttendances().forEach(this::printAttendanceRecord);
         System.out.println();
     }
 

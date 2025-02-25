@@ -3,11 +3,24 @@ package attendance.domain;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class Attendances {
 
-    private final List<Attendance> attendances = new ArrayList<>();
+    private final List<Attendance> attendances;
+
+    public Attendances() {
+        this.attendances = new ArrayList<>();
+    }
+
+    public Attendances(List<Attendance> attendances) {
+        this.attendances = attendances;
+    }
+
+    public static Attendances of(List<Attendance> attendances) {
+        return new Attendances(attendances);
+    }
 
     public Attendance addAttendance(final LocalDateTime dateTime) {
         Attendance attendance = new Attendance(dateTime);
@@ -39,5 +52,9 @@ public class Attendances {
                 .sorted(Attendance::compareTo)
                 .filter(attendance -> attendance.isBefore(date))
                 .toList();
+    }
+
+    public List<Attendance> getAttendances() {
+        return Collections.unmodifiableList(attendances);
     }
 }

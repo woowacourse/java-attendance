@@ -5,6 +5,7 @@ import attendance.domain.Attendance;
 import attendance.domain.AttendanceManager;
 import attendance.domain.AttendanceStatus;
 import attendance.domain.AttendanceUpdate;
+import attendance.domain.Attendances;
 import attendance.domain.CampusTime;
 import attendance.domain.Holiday;
 import attendance.utility.DateGenerator;
@@ -16,7 +17,6 @@ import attendance.view.OutputView;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.List;
 import java.util.Map;
 
 import static attendance.view.AttendanceMenu.CHECK;
@@ -96,7 +96,7 @@ public class AttendanceSystem {
         if (menu == RECORD_SEARCH) {
             String nickname = validateAndReadNickname();
 
-            List<Attendance> attendanceRecords = attendanceManager.getAttendanceRecord(today, nickname);
+            Attendances attendanceRecords = attendanceManager.getAttendanceRecord(today, nickname);
             outputView.printAttendanceRecords(attendanceRecords, nickname);
 
             AttendanceStatus attendanceStatus = attendanceManager.getAttendanceStatus(today, nickname);

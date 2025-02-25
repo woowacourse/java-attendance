@@ -36,9 +36,10 @@ public class AttendanceManager {
         return new AttendanceUpdate(List.of(beforeAttendance, afterAttendance));
     }
 
-    public List<Attendance> getAttendanceRecord(final LocalDate today, final String nickname) {
+    public Attendances getAttendanceRecord(final LocalDate today, final String nickname) {
         Attendances attendances = findCrewAttendance(nickname);
-        return attendances.getAttendancesBefore(today);
+        List<Attendance> before = attendances.getAttendancesBefore(today);
+        return Attendances.of(before);
     }
 
     public AttendanceStatus getAttendanceStatus(final LocalDate today, final String nickname) {

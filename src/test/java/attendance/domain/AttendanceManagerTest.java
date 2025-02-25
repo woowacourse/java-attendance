@@ -123,10 +123,10 @@ class AttendanceManagerTest {
         attendanceManager.addCrew(nickname, attendances);
 
         // when
-        List<Attendance> result = attendanceManager.getAttendanceRecord(nowDate, nickname);
+        Attendances result = attendanceManager.getAttendanceRecord(nowDate, nickname);
 
         // then
-        assertThat(result.size()).isEqualTo(dayOfMonth - 1);
+        assertThat(result.getAttendances().size()).isEqualTo(dayOfMonth - 1);
     }
 
     @Test
