@@ -45,6 +45,10 @@ public class AttendanceDateTime {
         return this.time.isBefore(time);
     }
 
+    public boolean isSameDate(LocalDate date) {
+        return false;
+    }
+
     public LocalDate getDate() {
         return date.getValue();
     }

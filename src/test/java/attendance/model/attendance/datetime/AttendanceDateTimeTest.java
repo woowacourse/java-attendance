@@ -68,4 +68,15 @@ class AttendanceDateTimeTest {
         // When & Then
         assertThat(attendanceDateTime.isBeforeTime(LocalTime.of(13, 6))).isTrue();
     }
+
+    @DisplayName("LocalDate 를 받아 해당 LocalDate 가 자신의 출석 일자인지 반환한다.")
+    @Test
+    void isSameDate() {
+        // Given
+        final LocalDateTime dateTime = LocalDateTime.of(2024, 12, 2, 13, 5);
+        final AttendanceDateTime attendanceDateTime = AttendanceDateTime.policyApplied(dateTime, campusOperationPolicy);
+
+        // When & Then
+        assertThat(attendanceDateTime.isSameDate(dateTime.toLocalDate())).isTrue();
+    }
 }
