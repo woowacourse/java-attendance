@@ -36,7 +36,7 @@ public enum AttendanceType {
         return FREE;
     }
 
-    private static boolean isMonday(DayOfWeek dayOfWeek) {
+    private static boolean isMonday(final DayOfWeek dayOfWeek) {
         return dayOfWeek.equals(DayOfWeek.MONDAY);
     }
 
