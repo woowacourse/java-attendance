@@ -1,7 +1,7 @@
 package repository;
 
-import constant.AttendanceStatus;
 import domain.AttendanceRecord;
+import domain.AttendanceStatus;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import org.assertj.core.api.Assertions;

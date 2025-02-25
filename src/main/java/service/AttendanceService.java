@@ -1,11 +1,11 @@
 package service;
 
-import constant.AttendanceStatus;
-import constant.CampusTime;
 import controller.dto.ModifyAttendanceRequest;
 import controller.dto.SaveAttendanceRequest;
 import controller.dto.SavedAttendanceRecord;
 import domain.AttendanceRecord;
+import domain.AttendanceStatus;
+import domain.CampusTime;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import repository.AttendanceRecordRepository;
@@ -36,6 +36,15 @@ public class AttendanceService {
         AttendanceRecord found = AttendanceRecordRepository.find(request.nickname(), request.date());
         return SavedAttendanceRecord.of(found.date(), found.time(), found.status());
     }
+
+//    public MonthAttendanceStatistics getMonthAttendanceStatistics(MonthAttendanceStatisticsRequest request) {
+//        // TODO: 특정 크루의 월 단위 출석 기록
+//
+//        // TODO: 출석 상태별 횟수 계산
+//
+//        // TODO: 제적 위험 등급 계산
+//        return null;
+//    }
 
     private void validateOffDay(LocalDate date) {
         if (DateTimeUtil.isWeekend(date)

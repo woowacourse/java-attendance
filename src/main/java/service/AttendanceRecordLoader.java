@@ -1,7 +1,7 @@
 package service;
 
-import constant.AttendanceStatus;
 import domain.AttendanceRecord;
+import domain.AttendanceStatus;
 import domain.Crew;
 import java.io.BufferedReader;
 import java.io.File;

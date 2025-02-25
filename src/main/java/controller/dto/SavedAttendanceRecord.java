@@ -1,6 +1,6 @@
 package controller.dto;
 
-import constant.AttendanceStatus;
+import domain.AttendanceStatus;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;

@@ -1,9 +1,9 @@
 package service;
 
-import constant.AttendanceStatus;
 import controller.dto.ModifyAttendanceRequest;
 import controller.dto.SaveAttendanceRequest;
 import domain.AttendanceRecord;
+import domain.AttendanceStatus;
 import domain.Crew;
 import java.time.LocalDate;
 import java.time.LocalTime;

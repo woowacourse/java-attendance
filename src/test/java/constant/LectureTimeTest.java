@@ -2,6 +2,7 @@ package constant;
 
 import static org.junit.jupiter.api.Assertions.assertAll;
 
+import domain.LectureTime;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import org.assertj.core.api.Assertions;

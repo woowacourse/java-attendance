@@ -1,6 +1,5 @@
 package domain;
 
-import constant.AttendanceStatus;
 import java.time.LocalDate;
 import java.time.LocalTime;
 
@@ -10,5 +9,5 @@ public record AttendanceRecord(
         LocalTime time,
         AttendanceStatus status
 ) {
-    
+
 }

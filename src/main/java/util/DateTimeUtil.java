@@ -1,6 +1,6 @@
 package util;
 
-import constant.Holiday;
+import domain.Holiday;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalTime;
