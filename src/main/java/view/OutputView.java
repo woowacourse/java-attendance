@@ -17,6 +17,9 @@ public class OutputView {
     private static final String DISMISSAL_LABEL_FORMATTER = "- %s: 결석 %d회, 지각 %d회 (제적)\n";
     private static final String PARENTHESES_FORMATTER = "( %s )\n";
     private static final String SUBJECT = "%s 대상자입니다.";
+    private static final String DISMISSAL_SUBJECT = "제적 대상자입니다.";
+    private static final String INTERVIEW_SUBJECT = "면담 대상자입니다.";
+    private static final String WARNING_SUBJECT = "경고 대상자입니다.";
 
     public static void printTodayAttendanceResult(LocalDateTime localDateTime, AttendanceStatus attendanceStatus) {
         String dateAndTime = LocalDateTimePrintFormatter.createAttendanceResultMessage(localDateTime);
@@ -41,10 +44,18 @@ public class OutputView {
         for (String state : studentRecord.keySet()) {
             System.out.printf(STATE_FORMATTER,state,studentRecord.get(state));
         }
-        if (StudentPunishment.makeExpulsionNotice(riskLevel) == null) {
+        if (StudentPunishment.determineDisciplinaryAction(riskLevel) == null) {
             return;
         }
-        System.out.printf(SUBJECT,StudentPunishment.makeExpulsionNotice(riskLevel));
+        if (StudentPunishment.determineDisciplinaryAction(riskLevel).equals(StudentPunishment.DISMISSAL)) {
+            System.out.println(DISMISSAL_SUBJECT);
+        }
+        if (StudentPunishment.determineDisciplinaryAction(riskLevel).equals(StudentPunishment.WARNING)) {
+            System.out.println(WARNING_SUBJECT);
+        }
+        if (StudentPunishment.determineDisciplinaryAction(riskLevel).equals(StudentPunishment.INTERVIEW)) {
+            System.out.println(INTERVIEW_SUBJECT);
+        }
     }
 
     public static void displayAtRiskStudent() {

@@ -1,31 +1,29 @@
 package model;
 
 public enum StudentPunishment {
-    WARNING(2,"경고 대상자입니다."),
-    INTERVIEW(3,"면담 대상자입니다."),
-    DISMISSAL(5,"제적 대상자입니다.");
+    WARNING(2),
+    INTERVIEW(3),
+    DISMISSAL(5);
 
     private final int standard;
-    private final String expulsionNotice;
 
-    StudentPunishment(int standard, String expulsionNotice) {
+    StudentPunishment(int standard) {
         this.standard = standard;
-        this.expulsionNotice = expulsionNotice;
     }
 
     public int getStandard() {
         return standard;
     }
 
-    public static String makeExpulsionNotice(int riskLevel) {
-        if (riskLevel >= StudentPunishment.DISMISSAL.getStandard()) {
-            return DISMISSAL.expulsionNotice;
+    public static StudentPunishment determineDisciplinaryAction(int riskLevel) {
+        if (riskLevel >= DISMISSAL.standard) {
+            return DISMISSAL;
         }
-        if (riskLevel >= StudentPunishment.INTERVIEW.getStandard()) {
-            return INTERVIEW.expulsionNotice;
+        if (riskLevel >= INTERVIEW.standard) {
+            return INTERVIEW;
         }
-        if (riskLevel >= StudentPunishment.WARNING.getStandard()) {
-            return WARNING.expulsionNotice;
+        if (riskLevel >= WARNING.standard) {
+            return WARNING;
         }
         return null;
     }
