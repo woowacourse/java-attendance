@@ -4,6 +4,7 @@ import domain.Attendance;
 import domain.AttendanceState;
 import domain.Crew;
 import domain.HistoryCalculator;
+import dto.AbsenceRecordDto;
 import dto.AttendanceHistoryDto;
 import dto.AttendanceRecord;
 import dto.AttendanceStatus;
@@ -87,22 +88,15 @@ public class MainController {
 
         List<AttendanceRecord> attendanceRecords = attendance.getRecordByCrew(crew);
 
-        AttendanceStatus attendanceStatus = HistoryCalculator.calculateBy(attendanceRecords);
+        AttendanceStatus attendanceStatus = HistoryCalculator.calculateAttendanceRecordBy(attendanceRecords);
 
         AttendanceHistoryDto attendanceHistoryDto = new AttendanceHistoryDto(crew, attendanceRecords, attendanceStatus);
 
-//        AttendanceHistoryDto attendanceHistoryDto = attendance.getAttendanceHistory(crew);
         OutputView.printRecordAttendance(attendanceHistoryDto);
-//
-//        AbsenceHistory absenceHistory = new AbsenceHistory(attendanceHistoryDto);
-//
-//        AbsenceHistoryDto absenceResultDto = absenceHistory.calculate();
-//
-//        OutputView.printAbsenceHistory(absenceResultDto);
     }
 
     private void absenceHistory() {
-//        Map<Crew, AbsenceHistoryDto> result = attendance.getAbsenceHistory();
-//        OutputView.printAbsenceResult(result);
+        List<AbsenceRecordDto> absenceRecordDtos = HistoryCalculator.calculateAbsenceRecordBy(attendance);
+        OutputView.printAbsenceResult(absenceRecordDtos);
     }
 }
