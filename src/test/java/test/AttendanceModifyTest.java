@@ -78,6 +78,7 @@ public class AttendanceModifyTest {
                 oldAttendance
         )));
 
+        //when, then
         assertThatThrownBy(() -> {
             attendances.modifyFrom(oldAttendance, modifyTime);
         }).isInstanceOf(FutureAttendanceModifyException.class);
@@ -94,6 +95,7 @@ public class AttendanceModifyTest {
                 oldAttendance
         )));
 
+        //when, then
         assertThatThrownBy(() -> {
             attendances.modifyFrom(oldAttendance, modifyTime);})
                 .isInstanceOf(HolidayAttendanceException.class)

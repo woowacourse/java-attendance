@@ -3,13 +3,14 @@ package view;
 import common.Common;
 import java.time.LocalTime;
 import java.util.Scanner;
+import model.DateGenerator;
 
 public class InputView {
     Scanner sc = new Scanner(System.in);
 
     public String readFunctionChoice() {
         System.out.printf("오늘은 %s입니다. 가능을 선택해주세요.\n",
-                Common.nowDate.format(Common.monthDateDayFormatter)
+                DateGenerator.now().format(Common.monthDateDayFormatter)
         );
         System.out.print("""
                 1. 출석 확인
