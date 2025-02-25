@@ -7,6 +7,7 @@ import dto.AttendanceRecord;
 import dto.AttendanceStatus;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Predicate;
 
 public class HistoryCalculator {
 
@@ -47,12 +48,29 @@ public class HistoryCalculator {
 
     public static List<AbsenceRecordDto> calculateAbsenceRecordBy(Attendance attendance) {
         List<AbsenceRecordDto> absenceRecordDtos = new ArrayList<>();
+
+        Predicate<AttendanceStatus> recordFilter = status -> !status.absencePolicy().equals(AbsencePolicy.PASS);
+
         attendance.getAttendanceMap()
-                .forEach((crew, attendanceRecords) -> {
-                    AttendanceStatus attendanceStatus = calculateAttendanceRecordBy(attendanceRecords);
-                    absenceRecordDtos.add(new AbsenceRecordDto(crew, attendanceStatus.absenceHistory().lateness(),
-                            attendanceStatus.absenceHistory().absence(), attendanceStatus.absencePolicy()));
-                });
+                .forEach((crew, attendanceRecords) -> addAbsenceRecord(absenceRecordDtos, crew, attendanceRecords,
+                        recordFilter));
         return absenceRecordDtos;
+    }
+
+    private static void addAbsenceRecord(List<AbsenceRecordDto> absenceRecordDtos, Crew crew,
+                                         List<AttendanceRecord> attendanceRecords,
+                                         Predicate<AttendanceStatus> recordFilter) {
+        AttendanceStatus attendanceStatus = calculateAttendanceRecordBy(attendanceRecords);
+        if (recordFilter.test(attendanceStatus)) {
+            absenceRecordDtos.add(createAbsenceRecordDto(crew, attendanceStatus));
+        }
+    }
+
+    private static AbsenceRecordDto createAbsenceRecordDto(Crew crew, AttendanceStatus attendanceStatus) {
+        return new AbsenceRecordDto(
+                crew,
+                attendanceStatus.absenceHistory().lateness(),
+                attendanceStatus.absenceHistory().absence(),
+                attendanceStatus.absencePolicy());
     }
 }
