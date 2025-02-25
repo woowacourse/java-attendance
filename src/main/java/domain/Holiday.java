@@ -4,9 +4,7 @@ import java.time.LocalDate;
 import java.util.Arrays;
 
 public enum Holiday {
-    TEMPORARY_HOLIDAY_1(LocalDate.of(2025, 2, 18)),
-    TEMPORARY_HOLIDAY_2(LocalDate.of(2025, 2, 20)),
-    TEMPORARY_HOLIDAY_3(LocalDate.of(2025, 2, 21));
+    TEMPORARY_HOLIDAY_1(LocalDate.of(2025, 2, 21));
 
     private final LocalDate date;
 
