@@ -19,8 +19,7 @@ public enum CrewStatus {
     }
 
     public static CrewStatus from(int lateCount, int absentCount) {
-        int additionalAbsentCount = lateCount / 3;
-        int crewLimitCount = absentCount + additionalAbsentCount;
+        int crewLimitCount = absentCount + lateCount / 3;
 
         return Arrays.stream(CrewStatus.values())
                 .filter(crewStatus -> crewStatus.limitCount <= crewLimitCount)
@@ -35,4 +34,5 @@ public enum CrewStatus {
     public int getLimitCount() {
         return limitCount;
     }
+
 }

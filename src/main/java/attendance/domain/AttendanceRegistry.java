@@ -36,22 +36,7 @@ public class AttendanceRegistry {
             attendanceCounts.set(2, attendanceCounts.getLast() + mappingStatusToNumber(attendanceChecker.isAttendance()));
         }
         this.attendanceTraces = attendanceCounts;
-        judgeCrewStatus(attendanceCounts.getFirst(), attendanceCounts.getLast());
-    }
-
-    private void judgeCrewStatus(int lateCounts, int absenceCounts) {
-        int totalAbsence = absenceCounts + (lateCounts / 3);
-        if (totalAbsence > 5) {
-            crewStatus = CrewStatus.DISMISS;
-            return;
-        }
-        if (totalAbsence >= 3) {
-            crewStatus = CrewStatus.COUNSELING;
-            return;
-        }
-        if (totalAbsence == 2) {
-            crewStatus = CrewStatus.WARNING;
-        }
+        this.crewStatus = CrewStatus.from(attendanceCounts.getLast(), attendanceCounts.getFirst());
     }
 
     private int mappingStatusToNumber(final boolean attendanceStatus) {

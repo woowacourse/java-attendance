@@ -63,13 +63,9 @@ class RegisterTest {
         assertThat(result.getAttendanceStatus()).isEqualTo(AttendanceStatus.ATTENDANCE.getName());
     }
 
-    @DisplayName("2월 1일부터 21일까지 평일 수는 총 15일이라, 출석기록은 총 15개 있어야 하는지 검증하는 테스트 입니다.")
+    @DisplayName("2월 1일부터 5일까지 평일 수는 총 3일이라, 출석기록은 총 3개 있어야 하는지 검증하는 테스트 입니다.")
     @Test
     void 출석기록_계산_테스트() {
-        //given
-        LocalDateTime firstTime = LocalDateTime.of(currentDate, java.time.LocalTime.of(9, 59));
-        register.modifyInfo(crew, firstTime);
-
         //when
         AttendanceRegistry result = register.checkAttendanceHistory(crew);
 

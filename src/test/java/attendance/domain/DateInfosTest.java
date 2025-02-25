@@ -49,18 +49,18 @@ class DateInfosTest {
         Assertions.assertThat(attendanceChecker.getLocalDateTime().getDayOfMonth()).isEqualTo(19);
     }
 
-    @ParameterizedTest
-    @CsvSource(value = {"2025,2,19,09:59,1,0,0",
-            "2025,2,20,10:06,0,1,0",
-            "2025,2,21,10:31,0,0,1"})
-    void 출결상태_통계_계산(int year, int month, int day, String time, int expectedAttendance, int expectedLate, int expectedAbsence) {
+
+    @Test
+    void 출결상태_통계_계산() {
         //given
-        List<String> timeNumbers = List.of(time.split(":"));
-        LocalDateTime localDateTime = LocalDateTime.of(year, month, day, Integer.parseInt(timeNumbers.get(0)), Integer.parseInt(timeNumbers.get(1)));
-
+        LocalDateTime localDateTime = LocalDateTime.of(2025, 2, 19, 10, 31);
+        LocalDateTime localDateTime2 = LocalDateTime.of(2025, 2, 17, 13, 31);
+        LocalDateTime localDateTime3= LocalDateTime.of(2025, 2, 20, 9, 59);
         AttendanceChecker attendanceChecker = AttendanceChecker.of(localDateTime);
+        AttendanceChecker attendanceChecker2 = AttendanceChecker.of(localDateTime2);
+        AttendanceChecker attendanceChecker3 = AttendanceChecker.of(localDateTime3);
 
-        AttendanceRegistry attendanceRegistry = AttendanceRegistry.from(List.of(attendanceChecker));
+        AttendanceRegistry attendanceRegistry = AttendanceRegistry.from(List.of(attendanceChecker, attendanceChecker2, attendanceChecker3));
 
         //when
         attendanceRegistry.calculateAttendanceHistory();
@@ -70,8 +70,8 @@ class DateInfosTest {
         int absence = attendanceTraces.getFirst();
 
         //then
-        Assertions.assertThat(attendance).isEqualTo(expectedAttendance);
-        Assertions.assertThat(late).isEqualTo(expectedLate);
-        Assertions.assertThat(absence).isEqualTo(expectedAbsence);
+        Assertions.assertThat(attendance).isEqualTo(1);
+        Assertions.assertThat(late).isEqualTo(0);
+        Assertions.assertThat(absence).isEqualTo(2);
     }
 }
