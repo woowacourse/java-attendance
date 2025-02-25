@@ -1,5 +1,6 @@
 package view;
 
+import domain.AbsencePolicy;
 import domain.AttendanceState;
 import dto.AbsenceRecordDto;
 import dto.AttendanceHistoryDto;
@@ -8,6 +9,7 @@ import dto.AttendanceStatus;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.Comparator;
 import java.util.List;
 import util.DateTimeUtil;
 
@@ -54,7 +56,7 @@ public class OutputView {
         List<AttendanceRecord> records = attendanceHistoryDto.records();
         for (AttendanceRecord record : records) {
             String timeFormatted = formatTime(record.time().time());
-            
+
             System.out.printf(
                     String.format("%02d월 %02d일 %s %s (%s)\n",
                             DateTimeUtil.getMonthBy(record.date()),
@@ -82,10 +84,33 @@ public class OutputView {
 
     public static void printAbsenceResult(final List<AbsenceRecordDto> absenceRecordDtos) {
         System.out.println("제적 위험자 조회 결과");
-        absenceRecordDtos.forEach(dto -> System.out.printf("- %s: 결석 %d회, 지각 %d회 (%s)\n",
+        sortAbsenceRecordDtos(absenceRecordDtos).forEach(dto -> System.out.printf("- %s: 결석 %d회, 지각 %d회 (%s)\n",
                 dto.crew().getName(),
                 dto.absence(),
                 dto.lateness(),
                 dto.absencePolicy().getDescription()));
+    }
+
+    private static List<AbsenceRecordDto> sortAbsenceRecordDtos(List<AbsenceRecordDto> absenceRecordDtos) {
+        return absenceRecordDtos.stream()
+                .sorted(Comparator
+                        .comparing((AbsenceRecordDto dto) -> getAbsencePriority(dto.absencePolicy()))
+                        .thenComparing(dto -> dto.lateness() + dto.absence() * 3, Comparator.reverseOrder())
+                        .thenComparing(dto -> dto.crew().getName()))
+                .toList();
+
+    }
+
+    private static int getAbsencePriority(AbsencePolicy absencePolicy) {
+        if (absencePolicy == AbsencePolicy.DISMISSED) {
+            return 0;
+        }
+        if (absencePolicy == AbsencePolicy.INTERVIEW) {
+            return 1;
+        }
+        if (absencePolicy == AbsencePolicy.WARNING) {
+            return 2;
+        }
+        return 3;
     }
 }
