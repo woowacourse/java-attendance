@@ -11,7 +11,7 @@ public class Crew {
 
     public Crew(String nickname) {
         this.nickname = nickname;
-        this.attendances = new ArrayList<Attendance>();
+        this.attendances = new ArrayList<>();
     }
 
     public Attendance addAttendance(LocalDateTime attendanceDateTime) {

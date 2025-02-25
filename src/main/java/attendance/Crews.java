@@ -20,4 +20,13 @@ public class Crews {
         crews.add(crew);
         return crew;
     }
+
+    public Crew findCrewByNickname(String nickname) {
+        for (Crew crew : crews) {
+            if(crew.isEqualCrew(nickname)) {
+                return crew;
+            }
+        }
+        throw new IllegalArgumentException("등록되지 않은 닉네임입니다.");
+    }
 }
