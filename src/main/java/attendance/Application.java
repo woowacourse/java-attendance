@@ -70,6 +70,7 @@ public class Application {
 
     private static void handleAttendanceCommands(AttendanceBook attendanceBook) {
         Stream.generate(() -> {
+                outputView.printRequestMessage(SystemDateConfig.NOW_DATE);
                 outputView.printMethod();
                 return requestInputString();
             })
@@ -87,7 +88,7 @@ public class Application {
 
     private static void registerAttendance(AttendanceBook attendanceBook) {
         RegisterManager attendanceManager = new RegisterManager(attendanceBook);
-
+        outputView.printRequestNickname();
         String nickname = requestInputString();
         try {
             attendanceManager.manage(nickname, SystemDateConfig.NOW_DATETIME);
@@ -100,7 +101,7 @@ public class Application {
 
     private static void modifyAttendance(AttendanceBook attendanceBook) {
         ModifyManager attendanceManager = new ModifyManager(attendanceBook);
-        String nickname = requestInputString();
+        String nickname = requestInputStringForModify();
         var dateTime = requestLocalDateTime();
         try {
             attendanceManager.manage(nickname, dateTime);
@@ -113,6 +114,7 @@ public class Application {
 
     private static void checkAttendanceStatisticsByCrew(AttendanceBook attendanceBook) {
         StatisticManger attendanceManager = new StatisticManger(attendanceBook);
+        outputView.printRequestNickname();
         String nickname = requestInputString();
         try {
             attendanceManager.manage(nickname);
@@ -138,7 +140,13 @@ public class Application {
         });
     }
 
+    private static String requestInputStringForModify() {
+        outputView.printRequestNicknameForModify();
+        return requestInputString();
+    }
+
     private static LocalDate requestDate() {
+        outputView.printRequestDate();
         return handleInput(() -> {
             String input = inputView.input();
             StringUtility.validateIsEmpty(input);
@@ -148,6 +156,7 @@ public class Application {
     }
 
     private static LocalTime requestTime() {
+        outputView.printRequestTime();
         return handleInput(() -> {
             String input = inputView.input();
             StringUtility.validateIsEmpty(input);
