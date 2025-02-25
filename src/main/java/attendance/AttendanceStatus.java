@@ -4,12 +4,15 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.Arrays;
 import java.util.Comparator;
+import java.util.Map;
 
 public enum AttendanceStatus {
     ATTENDANCE("출석", null),
     LATENESS("지각", 5),
     ABSENCE("결석", 30),
     ;
+
+    private static final int LATE_TO_ABSENCE_RATIO = 3;
 
     private final String name;
     private final Integer minLateTime;
@@ -27,5 +30,11 @@ public enum AttendanceStatus {
             .filter(status -> status.minLateTime < lateTime)
             .max(Comparator.comparing(status -> status.minLateTime))
             .orElse(ATTENDANCE);
+    }
+
+    public static int getConvertedAbsence(Map<AttendanceStatus, Integer> statistics) {
+        int lateness = statistics.getOrDefault(AttendanceStatus.LATENESS, 0);
+        int absence = statistics.getOrDefault(AttendanceStatus.ABSENCE, 0);
+        return (lateness + absence * LATE_TO_ABSENCE_RATIO) / LATE_TO_ABSENCE_RATIO;
     }
 }

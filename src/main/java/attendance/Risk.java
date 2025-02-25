@@ -19,12 +19,10 @@ public enum Risk {
     }
 
     public static Risk of(Map<AttendanceStatus, Integer> statistics) {
-        int lateness = statistics.getOrDefault(AttendanceStatus.LATENESS, 0);
-        int absence = statistics.getOrDefault(AttendanceStatus.ABSENCE, 0);
-        int weightSum = (lateness + absence * 3) / 3;
+        int absenceWeight = AttendanceStatus.getConvertedAbsence(statistics);
 
         return Arrays.stream(values())
-            .filter(risk -> risk.minAbsenceCount <= weightSum)
+            .filter(risk -> risk.minAbsenceCount <= absenceWeight)
             .max(Comparator.comparing(risk -> risk.minAbsenceCount))
             .orElse(null);
     }
