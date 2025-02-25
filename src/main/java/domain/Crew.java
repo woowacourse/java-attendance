@@ -12,9 +12,9 @@ public class Crew implements Comparable<Crew> {
     private final String name;
     private final Attendance attendance;
 
-    public Crew(String name) {
+    public Crew(String name, LocalDate endTime) {
         this.name = name;
-        this.attendance = new Attendance(AttendanceDate.DEFAULT_START_DATE, LocalDate.now());
+        this.attendance = new Attendance(AttendanceDate.DEFAULT_START_DATE, endTime);
     }
 
     public void initializeAttendance(List<LocalDateTime> localDateTimes) {

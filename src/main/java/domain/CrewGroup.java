@@ -1,5 +1,6 @@
 package domain;
 
+import java.time.LocalDate;
 import java.util.List;
 
 public class CrewGroup {
@@ -10,7 +11,7 @@ public class CrewGroup {
             throw new IllegalArgumentException("중복된 이름의 크루는 존재할 수 없습니다.");
         }
         this.crews = crewNames.stream()
-                .map(Crew::new)
+                .map(crew -> new Crew(crew, LocalDate.now()))
                 .toList();
     }
 
