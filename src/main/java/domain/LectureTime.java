@@ -7,6 +7,7 @@ import java.time.format.TextStyle;
 import java.time.temporal.ChronoUnit;
 import java.util.Arrays;
 import java.util.Locale;
+import util.DateTimeUtil;
 
 public enum LectureTime {
     MONDAY(DayOfWeek.MONDAY, LocalTime.of(13, 0), LocalTime.of(18, 0)),
@@ -26,6 +27,9 @@ public enum LectureTime {
     }
 
     public static boolean isLectureDate(LocalDate date) {
+        if (DateTimeUtil.isHoliday(date) || DateTimeUtil.isWeekend(date)) {
+            return false;
+        }
         return Arrays.stream(values())
                 .map(lectureTime -> lectureTime.dayOfWeek)
                 .anyMatch(dayOfWeek1 -> dayOfWeek1 == date.getDayOfWeek());
