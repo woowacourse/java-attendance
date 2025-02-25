@@ -1,0 +1,40 @@
+package domain;
+
+import java.time.DayOfWeek;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
+
+public class AttendanceDateTime {
+    private static final String ATTENDANCE_DATE_TIME_FORMAT = "yyyy-MM-dd HH:mm";
+    private static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern(
+            ATTENDANCE_DATE_TIME_FORMAT);
+
+    private final LocalDateTime dateTime;
+
+    private AttendanceDateTime(final LocalDateTime dateTime) {
+        this.dateTime = dateTime;
+    }
+
+    public static AttendanceDateTime from(final String inputDateTime) {
+        final LocalDateTime parsedDateTime = parseDateTime(inputDateTime);
+        return new AttendanceDateTime(parsedDateTime);
+    }
+
+    private static LocalDateTime parseDateTime(final String inputDateTime) {
+        try {
+            return LocalDateTime.parse(inputDateTime, DATE_TIME_FORMATTER);
+        } catch (final DateTimeParseException e) {
+            throw new IllegalArgumentException("날짜 형식은 yyyy-mm-dd- hh:mm으로 작성해주세요.");
+        }
+    }
+
+    public boolean isEqualToDayOfWeek(final String inputDayOfWeek) {
+        final DayOfWeek dayOfWeek = dateTime.getDayOfWeek();
+        return String.valueOf(dayOfWeek).equals(inputDayOfWeek);
+    }
+
+    public LocalDateTime getDateTime() {
+        return dateTime;
+    }
+}
