@@ -1,12 +1,14 @@
 package attendance.model.attendance;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 import attendance.model.campus.CampusOperationPolicy;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
@@ -26,7 +28,7 @@ class AttendanceLogsTest {
         );
         values.add(
                 AttendanceLog.fromAttendanceDateTime(
-                        LocalDateTime.of(2024, 12, 4, 10, 5),
+                        LocalDateTime.of(2024, 12, 4, 10, 6),
                         campusOperationPolicy
                 )
         );
@@ -59,7 +61,7 @@ class AttendanceLogsTest {
         );
         expected.add(
                 AttendanceLog.fromAttendanceDateTime(
-                        LocalDateTime.of(2024, 12, 4, 10, 5),
+                        LocalDateTime.of(2024, 12, 4, 10, 6),
                         campusOperationPolicy
                 )
         );
@@ -75,5 +77,33 @@ class AttendanceLogsTest {
 
         // Then
         assertThat(actual).containsExactlyElementsOf(expected);
+    }
+
+    @Test
+    void getAttendanceStatusStatistics() {
+
+        // Given
+        final LocalDate from = LocalDate.of(2024, 12, 2);
+        final LocalDate to = LocalDate.of(2024, 12, 5);
+        final int expectedAttendanceCount = 1;
+        final int expectedAbsenceCount = 2;
+        final int expectedLateCount = 1;
+
+        // When
+        final Map<AttendanceStatus, Integer> actual = attendanceLogs.getAttendanceStatusStatistics(
+                from,
+                to,
+                campusOperationPolicy
+        );
+        final int actualAttendanceCount = actual.get(AttendanceStatus.ATTENDANCE);
+        final int actualAbsenceCount = actual.get(AttendanceStatus.ABSENCE);
+        final int actualLateCount = actual.get(AttendanceStatus.LATE);
+
+        // Then
+        assertAll(
+                () -> assertThat(actualAttendanceCount).isEqualTo(expectedAttendanceCount),
+                () -> assertThat(actualAbsenceCount).isEqualTo(expectedAbsenceCount),
+                () -> assertThat(actualLateCount).isEqualTo(expectedLateCount)
+        );
     }
 }
