@@ -7,7 +7,7 @@ import org.junit.jupiter.api.Test;
 public class DataFileReaderTest {
     @DisplayName("파일 내용 줄단위 변환")
     @Test
-    void test1(){
+    void test1() {
         Assertions.assertThat(new DataFileReader().read())
                 .hasSize(41);
     }
