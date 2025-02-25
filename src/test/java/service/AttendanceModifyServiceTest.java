@@ -24,8 +24,6 @@ class AttendanceModifyServiceTest {
 
     @BeforeEach
     void setUp() {
-        LocalDateTime now = AttendanceCustomDate.now();
-
         crewAttendances = new CrewAttendances();
         attendanceModifyService = new AttendanceModifyService(crewAttendances);
 
@@ -34,7 +32,7 @@ class AttendanceModifyServiceTest {
 
     @DisplayName("기존 출석 기록을 수정한다.")
     @Test
-    void test() {
+    void test1() {
         //given
         LocalDate date = LocalDate.of(AttendanceCustomDate.YEAR, AttendanceCustomDate.MONTH.getValue(), 19);
         LocalTime beforeTime = LocalTime.of(10, 30);
@@ -47,6 +45,23 @@ class AttendanceModifyServiceTest {
         //then
         assertThat(response.beforeTime()).isEqualTo(Optional.of(beforeTime));
         assertThat(response.beforeStatus()).isEqualTo(AttendanceStatus.LATE.getExpression());
+        assertThat(response.afterTime()).isEqualTo(Optional.of(afterTime));
+        assertThat(response.afterStatus()).isEqualTo(AttendanceStatus.ATTENDANCE.getExpression());
+    }
+
+    @DisplayName("출석 기록이 존재하지 않는 경우에도 수정할 수 있다.")
+    @Test
+    void test2() {
+        //given
+        LocalDate date = LocalDate.of(AttendanceCustomDate.YEAR, AttendanceCustomDate.MONTH.getValue(), 19);
+        LocalTime afterTime = LocalTime.of(10, 0);
+
+        //when
+        AttendanceModifyResponse response = attendanceModifyService.modify(name, date, afterTime);
+
+        //then
+        assertThat(response.beforeTime()).isEqualTo(Optional.empty());
+        assertThat(response.beforeStatus()).isEqualTo(AttendanceStatus.TRUANCY.getExpression());
         assertThat(response.afterTime()).isEqualTo(Optional.of(afterTime));
         assertThat(response.afterStatus()).isEqualTo(AttendanceStatus.ATTENDANCE.getExpression());
     }
