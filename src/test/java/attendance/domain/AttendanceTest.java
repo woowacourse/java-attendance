@@ -15,7 +15,10 @@ public class AttendanceTest {
         return Stream.of(
                 Arguments.of(LocalDateTime.of(2024, 12, 3, 9, 50),"출석"),
                 Arguments.of(LocalDateTime.of(2024, 12, 3, 10, 6),"지각"),
-                Arguments.of(LocalDateTime.of(2024, 12, 3, 10, 50),"결석")
+                Arguments.of(LocalDateTime.of(2024, 12, 3, 10, 50),"결석"),
+                Arguments.of(LocalDateTime.of(2024, 12, 2, 13, 0),"출석"),
+                Arguments.of(LocalDateTime.of(2024, 12, 2, 13, 6),"지각"),
+                Arguments.of(LocalDateTime.of(2024, 12, 2, 13, 31),"결석")
         );
     }
 
@@ -26,5 +29,7 @@ public class AttendanceTest {
         Attendance attendance = new Attendance(localDateTime);
         Assertions.assertThat(attendance.getAttendanceStatus()).isEqualTo(status);
     }
+
+
 
 }
