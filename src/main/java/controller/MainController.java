@@ -55,11 +55,9 @@ public class MainController {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");
         LocalTime dateTime = LocalTime.parse(schoolStartTime, formatter);
 
-//        AttendanceState attendanceState = AttendanceState.findStateBy(dateTime, LocalDate.now());
         AttendanceState attendanceState = AttendanceState.findStateBy(dateTime,
                 LocalDate.of(2024, 12, DateTimeUtil.getTodayDate()));
 
-//        attendance.save(crew, schoolStartTime, LocalDate.now());
         attendance.save(crew, schoolStartTime, LocalDate.of(2024, 12, DateTimeUtil.getTodayDate()));
 
         OutputView.printTodayAttendance(schoolStartTime, attendanceState.getDescription());
@@ -77,7 +75,6 @@ public class MainController {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("HH:mm");
         LocalTime afterTime = LocalTime.parse(time, formatter);
 
-        // 수정 필요...
         LocalDateTime afterLocalDateTime = LocalDateTime.of(
                 2024, 12, date, afterTime.getHour(), afterTime.getMinute());
 

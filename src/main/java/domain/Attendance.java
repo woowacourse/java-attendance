@@ -31,7 +31,6 @@ public class Attendance {
     }
 
     public List<AttendanceRecord> getRecordByCrew(Crew crew) {
-        // 결석인 날 '--:--' 추가
         List<AttendanceRecord> nonHolidaysAttendanceMap = modifyMap(attendanceMap.get(crew));
         List<AttendanceRecord> sortedAttendanceMap = sortByDate(nonHolidaysAttendanceMap);
 
@@ -93,12 +92,8 @@ public class Attendance {
         Time time = new Time(todayLocalTime, state);
         AttendanceRecord record = new AttendanceRecord(todayLocalDate, time);
 
-        // 수정 필요
-        validateDuplicateSave(24, records);
-//        validateDuplicateSave(DateTimeUtil.getDateBy(LocalDate.now()), localDateTimes);
+        validateDuplicateSave(DateTimeUtil.getTodayDate(), records);
 
-//        localDateTimes.add(todayLocalDateTime);
-//        attendanceMap.put(crew, localDateTimes);
         records.add(record);
         attendanceMap.put(crew, records);
     }
@@ -108,7 +103,6 @@ public class Attendance {
         for (AttendanceRecord record : records) {
             LocalDate date = record.date();
             int dayOfMonth = DateTimeUtil.getDateBy(date);
-//            int dayOfMonth = localDateTime.getDayOfMonth();
 
             if (dayOfMonth == todayDay) {
                 throw new IllegalArgumentException("이미 출석한 크루입니다.");
@@ -118,16 +112,14 @@ public class Attendance {
 
     public LocalTime update(final Crew crew, final String updateTime, final int date) {
         DateTimeUtil.validateHolyDay(date);
-        List<AttendanceRecord> attendanceRecords = new ArrayList<>(attendanceMap.get(crew)); // 불변 리스트를 가변 리스트로 복사
+        List<AttendanceRecord> attendanceRecords = new ArrayList<>(attendanceMap.get(crew));
 
-//        List<AttendanceRecord> attendanceRecords = attendanceMap.get(crew);
         int i;
         LocalTime beforeLocalTime = null;
         System.out.println(attendanceRecords.size());
         for (i = 0; i < attendanceRecords.size(); i++) {
             AttendanceRecord record = attendanceRecords.get(i);
             int dayOfMonth = DateTimeUtil.getDateBy(record.date());
-//            int dayOfMonth = localDateTime.getDayOfMonth();
             if (dayOfMonth == date) {
                 beforeLocalTime = record.time().time();
                 break;
