@@ -15,7 +15,7 @@ public class AttendanceHistoryLoader {
     private final DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
     private final DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm");
 
-    public Crews loadCrews(FileReader fileReader) {
+    public Crews loadCrews(FileReader fileReader) throws IOException {
         Crews crews = new Crews();
         Map<String, Crew> crewMap = new HashMap<>();
 
@@ -23,7 +23,7 @@ public class AttendanceHistoryLoader {
             skipHeader(reader);
             loadAttendanceHistory(reader, crewMap, crews);
         } catch (IOException e) {
-            e.printStackTrace();
+            throw new IOException("[ERROR] 초기 출석 데이터를 로드하는 중 오류가 발생하였습니다.");
         }
 
         return crews;
