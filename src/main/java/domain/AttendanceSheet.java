@@ -17,10 +17,14 @@ public class AttendanceSheet {
     }
 
     public void validateIsAlreadyAttendance(String nickname, LocalDate date) {
-        if(attendances.stream()
-                .anyMatch(attendance -> attendance.isAlreadyAttendance(nickname, date))){
+        if(isAttendanceAlreadyExist(nickname, date)){
             throw new IllegalArgumentException("[ERROR] 이미 출석하셨습니다. 수정 기능을 이용하세요");
         }
+    }
+
+    private boolean isAttendanceAlreadyExist(String nickname, LocalDate date) {
+        return attendances.stream()
+                .anyMatch(attendance -> attendance.isAlreadyAttendance(nickname, date));
     }
 
     public void update(String nickname, int dayOfMonth, LocalTime updateTime) {
@@ -28,9 +32,13 @@ public class AttendanceSheet {
     }
 
     public void validateNotFoundAttendance(String nickname, LocalDate date) {
-        if(attendances.stream()
-                .noneMatch(attendance -> attendance.isAlreadyAttendance(nickname,date))){
+        if(isAttendanceNotExist(nickname, date)){
             throw new IllegalArgumentException("[ERROR] 출석 기록이 없습니다. 출석 확인 기능을 이용하세요");
         }
+    }
+
+    private boolean isAttendanceNotExist(String nickname, LocalDate date) {
+        return attendances.stream()
+                .noneMatch(attendance -> attendance.isAlreadyAttendance(nickname, date));
     }
 }
