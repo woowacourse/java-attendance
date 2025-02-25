@@ -79,4 +79,16 @@ class AttendanceDateTimeTest {
         // When & Then
         assertThat(attendanceDateTime.isSameDate(dateTime.toLocalDate())).isTrue();
     }
+
+    @DisplayName("자신의 출석 시간이 value 가 비어 있는 null 한 시간인지 반환한다.")
+    @Test
+    void isNullTime() {
+        // Given
+        final LocalDateTime dateTime = LocalDateTime.of(2024, 12, 2, 13, 5);
+        final AttendanceDateTime attendanceDateTime = AttendanceDateTime.policyAppliedWithNullTime(
+                dateTime.toLocalDate(), campusOperationPolicy);
+
+        // When & Then
+        assertThat(attendanceDateTime.isNullTime()).isTrue();
+    }
 }
