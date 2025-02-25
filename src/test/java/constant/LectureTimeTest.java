@@ -1,0 +1,34 @@
+package constant;
+
+import java.time.LocalDate;
+import org.assertj.core.api.SoftAssertions;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+
+class LectureTimeTest {
+    @Test
+    @DisplayName("해당 날짜가 교육이 있는 날인지 확인한다")
+    void isLectureTimeTest() {
+        // when & then
+        SoftAssertions.assertSoftly(softAssertions -> {
+            softAssertions.assertThat(LectureTime.isLectureDate(LocalDateFixture.MONDAY)).isTrue();
+            softAssertions.assertThat(LectureTime.isLectureDate(LocalDateFixture.TUESDAY)).isTrue();
+            softAssertions.assertThat(LectureTime.isLectureDate(LocalDateFixture.WEDNESDAY)).isTrue();
+            softAssertions.assertThat(LectureTime.isLectureDate(LocalDateFixture.THURSDAY)).isTrue();
+            softAssertions.assertThat(LectureTime.isLectureDate(LocalDateFixture.FRIDAY)).isTrue();
+            softAssertions.assertThat(LectureTime.isLectureDate(LocalDateFixture.SATURDAY)).isFalse();
+            softAssertions.assertThat(LectureTime.isLectureDate(LocalDateFixture.SUNDAY)).isFalse();
+        });
+    }
+
+    static class LocalDateFixture {
+        // DayOfWeek
+        public static LocalDate MONDAY = LocalDate.of(2025, 2, 3);
+        public static LocalDate TUESDAY = LocalDate.of(2025, 2, 4);
+        public static LocalDate WEDNESDAY = LocalDate.of(2025, 2, 5);
+        public static LocalDate THURSDAY = LocalDate.of(2025, 2, 6);
+        public static LocalDate FRIDAY = LocalDate.of(2025, 2, 7);
+        public static LocalDate SATURDAY = LocalDate.of(2025, 2, 8);
+        public static LocalDate SUNDAY = LocalDate.of(2025, 2, 9);
+    }
+}
