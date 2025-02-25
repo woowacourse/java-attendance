@@ -4,6 +4,7 @@ import static java.util.Objects.requireNonNull;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.Objects;
 
 public class AttendanceLog {
 
@@ -25,5 +26,20 @@ public class AttendanceLog {
 
     public boolean isAbsent() {
         return attendanceTime == null;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        AttendanceLog that = (AttendanceLog) o;
+        return Objects.equals(nickname, that.nickname)
+                && Objects.equals(attendanceDate, that.attendanceDate);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(nickname, attendanceDate);
     }
 }

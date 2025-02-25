@@ -24,6 +24,21 @@ class AttendanceLogTest {
                 .doesNotThrowAnyException();
     }
 
+    @DisplayName("닉네임과 등교 날짜가 같은 경우 같은 출석 로그로 간주한다.")
+    @Test
+    void shouldEquals_WhenNicknameAndAttendanceDateSame() {
+        // given
+        Nickname nickname = new Nickname("벨로");
+        LocalDate attendanceDate = LocalDate.of(2024, 12, 2);
+        LocalTime attendanceTime = LocalTime.of(10, 0);
+        AttendanceLog beforeAttendanceLog = new AttendanceLog(nickname, attendanceDate, attendanceTime);
+        AttendanceLog afterAttendanceLog = new AttendanceLog(nickname, attendanceDate, attendanceTime);
+
+        // when & then
+        assertThat(beforeAttendanceLog.equals(afterAttendanceLog))
+                .isTrue();
+    }
+
     @DisplayName("닉네임이 null인 경우 예외가 발생한다.")
     @Test
     void shouldThrowException_WhenNicknameIsNull() {

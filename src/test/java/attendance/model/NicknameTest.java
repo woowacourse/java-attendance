@@ -1,8 +1,10 @@
 package attendance.model;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
 
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.NullAndEmptySource;
 import org.junit.jupiter.params.provider.ValueSource;
@@ -17,6 +19,17 @@ class NicknameTest {
         // when & then
         assertThatCode(() -> new Nickname(validNickname))
                 .doesNotThrowAnyException();
+    }
+
+    @DisplayName("같은 닉네임(값)을 가진 경우 동일하게 간주한다.")
+    @Test
+    void shouldEquals_WhenSameNicknameValue() {
+        // given
+        Nickname nickname = new Nickname("벨로");
+
+        // when & then
+        assertThat(nickname.equals(new Nickname("벨로")))
+                .isTrue();
     }
 
     @DisplayName("닉네임 길이가 2~4자가 아닌 경우 예외가 발생한다.")

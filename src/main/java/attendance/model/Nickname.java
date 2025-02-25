@@ -1,5 +1,7 @@
 package attendance.model;
 
+import java.util.Objects;
+
 public class Nickname {
 
     private final String value;
@@ -22,5 +24,19 @@ public class Nickname {
         if (!nickname.matches("^[가-힣]+$")) {
             throw new IllegalArgumentException("닉네임은 한글만 사용할 수 있습니다. 입력: %s".formatted(nickname));
         }
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        Nickname nickname = (Nickname) o;
+        return Objects.equals(value, nickname.value);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(value);
     }
 }
