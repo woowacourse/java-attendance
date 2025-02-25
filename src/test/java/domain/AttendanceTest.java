@@ -1,5 +1,6 @@
 package domain;
 
+import static domain.Crew.*;
 import static org.assertj.core.api.Assertions.*;
 
 import domain.attendance.Attendance;
@@ -18,7 +19,7 @@ public class AttendanceTest {
     @Test
     void test1() {
         // given & when
-        Attendance attendance = new Attendance(AttendanceDate.DEFAULT_START_DATE, LocalDate.now());
+        Attendance attendance = new Attendance(DEFAULT_START_DATE, LocalDate.now());
 
         // then
         assertThat(attendance)
@@ -28,14 +29,14 @@ public class AttendanceTest {
     @DisplayName("학생 한 명의 결석횟수")
     @Test
     void test2() {
-        Attendance attendance = new Attendance(AttendanceDate.DEFAULT_START_DATE, LocalDate.of(2025, 2, 17));
+        Attendance attendance = new Attendance(DEFAULT_START_DATE, LocalDate.of(2025, 2, 17));
         assertThat(attendance.countAbsence()).isEqualTo(53);
     }
 
     @DisplayName("학생 한 명의 출석 횟수")
     @Test
     void test3() {
-        Attendance attendance = new Attendance(AttendanceDate.DEFAULT_START_DATE, LocalDate.now());
+        Attendance attendance = new Attendance(DEFAULT_START_DATE, LocalDate.now());
 
         attendance.editAttendanceDateTime(LocalDateTime.of(2025, 2, 10, 10, 0));
 
@@ -45,7 +46,7 @@ public class AttendanceTest {
     @DisplayName("학생 한 명의 지각 횟수")
     @Test
     void test4() {
-        Attendance attendance = new Attendance(AttendanceDate.DEFAULT_START_DATE, LocalDate.now());
+        Attendance attendance = new Attendance(DEFAULT_START_DATE, LocalDate.now());
 
         attendance.editAttendanceDateTime(LocalDateTime.of(2025, 2, 18, 10, 10));
 
@@ -55,7 +56,7 @@ public class AttendanceTest {
     @DisplayName("결석이 여섯 번 이상일 때 제적대상자임을 반환한다")
     @Test
     void test5() {
-        Attendance attendance = new Attendance(AttendanceDate.DEFAULT_START_DATE, LocalDate.now());
+        Attendance attendance = new Attendance(DEFAULT_START_DATE, LocalDate.now());
 
         AttendanceWarning attendanceWarning = AttendanceWarning.determineAttendanceWarning(
                 attendance.countAbsenceIncludingTardy());
@@ -66,7 +67,7 @@ public class AttendanceTest {
     @DisplayName("결석이  번일 때 경고대상자임을 반환한다")
     @Test
     void test6() {
-        Attendance attendance = new Attendance(AttendanceDate.DEFAULT_START_DATE
+        Attendance attendance = new Attendance(DEFAULT_START_DATE
                 , LocalDate.of(2024, 12, 10));
 
         AttendanceWarning attendanceWarning = AttendanceWarning.determineAttendanceWarning(
@@ -79,14 +80,14 @@ public class AttendanceTest {
     @Test
     void test7() {
         // given
-        Attendance attendance = new Attendance(AttendanceDate.DEFAULT_START_DATE, LocalDate.of(2024, 12, 3));
+        Attendance attendance = new Attendance(DEFAULT_START_DATE, LocalDate.of(2024, 12, 3));
         LocalDateTime updateDateTime = LocalDateTime.of(2024, 12, 2, 10, 0);
 
         // then
         attendance.editAttendanceDateTime(updateDateTime);
 
         // given
-        assertThat(attendance.findAttendanceDate(AttendanceDate.DEFAULT_START_DATE).checkAttendanceTime())
+        assertThat(attendance.findAttendanceDate(DEFAULT_START_DATE).checkAttendanceTime())
                 .isEqualTo(updateDateTime);
     }
 
@@ -95,7 +96,7 @@ public class AttendanceTest {
     void test8() {
         // given
         LocalDateTime nowDateTime = LocalDateTime.now();
-        Attendance attendance = new Attendance(AttendanceDate.DEFAULT_START_DATE, LocalDate.now());
+        Attendance attendance = new Attendance(DEFAULT_START_DATE, LocalDate.now());
 
         // when
         attendance.attend(nowDateTime);
@@ -110,7 +111,7 @@ public class AttendanceTest {
     void test9() {
         // given
         LocalDateTime tomorrowDateTime = LocalDateTime.now().plusDays(1);
-        Attendance attendance = new Attendance(AttendanceDate.DEFAULT_START_DATE, LocalDate.now());
+        Attendance attendance = new Attendance(DEFAULT_START_DATE, LocalDate.now());
 
         // when & then
         assertThatThrownBy(() -> attendance.attend(tomorrowDateTime))
@@ -123,7 +124,7 @@ public class AttendanceTest {
     void test10() {
         // given
         LocalDateTime todayDateTime = LocalDateTime.now();
-        Attendance attendance = new Attendance(AttendanceDate.DEFAULT_START_DATE, LocalDate.now());
+        Attendance attendance = new Attendance(DEFAULT_START_DATE, LocalDate.now());
         attendance.attend(todayDateTime);
 
         // when & then
