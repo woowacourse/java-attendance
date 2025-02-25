@@ -1,5 +1,6 @@
 package attendance;
 
+import static attendance.AttendanceTest.generateAttendance;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 import java.time.LocalDate;
@@ -40,12 +41,10 @@ public class AttendancesTest {
         assertThat(result).isFalse();
     }
 
-    private static Attendances generateAttendances(List<LocalDateTime> dateTimes) {
+    public static Attendances generateAttendances(List<LocalDateTime> dateTimes) {
         List<Attendance> attendances = new ArrayList<>();
         for (LocalDateTime dateTime : dateTimes) {
-            Attendance attendance = new Attendance(new AttendanceDate(dateTime.toLocalDate()),
-                    new AttendanceTime(dateTime.toLocalTime()));
-            attendances.add(attendance);
+            attendances.add(generateAttendance(dateTime));
         }
         return new Attendances(attendances);
     }

@@ -25,7 +25,7 @@ public class AttendanceTest {
         assertThat(result).isFalse();
     }
 
-    private static Attendance generateAttendance(LocalDateTime dateTime) {
+    public static Attendance generateAttendance(LocalDateTime dateTime) {
         LocalDate date = dateTime.toLocalDate();
         LocalTime time = dateTime.toLocalTime();
         return new Attendance(new AttendanceDate(date), new AttendanceTime(time));
