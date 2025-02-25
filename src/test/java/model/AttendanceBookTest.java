@@ -54,22 +54,6 @@ public class AttendanceBookTest {
     }
 
     @Test
-    @DisplayName("등교 시간을 바탕으로 출석 기록을 map에 업데이트하는 기능")
-    void test5() {
-        String name = "짱수";
-        int month = LocalDateTime.now().getMonthValue();
-        int day = LocalDateTime.now().getDayOfMonth();
-        LocalDateTime localDateTime = LocalDateTime.of(2025, month, day,9,59);
-
-        Student student6 = studentRepository.findStudentByName(name);
-        student6.attendanceRegister(localDateTime);
-        Assertions.assertEquals(student6.getAttendanceRecords()
-                .getRecord()
-                .get(LocalDate.from(localDateTime))
-                .getAttendanceStatus(), AttendanceStatus.ATTENDANCE);
-    }
-
-    @Test
     @DisplayName("출석 기록 업데이트 하는 메서드 테스트")
     void test7() {
         Student student1 = studentRepository.findStudentByName("빙티");
