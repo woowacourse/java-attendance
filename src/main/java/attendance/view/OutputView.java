@@ -67,15 +67,15 @@ public class OutputView {
                 localDateTime.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.KOREA));
     }
 
-    public static void printQueryAttendance(String name, AttendanceRepository attendanceRepository) {
+    public static void printQueryAttendance(String name, Crews crews) {
         int today = LocalDate.now().getDayOfMonth();
-        Map<LocalDate, HourMinute> crewAttendances = attendanceRepository.queryCrewAttendance(name, today);
+        Map<LocalDate, Attendance> crewAttendances = crews.queryCrewAttendance(name, today);
 
         System.out.printf(QUERY_ATTENDANCE_HEADER_FORMAT, name);
 
         printCrewAttendances(today, crewAttendances);
-        printAttendanceStatus(name, attendanceRepository, today);
-        printCrewWarningLevel(name, attendanceRepository, today);
+        printAttendanceStatus(name, crews, today);
+        printCrewWarningLevel(name, crews, today);
     }
 
     private static void printCrewAttendances(final int today, final Map<LocalDate, HourMinute> crewAttendances) {
@@ -102,8 +102,8 @@ public class OutputView {
         printAddedAttendance(LocalDateTime.of(2024, 12, day, hourMinute.hour(), hourMinute.minute()));
     }
 
-    private static void printAttendanceStatus(String name, AttendanceRepository attendanceRepository, int today) {
-        Map<AttendanceStatus, Integer> statuses = attendanceRepository.queryCrewAttendanceStatus(name, today);
+    private static void printAttendanceStatus(String name, Crews crews, int today) {
+        Map<AttendanceStatus, Integer> statuses = crews.queryCrewAttendanceStatus(name, today);
 
         statuses.keySet().forEach(status -> {
             System.out.printf(ATTENDANCE_STATUS_FORMAT, status.getStatus(), statuses.get(status));
@@ -111,30 +111,30 @@ public class OutputView {
         System.out.println();
     }
 
-    private static void printCrewWarningLevel(String name, AttendanceRepository attendanceRepository, int today) {
-        WarningLevel level = attendanceRepository.queryWarningLevelByName(name, today);
+    private static void printCrewWarningLevel(String name, Crews crews, int today) {
+        WarningLevel level = crews.queryWarningLevelByName(name, today);
         if (level == WarningLevel.NONE) {
             return;
         }
         System.out.printf(WARNING_FORMAT, level.getLevel());
     }
 
-    public static void printWarningCrews(AttendanceRepository attendanceRepository) {
+    public static void printWarningCrews(Crews crews) {
         System.out.print(WARNING_CREW_HEADER_FORMAT);
 
         int today = LocalDate.now().getDayOfMonth();
         Arrays.stream(WarningLevel.values()).sequential().forEach(level -> {
-            List<String> names = attendanceRepository.findByWarningLevel(level, today);
-            List<String> formattedStatusCounts = formatStatusCount(attendanceRepository, names, today);
+            List<String> names = crews.findByWarningLevel(level, today);
+            List<String> formattedStatusCounts = formatStatusCount(crews, names, today);
             formattedStatusCounts.forEach(System.out::print);
         });
     }
 
-    private static List<String> formatStatusCount(final AttendanceRepository attendanceRepository,
+    private static List<String> formatStatusCount(final Crews crews,
                                                   final List<String> names,
                                                   final int today) {
         return names.stream().map(name -> {
-            final Map<AttendanceStatus, Integer> crewStatuses = attendanceRepository.queryCrewAttendanceStatus(
+            final Map<AttendanceStatus, Integer> crewStatuses = crews.queryCrewAttendanceStatus(
                     name, today);
             WarningLevel level = WarningLevel.of(crewStatuses);
 

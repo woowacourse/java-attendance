@@ -21,8 +21,8 @@ public class AttendanceController {
     public static final char QUIT_APPLICATION_OPERATION = 'Q';
 
     public void run() {
-        AttendanceRepository attendanceRepository = initData();
-        initOperations(attendanceRepository);
+        Crews crews = initData();
+        initOperations(crews);
         char option;
         while ((option = getInputOption()) != QUIT_APPLICATION_OPERATION) {
             runCommand(option);
@@ -37,15 +37,15 @@ public class AttendanceController {
         }
     }
 
-    private AttendanceRepository initData() {
-        return new AttendanceRepository(DataLoader.loadAll(DataFileReader.read()));
+    private Crews initData() {
+        return new Crews(DataLoader.loadAll(DataFileReader.read()));
     }
 
-    private void initOperations(AttendanceRepository attendanceRepository) {
-        operations.put(REGISTER_ATTENDANCE_OPERATION, () -> registerAttendance(attendanceRepository));
-        operations.put(MODIFY_ATTENDANCE_OPERATION, () -> modifyAttendance(attendanceRepository));
-        operations.put(QUERY_ATTENDANCE_OPERATION, () -> queryAttendance(attendanceRepository));
-        operations.put(QUERY_WARNING_CREW_OPERATION, () -> queryWarningCrews(attendanceRepository));
+    private void initOperations(Crews crews) {
+        operations.put(REGISTER_ATTENDANCE_OPERATION, () -> registerAttendance(crews));
+        operations.put(MODIFY_ATTENDANCE_OPERATION, () -> modifyAttendance(crews));
+        operations.put(QUERY_ATTENDANCE_OPERATION, () -> queryAttendance(crews));
+        operations.put(QUERY_WARNING_CREW_OPERATION, () -> queryWarningCrews(crews));
     }
 
     private char getInputOption() {
@@ -66,30 +66,30 @@ public class AttendanceController {
         }
     }
 
-    private void registerAttendance(AttendanceRepository attendanceRepository) {
+    private void registerAttendance(Crews crews) {
         String name = InputView.readNickName();
         LocalTime localTime = InputView.readAttendanceTime();
         LocalDateTime localDateTime = LocalDateTime.of(LocalDate.of(2024, 12, LocalDate.now().getDayOfMonth()),
                 localTime);
-        attendanceRepository.add(name, localDateTime);
+        crews.attend(name, localDateTime);
         OutputView.printAddedAttendance(localDateTime);
     }
 
-    private void modifyAttendance(AttendanceRepository attendanceRepository) {
+    private void modifyAttendance(Crews crews) {
         String name = InputView.readModifyNickName();
         final int day = InputView.readModifyDay();
         LocalTime newTime = InputView.readModifyTime();
         LocalDateTime localDateTime = LocalDateTime.of(LocalDate.of(2024, 12, day), newTime);
-        HourMinute prevHourMinute = attendanceRepository.update(name, localDateTime);
-        OutputView.printModifiedAttendance(prevHourMinute, localDateTime);
+        Attendance prevAttendance = crews.update(name, localDateTime);
+        OutputView.printModifiedAttendance(prevAttendance, localDateTime);
     }
 
-    private void queryAttendance(AttendanceRepository attendanceRepository) {
+    private void queryAttendance(Crews crews) {
         String name = InputView.readNickName();
-        OutputView.printQueryAttendance(name, attendanceRepository);
+        OutputView.printQueryAttendance(name, crews);
     }
 
-    private void queryWarningCrews(AttendanceRepository attendanceRepository) {
-        OutputView.printWarningCrews(attendanceRepository);
+    private void queryWarningCrews(Crews crews) {
+        OutputView.printWarningCrews(crews);
     }
 }

@@ -14,20 +14,20 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
-@DisplayName("출석 정보를 관리하는 저장소")
+@DisplayName("크루원들을 관리하는 저장소")
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
-public class AttendanceRepositoryTest {
-    private AttendanceRepository attendanceRepository;
+public class CrewsTest {
+    private Crews crews;
 
     @BeforeEach
     void setUp() {
-        List<Attendance> attendances = List.of(
-                new Attendance("빙티"),
-                new Attendance("이든"),
-                new Attendance("쿠키"),
-                new Attendance("빙봉")
+        List<Crew> crews = List.of(
+                new Crew("빙티"),
+                new Crew("이든"),
+                new Crew("쿠키"),
+                new Crew("빙봉")
         );
-        attendanceRepository = new AttendanceRepository(attendances);
+        this.crews = new Crews(crews);
     }
 
     @Test
@@ -35,7 +35,7 @@ public class AttendanceRepositoryTest {
         String name = "빙봉";
         LocalDateTime localDateTime = LocalDateTime.of(2024, 12, 23, 13, 1);
 
-        assertThatCode(() -> attendanceRepository.add(name, localDateTime)).doesNotThrowAnyException();
+        assertThatCode(() -> crews.attend(name, localDateTime)).doesNotThrowAnyException();
     }
 
     @Test
@@ -44,34 +44,34 @@ public class AttendanceRepositoryTest {
 
         String otherName = "루키";
 
-        assertThatThrownBy(() -> attendanceRepository.add(otherName, attendanceTime))
+        assertThatThrownBy(() -> crews.attend(otherName, attendanceTime))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("유효하지 않은 닉네임입니다.");
     }
 
     @Test
-    void 크루의_출석_정보를_수정한다() {
-        String name = "빙봉";
-        LocalDateTime prevAttendanceTime = LocalDateTime.of(2024, 12, 23, 13, 35);
-        attendanceRepository.add(name, prevAttendanceTime);
+    void 출석_저장_시_출석_기록이_존재하면_예외가_발생한다() {
+        LocalDateTime attendanceTime = LocalDateTime.of(2024, 12, 23, 13, 1);
+        String crewName = "빙봉";
+        crews.attend(crewName, attendanceTime);
+        LocalDateTime newAttendanceTime = LocalDateTime.of(2024, 12, 23, 13, 3);
 
-        LocalDateTime newAttendanceTime = LocalDateTime.of(2024, 12, 23, 13, 1);
-
-        assertThatCode(() -> attendanceRepository.update(name, newAttendanceTime))
-                .doesNotThrowAnyException();
+        assertThatThrownBy(() -> crews.attend(crewName, newAttendanceTime))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("출석 기록이 존재합니다. 출석 수정 기능을 이용하세요.");
     }
 
     @Test
     void 출석_정보를_수정하면_이전_출석_시간을_반환한다() {
         String name = "빙봉";
         LocalDateTime prevAttendanceTime = LocalDateTime.of(2024, 12, 23, 15, 35);
-        attendanceRepository.add(name, prevAttendanceTime);
+        crews.attend(name, prevAttendanceTime);
 
         LocalDateTime newAttendanceTime = LocalDateTime.of(2024, 12, 23, 13, 1);
-        HourMinute prevHourMinute = attendanceRepository.update(name, newAttendanceTime);
+        Attendance prevAttendance = crews.update(name, newAttendanceTime);
 
-        assertThat(prevHourMinute.hour()).isEqualTo(15);
-        assertThat(prevHourMinute.minute()).isEqualTo(35);
+        assertThat(prevAttendance.getHour()).isEqualTo(15);
+        assertThat(prevAttendance.getMinute()).isEqualTo(35);
     }
 
     @Test
@@ -79,21 +79,20 @@ public class AttendanceRepositoryTest {
         String name = "루키";
         LocalDateTime newAttendanceTime = LocalDateTime.of(2024, 12, 22, 13, 1);
 
-        assertThatThrownBy(() -> attendanceRepository.update(name, newAttendanceTime))
+        assertThatThrownBy(() -> crews.update(name, newAttendanceTime))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("유효하지 않은 닉네임입니다.");
-
     }
 
     @Test
     void 수정_시_해당_날짜에_출석_기록이_없으면_예외가_발생한다() {
         String name = "빙봉";
         LocalDateTime prevAttendanceTime = LocalDateTime.of(2024, 12, 23, 13, 3);
-        attendanceRepository.add(name, prevAttendanceTime);
+        crews.attend(name, prevAttendanceTime);
 
         LocalDateTime newLocalDateTime = LocalDateTime.of(2024, 12, 22, 13, 1);
 
-        assertThatThrownBy(() -> attendanceRepository.update(name, newLocalDateTime))
+        assertThatThrownBy(() -> crews.update(name, newLocalDateTime))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("해당 날짜에 출석 기록이 없습니다.");
     }
@@ -107,8 +106,8 @@ public class AttendanceRepositoryTest {
     })
     void 제적_위험_상태를_반환한다(String name, WarningLevel expected) {
         int today = 13;
-        AttendanceRepository attendanceRepository = AttendanceRepositoryTestFixture.createAttendanceRepository();
-        WarningLevel warningLevel = attendanceRepository.queryWarningLevelByName(name, 13);
+        Crews crews = CrewsTestFixture.createAttendanceRepository();
+        WarningLevel warningLevel = crews.queryWarningLevelByName(name, 13);
 
         assertThat(warningLevel).isEqualTo(expected);
     }
