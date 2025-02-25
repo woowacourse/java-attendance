@@ -320,11 +320,62 @@ class AttendanceSystemTest {
                 .withMessage(ExceptionMessage.INVALID_CREW.getMessage());
     }
 
+    @DisplayName("제적 위험자 조회 - 제적 위험이 있는 크루의 출석 상태와 제적 위험도를 구할 수 있다")
+    @Test
+    void 제적_위험이_있는_크루의_출석_상태와_제적_위험도를_구할_수_있다() {
+        addNotRiskCrew("쿠키1");
+        addWarningTargetCrew("쿠키2");
+        addCounselingTargetCrew("쿠키3");
+        addExpulsionTargetCrew("쿠키4");
+
+        List<AttendanceState> states = attendanceSystem.findRiskCrew(LocalDate.of(2025, 2, 8));
+        assertThat(states)
+                .extracting(AttendanceState::getRiskTyp)
+                .containsExactlyInAnyOrder(RiskType.NONE, RiskType.COUNSELING, RiskType.WARNING, RiskType.EXPULSION);
+    }
+
     String makeHolidayAttendanceExceptionMessage(LocalDateTime dateTime) {
         return String.format(ExceptionMessage.HOLIDAY_ATTENDANCE.getMessage(),
                 dateTime.getMonth().getValue(), dateTime.getDayOfMonth(),
                 dateTime.getDayOfWeek().getDisplayName(TextStyle.SHORT, Locale.KOREA));
     }
+
+    void addNotRiskCrew(String name) {
+        crewStorage.add(name);
+        attendanceSystem.addAttendanceRecord(name, LocalDateTime.of(2025, 2, 3, 8, 50));
+        attendanceSystem.addAttendanceRecord(name, LocalDateTime.of(2025, 2, 4, 8, 50));
+        attendanceSystem.addAttendanceRecord(name, LocalDateTime.of(2025, 2, 5, 8, 50));
+        attendanceSystem.addAttendanceRecord(name, LocalDateTime.of(2025, 2, 6, 8, 50));
+        attendanceSystem.addAttendanceRecord(name, LocalDateTime.of(2025, 2, 7, 8, 50));
+    }
+
+    void addWarningTargetCrew(String name) {
+        crewStorage.add(name);
+        attendanceSystem.addAttendanceRecord(name, LocalDateTime.of(2025, 2, 3, 8, 50));
+        attendanceSystem.addAttendanceRecord(name, LocalDateTime.of(2025, 2, 4, 8, 50));
+        attendanceSystem.addAttendanceRecord(name, LocalDateTime.of(2025, 2, 5, 8, 50));
+        attendanceSystem.addAttendanceRecord(name, LocalDateTime.of(2025, 2, 6, 15, 0));
+        attendanceSystem.addAttendanceRecord(name, LocalDateTime.of(2025, 2, 7, 15, 0));
+    }
+
+    void addCounselingTargetCrew(String name) {
+        crewStorage.add(name);
+        attendanceSystem.addAttendanceRecord(name, LocalDateTime.of(2025, 2, 3, 8, 50));
+        attendanceSystem.addAttendanceRecord(name, LocalDateTime.of(2025, 2, 4, 8, 50));
+        attendanceSystem.addAttendanceRecord(name, LocalDateTime.of(2025, 2, 5, 15, 0));
+        attendanceSystem.addAttendanceRecord(name, LocalDateTime.of(2025, 2, 6, 15, 0));
+        attendanceSystem.addAttendanceRecord(name, LocalDateTime.of(2025, 2, 7, 15, 0));
+    }
+
+    void addExpulsionTargetCrew(String name) {
+        crewStorage.add(name);
+        attendanceSystem.addAttendanceRecord(name, LocalDateTime.of(2025, 2, 3, 15, 0));
+        attendanceSystem.addAttendanceRecord(name, LocalDateTime.of(2025, 2, 4, 15, 0));
+        attendanceSystem.addAttendanceRecord(name, LocalDateTime.of(2025, 2, 5, 15, 0));
+        attendanceSystem.addAttendanceRecord(name, LocalDateTime.of(2025, 2, 6, 15, 0));
+        attendanceSystem.addAttendanceRecord(name, LocalDateTime.of(2025, 2, 7, 15, 0));
+    }
+
 
     void checkSameRecord(
             AttendanceRecord target,

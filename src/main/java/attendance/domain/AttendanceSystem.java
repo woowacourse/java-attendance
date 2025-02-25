@@ -65,7 +65,12 @@ public class AttendanceSystem {
         int maxAttendanceCount = (int) notHolidays.stream().filter(notHoliday -> !notHoliday.isAfter(today)).count();
         int attendanceCount = calculateAttendanceRecordInMonth(nickname, today);
         int lateCount = calculateLateRecordInMonth(nickname, today);
-        return new AttendanceState(attendanceCount, lateCount, maxAttendanceCount - attendanceCount - lateCount);
+        return new AttendanceState(nickname, attendanceCount, lateCount,
+                maxAttendanceCount - attendanceCount - lateCount);
+    }
+
+    public List<AttendanceState> findRiskCrew(LocalDate today) {
+        return null;
     }
 
     private void validateAlreadyAttendance(String crewNickname, LocalDate date) {
