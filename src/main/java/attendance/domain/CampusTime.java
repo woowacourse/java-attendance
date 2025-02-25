@@ -25,7 +25,6 @@ public class CampusTime {
         return new CampusTime(timeString);
     }
 
-    // TODO(test) : 테스트코드 작성
     public boolean isAfter(final LocalTime time) {
         return this.time.isAfter(time);
     }

@@ -53,7 +53,6 @@ public class OutputView {
         System.out.println();
     }
 
-
     public void writeAttendanceHistory(LocalDate now, DateInfos dateInfos, AttendanceHistory history) {
         System.out.printf("이번 달 %s의 출석 기록입니다.", history.getCrewName());
         System.out.println();

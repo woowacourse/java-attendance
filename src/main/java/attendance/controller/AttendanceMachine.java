@@ -59,20 +59,19 @@ public class AttendanceMachine {
         return false;
     }
 
-    private void functionFour(Register register) {
-        AttendanceHistories histories = AttendanceHistories.fromRegister(register);
-        List<AttendanceHistory> warningAttendanceHistory = histories.findWarningAttendanceHistory();
-
-        outputView.writeWarningHistories(warningAttendanceHistory);
+    private AttendanceOperation readFunction(LocalDate now) {
+        return retryUntilValidInput(() -> AttendanceOperation.of(inputView.readFunctionChoose(now)));
     }
 
-    private void functionThree(LocalDate now, Register register) {
+    private void functionOne(LocalDate now, Register register) {
         String crewName = inputView.readCrewName();
+        String attendanceTime = inputView.readAttendanceTime();
+        CampusTime attendanceCampusTime = CampusTime.fromHourColonMinute(attendanceTime);
 
-        DateInfos dateInfos = register.findDateInfos(crewName);
-        AttendanceHistory history = AttendanceHistory.fromDateInfos(crewName, now, dateInfos);
+        DateInfo dateInfo = DateInfo.fromCampusTime(now, attendanceCampusTime);
+        register.addDateInfo(crewName, dateInfo);
 
-        outputView.writeAttendanceHistory(now, dateInfos, history);
+        outputView.writeAttendanceCheck(dateInfo);
     }
 
     private void functionTwo(LocalDate now, Register register) {
@@ -96,19 +95,19 @@ public class AttendanceMachine {
         outputView.writeAttendanceModifyCheck(beforeHour, beforeMinute, beforeStatus, afterDateInfo);
     }
 
-    private void functionOne(LocalDate now, Register register) {
+    private void functionThree(LocalDate now, Register register) {
         String crewName = inputView.readCrewName();
-        String attendanceTime = inputView.readAttendanceTime();
-        CampusTime attendanceCampusTime = CampusTime.fromHourColonMinute(attendanceTime);
+        DateInfos dateInfos = register.findDateInfos(crewName);
+        AttendanceHistory history = AttendanceHistory.fromDateInfos(crewName, now, dateInfos);
 
-        DateInfo dateInfo = DateInfo.fromCampusTime(now, attendanceCampusTime);
-        register.addDateInfo(crewName, dateInfo);
-
-        outputView.writeAttendanceCheck(dateInfo);
+        outputView.writeAttendanceHistory(now, dateInfos, history);
     }
 
-    private AttendanceOperation readFunction(LocalDate now) {
-        return retryUntilValidInput(() -> AttendanceOperation.of(inputView.readFunctionChoose(now)));
+    private void functionFour(Register register) {
+        AttendanceHistories histories = AttendanceHistories.fromRegister(register);
+        List<AttendanceHistory> warningAttendanceHistory = histories.findWarningAttendanceHistory();
+
+        outputView.writeWarningHistories(warningAttendanceHistory);
     }
 
     private <T> T retryUntilValidInput(final Supplier<T> supplier) {

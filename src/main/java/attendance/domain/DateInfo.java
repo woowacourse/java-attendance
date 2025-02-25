@@ -19,12 +19,6 @@ public class DateInfo {
         this.attendanceStatus = AttendanceStatus.calculateAttendanceStatus(date, campusTime);
     }
 
-    private void validateDateIsWeekday(LocalDate date) {
-        if (date.getDayOfWeek() == DayOfWeek.SATURDAY || date.getDayOfWeek() == DayOfWeek.SUNDAY) {
-            throw CustomException.from(ErrorMessage.NOT_WEEKEND);
-        }
-    }
-
     public static DateInfo fromCampusTime(LocalDate localDate, CampusTime campusTime) {
         return new DateInfo(localDate, campusTime);
     }
@@ -36,6 +30,12 @@ public class DateInfo {
 
     public boolean isAttendanceDay(int day) {
         return date.getDayOfMonth() == day;
+    }
+
+    private void validateDateIsWeekday(LocalDate date) {
+        if (date.getDayOfWeek() == DayOfWeek.SATURDAY || date.getDayOfWeek() == DayOfWeek.SUNDAY) {
+            throw CustomException.from(ErrorMessage.NOT_WEEKEND);
+        }
     }
 
     public int getMonth() {

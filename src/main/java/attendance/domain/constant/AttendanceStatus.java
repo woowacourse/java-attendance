@@ -14,6 +14,8 @@ public enum AttendanceStatus {
 
     public static final int MONDAY_LIMIT_HOUR = 13;
     public static final int WEEKDAY_LIMIT_HOUR = 10;
+    public static final int ABSENT_LIMIT_MINUTE = 30;
+    public static final int LATE_LIMIT_MINUTE = 5;
     private final String status;
 
     AttendanceStatus(final String status) {
@@ -35,10 +37,10 @@ public enum AttendanceStatus {
     }
 
     private static AttendanceStatus compareAttendanceStatus(int hour, CampusTime campusTime) {
-        if (campusTime.isAfter(LocalTime.of(hour, 30))) {
+        if (campusTime.isAfter(LocalTime.of(hour, ABSENT_LIMIT_MINUTE))) {
             return AttendanceStatus.ABSENCE;
         }
-        if (campusTime.isAfter(LocalTime.of(hour, 5))) {
+        if (campusTime.isAfter(LocalTime.of(hour, LATE_LIMIT_MINUTE))) {
             return AttendanceStatus.LATE;
         }
         return AttendanceStatus.ATTENDANCE;

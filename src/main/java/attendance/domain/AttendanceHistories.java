@@ -10,7 +10,7 @@ import java.util.stream.Collectors;
 
 public class AttendanceHistories {
 
-    private List<AttendanceHistory> attendanceHistories;
+    private final List<AttendanceHistory> attendanceHistories;
 
     private AttendanceHistories(List<AttendanceHistory> attendanceHistories) {
         this.attendanceHistories = attendanceHistories;
