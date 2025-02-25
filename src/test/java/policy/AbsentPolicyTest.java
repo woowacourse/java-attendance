@@ -1,5 +1,6 @@
 package policy;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -25,14 +26,17 @@ import static org.assertj.core.api.Assertions.*;
     5-1 월요일일 경우 13시 [x]
  */
 public class AbsentPolicyTest {
+    AbsentPolicy absentPolicy;
+
+    @BeforeEach
+    void setUp() {
+        absentPolicy = new AbsentPolicy();
+    }
+
     @ParameterizedTest
     @DisplayName("주말에 출석하려고 하는 경우 예외가 발생한다")
     @EnumSource(value = DayOfWeek.class, names = {"SATURDAY", "SUNDAY"})
     public void validateWeekendTest(DayOfWeek dayOfWeek){
-        //given
-        AbsentPolicy absentPolicy = new AbsentPolicy();
-
-        //when-then
         assertThatThrownBy(() -> absentPolicy.validateIsWeekend(dayOfWeek))
                 .isInstanceOf(IllegalArgumentException.class);
     }
@@ -41,7 +45,6 @@ public class AbsentPolicyTest {
     @DisplayName("공휴일에 출석하려고 하는 경우 예외가 발생한다")
     public void validateHolidayTest(){
         //given
-        AbsentPolicy absentPolicy = new AbsentPolicy();
         LocalDate attendanceDate = LocalDate.of(2024,12,25);
 
         //when-then
@@ -52,7 +55,6 @@ public class AbsentPolicyTest {
     @Test
     @DisplayName("결석 처리를 할 수 있다")
     public void checkAbsentStatusTest(){
-        AbsentPolicy absentPolicy = new AbsentPolicy();
         LocalDateTime educationDateTime = LocalDateTime.of(2024,12,10,10,31);
 
         assertThat(absentPolicy.checkAttendanceStatus(educationDateTime)).isEqualTo("결석");
@@ -62,10 +64,6 @@ public class AbsentPolicyTest {
     @DisplayName("시작 시간부터 5분 이하이면 출석이다")
     @MethodSource("provideDateTimeForAttendancePolicy")
     public void checkAttendanceStatusTest(LocalDateTime educationDateTime){
-        //given
-        AbsentPolicy absentPolicy = new AbsentPolicy();
-
-        //when-then
         assertThat(absentPolicy.checkAttendanceStatus(educationDateTime)).isEqualTo("출석");
     }
 
@@ -82,10 +80,6 @@ public class AbsentPolicyTest {
     @DisplayName("시작 시간부터 5분 초과 30분 이하이면 지각이다")
     @MethodSource("provideDateTimeForLatePolicy")
     public void checkLateStatusTest(LocalDateTime educationDateTime){
-        //given
-        AbsentPolicy absentPolicy = new AbsentPolicy();
-
-        //when-then
         assertThat(absentPolicy.checkAttendanceStatus(educationDateTime)).isEqualTo("지각");
     }
 
