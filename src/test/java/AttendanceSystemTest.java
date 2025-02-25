@@ -216,13 +216,73 @@ public class AttendanceSystemTest {
              date = date.plusDays(1)) {
             try {
                 attendanceSystem.editAttendance(name, date, LocalTime.of(10, 0));
-            } catch (IllegalArgumentException e) {
+            } catch (IllegalArgumentException ignored) {
 
             }
         }
         assertAll(
                 () -> assertThat(attendanceSystem.getAbsenceCount(name) + attendanceSystem.getTardyCount(name) / 3).isEqualTo(3),
                 () -> assertThat(attendanceSystem.getRisk(name)).isEqualTo(RiskStatus.COUNSELING)
+        );
+    }
+
+    @DisplayName("결석을 2회 한경우 경고 대상자이다")
+    @Test
+    void warning_test() {
+        String name = "두리";
+        attendanceSystem.attendance(name, LocalTime.of(10, 0));
+        for (LocalDate date = LocalDate.of(2024, 12, 1);
+             date.isBefore(attendanceSystem.TODAY.minusDays(4));
+             date = date.plusDays(1)) {
+            try {
+                attendanceSystem.editAttendance(name, date, LocalTime.of(10, 0));
+            } catch (IllegalArgumentException ignored) {
+
+            }
+        }
+        assertAll(
+                () -> assertThat(attendanceSystem.getAbsenceCount(name) + attendanceSystem.getTardyCount(name) / 3).isEqualTo(2),
+                () -> assertThat(attendanceSystem.getRisk(name)).isEqualTo(RiskStatus.WARNING)
+        );
+    }
+
+    @DisplayName("결석을 안한 경우")
+    @Test
+    void none_test() {
+        String name = "두리";
+        attendanceSystem.attendance(name, LocalTime.of(10, 0));
+        for (LocalDate date = LocalDate.of(2024, 12, 1);
+             date.isBefore(attendanceSystem.TODAY);
+             date = date.plusDays(1)) {
+            try {
+                attendanceSystem.editAttendance(name, date, LocalTime.of(10, 0));
+            } catch (IllegalArgumentException ignored) {
+
+            }
+        }
+        assertAll(
+                () -> assertThat(attendanceSystem.getAbsenceCount(name) + attendanceSystem.getTardyCount(name) / 3).isEqualTo(0),
+                () -> assertThat(attendanceSystem.getRisk(name)).isEqualTo(RiskStatus.NONE)
+        );
+    }
+
+    @DisplayName("결석을 한번 한 경우")
+    @Test
+    void none_test2() {
+        String name = "두리";
+        attendanceSystem.attendance(name, LocalTime.of(10, 0));
+        for (LocalDate date = LocalDate.of(2024, 12, 1);
+             date.isBefore(attendanceSystem.TODAY.minusDays(1));
+             date = date.plusDays(1)) {
+            try {
+                attendanceSystem.editAttendance(name, date, LocalTime.of(10, 0));
+            } catch (IllegalArgumentException ignored) {
+
+            }
+        }
+        assertAll(
+                () -> assertThat(attendanceSystem.getAbsenceCount(name) + attendanceSystem.getTardyCount(name) / 3).isEqualTo(1),
+                () -> assertThat(attendanceSystem.getRisk(name)).isEqualTo(RiskStatus.NONE)
         );
     }
 }
