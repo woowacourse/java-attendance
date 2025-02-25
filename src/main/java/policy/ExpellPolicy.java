@@ -1,3 +1,5 @@
+package policy;
+
 public class ExpellPolicy {
 
     private static final int LATE_ABSENT_RATE = 3;
