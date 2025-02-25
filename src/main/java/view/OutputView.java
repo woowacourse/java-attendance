@@ -1,9 +1,9 @@
 package view;
 
+import domain.AbsenceHistory;
 import domain.AttendanceState;
 import domain.Calender;
 import domain.Crew;
-import dto.AbsenceResultDto;
 import dto.AttendanceResultDto;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -58,8 +58,8 @@ public class OutputView {
                 attendanceResultDto.attendanceState().getDescription());
     }
 
-    public void printAbsenceHistory(AbsenceResultDto absenceResultDto) {
-        System.out.printf("출석: %d회\n", absenceResultDto.attendance());
+    public void printAbsenceHistory(AbsenceHistory absenceResultDto) {
+        System.out.printf("\n출석: %d회\n", absenceResultDto.attendance());
         System.out.printf("지각: %d회\n", absenceResultDto.lateness());
         System.out.printf("결석: %d회\n", absenceResultDto.absence());
 
@@ -68,7 +68,7 @@ public class OutputView {
         System.out.printf("%s 대상자입니다.\n", absenceResultDto.status().getDescription());
     }
 
-    public void printAbsenceResult(final Map<Crew, AbsenceResultDto> result) {
+    public void printAbsenceResult(final Map<Crew, AbsenceHistory> result) {
         System.out.println("제적 위험자 조회 결과");
         result.forEach((crew, absenceResult) ->
                 System.out.printf("- %s: 결석 %d회, 지각 %d회 (%s)\n",
