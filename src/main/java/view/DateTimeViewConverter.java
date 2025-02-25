@@ -3,11 +3,8 @@ package view;
 import static domain.AttendanceHistory.ABSENT_DEFAULT_HOUR;
 import static domain.AttendanceHistory.ABSENT_DEFAULT_MINUTE;
 
-import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
-import java.util.Date;
 import java.util.Locale;
 
 public class DateTimeViewConverter {
@@ -16,10 +13,13 @@ public class DateTimeViewConverter {
     public final static int STANDARD_MONTH = 12;
     private final static int HOUR_INDEX = 0;
     private final static int MINUTES_INDEX = 1;
+
     private static final DateTimeFormatter NORMAL_FORMATTER =
             DateTimeFormatter.ofPattern("MM월 dd일 E요일 HH:mm", Locale.KOREAN);
     private static final DateTimeFormatter DATE_ONLY_FORMATTER =
             DateTimeFormatter.ofPattern("MM월 dd일 E요일", Locale.KOREAN);
+    private static final DateTimeFormatter TIME_FORMATTER =
+            DateTimeFormatter.ofPattern("HH:mm", Locale.KOREAN);
 
     public static LocalDateTime changeToDate(String input) {
         validateDate(input.trim());
@@ -30,7 +30,6 @@ public class DateTimeViewConverter {
         return LocalDateTime.of(STANDARD_YEAR, STANDARD_MONTH, now.getDayOfMonth(), hour, minutes);
     }
 
-
     public static String dateFormattingForOutput(LocalDateTime localDateTime) {
         if (localDateTime.getHour() == ABSENT_DEFAULT_HOUR && localDateTime.getMinute() == ABSENT_DEFAULT_MINUTE) {
             return localDateTime.format(DATE_ONLY_FORMATTER) + " --:--";
@@ -40,15 +39,11 @@ public class DateTimeViewConverter {
 
     public static String dateFormattingForInput(LocalDateTime localDateTime) {
         LocalDateTime changedDate = changeStandardDate(localDateTime);
-        SimpleDateFormat dateFormat = new SimpleDateFormat("MM월 dd일 E요일", Locale.KOREAN);
-        Date dateAttendanceTime = Date.from(changedDate.atZone(ZoneId.systemDefault()).toInstant());
-        return dateFormat.format(dateAttendanceTime);
+        return changedDate.format(DATE_ONLY_FORMATTER);
     }
 
     public static String timeFormattingForOutput(LocalDateTime localDateTime) {
-        SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm", Locale.KOREAN);
-        Date dateAttendanceTime = Date.from(localDateTime.atZone(ZoneId.systemDefault()).toInstant());
-        return dateFormat.format(dateAttendanceTime);
+        return localDateTime.format(TIME_FORMATTER);
     }
 
     public static LocalDateTime editDayOfMonth(String date, String time) {
@@ -78,5 +73,4 @@ public class DateTimeViewConverter {
             throw new IllegalArgumentException("[ERROR]  숫자를 입력해주세요.");
         }
     }
-
 }
