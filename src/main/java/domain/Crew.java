@@ -1,5 +1,7 @@
 package domain;
 
+import java.util.Objects;
+
 public class Crew {
     private final String nickname;
 
@@ -9,5 +11,22 @@ public class Crew {
 
     public static Crew from(String nickname) {
         return new Crew(nickname);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        Crew crew = (Crew) o;
+        return Objects.equals(nickname, crew.nickname);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(nickname);
     }
 }
