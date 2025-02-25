@@ -26,12 +26,18 @@ public class FileReaderPolicy {
         List<String> lines = readLines();
 
         for (String line : lines) {
-            String[] splitLine = line.split(SPLIT_DELIMITER);
-            validateSplitLineFormat(splitLine);
-
-            String nickname = splitLine[0];
-            LocalDateTime dateTime = parseAttendanceDateTime(splitLine[1]);
+            createAttendance(line);
         }
+    }
+
+    public AttendanceSheet createAttendance(String line) {
+        String[] splitLine = line.split(SPLIT_DELIMITER);
+        validateSplitLineFormat(splitLine);
+
+        String nickname = splitLine[0];
+        LocalDateTime dateTime = parseAttendanceDateTime(splitLine[1]);
+
+        return new AttendanceSheet(nickname, dateTime.toLocalDate(), dateTime.toLocalTime());
     }
 
     private List<String> readLines() {
