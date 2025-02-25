@@ -58,7 +58,18 @@ public class AttendanceSheetTest {
 
         //when-then
         assertDoesNotThrow(() -> attendanceSheet.update(nickname, dayOfMonth, updateTime));
+    }
 
+    @Test
+    @DisplayName("출석 기록이 없을 때 수정하려고 하면 예외가 발생한다")
+    public void attendNotFoundTest() {
+        //given
+        String nickname = "링크";
+        LocalDate date = LocalDate.of(2024, 12, 15);
+
+        //when-then
+        assertThatThrownBy(() -> attendanceSheet.validateNotFoundAttendance(nickname, date))
+                .isInstanceOf(IllegalArgumentException.class);
     }
 
 }

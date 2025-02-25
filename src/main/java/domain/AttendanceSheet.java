@@ -24,5 +24,9 @@ public class AttendanceSheet {
     }
 
     public void update(String nickname, int dayOfMonth, LocalTime updateTime) {
+        
+    }
+
+    public void validateNotFoundAttendance(String nickname, LocalDate date) {
     }
 }
