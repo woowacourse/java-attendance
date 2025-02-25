@@ -34,7 +34,7 @@
 - AttendanceBook
   - [ ] 크루들과 크루들에 대한 출석 기록들을 저장
 - Attendance
-  - [ ] 출석 날짜, 출석 시간, 출석 상태 저장
+  - [x] 출석 날짜, 출석 시간, 출석 상태 저장
 - Attendances
   - [ ] 크루 한 명의 출석 기록들을 저장
 - AttendanceDate
