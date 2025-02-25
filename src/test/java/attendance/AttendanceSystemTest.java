@@ -36,18 +36,16 @@ class AttendanceSystemTest {
     static final LocalDateTime PUBLIC_HOLIDAY = LocalDateTime.of(2025, 2, 24, 8, 50);
     static final LocalDateTime COMMON_ATTENDANCE_DATE_TIME = LocalDateTime.of(2025, 2, 4, 8, 50);
 
-    AttendanceSystem attendanceSystem;
-    CrewStorage crewStorage;
-    AttendanceChecker attendanceChecker;
-    HolidayChecker holidayChecker;
+    CrewStorage crewStorage = new CrewStorage();
+    HolidayChecker holidayChecker = new HolidayChecker();
+    AttendanceChecker attendanceChecker = new AttendanceChecker(holidayChecker);
+    AttendanceSystem attendanceSystem = new AttendanceSystem(crewStorage, attendanceChecker);
 
     @BeforeEach
     void beforeEach() {
-        crewStorage = new CrewStorage();
+        crewStorage.validateIsNotContained(VALID_CREW_NICKNAME);
         crewStorage.add(VALID_CREW_NICKNAME);
-        holidayChecker = new HolidayChecker();
         holidayChecker.addPublicHoliday(PUBLIC_HOLIDAY.toLocalDate());
-        attendanceChecker = new AttendanceChecker(holidayChecker);
         attendanceSystem = new AttendanceSystem(crewStorage, attendanceChecker);
     }
 
