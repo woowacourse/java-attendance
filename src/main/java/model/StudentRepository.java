@@ -9,10 +9,6 @@ public class StudentRepository {
         this.students = students;
     }
 
-    public List<Student> getStudents() {
-        return students;
-    }
-
     public void notExistStudent(String studentName) {
         if (findStudentByName(studentName) == null) {
             throw new IllegalArgumentException("[ERROR] 등록되지 않은 닉네임입니다.");
@@ -24,5 +20,9 @@ public class StudentRepository {
                 .filter(s -> s.getName().equals(name))
                 .findFirst()
                 .orElse(null);
+    }
+
+    public List<Student> getStudents() {
+        return students;
     }
 }

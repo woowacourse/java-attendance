@@ -14,10 +14,6 @@ public enum AttendanceStatus {
         this.attendanceJudgementTime = attendanceJudgementTime;
     }
 
-    public String getState() {
-        return state;
-    }
-
     public static AttendanceStatus fromMinutesLate(int minutesLate) {
         if (minutesLate > ABSENT.attendanceJudgementTime) {
             return ABSENT;
@@ -26,5 +22,9 @@ public enum AttendanceStatus {
             return LATE;
         }
         return ATTENDANCE;
+    }
+
+    public String getState() {
+        return state;
     }
 }

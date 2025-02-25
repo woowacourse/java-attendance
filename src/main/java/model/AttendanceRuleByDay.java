@@ -34,11 +34,6 @@ public enum AttendanceRuleByDay {
                 .orElseThrow();
     }
 
-    private AttendanceStatus calculateAttendanceStatusByArrivalTime(LocalTime arrivalTime) {
-        int late = (int) classStartTime.until(arrivalTime, ChronoUnit.MINUTES);
-        return AttendanceStatus.fromMinutesLate(late);
-    }
-
     public static String findDayByDayOfWeekValue(DayOfWeek dayOfWeekValue) {
         return Arrays.stream(values())
                 .filter(attendanceRule -> attendanceRule.dayOfWeek == dayOfWeekValue)
@@ -46,4 +41,10 @@ public enum AttendanceRuleByDay {
                 .findFirst()
                 .orElseThrow();
     }
+
+    private AttendanceStatus calculateAttendanceStatusByArrivalTime(LocalTime arrivalTime) {
+        int late = (int) classStartTime.until(arrivalTime, ChronoUnit.MINUTES);
+        return AttendanceStatus.fromMinutesLate(late);
+    }
+
 }

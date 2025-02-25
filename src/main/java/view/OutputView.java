@@ -95,5 +95,4 @@ public class OutputView {
                     String.format(WARNING_LABEL_FORMATTER, student.getName(), student.getAbsent(), student.getLate()));
         }
     }
-
 }

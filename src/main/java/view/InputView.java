@@ -39,14 +39,6 @@ public class InputView {
         System.out.println("오늘은 " + month + "월 " + date + "일 " + day + "입니다. 기능을 선택해 주세요.");
     }
 
-    private static void printMenu() {
-        System.out.println(ATTENDANCE_CHECK_MENU);
-        System.out.println(ATTENDANCE_MODIFY_MENU);
-        System.out.println(RECORD_PRINT_FOR_EACH_CREW_MENU);
-        System.out.println(DISMISSAL_CREW_CHECK_MENU);
-        System.out.println(QUIT);
-    }
-
     public static String userInput() {
         return scanner.nextLine();
     }
@@ -60,13 +52,6 @@ public class InputView {
             System.out.println(e.getMessage());
             return getUserInputString();
         }
-    }
-
-    private static String isQOrOneOrTwoOrThreeOrFour(String input) {
-        if (!input.matches(MENU_OPTION)) {
-            throw new IllegalArgumentException("[ERROR] 메뉴에 없는 선택지 입니다.");
-        }
-        return input;
     }
 
     public static void printInputNicName() {
@@ -116,5 +101,18 @@ public class InputView {
             throw new IllegalArgumentException("[ERROR] 캠퍼스 운영 시간이 아닙니다.");
         }
     }
+    private static void printMenu() {
+        System.out.println(ATTENDANCE_CHECK_MENU);
+        System.out.println(ATTENDANCE_MODIFY_MENU);
+        System.out.println(RECORD_PRINT_FOR_EACH_CREW_MENU);
+        System.out.println(DISMISSAL_CREW_CHECK_MENU);
+        System.out.println(QUIT);
+    }
 
+    private static String isQOrOneOrTwoOrThreeOrFour(String input) {
+        if (!input.matches(MENU_OPTION)) {
+            throw new IllegalArgumentException("[ERROR] 메뉴에 없는 선택지 입니다.");
+        }
+        return input;
+    }
 }

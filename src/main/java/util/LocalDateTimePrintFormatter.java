@@ -23,6 +23,4 @@ public class LocalDateTimePrintFormatter {
         return localDateTime.format(DateTimeFormatter.ofPattern("MM월 dd일 " + dayOfWeek.getDisplayName(
                 TextStyle.FULL, Locale.KOREAN) + " " + DateFormatInformation.LOCAL_TIME_FORMATTER));
     }
-
-
 }

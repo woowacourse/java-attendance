@@ -1,6 +1,5 @@
 package model;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 public class Student {
@@ -11,22 +10,6 @@ public class Student {
     private int totalAbsent;
     private int totalAttendance;
     private int totalLate;
-
-    public int getLate() {
-        return totalAbsent;
-    }
-
-    public int getAttendance() {
-        return totalAttendance;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public AttendanceRecords getAttendanceRecords() {
-        return attendanceRecords;
-    }
 
     public int getAbsent() {
         return totalLate;
@@ -55,10 +38,6 @@ public class Student {
         attendanceRecords.createAttendanceRecords(localDateTime);
     }
 
-    public boolean compareDayIsSame(LocalDateTime localDateTime1, LocalDateTime localDateTime2) {
-        return LocalDate.from(localDateTime1).equals(LocalDate.from(localDateTime2));
-    }
-
     public String findStateByLocalDateTime(LocalDateTime localDateTime) {
         return attendanceRecords.findAttendanceStatusByLocalDateTime(localDateTime).getState();
     }
@@ -67,5 +46,19 @@ public class Student {
         updateAttendanceCount();
         return totalAbsent + totalLate / LATE_CONVERSION_RATE;
     }
+    public int getLate() {
+        return totalAbsent;
+    }
 
+    public int getAttendance() {
+        return totalAttendance;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public AttendanceRecords getAttendanceRecords() {
+        return attendanceRecords;
+    }
 }

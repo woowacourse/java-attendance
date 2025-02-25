@@ -72,13 +72,6 @@ public class StudentRepositoryTest {
     }
 
     @Test
-    @DisplayName("LocalDateTime 을 날짜까지만 비교하는 메서드 테스트")
-    void test6() {
-        boolean compareResult = student.compareDayIsSame(LocalDateTime.of(2024,12,12,9,59),LocalDateTime.of(2024,12,12,13,25));
-        Assertions.assertTrue(compareResult);
-    }
-
-    @Test
     @DisplayName("출석 기록 업데이트 하는 메서드 테스트")
     void test7() {
         Student student1 = studentRepository.findStudentByName("빙티");

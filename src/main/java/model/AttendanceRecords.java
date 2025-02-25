@@ -19,7 +19,7 @@ public class AttendanceRecords {
 
     public void updateAttendanceStatusByLocalDate(LocalDateTime updateLocalDateTime) {
         validateHoliday(updateLocalDateTime);
-        checkOpeningHours(updateLocalDateTime);
+        validateOpeningHours(updateLocalDateTime);
         AttendanceStatus newAttendanceStatus = AttendanceRuleByDay
                 .calculateAttendance(updateLocalDateTime);
 
@@ -36,7 +36,7 @@ public class AttendanceRecords {
 
     public void registerAttendanceRecord(LocalDateTime localDateTime) {
         validateHoliday(localDateTime);
-        checkOpeningHours(localDateTime);
+        validateOpeningHours(localDateTime);
         LocalDate localDate = LocalDate.from(localDateTime);
         LocalTime localTime = LocalTime.from(localDateTime);
         AttendanceStatus attendanceStatus = AttendanceRuleByDay.calculateAttendance(localDateTime);
@@ -62,12 +62,6 @@ public class AttendanceRecords {
                 .count();
     }
 
-    private void modifyAttendanceRecord(LocalDateTime updateLocalDateTime, LocalDate recordLocalDate,
-                                        AttendanceStatus newAttendanceStatus) {
-        LocalTime localTime = LocalTime.from(updateLocalDateTime);
-        record.put(recordLocalDate, new AttendanceRecord(localTime, newAttendanceStatus));
-    }
-
     public void createAttendanceRecords(LocalDateTime today) {
         AttendanceStatus attendanceStatus = AttendanceRuleByDay.calculateAttendance(today);
         record.put(LocalDate.from(today), new AttendanceRecord(LocalTime.from(today), attendanceStatus));
@@ -86,6 +80,19 @@ public class AttendanceRecords {
         }
     }
 
+    public AttendanceStatus findAttendanceStatusByLocalDateTime(LocalDateTime localDateTime) {
+        return record.entrySet().stream()
+                .filter(e -> compareDayIsSame(localDateTime, e.getKey()))
+                .map(e -> e.getValue().getAttendanceStatus())
+                .findFirst().orElse(null);
+    }
+
+    private void modifyAttendanceRecord(LocalDateTime updateLocalDateTime, LocalDate recordLocalDate,
+                                        AttendanceStatus newAttendanceStatus) {
+        LocalTime localTime = LocalTime.from(updateLocalDateTime);
+        record.put(recordLocalDate, new AttendanceRecord(localTime, newAttendanceStatus));
+    }
+
     private void addAbsentRecordForStudent(LocalDateTime updateLocalDateTime) {
         record.put(LocalDate.from(updateLocalDateTime), new AttendanceRecord(null, AttendanceStatus.ABSENT));
     }
@@ -97,14 +104,7 @@ public class AttendanceRecords {
         }
     }
 
-    public AttendanceStatus findAttendanceStatusByLocalDateTime(LocalDateTime localDateTime) {
-        return record.entrySet().stream()
-                .filter(e -> compareDayIsSame(localDateTime, e.getKey()))
-                .map(e -> e.getValue().getAttendanceStatus())
-                .findFirst().orElse(null);
-    }
-
-    private void checkOpeningHours(LocalDateTime localDateTime) {
+    private void validateOpeningHours(LocalDateTime localDateTime) {
         LocalTime localTime = LocalTime.from(localDateTime);
         LocalTime startTime = LocalTime.of(8, 0);
         LocalTime endTime = LocalTime.of(23, 0);
@@ -113,7 +113,7 @@ public class AttendanceRecords {
         }
     }
 
-    public boolean compareDayIsSame(LocalDateTime localDateTime, LocalDate localDate) {
+    private boolean compareDayIsSame(LocalDateTime localDateTime, LocalDate localDate) {
         return LocalDate.from(localDateTime).equals(localDate);
     }
 
