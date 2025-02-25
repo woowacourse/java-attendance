@@ -51,7 +51,7 @@ public class AttendanceService {
     }
 
     private void validateCampusTime(LocalTime time) {
-        if (!DateTimeUtil.isBetween(CampusTime.openTime, CampusTime.closeTime, time)) {
+        if (!DateTimeUtil.isInRange(CampusTime.openTime, CampusTime.closeTime, time)) {
             throw new IllegalArgumentException(time + ": 캠퍼스 운영시간이 아닙니다.");
         }
     }
