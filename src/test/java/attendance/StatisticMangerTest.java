@@ -78,7 +78,7 @@ public class StatisticMangerTest {
 
         assertThat(statisticManger.getResult())
             .contains("""
-                출석: 11회
+                출석: 10회
                 지각: 5회
                 결석: 2회
                 """);

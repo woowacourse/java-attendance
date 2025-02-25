@@ -24,7 +24,7 @@ public class StatusStatistic implements Comparable<StatusStatistic> {
         var stringBuilder = new StringBuilder();
         var attendanceStatusList = statistic.keySet().stream().sorted().toList();
         for (AttendanceStatus attendanceStatus : attendanceStatusList) {
-            String status = attendanceStatus.getStatus();
+            String status = attendanceStatus.getValue();
             int count = statistic.get(attendanceStatus);
             var formatted = String.format(FORMAT_STATE, status, count);
             stringBuilder.append(formatted);

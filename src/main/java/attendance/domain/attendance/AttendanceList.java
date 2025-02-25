@@ -91,7 +91,7 @@ public class AttendanceList {
 
         String result = DateTimeFormatterWrapper.getFormatter(Constant.ATTENDANCE_INFO)
             .format(dateTime);
-        String format = String.format(Constant.STATUS, status.getStatus());
+        String format = String.format(Constant.STATUS, status.getValue());
         attendanceHistory.add(result + format);
         putAttendanceState(attendanceStatusMap, status);
     }
@@ -105,7 +105,7 @@ public class AttendanceList {
     }
 
     private LocalDate getLastDay() {
-        return SystemDateConfig.SYSTEM_TODAY.plusDays(1);
+        return SystemDateConfig.SYSTEM_NOW_DATE.plusDays(1);
     }
 
     private void putAttendanceState(Map<AttendanceStatus, Integer> attendanceStatusMap, AttendanceStatus status) {
