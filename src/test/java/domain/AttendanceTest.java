@@ -83,7 +83,7 @@ public class AttendanceTest {
         attendance.editAttendanceDateTime(updateDateTime);
 
         // given
-        assertThat(attendance.findAttendanceDate(AttendanceDate.DEFAULT_START_DATE).checkAttendanceTime())
+        assertThat(attendance.findAttendanceDate(AttendanceDate.DEFAULT_START_DATE).getAttendanceTime())
                 .isEqualTo(updateDateTime);
     }
 

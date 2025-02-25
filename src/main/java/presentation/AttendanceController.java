@@ -115,7 +115,7 @@ public class AttendanceController {
                 attendanceDay);
         AttendanceDate attendanceDate = crew.findAttendanceDate(findLocalDate);
 
-        String beforeEditDate = DateTimeUtil.convertLocalDateTimeToString(attendanceDate.checkAttendanceTime());
+        String beforeEditDate = DateTimeUtil.convertLocalDateTimeToString(attendanceDate.getAttendanceTime());
         AttendanceState beforeState = attendanceDate.calculateAttendanceState();
 
         return new ResponseAttendanceEditStateDto(beforeEditDate, beforeState, null, null);
