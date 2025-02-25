@@ -1,8 +1,11 @@
 package attendance.domain;
 
 import attendance.domain.constant.AttendanceStatus;
+import attendance.exception.CustomException;
+import attendance.exception.ErrorMessage;
 import java.time.LocalTime;
 import java.util.Map.Entry;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -87,6 +90,28 @@ class RegisterTest {
         AttendanceChecker firstCheck = register.findInfo(crew, attendanceTimes.get(crew).get(0));
 
         assertThat(firstCheck.getLocalDateTime()).isEqualTo(attendanceTimes.get(crew).get(0));
+    }
+
+    @Test
+    void 캠퍼스_운영_오픈_출석_시간_검증() {
+        //given
+        LocalDateTime localDateTime = LocalDateTime.of(2025, 2, 25, 7,59);
+
+        //when & then
+        Assertions.assertThatThrownBy(() -> register.modifyInfo(crew, localDateTime))
+                        .isInstanceOf(CustomException.class)
+                                .hasMessage(ErrorMessage.CAMPUS_NOT_OPERATION.getMessage());
+    }
+
+    @Test
+    void 캠퍼스_운영_마감_출석_시간_검증() {
+        //given
+        LocalDateTime localDateTime = LocalDateTime.of(2025, 2, 25, 23,0);
+
+        //when & then
+        Assertions.assertThatThrownBy(() -> register.modifyInfo(crew, localDateTime))
+                .isInstanceOf(CustomException.class)
+                .hasMessage(ErrorMessage.CAMPUS_NOT_OPERATION.getMessage());
     }
 
     @Test

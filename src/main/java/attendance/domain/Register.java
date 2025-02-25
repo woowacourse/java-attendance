@@ -13,6 +13,8 @@ import java.util.Map.Entry;
 
 public class Register {
     private final Map<Crew, AttendanceRegistry> register;
+    private static final int OPEN_TIME = 8;
+    private static final int CLOSE_TIME = 23;
 
     public Register(Crews crews, LocalDate now) {
         register = new HashMap<>();
@@ -20,10 +22,18 @@ public class Register {
     }
 
     public AttendanceChecker modifyInfo(Crew crew, LocalDateTime localDateTime) {
+        validateCampusOperationTime(localDateTime);
         AttendanceRegistry attendanceRegistry = register.get(findValidatedCrew(crew));
         AttendanceChecker attendanceChecker = attendanceRegistry.findByDay(localDateTime);
         attendanceChecker.modifyAttendanceTime(localDateTime);
         return attendanceChecker;
+    }
+
+    private void validateCampusOperationTime(LocalDateTime localDateTime) {
+        int hour = localDateTime.getHour();
+        if (hour < OPEN_TIME || hour == CLOSE_TIME) {
+            throw CustomException.from(ErrorMessage.CAMPUS_NOT_OPERATION);
+        }
     }
 
     public AttendanceChecker findInfo(Crew crew, LocalDateTime modifyDate) {

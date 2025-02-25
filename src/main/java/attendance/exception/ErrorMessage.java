@@ -10,7 +10,8 @@ public enum ErrorMessage {
     NICKNAME_NOT_PRESENCE("없는 닉네임 입니다."),
     NUMBER_FORMAT_MINUTE_ERROR("분은 숫자로 입력하셔야 합니다."),
     NOT_RISK_CREW("제적사항이 없는 학생입니다."),
-    NUMBER_FORMAT_ERROR("숫자로 입력하셔야 합니다.");
+    NUMBER_FORMAT_ERROR("숫자로 입력하셔야 합니다."),
+    CAMPUS_NOT_OPERATION("캠퍼스 운영 시간은 08시부터 23시까지 입니다.");
 
     private final String PREFIX = "[ERROR] ";
     private final String message;
