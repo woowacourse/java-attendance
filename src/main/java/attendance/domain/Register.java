@@ -68,8 +68,8 @@ public class Register {
     }
 
     private int calculateTotalAbsence(List<Integer> absenceCounts) {
-        int absence = absenceCounts.get(0);
-        int late = absenceCounts.get(1);
+        int absence = absenceCounts.getFirst();
+        int late = absenceCounts.getLast();
         return divideLate(absence, late);
     }
 
