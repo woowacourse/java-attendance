@@ -53,6 +53,18 @@ public class AttendanceTest {
         assertThat(attendance.countTardy()).isEqualTo(1);
     }
 
+    @DisplayName("지각 3번이면 결석 1번 입니다.")
+    @Test
+    void test4_1(){
+        Attendance attendance = new Attendance(LocalDate.of(2025,2,20), LocalDate.now());
+
+        attendance.editAttendanceDateTime(LocalDateTime.of(2025, 2, 20, 10, 6));
+        attendance.editAttendanceDateTime(LocalDateTime.of(2025, 2, 21, 10, 6));
+        attendance.editAttendanceDateTime(LocalDateTime.of(2025, 2, 24, 13, 6));
+
+        assertThat(attendance.countAbsenceIncludingTardy()).isEqualTo(1);
+    }
+
     @DisplayName("결석이 여섯 번 이상일 때 제적대상자임을 반환한다")
     @Test
     void test5() {
@@ -89,6 +101,18 @@ public class AttendanceTest {
         // given
         assertThat(attendance.findAttendanceDate(DEFAULT_START_DATE).checkAttendanceTime())
                 .isEqualTo(updateDateTime);
+    }
+
+    @DisplayName("미래의 경우 조회할 수 없다")
+    @Test
+    void test7_1(){
+        Attendance attendance = new Attendance(DEFAULT_START_DATE, LocalDate.now());
+
+        assertThatThrownBy(() -> attendance.findAttendanceDate(LocalDate.of(
+                2025,
+                5,
+                6))).isInstanceOf(IllegalArgumentException.class);
+
     }
 
     @DisplayName("학생이 오늘 날짜에 출석한다")

@@ -4,6 +4,8 @@ import static org.assertj.core.api.Assertions.*;
 
 import domain.attendance.AttendanceDate;
 import domain.attendance.AttendanceState;
+
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -104,5 +106,55 @@ public class AttendanceDateTest {
 
         //then
         assertThat(attendanceState).isEqualTo(AttendanceState.ABSENCE);
+    }
+
+    @DisplayName("isEqualsLocalDate 테스트")
+    @Test
+    void test6(){
+        AttendanceDate attendanceDate = new AttendanceDate(LocalDateTime.of(
+                2025,
+                1,
+                2,
+                3,
+                4));
+        assertThat(attendanceDate.isEqualsLocalDate(LocalDate.of(2025,1,2))).isTrue();
+    }
+
+    @DisplayName("editDateTime 테스트")
+    @Test
+    void test7(){
+        AttendanceDate attendanceDate = new AttendanceDate(LocalDateTime.of(
+                2025,
+                1,
+                2,
+                3,
+                4));
+        attendanceDate.editDateTime(LocalDateTime.of(
+                2025,
+                1,
+                1,
+                2,
+                3));
+
+        assertThat(attendanceDate.isEqualsLocalDate(LocalDate.of(2025,1,1))).isTrue();
+    }
+
+    @DisplayName("!equals 테스트")
+    @Test
+    void test7_1(){
+        AttendanceDate attendanceDate = new AttendanceDate(LocalDateTime.of(
+                2025,
+                1,
+                2,
+                3,
+                4));
+        attendanceDate.editDateTime(LocalDateTime.of(
+                2025,
+                1,
+                3,
+                2,
+                3));
+
+        assertThat(attendanceDate.isEqualsLocalDate(LocalDate.of(2025,1,1))).isFalse();
     }
 }
