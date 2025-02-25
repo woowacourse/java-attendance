@@ -3,10 +3,10 @@ package model;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import attendance.model.Attendance;
-import global.BaseTest;
+import global.Constant;
 import org.junit.jupiter.api.Test;
 
-class AttendanceTest extends BaseTest {
+class AttendanceTest {
 
     @Test
     void _5분_초과로_늦게온_경우_지각이다() {

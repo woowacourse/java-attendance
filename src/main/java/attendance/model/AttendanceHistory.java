@@ -7,7 +7,8 @@ import java.util.Objects;
 import java.util.stream.Stream;
 
 public record AttendanceHistory(
-        List<AttendanceDateTime> attendanceDateTimes
+        List<AttendanceDateTime> attendanceDateTimes,
+        CustomLocalDateTime customLocalDateTime
 ) {
     public void addAttendanceDateTime(AttendanceDateTime attendanceDateTime) {
         attendanceDateTimes.add(attendanceDateTime);
@@ -59,10 +60,10 @@ public record AttendanceHistory(
     }
 
     public LocalDate computeLastAttendableDate() {
-        if (CustomLocalDateTime.nowDate().getYear() > 2024) {
+        if (customLocalDateTime.nowDate().getYear() > 2024) {
             return LocalDate.of(2024, 12, 31);
         }
-        return CustomLocalDateTime.nowDate();
+        return customLocalDateTime.nowDate();
     }
 
     public long convertLateCount() {

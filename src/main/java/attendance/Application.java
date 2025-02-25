@@ -3,13 +3,17 @@ package attendance;
 import attendance.controller.Controller;
 import attendance.model.AttendanceRegister;
 import attendance.model.CrewDataLoader;
+import attendance.model.CustomLocalDateTime;
 import attendance.view.InputView;
 import attendance.view.OutputView;
 import java.util.HashMap;
 
 public class Application {
 
-    private static final AttendanceRegister attendanceRegister = new AttendanceRegister(new HashMap<>());
+    private static final AttendanceRegister attendanceRegister = new AttendanceRegister(
+            new HashMap<>(),
+            new CustomLocalDateTime()
+    );
     public static final String FILE_NAME = "attendances.csv";
 
     public static void main(String[] args) {

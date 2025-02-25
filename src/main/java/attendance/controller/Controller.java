@@ -46,8 +46,9 @@ public class Controller {
     private void addAttendance() {
         AttendanceHistory attendanceHistory = attendanceRegister
                 .findAttendanceHistoryByCrewName(inputView.inputCrewName());
+        CustomLocalDateTime customLocalDateTime = new CustomLocalDateTime();
         AttendanceDateTime attendanceDateTime = new AttendanceDateTime(
-                new AttendanceDate(CustomLocalDateTime.nowDate()),
+                new AttendanceDate(customLocalDateTime.nowDate()),
                 new AttendanceTime(Parser.parseTime(inputView.inputEntryTime()))
         );
         attendanceHistory.addAttendanceDateTime(attendanceDateTime);

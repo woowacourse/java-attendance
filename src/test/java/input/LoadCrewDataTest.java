@@ -4,20 +4,20 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import attendance.model.AttendanceRegister;
 import attendance.model.CrewDataLoader;
-import global.BaseTest;
+import global.Constant;
 import java.util.HashMap;
 import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-class LoadCrewDataTest extends BaseTest {
+class LoadCrewDataTest {
 
     private CrewDataLoader loader;
     private AttendanceRegister register;
 
     @BeforeEach
     void setUp() {
-        register = new AttendanceRegister(new HashMap<>());
+        register = new AttendanceRegister(new HashMap<>(), Constant.customLocalDateTime);
         loader = new CrewDataLoader(register);
         loader.load("attendances.csv");
     }

@@ -8,19 +8,19 @@ import attendance.model.AttendanceDateTime;
 import attendance.model.AttendanceHistory;
 import attendance.model.AttendanceTime;
 import attendance.model.AttendanceWarning;
-import global.BaseTest;
+import global.Constant;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 import org.junit.jupiter.api.Test;
 
-class AttendanceHistoryTest extends BaseTest {
+class AttendanceHistoryTest {
 
     @Test
     void 출석_시간이_출석기록에_정상적으로_추가된다() {
         // given
-        AttendanceHistory attendanceHistory = new AttendanceHistory(new ArrayList<>());
+        AttendanceHistory attendanceHistory = new AttendanceHistory(new ArrayList<>(), Constant.customLocalDateTime);
 
         // when
         attendanceHistory.addAttendanceDateTime(new AttendanceDateTime(
@@ -35,7 +35,7 @@ class AttendanceHistoryTest extends BaseTest {
     @Test
     void 특정_날짜의_출석_기록을_조회한다() {
         // given
-        AttendanceHistory attendanceHistory = new AttendanceHistory(new ArrayList<>());
+        AttendanceHistory attendanceHistory = new AttendanceHistory(new ArrayList<>(), Constant.customLocalDateTime);
         AttendanceDate attendanceDate = new AttendanceDate(LocalDate.of(2024, 12, 2));
         AttendanceTime attendanceTime = new AttendanceTime(LocalTime.of(9, 58));
         AttendanceDateTime attendanceDateTime = new AttendanceDateTime(
@@ -54,7 +54,7 @@ class AttendanceHistoryTest extends BaseTest {
     @Test
     void 출석_기록이_없는_날짜로_조회할_경우_예외가_발생한다() {
         // given
-        AttendanceHistory attendanceHistory = new AttendanceHistory(new ArrayList<>());
+        AttendanceHistory attendanceHistory = new AttendanceHistory(new ArrayList<>(), Constant.customLocalDateTime);
         AttendanceDate attendanceDate = new AttendanceDate(LocalDate.of(2024, 12, 2));
         AttendanceTime attendanceTime = new AttendanceTime(LocalTime.of(9, 58));
         AttendanceDateTime attendanceDateTime = new AttendanceDateTime(
@@ -72,7 +72,7 @@ class AttendanceHistoryTest extends BaseTest {
     @Test
     void 출석_기록에서_지각_횟수를_조회한다() {
         // given
-        AttendanceHistory attendanceHistory = new AttendanceHistory(new ArrayList<>());
+        AttendanceHistory attendanceHistory = new AttendanceHistory(new ArrayList<>(), Constant.customLocalDateTime);
         AttendanceDateTime attendance = new AttendanceDateTime(
                 new AttendanceDate(LocalDate.of(2024, 12, 2)),
                 new AttendanceTime(LocalTime.of(9, 58))
@@ -99,7 +99,7 @@ class AttendanceHistoryTest extends BaseTest {
     @Test
     void 출석_기록에서_결석_횟수를_조회한다() {
         // given
-        AttendanceHistory attendanceHistory = new AttendanceHistory(new ArrayList<>());
+        AttendanceHistory attendanceHistory = new AttendanceHistory(new ArrayList<>(), Constant.customLocalDateTime);
         AttendanceDateTime attendance = new AttendanceDateTime(
                 new AttendanceDate(LocalDate.of(2024, 12, 2)),
                 new AttendanceTime(LocalTime.of(9, 58))
@@ -126,7 +126,7 @@ class AttendanceHistoryTest extends BaseTest {
     @Test
     void 출석_기록에의_해당없음_상태를_조회한다() {
         // given
-        AttendanceHistory attendanceHistory = new AttendanceHistory(new ArrayList<>());
+        AttendanceHistory attendanceHistory = new AttendanceHistory(new ArrayList<>(), Constant.customLocalDateTime);
         List<Integer> attendDay = List.of(3, 4, 5, 6, 10, 11, 12 ,13);
         List<Integer> mondayAttendDay = List.of(2, 9, 16);
         attendDay.forEach(day -> attendanceHistory.addAttendanceDateTime(new AttendanceDateTime(
@@ -148,7 +148,7 @@ class AttendanceHistoryTest extends BaseTest {
     @Test
     void 출석_기록에의_경고_상태를_조회한다() {
         // given
-        AttendanceHistory attendanceHistory = new AttendanceHistory(new ArrayList<>());
+        AttendanceHistory attendanceHistory = new AttendanceHistory(new ArrayList<>(), Constant.customLocalDateTime);
         List<Integer> attendDay = List.of(3, 4, 5, 6, 10, 11);
         List<Integer> absenceDay = List.of(12 ,13);
         List<Integer> attendMondayAttendDay = List.of(2, 9, 16);
@@ -175,7 +175,7 @@ class AttendanceHistoryTest extends BaseTest {
     @Test
     void 출석_기록에의_면담_상태를_조회한다() {
         // given
-        AttendanceHistory attendanceHistory = new AttendanceHistory(new ArrayList<>());
+        AttendanceHistory attendanceHistory = new AttendanceHistory(new ArrayList<>(), Constant.customLocalDateTime);
         List<Integer> attendDay = List.of(3, 4, 5, 6);
         List<Integer> absenceDay = List.of(6, 10, 11, 12 ,13);
         List<Integer> attendMondayAttendDay = List.of(2, 9, 16);
@@ -202,7 +202,7 @@ class AttendanceHistoryTest extends BaseTest {
     @Test
     void 출석_기록에의_제적_상태를_조회한다() {
         // given
-        AttendanceHistory attendanceHistory = new AttendanceHistory(new ArrayList<>());
+        AttendanceHistory attendanceHistory = new AttendanceHistory(new ArrayList<>(), Constant.customLocalDateTime);
         List<Integer> attendDay = List.of(3, 4, 5, 6);
         List<Integer> absenceDay = List.of(6, 10, 11, 12 ,13);
         List<Integer> attendMondayAttendDay = List.of(2, 9, 16);
@@ -229,7 +229,7 @@ class AttendanceHistoryTest extends BaseTest {
     @Test
     void 특정_날짜에_출석_기록이_있는지_확인한다() {
         // given
-        AttendanceHistory attendanceHistory = new AttendanceHistory(new ArrayList<>());
+        AttendanceHistory attendanceHistory = new AttendanceHistory(new ArrayList<>(), Constant.customLocalDateTime);
         AttendanceDate attendanceDate = new AttendanceDate(LocalDate.of(2024, 12, 2));
         AttendanceDateTime attendance = new AttendanceDateTime(
                 attendanceDate,
@@ -247,7 +247,7 @@ class AttendanceHistoryTest extends BaseTest {
     @Test
     void 마지막_출석_가능_날짜를_계산한다() {
         // given
-        AttendanceHistory attendanceHistory = new AttendanceHistory(new ArrayList<>());
+        AttendanceHistory attendanceHistory = new AttendanceHistory(new ArrayList<>(), Constant.customLocalDateTime);
 
         // when
         LocalDate lastAttendableDate = attendanceHistory.computeLastAttendableDate();
@@ -259,7 +259,7 @@ class AttendanceHistoryTest extends BaseTest {
     @Test
     void 결석을_지각으로_변환한다() {
         // given
-        AttendanceHistory attendanceHistory = new AttendanceHistory(new ArrayList<>());
+        AttendanceHistory attendanceHistory = new AttendanceHistory(new ArrayList<>(), Constant.customLocalDateTime);
         AttendanceDateTime attendance = new AttendanceDateTime(
                 new AttendanceDate(LocalDate.of(2024, 12, 2)),
                 new AttendanceTime(LocalTime.of(9, 58))

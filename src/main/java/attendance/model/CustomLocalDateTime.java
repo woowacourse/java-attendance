@@ -6,17 +6,21 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 
 public class CustomLocalDateTime {
-    private static Clock clock = Clock.system(ZoneId.of("UTC"));
+    private final Clock clock;
 
-    public static void setClock(Clock clock) {
-        CustomLocalDateTime.clock = clock;
+    public CustomLocalDateTime() {
+        this.clock = Clock.system(ZoneId.of("UTC"));
     }
 
-    public static LocalDateTime now() {
+    public CustomLocalDateTime(Clock clock) {
+        this.clock = clock;
+    }
+
+    public LocalDateTime now() {
         return LocalDateTime.now(clock);
     }
 
-    public static LocalDate nowDate() {
+    public LocalDate nowDate() {
         return now().toLocalDate();
     }
 }
