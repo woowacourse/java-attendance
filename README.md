@@ -138,7 +138,7 @@
     - LocalTime 출석 시간
 - **생성**
     - LocalTime 과 CampusOperationPolicy 를 받아 생성된다.
-    - CampusOperationPolicy 를 받아 value 가 null 인 자신을 생성한다.
+    - value 가 null 인 자신을 생성한다.
 - **동작**
     - 생성 시 CampusOperationPolicy 를 통해 캠퍼스 운영 시간인지 검증한다.
     - LocalTime 을 받아 해당 LocalTime 이 자신의 value 보다 이전인지 반환한다.
