@@ -15,7 +15,7 @@ public class Crew {
     }
 
     public CheckAttendanceResponse checkAttendance(LocalDate date, LocalTime time) {
-        validateAttendanceDateNotExists(date);
+        validateNoDuplicateAttendance(date);
         attendances.put(date, time);
 
         return new CheckAttendanceResponse(
@@ -23,9 +23,9 @@ public class Crew {
         );
     }
 
-    private void validateAttendanceDateNotExists(LocalDate input) {
+    private void validateNoDuplicateAttendance(LocalDate input) {
         if (attendances.containsKey(input)) {
-            throw new IllegalArgumentException("이미 출석한 날짜입니다.");
+            throw new IllegalArgumentException(ErrorCode.ATTENDANCE_DATE_DUPLICATED.getMessage());
         }
     }
 }

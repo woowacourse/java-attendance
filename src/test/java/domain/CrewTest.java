@@ -39,6 +39,7 @@ public class CrewTest {
         crew.checkAttendance(date, time);
 
         assertThatThrownBy(() -> crew.checkAttendance(date, time))
-                .isInstanceOf(IllegalArgumentException.class);
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage(ErrorCode.ATTENDANCE_DATE_DUPLICATED.getMessage());
     }
 }
