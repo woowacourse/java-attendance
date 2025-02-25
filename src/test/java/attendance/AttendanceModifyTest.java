@@ -65,7 +65,7 @@ public class AttendanceModifyTest {
         attendanceManager.modifyAttendance(name, modifyDate, afterModifyTime);
 
         assertThat(
-                attendanceManager.getAttendance(name, modifyDate)
+                attendanceManager.findAttendance(name, modifyDate)
                         .attendanceStatus()
                         .getStatus()
         ).contains(modifyResult);

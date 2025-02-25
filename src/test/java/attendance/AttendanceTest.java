@@ -58,7 +58,7 @@ public class AttendanceTest {
         AttendanceManager attendanceManager = new AttendanceManager(
                 new AttendanceReader("/test.csv").loadAttendanceLinesFromAttendanceFile());
         assertThat(
-                attendanceManager.getAttendance("투다", LocalDate.of(2024, 12, 13))
+                attendanceManager.findAttendance("투다", LocalDate.of(2024, 12, 13))
                         .attendanceStatus()
         ).isEqualTo(AttendanceStatus.ATTENDANCE);
     }
@@ -70,7 +70,7 @@ public class AttendanceTest {
         AttendanceManager attendanceManager = new AttendanceManager(
                 new AttendanceReader(src).loadAttendanceLinesFromAttendanceFile());
         assertThat(
-                attendanceManager.getAttendance(name, localDate)
+                attendanceManager.findAttendance(name, localDate)
                         .attendanceStatus().getStatus()
         ).contains(attendanceStatus);
     }

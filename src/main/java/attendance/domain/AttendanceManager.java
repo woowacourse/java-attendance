@@ -16,8 +16,8 @@ public class AttendanceManager {
     private static final LocalTime SCHOOL_OPEN_TIME = LocalTime.of(8, 0);
     private static final LocalTime SCHOOL_CLOSE_TIME = LocalTime.of(23, 0);
     private static final String OUT_OF_SCHOOL_SCHEDULE = "등교시간에만 출석 가능합니다.";
-    private static final LocalDate ATTENDANCE_AVAILABLE_START_DATE = LocalDate.of(2024, 12, 1);
-    private static final LocalDate ATTENDANCE_AVAILABLE_END_DATE = LocalDate.of(2024, 12, 31);
+    private static final LocalDate SYSTEM_AVAILABLE_START_DATE = LocalDate.of(2024, 12, 1);
+    private static final LocalDate SYSTEM_AVAILABLE_END_DATE = LocalDate.of(2024, 12, 31);
     private static final String NICKNAME_NOT_EXISTS = "출석 정보가 존재하지 않습니다.";
     private static final String CANNOT_BE_EMPTY_NICKNAME = "닉네임은 공백일 수 없습니다.";
     private static final String ATTENDANCE_NOT_AVAILABLE = "출석 시스템은 2024년 12월 동안만 유효합니다";
@@ -25,6 +25,9 @@ public class AttendanceManager {
     private static final String ATTENDANCE_RESULT_FORMAT = "%s (%s)";
 
     private final HashMap<String, Attendances> attendanceManager = new HashMap<>();
+    private final int XMAS_MONTH = 12;
+    private final int XMAS_DAY = 25;
+    private final int STATUS_ADD_COUNT = 1;
 
     public AttendanceManager() {
     }
@@ -86,26 +89,29 @@ public class AttendanceManager {
 
     public void validateIsAttendanceAvailable(LocalDate currentDate) {
         validateIsAttendanceWeekend(currentDate);
-        if (ATTENDANCE_AVAILABLE_START_DATE.isAfter(currentDate) || ATTENDANCE_AVAILABLE_END_DATE.isBefore(
+        if (SYSTEM_AVAILABLE_START_DATE.isAfter(currentDate) || SYSTEM_AVAILABLE_END_DATE.isBefore(
                 currentDate)) {
             throw new AttendanceArgumentException(ATTENDANCE_NOT_AVAILABLE);
         }
     }
 
     private void validateIsAttendanceWeekend(LocalDate currentDate) {
-        String ATTENDANCE_WEEKEND_ERROR = DateTimeFormatterWrapper.formattingAttendanceDateError(currentDate);
-        if (currentDate.getMonth().getValue() == 12 && currentDate.getDayOfMonth() == 25) {
-            throw new AttendanceArgumentException(ATTENDANCE_WEEKEND_ERROR);
+        String CANNOT_ATTENDANCE_ON_HOLIDAY = DateTimeFormatterWrapper.formattingAttendanceDateError(currentDate);
+        int month = currentDate.getMonth().getValue();
+        int dayOfMonth = currentDate.getDayOfMonth();
+        int dayOfWeekend = currentDate.getDayOfWeek().getValue();
+        if (month == XMAS_MONTH && dayOfMonth == XMAS_DAY) {
+            throw new AttendanceArgumentException(CANNOT_ATTENDANCE_ON_HOLIDAY);
         }
-        if (currentDate.getDayOfWeek().getValue() >= WEEKEND_NUMBER) {
-            throw new AttendanceArgumentException(ATTENDANCE_WEEKEND_ERROR);
+        if (dayOfWeekend >= WEEKEND_NUMBER) {
+            throw new AttendanceArgumentException(CANNOT_ATTENDANCE_ON_HOLIDAY);
         }
     }
 
     public AttendanceHistory crewAttendanceHistory(String nickname) {
         validateCrewNameExist(nickname);
-        LocalDate startDate = ATTENDANCE_AVAILABLE_START_DATE;
-        LocalDate endDate = ATTENDANCE_AVAILABLE_END_DATE;
+        LocalDate startDate = SYSTEM_AVAILABLE_START_DATE;
+        LocalDate endDate = SYSTEM_AVAILABLE_END_DATE;
         List<String> attendanceHistories = new ArrayList<>();
         Map<String, Integer> attendanceStatusMap = new HashMap<>();
         Attendances attendances = attendanceManager.get(nickname);
@@ -132,13 +138,9 @@ public class AttendanceManager {
     private void appendAttendanceHistories(Attendances attendances, LocalDate currentDate,
                                            List<String> attendanceHistories,
                                            Map<String, Integer> attendanceStatusMap) {
-        if (!isAttendanceAvailable(currentDate)) {
-            return;
-        }
-        if (!isAttendanceExistInDate(attendances, currentDate)) {
-            addAbsenceHistory(attendanceHistories, attendanceStatusMap, currentDate);
-            return;
-        }
+        validateIsAttendanceAvailable(currentDate);
+        attendances.validateIsExistAttendanceHistory(currentDate);
+        addAbsenceHistory(attendanceHistories, attendanceStatusMap, currentDate);
         addAttendanceHistory(attendances, currentDate, attendanceHistories, attendanceStatusMap);
     }
 
@@ -155,7 +157,7 @@ public class AttendanceManager {
                                    Map<String, Integer> attendanceStatusMap, LocalDate currentDate) {
         String absenceHistory = DateTimeFormatterWrapper.formattingAttendanceAbsenceHistory(currentDate);
         attendanceHistories.add(absenceHistory);
-        attendanceStatusMap.merge(AttendanceStatus.ABSENCE.getStatus(), 1, Integer::sum);
+        attendanceStatusMap.merge(AttendanceStatus.ABSENCE.getStatus(), STATUS_ADD_COUNT, Integer::sum);
     }
 
     private void addAttendanceHistory(Attendances attendances, LocalDate currentDate,
@@ -164,7 +166,7 @@ public class AttendanceManager {
         LocalTime attendanceTime = attendances.getAttendanceTime(currentDate);
         String attendanceStatus = attendances.getAttendanceStatus(currentDate);
 
-        attendanceStatusMap.merge(attendanceStatus, 1, Integer::sum);
+        attendanceStatusMap.merge(attendanceStatus, STATUS_ADD_COUNT, Integer::sum);
 
         String dateTimeFormatResult = DateTimeFormatterWrapper.parsingAttendanceResult(
                 LocalDateTime.of(currentDate, attendanceTime));
