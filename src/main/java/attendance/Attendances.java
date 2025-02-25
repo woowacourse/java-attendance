@@ -41,4 +41,22 @@ public class Attendances {
                 .findFirst()
                 .orElseThrow(IllegalArgumentException::new);
     }
+
+    public int countAttend() {
+        return Math.toIntExact(attendances.stream()
+                .filter(attendance -> attendance.checkAttendanceStatus() == AttendanceStatus.ATTEND)
+                .count());
+    }
+
+    public int countLate() {
+        return Math.toIntExact(attendances.stream()
+                .filter(attendance -> attendance.checkAttendanceStatus() == AttendanceStatus.LATE)
+                .count());
+    }
+
+    public int countAbsence() {
+        return Math.toIntExact(attendances.stream()
+                .filter(attendance -> attendance.checkAttendanceStatus() == AttendanceStatus.ABSENCE)
+                .count());
+    }
 }

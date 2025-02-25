@@ -36,4 +36,8 @@ public class Attendance {
         return Objects.equals(attendanceDate, that.attendanceDate) && Objects.equals(attendanceTime,
                 that.attendanceTime);
     }
+
+    public AttendanceStatus checkAttendanceStatus() {
+        return attendanceTime.checkAttendanceStatus(attendanceDate.isMonday());
+    }
 }

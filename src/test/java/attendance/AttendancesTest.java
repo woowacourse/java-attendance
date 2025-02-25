@@ -51,6 +51,57 @@ public class AttendancesTest {
         assertThat(result).isEqualTo(Attendance.from(LocalDateTime.of(2024, 12, 13, 10, 6)));
     }
 
+    @Test
+    void 출석_횟수를_계산한다() {
+        List<LocalDateTime> dateTimes = List.of(
+                LocalDateTime.of(2024, 12, 11, 9, 59),
+                LocalDateTime.of(2024, 12, 12, 9, 59),
+                LocalDateTime.of(2024, 12, 13, 9, 59)
+        );
+        Attendances attendances = generateAttendances(dateTimes);
+        final var result = attendances.countAttend();
+
+        assertThat(result).isEqualTo(3);
+    }
+
+    @Test
+    void 지각_횟수를_계산한다() {
+        List<LocalDateTime> dateTimes = List.of(
+                LocalDateTime.of(2024, 12, 11, 10, 6),
+                LocalDateTime.of(2024, 12, 12, 10, 6),
+                LocalDateTime.of(2024, 12, 13, 10, 6)
+        );
+        Attendances attendances = generateAttendances(dateTimes);
+        final var result = attendances.countLate();
+
+        assertThat(result).isEqualTo(3);
+    }
+
+    @Test
+    void 지각_횟수를_계산한다2() {
+        List<LocalDateTime> dateTimes = List.of(
+                LocalDateTime.of(2024, 12, 11, 10, 6),
+                LocalDateTime.of(2024, 12, 12, 10, 6)
+        );
+        Attendances attendances = generateAttendances(dateTimes);
+        final var result = attendances.countLate();
+
+        assertThat(result).isEqualTo(2);
+    }
+
+    @Test
+    void 결석_횟수를_계산한다() {
+        List<LocalDateTime> dateTimes = List.of(
+                LocalDateTime.of(2024, 12, 11, 10, 31),
+                LocalDateTime.of(2024, 12, 12, 10, 31),
+                LocalDateTime.of(2024, 12, 13, 10, 31)
+        );
+        Attendances attendances = generateAttendances(dateTimes);
+        final var result = attendances.countAbsence();
+
+        assertThat(result).isEqualTo(3);
+    }
+
     public static Attendances generateAttendances(List<LocalDateTime> dateTimes) {
         List<Attendance> attendances = new ArrayList<>();
         for (LocalDateTime dateTime : dateTimes) {

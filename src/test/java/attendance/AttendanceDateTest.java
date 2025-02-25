@@ -52,4 +52,20 @@ public class AttendanceDateTest {
 
         assertThat(attendanceDate.isEqualToDate(LocalDate.of(2024, 12, 12))).isFalse();
     }
+
+    @Test
+    void 월요일이면_true를_반환한다() {
+        LocalDate date = LocalDate.of(2024, 12, 9);
+        AttendanceDate attendanceDate = AttendanceDate.from(date);
+
+        assertThat(attendanceDate.isMonday()).isTrue();
+    }
+
+    @Test
+    void 월요일이면_false를_반환한다() {
+        LocalDate date = LocalDate.of(2024, 12, 10);
+        AttendanceDate attendanceDate = AttendanceDate.from(date);
+
+        assertThat(attendanceDate.isMonday()).isFalse();
+    }
 }
