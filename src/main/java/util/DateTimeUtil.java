@@ -6,10 +6,7 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 
 public class DateTimeUtil {
-    public static boolean isOffDay(LocalDate date) {
-        return isWeekend(date) || isHoliday(date);
-    }
-
+    
     public static boolean isWeekend(LocalDate date) {
         return date.getDayOfWeek() == DayOfWeek.SATURDAY
                 || date.getDayOfWeek() == DayOfWeek.SUNDAY;
