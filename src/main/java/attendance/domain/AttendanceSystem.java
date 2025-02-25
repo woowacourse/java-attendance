@@ -37,8 +37,14 @@ public class AttendanceSystem {
                 .findAny();
     }
 
-    public void updateAttendance(String validCrewNickname, LocalDate localDate, LocalTime newArrivalTime) {
+    public void updateAttendance(String nickname, LocalDate arrivalDate, LocalTime newTime) {
+        Optional<AttendanceRecord> originRecord = findAttendanceRecord(nickname, arrivalDate);
+        originRecord.ifPresent(records::remove);
 
+        LocalDateTime newDateTime = LocalDateTime.of(arrivalDate, newTime);
+        AttendanceType attendanceType = attendanceChecker.checkAttendance(newDateTime);
+        AttendanceRecord newRecord = new AttendanceRecord(nickname, newDateTime, attendanceType);
+        records.add(newRecord);
     }
 
     private void validateAlreadyAttendance(String crewNickname, LocalDate date) {
