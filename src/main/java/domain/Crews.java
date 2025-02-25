@@ -7,7 +7,11 @@ public class Crews {
 
     private List<Crew> crews;
 
-    public void loadCrews(List<String> crewsInFile) {
+    public Crews(List<String> crewsInFile) {
+        saveCrews(crewsInFile);
+    }
+
+    private void saveCrews(List<String> crewsInFile) {
         this.crews = new ArrayList<>();
         crewsInFile.forEach(crewInFile ->
                 saveCrew(crewInFile.split(",")[0], crewInFile.split(",")[1])

@@ -28,8 +28,7 @@ public class AttendanceController {
 
     public void run(AttendanceFileReader attendanceFileReader) {
         List<String> crewsOfFile = attendanceFileReader.readFile("src/main/resources/attendances.csv");
-        Crews crews = new Crews();
-        crews.loadCrews(crewsOfFile);
+        Crews crews = new Crews(crewsOfFile);
 
         String command;
         do {
