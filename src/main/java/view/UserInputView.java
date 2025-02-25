@@ -8,7 +8,6 @@ import java.util.Arrays;
 import java.util.Locale;
 import java.util.Scanner;
 
-// TODO : 입력값 검증 로직
 public class UserInputView {
     private final LocalDate today;
 

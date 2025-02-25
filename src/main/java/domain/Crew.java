@@ -1,5 +1,6 @@
 package domain;
 
+import constant.AbsentPenalty;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -7,8 +8,8 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
-import static constant.AttendanceStatus.*;
-import static constant.Warning.*;
+import static domain.AttendanceStatus.*;
+import static constant.AbsentPenalty.*;
 
 public class Crew {
     private final String name;
@@ -50,7 +51,7 @@ public class Crew {
                         attendance.isEqualDate(localDateTime));
     }
 
-    public List<Attendance> update(LocalDateTime newDateAndTime) {
+    public AttendanceUpdateResult update(LocalDateTime newDateAndTime) {
         if (!isAlreadyAttendedDay(newDateAndTime)) {
             throw new IllegalArgumentException("해당 날짜에 출석 기록이 없습니다.");
         }
@@ -59,9 +60,9 @@ public class Crew {
                 .findFirst()
                 .orElseThrow();
         attendanceInfo.remove(oldAttendance);
-        Attendance attendance = new Attendance(newDateAndTime);
-        attendanceInfo.add(attendance);
-        return List.of(oldAttendance, attendance);
+        Attendance newAttendance = new Attendance(newDateAndTime);
+        attendanceInfo.add(newAttendance);
+        return new AttendanceUpdateResult(oldAttendance, newAttendance);
     }
 
     public void updateAbsentUntil(LocalDate lastDate) {
@@ -77,36 +78,35 @@ public class Crew {
         }
     }
 
-    // 인자 : 지각 3회를 결석 1회로 간주한 결석 횟수
-    public String calculateWarningStatus() {
+    public AbsentPenalty getAbsentPenalty() {
         int absentCount = getAbsentCount() + getLateCount() / 3;
         if (absentCount > EXPEL.getAbsentCount()) {
-            return EXPEL.getPenalty();
+            return EXPEL;
         }
         if (absentCount >= COUNSELING.getAbsentCount()) {
-            return COUNSELING.getPenalty();
+            return COUNSELING;
         }
         if (absentCount >= WARNING.getAbsentCount()) {
-            return WARNING.getPenalty();
+            return WARNING;
         }
-        return "";
+        return NONE;
     }
 
     public int getAttendanceCount() {
-        return getStateCount(ATTENDED.getStatus());
+        return getStateCount(ATTENDED);
     }
 
     public int getLateCount() {
-        return getStateCount(LATE.getStatus());
+        return getStateCount(LATE);
     }
 
     public int getAbsentCount() {
-        return getStateCount(ABSENT.getStatus());
+        return getStateCount(ABSENT);
     }
 
-    private int getStateCount(String state) {
+    private int getStateCount(AttendanceStatus status) {
         return (int) attendanceInfo.stream()
-                .filter(a -> a.getState().equals(state))
+                .filter(a -> a.getStatus() == status)
                 .count();
     }
 

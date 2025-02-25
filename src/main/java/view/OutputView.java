@@ -1,10 +1,12 @@
 package view;
 
-import static constant.AttendanceStatus.ABSENT;
-import static constant.AttendanceStatus.LATE;
+import static domain.AttendanceStatus.ABSENT;
+import static domain.AttendanceStatus.LATE;
 
+import constant.AbsentPenalty;
 import domain.AllCrew;
 import domain.Attendance;
+import domain.AttendanceUpdateResult;
 import domain.Crew;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -33,13 +35,13 @@ public class OutputView {
     }
 
     public void printWarningInfo(Crew crew) {
-        String nameAndCountFormat = crew.getName() + ": " + ABSENT.getStatus() + " " + crew.getAbsentCount() + "회, " + LATE.getStatus() + " " + crew.getLateCount() + "회 ";
-        String warningStatus = crew.calculateWarningStatus();
-        if (warningStatus.isEmpty()) {
+        String nameAndCountFormat = crew.getName() + ": " + ABSENT.getStringValue() + " " + crew.getAbsentCount() + "회, " + LATE.getStringValue() + " " + crew.getLateCount() + "회 ";
+        AbsentPenalty absentPenalty = crew.getAbsentPenalty();
+        if (absentPenalty == AbsentPenalty.NONE) {
             System.out.println(nameAndCountFormat);
             return;
         }
-        System.out.println(nameAndCountFormat + "(" + warningStatus + ")");
+        System.out.println(nameAndCountFormat + "(" + absentPenalty.getPenalty() + ")");
     }
 
     public void printAttendanceHistory(AllCrew allCrew, String name) {
@@ -54,11 +56,11 @@ public class OutputView {
     }
 
     public String getFormatedWarningStatus(Crew crew) {
-        String warningStatus = crew.calculateWarningStatus();
-        if (warningStatus.isEmpty()) {
+        AbsentPenalty absentPenalty = crew.getAbsentPenalty();
+        if (absentPenalty == AbsentPenalty.NONE) {
             return "";
         }
-        return warningStatus + " 대상자입니다.";
+        return absentPenalty.getPenalty() + " 대상자입니다.";
     }
 
 
@@ -89,18 +91,18 @@ public class OutputView {
     }
 
     public String getFormattedTimeAndState(Attendance attendance) {
-        String state = attendance.getState();
+        String state = attendance.getStatusValue();
         if (state.equals("결석")) {
             return "--:-- " + "(" + state + ")";
         }
         return attendance.getDateAndTime().format(DateTimeFormatter.ofPattern("HH:mm ", Locale.KOREAN)) + "("
-                + attendance.getState() + ")";
+                + attendance.getStatus() + ")";
     }
 
     public void printModifyAttendance(AllCrew allCrew, String name, LocalDateTime dateTime) {
-        List<Attendance> oldAndNew = allCrew.modifyCrewAttendanceByName(name, dateTime);
-        Attendance oldAttendance = oldAndNew.get(0);
-        Attendance newAttendance = oldAndNew.get(1);
+        AttendanceUpdateResult attendanceUpdateResult = allCrew.modifyCrewAttendanceByName(name, dateTime);
+        Attendance oldAttendance = attendanceUpdateResult.getOldAttendance();
+        Attendance newAttendance = attendanceUpdateResult.getNewAttendance();
         System.out.println("\n" + getFormatedModifiedAttendance(oldAttendance, newAttendance));
     }
 

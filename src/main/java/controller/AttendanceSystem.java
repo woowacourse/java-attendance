@@ -1,6 +1,5 @@
 package controller;
 
-import constant.AttendanceStatus;
 import constant.MenuOption;
 import domain.AllCrew;
 import java.time.LocalDate;
