@@ -20,7 +20,7 @@ public class Crew {
         attendances.put(date, time);
 
         return new CheckAttendanceResponse(
-                date, time, "출석"
+                date, time, AttendanceStatus.findMessageByAttendDateAndTime(date, time)
         );
     }
 
@@ -38,8 +38,9 @@ public class Crew {
                 date,
                 originalTime,
                 modifiedTime,
-                "출석",
-                "출석"
+                AttendanceStatus.findMessageByAttendDateAndTime(date, originalTime),
+                AttendanceStatus.findMessageByAttendDateAndTime(date, modifiedTime)
         );
     }
+
 }
