@@ -1,3 +1,5 @@
+package domain;
+
 public enum AttendanceType {
     ATTENDANCE("출석"),
     LATE("지각"),
