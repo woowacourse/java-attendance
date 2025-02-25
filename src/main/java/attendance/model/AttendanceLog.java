@@ -28,6 +28,16 @@ public class AttendanceLog {
         return attendanceTime == null;
     }
 
+    public boolean isSameNicknameAndMonth(Nickname targetNickname, LocalDate baseDate) {
+        return this.nickname.equals(targetNickname)
+                && this.attendanceDate.getYear() == baseDate.getYear()
+                && this.attendanceDate.getMonth() == baseDate.getMonth();
+    }
+
+    public boolean isBefore(LocalDate baseDate) {
+        return attendanceDate.isBefore(baseDate);
+    }
+
     @Override
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) {
