@@ -37,8 +37,12 @@ public class Attendances {
                 .orElseThrow(RuntimeException::new); //TODO : 다른 예외로 교체
     }
 
-    public Attendance modify(LocalDate modifyDate, LocalTime modifyTime) {
-        return null;
+    public Attendance modify(LocalDate date, LocalTime newTime) {
+        Attendance oldAttendance = findByDate(date);
+        Attendance newAttendance = new Attendance(date, newTime);
+        this.attendances.remove(oldAttendance);
+        this.attendances.add(newAttendance);
+        return newAttendance;
     }
 
     @Override
