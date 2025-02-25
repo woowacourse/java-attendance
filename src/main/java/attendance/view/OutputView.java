@@ -72,7 +72,7 @@ public class OutputView {
 
     public void printAttendanceStatus(final AttendanceStatus attendanceStatus) {
         EnumMap<AttendanceState, Integer> status = attendanceStatus.getStatus();
-        String riskName = attendanceStatus.getRisk().getName();
+        String riskName = attendanceStatus.getRisk().name();
 
         System.out.printf(NEW_LINE + """
                         출석: %s회
@@ -83,19 +83,19 @@ public class OutputView {
                 status.get(AttendanceState.LATE),
                 status.get(AttendanceState.ABSENCE)
         );
-        System.out.printf(NEW_LINE + "%s 대상자입니다.", AttendanceRiskView.find(riskName));
+        System.out.printf(NEW_LINE + "%s 대상자입니다.", AttendanceRiskView.find(riskName).getName());
     }
 
     public void printAttendanceRiskCrews(final AttendanceRiskCrews riskCrews) {
         System.out.print(NEW_LINE + "제적 위험자 조회 결과");
 
         for (Map.Entry<String, AttendanceStatus> statusEntry : riskCrews.getRiskCrews().entrySet()) {
-            String riskName = statusEntry.getValue().getRisk().getName();
+            String riskName = statusEntry.getValue().getRisk().name();
             System.out.printf("\n- %s: 결석 %d회, 지각 %d회 (%s)",
                     statusEntry.getKey(),
                     statusEntry.getValue().getStatus().get(AttendanceState.ABSENCE),
                     statusEntry.getValue().getStatus().get(AttendanceState.LATE),
-                    AttendanceRiskView.find(riskName)
+                    AttendanceRiskView.find(riskName).getName()
             );
         }
     }
