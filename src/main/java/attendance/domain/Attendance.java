@@ -1,45 +1,48 @@
 package attendance.domain;
 
 import java.time.DayOfWeek;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 
 public class Attendance {
 
-    private final LocalDateTime attendanceDateTime;
+    private final LocalDate attendanceDate;
+    private final LocalTime attendanceTime;
     private final String attendanceStatus;
 
-    public Attendance(LocalDateTime attendacneTime) {
-        this.attendanceDateTime = attendacneTime;
+    public Attendance(LocalDateTime attendanceDateTime) {
+        this.attendanceDate = attendanceDateTime.toLocalDate();
+        this.attendanceTime = attendanceDateTime.toLocalTime();
         this.attendanceStatus = checkAttendanceStatus();
     }
 
     private String checkAttendanceStatus() {
-        if (attendanceDateTime.toLocalDate().getDayOfWeek().equals(DayOfWeek.MONDAY)) {
-            if (attendanceDateTime.toLocalTime().isBefore(LocalTime.of(13, 5)) || attendanceDateTime.toLocalTime()
-                    .equals(LocalTime.of(13, 5))) {
+        if (attendanceDate.getDayOfWeek().equals(DayOfWeek.MONDAY)) {
+            if (attendanceTime.isBefore(LocalTime.of(13, 5)) || attendanceTime.equals(LocalTime.of(13, 5))) {
                 return "출석";
             }
-            if (attendanceDateTime.toLocalTime().isBefore(LocalTime.of(13, 30)) || attendanceDateTime.toLocalTime()
-                    .equals(LocalTime.of(13, 30))) {
+            if (attendanceTime.isBefore(LocalTime.of(13, 30)) || attendanceTime.equals(LocalTime.of(13, 30))) {
                 return "지각";
             }
             return "결석";
         }
 
-        if (attendanceDateTime.toLocalTime().isBefore(LocalTime.of(10, 5)) || attendanceDateTime.toLocalTime()
-                .equals(LocalTime.of(10, 5))) {
+        if (attendanceTime.isBefore(LocalTime.of(10, 5)) || attendanceTime.equals(LocalTime.of(10, 5))) {
             return "출석";
         }
-        if (attendanceDateTime.toLocalTime().isBefore(LocalTime.of(10, 30)) || attendanceDateTime.toLocalTime()
-                .equals(LocalTime.of(10, 30))) {
+        if (attendanceTime.isBefore(LocalTime.of(10, 30)) || attendanceTime.equals(LocalTime.of(10, 30))) {
             return "지각";
         }
         return "결석";
     }
 
-    public LocalDateTime getAttendanceDateTime() {
-        return attendanceDateTime;
+    public LocalDate getAttendanceDate() {
+        return attendanceDate;
+    }
+
+    public LocalTime getAttendanceTime() {
+        return attendanceTime;
     }
 
     public String getAttendanceStatus() {
