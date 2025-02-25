@@ -4,7 +4,6 @@ import dto.DismissalCrewDto;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
@@ -110,7 +109,6 @@ public class AttendanceController {
     private void checkDismissalCrews(final CrewHistories crewHistories) {
         Map<String, AttendanceCounter> dismissalCrews = crewHistories.findDismissalCrews(getTodayDate());
         List<DismissalCrewDto> dismissalCrewDtos = DismissalCrewDto.of(dismissalCrews);
-        Collections.sort(dismissalCrewDtos);
         resultView.printDismissalResult(dismissalCrewDtos);
     }
 

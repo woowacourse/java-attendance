@@ -2,6 +2,7 @@ package view;
 
 import dto.DismissalCrewDto;
 import java.time.LocalDateTime;
+import java.util.Comparator;
 import java.util.List;
 import model.AttendanceCounter;
 import model.AttendanceType;
@@ -21,6 +22,11 @@ public class ResultView {
             """;
     private static final String SUBJECT_TYPE_FORM = "%s 대상자입니다.";
     private static final String DISMISSAL_RESULT_TITLE = "제적 위험자 조회 결과";
+    private static final Comparator<DismissalCrewDto> COMPARATOR =
+            Comparator.comparing(DismissalCrewDto::subjectType, SubjectType.getComparator())
+                    .thenComparing(dto -> SubjectType.calculateTotalLateCount(dto.lateCount(), dto.absentCount()),
+                            Comparator.reverseOrder())
+                    .thenComparing(DismissalCrewDto::nickname);
     private static final String DISMISSAL_RESULT_FORM = "- %s: 결석 %d회, 지각 %d회 (%s)";
 
     public void printAttendanceHistory(final String attendanceTime, final AttendanceType attendanceType) {
@@ -37,7 +43,7 @@ public class ResultView {
             final String nickname,
             final List<LocalDateTime> attendanceHistory,
             final AttendanceCounter attendanceCounter
-            ) {
+    ) {
         System.out.printf(LINE + ATTENDANCE_HISTORY_BY_CREW_FORM + LINE + LINE, nickname);
         printAttendanceHistories(attendanceHistory);
         printAttendanceTypeCount(attendanceCounter);
@@ -47,6 +53,7 @@ public class ResultView {
     public void printDismissalResult(final List<DismissalCrewDto> dtos) {
         System.out.println(DISMISSAL_RESULT_TITLE);
         dtos.stream()
+                .sorted(COMPARATOR)
                 .map(dto -> String.format(DISMISSAL_RESULT_FORM, dto.nickname(),
                         dto.absentCount(), dto.lateCount(), dto.subjectType().getName()))
                 .forEach(System.out::println);
