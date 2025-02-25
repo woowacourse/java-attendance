@@ -3,6 +3,7 @@ package attendance.domain;
 import attendance.domain.checker.AttendanceChecker;
 import attendance.domain.checker.AttendanceType;
 import attendance.domain.crew.CrewStorage;
+import attendance.domain.dto.AttendanceState;
 import attendance.domain.record.AttendanceRecord;
 import attendance.exception.ExceptionMessage;
 import java.time.LocalDate;
@@ -55,6 +56,10 @@ public class AttendanceSystem {
                 .filter(notHoliday -> !notHoliday.isAfter(today))
                 .map(notHoliday -> findOrElseAbsenceRecord(nickname, notHoliday))
                 .toList();
+    }
+
+    public AttendanceState calculateAttendanceStateInMonth(String nickname, LocalDate today) {
+        return null;
     }
 
     private void validateAlreadyAttendance(String crewNickname, LocalDate date) {

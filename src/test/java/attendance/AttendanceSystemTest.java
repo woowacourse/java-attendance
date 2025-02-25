@@ -9,6 +9,7 @@ import attendance.domain.checker.AttendanceChecker;
 import attendance.domain.checker.AttendanceType;
 import attendance.domain.checker.HolidayChecker;
 import attendance.domain.crew.CrewStorage;
+import attendance.domain.dto.AttendanceState;
 import attendance.domain.record.AttendanceRecord;
 import attendance.exception.ExceptionMessage;
 import java.time.LocalDate;
@@ -282,6 +283,20 @@ class AttendanceSystemTest {
         assertThat(records).isSortedAccordingTo(Comparator.comparing(AttendanceRecord::getArrivalDateTime));
         checkAttendanceTypeCount(records, AttendanceType.ATTENDANCE, 3);
         checkAttendanceTypeCount(records, AttendanceType.ABSENCE, 12);
+    }
+
+    @DisplayName("출석 조회 - 닉네임을 통해 해당 크루의 출석 현황을 조회할 수 있다")
+    @Test
+    void 출석_조회_닉네임을_통해_해당_크루의_출석_현황을_조회할_수_있다() {
+        attendanceSystem.addAttendanceRecord(VALID_CREW_NICKNAME, LocalDateTime.of(2025, 2, 19, 10, 5));
+        attendanceSystem.addAttendanceRecord(VALID_CREW_NICKNAME, LocalDateTime.of(2025, 2, 18, 8, 50));
+        attendanceSystem.addAttendanceRecord(VALID_CREW_NICKNAME, LocalDateTime.of(2025, 2, 17, 8, 50));
+        LocalDate today = LocalDate.of(2025, 2, 21);
+        AttendanceState state = attendanceSystem.calculateAttendanceStateInMonth(VALID_CREW_NICKNAME, today);
+
+        assertThat(state.attendanceCount()).isEqualTo(2);
+        assertThat(state.lateCount()).isEqualTo(1);
+        assertThat(state.absenceCount()).isEqualTo(12);
     }
 
     String makeHolidayAttendanceExceptionMessage(LocalDateTime dateTime) {
