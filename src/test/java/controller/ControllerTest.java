@@ -5,40 +5,40 @@ import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PrintStream;
+import java.util.Scanner;
 import org.assertj.core.api.Assertions;
-import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import view.InputView;
 
 class ControllerTest {
 
     Controller controller = new Controller();
 
-    private final InputStream originalIn = System.in;
-    private final PrintStream originalOut = System.out;
-
-    @AfterEach
-    void tearDown() {
-        System.setIn(originalIn);
-        System.setOut(originalOut);
+    @BeforeEach
+    void setScanner() {
+        System.setIn(System.in);
+        InputView.setScanner(new Scanner(System.in));
     }
 
     @Test
     @DisplayName("존재하지 않는 학생을 입력했을 때의 테스트")
     void test1() {
-        String input = "1\n말론\n이든\n09:59\nQ\n";
+        String input = "1\n말론\n이든\n09:59\nQ";
         InputStream in  = new ByteArrayInputStream(input.getBytes());
 
         System.setIn(in);
+
+        InputView.setScanner(new Scanner(System.in));
 
         OutputStream out = new ByteArrayOutputStream();
         PrintStream printStream = new PrintStream(out);
 
         System.setOut(printStream);
 
-        Assertions.assertThat(out.toString().contains("[ERROR] 존재하지 않는 학생입니다."));
-
         controller.start();
+        Assertions.assertThat(out.toString().contains("[ERROR] 존재하지 않는 학생입니다.")).isTrue();
     }
 
     @Test
@@ -49,6 +49,8 @@ class ControllerTest {
         InputStream in = new ByteArrayInputStream(input.getBytes());
         System.setIn(in);
 
+        InputView.setScanner(new Scanner(System.in));
+
         OutputStream out = new ByteArrayOutputStream();
         PrintStream printStream = new PrintStream(out);
 
@@ -56,16 +58,19 @@ class ControllerTest {
 
         controller.start();
 
-        Assertions.assertThat(out.toString().contains("[ERROR] 시간 형식에 맞지 않습니다."));
+        Assertions.assertThat(out.toString().contains("[ERROR] 시간 형식에 맞지 않습니다.")).isTrue();
     }
 
     @Test
     @DisplayName("캠퍼스 운영 시간이 아닌 시간을 입력했을 때의 테스트")
     void test3() {
-        String input = "1\n이든\n04:33\n09:59\nQ\n";
+        String input = "1\n이든\n04:33\n09:59\nQ";
 
         InputStream in = new ByteArrayInputStream(input.getBytes());
         System.setIn(in);
+
+        InputView.setScanner(new Scanner(System.in));
+
 
         OutputStream out = new ByteArrayOutputStream();
         PrintStream printStream = new PrintStream(out);
@@ -74,16 +79,19 @@ class ControllerTest {
 
         controller.start();
 
-        Assertions.assertThat(out.toString().contains("[ERROR] 캠퍼스 운영 시간이 아닙니다."));
+        Assertions.assertThat(out.toString().contains("[ERROR] 캠퍼스 운영 시간이 아닙니다.")).isTrue();
+        printStream.flush();
     }
 
     @Test
     @DisplayName("학생이 출석했을 때 테스트")
     void test4() {
-        String input = "1\n이든\n09:59\nQ\n";
+        String input = "1\n이든\n09:59\nQ";
 
         InputStream in = new ByteArrayInputStream(input.getBytes());
         System.setIn(in);
+
+        InputView.setScanner(new Scanner(System.in));
 
         OutputStream out = new ByteArrayOutputStream();
         PrintStream printStream = new PrintStream(out);
@@ -92,16 +100,20 @@ class ControllerTest {
 
         controller.start();
 
-        Assertions.assertThat(out.toString().contains("12월 12일 목요일 09:59( 출석 )"));
+        Assertions.assertThat(out.toString().contains("12월 12일 목요일 09:59( 출석 )")).isTrue();
+        printStream.flush();
+
     }
 
     @Test
     @DisplayName("수정할 때의 메서드 테스트")
     void test5() {
-        String input = "2\n이든\n11\n09:59\nQ\n";
+        String input = "2\n이든\n11\n09:59\nQ";
 
         InputStream in = new ByteArrayInputStream(input.getBytes());
         System.setIn(in);
+
+        InputView.setScanner(new Scanner(System.in));
 
         OutputStream out = new ByteArrayOutputStream();
         PrintStream printStream = new PrintStream(out);
@@ -110,16 +122,20 @@ class ControllerTest {
 
         controller.start();
 
-        Assertions.assertThat(out.toString().contains("12월 11일 수요일 --:-- -> 09:59 (출석) 수정 완료!"));
+        Assertions.assertThat(out.toString().contains("12월 11일 수요일 --:-- -> 09:59 (출석) 수정 완료!")).isTrue();
+        printStream.flush();
+
     }
 
     @Test
     @DisplayName("주말 및 공휴일을 수정할 때의 메서드 테스트")
     void test6() {
-        String input = "2\n이든\n25\n09:59\nQ\n";
+        String input = "2\n이든\n25\n09:59\nQ";
 
         InputStream in = new ByteArrayInputStream(input.getBytes());
         System.setIn(in);
+
+        InputView.setScanner(new Scanner(System.in));
 
         OutputStream out = new ByteArrayOutputStream();
         PrintStream printStream = new PrintStream(out);
@@ -128,16 +144,20 @@ class ControllerTest {
 
         controller.start();
 
-        Assertions.assertThat(out.toString().contains("[ERROR] 주말 및 공휴일에는 출석을 수정할 수 없습니다."));
+        Assertions.assertThat(out.toString().contains("[ERROR] 주말 및 공휴일에는 출석을 수정할 수 없습니다.")).isTrue();
+        printStream.flush();
+
     }
 
     @Test
     @DisplayName("크루별 출석 기록 확인 기능 테스트")
     void test7() {
-        String input = "3\n빙봉\nQ\n";
+        String input = "3\n빙봉\nQ";
 
         InputStream in = new ByteArrayInputStream(input.getBytes());
         System.setIn(in);
+
+        InputView.setScanner(new Scanner(System.in));
 
         OutputStream out = new ByteArrayOutputStream();
         PrintStream printStream = new PrintStream(out);
@@ -157,16 +177,20 @@ class ControllerTest {
                 + "결석: 6회\n"
                 + "출석: 1회\n"
                 + "지각: 1회\n"
-                + "제적 대상자입니다."));
+                + "제적 대상자입니다.")).isTrue();
+        printStream.flush();
+
     }
 
     @Test
     @DisplayName("제적 위험자 확인 기능 테스트")
     void test8() {
-        String input = "4\nQ\n";
+        String input = "4\nQ";
 
         InputStream in = new ByteArrayInputStream(input.getBytes());
         System.setIn(in);
+
+        InputView.setScanner(new Scanner(System.in));
 
         OutputStream out = new ByteArrayOutputStream();
         PrintStream printStream = new PrintStream(out);
@@ -180,6 +204,7 @@ class ControllerTest {
                 + "- 이든: 결석 6회, 지각 1회 (제적)\n"
                 + "- 빙봉: 결석 6회, 지각 1회 (제적)\n"
                 + "- 쿠키: 결석 6회, 지각 1회 (제적)\n"
-                + "- 짱수: 결석 6회, 지각 0회 (제적)"));
+                + "- 짱수: 결석 6회, 지각 0회 (제적)")).isTrue();
+        printStream.flush();
     }
 }

@@ -27,7 +27,11 @@ public class InputView {
     private static final LocalTime END_TIME = LocalTime.of(23,0);
     private static final int DECEMBER_START_DATE = 1;
     private static final int DECEMBER_ENT_DATE = 31;
-    private static final Scanner scanner = new Scanner(System.in);
+    private static Scanner scanner = new Scanner(System.in);
+
+    public static void setScanner(Scanner newScanner) {
+        scanner = newScanner;
+    }
 
     private static void printMenu() {
         System.out.println(ATTENDANCE_CHECK_MENU);
