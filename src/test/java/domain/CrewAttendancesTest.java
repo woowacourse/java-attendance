@@ -42,10 +42,9 @@ public class CrewAttendancesTest {
             LocalDate date = LocalDate.of(2024, 12, 3);
             CrewAttendances crewAttendances = new CrewAttendances(new TestAttendanceNowDateStrategy(date));
             crewAttendances.addAttendance(nickname, time);
-
-            Assertions.assertThat(
-                    crewAttendances.crewAttendance(nickname, date).attendanceStatus()
-            ).isEqualTo(AttendanceStatus.LATE);
+            CrewAttendance crewAttendance = crewAttendances.crewAttendance(nickname, date);
+            Assertions.assertThat(crewAttendance.attendanceStatus())
+                    .isEqualTo(AttendanceStatus.LATE);
         }
 
         @Test
@@ -71,9 +70,9 @@ public class CrewAttendancesTest {
             CrewAttendances crewAttendances = new CrewAttendances(new TestAttendanceNowDateStrategy(date));
             crewAttendances.addAttendance(nickname, time);
 
-            Assertions.assertThat(
-                    crewAttendances.crewAttendance(nickname, date).attendanceStatus()
-            ).isEqualTo(AttendanceStatus.LATE);
+            Assertions.assertThat(crewAttendances.crewAttendance(nickname, date)
+                            .attendanceStatus())
+                    .isEqualTo(AttendanceStatus.LATE);
         }
 
         @Test

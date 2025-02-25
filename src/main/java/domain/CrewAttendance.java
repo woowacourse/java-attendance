@@ -1,8 +1,16 @@
 package domain;
 
-import java.time.LocalTime;
+public class CrewAttendance {
+    private final AttendanceTime attendanceTime;
+    private final CrewAttendanceStatus crewAttendanceStatus;
 
-public record CrewAttendance(LocalTime attendanceTime, AttendanceStatus attendanceStatus) {
+    public CrewAttendance(AttendanceDate attendanceDate, AttendanceTime attendanceTime) {
+        this.attendanceTime = attendanceTime;
+        crewAttendanceStatus = new CrewAttendanceStatus(attendanceDate, attendanceTime);
+    }
 
+    public AttendanceStatus attendanceStatus() {
+        return crewAttendanceStatus.attendanceStatus();
+    }
 }
 

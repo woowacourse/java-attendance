@@ -7,7 +7,7 @@ import java.util.Map;
 import strategy.NowDateStrategy;
 
 public class CrewAttendances {
-    private final Map<String, DateCrewAttendanceManager> crewAttendances;
+    private final Map<CrewName, DateCrewAttendanceManager> crewAttendances;
     private final NowDateStrategy nowDateStrategy;
 
     public CrewAttendances(NowDateStrategy nowDateStrategy) {
@@ -26,7 +26,8 @@ public class CrewAttendances {
     }
 
     private DateCrewAttendanceManager dateCrewAttendanceManager(String nickname) {
-        crewAttendances.putIfAbsent(nickname, new DateCrewAttendanceManager(nowDateStrategy));
-        return crewAttendances.get(nickname);
+        CrewName crewName = new CrewName(nickname);
+        crewAttendances.putIfAbsent(crewName, new DateCrewAttendanceManager(nowDateStrategy));
+        return crewAttendances.get(crewName);
     }
 }
