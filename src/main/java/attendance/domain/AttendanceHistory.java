@@ -1,8 +1,14 @@
 package attendance.domain;
 
-import java.util.List;
-import java.util.Map;
+import java.time.LocalDateTime;
 
-public record AttendanceHistory(String nickname, List<String> attendanceHistories,
-                                Map<AttendanceStatus, Integer> statusMap) {
+public class AttendanceHistory {
+
+    private final LocalDateTime attendanceDateTime;
+    private final AttendanceStatus attendanceStatus;
+
+    public AttendanceHistory(LocalDateTime attendanceDateTime, AttendanceStatus attendanceStatus) {
+        this.attendanceDateTime = attendanceDateTime;
+        this.attendanceStatus = attendanceStatus;
+    }
 }

@@ -45,8 +45,7 @@ public class Attendances {
     }
 
     public LocalTime getAttendanceTime(LocalDate datetime) {
-        return attendances.get(datetime)
-                .time();
+        return attendances.get(datetime).time();
     }
 
     public AttendanceStatus getAttendanceStatus(LocalDate date) {

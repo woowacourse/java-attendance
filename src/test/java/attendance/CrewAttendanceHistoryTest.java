@@ -3,15 +3,15 @@ package attendance;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import attendance.domain.AttendanceDismissStatus;
-import attendance.domain.AttendanceHistory;
 import attendance.domain.AttendanceManager;
 import attendance.domain.AttendanceReader;
 import attendance.domain.AttendanceStatuses;
+import attendance.domain.CrewAttendanceHistory;
 import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-public class AttendanceHistoryTest {
+public class CrewAttendanceHistoryTest {
 
     @Test
     @DisplayName("출석 내역 테스트")
@@ -47,8 +47,9 @@ public class AttendanceHistoryTest {
         AttendanceManager attendanceManager = new AttendanceManager(
                 new AttendanceReader(src).loadAttendanceLinesFromAttendanceFile());
 
-        AttendanceHistory attendanceHistory = attendanceManager.crewAttendanceHistory(name);
-        AttendanceStatuses attendances = new AttendanceStatuses(attendanceHistory, attendanceHistory.statusMap());
+        CrewAttendanceHistory crewAttendanceHistory = attendanceManager.crewAttendanceHistory(name);
+        AttendanceStatuses attendances = new AttendanceStatuses(
+                crewAttendanceHistory.statusMap());
         AttendanceDismissStatus attendanceDismissStatus = attendances.calculateAttendanceDismiss();
         assertThat(attendanceDismissStatus).isEqualTo(AttendanceDismissStatus.DISMISS);
     }

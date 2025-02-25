@@ -1,10 +1,10 @@
 package attendance;
 
 import attendance.domain.AttendanceDismissStatus;
-import attendance.domain.AttendanceHistory;
 import attendance.domain.AttendanceManager;
 import attendance.domain.AttendanceReader;
 import attendance.domain.AttendanceStatuses;
+import attendance.domain.CrewAttendanceHistory;
 import java.util.List;
 import java.util.stream.Stream;
 import org.assertj.core.api.Assertions;
@@ -36,15 +36,16 @@ public class CrewDismissTest {
     void testAttendances(String src, List<String> nicknames, List<AttendanceDismissStatus> attendanceStatus) {
         AttendanceManager attendanceManager = new AttendanceManager(
                 new AttendanceReader(src).loadAttendanceLinesFromAttendanceFile());
-        List<AttendanceHistory> attendanceHistories = attendanceManager.crewDismissHistory();
+        List<CrewAttendanceHistory> attendanceHistories = attendanceManager.crewDismissHistory();
 
         for (int i = 0; i < nicknames.size(); i++) {
             Assertions.assertThat(attendanceManager.crewDismissHistory());
-            AttendanceHistory attendanceHistory = attendanceHistories.get(i);
+            CrewAttendanceHistory crewAttendanceHistory = attendanceHistories.get(i);
             String nickname = nicknames.get(i);
-            AttendanceStatuses attendances = new AttendanceStatuses(attendanceHistory, attendanceHistory.statusMap());
+            AttendanceStatuses attendances = new AttendanceStatuses(
+                    crewAttendanceHistory.statusMap());
             AttendanceDismissStatus attendanceDismissStatus = attendances.calculateAttendanceDismiss();
-            Assertions.assertThat(attendanceHistory.nickname()).isEqualTo(nickname);
+            Assertions.assertThat(crewAttendanceHistory.nickname()).isEqualTo(nickname);
             Assertions.assertThat(attendanceDismissStatus).isEqualTo(attendanceStatus.get(i));
         }
     }

@@ -2,10 +2,10 @@ package attendance.controller;
 
 import attendance.domain.Attendance;
 import attendance.domain.AttendanceDismissStatus;
-import attendance.domain.AttendanceHistory;
 import attendance.domain.AttendanceManager;
 import attendance.domain.AttendanceStatus;
 import attendance.domain.AttendanceStatuses;
+import attendance.domain.CrewAttendanceHistory;
 import attendance.domain.DateTimeFormatterWrapper;
 import attendance.dto.AttendanceHistoryDto;
 import attendance.dto.AttendanceStatusCount;
@@ -60,20 +60,19 @@ public class AttendanceController {
     }
 
     private void handleAttendanceHistory() {
-        AttendanceHistory attendanceHistory = requestAttendanceHistory();
-        Map<AttendanceStatus, Integer> status = attendanceHistory.statusMap();
-        AttendanceStatuses attendanceStatuses = new AttendanceStatuses(attendanceHistory, status);
+        CrewAttendanceHistory crewAttendanceHistory = requestAttendanceHistory();
+        AttendanceStatuses attendanceStatuses = crewAttendanceHistory.attendanceStatuses();
         int absenceCount = attendanceStatuses.absenceCount();
         AttendanceDismissStatus attendanceDismissStatus = AttendanceDismissStatus.calculateAttendanceDismiss(
                 absenceCount, attendanceStatuses.lateCount());
         AttendanceStatusCount attendanceStatusCount = new AttendanceStatusCount(attendanceStatuses.absenceCount(),
                 attendanceStatuses.lateCount(), attendanceStatuses.attendanceCount());
-        AttendanceHistoryDto attendanceHistoryDto = new AttendanceHistoryDto(attendanceHistory.nickname(),
-                attendanceHistory.attendanceHistories(), attendanceDismissStatus.getStatus());
+        AttendanceHistoryDto attendanceHistoryDto = new AttendanceHistoryDto(crewAttendanceHistory.nickname(),
+                crewAttendanceHistory.attendanceHistories(), attendanceDismissStatus.getStatus());
         outputView.printAttendanceHistory(attendanceStatusCount, attendanceHistoryDto);
     }
 
-    private AttendanceHistory requestAttendanceHistory() {
+    private CrewAttendanceHistory requestAttendanceHistory() {
         return handleRequest(() -> {
             String nickname = handleRequest(this::inputAttendanceHistoryNickname);
             return attendanceManager.crewAttendanceHistory(nickname);
@@ -81,21 +80,20 @@ public class AttendanceController {
     }
 
     private void handleShowCrewDismiss() {
-        List<AttendanceHistory> attendanceHistories = handleRequest(attendanceManager::crewDismissHistory);
+        List<CrewAttendanceHistory> attendanceHistories = handleRequest(attendanceManager::crewDismissHistory);
         StringBuilder crewDismissHistoryBuilder = new StringBuilder();
         appendCrewDismissHistory(attendanceHistories, crewDismissHistoryBuilder);
         outputView.printCrewDismisses(crewDismissHistoryBuilder.toString());
     }
 
-    private void appendCrewDismissHistory(List<AttendanceHistory> attendanceHistories,
+    private void appendCrewDismissHistory(List<CrewAttendanceHistory> attendanceHistories,
                                           StringBuilder crewDismissHistoryBuilder) {
-
-        for (AttendanceHistory attendanceHistory : attendanceHistories) {
-            Map<AttendanceStatus, Integer> status = attendanceHistory.statusMap();
-            AttendanceStatuses attendanceStatuses = new AttendanceStatuses(attendanceHistory, status);
+        for (CrewAttendanceHistory crewAttendanceHistory : attendanceHistories) {
+            Map<AttendanceStatus, Integer> status = crewAttendanceHistory.statusMap();
+            AttendanceStatuses attendanceStatuses = new AttendanceStatuses(status);
             AttendanceDismissStatus attendanceDismissStatus = attendanceStatuses.calculateAttendanceDismiss();
             crewDismissHistoryBuilder.append(
-                    outputView.crewDismiss(attendanceHistory.nickname(), attendanceStatuses.absenceCount(),
+                    outputView.crewDismiss(crewAttendanceHistory.nickname(), attendanceStatuses.absenceCount(),
                             attendanceStatuses.lateCount(), attendanceDismissStatus.getStatus()));
         }
     }

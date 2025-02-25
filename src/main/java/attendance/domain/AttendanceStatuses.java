@@ -1,15 +1,19 @@
 package attendance.domain;
 
+import java.util.HashMap;
 import java.util.Map;
 
 public class AttendanceStatuses {
 
-    private final AttendanceHistory attendanceHistory;
     private final Map<AttendanceStatus, Integer> status;
+    private static final Integer STATUS_ADD_COUNT = 1;
 
-    public AttendanceStatuses(AttendanceHistory attendanceHistory, Map<AttendanceStatus, Integer> status) {
-        this.attendanceHistory = attendanceHistory;
+    public AttendanceStatuses(Map<AttendanceStatus, Integer> status) {
         this.status = status;
+    }
+
+    public AttendanceStatuses() {
+        this.status = new HashMap<>();
     }
 
     public int attendanceCount() {
@@ -26,5 +30,9 @@ public class AttendanceStatuses {
 
     public AttendanceDismissStatus calculateAttendanceDismiss() {
         return AttendanceDismissStatus.calculateAttendanceDismiss(absenceCount(), lateCount());
+    }
+
+    public void mergeStatus(AttendanceStatus attendanceStatus) {
+        status.merge(attendanceStatus, STATUS_ADD_COUNT, Integer::sum);
     }
 }
