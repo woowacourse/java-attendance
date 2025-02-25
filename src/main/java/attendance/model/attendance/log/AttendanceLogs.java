@@ -1,5 +1,6 @@
-package attendance.model.attendance;
+package attendance.model.attendance.log;
 
+import attendance.model.attendance.AttendanceStatus;
 import attendance.model.campus.CampusOperationPolicy;
 import java.time.LocalDate;
 import java.util.Comparator;

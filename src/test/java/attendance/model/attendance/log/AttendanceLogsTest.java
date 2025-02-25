@@ -1,8 +1,9 @@
-package attendance.model.attendance;
+package attendance.model.attendance.log;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
+import attendance.model.attendance.AttendanceStatus;
 import attendance.model.campus.CampusOperationPolicy;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
