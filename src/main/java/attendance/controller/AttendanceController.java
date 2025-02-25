@@ -6,12 +6,12 @@ import attendance.domain.AttendanceHistories;
 import attendance.domain.AttendanceManager;
 import attendance.domain.AttendanceStatuses;
 import attendance.domain.CrewAttendanceHistory;
+import attendance.domain.CrewName;
 import attendance.domain.DateTimeFormatterWrapper;
 import attendance.dto.AttendanceStatusCount;
 import attendance.dto.ModifyAttendanceDto;
 import attendance.dto.RequestModifyAttendanceDto;
 import attendance.exception.AttendanceArgumentException;
-import attendance.validation.AttendanceInputValidator;
 import attendance.view.AttendanceMethod;
 import attendance.view.ConsoleInputView;
 import attendance.view.OutputView;
@@ -23,20 +23,16 @@ import java.util.function.Supplier;
 
 public class AttendanceController {
 
-    private final AttendanceManager attendanceManager;
-    private final AttendanceInputValidator attendanceInputValidator;
-
     private final static OutputView outputView = new OutputView();
     private final static ConsoleInputView inputView = new ConsoleInputView();
     private final static String ATTENDANCE_AVAILABLE_MONTH = "12";
     private final static String ATTENDANCE_REQUEST_DATE_FORMAT = "%s %s ";
     private final static String ATTENDANCE_AVAILABLE_YEAR = "2024";
     private final static String NOT_SUPPORT_METHOD = "지원하지 않는 기능입니다.";
+    private final AttendanceManager attendanceManager;
 
-    public AttendanceController(AttendanceManager attendanceManager,
-                                AttendanceInputValidator attendanceInputValidator) {
+    public AttendanceController(AttendanceManager attendanceManager) {
         this.attendanceManager = attendanceManager;
-        this.attendanceInputValidator = attendanceInputValidator;
     }
 
     public void start() {
@@ -136,20 +132,28 @@ public class AttendanceController {
         return handleRequest(() -> {
             outputView.printAttendanceModifyNicknameInput();
             String nickname = inputView.input();
-            attendanceInputValidator.validateAttendanceNickname(nickname);
-            attendanceManager.validateAttendanceExist(nickname);
+            validateCrewName(nickname);
             return nickname;
         });
+    }
+
+    private void validateCrewName(String nickname) {
+        CrewName.from(nickname);
     }
 
     private String inputAttendanceHistoryNickname() {
         return handleRequest(() -> {
             outputView.printNicknameInput();
             String nickname = inputView.input();
-            attendanceInputValidator.validateAttendanceNickname(nickname);
+            validateCrewName(nickname);
+            validateAttendanceExist(nickname);
             attendanceManager.validateAttendanceExist(nickname);
             return nickname;
         });
+    }
+
+    private void validateAttendanceExist(String nickname) {
+        attendanceManager.validateAttendanceExist(nickname);
     }
 
     private void handleAttendance() {
@@ -178,7 +182,6 @@ public class AttendanceController {
         try {
             outputView.printAttendanceTimeInput();
             String inputTime = inputView.input();
-            attendanceInputValidator.validateAttendanceTime(inputTime);
             LocalTime time = DateTimeFormatterWrapper.parsingAttendanceTime(inputTime);
             attendanceManager.validateIsSchoolOpen(time);
             return time;
@@ -190,7 +193,7 @@ public class AttendanceController {
     private String inputAttendanceNickname() {
         outputView.printNicknameInput();
         String nickname = inputView.input();
-        attendanceInputValidator.validateAttendanceNickname(nickname);
+        validateCrewName(nickname);
         return nickname;
     }
 

@@ -16,12 +16,11 @@ public class AttendanceManager {
     private static final String OUT_OF_SCHOOL_SCHEDULE = "등교시간에만 출석 가능합니다.";
     private static final LocalDate SYSTEM_AVAILABLE_START_DATE = LocalDate.of(2024, 12, 1);
     private static final LocalDate SYSTEM_AVAILABLE_END_DATE = LocalDate.of(2024, 12, 31);
-    private static final String NICKNAME_NOT_EXISTS = "출석 정보가 존재하지 않습니다.";
-    private static final String CANNOT_BE_EMPTY_NICKNAME = "닉네임은 공백일 수 없습니다.";
+    private static final String CREW_NOT_EXISTS = "출석 정보가 존재하지 않습니다.";
     private static final String ATTENDANCE_NOT_AVAILABLE = "출석 시스템은 2024년 12월 동안만 유효합니다";
     private static final int WEEKEND_NUMBER = 6;
 
-    private final HashMap<String, Attendances> attendanceManager = new HashMap<>();
+    private final HashMap<CrewName, Attendances> attendanceManager = new HashMap<>();
     private final int XMAS_MONTH = 12;
     private final int XMAS_DAY = 25;
 
@@ -43,18 +42,27 @@ public class AttendanceManager {
     }
 
     public void addAttendance(String nickname, LocalDateTime time) {
-        validateNickname(nickname);
+        CrewName crewName = createCrewName(nickname);
         LocalTime currentTime = time.toLocalTime();
         LocalDate currentDate = time.toLocalDate();
         validateIsSchoolOpen(currentTime);
         validateIsAttendanceAvailable(currentDate);
-        Attendances attendances = attendanceManager.getOrDefault(nickname, new Attendances());
-        attendanceManager.put(nickname, attendances);
+        Attendances attendances = findAttendancesByCrewName(crewName);
+        attendanceManager.put(crewName, attendances);
         attendances.addAttendance(currentTime, currentDate);
     }
 
+    private Attendances findAttendancesByCrewName(CrewName crewName) {
+        return attendanceManager.getOrDefault(crewName, new Attendances());
+    }
+
+    private static CrewName createCrewName(String nickname) {
+        CrewName crewName = CrewName.from(nickname);
+        return crewName;
+    }
+
     public Attendance findAttendance(String nickname, LocalDate date) {
-        Attendances attendances = attendanceManager.getOrDefault(nickname, new Attendances());
+        Attendances attendances = attendanceManager.getOrDefault(CrewName.from(nickname), new Attendances());
         return attendances.getAttendance(date);
     }
 
@@ -64,22 +72,22 @@ public class AttendanceManager {
         }
     }
 
-    public void validateNickname(String nickname) {
-        if (nickname == null || nickname.isBlank() || nickname.isEmpty()) {
-            throw new AttendanceArgumentException(CANNOT_BE_EMPTY_NICKNAME);
-        }
-    }
-
     public void modifyAttendance(String nickname, LocalDate modifyDate, LocalTime afterModifyTime) {
-        validateAttendanceExist(nickname);
-        Attendances attendances = attendanceManager.get(nickname);
+        CrewName crewName = createCrewName(nickname);
+        validateAttendanceExist(crewName);
+        Attendances attendances = findAttendancesByCrewName(crewName);
         attendances.modifyAttendance(modifyDate, afterModifyTime);
     }
 
     public void validateAttendanceExist(String nickname) {
-        Attendances attendances = attendanceManager.get(nickname);
+        validateAttendanceExist(CrewName.from(nickname));
+    }
+
+
+    public void validateAttendanceExist(CrewName crewName) {
+        Attendances attendances = attendanceManager.get(crewName);
         if (attendances == null) {
-            throw new AttendanceArgumentException(NICKNAME_NOT_EXISTS);
+            throw new AttendanceArgumentException(CREW_NOT_EXISTS);
         }
     }
 
@@ -117,7 +125,7 @@ public class AttendanceManager {
         LocalDate endDate = SYSTEM_AVAILABLE_END_DATE;
         AttendanceStatuses attendanceStatuses = new AttendanceStatuses();
         AttendanceHistories attendanceHistories = new AttendanceHistories();
-        Attendances attendances = attendanceManager.get(nickname);
+        Attendances attendances = attendanceManager.get(CrewName.from(nickname));
         for (LocalDate currentDate = startDate; !currentDate.isAfter(endDate); currentDate = currentDate.plusDays(1)) {
             appendAttendanceHistories(attendances, currentDate, attendanceStatuses, attendanceHistories);
         }
@@ -125,8 +133,8 @@ public class AttendanceManager {
     }
 
     private void validateCrewNameExist(String nickname) {
-        validateNickname(nickname);
-        validateAttendanceExist(nickname);
+        CrewName crewName = CrewName.from(nickname);
+        validateAttendanceExist(crewName);
     }
 
     private void appendAttendanceHistories(Attendances attendances, LocalDate currentDate,
@@ -158,7 +166,10 @@ public class AttendanceManager {
     }
 
     public List<String> attendancesNicknames() {
-        return attendanceManager.keySet().stream().toList();
+        return attendanceManager.keySet()
+                .stream()
+                .map((crewName) -> crewName.getName())
+                .toList();
     }
 
     public List<CrewAttendanceHistory> crewDismissHistory() {
@@ -169,9 +180,9 @@ public class AttendanceManager {
     }
 
     public void modifyAttendance(RequestModifyAttendanceDto requestModifyAttendanceDto) {
-        String nickname = requestModifyAttendanceDto.nickname();
-        validateAttendanceExist(nickname);
-        Attendances attendances = attendanceManager.get(nickname);
+        CrewName crewName = createCrewName(requestModifyAttendanceDto.nickname());
+        validateAttendanceExist(crewName);
+        Attendances attendances = attendanceManager.get(crewName);
         attendances.modifyAttendance(requestModifyAttendanceDto.date(), requestModifyAttendanceDto.time());
     }
 }
