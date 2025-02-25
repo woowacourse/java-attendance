@@ -1,12 +1,14 @@
+import domain.Attendance;
+import domain.AttendanceSheet;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import domain.Attendance;
 import policy.FileReaderPolicy;
+
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
 public class FileReaderPolicyTest {
     private static final String FILE_PATH = "src/main/resources/attendances.csv";
@@ -49,13 +51,27 @@ public class FileReaderPolicyTest {
 
     @Test
     @DisplayName("파일 한 줄을 읽어들여 출석부에 기록할 수 있다")
-    public void validateAttendanceDateTest() {
+    public void createAttendanceTest() {
         //given
         String attendanceInfo = "쿠키,2024-12-13 10:08";
 
         //when-then
         assertThat(fileReaderPolicy.createAttendance(attendanceInfo))
                 .isInstanceOf(Attendance.class);
+    }
+
+    @Test
+    @DisplayName("파일을 읽어들여 출석부에 기록할 수 있다")
+    public void createAttendancesTest() {
+        //given
+        List<String> attendancesInfo = List.of(
+                "쿠키,2024-12-13 10:08",
+                "빙봉,2024-12-13 10:07"
+                );
+
+        //when-then
+        assertThat(fileReaderPolicy.createAttendances(attendancesInfo))
+                .isInstanceOf(AttendanceSheet.class);
     }
 
 }

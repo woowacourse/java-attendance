@@ -1,6 +1,7 @@
 package policy;
 
 import domain.Attendance;
+import domain.AttendanceSheet;
 
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
@@ -24,11 +25,11 @@ public class FileReaderPolicy {
         this.fileReader = readFile(filePath);
     }
 
-    public Attendance createAttendances() {
-        List<String> lines = readLines();
-        for (String line : lines) {
+    public AttendanceSheet createAttendances(List<String> attendancesInfo) {
+        for (String line : attendancesInfo) {
             createAttendance(line);
         }
+        return null;
     }
 
     public Attendance createAttendance(String line) {
