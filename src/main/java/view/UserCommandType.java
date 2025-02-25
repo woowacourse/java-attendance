@@ -1,4 +1,4 @@
-package domain;
+package view;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -18,14 +18,15 @@ public enum UserCommandType {
         CommandKey = commandKey;
     }
 
+    public static UserCommandType getUserCommand(String userCommand) {
+        validateUserCommand(userCommand);
+        return getCommandTypes().get(userCommand);
+    }
+
     public static void validateUserCommand(String userCommand) {
         if (!containKey(userCommand)) {
             throw new IllegalArgumentException("올바른 기능 입력이 아닙니다.");
         }
-    }
-
-    public static UserCommandType getUserCommand(String userCommand) {
-        return getCommandTypes().get(userCommand);
     }
 
     private static boolean containKey(String userCommand) {
