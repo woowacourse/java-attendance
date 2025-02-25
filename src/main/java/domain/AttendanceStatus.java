@@ -6,6 +6,7 @@ import static controller.AttendanceController.NOW_YEAR;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -35,11 +36,12 @@ public enum AttendanceStatus {
             .map(date -> crew.findStatusByDate(date))
             .collect(Collectors.groupingBy(Function.identity(), Collectors.counting()));
 
-        return new StatisticsResult(
-            statusCounts.getOrDefault(ATTENDANCE, 0L).intValue(),
-            statusCounts.getOrDefault(LATENESS, 0L).intValue(),
-            statusCounts.getOrDefault(ABSENCE, 0L).intValue()
-        );
+        Map<AttendanceStatus, Integer> result = new HashMap<>();
+            result.put(ATTENDANCE, statusCounts.getOrDefault(ATTENDANCE, 0L).intValue());
+            result.put(LATENESS, statusCounts.getOrDefault(LATENESS, 0L).intValue());
+            result.put(ABSENCE, statusCounts.getOrDefault(ABSENCE, 0L).intValue());
+
+        return new StatisticsResult(result);
     }
 
     public static AttendanceStatus of(LocalTime time, DayOfWeek dayOfWeek) {
