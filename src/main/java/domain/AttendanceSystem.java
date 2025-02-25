@@ -18,7 +18,7 @@ public class AttendanceSystem {
         if (!attendanceBooks.containsKey(name)) {
             attendanceBooks.put(name, new AttendanceBook());
         }
-        if(attendanceBooks.get(name).hasAttendanceRecord(TODAY)) {
+        if (attendanceBooks.get(name).hasAttendanceRecord(TODAY)) {
             throw new IllegalArgumentException();
         }
         attendanceBooks.get(name).attendance(TODAY, time);
@@ -44,5 +44,9 @@ public class AttendanceSystem {
     public int getAttendCount(String name) {
         return attendanceBooks.get(name).getAttendCount(TODAY);
 
+    }
+
+    public RiskStatus getRisk(String name) {
+        return attendanceBooks.get(name).getRiskStatus(TODAY);
     }
 }

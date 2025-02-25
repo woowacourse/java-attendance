@@ -1,4 +1,5 @@
 import domain.AttendanceSystem;
+import domain.RiskStatus;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -8,6 +9,7 @@ import java.time.LocalTime;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 public class AttendanceSystemTest {
     private final AttendanceSystem attendanceSystem = new AttendanceSystem();
@@ -51,6 +53,16 @@ public class AttendanceSystemTest {
         }).isInstanceOf(IllegalArgumentException.class);
     }
 
+    @DisplayName("출석하려는 시간이 캠퍼스 운영시간이 아닌 경우 예외를 던진다2")
+    @Test
+    void cannon_attend_if_is_not_operating_hours2() {
+        String name = "두리";
+        LocalTime time = LocalTime.of(23, 1);
+        assertThatThrownBy(() -> {
+            attendanceSystem.attendance(name, time);
+        }).isInstanceOf(IllegalArgumentException.class);
+    }
+
     @DisplayName("이름과 날짜 등교시간을 입력하면 기록을 수정할 수 있다")
     @Test
     void edit_attendance() {
@@ -67,7 +79,7 @@ public class AttendanceSystemTest {
         String name = "두리";
         attendanceSystem.attendance(name, LocalTime.of(10, 30));
         assertThatThrownBy(() ->
-            attendanceSystem.editAttendance(name, attendanceSystem.TODAY, LocalTime.of(23, 55))
+                attendanceSystem.editAttendance(name, attendanceSystem.TODAY, LocalTime.of(23, 55))
         ).isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -183,5 +195,34 @@ public class AttendanceSystemTest {
         attendanceSystem.attendance(name, LocalTime.of(10, 5));
         attendanceSystem.editAttendance(name, LocalDate.of(2024, 12, 2), LocalTime.of(13, 7));
         assertThat(attendanceSystem.getAttendCount(name)).isEqualTo(1);
+    }
+
+    @DisplayName("결석을 5회 초과로 한 경우 제적 대상자이다")
+    @Test
+    void expulsion_test() {
+        String name = "두리";
+        attendanceSystem.attendance(name, LocalTime.of(10, 0));
+        assertThat(attendanceSystem.getAbsenceCount(name) + attendanceSystem.getTardyCount(name) / 3).isEqualTo(11);
+        assertThat(attendanceSystem.getRisk(name)).isEqualTo(RiskStatus.EXPULSION);
+    }
+
+    @DisplayName("결석을 3회이상 5회 이하로 한 경우 면담 대상자이다")
+    @Test
+    void counseling_test() {
+        String name = "두리";
+        attendanceSystem.attendance(name, LocalTime.of(10, 0));
+        for (LocalDate date = LocalDate.of(2024, 12, 1);
+             date.isBefore(attendanceSystem.TODAY.minusDays(5));
+             date = date.plusDays(1)) {
+            try {
+                attendanceSystem.editAttendance(name, date, LocalTime.of(10, 0));
+            } catch (IllegalArgumentException e) {
+
+            }
+        }
+        assertAll(
+                () -> assertThat(attendanceSystem.getAbsenceCount(name) + attendanceSystem.getTardyCount(name) / 3).isEqualTo(3),
+                () -> assertThat(attendanceSystem.getRisk(name)).isEqualTo(RiskStatus.COUNSELING)
+        );
     }
 }

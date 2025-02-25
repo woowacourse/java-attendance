@@ -89,6 +89,10 @@ public class AttendanceBook {
                 !attendanceBook.get(date).isAfter(startTime(date).plusMinutes(5));
     }
 
+    public RiskStatus getRiskStatus(LocalDate today) {
+        return RiskStatus.getRiskStatus(getAbsenceCount(today), getTardyCount(today));
+    }
+
     private boolean isHoliday(LocalDate date) {
         DayOfWeek day = date.getDayOfWeek();
         return isWeekend(day) || isChristmas(date);
