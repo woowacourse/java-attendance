@@ -22,7 +22,7 @@ import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException
 
 class AttendanceManagerTest {
 
-    private final DateGenerator dateGenerator = new MockingDateGenerator();
+    private final DateGenerator dateGenerator = new FixedDateGenerator();
     private final AttendanceManager attendanceManager = new AttendanceManager();
 
     @ParameterizedTest(name = "출석 시간: {0} | 출석 상황 결과 : {1}")
@@ -298,7 +298,7 @@ class AttendanceManagerTest {
         );
     }
 
-    static class MockingDateGenerator implements DateGenerator {
+    static class FixedDateGenerator implements DateGenerator {
 
         @Override
         public LocalDate generateNow() {
