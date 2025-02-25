@@ -129,6 +129,8 @@
     - LocalDate 와 CampusOperationPolicy 를 받아 생성된다.
 - **동작**
     - 생성 시 CampusOperationPolicy 를 통해 캠퍼스 운영 날짜인지 검증한다.
+    - LocalDate 를 받아 해당 LocalDate 와 자신이 같은 날인지 반환한다.
+    - DayOfWeek 를 받아 해당 요일이 자신의 요일인지 반환한다.
 
 ### AttendanceTime (출석 시간 Class)
 
@@ -136,8 +138,25 @@
     - LocalTime 출석 시간
 - **생성**
     - LocalTime 과 CampusOperationPolicy 를 받아 생성된다.
+    - CampusOperationPolicy 를 받아 value 가 null 인 자신을 생성한다.
 - **동작**
     - 생성 시 CampusOperationPolicy 를 통해 캠퍼스 운영 시간인지 검증한다.
+    - LocalTime 을 받아 해당 LocalTime 이 자신의 value 보다 이전인지 반환한다.
+    - value 가 null 일수 있으므로, getter 는 Optional 로 반환한다.
+
+### AttendanceDateTime (출석 일시 Class)
+
+- **상태**
+    - AttendanceDate 출석 일자
+    - AttendanceTime 출석 시간
+- **생성**
+    - LocalDateTime 과 CampusOperationPolicy 를 받아 생성된다.
+    - LocalDate 와 과 CampusOperationPolicy 만을 받아 시간이 null 인 자신을 생성한다.
+- **동작**
+    - LocalDate 를 받아 해당 LocalDate 가 자신의 출석 일자인지 반환한다.
+    - LocalTime 을 받아 해당 LocalTime 이 자신의 출석 시간보다 이전인지 반환한다.
+    - 자신의 출석 시간이 value 가 비어 있는 null 한 시간인지 반환한다.
+    - DayOfWeek 를 받아 해당 요일이 자신의 요일인지 반환한다.
 
 ### CrewAttendanceLog (크루 출석 기록 Class)
 
