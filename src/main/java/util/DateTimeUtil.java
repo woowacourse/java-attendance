@@ -1,5 +1,6 @@
 package util;
 
+import constant.Holiday;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 
@@ -14,6 +15,6 @@ public class DateTimeUtil {
     }
 
     public static boolean isHoliday(LocalDate date) {
-        return false;
+        return Holiday.isHoliday(date.getMonthValue(), date.getDayOfMonth());
     }
 }
