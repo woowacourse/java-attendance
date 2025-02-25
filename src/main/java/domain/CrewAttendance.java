@@ -1,6 +1,6 @@
 package domain;
 
-import vo.*;
+import domain.vo.*;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;

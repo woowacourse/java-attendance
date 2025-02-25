@@ -1,4 +1,4 @@
-package view.reader;
+package io.reader;
 
 public interface Reader {
     

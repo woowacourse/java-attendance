@@ -1,4 +1,4 @@
-package view.writer;
+package io.writer;
 
 public interface Writer {
     

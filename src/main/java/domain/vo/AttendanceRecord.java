@@ -1,13 +1,14 @@
-package vo;
+package domain.vo;
 
 import domain.AttendanceStatus;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.Optional;
 
-public record AttendResult(
+public record AttendanceRecord(
         LocalDate attendDate,
-        LocalTime attendTime,
+        Optional<LocalTime> attendTime,
         AttendanceStatus status
 ) {
 }

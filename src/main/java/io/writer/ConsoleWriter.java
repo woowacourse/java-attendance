@@ -1,4 +1,4 @@
-package view.writer;
+package io.writer;
 
 import java.io.BufferedWriter;
 import java.io.IOException;

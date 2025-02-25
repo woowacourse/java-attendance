@@ -1,9 +1,9 @@
 package domain;
 
-import vo.AttendResult;
-import vo.AttendanceModifyResult;
-import vo.AttendanceRecordFindResults;
-import vo.ExpelWarningResult;
+import domain.vo.AttendResult;
+import domain.vo.AttendanceModifyResult;
+import domain.vo.AttendanceRecordFindResults;
+import domain.vo.ExpelWarningResult;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
