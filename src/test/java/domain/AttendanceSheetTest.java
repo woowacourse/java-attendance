@@ -39,12 +39,26 @@ public class AttendanceSheetTest {
     @Test
     @DisplayName("이미 출석한 경우 다시 출석할 수 없으며 수정 기능을 이용하도록 안내하는 예외가 발생한다")
     public void alreadyAttendTest() {
+        //given
         String nickname = "링크";
         LocalDate date = LocalDate.of(2024, 12, 11);
 
         //when-then
         assertThatThrownBy(() -> attendanceSheet.validateIsAlreadyAttendance(nickname, date))
                 .isInstanceOf(IllegalArgumentException.class);
+    }
+
+    @Test
+    @DisplayName("출석 확인을 수정할 수 있다")
+    public void updateAttendanceTest() {
+        //given
+        String nickname = "링크";
+        int dayOfMonth = 10;
+        LocalTime updateTime = LocalTime.of(11,0);
+
+        //when-then
+        assertDoesNotThrow(() -> attendanceSheet.update(nickname, dayOfMonth, updateTime));
+
     }
 
 }
