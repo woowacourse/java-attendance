@@ -3,7 +3,6 @@ package model;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Collections;
-import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -11,11 +10,9 @@ import java.util.Map.Entry;
 
 public class CrewHistory {
 
-    private final String nickname;
     private final Map<Integer, LocalDateTime> attendance;
 
-    public CrewHistory(final String nickname, final Map<Integer, LocalDateTime> attendance) {
-        this.nickname = nickname;
+    public CrewHistory(final Map<Integer, LocalDateTime> attendance) {
         this.attendance = new HashMap<>(attendance);
     }
 
@@ -43,17 +40,9 @@ public class CrewHistory {
         return previousTime;
     }
 
-    public Map<AttendanceType, Integer> countAttendanceType(final LocalDate todayDate) {
+    public AttendanceCounter countAttendanceType(final LocalDate todayDate) {
         List<LocalDateTime> history = getAttendanceHistory(todayDate);
-        return countAttendanceType(history);
-    }
-
-    public Map<AttendanceType, Integer> countAttendanceType(final List<LocalDateTime> history) {
-        Map<AttendanceType, Integer> result = initialize();
-        for (LocalDateTime attendanceTime : history) {
-            result.merge(AttendanceType.from(attendanceTime), 1, Integer::sum);
-        }
-        return Collections.unmodifiableMap(result);
+        return new AttendanceCounter(history);
     }
 
     public List<LocalDateTime> getAttendanceHistory(final LocalDate todayDate) {
@@ -64,20 +53,8 @@ public class CrewHistory {
                 .toList();
     }
 
-    private Map<AttendanceType, Integer> initialize() {
-        Map<AttendanceType, Integer> result = new EnumMap<>(AttendanceType.class);
-        result.put(AttendanceType.ATTENDANCE, 0);
-        result.put(AttendanceType.LATE, 0);
-        result.put(AttendanceType.ABSENCE, 0);
-        return result;
-    }
-
     private boolean isAfterToday(final LocalDate todayDate, final LocalDate modifyDate) {
         return modifyDate.isEqual(todayDate) || modifyDate.isAfter(todayDate);
-    }
-
-    public String getNickname() {
-        return nickname;
     }
 
     public Map<Integer, LocalDateTime> getAttendance() {

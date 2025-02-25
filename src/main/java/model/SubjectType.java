@@ -2,7 +2,6 @@ package model;
 
 import java.util.Arrays;
 import java.util.Comparator;
-import java.util.Map;
 
 public enum SubjectType {
 
@@ -23,9 +22,7 @@ public enum SubjectType {
         this.threshold = threshold;
     }
 
-    public static SubjectType from(final Map<AttendanceType, Integer> result) {
-        int absentCount = result.get(AttendanceType.ABSENCE);
-        int lateCount = result.get(AttendanceType.LATE);
+    public static SubjectType from(final int absentCount, final int lateCount) {
         int totalAbsentCount = calculateTotalAbsentCount(lateCount, absentCount);
         return Arrays.stream(SubjectType.values())
                 .sorted(COMPARATOR)
@@ -38,9 +35,8 @@ public enum SubjectType {
         return lateCount + absentCount * CONVERTED_ABSENT_UNIT;
     }
 
-    public static boolean isApplicable(final Map<AttendanceType, Integer> result) {
-        SubjectType subjectType = from(result);
-        return !subjectType.equals(SubjectType.NOT_APPLICABLE);
+    public boolean isApplicable() {
+        return !this.equals(SubjectType.NOT_APPLICABLE);
     }
 
     public static Comparator<SubjectType> getComparator() {

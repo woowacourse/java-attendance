@@ -8,11 +8,11 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
+import model.AttendanceCounter;
 import model.AttendanceType;
 import model.Campus;
 import model.CrewHistories;
 import model.CrewHistory;
-import model.SubjectType;
 import model.TodayClock;
 import util.StringParser;
 import util.TimeFormatter;
@@ -103,15 +103,13 @@ public class AttendanceController {
         CrewHistory crewHistory = crewHistories.findCrewByNickname(nickname);
 
         List<LocalDateTime> attendanceHistory = crewHistory.getAttendanceHistory(getTodayDate());
-        Map<AttendanceType, Integer> result = crewHistory.countAttendanceType(attendanceHistory);
-        SubjectType subjectType = SubjectType.from(result);
-
-        resultView.printAttendanceHistoryResultByCrew(nickname, attendanceHistory, result, subjectType);
+        AttendanceCounter attendanceCounter = crewHistory.countAttendanceType(getTodayDate());
+        resultView.printAttendanceHistoryResultByCrew(nickname, attendanceHistory, attendanceCounter);
     }
 
     private void checkDismissalCrews(final CrewHistories crewHistories) {
-        List<CrewHistory> dismissalCrewHistories = crewHistories.findDismissalCrews(getTodayDate());
-        List<DismissalCrewDto> dismissalCrewDtos = DismissalCrewDto.of(getTodayDate(), dismissalCrewHistories);
+        Map<String, AttendanceCounter> dismissalCrews = crewHistories.findDismissalCrews(getTodayDate());
+        List<DismissalCrewDto> dismissalCrewDtos = DismissalCrewDto.of(dismissalCrews);
         Collections.sort(dismissalCrewDtos);
         resultView.printDismissalResult(dismissalCrewDtos);
     }

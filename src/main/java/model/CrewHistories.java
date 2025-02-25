@@ -2,8 +2,9 @@ package model;
 
 import java.time.LocalDate;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.stream.Collectors;
 
 public class CrewHistories {
 
@@ -20,10 +21,11 @@ public class CrewHistories {
         return crews.get(nickname);
     }
 
-    public List<CrewHistory> findDismissalCrews(final LocalDate todayDate) {
-        return crews.values()
-                .stream()
-                .filter(crew -> SubjectType.isApplicable(crew.countAttendanceType(todayDate)))
-                .toList();
+    public Map<String, AttendanceCounter> findDismissalCrews(final LocalDate todayDate) {
+        return crews.entrySet().stream()
+                .map(entry -> Map.entry(entry.getKey(), entry.getValue().countAttendanceType(todayDate)))
+                .filter(entry -> SubjectType.from(entry.getValue().getAbsentCount(), entry.getValue().getLateCount())
+                        .isApplicable())
+                .collect(Collectors.toMap(Entry::getKey, Entry::getValue));
     }
 }

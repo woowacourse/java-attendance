@@ -3,7 +3,7 @@ package view;
 import dto.DismissalCrewDto;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Map;
+import model.AttendanceCounter;
 import model.AttendanceType;
 import model.SubjectType;
 import util.TimeFormatter;
@@ -36,13 +36,12 @@ public class ResultView {
     public void printAttendanceHistoryResultByCrew(
             final String nickname,
             final List<LocalDateTime> attendanceHistory,
-            final Map<AttendanceType, Integer> result,
-            final SubjectType subjectType
-    ) {
+            final AttendanceCounter attendanceCounter
+            ) {
         System.out.printf(LINE + ATTENDANCE_HISTORY_BY_CREW_FORM + LINE + LINE, nickname);
         printAttendanceHistories(attendanceHistory);
-        printAttendanceTypeCount(result);
-        printSubjectType(subjectType);
+        printAttendanceTypeCount(attendanceCounter);
+        printSubjectType(SubjectType.from(attendanceCounter.getAbsentCount(), attendanceCounter.getLateCount()));
     }
 
     public void printDismissalResult(final List<DismissalCrewDto> dtos) {
@@ -59,11 +58,11 @@ public class ResultView {
                 AttendanceType.from(localDateTime)));
     }
 
-    private void printAttendanceTypeCount(final Map<AttendanceType, Integer> result) {
+    private void printAttendanceTypeCount(final AttendanceCounter attendanceCounter) {
         System.out.printf(LINE + ATTENDANCE_TYPE_COUNT_FORM + LINE,
-                result.get(AttendanceType.ATTENDANCE),
-                result.get(AttendanceType.LATE),
-                result.get(AttendanceType.ABSENCE)
+                attendanceCounter.getAttendanceCount(),
+                attendanceCounter.getLateCount(),
+                attendanceCounter.getAbsentCount()
         );
     }
 

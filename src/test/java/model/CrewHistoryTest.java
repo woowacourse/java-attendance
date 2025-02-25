@@ -1,6 +1,5 @@
 package model;
 
-import static java.util.Map.entry;
 import static model.AttendanceType.DEFAULT_TIME;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -11,7 +10,6 @@ import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -25,7 +23,7 @@ public class CrewHistoryTest {
     @Test
     void checkAttendanceTest() {
         // Given
-        CrewHistory crewHistory = new CrewHistory(CREW_NAME, new HashMap<>());
+        CrewHistory crewHistory = new CrewHistory(new HashMap<>());
         LocalDateTime attendanceTime = LocalDateTime.of(2024, 12, 3, 9, 0);
 
         // When
@@ -39,7 +37,7 @@ public class CrewHistoryTest {
     @Test
     void alreadyAttendanceTest() {
         // Given
-        CrewHistory crewHistory = new CrewHistory(CREW_NAME, new HashMap<>());
+        CrewHistory crewHistory = new CrewHistory(new HashMap<>());
         LocalDateTime attendanceTime = LocalDateTime.of(2024, 12, 3, 9, 0);
         crewHistory.attend(attendanceTime);
 
@@ -54,7 +52,7 @@ public class CrewHistoryTest {
     @Test
     void modifyAttendanceTest() {
         // Given
-        CrewHistory crewHistory = new CrewHistory(CREW_NAME, new HashMap<>());
+        CrewHistory crewHistory = new CrewHistory(new HashMap<>());
         LocalDateTime attendanceTime = LocalDateTime.of(2024, 12, 3, 9, 0);
         crewHistory.attend(attendanceTime);
 
@@ -79,7 +77,7 @@ public class CrewHistoryTest {
     })
     void invalidModifyDateTest(LocalDate todayDate) {
         // Given
-        CrewHistory crewHistory = new CrewHistory(CREW_NAME, new HashMap<>());
+        CrewHistory crewHistory = new CrewHistory(new HashMap<>());
         LocalDateTime modifyTime = LocalDateTime.of(2024, 12, 4, 9, 50);
 
         // When & Then
@@ -97,7 +95,7 @@ public class CrewHistoryTest {
         LocalDateTime dateTime1 = LocalDateTime.of(2024, 12, 3, 9, 0);
         LocalDateTime dateTime2 = LocalDateTime.of(2024, 12, 4, 9, 0);
         LocalDateTime todayDateTime = LocalDateTime.of(2024, 12, 19, 9, 0);
-        CrewHistory crewHistory = new CrewHistory(CREW_NAME, Map.of(3, dateTime1, 12, dateTime2, 19, todayDateTime));
+        CrewHistory crewHistory = new CrewHistory(Map.of(3, dateTime1, 12, dateTime2, 19, todayDateTime));
 
         // When
         List<LocalDateTime> attendanceHistory = crewHistory.getAttendanceHistory(today);
@@ -116,16 +114,17 @@ public class CrewHistoryTest {
         LocalDateTime dateTime3 = LocalDateTime.of(2024, 12, 4, 10, 31);
         LocalDateTime dateTime4 = LocalDateTime.of(LocalDate.of(2024, 12, 5), DEFAULT_TIME);
         LocalDateTime dateTime5 = LocalDateTime.of(2024, 12, 6, 9, 30);
-        CrewHistory crewHistory = new CrewHistory(CREW_NAME, Map.of(2, dateTime1, 3, dateTime2, 4, dateTime3, 5, dateTime4, 9, dateTime5));
+        CrewHistory crewHistory = new CrewHistory(
+                Map.of(2, dateTime1, 3, dateTime2, 4, dateTime3, 5, dateTime4, 9, dateTime5));
 
         // When
-        Map<AttendanceType, Integer> result = crewHistory.countAttendanceType(todayDate);
+        AttendanceCounter attendanceCounter = crewHistory.countAttendanceType(todayDate);
 
         // Then
-        Assertions.assertThat(result).containsExactly(
-                entry(AttendanceType.ATTENDANCE, 2),
-                entry(AttendanceType.LATE, 1),
-                entry(AttendanceType.ABSENCE, 2)
+        assertAll(
+                () -> assertThat(attendanceCounter.getAttendanceCount()).isEqualTo(2),
+                () -> assertThat(attendanceCounter.getLateCount()).isEqualTo(1),
+                () -> assertThat(attendanceCounter.getAbsentCount()).isEqualTo(2)
         );
     }
 }

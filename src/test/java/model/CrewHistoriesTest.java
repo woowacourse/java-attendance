@@ -20,8 +20,8 @@ public class CrewHistoriesTest {
     @DisplayName("크루 이름으로 크루를 조회한다")
     @Test
     void findCrewNicknameTest() {
-        CrewHistory crewHistory1 = new CrewHistory(hotteok, new HashMap<>());
-        CrewHistory crewHistory2 = new CrewHistory(mint, new HashMap<>());
+        CrewHistory crewHistory1 = new CrewHistory(new HashMap<>());
+        CrewHistory crewHistory2 = new CrewHistory(new HashMap<>());
         // Given
         CrewHistories crewHistories = new CrewHistories(
                 Map.of(hotteok, crewHistory1, mint, crewHistory2)
@@ -34,8 +34,8 @@ public class CrewHistoriesTest {
     @DisplayName("크루가 존재하지 않는다면 예외를 발생시킨다")
     @Test
     void crewNotExistTest() {
-        CrewHistory crewHistory1 = new CrewHistory(hotteok, new HashMap<>());
-        CrewHistory crewHistory2 = new CrewHistory(mint, new HashMap<>());
+        CrewHistory crewHistory1 = new CrewHistory(new HashMap<>());
+        CrewHistory crewHistory2 = new CrewHistory(new HashMap<>());
         // Given
         CrewHistories crewHistories = new CrewHistories(
                 Map.of(hotteok, crewHistory1, mint, crewHistory2)
@@ -52,34 +52,43 @@ public class CrewHistoriesTest {
     void findDismissalCrewsTest() {
         // Given
         LocalDate todayDate = LocalDate.of(2024, 12, 10);
-        CrewHistory crewHistory1 = new CrewHistory(hotteok, Map.of(
-                2, LocalDateTime.of(LocalDate.of(2024, 12, 2), DEFAULT_TIME),
-                3, LocalDateTime.of(LocalDate.of(2024, 12, 3), DEFAULT_TIME),
-                4, LocalDateTime.of(2024, 12, 4, 9, 30),
-                5, LocalDateTime.of(2024, 12, 5, 9, 30),
-                6, LocalDateTime.of(2024, 12, 6, 9, 30),
-                9, LocalDateTime.of(2024, 12, 9, 9, 30)
+        CrewHistory crewHistory1 = new CrewHistory(Map.of(
+                2, makeDefaultTime(2),
+                3, makeDefaultTime(3),
+                4, makeAttendance(4),
+                5, makeAttendance(5),
+                6, makeAttendance(6),
+                9, makeAttendance(9)
         ));
-        CrewHistory crewHistory2 = new CrewHistory(mint, Map.of(
-                2, LocalDateTime.of(LocalDate.of(2024, 12, 2), DEFAULT_TIME),
-                3, LocalDateTime.of(LocalDate.of(2024, 12, 3), DEFAULT_TIME),
-                4, LocalDateTime.of(LocalDate.of(2024, 12, 4), DEFAULT_TIME),
-                5, LocalDateTime.of(2024, 12, 5, 9, 30),
-                6, LocalDateTime.of(2024, 12, 6, 9, 30),
-                9, LocalDateTime.of(2024, 12, 9, 9, 30)
+        CrewHistory crewHistory2 = new CrewHistory(Map.of(
+                2, makeDefaultTime(2),
+                3, makeDefaultTime(3),
+                4, makeDefaultTime(4),
+                5, makeAttendance(5),
+                6, makeAttendance(6),
+                9, makeAttendance(9)
         ));
 
-        CrewHistory crewHistory3 = new CrewHistory(wilson, Map.of(
-                2, LocalDateTime.of(LocalDate.of(2024, 12, 2), DEFAULT_TIME),
-                3, LocalDateTime.of(LocalDate.of(2024, 12, 3), DEFAULT_TIME),
-                4, LocalDateTime.of(LocalDate.of(2024, 12, 4), DEFAULT_TIME),
-                5, LocalDateTime.of(LocalDate.of(2024, 12, 5), DEFAULT_TIME),
-                6, LocalDateTime.of(LocalDate.of(2024, 12, 6), DEFAULT_TIME),
-                9, LocalDateTime.of(LocalDate.of(2024, 12, 9), DEFAULT_TIME)
+        CrewHistory crewHistory3 = new CrewHistory(Map.of(
+                2, makeDefaultTime(2),
+                3, makeDefaultTime(3),
+                4, makeDefaultTime(4),
+                5, makeDefaultTime(5),
+                6, makeDefaultTime(6),
+                9, makeDefaultTime(9)
         ));
-        CrewHistories crewHistories = new CrewHistories(Map.of(hotteok, crewHistory1, mint, crewHistory2, wilson, crewHistory3));
+        CrewHistories crewHistories = new CrewHistories(
+                Map.of(hotteok, crewHistory1, mint, crewHistory2, wilson, crewHistory3));
 
         // When & Then
-        assertThat(crewHistories.findDismissalCrews(todayDate)).containsOnly(crewHistory1, crewHistory2, crewHistory3);
+        assertThat(crewHistories.findDismissalCrews(todayDate)).containsKeys(hotteok, mint, wilson);
+    }
+
+    private LocalDateTime makeDefaultTime(final int day) {
+        return LocalDateTime.of(LocalDate.of(2024, 12, day), DEFAULT_TIME);
+    }
+
+    private LocalDateTime makeAttendance(final int day) {
+        return LocalDateTime.of(2024, 12, day, 9, 30);
     }
 }
