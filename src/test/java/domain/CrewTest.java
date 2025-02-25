@@ -266,7 +266,7 @@ public class CrewTest {
             // then
             // 11일 결석
             assertAll(() -> assertThat(crew.getAbsentPenalty()).isEqualTo(WARNING),
-                    () -> assertThat(crew.getAbsentPenalty().getPenalty()).isEqualTo(WARNING.getPenalty()));
+                    () -> assertThat(crew.getAbsentPenalty()).isEqualTo(WARNING));
         }
 
         @DisplayName("특정 크루 면담 대상자 여부 판별")
