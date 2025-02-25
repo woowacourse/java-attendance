@@ -9,9 +9,16 @@ public class Crew implements Comparable<Crew> {
     private final String name;
     private final Attendance attendance;
 
+    private static final int DEFAULT_START_TIME = 2024;
+    private static final int DEFAULT_START_MONTH = 12;
+    private static final int DEFAULT_START_DAY = 2;
+
+    public static final LocalDate DEFAULT_START_DATE = java.time.LocalDate.of(DEFAULT_START_TIME, DEFAULT_START_MONTH,
+            DEFAULT_START_DAY);
+
     public Crew(String name) {
         this.name = name;
-        this.attendance = new Attendance(AttendanceDate.DEFAULT_START_DATE, LocalDate.now());
+        this.attendance = new Attendance(DEFAULT_START_DATE, LocalDate.now());
     }
 
     public String getName() {
