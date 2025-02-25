@@ -28,6 +28,13 @@ public class FileReaderPolicyTest {
     }
 
     @Test
+    @DisplayName("파일을 읽어들일 수 있다")
+    public void readLinesTest() {
+        assertThat(fileReaderPolicy.readLines())
+                .isInstanceOf(List.class);
+    }
+
+    @Test
     @DisplayName("쉼표에 따라 나눈 문자열의 개수가 차이가 나면 예외가 발생한다")
     public void validateFileFormatTest() {
         //given
@@ -61,7 +68,7 @@ public class FileReaderPolicyTest {
     }
 
     @Test
-    @DisplayName("파일을 읽어들여 출석부에 기록할 수 있다")
+    @DisplayName("파일 전체를 읽어들여 출석부에 기록할 수 있다")
     public void createAttendancesTest() {
         //given
         List<String> attendancesInfo = List.of(

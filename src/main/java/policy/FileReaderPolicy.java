@@ -13,7 +13,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class FileReaderPolicy {
-    private static final String FILE_PATH = "src/main/resources/attendances.csv";
 
     private static final String SPLIT_DELIMITER = ",";
     private static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
@@ -34,6 +33,13 @@ public class FileReaderPolicy {
         return new AttendanceSheet(attendances);
     }
 
+    public List<String> readLines() {
+        BufferedReader bufferedReader = new BufferedReader(fileReader);
+        return bufferedReader.lines()
+                .skip(HEADER)
+                .toList();
+    }
+
     public Attendance createAttendance(String line) {
         String[] splitLine = line.split(SPLIT_DELIMITER);
         validateSplitLineFormat(splitLine);
@@ -44,12 +50,6 @@ public class FileReaderPolicy {
         return new Attendance(nickname, dateTime.toLocalDate(), dateTime.toLocalTime());
     }
 
-    private List<String> readLines() {
-        BufferedReader bufferedReader = new BufferedReader(fileReader);
-        return bufferedReader.lines()
-                .skip(HEADER)
-                .toList();
-    }
 
     private FileReader readFile(String filePath) {
         try {
