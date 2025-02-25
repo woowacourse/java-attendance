@@ -14,4 +14,8 @@ public class AttendanceDate {
         }
         this.date = date;
     }
+
+    public boolean isEqualToDate(LocalDate date) {
+        return this.date.isEqual(date);
+    }
 }

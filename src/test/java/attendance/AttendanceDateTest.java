@@ -1,5 +1,6 @@
 package attendance;
 
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatCode;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 
@@ -34,5 +35,21 @@ public class AttendanceDateTest {
         LocalDate friday = LocalDate.of(2024, 12, 13);
         assertThatCode(() -> new AttendanceDate(friday))
                 .doesNotThrowAnyException();
+    }
+
+    @Test
+    void 같은_날이면_true를_반환한다() {
+        LocalDate date = LocalDate.of(2024, 12, 13);
+        AttendanceDate attendanceDate = new AttendanceDate(date);
+
+        assertThat(attendanceDate.isEqualToDate(date)).isTrue();
+    }
+
+    @Test
+    void 다른_날이면_false를_반환한다() {
+        LocalDate date = LocalDate.of(2024, 12, 13);
+        AttendanceDate attendanceDate = new AttendanceDate(date);
+
+        assertThat(attendanceDate.isEqualToDate(LocalDate.of(2024, 12, 12))).isFalse();
     }
 }
