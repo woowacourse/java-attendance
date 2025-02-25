@@ -1,4 +1,4 @@
-package attendance.domain;
+package attendance.domain.crew;
 
 import java.util.Objects;
 

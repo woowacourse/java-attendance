@@ -4,11 +4,12 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 
-import attendance.domain.AttendanceRecord;
 import attendance.domain.AttendanceSystem;
-import attendance.domain.AttendanceType;
-import attendance.domain.CrewStorage;
-import attendance.domain.HolidayChecker;
+import attendance.domain.checker.AttendanceChecker;
+import attendance.domain.checker.AttendanceType;
+import attendance.domain.checker.HolidayChecker;
+import attendance.domain.crew.CrewStorage;
+import attendance.domain.record.AttendanceRecord;
 import attendance.exception.ExceptionMessage;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -34,15 +35,17 @@ class AttendanceSystemTest {
 
     AttendanceSystem attendanceSystem;
     CrewStorage crewStorage;
+    AttendanceChecker attendanceChecker;
     HolidayChecker holidayChecker;
 
     @BeforeEach
     void beforeEach() {
-        holidayChecker = new HolidayChecker();
-        holidayChecker.addPublicHoliday(PUBLIC_HOLIDAY.toLocalDate());
         crewStorage = new CrewStorage();
         crewStorage.add(VALID_CREW_NICKNAME);
-        attendanceSystem = new AttendanceSystem(crewStorage, holidayChecker);
+        holidayChecker = new HolidayChecker();
+        holidayChecker.addPublicHoliday(PUBLIC_HOLIDAY.toLocalDate());
+        attendanceChecker = new AttendanceChecker(holidayChecker);
+        attendanceSystem = new AttendanceSystem(crewStorage, attendanceChecker);
     }
 
     @DisplayName("닉네임과 출석 시간으로 출석 기록을 추가할 수 있다")

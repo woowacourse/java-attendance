@@ -1,57 +1,32 @@
 package attendance.domain;
 
+import attendance.domain.checker.AttendanceChecker;
+import attendance.domain.checker.AttendanceType;
+import attendance.domain.crew.CrewStorage;
+import attendance.domain.record.AttendanceRecord;
 import attendance.exception.ExceptionMessage;
-import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.time.format.TextStyle;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 import java.util.Optional;
 
 public class AttendanceSystem {
 
     private final CrewStorage crewStorage;
-    private final HolidayChecker holidayChecker;
+    private final AttendanceChecker attendanceChecker;
     private final List<AttendanceRecord> records = new ArrayList<>();
 
-    public AttendanceSystem(CrewStorage crewStorage, HolidayChecker holidayChecker) {
+    public AttendanceSystem(CrewStorage crewStorage, AttendanceChecker attendanceChecker) {
         this.crewStorage = crewStorage;
-        this.holidayChecker = holidayChecker;
+        this.attendanceChecker = attendanceChecker;
     }
 
     public void addAttendanceRecord(String crewNickname, LocalDateTime arrivalDateTime) {
         crewStorage.validateIsNotContained(crewNickname);
-
-        Optional<AttendanceRecord> originRecord = findAttendanceRecord(crewNickname, arrivalDateTime.toLocalDate());
-        if (originRecord.isPresent()) {
-            throw new IllegalArgumentException(ExceptionMessage.ALREADY_ATTENDANCE.getMessage());
-        }
-
-        if (holidayChecker.checkHoliday(arrivalDateTime.toLocalDate())) {
-            String exceptionMessage = String.format(ExceptionMessage.HOLIDAY_ATTENDANCE.getMessage(),
-                    arrivalDateTime.getMonth().getValue(), arrivalDateTime.getDayOfMonth(),
-                    arrivalDateTime.getDayOfWeek().getDisplayName(TextStyle.SHORT, Locale.KOREA));
-            throw new IllegalArgumentException(exceptionMessage);
-        }
-
-        LocalTime arrivalTime = arrivalDateTime.toLocalTime();
-        if (arrivalTime.isBefore(LocalTime.of(8, 0, 0))
-                || arrivalTime.isAfter(LocalTime.of(22, 59, 59))) {
-            throw new IllegalArgumentException(ExceptionMessage.OUT_OF_CAMPUS_TIME.getMessage());
-        }
-
-        if (arrivalDateTime.getDayOfWeek() == DayOfWeek.MONDAY) {
-            AttendanceType type = AttendanceType.parse(LocalTime.of(13, 0, 0), arrivalDateTime.toLocalTime());
-            AttendanceRecord newRecord = new AttendanceRecord(crewNickname, arrivalDateTime, type);
-            records.add(newRecord);
-            return;
-        }
-
-        AttendanceType type = AttendanceType.parse(LocalTime.of(10, 0, 0), arrivalDateTime.toLocalTime());
-        AttendanceRecord newRecord = new AttendanceRecord(crewNickname, arrivalDateTime, type);
+        validateAlreadyAttendance(crewNickname, arrivalDateTime.toLocalDate());
+        AttendanceType attendanceType = attendanceChecker.checkAttendance(arrivalDateTime);
+        AttendanceRecord newRecord = new AttendanceRecord(crewNickname, arrivalDateTime, attendanceType);
         records.add(newRecord);
     }
 
@@ -59,5 +34,12 @@ public class AttendanceSystem {
         return records.stream()
                 .filter(record -> record.isSame(crewNickname, date))
                 .findAny();
+    }
+
+    private void validateAlreadyAttendance(String crewNickname, LocalDate date) {
+        Optional<AttendanceRecord> originRecord = findAttendanceRecord(crewNickname, date);
+        if (originRecord.isPresent()) {
+            throw new IllegalArgumentException(ExceptionMessage.ALREADY_ATTENDANCE.getMessage());
+        }
     }
 }

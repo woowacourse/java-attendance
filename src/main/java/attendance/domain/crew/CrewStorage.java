@@ -1,4 +1,4 @@
-package attendance.domain;
+package attendance.domain.crew;
 
 import attendance.exception.ExceptionMessage;
 import java.util.HashSet;

@@ -1,4 +1,4 @@
-package attendance.domain;
+package attendance.domain.checker;
 
 import java.time.LocalTime;
 

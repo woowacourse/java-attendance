@@ -1,5 +1,6 @@
-package attendance.domain;
+package attendance.domain.record;
 
+import attendance.domain.checker.AttendanceType;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Objects;
