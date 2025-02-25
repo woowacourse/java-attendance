@@ -14,10 +14,10 @@ public class Attendance {
     public Attendance(LocalDateTime attendanceDateTime) {
         this.attendanceDate = attendanceDateTime.toLocalDate();
         this.attendanceTime = attendanceDateTime.toLocalTime();
-        this.attendanceStatus = checkAttendanceStatus();
+        this.attendanceStatus = determineAttendanceStatus();
     }
 
-    private String checkAttendanceStatus() {
+    private String determineAttendanceStatus() {
         if (attendanceDate.getDayOfWeek().equals(DayOfWeek.MONDAY)) {
             if (attendanceTime.isBefore(LocalTime.of(13, 5)) || attendanceTime.equals(LocalTime.of(13, 5))) {
                 return "출석";

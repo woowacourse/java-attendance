@@ -11,7 +11,8 @@ import org.junit.jupiter.params.provider.MethodSource;
 public class AttendanceTest {
 
 
-    private static Stream<Arguments> checkAttendanceStatusTestCases() {
+    private static Stream<Arguments> determineAttendanceStatusTestCases() {
+        //given
         return Stream.of(
                 Arguments.of(LocalDateTime.of(2024, 12, 3, 9, 50),"출석"),
                 Arguments.of(LocalDateTime.of(2024, 12, 3, 10, 6),"지각"),
@@ -25,8 +26,10 @@ public class AttendanceTest {
     @DisplayName("등교시간에 따라 출석상태가 출석,지각,등교로 등록되는지 테스트")
     @ParameterizedTest
     @MethodSource("checkAttendanceStatusTestCases")
-    void checkAttendance(LocalDateTime localDateTime, String status) {
+    void determineAttendanceStatus(LocalDateTime localDateTime, String status) {
+        //when
         Attendance attendance = new Attendance(localDateTime);
+        //then
         Assertions.assertThat(attendance.getAttendanceStatus()).isEqualTo(status);
     }
 
