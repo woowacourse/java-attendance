@@ -19,6 +19,9 @@ public class Crew {
     }
 
     public void attendance(LocalDate date, LocalTime time) {
+        if (attendanceRecords.containsKey(date)) {
+            throw new IllegalArgumentException();
+        }
         attendanceRecords.put(date, time);
     }
 }
