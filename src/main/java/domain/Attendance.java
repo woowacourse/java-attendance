@@ -15,12 +15,27 @@ public class Attendance {
         updateStatus();
     }
 
+    public Attendance(Attendance attendance) {
+        this.day = attendance.day;
+        this.attendanceTime = attendance.attendanceTime;
+        this.isLate = attendance.isLate;
+        this.isAbsent = attendance.isAbsent;
+    }
+
+    public Day getDay() {
+        return new Day(day.getDate());
+    }
+
     public Boolean getLate() {
         return isLate;
     }
 
     public Boolean getAbsent() {
         return isAbsent;
+    }
+
+    public LocalTime getAttendanceTime() {
+        return attendanceTime;
     }
 
     public Boolean isEqualTo(LocalDate date) {
@@ -34,11 +49,6 @@ public class Attendance {
         }
         isLate = day.isLate(attendanceTime);
         isAbsent = day.isAbsent(attendanceTime);
-    }
-
-    public AttendanceDto toDto() {
-        LocalDate date = day.getDate();
-        return new AttendanceDto(date, isLate, isAbsent, attendanceTime);
     }
 
     public void updateAttendanceTime(LocalTime attendanceTime) {

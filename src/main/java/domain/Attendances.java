@@ -8,13 +8,24 @@ import java.util.List;
 public class Attendances {
     private static final Integer LATE_COUNT_FOR_ABSENT = 3;
 
-    private final List<Attendance> attendances = new ArrayList<>();
+    private final List<Attendance> attendances;
 
     public Attendances() {
+        attendances = new ArrayList<>();
     }
 
-    public void addAttendance(Attendance attendance) {
+    public Attendances(Attendances attendances) {
+        this.attendances = new ArrayList<>(attendances.getAttendances());
+    }
+
+    public void add(Attendance attendance) {
         attendances.add(attendance);
+    }
+
+    public List<Attendance> getAttendances() {
+        return attendances.stream()
+                .map(Attendance::new)
+                .toList();
     }
 
     public Integer getLateCount() {
@@ -29,13 +40,30 @@ public class Attendances {
                 .count();
     }
 
-    public Integer getNonAttendanceCount() {
+    public PenaltyStatus getPenaltyStatus() {
+        return PenaltyStatus.getInstance(getNonAttendanceCount());
+    }
+
+    private Integer getNonAttendanceCount() {
         return attendances.size() - -getAbsentCount() - getLateCount() / LATE_COUNT_FOR_ABSENT;
+    }
+
+    public Integer getTotalAttendanceCount() {
+        return attendances.size();
     }
 
     public Boolean isAlreadyAttended(LocalDate date) {
         return attendances.stream()
                 .anyMatch(attendance -> attendance.isEqualTo(date));
+    }
+
+    public void recordAbsence() {
+        LocalDate.now().withDayOfMonth(1)
+                .datesUntil(LocalDate.now())
+                .filter(date -> date.getDayOfWeek().getValue() < 6)
+                .filter(date -> !Holiday.isHoliday(date))
+                .filter(date -> !isAlreadyAttended(date))
+                .forEach(date -> add(new Attendance(new Day(date), null)));
     }
 
     public Attendance findByDate(Integer dayOfMonth) {
@@ -51,25 +79,6 @@ public class Attendances {
                 .orElseThrow(() -> new IllegalArgumentException("[ERROR] 해당 날짜는 출석일이 아닙니다."));
     }
 
-    public Integer getTotalAttendanceCount() {
-        return attendances.size();
-    }
-
-    public List<AttendanceDto> createAttendanceDtos() {
-        return attendances.stream()
-                .map(Attendance::toDto)
-                .toList();
-    }
-
-    public void recordAbsence() {
-        LocalDate.now().withDayOfMonth(1)
-                .datesUntil(LocalDate.now())
-                .filter(date -> date.getDayOfWeek().getValue() < 6)
-                .filter(date -> !Holiday.isHoliday(date))
-                .filter(date -> !isAlreadyAttended(date))
-                .forEach(date -> addAttendance(new Attendance(new Day(date), null)));
-    }
-    
     private void validateDayOfMonth(Integer dayOfMonth, LocalDate today) {
         YearMonth yearMonth = YearMonth.of(today.getYear(), today.getMonth().getValue());
         if (dayOfMonth < 1 || dayOfMonth > yearMonth.lengthOfMonth()) {
