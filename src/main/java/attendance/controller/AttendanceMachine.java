@@ -35,10 +35,7 @@ public class AttendanceMachine {
     public void start() throws IOException {
         List<String> attendanceFiles = FileReader.fileReadLine("attendances.csv");
         Register register = Register.createRegisterByCrewAttendanceTimeFile(attendanceFiles);
-        operationMap.put(AttendanceOperation.ONE, this::functionOne);
-        operationMap.put(AttendanceOperation.TWO, this::functionTwo);
-        operationMap.put(AttendanceOperation.THREE, this::functionThree);
-        operationMap.put(AttendanceOperation.FOUR, this::functionFour);
+        initializeOperationMap();
 
         boolean flag = true;
         while (flag) {
@@ -46,6 +43,13 @@ public class AttendanceMachine {
             flag = mappingFunction(attendanceOperation, LocalDate.now(), register);
         }
         inputView.closeScanner();
+    }
+
+    private void initializeOperationMap() {
+        operationMap.put(AttendanceOperation.ONE, this::functionOne);
+        operationMap.put(AttendanceOperation.TWO, this::functionTwo);
+        operationMap.put(AttendanceOperation.THREE, this::functionThree);
+        operationMap.put(AttendanceOperation.FOUR, this::functionFour);
     }
 
     private boolean mappingFunction(AttendanceOperation attendanceOperation, LocalDate now, Register register) {
@@ -80,18 +84,22 @@ public class AttendanceMachine {
         CampusTime campusTime = CampusTime.fromHourColonMinute(modifyTime);
         LocalDate date = LocalDate.of(now.getYear(), now.getMonth(), Integer.parseInt(modifyDay));
 
-        boolean isInfoExist = register.hasDateInfo(crewName, modifyDay);
-        if (!isInfoExist) {
-            DateInfo createDateInfo = register.findOrCreateDateInfo(crewName, date, campusTime);
-            outputView.writeAttendanceModifyCheck(createDateInfo);
+        if (!register.hasDateInfo(crewName, modifyDay)) {
+            createAndWriteDateInfo(register, crewName, date, campusTime);
             return;
         }
+
         DateInfo beforeDateInfo = register.findOrCreateDateInfo(crewName, date, campusTime);
         int beforeHour = beforeDateInfo.getCampusHour();
         int beforeMinute = beforeDateInfo.getCampusMinute();
         AttendanceStatus beforeStatus = beforeDateInfo.getAttendanceStatus();
         DateInfo afterDateInfo = register.modifyDateInfo(crewName, modifyDay, campusTime);
         outputView.writeAttendanceModifyCheck(beforeHour, beforeMinute, beforeStatus, afterDateInfo);
+    }
+
+    private void createAndWriteDateInfo(Register register, String crewName, LocalDate date, CampusTime campusTime) {
+        DateInfo createDateInfo = register.findOrCreateDateInfo(crewName, date, campusTime);
+        outputView.writeAttendanceModifyCheck(createDateInfo);
     }
 
     private void functionThree(LocalDate now, Register register) {

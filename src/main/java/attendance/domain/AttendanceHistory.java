@@ -4,7 +4,6 @@ import attendance.domain.constant.AttendanceStatus;
 import attendance.domain.constant.CrewStatus;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.EnumMap;
 import java.util.List;
@@ -35,6 +34,13 @@ public class AttendanceHistory {
         statusCountMap.put(AttendanceStatus.LATE, historyCount -> historyCount.set(1, historyCount.get(1) + 1));
         statusCountMap.put(AttendanceStatus.ABSENCE, historyCount -> historyCount.set(2, historyCount.get(2) + 1));
 
+        calculateHistoryCounts(now, dateInfos, statusCountMap, counts);
+        return new AttendanceHistory(crewName, counts.get(0), counts.get(1), counts.get(2));
+    }
+
+    private static void calculateHistoryCounts(LocalDate now, DateInfos dateInfos,
+                                               Map<AttendanceStatus, Consumer<List<Integer>>> statusCountMap,
+                                               List<Integer> counts) {
         for (int day = 1; day <= now.getDayOfMonth(); day++) {
             LocalDate currentDate = LocalDate.of(now.getYear(), now.getMonthValue(), day);
             if (isWeekend(currentDate)) {
@@ -43,7 +49,6 @@ public class AttendanceHistory {
             AttendanceStatus status = dateInfos.findAttendanceStatusByDay(day);
             statusCountMap.get(status).accept(counts);
         }
-        return new AttendanceHistory(crewName, counts.get(0), counts.get(1), counts.get(2));
     }
 
     private static boolean isWeekend(LocalDate currentDate) {
