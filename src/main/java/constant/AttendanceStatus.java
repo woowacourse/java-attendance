@@ -1,4 +1,4 @@
-package domain;
+package constant;
 
 import java.time.LocalDate;
 import java.time.LocalTime;

@@ -1,5 +1,6 @@
 package domain;
 
+import constant.AttendanceStatus;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import org.assertj.core.api.SoftAssertions;
