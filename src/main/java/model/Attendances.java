@@ -1,6 +1,7 @@
 package model;
 
 import common.Common;
+import exception.DuplicatedAttendanceRegistrationException;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
@@ -43,7 +44,7 @@ public class Attendances {
         if (oldAttendance.getTime().equals(Common.noneAttendanceTime)) {
             return;
         }
-        throw new IllegalArgumentException("중복 출석 등록은 불가능합니다.");
+        throw new DuplicatedAttendanceRegistrationException();
     }
 
     public Attendance findByDate(LocalDate date) { //TODO :private

@@ -11,4 +11,8 @@ public class OutputView {
                 newAttendance.findStatus().getMeaning()
         );
     }
+
+    public void printExceptionMessage(String message) {
+        System.out.println("[ERROR] " + message);
+    }
 }
