@@ -1,5 +1,7 @@
 package policy;
 
+import domain.Attendance;
+
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
@@ -22,22 +24,21 @@ public class FileReaderPolicy {
         this.fileReader = readFile(filePath);
     }
 
-    public void createAttendances() {
+    public Attendance createAttendances() {
         List<String> lines = readLines();
-
         for (String line : lines) {
             createAttendance(line);
         }
     }
 
-    public AttendanceSheet createAttendance(String line) {
+    public Attendance createAttendance(String line) {
         String[] splitLine = line.split(SPLIT_DELIMITER);
         validateSplitLineFormat(splitLine);
 
         String nickname = splitLine[0];
         LocalDateTime dateTime = parseAttendanceDateTime(splitLine[1]);
 
-        return new AttendanceSheet(nickname, dateTime.toLocalDate(), dateTime.toLocalTime());
+        return new Attendance(nickname, dateTime.toLocalDate(), dateTime.toLocalTime());
     }
 
     private List<String> readLines() {

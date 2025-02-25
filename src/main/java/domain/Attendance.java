@@ -1,14 +1,14 @@
-package policy;
+package domain;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
 
-public class AttendanceSheet {
+public class Attendance {
     private String nickname;
     private LocalDate date;
     private LocalTime time;
 
-    public AttendanceSheet(String nickname, LocalDate localDate, LocalTime localTime) {
+    public Attendance(String nickname, LocalDate localDate, LocalTime localTime) {
         this.nickname = nickname;
         this.date = localDate;
         this.time = localTime;

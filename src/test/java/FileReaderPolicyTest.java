@@ -1,8 +1,7 @@
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import policy.AttendanceSheet;
+import domain.Attendance;
 import policy.FileReaderPolicy;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -56,7 +55,7 @@ public class FileReaderPolicyTest {
 
         //when-then
         assertThat(fileReaderPolicy.createAttendance(attendanceInfo))
-                .isInstanceOf(AttendanceSheet.class);
+                .isInstanceOf(Attendance.class);
     }
 
 }
