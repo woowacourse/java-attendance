@@ -91,7 +91,7 @@ public class AttendanceMachine {
 
     private LocalDateTime readModifyDateTime(LocalDate now) {
         int modifyDate = readModifyDay();
-        List<String> modifyTime = Parser.convertToGroup(findModifyTime());
+        List<String> modifyTime = findModifyTime();
         return now.withDayOfMonth(modifyDate).atTime(
                 Parser.convertToNumber(modifyTime.getFirst()),
                 Parser.convertToNumber(modifyTime.getLast())
@@ -106,7 +106,7 @@ public class AttendanceMachine {
     }
 
     private LocalDateTime readAttendanceDateTime(LocalDate now) {
-        List<String> attendanceTime = Parser.convertToGroup(findAttendanceTime());
+        List<String> attendanceTime = findAttendanceTime();
         return now.atTime(Parser.convertToNumber(attendanceTime.getFirst()),
                 Parser.convertToNumber(attendanceTime.getLast()));
     }
@@ -119,12 +119,12 @@ public class AttendanceMachine {
         return retryUntilValidInput(() -> crews.findCrew(inputView.readModifyCrewName()));
     }
 
-    private String findAttendanceTime() {
-        return retryUntilValidInput(inputView::readAttendanceTime);
+    private List<String> findAttendanceTime() {
+        return Parser.convertToGroup(retryUntilValidInput(inputView::readAttendanceTime));
     }
 
-    private String findModifyTime() {
-        return retryUntilValidInput(inputView::readModifyTime);
+    private List<String> findModifyTime() {
+        return Parser.convertToGroup(retryUntilValidInput(inputView::readModifyTime));
     }
 
     private int readModifyDay() {
