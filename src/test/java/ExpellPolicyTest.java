@@ -34,6 +34,4 @@ public class ExpellPolicyTest {
                 Arguments.of(3,5)
         );
     }
-
-
 }
