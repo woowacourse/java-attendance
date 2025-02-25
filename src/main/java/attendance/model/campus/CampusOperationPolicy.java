@@ -1,5 +1,6 @@
 package attendance.model.campus;
 
+import attendance.Holiday;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -11,19 +12,25 @@ public class CampusOperationPolicy {
     private static final LocalTime DEFAULT_CLOSE_TIME = LocalTime.of(23, 0);
 
     public boolean isCampusOpen(final LocalDateTime dateTime) {
-        if (isWeekEnd(dateTime.toLocalDate())) {
-            return false;
-        }
-
-        final LocalTime time = dateTime.toLocalTime();
-
-        return time.isAfter(DEFAULT_OPEN_TIME.minusMinutes(1))
-                && time.isBefore(DEFAULT_CLOSE_TIME.plusMinutes(1));
+        return isOpenDate(dateTime.toLocalDate()) && isOpenTime(dateTime.toLocalTime());
     }
 
-    private boolean isWeekEnd(final LocalDate date) {
+    private boolean isOpenDate(final LocalDate date) {
+        return isWeekDay(date) || isNotHoliday(date);
+    }
+
+    private boolean isWeekDay(final LocalDate date) {
         final DayOfWeek dayOfWeek = date.getDayOfWeek();
 
-        return dayOfWeek == DayOfWeek.SATURDAY || dayOfWeek == DayOfWeek.SUNDAY;
+        return dayOfWeek != DayOfWeek.SATURDAY && dayOfWeek != DayOfWeek.SUNDAY;
+    }
+
+    private boolean isNotHoliday(final LocalDate date) {
+        return !Holiday.isHoliday(date);
+    }
+
+    private boolean isOpenTime(final LocalTime time) {
+        return time.isAfter(DEFAULT_OPEN_TIME.minusMinutes(1))
+                && time.isBefore(DEFAULT_CLOSE_TIME.plusMinutes(1));
     }
 }
