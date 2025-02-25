@@ -11,9 +11,9 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import view.InputView;
 
-public class StudentRepositoryTest {
+public class AttendanceBookTest {
     Controller controller = new Controller();
-    StudentRepository studentRepository = controller.createStudentRepository();
+    AttendanceBook studentRepository = controller.createStudentRepository();
     Student student = studentRepository.findStudentByName("빙티");
 
     @Test
