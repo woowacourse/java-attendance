@@ -71,9 +71,9 @@ class AttendanceLogsTest {
         );
 
         // When
-        final List<AttendanceLog> actual = attendanceLogs.getAllAttendanceLogs(from, to);
+        final List<AttendanceLog> actual = attendanceLogs.getAllAttendanceLogs(from, to, campusOperationPolicy);
 
         // Then
-        assertThat(actual).containsExactlyInAnyOrderElementsOf(expected);
+        assertThat(actual).containsExactlyElementsOf(expected);
     }
 }
