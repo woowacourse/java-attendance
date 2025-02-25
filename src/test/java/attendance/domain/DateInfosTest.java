@@ -56,9 +56,9 @@ class DateInfosTest {
         LocalDateTime localDateTime = LocalDateTime.of(2025, 2, 19, 10, 31);
         LocalDateTime localDateTime2 = LocalDateTime.of(2025, 2, 17, 13, 31);
         LocalDateTime localDateTime3= LocalDateTime.of(2025, 2, 20, 9, 59);
-        AttendanceChecker attendanceChecker = AttendanceChecker.of(localDateTime);
-        AttendanceChecker attendanceChecker2 = AttendanceChecker.of(localDateTime2);
-        AttendanceChecker attendanceChecker3 = AttendanceChecker.of(localDateTime3);
+        AttendanceChecker attendanceChecker = new AttendanceChecker(localDateTime);
+        AttendanceChecker attendanceChecker2 = new AttendanceChecker(localDateTime2);
+        AttendanceChecker attendanceChecker3 = new AttendanceChecker(localDateTime3);
 
         AttendanceRegistry attendanceRegistry = AttendanceRegistry.from(List.of(attendanceChecker, attendanceChecker2, attendanceChecker3));
 

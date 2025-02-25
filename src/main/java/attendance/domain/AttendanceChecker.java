@@ -10,13 +10,9 @@ public class AttendanceChecker {
     private AttendanceStatus attendanceStatus;
     private static final int DEFAULT_TIME = 0;
 
-    private AttendanceChecker(LocalDateTime localDateTime) {
+    public AttendanceChecker(LocalDateTime localDateTime) {
         this.localDateTime = localDateTime;
         this.attendanceStatus = AttendanceStatus.calculateStatus(localDateTime);
-    }
-
-    public static AttendanceChecker of(LocalDateTime localDateTime) {
-        return new AttendanceChecker(localDateTime);
     }
 
     public static AttendanceChecker makeDefaultValue(LocalDate localDate) {

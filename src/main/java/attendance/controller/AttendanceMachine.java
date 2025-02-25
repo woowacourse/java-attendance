@@ -102,7 +102,7 @@ public class AttendanceMachine {
         Crew crew = findCrew(crews);
         LocalDateTime attendanceTime = readAttendanceDateTime(now);
         register.modifyInfo(crew, attendanceTime);
-        outputView.writeAttendanceCheck(AttendanceChecker.of(attendanceTime));
+        outputView.writeAttendanceCheck(new AttendanceChecker(attendanceTime));
     }
 
     private LocalDateTime readAttendanceDateTime(LocalDate now) {

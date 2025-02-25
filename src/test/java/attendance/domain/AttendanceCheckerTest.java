@@ -19,7 +19,7 @@ class AttendanceCheckerTest {
         LocalDateTime localDateTime = LocalDateTime.of(year, month, day, Integer.parseInt(timeNumbers.get(0)),
                 Integer.parseInt(timeNumbers.get(1)));
         Weekday weekday = Weekday.from(localDateTime.getDayOfWeek());
-        AttendanceChecker attendanceChecker = AttendanceChecker.of(localDateTime);
+        AttendanceChecker attendanceChecker = new AttendanceChecker(localDateTime);
 
         //when
         String attendanceStatus = attendanceChecker.getAttendanceStatus();
@@ -44,7 +44,7 @@ class AttendanceCheckerTest {
                 Integer.parseInt(beforeTimeNumbers.get(0)), Integer.parseInt(beforeTimeNumbers.get(1)));
         LocalDateTime affterLocalDateTime = LocalDateTime.of(year, month, day,
                 Integer.parseInt(afterTimeNumbers.get(0)), Integer.parseInt(afterTimeNumbers.get(1)));
-        AttendanceChecker attendanceChecker = AttendanceChecker.of(beforeLocalDateTime);
+        AttendanceChecker attendanceChecker = new AttendanceChecker(beforeLocalDateTime);
         //when
         attendanceChecker.modifyAttendanceTime(affterLocalDateTime);
 
@@ -61,7 +61,7 @@ class AttendanceCheckerTest {
         LocalDateTime localDateTime = LocalDateTime.of(year, month, day, Integer.parseInt(timeNumbers.get(0)),
                 Integer.parseInt(timeNumbers.get(1)));
 
-        AttendanceChecker attendanceChecker = AttendanceChecker.of(localDateTime);
+        AttendanceChecker attendanceChecker = new AttendanceChecker(localDateTime);
 
         //when & then
         Assertions.assertThat(attendanceChecker.isAbsence()).isEqualTo(expectedStatus);
@@ -76,7 +76,7 @@ class AttendanceCheckerTest {
         LocalDateTime localDateTime = LocalDateTime.of(year, month, day, Integer.parseInt(timeNumbers.get(0)),
                 Integer.parseInt(timeNumbers.get(1)));
 
-        AttendanceChecker attendanceChecker = AttendanceChecker.of(localDateTime);
+        AttendanceChecker attendanceChecker = new AttendanceChecker(localDateTime);
 
         //when & then
         Assertions.assertThat(attendanceChecker.isLate()).isEqualTo(expectedStatus);
@@ -90,7 +90,7 @@ class AttendanceCheckerTest {
         LocalDateTime localDateTime = LocalDateTime.of(year, month, day, Integer.parseInt(timeNumbers.get(0)),
                 Integer.parseInt(timeNumbers.get(1)));
 
-        AttendanceChecker attendanceChecker = AttendanceChecker.of(localDateTime);
+        AttendanceChecker attendanceChecker = new AttendanceChecker(localDateTime);
         //when & then
         Assertions.assertThat(attendanceChecker.isAttendance()).isEqualTo(expectedStatus);
     }
