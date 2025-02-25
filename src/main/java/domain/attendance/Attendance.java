@@ -116,6 +116,6 @@ public class Attendance {
     }
 
     public List<AttendanceDate> getAttendanceDates() {
-        return Collections.unmodifiableList(attendanceDates);
+        return new ArrayList<>(attendanceDates);
     }
 }
