@@ -255,6 +255,21 @@ class AttendanceSystemTest {
         );
     }
 
+    @DisplayName("출석 기록 수정 - 캠퍼스 운영 시간이 아닌 경우 예외 메세지를 출력한다")
+    @ParameterizedTest
+    @ValueSource(strings = {"07:59:59", "23:00:00"})
+    void 출석_기록_수정_캠퍼스_운영_시간이_아닌_경우_예외_메세지를_출력한다(LocalTime time) {
+        LocalDateTime newDateTime = LocalDateTime.of(
+                COMMON_ATTENDANCE_DATE_TIME.toLocalDate(), time);
+
+        assertThatIllegalArgumentException()
+                .isThrownBy(() -> attendanceSystem.updateAttendance(
+                        VALID_CREW_NICKNAME,
+                        newDateTime.toLocalDate(),
+                        newDateTime.toLocalTime()))
+                .withMessage(ExceptionMessage.OUT_OF_CAMPUS_TIME.getMessage());
+    }
+
     void checkSameRecord(
             AttendanceRecord target,
             String expectedNickname,
