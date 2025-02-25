@@ -47,7 +47,7 @@ public class AttendanceController {
 
         String function = "";
         while (!function.equalsIgnoreCase("Q")) {
-            function = inputView.printFunction(currentDate);
+            function = inputView.readFunction(currentDate);
             validateFunctions(function, functions.keySet());
             functions.getOrDefault(function, () -> {
             }).run();
@@ -57,10 +57,7 @@ public class AttendanceController {
     private void attendCrew() {
         handleException(() -> {
             String name = inputView.readName();
-            InputValidator.checkNull(name);
-
             String time = inputView.readTime();
-            InputValidator.checkNull(time);
 
             LocalDate today = DateTimeParser.parseIntegerToDate(NOW_YEAR, NOW_MONTH, NOW_DAY);
             LocalTime attendedTime = DateTimeParser.parseStringToTime(time);
@@ -75,14 +72,8 @@ public class AttendanceController {
     private void editCrewRecord() {
         handleException(() -> {
             String name = inputView.readEditName();
-            InputValidator.checkNull(name);
-
             String dayOfMonth = inputView.readEditDayOfMonth();
-            InputValidator.checkNull(dayOfMonth);
-            InputValidator.checkInteger(dayOfMonth);
-
             String time = inputView.readEditTime();
-            InputValidator.checkNull(time);
 
             LocalDate editedDate = DateTimeParser
                 .parseIntegerToDate(NOW_YEAR, NOW_MONTH, Integer.parseInt(dayOfMonth));
@@ -98,7 +89,6 @@ public class AttendanceController {
     private void checkCrewRecords() {
         handleException(() -> {
             String name = inputView.readName();
-            InputValidator.checkNull(name);
 
             LocalDate currentDate = DateTimeParser.parseIntegerToDate(NOW_YEAR, NOW_MONTH, NOW_DAY);
             Crew crew = crews.findCrewByName(name);

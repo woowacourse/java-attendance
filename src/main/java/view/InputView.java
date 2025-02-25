@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.time.format.TextStyle;
 import java.util.Locale;
 import java.util.Scanner;
+import util.validator.InputValidator;
 
 public class InputView {
 
@@ -20,26 +21,37 @@ public class InputView {
     private static final String FUNCTION_Q_MESSAGE = "Q. 종료";
 
     public String readName() {
-        return basicInput(INPUT_NAME_MESSAGE);
+        String name = basicInput(INPUT_NAME_MESSAGE);
+        InputValidator.checkNull(name);
+        return name;
     }
 
     public String readTime() {
-        return basicInput(INPUT_TIME_MESSAGE);
+        String time = basicInput(INPUT_TIME_MESSAGE);
+        InputValidator.checkNull(time);
+        return time;
     }
 
     public String readEditName() {
-        return basicInput(INPUT_EDIT_NAME_MESSAGE);
+        String name = basicInput(INPUT_EDIT_NAME_MESSAGE);
+        InputValidator.checkNull(name);
+        return name;
     }
 
     public String readEditDayOfMonth() {
-        return basicInput(INPUT_EDIT_DAY_MESSAGE);
+        String dayOfMonth = basicInput(INPUT_EDIT_DAY_MESSAGE);
+        InputValidator.checkNull(dayOfMonth);
+        InputValidator.checkInteger(dayOfMonth);
+        return dayOfMonth;
     }
 
     public String readEditTime() {
-        return basicInput(INPUT_EDIT_TIME_MESSAGE);
+        String time = basicInput(INPUT_EDIT_TIME_MESSAGE);
+        InputValidator.checkNull(time);
+        return time;
     }
 
-    public String printFunction(LocalDate localDate) {
+    public String readFunction(LocalDate localDate) {
         Scanner sc = new Scanner(System.in);
         System.out.printf(CHOOSE_FUNCTION_MESSAGE,
             localDate.getMonthValue(),
