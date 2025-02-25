@@ -7,7 +7,6 @@ import attendance.domain.AttendanceHistory;
 import attendance.domain.AttendanceTime;
 import attendance.domain.AttendanceType;
 import attendance.domain.Crew;
-import attendance.domain.CrewStatus;
 import attendance.domain.DangerousCrew;
 import attendance.domain.DayOfWeek;
 import java.time.LocalDate;
@@ -28,9 +27,9 @@ public class OutputView {
 
     public void printModifyAttendanceResult(AttendanceHistory attendanceHistory,
         AttendanceHistory modifyAttendanceHistory) {
-        LocalDateTime attendanceTime = attendanceHistory.getAttendanceTime().getAttendanceTime();
+        LocalDateTime attendanceTime = attendanceHistory.getAttendanceTime().getTime();
         LocalDateTime modifyAttendanceTime = modifyAttendanceHistory.getAttendanceTime()
-            .getAttendanceTime();
+            .getTime();
         int month = attendanceTime.getMonthValue();
         int day = attendanceTime.getDayOfMonth();
         DayOfWeek dayOfWeek = DayOfWeek.calculateDayOfWeek(attendanceTime.toLocalDate());
@@ -52,7 +51,7 @@ public class OutputView {
         System.out.println(ATTENDANCE_INFO_MESSAGE.formatted(crew.getName()));
         for (AttendanceHistory attendanceHistory : attendanceHistories.getAttendanceHistories()) {
             LocalDateTime attendanceTime = attendanceHistory.getAttendanceTime()
-                .getAttendanceTime();
+                .getTime();
 
             int month = attendanceTime.getMonthValue();
             int day = attendanceTime.getDayOfMonth();
@@ -75,7 +74,7 @@ public class OutputView {
     public void printAttendanceResult(AttendanceHistory attendanceHistory) {
         AttendanceTime attendanceTime = attendanceHistory.getAttendanceTime();
         AttendanceType attendanceType = attendanceHistory.getAttendanceType();
-        LocalDateTime localDateTime = attendanceTime.getAttendanceTime();
+        LocalDateTime localDateTime = attendanceTime.getTime();
         LocalDate localDate = localDateTime.toLocalDate();
         LocalTime localTime = localDateTime.toLocalTime();
         int month = localDate.getMonthValue();
@@ -91,7 +90,7 @@ public class OutputView {
         System.out.println(INTERVIEW_TARGET_MESSAGE);
     }
 
-    public void printAttendanceTypeResult(Map<AttendanceType, Integer> attendanceResult) {
+    public void printAttendanceTypeResult(Map<AttendanceType, Long> attendanceResult) {
         for (AttendanceType attendanceType : attendanceResult.keySet()) {
             System.out.println(ATTENDANCE_TYPE_RESULT_MESSAGE.formatted(
                 attendanceType.getName(), attendanceResult.get(attendanceType))
@@ -105,7 +104,7 @@ public class OutputView {
 
     public void printDangerousCrews(DangerousCrew dangerousCrew) {
         AttendanceHistories attendanceHistories = dangerousCrew.getAttendanceHistories();
-        Map<AttendanceType, Integer> attendanceResult = attendanceHistories.calculateAttendanceResult();
+        Map<AttendanceType, Long> attendanceResult = attendanceHistories.calculateAttendanceResult();
         System.out.println(DANGEROUS_CREW_INFO.formatted(
             dangerousCrew.getCrewName(), attendanceResult.get(ABSENCE), attendanceResult.get(LATE),
             dangerousCrew.getStatusName()));

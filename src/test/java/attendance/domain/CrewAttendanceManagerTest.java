@@ -29,10 +29,10 @@ public class CrewAttendanceManagerTest {
             crew);
 
         List<AttendanceHistory> findAttendanceHistories = attendanceHistories.getAttendanceHistories();
-        assertThat(findAttendanceHistories.get(0).getAttendanceTime().getAttendanceTime()).isEqualTo(attendanceDateTime1);
+        assertThat(findAttendanceHistories.get(0).getAttendanceTime().getTime()).isEqualTo(attendanceDateTime1);
         assertThat(findAttendanceHistories.get(0).getAttendanceType()).isEqualTo(ATTENDANCE);
 
-        assertThat(findAttendanceHistories.get(1).getAttendanceTime().getAttendanceTime()).isEqualTo(attendanceDateTime2);
+        assertThat(findAttendanceHistories.get(1).getAttendanceTime().getTime()).isEqualTo(attendanceDateTime2);
         assertThat(findAttendanceHistories.get(1).getAttendanceType()).isEqualTo(LATE);
     }
 

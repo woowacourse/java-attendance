@@ -23,7 +23,7 @@ public enum CrewStatus {
         return name;
     }
 
-    public static CrewStatus calculateCrewStatus(Map<AttendanceType, Integer> attendanceResult) {
+    public static CrewStatus calculateCrewStatus(Map<AttendanceType, Long> attendanceResult) {
         int validateValue = 0;
         validateValue += attendanceResult.get(ABSENCE);
         validateValue += attendanceResult.get(LATE) / 3;

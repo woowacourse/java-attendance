@@ -39,7 +39,7 @@ public class AttendanceHistoriesTest {
         LocalDate findDate = LocalDate.of(2024, 2, 20);
 
         //when, then
-        assertThatThrownBy(() -> attendanceHistories.getValidationAttendanceDate(findDate))
+        assertThatThrownBy(() -> attendanceHistories.getAttendanceHistoryByDate(findDate))
             .isInstanceOf(IllegalArgumentException.class)
             .hasMessage(NOT_EXIST_ATTENDANCE.getMessage());
     }
@@ -57,7 +57,7 @@ public class AttendanceHistoriesTest {
         attendanceHistories.addAttendanceHistory(attendanceHistory2);
 
         LocalDate findDate = LocalDate.of(2024, 12, 10);
-        AttendanceHistory foundAttendanceHistory = attendanceHistories.getValidationAttendanceDate(
+        AttendanceHistory foundAttendanceHistory = attendanceHistories.getAttendanceHistoryByDate(
             findDate);
         assertThat(foundAttendanceHistory.getAttendanceTime().isSameDate(findDate)).isTrue();
         assertThat(foundAttendanceHistory.getAttendanceType()).isEqualTo(ABSENCE);
@@ -72,14 +72,14 @@ public class AttendanceHistoriesTest {
         AttendanceHistory currentAttendanceHistory = AttendanceHistory.from(currentAttendanceTime);
         attendanceHistories.addAttendanceHistory(currentAttendanceHistory);
 
-        AttendanceHistory beforeDate = attendanceHistories.getValidationAttendanceDate(
+        AttendanceHistory beforeDate = attendanceHistories.getAttendanceHistoryByDate(
             LocalDate.of(2024, 12, 11));
 
         LocalDateTime modifyAttendanceTime = LocalDateTime.of(2024, 12, 11, 10, 0);
 
         attendanceHistories.modifyAttendanceResult(modifyAttendanceTime);
 
-        AttendanceHistory afterDate = attendanceHistories.getValidationAttendanceDate(
+        AttendanceHistory afterDate = attendanceHistories.getAttendanceHistoryByDate(
             LocalDate.of(2024, 12, 11));
 
         AttendanceType beforeAttendanceType = beforeDate.getAttendanceType();

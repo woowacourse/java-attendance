@@ -75,7 +75,7 @@ public class AttendanceController {
         LocalTime modifyTime = inputView.inputAttendanceTime();
         AttendanceHistories attendanceHistories = crewAttendanceManager.findAttendanceHistoriesByCrew(
             crew);
-        AttendanceHistory attendanceHistory = attendanceHistories.getValidationAttendanceDate(
+        AttendanceHistory attendanceHistory = attendanceHistories.getAttendanceHistoryByDate(
             modifyDate);
         AttendanceHistory modifyAttendanceHistory = attendanceHistories.modifyAttendanceResult(
             LocalDateTime.of(modifyDate, modifyTime));
@@ -87,7 +87,7 @@ public class AttendanceController {
         Crew crew = crews.findByCrewName(crewName);
         AttendanceHistories attendanceHistories = crewAttendanceManager.findAttendanceHistoriesByCrew(
             crew);
-        Map<AttendanceType, Integer> attendanceResult = attendanceHistories.calculateAttendanceResult();
+        Map<AttendanceType, Long> attendanceResult = attendanceHistories.calculateAttendanceResult();
         outputView.printAttendanceHistories(crew, attendanceHistories);
         outputView.printAttendanceTypeResult(attendanceResult);
         CrewStatus crewStatus = CrewStatus.calculateCrewStatus(attendanceResult);
@@ -105,4 +105,6 @@ public class AttendanceController {
             outputView.printDangerousCrews(dangerousCrew);
         }
     }
+
+
 }

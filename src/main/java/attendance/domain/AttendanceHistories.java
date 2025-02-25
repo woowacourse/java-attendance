@@ -5,6 +5,7 @@ import static attendance.error.ErrorMessage.NOT_EXIST_ATTENDANCE;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -12,6 +13,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 public class AttendanceHistories {
 
@@ -25,12 +27,11 @@ public class AttendanceHistories {
         return new AttendanceHistories();
     }
 
-    public void calculateHistories(LocalDate localDate) {
-        int year = localDate.getYear();
-        int month = localDate.getMonthValue();
-        int day = localDate.getDayOfMonth();
+    public void calculateHistories(LocalDate currentDate) {
+        int day = currentDate.getDayOfMonth();
         for (int i = 1; i < day; i++) {
-            validateWeekdayAndCalculateAttendance(year, month, i);
+            LocalDate calculateDay = currentDate.withDayOfMonth(i);
+            validateWeekdayAndCalculateAttendance(calculateDay);
         }
     }
 
@@ -41,79 +42,70 @@ public class AttendanceHistories {
 
     public List<AttendanceHistory> getAttendanceHistories() {
         Collections.sort(attendanceHistories, Comparator.comparing(
-            history -> history.getAttendanceTime().getAttendanceTime().toLocalDate()
+            history -> history.getAttendanceTime().getTime().toLocalDate()
         ));
         return Collections.unmodifiableList(attendanceHistories);
     }
 
-    public AttendanceHistory getValidationAttendanceDate(LocalDate localDate) {
-        Optional<AttendanceHistory> attendanceHistoryByDate = getAttendanceHistoryByDate(localDate);
-        if (attendanceHistoryByDate.isEmpty()) {
-            throw new IllegalArgumentException(NOT_EXIST_ATTENDANCE.getMessage());
-        }
-        return attendanceHistoryByDate.get();
+    public AttendanceHistory getAttendanceHistoryByDate(LocalDate findDate) {
+        return validateNotExistAttendance(findDate);
     }
 
     public AttendanceHistory modifyAttendanceResult(LocalDateTime modifyDateTime) {
-        Optional<AttendanceHistory> attendanceHistory = getAttendanceHistoryByDate(
-            modifyDateTime.toLocalDate());
-        if (attendanceHistories.isEmpty()) {
-            throw new IllegalArgumentException(NOT_EXIST_ATTENDANCE.getMessage());
-        }
+        AttendanceHistory attendanceHistory = getAllAttendanceHistoryByDate(
+            modifyDateTime.toLocalDate()).orElseThrow(
+            () -> new IllegalArgumentException(NOT_EXIST_ATTENDANCE.getMessage()));
         AttendanceHistory modifyAttendanceHistory = AttendanceHistory.from(modifyDateTime);
-        attendanceHistories.remove(attendanceHistory.get());
+        attendanceHistories.remove(attendanceHistory);
         attendanceHistories.add(modifyAttendanceHistory);
         return modifyAttendanceHistory;
     }
 
-    public Map<AttendanceType, Integer> calculateAttendanceResult() {
+    public Map<AttendanceType, Long> calculateAttendanceResult() {
         Map<AttendanceType, Integer> attendanceResult = new LinkedHashMap<>();
         initAttendanceResult(attendanceResult);
-        for (AttendanceHistory attendanceHistory : attendanceHistories) {
-            AttendanceType attendanceType = attendanceHistory.getAttendanceType();
-            attendanceResult.put(attendanceType, attendanceResult.get(attendanceType) + 1);
-        }
-        return attendanceResult;
+        return attendanceHistories.stream()
+            .collect(
+                Collectors.groupingBy(AttendanceHistory::getAttendanceType, Collectors.counting()));
     }
 
-    private void validateWeekdayAndCalculateAttendance(int year, int month, int i) {
-        LocalDate findDate = LocalDate.of(year, month, i);
-        if (Holiday.isHoliday(findDate)) {
+    private void validateWeekdayAndCalculateAttendance(LocalDate calculateDay) {
+        if (Holiday.isHoliday(calculateDay)) {
             return;
         }
-        if (!DayOfWeek.isWeekday(findDate)) {
+        if (!DayOfWeek.isWeekday(calculateDay)) {
             return;
         }
-        Optional<AttendanceHistory> hasDate = getAttendanceHistoryByDate(findDate);
-        calculateAttendance(hasDate, year, month, i);
-    }
-
-    private void calculateAttendance(Optional<AttendanceHistory> hasDate, int year, int month,
-        int i) {
+        Optional<AttendanceHistory> hasDate = getAllAttendanceHistoryByDate(calculateDay);
         if (hasDate.isEmpty()) {
-            LocalDateTime notAttendanceTime = LocalDateTime.of(year, month, i, 0, 0);
-            AttendanceHistory attendanceHistory = AttendanceHistory.from(notAttendanceTime);
-            addAttendanceHistory(attendanceHistory);
+            addAbsenceAttendance(calculateDay);
         }
     }
 
-    private Optional<AttendanceHistory> getAttendanceHistoryByDate(LocalDate localDate) {
+    private void addAbsenceAttendance(LocalDate calculateDay) {
+        LocalDateTime notAttendanceTime = LocalDateTime.of(calculateDay, LocalTime.of(0, 0));
+        AttendanceHistory attendanceHistory = AttendanceHistory.from(notAttendanceTime);
+        addAttendanceHistory(attendanceHistory);
+    }
+
+    private Optional<AttendanceHistory> getAllAttendanceHistoryByDate(LocalDate localDate) {
         return attendanceHistories.stream()
             .filter(history -> history.findAttendanceTimeByDate(localDate))
             .findAny();
     }
 
-    /***
-     *  .줄이는 리팩토링 필요
-     */
     private void validateDuplicateHistory(AttendanceHistory attendanceHistory) {
-        boolean isSame = attendanceHistories.stream()
-            .anyMatch(result -> result.getAttendanceTime().
-                getAttendanceTime().toLocalDate()
-                .isEqual(attendanceHistory.getAttendanceTime().getAttendanceTime().toLocalDate()));
-        if (isSame) {
-            throw new IllegalArgumentException(ALREADY_EXIST_ATTENDANCE.getMessage());
-        }
+        attendanceHistories.stream()
+            .filter(result -> result.findAttendanceTimeByDate(attendanceHistory.getAttendanceDate()))
+            .findAny()
+            .ifPresent(result -> {
+                throw new IllegalArgumentException(ALREADY_EXIST_ATTENDANCE.getMessage());
+            });
+    }
+
+    private AttendanceHistory validateNotExistAttendance(LocalDate findDate) {
+        return getAllAttendanceHistoryByDate(findDate).orElseThrow(
+            () -> new IllegalArgumentException(NOT_EXIST_ATTENDANCE.getMessage()));
     }
 
     private void initAttendanceResult(Map<AttendanceType, Integer> attendanceResult) {

@@ -37,7 +37,11 @@ public class AttendanceTime {
         return currentDate.isEqual(findDate);
     }
 
-    public LocalDateTime getAttendanceTime() {
+    public LocalDate getLocalDate() {
+        return attendanceTime.toLocalDate();
+    }
+
+    public LocalDateTime getTime() {
         return attendanceTime;
     }
 

@@ -30,6 +30,10 @@ public class AttendanceHistory {
         return attendanceType;
     }
 
+    public LocalDate getAttendanceDate() {
+        return attendanceTime.getLocalDate();
+    }
+
     @Override
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) {

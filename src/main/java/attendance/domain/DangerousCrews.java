@@ -38,7 +38,7 @@ public class DangerousCrews {
     private void addDangerousCrew(CrewAttendanceManager crewAttendanceManager, Crew crew) {
         AttendanceHistories attendanceHistories = crewAttendanceManager.findAttendanceHistoriesByCrew(
             crew);
-        Map<AttendanceType, Integer> attendanceResult = attendanceHistories.calculateAttendanceResult();
+        Map<AttendanceType, Long> attendanceResult = attendanceHistories.calculateAttendanceResult();
         CrewStatus crewStatus = calculateCrewStatus(attendanceResult);
         if (crewStatus != CLEAR) {
             DangerousCrew dangerousCrew = DangerousCrew.of(crew, crewStatus, attendanceHistories);
