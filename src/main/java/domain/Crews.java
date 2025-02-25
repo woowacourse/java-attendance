@@ -2,7 +2,6 @@ package domain;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -21,13 +20,13 @@ public class Crews {
         findCrew.addAttendance(attendanceTime);
     }
 
-     public String editHistory(String username, LocalDateTime localDateTime) {
+    public String editHistory(String username, LocalDateTime localDateTime) {
         Crew findCrew = getCrew(username);
         findCrew.editHistory(localDateTime);
         return findCrew.getHistoryResult(localDateTime);
     }
 
-    public Map<String, Integer> getAttendanceAllResult(String username, LocalDateTime localDateTime) {
+    public Map<AttendanceResult, Integer> getAttendanceAllResult(String username, LocalDateTime localDateTime) {
         Crew findCrew = getCrew(username);
         return findCrew.getAttendanceAllResult(localDateTime);
     }
@@ -41,6 +40,7 @@ public class Crews {
         Crew findCrew = getCrew(username);
         return findCrew.getBeforeHistories(standard);
     }
+
     public String getHistoryResult(String username, LocalDateTime attendanceTime) {
         Crew findCrew = getCrew(username);
         return findCrew.getHistoryResult(attendanceTime);

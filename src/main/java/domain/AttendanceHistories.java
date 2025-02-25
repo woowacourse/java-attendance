@@ -27,9 +27,9 @@ public class AttendanceHistories {
     }
 
     public AbsenceLevel classifyAbsenceLevel(LocalDateTime standard) {
-        Map<String, Integer> results = getAttendanceResultCount(standard);
-        int absentCount = results.getOrDefault(ABSENCE.getResult(), 0);
-        int lateCount = results.getOrDefault(LATE.getResult(), 0);
+        Map<AttendanceResult, Integer> results = getAttendanceResultCount(standard);
+        int absentCount = results.getOrDefault(ABSENCE, 0);
+        int lateCount = results.getOrDefault(LATE, 0);
         return AbsenceLevel.findAbsenceLevel(absentCount, lateCount);
     }
 
@@ -59,12 +59,12 @@ public class AttendanceHistories {
         histories.add(new AttendanceHistory(time));
     }
 
-    public Map<String, Integer> getAttendanceResultCount(LocalDateTime standard) {
-        Map<String, Integer> results = new HashMap<>();
+    public Map<AttendanceResult, Integer> getAttendanceResultCount(LocalDateTime standard) {
+        Map<AttendanceResult, Integer> results = new HashMap<>();
         histories.stream().filter(history -> history.isBeforeHistory(standard))
                 .forEach(history -> {
-                    String result = history.getAttendanceResult();
-                    results.put(result, results.getOrDefault(result, 0) + 1);
+                    AttendanceResult attendanceResult = history.getAttendanceResult();
+                    results.put(attendanceResult, results.getOrDefault(attendanceResult, 0) + 1);
                 });
         return results;
     }
@@ -81,7 +81,7 @@ public class AttendanceHistories {
                 .filter(history -> (history.getAttendanceTime().getDayOfMonth() == time.getDayOfMonth()) &&
                         (history.getAttendanceTime().getMonthValue() == time.getMonthValue())).findFirst()
                 .orElseThrow(() -> new IllegalArgumentException("[ERROR] 해당 날짜 출석 기록이 없습니다. 출석 기록이 있는 날짜를 입력해 주세요."));
-        return findAttendanceHistory.getAttendanceResult();
+        return findAttendanceHistory.getAttendanceResult().getResult();
     }
 
     public LocalDateTime getHistory(LocalDateTime time) {

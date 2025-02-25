@@ -47,8 +47,8 @@ public class AttendanceHistory implements Comparable<AttendanceHistory> {
         return attendanceTime;
     }
 
-    public String getAttendanceResult() {
-        return attendanceResult.getResult();
+    public AttendanceResult getAttendanceResult() {
+        return attendanceResult;
     }
 
     private AttendanceResult getAttendanceResult(LocalDateTime attendanceTime) {

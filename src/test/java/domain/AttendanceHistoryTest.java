@@ -21,7 +21,7 @@ public class AttendanceHistoryTest {
         LocalDateTime time = LocalDateTime.of(2025, 2, 18, 10, minutes);
         AttendanceHistory attendanceHistory = new AttendanceHistory(time);
         // when
-        String result = attendanceHistory.getAttendanceResult();
+        String result = attendanceHistory.getAttendanceResult().getResult();
         // then
         assertThat(result).isEqualTo(expected);
     }

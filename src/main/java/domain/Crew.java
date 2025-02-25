@@ -49,7 +49,7 @@ public class Crew {
         return attendanceHistories.classifyAbsenceLevel(time);
     }
 
-    public Map<String, Integer> getAttendanceAllResult(LocalDateTime time) {
+    public Map<AttendanceResult, Integer> getAttendanceAllResult(LocalDateTime time) {
         return attendanceHistories.getAttendanceResultCount(time);
     }
 }
