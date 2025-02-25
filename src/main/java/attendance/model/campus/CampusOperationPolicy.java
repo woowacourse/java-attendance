@@ -29,7 +29,7 @@ public class CampusOperationPolicy {
         return !Holiday.isHoliday(date);
     }
 
-    private boolean isOpenTime(final LocalTime time) {
+    public boolean isOpenTime(final LocalTime time) {
         return time.isAfter(DEFAULT_OPEN_TIME.minusMinutes(1))
                 && time.isBefore(DEFAULT_CLOSE_TIME.plusMinutes(1));
     }
