@@ -23,7 +23,7 @@ public class AttendanceTime {
     }
 
     public static AttendanceTime nullObject() {
-        return null;
+        return new AttendanceTime(null);
     }
 
     private static void validateCampusOperationTime(
