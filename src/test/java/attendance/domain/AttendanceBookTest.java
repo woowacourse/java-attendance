@@ -15,7 +15,6 @@ class AttendanceBookTest {
     private String name;
     private AttendanceBook attendanceBook;
 
-
     @BeforeEach
     void setUp() {
         names = new ArrayList<>();
