@@ -57,11 +57,6 @@ public class Register {
         return dateInfos.hasDateInfo(Integer.parseInt(day));
     }
 
-    public DateInfo findDateInfo(String crewName, String day) {
-        DateInfos dateInfos = register.get(crews.findCrew(crewName));
-        return dateInfos.findDateInfoByDay(Integer.parseInt(day));
-    }
-
     public DateInfo findOrCreateDateInfo(String crewName, LocalDate date, CampusTime campusTime) {
         DateInfos dateInfos = register.get(crews.findCrew(crewName));
         return dateInfos.findOrCreateDateInfoByDate(date, campusTime);

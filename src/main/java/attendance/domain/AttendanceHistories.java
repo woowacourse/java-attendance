@@ -1,7 +1,5 @@
 package attendance.domain;
 
-import attendance.exception.CustomException;
-import attendance.exception.ErrorMessage;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -26,13 +24,6 @@ public class AttendanceHistories {
             attendanceHistories.add(AttendanceHistory.fromDateInfos(crewName, now, dateInfos));
         }
         return new AttendanceHistories(attendanceHistories);
-    }
-
-    public AttendanceHistory findAttendanceHistoryByCrewName(String crewName) {
-        return attendanceHistories.stream()
-                .filter(history -> history.findByCrewName(crewName))
-                .findFirst()
-                .orElseThrow(() -> CustomException.from(ErrorMessage.NICKNAME_NOT_PRESENCE));
     }
 
     public List<AttendanceHistory> findWarningAttendanceHistory() {
