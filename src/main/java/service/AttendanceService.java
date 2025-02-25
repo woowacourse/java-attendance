@@ -63,21 +63,23 @@ public class AttendanceService {
             String nickname, LocalDate today) {
         List<AttendanceRecordResponse> monthAttendanceRecords = new ArrayList<>();
         for (int day = 1; day < today.getDayOfMonth(); day++) {
-            LocalDate targetDate = today.withDayOfMonth(day);
-            if (!LectureTime.isLectureDate(targetDate)) {
-                continue;
-            }
-            if (!AttendanceRecordRepository.exists(nickname, targetDate)) {
-                monthAttendanceRecords.add(AttendanceRecordResponse.from(targetDate));
-            } else {
-                monthAttendanceRecords.add(
-                        AttendanceRecordResponse.from(
-                                AttendanceRecordRepository.find(nickname, targetDate)
-                        )
-                );
-            }
+            addAttendanceRecord(nickname, today.withDayOfMonth(day), monthAttendanceRecords);
         }
         return monthAttendanceRecords;
+    }
+
+    private void addAttendanceRecord(String nickname, LocalDate targetDate,
+                                     List<AttendanceRecordResponse> monthAttendanceRecords) {
+        if (!LectureTime.isLectureDate(targetDate)) {
+            return;
+        }
+        if (!AttendanceRecordRepository.exists(nickname, targetDate)) {
+            monthAttendanceRecords.add(AttendanceRecordResponse.from(targetDate));
+            return;
+        }
+        monthAttendanceRecords.add(
+                AttendanceRecordResponse.from(AttendanceRecordRepository.find(nickname, targetDate))
+        );
     }
 
     private Map<String, Integer> calculateAttendanceStatusCount(List<AttendanceRecordResponse> monthAttendanceRecords) {
