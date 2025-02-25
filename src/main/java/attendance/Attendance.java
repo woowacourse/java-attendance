@@ -27,7 +27,6 @@ public class Attendance {
     }
 
     public Attendance attend(String timeInput, LocalDate today) {
-
         checkHoliday(today);
         if(Objects.equals("--:--", timeInput)) {
             String attendanceStatus = "결석";
@@ -57,7 +56,7 @@ public class Attendance {
     }
 
     private LocalTime formatTimeInput(String timeInput) {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("[HH:mm][HH:m][H:mm][H:m]");
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("[HH:mm][H:mm][HH:m][H:m]");
         return LocalTime.parse(timeInput, formatter);
     }
 
