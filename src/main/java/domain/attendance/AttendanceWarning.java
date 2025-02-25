@@ -1,5 +1,7 @@
 package domain.attendance;
 
+import java.util.Arrays;
+
 public enum AttendanceWarning {
     WEEDING("제적", 6),
     INTERVIEW("면담", 3),
@@ -16,12 +18,10 @@ public enum AttendanceWarning {
     }
 
     public static AttendanceWarning determineAttendanceWarning(int absenceIncludingTardyCount) {
-        for (AttendanceWarning value : values()) {
-            if (value.absenceCount <= absenceIncludingTardyCount) {
-                return value;
-            }
-        }
-        return NONE;
+        return Arrays.stream(values())
+                .filter(value -> value.absenceCount <= absenceIncludingTardyCount)
+                .findFirst()
+                .orElse(NONE);
     }
 
     public String getStatus() {
