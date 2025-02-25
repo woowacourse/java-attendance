@@ -7,7 +7,7 @@ import attendance.domain.attendance.AttendanceBook;
 
 public class StatisticManger {
     private final AttendanceBook attendanceBook;
-    private final StringBuilder builder = new StringBuilder();
+    private final StringBuilder report = new StringBuilder();
 
     public StatisticManger(AttendanceBook attendanceBook) {
         this.attendanceBook = attendanceBook;
@@ -23,20 +23,20 @@ public class StatisticManger {
     }
 
     public String getResult() {
-        return builder.toString();
+        return report.toString();
     }
 
     private void writeReport(String nickname, List<String> history, StatusStatistic statistic) {
-        builder.append(Message.INITIALIZE.getMessage(nickname));
-        history.forEach(builder::append);
+        report.append(Message.INITIALIZE.getMessage(nickname));
+        history.forEach(report::append);
 
-        builder.append(statistic.getReportDetail());
+        report.append(statistic.getReportDetail());
 
         StatusStatistic.SanctionLevel level = statistic.judgeSanctionLevel();
         if (level.equals(StatusStatistic.SanctionLevel.NONE)) {
             return;
         }
-        builder.append(Message.SANCTION_LEVEL.getMessage(statistic.judgeSanctionLevel().getValues()));
+        report.append(Message.SANCTION_LEVEL.getMessage(statistic.judgeSanctionLevel().getValues()));
     }
 
     protected enum Message {

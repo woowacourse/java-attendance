@@ -16,7 +16,7 @@ public class RegisterManager {
     public static final String dd = "(%s)";
 
     private final AttendanceBook attendanceBook;
-    private final StringBuilder builder = new StringBuilder();
+    private final StringBuilder report = new StringBuilder();
 
     public RegisterManager(AttendanceBook attendanceBook) {
         this.attendanceBook = attendanceBook;
@@ -32,7 +32,7 @@ public class RegisterManager {
             String formattedDateTime = getFormatter(ATTENDANCE_INFO).format(dateTime);
             String status = attendance.attendanceStatus().getValue();
             String formattedStatus = String.format(dd, status);
-            builder.append(formattedDateTime)
+            report.append(formattedDateTime)
                 .append(formattedStatus);
         } catch (NullPointerException e) {
             throw new AttendanceArgumentException(NOT_REGISTERED_NICKNAME);
@@ -40,7 +40,7 @@ public class RegisterManager {
     }
 
     public String getResult() {
-        return builder.toString();
+        return report.toString();
     }
 
     private void isDuplicateAttendance(Attendance attendance, AttendanceList attendanceList) {

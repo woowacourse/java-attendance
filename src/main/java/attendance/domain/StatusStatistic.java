@@ -1,12 +1,16 @@
 package attendance.domain;
 
+import java.util.Arrays;
+import java.util.Comparator;
 import java.util.Map;
+import java.util.function.Predicate;
 
 import attendance.domain.attendance.AttendanceList;
 
 public class StatusStatistic implements Comparable<StatusStatistic> {
     private static final String FORMAT_STATE = "%s: %d회\n";
     private static final String FORMAT_SANCTION = "- %s: 결석 %d회, 지각 %d회 (%s)\n";
+    public static final int DIVIDER = 3;
 
     private final Map<AttendanceStatus, Integer> statistic;
     private final String nickname;
@@ -36,21 +40,8 @@ public class StatusStatistic implements Comparable<StatusStatistic> {
     public SanctionLevel judgeSanctionLevel() {
         int late = statistic.getOrDefault(AttendanceStatus.LATE, 0);
         int absence = statistic.getOrDefault(AttendanceStatus.ABSENCE, 0);
-        var weight = late / 3 + absence;
-        return calculateSanctionLevel(weight);
-    }
-
-    private SanctionLevel calculateSanctionLevel(int weight) {
-        if (weight > 5) {
-            return SanctionLevel.DISMISS;
-        }
-        if (weight >= 3) {
-            return SanctionLevel.NEED_MEETING;
-        }
-        if (weight > 1) {
-            return SanctionLevel.WARNING;
-        }
-        return SanctionLevel.NONE;
+        var weight = late / DIVIDER + absence;
+        return SanctionLevel.getByWight(weight);
     }
 
     public String getReportSanctions() {
@@ -64,44 +55,51 @@ public class StatusStatistic implements Comparable<StatusStatistic> {
         return stringBuilder.toString();
     }
 
-    @Override
-    public int compareTo(StatusStatistic o) {
-        SanctionLevel sanctionLevel = judgeSanctionLevel();
-        SanctionLevel otherSanctionLevel = o.judgeSanctionLevel();
-        if (sanctionLevel == otherSanctionLevel) {
-            return compareToWeight(o);
-        }
-        return sanctionLevel.compareTo(otherSanctionLevel);
+    private String getName() {
+        return nickname;
     }
 
-    private int compareToWeight(StatusStatistic o) {
-        int weight = statistic.getOrDefault(AttendanceStatus.ABSENCE, 0)
+    private int getWeight() {
+        return statistic.getOrDefault(AttendanceStatus.ABSENCE, 0)
             + statistic.getOrDefault(AttendanceStatus.LATE, 0);
-        int otherWeight = o.statistic.getOrDefault(AttendanceStatus.ABSENCE, 0)
-            + o.statistic.getOrDefault(AttendanceStatus.LATE, 0);
+    }
 
-        if (weight == otherWeight) {
-            return nickname.compareTo(o.nickname);
-        }
-
-        return otherWeight - weight;
+    @Override
+    public int compareTo(StatusStatistic o) {
+        return Comparator.comparing(StatusStatistic::judgeSanctionLevel)
+            .thenComparing(StatusStatistic::getWeight, Comparator.reverseOrder())
+            .thenComparing(StatusStatistic::getName)
+            .compare(this, o);
     }
 
     public enum SanctionLevel {
-        DISMISS("제적"),
-        NEED_MEETING("면담"),
-        WARNING("경고"),
-        NONE(""),
+        DISMISS("제적", weight -> weight > 5),
+        NEED_MEETING("면담", weight -> weight >= 3),
+        WARNING("경고", weight -> weight > 1),
+        NONE("", weight -> weight <= 1),
         ;
 
         public String getValues() {
             return value;
         }
 
+        private final Predicate<Integer> condition;
         private final String value;
 
-        SanctionLevel(String value) {
+        SanctionLevel(String value, Predicate<Integer> condition) {
             this.value = value;
+            this.condition = condition;
+        }
+
+        public boolean matches(int wight) {
+            return condition.test(wight);
+        }
+
+        public static SanctionLevel getByWight(int wight) {
+            return Arrays.stream(values())
+                .filter(status -> status.matches(wight))
+                .findFirst()
+                .orElse(NONE);
         }
     }
 }

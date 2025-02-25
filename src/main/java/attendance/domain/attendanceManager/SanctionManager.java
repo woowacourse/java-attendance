@@ -9,7 +9,7 @@ public class SanctionManager {
     public static final String INIT_MESSAGE = "\n제적 위험자 조회 결과\n";
 
     private final AttendanceBook attendanceBook;
-    private final StringBuilder builder = new StringBuilder();
+    private final StringBuilder report = new StringBuilder();
 
     public SanctionManager(AttendanceBook attendanceBook) {
         this.attendanceBook = attendanceBook;
@@ -20,14 +20,15 @@ public class SanctionManager {
     }
 
     public String getResult() {
-        builder.append(INIT_MESSAGE);
+        report.append(INIT_MESSAGE);
         List<String> reportDetails = attendanceBook.statusStatistics()
             .stream()
             .map(StatusStatistic::getReportSanctions)
             .toList();
+
         for (String reportDetail : reportDetails) {
-            builder.append(reportDetail);
+            report.append(reportDetail);
         }
-        return builder.toString();
+        return report.toString();
     }
 }
