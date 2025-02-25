@@ -1,16 +1,14 @@
+import static org.assertj.core.api.Assertions.assertThat;
+
 import domain.Attendance;
-import domain.AttendanceDto;
 import domain.Day;
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.util.stream.Stream;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
-
-import java.time.LocalDate;
-import java.time.LocalTime;
-import java.util.stream.Stream;
-
-import static org.assertj.core.api.Assertions.assertThat;
 
 public class AttendanceUpdateTest {
 
@@ -40,9 +38,7 @@ public class AttendanceUpdateTest {
 
         attendance.updateAttendanceTime(modifiedTime);
 
-        AttendanceDto attendanceDto = attendance.toDto();
-
-        assertThat(attendanceDto.getAttendanceTime()).isEqualTo(LocalTime.of(9, 58));
+        assertThat(attendance.getAttendanceTime()).isEqualTo(LocalTime.of(9, 58));
     }
 
     @ParameterizedTest
@@ -56,9 +52,7 @@ public class AttendanceUpdateTest {
 
         attendance.updateAttendanceTime(modifiedTime);
 
-        AttendanceDto attendanceDto = attendance.toDto();
-
-        assertThat(attendanceDto.getLate()).isEqualTo(isLate);
+        assertThat(attendance.getLate()).isEqualTo(isLate);
     }
 
     @ParameterizedTest
@@ -72,8 +66,6 @@ public class AttendanceUpdateTest {
 
         attendance.updateAttendanceTime(modifiedTime);
 
-        AttendanceDto attendanceDto = attendance.toDto();
-
-        assertThat(attendanceDto.getAbsent()).isEqualTo(isAbsent);
+        assertThat(attendance.getAbsent()).isEqualTo(isAbsent);
     }
 }

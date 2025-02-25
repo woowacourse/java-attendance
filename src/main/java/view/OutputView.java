@@ -1,7 +1,8 @@
 package view;
 
-import domain.AttendanceDto;
-import domain.CrewDto;
+import domain.Attendance;
+import domain.Attendances;
+import domain.Crew;
 import domain.DayOfWeek;
 import java.time.LocalDate;
 import java.util.Comparator;
@@ -23,25 +24,25 @@ public class OutputView {
                 today.getMonth().getValue(), today.getDayOfMonth(), dayOfWeekName);
     }
 
-    public void printAttendanceInformation(AttendanceDto attendanceDto) {
+    public void printAttendanceInformation(Attendance attendance) {
         LocalDate today = LocalDate.now();
         String dayOfWeekName = DayOfWeek.getNameById(today.getDayOfWeek().getValue());
-        String attendanceTime = Converter.covertLocalTimeToString(attendanceDto.getAttendanceTime());
-        String attendanceStatusName = getAttendanceStatusName(attendanceDto);
+        String attendanceTime = Converter.covertLocalTimeToString(attendance.getAttendanceTime());
+        String attendanceStatusName = getAttendanceStatusName(attendance);
         System.out.printf("%d월 %02d일 %s %s (%s)\n", today.getMonth().getValue(), today.getDayOfMonth(), dayOfWeekName,
                 attendanceTime, attendanceStatusName);
     }
 
-    public void printUpdatedAttendanceHistory(AttendanceDto originalAttendanceDto, AttendanceDto editedAttendanceDto) {
+    public void printUpdatedAttendanceHistory(Attendance originalAttendance, Attendance editedAttendance) {
 
-        LocalDate date = editedAttendanceDto.getDate();
+        LocalDate date = editedAttendance.getDay().getDate();
         String dayOfWeekName = DayOfWeek.getNameById(date.getDayOfWeek().getValue());
 
-        String originalAttendanceTime = Converter.covertLocalTimeToString(originalAttendanceDto.getAttendanceTime());
-        String editedAttendanceTime = Converter.covertLocalTimeToString(editedAttendanceDto.getAttendanceTime());
+        String originalAttendanceTime = Converter.covertLocalTimeToString(originalAttendance.getAttendanceTime());
+        String editedAttendanceTime = Converter.covertLocalTimeToString(editedAttendance.getAttendanceTime());
 
-        String originAttendanceStatusName = getAttendanceStatusName(originalAttendanceDto);
-        String editedAttendanceStatusName = getAttendanceStatusName(editedAttendanceDto);
+        String originAttendanceStatusName = getAttendanceStatusName(originalAttendance);
+        String editedAttendanceStatusName = getAttendanceStatusName(editedAttendance);
 
         System.out.printf("%d월 %02d일 %s %s (%s) -> %s (%s) 수정 완료!\n",
                 date.getMonth().getValue(), date.getDayOfMonth(), dayOfWeekName,
@@ -53,12 +54,12 @@ public class OutputView {
         System.out.printf("이번 달 %s의 출석 기록입니다.\n\n", nickname);
     }
 
-    public void printAttendanceHistoryWithCrew(CrewDto crewDto) {
-        int lateCount = crewDto.getLateCount();
-        int absentCount = crewDto.getAbsentCount();
-        int attendanceCount = crewDto.getAttendances().getTotalAttendanceCount() - lateCount - absentCount;
+    public void printAttendanceHistoryWithCrew(Attendances attendances) {
+        int lateCount = attendances.getLateCount();
+        int absentCount = attendances.getAbsentCount();
+        int attendanceCount = attendances.getTotalAttendanceCount() - lateCount - absentCount;
 
-        crewDto.getAttendanceDtos().stream()
+        attendances.getAttendances().stream()
                 .map(this::formatAttendanceRecord)
                 .forEach(System.out::print);
 
@@ -66,16 +67,16 @@ public class OutputView {
 
         printAttendanceSummary(attendanceCount, lateCount, absentCount);
 
-        System.out.println(crewDto.getPenaltyStatus().getName() + " 대상자입니다.\n");
+        System.out.println(attendances.getPenaltyStatus().getName() + " 대상자입니다.\n");
     }
 
-    private String formatAttendanceRecord(AttendanceDto attendanceDto) {
-        LocalDate date = attendanceDto.getDate();
-        String attendanceTime = Optional.ofNullable(attendanceDto.getAttendanceTime())
+    private String formatAttendanceRecord(Attendance attendance) {
+        LocalDate date = attendance.getDay().getDate();
+        String attendanceTime = Optional.ofNullable(attendance.getAttendanceTime())
                 .map(Converter::covertLocalTimeToString)
                 .orElse("--:--");
         String dayOfWeekName = DayOfWeek.getNameById(date.getDayOfWeek().getValue());
-        String attendanceStatusName = getAttendanceStatusName(attendanceDto);
+        String attendanceStatusName = getAttendanceStatusName(attendance);
 
         return String.format("%d월 %02d일 %s %s (%s)\n",
                 date.getMonth().getValue(), date.getDayOfMonth(),
@@ -89,34 +90,33 @@ public class OutputView {
     }
 
 
-    private String getAttendanceStatusName(AttendanceDto attendanceDto) {
-        String attendanceStatusName = "출석";
-        if (attendanceDto.getAbsent()) {
-            attendanceStatusName = "결석";
+    private String getAttendanceStatusName(Attendance attendance) {
+        if (attendance.getAbsent()) {
+            return "결석";
         }
 
-        if (attendanceDto.getLate()) {
-            attendanceStatusName = "지각";
+        if (attendance.getLate()) {
+            return "지각";
         }
-        return attendanceStatusName;
+        return "출석";
     }
 
-    public void printPenaltyCrews(List<CrewDto> crewDtos) {
+    public void printPenaltyCrews(List<Crew> crews) {
         System.out.println("제적 위험자 조회 결과");
-        sortCrewDtos(crewDtos);
-        for (CrewDto dto : crewDtos) {
-            System.out.printf("- %s: 결석 %d회, 지각 %d회 (%s)\n", dto.getNickName(), dto.getAbsentCount(),
-                    dto.getLateCount(),
-                    dto.getPenaltyStatus().getName());
+        sortCrews(crews);
+        for (Crew crew : crews) {
+            System.out.printf("- %s: 결석 %d회, 지각 %d회 (%s)\n", crew.getNickName(), crew.getAbsentCount(),
+                    crew.getLateCount(),
+                    crew.getPenaltyStatus().getName());
         }
         System.out.println();
 
     }
 
-    private void sortCrewDtos(List<CrewDto> crewDtos) {
-        crewDtos.sort(
-                Comparator.comparing((CrewDto dto) -> dto.getPenaltyStatus().getThreshold(), Comparator.reverseOrder())
-                        .thenComparing(dto -> dto.getLateCount() + dto.getAbsentCount(), Comparator.reverseOrder())
-                        .thenComparing(CrewDto::getNickName));
+    private void sortCrews(List<Crew> crews) {
+        crews.sort(
+                Comparator.comparing((Crew crew) -> crew.getPenaltyStatus().getThreshold(), Comparator.reverseOrder())
+                        .thenComparing(crew -> crew.getLateCount() + crew.getAbsentCount(), Comparator.reverseOrder())
+                        .thenComparing(Crew::getNickName));
     }
 }

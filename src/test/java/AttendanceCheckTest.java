@@ -1,6 +1,11 @@
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
+
 import domain.Attendance;
-import domain.AttendanceDto;
 import domain.Day;
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.util.stream.Stream;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -8,16 +13,7 @@ import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.jupiter.params.provider.ValueSource;
 import util.Converter;
 
-import java.time.LocalDate;
-import java.time.LocalTime;
-import java.util.stream.Stream;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
-
 public class AttendanceCheckTest {
-
-    private LocalDate today = LocalDate.now();
 
     public static Stream<Arguments> getDayOfWeekAndAttendanceTime() {
         return Stream.of(
@@ -61,10 +57,9 @@ public class AttendanceCheckTest {
     @MethodSource("getDayOfWeekAndAttendanceTime")
     void 날짜에_따른_출석_기준_시간을_적용한다(LocalDate date, LocalTime attendanceTime, Boolean isLate, Boolean isAbsent) {
         Attendance attendance = new Attendance(new Day(date), attendanceTime);
-        AttendanceDto dto = attendance.toDto();
 
-        Boolean actualIsLate = dto.getLate();
-        Boolean actualIsAbsent = dto.getAbsent();
+        Boolean actualIsLate = attendance.getLate();
+        Boolean actualIsAbsent = attendance.getAbsent();
 
         assertThat(actualIsLate).isEqualTo(isLate);
         assertThat(actualIsAbsent).isEqualTo(isAbsent);

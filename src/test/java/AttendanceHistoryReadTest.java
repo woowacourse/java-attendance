@@ -1,17 +1,16 @@
+import static org.assertj.core.api.Assertions.assertThat;
+
 import domain.Attendance;
 import domain.Day;
 import domain.PenaltyStatus;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.Arguments;
-import org.junit.jupiter.params.provider.MethodSource;
-
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
 import java.util.stream.Stream;
-
-import static org.assertj.core.api.Assertions.assertThat;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 
 public class AttendanceHistoryReadTest {
 
@@ -40,8 +39,8 @@ public class AttendanceHistoryReadTest {
     void 출석횟수를_계산한다() {
 
         final var attendanceCount = attendances.stream()
-                .filter(attendance -> attendance.toDto().getLate().equals(false))
-                .filter(attendance -> attendance.toDto().getAbsent().equals(false))
+                .filter(attendance -> attendance.getLate().equals(false))
+                .filter(attendance -> attendance.getAbsent().equals(false))
                 .count();
         assertThat(attendanceCount).isEqualTo(3);
     }
@@ -50,7 +49,7 @@ public class AttendanceHistoryReadTest {
     void 지각횟수를_계산한다() {
 
         final var lateCount = attendances.stream()
-                .filter(attendance -> attendance.toDto().getLate().equals(true))
+                .filter(attendance -> attendance.getLate().equals(true))
                 .count();
         assertThat(lateCount).isEqualTo(3);
     }
@@ -59,7 +58,7 @@ public class AttendanceHistoryReadTest {
     void 결석횟수를_계산한다() {
 
         final var absentCount = attendances.stream()
-                .filter(attendance -> attendance.toDto().getAbsent().equals(true))
+                .filter(attendance -> attendance.getAbsent().equals(true))
                 .count();
         assertThat(absentCount).isEqualTo(3);
     }

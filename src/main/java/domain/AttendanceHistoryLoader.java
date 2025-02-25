@@ -57,7 +57,7 @@ public class AttendanceHistoryLoader {
             return crews.findByNickname(nickname);
         } catch (IllegalArgumentException e) {
             Crew crew = new Crew(nickname);
-            crews.addCrew(crew);
+            crews.add(crew);
             return crew;
         }
     }

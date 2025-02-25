@@ -16,6 +16,10 @@ public class Day {
         this.date = date;
     }
 
+    public LocalDate getDate() {
+        return date;
+    }
+
     private DayOfWeek getDayOfWeek(LocalDate date) {
         return DayOfWeek.getInstance(date);
     }
@@ -56,7 +60,4 @@ public class Day {
         return betweenMinutes > STANDARD_ABSENT_MINUTE;
     }
 
-    public LocalDate getDate() {
-        return date;
-    }
 }

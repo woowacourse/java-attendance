@@ -1,9 +1,7 @@
 package controller;
 
 import domain.Attendance;
-import domain.AttendanceDto;
 import domain.Crew;
-import domain.CrewDto;
 import domain.Crews;
 import domain.Day;
 import domain.DayOfWeek;
@@ -65,19 +63,18 @@ public class AttendanceController {
         LocalTime attendanceTime = inputView.getAttendanceTime();
         Attendance attendance = new Attendance(new Day(LocalDate.now()), attendanceTime);
         crew.addAttendance(attendance);
-        outputView.printAttendanceInformation(attendance.toDto());
+        outputView.printAttendanceInformation(attendance);
     }
 
     public void processAttendanceEdit() {
 
         Crew crew = crews.findByNickname(inputView.getEditNickname());
         Attendance attendance = crew.findByDate(inputView.getEditDayOfMonth());
-        AttendanceDto originalAttendanceDto = attendance.toDto();
+        Attendance originalAttendance = new Attendance(attendance.getDay(), attendance.getAttendanceTime());
 
         attendance.updateAttendanceTime(inputView.getNewTime());
-        AttendanceDto editedAttendanceDto = attendance.toDto();
 
-        outputView.printUpdatedAttendanceHistory(originalAttendanceDto, editedAttendanceDto);
+        outputView.printUpdatedAttendanceHistory(originalAttendance, attendance);
     }
 
     public void processAttendanceHistory() {
@@ -86,17 +83,15 @@ public class AttendanceController {
         Crew crew = crews.findByNickname(nickname);
 
         outputView.printCrewAttendanceHistoryMessage(nickname);
-        outputView.printAttendanceHistoryWithCrew(crew.toDto());
+        outputView.printAttendanceHistoryWithCrew(crew.getAttendances());
     }
 
     public void processPenaltyCheck() {
-
-        List<CrewDto> crewDtos = crews.createCrewDtos();
-        List<CrewDto> penaltyCrewDtos = crewDtos.stream()
-                .filter(crewDto -> crewDto.getPenaltyStatus() != PenaltyStatus.NONE)
+        List<Crew> penaltyCrews = crews.getCrews().stream()
+                .filter(crew -> crew.getPenaltyStatus() != PenaltyStatus.NONE)
                 .collect(Collectors.toCollection(ArrayList::new));
 
-        outputView.printPenaltyCrews(penaltyCrewDtos);
+        outputView.printPenaltyCrews(penaltyCrews);
 
     }
 
