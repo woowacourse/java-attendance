@@ -86,6 +86,7 @@ public class Attendance {
                     LocalDateTime.of(cursorCheckDate.getYear(), cursorCheckDate.getMonth(),
                             cursorCheckDate.getDayOfMonth(), ABSENCE_HOUR, ABSENCE_MINUTE)));
         } catch (IllegalArgumentException ignored) {
+            throw new IllegalArgumentException("주말이나 공휴일에는 출석을 추가할 수 없습니다.");
         }
     }
 
