@@ -2,26 +2,27 @@ package attendance;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.List;
+import java.time.LocalTime;
+import java.util.Map;
 
 public class Attendances {
-    private final List<LocalDateTime> attendances;
+    private final Map<AttendanceDate, AttendanceTime> attendances;
 
-    public Attendances(List<LocalDateTime> attendances) {
+    public Attendances(Map<AttendanceDate, AttendanceTime> attendances) {
         this.attendances = attendances;
     }
 
     public void add(LocalDateTime dateTime) {
-        if (existsByDate(LocalDate.from(dateTime))) {
+        LocalDate date = LocalDate.from(dateTime);
+        if (existsByDate(date)) {
             throw new IllegalArgumentException("[ERROR] 이미 출석하셨습니다. 수정 기능을 이용해주세요.");
         }
-        attendances.add(dateTime);
+        attendances.put(new AttendanceDate(date), new AttendanceTime(LocalTime.from(dateTime)));
     }
 
     public boolean existsByDate(LocalDate date) {
-        List<LocalDate> dates = attendances.stream()
-                .map(LocalDate::from)
-                .toList();
-        return dates.contains(date);
+        return attendances.keySet()
+                .stream()
+                .anyMatch(attendanceDate -> attendanceDate.isEqualToDate(date));
     }
 }
