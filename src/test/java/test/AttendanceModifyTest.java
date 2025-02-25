@@ -1,9 +1,6 @@
 package test;
 
 import java.time.LocalDate;
-import java.time.LocalTime;
-import model.Attendance;
-import model.AttendanceInitializer;
 import model.DateGenerator;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
