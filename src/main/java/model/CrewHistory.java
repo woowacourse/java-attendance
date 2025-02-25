@@ -7,7 +7,7 @@ import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.IntStream;
+import java.util.Map.Entry;
 
 public class CrewHistory {
 
@@ -58,17 +58,17 @@ public class CrewHistory {
 
     public List<LocalDateTime> getAttendanceHistory(final LocalDate todayDate) {
         int today = todayDate.getDayOfMonth();
-        return IntStream.range(1, today)
-                .filter(attendance::containsKey)
-                .mapToObj(attendance::get)
+        return attendance.entrySet().stream()
+                .filter(it -> it.getKey() < today)
+                .map(Entry::getValue)
                 .toList();
     }
 
     private Map<AttendanceType, Integer> initialize() {
         Map<AttendanceType, Integer> result = new EnumMap<>(AttendanceType.class);
-        result.put(AttendanceType.출석, 0);
-        result.put(AttendanceType.지각, 0);
-        result.put(AttendanceType.결석, 0);
+        result.put(AttendanceType.ATTENDANCE, 0);
+        result.put(AttendanceType.LATE, 0);
+        result.put(AttendanceType.ABSENCE, 0);
         return result;
     }
 
