@@ -48,7 +48,7 @@ public class AttendanceTime {
     }
 
     public boolean isNullObject() {
-        return false;
+        return value == null;
     }
 
     @Override
