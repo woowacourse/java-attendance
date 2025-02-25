@@ -53,7 +53,7 @@ public class Attends {
 
     public List<Attend> getAttends(List<Integer> dayOfWeek) {
         List<Integer> existAttendDay = dayOfWeek.stream()
-                .filter(day -> hasDayEqualsAttend(day))
+                .filter(this::hasDayEqualsAttend)
                 .toList();
 
         List<Attend> result = new ArrayList<>();
