@@ -4,7 +4,6 @@ import attendance.domain.AttendanceHistory;
 import attendance.domain.DateInfo;
 import attendance.domain.DateInfos;
 import attendance.domain.constant.AttendanceStatus;
-import attendance.exception.CustomException;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.util.Comparator;
@@ -58,8 +57,12 @@ public class OutputView {
         System.out.println();
 
         for (int day = 1; day <= now.getDayOfMonth(); day++) {
-            if (!dateInfos.hasDateInfo(day)) {
+            LocalDate currentDate = LocalDate.of(now.getDayOfYear(), now.getDayOfMonth(), day);
+            if (isWeekend(currentDate)) {
                 continue;
+            }
+            if (!dateInfos.hasDateInfo(day)) {
+                writeAbsentAttendanceCheck(currentDate);
             }
             DateInfo dateInfo = dateInfos.findDateInfoByDay(day);
             writeAttendanceCheck(dateInfo);
@@ -90,6 +93,14 @@ public class OutputView {
 
     public void errorMessagePrint(String message) {
         System.out.println(message);
+    }
+
+    private void writeAbsentAttendanceCheck(LocalDate currentDate) {
+        String month = formatWithLeadingZero(currentDate.getMonthValue());
+        String day = formatWithLeadingZero(currentDate.getDayOfMonth());
+        String dayOfWeek = changeDayOfWeekToKorean(currentDate.getDayOfWeek());
+        System.out.printf("%s월 %s일 %s --:-- (결석)", month, day, dayOfWeek);
+        System.out.println();
     }
 
     private static boolean isWeekend(LocalDate currentDate) {
