@@ -1,7 +1,9 @@
 public class ExpellPolicy {
 
     private static final int LATE_ABSENT_RATE = 3;
+
     private static final int EXPELL_LIMIT = 5;
+    private static final int INTERVIEW_LIMIT = 3;
 
     public String checkExpellStatus(int lateCount, int absentCount) {
         absentCount += lateCount/ LATE_ABSENT_RATE;
@@ -10,7 +12,7 @@ public class ExpellPolicy {
             return "제적";
         }
 
-        if(absentCount >= 3) {
+        if(absentCount >= INTERVIEW_LIMIT) {
             return "면담";
         }
         return null;
