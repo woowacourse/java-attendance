@@ -63,7 +63,7 @@ public class AttendanceLog {
         return dayOfWeek == DayOfWeek.SATURDAY || dayOfWeek == DayOfWeek.SUNDAY;
     }
 
-    public boolean isAbsent() {
+    public boolean isNotRecorded() {
         return attendanceTime == null;
     }
 

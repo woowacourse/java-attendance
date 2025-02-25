@@ -106,11 +106,28 @@ class AttendanceLogTest {
 
         // when
         AttendanceLog attendanceLog = new AttendanceLog(nickname, attendanceDate);
-        boolean isAbsent = attendanceLog.isAbsent();
+        boolean isAbsent = attendanceLog.isNotRecorded();
 
         // then
         assertThat(isAbsent)
                 .isTrue();
+    }
+
+    @DisplayName("등교 시간이 있는 경우 결석으로 간주하지 않는다.")
+    @Test
+    void shouldAbsent_WhenAttendanceTimeExist() {
+        // given
+        Nickname nickname = new Nickname("벨로");
+        LocalDate attendanceDate = LocalDate.of(2024, 12, 2);
+        LocalTime attendanceTime = LocalTime.of(10, 0);
+
+        // when
+        AttendanceLog attendanceLog = new AttendanceLog(nickname, attendanceDate, attendanceTime);
+        boolean isAbsent = attendanceLog.isNotRecorded();
+
+        // then
+        assertThat(isAbsent)
+                .isFalse();
     }
 
     @DisplayName("캠퍼스 운영시간이 아닐 때 출석하는 경우 예외가 발생한다.")
