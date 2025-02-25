@@ -64,8 +64,8 @@ public class AttendanceMachine {
     }
 
     private void functionOne(LocalDate now, Register register) {
-        String crewName = inputView.readCrewName();
-        String attendanceTime = inputView.readAttendanceTime();
+        String crewName = readCrewName();
+        String attendanceTime = readAttendanceTime();
         CampusTime attendanceCampusTime = CampusTime.fromHourColonMinute(attendanceTime);
 
         DateInfo dateInfo = DateInfo.fromCampusTime(now, attendanceCampusTime);
@@ -74,10 +74,11 @@ public class AttendanceMachine {
         outputView.writeAttendanceCheck(dateInfo);
     }
 
+
     private void functionTwo(LocalDate now, Register register) {
-        String crewName = inputView.readModifyCrewName();
-        String modifyDay = inputView.readModifyDay();
-        String modifyTime = inputView.readModifyTime();
+        String crewName = readModifyCrewName();
+        String modifyDay = readModifyDay();
+        String modifyTime = readModifyTime();
         CampusTime campusTime = CampusTime.fromHourColonMinute(modifyTime);
         LocalDate date = LocalDate.of(now.getYear(), now.getMonth(), Integer.parseInt(modifyDay));
 
@@ -96,7 +97,7 @@ public class AttendanceMachine {
     }
 
     private void functionThree(LocalDate now, Register register) {
-        String crewName = inputView.readCrewName();
+        String crewName = readCrewName();
         DateInfos dateInfos = register.findDateInfos(crewName);
         AttendanceHistory history = AttendanceHistory.fromDateInfos(crewName, now, dateInfos);
 
@@ -108,6 +109,26 @@ public class AttendanceMachine {
         List<AttendanceHistory> warningAttendanceHistory = histories.findWarningAttendanceHistory();
 
         outputView.writeWarningHistories(warningAttendanceHistory);
+    }
+
+    private String readAttendanceTime() {
+        return retryUntilValidInput(inputView::readAttendanceTime);
+    }
+
+    private String readCrewName() {
+        return retryUntilValidInput(inputView::readCrewName);
+    }
+
+    private String readModifyCrewName() {
+        return retryUntilValidInput(inputView::readModifyCrewName);
+    }
+
+    private String readModifyDay() {
+        return retryUntilValidInput(inputView::readModifyDay);
+    }
+
+    private String readModifyTime() {
+        return retryUntilValidInput(inputView::readModifyTime);
     }
 
     private <T> T retryUntilValidInput(final Supplier<T> supplier) {
