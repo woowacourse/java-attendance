@@ -5,6 +5,7 @@ import java.time.LocalTime;
 import java.util.HashMap;
 import model.AttendanceCalculator;
 import model.AttendanceStatus;
+import model.MenuOption;
 import util.FileInput;
 import model.StudentAttendanceRecord;
 import model.TodayDate;
@@ -15,34 +16,29 @@ import view.OutputView;
 public class Controller {
     private final TodayDate todayDate = new TodayDate();
     private final StudentAttendanceRecord studentRecordRepository = FileInput.createStudentRepository();
-    private final int ATTENDANCE_CHECK = 1;
-    private final int ATTENDANCE_MODIFY = 2;
-    private final int STUDENT_RECORD_CHECK = 3;
-    private final int DISMISSAL_SUBJECT_CHECK = 4;
-    private final String QUICK = "Q";
 
     public void start() {
         studentRecordRepository.updateEveryStudentNoInformationInFile(todayDate.getTodayDateTIme());
         while (true){
             String userInput = InputView.getUserWantMenu(todayDate);
-            if (userInput.equals(QUICK)) {
+            if (userInput.equals(MenuOption.QUICK.getOption())) {
                 break;
             }
-            if (Integer.parseInt(userInput) == ATTENDANCE_CHECK) {
+            if (Integer.parseInt(userInput) == MenuOption.ATTENDANCE_CHECK.getNumberOption()) {
                 if (functionForMenuOne(todayDate, studentRecordRepository)) {
                     continue;
                 }
             }
-            if (Integer.parseInt(userInput) == ATTENDANCE_MODIFY) {
+            if (Integer.parseInt(userInput) == MenuOption.ATTENDANCE_MODIFY.getNumberOption()) {
                 if (functionForMenuTwo(studentRecordRepository)) {
                     continue;
                 }
 
             }
-            if (Integer.parseInt(userInput) == STUDENT_RECORD_CHECK) {
+            if (Integer.parseInt(userInput) == MenuOption.STUDENT_RECORD_CHECK.getNumberOption()) {
                 functionForMenuThree(studentRecordRepository);
             }
-            if (Integer.parseInt(userInput) == DISMISSAL_SUBJECT_CHECK) {
+            if (Integer.parseInt(userInput) == MenuOption.DISMISSAL_SUBJECT_CHECK.getNumberOption()) {
                 functionForMenuFour(studentRecordRepository);
             }
         }
