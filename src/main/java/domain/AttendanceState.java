@@ -1,5 +1,6 @@
 package domain;
 
+import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import util.DateTimeUtil;
@@ -24,25 +25,25 @@ public enum AttendanceState {
         }
         AttendanceTime.validateCampusTime(localTime);
 
-        String dayOfWeek = DateTimeUtil.getDayOfWeekBy(
-                LocalDate.of(
-                        DateTimeUtil.getYearBy(localDate),
-                        DateTimeUtil.getMonthBy(localDate),
-                        DateTimeUtil.getDateBy(localDate)));
+//        LocalDate localDate1 =
+//                LocalDate.of(
+//                        DateTimeUtil.getYearBy(localDate),
+//                        DateTimeUtil.getMonthBy(localDate),
+//                        DateTimeUtil.getDateBy(localDate));
 
-        return getDayOfWeekString(localTime, dayOfWeek);
+        return getDayOfWeekString(localTime, localDate);
     }
 
     private static boolean checkAbsenceDay(LocalTime localTime) {
         return localTime.equals(LocalTime.of(0, 0));
     }
 
-    private static AttendanceState getDayOfWeekString(LocalTime localTime, String dayOfWeek) {
-        if (dayOfWeek.equals("월요일")) {
+    private static AttendanceState getDayOfWeekString(LocalTime localTime, LocalDate localDate) {
+        if (localDate.getDayOfWeek() == DayOfWeek.MONDAY) {
             return determineAttendanceStatus(localTime, AttendanceTime.MON_TIME);
         }
 
-        if (!dayOfWeek.equals("공휴일")) {
+        if (!(localDate.getDayOfWeek() == DayOfWeek.SATURDAY) && !(localDate.getDayOfWeek() == DayOfWeek.SUNDAY)) {
             return determineAttendanceStatus(localTime, AttendanceTime.ELSE_TIME);
         }
 
