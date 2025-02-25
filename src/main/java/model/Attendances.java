@@ -14,16 +14,27 @@ public class Attendances {
         this.attendances = attendances;
     }
 
-    public Attendance update(LocalDate date, LocalTime time) {
+    public Attendance register(LocalDate date, LocalTime time) {
         Attendance oldAttendance = findByDate(date);
-        validateFirstUpdate(oldAttendance);
+        validateFirstRegistration(oldAttendance);
         Attendance newAttendance = new Attendance(date, time);
         this.attendances.remove(oldAttendance);
         this.attendances.add(newAttendance);
         return newAttendance;
     }
 
-    private void validateFirstUpdate(Attendance oldAttendance) {
+    public Attendance modifyFrom(Attendance oldAttendance, LocalTime newTime) {
+        if (attendances.contains(oldAttendance)) {
+            LocalDate date = oldAttendance.getDate();
+            Attendance newAttendance = new Attendance(date, newTime);
+            this.attendances.remove(oldAttendance);
+            this.attendances.add(newAttendance);
+            return newAttendance;
+        }
+        throw new RuntimeException("수정을 요청한 출석 객체를 찾을 수 없습니다.");
+    }
+
+    private void validateFirstRegistration(Attendance oldAttendance) {
         if (oldAttendance.getTime().equals(Common.noneAttendanceTime)) {
             return;
         }
@@ -35,14 +46,6 @@ public class Attendances {
                 .filter(attendance -> attendance.isSameDateWith(date))
                 .findAny()
                 .orElseThrow(RuntimeException::new); //TODO : 다른 예외로 교체
-    }
-
-    public Attendance modify(LocalDate date, LocalTime newTime) {
-        Attendance oldAttendance = findByDate(date);
-        Attendance newAttendance = new Attendance(date, newTime);
-        this.attendances.remove(oldAttendance);
-        this.attendances.add(newAttendance);
-        return newAttendance;
     }
 
     @Override

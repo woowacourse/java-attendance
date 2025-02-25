@@ -176,7 +176,7 @@ public class AttendanceRegisterTest {
 
         //when
         Attendances attendancesOfCrew = initializedAttendances.get(crew);
-        Attendance attendance = attendancesOfCrew.update(LocalDate.of(2024, 12, 14),
+        Attendance attendance = attendancesOfCrew.register(LocalDate.of(2024, 12, 14),
                 LocalTime.of(10, 10));
 
         assertThat(attendance).isEqualTo(new Attendance(LocalDate.of(2024, 12, 14),
@@ -312,9 +312,9 @@ public class AttendanceRegisterTest {
         Map<Crew, Attendances> initializedAttendances = AttendanceInitializer.initializeAttendanceOf(crews);
         Attendances attendances = initializedAttendances.get(crew);
 
-        attendances.update(LocalDate.of(2024, 12, 13), LocalTime.of(10, 5));
+        attendances.register(LocalDate.of(2024, 12, 13), LocalTime.of(10, 5));
 
-        assertThatThrownBy(() -> attendances.update(LocalDate.of(2024, 12, 13), LocalTime.of(11, 11)))
+        assertThatThrownBy(() -> attendances.register(LocalDate.of(2024, 12, 13), LocalTime.of(11, 11)))
                 .isInstanceOf(DuplicatedAttendanceRegistrationException.class);
     }
 }

@@ -70,7 +70,7 @@ public class AttendanceController {
             LocalDate date = LocalDate.of(2024, 12, 13); //TODO : 오늘
             LocalTime time = inputView.readAttendanceTime();
             Attendances crewAttendances = attendances.get(crew);
-            Attendance newAttendance = crewAttendances.update(date, time);
+            Attendance newAttendance = crewAttendances.register(date, time);
             outputView.printAttendanceRegisterResult(newAttendance);
         } catch (DuplicatedAttendanceRegistrationException e) {
             outputView.printExceptionMessage(e.getMessage());

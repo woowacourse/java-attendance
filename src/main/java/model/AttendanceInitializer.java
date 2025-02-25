@@ -37,7 +37,7 @@ public class AttendanceInitializer {
             Crew crew = crews.findCrewByName(data.split(",")[0]).orElseThrow(RuntimeException::new);
             Attendances attendances = defaultAttendances.get(crew);
             LocalDateTime attendanceTime = parseAttendanceFrom(data);
-            attendances.update(attendanceTime.toLocalDate(), attendanceTime.toLocalTime());
+            attendances.register(attendanceTime.toLocalDate(), attendanceTime.toLocalTime());
         }
     }
 
