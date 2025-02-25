@@ -1,6 +1,7 @@
 package view;
 
 import domain.AttendanceState;
+import dto.AbsenceRecordDto;
 import dto.AttendanceHistoryDto;
 import dto.AttendanceRecord;
 import dto.AttendanceStatus;
@@ -43,7 +44,7 @@ public class OutputView {
                 afterAttendanceState);
     }
 
-    public static void printRecordAttendance(AttendanceHistoryDto attendanceHistoryDto) {
+    public static void printRecordAttendance(final AttendanceHistoryDto attendanceHistoryDto) {
         System.out.printf("이번 달 %s의 출석 기록입니다.\n", attendanceHistoryDto.crew().getName());
         System.out.println();
 
@@ -67,13 +68,13 @@ public class OutputView {
 
         System.out.printf("%s 대상자입니다.\n", attendanceStatus.absencePolicy().getDescription());
     }
-//
-//    public static void printAbsenceResult(final Map<Crew, AbsenceHistoryDto> result) {
-//        System.out.println("제적 위험자 조회 결과");
-//        result.forEach((crew, absenceResult) -> System.out.printf("- %s: 결석 %d회, 지각 %d회 (%s)\n",
-//                crew.getName(),
-//                absenceResult.absence(),
-//                absenceResult.lateness(),
-//                absenceResult.status()));
-//    }
+
+    public static void printAbsenceResult(final List<AbsenceRecordDto> absenceRecordDtos) {
+        System.out.println("제적 위험자 조회 결과");
+        absenceRecordDtos.forEach(dto -> System.out.printf("- %s: 결석 %d회, 지각 %d회 (%s)\n",
+                dto.crew().getName(),
+                dto.absence(),
+                dto.lateness(),
+                dto.absencePolicy().getDescription()));
+    }
 }

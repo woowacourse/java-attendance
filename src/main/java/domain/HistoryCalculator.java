@@ -1,9 +1,11 @@
 package domain;
 
 import dto.AbsenceHistoryDto;
+import dto.AbsenceRecordDto;
 import dto.AttendanceHistoryDto;
 import dto.AttendanceRecord;
 import dto.AttendanceStatus;
+import java.util.ArrayList;
 import java.util.List;
 
 public class HistoryCalculator {
@@ -14,7 +16,7 @@ public class HistoryCalculator {
         this.attendanceResultDtos = attendanceResultDtos;
     }
 
-    public static AttendanceStatus calculateBy(List<AttendanceRecord> attendanceRecords) {
+    public static AttendanceStatus calculateAttendanceRecordBy(List<AttendanceRecord> attendanceRecords) {
         AbsenceHistoryDto absenceHistoryDto = calculateAbsenceHistory(attendanceRecords);
         AbsencePolicy absencePolicy = calculateAbsencePolicy(absenceHistoryDto);
         return new AttendanceStatus(absenceHistoryDto, absencePolicy);
@@ -41,5 +43,16 @@ public class HistoryCalculator {
 
     private static AbsencePolicy calculateAbsencePolicy(AbsenceHistoryDto absenceHistoryDto) {
         return AbsencePolicy.getAbsencePolicy(absenceHistoryDto.lateness(), absenceHistoryDto.absence());
+    }
+
+    public static List<AbsenceRecordDto> calculateAbsenceRecordBy(Attendance attendance) {
+        List<AbsenceRecordDto> absenceRecordDtos = new ArrayList<>();
+        attendance.getAttendanceMap()
+                .forEach((crew, attendanceRecords) -> {
+                    AttendanceStatus attendanceStatus = calculateAttendanceRecordBy(attendanceRecords);
+                    absenceRecordDtos.add(new AbsenceRecordDto(crew, attendanceStatus.absenceHistory().lateness(),
+                            attendanceStatus.absenceHistory().absence(), attendanceStatus.absencePolicy()));
+                });
+        return absenceRecordDtos;
     }
 }
