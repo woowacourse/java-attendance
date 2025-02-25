@@ -54,4 +54,23 @@ public class ExpellPolicyTest {
                 Arguments.of(3,2)
         );
     }
+
+    @ParameterizedTest
+    @DisplayName("결석 회수가 2회 이상이면 경고 대상자이다")
+    @MethodSource("provideLateCountAndAbsentCountForIsWarning")
+    public void warningPolicyTest(int lateCount, int absentCount) {
+        //given
+        ExpellPolicy expellPolicy = new ExpellPolicy();
+
+        //when-then
+        assertThat(expellPolicy.checkExpellStatus(lateCount, absentCount)).isEqualTo("경고");
+    }
+
+    private static Stream<Arguments> provideLateCountAndAbsentCountForIsWarning() {
+        return Stream.of(
+                Arguments.of(0,2),
+                Arguments.of(3,1),
+                Arguments.of(6,0)
+        );
+    }
 }
