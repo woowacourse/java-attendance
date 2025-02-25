@@ -39,4 +39,21 @@ class AttendanceDateTimeTest {
                 () -> assertThat(attendanceDateTime.getTime()).hasValue(dateTime.toLocalTime())
         );
     }
+
+    @DisplayName("LocalDate 와 과 CampusOperationPolicy 만을 받아 시간이 null 인 자신을 생성한다.")
+    @Test
+    void policyAppliedWithNullTime() {
+        // Given
+        final LocalDateTime dateTime = LocalDateTime.of(2024, 12, 2, 13, 5);
+
+        // When
+        final AttendanceDateTime attendanceDateTime = AttendanceDateTime.policyAppliedWithNullTime(
+                dateTime.toLocalDate(), campusOperationPolicy);
+
+        // Then
+        assertAll(
+                () -> assertThat(attendanceDateTime.getDate()).isEqualTo(dateTime.toLocalDate()),
+                () -> assertThat(attendanceDateTime.getTime()).isNotPresent()
+        );
+    }
 }

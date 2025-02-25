@@ -30,6 +30,14 @@ public class AttendanceDateTime {
         );
     }
 
+    public static AttendanceDateTime policyAppliedWithNullTime(
+            final LocalDate date,
+            final CampusOperationPolicy campusOperationPolicy
+    ) {
+
+        return null;
+    }
+
     public LocalDate getDate() {
         return date.getValue();
     }
