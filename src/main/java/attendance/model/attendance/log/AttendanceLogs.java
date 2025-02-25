@@ -64,9 +64,10 @@ public class AttendanceLogs {
     }
 
     public void add(final AttendanceLog attendanceLog) {
+        values.add(attendanceLog);
     }
 
     public List<AttendanceLog> getValues() {
-        return List.of();
+        return values;
     }
 }

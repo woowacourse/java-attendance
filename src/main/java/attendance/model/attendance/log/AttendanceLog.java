@@ -32,6 +32,7 @@ public class AttendanceLog {
         );
     }
 
+    // 운영 시간 아닐때 검증하도록(아마 구조 바꿔야 할듯)
     public static AttendanceLog fromAbsenceDate(final LocalDate absenceDate) {
         return new AttendanceLog(
                 absenceDate,
