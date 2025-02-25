@@ -21,7 +21,7 @@ import view.OutputView;
 
 public class AttendanceController {
 
-    private final static String CSV_PATH = "attendance.csv";
+    private final static String CSV_PATH = "attendances.csv";
 
     private final InputView inputView;
     private final OutputView outputView;
