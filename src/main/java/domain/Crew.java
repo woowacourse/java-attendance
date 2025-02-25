@@ -27,14 +27,6 @@ public class Crew implements Comparable<Crew> {
         attendanceDate.editDateTime(localDateTime);
     }
 
-    public String getName() {
-        return this.name;
-    }
-
-    public Attendance getAttendance() {
-        return attendance;
-    }
-
     public int countAbsence() {
         return attendance.countAbsence();
     }
@@ -54,6 +46,14 @@ public class Crew implements Comparable<Crew> {
     public boolean isAttendanceWarning() {
         return AttendanceWarning.determineAttendanceWarning(this.attendance.countAbsenceIncludingTardy())
                 != AttendanceWarning.NONE;
+    }
+
+    public String getName() {
+        return this.name;
+    }
+
+    public Attendance getAttendance() {
+        return attendance;
     }
 
     @Override
