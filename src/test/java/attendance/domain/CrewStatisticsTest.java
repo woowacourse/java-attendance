@@ -2,6 +2,8 @@ package attendance.domain;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import attendance.dto.AttendanceExpelDto;
+import attendance.dto.AttendanceExpelRecord;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -51,12 +53,10 @@ public class CrewStatisticsTest {
     @DisplayName("기능: 정렬된 크루들 통계 문자열 리스트 반환 확인")
     void checkSortedCrewsStatistics() {
         CrewStatistics sortedCrewStatistics = crewStatistics.sortCrewStatistics();
-        List<List<String>> sortedExpelExpectedInfo = sortedCrewStatistics.crewsExpelExpectedInfo();
+        AttendanceExpelDto attendanceExpelDto = AttendanceExpelDto.fromAttendanceExpelRecord(sortedCrewStatistics);
 
-        assertThat(sortedExpelExpectedInfo).isNotEmpty();
-        assertThat(sortedExpelExpectedInfo).hasSize(3);
-        assertThat(sortedExpelExpectedInfo)
-                .extracting(List::getFirst)
+        assertThat(attendanceExpelDto.attendanceExpelRecords())
+                .extracting(AttendanceExpelRecord::crewName)
                 .containsExactly("빙봉", "빙티", "쿠키");
     }
 }

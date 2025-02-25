@@ -1,6 +1,5 @@
 package attendance.domain;
 
-import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
@@ -20,12 +19,7 @@ public class CrewStatistics {
         return new CrewStatistics(crewsStatistics);
     }
 
-    public List<List<String>> crewsExpelExpectedInfo() {
-        List<List<String>> crewsExpelExpectedInfo = new ArrayList<>();
-
-        for (CrewStatistic crewStatistic : crewStatistics) {
-            crewsExpelExpectedInfo.add(crewStatistic.crewExpelExpectedInfo());
-        }
-        return crewsExpelExpectedInfo;
+    public List<CrewStatistic> getCrewStatistics() {
+        return crewStatistics;
     }
 }
