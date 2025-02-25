@@ -13,8 +13,8 @@ import presentation.InputValidator;
 public class DateTimeUtil {
     private static final DateTimeFormatter LOCAL_DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
     private static final DateTimeFormatter LOCAL_DATE_FORMATTER = DateTimeFormatter.ofPattern("MM월 dd일");
-    private static final DateTimeFormatter LOCAL_TIME_KOREAN_FORMATTER = DateTimeFormatter.ofPattern("hh시 mm분");
-    private static final DateTimeFormatter LOCAL_TIME_FORMATTER = DateTimeFormatter.ofPattern("hh:mm");
+    private static final DateTimeFormatter LOCAL_TIME_KOREAN_FORMATTER = DateTimeFormatter.ofPattern("HH시 mm분");
+    private static final DateTimeFormatter LOCAL_TIME_FORMATTER = DateTimeFormatter.ofPattern("HH:mm");
 
     public static String convertLocalDateTimeToString(LocalDateTime localDateTime) {
         try {
