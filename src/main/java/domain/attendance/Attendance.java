@@ -1,5 +1,6 @@
 package domain.attendance;
 
+import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -28,7 +29,7 @@ public class Attendance {
     }
 
     private boolean isHolidayOrWeekend(LocalDate date) {
-        return date.getDayOfWeek().getValue() >= AttendanceDate.SATURDAY || Holiday.has(date);
+        return date.getDayOfWeek().getValue() >= DayOfWeek.SATURDAY.getValue() || Holiday.has(date);
     }
 
     private void addAttendanceDate(LocalDate cursorDate) {
