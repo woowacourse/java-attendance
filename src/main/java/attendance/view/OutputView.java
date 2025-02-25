@@ -81,8 +81,11 @@ public class OutputView {
         return DateTimeFormatterWrapper.parsingAttendanceResult(localDateTime);
     }
 
-    public String crewDismiss(String nickname, int absence, int late, String attendanceDismissStatus) {
-        return String.format(CREW_DISMISS_FORMAT, nickname, absence, late, attendanceDismissStatus);
+    public String crewDismiss(String nickname, AttendanceStatusCount attendanceStatusCount,
+                              String attendanceDismissStatus) {
+        return String.format(CREW_DISMISS_FORMAT, nickname, attendanceStatusCount.absence(),
+                attendanceStatusCount.late(),
+                attendanceDismissStatus);
     }
 
     public void printCrewDismisses(String crewDismissHistories) {

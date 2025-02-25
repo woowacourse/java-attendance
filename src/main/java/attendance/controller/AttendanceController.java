@@ -85,8 +85,8 @@ public class AttendanceController {
             AttendanceStatuses attendanceStatuses = crewAttendanceHistory.attendanceStatuses();
             AttendanceDismissStatus attendanceDismissStatus = attendanceStatuses.calculateAttendanceDismiss();
             crewDismissHistoryBuilder.append(
-                    outputView.crewDismiss(crewAttendanceHistory.nickname(), attendanceStatuses.absenceCount(),
-                            attendanceStatuses.lateCount(), attendanceDismissStatus.getStatus()));
+                    outputView.crewDismiss(crewAttendanceHistory.nickname(), attendanceStatuses.attendanceStatusCount(),
+                            attendanceDismissStatus.getStatus()));
         }
     }
 
