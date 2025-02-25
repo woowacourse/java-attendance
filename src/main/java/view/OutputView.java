@@ -14,10 +14,9 @@ import util.DateTimeUtil;
 public class OutputView {
     public static void printTodayAttendance(
             final String schoolStartTime, final String attendanceResult) {
-        System.out.printf("%02d월 %02d일 %s %s (%s)\n",
-                DateTimeUtil.getMonthBy(LocalDate.now()),
-                DateTimeUtil.getDateBy(LocalDate.now()),
-                DateTimeUtil.getDayOfWeekBy(LocalDate.now()),
+        System.out.printf("12월 %02d일 %s %s (%s)\n",
+                DateTimeUtil.getTodayDate(),
+                DateTimeUtil.getDayOfWeekBy(LocalDate.of(2024, 12, DateTimeUtil.getTodayDate())),
                 schoolStartTime, attendanceResult);
     }
 
@@ -32,17 +31,21 @@ public class OutputView {
                         afterDateTime.toLocalTime(), localDate)
                 .getDescription();
 
-        System.out.printf("%02d월 %02d일 %s %02d:%02d (%s) -> %02d:%02d (%s) 수정 완료!\n",
+        String beforeTimeFormatted = formatTime(beforeTime);
+
+        System.out.printf("%02d월 %02d일 %s %s (%s) -> %02d:%02d (%s) 수정 완료!\n",
                 DateTimeUtil.getYearBy(localDate),
                 DateTimeUtil.getDateBy(localDate),
                 DateTimeUtil.getDayOfWeekBy(localDate),
-                beforeTime.getHour(),
-                beforeTime.getMinute(),
+//                beforeTime.getHour(),
+//                beforeTime.getMinute(),
+                beforeTimeFormatted,
                 beforeAttendanceState,
                 afterDateTime.getHour(),
                 afterDateTime.getMinute(),
                 afterAttendanceState);
     }
+
 
     public static void printRecordAttendance(final AttendanceHistoryDto attendanceHistoryDto) {
         System.out.printf("이번 달 %s의 출석 기록입니다.\n", attendanceHistoryDto.crew().getName());
@@ -50,13 +53,14 @@ public class OutputView {
 
         List<AttendanceRecord> records = attendanceHistoryDto.records();
         for (AttendanceRecord record : records) {
+            String timeFormatted = formatTime(record.time().time());
+            
             System.out.printf(
-                    String.format("%02d월 %02d일 %s %02d:%02d (%s)\n",
+                    String.format("%02d월 %02d일 %s %s (%s)\n",
                             DateTimeUtil.getMonthBy(record.date()),
                             DateTimeUtil.getDateBy(record.date()),
                             DateTimeUtil.getDayOfWeekBy(record.date()),
-                            record.time().time().getHour(),
-                            record.time().time().getMinute(),
+                            timeFormatted,
                             record.time().state().getDescription()));
         }
 
@@ -67,6 +71,13 @@ public class OutputView {
         System.out.println();
 
         System.out.printf("%s 대상자입니다.\n", attendanceStatus.absencePolicy().getDescription());
+    }
+
+    private static String formatTime(LocalTime beforeTime) {
+        if (beforeTime.equals(LocalTime.of(0, 0))) {
+            return "--:--";
+        }
+        return String.format("%02d:%02d", beforeTime.getHour(), beforeTime.getMinute());
     }
 
     public static void printAbsenceResult(final List<AbsenceRecordDto> absenceRecordDtos) {
