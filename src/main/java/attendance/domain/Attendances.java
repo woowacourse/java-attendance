@@ -57,19 +57,19 @@ public class Attendances {
 
     public void modifyAttendance(LocalDate modifyDate, LocalTime afterModifyTime) {
         validateIsExistAttendanceHistory(modifyDate);
-        Attendance previousAttendance = attendances.remove(modifyDate);
-        try {
-            addAttendance(afterModifyTime, modifyDate);
-        } catch (AttendanceArgumentException e) {
-            attendances.put(modifyDate, previousAttendance);
-            throw e;
-        }
+        AttendanceStatus attendanceStatus = determineAttendanceStatus(modifyDate, afterModifyTime);
+        Attendance attendance = new Attendance(attendanceStatus, afterModifyTime);
+        attendances.put(modifyDate, attendance);
     }
 
     public void validateIsExistAttendanceHistory(LocalDate date) {
-        if (attendances.get(date) == null) {
+        if (!isAttendanceExist(date)) {
             throw new AttendanceArgumentException(NOT_EXIST_ATTENDANCE);
         }
+    }
+
+    public boolean isAttendanceExist(LocalDate date) {
+        return attendances.get(date) != null;
     }
 
     public Attendance getAttendance(LocalDate date) {

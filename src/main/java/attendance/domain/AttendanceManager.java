@@ -97,15 +97,22 @@ public class AttendanceManager {
 
     private void validateIsAttendanceWeekend(LocalDate currentDate) {
         String CANNOT_ATTENDANCE_ON_HOLIDAY = DateTimeFormatterWrapper.formattingAttendanceDateError(currentDate);
+        if (isHoliday(currentDate)) {
+            throw new AttendanceArgumentException(CANNOT_ATTENDANCE_ON_HOLIDAY);
+        }
+    }
+
+    public boolean isHoliday(LocalDate currentDate) {
         int month = currentDate.getMonth().getValue();
         int dayOfMonth = currentDate.getDayOfMonth();
         int dayOfWeekend = currentDate.getDayOfWeek().getValue();
         if (month == XMAS_MONTH && dayOfMonth == XMAS_DAY) {
-            throw new AttendanceArgumentException(CANNOT_ATTENDANCE_ON_HOLIDAY);
+            return true;
         }
         if (dayOfWeekend >= WEEKEND_NUMBER) {
-            throw new AttendanceArgumentException(CANNOT_ATTENDANCE_ON_HOLIDAY);
+            return true;
         }
+        return false;
     }
 
     public AttendanceHistory crewAttendanceHistory(String nickname) {
@@ -126,31 +133,17 @@ public class AttendanceManager {
         validateAttendanceExist(nickname);
     }
 
-    private boolean isAttendanceAvailable(LocalDate currentDate) {
-        try {
-            validateIsAttendanceAvailable(currentDate);
-            return true;
-        } catch (AttendanceArgumentException e) {
-            return false;
-        }
-    }
-
     private void appendAttendanceHistories(Attendances attendances, LocalDate currentDate,
                                            List<String> attendanceHistories,
                                            Map<String, Integer> attendanceStatusMap) {
-        validateIsAttendanceAvailable(currentDate);
-        attendances.validateIsExistAttendanceHistory(currentDate);
-        addAbsenceHistory(attendanceHistories, attendanceStatusMap, currentDate);
-        addAttendanceHistory(attendances, currentDate, attendanceHistories, attendanceStatusMap);
-    }
-
-    private boolean isAttendanceExistInDate(Attendances attendances, LocalDate currentDate) {
-        try {
-            attendances.validateIsExistAttendanceHistory(currentDate);
-            return true;
-        } catch (AttendanceArgumentException e) {
-            return false;
+        if (isHoliday(currentDate)) {
+            return;
         }
+        if (attendances.isAttendanceExist(currentDate)) {
+            addAttendanceHistory(attendances, currentDate, attendanceHistories, attendanceStatusMap);
+            return;
+        }
+        addAbsenceHistory(attendanceHistories, attendanceStatusMap, currentDate);
     }
 
     private void addAbsenceHistory(List<String> attendanceHistories,
