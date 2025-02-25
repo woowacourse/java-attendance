@@ -41,10 +41,9 @@ public class AttendanceSheetTest {
     public void alreadyAttendTest() {
         String nickname = "링크";
         LocalDate date = LocalDate.of(2024, 12, 11);
-        LocalTime time = LocalTime.of(10,0);
 
         //when-then
-        assertThatThrownBy(() -> attendanceSheet.add(nickname, date, time))
+        assertThatThrownBy(() -> attendanceSheet.validateIsAlreadyAttendance(nickname, date))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 

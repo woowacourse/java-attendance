@@ -13,4 +13,8 @@ public class Attendance {
         this.date = localDate;
         this.time = localTime;
     }
+
+    public boolean isAlreadyAttendance(String nickname, LocalDate date) {
+        return false;
+    }
 }
