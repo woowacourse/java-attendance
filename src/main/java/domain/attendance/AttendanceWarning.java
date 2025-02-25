@@ -23,8 +23,9 @@ public enum AttendanceWarning {
     }
 
     public static AttendanceWarning determineAttendanceWarning(int absenceIncludingTardyCount) {
-        Optional<AttendanceWarning> attendanceWarning = Arrays.stream(values())
-                .filter(value -> value.absenceCount <= absenceIncludingTardyCount).findAny();
-        return attendanceWarning.orElse(NONE);
+        return Arrays.stream(values())
+                .filter(value -> value.absenceCount <= absenceIncludingTardyCount)
+                .findAny()
+                .orElse(NONE);
     }
 }
