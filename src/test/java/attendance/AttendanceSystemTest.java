@@ -311,6 +311,15 @@ class AttendanceSystemTest {
         assertThat(state.getRiskTyp()).isEqualTo(RiskType.COUNSELING);
     }
 
+    @DisplayName("출석 조회 - 닉네임이 등록되지 않은 경우 예외 메세지를 출력한다")
+    @Test
+    void 출석_조회_닉네임이_등록되지_않은_경우_예외_메세지를_출력한다() {
+        LocalDate today = LocalDate.of(2025, 2, 7);
+        assertThatIllegalArgumentException()
+                .isThrownBy(() -> attendanceSystem.calculateAttendanceStateInMonth(INVALID_CREW_NICKNAME, today))
+                .withMessage(ExceptionMessage.INVALID_CREW.getMessage());
+    }
+
     String makeHolidayAttendanceExceptionMessage(LocalDateTime dateTime) {
         return String.format(ExceptionMessage.HOLIDAY_ATTENDANCE.getMessage(),
                 dateTime.getMonth().getValue(), dateTime.getDayOfMonth(),
