@@ -3,6 +3,7 @@ package attendance;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.assertj.core.api.SoftAssertions.assertSoftly;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -12,8 +13,8 @@ import org.junit.jupiter.api.Test;
 
 class AttendanceTest {
 
-    public static final LocalDate DATE = LocalDate.of(2025, 02, 25);
-    public static final LocalTime TIME = LocalTime.of(10, 00);
+    private static final LocalDate DATE = LocalDate.of(2025, 02, 25);
+    private static final LocalTime TIME = LocalTime.of(10, 00);
 
     @Test
     @DisplayName("닉네임과 등교 시간을 입력하면 출석할 수 있다")
@@ -71,5 +72,19 @@ class AttendanceTest {
         assertThatThrownBy(() -> {
             crew.modifyAttendance(DATE, TIME.plusMinutes(30));
         }).isInstanceOf(IllegalArgumentException.class);
+    }
+
+    @Test
+    @DisplayName("등교 기록이 없으면 결석을 반환한다")
+    void fromAbsenceTest() {
+        // given
+        Crew crew = new Crew("pobi");
+
+        // when then
+        assertSoftly(softly -> {
+            softly.assertThat(crew.getAttendanceStatusOf(DATE.plusDays(0))).isEqualTo(AttendanceStatus.ABSENCE);
+            softly.assertThat(crew.getAttendanceStatusOf(DATE.plusDays(1))).isEqualTo(AttendanceStatus.ABSENCE);
+            softly.assertThat(crew.getAttendanceStatusOf(DATE.plusDays(2))).isEqualTo(AttendanceStatus.ABSENCE);
+        });
     }
 }
