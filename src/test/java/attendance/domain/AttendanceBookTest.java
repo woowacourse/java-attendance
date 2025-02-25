@@ -46,4 +46,19 @@ class AttendanceBookTest {
         Assertions.assertThat(findRecord.getAttendanceStatus()).isEqualTo(AttendanceStatus.LATE);
     }
 
+    @DisplayName("해당 크루의 기록에 따라 알맞은 경고 등급을 반환한다.")
+    @Test
+    void test_getWarningStatus() {
+        // given
+        AttendanceBook attendanceBook = new AttendanceBook();
+        String crewName = "빙티";
+        attendanceBook.add(crewName, new AttendanceRecord(LocalDateTime.of(2024, 12, 3, 11, 0)));
+        attendanceBook.add(crewName, new AttendanceRecord(LocalDateTime.of(2024, 12, 4, 11, 0)));
+
+        // when
+        WarningStatus warning = attendanceBook.getWarningByCrew(crewName);
+
+        // then
+        Assertions.assertThat(warning).isEqualTo(WarningStatus.WARNING);
+    }
 }

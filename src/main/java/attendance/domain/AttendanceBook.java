@@ -29,6 +29,26 @@ public class AttendanceBook {
                 .orElseThrow(() -> new IllegalArgumentException("출석 기록이 없는 날짜입니다."));
     }
 
+    public WarningStatus getWarningByCrew(String crewName) {
+        List<AttendanceRecord> records = crewRecords.get(crewName);
+        long absenceCount = calculateAbsentCount(records);
+        long lateCount = calculateLateCount(records);
+
+        return WarningStatus.from(absenceCount, lateCount);
+    }
+
+    public long calculateLateCount(List<AttendanceRecord> records) {
+        return records.stream()
+                .filter(record -> record.getAttendanceStatus() == AttendanceStatus.LATE)
+                .count();
+    }
+
+    public long calculateAbsentCount(List<AttendanceRecord> records) {
+        return records.stream()
+                .filter(record -> record.getAttendanceStatus() == AttendanceStatus.ABSENT)
+                .count();
+    }
+
     public List<AttendanceRecord> getRecordsByName(String name) {
         return Collections.unmodifiableList(crewRecords.get(name));
     }
