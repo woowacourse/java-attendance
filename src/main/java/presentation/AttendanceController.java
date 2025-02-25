@@ -39,38 +39,36 @@ public class AttendanceController {
     }
 
     private void repeatCommand(CrewGroup crewGroup) {
-        while (true) {
-            if (controlCommand(crewGroup)) {
-                return;
-            }
-        }
+        while(runCommand(crewGroup)){}
     }
 
-    private boolean controlCommand(CrewGroup crewGroup) {
-        try {
-            ControllerCommand command = convertCommand(InputView.inputCommand());
-            InputValidator.commandValidate(command.getCommand());
-
-            if (command.equals(ATTEND_COMMAND)) {
-                attendCommand(crewGroup);
-            }
-            if (command.equals(EDIT_COMMAND)) {
-                attendanceEditCommand(crewGroup);
-            }
-            if (command.equals(CREW_QUERY_COMMAND)) {
-                crewQueryCommand(crewGroup);
-            }
-            if (command.equals(CREWS_WARNING_COMMAND)) {
-                attendanceWarningCommand(crewGroup);
-            }
-            if (command.equals(EXIT_COMMAND)) {
-                return true;
-            }
-            return false;
-        } catch (IllegalArgumentException e) {
+    private boolean runCommand(CrewGroup crewGroup){
+        try{
+            return controlCommand(crewGroup);
+        } catch (IllegalArgumentException e){
             OutputView.printError(e.getMessage());
-            return false;
         }
+        return true;
+    }
+
+
+    private boolean controlCommand(CrewGroup crewGroup) {
+        ControllerCommand command = convertCommand(InputView.inputCommand());
+        InputValidator.commandValidate(command.getCommand());
+
+        if (command.equals(ATTEND_COMMAND)) {
+            attendCommand(crewGroup);
+        }
+        if (command.equals(EDIT_COMMAND)) {
+            attendanceEditCommand(crewGroup);
+        }
+        if (command.equals(CREW_QUERY_COMMAND)) {
+            crewQueryCommand(crewGroup);
+        }
+        if (command.equals(CREWS_WARNING_COMMAND)) {
+            attendanceWarningCommand(crewGroup);
+        }
+        return !command.equals(EXIT_COMMAND);
     }
 
     private void attendanceWarningCommand(CrewGroup crewGroup) {
