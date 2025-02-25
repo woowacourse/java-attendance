@@ -71,8 +71,8 @@ public class AttendanceSystem {
         if (menu == CHECK) {
             holiday.validateHoliday(today);
 
-            String nickname = validateAndReadNickname(false);
-            LocalTime time = parseTime(false);
+            String nickname = validateAndReadNickname();
+            LocalTime time = parseTime();
             LocalDateTime dateTime = LocalDateTime.of(today, time);
 
             Attendance attendanceCheck = attendanceManager.processAttendanceCheck(dateTime, nickname);
@@ -82,11 +82,11 @@ public class AttendanceSystem {
 
     private void processUpdate(final AttendanceMenu menu, final LocalDate today) {
         if (menu == UPDATE) {
-            String nickname = validateAndReadNickname(true);
+            String nickname = validateAndReadNicknameForUpdate();
 
             int day = inputView.readDateForUpdate();
             LocalDate date = DateTimeParser.parseDateByDay(today, day);
-            LocalTime time = parseTime(true);
+            LocalTime time = parseTimeForUpdate();
             LocalDateTime dateTime = LocalDateTime.of(date, time);
 
             List<Attendance> attendanceUpdate = attendanceManager.processAttendanceUpdate(dateTime, nickname);
@@ -96,7 +96,7 @@ public class AttendanceSystem {
 
     private void processRecordSearch(final AttendanceMenu menu, final LocalDate today) {
         if (menu == RECORD_SEARCH) {
-            String nickname = validateAndReadNickname(false);
+            String nickname = validateAndReadNickname();
 
             List<Attendance> attendanceRecords = attendanceManager.getAttendanceRecord(today, nickname);
             outputView.printAttendanceRecords(attendanceRecords, nickname);
@@ -113,14 +113,25 @@ public class AttendanceSystem {
         }
     }
 
-    private String validateAndReadNickname(final boolean isForUpdated) {
-        String nickname = inputView.readNickname(isForUpdated);
+    private String validateAndReadNickname() {
+        String nickname = inputView.readNickname();
         attendanceManager.validateNicknameExists(nickname);
         return nickname;
     }
 
-    private LocalTime parseTime(final boolean isForUpdated) {
-        String time = inputView.readAttendanceTime(isForUpdated);
+    private String validateAndReadNicknameForUpdate() {
+        String nickname = inputView.readNicknameForUpdate();
+        attendanceManager.validateNicknameExists(nickname);
+        return nickname;
+    }
+
+    private LocalTime parseTime() {
+        String time = inputView.readAttendanceTime();
+        return DateTimeParser.parseTime(time);
+    }
+
+    private LocalTime parseTimeForUpdate() {
+        String time = inputView.readAttendanceTimeForUpdate();
         return DateTimeParser.parseTime(time);
     }
 }
