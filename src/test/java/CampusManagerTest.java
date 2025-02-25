@@ -1,0 +1,49 @@
+import static org.assertj.core.api.Assertions.assertThat;
+
+import java.time.LocalDate;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+
+class CampusManagerTest {
+    @DisplayName("주어진_날짜가_공휴일이_아닌_평일이면_true_를_반환한다")
+    @Test
+    void should_ReturnTrue_WhenDateIsNotWeekendAndHoliday() {
+        //given
+        CampusManager campusManager = new CampusManager();
+        LocalDate date = LocalDate.of(2024, 12, 26);
+
+        //when
+        boolean result = campusManager.isOperationDate(date);
+
+        //then
+        assertThat(result).isTrue();
+    }
+
+    @DisplayName("주어진_날짜가_공휴일이면_false_를_반환한다")
+    @Test
+    void should_ReturnFalse_WhenDateIsHoliday() {
+        //given
+        CampusManager campusManager = new CampusManager();
+        LocalDate date = LocalDate.of(2024, 12, 25);
+
+        //when
+        boolean result = campusManager.isOperationDate(date);
+
+        //then
+        assertThat(result).isFalse();
+    }
+
+    @DisplayName("주어진_날짜가_주말이면_false_를_반환한다")
+    @Test
+    void should_ReturnFalse_WhenDateIsWeekend() {
+        //given
+        CampusManager campusManager = new CampusManager();
+        LocalDate date = LocalDate.of(2024, 12, 22);
+
+        //when
+        boolean result = campusManager.isOperationDate(date);
+
+        //then
+        assertThat(result).isFalse();
+    }
+}
