@@ -12,7 +12,9 @@ public enum ErrorMessage {
     OUT_OF_CAMPUS_TIME_RANGE("캠퍼스 운영 시간은 매일 08:00 ~ 23:00 입니다"),
     OUT_OF_HOUR_RANGE("24시 이내로 입력해 주세요"),
     OUT_OF_MINUTE_RANGE("60분 이내로 입력해 주세요"),
-    NOT_HAVE_ATTENDANCE("해당 날짜의 출석 기록이 없습니다.");
+    NOT_HAVE_ATTENDANCE("해당 날짜의 출석 기록이 없습니다."),
+    NOT_WEEKEND("주말은 출석할 수 없습니다."),
+    ;
 
     private static final String PREFIX = "[ERROR] ";
     private final String message;
