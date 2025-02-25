@@ -53,9 +53,9 @@ class AttendanceServiceTest {
         CrewRepository.addCrew(new Crew(nickname));
         AttendanceRecordRepository.add(
                 new AttendanceRecord(nickname, date, before, AttendanceStatus.of(date, before)));
+        ModifyAttendanceRequest request = ModifyAttendanceRequest.of(nickname, date, day, after);
 
         // when
-        ModifyAttendanceRequest request = ModifyAttendanceRequest.of(nickname, date, day, after);
         attendanceService.modifyAttendanceRecord(request);
 
         // then
@@ -64,5 +64,25 @@ class AttendanceServiceTest {
             AttendanceRecord record = AttendanceRecordRepository.find(nickname, date);
             softAssertions.assertThat(record.time()).isEqualTo(after);
         });
+    }
+
+    @Test
+    @DisplayName("수정하려는 출석 기록과 동일한 출석 기록이 존재하면 예외가 발생한다")
+    void modifyAttendanceRecordTest_SameAttendanceRecordExistsException() {
+        // given
+        String nickname = "name";
+        LocalDate date = LocalDate.of(2025, 2, 4);
+        int day = 4;
+        LocalTime before = LocalTime.of(10, 31);
+        LocalTime after = before;
+        CrewRepository.addCrew(new Crew(nickname));
+        AttendanceRecordRepository.add(
+                new AttendanceRecord(nickname, date, before, AttendanceStatus.of(date, before)));
+        ModifyAttendanceRequest request = ModifyAttendanceRequest.of(nickname, date, day, after);
+
+        // when & then
+        Assertions.assertThatThrownBy(() -> {
+            attendanceService.modifyAttendanceRecord(request);
+        }).isInstanceOf(IllegalArgumentException.class);
     }
 }
