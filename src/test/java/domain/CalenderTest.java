@@ -31,7 +31,7 @@ class CalenderTest {
     @ValueSource(ints = {1, 7, 8, 14, 15, 21, 22, 25, 28, 29})
     void validateHolyDay(int dayOfMonth) {
         // when & then
-        assertThatThrownBy(() -> DateTimeUtil.validateHolyDay(dayOfMonth))
+        assertThatThrownBy(() -> DateTimeUtil.validateHoliDay(dayOfMonth))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("공휴일에는 출석을 할 수 없습니다.");
     }
@@ -42,7 +42,7 @@ class CalenderTest {
     void holyDay(int dayOfMonth) {
 
         // when & then
-        assertThatCode(() -> DateTimeUtil.validateHolyDay(dayOfMonth))
+        assertThatCode(() -> DateTimeUtil.validateHoliDay(dayOfMonth))
                 .doesNotThrowAnyException();
     }
 }

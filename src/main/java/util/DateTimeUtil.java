@@ -1,5 +1,6 @@
 package util;
 
+import domain.Holiday;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.format.TextStyle;
@@ -27,7 +28,7 @@ public class DateTimeUtil {
     }
 
 
-    public static void validateHolyDay(final int date) {
+    public static void validateHoliDay(final int date) {
         LocalDate localDate = LocalDate.of(2024, 12, date);
         if (DateTimeUtil.isHoliday(localDate)) {
             throw new IllegalArgumentException("공휴일에는 출석을 할 수 없습니다.");
@@ -35,6 +36,8 @@ public class DateTimeUtil {
     }
 
     public static boolean isHoliday(LocalDate localDate) {
-        return localDate.getDayOfWeek().equals(DayOfWeek.SATURDAY) || localDate.getDayOfWeek().equals(DayOfWeek.SUNDAY);
+        return localDate.getDayOfWeek().equals(DayOfWeek.SATURDAY) || localDate.getDayOfWeek().equals(DayOfWeek.SUNDAY)
+                || !Holiday.from(localDate)
+                .equals(Holiday.NON_HOLIDAY);
     }
 }
