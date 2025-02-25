@@ -3,6 +3,7 @@ package attendance.view;
 import attendance.domain.Attendance;
 import attendance.domain.AttendanceState;
 import attendance.domain.AttendanceStatus;
+import attendance.domain.AttendanceUpdate;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -50,14 +51,11 @@ public class OutputView {
         );
     }
 
-    public void printAttendUpdateResult(List<Attendance> attendances) {
-        Attendance oldAttendance = attendances.getFirst();
-        Attendance updateAttendance = attendances.getLast();
-
-        printAttendanceRecord(oldAttendance);
+    public void printAttendUpdateResult(AttendanceUpdate update) {
+        printAttendanceRecord(update.getBeforeAttendance());
         System.out.printf(" -> %s (%s) 수정 완료!",
-                updateAttendance.getDateTime().toLocalTime(),
-                updateAttendance.getState().getName()
+                update.getAfterAttendance().getDateTime().toLocalTime(),
+                update.getAfterAttendance().getState().getName()
         );
     }
 

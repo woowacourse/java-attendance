@@ -83,12 +83,12 @@ class AttendanceManagerTest {
 
         // when
         LocalDateTime updateDateTime = LocalDateTime.of(nowDate, time);
-        List<Attendance> result = attendanceManager.processAttendanceUpdate(updateDateTime, nickname);
+        AttendanceUpdate result = attendanceManager.processAttendanceUpdate(updateDateTime, nickname);
 
         // then
         assertAll(
-                () -> assertThat(result.getLast().getDateTime().toLocalTime()).isEqualTo(time),
-                () -> assertThat(result.getLast().getState()).isEqualTo(expected)
+                () -> assertThat(result.getAfterAttendance().getDateTime().toLocalTime()).isEqualTo(time),
+                () -> assertThat(result.getAfterAttendance().getState()).isEqualTo(expected)
         );
     }
 

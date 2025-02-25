@@ -4,6 +4,7 @@ import attendance.config.AppConfig;
 import attendance.domain.Attendance;
 import attendance.domain.AttendanceManager;
 import attendance.domain.AttendanceStatus;
+import attendance.domain.AttendanceUpdate;
 import attendance.domain.CampusTime;
 import attendance.domain.Holiday;
 import attendance.utility.DateGenerator;
@@ -86,7 +87,7 @@ public class AttendanceSystem {
             LocalTime time = parseTimeForUpdate();
             LocalDateTime dateTime = LocalDateTime.of(date, time);
 
-            List<Attendance> attendanceUpdate = attendanceManager.processAttendanceUpdate(dateTime, nickname);
+            AttendanceUpdate attendanceUpdate = attendanceManager.processAttendanceUpdate(dateTime, nickname);
             outputView.printAttendUpdateResult(attendanceUpdate);
         }
     }

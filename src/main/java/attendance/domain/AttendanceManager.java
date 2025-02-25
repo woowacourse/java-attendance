@@ -28,13 +28,12 @@ public class AttendanceManager {
         return attendances.addAttendance(dateTime);
     }
 
-    public List<Attendance> processAttendanceUpdate(final LocalDateTime dateTime, final String nickname) {
+    public AttendanceUpdate processAttendanceUpdate(final LocalDateTime dateTime, final String nickname) {
         Attendances attendances = findCrewAttendance(nickname);
 
-        Attendance oldAttendance = attendances.deleteAttendance(dateTime.toLocalDate());
-        Attendance newAttendance = attendances.addAttendance(dateTime);
-
-        return List.of(oldAttendance, newAttendance);
+        Attendance beforeAttendance = attendances.deleteAttendance(dateTime.toLocalDate());
+        Attendance afterAttendance = attendances.addAttendance(dateTime);
+        return new AttendanceUpdate(List.of(beforeAttendance, afterAttendance));
     }
 
     public List<Attendance> getAttendanceRecord(final LocalDate today, final String nickname) {
