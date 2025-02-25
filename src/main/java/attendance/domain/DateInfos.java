@@ -19,10 +19,6 @@ public class DateInfos {
         return new DateInfos(new ArrayList<>());
     }
 
-    public static DateInfos from(final List<DateInfo> dateInfos) {
-        return new DateInfos(dateInfos);
-    }
-
     public void addDateInfo(final DateInfo dateInfo) {
         this.dateInfos.add(dateInfo);
     }
@@ -44,11 +40,6 @@ public class DateInfos {
         return newDateInfo;
     }
 
-    public boolean hasDateInfo(final int day) {
-        return dateInfos.stream()
-                .anyMatch(dateInfo -> dateInfo.isAttendanceDay(day));
-    }
-
     public AttendanceStatus findAttendanceStatusByDay(final int day) {
         for (DateInfo dateInfo : dateInfos) {
             if (dateInfo.isAttendanceDay(day)) {
@@ -56,6 +47,15 @@ public class DateInfos {
             }
         }
         return AttendanceStatus.ABSENCE;
+    }
+
+    public boolean hasDateInfo(final int day) {
+        return dateInfos.stream()
+                .anyMatch(dateInfo -> dateInfo.isAttendanceDay(day));
+    }
+
+    public List<DateInfo> getDateInfos() {
+        return new ArrayList<>(dateInfos);
     }
 
 }
