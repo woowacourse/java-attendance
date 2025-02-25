@@ -19,6 +19,13 @@ public class Attendances {
                 .orElseThrow(() -> new IllegalArgumentException("[ERROR] 해당 날짜에 대한 출석 기록이 존재하지 않습니다."));
     }
 
+    public Attendance findAttendanceByDate(AttendanceDate date) {
+        return this.attendances.stream()
+                .filter(attendance -> attendance.isSameDate(date))
+                .findAny()
+                .orElseThrow(() -> new IllegalArgumentException("[ERROR] 해당 날짜에 대한 출석 기록이 존재하지 않습니다."));
+    }
+
     public CrewStatus getCrewStatue() {
         return CrewStatus.checkCrewStatus(this.countLate(), this.countUnattended());
     }
@@ -43,5 +50,10 @@ public class Attendances {
 
     public void addNewAttendance(AttendanceDate attendanceDate, AttendanceTime attendanceTime) {
         this.attendances.add(new Attendance(attendanceDate, attendanceTime));
+    }
+
+    public void editAttendance(AttendanceDate attendanceDate, AttendanceTime attendanceTime) {
+        Attendance oldAttendance = findAttendanceByDate(attendanceDate);
+        oldAttendance.editTime(attendanceTime);
     }
 }

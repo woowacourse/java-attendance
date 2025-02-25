@@ -2,7 +2,6 @@ package domain;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -27,7 +26,6 @@ public class AttendanceBookTest {
         attendanceBook = new AttendanceBook(attendanceFileContents);
     }
 
-    /*
     @DisplayName("닉네임으로 크루 탐색 기능 테스트")
     @Test
     void findCrewByNameTest() {
@@ -35,12 +33,10 @@ public class AttendanceBookTest {
                 .isEqualTo(new Crew("쿠키", new Attendances(List.of())));
     }
 
-     */
-
     @DisplayName("없는 크루 탐색 테스트")
     @Test
     void findCrewByNameExceptionTest() {
-        assertThatThrownBy(() -> attendanceBook.checkExistCrew("메이"))
+        assertThatThrownBy(() -> attendanceBook.checkExistCrew("메삼"))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -56,20 +52,6 @@ public class AttendanceBookTest {
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
-    /*
-    @DisplayName("캠퍼스 열지 않은 시간에 출석할 때 예외 테스트")
-    @Test
-    void attendAtCampusNotOpenTimeTest() {
-        String name = "빙봉";
-        AttendanceDate attendanceDate = new AttendanceDate(LocalDate.of(2024, 12, 24));
-        AttendanceTime attendanceTime = new AttendanceTime(LocalTime.of(7, 59));
-
-        Assertions.assertThatThrownBy(() -> attendanceBook.attend(name, attendanceDate, attendanceTime))
-                .isInstanceOf(IllegalArgumentException.class);
-    }
-
-     */
-
     @DisplayName("이미 출석한 경우 예외 테스트")
     @Test
     void attendAlreadyAttendedTest() {
@@ -78,5 +60,27 @@ public class AttendanceBookTest {
 
         Assertions.assertThatThrownBy(() -> attendanceBook.checkAlreadyAttended(name, attendanceDate))
                 .isInstanceOf(IllegalArgumentException.class);
+    }
+
+    @DisplayName("출석 수정을 위한 출석 기록 확인 테스트")
+    @Test
+    void checkAttendanceExistForEditTest() {
+        String name = "빙봉";
+        AttendanceDate attendanceDate = new AttendanceDate(LocalDate.of(2024, 12, 27));
+
+        Assertions.assertThatThrownBy(() -> attendanceBook.checkAttendanceExist(name, attendanceDate))
+                .isInstanceOf(IllegalArgumentException.class);
+    }
+
+    @DisplayName("지각 -> 출석 수정 테스트")
+    @Test
+    void attendEditTest() {
+        String name = "빙봉";
+        AttendanceDate attendanceDate = new AttendanceDate(LocalDate.of(2024, 12, 2));
+        AttendanceTime attendanceTime = new AttendanceTime(LocalTime.of(12, 58));
+
+        attendanceBook.editAttendance(name, attendanceDate, attendanceTime);
+
+        Assertions.assertThat(attendanceBook.findCrewByName(name).findAttendanceByDate(attendanceDate).isLate()).isEqualTo(false);
     }
 }

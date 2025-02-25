@@ -20,14 +20,20 @@ public class Crew {
         return this.name.equals(name);
     }
 
-    public void checkAlreadyAttend(AttendanceDate attendanceDate) {
-        if (this.attendances.checkAlreadyAttend(attendanceDate)) {
-            throw new IllegalArgumentException("[ERROR] 이미 출석했습니다. 수정 기능을 이용해 주세요.");
-        }
+    public boolean checkAlreadyAttend(AttendanceDate attendanceDate) {
+        return this.attendances.checkAlreadyAttend(attendanceDate);
     }
 
     public void attend(AttendanceDate attendanceDate, AttendanceTime attendanceTime) {
         this.attendances.addNewAttendance(attendanceDate, attendanceTime);
+    }
+
+    public void edit(AttendanceDate attendanceDate, AttendanceTime attendanceTime) {
+        this.attendances.editAttendance(attendanceDate, attendanceTime);
+    }
+
+    public Attendance findAttendanceByDate(AttendanceDate attendanceDate) {
+        return this.attendances.findAttendanceByDate(attendanceDate);
     }
 
     @Override

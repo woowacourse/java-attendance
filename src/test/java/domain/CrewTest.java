@@ -35,7 +35,7 @@ public class CrewTest {
                 .isEqualTo(true);
     }
 
-    @DisplayName("크루 출석 테스트")
+    @DisplayName("크루 출석 확인 테스트")
     @Test
     void crewAttendTest() {
         String crewName = "메이";
@@ -46,7 +46,22 @@ public class CrewTest {
         AttendanceTime attendanceTime = new AttendanceTime(LocalTime.of(10, 30));
         crew.attend(attendanceDate, attendanceTime);
 
-        Assertions.assertThatThrownBy(() -> crew.checkAlreadyAttend(attendanceDate))
-                .isInstanceOf(IllegalArgumentException.class);
+        Assertions.assertThat(crew.checkAlreadyAttend(attendanceDate)).isEqualTo(true);
+    }
+
+    @DisplayName("크루 결석에서 출석으로 기록 수정 테스트")
+    @Test
+    void crewAttendanceEditTest() {
+        String crewName = "메이";
+        Attendances attendances = new Attendances(List.of());
+        Crew crew = new Crew(crewName, attendances);
+        AttendanceDate attendanceDate = new AttendanceDate(LocalDate.of(2024, 12, 3));
+        AttendanceTime oldTime = new AttendanceTime(LocalTime.of(10, 35));
+        AttendanceTime newTime = new AttendanceTime(LocalTime.of(9, 55));
+
+        crew.attend(attendanceDate, oldTime);
+        crew.edit(attendanceDate, newTime);
+
+        Assertions.assertThat(crew.findAttendanceByDate(attendanceDate).isLate()).isEqualTo(false);
     }
 }

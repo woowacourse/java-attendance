@@ -20,22 +20,13 @@ public class AttendanceBook {
         }
     }
 
-    private List<Attendance> parseAttendances(Map<String, List<LocalDateTime>> crewAttendances, String name) {
-        List<Attendance> attendances = new ArrayList<>();
-        for (LocalDateTime attendanceDateTime : crewAttendances.get(name)) {
-            LocalDate date = attendanceDateTime.toLocalDate();
-            LocalTime time = attendanceDateTime.toLocalTime();
-            Attendance attendance = new Attendance(new AttendanceDate(date), new AttendanceTime(time));
-
-            attendances.add(attendance);
-        }
-        return attendances;
-    }
-
     public void checkAlreadyAttended(String name, AttendanceDate attendanceDate) {
         Crew crew = findCrewByName(name);
-        crew.checkAlreadyAttend(attendanceDate);
+        if (crew.checkAlreadyAttend(attendanceDate)) {
+            throw new IllegalArgumentException("[ERROR] 이미 출석했습니다. 수정 기능을 이용해 주세요.");
+        }
     }
+
 
     // AttendanceDate로 파싱한 걸 받아올지? 여기서 파싱할지?
     public void attend(String name, AttendanceDate attendanceDate, AttendanceTime attendanceTime) {
@@ -49,11 +40,34 @@ public class AttendanceBook {
             .findAny()
             .orElseThrow(() -> new IllegalArgumentException("[ERROR] 등록되지 않은 닉네임입니다."));
     }
-
     public Crew findCrewByName(String name) {
         return crews.stream()
                 .filter(crew -> crew.isSameName(name))
                 .findAny()
                 .orElseThrow();
+    }
+
+    public void checkAttendanceExist(String name, AttendanceDate attendanceDate) {
+        Crew crew = findCrewByName(name);
+        if (!crew.checkAlreadyAttend(attendanceDate)) {
+            throw new IllegalArgumentException("[ERROR] 출석 기록이 존재하지 않습니다.");
+        }
+    }
+
+    public void editAttendance(String name, AttendanceDate attendanceDate, AttendanceTime attendanceTime) {
+        Crew crew = findCrewByName(name);
+        crew.edit(attendanceDate, attendanceTime);
+    }
+
+    private List<Attendance> parseAttendances(Map<String, List<LocalDateTime>> crewAttendances, String name) {
+        List<Attendance> attendances = new ArrayList<>();
+        for (LocalDateTime attendanceDateTime : crewAttendances.get(name)) {
+            LocalDate date = attendanceDateTime.toLocalDate();
+            LocalTime time = attendanceDateTime.toLocalTime();
+            Attendance attendance = new Attendance(new AttendanceDate(date), new AttendanceTime(time));
+
+            attendances.add(attendance);
+        }
+        return attendances;
     }
 }

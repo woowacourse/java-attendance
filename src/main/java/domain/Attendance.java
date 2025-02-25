@@ -5,8 +5,8 @@ import java.time.LocalDate;
 public class Attendance {
 
     private final AttendanceDate attendanceDate;
-    private final AttendanceTime attendanceTime;
-    private final AttendanceStatus attendanceStatus;
+    private AttendanceTime attendanceTime;
+    private AttendanceStatus attendanceStatus;
 
     public Attendance(AttendanceDate attendanceDate, AttendanceTime attendanceTime) {
         this.attendanceDate = attendanceDate;
@@ -28,5 +28,10 @@ public class Attendance {
 
     public boolean isUnattendedOrNoShow() {
         return this.attendanceStatus.equals(AttendanceStatus.UNATTENDED) || this.attendanceStatus.equals(AttendanceStatus.NO_SHOW);
+    }
+
+    public void editTime(AttendanceTime newTime) {
+        this.attendanceTime = newTime;
+        this.attendanceStatus = AttendanceStatus.checkAttendanceStatus(this.attendanceDate, newTime);
     }
 }

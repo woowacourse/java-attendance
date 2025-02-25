@@ -98,8 +98,27 @@ public class AttendancesTest {
         attendances.addNewAttendance(
                 new AttendanceDate(LocalDate.of(2024, 12, 24)),
                 new AttendanceTime(LocalTime.of(10, 0)));
-        
+
         Assertions.assertThat(attendances.checkAlreadyAttend(new AttendanceDate(LocalDate.of(2024, 12, 24))))
                 .isEqualTo(true);
+    }
+
+    @DisplayName("출석 기록 수정 테스트")
+    @Test
+    void editAttendanceTest() {
+        LocalDate editDate = LocalDate.of(2024, 12, 3);
+        LocalTime oldTime = LocalTime.of(10, 31);
+        LocalTime editTime = LocalTime.of(9, 55);
+
+        Attendances attendances = new Attendances(List.of(
+                new Attendance(new AttendanceDate(editDate), new AttendanceTime(oldTime))
+        ));
+
+        attendances.editAttendance(
+                new AttendanceDate(editDate),
+                new AttendanceTime(editTime));
+
+        Assertions.assertThat(attendances.findAttendanceByDate(editDate).isLate()).isEqualTo(false);
+
     }
 }
