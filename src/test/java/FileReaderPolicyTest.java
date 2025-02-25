@@ -26,4 +26,17 @@ public class FileReaderPolicyTest {
         assertThatThrownBy(() -> fileReaderPolicy.validateSplitLineFormat(splitLine))
                 .isInstanceOf(IllegalArgumentException.class);
     }
+
+    @Test
+    @DisplayName("날짜와 시간 형식이 맞지 않으면 예외가 발생한다")
+    public void validateAttendanceDateTimeFormatTest() {
+        //given
+        FileReaderPolicy fileReaderPolicy = new FileReaderPolicy(FILE_PATH);
+        String attendanceDateTime = "2024:12:13 09:11";
+
+        //when-then
+        assertThatThrownBy(() -> fileReaderPolicy.parseAttendanceDateTime(attendanceDateTime))
+                .isInstanceOf(IllegalArgumentException.class);
+    }
+
 }

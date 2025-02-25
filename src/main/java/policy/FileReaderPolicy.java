@@ -30,7 +30,7 @@ public class FileReaderPolicy {
             validateSplitLineFormat(splitLine);
 
             String nickname = splitLine[0];
-            LocalDateTime dateTime = parseAttendanceDateTime(splitLine);
+            LocalDateTime dateTime = parseAttendanceDateTime(splitLine[1]);
         }
     }
 
@@ -55,9 +55,9 @@ public class FileReaderPolicy {
         }
     }
 
-    private LocalDateTime parseAttendanceDateTime(String[] splitLine) {
+    public LocalDateTime parseAttendanceDateTime(String dateTime) {
         try{
-           return LocalDateTime.parse(splitLine[1], DATE_TIME_FORMATTER);
+           return LocalDateTime.parse(dateTime, DATE_TIME_FORMATTER);
         }catch (DateTimeParseException e){
             throw new IllegalArgumentException("[ERROR] 날짜 형식이 잘못되었습니다");
         }
