@@ -24,21 +24,18 @@ public class HistoryCalculator {
     }
 
     private static AbsenceHistoryDto calculateAbsenceHistory(List<AttendanceRecord> attendanceRecords) {
-        int attendance = 0;
-        int lateness = 0;
-        int absence = 0;
-        for (AttendanceRecord attendanceRecord : attendanceRecords) {
-            AttendanceState state = attendanceRecord.time().state();
-            if (state.equals(AttendanceState.ATTENDANCE)) {
-                attendance++;
-            }
-            if (state.equals(AttendanceState.LATENESS)) {
-                lateness++;
-            }
-            if (state.equals(AttendanceState.ABSENCE)) {
-                absence++;
-            }
-        }
+        int attendance = (int) attendanceRecords.stream()
+                .filter(record -> record.time().state().equals(AttendanceState.ATTENDANCE))
+                .count();
+
+        int lateness = (int) attendanceRecords.stream()
+                .filter(record -> record.time().state().equals(AttendanceState.LATENESS))
+                .count();
+
+        int absence = (int) attendanceRecords.stream()
+                .filter(record -> record.time().state().equals(AttendanceState.ABSENCE))
+                .count();
+        
         return new AbsenceHistoryDto(attendance, lateness, absence);
     }
 
