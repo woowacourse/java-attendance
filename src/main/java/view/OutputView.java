@@ -26,7 +26,7 @@ public class OutputView {
     public void printAllDangerousCrew(AllCrew allCrew) {
         System.out.println("\n제적 위험자 조회 결과");
         allCrew.sortAllCrewOrderByWarningInfo();
-        List<Crew> allWarningCrew = allCrew.getAllWarningCrew();
+        List<Crew> allWarningCrew = allCrew.getAllAbsentPenaltyReceivedCrew();
         for (Crew crew : allWarningCrew) {
             System.out.print("- ");
             printWarningInfo(crew);

@@ -36,7 +36,7 @@ public class AllCrew {
         return allCrew.stream()
                 .filter(crew -> crew.isSameName(name))
                 .findFirst()
-                .orElseThrow(() -> new IllegalArgumentException("Crew not found"));
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 크루입니다."));
     }
 
     public void sortAllCrewOrderByWarningInfo() {
@@ -58,7 +58,7 @@ public class AllCrew {
         allCrew.forEach(crew -> crew.updateAbsentUntil(date));
     }
 
-    public List<Crew> getAllWarningCrew() {
+    public List<Crew> getAllAbsentPenaltyReceivedCrew() {
         List<Crew> allWarningCrew = new ArrayList<>();
         for (Crew crew : allCrew) {
             if (crew.getAbsentPenalty() != AbsentPenalty.NONE){
