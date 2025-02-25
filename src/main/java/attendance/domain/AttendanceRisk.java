@@ -3,16 +3,14 @@ package attendance.domain;
 import java.util.Arrays;
 
 public enum AttendanceRisk {
-    EXPULSION("제적", 6),
-    COUNSELING("면담", 3),
-    WARNING("경고", 2),
-    NONE("해당없음", 0);
+    EXPULSION(6),
+    COUNSELING(3),
+    WARNING(2),
+    NONE(0);
 
-    private final String name;
     private final int threshold;
 
-    AttendanceRisk(final String name, final int threshold) {
-        this.name = name;
+    AttendanceRisk(final int threshold) {
         this.threshold = threshold;
     }
 
@@ -22,9 +20,5 @@ public enum AttendanceRisk {
                 .filter(type -> type.threshold <= allAbsence)
                 .findFirst()
                 .orElse(NONE);
-    }
-
-    public String getName() {
-        return name;
     }
 }
