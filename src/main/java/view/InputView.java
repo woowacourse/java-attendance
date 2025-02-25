@@ -10,7 +10,7 @@ public class InputView {
         return SCANNER.nextLine();
     }
 
-    public static String scanLocalTime() {
+    public static String scanAttendanceTime() {
         System.out.println("등교 시간을 입력해 주세요.");
         return SCANNER.nextLine();
     }

@@ -26,12 +26,16 @@ public enum AttendanceStatus {
         if (Holiday.isHoliday(date) || !LectureTime.isLectureDate(date)) {
             throw new IllegalArgumentException(date + ": 교육이 없는 날입니다.");
         }
-        
+
         int elapsedMinutes = LectureTime.calculateElapsedMinutes(date, time);
         return Arrays.stream(values())
                 .filter(status -> status.elapsedMinutesLimit <= elapsedMinutes)
                 .max(Comparator.comparing(AttendanceStatus::getElapsedMinutesLimit))
                 .orElseThrow(() -> new IllegalArgumentException("논리적으로 발생할 수 없는 예외입니다."));
+    }
+
+    public String getTitle() {
+        return title;
     }
 
     public int getElapsedMinutesLimit() {
