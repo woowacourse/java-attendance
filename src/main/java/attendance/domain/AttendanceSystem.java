@@ -38,6 +38,7 @@ public class AttendanceSystem {
     }
 
     public void updateAttendance(String nickname, LocalDate arrivalDate, LocalTime newTime) {
+        crewStorage.validateIsNotContained(nickname);
         Optional<AttendanceRecord> originRecord = findAttendanceRecord(nickname, arrivalDate);
         originRecord.ifPresent(records::remove);
 
