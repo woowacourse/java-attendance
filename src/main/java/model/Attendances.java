@@ -1,5 +1,6 @@
 package model;
 
+import common.Common;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
@@ -31,10 +32,18 @@ public class Attendances {
 
     public Attendance update(LocalDate date, LocalTime time) {
         Attendance oldAttendance = findByDate(date);
+        validateFirstUpdate(oldAttendance);
         Attendance newAttendance = new Attendance(date, time);
         this.attendances.remove(oldAttendance);
         this.attendances.add(newAttendance);
         return newAttendance;
+    }
+
+    private void validateFirstUpdate(Attendance oldAttendance) {
+        if (oldAttendance.getTime().equals(Common.noneAttendanceTime)) {
+            return;
+        }
+        throw new IllegalArgumentException("중복 출석 등록은 불가능합니다.");
     }
 
     public Attendance findByDate(LocalDate date) { //TODO :private
