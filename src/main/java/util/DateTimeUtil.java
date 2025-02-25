@@ -6,9 +6,9 @@ import java.time.format.TextStyle;
 import java.util.Locale;
 
 public class DateTimeUtil {
-    private static LocalDate now() {
-        return LocalDate.now();
-    }
+//    private static LocalDate now() {
+//        return LocalDate.now();
+//    }
 
     public static int getYearBy(LocalDate localDate) {
         return localDate.getYear();
@@ -26,6 +26,11 @@ public class DateTimeUtil {
     public static String getDayOfWeekBy(LocalDate localDate) {
         return localDate.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.KOREAN);
     }
+
+    public static int getTodayDate() {
+        return getDateBy(LocalDate.now());
+    }
+
 
     public static void validateHolyDay(final int date) {
         LocalDate localDate = LocalDate.of(2024, 12, date);

@@ -13,6 +13,7 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import util.DateTimeUtil;
 import util.FileManager;
 import view.InputView;
 import view.OutputView;
@@ -55,10 +56,11 @@ public class MainController {
         LocalTime dateTime = LocalTime.parse(schoolStartTime, formatter);
 
 //        AttendanceState attendanceState = AttendanceState.findStateBy(dateTime, LocalDate.now());
-        AttendanceState attendanceState = AttendanceState.findStateBy(dateTime, LocalDate.of(2024, 12, 16));
+        AttendanceState attendanceState = AttendanceState.findStateBy(dateTime,
+                LocalDate.of(2024, 12, DateTimeUtil.getTodayDate()));
 
 //        attendance.save(crew, schoolStartTime, LocalDate.now());
-        attendance.save(crew, schoolStartTime, LocalDate.of(2024, 12, 16));
+        attendance.save(crew, schoolStartTime, LocalDate.of(2024, 12, DateTimeUtil.getTodayDate()));
 
         OutputView.printTodayAttendance(schoolStartTime, attendanceState.getDescription());
     }
