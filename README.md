@@ -53,6 +53,8 @@
 ### util
 - DateTimeConvertor
   - [x] 문자열로 이루어진 날짜와 시간 정보를 LocalDate, LocalTime으로 파싱
+- AttendanceFileReader
+  - [x] 파일의 내용을 String으로 읽어오는 기능
 
 ### 예외 상황
 - [x] 출석하려는 날짜가 주말 및 공휴일인 경우
