@@ -20,7 +20,7 @@ public class Attendance {
 
     private void validateAttendanceTime(LocalTime localTime) {
         if (localTime.isBefore(LocalTime.of(8, 0)) || localTime.isAfter(LocalTime.of(23, 0))) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("[ERROR] 지정된 시간이 아니면 등교가 불가능합니다.");
         }
 
     }
