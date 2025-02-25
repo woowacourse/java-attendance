@@ -23,7 +23,7 @@ public class AttendanceBook {
             throw new InvalidDateException();
         }
         Attendance attendance = Attendance.of(date, time);
-        addAttendance(attendance);
+        attendances.add(attendance);
         return attendance;
     }
 
@@ -40,7 +40,8 @@ public class AttendanceBook {
                 .findFirst()
                 .orElse(Attendance.empty(date));
         Attendance modifiedAttendance = oldAttendance.modify(time);
-        addAttendance(modifiedAttendance);
+        attendances.remove(oldAttendance);
+        attendances.add(modifiedAttendance);
         return modifiedAttendance;
     }
 
@@ -104,13 +105,6 @@ public class AttendanceBook {
             }
         }
         return count;
-    }
-
-    private void addAttendance(Attendance attendance) {
-        if (!attendances.add(attendance)) {
-            attendances.remove(attendance);
-            attendances.add(attendance);
-        }
     }
 
     private boolean isHoliday(LocalDate date) {
