@@ -10,7 +10,7 @@ import org.junit.jupiter.params.provider.CsvSource;
 class CrewStatusTest {
 
     @ParameterizedTest
-    @CsvSource(value = {"2,2,경고", "3,3,면담", "6,1,면담", "0,5,면담", "6,4,제적"})
+    @CsvSource(value = {"2,2,경고", "3,3,면담", "6,1,면담", "0,5,면담", "6,4,제적", "0,1,정상"})
     void 올바른_상태_반환_검사(int lateCount, int absentCount, String expectedResult) {
 
         // given
@@ -25,10 +25,11 @@ class CrewStatusTest {
 
         // given
         int lateCounts = 0;
-        int absentCounts = 1;
+        int absentCounts = -1;
 
         // when & then
         Assertions.assertThatThrownBy(() -> CrewStatus.from(lateCounts, absentCounts))
                 .isInstanceOf(CustomException.class).hasMessage(ErrorMessage.NOT_RISK_CREW.getMessage());
     }
+
 }
