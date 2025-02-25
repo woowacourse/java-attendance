@@ -1,4 +1,4 @@
-package util;
+package presentation;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
@@ -8,7 +8,6 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.time.format.TextStyle;
 import java.util.Locale;
-import presentation.InputValidator;
 
 public class DateTimeUtil {
     private static final DateTimeFormatter LOCAL_DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");

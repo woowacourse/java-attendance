@@ -18,7 +18,6 @@ import presentation.view.AttendanceFileInputView;
 import presentation.view.InputView;
 import presentation.view.OutputView;
 import domain.CrewFactory;
-import util.DateTimeUtil;
 
 public class AttendanceController {
     private final AttendanceFileInputView fileInputView;

@@ -2,7 +2,7 @@ package presentation.view;
 
 import java.time.LocalDate;
 import java.util.Scanner;
-import util.DateTimeUtil;
+import presentation.DateTimeUtil;
 
 public class InputView {
     private static final Scanner scanner = new Scanner(System.in);

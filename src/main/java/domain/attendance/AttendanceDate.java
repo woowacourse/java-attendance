@@ -3,7 +3,7 @@ package domain.attendance;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import util.DateTimeUtil;
+import presentation.DateTimeUtil;
 
 public class AttendanceDate implements Comparable<AttendanceDate> {
     private static final int DEFAULT_START_TIME = 2024;

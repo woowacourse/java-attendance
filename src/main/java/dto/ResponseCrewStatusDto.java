@@ -2,7 +2,7 @@ package dto;
 
 import domain.attendance.AttendanceDate;
 import domain.attendance.AttendanceState;
-import util.DateTimeUtil;
+import presentation.DateTimeUtil;
 
 public record ResponseCrewStatusDto(String crewDate, String crewTime, AttendanceState attendanceState) {
     public static ResponseCrewStatusDto from(AttendanceDate attendanceDate) {
