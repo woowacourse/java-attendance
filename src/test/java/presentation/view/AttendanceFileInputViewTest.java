@@ -6,7 +6,7 @@ import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-class FileInputViewTest {
+class AttendanceFileInputViewTest {
     @DisplayName("출석 기록 파일을 읽어서 출석 데이터를 반환한다")
     @Test
     void test() {
