@@ -6,7 +6,7 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Scanner;
-import model.StudentRecordRepository;
+import model.StudentAttendanceRecord;
 import model.TodayDate;
 
 public class InputView {
@@ -111,7 +111,7 @@ public class InputView {
         return getTimeUntilValidate(localDate);
     }
 
-    public static String getStudentNameForModifyUntilValidate(StudentRecordRepository studentRepository) {
+    public static String getStudentNameForModifyUntilValidate(StudentAttendanceRecord studentRepository) {
         try {
             InputView.printInputNicName();
             return getStudentNameUntilExist(studentRepository);
@@ -129,7 +129,7 @@ public class InputView {
         }
     }
 
-    public static String getStudentForAttendanceCheckUntilExist(StudentRecordRepository studentRepository) {
+    public static String getStudentForAttendanceCheckUntilExist(StudentAttendanceRecord studentRepository) {
         InputView.printInputNicName();
         try {
             return getStudentNameUntilExist(studentRepository);
@@ -139,7 +139,7 @@ public class InputView {
         }
     }
 
-    public static String getStudentNameUntilExist(StudentRecordRepository studentRecordRepository) {
+    public static String getStudentNameUntilExist(StudentAttendanceRecord studentRecordRepository) {
         String userName = InputView.userInput();
         try{
             if(!studentRecordRepository.isExistStudentByName(userName)) {

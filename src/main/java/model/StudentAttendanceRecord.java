@@ -4,11 +4,11 @@ import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 
-public class StudentRecordRepository {
+public class StudentAttendanceRecord {
 
     private final Map<String, Record> studentRecord = new HashMap<>();
 
-    public StudentRecordRepository() {
+    public StudentAttendanceRecord() {
     }
 
     public Map<String, Record> getStudentRecord() {

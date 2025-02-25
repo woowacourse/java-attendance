@@ -6,7 +6,7 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import model.StudentRecordRepository;
+import model.StudentAttendanceRecord;
 
 public class FileInput {
     private static final String filePath = "src/main/resources/attendances.csv";
@@ -29,9 +29,9 @@ public class FileInput {
         return attendanceFile;
     }
 
-    public static StudentRecordRepository readFileAndCreateStudentRepository() throws IOException {
+    public static StudentAttendanceRecord readFileAndCreateStudentRepository() throws IOException {
         FileInput fileInput = new FileInput();
-        StudentRecordRepository studentRecordRepository = new StudentRecordRepository();
+        StudentAttendanceRecord studentRecordRepository = new StudentAttendanceRecord();
         for (String information : readAttendanceFile()) {
             String[] nameAndTimeInformation = information.split(",");
             String name = nameAndTimeInformation[0];
@@ -44,7 +44,7 @@ public class FileInput {
         return studentRecordRepository;
     }
 
-    public static StudentRecordRepository createStudentRepository(){
+    public static StudentAttendanceRecord createStudentRepository(){
         try{
             return readFileAndCreateStudentRepository();
         } catch (IOException e){

@@ -9,7 +9,7 @@ import util.FileInput;
 
 class StudentRecordRepositoryTest {
 
-    StudentRecordRepository studentRecordRepository = FileInput.createStudentRepository();
+    StudentAttendanceRecord studentRecordRepository = FileInput.createStudentRepository();
 
     @Test
     @DisplayName("이름을 통해 존재하는 학생인지 판단하는 메서드 테스트")
