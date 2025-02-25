@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
@@ -15,11 +16,10 @@ public class AttendanceSheetTest {
     public void attendTest() {
         //given
         AttendanceSheet attendanceSheet = new AttendanceSheet(
-                List.of(
-                        new Attendance("링크", LocalDate.of(2024, 12, 10), LocalTime.of(10,0)),
+                new ArrayList<>(
+                        List.of(new Attendance("링크", LocalDate.of(2024, 12, 10), LocalTime.of(10,0)),
                         new Attendance("링크", LocalDate.of(2024, 12, 11), LocalTime.of(11,0))
-                        
-                )
+                ))
         );
 
         String nickname = "링크";
