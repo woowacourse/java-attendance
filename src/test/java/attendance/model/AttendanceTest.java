@@ -35,15 +35,12 @@ public class AttendanceTest {
                 Arguments.of(
                         List.of(
                                 new Attendance(
-                                        new Crew("쿠키"),
                                         LocalDateTime.parse("2025-02-14 13:03", dateTimeFormatter)
                                 ),
                                 new Attendance(
-                                        new Crew("이든"),
                                         LocalDateTime.parse("2025-02-13 10:08", dateTimeFormatter)
                                 ),
                                 new Attendance(
-                                        new Crew("빙티"),
                                         LocalDateTime.parse("2025-02-12 9:49", dateTimeFormatter)
                                 )
                         )

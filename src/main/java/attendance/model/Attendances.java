@@ -6,7 +6,9 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class Attendances {
     private final List<Attendance> attendances;
@@ -21,7 +23,6 @@ public class Attendances {
         csvData.stream()
                 .filter(row -> row.getFirst().equals(name))
                 .map(row -> new Attendance(
-                        crew,
                         LocalDateTime.parse(row.getLast(), dateTimeFormatter)
                 ))
                 .forEach(attendances::add);
@@ -42,7 +43,6 @@ public class Attendances {
         for (LocalDate i = firstDate; i.isBefore(today); i = i.plusDays(1)) {
             if (isWorkday(i) && !isAttend(i)) {
                 attendances.add(new Attendance(
-                        crew,
                         LocalDateTime.of(i, LocalTime.of(0, 0)),
                         AttendanceType.ABSENT
                 ));
@@ -77,4 +77,30 @@ public class Attendances {
                 .filter(attendance -> attendance.getType() == AttendanceType.ABSENT)
                 .count();
     }
+
+    public void attend(LocalDateTime dateTime) {
+        attendances.add(new Attendance(dateTime, AttendanceType.of(dateTime)));
+    }
+
+    public Map<AttendanceType, Integer> getInfo() {
+        Map<AttendanceType, Integer> attendanceInfo = new HashMap<>();
+        attendanceInfo.put(AttendanceType.PRESENT, 0);
+        attendanceInfo.put(AttendanceType.LATE, 0);
+        attendanceInfo.put(AttendanceType.ABSENT, 0);
+
+        for (Attendance attendance : attendances) {
+            if (attendance.getType() == AttendanceType.PRESENT) {
+                attendanceInfo.put(AttendanceType.PRESENT, attendanceInfo.get(AttendanceType.PRESENT) + 1);
+            }
+            if (attendance.getType() == AttendanceType.LATE) {
+                attendanceInfo.put(AttendanceType.LATE, attendanceInfo.get(AttendanceType.LATE) + 1);
+            }
+            if (attendance.getType() == AttendanceType.ABSENT) {
+                attendanceInfo.put(AttendanceType.ABSENT, attendanceInfo.get(AttendanceType.ABSENT) + 1);
+            }
+        }
+        return attendanceInfo;
+    }
+
+
 }

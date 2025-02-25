@@ -1,7 +1,10 @@
 package attendance.model;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import java.time.LocalTime;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -13,5 +16,19 @@ public class CrewTest {
         Crew crew2 = new Crew("엠제이");
 
         assertEquals(crew1, crew2);
+    }
+
+    @DisplayName("크루가 출석을 한다.")
+    @Test
+    void crewAttend() {
+        Crew crew = new Crew("이든");
+        crew.attendToday(LocalTime.of(9, 58));
+
+        assertAll(
+                () -> assertThat(crew.getPresentCount()).isEqualTo(1),
+                () -> assertThat(crew.getLateCount()).isEqualTo(0),
+                () -> assertThat(crew.getAbsentCount()).isEqualTo(0)
+        );
+
     }
 }

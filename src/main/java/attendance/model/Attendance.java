@@ -4,17 +4,14 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 public class Attendance {
-    private final Crew crew;
     private final LocalDateTime dateTime;
     private AttendanceType type;
 
-    public Attendance(Crew crew, LocalDateTime dateTime) {
-        this.crew = crew;
+    public Attendance(LocalDateTime dateTime) {
         this.dateTime = dateTime;
     }
 
-    public Attendance(Crew crew, LocalDateTime dateTime, AttendanceType type) {
-        this.crew = crew;
+    public Attendance(LocalDateTime dateTime, AttendanceType type) {
         this.dateTime = dateTime;
         this.type = type;
     }
