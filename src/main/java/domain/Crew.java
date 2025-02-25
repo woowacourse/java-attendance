@@ -28,16 +28,16 @@ public class Crew implements Comparable<Crew> {
 
     @Override
     public int compareTo(Crew compareCrew) {
-        if (this.attendance.countAbsence() < compareCrew.attendance.countAbsence()) {
+        int absenceCount = this.attendance.countAbsence();
+        int compareAbsenceCount = compareCrew.getAttendance().countAbsence();
+        int tardyCount = this.attendance.countTardy();
+        int compareTardyCount = compareCrew.getAttendance().countTardy();
+
+        if(absenceCount < compareAbsenceCount ||
+                (absenceCount == compareAbsenceCount) && tardyCount < compareTardyCount){
             return 1;
         }
-        if (this.attendance.countAbsence() > compareCrew.attendance.countAbsence()) {
-            return -1;
-        }
-        if (this.attendance.countTardy() < compareCrew.attendance.countTardy()) {
-            return 1;
-        }
-        if (this.attendance.countTardy() > compareCrew.attendance.countTardy()) {
+        if(absenceCount > compareAbsenceCount || tardyCount > compareTardyCount){
             return -1;
         }
         return this.name.compareTo(compareCrew.name);
