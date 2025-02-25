@@ -40,7 +40,7 @@ public class InputView {
     }
 
     public static String getUserWantMenu(TodayDate todayDate){
-        System.out.printf(String.format(PRINT_TODAY_FORMAT,todayDate.getTodayDate().getMonth().getValue(),todayDate.getTodayDate().getDayOfMonth(),todayDate.getTodayDay()));
+        System.out.printf(PRINT_TODAY_FORMAT,todayDate.getTodayDate().getMonth().getValue(),todayDate.getTodayDate().getDayOfMonth(),todayDate.getTodayDay());
         printMenu();
         String input = userInput();
         try{
