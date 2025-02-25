@@ -1,5 +1,6 @@
 package attendance.domain;
 
+import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.util.ArrayList;
@@ -22,5 +23,20 @@ class AttendanceBookTest {
         assertThatThrownBy(() -> attendanceBook.hasCrew("추추"))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("[ERROR] 출석부에 존재하지 않는 닉네임입니다.");
+    }
+
+    @DisplayName("입력된 이름이 출석부에 있다면 예외가 발생하지 않는다.")
+    @Test
+    void 입력된_이름이_출석부에_있다면_예외가_발생하지_않는다() {
+
+        // given
+        List<String> names = new ArrayList<>();
+        names.add("체체");
+        AttendanceBook attendanceBook = new AttendanceBook(names);
+
+        // when & then
+        assertThatCode(() -> {
+            attendanceBook.hasCrew("체체");
+        }).doesNotThrowAnyException();
     }
 }
