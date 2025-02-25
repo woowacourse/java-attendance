@@ -40,6 +40,20 @@ public class OutputView {
         System.out.println();
     }
 
+    public void writeAttendanceModifyCheck(DateInfo dateInfo) {
+        String month = formatWithLeadingZero(dateInfo.getMonth());
+        String day = formatWithLeadingZero(dateInfo.getDay());
+        String dayOfWeek = changeDayOfWeekToKorean(dateInfo.getDayOfWeek());
+
+        String afterHour = formatWithLeadingZero(dateInfo.getCampusHour());
+        String afterMinute = formatWithLeadingZero(dateInfo.getCampusMinute());
+        String afterStatus = dateInfo.getAttendanceStatus().getStatus();
+        System.out.printf("%s월 %s일 %s --:-- (결석) -> %s:%s (%s) 수정 완료!",
+                month, day, dayOfWeek, afterHour, afterMinute, afterStatus);
+        System.out.println();
+    }
+
+
     public void writeAttendanceHistory(LocalDate now, DateInfos dateInfos, AttendanceHistory history) {
         System.out.printf("이번 달 %s의 출석 기록입니다.", history.getCrewName());
         System.out.println();

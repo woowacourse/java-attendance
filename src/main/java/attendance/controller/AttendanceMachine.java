@@ -85,12 +85,17 @@ public class AttendanceMachine {
         CampusTime campusTime = CampusTime.fromHourColonMinute(modifyTime);
         LocalDate date = LocalDate.of(now.getYear(), now.getMonth(), Integer.parseInt(modifyDay));
 
-        DateInfo beforeDateInfo = register.findOrCreateDateInfo(crewName, date);
+        boolean isInfoExist = register.hasDateInfo(crewName, modifyDay);
+        if (!isInfoExist) {
+            DateInfo createDateInfo = register.findOrCreateDateInfo(crewName, date, campusTime);
+            outputView.writeAttendanceModifyCheck(createDateInfo);
+            return;
+        }
+        DateInfo beforeDateInfo = register.findOrCreateDateInfo(crewName, date, campusTime);
         int beforeHour = beforeDateInfo.getCampusHour();
         int beforeMinute = beforeDateInfo.getCampusMinute();
         AttendanceStatus beforeStatus = beforeDateInfo.getAttendanceStatus();
         DateInfo afterDateInfo = register.modifyDateInfo(crewName, modifyDay, campusTime);
-
         outputView.writeAttendanceModifyCheck(beforeHour, beforeMinute, beforeStatus, afterDateInfo);
     }
 

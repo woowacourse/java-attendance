@@ -52,9 +52,19 @@ public class Register {
         return dateInfo;
     }
 
+    public boolean hasDateInfo(String crewName, String day) {
+        DateInfos dateInfos = register.get(crews.findCrew(crewName));
+        return dateInfos.hasDateInfo(Integer.parseInt(day));
+    }
+
     public DateInfo findDateInfo(String crewName, String day) {
         DateInfos dateInfos = register.get(crews.findCrew(crewName));
         return dateInfos.findDateInfoByDay(Integer.parseInt(day));
+    }
+
+    public DateInfo findOrCreateDateInfo(String crewName, LocalDate date, CampusTime campusTime) {
+        DateInfos dateInfos = register.get(crews.findCrew(crewName));
+        return dateInfos.findOrCreateDateInfoByDate(date, campusTime);
     }
 
     public DateInfos findDateInfos(String crewName) {
@@ -64,4 +74,5 @@ public class Register {
     public Crews getCrews() {
         return crews;
     }
+
 }

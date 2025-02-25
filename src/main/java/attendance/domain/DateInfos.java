@@ -3,6 +3,7 @@ package attendance.domain;
 import attendance.domain.constant.AttendanceStatus;
 import attendance.exception.CustomException;
 import attendance.exception.ErrorMessage;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -29,7 +30,23 @@ public class DateInfos {
     public DateInfo findDateInfoByDay(final int day) {
         return dateInfos.stream().filter(dateInfo -> dateInfo.isAttendanceDay(day))
                 .findFirst()
-                .orElseThrow(() -> CustomException.from(ErrorMessage.NOT_HAVE_ATTENDANCE));
+                .orElseThrow(() -> CustomException.from(ErrorMessage.NICKNAME_NOT_PRESENCE));
+    }
+
+    public DateInfo findOrCreateDateInfoByDate(final LocalDate date, final CampusTime campusTime) {
+        for (DateInfo dateInfo : dateInfos) {
+            if (dateInfo.isAttendanceDay(date.getDayOfMonth())) {
+                return dateInfo;
+            }
+        }
+        DateInfo newDateInfo = DateInfo.fromCampusTime(date, campusTime);
+        dateInfos.add(newDateInfo);
+        return newDateInfo;
+    }
+
+    public boolean hasDateInfo(final int day) {
+        return dateInfos.stream()
+                .anyMatch(dateInfo -> dateInfo.isAttendanceDay(day));
     }
 
     public AttendanceStatus findAttendanceStatusByDay(final int day) {
