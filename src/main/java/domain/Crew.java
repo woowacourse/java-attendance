@@ -9,6 +9,7 @@ import java.time.LocalTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 public class Crew {
 
@@ -18,19 +19,14 @@ public class Crew {
         this.records = initializeRecords(localDateTimes);
     }
 
-    public DailyRecord findRecordByDate(LocalDate localDate) {
-        if(records.containsKey(localDate)) {
-            return records.get(localDate);
-        }
-        return null;
+    public Optional<DailyRecord> findRecordByDate(LocalDate localDate) {
+        return Optional.ofNullable(records.get(localDate));
     }
 
     public AttendanceStatus findStatusByDate(LocalDate date) {
-        DailyRecord record = findRecordByDate(date);
-        if (record == null) {
-            return ABSENCE;
-        }
-        return record.getStatus();
+        return findRecordByDate(date)
+            .map(DailyRecord::getStatus)
+            .orElse(ABSENCE);
     }
 
     public int getAttendanceCount() {

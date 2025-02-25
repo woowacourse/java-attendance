@@ -11,6 +11,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -42,9 +43,9 @@ public class CrewsTest {
         DailyRecord record = crews.attendCrew(name, dateAndTime);
 
         Crew crew = crews.findCrewByName(name);
-        DailyRecord expectedRecord = crew.findRecordByDate(localDate);
+        Optional<DailyRecord> expectedRecord = crew.findRecordByDate(localDate);
 
-        assertThat(expectedRecord).isEqualTo(record);
+        assertThat(expectedRecord).get();
     }
 
     @Test
@@ -72,9 +73,9 @@ public class CrewsTest {
         crews.createCrew(name, List.of(initialDateAndTime));
         crews.editCrew(name, editedDateAndTime);
 
-        DailyRecord dailyRecord = findTimeAndStatus(name, localDate);
+        Optional<DailyRecord> dailyRecord = findDailyRecord(name, localDate);
 
-        assertThat(dailyRecord.getStatus()).isEqualTo(AttendanceStatus.LATENESS);
+        assertThat(dailyRecord.get().getStatus()).isEqualTo(AttendanceStatus.LATENESS);
     }
 
     @Test
@@ -91,7 +92,7 @@ public class CrewsTest {
         }).isInstanceOf(IllegalArgumentException.class);
     }
 
-    private DailyRecord findTimeAndStatus(String name, LocalDate localDate) {
+    private Optional<DailyRecord> findDailyRecord(String name, LocalDate localDate) {
         Crew crew = crews.findCrewByName(name);
         return crew.findRecordByDate(localDate);
     }

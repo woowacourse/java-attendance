@@ -13,6 +13,7 @@ import java.time.LocalDate;
 import java.time.format.TextStyle;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Optional;
 
 public class OutputView {
 
@@ -59,14 +60,14 @@ public class OutputView {
     }
 
     private void printCrewAttendance(LocalDate date, Crew crew) {
-        DailyRecord record = crew.findRecordByDate(date);
-        if (record == null || record.getStatus() == null) {
+        Optional<DailyRecord> record = crew.findRecordByDate(date);
+        if (record.isEmpty()) {
             System.out.printf(ATTENDANCE_RECORD_FORMAT
                 , dateFormatting(date)
                 , ABSENCE_RECORD_FORMAT);
             return;
         }
-        printAttendanceRecord(date, record);
+        printAttendanceRecord(date, record.orElse(null));
     }
 
     public void printStatistics(int attendanceCount, int latenessCount, int absenceCount,

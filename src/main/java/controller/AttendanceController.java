@@ -14,6 +14,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import util.parser.DateTimeParser;
 import util.validator.InputValidator;
@@ -64,8 +65,8 @@ public class AttendanceController {
             LocalDateTime dateTime = LocalDateTime.of(today, attendedTime);
 
             crews.attendCrew(name, dateTime);
-            DailyRecord dailyRecord = crews.findCrewByName(name).findRecordByDate(today);
-            outputView.printAttendanceRecord(today, dailyRecord);
+            Optional<DailyRecord> dailyRecord = crews.findCrewByName(name).findRecordByDate(today);
+            outputView.printAttendanceRecord(today, dailyRecord.get());
         });
     }
 
@@ -80,9 +81,9 @@ public class AttendanceController {
             LocalTime attendedTime = DateTimeParser.parseStringToTime(time);
             LocalDateTime dateTime = LocalDateTime.of(editedDate, attendedTime);
 
-            DailyRecord oldStatus = crews.editCrew(name, dateTime);
-            DailyRecord newStatus = crews.findCrewByName(name).findRecordByDate(editedDate);
-            outputView.printEditResult(editedDate, oldStatus, newStatus);
+            DailyRecord oldRecord = crews.editCrew(name, dateTime);
+            Optional<DailyRecord> newRecord = crews.findCrewByName(name).findRecordByDate(editedDate);
+            outputView.printEditResult(editedDate, oldRecord, newRecord.get());
         });
     }
 
