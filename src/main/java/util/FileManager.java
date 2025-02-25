@@ -14,10 +14,8 @@ public class FileManager {
     private static final String SPLIT_DELIMITER = ",";
 
     public static Attendance readFile(String filePath) {
-        try {
-            BufferedReader br = new BufferedReader(new FileReader(filePath));
+        try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
             oneLineSkip(br);
-
             return createAttendance(br);
         } catch (IOException e) {
             throw new IllegalArgumentException("잘못된 파일 입니다.");
