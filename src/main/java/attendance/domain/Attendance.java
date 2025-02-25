@@ -12,9 +12,14 @@ public class Attendance {
     private final String attendanceStatus;
 
     public Attendance(LocalDateTime attendanceDateTime) {
+        validateAttendanceTime(attendanceDateTime.toLocalTime());
         this.attendanceDate = attendanceDateTime.toLocalDate();
         this.attendanceTime = attendanceDateTime.toLocalTime();
         this.attendanceStatus = determineAttendanceStatus();
+    }
+
+    private void validateAttendanceTime(LocalTime localTime) {
+
     }
 
     private String determineAttendanceStatus() {
