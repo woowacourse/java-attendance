@@ -83,4 +83,14 @@ public class AttendanceBookTest {
 
         Assertions.assertThat(attendanceBook.findCrewByName(name).findAttendanceByDate(attendanceDate).isLate()).isEqualTo(false);
     }
+
+    @DisplayName("크루 이름 기반 출석 기록들 탐색 테스트")
+    @Test
+    void findAttendancesByCrewNameTest() {
+        String name = "메이";
+        List<Attendance> attendances = attendanceBook.getAttendancesByName(name);
+
+        Assertions.assertThat(attendances.size()).isEqualTo(2);
+    }
+
 }

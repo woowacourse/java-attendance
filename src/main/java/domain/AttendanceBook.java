@@ -59,6 +59,11 @@ public class AttendanceBook {
         crew.edit(attendanceDate, attendanceTime);
     }
 
+    public List<Attendance> getAttendancesByName(String name) {
+        Crew crew = findCrewByName(name);
+        return crew.getAttendances();
+    }
+
     private List<Attendance> parseAttendances(Map<String, List<LocalDateTime>> crewAttendances, String name) {
         List<Attendance> attendances = new ArrayList<>();
         for (LocalDateTime attendanceDateTime : crewAttendances.get(name)) {

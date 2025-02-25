@@ -56,4 +56,8 @@ public class Attendances {
         Attendance oldAttendance = findAttendanceByDate(attendanceDate);
         oldAttendance.editTime(attendanceTime);
     }
+
+    public List<Attendance> getAttendances() {
+        return this.attendances;
+    }
 }

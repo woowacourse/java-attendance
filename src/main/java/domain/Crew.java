@@ -1,5 +1,6 @@
 package domain;
 
+import java.util.List;
 import java.util.Objects;
 
 public class Crew {
@@ -46,6 +47,10 @@ public class Crew {
         }
         Crew crew = (Crew) o;
         return Objects.equals(name, crew.name);
+    }
+
+    public List<Attendance> getAttendances() {
+        return this.attendances.getAttendances();
     }
 
     @Override
