@@ -11,23 +11,15 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 import view.InputView;
 import view.OutputView;
 
 public class AttendanceController {
+    private static final String EXIT = "Q";
     private final Crews crews;
     private final InputView inputView;
     private final OutputView outputView;
-    private final Map<Option, Runnable> options = Map.of(
-            Option.ATTEND, this::processAttendance,
-            Option.EDIT_ATTENDANCE, this::processAttendanceEdit,
-            Option.SHOW_ATTENDANCE_HISTORY, this::processAttendanceHistory,
-            Option.SHOW_PENALTY_CREWS, this::processPenaltyCheck,
-            Option.EXIT, this::exitApplication
-    );
-
 
     public AttendanceController(Crews crews, InputView inputView, OutputView outputView) {
         this.crews = crews;
@@ -37,17 +29,16 @@ public class AttendanceController {
 
     public void run() {
         crews.recordAllAbsence();
-        while (true) {
+        String optionChoice = "";
+        while (!EXIT.equals(optionChoice)) {
             outputView.printOptionMessage();
-            processAttendanceTasks(inputView.getOption());
+            optionChoice = inputView.getOption();
+            Option option = Option.validateValue(optionChoice);
+            option.execute(this);
         }
     }
-
-    private void processAttendanceTasks(String optionChoice) {
-        options.get(Option.validateValue(optionChoice)).run();
-    }
-
-    public void processAttendance() {
+    
+    void processAttendance() {
         checkHoliday(LocalDate.now());
         Crew crew = crews.findByNickname(inputView.getNickname());
 
@@ -59,14 +50,14 @@ public class AttendanceController {
         registerAttendance(crew);
     }
 
-    private void registerAttendance(Crew crew) {
+    void registerAttendance(Crew crew) {
         LocalTime attendanceTime = inputView.getAttendanceTime();
         Attendance attendance = new Attendance(new Day(LocalDate.now()), attendanceTime);
         crew.addAttendance(attendance);
         outputView.printAttendanceInformation(attendance);
     }
 
-    public void processAttendanceEdit() {
+    void processAttendanceEdit() {
 
         Crew crew = crews.findByNickname(inputView.getEditNickname());
         Attendance attendance = crew.findByDate(inputView.getEditDayOfMonth());
@@ -77,7 +68,7 @@ public class AttendanceController {
         outputView.printUpdatedAttendanceHistory(originalAttendance, attendance);
     }
 
-    public void processAttendanceHistory() {
+    void processAttendanceHistory() {
 
         String nickname = inputView.getNickname();
         Crew crew = crews.findByNickname(nickname);
@@ -86,7 +77,7 @@ public class AttendanceController {
         outputView.printAttendanceHistoryWithCrew(crew.getAttendances());
     }
 
-    public void processPenaltyCheck() {
+    void processPenaltyCheck() {
         List<Crew> penaltyCrews = crews.getCrews().stream()
                 .filter(crew -> crew.getPenaltyStatus() != PenaltyStatus.NONE)
                 .collect(Collectors.toCollection(ArrayList::new));
@@ -95,8 +86,7 @@ public class AttendanceController {
 
     }
 
-    private void exitApplication() {
-        System.exit(0);
+    void exitApplication() {
     }
 
     private void checkHoliday(LocalDate todayDate) {
@@ -109,6 +99,7 @@ public class AttendanceController {
                     "[ERROR] " + month + "월 " + dayOfMonth + "일 " + dayOfWeekName + "은 등교일이 아닙니다.");
         }
     }
+
 }
 
 
