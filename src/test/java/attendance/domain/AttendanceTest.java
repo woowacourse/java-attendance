@@ -16,7 +16,7 @@ class AttendanceTest {
 
     @ParameterizedTest
     @MethodSource
-    void 날짜와_시간으로_출석을_생성한다(LocalDateTime dateTime, AttendanceStateType excepted) {
+    void 날짜와_시간으로_출석을_생성한다(LocalDateTime dateTime, AttendanceState excepted) {
         // when
         Attendance result = new Attendance(dateTime);
 
@@ -52,7 +52,7 @@ class AttendanceTest {
 
     @ParameterizedTest
     @MethodSource
-    void 출석_상태가_동일한지_검사한다(AttendanceStateType state, boolean expected) {
+    void 출석_상태가_동일한지_검사한다(AttendanceState state, boolean expected) {
         // given
         LocalDateTime dateTime = LocalDateTime.of(2024, 12, 2, 13, 0);
         Attendance attendance = new Attendance(dateTime);
@@ -102,9 +102,9 @@ class AttendanceTest {
 
     static Stream<Arguments> 날짜와_시간으로_출석을_생성한다() {
         return Stream.of(
-                Arguments.of(LocalDateTime.of(2024, 12, 3, 10, 0), AttendanceStateType.ATTENDANCE),
-                Arguments.of(LocalDateTime.of(2024, 12, 3, 10, 6), AttendanceStateType.LATE),
-                Arguments.of(LocalDateTime.of(2024, 12, 3, 10, 31), AttendanceStateType.ABSENCE)
+                Arguments.of(LocalDateTime.of(2024, 12, 3, 10, 0), AttendanceState.ATTENDANCE),
+                Arguments.of(LocalDateTime.of(2024, 12, 3, 10, 6), AttendanceState.LATE),
+                Arguments.of(LocalDateTime.of(2024, 12, 3, 10, 31), AttendanceState.ABSENCE)
         );
     }
 
@@ -117,8 +117,8 @@ class AttendanceTest {
 
     static Stream<Arguments> 출석_상태가_동일한지_검사한다() {
         return Stream.of(
-                Arguments.of(AttendanceStateType.ATTENDANCE, true),
-                Arguments.of(AttendanceStateType.ABSENCE, false)
+                Arguments.of(AttendanceState.ATTENDANCE, true),
+                Arguments.of(AttendanceState.ABSENCE, false)
         );
     }
 }

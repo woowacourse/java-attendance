@@ -7,9 +7,9 @@ import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.List;
 
-import static attendance.domain.AttendanceStateType.ABSENCE;
-import static attendance.domain.AttendanceStateType.ATTENDANCE;
-import static attendance.domain.AttendanceStateType.LATE;
+import static attendance.domain.AttendanceState.ABSENCE;
+import static attendance.domain.AttendanceState.ATTENDANCE;
+import static attendance.domain.AttendanceState.LATE;
 import static org.assertj.core.api.Assertions.assertThat;
 
 class AttendanceStatusTest {
@@ -25,7 +25,7 @@ class AttendanceStatusTest {
 
         // when
         AttendanceStatus attendanceStatus = new AttendanceStatus(attendances);
-        EnumMap<AttendanceStateType, Integer> result = attendanceStatus.getStatus();
+        EnumMap<AttendanceState, Integer> result = attendanceStatus.getStatus();
 
         // then
         assertThat(result.get(ABSENCE)).isEqualTo(1);

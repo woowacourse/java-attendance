@@ -5,19 +5,19 @@ import java.util.EnumMap;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static attendance.domain.AttendanceRiskType.NONE;
-import static attendance.domain.AttendanceRiskType.find;
-import static attendance.domain.AttendanceStateType.ABSENCE;
-import static attendance.domain.AttendanceStateType.LATE;
+import static attendance.domain.AttendanceRisk.NONE;
+import static attendance.domain.AttendanceRisk.find;
+import static attendance.domain.AttendanceState.ABSENCE;
+import static attendance.domain.AttendanceState.LATE;
 
 public class AttendanceStatus implements Comparable<AttendanceStatus> {
 
-    private final EnumMap<AttendanceStateType, Integer> status;
-    private final AttendanceRiskType riskType;
+    private final EnumMap<AttendanceState, Integer> status;
+    private final AttendanceRisk risk;
 
     public AttendanceStatus(final List<Attendance> attendances) {
         status = calculateAttendanceStatus(attendances);
-        riskType = calculateAttendanceRisk();
+        risk = calculateAttendanceRisk();
     }
 
     public static AttendanceStatus of(final List<Attendance> attendances) {
@@ -25,45 +25,45 @@ public class AttendanceStatus implements Comparable<AttendanceStatus> {
     }
 
     public boolean isNotNoneState() {
-        return riskType != NONE;
+        return risk != NONE;
     }
 
     @Override
     public int compareTo(final AttendanceStatus other) {
-        if (riskType == other.riskType) {
+        if (risk == other.risk) {
             int thisScore = calculateScore();
             int otherScore = other.calculateScore();
 
             return Integer.compare(otherScore, thisScore);
         }
-        return other.riskType.compareTo(this.riskType);
+        return other.risk.compareTo(this.risk);
     }
 
-    public EnumMap<AttendanceStateType, Integer> getStatus() {
+    public EnumMap<AttendanceState, Integer> getStatus() {
         return status;
     }
 
-    public AttendanceRiskType getRiskType() {
-        return riskType;
+    public AttendanceRisk getRisk() {
+        return risk;
     }
 
-    private EnumMap<AttendanceStateType, Integer> calculateAttendanceStatus(final List<Attendance> attendances) {
-        return Arrays.stream(AttendanceStateType.values())
+    private EnumMap<AttendanceState, Integer> calculateAttendanceStatus(final List<Attendance> attendances) {
+        return Arrays.stream(AttendanceState.values())
                 .collect(Collectors.toMap(
                         status -> status,
                         status -> calculateStateCount(attendances, status),
                         (s1, s2) -> s2,
-                        () -> new EnumMap<>(AttendanceStateType.class)
+                        () -> new EnumMap<>(AttendanceState.class)
                 ));
     }
 
-    private int calculateStateCount(final List<Attendance> attendances, final AttendanceStateType status) {
+    private int calculateStateCount(final List<Attendance> attendances, final AttendanceState status) {
         return (int) attendances.stream()
                 .filter(attendance -> attendance.hasState(status))
                 .count();
     }
 
-    private AttendanceRiskType calculateAttendanceRisk() {
+    private AttendanceRisk calculateAttendanceRisk() {
         int expulsion = status.get(ABSENCE);
         int late = status.get(LATE);
         return find(expulsion, late);

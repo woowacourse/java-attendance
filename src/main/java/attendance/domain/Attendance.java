@@ -7,11 +7,11 @@ import java.time.LocalTime;
 public class Attendance implements Comparable<Attendance> {
 
     private final LocalDateTime dateTime;
-    private final AttendanceStateType state;
+    private final AttendanceState state;
 
     public Attendance(final LocalDateTime dateTime) {
         this.dateTime = dateTime;
-        this.state = AttendanceStateType.find(EducationTime.calculateOverTime(dateTime));
+        this.state = AttendanceState.find(EducationTime.calculateOverTime(dateTime));
     }
 
     public boolean isSameDate(final LocalDate date) {
@@ -22,7 +22,7 @@ public class Attendance implements Comparable<Attendance> {
         return !dateTime.toLocalTime().equals(LocalTime.MAX);
     }
 
-    public boolean hasState(final AttendanceStateType state) {
+    public boolean hasState(final AttendanceState state) {
         return this.state == state;
     }
 
@@ -39,7 +39,7 @@ public class Attendance implements Comparable<Attendance> {
         return dateTime;
     }
 
-    public AttendanceStateType getState() {
+    public AttendanceState getState() {
         return state;
     }
 }

@@ -24,7 +24,7 @@ class AttendancesTest {
 
         // than
         assertThat(result.getDateTime()).isEqualTo(dateTime);
-        assertThat(result.getState()).isEqualTo(AttendanceStateType.ATTENDANCE);
+        assertThat(result.getState()).isEqualTo(AttendanceState.ATTENDANCE);
     }
 
     @Test

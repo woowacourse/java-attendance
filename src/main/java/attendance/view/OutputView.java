@@ -1,7 +1,7 @@
 package attendance.view;
 
 import attendance.domain.Attendance;
-import attendance.domain.AttendanceStateType;
+import attendance.domain.AttendanceState;
 import attendance.domain.AttendanceStatus;
 
 import java.time.LocalDate;
@@ -69,9 +69,9 @@ public class OutputView {
     }
 
     public void printAttendanceStatus(final AttendanceStatus attendanceStatus) {
-        EnumMap<AttendanceStateType, Integer> status = attendanceStatus.getStatus();
+        EnumMap<AttendanceState, Integer> status = attendanceStatus.getStatus();
 
-        for (Map.Entry<AttendanceStateType, Integer> entry : status.entrySet()) {
+        for (Map.Entry<AttendanceState, Integer> entry : status.entrySet()) {
             System.out.printf(NEW_LINE + "%s: %d회",
                     entry.getKey().getName(),
                     entry.getValue()
@@ -79,7 +79,7 @@ public class OutputView {
         }
 
         System.out.println();
-        System.out.printf(NEW_LINE + "%s 대상자입니다.", attendanceStatus.getRiskType().getName());
+        System.out.printf(NEW_LINE + "%s 대상자입니다.", attendanceStatus.getRisk().getName());
     }
 
     public void printAttendanceRiskCrews(final Map<String, AttendanceStatus> CrewStatus) {
@@ -88,9 +88,9 @@ public class OutputView {
         for (Map.Entry<String, AttendanceStatus> statusEntry : CrewStatus.entrySet()) {
             System.out.printf("\n- %s: 결석 %d회, 지각 %d회 (%s)",
                     statusEntry.getKey(),
-                    statusEntry.getValue().getStatus().get(AttendanceStateType.ABSENCE),
-                    statusEntry.getValue().getStatus().get(AttendanceStateType.LATE),
-                    statusEntry.getValue().getRiskType().getName()
+                    statusEntry.getValue().getStatus().get(AttendanceState.ABSENCE),
+                    statusEntry.getValue().getStatus().get(AttendanceState.LATE),
+                    statusEntry.getValue().getRisk().getName()
             );
         }
     }

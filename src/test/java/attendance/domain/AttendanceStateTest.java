@@ -7,18 +7,18 @@ import org.junit.jupiter.params.provider.MethodSource;
 
 import java.util.stream.Stream;
 
-import static attendance.domain.AttendanceStateType.ABSENCE;
-import static attendance.domain.AttendanceStateType.ATTENDANCE;
-import static attendance.domain.AttendanceStateType.LATE;
+import static attendance.domain.AttendanceState.ABSENCE;
+import static attendance.domain.AttendanceState.ATTENDANCE;
+import static attendance.domain.AttendanceState.LATE;
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class AttendanceStateTypeTest {
+public class AttendanceStateTest {
 
     @ParameterizedTest
     @MethodSource
     @DisplayName("임계값에 해당하는 출결 상태를 반환한다.")
-    void 임계값에_해당하는_출결_상태를_반환한다(int threshold, AttendanceStateType type) {
-        assertThat(AttendanceStateType.find(threshold))
+    void 임계값에_해당하는_출결_상태를_반환한다(int threshold, AttendanceState type) {
+        assertThat(AttendanceState.find(threshold))
                 .isEqualTo(type);
     }
 

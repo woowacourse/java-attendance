@@ -2,7 +2,7 @@ package attendance.domain;
 
 import java.util.Arrays;
 
-public enum AttendanceStateType {
+public enum AttendanceState {
     ABSENCE("결석", 30),
     LATE("지각", 5),
     ATTENDANCE("출석", 0);
@@ -10,12 +10,12 @@ public enum AttendanceStateType {
     private final String name;
     private final int threshold;
 
-    AttendanceStateType(final String name, final int threshold) {
+    AttendanceState(final String name, final int threshold) {
         this.name = name;
         this.threshold = threshold;
     }
 
-    public static AttendanceStateType find(final int overTime) {
+    public static AttendanceState find(final int overTime) {
         return Arrays.stream(values())
                 .filter(type -> type.threshold < overTime)
                 .findFirst()

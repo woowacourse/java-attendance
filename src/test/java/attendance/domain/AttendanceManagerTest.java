@@ -1,7 +1,6 @@
 package attendance.domain;
 
 import attendance.utility.DateGenerator;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -15,26 +14,20 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Stream;
 
-import static attendance.domain.AttendanceStateType.ABSENCE;
-import static attendance.domain.AttendanceStateType.ATTENDANCE;
-import static attendance.domain.AttendanceStateType.LATE;
+import static attendance.domain.AttendanceState.ABSENCE;
+import static attendance.domain.AttendanceState.ATTENDANCE;
+import static attendance.domain.AttendanceState.LATE;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 
 class AttendanceManagerTest {
 
-    private DateGenerator dateGenerator;
-    private AttendanceManager attendanceManager;
-
-    @BeforeEach
-    void beforeEach() {
-        dateGenerator = new MockingDateGenerator();
-        attendanceManager = new AttendanceManager();
-    }
+    private final DateGenerator dateGenerator = new MockingDateGenerator();
+    private final AttendanceManager attendanceManager = new AttendanceManager();
 
     @ParameterizedTest(name = "출석 시간: {0} | 출석 상황 결과 : {1}")
     @MethodSource("기본_출석_데이터")
-    void 출석_데이터로_출석_체크한다(LocalTime time, AttendanceStateType expected) {
+    void 출석_데이터로_출석_체크한다(LocalTime time, AttendanceState expected) {
         // given
         String nickname = "비타";
         LocalDate nowDate = dateGenerator.now();
@@ -75,7 +68,7 @@ class AttendanceManagerTest {
 
     @ParameterizedTest(name = "변경 시간: {0} | 출석 상황 결과 : {1}")
     @MethodSource("기본_출석_데이터")
-    void 출석_데이터를_수정한다(LocalTime time, AttendanceStateType expected) {
+    void 출석_데이터를_수정한다(LocalTime time, AttendanceState expected) {
         // given
         String nickname = "비타";
         LocalDate nowDate = dateGenerator.now();
@@ -147,7 +140,7 @@ class AttendanceManagerTest {
 
         // then
         assertThat(result.getStatus().size()).isEqualTo(3);
-        assertThat(result.getRiskType()).isEqualTo(AttendanceRiskType.NONE);
+        assertThat(result.getRisk()).isEqualTo(AttendanceRisk.NONE);
     }
 
     @Test
