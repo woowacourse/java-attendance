@@ -5,6 +5,7 @@ import domain.attendance.AttendanceDate;
 import domain.attendance.AttendanceWarning;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Comparator;
 import java.util.List;
 
 public class Crew implements Comparable<Crew> {
@@ -57,18 +58,12 @@ public class Crew implements Comparable<Crew> {
 
     @Override
     public int compareTo(Crew compareCrew) {
-        if (this.attendance.countAbsence() < compareCrew.attendance.countAbsence()) {
-            return 1;
-        }
-        if (this.attendance.countAbsence() > compareCrew.attendance.countAbsence()) {
-            return -1;
-        }
-        if (this.attendance.countTardy() < compareCrew.attendance.countTardy()) {
-            return 1;
-        }
-        if (this.attendance.countTardy() > compareCrew.attendance.countTardy()) {
-            return -1;
-        }
-        return this.name.compareTo(compareCrew.name);
+        return Comparator
+                .comparing((Crew crew) -> crew.attendance.countAbsence())
+                .reversed()
+                .thenComparing((Crew crew) -> crew.attendance.countTardy())
+                .reversed()
+                .thenComparing((Crew crew) -> crew.name)
+                .compare(compareCrew, this);
     }
 }
