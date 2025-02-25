@@ -52,6 +52,6 @@ public class Crew {
     }
 
     private boolean isTruancy(LocalDate date) {
-        return !attendanceRecords.containsKey(date) && !Holiday.isHoliday(date);
+        return !attendanceRecords.containsKey(date) && !DayOff.isDayOff(date);
     }
 }
