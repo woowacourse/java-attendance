@@ -50,6 +50,7 @@ public class AttendancesTest {
     @DisplayName("크루와 시간으로 오늘 출석 기록을 추가한다.")
     @Test
     void addAttendanceWithCrewAndDateTime() {
+        // 시간으로 출석하면 오늘날짜와 함께 출석 기록 추가
         attendances.attendToday(
                 new Crew("빙티"),
                 LocalTime.of(9, 58)
@@ -71,6 +72,8 @@ public class AttendancesTest {
     @DisplayName("크루와 날짜로 출석 기록을 조회해서 원하는 시간으로 수정한다.")
     @Test
     void modifyAttendanceWithNewTime() {
+        // 기존: 쿠키,2025-02-14 13:03
+        // 수정: 쿠키, 2025-02-14 10:01
         attendances.modifyAttendance(
                 new Crew("쿠키"),
                 LocalDateTime.of(2025, 2, 14, 10, 1, 0)
