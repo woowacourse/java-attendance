@@ -1,10 +1,10 @@
 package attendance.domain;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.List;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -22,9 +22,9 @@ class AttendanceBookTest {
         attendanceBook.add(crewName, record);
 
         // then
-        List<AttendanceRecord> records = attendanceBook.getRecordsByName(crewName);
-        Assertions.assertThat(records).hasSize(1);
-        Assertions.assertThat(records.contains(record)).isTrue();
+        AttendanceHistory history = attendanceBook.getHistoryByName(crewName);
+        assertThat(history.getRecords()).hasSize(1);
+        assertThat(history.getRecords().contains(record)).isTrue();
     }
 
     @DisplayName("해당 크루의 특정 날짜의 기록을 지각으로 수정할 수 있다.")
@@ -42,8 +42,9 @@ class AttendanceBookTest {
         attendanceBook.modify(crewName, targetDate, modifyTime);
 
         // then
-        AttendanceRecord findRecord = attendanceBook.getRecordBy(crewName, targetDate);
-        Assertions.assertThat(findRecord.getAttendanceStatus()).isEqualTo(AttendanceStatus.LATE);
+        AttendanceHistory history = attendanceBook.getHistoryByName(crewName);
+        assertThat(history.getRecordByDate(targetDate).getAttendanceStatus())
+                .isEqualTo(AttendanceStatus.LATE);
     }
 
     @DisplayName("해당 크루의 기록에 따라 알맞은 경고 등급을 반환한다.")
@@ -59,6 +60,25 @@ class AttendanceBookTest {
         WarningStatus warning = attendanceBook.getWarningByCrew(crewName);
 
         // then
-        Assertions.assertThat(warning).isEqualTo(WarningStatus.WARNING);
+        assertThat(warning).isEqualTo(WarningStatus.WARNING);
+    }
+
+    @DisplayName("크루 이름으로 해당 크루의 기록을 찾는다.")
+    @Test
+    void test_findCrewHistory() {
+        // given
+        AttendanceBook attendanceBook = new AttendanceBook();
+        String crewName = "빙티";
+        AttendanceRecord record = new AttendanceRecord(LocalDateTime.of(2024, 12, 3, 11, 0));
+        attendanceBook.add(crewName, record);
+
+        // when
+        AttendanceHistory history = attendanceBook.getHistoryByName(crewName);
+
+        // then
+        assertThat(history.getRecords()).hasSize(1);
+
+        AttendanceRecord findRecord = history.getRecordByDate(LocalDate.of(2024, 12, 3));
+        assertThat(findRecord).isEqualTo(record);
     }
 }

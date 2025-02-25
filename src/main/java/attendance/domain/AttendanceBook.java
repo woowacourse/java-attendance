@@ -2,54 +2,39 @@ package attendance.domain;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public class AttendanceBook {
-    private final Map<String, List<AttendanceRecord>> crewRecords = new HashMap<>();
+    private final Map<String, AttendanceHistory> crewHistories = new HashMap<>();
 
-    public void add(String name, AttendanceRecord record) {
-        List<AttendanceRecord> records = crewRecords.computeIfAbsent(name, key -> new ArrayList<>());
-        records.add(record);
+    public void add(String crewName, AttendanceRecord record) {
+        AttendanceHistory history = crewHistories.computeIfAbsent(crewName, key -> new AttendanceHistory());
+        history.addRecord(record);
     }
 
     public void modify(String crewName, LocalDate targetDate, LocalTime modifyTime) {
-        AttendanceRecord record = getRecordBy(crewName, targetDate);
-        record.modify(modifyTime);
-    }
-
-    public AttendanceRecord getRecordBy(String crewName, LocalDate targetDate) {
-        List<AttendanceRecord> records = crewRecords.get(crewName);
-        return records.stream()
-                .filter(record -> record.isSameDate(targetDate))
-                .findAny()
-                .orElseThrow(() -> new IllegalArgumentException("출석 기록이 없는 날짜입니다."));
+        AttendanceHistory history = crewHistories.get(crewName);
+        if (history == null) {
+            throw new IllegalArgumentException("해당 크루의 기록이 없습니다.");
+        }
+        history.modifyRecord(targetDate, modifyTime);
     }
 
     public WarningStatus getWarningByCrew(String crewName) {
-        List<AttendanceRecord> records = crewRecords.get(crewName);
-        long absenceCount = calculateAbsentCount(records);
-        long lateCount = calculateLateCount(records);
-
-        return WarningStatus.from(absenceCount, lateCount);
+        AttendanceHistory history = crewHistories.get(crewName);
+        if (history == null) {
+            throw new IllegalArgumentException("해당 크루의 기록이 없습니다.");
+        }
+        return history.getWarningStatus();
     }
 
-    public long calculateLateCount(List<AttendanceRecord> records) {
-        return records.stream()
-                .filter(record -> record.getAttendanceStatus() == AttendanceStatus.LATE)
-                .count();
+    public AttendanceHistory getHistoryByName(String crewName) {
+        AttendanceHistory history = crewHistories.get(crewName);
+        if (history == null) {
+            throw new IllegalArgumentException("해당 크루의 기록이 없습니다.");
+        }
+        return history;
     }
 
-    public long calculateAbsentCount(List<AttendanceRecord> records) {
-        return records.stream()
-                .filter(record -> record.getAttendanceStatus() == AttendanceStatus.ABSENT)
-                .count();
-    }
-
-    public List<AttendanceRecord> getRecordsByName(String name) {
-        return Collections.unmodifiableList(crewRecords.get(name));
-    }
 }
