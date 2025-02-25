@@ -2,7 +2,6 @@ package domain;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -19,9 +18,9 @@ public class AttendanceTimes {
         return new AttendanceTimes(attendanceTimes);
     }
 
-    public boolean contains(LocalDate date) {
+    public boolean contains(AttendanceTime time) {
         return attendanceLog.stream()
-                .anyMatch(attendanceTime -> attendanceTime.isSameDate(date));
+                .anyMatch(attendanceTime -> attendanceTime.isSameDate(time));
     }
 
     public void addAttendance(AttendanceTime time) { // TODO: 파라미터 시그니처 통일하기
@@ -29,20 +28,21 @@ public class AttendanceTimes {
     }
 
     public LocalDateTime readAttendance(LocalDate date) {
+        AttendanceTime dateTime = AttendanceTime.of(date, null); // TODO: null 보다 나은 방법 고민
         return attendanceLog.stream()
-                .filter(attendanceTime -> attendanceTime.isSameDate(date))
+                .filter(attendanceTime -> attendanceTime.isSameDate(dateTime))
                 .findAny()
                 .orElseThrow(() -> new IllegalArgumentException("해당 날짜의 출석기록이 존재하지 않습니다."))
                 .toLocalDateTime();
     }
 
-    public Optional<AttendanceTime> modifyAttendance(LocalDate date, LocalTime time) {
+    public Optional<AttendanceTime> modifyAttendance(AttendanceTime time) {
         Optional<AttendanceTime> currentTime = attendanceLog.stream()
-                .filter(attendanceTime -> attendanceTime.isSameDate(date))
+                .filter(attendanceTime -> attendanceTime.isSameDate(time))
                 .findAny();
         Optional<AttendanceTime> previous = Optional.empty();
         if (currentTime.isEmpty()) {
-            attendanceLog.add(AttendanceTime.of(date, time));
+            attendanceLog.add(time);
             return previous;
         }
         return Optional.of(currentTime.get().modify(time));

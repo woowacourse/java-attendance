@@ -62,8 +62,14 @@ class AttendanceTimeTest {
         );
 
         // when
-        boolean b1 = attendanceTime.isSameDate(LocalDate.of(2024, 12, 10));
-        boolean b2 = attendanceTime.isSameDate(LocalDate.of(2024, 12, 11));
+        boolean b1 = attendanceTime.isSameDate(AttendanceTime.of(
+                LocalDate.of(2024, 12, 10),
+                null)
+        );
+        boolean b2 = attendanceTime.isSameDate(AttendanceTime.of(
+                LocalDate.of(2024, 12, 11),
+                null)
+        );
 
         // then
         assertThat(b1).isTrue();
@@ -115,7 +121,9 @@ class AttendanceTimeTest {
         AttendanceTime attendanceTime = AttendanceTime.of(date, time);
 
         // when
-        AttendanceTime previous = attendanceTime.modify(LocalTime.of(10, 20));
+        AttendanceTime previous = attendanceTime.modify(
+                AttendanceTime.of(date, LocalTime.of(10, 20))
+        );
 
         // then
         AttendanceTime expected = AttendanceTime.of(

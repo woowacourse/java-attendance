@@ -37,9 +37,9 @@ public class AttendanceTime {
         return new AttendanceTime(date, time);
     }
 
-    public AttendanceTime modify(LocalTime time) {
+    public AttendanceTime modify(AttendanceTime attendanceTime) {
         AttendanceTime previous = AttendanceTime.of(this.date, this.time);
-        this.time = time;
+        this.time = attendanceTime.time;
         return previous;
     }
 
@@ -47,8 +47,8 @@ public class AttendanceTime {
         return LocalDateTime.of(this.date, this.time);
     }
 
-    public boolean isSameDate(LocalDate date) {
-        return this.date.equals(date);
+    public boolean isSameDate(AttendanceTime attendanceTime) {
+        return this.date.equals(attendanceTime.date);
     }
 
     @Override

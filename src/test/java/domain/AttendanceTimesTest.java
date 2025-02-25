@@ -31,8 +31,14 @@ class AttendanceTimesTest {
         AttendanceTimes attendanceTimes = AttendanceTimes.of(createAttendanceLog());
 
         // when
-        boolean b1 = attendanceTimes.contains(LocalDate.of(2024, 12, 10));
-        boolean b2 = attendanceTimes.contains(LocalDate.of(2024, 12, 3));
+        boolean b1 = attendanceTimes.contains(AttendanceTime.of(
+                LocalDate.of(2024, 12, 10),
+                null)
+        );
+        boolean b2 = attendanceTimes.contains(AttendanceTime.of(
+                LocalDate.of(2024, 12, 3),
+                null)
+        );
 
         // then
         assertThat(b1).isTrue();
@@ -88,8 +94,7 @@ class AttendanceTimesTest {
 
         // when
         Optional<AttendanceTime> optionalAttendanceTime = attendanceTimes.modifyAttendance(
-                date,
-                time
+                AttendanceTime.of(date, time)
         );
 
         // then
