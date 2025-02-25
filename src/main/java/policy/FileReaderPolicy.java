@@ -9,6 +9,7 @@ import java.io.FileReader;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
+import java.util.ArrayList;
 import java.util.List;
 
 public class FileReaderPolicy {
@@ -26,10 +27,11 @@ public class FileReaderPolicy {
     }
 
     public AttendanceSheet createAttendances(List<String> attendancesInfo) {
+        List<Attendance> attendances = new ArrayList<>();
         for (String line : attendancesInfo) {
-            createAttendance(line);
+            attendances.add(createAttendance(line));
         }
-        return null;
+        return new AttendanceSheet(attendances);
     }
 
     public Attendance createAttendance(String line) {
