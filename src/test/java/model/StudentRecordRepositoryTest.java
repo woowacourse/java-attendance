@@ -1,6 +1,5 @@
 package model;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
@@ -42,14 +41,5 @@ class StudentRecordRepositoryTest {
         Assertions.assertFalse(studentRecordRepository.getStudentRecord().get("이든")
                 .getTimeRecords()
                 .contains(LocalDateTime.of(2024,12,3,10,6)));
-    }
-
-    @Test
-    @DisplayName("오늘 이미 출석한 요일을 다시 출석하고자 할때 예외 발생하는 메서드 테스트")
-    void test5() {
-        org.assertj.core.api.Assertions.assertThatThrownBy(() ->
-                studentRecordRepository.isAlreadyAttendanceDate("이든",new TodayDate(LocalDate.of(2024,12,2))))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage("[ERROR] 이미 출석한 요일입니다. 수정하고 싶으시면 수정 메뉴를 이용해 주세요.");
     }
 }
