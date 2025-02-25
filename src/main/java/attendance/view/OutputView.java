@@ -3,6 +3,7 @@ package attendance.view;
 import attendance.domain.DateTimeFormatterWrapper;
 import attendance.dto.AttendanceHistoryDto;
 import attendance.dto.AttendanceStatusCount;
+import attendance.dto.ModifyAttendanceDto;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -73,21 +74,23 @@ public class OutputView {
         println(stringBuilder.toString());
     }
 
-    public void printModifyAttendance(String previousAttendanceStatus, LocalDateTime previousModifyDateTime,
-                                      String afterAttendanceStatus, LocalTime afterModifyTime) {
-        var previousDateTimeFormatResult = DateTimeFormatterWrapper.parsingAttendanceResult(previousModifyDateTime);
-        var afterTimeFormatResult = DateTimeFormatterWrapper.parsingAttendanceTime(afterModifyTime);
-        println(String.format(ATTENDANCE_MODIFY_RESULT_FORMAT, previousDateTimeFormatResult,
-                previousAttendanceStatus,
-                afterTimeFormatResult,
-                afterAttendanceStatus));
-    }
-
     public String crewDismiss(String nickname, int absence, int late, String attendanceDismissStatus) {
         return String.format(CREW_DISMISS_FORMAT, nickname, absence, late, attendanceDismissStatus);
     }
 
     public void printCrewDismisses(String crewDismissHistories) {
         println(CREW_DISMISS_PREFIX + crewDismissHistories);
+    }
+
+    public void printModifyAttendance(ModifyAttendanceDto previousModifyAttendance,
+                                      ModifyAttendanceDto afterModifyAttendanceDto) {
+        var previousDateTimeFormatResult = DateTimeFormatterWrapper.parsingAttendanceResult(
+                previousModifyAttendance.attendanceDateTime());
+        var afterTimeFormatResult = DateTimeFormatterWrapper.parsingAttendanceTime(
+                afterModifyAttendanceDto.getTime());
+        println(String.format(ATTENDANCE_MODIFY_RESULT_FORMAT, previousDateTimeFormatResult,
+                previousModifyAttendance.status(),
+                afterTimeFormatResult,
+                afterModifyAttendanceDto.status()));
     }
 }

@@ -1,5 +1,6 @@
 package attendance.domain;
 
+import attendance.dto.RequestModifyAttendanceDto;
 import attendance.exception.AttendanceArgumentException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -22,7 +23,7 @@ public class AttendanceManager {
     private static final String ATTENDANCE_NOT_AVAILABLE = "출석 시스템은 2024년 12월 동안만 유효합니다";
     private static final int WEEKEND_NUMBER = 6;
     private static final String ATTENDANCE_RESULT_FORMAT = "%s (%s)";
-    
+
     private final HashMap<String, Attendances> attendanceManager = new HashMap<>();
 
     public AttendanceManager() {
@@ -42,8 +43,6 @@ public class AttendanceManager {
         }
     }
 
-    ;
-
     public void addAttendance(String nickname, LocalDateTime time) {
         validateNickname(nickname);
         LocalTime currentTime = time.toLocalTime();
@@ -55,7 +54,7 @@ public class AttendanceManager {
         attendances.addAttendance(currentTime, currentDate);
     }
 
-    public Attendance getAttendance(String nickname, LocalDate date) {
+    public Attendance findAttendance(String nickname, LocalDate date) {
         Attendances attendances = attendanceManager.getOrDefault(nickname, new Attendances());
         return attendances.getAttendance(date);
     }
@@ -182,6 +181,13 @@ public class AttendanceManager {
                 .stream()
                 .map(this::crewAttendanceHistory)
                 .collect(Collectors.toList());
+    }
+
+    public void modifyAttendance(RequestModifyAttendanceDto requestModifyAttendanceDto) {
+        String nickname = requestModifyAttendanceDto.nickname();
+        validateAttendanceExist(nickname);
+        Attendances attendances = attendanceManager.get(nickname);
+        attendances.modifyAttendance(requestModifyAttendanceDto.date(), requestModifyAttendanceDto.time());
     }
 }
 

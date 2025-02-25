@@ -8,6 +8,8 @@ import attendance.domain.AttendanceStatus;
 import attendance.domain.DateTimeFormatterWrapper;
 import attendance.dto.AttendanceHistoryDto;
 import attendance.dto.AttendanceStatusCount;
+import attendance.dto.ModifyAttendanceDto;
+import attendance.dto.RequestModifyAttendanceDto;
 import attendance.exception.AttendanceArgumentException;
 import attendance.validation.AttendanceInputValidator;
 import attendance.view.AttendanceMethod;
@@ -98,16 +100,30 @@ public class AttendanceController {
     }
 
     private void handleModifyAttendance() {
+        RequestModifyAttendanceDto requestModifyAttendanceDto = inputModifyAttendance();
+        var previousAttendance = getAttendance(requestModifyAttendanceDto.nickname(),
+                requestModifyAttendanceDto.date());
+        attendanceManager.modifyAttendance(requestModifyAttendanceDto);
+        var afterAttendance = getAttendance(requestModifyAttendanceDto.nickname(), requestModifyAttendanceDto.date());
+        ModifyAttendanceDto previousModifyAttendanceDto = new ModifyAttendanceDto(previousAttendance.getStatus(),
+                LocalDateTime.of(requestModifyAttendanceDto.date(), previousAttendance.time()));
+        ModifyAttendanceDto afterModifyAttendanceDto = new ModifyAttendanceDto(afterAttendance.getStatus(),
+                LocalDateTime.of(requestModifyAttendanceDto.date(), afterAttendance.time()));
+        outputView.printModifyAttendance(previousModifyAttendanceDto, afterModifyAttendanceDto);
+    }
+
+    private Attendance getAttendance(String nickname, LocalDate date) {
+        return attendanceManager.findAttendance(nickname, date);
+    }
+
+    private RequestModifyAttendanceDto inputModifyAttendance() {
         String nickname = handleRequest(this::inputAttendanceExistNickname);
         LocalDate date = handleRequest(this::attendanceModifyDate);
         LocalTime time = handleRequest(this::inputAttendanceTime);
-        var previousAttendance = handleRequest(() -> attendanceManager.getAttendance(nickname, date));
-        attendanceManager.modifyAttendance(nickname, date, time);
-        var afterAttendance = handleRequest(() -> attendanceManager.getAttendance(nickname, date));
-        outputView.printModifyAttendance(previousAttendance.getStatus(),
-                LocalDateTime.of(date, previousAttendance.time()),
-                afterAttendance.getStatus(), afterAttendance.time());
+        RequestModifyAttendanceDto modifyAttendanceDto = new RequestModifyAttendanceDto(nickname, date, time);
+        return modifyAttendanceDto;
     }
+
 
     private LocalDate attendanceModifyDate() {
         return handleRequest(() -> {
@@ -156,7 +172,7 @@ public class AttendanceController {
     private Attendance addAttendance(String nickname, LocalDate attendanceDate, LocalTime inputTime) {
         try {
             attendanceManager.addAttendance(nickname, LocalDateTime.of(attendanceDate, inputTime));
-            return attendanceManager.getAttendance(nickname, attendanceDate);
+            return getAttendance(nickname, attendanceDate);
         } catch (AttendanceArgumentException e) {
             throw new AttendanceArgumentException(
                     DateTimeFormatterWrapper.formattingAttendanceDateError(attendanceDate));
