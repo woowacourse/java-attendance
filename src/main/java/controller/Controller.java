@@ -39,14 +39,16 @@ public class Controller {
         LocalDateTime today = LocalDateTime.of(2024, 12, 13, 10, 0);
         CrewLoader crewLoader = new CrewLoader();
         CrewGroup crewGroup = crewLoader.loadCrews(today);
+
         try {
             while (true) {
                 String rawFunction = inputView.insertFunction(today);
-
-                runCycle(getUserCommand(rawFunction), crewGroup, today);
-                if (getUserCommand(rawFunction).equals(QUIT)) {
-                    return;
+                UserCommandType userCommandType = getUserCommand(rawFunction);
+                if (userCommandType.equals(QUIT)) {
+                    break;
                 }
+                
+                runCycle(userCommandType, crewGroup, today);
             }
         } catch (Exception e) {
             outputView.printError(e.getMessage());
