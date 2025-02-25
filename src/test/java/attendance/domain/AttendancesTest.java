@@ -9,6 +9,7 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 class AttendancesTest {
 
@@ -23,8 +24,10 @@ class AttendancesTest {
         Attendance result = attendances.addAttendance(dateTime);
 
         // than
-        assertThat(result.getDateTime()).isEqualTo(dateTime);
-        assertThat(result.getState()).isEqualTo(AttendanceState.ATTENDANCE);
+        assertAll(
+                () -> assertThat(result.getDateTime()).isEqualTo(dateTime),
+                () -> assertThat(result.getState()).isEqualTo(AttendanceState.ATTENDANCE)
+        );
     }
 
     @Test

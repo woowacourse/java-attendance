@@ -11,6 +11,7 @@ import static attendance.domain.AttendanceState.ABSENCE;
 import static attendance.domain.AttendanceState.ATTENDANCE;
 import static attendance.domain.AttendanceState.LATE;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 class AttendanceStatusTest {
 
@@ -28,9 +29,11 @@ class AttendanceStatusTest {
         EnumMap<AttendanceState, Integer> result = attendanceStatus.getStatus();
 
         // then
-        assertThat(result.get(ABSENCE)).isEqualTo(1);
-        assertThat(result.get(LATE)).isEqualTo(1);
-        assertThat(result.get(ATTENDANCE)).isEqualTo(1);
+        assertAll(
+                () -> assertThat(result.get(ABSENCE)).isEqualTo(1),
+                () -> assertThat(result.get(LATE)).isEqualTo(1),
+                () -> assertThat(result.get(ATTENDANCE)).isEqualTo(1)
+        );
     }
 
     @Test

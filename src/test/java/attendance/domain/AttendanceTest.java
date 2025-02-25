@@ -11,6 +11,7 @@ import java.time.LocalTime;
 import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 class AttendanceTest {
 
@@ -21,8 +22,10 @@ class AttendanceTest {
         Attendance result = new Attendance(dateTime);
 
         // than
-        assertThat(result.getDateTime()).isEqualTo(dateTime);
-        assertThat(result.getState()).isEqualTo(excepted);
+        assertAll(
+                () -> assertThat(result.getDateTime()).isEqualTo(dateTime),
+                () -> assertThat(result.getState()).isEqualTo(excepted)
+        );
     }
 
     @ParameterizedTest

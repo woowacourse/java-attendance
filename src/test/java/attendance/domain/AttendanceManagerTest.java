@@ -19,6 +19,7 @@ import static attendance.domain.AttendanceState.ATTENDANCE;
 import static attendance.domain.AttendanceState.LATE;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 class AttendanceManagerTest {
 
@@ -42,8 +43,10 @@ class AttendanceManagerTest {
         Attendance result = attendanceManager.processAttendanceCheck(dateTime, nickname);
 
         // then
-        assertThat(result.getDateTime()).isEqualTo(dateTime);
-        assertThat(result.getState()).isEqualTo(expected);
+        assertAll(
+                () -> assertThat(result.getDateTime()).isEqualTo(dateTime),
+                () -> assertThat(result.getState()).isEqualTo(expected)
+        );
     }
 
     @Test
@@ -83,8 +86,10 @@ class AttendanceManagerTest {
         List<Attendance> result = attendanceManager.processAttendanceUpdate(updateDateTime, nickname);
 
         // then
-        assertThat(result.getLast().getDateTime().toLocalTime()).isEqualTo(time);
-        assertThat(result.getLast().getState()).isEqualTo(expected);
+        assertAll(
+                () -> assertThat(result.getLast().getDateTime().toLocalTime()).isEqualTo(time),
+                () -> assertThat(result.getLast().getState()).isEqualTo(expected)
+        );
     }
 
     @Test
@@ -139,8 +144,10 @@ class AttendanceManagerTest {
         AttendanceStatus result = attendanceManager.getAttendanceStatus(nowDate, nickname);
 
         // then
-        assertThat(result.getStatus().size()).isEqualTo(3);
-        assertThat(result.getRisk()).isEqualTo(AttendanceRisk.NONE);
+        assertAll(
+                () -> assertThat(result.getStatus().size()).isEqualTo(3),
+                () -> assertThat(result.getRisk()).isEqualTo(AttendanceRisk.NONE)
+        );
     }
 
     @Test
@@ -243,14 +250,6 @@ class AttendanceManagerTest {
         assertThat(sortedKeys).containsExactly("랜디", "레오");
     }
 
-    private void addAttendancesForCrew(final List<LocalDateTime> dateTimes, final String nickname) {
-        Attendances attendances = new Attendances();
-        for (LocalDateTime dateTime : dateTimes) {
-            attendances.addAttendance(dateTime);
-        }
-        attendanceManager.addCrew(nickname, attendances);
-    }
-
     @Test
     void 제적_위험자_목록을_이름_오름차순으로_정렬한다() {
         // given
@@ -288,6 +287,14 @@ class AttendanceManagerTest {
         assertThatIllegalArgumentException()
                 .isThrownBy(() -> attendanceManager.validateNicknameExists(nickname))
                 .withMessage("[ERROR] 등록되지 않은 닉네임입니다.");
+    }
+
+    private void addAttendancesForCrew(final List<LocalDateTime> dateTimes, final String nickname) {
+        Attendances attendances = new Attendances();
+        for (LocalDateTime dateTime : dateTimes) {
+            attendances.addAttendance(dateTime);
+        }
+        attendanceManager.addCrew(nickname, attendances);
     }
 
     static Stream<Arguments> 기본_출석_데이터() {
