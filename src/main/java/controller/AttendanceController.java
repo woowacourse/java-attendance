@@ -104,7 +104,7 @@ public class AttendanceController {
 
         List<LocalDateTime> attendanceHistory = crewHistory.getAttendanceHistory(getTodayDate());
         Map<AttendanceType, Integer> result = crewHistory.countAttendanceType(attendanceHistory);
-        SubjectType subjectType = SubjectType.from(crewHistory.countAttendanceType(attendanceHistory));
+        SubjectType subjectType = SubjectType.from(result);
 
         resultView.printAttendanceHistoryResultByCrew(nickname, attendanceHistory, result, subjectType);
     }
