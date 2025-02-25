@@ -3,6 +3,7 @@ package domain;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -10,7 +11,8 @@ public class AttendanceTimes {
     private final List<AttendanceTime> attendanceLog;
 
     private AttendanceTimes(List<AttendanceTime> attendanceLog) {
-        this.attendanceLog = attendanceLog;
+        this.attendanceLog = new ArrayList<>(attendanceLog);
+        ;
     }
 
     public static AttendanceTimes of(List<AttendanceTime> attendanceTimes) {
@@ -20,6 +22,10 @@ public class AttendanceTimes {
     public boolean contains(LocalDate date) {
         return attendanceLog.stream()
                 .anyMatch(attendanceTime -> attendanceTime.isSameDate(date));
+    }
+
+    public void addAttendance(AttendanceTime time) { // TODO: 파라미터 시그니처 통일하기
+        attendanceLog.add(time);
     }
 
     public LocalDateTime readAttendance(LocalDate date) {

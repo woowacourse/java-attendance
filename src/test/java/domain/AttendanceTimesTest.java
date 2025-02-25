@@ -40,6 +40,21 @@ class AttendanceTimesTest {
     }
 
     @Test
+    @DisplayName("출석 기록 추가")
+    void addAttendanceTest() {
+        // given
+        AttendanceTimes attendanceTimes = AttendanceTimes.of(createAttendanceLog());
+        AttendanceTime attendanceTime = AttendanceTime.of(
+                LocalDate.of(2024, 12, 20),
+                LocalTime.of(11, 20)
+        );
+
+        // when, then
+        assertThatCode(() -> attendanceTimes.addAttendance(attendanceTime))
+                .doesNotThrowAnyException();
+    }
+
+    @Test
     @DisplayName("원하는 날짜의 출석을 확인")
     void readAttendanceInAttendancesTest() {
         // given
