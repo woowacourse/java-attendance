@@ -17,4 +17,8 @@ public class DateTimeUtil {
     public static boolean isHoliday(LocalDate date) {
         return Holiday.isHoliday(date.getMonthValue(), date.getDayOfMonth());
     }
+
+    public static LocalDate now() {
+        return LocalDate.now();
+    }
 }

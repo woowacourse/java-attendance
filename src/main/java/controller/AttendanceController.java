@@ -8,22 +8,39 @@ public class AttendanceController {
     private final AttendanceService attendanceService;
 
     public AttendanceController(AttendanceService attendanceService) {
+        init();
         this.attendanceService = attendanceService;
     }
 
-    public void run() {
+    private void init() {
         AttendanceRecordLoader.loadAttendanceRecordsFromFile();
-//        saveAttendanceRecord();
+    }
 
+    public void run() {
+        boolean isRunning = true;
+        while (isRunning) {
+            String option = InputView.scanMainMenuOption();
+            switch (MainMenuCommand.from(option)) {
+                case SAVE_ATTENDANCE_RECORD -> saveAttendanceRecord();
+                case MODIFY_ATTENDANCE_RECORD -> modifyAttendanceRecord();
+                case PRINT_MONTH_ATTENDANCE_STATISTICS -> printMonthAttendanceStatistics();
+                case PRINT_CREWS_ON_RISK_OF_EXPELLED -> printCrewsOnRiskOfExpelled();
+                case QUIT -> isRunning = false;
+            }
+        }
     }
 
     private void saveAttendanceRecord() {
         String nickname = InputView.scanNickname();
         String time = InputView.scanAttendanceTime();
+    }
 
-//        OutputView.printSavedAttendanceRecord(new SavedAttendanceRecord(
-//                LocalDateTime.of(2025, 2, 3, 10, 0),
-//                AttendanceStatus.ATTENDANCE
-//        ));
+    private void modifyAttendanceRecord() {
+    }
+
+    private void printMonthAttendanceStatistics() {
+    }
+
+    private void printCrewsOnRiskOfExpelled() {
     }
 }
