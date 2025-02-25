@@ -28,4 +28,15 @@ class AttendanceDateTest {
         // When & Then
         assertThat(attendanceDate.isSameDate(date)).isTrue();
     }
+
+    @Test
+    void isSameDayOfWeek() {
+
+        // Given
+        final LocalDate date = LocalDate.of(2024, 12, 2);
+        final AttendanceDate attendanceDate = AttendanceDate.policyApplied(date, campusOperationPolicy);
+
+        // When & Then
+        assertThat(attendanceDate.isSameDayOfWeek(date.getDayOfWeek())).isTrue();
+    }
 }

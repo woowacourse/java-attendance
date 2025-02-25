@@ -1,6 +1,7 @@
 package attendance.model.attendance.datetime.date;
 
 import attendance.model.campus.CampusOperationPolicy;
+import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.util.Objects;
 
@@ -33,6 +34,10 @@ public class AttendanceDate {
 
     public boolean isSameDate(final LocalDate date) {
         return this.value.equals(date);
+    }
+
+    public boolean isSameDayOfWeek(final DayOfWeek dayOfWeek) {
+        return false;
     }
 
     @Override
