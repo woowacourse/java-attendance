@@ -11,7 +11,7 @@ public class Attendance implements Comparable<Attendance> {
 
     public Attendance(final LocalDateTime dateTime) {
         this.dateTime = dateTime;
-        this.state = AttendanceState.find(EducationTime.calculateOverTime(dateTime));
+        this.state = AttendanceState.find(dateTime);
     }
 
     public boolean isSameDate(final LocalDate date) {
