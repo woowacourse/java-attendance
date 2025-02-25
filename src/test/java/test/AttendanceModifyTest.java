@@ -95,7 +95,8 @@ public class AttendanceModifyTest {
         )));
 
         assertThatThrownBy(() -> {
-            attendances.modifyFrom(oldAttendance, modifyTime);
-        }).isInstanceOf(HolidayAttendanceException.class);
+            attendances.modifyFrom(oldAttendance, modifyTime);})
+                .isInstanceOf(HolidayAttendanceException.class)
+                .hasMessageContaining("12월 14일 토요일은 등교일이 아닙니다.");
     }
 }

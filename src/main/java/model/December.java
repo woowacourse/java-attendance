@@ -1,6 +1,7 @@
 package model;
 
 import common.Common;
+import exception.HolidayAttendanceException;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.util.List;
@@ -13,8 +14,7 @@ public class December {
 
     public static void validateHoliday(LocalDate date) {
         if (isHolidayAt(date)) {
-            throw new IllegalArgumentException(
-                    String.format("%s은 등교일이 아닙니다.", date.format(Common.monthDateDayFormatter)));
+            throw new HolidayAttendanceException(date);
         }
     }
 
