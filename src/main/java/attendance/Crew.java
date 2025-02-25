@@ -19,21 +19,25 @@ public class Crew {
     }
 
     public void attendance(LocalDate date, LocalTime time) {
-        validateAttendance(date);
+        validateAttendanceDate(date);
         attendanceRecords.put(date, time);
     }
 
-    private void validateAttendance(LocalDate date) {
+    private void validateAttendanceDate(LocalDate date) {
         if (attendanceRecords.containsKey(date)) {
             throw new IllegalArgumentException("이미 출석한 경우 다시 출석할 수 없습니다. 출석 수정 기능을 이용해 주세요.");
         }
     }
 
     public void modifyAttendance(LocalDate date, LocalTime time) {
+        validateModifyAttendanceDate(date);
+        attendanceRecords.put(date, time);
+    }
+
+    private void validateModifyAttendanceDate(LocalDate date) {
         if (!attendanceRecords.containsKey(date)) {
             throw new IllegalArgumentException();
         }
-        attendanceRecords.put(date, time);
     }
 
     public LocalTime getAttendanceTimeOf(LocalDate date) {

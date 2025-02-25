@@ -27,7 +27,7 @@ class AttendanceTest {
         assertThatCode(() -> {
             Crew found = crews.get("pobi");
             found.attendance(DATE, TIME);
-        });
+        }).doesNotThrowAnyException();
     }
 
     @Test
