@@ -1,9 +1,10 @@
+package policy;
+
 import domain.Attendance;
 import domain.AttendanceSheet;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import policy.FileReaderPolicy;
 
 import java.util.List;
 

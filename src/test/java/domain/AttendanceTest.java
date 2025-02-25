@@ -1,4 +1,5 @@
-import domain.Attendance;
+package domain;
+
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
