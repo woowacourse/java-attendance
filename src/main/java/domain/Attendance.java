@@ -5,6 +5,7 @@ import java.time.LocalTime;
 import java.time.format.TextStyle;
 import java.util.List;
 import java.util.Locale;
+import java.util.Objects;
 
 public class Attendance {
     private static final List<Integer> HOLIDAYS = List.of(1, 7, 8, 14, 15, 21, 22, 25, 28, 29);
@@ -34,5 +35,22 @@ public class Attendance {
 
     public AttendanceStatus calculateAttendanceStatus() {
         return AttendanceStatus.calculateAttendanceStatus(dateTime);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        Attendance that = (Attendance) o;
+        return dateTime.getDayOfMonth() == that.dateTime.getDayOfMonth();
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(dateTime.getDayOfMonth());
     }
 }
