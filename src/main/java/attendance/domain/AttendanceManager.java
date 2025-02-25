@@ -120,7 +120,7 @@ public class AttendanceManager {
         LocalDate startDate = SYSTEM_AVAILABLE_START_DATE;
         LocalDate endDate = SYSTEM_AVAILABLE_END_DATE;
         List<String> attendanceHistories = new ArrayList<>();
-        Map<String, Integer> attendanceStatusMap = new HashMap<>();
+        Map<AttendanceStatus, Integer> attendanceStatusMap = new HashMap<>();
         Attendances attendances = attendanceManager.get(nickname);
         for (LocalDate currentDate = startDate; !currentDate.isAfter(endDate); currentDate = currentDate.plusDays(1)) {
             appendAttendanceHistories(attendances, currentDate, attendanceHistories, attendanceStatusMap);
@@ -135,7 +135,7 @@ public class AttendanceManager {
 
     private void appendAttendanceHistories(Attendances attendances, LocalDate currentDate,
                                            List<String> attendanceHistories,
-                                           Map<String, Integer> attendanceStatusMap) {
+                                           Map<AttendanceStatus, Integer> attendanceStatusMap) {
         if (isHoliday(currentDate)) {
             return;
         }
@@ -147,24 +147,23 @@ public class AttendanceManager {
     }
 
     private void addAbsenceHistory(List<String> attendanceHistories,
-                                   Map<String, Integer> attendanceStatusMap, LocalDate currentDate) {
+                                   Map<AttendanceStatus, Integer> attendanceStatusMap, LocalDate currentDate) {
         String absenceHistory = DateTimeFormatterWrapper.formattingAttendanceAbsenceHistory(currentDate);
         attendanceHistories.add(absenceHistory);
-        attendanceStatusMap.merge(AttendanceStatus.ABSENCE.getStatus(), STATUS_ADD_COUNT, Integer::sum);
+        attendanceStatusMap.merge(AttendanceStatus.ABSENCE, STATUS_ADD_COUNT, Integer::sum);
     }
 
     private void addAttendanceHistory(Attendances attendances, LocalDate currentDate,
                                       List<String> attendanceHistories,
-                                      Map<String, Integer> attendanceStatusMap) {
+                                      Map<AttendanceStatus, Integer> attendanceStatusMap) {
         LocalTime attendanceTime = attendances.getAttendanceTime(currentDate);
-        String attendanceStatus = attendances.getAttendanceStatus(currentDate);
-
+        AttendanceStatus attendanceStatus = attendances.getAttendanceStatus(currentDate);
         attendanceStatusMap.merge(attendanceStatus, STATUS_ADD_COUNT, Integer::sum);
 
         String dateTimeFormatResult = DateTimeFormatterWrapper.parsingAttendanceResult(
                 LocalDateTime.of(currentDate, attendanceTime));
         attendanceHistories.add(
-                String.format(ATTENDANCE_RESULT_FORMAT, dateTimeFormatResult, attendanceStatus));
+                String.format(ATTENDANCE_RESULT_FORMAT, dateTimeFormatResult, attendanceStatus.getStatus()));
     }
 
     public List<String> attendancesNicknames() {

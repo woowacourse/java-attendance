@@ -4,9 +4,8 @@ import attendance.domain.AttendanceDismissStatus;
 import attendance.domain.AttendanceHistory;
 import attendance.domain.AttendanceManager;
 import attendance.domain.AttendanceReader;
-import attendance.domain.AttendanceStatus;
+import attendance.domain.AttendanceStatuses;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Stream;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
@@ -43,11 +42,8 @@ public class CrewDismissTest {
             Assertions.assertThat(attendanceManager.crewDismissHistory());
             AttendanceHistory attendanceHistory = attendanceHistories.get(i);
             String nickname = nicknames.get(i);
-            Map<String, Integer> status = attendanceHistory.statusMap();
-            AttendanceDismissStatus attendanceDismissStatus = AttendanceDismissStatus
-                    .calculateAttendanceDismiss(AttendanceStatus.absenceCount(status),
-                            AttendanceStatus.lateCount(status));
-
+            AttendanceStatuses attendances = new AttendanceStatuses(attendanceHistory, attendanceHistory.statusMap());
+            AttendanceDismissStatus attendanceDismissStatus = attendances.calculateAttendanceDismiss();
             Assertions.assertThat(attendanceHistory.nickname()).isEqualTo(nickname);
             Assertions.assertThat(attendanceDismissStatus).isEqualTo(attendanceStatus.get(i));
         }

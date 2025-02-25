@@ -3,11 +3,11 @@ package attendance;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import attendance.domain.AttendanceDismissStatus;
+import attendance.domain.AttendanceHistory;
 import attendance.domain.AttendanceManager;
 import attendance.domain.AttendanceReader;
-import attendance.domain.AttendanceStatus;
+import attendance.domain.AttendanceStatuses;
 import java.util.List;
-import java.util.Map;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -47,13 +47,9 @@ public class AttendanceHistoryTest {
         AttendanceManager attendanceManager = new AttendanceManager(
                 new AttendanceReader(src).loadAttendanceLinesFromAttendanceFile());
 
-        Map<String, Integer> status = attendanceManager
-                .crewAttendanceHistory(name)
-                .statusMap();
-        AttendanceDismissStatus attendanceDismissStatus = AttendanceDismissStatus
-                .calculateAttendanceDismiss(AttendanceStatus.absenceCount(status),
-                        AttendanceStatus.lateCount(status));
-        assertThat(attendanceDismissStatus)
-                .isEqualTo(AttendanceDismissStatus.DISMISS);
+        AttendanceHistory attendanceHistory = attendanceManager.crewAttendanceHistory(name);
+        AttendanceStatuses attendances = new AttendanceStatuses(attendanceHistory, attendanceHistory.statusMap());
+        AttendanceDismissStatus attendanceDismissStatus = attendances.calculateAttendanceDismiss();
+        assertThat(attendanceDismissStatus).isEqualTo(AttendanceDismissStatus.DISMISS);
     }
 }

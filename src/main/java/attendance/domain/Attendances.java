@@ -49,10 +49,8 @@ public class Attendances {
                 .time();
     }
 
-    public String getAttendanceStatus(LocalDate date) {
-        return attendances.get(date)
-                .attendanceStatus()
-                .getStatus();
+    public AttendanceStatus getAttendanceStatus(LocalDate date) {
+        return attendances.get(date).attendanceStatus();
     }
 
     public void modifyAttendance(LocalDate modifyDate, LocalTime afterModifyTime) {
