@@ -110,10 +110,7 @@ public class AttendanceBook {
 
     private boolean isWarningCrew(String name, List<Integer> days) {
         WarningStatus warningStatus = judgeWarningStatus(name, days);
-        if (warningStatus == WarningStatus.CLEAR) {
-            return false;
-        }
-        return true;
+        return warningStatus != WarningStatus.CLEAR;
     }
 
     private WarningStatus judgeWarningStatus(String name, List<Integer> days) {
