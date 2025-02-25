@@ -1,3 +1,4 @@
+import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -28,6 +29,14 @@ public class AttendanceSystem {
     }
 
     public void editAttendance(String name, LocalDate date, LocalTime time) {
+        if(isHoliday(date)) {
+            throw new IllegalArgumentException();
+        }
         attendanceBooks.get(name).attendance(date, time);
+    }
+
+    private boolean isHoliday(LocalDate date) {
+        DayOfWeek day = date.getDayOfWeek();
+        return day == DayOfWeek.SATURDAY || day == DayOfWeek.SUNDAY;
     }
 }

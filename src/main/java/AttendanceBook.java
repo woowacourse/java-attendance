@@ -2,10 +2,13 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 public class AttendanceBook {
     private final Map<LocalDate, LocalTime> attendanceBook;
+    Set<Integer> list = new HashSet<>();
 
     public AttendanceBook() {
         attendanceBook = new HashMap<>();

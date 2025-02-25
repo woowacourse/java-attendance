@@ -1,6 +1,7 @@
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 
@@ -59,13 +60,24 @@ public class AttendanceSystemTest {
                 .isEqualTo(LocalDateTime.of(attendanceSystem.TODAY, LocalTime.of(10, 0)));
     }
 
-    @DisplayName("수정하려는 시간이 캠퍼스 운영 시간이 아닌 경우 에러를 출력한다")
+    @DisplayName("수정하려는 시간이 캠퍼스 운영 시간이 아닌 경우 예외를 던진다")
     @Test
     void edit_attendance_in_non_operating_hour() {
         String name = "두리";
         attendanceSystem.attendance(name, LocalTime.of(10, 30));
-        assertThatThrownBy(() -> {
-            attendanceSystem.editAttendance(name, attendanceSystem.TODAY, LocalTime.of(23, 55));
-        }).isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() ->
+            attendanceSystem.editAttendance(name, attendanceSystem.TODAY, LocalTime.of(23, 55))
+        ).isInstanceOf(IllegalArgumentException.class);
     }
+
+    @DisplayName("수정하려는 날짜가 주말인 경우 예외를 던진다")
+    @Test
+    void edit_attendance_in_holiday() {
+        String name = "두리";
+        attendanceSystem.attendance(name, LocalTime.of(10, 0));
+        assertThatThrownBy(() ->
+                attendanceSystem.editAttendance(name, LocalDate.of(2024, 12, 1), LocalTime.of(10, 0)
+                )).isInstanceOf(IllegalArgumentException.class);
+    }
+
 }
