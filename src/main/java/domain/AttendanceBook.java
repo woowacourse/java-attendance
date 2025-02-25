@@ -20,16 +20,13 @@ public class AttendanceBook {
         }
     }
 
-    public void checkAlreadyAttended(String name, AttendanceDate attendanceDate) {
-        Crew crew = findCrewByName(name);
+    public void checkAlreadyAttended(Crew crew, AttendanceDate attendanceDate) {
         if (crew.checkAlreadyAttend(attendanceDate)) {
             throw new IllegalArgumentException("[ERROR] 이미 출석했습니다. 수정 기능을 이용해 주세요.");
         }
     }
 
-    // AttendanceDate로 파싱한 걸 받아올지? 여기서 파싱할지?
-    public void attend(String name, AttendanceDate attendanceDate, AttendanceTime attendanceTime) {
-        Crew crew = findCrewByName(name);
+    public void attend(Crew crew, AttendanceDate attendanceDate, AttendanceTime attendanceTime) {
         crew.attend(attendanceDate, attendanceTime);
     }
 

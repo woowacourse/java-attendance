@@ -48,11 +48,12 @@ public class AttendanceBookTest {
     @Test
     void attendTest() {
         String name = "빙봉";
+        Crew crew = attendanceBook.findCrewByName(name);
         AttendanceDate attendanceDate = new AttendanceDate(LocalDate.of(2024, 12, 24));
         AttendanceTime attendanceTime = new AttendanceTime(LocalTime.of(10, 1));
 
         attendanceBook.attend(name, attendanceDate, attendanceTime);
-        Assertions.assertThatThrownBy(() -> attendanceBook.checkAlreadyAttended(name, attendanceDate))
+        Assertions.assertThatThrownBy(() -> attendanceBook.checkAlreadyAttended(crew, attendanceDate))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -60,9 +61,10 @@ public class AttendanceBookTest {
     @Test
     void attendAlreadyAttendedTest() {
         String name = "빙봉";
+        Crew crew = attendanceBook.findCrewByName(name);
         AttendanceDate attendanceDate = new AttendanceDate(LocalDate.of(2024, 12, 13));
 
-        Assertions.assertThatThrownBy(() -> attendanceBook.checkAlreadyAttended(name, attendanceDate))
+        Assertions.assertThatThrownBy(() -> attendanceBook.checkAlreadyAttended(crew, attendanceDate))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
