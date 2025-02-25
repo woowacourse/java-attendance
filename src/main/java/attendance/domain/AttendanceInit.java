@@ -23,9 +23,7 @@ public class AttendanceInit {
         this.attendanceManager = attendanceManager;
         this.dateGenerator = dateGenerator;
         this.holiday = holiday;
-    }
 
-    public void initSystem() {
         initAttendances();
         initHoliday();
     }

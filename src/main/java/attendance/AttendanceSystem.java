@@ -2,7 +2,6 @@ package attendance;
 
 import attendance.config.AppConfig;
 import attendance.domain.Attendance;
-import attendance.domain.AttendanceInit;
 import attendance.domain.AttendanceManager;
 import attendance.domain.AttendanceStatus;
 import attendance.domain.CampusTime;
@@ -32,7 +31,6 @@ public class AttendanceSystem {
     private final DateGenerator dateGenerator;
     private final Holiday holiday;
     private final AttendanceManager attendanceManager;
-    private final AttendanceInit attendanceInit;
 
     public AttendanceSystem(AppConfig appConfig) {
         this.inputView = appConfig.getInputView();
@@ -40,12 +38,9 @@ public class AttendanceSystem {
         this.dateGenerator = appConfig.getDateGenerator();
         this.holiday = appConfig.getHoliday();
         this.attendanceManager = appConfig.getAttendanceManager();
-        this.attendanceInit = appConfig.getAttendanceInit();
     }
 
     public void run() {
-        attendanceInit.initSystem();
-
         while (true) {
             LocalDate today = dateGenerator.generateNow();
             AttendanceMenu menu = selectMenu(today);
