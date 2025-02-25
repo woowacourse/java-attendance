@@ -1,6 +1,7 @@
 package attendance.domain;
 
 import attendance.domain.constant.AttendanceStatus;
+import attendance.domain.constant.CrewStatus;
 import attendance.exception.CustomException;
 import attendance.exception.ErrorMessage;
 import java.time.LocalDate;
@@ -87,7 +88,6 @@ public class Register {
         return absence + (late / 3);
     }
 
-
     private Crew findValidatedCrew(Crew crew) {
         return register.keySet().stream()
                 .filter(crewName -> crewName.equals(crew))
@@ -99,7 +99,7 @@ public class Register {
         int absenceCounts = attendanceRegistry.findStatusCounts(AttendanceStatus.ABSENCE);
         int lateCounts = attendanceRegistry.findStatusCounts(AttendanceStatus.LATE);
         int limitCount = divideLate(absenceCounts, lateCounts);
-        if (limitCount >= 2) {
+        if (limitCount >= CrewStatus.WARNING.getLimitCount()) {
             riskCrews.put(crew, List.of(absenceCounts, lateCounts));
         }
     }

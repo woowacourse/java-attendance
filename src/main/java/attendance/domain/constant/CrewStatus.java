@@ -32,4 +32,7 @@ public enum CrewStatus {
         return status;
     }
 
+    public int getLimitCount() {
+        return limitCount;
+    }
 }
