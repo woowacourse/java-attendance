@@ -39,7 +39,7 @@ public class Attendance {
 
     public AttendanceDate findAttendanceDate(LocalDate findAttendanceDate) {
         Optional<AttendanceDate> attendanceDate = attendanceDates.stream()
-                .filter(localDate -> localDate.equals(findAttendanceDate)).findFirst();
+                .filter(localDate -> localDate.isEqualsLocalDate(findAttendanceDate)).findFirst();
         if (attendanceDate.isPresent()) {
             return attendanceDate.get();
         }
@@ -70,7 +70,7 @@ public class Attendance {
     }
 
     private boolean has(LocalDate localDate) {
-        return attendanceDates.stream().anyMatch(attendanceDate -> attendanceDate.equals(localDate));
+        return attendanceDates.stream().anyMatch(attendanceDate -> attendanceDate.isEqualsLocalDate(localDate));
     }
 
     private void validateAndUpdateAttendanceDates(LocalDate cursorDate) {

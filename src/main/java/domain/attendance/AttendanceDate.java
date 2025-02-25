@@ -37,7 +37,7 @@ public class AttendanceDate implements Comparable<AttendanceDate> {
         return this.dateTime.toLocalDate();
     }
 
-    public boolean equals(LocalDate compareDate) {
+    public boolean isEqualsLocalDate(LocalDate compareDate) {
         return (this.dateTime.getYear() == compareDate.getYear()
                 && this.dateTime.getMonthValue() == compareDate.getMonthValue()
                 && this.dateTime.getDayOfMonth() == compareDate.getDayOfMonth());
