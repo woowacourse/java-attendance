@@ -6,12 +6,22 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PrintStream;
 import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 class ControllerTest {
 
     Controller controller = new Controller();
+
+    private final InputStream originalIn = System.in;
+    private final PrintStream originalOut = System.out;
+
+    @AfterEach
+    void tearDown() {
+        System.setIn(originalIn);
+        System.setOut(originalOut);
+    }
 
     @Test
     @DisplayName("존재하지 않는 학생을 입력했을 때의 테스트")

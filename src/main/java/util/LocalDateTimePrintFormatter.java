@@ -11,7 +11,7 @@ public class LocalDateTimePrintFormatter {
 
     public static final DateTimeFormatter dateTimeFormatterForHourMin = DateTimeFormatter.ofPattern("HH:mm");
 
-    public static String LocalDateTimeToLocalTime(LocalDateTime localDateTime) {
+    public static String localDateTimeToStringFormatter(LocalDateTime localDateTime) {
         DayOfWeek dayOfWeek = localDateTime.getDayOfWeek();
 
         if (localDateTime.format(dateTimeFormatterForHourMin).equals("00:00")) {

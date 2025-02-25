@@ -1,6 +1,5 @@
 package controller;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.HashMap;
@@ -71,7 +70,7 @@ public class Controller {
         if (isHolidayForMenuTwo(modifyLocalDateTime)) {
             return true;
         }
-        String recordBeforeModify = LocalDateTimePrintFormatter.LocalDateTimeToLocalTime(
+        String recordBeforeModify = LocalDateTimePrintFormatter.localDateTimeToStringFormatter(
                 studentRecordRepository.getStudentRecord().get(studentName).compareDayIsSame(modifyLocalDateTime));
 
         studentRecordRepository.modifyRecord(studentName, modifyLocalDateTime);

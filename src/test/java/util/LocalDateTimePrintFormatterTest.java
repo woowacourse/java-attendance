@@ -9,7 +9,7 @@ class LocalDateTimePrintFormatterTest {
     @DisplayName("출력 양식을 만드는 메서드에 대한 테스트")
     void test1() {
         org.assertj.core.api.Assertions.assertThat(
-                LocalDateTimePrintFormatter.LocalDateTimeToLocalTime(LocalDateTime.of(2024,12,2,13,0))
+                LocalDateTimePrintFormatter.localDateTimeToStringFormatter(LocalDateTime.of(2024,12,2,13,0))
         ).isEqualTo("12월 02일 월요일 13:00");
     }
 
@@ -17,7 +17,7 @@ class LocalDateTimePrintFormatterTest {
     @DisplayName("출력 양식을 만드는 메서드에 대한 테스트")
     void test2() {
         org.assertj.core.api.Assertions.assertThat(
-                LocalDateTimePrintFormatter.LocalDateTimeToLocalTime(LocalDateTime.of(2024,12,2,0,0))
+                LocalDateTimePrintFormatter.localDateTimeToStringFormatter(LocalDateTime.of(2024,12,2,0,0))
         ).isEqualTo("12월 02일 월요일 --:--");
     }
 
