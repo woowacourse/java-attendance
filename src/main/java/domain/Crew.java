@@ -1,6 +1,7 @@
 package domain;
 
 import dto.CheckAttendanceResponse;
+import dto.ModifyAttendanceResponse;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.HashMap;
@@ -27,5 +28,18 @@ public class Crew {
         if (attendances.containsKey(input)) {
             throw new IllegalArgumentException(ErrorCode.ATTENDANCE_DATE_DUPLICATED.getMessage());
         }
+    }
+
+    public ModifyAttendanceResponse modifyAttendance(LocalDate date, LocalTime modifiedTime) {
+        LocalTime originalTime = attendances.get(date);
+        attendances.put(date, modifiedTime);
+
+        return new ModifyAttendanceResponse(
+                date,
+                originalTime,
+                modifiedTime,
+                "출석",
+                "출석"
+        );
     }
 }

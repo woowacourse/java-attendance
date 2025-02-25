@@ -4,6 +4,7 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 
 import dto.CheckAttendanceResponse;
+import dto.ModifyAttendanceResponse;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import org.junit.jupiter.api.BeforeEach;
@@ -46,12 +47,16 @@ public class CrewTest {
     @Test
     @DisplayName("출석 확인을 수정하려면 닉네임, 수정하려는 날짜, 등교 시간을 입력하여 기록을 수정할 수 있다.")
     void crewTest3() {
-        LocalDate originalDate = LocalDate.now();
+        LocalDate date = LocalDate.now();
         LocalTime originalTime = LocalTime.now();
-        LocalDate modifiedDate = LocalDate.now().minusDays(1);
         LocalTime modifiedTime = LocalTime.now().minusHours(1);
 
-        crew.checkAttendance(originalDate, originalTime);
-        crew.modifyAttendance(modifiedDate, modifiedTime);
+        crew.checkAttendance(date, originalTime);
+        
+        assertThat(crew.modifyAttendance(date, modifiedTime))
+                .extracting(ModifyAttendanceResponse::date,
+                        ModifyAttendanceResponse::originalTime,
+                        ModifyAttendanceResponse::modifiedTime)
+                .containsExactly(date, originalTime, modifiedTime);
     }
 }
