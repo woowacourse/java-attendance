@@ -42,5 +42,24 @@ public class AttendanceDateTimeTest {
         AttendanceDateTime attendanceDateTime = AttendanceDateTime.of(2024, 12, 26, 10,31);
         Assertions.assertThat(attendanceDateTime.getAttendanceType()).isEqualTo(AttendanceType.ABSENCE);
     }
+
+    @DisplayName("isSchoolTime() 테스트")
+    @Test
+    void isSchoolTimeTest1() {
+        AttendanceDateTime attendanceDateTime = AttendanceDateTime.of(2024, 12, 26, 10,31);
+        Assertions.assertThat(attendanceDateTime.isSchoolTime()).isTrue();
+    }
+
+    @Test
+    void isSchoolTimeTest2() {
+        AttendanceDateTime attendanceDateTime = AttendanceDateTime.of(2024, 12, 26, 7,59);
+        Assertions.assertThat(attendanceDateTime.isSchoolTime()).isFalse();
+    }
+
+    @Test
+    void isSchoolTimeTest3() {
+        AttendanceDateTime attendanceDateTime = AttendanceDateTime.of(2024, 12, 26, 23,1);
+        Assertions.assertThat(attendanceDateTime.isSchoolTime()).isFalse();
+    }
 }
 

@@ -6,7 +6,6 @@ public class AttendanceDateTime {
 
     private AttendanceDateTime(LocalDateTime localDateTime) {
         this.localDateTime = localDateTime;
-
     }
 
     public static AttendanceDateTime of(int year, int month, int day, int hour, int minute) {
@@ -24,6 +23,18 @@ public class AttendanceDateTime {
         return false;
     }
 
+    public boolean isSchoolTime() {
+        int currentHour = localDateTime.getHour();
+        int currentMinute = localDateTime.getMinute();
+        if (currentHour >= 8 && currentHour <= 22) {
+            return true;
+        }
+        if (currentHour == 23 && currentMinute == 0) {
+            return true;
+        }
+        return false;
+    }
+
     public AttendanceType getAttendanceType() {
         DayOfWeek currentDayOfWeek = localDateTime.getDayOfWeek();
         int attendanceHourThreshold = 10;
@@ -31,7 +42,8 @@ public class AttendanceDateTime {
             attendanceHourThreshold = 13;
         }
 
-        if (localDateTime.getHour() < attendanceHourThreshold || (localDateTime.getHour() == attendanceHourThreshold && localDateTime.getMinute() == 0)) {
+        if (localDateTime.getHour() < attendanceHourThreshold || (localDateTime.getHour() == attendanceHourThreshold
+                && localDateTime.getMinute() == 0)) {
             return AttendanceType.ATTENDANCE;
         }
         if (localDateTime.getHour() == attendanceHourThreshold && localDateTime.getMinute() <= 30) {
