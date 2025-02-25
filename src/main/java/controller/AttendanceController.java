@@ -10,5 +10,6 @@ public class AttendanceController {
     }
 
     public void run() {
+        System.out.println("Test");
     }
 }

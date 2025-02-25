@@ -11,7 +11,7 @@ import java.util.Scanner;
 
 public class AttendanceFileReader {
     public static void readAttendanceFile(AttendanceStorage attendanceStorage) throws FileNotFoundException {
-        Scanner scanner = new Scanner(new File("./resources/attendances.csv"));
+        Scanner scanner = new Scanner(new File("src/main/resources/attendances.csv"));
         scanner.nextLine();
 
         // 여기서부터 시작

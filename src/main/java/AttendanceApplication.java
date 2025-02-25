@@ -11,8 +11,9 @@ public class AttendanceApplication {
             AttendanceFileReader.readAttendanceFile(attendanceStorage);
             AttendanceService attendanceService = new AttendanceService(attendanceStorage);
             AttendanceController attendanceController = new AttendanceController(attendanceService);
+            attendanceController.run();
         } catch (FileNotFoundException exception) {
-
+            // TODO:
         }
     }
 }
