@@ -5,10 +5,10 @@ import domain.Attendances;
 import domain.Crew;
 import domain.DayOfWeek;
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
-import util.Converter;
 
 public class OutputView {
 
@@ -27,7 +27,7 @@ public class OutputView {
     public void printAttendanceInformation(Attendance attendance) {
         LocalDate today = LocalDate.now();
         String dayOfWeekName = DayOfWeek.getNameById(today.getDayOfWeek().getValue());
-        String attendanceTime = Converter.covertLocalTimeToString(attendance.getAttendanceTime());
+        String attendanceTime = covertLocalTimeToString(attendance.getAttendanceTime());
         String attendanceStatusName = getAttendanceStatusName(attendance);
         System.out.printf("%d월 %02d일 %s %s (%s)\n", today.getMonth().getValue(), today.getDayOfMonth(), dayOfWeekName,
                 attendanceTime, attendanceStatusName);
@@ -38,8 +38,8 @@ public class OutputView {
         LocalDate date = editedAttendance.getDay().getDate();
         String dayOfWeekName = DayOfWeek.getNameById(date.getDayOfWeek().getValue());
 
-        String originalAttendanceTime = Converter.covertLocalTimeToString(originalAttendance.getAttendanceTime());
-        String editedAttendanceTime = Converter.covertLocalTimeToString(editedAttendance.getAttendanceTime());
+        String originalAttendanceTime = covertLocalTimeToString(originalAttendance.getAttendanceTime());
+        String editedAttendanceTime = covertLocalTimeToString(editedAttendance.getAttendanceTime());
 
         String originAttendanceStatusName = getAttendanceStatusName(originalAttendance);
         String editedAttendanceStatusName = getAttendanceStatusName(editedAttendance);
@@ -73,7 +73,7 @@ public class OutputView {
     private String formatAttendanceRecord(Attendance attendance) {
         LocalDate date = attendance.getDay().getDate();
         String attendanceTime = Optional.ofNullable(attendance.getAttendanceTime())
-                .map(Converter::covertLocalTimeToString)
+                .map(this::covertLocalTimeToString)
                 .orElse("--:--");
         String dayOfWeekName = DayOfWeek.getNameById(date.getDayOfWeek().getValue());
         String attendanceStatusName = getAttendanceStatusName(attendance);
@@ -118,5 +118,14 @@ public class OutputView {
                 Comparator.comparing((Crew crew) -> crew.getPenaltyStatus().getThreshold(), Comparator.reverseOrder())
                         .thenComparing(crew -> crew.getLateCount() + crew.getAbsentCount(), Comparator.reverseOrder())
                         .thenComparing(Crew::getNickName));
+    }
+
+    private String covertLocalTimeToString(LocalTime localTime) {
+
+        if (localTime == null) {
+            return "--:--";
+        }
+
+        return localTime.format(TimeFormat.DATE_TIME_FORMATTER);
     }
 }

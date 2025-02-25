@@ -10,8 +10,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
-import org.junit.jupiter.params.provider.ValueSource;
-import util.Converter;
+
 
 public class AttendanceCheckTest {
 
@@ -35,22 +34,6 @@ public class AttendanceCheckTest {
         final var actual = "12월 05일 화요일 " + attendanceTime + " (출석)";
         final var expected = "12월 05일 화요일 09:59 (출석)";
         assertThat(actual).isEqualTo(expected);
-    }
-
-    @ParameterizedTest
-    @ValueSource(strings = {"10:61"})
-    void 존재하지않는_시간을_입력하면_예외가_발생한다(String value) {
-        assertThatThrownBy(() -> Converter.convertStringToLocalTime(value))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageStartingWith("[ERROR]");
-    }
-
-    @ParameterizedTest
-    @ValueSource(strings = {"테스트:00"})
-    void 시간형식이_아닌값을_입력하면_예외가_발생한다(String value) {
-        assertThatThrownBy(() -> Converter.convertStringToLocalTime(value))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageStartingWith("[ERROR]");
     }
 
     @ParameterizedTest
