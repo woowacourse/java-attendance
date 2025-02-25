@@ -8,21 +8,17 @@ import java.util.List;
 
 public enum AttendanceCalculator {
 
-    MONDAY(LocalTime.of(13,5),LocalTime.of(13,30),1),
-    TUESDAY(LocalTime.of(10,5),LocalTime.of(10,30),2),
-    WEDNESDAY(LocalTime.of(10,5), LocalTime.of(10,30),3),
-    THURSDAY(LocalTime.of(10,5), LocalTime.of(10,30),4),
-    FRIDAY(LocalTime.of(10,5), LocalTime.of(10,30),5);
+    MONDAY(LocalTime.of(13,5),LocalTime.of(13,30)),
+    TUESDAY_TO_FRIDAY(LocalTime.of(10,5),LocalTime.of(10,30));
+
 
     private final LocalTime lateTime;
     private final LocalTime absentTime;
-    private final int dayOfWeekValue;
     private static final int christmas = 25;
 
-    AttendanceCalculator(LocalTime lateTime, LocalTime absentTime, int dayOfWeekValue) {
+    AttendanceCalculator(LocalTime lateTime, LocalTime absentTime) {
         this.lateTime = lateTime;
         this.absentTime = absentTime;
-        this.dayOfWeekValue = dayOfWeekValue;
     }
 
     public static boolean checkHoliday(LocalDateTime localDateTime) {
@@ -43,23 +39,20 @@ public enum AttendanceCalculator {
         attendanceRecord.put("출석", 0);
         attendanceRecord.put("지각", 0);
         for (LocalDateTime localDateTime :record) {
-            int day = localDateTime.getDayOfWeek().getValue();
-            attendanceRecord.put(calculateAttendance(day, LocalTime.from(localDateTime)).getState(),
-                    attendanceRecord.get(calculateAttendance(day, LocalTime.from(localDateTime)).getState()) + 1);
+            attendanceRecord.put(calculateAttendance(localDateTime, LocalTime.from(localDateTime)).getState(),
+                    attendanceRecord.get(calculateAttendance(localDateTime, LocalTime.from(localDateTime)).getState()) + 1);
         }
         return attendanceRecord;
     }
 
-    public static AttendanceStatus calculateAttendance(int day, LocalTime localTime) {
+    public static AttendanceStatus calculateAttendance(LocalDateTime localDateTime, LocalTime localTime) {
         if (localTime.equals(LocalTime.of(0,0))) {
             return AttendanceStatus.ABSENT;
         }
-        for (AttendanceCalculator attendanceCalculatorByDay : AttendanceCalculator.values()) {
-            if (attendanceCalculatorByDay.dayOfWeekValue == day) {
-                return getAttendanceStatus(localTime, attendanceCalculatorByDay);
-            }
+        if (localDateTime.getDayOfWeek().equals(DayOfWeek.MONDAY)) {
+            return getAttendanceStatus(localTime, AttendanceCalculator.MONDAY);
         }
-        return null;
+        return getAttendanceStatus(localTime, AttendanceCalculator.TUESDAY_TO_FRIDAY);
     }
 
     private static AttendanceStatus getAttendanceStatus(LocalTime localTime,
