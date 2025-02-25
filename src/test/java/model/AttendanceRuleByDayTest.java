@@ -1,5 +1,6 @@
 package model;
 
+import java.time.DayOfWeek;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import org.assertj.core.api.Assertions;
@@ -25,7 +26,7 @@ class AttendanceRuleByDayTest {
     @Test
     @DisplayName("정수형을 입력 받고, String 형 요일을 출력하는 메서드 테스트")
     void test3() {
-        int friday = 5;
+        DayOfWeek friday = DayOfWeek.FRIDAY;
         Assertions.assertThat(AttendanceRuleByDay.
                         findDayByDayOfWeekValue(friday)).
                 isEqualTo("금요일");

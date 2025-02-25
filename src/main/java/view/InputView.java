@@ -35,7 +35,7 @@ public class InputView {
         int month = localDate.getMonthValue();
         int date = localDate.getDayOfMonth();
         DayOfWeek dayOfWeek = localDate.getDayOfWeek();
-        String day = AttendanceRuleByDay.findDayByDayOfWeekValue(dayOfWeek.getValue());
+        String day = AttendanceRuleByDay.findDayByDayOfWeekValue(dayOfWeek);
         System.out.println("오늘은 " + month + "월 " + date + "일 " + day + "입니다. 기능을 선택해 주세요.");
     }
 
