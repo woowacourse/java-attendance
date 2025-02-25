@@ -353,9 +353,9 @@ class AttendanceSystemTest {
     void 제적_위험자_두번째로_결석_지각의_내림차순으로_정렬된다() {
         addNotRiskCrew(VALID_CREW_NICKNAME);
         addWarningTargetCrew("쿠키2");
-        attendanceSystem.addAttendanceRecord("쿠키2", LocalDateTime.of(2025, 2, 10, 10, 5));
+        attendanceSystem.addAttendanceRecord("쿠키2", LocalDateTime.of(2025, 2, 10, 8, 50));
         addWarningTargetCrew("쿠키3");
-        attendanceSystem.addAttendanceRecord("쿠키3", LocalDateTime.of(2025, 2, 10, 8, 50));
+        attendanceSystem.addAttendanceRecord("쿠키3", LocalDateTime.of(2025, 2, 10, 13, 5));
 
         List<AttendanceState> states = attendanceSystem.findRiskCrew(LocalDate.of(2025, 2, 10));
         assertThat(states)
@@ -367,14 +367,14 @@ class AttendanceSystemTest {
     @Test
     void 제적_위험자_세번째로_닉네임의_내림차순으로_정렬된다() {
         addNotRiskCrew(VALID_CREW_NICKNAME);
-        addWarningTargetCrew("쿠키2");
-        addWarningTargetCrew("쿠키3");
-        addWarningTargetCrew("쿠키4");
+        addWarningTargetCrew("가");
+        addWarningTargetCrew("나");
+        addWarningTargetCrew("다");
 
         List<AttendanceState> states = attendanceSystem.findRiskCrew(LocalDate.of(2025, 2, 8));
         assertThat(states)
                 .extracting(AttendanceState::getNickname)
-                .containsExactly("쿠키2", "쿠기3", "쿠키4");
+                .containsExactly("가", "나", "다");
     }
 
 

@@ -74,6 +74,7 @@ public class AttendanceSystem {
         return allNicknames.stream()
                 .map(nickname -> calculateAttendanceStateInMonth(nickname, today))
                 .filter(state -> state.getRiskTyp() != RiskType.NONE)
+                .sorted()
                 .toList();
     }
 

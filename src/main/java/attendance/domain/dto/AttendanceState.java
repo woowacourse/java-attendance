@@ -2,7 +2,7 @@ package attendance.domain.dto;
 
 import attendance.domain.RiskType;
 
-public class AttendanceState {
+public class AttendanceState implements Comparable<AttendanceState> {
 
     private final String nickname;
     private final int attendanceCount;
@@ -36,5 +36,30 @@ public class AttendanceState {
 
     public RiskType getRiskTyp() {
         return riskTyp;
+    }
+
+    @Override
+    public int compareTo(AttendanceState other) {
+        if (compareRiskType(other) == 0 && compareAbsenceScore(other) == 0) {
+            return compareNickname(other);
+        }
+        if (compareRiskType(other) == 0) {
+            return compareAbsenceScore(other);
+        }
+        return compareRiskType(other);
+    }
+
+    private int compareRiskType(AttendanceState other) {
+        return this.riskTyp.compareTo(other.getRiskTyp());
+    }
+
+    private int compareAbsenceScore(AttendanceState other) {
+        int currentScore = absenceCount * 3 + lateCount;
+        int otherScore = other.getAbsenceCount() * 3 + other.getLateCount();
+        return currentScore - otherScore;
+    }
+
+    private int compareNickname(AttendanceState other) {
+        return nickname.compareTo(other.nickname);
     }
 }
