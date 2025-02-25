@@ -3,9 +3,9 @@ package attendance.view;
 import static attendance.domain.AttendanceStatus.ABSENCE;
 import static attendance.domain.AttendanceStatus.LATENESS;
 
-import attendance.domain.AttendanceRepository;
+import attendance.domain.Attendance;
 import attendance.domain.AttendanceStatus;
-import attendance.domain.HourMinute;
+import attendance.domain.Crews;
 import attendance.domain.WarningLevel;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -38,7 +38,8 @@ public class OutputView {
                     """;
 
     public static void printOptions() {
-        System.out.printf(TODAY_IS, convertDate(LocalDateTime.now()));
+        int today = LocalDateTime.now().getDayOfMonth();
+        System.out.printf(TODAY_IS, convertDate(LocalDateTime.of(2024, 12, today, 0, 0)));
         System.out.print(OPERATION_OPTION_MESSAGE);
     }
 
@@ -50,12 +51,11 @@ public class OutputView {
                 AttendanceStatus.checkAttendance(localDateTime).getStatus());
     }
 
-    public static void printModifiedAttendance(HourMinute prevHourMinute, LocalDateTime newAttendanceTime) {
-        LocalTime prevTime = LocalTime.of(prevHourMinute.hour(), prevHourMinute.minute());
+    public static void printModifiedAttendance(Attendance prevAttendance, LocalDateTime newAttendanceTime) {
         System.out.printf(MODIFY_SUCCESS_FORMAT,
                 convertDate(newAttendanceTime),
-                prevTime.toString(),
-                prevHourMinute.attendanceStatus().getStatus(),
+                prevAttendance.time().toString(),
+                prevAttendance.attendanceStatus().getStatus(),
                 newAttendanceTime.toLocalTime().toString(),
                 AttendanceStatus.checkAttendance(newAttendanceTime).getStatus());
     }
@@ -78,7 +78,7 @@ public class OutputView {
         printCrewWarningLevel(name, crews, today);
     }
 
-    private static void printCrewAttendances(final int today, final Map<LocalDate, HourMinute> crewAttendances) {
+    private static void printCrewAttendances(final int today, final Map<LocalDate, Attendance> crewAttendances) {
         for (int day = 1; day < today; day++) {
             LocalDate date = LocalDate.of(2024, 12, day);
             printAttendances(crewAttendances, date, day);
@@ -86,20 +86,20 @@ public class OutputView {
         System.out.println();
     }
 
-    private static void printAttendances(final Map<LocalDate, HourMinute> crewAttendances, final LocalDate date,
+    private static void printAttendances(final Map<LocalDate, Attendance> crewAttendances, final LocalDate date,
                                          final int day) {
         if (!crewAttendances.containsKey(date)) {
             return;
         }
-        HourMinute hourMinute = crewAttendances.get(date);
+        Attendance attendance = crewAttendances.get(date);
 
-        if (hourMinute.hour() == HourMinute.NULL_TIME && hourMinute.minute() == HourMinute.NULL_TIME) {
+        if (attendance.time() == null) {
             System.out.printf("%s %s (%s)\n", convertDate(LocalDateTime.of(date, LocalTime.of(0, 0))),
                     ABSENCE_TIME_FORMAT,
-                    hourMinute.attendanceStatus().getStatus());
+                    attendance.attendanceStatus().getStatus());
             return;
         }
-        printAddedAttendance(LocalDateTime.of(2024, 12, day, hourMinute.hour(), hourMinute.minute()));
+        printAddedAttendance(LocalDateTime.of(2024, 12, day, attendance.getHour(), attendance.getMinute()));
     }
 
     private static void printAttendanceStatus(String name, Crews crews, int today) {

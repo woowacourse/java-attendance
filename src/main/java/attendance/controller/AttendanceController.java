@@ -1,7 +1,7 @@
 package attendance.controller;
 
-import attendance.domain.AttendanceRepository;
-import attendance.domain.HourMinute;
+import attendance.domain.Attendance;
+import attendance.domain.Crews;
 import attendance.util.DataLoader;
 import attendance.view.DataFileReader;
 import attendance.view.InputView;
