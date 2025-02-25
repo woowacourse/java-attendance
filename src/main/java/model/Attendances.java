@@ -2,6 +2,7 @@ package model;
 
 import common.Common;
 import exception.DuplicatedAttendanceRegistrationException;
+import exception.FutureAttendanceModifyException;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
@@ -26,12 +27,19 @@ public class Attendances {
     public Attendance modifyFrom(Attendance oldAttendance, LocalTime newTime) {
         if (attendances.contains(oldAttendance)) {
             LocalDate date = oldAttendance.getDate();
+            validateFutureModification(date);
             Attendance newAttendance = new Attendance(date, newTime);
             this.attendances.remove(oldAttendance);
             this.attendances.add(newAttendance);
             return newAttendance;
         }
         throw new RuntimeException("수정을 요청한 출석 객체를 찾을 수 없습니다.");
+    }
+
+    private void validateFutureModification(LocalDate date) {
+        if (date.isAfter(DateGenerator.now())) {
+            throw new FutureAttendanceModifyException();
+        }
     }
 
     private void validateFirstRegistration(Attendance oldAttendance) {
