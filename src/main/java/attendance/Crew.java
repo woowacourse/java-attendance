@@ -20,6 +20,10 @@ public class Crew {
         return attendance;
     }
 
+    public boolean isEqualCrew(String nickname) {
+        return this.nickname.equals(nickname);
+    }
+
     public List<Attendance> getAttendances() {
         return attendances;
     }
