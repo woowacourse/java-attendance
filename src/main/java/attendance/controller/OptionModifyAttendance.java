@@ -1,5 +1,12 @@
-package attendance.domain;
+package attendance.controller;
 
+import attendance.domain.Attendance;
+import attendance.domain.AttendanceType;
+import attendance.domain.Attendances;
+import attendance.domain.Crew;
+import attendance.domain.Crews;
+import attendance.domain.MenuCommand;
+import attendance.dto.AttendanceModifyDto;
 import attendance.view.InputView;
 import attendance.view.OutputView;
 import java.time.LocalDate;
@@ -17,15 +24,7 @@ public class OptionModifyAttendance extends MenuOption {
 
     @Override
     public void executeMenuOption(MenuCommand command) {
-        if (!isCorrectCommand(command)) {
-            return;
-        }
         executeModifyAttendance();
-    }
-
-    @Override
-    public boolean isCorrectCommand(MenuCommand command) {
-        return command.equals(MenuCommand.MODIFY);
     }
 
     private void executeModifyAttendance() {
@@ -37,8 +36,8 @@ public class OptionModifyAttendance extends MenuOption {
         LocalDateTime localDateTime = createLocalDateTime(localDate, modifyTime);
         attendances.modifyAttendances(crew, localDateTime);
         Attendance newAttendance = attendances.findMatchCrewDate(crew, localDate);
-        InfoModifyAttendance modifyAttendanceInfo = new InfoModifyAttendance(originalTime, originalType,
-                newAttendance.getInfo());
+        AttendanceModifyDto modifyAttendanceInfo = AttendanceModifyDto.fromModifiedAttendance(originalTime,
+                originalType, newAttendance);
         outputView.printModifiedAttendance(modifyAttendanceInfo);
     }
 

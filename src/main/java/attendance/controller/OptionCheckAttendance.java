@@ -1,5 +1,12 @@
-package attendance.domain;
+package attendance.controller;
 
+import attendance.domain.Attendance;
+import attendance.domain.AttendanceType;
+import attendance.domain.Attendances;
+import attendance.domain.Crew;
+import attendance.domain.Crews;
+import attendance.domain.MenuCommand;
+import attendance.dto.AttendanceCheckDto;
 import attendance.view.InputView;
 import attendance.view.OutputView;
 import java.time.LocalDateTime;
@@ -16,15 +23,7 @@ public class OptionCheckAttendance extends MenuOption {
 
     @Override
     public void executeMenuOption(MenuCommand command) {
-        if (!isCorrectCommand(command)) {
-            return;
-        }
         executeCheckAttendance();
-    }
-
-    @Override
-    public boolean isCorrectCommand(MenuCommand command) {
-        return command.equals(MenuCommand.ATTEND);
     }
 
     private void executeCheckAttendance() {
@@ -35,8 +34,8 @@ public class OptionCheckAttendance extends MenuOption {
         AttendanceType status = AttendanceType.of(localDateTime);
         Attendance todayAttendance = new Attendance(crew, localDateTime, status);
         attendances.add(todayAttendance);
-        InfoCheckAttendance checkAttendanceInfo = new InfoCheckAttendance(todayAttendance.getInfo());
-        outputView.printTodayAttendance(checkAttendanceInfo);
+        AttendanceCheckDto attendanceInfo = AttendanceCheckDto.fromAttendance(todayAttendance);
+        outputView.printTodayAttendance(attendanceInfo);
     }
 
     private void validateWeekend() {

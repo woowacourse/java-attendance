@@ -1,5 +1,12 @@
-package attendance.domain;
+package attendance.controller;
 
+import attendance.domain.Attendance;
+import attendance.domain.Attendances;
+import attendance.domain.Crew;
+import attendance.domain.CrewStatistic;
+import attendance.domain.Crews;
+import attendance.domain.MenuCommand;
+import attendance.dto.AttendanceLookupDto;
 import attendance.view.InputView;
 import attendance.view.OutputView;
 import java.util.List;
@@ -11,15 +18,7 @@ public class OptionLookupAttendance extends MenuOption {
 
     @Override
     public void executeMenuOption(MenuCommand command) {
-        if (!isCorrectCommand(command)) {
-            return;
-        }
         executeLookupAttendanceHistory();
-    }
-
-    @Override
-    public boolean isCorrectCommand(MenuCommand command) {
-        return command.equals(MenuCommand.LOOKUP);
     }
 
     private void executeLookupAttendanceHistory() {
@@ -27,10 +26,8 @@ public class OptionLookupAttendance extends MenuOption {
         List<Attendance> crewAttendances = attendances.findCrewAttendances(crew);
         CrewStatistic crewStatistic = new CrewStatistic(crew, crewAttendances);
         crewStatistic.checkCrewStatistic();
-        InfoLookupAttendance infoLookupAttendance = new InfoLookupAttendance(crew.getName(),
-                crewStatistic.crewAttendanceHistoryInfo(), crewStatistic.crewStatisticStatusInfo());
-        infoLookupAttendance.createCrewAttendanceRecords();
-        outputView.printCrewAttendanceHistory(infoLookupAttendance);
-        outputView.printCrewStatisticStatus(infoLookupAttendance);
+        AttendanceLookupDto attendanceLookupDto = AttendanceLookupDto.fromAttendanceHistoryInfo(crew, crewStatistic);
+        outputView.printCrewAttendanceHistory(attendanceLookupDto);
+        outputView.printCrewStatisticStatus(attendanceLookupDto);
     }
 }

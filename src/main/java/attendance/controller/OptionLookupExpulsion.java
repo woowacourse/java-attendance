@@ -1,5 +1,13 @@
-package attendance.domain;
+package attendance.controller;
 
+import attendance.domain.Attendance;
+import attendance.domain.Attendances;
+import attendance.domain.Crew;
+import attendance.domain.CrewStatistic;
+import attendance.domain.CrewStatistics;
+import attendance.domain.Crews;
+import attendance.domain.MenuCommand;
+import attendance.dto.AttendanceExpelDto;
 import attendance.view.InputView;
 import attendance.view.OutputView;
 import java.util.ArrayList;
@@ -12,15 +20,7 @@ public class OptionLookupExpulsion extends MenuOption {
 
     @Override
     public void executeMenuOption(MenuCommand command) {
-        if (!isCorrectCommand(command)) {
-            return;
-        }
         executeLookupExpulsion();
-    }
-
-    @Override
-    public boolean isCorrectCommand(MenuCommand command) {
-        return command.equals(MenuCommand.EXPEL);
     }
 
     private void executeLookupExpulsion() {
@@ -33,9 +33,7 @@ public class OptionLookupExpulsion extends MenuOption {
         }
         CrewStatistics crewStatistics = new CrewStatistics(crewsStatistics);
         CrewStatistics sortedCrewStatistics = crewStatistics.sortCrewStatistics();
-        InfoLookupExpulsion infoLookupExpulsion = new InfoLookupExpulsion(
-                sortedCrewStatistics.crewsExpelExpectedInfo());
-        infoLookupExpulsion.createCrewExpelRecords();
-        outputView.printExpelExpectedCrews(infoLookupExpulsion);
+        AttendanceExpelDto attendanceExpelDto = AttendanceExpelDto.fromAttendanceExpelRecord(sortedCrewStatistics);
+        outputView.printExpelExpectedCrews(attendanceExpelDto);
     }
 }
