@@ -17,8 +17,10 @@ public class Crew {
         attendTimes.add(new AttendTime(localDateTime));
     }
 
-    public void attend(LocalDateTime localDateTime) {
-        attendTimes.add(new AttendTime(localDateTime));
+    public AttendTime attend(LocalDateTime localDateTime) {
+        AttendTime attendTime =new AttendTime(localDateTime);
+        attendTimes.add(attendTime);
+        return attendTime;
     }
 
     public String getNickname() {
@@ -28,4 +30,11 @@ public class Crew {
     public List<AttendTime> getAttendTimes() {
         return attendTimes;
     }
+
+//    public AttendTime findAttendanceByDate(int date) {
+//        return attendTimes.stream()
+//                .filter(attendTime -> attendTime.checkSameDate(date))
+//                .findAny()
+//                .orElseThrow(() -> new IllegalArgumentException("없는 날짜입니다."));
+//    }
 }

@@ -23,9 +23,10 @@ public class Crews {
         crews.add(new Crew(nickname, LocalDateTime.parse(date, FORMATTER)));
     }
 
-    public void addCrewAttendance(String nickname, String time) {
+    public AttendTime addCrewAttendance(String nickname, String time) {
         Crew crew = findCrewByNickname(nickname).orElseThrow(() -> new IllegalArgumentException("없는 닉네임입니다."));
-        crew.attend(LocalDateTime.parse(time, FORMATTER));
+        return crew.attend(LocalDateTime.parse(time, FORMATTER));
+
     }
 
     public Optional<Crew> findCrewByNickname(String nickname) {

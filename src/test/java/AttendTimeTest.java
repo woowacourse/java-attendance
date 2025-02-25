@@ -21,7 +21,7 @@ public class AttendTimeTest {
     @DisplayName("출석의 상태를 파악할 수 있다")
     @Test
     void test3(){
-        AttendTime attendTime = new AttendTime(LocalDateTime.of(2024,12,17,10,58));
-        assertThat(attendTime.checkAttendanceStatus()).isEqualTo(AttendanceStatus.ABSENT);
+        AttendTime attendTime = new AttendTime(LocalDateTime.of(2024,12,17,10,6));
+        assertThat(attendTime.checkAttendanceStatus()).isEqualTo(AttendanceStatus.LATE);
     }
 }

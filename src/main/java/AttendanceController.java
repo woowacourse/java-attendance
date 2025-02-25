@@ -1,3 +1,5 @@
+import java.time.LocalTime;
+
 public class AttendanceController {
 
     public static final String TODAY_LOCAL_DATE = "2024-12-16";
@@ -15,7 +17,7 @@ public class AttendanceController {
 
         String nickname = inputView.getNickname();
         String localDateTimeToday = inputView.getTodayLocalDateTime();
-        crews.addCrewAttendance(nickname, localDateTimeToday);
-        outputView.printAttendanceResult(localDateTimeToday);
+        AttendTime attendTime =crews.addCrewAttendance(nickname, localDateTimeToday);
+        outputView.printAttendanceResult(localDateTimeToday,attendTime.checkAttendanceStatus());
     }
 }

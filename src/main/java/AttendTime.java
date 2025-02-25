@@ -35,4 +35,7 @@ public class AttendTime {
         return obj.equals(this.localDateTime);
     }
 
+//    public boolean checkSameDate(int date) {
+//        return localDateTime.getDayOfMonth()==date;
+//    }
 }
