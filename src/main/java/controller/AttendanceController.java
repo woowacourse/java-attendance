@@ -1,5 +1,6 @@
 package controller;
 
+import exception.CrewNotExistException;
 import exception.DuplicatedAttendanceRegistrationException;
 import java.io.BufferedReader;
 import java.io.FileReader;
@@ -14,6 +15,7 @@ import model.AttendanceInitializer;
 import model.Attendances;
 import model.Crew;
 import model.Crews;
+import model.DateGenerator;
 import view.InputView;
 import view.OutputView;
 
@@ -65,18 +67,35 @@ public class AttendanceController {
     private void doRegisterService(Map<Crew, Attendances> attendances, Crews crews) {
         try {
             String name = inputView.readCrewName();
-            Crew crew = crews.findCrewByName(name).orElseThrow(IllegalArgumentException::new);
+            Crew crew = crews.findCrewByName(name)
+                    .orElseThrow(CrewNotExistException::new);
 
             LocalDate date = LocalDate.of(2024, 12, 13); //TODO : 오늘
             LocalTime time = inputView.readAttendanceTime();
             Attendances crewAttendances = attendances.get(crew);
             Attendance newAttendance = crewAttendances.register(date, time);
             outputView.printAttendanceRegisterResult(newAttendance);
-        } catch (DuplicatedAttendanceRegistrationException e) {
+        } catch (IllegalArgumentException e) {
             outputView.printExceptionMessage(e.getMessage());
         }
     }
 
     private void doModifyService(Map<Crew, Attendances> attendances, Crews crews) {
+        try {
+            String name = inputView.readCrewName();
+            Crew crew = crews.findCrewByName(name)
+                    .orElseThrow(CrewNotExistException::new);
+
+            LocalDate date = DateGenerator.create(inputView.readModifyDate());
+            LocalTime time = inputView.readModifyTime();
+
+            Attendances crewAttendance = attendances.get(crew);
+            Attendance oldAttendance = crewAttendance.findByDate(date);
+            Attendance newAttendance = crewAttendance.modifyFrom(oldAttendance, time);
+
+            outputView.printAttendanceModifyResult(oldAttendance, newAttendance);
+        } catch (IllegalArgumentException e) {
+            outputView.printExceptionMessage(e.getMessage());
+        }
     }
 }
