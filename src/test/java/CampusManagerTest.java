@@ -1,6 +1,7 @@
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.time.LocalDate;
+import java.time.LocalTime;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -42,6 +43,34 @@ class CampusManagerTest {
 
         //when
         boolean result = campusManager.isOperationDate(date);
+
+        //then
+        assertThat(result).isFalse();
+    }
+
+    @DisplayName("주어진_시간이_캠퍼스_운영_시간이면_true_를_반환한다")
+    @Test
+    void should_ReturnTrue_WhenTimeIsOperationTime() {
+        //given
+        CampusManager campusManager = new CampusManager();
+        LocalTime time = LocalTime.of(23, 00);
+
+        //when
+        boolean result = campusManager.isOperationTime(time);
+
+        //then
+        assertThat(result).isTrue();
+    }
+
+    @DisplayName("주어진_시간이_캠퍼스_운영_시간이_아니면_false_를_반환한다")
+    @Test
+    void should_ReturnFalse_WhenTimeIsOperationTime() {
+        //given
+        CampusManager campusManager = new CampusManager();
+        LocalTime time = LocalTime.of(23, 01);
+
+        //when
+        boolean result = campusManager.isOperationTime(time);
 
         //then
         assertThat(result).isFalse();
