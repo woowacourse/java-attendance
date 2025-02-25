@@ -5,20 +5,9 @@ import java.time.LocalTime;
 public record AttendanceTime(
         LocalTime time
 ) {
-    public AttendanceTime {
-        if (time.isBefore(LocalTime.of(8, 0)) || time.isAfter(LocalTime.of(23, 0))) {
-            throw new IllegalArgumentException();
-        }
-    }
-
-    public AttendanceStatus checkMondayAttendanceStatus() {
-        if (time.isAfter(LocalTime.of(13, 30))) {
-            return AttendanceStatus.ABSENCE;
-        }
-        if (time.isAfter(LocalTime.of(13, 5))) {
-            return AttendanceStatus.LATE;
-        }
-        return AttendanceStatus.ATTEND;
+    public static AttendanceTime from(LocalTime time) {
+        validate(time);
+        return new AttendanceTime(time);
     }
 
     public AttendanceStatus checkAttendanceStatus(boolean isMonday) {
@@ -35,5 +24,11 @@ public record AttendanceTime(
             return AttendanceStatus.LATE;
         }
         return AttendanceStatus.ATTEND;
+    }
+
+    private static void validate(LocalTime time) {
+        if (time.isBefore(LocalTime.of(8, 0)) || time.isAfter(LocalTime.of(23, 0))) {
+            throw new IllegalArgumentException();
+        }
     }
 }

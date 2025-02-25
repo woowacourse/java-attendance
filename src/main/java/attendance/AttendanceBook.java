@@ -19,4 +19,11 @@ public class AttendanceBook {
         crewAttendances.put(nickname, attendances);
         return attendance;
     }
+
+    public Attendance updateAttendance(String nickname, LocalDateTime dateTime) {
+        Attendances attendances = crewAttendances.get(nickname);
+        Attendance before = attendances.updateAttendance(dateTime);
+        crewAttendances.put(nickname, attendances);
+        return before;
+    }
 }

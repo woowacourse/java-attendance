@@ -11,7 +11,7 @@ public class AttendanceTest {
 
     @Test
     void 날짜가_같다면_true를_반환한다() {
-        Attendance attendance = generateAttendance(LocalDateTime.of(2024, 12, 13, 9, 59));
+        Attendance attendance = Attendance.from(LocalDateTime.of(2024, 12, 13, 9, 59));
         final var result = attendance.isEqualToDate(LocalDate.of(2024, 12, 13));
 
         assertThat(result).isTrue();
@@ -19,15 +19,20 @@ public class AttendanceTest {
 
     @Test
     void 날짜가_다르면_false를_반환한다() {
-        Attendance attendance = generateAttendance(LocalDateTime.of(2024, 12, 13, 9, 59));
+        Attendance attendance = Attendance.from(LocalDateTime.of(2024, 12, 13, 9, 59));
         final var result = attendance.isEqualToDate(LocalDate.of(2024, 12, 14));
 
         assertThat(result).isFalse();
     }
 
-    public static Attendance generateAttendance(LocalDateTime dateTime) {
-        LocalDate date = dateTime.toLocalDate();
-        LocalTime time = dateTime.toLocalTime();
-        return new Attendance(new AttendanceDate(date), new AttendanceTime(time));
+    @Test
+    void 시간을_입력_받아_출석을_수정한다() {
+        Attendance before = Attendance.from(LocalDateTime.of(2024, 12, 13, 9, 59));
+        LocalTime time = LocalTime.of(10, 6);
+
+        before.updateTime(time);
+        Attendance updated = Attendance.from(LocalDateTime.of(2024, 12, 13, 10, 6));
+
+        assertThat(before).isEqualTo(updated);
     }
 }

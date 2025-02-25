@@ -1,6 +1,8 @@
 package attendance;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.Objects;
 
 public class Attendance {
@@ -12,8 +14,17 @@ public class Attendance {
         this.attendanceTime = attendanceTime;
     }
 
+    public static Attendance from(LocalDateTime dateTime) {
+        return new Attendance(AttendanceDate.from(LocalDate.from(dateTime)),
+                AttendanceTime.from(LocalTime.from(dateTime)));
+    }
+
     public boolean isEqualToDate(LocalDate date) {
         return this.attendanceDate.isEqualToDate(date);
+    }
+
+    public void updateTime(LocalTime time) {
+        this.attendanceTime = AttendanceTime.from(time);
     }
 
     @Override
