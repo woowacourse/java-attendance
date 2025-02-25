@@ -43,11 +43,13 @@ public class AttendanceHistoryLoader {
 
     private void parseAndAddAttendance(Map<String, Crew> crewMap, Crews crews, String line) {
         String[] values = line.split(",");
+        String crewName = values[0];
+
         String[] datetimeValues = values[1].split(" ");
         String date = datetimeValues[0];
         String time = datetimeValues[1];
 
-        Crew crew = getCrew(crewMap, crews, values[0]);
+        Crew crew = getCrew(crewMap, crews, crewName);
 
         crew.addAttendance(new Attendance(new Day(LocalDate.parse(date, dateFormatter)),
                 LocalTime.parse(time, timeFormatter)));
