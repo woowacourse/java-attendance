@@ -91,22 +91,6 @@ public class AttendanceRecords {
         if (day == 6 || day == 7 || localDateTime.getDayOfMonth() == 25) {
             throw new IllegalArgumentException("[주말 및 공휴일에는 등교일이 아닙니다]");
         }
-        ;
-    }
-
-    public LocalDateTime findLocalDateTime(LocalDateTime localDateTime) {
-        return record.entrySet().stream()
-                .filter(e -> compareDayIsSame(localDateTime, e.getKey()))
-                .map(e -> LocalDateTime.of(e.getKey(), e.getValue().getAttendanceTime()))
-                .findFirst()
-                .orElse(null);
-//        for (LocalDate localDate : record.keySet()) {
-//            if (compareDayIsSame(localDateTime, localDate)) {
-//                LocalTime localTime = record.get(localDate).getAttendanceTime();
-//                return LocalDateTime.of(localDate, localTime);
-//            }
-//        }
-//        return null;
     }
 
     public AttendanceStatus findAttendanceStatusByLocalDateTime(LocalDateTime localDateTime) {
@@ -115,7 +99,6 @@ public class AttendanceRecords {
                 .map(e -> e.getValue().getAttendanceStatus())
                 .findFirst().orElse(null);
     }
-
 
     private void checkOpeningHours(LocalDateTime localDateTime) {
         LocalTime localTime = LocalTime.from(localDateTime);
@@ -146,5 +129,4 @@ public class AttendanceRecords {
     public Map<LocalDate, AttendanceRecord> getRecord() {
         return record;
     }
-
 }
