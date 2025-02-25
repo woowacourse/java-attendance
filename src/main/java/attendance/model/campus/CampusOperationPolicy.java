@@ -16,7 +16,7 @@ public class CampusOperationPolicy {
     }
 
     public boolean isOpenDate(final LocalDate date) {
-        return isWeekDay(date) || isNotHoliday(date);
+        return isWeekDay(date) && isNotHoliday(date);
     }
 
     private boolean isWeekDay(final LocalDate date) {
