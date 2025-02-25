@@ -16,7 +16,7 @@ public class TimePolicy {
     private static final LocalTime OPERATING_START_TIME = LocalTime.of(8, 0);
     private static final LocalTime OPERATING_END_TIME = LocalTime.of(23, 0);
 
-    public static int validateHour(String inputHour){
+    public int validateHour(String inputHour){
         int hour = validateInteger(inputHour);
         if(hour > MAX_HOUR || hour < MIN_HOUR){
             throw new IllegalArgumentException("[ERROR] 시간 입력 형식이 잘못되었습니다");
@@ -24,7 +24,7 @@ public class TimePolicy {
         return hour;
     }
 
-    public static int validateMinute(String inputMinute) {
+    public int validateMinute(String inputMinute) {
         int minute = validateInteger(inputMinute);
         if(minute > MAX_MINUTE || minute < MIN_MINUTE){
             throw new IllegalArgumentException("[ERROR] 시간 입력 형식이 잘못되었습니다");
@@ -32,7 +32,7 @@ public class TimePolicy {
         return minute;
     }
 
-    public static String[] validateTimeFormat(String time) {
+    public String[] validateTimeFormat(String time) {
         String[] splitTime = time.split(TIME_SEPARATOR);
 
         if(splitTime.length != TIME_FORMAT_LENGTH){
@@ -42,7 +42,7 @@ public class TimePolicy {
         return splitTime;
     }
 
-    public static void validateOperatingTime(String time) {
+    public void validateOperatingTime(String time) {
         String[] splitTime = validateTimeFormat(time);
 
         int hour = validateHour(splitTime[0]);
@@ -55,7 +55,7 @@ public class TimePolicy {
         }
     }
 
-    private static int validateInteger(String input) {
+    private int validateInteger(String input) {
         try{
             return Integer.parseInt(input);
         }catch (NumberFormatException e){
