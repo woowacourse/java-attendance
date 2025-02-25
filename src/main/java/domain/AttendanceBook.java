@@ -8,7 +8,7 @@ import java.time.LocalTime;
 import java.util.*;
 
 public class AttendanceBook {
-    private final HashSet<Attendance> attendances; // key: 몇 일, value: 출석 시간
+    private final HashSet<Attendance> attendances;
 
     public AttendanceBook(int year, int month) {
         Month customMonth = Month.of(month);
