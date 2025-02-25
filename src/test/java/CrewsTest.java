@@ -101,7 +101,7 @@ public class CrewsTest {
     @Test
     void findWarningCrewsTest_1() {
         List<LocalDateTime> testRecords1 = List.of(LocalDateTime.of(2024, 12, 2, 13, 6), // 지각
-            LocalDateTime.of(2024, 12, 3, 9, 7), // 지각
+            LocalDateTime.of(2024, 12, 3, 10, 7), // 지각
             LocalDateTime.of(2024, 12, 4, 10, 8), // 지각
             LocalDateTime.of(2024, 12, 5, 10, 9),// 지각
             LocalDateTime.of(2024, 12, 6, 10, 10),// 지각

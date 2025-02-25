@@ -67,6 +67,10 @@ public class Crews {
         }
     }
 
+    public Map<String, Crew> getCrews() {
+        return crews;
+    }
+
     private void validateAttendancePossibility(String name, LocalDateTime dateTime) {
         if (findCrewByName(name).isAlreadyAttended(dateTime.toLocalDate())) {
             throw new IllegalArgumentException(DUPLICATE_ATTEND_ERROR_MESSAGE);

@@ -23,7 +23,8 @@ public class AttendanceStatusTest {
     void getAttendanceStatus_1() {
         LocalTime time = LocalTime.of(10, 5);
         DayOfWeek dayOfWeek = DayOfWeek.FRIDAY;
-        Assertions.assertThat(AttendanceStatus.of(time, dayOfWeek)).isEqualTo(AttendanceStatus.ATTENDANCE);
+        Assertions.assertThat(AttendanceStatus.of(time, dayOfWeek))
+            .isEqualTo(AttendanceStatus.ATTENDANCE);
     }
 
     @DisplayName("지각 상태를 반환한다.")
@@ -31,7 +32,8 @@ public class AttendanceStatusTest {
     void getAttendanceStatus_2() {
         LocalTime time = LocalTime.of(10, 30);
         DayOfWeek dayOfWeek = DayOfWeek.FRIDAY;
-        Assertions.assertThat(AttendanceStatus.of(time, dayOfWeek)).isEqualTo(AttendanceStatus.LATENESS);
+        Assertions.assertThat(AttendanceStatus.of(time, dayOfWeek))
+            .isEqualTo(AttendanceStatus.LATENESS);
     }
 
     @DisplayName("결석 상태를 반환한다.")
@@ -39,7 +41,8 @@ public class AttendanceStatusTest {
     void getAttendanceStatus_3() {
         LocalTime time = LocalTime.of(10, 31);
         DayOfWeek dayOfWeek = DayOfWeek.FRIDAY;
-        Assertions.assertThat(AttendanceStatus.of(time, dayOfWeek)).isEqualTo(AttendanceStatus.ABSENCE);
+        Assertions.assertThat(AttendanceStatus.of(time, dayOfWeek))
+            .isEqualTo(AttendanceStatus.ABSENCE);
     }
 
     @DisplayName("출석 통계를 정확하게 계산한다.")
