@@ -1,6 +1,7 @@
 package attendance;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 
 import attendance.domain.AttendanceRecord;
@@ -21,6 +22,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
+import org.junit.jupiter.params.provider.ValueSource;
 
 class AttendanceSystemTest {
 
@@ -29,7 +31,6 @@ class AttendanceSystemTest {
     static final LocalDateTime SATURDAY = LocalDateTime.of(2025, 2, 8, 8, 50);
     static final LocalDateTime SUNDAY = LocalDateTime.of(2025, 2, 9, 8, 50);
     static final LocalDateTime PUBLIC_HOLIDAY = LocalDateTime.of(2025, 2, 24, 8, 50);
-
 
     AttendanceSystem attendanceSystem;
     CrewStorage crewStorage;
@@ -111,7 +112,7 @@ class AttendanceSystemTest {
     @Test
     void 이미_출석한_경우_다시_출석할_수_없으며_수정_기능을_이용하도록_안내한다() {
         String crewNickname = VALID_CREW_NICKNAME;
-        LocalDate arrivalDate = LocalDate.of(2525, 2, 4);
+        LocalDate arrivalDate = LocalDate.of(2025, 2, 4);
         LocalDateTime arrivalDateTime = LocalDateTime.of(arrivalDate, LocalTime.of(8, 50, 0));
         attendanceSystem.addAttendanceRecord(crewNickname, arrivalDateTime);
 
@@ -152,6 +153,27 @@ class AttendanceSystemTest {
                 Arguments.of(SUNDAY),
                 Arguments.of(PUBLIC_HOLIDAY)
         );
+    }
+
+    @DisplayName("캠퍼스 운영 시간이 아닌 경우 예외 메세지를 출력한다")
+    @ParameterizedTest
+    @ValueSource(strings = {"07:59:59", "23:00:00"})
+    void 캠퍼스_운영_시간이_아닌_경우_예외_메세지를_출력한다(LocalTime arrivalTime) {
+        LocalDateTime arrivalDateTime = LocalDateTime.of(LocalDate.of(2025, 2, 10), arrivalTime);
+
+        assertThatIllegalArgumentException()
+                .isThrownBy(() -> attendanceSystem.addAttendanceRecord(VALID_CREW_NICKNAME, arrivalDateTime))
+                .withMessage(ExceptionMessage.OUT_OF_CAMPUS_TIME.getMessage());
+    }
+
+    @DisplayName("캠퍼스 운영 시간인 경우 예외 메세지를 발생시키지 않는다")
+    @ParameterizedTest
+    @ValueSource(strings = {"08:00", "22:59"})
+    void 캠퍼스_운영_시간인_경우_예외_메세지를_발생시키지_않는다(LocalTime arrivalTime) {
+        LocalDateTime arrivalDateTime = LocalDateTime.of(LocalDate.of(2025, 2, 10), arrivalTime);
+
+        assertThatCode(() -> attendanceSystem.addAttendanceRecord(VALID_CREW_NICKNAME, arrivalDateTime))
+                .doesNotThrowAnyException();
     }
 
 }
