@@ -3,7 +3,6 @@ package attendance.model;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.time.Month;
 import java.time.format.DateTimeFormatter;
 import java.util.Objects;
 
@@ -51,9 +50,8 @@ public class AttendanceLog {
         if (attendanceDate == null) {
             throw new IllegalArgumentException("출석 날짜는 null일 수 없습니다.");
         }
-        boolean isChristmas = attendanceDate.getMonth() == Month.DECEMBER && attendanceDate.getDayOfMonth() == 25;
-        if (isChristmas) {
-            throw new IllegalArgumentException("공휴일(크리스마스)에는 출석할 수 없습니다.");
+        if (PublicHoliday.isPublicHoliday(attendanceDate)) {
+            throw new IllegalArgumentException("공휴일에는 출석할 수 없습니다.");
         }
         if (isWeekend(attendanceDate)) {
             throw new IllegalArgumentException("주말에는 출석할 수 없습니다.");

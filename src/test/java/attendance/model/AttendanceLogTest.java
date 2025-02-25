@@ -65,7 +65,7 @@ class AttendanceLogTest {
         // when & then
         assertThatCode(() -> new AttendanceLog(nickname, christmas))
                 .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage("공휴일(크리스마스)에는 출석할 수 없습니다.");
+                .hasMessage("공휴일에는 출석할 수 없습니다.");
     }
 
     @DisplayName("등교 날짜가 주말인 경우 예외가 발생한다.")
