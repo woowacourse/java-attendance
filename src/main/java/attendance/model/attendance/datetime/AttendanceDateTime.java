@@ -59,7 +59,7 @@ public class AttendanceDateTime {
     }
 
     public boolean isSameDayOfWeek(final DayOfWeek dayOfWeek) {
-        return false;
+        return date.isSameDayOfWeek(dayOfWeek);
     }
 
     public Optional<LocalTime> getTime() {
