@@ -1,4 +1,4 @@
-package constant;
+package domain;
 
 public enum AttendanceStandard {
     OPEN_TIME(8),

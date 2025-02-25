@@ -3,7 +3,7 @@ package view;
 import static domain.AttendanceStatus.ABSENT;
 import static domain.AttendanceStatus.LATE;
 
-import constant.AbsentPenalty;
+import domain.AbsentPenalty;
 import domain.AllCrew;
 import domain.Attendance;
 import domain.AttendanceUpdateResult;

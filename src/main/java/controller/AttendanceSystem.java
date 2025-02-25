@@ -1,6 +1,6 @@
 package controller;
 
-import constant.MenuOption;
+import domain.MenuOption;
 import domain.AllCrew;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -11,7 +11,7 @@ import view.FileInputView;
 import view.OutputView;
 import view.UserInputView;
 
-import static constant.MenuOption.*;
+import static domain.MenuOption.*;
 
 public class AttendanceSystem {
     private final FileInputView fileInputView;

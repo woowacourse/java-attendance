@@ -1,11 +1,11 @@
 package domain;
 
-import static constant.AttendanceStandard.ABSENT_DEADLINE;
-import static constant.AttendanceStandard.CLOSE_TIME;
-import static constant.AttendanceStandard.LATE_DEADLINE;
-import static constant.AttendanceStandard.MONDAY_START_HOUR;
-import static constant.AttendanceStandard.NON_MONDAY_START_HOUR;
-import static constant.AttendanceStandard.OPEN_TIME;
+import static domain.AttendanceStandard.ABSENT_DEADLINE;
+import static domain.AttendanceStandard.CLOSE_TIME;
+import static domain.AttendanceStandard.LATE_DEADLINE;
+import static domain.AttendanceStandard.MONDAY_START_HOUR;
+import static domain.AttendanceStandard.NON_MONDAY_START_HOUR;
+import static domain.AttendanceStandard.OPEN_TIME;
 
 import java.time.DayOfWeek;
 import java.time.LocalDateTime;

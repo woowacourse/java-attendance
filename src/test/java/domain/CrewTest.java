@@ -1,14 +1,13 @@
 package domain;
 
-import static constant.AbsentPenalty.COUNSELING;
-import static constant.AbsentPenalty.EXPEL;
-import static constant.AbsentPenalty.WARNING;
+import static domain.AbsentPenalty.COUNSELING;
+import static domain.AbsentPenalty.EXPEL;
+import static domain.AbsentPenalty.WARNING;
 import static domain.AttendanceStatus.LATE;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
-import constant.AbsentPenalty;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import org.junit.jupiter.api.DisplayName;

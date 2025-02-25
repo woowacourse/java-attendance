@@ -1,6 +1,5 @@
 package domain;
 
-import constant.AbsentPenalty;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -9,7 +8,7 @@ import java.util.Comparator;
 import java.util.List;
 
 import static domain.AttendanceStatus.*;
-import static constant.AbsentPenalty.*;
+import static domain.AbsentPenalty.*;
 
 public class Crew {
     private final String name;

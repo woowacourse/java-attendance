@@ -1,4 +1,4 @@
-package constant;
+package domain;
 
 public enum MenuOption {
     CHECK_ATTENDANCE("1"),
