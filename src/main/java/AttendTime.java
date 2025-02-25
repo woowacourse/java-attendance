@@ -1,4 +1,5 @@
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 
 public class AttendTime {
     private final LocalDateTime localDateTime;
@@ -22,6 +23,11 @@ public class AttendTime {
         if (December.checkHolyDay(localDateTime.getDayOfMonth())) {
             throw new IllegalArgumentException("휴일은 출석 할 수 없습니다.");
         }
+    }
+
+    public AttendanceStatus checkAttendanceStatus() {
+        int startingHour = AttendTimeOfWeekDay.getTimeByDayOfWeekDay(localDateTime.getDayOfWeek().getValue());
+        return AttendanceStatus.calculate(LocalTime.of(startingHour, 5), LocalTime.of(startingHour, 30), localDateTime.toLocalTime());
     }
 
     @Override
