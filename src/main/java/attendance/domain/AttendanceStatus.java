@@ -3,12 +3,12 @@ package attendance.domain;
 import java.util.Arrays;
 import java.util.EnumMap;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static attendance.domain.AttendanceRiskType.NONE;
 import static attendance.domain.AttendanceRiskType.find;
 import static attendance.domain.AttendanceStateType.ABSENCE;
 import static attendance.domain.AttendanceStateType.LATE;
-import static attendance.domain.AttendanceStateType.values;
 
 public class AttendanceStatus implements Comparable<AttendanceStatus> {
 
@@ -48,13 +48,13 @@ public class AttendanceStatus implements Comparable<AttendanceStatus> {
     }
 
     private EnumMap<AttendanceStateType, Integer> calculateAttendanceStatus(final List<Attendance> attendances) {
-        EnumMap<AttendanceStateType, Integer> status = new EnumMap<>(AttendanceStateType.class);
-        Arrays.stream(values())
-                .forEach(stateType -> {
-                    int stateCount = calculateStateCount(attendances, stateType);
-                    status.put(stateType, stateCount);
-                });
-        return status;
+        return Arrays.stream(AttendanceStateType.values())
+                .collect(Collectors.toMap(
+                        status -> status,
+                        status -> calculateStateCount(attendances, status),
+                        (s1, s2) -> s2,
+                        () -> new EnumMap<>(AttendanceStateType.class)
+                ));
     }
 
     private int calculateStateCount(final List<Attendance> attendances, final AttendanceStateType status) {
