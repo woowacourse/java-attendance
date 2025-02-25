@@ -10,13 +10,13 @@ public class AttendanceBook {
         this.crewAttendances = crewAttendances;
     }
 
-    public LocalDateTime attend(String nickname, LocalDateTime dateTime) {
+    public Attendance attend(String nickname, LocalDateTime dateTime) {
         if (!crewAttendances.containsKey(nickname)) {
             throw new IllegalArgumentException("[ERROR] 등록되지 않은 닉네임입니다.");
         }
         Attendances attendances = crewAttendances.get(nickname);
-        attendances.add(dateTime);
+        Attendance attendance = attendances.add(dateTime);
         crewAttendances.put(nickname, attendances);
-        return dateTime;
+        return attendance;
     }
 }

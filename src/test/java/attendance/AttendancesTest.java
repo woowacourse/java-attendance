@@ -4,9 +4,8 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.HashMap;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import org.junit.jupiter.api.Test;
 
 public class AttendancesTest {
@@ -42,9 +41,11 @@ public class AttendancesTest {
     }
 
     private static Attendances generateAttendances(List<LocalDateTime> dateTimes) {
-        Map<AttendanceDate, AttendanceTime> attendances = new HashMap<>();
+        List<Attendance> attendances = new ArrayList<>();
         for (LocalDateTime dateTime : dateTimes) {
-            attendances.put(new AttendanceDate(dateTime.toLocalDate()), new AttendanceTime(dateTime.toLocalTime()));
+            Attendance attendance = new Attendance(new AttendanceDate(dateTime.toLocalDate()),
+                    new AttendanceTime(dateTime.toLocalTime()));
+            attendances.add(attendance);
         }
         return new Attendances(attendances);
     }
