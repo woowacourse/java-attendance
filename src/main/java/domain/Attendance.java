@@ -8,7 +8,6 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.IntStream;
@@ -32,11 +31,10 @@ public class Attendance {
 
     public List<AttendanceRecord> getRecordByCrew(Crew crew) {
         List<AttendanceRecord> nonHolidaysAttendanceMap = modifyMap(attendanceMap.get(crew));
-        List<AttendanceRecord> sortedAttendanceMap = sortByDate(nonHolidaysAttendanceMap);
 
-        attendanceMap.put(crew, sortedAttendanceMap);
+        attendanceMap.put(crew, nonHolidaysAttendanceMap);
 
-        return sortedAttendanceMap;
+        return nonHolidaysAttendanceMap;
     }
 
     private List<AttendanceRecord> modifyMap(List<AttendanceRecord> attendanceRecords) {
@@ -62,13 +60,6 @@ public class Attendance {
     private boolean containsAttendance(List<AttendanceRecord> attendanceRecords, LocalDate date) {
         return attendanceRecords.stream()
                 .anyMatch(record -> DateTimeUtil.getDateBy(record.date()) == date.getDayOfMonth());
-    }
-
-
-    private List<AttendanceRecord> sortByDate(List<AttendanceRecord> attendanceRecords) {
-        return attendanceRecords.stream()
-                .sorted(Comparator.comparing(AttendanceRecord::date))
-                .toList();
     }
 
     public Map<Crew, List<AttendanceRecord>> getAttendanceMap() {
