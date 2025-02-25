@@ -9,9 +9,11 @@ import java.util.Map;
 
 public class Attendances {
     private final Map<LocalDate, Attendance> attendances;
+    private final AttendanceChecker checker;
 
     public Attendances() {
         this.attendances = new HashMap<>();
+        this.checker = new RegularAttendanceChecker();
     }
 
     public void attend(final LocalDateTime attendTime) {
@@ -72,7 +74,7 @@ public class Attendances {
     }
 
     private void fillEmptyAttendance(final int day, final LocalDate date) {
-        if (AttendanceChecker.isCampusDay(day) && !attendances.containsKey(date)) {
+        if (checker.isCampusDay(day) && !attendances.containsKey(date)) {
             attendances.put(date, new Attendance(null, AttendanceStatus.ABSENCE));
         }
     }

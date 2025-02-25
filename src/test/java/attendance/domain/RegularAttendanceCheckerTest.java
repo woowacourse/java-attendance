@@ -15,7 +15,7 @@ import org.junit.jupiter.params.provider.ValueSource;
 
 @DisplayName("출석 상태를 판별")
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
-class AttendanceCheckerTest {
+class RegularAttendanceCheckerTest {
 
     @ParameterizedTest
     @CsvSource({
@@ -24,7 +24,8 @@ class AttendanceCheckerTest {
             "23, 1"
     })
     void 캠퍼스의_운영_시간이_아니면_예외가_발생한다(int hour, int minute) {
-        assertThatThrownBy(() -> AttendanceChecker.checkCampusHour(hour, minute))
+        AttendanceChecker checker = new RegularAttendanceChecker();
+        assertThatThrownBy(() -> checker.checkCampusHour(hour, minute))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("[ERROR] 현재 캠퍼스 운영시간이 아닙니다.");
     }
@@ -37,15 +38,19 @@ class AttendanceCheckerTest {
             "23, 0"
     })
     void 캠퍼스의_운영_시간이면_예외가_발생하지_않는다(int hour, int minute) {
-        assertThatCode(() -> AttendanceChecker.checkCampusHour(hour, minute)).doesNotThrowAnyException();
+        AttendanceChecker checker = new RegularAttendanceChecker();
+
+        assertThatCode(() -> checker.checkCampusHour(hour, minute)).doesNotThrowAnyException();
     }
 
     @ParameterizedTest
     @ValueSource(ints = {25, 22, 29, 21, 28})
     void 캠퍼스가_휴일이면_예외가_발생한다(int day) {
+        AttendanceChecker checker = new RegularAttendanceChecker();
+
         String displayName = LocalDate.of(2024, 12, day).getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.KOREA);
 
-        assertThatThrownBy(() -> AttendanceChecker.validateCampusDay(day))
+        assertThatThrownBy(() -> checker.validateCampusDay(day))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage(String.format("[ERROR] 12월 %02d일 %s은 등교일이 아닙니다.", day, displayName));
     }
@@ -53,7 +58,9 @@ class AttendanceCheckerTest {
     @ParameterizedTest
     @ValueSource(ints = {2, 3, 24, 20, 23})
     void 캠퍼스가_운영일이면_예외가_발생하지_않는다(int day) {
-        assertThatCode(() -> AttendanceChecker.validateCampusDay(day)).doesNotThrowAnyException();
+        AttendanceChecker checker = new RegularAttendanceChecker();
+
+        assertThatCode(() -> checker.validateCampusDay(day)).doesNotThrowAnyException();
     }
 
 }
