@@ -5,6 +5,12 @@ import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 public enum AttendanceStatus {
 
@@ -63,5 +69,26 @@ public enum AttendanceStatus {
             return LATE;
         }
         return ABSENCE;
+    }
+
+    public static Map<AttendanceStatus, Integer> getStatistics(final List<AttendanceStatus> attendanceStatuses) {
+        return Arrays.stream(values())
+                .sorted(Comparator.comparingInt(Enum::ordinal))
+                .collect(
+                        Collectors.toMap(
+                                attendanceStatus -> attendanceStatus,
+                                attendanceStatus -> countOccurrence(attendanceStatus, attendanceStatuses),
+                                (oldAttendanceStatus, newAttendanceStatus) -> oldAttendanceStatus,
+                                LinkedHashMap::new
+                        )
+                );
+    }
+
+    private static int countOccurrence(AttendanceStatus attendanceStatus, List<AttendanceStatus> attendanceStatuses) {
+        return Math.toIntExact(
+                attendanceStatuses.stream()
+                        .filter(attendanceStatus::equals)
+                        .count()
+        );
     }
 }
