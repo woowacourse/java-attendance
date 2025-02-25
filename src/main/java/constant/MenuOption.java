@@ -17,4 +17,13 @@ public enum MenuOption {
     public String getValue() {
         return this.menu;
     }
+
+    public static MenuOption getMenuOption(String menu) {
+        for (MenuOption option : MenuOption.values()) {
+            if (option.getValue().equals(menu)) {
+                return option;
+            }
+        }
+        throw new IllegalArgumentException("Invalid menu option: " + menu);
+    }
 }

@@ -1,5 +1,7 @@
 package controller;
 
+import constant.AttendanceStatus;
+import constant.MenuOption;
 import domain.AllCrew;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -40,17 +42,17 @@ public class AttendanceSystem {
     }
 
     private boolean executeMenu(String menuInput) {
-        allCrew.updateAbsentHistory(todayDate.minusDays(1));
-        if (menuInput.equals(CHECK_ATTENDANCE.getValue())) {
+        MenuOption menuOption = MenuOption.getMenuOption(menuInput);
+        if (menuOption == CHECK_ATTENDANCE) {
             checkAttendance();
         }
-        if (menuInput.equals(MODIFY_ATTENDANCE.getValue())) {
+        if (menuOption == MODIFY_ATTENDANCE) {
             modifyAttendance();
         }
-        if (menuInput.equals(CHECK_CREW_ATTENDANCE_HISTORY.getValue())) {
+        if (menuOption == CHECK_CREW_ATTENDANCE_HISTORY) {
             checkCrewAttendanceHistory();
         }
-        if (menuInput.equals(CHECK_DANGEROUS_CREW.getValue())) {
+        if (menuOption == CHECK_DANGEROUS_CREW) {
             checkDangerousCrew();
         }
         if (quitPattern.matcher(menuInput).matches()){
@@ -71,11 +73,11 @@ public class AttendanceSystem {
     private void checkAttendance() {
         String name = userInputView.askNickNameForCheckAttendance();
         ArrayList<String> time = userInputView.askAttendanceTimeForCheckAttendance();
-        System.out.println(outputView.printCheckedAttendance(allCrew.addCrewAttendanceByName(name, LocalDateTime.of(todayDate.getYear(),
+        outputView.printCheckedAttendance(allCrew.addCrewAttendanceByName(name, LocalDateTime.of(todayDate.getYear(),
                 todayDate.getMonthValue(),
                 todayDate.getDayOfMonth(),
                 Integer.parseInt(time.get(0)),
-                Integer.parseInt(time.get(1))))));
+                Integer.parseInt(time.get(1)))));
     }
 
     private void modifyAttendance() {
