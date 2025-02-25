@@ -56,28 +56,30 @@ public class CrewStatisticTest {
     @Test
     @DisplayName("기능: 크루의 전체 출석 기록 개수를 확인")
     void checkTotalAttendanceDays() {
-        assertThat(crewStatistic.crewAttendanceHistoryInfo().size())
-                .isEqualTo(workingDays);
+        Attendances crewAttendance = crewStatistic.getCrewAttendances();
+        assertThat(crewAttendance.getAttendances())
+                .hasSize(workingDays);
     }
 
     @Test
     @DisplayName("기능: 크루의 출결 횟수 및 상태 정보 계산 확인")
     void calculateCrewStatisticStatusInfo() {
-        String safeCount = String.valueOf(5);
-        String lateCount = String.valueOf(3);
-        String absentCount = String.valueOf(workingDays - ATTENDANCE_RECORDS_NO_ABSENT.size() + 1);
+        int safeCount = 5;
+        int lateCount = 3;
+        int absentCount = workingDays - ATTENDANCE_RECORDS_NO_ABSENT.size() + 1;
 
-        assertThat(crewStatistic.crewStatisticStatusInfo())
+        assertThat(List.of(crewStatistic.getSafeCount(), crewStatistic.getLateCount(), crewStatistic.getAbsentCount(),
+                crewStatistic.getCrewStatus().toString()))
                 .isEqualTo(List.of(safeCount, lateCount, absentCount, "제적"));
     }
 
     @Test
     @DisplayName("기능: 제적 위험자인 크루들 정보 계산 확인")
     void calculateExpelExpectedCrewsInfo() {
-        String absentCount = String.valueOf(workingDays - ATTENDANCE_RECORDS_NO_ABSENT.size() + 1);
-        String lateCount = String.valueOf(3);
+        int absentCount = workingDays - ATTENDANCE_RECORDS_NO_ABSENT.size() + 1;
+        int lateCount = 3;
 
-        assertThat(crewStatistic.crewExpelExpectedInfo())
-                .isEqualTo(List.of("쿠키", absentCount, lateCount, "제적"));
+        assertThat(List.of(crewStatistic.getCrewName(), crewStatistic.getAbsentCount(), crewStatistic.getLateCount(),
+                crewStatistic.getCrewStatus().toString())).isEqualTo(List.of("쿠키", absentCount, lateCount, "제적"));
     }
 }
