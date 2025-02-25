@@ -14,11 +14,11 @@ public enum AttendanceStatus {
         this.status = status;
     }
 
-    public static AttendanceStatus checkAttendance(LocalDateTime localDateTime) {
-        int hour = localDateTime.getHour();
-        int minute = localDateTime.getMinute();
+    public static AttendanceStatus checkAttendance(LocalDateTime time) {
+        int hour = time.getHour();
+        int minute = time.getMinute();
 
-        if (localDateTime.getDayOfWeek().equals(DayOfWeek.MONDAY)) {
+        if (time.getDayOfWeek().equals(DayOfWeek.MONDAY)) {
             return checkMondayAttendance(hour, minute);
         }
         return checkRegularAttendance(hour, minute);
