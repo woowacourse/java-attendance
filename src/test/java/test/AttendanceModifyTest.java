@@ -49,4 +49,22 @@ public class AttendanceModifyTest {
         assertThat(attendance.equals(new Attendance(modifyDate, LocalTime.of(10, 10))));
     }
 
+    @DisplayName("수정하려는 날짜에 맞는 Attendance 객체를 새 시간으로 교체한다.")
+    @Test
+    void test2() {
+        //given
+        LocalDate modifyDate = LocalDate.of(2024, 12, 13);
+        LocalTime modifyTime = LocalTime.of(11, 11);
+        Attendances attendances = new Attendances(List.of(
+                new Attendance(modifyDate, LocalTime.of(10, 10))
+        ));
+
+        //when
+        Attendance attendance = attendances.modify(modifyDate, modifyTime);
+
+        //then
+        assertThat(attendance).isEqualTo(new Attendance(modifyDate, modifyTime));
+        assertThat(attendances.findByDate(modifyDate)).isEqualTo(attendance);
+    }
+
 }
