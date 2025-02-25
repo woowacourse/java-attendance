@@ -323,7 +323,7 @@ class AttendanceSystemTest {
     @DisplayName("제적 위험자 조회 - 제적 위험이 있는 크루의 출석 상태와 제적 위험도를 구할 수 있다")
     @Test
     void 제적_위험이_있는_크루의_출석_상태와_제적_위험도를_구할_수_있다() {
-        addNotRiskCrew("쿠키1");
+        addNotRiskCrew(VALID_CREW_NICKNAME);
         addWarningTargetCrew("쿠키2");
         addCounselingTargetCrew("쿠키3");
         addExpulsionTargetCrew("쿠키4");
@@ -331,7 +331,7 @@ class AttendanceSystemTest {
         List<AttendanceState> states = attendanceSystem.findRiskCrew(LocalDate.of(2025, 2, 8));
         assertThat(states)
                 .extracting(AttendanceState::getRiskTyp)
-                .containsExactlyInAnyOrder(RiskType.NONE, RiskType.COUNSELING, RiskType.WARNING, RiskType.EXPULSION);
+                .containsExactlyInAnyOrder(RiskType.WARNING, RiskType.COUNSELING, RiskType.EXPULSION);
     }
 
     String makeHolidayAttendanceExceptionMessage(LocalDateTime dateTime) {

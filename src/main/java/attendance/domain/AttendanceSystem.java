@@ -70,7 +70,11 @@ public class AttendanceSystem {
     }
 
     public List<AttendanceState> findRiskCrew(LocalDate today) {
-        return null;
+        List<String> allNicknames = crewStorage.findAllNicknames();
+        return allNicknames.stream()
+                .map(nickname -> calculateAttendanceStateInMonth(nickname, today))
+                .filter(state -> state.getRiskTyp() != RiskType.NONE)
+                .toList();
     }
 
     private void validateAlreadyAttendance(String crewNickname, LocalDate date) {
