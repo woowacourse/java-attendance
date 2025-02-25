@@ -74,6 +74,25 @@ public class CrewTest {
         }
     }
 
+    @DisplayName("크루 출석 정보 정렬 테스트")
+    @Test
+    void attendanceInfoSortTest() {
+        // given
+        Crew crew = new Crew("띠용");
+        LocalDateTime attendedTime_1 = LocalDateTime.of(2024, 12, 5, 10, 0);
+        LocalDateTime attendedTime_2 = LocalDateTime.of(2024, 12, 9, 10, 0);
+        LocalDateTime attendedTime_3 = LocalDateTime.of(2024, 12, 6, 10, 0);
+        crew.addAttendance(attendedTime_1);
+        crew.addAttendance(attendedTime_2);
+        crew.addAttendance(attendedTime_3);
+
+        // when
+        crew.sortAttendanceInfo();
+
+        // then
+        assertThat(crew.getAttendanceInfo()).extracting(Attendance::getDayOfMonth).containsExactly(5, 6, 9);
+    }
+
     @Nested
     @DisplayName("비정상 출석 시도 테스트")
     class abnormalAttendanceTest {
@@ -126,8 +145,10 @@ public class CrewTest {
         @DisplayName("존재하지 않는 출석일 수정 시도 상황")
         @Test
         void test2() {
-            //
+            // given
             Crew crew = new Crew("띠용");
+
+            // when & then
             assertThatThrownBy(() -> crew.update(LocalDateTime.of(2024, 12, 5, 10, 6)))
                     .hasMessage("해당 날짜에 출석 기록이 없습니다.");
         }
@@ -244,7 +265,8 @@ public class CrewTest {
 
             // then
             // 11일 결석
-            assertThat(crew.getAbsentPenalty()).isEqualTo(WARNING);
+            assertAll(() -> assertThat(crew.getAbsentPenalty()).isEqualTo(WARNING),
+                    () -> assertThat(crew.getAbsentPenalty().getPenalty()).isEqualTo(WARNING.getPenalty()));
         }
 
         @DisplayName("특정 크루 면담 대상자 여부 판별")
