@@ -1,3 +1,4 @@
+import domain.AttendanceSystem;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -90,4 +91,28 @@ public class AttendanceSystemTest {
                 )).isInstanceOf(IllegalArgumentException.class);
     }
 
+    @DisplayName("오늘까지의 결석 횟수를 가져온다")
+    @Test
+    void get_absence_record() {
+        String name = "두리";
+        attendanceSystem.attendance(name, LocalTime.of(10, 0));
+        assertThat(attendanceSystem.getAbsenceCount(name)).isEqualTo(11);
+    }
+
+    @DisplayName("30분 초과시 결석이다")
+    @Test
+    void get_absence_record2() {
+        String name = "두리";
+        attendanceSystem.attendance(name, LocalTime.of(10, 31));
+        assertThat(attendanceSystem.getAbsenceCount(name)).isEqualTo(12);
+    }
+
+    @DisplayName("월요일은 1시 시작이다")
+    @Test
+    void get_absence_record_monday() {
+        String name = "두리";
+        attendanceSystem.attendance(name, LocalTime.of(10, 31));
+        attendanceSystem.editAttendance(name, LocalDate.of(2024, 12, 2), LocalTime.of(10, 31));
+        assertThat(attendanceSystem.getAbsenceCount(name)).isEqualTo(11);
+    }
 }

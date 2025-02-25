@@ -1,14 +1,13 @@
-import java.time.DayOfWeek;
+package domain;
+
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
 
 public class AttendanceSystem {
-    public LocalDate TODAY = LocalDate.of(2024, 12, 17);
-    private final LocalDate CHRISTMAS = LocalDate.of(2024, 12, 25);
+    public static LocalDate TODAY = LocalDate.of(2024, 12, 17);
     private final Map<String, AttendanceBook> attendanceBooks;
 
     public AttendanceSystem() {
@@ -31,22 +30,10 @@ public class AttendanceSystem {
     }
 
     public void editAttendance(String name, LocalDate date, LocalTime time) {
-        if(isHoliday(date)) {
-            throw new IllegalArgumentException();
-        }
         attendanceBooks.get(name).attendance(date, time);
     }
 
-    private boolean isHoliday(LocalDate date) {
-        DayOfWeek day = date.getDayOfWeek();
-        return isWeekend(day) || isChristmas(date);
-    }
-
-    private boolean isChristmas(LocalDate date) {
-        return Objects.equals(date, CHRISTMAS);
-    }
-
-    private static boolean isWeekend(DayOfWeek day) {
-        return day == DayOfWeek.SATURDAY || day == DayOfWeek.SUNDAY;
+    public int getAbsenceCount(String name) {
+        return attendanceBooks.get(name).getAbsenceCount();
     }
 }
