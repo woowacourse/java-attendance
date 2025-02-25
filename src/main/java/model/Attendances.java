@@ -27,7 +27,7 @@ public class Attendances {
     public Attendance modifyFrom(Attendance oldAttendance, LocalTime newTime) {
         if (attendances.contains(oldAttendance)) {
             LocalDate date = oldAttendance.getDate();
-            validateFutureModification(date);
+            validateDate(date);
             Attendance newAttendance = new Attendance(date, newTime);
             this.attendances.remove(oldAttendance);
             this.attendances.add(newAttendance);
@@ -36,7 +36,8 @@ public class Attendances {
         throw new RuntimeException("수정을 요청한 출석 객체를 찾을 수 없습니다.");
     }
 
-    private void validateFutureModification(LocalDate date) {
+    private void validateDate(LocalDate date) {
+        December.validateHoliday(date);
         if (date.isAfter(DateGenerator.now())) {
             throw new FutureAttendanceModifyException();
         }
