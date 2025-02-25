@@ -9,6 +9,10 @@ public class ExpellPolicy {
         if(absentCount > EXPELL_LIMIT) {
             return "제적";
         }
+
+        if(absentCount >= 3) {
+            return "면담";
+        }
         return null;
     }
 }

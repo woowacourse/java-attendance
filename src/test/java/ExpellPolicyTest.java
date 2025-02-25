@@ -48,10 +48,10 @@ public class ExpellPolicyTest {
 
     private static Stream<Arguments> provideLateCountAndAbsentCountForIsInterview() {
         return Stream.of(
-                Arguments.of(0,6),
-                Arguments.of(1,6),
-                Arguments.of(2,6),
-                Arguments.of(3,5)
+                Arguments.of(0,3),
+                Arguments.of(0,4),
+                Arguments.of(0,5),
+                Arguments.of(3,2)
         );
     }
 }
