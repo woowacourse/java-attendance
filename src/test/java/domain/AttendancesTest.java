@@ -86,4 +86,20 @@ public class AttendancesTest {
         Assertions.assertThat(normalAttendances.getCrewStatue())
                 .isEqualTo(CrewStatus.EXPELLED);
     }
+
+    @DisplayName("출석 기록 추가 테스트")
+    @Test
+    void addAttendanceTest() {
+        Attendances attendances = new Attendances(List.of(
+                new Attendance(new AttendanceDate(LocalDate.of(2024, 12, 3)), new AttendanceTime(LocalTime.of(10, 31))),
+                new Attendance(new AttendanceDate(LocalDate.of(2024, 12, 4)), new AttendanceTime(LocalTime.of(10, 31)))
+        ));
+
+        attendances.addNewAttendance(
+                new AttendanceDate(LocalDate.of(2024, 12, 24)),
+                new AttendanceTime(LocalTime.of(10, 0)));
+        
+        Assertions.assertThat(attendances.checkAlreadyAttend(new AttendanceDate(LocalDate.of(2024, 12, 24))))
+                .isEqualTo(true);
+    }
 }

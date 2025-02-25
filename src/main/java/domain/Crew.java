@@ -20,6 +20,16 @@ public class Crew {
         return this.name.equals(name);
     }
 
+    public void checkAlreadyAttend(AttendanceDate attendanceDate) {
+        if (this.attendances.checkAlreadyAttend(attendanceDate)) {
+            throw new IllegalArgumentException("[ERROR] 이미 출석했습니다. 수정 기능을 이용해 주세요.");
+        }
+    }
+
+    public void attend(AttendanceDate attendanceDate, AttendanceTime attendanceTime) {
+        this.attendances.addNewAttendance(attendanceDate, attendanceTime);
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {

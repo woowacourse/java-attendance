@@ -32,10 +32,28 @@ public class AttendanceBook {
         return attendances;
     }
 
+    public void checkAlreadyAttended(String name, AttendanceDate attendanceDate) {
+        Crew crew = findCrewByName(name);
+        crew.checkAlreadyAttend(attendanceDate);
+    }
+
+    // AttendanceDate로 파싱한 걸 받아올지? 여기서 파싱할지?
+    public void attend(String name, AttendanceDate attendanceDate, AttendanceTime attendanceTime) {
+        Crew crew = findCrewByName(name);
+        crew.attend(attendanceDate, attendanceTime);
+    }
+
+    public void checkExistCrew(String name) {
+        crews.stream()
+            .filter(crew -> crew.isSameName(name))
+            .findAny()
+            .orElseThrow(() -> new IllegalArgumentException("[ERROR] 등록되지 않은 닉네임입니다."));
+    }
+
     public Crew findCrewByName(String name) {
         return crews.stream()
                 .filter(crew -> crew.isSameName(name))
                 .findAny()
-                .orElseThrow(() -> new IllegalArgumentException("[ERROR] 등록되지 않은 닉네임입니다."));
+                .orElseThrow();
     }
 }

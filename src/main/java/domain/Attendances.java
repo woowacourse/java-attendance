@@ -1,6 +1,7 @@
 package domain;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 public class Attendances {
@@ -8,7 +9,7 @@ public class Attendances {
     private final List<Attendance> attendances;
 
     public Attendances(List<Attendance> attendances) {
-        this.attendances = attendances;
+        this.attendances = new ArrayList<>(attendances);
     }
 
     public Attendance findAttendanceByDate(LocalDate date) {
@@ -22,6 +23,12 @@ public class Attendances {
         return CrewStatus.checkCrewStatus(this.countLate(), this.countUnattended());
     }
 
+    public boolean checkAlreadyAttend(AttendanceDate date) {
+        return this.attendances.stream()
+                .filter(attendance -> attendance.isSameDate(date))
+                .count() != 0;
+    }
+
     private int countLate() {
         return (int) attendances.stream()
                 .filter(Attendance::isLate)
@@ -32,5 +39,9 @@ public class Attendances {
         return (int) attendances.stream()
                 .filter(Attendance::isUnattendedOrNoShow)
                 .count();
+    }
+
+    public void addNewAttendance(AttendanceDate attendanceDate, AttendanceTime attendanceTime) {
+        this.attendances.add(new Attendance(attendanceDate, attendanceTime));
     }
 }

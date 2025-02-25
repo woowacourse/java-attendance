@@ -33,4 +33,8 @@ public class AttendanceDate {
     public boolean isSameAs(LocalDate date) {
         return this.attendanceDate.equals(date);
     }
+
+    public boolean isSameAs(AttendanceDate date) {
+        return this.attendanceDate.equals(date.attendanceDate);
+    }
 }

@@ -18,6 +18,10 @@ public class Attendance {
         return attendanceDate.isSameAs(date);
     }
 
+    public boolean isSameDate(AttendanceDate date) {
+        return attendanceDate.isSameAs(date);
+    }
+
     public boolean isLate() {
         return this.attendanceStatus.equals(AttendanceStatus.LATE);
     }

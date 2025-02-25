@@ -34,4 +34,19 @@ public class CrewTest {
         Assertions.assertThat(crew.isSameName("메이"))
                 .isEqualTo(true);
     }
+
+    @DisplayName("크루 출석 테스트")
+    @Test
+    void crewAttendTest() {
+        String crewName = "메이";
+        Attendances attendances = new Attendances(List.of());
+        Crew crew = new Crew(crewName, attendances);
+
+        AttendanceDate attendanceDate = new AttendanceDate(LocalDate.of(2024, 12, 24));
+        AttendanceTime attendanceTime = new AttendanceTime(LocalTime.of(10, 30));
+        crew.attend(attendanceDate, attendanceTime);
+
+        Assertions.assertThatThrownBy(() -> crew.checkAlreadyAttend(attendanceDate))
+                .isInstanceOf(IllegalArgumentException.class);
+    }
 }
