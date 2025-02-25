@@ -4,15 +4,13 @@ import java.time.LocalDateTime;
 import java.util.Arrays;
 
 public enum AttendanceState {
-    ABSENCE("결석", 30),
-    LATE("지각", 5),
-    ATTENDANCE("출석", 0);
+    ABSENCE(30),
+    LATE(5),
+    ATTENDANCE(0);
 
-    private final String name;
     private final int threshold;
 
-    AttendanceState(final String name, final int threshold) {
-        this.name = name;
+    AttendanceState(final int threshold) {
         this.threshold = threshold;
     }
 
@@ -22,9 +20,5 @@ public enum AttendanceState {
                 .filter(type -> type.threshold < overTime)
                 .findFirst()
                 .orElse(ATTENDANCE);
-    }
-
-    public String getName() {
-        return name;
     }
 }
