@@ -4,9 +4,11 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 public class AttendanceSystem {
-    public final LocalDate TODAY = LocalDate.of(2024, 12, 17);
+    public LocalDate TODAY = LocalDate.of(2024, 12, 17);
+    private final LocalDate CHRISTMAS = LocalDate.of(2024, 12, 25);
     private final Map<String, AttendanceBook> attendanceBooks;
 
     public AttendanceSystem() {
@@ -37,6 +39,14 @@ public class AttendanceSystem {
 
     private boolean isHoliday(LocalDate date) {
         DayOfWeek day = date.getDayOfWeek();
+        return isWeekend(day) || isChristmas(date);
+    }
+
+    private boolean isChristmas(LocalDate date) {
+        return Objects.equals(date, CHRISTMAS);
+    }
+
+    private static boolean isWeekend(DayOfWeek day) {
         return day == DayOfWeek.SATURDAY || day == DayOfWeek.SUNDAY;
     }
 }

@@ -80,4 +80,14 @@ public class AttendanceSystemTest {
                 )).isInstanceOf(IllegalArgumentException.class);
     }
 
+    @DisplayName("수정하려는 날짜가 크리스마스인 경우 예외를 던진다")
+    @Test
+    void edit_attendance_in_christmas() {
+        String name = "두리";
+        attendanceSystem.attendance(name, LocalTime.of(10, 0));
+        assertThatThrownBy(() ->
+                attendanceSystem.editAttendance(name, LocalDate.of(2024, 12, 25), LocalTime.of(10, 0)
+                )).isInstanceOf(IllegalArgumentException.class);
+    }
+
 }
