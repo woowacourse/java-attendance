@@ -1,6 +1,7 @@
 package domain;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 
 import dto.CheckAttendanceResponse;
 import java.time.LocalDate;
@@ -27,5 +28,17 @@ public class CrewTest {
         assertThat(crew.checkAttendance(date, time))
                 .extracting(CheckAttendanceResponse::date, CheckAttendanceResponse::time)
                 .containsExactly(date, time);
+    }
+
+    @Test
+    @DisplayName("이미 출석한 경우, 다시 출석할 수 없으며 수정 기능을 이용하도록 안내한다.")
+    void crewTest2() {
+        LocalDate date = LocalDate.now();
+        LocalTime time = LocalTime.now();
+
+        crew.checkAttendance(date, time);
+
+        assertThatThrownBy(() -> crew.checkAttendance(date, time))
+                .isInstanceOf(IllegalArgumentException.class);
     }
 }
