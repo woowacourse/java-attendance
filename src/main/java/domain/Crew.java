@@ -6,4 +6,8 @@ public class Crew {
     public Crew(String nickname) {
         this.nickname = nickname;
     }
+
+    public String getNickname() {
+        return nickname;
+    }
 }

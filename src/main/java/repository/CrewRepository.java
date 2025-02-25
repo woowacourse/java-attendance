@@ -7,12 +7,12 @@ import java.util.List;
 public class CrewRepository {
     private static final List<Crew> CREWS = new ArrayList<>();
 
-    // TODO: 크루 추가
     public static void addCrew(Crew crew) {
+        CREWS.add(crew);
     }
 
-    // TODO: 크루 존재 여부 확인
     public static boolean existsCrew(String nickname) {
-        return true;
+        return CREWS.stream()
+                .anyMatch(crew -> nickname.equals(crew.getNickname()));
     }
 }
