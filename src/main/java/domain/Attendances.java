@@ -36,13 +36,13 @@ public class Attendances {
                 .count() != 0;
     }
 
-    private int countLate() {
+    public int countLate() {
         return (int) attendances.stream()
                 .filter(Attendance::isLate)
                 .count();
     }
 
-    private int countUnattended() {
+    public int countUnattended() {
         return (int) attendances.stream()
                 .filter(Attendance::isUnattendedOrNoShow)
                 .count();

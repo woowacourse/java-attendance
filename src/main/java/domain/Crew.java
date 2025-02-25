@@ -37,6 +37,22 @@ public class Crew {
         return this.attendances.findAttendanceByDate(attendanceDate);
     }
 
+    public boolean isExpelledStatus() {
+        return !this.getCrewStatus().equals(CrewStatus.NORMAL);
+    }
+
+    public List<Attendance> getAttendances() {
+        return this.attendances.getAttendances();
+    }
+
+    public int getLateCount() {
+        return this.attendances.countLate();
+    }
+
+    public int getAbsentCount() {
+        return this.attendances.countUnattended();
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -47,10 +63,6 @@ public class Crew {
         }
         Crew crew = (Crew) o;
         return Objects.equals(name, crew.name);
-    }
-
-    public List<Attendance> getAttendances() {
-        return this.attendances.getAttendances();
     }
 
     @Override

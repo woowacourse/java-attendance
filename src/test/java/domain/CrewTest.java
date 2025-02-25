@@ -64,4 +64,43 @@ public class CrewTest {
 
         Assertions.assertThat(crew.findAttendanceByDate(attendanceDate).isLate()).isEqualTo(false);
     }
+
+    @DisplayName("크루가 제적 위험인지 확인")
+    @Test
+    void checkCrewExpelledTest() {
+        String crewName = "메이";
+        Attendances attendances = new Attendances(List.of(
+                new Attendance(new AttendanceDate(LocalDate.of(2024, 12, 3)), new AttendanceTime(LocalTime.of(10, 31))),
+                new Attendance(new AttendanceDate(LocalDate.of(2024, 12, 4)), new AttendanceTime(LocalTime.of(10, 31)))
+        ));
+        Crew crew = new Crew(crewName, attendances);
+
+        assertThat(crew.isExpelledStatus()).isEqualTo(true);
+    }
+
+    @DisplayName("크루의 지각 수 카운트 테스트")
+    @Test
+    void checkCrewLateCountTest() {
+        String crewName = "메이";
+        Attendances attendances = new Attendances(List.of(
+                new Attendance(new AttendanceDate(LocalDate.of(2024, 12, 3)), new AttendanceTime(LocalTime.of(10, 6))),
+                new Attendance(new AttendanceDate(LocalDate.of(2024, 12, 4)), new AttendanceTime(LocalTime.of(10, 6)))
+        ));
+        Crew crew = new Crew(crewName, attendances);
+
+        assertThat(crew.getLateCount()).isEqualTo(2);
+    }
+
+    @DisplayName("크루의 결석 수 카운트 테스트")
+    @Test
+    void checkCrewAbsentCountTest() {
+        String crewName = "메이";
+        Attendances attendances = new Attendances(List.of(
+                new Attendance(new AttendanceDate(LocalDate.of(2024, 12, 3)), new AttendanceTime(LocalTime.of(10, 31))),
+                new Attendance(new AttendanceDate(LocalDate.of(2024, 12, 4)), new AttendanceTime(LocalTime.of(10, 31)))
+        ));
+        Crew crew = new Crew(crewName, attendances);
+
+        assertThat(crew.getAbsentCount()).isEqualTo(2);
+    }
 }

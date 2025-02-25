@@ -8,10 +8,14 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Stream;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import util.AttendanceConvertor;
 import util.AttendanceFileReader;
 
@@ -81,7 +85,7 @@ public class AttendanceBookTest {
 
         attendanceBook.editAttendance(name, attendanceDate, attendanceTime);
 
-        Assertions.assertThat(attendanceBook.findCrewByName(name).findAttendanceByDate(attendanceDate).isLate()).isEqualTo(false);
+        assertThat(attendanceBook.findCrewByName(name).findAttendanceByDate(attendanceDate).isLate()).isEqualTo(false);
     }
 
     @DisplayName("크루 이름 기반 출석 기록들 탐색 테스트")
@@ -90,7 +94,23 @@ public class AttendanceBookTest {
         String name = "메이";
         List<Attendance> attendances = attendanceBook.getAttendancesByName(name);
 
-        Assertions.assertThat(attendances.size()).isEqualTo(2);
+        assertThat(attendances.size()).isEqualTo(5);
     }
 
+    @DisplayName("제적 위험자 확인 테스트")
+    @ParameterizedTest
+    @MethodSource("provideExpelledCrew")
+    void findRiskOfExpulsionCrewTest(Crew crew) {
+        assertThat(crew.getCrewStatus()).isNotEqualTo(CrewStatus.NORMAL);
+    }
+
+    private static Stream<Arguments> provideExpelledCrew() {
+        List<String> contents = AttendanceFileReader.readFile();
+        Map<String, List<LocalDateTime>> attendanceFileContents = AttendanceConvertor.convertToAttendances(contents);
+        AttendanceBook attendanceBook = new AttendanceBook(attendanceFileContents);
+        List<Crew> crews = attendanceBook.findRiskOfExpulsionCrew();
+
+        return crews.stream()
+                .map(Arguments::arguments);
+    }
 }

@@ -27,7 +27,6 @@ public class AttendanceBook {
         }
     }
 
-
     // AttendanceDate로 파싱한 걸 받아올지? 여기서 파싱할지?
     public void attend(String name, AttendanceDate attendanceDate, AttendanceTime attendanceTime) {
         Crew crew = findCrewByName(name);
@@ -40,6 +39,7 @@ public class AttendanceBook {
             .findAny()
             .orElseThrow(() -> new IllegalArgumentException("[ERROR] 등록되지 않은 닉네임입니다."));
     }
+
     public Crew findCrewByName(String name) {
         return crews.stream()
                 .filter(crew -> crew.isSameName(name))
@@ -62,6 +62,12 @@ public class AttendanceBook {
     public List<Attendance> getAttendancesByName(String name) {
         Crew crew = findCrewByName(name);
         return crew.getAttendances();
+    }
+
+    public List<Crew> findRiskOfExpulsionCrew() {
+        return crews.stream()
+                .filter(Crew::isExpelledStatus)
+                .toList();
     }
 
     private List<Attendance> parseAttendances(Map<String, List<LocalDateTime>> crewAttendances, String name) {
