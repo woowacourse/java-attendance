@@ -1,6 +1,6 @@
 package util;
 
-import static model.AttendanceType.DEFAULT_TIME;
+import static domain.model.AttendanceType.DEFAULT_TIME;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;

@@ -1,9 +1,9 @@
 import controller.AttendanceController;
-import model.AttendanceTodayClock;
-import model.Campus;
-import model.CrewHistories;
-import model.CrewInitializer;
-import model.TodayClock;
+import domain.model.AttendanceTodayClock;
+import domain.model.Campus;
+import domain.model.CrewHistories;
+import domain.model.CrewInitializer;
+import domain.model.TodayClock;
 import util.FileReader;
 import view.InputValidator;
 import view.InputView;

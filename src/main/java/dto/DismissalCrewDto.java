@@ -3,8 +3,8 @@ package dto;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-import model.AttendanceCounter;
-import model.SubjectType;
+import domain.model.AttendanceCounter;
+import domain.model.SubjectType;
 
 public record DismissalCrewDto(String nickname, int absentCount, int lateCount, SubjectType subjectType) {
 

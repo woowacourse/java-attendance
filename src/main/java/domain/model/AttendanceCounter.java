@@ -1,4 +1,4 @@
-package model;
+package domain.model;
 
 import java.time.LocalDateTime;
 import java.util.EnumMap;

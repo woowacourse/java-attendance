@@ -4,9 +4,9 @@ import dto.DismissalCrewDto;
 import java.time.LocalDateTime;
 import java.util.Comparator;
 import java.util.List;
-import model.AttendanceCounter;
-import model.AttendanceType;
-import model.SubjectType;
+import domain.model.AttendanceCounter;
+import domain.model.AttendanceType;
+import domain.model.SubjectType;
 import util.TimeFormatter;
 
 public class ResultView {

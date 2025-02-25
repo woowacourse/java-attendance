@@ -1,9 +1,11 @@
 package model;
 
-import static model.AttendanceType.DEFAULT_TIME;
+import static domain.model.AttendanceType.DEFAULT_TIME;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+import domain.model.CrewHistories;
+import domain.model.CrewHistory;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.HashMap;
