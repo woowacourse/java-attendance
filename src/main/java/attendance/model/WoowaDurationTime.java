@@ -33,7 +33,7 @@ public enum WoowaDurationTime {
         return startTime;
     }
 
-    public static boolean isDurationDay(LocalDate localDate) {
+    public static boolean isDurationDate(LocalDate localDate) {
         return !(isWeekend(localDate) || isHoliday(localDate));
     }
 

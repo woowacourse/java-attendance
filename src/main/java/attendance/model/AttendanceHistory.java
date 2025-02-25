@@ -37,7 +37,7 @@ public record AttendanceHistory(
         LocalDate attendanceEndDate = computeLastAttendableDate();
         return Stream.iterate(attendanceStartDate, date -> date.plusDays(1))
                 .limit(ChronoUnit.DAYS.between(attendanceStartDate, attendanceEndDate) + 1)
-                .filter(WoowaDurationTime::isDurationDay)
+                .filter(WoowaDurationTime::isDurationDate)
                 .count() - computeLateCount() - computeAttendanceCount();
     }
 

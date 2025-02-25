@@ -33,9 +33,9 @@ class WoowaDurationTimeTest {
         LocalDate weekend = LocalDate.of(2025, 2, 15); // 토요일
         LocalDate holiday = LocalDate.of(2024, 12, 25); // 공휴일
         SoftAssertions softly = new SoftAssertions();
-        softly.assertThat(WoowaDurationTime.isDurationDay(weekday)).isTrue();
-        softly.assertThat(WoowaDurationTime.isDurationDay(weekend)).isFalse();
-        softly.assertThat(WoowaDurationTime.isDurationDay(holiday)).isFalse();
+        softly.assertThat(WoowaDurationTime.isDurationDate(weekday)).isTrue();
+        softly.assertThat(WoowaDurationTime.isDurationDate(weekend)).isFalse();
+        softly.assertThat(WoowaDurationTime.isDurationDate(holiday)).isFalse();
         softly.assertAll();
 
     }

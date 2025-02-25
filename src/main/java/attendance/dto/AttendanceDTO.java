@@ -6,7 +6,6 @@ import attendance.model.AttendanceHistory;
 import attendance.model.WoowaDurationTime;
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.stream.IntStream;
 
@@ -18,27 +17,47 @@ public record AttendanceDTO(
         long lateCount,
         long absenceCount
 ) {
+
+    public static final int DURING_YEAR = 2024;
+    public static final int LAST_DAY = 31;
+
     public static AttendanceDTO from(String crewName, AttendanceHistory attendanceHistory) {
-        LocalDate attendanceStartDate = LocalDate.of(2024, 12, 1);
-        LocalDate attendanceEndDate = attendanceHistory.computeLastAttendableDate();
         return new AttendanceDTO(
                 crewName,
-                IntStream.range(1, (int) (ChronoUnit.DAYS.between(attendanceStartDate, attendanceEndDate) + 2))
-                        .filter(day -> WoowaDurationTime.isDurationDay(LocalDate.of(2024, 12, day)))
-                        .mapToObj(day -> {
-                            AttendanceDate attendanceDate = new AttendanceDate(LocalDate.of(2024, 12, day));
-                            if (attendanceHistory.containsAttendance(attendanceDate)) {
-                                return AttendanceDetailDTO.fromArriveAttendance(
-                                        attendanceHistory.findAttendanceDateTime(attendanceDate)
-                                );
-                            }
-                            return AttendanceDetailDTO.fromNonArriveAttendance(LocalDate.of(2024, 12, day));
-                        }).toList(),
+                IntStream.range(1, computeLastAttendanceDate())
+                        .filter(AttendanceDTO::isDurationDay)
+                        .mapToObj(day -> new AttendanceDate(LocalDate.of(2024, 12, day)))
+                        .map(attendanceDate -> generateAttendanceDetailDTO(attendanceHistory, attendanceDate))
+                        .toList(),
                 attendanceHistory.getAttendanceWarning().name(),
                 attendanceHistory.computeAttendanceCount(),
                 attendanceHistory.computeLateCount(),
                 attendanceHistory.computeAbsenceCount()
         );
+    }
+
+    private static AttendanceDetailDTO generateAttendanceDetailDTO(
+            AttendanceHistory attendanceHistory,
+            AttendanceDate attendanceDate
+    ) {
+        if (attendanceHistory.containsAttendance(attendanceDate)) {
+            return AttendanceDetailDTO.fromArriveAttendance(
+                    attendanceHistory.findAttendanceDateTime(attendanceDate)
+            );
+        }
+        return AttendanceDetailDTO.fromNonArriveAttendance(attendanceDate.localDate());
+    }
+
+    private static boolean isDurationDay(int day) {
+        return WoowaDurationTime.isDurationDate(LocalDate.of(2024, 12, day));
+    }
+
+    private static int computeLastAttendanceDate() {
+        LocalDate now = LocalDate.now();
+        if (now.getYear() > DURING_YEAR) {
+            return LAST_DAY;
+        }
+        return now.getDayOfMonth();
     }
 
     public record AttendanceDetailDTO(

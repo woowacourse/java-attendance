@@ -16,7 +16,7 @@ public record AttendanceDate(
     }
 
     private void validate(LocalDate localDate) {
-        if (!WoowaDurationTime.isDurationDay(localDate)) {
+        if (!WoowaDurationTime.isDurationDate(localDate)) {
             throw new IllegalArgumentException(localDate.format(
                     DateTimeFormatter.ofPattern("MM월 dd일 EEE은 등교일이 아닙니다.")
             ));
