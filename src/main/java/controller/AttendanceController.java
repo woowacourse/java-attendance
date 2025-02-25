@@ -71,7 +71,7 @@ public class AttendanceController {
             Crew crew = crews.findCrewByName(name)
                     .orElseThrow(CrewNotExistException::new);
 
-            LocalDate date = LocalDate.of(2024, 12, 13); //TODO : 오늘
+            LocalDate date = DateGenerator.now();
             December.validateHoliday(date);
 
             LocalTime time = inputView.readAttendanceTime();

@@ -9,7 +9,6 @@ import java.util.Locale;
 public class Common {
     public static final TextStyle textStyle = TextStyle.FULL;
     public static final Locale locale = Locale.of("ko", "KR");
-    public static final LocalDate nowDate = LocalDate.of(2024, 12, 13);
 
     public static final DateTimeFormatter monthDateDayFormatter = DateTimeFormatter.ofPattern(
             "MM월 dd일 E요일")
