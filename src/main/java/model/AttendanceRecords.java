@@ -44,19 +44,19 @@ public class AttendanceRecords {
         record.put(localDate, attendanceRecord);
     }
 
-    public int findTotalAttendanceCount() {
+    public long findTotalAttendanceCount() {
         return (int) record.entrySet().stream()
                 .filter(e -> e.getValue().getAttendanceStatus().equals(AttendanceStatus.ATTENDANCE))
                 .count();
     }
 
-    public int findTotalLateCount() {
+    public long findTotalLateCount() {
         return (int) record.entrySet().stream()
                 .filter(e -> e.getValue().getAttendanceStatus().equals(AttendanceStatus.LATE))
                 .count();
     }
 
-    public int findTotalAbsentCount() {
+    public long findTotalAbsentCount() {
         return (int) record.entrySet().stream()
                 .filter(e -> e.getValue().getAttendanceStatus().equals(AttendanceStatus.ABSENT))
                 .count();
