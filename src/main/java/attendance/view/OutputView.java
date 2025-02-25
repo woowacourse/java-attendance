@@ -42,24 +42,25 @@ public class OutputView {
         for (AttendanceChecker attendanceChecker : attendanceRegistry.getDateInfos()) {
             writeAttendanceCheck(attendanceChecker);
         }
+        List<Integer> attendanceTraces = attendanceRegistry.getAttendanceTraces();
         System.out.println();
-        System.out.println(String.format("출석: %d회", attendanceRegistry.getAttendance()));
-        System.out.println(String.format("지각: %d회", attendanceRegistry.getLate()));
-        System.out.println(String.format("결석: %d회", attendanceRegistry.getAbsence()));
+        System.out.println(String.format("출석: %d회", attendanceTraces.getLast()));
+        System.out.println(String.format("지각: %d회", attendanceTraces.get(1)));
+        System.out.println(String.format("결석: %d회", attendanceTraces.getFirst()));
         writeWarningMessage(attendanceRegistry);
     }
 
     private void writeWarningMessage(AttendanceRegistry attendanceRegistry) {
-        int absence = attendanceRegistry.getAbsence() + attendanceRegistry.getLate()/3;
-        if (absence > 5) {
+        CrewStatus crewStatus = attendanceRegistry.getCrewStatus();
+        if (crewStatus.equals(CrewStatus.DISMISS)) {
             System.out.println("제적 대상자입니다.");
             return;
         }
-        if (absence >= 3) {
+        if (crewStatus.equals(CrewStatus.COUNSELING)) {
             System.out.println("면담 대상자입니다.");
             return;
         }
-        if (absence == 2) {
+        if (crewStatus.equals(CrewStatus.WARNING)) {
             System.out.println("경고 대상자입니다.");
         }
     }

@@ -24,4 +24,5 @@ public enum CommandOption {
                 .findFirst()
                 .orElseThrow(() -> CustomException.from(ErrorMessage.FUNCTION_NOT_PRESENCE));
     }
+
 }

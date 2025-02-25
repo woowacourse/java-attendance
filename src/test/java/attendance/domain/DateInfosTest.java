@@ -64,9 +64,10 @@ class DateInfosTest {
 
         //when
         attendanceRegistry.calculateAttendanceHistory();
-        int attendance = attendanceRegistry.getAttendance();
-        int late = attendanceRegistry.getLate();
-        int absence = attendanceRegistry.getAbsence();
+        List<Integer> attendanceTraces = attendanceRegistry.getAttendanceTraces();
+        int attendance = attendanceTraces.getLast();
+        int late = attendanceTraces.get(1);
+        int absence = attendanceTraces.getFirst();
 
         //then
         Assertions.assertThat(attendance).isEqualTo(expectedAttendance);

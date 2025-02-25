@@ -18,4 +18,5 @@ public class Parser {
     public static List<String> convertToGroup(String time) {
         return List.of(time.split(DELIMITER));
     }
+
 }

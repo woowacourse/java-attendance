@@ -1,6 +1,7 @@
 package attendance.domain;
 
 import attendance.domain.constant.AttendanceStatus;
+import attendance.domain.constant.CrewStatus;
 import attendance.domain.constant.Weekday;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -11,9 +12,8 @@ import java.util.List;
 public class AttendanceRegistry {
 
     private final List<AttendanceChecker> attendanceCheckers;
-    private int absence;
-    private int late;
-    private int attendance;
+    private List<Integer> attendanceTraces;
+    private CrewStatus crewStatus;
 
     private AttendanceRegistry(List<AttendanceChecker> attendanceCheckers) {
         this.attendanceCheckers = attendanceCheckers;
@@ -29,17 +29,29 @@ public class AttendanceRegistry {
     }
 
     public void calculateAttendanceHistory() {
-        int absence = 0;
-        int late = 0;
-        int attendance = 0;
+        List<Integer> attendanceCounts = new ArrayList<>(List.of(0, 0, 0));
         for (AttendanceChecker attendanceChecker : attendanceCheckers) {
-            absence += mappingStatusToNumber(attendanceChecker.isAbsence());
-            late += mappingStatusToNumber(attendanceChecker.isLate());
-            attendance += mappingStatusToNumber(attendanceChecker.isAttendance());
+            attendanceCounts.set(0, attendanceCounts.getFirst() + mappingStatusToNumber(attendanceChecker.isAbsence()));
+            attendanceCounts.set(1, attendanceCounts.get(1) + mappingStatusToNumber(attendanceChecker.isLate()));
+            attendanceCounts.set(2, attendanceCounts.getLast() + mappingStatusToNumber(attendanceChecker.isAttendance()));
         }
-        this.absence = absence;
-        this.late = late;
-        this.attendance = attendance;
+        this.attendanceTraces = attendanceCounts;
+        judgeCrewStatus(attendanceCounts.getFirst(), attendanceCounts.getLast());
+    }
+
+    private void judgeCrewStatus(int lateCounts, int absenceCounts) {
+        int totalAbsence = absenceCounts + (lateCounts / 3);
+        if (totalAbsence > 5) {
+            crewStatus = CrewStatus.DISMISS;
+            return;
+        }
+        if (totalAbsence >= 3) {
+            crewStatus = CrewStatus.COUNSELING;
+            return;
+        }
+        if (totalAbsence == 2) {
+            crewStatus = CrewStatus.WARNING;
+        }
     }
 
     private int mappingStatusToNumber(final boolean attendanceStatus) {
@@ -85,16 +97,13 @@ public class AttendanceRegistry {
         return Collections.unmodifiableList(attendanceCheckers);
     }
 
-    public int getAbsence() {
-        return absence;
+
+    public List<Integer> getAttendanceTraces() {
+        return attendanceTraces;
     }
 
-    public int getLate() {
-        return late;
-    }
-
-    public int getAttendance() {
-        return attendance;
+    public CrewStatus getCrewStatus() {
+        return crewStatus;
     }
 
 }

@@ -83,7 +83,7 @@ public class Register {
         return divideLate(absence, late);
     }
 
-    private static int divideLate(int absence, int late) {
+    private int divideLate(int absence, int late) {
         return absence + (late / 3);
     }
 

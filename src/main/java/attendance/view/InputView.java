@@ -13,7 +13,6 @@ public class InputView {
     private static final String ATTENDANCE_HISTORY_EACH_CREW = "3. 크루별 출석 기록 확인";
     private static final String ATTENDANCE_WARNING_CREW_CHECK = "4. 제적 위험자 확인";
     private static final String QUIT = "Q. 종료";
-
     private static final String READ_CREW_NAME = "닉네임을 입력해 주세요";
     private static final String READ_ATTENDANCE_TIME = "등교 시간을 입력해 주세요.";
     private static final String READ_MODIFY_CREW_NAME = "출석을 수정하려는 크루의 닉네임을 입력해 주세요";
