@@ -43,7 +43,7 @@ public class OutputView {
     }
 
     public void printAttendanceHistory(AllCrew allCrew, String name) {
-        Crew crew = allCrew.getUpdatedCrew(name, today.minusDays(1));
+        Crew crew = allCrew.findCrewByName(name);
         System.out.println(getAttendanceHistory(crew));
     }
 

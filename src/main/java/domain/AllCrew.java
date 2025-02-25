@@ -32,13 +32,7 @@ public class AllCrew {
         return crew.update(dateTime);
     }
 
-    public Crew getUpdatedCrew(String name, LocalDate lastDate) {
-        Crew crew = findCrewByName(name);
-        crew.updateAbsentUntil(lastDate);
-        return crew;
-    }
-
-    private Crew findCrewByName(String name) {
+    public Crew findCrewByName(String name) {
         return allCrew.stream()
                 .filter(crew -> crew.isSameName(name))
                 .findFirst()
