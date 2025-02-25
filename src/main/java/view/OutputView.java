@@ -8,7 +8,7 @@ import java.util.Map.Entry;
 import model.AttendanceRecord;
 import model.Student;
 import model.StudentPunishment;
-import model.StudentRepository;
+import model.AttendanceBook;
 import util.LocalDateTimePrintFormatter;
 
 public class OutputView {
@@ -73,7 +73,7 @@ public class OutputView {
         }
     }
 
-    public static void printEveryStudentPunishmentLabel(StudentRepository studentRepository) {
+    public static void printEveryStudentPunishmentLabel(AttendanceBook studentRepository) {
         for (Student student : studentRepository.getStudents()) {
             printStudentPunishmentLabelAndPrint(student);
         }

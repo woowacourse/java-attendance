@@ -7,7 +7,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import model.Student;
-import model.StudentRepository;
+import model.AttendanceBook;
 import util.FileInput;
 import util.LocalDateTimePrintFormatter;
 import view.InputView;
@@ -21,13 +21,13 @@ public class Controller {
     private static final int CHECK_DROPOUT_RISK = 4;
 
 
-    private StudentRepository readFileAndCreateStudentRepository() throws IOException {
+    private AttendanceBook readFileAndCreateStudentRepository() throws IOException {
         FileInput fileInput = new FileInput();
         List<Student> students = fileInput.createStudents();
-        return new StudentRepository(students);
+        return new AttendanceBook(students);
     }
 
-    public StudentRepository createStudentRepository() {
+    public AttendanceBook createStudentRepository() {
         try {
             return readFileAndCreateStudentRepository();
         } catch (IOException e) {
@@ -38,7 +38,7 @@ public class Controller {
     public void attendanceStart() {
         LocalDate todayDate = LocalDate.from(TODAY);
         InputView.printTodayAndSelectFunction(todayDate);
-        StudentRepository studentRepository = createStudentRepository();
+        AttendanceBook studentRepository = createStudentRepository();
 
         for (Student student : studentRepository.getStudents()) {
             student.getAttendanceRecords().updateStateNotExistInFile(todayDate);
@@ -65,11 +65,11 @@ public class Controller {
 
     }
 
-    private static void functionForMenuFour(StudentRepository studentRepository) {
+    private static void functionForMenuFour(AttendanceBook studentRepository) {
         OutputView.printEveryStudentPunishmentLabel(studentRepository);
     }
 
-    private void functionForMenuThree(StudentRepository studentRepository) {
+    private void functionForMenuThree(AttendanceBook studentRepository) {
         String studentName = getStudentForAttendanceCheckUntilExist(studentRepository);
         OutputView.printAttendanceRecord(studentRepository
                 .findStudentByName(studentName).getAttendanceRecords().getRecord());
@@ -78,7 +78,7 @@ public class Controller {
         OutputView.printStudentPunishmentLabel(studentRepository.findStudentByName(studentName));
     }
 
-    private void functionForMenuTwo(StudentRepository studentRepository) {
+    private void functionForMenuTwo(AttendanceBook studentRepository) {
         String studentName = getStudentNameForModifyUntilValidate(studentRepository);
         Student student = studentRepository.findStudentByName(studentName);
         LocalDateTime modifyLocalDateTime = getLocalDateTimeToModify();
@@ -104,7 +104,7 @@ public class Controller {
         return getTimeUntilValidate(localDate);
     }
 
-    private void functionForMenuOne(StudentRepository studentRepository, LocalDate todayDate) {
+    private void functionForMenuOne(AttendanceBook studentRepository, LocalDate todayDate) {
         String studentName = getStudentForAttendanceCheckUntilExist(studentRepository);
         LocalDateTime localDateTime = getLocalDateTimeUntilValidate(todayDate);
         Student student = studentRepository.findStudentByName(studentName);
@@ -112,7 +112,7 @@ public class Controller {
         OutputView.printTodayAttendanceResult(student, localDateTime);
     }
 
-    private String getStudentNameForModifyUntilValidate(StudentRepository studentRepository) {
+    private String getStudentNameForModifyUntilValidate(AttendanceBook studentRepository) {
         try {
             InputView.printStudentNameForModify();
             return getStudentNameUntilExist(studentRepository);
@@ -130,7 +130,7 @@ public class Controller {
         }
     }
 
-    private String getStudentForAttendanceCheckUntilExist(StudentRepository studentRepository) {
+    private String getStudentForAttendanceCheckUntilExist(AttendanceBook studentRepository) {
         InputView.printInputNicName();
         try {
             return getStudentNameUntilExist(studentRepository);
@@ -139,7 +139,7 @@ public class Controller {
         }
     }
 
-    private String getStudentNameUntilExist(StudentRepository studentRepository) {
+    private String getStudentNameUntilExist(AttendanceBook studentRepository) {
         String userName = InputView.userInput();
         try {
             studentRepository.notExistStudent(userName);
