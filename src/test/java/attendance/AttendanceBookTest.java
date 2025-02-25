@@ -29,9 +29,7 @@ public class AttendanceBookTest {
         final var result = attendanceBook.attend("훌라", LocalDateTime.of(2024, 12, 16, 12, 59));
 
         LocalDateTime dateTime = LocalDateTime.of(2024, 12, 16, 12, 59);
-        AttendanceDate attendanceDate = new AttendanceDate(dateTime.toLocalDate());
-        AttendanceTime attendanceTime = new AttendanceTime(dateTime.toLocalTime());
-        Attendance comparison = new Attendance(attendanceDate, attendanceTime);
+        Attendance comparison = Attendance.from(dateTime);
 
         assertThat(result).isEqualTo(comparison);
     }
@@ -43,6 +41,16 @@ public class AttendanceBookTest {
 
         assertThatThrownBy(() -> attendanceBook.attend("훌라", LocalDateTime.of(2024, 12, 13, 9, 59)))
                 .isInstanceOf(IllegalArgumentException.class);
+    }
+
+    @Test
+    void 닉네임과_시간을_이용해_출석하면_수정된_기록을_반환한다() {
+        List<LocalDateTime> attendances = List.of(LocalDateTime.of(2024, 12, 13, 9, 59));
+        AttendanceBook attendanceBook = generateAttendanceBook("훌라", attendances);
+
+        final var result = attendanceBook.updateAttendance("훌라", LocalDateTime.of(2024, 12, 13, 10, 6));
+
+        assertThat(result).isEqualTo(Attendance.from(LocalDateTime.of(2024, 12, 13, 10, 6)));
     }
 
     public static AttendanceBook generateAttendanceBook(String nickname, List<LocalDateTime> dateTimes) {
