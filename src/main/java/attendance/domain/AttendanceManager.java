@@ -76,7 +76,7 @@ public class AttendanceManager {
         return crewAttendances.get(nickname);
     }
 
-    private LinkedHashMap<String, AttendanceStatus> generateAttendanceRisks(final LocalDate today) {
+    private Map<String, AttendanceStatus> generateAttendanceRisks(final LocalDate today) {
         return crewAttendances.entrySet().stream()
                 .collect(Collectors.toMap(
                         Map.Entry::getKey,
