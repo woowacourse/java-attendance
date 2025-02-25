@@ -6,6 +6,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import util.DateTimeUtil;
@@ -29,7 +30,14 @@ public class Attendance {
     }
 
     public List<AttendanceRecord> getRecordByCrew(Crew crew) {
-        return attendanceMap.get(crew);
+        List<AttendanceRecord> sortedAttendanceMap = sortByDate(attendanceMap.get(crew));
+        return sortedAttendanceMap;
+    }
+
+    private List<AttendanceRecord> sortByDate(List<AttendanceRecord> attendanceRecords) {
+        return attendanceRecords.stream()
+                .sorted(Comparator.comparing(AttendanceRecord::date))
+                .toList();
     }
 
     public Map<Crew, List<AttendanceRecord>> getAttendanceMap() {
