@@ -17,8 +17,8 @@ public class AttendanceDate implements Comparable<AttendanceDate> {
 
     public AttendanceDate(LocalDateTime dateTime) {
         this.dateTime = dateTime;
-        int dayOfWeek = getDayOfWeekValue();
-        if (dayOfWeek >= DayOfWeek.SATURDAY.getValue()) {
+        DayOfWeek dayOfWeek = dateTime.getDayOfWeek();
+        if (dayOfWeek.compareTo(DayOfWeek.SATURDAY) > 0) {
             throw new IllegalArgumentException(
                     DateTimeUtil.convertLocalDateToString(dateTime.toLocalDate()) + "은 등교일이 아닙니다.");
         }
@@ -41,17 +41,13 @@ public class AttendanceDate implements Comparable<AttendanceDate> {
     }
 
     public AttendanceState calculateAttendanceState() {
-        return AttendanceState.calculateAttendanceState(this.getDayOfWeekValue(), this.dateTime);
+        return AttendanceState.calculateAttendanceState(this.dateTime.getDayOfWeek(), this.dateTime);
     }
 
     public boolean equals(LocalDate compareDate) {
         return (this.dateTime.getYear() == compareDate.getYear()
                 && this.dateTime.getMonthValue() == compareDate.getMonthValue()
                 && this.dateTime.getDayOfMonth() == compareDate.getDayOfMonth());
-    }
-
-    private int getDayOfWeekValue() {
-        return this.dateTime.getDayOfWeek().getValue();
     }
 
     @Override

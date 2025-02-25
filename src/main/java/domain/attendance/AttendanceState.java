@@ -1,5 +1,6 @@
 package domain.attendance;
 
+import java.time.DayOfWeek;
 import java.time.LocalDateTime;
 
 public enum AttendanceState {
@@ -18,7 +19,7 @@ public enum AttendanceState {
         return state;
     }
 
-    public static AttendanceState calculateAttendanceState(int dayOfWeek, LocalDateTime dateTime) {
+    public static AttendanceState calculateAttendanceState(DayOfWeek dayOfWeek, LocalDateTime dateTime) {
         if (AttendanceTime.isAttendance(dayOfWeek, dateTime)) {
             return ATTENDANCE;
         }
