@@ -31,6 +31,10 @@ public class AttendanceDate {
         }
     }
 
+    public boolean isSameDate(final LocalDate date) {
+        return false;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) {
