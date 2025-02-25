@@ -1,24 +1,25 @@
 package controller;
 
-import static domain.UserCommandType.ALERT_CREW_CHECK;
-import static domain.UserCommandType.ATTENDANCE_CHANGE;
-import static domain.UserCommandType.ATTENDANCE_CHECK;
-import static domain.UserCommandType.ATTENDANCE_SHOW;
-import static domain.UserCommandType.QUIT;
-import static domain.UserCommandType.getUserCommand;
-import static domain.UserCommandType.validateUserCommand;
 import static util.Day.validateDay;
+import static view.UserCommandType.ALERT_CREW_CHECK;
+import static view.UserCommandType.ATTENDANCE_CHANGE;
+import static view.UserCommandType.ATTENDANCE_CHECK;
+import static view.UserCommandType.ATTENDANCE_SHOW;
+import static view.UserCommandType.QUIT;
+import static view.UserCommandType.getUserCommand;
 
 import domain.Attendance;
 import domain.Crew;
 import domain.CrewGroup;
 import domain.Time;
-import domain.UserCommandType;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import service.CrewLoader;
+import util.Day;
 import view.InputView;
 import view.OutputView;
+import view.UserCommandType;
 import view.dto.AlertCrewDTO;
 import view.dto.AlertCrewsDTO;
 import view.dto.AttendanceLogDTO;
@@ -41,7 +42,6 @@ public class Controller {
         try {
             while (true) {
                 String rawFunction = inputView.insertFunction(today);
-                validateUserCommand(rawFunction);
 
                 runCycle(getUserCommand(rawFunction), crewGroup, today);
                 if (getUserCommand(rawFunction).equals(QUIT)) {
@@ -56,12 +56,15 @@ public class Controller {
     private void runCycle(UserCommandType userCommandType, CrewGroup crewGroup, LocalDateTime today) {
         if (userCommandType.equals(ATTENDANCE_CHECK)) {
             checkAttendance(crewGroup, today);
+            return;
         }
         if (userCommandType.equals(ATTENDANCE_CHANGE)) {
             changeAttendance(crewGroup, today);
+            return;
         }
         if (userCommandType.equals(ATTENDANCE_SHOW)) {
             showCrewAttendance(crewGroup);
+            return;
         }
         if (userCommandType.equals(ALERT_CREW_CHECK)) {
             showAlertCrews(crewGroup);
@@ -97,9 +100,11 @@ public class Controller {
         String rawTime = inputView.insertChangeTime();
         Time time = new Time(rawTime);
 
-        Attendance originalAttendance = crew.getSpecificAttendance(changeDate);
+        LocalDate changeLocalDate = Day.toLocalDate(changeDate, today);
+
+        Attendance originalAttendance = crew.getSpecificAttendance(changeLocalDate);
         Attendance copy = new Attendance(originalAttendance.getDate());
-        Attendance changedAttendance = crew.changeAttendance(changeDate, time);
+        Attendance changedAttendance = crew.changeAttendance(changeLocalDate, time);
 
         outputView.printChangeLog(ChangeAttendanceLogDTO.from(copy, changedAttendance));
     }

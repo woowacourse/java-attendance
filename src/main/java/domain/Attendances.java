@@ -1,5 +1,6 @@
 package domain;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -39,9 +40,9 @@ public class Attendances {
                 .count());
     }
 
-    public Optional<Attendance> getSpecificAttendance(int testDay) {
+    public Optional<Attendance> getSpecificAttendance(LocalDate specificDate) {
         return attendanceLog.stream()
-                .filter(attendance -> attendance.isSameDay(testDay))
+                .filter(attendance -> attendance.isSameDay(specificDate))
                 .findAny();
     }
 
@@ -68,7 +69,7 @@ public class Attendances {
         }
     }
 
-    public Attendance changeAttendance(int date, Time time) {
+    public Attendance changeAttendance(LocalDate date, Time time) {
         Attendance targetAttendance = getSpecificAttendance(date).get();
         targetAttendance.updateAttendance(time);
         return targetAttendance;

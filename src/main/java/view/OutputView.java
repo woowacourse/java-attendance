@@ -72,12 +72,13 @@ public class OutputView {
         LocalDateTime originalTime = changeAttendanceLogDTO.originalTime();
         LocalDateTime changeTime = changeAttendanceLogDTO.changeTime();
         String dayOfWeekKorean = DayOfWeekConverter.convertDayOfWeek(originalTime);
-        String time = String.format("%02d:%02d", originalTime.getHour(), originalTime.getMinute());
-        String cTime = String.format("%02d:%02d", changeTime.getHour(), changeTime.getMinute());
+        String oldTime = String.format("%02d:%02d", originalTime.getHour(), originalTime.getMinute());
+        String currentTime = String.format("%02d:%02d", changeTime.getHour(), changeTime.getMinute());
+
         System.out.printf("%d월 %02d일 %s %s (%s) -> %s (%s) 수정 완료!%n",
                 originalTime.getMonth().getValue(),
                 originalTime.getDayOfMonth(),
-                dayOfWeekKorean, time, changeAttendanceLogDTO.originalStatus().getName(), cTime,
+                dayOfWeekKorean, oldTime, changeAttendanceLogDTO.originalStatus().getName(), currentTime,
                 changeAttendanceLogDTO.changeStatus().getName());
     }
 

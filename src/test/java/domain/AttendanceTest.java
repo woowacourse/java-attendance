@@ -1,8 +1,6 @@
 package domain;
 
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
@@ -37,13 +35,13 @@ class AttendanceTest {
     @Test
     void isSameDayTest() {
         LocalDateTime day = LocalDateTime.of(2024, 12, 2, 13, 0);
-        int sameDay = 2;
-        int differentDay = 10;
+        LocalDate sameDay = LocalDate.of(2024, 12, 2);
+        LocalDate differentDay = LocalDate.of(2024, 12, 10);
 
         Attendance attendance = new Attendance(day);
         Assertions.assertAll(
                 () -> Assertions.assertTrue(attendance.isSameDay(sameDay)),
                 () -> Assertions.assertFalse(attendance.isSameDay(differentDay))
-                );
+        );
     }
 }

@@ -1,5 +1,6 @@
 package domain;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
@@ -22,15 +23,15 @@ public class Crew {
     }
 
     public boolean isAlreadyChecked(LocalDateTime today) {
-        return attendances.getSpecificAttendance(today.getDayOfMonth()).isPresent();
+        return attendances.getSpecificAttendance(today.toLocalDate()).isPresent();
     }
 
-    public Attendance getSpecificAttendance(int day) {
-        return attendances.getSpecificAttendance(day).get();
+    public Attendance getSpecificAttendance(LocalDate specificDate) {
+        return attendances.getSpecificAttendance(specificDate).get();
     }
 
-    public Attendance changeAttendance(int changeDay, Time time) {
-        return attendances.changeAttendance(changeDay, time);
+    public Attendance changeAttendance(LocalDate changeDate, Time time) {
+        return attendances.changeAttendance(changeDate, time);
     }
 
     public String getNickname() {

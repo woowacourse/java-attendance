@@ -4,6 +4,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
+import view.UserCommandType;
 
 class UserCommandTypeTest {
     @DisplayName("잘못된 사용자 입력일 시, 에러가 발생합니다.")

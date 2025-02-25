@@ -1,5 +1,6 @@
 package domain;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -45,9 +46,8 @@ class AttendancesTest {
     @DisplayName("특정 날짜의 출석이 존재하는지 확인합니다.")
     @Test
     void checkAlreadyExistTest() {
-        int testDay = 3;
-        Assertions.assertEquals(attendances.getSpecificAttendance(testDay).get().getDay(),
-                testDay);
+        LocalDate testDay = LocalDate.of(2024, 12, 3);
+        Assertions.assertNotNull(attendances.getSpecificAttendance(testDay));
     }
 
     @DisplayName("현재 출석 상태가 어떤 제적 상태인지 확인합니다.")

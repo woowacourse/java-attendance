@@ -3,7 +3,6 @@ package util;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
-import util.DayOfWeekConverter;
 
 public class Day {
     public static final int SATURDAY = 6;
@@ -37,5 +36,9 @@ public class Day {
         if (isFuture(day, today)) {
             throw new IllegalArgumentException("미래 날짜는 수정할 수 없습니다.");
         }
+    }
+
+    public static LocalDate toLocalDate(int day, LocalDateTime today) {
+        return LocalDate.of(today.getYear(), today.getMonth(), day);
     }
 }

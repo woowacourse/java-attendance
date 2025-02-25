@@ -1,6 +1,7 @@
 package domain;
 
 import java.time.Duration;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 public class Attendance {
@@ -9,7 +10,8 @@ public class Attendance {
     public static final int ABSENT_LIMIT_MINUTE = 30;
     public static final int LATE_LIMIT_MINUTE = 5;
     public static final int MONDAY = 1;
-
+    // 로컬 데이트
+    // 로컬 타임 두 개로 나누기?
     private LocalDateTime date;
 
     public Attendance(LocalDateTime date) {
@@ -39,8 +41,8 @@ public class Attendance {
                 time.getHour(), time.getMinute());
     }
 
-    public boolean isSameDay(int day) {
-        return date.getDayOfMonth() == day;
+    public boolean isSameDay(LocalDate specificDate) {
+        return date.toLocalDate().isEqual(specificDate);
     }
 
     public int getDay() {
