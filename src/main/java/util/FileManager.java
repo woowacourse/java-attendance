@@ -16,7 +16,7 @@ public class FileManager {
     public static Attendance readFile(String filePath) {
         try {
             BufferedReader br = new BufferedReader(new FileReader(filePath));
-            br.readLine();
+            oneLineSkip(br);
 
             return createAttendance(br);
         } catch (IOException e) {
@@ -28,7 +28,7 @@ public class FileManager {
         String line;
 
         Attendance attendance = new Attendance();
-        while ((line = br.readLine()) != null) {
+        while ((line = oneLineSkip(br)) != null) {
             String[] lineSplit = split(line);
 
             Crew crew = createCrew(lineSplit);
@@ -37,6 +37,10 @@ public class FileManager {
             attendance.addAttendance(crew, localDateTime);
         }
         return attendance;
+    }
+
+    private static String oneLineSkip(final BufferedReader br) throws IOException {
+        return br.readLine();
     }
 
     private static String[] split(final String line) {
