@@ -14,24 +14,24 @@ public class AttendanceBook {
     private static final LocalTime ABSENCE_TIME = LocalTime.of(10, 30);
     private static final LocalTime END_TIME = LocalTime.of(23, 0);
 
-    public Map<String, Attends> map;
+    private final Map<String, Attends> attendanceBook;
 
     public AttendanceBook() {
-        this.map = new HashMap<>();
+        this.attendanceBook = new HashMap<>();
     }
 
     public void registerName(String name) {
-        if (map.containsKey(name)) {
+        if (attendanceBook.containsKey(name)) {
             return;
         }
-        map.put(name, new Attends(new ArrayList<>()));
+        attendanceBook.put(name, new Attends(new ArrayList<>()));
     }
 
     public void attend(String name, Attend attend) {
         validateIsNameExist(name);
         validateAttendableDay(attend);
         validateAttendableTime(attend);
-        Attends attends = map.get(name);
+        Attends attends = attendanceBook.get(name);
         attends.addAttend(attend);
     }
 
@@ -39,7 +39,7 @@ public class AttendanceBook {
         validateIsNameExist(name);
         validateAttendableDay(attend);
         validateAttendableTime(attend);
-        Attends attends = map.get(name);
+        Attends attends = attendanceBook.get(name);
         attends.edit(attend);
     }
 
@@ -57,11 +57,11 @@ public class AttendanceBook {
 
     public Attends findByName(String name) {
         validateIsNameExist(name);
-        return map.get(name);
+        return attendanceBook.get(name);
     }
 
     public Attend findByNameAndDay(String name, int day) {
-        Attends attends = map.get(name);
+        Attends attends = attendanceBook.get(name);
         return attends.findByDay(day);
     }
 
@@ -69,12 +69,12 @@ public class AttendanceBook {
     public List<Attend> getAttends(String name) {
         validateIsNameExist(name);
         List<Integer> days = DateUtil.getAttendUntilDay(Current.TODAY.getYesterday());
-        return map.get(name)
+        return attendanceBook.get(name)
                 .getAttends(days);
     }
 
     private void validateIsNameExist(String name) {
-        if (!map.containsKey(name)) {
+        if (!attendanceBook.containsKey(name)) {
             throw new IllegalArgumentException("출석부에 존재하지 않는 크루입니다.");
         }
     }
@@ -102,7 +102,7 @@ public class AttendanceBook {
     }
 
     public List<WarningCrew> checkWarningCrews(List<Integer> days) {
-        return map.keySet().stream()
+        return attendanceBook.keySet().stream()
                 .filter(name -> isWarningCrew(name, days))
                 .map(name -> new WarningCrew(name, checkAttendance(name, days).countAttendStatus()))
                 .collect(Collectors.toList());
