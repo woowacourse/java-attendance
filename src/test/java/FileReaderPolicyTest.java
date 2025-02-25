@@ -22,6 +22,6 @@ public class FileReaderPolicyTest {
         FileReaderPolicy fileReaderPolicy = new FileReaderPolicy(FILE_PATH);
 
         //when-then
-        assertDoesNotThrow(fileReaderPolicy::parseLines);
+        assertDoesNotThrow(fileReaderPolicy::createAttendances);
     }
 }

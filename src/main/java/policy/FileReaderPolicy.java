@@ -22,7 +22,7 @@ public class FileReaderPolicy {
         this.fileReader = readFile(filePath);
     }
 
-    public void parseLines() {
+    public void createAttendances() {
         List<String> lines = readLines();
 
         for (String line : lines) {
