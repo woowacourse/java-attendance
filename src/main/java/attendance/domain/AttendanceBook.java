@@ -1,0 +1,16 @@
+package attendance.domain;
+
+import java.util.List;
+
+public class AttendanceBook {
+
+    private final List<String> crewNames;
+
+    public AttendanceBook(List<String> crewNames) {
+        this.crewNames = crewNames;
+    }
+
+    public void hasCrew(final String crewName) {
+        throw new IllegalArgumentException("[ERROR] 출석부에 존재하지 않는 닉네임입니다.");
+    }
+}
