@@ -1,0 +1,47 @@
+package attendance;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
+
+import java.time.LocalDate;
+import java.util.Optional;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.api.Test;
+
+class AttendanceHistoryTest {
+    @Nested
+    class findAttendanceByDate {
+        @DisplayName("주어진_날짜의_출석을_찾아_반환한다")
+        @Test
+        void should_ReturnAttendance_WhenSameDateExists() {
+            //given
+            AttendanceHistory attendanceHistory = new AttendanceHistory();
+            LocalDate date = LocalDate.of(2024, 12, 26);
+            attendanceHistory.addAttendance(new Attendance(date));
+
+            //when
+            Optional<Attendance> result = attendanceHistory.findAttendanceByDate(date);
+
+            //then
+            assertAll(
+                    () -> assertThat(result).isNotEmpty(),
+                    () -> assertThat(result.get().isDateEquals(date)).isTrue()
+            );
+        }
+
+        @DisplayName("주어진_날짜의_출석이_없으면_null_을_반환한다")
+        @Test
+        void should_ReturnEmpty_WhenSameDateNotExists() {
+            //given
+            AttendanceHistory attendanceHistory = new AttendanceHistory();
+            LocalDate date = LocalDate.of(2024, 12, 26);
+
+            //when
+            Optional<Attendance> result = attendanceHistory.findAttendanceByDate(date);
+
+            //then
+            assertThat(result).isEmpty();
+        }
+    }
+}
