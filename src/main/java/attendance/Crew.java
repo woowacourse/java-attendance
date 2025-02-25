@@ -8,7 +8,7 @@ import java.util.Map;
 public class Crew {
 
     private final String name;
-    private final Map<LocalDate, LocalTime> attendanceHistory = new HashMap<>();
+    private final Map<LocalDate, LocalTime> attendanceRecords = new HashMap<>();
 
     public Crew(String name) {
         this.name = name;
@@ -19,6 +19,6 @@ public class Crew {
     }
 
     public void attendance(LocalDate date, LocalTime time) {
-        attendanceHistory.put(date, time);
+        attendanceRecords.put(date, time);
     }
 }
