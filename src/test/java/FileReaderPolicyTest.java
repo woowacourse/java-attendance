@@ -2,8 +2,10 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import policy.AttendanceSheet;
 import policy.FileReaderPolicy;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
@@ -49,6 +51,12 @@ public class FileReaderPolicyTest {
     @Test
     @DisplayName("파일 한 줄을 읽어들여 출석부에 기록할 수 있다")
     public void validateAttendanceDateTest() {
+        //given
+        String attendanceInfo = "쿠키,2024-12-13 10:08";
+
+        //when-then
+        assertThat(fileReaderPolicy.createAttendance(attendanceInfo))
+                .isInstanceOf(AttendanceSheet.class);
     }
 
 }
