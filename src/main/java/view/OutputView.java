@@ -60,6 +60,7 @@ public class OutputView {
         int attendanceCount = attendances.getTotalAttendanceCount() - lateCount - absentCount;
 
         attendances.getAttendances().stream()
+                .sorted(Comparator.comparing(attendance -> attendance.getDay().getDate()))
                 .map(this::formatAttendanceRecord)
                 .forEach(System.out::print);
 
