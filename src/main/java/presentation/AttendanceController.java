@@ -22,16 +22,14 @@ import util.DateTimeUtil;
 import static presentation.ControllerCommand.*;
 
 public class AttendanceController {
-    private final FileInputView fileInputView;
     private final AttendanceService attendanceService;
 
-    public AttendanceController(FileInputView fileInputView, AttendanceService attendanceService) {
-        this.fileInputView = fileInputView;
+    public AttendanceController(AttendanceService attendanceService) {
         this.attendanceService = attendanceService;
     }
 
     public void run() {
-        Map<String, List<String>> attendanceFileInfo = fileInputView.getFileInput();
+        Map<String, List<String>> attendanceFileInfo = FileInputView.getFileInput();
         Map<String, List<LocalDateTime>> crewInitAttendanceDates = InputParser.getFileAttendanceInfo(
                 attendanceFileInfo);
 
@@ -40,10 +38,10 @@ public class AttendanceController {
         repeatCommand(crewGroup);
     }
 
-    private boolean repeatCommand(CrewGroup crewGroup) {
+    private void repeatCommand(CrewGroup crewGroup) {
         while (true) {
             if (controlCommand(crewGroup)) {
-                return true;
+                return;
             }
         }
     }

@@ -1,8 +1,8 @@
 package presentation.view;
 
-import java.io.BufferedReader;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -11,21 +11,20 @@ import java.util.Map;
 public class FileInputView {
     private static final int NAME_INDEX = 0;
     private static final int ATTENDANCE_DATE_INDEX = 1;
-    private static final String FILE_NAME = "attendances.csv";
+    private static final String FILE_NAME = "src/main/resources/attendances.csv";
 
-    public Map<String, List<String>> getFileInput() {
-
-        InputStream inputStream = getClass().getClassLoader().getResourceAsStream(FILE_NAME);
-        BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
-
-        //수정
+    public static Map<String, List<String>> getFileInput() {
         Map<String, List<String>> attendanceDateGroupByCrew = new HashMap<>();
+        try{
+            List<String> lines = Files.readAllLines(Paths.get(FILE_NAME));
+            lines.stream().skip(1).forEach(fileDate -> addInitDate(attendanceDateGroupByCrew,fileDate));
+        }catch (IOException e){
 
-        reader.lines().skip(1).forEach(fileData -> addInitDate(attendanceDateGroupByCrew, fileData));
+        }
         return attendanceDateGroupByCrew;
     }
 
-    private void addInitDate(Map<String, List<String>> dateGroupByCrew, String fileData) {
+    private static void addInitDate(Map<String, List<String>> dateGroupByCrew, String fileData) {
         String[] parsedData = fileData.split(",");
 
         List<String> mapInside = dateGroupByCrew.getOrDefault(parsedData[NAME_INDEX], new ArrayList<>());
