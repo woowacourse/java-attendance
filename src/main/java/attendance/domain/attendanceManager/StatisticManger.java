@@ -1,19 +1,19 @@
 package attendance.domain.attendanceManager;
 
-import java.time.LocalDate;
-import java.time.LocalTime;
 import java.util.List;
 
 import attendance.domain.StatusStatistic;
 import attendance.domain.attendance.AttendanceBook;
 
-public class StatisticManger extends AttendanceManager {
+public class StatisticManger {
+    private final AttendanceBook attendanceBook;
+    private final StringBuilder builder = new StringBuilder();
+
     public StatisticManger(AttendanceBook attendanceBook) {
-        super(attendanceBook);
+        this.attendanceBook = attendanceBook;
     }
 
-    @Override
-    public void manage(String nickname, LocalDate date, LocalTime time) {
+    public void manage(String nickname) {
         var attendanceList = attendanceBook.getAttendanceList(nickname);
 
         StatusStatistic statistic = StatusStatistic.of(attendanceList, nickname);
@@ -22,7 +22,6 @@ public class StatisticManger extends AttendanceManager {
         writeReport(nickname, history, statistic);
     }
 
-    @Override
     public String getResult() {
         return builder.toString();
     }

@@ -1,33 +1,30 @@
 package attendance.domain.attendanceManager;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 
 import attendance.domain.attendance.Attendance;
 import attendance.domain.attendance.AttendanceBook;
 import attendance.domain.attendance.AttendanceList;
 
-public class ModifyManager extends AttendanceManager {
+public class ModifyManager {
+    private final AttendanceBook attendanceBook;
+    private final StringBuilder builder = new StringBuilder();
 
     public ModifyManager(AttendanceBook attendanceBook) {
-        super(attendanceBook);
+        this.attendanceBook = attendanceBook;
     }
 
-    @Override
-    public void manage(String nickname, LocalDate date, LocalTime time) {
-        var dateTime = LocalDateTime.of(date, time);
+    public void manage(String nickname, LocalDateTime dateTime) {
         var attendance = new Attendance(dateTime);
 
         AttendanceList attendanceList = attendanceBook.getAttendanceList(nickname);
 
-        attendanceBook.findAttendance(nickname, date)
+        attendanceBook.findAttendance(nickname, dateTime.toLocalDate())
             .ifPresent(attendanceList::remove);
 
         attendanceList.add(attendance);
     }
 
-    @Override
     public String getResult() {
         return builder.toString();
     }
