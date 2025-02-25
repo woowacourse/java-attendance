@@ -45,4 +45,15 @@ class AttendanceTimeTest {
         // Then
         assertThat(attendanceTime.getValue()).isNotPresent();
     }
+
+    @DisplayName("LocalTime 을 받아 해당 LocalTime 이 자신의 value 보다 이전인지 반환한다.")
+    @Test
+    void isBefore() {
+        // Given
+        final LocalTime time = LocalTime.of(13, 5);
+        final AttendanceTime attendanceTime = AttendanceTime.policyApplied(time, campusOperationPolicy);
+
+        // When & Then
+        assertThat(attendanceTime.isBefore(LocalTime.of(13, 6))).isTrue();
+    }
 }

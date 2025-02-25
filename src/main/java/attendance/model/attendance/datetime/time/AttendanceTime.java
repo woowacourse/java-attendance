@@ -36,6 +36,10 @@ public class AttendanceTime {
         }
     }
 
+    public boolean isBefore(final LocalTime time) {
+        return false;
+    }
+
     public Optional<LocalTime> getValue() {
         return Optional.ofNullable(value);
     }
