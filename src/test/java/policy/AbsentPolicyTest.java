@@ -13,6 +13,9 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.stream.Stream;
 
+import static domain.AttendanceState.ABSENT;
+import static domain.AttendanceState.ATTENDANCE;
+import static domain.AttendanceState.LATE;
 import static org.assertj.core.api.Assertions.*;
 
 /*
@@ -57,14 +60,14 @@ public class AbsentPolicyTest {
     public void checkAbsentStatusTest(){
         LocalDateTime educationDateTime = LocalDateTime.of(2024,12,10,10,31);
 
-        assertThat(absentPolicy.checkAttendanceStatus(educationDateTime)).isEqualTo("결석");
+        assertThat(absentPolicy.checkAttendanceStatus(educationDateTime)).isEqualTo(ABSENT);
     }
 
     @ParameterizedTest
     @DisplayName("시작 시간부터 5분 이하이면 출석이다")
     @MethodSource("provideDateTimeForAttendancePolicy")
     public void checkAttendanceStatusTest(LocalDateTime educationDateTime){
-        assertThat(absentPolicy.checkAttendanceStatus(educationDateTime)).isEqualTo("출석");
+        assertThat(absentPolicy.checkAttendanceStatus(educationDateTime)).isEqualTo(ATTENDANCE);
     }
 
     private static Stream<Arguments> provideDateTimeForAttendancePolicy(){
@@ -80,7 +83,7 @@ public class AbsentPolicyTest {
     @DisplayName("시작 시간부터 5분 초과 30분 이하이면 지각이다")
     @MethodSource("provideDateTimeForLatePolicy")
     public void checkLateStatusTest(LocalDateTime educationDateTime){
-        assertThat(absentPolicy.checkAttendanceStatus(educationDateTime)).isEqualTo("지각");
+        assertThat(absentPolicy.checkAttendanceStatus(educationDateTime)).isEqualTo(LATE);
     }
 
     private static Stream<Arguments> provideDateTimeForLatePolicy(){

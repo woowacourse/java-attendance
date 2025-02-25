@@ -1,5 +1,10 @@
 package policy;
 
+import static domain.AttendanceState.ABSENT;
+import static domain.AttendanceState.ATTENDANCE;
+import static domain.AttendanceState.LATE;
+
+import domain.AttendanceState;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -27,7 +32,7 @@ public class AbsentPolicy {
         }
     }
 
-    public String checkAttendanceStatus(LocalDateTime educationDateTime) {
+    public AttendanceState checkAttendanceStatus(LocalDateTime educationDateTime) {
         LocalDate educationDate = educationDateTime.toLocalDate();
         LocalTime educationTime = educationDateTime.toLocalTime();
         DayOfWeek attendanceDayOfWeek = educationDate.getDayOfWeek();
@@ -40,16 +45,16 @@ public class AbsentPolicy {
         return calculateAttendanceStatus(educationTime, attendanceTime);
     }
 
-    private static String calculateAttendanceStatus(LocalTime educationTime, LocalTime attendanceTime) {
+    private static AttendanceState calculateAttendanceStatus(LocalTime educationTime, LocalTime attendanceTime) {
         if(isAttendanceTime(educationTime, attendanceTime)){
-            return "출석";
+            return ATTENDANCE;
         }
 
         if(isLateTime(educationTime, attendanceTime)){
-            return "지각";
+            return LATE;
         }
 
-        return "결석";
+        return ABSENT;
     }
 
     private static boolean isLateTime(LocalTime educationTime, LocalTime attendanceTime) {
