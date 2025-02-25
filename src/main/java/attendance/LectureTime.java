@@ -33,8 +33,8 @@ public enum LectureTime {
             .orElseThrow(() -> new IllegalStateException("잘못된 요일 정보가 주어졌습니다."));
     }
 
-    public static int getLateTimeOf(LocalDate date, LocalTime time) {
-        Duration duration = Duration.between(from(date).startTime, time);
+    public int getLateTimeOf(LocalTime time) {
+        Duration duration = Duration.between(startTime, time);
         return (int)duration.toMinutes();
     }
 }

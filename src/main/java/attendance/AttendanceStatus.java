@@ -20,7 +20,7 @@ public enum AttendanceStatus {
     }
 
     public static AttendanceStatus from(LocalDate date, LocalTime time) {
-        int lateTime = LectureTime.getLateTimeOf(date, time);
+        int lateTime = LectureTime.from(date).getLateTimeOf(time);
 
         return Arrays.stream(values())
             .filter(status -> status.minLateTime != null)

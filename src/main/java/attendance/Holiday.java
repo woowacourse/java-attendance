@@ -1,5 +1,8 @@
 package attendance;
 
+import java.time.LocalDate;
+import java.util.Arrays;
+
 public enum Holiday {
     CHRISTMAS("크리스마스", 12, 25),
     ;
@@ -14,7 +17,10 @@ public enum Holiday {
         this.day = day;
     }
 
-    public static boolean isHoliday() {
-        return false;
+    public static boolean isHoliday(LocalDate date) {
+        return Arrays.stream(values()).anyMatch(holiday -> {
+            LocalDate converted = LocalDate.of(date.getYear(), holiday.month, holiday.day);
+            return converted.equals(date);
+        });
     }
 }

@@ -45,9 +45,13 @@ public class Crew {
     }
 
     public AttendanceStatus getAttendanceStatusOf(LocalDate date) {
-        if (!attendanceRecords.containsKey(date) && !Holiday.isHoliday()) {
+        if (isTruancy(date)) {
             return AttendanceStatus.ABSENCE;
         }
         return AttendanceStatus.from(date, attendanceRecords.get(date));
+    }
+
+    private boolean isTruancy(LocalDate date) {
+        return !attendanceRecords.containsKey(date) && !Holiday.isHoliday(date);
     }
 }
