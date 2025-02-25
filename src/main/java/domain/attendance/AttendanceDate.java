@@ -32,7 +32,7 @@ public class AttendanceDate implements Comparable<AttendanceDate> {
         this.dateTime = editDateTime;
     }
 
-    public LocalDateTime checkAttendanceTime() {
+    public LocalDateTime getAttendanceTime() {
         return this.dateTime;
     }
 
