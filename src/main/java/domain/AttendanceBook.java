@@ -6,9 +6,11 @@ import domain.vo.AttendanceRecordFindResults;
 import domain.vo.ExpelWarningResult;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 public class AttendanceBook {
@@ -18,6 +20,21 @@ public class AttendanceBook {
     public AttendanceBook(final List<String> crews, final LocalDate today) {
         this.crewAttendances = crews.stream()
                 .collect(Collectors.toMap(crew -> crew, crew -> new CrewAttendance(today)));
+    }
+    
+    public AttendanceBook(final Map<String, Set<LocalDateTime>> attendances, final LocalDate today) {
+        this.crewAttendances = attendances.entrySet().stream()
+                .collect(Collectors.toMap(
+                        Map.Entry::getKey,
+                        (entry) -> new CrewAttendance(today, parseDateTimeToMap(entry.getValue()))
+                ));
+    }
+    
+    private Map<LocalDate, LocalTime> parseDateTimeToMap(final Set<LocalDateTime> dateTime) {
+        return dateTime.stream().collect(Collectors.toMap(
+                LocalDateTime::toLocalDate,
+                LocalDateTime::toLocalTime
+        ));
     }
     
     public AttendResult attend(final String nickname, final LocalDate date, final LocalTime time) {

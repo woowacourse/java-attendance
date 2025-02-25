@@ -23,6 +23,11 @@ public class CrewAttendance {
         this.calendar = generateCalendar(today);
     }
     
+    public CrewAttendance(final LocalDate today, final Map<LocalDate, LocalTime> attendances) {
+        this(today);
+        attendances.forEach((key, value) -> calendar.put(key, Optional.of(value)));
+    }
+    
     private Map<LocalDate, Optional<LocalTime>> generateCalendar(final LocalDate today) {
         return IntStream.rangeClosed(1, today.getDayOfMonth())
                 .mapToObj(today::withDayOfMonth)
