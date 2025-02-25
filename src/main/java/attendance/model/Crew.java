@@ -19,6 +19,7 @@ public class Crew {
 
     public void initCrewAttendances(List<List<String>> csvData) {
         attendances.initAttendances(name, csvData);
+        statistic.updateStatistic(attendances);
     }
 
     public boolean isName(String name) {
@@ -59,4 +60,7 @@ public class Crew {
         return Objects.hash(name);
     }
 
+    public Attendance findAttendance(LocalDate date) {
+        return attendances.findAttendance(date);
+    }
 }

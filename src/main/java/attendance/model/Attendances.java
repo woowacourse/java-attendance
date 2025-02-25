@@ -102,5 +102,11 @@ public class Attendances {
         return attendanceInfo;
     }
 
+    public Attendance findAttendance(LocalDate date) {
+        return attendances.stream()
+                .filter(attendance -> attendance.isSameDate(date))
+                .findFirst()
+                .orElseThrow(() -> new IllegalStateException("출석 수정은 어제까지의 기록만 가능합니다."));  // 값이 없을 경우 null 반환
+    }
 
 }
