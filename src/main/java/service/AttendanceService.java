@@ -18,12 +18,20 @@ public class AttendanceService {
         validateCampusTime(request.time());
         AttendanceRecordRepository.add(new AttendanceRecord(request.nickname(), request.date(), request.time(),
                 AttendanceStatus.of(request.date(), request.time())));
-        AttendanceRecord record = AttendanceRecordRepository.find(request.nickname(), request.date());
-        return SavedAttendanceRecord.of(record.date(), record.time(), record.status());
+        AttendanceRecord found = AttendanceRecordRepository.find(request.nickname(), request.date());
+        return SavedAttendanceRecord.of(found.date(), found.time(), found.status());
     }
 
     public SavedAttendanceRecord modifyAttendanceRecord(ModifyAttendanceRequest request) {
-        return null;
+        validateCrew(request.nickname());
+        validateCampusTime(request.time());
+        if (AttendanceRecordRepository.exists(request.nickname(), request.date(), request.time())) {
+            throw new IllegalArgumentException("이미 같은 출석 기록이 존재합니다.");
+        }
+        AttendanceRecordRepository.put(new AttendanceRecord(request.nickname(), request.date(), request.time(),
+                AttendanceStatus.of(request.date(), request.time())));
+        AttendanceRecord found = AttendanceRecordRepository.find(request.nickname(), request.date());
+        return SavedAttendanceRecord.of(found.date(), found.time(), found.status());
     }
 
     private void validateCrew(String nickname) {
