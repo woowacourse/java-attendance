@@ -33,12 +33,7 @@ public record AttendanceHistory(
     }
 
     public long computeAbsenceCount() {
-        LocalDate attendanceStartDate = LocalDate.of(2024, 12, 1);
-        LocalDate attendanceEndDate = computeLastAttendableDate();
-        return Stream.iterate(attendanceStartDate, date -> date.plusDays(1))
-                .limit(ChronoUnit.DAYS.between(attendanceStartDate, attendanceEndDate) + 1)
-                .filter(WoowaDurationTime::isDurationDate)
-                .count() - computeLateCount() - computeAttendanceCount();
+         return computeMonthlyAttendableCount() - computeLateCount() - computeAttendanceCount();
     }
 
     public boolean containsAttendance(AttendanceDate attendanceDate) {
@@ -72,5 +67,14 @@ public record AttendanceHistory(
 
     public long convertLateCount() {
         return computeAbsenceCount() * 3 + computeLateCount();
+    }
+
+    private long computeMonthlyAttendableCount() {
+        LocalDate attendanceStartDate = LocalDate.of(2024, 12, 1);
+        LocalDate attendanceEndDate = computeLastAttendableDate();
+        return Stream.iterate(attendanceStartDate, date -> date.plusDays(1))
+                .limit(ChronoUnit.DAYS.between(attendanceStartDate, attendanceEndDate) + 1)
+                .filter(WoowaDurationTime::isDurationDate)
+                .count();
     }
 }
