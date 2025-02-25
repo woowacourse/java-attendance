@@ -4,10 +4,13 @@ import domain.Crews;
 import view.InputView;
 import view.OutputView;
 
+import java.io.FileReader;
+import java.io.IOException;
+
 public class Application {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
         AttendanceHistoryLoader attendanceHistoryLoader = new AttendanceHistoryLoader();
-        Crews crews = attendanceHistoryLoader.loadCrews();
+        Crews crews = attendanceHistoryLoader.loadCrews(new FileReader("src/main/resources/attendances12.csv"));
         InputView inputView = new InputView();
         OutputView outputView = new OutputView();
         AttendanceController attendanceController = new AttendanceController(crews, inputView, outputView);

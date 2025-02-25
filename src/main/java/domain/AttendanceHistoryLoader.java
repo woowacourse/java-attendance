@@ -13,10 +13,10 @@ public class AttendanceHistoryLoader {
     private final DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
     private final DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm");
 
-    public Crews loadCrews() {
+    public Crews loadCrews(FileReader fileReader) {
         Crews crews = new Crews(new ArrayList<>());
 
-        try (BufferedReader reader = new BufferedReader(new FileReader("src/main/resources/attendances12.csv"))) {
+        try (BufferedReader reader = new BufferedReader(fileReader)) {
             ignoreTitleOfFile(reader);
             loadAttendanceHistory(reader, crews);
         } catch (IOException e) {
