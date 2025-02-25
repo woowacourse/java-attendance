@@ -14,7 +14,11 @@ public class Attendance {
         this.time = localTime;
     }
 
-    public boolean isAlreadyAttendance(String nickname, LocalDate date) {
+    public boolean isAttendanceExist(String nickname, LocalDate date) {
         return this.nickname.equals(nickname) && this.date.equals(date);
+    }
+
+    public void update(LocalTime updateTime) {
+        this.time = updateTime;
     }
 }

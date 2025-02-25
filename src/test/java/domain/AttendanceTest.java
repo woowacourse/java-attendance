@@ -16,6 +16,6 @@ public class AttendanceTest {
         Attendance attendance = new Attendance("링크", LocalDate.of(2024,12,10), LocalTime.of(10,0));
 
         //when-then
-        assertThat(attendance.isAlreadyAttendance("링크", LocalDate.of(2024,12,10))).isTrue();
+        assertThat(attendance.isAttendanceExist("링크", LocalDate.of(2024,12,10))).isTrue();
     }
 }
