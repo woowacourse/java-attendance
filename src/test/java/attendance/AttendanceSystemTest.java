@@ -295,9 +295,9 @@ class AttendanceSystemTest {
         LocalDate today = LocalDate.of(2025, 2, 21);
         AttendanceState state = attendanceSystem.calculateAttendanceStateInMonth(VALID_CREW_NICKNAME, today);
 
-        assertThat(state.attendanceCount()).isEqualTo(2);
-        assertThat(state.lateCount()).isEqualTo(1);
-        assertThat(state.absenceCount()).isEqualTo(12);
+        assertThat(state.getAttendanceCount()).isEqualTo(2);
+        assertThat(state.getLateCount()).isEqualTo(1);
+        assertThat(state.getAbsenceCount()).isEqualTo(12);
     }
 
     @DisplayName("출석 조회 - 닉네임을 통해 해당 크루의 제적 위험도를 계산할 수 있다")
@@ -308,7 +308,7 @@ class AttendanceSystemTest {
         LocalDate today = LocalDate.of(2025, 2, 7);
         AttendanceState state = attendanceSystem.calculateAttendanceStateInMonth(VALID_CREW_NICKNAME, today);
 
-        assertThat(state.riskType()).isEqualTo(RiskType.COUNSELING);
+        assertThat(state.getRiskTyp()).isEqualTo(RiskType.COUNSELING);
     }
 
     String makeHolidayAttendanceExceptionMessage(LocalDateTime dateTime) {
