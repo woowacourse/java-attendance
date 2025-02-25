@@ -46,7 +46,7 @@ public class AttendanceDateTime {
     }
 
     public boolean isSameDate(LocalDate date) {
-        return false;
+        return this.date.isSameDate(date);
     }
 
     public LocalDate getDate() {
