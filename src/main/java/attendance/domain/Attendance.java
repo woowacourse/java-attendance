@@ -9,6 +9,7 @@ public class Attendance {
     private final LocalTime attendanceTime;
 
     public Attendance(LocalDate attendanceDate, LocalTime attendanceTime) {
+        Holiday.check(attendanceDate);
         this.attendanceDate = attendanceDate;
         this.attendanceTime = attendanceTime;
     }

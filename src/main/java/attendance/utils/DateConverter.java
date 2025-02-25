@@ -26,4 +26,9 @@ public class DateConverter {
             throw new IllegalArgumentException("[ERROR] 날짜 입력 형식이 올바르지 않습니다.");
         }
     }
+
+    public static String convertToString(LocalDate attendanceDate) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM월 d일");
+        return attendanceDate.format(formatter);
+    }
 }
