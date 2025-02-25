@@ -4,9 +4,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 
 import attendance.domain.AttendanceManager;
+import attendance.domain.AttendanceReader;
 import attendance.domain.AttendanceStatus;
 import attendance.exception.AttendanceArgumentException;
-import attendance.repository.AttendanceFileRepository;
 import java.time.LocalDate;
 import java.util.stream.Stream;
 import org.junit.jupiter.api.DisplayName;
@@ -56,7 +56,7 @@ public class AttendanceTest {
     @DisplayName("출석 데이터 불러오기 테스트")
     void testLoadAttendance() {
         AttendanceManager attendanceManager = new AttendanceManager(
-                new AttendanceFileRepository("/test.csv").loadAttendanceLinesFromAttendanceFile());
+                new AttendanceReader("/test.csv").loadAttendanceLinesFromAttendanceFile());
         assertThat(
                 attendanceManager.getAttendance("투다", LocalDate.of(2024, 12, 13))
                         .attendanceStatus()
@@ -68,7 +68,7 @@ public class AttendanceTest {
     @DisplayName("출석 완료 테스트")
     void testAttendances(String src, String name, LocalDate localDate, String attendanceStatus) {
         AttendanceManager attendanceManager = new AttendanceManager(
-                new AttendanceFileRepository(src).loadAttendanceLinesFromAttendanceFile());
+                new AttendanceReader(src).loadAttendanceLinesFromAttendanceFile());
         assertThat(
                 attendanceManager.getAttendance(name, localDate)
                         .attendanceStatus().getStatus()
@@ -78,9 +78,9 @@ public class AttendanceTest {
     @Test
     @DisplayName("주말에 출석시 예외 발생 테스트")
     void testWeekend() {
-        AttendanceFileRepository attendanceFileRepository = new AttendanceFileRepository("/testWeekend.csv");
+        AttendanceReader attendanceReader = new AttendanceReader("/testWeekend.csv");
         assertThatThrownBy(() ->
-                new AttendanceManager(attendanceFileRepository.loadAttendanceLinesFromAttendanceFile())
+                new AttendanceManager(attendanceReader.loadAttendanceLinesFromAttendanceFile())
         )
                 .isInstanceOf(AttendanceArgumentException.class)
                 .hasMessageContaining("12월 14일 토요일은 등교일이 아닙니다.");
@@ -89,9 +89,9 @@ public class AttendanceTest {
     @Test
     @DisplayName("등교 외 출석시 예외 발생 테스트")
     void testSchoolStartTime() {
-        AttendanceFileRepository attendanceFileRepository = new AttendanceFileRepository("/testSchoolTime.csv");
+        AttendanceReader attendanceReader = new AttendanceReader("/testSchoolTime.csv");
         assertThatThrownBy(() ->
-                new AttendanceManager(attendanceFileRepository.loadAttendanceLinesFromAttendanceFile())
+                new AttendanceManager(attendanceReader.loadAttendanceLinesFromAttendanceFile())
         )
                 .isInstanceOf(AttendanceArgumentException.class)
                 .hasMessageContaining("등교시간에만 출석 가능합니다.");
@@ -100,9 +100,9 @@ public class AttendanceTest {
     @Test
     @DisplayName("입력 날짜가 유효하지 않을시 예외 발생 테스트")
     void testInvalidDate() {
-        AttendanceFileRepository attendanceFileRepository = new AttendanceFileRepository("/testInvalidDate.csv");
+        AttendanceReader attendanceReader = new AttendanceReader("/testInvalidDate.csv");
         assertThatThrownBy(() ->
-                new AttendanceManager(attendanceFileRepository.loadAttendanceLinesFromAttendanceFile())
+                new AttendanceManager(attendanceReader.loadAttendanceLinesFromAttendanceFile())
         )
                 .isInstanceOf(AttendanceArgumentException.class)
                 .hasMessageContaining("유효하지 않은 날짜입니다.");
@@ -111,9 +111,9 @@ public class AttendanceTest {
     @Test
     @DisplayName("이미 동일한 날짜에 출석했을 시 예외 발생 테스트")
     void duplicateAttendanceTest() {
-        AttendanceFileRepository attendanceFileRepository = new AttendanceFileRepository("/testDuplicateNickname.csv");
+        AttendanceReader attendanceReader = new AttendanceReader("/testDuplicateNickname.csv");
         assertThatThrownBy(() ->
-                new AttendanceManager(attendanceFileRepository.loadAttendanceLinesFromAttendanceFile())
+                new AttendanceManager(attendanceReader.loadAttendanceLinesFromAttendanceFile())
         )
                 .isInstanceOf(AttendanceArgumentException.class)
                 .hasMessageContaining("이미 출석되었습니다.");
@@ -122,9 +122,9 @@ public class AttendanceTest {
     @Test
     @DisplayName("유효하지 않은 닉네임인 경우 예외 발생 테스트")
     void testNicknameInvalid() {
-        AttendanceFileRepository attendanceFileRepository = new AttendanceFileRepository("/testInvalidNickname.csv");
+        AttendanceReader attendanceReader = new AttendanceReader("/testInvalidNickname.csv");
         assertThatThrownBy(() ->
-                new AttendanceManager(attendanceFileRepository.loadAttendanceLinesFromAttendanceFile())
+                new AttendanceManager(attendanceReader.loadAttendanceLinesFromAttendanceFile())
         )
                 .isInstanceOf(AttendanceArgumentException.class)
                 .hasMessageContaining("닉네임은 공백일 수 없습니다.");

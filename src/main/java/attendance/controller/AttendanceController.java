@@ -146,10 +146,9 @@ public class AttendanceController {
         LocalDate attendanceDate = LocalDate.now();
         try {
             var attendance = addAttendance(nickname, attendanceDate, inputTime);
-            outputView.printAttendanceResult(attendance.attendanceStatus()
-                    .getStatus(), inputTime, attendanceDate);
+            outputView.printAttendanceResult(attendance.attendanceStatus().getStatus(), inputTime, attendanceDate);
         } catch (AttendanceArgumentException e) {
-            outputView.printError(e.getMessage());
+            outputView.println(e.getMessage());
         }
     }
 
@@ -195,7 +194,7 @@ public class AttendanceController {
         try {
             return inputSupplier.get();
         } catch (AttendanceArgumentException e) {
-            outputView.printError(e.getMessage());
+            outputView.println(e.getMessage());
             return handleRequest(inputSupplier);
         }
     }

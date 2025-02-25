@@ -1,4 +1,4 @@
-package attendance.repository;
+package attendance.domain;
 
 import attendance.exception.AttendanceArgumentException;
 import java.io.BufferedReader;
@@ -8,16 +8,16 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class AttendanceFileRepository {
+public class AttendanceReader {
     private final String attendanceFileSrc;
     private final String FILE_DOESNT_EXISTS = "존재하지 않은 파일입니다.";
     private final String DEFAULT_FILE_NAME = "/attendances.csv";
 
-    public AttendanceFileRepository() {
+    public AttendanceReader() {
         this.attendanceFileSrc = DEFAULT_FILE_NAME;
     }
 
-    public AttendanceFileRepository(String attendanceFileSrc) {
+    public AttendanceReader(String attendanceFileSrc) {
         this.attendanceFileSrc = attendanceFileSrc;
     }
 

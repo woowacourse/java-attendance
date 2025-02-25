@@ -3,8 +3,8 @@ package attendance;
 import attendance.domain.AttendanceDismissStatus;
 import attendance.domain.AttendanceHistory;
 import attendance.domain.AttendanceManager;
+import attendance.domain.AttendanceReader;
 import attendance.domain.AttendanceStatus;
-import attendance.repository.AttendanceFileRepository;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Stream;
@@ -36,7 +36,7 @@ public class CrewDismissTest {
     @DisplayName("제적 대상자 출력 테스트")
     void testAttendances(String src, List<String> nicknames, List<AttendanceDismissStatus> attendanceStatus) {
         AttendanceManager attendanceManager = new AttendanceManager(
-                new AttendanceFileRepository(src).loadAttendanceLinesFromAttendanceFile());
+                new AttendanceReader(src).loadAttendanceLinesFromAttendanceFile());
         List<AttendanceHistory> attendanceHistories = attendanceManager.crewDismissHistory();
 
         for (int i = 0; i < nicknames.size(); i++) {

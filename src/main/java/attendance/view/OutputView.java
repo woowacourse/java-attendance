@@ -35,10 +35,6 @@ public class OutputView {
         System.out.println(string);
     }
 
-    public void printError(String message) {
-        println(message);
-    }
-
     public void printAttendanceModifyNicknameInput() {
         println(INPUT_ATTENDANCE_MODIFY_NICKNAME);
     }

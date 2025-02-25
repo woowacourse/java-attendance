@@ -23,7 +23,6 @@ public class AttendanceManager {
     static final int WEEKEND_NUMBER = 6;
 
     public AttendanceManager() {
-
     }
 
     public AttendanceManager(List<String> attendanceLines) {

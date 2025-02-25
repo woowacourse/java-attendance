@@ -4,8 +4,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import attendance.domain.AttendanceDismissStatus;
 import attendance.domain.AttendanceManager;
+import attendance.domain.AttendanceReader;
 import attendance.domain.AttendanceStatus;
-import attendance.repository.AttendanceFileRepository;
 import java.util.List;
 import java.util.Map;
 import org.junit.jupiter.api.DisplayName;
@@ -29,7 +29,7 @@ public class AttendanceHistoryTest {
                 "12월 12일 목요일 --:-- (결석)",
                 "12월 13일 금요일 10:02 (출석)");
         AttendanceManager attendanceManager = new AttendanceManager(
-                new AttendanceFileRepository(src).loadAttendanceLinesFromAttendanceFile());
+                new AttendanceReader(src).loadAttendanceLinesFromAttendanceFile());
 
         List<String> histories = attendanceManager
                 .crewAttendanceHistory(name)
@@ -45,7 +45,7 @@ public class AttendanceHistoryTest {
         String src = "/testAttendanceHistory.csv";
         String name = "빙티";
         AttendanceManager attendanceManager = new AttendanceManager(
-                new AttendanceFileRepository(src).loadAttendanceLinesFromAttendanceFile());
+                new AttendanceReader(src).loadAttendanceLinesFromAttendanceFile());
 
         Map<String, Integer> status = attendanceManager
                 .crewAttendanceHistory(name)

@@ -3,8 +3,8 @@ package attendance;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import attendance.domain.AttendanceManager;
+import attendance.domain.AttendanceReader;
 import attendance.domain.AttendanceStatus;
-import attendance.repository.AttendanceFileRepository;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.stream.Stream;
@@ -61,7 +61,7 @@ public class AttendanceModifyTest {
     void testAttendances(String src, String name, LocalDate modifyDate, LocalTime afterModifyTime,
                          String modifyResult) {
         AttendanceManager attendanceManager = new AttendanceManager(
-                new AttendanceFileRepository(src).loadAttendanceLinesFromAttendanceFile());
+                new AttendanceReader(src).loadAttendanceLinesFromAttendanceFile());
         attendanceManager.modifyAttendance(name, modifyDate, afterModifyTime);
 
         assertThat(
