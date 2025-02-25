@@ -37,6 +37,12 @@ public class AttendanceSystem {
             throw new IllegalArgumentException(exceptionMessage);
         }
 
+        LocalTime arrivalTime = arrivalDateTime.toLocalTime();
+        if (arrivalTime.isBefore(LocalTime.of(8, 0, 0))
+                || arrivalTime.isAfter(LocalTime.of(22, 59, 59))) {
+            throw new IllegalArgumentException(ExceptionMessage.OUT_OF_CAMPUS_TIME.getMessage());
+        }
+
         if (arrivalDateTime.getDayOfWeek() == DayOfWeek.MONDAY) {
             AttendanceType type = AttendanceType.parse(LocalTime.of(13, 0, 0), arrivalDateTime.toLocalTime());
             AttendanceRecord newRecord = new AttendanceRecord(crewNickname, arrivalDateTime, type);
