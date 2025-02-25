@@ -76,9 +76,7 @@ public class Controller {
 
         studentRecordRepository.modifyRecord(studentName, modifyLocalDateTime);
 
-        int day = modifyLocalDateTime.getDayOfWeek().getValue();
-
-        String recordAfterModifyState = AttendanceCalculator.calculateAttendance(day,LocalTime.from(modifyLocalDateTime)).getState();
+        String recordAfterModifyState = AttendanceCalculator.calculateAttendance(modifyLocalDateTime,LocalTime.from(modifyLocalDateTime)).getState();
         String recordAfterModify = LocalDateTimePrintFormatter.modifyComplete(modifyLocalDateTime,recordAfterModifyState);
 
         OutputView.printSecondMenu(recordBeforeModify, recordAfterModify);
@@ -110,8 +108,7 @@ public class Controller {
         LocalDateTime localDateTime = InputView.getLocalDateTimeUntilValidate(todayDate);
         studentRecordRepository.addRecord(name, localDateTime);
 
-        int day = localDateTime.getDayOfWeek().getValue();
-        AttendanceStatus todayResult = AttendanceCalculator.calculateAttendance(day,LocalTime.from(localDateTime));
+        AttendanceStatus todayResult = AttendanceCalculator.calculateAttendance(localDateTime,LocalTime.from(localDateTime));
         OutputView.printTodayAttendanceResult(localDateTime,todayResult);
         return false;
     }
