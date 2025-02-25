@@ -1,11 +1,10 @@
-package attendance;
+package attendance.domain;
 
+import attendance.util.FormattedErrorMessage;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
-import java.time.format.TextStyle;
-import java.util.Locale;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -21,15 +20,11 @@ public class AttendanceTest {
         assertAll(
                 () -> assertThatThrownBy(() -> new Attendance(saturday))
                         .isInstanceOf(IllegalArgumentException.class)
-                        .hasMessage("[ERROR] %d월 %d일 %s은(는) 등교일이 아닙니다"
-                                .formatted(saturday.getMonthValue(), saturday.getDayOfMonth(),
-                                        saturday.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.KOREAN))),
+                        .hasMessage(FormattedErrorMessage.INVALID_ATTENDANCE_ERROR.getDateFormatMessage(saturday)),
 
                 () -> assertThatThrownBy(() -> new Attendance(sunday))
                         .isInstanceOf(IllegalArgumentException.class)
-                        .hasMessage("[ERROR] %d월 %d일 %s은(는) 등교일이 아닙니다"
-                                .formatted(sunday.getMonthValue(), sunday.getDayOfMonth(),
-                                        sunday.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.KOREAN)))
+                        .hasMessage(FormattedErrorMessage.INVALID_ATTENDANCE_ERROR.getDateFormatMessage(sunday))
         );
     }
 }
