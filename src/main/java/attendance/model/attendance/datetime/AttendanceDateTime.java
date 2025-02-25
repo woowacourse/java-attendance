@@ -2,6 +2,9 @@ package attendance.model.attendance.datetime;
 
 import attendance.model.attendance.datetime.date.AttendanceDate;
 import attendance.model.attendance.datetime.time.AttendanceTime;
+import attendance.model.campus.CampusOperationPolicy;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.Objects;
 import java.util.Optional;
@@ -14,6 +17,18 @@ public class AttendanceDateTime {
     private AttendanceDateTime(AttendanceDate date, AttendanceTime time) {
         this.date = date;
         this.time = time;
+    }
+
+    public static AttendanceDateTime policyApplied(
+            final LocalDateTime dateTime,
+            final CampusOperationPolicy campusOperationPolicy
+    ) {
+
+        return null;
+    }
+
+    public LocalDate getDate() {
+        return null;
     }
 
     public Optional<LocalTime> getTime() {
