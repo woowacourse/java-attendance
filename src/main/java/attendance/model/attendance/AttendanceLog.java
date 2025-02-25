@@ -39,6 +39,10 @@ public class AttendanceLog {
         );
     }
 
+    public boolean isSameDate(LocalDate date) {
+        return this.date.equals(date);
+    }
+
     public LocalDate getDate() {
         return date;
     }
