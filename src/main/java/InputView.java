@@ -15,4 +15,8 @@ public class InputView {
         String time = scanner.nextLine();
         return AttendanceController.TODAY_LOCAL_DATE +" "+ time;
     }
+
+    public Command getCommand() {
+        return Command.findCommand(scanner.nextLine());
+    }
 }

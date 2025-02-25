@@ -1,5 +1,3 @@
-import java.time.LocalTime;
-
 public class AttendanceController {
 
     public static final String TODAY_LOCAL_DATE = "2024-12-16";
@@ -13,11 +11,19 @@ public class AttendanceController {
 
     public void run() {
 
+
         Crews crews = new Crews(CrewAttendanceFileReader.readFile("src/main/resources/attendances.csv"));
 
+        Command command = inputView.getCommand();
+        try {
+            if (command.equals(Command.ATTEND_TODAY)) {
         String nickname = inputView.getNickname();
         String localDateTimeToday = inputView.getTodayLocalDateTime();
         AttendTime attendTime =crews.addCrewAttendance(nickname, localDateTimeToday);
         outputView.printAttendanceResult(localDateTimeToday,attendTime.checkAttendanceStatus());
+            }
+        } catch (Exception e) {
+            System.out.println("[ERROR]" + e.getMessage());
+        }
     }
 }
