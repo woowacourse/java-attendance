@@ -20,12 +20,20 @@ public class Crew {
 
     public void attendance(LocalDate date, LocalTime time) {
         validateAttendanceDate(date);
+        validateAttendanceTime(time);
         attendanceRecords.put(date, time);
     }
 
     private void validateAttendanceDate(LocalDate date) {
         if (attendanceRecords.containsKey(date)) {
             throw new IllegalArgumentException("이미 출석한 경우 다시 출석할 수 없습니다. 출석 수정 기능을 이용해 주세요.");
+        }
+    }
+
+    private void validateAttendanceTime(LocalTime time) {
+        if (time.isBefore(AttendanceConstant.CAMPUS_OPEN_TIME) ||
+            time.isAfter(AttendanceConstant.CAMPUS_CLOSE_TIME)) {
+            throw new IllegalArgumentException("캠퍼스 운영시간 내에만 출석할 수 있습니다.");
         }
     }
 

@@ -10,6 +10,8 @@ import java.time.LocalTime;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 
 class AttendanceTest {
 
@@ -44,15 +46,19 @@ class AttendanceTest {
         }).isInstanceOf(IllegalArgumentException.class);
     }
 
-    @Test
+    @ParameterizedTest
+    @CsvSource({
+        "07,59",
+        "23,01",
+    })
     @DisplayName("운영시간이 아닌 시간에 등교를 시도할 경우 예외를 반환한다")
-    void attendanceExceptionTest2() {
+    void attendanceExceptionTest2(int hour, int minute) {
         // given
         Crew crew = new Crew("pobi");
 
         // when then
         assertThatThrownBy(() -> {
-            crew.attendance(DATE, LocalTime.of(07, 59));
+            crew.attendance(DATE, LocalTime.of(hour, minute));
         }).isInstanceOf(IllegalArgumentException.class);
     }
 
