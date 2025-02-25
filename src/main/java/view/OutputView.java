@@ -98,11 +98,11 @@ public class OutputView {
 
     private String formatWarningCrew(WarningCrew warningCrew) {
         WarningStatus warningStatus = WarningStatus.judgeWarningStatus(warningCrew.attendCount());
-        return String.format("- %s: 결석 %d회, 지각 %d회 (%s)"
-                , warningCrew.name()
-                , warningCrew.attendCount().absence()
-                , warningCrew.attendCount().late()
-                , formatWarningStatusShort(warningStatus));
+        return String.format("- %s: 결석 %d회, 지각 %d회 (%s)",
+                warningCrew.name(),
+                warningCrew.attendCount().absence(),
+                warningCrew.attendCount().late(),
+                formatWarningStatusShort(warningStatus));
     }
 
     private String formatWarningStatusShort(WarningStatus warningStatus) {
