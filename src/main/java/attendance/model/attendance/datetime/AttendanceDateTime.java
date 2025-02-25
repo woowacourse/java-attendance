@@ -50,7 +50,7 @@ public class AttendanceDateTime {
     }
 
     public boolean isNullTime() {
-        return false;
+        return time.getValue().isEmpty();
     }
 
     public LocalDate getDate() {
