@@ -24,7 +24,7 @@ class AttendanceLogTest {
         final AttendanceStatus expectedAttendanceStatus = AttendanceStatus.ATTENDANCE;
 
         // When
-        final AttendanceLog actual = AttendanceLog.fromAttendanceDateTime(attendanceDateTime, campusOperationPolicy);
+        final AttendanceLog actual = AttendanceLog.fromDateTime(attendanceDateTime, campusOperationPolicy);
 
         // Then
         assertAll(
@@ -42,7 +42,7 @@ class AttendanceLogTest {
         final AttendanceStatus expectedAttendanceStatus = AttendanceStatus.ABSENCE;
 
         // When
-        final AttendanceLog actual = AttendanceLog.fromAbsenceDate(absenceDate);
+        final AttendanceLog actual = AttendanceLog.fromAbsenceDate(absenceDate, campusOperationPolicy);
 
         // Then
         assertAll(

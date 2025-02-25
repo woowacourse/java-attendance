@@ -29,7 +29,7 @@ class CrewAttendanceLogTest {
 
         // Given
         final LocalDateTime attendanceDateTime = LocalDateTime.of(2024, 12, 13, 10, 1);
-        final AttendanceLog expected = AttendanceLog.fromAttendanceDateTime(
+        final AttendanceLog expected = AttendanceLog.fromDateTime(
                 attendanceDateTime,
                 campusOperationPolicy
         );

@@ -1,6 +1,7 @@
 package attendance.model.attendance.log;
 
 import attendance.model.attendance.AttendanceStatus;
+import attendance.model.attendance.datetime.AttendanceDateTime;
 import attendance.model.campus.CampusOperationPolicy;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -10,47 +11,52 @@ import java.util.Optional;
 
 public class AttendanceLog {
 
-    private final LocalDate date;
-    private final LocalTime time;
+    private final AttendanceDateTime attendanceDateTime;
     private final AttendanceStatus attendanceStatus;
 
-    private AttendanceLog(LocalDate date, LocalTime time, AttendanceStatus attendanceStatus) {
-        this.date = date;
-        this.time = time;
+    private AttendanceLog(AttendanceDateTime attendanceDateTime, AttendanceStatus attendanceStatus) {
+        this.attendanceDateTime = attendanceDateTime;
         this.attendanceStatus = attendanceStatus;
     }
 
-    public static AttendanceLog fromAttendanceDateTime(
-            final LocalDateTime attendanceDateTime,
+    public static AttendanceLog fromDateTime(
+            final LocalDateTime dateTime,
             final CampusOperationPolicy campusOperationPolicy
     ) {
 
+        final AttendanceDateTime attendanceDateTime = AttendanceDateTime.policyApplied(
+                dateTime,
+                campusOperationPolicy
+        );
+
         return new AttendanceLog(
-                attendanceDateTime.toLocalDate(),
-                attendanceDateTime.toLocalTime(),
-                AttendanceStatus.from(attendanceDateTime, campusOperationPolicy)
+                attendanceDateTime,
+                AttendanceStatus.fromAttendanceDateTime(attendanceDateTime)
         );
     }
 
     // 운영 시간 아닐때 검증하도록(아마 구조 바꿔야 할듯)
-    public static AttendanceLog fromAbsenceDate(final LocalDate absenceDate) {
+    public static AttendanceLog fromAbsenceDate(
+            final LocalDate absenceDate,
+            final CampusOperationPolicy campusOperationPolicy
+    ) {
+
         return new AttendanceLog(
-                absenceDate,
-                null,
+                AttendanceDateTime.policyAppliedWithNullTime(absenceDate, campusOperationPolicy),
                 AttendanceStatus.ABSENCE
         );
     }
 
     public boolean isSameDate(LocalDate date) {
-        return this.date.equals(date);
+        return attendanceDateTime.isSameDate(date);
     }
 
     public LocalDate getDate() {
-        return date;
+        return attendanceDateTime.getDate();
     }
 
     public Optional<LocalTime> getTime() {
-        return Optional.ofNullable(time);
+        return attendanceDateTime.getTime();
     }
 
     public AttendanceStatus getAttendanceStatus() {
@@ -63,20 +69,19 @@ public class AttendanceLog {
             return false;
         }
         AttendanceLog that = (AttendanceLog) o;
-        return Objects.equals(date, that.date) && Objects.equals(time, that.time)
+        return Objects.equals(attendanceDateTime, that.attendanceDateTime)
                 && attendanceStatus == that.attendanceStatus;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(date, time, attendanceStatus);
+        return Objects.hash(attendanceDateTime, attendanceStatus);
     }
 
     @Override
     public String toString() {
         return "AttendanceLog{" +
-                "date=" + date +
-                ", time=" + time +
+                "attendanceDateTime=" + attendanceDateTime +
                 ", attendanceStatus=" + attendanceStatus +
                 '}';
     }

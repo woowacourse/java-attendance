@@ -1,9 +1,7 @@
 package attendance.model.attendance;
 
-import attendance.model.campus.CampusOperationPolicy;
+import attendance.model.attendance.datetime.AttendanceDateTime;
 import java.time.DayOfWeek;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.Arrays;
 import java.util.Comparator;
@@ -29,43 +27,27 @@ public enum AttendanceStatus {
         this.name = name;
     }
 
-    public static AttendanceStatus from(
-            final LocalDateTime dateTime,
-            final CampusOperationPolicy campusOperationPolicy
-    ) {
+    public static AttendanceStatus fromAttendanceDateTime(final AttendanceDateTime attendanceDateTime) {
 
-        validateCampusOperationTime(dateTime, campusOperationPolicy);
-
-        if (isMonday(dateTime.toLocalDate())) {
-            return calculate(dateTime.toLocalTime(), MONDAY_LATE_TIME, MONDAY_ABSENCE_TIME);
+        if (attendanceDateTime.isNullTime()) {
+            return ABSENCE;
         }
-        return calculate(dateTime.toLocalTime(), WEEKDAY_LATE_TIME, WEEKDAY_ABSENCE_TIME);
-    }
-
-    private static void validateCampusOperationTime(
-            final LocalDateTime dateTime,
-            final CampusOperationPolicy campusOperationPolicy
-    ) {
-
-        if (!campusOperationPolicy.isCampusOpen(dateTime)) {
-            throw new IllegalArgumentException("캠퍼스 운영 시간이 아닙니다.");
+        if (attendanceDateTime.isSameDayOfWeek(DayOfWeek.MONDAY)) {
+            return calculate(attendanceDateTime, MONDAY_LATE_TIME, MONDAY_ABSENCE_TIME);
         }
-    }
-
-    private static boolean isMonday(LocalDate date) {
-        return date.getDayOfWeek() == DayOfWeek.MONDAY;
+        return calculate(attendanceDateTime, WEEKDAY_LATE_TIME, WEEKDAY_ABSENCE_TIME);
     }
 
     private static AttendanceStatus calculate(
-            final LocalTime time,
+            final AttendanceDateTime attendanceDateTime,
             final LocalTime lateTime,
             final LocalTime absenceTime
     ) {
 
-        if (time.isBefore(lateTime)) {
+        if (attendanceDateTime.isBeforeTime(lateTime)) {
             return ATTENDANCE;
         }
-        if (time.isBefore(absenceTime)) {
+        if (attendanceDateTime.isBeforeTime(absenceTime)) {
             return LATE;
         }
         return ABSENCE;

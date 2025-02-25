@@ -40,7 +40,7 @@ public class AttendanceLogs {
         return from.datesUntil(to)
                 .filter(campusOperationPolicy::isOpenDate)
                 .filter(date -> !containsDate(date))
-                .map(AttendanceLog::fromAbsenceDate)
+                .map(date -> AttendanceLog.fromAbsenceDate(date, campusOperationPolicy))
                 .toList();
     }
 

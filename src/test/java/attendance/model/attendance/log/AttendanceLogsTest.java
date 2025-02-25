@@ -22,19 +22,19 @@ class AttendanceLogsTest {
     static void setUp() {
         List<AttendanceLog> values = new ArrayList<>();
         values.add(
-                AttendanceLog.fromAttendanceDateTime(
+                AttendanceLog.fromDateTime(
                         LocalDateTime.of(2024, 12, 2, 13, 0),
                         campusOperationPolicy
                 )
         );
         values.add(
-                AttendanceLog.fromAttendanceDateTime(
+                AttendanceLog.fromDateTime(
                         LocalDateTime.of(2024, 12, 4, 10, 6),
                         campusOperationPolicy
                 )
         );
         values.add(
-                AttendanceLog.fromAttendanceDateTime(
+                AttendanceLog.fromDateTime(
                         LocalDateTime.of(2024, 12, 5, 11, 0),
                         campusOperationPolicy
                 )
@@ -50,24 +50,25 @@ class AttendanceLogsTest {
         final LocalDate to = LocalDate.of(2024, 12, 5);
         final List<AttendanceLog> expected = new ArrayList<>();
         expected.add(
-                AttendanceLog.fromAttendanceDateTime(
+                AttendanceLog.fromDateTime(
                         LocalDateTime.of(2024, 12, 2, 13, 0),
                         campusOperationPolicy
                 )
         );
         expected.add(
                 AttendanceLog.fromAbsenceDate(
-                        LocalDate.of(2024, 12, 3)
+                        LocalDate.of(2024, 12, 3),
+                        campusOperationPolicy
                 )
         );
         expected.add(
-                AttendanceLog.fromAttendanceDateTime(
+                AttendanceLog.fromDateTime(
                         LocalDateTime.of(2024, 12, 4, 10, 6),
                         campusOperationPolicy
                 )
         );
         expected.add(
-                AttendanceLog.fromAttendanceDateTime(
+                AttendanceLog.fromDateTime(
                         LocalDateTime.of(2024, 12, 5, 11, 0),
                         campusOperationPolicy
                 )
