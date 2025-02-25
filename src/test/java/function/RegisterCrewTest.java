@@ -25,7 +25,7 @@ public class RegisterCrewTest {
 
     @Test
     @DisplayName("읽어온 출석 기록을 크루 이름, 시간 로그 데이터로 분리한다.")
-    void Parse_Existed_Attendance_Records_To_Name_And_Date() {
+    void Parse_Existed_Attendance_Records_To_Name_And_TimeLog() {
         String existedRecord = "빙봉,2024-12-13 10:07";
         List<String> parsedRecord = ParsingUtils.parseRecordToNameAndDate(existedRecord);
 
