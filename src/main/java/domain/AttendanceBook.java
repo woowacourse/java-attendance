@@ -41,9 +41,9 @@ public class AttendanceBook {
         return time.isBefore(LocalTime.of(8, 0)) || time.isAfter(LocalTime.of(23, 0));
     }
 
-    public int getAbsenceCount() {
+    public int getAbsenceCount(LocalDate today) {
         return (int) LocalDate.of(2024, 12, 1)
-                .datesUntil(AttendanceSystem.TODAY.plusDays(1))
+                .datesUntil(today.plusDays(1))
                 .filter(date -> !isHoliday(date))
                 .filter(this::isAbsence)
                 .count();
@@ -60,9 +60,9 @@ public class AttendanceBook {
         return START_TIME;
     }
 
-    public int getTardyCount() {
+    public int getTardyCount(LocalDate today) {
         return (int) LocalDate.of(2024, 12, 1)
-                .datesUntil(AttendanceSystem.TODAY.plusDays(1))
+                .datesUntil(today.plusDays(1))
                 .filter(date -> !isHoliday(date))
                 .filter(attendanceBook::containsKey)
                 .filter(this::isTardy)
@@ -75,9 +75,9 @@ public class AttendanceBook {
                         !attendanceBook.get(date).isAfter(startTime(date).plusMinutes(30)));
     }
 
-    public int getAttendCount() {
+    public int getAttendCount(LocalDate today) {
         return (int) LocalDate.of(2024, 12, 1)
-                .datesUntil(AttendanceSystem.TODAY.plusDays(1))
+                .datesUntil(today.plusDays(1))
                 .filter(date -> !isHoliday(date))
                 .filter(attendanceBook::containsKey)
                 .filter(this::isAttend)
@@ -86,7 +86,7 @@ public class AttendanceBook {
 
     private boolean isAttend(LocalDate date) {
         return !attendanceBook.containsKey(date) ||
-                    !attendanceBook.get(date).isAfter(startTime(date).plusMinutes(5));
+                !attendanceBook.get(date).isAfter(startTime(date).plusMinutes(5));
     }
 
     private boolean isHoliday(LocalDate date) {

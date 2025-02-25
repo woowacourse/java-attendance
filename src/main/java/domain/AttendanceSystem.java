@@ -7,7 +7,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class AttendanceSystem {
-    public static LocalDate TODAY = LocalDate.of(2024, 12, 17);
+    public LocalDate TODAY = LocalDate.of(2024, 12, 17);
     private final Map<String, AttendanceBook> attendanceBooks;
 
     public AttendanceSystem() {
@@ -34,15 +34,15 @@ public class AttendanceSystem {
     }
 
     public int getAbsenceCount(String name) {
-        return attendanceBooks.get(name).getAbsenceCount();
+        return attendanceBooks.get(name).getAbsenceCount(TODAY);
     }
 
     public int getTardyCount(String name) {
-        return attendanceBooks.get(name).getTardyCount();
+        return attendanceBooks.get(name).getTardyCount(TODAY);
     }
 
     public int getAttendCount(String name) {
-        return attendanceBooks.get(name).getAttendCount();
+        return attendanceBooks.get(name).getAttendCount(TODAY);
 
     }
 }

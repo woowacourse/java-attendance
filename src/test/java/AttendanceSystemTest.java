@@ -18,7 +18,7 @@ public class AttendanceSystemTest {
         String name = "두리";
         LocalTime time = LocalTime.of(10, 0);
         attendanceSystem.attendance(name, time);
-        assertThat(attendanceSystem.getAttendanceRecord(name, AttendanceSystem.TODAY)).isEqualTo(LocalDateTime.of(AttendanceSystem.TODAY, time));
+        assertThat(attendanceSystem.getAttendanceRecord(name, attendanceSystem.TODAY)).isEqualTo(LocalDateTime.of(attendanceSystem.TODAY, time));
     }
 
     @DisplayName("이름과 등교시간을 입력하면 오늘 날짜로 출석할 수 있다2")
@@ -27,7 +27,7 @@ public class AttendanceSystemTest {
         String name = "두리";
         LocalTime time = LocalTime.of(10, 30);
         attendanceSystem.attendance(name, time);
-        assertThat(attendanceSystem.getAttendanceRecord(name, AttendanceSystem.TODAY)).isEqualTo(LocalDateTime.of(AttendanceSystem.TODAY, time));
+        assertThat(attendanceSystem.getAttendanceRecord(name, attendanceSystem.TODAY)).isEqualTo(LocalDateTime.of(attendanceSystem.TODAY, time));
     }
 
     @DisplayName("이미 출석한 경우 다시 출석할 수 없다")
@@ -56,9 +56,9 @@ public class AttendanceSystemTest {
     void edit_attendance() {
         String name = "두리";
         attendanceSystem.attendance(name, LocalTime.of(10, 30));
-        attendanceSystem.editAttendance(name, AttendanceSystem.TODAY, LocalTime.of(10, 0));
-        assertThat(attendanceSystem.getAttendanceRecord(name, AttendanceSystem.TODAY))
-                .isEqualTo(LocalDateTime.of(AttendanceSystem.TODAY, LocalTime.of(10, 0)));
+        attendanceSystem.editAttendance(name, attendanceSystem.TODAY, LocalTime.of(10, 0));
+        assertThat(attendanceSystem.getAttendanceRecord(name, attendanceSystem.TODAY))
+                .isEqualTo(LocalDateTime.of(attendanceSystem.TODAY, LocalTime.of(10, 0)));
     }
 
     @DisplayName("수정하려는 시간이 캠퍼스 운영 시간이 아닌 경우 예외를 던진다")
@@ -67,7 +67,7 @@ public class AttendanceSystemTest {
         String name = "두리";
         attendanceSystem.attendance(name, LocalTime.of(10, 30));
         assertThatThrownBy(() ->
-            attendanceSystem.editAttendance(name, AttendanceSystem.TODAY, LocalTime.of(23, 55))
+            attendanceSystem.editAttendance(name, attendanceSystem.TODAY, LocalTime.of(23, 55))
         ).isInstanceOf(IllegalArgumentException.class);
     }
 
