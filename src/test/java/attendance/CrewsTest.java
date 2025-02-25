@@ -3,6 +3,7 @@ package attendance;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+import java.time.LocalDateTime;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -37,5 +38,56 @@ public class CrewsTest {
         Crews crews = new Crews();
         crews.addCrew("모루");
         assertThatThrownBy(() -> crews.findCrewByNickname("히포")).isInstanceOf(IllegalArgumentException.class);
+    }
+
+    @Test
+    @DisplayName("크루의 닉네임과 출석 시간이 들어오면 크루의 출석 기록에 추가하고, Attendance를 리턴 - 출석 기록 확인")
+    void addCrewAttendanceTest1() {
+        Crews crews = new Crews();
+        Crew crew = crews.addCrew("모루");
+
+        assertThat(crew.addAttendance(LocalDateTime.of(2024,12,11,9,58)))
+                .hasFieldOrPropertyWithValue("attendanceDateTime", LocalDateTime.of(2024,12,11,9,58));
+    }
+
+    @Test
+    @DisplayName("크루의 닉네임과 출석 시간이 들어오면 크루의 출석 기록에 추가하고, Attendance를 리턴 - 출석 상태 확인-출석")
+    void addCrewAttendanceTest2() {
+        Crews crews = new Crews();
+        Crew crew = crews.addCrew("모루");
+
+        assertThat(crew.addAttendance(LocalDateTime.of(2024,12,11,9,58)))
+                .hasFieldOrPropertyWithValue("attendanceStatus", "출석");
+    }
+
+    @Test
+    @DisplayName("크루의 닉네임과 출석 시간이 들어오면 크루의 출석 기록에 추가하고, Attendance를 리턴 - 출석 상태 확인-지각")
+    void addCrewAttendanceTest3() {
+        Crews crews = new Crews();
+        Crew crew = crews.addCrew("모루");
+
+        assertThat(crew.addAttendance(LocalDateTime.of(2024,12,11,10,6)))
+                .hasFieldOrPropertyWithValue("attendanceStatus", "지각");
+    }
+
+    @Test
+    @DisplayName("크루의 닉네임과 출석 시간이 들어오면 크루의 출석 기록에 추가하고, Attendance를 리턴 - 출석 상태 확인-결석")
+    void addCrewAttendanceTest4() {
+        Crews crews = new Crews();
+        Crew crew = crews.addCrew("모루");
+
+        assertThat(crew.addAttendance(LocalDateTime.of(2024,12,11,10,36)))
+                .hasFieldOrPropertyWithValue("attendanceStatus", "결석");
+    }
+
+    @Test
+    @DisplayName("크루의 닉네임으로 출석 기록을 찾고, 그 기록에 출석 추가")
+    void addCrewAttendanceTest5() {
+        Crews crews = new Crews();
+        crews.addCrew("모루");
+
+        Crew crew = crews.findCrewByNickname("모루");
+        assertThat(crew.addAttendance(LocalDateTime.of(2024,12,11,10,36)))
+                .hasFieldOrPropertyWithValue("attendanceStatus", "결석");
     }
 }
