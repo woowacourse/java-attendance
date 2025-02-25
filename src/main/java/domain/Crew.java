@@ -18,7 +18,7 @@ public class Crew {
         this.records = initializeRecords(localDateTimes);
     }
 
-    public DailyRecord findTimeByDate(LocalDate localDate) {
+    public DailyRecord findRecordByDate(LocalDate localDate) {
         if(records.containsKey(localDate)) {
             return records.get(localDate);
         }
@@ -26,11 +26,11 @@ public class Crew {
     }
 
     public AttendanceStatus findStatusByDate(LocalDate date) {
-        DailyRecord status = findTimeByDate(date);
-        if (status == null) {
+        DailyRecord record = findRecordByDate(date);
+        if (record == null) {
             return ABSENCE;
         }
-        return status.getStatus();
+        return record.getStatus();
     }
 
     public int getAttendanceCount() {
@@ -39,7 +39,7 @@ public class Crew {
 
     public DailyRecord attend(LocalDateTime localDateTime) {
         LocalDate localDate = localDateTime.toLocalDate();
-        DailyRecord dailyRecord = createTimeAndStatus(localDateTime);
+        DailyRecord dailyRecord = createDailyRecord(localDateTime);
 
         records.put(localDate, dailyRecord);
         return dailyRecord;
@@ -47,11 +47,11 @@ public class Crew {
 
     public DailyRecord edit(LocalDateTime newDateTime) {
         LocalDate localDate = newDateTime.toLocalDate();
-        DailyRecord oldStatus = records.get(localDate);
-        DailyRecord newStatus = createTimeAndStatus(newDateTime);
+        DailyRecord oldRecord = records.get(localDate);
+        DailyRecord newRecord = createDailyRecord(newDateTime);
 
-        records.put(localDate, newStatus);
-        return oldStatus;
+        records.put(localDate, newRecord);
+        return oldRecord;
     }
 
     public boolean isAlreadyAttended(LocalDate localDate) {
@@ -62,13 +62,13 @@ public class Crew {
         Map<LocalDate, DailyRecord> result = new HashMap<>();
         for (LocalDateTime localDateTime : localDateTimes) {
             LocalDate localDate = localDateTime.toLocalDate();
-            DailyRecord timeStatus = createTimeAndStatus(localDateTime);
-            result.put(localDate, timeStatus);
+            DailyRecord record = createDailyRecord(localDateTime);
+            result.put(localDate, record);
         }
         return result;
     }
 
-    private DailyRecord createTimeAndStatus(LocalDateTime localDateTime) {
+    private DailyRecord createDailyRecord(LocalDateTime localDateTime) {
         LocalDate localDate = localDateTime.toLocalDate();
         LocalTime localTime = localDateTime.toLocalTime();
         DayOfWeek dayOfWeek = localDate.getDayOfWeek();

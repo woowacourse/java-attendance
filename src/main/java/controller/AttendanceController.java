@@ -64,7 +64,7 @@ public class AttendanceController {
             LocalDateTime dateTime = LocalDateTime.of(today, attendedTime);
 
             crews.attendCrew(name, dateTime);
-            DailyRecord dailyRecord = crews.findCrewByName(name).findTimeByDate(today);
+            DailyRecord dailyRecord = crews.findCrewByName(name).findRecordByDate(today);
             outputView.printAttendanceRecord(today, dailyRecord);
         });
     }
@@ -81,7 +81,7 @@ public class AttendanceController {
             LocalDateTime dateTime = LocalDateTime.of(editedDate, attendedTime);
 
             DailyRecord oldStatus = crews.editCrew(name, dateTime);
-            DailyRecord newStatus = crews.findCrewByName(name).findTimeByDate(editedDate);
+            DailyRecord newStatus = crews.findCrewByName(name).findRecordByDate(editedDate);
             outputView.printEditResult(editedDate, oldStatus, newStatus);
         });
     }

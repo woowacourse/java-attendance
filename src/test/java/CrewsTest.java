@@ -39,12 +39,12 @@ public class CrewsTest {
         String name = "빙봉";
 
         crews.createCrew(name, List.of());
-        DailyRecord timeStatus = crews.attendCrew(name, dateAndTime);
+        DailyRecord record = crews.attendCrew(name, dateAndTime);
 
         Crew crew = crews.findCrewByName(name);
-        DailyRecord expectedTimeStatus = crew.findTimeByDate(localDate);
+        DailyRecord expectedRecord = crew.findRecordByDate(localDate);
 
-        assertThat(expectedTimeStatus).isEqualTo(timeStatus);
+        assertThat(expectedRecord).isEqualTo(record);
     }
 
     @Test
@@ -93,7 +93,7 @@ public class CrewsTest {
 
     private DailyRecord findTimeAndStatus(String name, LocalDate localDate) {
         Crew crew = crews.findCrewByName(name);
-        return crew.findTimeByDate(localDate);
+        return crew.findRecordByDate(localDate);
     }
 
     @DisplayName("제적 위험자를 기준에 맞게 정렬한다.")

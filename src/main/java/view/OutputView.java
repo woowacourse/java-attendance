@@ -59,14 +59,14 @@ public class OutputView {
     }
 
     private void printCrewAttendance(LocalDate date, Crew crew) {
-        DailyRecord status = crew.findTimeByDate(date);
-        if (status == null || status.getStatus() == null) {
+        DailyRecord record = crew.findRecordByDate(date);
+        if (record == null || record.getStatus() == null) {
             System.out.printf(ATTENDANCE_RECORD_FORMAT
                 , dateFormatting(date)
                 , ABSENCE_RECORD_FORMAT);
             return;
         }
-        printAttendanceRecord(date, status);
+        printAttendanceRecord(date, record);
     }
 
     public void printStatistics(int attendanceCount, int latenessCount, int absenceCount,
