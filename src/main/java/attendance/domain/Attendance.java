@@ -1,6 +1,7 @@
 package attendance.domain;
 
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 
 public class Attendance {
 
@@ -13,7 +14,15 @@ public class Attendance {
     }
 
     private String checkAttendanceStatus() {
-        return "출석";
+        if (attendanceDateTime.toLocalTime().isBefore(LocalTime.of(10, 5)) || attendanceDateTime.toLocalTime()
+                .equals(LocalTime.of(10, 5))) {
+            return "출석";
+        }
+        if (attendanceDateTime.toLocalTime().isBefore(LocalTime.of(10, 30)) || attendanceDateTime.toLocalTime()
+                .equals(LocalTime.of(10, 30))) {
+            return "지각";
+        }
+        return "결석";
     }
 
     public LocalDateTime getAttendanceDateTime() {
