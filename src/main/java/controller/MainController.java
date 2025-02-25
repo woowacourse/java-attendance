@@ -3,10 +3,8 @@ package controller;
 import domain.AbsenceHistory;
 import domain.Attendance;
 import domain.AttendanceState;
-import domain.Command;
 import domain.Crew;
 import domain.DateProvider;
-import domain.FeatureType;
 import dto.AttendanceResultDto;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -25,13 +23,6 @@ public class MainController {
     private final DateProvider provider;
     private final Attendance attendance = FileManager.readFile(FILE_PATH);
 
-    private final Map<FeatureType, Command> features = Map.of(
-            FeatureType.ATTENDANCE_CHECK, this::attendanceCheck,
-            FeatureType.ATTENDANCE_UPDATE, this::attendanceUpdate,
-            FeatureType.ATTENDANCE_RECORD, this::attendanceRecord,
-            FeatureType.READ_ABSENCE, this::readAbsence
-    );
-
     public MainController(final InputView inputView, final OutputView outputView, final DateProvider provider) {
         this.inputView = inputView;
         this.outputView = outputView;
@@ -48,14 +39,14 @@ public class MainController {
 
     private void executeFeature(String feature) {
         FeatureType featureType = FeatureType.findBy(feature);
-        features.getOrDefault(featureType, outputView::printExit).execute();
+        featureType.execute(this);
     }
 
-    private boolean isExit(final String feature) {
+    boolean isExit(final String feature) {
         return !FeatureType.isExitType(feature);
     }
 
-    private void attendanceCheck() {
+    void attendanceCheck() {
         String nickname = inputView.inputNickName();
         LocalTime attendanceTime = inputView.inputGoTime();
 
@@ -73,7 +64,7 @@ public class MainController {
         return provider.getDayOfWeek().getDescription();
     }
 
-    private void attendanceUpdate() {
+    void attendanceUpdate() {
         String nickname = inputView.inputUpdateNickName();
         int date = inputView.inputUpdateDate();
         LocalTime updateTime = inputView.inputUpdateTime();
@@ -86,7 +77,7 @@ public class MainController {
         outputView.printUpdateAttendance(beforeDateTime, updateLocalDateTime);
     }
 
-    private void attendanceRecord() {
+    void attendanceRecord() {
         String nickname = inputView.inputNickName();
         Crew crew = attendance.getCrewByName(nickname);
 
@@ -98,8 +89,12 @@ public class MainController {
         outputView.printAbsenceHistory(absenceHistory);
     }
 
-    private void readAbsence() {
+    void readAbsence() {
         Map<Crew, AbsenceHistory> result = attendance.getAbsence(provider.getToday());
         outputView.printAbsenceResult(result);
+    }
+
+    void exit() {
+        outputView.printExit();
     }
 }
