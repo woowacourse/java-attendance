@@ -14,7 +14,7 @@ class FileManagerTest {
     @Test
     void getReadFile() {
         //given
-        String filePath = "src/main/resources/attendances.csv";
+        String filePath = "src/test/resources/stubAttendances.csv";
 
         //when
         Attendance attendance = FileManager.readFile(filePath);
@@ -26,6 +26,18 @@ class FileManagerTest {
         assertThat(attendance.getAttendances())
                 .containsKey(crew)
                 .isNotEmpty();
+    }
+
+    @DisplayName("파일의 구분자가 잘못된 경우 예외가 발생한다.")
+    @Test
+    void invalidDelimiter() {
+        //given
+        String filePath = "src/test/resources/invalidDelimiterAttendances.csv";
+
+        //when //then
+        assertThatThrownBy(() -> FileManager.readFile(filePath))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("잘못된 구분자 입니다.");
     }
 
     @DisplayName("파일 경로가 잘못된 경우 예외를 발생한다.")

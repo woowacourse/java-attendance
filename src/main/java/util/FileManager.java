@@ -34,7 +34,7 @@ public class FileManager {
         Map<Crew, List<LocalDateTime>> attendances = new LinkedHashMap<>();
 
         while ((line = br.readLine()) != null) {
-            String[] lineSplit = line.split(SPLIT_DELIMITER);
+            String[] lineSplit = split(line);
 
             Crew crew = createCrew(lineSplit);
             LocalDateTime localDateTime = createLocalDateTime(lineSplit);
@@ -44,6 +44,17 @@ public class FileManager {
         }
 
         return new Attendance(attendances);
+    }
+
+    private static String[] split(final String line) {
+        validateSplit(line);
+        return line.split(SPLIT_DELIMITER);
+    }
+
+    private static void validateSplit(final String line) {
+        if (!line.contains(SPLIT_DELIMITER)) {
+            throw new IllegalArgumentException("잘못된 구분자 입니다.");
+        }
     }
 
     private static Crew createCrew(final String[] lineSplit) {
