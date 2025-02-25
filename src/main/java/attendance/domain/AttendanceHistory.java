@@ -4,6 +4,11 @@ import attendance.domain.constant.AttendanceStatus;
 import attendance.domain.constant.CrewStatus;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.EnumMap;
+import java.util.List;
+import java.util.Map;
+import java.util.function.Consumer;
 
 public class AttendanceHistory {
 
@@ -23,36 +28,25 @@ public class AttendanceHistory {
 
     public static AttendanceHistory fromDateInfos(String crewName, LocalDate now, DateInfos dateInfos) {
 
-        int attendanceCount = 0;
-        int lateCount = 0;
-        int absenceCount = 0;
+        List<Integer> counts = new ArrayList<>(3);
+        Map<AttendanceStatus, Consumer<List<Integer>>> statusCountMap = new EnumMap<>(AttendanceStatus.class);
+        statusCountMap.put(AttendanceStatus.ATTENDANCE, historyCount -> historyCount.set(0, historyCount.get(0) + 1));
+        statusCountMap.put(AttendanceStatus.LATE, historyCount -> historyCount.set(1, historyCount.get(1) + 1));
+        statusCountMap.put(AttendanceStatus.ABSENCE, historyCount -> historyCount.set(2, historyCount.get(2) + 1));
 
         for (int day = 1; day <= now.getDayOfMonth(); day++) {
             LocalDate currentDate = LocalDate.of(now.getYear(), now.getMonthValue(), day);
             if (isWeekend(currentDate)) {
                 continue;
             }
-
             AttendanceStatus status = dateInfos.findAttendanceStatusByDay(day);
-            if (status == AttendanceStatus.LATE) {
-                lateCount++;
-            }
-            if (status == AttendanceStatus.ABSENCE) {
-                absenceCount++;
-            }
-            if (status == AttendanceStatus.ATTENDANCE) {
-                attendanceCount++;
-            }
+            statusCountMap.get(status).accept(counts);
         }
-        return new AttendanceHistory(crewName, attendanceCount, lateCount, absenceCount);
+        return new AttendanceHistory(crewName, counts.get(0), counts.get(1), counts.get(2));
     }
 
     private static boolean isWeekend(LocalDate currentDate) {
         return currentDate.getDayOfWeek() == DayOfWeek.SATURDAY || currentDate.getDayOfWeek() == DayOfWeek.SUNDAY;
-    }
-
-    public boolean findByCrewName(String crewName) {
-        return this.crewName.equals(crewName);
     }
 
     public boolean isWarningCrew() {

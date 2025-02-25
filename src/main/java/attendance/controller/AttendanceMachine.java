@@ -14,15 +14,20 @@ import attendance.view.InputView;
 import attendance.view.OutputView;
 import java.io.IOException;
 import java.time.LocalDate;
+import java.util.EnumMap;
 import java.util.List;
+import java.util.Map;
+import java.util.function.BiConsumer;
 import java.util.function.Supplier;
 
 public class AttendanceMachine {
 
+    private final Map<AttendanceOperation, BiConsumer<LocalDate, Register>> operationMap;
     private final InputView inputView;
     private final OutputView outputView;
 
     public AttendanceMachine(InputView inputView, OutputView outputView) {
+        this.operationMap = new EnumMap<>(AttendanceOperation.class);
         this.inputView = inputView;
         this.outputView = outputView;
     }
@@ -30,6 +35,10 @@ public class AttendanceMachine {
     public void start() throws IOException {
         List<String> attendanceFiles = FileReader.fileReadLine("attendances.csv");
         Register register = Register.createRegisterByCrewAttendanceTimeFile(attendanceFiles);
+        operationMap.put(AttendanceOperation.ONE, this::functionOne);
+        operationMap.put(AttendanceOperation.TWO, this::functionTwo);
+        operationMap.put(AttendanceOperation.THREE, this::functionThree);
+        operationMap.put(AttendanceOperation.FOUR, this::functionFour);
 
         boolean flag = true;
         while (flag) {
@@ -40,23 +49,12 @@ public class AttendanceMachine {
     }
 
     private boolean mappingFunction(AttendanceOperation attendanceOperation, LocalDate now, Register register) {
-        if (attendanceOperation.equals(AttendanceOperation.ONE)) {
-            functionOne(now, register);
-            return true;
+        BiConsumer<LocalDate, Register> function = operationMap.get(attendanceOperation);
+        if (function == null) {
+            return false;
         }
-        if (attendanceOperation.equals(AttendanceOperation.TWO)) {
-            functionTwo(now, register);
-            return true;
-        }
-        if (attendanceOperation.equals(AttendanceOperation.THREE)) {
-            functionThree(now, register);
-            return true;
-        }
-        if (attendanceOperation.equals(AttendanceOperation.FOUR)) {
-            functionFour(now, register);
-            return true;
-        }
-        return false;
+        function.accept(now, register);
+        return true;
     }
 
     private AttendanceOperation readFunction(LocalDate now) {
