@@ -2,6 +2,7 @@ package service;
 
 import constant.AttendanceStatus;
 import constant.CampusTime;
+import controller.dto.ModifyAttendanceRequest;
 import controller.dto.SaveAttendanceRequest;
 import controller.dto.SavedAttendanceRecord;
 import domain.AttendanceRecord;
@@ -19,6 +20,10 @@ public class AttendanceService {
                 AttendanceStatus.of(request.date(), request.time())));
         AttendanceRecord record = AttendanceRecordRepository.find(request.nickname(), request.date());
         return SavedAttendanceRecord.of(record.date(), record.time(), record.status());
+    }
+
+    public SavedAttendanceRecord modifyAttendanceRecord(ModifyAttendanceRequest request) {
+        return null;
     }
 
     private void validateCrew(String nickname) {

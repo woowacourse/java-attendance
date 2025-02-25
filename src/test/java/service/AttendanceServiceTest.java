@@ -1,10 +1,14 @@
 package service;
 
+import constant.AttendanceStatus;
+import controller.dto.ModifyAttendanceRequest;
 import controller.dto.SaveAttendanceRequest;
+import domain.AttendanceRecord;
 import domain.Crew;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import org.assertj.core.api.Assertions;
+import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -35,5 +39,30 @@ class AttendanceServiceTest {
 
         // then
         Assertions.assertThat(AttendanceRecordRepository.exists(nickname, date)).isTrue();
+    }
+
+    @Test
+    @DisplayName("닉네임, 수정하려는 날짜, 시간을 받아 출석 기록을 수정한다")
+    void modifyAttendanceRecordTest() {
+        // given
+        String nickname = "name";
+        LocalDate date = LocalDate.of(2025, 2, 4);
+        int day = 4;
+        LocalTime before = LocalTime.of(10, 31);
+        LocalTime after = LocalTime.of(10, 5);
+        CrewRepository.addCrew(new Crew(nickname));
+        AttendanceRecordRepository.add(
+                new AttendanceRecord(nickname, date, before, AttendanceStatus.of(date, before)));
+
+        // when
+        ModifyAttendanceRequest request = ModifyAttendanceRequest.of(nickname, date, day, after);
+        attendanceService.modifyAttendanceRecord(request);
+
+        // then
+        SoftAssertions.assertSoftly(softAssertions -> {
+            softAssertions.assertThat(AttendanceRecordRepository.exists(nickname, date)).isTrue();
+            AttendanceRecord record = AttendanceRecordRepository.find(nickname, date);
+            softAssertions.assertThat(record.time()).isEqualTo(after);
+        });
     }
 }
