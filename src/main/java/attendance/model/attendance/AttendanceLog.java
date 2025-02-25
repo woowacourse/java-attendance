@@ -24,11 +24,19 @@ public class AttendanceLog {
             final CampusOperationPolicy campusOperationPolicy
     ) {
 
-        return null;
+        return new AttendanceLog(
+                attendanceDateTime.toLocalDate(),
+                attendanceDateTime.toLocalTime(),
+                AttendanceStatus.from(attendanceDateTime, campusOperationPolicy)
+        );
     }
 
     public static AttendanceLog fromAbsenceDate(final LocalDate absenceDate) {
-        return null;
+        return new AttendanceLog(
+                absenceDate,
+                null,
+                AttendanceStatus.ABSENCE
+        );
     }
 
     public LocalDate getDate() {
