@@ -14,7 +14,7 @@ import view.InputView;
 import view.OutputView;
 
 public class Controller {
-    private final TodayDate todayDate = new TodayDate(LocalDate.of(2024,12,12));
+    private final TodayDate todayDate = new TodayDate();
     private final StudentAttendanceRecord studentRecordRepository = FileInput.createStudentRepository();
     private final int ATTENDANCE_CHECK = 1;
     private final int ATTENDANCE_MODIFY = 2;
