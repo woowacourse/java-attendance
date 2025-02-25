@@ -12,7 +12,7 @@ import attendance.common.exception.AttendanceFileException;
 public class AttendanceFileReader {
     private static final String NOT_EXIST_FILE = "존재하지 않은 파일입니다.";
     private static final String INVALID_FILE = "유효하지 않은 파일입니다.";
-    private static final int csvInfo = 1;
+    private static final int SKIP_CSV_INFO = 1;
 
     private final String fileName;
 
@@ -41,7 +41,7 @@ public class AttendanceFileReader {
         try (BufferedReader bufferedReader = new BufferedReader(
             new FileReader(resourceUrl.getFile()))) {
             return bufferedReader.lines()
-                .skip(csvInfo)
+                .skip(SKIP_CSV_INFO)
                 .collect(Collectors.toList());
         } catch (IOException e) {
             throw new AttendanceFileException(INVALID_FILE, e);
