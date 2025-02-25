@@ -15,6 +15,8 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.TextStyle;
+import java.util.Comparator;
+import java.util.List;
 import java.util.Locale;
 import java.util.stream.Stream;
 import org.junit.jupiter.api.BeforeEach;
@@ -270,6 +272,27 @@ class AttendanceSystemTest {
                 .withMessage(ExceptionMessage.OUT_OF_CAMPUS_TIME.getMessage());
     }
 
+    @DisplayName("출석 조회 - 닉네임을 통해 해당 크루의 출석 기록 일자순으로 조회할 수 있다")
+    @Test
+    void 출석_조회_닉네임을_통해_해당_크루의_출석_기록_일자순으로_조회할_수_있다() {
+        attendanceSystem.addAttendanceRecord(INVALID_CREW_NICKNAME, LocalDateTime.of(2025, 2, 19, 8, 50));
+        attendanceSystem.addAttendanceRecord(INVALID_CREW_NICKNAME, LocalDateTime.of(2025, 2, 18, 8, 50));
+        attendanceSystem.addAttendanceRecord(INVALID_CREW_NICKNAME, LocalDateTime.of(2025, 2, 17, 8, 50));
+        LocalDate today = LocalDate.of(2025, 2, 21);
+        List<AttendanceRecord> records = attendanceSystem.findRecordsInMonth(today);
+
+        assertThat(records).hasSize(15);
+        assertThat(records).isSortedAccordingTo(Comparator.comparing(AttendanceRecord::getArrivalDateTime));
+        checkAttendanceTypeCount(records, AttendanceType.ATTENDANCE, 3);
+        checkAttendanceTypeCount(records, AttendanceType.ABSENCE, 12);
+    }
+
+    String makeHolidayAttendanceExceptionMessage(LocalDateTime dateTime) {
+        return String.format(ExceptionMessage.HOLIDAY_ATTENDANCE.getMessage(),
+                dateTime.getMonth().getValue(), dateTime.getDayOfMonth(),
+                dateTime.getDayOfWeek().getDisplayName(TextStyle.SHORT, Locale.KOREA));
+    }
+
     void checkSameRecord(
             AttendanceRecord target,
             String expectedNickname,
@@ -279,9 +302,9 @@ class AttendanceSystemTest {
         assertThat(target.getArrivalDateTime()).isEqualTo(expectedDateTime);
     }
 
-    String makeHolidayAttendanceExceptionMessage(LocalDateTime dateTime) {
-        return String.format(ExceptionMessage.HOLIDAY_ATTENDANCE.getMessage(),
-                dateTime.getMonth().getValue(), dateTime.getDayOfMonth(),
-                dateTime.getDayOfWeek().getDisplayName(TextStyle.SHORT, Locale.KOREA));
+    void checkAttendanceTypeCount(List<AttendanceRecord> targetRecords, AttendanceType targetType, int expectedCount) {
+        assertThat(targetRecords).extracting(AttendanceRecord::getAttendanceType)
+                .filteredOn(type -> type == targetType).size()
+                .isEqualTo(expectedCount);
     }
 }

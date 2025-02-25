@@ -9,6 +9,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -46,6 +47,10 @@ public class AttendanceSystem {
         AttendanceType attendanceType = attendanceChecker.checkAttendance(newDateTime);
         AttendanceRecord newRecord = new AttendanceRecord(nickname, newDateTime, attendanceType);
         records.add(newRecord);
+    }
+
+    public List<AttendanceRecord> findRecordsInMonth(LocalDate today) {
+        return Collections.EMPTY_LIST;
     }
 
     private void validateAlreadyAttendance(String crewNickname, LocalDate date) {
