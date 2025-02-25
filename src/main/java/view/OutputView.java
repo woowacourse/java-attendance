@@ -77,8 +77,8 @@ public class OutputView {
         return formatedAttendanceInfo.toString();
     }
 
-    public String printCheckedAttendance(Attendance attendance) {
-        return getFormattedAttended(attendance);
+    public void printCheckedAttendance(Attendance attendance) {
+        System.out.println(getFormattedAttended(attendance));
     }
 
     public String getFormattedAttended(Attendance attendance) {
