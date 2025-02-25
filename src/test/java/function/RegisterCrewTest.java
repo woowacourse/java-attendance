@@ -60,6 +60,9 @@ public class RegisterCrewTest {
     @DisplayName("csv 파일을 읽어서 크루 등록을 진행한다.")
     void Register_Crews() {
         CrewRegistration crewRegistration = new CrewRegistration();
+
         AttendanceBook attendanceBook = crewRegistration.registerCrews("src/test/java/resources/test.csv");
+
+        assertThat(attendanceBook.checkCrewExisted("쿠키")).isEqualTo(true);
     }
 }
