@@ -82,10 +82,12 @@ public class OutputView {
 
     public void printWarningCrews(List<WarningCrew> warningCrews) {
         System.out.println("제적 위험자 조회 결과");
-        List<WarningCrew> sorted = warningCrews.stream()
-                .sorted(Comparator.comparing(a -> ((WarningCrew) a).attendCount().calculateRank()).reversed()
-                        .thenComparing(Comparator.comparing(a -> ((WarningCrew) a).name()))).toList();
-        for (WarningCrew warningCrew : sorted) {
+        List<WarningCrew> sortedWarningCrew = warningCrews.stream()
+                .sorted(Comparator.comparing((WarningCrew warningCrew) -> warningCrew.attendCount().calculateRank())
+                        .reversed()
+                        .thenComparing(WarningCrew::name))
+                .toList();
+        for (WarningCrew warningCrew : sortedWarningCrew) {
             String message = formatWarningCrew(warningCrew);
             System.out.println(message);
         }
