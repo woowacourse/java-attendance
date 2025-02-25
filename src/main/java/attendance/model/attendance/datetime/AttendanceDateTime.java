@@ -42,7 +42,7 @@ public class AttendanceDateTime {
     }
 
     public boolean isBeforeTime(final LocalTime time) {
-        return false;
+        return this.time.isBefore(time);
     }
 
     public LocalDate getDate() {
