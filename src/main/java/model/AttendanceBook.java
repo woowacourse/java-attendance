@@ -2,10 +2,10 @@ package model;
 
 import java.util.List;
 
-public class StudentRepository {
+public class AttendanceBook {
     private final List<Student> students;
 
-    public StudentRepository(List<Student> students) {
+    public AttendanceBook(List<Student> students) {
         this.students = students;
     }
 
