@@ -49,7 +49,7 @@ public class AttendanceSystem {
         records.add(newRecord);
     }
 
-    public List<AttendanceRecord> findRecordsInMonth(LocalDate today) {
+    public List<AttendanceRecord> findRecordsInMonth(String nickname, LocalDate today) {
         return Collections.EMPTY_LIST;
     }
 

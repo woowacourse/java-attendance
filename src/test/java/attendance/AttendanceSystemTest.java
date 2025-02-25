@@ -43,7 +43,6 @@ class AttendanceSystemTest {
 
     @BeforeEach
     void beforeEach() {
-        crewStorage.validateIsNotContained(VALID_CREW_NICKNAME);
         crewStorage.add(VALID_CREW_NICKNAME);
         holidayChecker.addPublicHoliday(PUBLIC_HOLIDAY.toLocalDate());
         attendanceSystem = new AttendanceSystem(crewStorage, attendanceChecker);
@@ -273,11 +272,11 @@ class AttendanceSystemTest {
     @DisplayName("출석 조회 - 닉네임을 통해 해당 크루의 출석 기록 일자순으로 조회할 수 있다")
     @Test
     void 출석_조회_닉네임을_통해_해당_크루의_출석_기록_일자순으로_조회할_수_있다() {
-        attendanceSystem.addAttendanceRecord(INVALID_CREW_NICKNAME, LocalDateTime.of(2025, 2, 19, 8, 50));
-        attendanceSystem.addAttendanceRecord(INVALID_CREW_NICKNAME, LocalDateTime.of(2025, 2, 18, 8, 50));
-        attendanceSystem.addAttendanceRecord(INVALID_CREW_NICKNAME, LocalDateTime.of(2025, 2, 17, 8, 50));
+        attendanceSystem.addAttendanceRecord(VALID_CREW_NICKNAME, LocalDateTime.of(2025, 2, 19, 8, 50));
+        attendanceSystem.addAttendanceRecord(VALID_CREW_NICKNAME, LocalDateTime.of(2025, 2, 18, 8, 50));
+        attendanceSystem.addAttendanceRecord(VALID_CREW_NICKNAME, LocalDateTime.of(2025, 2, 17, 8, 50));
         LocalDate today = LocalDate.of(2025, 2, 21);
-        List<AttendanceRecord> records = attendanceSystem.findRecordsInMonth(today);
+        List<AttendanceRecord> records = attendanceSystem.findRecordsInMonth(VALID_CREW_NICKNAME, today);
 
         assertThat(records).hasSize(15);
         assertThat(records).isSortedAccordingTo(Comparator.comparing(AttendanceRecord::getArrivalDateTime));
