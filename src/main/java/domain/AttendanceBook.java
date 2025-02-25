@@ -1,5 +1,6 @@
 package domain;
 
+import dto.CheckAttendanceResponse;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
@@ -29,5 +30,11 @@ public class AttendanceBook {
     public boolean checkCrewExisted(String name) {
         return crews.stream()
                 .anyMatch(crew -> crew.isMyName(name));
+    }
+
+    public CheckAttendanceResponse checkAttendance(String name, LocalTime time) {
+        Crew foundCrew = findCrewByName(name);
+        foundCrew.addNewTimeLog(LocalDate.now(), time);
+        return new CheckAttendanceResponse(time, "출석");
     }
 }
