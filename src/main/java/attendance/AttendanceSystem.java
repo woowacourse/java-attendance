@@ -59,13 +59,13 @@ public class AttendanceSystem {
     }
 
     private void processSystem(final AttendanceMenu menu, final LocalDate today) {
-        processCheck(menu, today);
-        processUpdate(menu, today);
-        processRecordSearch(menu, today);
-        processRiskSearch(menu, today);
+        checkAttendance(menu, today);
+        updateAttendance(menu, today);
+        attendanceRecordSearch(menu, today);
+        attendanceRiskSearch(menu, today);
     }
 
-    private void processCheck(final AttendanceMenu menu, final LocalDate today) {
+    private void checkAttendance(final AttendanceMenu menu, final LocalDate today) {
         if (menu == CHECK) {
             holiday.validateHoliday(today);
 
@@ -78,7 +78,7 @@ public class AttendanceSystem {
         }
     }
 
-    private void processUpdate(final AttendanceMenu menu, final LocalDate today) {
+    private void updateAttendance(final AttendanceMenu menu, final LocalDate today) {
         if (menu == UPDATE) {
             String nickname = validateAndReadNicknameForUpdate();
 
@@ -92,7 +92,7 @@ public class AttendanceSystem {
         }
     }
 
-    private void processRecordSearch(final AttendanceMenu menu, final LocalDate today) {
+    private void attendanceRecordSearch(final AttendanceMenu menu, final LocalDate today) {
         if (menu == RECORD_SEARCH) {
             String nickname = validateAndReadNickname();
 
@@ -104,7 +104,7 @@ public class AttendanceSystem {
         }
     }
 
-    private void processRiskSearch(final AttendanceMenu menu, final LocalDate today) {
+    private void attendanceRiskSearch(final AttendanceMenu menu, final LocalDate today) {
         if (menu == RISK_SEARCH) {
             AttendanceRiskCrews riskCrews = attendanceManager.getAttendanceRiskCrew(today);
             outputView.printAttendanceRiskCrews(riskCrews);
