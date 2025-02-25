@@ -109,8 +109,8 @@ public class Crew {
                 .count();
     }
 
-    private boolean containsDayOfMonth(int date) {
+    private boolean containsDayOfMonth(int dayOfMonth) {
         return attendanceInfo.stream()
-                .anyMatch(a -> a.getDayOfMonth() == date);
+                .anyMatch(attendance -> attendance.isEqualDayOfMonth(dayOfMonth));
     }
 }

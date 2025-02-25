@@ -30,4 +30,8 @@ public class Attendance {
     public boolean isEqualDate(LocalDateTime localDateTime) {
         return dateAndTime.toLocalDate().isEqual(localDateTime.toLocalDate());
     }
+
+    public boolean isEqualDayOfMonth(int dayOfMonth) {
+        return dateAndTime.getDayOfMonth() == dayOfMonth;
+    }
 }
