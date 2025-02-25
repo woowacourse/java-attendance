@@ -35,8 +35,4 @@ public class AttendanceChecker {
                 .filter(date -> !holidayChecker.checkHoliday(date))
                 .collect(Collectors.toList());
     }
-
-    public boolean isHoliday(LocalDate date) {
-        return holidayChecker.checkHoliday(date);
-    }
 }

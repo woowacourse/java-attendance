@@ -59,7 +59,12 @@ public class AttendanceSystem {
     }
 
     public AttendanceState calculateAttendanceStateInMonth(String nickname, LocalDate today) {
-        return null;
+        List<LocalDate> notHolidays = attendanceChecker
+                .calculateNotHolidayInMonth(today.getYear(), today.getMonth());
+        int maxAttendanceCount = (int) notHolidays.stream().filter(notHoliday -> !notHoliday.isAfter(today)).count();
+        int attendanceCount = calculateAttendanceRecordInMonth(nickname, today);
+        int lateCount = calculateLateRecordInMonth(nickname, today);
+        return new AttendanceState(attendanceCount, lateCount, maxAttendanceCount - attendanceCount - lateCount);
     }
 
     private void validateAlreadyAttendance(String crewNickname, LocalDate date) {
@@ -72,5 +77,21 @@ public class AttendanceSystem {
     private AttendanceRecord findOrElseAbsenceRecord(String nickname, LocalDate date) {
         Optional<AttendanceRecord> record = findAttendanceRecord(nickname, date);
         return record.orElseGet(() -> AttendanceRecord.makeAbsenceRecord(nickname, date));
+    }
+
+    private int calculateAttendanceRecordInMonth(String nickname, LocalDate today) {
+        return (int) records.stream()
+                .filter(record -> record.checkNickname(nickname))
+                .filter(record -> record.checkIsInMonth(today.getYear(), today.getMonth()))
+                .filter(record -> record.checkType(AttendanceType.ATTENDANCE))
+                .count();
+    }
+
+    private int calculateLateRecordInMonth(String nickname, LocalDate today) {
+        return (int) records.stream()
+                .filter(record -> record.checkNickname(nickname))
+                .filter(record -> record.checkIsInMonth(today.getYear(), today.getMonth()))
+                .filter(record -> record.checkType(AttendanceType.LATE))
+                .count();
     }
 }
