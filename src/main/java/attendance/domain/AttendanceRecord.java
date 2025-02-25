@@ -1,6 +1,7 @@
 package attendance.domain;
 
 import java.time.Duration;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 
@@ -20,4 +21,13 @@ public class AttendanceRecord {
 
         return AttendanceStatus.from(minutes);
     }
+
+    public void modify(LocalTime modifyTime) {
+        attendanceDateTime = LocalDateTime.of(attendanceDateTime.toLocalDate(), modifyTime);
+    }
+
+    public boolean isSameDate(LocalDate date) {
+        return date.equals(attendanceDateTime.toLocalDate());
+    }
+
 }
