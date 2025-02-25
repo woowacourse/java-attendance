@@ -28,13 +28,34 @@ public class Attendance {
         checkCampusOpen(attendanceDateTime);
 
         this.attendanceDateTime = attendanceDateTime;
-        this.attendanceStatus = checkAttendanceStatus(attendanceDateTime, startHour);
+        this.attendanceStatus = checkAttendanceStatus(attendanceDateTime);
+    }
+
+    public Attendance updateAttendanceTime(LocalTime updateTime) {
+        this.attendanceDateTime = LocalDateTime.of(LocalDate.from(this.attendanceDateTime), updateTime);
+        this.attendanceStatus = checkAttendanceStatus(attendanceDateTime);
+        return this;
+    }
+
+    public boolean isEqualDate(LocalDate date) {
+        return LocalDate.from(attendanceDateTime).isEqual(date);
     }
 
     private void checkHoliday(LocalDateTime attendanceDateTime) {
         if(WEEKEND.contains(attendanceDateTime.getDayOfWeek()) || attendanceDateTime.getDayOfMonth() == CHRISTMAS) {
             throw new IllegalArgumentException("등교일이 아닙니다.");
         }
+    }
+
+    private String checkAttendanceStatus(LocalDateTime attendanceDateTime) {
+        int startHour = checkStartHour(attendanceDateTime);
+        if(attendanceDateTime.getHour() > startHour || (attendanceDateTime.getHour() >= 10 && attendanceDateTime.getMinute() > 30)) {
+            return "결석";
+        }
+        if(attendanceDateTime.getHour() == startHour && attendanceDateTime.getMinute() > 5) {
+            return "지각";
+        }
+        return "출석";
     }
 
     private int checkStartHour(LocalDateTime attendanceDateTime) {
@@ -50,19 +71,5 @@ public class Attendance {
         if(attendanceTime.isBefore(OPEN_HOUR) || attendanceTime.isAfter(CLOSE_HOUR)) {
             throw new IllegalArgumentException("캠퍼스 운영 시간은 8:00 ~ 23:00입니다.");
         }
-    }
-
-    private String checkAttendanceStatus(LocalDateTime attendanceTime, int startHour) {
-        if(attendanceTime.getHour() > startHour || (attendanceTime.getHour() >= 10 && attendanceTime.getMinute() > 30)) {
-            return "결석";
-        }
-        if(attendanceTime.getHour() == startHour && attendanceTime.getMinute() > 5) {
-            return "지각";
-        }
-        return "출석";
-    }
-
-    public boolean isEqualDate(LocalDate date) {
-        return LocalDate.from(attendanceDateTime).isEqual(date);
     }
 }

@@ -2,6 +2,7 @@ package attendance;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,11 +22,18 @@ public class Crew {
         return attendance;
     }
 
-    public boolean isEqualCrew(String nickname) { return this.nickname.equals(nickname); }
+    public boolean isEqualCrew(String nickname) {
+        return this.nickname.equals(nickname);
+    }
+
+    public Attendance updateAttendance(LocalDate updateDate, LocalTime updateTime) {
+        Attendance beforeAttendance = findAttendanceByDate(updateDate);
+        return beforeAttendance.updateAttendanceTime(updateTime);
+    }
 
     public Attendance findAttendanceByDate(LocalDate date) {
         for (Attendance attendance : attendances) {
-            if(attendance.isEqualDate(date)) {
+            if (attendance.isEqualDate(date)) {
                 return attendance;
             }
         }

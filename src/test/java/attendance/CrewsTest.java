@@ -2,9 +2,11 @@ package attendance;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.assertj.core.api.SoftAssertions.assertSoftly;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -136,5 +138,28 @@ public class CrewsTest {
 
         assertThatThrownBy(() -> crew.findAttendanceByDate(LocalDate.of(2024,12,13)))
                 .isInstanceOf(IllegalArgumentException.class);
+    }
+
+    @Test
+    @DisplayName("날짜로 출석 기록을 찾아 수정")
+    void updateAttendanceTest1() {
+        Crews crews = new Crews();
+        Crew crew = crews.addCrew("모루");
+        crew.addAttendance(LocalDateTime.of(2024,12,11,10,36));
+        crew.addAttendance(LocalDateTime.of(2024,12,12,10,6));
+
+        crew.updateAttendance(LocalDate.of(2024,12,11), LocalTime.of(10,0));
+
+
+        assertSoftly(softly -> {
+            assertThat(crew.findAttendanceByDate(LocalDate.of(2024,12,11)))
+                    .hasFieldOrPropertyWithValue("attendanceDateTime", LocalDateTime.of(2024,12,11,10,0));
+            assertThat(crew.findAttendanceByDate(LocalDate.of(2024,12,11)))
+                    .hasFieldOrPropertyWithValue("attendanceStatus", "출석");
+
+            Crew foundCrew = crews.findCrewByNickname("모루");
+            assertThat(foundCrew.findAttendanceByDate(LocalDate.of(2024,12,11)))
+                    .hasFieldOrPropertyWithValue("attendanceDateTime", LocalDateTime.of(2024,12,11,10,0));
+        });
     }
 }
