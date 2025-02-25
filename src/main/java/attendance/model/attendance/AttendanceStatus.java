@@ -28,7 +28,7 @@ public enum AttendanceStatus {
             final CampusOperationPolicy campusOperationPolicy
     ) {
 
-        validateCampusOperationTime(dateTime.toLocalTime(), campusOperationPolicy);
+        validateCampusOperationTime(dateTime, campusOperationPolicy);
 
         if (isMonday(dateTime.toLocalDate())) {
             return calculate(dateTime.toLocalTime(), MONDAY_LATE_TIME, MONDAY_ABSENCE_TIME);
@@ -37,11 +37,11 @@ public enum AttendanceStatus {
     }
 
     private static void validateCampusOperationTime(
-            final LocalTime time,
+            final LocalDateTime dateTime,
             final CampusOperationPolicy campusOperationPolicy
     ) {
 
-        if (!campusOperationPolicy.isCampusOpen(time)) {
+        if (!campusOperationPolicy.isCampusOpen(dateTime)) {
             throw new IllegalArgumentException("캠퍼스 운영 시간이 아닙니다.");
         }
     }
