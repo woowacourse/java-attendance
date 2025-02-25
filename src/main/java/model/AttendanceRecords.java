@@ -7,6 +7,10 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class AttendanceRecords {
+    private static final int SATURDAY = 6;
+    private static final int SUNDAY = 7;
+    private static final int CHRISTMAS = 25;
+
     private final Map<LocalDate, AttendanceRecord> record;
 
     public AttendanceRecords(Map<LocalDate, AttendanceRecord> record) {
@@ -14,7 +18,7 @@ public class AttendanceRecords {
     }
 
     public void updateAttendanceStatusByLocalDate(LocalDateTime updateLocalDateTime) {
-        checkHoliday(updateLocalDateTime);
+        validateHoliday(updateLocalDateTime);
         checkOpeningHours(updateLocalDateTime);
         AttendanceStatus newAttendanceStatus = AttendanceRuleByDay
                 .calculateAttendance(updateLocalDateTime);
@@ -31,7 +35,7 @@ public class AttendanceRecords {
     }
 
     public void registerAttendanceRecord(LocalDateTime localDateTime) {
-        checkHoliday(localDateTime);
+        validateHoliday(localDateTime);
         checkOpeningHours(localDateTime);
         LocalDate localDate = LocalDate.from(localDateTime);
         LocalTime localTime = LocalTime.from(localDateTime);
@@ -86,9 +90,9 @@ public class AttendanceRecords {
         record.put(LocalDate.from(updateLocalDateTime), new AttendanceRecord(null, AttendanceStatus.ABSENT));
     }
 
-    private void checkHoliday(LocalDateTime localDateTime) {
+    private void validateHoliday(LocalDateTime localDateTime) {
         int day = localDateTime.getDayOfWeek().getValue();
-        if (day == 6 || day == 7 || localDateTime.getDayOfMonth() == 25) {
+        if (day == SATURDAY || day == SUNDAY || localDateTime.getDayOfMonth() == CHRISTMAS) {
             throw new IllegalArgumentException("[주말 및 공휴일에는 등교일이 아닙니다]");
         }
     }
