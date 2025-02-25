@@ -4,8 +4,7 @@ import domain.AttendanceBook;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import repository.AttendanceRepository;
-import repository.AttendanceRepositoryImpl;
+import domain.CrewAttendances;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -15,23 +14,23 @@ import java.util.Map;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class AttendanceStoreTest {
-    AttendanceRepository attendanceRepository = new AttendanceRepositoryImpl();
-    AttendanceStoreService attendanceStoreService = new AttendanceStoreService(attendanceRepository);
+    CrewAttendances crewAttendances = new CrewAttendances();
+    AttendanceStoreService attendanceStoreService = new AttendanceStoreService(crewAttendances);
 
     Map<String, AttendanceBook> attendanceBooks = new HashMap<>();
 
     @BeforeEach
     void setup() {
-        AttendanceBook 쿠키_출석부 = new AttendanceBook(2024, 12);
+        AttendanceBook 쿠키_출석부 = new AttendanceBook();
         쿠키_출석부.create(LocalDate.of(2024, 12, 13), LocalTime.of(10, 8));
 
-        AttendanceBook 빙봉_출석부 = new AttendanceBook(2024, 12);
+        AttendanceBook 빙봉_출석부 = new AttendanceBook();
         빙봉_출석부.create(LocalDate.of(2024, 12, 13), LocalTime.of(10, 7));
 
-        AttendanceBook 빙티_출석부 = new AttendanceBook(2024, 12);
+        AttendanceBook 빙티_출석부 = new AttendanceBook();
         빙티_출석부.create(LocalDate.of(2024, 12, 13), LocalTime.of(10, 7));
 
-        AttendanceBook 이든_출석부 = new AttendanceBook(2024, 12);
+        AttendanceBook 이든_출석부 = new AttendanceBook();
         이든_출석부.create(LocalDate.of(2024, 12, 13), LocalTime.of(10, 7));
 
         attendanceBooks.put("쿠키", 쿠키_출석부);
@@ -51,7 +50,7 @@ public class AttendanceStoreTest {
         // then
         for (String name : attendanceBooks.keySet()) {
             AttendanceBook expected = attendanceBooks.get(name);
-            assertThat(attendanceRepository.findByCrewName(name)).isEqualTo(expected);
+            assertThat(crewAttendances.findByCrewName(name)).isEqualTo(expected);
         }
     }
 }

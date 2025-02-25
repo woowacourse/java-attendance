@@ -1,10 +1,10 @@
 package view;
 
 import controller.Menu;
+import domain.Attendance;
 import domain.AttendanceCustomDate;
 import domain.AttendanceStatus;
 import domain.CrewStatus;
-import service.dto.AttendanceHistoryResponse;
 import service.dto.AttendanceModifyResponse;
 import service.dto.AttendanceRegisterResponse;
 import service.dto.DisenrollmentCheckResponse;
@@ -75,7 +75,7 @@ public class OutputView {
 
     public void printHistoryResult(
             String name,
-            List<AttendanceHistoryResponse> histories,
+            Map<LocalDate, Attendance> histories,
             Map<AttendanceStatus, Integer> attendanceResult,
             CrewStatus crewStatus
     ) {
@@ -97,20 +97,22 @@ public class OutputView {
         );
     }
 
-    private void printHistories(List<AttendanceHistoryResponse> histories) {
-        histories.forEach(response -> {
-            String formattedDate = response.date().format(
+    private void printHistories(Map<LocalDate, Attendance> histories) {
+        for (Map.Entry<LocalDate, Attendance> entry : histories.entrySet()) {
+            LocalDate date = entry.getKey();
+            Attendance attendance = entry.getValue();
+            String formattedDate = date.format(
                     DateTimeFormatter.ofPattern("MM월 dd일 E요일").withLocale(Locale.forLanguageTag("ko"))
             );
             String formattedTime = "--:--";
-            if (response.time().isPresent()) {
-                formattedTime = response.time().get().format(
-                        DateTimeFormatter.ofPattern("HH:mm").withLocale(Locale.forLanguageTag("ko"))
-                );
+            if (!attendance.isAbsence()) {
+                formattedTime = attendance.getTime()
+                        .get()
+                        .format(DateTimeFormatter.ofPattern("HH:mm").withLocale(Locale.forLanguageTag("ko")));
             }
-            String status = response.status();
+            String status = attendance.getStatus().getExpression();
             System.out.printf("%s %s (%s)\n", formattedDate, formattedTime, status);
-        });
+        }
     }
 
     private void printAttendanceCount(Map<AttendanceStatus, Integer> attendanceResult) {

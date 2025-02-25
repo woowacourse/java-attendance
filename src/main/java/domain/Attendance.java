@@ -25,8 +25,12 @@ public class Attendance {
         return new Attendance(date, time, AttendanceStatus.of(LocalDateTime.of(date, time)));
     }
 
-    public boolean isEmpty() {
+    public boolean isAbsence() {
         return status == AttendanceStatus.TRUANCY;
+    }
+
+    public boolean isAttendedOn(LocalDate date) {
+        return this.date.isEqual(date);
     }
 
     public LocalDate getDate() {

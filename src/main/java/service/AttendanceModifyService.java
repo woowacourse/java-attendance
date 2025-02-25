@@ -1,23 +1,22 @@
 package service;
 
 import domain.Attendance;
-import repository.AttendanceRepository;
+import domain.CrewAttendances;
 import service.dto.AttendanceModifyResponse;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
 
 public class AttendanceModifyService {
-    private final AttendanceRepository attendanceRepository;
+    private final CrewAttendances crewAttendances;
 
-    public AttendanceModifyService(AttendanceRepository attendanceRepository) {
-        this.attendanceRepository = attendanceRepository;
+    public AttendanceModifyService(CrewAttendances crewAttendances) {
+        this.crewAttendances = crewAttendances;
     }
 
     public AttendanceModifyResponse modify(String name, LocalDate date, LocalTime time) {
-        Attendance beforeAttendance = attendanceRepository.findByCrewAndDate(name, date);
-        Attendance afterAttendance = beforeAttendance.modify(time);
-        attendanceRepository.modifyAttendance(name, date, time);
+        Attendance beforeAttendance = crewAttendances.findByCrewAndDate(name, date);
+        Attendance afterAttendance = crewAttendances.modifyAttendance(name, date, time);
         return new AttendanceModifyResponse(
                 date,
                 beforeAttendance.getTime(),

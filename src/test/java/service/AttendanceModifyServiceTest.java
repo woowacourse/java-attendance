@@ -3,10 +3,10 @@ package service;
 import domain.AttendanceCustomDate;
 import domain.AttendanceStatus;
 import domain.Crew;
+import domain.CrewAttendances;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import repository.*;
 import service.dto.AttendanceModifyResponse;
 
 import java.time.LocalDate;
@@ -19,17 +19,17 @@ import static org.assertj.core.api.Assertions.assertThat;
 class AttendanceModifyServiceTest {
     String name = "빙티";
     Crew crew = new Crew(name);
-    AttendanceRepository attendanceRepository;
+    CrewAttendances crewAttendances;
     AttendanceModifyService attendanceModifyService;
 
     @BeforeEach
     void setUp() {
         LocalDateTime now = AttendanceCustomDate.now();
 
-        attendanceRepository = new AttendanceRepositoryImpl();
-        attendanceModifyService = new AttendanceModifyService(attendanceRepository);
+        crewAttendances = new CrewAttendances();
+        attendanceModifyService = new AttendanceModifyService(crewAttendances);
 
-        attendanceRepository.save(crew, now.getYear(), now.getMonthValue());
+        crewAttendances.save(crew);
     }
 
     @DisplayName("기존 출석 기록을 수정한다.")
@@ -39,7 +39,7 @@ class AttendanceModifyServiceTest {
         LocalDate date = LocalDate.of(AttendanceCustomDate.YEAR, AttendanceCustomDate.MONTH.getValue(), 19);
         LocalTime beforeTime = LocalTime.of(10, 30);
         LocalTime afterTime = LocalTime.of(10, 0);
-        attendanceRepository.createNewAttendance(name, date, beforeTime);
+        crewAttendances.createNewAttendance(name, date, beforeTime);
 
         //when
         AttendanceModifyResponse response = attendanceModifyService.modify(name, date, afterTime);

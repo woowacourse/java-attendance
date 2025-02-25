@@ -1,7 +1,7 @@
 package domain;
 
-import exception.AttendanceNotExistException;
 import exception.DuplicateAttendanceException;
+import exception.InvalidDateException;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -10,23 +10,17 @@ import java.util.*;
 public class AttendanceBook {
     private final HashSet<Attendance> attendances;
 
-    public AttendanceBook(int year, int month) {
-        Month customMonth = Month.of(month);
-
+    public AttendanceBook() {
         attendances = new HashSet<>();
-        for (int day = 1; day <= customMonth.getLastDay(); day++) {
-            if (!customMonth.isHoliday(day)) {
-                LocalDate date = LocalDate.of(year, month, day);
-                attendances.add(Attendance.empty(date));
-            }
-        }
     }
 
     public Attendance create(LocalDate date, LocalTime time) {
-        final boolean isExist = attendances.stream()
-                .anyMatch(attendance -> attendance.getDate().isEqual(date) && !attendance.isEmpty());
+        final boolean isExist = attendances.stream().anyMatch(attendance -> attendance.isAttendedOn(date));
         if (isExist) {
             throw new DuplicateAttendanceException();
+        }
+        if (isHoliday(date)) {
+            throw new InvalidDateException();
         }
         Attendance attendance = Attendance.of(date, time);
         addAttendance(attendance);
@@ -35,48 +29,62 @@ public class AttendanceBook {
 
     public Attendance findAttendanceByDate(LocalDate date) {
         return attendances.stream()
-                .filter(attendance -> attendance.getDate().isEqual(date))
+                .filter(attendance -> attendance.isAttendedOn(date))
                 .findFirst()
                 .orElse(Attendance.empty(date));
     }
 
-    public void replace(LocalDate date, LocalTime time) {
+    public Attendance replace(LocalDate date, LocalTime time) {
         Attendance oldAttendance = attendances.stream()
-                .filter(attendance -> attendance.getDate().isEqual(date))
+                .filter(attendance -> attendance.isAttendedOn(date))
                 .findFirst()
-                .orElseThrow(AttendanceNotExistException::new);
+                .orElse(Attendance.empty(date));
         Attendance modifiedAttendance = oldAttendance.modify(time);
         addAttendance(modifiedAttendance);
+        return modifiedAttendance;
     }
 
-    public List<Attendance> getAllAttendances(final int limitDay) {
-        return attendances.stream()
-                .sorted(Comparator.comparing(Attendance::getDate))
-                .filter(attendance -> attendance.getDate().getDayOfMonth() < limitDay)
-                .toList();
+    // TODO: 출석 내역을 날짜 기준으로 정렬해서 보여주는 것은 뷰의 책임으로 넘기기
+    public List<Attendance> getAllAttendances(LocalDate startDate, LocalDate endDate) {
+        List<Attendance> result = new ArrayList<>();
+        for (LocalDate current = startDate; current.isBefore(endDate); current = current.plusDays(1)) {
+            if (isHoliday(current)) {
+                continue;
+            }
+            Attendance attendance = findAttendanceByDate(current);
+            result.add(attendance);
+        }
+        return result;
     }
 
-    public Map<AttendanceStatus, Integer> calculateAttendanceResult(final int limitDay) {
+    public Map<AttendanceStatus, Integer> calculateAttendanceResult(LocalDate startDate, LocalDate endDate) {
         Map<AttendanceStatus, Integer> result = new HashMap<>();
         result.put(AttendanceStatus.ATTENDANCE, 0);
         result.put(AttendanceStatus.LATE, 0);
         result.put(AttendanceStatus.ABSENCE, 0);
 
-        List<Attendance> attendances = getAllAttendances(limitDay);
-        for (Attendance attendance : attendances) {
+        for (LocalDate current = startDate; current.isBefore(endDate); current = current.plusDays(1)) {
+            if (isHoliday(current)) {
+                continue;
+            }
+            Attendance attendance = findAttendanceByDate(current);
             AttendanceStatus status = attendance.getStatus();
-            if (status == AttendanceStatus.TRUANCY) {
+            if (attendance.isAbsence()) {
                 status = AttendanceStatus.ABSENCE;
             }
             result.replace(status, result.get(status) + 1);
         }
+
         return result;
     }
 
-    public int getLateCount(final int limitDay) {
-        List<Attendance> attendances = getAllAttendances(limitDay);
+    public int getLateCount(LocalDate startDate, LocalDate endDate) {
         int count = 0;
-        for (Attendance attendance : attendances) {
+        for (LocalDate current = startDate; current.isBefore(endDate); current = current.plusDays(1)) {
+            if (isHoliday(current)) {
+                continue;
+            }
+            Attendance attendance = findAttendanceByDate(current);
             if (attendance.getStatus() == AttendanceStatus.LATE) {
                 count++;
             }
@@ -84,12 +92,14 @@ public class AttendanceBook {
         return count;
     }
 
-    public int getAbsenceCount(final int limitDay) {
-        List<Attendance> attendances = getAllAttendances(limitDay);
+    public int getAbsenceCount(LocalDate startDate, LocalDate endDate) {
         int count = 0;
-        for (Attendance attendance : attendances) {
-            if (attendance.getStatus() == AttendanceStatus.ABSENCE
-                    || attendance.getStatus() == AttendanceStatus.TRUANCY) {
+        for (LocalDate current = startDate; current.isBefore(endDate); current = current.plusDays(1)) {
+            if (isHoliday(current)) {
+                continue;
+            }
+            Attendance attendance = findAttendanceByDate(current);
+            if (attendance.getStatus() == AttendanceStatus.ABSENCE || attendance.isAbsence()) {
                 count++;
             }
         }
@@ -114,5 +124,10 @@ public class AttendanceBook {
             attendances.remove(attendance);
             attendances.add(attendance);
         }
+    }
+
+    private boolean isHoliday(LocalDate date) {
+        Month month = Month.of(date.getMonthValue());
+        return month.isHoliday(date.getDayOfMonth());
     }
 }

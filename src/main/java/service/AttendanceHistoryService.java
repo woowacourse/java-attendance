@@ -1,43 +1,34 @@
 package service;
 
+import domain.Attendance;
 import domain.AttendanceBook;
 import domain.AttendanceStatus;
 import domain.CrewStatus;
-import repository.AttendanceRepository;
-import service.dto.AttendanceHistoryResponse;
+import domain.CrewAttendances;
 
 import java.time.LocalDate;
-import java.util.List;
 import java.util.Map;
 
 public class AttendanceHistoryService {
-    private final AttendanceRepository attendanceRepository;
+    private final CrewAttendances crewAttendances;
 
-    public AttendanceHistoryService(AttendanceRepository attendanceRepository) {
-        this.attendanceRepository = attendanceRepository;
+    public AttendanceHistoryService(CrewAttendances crewAttendances) {
+        this.crewAttendances = crewAttendances;
     }
 
-    public List<AttendanceHistoryResponse> getHistoriesOf(String name, LocalDate date) {
-        AttendanceBook attendanceBook = attendanceRepository.findByCrewName(name);
-        return attendanceBook.getAllAttendances(date.getDayOfMonth())
-                .stream()
-                .map(attendance -> new AttendanceHistoryResponse(
-                        attendance.getDate(),
-                        attendance.getTime(),
-                        attendance.getStatus().getExpression())
-                )
-                .toList();
+    public Map<LocalDate, Attendance> getHistoriesOf(String name, LocalDate startDate, LocalDate endDate) {
+        return crewAttendances.getAttendances(name, startDate, endDate);
     }
 
-    public Map<AttendanceStatus, Integer> getAttendanceResultOf(String name, LocalDate date) {
-        AttendanceBook attendanceBook = attendanceRepository.findByCrewName(name);
-        return attendanceBook.calculateAttendanceResult(date.getDayOfMonth());
+    public Map<AttendanceStatus, Integer> getAttendanceResultOf(String name, LocalDate startDate, LocalDate endDate) {
+        AttendanceBook attendanceBook = crewAttendances.findByCrewName(name);
+        return attendanceBook.calculateAttendanceResult(startDate, endDate);
     }
 
-    public CrewStatus getCrewStatus(String name, LocalDate date) {
-        AttendanceBook attendanceBook = attendanceRepository.findByCrewName(name);
-        int lateCount = attendanceBook.getLateCount(date.getDayOfMonth());
-        int absenceCount = attendanceBook.getAbsenceCount(date.getDayOfMonth());
+    public CrewStatus getCrewStatus(String name, LocalDate startDate, LocalDate endDate) {
+        AttendanceBook attendanceBook = crewAttendances.findByCrewName(name);
+        int lateCount = attendanceBook.getLateCount(startDate, endDate);
+        int absenceCount = attendanceBook.getAbsenceCount(startDate, endDate);
         return CrewStatus.from(lateCount, absenceCount);
     }
 }

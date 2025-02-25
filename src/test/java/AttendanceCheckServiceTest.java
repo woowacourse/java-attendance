@@ -4,31 +4,27 @@ import exception.DuplicateAttendanceException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import repository.AttendanceRepository;
-import repository.AttendanceRepositoryImpl;
+import domain.CrewAttendances;
 import service.AttendanceCheckService;
 import service.dto.AttendanceRegisterResponse;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.*;
 
 public class AttendanceCheckServiceTest {
-    AttendanceRepository attendanceRepository;
+    CrewAttendances crewAttendances;
     AttendanceCheckService attendanceCheckService;
 
     @BeforeEach
     void setUp() {
-        LocalDateTime now = AttendanceCustomDate.now();
-
         Crew crew = new Crew("이든");
-        attendanceRepository = new AttendanceRepositoryImpl();
-        attendanceCheckService = new AttendanceCheckService(attendanceRepository);
+        crewAttendances = new CrewAttendances();
+        attendanceCheckService = new AttendanceCheckService(crewAttendances);
 
-        attendanceRepository.save(crew, now.getYear(), now.getMonthValue());
+        crewAttendances.save(crew);
     }
 
     @DisplayName("등교시간을 입력하면 Attendance 객체를 추가할 수 있다.")
@@ -54,7 +50,7 @@ public class AttendanceCheckServiceTest {
         String name = "이든";
         LocalDate date = LocalDate.of(AttendanceCustomDate.YEAR, AttendanceCustomDate.MONTH.getValue(), 18);
         LocalTime time = LocalTime.of(16, 55);
-        attendanceRepository.createNewAttendance(name, date, time);
+        crewAttendances.createNewAttendance(name, date, time);
 
         // when & then
         assertThatThrownBy(() -> {

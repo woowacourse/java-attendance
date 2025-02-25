@@ -1,9 +1,8 @@
 package service;
 
-import domain.AttendanceCustomDate;
 import domain.Crew;
 import exception.CrewNotExistException;
-import repository.AttendanceRepository;
+import domain.CrewAttendances;
 
 import java.io.*;
 import java.time.LocalDateTime;
@@ -12,10 +11,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class AttendanceStoreService {
-    private final AttendanceRepository attendanceRepository;
+    private final CrewAttendances crewAttendances;
 
-    public AttendanceStoreService(AttendanceRepository attendanceRepository) {
-        this.attendanceRepository = attendanceRepository;
+    public AttendanceStoreService(CrewAttendances crewAttendances) {
+        this.crewAttendances = crewAttendances;
     }
 
     public void save(String file) {
@@ -23,14 +22,13 @@ public class AttendanceStoreService {
         for (String line : lines) {
             String[] parsed = line.split(",");;
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
-            LocalDateTime now = AttendanceCustomDate.now();
             try {
-                attendanceRepository.findCrewByName(parsed[0]);
+                crewAttendances.findCrewByName(parsed[0]);
             } catch (CrewNotExistException e) {
-                attendanceRepository.save(new Crew(parsed[0]), now.getYear(), now.getMonthValue());
+                crewAttendances.save(new Crew(parsed[0]));
             }
             LocalDateTime attendanceTime = LocalDateTime.parse(parsed[1], formatter);
-            attendanceRepository.createNewAttendance(
+            crewAttendances.createNewAttendance(
                     parsed[0],
                     attendanceTime.toLocalDate(),
                     attendanceTime.toLocalTime()

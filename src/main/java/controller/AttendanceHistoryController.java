@@ -1,5 +1,6 @@
 package controller;
 
+import domain.Attendance;
 import domain.AttendanceCustomDate;
 import domain.AttendanceStatus;
 import domain.CrewStatus;
@@ -31,10 +32,10 @@ public class AttendanceHistoryController implements Controller {
     public void run() {
         String name = inputView.readName();
         LocalDate nowDate = AttendanceCustomDate.now().toLocalDate();
-        List<AttendanceHistoryResponse> histories =
-                attendanceHistoryService.getHistoriesOf(name, nowDate);
-        Map<AttendanceStatus, Integer> attendanceResult = attendanceHistoryService.getAttendanceResultOf(name, nowDate);
-        CrewStatus crewStatus = attendanceHistoryService.getCrewStatus(name, nowDate);
+        Map<LocalDate, Attendance> histories = attendanceHistoryService.getHistoriesOf(name, nowDate.withDayOfMonth(1), nowDate);
+        Map<AttendanceStatus, Integer> attendanceResult = attendanceHistoryService
+                .getAttendanceResultOf(name, nowDate.withDayOfMonth(1), nowDate);
+        CrewStatus crewStatus = attendanceHistoryService.getCrewStatus(name, nowDate.withDayOfMonth(1), nowDate);
         outputView.printHistoryResult(name, histories, attendanceResult, crewStatus);
     }
 }

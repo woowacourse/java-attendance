@@ -1,14 +1,13 @@
 package config;
 
 import controller.*;
-import repository.AttendanceRepository;
-import repository.AttendanceRepositoryImpl;
+import domain.CrewAttendances;
 import service.*;
 import view.InputView;
 import view.OutputView;
 
 public class AppConfig {
-    private AttendanceRepository attendanceRepository;
+    private CrewAttendances crewAttendances;
     private InputView inputView;
     private OutputView outputView;
 
@@ -28,14 +27,14 @@ public class AppConfig {
         return new AttendanceHistoryController(
                 getInputView(),
                 getOutputView(),
-                new AttendanceHistoryService(getAttendanceRepository())
+                new AttendanceHistoryService(getCrewAttendances())
         );
     }
 
     private Controller getDisenrollmentCheckController() {
         return new DisenrollmentCheckController(
                 getOutputView(),
-                new DisenrollmentCheckService(getAttendanceRepository())
+                new DisenrollmentCheckService(getCrewAttendances())
         );
     }
 
@@ -43,13 +42,13 @@ public class AppConfig {
         return new AttendanceModifyController(
                 getInputView(),
                 getOutputView(),
-                new AttendanceModifyService(getAttendanceRepository())
+                new AttendanceModifyService(getCrewAttendances())
         );
     }
 
     private Controller getAttendanceStoreController() {
         return new StoreController(
-                new AttendanceStoreService(getAttendanceRepository())
+                new AttendanceStoreService(getCrewAttendances())
         );
     }
 
@@ -57,7 +56,7 @@ public class AppConfig {
         return new AttendanceCheckController(
                 getInputView(),
                 getOutputView(),
-                new AttendanceCheckService(getAttendanceRepository())
+                new AttendanceCheckService(getCrewAttendances())
         );
     }
 
@@ -75,10 +74,10 @@ public class AppConfig {
         return outputView;
     }
 
-    private AttendanceRepository getAttendanceRepository() {
-        if (attendanceRepository == null) {
-            attendanceRepository = new AttendanceRepositoryImpl();
+    private CrewAttendances getCrewAttendances() {
+        if (crewAttendances == null) {
+            crewAttendances = new CrewAttendances();
         }
-        return attendanceRepository;
+        return crewAttendances;
     }
 }
