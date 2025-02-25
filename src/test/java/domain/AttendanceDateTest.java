@@ -4,7 +4,9 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.stream.Stream;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -34,4 +36,20 @@ public class AttendanceDateTest {
                 Arguments.arguments(LocalDate.of(2024, 12, 25))
         );
     }
+
+    @ParameterizedTest
+    @DisplayName("날짜에 따른 교육 시작 시간 탐색 테스트")
+    @MethodSource("provideDateAndEducationStartTime")
+    void findEducationStartTimeTest(LocalDate date, LocalTime expected) {
+        AttendanceDate attendanceDate = new AttendanceDate(date);
+        Assertions.assertThat(attendanceDate.getEducationStartTime()).isEqualTo(expected);
+    }
+
+    private static Stream<Arguments> provideDateAndEducationStartTime() {
+        return Stream.of(
+                Arguments.arguments(LocalDate.of(2024, 12, 2), LocalTime.of(13, 0)),
+                Arguments.arguments(LocalDate.of(2024, 12, 3), LocalTime.of(10, 0))
+        );
+    }
+
 }

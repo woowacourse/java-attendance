@@ -2,6 +2,7 @@ package domain;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.List;
 
 public class AttendanceDate {
@@ -12,6 +13,13 @@ public class AttendanceDate {
     public AttendanceDate(final LocalDate date) {
         validateCampusOpen(date);
         this.attendanceDate = date;
+    }
+
+    public LocalTime getEducationStartTime() {
+        if (attendanceDate.getDayOfWeek().equals(DayOfWeek.MONDAY)) {
+            return LocalTime.of(13, 0);
+        }
+        return LocalTime.of(10, 0);
     }
 
     private void validateCampusOpen(LocalDate date) {

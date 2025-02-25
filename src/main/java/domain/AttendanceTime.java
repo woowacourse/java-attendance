@@ -19,4 +19,12 @@ public class AttendanceTime {
             throw new IllegalArgumentException("[ERROR] 캠퍼스 운영 시간이 아닙니다.");
         }
     }
+
+    public boolean isAfter(LocalTime time) {
+        return this.attendanceTime.isAfter(time);
+    }
+
+    public boolean isBefore(LocalTime time) {
+        return this.attendanceTime.isBefore(time);
+    }
 }
