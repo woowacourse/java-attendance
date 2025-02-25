@@ -1,4 +1,4 @@
-package attendance;
+package attendance.view;
 
 import java.util.Arrays;
 

@@ -8,6 +8,7 @@ import attendance.domain.AttendanceStatus;
 import attendance.domain.Holiday;
 import attendance.utility.DateGenerator;
 import attendance.utility.DateTimeParser;
+import attendance.view.AttendanceMenu;
 import attendance.view.InputView;
 import attendance.view.OutputView;
 
@@ -17,11 +18,11 @@ import java.time.LocalTime;
 import java.util.List;
 import java.util.Map;
 
-import static attendance.AttendanceMenu.CHECK;
-import static attendance.AttendanceMenu.QUIT;
-import static attendance.AttendanceMenu.RECORD_SEARCH;
-import static attendance.AttendanceMenu.RISK_SEARCH;
-import static attendance.AttendanceMenu.UPDATE;
+import static attendance.view.AttendanceMenu.CHECK;
+import static attendance.view.AttendanceMenu.QUIT;
+import static attendance.view.AttendanceMenu.RECORD_SEARCH;
+import static attendance.view.AttendanceMenu.RISK_SEARCH;
+import static attendance.view.AttendanceMenu.UPDATE;
 
 public class AttendanceSystem {
 
