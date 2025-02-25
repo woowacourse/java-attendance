@@ -2,7 +2,6 @@ package domain;
 
 import dto.AttendanceRecord;
 import dto.Time;
-import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -43,18 +42,13 @@ public class Attendance {
         LocalDate today = LocalDate.of(2024, 12, DateTimeUtil.getTodayDate());
         List<LocalDate> workDays = IntStream.range(1, DateTimeUtil.getDateBy(today))
                 .mapToObj(today::withDayOfMonth)
-                .filter(date -> isWeekDay(date) && !containsAttendance(attendanceRecords, date))
+                .filter(date -> !DateTimeUtil.isHoliday(date) && !containsAttendance(attendanceRecords, date))
                 .toList();
 
         workDays.forEach(date -> modifiedRecords.add(
                 new AttendanceRecord(date, new Time(LocalTime.of(0, 0), AttendanceState.ABSENCE))));
 
         return modifiedRecords;
-    }
-
-    private boolean isWeekDay(LocalDate date) {
-        DayOfWeek dayOfWeek = date.getDayOfWeek();
-        return dayOfWeek != DayOfWeek.SATURDAY && dayOfWeek != DayOfWeek.SUNDAY;
     }
 
     private boolean containsAttendance(List<AttendanceRecord> attendanceRecords, LocalDate date) {
@@ -102,12 +96,11 @@ public class Attendance {
     }
 
     public LocalTime update(final Crew crew, final String updateTime, final int date) {
-        DateTimeUtil.validateHolyDay(date);
+        DateTimeUtil.validateHoliDay(date);
         List<AttendanceRecord> attendanceRecords = new ArrayList<>(attendanceMap.get(crew));
 
         int i;
         LocalTime beforeLocalTime = null;
-        System.out.println(attendanceRecords.size());
         for (i = 0; i < attendanceRecords.size(); i++) {
             AttendanceRecord record = attendanceRecords.get(i);
             int dayOfMonth = DateTimeUtil.getDateBy(record.date());

@@ -17,7 +17,7 @@ public enum AttendanceState {
     }
 
     public static AttendanceState findStateBy(final LocalTime localTime, final LocalDate localDate) {
-        DateTimeUtil.validateHolyDay(DateTimeUtil.getDateBy(localDate));
+        DateTimeUtil.validateHoliDay(DateTimeUtil.getDateBy(localDate));
 
         if (checkAbsenceDay(localTime)) {
             return AttendanceState.ABSENCE;
