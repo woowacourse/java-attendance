@@ -2,11 +2,10 @@ package attendance.controller;
 
 import attendance.domain.AttendanceHistories;
 import attendance.domain.AttendanceHistory;
-import attendance.domain.Crews;
+import attendance.domain.CampusTime;
 import attendance.domain.DateInfo;
 import attendance.domain.DateInfos;
 import attendance.domain.Register;
-import attendance.domain.CampusTime;
 import attendance.domain.constant.AttendanceOperation;
 import attendance.domain.constant.AttendanceStatus;
 import attendance.exception.CustomException;
@@ -46,7 +45,7 @@ public class AttendanceMachine {
             return true;
         }
         if (attendanceOperation.equals(AttendanceOperation.TWO)) {
-            functionTwo(register);
+            functionTwo(now, register);
             return true;
         }
         if (attendanceOperation.equals(AttendanceOperation.THREE)) {
@@ -78,14 +77,15 @@ public class AttendanceMachine {
         outputView.writeAttendanceHistory(now, dateInfos, history);
     }
 
-    private void functionTwo(Register register) {
+    private void functionTwo(LocalDate now, Register register) {
 
         String crewName = inputView.readModifyCrewName();
         String modifyDay = inputView.readModifyDay();
         String modifyTime = inputView.readModifyTime();
         CampusTime campusTime = CampusTime.fromHourColonMinute(modifyTime);
+        LocalDate date = LocalDate.of(now.getYear(), now.getMonth(), Integer.parseInt(modifyDay));
 
-        DateInfo beforeDateInfo = register.findDateInfo(crewName, modifyDay);
+        DateInfo beforeDateInfo = register.findOrCreateDateInfo(crewName, date);
         int beforeHour = beforeDateInfo.getCampusHour();
         int beforeMinute = beforeDateInfo.getCampusMinute();
         AttendanceStatus beforeStatus = beforeDateInfo.getAttendanceStatus();

@@ -1,6 +1,8 @@
 package attendance.domain;
 
 import attendance.domain.constant.AttendanceStatus;
+import attendance.exception.CustomException;
+import attendance.exception.ErrorMessage;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 
@@ -11,9 +13,16 @@ public class DateInfo {
     private AttendanceStatus attendanceStatus;
 
     private DateInfo(LocalDate date, CampusTime campusTime) {
+        validateDateIsWeekday(date);
         this.date = date;
         this.campusTime = campusTime;
         this.attendanceStatus = AttendanceStatus.calculateAttendanceStatus(date, campusTime);
+    }
+
+    private void validateDateIsWeekday(LocalDate date) {
+        if (date.getDayOfWeek() == DayOfWeek.SATURDAY || date.getDayOfWeek() == DayOfWeek.SUNDAY) {
+            throw CustomException.from(ErrorMessage.NOT_WEEKEND);
+        }
     }
 
     public static DateInfo fromCampusTime(LocalDate localDate, CampusTime campusTime) {
