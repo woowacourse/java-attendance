@@ -7,15 +7,15 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class Attendances {
-    private final Map<LocalDate, Attendance> attendances = new HashMap<>();
     private static final String DUPLICATE_ATTENDANCE_DATE = "이미 출석되었습니다. 수정 기능을 이용해주세요.";
     private static final String NOT_EXIST_ATTENDANCE = "해당 날짜에 출석이 존재하지 않습니다.";
-    static final int MONDAY = 1;
-    static final LocalTime MONDAY_START_TIME = LocalTime.of(13, 0);
-    static final LocalTime NORMAL_START_TIME = LocalTime.of(10, 0);
-    static final int LATE_MINUTE = 5;
-    static final int ABSENCE_MINUTE = 30;
+    private static final int MONDAY = 1;
+    private static final LocalTime MONDAY_START_TIME = LocalTime.of(13, 0);
+    private static final LocalTime NORMAL_START_TIME = LocalTime.of(10, 0);
+    private static final int LATE_MINUTE = 5;
+    private static final int ABSENCE_MINUTE = 30;
 
+    private final Map<LocalDate, Attendance> attendances = new HashMap<>();
 
     private AttendanceStatus determineAttendanceStatus(LocalDate currentDate, LocalTime currentTime) {
         LocalTime startTime = determineAttendanceStartTime(currentDate);

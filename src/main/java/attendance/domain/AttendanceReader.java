@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class AttendanceReader {
+    
     private final String attendanceFileSrc;
     private final String WRONG_FILE_FORMAT = "유효하지 않은 파일 포맷입니다.";
     private final String FILE_DOESNT_EXISTS = "존재하지 않은 파일입니다.";

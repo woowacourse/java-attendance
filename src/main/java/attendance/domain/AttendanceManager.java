@@ -1,7 +1,7 @@
 package attendance.domain;
 
-import attendance.dto.RequestModifyAttendanceDto;
 import attendance.exception.AttendanceArgumentException;
+import attendance.view.dto.RequestModifyAttendanceDto;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;

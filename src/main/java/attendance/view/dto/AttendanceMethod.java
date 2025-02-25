@@ -1,9 +1,10 @@
-package attendance.view;
+package attendance.view.dto;
 
 import attendance.exception.AttendanceArgumentException;
 import java.util.Arrays;
 
 public enum AttendanceMethod {
+    
     ATTENDANCE("1"),
     MODIFY("2"),
     ATTENDANCE_HISTORY("3"),

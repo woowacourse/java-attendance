@@ -1,6 +1,6 @@
 package attendance.domain;
 
-import attendance.dto.AttendanceStatusCount;
+import attendance.view.dto.AttendanceStatusCount;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -11,10 +11,6 @@ public class AttendanceStatuses {
 
     public AttendanceStatuses() {
         this.status = new HashMap<>();
-    }
-
-    public AttendanceStatuses(Map<AttendanceStatus, Integer> status) {
-        this.status = status;
     }
 
     public AttendanceDismissStatus calculateAttendanceDismiss() {
