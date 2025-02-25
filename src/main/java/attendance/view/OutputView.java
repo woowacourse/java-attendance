@@ -48,7 +48,7 @@ public class OutputView {
                 dateTime.getDayOfMonth(),
                 dateTime.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.KOREA),
                 timeContent,
-                attendance.getState().getName()
+                AttendanceStateView.find(attendance.getState().name()).getName()
         );
     }
 
@@ -56,7 +56,7 @@ public class OutputView {
         printAttendanceRecord(update.getBeforeAttendance());
         System.out.printf(" -> %s (%s) 수정 완료!",
                 update.getAfterAttendance().getDateTime().toLocalTime(),
-                update.getAfterAttendance().getState().getName()
+                AttendanceStateView.find(update.getAfterAttendance().getState().name()).getName()
         );
     }
 
@@ -70,14 +70,16 @@ public class OutputView {
     public void printAttendanceStatus(final AttendanceStatus attendanceStatus) {
         EnumMap<AttendanceState, Integer> status = attendanceStatus.getStatus();
 
-        for (Map.Entry<AttendanceState, Integer> entry : status.entrySet()) {
-            System.out.printf(NEW_LINE + "%s: %d회",
-                    entry.getKey().getName(),
-                    entry.getValue()
-            );
-        }
+        System.out.printf(NEW_LINE + """
+                        출석: %s회
+                        지각: %s회
+                        결석: %s회
+                        """,
+                status.get(AttendanceState.ATTENDANCE),
+                status.get(AttendanceState.LATE),
+                status.get(AttendanceState.ABSENCE)
+        );
 
-        System.out.println();
         System.out.printf(NEW_LINE + "%s 대상자입니다.", attendanceStatus.getRisk().getName());
     }
 
