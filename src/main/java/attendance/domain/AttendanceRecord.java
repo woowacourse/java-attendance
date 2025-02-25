@@ -1,6 +1,8 @@
 package attendance.domain;
 
+import java.time.Duration;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 
 public class AttendanceRecord {
     private LocalDateTime attendanceDateTime;
@@ -10,7 +12,11 @@ public class AttendanceRecord {
     }
 
     public AttendanceStatus getAttendanceStatus() {
-        //AttendanceStatus.from()
-        return AttendanceStatus.PRESENT;
+        LocalTime startTime = LocalTime.of(13, 0);
+        LocalTime attendanceTime = attendanceDateTime.toLocalTime();
+        Duration duration = Duration.between(startTime, attendanceTime);
+        long minutes = duration.toMinutes();
+
+        return AttendanceStatus.from(minutes);
     }
 }

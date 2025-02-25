@@ -7,9 +7,9 @@ import org.junit.jupiter.api.Test;
 
 class AttendanceRecordTest {
 
-    @DisplayName("출석한 시간에 기반하여 출석 상태를 알맞게 결정한다 - 출석")
+    @DisplayName("월요일 출석 기록에 대해서 출석 상태를 알맞게 계산한다")
     @Test
-    void test() {
+    void test_presentRecord() {
         // given
         LocalDateTime attendanceDateTime = LocalDateTime.of(2024, 12, 2, 13, 0);
 
@@ -21,4 +21,31 @@ class AttendanceRecordTest {
         Assertions.assertThat(status).isEqualTo(AttendanceStatus.PRESENT);
     }
 
+    @DisplayName("월요일 지각 기록에 대해서 출석 상태를 알맞게 계산한다")
+    @Test
+    void test_lateRecord() {
+        // given
+        LocalDateTime attendanceDateTime = LocalDateTime.of(2024, 12, 2, 13, 6);
+
+        // when
+        AttendanceRecord record = new AttendanceRecord(attendanceDateTime);
+
+        // then
+        AttendanceStatus status = record.getAttendanceStatus();
+        Assertions.assertThat(status).isEqualTo(AttendanceStatus.LATE);
+    }
+
+    @DisplayName("월요일 결석 기록에 대해서 출석 상태를 알맞게 계산한다")
+    @Test
+    void test_absentRecord() {
+        // given
+        LocalDateTime attendanceDateTime = LocalDateTime.of(2024, 12, 2, 13, 31);
+
+        // when
+        AttendanceRecord record = new AttendanceRecord(attendanceDateTime);
+
+        // then
+        AttendanceStatus status = record.getAttendanceStatus();
+        Assertions.assertThat(status).isEqualTo(AttendanceStatus.ABSENT);
+    }
 }
