@@ -334,6 +334,50 @@ class AttendanceSystemTest {
                 .containsExactlyInAnyOrder(RiskType.WARNING, RiskType.COUNSELING, RiskType.EXPULSION);
     }
 
+    @DisplayName("제적 위험자 조회 - 제적 위험자 첫번째로 제적 위험도의 내림차순으로 정렬된다")
+    @Test
+    void 제적_위험자_첫번째로_제적_위험도로_정렬된다() {
+        addNotRiskCrew(VALID_CREW_NICKNAME);
+        addWarningTargetCrew("쿠키2");
+        addCounselingTargetCrew("쿠키3");
+        addExpulsionTargetCrew("쿠키4");
+
+        List<AttendanceState> states = attendanceSystem.findRiskCrew(LocalDate.of(2025, 2, 8));
+        assertThat(states)
+                .extracting(AttendanceState::getRiskTyp)
+                .containsExactly(RiskType.EXPULSION, RiskType.COUNSELING, RiskType.WARNING);
+    }
+
+    @DisplayName("제적 위험자 조회 - 제적 위험자 두번째로 결석 지각의 내림차순으로 정렬된다")
+    @Test
+    void 제적_위험자_두번째로_결석_지각의_내림차순으로_정렬된다() {
+        addNotRiskCrew(VALID_CREW_NICKNAME);
+        addWarningTargetCrew("쿠키2");
+        attendanceSystem.addAttendanceRecord("쿠키2", LocalDateTime.of(2025, 2, 10, 10, 5));
+        addWarningTargetCrew("쿠키3");
+        attendanceSystem.addAttendanceRecord("쿠키3", LocalDateTime.of(2025, 2, 10, 8, 50));
+
+        List<AttendanceState> states = attendanceSystem.findRiskCrew(LocalDate.of(2025, 2, 10));
+        assertThat(states)
+                .extracting(AttendanceState::getNickname)
+                .containsExactly("쿠키3", "쿠키2");
+    }
+
+    @DisplayName("제적 위험자 조회 - 제적 위험자 세번째로 닉네임의 내림차순으로 정렬된다.")
+    @Test
+    void 제적_위험자_세번째로_닉네임의_내림차순으로_정렬된다() {
+        addNotRiskCrew(VALID_CREW_NICKNAME);
+        addWarningTargetCrew("쿠키2");
+        addWarningTargetCrew("쿠키3");
+        addWarningTargetCrew("쿠키4");
+
+        List<AttendanceState> states = attendanceSystem.findRiskCrew(LocalDate.of(2025, 2, 8));
+        assertThat(states)
+                .extracting(AttendanceState::getNickname)
+                .containsExactly("쿠키2", "쿠기3", "쿠키4");
+    }
+
+
     String makeHolidayAttendanceExceptionMessage(LocalDateTime dateTime) {
         return String.format(ExceptionMessage.HOLIDAY_ATTENDANCE.getMessage(),
                 dateTime.getMonth().getValue(), dateTime.getDayOfMonth(),
