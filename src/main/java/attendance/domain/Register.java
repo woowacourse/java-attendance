@@ -5,9 +5,11 @@ import attendance.exception.CustomException;
 import attendance.exception.ErrorMessage;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 public class Register {
     private final Map<Crew, AttendanceRegistry> register;
@@ -47,14 +49,34 @@ public class Register {
         }
     }
 
-    public Map<Crew, List<Integer>> findAllExpertRiskCrews() {
-        Map<Crew, List<Integer>> riskCrews = new HashMap<>();
+    public List<Entry<Crew, List<Integer>>> findAllExpertRiskCrews() {
+        Map<Crew, List<Integer>> riskCrewMap = new HashMap<>();
         for (Crew crew : register.keySet()) {
             AttendanceRegistry attendanceRegistry = register.get(findValidatedCrew(crew));
-            findRiskCrews(crew, riskCrews, attendanceRegistry);
+            findRiskCrews(crew, riskCrewMap, attendanceRegistry);
         }
+        return orderByAbsenceCounts(riskCrewMap);
+    }
+
+    private List<Entry<Crew, List<Integer>>> orderByAbsenceCounts(Map<Crew, List<Integer>> riskCrewMap) {
+        List<Map.Entry<Crew, List<Integer>>> riskCrews = new ArrayList<>(riskCrewMap.entrySet());
+        riskCrews.sort((e1, e2) -> Integer.compare(
+                calculateTotalAbsence(e2.getValue()),
+                calculateTotalAbsence(e1.getValue())
+        ));
         return riskCrews;
     }
+
+    private int calculateTotalAbsence(List<Integer> absenceCounts) {
+        int absence = absenceCounts.get(0);
+        int late = absenceCounts.get(1);
+        return divideLate(absence, late);
+    }
+
+    private static int divideLate(int absence, int late) {
+        return absence + (late / 3);
+    }
+
 
     private Crew findValidatedCrew(Crew crew) {
         return register.keySet().stream()
@@ -66,7 +88,7 @@ public class Register {
     private void findRiskCrews(Crew crew, Map<Crew, List<Integer>> riskCrews, AttendanceRegistry attendanceRegistry) {
         int absenceCounts = attendanceRegistry.findStatusCounts(AttendanceStatus.ABSENCE);
         int lateCounts = attendanceRegistry.findStatusCounts(AttendanceStatus.LATE);
-        int limitCount = lateCounts / 3 + absenceCounts;
+        int limitCount = divideLate(absenceCounts, lateCounts);
         if (limitCount >= 2) {
             riskCrews.put(crew, List.of(absenceCounts, lateCounts));
         }

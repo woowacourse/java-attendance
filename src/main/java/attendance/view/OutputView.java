@@ -64,81 +64,20 @@ public class OutputView {
         }
     }
 
-    public void writeDismissCrewCheck(Map<Crew, List<Integer>> allExpertRiskCrews) {
+    public void writeDismissCrewCheck(List<Map.Entry<Crew, List<Integer>>> allExpertRiskCrews) {
         System.out.println("제적 위험자 조회 결과");
-        List<Map.Entry<Crew, List<Integer>>> crewList = new ArrayList<>(allExpertRiskCrews.entrySet());
-        crewList.sort((e1, e2) -> Integer.compare(
-                calculateTotalAbsence(e2.getValue()),
-                calculateTotalAbsence(e1.getValue())
-        ));
-        Set<Crew> excludedCrews = orderByAbsence(crewList);
-        orderByNickname(crewList, excludedCrews);
-    }
-
-    private int calculateTotalAbsence(List<Integer> absenceCounts) {
-        int absence = absenceCounts.get(0);
-        int late = absenceCounts.get(1);
-        return absence + late;
-    }
-
-    private Set<Crew> orderByAbsence(List<Entry<Crew, List<Integer>>> crewList) {
-        Set<Crew> excludedCrews = new HashSet<>();
-        int maxAbsence = calculateTotalAbsence(crewList.getFirst().getValue());
-        Iterator<Entry<Crew, List<Integer>>> iterator = crewList.iterator();
-        while (iterator.hasNext()) {
-            Entry<Crew, List<Integer>> entry = iterator.next();
-            checkMaxAbsence(entry, maxAbsence, excludedCrews, iterator);
+        for (Map.Entry<Crew, List<Integer>> entry : allExpertRiskCrews) {
+            int absenceCounts = entry.getValue().getFirst();
+            int lateCounts = entry.getValue().getLast();
+            String crewName = entry.getKey().getCrewName();
+            String crewStatus = CrewStatus.from(lateCounts, absenceCounts).getName();
+            writeAbsenceOver(absenceCounts, crewName, lateCounts, crewStatus);
         }
-        return excludedCrews;
-    }
-
-    private void orderByNickname(List<Entry<Crew, List<Integer>>> crewList, Set<Crew> excludedCrews) {
-        List<Entry<Crew, List<Integer>>> remainingCrewList = crewList.stream()
-                .filter(entry -> !excludedCrews.contains(entry.getKey()))
-                .sorted(Comparator.comparing(entry -> entry.getKey().getCrewName()))
-                .toList();
-
-        for (Entry<Crew, List<Integer>> entry : remainingCrewList) {
-            writeEntry(entry);
-        }
-    }
-
-    private void checkMaxAbsence(Entry<Crew, List<Integer>> entry, int maxAbsence, Set<Crew> excludedCrews,
-                           Iterator<Entry<Crew, List<Integer>>> iterator) {
-        if (entry.getValue().get(0) == maxAbsence) {
-            writeEntry(entry);
-            excludedCrews.add(entry.getKey());
-            iterator.remove();
-        }
-    }
-
-    private void writeEntry(Map.Entry<Crew, List<Integer>> entry) {
-        Crew crew = entry.getKey();
-        String crewName = crew.getCrewName();
-        int absenceCounts = entry.getValue().get(0);
-        int lateCounts = entry.getValue().get(1);
-
-        CrewStatus crewStatus = CrewStatus.from(lateCounts, absenceCounts);
-        writeOrderedCrews(crewStatus, absenceCounts, crewName, lateCounts);
-    }
-
-    private void writeOrderedCrews(CrewStatus crewStatus, int absenceCounts, String crewName, int lateCounts) {
-        if (crewStatus.equals(CrewStatus.DISMISS)) {
-            writeAbsenceOver(absenceCounts, crewName, lateCounts, crewStatus.getName());
-            return;
-        }
-        if (crewStatus.equals(CrewStatus.WARNING)) {
-            writeAbsenceOver(absenceCounts, crewName, lateCounts, crewStatus.getName());
-            return;
-        }
-        writeAbsenceOver(absenceCounts, crewName, lateCounts, crewStatus.getName());
     }
 
     private void writeAbsenceOver(int absenceCounts, String crewName, int lateCounts, String crewStatus) {
-        if (absenceCounts >= 2) {
-            System.out.println(String.format("- %s: 결석 %d회, 지각 %d회 (%s)", crewName, absenceCounts, lateCounts,
-                    crewStatus));
-        }
+        System.out.println(String.format("- %s: 결석 %d회, 지각 %d회 (%s)", crewName, absenceCounts, lateCounts,
+                crewStatus));
     }
 
     private String convertZeroToHyphen(int hour, int minute) {

@@ -2,10 +2,13 @@ package attendance.domain;
 
 import attendance.domain.constant.AttendanceStatus;
 import java.time.LocalTime;
+import java.util.Map.Entry;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import static org.assertj.core.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertAll;
+
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.*;
@@ -14,16 +17,19 @@ class RegisterTest {
 
     private Register register;
     private Crew crew;
+    private Crew crew1;
+    private Crew crew2;
+    private Crew crew3;
     private LocalDate currentDate;
 
     @BeforeEach
     void setUp() {
-        // Test setup - 현재 날짜와 Crew 객체를 생성
-        currentDate = LocalDate.of(2025, 2, 21);
-        Crew crew1 = Crew.from("제프리");
-        Crew crew2 = Crew.from("부기");
+        currentDate = LocalDate.of(2025, 2, 5);
         crew = Crew.from("우가");
-        Crews crews = new Crews(Set.of(crew, crew1, crew2));
+        crew1 = Crew.from("제프리");
+        crew2 = Crew.from("부기");
+        crew3 = Crew.from("범블비");
+        Crews crews = new Crews(Set.of(crew, crew1, crew2, crew3));
         register = new Register(crews, currentDate);
     }
 
@@ -65,7 +71,7 @@ class RegisterTest {
         AttendanceRegistry result = register.checkAttendanceHistory(crew);
 
         //then
-        assertThat(result.getDateInfos().size()).isEqualTo(15);
+        assertThat(result.getDateInfos().size()).isEqualTo(3);
     }
 
     @Test
@@ -89,15 +95,30 @@ class RegisterTest {
         Map<Crew, List<LocalDateTime>> attendanceTimes = new HashMap<>();
 
         attendanceTimes.put(crew, List.of(LocalDateTime.of(2025,2,3,12,59),
-                LocalDateTime.of(2025,2,4,10,31),
+                LocalDateTime.of(2025,2,4,10,31), //출석 1, 결석2
                 LocalDateTime.of(2025, 2, 5, 10, 31)));
+        attendanceTimes.put(crew1, List.of(LocalDateTime.of(2025,2,3,12,59),
+                LocalDateTime.of(2025,2,4,9,59), //출석 2,
+                LocalDateTime.of(2025, 2, 5, 10, 31)));
+        attendanceTimes.put(crew2, List.of(LocalDateTime.of(2025,2,3,12,59),
+                LocalDateTime.of(2025,2,4,9,59), //출석 3,
+                LocalDateTime.of(2025, 2, 5, 9, 0)));
+        attendanceTimes.put(crew3, List.of(LocalDateTime.of(2025,2,3,13,31),
+                LocalDateTime.of(2025,2,4,10,31), //결석 3
+                LocalDateTime.of(2025, 2, 5, 12, 31)));
         register.fromCrewAttendanceTimeFile(attendanceTimes);
 
         //when
-        Map<Crew, List<Integer>> riskCrews = register.findAllExpertRiskCrews();
-
-        //then
-        assertThat(riskCrews).containsKey(crew);
+        List<Entry<Crew, List<Integer>>> riskCrews = register.findAllExpertRiskCrews();
+        List<Crew> orderedCrews = new ArrayList<>();
+        for (Map.Entry<Crew, List<Integer>> riskCrew : riskCrews) {
+            orderedCrews.add(riskCrew.getKey());
+        }
+        assertAll(
+                () -> assertThat(orderedCrews.size()).isEqualTo(2),
+                () -> assertThat(orderedCrews.getFirst()).isEqualTo(crew3),
+                () -> assertThat(orderedCrews.getLast()).isEqualTo(crew)
+        );
     }
 
 }
