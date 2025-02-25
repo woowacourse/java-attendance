@@ -18,10 +18,12 @@ public class OutputView {
         System.out.print(" -> ");
         System.out.print(formatAttendAndStatus(after, afterStatus));
         System.out.println(" 수정 완료!");
+        System.out.println();
     }
 
     public void printAttendResult(Attend attend, AttendStatus attendStatus) {
         System.out.println(formatAttendAndStatus(attend, attendStatus));
+        System.out.println();
     }
 
     private String formatAttendAndStatus(Attend attend, AttendStatus attendStatus) {
@@ -64,14 +66,14 @@ public class OutputView {
         // 경고 메시지 출력
         WarningStatus warningStatus = WarningStatus.judgeWarningStatus(attendCount);
         String warningMessage = formatWarningStatus(warningStatus);
-        System.out.println(warningMessage);
+        System.out.print(warningMessage);
     }
 
     private String formatWarningStatus(WarningStatus warningStatus) {
         if (warningStatus == WarningStatus.CLEAR) {
             return "";
         }
-        return formatWarningStatusShort(warningStatus) + " 대상자입니다.";
+        return formatWarningStatusShort(warningStatus) + " 대상자입니다.\r\n\r\n";
     }
 
     private String formatAttendCount(AttendCount attendCount) {

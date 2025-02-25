@@ -19,10 +19,10 @@ public class InputView {
                 2. 출석 수정
                 3. 크루별 출석 기록 확인
                 4. 제적 위험자 확인
-                Q. 종료
-                """);
+                Q. 종료""");
         String input = scanner.nextLine();
         validateEmptyInput(input);
+        System.out.println();
         return input;
     }
 
