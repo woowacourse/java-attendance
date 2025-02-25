@@ -15,10 +15,17 @@ public class Crew {
     }
 
     public CheckAttendanceResponse checkAttendance(LocalDate date, LocalTime time) {
+        validateAttendanceDateNotExists(date);
         attendances.put(date, time);
 
         return new CheckAttendanceResponse(
                 date, time, "출석"
         );
+    }
+
+    private void validateAttendanceDateNotExists(LocalDate input) {
+        if (attendances.containsKey(input)) {
+            throw new IllegalArgumentException("이미 출석한 날짜입니다.");
+        }
     }
 }
