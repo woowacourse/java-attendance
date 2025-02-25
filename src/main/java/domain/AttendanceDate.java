@@ -29,4 +29,8 @@ public class AttendanceDate {
             throw new IllegalArgumentException("[ERROR] %d월 %d일 %s일은 등교일이 아닙니다.");
         }
     }
+
+    public boolean isSameAs(LocalDate date) {
+        return this.attendanceDate.equals(date);
+    }
 }
