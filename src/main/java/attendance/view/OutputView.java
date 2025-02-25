@@ -57,12 +57,13 @@ public class OutputView {
         System.out.println();
 
         for (int day = 1; day <= now.getDayOfMonth(); day++) {
-            LocalDate currentDate = LocalDate.of(now.getDayOfYear(), now.getDayOfMonth(), day);
+            LocalDate currentDate = LocalDate.of(now.getYear(), now.getMonthValue(), day);
             if (isWeekend(currentDate)) {
                 continue;
             }
             if (!dateInfos.hasDateInfo(day)) {
                 writeAbsentAttendanceCheck(currentDate);
+                continue;
             }
             DateInfo dateInfo = dateInfos.findDateInfoByDay(day);
             writeAttendanceCheck(dateInfo);
@@ -89,6 +90,7 @@ public class OutputView {
                     String.format("- %s: 결석 %d회, 지각 %d회 (%s)", history.getCrewName(), history.getAbsenceCount(),
                             history.getLateCount(), history.getCrewStatus().getName()));
         }
+        System.out.println();
     }
 
     public void errorMessagePrint(String message) {
