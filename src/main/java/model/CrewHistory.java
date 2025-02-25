@@ -3,17 +3,17 @@ package model;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.TreeMap;
 
 public class CrewHistory {
 
     private final Map<Integer, LocalDateTime> attendance;
 
     public CrewHistory(final Map<Integer, LocalDateTime> attendance) {
-        this.attendance = new HashMap<>(attendance);
+        this.attendance = new TreeMap<>(attendance);
     }
 
     public void loadHistory(final LocalDateTime attendanceTime) {
