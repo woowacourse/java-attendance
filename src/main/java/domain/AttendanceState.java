@@ -25,12 +25,6 @@ public enum AttendanceState {
         }
         AttendanceTime.validateCampusTime(localTime);
 
-//        LocalDate localDate1 =
-//                LocalDate.of(
-//                        DateTimeUtil.getYearBy(localDate),
-//                        DateTimeUtil.getMonthBy(localDate),
-//                        DateTimeUtil.getDateBy(localDate));
-
         return getDayOfWeekString(localTime, localDate);
     }
 
