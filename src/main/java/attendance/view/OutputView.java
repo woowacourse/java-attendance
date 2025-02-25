@@ -1,6 +1,7 @@
 package attendance.view;
 
 import attendance.domain.Attendance;
+import attendance.domain.AttendanceRiskCrews;
 import attendance.domain.AttendanceState;
 import attendance.domain.AttendanceStatus;
 import attendance.domain.AttendanceUpdate;
@@ -80,10 +81,10 @@ public class OutputView {
         System.out.printf(NEW_LINE + "%s 대상자입니다.", attendanceStatus.getRisk().getName());
     }
 
-    public void printAttendanceRiskCrews(final Map<String, AttendanceStatus> CrewStatus) {
+    public void printAttendanceRiskCrews(final AttendanceRiskCrews riskCrews) {
         System.out.print(NEW_LINE + "제적 위험자 조회 결과");
 
-        for (Map.Entry<String, AttendanceStatus> statusEntry : CrewStatus.entrySet()) {
+        for (Map.Entry<String, AttendanceStatus> statusEntry : riskCrews.getRiskCrews().entrySet()) {
             System.out.printf("\n- %s: 결석 %d회, 지각 %d회 (%s)",
                     statusEntry.getKey(),
                     statusEntry.getValue().getStatus().get(AttendanceState.ABSENCE),

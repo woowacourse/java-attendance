@@ -11,7 +11,6 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Stream;
 
 import static attendance.domain.AttendanceState.ABSENCE;
@@ -171,10 +170,10 @@ class AttendanceManagerTest {
         }
 
         // when
-        Map<String, AttendanceStatus> result = attendanceManager.getAttendanceRiskCrew(nowDate);
+        AttendanceRiskCrews result = attendanceManager.getAttendanceRiskCrew(nowDate);
 
         // then
-        assertThat(result.size()).isEqualTo(3);
+        assertThat(result.getRiskCrews().size()).isEqualTo(3);
     }
 
     @Test
@@ -189,10 +188,10 @@ class AttendanceManagerTest {
         attendanceManager.addCrew(nickname, attendances);
 
         // when
-        Map<String, AttendanceStatus> result = attendanceManager.getAttendanceRiskCrew(nowDate);
+        AttendanceRiskCrews result = attendanceManager.getAttendanceRiskCrew(nowDate);
 
         // then
-        assertThat(result).doesNotContainKey(nickname);
+        assertThat(result.getRiskCrews()).doesNotContainKey(nickname);
     }
 
     @Test
@@ -216,10 +215,10 @@ class AttendanceManagerTest {
         addAttendancesForCrew(randiDateTimes, "랜디");
 
         // when
-        Map<String, AttendanceStatus> result = attendanceManager.getAttendanceRiskCrew(nowDate);
+        AttendanceRiskCrews result = attendanceManager.getAttendanceRiskCrew(nowDate);
 
         // then
-        List<String> sortedKeys = new ArrayList<>(result.keySet());
+        List<String> sortedKeys = new ArrayList<>(result.getRiskCrews().keySet());
         assertThat(sortedKeys).containsExactly("레오", "랜디");
     }
 
@@ -243,10 +242,10 @@ class AttendanceManagerTest {
         addAttendancesForCrew(randiDateTimes, "랜디");
 
         // when
-        Map<String, AttendanceStatus> result = attendanceManager.getAttendanceRiskCrew(nowDate);
+        AttendanceRiskCrews result = attendanceManager.getAttendanceRiskCrew(nowDate);
 
         // then
-        List<String> sortedKeys = new ArrayList<>(result.keySet());
+        List<String> sortedKeys = new ArrayList<>(result.getRiskCrews().keySet());
         assertThat(sortedKeys).containsExactly("랜디", "레오");
     }
 
@@ -271,10 +270,10 @@ class AttendanceManagerTest {
         }
 
         // when
-        Map<String, AttendanceStatus> result = attendanceManager.getAttendanceRiskCrew(nowDate);
+        AttendanceRiskCrews result = attendanceManager.getAttendanceRiskCrew(nowDate);
 
         // then
-        List<String> sortedKeys = new ArrayList<>(result.keySet());
+        List<String> sortedKeys = new ArrayList<>(result.getRiskCrews().keySet());
         assertThat(sortedKeys).containsExactly("랜디", "레오", "비타");
     }
 

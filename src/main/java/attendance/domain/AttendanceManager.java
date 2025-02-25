@@ -49,17 +49,8 @@ public class AttendanceManager {
         return AttendanceStatus.of(attendancesBeforeToday);
     }
 
-    public Map<String, AttendanceStatus> getAttendanceRiskCrew(final LocalDate today) {
-        return generateAttendanceRisks(today).entrySet().stream()
-                .filter(entry -> entry.getValue().isNotNoneState())
-                .sorted(Map.Entry.<String, AttendanceStatus>comparingByValue()
-                        .thenComparing(Map.Entry.comparingByKey()))
-                .collect(Collectors.toMap(
-                        Map.Entry::getKey,
-                        Map.Entry::getValue,
-                        (existing, replacement) -> existing,
-                        LinkedHashMap::new
-                ));
+    public AttendanceRiskCrews getAttendanceRiskCrew(final LocalDate today) {
+        return AttendanceRiskCrews.of(generateAttendanceRisks(today));
     }
 
     public void validateNicknameExists(final String nickname) {

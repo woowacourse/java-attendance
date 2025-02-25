@@ -3,6 +3,7 @@ package attendance;
 import attendance.config.AppConfig;
 import attendance.domain.Attendance;
 import attendance.domain.AttendanceManager;
+import attendance.domain.AttendanceRiskCrews;
 import attendance.domain.AttendanceStatus;
 import attendance.domain.AttendanceUpdate;
 import attendance.domain.Attendances;
@@ -17,7 +18,6 @@ import attendance.view.OutputView;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.Map;
 
 import static attendance.view.AttendanceMenu.CHECK;
 import static attendance.view.AttendanceMenu.QUIT;
@@ -106,7 +106,7 @@ public class AttendanceSystem {
 
     private void processRiskSearch(final AttendanceMenu menu, final LocalDate today) {
         if (menu == RISK_SEARCH) {
-            Map<String, AttendanceStatus> riskCrews = attendanceManager.getAttendanceRiskCrew(today);
+            AttendanceRiskCrews riskCrews = attendanceManager.getAttendanceRiskCrew(today);
             outputView.printAttendanceRiskCrews(riskCrews);
         }
     }
