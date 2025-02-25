@@ -195,6 +195,33 @@ class AttendanceSystemTest {
         checkSameRecord(actualRecord, VALID_CREW_NICKNAME, newDateTime);
     }
 
+    @DisplayName("출석 기록 수정 - 교육시간과 출석정책을 기준으로 출석 상태를 결정한다")
+    @ParameterizedTest
+    @MethodSource()
+    void 출석_기록_수정_교육시간과_출석정책을_기준으로_출석_상태를_결정한다(LocalTime time, AttendanceType expectedType) {
+        attendanceSystem.addAttendanceRecord(VALID_CREW_NICKNAME, COMMON_ATTENDANCE_DATE_TIME);
+        LocalDateTime newDateTime = LocalDateTime.of(
+                COMMON_ATTENDANCE_DATE_TIME.toLocalDate(), time);
+
+        attendanceSystem.updateAttendance(
+                VALID_CREW_NICKNAME, newDateTime.toLocalDate(), newDateTime.toLocalTime());
+
+        AttendanceRecord actualRecord = attendanceSystem.findAttendanceRecord(
+                VALID_CREW_NICKNAME, COMMON_ATTENDANCE_DATE_TIME.toLocalDate()).get();
+        assertThat(actualRecord.getAttendanceType()).isEqualTo(expectedType);
+    }
+
+    static Stream<Arguments> 출석_기록_수정_교육시간과_출석정책을_기준으로_출석_상태를_결정한다() {
+        return Stream.of(
+                Arguments.of(LocalTime.of(9, 59, 59), AttendanceType.ATTENDANCE),
+                Arguments.of(LocalTime.of(10, 4, 59), AttendanceType.ATTENDANCE),
+                Arguments.of(LocalTime.of(10, 5, 0), AttendanceType.LATE),
+                Arguments.of(LocalTime.of(10, 29, 59), AttendanceType.LATE),
+                Arguments.of(LocalTime.of(10, 30, 0), AttendanceType.ABSENCE),
+                Arguments.of(LocalTime.of(10, 30, 1), AttendanceType.ABSENCE)
+        );
+    }
+
     void checkSameRecord(
             AttendanceRecord target,
             String expectedNickname,
