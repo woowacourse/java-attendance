@@ -32,6 +32,18 @@ class AttendanceRuleByDayTest {
                 isEqualTo("금요일");
     }
 
+    @Test
+    void calculateAttendance() {
+        AttendanceStatus expect = AttendanceStatus.LATE;
+        AttendanceStatus result = AttendanceRuleByDay
+                .calculateAttendance(LocalDateTime.of(2024,12,13,10,6));
+        Assertions.assertThat(result).isEqualTo(expect);
+    }
 
-
+    @Test
+    void findDayByDayOfWeekValue() {
+        String expect = "월요일";
+        String result = AttendanceRuleByDay.findDayByDayOfWeekValue(DayOfWeek.MONDAY);
+        Assertions.assertThat(result).isEqualTo(expect);
+    }
 }

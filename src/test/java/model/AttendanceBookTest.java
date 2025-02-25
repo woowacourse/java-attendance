@@ -12,9 +12,7 @@ import org.junit.jupiter.api.Test;
 import view.InputView;
 
 public class AttendanceBookTest {
-    Controller controller = new Controller();
-    AttendanceBook studentRepository = controller.createStudentRepository();
-    Student student = studentRepository.findStudentByName("빙티");
+    private final AttendanceBook studentRepository = new Controller().createStudentRepository();
 
     @Test
     @DisplayName("존재하지 않는 학생을 입력시 예외처리 한다.")
@@ -51,8 +49,8 @@ public class AttendanceBookTest {
 
         Student student = studentRepository.findStudentByName(name);
         student.attendanceRegister(localDateTime);
-        student.updateAttendanceCount();
-        assertThat(student.getAttendance()).isEqualTo(3);
+        student.updateAttendanceTotalCount();
+        assertThat(student.getAttendanceCount().getAttendanceTotalCount()).isEqualTo(3);
     }
 
     @Test
