@@ -3,6 +3,7 @@ package attendance.domain;
 import attendance.exception.CustomException;
 import attendance.exception.ErrorMessage;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -62,18 +63,20 @@ class CrewsTest {
         String crewName1 = "빙봉";
         String crewName2 = "우가";
         String crewName3 = "밍티";
-        Set<Crew> crewNames = Set.of(Crew.from(crewName1), Crew.from(crewName2), Crew.from(crewName3));
+        Crew crew1 = Crew.from(crewName1);
+        Crew crew2 = Crew.from(crewName2);
+        Crew crew3 = Crew.from(crewName3);
+        Set<Crew> crewNames = Set.of(crew1, crew2, crew3);
         Crews crews = new Crews(crewNames);
 
         LocalDate now = LocalDate.of(2025, 2, 19);
 
-        Map<Crew, AttendanceRegistry> register = new HashMap<>();
-
+        LocalDateTime localDateTime = LocalDateTime.of(2025,2,19,10,31);
         // when
-        crews.register(register, now);
-
+        Register register = new Register(crews, now);
+        register.findInfo(crew1, localDateTime).isAbsence();
         // then
-        Assertions.assertThat(register.size()).isEqualTo(3);
+        Assertions.assertThat(register.findInfo(crew1, localDateTime).isAbsence()).isTrue();
     }
 
 }

@@ -19,7 +19,13 @@ public class Register {
 
     public Register(Crews crews, LocalDate now) {
         register = new HashMap<>();
-        crews.register(register, now);
+        initializeRegister(crews, now);
+    }
+
+    private void initializeRegister(Crews crews, LocalDate now) {
+        for (Crew crew : crews.getCrews()) {
+            register.put(crew, AttendanceRegistry.fromDefaultValue(now));
+        }
     }
 
     public AttendanceChecker modifyInfo(Crew crew, LocalDateTime localDateTime) {
