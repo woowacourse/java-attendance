@@ -12,12 +12,21 @@ public class Crew {
         this.attendances = new Attendances();
     }
 
-    public CrewDto toDto() {
-        return new CrewDto(nickName, attendances);
+    public Crew(Crew crew) {
+        this.nickName = crew.nickName;
+        this.attendances = new Attendances(crew.attendances);
+    }
+
+    public String getNickName() {
+        return nickName;
+    }
+
+    public Attendances getAttendances() {
+        return new Attendances(attendances);
     }
 
     public void addAttendance(Attendance attendance) {
-        attendances.addAttendance(attendance);
+        attendances.add(attendance);
     }
 
     public Boolean isEqualTo(String nickname) {
@@ -32,9 +41,20 @@ public class Crew {
         attendances.recordAbsence();
     }
 
-
     public Attendance findByDate(Integer dayOfMonth) {
         return attendances.findByDate(dayOfMonth);
+    }
+
+    public Integer getAbsentCount() {
+        return attendances.getAbsentCount();
+    }
+
+    public Integer getLateCount() {
+        return attendances.getLateCount();
+    }
+
+    public PenaltyStatus getPenaltyStatus() {
+        return attendances.getPenaltyStatus();
     }
 
 

@@ -10,8 +10,14 @@ public class Crews {
     public Crews() {
     }
 
-    public void addCrew(Crew crew) {
+    public void add(Crew crew) {
         crews.add(crew);
+    }
+
+    public List<Crew> getCrews() {
+        return crews.stream()
+                .map(Crew::new)
+                .toList();
     }
 
     public Crew findByNickname(String nickname) {
@@ -23,14 +29,6 @@ public class Crews {
 
     public void recordAllAbsence() {
         crews.forEach(Crew::recordAbsence);
-    }
-
-    public List<CrewDto> createCrewDtos() {
-        List<CrewDto> crewDtos = new ArrayList<>();
-        for (Crew crew : crews) {
-            crewDtos.add(crew.toDto());
-        }
-        return crewDtos;
     }
 
 
