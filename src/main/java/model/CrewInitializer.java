@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Map;
 import util.StringParser;
 
-public class Initializer {
+public class CrewInitializer {
 
     private static final String SPLITTER = ",";
 
@@ -17,7 +17,7 @@ public class Initializer {
     private final TodayClock todayClock;
     private final Map<Integer, LocalDateTime> attendance;
 
-    public Initializer(final Campus campus, final TodayClock todayClock) {
+    public CrewInitializer(final Campus campus, final TodayClock todayClock) {
         this.campus = campus;
         this.todayClock = todayClock;
         this.attendance = createInitialAttendance();
@@ -29,23 +29,6 @@ public class Initializer {
             loadHistory(line, crewsMap);
         }
         return new CrewHistories(crewsMap);
-    }
-
-    private void loadHistory(String input, Map<String, CrewHistory> crewsMap) {
-        String[] tokens = input.split(SPLITTER);
-        String nickname = tokens[0];
-        LocalDateTime attendanceDateTime = StringParser.parseLocalDateTime(tokens[1]);
-        CrewHistory crewHistory = getCrew(crewsMap, nickname);
-        crewHistory.loadHistory(attendanceDateTime);
-    }
-
-    private CrewHistory getCrew(final Map<String, CrewHistory> crewsMap, final String nickname) {
-        if (crewsMap.containsKey(nickname)) {
-            return crewsMap.get(nickname);
-        }
-        CrewHistory crewHistory = new CrewHistory(new HashMap<>(attendance));
-        crewsMap.put(nickname, crewHistory);
-        return crewHistory;
     }
 
     private Map<Integer, LocalDateTime> createInitialAttendance() {
@@ -64,5 +47,22 @@ public class Initializer {
         }
         LocalDateTime dateTime = LocalDateTime.of(date, DEFAULT_TIME);
         initialAttendance.put(day, dateTime);
+    }
+
+    private void loadHistory(String input, Map<String, CrewHistory> crewsMap) {
+        String[] tokens = input.split(SPLITTER);
+        String nickname = tokens[0];
+        LocalDateTime attendanceDateTime = StringParser.parseLocalDateTime(tokens[1]);
+        CrewHistory crewHistory = getCrew(crewsMap, nickname);
+        crewHistory.loadHistory(attendanceDateTime);
+    }
+
+    private CrewHistory getCrew(final Map<String, CrewHistory> crewsMap, final String nickname) {
+        if (crewsMap.containsKey(nickname)) {
+            return crewsMap.get(nickname);
+        }
+        CrewHistory crewHistory = new CrewHistory(new HashMap<>(attendance));
+        crewsMap.put(nickname, crewHistory);
+        return crewHistory;
     }
 }

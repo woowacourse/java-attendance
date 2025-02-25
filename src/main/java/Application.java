@@ -2,7 +2,7 @@ import controller.AttendanceController;
 import model.AttendanceTodayClock;
 import model.Campus;
 import model.CrewHistories;
-import model.Initializer;
+import model.CrewInitializer;
 import model.TodayClock;
 import util.FileReader;
 import view.InputValidator;
@@ -14,8 +14,8 @@ public class Application {
     public static void main(String[] args) {
         Campus campus = new Campus();
         TodayClock todayClock = new AttendanceTodayClock();
-        Initializer initializer = new Initializer(campus, todayClock);
-        CrewHistories crewHistories = initializer.initialize(FileReader.readFile());
+        CrewInitializer crewInitializer = new CrewInitializer(campus, todayClock);
+        CrewHistories crewHistories = crewInitializer.initialize(FileReader.readFile());
 
         AttendanceController controller = makeController(campus, todayClock);
         controller.start(crewHistories);
