@@ -1,5 +1,6 @@
 package model;
 
+import java.time.DayOfWeek;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.HashMap;
@@ -16,8 +17,6 @@ public enum AttendanceCalculator {
     private final LocalTime lateTime;
     private final LocalTime absentTime;
     private final int dayOfWeekValue;
-    private static final int saturday = 6;
-    private static final int sunday = 7;
     private static final int christmas = 25;
 
     AttendanceCalculator(LocalTime lateTime, LocalTime absentTime, int dayOfWeekValue) {
@@ -31,11 +30,11 @@ public enum AttendanceCalculator {
     }
 
     private static boolean isWeekendDay(LocalDateTime localDateTime) {
-        return (localDateTime.getDayOfWeek().getValue() == saturday || localDateTime.getDayOfWeek().getValue() == sunday);
+        return (localDateTime.getDayOfWeek().equals(DayOfWeek.SATURDAY) || localDateTime.getDayOfWeek().equals(DayOfWeek.SUNDAY));
     }
 
     private static boolean isChristmas(LocalDateTime localDateTime) {
-        return (localDateTime.getDayOfMonth() == 25);
+        return (localDateTime.getDayOfMonth() == christmas);
     }
 
     public static HashMap<String, Integer> recordAttendanceResult(List<LocalDateTime> record) {
