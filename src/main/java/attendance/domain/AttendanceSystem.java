@@ -59,6 +59,7 @@ public class AttendanceSystem {
     }
 
     public AttendanceState calculateAttendanceStateInMonth(String nickname, LocalDate today) {
+        crewStorage.validateIsNotContained(nickname);
         List<LocalDate> notHolidays = attendanceChecker
                 .calculateNotHolidayInMonth(today.getYear(), today.getMonth());
         int maxAttendanceCount = (int) notHolidays.stream().filter(notHoliday -> !notHoliday.isAfter(today)).count();
