@@ -4,6 +4,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -55,9 +57,9 @@ public class AttendanceModifyTest {
         //given
         LocalDate modifyDate = LocalDate.of(2024, 12, 13);
         LocalTime modifyTime = LocalTime.of(11, 11);
-        Attendances attendances = new Attendances(List.of(
+        Attendances attendances = new Attendances(new ArrayList<>(Arrays.asList(
                 new Attendance(modifyDate, LocalTime.of(10, 10))
-        ));
+        ))); //TODO : new ttendances에 불변 들어가면 안됨! 만드는 거 분리하기
 
         //when
         Attendance attendance = attendances.modify(modifyDate, modifyTime);
