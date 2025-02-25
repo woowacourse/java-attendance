@@ -33,6 +33,12 @@ public class AttendanceRecordRepository {
                 .orElseThrow(() -> new IllegalArgumentException("출석 기록이 존재하지 않습니다."));
     }
 
+    public static List<AttendanceRecord> find(String nickname) {
+        return ATTENDANCE_RECORDS.stream()
+                .filter(record -> nickname.equals(record.nickname()))
+                .toList();
+    }
+
     public static boolean exists(String nickname, LocalDate date) {
         return ATTENDANCE_RECORDS.stream()
                 .anyMatch(record -> nickname.equals(record.nickname())

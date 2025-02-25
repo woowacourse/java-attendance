@@ -1,8 +1,7 @@
 package controller.dto;
 
-import domain.AttendanceStatus;
+import domain.AttendanceRecord;
 import java.time.LocalDate;
-import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 
 public record AttendanceRecordResponse(
@@ -17,7 +16,8 @@ public record AttendanceRecordResponse(
         return new AttendanceRecordResponse(date, "--:--", "결석");
     }
 
-    public static AttendanceRecordResponse of(LocalDate date, LocalTime time, AttendanceStatus status) {
-        return new AttendanceRecordResponse(date, time.format(TIME_FORMATTER), status.getTitle());
+    public static AttendanceRecordResponse from(AttendanceRecord attendanceRecord) {
+        return new AttendanceRecordResponse(attendanceRecord.date(), attendanceRecord.time().format(TIME_FORMATTER),
+                attendanceRecord.status().getTitle());
     }
 }

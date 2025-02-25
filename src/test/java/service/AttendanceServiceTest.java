@@ -91,7 +91,7 @@ class AttendanceServiceTest {
 
     @Test
     @DisplayName("특정 크루의 월 단위 출석 기록을 불러온다")
-    void test() {
+    void getMonthAttendanceStatisticsTest() {
         // given
         String nickname = "name";
         LocalDate monday = LocalDate.of(2025, 2, 3);
@@ -105,9 +105,9 @@ class AttendanceServiceTest {
         attendanceService.saveAttendanceRecord(new SaveAttendanceRequest(nickname, monday.plusDays(3), time));
         // 30분 초과 결석 1
         attendanceService.saveAttendanceRecord(
-                new SaveAttendanceRequest(nickname, monday.plusDays(3), LocalTime.of(10, 31)));
+                new SaveAttendanceRequest(nickname, monday.plusDays(4), LocalTime.of(10, 31)));
         // 출석 기록 없는 결석 1
-        LocalDate today = monday.plusDays(7);
+        LocalDate today = monday.plusDays(8);
 
         // when
         MonthAttendanceStatistics statistics = attendanceService.getMonthAttendanceStatistics(
