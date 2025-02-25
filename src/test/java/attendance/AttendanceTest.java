@@ -58,6 +58,18 @@ class AttendanceTest {
         found.modifyAttendance(DATE, time);
 
         // then
-        assertThat(found.getAttendanceRecordOf(DATE)).isEqualTo(time);
+        assertThat(found.getAttendanceTimeOf(DATE)).isEqualTo(time);
+    }
+
+    @Test
+    @DisplayName("출석하지 않은 날짜를 수정 시도할 경우 예외를 반환한다")
+    void modifyAttendanceExceptionTest() {
+        // given
+        Crew crew = new Crew("pobi");
+
+        // when then
+        assertThatThrownBy(() -> {
+            crew.modifyAttendance(DATE, TIME.plusMinutes(30));
+        }).isInstanceOf(IllegalArgumentException.class);
     }
 }

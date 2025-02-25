@@ -28,4 +28,15 @@ public class Crew {
             throw new IllegalArgumentException("이미 출석한 경우 다시 출석할 수 없습니다. 출석 수정 기능을 이용해 주세요.");
         }
     }
+
+    public void modifyAttendance(LocalDate date, LocalTime time) {
+        if (!attendanceRecords.containsKey(date)) {
+            throw new IllegalArgumentException();
+        }
+        attendanceRecords.put(date, time);
+    }
+
+    public LocalTime getAttendanceTimeOf(LocalDate date) {
+        return attendanceRecords.get(date);
+    }
 }
