@@ -7,9 +7,9 @@ import java.util.List;
 public enum WarningStatus {
     CLEAR(0), WARNING(2), INTERVIEW(3), EXPEL(6);
 
-    public static long LATE_FER_ABSENCE = 3;
+    public static final long LATE_FER_ABSENCE = 3;
 
-    private int absenceCount;
+    private final int absenceCount;
 
     WarningStatus(final int absenceCount) {
         this.absenceCount = absenceCount;
