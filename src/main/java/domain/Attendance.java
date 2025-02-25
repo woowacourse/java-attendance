@@ -1,7 +1,5 @@
 package domain;
 
-import constant.AttendanceStandard;
-
 import java.time.DayOfWeek;
 import java.time.LocalDateTime;
 

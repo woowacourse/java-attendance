@@ -28,7 +28,7 @@ public class FileInputView {
     }
 
     private void addNewCrewWhenNotExisted(AllCrew allCrew, String crewName) {
-        if (!allCrew.containsCrewName(crewName)) {
+        if (!allCrew.isContainedCrewName(crewName)) {
             allCrew.addCrew(new Crew(crewName));
         }
     }

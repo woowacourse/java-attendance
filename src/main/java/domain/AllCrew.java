@@ -17,9 +17,9 @@ public class AllCrew {
         allCrew.add(crew);
     }
 
-    public boolean containsCrewName(String crewName) {
+    public boolean isContainedCrewName(String crewName) {
         return allCrew.stream()
-                .anyMatch(crew -> crew.getName().equals(crewName));
+                .anyMatch(crew -> crew.isSameName(crewName));
     }
 
     public Attendance addCrewAttendanceByName(String name, LocalDateTime dateTime) {
