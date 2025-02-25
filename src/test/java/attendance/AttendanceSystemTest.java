@@ -32,6 +32,7 @@ class AttendanceSystemTest {
     static final LocalDateTime SATURDAY = LocalDateTime.of(2025, 2, 8, 8, 50);
     static final LocalDateTime SUNDAY = LocalDateTime.of(2025, 2, 9, 8, 50);
     static final LocalDateTime PUBLIC_HOLIDAY = LocalDateTime.of(2025, 2, 24, 8, 50);
+    static final LocalDateTime COMMON_ATTENDANCE_DATE_TIME = LocalDateTime.of(2025, 2, 4, 8, 50);
 
     AttendanceSystem attendanceSystem;
     CrewStorage crewStorage;
@@ -179,4 +180,27 @@ class AttendanceSystemTest {
                 .doesNotThrowAnyException();
     }
 
+    @DisplayName("출석 기록 수정 - 닉네임, 수정 목표 날짜, 새로운 출석 시간으로 기존 출석 기록을 수정할 수 있다")
+    @Test
+    void 출석_기록_수정_닉네임_수정_목표_날짜_새로운_출석_시간으로_기존_출석_기록을_수정할_수_있다() {
+        attendanceSystem.addAttendanceRecord(VALID_CREW_NICKNAME, COMMON_ATTENDANCE_DATE_TIME);
+        LocalDateTime newDateTime = LocalDateTime.of(
+                COMMON_ATTENDANCE_DATE_TIME.toLocalDate(), LocalTime.of(10, 5));
+
+        attendanceSystem.updateAttendance(
+                VALID_CREW_NICKNAME, newDateTime.toLocalDate(), newDateTime.toLocalTime());
+
+        AttendanceRecord actualRecord = attendanceSystem.findAttendanceRecord(
+                VALID_CREW_NICKNAME, COMMON_ATTENDANCE_DATE_TIME.toLocalDate()).get();
+        checkSameRecord(actualRecord, VALID_CREW_NICKNAME, newDateTime);
+    }
+
+    void checkSameRecord(
+            AttendanceRecord target,
+            String expectedNickname,
+            LocalDateTime expectedDateTime
+    ) {
+        assertThat(target.getNickname()).isEqualTo(expectedNickname);
+        assertThat(target.getArrivalDateTime()).isEqualTo(expectedDateTime);
+    }
 }

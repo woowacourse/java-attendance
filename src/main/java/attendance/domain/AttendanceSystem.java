@@ -7,6 +7,7 @@ import attendance.domain.record.AttendanceRecord;
 import attendance.exception.ExceptionMessage;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -34,6 +35,10 @@ public class AttendanceSystem {
         return records.stream()
                 .filter(record -> record.isSame(crewNickname, date))
                 .findAny();
+    }
+
+    public void updateAttendance(String validCrewNickname, LocalDate localDate, LocalTime newArrivalTime) {
+
     }
 
     private void validateAlreadyAttendance(String crewNickname, LocalDate date) {

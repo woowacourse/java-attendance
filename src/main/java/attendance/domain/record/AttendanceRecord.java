@@ -39,7 +39,15 @@ public final class AttendanceRecord {
         return Objects.hash(nickname, arrivalDateTime);
     }
 
+    public String getNickname() {
+        return nickname;
+    }
+
     public AttendanceType getAttendanceType() {
         return attendanceType;
+    }
+
+    public LocalDateTime getArrivalDateTime() {
+        return arrivalDateTime;
     }
 }
