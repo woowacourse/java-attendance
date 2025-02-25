@@ -18,7 +18,7 @@ public class InputView {
                 3. 크루별 출석 기록 확인
                 4. 제적 위험자 확인
                 Q. 종료       
-                """, DateTimeUtil.now().format(MAIN_MENU_FORMAT));
+                """, DateTimeUtil.nowDate().format(MAIN_MENU_FORMAT));
         return SCANNER.nextLine();
     }
 

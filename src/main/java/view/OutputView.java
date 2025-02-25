@@ -9,7 +9,7 @@ public class OutputView {
             = DateTimeFormatter.ofPattern("MM월 dd일 E요일 HH:mm", Locale.KOREAN);
 
     public static void printSavedAttendanceRecord(SavedAttendanceRecord saved) {
-        System.out.printf("%s (%s)",
+        System.out.printf("%s (%s)%n",
                 saved.dateTime().format(SAVED_ATTENDANCE_RECORD_FORMAT),
                 saved.status().getTitle()
         );

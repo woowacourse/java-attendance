@@ -1,8 +1,11 @@
 package controller;
 
+import controller.dto.SaveAttendanceRequest;
 import service.AttendanceRecordLoader;
 import service.AttendanceService;
+import util.DateTimeUtil;
 import view.InputView;
+import view.OutputView;
 
 public class AttendanceController {
     private final AttendanceService attendanceService;
@@ -33,6 +36,9 @@ public class AttendanceController {
     private void saveAttendanceRecord() {
         String nickname = InputView.scanNickname();
         String time = InputView.scanAttendanceTime();
+        OutputView.printSavedAttendanceRecord(
+                attendanceService.saveAttendanceRecord(
+                        SaveAttendanceRequest.of(nickname, DateTimeUtil.nowDate(), time)));
     }
 
     private void modifyAttendanceRecord() {

@@ -3,6 +3,7 @@ package util;
 import constant.Holiday;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
+import java.time.LocalTime;
 
 public class DateTimeUtil {
     public static boolean isOffDay(LocalDate date) {
@@ -18,7 +19,12 @@ public class DateTimeUtil {
         return Holiday.isHoliday(date.getMonthValue(), date.getDayOfMonth());
     }
 
-    public static LocalDate now() {
+    public static LocalDate nowDate() {
         return LocalDate.now();
+    }
+
+    public static boolean isBetween(LocalTime startTime, LocalTime endTime, LocalTime targetTime) {
+        return (targetTime.equals(startTime) || targetTime.isAfter(startTime))
+                && (targetTime.equals(endTime) || targetTime.isBefore(endTime));
     }
 }

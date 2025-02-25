@@ -8,11 +8,18 @@ public class CrewRepository {
     private static final List<Crew> CREWS = new ArrayList<>();
 
     public static void addCrew(Crew crew) {
+        if (existsCrew(crew.getNickname())) {
+            return;
+        }
         CREWS.add(crew);
     }
 
     public static boolean existsCrew(String nickname) {
         return CREWS.stream()
                 .anyMatch(crew -> nickname.equals(crew.getNickname()));
+    }
+
+    public static void clear() {
+        CREWS.clear();
     }
 }

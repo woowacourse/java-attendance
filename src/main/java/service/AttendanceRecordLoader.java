@@ -2,6 +2,7 @@ package service;
 
 import constant.AttendanceStatus;
 import domain.AttendanceRecord;
+import domain.Crew;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
@@ -9,6 +10,7 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import repository.AttendanceRecordRepository;
+import repository.CrewRepository;
 
 public class AttendanceRecordLoader {
 
@@ -24,19 +26,19 @@ public class AttendanceRecordLoader {
              BufferedReader br = new BufferedReader(fr);
         ) {
             br.lines().skip(1)
-                    .map(AttendanceRecordLoader::parseAttendanceRecord)
-                    .forEach(AttendanceRecordRepository::add);
+                    .forEach(AttendanceRecordLoader::addToRepository);
         } catch (IOException e) {
             System.out.println("기존 출석 기록을 읽어오지 못했습니다.");
         }
     }
 
-    private static AttendanceRecord parseAttendanceRecord(String line) {
+    private static void addToRepository(String line) {
         String[] parsed = line.split(",", -1);
         String nickname = parsed[0];
         String dateTime = parsed[1];
         LocalDateTime d = LocalDateTime.parse(dateTime, DATETIME_FORMAT);
-        return new AttendanceRecord(nickname, d.toLocalDate(), d.toLocalTime(),
-                AttendanceStatus.of(d.toLocalDate(), d.toLocalTime()));
+        CrewRepository.addCrew(new Crew(nickname));
+        AttendanceRecordRepository.add(new AttendanceRecord(nickname, d.toLocalDate(), d.toLocalTime(),
+                AttendanceStatus.of(d.toLocalDate(), d.toLocalTime())));
     }
 }
