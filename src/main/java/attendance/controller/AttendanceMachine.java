@@ -60,7 +60,6 @@ public class AttendanceMachine {
     }
 
     private void functionFour(Register register) {
-
         AttendanceHistories histories = AttendanceHistories.fromRegister(register);
         List<AttendanceHistory> warningAttendanceHistory = histories.findWarningAttendanceHistory();
 
@@ -68,7 +67,6 @@ public class AttendanceMachine {
     }
 
     private void functionThree(LocalDate now, Register register) {
-
         String crewName = inputView.readCrewName();
 
         DateInfos dateInfos = register.findDateInfos(crewName);
@@ -78,7 +76,6 @@ public class AttendanceMachine {
     }
 
     private void functionTwo(LocalDate now, Register register) {
-
         String crewName = inputView.readModifyCrewName();
         String modifyDay = inputView.readModifyDay();
         String modifyTime = inputView.readModifyTime();
@@ -100,7 +97,6 @@ public class AttendanceMachine {
     }
 
     private void functionOne(LocalDate now, Register register) {
-
         String crewName = inputView.readCrewName();
         String attendanceTime = inputView.readAttendanceTime();
         CampusTime attendanceCampusTime = CampusTime.fromHourColonMinute(attendanceTime);
@@ -110,7 +106,6 @@ public class AttendanceMachine {
 
         outputView.writeAttendanceCheck(dateInfo);
     }
-
 
     private AttendanceOperation readFunction(LocalDate now) {
         return retryUntilValidInput(() -> AttendanceOperation.of(inputView.readFunctionChoose(now)));

@@ -24,4 +24,5 @@ public enum AttendanceOperation {
                 .findFirst()
                 .orElseThrow(() -> CustomException.from(ErrorMessage.FUNCTION_NOT_PRESENCE));
     }
+
 }
