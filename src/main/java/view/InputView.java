@@ -25,6 +25,8 @@ public class InputView {
     private static final DateTimeFormatter dateTimeFormatterForHourMin = DateTimeFormatter.ofPattern("HH:mm");
     private static final int startTime = 8;
     private static final int endTime = 23;
+    private static final int DECEMBER_START_DATE = 1;
+    private static final int DECEMBER_ENT_DATE = 31;
     private static final Scanner scanner = new Scanner(System.in);
 
     private static void printMenu() {
@@ -74,7 +76,7 @@ public class InputView {
         System.out.println(PROMPT_DAY_INPUT_TO_MODIFY);
         try{
             int date = Integer.parseInt(userInput());
-            if(date < 1 || date > 31){
+            if(date < DECEMBER_START_DATE || date > DECEMBER_ENT_DATE){
                 throw new IllegalArgumentException("[ERROR] 1~31 사이의 숫자만 입력해주세요");
             }
             return date;
