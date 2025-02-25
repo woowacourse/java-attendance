@@ -22,10 +22,17 @@ public class AttendancesTest {
         Assertions.assertEquals(2, attendances.getRecords().size());
     }
 
-    @DisplayName("동일한 날짜가 있다면 출석을 삭제하고 추가한다")
+    @DisplayName("출석을 수정한다")
     @Test
-    void removeAttendance() {
-        attendances.addAttendance(LocalDateTime.of(2024, 12, 2, 15, 0));
+    void updateAttendance() {
+        attendances.updateAttendance(LocalDateTime.of(2024, 12, 2, 15, 0), 3);
         Assertions.assertEquals(1, attendances.getRecords().size());
+    }
+
+    @DisplayName("미래 시점인 경우 수정하지 않고 예외를 발생시킨다.")
+    @Test
+    void updateAttendanceFutureExceptionTest() {
+        Assertions.assertThrows(IllegalArgumentException.class,
+                () -> attendances.updateAttendance(LocalDateTime.of(2024, 12, 2, 15, 0), 1));
     }
 }
