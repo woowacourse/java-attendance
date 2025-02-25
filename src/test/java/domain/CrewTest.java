@@ -5,6 +5,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -21,5 +22,16 @@ public class CrewTest {
         Crew crew = new Crew(crewName, attendances);
 
         assertThat(crew.getCrewStatus()).isEqualTo(CrewStatus.WARNING);
+    }
+
+    @DisplayName("크루 이름 동일성 확인 테스트")
+    @Test
+    void crewNameEqualsTest() {
+        String crewName = "메이";
+        Attendances attendances = new Attendances(List.of());
+        Crew crew = new Crew(crewName, attendances);
+
+        Assertions.assertThat(crew.isSameName("메이"))
+                .isEqualTo(true);
     }
 }
