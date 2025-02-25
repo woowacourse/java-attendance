@@ -14,7 +14,6 @@ public class AppConfig {
     private final OutputView outputView;
     private final Holiday holiday;
     private final DateGenerator dateGenerator;
-    private final AttendanceInit attendanceInit;
     private final AttendanceManager attendanceManager;
 
     public AppConfig() {
@@ -23,7 +22,7 @@ public class AppConfig {
         this.holiday = new Holiday();
         this.dateGenerator = new CurrentDateGeneratorImpl();
         this.attendanceManager = new AttendanceManager();
-        this.attendanceInit = new AttendanceInit(attendanceManager, holiday, dateGenerator);
+        new AttendanceInit(attendanceManager, holiday, dateGenerator);
     }
 
     public InputView getInputView() {
@@ -44,9 +43,5 @@ public class AppConfig {
 
     public AttendanceManager getAttendanceManager() {
         return attendanceManager;
-    }
-
-    public AttendanceInit getAttendanceInit() {
-        return attendanceInit;
     }
 }
