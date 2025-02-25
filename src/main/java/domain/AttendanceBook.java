@@ -106,6 +106,18 @@ public class AttendanceBook {
         return count;
     }
 
+    private void addAttendance(Attendance attendance) {
+        if (!attendances.add(attendance)) {
+            attendances.remove(attendance);
+            attendances.add(attendance);
+        }
+    }
+
+    private boolean isHoliday(LocalDate date) {
+        Month month = Month.of(date.getMonthValue());
+        return month.isHoliday(date.getDayOfMonth());
+    }
+
     @Override
     public boolean equals(Object object) {
         if (this == object) return true;
@@ -117,17 +129,5 @@ public class AttendanceBook {
     @Override
     public int hashCode() {
         return Objects.hash(attendances);
-    }
-
-    private void addAttendance(Attendance attendance) {
-        if (!attendances.add(attendance)) {
-            attendances.remove(attendance);
-            attendances.add(attendance);
-        }
-    }
-
-    private boolean isHoliday(LocalDate date) {
-        Month month = Month.of(date.getMonthValue());
-        return month.isHoliday(date.getDayOfMonth());
     }
 }
