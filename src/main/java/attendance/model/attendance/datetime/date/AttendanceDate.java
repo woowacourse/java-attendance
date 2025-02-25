@@ -40,6 +40,10 @@ public class AttendanceDate {
         return value.getDayOfWeek().equals(dayOfWeek);
     }
 
+    public LocalDate getValue() {
+        return value;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) {

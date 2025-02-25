@@ -24,11 +24,14 @@ public class AttendanceDateTime {
             final CampusOperationPolicy campusOperationPolicy
     ) {
 
-        return null;
+        return new AttendanceDateTime(
+                AttendanceDate.policyApplied(dateTime.toLocalDate(), campusOperationPolicy),
+                AttendanceTime.policyApplied(dateTime.toLocalTime(), campusOperationPolicy)
+        );
     }
 
     public LocalDate getDate() {
-        return null;
+        return date.getValue();
     }
 
     public Optional<LocalTime> getTime() {

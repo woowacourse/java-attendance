@@ -5,7 +5,6 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 
 import attendance.model.campus.CampusOperationPolicy;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -36,8 +35,8 @@ class AttendanceDateTimeTest {
 
         // Then
         assertAll(
-                () -> assertThat(attendanceDateTime.getDate()).isEqualTo(dateTime),
-                () -> assertThat(attendanceDateTime.getTime()).hasValue(LocalTime.of(13, 5))
+                () -> assertThat(attendanceDateTime.getDate()).isEqualTo(dateTime.toLocalDate()),
+                () -> assertThat(attendanceDateTime.getTime()).hasValue(dateTime.toLocalTime())
         );
     }
 }
