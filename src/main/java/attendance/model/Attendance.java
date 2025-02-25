@@ -4,7 +4,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 public class Attendance {
-    private final LocalDateTime dateTime;
+    private LocalDateTime dateTime;
     private AttendanceType type;
 
     public Attendance(LocalDateTime dateTime) {
@@ -26,5 +26,9 @@ public class Attendance {
 
     public boolean isSameDate(LocalDate date) {
         return dateTime.toLocalDate().equals(date);
+    }
+
+    public void modifyDateTime(LocalDateTime dateTime) {
+        this.dateTime = dateTime;
     }
 }

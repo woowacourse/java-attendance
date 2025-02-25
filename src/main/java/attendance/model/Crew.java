@@ -43,6 +43,15 @@ public class Crew {
         return statistic.getAbsentCount();
     }
 
+    public Attendance findAttendance(LocalDate date) {
+        return attendances.findAttendance(date);
+    }
+
+    public void modifyAttendance(LocalDateTime dateTime) {
+        attendances.modifyAttendance(dateTime);
+        statistic.updateStatistic(attendances);
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -58,9 +67,5 @@ public class Crew {
     @Override
     public int hashCode() {
         return Objects.hash(name);
-    }
-
-    public Attendance findAttendance(LocalDate date) {
-        return attendances.findAttendance(date);
     }
 }

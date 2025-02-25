@@ -109,4 +109,12 @@ public class Attendances {
                 .orElseThrow(() -> new IllegalStateException("출석 수정은 어제까지의 기록만 가능합니다."));  // 값이 없을 경우 null 반환
     }
 
+    public void modifyAttendance(LocalDateTime dateTime) {
+        for (Attendance attendance : attendances) {
+            if (attendance.isSameDate(dateTime.toLocalDate())) {
+                attendance.modifyDateTime(dateTime);
+                attendance.calculateAttendanceType();
+            }
+        }
+    }
 }
