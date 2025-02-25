@@ -15,7 +15,7 @@ public class CSVReader {
         try {
             addData(path, csvData);
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new RuntimeException("해당하는 파일이 없습니다.");
         }
 
         return csvData;

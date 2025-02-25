@@ -72,9 +72,9 @@ public class Attendances {
                 .count();
     }
 
-//    public int calculateAbsentCount() {
-//        return (int) attendances.stream()
-//                .filter(attendance -> attendance.getType() == AttendanceType.ABSENT)
-//                .count();
-//    }
+    public int calculateAbsentCount() {
+        return (int) attendances.stream()
+                .filter(attendance -> attendance.getType() == AttendanceType.ABSENT)
+                .count();
+    }
 }

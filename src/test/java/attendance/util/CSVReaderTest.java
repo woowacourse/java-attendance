@@ -1,6 +1,7 @@
 package attendance.util;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -24,5 +25,13 @@ class CSVReaderTest {
                         List.of("짱수", "2025-02-03 10:00")
                 )
         );
+    }
+
+    @DisplayName("파일이 존재하지 않는 경우 올바른 예외를 발생한다.")
+    @Test
+    void nonExistentCSV() {
+        Path path = Paths.get("src/main/resources/testURL.csv");
+        assertThatThrownBy(() -> CSVReader.readCSV(path)).isInstanceOf(RuntimeException.class)
+                .hasMessage("해당하는 파일이 없습니다.");
     }
 }
