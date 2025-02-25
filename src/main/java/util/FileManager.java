@@ -58,12 +58,12 @@ public class FileManager {
     }
 
     private static Crew createCrew(final String[] lineSplit) {
-        String name = lineSplit[0];
+        String name = lineSplit[0].trim();
         return Crew.from(name);
     }
 
     private static LocalDateTime createLocalDateTime(final String[] lineSplit) {
-        String dateTime = lineSplit[1];
+        String dateTime = lineSplit[1].trim();
         return LocalDateTime.parse(dateTime, DATE_TIME_FORMAT);
     }
 
