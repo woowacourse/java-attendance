@@ -7,6 +7,9 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.converter.JavaTimeConversionPattern;
+import org.junit.jupiter.params.provider.CsvSource;
 
 @DisplayName("출석 기록 테스트")
 class AttendanceLogTest {
@@ -48,11 +51,53 @@ class AttendanceLogTest {
 
         // when & then
         assertThatCode(() -> new AttendanceLog(null, attendanceDate, attendanceTime))
-                .isInstanceOf(NullPointerException.class)
+                .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("닉네임은 null일 수 없습니다.");
     }
 
-    @DisplayName("출석 시간이 없는 경우 결석으로 간주한다.")
+    @DisplayName("등교 날짜가 법정 공휴일인 경우 예외가 발생한다.")
+    @Test
+    void shouldThrowException_WhenAttendanceDateIsPublicHoliday() {
+        // given
+        Nickname nickname = new Nickname("벨로");
+        LocalDate christmas = LocalDate.of(2024, 12, 25);
+
+        // when & then
+        assertThatCode(() -> new AttendanceLog(nickname, christmas))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("공휴일(크리스마스)에는 출석할 수 없습니다.");
+    }
+
+    @DisplayName("등교 날짜가 주말인 경우 예외가 발생한다.")
+    @ParameterizedTest
+    @CsvSource({
+            "2024-12-07", // 토요일
+            "2024-12-08"  // 일요일
+    })
+    void shouldThrowException_WhenAttendanceDateIsWeekend(@JavaTimeConversionPattern("yyyy-MM-dd") LocalDate weekend) {
+        // given
+        Nickname nickname = new Nickname("벨로");
+
+        // when & then
+        assertThatCode(() -> new AttendanceLog(nickname, weekend))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("주말에는 출석할 수 없습니다.");
+    }
+
+    @DisplayName("등교 날짜가 null인 경우 예외가 발생한다.")
+    @Test
+    void shouldThrowException_WhenAttendanceDateIsNull() {
+        // given
+        Nickname nickname = new Nickname("벨로");
+        LocalTime attendanceTime = LocalTime.of(10, 0);
+
+        // when & then
+        assertThatCode(() -> new AttendanceLog(nickname, null, attendanceTime))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("출석 날짜는 null일 수 없습니다.");
+    }
+
+    @DisplayName("등교 시간이 없는 경우 결석으로 간주한다.")
     @Test
     void shouldAbsent_WhenAttendanceTimeIsNull() {
         // given
@@ -68,16 +113,20 @@ class AttendanceLogTest {
                 .isTrue();
     }
 
-    @DisplayName("출석 날짜가 null인 경우 예외가 발생한다.")
-    @Test
-    void shouldThrowException_WhenAttendanceDateIsNull() {
+    @DisplayName("캠퍼스 운영시간이 아닐 때 출석하는 경우 예외가 발생한다.")
+    @ParameterizedTest
+    @CsvSource({
+            "07:59",
+            "23:01",
+    })
+    void shouldThrowException_WhenAttendanceTimeNotInOpen(@JavaTimeConversionPattern("HH:mm") LocalTime outTime) {
         // given
         Nickname nickname = new Nickname("벨로");
-        LocalTime attendanceTime = LocalTime.of(10, 0);
+        LocalDate attendanceDate = LocalDate.of(2024, 12, 2);
 
         // when & then
-        assertThatCode(() -> new AttendanceLog(nickname, null, attendanceTime))
-                .isInstanceOf(NullPointerException.class)
-                .hasMessage("출석 날짜는 null일 수 없습니다.");
+        assertThatCode(() -> new AttendanceLog(nickname, attendanceDate, outTime))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("캠퍼스 운영시간(08:00~23:00) 외에는 출석할 수 없습니다.");
     }
 }

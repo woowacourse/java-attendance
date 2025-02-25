@@ -1,27 +1,68 @@
 package attendance.model;
 
-import static java.util.Objects.requireNonNull;
-
+import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.time.Month;
+import java.time.format.DateTimeFormatter;
 import java.util.Objects;
 
 public class AttendanceLog {
+
+    private static final LocalTime OPEN_TIME = LocalTime.of(8, 0);
+    private static final LocalTime CLOSE_TIME = LocalTime.of(23, 0);
+    private static final DateTimeFormatter TIME_FORMATTER = DateTimeFormatter.ofPattern("HH:mm");
 
     private final Nickname nickname;
     private final LocalDate attendanceDate;
     private final LocalTime attendanceTime;
 
     public AttendanceLog(Nickname nickname, LocalDate attendanceDate, LocalTime attendanceTime) {
-        this.nickname = requireNonNull(nickname, "닉네임은 null일 수 없습니다.");
-        this.attendanceDate = requireNonNull(attendanceDate, "출석 날짜는 null일 수 없습니다.");
+        validateNickname(nickname);
+        validateAttendanceDate(attendanceDate);
+        validateAttendanceTime(attendanceTime);
+        this.nickname = nickname;
+        this.attendanceDate = attendanceDate;
         this.attendanceTime = attendanceTime;
     }
 
+    private void validateAttendanceTime(LocalTime attendanceTime) {
+        if (attendanceTime.isBefore(OPEN_TIME) || attendanceTime.isAfter(CLOSE_TIME)) {
+            throw new IllegalArgumentException("캠퍼스 운영시간(%s~%s) 외에는 출석할 수 없습니다."
+                    .formatted(OPEN_TIME.format(TIME_FORMATTER), CLOSE_TIME.format(TIME_FORMATTER)));
+        }
+    }
+
     public AttendanceLog(Nickname nickname, LocalDate attendanceDate) {
-        this.nickname = requireNonNull(nickname, "닉네임은 null일 수 없습니다.");
-        this.attendanceDate = requireNonNull(attendanceDate, "출석 날짜는 null일 수 없습니다.");
+        validateNickname(nickname);
+        validateAttendanceDate(attendanceDate);
+        this.nickname = nickname;
+        this.attendanceDate = attendanceDate;
         this.attendanceTime = null;
+    }
+
+    private void validateNickname(Nickname nickname) {
+        if (nickname == null) {
+            throw new IllegalArgumentException("닉네임은 null일 수 없습니다.");
+        }
+    }
+
+    private void validateAttendanceDate(LocalDate attendanceDate) {
+        if (attendanceDate == null) {
+            throw new IllegalArgumentException("출석 날짜는 null일 수 없습니다.");
+        }
+        boolean isChristmas = attendanceDate.getMonth() == Month.DECEMBER && attendanceDate.getDayOfMonth() == 25;
+        if (isChristmas) {
+            throw new IllegalArgumentException("공휴일(크리스마스)에는 출석할 수 없습니다.");
+        }
+        if (isWeekend(attendanceDate)) {
+            throw new IllegalArgumentException("주말에는 출석할 수 없습니다.");
+        }
+    }
+
+    private boolean isWeekend(LocalDate baseDate) {
+        DayOfWeek dayOfWeek = baseDate.getDayOfWeek();
+        return dayOfWeek == DayOfWeek.SATURDAY || dayOfWeek == DayOfWeek.SUNDAY;
     }
 
     public boolean isAbsent() {
