@@ -4,6 +4,7 @@ import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.TextStyle;
+import java.time.temporal.ChronoUnit;
 import java.util.Arrays;
 import java.util.Locale;
 
@@ -40,5 +41,12 @@ public enum LectureTime {
                                 .getDisplayName(TextStyle.SHORT, Locale.KOREAN)
                                 + ": 교육이 없는 요일입니다.")
                 );
+    }
+
+    public static int calculateElapsedMinutes(LocalDate date, LocalTime time) {
+        if (!isLectureDate(date)) {
+            throw new IllegalArgumentException(date + ": 교육이 없는 날입니다.");
+        }
+        return Math.max(0, (int) ChronoUnit.MINUTES.between(from(date).startTime, time));
     }
 }

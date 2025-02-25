@@ -1,5 +1,6 @@
 package constant;
 
+import java.time.LocalDate;
 import java.util.Arrays;
 
 public enum Holiday {
@@ -19,5 +20,9 @@ public enum Holiday {
     public static boolean isHoliday(int month, int day) {
         return Arrays.stream(values())
                 .anyMatch(holiday -> holiday.month == month && holiday.day == day);
+    }
+
+    public static boolean isHoliday(LocalDate date) {
+        return isHoliday(date.getMonthValue(), date.getDayOfMonth());
     }
 }

@@ -3,6 +3,7 @@ package constant;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
 import java.time.LocalDate;
+import java.time.LocalTime;
 import org.assertj.core.api.Assertions;
 import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.DisplayName;
@@ -54,6 +55,17 @@ class LectureTimeTest {
                 LectureTime.from(LocalDateFixture.SUNDAY);
             }).isInstanceOf(IllegalArgumentException.class);
         });
+    }
+
+    @Test
+    @DisplayName("날짜와 시간으로 교육 시작 시각으로부터 몇분 늦었는지 계산한다")
+    void calculateElapsedMinutesTest() {
+        // when
+        int diff = LectureTime.calculateElapsedMinutes(LocalDateFixture.MONDAY,
+                LocalTime.of(13, 32));
+
+        // then
+        Assertions.assertThat(diff).isEqualTo(32);
     }
 
     static class LocalDateFixture {
