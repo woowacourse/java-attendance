@@ -1,6 +1,5 @@
-package attendance;
+package attendance.domain;
 
-import attendance.domain.AttendanceFileParser;
 import attendance.dto.AttendanceFileDto;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator;
@@ -17,6 +16,7 @@ public class AttendanceFileParserTest {
 
     @Test
     void 출석_파일을_읽고_dto로_반환한다() {
+        // given
         AttendanceFileParser attendanceFileParser = new AttendanceFileParser("src/test/java/resources/testAttendances.csv");
 
         List<AttendanceFileDto> attendanceFileDtos = List.of (
@@ -26,6 +26,7 @@ public class AttendanceFileParserTest {
             new AttendanceFileDto("이든", LocalDate.of(2024, 12, 13), LocalTime.of(10, 7))
         );
 
+        // when & then
         assertThat(attendanceFileParser.read()).isEqualTo(attendanceFileDtos);
     }
 }
