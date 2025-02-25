@@ -54,7 +54,8 @@ public class OutputView {
         System.out.println();
 
         List<AttendanceRecord> records = attendanceHistoryDto.records();
-        for (AttendanceRecord record : records) {
+        List<AttendanceRecord> sortedRecords = sortByDate(records);
+        for (AttendanceRecord record : sortedRecords) {
             String timeFormatted = formatTime(record.time().time());
 
             System.out.printf(
@@ -73,6 +74,12 @@ public class OutputView {
         System.out.println();
 
         System.out.printf("%s 대상자입니다.\n", attendanceStatus.absencePolicy().getDescription());
+    }
+
+    private static List<AttendanceRecord> sortByDate(List<AttendanceRecord> attendanceRecords) {
+        return attendanceRecords.stream()
+                .sorted(Comparator.comparing(AttendanceRecord::date))
+                .toList();
     }
 
     private static String formatTime(LocalTime beforeTime) {
