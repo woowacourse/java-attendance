@@ -18,7 +18,18 @@ public class AttendanceTime {
             final CampusOperationPolicy campusOperationPolicy
     ) {
 
-        return null;
+        validateCampusOperationTime(value, campusOperationPolicy);
+        return new AttendanceTime(value);
+    }
+
+    private static void validateCampusOperationTime(
+            final LocalTime value,
+            final CampusOperationPolicy campusOperationPolicy
+    ) {
+
+        if (!campusOperationPolicy.isOpenTime(value)) {
+            throw new IllegalArgumentException("캠퍼스 운영 시간이 아닙니다.");
+        }
     }
 
     public Optional<LocalTime> getValue() {
