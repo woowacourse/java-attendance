@@ -10,8 +10,6 @@ import util.DateUtil;
 
 public class AttendanceBook {
     private static final LocalTime START_TIME = LocalTime.of(8, 0);
-    private static final LocalTime LATE_TIME = LocalTime.of(10, 5);
-    private static final LocalTime ABSENCE_TIME = LocalTime.of(10, 30);
     private static final LocalTime END_TIME = LocalTime.of(23, 0);
 
     private final Map<String, Attends> attendanceBook;
@@ -80,7 +78,7 @@ public class AttendanceBook {
     }
 
     public AttendStatus checkAttendance(Attend attend) {
-        return AttendStatus.calculateAttend(attend, LATE_TIME, ABSENCE_TIME);
+        return AttendStatus.calculateAttend(attend);
     }
 
     public AttendanceResults checkAttendance(String name, List<Integer> days) {
@@ -95,7 +93,7 @@ public class AttendanceBook {
     private AttendanceResult getAttendanceResult(Attends attends, int day) {
         if (attends.hasDayEqualsAttend(day)) {
             Attend attend = attends.findByDay(day);
-            return new AttendanceResult(attend, AttendStatus.calculateAttend(attend, LATE_TIME, ABSENCE_TIME));
+            return new AttendanceResult(attend, AttendStatus.calculateAttend(attend));
         }
         Attend attend = Attend.fromDay(day);
         return new AttendanceResult(attend, AttendStatus.ABSENCE);

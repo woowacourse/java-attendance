@@ -1,16 +1,18 @@
 package domain;
 
+import java.time.DayOfWeek;
 import java.time.LocalTime;
 
 public enum AttendStatus {
     ATTEND, LATE, ABSENCE;
 
-    public static AttendStatus calculateAttend(Attend attend, LocalTime lateTime, LocalTime absenceTime) {
-        LocalTime targetTime = attend.time;
-        if (targetTime == null || targetTime.isAfter(absenceTime)) {
+    public static AttendStatus calculateAttend(Attend attend) {
+        final LocalTime targetTime = attend.time;
+        final DayOfWeek dayOfWeek = attend.getDayOfWeek();
+        if (targetTime == null || targetTime.isAfter(AttendanceTimeInfo.getAbsenceTime(dayOfWeek))) {
             return ABSENCE;
         }
-        if (targetTime.isAfter(lateTime)) {
+        if (targetTime.isAfter(AttendanceTimeInfo.getLateLocalTime(dayOfWeek))) {
             return LATE;
         }
         return ATTEND;

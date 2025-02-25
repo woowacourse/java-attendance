@@ -1,5 +1,6 @@
 package domain;
 
+import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.Objects;
@@ -33,6 +34,10 @@ public class Attend {
 
     public boolean isDayEqual(final int day) {
         return DateUtil.isDayEqual(day, date);
+    }
+
+    public DayOfWeek getDayOfWeek() {
+        return date.getDayOfWeek();
     }
 
     public int getDay() {
