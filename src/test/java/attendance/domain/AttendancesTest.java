@@ -11,7 +11,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 public class AttendancesTest {
-    private static final int ATTENDANCE_TOTAL_DAYS = 15;
+    private static final int ATTENDANCE_TOTAL_DAYS = 17;
 
     private final Crews crews = new Crews();
     private final Attendances attendances = new Attendances();

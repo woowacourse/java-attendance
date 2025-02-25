@@ -89,7 +89,7 @@ public class Attendances {
         attendances.add(attendance);
     }
 
-    public void hasCheckedAttendance(Crew crew, LocalDate today) {
+    public void hasCheckedAttendance(final Crew crew, final LocalDate today) {
         boolean isCheckedAttendance = attendances.stream()
                 .anyMatch(attendance -> attendance.isSameCrewDate(crew, today));
 
