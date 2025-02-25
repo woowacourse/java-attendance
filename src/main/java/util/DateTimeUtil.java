@@ -6,10 +6,6 @@ import java.time.format.TextStyle;
 import java.util.Locale;
 
 public class DateTimeUtil {
-//    private static LocalDate now() {
-//        return LocalDate.now();
-//    }
-
     public static int getYearBy(LocalDate localDate) {
         return localDate.getYear();
     }
@@ -19,7 +15,6 @@ public class DateTimeUtil {
     }
 
     public static int getDateBy(LocalDate localDate) {
-//        return 19;
         return localDate.getDayOfMonth();
     }
 
