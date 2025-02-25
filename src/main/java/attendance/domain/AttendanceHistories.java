@@ -14,12 +14,11 @@ public class AttendanceHistories {
         this.attendanceHistories = attendanceHistories;
     }
 
-    public static AttendanceHistories fromRegister(Register register) {
+    public static AttendanceHistories fromRegister(LocalDate now, Register register) {
         List<AttendanceHistory> attendanceHistories = new ArrayList<>();
         Set<Crew> crewSet = register.getCrews().getCrews();
         for (Crew crew : crewSet) {
             String crewName = crew.getCrewName();
-            LocalDate now = LocalDate.now();
             DateInfos dateInfos = register.findDateInfos(crewName);
             attendanceHistories.add(AttendanceHistory.fromDateInfos(crewName, now, dateInfos));
         }

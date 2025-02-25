@@ -53,7 +53,7 @@ public class AttendanceMachine {
             return true;
         }
         if (attendanceOperation.equals(AttendanceOperation.FOUR)) {
-            functionFour(register);
+            functionFour(now, register);
             return true;
         }
         return false;
@@ -104,8 +104,8 @@ public class AttendanceMachine {
         outputView.writeAttendanceHistory(now, dateInfos, history);
     }
 
-    private void functionFour(Register register) {
-        AttendanceHistories histories = AttendanceHistories.fromRegister(register);
+    private void functionFour(LocalDate now, Register register) {
+        AttendanceHistories histories = AttendanceHistories.fromRegister(now, register);
         List<AttendanceHistory> warningAttendanceHistory = histories.findWarningAttendanceHistory();
 
         outputView.writeWarningHistories(warningAttendanceHistory);
