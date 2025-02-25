@@ -37,7 +37,10 @@ public class AttendanceTime {
     }
 
     public boolean isBefore(final LocalTime time) {
-        return false;
+        if (value == null) {
+            throw new IllegalStateException("출석 시간이 존재하지 않습니다.");
+        }
+        return value.isBefore(time);
     }
 
     public Optional<LocalTime> getValue() {
