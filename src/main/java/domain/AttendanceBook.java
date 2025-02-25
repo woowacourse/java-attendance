@@ -75,6 +75,20 @@ public class AttendanceBook {
                         !attendanceBook.get(date).isAfter(startTime(date).plusMinutes(30)));
     }
 
+    public int getAttendCount() {
+        return (int) LocalDate.of(2024, 12, 1)
+                .datesUntil(AttendanceSystem.TODAY.plusDays(1))
+                .filter(date -> !isHoliday(date))
+                .filter(attendanceBook::containsKey)
+                .filter(this::isAttend)
+                .count();
+    }
+
+    private boolean isAttend(LocalDate date) {
+        return !attendanceBook.containsKey(date) ||
+                    !attendanceBook.get(date).isAfter(startTime(date).plusMinutes(5));
+    }
+
     private boolean isHoliday(LocalDate date) {
         DayOfWeek day = date.getDayOfWeek();
         return isWeekend(day) || isChristmas(date);

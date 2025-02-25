@@ -40,4 +40,9 @@ public class AttendanceSystem {
     public int getTardyCount(String name) {
         return attendanceBooks.get(name).getTardyCount();
     }
+
+    public int getAttendCount(String name) {
+        return attendanceBooks.get(name).getAttendCount();
+
+    }
 }
