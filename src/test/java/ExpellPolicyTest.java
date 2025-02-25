@@ -1,5 +1,9 @@
 import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
+
+import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -11,16 +15,25 @@ input : 지각 3회 -> 결석 1회
 4. 정상 테스트
  */
 public class ExpellPolicyTest {
-    @Test
+    @ParameterizedTest
     @DisplayName("결석 회수가 5회 초과이면 제적 대상자이다")
-    public void expellPolicyTest() {
+    @MethodSource("provideLateCountAndAbsentCountForIsExpell")
+    public void expellPolicyTest(int lateCount, int absentCount) {
         //given
         ExpellPolicy expellPolicy = new ExpellPolicy();
-        int lateCount = 0;
-        int absentCount = 6;
 
         //when-then
         assertThat(expellPolicy.checkExpellStatus(lateCount, absentCount)).isEqualTo("제적");
-
     }
+
+    private static Stream<Arguments> provideLateCountAndAbsentCountForIsExpell() {
+        return Stream.of(
+                Arguments.of(0,6),
+                Arguments.of(1,6),
+                Arguments.of(2,6),
+                Arguments.of(3,5)
+        );
+    }
+
+
 }
