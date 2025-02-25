@@ -4,10 +4,10 @@ import static view.DateTimeViewConverter.changeStandardDate;
 
 import domain.AbsenceLevel;
 import domain.AttendanceHistory;
+import domain.AttendanceResult;
 import domain.Crew;
 import domain.Crews;
 import dto.AbsenceCrewDto;
-import dto.AbsenceCrewsDto;
 import dto.HistoriesDto;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -73,7 +73,7 @@ public class AttendanceController {
         String username = inputView.getName();
         LocalDateTime newDate = changeStandardDate(LocalDateTime.now());
         List<AttendanceHistory> beforeAttendanceHistory = crews.getBeforeHistory(username, newDate);
-        Map<String, Integer> attendanceAllResult = crews.getAttendanceAllResult(username, newDate);
+        Map<AttendanceResult, Integer> attendanceAllResult = crews.getAttendanceAllResult(username, newDate);
         AbsenceLevel classifyAbsenceLevel = crews.getClassifyAbsenceLevel(username, newDate);
         HistoriesDto historiesDto = HistoriesDto.of(username, beforeAttendanceHistory, attendanceAllResult,
                 classifyAbsenceLevel);
@@ -84,12 +84,11 @@ public class AttendanceController {
         LocalDateTime newDate = changeStandardDate(LocalDateTime.now());
         List<Crew> members = crews.getHighAbsenceLevelCrews(newDate);
         List<AbsenceCrewDto> crewDtos = members.stream().map(member -> {
-            Map<String, Integer> results = crews.getAttendanceAllResult(member.getUserName(), newDate);
+            Map<AttendanceResult, Integer> results = crews.getAttendanceAllResult(member.getUserName(), newDate);
             AbsenceLevel classifyAbsenceLevel = crews.getClassifyAbsenceLevel(member.getUserName(), newDate);
             return new AbsenceCrewDto(member.getUserName(), results, classifyAbsenceLevel);
         }).collect(Collectors.toList());
-        AbsenceCrewsDto crewsDto = new AbsenceCrewsDto(crewDtos);
-        outputVIew.printDangerous(crewsDto);
+        outputVIew.printDangerous(crewDtos);
     }
 
 

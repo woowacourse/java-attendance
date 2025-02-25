@@ -5,11 +5,12 @@ import static domain.AttendanceResult.ABSENCE;
 import static domain.AttendanceResult.ATTENDANCE;
 import static domain.AttendanceResult.LATE;
 
+import domain.AttendanceResult;
 import dto.AbsenceCrewDto;
-import dto.AbsenceCrewsDto;
 import dto.HistoriesDto;
 import dto.HistoryDto;
 import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -35,18 +36,19 @@ public class OutputVIew {
         printUserAttendanceResult(historiesDto);
     }
 
-    public void printDangerous(AbsenceCrewsDto crewsDto) {
+    public void printDangerous(List<AbsenceCrewDto> crewsDto) {
         System.out.println("제적 위험자 조회 결과");
-        List<AbsenceCrewDto> crews = crewsDto.getCrews();
-        crews.forEach(crew -> {
-            Map<String, Integer> results = crew.getResults();
+        Collections.sort(crewsDto);
+        crewsDto.forEach(crew -> {
+            Map<AttendanceResult, Integer> results = crew.getResults();
             System.out.printf("- %s: 결석 %d회,지각 %d회 (%s)\n", crew.getUsername(),
-                    results.getOrDefault(ABSENCE.getResult(), 0),
-                    results.getOrDefault(LATE.getResult(), 0),
+                    results.getOrDefault(ABSENCE, 0),
+                    results.getOrDefault(LATE, 0),
                     crew.getClassifyAbsenceLevel());
         });
         System.out.print(LINE_SEPARATOR);
     }
+
 
     private void printAttendanceHistory(HistoriesDto historiesDto) {
         System.out.printf("이번 달 %s의 출석 기록입니다.\n", historiesDto.username());
@@ -65,12 +67,14 @@ public class OutputVIew {
     }
 
     private void printAttendanceAllResult(HistoriesDto historiesDto) {
-        Map<String, Integer> result = historiesDto.attendanceAllResult();
+        Map<AttendanceResult, Integer> result = historiesDto.attendanceAllResult();
         System.out.print(LINE_SEPARATOR);
-        System.out.printf("출석: %d회\n", result.getOrDefault(ATTENDANCE.getResult(), 0));
-        System.out.printf("지각: %d회\n", result.getOrDefault(LATE.getResult(), 0));
-        System.out.printf("결석: %d회\n", result.getOrDefault(ABSENCE.getResult(), 0));
+        System.out.printf("출석: %d회\n", result.getOrDefault(ATTENDANCE, 0));
+        System.out.printf("지각: %d회\n", result.getOrDefault(LATE, 0));
+        System.out.printf("결석: %d회\n", result.getOrDefault(ABSENCE, 0));
         System.out.print(LINE_SEPARATOR);
     }
+
+
 }
 
