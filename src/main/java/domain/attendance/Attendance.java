@@ -53,16 +53,20 @@ public class Attendance {
     public void fillAttendanceDate() {
         for (LocalDate cursorCheckDate = LocalDate.now().minusDays(1); !this.has(cursorCheckDate);
              cursorCheckDate = cursorCheckDate.minusDays(1)) {
-            try {
-                attendanceDates.add(new AttendanceDate(
-                        LocalDateTime.of(cursorCheckDate.getYear(),
-                                cursorCheckDate.getMonth(),
-                                cursorCheckDate.getDayOfMonth(), ABSENCE_HOUR,
-                                ABSENCE_MINUTE)));
-            } catch (IllegalArgumentException ignored) {
-            }
+            addAttendanceDate(cursorCheckDate);
         }
         Collections.sort(this.attendanceDates);
+    }
+
+    private void addAttendanceDate(LocalDate cursorCheckDate){
+        try {
+            attendanceDates.add(new AttendanceDate(
+                    LocalDateTime.of(cursorCheckDate.getYear(),
+                            cursorCheckDate.getMonth(),
+                            cursorCheckDate.getDayOfMonth(), ABSENCE_HOUR,
+                            ABSENCE_MINUTE)));
+        } catch (IllegalArgumentException ignored) {
+        }
     }
 
     private boolean has(LocalDate localDate) {
