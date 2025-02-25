@@ -96,23 +96,26 @@ public class Application {
     private static void modifyAttendance(AttendanceBook attendanceBook) {
         ModifyManager attendanceManager = new ModifyManager(attendanceBook);
         String nickname = requestNickname();
-        LocalDate date = requestDate();
-        LocalTime time = requestTime();
-        var dateTime = LocalDateTime.of(date, time);
-
-        attendanceManager.manage(nickname, dateTime);
-        String result = attendanceManager.getResult();
-        outputView.println(result);
-
+        var dateTime = requestLocalDateTime();
+        try {
+            attendanceManager.manage(nickname, dateTime);
+            String result = attendanceManager.getResult();
+            outputView.println(result);
+        } catch (AttendanceArgumentException e) {
+            outputView.printError(e.getMessage());
+        }
     }
 
     private static void checkAttendanceStatisticsByCrew(AttendanceBook attendanceBook) {
         StatisticManger attendanceManager = new StatisticManger(attendanceBook);
         String nickname = requestNickname();
-
-        attendanceManager.manage(nickname);
-        String result = attendanceManager.getResult();
-        outputView.println(result);
+        try {
+            attendanceManager.manage(nickname);
+            String result = attendanceManager.getResult();
+            outputView.println(result);
+        } catch (AttendanceArgumentException e) {
+            outputView.printError(e.getMessage());
+        }
     }
 
     private static void checkSanctionStatistic(AttendanceBook attendanceBook) {
@@ -145,6 +148,12 @@ public class Application {
             isEmptyForString(Date);
             return LocalTime.parse(Date);
         });
+    }
+
+    private static LocalDateTime requestLocalDateTime() {
+        LocalDate date = requestDate();
+        LocalTime time = requestTime();
+        return LocalDateTime.of(date, time);
     }
 
     private static void isEmptyForString(String nickname) {
