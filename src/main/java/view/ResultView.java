@@ -24,13 +24,13 @@ public class ResultView {
     private static final String DISMISSAL_RESULT_FORM = "- %s: 결석 %d회, 지각 %d회 (%s)";
 
     public void printAttendanceHistory(final String attendanceTime, final AttendanceType attendanceType) {
-        System.out.printf(ATTENDANCE_HISTORY_FORM + LINE, attendanceTime, attendanceType.name());
+        System.out.printf(ATTENDANCE_HISTORY_FORM + LINE, attendanceTime, attendanceType.getName());
     }
 
     public void printModifyHistory(final String previousTime, final AttendanceType previousType,
                                    final String modifyTime, final AttendanceType modifyType) {
-        System.out.printf(LINE + MODIFY_HISTORY_FORM + LINE, previousTime, previousType.name(),
-                modifyTime, modifyType.name());
+        System.out.printf(LINE + MODIFY_HISTORY_FORM + LINE, previousTime, previousType.getName(),
+                modifyTime, modifyType.getName());
     }
 
     public void printAttendanceHistoryResultByCrew(
@@ -49,7 +49,7 @@ public class ResultView {
         System.out.println(DISMISSAL_RESULT_TITLE);
         dtos.stream()
                 .map(dto -> String.format(DISMISSAL_RESULT_FORM, dto.nickname(),
-                        dto.absentCount(), dto.lateCount(), dto.subjectType().name()))
+                        dto.absentCount(), dto.lateCount(), dto.subjectType().getName()))
                 .forEach(System.out::println);
     }
 
@@ -61,16 +61,16 @@ public class ResultView {
 
     private void printAttendanceTypeCount(final Map<AttendanceType, Integer> result) {
         System.out.printf(LINE + ATTENDANCE_TYPE_COUNT_FORM + LINE,
-                result.get(AttendanceType.출석),
-                result.get(AttendanceType.지각),
-                result.get(AttendanceType.결석)
+                result.get(AttendanceType.ATTENDANCE),
+                result.get(AttendanceType.LATE),
+                result.get(AttendanceType.ABSENCE)
         );
     }
 
     private void printSubjectType(final SubjectType subjectType) {
-        if (subjectType.equals(SubjectType.해당없음)) {
+        if (subjectType.equals(SubjectType.NOT_APPLICABLE)) {
             return;
         }
-        System.out.printf(SUBJECT_TYPE_FORM + LINE, subjectType.name());
+        System.out.printf(SUBJECT_TYPE_FORM + LINE, subjectType.getName());
     }
 }

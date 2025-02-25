@@ -26,15 +26,15 @@ class SubjectTypeTest {
                                   final int absentCount, final String subjectTypeName) {
         // Given
         Map<AttendanceType, Integer> result = Map.of(
-                AttendanceType.출석, attendanceCount,
-                AttendanceType.지각, lateCount,
-                AttendanceType.결석, absentCount
+                AttendanceType.ATTENDANCE, attendanceCount,
+                AttendanceType.LATE, lateCount,
+                AttendanceType.ABSENCE, absentCount
         );
 
         // When
         SubjectType expected = SubjectType.from(result);
 
         // Then
-        Assertions.assertThat(expected.name()).isEqualTo(subjectTypeName);
+        Assertions.assertThat(expected.getName()).isEqualTo(subjectTypeName);
     }
 }

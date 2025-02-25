@@ -7,17 +7,19 @@ import java.time.LocalTime;
 
 public enum AttendanceType {
 
-    출석(Duration.ofMinutes(0)),
-    지각(Duration.ofMinutes(5)),
-    결석(Duration.ofMinutes(30));
+    ATTENDANCE("출석", Duration.ofMinutes(0)),
+    LATE("지각", Duration.ofMinutes(5)),
+    ABSENCE("결석", Duration.ofMinutes(30));
 
     public static final LocalTime DEFAULT_TIME = LocalTime.MIN;
 
-    AttendanceType(Duration threshold) {
+    private final String name;
+    private final Duration threshold;
+
+    AttendanceType(final String name, final Duration threshold) {
+        this.name = name;
         this.threshold = threshold;
     }
-
-    private final Duration threshold;
 
     public static AttendanceType from(final LocalDateTime attendanceDateTime) {
         LocalTime attendanceTime = LocalTime.from(attendanceDateTime);
@@ -26,13 +28,13 @@ public enum AttendanceType {
     }
 
     private static AttendanceType getAttendanceTypeByTime(final LocalTime attendanceTime, final LocalTime startTime) {
-        if (attendanceTime.equals(DEFAULT_TIME) || attendanceTime.isAfter(startTime.plus(결석.threshold))) {
-            return 결석;
+        if (attendanceTime.equals(DEFAULT_TIME) || attendanceTime.isAfter(startTime.plus(ABSENCE.threshold))) {
+            return ABSENCE;
         }
-        if (attendanceTime.isAfter(startTime.plus(지각.threshold))) {
-            return 지각;
+        if (attendanceTime.isAfter(startTime.plus(LATE.threshold))) {
+            return LATE;
         }
-        return 출석;
+        return ATTENDANCE;
     }
 
     private static LocalTime getStartTime(DayOfWeek dayOfWeek) {
@@ -40,5 +42,9 @@ public enum AttendanceType {
             return LocalTime.of(13, 0);
         }
         return LocalTime.of(10, 0);
+    }
+
+    public String getName() {
+        return name;
     }
 }

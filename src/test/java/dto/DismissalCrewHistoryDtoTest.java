@@ -21,11 +21,11 @@ class DismissalCrewHistoryDtoTest {
     @Test
     void sortTest() {
         // Given
-        DismissalCrewDto bingbong = new DismissalCrewDto("빙봉", 1, 6, SubjectType.면담);
-        DismissalCrewDto cookie = new DismissalCrewDto("쿠키", 2, 3, SubjectType.면담);
-        DismissalCrewDto bingtee = new DismissalCrewDto("빙티", 3, 4, SubjectType.면담);
-        DismissalCrewDto zzangsu = new DismissalCrewDto("짱수", 0, 6, SubjectType.경고);
-        DismissalCrewDto eden = new DismissalCrewDto("이든", 2, 5, SubjectType.면담);
+        DismissalCrewDto bingbong = new DismissalCrewDto("빙봉", 1, 6, SubjectType.INTERVIEW);
+        DismissalCrewDto cookie = new DismissalCrewDto("쿠키", 2, 3, SubjectType.INTERVIEW);
+        DismissalCrewDto bingtee = new DismissalCrewDto("빙티", 3, 4, SubjectType.INTERVIEW);
+        DismissalCrewDto zzangsu = new DismissalCrewDto("짱수", 0, 6, SubjectType.WARNING);
+        DismissalCrewDto eden = new DismissalCrewDto("이든", 2, 5, SubjectType.INTERVIEW);
         List<DismissalCrewDto> dtos = new ArrayList<>(List.of(bingbong, cookie, bingtee, zzangsu, eden));
 
         // When

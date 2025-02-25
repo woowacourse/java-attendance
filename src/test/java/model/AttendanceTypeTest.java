@@ -27,6 +27,6 @@ class AttendanceTypeTest {
         AttendanceType attendanceType = AttendanceType.from(time);
 
         // Then
-        assertThat(attendanceType.name()).isEqualTo(attendanceTypeName);
+        assertThat(attendanceType.getName()).isEqualTo(attendanceTypeName);
     }
 }

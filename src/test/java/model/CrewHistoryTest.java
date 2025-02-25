@@ -123,9 +123,9 @@ public class CrewHistoryTest {
 
         // Then
         Assertions.assertThat(result).containsExactly(
-                entry(AttendanceType.출석, 2),
-                entry(AttendanceType.지각, 1),
-                entry(AttendanceType.결석, 2)
+                entry(AttendanceType.ATTENDANCE, 2),
+                entry(AttendanceType.LATE, 1),
+                entry(AttendanceType.ABSENCE, 2)
         );
     }
 }
