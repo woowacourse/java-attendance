@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 import model.AttendanceRecord;
 import model.AttendanceRecords;
 import model.AttendanceRuleByDay;
@@ -39,16 +40,14 @@ public class FileInput {
     }
 
     private List<String> readAttendanceFile() throws IOException {
-        ArrayList<String> attendanceFile = new ArrayList<>();
-        fileBr.readLine();
-        while (true) {
-            String information = fileBr.readLine();
-            if (information == null) {
-                break;
-            }
-            attendanceFile.add(information);
+
+        try (BufferedReader br = fileBr) {
+            return br.lines()
+                    .skip(1)
+                    .collect(Collectors.toList());
+        } catch (IOException e) {
+            throw new IOException("[ERROR] 파일을 읽는 중 오류가 발생했습니다.", e);
         }
-        return attendanceFile;
     }
 
     private void createStudentByFileInfo(List<Student> students, String[] studentNameAndAttendanceTime) {
