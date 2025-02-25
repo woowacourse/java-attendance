@@ -20,6 +20,10 @@ public class AttendanceLog {
         this.attendanceStatus = AttendanceStatus.findStatus(attendDateTime);
     }
 
+    public AttendanceStatus getAttendanceStatus() {
+        return attendanceStatus;
+    }
+
     private void verifyAttendDateTime(LocalDateTime attendDateTime) {
         verifyAttendDate(attendDateTime.toLocalDate());
         verifyAttendTime(attendDateTime.toLocalTime());
