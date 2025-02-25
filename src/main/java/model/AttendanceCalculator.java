@@ -27,7 +27,15 @@ public enum AttendanceCalculator {
     }
 
     public static boolean checkHoliday(LocalDateTime localDateTime) {
-        return (localDateTime.getDayOfWeek().getValue() == saturday || localDateTime.getDayOfWeek().getValue() == sunday || localDateTime.getDayOfMonth() == christmas);
+        return (isWeekendDay(localDateTime) || isChristmas(localDateTime));
+    }
+
+    private static boolean isWeekendDay(LocalDateTime localDateTime) {
+        return (localDateTime.getDayOfWeek().getValue() == saturday || localDateTime.getDayOfWeek().getValue() == sunday);
+    }
+
+    private static boolean isChristmas(LocalDateTime localDateTime) {
+        return (localDateTime.getDayOfMonth() == 25);
     }
 
     public static HashMap<String, Integer> recordAttendanceResult(List<LocalDateTime> record) {
