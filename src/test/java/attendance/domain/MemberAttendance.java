@@ -7,8 +7,8 @@ public class MemberAttendance {
     private final List<Attendance> attendances;
 
     public MemberAttendance(Crew crew, List<Attendance> attendances) {
-        this.crew = null;
-        this.attendances = null;
+        this.crew = crew;
+        this.attendances = attendances;
     }
 
     public Crew getCrew() {
