@@ -53,12 +53,12 @@ public class Attendance {
         if (attendanceDate.isPresent()) {
             return attendanceDate.get();
         }
-        if (findAttendanceDate.isBefore(LocalDate.now())) {
-            fillAttendanceDate();
-            return findAttendanceDate(findAttendanceDate);
+        if (findAttendanceDate.isEqual(LocalDate.now())) {
+            throw new IllegalArgumentException("먼저 출석을 완료한 뒤에 수정해주세요.");
         }
-        throw new IllegalArgumentException("아직 수정할 수 없습니다.");
+        throw new IllegalArgumentException("미래의 출석 정보는 아직 수정할 수 없습니다.");
     }
+
 
     public AttendanceState attend(LocalDateTime attendDateTime) {
         if (!attendDateTime.isBefore(LocalDateTime.now())) {

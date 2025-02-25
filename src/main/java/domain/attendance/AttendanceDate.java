@@ -17,7 +17,6 @@ public class AttendanceDate implements Comparable<AttendanceDate> {
 
     public AttendanceDate(LocalDateTime dateTime) {
         this.dateTime = dateTime;
-
         int dayOfWeek = getDayOfWeekValue();
         if (dayOfWeek >= DayOfWeek.SATURDAY.getValue()) {
             throw new IllegalArgumentException(
