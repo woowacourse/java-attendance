@@ -32,9 +32,10 @@ public class AttendanceBook {
                 .anyMatch(crew -> crew.isMyName(name));
     }
 
-    public CheckAttendanceResponse checkAttendance(String name, LocalTime time) {
+    public CheckAttendanceResponse checkAttendance(String name, LocalDate date, LocalTime time) {
         Crew foundCrew = findCrewByName(name);
-        foundCrew.addNewTimeLog(LocalDate.now(), time);
-        return new CheckAttendanceResponse(time, "출석");
+        foundCrew.addNewTimeLog(date, time);
+        return new CheckAttendanceResponse(
+                time, AttendanceStatus.judgeAttendanceStatusByDateAndTime(date, time));
     }
 }

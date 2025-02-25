@@ -19,7 +19,8 @@ public class CheckAttendanceTest {
         attendanceBook.registerCrew("쿠키", LocalDate.of(2024, 12, 4), LocalTime.of(10, 6));
 
         // when
-        CheckAttendanceResponse response = attendanceBook.checkAttendance("쿠키", LocalTime.of(10, 1));
+        CheckAttendanceResponse response = attendanceBook.checkAttendance("쿠키", LocalDate.of(2024, 12, 2),
+                LocalTime.of(10, 1));
 
         // then
         assertThat(response.time()).isEqualTo(LocalTime.of(10, 1));
