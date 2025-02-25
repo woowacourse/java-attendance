@@ -27,19 +27,20 @@ public class MainController {
         String feature;
         do {
             feature = InputView.inputFeature();
-            if ("1".equals(feature)) {
-                attendanceCheck();
+            switch (feature) {
+                case "1":
+                    attendanceCheck();
+                    break;
+                case "2":
+                    attendanceUpdate();
+                    break;
+                case "3":
+                    attendanceHistory();
+                    break;
+                case "4":
+                    absenceHistory();
+                    break;
             }
-            if ("2".equals(feature)) {
-                attendanceUpdate();
-            }
-            if ("3".equals(feature)) {
-                attendanceHistory();
-            }
-            if ("4".equals(feature)) {
-                absenceHistory();
-            }
-
         } while (!"Q".equals(feature));
     }
 
