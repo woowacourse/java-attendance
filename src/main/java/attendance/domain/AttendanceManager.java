@@ -27,22 +27,21 @@ public class AttendanceManager {
     public AttendanceManager() {
     }
 
-    public AttendanceManager(List<String> attendanceLines) {
-        loadAttendances(attendanceLines);
+    public AttendanceManager(List<AttendanceRequest> attendanceRequests) {
+        loadAttendances(attendanceRequests);
     }
 
-    private void loadAttendances(List<String> attendanceLines) {
-        for (String attendanceLine : attendanceLines) {
-            String[] attendanceUnits = attendanceLine.split(",");
-            String nickname = attendanceUnits[0];
-
-            LocalDateTime datetime = DateTimeFormatterWrapper.parsingAttendanceDateTime(attendanceUnits[1]);
-            addAttendance(nickname, datetime);
+    private void loadAttendances(List<AttendanceRequest> attendanceRequests) {
+        for (AttendanceRequest attendanceRequest : attendanceRequests) {
+            addAttendance(attendanceRequest.crewName(), attendanceRequest.attendanceDateTime());
         }
     }
 
-    public void addAttendance(String nickname, LocalDateTime time) {
-        CrewName crewName = createCrewName(nickname);
+    public void addAttendance(String crewName, LocalDateTime time) {
+        addAttendance(createCrewName(crewName), time);
+    }
+
+    public void addAttendance(CrewName crewName, LocalDateTime time) {
         LocalTime currentTime = time.toLocalTime();
         LocalDate currentDate = time.toLocalDate();
         validateIsSchoolOpen(currentTime);

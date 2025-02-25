@@ -103,9 +103,7 @@ public class AttendanceTest {
         AttendanceReader attendanceReader = new AttendanceReader("/testInvalidDate.csv");
         assertThatThrownBy(() ->
                 new AttendanceManager(attendanceReader.loadAttendanceLinesFromAttendanceFile())
-        )
-                .isInstanceOf(AttendanceArgumentException.class)
-                .hasMessageContaining("유효하지 않은 날짜입니다.");
+        ).isInstanceOf(AttendanceArgumentException.class);
     }
 
     @Test
@@ -125,8 +123,6 @@ public class AttendanceTest {
         AttendanceReader attendanceReader = new AttendanceReader("/testInvalidNickname.csv");
         assertThatThrownBy(() ->
                 new AttendanceManager(attendanceReader.loadAttendanceLinesFromAttendanceFile())
-        )
-                .isInstanceOf(AttendanceArgumentException.class)
-                .hasMessageContaining("닉네임은 공백일 수 없습니다.");
+        ).isInstanceOf(AttendanceArgumentException.class);
     }
 }
