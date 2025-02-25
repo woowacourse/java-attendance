@@ -14,7 +14,7 @@ public class AttendanceSystem {
     private final CrewStorage crewStorage;
     private final List<AttendanceRecord> records = new ArrayList<>();
 
-    public AttendanceSystem(CrewStorage crewStorage) {
+    public AttendanceSystem(CrewStorage crewStorage, HolidayChecker holidayChecker) {
         this.crewStorage = crewStorage;
     }
 

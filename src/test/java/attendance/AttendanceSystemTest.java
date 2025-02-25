@@ -7,10 +7,13 @@ import attendance.domain.AttendanceRecord;
 import attendance.domain.AttendanceSystem;
 import attendance.domain.AttendanceType;
 import attendance.domain.CrewStorage;
+import attendance.domain.HolidayChecker;
 import attendance.exception.ExceptionMessage;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.format.TextStyle;
+import java.util.Locale;
 import java.util.stream.Stream;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -23,15 +26,22 @@ class AttendanceSystemTest {
 
     static final String VALID_CREW_NICKNAME = "쿠키";
     static final String INVALID_CREW_NICKNAME = "빙봉";
+    static final LocalDateTime SATURDAY = LocalDateTime.of(2025, 2, 8, 8, 50);
+    static final LocalDateTime SUNDAY = LocalDateTime.of(2025, 2, 9, 8, 50);
+    static final LocalDateTime PUBLIC_HOLIDAY = LocalDateTime.of(2025, 2, 24, 8, 50);
+
 
     AttendanceSystem attendanceSystem;
     CrewStorage crewStorage;
+    HolidayChecker holidayChecker;
 
     @BeforeEach
     void beforeEach() {
+        holidayChecker = new HolidayChecker();
+        holidayChecker.addPublicHoliday(PUBLIC_HOLIDAY.toLocalDate());
         crewStorage = new CrewStorage();
         crewStorage.add(VALID_CREW_NICKNAME);
-        attendanceSystem = new AttendanceSystem(crewStorage);
+        attendanceSystem = new AttendanceSystem(crewStorage, holidayChecker);
     }
 
     @DisplayName("닉네임과 출석 시간으로 출석 기록을 추가할 수 있다")
@@ -120,4 +130,28 @@ class AttendanceSystemTest {
                 .isThrownBy(() -> attendanceSystem.addAttendanceRecord(crewNickname, arrivalDateTime))
                 .withMessage(ExceptionMessage.INVALID_CREW.getMessage());
     }
+
+    @DisplayName("등교일이 아닌 경우 예외 메세지를 출력한다")
+    @ParameterizedTest
+    @MethodSource()
+    void 등교일이_아닌_경우_예외_메세지를_출력한다(LocalDateTime arrivalDateTime) {
+        String crewNickname = VALID_CREW_NICKNAME;
+
+        String exceptionMessage = String.format(ExceptionMessage.HOLIDAY_ATTENDANCE.getMessage(),
+                arrivalDateTime.getMonth().getValue(), arrivalDateTime.getDayOfMonth(),
+                arrivalDateTime.getDayOfWeek().getDisplayName(TextStyle.SHORT, Locale.KOREA));
+
+        assertThatIllegalArgumentException()
+                .isThrownBy(() -> attendanceSystem.addAttendanceRecord(crewNickname, arrivalDateTime))
+                .withMessage(exceptionMessage);
+    }
+
+    static Stream<Arguments> 등교일이_아닌_경우_예외_메세지를_출력한다() {
+        return Stream.of(
+                Arguments.of(SATURDAY),
+                Arguments.of(SUNDAY),
+                Arguments.of(PUBLIC_HOLIDAY)
+        );
+    }
+
 }
