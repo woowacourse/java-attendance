@@ -5,7 +5,6 @@ import domain.constant.StandardDate;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 
 public class Crew {
@@ -64,7 +63,6 @@ public class Crew {
     }
 
     public List<Attendance> getAttendances() {
-        attendances.sort(Comparator.comparing((Attendance attendance) -> attendance.getDate()));
         return List.copyOf(attendances);
     }
 

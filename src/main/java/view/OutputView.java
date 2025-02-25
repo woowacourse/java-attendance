@@ -67,7 +67,10 @@ public class OutputView {
     }
 
     private void printTotalAttendanceHistory(Crew crew) {
-        for (Attendance attendance : crew.getAttendances()) {
+        List<Attendance> attendances = crew.getAttendances();
+        attendances.sort(Comparator.comparing(Attendance::getDate));
+
+        for (Attendance attendance : attendances) {
             printAttendanceHistory(attendance);
         }
     }
