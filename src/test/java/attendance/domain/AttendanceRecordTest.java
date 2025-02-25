@@ -9,7 +9,7 @@ class AttendanceRecordTest {
 
     @DisplayName("월요일 출석 기록에 대해서 출석 상태를 알맞게 계산한다")
     @Test
-    void test_presentRecord() {
+    void test_monday_presentRecord() {
         // given
         LocalDateTime attendanceDateTime = LocalDateTime.of(2024, 12, 2, 13, 0);
 
@@ -23,7 +23,7 @@ class AttendanceRecordTest {
 
     @DisplayName("월요일 지각 기록에 대해서 출석 상태를 알맞게 계산한다")
     @Test
-    void test_lateRecord() {
+    void test_monday_lateRecord() {
         // given
         LocalDateTime attendanceDateTime = LocalDateTime.of(2024, 12, 2, 13, 6);
 
@@ -37,9 +37,51 @@ class AttendanceRecordTest {
 
     @DisplayName("월요일 결석 기록에 대해서 출석 상태를 알맞게 계산한다")
     @Test
-    void test_absentRecord() {
+    void test_monday_absentRecord() {
         // given
         LocalDateTime attendanceDateTime = LocalDateTime.of(2024, 12, 2, 13, 31);
+
+        // when
+        AttendanceRecord record = new AttendanceRecord(attendanceDateTime);
+
+        // then
+        AttendanceStatus status = record.getAttendanceStatus();
+        Assertions.assertThat(status).isEqualTo(AttendanceStatus.ABSENT);
+    }
+
+    @DisplayName("월요일이 아닌 요일의 출석 기록에 대해서 출석 상태를 알맞게 계산한다")
+    @Test
+    void test_presentRecord() {
+        // given
+        LocalDateTime attendanceDateTime = LocalDateTime.of(2024, 12, 3, 10, 0);
+
+        // when
+        AttendanceRecord record = new AttendanceRecord(attendanceDateTime);
+
+        // then
+        AttendanceStatus status = record.getAttendanceStatus();
+        Assertions.assertThat(status).isEqualTo(AttendanceStatus.PRESENT);
+    }
+
+    @DisplayName("월요일이 아닌 요일의 지각 기록에 대해서 출석 상태를 알맞게 계산한다")
+    @Test
+    void test_lateRecord() {
+        // given
+        LocalDateTime attendanceDateTime = LocalDateTime.of(2024, 12, 3, 10, 6);
+
+        // when
+        AttendanceRecord record = new AttendanceRecord(attendanceDateTime);
+
+        // then
+        AttendanceStatus status = record.getAttendanceStatus();
+        Assertions.assertThat(status).isEqualTo(AttendanceStatus.LATE);
+    }
+
+    @DisplayName("월요일이 아닌 요일의 결석 기록에 대해서 출석 상태를 알맞게 계산한다")
+    @Test
+    void test_absentRecord() {
+        // given
+        LocalDateTime attendanceDateTime = LocalDateTime.of(2024, 12, 3, 10, 31);
 
         // when
         AttendanceRecord record = new AttendanceRecord(attendanceDateTime);
