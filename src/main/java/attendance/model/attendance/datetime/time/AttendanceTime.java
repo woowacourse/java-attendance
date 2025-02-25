@@ -47,6 +47,10 @@ public class AttendanceTime {
         return Optional.ofNullable(value);
     }
 
+    public boolean isNullObject() {
+        return false;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) {
