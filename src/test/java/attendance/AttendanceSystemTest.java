@@ -5,6 +5,7 @@ import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 
 import attendance.domain.AttendanceSystem;
+import attendance.domain.RiskType;
 import attendance.domain.checker.AttendanceChecker;
 import attendance.domain.checker.AttendanceType;
 import attendance.domain.checker.HolidayChecker;
@@ -297,6 +298,17 @@ class AttendanceSystemTest {
         assertThat(state.attendanceCount()).isEqualTo(2);
         assertThat(state.lateCount()).isEqualTo(1);
         assertThat(state.absenceCount()).isEqualTo(12);
+    }
+
+    @DisplayName("출석 조회 - 닉네임을 통해 해당 크루의 제적 위험도를 계산할 수 있다")
+    @Test
+    void 출석_조회_닉네임을_통해_해당_크루의_제적_위험도를_계산할_수_있다() {
+        attendanceSystem.addAttendanceRecord(VALID_CREW_NICKNAME, LocalDateTime.of(2025, 2, 3, 10, 5));
+        attendanceSystem.addAttendanceRecord(VALID_CREW_NICKNAME, LocalDateTime.of(2025, 2, 4, 8, 50));
+        LocalDate today = LocalDate.of(2025, 2, 7);
+        AttendanceState state = attendanceSystem.calculateAttendanceStateInMonth(VALID_CREW_NICKNAME, today);
+
+        assertThat(state.riskType()).isEqualTo(RiskType.COUNSELING);
     }
 
     String makeHolidayAttendanceExceptionMessage(LocalDateTime dateTime) {
