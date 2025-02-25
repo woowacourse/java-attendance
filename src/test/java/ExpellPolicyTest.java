@@ -34,4 +34,24 @@ public class ExpellPolicyTest {
                 Arguments.of(3,5)
         );
     }
+
+    @ParameterizedTest
+    @DisplayName("결석 회수가 3회 이상이면 면담 대상자이다")
+    @MethodSource("provideLateCountAndAbsentCountForIsInterview")
+    public void interviewPolicyTest(int lateCount, int absentCount) {
+        //given
+        ExpellPolicy expellPolicy = new ExpellPolicy();
+
+        //when-then
+        assertThat(expellPolicy.checkExpellStatus(lateCount, absentCount)).isEqualTo("면담");
+    }
+
+    private static Stream<Arguments> provideLateCountAndAbsentCountForIsInterview() {
+        return Stream.of(
+                Arguments.of(0,6),
+                Arguments.of(1,6),
+                Arguments.of(2,6),
+                Arguments.of(3,5)
+        );
+    }
 }
