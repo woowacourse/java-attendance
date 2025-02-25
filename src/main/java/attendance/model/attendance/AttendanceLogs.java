@@ -52,6 +52,12 @@ public class AttendanceLogs {
             final CampusOperationPolicy campusOperationPolicy
     ) {
 
-        return Map.of();
+        final List<AttendanceLog> allAttendanceLogs = getAllAttendanceLogs(from, to, campusOperationPolicy);
+
+        final List<AttendanceStatus> attendanceStatuses = allAttendanceLogs.stream()
+                .map(AttendanceLog::getAttendanceStatus)
+                .toList();
+
+        return AttendanceStatus.getStatistics(attendanceStatuses);
     }
 }
