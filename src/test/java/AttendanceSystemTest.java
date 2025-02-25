@@ -107,6 +107,14 @@ public class AttendanceSystemTest {
         assertThat(attendanceSystem.getAbsenceCount(name)).isEqualTo(12);
     }
 
+    @DisplayName("30분 초과시 결석이다")
+    @Test
+    void get_absence_record3() {
+        String name = "두리";
+        attendanceSystem.attendance(name, LocalTime.of(10, 7));
+        assertThat(attendanceSystem.getAbsenceCount(name)).isEqualTo(11);
+    }
+
     @DisplayName("월요일은 1시 시작이다")
     @Test
     void get_absence_record_monday() {
@@ -114,5 +122,22 @@ public class AttendanceSystemTest {
         attendanceSystem.attendance(name, LocalTime.of(10, 31));
         attendanceSystem.editAttendance(name, LocalDate.of(2024, 12, 2), LocalTime.of(10, 31));
         assertThat(attendanceSystem.getAbsenceCount(name)).isEqualTo(11);
+    }
+
+    @DisplayName("오늘까지의 지각 횟수를 출력한다")
+    @Test
+    void get_tardy_record() {
+        String name = "두리";
+        attendanceSystem.attendance(name, LocalTime.of(10, 7));
+        assertThat(attendanceSystem.getTardyCount(name)).isEqualTo(1);
+    }
+
+    @DisplayName("오늘까지의 지각 횟수를 출력한다2")
+    @Test
+    void get_tardy_record2() {
+        String name = "두리";
+        attendanceSystem.attendance(name, LocalTime.of(10, 7));
+        attendanceSystem.editAttendance(name, LocalDate.of(2024, 12, 3), LocalTime.of(10, 7));
+        assertThat(attendanceSystem.getTardyCount(name)).isEqualTo(2);
     }
 }

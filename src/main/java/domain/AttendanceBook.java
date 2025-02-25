@@ -27,7 +27,7 @@ public class AttendanceBook {
         if (isNotOperatingHours(time)) {
             throw new IllegalArgumentException();
         }
-        if(isHoliday(date)) {
+        if (isHoliday(date)) {
             throw new IllegalArgumentException();
         }
         attendanceBook.put(date, time);
@@ -42,27 +42,37 @@ public class AttendanceBook {
     }
 
     public int getAbsenceCount() {
-        int absenceCount = 0;
-        for(LocalDate date = LocalDate.of(2024, 12, 1); !date.isAfter(AttendanceSystem.TODAY); date = date.plusDays(1)) {
-            if(isHoliday(date)) {
-                continue;
-            }
-            if(isAbsence(date)) {
-                absenceCount ++;
-            }
-        }
-        return absenceCount;
+        return (int) LocalDate.of(2024, 12, 1)
+                .datesUntil(AttendanceSystem.TODAY.plusDays(1))
+                .filter(date -> !isHoliday(date))
+                .filter(this::isAbsence)
+                .count();
     }
 
     private boolean isAbsence(LocalDate date) {
-        return !attendanceBook.containsKey(date) || attendanceBook.get(date).isAfter(startTime(date));
+        return !attendanceBook.containsKey(date) || attendanceBook.get(date).isAfter(startTime(date).plusMinutes(30));
     }
 
     private LocalTime startTime(LocalDate date) {
-        if(date.getDayOfWeek().equals(DayOfWeek.MONDAY)) {
+        if (date.getDayOfWeek().equals(DayOfWeek.MONDAY)) {
             return MONDAY_START_TIME;
         }
         return START_TIME;
+    }
+
+    public int getTardyCount() {
+        return (int) LocalDate.of(2024, 12, 1)
+                .datesUntil(AttendanceSystem.TODAY.plusDays(1))
+                .filter(date -> !isHoliday(date))
+                .filter(attendanceBook::containsKey)
+                .filter(this::isTardy)
+                .count();
+    }
+
+    private boolean isTardy(LocalDate date) {
+        return !attendanceBook.containsKey(date) ||
+                (attendanceBook.get(date).isAfter(startTime(date).plusMinutes(5)) &&
+                        !attendanceBook.get(date).isAfter(startTime(date).plusMinutes(30)));
     }
 
     private boolean isHoliday(LocalDate date) {
@@ -77,6 +87,4 @@ public class AttendanceBook {
     private static boolean isWeekend(DayOfWeek day) {
         return day == DayOfWeek.SATURDAY || day == DayOfWeek.SUNDAY;
     }
-
-
 }
