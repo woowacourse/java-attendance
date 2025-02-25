@@ -11,7 +11,7 @@ public class CrewGroupTest {
     @Test
     void test() {
         List<String> crews = List.of("수양", "수양");
-        assertThatThrownBy(() -> CrewGroup.from(crews))
+        assertThatThrownBy(() -> new CrewGroup(crews))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("중복된 이름의 크루는 존재할 수 없습니다.");
     }
@@ -21,7 +21,7 @@ public class CrewGroupTest {
     void test2() {
         String crewName = "가이온";
         List<String> crews = List.of("수양", crewName);
-        CrewGroup crewGroup = CrewGroup.from(crews);
+        CrewGroup crewGroup = new CrewGroup(crews);
 
         Crew crew = crewGroup.findCrew(crewName);
 

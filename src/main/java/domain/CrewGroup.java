@@ -7,17 +7,13 @@ import java.util.stream.Collectors;
 public class CrewGroup {
     private List<Crew> crews;
 
-    private CrewGroup(List<Crew> crews) {
-        this.crews = crews;
-    }
-
-    public static CrewGroup from(List<String> crewNames) {
+    public CrewGroup(List<String> crewNames) {
         if (crewNames.stream().distinct().count() != crewNames.size()) {
             throw new IllegalArgumentException("중복된 이름의 크루는 존재할 수 없습니다.");
         }
-
-        List<Crew> crews = crewNames.stream().map(crewName -> new Crew(crewName)).toList();
-        return new CrewGroup(crews);
+        this.crews = crewNames.stream()
+                .map(Crew::new)
+                .toList();
     }
 
     public Crew findCrew(String crewName) {
