@@ -32,7 +32,6 @@ class AttendancesTest {
     void 출석_수정_시_출석_기록이_없으면_예외가_발생한다() {
         LocalDateTime modifyTime = LocalDateTime.of(2024, 12, 23, 13, 3);
         Attendances attendance = new Attendances();
-        attendance.attend(modifyTime);
 
         assertThatThrownBy(() -> attendance.modify(modifyTime))
                 .isInstanceOf(IllegalArgumentException.class)
