@@ -14,23 +14,6 @@ public class Attendances {
         this.attendances = attendances;
     }
 
-    @Override
-    public boolean equals(Object object) {
-        if (this == object) {
-            return true;
-        }
-        if (!(object instanceof Attendances targetAttendances)) {
-            return false;
-        }
-        return attendances.containsAll(targetAttendances.attendances)
-                && targetAttendances.attendances.containsAll(attendances);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hashCode(attendances);
-    }
-
     public Attendance update(LocalDate date, LocalTime time) {
         Attendance oldAttendance = findByDate(date);
         validateFirstUpdate(oldAttendance);
@@ -52,5 +35,26 @@ public class Attendances {
                 .filter(attendance -> attendance.isSameDateWith(date))
                 .findAny()
                 .orElseThrow(RuntimeException::new); //TODO : 다른 예외로 교체
+    }
+
+    public Attendance modify(LocalDate modifyDate, LocalTime modifyTime) {
+        return null;
+    }
+
+    @Override
+    public boolean equals(Object object) {
+        if (this == object) {
+            return true;
+        }
+        if (!(object instanceof Attendances targetAttendances)) {
+            return false;
+        }
+        return attendances.containsAll(targetAttendances.attendances)
+                && targetAttendances.attendances.containsAll(attendances);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(attendances);
     }
 }
