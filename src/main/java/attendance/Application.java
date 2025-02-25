@@ -3,15 +3,16 @@ package attendance;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.time.Month;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Supplier;
+import java.util.stream.Stream;
 
 import attendance.common.SystemDateConfig;
 import attendance.common.exception.AttendanceArgumentException;
 import attendance.common.exception.AttendanceFileException;
 import attendance.common.utill.StringUtility;
+import attendance.common.utill.dateTimeUtility;
 import attendance.domain.AttendanceFileReader;
 import attendance.domain.attendance.AttendanceBook;
 import attendance.domain.attendanceManager.ModifyManager;
@@ -22,8 +23,9 @@ import attendance.view.InputView;
 import attendance.view.OutputView;
 
 public class Application {
-    private static final String FILE = "/attendances.csv";
     private static final Map<String, AttendanceOperation> optionMenu = new HashMap<>();
+    private static final String WRONG_INPUT = "잘못된 입력입니다.";
+    private static final String FILE = "/attendances.csv";
 
     private static InputView inputView;
     private static OutputView outputView;
@@ -42,27 +44,12 @@ public class Application {
 
     public static void main(String[] args) {
         try {
-            initialize();
-            chooseMenu();
+            inputView = new InputView();
+            outputView = new OutputView();
+            AttendanceBook attendanceBook = getAttendanceBook();
+            processAttendanceMenu(attendanceBook);
         } catch (AttendanceFileException e) {
             outputView.printError(e.getMessage());
-        }
-    }
-
-    public static void initialize() {
-        inputView = new InputView();
-        outputView = new OutputView();
-    }
-
-    public static void chooseMenu() throws AttendanceFileException {
-        AttendanceBook attendanceBook = getAttendanceBook();
-        while (true) {
-            outputView.printMethod();
-            String option = requestNickname();
-            if (option.equals("Q")) {
-                break;
-            }
-            run(option, attendanceBook);
         }
     }
 
@@ -72,10 +59,28 @@ public class Application {
         return AttendanceBook.from(lines);
     }
 
+    public static void processAttendanceMenu(AttendanceBook attendanceBook) {
+        try {
+            handleAttendanceCommands(attendanceBook);
+        } catch (AttendanceArgumentException e) {
+            outputView.printError(e.getMessage());
+            processAttendanceMenu(attendanceBook);
+        }
+    }
+
+    private static void handleAttendanceCommands(AttendanceBook attendanceBook) {
+        Stream.generate(() -> {
+                outputView.printMethod();
+                return requestInputString();
+            })
+            .takeWhile(option -> !option.equals("Q"))
+            .forEach(option -> run(option, attendanceBook));
+    }
+
     private static void run(String option, AttendanceBook attendanceBook) {
         AttendanceOperation runnable = optionMenu.getOrDefault(option, null);
         if (runnable == null) {
-            throw new IllegalArgumentException("잘못된 입력입니다.");
+            throw new AttendanceArgumentException(WRONG_INPUT);
         }
         runnable.run(attendanceBook);
     }
@@ -83,9 +88,9 @@ public class Application {
     private static void registerAttendance(AttendanceBook attendanceBook) {
         RegisterManager attendanceManager = new RegisterManager(attendanceBook);
 
-        String nickname = requestNickname();
+        String nickname = requestInputString();
         try {
-            attendanceManager.manage(nickname, SystemDateConfig.SYSTEM_NOW_DATETIME);
+            attendanceManager.manage(nickname, SystemDateConfig.NOW_DATETIME);
             String result = attendanceManager.getResult();
             outputView.println(result);
         } catch (AttendanceArgumentException e) {
@@ -95,7 +100,7 @@ public class Application {
 
     private static void modifyAttendance(AttendanceBook attendanceBook) {
         ModifyManager attendanceManager = new ModifyManager(attendanceBook);
-        String nickname = requestNickname();
+        String nickname = requestInputString();
         var dateTime = requestLocalDateTime();
         try {
             attendanceManager.manage(nickname, dateTime);
@@ -108,7 +113,7 @@ public class Application {
 
     private static void checkAttendanceStatisticsByCrew(AttendanceBook attendanceBook) {
         StatisticManger attendanceManager = new StatisticManger(attendanceBook);
-        String nickname = requestNickname();
+        String nickname = requestInputString();
         try {
             attendanceManager.manage(nickname);
             String result = attendanceManager.getResult();
@@ -125,10 +130,10 @@ public class Application {
         outputView.println(result);
     }
 
-    private static String requestNickname() {
+    private static String requestInputString() {
         return handleInput(() -> {
             String nickname = inputView.input();
-            isEmptyForString(nickname);
+            StringUtility.validateIsEmpty(nickname);
             return nickname;
         });
     }
@@ -136,17 +141,17 @@ public class Application {
     private static LocalDate requestDate() {
         return handleInput(() -> {
             String input = inputView.input();
-            isEmptyForString(input);
-            int day = Integer.parseInt(input);
-            return LocalDate.of(2024, Month.DECEMBER, day);
+            StringUtility.validateIsEmpty(input);
+            String date = SystemDateConfig.YEAR_MONTH + input;
+            return dateTimeUtility.parseToDate(date);
         });
     }
 
     private static LocalTime requestTime() {
         return handleInput(() -> {
-            String Date = inputView.input();
-            isEmptyForString(Date);
-            return LocalTime.parse(Date);
+            String input = inputView.input();
+            StringUtility.validateIsEmpty(input);
+            return dateTimeUtility.parseToTime(input);
         });
     }
 
@@ -156,27 +161,12 @@ public class Application {
         return LocalDateTime.of(date, time);
     }
 
-    private static void isEmptyForString(String nickname) {
-        if (StringUtility.isEmpty(nickname)) {
-            throw new AttendanceArgumentException("공백 에러");
-        }
-    }
-
     private static <T> T handleInput(Supplier<T> inputSupplier) {
         try {
             return inputSupplier.get();
-        } catch (AttendanceArgumentException e) {
+        } catch (IllegalArgumentException e) {
             outputView.printError(e.getMessage());
             return handleInput(inputSupplier);
-        }
-    }
-
-    private static <T> void handleManage(Supplier<T> inputSupplier) {
-        try {
-            inputSupplier.get();
-        } catch (AttendanceArgumentException e) {
-            outputView.printError(e.getMessage());
-            handleManage(inputSupplier);
         }
     }
 }
