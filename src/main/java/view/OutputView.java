@@ -39,8 +39,6 @@ public class OutputView {
                 DateTimeUtil.getYearBy(localDate),
                 DateTimeUtil.getDateBy(localDate),
                 DateTimeUtil.getDayOfWeekBy(localDate),
-//                beforeTime.getHour(),
-//                beforeTime.getMinute(),
                 beforeTimeFormatted,
                 beforeAttendanceState,
                 afterDateTime.getHour(),
