@@ -30,7 +30,7 @@ public class TodayDate {
 
     public void isHoliday() {
         if (AttendanceCalculator.checkHoliday(getTodayDateTIme())) {
-            throw new IllegalArgumentException(LocalDateTimePrintFormatter.isNotAttendanceAvailable(todayDate));
+            throw new IllegalArgumentException(LocalDateTimePrintFormatter.createNonSchoolDayMessage(todayDate));
         }
     }
 }

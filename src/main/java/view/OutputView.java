@@ -19,7 +19,7 @@ public class OutputView {
     private static final String SUBJECT = "%s 대상자입니다.";
 
     public static void printTodayAttendanceResult(LocalDateTime localDateTime, AttendanceStatus attendanceStatus) {
-        String dateAndTime = LocalDateTimePrintFormatter.LocalDateTimeToLocalTime(localDateTime);
+        String dateAndTime = LocalDateTimePrintFormatter.createAttendanceResultMessage(localDateTime);
         System.out.printf(dateAndTime);
         System.out.printf(PARENTHESES_FORMATTER,attendanceStatus.getState());
     }
@@ -30,7 +30,7 @@ public class OutputView {
 
     public static void printAttendanceRecord(ArrayList<LocalDateTime> record) {
         for (LocalDateTime localDateTime : record) {
-            System.out.printf(LocalDateTimePrintFormatter.LocalDateTimeToLocalTime(localDateTime));
+            System.out.printf(LocalDateTimePrintFormatter.createAttendanceResultMessage(localDateTime));
             System.out.printf(PARENTHESES_FORMATTER, AttendanceCalculator.calculateAttendance(localDateTime,
                     LocalTime.from(localDateTime)).getState());
         }

@@ -11,7 +11,7 @@ public class LocalDateTimePrintFormatter {
 
     public static final DateTimeFormatter dateTimeFormatterForHourMin = DateTimeFormatter.ofPattern("HH:mm");
 
-    public static String localDateTimeToStringFormatter(LocalDateTime localDateTime) {
+    public static String createAttendanceResultMessage(LocalDateTime localDateTime) {
         DayOfWeek dayOfWeek = localDateTime.getDayOfWeek();
 
         if (localDateTime.format(dateTimeFormatterForHourMin).equals("00:00")) {
@@ -23,7 +23,7 @@ public class LocalDateTimePrintFormatter {
                 TextStyle.FULL, Locale.KOREAN) + " HH:mm"));
     }
 
-    public static String isNotAttendanceAvailable(LocalDate localDate) {
+    public static String createNonSchoolDayMessage(LocalDate localDate) {
         DayOfWeek dayOfWeek = localDate.getDayOfWeek();
 
         String formattedDate = localDate.format(DateTimeFormatter.ofPattern("MM월 dd일"));
@@ -33,7 +33,7 @@ public class LocalDateTimePrintFormatter {
                 "은 등교일이 아닙니다.";
     }
 
-    public static String modifyComplete(LocalDateTime modifyDateTime, String recordAfterModifyState) {
+    public static String creatModifyCompleteMessage(LocalDateTime modifyDateTime, String recordAfterModifyState) {
         return modifyDateTime.format(dateTimeFormatterForHourMin) + " (" +recordAfterModifyState + ") 수정 완료!";
     }
 

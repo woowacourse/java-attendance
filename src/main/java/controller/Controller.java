@@ -70,13 +70,13 @@ public class Controller {
         if (isHolidayForMenuTwo(modifyLocalDateTime)) {
             return true;
         }
-        String recordBeforeModify = LocalDateTimePrintFormatter.localDateTimeToStringFormatter(
+        String recordBeforeModify = LocalDateTimePrintFormatter.createAttendanceResultMessage(
                 studentRecordRepository.getStudentRecord().get(studentName).compareDayIsSame(modifyLocalDateTime));
 
         studentRecordRepository.modifyRecord(studentName, modifyLocalDateTime);
 
         String recordAfterModifyState = AttendanceCalculator.calculateAttendance(modifyLocalDateTime,LocalTime.from(modifyLocalDateTime)).getState();
-        String recordAfterModify = LocalDateTimePrintFormatter.modifyComplete(modifyLocalDateTime,recordAfterModifyState);
+        String recordAfterModify = LocalDateTimePrintFormatter.creatModifyCompleteMessage(modifyLocalDateTime,recordAfterModifyState);
 
         OutputView.printSecondMenu(recordBeforeModify, recordAfterModify);
         return false;
