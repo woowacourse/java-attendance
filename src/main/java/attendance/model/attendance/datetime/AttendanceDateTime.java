@@ -3,6 +3,7 @@ package attendance.model.attendance.datetime;
 import attendance.model.attendance.datetime.date.AttendanceDate;
 import attendance.model.attendance.datetime.time.AttendanceTime;
 import attendance.model.campus.CampusOperationPolicy;
+import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -55,6 +56,10 @@ public class AttendanceDateTime {
 
     public LocalDate getDate() {
         return date.getValue();
+    }
+
+    public boolean isSameDayOfWeek(final DayOfWeek dayOfWeek) {
+        return false;
     }
 
     public Optional<LocalTime> getTime() {

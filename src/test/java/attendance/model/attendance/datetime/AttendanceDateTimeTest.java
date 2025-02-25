@@ -91,4 +91,15 @@ class AttendanceDateTimeTest {
         // When & Then
         assertThat(attendanceDateTime.isNullTime()).isTrue();
     }
+
+    @DisplayName("DayOfWeek 를 받아 해당 요일이 자신의 요일인지 반환한다.")
+    @Test
+    void isSameDayOfWeek() {
+        // Given
+        final LocalDateTime dateTime = LocalDateTime.of(2024, 12, 2, 13, 5);
+        final AttendanceDateTime attendanceDateTime = AttendanceDateTime.policyApplied(dateTime, campusOperationPolicy);
+
+        // When & Then
+        assertThat(attendanceDateTime.isSameDayOfWeek(dateTime.getDayOfWeek())).isTrue();
+    }
 }
