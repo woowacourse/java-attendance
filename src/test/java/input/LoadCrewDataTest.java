@@ -24,6 +24,7 @@ class LoadCrewDataTest extends BaseTest {
 
     @Test
     void 빙티의_출석정보가_저장되었는지_확인한다() {
+        // then
         SoftAssertions softly = new SoftAssertions();
         softly.assertThat(register.findAttendanceHistoryByCrewName("빙티").computeAttendanceCount()).isEqualTo(3);
         softly.assertThat(register.findAttendanceHistoryByCrewName("빙티").computeAbsenceCount()).isEqualTo(4);
@@ -33,6 +34,10 @@ class LoadCrewDataTest extends BaseTest {
 
     @Test
     void 모든_인원의_출석_정보가_저장되었는지_확인한다() {
-        assertThat(register.entryStream().count()).isEqualTo(5);
+        // when
+        long count = register.entryStream().count();
+
+        // then
+        assertThat(count).isEqualTo(5);
     }
 }

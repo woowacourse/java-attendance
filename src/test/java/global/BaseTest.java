@@ -1,7 +1,6 @@
 package global;
 
 import attendance.model.CustomLocalDateTime;
-import java.lang.reflect.Field;
 import java.time.Clock;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -11,7 +10,7 @@ import org.junit.jupiter.api.BeforeEach;
 public class BaseTest {
 
     @BeforeEach
-    void setFixedClock() throws NoSuchFieldException, IllegalAccessException {
+    void setFixedClock() {
         Clock fixedClock = Clock.fixed(
                 LocalDateTime.of(2024, 12, 16, 12, 0).toInstant(ZoneOffset.UTC),
                 ZoneId.of("UTC")

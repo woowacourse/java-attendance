@@ -15,21 +15,42 @@ class AttendanceTimeTest {
     @Test
     @DisplayName("출석_시작_시간으로_부터_현재_시간이_몇분_차이인지_계산한다(빨리온경우)")
     void 출석_시작_시간으로_부터_현재_시간이_몇분_차이인지_계산한다1() {
+        // given
         AttendanceTime attendanceTime = new AttendanceTime(LocalTime.of(9, 58));
-        assertThat(attendanceTime.computeMinuteDelta(LocalTime.of(10, 5))).isEqualTo(-7);
+        LocalTime currentTime = LocalTime.of(10, 5);
+
+        // when
+        long minuteDelta = attendanceTime.computeMinuteDelta(currentTime);
+
+        // then
+        assertThat(minuteDelta).isEqualTo(-7);
     }
 
     @Test
     @DisplayName("출석_시작_시간으로_부터_현재_시간이_몇분_차이인지_계산한다(늦게온경우)")
     void 출석_시작_시간으로_부터_현재_시간이_몇분_차이인지_계산한다2() {
+        // given
         AttendanceTime attendanceTime = new AttendanceTime(LocalTime.of(10, 10));
-        assertThat(attendanceTime.computeMinuteDelta(LocalTime.of(10, 5))).isEqualTo(5);
+        LocalTime currentTime = LocalTime.of(10, 5);
+
+        // when
+        long minuteDelta = attendanceTime.computeMinuteDelta(currentTime);
+
+        // then
+        assertThat(minuteDelta).isEqualTo(5);
     }
 
     @Test
     @DisplayName("출석_시작_시간으로_부터_현재_시간이_몇분_차이인지_계산한다(딱 맞춰 온 경우)")
     void 출석_시작_시간으로_부터_현재_시간이_몇분_차이인지_계산한다3() {
+        // given
         AttendanceTime attendanceTime = new AttendanceTime(LocalTime.of(10, 5));
-        assertThat(attendanceTime.computeMinuteDelta(LocalTime.of(10, 5))).isZero();
+        LocalTime currentTime = LocalTime.of(10, 5);
+
+        // when
+        long minuteDelta = attendanceTime.computeMinuteDelta(currentTime);
+
+        // then
+        assertThat(minuteDelta).isZero();
     }
 }
