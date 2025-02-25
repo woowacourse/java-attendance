@@ -1,12 +1,19 @@
 package attendance.model;
 
+import java.util.List;
 import java.util.Objects;
 
 public class Crew {
     private final String name;
+    private final Attendances attendances;
 
     public Crew(String name) {
         this.name = name;
+        this.attendances = new Attendances();
+    }
+
+    public void initCrewAttendances(List<List<String>> csvData) {
+        attendances.initAttendances(name, csvData);
     }
 
     @Override

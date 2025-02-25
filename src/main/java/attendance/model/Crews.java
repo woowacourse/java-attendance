@@ -28,4 +28,8 @@ public class Crews {
                 .findAny()
                 .orElseThrow(() -> new IllegalArgumentException("입력하신 크루가 존재하지 않습니다."));
     }
+
+    public void initCrewsAttendance(List<List<String>> csvData) {
+        crews.forEach(crew -> crew.initCrewAttendances(csvData));
+    }
 }
