@@ -15,6 +15,6 @@ public class Attendance {
     }
 
     public boolean isAlreadyAttendance(String nickname, LocalDate date) {
-        return false;
+        return this.nickname.equals(nickname) && this.date.equals(date);
     }
 }
