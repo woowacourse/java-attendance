@@ -1,6 +1,6 @@
 package attendance.util;
 
-import attendance.domain.Attendance;
+import attendance.domain.Crew;
 import java.util.List;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
@@ -21,10 +21,10 @@ public class DataLoaderTest {
                 "이든,2024-12-13 10:07"
         );
 
-        List<Attendance> attendances = DataLoader.loadAll(datas);
+        List<Crew> attendances = DataLoader.loadAll(datas);
 
         Assertions.assertThat(attendances)
                 .hasSize(4)
-                .hasOnlyElementsOfType(Attendance.class);
+                .hasOnlyElementsOfType(Crew.class);
     }
 }
