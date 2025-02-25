@@ -41,6 +41,10 @@ public class AttendanceDateTime {
         );
     }
 
+    public boolean isBeforeTime(final LocalTime time) {
+        return false;
+    }
+
     public LocalDate getDate() {
         return date.getValue();
     }

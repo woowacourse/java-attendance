@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 
 import attendance.model.campus.CampusOperationPolicy;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -55,5 +56,16 @@ class AttendanceDateTimeTest {
                 () -> assertThat(attendanceDateTime.getDate()).isEqualTo(dateTime.toLocalDate()),
                 () -> assertThat(attendanceDateTime.getTime()).isNotPresent()
         );
+    }
+
+    @DisplayName("LocalTime 을 받아 해당 LocalTime 이 자신의 출석 시간보다 이전인지 반환한다.")
+    @Test
+    void isBeforeTime() {
+        // Given
+        final LocalDateTime dateTime = LocalDateTime.of(2024, 12, 2, 13, 5);
+        final AttendanceDateTime attendanceDateTime = AttendanceDateTime.policyApplied(dateTime, campusOperationPolicy);
+
+        // When & Then
+        assertThat(attendanceDateTime.isBeforeTime(LocalTime.of(13, 6))).isTrue();
     }
 }
