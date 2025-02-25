@@ -1,5 +1,6 @@
 package controller;
 
+import exception.DuplicatedAttendanceRegistrationException;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
@@ -57,22 +58,25 @@ public class AttendanceController {
 
     private Map<Crew, Attendances> registerAttendances(List<String> data, Crews crews) {
         Map<Crew, Attendances> defaultAttendances = AttendanceInitializer.initializeAttendanceOf(crews);
-        // TODO
-        return null;
+        AttendanceInitializer.updateAttendances(crews, data, defaultAttendances);
+        return defaultAttendances;
     }
 
     private void doRegisterService(Map<Crew, Attendances> attendances, Crews crews) {
-        String name = inputView.readCrewName();
-        Crew crew = crews.findCrewByName(name).orElseThrow(IllegalArgumentException::new);
+        try {
+            String name = inputView.readCrewName();
+            Crew crew = crews.findCrewByName(name).orElseThrow(IllegalArgumentException::new);
 
-        LocalDate date = LocalDate.of(2024, 12, 13); //TODO : 오늘
-        LocalTime time = inputView.readAttendanceTime();
-        Attendances crewAttendances = attendances.get(crew);
-        Attendance newAttendance = crewAttendances.update(date, time);
-        outputView.printAttendanceRegisterResult(newAttendance);
+            LocalDate date = LocalDate.of(2024, 12, 13); //TODO : 오늘
+            LocalTime time = inputView.readAttendanceTime();
+            Attendances crewAttendances = attendances.get(crew);
+            Attendance newAttendance = crewAttendances.update(date, time);
+            outputView.printAttendanceRegisterResult(newAttendance);
+        } catch (DuplicatedAttendanceRegistrationException e) {
+            outputView.printExceptionMessage(e.getMessage());
+        }
     }
 
     private void doModifyService(Map<Crew, Attendances> attendances, Crews crews) {
-
     }
 }

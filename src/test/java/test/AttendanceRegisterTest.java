@@ -3,6 +3,7 @@ package test;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+import exception.DuplicatedAttendanceRegistrationException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -314,6 +315,6 @@ public class AttendanceRegisterTest {
         attendances.update(LocalDate.of(2024, 12, 13), LocalTime.of(10, 5));
 
         assertThatThrownBy(() -> attendances.update(LocalDate.of(2024, 12, 13), LocalTime.of(11, 11)))
-                .isInstanceOf(IllegalArgumentException.class);
+                .isInstanceOf(DuplicatedAttendanceRegistrationException.class);
     }
 }
