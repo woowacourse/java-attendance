@@ -2,7 +2,7 @@ package view;
 
 import java.util.Arrays;
 
-public enum Command {
+public enum MenuOption {
 
     CHECK_ATTENDANCE("1"),
     MODIFY_ATTENDANCE("2"),
@@ -12,13 +12,13 @@ public enum Command {
 
     private final String command;
 
-    Command(String command) {
+    MenuOption(String command) {
         this.command = command;
     }
 
-    public static Command from(final String input) {
-        return Arrays.stream(Command.values())
-                .filter(command -> command.command.equals(input))
+    public static MenuOption from(final String input) {
+        return Arrays.stream(MenuOption.values())
+                .filter(menuOption -> menuOption.command.equals(input))
                 .findFirst()
                 .orElseThrow(() -> new IllegalArgumentException("잘못된 입력입니다."));
     }

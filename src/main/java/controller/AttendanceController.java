@@ -15,7 +15,7 @@ import model.CrewHistory;
 import model.TodayClock;
 import util.StringParser;
 import util.TimeFormatter;
-import view.Command;
+import view.MenuOption;
 import view.InputView;
 import view.ResultView;
 
@@ -25,7 +25,7 @@ public class AttendanceController {
     private final ResultView resultView;
     private final Campus campus;
     private final TodayClock todayClock;
-    private final Map<Command, Consumer<CrewHistories>> commands = initializeCommands();
+    private final Map<MenuOption, Consumer<CrewHistories>> commands = initializeCommands();
 
     public AttendanceController(final InputView inputView, final ResultView resultView, final Campus campus,
                                 final TodayClock todayClock) {
@@ -36,25 +36,25 @@ public class AttendanceController {
     }
 
     public void start(final CrewHistories crewHistories) {
-        Command command = Command.from(inputView.readCommand(getTodayDate()));
-        if (command.equals(Command.QUIT)) {
+        MenuOption menuOption = MenuOption.from(inputView.readCommand(getTodayDate()));
+        if (menuOption.equals(MenuOption.QUIT)) {
             return;
         }
-        process(crewHistories, command);
+        process(crewHistories, menuOption);
         start(crewHistories);
     }
 
-    private Map<Command, Consumer<CrewHistories>> initializeCommands() {
+    private Map<MenuOption, Consumer<CrewHistories>> initializeCommands() {
         return Map.of(
-                Command.CHECK_ATTENDANCE, this::checkAttendance,
-                Command.MODIFY_ATTENDANCE, this::modifyAttendance,
-                Command.CHECK_ATTENDANCE_BY_CREW, this::checkAttendanceHistoryByCrew,
-                Command.CHECK_DISMISSAL_CREW, this::checkDismissalCrews
+                MenuOption.CHECK_ATTENDANCE, this::checkAttendance,
+                MenuOption.MODIFY_ATTENDANCE, this::modifyAttendance,
+                MenuOption.CHECK_ATTENDANCE_BY_CREW, this::checkAttendanceHistoryByCrew,
+                MenuOption.CHECK_DISMISSAL_CREW, this::checkDismissalCrews
         );
     }
 
-    private void process(final CrewHistories crewHistories, final Command command) {
-        Consumer<CrewHistories> consumer = commands.get(command);
+    private void process(final CrewHistories crewHistories, final MenuOption menuOption) {
+        Consumer<CrewHistories> consumer = commands.get(menuOption);
         consumer.accept(crewHistories);
     }
 
