@@ -5,6 +5,7 @@ import attendance.domain.Attendance;
 import attendance.domain.AttendanceInit;
 import attendance.domain.AttendanceManager;
 import attendance.domain.AttendanceStatus;
+import attendance.domain.CampusTime;
 import attendance.domain.Holiday;
 import attendance.utility.DateGenerator;
 import attendance.utility.DateTimeParser;
@@ -128,11 +129,17 @@ public class AttendanceSystem {
 
     private LocalTime parseTime() {
         String time = inputView.readAttendanceTime();
-        return DateTimeParser.parseTime(time);
+        return parseAndValidateTime(time);
     }
 
     private LocalTime parseTimeForUpdate() {
         String time = inputView.readAttendanceTimeForUpdate();
-        return DateTimeParser.parseTime(time);
+        return parseAndValidateTime(time);
+    }
+
+    private static LocalTime parseAndValidateTime(final String time) {
+        LocalTime parsedTime = DateTimeParser.parseTime(time);
+        CampusTime.validateOperationTime(parsedTime);
+        return parsedTime;
     }
 }
