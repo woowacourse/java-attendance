@@ -17,17 +17,16 @@ public class CrewGroup {
     }
 
     public Crew findCrew(String crewName) {
-        Optional<Crew> findCrew = crews.stream().filter(crew -> crew.getName().equals(crewName)).findFirst();
-        if (findCrew.isEmpty()) {
-            throw new IllegalArgumentException("등록되지 않은 닉네임입니다.");
-        }
-        return findCrew.get();
+        return crews.stream()
+                .filter(crew -> crew.getName().equals(crewName))
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException("등록되지 않은 닉네임입니다."));
     }
 
     public List<Crew> sortedAttendanceWarning() {
         return crews.stream()
                 .filter(Crew::isAttendanceWarning)
                 .sorted()
-                .collect(Collectors.toList());
+                .toList();
     }
 }
