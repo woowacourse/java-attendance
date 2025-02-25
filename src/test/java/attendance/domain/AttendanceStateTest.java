@@ -25,7 +25,9 @@ public class AttendanceStateTest {
     static Stream<Arguments> 임계값에_해당하는_출결_상태를_반환한다() {
         return Stream.of(
                 Arguments.of(0, ATTENDANCE),
+                Arguments.of(5, ATTENDANCE),
                 Arguments.of(6, LATE),
+                Arguments.of(30, LATE),
                 Arguments.of(31, ABSENCE)
         );
     }
