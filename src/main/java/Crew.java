@@ -4,28 +4,28 @@ import java.util.List;
 
 public class Crew {
     private final String nickname;
-    private List<LocalDateTime> localDateTimeList;
+    private List<AttendTime> attendTimes;
 
     public Crew(String nickname) {
         this.nickname = nickname;
-        this.localDateTimeList = new ArrayList<>();
+        this.attendTimes = new ArrayList<>();
     }
 
     public Crew(String nickname, LocalDateTime localDateTime) {
         this.nickname = nickname;
-        this.localDateTimeList = new ArrayList<>();
-        localDateTimeList.add(localDateTime);
+        this.attendTimes = new ArrayList<>();
+        attendTimes.add(new AttendTime(localDateTime));
     }
 
     public void attend(LocalDateTime localDateTime) {
-        localDateTimeList.add(localDateTime);
+        attendTimes.add(new AttendTime(localDateTime));
     }
 
     public String getNickname() {
         return nickname;
     }
 
-    public List<LocalDateTime> getLocalDateTimeList() {
-        return localDateTimeList;
+    public List<AttendTime> getAttendTimes() {
+        return attendTimes;
     }
 }

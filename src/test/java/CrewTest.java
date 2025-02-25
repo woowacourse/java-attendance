@@ -13,6 +13,6 @@ public class CrewTest {
         Crew crew = new Crew("슬링키");
         LocalDateTime localDateTime = LocalDateTime.of(2024, 12, 13, 10, 8);
         crew.attend(localDateTime);
-        assertThat(crew.getLocalDateTimeList().size()).isEqualTo(1);
+        assertThat(crew.getAttendTimes().size()).isEqualTo(1);
     }
 }

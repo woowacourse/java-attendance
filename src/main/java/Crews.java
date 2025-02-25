@@ -23,11 +23,17 @@ public class Crews {
         crews.add(new Crew(nickname, LocalDateTime.parse(date, FORMATTER)));
     }
 
-    public List<Crew> getCrews() {
-        return crews;
+    public void addCrewAttendance(String nickname, String time) {
+        Crew crew = findCrewByNickname(nickname).orElseThrow(() -> new IllegalArgumentException("없는 닉네임입니다."));
+        crew.attend(LocalDateTime.parse(time, FORMATTER));
     }
 
     public Optional<Crew> findCrewByNickname(String nickname) {
         return crews.stream().filter(crew -> crew.getNickname().equals(nickname)).findFirst();
     }
+
+    public List<Crew> getCrews() {
+        return crews;
+    }
+
 }
