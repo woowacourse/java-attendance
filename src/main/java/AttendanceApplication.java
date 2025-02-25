@@ -6,6 +6,7 @@ import view.InputView;
 import view.OutputView;
 
 public class AttendanceApplication {
+
     public static void main(String[] args) {
         LocalDate currentDate = parseToDate(args);
 

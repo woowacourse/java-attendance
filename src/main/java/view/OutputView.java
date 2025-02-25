@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Objects;
 
 public class OutputView {
+    
     public void printArriveResult(WorkDateTime workDateTime, String attendanceStatusName) {
         WorkDate workDate = workDateTime.getDate();
         WorkDay workDay = workDate.getWorkDay();
