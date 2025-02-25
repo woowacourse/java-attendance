@@ -28,5 +28,9 @@ public class AttendanceSheet {
     }
 
     public void validateNotFoundAttendance(String nickname, LocalDate date) {
+        if(attendances.stream()
+                .noneMatch(attendance -> attendance.isAlreadyAttendance(nickname,date))){
+            throw new IllegalArgumentException("[ERROR] 출석 기록이 없습니다. 출석 확인 기능을 이용하세요");
+        }
     }
 }
