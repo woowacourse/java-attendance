@@ -17,7 +17,7 @@ public enum AttendanceStateView {
         return Arrays.stream(values())
                 .filter(state -> state.name().equals(name))
                 .findFirst()
-                .orElseThrow(() -> new IllegalArgumentException("[ERROR] 반환된 출석에 동일한 의미가 없습니다."));
+                .orElseThrow(() -> new IllegalArgumentException("[ERROR] 출석에 일치하는 동일한 의미가 없습니다."));
     }
 
     public String getName() {
