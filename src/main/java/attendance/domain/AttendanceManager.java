@@ -12,15 +12,18 @@ import java.util.stream.Collectors;
 
 public class AttendanceManager {
 
-    static final LocalTime SCHOOL_OPEN_TIME = LocalTime.of(8, 0);
-    static final LocalTime SCHOOL_CLOSE_TIME = LocalTime.of(23, 0);
-    static final String OUT_OF_SCHOOL_SCHEDULE = "등교시간에만 출석 가능합니다.";
-    static final LocalDate ATTENDANCE_AVAILABLE_START_DATE = LocalDate.of(2024, 12, 1);
-    static final LocalDate ATTENDANCE_AVAILABLE_END_DATE = LocalDate.of(2024, 12, 31);
-    static final String NICKNAME_NOT_EXISTS = "출석 정보가 존재하지 않습니다.";
-    static final String CANNOT_BE_EMPTY_NICKNAME = "닉네임은 공백일 수 없습니다.";
-    static final String ATTENDANCE_NOT_AVAILABLE = "출석 시스템은 2024년 12월 동안만 유효합니다";
-    static final int WEEKEND_NUMBER = 6;
+    private static final LocalTime SCHOOL_OPEN_TIME = LocalTime.of(8, 0);
+    private static final LocalTime SCHOOL_CLOSE_TIME = LocalTime.of(23, 0);
+    private static final String OUT_OF_SCHOOL_SCHEDULE = "등교시간에만 출석 가능합니다.";
+    private static final LocalDate ATTENDANCE_AVAILABLE_START_DATE = LocalDate.of(2024, 12, 1);
+    private static final LocalDate ATTENDANCE_AVAILABLE_END_DATE = LocalDate.of(2024, 12, 31);
+    private static final String NICKNAME_NOT_EXISTS = "출석 정보가 존재하지 않습니다.";
+    private static final String CANNOT_BE_EMPTY_NICKNAME = "닉네임은 공백일 수 없습니다.";
+    private static final String ATTENDANCE_NOT_AVAILABLE = "출석 시스템은 2024년 12월 동안만 유효합니다";
+    private static final int WEEKEND_NUMBER = 6;
+    private static final String ATTENDANCE_RESULT_FORMAT = "%s (%s)";
+    
+    private final HashMap<String, Attendances> attendanceManager = new HashMap<>();
 
     public AttendanceManager() {
     }
@@ -33,13 +36,13 @@ public class AttendanceManager {
         for (String attendanceLine : attendanceLines) {
             String[] attendanceUnits = attendanceLine.split(",");
             String nickname = attendanceUnits[0];
+
             LocalDateTime datetime = DateTimeFormatterWrapper.parsingAttendanceDateTime(attendanceUnits[1]);
             addAttendance(nickname, datetime);
         }
     }
 
-    private HashMap<String, Attendances> attendanceManager = new HashMap<>();
-    private String ATTENDANCE_RESULT_FORMAT = "%s (%s)";
+    ;
 
     public void addAttendance(String nickname, LocalDateTime time) {
         validateNickname(nickname);

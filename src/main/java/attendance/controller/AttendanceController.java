@@ -4,17 +4,18 @@ import attendance.domain.Attendance;
 import attendance.domain.AttendanceDismissStatus;
 import attendance.domain.AttendanceHistory;
 import attendance.domain.AttendanceManager;
-import attendance.domain.AttendanceMethod;
 import attendance.domain.AttendanceStatus;
 import attendance.domain.DateTimeFormatterWrapper;
+import attendance.dto.AttendanceHistoryDto;
+import attendance.dto.AttendanceStatusCount;
 import attendance.exception.AttendanceArgumentException;
 import attendance.validation.AttendanceInputValidator;
+import attendance.view.AttendanceMethod;
 import attendance.view.ConsoleInputView;
 import attendance.view.OutputView;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.EnumSet;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Supplier;
@@ -26,10 +27,9 @@ public class AttendanceController {
 
     private final static OutputView outputView = new OutputView();
     private final static ConsoleInputView inputView = new ConsoleInputView();
-    private final static EnumSet<AttendanceMethod> SUPPORTED_METHODS =
-            EnumSet.of(AttendanceMethod.ATTENDANCE, AttendanceMethod.MODIFY,
-                    AttendanceMethod.ATTENDANCE_HISTORY, AttendanceMethod.CREW_DISMISS_VIEW);
-    private final static String ATTENDANCE_MONTH = "2024 12 ";
+    private final static String ATTENDANCE_AVAILABLE_MONTH = "12";
+    private final static String ATTENDANCE_REQUEST_DATE_FORMAT = "%s %s ";
+    private final static String ATTENDANCE_AVAILABLE_YEAR = "2024";
     private final static String NOT_SUPPORT_METHOD = "지원하지 않는 기능입니다.";
 
     public AttendanceController(AttendanceManager attendanceManager,
@@ -47,15 +47,12 @@ public class AttendanceController {
     }
 
     private void doMethod(AttendanceMethod method) {
-        if (!SUPPORTED_METHODS.contains(method)) {
-            throw new AttendanceArgumentException(NOT_SUPPORT_METHOD);
-        }
-
         switch (method) {
             case ATTENDANCE -> handleAttendance();
             case MODIFY -> handleModifyAttendance();
             case ATTENDANCE_HISTORY -> handleAttendanceHistory();
             case CREW_DISMISS_VIEW -> handleShowCrewDismiss();
+            default -> throw new AttendanceArgumentException(NOT_SUPPORT_METHOD);
         }
     }
 
@@ -65,9 +62,11 @@ public class AttendanceController {
         int absenceCount = AttendanceStatus.absenceCount(status);
         AttendanceDismissStatus attendanceDismissStatus = AttendanceDismissStatus.calculateAttendanceDismiss(
                 absenceCount, AttendanceStatus.lateCount(status));
-        outputView.printAttendanceHistory(attendanceHistory.nickname(), attendanceHistory.attendanceHistories(),
-                AttendanceStatus.lateCount(status), AttendanceStatus.attendanceCount(status),
-                AttendanceStatus.lateCount(status), attendanceDismissStatus.getStatus());
+        AttendanceStatusCount attendanceStatusCount = new AttendanceStatusCount(AttendanceStatus.lateCount(status),
+                AttendanceStatus.attendanceCount(status), AttendanceStatus.lateCount(status));
+        AttendanceHistoryDto attendanceHistoryDto = new AttendanceHistoryDto(attendanceHistory.nickname(),
+                attendanceHistory.attendanceHistories(), attendanceDismissStatus.getStatus());
+        outputView.printAttendanceHistory(attendanceStatusCount, attendanceHistoryDto);
     }
 
     private AttendanceHistory requestAttendanceHistory() {
@@ -105,15 +104,17 @@ public class AttendanceController {
         var previousAttendance = handleRequest(() -> attendanceManager.getAttendance(nickname, date));
         attendanceManager.modifyAttendance(nickname, date, time);
         var afterAttendance = handleRequest(() -> attendanceManager.getAttendance(nickname, date));
-        outputView.printModifyAttendance(previousAttendance.attendanceStatus().getStatus(),
+        outputView.printModifyAttendance(previousAttendance.getStatus(),
                 LocalDateTime.of(date, previousAttendance.time()),
-                afterAttendance.attendanceStatus().getStatus(), afterAttendance.time());
+                afterAttendance.getStatus(), afterAttendance.time());
     }
 
     private LocalDate attendanceModifyDate() {
         return handleRequest(() -> {
             outputView.printAttendanceModifyDateInput();
-            String dateInput = ATTENDANCE_MONTH + inputView.input();
+            String dateInput =
+                    String.format(ATTENDANCE_REQUEST_DATE_FORMAT, ATTENDANCE_AVAILABLE_YEAR, ATTENDANCE_AVAILABLE_MONTH)
+                            + inputView.input();
             LocalDate date = DateTimeFormatterWrapper.parsingAttendanceDate(dateInput);
             attendanceManager.validateIsAttendanceAvailable(date);
             return date;
@@ -146,7 +147,7 @@ public class AttendanceController {
         LocalDate attendanceDate = LocalDate.now();
         try {
             var attendance = addAttendance(nickname, attendanceDate, inputTime);
-            outputView.printAttendanceResult(attendance.attendanceStatus().getStatus(), inputTime, attendanceDate);
+            outputView.printAttendanceResult(attendance.getStatus(), inputTime, attendanceDate);
         } catch (AttendanceArgumentException e) {
             outputView.println(e.getMessage());
         }
