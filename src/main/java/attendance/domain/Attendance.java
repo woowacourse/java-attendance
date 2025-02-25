@@ -19,6 +19,9 @@ public class Attendance {
     }
 
     private void validateAttendanceTime(LocalTime localTime) {
+        if (localTime.isBefore(LocalTime.of(8, 0)) || localTime.isAfter(LocalTime.of(23, 0))) {
+            throw new IllegalArgumentException();
+        }
 
     }
 
