@@ -6,11 +6,11 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class Record {
+public class AttendanceRecord {
 
     List<LocalDateTime> timeRecords = new ArrayList<>();
 
-    public Record(LocalDateTime localDateTime) {
+    public AttendanceRecord(LocalDateTime localDateTime) {
         timeRecords.add(localDateTime);
     }
 

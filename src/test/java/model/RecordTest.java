@@ -7,7 +7,7 @@ import org.junit.jupiter.api.Test;
 
 class RecordTest {
 
-    Record record = new Record(LocalDateTime.of(2024,12,12,0,0));
+    AttendanceRecord record = new AttendanceRecord(LocalDateTime.of(2024,12,12,0,0));
 
     @Test
     @DisplayName("로컬 데이트 타임을 저장하는 메서드 테스트")

@@ -6,12 +6,12 @@ import java.util.Map;
 
 public class StudentAttendanceRecord {
 
-    private final Map<String, Record> studentRecord = new HashMap<>();
+    private final Map<String, AttendanceRecord> studentRecord = new HashMap<>();
 
     public StudentAttendanceRecord() {
     }
 
-    public Map<String, Record> getStudentRecord() {
+    public Map<String, AttendanceRecord> getStudentRecord() {
         return studentRecord;
     }
 
@@ -24,7 +24,7 @@ public class StudentAttendanceRecord {
             studentRecord.get(name).addTime(localDateTime);
             return;
         }
-        studentRecord.put(name, new Record(localDateTime));
+        studentRecord.put(name, new AttendanceRecord(localDateTime));
     }
 
     public void modifyRecord(String studentName, LocalDateTime localDateTime) {
@@ -37,7 +37,7 @@ public class StudentAttendanceRecord {
         }
     }
 
-    public Record getStudentRecordByName(String name) {
+    public AttendanceRecord getStudentRecordByName(String name) {
         return studentRecord.get(name);
     }
 
