@@ -5,6 +5,7 @@ import attendance.domain.constant.CrewStatus;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
@@ -28,7 +29,7 @@ public class AttendanceHistory {
 
     public static AttendanceHistory fromDateInfos(String crewName, LocalDate now, DateInfos dateInfos) {
 
-        List<Integer> counts = new ArrayList<>(3);
+        List<Integer> counts = Arrays.asList(0, 0, 0);
         Map<AttendanceStatus, Consumer<List<Integer>>> statusCountMap = new EnumMap<>(AttendanceStatus.class);
         statusCountMap.put(AttendanceStatus.ATTENDANCE, historyCount -> historyCount.set(0, historyCount.get(0) + 1));
         statusCountMap.put(AttendanceStatus.LATE, historyCount -> historyCount.set(1, historyCount.get(1) + 1));
