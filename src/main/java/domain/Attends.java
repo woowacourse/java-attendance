@@ -1,7 +1,6 @@
 package domain;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class Attends {
 
@@ -48,9 +47,7 @@ public class Attends {
     }
 
     private void removeContainedAttend(Attend target) {
-        attends = attends.stream()
-                .filter(before -> !before.isDayEqual(target))
-                .collect(Collectors.toList());
+        attends.removeIf(before -> before.isDayEqual(target));
     }
 
     public List<Attend> getAttends(List<Integer> dayOfWeek) {
