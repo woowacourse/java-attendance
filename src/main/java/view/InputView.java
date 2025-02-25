@@ -23,8 +23,8 @@ public class InputView {
     private static final String MENU_OPTION = "[1-4]|Q";
     private static final String PRINT_TODAY_FORMAT = "오늘은 %d월 %d일 %s입니다. 기능을 선택해 주세요.\n";
     private static final DateTimeFormatter dateTimeFormatterForHourMin = DateTimeFormatter.ofPattern("HH:mm");
-    private static final int startTime = 8;
-    private static final int endTime = 23;
+    private static final LocalTime START_TIME = LocalTime.of(8,0);
+    private static final LocalTime END_TIME = LocalTime.of(23,0);
     private static final int DECEMBER_START_DATE = 1;
     private static final int DECEMBER_ENT_DATE = 31;
     private static final Scanner scanner = new Scanner(System.in);
@@ -101,7 +101,7 @@ public class InputView {
     }
 
     public static void isNotOpeningHour(LocalDateTime localDateTime) {
-        if (localDateTime.getHour() < startTime || localDateTime.getHour() >= endTime) {
+        if (localDateTime.toLocalTime().isBefore(START_TIME) || localDateTime.toLocalTime().isAfter(END_TIME)) {
             throw new IllegalArgumentException("[ERROR] 캠퍼스 운영 시간이 아닙니다.");
         }
     }
@@ -173,5 +173,4 @@ public class InputView {
             throw new IllegalArgumentException();
         }
     }
-
 }
