@@ -13,7 +13,7 @@ public class RegisterManager {
     public static final String DUPLICATE_DATE = "이미 출석되었습니다. 수정 기능을 이용해주세요.";
     public static final String NOT_REGISTERED_NICKNAME = "등록되지 않은 닉네임입니다.";
     public static final String ATTENDANCE_INFO = "MM월 d일 E요일 HH:mm ";
-    public static final String dd = "(%s)";
+    public static final String FORMAT_STATUS = "(%s)";
 
     private final AttendanceBook attendanceBook;
     private final StringBuilder report = new StringBuilder();
@@ -26,27 +26,34 @@ public class RegisterManager {
         try {
             var attendance = new Attendance(dateTime);
             var attendanceList = attendanceBook.attendances().get(nickname);
-            isDuplicateAttendance(attendance, attendanceList);
+            validateDuplicate(attendance, attendanceList);
             attendanceList.add(attendance);
-
-            String formattedDateTime = getFormatter(ATTENDANCE_INFO).format(dateTime);
-            String status = attendance.attendanceStatus().getValue();
-            String formattedStatus = String.format(dd, status);
-            report.append(formattedDateTime)
-                .append(formattedStatus);
+            writeDateTime(dateTime);
+            writeStatus(attendance);
         } catch (NullPointerException e) {
             throw new AttendanceArgumentException(NOT_REGISTERED_NICKNAME);
         }
     }
 
-    public String getResult() {
-        return report.toString();
-    }
-
-    private void isDuplicateAttendance(Attendance attendance, AttendanceList attendanceList) {
+    private void validateDuplicate(Attendance attendance, AttendanceList attendanceList) {
         if (attendanceList.contains(attendance)) {
             throw new AttendanceArgumentException(DUPLICATE_DATE);
         }
+    }
+
+    private void writeDateTime(LocalDateTime dateTime) {
+        String formattedDateTime = getFormatter(ATTENDANCE_INFO).format(dateTime);
+        report.append(formattedDateTime);
+    }
+
+    private void writeStatus(Attendance attendance) {
+        String status = attendance.attendanceStatus().getValue();
+        String formattedStatus = String.format(FORMAT_STATUS, status);
+        report.append(formattedStatus);
+    }
+
+    public String getResult() {
+        return report.toString();
     }
 
 }
