@@ -1,6 +1,8 @@
 package service;
 
 import controller.dto.ModifyAttendanceRequest;
+import controller.dto.MonthAttendanceStatistics;
+import controller.dto.MonthAttendanceStatisticsRequest;
 import controller.dto.SaveAttendanceRequest;
 import controller.dto.SavedAttendanceRecord;
 import domain.AttendanceRecord;
@@ -63,5 +65,9 @@ public class AttendanceService {
         if (!DateTimeUtil.isInRange(CampusTime.openTime, CampusTime.closeTime, time)) {
             throw new IllegalArgumentException(time + ": 캠퍼스 운영시간이 아닙니다.");
         }
+    }
+
+    public MonthAttendanceStatistics getMonthAttendanceStatistics(MonthAttendanceStatisticsRequest request) {
+        return null;
     }
 }

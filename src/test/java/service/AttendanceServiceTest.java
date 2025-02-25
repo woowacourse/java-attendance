@@ -1,12 +1,15 @@
 package service;
 
 import controller.dto.ModifyAttendanceRequest;
+import controller.dto.MonthAttendanceStatistics;
+import controller.dto.MonthAttendanceStatisticsRequest;
 import controller.dto.SaveAttendanceRequest;
 import domain.AttendanceRecord;
 import domain.AttendanceStatus;
 import domain.Crew;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.Map;
 import org.assertj.core.api.Assertions;
 import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.AfterEach;
@@ -84,5 +87,40 @@ class AttendanceServiceTest {
         Assertions.assertThatThrownBy(() -> {
             attendanceService.modifyAttendanceRecord(request);
         }).isInstanceOf(IllegalArgumentException.class);
+    }
+
+    @Test
+    @DisplayName("특정 크루의 월 단위 출석 기록을 불러온다")
+    void test() {
+        // given
+        String nickname = "name";
+        LocalDate monday = LocalDate.of(2025, 2, 3);
+        LocalTime time = LocalTime.of(10, 30);
+        CrewRepository.addCrew(new Crew(nickname));
+        // 출석 1
+        attendanceService.saveAttendanceRecord(new SaveAttendanceRequest(nickname, monday, LocalTime.of(10, 31)));
+        // 지각 3
+        attendanceService.saveAttendanceRecord(new SaveAttendanceRequest(nickname, monday.plusDays(1), time));
+        attendanceService.saveAttendanceRecord(new SaveAttendanceRequest(nickname, monday.plusDays(2), time));
+        attendanceService.saveAttendanceRecord(new SaveAttendanceRequest(nickname, monday.plusDays(3), time));
+        // 30분 초과 결석 1
+        attendanceService.saveAttendanceRecord(
+                new SaveAttendanceRequest(nickname, monday.plusDays(3), LocalTime.of(10, 31)));
+        // 출석 기록 없는 결석 1
+        LocalDate today = monday.plusDays(7);
+
+        // when
+        MonthAttendanceStatistics statistics = attendanceService.getMonthAttendanceStatistics(
+                new MonthAttendanceStatisticsRequest(nickname, today));
+
+        // then
+        SoftAssertions.assertSoftly(softAssertions -> {
+            Map<String, Integer> statusCount = statistics.attendanceStatusCount();
+            softAssertions.assertThat(statusCount.get("출석")).isEqualTo(1);
+            softAssertions.assertThat(statusCount.get("지각")).isEqualTo(3);
+            softAssertions.assertThat(statusCount.get("결석")).isEqualTo(2);
+            String riskRank = statistics.riskRank();
+            softAssertions.assertThat(riskRank).isEqualTo("면담");
+        });
     }
 }
