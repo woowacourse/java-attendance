@@ -142,13 +142,9 @@ class AttendanceSystemTest {
     void 출석_확인_등교일이_아닌_경우_예외_메세지를_출력한다(LocalDateTime arrivalDateTime) {
         String crewNickname = VALID_CREW_NICKNAME;
 
-        String exceptionMessage = String.format(ExceptionMessage.HOLIDAY_ATTENDANCE.getMessage(),
-                arrivalDateTime.getMonth().getValue(), arrivalDateTime.getDayOfMonth(),
-                arrivalDateTime.getDayOfWeek().getDisplayName(TextStyle.SHORT, Locale.KOREA));
-
         assertThatIllegalArgumentException()
                 .isThrownBy(() -> attendanceSystem.addAttendanceRecord(crewNickname, arrivalDateTime))
-                .withMessage(exceptionMessage);
+                .withMessage(makeHolidayAttendanceExceptionMessage(arrivalDateTime));
     }
 
     static Stream<Arguments> 출석_확인_등교일이_아닌_경우_예외_메세지를_출력한다() {
@@ -227,13 +223,36 @@ class AttendanceSystemTest {
     void 출석_기록_수정_닉네임이_등록되지_않은_경우_예외_메세지를_출력한다() {
         LocalDateTime newDateTime = LocalDateTime.of(
                 COMMON_ATTENDANCE_DATE_TIME.toLocalDate(), LocalTime.of(8, 50));
-        
+
         assertThatIllegalArgumentException()
                 .isThrownBy(() -> attendanceSystem.updateAttendance(
                         INVALID_CREW_NICKNAME,
                         newDateTime.toLocalDate(),
                         newDateTime.toLocalTime()))
                 .withMessage(ExceptionMessage.INVALID_CREW.getMessage());
+    }
+
+    @DisplayName("출석 기록 수정 - 등교일이 아닌 경우 예외 메세지를 출력한다")
+    @ParameterizedTest
+    @MethodSource()
+    void 출석_기록_수정_등교일이_아닌_경우_예외_메세지를_출력한다(LocalDateTime holiday) {
+        LocalDateTime newDateTime = LocalDateTime.of(
+                holiday.toLocalDate(), LocalTime.of(8, 50));
+
+        assertThatIllegalArgumentException()
+                .isThrownBy(() -> attendanceSystem.updateAttendance(
+                        VALID_CREW_NICKNAME,
+                        newDateTime.toLocalDate(),
+                        newDateTime.toLocalTime()))
+                .withMessage(makeHolidayAttendanceExceptionMessage(newDateTime));
+    }
+
+    static Stream<Arguments> 출석_기록_수정_등교일이_아닌_경우_예외_메세지를_출력한다() {
+        return Stream.of(
+                Arguments.of(SATURDAY),
+                Arguments.of(SUNDAY),
+                Arguments.of(PUBLIC_HOLIDAY)
+        );
     }
 
     void checkSameRecord(
@@ -243,5 +262,11 @@ class AttendanceSystemTest {
     ) {
         assertThat(target.getNickname()).isEqualTo(expectedNickname);
         assertThat(target.getArrivalDateTime()).isEqualTo(expectedDateTime);
+    }
+
+    String makeHolidayAttendanceExceptionMessage(LocalDateTime dateTime) {
+        return String.format(ExceptionMessage.HOLIDAY_ATTENDANCE.getMessage(),
+                dateTime.getMonth().getValue(), dateTime.getDayOfMonth(),
+                dateTime.getDayOfWeek().getDisplayName(TextStyle.SHORT, Locale.KOREA));
     }
 }
