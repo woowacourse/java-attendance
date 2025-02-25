@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 import model.AttendanceType;
 import model.CrewHistory;
 import model.SubjectType;
@@ -21,13 +22,13 @@ public record DismissalCrewDto(String nickname, int absentCount, int lateCount, 
     public static List<DismissalCrewDto> of(final LocalDate todayDate, final List<CrewHistory> crewHistories) {
         return crewHistories.stream()
                 .map(crew -> of(todayDate, crew))
-                .toList();
+                .collect(Collectors.toList());
     }
 
     private static DismissalCrewDto of(final LocalDate todayDate, final CrewHistory crewHistory) {
         Map<AttendanceType, Integer> countedAttendanceType = crewHistory.countAttendanceType(todayDate);
-        return new DismissalCrewDto(crewHistory.getNickname(), countedAttendanceType.get(AttendanceType.결석),
-                countedAttendanceType.get(AttendanceType.지각), SubjectType.from(countedAttendanceType));
+        return new DismissalCrewDto(crewHistory.getNickname(), countedAttendanceType.get(AttendanceType.ABSENCE),
+                countedAttendanceType.get(AttendanceType.LATE), SubjectType.from(countedAttendanceType));
     }
 
     @Override
