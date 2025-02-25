@@ -38,7 +38,7 @@ class TimeTest {
 
         // when & then
         assertThatCode(() -> {
-            Time time = new Time(LocalDateTime.of(2025, 2, 25, 8, 0));
+            Time time = new Time(LocalDateTime.of(year, month, dayOfMonth, hour, minute));
         }).doesNotThrowAnyException();
     }
 
