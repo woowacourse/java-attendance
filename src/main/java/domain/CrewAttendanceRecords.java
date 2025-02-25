@@ -7,8 +7,8 @@ import java.util.*;
 public class CrewAttendanceRecords {
     private final Map<Crew, AttendanceRecords> crewAttendanceRecords;
 
-    public CrewAttendanceRecords(CrewAttendanceRecordsGenerator generator, LocalDate currentDate) {
-        this.crewAttendanceRecords = generator.generate(currentDate);
+    public CrewAttendanceRecords(Map<Crew, AttendanceRecords> crewAttendanceRecords) {
+        this.crewAttendanceRecords = crewAttendanceRecords;
     }
 
     public boolean hasCrew(Crew crew) {

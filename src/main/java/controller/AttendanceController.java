@@ -30,7 +30,7 @@ public class AttendanceController {
 
     public AttendanceController(String[] args) {
         this.currentDate = LocalDate.parse(args[START_DATE_INDEX]);
-        this.crewAttendanceRecords = new CrewAttendanceRecords(new CsvParsingGenerator(), currentDate);
+        this.crewAttendanceRecords = new CsvParsingGenerator().generate(currentDate);
     }
 
     public void run() {

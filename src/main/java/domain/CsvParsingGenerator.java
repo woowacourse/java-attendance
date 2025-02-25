@@ -15,17 +15,10 @@ public class CsvParsingGenerator implements CrewAttendanceRecordsGenerator {
     private static final String FILE_PATH = "/attendances.csv";
 
     @Override
-    public Map<Crew, AttendanceRecords> generate(LocalDate currentDate) {
-        Map<Crew, AttendanceRecords> crewAttendanceRecords = new HashMap<>();
+    public CrewAttendanceRecords generate(LocalDate currentDate) {
         List<String> rows = getStrings().stream().skip(HEADER_ROW).toList();
-        for (String row : rows) {
-            Crew crew = new Crew(row.split(",")[CREW_INDEX]);
-            AttendanceRecord attendanceRecord = AttendanceRecord.parse(row.split(",")[RECORD_INDEX]);
-            AttendanceRecords existingRecords = crewAttendanceRecords.getOrDefault(crew, new AttendanceRecords());
-            existingRecords.addRecord(attendanceRecord);
-            crewAttendanceRecords.put(crew, existingRecords);
-        }
-        return fillAbsence(crewAttendanceRecords, currentDate);
+        Map<Crew, AttendanceRecords> crewAttendanceRecords = createCrewRecords(rows, currentDate);
+        return new CrewAttendanceRecords(crewAttendanceRecords);
     }
 
     private Map<Crew, AttendanceRecords> fillAbsence(Map<Crew, AttendanceRecords> crewAttendanceRecords, LocalDate currentDate) {
@@ -41,5 +34,17 @@ public class CsvParsingGenerator implements CrewAttendanceRecordsGenerator {
         } catch (NullPointerException e) {
             throw new IllegalStateException("");
         }
+    }
+
+    private Map<Crew, AttendanceRecords> createCrewRecords(List<String> rows, LocalDate currentDate) {
+        Map<Crew, AttendanceRecords> crewAttendanceRecords = new HashMap<>();
+        for (String row : rows) {
+            Crew crew = new Crew(row.split(",")[CREW_INDEX]);
+            AttendanceRecord attendanceRecord = AttendanceRecord.parse(row.split(",")[RECORD_INDEX]);
+            AttendanceRecords existingRecords = crewAttendanceRecords.getOrDefault(crew, new AttendanceRecords());
+            existingRecords.addRecord(attendanceRecord);
+            crewAttendanceRecords.put(crew, existingRecords);
+        }
+        return fillAbsence(crewAttendanceRecords, currentDate);
     }
 }
