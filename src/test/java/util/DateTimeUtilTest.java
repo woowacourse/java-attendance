@@ -25,6 +25,13 @@ class DateTimeUtilTest {
         Assertions.assertThat(DateTimeUtil.isWeekend(LocalDateFixture.FRIDAY)).isFalse();
     }
 
+    @Test
+    @DisplayName("해당 날짜가 공휴일이면 true를 반환한다")
+    void isHolidayTest() {
+        // when & then
+        Assertions.assertThat(DateTimeUtil.isHoliday(LocalDateFixture.CHRISTMAS)).isTrue();
+    }
+
     static class LocalDateFixture {
         // DayOfWeek
         public static LocalDate MONDAY = LocalDate.of(2025, 2, 3);
@@ -34,5 +41,8 @@ class DateTimeUtilTest {
         public static LocalDate FRIDAY = LocalDate.of(2025, 2, 7);
         public static LocalDate SATURDAY = LocalDate.of(2025, 2, 8);
         public static LocalDate SUNDAY = LocalDate.of(2025, 2, 9);
+
+        // Holiday
+        public static LocalDate CHRISTMAS = LocalDate.of(2025, 12, 25);
     }
 }
