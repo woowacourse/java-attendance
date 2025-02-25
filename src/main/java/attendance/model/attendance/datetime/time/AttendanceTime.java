@@ -22,6 +22,10 @@ public class AttendanceTime {
         return new AttendanceTime(value);
     }
 
+    public static AttendanceTime nullObject() {
+        return null;
+    }
+
     private static void validateCampusOperationTime(
             final LocalTime value,
             final CampusOperationPolicy campusOperationPolicy
