@@ -90,7 +90,7 @@ class RegisterTest {
     }
 
     @Test
-    void 위험군_팀_조회_테스트() {
+    void 위험군_팀_조회_및_정렬_테스트() {
         //given
         Map<Crew, List<LocalDateTime>> attendanceTimes = new HashMap<>();
 
