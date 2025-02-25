@@ -1,5 +1,6 @@
 package attendance;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
@@ -40,5 +41,23 @@ class AttendanceTest {
         assertThatThrownBy(() -> {
             crew.attendance(DATE, TIME.plusMinutes(30));
         }).isInstanceOf(IllegalArgumentException.class);
+    }
+
+    @Test
+    @DisplayName("닉네임, 수정하려는 날짜, 등교 시간으로 출석 기록을 수정할 수 있다")
+    void modifyAttendanceTest() {
+        // given
+        Crew crew = new Crew("pobi");
+        crew.attendance(DATE, TIME);
+        Crews crews = new Crews();
+        crews.add(crew);
+
+        // when
+        Crew found = crews.get("pobi");
+        LocalTime time = TIME.plusMinutes(30);
+        found.modifyAttendance(DATE, time);
+
+        // then
+        assertThat(found.getAttendanceRecordOf(DATE)).isEqualTo(time);
     }
 }
