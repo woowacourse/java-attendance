@@ -36,7 +36,7 @@ public class DateProvider {
     }
 
     public Calender getDayOfWeek() {
-        return Calender.findBy(getToday());
+        return Calender.findBy(localDate.getDayOfWeek());
     }
 
     private LocalDate validateFormat(final int year, final int month, final int today) {

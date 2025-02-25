@@ -18,22 +18,18 @@ public enum AttendanceState {
         this.description = description;
     }
 
-    public static AttendanceState findStateBy(final LocalTime localTime, final int dayOfMonth) {
-        return findState(localTime, dayOfMonth);
-    }
-
     public static AttendanceState findStateBy(final LocalDateTime localDateTime) {
-        return findState(localDateTime.toLocalTime(), localDateTime.getDayOfMonth());
+        return findState(localDateTime);
     }
 
-    private static AttendanceState findState(final LocalTime localTime, final int dayOfMonth) {
-        Calender.validateHolyDay(dayOfMonth);
-        AttendanceTime.validateCampusTime(localTime);
+    private static AttendanceState findState(final LocalDateTime localDateTime) {
+        Calender.validateHolyDay(localDateTime.toLocalDate());
+        AttendanceTime.validateCampusTime(localDateTime.toLocalTime());
 
-        Calender calender = Calender.findBy(dayOfMonth);
+        Calender calender = Calender.findBy(localDateTime.getDayOfWeek());
         AttendanceTime attendanceTime = AttendanceTime.findBy(calender);
 
-        return calculateStatusBy(localTime, attendanceTime);
+        return calculateStatusBy(localDateTime.toLocalTime(), attendanceTime);
     }
 
     private static AttendanceState calculateStatusBy(final LocalTime localTime, final AttendanceTime attendanceTime) {

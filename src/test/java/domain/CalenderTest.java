@@ -4,10 +4,13 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+import java.time.DayOfWeek;
+import java.time.LocalDate;
+import java.util.stream.Stream;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.ValueSource;
+import org.junit.jupiter.params.provider.MethodSource;
 
 class CalenderTest {
 
@@ -15,10 +18,10 @@ class CalenderTest {
     @Test
     void getDayOfWeekByDayOfMonth() {
         //given
-        int dayOfMonth = 19;
+        DayOfWeek thursday = DayOfWeek.THURSDAY;
 
         //when
-        Calender result = Calender.findBy(dayOfMonth);
+        Calender result = Calender.findBy(thursday);
 
         //then
         assertThat(result.getDescription()).isEqualTo("목요일");
@@ -26,12 +29,12 @@ class CalenderTest {
 
     @DisplayName("날짜가 공휴일이라면 true를 반환한다.")
     @ParameterizedTest
-    @ValueSource(ints = {1, 7, 8, 14, 15, 21, 22, 25, 28, 29})
-    void isHolyDay(int dayOfMonth) {
+    @MethodSource("provideHolyDay")
+    void isHolyDay(LocalDate dayOfWeek) {
         //given
 
         //when
-        boolean actual = Calender.isHolyDay(dayOfMonth);
+        boolean actual = Calender.isHolyDay(dayOfWeek);
 
         //then
         assertThat(actual).isTrue();
@@ -39,34 +42,78 @@ class CalenderTest {
 
     @DisplayName("날짜가 공휴일이 아니라면 false를 반환한다.")
     @ParameterizedTest
-    @ValueSource(ints = {2, 3, 4, 5, 9, 10, 11, 12, 13, 16, 17, 18, 19, 20, 23, 24, 26, 27, 30, 31})
-    void isNotHolyDay(int dayOfMonth) {
+    @MethodSource("provideLocalDate")
+    void isNotHolyDay(LocalDate localDate) {
         //given
 
         //when
-        boolean actual = Calender.isHolyDay(dayOfMonth);
+        boolean actual = Calender.isHolyDay(localDate);
 
         //then
         assertThat(actual).isFalse();
     }
 
+
     @DisplayName("공휴일에 출석확인을 하면 예외가 발생한다.")
-    @ParameterizedTest
-    @ValueSource(ints = {1, 7, 8, 14, 15, 21, 22, 25, 28, 29})
-    void validateHolyDay(int dayOfMonth) {
+    @Test
+    void validateHolyDay() {
+        //given
+        LocalDate localDate = LocalDate.of(2024, 12, 25);
+
         //when & then
-        assertThatThrownBy(() -> Calender.validateHolyDay(dayOfMonth))
+        assertThatThrownBy(() -> Calender.validateHolyDay(localDate))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("공휴일에는 출석을 할 수 없습니다.");
+
     }
 
     @DisplayName("공휴일이 아닌 날에 출석확인을 할 수 있다.")
     @ParameterizedTest
-    @ValueSource(ints = {2, 3, 4, 5, 9, 10, 11, 12, 13, 16, 17, 18, 19, 20, 23, 24, 26, 27, 30, 31})
-    void holyDay(int dayOfMonth) {
+    @MethodSource("provideLocalDate")
+    void holyDay(LocalDate dayOfWeek) {
 
         //when & then
-        assertThatCode(() -> Calender.validateHolyDay(dayOfMonth))
+        assertThatCode(() -> Calender.validateHolyDay(dayOfWeek))
                 .doesNotThrowAnyException();
+    }
+
+    static Stream<LocalDate> provideLocalDate() {
+        return Stream.of(
+                LocalDate.of(2024, 12, 2),
+                LocalDate.of(2024, 12, 3),
+                LocalDate.of(2024, 12, 4),
+                LocalDate.of(2024, 12, 5),
+                LocalDate.of(2024, 12, 6),
+                LocalDate.of(2024, 12, 9),
+                LocalDate.of(2024, 12, 10),
+                LocalDate.of(2024, 12, 12),
+                LocalDate.of(2024, 12, 13),
+                LocalDate.of(2024, 12, 16),
+                LocalDate.of(2024, 12, 18),
+                LocalDate.of(2024, 12, 19),
+                LocalDate.of(2024, 12, 20),
+                LocalDate.of(2024, 12, 23),
+                LocalDate.of(2024, 12, 24),
+                LocalDate.of(2024, 12, 26),
+                LocalDate.of(2024, 12, 27),
+                LocalDate.of(2024, 12, 30),
+                LocalDate.of(2024, 12, 31))
+                ;
+    }
+
+
+    static Stream<LocalDate> provideHolyDay() {
+        return Stream.of(
+                LocalDate.of(2024, 12, 1),
+                LocalDate.of(2024, 12, 7),
+                LocalDate.of(2024, 12, 8),
+                LocalDate.of(2024, 12, 14),
+                LocalDate.of(2024, 12, 15),
+                LocalDate.of(2024, 12, 21),
+                LocalDate.of(2024, 12, 22),
+                LocalDate.of(2024, 12, 25),
+                LocalDate.of(2024, 12, 28),
+                LocalDate.of(2024, 12, 29))
+                ;
     }
 }

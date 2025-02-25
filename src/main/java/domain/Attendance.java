@@ -1,6 +1,7 @@
 package domain;
 
 import dto.AttendanceResultDto;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -36,7 +37,7 @@ public class Attendance {
     }
 
     public LocalDateTime update(final Crew crew, final LocalDateTime updateTime) {
-        Calender.validateHolyDay(updateTime.getDayOfMonth());
+        Calender.validateHolyDay(updateTime.toLocalDate());
 
         List<LocalDateTime> localDateTimes = attendances.get(crew);
         LocalDateTime beforeRecord = findBeforeRecord(updateTime, localDateTimes);
@@ -101,7 +102,7 @@ public class Attendance {
                              final List<AttendanceResultDto> attendanceResultDtos) {
         int idx = 0;
         for (int dayIndex = 1; dayIndex < todayDay; dayIndex++) {
-            if (Calender.isHolyDay(dayIndex)) {
+            if (Calender.isHolyDay(LocalDate.of(2024, 12, dayIndex))) {
                 continue;
             }
             if (hasRecord(idx, localDateTimes, dayIndex)) {
@@ -119,7 +120,7 @@ public class Attendance {
 
     private void insertRecord(final LocalDateTime localDateTime, final int dayIndex,
                               final List<AttendanceResultDto> attendanceResultDtos) {
-        AttendanceState state = AttendanceState.findStateBy(localDateTime.toLocalTime(), dayIndex);
+        AttendanceState state = AttendanceState.findStateBy(localDateTime);
         attendanceResultDtos.add(new AttendanceResultDto(localDateTime, state));
     }
 

@@ -29,7 +29,7 @@ public class OutputView {
 
         System.out.printf("12월 %02d일 %s %02d:%02d (%s) -> %02d:%02d (%s) 수정 완료!\n",
                 beforeDateTime.getDayOfMonth(),
-                Calender.findBy(beforeDateTime.getDayOfMonth()).getDescription(),
+                Calender.findBy(beforeDateTime.getDayOfWeek()).getDescription(),
                 beforeDateTime.getHour(),
                 beforeDateTime.getMinute(),
                 beforeAttendanceState.getDescription(),
@@ -47,14 +47,14 @@ public class OutputView {
         if (attendanceResultDto.localDateTime().getHour() != 0) {
             return String.format("12월 %02d일 %s %02d:%02d (%s)\n",
                     attendanceResultDto.localDateTime().getDayOfMonth(),
-                    Calender.findBy(attendanceResultDto.localDateTime().getDayOfMonth()).getDescription(),
+                    Calender.findBy(attendanceResultDto.localDateTime().getDayOfWeek()).getDescription(),
                     attendanceResultDto.localDateTime().getHour(),
                     attendanceResultDto.localDateTime().getMinute(),
                     attendanceResultDto.attendanceState().getDescription());
         }
         return String.format("12월 %02d일 %s --:-- (%s)\n",
                 attendanceResultDto.localDateTime().getDayOfMonth(),
-                Calender.findBy(attendanceResultDto.localDateTime().getDayOfMonth()).getDescription(),
+                Calender.findBy(attendanceResultDto.localDateTime().getDayOfWeek()).getDescription(),
                 attendanceResultDto.attendanceState().getDescription());
     }
 
