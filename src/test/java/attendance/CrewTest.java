@@ -1,0 +1,46 @@
+package attendance;
+
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+
+import java.time.LocalDateTime;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+
+public class CrewTest {
+
+    @Test
+    @DisplayName("닉네임과 출석 기록이 들어오면, 크루의 출석 기록이 추가되고, Attendance를 리턴한다")
+    void crewAddAttendanceTest1() {
+        Crew crew = new Crew("모루");
+        assertThat(crew.addAttendance(LocalDateTime.of(2024,12,11,8,0)))
+                .isInstanceOf(Attendance.class);
+    }
+
+    @Test
+    @DisplayName("출석 시간이 운영 시간이 아니면 예외")
+    void crewAddAttendanceTest2() {
+        Crew crew = new Crew("모루");
+        assertThatThrownBy(() -> crew.addAttendance(LocalDateTime.of(2024,12,11,6,0)))
+                .isInstanceOf(IllegalArgumentException.class);
+    }
+
+    @Test
+    @DisplayName("출석일이 운영일이 아니면 예외")
+    void crewAddAttendanceTest3() {
+        Crew crew = new Crew("모루");
+        assertThatThrownBy(() -> crew.addAttendance(LocalDateTime.of(2024,12,8,10,0)))
+                .isInstanceOf(IllegalArgumentException.class);
+    }
+
+    @Test
+    @DisplayName("크루의 출석 기록에 출석이 추가됐는지 확인")
+    void crewAddAttendanceTest4() {
+        Crew crew = new Crew("모루");
+        crew.addAttendance(LocalDateTime.of(2024,12,11,8,0));
+        crew.addAttendance(LocalDateTime.of(2024,12,12,8,0));
+
+        assertThat(crew.getAttendances().size()).isEqualTo(2);
+    }
+}
