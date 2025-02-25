@@ -16,12 +16,14 @@ public class FileReaderPolicyTest {
     }
 
     @Test
-    @DisplayName("파일의 형식이 올바른지 검증할 수 있다")
+    @DisplayName("쉼표에 따라 나눈 문자열의 개수가 차이가 나면 예외가 발생한다")
     public void validateFileFormatTest() {
         //given
         FileReaderPolicy fileReaderPolicy = new FileReaderPolicy(FILE_PATH);
+        String[] splitLine = {"링크"};
 
         //when-then
-        assertDoesNotThrow(fileReaderPolicy::createAttendances);
+        assertThatThrownBy(() -> fileReaderPolicy.validateSplitLineFormat(splitLine))
+                .isInstanceOf(IllegalArgumentException.class);
     }
 }

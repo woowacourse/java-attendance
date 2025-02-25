@@ -49,13 +49,13 @@ public class FileReaderPolicy {
         }
     }
 
-    private static void validateSplitLineFormat(String[] splitLine) {
+    public void validateSplitLineFormat(String[] splitLine) {
         if (splitLine.length != LINE_SPLIT_COUNT) {
             throw new IllegalArgumentException("[ERROR] 파일 형식이 잘못되었습니다");
         }
     }
 
-    private static LocalDateTime parseAttendanceDateTime(String[] splitLine) {
+    private LocalDateTime parseAttendanceDateTime(String[] splitLine) {
         try{
            return LocalDateTime.parse(splitLine[1], DATE_TIME_FORMATTER);
         }catch (DateTimeParseException e){
