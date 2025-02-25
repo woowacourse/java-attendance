@@ -22,4 +22,8 @@ public record AttendanceDate(
             throw new IllegalArgumentException();
         }
     }
+
+    public boolean isMonday() {
+        return date.getDayOfWeek() == DayOfWeek.MONDAY;
+    }
 }

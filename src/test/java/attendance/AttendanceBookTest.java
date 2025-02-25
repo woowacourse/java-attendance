@@ -2,6 +2,7 @@ package attendance;
 
 import static attendance.AttendancesTest.generateAttendances;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThatCode;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 
 import java.time.LocalDateTime;
@@ -13,7 +14,7 @@ import org.junit.jupiter.api.Test;
 public class AttendanceBookTest {
 
     @Test
-    void 닉네임이_존재하지_않으면_예외를_던진다() {
+    void 출석_시_닉네임이_존재하지_않으면_예외를_던진다() {
         List<LocalDateTime> dateTimes = List.of(LocalDateTime.of(2024, 12, 13, 9, 59));
         AttendanceBook attendanceBook = generateAttendanceBook("훌라", dateTimes);
 
@@ -51,6 +52,24 @@ public class AttendanceBookTest {
         final var result = attendanceBook.updateAttendance("훌라", LocalDateTime.of(2024, 12, 13, 10, 6));
 
         assertThat(result).isEqualTo(Attendance.from(LocalDateTime.of(2024, 12, 13, 10, 6)));
+    }
+
+    @Test
+    void 출석_기록을_가져올_때_닉네임이_없다면_예외를_던진다() {
+        List<LocalDateTime> attendances = List.of(LocalDateTime.of(2024, 12, 13, 9, 59));
+        AttendanceBook attendanceBook = generateAttendanceBook("훌라", attendances);
+
+        assertThatThrownBy(() -> attendanceBook.findByNickname("모루"))
+                .isInstanceOf(IllegalArgumentException.class);
+    }
+
+    @Test
+    void 닉네임을_통해_출석_기록을_가져온다() {
+        List<LocalDateTime> attendances = List.of(LocalDateTime.of(2024, 12, 13, 9, 59));
+        AttendanceBook attendanceBook = generateAttendanceBook("훌라", attendances);
+
+        assertThatCode(() -> attendanceBook.findByNickname("훌라"))
+                .doesNotThrowAnyException();
     }
 
     public static AttendanceBook generateAttendanceBook(String nickname, List<LocalDateTime> dateTimes) {

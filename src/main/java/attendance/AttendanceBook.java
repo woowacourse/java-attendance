@@ -11,9 +11,7 @@ public class AttendanceBook {
     }
 
     public Attendance attend(String nickname, LocalDateTime dateTime) {
-        if (!crewAttendances.containsKey(nickname)) {
-            throw new IllegalArgumentException("[ERROR] 등록되지 않은 닉네임입니다.");
-        }
+        validateNickname(nickname);
         Attendances attendances = crewAttendances.get(nickname);
         Attendance attendance = attendances.add(dateTime);
         crewAttendances.put(nickname, attendances);
@@ -25,5 +23,16 @@ public class AttendanceBook {
         Attendance before = attendances.updateAttendance(dateTime);
         crewAttendances.put(nickname, attendances);
         return before;
+    }
+
+    public Attendances findByNickname(String nickname) {
+        validateNickname(nickname);
+        return crewAttendances.get(nickname);
+    }
+
+    private void validateNickname(String nickname) {
+        if (!crewAttendances.containsKey(nickname)) {
+            throw new IllegalArgumentException("[ERROR] 등록되지 않은 닉네임입니다.");
+        }
     }
 }
