@@ -47,10 +47,4 @@ public class AttendanceTest {
 
         assertThat(attendance.getType()).isEqualTo(AttendanceType.LATE);
     }
-
-    @DisplayName("기능: 출석 날짜와 시간 및 유형 정보 문자열로 반환")
-    @Test
-    void returnDateTimeAttendanceTypeFromAttendance() {
-        assertThat(attendance.getInfo()).contains("2", "19", "수", "09:50", "출석");
-    }
 }

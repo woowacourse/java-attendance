@@ -3,9 +3,6 @@ package attendance.domain;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.time.format.TextStyle;
-import java.util.List;
-import java.util.Locale;
 
 public class Attendance {
     private static final String TIME_FORMAT = "HH:mm";
@@ -53,7 +50,7 @@ public class Attendance {
         return attendanceType;
     }
 
-    public void updateCrewAttendanceCount(AttendanceCount attendanceCount) {
+    public void updateCrewAttendanceCount(final AttendanceCount attendanceCount) {
         if (attendanceType.equals(AttendanceType.SAFE)) {
             attendanceCount.incrementSafeCount();
             return;
@@ -65,15 +62,5 @@ public class Attendance {
         if (attendanceType.equals(AttendanceType.ABSENT)) {
             attendanceCount.incrementAbsentCount();
         }
-    }
-
-    public List<String> getInfo() {
-        return List.of(
-                String.valueOf(presentTime.getMonthValue()),
-                String.valueOf(presentTime.getDayOfMonth()),
-                presentTime.getDayOfWeek().getDisplayName(TextStyle.NARROW, Locale.KOREAN),
-                presentTime.format(DateTimeFormatter.ofPattern(TIME_FORMAT)),
-                this.attendanceType.toString()
-        );
     }
 }
