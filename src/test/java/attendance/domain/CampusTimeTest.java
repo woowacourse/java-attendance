@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import attendance.exception.CustomException;
 import attendance.exception.ErrorMessage;
+import java.time.LocalTime;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -91,6 +92,16 @@ class CampusTimeTest {
         Assertions.assertThatThrownBy(() -> CampusTime.fromHourColonMinute(time))
                 .isInstanceOf(CustomException.class)
                 .hasMessage(ErrorMessage.OUT_OF_CAMPUS_TIME_RANGE.getMessage());
+    }
+
+    @Test
+    void 시간_비교해_이후_시간일_경우() {
+        // given
+        CampusTime campusTime = CampusTime.fromHourColonMinute("10:00");
+        LocalTime localTime = LocalTime.of(9, 59);
+
+        // when // then
+        Assertions.assertThat(campusTime.isAfter(localTime)).isTrue();
     }
 
 }
