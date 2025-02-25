@@ -23,4 +23,20 @@ public class AttendanceDateTime {
         }
         return false;
     }
+
+    public AttendanceType getAttendanceType() {
+        DayOfWeek currentDayOfWeek = localDateTime.getDayOfWeek();
+        int attendanceHourThreshold = 10;
+        if (currentDayOfWeek == DayOfWeek.MONDAY) {
+            attendanceHourThreshold = 13;
+        }
+
+        if (localDateTime.getHour() < attendanceHourThreshold || (localDateTime.getHour() == attendanceHourThreshold && localDateTime.getMinute() == 0)) {
+            return AttendanceType.ATTENDANCE;
+        }
+        if (localDateTime.getHour() == attendanceHourThreshold && localDateTime.getMinute() <= 30) {
+            return AttendanceType.LATE;
+        }
+        return AttendanceType.ABSENCE;
+    }
 }
