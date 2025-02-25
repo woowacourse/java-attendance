@@ -1,6 +1,7 @@
 package attendance;
 
 import java.time.DayOfWeek;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
@@ -59,5 +60,9 @@ public class Attendance {
             return "지각";
         }
         return "출석";
+    }
+
+    public boolean isEqualDate(LocalDate date) {
+        return LocalDate.from(attendanceDateTime).isEqual(date);
     }
 }

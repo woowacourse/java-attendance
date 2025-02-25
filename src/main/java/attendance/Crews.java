@@ -21,6 +21,10 @@ public class Crews {
         return crew;
     }
 
+    public List<Attendance> findCrewAttendanceByNickname(String nickname) {
+        return findCrewByNickname(nickname).getAttendances();
+    }
+
     public Crew findCrewByNickname(String nickname) {
         for (Crew crew : crews) {
             if(crew.isEqualCrew(nickname)) {

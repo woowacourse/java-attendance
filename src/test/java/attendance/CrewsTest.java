@@ -3,6 +3,7 @@ package attendance;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -89,5 +90,51 @@ public class CrewsTest {
         Crew crew = crews.findCrewByNickname("모루");
         assertThat(crew.addAttendance(LocalDateTime.of(2024,12,11,10,36)))
                 .hasFieldOrPropertyWithValue("attendanceStatus", "결석");
+    }
+
+    @Test
+    @DisplayName("크루의 닉네임으로 출석 기록을 가져온다.")
+    void findCrewAttendanceByNicknameTest1() {
+        Crews crews = new Crews();
+        Crew crew = crews.addCrew("모루");
+        crew.addAttendance(LocalDateTime.of(2024,12,11,10,36));
+        crew.addAttendance(LocalDateTime.of(2024,12,12,10,6));
+
+        assertThat(crews.findCrewAttendanceByNickname("모루").size()).isEqualTo(2);
+    }
+
+    @Test
+    @DisplayName("크루의 닉네임으로 출석 기록을 찾을 수 없으면 예외")
+    void findCrewAttendanceByNicknameTest2() {
+        Crews crews = new Crews();
+        Crew crew = crews.addCrew("모루");
+        crew.addAttendance(LocalDateTime.of(2024,12,11,10,36));
+        crew.addAttendance(LocalDateTime.of(2024,12,12,10,6));
+
+        assertThatThrownBy(() -> crews.findCrewAttendanceByNickname("히포").size()).isInstanceOf(IllegalArgumentException.class);
+    }
+
+    @Test
+    @DisplayName("날짜에 맞는 출석 기록 찾기")
+    void findAttendanceByDateTest1() {
+        Crews crews = new Crews();
+        Crew crew = crews.addCrew("모루");
+        crew.addAttendance(LocalDateTime.of(2024,12,11,10,36));
+        crew.addAttendance(LocalDateTime.of(2024,12,12,10,6));
+
+        assertThat(crew.findAttendanceByDate(LocalDate.of(2024,12,11)))
+                .hasFieldOrPropertyWithValue("attendanceDateTime", LocalDateTime.of(2024,12,11,10,36));
+    }
+
+    @Test
+    @DisplayName("해당하는 날짜의 출석 기록이 없으면 예외")
+    void findAttendanceByDateTest2() {
+        Crews crews = new Crews();
+        Crew crew = crews.addCrew("모루");
+        crew.addAttendance(LocalDateTime.of(2024,12,11,10,36));
+        crew.addAttendance(LocalDateTime.of(2024,12,12,10,6));
+
+        assertThatThrownBy(() -> crew.findAttendanceByDate(LocalDate.of(2024,12,13)))
+                .isInstanceOf(IllegalArgumentException.class);
     }
 }

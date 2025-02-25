@@ -1,5 +1,6 @@
 package attendance;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -20,8 +21,15 @@ public class Crew {
         return attendance;
     }
 
-    public boolean isEqualCrew(String nickname) {
-        return this.nickname.equals(nickname);
+    public boolean isEqualCrew(String nickname) { return this.nickname.equals(nickname); }
+
+    public Attendance findAttendanceByDate(LocalDate date) {
+        for (Attendance attendance : attendances) {
+            if(attendance.isEqualDate(date)) {
+                return attendance;
+            }
+        }
+        throw new IllegalArgumentException("해당하는 날짜의 출석이 없습니다.");
     }
 
     public List<Attendance> getAttendances() {
