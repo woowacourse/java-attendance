@@ -35,7 +35,10 @@ public class AttendanceDateTime {
             final CampusOperationPolicy campusOperationPolicy
     ) {
 
-        return null;
+        return new AttendanceDateTime(
+                AttendanceDate.policyApplied(date, campusOperationPolicy),
+                AttendanceTime.nullObject()
+        );
     }
 
     public LocalDate getDate() {
