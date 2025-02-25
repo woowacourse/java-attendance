@@ -7,13 +7,8 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
 
 public class FileManager {
-
 
     private static final DateTimeFormatter DATE_TIME_FORMAT = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
     private static final String SPLIT_DELIMITER = ",";
@@ -23,27 +18,25 @@ public class FileManager {
             BufferedReader br = new BufferedReader(new FileReader(filePath));
             br.readLine();
 
-            return createAttendances(br);
+            return createAttendance(br);
         } catch (IOException e) {
             throw new IllegalArgumentException("잘못된 파일 입니다.");
         }
     }
 
-    private static Attendance createAttendances(final BufferedReader br) throws IOException {
+    private static Attendance createAttendance(final BufferedReader br) throws IOException {
         String line;
-        Map<Crew, List<LocalDateTime>> attendances = new LinkedHashMap<>();
 
+        Attendance attendance = new Attendance();
         while ((line = br.readLine()) != null) {
             String[] lineSplit = split(line);
 
             Crew crew = createCrew(lineSplit);
             LocalDateTime localDateTime = createLocalDateTime(lineSplit);
 
-            List<LocalDateTime> localDateTimes = insertLocalDateTime(attendances, crew, localDateTime);
-            attendances.put(crew, localDateTimes);
+            attendance.addAttendance(crew, localDateTime);
         }
-
-        return new Attendance(attendances);
+        return attendance;
     }
 
     private static String[] split(final String line) {
@@ -67,10 +60,4 @@ public class FileManager {
         return LocalDateTime.parse(dateTime, DATE_TIME_FORMAT);
     }
 
-    private static List<LocalDateTime> insertLocalDateTime(final Map<Crew, List<LocalDateTime>> attendances,
-                                                           final Crew crew, final LocalDateTime localDateTime) {
-        List<LocalDateTime> localDateTimes = attendances.getOrDefault(crew, new ArrayList<>());
-        localDateTimes.add(localDateTime);
-        return localDateTimes;
-    }
 }

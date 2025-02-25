@@ -7,7 +7,6 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import dto.AttendanceResultDto;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Stream;
@@ -161,10 +160,11 @@ class AttendanceTest {
         localDateTimes.add(LocalDateTime.of(2024, 12, 4, 10, 11));
         localDateTimes.add(LocalDateTime.of(2024, 12, 5, 10, 14));
 
-        Map<Crew, List<LocalDateTime>> attendances = new LinkedHashMap<>();
-        attendances.put(crew, localDateTimes);
-
-        return new Attendance(attendances);
+        Attendance attendance = new Attendance();
+        for (LocalDateTime localDateTime : localDateTimes) {
+            attendance.addAttendance(crew, localDateTime);
+        }
+        return attendance;
     }
 
     static Stream<LocalDateTime> provideLocalDateTimes() {

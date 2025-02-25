@@ -5,15 +5,21 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
 public class Attendance {
 
-    private final Map<Crew, List<LocalDateTime>> attendances;
+    private final Map<Crew, List<LocalDateTime>> attendances = new LinkedHashMap<>();
 
-    public Attendance(final Map<Crew, List<LocalDateTime>> attendanceMap) {
-        this.attendances = attendanceMap;
+    public Attendance() {
+    }
+
+    public void addAttendance(final Crew crew, final LocalDateTime localDateTime) {
+        List<LocalDateTime> localDateTimes = attendances.getOrDefault(crew, new ArrayList<>());
+        localDateTimes.add(localDateTime);
+        attendances.put(crew, localDateTimes);
     }
 
     public Crew getCrewByName(String name) {
