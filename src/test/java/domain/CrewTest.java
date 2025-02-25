@@ -2,6 +2,7 @@ package domain;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
+import dto.CheckAttendanceResponse;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import org.junit.jupiter.api.BeforeEach;
@@ -23,8 +24,8 @@ public class CrewTest {
         LocalDate date = LocalDate.now();
         LocalTime time = LocalTime.now();
 
-        crew.checkAttendance(date, time);
-
-        assertThat(crew.getAttendances().get(date)).isEqualTo(time);
+        assertThat(crew.checkAttendance(date, time))
+                .extracting(CheckAttendanceResponse::date, CheckAttendanceResponse::time)
+                .containsExactly(date, time);
     }
 }

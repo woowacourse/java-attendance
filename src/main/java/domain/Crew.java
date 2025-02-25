@@ -1,5 +1,6 @@
 package domain;
 
+import dto.CheckAttendanceResponse;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.HashMap;
@@ -13,11 +14,11 @@ public class Crew {
         this.name = name;
     }
 
-    public void checkAttendance(LocalDate date, LocalTime time) {
+    public CheckAttendanceResponse checkAttendance(LocalDate date, LocalTime time) {
         attendances.put(date, time);
-    }
 
-    public Map<LocalDate, LocalTime> getAttendances() {
-        return attendances;
+        return new CheckAttendanceResponse(
+                date, time, "출석"
+        );
     }
 }
