@@ -47,7 +47,7 @@ public class AttendanceSystem {
         attendanceInit.initSystem();
 
         while (true) {
-            LocalDate today = dateGenerator.now();
+            LocalDate today = dateGenerator.generateNow();
             AttendanceMenu menu = selectMenu(today);
 
             processSystem(menu, today);

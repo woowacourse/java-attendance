@@ -52,11 +52,11 @@ public class AttendanceInit {
     private void addNewCrew(final String nickname) {
         if (!attendanceManager.containsNickname(nickname)) {
 
-            int day = dateGenerator.now().getDayOfMonth();
+            int day = dateGenerator.generateNow().getDayOfMonth();
 
             Attendances newAttendances = new Attendances();
             IntStream.range(1, day + 1)
-                    .mapToObj(index -> LocalDateTime.of(dateGenerator.now().withDayOfMonth(index), LocalTime.MAX))
+                    .mapToObj(index -> LocalDateTime.of(dateGenerator.generateNow().withDayOfMonth(index), LocalTime.MAX))
                     .filter(dateTime -> !holiday.isHoliday(dateTime.toLocalDate()))
                     .forEach(newAttendances::addAttendance);
 

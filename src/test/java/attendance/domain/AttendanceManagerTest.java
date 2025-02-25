@@ -30,7 +30,7 @@ class AttendanceManagerTest {
     void 출석_데이터로_출석_체크한다(LocalTime time, AttendanceState expected) {
         // given
         String nickname = "비타";
-        LocalDate nowDate = dateGenerator.now();
+        LocalDate nowDate = dateGenerator.generateNow();
 
         Attendances attendances = new Attendances();
         attendances.addAttendance(LocalDateTime.of(nowDate, LocalTime.MAX));
@@ -50,7 +50,7 @@ class AttendanceManagerTest {
     void 이미_출석한_경우_다시_출석한_경우_예외가_발생한다() {
         // given
         String nickname = "비타";
-        LocalDate nowDate = dateGenerator.now();
+        LocalDate nowDate = dateGenerator.generateNow();
 
         Attendances attendances = new Attendances();
         attendances.addAttendance(LocalDateTime.of(nowDate, LocalTime.MIDNIGHT));
@@ -71,7 +71,7 @@ class AttendanceManagerTest {
     void 출석_데이터를_수정한다(LocalTime time, AttendanceState expected) {
         // given
         String nickname = "비타";
-        LocalDate nowDate = dateGenerator.now();
+        LocalDate nowDate = dateGenerator.generateNow();
 
         Attendances attendances = new Attendances();
         attendances.addAttendance(LocalDateTime.of(nowDate, LocalTime.MAX));
@@ -107,7 +107,7 @@ class AttendanceManagerTest {
         String nickname = "이든";
 
         Attendances attendances = new Attendances();
-        LocalDate nowDate = dateGenerator.now();
+        LocalDate nowDate = dateGenerator.generateNow();
         int dayOfMonth = nowDate.getDayOfMonth();
 
         for (int day = 1; day <= dayOfMonth; day++) {
@@ -128,7 +128,7 @@ class AttendanceManagerTest {
     void 출결_상태를_반환한다() {
         // given
         String nickname = "이든";
-        LocalDate nowDate = dateGenerator.now();
+        LocalDate nowDate = dateGenerator.generateNow();
 
         Attendances attendances = new Attendances();
         attendances.addAttendance(LocalDateTime.of(nowDate, LocalTime.MIDNIGHT));
@@ -148,7 +148,7 @@ class AttendanceManagerTest {
         // given
         List<String> nicknames = List.of("레오", "랜디", "비타");
         List<LocalDateTime> dateTimes = new ArrayList<>();
-        LocalDate nowDate = dateGenerator.now();
+        LocalDate nowDate = dateGenerator.generateNow();
 
         for (int day = 1; day < 8; day++) {
             LocalDate date = nowDate.withDayOfMonth(day);
@@ -176,7 +176,7 @@ class AttendanceManagerTest {
         String nickname = "이든";
 
         Attendances attendances = new Attendances();
-        LocalDate nowDate = dateGenerator.now();
+        LocalDate nowDate = dateGenerator.generateNow();
         attendances.addAttendance(LocalDateTime.of(nowDate, LocalTime.MIDNIGHT));
 
         attendanceManager.addCrew(nickname, attendances);
@@ -191,7 +191,7 @@ class AttendanceManagerTest {
     @Test
     void 제적_위험자_목록을_위험도_순서로_정렬한다() {
         // given
-        LocalDate nowDate = dateGenerator.now();
+        LocalDate nowDate = dateGenerator.generateNow();
         List<LocalDateTime> leoDateTimes = List.of(
                 LocalDateTime.of(nowDate.withDayOfMonth(1), LocalTime.MAX),
                 LocalDateTime.of(nowDate.withDayOfMonth(2), LocalTime.MAX),
@@ -219,7 +219,7 @@ class AttendanceManagerTest {
     @Test
     void 제적_위험자_목록을_출석_수치로_내림차순_정렬한다() {
         // given
-        LocalDate nowDate = dateGenerator.now();
+        LocalDate nowDate = dateGenerator.generateNow();
         List<LocalDateTime> leoDateTimes = List.of(
                 LocalDateTime.of(nowDate.withDayOfMonth(1), LocalTime.MAX),
                 LocalDateTime.of(nowDate.withDayOfMonth(2), LocalTime.MAX),
@@ -256,7 +256,7 @@ class AttendanceManagerTest {
         // given
         List<String> nicknames = List.of("레오", "랜디", "비타");
 
-        LocalDate nowDate = dateGenerator.now();
+        LocalDate nowDate = dateGenerator.generateNow();
         List<LocalDateTime> dateTimes = List.of(
                 LocalDateTime.of(nowDate.withDayOfMonth(1), LocalTime.MAX),
                 LocalDateTime.of(nowDate.withDayOfMonth(2), LocalTime.MAX),
@@ -301,7 +301,7 @@ class AttendanceManagerTest {
     static class MockingDateGenerator implements DateGenerator {
 
         @Override
-        public LocalDate now() {
+        public LocalDate generateNow() {
             return LocalDate.of(2024, 12, 10);
         }
     }
