@@ -4,7 +4,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-import dto.AbsenceResultDto;
 import dto.AttendanceResultDto;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -134,7 +133,7 @@ class AttendanceTest {
         Attendance attendance = FileManager.readFile(filePath);
 
         //when
-        Map<Crew, AbsenceResultDto> actual = attendance.getAbsence(14);
+        Map<Crew, AbsenceHistory> actual = attendance.getAbsence(14);
 
         //then
         assertThat(actual).hasSize(5);

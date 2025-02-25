@@ -1,40 +1,34 @@
 package domain;
 
-import dto.AbsenceResultDto;
 import dto.AttendanceResultDto;
 import java.util.List;
 
-public class AbsenceHistory {
+public record AbsenceHistory(int attendance, int lateness, int absence, AbsencePolicy status) {
 
-    private final List<AttendanceResultDto> attendanceResultDtos;
-
-    public AbsenceHistory(final List<AttendanceResultDto> attendanceResultDtos) {
-        this.attendanceResultDtos = attendanceResultDtos;
-    }
-
-    public AbsenceResultDto calculate() {
-        int attendance = attendanceCalculate();
-        int lateness = lateCalculate();
-        int absence = absenceCalculate();
+    public static AbsenceHistory calculate(final List<AttendanceResultDto> attendanceResultDtos) {
+        int attendance = attendanceCalculate(attendanceResultDtos);
+        int lateness = lateCalculate(attendanceResultDtos);
+        int absence = absenceCalculate(attendanceResultDtos);
 
         AbsencePolicy absenceStatus = AbsencePolicy.getAbsencePolicy(absence, lateness);
-        return new AbsenceResultDto(attendance, lateness, absence, absenceStatus);
+        return new AbsenceHistory(attendance, lateness, absence, absenceStatus);
     }
 
-    private int lateCalculate() {
-        return calculateAbsence(AttendanceState.LATENESS);
+    private static int lateCalculate(final List<AttendanceResultDto> attendanceResultDtos) {
+        return calculateAbsence(attendanceResultDtos, AttendanceState.LATENESS);
     }
 
-    private int absenceCalculate() {
-        return calculateAbsence(AttendanceState.ABSENCE);
+    private static int absenceCalculate(final List<AttendanceResultDto> attendanceResultDtos) {
+        return calculateAbsence(attendanceResultDtos, AttendanceState.ABSENCE);
     }
 
-    private int attendanceCalculate() {
-        return calculateAbsence(AttendanceState.ATTENDANCE);
+    private static int attendanceCalculate(final List<AttendanceResultDto> attendanceResultDtos) {
+        return calculateAbsence(attendanceResultDtos, AttendanceState.ATTENDANCE);
     }
 
-    private int calculateAbsence(AttendanceState state) {
-        return (int) attendanceResultDtos.stream().filter(dto -> dto.isSame(state)).count();
+    private static int calculateAbsence(final List<AttendanceResultDto> attendanceResultDtos, AttendanceState state) {
+        return (int) attendanceResultDtos.stream()
+                .filter(dto -> dto.isSame(state))
+                .count();
     }
-
 }

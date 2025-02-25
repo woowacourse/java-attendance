@@ -1,6 +1,5 @@
 package domain;
 
-import dto.AbsenceResultDto;
 import dto.AttendanceResultDto;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -18,10 +17,7 @@ public class Attendance {
     }
 
     public Crew getCrewByName(String name) {
-        return attendances.keySet()
-                .stream()
-                .filter(crew -> crew.isSame(name))
-                .findFirst()
+        return attendances.keySet().stream().filter(crew -> crew.isSame(name)).findFirst()
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 크루 입니다."));
     }
 
@@ -46,8 +42,7 @@ public class Attendance {
 
     private LocalDateTime findBeforeRecord(final LocalDateTime updateTime, final List<LocalDateTime> localDateTimes) {
         return localDateTimes.stream()
-                .filter(attendanceTime -> attendanceTime.toLocalDate().equals(updateTime.toLocalDate()))
-                .findFirst()
+                .filter(attendanceTime -> attendanceTime.toLocalDate().equals(updateTime.toLocalDate())).findFirst()
                 .orElseThrow(() -> new IllegalArgumentException("수정 가능한 출석 기록이 존재하지 않습니다."));
     }
 
@@ -71,14 +66,13 @@ public class Attendance {
         return attendanceResultDtos;
     }
 
-    public Map<Crew, AbsenceResultDto> getAbsence(final int todayDay) {
-        Map<Crew, AbsenceResultDto> absenceMap = new HashMap<>();
+    public Map<Crew, AbsenceHistory> getAbsence(final int todayDay) {
+        Map<Crew, AbsenceHistory> absenceMap = new HashMap<>();
         for (Crew crew : attendances.keySet()) {
             List<AttendanceResultDto> attendanceResultDtos = readRecord(crew, todayDay);
 
-            AbsenceHistory absenceHistory = new AbsenceHistory(attendanceResultDtos);
-            AbsenceResultDto absenceResultDto = absenceHistory.calculate();
-            absenceMap.put(crew, absenceResultDto);
+            AbsenceHistory absenceHistory = AbsenceHistory.calculate(attendanceResultDtos);
+            absenceMap.put(crew, absenceHistory);
         }
         return absenceMap;
     }

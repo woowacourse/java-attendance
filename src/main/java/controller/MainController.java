@@ -7,7 +7,6 @@ import domain.Command;
 import domain.Crew;
 import domain.DateProvider;
 import domain.FeatureType;
-import dto.AbsenceResultDto;
 import dto.AttendanceResultDto;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -94,15 +93,13 @@ public class MainController {
         List<AttendanceResultDto> attendanceResultDtos = attendance.readRecord(crew, provider.getToday());
         outputView.printRecordAttendance(attendanceResultDtos);
 
-        AbsenceHistory absenceHistory = new AbsenceHistory(attendanceResultDtos);
+        AbsenceHistory absenceHistory = AbsenceHistory.calculate(attendanceResultDtos);
 
-        AbsenceResultDto absenceResultDto = absenceHistory.calculate();
-
-        outputView.printAbsenceHistory(absenceResultDto);
+        outputView.printAbsenceHistory(absenceHistory);
     }
 
     private void readAbsence() {
-        Map<Crew, AbsenceResultDto> result = attendance.getAbsence(provider.getToday());
+        Map<Crew, AbsenceHistory> result = attendance.getAbsence(provider.getToday());
         outputView.printAbsenceResult(result);
     }
 }
