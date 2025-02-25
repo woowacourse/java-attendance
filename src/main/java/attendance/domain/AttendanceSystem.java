@@ -9,7 +9,6 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -50,7 +49,12 @@ public class AttendanceSystem {
     }
 
     public List<AttendanceRecord> findRecordsInMonth(String nickname, LocalDate today) {
-        return Collections.EMPTY_LIST;
+        List<LocalDate> notHolidays = attendanceChecker
+                .calculateNotHolidayInMonth(today.getYear(), today.getMonth());
+        return notHolidays.stream()
+                .filter(notHoliday -> !notHoliday.isAfter(today))
+                .map(notHoliday -> findOrElseAbsenceRecord(nickname, notHoliday))
+                .toList();
     }
 
     private void validateAlreadyAttendance(String crewNickname, LocalDate date) {
@@ -58,5 +62,10 @@ public class AttendanceSystem {
         if (originRecord.isPresent()) {
             throw new IllegalArgumentException(ExceptionMessage.ALREADY_ATTENDANCE.getMessage());
         }
+    }
+
+    private AttendanceRecord findOrElseAbsenceRecord(String nickname, LocalDate date) {
+        Optional<AttendanceRecord> record = findAttendanceRecord(nickname, date);
+        return record.orElseGet(() -> AttendanceRecord.makeAbsenceRecord(nickname, date));
     }
 }

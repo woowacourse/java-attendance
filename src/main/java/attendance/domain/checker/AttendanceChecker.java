@@ -1,8 +1,13 @@
 package attendance.domain.checker;
 
 import java.time.DayOfWeek;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.Month;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 public class AttendanceChecker {
 
@@ -21,5 +26,17 @@ public class AttendanceChecker {
             return AttendanceType.parse(MONDAY_EDUCATION_START_TIME, arrivalDatetime.toLocalTime());
         }
         return AttendanceType.parse(NOT_MONDAY_EDUCATION_START_TIME, arrivalDatetime.toLocalTime());
+    }
+
+    public List<LocalDate> calculateNotHolidayInMonth(int year, Month month) {
+        int lastDayInMonth = LocalDate.of(year, month.getValue(), 1).lengthOfMonth();
+        return IntStream.range(1, lastDayInMonth + 1)
+                .mapToObj(day -> LocalDate.of(year, month.getValue(), day))
+                .filter(date -> !holidayChecker.checkHoliday(date))
+                .collect(Collectors.toList());
+    }
+
+    public boolean isHoliday(LocalDate date) {
+        return holidayChecker.checkHoliday(date);
     }
 }
