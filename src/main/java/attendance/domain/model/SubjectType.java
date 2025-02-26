@@ -35,16 +35,16 @@ public enum SubjectType {
         return lateCount + absentCount * CONVERTED_ABSENT_UNIT;
     }
 
-    public boolean isApplicable() {
-        return this != SubjectType.NOT_APPLICABLE;
-    }
-
     public static Comparator<SubjectType> getComparator() {
         return COMPARATOR;
     }
 
     private static int calculateTotalAbsentCount(final int lateCount, final int absentCount) {
         return absentCount + lateCount / CONVERTED_ABSENT_UNIT;
+    }
+
+    public boolean isApplicable() {
+        return this != SubjectType.NOT_APPLICABLE;
     }
 
     public String getName() {
