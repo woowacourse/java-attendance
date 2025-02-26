@@ -56,7 +56,7 @@ public class AppConfig {
         return new AttendanceCheckController(
                 getInputView(),
                 getOutputView(),
-                new AttendanceCheckService(getCrewAttendances())
+                getCrewAttendances()
         );
     }
 

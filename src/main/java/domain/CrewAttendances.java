@@ -20,11 +20,12 @@ public class CrewAttendances {
         crewAttendances.put(crew, new AttendanceBook());
     }
 
-    public void createNewAttendance(String crewName, LocalDate date, LocalTime time) {
+    public Attendance createNewAttendance(String crewName, LocalDate date, LocalTime time) {
         Crew crew = findCrewByName(crewName);
         AttendanceBook attendanceBook = crewAttendances.get(crew);
-        attendanceBook.register(date, time);
+        Attendance attendance = attendanceBook.register(date, time);
         crewAttendances.replace(crew, attendanceBook);
+        return attendance;
     }
 
     public AttendanceBook findByCrewName(String crewName) {

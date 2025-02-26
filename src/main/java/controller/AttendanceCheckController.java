@@ -1,38 +1,41 @@
 package controller;
 
+import domain.Attendance;
 import domain.AttendanceCustomDate;
+import domain.CrewAttendances;
+import domain.Month;
 import exception.CrewNotExistException;
 import exception.DuplicateAttendanceException;
-import service.AttendanceCheckService;
-import service.dto.AttendanceRegisterResponse;
 import view.InputView;
 import view.OutputView;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Locale;
 
 public class AttendanceCheckController implements Controller {
     private final InputView inputView;
     private final OutputView outputView;
-    private final AttendanceCheckService attendanceCheckService;
+    private final CrewAttendances crewAttendances;
 
     public AttendanceCheckController(
             InputView inputView,
             OutputView outputView,
-            AttendanceCheckService attendanceCheckService
+            CrewAttendances crewAttendances
     ) {
         this.inputView = inputView;
         this.outputView = outputView;
-        this.attendanceCheckService = attendanceCheckService;
+        this.crewAttendances = crewAttendances;
     }
 
     @Override
     public void run() {
-        //TODO : 오늘이 출석 일자인지 확인하고 아니면 에러 날리기
+        LocalDate now = AttendanceCustomDate.now().toLocalDate();
+        validateDate(now);
         String name = inputView.readName();
         String timeInput = inputView.readTime();
-        LocalDate now = AttendanceCustomDate.now().toLocalDate();
         String[] minuteAndHour = timeInput.split(":");
         LocalDateTime dateTime = LocalDateTime.of(
                 now.getYear(),
@@ -44,10 +47,22 @@ public class AttendanceCheckController implements Controller {
         registerAttendance(name, dateTime.toLocalDate(), dateTime.toLocalTime());
     }
 
+    private void validateDate(LocalDate date) {
+        Month month = Month.of(date.getMonthValue());
+        final int day = date.getDayOfMonth();
+        if (month.isHoliday(day)) {
+            String formattedDate = date.format(
+                    DateTimeFormatter.ofPattern("MM월 dd일 E요일").withLocale(Locale.forLanguageTag("ko"))
+            );
+            throw new IllegalArgumentException(formattedDate + "은 등교일이 아닙니다.");
+        }
+    }
+
     private void registerAttendance(String name, LocalDate date, LocalTime time) {
         try {
-            AttendanceRegisterResponse response = attendanceCheckService.register(name, date, time);//출석등록
-            outputView.printAttendanceResult(response);
+            Attendance attendance = crewAttendances.createNewAttendance(name, date, time);
+            String status = attendance.getStatus().getExpression();
+            outputView.printAttendanceResult(attendance.getDate(), attendance.getTime().get(), status);
         } catch (DuplicateAttendanceException e) {
             // TODO: 에러 잘 뜨는지 보기
             outputView.recommendModifyFunction(e.getMessage());

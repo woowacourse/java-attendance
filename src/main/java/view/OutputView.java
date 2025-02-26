@@ -6,7 +6,6 @@ import domain.AttendanceCustomDate;
 import domain.AttendanceStatus;
 import domain.CrewStatus;
 import service.dto.AttendanceModifyResponse;
-import service.dto.AttendanceRegisterResponse;
 import service.dto.DisenrollmentCheckResponse;
 
 import java.time.LocalDate;
@@ -27,18 +26,15 @@ public class OutputView {
         });
     }
 
-    public void printAttendanceResult(AttendanceRegisterResponse response) {
-        String formattedDate = response.date().format(
+    public void printAttendanceResult(LocalDate date, LocalTime time, String status) {
+        String formattedDate = date.format(
                 DateTimeFormatter.ofPattern("MM월 dd일 E요일").withLocale(Locale.forLanguageTag("ko"))
         );
-        String formattedTime = "--:--";
-        if (response.time().isPresent()) {
-            LocalTime time = response.time().get();
-            formattedTime = time.format(
-                    DateTimeFormatter.ofPattern("HH:mm").withLocale(Locale.forLanguageTag("ko"))
-            );
-        }
-        String formattedStatus = "(" + response.status() + ")";
+        String formattedTime = time.format(
+                DateTimeFormatter.ofPattern("HH:mm").withLocale(Locale.forLanguageTag("ko"))
+        );
+
+        String formattedStatus = "(" + status + ")";
         System.out.println(formattedDate + " " + formattedTime + " " + formattedStatus);
     }
 

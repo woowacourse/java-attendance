@@ -1,5 +1,7 @@
 package controller;
 
+import exception.CrewNotExistException;
+import exception.DuplicateAttendanceException;
 import view.InputView;
 import view.OutputView;
 
@@ -11,7 +13,6 @@ public class MainController {
     private final InputView inputView;
     private final OutputView outputView;
     private final Map<Menu, Controller> controllerMapper = new EnumMap<>(Menu.class);
-
 
     public MainController(
             InputView inputView,
@@ -39,7 +40,17 @@ public class MainController {
             if (menu == Menu.QUIT) {
                 return;
             }
-            controllerMapper.get(menu).run();
+            runController(controllerMapper.get(menu));
+        }
+    }
+
+    private void runController(Controller controller) {
+        try {
+            controller.run();
+        } catch (DuplicateAttendanceException e) {
+            outputView.recommendModifyFunction(e.getMessage());
+        } catch (Exception e) {
+            outputView.printExceptionMessage(e.getMessage());
         }
     }
 }
