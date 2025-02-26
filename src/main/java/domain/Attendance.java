@@ -18,7 +18,7 @@ public class Attendance {
     }
 
     public static Attendance empty(LocalDate date) {
-        return new Attendance(date, null, AttendanceStatus.TRUANCY);
+        return new Attendance(date, null, AttendanceStatus.ABSENCE);
     }
 
     public static Attendance of(LocalDate date, LocalTime time) {
@@ -26,7 +26,7 @@ public class Attendance {
     }
 
     public boolean isAbsence() {
-        return status == AttendanceStatus.TRUANCY;
+        return status == AttendanceStatus.ABSENCE;
     }
 
     public boolean isAttendedOn(LocalDate date) {

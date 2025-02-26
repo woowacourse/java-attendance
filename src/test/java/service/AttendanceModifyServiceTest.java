@@ -61,7 +61,7 @@ class AttendanceModifyServiceTest {
 
         //then
         assertThat(response.beforeTime()).isEqualTo(Optional.empty());
-        assertThat(response.beforeStatus()).isEqualTo(AttendanceStatus.TRUANCY.getExpression());
+        assertThat(response.beforeStatus()).isEqualTo(AttendanceStatus.ABSENCE.getExpression());
         assertThat(response.afterTime()).isEqualTo(Optional.of(afterTime));
         assertThat(response.afterStatus()).isEqualTo(AttendanceStatus.ATTENDANCE.getExpression());
     }

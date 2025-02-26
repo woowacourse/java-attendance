@@ -60,9 +60,6 @@ public class AttendanceBook {
 
     public Map<AttendanceStatus, Integer> calculateAttendanceResult(LocalDate startDate, LocalDate endDate) {
         Map<AttendanceStatus, Integer> result = new HashMap<>();
-        result.put(AttendanceStatus.ATTENDANCE, 0);
-        result.put(AttendanceStatus.LATE, 0);
-        result.put(AttendanceStatus.ABSENCE, 0);
 
         for (LocalDate current = startDate; current.isBefore(endDate); current = current.plusDays(1)) {
             if (isHoliday(current)) {
@@ -70,9 +67,6 @@ public class AttendanceBook {
             }
             Attendance attendance = findAttendanceByDate(current);
             AttendanceStatus status = attendance.getStatus();
-            if (attendance.isAbsence()) {
-                status = AttendanceStatus.ABSENCE;
-            }
             result.replace(status, result.get(status) + 1);
         }
 
