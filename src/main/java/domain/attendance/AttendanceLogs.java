@@ -6,7 +6,9 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class AttendanceLogs {
 
@@ -34,22 +36,22 @@ public class AttendanceLogs {
         return registerLog(LocalDateTime.of(editDate, editTime));
     }
 
+    public Map<AttendanceStatus, Integer> calculateLogsStatus() {
+        Map<AttendanceStatus, Integer> attendanceLogsStatus = new HashMap<>();
+        for (AttendanceStatus attendanceStatus : AttendanceStatus.values()) {
+            attendanceLogsStatus.put(attendanceStatus, 0);
+        }
+        for (AttendanceLog attendanceLog : attendanceLogs) {
+            AttendanceStatus attendanceStatus = attendanceLog.getAttendanceStatus();
+            attendanceLogsStatus.put(attendanceStatus, attendanceLogsStatus.get(attendanceStatus) + 1);
+        }
+        return attendanceLogsStatus;
+    }
+
     public CrewStatus calculateCrewStatus() {
-        int lateCount = calculateLateCount();
-        int absentCount = calculateAbsentCount();
-        return CrewStatus.findStatus(lateCount, absentCount);
-    }
-
-    private int calculateLateCount() {
-        return (int) attendanceLogs.stream()
-                .filter(attendanceLog -> attendanceLog.getAttendanceStatus() == AttendanceStatus.LATE)
-                .count();
-    }
-
-    private int calculateAbsentCount() {
-        return (int) attendanceLogs.stream()
-                .filter(attendanceLog -> attendanceLog.getAttendanceStatus() == AttendanceStatus.ABSENT)
-                .count();
+        Map<AttendanceStatus, Integer> attendanceLogsStatus = calculateLogsStatus();
+        return CrewStatus.findStatus(attendanceLogsStatus.get(AttendanceStatus.LATE),
+                attendanceLogsStatus.get(AttendanceStatus.ABSENT));
     }
 
     private boolean isAttendanceLog(LocalDate attendDate) {
