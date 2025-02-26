@@ -18,8 +18,8 @@ public class AttendanceRecord {
     @Override
     public boolean equals(Object object) {
         if(this == object) return true;
-        if(object == null || this.getClass() != object.getClass()) return false;
+        if(object == null || getClass() != object.getClass()) return false;
         AttendanceRecord other = (AttendanceRecord) object;
-        return Objects.equals(this.value, other.value);
+        return Objects.equals(value, other.value);
     }
 }
