@@ -12,12 +12,18 @@ public class Attendance {
     private final String attendanceStatus;
 
     public Attendance(LocalDateTime attendanceDateTime) {
+        validateAttendanceDate(attendanceDateTime.toLocalDate());
         validateAttendanceTime(attendanceDateTime.toLocalTime());
         this.attendanceDate = attendanceDateTime.toLocalDate();
         this.attendanceTime = attendanceDateTime.toLocalTime();
         this.attendanceStatus = determineAttendanceStatus();
     }
 
+
+    private void validateAttendanceDate(LocalDate localDate) {
+
+        throw new IllegalArgumentException("주말 및 공휴일은 출석을 받지");
+    }
     private void validateAttendanceTime(LocalTime localTime) {
         if (localTime.isBefore(LocalTime.of(8, 0)) || localTime.isAfter(LocalTime.of(23, 0))) {
             throw new IllegalArgumentException("[ERROR] 지정된 시간이 아니면 등교가 불가능합니다.");
