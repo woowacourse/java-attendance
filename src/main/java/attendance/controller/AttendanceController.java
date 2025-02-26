@@ -1,6 +1,7 @@
 package attendance.controller;
 
 import attendance.domain.AttendanceBook;
+import attendance.domain.AttendanceHistory;
 import attendance.domain.AttendanceRecord;
 import attendance.domain.Crew;
 import attendance.domain.Crews;
@@ -26,8 +27,10 @@ public class AttendanceController {
     }
 
     public void run() {
+
         Map<MainOption, Runnable> commands = Map.of(
                 MainOption.CHECK_ATTENDANCE, this::processCheckAttendance,
+                MainOption.VIEW_CREW_HISTORY, this::processViewCrewHistory,
                 MainOption.QUIT, () -> System.exit(0)
         );
 
@@ -46,6 +49,16 @@ public class AttendanceController {
                     record);
 
             outputView.displayAttendanceResult(record);
+        });
+    }
+
+    private void processViewCrewHistory() {
+        process(() -> {
+            Crew crew = crews.findByName(inputView.readName());
+
+            AttendanceHistory history = attendanceBook.getHistoryByName(crew.getName());
+
+            outputView.displayCrewHistory(crew, history);
         });
     }
 
