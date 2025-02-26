@@ -12,9 +12,9 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
+import attendance.domain.Attendance;
+import attendance.domain.AttendanceBook;
 import attendance.domain.AttendanceStatus;
-import attendance.domain.attendance.Attendance;
-import attendance.domain.attendance.AttendanceBook;
 import attendance.exception.AttendanceArgumentException;
 import attendance.exception.AttendanceFileException;
 import attendance.utility.CsvReader;

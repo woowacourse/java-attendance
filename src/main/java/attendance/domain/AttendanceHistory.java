@@ -1,4 +1,4 @@
-package attendance.domain.attendance;
+package attendance.domain;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
@@ -12,7 +12,6 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import attendance.SystemDateConfig;
-import attendance.domain.AttendanceStatus;
 
 public record AttendanceHistory(Map<LocalDate, Optional<Attendance>> history) {
 

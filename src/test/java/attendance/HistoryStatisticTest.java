@@ -14,10 +14,11 @@ import java.util.Map;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import attendance.domain.Attendance;
+import attendance.domain.AttendanceBook;
+import attendance.domain.AttendanceHistory;
 import attendance.domain.HistoryStatistic;
-import attendance.domain.attendance.Attendance;
-import attendance.domain.attendance.AttendanceBook;
-import attendance.domain.attendance.AttendanceHistory;
+import attendance.domain.SanctionLevel;
 import attendance.exception.AttendanceFileException;
 import attendance.utility.CsvReader;
 
@@ -43,7 +44,7 @@ public class HistoryStatisticTest {
         var attendanceHistory = AttendanceHistory.from(attendances);
         var statusStatistic = new HistoryStatistic(attendanceHistory.countStatusOnHistory(), nickname);
 
-        assertThat(statusStatistic.judgeSanctionLevel()).isEqualTo(HistoryStatistic.SanctionLevel.DISMISS);
+        assertThat(statusStatistic.judgeSanctionLevel()).isEqualTo(SanctionLevel.DISMISS);
     }
 
     @Test
@@ -60,12 +61,12 @@ public class HistoryStatisticTest {
 
         Collections.sort(historyStatistics);
 
-        HistoryStatistic.SanctionLevel[] expectedLevels = {
-            HistoryStatistic.SanctionLevel.DISMISS,
-            HistoryStatistic.SanctionLevel.NEED_MEETING,
-            HistoryStatistic.SanctionLevel.NEED_MEETING,
-            HistoryStatistic.SanctionLevel.NEED_MEETING,
-            HistoryStatistic.SanctionLevel.WARNING
+        SanctionLevel[] expectedLevels = {
+            SanctionLevel.DISMISS,
+            SanctionLevel.NEED_MEETING,
+            SanctionLevel.NEED_MEETING,
+            SanctionLevel.NEED_MEETING,
+            SanctionLevel.WARNING
         };
 
         for (int i = 0; i < expectedLevels.length; i++) {

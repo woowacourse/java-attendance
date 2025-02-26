@@ -10,8 +10,8 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
+import attendance.domain.Attendance;
 import attendance.domain.AttendanceStatus;
-import attendance.domain.attendance.Attendance;
 import attendance.exception.AttendanceArgumentException;
 
 public class AttendanceTest {

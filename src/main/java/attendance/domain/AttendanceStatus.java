@@ -3,9 +3,9 @@ package attendance.domain;
 import java.time.LocalTime;
 
 public enum AttendanceStatus {
-    ATTENDANCE("출석", 30),
+    ABSENCE("결석", 30),
     LATE("지각", 5),
-    ABSENCE("결석", 0);
+    ATTENDANCE("출석", 0);
 
     private final String status;
     private final int minutes;

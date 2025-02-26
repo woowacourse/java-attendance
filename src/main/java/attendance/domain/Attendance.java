@@ -1,18 +1,15 @@
-package attendance.domain.attendance;
+package attendance.domain;
 
 import static attendance.SystemDateConfig.*;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 
-import attendance.domain.AttendanceStatus;
 import attendance.exception.AttendanceArgumentException;
 
 public record Attendance(LocalDateTime dateTime, AttendanceStatus attendanceStatus) {
     private static final String CANNOT_ATTENDANCE_WEEKEND_FORMAT = "MM월 dd일 E요일은 등교일이 아닙니다.";
-    private static final String OUT_OF_SCHOOL_SCHEDULE = "등교시간에만 출석 가능합니다.";
 
     public static Attendance from(LocalDateTime dateTime) {
         AttendanceStatus attendanceStatus = decideAttendanceStatus(dateTime);
@@ -21,15 +18,15 @@ public record Attendance(LocalDateTime dateTime, AttendanceStatus attendanceStat
 
     private static AttendanceStatus decideAttendanceStatus(LocalDateTime dateTime) {
         validate(dateTime);
-        LocalTime schedule = getScheduleForDay(dateTime);
-        return AttendanceStatus.decideStatus(dateTime.toLocalTime(), schedule);
+        Schedule schedule = Schedule.getScheduleOnDay(dateTime);
+        return AttendanceStatus.decideStatus(dateTime.toLocalTime(), schedule.getTime());
     }
 
     private static void validate(LocalDateTime dateTime) {
         var date = dateTime.toLocalDate();
         validateIsWeekend(date);
         validateIsHoliday(date);
-        validateIsDuringCampusSchedule(dateTime);
+        Schedule.validateCampusSchedule(dateTime);
     }
 
     private static void validateIsHoliday(LocalDate date) {
@@ -47,31 +44,8 @@ public record Attendance(LocalDateTime dateTime, AttendanceStatus attendanceStat
         }
     }
 
-    private static void validateIsDuringCampusSchedule(LocalDateTime dateTime) {
-        LocalTime time = dateTime.toLocalTime();
-        if (time.isBefore(Schedule.CAMPUS_OPEN) || time.isAfter(Schedule.CAMPUS_CLOSE)) {
-            throw new AttendanceArgumentException(OUT_OF_SCHOOL_SCHEDULE);
-        }
-    }
-
-    private static LocalTime getScheduleForDay(LocalDateTime dateTime) {
-        if (dateTime.getDayOfWeek() == DayOfWeek.MONDAY) {
-            return Schedule.MONDAY;
-        }
-        return Schedule.DEFAULT;
-    }
-
     public LocalDate getDate() {
         return dateTime.toLocalDate();
     }
 
-    private static class Schedule {
-        private static final LocalTime DEFAULT = LocalTime.of(10, 0);
-        private static final LocalTime MONDAY = LocalTime.of(13, 0);
-        private static final LocalTime CAMPUS_OPEN = LocalTime.of(8, 0);
-        private static final LocalTime CAMPUS_CLOSE = LocalTime.of(23, 0);
-
-        private Schedule() {
-        }
-    }
 }

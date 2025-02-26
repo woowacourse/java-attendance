@@ -12,9 +12,9 @@ import java.util.Map;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import attendance.domain.Attendance;
+import attendance.domain.AttendanceHistory;
 import attendance.domain.AttendanceStatus;
-import attendance.domain.attendance.Attendance;
-import attendance.domain.attendance.AttendanceHistory;
 
 public class AttendanceHistoryTest {
 

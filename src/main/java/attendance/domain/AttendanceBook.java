@@ -1,4 +1,4 @@
-package attendance.domain.attendance;
+package attendance.domain;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -10,7 +10,6 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
-import attendance.domain.HistoryStatistic;
 import attendance.exception.AttendanceArgumentException;
 import attendance.utility.DateTimeFormatterWrapper;
 

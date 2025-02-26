@@ -12,11 +12,11 @@ import java.util.Optional;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
 
+import attendance.domain.Attendance;
+import attendance.domain.AttendanceBook;
+import attendance.domain.AttendanceHistory;
+import attendance.domain.Attendances;
 import attendance.domain.HistoryStatistic;
-import attendance.domain.attendance.Attendance;
-import attendance.domain.attendance.AttendanceBook;
-import attendance.domain.attendance.AttendanceHistory;
-import attendance.domain.attendance.Attendances;
 import attendance.exception.AttendanceArgumentException;
 import attendance.exception.AttendanceFileException;
 import attendance.utility.CsvReader;
