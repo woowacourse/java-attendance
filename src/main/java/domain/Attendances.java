@@ -1,5 +1,6 @@
 package domain;
 
+import constant.Constants;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -26,8 +27,8 @@ public class Attendances {
                 .orElseThrow(() -> new IllegalArgumentException("[ERROR] 해당 날짜에 대한 출석 기록이 존재하지 않습니다."));
     }
 
-    public CrewStatus getCrewStatue() {
-        return CrewStatus.checkCrewStatus(this.countLate(), this.countUnattended());
+    public CrewStatus getCrewStatue(LocalDate nowDate) {
+        return CrewStatus.checkCrewStatus(this.countLate(), this.countUnattended(nowDate));
     }
 
     public boolean checkAlreadyAttend(AttendanceDate date) {
@@ -36,16 +37,25 @@ public class Attendances {
                 .count() != 0;
     }
 
+    public int countAttendance() {
+        return (int) attendances.stream()
+                .filter(Attendance::isAttended)
+                .count();
+    }
+
     public int countLate() {
         return (int) attendances.stream()
                 .filter(Attendance::isLate)
                 .count();
     }
 
-    public int countUnattended() {
-        return (int) attendances.stream()
+    public int countUnattended(LocalDate nowDate) {
+        int absentCount = (int) attendances.stream()
                 .filter(Attendance::isUnattendedOrNoShow)
                 .count();
+
+        absentCount += (AttendanceDate.getPastEducationDates(nowDate).size() - this.attendances.size());
+        return absentCount;
     }
 
     public void addNewAttendance(AttendanceDate attendanceDate, AttendanceTime attendanceTime) {

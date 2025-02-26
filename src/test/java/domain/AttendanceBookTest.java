@@ -90,26 +90,18 @@ public class AttendanceBookTest {
         assertThat(crew.findAttendanceByDate(attendanceDate).isLate()).isEqualTo(false);
     }
 
-    @DisplayName("크루 이름 기반 출석 기록들 탐색 테스트")
-    @Test
-    void findAttendancesByCrewNameTest() {
-        List<Attendance> attendances = attendanceBook.getAttendancesByCrew(attendanceBook.findCrewByName("메이"));
-
-        assertThat(attendances.size()).isEqualTo(5);
-    }
-
     @DisplayName("제적 위험자 확인 테스트")
     @ParameterizedTest
     @MethodSource("provideExpelledCrew")
     void findRiskOfExpulsionCrewTest(Crew crew) {
-        assertThat(crew.getCrewStatus()).isNotEqualTo(CrewStatus.NORMAL);
+        assertThat(crew.getCrewStatus(LocalDate.of(2024, 12, 31))).isNotEqualTo(CrewStatus.NORMAL);
     }
 
     private static Stream<Arguments> provideExpelledCrew() {
         List<String> contents = AttendanceFileReader.readFile();
         Map<String, List<LocalDateTime>> attendanceFileContents = AttendanceConvertor.convertToAttendances(contents);
         AttendanceBook attendanceBook = new AttendanceBook(attendanceFileContents);
-        List<Crew> crews = attendanceBook.findRiskOfExpulsionCrew();
+        List<Crew> crews = attendanceBook.findRiskOfExpulsionCrew(LocalDate.of(2024, 12, 31));
 
         return crews.stream()
                 .map(Arguments::arguments);

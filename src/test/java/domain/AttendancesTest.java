@@ -50,11 +50,11 @@ public class AttendancesTest {
     @Test
     void checkWarningTest() {
         Attendances normalAttendances = new Attendances(List.of(
-                new Attendance(new AttendanceDate(LocalDate.of(2024, 12, 3)), new AttendanceTime(LocalTime.of(10, 31))),
-                new Attendance(new AttendanceDate(LocalDate.of(2024, 12, 4)), new AttendanceTime(LocalTime.of(10, 31)))
+                new Attendance(new AttendanceDate(LocalDate.of(2024, 12, 2)), new AttendanceTime(LocalTime.of(13, 31))),
+                new Attendance(new AttendanceDate(LocalDate.of(2024, 12, 3)), new AttendanceTime(LocalTime.of(10, 31)))
         ));
 
-        Assertions.assertThat(normalAttendances.getCrewStatue())
+        Assertions.assertThat(normalAttendances.getCrewStatue(LocalDate.of(2024, 12, 4)))
                 .isEqualTo(CrewStatus.WARNING);
     }
 
@@ -67,7 +67,7 @@ public class AttendancesTest {
                 new Attendance(new AttendanceDate(LocalDate.of(2024, 12, 5)), new AttendanceTime(LocalTime.of(10, 31)))
         ));
 
-        Assertions.assertThat(normalAttendances.getCrewStatue())
+        Assertions.assertThat(normalAttendances.getCrewStatue(LocalDate.of(2024, 12, 6)))
                 .isEqualTo(CrewStatus.INTERVIEW);
     }
 
@@ -83,7 +83,7 @@ public class AttendancesTest {
                 new Attendance(new AttendanceDate(LocalDate.of(2024, 12, 9)), new AttendanceTime(LocalTime.of(13, 31)))
         ));
 
-        Assertions.assertThat(normalAttendances.getCrewStatue())
+        Assertions.assertThat(normalAttendances.getCrewStatue(LocalDate.of(2024, 12, 10)))
                 .isEqualTo(CrewStatus.EXPELLED);
     }
 

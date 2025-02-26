@@ -47,13 +47,9 @@ public class AttendanceBook {
         crew.edit(attendanceDate, attendanceTime);
     }
 
-    public List<Attendance> getAttendancesByCrew(Crew crew) {
-        return crew.getAttendances();
-    }
-
-    public List<Crew> findRiskOfExpulsionCrew() {
+    public List<Crew> findRiskOfExpulsionCrew(LocalDate nowDate) {
         return crews.stream()
-                .filter(Crew::isExpelledStatus)
+                .filter(crew -> crew.isExpelledStatus(nowDate))
                 .toList();
     }
 

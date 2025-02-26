@@ -1,6 +1,6 @@
 package domain;
 
-import java.util.List;
+import java.time.LocalDate;
 import java.util.Objects;
 
 public class Crew {
@@ -13,8 +13,8 @@ public class Crew {
         this.attendances = attendances;
     }
 
-    public CrewStatus getCrewStatus() {
-        return this.attendances.getCrewStatue();
+    public CrewStatus getCrewStatus(LocalDate nowDate) {
+        return this.attendances.getCrewStatue(nowDate);
     }
 
     public boolean isSameName(String name) {
@@ -37,20 +37,24 @@ public class Crew {
         return this.attendances.findAttendanceByDate(attendanceDate);
     }
 
-    public boolean isExpelledStatus() {
-        return !this.getCrewStatus().equals(CrewStatus.NORMAL);
-    }
-
-    public List<Attendance> getAttendances() {
-        return this.attendances.getAttendances();
+    public boolean isExpelledStatus(LocalDate nowDate) {
+        return !this.getCrewStatus(nowDate).equals(CrewStatus.NORMAL);
     }
 
     public int getLateCount() {
         return this.attendances.countLate();
     }
 
-    public int getAbsentCount() {
-        return this.attendances.countUnattended();
+    public int getAbsentCount(LocalDate nowDate) {
+        return this.attendances.countUnattended(nowDate);
+    }
+
+    public Object getName() {
+        return this.name;
+    }
+
+    public Attendances getAttendances() {
+        return this.attendances;
     }
 
     @Override

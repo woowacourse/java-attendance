@@ -16,12 +16,12 @@ public class CrewTest {
     void checkCrewStatusTest() {
         String crewName = "메이";
         Attendances attendances = new Attendances(List.of(
-                new Attendance(new AttendanceDate(LocalDate.of(2024, 12, 3)), new AttendanceTime(LocalTime.of(10, 31))),
-                new Attendance(new AttendanceDate(LocalDate.of(2024, 12, 4)), new AttendanceTime(LocalTime.of(10, 31)))
+                new Attendance(new AttendanceDate(LocalDate.of(2024, 12, 2)), new AttendanceTime(LocalTime.of(13, 31))),
+                new Attendance(new AttendanceDate(LocalDate.of(2024, 12, 3)), new AttendanceTime(LocalTime.of(10, 31)))
         ));
         Crew crew = new Crew(crewName, attendances);
 
-        assertThat(crew.getCrewStatus()).isEqualTo(CrewStatus.WARNING);
+        assertThat(crew.getCrewStatus(LocalDate.of(2024, 12, 4))).isEqualTo(CrewStatus.WARNING);
     }
 
     @DisplayName("크루 이름 동일성 확인 테스트")
@@ -75,7 +75,7 @@ public class CrewTest {
         ));
         Crew crew = new Crew(crewName, attendances);
 
-        assertThat(crew.isExpelledStatus()).isEqualTo(true);
+        assertThat(crew.isExpelledStatus(LocalDate.of(2024, 12, 5))).isEqualTo(true);
     }
 
     @DisplayName("크루의 지각 수 카운트 테스트")
@@ -96,11 +96,11 @@ public class CrewTest {
     void checkCrewAbsentCountTest() {
         String crewName = "메이";
         Attendances attendances = new Attendances(List.of(
-                new Attendance(new AttendanceDate(LocalDate.of(2024, 12, 3)), new AttendanceTime(LocalTime.of(10, 31))),
-                new Attendance(new AttendanceDate(LocalDate.of(2024, 12, 4)), new AttendanceTime(LocalTime.of(10, 31)))
+                new Attendance(new AttendanceDate(LocalDate.of(2024, 12, 2)), new AttendanceTime(LocalTime.of(13, 31))),
+                new Attendance(new AttendanceDate(LocalDate.of(2024, 12, 3)), new AttendanceTime(LocalTime.of(10, 31)))
         ));
         Crew crew = new Crew(crewName, attendances);
 
-        assertThat(crew.getAbsentCount()).isEqualTo(2);
+        assertThat(crew.getAbsentCount(LocalDate.of(2024, 12, 4))).isEqualTo(2);
     }
 }

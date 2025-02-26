@@ -1,7 +1,7 @@
 package controller;
 
+import constant.Constants;
 import domain.AttendanceBook;
-import java.time.LocalDate;
 import util.AttendanceConvertor;
 import util.AttendanceFileReader;
 import util.InputProcessor;
@@ -19,14 +19,13 @@ public class AttendanceController {
     }
 
     public void run() {
-        LocalDate nowDate = LocalDate.now();
         AttendanceBook attendanceBook = new AttendanceBook(AttendanceConvertor.convertToAttendances(AttendanceFileReader.readFile()));
         MenuOption option;
 
         do {
-            outputView.printWelcomeMessage(nowDate);
+            outputView.printWelcomeMessage();
             option = InputProcessor.processInputUntilSuccess(this::processOptionInput);
-            option.process(attendanceBook, nowDate);
+            option.process(attendanceBook, Constants.NOW_DATE);
         } while (!option.equals(MenuOption.QUIT));
     }
 

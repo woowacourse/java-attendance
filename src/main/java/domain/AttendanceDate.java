@@ -3,11 +3,15 @@ package domain;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.List;
 
 public class AttendanceDate {
 
+    private static final LocalDate EDUCATION_START_DATE = LocalDate.of(2024, 12, 1);
     private static final List<LocalDate> HOLIDAYS = List.of(LocalDate.of(2024, 12, 25));
+    private static final LocalDate JANUARY_START_DATE = LocalDate.of(2025, 1, 1);
+
     private final LocalDate attendanceDate;
 
     public AttendanceDate(final LocalDate date) {
@@ -22,12 +26,15 @@ public class AttendanceDate {
         return LocalTime.of(10, 0);
     }
 
-    private void validateCampusOpen(LocalDate date) {
-        if (date.getDayOfWeek().equals(DayOfWeek.SATURDAY)
-                || date.getDayOfWeek().equals(DayOfWeek.SUNDAY)
-                || HOLIDAYS.contains(date)) {
-            throw new IllegalArgumentException("[ERROR] %d월 %d일 %s일은 등교일이 아닙니다.");
+    public static List<LocalDate> getPastEducationDates(LocalDate nowDate) {
+        if (nowDate.isAfter(JANUARY_START_DATE)) {
+            nowDate = JANUARY_START_DATE;
         }
+        List<LocalDate> educationDates = new ArrayList<>();
+        for (LocalDate date = EDUCATION_START_DATE; date.isBefore(nowDate); date = date.plusDays(1)) {
+            addEducationDate(date, educationDates);
+        }
+        return educationDates;
     }
 
     public boolean isSameAs(LocalDate date) {
@@ -48,5 +55,23 @@ public class AttendanceDate {
 
     public DayOfWeek getDayOfWeek() {
         return this.attendanceDate.getDayOfWeek();
+    }
+
+    private void validateCampusOpen(LocalDate date) {
+        if (isCampusClosed(date)) {
+            throw new IllegalArgumentException("[ERROR] %d월 %d일 %s일은 등교일이 아닙니다.");
+        }
+    }
+
+    private static boolean isCampusClosed(LocalDate date) {
+        return date.getDayOfWeek().equals(DayOfWeek.SATURDAY)
+                || date.getDayOfWeek().equals(DayOfWeek.SUNDAY)
+                || HOLIDAYS.contains(date);
+    }
+
+    private static void addEducationDate(LocalDate date, List<LocalDate> educationDates) {
+        if (!isCampusClosed(date)) {
+            educationDates.add(date);
+        }
     }
 }

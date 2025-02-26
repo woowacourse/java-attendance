@@ -10,7 +10,7 @@ public class InputView {
     private static final Scanner scanner = new Scanner(System.in);
     private static final DateTimeFormatter TIME_FORMATTER = DateTimeFormatter.ofPattern("HH:mm");
 
-    public String getAttendNameInput() {
+    public String getNameInput() {
         System.out.println("닉네임을 입력해 주세요.");
         return scanner.nextLine();
     }

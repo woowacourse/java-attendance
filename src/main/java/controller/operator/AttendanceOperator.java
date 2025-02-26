@@ -16,7 +16,7 @@ public class AttendanceOperator implements OptionOperator {
         AttendanceDate attendanceDate = new AttendanceDate(nowDate);
 
         Crew crew = InputProcessor.processInputUntilSuccess(() -> {
-            String name = inputView.getAttendNameInput();
+            String name = inputView.getNameInput();
             Crew attendCrew = attendanceBook.findCrewByName(name);
             attendanceBook.checkAlreadyAttended(attendCrew, attendanceDate);
             return attendCrew;

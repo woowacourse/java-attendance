@@ -22,6 +22,10 @@ public class Attendance {
         return attendanceDate.isSameAs(date);
     }
 
+    public boolean isAttended() {
+        return this.attendanceStatus.equals(AttendanceStatus.ATTEND);
+    }
+
     public boolean isLate() {
         return this.attendanceStatus.equals(AttendanceStatus.LATE);
     }
