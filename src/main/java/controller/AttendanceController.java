@@ -1,8 +1,11 @@
 package controller;
 
+import controller.dto.ModifyAttendanceRequest;
 import controller.dto.SaveAttendanceRequest;
+import java.time.LocalDate;
 import service.AttendanceRecordLoader;
 import service.AttendanceService;
+import service.dto.ModifyAttendanceRecordResponse;
 import util.DateTimeUtil;
 import view.InputView;
 import view.OutputView;
@@ -42,6 +45,14 @@ public class AttendanceController {
     }
 
     private void modifyAttendanceRecord() {
+        String nickname = InputView.scanNicknameToModify();
+        LocalDate nowDate = DateTimeUtil.nowDate();
+        int day = InputView.scanDayToModify();
+        String time = InputView.scanTimeToModify();
+
+        ModifyAttendanceRecordResponse response = attendanceService
+                .modifyAttendanceRecord(ModifyAttendanceRequest.of(nickname, nowDate, day, time));
+        OutputView.printModifiedAttendanceRecord(response);
     }
 
     private void printMonthAttendanceStatistics() {

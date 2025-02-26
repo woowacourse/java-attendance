@@ -1,11 +1,8 @@
 package service;
 
-import controller.dto.AttendanceRecordResponse;
 import controller.dto.ModifyAttendanceRequest;
-import controller.dto.MonthAttendanceStatistics;
 import controller.dto.MonthAttendanceStatisticsRequest;
 import controller.dto.SaveAttendanceRequest;
-import controller.dto.SavedAttendanceRecord;
 import domain.AttendanceRecord;
 import domain.AttendanceStatus;
 import domain.CampusTime;
@@ -19,11 +16,16 @@ import java.util.List;
 import java.util.Map;
 import repository.AttendanceRecordRepository;
 import repository.CrewRepository;
+import service.dto.AttendanceRecordResponse;
+import service.dto.ModifyAttendanceRecordResponse;
+import service.dto.ModifyAttendanceRecordResponse.TimeStatus;
+import service.dto.MonthAttendanceStatisticsResponse;
+import service.dto.SaveAttendanceRecordResponse;
 import util.DateTimeUtil;
 
 public class AttendanceService {
 
-    public SavedAttendanceRecord saveAttendanceRecord(SaveAttendanceRequest request) {
+    public SaveAttendanceRecordResponse saveAttendanceRecord(SaveAttendanceRequest request) {
         validateCrew(request.nickname());
         validateOffDay(request.date());
         validateCampusTime(request.time());
@@ -31,30 +33,29 @@ public class AttendanceService {
         AttendanceRecordRepository.add(new AttendanceRecord(request.nickname(), request.date(), request.time(),
                 AttendanceStatus.of(request.date(), request.time())));
         AttendanceRecord found = AttendanceRecordRepository.find(request.nickname(), request.date());
-        return SavedAttendanceRecord.of(found.date(), found.time(), found.status());
+        return SaveAttendanceRecordResponse.of(found.date(), found.time(), found.status());
     }
 
-    public SavedAttendanceRecord modifyAttendanceRecord(ModifyAttendanceRequest request) {
+    public ModifyAttendanceRecordResponse modifyAttendanceRecord(ModifyAttendanceRequest request) {
         validateCrew(request.nickname());
         validateOffDay(request.date());
         validateCampusTime(request.time());
+        validateSameAttendanceRecordExists(request);
 
-        if (AttendanceRecordRepository.exists(request.nickname(), request.date(), request.time())) {
-            throw new IllegalArgumentException("이미 같은 출석 기록이 존재합니다.");
-        }
+        TimeStatus before = getDateTimeStatus(request.nickname(), request.date());
         AttendanceRecordRepository.put(new AttendanceRecord(request.nickname(), request.date(), request.time(),
                 AttendanceStatus.of(request.date(), request.time())));
-        AttendanceRecord found = AttendanceRecordRepository.find(request.nickname(), request.date());
-        return SavedAttendanceRecord.of(found.date(), found.time(), found.status());
+        TimeStatus after = getDateTimeStatus(request.nickname(), request.date());
+        return ModifyAttendanceRecordResponse.of(request.date(), before, after);
     }
 
-    public MonthAttendanceStatistics getMonthAttendanceStatistics(MonthAttendanceStatisticsRequest request) {
+    public MonthAttendanceStatisticsResponse getMonthAttendanceStatistics(MonthAttendanceStatisticsRequest request) {
         List<AttendanceRecordResponse> monthAttendanceRecords = getMonthAttendanceRecords(request.nickname(),
                 request.today());
         Map<String, Integer> attendanceStatusCount = calculateAttendanceStatusCount(monthAttendanceRecords);
         String riskRank = calculateRiskRank(attendanceStatusCount);
 
-        return new MonthAttendanceStatistics(monthAttendanceRecords,
+        return new MonthAttendanceStatisticsResponse(monthAttendanceRecords,
                 attendanceStatusCount,
                 riskRank);
     }
@@ -66,6 +67,14 @@ public class AttendanceService {
             addAttendanceRecord(nickname, today.withDayOfMonth(day), monthAttendanceRecords);
         }
         return monthAttendanceRecords;
+    }
+
+    private TimeStatus getDateTimeStatus(String nickName, LocalDate date) {
+        if (!AttendanceRecordRepository.exists(nickName, date)) {
+            return TimeStatus.createAbsentTimeStatus();
+        }
+        AttendanceRecord found = AttendanceRecordRepository.find(nickName, date);
+        return TimeStatus.of(found.time(), found.status().getTitle());
     }
 
     private void addAttendanceRecord(String nickname, LocalDate targetDate,
@@ -114,6 +123,12 @@ public class AttendanceService {
     private void validateCampusTime(LocalTime time) {
         if (!DateTimeUtil.isInRange(CampusTime.openTime, CampusTime.closeTime, time)) {
             throw new IllegalArgumentException(time + ": 캠퍼스 운영시간이 아닙니다.");
+        }
+    }
+
+    private void validateSameAttendanceRecordExists(ModifyAttendanceRequest request) {
+        if (AttendanceRecordRepository.exists(request.nickname(), request.date(), request.time())) {
+            throw new IllegalArgumentException("이미 같은 출석 기록이 존재합니다.");
         }
     }
 }

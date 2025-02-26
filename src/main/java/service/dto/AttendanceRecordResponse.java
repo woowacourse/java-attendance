@@ -1,4 +1,4 @@
-package controller.dto;
+package service.dto;
 
 import domain.AttendanceRecord;
 import java.time.LocalDate;

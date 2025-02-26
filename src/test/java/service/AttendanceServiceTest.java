@@ -1,7 +1,6 @@
 package service;
 
 import controller.dto.ModifyAttendanceRequest;
-import controller.dto.MonthAttendanceStatistics;
 import controller.dto.MonthAttendanceStatisticsRequest;
 import controller.dto.SaveAttendanceRequest;
 import domain.AttendanceRecord;
@@ -17,6 +16,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import repository.AttendanceRecordRepository;
 import repository.CrewRepository;
+import service.dto.MonthAttendanceStatisticsResponse;
 
 class AttendanceServiceTest {
     private final AttendanceService attendanceService = new AttendanceService();
@@ -52,7 +52,7 @@ class AttendanceServiceTest {
         LocalDate date = LocalDate.of(2025, 2, 4);
         int day = 4;
         LocalTime before = LocalTime.of(10, 31);
-        LocalTime after = LocalTime.of(10, 5);
+        String after = "10:05";
         CrewRepository.addCrew(new Crew(nickname));
         AttendanceRecordRepository.add(
                 new AttendanceRecord(nickname, date, before, AttendanceStatus.of(date, before)));
@@ -77,7 +77,7 @@ class AttendanceServiceTest {
         LocalDate date = LocalDate.of(2025, 2, 4);
         int day = 4;
         LocalTime before = LocalTime.of(10, 31);
-        LocalTime after = before;
+        String after = "10:31";
         CrewRepository.addCrew(new Crew(nickname));
         AttendanceRecordRepository.add(
                 new AttendanceRecord(nickname, date, before, AttendanceStatus.of(date, before)));
@@ -110,7 +110,7 @@ class AttendanceServiceTest {
         LocalDate today = monday.plusDays(8);
 
         // when
-        MonthAttendanceStatistics statistics = attendanceService.getMonthAttendanceStatistics(
+        MonthAttendanceStatisticsResponse statistics = attendanceService.getMonthAttendanceStatistics(
                 new MonthAttendanceStatisticsRequest(nickname, today));
 
         // then
