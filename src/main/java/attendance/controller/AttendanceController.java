@@ -10,6 +10,7 @@ import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.time.format.TextStyle;
 import java.util.Locale;
+import java.util.Map;
 
 public class AttendanceController {
     private static final Path path = Paths.get("src/main/resources/attendances.csv");
@@ -32,14 +33,19 @@ public class AttendanceController {
     public void run() {
         MenuOption menuOption = MenuOption.NONE;
         while (!MenuOption.QUIT.equals(menuOption)) {
-            try {
-                menuOption = readCommand();
-                // menuOption에 따라 실행
-            } catch (IllegalArgumentException e) {
-                outputView.printErrorMessage(e);
-                run();
-            }
+            menuOption = manageOption(menuOption);
         }
+    }
+
+    private MenuOption manageOption(MenuOption menuOption) {
+        try {
+            menuOption = readCommand();
+            executeOption(menuOption);
+        } catch (IllegalArgumentException e) {
+            outputView.printErrorMessage(e);
+            run();
+        }
+        return menuOption;
     }
 
     private MenuOption readCommand() {
@@ -49,4 +55,32 @@ public class AttendanceController {
         String day = today.getDayOfWeek().getDisplayName(TextStyle.NARROW, Locale.KOREAN);
         return MenuOption.of(inputView.readCommand(month, date, day));
     }
+
+    private void executeOption(MenuOption menuOption) {
+        Map<MenuOption, Runnable> optionActions = Map.of(
+                MenuOption.ATTEND_TODAY, this::attendToday,
+                MenuOption.MODIFY_ATTENDANCE, this::modifyAttendance,
+                MenuOption.SHOW_STATISTIC, this::showStatistic,
+                MenuOption.CHECK_STATUS, this::checkStatus
+        );
+
+        optionActions.get(menuOption).run();
+    }
+
+    private void attendToday() {
+
+    }
+
+    private void modifyAttendance() {
+
+    }
+
+    private void showStatistic() {
+
+    }
+
+    private void checkStatus() {
+
+    }
+
 }
