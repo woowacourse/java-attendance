@@ -29,6 +29,10 @@ public class AttendanceSystem {
         return attendanceBooks.get(name).getAttendanceDateTimeByDate(date);
     }
 
+    public LocalDateTime getAttendanceRecordToday(String name) {
+        return attendanceBooks.get(name).getAttendanceDateTimeByDate(TODAY);
+    }
+
     public void editAttendance(String name, LocalDate date, LocalTime time) {
         attendanceBooks.get(name).attendance(date, time);
     }

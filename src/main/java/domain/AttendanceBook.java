@@ -11,8 +11,6 @@ import java.util.Objects;
 public class AttendanceBook {
     private final Map<LocalDate, LocalTime> attendanceBook;
     private final LocalDate CHRISTMAS = LocalDate.of(2024, 12, 25);
-    private final LocalTime MONDAY_START_TIME = LocalTime.of(13, 0);
-    private final LocalTime START_TIME = LocalTime.of(10, 0);
 
 
     public AttendanceBook() {
@@ -50,14 +48,9 @@ public class AttendanceBook {
     }
 
     private boolean isAbsence(LocalDate date) {
-        return !attendanceBook.containsKey(date) || attendanceBook.get(date).isAfter(startTime(date).plusMinutes(30));
-    }
-
-    private LocalTime startTime(LocalDate date) {
-        if (date.getDayOfWeek().equals(DayOfWeek.MONDAY)) {
-            return MONDAY_START_TIME;
-        }
-        return START_TIME;
+        return !attendanceBook.containsKey(date) ||
+                AttendanceStatus.getAttendanceStatus(date, attendanceBook.get(date))
+                        .equals(AttendanceStatus.ABSENCE);
     }
 
     public int getTardyCount(LocalDate today) {
@@ -71,8 +64,8 @@ public class AttendanceBook {
 
     private boolean isTardy(LocalDate date) {
         return !attendanceBook.containsKey(date) ||
-                (attendanceBook.get(date).isAfter(startTime(date).plusMinutes(5)) &&
-                        !attendanceBook.get(date).isAfter(startTime(date).plusMinutes(30)));
+                AttendanceStatus.getAttendanceStatus(date, attendanceBook.get(date))
+                        .equals(AttendanceStatus.TARDY);
     }
 
     public int getAttendCount(LocalDate today) {
@@ -86,7 +79,8 @@ public class AttendanceBook {
 
     private boolean isAttend(LocalDate date) {
         return !attendanceBook.containsKey(date) ||
-                !attendanceBook.get(date).isAfter(startTime(date).plusMinutes(5));
+                AttendanceStatus.getAttendanceStatus(date, attendanceBook.get(date))
+                        .equals(AttendanceStatus.ATTEND);
     }
 
     public RiskStatus getRiskStatus(LocalDate today) {
