@@ -134,4 +134,34 @@ class AttendanceTest {
             softly.assertThat(crew.getAttendanceStatusOf(LocalDate.of(2025,02,23))).isNull();
         });
     }
+
+    @Test
+    @DisplayName("전날까지의 크루 출석 기록을 바탕으로 제적 위험자를 파악한다")
+    void getRiskTest() {
+        // given
+        Crew crew1 = new Crew("crew1");
+        Crew crew2 = new Crew("crew2");
+        Crew crew3 = new Crew("crew3");
+
+        // when
+        // crew1: 결석 2회 -> 경고
+        crew1.attendance(LocalDate.of(2025, 02, 03), LocalTime.of(13, 00));
+        crew1.attendance(LocalDate.of(2025, 02, 05), LocalTime.of(10, 00));
+        crew1.attendance(LocalDate.of(2025, 02, 06), LocalTime.of(10, 00));
+        crew1.attendance(LocalDate.of(2025, 02, 07), LocalTime.of(10, 00));
+
+        // crew2: 결석 3회 -> 면담
+        crew2.attendance(LocalDate.of(2025, 02, 03), LocalTime.of(13, 00));
+        crew2.attendance(LocalDate.of(2025, 02, 04), LocalTime.of(10, 00));
+        crew2.attendance(LocalDate.of(2025, 02, 05), LocalTime.of(10, 00));
+
+        // crew3: 결석 6회 -> 제적
+
+        // then
+        assertSoftly(softly -> {
+            softly.assertThat(crew1.getRisk()).isEqualTo(Risk.WARNING);
+            softly.assertThat(crew2.getRisk()).isEqualTo(Risk.INTERVIEW);
+            softly.assertThat(crew3.getRisk()).isEqualTo(Risk.EXPULSION);
+        });
+    }
 }
