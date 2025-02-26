@@ -8,6 +8,6 @@ public class OperationTimeChecker {
     }
 
     public boolean isHoliday(final LocalDate targetDate) {
-        return true;
+        return targetDate.isEqual(LocalDate.of(2024, 12, 25));
     }
 }
