@@ -88,13 +88,15 @@ public class AttendanceHistories {
     }
 
     public Map<AttendanceResult, Integer> getAttendanceResultCount(LocalDateTime standard) {
-        Map<AttendanceResult, Integer> results = new HashMap<>();
-        histories.stream().filter(history -> history.isBeforeHistory(standard))
-                .forEach(history -> {
-                    AttendanceResult attendanceResult = history.getAttendanceResult();
-                    results.put(attendanceResult, results.getOrDefault(attendanceResult, 0) + 1);
+        return histories.stream()
+                .filter(history -> history.isBeforeHistory(standard))
+                .reduce(new HashMap<>(), (map, history) -> {
+                    map.merge(history.getAttendanceResult(), 1, Integer::sum);
+                    return map;
+                }, (map1, map2) -> {
+                    map2.forEach((key, value) -> map1.merge(key, value, Integer::sum));
+                    return map1;
                 });
-        return results;
     }
 
     public List<AttendanceHistory> getSortedHistories(LocalDateTime standard) {
