@@ -14,6 +14,7 @@ public enum AttendanceStatus {
 
     public static final LocalTime MONDAY_START_TIME = LocalTime.of(13, 0);
     public static final LocalTime WEEKDAY_START_TIME = LocalTime.of(10, 0);
+
     public static final int ABSENCE_BOUNDARY = 30;
     public static final int LATE_BOUNDARY = 5;
 
