@@ -8,6 +8,6 @@ public class OperationTimeChecker {
     }
 
     public boolean isHoliday(final LocalDate targetDate) {
-        return false;
+        return true;
     }
 }
