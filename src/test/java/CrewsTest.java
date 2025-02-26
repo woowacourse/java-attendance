@@ -2,6 +2,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import domain.Crew;
 import domain.Crews;
+import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -15,8 +16,9 @@ public class CrewsTest {
         @Test
         public void findByName() throws Exception {
             // given
-            final var crews = new Crews();
             final var crewName = "우가";
+            final var crew = new Crew(crewName);
+            final var crews = new Crews(List.of(crew));
 
             // when
             final Crew actual = crews.findByName(crewName);
