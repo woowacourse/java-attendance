@@ -5,6 +5,7 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
+import view.ErrorMessage;
 
 public class AttendanceBook {
     private final List<Crew> crews;
@@ -33,20 +34,19 @@ public class AttendanceBook {
     }
 
     public CheckAttendanceResponse checkAttendance(String name, LocalDate date, LocalTime time) {
-        String attendanceStatus = validateWorkingDay(date, time);
+        String attendanceStatus = validateTrainingDay(date, time);
 
         Crew foundCrew = findCrewByName(name);
         foundCrew.addNewTimeLog(date, time);
         return new CheckAttendanceResponse(time, attendanceStatus);
     }
 
-    public static String validateWorkingDay(LocalDate date, LocalTime time) {
+    public static String validateTrainingDay(LocalDate date, LocalTime time) {
         String attendanceStatus = AttendanceStatus.judgeAttendanceStatusByDateAndTime(date, time);
-
         if (!attendanceStatus.equals("출석") && !attendanceStatus.equals("결석") && !attendanceStatus.equals("지각")) {
             throw new IllegalArgumentException(
-                    String.format("[ERROR] %02d월 %02d일 %s은 등교일이 아닙니다.",
-                            date.getMonthValue(), date.getDayOfMonth(), attendanceStatus));
+                    ErrorMessage.NOTICE_NOT_TRAINING_DAY.format(date.getMonthValue(), date.getDayOfMonth(),
+                            attendanceStatus));
         }
 
         return attendanceStatus;
