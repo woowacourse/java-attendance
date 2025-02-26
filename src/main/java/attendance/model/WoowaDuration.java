@@ -1,5 +1,6 @@
 package attendance.model;
 
+import java.time.DayOfWeek;
 import java.time.LocalDate;
 
 public enum WoowaDuration {
@@ -13,6 +14,13 @@ public enum WoowaDuration {
     ;
 
     public static boolean isDurationDay(LocalDate date) {
-        return false;
+        if (
+                date.getDayOfWeek().equals(DayOfWeek.SUNDAY) ||
+                        date.getDayOfWeek().equals(DayOfWeek.SATURDAY) ||
+                        date.getDayOfMonth() == 25
+        ) {
+            return false;
+        }
+        return true;
     }
 }
