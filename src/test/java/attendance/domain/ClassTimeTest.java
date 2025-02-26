@@ -13,6 +13,7 @@ class ClassTimeTest {
 
     @ParameterizedTest
     @CsvSource({
+            "2024-12-02T12:59, -1",
             "2024-12-02T13:00, 0",
             "2024-12-02T13:06, 6",
             "2024-12-02T13:31, 31",
