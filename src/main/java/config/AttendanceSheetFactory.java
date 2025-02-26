@@ -2,6 +2,7 @@ package config;
 
 import domain.Attendance;
 import domain.AttendanceSheet;
+import policy.AbsentPolicy;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -14,6 +15,12 @@ public class AttendanceSheetFactory extends ReadFile<Attendance,AttendanceSheet>
     private static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
     private static final int LINE_SPLIT_COUNT = 2;
 
+    private final AbsentPolicy absentPolicy;
+
+    public AttendanceSheetFactory(AbsentPolicy absentPolicy) {
+        this.absentPolicy = absentPolicy;
+    }
+
     private Attendance createAttendance(String line) {
         String[] splitLine = line.split(SPLIT_DELIMITER);
         validateSplitLineFormat(splitLine);
@@ -21,11 +28,10 @@ public class AttendanceSheetFactory extends ReadFile<Attendance,AttendanceSheet>
         String nickname = splitLine[0];
         LocalDateTime dateTime = parseAttendanceDateTime(splitLine[1]);
 
-        return new Attendance(nickname, dateTime.toLocalDate(), dateTime.toLocalTime());
+        return new Attendance(nickname, dateTime.toLocalDate(), dateTime.toLocalTime(), absentPolicy.checkAttendanceStatus(dateTime));
     }
 
     private void validateSplitLineFormat(String[] splitLine) {
-        System.out.println(splitLine.length);
         if (splitLine.length != LINE_SPLIT_COUNT) {
             throw new IllegalArgumentException("[ERROR] 파일 형식이 잘못되었습니다");
         }
@@ -46,6 +52,6 @@ public class AttendanceSheetFactory extends ReadFile<Attendance,AttendanceSheet>
 
     @Override
     protected AttendanceSheet createInstances(List<Attendance> instances) {
-        return new AttendanceSheet(instances);
+        return new AttendanceSheet(absentPolicy, instances);
     }
 }

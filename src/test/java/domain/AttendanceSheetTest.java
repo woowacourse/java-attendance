@@ -3,12 +3,14 @@ package domain;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import policy.AbsentPolicy;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import static domain.AttendanceState.ATTENDANCE;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
@@ -17,10 +19,10 @@ public class AttendanceSheetTest {
 
     @BeforeEach
     void setUp() {
-        attendanceSheet = new AttendanceSheet(
+        attendanceSheet = new AttendanceSheet(new AbsentPolicy(),
                 new ArrayList<>(
-                        List.of(new Attendance("링크", LocalDate.of(2024, 12, 10), LocalTime.of(10,0)),
-                                new Attendance("링크", LocalDate.of(2024, 12, 11), LocalTime.of(11,0))
+                        List.of(new Attendance("링크", LocalDate.of(2024, 12, 10), LocalTime.of(10,0), ATTENDANCE),
+                                new Attendance("링크", LocalDate.of(2024, 12, 11), LocalTime.of(10,0), ATTENDANCE)
                         ))
         );
     }

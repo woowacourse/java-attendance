@@ -7,11 +7,13 @@ public class Attendance {
     private String nickname;
     private LocalDate date;
     private LocalTime time;
+    private AttendanceState state;
 
-    public Attendance(String nickname, LocalDate localDate, LocalTime localTime) {
+    public Attendance(String nickname, LocalDate localDate, LocalTime localTime, AttendanceState state) {
         this.nickname = nickname;
         this.date = localDate;
         this.time = localTime;
+        this.state = state;
     }
 
     public boolean isAttendanceExist(String nickname, LocalDate date) {

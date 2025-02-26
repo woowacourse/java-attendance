@@ -1,6 +1,9 @@
 package domain;
 
+import policy.AbsentPolicy;
+
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
 
@@ -9,15 +12,17 @@ public class AttendanceSheet {
     public static final int ATTENDANCE_YEAR = 2024;
     public static final int ATTENDANCE_MONTH = 12;
 
-    List<Attendance> attendances;
+    private final AbsentPolicy absentPolicy;
+    private final List<Attendance> attendances;
 
-    public AttendanceSheet(List<Attendance> attendances) {
+    public AttendanceSheet(AbsentPolicy absentPolicy, List<Attendance> attendances) {
+        this.absentPolicy = absentPolicy;
         this.attendances = attendances;
     }
 
     public void add(String nickname, LocalDate date, LocalTime time) {
         validateIsAlreadyAttendance(nickname, date);
-        this.attendances.add(new Attendance(nickname, date, time));
+        this.attendances.add(new Attendance(nickname, date, time, absentPolicy.checkAttendanceStatus(LocalDateTime.of(date, time))));
     }
 
     public void validateIsAlreadyAttendance(String nickname, LocalDate date) {

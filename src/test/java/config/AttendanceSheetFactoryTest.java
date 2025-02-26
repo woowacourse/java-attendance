@@ -6,6 +6,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
+import policy.AbsentPolicy;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -20,7 +21,7 @@ public class AttendanceSheetFactoryTest {
 
     @BeforeEach
     void setUp() {
-        readFile = new AttendanceSheetFactory();
+        readFile = new AttendanceSheetFactory(new AbsentPolicy());
     }
 
     @Test
@@ -54,7 +55,7 @@ public class AttendanceSheetFactoryTest {
     public void createAttendancesTest(@TempDir Path tempDir) throws IOException {
         //given
         Path path = tempDir.resolve("attendances.csv");
-        List<String> lines = List.of("nickname,dateTime", "링크,2024-12-13 09:11", "링크,2024-12-14 09:11");
+        List<String> lines = List.of("nickname,dateTime", "링크,2024-12-12 09:11", "링크,2024-12-13 09:11");
         Files.write(path, lines);
 
         //when-then

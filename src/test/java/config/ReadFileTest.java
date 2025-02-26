@@ -5,6 +5,7 @@ import domain.AttendanceSheet;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import policy.AbsentPolicy;
 
 import java.nio.file.Paths;
 
@@ -15,7 +16,7 @@ public class ReadFileTest {
 
     @BeforeEach
     void setUp() {
-        readFile = new AttendanceSheetFactory();
+        readFile = new AttendanceSheetFactory(new AbsentPolicy());
     }
 
     @Test
