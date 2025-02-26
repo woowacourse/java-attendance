@@ -1,5 +1,6 @@
 package model;
 
+import java.time.DayOfWeek;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
@@ -23,7 +24,7 @@ public class AttendanceRecord {
         Collections.sort(timeRecords);
     }
 
-    public LocalDateTime isSameDay(LocalDateTime wantToFindLocalDateTime) {
+    public LocalDateTime findSameDay(LocalDateTime wantToFindLocalDateTime) {
         for (LocalDateTime localDateTime : timeRecords) {
             LocalDateTime dayDate1 = localDateTime.truncatedTo(ChronoUnit.DAYS);
             LocalDateTime dayDate2 = wantToFindLocalDateTime.truncatedTo(ChronoUnit.DAYS);
@@ -35,12 +36,12 @@ public class AttendanceRecord {
     }
 
     public void modifyRecord(LocalDateTime wantToModifyLocalDateTime) {
-        timeRecords.remove(isSameDay(wantToModifyLocalDateTime));
+        timeRecords.remove(findSameDay(wantToModifyLocalDateTime));
         addTime(wantToModifyLocalDateTime);
         Collections.sort(timeRecords);
     }
 
-    public boolean isSameDay(LocalDateTime localDateTime1, LocalDateTime localDateTime2) {
+    public boolean findSameDay(LocalDateTime localDateTime1, LocalDateTime localDateTime2) {
         LocalDateTime dayDate1 = localDateTime1.truncatedTo(ChronoUnit.DAYS);
         LocalDateTime dayDate2 = localDateTime2.truncatedTo(ChronoUnit.DAYS);
 
@@ -49,19 +50,17 @@ public class AttendanceRecord {
 
     public void updateNoInformationInFile(LocalDateTime todayDate) {
         LocalDateTime standard = LocalDateTime.of(2024, 12, 1, 0, 0);
-        while (!isSameDay(standard,todayDate)) {
-            if (standard.getDayOfWeek().getValue() == 6 || standard.getDayOfWeek().getValue() == 7) {
-                standard = standard.plusDays(1);
-                continue;
-            }
-            if (isSameDay(standard)==null) {
+        while (!findSameDay(standard,todayDate)) {
+            if (!isWeekend(standard) && findSameDay(standard) == null) {
                 timeRecords.add(standard);
-                standard = standard.plusDays(1);
-                continue;
             }
             standard = standard.plusDays(1);
         }
         Collections.sort(timeRecords);
+    }
+
+    private boolean isWeekend(LocalDateTime localDateTime) {
+        return (localDateTime.getDayOfWeek().equals(DayOfWeek.SUNDAY) || localDateTime.getDayOfWeek().equals(DayOfWeek.SATURDAY));
     }
 
 }
