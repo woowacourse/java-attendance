@@ -2,7 +2,6 @@ package attendance.domain;
 
 import attendance.util.FormattedErrorMessage;
 import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -11,24 +10,28 @@ import java.time.LocalDate;
 import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.assertAll;
 
 @DisplayName("출석 테스트")
 public class AttendanceTest {
 
-    @Test
-    void 주말에_출석을_하면_예외가_발생한다() {
-        LocalDate saturday = LocalDate.of(2024, 12, 14);
-        LocalDate sunday = LocalDate.of(2024, 12, 15);
+    @ParameterizedTest(name = "{index} : {1}")
+    @MethodSource("getWeekend")
+    void 주말에_출석을_하면_예외가_발생한다(LocalDate weekend, String message) {
+        assertThatThrownBy(() -> new Attendance(weekend))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage(FormattedErrorMessage.INVALID_ATTENDANCE_ERROR.getDateFormatMessage(weekend));
+    }
 
-        assertAll(
-                () -> assertThatThrownBy(() -> new Attendance(saturday))
-                        .isInstanceOf(IllegalArgumentException.class)
-                        .hasMessage(FormattedErrorMessage.INVALID_ATTENDANCE_ERROR.getDateFormatMessage(saturday)),
-
-                () -> assertThatThrownBy(() -> new Attendance(sunday))
-                        .isInstanceOf(IllegalArgumentException.class)
-                        .hasMessage(FormattedErrorMessage.INVALID_ATTENDANCE_ERROR.getDateFormatMessage(sunday))
+    static Stream<Arguments> getWeekend() {
+        return Stream.of(
+                Arguments.of(LocalDate.of(2024, 12, 14), "2024년 12월 토요일"),
+                Arguments.of(LocalDate.of(2024, 12, 14), "2024년 12월 일요일"),
+                Arguments.of(LocalDate.of(2025, 1, 25), "2025년 1월 토요일"),
+                Arguments.of(LocalDate.of(2025, 1, 26), "2025년 1월 일요일"),
+                Arguments.of(LocalDate.of(2025, 2, 22), "2025년 2월 토요일"),
+                Arguments.of(LocalDate.of(2025, 2, 23), "2025년 2월 일요일"),
+                Arguments.of(LocalDate.of(2025, 8, 30), "2025년 8월 토요일"),
+                Arguments.of(LocalDate.of(2025, 8, 31), "2025년 8월 일요일")
         );
     }
 
