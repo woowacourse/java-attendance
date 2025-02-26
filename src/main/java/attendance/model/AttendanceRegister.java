@@ -1,7 +1,6 @@
 package attendance.model;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -9,18 +8,18 @@ import java.util.List;
 import java.util.Map;
 
 public class AttendanceRegister {
-    private final Map<String, List<LocalDateTime>> register = new HashMap<>();
+    private final Map<String, List<AttendanceDateTime>> register = new HashMap<>();
 
-    public void attend(String crewName, LocalDateTime localDateTime) {
-        List<LocalDateTime> attendanceRecord = register.getOrDefault(crewName, new ArrayList<>());
-        attendanceRecord.add(localDateTime);
+    public void attend(String crewName, AttendanceDateTime attendanceDateTime) {
+        List<AttendanceDateTime> attendanceRecord = register.getOrDefault(crewName, new ArrayList<>());
+        attendanceRecord.add(attendanceDateTime);
         register.putIfAbsent(crewName, attendanceRecord);
     }
 
-    public LocalDateTime findAttendanceByCrewName(String crewName, LocalDate localDate) {
+    public AttendanceDateTime findAttendanceByCrewName(String crewName, LocalDate attendanceDate) {
         validateContainsCrewName(crewName);
         return register.get(crewName).stream()
-                .filter(localDateTime -> localDateTime.toLocalDate().equals(localDate))
+                .filter(attendanceDateTime -> attendanceDateTime.equalsDate(attendanceDate))
                 .findFirst()
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 출석일입니다."));
     }
@@ -33,17 +32,11 @@ public class AttendanceRegister {
 
     public void modify(String crewName, LocalDate modifyDate, LocalTime modifyTime) {
         validateContainsCrewName(crewName);
-        List<LocalDateTime> attendanceRecord = register.get(crewName);
-        int index = -1;
-        for (int i = 0; i < attendanceRecord.size(); ++i) {
-            if (attendanceRecord.get(i).toLocalDate().equals(modifyDate)) {
-                index = i;
-            }
-        }
-        if (index == -1) {
-            throw new IllegalArgumentException("존재하지 않는 출석일입니다.");
-        }
-        attendanceRecord.remove(index);
-        attendanceRecord.add(LocalDateTime.of(modifyDate, modifyTime));
+        List<AttendanceDateTime> attendanceRecord = register.get(crewName);
+        AttendanceDateTime foundAttendanceDateTime = attendanceRecord.stream()
+                .filter(attendanceDateTime -> attendanceDateTime.equalsDate(modifyDate))
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 출석일입니다."));
+        foundAttendanceDateTime.modifyAttendanceTime(modifyTime);
     }
 }
