@@ -3,6 +3,7 @@ package attendance.model.attendance.log;
 import attendance.model.attendance.AttendanceStatus;
 import attendance.model.campus.CampusOperationPolicy;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -15,6 +16,18 @@ public class AttendanceLogs {
 
     public AttendanceLogs(final List<AttendanceLog> values) {
         this.values = new ArrayList<>(values);
+    }
+
+    public static AttendanceLogs fromLocalDateTimes(
+            final List<LocalDateTime> dateTimes,
+            final CampusOperationPolicy campusOperationPolicy
+    ) {
+
+        final List<AttendanceLog> attendanceLogs = dateTimes.stream()
+                .map(dateTime -> AttendanceLog.fromDateTime(dateTime, campusOperationPolicy))
+                .toList();
+
+        return new AttendanceLogs(attendanceLogs);
     }
 
     public List<AttendanceLog> getAllAttendanceLogs(
