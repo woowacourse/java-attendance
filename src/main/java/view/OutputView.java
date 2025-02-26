@@ -21,16 +21,29 @@ public class OutputView {
     }
 
     public void printAttendanceMessage(Attendance attendance) {
+        System.out.println(this.generateAttendanceMessage(attendance) + System.lineSeparator());
+    }
+
+    public void printEditMessage(Attendance oldAttendance, Attendance newAttendance) {
+        System.out.print(System.lineSeparator() + generateAttendanceMessage(oldAttendance));
+
+        System.out.println(String.format(" -> %02d:%02d (%s) 수정 완료!",
+                newAttendance.getAttendanceTime().getHour(),
+                newAttendance.getAttendanceTime().getMinute(),
+                newAttendance.getAttendanceStatus().getStatus()));
+    }
+
+    private String generateAttendanceMessage(Attendance attendance) {
         AttendanceDate attendanceDate = attendance.getAttendanceDate();
         AttendanceTime attendanceTime = attendance.getAttendanceTime();
         AttendanceStatus attendanceStatus = attendance.getAttendanceStatus();
 
-        System.out.println(String.format("%d월 %d일 %s요일 %02d:%02d (%s)",
+        return String.format("%d월 %d일 %s요일 %02d:%02d (%s)",
                 attendanceDate.getMonthValue(),
                 attendanceDate.getDayOfMonth(),
                 DayOfWeekConvertor.convertToKorean(attendanceDate.getDayOfWeek()),
                 attendanceTime.getHour(),
                 attendanceTime.getMinute(),
-                attendanceStatus.getStatus()) + System.lineSeparator());
+                attendanceStatus.getStatus());
     }
 }

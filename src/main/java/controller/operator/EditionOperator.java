@@ -1,5 +1,6 @@
 package controller.operator;
 
+import domain.Attendance;
 import domain.AttendanceBook;
 import domain.AttendanceDate;
 import domain.AttendanceTime;
@@ -23,11 +24,16 @@ public class EditionOperator implements OptionOperator {
             return date;
         });
 
+        Attendance oldAttendance = crew.findAttendanceByDate(editDate);
+
         AttendanceTime editTime = InputProcessor.processInputUntilSuccess(() -> {
             LocalTime editTimeInput = inputView.getEditTimeInput();
             return new AttendanceTime(editTimeInput);
         });
 
         attendanceBook.editAttendance(crew, editDate, editTime);
+
+        Attendance newAttendance = crew.findAttendanceByDate(editDate);
+        outputView.printEditMessage(oldAttendance, newAttendance);
     }
 }
