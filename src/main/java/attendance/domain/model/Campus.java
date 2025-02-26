@@ -9,11 +9,13 @@ import attendance.util.TimeFormatter;
 public class Campus {
 
     private static final int CHRISTMAS_DAY = 25;
+    private static final int OPEN_HOUR = 8;
+    private static final int CLOSE_HOUR = 23;
 
     public void validateOperationTime(final LocalDateTime localDateTime) {
         LocalTime time = LocalTime.from(localDateTime);
-        LocalTime openTime = LocalTime.of(8, 0);
-        LocalTime closeTime = LocalTime.of(23, 0);
+        LocalTime openTime = LocalTime.of(OPEN_HOUR, 0);
+        LocalTime closeTime = LocalTime.of(CLOSE_HOUR, 0);
         if (isNotOperationTime(time, closeTime, openTime)) {
             throw new IllegalArgumentException("[ERROR] 캠퍼스 운영 시간이 아닙니다.");
         }
