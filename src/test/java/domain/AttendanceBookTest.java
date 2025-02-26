@@ -52,7 +52,7 @@ public class AttendanceBookTest {
         AttendanceDate attendanceDate = new AttendanceDate(LocalDate.of(2024, 12, 24));
         AttendanceTime attendanceTime = new AttendanceTime(LocalTime.of(10, 1));
 
-        attendanceBook.attend(name, attendanceDate, attendanceTime);
+        attendanceBook.attend(crew, attendanceDate, attendanceTime);
         Assertions.assertThatThrownBy(() -> attendanceBook.checkAlreadyAttended(crew, attendanceDate))
                 .isInstanceOf(IllegalArgumentException.class);
     }
