@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
 
-public class Attendance {
+public class Attendance implements Comparable<Attendance> {
     private static final List<Integer> HOLIDAYS = List.of(1, 7, 8, 14, 15, 21, 22, 25, 28, 29);
     private static final LocalTime openTime = LocalTime.of(8, 0);
     private static final LocalTime closeTime = LocalTime.of(23, 0);
@@ -37,6 +37,10 @@ public class Attendance {
         return AttendanceStatus.calculateAttendanceStatus(dateTime);
     }
 
+    public boolean isBefore(LocalDateTime today) {
+        return dateTime.isBefore(today);
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -52,5 +56,10 @@ public class Attendance {
     @Override
     public int hashCode() {
         return Objects.hashCode(dateTime.getDayOfMonth());
+    }
+
+    @Override
+    public int compareTo(Attendance o) {
+        return dateTime.compareTo(o.dateTime);
     }
 }

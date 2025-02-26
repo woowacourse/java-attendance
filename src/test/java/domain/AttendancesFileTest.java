@@ -38,6 +38,6 @@ class AttendancesFileTest {
     void FileNotFoundExceptionTest() {
         Path testPath = Path.of("noFile.txt");
 
-        Assertions.assertThat(attendancesFile.loadInitialAttendances(testPath)).hasSize(0);
+        Assertions.assertThat(attendancesFile.loadInitialAttendances(testPath)).isEmpty();
     }
 }
