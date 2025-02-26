@@ -1,6 +1,10 @@
 package attendance.model;
 
 import static attendance.domain.model.AttendanceType.DEFAULT_TIME;
+import static attendance.fixture.TestFixture.makeAbsent;
+import static attendance.fixture.TestFixture.makeAttendance;
+import static attendance.fixture.TestFixture.makeDefaultTime;
+import static attendance.fixture.TestFixture.makeLate;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -26,7 +30,7 @@ public class CrewHistoryTest {
     void checkAttendanceTest() {
         // Given
         CrewHistory crewHistory = new CrewHistory(new HashMap<>());
-        LocalDateTime attendanceTime = LocalDateTime.of(2024, 12, 3, 9, 0);
+        LocalDateTime attendanceTime = makeAttendance(3);
 
         // When
         crewHistory.attend(attendanceTime);
@@ -40,7 +44,7 @@ public class CrewHistoryTest {
     void alreadyAttendanceTest() {
         // Given
         CrewHistory crewHistory = new CrewHistory(new HashMap<>());
-        LocalDateTime attendanceTime = LocalDateTime.of(2024, 12, 3, 9, 0);
+        LocalDateTime attendanceTime = makeAttendance(3);
         crewHistory.attend(attendanceTime);
 
         // When & Then
@@ -80,7 +84,7 @@ public class CrewHistoryTest {
     void invalidModifyDateTest(LocalDate todayDate) {
         // Given
         CrewHistory crewHistory = new CrewHistory(new HashMap<>());
-        LocalDateTime modifyTime = LocalDateTime.of(2024, 12, 4, 9, 50);
+        LocalDateTime modifyTime = makeAttendance(4);
 
         // When & Then
         assertThatThrownBy(() -> crewHistory.modify(modifyTime, todayDate))
@@ -94,9 +98,9 @@ public class CrewHistoryTest {
         // Given
         LocalDate today = LocalDate.of(2024, 12, 19);
 
-        LocalDateTime dateTime1 = LocalDateTime.of(2024, 12, 3, 9, 0);
-        LocalDateTime dateTime2 = LocalDateTime.of(2024, 12, 4, 9, 0);
-        LocalDateTime todayDateTime = LocalDateTime.of(2024, 12, 19, 9, 0);
+        LocalDateTime dateTime1 = makeAttendance(3);
+        LocalDateTime dateTime2 = makeAttendance(4);
+        LocalDateTime todayDateTime = makeAttendance(19);
         CrewHistory crewHistory = new CrewHistory(Map.of(
                 LocalDate.from(dateTime1), dateTime1,
                 LocalDate.from(dateTime2), dateTime2,
@@ -115,11 +119,11 @@ public class CrewHistoryTest {
     void countAttendanceTypeTest() {
         // Given
         LocalDate todayDate = LocalDate.of(2024, 12, 13);
-        LocalDateTime dateTime1 = LocalDateTime.of(2024, 12, 2, 9, 0);
-        LocalDateTime dateTime2 = LocalDateTime.of(2024, 12, 3, 10, 6);
-        LocalDateTime dateTime3 = LocalDateTime.of(2024, 12, 4, 10, 31);
-        LocalDateTime dateTime4 = LocalDateTime.of(LocalDate.of(2024, 12, 5), DEFAULT_TIME);
-        LocalDateTime dateTime5 = LocalDateTime.of(2024, 12, 6, 9, 30);
+        LocalDateTime dateTime1 = makeAttendance(2);
+        LocalDateTime dateTime2 = makeLate(3);
+        LocalDateTime dateTime3 = makeAbsent(4);
+        LocalDateTime dateTime4 = makeDefaultTime(5);
+        LocalDateTime dateTime5 = makeAttendance(6);
         CrewHistory crewHistory = new CrewHistory(Map.of(
                 LocalDate.from(dateTime1), dateTime1,
                 LocalDate.from(dateTime2), dateTime2,

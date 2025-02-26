@@ -1,13 +1,14 @@
 package attendance.model;
 
-import static attendance.domain.model.AttendanceType.DEFAULT_TIME;
+import static attendance.fixture.TestFixture.makeAttendance;
+import static attendance.fixture.TestFixture.makeDay;
+import static attendance.fixture.TestFixture.makeDefaultTime;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import attendance.domain.model.CrewHistories;
 import attendance.domain.model.CrewHistory;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 import org.junit.jupiter.api.DisplayName;
@@ -86,15 +87,4 @@ public class CrewHistoriesTest {
         assertThat(crewHistories.findDismissalCrews(todayDate)).containsKeys(hotteok, mint, wilson);
     }
 
-    private LocalDateTime makeDefaultTime(final int day) {
-        return LocalDateTime.of(makeDay(day), DEFAULT_TIME);
-    }
-
-    private LocalDate makeDay(final int day) {
-        return LocalDate.of(2024, 12, day);
-    }
-
-    private LocalDateTime makeAttendance(final int day) {
-        return LocalDateTime.of(2024, 12, day, 9, 30);
-    }
 }

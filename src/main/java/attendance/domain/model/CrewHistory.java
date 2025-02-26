@@ -31,7 +31,7 @@ public class CrewHistory {
 
     public LocalDateTime modify(final LocalDateTime modifyDateTime, final LocalDate todayDate) {
         LocalDate modifyDate = LocalDate.from(modifyDateTime);
-        if (isAfterToday(todayDate, modifyDate)) {
+        if (isEqualOrAfterToday(todayDate, modifyDate)) {
             throw new IllegalArgumentException("[ERROR] 수정 일자는 어제 기록까지만 수정할 수 있습니다.");
         }
         LocalDateTime previousTime = attendance.get(modifyDate);
@@ -51,7 +51,7 @@ public class CrewHistory {
                 .toList();
     }
 
-    private boolean isAfterToday(final LocalDate todayDate, final LocalDate modifyDate) {
+    private boolean isEqualOrAfterToday(final LocalDate todayDate, final LocalDate modifyDate) {
         return modifyDate.isEqual(todayDate) || modifyDate.isAfter(todayDate);
     }
 
