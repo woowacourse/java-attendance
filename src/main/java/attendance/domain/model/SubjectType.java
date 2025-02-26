@@ -36,7 +36,7 @@ public enum SubjectType {
     }
 
     public boolean isApplicable() {
-        return !this.equals(SubjectType.NOT_APPLICABLE);
+        return this != SubjectType.NOT_APPLICABLE;
     }
 
     public static Comparator<SubjectType> getComparator() {
