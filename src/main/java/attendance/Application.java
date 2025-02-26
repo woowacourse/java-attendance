@@ -1,6 +1,8 @@
 package attendance;
 
+import attendance.domain.CampusManager;
 import attendance.view.InputView;
+import attendance.view.OutputView;
 import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.Map;
@@ -8,6 +10,7 @@ import java.util.Map;
 public class Application {
     private static final Map<String, Runnable> options;
     private static final String QUIT_OPTION = "Q";
+    private static final CampusManager campusManager = new CampusManager();
 
     static {
         options = new HashMap<>();
@@ -42,7 +45,12 @@ public class Application {
     }
 
     private static void doAttendance() {
-
+        LocalDate today = now();
+        boolean isOperationDate = campusManager.isOperationDate(today);
+        if (!isOperationDate) {
+            OutputView.printNotOperationDate(today);
+            return;
+        }
     }
 
     private static void modifyAttendance() {
@@ -55,5 +63,9 @@ public class Application {
 
     private static void checkDangerousCrews() {
 
+    }
+
+    private static LocalDate now() {
+        return LocalDate.now();
     }
 }
