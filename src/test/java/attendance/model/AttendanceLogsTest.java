@@ -6,6 +6,7 @@ import static org.assertj.core.api.Assertions.assertThatCode;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.EnumMap;
 import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -126,5 +127,30 @@ class AttendanceLogsTest {
         // then
         assertThat(edited.getAttendanceTime())
                 .isEqualTo(LocalTime.of(13, 0));
+    }
+
+    @DisplayName("닉네임과 기준 날짜로 이번 달 각 출석 유형 횟수를 조회할 수 있다.")
+    @Test
+    void countAllAttendanceTypeTest() {
+        // given
+        Nickname nickname = new Nickname("벨로");
+        LocalDate today = LocalDate.of(2024, 12, 5);
+        LocalDate yesterday = today.minusDays(1);
+        LocalTime attendanceTime = LocalTime.of(10, 0);
+
+        AttendanceLogs attendanceLogs = new AttendanceLogs();
+        attendanceLogs.add(new AttendanceLog(nickname, yesterday, attendanceTime));
+        attendanceLogs.add(new AttendanceLog(nickname, today, attendanceTime));
+
+        // when
+        EnumMap<AttendanceType, Integer> map = attendanceLogs.countAllAttendanceType(nickname, today);
+
+        // then
+        assertThat(map.get(AttendanceType.PRESENT))
+                .isEqualTo(1);
+        assertThat(map.get(AttendanceType.LATE))
+                .isEqualTo(0);
+        assertThat(map.get(AttendanceType.ABSENT))
+                .isEqualTo(2);
     }
 }

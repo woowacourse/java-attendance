@@ -3,6 +3,7 @@ package attendance.controller;
 import attendance.model.AttendanceLog;
 import attendance.model.AttendanceLogs;
 import attendance.model.AttendanceType;
+import attendance.model.AttendanceWarningLevel;
 import attendance.model.AttendancesFile;
 import attendance.model.Command;
 import attendance.model.EducationSchedule;
@@ -13,6 +14,8 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
+import java.util.EnumMap;
+import java.util.List;
 
 public class AttendanceController {
 
@@ -38,6 +41,9 @@ public class AttendanceController {
         }
         if (command == Command.EDIT_ATTENDANCE) {
             editAttendanceLog(baseDate, attendanceLogs);
+        }
+        if (command == Command.ATTENDANCE_LOGS) {
+            displayAttendanceLogs(baseDate, attendanceLogs);
         }
     }
 
@@ -87,5 +93,20 @@ public class AttendanceController {
     private LocalDate createTargetDate(LocalDate baseDate) {
         int targetDate = inputView.readDateForEditAttendance();
         return LocalDate.of(baseDate.getYear(), baseDate.getMonth(), targetDate);
+    }
+
+    private void displayAttendanceLogs(LocalDate baseDate, AttendanceLogs attendanceLogs) {
+        Nickname nickname = new Nickname(inputView.readNickname());
+        List<AttendanceLog> logs = attendanceLogs.findAllByNicknameInMonth(nickname, baseDate);
+        outputView.printAttendanceLogs(nickname, logs);
+        EnumMap<AttendanceType, Integer> counted = attendanceLogs.countAllAttendanceType(nickname, baseDate);
+        outputView.printAttendanceTypeCount(counted);
+        outputView.printWarningLevel(determineWarningLevel(counted));
+    }
+
+    private AttendanceWarningLevel determineWarningLevel(EnumMap<AttendanceType, Integer> counted) {
+        int lateCount = counted.get(AttendanceType.LATE);
+        int absentCount = counted.get(AttendanceType.ABSENT);
+        return AttendanceWarningLevel.determine(lateCount, absentCount);
     }
 }

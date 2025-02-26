@@ -84,7 +84,7 @@ public class AttendanceLog {
     }
 
     public LocalDateTime getAttendanceDateTime() {
-        return LocalDateTime.of(attendanceDate, getAttendanceTime());
+        return LocalDateTime.of(attendanceDate, attendanceTime);
     }
 
     public LocalDate getAttendanceDate() {
@@ -92,9 +92,6 @@ public class AttendanceLog {
     }
 
     public LocalTime getAttendanceTime() {
-        if (attendanceTime == null) {
-            throw new IllegalArgumentException("등교 시간 기록이 존재하지 않습니다.");
-        }
         return attendanceTime;
     }
 

@@ -2,10 +2,15 @@ package attendance.model;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.EnumMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 public class AttendanceLogs {
 
@@ -34,9 +39,27 @@ public class AttendanceLogs {
     }
 
     public List<AttendanceLog> findAllByNicknameInMonth(Nickname nickname, LocalDate baseDate) {
-        return logs.stream()
+        List<AttendanceLog> realLogs = logs.stream()
                 .filter(sameCrewAndMonth(nickname, baseDate))
                 .filter(untilPreviousDay(baseDate))
+                .toList();
+
+        Set<LocalDate> existingDates = realLogs.stream()
+                .map(AttendanceLog::getAttendanceDate)
+                .collect(Collectors.toSet());
+
+        List<AttendanceLog> completeLogs = new ArrayList<>(realLogs);
+        for (LocalDate date = baseDate.withDayOfMonth(1); date.isBefore(baseDate); date = date.plusDays(1)) {
+            if (!existingDates.contains(date)) {
+                try {
+                    completeLogs.add(new AttendanceLog(nickname, date));
+                } catch (IllegalArgumentException ignore) {
+                }
+            }
+        }
+
+        return completeLogs.stream()
+                .sorted(Comparator.comparing(AttendanceLog::getAttendanceDate))
                 .toList();
     }
 
@@ -59,5 +82,19 @@ public class AttendanceLogs {
         AttendanceLog newAttendanceLog = new AttendanceLog(nickname, dateTime.toLocalDate(), dateTime.toLocalTime());
         logs.add(newAttendanceLog);
         return newAttendanceLog;
+    }
+
+    public EnumMap<AttendanceType, Integer> countAllAttendanceType(Nickname nickname, LocalDate baseDate) {
+        EnumMap<AttendanceType, Integer> attendanceCounts = new EnumMap<>(AttendanceType.class);
+
+        Arrays.stream(AttendanceType.values())
+                .forEach(type -> attendanceCounts.put(type, 0));
+
+        findAllByNicknameInMonth(nickname, baseDate).forEach(log -> {
+            AttendanceType type = AttendanceType.determine(EducationSchedule.findStartTimeByDay(log.getAttendanceDate().getDayOfWeek()), log.getAttendanceTime());
+            attendanceCounts.put(type, attendanceCounts.get(type) + 1);
+        });
+
+        return attendanceCounts;
     }
 }
