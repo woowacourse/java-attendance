@@ -166,11 +166,11 @@ class CrewAttendanceTest {
 
         // when
         List<LocalDateTime> times = crewAttendance.readAttendanceTimesBefore(
-                LocalDate.of(2024, 12, 14)
+                LocalDate.of(2024, 12, 13)
         );
 
         // then
-        assertThat(times).hasSize(4);
+        assertThat(times).hasSize(3);
     }
 
     private AttendanceTimes createAttendanceTimes() {

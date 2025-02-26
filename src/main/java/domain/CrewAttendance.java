@@ -2,9 +2,9 @@ package domain;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.IntStream;
 
 public class CrewAttendance {
     private final Crew crew;
@@ -28,17 +28,13 @@ public class CrewAttendance {
     }
 
     public List<LocalDateTime> readAttendanceTimesBefore(LocalDate date) {
-        List<LocalDateTime> times = new ArrayList<>();
         int today = date.getDayOfMonth();
-        for (int i = 1; i < today; i++) {
-            try {
-                LocalDateTime time = attendanceTimes.readAttendance(LocalDate.of(2024, 12, i));
-                times.add(time);
-            } catch (IllegalArgumentException e) {
-                continue;
-            }
-        }
-        return times;
+        return IntStream.range(1, today)
+                .mapToObj(day -> LocalDate.of(2024, 12, day))
+                .filter(attendanceTimes::contains)
+                .map(attendanceTimes::readAttendance)
+                .sorted()
+                .toList();
     }
 
     public int countAttendanceBeforeDate(LocalDate date) {
