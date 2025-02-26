@@ -180,18 +180,6 @@
 - **동작**
     - Path 를 받아 해당 Path 의 파일에 있는 데이터를 읽어 크루 출석 기록 리스트를 반환한다.
 
-### CrewAttendanceLogComparator (크루 출석 기록 Comparator Class)
-
-- **상태**
-    - 없음.
-- **생성**
-    - 기본 생성자를 사용한다.
-- **동작**
-    - CrewAttendanceLog 두 개를 받아 비교한다.
-        - 결석 수를 우선적으로 정렬한다.
-        - 결석 수가 같으면 지각 수를 기준으로 정렬한다.
-        - 결석 수와 지각 수가 같으면 이름을 기준으로 정렬한다.
-
 ### CrewAttendanceRepository (크루 출석 기록 일급 컬렉션 저장소 Class)
 
 - **상태**
