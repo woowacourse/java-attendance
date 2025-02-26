@@ -40,4 +40,8 @@ public class Attendance {
         return attendanceDate.getDayOfWeek() == DayOfWeek.SATURDAY ||
                 attendanceDate.getDayOfWeek() == DayOfWeek.SUNDAY;
     }
+
+    public AttendanceStatus getAttendanceStatus() {
+        return null;
+    }
 }
