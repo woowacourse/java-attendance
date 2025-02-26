@@ -1,4 +1,3 @@
-import java.time.LocalDateTime;
 import java.time.LocalTime;
 
 public enum AttendanceStatus {
@@ -13,7 +12,7 @@ public enum AttendanceStatus {
         this.status = status;
     }
 
-    public static AttendanceStatus calculate(LocalTime lateTime, LocalTime absentTime, LocalTime attendanceTime) {
+    public static AttendanceStatus calculateStatus(LocalTime lateTime, LocalTime absentTime, LocalTime attendanceTime) {
         if (attendanceTime.isAfter(absentTime))
             return ABSENT;
         if (attendanceTime.isAfter(lateTime))
