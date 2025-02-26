@@ -1,4 +1,5 @@
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import domain.AttendanceBook;
 import domain.AttendanceHistory;
@@ -32,5 +33,18 @@ public class AttendanceBookTest {
     @Nested
     @DisplayName("실패 테스트")
     class FailCases {
+
+        @DisplayName("이미 존재하는 크루에 대해서 새롭게 register하면, 예외가 발생한다.")
+        @Test
+        public void register() throws Exception {
+            // given
+            final var crew = new Crew("헤일러");
+            final var attendanceBook = new AttendanceBook();
+            attendanceBook.registerCrew(crew);
+
+            // when & then
+            assertThatThrownBy(() -> attendanceBook.registerCrew(crew))
+                    .isInstanceOf(IllegalStateException.class);
+        }
     }
 }
