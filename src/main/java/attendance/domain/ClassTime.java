@@ -9,7 +9,11 @@ import java.util.Locale;
 
 public enum ClassTime {
     MONDAY(LocalTime.of(13, 0)),
-    TUESDAY(LocalTime.of(10, 0));
+    TUESDAY(LocalTime.of(10, 0)),
+    WEDNESDAY(LocalTime.of(10, 0)),
+    THURSDAY(LocalTime.of(10, 0)),
+    FRIDAY(LocalTime.of(10, 0)),
+    ;
 
     private final LocalTime startTime;
 
