@@ -5,6 +5,10 @@ public enum WarningLevel {
 
 
     public static WarningLevel from(int lateCount, int absentCount) {
+        int totalAbsent = lateCount / 3 + absentCount;
+        if (totalAbsent >= 2) {
+            return WARNING;
+        }
         return null;
     }
 }
