@@ -42,7 +42,6 @@ public class AttendanceBook {
                 .orElse(Attendance.empty(date));
     }
 
-    // TODO: 출석 내역을 날짜 기준으로 정렬해서 보여주는 것은 뷰의 책임으로 넘기기
     public List<Attendance> getAllAttendances(LocalDate startDate, LocalDate endDate) {
         List<Attendance> result = new ArrayList<>();
         for (LocalDate current = startDate; current.isBefore(endDate); current = current.plusDays(1)) {
@@ -55,7 +54,7 @@ public class AttendanceBook {
         return result;
     }
 
-    public Map<AttendanceStatus, Integer> getAttendanceStatusCounts(LocalDate startDate, LocalDate endDate) {
+    public AttendanceStatistic getAttendanceStatistic(LocalDate startDate, LocalDate endDate) {
         Map<AttendanceStatus, Integer> result = new HashMap<>();
 
         for (LocalDate current = startDate; current.isBefore(endDate); current = current.plusDays(1)) {
@@ -68,35 +67,7 @@ public class AttendanceBook {
             result.put(status, updatedValue);
         }
 
-        return result;
-    }
-
-    public int getLateCount(LocalDate startDate, LocalDate endDate) {
-        int count = 0;
-        for (LocalDate current = startDate; current.isBefore(endDate); current = current.plusDays(1)) {
-            if (isHoliday(current)) {
-                continue;
-            }
-            Attendance attendance = findAttendanceByDate(current);
-            if (attendance.getStatus() == AttendanceStatus.LATE) {
-                count++;
-            }
-        }
-        return count;
-    }
-
-    public int getAbsenceCount(LocalDate startDate, LocalDate endDate) {
-        int count = 0;
-        for (LocalDate current = startDate; current.isBefore(endDate); current = current.plusDays(1)) {
-            if (isHoliday(current)) {
-                continue;
-            }
-            Attendance attendance = findAttendanceByDate(current);
-            if (attendance.isAbsence()) {
-                count++;
-            }
-        }
-        return count;
+        return new AttendanceStatistic(result);
     }
 
     private boolean isHoliday(LocalDate date) {

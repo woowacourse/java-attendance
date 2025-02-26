@@ -27,9 +27,9 @@ public class AttendanceHistoryController implements Controller {
         String name = inputView.readName();
         LocalDate nowDate = AttendanceCustomDate.now().toLocalDate();
         Map<LocalDate, Attendance> histories = crewAttendances.getAttendances(name, nowDate.withDayOfMonth(1), nowDate);
-        Map<AttendanceStatus, Integer> attendanceResult = crewAttendances
-                .getAttendanceResult(name, nowDate.withDayOfMonth(1), nowDate);
-        CrewStatus crewStatus = crewAttendances.getCrewStatus(name, nowDate.withDayOfMonth(1), nowDate);
-        outputView.printHistoryResult(name, histories, attendanceResult, crewStatus);
+        AttendanceStatistic statistic = crewAttendances
+                .getAttendanceStatistic(name, nowDate.withDayOfMonth(1), nowDate);
+        CrewStatus crewStatus = statistic.getCrewStatus();
+        outputView.printHistoryResult(name, histories, statistic.getValue(), crewStatus);
     }
 }

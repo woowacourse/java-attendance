@@ -33,25 +33,11 @@ public class CrewAttendances {
         return crewAttendances.get(crew);
     }
 
-    public Attendance findAttendanceByCrewAndDate(String crewName, LocalDate date) {
-        AttendanceBook attendanceBook = findAttendanceBookByCrewName(crewName);
-        return attendanceBook.findAttendanceByDate(date);
-    }
-
-    public Attendance modifyAttendance(String crewName, LocalDate date, LocalTime time) {
-        AttendanceBook attendanceBook = findAttendanceBookByCrewName(crewName);
-        return attendanceBook.replace(date, time);
-    }
-
     public Crew findCrewByName(String crewName) {
         return crewAttendances.keySet().stream()
                 .filter(crew -> crew.getName().equals(crewName))
                 .findFirst()
                 .orElseThrow(CrewNotExistException::new);
-    }
-
-    public Map<Crew, AttendanceBook> findAll() {
-        return Collections.unmodifiableMap(crewAttendances);
     }
 
     public Map<LocalDate, Attendance> getAttendances(String name, LocalDate startDate, LocalDate endDate) {
@@ -65,15 +51,18 @@ public class CrewAttendances {
         return result;
     }
 
-    public Map<AttendanceStatus, Integer> getAttendanceResult(String name, LocalDate startDate, LocalDate endDate) {
+    public AttendanceStatistic getAttendanceStatistic(String name, LocalDate startDate, LocalDate endDate) {
         AttendanceBook attendanceBook = findAttendanceBookByCrewName(name);
-        return attendanceBook.getAttendanceStatusCounts(startDate, endDate);
+        return attendanceBook.getAttendanceStatistic(startDate, endDate);
     }
 
-    public CrewStatus getCrewStatus(String name, LocalDate startDate, LocalDate endDate) {
-        AttendanceBook attendanceBook = findAttendanceBookByCrewName(name);
-        final int lateCount = attendanceBook.getLateCount(startDate, endDate);
-        final int absenceCount = attendanceBook.getAbsenceCount(startDate, endDate);
-        return CrewStatus.from(lateCount, absenceCount);
+    public List<Crew> getDisenrollCrews(LocalDate startDate, LocalDate endDate) {
+        return crewAttendances.keySet()
+                .stream()
+                .filter(crew -> {
+                    AttendanceStatistic statistic = getAttendanceStatistic(crew.getName(), startDate, endDate);
+                    return statistic.getCrewStatus() != CrewStatus.NORMAL;
+                })
+                .toList();
     }
 }

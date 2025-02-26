@@ -20,11 +20,10 @@ public enum CrewStatus {
         this.absenceLowerBound = absenceLowerBound;
     }
 
-    public static CrewStatus from(int lateCount, int absenceCount) {
-        final int totalAbsenceCount = absenceCount + lateCount / 3; // TODO: 상수화?
+    public static CrewStatus from(final int absenceCount) {
         return Arrays.stream(values())
                 .sorted(Comparator.comparing(CrewStatus::getAbsenceLowerBound).reversed())
-                .filter(value -> totalAbsenceCount >= value.getAbsenceLowerBound())
+                .filter(value -> absenceCount >= value.getAbsenceLowerBound())
                 .findFirst()
                 .orElseThrow(InvalidAbsenceCountException::new);
     }

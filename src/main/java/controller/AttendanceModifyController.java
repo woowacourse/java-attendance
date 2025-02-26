@@ -1,6 +1,7 @@
 package controller;
 
 import domain.Attendance;
+import domain.AttendanceBook;
 import domain.CrewAttendances;
 import view.InputView;
 import view.OutputView;
@@ -28,12 +29,11 @@ public class AttendanceModifyController implements Controller{
         String crewName = inputView.readName();
         LocalDate modifyDate = inputView.readModifyDate();
         LocalTime modifyTime = inputView.readModifyTime();
-        Attendance beforeAttendance = crewAttendances.findAttendanceByCrewAndDate(crewName, modifyDate);
-        Attendance modifiedAttendance = crewAttendances.modifyAttendance(
-                crewName,
-                modifyDate,
-                modifyTime
-        );
+
+        AttendanceBook attendanceBook = crewAttendances.findAttendanceBookByCrewName(crewName);
+        Attendance beforeAttendance = attendanceBook.findAttendanceByDate(modifyDate);
+        Attendance modifiedAttendance = attendanceBook.replace(modifyDate, modifyTime);
+
         LocalTime beforeTime = beforeAttendance.getTime().orElse(null);
         String beforeStatus = beforeAttendance.getStatus().getExpression();
         String modifiedStatus = modifiedAttendance.getStatus().getExpression();

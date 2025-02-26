@@ -5,7 +5,7 @@ import domain.Attendance;
 import domain.AttendanceCustomDate;
 import domain.AttendanceStatus;
 import domain.CrewStatus;
-import service.dto.DisenrollmentCheckResponse;
+import view.dto.DisenrollmentCheckResponse;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -137,14 +137,15 @@ public class OutputView {
                     response.name(),
                     response.absenceCount(),
                     response.lateCount(),
-                    response.crewStatus()
+                    response.crewStatus().getExpression()
             );
         }
     }
 
     private List<DisenrollmentCheckResponse> getSortedResponse(List<DisenrollmentCheckResponse> responses) {
         return responses.stream()
-                .sorted(Comparator.comparing(DisenrollmentCheckResponse::getConvertedAbsenceCount).reversed()
+                .sorted(Comparator.comparing(DisenrollmentCheckResponse::crewStatus)
+                        .thenComparing(DisenrollmentCheckResponse::totalAbsenceCount).reversed()
                         .thenComparing(DisenrollmentCheckResponse::name))
                 .toList();
     }

@@ -34,7 +34,7 @@ public class AppConfig {
     private Controller getDisenrollmentCheckController() {
         return new DisenrollmentCheckController(
                 getOutputView(),
-                new DisenrollmentCheckService(getCrewAttendances())
+                getCrewAttendances()
         );
     }
 
