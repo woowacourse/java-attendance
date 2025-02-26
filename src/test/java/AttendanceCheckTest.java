@@ -24,4 +24,18 @@ public class AttendanceCheckTest {
         final var expected = "출석";
         assertEquals(expected, actual);
     }
+
+    @Test
+    void 출석_후_출석_기록을_확인한다() {
+        final var nickname = "에드";
+        final var attendanceTime = LocalTime.of(9, 59);
+
+        AttendanceCheck.attend(nickname, attendanceTime);
+
+        final var attendanceTimeRecord = AttendanceCheck.getAttendanceTime(nickname);
+        final var attendanceStatus = AttendanceCheck.getAttendanceStatus(nickname);
+
+        assertEquals(attendanceTimeRecord, attendanceTime);
+        assertEquals(attendanceStatus, "출석");
+    }
 }
