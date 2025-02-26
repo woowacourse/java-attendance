@@ -1,11 +1,8 @@
-package service;
+package domain;
 
-import domain.AttendanceBook;
-import domain.AttendanceStoreManager;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import domain.CrewAttendances;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
