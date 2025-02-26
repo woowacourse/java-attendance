@@ -54,12 +54,19 @@ public class AttendCheckerTest {
         LocalTime innerOperationTime = LocalTime.of(8, 0);
         LocalTime notOperationTime = LocalTime.of(7, 59);
 
+        LocalTime innerOperationTime2 = LocalTime.of(23, 0);
+        LocalTime notOperationTime2 = LocalTime.of(23, 1);
+
         //when
         boolean actual = operationTimeChecker.isContainsOperationTime(innerOperationTime);
         boolean actual2 = operationTimeChecker.isContainsOperationTime(notOperationTime);
+        boolean actual3 = operationTimeChecker.isContainsOperationTime(innerOperationTime2);
+        boolean actual4 = operationTimeChecker.isContainsOperationTime(notOperationTime2);
 
         //then
         assertThat(actual).isEqualTo(true);
         assertThat(actual2).isEqualTo(false);
+        assertThat(actual3).isEqualTo(true);
+        assertThat(actual4).isEqualTo(false);
     }
 }

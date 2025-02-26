@@ -16,6 +16,9 @@ public class OperationTimeChecker {
         if (targetTime.isBefore(LocalTime.of(8, 0))) {
             return false;
         }
+        if (targetTime.isAfter(LocalTime.of(23, 0))) {
+            return false;
+        }
         return true;
     }
 }
