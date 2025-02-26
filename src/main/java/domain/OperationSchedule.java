@@ -1,0 +1,42 @@
+package domain;
+
+import java.time.DayOfWeek;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+
+public enum OperationSchedule {
+
+    MONDAY(DayOfWeek.MONDAY, LocalTime.of(8, 0), LocalTime.of(23, 0)),
+    TUESDAY(DayOfWeek.TUESDAY, LocalTime.of(8, 0), LocalTime.of(23, 0)),
+    WEDNESDAY(DayOfWeek.WEDNESDAY, LocalTime.of(8, 0), LocalTime.of(23, 0)),
+    THURSDAY(DayOfWeek.THURSDAY, LocalTime.of(8, 0), LocalTime.of(23, 0)),
+    FRIDAY(DayOfWeek.FRIDAY, LocalTime.of(8, 0), LocalTime.of(23, 0)),
+    SATURDAY(DayOfWeek.SATURDAY, LocalTime.of(8, 0), LocalTime.of(23, 0)),
+    SUNDAY(DayOfWeek.SUNDAY, LocalTime.of(8, 0), LocalTime.of(23, 0)),
+    NONE(null, LocalTime.of(0, 0), LocalTime.of(0, 0));;
+
+    private final DayOfWeek dayOfWeek;
+    private final LocalTime startTime;
+    private final LocalTime endTime;
+
+    OperationSchedule(DayOfWeek dayOfWeek, LocalTime startTime, LocalTime endTime) {
+        this.dayOfWeek = dayOfWeek;
+        this.startTime = startTime;
+        this.endTime = endTime;
+    }
+
+    public static boolean isInOperationTime(LocalDateTime datetime) {
+        OperationSchedule schedule = findSchedule(datetime);
+        LocalTime time = datetime.toLocalTime();
+        return !(time.isBefore(schedule.startTime) || time.isAfter(schedule.endTime));
+    }
+
+    private static OperationSchedule findSchedule(LocalDateTime time) {
+        for (OperationSchedule schedule : OperationSchedule.values()) {
+            if (schedule.dayOfWeek.equals(time.getDayOfWeek())) {
+                return schedule;
+            }
+        }
+        return NONE;
+    }
+}
