@@ -1,11 +1,13 @@
 package attendance.domain;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
@@ -20,6 +22,24 @@ class AttendancesTest {
         Attendances attendances = new Attendances(List.of(attendance));
 
         assertThat(attendances.hasAttendanceByLocalDate(LocalDate.of(2025, 2, day))).isEqualTo(expected);
+    }
+
+    @Test
+    void 날짜를_알려주면_출석_기록을_알려준다() {
+        Attendance attendance = new Attendance(LocalDateTime.of(2025, 2, 26, 10, 0));
+        Attendances attendances = new Attendances(List.of(attendance));
+
+        assertThat(attendances.findSameDateAttendance(LocalDate.of(2025, 2, 26)))
+                .isEqualTo(new Attendance(LocalDateTime.of(2025, 2, 26, 10, 0)));
+    }
+
+    @Test
+    void 기록이_존재하지_않는_날짜를_알려주면_출석_기록을_조회할_수_없다() {
+        Attendance attendance = new Attendance(LocalDateTime.of(2025, 2, 26, 10, 0));
+        Attendances attendances = new Attendances(List.of(attendance));
+
+        assertThatThrownBy(() -> attendances.findSameDateAttendance(LocalDate.of(2025, 2, 25)))
+                .isInstanceOf(IllegalArgumentException.class);
     }
 
 }

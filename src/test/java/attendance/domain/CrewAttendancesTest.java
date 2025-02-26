@@ -45,4 +45,32 @@ class CrewAttendancesTest {
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
+    @Test
+    void 크루의_지정한_날짜_출석_기록을_조회한다() {
+        CrewAttendances crewAttendances = new CrewAttendances(crewAttendanceDateTimes);
+        Crew crew = new Crew("빙봉");
+
+        Attendance findAttendance = crewAttendances.findCrewAttendanceByLocalDate(crew, LocalDate.of(2025, 2, 26));
+
+        assertThat(findAttendance).isEqualTo(new Attendance(LocalDateTime.of(2025, 2, 26, 10, 0)));
+    }
+
+    @Test
+    void 존재하지_않는_크루의_출석_기록을_조회할_수_없다() {
+        CrewAttendances crewAttendances = new CrewAttendances(crewAttendanceDateTimes);
+        Crew crew = new Crew("비보");
+
+        assertThatThrownBy(() -> crewAttendances.findCrewAttendanceByLocalDate(crew, LocalDate.of(2025, 2, 26)))
+                .isInstanceOf(IllegalArgumentException.class);
+    }
+
+    @Test
+    void 크루의_출석_기록이_존재하지_않는_날짜의_출석_기록을_조회할_수_없다() {
+        CrewAttendances crewAttendances = new CrewAttendances(crewAttendanceDateTimes);
+        Crew crew = new Crew("빙봉");
+
+        assertThatThrownBy(() -> crewAttendances.findCrewAttendanceByLocalDate(crew, LocalDate.of(2025, 2, 25)))
+                .isInstanceOf(IllegalArgumentException.class);
+    }
+
 }

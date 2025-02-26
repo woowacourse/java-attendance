@@ -27,11 +27,21 @@ public class CrewAttendances {
     }
 
     public boolean hasCrewAttendanceByLocalDate(final Crew crew, final LocalDate findDate) {
+        validateCrewExistence(crew);
+        return crewAttendances.get(crew)
+                .hasAttendanceByLocalDate(findDate);
+    }
+
+    private void validateCrewExistence(final Crew crew) {
         if (!crewAttendances.containsKey(crew)) {
             throw new IllegalArgumentException("존재하지 않는 크루입니다.");
         }
+    }
+
+    public Attendance findCrewAttendanceByLocalDate(final Crew crew, final LocalDate findDate) {
+        validateCrewExistence(crew);
         return crewAttendances.get(crew)
-                .hasAttendanceByLocalDate(findDate);
+                .findSameDateAttendance(findDate);
     }
 
 }

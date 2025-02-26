@@ -16,4 +16,11 @@ public class Attendances {
                 .anyMatch(attendance -> attendance.isSameDate(findDate));
     }
 
+    public Attendance findSameDateAttendance(final LocalDate findDate) {
+        return attendances.stream()
+                .filter(attendance -> attendance.isSameDate(findDate))
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException("해당 날짜의 출석 기록이 존재하지 않습니다."));
+    }
+
 }
