@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.*;
 
 import dto.InitialInfo;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.HashMap;
 import java.util.Map;
 import org.junit.jupiter.api.BeforeEach;
@@ -14,7 +15,8 @@ public class AttendanceBookTest {
     AttendanceBook attendanceBook;
     AttendanceRecord attendanceRecord;
     CrewName mimi = new CrewName("미미");
-    Attendance dayOfTenAttendance = new Attendance(LocalDateTime.of(2024, 12, 10, 9, 59));
+    int day = 10;
+    Attendance dayOfTenAttendance = new Attendance(LocalDateTime.of(2024, 12, day, 9, 59));
 
     @BeforeEach
     void setUp() {
@@ -68,5 +70,16 @@ public class AttendanceBookTest {
         assertThatThrownBy(() -> attendanceBook.addAttendance(crewName, attendance))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("[ERROR]");
+    }
+
+    @DisplayName("닉네임, 수정하려는 날짜, 등교 시간을 입력하여 출석 기록을 수정할 수 있다.")
+    @Test
+    void test5() {
+        Attendance expectedAttendance = new Attendance(LocalDateTime.of(2024, 12, day, 10, 6));
+
+        Attendance modifiedAttendance = attendanceBook.modify(mimi, day, LocalTime.of(10, 6));
+
+        // TODO: Attendance 비교로 수정
+        assertThat(modifiedAttendance.getTime()).isEqualTo(expectedAttendance.getTime());
     }
 }
