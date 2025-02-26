@@ -49,10 +49,10 @@ public class AttendanceHistoriesTest {
         AttendanceHistories attendanceHistories = new AttendanceHistories(new ArrayList<>(List.of(oldHistory)));
 
         // when
-        attendanceHistories.update(crew, newHistory);
+        attendanceHistories.update(oldHistory, newHistory);
 
         // then
-        assertThat(attendanceHistories.checkExistenceByCrewAndDate(crew, newAttendAt.toLocalDate())).isTrue();
+        assertThat(attendanceHistories.findByCrewAndDate(crew, newAttendAt.toLocalDate())).isEqualTo(newHistory);
     }
 
     @Test
@@ -80,5 +80,6 @@ public class AttendanceHistoriesTest {
         assertThatThrownBy(() -> attendanceHistories.findByCrewAndDate(crew, attendAt.toLocalDate()))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("조건에 해당하는 기록이 존재하지 않습니다.");
+
     }
 }
