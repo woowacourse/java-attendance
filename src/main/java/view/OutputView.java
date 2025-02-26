@@ -83,7 +83,10 @@ public class OutputView {
         System.out.printf("이번 달 %s의 출석 기록입니다.\n", name);
         printHistories(histories);
         printAttendanceCount(attendanceResult);
-        printCrewStatus(crewStatus);
+        // TODO: 도메인 객체로 검사하는게 맞나..?
+        if (crewStatus != CrewStatus.NORMAL) {
+            printCrewStatus(crewStatus);
+        }
     }
 
     private String getFormattedDate(LocalDate date) {
