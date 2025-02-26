@@ -54,7 +54,8 @@ public class Attendances {
 
     public void editAttendance(AttendanceDate attendanceDate, AttendanceTime attendanceTime) {
         Attendance oldAttendance = findAttendanceByDate(attendanceDate);
-        oldAttendance.editTime(attendanceTime);
+        attendances.remove(oldAttendance);
+        attendances.add(new Attendance(attendanceDate, attendanceTime));
     }
 
     public List<Attendance> getAttendances() {
