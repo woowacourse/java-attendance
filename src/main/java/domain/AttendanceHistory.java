@@ -3,13 +3,15 @@ package domain;
 import java.time.LocalDateTime;
 
 public class AttendanceHistory implements Comparable<AttendanceHistory> {
+
+    public static final int ABSENT_DEFAULT_HOUR = 23;
+    public static final int ABSENT_DEFAULT_MINUTE = 59;
+
+    private static final int START_TIME = 8;
+    private static final int END_TIME = 23;
+
     private final LocalDateTime attendanceTime;
     private final AttendanceResult attendanceResult;
-
-    public final static int ABSENT_DEFAULT_HOUR = 23;
-    public final static int ABSENT_DEFAULT_MINUTE = 59;
-    private final static int START_TIME = 8;
-    private final static int END_TIME = 23;
 
     public AttendanceHistory(LocalDateTime attendanceTime) {
         validateHistory(attendanceTime);

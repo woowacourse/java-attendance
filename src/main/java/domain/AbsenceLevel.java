@@ -6,10 +6,10 @@ public enum AbsenceLevel {
     WARNING("경고", 2),
     NORMAL("정상", 0);
 
+    public static final int LATE_TO_ABSENCE_THRESHOLD = 3;
+
     private final String level;
     private final int standard;
-
-    public static final int LATE_TO_ABSENCE_THRESHOLD = 3;
 
     AbsenceLevel(String level, int standard) {
         this.level = level;
