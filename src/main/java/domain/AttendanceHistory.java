@@ -64,6 +64,9 @@ public class AttendanceHistory {
 
     public AttendanceRecord findByDate(final LocalDate date) {
         validateAttendanceDay(LocalDateTime.of(date, LocalTime.NOON));
+        if (!attendanceHistory.containsKey(date)) {
+            return AttendanceRecord.empty(date);
+        }
         return attendanceHistory.get(date);
     }
 
