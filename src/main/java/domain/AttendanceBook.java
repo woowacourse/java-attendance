@@ -19,4 +19,9 @@ public class AttendanceBook {
     public AttendanceRecord findAttendanceRecordBy(CrewName crewName) {
         return value.get(crewName);
     }
+
+    public boolean contains(CrewName crewName) {
+        AttendanceRecord attendanceRecord = value.get(crewName);
+        return attendanceRecord != null;
+    }
 }
