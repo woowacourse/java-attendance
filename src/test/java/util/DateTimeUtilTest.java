@@ -1,7 +1,9 @@
 package util;
 
 import java.time.LocalDate;
+import java.time.LocalTime;
 import org.assertj.core.api.Assertions;
+import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -30,6 +32,40 @@ class DateTimeUtilTest {
     void isHolidayTest() {
         // when & then
         Assertions.assertThat(DateTimeUtil.isHoliday(LocalDateFixture.CHRISTMAS)).isTrue();
+    }
+
+    @Test
+    @DisplayName("시간(시분)과 시간 사이를 구분할 수 있다")
+    void IsInRangeTest() {
+        // given
+        LocalTime startTime = LocalTime.of(1, 0);
+        LocalTime endTime = LocalTime.of(2, 31);
+
+        LocalTime earlyTime = LocalTime.of(0, 59);
+        LocalTime betweenTime = LocalTime.of(2, 30);
+        LocalTime overTime = LocalTime.of(2, 32);
+
+        // when & then
+        SoftAssertions.assertSoftly(softAssertions -> {
+            softAssertions.assertThat(DateTimeUtil.isInRange(startTime, endTime, earlyTime)).isFalse();
+            softAssertions.assertThat(DateTimeUtil.isInRange(startTime, endTime, betweenTime)).isTrue();
+            softAssertions.assertThat(DateTimeUtil.isInRange(startTime, endTime, overTime)).isFalse();
+        });
+    }
+
+    @Test
+    @DisplayName("시작 시간이 종료 시간보다 뒤인 경우 예외가 발생한다")
+    void IsInRangeTest_Exception() {
+        // given
+        LocalTime startTime = LocalTime.of(3, 0);
+        LocalTime endTime = LocalTime.of(2, 31);
+
+        LocalTime betweenTime = LocalTime.of(2, 30);
+
+        // when & then
+        Assertions.assertThatThrownBy(() -> {
+            DateTimeUtil.isInRange(startTime, endTime, betweenTime);
+        }).isInstanceOf(IllegalArgumentException.class);
     }
 
     static class LocalDateFixture {
