@@ -11,20 +11,16 @@ public class AttendanceBook {
     }
 
     public void addAttendance(CrewName crewName, Attendance attendance) {
-        if(!contains(crewName)) {
-            throw new IllegalArgumentException("[ERROR] 존재하지 않는 닉네임입니다.");
-        }
         AttendanceRecord attendanceRecord = findAttendanceRecordBy(crewName);
         attendanceRecord.add(attendance);
         value.put(crewName, attendanceRecord);
     }
 
     public AttendanceRecord findAttendanceRecordBy(CrewName crewName) {
-        return value.get(crewName);
-    }
-
-    public boolean contains(CrewName crewName) {
         AttendanceRecord attendanceRecord = value.get(crewName);
-        return attendanceRecord != null;
+        if (attendanceRecord == null) {
+            throw new IllegalArgumentException("[ERROR] 존재하지 않는 닉네임입니다.");
+        }
+        return attendanceRecord;
     }
 }
