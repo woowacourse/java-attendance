@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
 import java.util.Optional;
@@ -153,6 +154,23 @@ class CrewAttendanceTest {
         assertThat(previous1.isEmpty()).isTrue();
         assertThat(previous2.isPresent()).isTrue();
         assertThat(previous2.get()).isEqualTo(expected2);
+    }
+
+    @Test
+    @DisplayName("오늘 직전까지의 출석 기록 반환")
+    void readAttendanceTimesTest() {
+        // given
+        CrewAttendance crewAttendance = CrewAttendance.of(
+                Crew.of("차니"), createAttendanceTimes()
+        );
+
+        // when
+        List<LocalDateTime> times = crewAttendance.readAttendanceTimesBefore(
+                LocalDate.of(2024, 12, 14)
+        );
+
+        // then
+        assertThat(times).hasSize(4);
     }
 
     private AttendanceTimes createAttendanceTimes() {
