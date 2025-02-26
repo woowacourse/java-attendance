@@ -1,5 +1,6 @@
+import static org.assertj.core.api.Assertions.assertThat;
+
 import java.time.LocalDate;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -22,8 +23,22 @@ public class AttendCheckerTest {
         boolean actual3 = operationTimeChecker.isWeekend(weekend2);
 
         //then
-        Assertions.assertThat(actual).isEqualTo(true);
-        Assertions.assertThat(actual2).isEqualTo(false);
-        Assertions.assertThat(actual3).isEqualTo(true);
+        assertThat(actual).isEqualTo(true);
+        assertThat(actual2).isEqualTo(false);
+        assertThat(actual3).isEqualTo(true);
+    }
+
+    @Test
+    @DisplayName("주어진 날짜가 공휴일인지 판정하는 기능")
+    void checkDateIsHoliday() {
+        //given
+        OperationTimeChecker operationTimeChecker = new OperationTimeChecker();
+        LocalDate christmas = LocalDate.of(2024, 12, 25);
+
+        //when
+        boolean actual = operationTimeChecker.isHoliday(christmas);
+
+        //then
+        assertThat(actual).isEqualTo(true);
     }
 }
