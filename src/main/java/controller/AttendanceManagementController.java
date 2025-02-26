@@ -9,7 +9,7 @@ import java.util.Map;
 import model.AttendanceCalculator;
 import model.AttendanceStatus;
 import model.Student;
-import model.StudentRepository;
+import model.Students;
 import util.FileInput;
 import model.TodayDate;
 import util.LocalDateTimePrintFormatter;
@@ -21,7 +21,7 @@ public class AttendanceManagementController {
     public void start() {
         TodayDate todayDate = new TodayDate();
 
-        StudentRepository studentRepository = updateStudentAttendanceRecord();
+        Students studentRepository = updateStudentAttendanceRecord();
         studentRepository.updateEveryStudentNoInformationInFile(todayDate);
 
         String userInput = "";
@@ -44,17 +44,17 @@ public class AttendanceManagementController {
         }
     }
 
-    private StudentRepository updateStudentAttendanceRecord() {
+    private Students updateStudentAttendanceRecord() {
         Map<String, List<LocalDateTime>> studentRecordRepository = FileInput.createStudentRepository();
         List<Student> students = new ArrayList<>();
         for (String name : studentRecordRepository.keySet()) {
             Student student = new Student(name, studentRecordRepository.get(name));
             students.add(student);
         }
-        return new StudentRepository(students);
+        return new Students(students);
     }
 
-    private static void functionForDismissalSubjectCheck(StudentRepository studentRepository) {
+    private static void functionForDismissalSubjectCheck(Students studentRepository) {
         OutputView.displayAtRiskStudent();
         for (Student student : studentRepository.getStudentRepository()) {
             OutputView.printDismissalSubject(AttendanceCalculator.recordAttendanceResult(
@@ -62,7 +62,7 @@ public class AttendanceManagementController {
         }
     }
 
-    private static void functionForStudentRecordCheck(StudentRepository studentRepository) {
+    private static void functionForStudentRecordCheck(Students studentRepository) {
         String name = InputView.getStudentForAttendanceCheckUntilExist(studentRepository);
         OutputView.printAttendanceRecord(studentRepository.findStudentByName(name).getTimeRecords());
         HashMap<AttendanceStatus, Integer> attendanceRecord = AttendanceCalculator.recordAttendanceResult(
@@ -70,7 +70,7 @@ public class AttendanceManagementController {
         OutputView.printResult(attendanceRecord);
     }
 
-    private static void functionForAttendanceModify(StudentRepository studentRepository) {
+    private static void functionForAttendanceModify(Students studentRepository) {
         String studentName = InputView.getStudentNameForModifyUntilValidate(studentRepository);
         LocalDateTime modifyLocalDateTime = InputView.getLocalDateTimeToModify();
         if (isHolidayForMenuTwo(modifyLocalDateTime)) {
@@ -99,7 +99,7 @@ public class AttendanceManagementController {
         return false;
     }
 
-    private static void functionForAttendanceCheck(TodayDate todayDate, StudentRepository studentRepository) {
+    private static void functionForAttendanceCheck(TodayDate todayDate, Students studentRepository) {
         if (isHoliday(todayDate)) {
             return;
         }
@@ -116,7 +116,7 @@ public class AttendanceManagementController {
         OutputView.printTodayAttendanceResult(localDateTime,todayResult);
     }
 
-    private static boolean isAlreadyAttendance(StudentRepository studentRepository, String name,
+    private static boolean isAlreadyAttendance(Students studentRepository, String name,
                                                TodayDate todayDate) {
         try {
             studentRepository.findStudentByName(name).isAlreadyAttendanceDate(todayDate);

@@ -1,13 +1,12 @@
 package model;
 
-import java.util.ArrayList;
 import java.util.List;
 
-public class StudentRepository {
+public class Students {
 
     List<Student> studentRepository;
 
-    public StudentRepository(List<Student> studentRepository) {
+    public Students(List<Student> studentRepository) {
         this.studentRepository = studentRepository;
     }
 
