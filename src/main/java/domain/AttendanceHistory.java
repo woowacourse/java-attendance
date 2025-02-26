@@ -11,10 +11,12 @@ public class AttendanceHistory {
     private static final int CHRISTMAS_MONTH = 12;
     private static final int CHRISTMAS_MONTH_OF_DAY = 25;
 
+    private final Crew crew;
     private final Map<LocalDate, AttendanceRecord> attendanceHistory;
 
     public AttendanceHistory() {
         this.attendanceHistory = new HashMap<>();
+        this.crew = null;
     }
 
     public AttendanceRecord attendance(final LocalDateTime attendanceDateTime) {
@@ -38,5 +40,9 @@ public class AttendanceHistory {
                 || (date.getMonthValue() == CHRISTMAS_MONTH && date.getDayOfMonth() == CHRISTMAS_MONTH_OF_DAY)) {
             throw new IllegalArgumentException();
         }
+    }
+
+    public Crew getCrew() {
+        return null;
     }
 }
