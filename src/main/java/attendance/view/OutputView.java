@@ -11,4 +11,8 @@ public class OutputView {
                 "%s (%s)%n", record.getAttendanceDateTime().format(DATE_FORMATTER),
                 record.getAttendanceStatus().getTitle());
     }
+
+    public void printError(String message) {
+        System.out.println(message);
+    }
 }

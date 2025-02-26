@@ -2,6 +2,7 @@ package attendance.util;
 
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 
 public class Util {
 
@@ -16,7 +17,7 @@ public class Util {
     public static LocalTime parseToTime(String str) {
         try {
             return LocalTime.parse(str, DateTimeFormatter.ofPattern("HH:mm"));
-        } catch (IllegalArgumentException e) {
+        } catch (DateTimeParseException e) {
             throw new IllegalArgumentException("올바른 시간 입력이 아닙니다. 다시 입력해주세요.");
         }
     }

@@ -3,30 +3,38 @@ package attendance.controller;
 import attendance.domain.AttendanceBook;
 import attendance.domain.AttendanceRecord;
 import attendance.domain.Crew;
-import attendance.loader.AttendanceAssembler;
 import attendance.view.InputView;
 import attendance.view.OutputView;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.Map;
 
 public class AttendanceController {
     private final InputView inputView;
     private final OutputView outputView;
-    private final AttendanceAssembler assembler;
+    private final AttendanceBook attendanceBook;
 
-    public AttendanceController(InputView inputView, OutputView outputView, AttendanceAssembler assembler) {
+    public AttendanceController(InputView inputView, OutputView outputView, AttendanceBook attendanceBook) {
         this.inputView = inputView;
         this.outputView = outputView;
-        this.assembler = assembler;
+        this.attendanceBook = attendanceBook;
     }
 
     public void run() {
-        AttendanceBook attendanceBook = assembler.assembleDatas();
 
-        MainOption option = MainOption.from(inputView.readOption());
+        Map<MainOption, Runnable> commands = Map.of(
+                MainOption.CHECK_ATTENDANCE, this::processCheckAttendance,
+                MainOption.QUIT, () -> System.exit(0)
+        );
 
-        if (option == MainOption.CHECK_ATTENDANCE) {
+        Runnable action = commands.getOrDefault(MainOption.from(inputView.readOption()), this::run);
+        action.run();
+        run();
+    }
+
+    private void processCheckAttendance() {
+        process(() -> {
             Crew crew = new Crew(inputView.readName());
             LocalTime entryTime = inputView.readEntryTime();
 
@@ -35,7 +43,14 @@ public class AttendanceController {
                     record);
 
             outputView.displayAttendanceResult(record);
-        }
+        });
+    }
 
+    private void process(Runnable runnable) {
+        try {
+            runnable.run();
+        } catch (IllegalArgumentException exception) {
+            outputView.printError(exception.getMessage());
+        }
     }
 }
