@@ -1,8 +1,10 @@
 package attendance.view;
 
+import attendance.domain.AbsenceInfo;
 import attendance.domain.Crew;
 import attendance.domain.AttendanceChecker;
 import attendance.domain.AttendanceRegistry;
+import attendance.domain.CrewRisk;
 import attendance.domain.constant.CrewStatus;
 import attendance.domain.constant.Weekday;
 import java.time.LocalTime;
@@ -65,12 +67,13 @@ public class OutputView {
         }
     }
 
-    public void writeDismissCrewCheck(List<Map.Entry<Crew, List<Integer>>> allExpertRiskCrews) {
+    public void writeDismissCrewCheck(List<CrewRisk> allExpertRiskCrews) {
         System.out.println("제적 위험자 조회 결과");
-        for (Map.Entry<Crew, List<Integer>> entry : allExpertRiskCrews) {
-            int absenceCounts = entry.getValue().getFirst();
-            int lateCounts = entry.getValue().getLast();
-            String crewName = entry.getKey().getCrewName();
+        for (CrewRisk crewRisk : allExpertRiskCrews) {
+            AbsenceInfo absenceInfo = crewRisk.getAbsenceInfo();
+            int absenceCounts = absenceInfo.getAbsenceCount();
+            int lateCounts = absenceInfo.getLateCount();
+            String crewName = crewRisk.getCrew().getCrewName();
             String crewStatus = CrewStatus.from(lateCounts, absenceCounts).getName();
             writeAbsenceOver(absenceCounts, crewName, lateCounts, crewStatus);
         }

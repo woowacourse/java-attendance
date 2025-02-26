@@ -130,10 +130,10 @@ class RegisterTest {
         register.fromCrewAttendanceTimeFile(attendanceTimes);
 
         //when
-        List<Entry<Crew, List<Integer>>> riskCrews = register.findAllExpertRiskCrews();
+        List<CrewRisk> riskCrews = register.findAllExpertRiskCrews();
         List<Crew> orderedCrews = new ArrayList<>();
-        for (Map.Entry<Crew, List<Integer>> riskCrew : riskCrews) {
-            orderedCrews.add(riskCrew.getKey());
+        for (CrewRisk crewRisk : riskCrews) {
+            orderedCrews.add(crewRisk.getCrew());
         }
         assertAll(
                 () -> assertThat(orderedCrews.size()).isEqualTo(2),

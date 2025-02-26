@@ -10,7 +10,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 
 public class Register {
     private final Map<Crew, AttendanceRegistry> register;
@@ -66,8 +65,8 @@ public class Register {
         }
     }
 
-    public List<Entry<Crew, List<Integer>>> findAllExpertRiskCrews() {
-        Map<Crew, List<Integer>> riskCrewMap = new HashMap<>();
+    public List<CrewRisk> findAllExpertRiskCrews() {
+        Map<Crew, AbsenceInfo> riskCrewMap = new HashMap<>();
         for (Crew crew : register.keySet()) {
             AttendanceRegistry attendanceRegistry = register.get(findValidatedCrew(crew));
             findRiskCrews(crew, riskCrewMap, attendanceRegistry);
@@ -75,19 +74,17 @@ public class Register {
         return orderByAbsenceCounts(riskCrewMap);
     }
 
-    private List<Entry<Crew, List<Integer>>> orderByAbsenceCounts(Map<Crew, List<Integer>> riskCrewMap) {
-        List<Map.Entry<Crew, List<Integer>>> riskCrews = new ArrayList<>(riskCrewMap.entrySet());
-        riskCrews.sort((e1, e2) -> Integer.compare(
-                calculateTotalAbsence(e2.getValue()),
-                calculateTotalAbsence(e1.getValue())
+    private List<CrewRisk> orderByAbsenceCounts(Map<Crew, AbsenceInfo> riskCrewMap) {
+        List<CrewRisk> riskCrews = new ArrayList<>();
+        for (Map.Entry<Crew, AbsenceInfo> entry : riskCrewMap.entrySet()) {
+            riskCrews.add(new CrewRisk(entry.getKey(), entry.getValue()));
+        }
+
+        riskCrews.sort((crew1, crew2) -> Integer.compare(
+                crew2.getAbsenceInfo().calculateTotalAbsence(),
+                crew1.getAbsenceInfo().calculateTotalAbsence()
         ));
         return riskCrews;
-    }
-
-    private int calculateTotalAbsence(List<Integer> absenceCounts) {
-        int absence = absenceCounts.getFirst();
-        int late = absenceCounts.getLast();
-        return divideLate(absence, late);
     }
 
     private int divideLate(int absence, int late) {
@@ -101,12 +98,14 @@ public class Register {
                 .orElseThrow(() -> CustomException.from(ErrorMessage.NICKNAME_NOT_PRESENCE));
     }
 
-    private void findRiskCrews(Crew crew, Map<Crew, List<Integer>> riskCrews, AttendanceRegistry attendanceRegistry) {
+    private void findRiskCrews(Crew crew, Map<Crew, AbsenceInfo> riskCrews, AttendanceRegistry attendanceRegistry) {
         int absenceCounts = attendanceRegistry.findStatusCounts(AttendanceStatus.ABSENCE);
         int lateCounts = attendanceRegistry.findStatusCounts(AttendanceStatus.LATE);
         int limitCount = divideLate(absenceCounts, lateCounts);
+
         if (limitCount >= CrewStatus.WARNING.getLimitCount()) {
-            riskCrews.put(crew, List.of(absenceCounts, lateCounts));
+            AbsenceInfo absenceInfo = new AbsenceInfo(absenceCounts, lateCounts);
+            riskCrews.put(crew, absenceInfo);
         }
     }
 
