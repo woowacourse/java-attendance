@@ -19,9 +19,12 @@ public class AttendanceTest {
     @ParameterizedTest(name = "{index} : {1}")
     @MethodSource("getWeekend")
     void 주말에_출석을_하면_예외가_발생한다(LocalDate weekend, String message) {
-        assertThatThrownBy(() -> new Attendance(weekend))
+        LocalTime attendTime = LocalTime.of(8, 0);
+
+        assertThatThrownBy(() -> new Attendance(weekend, attendTime))
                 .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage(FormattedErrorMessage.INVALID_ATTENDANCE_ERROR.getDateFormatMessage(weekend));
+                .hasMessage(FormattedErrorMessage.INVALID_ATTEND_DATE_ERROR.getDateFormatMessage(weekend));
+
     }
 
     static Stream<Arguments> getWeekend() {
@@ -40,9 +43,11 @@ public class AttendanceTest {
     @ParameterizedTest(name = "{index} : {1}")
     @MethodSource("getHoliday")
     void 공휴일에_출석을_하면_예외가_발생한다(LocalDate holiday, String message) {
-        assertThatThrownBy(() -> new Attendance(holiday))
+        LocalTime attendTime = LocalTime.of(23, 0);
+
+        assertThatThrownBy(() -> new Attendance(holiday, attendTime))
                 .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage(FormattedErrorMessage.INVALID_ATTENDANCE_ERROR.getDateFormatMessage(holiday));
+                .hasMessage(FormattedErrorMessage.INVALID_ATTEND_DATE_ERROR.getDateFormatMessage(holiday));
     }
 
     static Stream<Arguments> getHoliday() {
@@ -64,6 +69,6 @@ public class AttendanceTest {
 
         assertThatThrownBy(() -> new Attendance(attendDate, attendTime))
                 .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage(FormattedErrorMessage.INVALID_ATTENDANCE_ERROR.getTimeFormatMessage(attendTime));
+                .hasMessage(FormattedErrorMessage.INVALID_ATTEND_TIME_ERROR.getTimeFormatMessage(attendTime));
     }
 }
