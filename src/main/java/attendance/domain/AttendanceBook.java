@@ -29,6 +29,11 @@ public class AttendanceBook {
         return crewAttendances.get(nickname);
     }
 
+    public Attendance findByNicknameAndDate(String nickname, LocalDateTime dateTime) {
+        Attendances attendances = crewAttendances.get(nickname);
+        return attendances.findByDate(dateTime.toLocalDate());
+    }
+
     private void validateNickname(String nickname) {
         if (!crewAttendances.containsKey(nickname)) {
             throw new IllegalArgumentException("[ERROR] 등록되지 않은 닉네임입니다.");

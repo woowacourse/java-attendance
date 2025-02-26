@@ -11,16 +11,6 @@ public class Attendances {
         this.attendances = attendances;
     }
 
-//    public Attendance add(LocalDateTime dateTime) {
-//        LocalDate date = LocalDate.from(dateTime);
-//        if (existsByDate(date)) {
-//            throw new IllegalArgumentException("[ERROR] 이미 출석하셨습니다. 수정 기능을 이용해주세요.");
-//        }
-//        Attendance attendance = Attendance.from(dateTime);
-//        attendances.add(attendance);
-//        return attendance;
-//    }
-
     public Attendance add(Attendance attendance) {
 //        if (existsByDate(date)) {
 //            throw new IllegalArgumentException("[ERROR] 이미 출석하셨습니다. 수정 기능을 이용해주세요.");
@@ -51,7 +41,7 @@ public class Attendances {
         return before;
     }
 
-    private Attendance findByDate(LocalDate date) {
+    public Attendance findByDate(LocalDate date) {
         return attendances.stream()
                 .filter(attendance -> attendance.isEqualToDate(date))
                 .findFirst()

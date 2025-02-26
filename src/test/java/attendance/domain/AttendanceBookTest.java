@@ -70,6 +70,24 @@ public class AttendanceBookTest {
                 .doesNotThrowAnyException();
     }
 
+    @Test
+    void 닉네임과_날짜를_이용해_출석기록을_가져온다() {
+        List<LocalDateTime> attendances = List.of(LocalDateTime.of(2024, 12, 13, 9, 59));
+        AttendanceBook attendanceBook = generateAttendanceBook("훌라", attendances);
+        final var result = attendanceBook.findByNicknameAndDate("훌라", LocalDateTime.of(2024, 12, 13, 10, 6));
+
+        assertThat(result).isEqualTo(Attendance.from(LocalDateTime.of(2024, 12, 13, 9, 59)));
+    }
+
+    @Test
+    void 닉네임과_날짜를_이용해_출석기록을_가져온다2() {
+        List<LocalDateTime> attendances = List.of(LocalDateTime.of(2024, 12, 12, 9, 31));
+        AttendanceBook attendanceBook = generateAttendanceBook("훌라", attendances);
+        final var result = attendanceBook.findByNicknameAndDate("훌라", LocalDateTime.of(2024, 12, 12, 10, 4));
+
+        assertThat(result).isEqualTo(Attendance.from(LocalDateTime.of(2024, 12, 12, 9, 31)));
+    }
+
     public static AttendanceBook generateAttendanceBook(String nickname, List<LocalDateTime> dateTimes) {
         Map<String, Attendances> crewAttendances = Map.of(nickname, generateAttendances(dateTimes));
         return new AttendanceBook(new HashMap<>(crewAttendances));
