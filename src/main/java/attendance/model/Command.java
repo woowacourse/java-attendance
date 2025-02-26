@@ -1,6 +1,7 @@
 package attendance.model;
 
 import java.util.Arrays;
+import java.util.List;
 
 public enum Command {
 
@@ -22,8 +23,17 @@ public enum Command {
         return this.code.equals(code);
     }
 
+    public String getCode() {
+        return code;
+    }
+
     public String getDescription() {
         return description;
+    }
+
+    public static List<Command> getCommands() {
+        return Arrays.stream(values())
+                .toList();
     }
 
     public static Command from(String input) {
