@@ -21,8 +21,8 @@ public class AttendanceFileReader {
             String rawDateTime = currentLines[1];
 
             LocalDateTime dateTime = LocalDateTime.parse(rawDateTime, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
-            attendanceStorage.addCrew(crew);
-            attendanceStorage.addHistory(AttendanceHistory.of(crew, dateTime));
+            attendanceStorage.add(crew);
+            attendanceStorage.add(AttendanceHistory.of(crew, dateTime));
         }
     }
 }

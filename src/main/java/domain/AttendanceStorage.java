@@ -14,11 +14,11 @@ public class AttendanceStorage {
         this.attendanceHistories = new ArrayList<>();
     }
 
-    public void addCrew(Crew crew) {
+    public void add(Crew crew) {
         crews.add(crew);
     }
 
-    public void addHistory(AttendanceHistory attendanceHistory) {
+    public void add(AttendanceHistory attendanceHistory) {
         attendanceHistories.add(attendanceHistory);
     }
 
