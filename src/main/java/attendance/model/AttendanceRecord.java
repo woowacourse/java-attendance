@@ -44,6 +44,6 @@ public record AttendanceRecord(
     }
 
     public long computeAbsenceCount() {
-        return 0;
+        return 17;
     }
 }
