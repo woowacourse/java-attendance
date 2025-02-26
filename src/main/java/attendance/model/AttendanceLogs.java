@@ -1,6 +1,7 @@
 package attendance.model;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -21,11 +22,18 @@ public class AttendanceLogs {
         }
     }
 
+    public AttendanceLog findByNicknameAndAttendanceDate(Nickname nickname, LocalDate attendanceDate) {
+        return logs.stream()
+                .filter(attendanceLog -> attendanceLog.isSameNicknameAndDate(nickname, attendanceDate))
+                .findFirst()
+                .orElseGet(() -> new AttendanceLog(nickname, attendanceDate));
+    }
+
     public boolean contains(AttendanceLog attendanceLog) {
         return logs.contains(attendanceLog);
     }
 
-    public List<AttendanceLog> findByNicknameInMonth(Nickname nickname, LocalDate baseDate) {
+    public List<AttendanceLog> findAllByNicknameInMonth(Nickname nickname, LocalDate baseDate) {
         return logs.stream()
                 .filter(sameCrewAndMonth(nickname, baseDate))
                 .filter(untilPreviousDay(baseDate))
@@ -38,5 +46,18 @@ public class AttendanceLogs {
 
     private Predicate<AttendanceLog> untilPreviousDay(LocalDate baseDate) {
         return attendanceLog -> attendanceLog.isBefore(baseDate);
+    }
+
+    public AttendanceLog edit(Nickname nickname, LocalDateTime dateTime) {
+        AttendanceLog attendanceLog = findByNicknameAndAttendanceDate(nickname, dateTime.toLocalDate());
+        if (attendanceLog.isNotRecorded()) {
+            AttendanceLog newAttendanceLog = new AttendanceLog(nickname, dateTime.toLocalDate(), dateTime.toLocalTime());
+            logs.add(newAttendanceLog);
+            return newAttendanceLog;
+        }
+        logs.remove(attendanceLog);
+        AttendanceLog newAttendanceLog = new AttendanceLog(nickname, dateTime.toLocalDate(), dateTime.toLocalTime());
+        logs.add(newAttendanceLog);
+        return newAttendanceLog;
     }
 }

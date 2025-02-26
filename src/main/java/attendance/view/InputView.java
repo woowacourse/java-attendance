@@ -33,4 +33,27 @@ public class InputView {
         System.out.println("등교 시간을 입력해 주세요.");
         return scanner.nextLine();
     }
+
+    public String readNicknameForEditAttendance() {
+        System.out.println("\n출석을 수정하려는 크루의 닉네임을 입력해 주세요.");
+        return scanner.nextLine();
+    }
+
+    public int readDateForEditAttendance() {
+        System.out.println("수정하려는 날짜(일)를 입력해 주세요.");
+        return parseInt(scanner.nextLine());
+    }
+
+    private int parseInt(String input) {
+        try {
+            return Integer.parseInt(input);
+        } catch (NumberFormatException e) {
+            throw new IllegalArgumentException("숫자만 입력할 수 있습니다. 입력: %s".formatted(input));
+        }
+    }
+
+    public String readAttendanceTimeForEditAttendance() {
+        System.out.println("언제로 변경하겠습니까?");
+        return scanner.nextLine();
+    }
 }

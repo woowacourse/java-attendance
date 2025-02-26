@@ -36,6 +36,9 @@ public class AttendanceController {
         if (command == Command.ATTENDANCE) {
             attend(baseDate, attendanceLogs);
         }
+        if (command == Command.EDIT_ATTENDANCE) {
+            editAttendanceLog(baseDate, attendanceLogs);
+        }
     }
 
     private void attend(LocalDate baseDate, AttendanceLogs attendanceLogs) {
@@ -59,5 +62,30 @@ public class AttendanceController {
 
     private LocalTime parseTime(String rawTime) {
         return LocalTime.parse(rawTime, DateTimeFormatter.ofPattern("HH:mm"));
+    }
+
+    private void editAttendanceLog(LocalDate baseDate, AttendanceLogs attendanceLogs) {
+        Nickname nickname = new Nickname(inputView.readNicknameForEditAttendance());
+        LocalDate targetDate = createTargetDate(baseDate);
+        LocalTime updateTime = parseTime(inputView.readAttendanceTimeForEditAttendance());
+        AttendanceLog beforeAttendanceLog = attendanceLogs.findByNicknameAndAttendanceDate(nickname, targetDate);
+        AttendanceLog afterAttendanceLog = attendanceLogs.edit(nickname, LocalDateTime.of(targetDate, updateTime));
+        outputView.printEditAttendanceLog(
+                beforeAttendanceLog,
+                determineAttendanceType(targetDate, getTimeInAttendanceLog(beforeAttendanceLog)),
+                afterAttendanceLog,
+                determineAttendanceType(targetDate, getTimeInAttendanceLog(afterAttendanceLog)));
+    }
+
+    private LocalTime getTimeInAttendanceLog(AttendanceLog attendanceLog) {
+        if (attendanceLog.isNotRecorded()) {
+            return null;
+        }
+        return attendanceLog.getAttendanceTime();
+    }
+
+    private LocalDate createTargetDate(LocalDate baseDate) {
+        int targetDate = inputView.readDateForEditAttendance();
+        return LocalDate.of(baseDate.getYear(), baseDate.getMonth(), targetDate);
     }
 }

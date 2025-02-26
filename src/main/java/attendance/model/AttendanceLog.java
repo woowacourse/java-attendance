@@ -68,10 +68,15 @@ public class AttendanceLog {
         return attendanceTime == null;
     }
 
-    public boolean isSameNicknameAndMonth(Nickname targetNickname, LocalDate baseDate) {
-        return this.nickname.equals(targetNickname)
-                && this.attendanceDate.getYear() == baseDate.getYear()
-                && this.attendanceDate.getMonth() == baseDate.getMonth();
+    public boolean isSameNicknameAndDate(Nickname comparedNickname, LocalDate comparedDate) {
+        return nickname.equals(comparedNickname)
+                && attendanceDate.isEqual(comparedDate);
+    }
+
+    public boolean isSameNicknameAndMonth(Nickname comparedNickname, LocalDate comparedDate) {
+        return nickname.equals(comparedNickname)
+                && attendanceDate.getYear() == comparedDate.getYear()
+                && attendanceDate.getMonth() == comparedDate.getMonth();
     }
 
     public boolean isBefore(LocalDate baseDate) {
@@ -80,6 +85,10 @@ public class AttendanceLog {
 
     public LocalDateTime getAttendanceDateTime() {
         return LocalDateTime.of(attendanceDate, getAttendanceTime());
+    }
+
+    public LocalDate getAttendanceDate() {
+        return attendanceDate;
     }
 
     public LocalTime getAttendanceTime() {

@@ -98,6 +98,23 @@ class AttendanceLogTest {
                 .hasMessage("출석 날짜는 null일 수 없습니다.");
     }
 
+    @DisplayName("등교 날짜를 조회할 수 있다.")
+    @Test
+    void getAttendanceDateTest() {
+        // given
+        Nickname nickname = new Nickname("벨로");
+        LocalDate attendanceDate = LocalDate.of(2024, 12, 2);
+        LocalTime attendanceTime = LocalTime.of(10, 0);
+        AttendanceLog attendanceLog = new AttendanceLog(nickname, attendanceDate, attendanceTime);
+
+        // when
+        LocalDate logAttendanceDate = attendanceLog.getAttendanceDate();
+
+        // then
+        assertThat(logAttendanceDate)
+                .isEqualTo(attendanceDate);
+    }
+
     @DisplayName("등교 시간이 없는 경우 결석으로 간주한다.")
     @Test
     void shouldAbsent_WhenAttendanceTimeIsNull() {
@@ -210,5 +227,53 @@ class AttendanceLogTest {
         assertThatCode(() -> new AttendanceLog(nickname, attendanceDate, outTime))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("캠퍼스 운영시간(08:00~23:00) 외에는 출석할 수 없습니다.");
+    }
+
+    @DisplayName("출석 로그를 닉네임과 입력한 달이 일치하는지 확인할 수 있다.")
+    @ParameterizedTest
+    @CsvSource({
+            "벨로, 2024-12-02, true",
+            "벨로, 2024-11-31, false",
+            "네오, 2024-12-02, false",
+            "네오, 2024-11-31, false"
+    })
+    void attendanceLogSameNicknameAndMonthTest(String comparedNickname,
+                                               @JavaTimeConversionPattern("yyyy-MM-dd") LocalDate comparedDate,
+                                               boolean expected) {
+        // given
+        Nickname belloNickname = new Nickname("벨로");
+        LocalDate attendanceDate = LocalDate.of(2024, 12, 2);
+        AttendanceLog attendanceLog = new AttendanceLog(belloNickname, attendanceDate);
+
+        // when
+        boolean isSame = attendanceLog.isSameNicknameAndMonth(new Nickname(comparedNickname), comparedDate);
+
+        // then
+        assertThat(isSame)
+                .isEqualTo(expected);
+    }
+
+    @DisplayName("출석 로그를 닉네임과 입력한 날짜가 일치하는지 확인할 수 있다.")
+    @ParameterizedTest
+    @CsvSource({
+            "벨로, 2024-12-02, true",
+            "벨로, 2024-12-31, false",
+            "네오, 2024-12-02, false",
+            "네오, 2024-12-31, false"
+    })
+    void attendanceLogSameNicknameAndDateTest(String comparedNickname,
+                                              @JavaTimeConversionPattern("yyyy-MM-dd") LocalDate comparedDate,
+                                              boolean expected) {
+        // given
+        Nickname belloNickname = new Nickname("벨로");
+        LocalDate attendanceDate = LocalDate.of(2024, 12, 2);
+        AttendanceLog attendanceLog = new AttendanceLog(belloNickname, attendanceDate);
+
+        // when
+        boolean isSame = attendanceLog.isSameNicknameAndDate(new Nickname(comparedNickname), comparedDate);
+
+        // then
+        assertThat(isSame)
+                .isEqualTo(expected);
     }
 }

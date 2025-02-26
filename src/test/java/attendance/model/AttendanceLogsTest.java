@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
 import org.junit.jupiter.api.DisplayName;
@@ -49,7 +50,7 @@ class AttendanceLogsTest {
 
     @DisplayName("기준 날짜 전날까지의 출석 기록을 닉네임과 기준 날짜로 조회할 수 있다.")
     @Test
-    void findAttendanceLogsByNicknameUpToPreviousDay() {
+    void findAttendanceLogsByNicknameUpToPreviousDayTest() {
         // given
         Nickname nickname = new Nickname("벨로");
         LocalDate today = LocalDate.of(2024, 12, 3);
@@ -61,11 +62,69 @@ class AttendanceLogsTest {
         attendanceLogs.add(new AttendanceLog(nickname, today, attendanceTime));
 
         // when
-        List<AttendanceLog> findLogs = attendanceLogs.findByNicknameInMonth(nickname, today);
+        List<AttendanceLog> findLogs = attendanceLogs.findAllByNicknameInMonth(nickname, today);
 
         // then
         assertThat(findLogs)
                 .hasSize(1)
                 .containsExactly(new AttendanceLog(nickname, yesterday, attendanceTime));
+    }
+
+    @DisplayName("닉네임과 특정 날짜로 출석 로그를 조회할 수 있다.")
+    @Test
+    void findByNicknameAndAttendanceDateTest() {
+        // given
+        Nickname nickname = new Nickname("벨로");
+        LocalDate today = LocalDate.of(2024, 12, 3);
+        LocalTime attendanceTime = LocalTime.of(10, 0);
+
+        AttendanceLogs attendanceLogs = new AttendanceLogs();
+        AttendanceLog attendanceLog = new AttendanceLog(nickname, today, attendanceTime);
+        attendanceLogs.add(attendanceLog);
+
+        // when
+        AttendanceLog findLog = attendanceLogs.findByNicknameAndAttendanceDate(nickname, today);
+
+        // then
+        assertThat(findLog)
+                .isEqualTo(attendanceLog);
+    }
+
+    @DisplayName("닉네임과 특정 날짜에 해당하는 출석 로그가 없는 경우 시간이 없는 로그 객체를 반환한다.")
+    @Test
+    void findByNicknameAndAttendanceDateNoExistTest() {
+        // given
+        Nickname nickname = new Nickname("벨로");
+        LocalDate today = LocalDate.of(2024, 12, 3);
+        AttendanceLogs attendanceLogs = new AttendanceLogs();
+
+        // when
+        AttendanceLog findLog = attendanceLogs.findByNicknameAndAttendanceDate(nickname, today);
+
+        // then
+        assertThat(findLog.isNotRecorded())
+                .isTrue();
+    }
+
+    @DisplayName("출석 로그를 수정할 수 있다.")
+    @Test
+    void editAttendanceLogTest() {
+        // given
+        Nickname nickname = new Nickname("벨로");
+        LocalDate today = LocalDate.of(2024, 12, 3);
+        LocalTime attendanceTime = LocalTime.of(10, 0);
+
+        AttendanceLogs attendanceLogs = new AttendanceLogs();
+        AttendanceLog attendanceLog = new AttendanceLog(nickname, today, attendanceTime);
+        attendanceLogs.add(attendanceLog);
+
+        // when
+        LocalDateTime updateDateTime = LocalDateTime.of(today, LocalTime.of(13, 0));
+        attendanceLogs.edit(nickname, updateDateTime);
+        AttendanceLog edited = attendanceLogs.findByNicknameAndAttendanceDate(nickname, updateDateTime.toLocalDate());
+
+        // then
+        assertThat(edited.getAttendanceTime())
+                .isEqualTo(LocalTime.of(13, 0));
     }
 }
