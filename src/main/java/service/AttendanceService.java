@@ -2,10 +2,12 @@ package service;
 
 import controller.dto.ModifyAttendanceRequest;
 import controller.dto.MonthAttendanceStatisticsRequest;
+import controller.dto.RiskCrewsRequest;
 import controller.dto.SaveAttendanceRequest;
 import domain.AttendanceRecord;
 import domain.AttendanceStatus;
 import domain.CampusTime;
+import domain.Crew;
 import domain.LectureTime;
 import domain.RiskRank;
 import java.time.LocalDate;
@@ -20,6 +22,8 @@ import service.dto.AttendanceRecordResponse;
 import service.dto.ModifyAttendanceRecordResponse;
 import service.dto.ModifyAttendanceRecordResponse.TimeStatus;
 import service.dto.MonthAttendanceStatisticsResponse;
+import service.dto.RiskCrew;
+import service.dto.RiskCrewsResponse;
 import service.dto.SaveAttendanceRecordResponse;
 import util.DateTimeUtil;
 
@@ -62,6 +66,22 @@ public class AttendanceService {
         return new MonthAttendanceStatisticsResponse(monthAttendanceRecords,
                 attendanceStatusCount,
                 riskRank);
+    }
+
+    public RiskCrewsResponse getRiskCrews(RiskCrewsRequest request) {
+        List<String> nicknames = CrewRepository.findAll()
+                .stream()
+                .map(Crew::getNickname)
+                .toList();
+        List<RiskCrew> riskCrews = new ArrayList<>();
+        nicknames.forEach(nickname -> {
+            List<AttendanceRecordResponse> monthAttendanceRecords = getMonthAttendanceRecords(nickname,
+                    request.today());
+            Map<String, Integer> attendanceStatusCount = calculateAttendanceStatusCount(monthAttendanceRecords);
+            String riskRank = calculateRiskRank(attendanceStatusCount);
+            riskCrews.add(new RiskCrew(nickname, attendanceStatusCount, riskRank));
+        });
+        return new RiskCrewsResponse(riskCrews);
     }
 
     private TimeStatus getDateTimeStatus(String nickName, LocalDate date) {

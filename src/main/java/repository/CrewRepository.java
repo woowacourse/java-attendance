@@ -2,6 +2,7 @@ package repository;
 
 import domain.Crew;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class CrewRepository {
@@ -17,6 +18,10 @@ public class CrewRepository {
     public static boolean existsCrew(String nickname) {
         return CREWS.stream()
                 .anyMatch(crew -> nickname.equals(crew.getNickname()));
+    }
+
+    public static List<Crew> findAll() {
+        return Collections.unmodifiableList(CREWS);
     }
 
     public static void clear() {

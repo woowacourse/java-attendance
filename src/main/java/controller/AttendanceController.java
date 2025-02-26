@@ -30,7 +30,7 @@ public class AttendanceController {
                 case SAVE_ATTENDANCE_RECORD -> saveAttendanceRecord();
                 case MODIFY_ATTENDANCE_RECORD -> modifyAttendanceRecord();
                 case PRINT_MONTH_ATTENDANCE_STATISTICS -> printMonthAttendanceStatistics();
-                case PRINT_CREWS_ON_RISK_OF_EXPELLED -> printCrewsOnRiskOfExpelled();
+                case PRINT_RISK_CREWS -> printCrewsOnRiskOfExpelled();
                 case QUIT -> isRunning = false;
             }
         }
