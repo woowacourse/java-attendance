@@ -35,7 +35,7 @@ public class Student {
         for (LocalDateTime localDateTime : timeRecords) {
             LocalDateTime dayDate1 = localDateTime.truncatedTo(ChronoUnit.DAYS);
             LocalDateTime dayDate2 = wantToFindLocalDateTime.truncatedTo(ChronoUnit.DAYS);
-            if (dayDate1.compareTo(dayDate2) == 0) {
+            if (dayDate1.isEqual(dayDate2)) {
                 return localDateTime;
             }
         }
@@ -52,7 +52,7 @@ public class Student {
         LocalDateTime dayDate1 = localDateTime1.truncatedTo(ChronoUnit.DAYS);
         LocalDateTime dayDate2 = localDateTime2.truncatedTo(ChronoUnit.DAYS);
 
-        return (dayDate1.compareTo(dayDate2) == 0);
+        return (dayDate1.isEqual(dayDate2));
     }
 
     public void updateNoInformationInFile(LocalDateTime todayDate) {
