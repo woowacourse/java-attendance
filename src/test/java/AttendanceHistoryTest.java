@@ -140,5 +140,18 @@ public class AttendanceHistoryTest {
             assertThatThrownBy(() -> attendanceHistory.updateTimeByDate(updateDateTime))
                     .isInstanceOf(IllegalArgumentException.class);
         }
+
+        @DisplayName("수정하려는 시간이 등교 시간이 아니라면, 예외가 발생한다.")
+        @Test
+        public void updateTimeByDateNotSchoolTime() throws Exception {
+            // given
+            final Crew owner = new Crew("owner");
+            final var attendanceHistory = new AttendanceHistory(owner);
+            final var updateDateTime = LocalDateTime.of(2024, 12, 13, 23, 5);
+
+            // when & then
+            assertThatThrownBy(() -> attendanceHistory.updateTimeByDate(updateDateTime))
+                    .isInstanceOf(IllegalArgumentException.class);
+        }
     }
 }
