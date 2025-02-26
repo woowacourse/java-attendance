@@ -15,6 +15,11 @@ public record AttendanceRecord(
         attendanceDateTimes.add(attendanceDateTime);
     }
 
+    public boolean containsAttendanceDateTimeByDate(LocalDate localDate) {
+        return attendanceDateTimes.stream()
+                .anyMatch(attendanceDateTime -> attendanceDateTime.equalsDate(localDate));
+    }
+
     public AttendanceDateTime findAttendanceByDate(LocalDate date) {
         return attendanceDateTimes.stream()
                 .filter(attendanceDateTime -> attendanceDateTime.equalsDate(date))

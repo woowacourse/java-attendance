@@ -10,6 +10,9 @@ public class AttendanceRegister {
 
     public void attend(String crewName, AttendanceDateTime attendanceDateTime) {
         AttendanceRecord attendanceRecord = register.getOrDefault(crewName, new AttendanceRecord());
+        if (attendanceRecord.containsAttendanceDateTimeByDate(attendanceDateTime.getAttendanceDate())) {
+            throw new IllegalArgumentException("이미 출석한 날짜입니다.");
+        }
         attendanceRecord.add(attendanceDateTime);
         register.putIfAbsent(crewName, attendanceRecord);
     }
