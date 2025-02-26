@@ -6,9 +6,9 @@ import controller.dto.SaveAttendanceRequest;
 import domain.AttendanceRecord;
 import domain.AttendanceStatus;
 import domain.Crew;
+import domain.RiskRank;
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.Map;
 import org.assertj.core.api.Assertions;
 import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.AfterEach;
@@ -16,6 +16,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import repository.AttendanceRecordRepository;
 import repository.CrewRepository;
+import service.dto.AttendanceStatusCount;
 import service.dto.MonthAttendanceStatisticsResponse;
 
 class AttendanceServiceTest {
@@ -115,12 +116,12 @@ class AttendanceServiceTest {
 
         // then
         SoftAssertions.assertSoftly(softAssertions -> {
-            Map<String, Integer> statusCount = statistics.attendanceStatusCount();
-            softAssertions.assertThat(statusCount.get("출석")).isEqualTo(1);
-            softAssertions.assertThat(statusCount.get("지각")).isEqualTo(3);
-            softAssertions.assertThat(statusCount.get("결석")).isEqualTo(2);
+            AttendanceStatusCount statusCount = statistics.attendanceStatusCount();
+            softAssertions.assertThat(statusCount.attendanceCount()).isEqualTo(1);
+            softAssertions.assertThat(statusCount.lateCount()).isEqualTo(3);
+            softAssertions.assertThat(statusCount.absentCount()).isEqualTo(2);
             String riskRank = statistics.riskRank();
-            softAssertions.assertThat(riskRank).isEqualTo("면담");
+            softAssertions.assertThat(riskRank).isEqualTo(RiskRank.INTERVIEW.getName());
         });
     }
 }

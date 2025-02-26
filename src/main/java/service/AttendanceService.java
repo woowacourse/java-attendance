@@ -13,13 +13,11 @@ import domain.RiskRank;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 import repository.AttendanceRecordRepository;
 import repository.CrewRepository;
 import service.dto.AttendanceRecordResponse;
+import service.dto.AttendanceStatusCount;
 import service.dto.ModifyAttendanceRecordResponse;
 import service.dto.ModifyAttendanceRecordResponse.TimeStatus;
 import service.dto.MonthAttendanceStatisticsResponse;
@@ -59,33 +57,38 @@ public class AttendanceService {
     }
 
     public MonthAttendanceStatisticsResponse getMonthAttendanceStatistics(MonthAttendanceStatisticsRequest request) {
-        List<AttendanceRecordResponse> monthAttendanceRecords = getMonthAttendanceRecords(
+        List<AttendanceRecordResponse> monthRecords = getMonthAttendanceRecordResponses(
                 request.nickname(),
                 request.today());
-        Map<String, Integer> attendanceStatusCount = calculateAttendanceStatusCount(
-                monthAttendanceRecords);
-        String riskRank = calculateRiskRank(attendanceStatusCount);
+        AttendanceStatusCount statusCount = calculateAttendanceStatusCount(
+                monthRecords);
+        RiskRank riskRank = calculateRiskRank(statusCount);
 
-        return new MonthAttendanceStatisticsResponse(monthAttendanceRecords,
-                attendanceStatusCount,
-                riskRank);
+        return new MonthAttendanceStatisticsResponse(monthRecords,
+                statusCount,
+                riskRank.getName());
     }
 
     public RiskCrewsResponse getRiskCrews(RiskCrewsRequest request) {
-        List<String> nicknames = CrewRepository.findAll()
+        List<String> nicknames = findCrewNicknames();
+        List<RiskCrew> riskCrews = new ArrayList<>();
+        nicknames.forEach(nickname -> {
+            List<AttendanceRecordResponse> monthRecords
+                    = getMonthAttendanceRecordResponses(nickname, request.today());
+            AttendanceStatusCount statusCount
+                    = calculateAttendanceStatusCount(monthRecords);
+            RiskRank riskRank = calculateRiskRank(statusCount);
+            riskCrews.add(
+                    new RiskCrew(nickname, statusCount.lateCount(), statusCount.absentCount(), riskRank.getName()));
+        });
+        return new RiskCrewsResponse(riskCrews);
+    }
+
+    private List<String> findCrewNicknames() {
+        return CrewRepository.findAll()
                 .stream()
                 .map(Crew::getNickname)
                 .toList();
-        List<RiskCrew> riskCrews = new ArrayList<>();
-        nicknames.forEach(nickname -> {
-            List<AttendanceRecordResponse> monthAttendanceRecords = getMonthAttendanceRecords(nickname,
-                    request.today());
-            Map<String, Integer> attendanceStatusCount = calculateAttendanceStatusCount(
-                    monthAttendanceRecords);
-            String riskRank = calculateRiskRank(attendanceStatusCount);
-            riskCrews.add(new RiskCrew(nickname, attendanceStatusCount, riskRank));
-        });
-        return new RiskCrewsResponse(riskCrews);
     }
 
     public TimeStatus getTimeStatus(String nickName, LocalDate date) {
@@ -96,7 +99,7 @@ public class AttendanceService {
         return TimeStatus.of(found.time(), found.status().getTitle());
     }
 
-    public List<AttendanceRecordResponse> getMonthAttendanceRecords(
+    private List<AttendanceRecordResponse> getMonthAttendanceRecordResponses(
             String nickname, LocalDate today) {
         List<AttendanceRecordResponse> monthAttendanceRecords = new ArrayList<>();
         for (int day = 1; day < today.getDayOfMonth(); day++) {
@@ -104,6 +107,7 @@ public class AttendanceService {
         }
         return monthAttendanceRecords;
     }
+
 
     private void addAttendanceRecord(String nickname, LocalDate targetDate,
                                      List<AttendanceRecordResponse> monthAttendanceRecords) {
@@ -120,22 +124,24 @@ public class AttendanceService {
         );
     }
 
-    public Map<String, Integer> calculateAttendanceStatusCount(List<AttendanceRecordResponse> monthAttendanceRecords) {
-        Map<String, Integer> attendanceStatusCount = new LinkedHashMap<>();
-        Arrays.stream(AttendanceStatus.values())
-                .forEach(status -> attendanceStatusCount.put(status.getTitle(), 0));
-        monthAttendanceRecords.forEach(record -> {
-            int before = attendanceStatusCount.getOrDefault(record.attendanceStatus(), 0);
-            attendanceStatusCount.put(record.attendanceStatus(), before + 1);
-        });
-        return attendanceStatusCount;
+    public AttendanceStatusCount calculateAttendanceStatusCount(List<AttendanceRecordResponse> monthAttendanceRecords) {
+        int attendanceCount = (int) monthAttendanceRecords.stream()
+                .filter(record -> record.attendanceStatus().equals(AttendanceStatus.ATTENDANCE.getTitle()))
+                .count();
+        int lateCount = (int) monthAttendanceRecords.stream()
+                .filter(record -> record.attendanceStatus().equals(AttendanceStatus.LATE.getTitle()))
+                .count();
+        int absentCount = (int) monthAttendanceRecords.stream()
+                .filter(record -> record.attendanceStatus().equals(AttendanceStatus.ABSENT.getTitle()))
+                .count();
+        return new AttendanceStatusCount(attendanceCount, lateCount, absentCount);
     }
 
-    public String calculateRiskRank(Map<String, Integer> attendanceStatusCount) {
+    public RiskRank calculateRiskRank(AttendanceStatusCount attendanceStatusCount) {
         int accumulatedCount =
-                attendanceStatusCount.getOrDefault("지각", 0) / 3
-                        + attendanceStatusCount.getOrDefault("결석", 0);
-        return RiskRank.getRiskRankNameByAbsentCount(accumulatedCount);
+                attendanceStatusCount.lateCount() / 3
+                        + attendanceStatusCount.absentCount();
+        return RiskRank.from(accumulatedCount);
     }
 
     private void validateCrew(String nickname) {
