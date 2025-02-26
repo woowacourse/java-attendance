@@ -34,11 +34,14 @@ public class AttendCheckerTest {
         //given
         OperationTimeChecker operationTimeChecker = new OperationTimeChecker();
         LocalDate christmas = LocalDate.of(2024, 12, 25);
+        LocalDate notHoliday = LocalDate.of(2024, 12, 1);
 
         //when
         boolean actual = operationTimeChecker.isHoliday(christmas);
+        boolean actual2 = operationTimeChecker.isHoliday(notHoliday);
 
         //then
         assertThat(actual).isEqualTo(true);
+        assertThat(actual2).isEqualTo(false);
     }
 }
