@@ -53,9 +53,9 @@ public class AttendanceController {
     private void modifyAttendanceRecord() {
         String nickname = InputView.scanNicknameToModify();
         LocalDate today = DateTimeUtil.nowDate();
-        int day = InputView.scanDayToModify();
-        String time = InputView.scanTimeToModify();
-        ModifyAttendanceRequest request = ModifyAttendanceRequest.of(nickname, today, day, time);
+        int dayToModify = InputView.scanDayToModify();
+        String timeToModify = InputView.scanTimeToModify();
+        ModifyAttendanceRequest request = ModifyAttendanceRequest.of(nickname, today, dayToModify, timeToModify);
         ModifyAttendanceRecordResponse response = attendanceService.modifyAttendanceRecord(request);
 
         OutputView.printModifiedAttendanceRecord(response);
@@ -76,6 +76,7 @@ public class AttendanceController {
         LocalDate today = DateTimeUtil.nowDate();
         RiskCrewsRequest request = new RiskCrewsRequest(today);
         RiskCrewsResponse response = attendanceService.getRiskCrews(request);
+        
         OutputView.printRiskCrews(response);
     }
 }
