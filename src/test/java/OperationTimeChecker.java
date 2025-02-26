@@ -4,6 +4,6 @@ public class OperationTimeChecker {
 
 
     public boolean isWeekend(final LocalDate targetDate) {
-        return false;
+        return true;
     }
 }
