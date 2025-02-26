@@ -24,4 +24,22 @@ public class PenaltyCountTest {
         // then
         assertThat(penaltyCount.getWeightedLateAndAbsencePoint()).isEqualTo(3);
     }
+
+    @Test
+    void 페널티를_찾는다() {
+        // given
+        Map<AttendanceStatus, Integer> statusCounts = Map.of(
+            AttendanceStatus.PRESENCE, 1,
+            AttendanceStatus.ABSENCE, 2,
+            AttendanceStatus.LATE, 3
+        );
+
+        PenaltyCount penaltyCount = new PenaltyCount(statusCounts);
+
+        // when
+        AttendancePenalty attendancePenalty = penaltyCount.findAttendancePenalty();
+
+        // then
+        assertThat(attendancePenalty).isEqualTo(AttendancePenalty.COUNSELING);
+    }
 }

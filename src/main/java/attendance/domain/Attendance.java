@@ -48,14 +48,6 @@ public class Attendance implements Comparable<Attendance> {
     }
 
     @Override
-    public String toString() {
-        return "Attendance{" +
-            "attendanceDate=" + attendanceDate +
-            ", attendanceTime=" + attendanceTime +
-            '}';
-    }
-
-    @Override
     public int compareTo(Attendance o) {
         return this.attendanceDate.compareTo(o.attendanceDate);
     }
