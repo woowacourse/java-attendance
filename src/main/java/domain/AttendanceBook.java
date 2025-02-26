@@ -1,5 +1,8 @@
 package domain;
 
+import static constants.AttendanceCriteria.OPERATING_END;
+import static constants.AttendanceCriteria.OPERATING_START;
+
 import dto.CheckAttendanceResponse;
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -35,8 +38,11 @@ public class AttendanceBook {
     }
 
     public CheckAttendanceResponse checkAttendance(String name, LocalDate date, LocalTime time) {
+        if (time.isBefore(OPERATING_START.getTime()) || time.isAfter(OPERATING_END.getTime())) {
+            throw new IllegalArgumentException(ErrorMessage.NOTICE_TIME_IS_NOT_A_CAMPUS_OPERATING_TIME.getFormat());
+        }
         String attendanceStatus = validateTrainingDay(date, time);
-
+        
         Crew foundCrew = findCrewByName(name);
         validateAlreadyAttendance(foundCrew, date);
 
