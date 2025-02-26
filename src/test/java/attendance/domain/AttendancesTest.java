@@ -1,5 +1,6 @@
 package attendance.domain;
 
+import static org.assertj.core.api.Assertions.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
@@ -85,6 +86,17 @@ class AttendancesTest {
 
         assertThatThrownBy(() -> attendances.add(addedAttendance))
                 .isInstanceOf(IllegalArgumentException.class);
+    }
+
+    @Test
+    void 기준_날짜를_알려주면_해당_날짜까지의_모든_출석_기록을_알려준다() {
+        Attendance attendance = new Attendance(LocalDateTime.of(2025, 2, 26, 10, 0));
+        Attendances attendances = new Attendances(new ArrayList<>(List.of(attendance)));
+        Attendance addedAttendance = new Attendance(LocalDateTime.of(2025, 2, 27, 9, 50));
+        attendances.add(addedAttendance);
+
+        assertThat(attendances.findAllUntilStandardDate(LocalDate.of(2025, 2, 27))).hasSize(2);
+
     }
 
 }

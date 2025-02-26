@@ -33,6 +33,10 @@ public class AttendanceDate {
         return attendanceDate.equals(localDate);
     }
 
+    public boolean isBeforeOrEqualDate(final LocalDate localDate) {
+        return isSameDate(localDate) || attendanceDate.isBefore(localDate);
+    }
+
     @Override
     public boolean equals(final Object o) {
         if (this == o) {

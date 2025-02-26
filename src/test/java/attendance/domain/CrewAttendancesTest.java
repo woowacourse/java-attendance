@@ -113,4 +113,15 @@ class CrewAttendancesTest {
                 .isEqualTo(new Attendance(attendanceDateTime));
     }
 
+    @Test
+    void 지정한_날짜까지_크루의_모든_출석_기록을_조회한다() {
+        CrewAttendances crewAttendances = new CrewAttendances(crewAttendanceDateTimes);
+        Attendance attendance = new Attendance(LocalDateTime.of(2025, 2, 27, 10, 0));
+        LocalDate standardDate = LocalDate.of(2025, 2, 27);
+        Crew crew = new Crew("빙봉");
+        crewAttendances.addAttendance(crew, attendance);
+
+        assertThat(crewAttendances.findAllCrewAttendanceUntilStandardDate(crew, standardDate)).hasSize(2);
+    }
+
 }

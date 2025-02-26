@@ -70,4 +70,10 @@ public class CrewAttendances {
         attendances.add(attendance);
     }
 
+    public List<Attendance> findAllCrewAttendanceUntilStandardDate(final Crew crew, final LocalDate standardDate) {
+        validateCrewExistence(crew);
+        Attendances attendances = crewAttendances.get(crew);
+        return attendances.findAllUntilStandardDate(standardDate);
+    }
+
 }

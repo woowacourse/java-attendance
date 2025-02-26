@@ -68,4 +68,14 @@ class AttendanceTest {
         assertThat(attendance.changeTime(modificationDateTime)).isEqualTo(new Attendance(modificationDateTime));
     }
 
+    @CsvSource(value = {
+            "26,true", "25,false"
+    })
+    @ParameterizedTest
+    void 날짜가_출석_날짜보다_과거이거나_동일한지_알려준다(int day, boolean expected) {
+        Attendance attendance = new Attendance(LocalDateTime.of(2025, 2, 26, 10, 0));
+
+        assertThat(attendance.isSameDate(LocalDate.of(2025, 2, day))).isEqualTo(expected);
+    }
+
 }

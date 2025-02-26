@@ -2,6 +2,7 @@ package attendance.domain;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 public class Attendances {
@@ -45,6 +46,16 @@ public class Attendances {
         ) {
             throw new IllegalArgumentException("해당 날짜의 출석 기록이 이미 존재합니다.");
         }
+    }
+
+    public List<Attendance> findAllUntilStandardDate(final LocalDate standardDate) {
+        List<Attendance> beforeAttendances = new ArrayList<>();
+        for (Attendance attendance : attendances) {
+            if (attendance.isBeforeOrEqualDate(standardDate)) {
+                beforeAttendances.add(attendance);
+            }
+        }
+        return beforeAttendances;
     }
 
 }

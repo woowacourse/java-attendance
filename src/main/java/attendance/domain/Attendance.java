@@ -26,6 +26,10 @@ public class Attendance {
         return new Attendance(modificationDateTime);
     }
 
+    public boolean isBeforeOrEqualDate(final LocalDate localDate) {
+        return attendanceDate.isBeforeOrEqualDate(localDate);
+    }
+
     @Override
     public boolean equals(final Object o) {
         if (this == o) {
