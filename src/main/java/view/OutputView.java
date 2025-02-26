@@ -11,7 +11,7 @@ public class OutputView {
     public static void printSavedAttendanceRecord(SaveAttendanceRecordResponse saved) {
         System.out.printf("%s (%s)%n",
                 saved.dateTime(),
-                saved.status().getName()
+                saved.status()
         );
         System.out.println();
     }

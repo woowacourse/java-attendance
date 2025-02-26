@@ -39,7 +39,7 @@ public class AttendanceService {
                         AttendanceStatus.of(request.date(), request.time()))
         );
         AttendanceRecord found = AttendanceRecordRepository.find(request.nickname(), request.date());
-        return SaveAttendanceRecordResponse.of(found.date(), found.time(), found.status());
+        return SaveAttendanceRecordResponse.of(found.date(), found.time(), found.status().getName());
     }
 
     public ModifyAttendanceRecordResponse modifyAttendanceRecord(ModifyAttendanceRequest request) {
