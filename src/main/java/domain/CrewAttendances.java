@@ -3,6 +3,7 @@ package domain;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import strategy.CurrentDateGenerateStrategy;
 
@@ -34,5 +35,9 @@ public class CrewAttendances {
     public void modifyAttendance(String nickname, LocalDate modifyDate, LocalTime modifyTime) {
         DateCrewAttendanceManager dateCrewAttendanceManager = dateCrewAttendanceManager(nickname);
         dateCrewAttendanceManager.modifyAttendance(modifyDate, modifyTime);
+    }
+
+    public List<CrewAttendanceHistory> crewAttendancesHistory() {
+        return null;
     }
 }

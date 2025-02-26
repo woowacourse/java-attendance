@@ -18,7 +18,6 @@ import strategy.TestAttendanceCurrentDateGenerateStrategy;
 public class ModifyAttendanceTest {
 
     private static CurrentDateGenerateStrategy currentDateGenerateStrategy;
-
     private static CrewAttendances crewAttendances;
 
     @BeforeAll
