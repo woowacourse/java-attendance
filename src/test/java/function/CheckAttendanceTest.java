@@ -3,9 +3,11 @@ package function;
 import static constants.TestDataMaker.ATTEND_EXCEPT_MONDAY;
 import static constants.TestDataMaker.ATTEND_MONDAY;
 import static constants.TestDataMaker.MONDAY_DATE;
+import static constants.TestDataMaker.SUNDAY_DATE;
 import static constants.TestDataMaker.TUESDAY_DATE;
 import static constants.TestDataMaker.WEDNESDAY_DATE;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import domain.AttendanceBook;
 import dto.CheckAttendanceResponse;
@@ -33,5 +35,13 @@ public class CheckAttendanceTest {
         // then
         assertThat(response.time()).isEqualTo(ATTEND_EXCEPT_MONDAY);
         assertThat(response.attendanceStatus()).isEqualTo("출석");
+    }
+
+    @Test
+    @DisplayName("출석하는 날이 주말이나 공휴일인 경우 예외 메시지를 출력한다.")
+    void Weekend_Working_Is_Not_Allowed() {
+        assertThatThrownBy(() -> attendanceBook.checkAttendance("쿠키", SUNDAY_DATE, ATTEND_EXCEPT_MONDAY))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("[ERROR] 12월 01일 일요일은 등교일이 아닙니다.");
     }
 }
