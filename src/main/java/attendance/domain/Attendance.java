@@ -1,5 +1,6 @@
 package attendance.domain;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
@@ -11,6 +12,10 @@ public class Attendance {
     public Attendance(final LocalDateTime attendanceDateTime) {
         this.attendanceDate = new AttendanceDate(attendanceDateTime.toLocalDate());
         this.attendanceTime = new AttendanceTime(attendanceDateTime.toLocalTime());
+    }
+
+    public boolean isSameDate(final LocalDate localDate) {
+        return attendanceDate.isSameDate(localDate);
     }
 
     @Override

@@ -26,8 +26,18 @@ class AttendanceDateTest {
         LocalDate localDate = LocalDate.of(2025, 2, 25);
 
         AttendanceDate attendanceDate = new AttendanceDate(localDate);
-        
+
         assertThat(attendanceDate).isEqualTo(new AttendanceDate(LocalDate.of(2025, 2, 25)));
+    }
+
+    @CsvSource(value = {
+            "26,true", "27,false"
+    })
+    @ParameterizedTest
+    void 날짜를_알려주면_출석_날짜와_같은지_알려준다(int day, boolean expected) {
+        AttendanceDate attendanceDate = new AttendanceDate(LocalDate.of(2025, 2, 26));
+
+        assertThat(attendanceDate.isSameDate(LocalDate.of(2025, 2, day))).isEqualTo(expected);
     }
 
 }

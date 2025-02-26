@@ -29,6 +29,9 @@ public class AttendanceDate {
         return Holiday.isWeekend(attendanceDate) || Holiday.isExistsInPublicHolidays(attendanceDate);
     }
 
+    public boolean isSameDate(final LocalDate localDate) {
+        return attendanceDate.equals(localDate);
+    }
 
     @Override
     public boolean equals(final Object o) {
