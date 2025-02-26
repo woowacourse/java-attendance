@@ -1,5 +1,9 @@
 package view;
 
+import domain.Attendance;
+import domain.AttendanceDate;
+import domain.AttendanceStatus;
+import domain.AttendanceTime;
 import java.time.LocalDate;
 import util.DayOfWeekConvertor;
 
@@ -14,5 +18,19 @@ public class OutputView {
 
     public void printErrorMessage(String errorMessage) {
         System.out.println(errorMessage);
+    }
+
+    public void printAttendanceMessage(Attendance attendance) {
+        AttendanceDate attendanceDate = attendance.getAttendanceDate();
+        AttendanceTime attendanceTime = attendance.getAttendanceTime();
+        AttendanceStatus attendanceStatus = attendance.getAttendanceStatus();
+
+        System.out.println(String.format("%d월 %d일 %s요일 %02d:%02d (%s)",
+                attendanceDate.getMonthValue(),
+                attendanceDate.getDayOfMonth(),
+                DayOfWeekConvertor.convertToKorean(attendanceDate.getDayOfWeek()),
+                attendanceTime.getHour(),
+                attendanceTime.getMinute(),
+                attendanceStatus.getStatus()) + System.lineSeparator());
     }
 }

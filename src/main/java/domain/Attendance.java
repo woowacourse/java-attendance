@@ -34,4 +34,16 @@ public class Attendance {
         this.attendanceTime = newTime;
         this.attendanceStatus = AttendanceStatus.checkAttendanceStatus(this.attendanceDate, newTime);
     }
+
+    public AttendanceDate getAttendanceDate() {
+        return this.attendanceDate;
+    }
+
+    public AttendanceTime getAttendanceTime() {
+        return this.attendanceTime;
+    }
+
+    public AttendanceStatus getAttendanceStatus() {
+        return this.attendanceStatus;
+    }
 }

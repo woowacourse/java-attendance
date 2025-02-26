@@ -93,8 +93,7 @@ public class AttendanceBookTest {
     @DisplayName("크루 이름 기반 출석 기록들 탐색 테스트")
     @Test
     void findAttendancesByCrewNameTest() {
-        String name = "메이";
-        List<Attendance> attendances = attendanceBook.getAttendancesByName(name);
+        List<Attendance> attendances = attendanceBook.getAttendancesByName(attendanceBook.findCrewByName("메이"));
 
         assertThat(attendances.size()).isEqualTo(5);
     }

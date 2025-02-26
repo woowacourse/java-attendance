@@ -3,13 +3,19 @@ package domain;
 import java.time.LocalTime;
 
 public enum AttendanceStatus {
-    ATTEND,
-    LATE,
-    UNATTENDED,
-    NO_SHOW;
+    ATTEND("출석"),
+    LATE("지각"),
+    UNATTENDED("결석"),
+    NO_SHOW("결석");
 
     private static final int LATE_MINUTE = 5;
     private static final int UNATTENDED_MINUTE = 30;
+
+    private final String status;
+
+    AttendanceStatus(String status) {
+        this.status = status;
+    }
 
     public static AttendanceStatus checkAttendanceStatus(AttendanceDate attendanceDate, AttendanceTime attendanceTime) {
         LocalTime educationStartTime = attendanceDate.getEducationStartTime();
@@ -24,5 +30,9 @@ public enum AttendanceStatus {
             return UNATTENDED;
         }
         return ATTEND;
+    }
+
+    public String getStatus() {
+        return status;
     }
 }

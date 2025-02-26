@@ -27,4 +27,12 @@ public class AttendanceTime {
     public boolean isBefore(LocalTime time) {
         return this.attendanceTime.isBefore(time);
     }
+
+    public int getHour() {
+        return this.attendanceTime.getHour();
+    }
+
+    public int getMinute() {
+        return this.attendanceTime.getMinute();
+    }
 }

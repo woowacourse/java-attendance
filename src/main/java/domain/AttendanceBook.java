@@ -47,8 +47,7 @@ public class AttendanceBook {
         crew.edit(attendanceDate, attendanceTime);
     }
 
-    public List<Attendance> getAttendancesByName(String name) {
-        Crew crew = findCrewByName(name);
+    public List<Attendance> getAttendancesByCrew(Crew crew) {
         return crew.getAttendances();
     }
 

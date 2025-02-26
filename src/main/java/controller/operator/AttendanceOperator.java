@@ -1,5 +1,6 @@
 package controller.operator;
 
+import domain.Attendance;
 import domain.AttendanceBook;
 import domain.AttendanceDate;
 import domain.AttendanceTime;
@@ -27,5 +28,8 @@ public class AttendanceOperator implements OptionOperator {
         });
 
         attendanceBook.attend(crew, attendanceDate, attendanceTime);
+        Attendance attendance = crew.findAttendanceByDate(attendanceDate);
+
+        outputView.printAttendanceMessage(attendance);
     }
 }

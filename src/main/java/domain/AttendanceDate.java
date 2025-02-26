@@ -37,4 +37,16 @@ public class AttendanceDate {
     public boolean isSameAs(AttendanceDate date) {
         return this.attendanceDate.equals(date.attendanceDate);
     }
+
+    public int getMonthValue() {
+        return this.attendanceDate.getMonthValue();
+    }
+
+    public int getDayOfMonth() {
+        return this.attendanceDate.getDayOfMonth();
+    }
+
+    public DayOfWeek getDayOfWeek() {
+        return this.attendanceDate.getDayOfWeek();
+    }
 }
