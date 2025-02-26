@@ -2,6 +2,7 @@ package attendance.domain;
 
 import attendance.util.FormattedErrorMessage;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -10,7 +11,9 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.stream.Stream;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 @DisplayName("출석 테스트")
 public class AttendanceTest {
@@ -80,6 +83,18 @@ public class AttendanceTest {
                 Arguments.of(CampusOperatingTime.CLOSE_AT.getTime().plusNanos(1), "운영 종료 시간 1 나노초 후"),
                 Arguments.of(CampusOperatingTime.CLOSE_AT.getTime().plusMinutes(1), "운영 종료 시간 1분 후"),
                 Arguments.of(CampusOperatingTime.CLOSE_AT.getTime().plusHours(1), "운영 종료 시간 1시간 후")
+        );
+    }
+
+    @Test
+    void 월요일_1시부터_1시5분까지는_출석이다() {
+        LocalDate monday = LocalDate.of(2024, 12, 9);
+        LocalTime mondayAttendStartTime = LocalTime.of(13, 0);
+        LocalTime mondayAttendEndTime = LocalTime.of(13, 5);
+
+        assertAll(
+                () -> assertThat(new Attendance(monday, mondayAttendStartTime).determineStatus()).isEqualTo("출석"),
+                () -> assertThat(new Attendance(monday, mondayAttendEndTime).determineStatus()).isEqualTo("출석")
         );
     }
 }
