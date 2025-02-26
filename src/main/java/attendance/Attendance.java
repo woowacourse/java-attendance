@@ -4,21 +4,18 @@ import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.List;
 import java.util.Objects;
 
 public class Attendance {
 
     private static final LocalTime OPEN_HOUR = LocalTime.of(8, 0);
     private static final LocalTime CLOSE_HOUR = LocalTime.of(23, 0);
-    private static final List<DayOfWeek> WEEKEND = List.of(DayOfWeek.SATURDAY, DayOfWeek.SUNDAY);
-    private static final int CHRISTMAS = 25;
 
     private LocalDateTime attendanceDateTime;
     private String attendanceStatus;
 
     public Attendance(LocalDateTime attendanceDateTime) {
-        checkHoliday(attendanceDateTime);
+        Holiday.isHoliday(attendanceDateTime);
         if(Objects.equals(LocalTime.from(attendanceDateTime), LocalTime.MIN)) {
             this.attendanceDateTime = attendanceDateTime;
             this.attendanceStatus = "결석";
@@ -30,22 +27,17 @@ public class Attendance {
         this.attendanceStatus = checkAttendanceStatus(attendanceDateTime);
     }
 
+    public Attendance(LocalDateTime attendanceDateTime, String attendanceStatus) {
+        this.attendanceDateTime = attendanceDateTime;
+        this.attendanceStatus = attendanceStatus;
+    }
+
     public Attendance updateAttendanceTime(LocalTime updateTime) {
         return new Attendance(LocalDateTime.of(LocalDate.from(this.attendanceDateTime), updateTime));
     }
 
     public boolean isEqualDate(LocalDate date) {
         return LocalDate.from(attendanceDateTime).isEqual(date);
-    }
-
-    public boolean isBeforeDate(LocalDate date) {
-        return LocalDate.from(attendanceDateTime).isBefore(date);
-    }
-
-    private void checkHoliday(LocalDateTime attendanceDateTime) {
-        if(WEEKEND.contains(attendanceDateTime.getDayOfWeek()) || attendanceDateTime.getDayOfMonth() == CHRISTMAS) {
-            throw new IllegalArgumentException("등교일이 아닙니다.");
-        }
     }
 
     private String checkAttendanceStatus(LocalDateTime attendanceDateTime) {

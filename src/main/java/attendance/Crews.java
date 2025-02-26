@@ -1,6 +1,8 @@
 package attendance;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -13,9 +15,11 @@ public class Crews {
     }
 
     public Crew add(String nickname) {
-        if(crews.stream().anyMatch(crew -> crew.isEqualCrew(nickname))) {
-            throw new IllegalArgumentException("이미 존재하는 크루입니다.");
-        }
+        crews.stream().filter(crew -> crew.isEqualCrew(nickname))
+                .findAny()
+                .ifPresent(crew -> {
+                    throw new IllegalArgumentException("이미 존재하는 크루입니다.");
+                });
 
         Crew crew = new Crew(nickname);
         crews.add(crew);
@@ -27,18 +31,30 @@ public class Crews {
     }
 
     public Crew findCrewByNickname(String nickname) {
-        for (Crew crew : crews) {
-            if(crew.isEqualCrew(nickname)) {
-                return crew;
-            }
-        }
-        throw new IllegalArgumentException("등록되지 않은 닉네임입니다.");
+        return crews.stream()
+                .filter(crew -> crew.isEqualCrew(nickname))
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException("등록되지 않은 닉네임입니다."));
     }
 
-    public List<Attendance> getCrewAttendanceUtilYesterday(LocalDate today, String nickname) {
+    public List<Attendance> getCrewAttendancesUtilYesterday(LocalDate today, String nickname) {
         List<Attendance> crewAttendances = findCrewAttendanceByNickname(nickname);
+        List<Attendance> attendancesUtilYesterday = new ArrayList<>();
+
+        LocalDate date = today.withDayOfMonth(1);
+        while (date.isBefore(today)) {
+            if (!Holiday.checkHoliday(date.atStartOfDay())) {
+                attendancesUtilYesterday.add(findAttendanceForDate(crewAttendances, date));
+            }
+            date = date.plusDays(1);
+        }
+        return attendancesUtilYesterday;
+    }
+
+    private Attendance findAttendanceForDate(List<Attendance> crewAttendances, LocalDate date) {
         return crewAttendances.stream()
-                .filter(attendance -> attendance.isBeforeDate(today))
-                .toList();
+                .filter(crewAttendance -> crewAttendance.isEqualDate(date))
+                .findFirst()
+                .orElseGet(() -> new Attendance(LocalDateTime.of(date, LocalTime.MIN), "결석"));
     }
 }

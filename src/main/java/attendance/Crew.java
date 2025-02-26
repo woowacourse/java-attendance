@@ -34,6 +34,7 @@ public class Crew {
         return updatedAttendance;
     }
 
+
     public Attendance findAttendanceByDate(LocalDate date) {
         return attendances.stream()
                 .filter(attendance -> attendance.isEqualDate(date))
