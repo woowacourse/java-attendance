@@ -73,16 +73,90 @@ public class AttendanceHistoryTest {
         attendanceHistory.register(LocalDate.of(2024, 12, 3), LocalTime.of(10, 6)); //지각
         attendanceHistory.register(LocalDate.of(2024, 12, 4), LocalTime.of(10, 31)); //결석
 
-
         //when
         AttendanceStatistics attendanceStatistics = new AttendanceStatistics(attendanceHistory);
         Map<AttendanceStatus, Integer> attendanceStatusCount = attendanceStatistics.calculateStatusCountUntilBefore(requestDate);
-
 
         //then
         assertThat(attendanceStatusCount.get(AttendanceStatus.NORMAL)).isEqualTo(1);
         assertThat(attendanceStatusCount.get(AttendanceStatus.LATE)).isEqualTo(1);
         assertThat(attendanceStatusCount.get(AttendanceStatus.ABSENCE)).isEqualTo(3);
+    }
+
+    @DisplayName("한 크루의 일부 출석 기록으로 패널티 여부를 구한다. - 패널티 없음")
+    @Test
+    void test3() {
+        //given
+        LocalDate requestDate = LocalDate.of(2024, 12, 7);
+        AttendanceHistory attendanceHistory = new AttendanceHistory();
+        attendanceHistory.register(LocalDate.of(2024, 12, 2), LocalTime.of(10, 0)); //출석
+        attendanceHistory.register(LocalDate.of(2024, 12, 3), LocalTime.of(10, 0)); //출석
+        attendanceHistory.register(LocalDate.of(2024, 12, 4), LocalTime.of(10, 10)); //지각
+        attendanceHistory.register(LocalDate.of(2024, 12, 5), LocalTime.of(10, 10)); //지각
+        attendanceHistory.register(LocalDate.of(2024, 12, 6), LocalTime.of(10, 31)); //결석
+
+        AttendanceStatistics attendanceStatistics = new AttendanceStatistics(attendanceHistory);
+
+        //when
+        String penaltyStatus = attendanceStatistics.calculatePenaltyUntilBefore(requestDate);
+
+        //then
+        assertThat(penaltyStatus).isEqualTo("없음");
+    }
+
+    @DisplayName("한 크루의 일부 출석 기록으로 패널티 여부를 구한다. - 경고")
+    @Test
+    void test3_1() {
+        //given
+        LocalDate requestDate = LocalDate.of(2024, 12, 7);
+        AttendanceHistory attendanceHistory = new AttendanceHistory();
+        attendanceHistory.register(LocalDate.of(2024, 12, 2), LocalTime.of(10, 0)); //출석
+        attendanceHistory.register(LocalDate.of(2024, 12, 3), LocalTime.of(10, 10)); //지각
+        attendanceHistory.register(LocalDate.of(2024, 12, 4), LocalTime.of(10, 10)); //지각
+        attendanceHistory.register(LocalDate.of(2024, 12, 5), LocalTime.of(10, 10)); //지각
+        attendanceHistory.register(LocalDate.of(2024, 12, 6), LocalTime.of(10, 31)); //결석
+        AttendanceStatistics attendanceStatistics = new AttendanceStatistics(attendanceHistory);
+
+        //when
+        String penaltyStatus = attendanceStatistics.calculatePenaltyUntilBefore(requestDate);
+
+        //then
+        assertThat(penaltyStatus).isEqualTo("경고");
+    }
+
+    @DisplayName("한 크루의 일부 출석 기록으로 패널티 여부를 구한다. - 면담")
+    @Test
+    void test3_2() {
+        //given
+        LocalDate requestDate = LocalDate.of(2024, 12, 7);
+        AttendanceHistory attendanceHistory = new AttendanceHistory();
+        attendanceHistory.register(LocalDate.of(2024, 12, 2), LocalTime.of(10, 10)); //지각
+        attendanceHistory.register(LocalDate.of(2024, 12, 3), LocalTime.of(10, 10)); //지각
+        attendanceHistory.register(LocalDate.of(2024, 12, 4), LocalTime.of(10, 10)); //지각
+        attendanceHistory.register(LocalDate.of(2024, 12, 5), LocalTime.of(10, 10)); //결석
+//        attendanceHistory.register(LocalDate.of(2024, 12, 6), LocalTime.of(10, 31)); //결석
+        AttendanceStatistics attendanceStatistics = new AttendanceStatistics(attendanceHistory);
+
+        //when
+        String penaltyStatus = attendanceStatistics.calculatePenaltyUntilBefore(requestDate);
+
+        //then
+        assertThat(penaltyStatus).isEqualTo("면담");
+    }
+
+    @DisplayName("한 크루의 일부 출석 기록으로 패널티 여부를 구한다. - 제적")
+    @Test
+    void test3_3() {
+        //given
+        LocalDate requestDate = LocalDate.of(2024, 12, 10);
+        AttendanceHistory attendanceHistory = new AttendanceHistory();
+        AttendanceStatistics attendanceStatistics = new AttendanceStatistics(attendanceHistory);
+
+        //when
+        String penaltyStatus = attendanceStatistics.calculatePenaltyUntilBefore(requestDate);
+
+        //then
+        assertThat(penaltyStatus).isEqualTo("제적");
     }
 }
 

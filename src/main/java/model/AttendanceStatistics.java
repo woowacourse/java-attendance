@@ -23,4 +23,8 @@ public class AttendanceStatistics {
         }
         return statusStatistics;
     }
+
+    public String calculatePenaltyUntilBefore(LocalDate requestDate) {
+        return null;
+    }
 }
