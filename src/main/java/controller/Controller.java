@@ -9,6 +9,7 @@ import static view.UserCommandType.QUIT;
 import static view.UserCommandType.getUserCommand;
 
 import domain.Attendance;
+import domain.AttendanceStatistics;
 import domain.Crew;
 import domain.CrewGroup;
 import domain.Time;
@@ -47,7 +48,7 @@ public class Controller {
                 if (userCommandType.equals(QUIT)) {
                     break;
                 }
-                
+
                 runCycle(userCommandType, crewGroup, today);
             }
         } catch (Exception e) {
@@ -114,8 +115,10 @@ public class Controller {
     private void showCrewAttendance(CrewGroup crewGroup) {
         String rawName = inputView.insertNickname();
         Crew crew = crewGroup.searchCrew(rawName);
+        AttendanceStatistics crewAttendanceStatistics = new AttendanceStatistics();
+        crewAttendanceStatistics.updateStatus(crew.getAttendances());
 
-        CrewAttendancesDTO crewAttendancesDTO = CrewAttendancesDTO.from(crew);
+        CrewAttendancesDTO crewAttendancesDTO = CrewAttendancesDTO.from(crew, crewAttendanceStatistics);
 
         outputView.printAttendancesLog(crewAttendancesDTO);
     }

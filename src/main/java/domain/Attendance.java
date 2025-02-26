@@ -10,8 +10,7 @@ public class Attendance {
     public static final int ABSENT_LIMIT_MINUTE = 30;
     public static final int LATE_LIMIT_MINUTE = 5;
     public static final int MONDAY = 1;
-    // 로컬 데이트
-    // 로컬 타임 두 개로 나누기?
+
     private LocalDateTime date;
 
     public Attendance(LocalDateTime date) {

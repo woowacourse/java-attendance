@@ -12,7 +12,7 @@ public class Attendances {
     public static final int ABSENT_HOUR = 23;
     public static final int ABSENT_MINUTE = 59;
 
-    public final List<Attendance> attendanceLog = new ArrayList<>();
+    private final List<Attendance> attendanceLog = new ArrayList<>();
 
     public void addAttendance(Attendance attendance) {
         attendanceLog.add(attendance);
