@@ -2,6 +2,6 @@ package strategy;
 
 import java.time.LocalDate;
 
-public interface NowDateStrategy {
+public interface CurrentDateGenerateStrategy {
     LocalDate now();
 }

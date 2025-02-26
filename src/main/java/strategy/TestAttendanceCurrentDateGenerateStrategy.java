@@ -2,11 +2,11 @@ package strategy;
 
 import java.time.LocalDate;
 
-public class TestAttendanceNowDateStrategy implements NowDateStrategy {
+public class TestAttendanceCurrentDateGenerateStrategy implements CurrentDateGenerateStrategy {
 
     private final LocalDate testAttendanceDate;
 
-    public TestAttendanceNowDateStrategy(LocalDate testAttendanceDate) {
+    public TestAttendanceCurrentDateGenerateStrategy(LocalDate testAttendanceDate) {
         this.testAttendanceDate = testAttendanceDate;
     }
 
