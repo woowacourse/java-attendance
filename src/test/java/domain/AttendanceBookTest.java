@@ -47,10 +47,8 @@ public class AttendanceBookTest {
 
         //when
         attendanceBook.updateAttendance(
-                new Attendance(
-                        "pobi",
-                        LocalDateTime.of(2024, 12, 13, 11, 1)
-                )
+                "pobi",
+                LocalDateTime.of(2024, 12, 13, 11, 1)
         );
 
         //then

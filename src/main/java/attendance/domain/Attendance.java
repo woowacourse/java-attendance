@@ -14,7 +14,7 @@ public class Attendance {
 
     private final String nickname;
     private final LocalDate attendanceDate;
-    private final LocalTime attendanceTime;
+    private LocalTime attendanceTime;
 
     public Attendance(String nickname, LocalDateTime attendanceDateTime) {
         validateAttendanceDate(attendanceDateTime.toLocalDate());
@@ -26,6 +26,11 @@ public class Attendance {
     public boolean isAlreadyAttend(Attendance newAttendance) {
         return nickname.equals(newAttendance.nickname) &&
                 attendanceDate.equals(newAttendance.attendanceDate);
+    }
+
+    public boolean isAlreadyAttend(String nickname, LocalDate date) {
+        return this.nickname.equals(nickname) &&
+                attendanceDate.equals(date);
     }
 
     private void validateAttendanceDate(LocalDate attendanceDate) {
@@ -40,6 +45,10 @@ public class Attendance {
     private boolean isWeekend(LocalDate attendanceDate) {
         return attendanceDate.getDayOfWeek() == DayOfWeek.SATURDAY ||
                 attendanceDate.getDayOfWeek() == DayOfWeek.SUNDAY;
+    }
+
+    public void updateAttendanceTime(LocalTime updateTime) {
+        this.attendanceTime = updateTime;
     }
 
     public AttendanceStatus getAttendanceStatus() {
