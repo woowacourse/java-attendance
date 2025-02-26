@@ -22,4 +22,22 @@ public class AttendanceBook {
         return attendances.stream()
                 .anyMatch(attendance -> attendance.isAlreadyAttend(newAttendance));
     }
+
+    @Override
+    public boolean equals(Object object) {
+        if (this == object) {
+            return true;
+        }
+        if (object == null || getClass() != object.getClass()) {
+            return false;
+        }
+
+        AttendanceBook that = (AttendanceBook) object;
+        return attendances.equals(that.attendances);
+    }
+
+    @Override
+    public int hashCode() {
+        return attendances.hashCode();
+    }
 }

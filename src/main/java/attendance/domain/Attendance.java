@@ -5,6 +5,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.MonthDay;
+import java.util.Objects;
 import java.util.Set;
 
 public class Attendance {
@@ -43,5 +44,27 @@ public class Attendance {
 
     public AttendanceStatus getAttendanceStatus() {
         return AttendanceStatus.calculate(attendanceDate.getDayOfWeek(), attendanceTime);
+    }
+
+    @Override
+    public boolean equals(Object object) {
+        if (this == object) {
+            return true;
+        }
+        if (object == null || getClass() != object.getClass()) {
+            return false;
+        }
+
+        Attendance that = (Attendance) object;
+        return Objects.equals(nickname, that.nickname) && Objects.equals(attendanceDate,
+                that.attendanceDate) && Objects.equals(attendanceTime, that.attendanceTime);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = Objects.hashCode(nickname);
+        result = 31 * result + Objects.hashCode(attendanceDate);
+        result = 31 * result + Objects.hashCode(attendanceTime);
+        return result;
     }
 }
