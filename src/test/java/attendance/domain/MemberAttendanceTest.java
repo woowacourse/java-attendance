@@ -60,4 +60,5 @@ public class MemberAttendanceTest {
         //then
         Assertions.assertDoesNotThrow(() -> memberAttendance.modifyAttendanceRecord(attendanceDateTime));
     }
+
 }

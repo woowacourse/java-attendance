@@ -69,15 +69,15 @@ public class AttendanceTest {
         Attendance attendance = new Attendance(LocalDateTime.of(2024, 12, 4, 9, 50));
 
         //when
-        AttendanceResult attendanceResult = new AttendanceResult(attendance);
+        AttendanceResult attendanceResult = AttendanceResult.from(attendance);
 
         //then
         SoftAssertions.assertSoftly(softly -> {
-            softly.assertThat(attendanceResult.getAttendanceMonth()).isEqualTo(12);
-            softly.assertThat(attendanceResult.getAttendanceDay()).isEqualTo(4);
-            softly.assertThat(attendanceResult.getAttendanceHour()).isEqualTo(9);
-            softly.assertThat(attendanceResult.getAttendanceMinute()).isEqualTo(50);
-            softly.assertThat(attendanceResult.getAttendanceStatus()).isEqualTo("출석");
+            softly.assertThat(attendanceResult.attendanceMonth()).isEqualTo(12);
+            softly.assertThat(attendanceResult.attendanceDay()).isEqualTo(4);
+            softly.assertThat(attendanceResult.attendanceHour()).isEqualTo(9);
+            softly.assertThat(attendanceResult.attendanceMinute()).isEqualTo(50);
+            softly.assertThat(attendanceResult.attendanceStatus()).isEqualTo("출석");
         });
 
     }

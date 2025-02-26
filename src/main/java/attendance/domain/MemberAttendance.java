@@ -21,13 +21,16 @@ public class MemberAttendance {
         return attendances;
     }
 
-    public void modifyAttendanceRecord(LocalDateTime attendanceDateTime) {
+    public List<Attendance> modifyAttendanceRecord(LocalDateTime attendanceDateTime) {
         Attendance modifyOldAttendance = attendances.stream()
                 .filter(attendance -> attendance.getAttendanceDate().equals(attendanceDateTime.toLocalDate()))
                 .findFirst()
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 날입니다."));
 
         attendances.remove(modifyOldAttendance);
-        attendances.add(new Attendance(attendanceDateTime));
+        Attendance modifyNewAttendance = new Attendance(attendanceDateTime);
+        attendances.add(modifyNewAttendance);
+
+        return List.of(modifyOldAttendance, modifyNewAttendance);
     }
 }

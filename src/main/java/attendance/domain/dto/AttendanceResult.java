@@ -2,38 +2,22 @@ package attendance.domain.dto;
 
 import attendance.domain.Attendance;
 
-public class AttendanceResult {
-    private final int attendanceMonth;
-    private final int attendanceDay;
-    private final int attendanceHour;
-    private final int attendanceMinute;
-    private final String attendanceStatus;
+public record AttendanceResult(
+        int attendanceMonth,
+        int attendanceDay,
+        int attendanceHour,
+        int attendanceMinute,
+        String attendanceStatus
+) {
 
-    public AttendanceResult(Attendance attendance) {
-        this.attendanceMonth = attendance.getAttendanceDate().getMonthValue();
-        this.attendanceDay = attendance.getAttendanceDate().getDayOfMonth();
-        this.attendanceHour = attendance.getAttendanceTime().getHour();
-        this.attendanceMinute = attendance.getAttendanceTime().getMinute();
-        this.attendanceStatus = attendance.getAttendanceStatus();
+    public static AttendanceResult from(Attendance attendance) {
+        return new AttendanceResult(
+                attendance.getAttendanceDate().getMonthValue(),
+                attendance.getAttendanceDate().getDayOfMonth(),
+                attendance.getAttendanceTime().getHour(),
+                attendance.getAttendanceTime().getMinute(),
+                attendance.getAttendanceStatus()
+        );
     }
 
-    public int getAttendanceMonth() {
-        return attendanceMonth;
-    }
-
-    public int getAttendanceDay() {
-        return attendanceDay;
-    }
-
-    public int getAttendanceHour() {
-        return attendanceHour;
-    }
-
-    public int getAttendanceMinute() {
-        return attendanceMinute;
-    }
-
-    public String getAttendanceStatus() {
-        return attendanceStatus;
-    }
 }
