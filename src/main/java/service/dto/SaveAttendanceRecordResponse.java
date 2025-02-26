@@ -4,13 +4,18 @@ import domain.AttendanceStatus;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Locale;
 
 public record SaveAttendanceRecordResponse(
-        LocalDateTime dateTime,
+        String dateTime,
         AttendanceStatus status
 ) {
 
+    private static final DateTimeFormatter DATE_TIME_FORMAT
+            = DateTimeFormatter.ofPattern("MM월 dd일 E요일 HH:mm", Locale.KOREAN);
+
     public static SaveAttendanceRecordResponse of(LocalDate date, LocalTime time, AttendanceStatus status) {
-        return new SaveAttendanceRecordResponse(LocalDateTime.of(date, time), status);
+        return new SaveAttendanceRecordResponse(LocalDateTime.of(date, time).format(DATE_TIME_FORMAT), status);
     }
 }

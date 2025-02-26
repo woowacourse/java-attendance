@@ -13,6 +13,7 @@ import domain.RiskRank;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -48,19 +49,21 @@ public class AttendanceService {
         validateCampusTime(request.time());
         validateSameAttendanceRecordExists(request.nickname(), request.date(), request.time());
 
-        TimeStatus before = getDateTimeStatus(request.nickname(), request.date());
+        TimeStatus before = getTimeStatus(request.nickname(), request.date());
         AttendanceRecordRepository.put(
                 new AttendanceRecord(request.nickname(), request.date(), request.time(),
                         AttendanceStatus.of(request.date(), request.time()))
         );
-        TimeStatus after = getDateTimeStatus(request.nickname(), request.date());
+        TimeStatus after = getTimeStatus(request.nickname(), request.date());
         return ModifyAttendanceRecordResponse.of(request.date(), before, after);
     }
 
     public MonthAttendanceStatisticsResponse getMonthAttendanceStatistics(MonthAttendanceStatisticsRequest request) {
-        List<AttendanceRecordResponse> monthAttendanceRecords = getMonthAttendanceRecords(request.nickname(),
+        List<AttendanceRecordResponse> monthAttendanceRecords = getMonthAttendanceRecords(
+                request.nickname(),
                 request.today());
-        Map<String, Integer> attendanceStatusCount = calculateAttendanceStatusCount(monthAttendanceRecords);
+        Map<String, Integer> attendanceStatusCount = calculateAttendanceStatusCount(
+                monthAttendanceRecords);
         String riskRank = calculateRiskRank(attendanceStatusCount);
 
         return new MonthAttendanceStatisticsResponse(monthAttendanceRecords,
@@ -77,19 +80,29 @@ public class AttendanceService {
         nicknames.forEach(nickname -> {
             List<AttendanceRecordResponse> monthAttendanceRecords = getMonthAttendanceRecords(nickname,
                     request.today());
-            Map<String, Integer> attendanceStatusCount = calculateAttendanceStatusCount(monthAttendanceRecords);
+            Map<String, Integer> attendanceStatusCount = calculateAttendanceStatusCount(
+                    monthAttendanceRecords);
             String riskRank = calculateRiskRank(attendanceStatusCount);
             riskCrews.add(new RiskCrew(nickname, attendanceStatusCount, riskRank));
         });
         return new RiskCrewsResponse(riskCrews);
     }
 
-    private TimeStatus getDateTimeStatus(String nickName, LocalDate date) {
+    public TimeStatus getTimeStatus(String nickName, LocalDate date) {
         if (!AttendanceRecordRepository.exists(nickName, date)) {
             return TimeStatus.createAbsentTimeStatus();
         }
         AttendanceRecord found = AttendanceRecordRepository.find(nickName, date);
         return TimeStatus.of(found.time(), found.status().getTitle());
+    }
+
+    public List<AttendanceRecordResponse> getMonthAttendanceRecords(
+            String nickname, LocalDate today) {
+        List<AttendanceRecordResponse> monthAttendanceRecords = new ArrayList<>();
+        for (int day = 1; day < today.getDayOfMonth(); day++) {
+            addAttendanceRecord(nickname, today.withDayOfMonth(day), monthAttendanceRecords);
+        }
+        return monthAttendanceRecords;
     }
 
     private void addAttendanceRecord(String nickname, LocalDate targetDate,
@@ -107,17 +120,10 @@ public class AttendanceService {
         );
     }
 
-    private List<AttendanceRecordResponse> getMonthAttendanceRecords(
-            String nickname, LocalDate today) {
-        List<AttendanceRecordResponse> monthAttendanceRecords = new ArrayList<>();
-        for (int day = 1; day < today.getDayOfMonth(); day++) {
-            addAttendanceRecord(nickname, today.withDayOfMonth(day), monthAttendanceRecords);
-        }
-        return monthAttendanceRecords;
-    }
-
-    private Map<String, Integer> calculateAttendanceStatusCount(List<AttendanceRecordResponse> monthAttendanceRecords) {
+    public Map<String, Integer> calculateAttendanceStatusCount(List<AttendanceRecordResponse> monthAttendanceRecords) {
         Map<String, Integer> attendanceStatusCount = new LinkedHashMap<>();
+        Arrays.stream(AttendanceStatus.values())
+                .forEach(status -> attendanceStatusCount.put(status.getTitle(), 0));
         monthAttendanceRecords.forEach(record -> {
             int before = attendanceStatusCount.getOrDefault(record.attendanceStatus(), 0);
             attendanceStatusCount.put(record.attendanceStatus(), before + 1);
@@ -125,7 +131,7 @@ public class AttendanceService {
         return attendanceStatusCount;
     }
 
-    private String calculateRiskRank(Map<String, Integer> attendanceStatusCount) {
+    public String calculateRiskRank(Map<String, Integer> attendanceStatusCount) {
         int accumulatedCount =
                 attendanceStatusCount.getOrDefault("지각", 0) / 3
                         + attendanceStatusCount.getOrDefault("결석", 0);
