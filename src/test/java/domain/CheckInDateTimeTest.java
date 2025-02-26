@@ -10,7 +10,7 @@ import java.time.LocalTime;
 import static org.assertj.core.api.Assertions.assertThatNoException;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-class CheckInTimeTest {
+class CheckInDateTimeTest {
     @Test
     @DisplayName("출석 시간이면 CheckInTime을 정상적으로 생성")
     void createChekInTimeTest() {
@@ -19,7 +19,7 @@ class CheckInTimeTest {
         LocalTime checkInTime = LocalTime.of(10, 0);
         //when
         //then
-        assertThatNoException().isThrownBy(() -> CheckInTime.of(checkInDate, checkInTime));
+        assertThatNoException().isThrownBy(() -> CheckInDateTime.of(checkInDate, checkInTime));
     }
 
     @Test
@@ -30,7 +30,7 @@ class CheckInTimeTest {
         LocalTime checkInTime = LocalTime.of(23, 10);
         //when
         //then
-        assertThatThrownBy(() -> CheckInTime.of(checkInDate, checkInTime))
+        assertThatThrownBy(() -> CheckInDateTime.of(checkInDate, checkInTime))
                 .isInstanceOf(AppException.class)
                 .hasMessageContaining(AppException.PREFIX);
     }

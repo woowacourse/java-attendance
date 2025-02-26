@@ -6,21 +6,21 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.Objects;
 
-public class CheckInTime implements Comparable<CheckInTime> {
+public class CheckInDateTime implements Comparable<CheckInDateTime> {
     private final LocalDate checkInDate;
     private final LocalTime checkInTime;
 
     public static final LocalTime CAMPUS_START_TIME = LocalTime.of(8, 0);
     public static final LocalTime CAMPUS_END_TIME = LocalTime.of(23, 0);
 
-    private CheckInTime(LocalDate checkInDate, LocalTime checkInTime) {
+    private CheckInDateTime(LocalDate checkInDate, LocalTime checkInTime) {
         validateCampusTime(checkInTime);
         this.checkInDate = checkInDate;
         this.checkInTime = checkInTime;
     }
 
-    public static CheckInTime of(LocalDate checkInDate, LocalTime checkInTime) {
-        return new CheckInTime(checkInDate, checkInTime);
+    public static CheckInDateTime of(LocalDate checkInDate, LocalTime checkInTime) {
+        return new CheckInDateTime(checkInDate, checkInTime);
     }
 
     private void validateCampusTime(LocalTime checkInTime) {
@@ -30,10 +30,10 @@ public class CheckInTime implements Comparable<CheckInTime> {
     }
 
     @Override
-    public int compareTo(CheckInTime o) {
-        int i = this.checkInDate.compareTo(o.checkInDate);
-        if (i != 0) {
-            return i;
+    public int compareTo(CheckInDateTime o) {
+        int dateComparison = this.checkInDate.compareTo(o.checkInDate);
+        if (dateComparison != 0) {
+            return dateComparison;
         }
         return this.checkInTime.compareTo(o.checkInTime);
     }
@@ -42,7 +42,7 @@ public class CheckInTime implements Comparable<CheckInTime> {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        CheckInTime that = (CheckInTime) o;
+        CheckInDateTime that = (CheckInDateTime) o;
         return checkInDate.equals(that.checkInDate) && checkInTime.equals(that.checkInTime);
     }
 

@@ -14,12 +14,12 @@ class CheckInHistoryTest {
     @DisplayName("출석 기록부에 내역을 정상적으로 추가")
     void addCheckInTimeTest() {
         //given
-        CheckInHistory history = CheckInHistory.of(new TreeSet<CheckInTime>());
-        CheckInTime checkInTime = CheckInTime.of(
+        CheckInHistory history = CheckInHistory.of(new TreeSet<CheckInDateTime>());
+        CheckInDateTime checkInDateTime = CheckInDateTime.of(
                 LocalDate.of(2024, 12, 3), LocalTime.of(10, 0)
         );
         //when
-        history.checkIn(checkInTime);
+        history.checkIn(checkInDateTime);
         //then
         assertThat(history.getCheckInCount()).isEqualTo(1);
     }
