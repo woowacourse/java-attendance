@@ -126,7 +126,7 @@ public class OutputView {
     }
 
     private void printCrewStatus(CrewStatus crewStatus) {
-        System.out.printf("%s 대상자입니다.\n", crewStatus.getExpression());
+        System.out.printf("%s 대상자입니다.\n", getCrewStatusText(crewStatus));
     }
 
     public void printDisenrollmentCheckResult(List<DisenrollmentCheckResponse> responses) {
@@ -137,9 +137,21 @@ public class OutputView {
                     response.name(),
                     response.absenceCount(),
                     response.lateCount(),
-                    response.crewStatus().getExpression()
+                    getCrewStatusText(response.crewStatus())
             );
         }
+    }
+
+    private String getCrewStatusText(CrewStatus crewStatus) {
+        switch (crewStatus) {
+            case WARNING:
+                return "경고";
+            case CONSULTANT:
+                return "면담";
+            case DISENROLLMENT:
+                return "제적";
+        }
+        return "";
     }
 
     private List<DisenrollmentCheckResponse> getSortedResponse(List<DisenrollmentCheckResponse> responses) {

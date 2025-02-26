@@ -6,17 +6,15 @@ import java.util.Arrays;
 import java.util.Comparator;
 
 public enum CrewStatus {
-    NORMAL(null, 0),
-    WARNING("경고", 2),
-    CONSULTANT("면담", 3),
-    DISENROLLMENT("제적", 6),
+    NORMAL(0),
+    WARNING(2),
+    CONSULTANT(3),
+    DISENROLLMENT(6),
     ;
 
-    private final String expression;
     private final int absenceLowerBound;
 
-    CrewStatus(String expression, int absenceLowerBound) {
-        this.expression = expression;
+    CrewStatus(int absenceLowerBound) {
         this.absenceLowerBound = absenceLowerBound;
     }
 
@@ -30,9 +28,5 @@ public enum CrewStatus {
 
     public int getAbsenceLowerBound() {
         return absenceLowerBound;
-    }
-
-    public String getExpression() {
-        return expression;
     }
 }
