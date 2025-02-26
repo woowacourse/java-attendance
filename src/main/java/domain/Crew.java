@@ -25,18 +25,6 @@ public class Crew {
         attendanceHistories.addHistory(history);
     }
 
-    public List<AttendanceHistory> getBeforeHistories(LocalDateTime standard) {
-        return attendanceHistories.getSortedHistories(standard);
-    }
-
-    public String getHistoryResult(LocalDateTime attendanceTime) {
-        return attendanceHistories.getHistoryResult(attendanceTime);
-    }
-
-    public String getUserName() {
-        return userName;
-    }
-
     public void editHistory(LocalDateTime attendanceTime) {
         attendanceHistories.editHistory(attendanceTime);
     }
@@ -51,5 +39,17 @@ public class Crew {
 
     public Map<AttendanceResult, Integer> getAttendanceAllResult(LocalDateTime time) {
         return attendanceHistories.getAttendanceResultCount(time);
+    }
+
+    public List<AttendanceHistory> getBeforeHistories(LocalDateTime standard) {
+        return attendanceHistories.getSortedHistories(standard);
+    }
+
+    public String getHistoryResult(LocalDateTime attendanceTime) {
+        return attendanceHistories.getHistoryResult(attendanceTime);
+    }
+
+    public String getUserName() {
+        return userName;
     }
 }

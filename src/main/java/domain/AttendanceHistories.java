@@ -26,6 +26,28 @@ public class AttendanceHistories {
                 .collect(Collectors.toList());
     }
 
+    private List<LocalDateTime> generateAbsenceHistories(List<LocalDateTime> attendanceTimes, LocalDate standard) {
+        return getAbsentDays(attendanceTimes, standard).stream()
+                .filter(date -> !Holiday.isHoliday(date))
+                .map(date -> LocalDateTime.of(date.getYear(), date.getMonthValue(), date.getDayOfMonth(),
+                        ABSENT_DEFAULT_HOUR, ABSENT_DEFAULT_MINUTE))
+                .collect(Collectors.toList());
+    }
+
+    private List<LocalDate> getAbsentDays(List<LocalDateTime> attendanceTimes, LocalDate standard) {
+        int day = standard.getDayOfMonth();
+        return IntStream.range(1, day)
+                .mapToObj(i -> LocalDate.of(standard.getYear(), standard.getMonthValue(), i))
+                .filter(date -> !hasAttendanceForDate(attendanceTimes, date))
+                .collect(Collectors.toList());
+    }
+
+    private boolean hasAttendanceForDate(List<LocalDateTime> attendanceTimes, LocalDate date) {
+        return attendanceTimes.stream()
+                .map(LocalDateTime::toLocalDate)
+                .anyMatch(attendanceDate -> attendanceDate.equals(date));
+    }
+
     public AbsenceLevel classifyAbsenceLevel(LocalDateTime standard) {
         Map<AttendanceResult, Integer> results = getAttendanceResultCount(standard);
         int absentCount = results.getOrDefault(ABSENCE, 0);
@@ -90,27 +112,5 @@ public class AttendanceHistories {
                         (history.getAttendanceTime().getMonthValue() == time.getMonthValue())).findFirst()
                 .orElseThrow(() -> new IllegalArgumentException("[ERROR] 해당 날짜 출석 기록이 없습니다. 출석 기록이 있는 날짜를 입력해 주세요."));
         return findAttendanceHistory.getAttendanceTime();
-    }
-
-    private List<LocalDateTime> generateAbsenceHistories(List<LocalDateTime> attendanceTimes, LocalDate standard) {
-        return getAbsentDays(attendanceTimes, standard).stream()
-                .filter(date -> !Holiday.isHoliday(date))
-                .map(date -> LocalDateTime.of(date.getYear(), date.getMonthValue(), date.getDayOfMonth(),
-                        ABSENT_DEFAULT_HOUR, ABSENT_DEFAULT_MINUTE))
-                .collect(Collectors.toList());
-    }
-
-    private List<LocalDate> getAbsentDays(List<LocalDateTime> attendanceTimes, LocalDate standard) {
-        int day = standard.getDayOfMonth();
-        return IntStream.range(1, day)
-                .mapToObj(i -> LocalDate.of(standard.getYear(), standard.getMonthValue(), i))
-                .filter(date -> !hasAttendanceForDate(attendanceTimes, date))
-                .collect(Collectors.toList());
-    }
-
-    private boolean hasAttendanceForDate(List<LocalDateTime> attendanceTimes, LocalDate date) {
-        return attendanceTimes.stream()
-                .map(LocalDateTime::toLocalDate)
-                .anyMatch(attendanceDate -> attendanceDate.equals(date));
     }
 }

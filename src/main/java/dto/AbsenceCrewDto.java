@@ -9,6 +9,7 @@ import domain.AttendanceResult;
 import java.util.Map;
 
 public class AbsenceCrewDto implements Comparable<AbsenceCrewDto> {
+
     private final String username;
     private final Map<AttendanceResult, Integer> results;
     private final String classifyAbsenceLevel;

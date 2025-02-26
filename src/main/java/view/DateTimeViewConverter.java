@@ -44,6 +44,10 @@ public class DateTimeViewConverter {
         return changedDate.format(DATE_ONLY_FORMATTER);
     }
 
+    public static LocalDateTime changeStandardDate(LocalDateTime time) {
+        return LocalDateTime.of(STANDARD_YEAR, STANDARD_MONTH, time.getDayOfMonth(), time.getHour(), time.getMinute());
+    }
+
     public static String timeFormattingForOutput(LocalDateTime localDateTime) {
         return localDateTime.format(TIME_FORMATTER);
     }
@@ -57,11 +61,6 @@ public class DateTimeViewConverter {
         int day = Integer.parseInt(date);
         return LocalDateTime.of(STANDARD_YEAR, STANDARD_MONTH, day, hour, minutes);
     }
-
-    public static LocalDateTime changeStandardDate(LocalDateTime time) {
-        return LocalDateTime.of(STANDARD_YEAR, STANDARD_MONTH, time.getDayOfMonth(), time.getHour(), time.getMinute());
-    }
-
 
     public static void validateDate(String input) {
         if (!input.matches(TIME_FORMAT)) {

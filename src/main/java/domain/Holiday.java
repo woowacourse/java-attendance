@@ -24,14 +24,6 @@ public enum Holiday {
         validateHoliday(time);
     }
 
-    public static boolean isHoliday(LocalDate time) {
-        boolean isHoliday = Arrays.stream(Holiday.values())
-                .anyMatch(holiday -> holiday.month == time.getMonthValue() && holiday.day == time.getDayOfMonth());
-        boolean isWeekend = time.getDayOfWeek() == SATURDAY || time.getDayOfWeek() == SUNDAY;
-        return isHoliday || isWeekend;
-    }
-
-
     private static void validateWeekend(LocalDateTime time) {
         if ((time.getDayOfWeek() == SATURDAY) || (time.getDayOfWeek() == SUNDAY)) {
             throw new IllegalArgumentException(
@@ -50,6 +42,13 @@ public enum Holiday {
                             time.getDayOfMonth())
             );
         }
+    }
+
+    public static boolean isHoliday(LocalDate time) {
+        boolean isHoliday = Arrays.stream(Holiday.values())
+                .anyMatch(holiday -> holiday.month == time.getMonthValue() && holiday.day == time.getDayOfMonth());
+        boolean isWeekend = time.getDayOfWeek() == SATURDAY || time.getDayOfWeek() == SUNDAY;
+        return isHoliday || isWeekend;
     }
 
 

@@ -36,20 +36,6 @@ public class OutputVIew {
         printUserAttendanceResult(historiesDto);
     }
 
-    public void printDangerous(List<AbsenceCrewDto> crewsDto) {
-        System.out.println("제적 위험자 조회 결과");
-        Collections.sort(crewsDto);
-        crewsDto.forEach(crew -> {
-            Map<AttendanceResult, Integer> results = crew.getResults();
-            System.out.printf("- %s: 결석 %d회,지각 %d회 (%s)\n", crew.getUsername(),
-                    results.getOrDefault(ABSENCE, 0),
-                    results.getOrDefault(LATE, 0),
-                    crew.getClassifyAbsenceLevel());
-        });
-        System.out.print(LINE_SEPARATOR);
-    }
-
-
     private void printAttendanceHistory(HistoriesDto historiesDto) {
         System.out.printf("이번 달 %s의 출석 기록입니다.\n", historiesDto.username());
         for (HistoryDto history : historiesDto.histories()) {
@@ -75,6 +61,18 @@ public class OutputVIew {
         System.out.print(LINE_SEPARATOR);
     }
 
+    public void printDangerous(List<AbsenceCrewDto> crewsDto) {
+        System.out.println("제적 위험자 조회 결과");
+        Collections.sort(crewsDto);
+        crewsDto.forEach(crew -> {
+            Map<AttendanceResult, Integer> results = crew.getResults();
+            System.out.printf("- %s: 결석 %d회,지각 %d회 (%s)\n", crew.getUsername(),
+                    results.getOrDefault(ABSENCE, 0),
+                    results.getOrDefault(LATE, 0),
+                    crew.getClassifyAbsenceLevel());
+        });
+        System.out.print(LINE_SEPARATOR);
+    }
 
 }
 

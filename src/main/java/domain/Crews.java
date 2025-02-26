@@ -20,6 +20,12 @@ public class Crews {
         findCrew.addAttendance(attendanceTime);
     }
 
+    private Crew getCrew(String username) {
+        return crews.stream()
+                .filter(crew -> crew.getUserName().equals(username)).findAny()
+                .orElseThrow(() -> new IllegalArgumentException("[ERROR] 존재하지 않은 크루입니다. 존재하는 크루 이름을 입력해주세요"));
+    }
+
     public String editHistory(String username, LocalDateTime localDateTime) {
         Crew findCrew = getCrew(username);
         findCrew.editHistory(localDateTime);
@@ -55,11 +61,4 @@ public class Crews {
         Crew findCrew = getCrew(username);
         return findCrew.getClassifyAbsenceLevel(localDateTime);
     }
-
-    private Crew getCrew(String username) {
-        return crews.stream()
-                .filter(crew -> crew.getUserName().equals(username)).findAny()
-                .orElseThrow(() -> new IllegalArgumentException("[ERROR] 존재하지 않은 크루입니다. 존재하는 크루 이름을 입력해주세요"));
-    }
-
 }
