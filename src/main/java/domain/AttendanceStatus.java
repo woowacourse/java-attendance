@@ -10,8 +10,4 @@ public enum AttendanceStatus {
     AttendanceStatus(String expression) {
         this.expression = expression;
     }
-
-    public AttendanceStatus of(Attendance attendance) {
-
-    }
 }

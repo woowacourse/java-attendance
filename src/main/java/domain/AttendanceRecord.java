@@ -1,11 +1,25 @@
 package domain;
 
-import java.util.List;
+import java.util.HashSet;
+import java.util.Objects;
+import java.util.Set;
 
 public class AttendanceRecord {
-    private final List<Attendance> attendanceRecord;
+    private final Set<Attendance> value;
 
-    public AttendanceRecord(List<Attendance> attendanceRecord) {
-        this.attendanceRecord = attendanceRecord;
+    public AttendanceRecord() {
+        this.value = new HashSet<>();
+    }
+
+    public void add(Attendance attendance) {
+        value.add(attendance);
+    }
+
+    @Override
+    public boolean equals(Object object) {
+        if(this == object) return true;
+        if(object == null || this.getClass() != object.getClass()) return false;
+        AttendanceRecord other = (AttendanceRecord) object;
+        return Objects.equals(this.value, other.value);
     }
 }

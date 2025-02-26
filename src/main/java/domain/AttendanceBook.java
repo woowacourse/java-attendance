@@ -9,4 +9,14 @@ public class AttendanceBook {
     public AttendanceBook() {
         this.value = new HashMap<>();
     }
+
+    public void addAttendance(CrewName crewName, Attendance attendance) {
+        AttendanceRecord attendanceRecord = new AttendanceRecord();
+        attendanceRecord.add(attendance);
+        value.put(crewName, attendanceRecord);
+    }
+
+    public AttendanceRecord findAttendanceRecordBy(CrewName crewName) {
+        return value.get(crewName);
+    }
 }
