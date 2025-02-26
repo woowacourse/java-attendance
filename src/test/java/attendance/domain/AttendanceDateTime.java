@@ -19,8 +19,25 @@ public class AttendanceDateTime {
 
     private void validate(LocalDateTime attendanceDateTime) {
         validateFuture(attendanceDateTime);
+        validateHoliday(attendanceDateTime);
         validateWeekend(attendanceDateTime);
         validateOperationTime(attendanceDateTime);
+    }
+
+    private void validateFuture(LocalDateTime attendanceDateTime) {
+        if (attendanceDateTime.isAfter(LocalDateTime.now())) {
+            throw new IllegalArgumentException("미래의 시간으로는 출석할 수 없습니다.");
+        }
+    }
+
+    private void validateHoliday(LocalDateTime attendanceDateTime) {
+        if (Holiday.isHoliday(attendanceDateTime)) {
+            throw new IllegalArgumentException("%d월 %d일 %s은 등교일이 아닙니다.".formatted(
+                    attendanceDateTime.getMonthValue(),
+                    attendanceDateTime.getDayOfMonth(),
+                    attendanceDateTime.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.KOREA)
+            ));
+        }
     }
 
     private void validateWeekend(LocalDateTime attendanceDateTime) {
@@ -41,12 +58,6 @@ public class AttendanceDateTime {
                     attendanceTime.getHour(),
                     attendanceTime.getMinute()
             ));
-        }
-    }
-
-    private void validateFuture(LocalDateTime attendanceDateTime) {
-        if (attendanceDateTime.isAfter(LocalDateTime.now())) {
-            throw new IllegalArgumentException("미래의 시간으로는 출석할 수 없습니다.");
         }
     }
 }
