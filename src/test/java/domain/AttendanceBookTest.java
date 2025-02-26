@@ -32,13 +32,10 @@ public class AttendanceBookTest {
     @Test
     void test1() {
         Attendance todayAttendance = new Attendance(LocalDateTime.of(2024, 12, 13, 9, 59));
-        AttendanceRecord expectedAttendanceRecord = new AttendanceRecord();
-        expectedAttendanceRecord.add(dayOfTenAttendance);
-        expectedAttendanceRecord.add(todayAttendance);
 
-        attendanceBook.addAttendance(mimi, todayAttendance);
+        Attendance savedAttendance = attendanceBook.addAttendance(mimi, todayAttendance);
 
-        assertThat(attendanceBook.findAttendanceRecordBy(mimi)).isEqualTo(expectedAttendanceRecord);
+        assertThat(todayAttendance).isEqualTo(savedAttendance);
     }
 
     @DisplayName("출석부에 존재하지 않는 닉네임일 경우 예외가 발생한다.")
