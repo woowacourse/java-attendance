@@ -59,4 +59,54 @@ public class AttendanceCheckTest {
         AttendanceStatus attendanceStatus = attendanceCheck.judge(attendanceTime, lateStandardTime, absentStandardTime);
         assertThat(attendanceStatus).isEqualTo(AttendanceStatus.ABSENCE);
     }
+
+    @Test
+    void 화요일_출석_테스트() {
+        lateStandardTime = LocalTime.of(10, 5);
+        absentStandardTime = LocalTime.of(10, 30);
+
+        LocalTime attendanceTime = LocalTime.of(10, 0);
+        AttendanceStatus attendanceStatus = attendanceCheck.judge(attendanceTime, lateStandardTime, absentStandardTime);
+        assertThat(attendanceStatus).isEqualTo(AttendanceStatus.ATTENDANCE);
+    }
+
+    @Test
+    void 화요일_출석_경계값_테스트() {
+        lateStandardTime = LocalTime.of(10, 5);
+        absentStandardTime = LocalTime.of(10, 30);
+
+        LocalTime attendanceTime = LocalTime.of(10, 5);
+        AttendanceStatus attendanceStatus = attendanceCheck.judge(attendanceTime, lateStandardTime, absentStandardTime);
+        assertThat(attendanceStatus).isEqualTo(AttendanceStatus.ATTENDANCE);
+    }
+
+    @Test
+    void 화요일_지각_테스트() {
+        lateStandardTime = LocalTime.of(10, 5);
+        absentStandardTime = LocalTime.of(10, 30);
+
+        LocalTime attendanceTime = LocalTime.of(10, 30);
+        AttendanceStatus attendanceStatus = attendanceCheck.judge(attendanceTime, lateStandardTime, absentStandardTime);
+        assertThat(attendanceStatus).isEqualTo(AttendanceStatus.LATENESS);
+    }
+
+    @Test
+    void 화요일_지각_경계값_테스트() {
+        lateStandardTime = LocalTime.of(10, 5);
+        absentStandardTime = LocalTime.of(10, 30);
+
+        LocalTime attendanceTime = LocalTime.of(10, 30);
+        AttendanceStatus attendanceStatus = attendanceCheck.judge(attendanceTime, lateStandardTime, absentStandardTime);
+        assertThat(attendanceStatus).isEqualTo(AttendanceStatus.LATENESS);
+    }
+
+    @Test
+    void 화요일_결석_테스트() {
+        lateStandardTime = LocalTime.of(10, 5);
+        absentStandardTime = LocalTime.of(10, 30);
+
+        LocalTime attendanceTime = LocalTime.of(10, 31);
+        AttendanceStatus attendanceStatus = attendanceCheck.judge(attendanceTime, lateStandardTime, absentStandardTime);
+        assertThat(attendanceStatus).isEqualTo(AttendanceStatus.ABSENCE);
+    }
 }
