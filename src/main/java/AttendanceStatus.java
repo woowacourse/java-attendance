@@ -40,6 +40,6 @@ public class AttendanceStatus {
         if (time.isBefore(classStartTime.plusMinutes(31))) {
             return "지각";
         }
-        return null;
+        return "결석";
     }
 }
