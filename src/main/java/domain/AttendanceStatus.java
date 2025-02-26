@@ -18,13 +18,9 @@ public enum AttendanceStatus {
     }
 
     public static AttendanceStatus of(final LocalDateTime dateTime) {
-        final ClassTime classTime = ClassTime.findClassTimeByDateTime(dateTime.toLocalDate());
-        final LocalDateTime timeBoundary = dateTime
-                .withHour(classTime.getStartTime().getHour())
-                .withMinute(classTime.getStartTime().getMinute());
         return Arrays.stream(values())
                 .sorted((o1, o2) -> o2.boundary - o1.boundary)
-                .filter(status -> dateTime.isAfter(timeBoundary.plusMinutes(status.boundary)))
+                .filter(status -> dateTime.isAfter(ClassTime.calculateBoundaryTime(dateTime.toLocalDate()).plusMinutes(status.boundary)))
                 .findFirst()
                 .orElse(ATTENDANCE);
     }
