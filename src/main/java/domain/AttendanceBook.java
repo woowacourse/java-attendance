@@ -10,10 +10,11 @@ public class AttendanceBook {
         this.value = initialInfo.getValue();
     }
 
-    public void addAttendance(CrewName crewName, Attendance attendance) {
+    public Attendance addAttendance(CrewName crewName, Attendance attendance) {
         AttendanceRecord attendanceRecord = findAttendanceRecordBy(crewName);
         attendanceRecord.add(attendance);
         value.put(crewName, attendanceRecord);
+        return attendance;
     }
 
     public AttendanceRecord findAttendanceRecordBy(CrewName crewName) {
