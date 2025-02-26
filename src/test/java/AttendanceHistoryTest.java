@@ -2,6 +2,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import domain.AttendanceHistory;
+import domain.AttendanceRecord;
 import domain.Crew;
 import java.time.LocalDateTime;
 import org.junit.jupiter.api.DisplayName;
@@ -34,6 +35,29 @@ public class AttendanceHistoryTest {
                     .hasDayOfMonth(13)
                     .hasHour(10)
                     .hasMinute(5);
+        }
+
+        @DisplayName("기존의 출석 기록을 새로운 시간으로 수정한다.")
+        @Test
+        public void updateTimeByDate() throws Exception {
+            // given
+            final Crew owner = new Crew("owner");
+            final var attendanceHistory = new AttendanceHistory(owner);
+            final var beforeTime = LocalDateTime.of(2024, 12, 13, 10, 5);
+            attendanceHistory.attendance(beforeTime);
+            final var afterTime = LocalDateTime.of(2024, 12, 13, 11, 30);
+
+            // when
+            final AttendanceRecord before = attendanceHistory.updateTimeByDate(afterTime);
+            final AttendanceRecord after = attendanceHistory.findByDate();
+
+            // then
+            assertThat(before.getDateTime())
+                    .hasHour(10)
+                    .hasMinute(5);
+            assertThat(after.getDateTime())
+                    .hasHour(11)
+                    .hasMinute(30);
         }
     }
 

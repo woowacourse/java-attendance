@@ -42,6 +42,14 @@ public class AttendanceHistory {
         }
     }
 
+    public AttendanceRecord updateTimeByDate(final LocalDateTime afterTime) {
+        return null;
+    }
+
+    public AttendanceRecord findByDate() {
+        return null;
+    }
+
     public Crew getCrew() {
         return crew;
     }
