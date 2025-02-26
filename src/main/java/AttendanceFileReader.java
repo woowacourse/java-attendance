@@ -1,3 +1,5 @@
+import domain.Attendance;
+import domain.Crew;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.time.LocalDate;
