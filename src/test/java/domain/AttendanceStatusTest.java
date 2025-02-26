@@ -5,7 +5,7 @@ import org.junit.jupiter.api.Test;
 
 import java.time.LocalTime;
 
-import static domain.AttendanceStatus.getAttendanceStatus;
+import static domain.AttendanceStatus.determineAttendanceStatus;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
@@ -17,7 +17,7 @@ class AttendanceStatusTest {
         LocalTime classStartTime = LocalTime.of(10, 0);
         LocalTime checkInTime = LocalTime.of(9, 0);
         //when
-        AttendanceStatus status = AttendanceStatus.getAttendanceStatus(classStartTime, checkInTime);
+        AttendanceStatus status = AttendanceStatus.determineAttendanceStatus(classStartTime, checkInTime);
         //then
         assertThat(status).isEqualTo(AttendanceStatus.PRESENCE);
     }
@@ -29,7 +29,7 @@ class AttendanceStatusTest {
         LocalTime classStartTime = LocalTime.of(10, 0);
         LocalTime checkInTime = LocalTime.of(10, 4);
         //when
-        AttendanceStatus status = getAttendanceStatus(classStartTime, checkInTime);
+        AttendanceStatus status = determineAttendanceStatus(classStartTime, checkInTime);
         //then
         assertThat(status).isEqualTo(AttendanceStatus.PRESENCE);
     }
@@ -42,9 +42,9 @@ class AttendanceStatusTest {
         //when
         //then
         assertAll(
-                () -> assertThat(getAttendanceStatus(classStartTime, LocalTime.of(10, 6)))
+                () -> assertThat(determineAttendanceStatus(classStartTime, LocalTime.of(10, 6)))
                         .isEqualTo(AttendanceStatus.LATE),
-                () -> assertThat(getAttendanceStatus(classStartTime, LocalTime.of(10, 30)))
+                () -> assertThat(determineAttendanceStatus(classStartTime, LocalTime.of(10, 30)))
                         .isEqualTo(AttendanceStatus.LATE)
         );
     }
@@ -56,7 +56,7 @@ class AttendanceStatusTest {
         LocalTime classStartTime = LocalTime.of(10, 0);
         LocalTime checkInTime = LocalTime.of(10, 31);
         //when
-        AttendanceStatus status = getAttendanceStatus(classStartTime, checkInTime);
+        AttendanceStatus status = determineAttendanceStatus(classStartTime, checkInTime);
         //then
         assertThat(status).isEqualTo(AttendanceStatus.ABSENCE);
     }

@@ -15,13 +15,12 @@ public enum AttendanceStatus {
         this.arrivalTimeLimit = arrivalTimeLimit;
     }
 
-    public static AttendanceStatus getAttendanceStatus(LocalTime classStartTime, LocalTime checkInTime) {
-        long timediff = Duration.between(classStartTime, checkInTime).toMinutes();
-        System.out.println(timediff);
-        if (timediff > ABSENCE.arrivalTimeLimit) {
+    public static AttendanceStatus determineAttendanceStatus(LocalTime classStartTime, LocalTime checkInTime) {
+        long minutesLate = Duration.between(classStartTime, checkInTime).toMinutes();
+        if (minutesLate > ABSENCE.arrivalTimeLimit) {
             return ABSENCE;
         }
-        if (timediff > LATE.arrivalTimeLimit) {
+        if (minutesLate > LATE.arrivalTimeLimit) {
             return LATE;
         }
         return PRESENCE;
