@@ -30,11 +30,30 @@ public class AttendanceController {
     }
 
     public void start(LocalDate baseDate) {
-        AttendanceLogs attendanceLogs = new AttendancesFile().load("src/main/resources/attendances.csv");
-        outputView.printDate(baseDate);
-        String rawCommand = inputView.readCommand(Command.getCommands());
-        Command command = Command.from(rawCommand);
+        AttendanceLogs attendanceLogs = loadAttendanceLogs();
+        boolean shouldContinue;
+        do {
+            outputView.printDate(baseDate);
+            shouldContinue = processInputCommand(baseDate, attendanceLogs);
+        } while (shouldContinue);
+    }
+
+    private boolean processInputCommand(LocalDate baseDate, AttendanceLogs attendanceLogs) {
+        Command command = readCommand();
+        if (command == Command.QUIT) {
+            return false;
+        }
         executeCommand(command, baseDate, attendanceLogs);
+        return true;
+    }
+
+    private Command readCommand() {
+        String rawCommand = inputView.readCommand(Command.getCommands());
+        return Command.from(rawCommand);
+    }
+
+    private AttendanceLogs loadAttendanceLogs() {
+        return new AttendancesFile().load("src/main/resources/attendances.csv");
     }
 
     private void executeCommand(Command command, LocalDate baseDate, AttendanceLogs attendanceLogs) {

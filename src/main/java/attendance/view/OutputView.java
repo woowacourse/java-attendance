@@ -16,7 +16,7 @@ import java.util.List;
 public class OutputView {
 
     public void printDate(LocalDate date) {
-        System.out.print(date.format(DateTimeFormatter.ofPattern("오늘은 MM월 dd일 E요일입니다. ")));
+        System.out.print(date.format(DateTimeFormatter.ofPattern("\n오늘은 MM월 dd일 E요일입니다. ")));
     }
 
     public void printAttend(LocalDateTime dateTime, AttendanceType attendanceType) {
