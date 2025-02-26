@@ -28,7 +28,7 @@
   - [ ] 제적 위험자 목록을 정렬하고 출력하는 기능
 
 ### controller
-- [ ] Q를 입력하기 전까지 반복 실행
+- [x] Q를 입력하기 전까지 반복 실행
 
 ### domain
 - AttendanceBook

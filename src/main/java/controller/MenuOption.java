@@ -1,20 +1,26 @@
 package controller;
 
+import domain.AttendanceBook;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.Arrays;
 
 public enum MenuOption {
 
-    REGISTER_ATTENDANCE("1"),
-    EDIT_ATTENDANCE("2"),
-    SHOW_CREW_ATTENDANCE("3"),
-    SHOW_EXPELLED_CREWS("4"),
-    QUIT("Q")
+    REGISTER_ATTENDANCE("1", new AttendanceOperator()),
+    EDIT_ATTENDANCE("2", new EditionOperator()),
+    SHOW_CREW_ATTENDANCE("3", new CrewAttendanceOperator()),
+    SHOW_EXPELLED_CREWS("4", new ExpelledCrewOperator()),
+    QUIT("Q", null)
     ;
 
     private final String command;
+    private final OptionOperator optionOperator;
 
-    MenuOption(String command) {
+    MenuOption(String command, OptionOperator optionOperator) {
         this.command = command;
+        this.optionOperator = optionOperator;
     }
 
     public static MenuOption findOptionByCommand(String input) {
@@ -22,5 +28,11 @@ public enum MenuOption {
                 .filter(option -> option.command.equals(input))
                 .findAny()
                 .orElseThrow(() -> new IllegalArgumentException("[ERROR] 유효하지 않은 옵션입니다."));
+    }
+
+    public void process(AttendanceBook attendanceBook, LocalDate attendanceDate) {
+        if (!this.equals(MenuOption.QUIT)) {
+            this.optionOperator.process(attendanceBook, attendanceDate);
+        }
     }
 }

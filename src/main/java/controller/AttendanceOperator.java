@@ -7,11 +7,11 @@ import domain.Crew;
 import java.time.LocalDate;
 import java.time.LocalTime;
 
-public class AttendOperator implements OptionOperator {
+public class AttendanceOperator implements OptionOperator {
 
     @Override
-    public void process(AttendanceBook attendanceBook, LocalTime nowTime) {
-        AttendanceDate attendanceDate = new AttendanceDate(LocalDate.now());
+    public void process(AttendanceBook attendanceBook, LocalDate nowDate) {
+        AttendanceDate attendanceDate = new AttendanceDate(nowDate);
 
         String name = inputView.getAttendNameInput();
         Crew crew = attendanceBook.findCrewByName(name);
