@@ -5,7 +5,9 @@ import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PrintStream;
+import java.time.LocalDate;
 import java.util.Scanner;
+import model.TodayDate;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -14,7 +16,7 @@ import view.InputView;
 
 class ControllerTest {
 
-    Controller controller = new Controller();
+    Controller controller = new Controller(new TodayDate(LocalDate.of(2024, 12, 12)));
 
     @BeforeEach
     void setScanner() {

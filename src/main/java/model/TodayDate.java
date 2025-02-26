@@ -5,14 +5,13 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.TextStyle;
 import java.util.Locale;
-import util.LocalDateTimePrintFormatter;
 
 public class TodayDate {
 
     private final LocalDate todayDate;
 
-    public TodayDate() {
-        this.todayDate = LocalDate.of(2024, 12, 14);
+    public TodayDate(LocalDate todayDate) {
+        this.todayDate = todayDate;
     }
 
     public LocalDate getTodayDate() {
