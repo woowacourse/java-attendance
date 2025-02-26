@@ -15,7 +15,7 @@ public class Application {
         Campus campus = new Campus();
         TodayClock todayClock = new AttendanceTodayClock();
         CrewInitializer crewInitializer = new CrewInitializer(campus, todayClock);
-        CrewHistories crewHistories = crewInitializer.initialize(FileReader.readFile());
+        CrewHistories crewHistories = crewInitializer.initialize(FileReader.read());
 
         AttendanceController controller = makeController(campus, todayClock);
         controller.start(crewHistories);
