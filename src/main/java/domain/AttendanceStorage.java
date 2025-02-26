@@ -21,4 +21,8 @@ public class AttendanceStorage {
     public void addHistory(AttendanceHistory attendanceHistory) {
         attendanceHistories.add(attendanceHistory);
     }
+
+    public boolean containsSameNickname(String nickname) {
+        return crews.contains(Crew.from(nickname));
+    }
 }
