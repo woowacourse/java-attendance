@@ -6,6 +6,6 @@ public enum WoowaDurationTime {
     ;
 
     public static boolean isDurationTime(LocalTime time) {
-        return true;
+        return !(time.isBefore(LocalTime.of(8, 0)) || time.isAfter(LocalTime.of(23, 0)));
     }
 }
