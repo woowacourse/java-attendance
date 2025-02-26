@@ -39,6 +39,11 @@ public class Attendance {
         if (EducationTime.isAttendOfMonday(attendTime)) {
             return AttendanceStatus.ATTEND;
         }
+
+        if (EducationTime.isLateOfMonday(attendTime)) {
+            return AttendanceStatus.LATE;
+        }
+
         return AttendanceStatus.ABSENT;
     }
 }

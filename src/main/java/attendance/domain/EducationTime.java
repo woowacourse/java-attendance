@@ -24,4 +24,8 @@ public enum EducationTime {
     public static boolean isAttendOfMonday(LocalTime inputTime) {
         return !inputTime.isBefore(MONDAY_ATTEND.time) && inputTime.isBefore(MONDAY_LATE.time);
     }
+
+    public static boolean isLateOfMonday(LocalTime inputTime) {
+        return !inputTime.isBefore(MONDAY_LATE.time) && inputTime.isBefore(MONDAY_ABSENT.time);
+    }
 }
