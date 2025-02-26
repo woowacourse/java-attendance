@@ -1,8 +1,10 @@
 package controller.dto;
 
+import java.time.DateTimeException;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 
 public record ModifyAttendanceRequest(
         String nickname,
@@ -10,9 +12,27 @@ public record ModifyAttendanceRequest(
         LocalTime time
 ) {
 
-    private static final DateTimeFormatter TIME_FORMATTER = DateTimeFormatter.ofPattern("HH:mm");
+    private static final DateTimeFormatter TIME_FORMAT = DateTimeFormatter.ofPattern("HH:mm");
 
-    public static ModifyAttendanceRequest of(String nickname, LocalDate date, int day, String time) {
-        return new ModifyAttendanceRequest(nickname, date.withDayOfMonth(day), LocalTime.parse(time, TIME_FORMATTER));
+    public static ModifyAttendanceRequest of(String nickname, LocalDate today, int day, String time) {
+        validateDay(today, day);
+        validateTime(time);
+        return new ModifyAttendanceRequest(nickname, today.withDayOfMonth(day), LocalTime.parse(time, TIME_FORMAT));
+    }
+
+    private static void validateDay(LocalDate today, int day) {
+        try {
+            today.withDayOfMonth(day);
+        } catch (DateTimeException e) {
+            throw new IllegalArgumentException(day + ": 이 달에는 존재하지 않는 날짜입니다.");
+        }
+    }
+
+    private static void validateTime(String time) {
+        try {
+            LocalTime.parse(time, TIME_FORMAT);
+        } catch (DateTimeParseException e) {
+            throw new IllegalArgumentException(time + ": 올바르지 않은 시간 형식입니다.");
+        }
     }
 }

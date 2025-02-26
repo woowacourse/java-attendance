@@ -3,6 +3,7 @@ package controller.dto;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 
 public record SaveAttendanceRequest(
         String nickname,
@@ -13,6 +14,15 @@ public record SaveAttendanceRequest(
     private static final DateTimeFormatter TIME_FORMAT = DateTimeFormatter.ofPattern("HH:mm");
 
     public static SaveAttendanceRequest of(String nickname, LocalDate date, String time) {
+        validateTime(time);
         return new SaveAttendanceRequest(nickname, date, LocalTime.parse(time, TIME_FORMAT));
+    }
+
+    private static void validateTime(String time) {
+        try {
+            LocalTime.parse(time, TIME_FORMAT);
+        } catch (DateTimeParseException e) {
+            throw new IllegalArgumentException(time + ": 올바르지 않은 시간 형식입니다.");
+        }
     }
 }
