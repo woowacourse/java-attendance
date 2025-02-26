@@ -4,6 +4,7 @@ import static constants.TestDataMaker.ATTEND_EXCEPT_MONDAY;
 import static constants.TestDataMaker.ATTEND_MONDAY;
 import static constants.TestDataMaker.LATE_MONDAY;
 import static constants.TestDataMaker.MONDAY_DATE;
+import static constants.TestDataMaker.NON_OPERATING_TIME;
 import static constants.TestDataMaker.SUNDAY_DATE;
 import static constants.TestDataMaker.TUESDAY_DATE;
 import static constants.TestDataMaker.WEDNESDAY_DATE;
@@ -59,8 +60,16 @@ public class CheckAttendanceTest {
     @Test
     @DisplayName("등록되지 않는 닉네임의 경우 에외 메시지를 출력한다.")
     void Name_Is_Not_Registered() {
-        assertThatThrownBy(() -> attendanceBook.checkAttendance("미등록", MONDAY_DATE, ATTEND_MONDAY))
+        assertThatThrownBy(() -> attendanceBook.checkAttendance("미등록", WEDNESDAY_DATE, ATTEND_EXCEPT_MONDAY))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage(ErrorMessage.NOTICE_NICKNAME_IS_NOT_REGISTERED.getFormat());
+    }
+
+    @Test
+    @DisplayName("등교 시간이 캠퍼스 운영 시간이 아닌 경우 예외메시지를 출력한다.")
+    void Time_Is_Not_A_Campus_Operating_Time() {
+        assertThatThrownBy(() -> attendanceBook.checkAttendance("쿠키", WEDNESDAY_DATE, NON_OPERATING_TIME))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage(ErrorMessage.NOTICE_TIME_IS_NOT_A_CAMPUS_OPERATING_TIME.getFormat());
     }
 }
