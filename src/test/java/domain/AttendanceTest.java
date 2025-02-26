@@ -10,11 +10,11 @@ import org.junit.jupiter.api.Test;
 public class AttendanceTest {
     @Test
     @DisplayName("1.1 닉네임과 등교 시간을 받으면 오늘 날짜로 출석 기록을 생성할 수 있다.")
-    void test() {
+    void attendTest() {
         // given
         Attendance attendance = new Attendance();
         String nickname = "노랑";
-        LocalTime time = LocalTime.of(10, 0);
+        LocalTime time = LocalTime.of(10, 5);
         // when
         String attendanceRecord = attendance.attend(nickname, time);
         // then
