@@ -4,11 +4,9 @@ import common.Common;
 import exception.DuplicatedAttendanceRegistrationException;
 import exception.FutureAttendanceModifyException;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -68,8 +66,8 @@ public class AttendanceHistory {
                 .orElseThrow(RuntimeException::new); //TODO : 다른 예외로 교체
     }
 
-    public List<Attendance> findAll() {
-        return Collections.unmodifiableList(this.attendances);
+    public List<Attendance> sliceByDateUntilBefore(LocalDate limitDate) {
+        return null;
     }
 
     @Override
