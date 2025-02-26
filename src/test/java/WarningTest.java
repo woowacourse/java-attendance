@@ -1,6 +1,8 @@
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 class WarningTest {
     @DisplayName("지각 3회당 결석 1회로 전환해 결석 횟수를 계산한다.")
     @Test
