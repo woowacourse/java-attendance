@@ -34,4 +34,12 @@ public record AttendanceRecord(
                         EducationSchedule.from(attendanceDateTime.getAttendanceDate())
                 ).equals(AttendanceStatus.LATE)).count();
     }
+
+    public long computeAttendanceCount() {
+        return attendanceDateTimes.stream()
+                .filter(attendanceDateTime -> AttendanceStatus.from(
+                        attendanceDateTime.getAttendanceTime(),
+                        EducationSchedule.from(attendanceDateTime.getAttendanceDate())
+                ).equals(AttendanceStatus.ATTEND)).count();
+    }
 }

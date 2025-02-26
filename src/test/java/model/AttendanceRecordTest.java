@@ -33,4 +33,32 @@ class AttendanceRecordTest {
 
         assertThat(attendanceRecord.computeLateCount()).isEqualTo(2);
     }
+
+    @Test
+    void 출석_기록에서_출석_회수를_조회한다() {
+        // given
+        AttendanceRecord attendanceRecord = new AttendanceRecord();
+        attendanceRecord.add(new AttendanceDateTime(
+                LocalDate.of(2024, 12, 10),
+                LocalTime.of(9, 50)
+        ));
+        attendanceRecord.add(new AttendanceDateTime(
+                LocalDate.of(2024, 12, 10),
+                LocalTime.of(10, 6)
+        ));
+        attendanceRecord.add(new AttendanceDateTime(
+                LocalDate.of(2024, 12, 10),
+                LocalTime.of(10, 30)
+        ));
+        attendanceRecord.add(new AttendanceDateTime(
+                LocalDate.of(2024, 12, 10),
+                LocalTime.of(10, 5)
+        ));
+        attendanceRecord.add(new AttendanceDateTime(
+                LocalDate.of(2024, 12, 10),
+                LocalTime.of(10, 31)
+        ));
+
+        assertThat(attendanceRecord.computeAttendanceCount()).isEqualTo(2);
+    }
 }
