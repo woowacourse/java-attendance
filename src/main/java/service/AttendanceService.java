@@ -1,6 +1,8 @@
 package service;
 
 import domain.AttendanceStorage;
+import domain.Crew;
+import java.time.LocalDateTime;
 
 public class AttendanceService {
     private final AttendanceStorage attendanceStorage;
@@ -9,8 +11,11 @@ public class AttendanceService {
         this.attendanceStorage = attendanceStorage;
     }
 
-    // nickname이 실제로 존재하는지 확인
     public boolean checkNicknameRegistered(String nickname) {
         return attendanceStorage.containsSameNickname(nickname);
+    }
+
+    public boolean checkHistoryAlreadyExists(Crew crew, LocalDateTime dateTime) {
+        return attendanceStorage.containsSameHistoryOf(crew, dateTime);
     }
 }
