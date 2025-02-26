@@ -4,14 +4,14 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.HashMap;
 import java.util.Map;
-import strategy.NowDateStrategy;
+import strategy.CurrentDateGenerateStrategy;
 
 public class CrewAttendances {
     private final Map<CrewName, DateCrewAttendanceManager> crewAttendances;
-    private final NowDateStrategy nowDateStrategy;
+    private final CurrentDateGenerateStrategy currentDateGenerateStrategy;
 
-    public CrewAttendances(NowDateStrategy nowDateStrategy) {
-        this.nowDateStrategy = nowDateStrategy;
+    public CrewAttendances(CurrentDateGenerateStrategy currentDateGenerateStrategy) {
+        this.currentDateGenerateStrategy = currentDateGenerateStrategy;
         this.crewAttendances = new HashMap<>();
     }
 
@@ -27,7 +27,12 @@ public class CrewAttendances {
 
     private DateCrewAttendanceManager dateCrewAttendanceManager(String nickname) {
         CrewName crewName = new CrewName(nickname);
-        crewAttendances.putIfAbsent(crewName, new DateCrewAttendanceManager(nowDateStrategy));
+        crewAttendances.putIfAbsent(crewName, new DateCrewAttendanceManager(currentDateGenerateStrategy));
         return crewAttendances.get(crewName);
+    }
+
+    public void modifyAttendance(String nickname, LocalDate modifyDate, LocalTime modifyTime) {
+        DateCrewAttendanceManager dateCrewAttendanceManager = dateCrewAttendanceManager(nickname);
+        dateCrewAttendanceManager.modifyAttendance(modifyDate, modifyTime);
     }
 }
