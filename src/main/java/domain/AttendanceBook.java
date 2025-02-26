@@ -74,6 +74,9 @@ public class AttendanceBook {
 
     public ModifyAttendanceResponse modifyAttendance(String name, LocalDate date, LocalTime time) {
         validateTimeIsInTheRangeOfOperation(time);
+        if (date.isAfter(LocalDate.now())) { // 현재보다 미래 시점인 경우
+            throw new IllegalArgumentException(ErrorMessage.NOTICE_FUTURE_CAN_NOT_BE_MODIFIED.getFormat());
+        }
         findCrewByName(name).addNewTimeLog(date, time);
         String attendanceStatus = validateTrainingDay(date, time);
         return new ModifyAttendanceResponse(date, time, attendanceStatus);
