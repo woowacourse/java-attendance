@@ -19,25 +19,25 @@ public class AttendanceInitializer {
                 .toList();
     }
 
-    public static Map<Crew, Attendances> initializeAttendanceOf(Crews crews) {
-        Map<Crew, Attendances> attendances = new HashMap<>();
+    public static Map<Crew, AttendanceBook> initializeAttendanceOf(Crews crews) {
+        Map<Crew, AttendanceBook> attendances = new HashMap<>();
         for (Crew crew : crews.getCrews()) {
             List<Attendance> defaultAttendances = IntStream.range(1, 32)
                     .mapToObj(date -> new Attendance(
                             LocalDate.of(2024, 12, date),
                             Common.noneAttendanceTime))
                     .collect(Collectors.toList()); //TODO : toList면 불변이 되어 수정 불가능해짐
-            attendances.put(crew, new Attendances(defaultAttendances));
+            attendances.put(crew, new AttendanceBook(defaultAttendances));
         }
         return attendances;
     }
 
-    public static void updateAttendances(Crews crews, List<String> combinedData, Map<Crew, Attendances> defaultAttendances) {
+    public static void updateAttendances(Crews crews, List<String> combinedData, Map<Crew, AttendanceBook> defaultAttendances) {
         for (String data : combinedData) {
             Crew crew = crews.findCrewByName(data.split(",")[0]).orElseThrow(RuntimeException::new);
-            Attendances attendances = defaultAttendances.get(crew);
+            AttendanceBook attendanceBook = defaultAttendances.get(crew);
             LocalDateTime attendanceTime = parseAttendanceFrom(data);
-            attendances.register(attendanceTime.toLocalDate(), attendanceTime.toLocalTime());
+            attendanceBook.register(attendanceTime.toLocalDate(), attendanceTime.toLocalTime());
         }
     }
 

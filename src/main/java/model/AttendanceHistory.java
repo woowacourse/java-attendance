@@ -8,10 +8,10 @@ import java.time.LocalTime;
 import java.util.List;
 import java.util.Objects;
 
-public class Attendances {
+public class AttendanceHistory {
     private final List<Attendance> attendances;
 
-    public Attendances(List<Attendance> attendances) {
+    public AttendanceHistory(List<Attendance> attendances) {
         this.attendances = attendances;
     }
 
@@ -62,11 +62,11 @@ public class Attendances {
         if (this == object) {
             return true;
         }
-        if (!(object instanceof Attendances targetAttendances)) {
+        if (!(object instanceof AttendanceHistory targetAttendanceHistory)) {
             return false;
         }
-        return attendances.containsAll(targetAttendances.attendances)
-                && targetAttendances.attendances.containsAll(attendances);
+        return attendances.containsAll(targetAttendanceHistory.attendances)
+                && targetAttendanceHistory.attendances.containsAll(attendances);
     }
 
     @Override
