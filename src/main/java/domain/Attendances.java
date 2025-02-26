@@ -1,6 +1,5 @@
 package domain;
 
-import constant.Constants;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -66,9 +65,5 @@ public class Attendances {
         Attendance oldAttendance = findAttendanceByDate(attendanceDate);
         attendances.remove(oldAttendance);
         attendances.add(new Attendance(attendanceDate, attendanceTime));
-    }
-
-    public List<Attendance> getAttendances() {
-        return this.attendances;
     }
 }

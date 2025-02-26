@@ -121,4 +121,16 @@ public class AttendancesTest {
         Assertions.assertThat(attendances.findAttendanceByDate(editDate).isLate()).isEqualTo(false);
 
     }
+
+    @DisplayName("결석 수 카운팅 테스트")
+    @Test
+    void countAbsentTest() {
+        Attendances normalAttendances = new Attendances(List.of(
+                new Attendance(new AttendanceDate(LocalDate.of(2024, 12, 2)), new AttendanceTime(LocalTime.of(13, 1))),
+                new Attendance(new AttendanceDate(LocalDate.of(2024, 12, 3)), new AttendanceTime(LocalTime.of(10, 1)))
+        ));
+
+        Assertions.assertThat(normalAttendances.countUnattended(LocalDate.of(2024, 12, 6)))
+                .isEqualTo(2);
+    }
 }
