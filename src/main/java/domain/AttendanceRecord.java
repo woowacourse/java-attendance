@@ -13,4 +13,8 @@ public class AttendanceRecord {
     public LocalDateTime getDateTime() {
         return this.attendanceDateTime;
     }
+
+    public boolean isEmpty() {
+        return false;
+    }
 }

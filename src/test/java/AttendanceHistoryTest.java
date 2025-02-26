@@ -81,6 +81,21 @@ public class AttendanceHistoryTest {
                     .hasHour(11)
                     .hasMinute(30);
         }
+
+        @DisplayName("기록이 존재하지 않는다면, empty record를 반환한다.")
+        @Test
+        public void findEmpty() throws Exception {
+            // given
+            final Crew owner = new Crew("owner");
+            final var attendanceHistory = new AttendanceHistory(owner);
+            final LocalDate targetDate = LocalDate.of(2024, 12, 13);
+
+            // when
+            final AttendanceRecord actual = attendanceHistory.findByDate(targetDate);
+
+            // then
+            assertThat(actual.isEmpty()).isTrue();
+        }
     }
 
     @Nested
