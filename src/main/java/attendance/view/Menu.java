@@ -3,7 +3,11 @@ package attendance.view;
 import java.util.Arrays;
 
 public enum Menu {
-    CHECK("1");
+    CHECK("1"),
+    UPDATE("2"),
+    RECORD_SEARCH("3"),
+    RISK_CREW_SEARCH("4"),
+    QUIT("Q");
 
     private final String command;
 
