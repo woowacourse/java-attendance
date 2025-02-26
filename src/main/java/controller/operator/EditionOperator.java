@@ -1,4 +1,4 @@
-package controller;
+package controller.operator;
 
 import domain.AttendanceBook;
 import domain.AttendanceDate;
@@ -18,7 +18,9 @@ public class EditionOperator implements OptionOperator {
 
         AttendanceDate editDate = InputProcessor.processInputUntilSuccess(() -> {
             int editDateInput = inputView.getEditDayInput();
-            return new AttendanceDate(LocalDate.of(2024, 12, editDateInput));
+            AttendanceDate date = new AttendanceDate(LocalDate.of(2024, 12, editDateInput));
+            attendanceBook.checkAttendanceExist(crew, date);
+            return date;
         });
 
         AttendanceTime editTime = InputProcessor.processInputUntilSuccess(() -> {

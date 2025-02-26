@@ -30,29 +30,20 @@ public class AttendanceBook {
         crew.attend(attendanceDate, attendanceTime);
     }
 
-    public void checkExistCrew(String name) {
-        crews.stream()
-            .filter(crew -> crew.isSameName(name))
-            .findAny()
-            .orElseThrow(() -> new IllegalArgumentException("[ERROR] 등록되지 않은 닉네임입니다."));
-    }
-
     public Crew findCrewByName(String name) {
         return crews.stream()
                 .filter(crew -> crew.isSameName(name))
                 .findAny()
-                .orElseThrow();
+                .orElseThrow(() -> new IllegalArgumentException("[ERROR] 등록되지 않은 닉네임입니다."));
     }
 
-    public void checkAttendanceExist(String name, AttendanceDate attendanceDate) {
-        Crew crew = findCrewByName(name);
+    public void checkAttendanceExist(Crew crew, AttendanceDate attendanceDate) {
         if (!crew.checkAlreadyAttend(attendanceDate)) {
             throw new IllegalArgumentException("[ERROR] 출석 기록이 존재하지 않습니다.");
         }
     }
 
-    public void editAttendance(String name, AttendanceDate attendanceDate, AttendanceTime attendanceTime) {
-        Crew crew = findCrewByName(name);
+    public void editAttendance(Crew crew, AttendanceDate attendanceDate, AttendanceTime attendanceTime) {
         crew.edit(attendanceDate, attendanceTime);
     }
 

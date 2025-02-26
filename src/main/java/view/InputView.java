@@ -32,4 +32,31 @@ public class InputView {
         System.out.println("Q. 종료" + System.lineSeparator());
         return scanner.nextLine();
     }
+
+    public String getEditNameInput() {
+        System.out.println("출석을 수정하려는 크루의 닉네임을 입력해 주세요.");
+        return scanner.nextLine();
+    }
+
+    public int getEditDayInput() {
+        System.out.println("수정하려는 날짜(일)를 입력해 주세요.");
+        return parseDay(scanner.nextLine());
+    }
+
+    public LocalTime getEditTimeInput() {
+        System.out.println("언제로 변경하겠습니까?");
+        try {
+            return LocalTime.parse(scanner.nextLine(), TIME_FORMATTER);
+        } catch (DateTimeException e) {
+            throw new IllegalArgumentException("[ERROR] 시간 입력 형식이 올바르지 않습니다.");
+        }
+    }
+
+    private int parseDay(String input) {
+        try {
+            return Integer.parseInt(input);
+        } catch (NumberFormatException e) {
+            throw new IllegalArgumentException("[ERROR] 날짜 입력 형식이 올바르지 않습니다.");
+        }
+    }
 }

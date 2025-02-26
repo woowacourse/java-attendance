@@ -1,8 +1,7 @@
-package controller;
+package controller.operator;
 
 import domain.AttendanceBook;
 import java.time.LocalDate;
-import java.time.LocalTime;
 
 public class ExpelledCrewOperator implements OptionOperator {
 

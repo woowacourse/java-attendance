@@ -1,4 +1,4 @@
-package controller;
+package controller.operator;
 
 import domain.AttendanceBook;
 import java.time.LocalDate;
