@@ -32,7 +32,7 @@ public class CrewHistoryTest {
         crewHistory.attend(attendanceTime);
 
         // Then
-        assertThat(crewHistory.getAttendance()).containsEntry(3, attendanceTime);
+        assertThat(crewHistory.getAttendance()).containsEntry(LocalDate.from(attendanceTime), attendanceTime);
     }
 
     @DisplayName("이미 출석한 경우 예외가 발생한다")
@@ -66,7 +66,7 @@ public class CrewHistoryTest {
 
         // Then
         assertAll(
-                () -> assertThat(crewHistory.getAttendance()).containsEntry(3, modifyTime),
+                () -> assertThat(crewHistory.getAttendance()).containsEntry(LocalDate.from(modifyTime), modifyTime),
                 () -> assertThat(previousDateTime).isEqualTo(attendanceTime)
         );
     }
@@ -97,7 +97,11 @@ public class CrewHistoryTest {
         LocalDateTime dateTime1 = LocalDateTime.of(2024, 12, 3, 9, 0);
         LocalDateTime dateTime2 = LocalDateTime.of(2024, 12, 4, 9, 0);
         LocalDateTime todayDateTime = LocalDateTime.of(2024, 12, 19, 9, 0);
-        CrewHistory crewHistory = new CrewHistory(Map.of(3, dateTime1, 12, dateTime2, 19, todayDateTime));
+        CrewHistory crewHistory = new CrewHistory(Map.of(
+                LocalDate.from(dateTime1), dateTime1,
+                LocalDate.from(dateTime2), dateTime2,
+                LocalDate.from(todayDateTime), todayDateTime
+        ));
 
         // When
         List<LocalDateTime> attendanceHistory = crewHistory.getAttendanceHistory(today);
@@ -116,8 +120,13 @@ public class CrewHistoryTest {
         LocalDateTime dateTime3 = LocalDateTime.of(2024, 12, 4, 10, 31);
         LocalDateTime dateTime4 = LocalDateTime.of(LocalDate.of(2024, 12, 5), DEFAULT_TIME);
         LocalDateTime dateTime5 = LocalDateTime.of(2024, 12, 6, 9, 30);
-        CrewHistory crewHistory = new CrewHistory(
-                Map.of(2, dateTime1, 3, dateTime2, 4, dateTime3, 5, dateTime4, 9, dateTime5));
+        CrewHistory crewHistory = new CrewHistory(Map.of(
+                LocalDate.from(dateTime1), dateTime1,
+                LocalDate.from(dateTime2), dateTime2,
+                LocalDate.from(dateTime3), dateTime3,
+                LocalDate.from(dateTime4), dateTime4,
+                LocalDate.from(dateTime5), dateTime5
+        ));
 
         // When
         AttendanceCounter attendanceCounter = crewHistory.countAttendanceType(todayDate);

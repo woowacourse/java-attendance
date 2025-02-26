@@ -10,23 +10,23 @@ import java.util.TreeMap;
 
 public class CrewHistory {
 
-    private final Map<Integer, LocalDateTime> attendance;
+    private final Map<LocalDate, LocalDateTime> attendance;
 
-    public CrewHistory(final Map<Integer, LocalDateTime> attendance) {
+    public CrewHistory(final Map<LocalDate, LocalDateTime> attendance) {
         this.attendance = new TreeMap<>(attendance);
     }
 
     public void loadHistory(final LocalDateTime attendanceTime) {
-        int day = attendanceTime.getDayOfMonth();
-        attendance.put(day, attendanceTime);
+        LocalDate date = LocalDate.from(attendanceTime);
+        attendance.put(date, attendanceTime);
     }
 
     public void attend(final LocalDateTime attendanceTime) {
-        int day = attendanceTime.getDayOfMonth();
-        if (attendance.containsKey(day)) {
+        LocalDate date = LocalDate.from(attendanceTime);
+        if (attendance.containsKey(date)) {
             throw new IllegalArgumentException("[ERROR] 이미 출석했습니다. 수정 기능을 이용해주세요.");
         }
-        attendance.put(day, attendanceTime);
+        attendance.put(date, attendanceTime);
     }
 
     public LocalDateTime modify(final LocalDateTime modifyDateTime, final LocalDate todayDate) {
@@ -34,9 +34,8 @@ public class CrewHistory {
         if (isAfterToday(todayDate, modifyDate)) {
             throw new IllegalArgumentException("[ERROR] 수정 일자는 어제 기록까지만 수정할 수 있습니다.");
         }
-        int modifyDay = modifyDateTime.getDayOfMonth();
-        LocalDateTime previousTime = attendance.get(modifyDay);
-        attendance.put(modifyDay, modifyDateTime);
+        LocalDateTime previousTime = attendance.get(modifyDate);
+        attendance.put(modifyDate, modifyDateTime);
         return previousTime;
     }
 
@@ -46,9 +45,8 @@ public class CrewHistory {
     }
 
     public List<LocalDateTime> getAttendanceHistory(final LocalDate todayDate) {
-        int today = todayDate.getDayOfMonth();
         return attendance.entrySet().stream()
-                .filter(it -> it.getKey() < today)
+                .filter(it -> todayDate.isAfter(it.getKey()))
                 .map(Entry::getValue)
                 .toList();
     }
@@ -57,7 +55,7 @@ public class CrewHistory {
         return modifyDate.isEqual(todayDate) || modifyDate.isAfter(todayDate);
     }
 
-    public Map<Integer, LocalDateTime> getAttendance() {
+    public Map<LocalDate, LocalDateTime> getAttendance() {
         return Collections.unmodifiableMap(attendance);
     }
 }

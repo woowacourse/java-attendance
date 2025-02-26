@@ -15,7 +15,7 @@ public class CrewInitializer {
 
     private final Campus campus;
     private final TodayClock todayClock;
-    private final Map<Integer, LocalDateTime> attendance;
+    private final Map<LocalDate, LocalDateTime> attendance;
 
     public CrewInitializer(final Campus campus, final TodayClock todayClock) {
         this.campus = campus;
@@ -31,22 +31,22 @@ public class CrewInitializer {
         return new CrewHistories(crewsMap);
     }
 
-    private Map<Integer, LocalDateTime> createInitialAttendance() {
-        Map<Integer, LocalDateTime> initialAttendance = new HashMap<>();
+    private Map<LocalDate, LocalDateTime> createInitialAttendance() {
+        Map<LocalDate, LocalDateTime> initialAttendance = new HashMap<>();
         LocalDate now = todayClock.getTodayDate();
         for (int day = 1; day < now.getDayOfMonth(); day++) {
-            putOperationDate(day, initialAttendance);
+            LocalDate date = LocalDate.of(2024, 12, day);
+            putOperationDate(date, initialAttendance);
         }
         return initialAttendance;
     }
 
-    private void putOperationDate(final int day, final Map<Integer, LocalDateTime> initialAttendance) {
-        LocalDate date = LocalDate.of(2024, 12, day);
+    private void putOperationDate(final LocalDate date, final Map<LocalDate, LocalDateTime> initialAttendance) {
         if (campus.isNotOperationDate(date)) {
             return;
         }
         LocalDateTime dateTime = LocalDateTime.of(date, DEFAULT_TIME);
-        initialAttendance.put(day, dateTime);
+        initialAttendance.put(date, dateTime);
     }
 
     private void loadHistory(String input, Map<String, CrewHistory> crewsMap) {

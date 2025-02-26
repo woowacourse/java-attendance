@@ -53,31 +53,31 @@ public class CrewHistoriesTest {
     @Test
     void findDismissalCrewsTest() {
         // Given
-        LocalDate todayDate = LocalDate.of(2024, 12, 10);
+        LocalDate todayDate = makeDay(10);
         CrewHistory crewHistory1 = new CrewHistory(Map.of(
-                2, makeDefaultTime(2),
-                3, makeDefaultTime(3),
-                4, makeAttendance(4),
-                5, makeAttendance(5),
-                6, makeAttendance(6),
-                9, makeAttendance(9)
+                makeDay(2), makeDefaultTime(2),
+                makeDay(3), makeDefaultTime(3),
+                makeDay(4), makeAttendance(4),
+                makeDay(5), makeAttendance(5),
+                makeDay(6), makeAttendance(6),
+                makeDay(9), makeAttendance(9)
         ));
         CrewHistory crewHistory2 = new CrewHistory(Map.of(
-                2, makeDefaultTime(2),
-                3, makeDefaultTime(3),
-                4, makeDefaultTime(4),
-                5, makeAttendance(5),
-                6, makeAttendance(6),
-                9, makeAttendance(9)
+                makeDay(2), makeDefaultTime(2),
+                makeDay(3), makeDefaultTime(3),
+                makeDay(4), makeDefaultTime(4),
+                makeDay(5), makeAttendance(5),
+                makeDay(6), makeAttendance(6),
+                makeDay(9), makeAttendance(9)
         ));
 
         CrewHistory crewHistory3 = new CrewHistory(Map.of(
-                2, makeDefaultTime(2),
-                3, makeDefaultTime(3),
-                4, makeDefaultTime(4),
-                5, makeDefaultTime(5),
-                6, makeDefaultTime(6),
-                9, makeDefaultTime(9)
+                makeDay(2), makeDefaultTime(2),
+                makeDay(3), makeDefaultTime(3),
+                makeDay(4), makeDefaultTime(4),
+                makeDay(5), makeDefaultTime(5),
+                makeDay(6), makeDefaultTime(6),
+                makeDay(9), makeDefaultTime(9)
         ));
         CrewHistories crewHistories = new CrewHistories(
                 Map.of(hotteok, crewHistory1, mint, crewHistory2, wilson, crewHistory3));
@@ -87,7 +87,11 @@ public class CrewHistoriesTest {
     }
 
     private LocalDateTime makeDefaultTime(final int day) {
-        return LocalDateTime.of(LocalDate.of(2024, 12, day), DEFAULT_TIME);
+        return LocalDateTime.of(makeDay(day), DEFAULT_TIME);
+    }
+
+    private LocalDate makeDay(final int day) {
+        return LocalDate.of(2024, 12, day);
     }
 
     private LocalDateTime makeAttendance(final int day) {
