@@ -30,8 +30,10 @@ public class AttendanceService {
         validateOffDay(request.date());
         validateCampusTime(request.time());
 
-        AttendanceRecordRepository.add(new AttendanceRecord(request.nickname(), request.date(), request.time(),
-                AttendanceStatus.of(request.date(), request.time())));
+        AttendanceRecordRepository.add(
+                new AttendanceRecord(request.nickname(), request.date(), request.time(),
+                        AttendanceStatus.of(request.date(), request.time()))
+        );
         AttendanceRecord found = AttendanceRecordRepository.find(request.nickname(), request.date());
         return SaveAttendanceRecordResponse.of(found.date(), found.time(), found.status());
     }
@@ -40,11 +42,13 @@ public class AttendanceService {
         validateCrew(request.nickname());
         validateOffDay(request.date());
         validateCampusTime(request.time());
-        validateSameAttendanceRecordExists(request);
+        validateSameAttendanceRecordExists(request.nickname(), request.date(), request.time());
 
         TimeStatus before = getDateTimeStatus(request.nickname(), request.date());
-        AttendanceRecordRepository.put(new AttendanceRecord(request.nickname(), request.date(), request.time(),
-                AttendanceStatus.of(request.date(), request.time())));
+        AttendanceRecordRepository.put(
+                new AttendanceRecord(request.nickname(), request.date(), request.time(),
+                        AttendanceStatus.of(request.date(), request.time()))
+        );
         TimeStatus after = getDateTimeStatus(request.nickname(), request.date());
         return ModifyAttendanceRecordResponse.of(request.date(), before, after);
     }
@@ -58,15 +62,6 @@ public class AttendanceService {
         return new MonthAttendanceStatisticsResponse(monthAttendanceRecords,
                 attendanceStatusCount,
                 riskRank);
-    }
-
-    private List<AttendanceRecordResponse> getMonthAttendanceRecords(
-            String nickname, LocalDate today) {
-        List<AttendanceRecordResponse> monthAttendanceRecords = new ArrayList<>();
-        for (int day = 1; day < today.getDayOfMonth(); day++) {
-            addAttendanceRecord(nickname, today.withDayOfMonth(day), monthAttendanceRecords);
-        }
-        return monthAttendanceRecords;
     }
 
     private TimeStatus getDateTimeStatus(String nickName, LocalDate date) {
@@ -89,6 +84,15 @@ public class AttendanceService {
         monthAttendanceRecords.add(
                 AttendanceRecordResponse.from(AttendanceRecordRepository.find(nickname, targetDate))
         );
+    }
+
+    private List<AttendanceRecordResponse> getMonthAttendanceRecords(
+            String nickname, LocalDate today) {
+        List<AttendanceRecordResponse> monthAttendanceRecords = new ArrayList<>();
+        for (int day = 1; day < today.getDayOfMonth(); day++) {
+            addAttendanceRecord(nickname, today.withDayOfMonth(day), monthAttendanceRecords);
+        }
+        return monthAttendanceRecords;
     }
 
     private Map<String, Integer> calculateAttendanceStatusCount(List<AttendanceRecordResponse> monthAttendanceRecords) {
@@ -126,8 +130,8 @@ public class AttendanceService {
         }
     }
 
-    private void validateSameAttendanceRecordExists(ModifyAttendanceRequest request) {
-        if (AttendanceRecordRepository.exists(request.nickname(), request.date(), request.time())) {
+    private void validateSameAttendanceRecordExists(String nickname, LocalDate date, LocalTime time) {
+        if (AttendanceRecordRepository.exists(nickname, date, time)) {
             throw new IllegalArgumentException("이미 같은 출석 기록이 존재합니다.");
         }
     }
