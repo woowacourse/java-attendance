@@ -14,6 +14,7 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.TreeSet;
 import repository.AttendanceRecordRepository;
 import repository.CrewRepository;
 import service.dto.AttendanceRecordResponse;
@@ -71,7 +72,7 @@ public class AttendanceService {
 
     public RiskCrewsResponse getRiskCrews(RiskCrewsRequest request) {
         List<String> nicknames = findCrewNicknames();
-        List<RiskCrew> riskCrews = new ArrayList<>();
+        TreeSet<RiskCrew> riskCrews = new TreeSet<>();
         nicknames.forEach(nickname -> {
             List<AttendanceRecordResponse> monthRecords
                     = getMonthAttendanceRecordResponses(nickname, request.today());

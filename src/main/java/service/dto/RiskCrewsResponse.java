@@ -1,9 +1,9 @@
 package service.dto;
 
-import java.util.List;
+import java.util.TreeSet;
 
 public record RiskCrewsResponse(
-        List<RiskCrew> riskCrews
+        TreeSet<RiskCrew> riskCrews
 ) {
 
 }
