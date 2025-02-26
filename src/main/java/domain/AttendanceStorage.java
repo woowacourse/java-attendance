@@ -1,5 +1,6 @@
 package domain;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -24,5 +25,10 @@ public class AttendanceStorage {
 
     public boolean containsSameNickname(String nickname) {
         return crews.contains(Crew.from(nickname));
+    }
+
+    public boolean containsSameHistoryOf(Crew crew, LocalDateTime dateTime) {
+        return attendanceHistories.stream()
+                .anyMatch(history -> history.hasSameCrew(crew) && history.hasSameDate(dateTime));
     }
 }
