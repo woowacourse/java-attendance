@@ -17,7 +17,7 @@ import attendance.exception.AttendanceArgumentException;
 public class AttendanceTest {
 
     @Test
-    @DisplayName("등교 시간을 입력하면, 출석한다.")
+    @DisplayName("등교 시간을 입력하면, 출석 상태를 저장한다.")
     void test_attendance() {
         var time = LocalDateTime.of(2024, 12, 13, 10, 1);
         var attendance = Attendance.from(time);
