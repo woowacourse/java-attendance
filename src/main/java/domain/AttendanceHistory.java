@@ -28,6 +28,14 @@ public class AttendanceHistory implements Comparable<AttendanceHistory> {
         return AttendanceResult.findAttendanceResult(attendanceTime);
     }
 
+    public boolean isSameDayOfMonth(LocalDateTime time) {
+        return this.attendanceTime.getDayOfMonth() == time.getDayOfMonth();
+    }
+
+    public boolean isSameMonth(LocalDateTime time) {
+        return this.attendanceTime.getMonthValue() == time.getMonthValue();
+    }
+
     public boolean isBeforeHistory(LocalDateTime time) {
         LocalDateTime standardTime = LocalDateTime.of(time.getYear(), time.getMonthValue(), time.getDayOfMonth(), 0, 0);
         return attendanceTime.isBefore(standardTime);
