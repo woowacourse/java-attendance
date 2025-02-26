@@ -35,4 +35,13 @@ public class AttendanceTest {
             .hasMessage("[ERROR] 캠퍼스 운영시간이 아닙니다.");
     }
 
+    @Test
+    void 출석시간이_캠퍼스_운영시간이면_예외가_발생하지_않는다() {
+        // given
+        LocalDate friday = LocalDate.of(2024, 12, 6);
+        LocalTime presenceTime = LocalTime.of(9, 50);
+
+        assertThatCode(() -> new Attendance(friday, presenceTime))
+            .doesNotThrowAnyException();
+    }
 }
