@@ -4,6 +4,7 @@ import static constants.AttendanceCriteria.OPERATING_END;
 import static constants.AttendanceCriteria.OPERATING_START;
 
 import dto.CheckAttendanceResponse;
+import dto.ModifyAttendanceResponse;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
@@ -69,5 +70,11 @@ public class AttendanceBook {
         if (foundCrew.isDateExisted(date)) { // 날짜가 존재한다면
             throw new IllegalArgumentException(ErrorMessage.NOTICE_ATTENDANCE_ALREADY_EXISTED.getFormat());
         }
+    }
+
+    public ModifyAttendanceResponse modifyAttendance(String name, LocalDate date, LocalTime time) {
+        findCrewByName(name).addNewTimeLog(date, time);
+        String attendanceStatus = validateTrainingDay(date, time);
+        return new ModifyAttendanceResponse(date, time, attendanceStatus);
     }
 }
