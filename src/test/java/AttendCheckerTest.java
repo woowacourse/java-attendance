@@ -28,5 +28,20 @@ public class AttendCheckerTest {
         assertThat(actual3).isEqualTo(true);
     }
 
+    @Test
+    @DisplayName("주어진 날짜가 공휴일인지 판정하는 기능")
+    void checkDateIsHoliday() {
+        //given
+        OperationTimeChecker operationTimeChecker = new OperationTimeChecker();
+        LocalDate christmas = LocalDate.of(2024, 12, 25);
+        LocalDate notHoliday = LocalDate.of(2024, 12, 1);
 
+        //when
+        boolean actual = operationTimeChecker.isHoliday(christmas);
+        boolean actual2 = operationTimeChecker.isHoliday(notHoliday);
+
+        //then
+        assertThat(actual).isEqualTo(true);
+        assertThat(actual2).isEqualTo(false);
+    }
 }
