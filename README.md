@@ -7,7 +7,7 @@
 ### 입력
 - [ ] 기능 명령어
 - [x] 닉네임
-- [ ] LocalTime
+- [x] LocalTime
 - [ ] DayOfMonth
 
 ### 출력
@@ -28,8 +28,8 @@
   - [ ] 등록되지 않은 닉네임의 입력
 
 #### LocalDate
-- [ ] format: HH:mm
-- [ ] 시간은 24시간 형식
+- [x] format: HH:mm
+- [x] 시간은 24시간 형식
 
 #### DayOfMonth
 - [ ] format: Integer
