@@ -51,6 +51,7 @@ public class Application {
             OutputView.printNotOperationDate(today);
             return;
         }
+        String crewNickname = InputView.readCrewNickname();
     }
 
     private static void modifyAttendance() {

@@ -27,6 +27,11 @@ public class InputView {
                 + "Q. 종료");
     }
 
+    public static String readCrewNickname() {
+        System.out.println("닉네임을 입력해 주세요.");
+        return input();
+    }
+
     private static String input() {
         return scanner.nextLine();
     }

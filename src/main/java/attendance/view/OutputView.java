@@ -11,6 +11,6 @@ public class OutputView {
         int date = attendanceDate.getDayOfMonth();
         DayOfWeek day = attendanceDate.getDayOfWeek();
         String dayName = day.getDisplayName(TextStyle.FULL, Locale.KOREAN);
-        System.out.println("[ERROR] %02d월 %02d일 %s은 등교일이 아닙니다.".formatted(month, date, dayName));
+        System.out.printf("[ERROR] %02d월 %02d일 %s은 등교일이 아닙니다.\n", month, date, dayName);
     }
 }
