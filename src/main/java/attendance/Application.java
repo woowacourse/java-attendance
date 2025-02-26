@@ -7,6 +7,7 @@ import java.util.Map;
 
 public class Application {
     private static final Map<String, Runnable> options;
+    private static final String QUIT_OPTION = "Q";
 
     static {
         options = new HashMap<>();
@@ -14,13 +15,23 @@ public class Application {
         options.put("2", Application::modifyAttendance);
         options.put("3", Application::checkAttendanceHistory);
         options.put("4", Application::checkDangerousCrews);
-        options.put("Q", null);
+        options.put(QUIT_OPTION, null);
     }
 
     public static void main(String[] args) {
         LocalDate today = LocalDate.now();
         String option = InputView.readOption(today);
-        Runnable function = options.get(option);
+        if (option.equals(QUIT_OPTION)) {
+            return;
+        }
+        run(option);
+    }
+
+    private static void run(final String option) {
+        Runnable function = options.getOrDefault(option, null);
+        if (function == null) {
+            throw new IllegalArgumentException("존재하지 않는 옵션입니다.");
+        }
         function.run();
     }
 
