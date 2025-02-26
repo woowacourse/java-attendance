@@ -53,8 +53,8 @@ class AddAttendance {
         CrewAttendances crewAttendances = new CrewAttendances(new TestAttendanceCurrentDateGenerateStrategy(date));
         crewAttendances.addAttendance(nickname, time);
 
-        Assertions.assertThat(
-                crewAttendances.crewAttendance(nickname, date).attendanceStatus()
+        Assertions.assertThat(crewAttendances.crewAttendance(nickname, date)
+                .attendanceStatus()
         ).isEqualTo(AttendanceStatus.ATTENDANCE);
     }
 
@@ -68,8 +68,8 @@ class AddAttendance {
         crewAttendances.addAttendance(nickname, time);
 
         Assertions.assertThat(crewAttendances.crewAttendance(nickname, date)
-                        .attendanceStatus())
-                .isEqualTo(AttendanceStatus.LATE);
+                .attendanceStatus()
+        ).isEqualTo(AttendanceStatus.LATE);
     }
 
     @Test
@@ -81,8 +81,8 @@ class AddAttendance {
         CrewAttendances crewAttendances = new CrewAttendances(new TestAttendanceCurrentDateGenerateStrategy(date));
         crewAttendances.addAttendance(nickname, time);
 
-        Assertions.assertThat(
-                crewAttendances.crewAttendance(nickname, date).attendanceStatus()
+        Assertions.assertThat(crewAttendances.crewAttendance(nickname, date)
+                .attendanceStatus()
         ).isEqualTo(AttendanceStatus.ABSENCE);
     }
 
@@ -95,8 +95,8 @@ class AddAttendance {
         CrewAttendances crewAttendances = new CrewAttendances(new TestAttendanceCurrentDateGenerateStrategy(date));
         crewAttendances.addAttendance(nickname, time);
 
-        Assertions.assertThat(
-                crewAttendances.crewAttendance(nickname, date).attendanceStatus()
+        Assertions.assertThat(crewAttendances.crewAttendance(nickname, date)
+                .attendanceStatus()
         ).isEqualTo(AttendanceStatus.ABSENCE);
     }
 
@@ -109,8 +109,8 @@ class AddAttendance {
         CrewAttendances crewAttendances = new CrewAttendances(new TestAttendanceCurrentDateGenerateStrategy(date));
         crewAttendances.addAttendance(nickname, time);
 
-        Assertions.assertThat(
-                crewAttendances.crewAttendance(nickname, date).attendanceStatus()
+        Assertions.assertThat(crewAttendances.crewAttendance(nickname, date)
+                .attendanceStatus()
         ).isEqualTo(AttendanceStatus.ATTENDANCE);
     }
 
@@ -192,6 +192,5 @@ class AddAttendance {
             Assertions.assertThatThrownBy(() -> crewAttendances.addAttendance(nickname, time))
                     .isInstanceOf(AttendanceException.class);
         }
-
     }
 }
