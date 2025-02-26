@@ -18,7 +18,7 @@ public record HistoryStatistic(EnumMap<AttendanceStatus, Integer> statistic, Str
         return SanctionLevel.getByWight(weight);
     }
 
-    private int getWeightForComparingSort() {
+    public int getWeightForComparingSort() {
         return statistic.getOrDefault(AttendanceStatus.ABSENCE, 0)
             + statistic.getOrDefault(AttendanceStatus.LATE, 0);
     }

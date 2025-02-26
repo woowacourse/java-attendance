@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 
 import attendance.domain.HistoryStatistic;
 import attendance.exception.AttendanceArgumentException;
@@ -47,12 +48,8 @@ public record AttendanceBook(Map<String, Attendances> attendances, List<HistoryS
         return attendances.get(nickname);
     }
 
-    public void updateStatusStatistics(HistoryStatistic statistics) {
-        // for (String name : attendances.keySet()) {
-        //     statusStatistics.add(statistic);
-        // }
-        //
-        // Collections.sort(statusStatistics);
+    public Set<String> getNicknameSet() {
+        return attendances.keySet();
     }
 
     private static final class Constant {

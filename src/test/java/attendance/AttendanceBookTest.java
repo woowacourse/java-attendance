@@ -11,14 +11,14 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
-import attendance.domain.AttendanceFileReader;
 import attendance.domain.attendance.AttendanceBook;
 import attendance.exception.AttendanceArgumentException;
 import attendance.exception.AttendanceFileException;
+import attendance.utility.CsvReader;
 
 public class AttendanceBookTest {
-    private final AttendanceFileReader attendanceFileReader = AttendanceFileReader.from("/attendances.csv");
-    private final AttendanceBook attendanceBook = AttendanceBook.from(attendanceFileReader.getLines());
+    private final CsvReader csvReader = new CsvReader("/attendances.csv");
+    private final AttendanceBook attendanceBook = AttendanceBook.from(csvReader.getLines());
 
     public AttendanceBookTest() throws AttendanceFileException {
     }
