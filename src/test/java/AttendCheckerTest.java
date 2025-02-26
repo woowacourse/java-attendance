@@ -3,87 +3,64 @@ import static org.assertj.core.api.Assertions.assertThat;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 
 public class AttendCheckerTest {
 
-    @Test
+    @ParameterizedTest
+    @CsvSource(value = {"2024-12-01,true", "2024-12-02,false", "2024-12-07,true"})
     @DisplayName("주어진 날짜를 기반으로 주말인지 판정하는 기능")
-    void checkDateIsWeekend() {
+    void checkDateIsWeekend(LocalDate targetDate, boolean expected) {
         //given
         OperationTimeChecker operationTimeChecker = new OperationTimeChecker();
 
         //when
-        LocalDate weekend = LocalDate.of(2024, 12, 1);
-        boolean actual = operationTimeChecker.isWeekend(weekend);
-
-        LocalDate weekDay = LocalDate.of(2024, 12, 2);
-        boolean actual2 = operationTimeChecker.isWeekend(weekDay);
-
-        LocalDate weekend2 = LocalDate.of(2024, 12, 7);
-        boolean actual3 = operationTimeChecker.isWeekend(weekend2);
+        boolean actual = operationTimeChecker.isWeekend(targetDate);
 
         //then
-        assertThat(actual).isEqualTo(true);
-        assertThat(actual2).isEqualTo(false);
-        assertThat(actual3).isEqualTo(true);
+        assertThat(actual).isEqualTo(expected);
     }
 
-    @Test
+    @ParameterizedTest
+    @CsvSource(value = {"2024-12-25,true", "2024-12-01,false"})
     @DisplayName("주어진 날짜가 공휴일인지 판정하는 기능")
-    void checkDateIsHoliday() {
+    void checkDateIsHoliday(LocalDate targetDate, boolean expected) {
         //given
         OperationTimeChecker operationTimeChecker = new OperationTimeChecker();
-        LocalDate christmas = LocalDate.of(2024, 12, 25);
-        LocalDate notHoliday = LocalDate.of(2024, 12, 1);
 
         //when
-        boolean actual = operationTimeChecker.isHoliday(christmas);
-        boolean actual2 = operationTimeChecker.isHoliday(notHoliday);
+        boolean actual = operationTimeChecker.isHoliday(targetDate);
 
         //then
-        assertThat(actual).isEqualTo(true);
-        assertThat(actual2).isEqualTo(false);
+        assertThat(actual).isEqualTo(expected);
     }
 
-    @Test
+    @ParameterizedTest
+    @CsvSource(value = {"07:59,false", "08:00,true", "23:00,true", "23:01,false"})
     @DisplayName("주어진 시간이 운영 시간에 포함되는지 판정하는 기능")
-    void checkTimeIsContainsOperationTime() {
+    void checkTimeIsContainsOperationTime(LocalTime targetTime, boolean expected) {
         //given
         OperationTimeChecker operationTimeChecker = new OperationTimeChecker();
-        LocalTime innerOperationTime = LocalTime.of(8, 0);
-        LocalTime notOperationTime = LocalTime.of(7, 59);
-
-        LocalTime innerOperationTime2 = LocalTime.of(23, 0);
-        LocalTime notOperationTime2 = LocalTime.of(23, 1);
 
         //when
-        boolean actual = operationTimeChecker.isContainsOperationTime(innerOperationTime);
-        boolean actual2 = operationTimeChecker.isContainsOperationTime(notOperationTime);
-        boolean actual3 = operationTimeChecker.isContainsOperationTime(innerOperationTime2);
-        boolean actual4 = operationTimeChecker.isContainsOperationTime(notOperationTime2);
+        boolean actual = operationTimeChecker.isContainsOperationTime(targetTime);
 
         //then
-        assertThat(actual).isEqualTo(true);
-        assertThat(actual2).isEqualTo(false);
-        assertThat(actual3).isEqualTo(true);
-        assertThat(actual4).isEqualTo(false);
+        assertThat(actual).isEqualTo(expected);
     }
 
-    @Test
+    @ParameterizedTest
+    @CsvSource(value = {"2024-12-02,13:00", "2024-12-03,10:00"})
     @DisplayName("요일에 따른 교육 시작 시간 판정 기능")
-    void checkEducationStartTimeUsingDayOfWeek() {
+    void checkEducationStartTimeUsingDayOfWeek(LocalDate targetDate, LocalTime expected) {
         //given
         OperationTimeChecker operationTimeChecker = new OperationTimeChecker();
-        LocalDate monday = LocalDate.of(2024, 12, 2);
-        LocalDate notMonday = LocalDate.of(2024, 12, 3);
 
         //when
-        LocalTime actual = operationTimeChecker.getEducationStartTime(monday);
-        LocalTime actual2 = operationTimeChecker.getEducationStartTime(notMonday);
+        LocalTime actual = operationTimeChecker.getEducationStartTime(targetDate);
 
         //then
-        assertThat(actual).isEqualTo(LocalTime.of(13, 0));
-        assertThat(actual2).isEqualTo(LocalTime.of(10, 0));
+        assertThat(actual).isEqualTo(expected);
     }
 }
