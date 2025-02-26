@@ -4,7 +4,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIterable;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-import dto.AttendanceCount;
 import except.AttendanceException;
 import java.time.LocalDate;
 import java.time.LocalTime;
