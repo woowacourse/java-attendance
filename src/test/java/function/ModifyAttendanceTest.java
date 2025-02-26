@@ -6,15 +6,20 @@ import static constants.TestDataMaker.LATE_MONDAY;
 import static constants.TestDataMaker.MONDAY_DATE;
 import static constants.TestDataMaker.NON_OPERATING_TIME;
 import static constants.TestDataMaker.SUNDAY_DATE;
+import static constants.TestDataMaker.THURSDAY_DATE;
 import static constants.TestDataMaker.TUESDAY_DATE;
+import static constants.TestDataMaker.WEDNESDAY_DATE;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import domain.AttendanceBook;
 import dto.ModifyAttendanceResponse;
+import java.time.LocalDate;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.mockito.MockedStatic;
+import org.mockito.Mockito;
 import view.ErrorMessage;
 
 public class ModifyAttendanceTest {
@@ -63,5 +68,19 @@ public class ModifyAttendanceTest {
         assertThatThrownBy(() -> attendanceBook.modifyAttendance("쿠키", MONDAY_DATE, NON_OPERATING_TIME))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage(ErrorMessage.NOTICE_TIME_IS_NOT_A_CAMPUS_OPERATING_TIME.getFormat());
+    }
+
+    @Test
+    @DisplayName("미래 날짜로 출석을 수정하는 경우 예외 메시지를 출력한다.")
+    void Cannot_Be_Modified_By_The_Future_Date() {
+        LocalDate fixedNow = WEDNESDAY_DATE;
+
+        try (MockedStatic<LocalDate> mockedLocalDate = Mockito.mockStatic(LocalDate.class)) {
+            mockedLocalDate.when(LocalDate::now).thenReturn(fixedNow);
+
+            assertThatThrownBy(() -> attendanceBook.modifyAttendance("쿠키", THURSDAY_DATE, ATTEND_EXCEPT_MONDAY))
+                    .isInstanceOf(IllegalArgumentException.class)
+                    .hasMessage(ErrorMessage.NOTICE_FUTURE_CAN_NOT_BE_MODIFIED.getFormat());
+        }
     }
 }
