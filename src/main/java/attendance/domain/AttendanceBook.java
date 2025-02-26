@@ -3,6 +3,7 @@ package attendance.domain;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public class AttendanceBook {
 
@@ -19,21 +20,23 @@ public class AttendanceBook {
         attendances.add(newAttendance);
     }
 
-    public void updateAttendance(String nickname, LocalDateTime updateDateTime) {
-        Attendance findAttendance = findAttendance(nickname, updateDateTime);
-        findAttendance.updateAttendanceTime(updateDateTime.toLocalTime());
-    }
-
-    private Attendance findAttendance(String nickname, LocalDateTime updateDateTime) {
-        return attendances.stream()
-                .filter(attendance -> attendance.isAlreadyAttend(nickname, updateDateTime.toLocalDate()))
-                .findFirst()
-                .orElseThrow();
-    }
-
     private boolean isAlreadyAttend(Attendance newAttendance) {
         return attendances.stream()
                 .anyMatch(attendance -> attendance.isAlreadyAttend(newAttendance));
+    }
+
+    public void updateAttendance(String nickname, LocalDateTime updateDateTime) {
+        findAttendance(nickname, updateDateTime)
+                .ifPresentOrElse(
+                        attendance -> attendance.updateAttendanceTime(updateDateTime.toLocalTime()),
+                        () -> attendances.add(new Attendance(nickname, updateDateTime))
+                );
+    }
+
+    private Optional<Attendance> findAttendance(String nickname, LocalDateTime updateDateTime) {
+        return attendances.stream()
+                .filter(attendance -> attendance.isAlreadyAttend(nickname, updateDateTime.toLocalDate()))
+                .findFirst();
     }
 
     @Override
