@@ -23,7 +23,7 @@ public enum AttendanceStatus {
     }
 
     public static AttendanceStatus of(LocalDate date, LocalTime time) {
-        if (Holiday.isHoliday(date) || !LectureTime.isLectureDate(date)) {
+        if (!LectureTime.isLectureDate(date)) {
             throw new IllegalArgumentException(date + ": 교육이 없는 날입니다.");
         }
 
