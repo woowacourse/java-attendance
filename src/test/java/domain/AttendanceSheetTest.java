@@ -3,15 +3,17 @@ package domain;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.*;
 import policy.AbsentPolicy;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Stream;
 
-import static domain.AttendanceState.ATTENDANCE;
-import static domain.AttendanceState.LATE;
+import static domain.AttendanceState.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
@@ -79,10 +81,19 @@ public class AttendanceSheetTest {
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
-    @Test
-    @DisplayName("크루의 출석 횟수를 계산할 수 있다")
-    public void countAttendanceStateTest() {
-        assertThat(attendanceSheet.countAttendanceState().get(ATTENDANCE)).isEqualTo(2);
+    @ParameterizedTest
+    @DisplayName("크루의 출석 상태 횟수를 계산할 수 있다")
+    @MethodSource("provideAttendanceStateForCount")
+    public void countAttendanceStateTest(AttendanceState state, int expected) {
+        assertThat(attendanceSheet.countAttendanceState().get(state)).isEqualTo(expected);
+    }
+
+    static Stream<Arguments> provideAttendanceStateForCount() {
+        return Stream.of(
+                Arguments.of(ATTENDANCE, 2),
+                Arguments.of(LATE, 1),
+                Arguments.of(ABSENT, 0)
+        );
     }
 
 }
