@@ -4,6 +4,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.Locale;
 import java.util.Scanner;
 import util.DateTimeUtil;
+import util.ExceptionHandler;
 
 public class InputView {
     private static final Scanner SCANNER = new Scanner(System.in);
@@ -38,10 +39,12 @@ public class InputView {
     }
 
     public static int scanDayToModify() {
-        System.out.println("수정하려는 날짜(일)를 입력해 주세요.");
-        String day = SCANNER.nextLine();
-        validateInteger(day);
-        return Integer.parseInt(day);
+        return ExceptionHandler.retryUntilSuccessWithReturn(() -> {
+            System.out.println("수정하려는 날짜(일)를 입력해 주세요.");
+            String day = SCANNER.nextLine();
+            validateInteger(day);
+            return Integer.parseInt(day);
+        });
     }
 
     public static String scanTimeToModify() {
