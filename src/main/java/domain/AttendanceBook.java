@@ -33,9 +33,15 @@ public class AttendanceBook {
     }
 
     public CheckAttendanceResponse checkAttendance(String name, LocalDate date, LocalTime time) {
+        String attendanceStatus = AttendanceStatus.judgeAttendanceStatusByDateAndTime(date, time);
+
+        if (!attendanceStatus.equals("출석") && !attendanceStatus.equals("결석") && !attendanceStatus.equals("지각")) {
+            throw new IllegalArgumentException(
+                    String.format("[ERROR] %02d월 %02d일 %s은 등교일이 아닙니다.",
+                            date.getMonthValue(), date.getDayOfMonth(), attendanceStatus));
+        }
         Crew foundCrew = findCrewByName(name);
         foundCrew.addNewTimeLog(date, time);
-        return new CheckAttendanceResponse(
-                time, AttendanceStatus.judgeAttendanceStatusByDateAndTime(date, time));
+        return new CheckAttendanceResponse(time, attendanceStatus);
     }
 }
