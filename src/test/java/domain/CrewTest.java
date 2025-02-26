@@ -3,6 +3,7 @@ package domain;
 import static domain.AbsentPenalty.COUNSELING;
 import static domain.AbsentPenalty.EXPEL;
 import static domain.AbsentPenalty.WARNING;
+import static domain.AttendanceStatus.ABSENT;
 import static domain.AttendanceStatus.LATE;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -10,6 +11,7 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -37,8 +39,6 @@ public class CrewTest {
                     () -> assertThat(attendanceResult.getStatusValue())
                             .isEqualTo(AttendanceStatus.ATTENDED.getStringValue())   // 저장된 출석 상태 테스트
             );
-
-
         }
 
         @DisplayName("지각 상황")
@@ -52,9 +52,12 @@ public class CrewTest {
             Attendance attendanceResult = crew.addAttendance(lateAttendedTime);
 
             // then
-            assertThat(attendanceResult).isNotNull();
-            assertThat(attendanceResult.getDateAndTime()).isEqualTo(lateAttendedTime);
-            assertThat(attendanceResult.getStatusValue()).isEqualTo(LATE.getStringValue());
+            assertAll(
+                    () -> assertThat(attendanceResult).isNotNull(),
+                    () -> assertThat(attendanceResult.getDateAndTime()).isEqualTo(lateAttendedTime),
+                    () -> assertThat(attendanceResult.getStatusValue()).isEqualTo(LATE.getStringValue())
+            );
+
         }
 
         @DisplayName("결석 상황")
@@ -67,10 +70,11 @@ public class CrewTest {
             // when
             Attendance attendanceResult = crew.addAttendance(absentAttendedTime);
 
-            // then
-            assertThat(attendanceResult).isNotNull();
-            assertThat(attendanceResult.getDateAndTime()).isEqualTo(absentAttendedTime);
-            assertThat(attendanceResult.getStatusValue()).isEqualTo(AttendanceStatus.ABSENT.getStringValue());
+            assertAll(
+                    () -> assertThat(attendanceResult).isNotNull(),
+                    () -> assertThat(attendanceResult.getDateAndTime()).isEqualTo(absentAttendedTime),
+                    () -> assertThat(attendanceResult.getStatusValue()).isEqualTo(ABSENT.getStringValue())
+            );
         }
     }
 
@@ -103,8 +107,10 @@ public class CrewTest {
             // given
             Crew crew = new Crew("띠용");
             Attendance oldAttendance = crew.addAttendance(LocalDateTime.of(2024, 12, 5, 8, 59));
-            assertThat(oldAttendance.getDateAndTime()).isEqualTo(LocalDateTime.of(2024, 12, 5, 8, 59));
-            assertThat(oldAttendance.getStatusValue()).isEqualTo(AttendanceStatus.ATTENDED.getStringValue());
+            assertAll(
+                    () -> assertThat(oldAttendance.getDateAndTime()).isEqualTo(LocalDateTime.of(2024, 12, 5, 8, 59)),
+                    () -> assertThat(oldAttendance.getStatusValue()).isEqualTo(AttendanceStatus.ATTENDED.getStringValue())
+            );
 
             // when & then
             assertThatThrownBy(() -> crew.addAttendance(LocalDateTime.of(2024, 12, 5, 9, 59)))
@@ -136,10 +142,12 @@ public class CrewTest {
 
             // when & then
             AttendanceUpdateResult oldAndNewAttendance = crew.update(LocalDateTime.of(2024, 12, 5, 10, 6));
-            assertThat(oldAndNewAttendance.getOldAttendance()).isEqualTo(oldAttendance);
-            assertThat(oldAndNewAttendance.getNewAttendance().getDateAndTime()).isEqualTo(
-                    LocalDateTime.of(2024, 12, 5, 10, 6));
-            assertThat(oldAndNewAttendance.getNewAttendance().getStatusValue()).isEqualTo(LATE.getStringValue());
+            assertAll(
+                    () -> assertThat(oldAndNewAttendance.getOldAttendance()).isEqualTo(oldAttendance),
+                    () -> assertThat(oldAndNewAttendance.getNewAttendance().getDateAndTime()).isEqualTo(
+                            LocalDateTime.of(2024, 12, 5, 10, 6)),
+                    () -> assertThat(oldAndNewAttendance.getNewAttendance().getStatusValue()).isEqualTo(LATE.getStringValue())
+            );
         }
 
         @DisplayName("존재하지 않는 출석일 수정 시도 상황")
@@ -237,9 +245,12 @@ public class CrewTest {
 
             // then
             // 12월 9, 11, 12일 결석
-            assertThat(crew.getAttendanceCount()).isEqualTo(4);
-            assertThat(crew.getLateCount()).isEqualTo(2);
-            assertThat(crew.getAbsentCount()).isEqualTo(3);
+            assertAll(
+                    () -> assertThat(crew.getAttendanceCount()).isEqualTo(4),
+                    () -> assertThat(crew.getLateCount()).isEqualTo(2),
+                    () -> assertThat(crew.getAbsentCount()).isEqualTo(3)
+            );
+
         }
     }
 
