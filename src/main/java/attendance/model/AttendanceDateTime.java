@@ -37,8 +37,4 @@ public class AttendanceDateTime {
     public int hashCode() {
         return Objects.hash(attendanceDate, attendanceTime);
     }
-
-    public LocalDate getAttendanceDate() {
-        return attendanceDate;
-    }
 }
