@@ -22,6 +22,9 @@ public class AttendanceBook {
     }
 
     public AttendanceHistory findByCrew(final Crew crew) {
+        if(!attendanceBook.containsKey(crew)){
+            throw new IllegalArgumentException();
+        }
         return attendanceBook.get(crew);
     }
 }
