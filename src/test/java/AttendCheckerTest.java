@@ -18,8 +18,12 @@ public class AttendCheckerTest {
         LocalDate weekDay = LocalDate.of(2024, 12, 2);
         boolean actual2 = operationTimeChecker.isWeekend(weekDay);
 
+        LocalDate weekend2 = LocalDate.of(2024, 12, 7);
+        boolean actual3 = operationTimeChecker.isWeekend(weekend2);
+
         //then
         Assertions.assertThat(actual).isEqualTo(true);
         Assertions.assertThat(actual2).isEqualTo(false);
+        Assertions.assertThat(actual3).isEqualTo(true);
     }
 }
