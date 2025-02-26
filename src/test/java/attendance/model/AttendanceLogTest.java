@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -128,6 +129,70 @@ class AttendanceLogTest {
         // then
         assertThat(isAbsent)
                 .isFalse();
+    }
+
+    @DisplayName("등교 시간이 있는 경우 조회할 수 있다.")
+    @Test
+    void getAttendanceTimeTest() {
+        // given
+        Nickname nickname = new Nickname("벨로");
+        LocalDate attendanceDate = LocalDate.of(2024, 12, 2);
+        LocalTime attendanceTime = LocalTime.of(10, 0);
+
+        // when
+        AttendanceLog attendanceLog = new AttendanceLog(nickname, attendanceDate, attendanceTime);
+
+        // then
+        assertThat(attendanceLog.getAttendanceTime())
+                .isEqualTo(attendanceTime);
+    }
+
+    @DisplayName("등교 시간이 있는 경우 날짜+시간을 조회할 수 있다.")
+    @Test
+    void getAttendanceDateTimeTest() {
+        // given
+        Nickname nickname = new Nickname("벨로");
+        LocalDate attendanceDate = LocalDate.of(2024, 12, 2);
+        LocalTime attendanceTime = LocalTime.of(10, 0);
+
+        // when
+        AttendanceLog attendanceLog = new AttendanceLog(nickname, attendanceDate, attendanceTime);
+
+        // then
+        assertThat(attendanceLog.getAttendanceDateTime())
+                .isEqualTo(LocalDateTime.of(attendanceDate, attendanceTime));
+    }
+
+    @DisplayName("등교 시간이 없는 기록에서 날짜+시간을 조회하려는 경우 예외가 발생한다.")
+    @Test
+    void shouldThrowException_WhenGetAttendanceDateTimeAndAttendanceTimeIsNull() {
+        // given
+        Nickname nickname = new Nickname("벨로");
+        LocalDate attendanceDate = LocalDate.of(2024, 12, 2);
+
+        // when
+        AttendanceLog attendanceLog = new AttendanceLog(nickname, attendanceDate);
+
+        // then
+        assertThatCode(attendanceLog::getAttendanceDateTime)
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("등교 시간 기록이 존재하지 않습니다.");
+    }
+
+    @DisplayName("등교 시간이 없는 기록에서 시간을 조회하려는 경우 예외가 발생한다.")
+    @Test
+    void shouldThrowException_WhenGetAttendanceTimeAndAttendanceTimeIsNull() {
+        // given
+        Nickname nickname = new Nickname("벨로");
+        LocalDate attendanceDate = LocalDate.of(2024, 12, 2);
+
+        // when
+        AttendanceLog attendanceLog = new AttendanceLog(nickname, attendanceDate);
+
+        // then
+        assertThatCode(attendanceLog::getAttendanceTime)
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("등교 시간 기록이 존재하지 않습니다.");
     }
 
     @DisplayName("캠퍼스 운영시간이 아닐 때 출석하는 경우 예외가 발생한다.")

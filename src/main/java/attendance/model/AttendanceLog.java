@@ -2,6 +2,7 @@ package attendance.model;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Objects;
@@ -75,6 +76,17 @@ public class AttendanceLog {
 
     public boolean isBefore(LocalDate baseDate) {
         return attendanceDate.isBefore(baseDate);
+    }
+
+    public LocalDateTime getAttendanceDateTime() {
+        return LocalDateTime.of(attendanceDate, getAttendanceTime());
+    }
+
+    public LocalTime getAttendanceTime() {
+        if (attendanceTime == null) {
+            throw new IllegalArgumentException("등교 시간 기록이 존재하지 않습니다.");
+        }
+        return attendanceTime;
     }
 
     @Override

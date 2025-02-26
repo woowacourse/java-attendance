@@ -23,4 +23,14 @@ public class InputView {
             System.out.printf("%s. %s%n", command.getCode(), command.getDescription());
         }
     }
+
+    public String readNickname() {
+        System.out.println("\n닉네임을 입력해 주세요.");
+        return scanner.nextLine();
+    }
+
+    public String readAttendanceTime() {
+        System.out.println("등교 시간을 입력해 주세요.");
+        return scanner.nextLine();
+    }
 }
