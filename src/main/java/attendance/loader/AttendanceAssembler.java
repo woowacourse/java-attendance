@@ -2,6 +2,8 @@ package attendance.loader;
 
 import attendance.domain.AttendanceHistory;
 import attendance.domain.AttendanceRecord;
+import attendance.domain.Crew;
+import attendance.domain.Crews;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
@@ -26,6 +28,12 @@ public class AttendanceAssembler {
             histories.put(crewName, history);
         });
         return histories;
+    }
+
+    public Crews assembleCrews(Map<String, AttendanceHistory> histories) {
+        Crews crews = new Crews();
+        histories.keySet().forEach(crewName -> crews.addCrew(new Crew(crewName)));
+        return crews;
     }
 
 }

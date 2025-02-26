@@ -6,6 +6,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.HashMap;
+import java.util.Map;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -15,9 +16,11 @@ class AttendanceBookTest {
     @Test
     void test_addCrewRecord() {
         // given
-        AttendanceBook attendanceBook = new AttendanceBook(new HashMap<>());
-        AttendanceRecord record = new AttendanceRecord(LocalDateTime.of(2024, 12, 2, 13, 0));
+        Map<String, AttendanceHistory> map = new HashMap<>();
         String crewName = "빙티";
+        map.put(crewName, new AttendanceHistory());
+        AttendanceBook attendanceBook = new AttendanceBook(map);
+        AttendanceRecord record = new AttendanceRecord(LocalDateTime.of(2024, 12, 2, 13, 0));
 
         // when
         attendanceBook.add(crewName, record);
@@ -32,9 +35,12 @@ class AttendanceBookTest {
     @Test
     void test_modifyCrewRecord() {
         // given
-        AttendanceBook attendanceBook = new AttendanceBook(new HashMap<>());
-        AttendanceRecord record = new AttendanceRecord(LocalDateTime.of(2024, 12, 2, 13, 0));
+        Map<String, AttendanceHistory> map = new HashMap<>();
         String crewName = "빙티";
+        AttendanceHistory history = new AttendanceHistory();
+        map.put(crewName, history);
+        AttendanceBook attendanceBook = new AttendanceBook(map);
+        AttendanceRecord record = new AttendanceRecord(LocalDateTime.of(2024, 12, 2, 13, 0));
         attendanceBook.add(crewName, record);
 
         // when
@@ -43,8 +49,8 @@ class AttendanceBookTest {
         attendanceBook.modify(crewName, targetDate, modifyTime);
 
         // then
-        AttendanceHistory history = attendanceBook.getHistoryByName(crewName);
-        assertThat(history.getRecordByDate(targetDate).getAttendanceStatus())
+        AttendanceHistory updatedHistory = attendanceBook.getHistoryByName(crewName);
+        assertThat(updatedHistory.getRecordByDate(targetDate).getAttendanceStatus())
                 .isEqualTo(AttendanceStatus.LATE);
     }
 
@@ -52,8 +58,10 @@ class AttendanceBookTest {
     @Test
     void test_getWarningStatus() {
         // given
-        AttendanceBook attendanceBook = new AttendanceBook(new HashMap<>());
+        Map<String, AttendanceHistory> map = new HashMap<>();
         String crewName = "빙티";
+        map.put(crewName, new AttendanceHistory()); // 미리 해당 크루의 기록을 등록
+        AttendanceBook attendanceBook = new AttendanceBook(map);
         attendanceBook.add(crewName, new AttendanceRecord(LocalDateTime.of(2024, 12, 3, 11, 0)));
         attendanceBook.add(crewName, new AttendanceRecord(LocalDateTime.of(2024, 12, 4, 11, 0)));
 
@@ -68,8 +76,10 @@ class AttendanceBookTest {
     @Test
     void test_findCrewHistory() {
         // given
-        AttendanceBook attendanceBook = new AttendanceBook(new HashMap<>());
+        Map<String, AttendanceHistory> map = new HashMap<>();
         String crewName = "빙티";
+        map.put(crewName, new AttendanceHistory()); // 미리 해당 크루의 기록을 등록
+        AttendanceBook attendanceBook = new AttendanceBook(map);
         AttendanceRecord record = new AttendanceRecord(LocalDateTime.of(2024, 12, 3, 11, 0));
         attendanceBook.add(crewName, record);
 
@@ -78,7 +88,6 @@ class AttendanceBookTest {
 
         // then
         assertThat(history.getRecords()).hasSize(1);
-
         AttendanceRecord findRecord = history.getRecordByDate(LocalDate.of(2024, 12, 3));
         assertThat(findRecord).isEqualTo(record);
     }
