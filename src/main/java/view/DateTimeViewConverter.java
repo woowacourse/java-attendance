@@ -8,11 +8,12 @@ import java.time.format.DateTimeFormatter;
 import java.util.Locale;
 
 public class DateTimeViewConverter {
-    private final static String DELIMITER = ":";
     public final static int STANDARD_YEAR = 2024;
     public final static int STANDARD_MONTH = 12;
+    private final static String DELIMITER = ":";
     private final static int HOUR_INDEX = 0;
     private final static int MINUTES_INDEX = 1;
+    private final static String TIME_FORMAT = "^(?:[01]\\d|2[0-3])\\s*:\\s*[0-5]\\d$";
 
     private static final DateTimeFormatter NORMAL_FORMATTER =
             DateTimeFormatter.ofPattern("MM월 dd일 E요일 HH:mm", Locale.KOREAN);
@@ -60,7 +61,6 @@ public class DateTimeViewConverter {
         return LocalDateTime.of(STANDARD_YEAR, STANDARD_MONTH, time.getDayOfMonth(), time.getHour(), time.getMinute());
     }
 
-    private final static String TIME_FORMAT = "^(?:[01]\\d|2[0-3])\\s*:\\s*[0-5]\\d$";
 
     public static void validateDate(String input) {
         if (!input.matches(TIME_FORMAT)) {
