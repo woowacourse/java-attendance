@@ -1,7 +1,7 @@
 package controller;
 
-import service.AttendanceModifyService;
-import service.dto.AttendanceModifyResponse;
+import domain.Attendance;
+import domain.CrewAttendances;
 import view.InputView;
 import view.OutputView;
 
@@ -11,13 +11,16 @@ import java.time.LocalTime;
 public class AttendanceModifyController implements Controller{
     private final InputView inputView;
     private final OutputView outputView;
-    private final AttendanceModifyService modifyService;
+    private final CrewAttendances crewAttendances;
 
-
-    public AttendanceModifyController(InputView inputView, OutputView outputView, AttendanceModifyService modifyService) {
+    public AttendanceModifyController(
+            InputView inputView,
+            OutputView outputView,
+            CrewAttendances crewAttendances
+    ) {
         this.inputView = inputView;
         this.outputView = outputView;
-        this.modifyService = modifyService;
+        this.crewAttendances = crewAttendances;
     }
 
     @Override
@@ -25,11 +28,16 @@ public class AttendanceModifyController implements Controller{
         String crewName = inputView.readName();
         LocalDate modifyDate = inputView.readModifyDate();
         LocalTime modifyTime = inputView.readModifyTime();
-        AttendanceModifyResponse response = modifyService.modify(
+        Attendance beforeAttendance = crewAttendances.findAttendanceByCrewAndDate(crewName, modifyDate);
+        Attendance modifiedAttendance = crewAttendances.modifyAttendance(
                 crewName,
                 modifyDate,
                 modifyTime
         );
-        outputView.printModifyResult(response);
+        LocalTime beforeTime = beforeAttendance.getTime().orElse(null);
+        String beforeStatus = beforeAttendance.getStatus().getExpression();
+        String modifiedStatus = modifiedAttendance.getStatus().getExpression();
+        LocalTime modifiedTime = modifiedAttendance.getTime().orElse(null);
+        outputView.printModifyResult(modifyDate, beforeTime, beforeStatus, modifiedTime, modifiedStatus);
     }
 }

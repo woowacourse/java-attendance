@@ -5,7 +5,6 @@ import domain.Attendance;
 import domain.AttendanceCustomDate;
 import domain.AttendanceStatus;
 import domain.CrewStatus;
-import service.dto.AttendanceModifyResponse;
 import service.dto.DisenrollmentCheckResponse;
 
 import java.time.LocalDate;
@@ -46,26 +45,32 @@ public class OutputView {
         System.out.println(message + " 수정 기능을 이용해주세요.");
     }
 
-    public void printModifyResult(AttendanceModifyResponse response) {
-        String formattedDate = getFormattedDate(response.date());
+    public void printModifyResult(
+            LocalDate date,
+            LocalTime beforeTime,
+            String beforeStatus,
+            LocalTime afterTime,
+            String afterStatus
+    ) {
+        String formattedDate = getFormattedDate(date);
 
         String formattedBeforeTime = "--:--";
-        if (response.beforeTime().isPresent()) {
-            formattedBeforeTime = getFormattedTime(response.beforeTime().get());
+        if (beforeTime != null) {
+            formattedBeforeTime = getFormattedTime(beforeTime);
         }
 
         String formattedAfterTime = "--:--";
-        if (response.afterTime().isPresent()) {
-            formattedAfterTime = getFormattedTime(response.afterTime().get());
+        if (afterTime != null) {
+            formattedAfterTime = getFormattedTime(afterTime);
         }
 
         System.out.printf("%s %s (%s) -> %s %s (%s) 수정 완료!\n",
                 formattedDate,
                 formattedBeforeTime,
-                response.beforeStatus(),
+                beforeStatus,
                 formattedDate,
                 formattedAfterTime,
-                response.afterStatus()
+                afterStatus
         );
     }
 

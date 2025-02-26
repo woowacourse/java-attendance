@@ -42,7 +42,7 @@ public class AppConfig {
         return new AttendanceModifyController(
                 getInputView(),
                 getOutputView(),
-                new AttendanceModifyService(getCrewAttendances())
+                getCrewAttendances()
         );
     }
 

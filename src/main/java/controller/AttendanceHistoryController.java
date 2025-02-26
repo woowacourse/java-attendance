@@ -5,12 +5,10 @@ import domain.AttendanceCustomDate;
 import domain.AttendanceStatus;
 import domain.CrewStatus;
 import service.AttendanceHistoryService;
-import service.dto.AttendanceHistoryResponse;
 import view.InputView;
 import view.OutputView;
 
 import java.time.LocalDate;
-import java.util.List;
 import java.util.Map;
 
 public class AttendanceHistoryController implements Controller {
