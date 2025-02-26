@@ -47,7 +47,7 @@ public class AttendanceHistory {
     }
 
     public AttendanceRecord findByDate(final LocalDate date) {
-        return null;
+        return attendanceHistory.get(date);
     }
 
     public Crew getCrew() {
