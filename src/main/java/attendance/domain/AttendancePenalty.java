@@ -1,6 +1,5 @@
 package attendance.domain;
 
-import java.util.Map;
 import java.util.function.Predicate;
 
 
@@ -18,13 +17,9 @@ public enum AttendancePenalty {
         this.isPenalty = isPenalty;
     }
 
-    public static AttendancePenalty findPenalty(Map<AttendanceStatus, Integer> statusCounts) {
-        int lateCount = statusCounts.get(AttendanceStatus.LATE);
-        int absenceCount = statusCounts.get(AttendanceStatus.ABSENCE);
-
-        int calculatedAbsence = absenceCount + (lateCount / 3);
+    public static AttendancePenalty findPenalty(int weightedLateAndAbsencePoint) {
         for (AttendancePenalty penalty : values()) {
-            if (penalty.isPenalty.test(calculatedAbsence)) {
+            if (penalty.isPenalty.test(weightedLateAndAbsencePoint)) {
                 return penalty;
             }
         }

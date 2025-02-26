@@ -16,12 +16,12 @@ public class PenaltyCountTest {
             AttendanceStatus.ABSENCE, 2,
             AttendanceStatus.LATE, 3
         );
-        PenaltyCount penaltyCount = new PenaltyCount(statusCounts);
 
         // when
-        int weightedLateAndAbsenceCount = penaltyCount.calculateWeightedLateAndAbsenceCount();
+        PenaltyCount penaltyCount = new PenaltyCount(statusCounts);
+
 
         // then
-        assertThat(weightedLateAndAbsenceCount).isEqualTo(3);
+        assertThat(penaltyCount.getWeightedLateAndAbsencePoint()).isEqualTo(3);
     }
 }
