@@ -20,10 +20,15 @@ public class ExistingAttendances {
         for (String data : combinedData) {
             String crewName = data.split(",")[0];
             LocalDateTime dateTime = parseAttendanceFrom(data);
-            attendances.merge(crewName, new ArrayList<>(Arrays.asList(dateTime)), (newTime, existingTimes) -> {
-                existingTimes.add(dateTime);
-                return existingTimes;
-            });
+            if (attendances.containsKey(crewName)) {
+                attendances.get(crewName).add(dateTime);
+                continue;
+            }
+            attendances.put(crewName, new ArrayList<>(Arrays.asList(dateTime)));
+//            attendances.merge(crewName, new ArrayList<>(Arrays.asList(dateTime)), (newTime, existingTimes) -> {
+//                existingTimes.add(dateTime);
+//                return existingTimes;
+//            });
         }
         return new ExistingAttendances(attendances);
     }

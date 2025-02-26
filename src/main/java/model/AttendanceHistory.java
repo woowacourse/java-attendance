@@ -7,12 +7,19 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 public class AttendanceHistory {
     private final List<Attendance> attendances;
 
-    public AttendanceHistory(List<Attendance> attendances) {
-        this.attendances = attendances;
+    public AttendanceHistory() {
+        List<Attendance> defaultAttendances = IntStream.range(1, 32)
+                .mapToObj(date -> new Attendance(
+                        LocalDate.of(2024, 12, date),
+                        Common.noneAttendanceTime))
+                .collect(Collectors.toList()); //TODO : toList면 불변이 되어 수정 불가능해짐
+        this.attendances = defaultAttendances;
     }
 
     public Attendance register(LocalDate date, LocalTime time) {
@@ -44,6 +51,7 @@ public class AttendanceHistory {
     }
 
     private void validateFirstRegistration(Attendance oldAttendance) {
+        //TODO : 날짜 예외 넣기
         if (oldAttendance.getTime().equals(Common.noneAttendanceTime)) {
             return;
         }
