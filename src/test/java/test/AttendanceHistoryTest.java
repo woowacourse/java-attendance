@@ -52,14 +52,14 @@ public class AttendanceHistoryTest {
         List<Attendance> attendanceHistories = attendanceHistory.sliceByDateUntilBefore(LocalDate.of(2024, 12, requestDate));
 
         //then
-        assertThat(attendanceHistories.size()).isEqualTo(requestDate - 1);
-        assertThat(attendanceHistories.get(8)).isEqualTo(
+        assertThat(attendanceHistories.size()).isEqualTo(9);
+        assertThat(attendanceHistories.get(5)).isEqualTo(
                 new Attendance(LocalDate.of(2024, 12, 9), Common.noneAttendanceTime));
-        assertThat(attendanceHistories.get(9)).isEqualTo(
+        assertThat(attendanceHistories.get(6)).isEqualTo(
                 new Attendance(LocalDate.of(2024, 12, 10), LocalTime.of(10, 0)));
-        assertThat(attendanceHistories.get(10)).isEqualTo(
+        assertThat(attendanceHistories.get(7)).isEqualTo(
                 new Attendance(LocalDate.of(2024, 12, 11), LocalTime.of(10, 6)));
-        assertThat(attendanceHistories.get(11)).isEqualTo(
+        assertThat(attendanceHistories.get(8)).isEqualTo(
                 new Attendance(LocalDate.of(2024, 12, 12), LocalTime.of(10, 31)));
     }
 
@@ -69,7 +69,6 @@ public class AttendanceHistoryTest {
         //given
         LocalDate requestDate = LocalDate.of(2024, 12, 7);
         AttendanceHistory attendanceHistory = new AttendanceHistory();
-        attendanceHistory.register(LocalDate.of(2024, 12, 1), LocalTime.of(10, 0)); //출석
         attendanceHistory.register(LocalDate.of(2024, 12, 2), LocalTime.of(10, 0)); //출석
         attendanceHistory.register(LocalDate.of(2024, 12, 3), LocalTime.of(10, 6)); //지각
         attendanceHistory.register(LocalDate.of(2024, 12, 4), LocalTime.of(10, 31)); //결석
@@ -81,7 +80,7 @@ public class AttendanceHistoryTest {
 
 
         //then
-        assertThat(attendanceStatusCount.get(AttendanceStatus.NORMAL)).isEqualTo(2);
+        assertThat(attendanceStatusCount.get(AttendanceStatus.NORMAL)).isEqualTo(1);
         assertThat(attendanceStatusCount.get(AttendanceStatus.LATE)).isEqualTo(1);
         assertThat(attendanceStatusCount.get(AttendanceStatus.ABSENCE)).isEqualTo(3);
     }
