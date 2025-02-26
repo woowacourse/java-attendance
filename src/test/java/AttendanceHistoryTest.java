@@ -54,7 +54,7 @@ public class AttendanceHistoryTest {
 
         @DisplayName("이미 출석한 경우라면 예외가 발생한다.")
         @Test
-        public void duplicateAttendance() throws Exception {
+        public void alreadyAttendance() throws Exception {
             // given
             final var attendanceHistory = new AttendanceHistory();
             final var attendanceDateTime = LocalDateTime.of(2024, 12, 13, 10, 5);
