@@ -4,8 +4,8 @@ import java.util.Arrays;
 import java.util.function.Function;
 
 public enum WarningLevel {
-    WARNING(totalAbsent -> totalAbsent >= 2),
-    INTERVIEW(totalAbsent -> false);
+    WARNING(totalAbsent -> totalAbsent == 2),
+    INTERVIEW(totalAbsent -> totalAbsent >= 3);
 
     private final Function<Integer, Boolean> isMatch;
 

@@ -1,7 +1,8 @@
 package domain;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import attendance.domain.WarningLevel;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 public class WarningLevelTest {
@@ -16,19 +17,19 @@ public class WarningLevelTest {
         WarningLevel result = WarningLevel.from(lateCount, absentCount);
 
         //then
-        Assertions.assertThat(result).isEqualTo(WarningLevel.WARNING);
+        assertThat(result).isEqualTo(WarningLevel.WARNING);
     }
 
     @Test
     void 결석이_3회_이상이라면_면담_대상자이다() {
         //given
         int lateCount = 0;
-        int absentCount = 2;
+        int absentCount = 3;
 
         //when
         WarningLevel result = WarningLevel.from(lateCount, absentCount);
 
         //then
-        Assertions.assertThat(result).isEqualTo(WarningLevel.INTERVIEW);
+        assertThat(result).isEqualTo(WarningLevel.INTERVIEW);
     }
 }
