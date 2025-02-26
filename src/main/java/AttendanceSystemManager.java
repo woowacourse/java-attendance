@@ -23,4 +23,13 @@ public class AttendanceSystemManager {
 
         AttendanceType attendanceType = AttendanceType.findAttendanceTypeByDateTime(requestedAt);
     }
+
+    public void update(String nickname, LocalDateTime requestedAt) {
+        Crew crew = crews.findCrewByName(nickname);
+
+        boolean existedHistory = attendanceHistories.checkExistenceByCrewAndDate(crew, requestedAt.toLocalDate());
+        if (!existedHistory) {
+            throw new IllegalArgumentException("존재하지 않는 출석 기록입니다. 먼저 등록 기능을 이용해주세요.");
+        }
+    }
 }
