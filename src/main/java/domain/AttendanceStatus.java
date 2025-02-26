@@ -22,6 +22,9 @@ public enum AttendanceStatus {
         if(attendance.getTime().isBefore(lateCondition)) {
             return AttendanceStatus.ATTEND;
         }
+        if(attendance.getTime().equals(lateCondition) || attendance.getTime().isAfter(lateCondition)) {
+            return AttendanceStatus.LATE;
+        }
         return null;
     }
 
