@@ -159,13 +159,25 @@ class AddAttendance {
         }
 
         @ParameterizedTest
-        @MethodSource("notSchoolRunningDate")
+        @MethodSource("notSystemRunningDate")
         @DisplayName("출석이 시스템 운영시간 외에 이루어진 경우 예외가 발생한다")
-        void addAttendanceNotSchoolRunning(LocalTime time, LocalDate date, String nickname) {
+        void addAttendanceOnSystemNotRunningDate(LocalTime time, LocalDate date, String nickname) {
             CrewAttendances crewAttendances = new CrewAttendances(new TestAttendanceCurrentDateGenerateStrategy(date));
 
             Assertions.assertThatThrownBy(() -> crewAttendances.addAttendance(nickname, time))
                     .hasMessageContaining("2024년 12월에만 출석할 수 있습니다.")
+                    .isInstanceOf(AttendanceException.class);
+        }
+
+        @Test
+        @DisplayName("출석이 학교 운영시간 외에 이루어진 경우 예외가 발생한다")
+        void addAttendanceNotSchoolRunning() {
+            String nickname = "투다";
+            LocalTime time = LocalTime.of(6, 0);
+            LocalDate date = LocalDate.of(2024, 12, 3);
+            CrewAttendances crewAttendances = new CrewAttendances(new TestAttendanceCurrentDateGenerateStrategy(date));
+
+            Assertions.assertThatThrownBy(() -> crewAttendances.addAttendance(nickname, time))
                     .isInstanceOf(AttendanceException.class);
         }
     }
