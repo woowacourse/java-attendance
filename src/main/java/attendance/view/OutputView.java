@@ -1,5 +1,7 @@
 package attendance.view;
 
+import static attendance.domain.AttendanceStatus.ABSENCE;
+
 import attendance.domain.AttendanceStatus;
 import attendance.dto.AttendanceResultResponse;
 import java.time.LocalDateTime;
@@ -10,7 +12,30 @@ public class OutputView {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM월 dd일 EEEE HH:mm");
         LocalDateTime dateTime = response.dateTime();
         AttendanceStatus status = response.status();
+        if (ABSENCE.equals(status)) {
+            printAbsenceResult(response);
+            System.out.println();
+            return;
+        }
         System.out.printf("%s (%s)\n", dateTime.format(formatter), status.getMessage());
+    }
+
+    public void printUpdateResult(AttendanceResultResponse beforeResponse,
+                                  AttendanceResultResponse afterResponse) {
+        DateTimeFormatter afterFormatter = DateTimeFormatter.ofPattern("HH:mm");
+
+        printAbsenceResult(beforeResponse);
+        System.out.printf(" -> %s (%s)수정 완료!\n",
+                afterResponse.dateTime().format(afterFormatter),
+                afterResponse.status().getMessage()
+        );
+    }
+
+    public void printAbsenceResult(AttendanceResultResponse response) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM월 dd일 EEEE --:--");
+        LocalDateTime dateTime = response.dateTime();
+        AttendanceStatus status = response.status();
+        System.out.printf("%s (%s)", dateTime.format(formatter), status.getMessage());
     }
 
     public void printErrorMessage(String massage) {

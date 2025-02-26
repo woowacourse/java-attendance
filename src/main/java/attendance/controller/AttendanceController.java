@@ -13,6 +13,7 @@ import attendance.util.CrewAttendancesDataParser;
 import attendance.view.InputView;
 import attendance.view.OutputView;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 
 public class AttendanceController {
@@ -45,7 +46,7 @@ public class AttendanceController {
             attend();
         }
         if (Menu.UPDATE_ATTENDANCE.equals(selectedMenu)) {
-
+            updateAttendance();
         }
         if (Menu.PRINT_ATTENDANCES_BY_CREW.equals(selectedMenu)) {
 
@@ -69,5 +70,19 @@ public class AttendanceController {
         attendanceBook.attend(inputView.readAttendNickname(), attendance);
 
         outputView.printAttendResult(AttendanceResultResponse.from(attendance));
+    }
+
+    private void updateAttendance() {
+        String nickname = inputView.readUpdateAttendanceNickname();
+        String inputDay = inputView.readUpdateAttendanceDay();
+        String inputTime = inputView.readUpdateAttendanceTime();
+
+        LocalDateTime dateTime = DateTimeConverter.convertToDateTime(inputDay, inputTime, today);
+        Attendance before = attendanceBook.findByNicknameAndDate(nickname, dateTime);
+        AttendanceResultResponse beforeResponse = AttendanceResultResponse.from(before);
+        Attendance after = attendanceBook.updateAttendance(nickname, dateTime);
+        AttendanceResultResponse afterResponse = AttendanceResultResponse.from(after);
+
+        outputView.printUpdateResult(beforeResponse, afterResponse);
     }
 }
