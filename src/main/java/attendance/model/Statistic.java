@@ -21,8 +21,22 @@ public class Statistic {
         this.presentCount = info.get(AttendanceType.PRESENT);
         this.lateCount = info.get(AttendanceType.LATE);
         this.absentCount = info.get(AttendanceType.ABSENT);
+
+        updateStatus();
     }
 
+    private void updateStatus() {
+        int penaltyCount = absentCount + lateCount / 3;
+        if (penaltyCount >= 2) {
+            this.status = Status.WARNING;
+        }
+        if (penaltyCount >= 3) {
+            this.status = Status.MEETING;
+        }
+        if (penaltyCount > 5) {
+            this.status = Status.EXPEL;
+        }
+    }
 
     public int getPresentCount() {
         return presentCount;
@@ -34,5 +48,9 @@ public class Statistic {
 
     public int getAbsentCount() {
         return absentCount;
+    }
+
+    public Status getStatus() {
+        return status;
     }
 }

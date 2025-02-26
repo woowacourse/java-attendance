@@ -6,6 +6,7 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -120,5 +121,10 @@ public class Attendances {
 
     public boolean hasTodayAttendance() {
         return attendances.stream().anyMatch(attendance -> attendance.isSameDate(LocalDate.now()));
+    }
+
+    public List<Attendance> getHistory() {
+        return attendances.stream()
+                .sorted(Comparator.comparingInt(attendance -> Integer.parseInt(attendance.getDateOfMonth()))).toList();
     }
 }

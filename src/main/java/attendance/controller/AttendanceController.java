@@ -36,21 +36,19 @@ public class AttendanceController {
     }
 
     public void run() {
-        MenuOption menuOption = MenuOption.NONE;
-        while (!MenuOption.QUIT.equals(menuOption)) {
-            menuOption = manageOption(menuOption);
+        MenuOption menuOption;
+        while (!MenuOption.QUIT.equals(menuOption = readCommand())) {
+            manageOption(menuOption);
         }
     }
 
-    private MenuOption manageOption(MenuOption menuOption) {
+    private void manageOption(MenuOption menuOption) {
         try {
-            menuOption = readCommand();
             executeOption(menuOption);
         } catch (IllegalArgumentException e) {
             outputView.printErrorMessage(e);
             run();
         }
-        return menuOption;
     }
 
     private MenuOption readCommand() {
@@ -92,7 +90,7 @@ public class AttendanceController {
     }
 
     private void showStatistic() {
-//        outputView.printCrewStatistic(crews.findCrew(inputView.readCrewName()));
+        outputView.printCrewStatistic(crews.findCrew(inputView.readCrewName()));
     }
 
     private void checkStatus() {

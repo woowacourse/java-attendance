@@ -56,6 +56,18 @@ public class Crew {
         return attendances.hasTodayAttendance();
     }
 
+    public String getName() {
+        return name;
+    }
+
+    public List<Attendance> getAttendanceHistory() {
+        return attendances.getHistory();
+    }
+
+    public Status getStatus() {
+        return statistic.getStatus();
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
