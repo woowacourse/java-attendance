@@ -1,7 +1,6 @@
 package attendance.domain;
 
 import java.util.List;
-import java.util.Optional;
 
 public class CrewAttendanceRepository {
     private final List<CrewAttendance> crewAttendances;
@@ -11,11 +10,10 @@ public class CrewAttendanceRepository {
     }
 
     public CrewAttendance findByName(final String name) {
-        Optional<CrewAttendance> targetCrewAttendance = crewAttendances.stream()
+        return crewAttendances.stream()
                 .filter(crewAttendance -> crewAttendance.isNameMatch(name))
-                .findAny();
-
-        return targetCrewAttendance.orElseThrow(() -> new IllegalArgumentException("[ERROR] 유효하지 않은 닉네임입니다."));
+                .findAny()
+                .orElseThrow(() -> new IllegalArgumentException("[ERROR] 유효하지 않은 닉네임입니다."));
     }
 
     public List<CrewAttendance> findByWarningLevel(final WarningLevel warningLevel) {
