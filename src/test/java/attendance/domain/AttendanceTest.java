@@ -7,8 +7,7 @@ import org.junit.jupiter.api.Test;
 import java.time.LocalDate;
 import java.time.LocalTime;
 
-import static org.assertj.core.api.Assertions.assertThatCode;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.assertj.core.api.Assertions.*;
 
 @DisplayNameGeneration(DisplayNameGenerator.ReplaceUnderscores.class)
 public class AttendanceTest {
@@ -43,5 +42,21 @@ public class AttendanceTest {
 
         assertThatCode(() -> new Attendance(friday, presenceTime))
             .doesNotThrowAnyException();
+    }
+
+    @Test
+    void 해당_날짜에_출석기록이_존재하는지_확인한다() {
+        //given
+        LocalDate friday = LocalDate.of(2024, 12, 13);
+        Attendance attendance = new Attendance(friday, LocalTime.of(10, 0));
+
+        // when
+        LocalDate thursday = LocalDate.of(2024, 12, 12);
+        boolean existsAttendanceOnFriday = attendance.hasAttendDate(friday);
+        boolean existsAttendanceOnThursday = attendance.hasAttendDate(thursday);
+
+        // then
+        assertThat(existsAttendanceOnFriday).isTrue();
+        assertThat(existsAttendanceOnThursday).isFalse();
     }
 }

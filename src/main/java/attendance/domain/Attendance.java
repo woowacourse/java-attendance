@@ -28,4 +28,12 @@ public class Attendance {
             throw new IllegalArgumentException("[ERROR] 캠퍼스 운영시간이 아닙니다.");
         }
     }
+
+    public boolean hasAttendDate(LocalDate editDate) {
+        return attendanceDate.isEqual(editDate);
+    }
+
+    public LocalTime getAttendanceTime() {
+        return attendanceTime;
+    }
 }
