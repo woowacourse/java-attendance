@@ -18,14 +18,12 @@ public enum AttendanceStatus {
 
     public static AttendanceStatus from(Attendance attendance) {
         int endHourOfAttendance = calculateEndHourOfAttendance(attendance.getDayOfWeek());
-        LocalTime endTimeOfAttendance = LocalTime.of(endHourOfAttendance, END_MINUTE_OF_ATTENDANCE);
-        LocalTime endTimeOfLate = LocalTime.of(endHourOfAttendance, END_MINUTE_OF_LATE);
         LocalTime checkTime = attendance.getTime();
 
-        if(checkTime.isAfter(endTimeOfLate)) {
+        if(checkTime.isAfter(LocalTime.of(endHourOfAttendance, END_MINUTE_OF_LATE))) {
             return AttendanceStatus.ABSENT;
         }
-        if(checkTime.isAfter(endTimeOfAttendance)) {
+        if(checkTime.isAfter(LocalTime.of(endHourOfAttendance, END_MINUTE_OF_ATTENDANCE))) {
             return AttendanceStatus.LATE;
         }
         return AttendanceStatus.ATTEND;
