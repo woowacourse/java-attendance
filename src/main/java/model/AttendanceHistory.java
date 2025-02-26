@@ -67,7 +67,10 @@ public class AttendanceHistory {
     }
 
     public List<Attendance> sliceByDateUntilBefore(LocalDate limitDate) {
-        return null;
+        return this.attendances.stream()
+                .filter(attendance -> attendance.getDate().isBefore(limitDate))
+                .sorted(Comparator.comparing(Attendance::getDate))
+                .toList();
     }
 
     @Override
