@@ -60,9 +60,6 @@ public class Crew {
         if (isTruancy(date)) {
             return AttendanceStatus.ABSENCE;
         }
-        if (DayOff.isDayOff(date)) {
-            return null;
-        }
         return AttendanceStatus.from(date, attendanceRecords.get(date));
     }
 
@@ -77,7 +74,7 @@ public class Crew {
     private Map<AttendanceStatus, Integer> getAttendanceStatistics(LocalDate today) {
         Map<AttendanceStatus, Integer> statistics = AttendanceStatus.getEmptyStatistics();
 
-        IntStream.range(1,today.getDayOfMonth())
+        IntStream.range(1, today.getDayOfMonth())
             .mapToObj(today::withDayOfMonth)
             .map(this::getAttendanceStatusOf)
             .forEach(status -> statistics.put(status, statistics.get(status) + 1));

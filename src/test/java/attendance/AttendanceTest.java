@@ -130,8 +130,10 @@ class AttendanceTest {
 
         // when then
         assertSoftly(softly -> {
-            softly.assertThat(crew.getAttendanceStatusOf(LocalDate.of(2025, 02, 22))).isNull();
-            softly.assertThat(crew.getAttendanceStatusOf(LocalDate.of(2025, 02, 23))).isNull();
+            softly.assertThat(crew.getAttendanceStatusOf(LocalDate.of(2025, 02, 22)))
+                .isEqualTo(AttendanceStatus.DAY_OFF);
+            softly.assertThat(crew.getAttendanceStatusOf(LocalDate.of(2025, 02, 23)))
+                .isEqualTo(AttendanceStatus.DAY_OFF);
         });
     }
 

@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 public enum AttendanceStatus {
+    DAY_OFF("휴무일", null),
     ATTENDANCE("출석", null),
     LATENESS("지각", 5),
     ABSENCE("결석", 30),
@@ -24,8 +25,10 @@ public enum AttendanceStatus {
     }
 
     public static AttendanceStatus from(LocalDate date, LocalTime time) {
+        if (DayOff.isDayOff(date)) {
+            return AttendanceStatus.DAY_OFF;
+        }
         int lateTime = LectureTime.from(date).getLateTimeOf(time);
-
         return Arrays.stream(values())
             .filter(status -> status.minLateTime != null)
             .filter(status -> status.minLateTime < lateTime)
@@ -34,10 +37,8 @@ public enum AttendanceStatus {
     }
 
     public static Map<AttendanceStatus, Integer> getEmptyStatistics() {
-        Map<AttendanceStatus, Integer> result = Arrays.stream(values())
+        return Arrays.stream(values())
             .collect(Collectors.toMap(status -> status, status -> 0));
-        result.put(null, 0);
-        return result;
     }
 
     public static int getConvertedAbsence(Map<AttendanceStatus, Integer> statistics) {
