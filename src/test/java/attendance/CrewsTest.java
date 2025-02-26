@@ -1,14 +1,15 @@
 package attendance;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.assertj.core.api.SoftAssertions.assertSoftly;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.assertj.core.api.SoftAssertions.assertSoftly;
 
 public class CrewsTest {
 
@@ -148,18 +149,33 @@ public class CrewsTest {
         crew.addAttendance(LocalDateTime.of(2024,12,11,10,36));
         crew.addAttendance(LocalDateTime.of(2024,12,12,10,6));
 
-        crew.updateAttendance(LocalDate.of(2024,12,11), LocalTime.of(10,0));
+        Attendance updatedAttendance = crew.updateAttendance(LocalDate.of(2024, 12, 11), LocalTime.of(10, 0));
 
 
         assertSoftly(softly -> {
-            assertThat(crew.findAttendanceByDate(LocalDate.of(2024,12,11)))
+            assertThat(updatedAttendance)
                     .hasFieldOrPropertyWithValue("attendanceDateTime", LocalDateTime.of(2024,12,11,10,0));
-            assertThat(crew.findAttendanceByDate(LocalDate.of(2024,12,11)))
+            assertThat(updatedAttendance)
                     .hasFieldOrPropertyWithValue("attendanceStatus", "출석");
 
             Crew foundCrew = crews.findCrewByNickname("모루");
             assertThat(foundCrew.findAttendanceByDate(LocalDate.of(2024,12,11)))
                     .hasFieldOrPropertyWithValue("attendanceDateTime", LocalDateTime.of(2024,12,11,10,0));
         });
+    }
+
+    @Test
+    @DisplayName("수정 전과 수정 후의 Attendance는 달라야 한다.")
+    void updateAttendanceTest2() {
+        Crews crews = new Crews();
+        Crew crew = crews.addCrew("모루");
+        crew.addAttendance(LocalDateTime.of(2024,12,11,10,36));
+        crew.addAttendance(LocalDateTime.of(2024,12,12,10,6));
+
+        LocalDate updateDate = LocalDate.of(2024,12,11);
+        Attendance beforeUpdate = crew.findAttendanceByDate(updateDate);
+
+        Attendance afterUpdate = crew.updateAttendance(LocalDate.of(2024, 12, 11), LocalTime.of(10, 0));
+        assertThat(beforeUpdate).isNotEqualTo(afterUpdate);
     }
 }

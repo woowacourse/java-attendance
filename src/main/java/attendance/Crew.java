@@ -28,16 +28,17 @@ public class Crew {
 
     public Attendance updateAttendance(LocalDate updateDate, LocalTime updateTime) {
         Attendance beforeAttendance = findAttendanceByDate(updateDate);
-        return beforeAttendance.updateAttendanceTime(updateTime);
+        attendances.remove(beforeAttendance);
+        Attendance updatedAttendance = beforeAttendance.updateAttendanceTime(updateTime);
+        attendances.add(updatedAttendance);
+        return updatedAttendance;
     }
 
     public Attendance findAttendanceByDate(LocalDate date) {
-        for (Attendance attendance : attendances) {
-            if (attendance.isEqualDate(date)) {
-                return attendance;
-            }
-        }
-        throw new IllegalArgumentException("해당하는 날짜의 출석이 없습니다.");
+        return attendances.stream()
+                .filter(attendance -> attendance.isEqualDate(date))
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException("해당하는 날짜의 출석이 없습니다."));
     }
 
     public List<Attendance> getAttendances() {

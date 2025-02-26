@@ -24,7 +24,6 @@ public class Attendance {
             this.attendanceStatus = "결석";
             return;
         }
-        int startHour = checkStartHour(attendanceDateTime);
         checkCampusOpen(attendanceDateTime);
 
         this.attendanceDateTime = attendanceDateTime;
@@ -32,9 +31,7 @@ public class Attendance {
     }
 
     public Attendance updateAttendanceTime(LocalTime updateTime) {
-        this.attendanceDateTime = LocalDateTime.of(LocalDate.from(this.attendanceDateTime), updateTime);
-        this.attendanceStatus = checkAttendanceStatus(attendanceDateTime);
-        return this;
+        return new Attendance(LocalDateTime.of(LocalDate.from(this.attendanceDateTime), updateTime));
     }
 
     public boolean isEqualDate(LocalDate date) {
@@ -71,5 +68,17 @@ public class Attendance {
         if(attendanceTime.isBefore(OPEN_HOUR) || attendanceTime.isAfter(CLOSE_HOUR)) {
             throw new IllegalArgumentException("캠퍼스 운영 시간은 8:00 ~ 23:00입니다.");
         }
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        Attendance that = (Attendance) o;
+        return Objects.equals(attendanceDateTime, that.attendanceDateTime) && Objects.equals(attendanceStatus, that.attendanceStatus);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(attendanceDateTime, attendanceStatus);
     }
 }
