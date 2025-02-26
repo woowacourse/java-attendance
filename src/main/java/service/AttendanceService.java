@@ -57,6 +57,7 @@ public class AttendanceService {
     }
 
     public MonthAttendanceStatisticsResponse getMonthAttendanceStatistics(MonthAttendanceStatisticsRequest request) {
+        validateCrew(request.nickname());
         List<AttendanceRecordResponse> monthRecords = getMonthAttendanceRecordResponses(
                 request.nickname(),
                 request.today());
