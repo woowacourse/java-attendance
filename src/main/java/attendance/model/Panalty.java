@@ -15,8 +15,8 @@ public enum Panalty {
         this.absenceCount = absenceCount;
     }
 
-    public static Panalty of(int absenceCount, int lateCount) {
-        int totalAbsenceCount = absenceCount + lateCount / 3;
+    public static Panalty of(long absenceCount, long lateCount) {
+        long totalAbsenceCount = absenceCount + lateCount / 3;
         return Arrays.stream(Panalty.values())
                 .sorted(Comparator.reverseOrder())
                 .filter(panalty -> panalty.absenceCount <= totalAbsenceCount)

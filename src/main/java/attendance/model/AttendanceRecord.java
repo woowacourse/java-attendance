@@ -44,15 +44,15 @@ public record AttendanceRecord(
                 ).equals(AttendanceStatus.ATTEND)).count();
     }
 
-    public long computeAbsenceCount() {
-        long duringEducationDayCount = IntStream.range(1, 32)
+    public long computeAbsencesUntil(LocalDate localDate) {
+        long duringEducationDayCount = IntStream.range(1, localDate.getDayOfMonth() + 1)
                 .mapToObj(day -> LocalDate.of(2024, 12, day))
                 .filter(EducationDay::isDuringEducationDay)
                 .count();
         return duringEducationDayCount - computeAttendanceCount() - computeLateCount();
     }
 
-    public Panalty computePanalty() {
-        return Panalty.DISMISSAL;
+    public Panalty computePanaltyUntil(LocalDate date) {
+        return Panalty.of(computeAbsencesUntil(date), computeLateCount());
     }
 }

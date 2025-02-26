@@ -33,7 +33,11 @@ class AttendanceRecordTest {
                 LocalTime.of(10, 31)
         ));
 
-        assertThat(attendanceRecord.computeLateCount()).isEqualTo(2);
+        // when
+        long lateCount = attendanceRecord.computeLateCount();
+
+        // then
+        assertThat(lateCount).isEqualTo(2);
     }
 
     @Test
@@ -60,7 +64,12 @@ class AttendanceRecordTest {
                 LocalDate.of(2024, 12, 17),
                 LocalTime.of(10, 31)
         ));
-        assertThat(attendanceRecord.computeAttendanceCount()).isEqualTo(2);
+
+        // when
+        long attendCount = attendanceRecord.computeAttendanceCount();
+
+        // then
+        assertThat(attendCount).isEqualTo(2);
     }
 
     @Test
@@ -88,7 +97,13 @@ class AttendanceRecordTest {
                 LocalDate.of(2024, 12, 17),
                 LocalTime.of(10, 31)
         ));
-        assertThat(attendanceRecord.computeAbsenceCount()).isEqualTo(17);
+        LocalDate now = LocalDate.of(2024, 12, 18);
+
+        // when
+        long absenceCount = attendanceRecord.computeAbsencesUntil(now);
+
+        // then
+        assertThat(absenceCount).isEqualTo(9);
     }
 
     @Test
@@ -97,10 +112,15 @@ class AttendanceRecordTest {
         // given
         AttendanceRecord attendanceRecord = new AttendanceRecord();
         attendanceRecord.add(new AttendanceDateTime(
-                LocalDate.of(2024, 12, 10),
+                LocalDate.of(2024, 12, 2),
                 LocalTime.of(10, 31)
         ));
-        assertThat(attendanceRecord.computePanalty()).isEqualTo(Panalty.NONE);
+        LocalDate now = LocalDate.of(2024, 12, 3);
+
+        // when
+        Panalty panalty = attendanceRecord.computePanaltyUntil(now);
+
+        assertThat(panalty).isEqualTo(Panalty.NONE);
     }
 
     @Test
@@ -109,14 +129,20 @@ class AttendanceRecordTest {
         // given
         AttendanceRecord attendanceRecord = new AttendanceRecord();
         attendanceRecord.add(new AttendanceDateTime(
-                LocalDate.of(2024, 12, 10),
+                LocalDate.of(2024, 12, 2),
                 LocalTime.of(10, 31)
         ));
         attendanceRecord.add(new AttendanceDateTime(
-                LocalDate.of(2024, 12, 10),
+                LocalDate.of(2024, 12, 3),
                 LocalTime.of(10, 31)
         ));
-        assertThat(attendanceRecord.computePanalty()).isEqualTo(Panalty.WARN);
+        LocalDate now = LocalDate.of(2024, 12, 4);
+
+        // when
+        Panalty panalty = attendanceRecord.computePanaltyUntil(now);
+
+        // then
+        assertThat(panalty).isEqualTo(Panalty.WARN);
     }
 
     @Test
@@ -125,18 +151,20 @@ class AttendanceRecordTest {
         // given
         AttendanceRecord attendanceRecord = new AttendanceRecord();
         attendanceRecord.add(new AttendanceDateTime(
-                LocalDate.of(2024, 12, 10),
+                LocalDate.of(2024, 12, 2),
                 LocalTime.of(10, 31)
         ));
         attendanceRecord.add(new AttendanceDateTime(
-                LocalDate.of(2024, 12, 10),
+                LocalDate.of(2024, 12, 3),
                 LocalTime.of(10, 31)
         ));
-        attendanceRecord.add(new AttendanceDateTime(
-                LocalDate.of(2024, 12, 10),
-                LocalTime.of(10, 31)
-        ));
-        assertThat(attendanceRecord.computePanalty()).isEqualTo(Panalty.INTERVIEW);
+        LocalDate now = LocalDate.of(2024, 12, 5);
+
+        // when
+        Panalty panalty = attendanceRecord.computePanaltyUntil(now);
+
+        // then
+        assertThat(panalty).isEqualTo(Panalty.INTERVIEW);
     }
 
     @Test
@@ -145,29 +173,15 @@ class AttendanceRecordTest {
         // given
         AttendanceRecord attendanceRecord = new AttendanceRecord();
         attendanceRecord.add(new AttendanceDateTime(
-                LocalDate.of(2024, 12, 10),
+                LocalDate.of(2024, 12, 2),
                 LocalTime.of(10, 31)
         ));
-        attendanceRecord.add(new AttendanceDateTime(
-                LocalDate.of(2024, 12, 10),
-                LocalTime.of(10, 31)
-        ));
-        attendanceRecord.add(new AttendanceDateTime(
-                LocalDate.of(2024, 12, 10),
-                LocalTime.of(10, 31)
-        ));
-        attendanceRecord.add(new AttendanceDateTime(
-                LocalDate.of(2024, 12, 10),
-                LocalTime.of(10, 31)
-        ));
-        attendanceRecord.add(new AttendanceDateTime(
-                LocalDate.of(2024, 12, 10),
-                LocalTime.of(10, 31)
-        ));
-        attendanceRecord.add(new AttendanceDateTime(
-                LocalDate.of(2024, 12, 10),
-                LocalTime.of(10, 31)
-        ));
-        assertThat(attendanceRecord.computePanalty()).isEqualTo(Panalty.DISMISSAL);
+        LocalDate now = LocalDate.of(2024, 12, 17);
+
+        // when
+        Panalty panalty = attendanceRecord.computePanaltyUntil(now);
+
+        // then
+        assertThat(panalty).isEqualTo(Panalty.DISMISSAL);
     }
 }
