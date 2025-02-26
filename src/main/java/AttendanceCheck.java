@@ -3,6 +3,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class AttendanceCheck {
+    static final LocalTime START_TIME = LocalTime.of(10, 0);
     static Map<String, LocalTime> attendanceRecord = new HashMap<>();
 
     public static void attend(String nickname, LocalTime attendanceTime) {
@@ -19,7 +20,9 @@ public class AttendanceCheck {
     }
 
     public static String getAttendanceStatus(String nickname) {
-        attendanceRecord.get(nickname);
+        if (START_TIME.plusMinutes(5).isBefore(attendanceRecord.get(nickname))) {
+            return "지각";
+        }
         return "출석";
     }
 
