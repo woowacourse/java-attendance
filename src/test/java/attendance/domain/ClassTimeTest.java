@@ -13,29 +13,14 @@ class ClassTimeTest {
 
     @ParameterizedTest
     @CsvSource({
-            "2024-12-02T12:59, -1",
             "2024-12-02T13:00, 0",
-            "2024-12-02T13:06, 6",
-            "2024-12-02T13:31, 31",
-    })
-    @DisplayName("월요일 등교 시작 시간으로부터 차이를 반환한다")
-    void shouldReturnDifferenceFromMondayStartTime(LocalDateTime attendanceDateTime, int excepted) {
-        // when
-        int result = ClassTime.calculateAttendanceDifference(attendanceDateTime);
-
-        // then
-        assertThat(result).isEqualTo(excepted);
-    }
-
-    @ParameterizedTest
-    @CsvSource({
-            "2024-12-03T09:59, -1",
             "2024-12-03T10:00, 0",
-            "2024-12-03T10:06, 6",
-            "2024-12-03T10:31, 31",
+            "2024-12-04T10:00, 0",
+            "2024-12-05T10:00, 0",
+            "2024-12-06T10:00, 0",
     })
-    @DisplayName("화요일 등교 시작 시간으로부터 차이를 반환한다")
-    void shouldReturnDifferenceFromTuesdayStartTime(LocalDateTime attendanceDateTime, int excepted) {
+    @DisplayName("등교 시작 시간으로부터 차이를 반환한다")
+    void shouldReturnDifferenceFromMondayStartTime(LocalDateTime attendanceDateTime, int excepted) {
         // when
         int result = ClassTime.calculateAttendanceDifference(attendanceDateTime);
 
