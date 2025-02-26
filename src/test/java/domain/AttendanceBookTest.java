@@ -74,12 +74,12 @@ public class AttendanceBookTest {
     @DisplayName("닉네임, 수정하려는 날짜, 등교 시간을 입력하여 출석 기록을 수정할 수 있다.")
     @Test
     void test5() {
-        Attendance expectedAttendance = new Attendance(LocalDateTime.of(2024, 12, day, 10, 6));
+        Attendance newAttendance = new Attendance(LocalDateTime.of(2024, 12, day, 10, 6));
 
-        attendanceBook.modify(mimi, expectedAttendance);
+        attendanceBook.modify(mimi, newAttendance);
 
         assertThat(attendanceBook.findAttendanceRecordBy(mimi)
-                .contains(expectedAttendance))
+                .contains(newAttendance))
                 .isTrue();
     }
 
@@ -92,5 +92,16 @@ public class AttendanceBookTest {
         assertThatThrownBy(() -> attendanceBook.modify(crewName, attendance))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("[ERROR]");
+    }
+
+    @DisplayName("출석 수정 시, 기존 출석 기록과 업데이트된 출석 기록을 모두 확인할 수 있다.")
+    @Test
+    void test7() {
+        Attendance newAttendance = new Attendance(LocalDateTime.of(2024, 12, day, 10, 6));
+
+        ModifyResult modifyResult = attendanceBook.modify(mimi, newAttendance);
+
+        assertThat(modifyResult.getOriginalAttendance()).isEqaulTo(dayOfTenAttendance);
+        assertThat(modifyResult.getModifiedAttendance()).isEqaulTo(newAttendance);
     }
 }
