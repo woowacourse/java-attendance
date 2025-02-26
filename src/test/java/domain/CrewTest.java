@@ -1,15 +1,19 @@
 package domain;
 
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 
+import dto.AttendanceRecordDTO;
 import dto.CheckAttendanceResponse;
+import dto.GetAttendanceRecordsResponse;
 import dto.ModifyAttendanceResponse;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import util.Parser;
 
 public class CrewTest {
 
@@ -28,7 +32,7 @@ public class CrewTest {
 
         assertThat(crew.checkAttendance(date, time))
                 .extracting(CheckAttendanceResponse::date, CheckAttendanceResponse::time)
-                .containsExactly(date, time);
+                .containsExactly(Parser.parseDateInKorean(date), Parser.parseTimeToString(time));
     }
 
     @Test
@@ -52,11 +56,30 @@ public class CrewTest {
         LocalTime modifiedTime = LocalTime.now().minusHours(1);
 
         crew.checkAttendance(date, originalTime);
-        
+
         assertThat(crew.modifyAttendance(date, modifiedTime))
                 .extracting(ModifyAttendanceResponse::date,
                         ModifyAttendanceResponse::originalTime,
                         ModifyAttendanceResponse::modifiedTime)
-                .containsExactly(date, originalTime, modifiedTime);
+                .containsExactly(Parser.parseDateInKorean(date), Parser.parseTimeToString(originalTime),
+                        Parser.parseTimeToString(modifiedTime));
+    }
+
+    @Test
+    @DisplayName("닉네임을 입력하면 전날까지의 크루 출석 기록을 확인할 수 있다.")
+    void crewTest4() {
+        LocalDate date = LocalDate.of(2024, 12, 3);
+        LocalTime time = LocalTime.now();
+
+        AttendanceRecordDTO expectedContainedDTO = new AttendanceRecordDTO(
+                Parser.parseDateInKorean(date),
+                Parser.parseTimeToString(time),
+                AttendanceStatus.findMessageByAttendDateAndTime(date, time));
+
+        crew.checkAttendance(date, time);
+        GetAttendanceRecordsResponse attendanceRecords = crew.getAttendanceRecords();
+        
+        Assertions.assertThat(attendanceRecords.attendanceRecordDTOs())
+                .contains(expectedContainedDTO);
     }
 }
