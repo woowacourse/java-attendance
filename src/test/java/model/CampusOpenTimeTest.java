@@ -2,13 +2,13 @@ package model;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import attendance.model.WoowaDurationTime;
+import attendance.model.CampusOpenTime;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-class WoowaDurationTimeTest {
+class CampusOpenTimeTest {
 
     @Test
     @DisplayName("캠퍼스 운영시간이 아닌 경우")
@@ -18,7 +18,7 @@ class WoowaDurationTimeTest {
         LocalTime time = LocalTime.of(7, 0);
 
         // when
-        boolean isDurationTime = WoowaDurationTime.isDurationTime(date, time);
+        boolean isDurationTime = CampusOpenTime.isDurationTime(date, time);
 
         // then
         assertThat(isDurationTime).isFalse();
@@ -32,7 +32,7 @@ class WoowaDurationTimeTest {
         LocalTime time = LocalTime.of(8, 0);
 
         // when
-        boolean isDurationTime = WoowaDurationTime.isDurationTime(date, time);
+        boolean isDurationTime = CampusOpenTime.isDurationTime(date, time);
 
         // then
         assertThat(isDurationTime).isTrue();

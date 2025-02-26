@@ -5,7 +5,7 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.Arrays;
 
-public enum WoowaDurationTime {
+public enum CampusOpenTime {
     MONDAY(DayOfWeek.MONDAY, LocalTime.of(8, 0), LocalTime.of(23, 0)),
     TUESDAY(DayOfWeek.TUESDAY, LocalTime.of(8, 0), LocalTime.of(23, 0)),
     WEDNESDAY(DayOfWeek.WEDNESDAY, LocalTime.of(8, 0), LocalTime.of(23, 0)),
@@ -19,14 +19,14 @@ public enum WoowaDurationTime {
     private final LocalTime startTime;
     private final LocalTime endTime;
 
-    WoowaDurationTime(DayOfWeek dayOfWeek, LocalTime startTime, LocalTime endTime) {
+    CampusOpenTime(DayOfWeek dayOfWeek, LocalTime startTime, LocalTime endTime) {
         this.dayOfWeek = dayOfWeek;
         this.startTime = startTime;
         this.endTime = endTime;
     }
 
     public static boolean isDurationTime(LocalDate localDate, LocalTime time) {
-        WoowaDurationTime durationTime = Arrays.stream(WoowaDurationTime.values())
+        CampusOpenTime durationTime = Arrays.stream(CampusOpenTime.values())
                 .filter(woowaDurationTime -> woowaDurationTime.dayOfWeek.equals(localDate.getDayOfWeek()))
                 .findFirst()
                 .orElseThrow(() -> new IllegalArgumentException("잘못된 날짜입니다."));

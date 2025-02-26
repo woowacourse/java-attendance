@@ -2,12 +2,12 @@ package model;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import attendance.model.WoowaDurationDay;
+import attendance.model.CampusOpenDay;
 import java.time.LocalDate;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-class WoowaDurationDayTest {
+class CampusOpenDayTest {
 
     @Test
     @DisplayName("주말인 경우")
@@ -16,7 +16,7 @@ class WoowaDurationDayTest {
         LocalDate date = LocalDate.of(2024, 12, 8);
 
         // when
-        boolean isDurationDay = WoowaDurationDay.isDurationDay(date);
+        boolean isDurationDay = CampusOpenDay.isDurationDay(date);
 
         // then
         assertThat(isDurationDay).isFalse();
@@ -29,7 +29,7 @@ class WoowaDurationDayTest {
         LocalDate date = LocalDate.of(2024, 12, 10);
 
         // when
-        boolean isDurationDay = WoowaDurationDay.isDurationDay(date);
+        boolean isDurationDay = CampusOpenDay.isDurationDay(date);
 
         // then
         assertThat(isDurationDay).isTrue();
@@ -42,7 +42,7 @@ class WoowaDurationDayTest {
         LocalDate date = LocalDate.of(2024, 12, 25);
 
         // when
-        boolean isDurationDay = WoowaDurationDay.isDurationDay(date);
+        boolean isDurationDay = CampusOpenDay.isDurationDay(date);
 
         // then
         assertThat(isDurationDay).isFalse();
