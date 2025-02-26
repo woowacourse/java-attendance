@@ -21,12 +21,18 @@ import java.util.Map;
 public class AttendanceController {
     private static final Map<String, Runnable> operations = new HashMap<>();
 
+    private static final String REGISTER_KEY = "1";
+    private static final String MODIFY_KEY = "2";
+    private static final String CREW_ATTENDANCE_KEY = "3";
+    private static final String WARNING_CREWS_KEY = "4";
+    private static final String QUIT_KEY = "Q";
+
     public void run() {
         CrewAttendanceRepository crewAttendanceRepository = initData();
         AttendanceBook attendanceBook = new AttendanceBook(crewAttendanceRepository);
         initOperations(attendanceBook);
         String option;
-        while (!(option = getInputOption()).equals("Q")) {
+        while (!(option = getInputOption()).equals(QUIT_KEY)) {
             operations.get(option).run();
         }
     }
@@ -36,10 +42,10 @@ public class AttendanceController {
     }
 
     private void initOperations(AttendanceBook attendanceBook) {
-        operations.put("1", () -> registerAttendance(attendanceBook));
-        operations.put("2", () -> modifyAttendance(attendanceBook));
-        operations.put("3", () -> queryAttendance(attendanceBook));
-        operations.put("4", () -> queryWarningCrews(attendanceBook));
+        operations.put(REGISTER_KEY, () -> registerAttendance(attendanceBook));
+        operations.put(MODIFY_KEY, () -> modifyAttendance(attendanceBook));
+        operations.put(CREW_ATTENDANCE_KEY, () -> queryAttendance(attendanceBook));
+        operations.put(WARNING_CREWS_KEY, () -> queryWarningCrews(attendanceBook));
     }
 
     private String getInputOption() {
