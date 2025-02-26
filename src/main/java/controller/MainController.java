@@ -18,7 +18,7 @@ public class MainController {
             InputView inputView,
             OutputView outputView,
             Controller storeController,
-            Controller attendanceController, //, 다른 출석수정, 조회, 제적조회 기능 컨트롤러..
+            Controller attendanceController,
             Controller modifyController,
             Controller historyController,
             Controller disenrollmentCheckController

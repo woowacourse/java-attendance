@@ -64,7 +64,6 @@ public class AttendanceCheckController implements Controller {
             String status = attendance.getStatus().getExpression();
             outputView.printAttendanceResult(attendance.getDate(), attendance.getTime().get(), status);
         } catch (DuplicateAttendanceException e) {
-            // TODO: 에러 잘 뜨는지 보기
             outputView.recommendModifyFunction(e.getMessage());
         } catch (CrewNotExistException e) {
             outputView.printExceptionMessage(e.getMessage());
