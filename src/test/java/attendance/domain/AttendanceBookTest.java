@@ -1,6 +1,6 @@
-package attendance;
+package attendance.domain;
 
-import static attendance.AttendancesTest.generateAttendances;
+import static attendance.domain.AttendancesTest.generateAttendances;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatCode;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
