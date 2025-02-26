@@ -17,6 +17,6 @@ public class OperationTimeChecker {
     }
 
     public LocalTime getEducationStartTime(final LocalDate targetDate) {
-        return null;
+        return LocalTime.of(13, 0);
     }
 }
