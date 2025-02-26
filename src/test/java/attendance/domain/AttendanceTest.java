@@ -27,4 +27,13 @@ public class AttendanceTest {
                         .hasMessage(FormattedErrorMessage.INVALID_ATTENDANCE_ERROR.getDateFormatMessage(sunday))
         );
     }
+
+    @Test
+    void 공휴일에_출석을_하면_예외가_발생한다() {
+        LocalDate holiday = LocalDate.of(2024, 12, 25);
+
+        assertThatThrownBy(() -> new Attendance(holiday))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage(FormattedErrorMessage.INVALID_ATTENDANCE_ERROR.getDateFormatMessage(holiday));
+    }
 }
