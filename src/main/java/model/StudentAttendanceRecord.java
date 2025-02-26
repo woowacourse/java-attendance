@@ -42,7 +42,7 @@ public class StudentAttendanceRecord {
     }
 
     public void isAlreadyAttendanceDate(String name, TodayDate todayDate) {
-        if (studentRecord.get(name).compareDayIsSame(todayDate.getTodayDateTIme())!=null) {
+        if (studentRecord.get(name).findSameDay(todayDate.getTodayDateTIme())!=null) {
             throw new IllegalArgumentException("[ERROR] 이미 출석한 요일입니다. 수정하고 싶으시면 수정 메뉴를 이용해 주세요.");
         }
     }

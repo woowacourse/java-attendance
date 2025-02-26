@@ -67,7 +67,7 @@ public class Controller {
             return true;
         }
         String recordBeforeModify = LocalDateTimePrintFormatter.createAttendanceResultMessage(
-                studentRecordRepository.getStudentRecord().get(studentName).compareDayIsSame(modifyLocalDateTime));
+                studentRecordRepository.getStudentRecord().get(studentName).findSameDay(modifyLocalDateTime));
 
         studentRecordRepository.modifyRecord(studentName, modifyLocalDateTime);
 

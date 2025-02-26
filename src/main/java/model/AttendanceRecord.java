@@ -23,7 +23,7 @@ public class AttendanceRecord {
         Collections.sort(timeRecords);
     }
 
-    public LocalDateTime compareDayIsSame(LocalDateTime wantToFindLocalDateTime) {
+    public LocalDateTime findSameDay(LocalDateTime wantToFindLocalDateTime) {
         for (LocalDateTime localDateTime : timeRecords) {
             LocalDateTime dayDate1 = localDateTime.truncatedTo(ChronoUnit.DAYS);
             LocalDateTime dayDate2 = wantToFindLocalDateTime.truncatedTo(ChronoUnit.DAYS);
@@ -35,12 +35,12 @@ public class AttendanceRecord {
     }
 
     public void modifyRecord(LocalDateTime wantToModifyLocalDateTime) {
-        timeRecords.remove(compareDayIsSame(wantToModifyLocalDateTime));
+        timeRecords.remove(findSameDay(wantToModifyLocalDateTime));
         addTime(wantToModifyLocalDateTime);
         Collections.sort(timeRecords);
     }
 
-    public boolean compareDayIsSame(LocalDateTime localDateTime1, LocalDateTime localDateTime2) {
+    public boolean findSameDay(LocalDateTime localDateTime1, LocalDateTime localDateTime2) {
         LocalDateTime dayDate1 = localDateTime1.truncatedTo(ChronoUnit.DAYS);
         LocalDateTime dayDate2 = localDateTime2.truncatedTo(ChronoUnit.DAYS);
 
@@ -49,12 +49,12 @@ public class AttendanceRecord {
 
     public void updateNoInformationInFile(LocalDateTime todayDate) {
         LocalDateTime standard = LocalDateTime.of(2024,12,1,0,0);
-        while (!compareDayIsSame(standard,todayDate)) {
+        while (!findSameDay(standard,todayDate)) {
             if (standard.getDayOfWeek().getValue() == 6 || standard.getDayOfWeek().getValue() == 7) {
                 standard = standard.plusDays(1);
                 continue;
             }
-            if (compareDayIsSame(standard)==null) {
+            if (findSameDay(standard)==null) {
                 timeRecords.add(standard);
                 standard = standard.plusDays(1);
                 continue;
