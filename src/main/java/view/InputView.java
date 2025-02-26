@@ -1,6 +1,7 @@
 package view;
 
 import constant.InputViewMessage;
+import dto.AttendanceCheckInRequest;
 import dto.AttendanceOptionRequest;
 import java.time.LocalDateTime;
 import java.time.format.TextStyle;
@@ -23,6 +24,17 @@ public class InputView {
 
         printNewLine();
         return new AttendanceOptionRequest(option);
+    }
+
+    public static AttendanceCheckInRequest readAttendanceCheckInRequest() {
+        println(InputViewMessage.ATTENDANCE_CHECK_IN_NICKNAME_PROMPT.getMessage());
+        String nickname = scanner.nextLine();
+
+        println(InputViewMessage.ATTENDANCE_CHECK_IN_TIME_PROMPT.getMessage());
+        String time = scanner.nextLine();
+
+        printNewLine();
+        return new AttendanceCheckInRequest(nickname, time);
     }
 
     private static void println(String message) {
