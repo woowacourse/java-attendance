@@ -18,6 +18,6 @@ class CampusTimeTest {
         // when & then
         assertThatIllegalArgumentException()
                 .isThrownBy(() -> CampusTime.validateOperateTime(time))
-                .withMessage("[ERROR] 12월 14일 토요일은 등교일이 아닙니다.");
+                .withMessage("[ERROR] 캠퍼스 운영 시간은 08:00 ~ 23:00 입니다.");
     }
 }
