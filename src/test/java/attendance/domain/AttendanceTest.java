@@ -15,12 +15,12 @@ public class AttendanceTest {
     private static Stream<Arguments> determineAttendanceStatusTestCases() {
         //given
         return Stream.of(
-                Arguments.of(LocalDateTime.of(2024, 12, 3, 9, 50),"출석"),
-                Arguments.of(LocalDateTime.of(2024, 12, 3, 10, 6),"지각"),
-                Arguments.of(LocalDateTime.of(2024, 12, 3, 10, 50),"결석"),
-                Arguments.of(LocalDateTime.of(2024, 12, 2, 13, 0),"출석"),
-                Arguments.of(LocalDateTime.of(2024, 12, 2, 13, 6),"지각"),
-                Arguments.of(LocalDateTime.of(2024, 12, 2, 13, 31),"결석")
+                Arguments.of(LocalDateTime.of(2024, 12, 3, 9, 50), "출석"),
+                Arguments.of(LocalDateTime.of(2024, 12, 3, 10, 6), "지각"),
+                Arguments.of(LocalDateTime.of(2024, 12, 3, 10, 50), "결석"),
+                Arguments.of(LocalDateTime.of(2024, 12, 2, 13, 0), "출석"),
+                Arguments.of(LocalDateTime.of(2024, 12, 2, 13, 6), "지각"),
+                Arguments.of(LocalDateTime.of(2024, 12, 2, 13, 31), "결석")
         );
     }
 
@@ -45,5 +45,14 @@ public class AttendanceTest {
                 .isExactlyInstanceOf(IllegalArgumentException.class);
     }
 
+    @Test
+    @DisplayName("주말 및 공휴일에는 출석을 받지 않는다.")
+    void weekendAndHolidayAttendanceThrowException() {
+        //given
+        LocalDateTime attendanceDateTime = LocalDateTime.of(2024, 12, 7, 10, 0);
 
+        //expected
+        Assertions.assertThatIllegalArgumentException()
+                .isThrownBy(() -> new Attendance(attendanceDateTime));
+    }
 }
