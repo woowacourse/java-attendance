@@ -2,6 +2,7 @@ package function;
 
 import static constants.TestDataMaker.ATTEND_EXCEPT_MONDAY;
 import static constants.TestDataMaker.ATTEND_MONDAY;
+import static constants.TestDataMaker.LATE_MONDAY;
 import static constants.TestDataMaker.MONDAY_DATE;
 import static constants.TestDataMaker.SUNDAY_DATE;
 import static constants.TestDataMaker.TUESDAY_DATE;
@@ -14,6 +15,7 @@ import dto.CheckAttendanceResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import view.ErrorMessage;
 
 public class CheckAttendanceTest {
     private AttendanceBook attendanceBook;
@@ -42,6 +44,15 @@ public class CheckAttendanceTest {
     void Weekend_Working_Is_Not_Allowed() {
         assertThatThrownBy(() -> attendanceBook.checkAttendance("쿠키", SUNDAY_DATE, ATTEND_EXCEPT_MONDAY))
                 .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage("[ERROR] 12월 01일 일요일은 등교일이 아닙니다.");
+                .hasMessage(ErrorMessage.NOTICE_NOT_TRAINING_DAY.format(SUNDAY_DATE.getMonthValue(),
+                        SUNDAY_DATE.getDayOfMonth(), "일요일"));
+    }
+
+    @Test
+    @DisplayName("이미 출석을 하였는데 다시 출석 확인을 하는 경우 예외 메시지를 출력한다.")
+    void Attendance_Already_Existed() {
+        assertThatThrownBy(() -> attendanceBook.checkAttendance("쿠키", MONDAY_DATE, LATE_MONDAY))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage(ErrorMessage.NOTICE_ATTENDANCE_ALREADY_EXISTED.getFormat());
     }
 }
