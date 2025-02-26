@@ -59,4 +59,24 @@ public class AttendanceBookTest {
                 )
         ));
     }
+
+    @Test
+    void 해당_날의_출석이_없는_경우에도_출석을_수정할_수_있다() {
+        //given
+        AttendanceBook attendanceBook = new AttendanceBook();
+
+        //when
+        attendanceBook.updateAttendance(
+                "pobi",
+                LocalDateTime.of(2024, 12, 13, 11, 1)
+        );
+
+        //then
+        assertThat(attendanceBook).isEqualTo(new AttendanceBook(
+                new Attendance(
+                        "pobi",
+                        LocalDateTime.of(2024, 12, 13, 11, 1)
+                )
+        ));
+    }
 }
