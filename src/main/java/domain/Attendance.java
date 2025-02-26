@@ -1,6 +1,7 @@
 package domain;
 
 import java.time.DayOfWeek;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.Objects;
@@ -18,6 +19,10 @@ public class Attendance {
 
     public LocalTime getTime() {
         return value.toLocalTime();
+    }
+
+    public boolean isEqualDate(LocalDate targetDate) {
+        return value.toLocalDate().equals(targetDate);
     }
 
     @Override

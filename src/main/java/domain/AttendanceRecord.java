@@ -1,5 +1,8 @@
 package domain;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
@@ -30,5 +33,17 @@ public class AttendanceRecord {
     public boolean contains(Attendance targetAttendance) {
         return value.stream()
                 .anyMatch(attendance -> attendance.equals(targetAttendance));
+    }
+
+    public Attendance modify(int day, LocalTime newTime) {
+        LocalDate date = LocalDate.of(2024, 12, day);
+        Attendance findAttendance = value.stream()
+                .filter(attendance -> attendance.isEqualDate(date))
+                .findFirst()
+                .orElseThrow(IllegalStateException::new);
+        value.remove(findAttendance);
+        Attendance newAttendance = new Attendance(LocalDateTime.of(date, newTime));
+        value.add(newAttendance);
+        return newAttendance;
     }
 }

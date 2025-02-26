@@ -1,6 +1,7 @@
 package domain;
 
 import dto.InitialInfo;
+import java.time.LocalTime;
 import java.util.Map;
 
 public class AttendanceBook {
@@ -26,5 +27,11 @@ public class AttendanceBook {
             throw new IllegalArgumentException("[ERROR] 존재하지 않는 닉네임입니다.");
         }
         return attendanceRecord;
+    }
+
+    public Attendance modify(CrewName crewName, int day, LocalTime newTime) {
+        AttendanceRecord attendanceRecord = findAttendanceRecordBy(crewName);
+        // TODO : 인자 감싸기
+        return attendanceRecord.modify(day, newTime);
     }
 }
