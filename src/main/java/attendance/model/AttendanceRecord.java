@@ -42,4 +42,8 @@ public record AttendanceRecord(
                         EducationSchedule.from(attendanceDateTime.getAttendanceDate())
                 ).equals(AttendanceStatus.ATTEND)).count();
     }
+
+    public long computeAbsenceCount() {
+        return 0;
+    }
 }
