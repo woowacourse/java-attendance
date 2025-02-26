@@ -1,5 +1,6 @@
 package attendance.domain;
 
+import java.time.LocalDate;
 import java.util.List;
 
 public class CrewAttendanceRepository {
@@ -16,9 +17,9 @@ public class CrewAttendanceRepository {
                 .orElseThrow(() -> new IllegalArgumentException("[ERROR] 유효하지 않은 닉네임입니다."));
     }
 
-    public List<CrewAttendance> findByWarningLevel(final WarningLevel warningLevel) {
+    public List<CrewAttendance> findByWarningLevel(final WarningLevel warningLevel, final LocalDate today) {
         return crewAttendances.stream()
-                .filter(crewAttendance -> crewAttendance.hasSameWarningLevel(warningLevel))
+                .filter(crewAttendance -> crewAttendance.hasSameWarningLevel(warningLevel, today))
                 .toList();
     }
 }

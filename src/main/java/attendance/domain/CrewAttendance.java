@@ -43,8 +43,8 @@ public class CrewAttendance {
         return !attendances.containsKey(localDate);
     }
 
-    public boolean hasSameWarningLevel(WarningLevel warningLevel) {
-        Map<AttendanceStatus, Integer> attendanceStatusCounts = countAttendanceStatusBefore(LocalDate.now());
+    public boolean hasSameWarningLevel(WarningLevel warningLevel, final LocalDate today) {
+        Map<AttendanceStatus, Integer> attendanceStatusCounts = countAttendanceStatusBefore(today);
         WarningLevel crewWarningLevel = WarningLevel.calculateLevel(attendanceStatusCounts);
         return crewWarningLevel == warningLevel;
     }

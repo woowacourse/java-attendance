@@ -31,25 +31,25 @@ public class AttendanceBook {
         return List.of(prevAttendanceTimeStatus, newAttendanceTimeStatus);
     }
 
-    public Map<LocalDate, AttendanceTimeStatus> queryAttendancesByName(final String name) {
+    public Map<LocalDate, AttendanceTimeStatus> queryAttendancesByName(final String name, LocalDate date) {
         CrewAttendance crewAttendance = crewAttendanceRepository.findByName(name);
-        return crewAttendance.queryAttendancesBefore(LocalDate.now());
+        return crewAttendance.queryAttendancesBefore(date);
     }
 
-    public Map<AttendanceStatus, Integer> queryAttendanceStatusByName(final String name) {
+    public Map<AttendanceStatus, Integer> queryAttendanceStatusByName(final String name, LocalDate date) {
         CrewAttendance crewAttendance = crewAttendanceRepository.findByName(name);
-        return crewAttendance.countAttendanceStatusBefore(LocalDate.now());
+        return crewAttendance.countAttendanceStatusBefore(date);
     }
 
-    public WarningLevel queryCrewWarningLevel(final String name) {
-        final Map<AttendanceStatus, Integer> attendanceStatusCounts = queryAttendanceStatusByName(name);
+    public WarningLevel queryCrewWarningLevel(final String name, LocalDate date) {
+        final Map<AttendanceStatus, Integer> attendanceStatusCounts = queryAttendanceStatusByName(name, date);
         return WarningLevel.calculateLevel(attendanceStatusCounts);
     }
 
-    public Map<WarningLevel, List<CrewAttendance>> queryCrewsByWarningLevel() {
+    public Map<WarningLevel, List<CrewAttendance>> queryCrewsByWarningLevel(final LocalDate today) {
         Map<WarningLevel, List<CrewAttendance>> warningCrews = new EnumMap<>(WarningLevel.class);
         for (WarningLevel warningLevel : WarningLevel.values()) {
-            List<CrewAttendance> crewAttendances = crewAttendanceRepository.findByWarningLevel(warningLevel);
+            List<CrewAttendance> crewAttendances = crewAttendanceRepository.findByWarningLevel(warningLevel, today);
             warningCrews.put(warningLevel, crewAttendances);
         }
         warningCrews.remove(NONE);

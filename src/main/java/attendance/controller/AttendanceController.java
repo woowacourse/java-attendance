@@ -13,6 +13,7 @@ import attendance.view.OutputView;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.ZoneId;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -68,19 +69,21 @@ public class AttendanceController {
     }
 
     private void queryAttendance(AttendanceBook attendanceBook) {
+        LocalDate today = LocalDate.now(ZoneId.of("Asia/Seoul"));
         String name = InputView.readNickName();
-        Map<LocalDate, AttendanceTimeStatus> attendances = attendanceBook.queryAttendancesByName(name);
+        Map<LocalDate, AttendanceTimeStatus> attendances = attendanceBook.queryAttendancesByName(name, today);
         OutputView.printAttendances(name, attendances);
 
-        Map<AttendanceStatus, Integer> attendanceStatusCounts = attendanceBook.queryAttendanceStatusByName(name);
+        Map<AttendanceStatus, Integer> attendanceStatusCounts = attendanceBook.queryAttendanceStatusByName(name, today);
         OutputView.printAttendanceStatuses(attendanceStatusCounts);
 
-        WarningLevel warningLevel = attendanceBook.queryCrewWarningLevel(name);
+        WarningLevel warningLevel = attendanceBook.queryCrewWarningLevel(name, today);
         OutputView.printCrewWarningLevel(warningLevel);
     }
 
     private void queryWarningCrews(AttendanceBook attendanceBook) {
-        Map<WarningLevel, List<CrewAttendance>> crewsByWarningLevel = attendanceBook.queryCrewsByWarningLevel();
+        LocalDate today = LocalDate.now(ZoneId.of("Asia/Seoul"));
+        Map<WarningLevel, List<CrewAttendance>> crewsByWarningLevel = attendanceBook.queryCrewsByWarningLevel(today);
 
         OutputView.printWarningCrews(crewsByWarningLevel);
     }
