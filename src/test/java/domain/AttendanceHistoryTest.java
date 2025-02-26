@@ -1,13 +1,17 @@
 package domain;
 
 import static org.assertj.core.api.Assertions.assertThatIterable;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+import except.AttendanceException;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
 import java.util.stream.Stream;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -68,5 +72,15 @@ public class AttendanceHistoryTest {
         testAttendanceCurrentDateGenerateStrategy.setTestDate(notIncludeDate);
         assertThatIterable(crewAttendances.crewAttendancesHistory(nickname))
                 .containsExactlyInAnyOrderElementsOf(expectCrewAttendanceHistories);
+    }
+
+    @Nested
+    class InvalidAttendanceHistory {
+
+        @Test
+        void invalidCrewTest() {
+            assertThatThrownBy(() -> crewAttendances.crewAttendancesHistory("냠냠"))
+                    .isInstanceOf(AttendanceException.class);
+        }
     }
 }
