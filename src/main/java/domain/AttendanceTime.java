@@ -51,6 +51,10 @@ public class AttendanceTime {
         return this.date.equals(attendanceTime.date);
     }
 
+    public boolean isSameDate(LocalDate date) {
+        return this.date.equals(date);
+    }
+
     @Override
     public boolean equals(Object o) {
         if (!(o instanceof AttendanceTime that)) {

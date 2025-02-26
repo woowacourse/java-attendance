@@ -18,9 +18,9 @@ public class AttendanceTimes {
         return new AttendanceTimes(attendanceTimes);
     }
 
-    public boolean contains(AttendanceTime time) {
+    public boolean contains(LocalDate date) {
         return attendanceLog.stream()
-                .anyMatch(attendanceTime -> attendanceTime.isSameDate(time));
+                .anyMatch(attendanceTime -> attendanceTime.isSameDate(date));
     }
 
     public void addAttendance(AttendanceTime time) { // TODO: 파라미터 시그니처 통일하기

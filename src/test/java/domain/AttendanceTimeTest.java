@@ -53,8 +53,8 @@ class AttendanceTimeTest {
     }
 
     @Test
-    @DisplayName("isSameDate()에서 날짜가 같으면 true반환")
-    void isSameDateTest() {
+    @DisplayName("isSameDate(AttendanceTime time)에서 날짜가 같으면 true반환")
+    void givenAttendanceTimeIsSameDateTest() {
         // given
         LocalDate date = LocalDate.of(2024, 12, 10);
         AttendanceTime attendanceTime = AttendanceTime.of(
@@ -69,6 +69,28 @@ class AttendanceTimeTest {
         boolean b2 = attendanceTime.isSameDate(AttendanceTime.of(
                 LocalDate.of(2024, 12, 11),
                 null)
+        );
+
+        // then
+        assertThat(b1).isTrue();
+        assertThat(b2).isFalse();
+    }
+
+    @Test
+    @DisplayName("isSameDate(LocalDate date)에서 날짜가 같으면 true반환")
+    void givenLocalDateIsSameDateTest() {
+        // given
+        LocalDate date = LocalDate.of(2024, 12, 10);
+        AttendanceTime attendanceTime = AttendanceTime.of(
+                date, LocalTime.of(10, 5)
+        );
+
+        // when
+        boolean b1 = attendanceTime.isSameDate(
+                LocalDate.of(2024, 12, 10)
+        );
+        boolean b2 = attendanceTime.isSameDate(
+                LocalDate.of(2024, 12, 11)
         );
 
         // then
