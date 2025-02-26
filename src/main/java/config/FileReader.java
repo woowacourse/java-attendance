@@ -1,27 +1,26 @@
-package policy;
+package config;
 
 import domain.Attendance;
 import domain.AttendanceSheet;
 
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class FileReaderPolicy {
+public class FileReader {
 
     private static final String SPLIT_DELIMITER = ",";
     private static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
     private static final int LINE_SPLIT_COUNT = 2;
     private static final int HEADER = 1;
 
-    FileReader fileReader;
+    java.io.FileReader fileReader;
 
-    public FileReaderPolicy(String filePath) {
+    public FileReader(String filePath) {
         this.fileReader = readFile(filePath);
     }
 
@@ -51,9 +50,9 @@ public class FileReaderPolicy {
     }
 
 
-    private FileReader readFile(String filePath) {
+    private java.io.FileReader readFile(String filePath) {
         try {
-            return new FileReader(filePath);
+            return new java.io.FileReader(filePath);
         } catch (FileNotFoundException e) {
             throw new RuntimeException("[ERROR] 파일 위치가 올바르지 않습니다");
         }
