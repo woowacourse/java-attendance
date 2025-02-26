@@ -1,5 +1,8 @@
 package model;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+
 import attendance.model.AttendanceDateTime;
 import attendance.model.AttendanceRegister;
 import java.time.LocalDate;
@@ -7,7 +10,7 @@ import java.time.LocalTime;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-class AttendanceTest {
+class AttendanceRegisterTest {
 
     @Test
     void 크루가_오늘날짜로_출석부에_출석을_한다() {
@@ -26,7 +29,7 @@ class AttendanceTest {
         );
 
         // then
-        Assertions.assertThat(registryAttendanceDateTime).isEqualTo(attendanceDateTime);
+        assertThat(registryAttendanceDateTime).isEqualTo(attendanceDateTime);
     }
 
     @Test
@@ -78,7 +81,26 @@ class AttendanceTest {
         );
 
         // then
-        Assertions.assertThat(modifyAttendanceDateTime).isEqualTo(new AttendanceDateTime(modifyDate, modifyTime));
+        assertThat(modifyAttendanceDateTime).isEqualTo(new AttendanceDateTime(modifyDate, modifyTime));
+    }
+
+    @Test
+    void 이미_출석한_날짜에_다시_출석을_시도할_경우_예외가_발생한다() {
+        // given
+        AttendanceRegister attendanceRegister = new AttendanceRegister();
+        AttendanceDateTime attendanceDateTime = new AttendanceDateTime(
+                LocalDate.of(2024, 12, 10),
+                LocalTime.of(10, 5)
+        );
+        attendanceRegister.attend("한스", attendanceDateTime);
+
+        // when & then
+        assertThatThrownBy(() -> {
+            attendanceRegister.attend("한스", new AttendanceDateTime(
+                    LocalDate.of(2024, 12, 10),
+                    LocalTime.of(10, 5)
+            ));
+        }).isInstanceOf(IllegalArgumentException.class);
     }
 
 
