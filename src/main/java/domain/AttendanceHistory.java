@@ -3,6 +3,7 @@ package domain;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -50,6 +51,7 @@ public class AttendanceHistory {
     }
 
     public AttendanceRecord findByDate(final LocalDate date) {
+        validateAttendanceDay(LocalDateTime.of(date, LocalTime.NOON));
         return attendanceHistory.get(date);
     }
 
