@@ -1,8 +1,12 @@
 package attendance.domain;
 
+import attendance.domain.dto.AttendanceResult;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.stream.Stream;
 import org.assertj.core.api.Assertions;
+import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -56,6 +60,25 @@ public class AttendanceTest {
         Assertions.assertThatIllegalArgumentException()
                 .isThrownBy(() -> new Attendance(attendanceDateTime))
                 .withMessage("주말 및 공휴일은 출석을 받지않습니다");
+    }
+
+    @Test
+    @DisplayName("출석 후 출석 기록을 확인할 수 있다")
+    void afterAttendanceCheckAttendanceRecord() {
+        //given
+        Attendance attendance = new Attendance(LocalDateTime.of(2024, 12, 4, 9, 50));
+
+        //when
+        AttendanceResult attendanceResult = new AttendanceResult(attendance);
+
+        //then
+        SoftAssertions.assertSoftly(softly -> {
+            softly.assertThat(attendanceResult.getAttendanceMonth()).isEqualTo(12);
+            softly.assertThat(attendanceResult.getAttendanceDay()).isEqualTo(4);
+            softly.assertThat(attendanceResult.getAttendanceHour()).isEqualTo(9);
+            softly.assertThat(attendanceResult.getAttendanceMinute()).isEqualTo(50);
+            softly.assertThat(attendanceResult.getAttendanceStatus()).isEqualTo("출석");
+        });
 
     }
 }

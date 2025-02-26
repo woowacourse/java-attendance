@@ -1,5 +1,6 @@
 package attendance.domain;
 
+import attendance.domain.dto.AttendanceResult;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -22,15 +23,17 @@ public class MemberAttendanceTest {
         List<Attendance> attendances = new ArrayList<>();
         attendances.add(attendance);
         //when
-        MemberAttendance memberAttendance = new MemberAttendance(crew,attendances);
+        MemberAttendance memberAttendance = new MemberAttendance(crew, attendances);
 
         //then
         SoftAssertions.assertSoftly(softly -> {
             softly.assertThat(memberAttendance.getCrew().getName()).isEqualTo("Lemon");
-            softly.assertThat(memberAttendance.getAttendances().get(0).getAttendanceDate()).isEqualTo(LocalDate.of(2024, 12, 4));
-            softly.assertThat(memberAttendance.getAttendances().get(0).getAttendanceTime()).isEqualTo(LocalTime.of(9, 50));
+            softly.assertThat(memberAttendance.getAttendances().get(0).getAttendanceDate())
+                    .isEqualTo(LocalDate.of(2024, 12, 4));
+            softly.assertThat(memberAttendance.getAttendances().get(0).getAttendanceTime())
+                    .isEqualTo(LocalTime.of(9, 50));
             softly.assertThat(memberAttendance.getAttendances().get(0).getAttendanceStatus()).isEqualTo("출석");
         });
-
     }
+
 }
