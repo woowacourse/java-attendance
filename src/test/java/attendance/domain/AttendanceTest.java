@@ -103,4 +103,22 @@ public class AttendanceTest {
                 Arguments.of(EducationTime.MONDAY_ABSENT.getTime(), AttendanceStatus.ABSENT, "월요일 결석 시작 시간")
         );
     }
+
+    @ParameterizedTest(name = "{index} : {2}")
+    @MethodSource("getGeneralAttendTime")
+    void 월요일이_아닌_요일의_출석시간에_따라_출석상태를_반환한다(LocalTime attendTime, AttendanceStatus expectedStatus, String message) {
+        LocalDate thursday = LocalDate.of(2024, 12, 12);
+
+        assertThat(new Attendance(thursday, attendTime).determineStatus()).isEqualTo(expectedStatus);
+    }
+
+    static Stream<Arguments> getGeneralAttendTime() {
+        return Stream.of(
+                Arguments.of(EducationTime.GENERAL_ATTEND.getTime(), AttendanceStatus.ATTEND, "목요일 출석 시작 시간"),
+                Arguments.of(EducationTime.GENERAL_LATE.getTime().minusNanos(1), AttendanceStatus.ATTEND, "목요일 출석 종료 시간"),
+                Arguments.of(EducationTime.GENERAL_LATE.getTime(), AttendanceStatus.LATE, "목요일 지각 시작 시간"),
+                Arguments.of(EducationTime.GENERAL_ABSENT.getTime().minusNanos(1), AttendanceStatus.LATE, "목요일 지각 종료 시간"),
+                Arguments.of(EducationTime.GENERAL_ABSENT.getTime(), AttendanceStatus.ABSENT, "목요일 결석 시작 시간")
+        );
+    }
 }
