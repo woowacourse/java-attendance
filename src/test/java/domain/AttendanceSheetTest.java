@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static domain.AttendanceState.ATTENDANCE;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
@@ -26,6 +27,7 @@ public class AttendanceSheetTest {
                         ))
         );
     }
+
     @Test
     @DisplayName("닉네임과 등교 날짜, 등교 시간을 입력하면 출석 기록을 추가할 수 있다")
     public void attendTest() {
@@ -73,6 +75,12 @@ public class AttendanceSheetTest {
         //when-then
         assertThatThrownBy(() -> attendanceSheet.update(nickname, dayOfMonth, updateTime))
                 .isInstanceOf(IllegalArgumentException.class);
+    }
+
+    @Test
+    @DisplayName("크루의 출석 횟수를 계산할 수 있다")
+    public void countAttendanceTest() {
+        assertThat(attendanceSheet.countAttendance()).isEqualTo(2);
     }
 
 }
