@@ -35,28 +35,4 @@ public class AttendanceTest {
             .hasMessage("[ERROR] 캠퍼스 운영시간이 아닙니다.");
     }
 
-    @Test
-    void 출석기록에_없는_이름인_경우_예외가_발생한다() {
-        // given
-        Attendances attendances = new Attendances();
-        attendances.addAttendance(
-            "빙티",new Attendance(LocalDate.of(2024,12,9), LocalTime.of(13,0)));
-
-        // when & then
-        assertThatThrownBy(() -> attendances.checkNameExists("철수"))
-            .isInstanceOf(IllegalArgumentException.class)
-            .hasMessage("[ERROR] 등록되지 않은 닉네임입니다.");
-    }
-
-    @Test
-    void 출석기록에_있는_이름인_경우_예외가_발생하지_않는다() {
-        // given
-        Attendances attendances = new Attendances();
-        attendances.addAttendance(
-            "빙티",new Attendance(LocalDate.of(2024,12,9), LocalTime.of(13,0)));
-
-        // when & then
-        assertThatCode(() -> attendances.checkNameExists("빙티"))
-            .doesNotThrowAnyException();
-    }
 }
