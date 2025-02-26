@@ -2,11 +2,13 @@ package attendance.domain;
 
 import attendance.util.FormattedErrorMessage;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -53,5 +55,15 @@ public class AttendanceTest {
                 Arguments.of(LocalDate.of(2025, 10, 9), "2025년 한글날"),
                 Arguments.of(LocalDate.of(2025, 12, 25), "2025년 크리스마스")
         );
+    }
+
+    @Test
+    void 캠퍼스_운영시간_이외의_시간에_출석을_하면_예외가_발생한다() {
+        LocalDate attendDate = LocalDate.of(2024, 12, 13);
+        LocalTime attendTime = LocalTime.of(7, 59);
+
+        assertThatThrownBy(() -> new Attendance(attendDate, attendTime))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage(FormattedErrorMessage.INVALID_ATTENDANCE_ERROR.getTimeFormatMessage(attendTime));
     }
 }
