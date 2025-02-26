@@ -14,23 +14,7 @@ import org.junit.jupiter.params.provider.MethodSource;
 import strategy.TestAttendanceCurrentDateGenerateStrategy;
 
 class AddAttendance {
-
-    private static Stream<Arguments> addAttendanceTest() {
-        return Stream.of(
-                Arguments.arguments(
-                        "투다",
-                        LocalTime.of(8, 0),
-                        LocalDate.of(2024, 12, 1),
-                        "투다"
-                ),
-                Arguments.arguments(
-                        LocalTime.of(8, 0),
-                        LocalDate.of(2024, 12, 21),
-                        "투다"
-                )
-        );
-    }
-
+    
     @Test
     @DisplayName("5분 초과시 지각")
     void addAttendanceLate() {

@@ -19,6 +19,14 @@ public class AttendanceDate {
         this.date = date;
     }
 
+    public static boolean isOutOfSchoolOpenDate(LocalDate attendanceDate) {
+        return SCHOOL_OPEN_END_DATE.isBefore(attendanceDate) || SCHOOL_OPEN_START_DATE.isAfter(attendanceDate);
+    }
+
+    public static LocalDate getSchoolLastDate() {
+        return SCHOOL_OPEN_END_DATE;
+    }
+
     private void validateAttendanceDate(LocalDate attendanceDate) {
         if (isWeekend(attendanceDate)) {
             throw new AttendanceException(NOT_SCHOOL_RUNNING_DAY);
@@ -26,10 +34,6 @@ public class AttendanceDate {
         if (isOutOfSchoolOpenDate(attendanceDate)) {
             throw new AttendanceException(OUT_OF_SCHOOL_OPEN_DATE);
         }
-    }
-
-    private boolean isOutOfSchoolOpenDate(LocalDate attendanceDate) {
-        return !(SCHOOL_OPEN_START_DATE.isBefore(attendanceDate) && SCHOOL_OPEN_END_DATE.isAfter(attendanceDate));
     }
 
     public boolean isMonday() {
