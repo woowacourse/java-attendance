@@ -1,6 +1,7 @@
 package model;
 
 import attendance.model.AttendanceRegister;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -15,7 +16,8 @@ class AttendanceTest {
         attendanceRegister.attend("한스", attendanceDateTime);
 
         // when
-        LocalDateTime registryAttendanceDateTime = attendanceRegister.findAttendanceByName("한스");
+        LocalDateTime registryAttendanceDateTime = attendanceRegister.findAttendanceByName("한스",
+                LocalDate.of(2024, 12, 10));
 
         // then
         Assertions.assertThat(registryAttendanceDateTime).isEqualTo(attendanceDateTime);
