@@ -8,6 +8,20 @@ import org.junit.jupiter.api.Test;
 class AttendanceStateTest {
 
     @Test
+    @DisplayName("등교 시작 시간으로부터 5분 이하는 출석이다")
+    void presentIfWithin5MinutesOfStartTime() {
+        // given
+        int overTime = 0;
+
+        // when
+        AttendanceState result = AttendanceState.evaluate(overTime);
+
+        // then
+        Assertions.assertThat(result)
+                .isEqualTo(AttendanceState.ATTENDANCE);
+    }
+
+    @Test
     @DisplayName("등교 시작 시간으로부터 5분 초과는 지각이다")
     void lateIfMoreThan5MinutesAfterStartTime() {
         // given
