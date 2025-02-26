@@ -73,6 +73,7 @@ public class AttendanceBook {
     }
 
     public ModifyAttendanceResponse modifyAttendance(String name, LocalDate date, LocalTime time) {
+        validateTimeIsInTheRangeOfOperation(time);
         findCrewByName(name).addNewTimeLog(date, time);
         String attendanceStatus = validateTrainingDay(date, time);
         return new ModifyAttendanceResponse(date, time, attendanceStatus);
