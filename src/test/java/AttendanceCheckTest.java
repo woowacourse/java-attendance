@@ -93,4 +93,18 @@ public class AttendanceCheckTest {
         assertEquals(expected, actual);
     }
 
+    //주말 및 공휴일에는 출석을 받지 않는다.
+    @Test
+    void 주말에는_출석을_받지_않는다() {
+        // 일요일
+        final var offDay = LocalDate.of(2025, 2, 23);
+
+        final var nickname = "에드";
+        final var attendanceTime = LocalTime.of(10, 31);
+        AttendanceCheck attendanceCheck = new AttendanceCheck();
+
+        assertThatThrownBy(() -> attendanceCheck.attend(offDay.getDayOfWeek(), nickname, attendanceTime))
+                .isInstanceOf(IllegalStateException.class)
+                .hasMessage("[ERROR] 오늘은 등교일이 아닙니다.");
+    }
 }
