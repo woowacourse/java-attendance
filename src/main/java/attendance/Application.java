@@ -28,6 +28,10 @@ public class Application {
     }
 
     public static void main(String[] args) {
+        /**
+         * 테스트 코드
+         */
+        attendanceManager.addCrew(new Crew("레오"));
         while (true) {
             LocalDate today = LocalDate.now();
             String option = InputView.readOption(today);
@@ -52,10 +56,6 @@ public class Application {
 
     private static void doAttendance() {
         LocalDate today = now();
-        /**
-         * 테스트 코드
-         */
-        attendanceManager.addCrew(new Crew("레오"));
         boolean isOperationDate = campusManager.isOperationDate(today);
         if (!isOperationDate) {
             OutputView.printNotOperationDate(today);
@@ -79,6 +79,7 @@ public class Application {
             OutputView.printNotOperationTime();
             return;
         }
+        Attendance attendance = attendanceManager.addAttendance(crew, today, attendanceTime);
     }
 
     private static void modifyAttendance() {
