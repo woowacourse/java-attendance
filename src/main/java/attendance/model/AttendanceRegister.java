@@ -2,6 +2,7 @@ package attendance.model;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -28,5 +29,8 @@ public class AttendanceRegister {
         if (!register.containsKey(name)) {
             throw new IllegalArgumentException("존재하지 않는 크루입니다.");
         }
+    }
+
+    public void modify(String crewName, LocalDate modifyDate, LocalTime modifyTime) {
     }
 }

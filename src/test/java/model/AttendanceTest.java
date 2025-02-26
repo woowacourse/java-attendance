@@ -3,6 +3,7 @@ package model;
 import attendance.model.AttendanceRegister;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -47,6 +48,26 @@ class AttendanceTest {
                 "한스",
                 LocalDate.of(2024, 12, 9)
         )).isInstanceOf(IllegalArgumentException.class);
+    }
+
+    @Test
+    void 특정_날짜에_특정_크루의_출석_시간을_수정한다() {
+        // given
+        AttendanceRegister attendanceRegister = new AttendanceRegister();
+        LocalDateTime attendanceDateTime = LocalDateTime.of(2024, 12, 10, 10, 5);
+        attendanceRegister.attend("한스", attendanceDateTime);
+        LocalDate modifyDate = LocalDate.of(2024, 12, 10);
+        LocalTime modifyTime = LocalTime.of(10, 0);
+        attendanceRegister.modify("한스", modifyDate, modifyTime);
+
+        // when
+        LocalDateTime modifyAttendanceDateTime = attendanceRegister.findAttendanceByCrewName(
+                "한스",
+                LocalDate.of(2024, 12, 10)
+        );
+
+        // then
+        Assertions.assertThat(modifyAttendanceDateTime).isEqualTo(LocalDateTime.of(modifyDate, modifyTime));
     }
 
 
