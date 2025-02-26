@@ -95,4 +95,16 @@ public class Attendances {
             attendances.add(new Attendance(currentDate, null));
         }
     }
+
+    public Map<AttendanceStatus, Integer> countAttendanceStatus(String name, LocalDate today) {
+        List<Attendance> attendanceUntilYesterday = findAttendanceUntilYesterday(name, today);
+
+        Map<AttendanceStatus, Integer> attendanceStatusCounts = AttendanceStatus.initMap();
+        for (Attendance attendance : attendanceUntilYesterday) {
+            AttendanceStatus status = AttendanceStatus.findAttendanceStatus(
+                attendance.getAttendanceDate(), attendance.getAttendanceTime());
+            attendanceStatusCounts.put(status, attendanceStatusCounts.get(status) + 1);
+        }
+        return attendanceStatusCounts;
+    }
 }

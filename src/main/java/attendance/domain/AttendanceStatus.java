@@ -3,6 +3,8 @@ package attendance.domain;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.EnumMap;
+import java.util.Map;
 
 public enum AttendanceStatus {
 
@@ -31,5 +33,14 @@ public enum AttendanceStatus {
             return LATE;
         }
         return PRESENCE;
+    }
+
+    public static Map<AttendanceStatus, Integer> initMap() {
+        Map<AttendanceStatus, Integer> attendanceStatusCounts = new EnumMap<>(AttendanceStatus.class);
+
+        for (AttendanceStatus status : values()) {
+            attendanceStatusCounts.put(status, 0);
+        }
+        return attendanceStatusCounts;
     }
 }

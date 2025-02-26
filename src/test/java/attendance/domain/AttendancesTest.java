@@ -7,6 +7,7 @@ import org.junit.jupiter.api.Test;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.*;
@@ -143,6 +144,33 @@ public class AttendancesTest {
                 new Attendance(LocalDate.of(2024, 12, 2), null),
                 new Attendance(twodaysAgo, LocalTime.of(10, 1)),
                 new Attendance(yesterday, LocalTime.of(10, 2))
+            )
+        );
+    }
+
+    @Test
+    void 크루의_출결상태를_집계한다() {
+        // given
+        Attendances attendances = new Attendances();
+        LocalDate twodaysAgo = LocalDate.of(2024, 12, 3);
+        LocalDate yesterday = LocalDate.of(2024, 12, 4);
+        LocalDate today = LocalDate.of(2024, 12, 5);
+        attendances.addAttendance(
+            "빙티", new Attendance(twodaysAgo, LocalTime.of(10, 1)));
+        attendances.addAttendance(
+            "빙티", new Attendance(yesterday, LocalTime.of(10, 6)));
+        attendances.addAttendance(
+            "빙티", new Attendance(today, LocalTime.of(10, 3)));
+
+        // when
+        Map<AttendanceStatus, Integer> attendanceStatusCount = attendances.countAttendanceStatus("빙티", today);
+
+        // then
+        assertThat(attendanceStatusCount).isEqualTo(
+            Map.of(
+                AttendanceStatus.PRESENCE, 1,
+                AttendanceStatus.LATE, 1,
+                AttendanceStatus.ABSENCE, 1
             )
         );
     }

@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -49,5 +50,17 @@ public class AttendanceStatusTest {
 
         // then
         assertThat(attendanceStatus).isEqualTo(AttendanceStatus.PRESENCE);
+    }
+
+    @Test
+    void 초기맵을_생성한다() {
+        // when
+        Map<AttendanceStatus, Integer> attendanceStatusCounts = AttendanceStatus.initMap();
+
+        // then
+        assertThat(attendanceStatusCounts).isEqualTo(Map.of(
+            AttendanceStatus.LATE, 0,
+            AttendanceStatus.ABSENCE, 0,
+            AttendanceStatus.PRESENCE, 0));
     }
 }
