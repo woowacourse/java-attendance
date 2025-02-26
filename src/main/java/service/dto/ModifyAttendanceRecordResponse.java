@@ -9,10 +9,10 @@ public record ModifyAttendanceRecordResponse(
         TimeStatus before,
         TimeStatus after
 ) {
-    private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("MM월 dd일 E요일");
+    private static final DateTimeFormatter DATE_FORMAT = DateTimeFormatter.ofPattern("MM월 dd일 E요일");
 
     public static ModifyAttendanceRecordResponse of(LocalDate date, TimeStatus before, TimeStatus after) {
-        return new ModifyAttendanceRecordResponse(date.format(DATE_FORMATTER), before, after);
+        return new ModifyAttendanceRecordResponse(date.format(DATE_FORMAT), before, after);
     }
 
     public record TimeStatus(
