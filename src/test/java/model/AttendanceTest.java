@@ -12,7 +12,7 @@ class AttendanceTest {
         // given
         AttendanceRegister attendanceRegister = new AttendanceRegister();
         LocalDateTime attendanceDateTime = LocalDateTime.of(2024, 12, 10, 10, 5);
-        attendanceRegister.attend("한스", attendanceRegister);
+        attendanceRegister.attend("한스", attendanceDateTime);
 
         // when
         LocalDateTime registryAttendanceDateTime = attendanceRegister.findAttendanceByName("한스");
