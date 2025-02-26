@@ -1,0 +1,59 @@
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+
+public class AttendTimes {
+    private List<AttendTime> attendTimes;
+
+    public AttendTimes() {
+        this.attendTimes = new ArrayList<>();
+    }
+
+    public void add(AttendTime attendTime) {
+        attendTimes.add(attendTime);
+    }
+
+    public void removeAttendance(int date) {
+        attendTimes.remove(findAttendanceByDate(date).orElseThrow(() -> new IllegalArgumentException("없는 날 입니다.")));
+    }
+
+    public Optional<AttendTime> findAttendanceByDate(int date) {
+        return attendTimes.stream()
+                .filter(attendTime -> attendTime.checkSameDate(date))
+                .findAny();
+    }
+
+    public List<AttendTime> getAttendTimeline() {
+        List<AttendTime> allAttendanceFromToday = new ArrayList<>();
+
+        LocalDate todayLocalDate = LocalDate.parse(AttendanceController.TODAY_LOCAL_DATE, AttendanceController.TODAY_FORMATTER);
+        int todayDayOfMonth = todayLocalDate.getDayOfMonth();
+        int todayMonthValue = todayLocalDate.getMonthValue();
+        int todayYear = todayLocalDate.getYear();
+
+        for (int i = 1; i < todayDayOfMonth; i++) {
+            AttendTime attendTime = findAttendanceByDate(i).orElse(null);
+            if (attendTime != null) {
+                allAttendanceFromToday.add(attendTime);
+                continue;
+            }
+
+            LocalDate localDate = LocalDate.of(todayYear, todayMonthValue, i);
+
+            if (!List.of(6, 7).contains(localDate.getDayOfWeek().getValue())) {
+                AttendTime absentAttendance = new AttendTime(LocalDate.of(todayYear, todayMonthValue, i), null);
+                allAttendanceFromToday.add(absentAttendance);
+            }
+        }
+        return allAttendanceFromToday;
+    }
+
+    public int calculateAttendedCount() {
+        return (int) attendTimes.stream().filter(attendTime -> attendTime.checkAttendanceStatus().equals(AttendanceStatus.ATTENDED)).count();
+    }
+
+    public List<AttendTime> getAttendTimes() {
+        return attendTimes;
+    }
+}

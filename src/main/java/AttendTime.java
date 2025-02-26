@@ -1,41 +1,48 @@
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 
 public class AttendTime {
-    private final LocalDateTime localDateTime;
 
-    public AttendTime(LocalDateTime localDateTime) {
-        validate(localDateTime);
-        this.localDateTime = localDateTime;
+    private final LocalDate localDate;
+    private final LocalTime localTime;
+    public AttendTime(LocalDate localDate,LocalTime localTime) {
+        validate(localDate);
+      this.localDate=localDate;
+      this.localTime=localTime;
+
     }
 
-    public void validate(LocalDateTime localDateTime) {
-        validateWeekend(localDateTime);
-        validateHolyDay(localDateTime);
+    public void validate(LocalDate localDate) {
+        validateWeekend(localDate);
+        validateHoliday(localDate);
     }
 
-    private void validateWeekend(LocalDateTime localDateTime) {
-        if (localDateTime.getDayOfWeek().getValue() > 5)
+    private void validateWeekend(LocalDate localDate) {
+        if (localDate.getDayOfWeek().getValue() > 5)
             throw new IllegalArgumentException("주말은 출석 할 수 없습니다.");
     }
 
-    private void validateHolyDay(LocalDateTime localDateTime) {
-        if (December.checkHolyDay(localDateTime.getDayOfMonth())) {
+    private void validateHoliday(LocalDate localDate) {
+        if (December.checkHolyDay(localDate.getDayOfMonth())) {
             throw new IllegalArgumentException("휴일은 출석 할 수 없습니다.");
         }
     }
 
     public AttendanceStatus checkAttendanceStatus() {
-        int startingHour = AttendTimeOfWeekDay.getTimeByDayOfWeekDay(localDateTime.getDayOfWeek().getValue());
-        return AttendanceStatus.calculate(LocalTime.of(startingHour, 5), LocalTime.of(startingHour, 30), localDateTime.toLocalTime());
+        int startingHour = AttendTimeOfWeekDay.getTimeByDayOfWeekDay(localDate.getDayOfWeek().getValue());
+        return AttendanceStatus.calculateStatus(LocalTime.of(startingHour, 5), LocalTime.of(startingHour, 30), localTime);
     }
 
-    @Override
-    public boolean equals(Object obj) {
-        return obj.equals(this.localDateTime);
+    public boolean checkSameDate(int date) {
+        return localDate.getDayOfMonth()==date;
     }
 
-//    public boolean checkSameDate(int date) {
-//        return localDateTime.getDayOfMonth()==date;
-//    }
+    public LocalDate getLocalDate() {
+        return localDate;
+    }
+
+    public LocalTime getLocalTime() {
+        return localTime;
+    }
 }

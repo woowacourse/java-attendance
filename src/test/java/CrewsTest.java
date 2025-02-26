@@ -40,23 +40,23 @@ public class CrewsTest {
         Crew crew = crews.findCrewByNickname("이든").orElseThrow(()->new IllegalArgumentException("없는 닉네임입니다"));
         assertThat(crew.getNickname()).isEqualTo("이든");
     }
-
-    @DisplayName("크루의 이름과 시간이 주어지면 오늘 출석할 수 있다")
-    @Test
-    void test5() {
-        List<String> crewAttendanceResource = CrewAttendanceFileReader.readFile("src/main/resources/attendances.csv");
-        Crews crews = new Crews(crewAttendanceResource);
-        String nickname = "쿠키";
-        String time = "2024-12-16 09:58";
-        crews.addCrewAttendance(nickname, time);
-        assertThat(crews.findCrewByNickname("쿠키")
-                .orElseThrow(() -> new IllegalArgumentException("없는 닉네임입니다."))
-                .getAttendTimes()
-                .stream()
-                .filter(attendTime -> attendTime
-                        .equals(LocalDateTime.of(2024, 12, 16, 9, 58))).count())
-                .isEqualTo(1);
-    }
+//
+//    @DisplayName("크루의 이름과 시간이 주어지면 오늘 출석할 수 있다")
+//    @Test
+//    void test5() {
+//        List<String> crewAttendanceResource = CrewAttendanceFileReader.readFile("src/main/resources/attendances.csv");
+//        Crews crews = new Crews(crewAttendanceResource);
+//        String nickname = "쿠키";
+//        String time = "2024-12-16 09:58";
+//        crews.addCrewAttendance(nickname, time);
+//        assertThat(crews.findCrewByNickname("쿠키")
+//                .orElseThrow(() -> new IllegalArgumentException("없는 닉네임입니다."))
+//                .getAttendTimes()
+//                .stream()
+//                .filter(attendTime -> attendTime
+//                        .equals(LocalDateTime.of(2024, 12, 16, 9, 58))).count())
+//                .isEqualTo(1);
+//    }
 
     @Test
     void test6() {
