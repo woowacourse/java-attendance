@@ -20,4 +20,13 @@ public class AttendanceBookTest {
 
         assertThat(attendanceBook.findAttendanceRecordBy(crewName)).isEqualTo(expectedAttendanceRecord);
     }
+
+    @DisplayName("출석부에 존재하지 않는 닉네임일 경우 예외가 발생한다.")
+    @Test
+    void test2() {
+        AttendanceBook attendanceBook = new AttendanceBook();
+        CrewName crewName = new CrewName("미미");
+
+        assertThat(attendanceBook.contains(crewName)).isFalse();
+    }
 }
