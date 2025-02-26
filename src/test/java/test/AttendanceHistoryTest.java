@@ -67,7 +67,7 @@ public class AttendanceHistoryTest {
     @Test
     void test2() {
         //given
-        int requestDate = 7;
+        LocalDate requestDate = LocalDate.of(2024, 12, 7);
         AttendanceHistory attendanceHistory = new AttendanceHistory();
         attendanceHistory.register(LocalDate.of(2024, 12, 1), LocalTime.of(10, 0)); //출석
         attendanceHistory.register(LocalDate.of(2024, 12, 2), LocalTime.of(10, 0)); //출석
