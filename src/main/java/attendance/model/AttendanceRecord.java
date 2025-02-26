@@ -26,4 +26,8 @@ public record AttendanceRecord(
                 .findFirst()
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 출석일입니다."));
     }
+
+    public long computeLateCount() {
+        return 0;
+    }
 }
