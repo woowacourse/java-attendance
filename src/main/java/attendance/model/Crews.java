@@ -1,5 +1,6 @@
 package attendance.model;
 
+import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.HashSet;
 import java.util.List;
@@ -17,6 +18,10 @@ public class Crews {
                 .map(List::getFirst)
                 .distinct()
                 .forEach(uniqueCrewName -> crews.add(new Crew(uniqueCrewName))); // Crew 객체 추가
+    }
+
+    public void initCrewsAttendance(List<List<String>> csvData) {
+        crews.forEach(crew -> crew.initCrewAttendances(csvData));
     }
 
     public boolean contains(Crew crew) {
@@ -37,7 +42,11 @@ public class Crews {
                 .ifPresent(findCrew -> findCrew.attendToday(attendTime));
     }
 
-    public void initCrewsAttendance(List<List<String>> csvData) {
-        crews.forEach(crew -> crew.initCrewAttendances(csvData));
+    public Attendance findTodayAttendance(Crew crew) {
+        return crews.stream()
+                .filter(findCrew -> findCrew.equals(crew))
+                .findFirst()
+                .map(findCrew -> findCrew.findAttendance(LocalDate.now()))
+                .orElseThrow(() -> new IllegalStateException("출석 체크가 안됐습니다."));
     }
 }

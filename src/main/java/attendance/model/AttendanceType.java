@@ -48,4 +48,9 @@ public enum AttendanceType {
         }
         return PRESENT;
     }
+
+    @Override
+    public String toString() {
+        return type;
+    }
 }

@@ -11,6 +11,7 @@ import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.TextStyle;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
@@ -28,7 +29,9 @@ public class AttendanceController {
     }
 
     public void start() {
-        crews.initCrews(CSVReader.readCSV(path));
+        List<List<String>> data = CSVReader.readCSV(path);
+        crews.initCrews(data);
+        crews.initCrewsAttendance(data);
         run();
     }
 
@@ -77,6 +80,7 @@ public class AttendanceController {
         LocalTime attendTime = LocalTime.parse(timeInfo);
 
         crews.attendToday(crew, attendTime);
+        outputView.printAttendMessage(crews.findTodayAttendance(crew));
     }
 
     private void modifyAttendance() {
@@ -84,7 +88,7 @@ public class AttendanceController {
     }
 
     private void showStatistic() {
-
+//        outputView.printCrewStatistic(crews.findCrew(inputView.readCrewName()));
     }
 
     private void checkStatus() {
