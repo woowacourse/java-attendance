@@ -1,4 +1,4 @@
-package attendance.domain;
+package attendance.utility;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
@@ -10,19 +10,15 @@ import java.util.stream.Collectors;
 
 import attendance.exception.AttendanceFileException;
 
-public class AttendanceFileReader {
+public class CsvReader {
     private static final String NOT_EXIST_FILE = "존재하지 않은 파일입니다.";
     private static final String INVALID_FILE = "유효하지 않은 파일입니다.";
     private static final int SKIP_CSV_LINE = 1;
 
     private final String fileName;
 
-    private AttendanceFileReader(String fileName) {
+    public CsvReader(String fileName) {
         this.fileName = fileName;
-    }
-
-    public static AttendanceFileReader from(String fileName) {
-        return new AttendanceFileReader(fileName);
     }
 
     public List<String> getLines() throws AttendanceFileException {
