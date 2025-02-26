@@ -32,7 +32,7 @@ public class AttendanceController {
         while (true) {
             try {
                 LocalDateTime now = LocalDateTime.now();
-                MenuCommand menuCommand = inputView.readMenuCommand();
+                MenuCommand menuCommand = inputView.readMenuCommand(now);
                 if (menuCommand == MenuCommand.FIRST) {
                     addAttendanceRecord(now);
                 }

@@ -2,7 +2,7 @@ package attendance.view.message;
 
 public enum InputMessage {
     MENU("""
-            오늘은 12월 14일 토요일입니다. 기능을 선택해 주세요.
+            오늘은 %s입니다. 기능을 선택해 주세요.
             1. 출석 확인
             2. 출석 수정
             3. 크루별 출석 기록 확인

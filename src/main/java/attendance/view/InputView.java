@@ -2,19 +2,26 @@ package attendance.view;
 
 import attendance.controller.MenuCommand;
 import attendance.view.message.InputMessage;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Locale;
 import java.util.Scanner;
 
 public class InputView {
 
     private final Scanner scanner;
+    private final DateTimeFormatter dateTimeformatter =
+            DateTimeFormatter.ofPattern("MM월 dd일 E요일").withLocale(Locale.KOREA);
 
     public InputView(Scanner scanner) {
         this.scanner = scanner;
     }
 
-    public MenuCommand readMenuCommand() {
-        System.out.println(InputMessage.MENU.getContent());
+    public MenuCommand readMenuCommand(LocalDateTime now) {
+        String dateContent = dateTimeformatter.format(now);
+        String menuContent = String.format(InputMessage.MENU.getContent(), dateContent);
+        System.out.println(menuContent);
         String input = scanner.nextLine();
         return MenuCommand.parse(input);
     }
