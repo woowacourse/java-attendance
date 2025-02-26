@@ -15,4 +15,8 @@ public class OperationTimeChecker {
     public boolean isContainsOperationTime(final LocalTime targetTime) {
         return !targetTime.isBefore(LocalTime.of(8, 0)) && !targetTime.isAfter(LocalTime.of(23, 0));
     }
+
+    public LocalTime getEducationStartTime(final LocalDate targetDate) {
+        return null;
+    }
 }

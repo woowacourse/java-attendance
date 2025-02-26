@@ -69,4 +69,18 @@ public class AttendCheckerTest {
         assertThat(actual3).isEqualTo(true);
         assertThat(actual4).isEqualTo(false);
     }
+
+    @Test
+    @DisplayName("요일에 따른 교육 시작 시간 판정 기능")
+    void checkEducationStartTimeUsingDayOfWeek() {
+        //given
+        OperationTimeChecker operationTimeChecker = new OperationTimeChecker();
+        LocalDate monday = LocalDate.of(2024, 12, 2);
+
+        //when
+        LocalTime actual = operationTimeChecker.getEducationStartTime(monday);
+
+        //then
+        assertThat(actual).isEqualTo(LocalTime.of(13, 0));
+    }
 }
