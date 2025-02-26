@@ -2,26 +2,21 @@ package attendance.model;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public class AttendanceRegister {
-    private final Map<String, List<AttendanceDateTime>> register = new HashMap<>();
+    private final Map<String, AttendanceRecord> register = new HashMap<>();
 
     public void attend(String crewName, AttendanceDateTime attendanceDateTime) {
-        List<AttendanceDateTime> attendanceRecord = register.getOrDefault(crewName, new ArrayList<>());
+        AttendanceRecord attendanceRecord = register.getOrDefault(crewName, new AttendanceRecord());
         attendanceRecord.add(attendanceDateTime);
         register.putIfAbsent(crewName, attendanceRecord);
     }
 
-    public AttendanceDateTime findAttendanceByCrewName(String crewName, LocalDate attendanceDate) {
+    public AttendanceDateTime findAttendanceDateTimeByCrewName(String crewName, LocalDate attendanceDate) {
         validateContainsCrewName(crewName);
-        return register.get(crewName).stream()
-                .filter(attendanceDateTime -> attendanceDateTime.equalsDate(attendanceDate))
-                .findFirst()
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 출석일입니다."));
+        return register.get(crewName).findAttendanceByDate(attendanceDate);
     }
 
     private void validateContainsCrewName(String name) {
@@ -32,11 +27,8 @@ public class AttendanceRegister {
 
     public void modify(String crewName, LocalDate modifyDate, LocalTime modifyTime) {
         validateContainsCrewName(crewName);
-        List<AttendanceDateTime> attendanceRecord = register.get(crewName);
-        AttendanceDateTime foundAttendanceDateTime = attendanceRecord.stream()
-                .filter(attendanceDateTime -> attendanceDateTime.equalsDate(modifyDate))
-                .findFirst()
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 출석일입니다."));
+        AttendanceRecord attendanceRecord = register.get(crewName);
+        AttendanceDateTime foundAttendanceDateTime = attendanceRecord.findAttendanceByDate(modifyDate);
         foundAttendanceDateTime.modifyAttendanceTime(modifyTime);
     }
 }

@@ -20,7 +20,7 @@ class AttendanceTest {
         attendanceRegister.attend("한스", attendanceDateTime);
 
         // when
-        AttendanceDateTime registryAttendanceDateTime = attendanceRegister.findAttendanceByCrewName(
+        AttendanceDateTime registryAttendanceDateTime = attendanceRegister.findAttendanceDateTimeByCrewName(
                 "한스",
                 LocalDate.of(2024, 12, 10)
         );
@@ -40,7 +40,7 @@ class AttendanceTest {
         attendanceRegister.attend("한스", attendanceDateTime);
 
         // when & then
-        Assertions.assertThatThrownBy(() -> attendanceRegister.findAttendanceByCrewName(
+        Assertions.assertThatThrownBy(() -> attendanceRegister.findAttendanceDateTimeByCrewName(
                 "한스",
                 LocalDate.of(2024, 12, 9)
         )).isInstanceOf(IllegalArgumentException.class);
@@ -52,7 +52,7 @@ class AttendanceTest {
         AttendanceRegister attendanceRegister = new AttendanceRegister();
 
         // when & then
-        Assertions.assertThatThrownBy(() -> attendanceRegister.findAttendanceByCrewName(
+        Assertions.assertThatThrownBy(() -> attendanceRegister.findAttendanceDateTimeByCrewName(
                 "한스",
                 LocalDate.of(2024, 12, 9)
         )).isInstanceOf(IllegalArgumentException.class);
@@ -72,7 +72,7 @@ class AttendanceTest {
         attendanceRegister.modify("한스", modifyDate, modifyTime);
 
         // when
-        AttendanceDateTime modifyAttendanceDateTime = attendanceRegister.findAttendanceByCrewName(
+        AttendanceDateTime modifyAttendanceDateTime = attendanceRegister.findAttendanceDateTimeByCrewName(
                 "한스",
                 LocalDate.of(2024, 12, 10)
         );
