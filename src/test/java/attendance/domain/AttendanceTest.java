@@ -86,18 +86,21 @@ public class AttendanceTest {
         );
     }
 
-    @ParameterizedTest(name = "{index} : {1}")
-    @MethodSource("getAttendTime")
-    void 월요일_1시부터_1시5분까지는_출석이다(LocalTime attendTime, String message) {
+    @ParameterizedTest(name = "{index} : {2}")
+    @MethodSource("getMondayAttendTime")
+    void 월요일_출석시간에_따라_출석상태를_반환한다(LocalTime attendTime, AttendanceStatus expectedStatus, String message) {
         LocalDate monday = LocalDate.of(2024, 12, 9);
 
-        assertThat(new Attendance(monday, attendTime).determineStatus()).isEqualTo(AttendanceStatus.ATTEND);
+        assertThat(new Attendance(monday, attendTime).determineStatus()).isEqualTo(expectedStatus);
     }
 
-    static Stream<Arguments> getAttendTime() {
+    static Stream<Arguments> getMondayAttendTime() {
         return Stream.of(
-                Arguments.of(EducationTime.MONDAY_ATTEND.getTime(), "월요일 출석 시작 시간"),
-                Arguments.of(EducationTime.MONDAY_LATE.getTime().minusNanos(1), "월요일 출석 종료 시간")
+                Arguments.of(EducationTime.MONDAY_ATTEND.getTime(), AttendanceStatus.ATTEND, "월요일 출석 시작 시간"),
+                Arguments.of(EducationTime.MONDAY_LATE.getTime().minusNanos(1), AttendanceStatus.ATTEND, "월요일 출석 종료 시간"),
+                Arguments.of(EducationTime.MONDAY_LATE.getTime(), AttendanceStatus.LATE, "월요일 지각 시작 시간"),
+                Arguments.of(EducationTime.MONDAY_ABSENT.getTime().minusNanos(1), AttendanceStatus.LATE, "월요일 지각 종료 시간"),
+                Arguments.of(EducationTime.MONDAY_ABSENT.getTime(), AttendanceStatus.ABSENT, "월요일 결석 시작 시간")
         );
     }
 }
