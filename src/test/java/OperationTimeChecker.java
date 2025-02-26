@@ -13,6 +13,9 @@ public class OperationTimeChecker {
     }
 
     public boolean isContainsOperationTime(final LocalTime targetTime) {
+        if (targetTime.isBefore(LocalTime.of(8, 0))) {
+            return false;
+        }
         return true;
     }
 }
