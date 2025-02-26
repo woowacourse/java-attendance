@@ -1,5 +1,6 @@
 package domain;
 
+import except.AttendanceException;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import org.assertj.core.api.Assertions;
@@ -37,5 +38,15 @@ public class ModifyAttendanceTest {
 
         Assertions.assertThat(crewAttendances.crewAttendance(nickname, date).attendanceStatus())
                 .isEqualTo(AttendanceStatus.ATTENDANCE);
+    }
+
+    @Test
+    @DisplayName("시작 시간전으로 수정시 에러가 발생한다")
+    void modifyAttendanceTestBeforeStart() {
+        String nickname = "투다";
+        LocalDate date = LocalDate.of(2024, 12, 3);
+        LocalTime time = LocalTime.of(7, 3);
+        Assertions.assertThatThrownBy(() -> crewAttendances.modifyAttendance(nickname, date, time))
+                .isInstanceOf(AttendanceException.class);
     }
 }
