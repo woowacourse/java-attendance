@@ -2,7 +2,6 @@ package attendance.domain;
 
 import attendance.util.FormattedErrorMessage;
 import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -19,7 +18,7 @@ public class AttendanceTest {
     @ParameterizedTest(name = "{index} : {1}")
     @MethodSource("getWeekend")
     void 주말에_출석을_하면_예외가_발생한다(LocalDate weekend, String message) {
-        LocalTime attendTime = LocalTime.of(8, 0);
+        LocalTime attendTime = CampusOperatingTime.OPEN_AT.getTime();
 
         assertThatThrownBy(() -> new Attendance(weekend, attendTime))
                 .isInstanceOf(IllegalArgumentException.class)
@@ -43,7 +42,7 @@ public class AttendanceTest {
     @ParameterizedTest(name = "{index} : {1}")
     @MethodSource("getHoliday")
     void 공휴일에_출석을_하면_예외가_발생한다(LocalDate holiday, String message) {
-        LocalTime attendTime = LocalTime.of(23, 0);
+        LocalTime attendTime = CampusOperatingTime.CLOSE_AT.getTime().minusMinutes(1);
 
         assertThatThrownBy(() -> new Attendance(holiday, attendTime))
                 .isInstanceOf(IllegalArgumentException.class)
@@ -62,13 +61,25 @@ public class AttendanceTest {
         );
     }
 
-    @Test
-    void 캠퍼스_운영시간_이외의_시간에_출석을_하면_예외가_발생한다() {
+    @ParameterizedTest(name = "{index} : {1}")
+    @MethodSource("getNotInOperatingTime")
+    void 캠퍼스_운영시간_이외의_시간에_출석을_하면_예외가_발생한다(LocalTime notInOperatingTime, String message) {
         LocalDate attendDate = LocalDate.of(2024, 12, 13);
-        LocalTime attendTime = LocalTime.of(7, 59);
 
-        assertThatThrownBy(() -> new Attendance(attendDate, attendTime))
+        assertThatThrownBy(() -> new Attendance(attendDate, notInOperatingTime))
                 .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage(FormattedErrorMessage.INVALID_ATTEND_TIME_ERROR.getTimeFormatMessage(attendTime));
+                .hasMessage(FormattedErrorMessage.INVALID_ATTEND_TIME_ERROR.getTimeFormatMessage(notInOperatingTime));
+    }
+
+    static Stream<Arguments> getNotInOperatingTime() {
+        return Stream.of(
+                Arguments.of(CampusOperatingTime.OPEN_AT.getTime().minusNanos(1), "운영 시작 시간 1 나노초 전"),
+                Arguments.of(CampusOperatingTime.OPEN_AT.getTime().minusMinutes(1), "운영 시작 시간 1분 전"),
+                Arguments.of(CampusOperatingTime.OPEN_AT.getTime().minusHours(1), "운영 시작 시간 1시간 전"),
+                Arguments.of(CampusOperatingTime.CLOSE_AT.getTime(), "운영 종료 시간"),
+                Arguments.of(CampusOperatingTime.CLOSE_AT.getTime().plusNanos(1), "운영 종료 시간 1 나노초 후"),
+                Arguments.of(CampusOperatingTime.CLOSE_AT.getTime().plusMinutes(1), "운영 종료 시간 1분 후"),
+                Arguments.of(CampusOperatingTime.CLOSE_AT.getTime().plusHours(1), "운영 종료 시간 1시간 후")
+        );
     }
 }

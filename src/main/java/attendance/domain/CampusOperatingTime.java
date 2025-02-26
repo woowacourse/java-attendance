@@ -3,8 +3,8 @@ package attendance.domain;
 import java.time.LocalTime;
 
 public enum CampusOperatingTime {
-    START(LocalTime.of(8, 0)),
-    END(LocalTime.of(23, 0))
+    OPEN_AT(LocalTime.of(8, 0)),
+    CLOSE_AT(LocalTime.of(23, 1))
     ;
 
     private final LocalTime time;
@@ -13,7 +13,11 @@ public enum CampusOperatingTime {
         this.time = time;
     }
 
+    public LocalTime getTime() {
+        return time;
+    }
+
     public static boolean notInOperation(LocalTime inputTime) {
-        return inputTime.isBefore(START.time) || inputTime.isAfter(END.time);
+        return inputTime.isBefore(OPEN_AT.time) || !inputTime.isBefore(CLOSE_AT.time);
     }
 }
