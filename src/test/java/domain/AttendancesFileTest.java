@@ -6,19 +6,12 @@ import java.nio.file.Path;
 import java.util.List;
 import java.util.Map;
 import org.assertj.core.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
-class AttendanceFileLoaderTest {
-    AttendanceFileLoader attendanceFileLoader;
-
-    @BeforeEach
-    void setUp() {
-        FileReader fileReader = new FileReader();
-        attendanceFileLoader = new AttendanceFileLoader(fileReader);
-    }
+class AttendancesFileTest {
+    AttendancesFile attendancesFile = new AttendancesFile();
 
     @DisplayName("파일을 읽어와서 초기 출석부 값으로 변경한다")
     @Test
@@ -34,9 +27,17 @@ class AttendanceFileLoaderTest {
                         """);
         Files.write(testPath, lines);
 
-        Map<String, Attendances> initialAttendanceBook = attendanceFileLoader.loadInitialAttendances(testPath);
+        Map<String, Attendances> initialAttendanceBook = attendancesFile.loadInitialAttendances(testPath);
         Assertions.assertThat(initialAttendanceBook).hasSize(2);
         Assertions.assertThat(initialAttendanceBook.get("빙봉").getRecords()).hasSize(2);
         Assertions.assertThat(initialAttendanceBook.get("이든").getRecords()).hasSize(1);
+    }
+
+    @DisplayName("파일이 존재하지 않으면 빈 맵를 반환한다")
+    @Test
+    void FileNotFoundExceptionTest() {
+        Path testPath = Path.of("noFile.txt");
+
+        Assertions.assertThat(attendancesFile.loadInitialAttendances(testPath)).hasSize(0);
     }
 }

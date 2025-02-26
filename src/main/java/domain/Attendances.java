@@ -13,7 +13,7 @@ public class Attendances {
     }
 
     public void updateAttendance(LocalDateTime dateTime, int day) {
-        if(dateTime.getDayOfMonth() > day) {
+        if (dateTime.getDayOfMonth() > day) {
             throw new IllegalArgumentException("미래는 수정할 수 없습니다.");
         }
         Attendance attendance = new Attendance(dateTime);

@@ -1,24 +1,24 @@
 package domain;
 
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Stream;
 
-public class AttendanceFileLoader {
+public class AttendancesFile {
     public static final String DELIMITER = ",";
-
-    private final FileReader fileReader;
-
-    public AttendanceFileLoader(FileReader fileReader) {
-        this.fileReader = fileReader;
-    }
 
     public Map<String, Attendances> loadInitialAttendances(Path path) {
         Map<String, Attendances> crewAttendances = new HashMap<>();
 
-        for (String line : fileReader.readLines(path)) {
+        for (String line : readLines(path)) {
             String[] splitLines = line.split(DELIMITER);
             String nickname = splitLines[0];
             LocalDateTime dateTime = convertStringToDateTime(splitLines);
@@ -34,7 +34,18 @@ public class AttendanceFileLoader {
         return crewAttendances;
     }
 
-    private static LocalDateTime convertStringToDateTime(String[] splitLines) {
+    private List<String> readLines(Path path) {
+        try (Stream<String> lines = Files.lines(path, StandardCharsets.UTF_8)) {
+            return lines.skip(1)
+                    .map(String::trim)
+                    .filter(line -> !line.isEmpty())
+                    .toList();
+        } catch (IOException e) {
+            return new ArrayList<>();
+        }
+    }
+
+    private LocalDateTime convertStringToDateTime(String[] splitLines) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
         return LocalDateTime.parse(splitLines[1], formatter);
     }
