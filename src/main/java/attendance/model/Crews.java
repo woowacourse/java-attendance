@@ -49,4 +49,12 @@ public class Crews {
                 .map(findCrew -> findCrew.findAttendance(LocalDate.now()))
                 .orElseThrow(() -> new IllegalStateException("출석 체크가 안됐습니다."));
     }
+
+    public boolean hasTodayAttendance(Crew crew) {
+        return crews.stream()
+                .filter(findCrew -> findCrew.equals(crew))
+                .findFirst()
+                .map(Crew::isAttendToday)
+                .get();
+    }
 }

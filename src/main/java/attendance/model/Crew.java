@@ -52,6 +52,10 @@ public class Crew {
         statistic.updateStatistic(attendances);
     }
 
+    public boolean isAttendToday() {
+        return attendances.hasTodayAttendance();
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {

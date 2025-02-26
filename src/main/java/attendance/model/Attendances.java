@@ -117,4 +117,8 @@ public class Attendances {
             }
         }
     }
+
+    public boolean hasTodayAttendance() {
+        return attendances.stream().anyMatch(attendance -> attendance.isSameDate(LocalDate.now()));
+    }
 }

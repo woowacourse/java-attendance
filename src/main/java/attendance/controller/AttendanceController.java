@@ -75,6 +75,10 @@ public class AttendanceController {
     private void attendToday() {
         Crew crew = crews.findCrew(inputView.readCrewName());
 
+        if (hasTodayAttendance(crew)) {
+            throw new IllegalArgumentException("해당 크루는 이미 오늘 출석했습니다!");
+        }
+
         String timeInfo = inputView.readAttendTime();
         validateTimeFormat(timeInfo);
         LocalTime attendTime = LocalTime.parse(timeInfo);
@@ -93,6 +97,10 @@ public class AttendanceController {
 
     private void checkStatus() {
 
+    }
+
+    private boolean hasTodayAttendance(Crew crew) {
+        return crews.hasTodayAttendance(crew);
     }
 
     private void validateTimeFormat(String timeInfo) {
