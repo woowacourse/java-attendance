@@ -121,4 +121,17 @@ class AttendanceTest {
             softly.assertThat(crew.getAttendanceStatusOf(DATE.plusDays(2))).isEqualTo(AttendanceStatus.ABSENCE);
         });
     }
+
+    @Test
+    @DisplayName("등교 기록이 없어도 주말 및 공휴일이면 결석을 반환하지 않는다")
+    void fromAbsenceTest2() {
+        // given
+        Crew crew = new Crew("pobi");
+
+        // when then
+        assertSoftly(softly -> {
+            softly.assertThat(crew.getAttendanceStatusOf(LocalDate.of(2025,02,22))).isNull();
+            softly.assertThat(crew.getAttendanceStatusOf(LocalDate.of(2025,02,23))).isNull();
+        });
+    }
 }

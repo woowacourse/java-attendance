@@ -59,6 +59,9 @@ public class Crew {
         if (isTruancy(date)) {
             return AttendanceStatus.ABSENCE;
         }
+        if (DayOff.isDayOff(date)) {
+            return null;
+        }
         return AttendanceStatus.from(date, attendanceRecords.get(date));
     }
 
