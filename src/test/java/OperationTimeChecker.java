@@ -13,6 +13,6 @@ public class OperationTimeChecker {
     }
 
     public boolean isContainsOperationTime(final LocalTime targetTime) {
-        return false;
+        return true;
     }
 }
