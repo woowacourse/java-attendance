@@ -69,4 +69,24 @@ public class ModifyAttendanceTest {
         Assertions.assertThatThrownBy(() -> crewAttendances.modifyAttendance(nickname, date, time))
                 .isInstanceOf(AttendanceException.class);
     }
+
+    @Test
+    @DisplayName("수정날짜가 잘못된 경우 예외가 발생한다")
+    void invalidModifyDateTest() {
+        String nickname = "투다";
+        LocalDate date = LocalDate.of(2024, 11, 3);
+        LocalTime time = LocalTime.of(8, 3);
+        Assertions.assertThatThrownBy(() -> crewAttendances.modifyAttendance(nickname, date, time))
+                .isInstanceOf(AttendanceException.class);
+    }
+
+    @Test
+    @DisplayName("수정시간이 잘못된 경우 예외가 발생한다")
+    void invalidModifyTimeTest() {
+        String nickname = "투다";
+        LocalDate date = LocalDate.of(2024, 12, 3);
+        LocalTime time = LocalTime.of(23, 1);
+        Assertions.assertThatThrownBy(() -> crewAttendances.modifyAttendance(nickname, date, time))
+                .isInstanceOf(AttendanceException.class);
+    }
 }
