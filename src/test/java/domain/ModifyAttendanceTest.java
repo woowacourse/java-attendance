@@ -71,7 +71,7 @@ public class ModifyAttendanceTest {
     }
 
     @Test
-    @DisplayName("수정날짜가 잘못된 경우 예외가 발생한다")
+    @DisplayName("수정날짜가 유효하지 않은 경우 예외가 발생한다")
     void invalidModifyDateTest() {
         String nickname = "투다";
         LocalDate date = LocalDate.of(2024, 11, 3);
@@ -81,7 +81,7 @@ public class ModifyAttendanceTest {
     }
 
     @Test
-    @DisplayName("수정시간이 잘못된 경우 예외가 발생한다")
+    @DisplayName("수정시간이 유효하지 않은 경우 예외가 발생한다")
     void invalidModifyTimeTest() {
         String nickname = "투다";
         LocalDate date = LocalDate.of(2024, 12, 3);
