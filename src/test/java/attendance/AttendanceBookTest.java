@@ -5,7 +5,6 @@ import static org.assertj.core.api.AssertionsForClassTypes.*;
 import java.time.LocalDateTime;
 import java.util.stream.Stream;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -17,21 +16,17 @@ import attendance.domain.attendance.Attendance;
 import attendance.domain.attendance.AttendanceBook;
 
 public class AttendanceBookTest {
-    private AttendanceBook manager;
-    private static final String TEST_FILE = "/attendances.csv";
+    private final AttendanceFileReader attendanceFileReader = AttendanceFileReader.from("/attendances.csv");
+    private final AttendanceBook attendanceBook = AttendanceBook.from(attendanceFileReader.getLines());
 
-    @BeforeEach
-    void setUp() throws AttendanceFileException {
-        var repository = AttendanceFileReader.from(TEST_FILE);
-        var lines = repository.getLines();
-        manager = AttendanceBook.from(lines);
+    public AttendanceBookTest() throws AttendanceFileException {
     }
 
     @ParameterizedTest
     @MethodSource("getSourceForAttendanceInfo")
     @DisplayName("csv 파일로부터 출석 정보를 불러온다.")
     void test_getAttendanceInfoFromCSV(String nickname, Attendance attendance) {
-        assertThat(manager.findAttendance(nickname, attendance)).isEqualTo(attendance);
+        assertThat(attendanceBook.findAttendance(nickname, attendance)).isEqualTo(attendance);
     }
 
     private static Stream<Arguments> getSourceForAttendanceInfo() {

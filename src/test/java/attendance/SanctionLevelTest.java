@@ -1,7 +1,6 @@
 package attendance;
 
 import org.assertj.core.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -11,16 +10,11 @@ import attendance.domain.attendance.AttendanceBook;
 import attendance.domain.attendanceManager.SanctionManager;
 
 public class SanctionLevelTest {
-    private static final String TEST_FILE = "/attendances.csv";
+    private final AttendanceFileReader attendanceFileReader = AttendanceFileReader.from("/attendances.csv");
+    private final AttendanceBook attendanceBook = AttendanceBook.from(attendanceFileReader.getLines());
+    private final SanctionManager sanctionManager = new SanctionManager(attendanceBook);
 
-    private SanctionManager sanctionManager;
-
-    @BeforeEach
-    void setUp() throws AttendanceFileException {
-        var repository = AttendanceFileReader.from(TEST_FILE);
-        var lines = repository.getLines();
-        AttendanceBook attendanceBook = AttendanceBook.from(lines);
-        sanctionManager = new SanctionManager(attendanceBook);
+    public SanctionLevelTest() throws AttendanceFileException {
     }
 
     @Test

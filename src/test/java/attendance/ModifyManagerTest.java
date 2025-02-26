@@ -4,7 +4,6 @@ import static org.assertj.core.api.AssertionsForClassTypes.*;
 
 import java.time.LocalDateTime;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -19,17 +18,11 @@ import attendance.domain.attendance.AttendanceBook;
 import attendance.domain.attendanceManager.ModifyManager;
 
 public class ModifyManagerTest {
-    private static final String TEST_FILE = "/attendances.csv";
+    private final AttendanceFileReader attendanceFileReader = AttendanceFileReader.from("/attendances.csv");
+    private final AttendanceBook attendanceBook = AttendanceBook.from(attendanceFileReader.getLines());
+    private final ModifyManager attendanceModifier = new ModifyManager(attendanceBook);
 
-    private ModifyManager attendanceModifier;
-    private AttendanceBook attendanceBook;
-
-    @BeforeEach
-    void setUp() throws AttendanceFileException {
-        var repository = AttendanceFileReader.from(TEST_FILE);
-        var lines = repository.getLines();
-        attendanceBook = AttendanceBook.from(lines);
-        attendanceModifier = new ModifyManager(attendanceBook);
+    public ModifyManagerTest() throws AttendanceFileException {
     }
 
     @Test

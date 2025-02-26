@@ -4,7 +4,6 @@ import static org.assertj.core.api.AssertionsForClassTypes.*;
 
 import java.time.LocalDateTime;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -16,17 +15,11 @@ import attendance.domain.attendance.AttendanceBook;
 import attendance.domain.attendanceManager.RegisterManager;
 
 public class RegisterManagerTest {
-    private static final String TEST_FILE = "/attendances.csv";
+    private final AttendanceFileReader attendanceFileReader = AttendanceFileReader.from("/attendances.csv");
+    private final AttendanceBook attendanceBook = AttendanceBook.from(attendanceFileReader.getLines());
+    private final RegisterManager attendanceRegister = new RegisterManager(attendanceBook);
 
-    private RegisterManager attendanceRegister;
-    private AttendanceBook attendanceBook;
-
-    @BeforeEach
-    void setUp() throws AttendanceFileException {
-        var repository = AttendanceFileReader.from(TEST_FILE);
-        var lines = repository.getLines();
-        attendanceBook = AttendanceBook.from(lines);
-        attendanceRegister = new RegisterManager(attendanceBook);
+    public RegisterManagerTest() throws AttendanceFileException {
     }
 
     @Test

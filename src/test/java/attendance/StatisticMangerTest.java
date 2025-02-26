@@ -2,7 +2,6 @@ package attendance;
 
 import static org.assertj.core.api.AssertionsForClassTypes.*;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -13,16 +12,11 @@ import attendance.domain.attendance.AttendanceBook;
 import attendance.domain.attendanceManager.StatisticManger;
 
 public class StatisticMangerTest {
-    private static final String TEST_FILE = "/attendances.csv";
+    private final AttendanceFileReader attendanceFileReader = AttendanceFileReader.from("/attendances.csv");
+    private final AttendanceBook attendanceBook = AttendanceBook.from(attendanceFileReader.getLines());
+    private final StatisticManger statisticManger = new StatisticManger(attendanceBook);
 
-    private StatisticManger statisticManger;
-
-    @BeforeEach
-    void setUp() throws AttendanceFileException {
-        var repository = AttendanceFileReader.from(TEST_FILE);
-        var lines = repository.getLines();
-        AttendanceBook attendanceBook = AttendanceBook.from(lines);
-        statisticManger = new StatisticManger(attendanceBook);
+    public StatisticMangerTest() throws AttendanceFileException {
     }
 
     @Test
