@@ -5,7 +5,7 @@ import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.Set;
 
-public enum CampusOpenDay {
+public enum EducationDay {
     MONDAY(DayOfWeek.MONDAY, true),
     TUESDAY(DayOfWeek.TUESDAY, true),
     WEDNESDAY(DayOfWeek.WEDNESDAY, true),
@@ -18,16 +18,16 @@ public enum CampusOpenDay {
     private final boolean operation;
     private static final Set<LocalDate> holidays = Set.of(LocalDate.of(2024, 12, 25));
 
-    CampusOpenDay(DayOfWeek dayOfWeek, boolean operation) {
+    EducationDay(DayOfWeek dayOfWeek, boolean operation) {
         this.dayOfWeek = dayOfWeek;
         this.operation = operation;
     }
 
-    public static boolean isDurationDay(LocalDate date) {
+    public static boolean isDuringEducationDay(LocalDate date) {
         if (holidays.contains(date)) {
             return false;
         }
-        return Arrays.stream(CampusOpenDay.values())
+        return Arrays.stream(EducationDay.values())
                 .filter(woowaDuration -> woowaDuration.dayOfWeek == date.getDayOfWeek())
                 .findFirst()
                 .orElseThrow(() -> new IllegalArgumentException("유효하지 않은 날짜입니다.")).operation;
