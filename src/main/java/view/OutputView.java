@@ -2,8 +2,8 @@ package view;
 
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import model.AttendanceCalculator;
 import model.AttendanceStatus;
 import model.StudentPunishment;
@@ -30,7 +30,7 @@ public class OutputView {
         System.out.println(recordBeforeModify + " -> " + localDateTimeFormat3);
     }
 
-    public static void printAttendanceRecord(ArrayList<LocalDateTime> record) {
+    public static void printAttendanceRecord(List<LocalDateTime> record) {
         for (LocalDateTime localDateTime : record) {
             System.out.printf(LocalDateTimePrintFormatter.createAttendanceResultMessage(localDateTime));
             System.out.printf(PARENTHESES_FORMATTER, AttendanceCalculator.calculateAttendance(localDateTime,

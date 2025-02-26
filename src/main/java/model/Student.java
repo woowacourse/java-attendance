@@ -22,8 +22,8 @@ public class Student {
         return name;
     }
 
-    public ArrayList<LocalDateTime> getTimeRecords() {
-        return (ArrayList<LocalDateTime>) timeRecords;
+    public List<LocalDateTime> getTimeRecords() {
+        return timeRecords;
     }
 
     public void addTime(LocalDateTime localDateTime) {
