@@ -1,5 +1,7 @@
 package attendance.domain;
 
+import static attendance.error.ErrorMessage.ERROR_CHECK_ATTENDANCE_AGAIN;
+
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
@@ -10,7 +12,16 @@ public class AttendanceHistory {
     private final List<AttendanceRecord> records = new ArrayList<>();
 
     public void addRecord(AttendanceRecord record) {
+        if (alreadyPresent(record)) {
+            throw new IllegalArgumentException(ERROR_CHECK_ATTENDANCE_AGAIN);
+        }
         records.add(record);
+    }
+
+    private boolean alreadyPresent(AttendanceRecord record) {
+        return records.stream()
+                .anyMatch(existingRecord -> existingRecord.getAttendanceDateTime().toLocalDate()
+                        .equals(record.getAttendanceDateTime().toLocalDate()));
     }
 
     public void modifyRecord(LocalDate targetDate, LocalTime modifyTime) {
