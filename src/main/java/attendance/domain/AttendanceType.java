@@ -7,8 +7,8 @@ import java.util.Arrays;
 import java.util.function.Function;
 
 public enum AttendanceType {
-    LATE((duration -> duration.toMinutes() > 5)),
-    ABSENT((duration -> duration.toMinutes() > 5));
+    LATE((duration -> 5 < duration.toMinutes() && duration.toMinutes() <= 30)),
+    ABSENT((duration -> duration.toMinutes() > 30));
 
     private final Function<Duration, Boolean> isMatch;
 
