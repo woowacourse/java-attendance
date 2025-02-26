@@ -12,7 +12,7 @@ public class TodayDate {
     private final LocalDate todayDate;
 
     public TodayDate() {
-        this.todayDate = LocalDate.of(2024, 12, 12);
+        this.todayDate = LocalDate.of(2024, 12, 14);
     }
 
     public LocalDate getTodayDate() {
@@ -28,9 +28,7 @@ public class TodayDate {
         return dayOfWeek.getDisplayName(TextStyle.FULL, Locale.KOREAN);
     }
 
-    public void isHoliday() {
-        if (AttendanceCalculator.checkHoliday(getTodayDateTIme())) {
-            throw new IllegalArgumentException(LocalDateTimePrintFormatter.createNonSchoolDayMessage(todayDate));
-        }
+    public boolean isHoliday() {
+        return  (AttendanceCalculator.checkHoliday(getTodayDateTIme()));
     }
 }

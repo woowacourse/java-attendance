@@ -168,13 +168,4 @@ public class InputView {
             throw new IllegalArgumentException();
         }
     }
-
-    public static void checkAttendanceAvailable(TodayDate todayDate) {
-        try {
-            todayDate.isHoliday();
-        } catch (IllegalArgumentException e) {
-            System.out.println(e.getMessage());
-            throw new IllegalArgumentException();
-        }
-    }
 }

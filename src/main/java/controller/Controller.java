@@ -120,8 +120,11 @@ public class Controller {
 
     private static boolean isHoliday(TodayDate todayDate) {
         try {
-            InputView.checkAttendanceAvailable(todayDate);
+            if (todayDate.isHoliday()) {
+                throw new IllegalArgumentException(LocalDateTimePrintFormatter.createNonSchoolDayMessage(
+                        todayDate.getTodayDate()));}
         }catch (IllegalArgumentException e) {
+            System.out.println(e.getMessage());
             return true;
         }
         return false;
