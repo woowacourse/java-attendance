@@ -6,7 +6,7 @@ import java.time.LocalTime;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-public class AttendanceTest {
+public class AttendanceTypeTest {
 
     @Test
     void 해당_요일의_시작_시각으로부터_5분_초과는_지각이다() {
@@ -45,6 +45,5 @@ public class AttendanceTest {
 
         //then
         Assertions.assertThat(result).isEqualTo(AttendanceType.ATTENDANCE);
-
     }
 }
