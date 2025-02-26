@@ -66,7 +66,6 @@ public class CrewTest {
                                 LocalDateTime.of(2025, 2, 14, 10, 0, 0))).doesNotThrowAnyException(),
                 () -> assertThat(bingbong.findAttendance(LocalDate.of(2025, 2, 14)).getType()).isEqualTo(
                         AttendanceType.PRESENT)
-
         );
     }
 }
