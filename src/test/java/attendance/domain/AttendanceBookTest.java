@@ -5,6 +5,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.HashMap;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -14,7 +15,7 @@ class AttendanceBookTest {
     @Test
     void test_addCrewRecord() {
         // given
-        AttendanceBook attendanceBook = new AttendanceBook();
+        AttendanceBook attendanceBook = new AttendanceBook(new HashMap<>());
         AttendanceRecord record = new AttendanceRecord(LocalDateTime.of(2024, 12, 2, 13, 0));
         String crewName = "빙티";
 
@@ -31,7 +32,7 @@ class AttendanceBookTest {
     @Test
     void test_modifyCrewRecord() {
         // given
-        AttendanceBook attendanceBook = new AttendanceBook();
+        AttendanceBook attendanceBook = new AttendanceBook(new HashMap<>());
         AttendanceRecord record = new AttendanceRecord(LocalDateTime.of(2024, 12, 2, 13, 0));
         String crewName = "빙티";
         attendanceBook.add(crewName, record);
@@ -51,7 +52,7 @@ class AttendanceBookTest {
     @Test
     void test_getWarningStatus() {
         // given
-        AttendanceBook attendanceBook = new AttendanceBook();
+        AttendanceBook attendanceBook = new AttendanceBook(new HashMap<>());
         String crewName = "빙티";
         attendanceBook.add(crewName, new AttendanceRecord(LocalDateTime.of(2024, 12, 3, 11, 0)));
         attendanceBook.add(crewName, new AttendanceRecord(LocalDateTime.of(2024, 12, 4, 11, 0)));
@@ -67,7 +68,7 @@ class AttendanceBookTest {
     @Test
     void test_findCrewHistory() {
         // given
-        AttendanceBook attendanceBook = new AttendanceBook();
+        AttendanceBook attendanceBook = new AttendanceBook(new HashMap<>());
         String crewName = "빙티";
         AttendanceRecord record = new AttendanceRecord(LocalDateTime.of(2024, 12, 3, 11, 0));
         attendanceBook.add(crewName, record);

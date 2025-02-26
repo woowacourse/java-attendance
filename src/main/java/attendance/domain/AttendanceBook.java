@@ -2,14 +2,20 @@ package attendance.domain;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.HashMap;
 import java.util.Map;
 
 public class AttendanceBook {
-    private final Map<String, AttendanceHistory> crewHistories = new HashMap<>();
+    private final Map<String, AttendanceHistory> crewHistories;
+
+    public AttendanceBook(Map<String, AttendanceHistory> crewHistories) {
+        this.crewHistories = crewHistories;
+    }
 
     public void add(String crewName, AttendanceRecord record) {
-        AttendanceHistory history = crewHistories.computeIfAbsent(crewName, key -> new AttendanceHistory());
+        AttendanceHistory history = crewHistories.get(crewName);
+        if (history == null) {
+            throw new IllegalArgumentException("해당 크루의 기록이 없습니다.");
+        }
         history.addRecord(record);
     }
 

@@ -1,6 +1,5 @@
 package attendance.loader;
 
-import attendance.domain.AttendanceBook;
 import attendance.domain.AttendanceHistory;
 import java.time.LocalDateTime;
 import java.util.Arrays;
@@ -20,10 +19,10 @@ class AttendanceAssemblerTest {
         AttendanceAssembler assembler = new AttendanceAssembler(new AttendancesLoader());
 
         // when
-        AttendanceBook attendanceBook = assembler.assembleDatas();
+        Map<String, AttendanceHistory> assembleDatas = assembler.assembleDatas();
 
         // then
-        AttendanceHistory history = attendanceBook.getHistoryByName("빙티");
+        AttendanceHistory history = assembleDatas.get("빙티");
         Assertions.assertThat(history.getRecords()).hasSize(7);
     }
 
@@ -41,7 +40,7 @@ class AttendanceAssemblerTest {
                 LocalDateTime.of(2024, 12, 14, 10, 5),
                 LocalDateTime.of(2024, 12, 15, 10, 3)
         ));
-        rawDatas.put("빙티", Arrays.asList(
+        rawDatas.put("빙티", List.of(
                 LocalDateTime.of(2024, 12, 13, 10, 7)
         ));
 
@@ -60,12 +59,12 @@ class AttendanceAssemblerTest {
         AttendanceAssembler assembler = new AttendanceAssembler(fakeLoader);
 
         // when
-        AttendanceBook attendanceBook = assembler.assembleDatas();
+        Map<String, AttendanceHistory> assembleDatas = assembler.assembleDatas();
 
         // then
-        Assertions.assertThat(attendanceBook.getHistoryByName("쿠키").getRecords()).hasSize(2);
-        Assertions.assertThat(attendanceBook.getHistoryByName("빙봉").getRecords()).hasSize(3);
-        Assertions.assertThat(attendanceBook.getHistoryByName("빙티").getRecords()).hasSize(1);
+        Assertions.assertThat(assembleDatas.get("쿠키").getRecords()).hasSize(2);
+        Assertions.assertThat(assembleDatas.get("빙봉").getRecords()).hasSize(3);
+        Assertions.assertThat(assembleDatas.get("빙티").getRecords()).hasSize(1);
     }
 
 }
