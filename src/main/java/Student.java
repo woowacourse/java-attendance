@@ -4,12 +4,19 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class Student {
-    Map<LocalDate, LocalTime> attendanceRecords = new HashMap<>();
+    Map<LocalDate, LocalTime> attendanceTimeRecords = new HashMap<>();
     Map<LocalDate, AttendanceStatus> attendanceStatusRecords = new HashMap<>();
 
     public void registerAttendanceRecord(LocalDate todayDate, String attendanceTime) {
-        attendanceRecords.put(todayDate, LocalTime.parse(attendanceTime));
+        attendanceTimeRecords.put(todayDate, LocalTime.parse(attendanceTime));
         AttendanceStatus attendanceStatus = AttendanceStatus.attendanceStatusCalculate(todayDate, attendanceTime);
         attendanceStatusRecords.put(todayDate, attendanceStatus);
+    }
+
+    public void modifyAttendanceRecord(String modifyDate, String modifyTime) {
+        LocalDate localDate = LocalDate.of(2024,12,Integer.parseInt(modifyDate));
+        attendanceTimeRecords.put(localDate, LocalTime.parse(modifyTime));
+        AttendanceStatus attendanceStatus = AttendanceStatus.attendanceStatusCalculate(localDate, modifyTime);
+        attendanceStatusRecords.put(localDate, attendanceStatus);
     }
 }
