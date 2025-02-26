@@ -18,4 +18,15 @@ public class AttendanceHistories {
     public void addNewHistory(AttendanceHistory attendanceHistory) {
         attendanceHistories.add(attendanceHistory);
     }
+
+    public void update(Crew crew, AttendanceHistory newAttendanceHistory) {
+        AttendanceHistory oldHistory = attendanceHistories.stream()
+                .filter(attendanceHistory -> attendanceHistory.isAboutSameCrew(crew)
+                        && attendanceHistory.isAboutSameDate(newAttendanceHistory.getAttendAt().toLocalDate()))
+                .findAny()
+                .orElseThrow();
+
+        int i = attendanceHistories.indexOf(oldHistory);
+        attendanceHistories.set(i, newAttendanceHistory);
+    }
 }

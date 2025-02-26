@@ -35,5 +35,22 @@ public class AttendanceHistoriesTest {
         assertThat(attendanceHistories.checkExistenceByCrewAndDate(crew, requestedDate)).isTrue();
     }
 
+    @Test
+    @DisplayName("출석 기록을 수정해라")
+    void test3() {
+        // given
+        Crew crew = new Crew("히로");
+        LocalDateTime attendAt = LocalDateTime.of(2024, 12, 2, 10, 0);
+        AttendanceHistory oldHistory = new AttendanceHistory(crew, attendAt);
 
+        LocalDateTime newAttendAt = LocalDateTime.of(2024, 12, 2, 10, 6);
+        AttendanceHistory newHistory = new AttendanceHistory(crew, newAttendAt);
+        AttendanceHistories attendanceHistories = new AttendanceHistories(new ArrayList<>(List.of(oldHistory)));
+
+        // when
+        attendanceHistories.update(crew, newHistory);
+
+        // then
+        assertThat(attendanceHistories.checkExistenceByCrewAndDate(crew, newAttendAt.toLocalDate())).isTrue();
+    }
 }

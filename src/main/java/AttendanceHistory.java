@@ -24,4 +24,7 @@ public class AttendanceHistory {
                 && attendAt.getDayOfMonth() == requestedDate.getDayOfMonth();
     }
 
+    public LocalDateTime getAttendAt() {
+        return attendAt;
+    }
 }
