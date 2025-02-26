@@ -51,12 +51,16 @@ public class AttendanceRecord {
     public void updateNoInformationInFile(LocalDateTime todayDate) {
         LocalDateTime standard = LocalDateTime.of(2024, 12, 1, 0, 0);
         while (!findSameDay(standard,todayDate)) {
-            if (!isWeekend(standard) && findSameDay(standard) == null) {
-                timeRecords.add(standard);
-            }
+            addTimeRecordIfValid(standard);
             standard = standard.plusDays(1);
         }
         Collections.sort(timeRecords);
+    }
+
+    private void addTimeRecordIfValid(LocalDateTime standard) {
+        if (!isWeekend(standard) && findSameDay(standard) == null) {
+            timeRecords.add(standard);
+        }
     }
 
     private boolean isWeekend(LocalDateTime localDateTime) {
