@@ -36,11 +36,11 @@ public class Attendance {
     }
 
     public AttendanceStatus determineStatus() {
-        if (EducationTime.isAttendOfMonday(attendTime)) {
+        if (EducationTime.isAttend(attendDate.getDayOfWeek(), attendTime)) {
             return AttendanceStatus.ATTEND;
         }
 
-        if (EducationTime.isLateOfMonday(attendTime)) {
+        if (EducationTime.isLate(attendDate.getDayOfWeek(), attendTime)) {
             return AttendanceStatus.LATE;
         }
 
