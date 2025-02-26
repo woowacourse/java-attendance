@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.*;
 
 import dto.InitialInfo;
 import dto.ModifyResult;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
@@ -16,7 +17,7 @@ public class AttendanceBookTest {
     AttendanceRecord attendanceRecord;
     CrewName mimi = new CrewName("미미");
     int day = 10;
-    Attendance dayOfTenAttendance = new Attendance(LocalDateTime.of(2024, 12, day, 9, 59));
+    Attendance dayOfTenAttendance = new Attendance(LocalDateTime.of(2024, 12, day, 10, 0));
 
     @BeforeEach
     void setUp() {
@@ -104,5 +105,35 @@ public class AttendanceBookTest {
 
         assertThat(modifyResult.originalAttendance()).isEqualTo(dayOfTenAttendance);
         assertThat(modifyResult.modifiedAttendance()).isEqualTo(newAttendance);
+    }
+
+    @DisplayName("닉네임을 입력하면 전날까지의 크루 출석 기록을 확인할 수 있다.")
+    @Test
+    void test8() {
+        Attendance firstAttendance = new Attendance(LocalDateTime.of(2024, 12, 2, 13, 0));
+        attendanceBook.addAttendance(mimi, firstAttendance);
+        attendanceBook.addAttendance(mimi, new Attendance(LocalDateTime.of(2024, 12, 3, 10, 15)));
+        attendanceBook.addAttendance(mimi, new Attendance(LocalDateTime.of(2024, 12, 4, 10, 15)));
+        attendanceBook.addAttendance(mimi, new Attendance(LocalDateTime.of(2024, 12, 5, 10, 15)));
+        attendanceBook.addAttendance(mimi, new Attendance(LocalDateTime.of(2024, 12, 6, 10, 0)));
+        attendanceBook.addAttendance(mimi, new Attendance(LocalDateTime.of(2024, 12, 9, 13, 0)));
+        // 10 이미 존재
+        // 11, 12 => 결석
+        // TODO : 결석 간주 시간 상수 분리?
+        Attendance expectedLastAttendance = new Attendance(LocalDateTime.of(2024, 12, 12, 15, 0));
+        // 결석 2, 지각 3, 출석 4
+
+        // TODO : 감싸기?
+        LocalDate yesterday = LocalDate.of(2024, 12, 12);
+        AttendanceHistory attendanceHistory = attendanceBook.findAttendanceHistoryUntil(yesterday);
+
+        assertThat(attendanceHistory.getAbsentCount()).isEqualTo(2);
+        assertThat(attendanceHistory.getLateCount()).isEqualTo(3);
+        assertThat(attendanceHistory.getAttendCount()).isEqualTo(4);
+
+        assertThat(attendanceHistory.getAttendances().getFirst()).isEqualTo(firstAttendance);
+        assertThat(attendanceHistory.getAttndances().getLast()).isEqualTo(expectedLastAttendance);
+
+        assertThat(attendanceHistory.getPenalty()).isEqualTo(Penalty.COUNSELING);
     }
 }
