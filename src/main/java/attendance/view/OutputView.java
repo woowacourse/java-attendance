@@ -21,4 +21,8 @@ public class OutputView {
     public static void printNotOperationTime() {
         System.out.println("[ERROR] 캠퍼스 운영 시간은 매일 08:00 ~ 23:00 입니다.");
     }
+
+    public static void printDuplicatedAttendance() {
+        System.out.println("이미 출석하셨습니다.");
+    }
 }

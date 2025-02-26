@@ -1,5 +1,6 @@
 package attendance;
 
+import attendance.domain.Attendance;
 import attendance.domain.AttendanceManager;
 import attendance.domain.CampusManager;
 import attendance.domain.Crew;
@@ -9,6 +10,7 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 public class Application {
     private static final Map<String, Runnable> options;
@@ -66,13 +68,17 @@ public class Application {
             OutputView.printNotRegisteredCrewNickname();
             return;
         }
+        Optional<Attendance> existingAttendance = attendanceManager.findAttendanceByCrewAndDate(crew, today);
+        if (existingAttendance.isPresent()) {
+            OutputView.printDuplicatedAttendance();
+            return;
+        }
         LocalTime attendanceTime = InputView.readAttendanceTime();
         boolean isOperationTime = campusManager.isOperationTime(attendanceTime);
         if (!isOperationTime) {
             OutputView.printNotOperationTime();
             return;
         }
-
     }
 
     private static void modifyAttendance() {
