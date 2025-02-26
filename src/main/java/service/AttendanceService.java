@@ -49,9 +49,8 @@ public class AttendanceService {
         validateSameAttendanceRecordExists(request.nickname(), request.date(), request.time());
 
         TimeStatus before = getTimeStatus(request.nickname(), request.date());
-        AttendanceRecordRepository.put(
-                new AttendanceRecord(request.nickname(), request.date(), request.time(),
-                        AttendanceStatus.of(request.date(), request.time()))
+        AttendanceRecordRepository.put(new AttendanceRecord(request.nickname(), request.date(), request.time(),
+                AttendanceStatus.of(request.date(), request.time()))
         );
         TimeStatus after = getTimeStatus(request.nickname(), request.date());
         return ModifyAttendanceRecordResponse.of(request.date(), before, after);
@@ -61,28 +60,31 @@ public class AttendanceService {
         List<AttendanceRecordResponse> monthRecords = getMonthAttendanceRecordResponses(
                 request.nickname(),
                 request.today());
-        AttendanceStatusCount statusCount = calculateAttendanceStatusCount(
-                monthRecords);
+        AttendanceStatusCount statusCount = calculateAttendanceStatusCount(monthRecords);
         RiskRank riskRank = calculateRiskRank(statusCount);
 
-        return new MonthAttendanceStatisticsResponse(monthRecords,
-                statusCount,
-                riskRank.getName());
+        return new MonthAttendanceStatisticsResponse(monthRecords, statusCount, riskRank.getName());
     }
 
     public RiskCrewsResponse getRiskCrews(RiskCrewsRequest request) {
         List<String> nicknames = findCrewNicknames();
         TreeSet<RiskCrew> riskCrews = new TreeSet<>();
         nicknames.forEach(nickname -> {
-            List<AttendanceRecordResponse> monthRecords
-                    = getMonthAttendanceRecordResponses(nickname, request.today());
-            AttendanceStatusCount statusCount
-                    = calculateAttendanceStatusCount(monthRecords);
-            RiskRank riskRank = calculateRiskRank(statusCount);
-            riskCrews.add(
-                    new RiskCrew(nickname, statusCount.lateCount(), statusCount.absentCount(), riskRank.getName()));
+            RiskCrew riskCrew = getRiskCrew(request.today(), nickname);
+            riskCrews.add(riskCrew);
         });
         return new RiskCrewsResponse(riskCrews);
+    }
+
+    private RiskCrew getRiskCrew(LocalDate today, String nickname) {
+        List<AttendanceRecordResponse> monthRecords = getMonthAttendanceRecordResponses(nickname, today);
+        AttendanceStatusCount statusCount = calculateAttendanceStatusCount(monthRecords);
+        RiskRank riskRank = calculateRiskRank(statusCount);
+        return new RiskCrew(
+                nickname,
+                statusCount.lateCount(),
+                statusCount.absentCount(),
+                riskRank.getName());
     }
 
     private List<String> findCrewNicknames() {
