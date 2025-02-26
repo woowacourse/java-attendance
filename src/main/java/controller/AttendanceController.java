@@ -75,7 +75,7 @@ public class AttendanceController {
         final Attendance attendance = LoopTemplate.tryCatchLoop(
                 () -> attendanceBook.attendance(crewName, convertLocalDateTime(localTime)), outputView);
         final AttendanceResponse attendanceResponse = convertAttendanceToResponse(attendance);
-        outputView.printCrewAttendances(List.of(attendanceResponse));
+        outputView.printAttendances(List.of(attendanceResponse));
     }
 
     private LocalTime readAttendanceTime() {
@@ -132,14 +132,9 @@ public class AttendanceController {
     private void responseCrewAttendanceHistory() {
         final String crewName = LoopTemplate.tryCatchLoop(this::inputCrewName, outputView);
         final Crew crew = attendanceBook.findCrewByName(crewName);
-        outputView.printAttendanceHistoryTitle(crewName);
-        final List<AttendanceResponse> attendanceResponses = convertAttendancesToResponses(crew.getAttendances());
-        outputView.printCrewAttendances(attendanceResponses);
-        final Map<AttendanceStatus, Integer> attendanceStatistics = crew.calculateAttendanceStatistics();
-        outputView.printAttendancesStatistics(attendanceStatistics);
-        final ExpulsionStatus expulsionStatus = crew.calculateExpulsionStatus();
-        outputView.printCrewExpulsionStatus(expulsionStatus);
 
+        outputView.printCrewAttendances(crewName, convertAttendancesToResponses(crew.getAttendances()));
+        outputView.printAttendancesStatistics(crew.calculateAttendanceStatistics(), crew.calculateExpulsionStatus());
     }
 
 

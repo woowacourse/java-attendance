@@ -65,16 +65,18 @@ public class OutputView {
         System.out.println("이미 출석을 하였습니다.");
     }
 
-    public void printAttendanceHistoryTitle(final String crewName) {
+    public void printCrewAttendances(final String crewName, final List<AttendanceResponse> attendanceResponses) {
         System.out.printf("이번 달 %s의 출석 기록입니다.\n", crewName);
+        printAttendances(attendanceResponses);
     }
 
-    public void printCrewAttendances(final List<AttendanceResponse> attendanceResponses) {
+    public void printAttendances(final List<AttendanceResponse> attendanceResponses) {
         final String crewAttendanceHistory = attendanceResponses.stream()
                 .sorted((o1, o2) -> o1.attendanceDate().compareTo(o2.attendanceDate()))
                 .map(this::formatAttendanceResponse)
                 .collect(Collectors.joining("\n"));
         System.out.println(System.lineSeparator() + crewAttendanceHistory);
+
     }
 
     public void printExpulsionCrewResponses(final List<ExpulsionCrewResponse> expulsionCrewResponses) {
@@ -104,14 +106,15 @@ public class OutputView {
         return String.format("%02d:%02d", attendanceDate.getHour(), attendanceDate.getMinute());
     }
 
-    public void printAttendancesStatistics(final Map<AttendanceStatus, Integer> attendanceStatuses) {
+    public void printAttendancesStatistics(final Map<AttendanceStatus, Integer> attendanceStatuses, final ExpulsionStatus expulsionStatus) {
         final String statistics = attendanceStatuses.entrySet().stream()
                 .map(entry -> String.format("%s: %d회", entry.getKey().getName(), entry.getValue()))
                 .collect(Collectors.joining("\n"));
         System.out.println(System.lineSeparator() + statistics);
+        printCrewExpulsionStatus(expulsionStatus);
     }
 
-    public void printCrewExpulsionStatus(final ExpulsionStatus expulsionStatus) {
+    private void printCrewExpulsionStatus(final ExpulsionStatus expulsionStatus) {
         if (expulsionStatus != ExpulsionStatus.NORMAL) {
             System.out.printf(System.lineSeparator() + "%s 대상자입니다.\n", expulsionStatus.getName());
         }
