@@ -51,5 +51,18 @@ public class AttendanceHistoryTest {
             assertThatThrownBy(() -> attendanceHistory.attendance(attendanceDateTime))
                     .isInstanceOf(IllegalArgumentException.class);
         }
+
+        @DisplayName("이미 출석한 경우라면 예외가 발생한다.")
+        @Test
+        public void duplicateAttendance() throws Exception {
+            // given
+            final var attendanceHistory = new AttendanceHistory();
+            final var attendanceDateTime = LocalDateTime.of(2024, 12, 13, 10, 5);
+            attendanceHistory.attendance(attendanceDateTime);
+
+            // when & then
+            assertThatThrownBy(() -> attendanceHistory.attendance(attendanceDateTime))
+                    .isInstanceOf(IllegalStateException.class);
+        }
     }
 }
