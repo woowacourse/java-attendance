@@ -12,6 +12,7 @@ import attendance.domain.WarningLevel;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.ZoneId;
 import java.time.format.TextStyle;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -43,7 +44,7 @@ public class OutputView {
     private static final String WARNING_CREW_RESULT_FORMAT = "\n- %s: 결석 %d회, 지각 %d회 (%s)";
 
     public static void printOptions() {
-        System.out.printf(TODAY_IS, getDisplayDate(LocalDateTime.now().toLocalDate()));
+        System.out.printf(TODAY_IS, getDisplayDate(LocalDate.now(ZoneId.of("Asia/Seoul"))));
         System.out.print(OPERATION_OPTION_MESSAGE);
     }
 
@@ -105,23 +106,27 @@ public class OutputView {
         System.out.printf(WARNING_LEVEL_FORMAT, warningLevel.getDisplayName());
     }
 
-    public static void printWarningCrews(Map<WarningLevel, List<CrewAttendance>> warningCrews) {
+    public static void printWarningCrews(Map<WarningLevel, List<CrewAttendance>> warningCrews, LocalDate today) {
         System.out.print(WARNING_CREW_HEADER_FORMAT);
 
         Arrays.stream(WarningLevel.values()).sequential()
                 .filter(warningLevel -> warningLevel != NONE)
                 .forEach(warningLevel -> {
                     List<CrewAttendance> crewAttendances = warningCrews.get(warningLevel);
-                    List<String> formattedWarningCrews = formatWarningCrews(warningLevel, crewAttendances);
+                    List<String> formattedWarningCrews = formatWarningCrews(warningLevel, crewAttendances, today);
                     formattedWarningCrews.forEach(System.out::print);
                 });
     }
 
-    private static List<String> formatWarningCrews(WarningLevel warningLevel, List<CrewAttendance> crewAttendances) {
+    private static List<String> formatWarningCrews(
+            WarningLevel warningLevel,
+            List<CrewAttendance> crewAttendances,
+            LocalDate today
+    ) {
         List<String> formattedWarningCrews = new ArrayList<>();
         for (CrewAttendance crewAttendance : crewAttendances) {
             Map<AttendanceStatus, Integer> attendanceStatusCounts =
-                    crewAttendance.countAttendanceStatusBefore(LocalDate.now());
+                    crewAttendance.countAttendanceStatusBefore(today);
             formattedWarningCrews.add(String.format(WARNING_CREW_RESULT_FORMAT,
                     crewAttendance.getName(),
                     attendanceStatusCounts.get(ABSENCE),
