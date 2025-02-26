@@ -14,7 +14,7 @@ import org.junit.jupiter.params.provider.MethodSource;
 import strategy.TestAttendanceCurrentDateGenerateStrategy;
 
 class AddAttendance {
-    
+
     @Test
     @DisplayName("5분 초과시 지각")
     void addAttendanceLate() {
