@@ -11,10 +11,14 @@ public class AttendanceBook {
     }
 
     public void registerCrew(final Crew crew) {
+        validateAlreadyRegister(crew);
+        attendanceBook.put(crew, new AttendanceHistory(crew));
+    }
+
+    private void validateAlreadyRegister(final Crew crew) {
         if (attendanceBook.containsKey(crew)) {
             throw new IllegalStateException();
         }
-        attendanceBook.put(crew, new AttendanceHistory(crew));
     }
 
     public AttendanceHistory findByCrew(final Crew crew) {
