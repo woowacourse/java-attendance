@@ -10,8 +10,8 @@ public class TodayDate {
 
     private final LocalDate todayDate;
 
-    public TodayDate(LocalDate todayDate) {
-        this.todayDate = todayDate;
+    public TodayDate() {
+        this.todayDate = LocalDate.of(2024, 12, 12);
     }
 
     public LocalDate getTodayDate() {

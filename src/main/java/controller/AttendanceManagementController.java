@@ -17,13 +17,9 @@ import view.InputView;
 import view.OutputView;
 
 public class AttendanceManagementController {
-    private final TodayDate todayDate;
-
-    public AttendanceManagementController(TodayDate todayDate) {
-        this.todayDate = todayDate;
-    }
 
     public void start() {
+        TodayDate todayDate = new TodayDate();
 
         StudentRepository studentRepository = updateStudentAttendanceRecord();
         studentRepository.updateEveryStudentNoInformationInFile(todayDate);
