@@ -37,6 +37,27 @@ public class AttendanceHistoryTest {
                     .hasMinute(5);
         }
 
+        @DisplayName("출석 기록을 날짜 기준으로 찾아온다.")
+        @Test
+        public void findByDate() throws Exception {
+            // given
+            final Crew owner = new Crew("owner");
+            final var attendanceHistory = new AttendanceHistory(owner);
+            final var attendanceDateTime = LocalDateTime.of(2024, 12, 13, 10, 5);
+            attendanceHistory.attendance(attendanceDateTime);
+
+            // when
+            final AttendanceRecord actual = attendanceHistory.findByDate();
+
+            // then
+            assertThat(actual.getDateTime())
+                    .hasYear(2024)
+                    .hasMonthValue(12)
+                    .hasDayOfMonth(13)
+                    .hasHour(10)
+                    .hasMinute(5);
+        }
+
         @DisplayName("기존의 출석 기록을 새로운 시간으로 수정한다.")
         @Test
         public void updateTimeByDate() throws Exception {
