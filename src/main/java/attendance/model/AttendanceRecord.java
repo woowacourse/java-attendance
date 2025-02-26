@@ -3,6 +3,7 @@ package attendance.model;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.IntStream;
 
 public record AttendanceRecord(
         List<AttendanceDateTime> attendanceDateTimes
@@ -44,6 +45,10 @@ public record AttendanceRecord(
     }
 
     public long computeAbsenceCount() {
-        return 17;
+        long duringEducationDayCount = IntStream.range(1, 32)
+                .mapToObj(day -> LocalDate.of(2024, 12, day))
+                .filter(EducationDay::isDuringEducationDay)
+                .count();
+        return duringEducationDayCount - computeAttendanceCount() - computeLateCount();
     }
 }
