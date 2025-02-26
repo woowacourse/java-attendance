@@ -6,6 +6,7 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.HashMap;
 import java.util.Map;
+import util.Parser;
 
 public class Crew {
     private final String name;
@@ -20,7 +21,8 @@ public class Crew {
         attendances.put(date, time);
 
         return new CheckAttendanceResponse(
-                date, time, AttendanceStatus.findMessageByAttendDateAndTime(date, time)
+                Parser.parseDateInKorean(date), Parser.parseTimeToString(time),
+                AttendanceStatus.findMessageByAttendDateAndTime(date, time)
         );
     }
 
@@ -35,9 +37,9 @@ public class Crew {
         attendances.put(date, modifiedTime);
 
         return new ModifyAttendanceResponse(
-                date,
-                originalTime,
-                modifiedTime,
+                Parser.parseDateInKorean(date),
+                Parser.parseTimeToString(originalTime),
+                Parser.parseTimeToString(modifiedTime),
                 AttendanceStatus.findMessageByAttendDateAndTime(date, originalTime),
                 AttendanceStatus.findMessageByAttendDateAndTime(date, modifiedTime)
         );
