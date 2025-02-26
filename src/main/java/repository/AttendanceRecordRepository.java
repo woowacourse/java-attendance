@@ -9,6 +9,9 @@ import java.util.List;
 public class AttendanceRecordRepository {
     private final static List<AttendanceRecord> ATTENDANCE_RECORDS = new ArrayList<>();
 
+    private AttendanceRecordRepository() {
+    }
+
     public static void put(AttendanceRecord attendanceRecord) {
         if (exists(attendanceRecord.nickname(), attendanceRecord.date())) {
             ATTENDANCE_RECORDS.removeIf(record ->

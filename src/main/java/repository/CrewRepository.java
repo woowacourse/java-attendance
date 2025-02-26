@@ -8,6 +8,9 @@ import java.util.List;
 public class CrewRepository {
     private static final List<Crew> CREWS = new ArrayList<>();
 
+    private CrewRepository() {
+    }
+
     public static void addCrew(Crew crew) {
         if (existsCrew(crew.getNickname())) {
             return;
