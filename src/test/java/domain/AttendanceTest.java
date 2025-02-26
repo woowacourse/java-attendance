@@ -3,6 +3,7 @@ package domain;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -12,8 +13,8 @@ public class AttendanceTest {
     @Nested
     @DisplayName("1.1 닉네임과 등교 시간을 받으면 오늘 날짜로 출석 기록을 생성할 수 있다.")
     class AttendanceCheckTest {
-        private final LocalDate MON_DATE = LocalDate.of(2025, 2, 24);
-        private final LocalDate TUE_DATE = LocalDate.of(2025, 2, 25);
+        private final LocalDate MONDAY_DATE = LocalDate.of(2025, 2, 24);
+        private final LocalDate TUESDAY_DATE = LocalDate.of(2025, 2, 25);
 
         @Test
         @DisplayName("화요일은 10시 5분에 출석할 경우 출석으로 처리한다.")
@@ -23,7 +24,7 @@ public class AttendanceTest {
             String nickname = "노랑";
             LocalTime time = LocalTime.of(10, 5);
             // when
-            String attendanceRecord = attendance.checkAttendance(nickname, time, TUE_DATE);
+            String attendanceRecord = attendance.checkAttendance(nickname, LocalDateTime.of(TUESDAY_DATE, time));
             // then
             assertThat(attendanceRecord).isEqualTo("출석");
         }
@@ -36,7 +37,7 @@ public class AttendanceTest {
             String nickname = "노랑";
             LocalTime time = LocalTime.of(10, 30);
             // when
-            String attendanceRecord = attendance.checkAttendance(nickname, time, TUE_DATE);
+            String attendanceRecord = attendance.checkAttendance(nickname, LocalDateTime.of(TUESDAY_DATE, time));
             // then
             assertThat(attendanceRecord).isEqualTo("지각");
         }
@@ -49,7 +50,7 @@ public class AttendanceTest {
             String nickname = "노랑";
             LocalTime time = LocalTime.of(10, 30, 1);
             // when
-            String attendanceRecord = attendance.checkAttendance(nickname, time, TUE_DATE);
+            String attendanceRecord = attendance.checkAttendance(nickname, LocalDateTime.of(TUESDAY_DATE, time));
             // then
             assertThat(attendanceRecord).isEqualTo("결석");
         }
@@ -62,7 +63,7 @@ public class AttendanceTest {
             String nickname = "노랑";
             LocalTime time = LocalTime.of(13, 5);
             // when
-            String attendanceRecord = attendance.checkAttendance(nickname, time, MON_DATE);
+            String attendanceRecord = attendance.checkAttendance(nickname, LocalDateTime.of(MONDAY_DATE, time));
             // then
             assertThat(attendanceRecord).isEqualTo("출석");
         }
@@ -75,7 +76,7 @@ public class AttendanceTest {
             String nickname = "노랑";
             LocalTime time = LocalTime.of(13, 30);
             // when
-            String attendanceRecord = attendance.checkAttendance(nickname, time, MON_DATE);
+            String attendanceRecord = attendance.checkAttendance(nickname, LocalDateTime.of(MONDAY_DATE, time));
             // then
             assertThat(attendanceRecord).isEqualTo("지각");
         }
@@ -88,7 +89,7 @@ public class AttendanceTest {
             String nickname = "노랑";
             LocalTime time = LocalTime.of(13, 30, 1);
             // when
-            String attendanceRecord = attendance.checkAttendance(nickname, time, MON_DATE);
+            String attendanceRecord = attendance.checkAttendance(nickname, LocalDateTime.of(MONDAY_DATE, time));
             // then
             assertThat(attendanceRecord).isEqualTo("결석");
         }
