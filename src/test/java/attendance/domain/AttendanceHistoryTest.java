@@ -74,4 +74,20 @@ class AttendanceHistoryTest {
         // then
         Assertions.assertThat(status).isEqualTo(WarningStatus.WARNING);
     }
+
+    @DisplayName("출석 내역의 출석 상태 개수를 계산한다.")
+    @Test
+    void test_countPresentStatus() {
+        // given
+        AttendanceHistory history = new AttendanceHistory();
+        history.addRecord(new AttendanceRecord(LocalDateTime.of(2024, 12, 2, 13, 0)));
+        history.addRecord(new AttendanceRecord(LocalDateTime.of(2024, 12, 3, 10, 0)));
+
+        // when
+        long count = history.countByAttendanceStatus(AttendanceStatus.PRESENT);
+
+        // then
+        assertThat(count).isEqualTo(2);
+
+    }
 }

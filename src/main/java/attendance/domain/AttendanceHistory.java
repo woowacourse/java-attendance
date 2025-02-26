@@ -26,20 +26,14 @@ public class AttendanceHistory {
     }
 
     public WarningStatus getWarningStatus() {
-        long lateCount = calculateLateCount();
-        long absentCount = calculateAbsentCount();
+        long lateCount = countByAttendanceStatus(AttendanceStatus.LATE);
+        long absentCount = countByAttendanceStatus(AttendanceStatus.ABSENT);
         return WarningStatus.from(absentCount, lateCount);
     }
 
-    private long calculateLateCount() {
+    public long countByAttendanceStatus(AttendanceStatus status) {
         return records.stream()
-                .filter(record -> record.getAttendanceStatus() == AttendanceStatus.LATE)
-                .count();
-    }
-
-    private long calculateAbsentCount() {
-        return records.stream()
-                .filter(record -> record.getAttendanceStatus() == AttendanceStatus.ABSENT)
+                .filter(record -> record.getAttendanceStatus() == status)
                 .count();
     }
 
