@@ -90,7 +90,7 @@ class AttendanceServiceTest {
     }
 
     @Test
-    @DisplayName("특정 크루의 월 단위 출석 기록을 불러온다")
+    @DisplayName("특정 크루의 월 단위 출석 통계를 가져온다")
     void getMonthAttendanceStatisticsTest() {
         // given
         String nickname = "name";
