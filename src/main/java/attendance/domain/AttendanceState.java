@@ -4,7 +4,8 @@ import java.util.Arrays;
 
 public enum AttendanceState {
     ATTENDANCE(5),
-    TARDY(30);
+    TARDY(30),
+    ABSENCE(Integer.MAX_VALUE);
 
     private final int threshold;
 
