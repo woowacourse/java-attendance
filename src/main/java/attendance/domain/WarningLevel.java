@@ -4,14 +4,14 @@ import java.util.Arrays;
 import java.util.function.Function;
 
 public enum WarningLevel {
-    WARNING((totalAbsent) -> totalAbsent >= 2);
+    WARNING(totalAbsent -> totalAbsent >= 2),
+    INTERVIEW(totalAbsent -> false);
 
     private final Function<Integer, Boolean> isMatch;
 
     WarningLevel(Function<Integer, Boolean> isMatch) {
         this.isMatch = isMatch;
     }
-
 
     public static WarningLevel from(int lateCount, int absentCount) {
         int totalAbsent = lateCount / 3 + absentCount;

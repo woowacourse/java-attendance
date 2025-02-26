@@ -18,4 +18,17 @@ public class WarningLevelTest {
         //then
         Assertions.assertThat(result).isEqualTo(WarningLevel.WARNING);
     }
+
+    @Test
+    void 결석이_3회_이상이라면_면담_대상자이다() {
+        //given
+        int lateCount = 0;
+        int absentCount = 2;
+
+        //when
+        WarningLevel result = WarningLevel.from(lateCount, absentCount);
+
+        //then
+        Assertions.assertThat(result).isEqualTo(WarningLevel.INTERVIEW);
+    }
 }
