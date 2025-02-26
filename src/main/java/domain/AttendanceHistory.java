@@ -1,6 +1,7 @@
 package domain;
 
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 
 public class AttendanceHistory implements Comparable<AttendanceHistory> {
 
@@ -48,14 +49,28 @@ public class AttendanceHistory implements Comparable<AttendanceHistory> {
     }
 
     private void validateOpeningHours(LocalDateTime attendanceTime) {
-        if (!(attendanceTime.getHour() == ABSENT_DEFAULT_HOUR && attendanceTime.getMinute() == ABSENT_DEFAULT_MINUTE)
-                && (attendanceTime.isBefore(LocalDateTime.of(attendanceTime.getYear(), attendanceTime.getMonthValue(),
-                attendanceTime.getDayOfMonth(), START_TIME, 0)) ||
-                (attendanceTime.isAfter(LocalDateTime.of(attendanceTime.getYear(), attendanceTime.getMonthValue(),
-                        attendanceTime.getDayOfMonth(), END_TIME, 0)))
-        )) {
+        LocalTime attendanceTimeLocalTime = attendanceTime.toLocalTime();
+        if (isExceptionTime(attendanceTimeLocalTime)) {
+            return;
+        }
+
+        if (isBefore(attendanceTimeLocalTime) || isAfter(attendanceTimeLocalTime)) {
             throw new IllegalArgumentException("[ERROR] 캠퍼스 운영 시간은 08:00~23:00 입니다. 해당 시간 내의 시간을 입력해 주세요.");
         }
+    }
+
+    private boolean isExceptionTime(LocalTime attendanceTime) {
+        return attendanceTime.getHour() == ABSENT_DEFAULT_HOUR && attendanceTime.getMinute() == ABSENT_DEFAULT_MINUTE;
+    }
+
+
+    private static boolean isBefore(LocalTime attendanceTimeLocalTime) {
+        return attendanceTimeLocalTime.isBefore(LocalTime.of(START_TIME, 0));
+    }
+
+    private static boolean isAfter(LocalTime attendanceTimeLocalTime) {
+        return attendanceTimeLocalTime.isAfter(
+                LocalTime.of(END_TIME, 0));
     }
 
     public LocalDateTime getAttendanceTime() {
