@@ -1,17 +1,20 @@
+import java.time.DayOfWeek;
+import java.time.LocalDate;
 import java.time.LocalTime;
 
 public class AttendanceCheck {
 
-    public AttendanceStatus judge(LocalTime attendanceTime,
-                                  LocalTime lateStandardTime,
-                                  LocalTime absentStandardTime) {
+    public AttendanceStatus judge(LocalTime attendanceTime, LocalDate date) {
 
-        if (attendanceTime.isAfter(lateStandardTime) && attendanceTime.isBefore(absentStandardTime)
-                || attendanceTime.equals(absentStandardTime)) {
+        DayOfWeek dayOfWeek = date.getDayOfWeek();
+        StandardTime standardTime = StandardTime.findByDayOfWeek(dayOfWeek);
+
+        if (attendanceTime.isAfter(standardTime.getLateTime()) && attendanceTime.isBefore(standardTime.getAbsentTime())
+                || attendanceTime.equals(standardTime.getAbsentTime())) {
             return AttendanceStatus.LATENESS;
         }
 
-        if (attendanceTime.isAfter(absentStandardTime)) {
+        if (attendanceTime.isAfter(standardTime.getAbsentTime())) {
             return AttendanceStatus.ABSENCE;
         }
 
