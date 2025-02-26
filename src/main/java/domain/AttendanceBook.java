@@ -1,17 +1,20 @@
 package domain;
 
-import java.util.HashMap;
+import dto.InitialInfo;
 import java.util.Map;
 
 public class AttendanceBook {
     private final Map<CrewName, AttendanceRecord> value;
 
-    public AttendanceBook() {
-        this.value = new HashMap<>();
+    public AttendanceBook(InitialInfo initialInfo) {
+        this.value = initialInfo.getValue();
     }
 
     public void addAttendance(CrewName crewName, Attendance attendance) {
-        AttendanceRecord attendanceRecord = new AttendanceRecord();
+        if(!contains(crewName)) {
+            throw new IllegalArgumentException("[ERROR] 존재하지 않는 닉네임입니다.");
+        }
+        AttendanceRecord attendanceRecord = findAttendanceRecordBy(crewName);
         attendanceRecord.add(attendance);
         value.put(crewName, attendanceRecord);
     }
