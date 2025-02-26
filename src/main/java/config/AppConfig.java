@@ -27,7 +27,7 @@ public class AppConfig {
         return new AttendanceHistoryController(
                 getInputView(),
                 getOutputView(),
-                new AttendanceHistoryService(getCrewAttendances())
+                getCrewAttendances()
         );
     }
 

@@ -55,7 +55,7 @@ public class AttendanceBook {
         return result;
     }
 
-    public Map<AttendanceStatus, Integer> calculateAttendanceResult(LocalDate startDate, LocalDate endDate) {
+    public Map<AttendanceStatus, Integer> getAttendanceStatusCounts(LocalDate startDate, LocalDate endDate) {
         Map<AttendanceStatus, Integer> result = new HashMap<>();
 
         for (LocalDate current = startDate; current.isBefore(endDate); current = current.plusDays(1)) {

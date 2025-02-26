@@ -64,4 +64,16 @@ public class CrewAttendances {
         }
         return result;
     }
+
+    public Map<AttendanceStatus, Integer> getAttendanceResult(String name, LocalDate startDate, LocalDate endDate) {
+        AttendanceBook attendanceBook = findAttendanceBookByCrewName(name);
+        return attendanceBook.getAttendanceStatusCounts(startDate, endDate);
+    }
+
+    public CrewStatus getCrewStatus(String name, LocalDate startDate, LocalDate endDate) {
+        AttendanceBook attendanceBook = findAttendanceBookByCrewName(name);
+        final int lateCount = attendanceBook.getLateCount(startDate, endDate);
+        final int absenceCount = attendanceBook.getAbsenceCount(startDate, endDate);
+        return CrewStatus.from(lateCount, absenceCount);
+    }
 }

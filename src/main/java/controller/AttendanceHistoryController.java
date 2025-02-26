@@ -1,10 +1,6 @@
 package controller;
 
-import domain.Attendance;
-import domain.AttendanceCustomDate;
-import domain.AttendanceStatus;
-import domain.CrewStatus;
-import service.AttendanceHistoryService;
+import domain.*;
 import view.InputView;
 import view.OutputView;
 
@@ -14,26 +10,26 @@ import java.util.Map;
 public class AttendanceHistoryController implements Controller {
     private final InputView inputView;
     private final OutputView outputView;
-    private final AttendanceHistoryService attendanceHistoryService;
+    private final CrewAttendances crewAttendances;
 
     public AttendanceHistoryController(
             InputView inputView,
             OutputView outputView,
-            AttendanceHistoryService attendanceHistoryService
+            CrewAttendances crewAttendances
     ) {
         this.inputView = inputView;
         this.outputView = outputView;
-        this.attendanceHistoryService = attendanceHistoryService;
+        this.crewAttendances = crewAttendances;
     }
 
     @Override
     public void run() {
         String name = inputView.readName();
         LocalDate nowDate = AttendanceCustomDate.now().toLocalDate();
-        Map<LocalDate, Attendance> histories = attendanceHistoryService.getHistoriesOf(name, nowDate.withDayOfMonth(1), nowDate);
-        Map<AttendanceStatus, Integer> attendanceResult = attendanceHistoryService
-                .getAttendanceResultOf(name, nowDate.withDayOfMonth(1), nowDate);
-        CrewStatus crewStatus = attendanceHistoryService.getCrewStatus(name, nowDate.withDayOfMonth(1), nowDate);
+        Map<LocalDate, Attendance> histories = crewAttendances.getAttendances(name, nowDate.withDayOfMonth(1), nowDate);
+        Map<AttendanceStatus, Integer> attendanceResult = crewAttendances
+                .getAttendanceResult(name, nowDate.withDayOfMonth(1), nowDate);
+        CrewStatus crewStatus = crewAttendances.getCrewStatus(name, nowDate.withDayOfMonth(1), nowDate);
         outputView.printHistoryResult(name, histories, attendanceResult, crewStatus);
     }
 }

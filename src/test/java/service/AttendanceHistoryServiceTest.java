@@ -27,7 +27,6 @@ class AttendanceHistoryServiceTest {
     }};
 
     CrewAttendances crewAttendances;
-    AttendanceHistoryService attendanceHistoryService;
 
     @BeforeEach
     void setUp() {
@@ -37,8 +36,6 @@ class AttendanceHistoryServiceTest {
         crewAttendances.createNewAttendance(name, now.withDayOfMonth(2).toLocalDate(), LocalTime.of(13, 0));
         crewAttendances.createNewAttendance(name, now.withDayOfMonth(3).toLocalDate(), LocalTime.of(10, 7));
         crewAttendances.createNewAttendance(name, now.withDayOfMonth(4).toLocalDate(), LocalTime.of(10, 31));
-
-        attendanceHistoryService = new AttendanceHistoryService(crewAttendances);
     }
 
     @DisplayName("크루 이름을 입력하면, 해당 크루의 전날까지의 출석 기록을 조회할 수 있다.")
@@ -48,7 +45,7 @@ class AttendanceHistoryServiceTest {
         LocalDate date = LocalDate.of(year, month, 6);
 
         // when
-        Map<LocalDate, Attendance> histories = attendanceHistoryService.getHistoriesOf(name, date.withDayOfMonth(1), date);
+        Map<LocalDate, Attendance> histories = crewAttendances.getAttendances(name, date.withDayOfMonth(1), date);
 
         // then
         assertThat(histories).isEqualTo(attendanceHistoryResult);
@@ -72,7 +69,8 @@ class AttendanceHistoryServiceTest {
         LocalDate date = LocalDate.of(year, month, 6);
 
         // when
-        Map<AttendanceStatus, Integer> attendanceCount = attendanceHistoryService.getAttendanceResultOf(name, date.withDayOfMonth(1), date);
+        Map<AttendanceStatus, Integer> attendanceCount = crewAttendances
+                .getAttendanceResult(name, date.withDayOfMonth(1), date);
 
         // then
         assertThat(attendanceCount.get(AttendanceStatus.ATTENDANCE)).isEqualTo(1);
@@ -87,7 +85,7 @@ class AttendanceHistoryServiceTest {
         LocalDate date = LocalDate.of(year, month, 6);
 
         // when
-        CrewStatus crewStatus = attendanceHistoryService.getCrewStatus(name, date.withDayOfMonth(1), date);
+        CrewStatus crewStatus = crewAttendances.getCrewStatus(name, date.withDayOfMonth(1), date);
 
         // then
         assertThat(crewStatus).isSameAs(CrewStatus.WARNING);
@@ -108,7 +106,7 @@ class AttendanceHistoryServiceTest {
         LocalDate date = LocalDate.of(year, month, 13);
 
         //when
-        CrewStatus crewStatus = attendanceHistoryService.getCrewStatus(name, date.withDayOfMonth(1), date);
+        CrewStatus crewStatus = crewAttendances.getCrewStatus(name, date.withDayOfMonth(1), date);
 
         //then
         assertThat(crewStatus).isSameAs(CrewStatus.CONSULTANT);
@@ -121,7 +119,7 @@ class AttendanceHistoryServiceTest {
         LocalDate date = LocalDate.of(year, month, 12);
 
         //when
-        CrewStatus crewStatus = attendanceHistoryService.getCrewStatus(name, date.withDayOfMonth(1), date);
+        CrewStatus crewStatus = crewAttendances.getCrewStatus(name, date.withDayOfMonth(1), date);
 
         //then
         assertThat(crewStatus).isSameAs(CrewStatus.DISENROLLMENT);
