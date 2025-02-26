@@ -27,4 +27,8 @@ public class AttendanceHistory {
     public boolean isBefore(LocalDate requestedDate) {
         return attendAt.toLocalDate().isBefore(requestedDate);
     }
+
+    public LocalDateTime getAttendAt() {
+        return attendAt;
+    }
 }
