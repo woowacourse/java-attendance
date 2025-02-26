@@ -31,11 +31,7 @@ public class CheckInDateTime implements Comparable<CheckInDateTime> {
 
     @Override
     public int compareTo(CheckInDateTime o) {
-        int dateComparison = this.checkInDate.compareTo(o.checkInDate);
-        if (dateComparison != 0) {
-            return dateComparison;
-        }
-        return this.checkInTime.compareTo(o.checkInTime);
+        return this.checkInDate.compareTo(o.checkInDate);
     }
 
     @Override
@@ -43,11 +39,11 @@ public class CheckInDateTime implements Comparable<CheckInDateTime> {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         CheckInDateTime that = (CheckInDateTime) o;
-        return checkInDate.equals(that.checkInDate) && checkInTime.equals(that.checkInTime);
+        return checkInDate.equals(that.checkInDate);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(checkInDate, checkInTime);
+        return Objects.hash(checkInDate);
     }
 }
