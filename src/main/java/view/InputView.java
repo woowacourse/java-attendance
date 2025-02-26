@@ -3,6 +3,7 @@ package view;
 import constant.InputViewMessage;
 import dto.AttendanceCheckInRequest;
 import dto.AttendanceOptionRequest;
+import dto.AttendanceUpdateRequest;
 import java.time.LocalDateTime;
 import java.time.format.TextStyle;
 import java.util.Locale;
@@ -35,6 +36,20 @@ public class InputView {
 
         printNewLine();
         return new AttendanceCheckInRequest(nickname, time);
+    }
+
+    public static AttendanceUpdateRequest readAttendanceUpdateRequest(LocalDateTime dateTime) {
+        println(InputViewMessage.ATTENDANCE_UPDATE_NICKNAME_PROMPT.getMessage());
+        String nickname = scanner.nextLine();
+
+        println(InputViewMessage.ATTENDANCE_UPDATE_DAY_PROMPT.getMessage());
+        String day = scanner.nextLine();
+
+        println(InputViewMessage.ATTENDANCE_UPDATE_TIME_PROMPT.getMessage());
+        String time = scanner.nextLine();
+
+        printNewLine();
+        return new AttendanceUpdateRequest(nickname, day, time);
     }
 
     private static void println(String message) {
