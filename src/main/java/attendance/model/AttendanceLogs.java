@@ -3,7 +3,6 @@ package attendance.model;
 import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Objects;
 import java.util.Set;
 import java.util.function.Predicate;
 
@@ -11,8 +10,8 @@ public class AttendanceLogs {
 
     private final Set<AttendanceLog> logs;
 
-    public AttendanceLogs(Set<AttendanceLog> attendanceLogs) {
-        logs = new HashSet<>(Objects.requireNonNull(attendanceLogs, "로그 목록은 null일 수 없습니다."));
+    public AttendanceLogs() {
+        logs = new HashSet<>();
     }
 
     public void add(AttendanceLog attendanceLog) {
