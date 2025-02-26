@@ -41,11 +41,31 @@ public class ModifyAttendanceTest {
     }
 
     @Test
-    @DisplayName("시작 시간전으로 수정시 에러가 발생한다")
+    @DisplayName("학교 시작 시간전으로 수정시 에러가 발생한다")
     void modifyAttendanceTestBeforeStart() {
         String nickname = "투다";
         LocalDate date = LocalDate.of(2024, 12, 3);
         LocalTime time = LocalTime.of(7, 3);
+        Assertions.assertThatThrownBy(() -> crewAttendances.modifyAttendance(nickname, date, time))
+                .isInstanceOf(AttendanceException.class);
+    }
+
+    @Test
+    @DisplayName("학교 종료후로 수정시 에러가 발생한다")
+    void modifyAttendanceTestAfterSchoolClose() {
+        String nickname = "투다";
+        LocalDate date = LocalDate.of(2024, 12, 3);
+        LocalTime time = LocalTime.of(23, 3);
+        Assertions.assertThatThrownBy(() -> crewAttendances.modifyAttendance(nickname, date, time))
+                .isInstanceOf(AttendanceException.class);
+    }
+
+    @Test
+    @DisplayName("존재하지 않는 유저를 수정하려하면 에러가 발생한다")
+    void doesntExistCrewModifyTest() {
+        String nickname = "냠냠";
+        LocalDate date = LocalDate.of(2024, 12, 3);
+        LocalTime time = LocalTime.of(8, 3);
         Assertions.assertThatThrownBy(() -> crewAttendances.modifyAttendance(nickname, date, time))
                 .isInstanceOf(AttendanceException.class);
     }
