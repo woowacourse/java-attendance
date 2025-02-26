@@ -40,4 +40,7 @@ public class AttendanceBook {
     public int hashCode() {
         return attendances.hashCode();
     }
+
+    public void updateAttendance(Attendance updateAttendance) {
+    }
 }

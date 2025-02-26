@@ -37,4 +37,28 @@ public class AttendanceBookTest {
         assertThat(attendanceBook)
                 .isEqualTo(new AttendanceBook(new Attendance(nickname, attendanceDateTime)));
     }
+
+    @Test
+    void 출석을_수정할_수_있다() {
+        //given
+        String nickname = "pobi";
+        LocalDateTime attendanceDateTime = LocalDateTime.of(2024, 12, 13, 10, 1);
+        AttendanceBook attendanceBook = new AttendanceBook(new Attendance(nickname, attendanceDateTime));
+
+        //when
+        attendanceBook.updateAttendance(
+                new Attendance(
+                        "pobi",
+                        LocalDateTime.of(2024, 12, 13, 11, 1)
+                )
+        );
+
+        //then
+        assertThat(attendanceBook).isEqualTo(new AttendanceBook(
+                new Attendance(
+                        "pobi",
+                        LocalDateTime.of(2024, 12, 13, 11, 1)
+                )
+        ));
+    }
 }
