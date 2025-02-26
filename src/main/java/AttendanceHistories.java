@@ -1,4 +1,5 @@
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 public class AttendanceHistories {
@@ -30,5 +31,12 @@ public class AttendanceHistories {
                         && attendanceHistory.isAboutSameDate(date))
                 .findAny()
                 .orElseThrow(() -> new IllegalArgumentException("조건에 해당하는 기록이 존재하지 않습니다."));
+    }
+
+    public List<AttendanceHistory> findAllHistoriesOfCrewDateBefore(Crew crew, LocalDateTime requestedDate) {
+        return attendanceHistories.stream()
+                .filter(attendanceHistory -> attendanceHistory.isAboutSameCrew(crew) &&
+                        attendanceHistory.isBefore(requestedDate.toLocalDate()))
+                .toList();
     }
 }

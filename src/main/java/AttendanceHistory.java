@@ -24,7 +24,7 @@ public class AttendanceHistory {
                 && attendAt.getDayOfMonth() == requestedDate.getDayOfMonth();
     }
 
-    public LocalDateTime getAttendAt() {
-        return attendAt;
+    public boolean isBefore(LocalDate requestedDate) {
+        return attendAt.toLocalDate().isBefore(requestedDate);
     }
 }

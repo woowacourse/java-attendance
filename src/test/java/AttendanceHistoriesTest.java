@@ -82,4 +82,25 @@ public class AttendanceHistoriesTest {
                 .hasMessage("조건에 해당하는 기록이 존재하지 않습니다.");
 
     }
+
+    @Test
+    @DisplayName("특정 날짜 전까지의 특정 크루의 모든 출석 기록을 가져온다")
+    void test6() {
+        // given
+        Crew crew = new Crew("히로");
+        LocalDateTime attendAt = LocalDateTime.of(2024, 12, 2, 10, 0);
+
+        AttendanceHistories attendanceHistories = new AttendanceHistories(List.of(
+                new AttendanceHistory(crew, attendAt),
+                new AttendanceHistory(crew, attendAt.plusDays(1)),
+                new AttendanceHistory(crew, attendAt.plusDays(2)),
+                new AttendanceHistory(crew, attendAt.plusDays(3)
+                )));
+
+        // when & then
+        List<AttendanceHistory> result = attendanceHistories.findAllHistoriesOfCrewDateBefore(
+                crew, attendAt.plusDays(4));
+        assertThat(result).hasSize(4);
+
+    }
 }
