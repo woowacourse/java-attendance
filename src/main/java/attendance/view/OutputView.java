@@ -1,9 +1,12 @@
 package attendance.view;
 
+import attendance.domain.AttendanceBook;
 import attendance.domain.AttendanceHistory;
 import attendance.domain.AttendanceRecord;
 import attendance.domain.AttendanceStatus;
 import attendance.domain.Crew;
+import attendance.domain.Crews;
+import attendance.domain.WarningStatus;
 import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.Comparator;
@@ -47,5 +50,25 @@ public class OutputView {
                 record.getAttendanceDateTime().format(DATE_FORMATTER),
                 record.getAttendanceStatus().getTitle()
         );
+    }
+
+    public void displayWarning(Crews crews, AttendanceBook attendanceBook) {
+        CustomStringBuilder sb = new CustomStringBuilder();
+
+        crews.getAllCrews().values().stream()
+                .filter(crew -> attendanceBook.getWarningByCrew(crew.getName()) != WarningStatus.NONE)
+                .forEach(crew -> {
+                    AttendanceHistory history = attendanceBook.getHistoryByName(crew.getName());
+                    long lateCount = history.countByAttendanceStatus(AttendanceStatus.LATE);
+                    long absentCount = history.countByAttendanceStatus(AttendanceStatus.ABSENT);
+                    sb.appendLine(String.format("- %s: 결석: %d회, 지각: %d회 (%s)",
+                            crew.getName(),
+                            absentCount,
+                            lateCount,
+                            history.getWarningStatus().getTitle()
+                    ));
+                });
+
+        sb.print();
     }
 }

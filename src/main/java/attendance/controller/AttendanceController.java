@@ -32,6 +32,7 @@ public class AttendanceController {
                 MainOption.CHECK_ATTENDANCE, this::processCheckAttendance,
                 MainOption.MODIFY_ATTENDANCE, this::processModifyRecord,
                 MainOption.VIEW_CREW_HISTORY, this::processViewCrewHistory,
+                MainOption.CHECK_WARNING, this::processCheckWarning,
                 MainOption.QUIT, () -> System.exit(0)
         );
 
@@ -46,8 +47,7 @@ public class AttendanceController {
             LocalTime entryTime = inputView.readEntryTime();
 
             AttendanceRecord record = new AttendanceRecord(LocalDateTime.of(LocalDate.of(2024, 12, 16), entryTime));
-            attendanceBook.add(crew.getName(),
-                    record);
+            attendanceBook.add(crew.getName(), record);
 
             outputView.displayAttendanceResult(record);
         });
@@ -76,6 +76,10 @@ public class AttendanceController {
 
             outputView.displayCrewHistory(crew, history);
         });
+    }
+
+    private void processCheckWarning() {
+        outputView.displayWarning(crews, attendanceBook);
     }
 
     private void process(Runnable runnable) {

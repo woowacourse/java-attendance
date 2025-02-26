@@ -24,4 +24,7 @@ public enum WarningStatus {
                 .orElse(NONE);
     }
 
+    public String getTitle() {
+        return title;
+    }
 }
