@@ -46,7 +46,7 @@ public class AttendanceHistoryTest {
 
             // when & then
             assertThatThrownBy(() -> attendanceHistory.attendance(attendanceDateTime))
-                    .isInstanceOf(IllegalStateException.class);
+                    .isInstanceOf(IllegalArgumentException.class);
         }
     }
 }
