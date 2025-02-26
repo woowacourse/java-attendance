@@ -6,13 +6,24 @@ public class Crew {
     private final String name;
 
     private Crew(String name) {
-        validateNameLength(name);
-        validateNameLanguage(name);
+        validateName(name);
         this.name = name;
     }
 
     public static Crew of(String name) {
         return new Crew(name);
+    }
+
+    private void validateName(String name) {
+        validateNonNull(name);
+        validateNameLength(name);
+        validateNameLanguage(name);
+    }
+
+    private void validateNonNull(String name) {
+        if (name == null) {
+            throw new AppException("이름은 NULL 이 될 수 없습니다.");
+        }
     }
 
     private void validateNameLength(String name) {
