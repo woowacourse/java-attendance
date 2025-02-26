@@ -19,13 +19,15 @@ public class AttendanceAssembler {
         Map<String, List<LocalDateTime>> rawDatas = loader.getRawDatas();
 
         AttendanceBook attendanceBook = new AttendanceBook();
-        for (Map.Entry<String, List<LocalDateTime>> entry : rawDatas.entrySet()) {
-            String crewName = entry.getKey();
-            for (LocalDateTime dateTime : entry.getValue()) {
-                AttendanceRecord record = new AttendanceRecord(dateTime);
-                attendanceBook.add(crewName, record);
-            }
-        }
+        rawDatas.forEach((crewName, dateTimes) ->
+                addRecordsForCrew(crewName, dateTimes, attendanceBook)
+        );
         return attendanceBook;
+    }
+
+    private void addRecordsForCrew(String crewName, List<LocalDateTime> dateTimes, AttendanceBook attendanceBook) {
+        dateTimes.forEach(dateTime ->
+                attendanceBook.add(crewName, new AttendanceRecord(dateTime))
+        );
     }
 }
