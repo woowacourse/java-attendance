@@ -7,8 +7,6 @@ import java.util.function.Predicate;
 
 public record HistoryStatistic(EnumMap<AttendanceStatus, Integer> statistic, String nickname)
     implements Comparable<HistoryStatistic> {
-    private static final String FORMAT_STATE = "%s: %d회\n";
-    private static final String FORMAT_SANCTION = "- %s: 결석 %d회, 지각 %d회 (%s)\n";
     public static final int DIVIDER = 3;
 
     public SanctionLevel judgeSanctionLevel() {

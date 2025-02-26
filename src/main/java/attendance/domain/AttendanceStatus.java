@@ -1,17 +1,23 @@
 package attendance.domain;
 
 public enum AttendanceStatus {
-    ATTENDANCE("출석"),
-    LATE("지각"),
-    ABSENCE("결석");
+    ATTENDANCE("출석", 31),
+    LATE("지각", 6),
+    ABSENCE("결석", 0);
 
-    private final String value;
+    private final String status;
+    private final int minutes;
 
-    AttendanceStatus(String value) {
-        this.value = value;
+    AttendanceStatus(String status, int minutes) {
+        this.status = status;
+        this.minutes = minutes;
     }
 
-    public String getValue() {
-        return value;
+    public String getStatus() {
+        return status;
+    }
+
+    public int getMinutes() {
+        return minutes;
     }
 }

@@ -26,18 +26,13 @@ import attendance.view.InputView;
 import attendance.view.OutputView;
 
 public class Application {
-    private static final Map<String, AttendanceOperation> optionMenu = new HashMap<>();
+    private static final Map<String, Runnable> optionMenu = new HashMap<>();
     private static final String WRONG_INPUT = "잘못된 입력입니다.";
     private static final String FILE = "/attendances.csv";
 
     private static InputView inputView;
     private static OutputView outputView;
     private static AttendanceBook attendanceBook;
-
-    @FunctionalInterface
-    interface AttendanceOperation {
-        void run(AttendanceBook attendanceBook);
-    }
 
     static {
         optionMenu.put("1", Application::registerAttendance);
@@ -47,50 +42,54 @@ public class Application {
     }
 
     public static void main(String[] args) {
+        initialize();
+        processAttendanceMenu();
+    }
+
+    private static void initialize() {
         try {
             inputView = new InputView();
             outputView = new OutputView();
-            attendanceBook = getAttendanceBook();
-            processAttendanceMenu(attendanceBook);
+            attendanceBook = generateAttendanceBook();
         } catch (AttendanceFileException e) {
             outputView.printError(e.getMessage());
         }
     }
 
-    private static AttendanceBook getAttendanceBook() throws AttendanceFileException {
+    private static AttendanceBook generateAttendanceBook() throws AttendanceFileException {
         var repository = new CsvReader(FILE);
         var lines = repository.getLines();
         return AttendanceBook.from(lines);
     }
 
-    public static void processAttendanceMenu(AttendanceBook attendanceBook) {
+    public static void processAttendanceMenu() {
         try {
-            handleAttendanceCommands(attendanceBook);
+            handleAttendanceCommands();
         } catch (AttendanceArgumentException e) {
             outputView.printError(e.getMessage());
-            processAttendanceMenu(attendanceBook);
+            processAttendanceMenu();
         }
     }
 
-    private static void handleAttendanceCommands(AttendanceBook attendanceBook) {
+    private static void handleAttendanceCommands() {
         Stream.generate(() -> {
                 outputView.printRequestMessage(SystemDateConfig.NOW_DATE);
                 outputView.printMethod();
                 return requestInputString();
             })
             .takeWhile(option -> !option.equals("Q"))
-            .forEach(option -> run(option, attendanceBook));
+            .forEach(Application::run);
     }
 
-    private static void run(String option, AttendanceBook attendanceBook) {
-        AttendanceOperation runnable = optionMenu.getOrDefault(option, null);
+    private static void run(String option) {
+        Runnable runnable = optionMenu.getOrDefault(option, null);
         if (runnable == null) {
             throw new AttendanceArgumentException(WRONG_INPUT);
         }
-        runnable.run(attendanceBook);
+        runnable.run();
     }
 
-    private static void registerAttendance(AttendanceBook attendanceBook) {
+    private static void registerAttendance() {
         outputView.printRequestNickname();
         String nickname = requestInputString();
         try {
@@ -109,7 +108,7 @@ public class Application {
         attendances.add(newAttendance);
     }
 
-    private static void modifyAttendance(AttendanceBook attendanceBook) {
+    private static void modifyAttendance() {
         String nickname = requestInputStringForModify();
         var dateTime = requestLocalDateTime();
         try {
@@ -128,7 +127,7 @@ public class Application {
         attendances.add(newAttendance);
     }
 
-    private static void checkAttendanceStatisticsByCrew(AttendanceBook attendanceBook) {
+    private static void checkAttendanceStatisticsByCrew() {
         outputView.printRequestNickname();
         String nickname = requestInputString();
         try {
@@ -149,7 +148,7 @@ public class Application {
         statusStatistic.judgeSanctionLevel();
     }
 
-    private static void checkSanctionStatistic(AttendanceBook attendanceBook) {
+    private static void checkSanctionStatistic() {
         List<HistoryStatistic> historyStatistics = new ArrayList<>();
         for (String nickname : attendanceBook.getNicknameSet()) {
             var attendances = attendanceBook.getAttendances(nickname);

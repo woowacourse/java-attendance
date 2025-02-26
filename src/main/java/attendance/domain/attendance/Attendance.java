@@ -11,6 +11,8 @@ import attendance.domain.AttendanceStatus;
 import attendance.exception.AttendanceArgumentException;
 
 public record Attendance(LocalDateTime dateTime, AttendanceStatus attendanceStatus) {
+    private static final String CANNOT_ATTENDANCE_WEEKEND_FORMAT = "MM월 dd일 E요일은 등교일이 아닙니다.";
+    private static final String OUT_OF_SCHOOL_SCHEDULE = "등교시간에만 출석 가능합니다.";
 
     public static Attendance from(LocalDateTime dateTime) {
         AttendanceStatus attendanceStatus = decideAttendanceStatus(dateTime);
@@ -35,20 +37,20 @@ public record Attendance(LocalDateTime dateTime, AttendanceStatus attendanceStat
             .anyMatch(day -> date.getDayOfMonth() == day);
 
         if (isHoliday) {
-            throw new AttendanceArgumentException(Message.CANNOT_ATTENDANCE_WEEKEND_FORMAT, date);
+            throw new AttendanceArgumentException(CANNOT_ATTENDANCE_WEEKEND_FORMAT, date);
         }
     }
 
     private static void validateIsWeekend(LocalDate date) {
         if (date.getDayOfWeek().getValue() >= DayOfWeek.SATURDAY.getValue()) {
-            throw new AttendanceArgumentException(Message.CANNOT_ATTENDANCE_WEEKEND_FORMAT, date);
+            throw new AttendanceArgumentException(CANNOT_ATTENDANCE_WEEKEND_FORMAT, date);
         }
     }
 
     private static void validateIsDuringCampusSchedule(LocalDateTime dateTime) {
         LocalTime time = dateTime.toLocalTime();
         if (time.isBefore(Schedule.CAMPUS_OPEN) || time.isAfter(Schedule.CAMPUS_CLOSE)) {
-            throw new AttendanceArgumentException(Message.OUT_OF_SCHOOL_SCHEDULE);
+            throw new AttendanceArgumentException(OUT_OF_SCHOOL_SCHEDULE);
         }
     }
 
@@ -60,10 +62,10 @@ public record Attendance(LocalDateTime dateTime, AttendanceStatus attendanceStat
     }
 
     private static AttendanceStatus decideOnDefaultDay(LocalTime time, LocalTime baseSchedule) {
-        if (isAfter(time, Penalty.ABSENCE, baseSchedule)) {
+        if (isAfter(time, AttendanceStatus.ABSENCE.getMinutes(), baseSchedule)) {
             return AttendanceStatus.ABSENCE;
         }
-        if (isAfter(time, Penalty.LATE, baseSchedule)) {
+        if (isAfter(time, AttendanceStatus.LATE.getMinutes(), baseSchedule)) {
             return AttendanceStatus.LATE;
         }
         return AttendanceStatus.ATTENDANCE;
@@ -84,22 +86,6 @@ public record Attendance(LocalDateTime dateTime, AttendanceStatus attendanceStat
         private static final LocalTime CAMPUS_CLOSE = LocalTime.of(23, 0);
 
         private Schedule() {
-        }
-    }
-
-    private static class Penalty {
-        private static final int ABSENCE = 30;
-        private static final int LATE = 5;
-
-        private Penalty() {
-        }
-    }
-
-    private static class Message {
-        private static final String CANNOT_ATTENDANCE_WEEKEND_FORMAT = "MM월 dd일 E요일은 등교일이 아닙니다.";
-        private static final String OUT_OF_SCHOOL_SCHEDULE = "등교시간에만 출석 가능합니다.";
-
-        private Message() {
         }
     }
 }
