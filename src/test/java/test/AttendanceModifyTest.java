@@ -37,15 +37,14 @@ public class AttendanceModifyTest {
     void test1() {
         //given
         LocalDate modifyDate = LocalDate.of(2024, 12, 13);
-        AttendanceHistory attendanceHistory = new AttendanceHistory(List.of(
-                new Attendance(modifyDate, LocalTime.of(10, 10))
-        ));
+        AttendanceHistory attendanceHistory = new AttendanceHistory();
+        attendanceHistory.register(modifyDate, LocalTime.of(10, 10));
 
         //when
         Attendance oldAttendance = attendanceHistory.findByDate(modifyDate);
 
         //then
-        assertThat(oldAttendance.equals(new Attendance(modifyDate, LocalTime.of(10, 10))));
+        assertThat(oldAttendance).isEqualTo(new Attendance(modifyDate, LocalTime.of(10, 10)));
     }
 
     @DisplayName("수정전 Attendance 객체를 바탕으로 새 Attendance 객체로 교체한다.")
@@ -54,10 +53,9 @@ public class AttendanceModifyTest {
         //given
         LocalDate modifyDate = LocalDate.of(2024, 12, 13);
         LocalTime modifyTime = LocalTime.of(11, 11);
-        Attendance oldAttendance = new Attendance(modifyDate, LocalTime.of(10, 10));
-        AttendanceHistory attendanceHistory = new AttendanceHistory(new ArrayList<>(Arrays.asList(
-                oldAttendance
-        ))); //TODO : new ttendances에 불변 들어가면 안됨! 만드는 거 분리하기
+        AttendanceHistory attendanceHistory = new AttendanceHistory();
+        attendanceHistory.register(modifyDate, LocalTime.of(10, 10));
+        Attendance oldAttendance = attendanceHistory.findByDate(modifyDate);
 
         //when
         Attendance attendance = attendanceHistory.modifyFrom(oldAttendance, modifyTime);
@@ -73,10 +71,9 @@ public class AttendanceModifyTest {
         //given
         LocalDate futureDate = LocalDate.of(2024, 12, 16);
         LocalTime modifyTime = LocalTime.of(11, 11);
-        Attendance oldAttendance = new Attendance(futureDate, LocalTime.of(10, 10));
-        AttendanceHistory attendanceHistory = new AttendanceHistory(new ArrayList<>(Arrays.asList(
-                oldAttendance
-        )));
+        AttendanceHistory attendanceHistory = new AttendanceHistory();
+        attendanceHistory.register(futureDate, LocalTime.of(10, 10));
+        Attendance oldAttendance = attendanceHistory.findByDate(futureDate);
 
         //when, then
         assertThatThrownBy(() -> {
@@ -90,10 +87,9 @@ public class AttendanceModifyTest {
         //given
         LocalDate holidayDate = LocalDate.of(2024, 12, 14);
         LocalTime modifyTime = LocalTime.of(11, 11);
-        Attendance oldAttendance = new Attendance(holidayDate, LocalTime.of(10, 10));
-        AttendanceHistory attendanceHistory = new AttendanceHistory(new ArrayList<>(Arrays.asList(
-                oldAttendance
-        )));
+        AttendanceHistory attendanceHistory = new AttendanceHistory();
+        attendanceHistory.register(holidayDate, LocalTime.of(10, 10));
+        Attendance oldAttendance = attendanceHistory.findByDate(holidayDate);
 
         //when, then
         assertThatThrownBy(() -> {

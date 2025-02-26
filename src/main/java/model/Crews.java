@@ -20,6 +20,7 @@ public class Crews {
         this.crews = crews;
     }
 
+    //TODO : private으로
     public static List<String> extractUniqueCrewData(List<String> combinedData) {
         return combinedData.stream()
                 .map(data -> data.split(",")[0])
@@ -32,6 +33,10 @@ public class Crews {
                 .filter(crew -> crew.equals(new Crew(name)))
                 .findAny();
         //TODO : getName대신 이거 써도 되나..? 메모리에반데
+    }
+
+    public List<Crew> getCrews() {
+        return Collections.unmodifiableList(crews);
     }
 
     @Override
@@ -49,9 +54,5 @@ public class Crews {
     @Override
     public int hashCode() {
         return Objects.hashCode(crews);
-    }
-
-    public List<Crew> getCrews() {
-        return Collections.unmodifiableList(crews);
     }
 }

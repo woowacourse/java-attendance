@@ -7,6 +7,7 @@ import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -14,15 +15,10 @@ public class AttendanceBook {
 
     private final Map<Crew, AttendanceHistory> attendances;
 
-    public static AttendanceBook from(List<String> data, Crews crews) {
+    public static AttendanceBook from(Crews crews) {
         Map<Crew, AttendanceHistory> attendances = new HashMap<>();
         for (Crew crew : crews.getCrews()) {
-            List<Attendance> defaultAttendances = IntStream.range(1, 32)
-                    .mapToObj(date -> new Attendance(
-                            LocalDate.of(2024, 12, date),
-                            Common.noneAttendanceTime))
-                    .collect(Collectors.toList()); //TODO : toList면 불변이 되어 수정 불가능해짐
-            attendances.put(crew, new AttendanceHistory(defaultAttendances));
+            attendances.put(crew, new AttendanceHistory());
         }
         return new AttendanceBook(attendances);
     }
@@ -41,6 +37,14 @@ public class AttendanceBook {
         }
     }
 
+    public AttendanceHistory findByCrew(Crew targetCrew) {
+        return attendances.keySet().stream()
+                .filter(crew -> crew.equals(targetCrew))
+                .findAny()
+                .map(attendances::get)
+                .orElseThrow(CrewNotExistException::new);
+    }
+
 //    public static Map<Crew, AttendanceHistory> initializeAttendanceOf(Crews crews) {
 //        Map<Crew, AttendanceHistory> attendances = new HashMap<>();
 //        for (Crew crew : crews.getCrews()) {
@@ -53,4 +57,23 @@ public class AttendanceBook {
 //        }
 //        return attendances;
 //    }
+
+
+    @Override
+    public boolean equals(Object object) {
+        if (this == object) {
+            return true;
+        }
+        if (object == null || getClass() != object.getClass()) {
+            return false;
+        }
+        AttendanceBook targetAttendancdBook = (AttendanceBook) object;
+        return attendances.entrySet().containsAll(targetAttendancdBook.attendances.entrySet())
+                && targetAttendancdBook.attendances.entrySet().containsAll(attendances.entrySet());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(attendances);
+    }
 }

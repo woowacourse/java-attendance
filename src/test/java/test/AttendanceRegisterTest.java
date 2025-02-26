@@ -7,11 +7,13 @@ import exception.DuplicatedAttendanceRegistrationException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.IntStream;
 import model.Attendance;
+import model.AttendanceBook;
 import model.AttendanceStatus;
 import model.AttendanceHistory;
 import model.Crew;
@@ -46,26 +48,29 @@ public class AttendanceRegisterTest {
 //        ));
 //    }
 
-    @DisplayName("중복 없이 크루 이름을 읽어온다.")
-    @Test
-    void test1() {
-        //given
-        List<String> combinedData = List.of(
-                "쿠키,2024-12-13 10:08",
-                "빙봉,2024-12-13 10:07",
-                "이든,2024-12-13 10:07",
-                "빙봉,2024-12-12 11:11",
-                "빙티,2024-12-12 10:07",
-                "이든,2024-12-12 10:06",
-                "이든,2024-12-11 10:10"
-        );
-
-        //when
-        List<String> crewNames = ExistingAttendances.extractUniqueCrewData(combinedData);
-
-        //then
-        assertThat(crewNames).containsExactly("쿠키", "빙봉", "이든", "빙티");
-    }
+    /**
+     * attendance파일에서 중복없는 크루이름을 빼오는 걸 Crews가 담당해서 필요없어짐
+     */
+//    @DisplayName("중복 없이 크루 이름을 읽어온다.")
+//    @Test
+//    void test1() {
+//        //given
+//        List<String> combinedData = List.of(
+//                "쿠키,2024-12-13 10:08",
+//                "빙봉,2024-12-13 10:07",
+//                "이든,2024-12-13 10:07",
+//                "빙봉,2024-12-12 11:11",
+//                "빙티,2024-12-12 10:07",
+//                "이든,2024-12-12 10:06",
+//                "이든,2024-12-11 10:10"
+//        );
+//
+//        //when
+//        List<String> crewNames = ExistingAttendances.extractUniqueCrewData(combinedData);
+//
+//        //then
+//        assertThat(crewNames).containsExactly("쿠키", "빙봉", "이든", "빙티");
+//    }
 
     /**
      * test3과 통합된 기능
@@ -91,10 +96,19 @@ public class AttendanceRegisterTest {
     @Test
     void test3() {
         //given
-        List<String> crewNames = List.of("쿠키", "빙봉", "빙티", "이든");
+//        List<String> crewNames = List.of("쿠키", "빙봉", "빙티", "이든");
+        List<String> combinedData = List.of(
+                "쿠키,2024-12-13 10:08",
+                "빙봉,2024-12-13 10:07",
+                "이든,2024-12-13 10:07",
+                "빙봉,2024-12-12 11:11",
+                "빙티,2024-12-12 10:07",
+                "이든,2024-12-12 10:06",
+                "이든,2024-12-11 10:10"
+        );
 
         //when
-        Crews crews = Crews.from(crewNames);
+        Crews crews = Crews.from(combinedData);
 
         //then
         assertThat(crews).isEqualTo(new Crews(List.of(
@@ -141,18 +155,15 @@ public class AttendanceRegisterTest {
     void test5_0() {
         //given
         Crew crew = new Crew("쿠키");
-        List<Crew> crewsInput = List.of(crew);
-        Crews crews = new Crews(crewsInput);
+        Crews crews = new Crews(List.of(crew));
 
         //when
-        Map<Crew, AttendanceHistory> attendancesPerCrew = ExistingAttendances.initializeAttendanceOf(crews);
+        AttendanceBook attendanceBook = AttendanceBook.from(crews);
 
         //then
-        assertThat(attendancesPerCrew.get(crew)).isEqualTo(new AttendanceHistory(
-                IntStream.range(1, 32)
-                        .mapToObj(date -> new Attendance(LocalDate.of(2024, 12, date), LocalTime.of(0, 0)))
-                        .toList()
-        ));
+        assertThat(attendanceBook).isEqualTo(new AttendanceBook(new HashMap<>(Map.of(
+                crew, new AttendanceHistory()
+        ))));
     }
 
     @DisplayName("크루 이름과 날짜 객체를 입력하면 날짜와 시간을 읽어서 Attendance 객체를 반환한다.")
@@ -172,10 +183,9 @@ public class AttendanceRegisterTest {
     void test5_2() {
         Crew crew = new Crew("빙티");
         Crews crews = new Crews(List.of(crew));
-        Map<Crew, AttendanceHistory> initializedAttendances = ExistingAttendances.initializeAttendanceOf(crews);
 
         //when
-        AttendanceHistory attendanceHistoryOfCrew = initializedAttendances.get(crew);
+        AttendanceHistory attendanceHistoryOfCrew = new AttendanceHistory();
         Attendance attendance = attendanceHistoryOfCrew.register(LocalDate.of(2024, 12, 14),
                 LocalTime.of(10, 10));
 
@@ -196,17 +206,19 @@ public class AttendanceRegisterTest {
                 "이든,2024-12-12 11:11"
         );
         Crews crews = new Crews(List.of(crew1, crew2));
-        Map<Crew, AttendanceHistory> defaultAttendances = ExistingAttendances.initializeAttendanceOf(crews);
+        ExistingAttendances fileAttendances = ExistingAttendances.from(combinedData);
+        AttendanceBook attendanceBook = AttendanceBook.from(crews);
 
         //when
-        ExistingAttendances.updateAttendances(crews, combinedData, defaultAttendances);
+        attendanceBook.update(fileAttendances.getAttendances(), crews);
 
         //then
-        assertThat(defaultAttendances.get(crew1)
-                .findByDate(LocalDate.of(2024, 12, 13)))
+        AttendanceHistory attendanceHistory1 = attendanceBook.findByCrew(crew1);
+        assertThat(attendanceHistory1.findByDate(LocalDate.of(2024, 12, 13)))
                 .isEqualTo(new Attendance(LocalDate.of(2024, 12, 13), LocalTime.of(10, 8)));
-        assertThat(defaultAttendances.get(crew2)
-                .findByDate(LocalDate.of(2024, 12, 12)))
+
+        AttendanceHistory attendanceHistory2 = attendanceBook.findByCrew(crew2); //TODO: 테스트위해 만들어벌임.. 근데 무조건 만들어야하는 메서드임
+        assertThat(attendanceHistory2.findByDate(LocalDate.of(2024, 12, 12)))
                 .isEqualTo(new Attendance(LocalDate.of(2024, 12, 12), LocalTime.of(11, 11)));
     }
 
@@ -309,8 +321,8 @@ public class AttendanceRegisterTest {
     void test8() {
         Crew crew = new Crew("빙티");
         Crews crews = new Crews(List.of(crew));
-        Map<Crew, AttendanceHistory> initializedAttendances = ExistingAttendances.initializeAttendanceOf(crews);
-        AttendanceHistory attendanceHistory = initializedAttendances.get(crew);
+        AttendanceBook attendanceBook = AttendanceBook.from(crews);
+        AttendanceHistory attendanceHistory = attendanceBook.findByCrew(crew);
 
         attendanceHistory.register(LocalDate.of(2024, 12, 13), LocalTime.of(10, 5));
 
