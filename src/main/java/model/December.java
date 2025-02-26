@@ -18,7 +18,7 @@ public class December {
         }
     }
 
-    private static boolean isHolidayAt(LocalDate date) {
+    public static boolean isHolidayAt(LocalDate date) {
         if (date.getYear() != YEAR || date.getMonthValue() != MONTH) {
             throw new RuntimeException("2024년 12월에 한정된 서비스입니다.");
         }

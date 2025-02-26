@@ -78,20 +78,23 @@ public class AttendanceModifyTest {
         }).isInstanceOf(FutureAttendanceModifyException.class);
     }
 
-    @DisplayName("등교일이 아닌 날을 수정 날짜로 입력할 경우 예외를 반환한다.")
-    @Test
-    void test5() {
-        //given
-        LocalDate holidayDate = LocalDate.of(2024, 12, 14);
-        LocalTime modifyTime = LocalTime.of(11, 11);
-        AttendanceHistory attendanceHistory = new AttendanceHistory();
-        attendanceHistory.register(holidayDate, LocalTime.of(10, 10));
-        Attendance oldAttendance = attendanceHistory.findByDate(holidayDate);
-
-        //when, then
-        assertThatThrownBy(() -> {
-            attendanceHistory.modifyFrom(oldAttendance, modifyTime);})
-                .isInstanceOf(HolidayAttendanceException.class)
-                .hasMessageContaining("12월 14일 토요일은 등교일이 아닙니다.");
-    }
+    /**
+     * TODO : 아예 수정날짜까지 등교일을 검사할 필요 없음 -> 한단계 안쪽인 Attenacne에서 처리하는 방향이 좋을듯
+     */
+//    @DisplayName("등교일이 아닌 날을 수정 날짜로 입력할 경우 예외를 반환한다.")
+//    @Test
+//    void test5() {
+//        //given
+//        LocalDate holidayDate = LocalDate.of(2024, 12, 14);
+//        LocalTime modifyTime = LocalTime.of(11, 11);
+//        AttendanceHistory attendanceHistory = new AttendanceHistory();
+//        attendanceHistory.register(holidayDate, LocalTime.of(10, 10));
+//        Attendance oldAttendance = attendanceHistory.findByDate(holidayDate);
+//
+//        //when, then
+//        assertThatThrownBy(() -> {
+//            attendanceHistory.modifyFrom(oldAttendance, modifyTime);})
+//                .isInstanceOf(HolidayAttendanceException.class)
+//                .hasMessageContaining("12월 14일 토요일은 등교일이 아닙니다.");
+//    }
 }

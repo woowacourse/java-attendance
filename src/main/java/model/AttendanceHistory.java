@@ -5,6 +5,7 @@ import exception.DuplicatedAttendanceRegistrationException;
 import exception.FutureAttendanceModifyException;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
@@ -15,11 +16,16 @@ public class AttendanceHistory {
     private final List<Attendance> attendances;
 
     public AttendanceHistory() {
-        List<Attendance> defaultAttendances = IntStream.range(1, 32)
-                .mapToObj(date -> new Attendance(
-                        LocalDate.of(2024, 12, date),
-                        Common.noneAttendanceTime))
-                .collect(Collectors.toList()); //TODO : toList면 불변이 되어 수정 불가능해짐
+        List<Attendance> defaultAttendances = new ArrayList<>(); //TODO : 스트림 불가?
+        for (int date = 1; date <= 31; date++) {
+            if (December.isHolidayAt(DateGenerator.create(date))) {
+                continue;
+            }
+            defaultAttendances.add(new Attendance(
+                    LocalDate.of(2024, 12, date),
+                    Common.noneAttendanceTime));
+        }//TODO : toList면 불변이 되어 수정 불가능해짐
+
         this.attendances = defaultAttendances;
     }
 

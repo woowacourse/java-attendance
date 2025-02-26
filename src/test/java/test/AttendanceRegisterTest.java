@@ -181,14 +181,13 @@ public class AttendanceRegisterTest {
     @Test
     void test5_2() {
         Crew crew = new Crew("빙티");
-        Crews crews = new Crews(List.of(crew));
 
         //when
         AttendanceHistory attendanceHistoryOfCrew = new AttendanceHistory();
-        Attendance attendance = attendanceHistoryOfCrew.register(LocalDate.of(2024, 12, 14),
+        Attendance attendance = attendanceHistoryOfCrew.register(LocalDate.of(2024, 12, 13),
                 LocalTime.of(10, 10));
 
-        assertThat(attendance).isEqualTo(new Attendance(LocalDate.of(2024, 12, 14),
+        assertThat(attendance).isEqualTo(new Attendance(LocalDate.of(2024, 12, 13),
                 LocalTime.of(10, 10)));
         //findByDate도 하면 좋을듯
     }
