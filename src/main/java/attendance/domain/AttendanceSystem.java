@@ -4,70 +4,65 @@ import attendance.domain.checker.AttendanceChecker;
 import attendance.domain.checker.AttendanceType;
 import attendance.domain.crew.CrewStorage;
 import attendance.domain.record.AttendanceRecord;
+import attendance.domain.record.AttendanceRecordStorage;
 import attendance.domain.risk.RiskType;
 import attendance.dto.AttendanceState;
 import attendance.dto.RecordUpdateResult;
-import attendance.exception.ExceptionMessage;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.ArrayList;
+import java.time.Month;
 import java.util.List;
-import java.util.Optional;
 
 public class AttendanceSystem {
 
     private final CrewStorage crewStorage;
     private final AttendanceChecker attendanceChecker;
-    private final List<AttendanceRecord> records = new ArrayList<>();
+    private final AttendanceRecordStorage recordStorage;
 
-    public AttendanceSystem(CrewStorage crewStorage, AttendanceChecker attendanceChecker) {
+    public AttendanceSystem(
+            CrewStorage crewStorage,
+            AttendanceChecker attendanceChecker,
+            AttendanceRecordStorage recordStorage
+    ) {
         this.crewStorage = crewStorage;
         this.attendanceChecker = attendanceChecker;
+        this.recordStorage = recordStorage;
     }
 
-    public AttendanceRecord addAttendanceRecord(String crewNickname, LocalDateTime arrivalDateTime) {
-        crewStorage.validateIsNotContained(crewNickname);
-        validateAlreadyAttendance(crewNickname, arrivalDateTime.toLocalDate());
-        AttendanceType attendanceType = attendanceChecker.checkAttendance(arrivalDateTime);
-        AttendanceRecord newRecord = new AttendanceRecord(crewNickname, arrivalDateTime, attendanceType);
-        records.add(newRecord);
+    public AttendanceRecord addAttendanceRecord(String nickname, LocalDateTime arrivalDateTime) {
+        crewStorage.validateIsNotContained(nickname);
+        AttendanceRecord newRecord = makeNewAttendance(nickname, arrivalDateTime);
+        recordStorage.add(newRecord);
         return newRecord;
     }
 
     public RecordUpdateResult updateAttendance(String nickname, LocalDate arrivalDate, LocalTime newTime) {
         crewStorage.validateIsNotContained(nickname);
-        Optional<AttendanceRecord> originRecord = findAttendanceRecord(nickname, arrivalDate);
-        originRecord.ifPresent(records::remove);
 
-        LocalDateTime newDateTime = LocalDateTime.of(arrivalDate, newTime);
-        AttendanceType attendanceType = attendanceChecker.checkAttendance(newDateTime);
-        AttendanceRecord newRecord = new AttendanceRecord(nickname, newDateTime, attendanceType);
-        records.add(newRecord);
+        AttendanceRecord oldRecord = recordStorage.findWithAbsenceRecord(nickname, arrivalDate);
+        recordStorage.remove(nickname, arrivalDate);
 
-        AttendanceRecord oldRecord = originRecord.orElse(
-                AttendanceRecord.makeAbsenceRecord(nickname, arrivalDate));
+        AttendanceRecord newRecord = makeNewAttendance(nickname, LocalDateTime.of(arrivalDate, newTime));
+        recordStorage.add(newRecord);
         return new RecordUpdateResult(oldRecord, newRecord);
     }
 
     public List<AttendanceRecord> findRecordsInMonth(String nickname, LocalDate today) {
-        List<LocalDate> notHolidays = attendanceChecker
-                .calculateNotHolidayInMonth(today.getYear(), today.getMonth());
+        List<LocalDate> notHolidays = calculateNotHoliday(today.getYear(), today.getMonth());
         return notHolidays.stream()
                 .filter(notHoliday -> !notHoliday.isAfter(today))
-                .map(notHoliday -> findOrElseAbsenceRecord(nickname, notHoliday))
+                .map(notHoliday -> recordStorage.findWithAbsenceRecord(nickname, notHoliday))
                 .toList();
     }
 
     public AttendanceState calculateAttendanceStateInMonth(String nickname, LocalDate today) {
         crewStorage.validateIsNotContained(nickname);
-        List<LocalDate> notHolidays = attendanceChecker
-                .calculateNotHolidayInMonth(today.getYear(), today.getMonth());
-        int maxAttendanceCount = (int) notHolidays.stream().filter(notHoliday -> !notHoliday.isAfter(today)).count();
-        int attendanceCount = calculateAttendanceRecordInMonth(nickname, today);
-        int lateCount = calculateLateRecordInMonth(nickname, today);
-        return new AttendanceState(nickname, attendanceCount, lateCount,
-                maxAttendanceCount - attendanceCount - lateCount);
+        int maxAttendanceCount = calculateMaxAttendanceCountUntilTodayInMonth(today);
+        int attendanceCount = recordStorage.calculateAttendanceCountInMonth(nickname, today);
+        int lateCount = recordStorage.calculateLateCountInMonth(nickname, today);
+        int absenceCount = maxAttendanceCount - attendanceCount - lateCount;
+        return new AttendanceState(nickname, attendanceCount, lateCount, absenceCount);
     }
 
     public List<AttendanceState> findRiskCrew(LocalDate today) {
@@ -79,37 +74,17 @@ public class AttendanceSystem {
                 .toList();
     }
 
-    public Optional<AttendanceRecord> findAttendanceRecord(String crewNickname, LocalDate date) {
-        return records.stream()
-                .filter(record -> record.isSame(crewNickname, date))
-                .findAny();
+    private AttendanceRecord makeNewAttendance(String nickname, LocalDateTime arrivalDateTime) {
+        AttendanceType attendanceType = attendanceChecker.checkAttendance(arrivalDateTime);
+        return new AttendanceRecord(nickname, arrivalDateTime, attendanceType);
     }
 
-    private void validateAlreadyAttendance(String crewNickname, LocalDate date) {
-        Optional<AttendanceRecord> originRecord = findAttendanceRecord(crewNickname, date);
-        if (originRecord.isPresent()) {
-            throw new IllegalArgumentException(ExceptionMessage.ALREADY_ATTENDANCE.getMessage());
-        }
+    private int calculateMaxAttendanceCountUntilTodayInMonth(LocalDate today) {
+        List<LocalDate> notHolidays = calculateNotHoliday(today.getYear(), today.getMonth());
+        return (int) notHolidays.stream().filter(notHoliday -> !notHoliday.isAfter(today)).count();
     }
 
-    private AttendanceRecord findOrElseAbsenceRecord(String nickname, LocalDate date) {
-        Optional<AttendanceRecord> record = findAttendanceRecord(nickname, date);
-        return record.orElseGet(() -> AttendanceRecord.makeAbsenceRecord(nickname, date));
-    }
-
-    private int calculateAttendanceRecordInMonth(String nickname, LocalDate today) {
-        return (int) records.stream()
-                .filter(record -> record.checkNickname(nickname))
-                .filter(record -> record.checkIsInMonth(today.getYear(), today.getMonth()))
-                .filter(record -> record.checkType(AttendanceType.ATTENDANCE))
-                .count();
-    }
-
-    private int calculateLateRecordInMonth(String nickname, LocalDate today) {
-        return (int) records.stream()
-                .filter(record -> record.checkNickname(nickname))
-                .filter(record -> record.checkIsInMonth(today.getYear(), today.getMonth()))
-                .filter(record -> record.checkType(AttendanceType.LATE))
-                .count();
+    private List<LocalDate> calculateNotHoliday(int year, Month month) {
+        return attendanceChecker.calculateNotHolidayInMonth(year, month);
     }
 }

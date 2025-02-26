@@ -1,7 +1,6 @@
 package attendance;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 
 import attendance.domain.AttendanceSystem;
@@ -10,6 +9,7 @@ import attendance.domain.checker.AttendanceType;
 import attendance.domain.checker.HolidayChecker;
 import attendance.domain.crew.CrewStorage;
 import attendance.domain.record.AttendanceRecord;
+import attendance.domain.record.AttendanceRecordStorage;
 import attendance.domain.risk.RiskType;
 import attendance.dto.AttendanceState;
 import attendance.exception.ExceptionMessage;
@@ -20,6 +20,7 @@ import java.time.format.TextStyle;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
+import java.util.Optional;
 import java.util.stream.Stream;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -27,113 +28,122 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
-import org.junit.jupiter.params.provider.ValueSource;
 
 class AttendanceSystemTest {
 
     static final String VALID_CREW_NICKNAME = "쿠키";
     static final String INVALID_CREW_NICKNAME = "빙봉";
-    static final LocalDateTime SATURDAY = LocalDateTime.of(2025, 2, 8, 8, 50);
-    static final LocalDateTime SUNDAY = LocalDateTime.of(2025, 2, 9, 8, 50);
-    static final LocalDateTime PUBLIC_HOLIDAY = LocalDateTime.of(2025, 2, 24, 8, 50);
-    static final LocalDateTime COMMON_ATTENDANCE_DATE_TIME = LocalDateTime.of(2025, 2, 4, 8, 50);
+    static final LocalDate SATURDAY = LocalDate.of(2025, 2, 8);
+    static final LocalDate SUNDAY = LocalDate.of(2025, 2, 9);
+    static final LocalDate PUBLIC_HOLIDAY = LocalDate.of(2025, 2, 24);
+    static final LocalDate MONDAY = LocalDate.of(2025, 2, 3);
+    static final LocalDate NOT_MONDAY = LocalDate.of(2025, 2, 4);
+    static final LocalTime MONDAY_ATTENDANCE_TIME = LocalTime.of(13, 0);
+    static final LocalTime MONDAY_LATE_TIME = LocalTime.of(13, 5);
+    static final LocalTime MONDAY_ABSENCE_TIME = LocalTime.of(13, 30);
+    static final LocalTime NOT_MONDAY_ATTENDANCE_TIME = LocalTime.of(10, 0);
+    static final LocalTime NOT_MONDAY_LATE_TIME = LocalTime.of(10, 5);
+    static final LocalTime NOT_MONDAY_ABSENCE_TIME = LocalTime.of(10, 30);
+    static final LocalTime CAMPUS_START_TIME = LocalTime.of(8, 0);
+    static final LocalTime CAMPUS_END_TIME = LocalTime.of(23, 0);
 
     CrewStorage crewStorage = new CrewStorage();
     HolidayChecker holidayChecker = new HolidayChecker();
     AttendanceChecker attendanceChecker = new AttendanceChecker(holidayChecker);
-    AttendanceSystem attendanceSystem = new AttendanceSystem(crewStorage, attendanceChecker);
+    AttendanceRecordStorage recordStorage = new AttendanceRecordStorage();
+    AttendanceSystem attendanceSystem = new AttendanceSystem(crewStorage, attendanceChecker, recordStorage);
 
     @BeforeEach
     void beforeEach() {
         crewStorage.add(VALID_CREW_NICKNAME);
-        holidayChecker.addPublicHoliday(PUBLIC_HOLIDAY.toLocalDate());
-        attendanceSystem = new AttendanceSystem(crewStorage, attendanceChecker);
+        holidayChecker.addPublicHoliday(PUBLIC_HOLIDAY);
     }
 
     @DisplayName("출석 확인 - 닉네임과 출석 시간으로 출석 기록을 추가할 수 있다")
     @Test
     void 출석_확인_닉네임과_출석_시간으로_출석_기록을_추가할_수_있다() {
-        String crewNickname = VALID_CREW_NICKNAME;
-        LocalDateTime arrivalDateTime = LocalDateTime.of(2025, 2, 4, 8, 50, 0);
+        String nickname = VALID_CREW_NICKNAME;
+        LocalDateTime arrivalDateTime = LocalDateTime.of(MONDAY, MONDAY_ATTENDANCE_TIME);
 
-        attendanceSystem.addAttendanceRecord(crewNickname, arrivalDateTime);
+        attendanceSystem.addAttendanceRecord(nickname, arrivalDateTime);
 
-        AttendanceRecord expectedRecord = new AttendanceRecord(crewNickname, arrivalDateTime,
-                AttendanceType.ATTENDANCE);
-        AttendanceRecord actualRecord = attendanceSystem.findAttendanceRecord(crewNickname,
-                arrivalDateTime.toLocalDate()).get();
-        assertThat(actualRecord).isEqualTo(expectedRecord);
+        Optional<AttendanceRecord> record = recordStorage.find(nickname, arrivalDateTime.toLocalDate());
+        assertThat(record).isPresent();
     }
 
     @DisplayName("출석 확인 - 교육시간과 출석정책을 기준으로 월요일의 출석 상태를 결정한다")
     @ParameterizedTest
     @MethodSource()
     void 출석_확인_교육시간과_출석정책을_기준으로_월요일의_출석_상태를_결정한다(LocalDateTime arrivalDateTime, AttendanceType attendanceType) {
-        String crewNickname = VALID_CREW_NICKNAME;
-        attendanceSystem.addAttendanceRecord(crewNickname, arrivalDateTime);
+        String nickname = VALID_CREW_NICKNAME;
 
-        AttendanceRecord actualRecord = attendanceSystem.findAttendanceRecord(
-                crewNickname, arrivalDateTime.toLocalDate()).get();
-        assertThat(actualRecord.getAttendanceType()).isEqualTo(attendanceType);
+        attendanceSystem.addAttendanceRecord(nickname, arrivalDateTime);
+
+        AttendanceRecord record = recordStorage.findWithAbsenceRecord(nickname, arrivalDateTime.toLocalDate());
+        assertThat(record.getAttendanceType()).isEqualTo(attendanceType);
     }
 
     static Stream<Arguments> 출석_확인_교육시간과_출석정책을_기준으로_월요일의_출석_상태를_결정한다() {
         return Stream.of(
-                Arguments.of(LocalDateTime.of(2025, 2, 3, 12, 0, 0), AttendanceType.ATTENDANCE),
-                Arguments.of(LocalDateTime.of(2025, 2, 3, 13, 4, 59), AttendanceType.ATTENDANCE),
-                Arguments.of(LocalDateTime.of(2025, 2, 3, 13, 5, 0), AttendanceType.LATE),
-                Arguments.of(LocalDateTime.of(2025, 2, 3, 13, 5, 1), AttendanceType.LATE),
-                Arguments.of(LocalDateTime.of(2025, 2, 3, 13, 29, 59), AttendanceType.LATE),
-                Arguments.of(LocalDateTime.of(2025, 2, 3, 13, 30, 0), AttendanceType.ABSENCE),
-                Arguments.of(LocalDateTime.of(2025, 2, 3, 13, 30, 1), AttendanceType.ABSENCE)
+                Arguments.of(LocalDateTime.of(MONDAY, MONDAY_ATTENDANCE_TIME), AttendanceType.ATTENDANCE),
+                Arguments.of(LocalDateTime.of(MONDAY, MONDAY_LATE_TIME.minusSeconds(1)), AttendanceType.ATTENDANCE),
+                Arguments.of(LocalDateTime.of(MONDAY, MONDAY_LATE_TIME), AttendanceType.LATE),
+                Arguments.of(LocalDateTime.of(MONDAY, MONDAY_LATE_TIME.plusSeconds(1)), AttendanceType.LATE),
+                Arguments.of(LocalDateTime.of(MONDAY, MONDAY_ABSENCE_TIME.minusSeconds(1)), AttendanceType.LATE),
+                Arguments.of(LocalDateTime.of(MONDAY, MONDAY_ABSENCE_TIME), AttendanceType.ABSENCE),
+                Arguments.of(LocalDateTime.of(MONDAY, MONDAY_ABSENCE_TIME.plusSeconds(1)), AttendanceType.ABSENCE)
         );
     }
 
     @DisplayName("출석 확인 - 교육시간과 출석정책을 기준으로 화요일에서 금요일의 출석 상태를 결정한다")
     @ParameterizedTest
     @MethodSource()
-    void 출석_확인_교육시간과_출석정책을_기준으로_화요일에서_금요일의_출석_상태를_결정한다(LocalDateTime arrivalDateTime, AttendanceType attendanceType) {
-        String crewNickname = VALID_CREW_NICKNAME;
-        attendanceSystem.addAttendanceRecord(crewNickname, arrivalDateTime);
+    void 출석_확인_교육시간과_출석정책을_기준으로_화요일에서_금요일의_출석_상태를_결정한다(
+            LocalDateTime arrivalDateTime,
+            AttendanceType attendanceType
+    ) {
+        String nickname = VALID_CREW_NICKNAME;
+        attendanceSystem.addAttendanceRecord(nickname, arrivalDateTime);
 
-        AttendanceRecord actualRecord = attendanceSystem.findAttendanceRecord(
-                crewNickname, arrivalDateTime.toLocalDate()).get();
-        assertThat(actualRecord.getAttendanceType()).isEqualTo(attendanceType);
+        AttendanceRecord record = recordStorage.findWithAbsenceRecord(nickname, arrivalDateTime.toLocalDate());
+        assertThat(record.getAttendanceType()).isEqualTo(attendanceType);
     }
 
     static Stream<Arguments> 출석_확인_교육시간과_출석정책을_기준으로_화요일에서_금요일의_출석_상태를_결정한다() {
         return Stream.of(
-                Arguments.of(LocalDateTime.of(2025, 2, 7, 9, 0, 0), AttendanceType.ATTENDANCE),
-                Arguments.of(LocalDateTime.of(2025, 2, 7, 10, 4, 59), AttendanceType.ATTENDANCE),
-                Arguments.of(LocalDateTime.of(2025, 2, 7, 10, 5, 0), AttendanceType.LATE),
-                Arguments.of(LocalDateTime.of(2025, 2, 7, 10, 5, 1), AttendanceType.LATE),
-                Arguments.of(LocalDateTime.of(2025, 2, 7, 10, 29, 59), AttendanceType.LATE),
-                Arguments.of(LocalDateTime.of(2025, 2, 7, 10, 30, 0), AttendanceType.ABSENCE),
-                Arguments.of(LocalDateTime.of(2025, 2, 7, 10, 30, 1), AttendanceType.ABSENCE)
+                Arguments.of(LocalDateTime.of(NOT_MONDAY, NOT_MONDAY_ATTENDANCE_TIME), AttendanceType.ATTENDANCE),
+                Arguments.of(LocalDateTime.of(NOT_MONDAY, NOT_MONDAY_LATE_TIME.minusSeconds(1)),
+                        AttendanceType.ATTENDANCE),
+                Arguments.of(LocalDateTime.of(NOT_MONDAY, NOT_MONDAY_LATE_TIME), AttendanceType.LATE),
+                Arguments.of(LocalDateTime.of(NOT_MONDAY, NOT_MONDAY_LATE_TIME.plusSeconds(1)), AttendanceType.LATE),
+                Arguments.of(LocalDateTime.of(NOT_MONDAY, NOT_MONDAY_ABSENCE_TIME.minusSeconds(1)),
+                        AttendanceType.LATE),
+                Arguments.of(LocalDateTime.of(NOT_MONDAY, NOT_MONDAY_ABSENCE_TIME), AttendanceType.ABSENCE),
+                Arguments.of(LocalDateTime.of(NOT_MONDAY, NOT_MONDAY_ABSENCE_TIME.plusSeconds(1)),
+                        AttendanceType.ABSENCE)
         );
     }
 
     @DisplayName("출석 확인 - 이미 출석한 경우, 다시 출석할 수 없으며 수정 기능을 이용하도록 안내한다")
     @Test
     void 출석_확인_이미_출석한_경우_다시_출석할_수_없으며_수정_기능을_이용하도록_안내한다() {
-        String crewNickname = VALID_CREW_NICKNAME;
-        LocalDate arrivalDate = LocalDate.of(2025, 2, 4);
-        LocalDateTime arrivalDateTime = LocalDateTime.of(arrivalDate, LocalTime.of(8, 50, 0));
-        attendanceSystem.addAttendanceRecord(crewNickname, arrivalDateTime);
+        String nickname = VALID_CREW_NICKNAME;
+        LocalDateTime arrivalDateTime = LocalDateTime.of(MONDAY, MONDAY_ATTENDANCE_TIME);
+        attendanceSystem.addAttendanceRecord(nickname, arrivalDateTime);
 
         assertThatIllegalArgumentException()
-                .isThrownBy(() -> attendanceSystem.addAttendanceRecord(crewNickname, arrivalDateTime))
+                .isThrownBy(() -> attendanceSystem.addAttendanceRecord(nickname, arrivalDateTime))
                 .withMessage(ExceptionMessage.ALREADY_ATTENDANCE.getMessage());
     }
 
     @DisplayName("출석 확인 - 네임이 등록되지 않은 경우 예외 메세지를 출력한다")
     @Test
     void 출석_확인_네임이_등록되지_않은_경우_예외_메세지를_출력한다() {
-        String crewNickname = INVALID_CREW_NICKNAME;
-        LocalDateTime arrivalDateTime = LocalDateTime.of(2025, 2, 4, 8, 50, 0);
+        String nickname = INVALID_CREW_NICKNAME;
+        LocalDateTime arrivalDateTime = LocalDateTime.of(MONDAY, MONDAY_ATTENDANCE_TIME);
 
         assertThatIllegalArgumentException()
-                .isThrownBy(() -> attendanceSystem.addAttendanceRecord(crewNickname, arrivalDateTime))
+                .isThrownBy(() -> attendanceSystem.addAttendanceRecord(nickname, arrivalDateTime))
                 .withMessage(ExceptionMessage.INVALID_CREW.getMessage());
     }
 
@@ -141,111 +151,92 @@ class AttendanceSystemTest {
     @ParameterizedTest
     @MethodSource()
     void 출석_확인_등교일이_아닌_경우_예외_메세지를_출력한다(LocalDateTime arrivalDateTime) {
-        String crewNickname = VALID_CREW_NICKNAME;
+        String nickname = VALID_CREW_NICKNAME;
 
         assertThatIllegalArgumentException()
-                .isThrownBy(() -> attendanceSystem.addAttendanceRecord(crewNickname, arrivalDateTime))
-                .withMessage(makeHolidayAttendanceExceptionMessage(arrivalDateTime));
+                .isThrownBy(() -> attendanceSystem.addAttendanceRecord(nickname, arrivalDateTime))
+                .withMessage(makeHolidayAttendanceExceptionMessage(arrivalDateTime.toLocalDate()));
     }
 
     static Stream<Arguments> 출석_확인_등교일이_아닌_경우_예외_메세지를_출력한다() {
         return Stream.of(
-                Arguments.of(SATURDAY),
-                Arguments.of(SUNDAY),
-                Arguments.of(PUBLIC_HOLIDAY)
+                Arguments.of(LocalDateTime.of(SATURDAY, MONDAY_ATTENDANCE_TIME)),
+                Arguments.of(LocalDateTime.of(SATURDAY, MONDAY_ATTENDANCE_TIME)),
+                Arguments.of(LocalDateTime.of(SATURDAY, MONDAY_ATTENDANCE_TIME))
         );
     }
 
     @DisplayName("출석 확인 - 캠퍼스 운영 시간이 아닌 경우 예외 메세지를 출력한다")
     @ParameterizedTest
-    @ValueSource(strings = {"07:59:59", "23:00:00"})
-    void 출석_확인_캠퍼스_운영_시간이_아닌_경우_예외_메세지를_출력한다(LocalTime arrivalTime) {
-        LocalDateTime arrivalDateTime = LocalDateTime.of(LocalDate.of(2025, 2, 10), arrivalTime);
-
+    @MethodSource()
+    void 출석_확인_캠퍼스_운영_시간이_아닌_경우_예외_메세지를_출력한다(LocalDateTime arrivalDateTime) {
         assertThatIllegalArgumentException()
-                .isThrownBy(() -> attendanceSystem.addAttendanceRecord(VALID_CREW_NICKNAME, arrivalDateTime))
+                .isThrownBy(() -> attendanceSystem.addAttendanceRecord(VALID_CREW_NICKNAME,
+                        LocalDateTime.of(MONDAY, CAMPUS_END_TIME)))
                 .withMessage(ExceptionMessage.OUT_OF_CAMPUS_TIME.getMessage());
     }
 
-    @DisplayName("출석 확인 - 캠퍼스 운영 시간인 경우 예외 메세지를 발생시키지 않는다")
-    @ParameterizedTest
-    @ValueSource(strings = {"08:00", "22:59"})
-    void 출석_확인_캠퍼스_운영_시간인_경우_예외_메세지를_발생시키지_않는다(LocalTime arrivalTime) {
-        LocalDateTime arrivalDateTime = LocalDateTime.of(LocalDate.of(2025, 2, 10), arrivalTime);
-
-        assertThatCode(() -> attendanceSystem.addAttendanceRecord(VALID_CREW_NICKNAME, arrivalDateTime))
-                .doesNotThrowAnyException();
+    static Stream<Arguments> 출석_확인_캠퍼스_운영_시간이_아닌_경우_예외_메세지를_출력한다() {
+        return Stream.of(
+                Arguments.of(LocalDateTime.of(MONDAY, CAMPUS_START_TIME.minusSeconds(1))),
+                Arguments.of(LocalDateTime.of(MONDAY, CAMPUS_END_TIME)),
+                Arguments.of(LocalDateTime.of(MONDAY, CAMPUS_END_TIME.plusSeconds(1)))
+        );
     }
 
     @DisplayName("출석 기록 수정 - 닉네임, 수정 목표 날짜, 새로운 출석 시간으로 기존 출석 기록을 수정할 수 있다")
     @Test
     void 출석_기록_수정_닉네임_수정_목표_날짜_새로운_출석_시간으로_기존_출석_기록을_수정할_수_있다() {
-        attendanceSystem.addAttendanceRecord(VALID_CREW_NICKNAME, COMMON_ATTENDANCE_DATE_TIME);
-        LocalDateTime newDateTime = LocalDateTime.of(
-                COMMON_ATTENDANCE_DATE_TIME.toLocalDate(), LocalTime.of(10, 5));
+        LocalDateTime oldDateTime = LocalDateTime.of(MONDAY, MONDAY_ATTENDANCE_TIME);
+        attendanceSystem.addAttendanceRecord(VALID_CREW_NICKNAME, oldDateTime);
 
-        attendanceSystem.updateAttendance(
-                VALID_CREW_NICKNAME, newDateTime.toLocalDate(), newDateTime.toLocalTime());
+        LocalDateTime newDateTime = LocalDateTime.of(MONDAY, MONDAY_LATE_TIME);
+        attendanceSystem.updateAttendance(VALID_CREW_NICKNAME, newDateTime.toLocalDate(), newDateTime.toLocalTime());
 
-        AttendanceRecord actualRecord = attendanceSystem.findAttendanceRecord(
-                VALID_CREW_NICKNAME, COMMON_ATTENDANCE_DATE_TIME.toLocalDate()).get();
-        checkSameRecord(actualRecord, VALID_CREW_NICKNAME, newDateTime);
+        AttendanceRecord actualRecord = recordStorage.findWithAbsenceRecord(VALID_CREW_NICKNAME, MONDAY);
+        assertThat(actualRecord.getAttendanceType()).isEqualTo(AttendanceType.LATE);
     }
 
     @DisplayName("출석 기록 수정 - 교육시간과 출석정책을 기준으로 출석 상태를 결정한다")
     @ParameterizedTest
     @MethodSource()
-    void 출석_기록_수정_교육시간과_출석정책을_기준으로_출석_상태를_결정한다(LocalTime time, AttendanceType expectedType) {
-        attendanceSystem.addAttendanceRecord(VALID_CREW_NICKNAME, COMMON_ATTENDANCE_DATE_TIME);
-        LocalDateTime newDateTime = LocalDateTime.of(
-                COMMON_ATTENDANCE_DATE_TIME.toLocalDate(), time);
-
+    void 출석_기록_수정_교육시간과_출석정책을_기준으로_출석_상태를_결정한다(LocalDateTime newDateTime, AttendanceType expectedType) {
         attendanceSystem.updateAttendance(
                 VALID_CREW_NICKNAME, newDateTime.toLocalDate(), newDateTime.toLocalTime());
 
-        AttendanceRecord actualRecord = attendanceSystem.findAttendanceRecord(
-                VALID_CREW_NICKNAME, COMMON_ATTENDANCE_DATE_TIME.toLocalDate()).get();
+        AttendanceRecord actualRecord = recordStorage.findWithAbsenceRecord(VALID_CREW_NICKNAME, MONDAY);
         assertThat(actualRecord.getAttendanceType()).isEqualTo(expectedType);
     }
 
     static Stream<Arguments> 출석_기록_수정_교육시간과_출석정책을_기준으로_출석_상태를_결정한다() {
         return Stream.of(
-                Arguments.of(LocalTime.of(9, 59, 59), AttendanceType.ATTENDANCE),
-                Arguments.of(LocalTime.of(10, 4, 59), AttendanceType.ATTENDANCE),
-                Arguments.of(LocalTime.of(10, 5, 0), AttendanceType.LATE),
-                Arguments.of(LocalTime.of(10, 29, 59), AttendanceType.LATE),
-                Arguments.of(LocalTime.of(10, 30, 0), AttendanceType.ABSENCE),
-                Arguments.of(LocalTime.of(10, 30, 1), AttendanceType.ABSENCE)
+                Arguments.of(LocalDateTime.of(MONDAY, MONDAY_ATTENDANCE_TIME), AttendanceType.ATTENDANCE),
+                Arguments.of(LocalDateTime.of(MONDAY, MONDAY_LATE_TIME.minusSeconds(1)), AttendanceType.ATTENDANCE),
+                Arguments.of(LocalDateTime.of(MONDAY, MONDAY_LATE_TIME), AttendanceType.LATE),
+                Arguments.of(LocalDateTime.of(MONDAY, MONDAY_LATE_TIME.plusSeconds(1)), AttendanceType.LATE),
+                Arguments.of(LocalDateTime.of(MONDAY, MONDAY_ABSENCE_TIME.minusSeconds(1)), AttendanceType.LATE),
+                Arguments.of(LocalDateTime.of(MONDAY, MONDAY_ABSENCE_TIME), AttendanceType.ABSENCE),
+                Arguments.of(LocalDateTime.of(MONDAY, MONDAY_ABSENCE_TIME.plusSeconds(1)), AttendanceType.ABSENCE)
         );
     }
 
     @DisplayName("출석 기록 수정 - 닉네임이 등록되지 않은 경우 예외 메세지를 출력한다")
     @Test
     void 출석_기록_수정_닉네임이_등록되지_않은_경우_예외_메세지를_출력한다() {
-        LocalDateTime newDateTime = LocalDateTime.of(
-                COMMON_ATTENDANCE_DATE_TIME.toLocalDate(), LocalTime.of(8, 50));
-
         assertThatIllegalArgumentException()
                 .isThrownBy(() -> attendanceSystem.updateAttendance(
-                        INVALID_CREW_NICKNAME,
-                        newDateTime.toLocalDate(),
-                        newDateTime.toLocalTime()))
+                        INVALID_CREW_NICKNAME, MONDAY, MONDAY_ATTENDANCE_TIME))
                 .withMessage(ExceptionMessage.INVALID_CREW.getMessage());
     }
 
     @DisplayName("출석 기록 수정 - 등교일이 아닌 경우 예외 메세지를 출력한다")
     @ParameterizedTest
     @MethodSource()
-    void 출석_기록_수정_등교일이_아닌_경우_예외_메세지를_출력한다(LocalDateTime holiday) {
-        LocalDateTime newDateTime = LocalDateTime.of(
-                holiday.toLocalDate(), LocalTime.of(8, 50));
-
+    void 출석_기록_수정_등교일이_아닌_경우_예외_메세지를_출력한다(LocalDate holiday) {
         assertThatIllegalArgumentException()
                 .isThrownBy(() -> attendanceSystem.updateAttendance(
-                        VALID_CREW_NICKNAME,
-                        newDateTime.toLocalDate(),
-                        newDateTime.toLocalTime()))
-                .withMessage(makeHolidayAttendanceExceptionMessage(newDateTime));
+                        VALID_CREW_NICKNAME, holiday, MONDAY_ATTENDANCE_TIME))
+                .withMessage(makeHolidayAttendanceExceptionMessage(holiday));
     }
 
     static Stream<Arguments> 출석_기록_수정_등교일이_아닌_경우_예외_메세지를_출력한다() {
@@ -258,17 +249,20 @@ class AttendanceSystemTest {
 
     @DisplayName("출석 기록 수정 - 캠퍼스 운영 시간이 아닌 경우 예외 메세지를 출력한다")
     @ParameterizedTest
-    @ValueSource(strings = {"07:59:59", "23:00:00"})
-    void 출석_기록_수정_캠퍼스_운영_시간이_아닌_경우_예외_메세지를_출력한다(LocalTime time) {
-        LocalDateTime newDateTime = LocalDateTime.of(
-                COMMON_ATTENDANCE_DATE_TIME.toLocalDate(), time);
-
+    @MethodSource()
+    void 출석_기록_수정_캠퍼스_운영_시간이_아닌_경우_예외_메세지를_출력한다(LocalDateTime arrivalDateTime) {
         assertThatIllegalArgumentException()
                 .isThrownBy(() -> attendanceSystem.updateAttendance(
-                        VALID_CREW_NICKNAME,
-                        newDateTime.toLocalDate(),
-                        newDateTime.toLocalTime()))
+                        VALID_CREW_NICKNAME, arrivalDateTime.toLocalDate(), arrivalDateTime.toLocalTime()))
                 .withMessage(ExceptionMessage.OUT_OF_CAMPUS_TIME.getMessage());
+    }
+
+    static Stream<Arguments> 출석_기록_수정_캠퍼스_운영_시간이_아닌_경우_예외_메세지를_출력한다() {
+        return Stream.of(
+                Arguments.of(LocalDateTime.of(MONDAY, CAMPUS_START_TIME.minusSeconds(1))),
+                Arguments.of(LocalDateTime.of(MONDAY, CAMPUS_END_TIME)),
+                Arguments.of(LocalDateTime.of(MONDAY, CAMPUS_END_TIME.plusSeconds(1)))
+        );
     }
 
     @DisplayName("출석 조회 - 닉네임을 통해 해당 크루의 출석 기록 일자순으로 조회할 수 있다")
@@ -352,15 +346,15 @@ class AttendanceSystemTest {
     @Test
     void 제적_위험자_두번째로_결석_지각의_내림차순으로_정렬된다() {
         addNotRiskCrew(VALID_CREW_NICKNAME);
-        addWarningTargetCrew("쿠키2");
-        attendanceSystem.addAttendanceRecord("쿠키2", LocalDateTime.of(2025, 2, 10, 8, 50));
-        addWarningTargetCrew("쿠키3");
-        attendanceSystem.addAttendanceRecord("쿠키3", LocalDateTime.of(2025, 2, 10, 13, 5));
+        addWarningTargetCrew("빙봉");
+        attendanceSystem.addAttendanceRecord("빙봉", LocalDateTime.of(2025, 2, 10, 8, 50));
+        addWarningTargetCrew("이든");
+        attendanceSystem.addAttendanceRecord("이든", LocalDateTime.of(2025, 2, 10, 13, 5));
 
         List<AttendanceState> states = attendanceSystem.findRiskCrew(LocalDate.of(2025, 2, 10));
         assertThat(states)
                 .extracting(AttendanceState::getNickname)
-                .containsExactly("쿠키3", "쿠키2");
+                .containsExactly("빙봉", "이든");
     }
 
     @DisplayName("제적 위험자 조회 - 제적 위험자 세번째로 닉네임의 내림차순으로 정렬된다.")
@@ -378,10 +372,10 @@ class AttendanceSystemTest {
     }
 
 
-    String makeHolidayAttendanceExceptionMessage(LocalDateTime dateTime) {
+    String makeHolidayAttendanceExceptionMessage(LocalDate date) {
         return String.format(ExceptionMessage.HOLIDAY_ATTENDANCE.getMessage(),
-                dateTime.getMonth().getValue(), dateTime.getDayOfMonth(),
-                dateTime.getDayOfWeek().getDisplayName(TextStyle.SHORT, Locale.KOREA));
+                date.getMonth().getValue(), date.getDayOfMonth(),
+                date.getDayOfWeek().getDisplayName(TextStyle.SHORT, Locale.KOREA));
     }
 
     void addNotRiskCrew(String name) {

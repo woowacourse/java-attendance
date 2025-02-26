@@ -3,7 +3,6 @@ package attendance.domain.record;
 import attendance.domain.checker.AttendanceType;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.time.Month;
 import java.util.Objects;
 
@@ -17,11 +16,6 @@ public final class AttendanceRecord {
         this.nickname = nickname;
         this.arrivalDateTime = arrivalDateTime;
         this.attendanceType = attendanceType;
-    }
-
-    public static AttendanceRecord makeAbsenceRecord(String nickname, LocalDate arrivalDate) {
-        LocalDateTime dateTime = LocalDateTime.of(arrivalDate, LocalTime.MIN);
-        return new AttendanceRecord(nickname, dateTime, AttendanceType.ABSENCE);
     }
 
     public boolean isSame(String name, LocalDate date) {
