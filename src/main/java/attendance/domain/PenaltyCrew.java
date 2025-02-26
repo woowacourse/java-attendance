@@ -1,8 +1,9 @@
 package attendance.domain;
 
+import java.util.Comparator;
 import java.util.Map;
 
-public class PenaltyCrew {
+public class PenaltyCrew implements Comparable<PenaltyCrew> {
 
     private final String name;
     private final PenaltyCount penaltyCount;
@@ -12,5 +13,25 @@ public class PenaltyCrew {
         this.name = name;
         this.penaltyCount = new PenaltyCount(statusCounts);
         this.penalty = penaltyCount.findAttendancePenalty();
+    }
+
+    public AttendancePenalty getPenalty() {
+        return penalty;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public int getWeightedLateAndAbsencePoint() {
+        return penaltyCount.getWeightedLateAndAbsencePoint();
+    }
+
+    @Override
+    public int compareTo(PenaltyCrew o) {
+        return Comparator.comparing(PenaltyCrew::getPenalty)
+            .thenComparing(PenaltyCrew::getWeightedLateAndAbsencePoint, Comparator.reverseOrder())
+            .thenComparing(PenaltyCrew::getName)
+            .compare(this, o);
     }
 }
