@@ -170,4 +170,48 @@ class AttendanceTimeTest {
         LocalDateTime expected = LocalDateTime.of(date, time);
         assertThat(converted).isEqualTo(expected);
     }
+
+    @Test
+    @DisplayName("해당 시간이 지각인지 판단")
+    void isAttendanceTimeLate() {
+        // given
+        AttendanceTime notLateTime = AttendanceTime.of(
+                LocalDate.of(2024, 12, 3),
+                LocalTime.of(10, 5)
+        );
+        AttendanceTime lateTime = AttendanceTime.of(
+                LocalDate.of(2024, 12, 3),
+                LocalTime.of(10, 6)
+        );
+
+        // when
+        boolean b1 = notLateTime.isLate();
+        boolean b2 = lateTime.isLate();
+
+        // then
+        assertThat(b1).isFalse();
+        assertThat(b2).isTrue();
+    }
+
+    @Test
+    @DisplayName("해당 시간이 결석인지 판단")
+    void isAttendanceTimeAbsence() {
+        // given
+        AttendanceTime notAbsenceTime = AttendanceTime.of(
+                LocalDate.of(2024, 12, 3),
+                LocalTime.of(10, 30)
+        );
+        AttendanceTime absenceTime = AttendanceTime.of(
+                LocalDate.of(2024, 12, 3),
+                LocalTime.of(10, 31)
+        );
+
+        // when
+        boolean b1 = notAbsenceTime.isAbsence();
+        boolean b2 = absenceTime.isAbsence();
+
+        // then
+        assertThat(b1).isFalse();
+        assertThat(b2).isTrue();
+    }
 }

@@ -1,6 +1,7 @@
 package domain;
 
 import java.time.DayOfWeek;
+import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -41,6 +42,27 @@ public class AttendanceTime {
         AttendanceTime previous = AttendanceTime.of(this.date, this.time);
         this.time = attendanceTime.time;
         return previous;
+    }
+
+    public boolean isLate() {
+        LocalTime start = LocalTime.of(10, 0);
+        if (date.getDayOfWeek() == DayOfWeek.MONDAY) {
+            start = LocalTime.of(13, 0);
+        }
+        long minutes = Duration.between(start, time).toMinutes();
+        if (minutes <= 5) {
+            return false;
+        }
+        return minutes <= 30;
+    }
+
+    public boolean isAbsence() {
+        LocalTime start = LocalTime.of(10, 0);
+        if (date.getDayOfWeek() == DayOfWeek.MONDAY) {
+            start = LocalTime.of(13, 0);
+        }
+        long minutes = Duration.between(start, time).toMinutes();
+        return minutes > 30;
     }
 
     public LocalDateTime toLocalDateTime() {
