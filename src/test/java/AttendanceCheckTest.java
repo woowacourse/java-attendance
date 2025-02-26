@@ -1,3 +1,4 @@
+import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.time.LocalTime;
@@ -38,5 +39,17 @@ public class AttendanceCheckTest {
 
         assertEquals(attendanceTimeRecord, attendanceTime);
         assertEquals(attendanceStatus, "출석");
+    }
+
+    @Test
+    void 이미_출석한_상태에서_출석을_시도하면_예외처리() {
+        final var nickname = "에드";
+        final var attendanceTime = LocalTime.of(9, 59);
+
+        AttendanceCheck.attend(nickname, attendanceTime);
+
+        assertThatThrownBy(() -> AttendanceCheck.attend(nickname, attendanceTime))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageStartingWith("[ERROR]");
     }
 }
