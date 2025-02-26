@@ -25,7 +25,8 @@ public class AttendanceBook {
         return crews.stream()
                 .filter(crew -> crew.isMyName(name))
                 .findAny()
-                .orElseThrow();
+                .orElseThrow(
+                        () -> new IllegalArgumentException(ErrorMessage.NOTICE_NICKNAME_IS_NOT_REGISTERED.getFormat()));
     }
 
     public boolean checkCrewExisted(String name) {
@@ -38,7 +39,7 @@ public class AttendanceBook {
 
         Crew foundCrew = findCrewByName(name);
         validateAlreadyAttendance(foundCrew, date);
-        
+
         foundCrew.addNewTimeLog(date, time);
         return new CheckAttendanceResponse(time, attendanceStatus);
     }
