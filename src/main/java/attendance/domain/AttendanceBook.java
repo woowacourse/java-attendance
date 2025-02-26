@@ -9,19 +9,21 @@ import java.util.List;
 import java.util.Map;
 
 public class AttendanceBook {
-    private final CrewAttendanceRepository crewAttendanceRepository;
+    private final Map<String, CrewAttendance> crewAttendances;
 
-    public AttendanceBook(final CrewAttendanceRepository crewAttendanceRepository) {
-        this.crewAttendanceRepository = crewAttendanceRepository;
+    public AttendanceBook(final Map<String, CrewAttendance> crewAttendances) {
+        this.crewAttendances = crewAttendances;
     }
 
     public void add(final String name, final LocalDateTime localDateTime) {
-        CrewAttendance crewAttendance = crewAttendanceRepository.findByName(name);
+        validateName(name);
+        CrewAttendance crewAttendance = crewAttendances.get(name);
         crewAttendance.add(localDateTime);
     }
 
     public List<AttendanceTimeStatus> modify(final String name, final LocalDateTime newLocalDateTime) {
-        CrewAttendance crewAttendance = crewAttendanceRepository.findByName(name);
+        validateName(name);
+        CrewAttendance crewAttendance = crewAttendances.get(name);
         LocalDate targetDate = newLocalDateTime.toLocalDate();
 
         AttendanceTimeStatus prevAttendanceTimeStatus = crewAttendance.getAttendanceOn(targetDate);
@@ -31,28 +33,40 @@ public class AttendanceBook {
         return List.of(prevAttendanceTimeStatus, newAttendanceTimeStatus);
     }
 
-    public Map<LocalDate, AttendanceTimeStatus> queryAttendancesByName(final String name, LocalDate date) {
-        CrewAttendance crewAttendance = crewAttendanceRepository.findByName(name);
-        return crewAttendance.queryAttendancesBefore(date);
+    private void validateName(final String name) {
+        if (!crewAttendances.containsKey(name)) {
+            throw new IllegalArgumentException("[ERROR] 유효하지 않은 닉네임입니다.");
+        }
     }
 
-    public Map<AttendanceStatus, Integer> queryAttendanceStatusByName(final String name, LocalDate date) {
-        CrewAttendance crewAttendance = crewAttendanceRepository.findByName(name);
+    public Map<LocalDate, AttendanceTimeStatus> getAttendanceHistory(final String name, LocalDate date) {
+        CrewAttendance crewAttendance = crewAttendances.get(name);
+        return crewAttendance.getAttendancesBefore(date);
+    }
+
+    public Map<AttendanceStatus, Integer> getAttendanceStatusCounts(final String name, LocalDate date) {
+        CrewAttendance crewAttendance = crewAttendances.get(name);
         return crewAttendance.countAttendanceStatusBefore(date);
     }
 
-    public WarningLevel queryCrewWarningLevel(final String name, LocalDate date) {
-        final Map<AttendanceStatus, Integer> attendanceStatusCounts = queryAttendanceStatusByName(name, date);
+    public WarningLevel getCrewWarningLevel(final String name, LocalDate date) {
+        final Map<AttendanceStatus, Integer> attendanceStatusCounts = getAttendanceStatusCounts(name, date);
         return WarningLevel.calculateLevel(attendanceStatusCounts);
     }
 
-    public Map<WarningLevel, List<CrewAttendance>> queryCrewsByWarningLevel(final LocalDate today) {
+    public Map<WarningLevel, List<CrewAttendance>> getCrewsByWarningLevel(final LocalDate today) {
         Map<WarningLevel, List<CrewAttendance>> warningCrews = new EnumMap<>(WarningLevel.class);
         for (WarningLevel warningLevel : WarningLevel.values()) {
-            List<CrewAttendance> crewAttendances = crewAttendanceRepository.findByWarningLevel(warningLevel, today);
+            List<CrewAttendance> crewAttendances = findByWarningLevel(warningLevel, today);
             warningCrews.put(warningLevel, crewAttendances);
         }
         warningCrews.remove(NONE);
         return warningCrews;
+    }
+
+    public List<CrewAttendance> findByWarningLevel(final WarningLevel warningLevel, final LocalDate today) {
+        return crewAttendances.values().stream()
+                .filter(crewAttendance -> crewAttendance.hasSameWarningLevel(warningLevel, today))
+                .toList();
     }
 }

@@ -4,7 +4,6 @@ import attendance.domain.AttendanceBook;
 import attendance.domain.AttendanceStatus;
 import attendance.domain.AttendanceTimeStatus;
 import attendance.domain.CrewAttendance;
-import attendance.domain.CrewAttendanceRepository;
 import attendance.domain.WarningLevel;
 import attendance.util.FileLoader;
 import attendance.view.DataFileReader;
@@ -28,8 +27,7 @@ public class AttendanceController {
     private static final String QUIT_KEY = "Q";
 
     public void run() {
-        CrewAttendanceRepository crewAttendanceRepository = initData();
-        AttendanceBook attendanceBook = new AttendanceBook(crewAttendanceRepository);
+        AttendanceBook attendanceBook = initData();
         initOperations(attendanceBook);
         String option;
         while (!(option = getInputOption()).equals(QUIT_KEY)) {
@@ -37,8 +35,8 @@ public class AttendanceController {
         }
     }
 
-    private CrewAttendanceRepository initData() {
-        return new CrewAttendanceRepository(FileLoader.loadAll(DataFileReader.read()));
+    private AttendanceBook initData() {
+        return new AttendanceBook(FileLoader.loadAll(DataFileReader.read()));
     }
 
     private void initOperations(AttendanceBook attendanceBook) {
@@ -56,7 +54,7 @@ public class AttendanceController {
     private void registerAttendance(AttendanceBook attendanceBook) {
         String name = InputView.readNickName();
         final LocalTime localTime = InputView.readAttendanceTime();
-        LocalDateTime localDateTime = LocalDateTime.of(LocalDate.now(), localTime);
+        LocalDateTime localDateTime = LocalDateTime.of(LocalDate.now(ZoneId.of("Asia/Seoul")), localTime);
 
         attendanceBook.add(name, localDateTime);
 
@@ -77,20 +75,20 @@ public class AttendanceController {
     private void queryAttendance(AttendanceBook attendanceBook) {
         LocalDate today = LocalDate.now(ZoneId.of("Asia/Seoul"));
         String name = InputView.readNickName();
-        Map<LocalDate, AttendanceTimeStatus> attendances = attendanceBook.queryAttendancesByName(name, today);
+        Map<LocalDate, AttendanceTimeStatus> attendances = attendanceBook.getAttendanceHistory(name, today);
         OutputView.printAttendances(name, attendances);
 
-        Map<AttendanceStatus, Integer> attendanceStatusCounts = attendanceBook.queryAttendanceStatusByName(name, today);
+        Map<AttendanceStatus, Integer> attendanceStatusCounts = attendanceBook.getAttendanceStatusCounts(name, today);
         OutputView.printAttendanceStatuses(attendanceStatusCounts);
 
-        WarningLevel warningLevel = attendanceBook.queryCrewWarningLevel(name, today);
+        WarningLevel warningLevel = attendanceBook.getCrewWarningLevel(name, today);
         OutputView.printCrewWarningLevel(warningLevel);
     }
 
     private void queryWarningCrews(AttendanceBook attendanceBook) {
         LocalDate today = LocalDate.now(ZoneId.of("Asia/Seoul"));
-        Map<WarningLevel, List<CrewAttendance>> crewsByWarningLevel = attendanceBook.queryCrewsByWarningLevel(today);
+        Map<WarningLevel, List<CrewAttendance>> crewsByWarningLevel = attendanceBook.getCrewsByWarningLevel(today);
 
-        OutputView.printWarningCrews(crewsByWarningLevel);
+        OutputView.printWarningCrews(crewsByWarningLevel, today);
     }
 }

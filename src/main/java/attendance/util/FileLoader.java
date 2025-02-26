@@ -2,32 +2,31 @@ package attendance.util;
 
 import attendance.domain.CrewAttendance;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
-import java.util.Optional;
+import java.util.Map;
 
 public class FileLoader {
 
-    public static List<CrewAttendance> loadAll(final List<String> contents) {
-        List<CrewAttendance> crewAttendances = new ArrayList<>();
+    public static Map<String, CrewAttendance> loadAll(final List<String> contents) {
+        Map<String, CrewAttendance> crewAttendances = new HashMap<>();
         contents.forEach(content -> {
             List<String> seperatedContent = Arrays.stream(content.split(",")).toList();
-            LocalDateTime localDateTime = LocalDateTime.parse(seperatedContent.get(1).replace(" ", "T"));
+            String crewName = seperatedContent.getFirst();
+            LocalDateTime localDateTime = LocalDateTime.parse(seperatedContent.getLast().replace(" ", "T"));
 
-            Optional<CrewAttendance> crewAttendance = crewAttendances.stream()
-                    .filter(crew -> crew.isNameMatch(seperatedContent.getFirst()))
-                    .findFirst();
-
-            crewAttendance.ifPresentOrElse(presentCrewAttendance -> presentCrewAttendance.add(localDateTime),
-                    () -> crewAttendances.add(createCrewAttendance(seperatedContent.getFirst(), localDateTime)));
+            CrewAttendance crewAttendance = createCrewAttendance(crewName, crewAttendances);
+            crewAttendance.add(localDateTime);
         });
         return crewAttendances;
     }
 
-    public static CrewAttendance createCrewAttendance(final String name, final LocalDateTime localDateTime) {
-        CrewAttendance crewAttendance = new CrewAttendance(name);
-        crewAttendance.add(localDateTime);
-        return crewAttendance;
+    public static CrewAttendance createCrewAttendance(final String crewName,
+                                                      final Map<String, CrewAttendance> crewAttendances) {
+        if (!crewAttendances.containsKey(crewName)) {
+            crewAttendances.put(crewName, new CrewAttendance(crewName));
+        }
+        return crewAttendances.get(crewName);
     }
 }

@@ -3,9 +3,10 @@ package attendance.domain;
 import attendance.util.FileLoader;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class CrewAttendanceTestFixture {
-    public static List<CrewAttendance> createCrewAttendances() {
+    public static Map<String, CrewAttendance> createCrewAttendances() {
         List<String> contents = new ArrayList<>();
 
         contents.add("쿠키,2024-12-13 10:08");
