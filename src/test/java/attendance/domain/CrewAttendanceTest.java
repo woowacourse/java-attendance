@@ -48,12 +48,12 @@ public class CrewAttendanceTest {
         crewAttendance.add(LocalDateTime.of(targetDate, prevTime));
         AttendanceTimeStatus prevAttendanceTimeStatus = crewAttendance.getAttendanceOn(targetDate);
         Map<LocalDate, AttendanceTimeStatus> prevAttendances =
-                crewAttendance.queryAttendancesBefore(targetDate.plusDays(1));
+                crewAttendance.getAttendancesBefore(targetDate.plusDays(1));
 
         crewAttendance.modify(LocalDateTime.of(targetDate, newTime));
         AttendanceTimeStatus newAttendanceTimeStatus = crewAttendance.getAttendanceOn(targetDate);
         Map<LocalDate, AttendanceTimeStatus> newAttendances =
-                crewAttendance.queryAttendancesBefore(targetDate.plusDays(1));
+                crewAttendance.getAttendancesBefore(targetDate.plusDays(1));
 
         assertThat(prevAttendanceTimeStatus.time().orElseThrow()).isEqualTo(prevTime);
         assertThat(newAttendanceTimeStatus.time().orElseThrow()).isEqualTo(newTime);

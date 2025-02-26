@@ -49,12 +49,8 @@ public class CrewAttendance {
         return crewWarningLevel == warningLevel;
     }
 
-    public boolean isNameMatch(String anotherName) {
-        return this.name.equals(anotherName);
-    }
-
     public Map<AttendanceStatus, Integer> countAttendanceStatusBefore(LocalDate localDate) {
-        Map<LocalDate, AttendanceTimeStatus> attendances = queryAttendancesBefore(localDate);
+        Map<LocalDate, AttendanceTimeStatus> attendances = getAttendancesBefore(localDate);
         Map<AttendanceStatus, Integer> attendanceStatusCounts = new EnumMap<>(AttendanceStatus.class);
 
         for (AttendanceStatus attendanceStatus : AttendanceStatus.values()) {
@@ -66,7 +62,7 @@ public class CrewAttendance {
         return attendanceStatusCounts;
     }
 
-    public Map<LocalDate, AttendanceTimeStatus> queryAttendancesBefore(LocalDate localDate) {
+    public Map<LocalDate, AttendanceTimeStatus> getAttendancesBefore(LocalDate localDate) {
         updateAttendanceBefore(localDate);
         return attendances.entrySet().stream()
                 .filter(entry -> entry.getKey().isBefore(localDate))
