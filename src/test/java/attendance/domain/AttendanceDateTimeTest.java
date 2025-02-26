@@ -55,7 +55,7 @@ public class AttendanceDateTimeTest {
     @Test
     void 미래의_시간에는_출석할_수_없다() {
         // Given
-        LocalDateTime attendanceDateTime = Year.of(2025).atMonth(12).atDay(26).atTime(7, 0);
+        LocalDateTime attendanceDateTime = Year.of(2025).atMonth(12).atDay(26).atTime(10, 0);
 
         // When & Then
         assertThatThrownBy(() -> new AttendanceDateTime(attendanceDateTime))
