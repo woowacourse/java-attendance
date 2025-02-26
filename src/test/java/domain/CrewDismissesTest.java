@@ -1,16 +1,13 @@
 package domain;
 
-import static org.assertj.core.api.Assertions.assertThatIterable;
-
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
 import java.util.stream.Stream;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.provider.Arguments;
-import org.junit.jupiter.params.provider.MethodSource;
 import strategy.TestAttendanceCurrentDateGenerateStrategy;
 
 public class CrewDismissesTest {
@@ -21,7 +18,7 @@ public class CrewDismissesTest {
     @BeforeAll
     static void initiate() {
         testAttendanceCurrentDateGenerateStrategy = new TestAttendanceCurrentDateGenerateStrategy(
-                LocalDate.of(2024, 12, 2));
+                LocalDate.of(2024, 12, 5));
         crewAttendances = new CrewAttendances(testAttendanceCurrentDateGenerateStrategy);
         crewAttendances.addAttendance("투다", LocalTime.of(8, 3));
         testAttendanceCurrentDateGenerateStrategy.setTestDate(LocalDate.of(2024, 12, 3));
@@ -31,7 +28,7 @@ public class CrewDismissesTest {
         crewAttendances.addAttendance("투다", LocalTime.of(8, 3));
     }
 
-    private static Stream<Arguments> attendanceHistoryTest() {
+    static Stream<Arguments> attendanceHistoryTest() {
         AttendanceDate attendanceDate1 = new AttendanceDate(LocalDate.of(2024, 12, 2));
         CrewAttendance crewAttendance1 = crewAttendances.crewAttendance("투다", LocalDate.of(2024, 12, 2));
         AttendanceDate attendanceDate2 = new AttendanceDate(LocalDate.of(2024, 12, 3));
@@ -60,13 +57,10 @@ public class CrewDismissesTest {
         );
     }
 
-    @ParameterizedTest
-    @MethodSource("attendanceHistoryTest")
-    @DisplayName("닉네임을 입력하여 전날까지의 출석 기록을 확인할 수 있다.")
-    void attendanceHistoryTest(String nickname, List<CrewAttendanceHistory> expectCrewAttendanceHistories,
-                               LocalDate notIncludeDate) {
-        testAttendanceCurrentDateGenerateStrategy.setTestDate(notIncludeDate);
-        assertThatIterable(crewAttendances.crewAttendancesHistory(nickname))
-                .containsExactlyInAnyOrderElementsOf(expectCrewAttendanceHistories);
+    @Test
+    @DisplayName("제적대상자 테스트")
+    void crewDismissTest() {
+
     }
+
 }

@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.Map;
 
 public record CrewAttendanceHistories(List<CrewAttendanceHistory> crewAttendanceHistories,
-                                      CrewDismissCount crewDismiss) {
+                                      CrewDismiss crewDismiss) {
     public static CrewAttendanceHistories from(List<CrewAttendanceHistory> crewAttendanceHistories) {
         Map<AttendanceStatus, Integer> crewAttendanceStatusCount = new HashMap<>();
         for (CrewAttendanceHistory attendanceHistory : crewAttendanceHistories) {
@@ -14,7 +14,7 @@ public record CrewAttendanceHistories(List<CrewAttendanceHistory> crewAttendance
             crewAttendanceStatusCount.put(attendanceStatus,
                     crewAttendanceStatusCount.getOrDefault(attendanceStatus, 0) + 1);
         }
-        return new CrewAttendanceHistories(crewAttendanceHistories,
-                AttendanceStatus.createCrewDismissCount(crewAttendanceStatusCount));
+
+        return new CrewAttendanceHistories(crewAttendanceHistories, new CrewDismiss(crewAttendanceStatusCount));
     }
 }
