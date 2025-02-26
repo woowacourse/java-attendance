@@ -37,4 +37,12 @@ public class AttendanceDateTime {
     public int hashCode() {
         return Objects.hash(attendanceDate, attendanceTime);
     }
+
+    public LocalTime getAttendanceTime() {
+        return attendanceTime;
+    }
+
+    public LocalDate getAttendanceDate() {
+        return attendanceDate;
+    }
 }

@@ -28,6 +28,10 @@ public record AttendanceRecord(
     }
 
     public long computeLateCount() {
-        return 0;
+        return attendanceDateTimes.stream()
+                .filter(attendanceDateTime -> AttendanceStatus.from(
+                        attendanceDateTime.getAttendanceTime(),
+                        EducationSchedule.from(attendanceDateTime.getAttendanceDate())
+                ).equals(AttendanceStatus.LATE)).count();
     }
 }
