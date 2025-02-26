@@ -1,8 +1,6 @@
 package domain;
 
-import domain.Crew;
 import exception.CrewNotExistException;
-import domain.CrewAttendances;
 
 import java.io.*;
 import java.time.LocalDateTime;
