@@ -42,6 +42,6 @@ public class Attendance {
     }
 
     public AttendanceStatus getAttendanceStatus() {
-        return null;
+        return AttendanceStatus.calculate(attendanceDate.getDayOfWeek(), attendanceTime);
     }
 }
