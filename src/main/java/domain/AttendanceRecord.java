@@ -1,5 +1,6 @@
 package domain;
 
+import dto.ModifyResult;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
@@ -21,10 +22,12 @@ public class AttendanceRecord {
         value.add(attendance);
     }
 
-    public void modify(Attendance newAttendance) {
+    public ModifyResult modify(Attendance newAttendance) {
+        // TODO : 네이밍 수정
         Attendance findAttendance = findSameDateAttendanceBy(newAttendance);
         value.remove(findAttendance);
         value.add(newAttendance);
+        return new ModifyResult(findAttendance, newAttendance);
     }
 
     @Override

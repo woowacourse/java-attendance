@@ -1,6 +1,7 @@
 package domain;
 
 import dto.InitialInfo;
+import dto.ModifyResult;
 import java.util.Map;
 
 public class AttendanceBook {
@@ -28,8 +29,8 @@ public class AttendanceBook {
         return attendanceRecord;
     }
 
-    public void modify(CrewName crewName, Attendance newAttendance) {
+    public ModifyResult modify(CrewName crewName, Attendance newAttendance) {
         AttendanceRecord attendanceRecord = findAttendanceRecordBy(crewName);
-        attendanceRecord.modify(newAttendance);
+        return attendanceRecord.modify(newAttendance);
     }
 }

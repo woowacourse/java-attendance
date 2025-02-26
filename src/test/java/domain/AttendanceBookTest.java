@@ -3,6 +3,7 @@ package domain;
 import static org.assertj.core.api.Assertions.*;
 
 import dto.InitialInfo;
+import dto.ModifyResult;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
@@ -101,7 +102,7 @@ public class AttendanceBookTest {
 
         ModifyResult modifyResult = attendanceBook.modify(mimi, newAttendance);
 
-        assertThat(modifyResult.getOriginalAttendance()).isEqaulTo(dayOfTenAttendance);
-        assertThat(modifyResult.getModifiedAttendance()).isEqaulTo(newAttendance);
+        assertThat(modifyResult.originalAttendance()).isEqualTo(dayOfTenAttendance);
+        assertThat(modifyResult.modifiedAttendance()).isEqualTo(newAttendance);
     }
 }
