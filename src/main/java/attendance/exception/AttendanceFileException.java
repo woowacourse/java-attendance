@@ -1,4 +1,4 @@
-package attendance.common.exception;
+package attendance.exception;
 
 import java.io.IOException;
 

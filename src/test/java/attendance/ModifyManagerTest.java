@@ -9,13 +9,13 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
-import attendance.common.exception.AttendanceArgumentException;
-import attendance.common.exception.AttendanceFileException;
 import attendance.domain.AttendanceFileReader;
 import attendance.domain.AttendanceStatus;
 import attendance.domain.attendance.Attendance;
 import attendance.domain.attendance.AttendanceBook;
 import attendance.domain.attendanceManager.ModifyManager;
+import attendance.exception.AttendanceArgumentException;
+import attendance.exception.AttendanceFileException;
 
 public class ModifyManagerTest {
     private final AttendanceFileReader attendanceFileReader = AttendanceFileReader.from("/attendances.csv");

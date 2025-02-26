@@ -1,4 +1,4 @@
-package attendance.common.utill;
+package attendance.utility;
 
 import java.time.format.DateTimeFormatter;
 import java.util.Locale;

@@ -1,14 +1,14 @@
 package attendance.domain.attendance;
 
-import static attendance.common.SystemDateConfig.*;
+import static attendance.SystemDateConfig.*;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 
-import attendance.common.exception.AttendanceArgumentException;
 import attendance.domain.AttendanceStatus;
+import attendance.exception.AttendanceArgumentException;
 
 public record Attendance(LocalDateTime dateTime, AttendanceStatus attendanceStatus) {
 

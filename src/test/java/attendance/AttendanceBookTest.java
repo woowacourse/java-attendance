@@ -10,10 +10,10 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
-import attendance.common.exception.AttendanceFileException;
 import attendance.domain.AttendanceFileReader;
 import attendance.domain.attendance.Attendance;
 import attendance.domain.attendance.AttendanceBook;
+import attendance.exception.AttendanceFileException;
 
 public class AttendanceBookTest {
     private final AttendanceFileReader attendanceFileReader = AttendanceFileReader.from("/attendances.csv");

@@ -1,7 +1,5 @@
 package attendance.domain.attendance;
 
-import static attendance.common.utill.DateTimeFormatterWrapper.*;
-
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -11,8 +9,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-import attendance.common.exception.AttendanceArgumentException;
 import attendance.domain.StatusStatistic;
+import attendance.exception.AttendanceArgumentException;
 
 public record AttendanceBook(Map<String, Attendances> attendances, List<StatusStatistic> statusStatistics) {
 

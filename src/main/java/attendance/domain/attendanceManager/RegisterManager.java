@@ -1,13 +1,11 @@
 package attendance.domain.attendanceManager;
 
-import static attendance.common.utill.DateTimeFormatterWrapper.*;
-
 import java.time.LocalDateTime;
 
-import attendance.common.exception.AttendanceArgumentException;
 import attendance.domain.attendance.Attendance;
 import attendance.domain.attendance.AttendanceBook;
 import attendance.domain.attendance.Attendances;
+import attendance.exception.AttendanceArgumentException;
 
 public class RegisterManager {
     public static final String DUPLICATE_DATE = "이미 출석되었습니다. 수정 기능을 이용해주세요.";

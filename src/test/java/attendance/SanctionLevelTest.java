@@ -4,10 +4,10 @@ import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import attendance.common.exception.AttendanceFileException;
 import attendance.domain.AttendanceFileReader;
 import attendance.domain.attendance.AttendanceBook;
 import attendance.domain.attendanceManager.SanctionManager;
+import attendance.exception.AttendanceFileException;
 
 public class SanctionLevelTest {
     private final AttendanceFileReader attendanceFileReader = AttendanceFileReader.from("/attendances.csv");

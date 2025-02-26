@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import attendance.common.exception.AttendanceFileException;
+import attendance.exception.AttendanceFileException;
 
 public class AttendanceFileReader {
     private static final String NOT_EXIST_FILE = "존재하지 않은 파일입니다.";

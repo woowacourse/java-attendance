@@ -1,6 +1,6 @@
 package attendance.domain.attendance;
 
-import static attendance.common.SystemDateConfig.*;
+import static attendance.SystemDateConfig.*;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
@@ -13,10 +13,10 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import attendance.common.SystemDateConfig;
-import attendance.common.exception.AttendanceArgumentException;
-import attendance.common.utill.DateTimeFormatterWrapper;
+import attendance.SystemDateConfig;
 import attendance.domain.AttendanceStatus;
+import attendance.exception.AttendanceArgumentException;
+import attendance.utility.DateTimeFormatterWrapper;
 
 public class Attendances {
     private final List<Attendance> attendances = new ArrayList<>();

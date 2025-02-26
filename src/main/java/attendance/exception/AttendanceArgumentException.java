@@ -1,9 +1,9 @@
-package attendance.common.exception;
+package attendance.exception;
 
 import java.time.DateTimeException;
 import java.time.LocalDate;
 
-import attendance.common.utill.DateTimeFormatterWrapper;
+import attendance.utility.DateTimeFormatterWrapper;
 
 public class AttendanceArgumentException extends IllegalArgumentException {
 

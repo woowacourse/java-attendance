@@ -1,4 +1,4 @@
-package attendance.common.utill;
+package attendance.utility;
 
 public final class StringUtility {
     private static final String WRONG_INPUT_NULL = "[ERROR] 입력값이 Null입니다.";

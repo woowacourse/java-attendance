@@ -7,12 +7,12 @@ import java.time.LocalDateTime;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import attendance.common.exception.AttendanceArgumentException;
-import attendance.common.exception.AttendanceFileException;
 import attendance.domain.AttendanceFileReader;
 import attendance.domain.attendance.Attendance;
 import attendance.domain.attendance.AttendanceBook;
 import attendance.domain.attendanceManager.RegisterManager;
+import attendance.exception.AttendanceArgumentException;
+import attendance.exception.AttendanceFileException;
 
 public class RegisterManagerTest {
     private final AttendanceFileReader attendanceFileReader = AttendanceFileReader.from("/attendances.csv");

@@ -2,7 +2,7 @@ package attendance.view;
 
 import java.time.LocalDate;
 
-import attendance.common.utill.DateTimeFormatterWrapper;
+import attendance.utility.DateTimeFormatterWrapper;
 
 public class OutputView {
 

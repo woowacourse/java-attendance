@@ -5,8 +5,8 @@ import static org.assertj.core.api.AssertionsForClassTypes.*;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import attendance.common.exception.AttendanceFileException;
 import attendance.domain.AttendanceFileReader;
+import attendance.exception.AttendanceFileException;
 
 public class AttendanceFileReaderTest {
 
