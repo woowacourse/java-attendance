@@ -1,5 +1,6 @@
 package domain;
 
+import exception.AppException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -21,7 +22,7 @@ class CrewTest {
 
     @DisplayName("이름이 2글자에서 4글자 사이가 아니면 예외 발생")
     @ParameterizedTest
-    @ValueSource(strings = {"가", "가나다라마", ""})
+    @ValueSource(strings = {"가", "가나다라마", "아아아아아아"})
     void outOfRangeNameException(final String name) {
         assertThatThrownBy(() -> Crew.of(name))
                 .isInstanceOf(AppException.class);
