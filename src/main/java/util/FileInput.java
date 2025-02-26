@@ -18,8 +18,8 @@ public class FileInput {
         fileBr = new BufferedReader(new FileReader(filePath));
     }
 
-    public static ArrayList<String> readAttendanceFile() throws IOException{
-        ArrayList<String> attendanceFile = new ArrayList<>();
+    public static List<String> readAttendanceFile() throws IOException{
+        List<String> attendanceFile = new ArrayList<>();
         fileBr.readLine();
         while(true) {
             String information = fileBr.readLine();
