@@ -11,4 +11,8 @@ public class OutputView {
                 nowDate.getDayOfMonth(),
                 DayOfWeekConvertor.convertToKorean(nowDate.getDayOfWeek())));
     }
+
+    public void printErrorMessage(String errorMessage) {
+        System.out.println(errorMessage);
+    }
 }

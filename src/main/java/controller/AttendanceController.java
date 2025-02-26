@@ -2,6 +2,7 @@ package controller;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import util.InputProcessor;
 import view.InputView;
 import view.OutputView;
 
@@ -19,7 +20,11 @@ public class AttendanceController {
         LocalDate localDate = LocalDate.now();
         outputView.printWelcomeMessage(localDate);
 
+        MenuOption optionInput = InputProcessor.processInputUntilSuccess(this::processOptionInput);
+    }
+
+    private MenuOption processOptionInput() {
         String optionInput = inputView.getOptionInput();
-        MenuOption option = MenuOption.findOptionByCommand(optionInput);
+        return MenuOption.findOptionByCommand(optionInput);
     }
 }
