@@ -1,5 +1,7 @@
 package domain;
 
+import static util.Constants.*;
+
 import java.time.DayOfWeek;
 import java.time.LocalTime;
 
@@ -15,19 +17,18 @@ public enum AttendanceStatus {
     }
 
     public static AttendanceStatus from(Attendance attendance) {
-        DayOfWeek dayOfWeek = attendance.getDayOfWeek();
-        int startHour = calculateStartHour(dayOfWeek);
-        LocalTime lateCondition = LocalTime.of(startHour, 6);
+        int attendanceHour = calculateAttendanceHour(attendance.getDayOfWeek());
+        LocalTime lateCondition = LocalTime.of(attendanceHour, START_MINUTE_OF_LATE);
         if(attendance.getTime().isBefore(lateCondition)) {
             return AttendanceStatus.ATTEND;
         }
         return null;
     }
 
-    private static int calculateStartHour(DayOfWeek dayOfWeek) {
+    private static int calculateAttendanceHour(DayOfWeek dayOfWeek) {
         if(dayOfWeek == DayOfWeek.MONDAY) {
-            return 13;
+            return ATTENDANCE_HOUR_OF_MONDAY;
         }
-        return 10;
+        return ATTENDANCE_HOUR_OF_TUESDAY_TO_FRIDAY;
     }
 }
