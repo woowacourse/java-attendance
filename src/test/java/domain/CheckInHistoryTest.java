@@ -1,5 +1,6 @@
 package domain;
 
+import exception.AppException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -9,6 +10,7 @@ import java.time.LocalTime;
 import java.util.TreeSet;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class CheckInHistoryTest {
 
@@ -37,12 +39,17 @@ class CheckInHistoryTest {
         assertThat(history.getCheckInCount()).isEqualTo(2);
     }
 
-/*    @Test
+    @Test
     @DisplayName("당일에 이미 출석 기록이 있는 경우 예외 발생")
     void alreadyCheckInExceptionTest() {
         //given
-        CheckInDateTime checkInDateTime = CheckInDateTime.of()
+        CheckInDateTime checkInDateTime = CheckInDateTime.of(
+                LocalDate.of(2024, 12, 3), LocalTime.of(11, 0)
+        );
         //when
         //then
-    }*/
+        assertThatThrownBy(() -> history.checkIn(checkInDateTime))
+                .isInstanceOf(AppException.class)
+                .hasMessageContaining(AppException.PREFIX);
+    }
 }
