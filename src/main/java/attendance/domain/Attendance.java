@@ -4,8 +4,12 @@ import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.MonthDay;
+import java.util.Set;
 
 public class Attendance {
+
+    private static final Set<MonthDay> HOLIDAYS = Set.of(MonthDay.of(12, 25));
 
     private final String nickname;
     private final LocalDate attendanceDate;
@@ -26,6 +30,9 @@ public class Attendance {
     private void validateAttendanceDate(LocalDate attendanceDate) {
         if (isWeekend(attendanceDate)) {
             throw new IllegalArgumentException("주말에는 출석할 수 없습니다.");
+        }
+        if (HOLIDAYS.contains(MonthDay.from(attendanceDate))) {
+            throw new IllegalArgumentException("공휴일에는 출석할 수 없습니다.");
         }
     }
 
