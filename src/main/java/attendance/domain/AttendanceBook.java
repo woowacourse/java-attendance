@@ -19,6 +19,7 @@ public class AttendanceBook {
     }
 
     private boolean isAlreadyAttend(Attendance newAttendance) {
-        return attendances.stream().anyMatch(attendance -> attendance.isAlreadyAttend(newAttendance));
+        return attendances.stream()
+                .anyMatch(attendance -> attendance.isAlreadyAttend(newAttendance));
     }
 }

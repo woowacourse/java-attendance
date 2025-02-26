@@ -20,4 +20,17 @@ public class AttendanceBookTest {
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("이미 출석한 경우 다시 출석할 수 없습니다.");
     }
+
+    @Test
+    void 주말에_출석을_할_경우_예외가_발생한다() {
+        //given
+        String nickname = "pobi";
+        LocalDateTime attendanceDateTime = LocalDateTime.of(2024, 12, 14, 10, 1); // 토요일
+        AttendanceBook attendanceBook = new AttendanceBook();
+
+        //when
+        Assertions.assertThatThrownBy(() -> attendanceBook.attend(new Attendance(nickname, attendanceDateTime)))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("주말에는 출석할 수 없습니다.");
+    }
 }
