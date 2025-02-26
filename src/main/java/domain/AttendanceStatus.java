@@ -6,9 +6,9 @@ import java.util.Arrays;
 import java.util.Comparator;
 
 public enum AttendanceStatus {
-    ATTENDANCE("출석", "정상 등교", 0),
-    LATE("지각", "6분 이상 늦음", 5 + 1),
-    ABSENT_LATE("결석", "31분 이상 늦음", 30 + 1),
+    ATTENDANCE("출석", "정상 등교", -1),
+    LATE("지각", "교육 시작 시간 5분 초과", 5),
+    ABSENT_LATE("결석", "교육 시작 시간 30분 초과", 30),
     ABSENT("결석", "출석 기록 없음", Integer.MAX_VALUE),
     ;
 
@@ -29,7 +29,7 @@ public enum AttendanceStatus {
 
         int elapsedMinutes = LectureTime.calculateElapsedMinutes(date, time);
         return Arrays.stream(values())
-                .filter(status -> status.elapsedMinutesLimit <= elapsedMinutes)
+                .filter(status -> status.elapsedMinutesLimit < elapsedMinutes)
                 .max(Comparator.comparing(AttendanceStatus::getElapsedMinutesLimit))
                 .orElseThrow(() -> new IllegalStateException("논리적으로 발생할 수 없는 예외입니다."));
     }
