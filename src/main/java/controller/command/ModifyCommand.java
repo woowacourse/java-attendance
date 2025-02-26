@@ -31,10 +31,8 @@ public class ModifyCommand implements Command {
     @Override
     public void execute(final CrewHistories crewHistories) {
         CrewHistory crewHistory = crewHistories.findCrewByNickname(inputView.readModifyNickname());
-
         LocalDateTime modifyTime = getModifyLocalDateTime();
         campus.validateOperationTime(modifyTime);
-
         LocalDateTime previousTime = crewHistory.modify(modifyTime, todayClock.getTodayDate());
 
         resultView.printModifyHistory(TimeFormatter.formatDateTime(previousTime), AttendanceType.from(previousTime),

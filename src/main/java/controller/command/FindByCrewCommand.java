@@ -28,7 +28,6 @@ public class FindByCrewCommand implements Command {
         CrewHistory crewHistory = crewHistories.findCrewByNickname(nickname);
 
         LocalDate todayDate = todayClock.getTodayDate();
-
         List<LocalDateTime> attendanceHistory = crewHistory.getAttendanceHistory(todayDate);
         AttendanceCounter attendanceCounter = crewHistory.countAttendanceType(todayDate);
 
