@@ -92,7 +92,7 @@ public class AttendanceService {
                 .toList();
     }
 
-    public TimeStatus getTimeStatus(String nickName, LocalDate date) {
+    private TimeStatus getTimeStatus(String nickName, LocalDate date) {
         if (!AttendanceRecordRepository.exists(nickName, date)) {
             return TimeStatus.createAbsentTimeStatus();
         }
@@ -125,7 +125,8 @@ public class AttendanceService {
         );
     }
 
-    public AttendanceStatusCount calculateAttendanceStatusCount(List<AttendanceRecordResponse> monthAttendanceRecords) {
+    private AttendanceStatusCount calculateAttendanceStatusCount(
+            List<AttendanceRecordResponse> monthAttendanceRecords) {
         int attendanceCount = (int) monthAttendanceRecords.stream()
                 .filter(record -> record.attendanceStatus().equals(AttendanceStatus.ATTENDANCE.getTitle()))
                 .count();
@@ -138,7 +139,7 @@ public class AttendanceService {
         return new AttendanceStatusCount(attendanceCount, lateCount, absentCount);
     }
 
-    public RiskRank calculateRiskRank(AttendanceStatusCount attendanceStatusCount) {
+    private RiskRank calculateRiskRank(AttendanceStatusCount attendanceStatusCount) {
         int accumulatedCount =
                 attendanceStatusCount.lateCount() / 3
                         + attendanceStatusCount.absentCount();
