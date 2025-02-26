@@ -7,6 +7,7 @@ import attendance.exception.ErrorMessage;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -71,20 +72,30 @@ public class Register {
             AttendanceRegistry attendanceRegistry = register.get(findValidatedCrew(crew));
             findRiskCrews(crew, riskCrewMap, attendanceRegistry);
         }
-        return orderByAbsenceCounts(riskCrewMap);
+        return mapToSortedCrewRisks(riskCrewMap);
     }
 
-    private List<CrewRisk> orderByAbsenceCounts(Map<Crew, AbsenceInfo> riskCrewMap) {
+    private List<CrewRisk> mapToSortedCrewRisks(Map<Crew, AbsenceInfo> riskCrewMap) {
         List<CrewRisk> riskCrews = new ArrayList<>();
         for (Map.Entry<Crew, AbsenceInfo> entry : riskCrewMap.entrySet()) {
             riskCrews.add(new CrewRisk(entry.getKey(), entry.getValue()));
         }
-
-        riskCrews.sort((crew1, crew2) -> Integer.compare(
-                crew2.getAbsenceInfo().calculateTotalAbsence(),
-                crew1.getAbsenceInfo().calculateTotalAbsence()
-        ));
+        orderByAbsenceCountsAndNickname(riskCrews);
         return riskCrews;
+    }
+
+    private static void orderByAbsenceCountsAndNickname(List<CrewRisk> riskCrews) {
+        riskCrews.sort((crew1, crew2) -> {
+            int absenceCompare = Integer.compare(
+                    crew2.getAbsenceInfo().calculateTotalAbsence(),
+                    crew1.getAbsenceInfo().calculateTotalAbsence()
+            );
+            //Integer.compare가 ==이면 0을 반환하니까, 0이 아닐 경우 리턴을 해주고, 0이면 닉네임순으로 정렬
+            if (absenceCompare != 0) {
+                return absenceCompare;
+            }
+            return crew1.getCrew().getCrewName().compareTo(crew2.getCrew().getCrewName());
+        });
     }
 
     private int divideLate(int absence, int late) {

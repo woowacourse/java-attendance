@@ -110,8 +110,9 @@ class RegisterTest {
                 .hasMessage(ErrorMessage.CAMPUS_NOT_OPERATION.getMessage());
     }
 
+    @DisplayName("crew와, crew3의 결석 횟수 + 지각 횟수가 똑같을 때 닉네임순으로 정렬이 되어서 crew3가 crew보다 먼저 오고, crew2가 결석 횟수가 가장 많아서 제일 먼저 온다")
     @Test
-    void 위험군_팀_조회_및_정렬_테스트() {
+    void 위험군_팀_조회_및_닉네임_결석횟수_정렬_테스트() {
         //given
         Map<Crew, List<LocalDateTime>> attendanceTimes = new HashMap<>();
 
@@ -121,12 +122,12 @@ class RegisterTest {
         attendanceTimes.put(crew1, List.of(LocalDateTime.of(2025,2,3,12,59),
                 LocalDateTime.of(2025,2,4,9,59), //출석 2,
                 LocalDateTime.of(2025, 2, 5, 10, 31)));
-        attendanceTimes.put(crew2, List.of(LocalDateTime.of(2025,2,3,12,59),
-                LocalDateTime.of(2025,2,4,9,59), //출석 3,
-                LocalDateTime.of(2025, 2, 5, 9, 0)));
+        attendanceTimes.put(crew2, List.of(LocalDateTime.of(2025,2,3,13,59),
+                LocalDateTime.of(2025,2,4,10,59), //결석 3,
+                LocalDateTime.of(2025, 2, 5, 11, 0)));
         attendanceTimes.put(crew3, List.of(LocalDateTime.of(2025,2,3,13,31),
-                LocalDateTime.of(2025,2,4,10,31), //결석 3
-                LocalDateTime.of(2025, 2, 5, 12, 31)));
+                LocalDateTime.of(2025,2,4,10,31), //결석 2, 출석 1
+                LocalDateTime.of(2025, 2, 5, 9, 59)));
         register.fromCrewAttendanceTimeFile(attendanceTimes);
 
         //when
@@ -136,8 +137,9 @@ class RegisterTest {
             orderedCrews.add(crewRisk.getCrew());
         }
         assertAll(
-                () -> assertThat(orderedCrews.size()).isEqualTo(2),
-                () -> assertThat(orderedCrews.getFirst()).isEqualTo(crew3),
+                () -> assertThat(orderedCrews.size()).isEqualTo(3),
+                () -> assertThat(orderedCrews.getFirst()).isEqualTo(crew2),
+                () -> assertThat(orderedCrews.get(1)).isEqualTo(crew3),
                 () -> assertThat(orderedCrews.getLast()).isEqualTo(crew)
         );
     }
