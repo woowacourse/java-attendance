@@ -1,6 +1,7 @@
 package attendance.domain;
 
 import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.Map;
 
 public class AttendanceBook {
@@ -38,5 +39,16 @@ public class AttendanceBook {
         if (!crewAttendances.containsKey(nickname)) {
             throw new IllegalArgumentException("[ERROR] 등록되지 않은 닉네임입니다.");
         }
+    }
+
+    public Map<String, Attendances> findWarningCrews() {
+        Map<String, Attendances> result = new HashMap<>();
+        for (String nickname : crewAttendances.keySet()) {
+            Attendances attendances = crewAttendances.get(nickname);
+            if (!attendances.calculateWarning().equals(Warning.NONE)) {
+                result.put(nickname, attendances);
+            }
+        }
+        return result;
     }
 }

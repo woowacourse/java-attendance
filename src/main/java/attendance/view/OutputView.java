@@ -6,8 +6,12 @@ import attendance.domain.AttendanceStatus;
 import attendance.domain.Warning;
 import attendance.dto.AttendanceResultResponse;
 import attendance.dto.AttendancesResponse;
+import attendance.dto.WarningCrewsResponse;
+import attendance.dto.WarningCrewsResponse.WarningCrew;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Comparator;
+import java.util.List;
 
 public class OutputView {
     public void printAttendResult(AttendanceResultResponse response) {
@@ -51,6 +55,23 @@ public class OutputView {
 
     public void printWarning(Warning warning) {
         System.out.printf("%s 대상자입니다.\n", warning.getMessage());
+    }
+
+    public void printWarningCrews(WarningCrewsResponse response) {
+        List<WarningCrew> warningCrews = response.warningCrews()
+                .stream()
+                .sorted(Comparator.comparing(WarningCrew::absenceCount)
+                        .thenComparing(WarningCrew::lateCount)
+                        .thenComparing(WarningCrew::nickname))
+                .toList();
+        for (WarningCrew warningCrew : warningCrews) {
+            System.out.printf("- %s: 결석 %d회, 지각 %d회 (%s)\n",
+                    warningCrew.nickname(),
+                    warningCrew.absenceCount(),
+                    warningCrew.lateCount(),
+                    warningCrew.warning().getMessage()
+            );
+        }
     }
 
     public void printErrorMessage(String massage) {
