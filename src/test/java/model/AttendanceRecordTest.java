@@ -20,15 +20,15 @@ class AttendanceRecordTest {
                 LocalTime.of(10, 6)
         ));
         attendanceRecord.add(new AttendanceDateTime(
-                LocalDate.of(2024, 12, 10),
+                LocalDate.of(2024, 12, 11),
                 LocalTime.of(10, 30)
         ));
         attendanceRecord.add(new AttendanceDateTime(
-                LocalDate.of(2024, 12, 10),
+                LocalDate.of(2024, 12, 12),
                 LocalTime.of(10, 5)
         ));
         attendanceRecord.add(new AttendanceDateTime(
-                LocalDate.of(2024, 12, 10),
+                LocalDate.of(2024, 12, 13),
                 LocalTime.of(10, 31)
         ));
 
@@ -44,19 +44,19 @@ class AttendanceRecordTest {
                 LocalTime.of(9, 50)
         ));
         attendanceRecord.add(new AttendanceDateTime(
-                LocalDate.of(2024, 12, 10),
+                LocalDate.of(2024, 12, 11),
                 LocalTime.of(10, 6)
         ));
         attendanceRecord.add(new AttendanceDateTime(
-                LocalDate.of(2024, 12, 10),
+                LocalDate.of(2024, 12, 12),
                 LocalTime.of(10, 30)
         ));
         attendanceRecord.add(new AttendanceDateTime(
-                LocalDate.of(2024, 12, 10),
+                LocalDate.of(2024, 12, 13),
                 LocalTime.of(10, 5)
         ));
         attendanceRecord.add(new AttendanceDateTime(
-                LocalDate.of(2024, 12, 10),
+                LocalDate.of(2024, 12, 17),
                 LocalTime.of(10, 31)
         ));
         assertThat(attendanceRecord.computeAttendanceCount()).isEqualTo(2);
@@ -72,21 +72,22 @@ class AttendanceRecordTest {
                 LocalTime.of(9, 50)
         ));
         attendanceRecord.add(new AttendanceDateTime(
-                LocalDate.of(2024, 12, 10),
+                LocalDate.of(2024, 12, 11),
                 LocalTime.of(10, 6)
         ));
         attendanceRecord.add(new AttendanceDateTime(
-                LocalDate.of(2024, 12, 10),
+                LocalDate.of(2024, 12, 12),
                 LocalTime.of(10, 30)
         ));
         attendanceRecord.add(new AttendanceDateTime(
-                LocalDate.of(2024, 12, 10),
+                LocalDate.of(2024, 12, 13),
                 LocalTime.of(10, 5)
         ));
         attendanceRecord.add(new AttendanceDateTime(
-                LocalDate.of(2024, 12, 10),
+                LocalDate.of(2024, 12, 17),
                 LocalTime.of(10, 31)
         ));
         assertThat(attendanceRecord.computeAbsenceCount()).isEqualTo(17);
     }
+
 }
