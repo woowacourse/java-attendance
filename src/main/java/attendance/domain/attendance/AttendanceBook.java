@@ -47,11 +47,11 @@ public record AttendanceBook(Map<String, Attendances> attendances, List<StatusSt
     }
 
     public Attendances getAttendanceList(String nickname) {
-        var attendanceList = attendances.get(nickname);
-        if (attendanceList == null) { //ToDo. !attendances.containsKey(nickname)
+        if (!attendances.containsKey(nickname)) {
             throw new AttendanceArgumentException(Constant.NOT_REGISTERED_NICKNAME);
         }
-        return attendanceList;
+
+        return attendances.get(nickname);
     }
 
     public void updateStatusStatistics() {
