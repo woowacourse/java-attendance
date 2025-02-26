@@ -5,6 +5,8 @@ import java.time.LocalTime;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 
 class AttendanceCalculatorTest {
     @Test
@@ -47,26 +49,17 @@ class AttendanceCalculatorTest {
         Assertions.assertThat(AttendanceCalculator.calculateAttendance(LocalDateTime.of(2024,12,3,13,0), LocalTime.of(0,0)))
                 .isEqualTo(AttendanceStatus.ABSENT);
     }
-    @Test
+    @ParameterizedTest
     @DisplayName("주말 및 공휴일을 검사하는 메서드 테스트")
-    void test8() {
-        org.junit.jupiter.api.Assertions.assertTrue(AttendanceCalculator.checkHoliday(LocalDateTime.of(2024,12,25,0,0)));
-    }
-    @Test
-    @DisplayName("주말 및 공휴일을 검사하는 메서드 테스트")
-    void test9() {
-        org.junit.jupiter.api.Assertions.assertTrue(AttendanceCalculator.checkHoliday(LocalDateTime.of(2024,12,14,0,0)));
-    }
-    @Test
-    @DisplayName("주말 및 공휴일을 검사하는 메서드 테스트")
-    void test10() {
-        org.junit.jupiter.api.Assertions.assertTrue(AttendanceCalculator.checkHoliday(LocalDateTime.of(2024,12,15,0,0)));
-    }
-    @Test
-    @DisplayName("주말 및 공휴일을 검사하는 메서드 테스트")
-    void test11() {
-        org.junit.jupiter.api.Assertions.assertFalse(AttendanceCalculator.checkHoliday(LocalDateTime.of(2024,12,16,0,0)));
-
+    @CsvSource({
+            "2024, 12, 25, true",
+            "2024, 12, 14, true",
+            "2024, 12, 15, true",
+            "2024, 12, 16, false"
+    })
+    void testCheckHoliday(int year, int month, int day, boolean expected) {
+        LocalDateTime date = LocalDateTime.of(year, month, day, 0, 0);
+        org.junit.jupiter.api.Assertions.assertEquals(expected, AttendanceCalculator.checkHoliday(date));
     }
 
 }
