@@ -1,9 +1,9 @@
 package attendance.domain;
 
-import static java.time.LocalDate.of;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.TimeZone;
 
@@ -46,7 +46,18 @@ class AttendanceTest {
     void 날짜를_알려주면_출석_날짜와_같은지_알려준다(int day, boolean expected) {
         Attendance attendance = new Attendance(LocalDateTime.of(2025, 2, 26, 10, 0));
 
-        assertThat(attendance.isSameDate(of(2025, 2, day))).isEqualTo(expected);
+        assertThat(attendance.isSameDate(LocalDate.of(2025, 2, day))).isEqualTo(expected);
+    }
+
+    @CsvSource(value = {
+            "26,true", "27,false"
+    })
+    @ParameterizedTest
+    void 다른_출석_기록을_알려주면_같은_출석_날짜인지_알려준다(int day, boolean expected) {
+        Attendance attendance = new Attendance(LocalDateTime.of(2025, 2, 26, 10, 0));
+        Attendance otherAttendance = new Attendance(LocalDateTime.of(2025, 2, day, 9, 0));
+
+        assertThat(attendance.isSameDate(otherAttendance)).isEqualTo(expected);
     }
 
     @Test

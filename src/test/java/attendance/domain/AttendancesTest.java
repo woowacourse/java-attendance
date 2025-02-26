@@ -65,4 +65,26 @@ class AttendancesTest {
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
+    @Test
+    void 출석을_저장한다() {
+        Attendance attendance = new Attendance(LocalDateTime.of(2025, 2, 26, 10, 0));
+        Attendances attendances = new Attendances(new ArrayList<>(List.of(attendance)));
+        Attendance addedAttendance = new Attendance(LocalDateTime.of(2025, 2, 27, 9, 50));
+
+        attendances.add(addedAttendance);
+
+        assertThat(attendances.findSameDateAttendance(LocalDate.of(2025, 2, 27)))
+                .isEqualTo(new Attendance(LocalDateTime.of(2025, 2, 27, 9, 50)));
+    }
+
+    @Test
+    void 해당_날짜에_이미_존재하는_출석_기록은_저장할_수_없다() {
+        Attendance attendance = new Attendance(LocalDateTime.of(2025, 2, 26, 10, 0));
+        Attendances attendances = new Attendances(new ArrayList<>(List.of(attendance)));
+        Attendance addedAttendance = new Attendance(LocalDateTime.of(2025, 2, 26, 9, 50));
+
+        assertThatThrownBy(() -> attendances.add(addedAttendance))
+                .isInstanceOf(IllegalArgumentException.class);
+    }
+
 }

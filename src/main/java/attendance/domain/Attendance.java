@@ -18,6 +18,10 @@ public class Attendance {
         return attendanceDate.isSameDate(localDate);
     }
 
+    public boolean isSameDate(final Attendance otherAttendance) {
+        return this.attendanceDate.equals(otherAttendance.attendanceDate);
+    }
+
     public Attendance changeTime(final LocalDateTime modificationDateTime) {
         return new Attendance(modificationDateTime);
     }

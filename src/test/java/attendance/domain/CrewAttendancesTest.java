@@ -1,5 +1,6 @@
 package attendance.domain;
 
+import static org.assertj.core.api.Assertions.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
@@ -99,5 +100,17 @@ class CrewAttendancesTest {
                 .hasMessage("2월 27일 보다 미래의 날짜를 수정할 수 없습니다.");
     }
 
+    @Test
+    void 크루의_출석_기록을_저장한다() {
+        CrewAttendances crewAttendances = new CrewAttendances(crewAttendanceDateTimes);
+        LocalDateTime attendanceDateTime = LocalDateTime.of(2025, 2, 27, 10, 0);
+        Attendance attendance = new Attendance(attendanceDateTime);
+        Crew crew = new Crew("빙봉");
+
+        crewAttendances.addAttendance(crew, attendance);
+
+        assertThat(crewAttendances.findCrewAttendanceByLocalDate(crew, LocalDate.of(2025, 2, 27)))
+                .isEqualTo(new Attendance(attendanceDateTime));
+    }
 
 }

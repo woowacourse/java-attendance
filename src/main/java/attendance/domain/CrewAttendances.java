@@ -64,4 +64,10 @@ public class CrewAttendances {
         }
     }
 
+    public void addAttendance(final Crew crew, final Attendance attendance) {
+        validateCrewExistence(crew);
+        Attendances attendances = crewAttendances.get(crew);
+        attendances.add(attendance);
+    }
+
 }

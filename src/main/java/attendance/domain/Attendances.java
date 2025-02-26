@@ -31,7 +31,20 @@ public class Attendances {
                 .orElseThrow(() -> new IllegalArgumentException("해당 날짜의 출석기록이 존재하지 않습니다."));
         Attendance modificationAttendance = originAttendance.changeTime(modificationDateTime);
         attendances.remove(originAttendance);
-        attendances.add(modificationAttendance);
+        add(modificationAttendance);
+    }
+
+    public void add(final Attendance attendance) {
+        validateIsExists(attendance);
+        attendances.add(attendance);
+    }
+
+    private void validateIsExists(final Attendance addedAttendance) {
+        if (attendances.stream()
+                .anyMatch(attendance -> attendance.isSameDate(addedAttendance))
+        ) {
+            throw new IllegalArgumentException("해당 날짜의 출석 기록이 이미 존재합니다.");
+        }
     }
 
 }
