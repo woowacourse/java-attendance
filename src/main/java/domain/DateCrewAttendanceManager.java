@@ -10,6 +10,8 @@ import strategy.CurrentDateGenerateStrategy;
 public class DateCrewAttendanceManager {
 
     private static final String ATTENDANCE_DOENST_EXIST = "존재하지 않는 출석 기록입니다.";
+    private static final String DUPLICATE_ATTENDANCE = "이미 출석하였습니다. 수정할려면 수정 기능을 참조해주세요";
+
     private final Map<AttendanceDate, CrewAttendance> dateCrewAttendances;
     private final CurrentDateGenerateStrategy currentDateGenerateStrategy;
 
@@ -21,6 +23,9 @@ public class DateCrewAttendanceManager {
     public void addAttendance(LocalTime time) {
         AttendanceDate attendanceDate = new AttendanceDate(currentDateGenerateStrategy.now());
         AttendanceTime attendanceTime = new AttendanceTime(time, attendanceDate);
+        if (dateCrewAttendances.containsKey(attendanceDate)) {
+            throw new AttendanceException(DUPLICATE_ATTENDANCE);
+        }
         dateCrewAttendances.put(attendanceDate, new CrewAttendance(attendanceTime));
     }
 

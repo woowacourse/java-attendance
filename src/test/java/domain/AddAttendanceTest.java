@@ -185,7 +185,7 @@ class AddAttendance {
         @DisplayName("이미 출석한 경우 예외가 발생한다")
         void duplicateAttendance() {
             String nickname = "투다";
-            LocalTime time = LocalTime.of(6, 0);
+            LocalTime time = LocalTime.of(8, 0);
             LocalDate date = LocalDate.of(2024, 12, 3);
             CrewAttendances crewAttendances = new CrewAttendances(new TestAttendanceCurrentDateGenerateStrategy(date));
             crewAttendances.addAttendance(nickname, time);
