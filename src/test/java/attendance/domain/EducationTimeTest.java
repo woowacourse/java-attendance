@@ -23,9 +23,9 @@ class EducationTimeTest {
     static Stream<Arguments> getAttendTimeByDayOfWeek() {
         return Stream.of(
                 Arguments.of(DayOfWeek.MONDAY, EducationTime.MONDAY_ATTEND.getTime(), "월요일 출석 시작 시간"),
-                Arguments.of(DayOfWeek.MONDAY, EducationTime.MONDAY_LATE.getTime().minusNanos(1), "월요일 출석 종료 시간"),
+                Arguments.of(DayOfWeek.MONDAY, EducationTime.MONDAY_LATE.getTime(), "월요일 출석 종료 시간"),
                 Arguments.of(DayOfWeek.WEDNESDAY, EducationTime.GENERAL_ATTEND.getTime(), "수요일 출석 시작 시간"),
-                Arguments.of(DayOfWeek.WEDNESDAY, EducationTime.GENERAL_LATE.getTime().minusNanos(1), "수요일 출석 종료 시간")
+                Arguments.of(DayOfWeek.WEDNESDAY, EducationTime.GENERAL_LATE.getTime(), "수요일 출석 종료 시간")
         );
     }
 
@@ -38,9 +38,9 @@ class EducationTimeTest {
     static Stream<Arguments> getNotAttendTimeByDayOfWeek() {
         return Stream.of(
                 Arguments.of(DayOfWeek.MONDAY, EducationTime.MONDAY_ATTEND.getTime().minusNanos(1), "월요일 출석 시작 시간 1 나노초 전"),
-                Arguments.of(DayOfWeek.MONDAY, EducationTime.MONDAY_LATE.getTime(), "월요일 출석 종료 시간 이후(지각 시작 시간)"),
+                Arguments.of(DayOfWeek.MONDAY, EducationTime.MONDAY_LATE.getTime().plusNanos(1), "월요일 출석 종료 시간 1 나노초 후"),
                 Arguments.of(DayOfWeek.WEDNESDAY, EducationTime.GENERAL_ATTEND.getTime().minusNanos(1), "수요일 출석 시작 시간 1 나노초 전"),
-                Arguments.of(DayOfWeek.WEDNESDAY, EducationTime.GENERAL_LATE.getTime(), "수요일 출석 종료 시간 이후(지각 시작 시간)")
+                Arguments.of(DayOfWeek.WEDNESDAY, EducationTime.GENERAL_LATE.getTime().plusNanos(1), "수요일 출석 종료 시간 1 나노초 후")
         );
     }
 
@@ -52,10 +52,10 @@ class EducationTimeTest {
 
     static Stream<Arguments> getLateTimeByDayOfWeek() {
         return Stream.of(
-                Arguments.of(DayOfWeek.MONDAY, EducationTime.MONDAY_LATE.getTime(), "월요일 지각 시작 시간"),
-                Arguments.of(DayOfWeek.MONDAY, EducationTime.MONDAY_ABSENT.getTime().minusNanos(1), "월요일 지각 종료 시간"),
-                Arguments.of(DayOfWeek.TUESDAY, EducationTime.GENERAL_LATE.getTime(), "화요일 출석 시작 시간"),
-                Arguments.of(DayOfWeek.TUESDAY, EducationTime.GENERAL_ABSENT.getTime().minusNanos(1), "화요일 지각 종료 시간")
+                Arguments.of(DayOfWeek.MONDAY, EducationTime.MONDAY_LATE.getTime().plusNanos(1), "월요일 지각 시작 시간"),
+                Arguments.of(DayOfWeek.MONDAY, EducationTime.MONDAY_ABSENT.getTime(), "월요일 지각 종료 시간"),
+                Arguments.of(DayOfWeek.TUESDAY, EducationTime.GENERAL_LATE.getTime().plusNanos(1), "화요일 지각 시작 시간"),
+                Arguments.of(DayOfWeek.TUESDAY, EducationTime.GENERAL_ABSENT.getTime(), "화요일 지각 종료 시간")
         );
     }
 
@@ -68,9 +68,9 @@ class EducationTimeTest {
     static Stream<Arguments> getNotLateTimeByDayOfWeek() {
         return Stream.of(
                 Arguments.of(DayOfWeek.MONDAY, EducationTime.MONDAY_LATE.getTime().minusNanos(1), "월요일 지각 시작 시간 1 나노초 전"),
-                Arguments.of(DayOfWeek.MONDAY, EducationTime.MONDAY_ABSENT.getTime(), "월요일 지각 종료 시간 이후(결석 시작 시간)"),
+                Arguments.of(DayOfWeek.MONDAY, EducationTime.MONDAY_ABSENT.getTime().plusNanos(1), "월요일 지각 종료 시간 1 나노초 후"),
                 Arguments.of(DayOfWeek.TUESDAY, EducationTime.GENERAL_LATE.getTime().minusNanos(1), "화요일 지각 시작 시간 1 나노초 전"),
-                Arguments.of(DayOfWeek.TUESDAY, EducationTime.GENERAL_ABSENT.getTime(), "화요일 지각 종료 시간 이후(결석 시작 시간)")
+                Arguments.of(DayOfWeek.TUESDAY, EducationTime.GENERAL_ABSENT.getTime().plusNanos(1), "화요일 지각 종료 시간 1 나노초 후")
         );
     }
 }
