@@ -1,5 +1,6 @@
 import java.time.DayOfWeek;
 import java.time.LocalDate;
+import java.time.LocalTime;
 
 public class OperationTimeChecker {
 
@@ -9,5 +10,9 @@ public class OperationTimeChecker {
 
     public boolean isHoliday(final LocalDate targetDate) {
         return targetDate.isEqual(LocalDate.of(2024, 12, 25));
+    }
+
+    public boolean isContainsOperationTime(final LocalTime targetTime) {
+        return false;
     }
 }

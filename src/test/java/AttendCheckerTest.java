@@ -1,6 +1,7 @@
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.time.LocalDate;
+import java.time.LocalTime;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -43,5 +44,19 @@ public class AttendCheckerTest {
         //then
         assertThat(actual).isEqualTo(true);
         assertThat(actual2).isEqualTo(false);
+    }
+
+    @Test
+    @DisplayName("주어진 시간이 운영 시간에 포함되는지 판정하는 기능")
+    void checkTimeIsContainsOperationTime() {
+        //given
+        OperationTimeChecker operationTimeChecker = new OperationTimeChecker();
+        LocalTime innerOperationTime = LocalTime.of(8, 0);
+
+        //when
+        boolean actual = operationTimeChecker.isContainsOperationTime(innerOperationTime);
+
+        //then
+        assertThat(actual).isEqualTo(true);
     }
 }
