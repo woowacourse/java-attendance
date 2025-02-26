@@ -3,7 +3,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import java.time.LocalTime;
 import org.junit.jupiter.api.Test;
 
-public class AttendanceCheck {
+public class AttendanceCheckTest {
 
     //닉네임과 등교 시간을 입력하면 출석할 수 있다.
     //출석 후 출석 기록을 확인할 수 있다.
