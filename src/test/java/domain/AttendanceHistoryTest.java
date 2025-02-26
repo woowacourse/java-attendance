@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIterable;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+import dto.AttendanceCount;
 import except.AttendanceException;
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -48,22 +49,22 @@ public class AttendanceHistoryTest {
                         "투다",
                         List.of(new CrewAttendanceHistory(crewAttendance1, attendanceDate1),
                                 new CrewAttendanceHistory(crewAttendance2, attendanceDate2)),
-                        new CrewDismissCount(0, 0, 2),
-                        LocalDate.of(2024, 12, 4)
+                        LocalDate.of(2024, 12, 4),
+                        new AttendanceCount(2, 0, 0)
                 ),
                 Arguments.arguments(
                         "투다",
                         List.of(new CrewAttendanceHistory(crewAttendance1, attendanceDate1),
                                 new CrewAttendanceHistory(crewAttendance2, attendanceDate2),
                                 new CrewAttendanceHistory(crewAttendance3, attendanceDate3)),
-                        new CrewDismissCount(0, 0, 3),
-                        LocalDate.of(2024, 12, 5)
+                        LocalDate.of(2024, 12, 5),
+                        new AttendanceCount(3, 0, 0)
                 ),
                 Arguments.arguments(
                         "투다",
                         List.of(),
-                        new CrewDismissCount(0, 0, 0),
-                        LocalDate.of(2024, 12, 1)
+                        LocalDate.of(2024, 12, 1),
+                        new AttendanceCount(0, 0, 0)
                 )
         );
     }
@@ -72,15 +73,15 @@ public class AttendanceHistoryTest {
     @MethodSource("attendanceHistoryTest")
     @DisplayName("닉네임을 입력하여 전날까지의 출석 기록을 확인할 수 있다.")
     void attendanceHistoryTest(String nickname, List<CrewAttendanceHistory> expectCrewAttendanceHistories,
-                               CrewDismissCount crewDismissCount,
-                               LocalDate notIncludeDate) {
+                               LocalDate notIncludeDate, AttendanceCount crewDismissCount) {
         testAttendanceCurrentDateGenerateStrategy.setTestDate(notIncludeDate);
         CrewAttendanceHistories crewAttendanceHistories = crewAttendances.crewAttendancesHistory(nickname);
         List<CrewAttendanceHistory> resultCrewAttendanceHistories = crewAttendanceHistories.crewAttendanceHistories();
 
         assertThatIterable(resultCrewAttendanceHistories)
                 .containsExactlyInAnyOrderElementsOf(expectCrewAttendanceHistories);
-        assertThat(crewAttendanceHistories.crewDismiss())
+        assertThat(crewAttendanceHistories.crewDismiss()
+                .attendanceCount())
                 .isEqualTo(crewDismissCount);
     }
 
