@@ -2,6 +2,7 @@ package view;
 
 import constant.InputViewMessage;
 import dto.AttendanceCheckInRequest;
+import dto.AttendanceHistoryRequest;
 import dto.AttendanceOptionRequest;
 import dto.AttendanceUpdateRequest;
 import java.time.LocalDateTime;
@@ -50,6 +51,14 @@ public class InputView {
 
         printNewLine();
         return new AttendanceUpdateRequest(nickname, day, time);
+    }
+
+    public static AttendanceHistoryRequest readAttendanceHistoryRequest() {
+        println(InputViewMessage.ATTENDANCE_HISTORY_NICKNAME_PROMPT.getMessage());
+        String nickname = scanner.nextLine();
+
+        printNewLine();
+        return new AttendanceHistoryRequest(nickname);
     }
 
     private static void println(String message) {
