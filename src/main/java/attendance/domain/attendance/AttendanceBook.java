@@ -14,21 +14,21 @@ import java.util.Optional;
 import attendance.common.exception.AttendanceArgumentException;
 import attendance.domain.StatusStatistic;
 
-public record AttendanceBook(Map<String, AttendanceList> attendances, List<StatusStatistic> statusStatistics) {
+public record AttendanceBook(Map<String, Attendances> attendances, List<StatusStatistic> statusStatistics) {
 
     public static AttendanceBook from(List<String> lines) {
-        Map<String, AttendanceList> attendances = new HashMap<>();
+        Map<String, Attendances> attendances = new HashMap<>();
         for (String line : lines) {
             addAttendance(line, attendances);
         }
         return new AttendanceBook(attendances, new ArrayList<>());
     }
 
-    private static void addAttendance(String line, Map<String, AttendanceList> attendances) {
+    private static void addAttendance(String line, Map<String, Attendances> attendances) {
         var lines = line.split(Constant.REGEX);
         var nickname = lines[0];
 
-        AttendanceList attendanceList = attendances.computeIfAbsent(nickname, k -> new AttendanceList());
+        Attendances attendanceList = attendances.computeIfAbsent(nickname, k -> new Attendances());
 
         var dateTime = LocalDateTime.parse(lines[1], getFormatter(Constant.DATETIME_FORMAT));
         var attendance = new Attendance(dateTime);
@@ -46,9 +46,9 @@ public record AttendanceBook(Map<String, AttendanceList> attendances, List<Statu
         return attendanceList.findAttendance(date);
     }
 
-    public AttendanceList getAttendanceList(String nickname) {
+    public Attendances getAttendanceList(String nickname) {
         var attendanceList = attendances.get(nickname);
-        if (attendanceList == null) {
+        if (attendanceList == null) { //ToDo. !attendances.containsKey(nickname)
             throw new AttendanceArgumentException(Constant.NOT_REGISTERED_NICKNAME);
         }
         return attendanceList;

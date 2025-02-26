@@ -6,7 +6,7 @@ import attendance.common.utill.DateTimeFormatterWrapper;
 
 public class OutputView {
 
-    private final static String METHOD_INFO = """
+    private final static String METHOD_MESSAGE = """
         1. 출석 확인
         2. 출석 수정
         3. 크루별 출석 기록 확인
@@ -32,7 +32,7 @@ public class OutputView {
     }
 
     public void printMethod() {
-        println(METHOD_INFO);
+        println(METHOD_MESSAGE);
     }
 
     public void printRequestNickname() {

@@ -5,7 +5,7 @@ import java.util.Comparator;
 import java.util.Map;
 import java.util.function.Predicate;
 
-import attendance.domain.attendance.AttendanceList;
+import attendance.domain.attendance.Attendances;
 
 public class StatusStatistic implements Comparable<StatusStatistic> {
     private static final String FORMAT_STATE = "%s: %d회\n";
@@ -15,8 +15,8 @@ public class StatusStatistic implements Comparable<StatusStatistic> {
     private final Map<AttendanceStatus, Integer> statistic;
     private final String nickname;
 
-    public static StatusStatistic of(AttendanceList attendanceList, String nickName) {
-        return new StatusStatistic(attendanceList.produceStatistic(), nickName);
+    public static StatusStatistic of(Attendances attendances, String nickName) {
+        return new StatusStatistic(attendances.produceStatistic(), nickName);
     }
 
     public StatusStatistic(Map<AttendanceStatus, Integer> statistic, String nickname) {
@@ -59,7 +59,7 @@ public class StatusStatistic implements Comparable<StatusStatistic> {
         return nickname;
     }
 
-    private int getWeight() {
+    private int getWeightForComparingSort() {
         return statistic.getOrDefault(AttendanceStatus.ABSENCE, 0)
             + statistic.getOrDefault(AttendanceStatus.LATE, 0);
     }
@@ -67,7 +67,7 @@ public class StatusStatistic implements Comparable<StatusStatistic> {
     @Override
     public int compareTo(StatusStatistic o) {
         return Comparator.comparing(StatusStatistic::judgeSanctionLevel)
-            .thenComparing(StatusStatistic::getWeight, Comparator.reverseOrder())
+            .thenComparing(StatusStatistic::getWeightForComparingSort, Comparator.reverseOrder())
             .thenComparing(StatusStatistic::getName)
             .compare(this, o);
     }

@@ -7,12 +7,12 @@ import java.time.LocalDateTime;
 import attendance.common.exception.AttendanceArgumentException;
 import attendance.domain.attendance.Attendance;
 import attendance.domain.attendance.AttendanceBook;
-import attendance.domain.attendance.AttendanceList;
+import attendance.domain.attendance.Attendances;
 
 public class RegisterManager {
     public static final String DUPLICATE_DATE = "이미 출석되었습니다. 수정 기능을 이용해주세요.";
     public static final String NOT_REGISTERED_NICKNAME = "등록되지 않은 닉네임입니다.";
-    public static final String ATTENDANCE_INFO = "MM월 d일 E요일 HH:mm ";
+    public static final String ATTENDANCE_FORMAT = "MM월 d일 E요일 HH:mm ";
     public static final String FORMAT_STATUS = "(%s)";
 
     private final AttendanceBook attendanceBook;
@@ -35,14 +35,14 @@ public class RegisterManager {
         }
     }
 
-    private void validateDuplicate(Attendance attendance, AttendanceList attendanceList) {
-        if (attendanceList.contains(attendance)) {
+    private void validateDuplicate(Attendance attendance, Attendances attendances) {
+        if (attendances.contains(attendance)) {
             throw new AttendanceArgumentException(DUPLICATE_DATE);
         }
     }
 
     private void writeDateTime(LocalDateTime dateTime) {
-        String formattedDateTime = getFormatter(ATTENDANCE_INFO).format(dateTime);
+        String formattedDateTime = getFormatter(ATTENDANCE_FORMAT).format(dateTime);
         report.append(formattedDateTime);
     }
 

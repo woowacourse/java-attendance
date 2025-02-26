@@ -5,6 +5,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.net.URL;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import attendance.common.exception.AttendanceFileException;
@@ -12,7 +13,7 @@ import attendance.common.exception.AttendanceFileException;
 public class AttendanceFileReader {
     private static final String NOT_EXIST_FILE = "존재하지 않은 파일입니다.";
     private static final String INVALID_FILE = "유효하지 않은 파일입니다.";
-    private static final int SKIP_CSV_INFO = 1;
+    private static final int SKIP_CSV_LINE = 1;
 
     private final String fileName;
 
@@ -30,18 +31,15 @@ public class AttendanceFileReader {
     }
 
     private URL getUrl(String fileName) throws AttendanceFileException {
-        URL resourceUrl = getClass().getResource(fileName);
-        if (resourceUrl == null) {
-            throw new AttendanceFileException(NOT_EXIST_FILE);
-        }
-        return resourceUrl;
+        Optional<URL> resourceUrl = Optional.ofNullable(getClass().getResource(fileName));
+        return resourceUrl.orElseThrow(() -> new AttendanceFileException(NOT_EXIST_FILE));
     }
 
     public List<String> readFile(URL resourceUrl) throws AttendanceFileException {
         try (BufferedReader bufferedReader = new BufferedReader(
             new FileReader(resourceUrl.getFile()))) {
             return bufferedReader.lines()
-                .skip(SKIP_CSV_INFO)
+                .skip(SKIP_CSV_LINE)
                 .collect(Collectors.toList());
         } catch (IOException e) {
             throw new AttendanceFileException(INVALID_FILE, e);
