@@ -20,7 +20,8 @@ public class AttendanceCheckTest {
         final var nickname = "에드";
         final var attendanceTime = LocalTime.of(9, 59);
 
-        final var actual = AttendanceCheck.attend(nickname, attendanceTime);
+        AttendanceCheck.attend(nickname, attendanceTime);
+        final var actual = AttendanceCheck.getAttendanceStatus(nickname);
         final var expected = "출석";
         assertEquals(expected, actual);
     }
