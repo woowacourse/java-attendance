@@ -55,4 +55,14 @@ public class AttendanceCheckTest {
         final var expected = "지각";
         assertEquals(expected, AttendanceCheck.getAttendanceStatus(nickname));
     }
+
+    @Test
+    void 시작_시간으로부터_30분_초과는_결석으로_처리한다() {
+        final var nickname = "에드";
+        final var attendanceTime = LocalTime.of(10, 6);
+
+        AttendanceCheck.attend(nickname, attendanceTime);
+        final var expected = "지각";
+        assertEquals(expected, AttendanceCheck.getAttendanceStatus(nickname));
+    }
 }
