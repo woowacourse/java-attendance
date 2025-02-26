@@ -3,6 +3,7 @@ package model;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import attendance.model.AttendanceStatus;
+import attendance.model.EducationSchedule;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import org.junit.jupiter.api.DisplayName;
@@ -16,9 +17,10 @@ class AttendanceStatusTest {
         // given
         LocalDate date = LocalDate.of(2024, 12, 9);
         LocalTime time = LocalTime.of(13, 0);
+        EducationSchedule educationSchedule = EducationSchedule.from(date);
 
         // when
-        AttendanceStatus attendanceStatus = AttendanceStatus.from(date, time);
+        AttendanceStatus attendanceStatus = AttendanceStatus.from(time, educationSchedule);
 
         // then
         assertThat(attendanceStatus).isEqualTo(AttendanceStatus.ATTEND);
@@ -30,9 +32,10 @@ class AttendanceStatusTest {
         // given
         LocalDate date = LocalDate.of(2024, 12, 9);
         LocalTime time = LocalTime.of(13, 6);
+        EducationSchedule educationSchedule = EducationSchedule.from(date);
 
         // when
-        AttendanceStatus attendanceStatus = AttendanceStatus.from(date, time);
+        AttendanceStatus attendanceStatus = AttendanceStatus.from(time, educationSchedule);
 
         // then
         assertThat(attendanceStatus).isEqualTo(AttendanceStatus.LATE);
@@ -44,9 +47,9 @@ class AttendanceStatusTest {
         // given
         LocalDate date = LocalDate.of(2024, 12, 9);
         LocalTime time = LocalTime.of(13, 31);
-
+        EducationSchedule educationSchedule = EducationSchedule.from(date);
         // when
-        AttendanceStatus attendanceStatus = AttendanceStatus.from(date, time);
+        AttendanceStatus attendanceStatus = AttendanceStatus.from(time, educationSchedule);
 
         // then
         assertThat(attendanceStatus).isEqualTo(AttendanceStatus.ABSENCE);
@@ -58,9 +61,9 @@ class AttendanceStatusTest {
         // given
         LocalDate date = LocalDate.of(2024, 12, 10);
         LocalTime time = LocalTime.of(10, 0);
-
+        EducationSchedule educationSchedule = EducationSchedule.from(date);
         // when
-        AttendanceStatus attendanceStatus = AttendanceStatus.from(date, time);
+        AttendanceStatus attendanceStatus = AttendanceStatus.from(time, educationSchedule);
 
         // then
         assertThat(attendanceStatus).isEqualTo(AttendanceStatus.ATTEND);
@@ -72,9 +75,9 @@ class AttendanceStatusTest {
         // given
         LocalDate date = LocalDate.of(2024, 12, 10);
         LocalTime time = LocalTime.of(10, 6);
-
+        EducationSchedule educationSchedule = EducationSchedule.from(date);
         // when
-        AttendanceStatus attendanceStatus = AttendanceStatus.from(date, time);
+        AttendanceStatus attendanceStatus = AttendanceStatus.from(time, educationSchedule);
 
         // then
         assertThat(attendanceStatus).isEqualTo(AttendanceStatus.LATE);
@@ -86,9 +89,9 @@ class AttendanceStatusTest {
         // given
         LocalDate date = LocalDate.of(2024, 12, 10);
         LocalTime time = LocalTime.of(10, 31);
-
+        EducationSchedule educationSchedule = EducationSchedule.from(date);
         // when
-        AttendanceStatus attendanceStatus = AttendanceStatus.from(date, time);
+        AttendanceStatus attendanceStatus = AttendanceStatus.from(time, educationSchedule);
 
         // then
         assertThat(attendanceStatus).isEqualTo(AttendanceStatus.ABSENCE);

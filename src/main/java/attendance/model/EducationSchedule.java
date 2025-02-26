@@ -29,4 +29,8 @@ public enum EducationSchedule {
                 .findFirst()
                 .orElseThrow(() -> new IllegalArgumentException("운영하지 않는 요일입니다."));
     }
+
+    public LocalTime getStartTime() {
+        return startTime;
+    }
 }

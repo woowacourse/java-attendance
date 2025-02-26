@@ -1,7 +1,5 @@
 package attendance.model;
 
-import java.time.DayOfWeek;
-import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.Arrays;
 import java.util.Comparator;
@@ -18,19 +16,19 @@ public enum AttendanceStatus {
         this.deadline = deadline;
     }
 
-    public static AttendanceStatus from(LocalDate localDate, LocalTime time) {
-        if (localDate.getDayOfWeek().equals(DayOfWeek.MONDAY)) {
-            return getAttendanceStatus(time, LocalTime.of(13, 0));
-        } else {
-            return getAttendanceStatus(time, LocalTime.of(10, 0));
-        }
-    }
-
-    private static AttendanceStatus getAttendanceStatus(LocalTime currentTime, LocalTime startTime) {
+    public static AttendanceStatus from(LocalTime currentTime, EducationSchedule educationSchedule) {
         return Arrays.stream(AttendanceStatus.values())
                 .sorted(Comparator.reverseOrder())
-                .filter(attendanceState -> currentTime.isAfter(startTime.plusMinutes(attendanceState.deadline)))
+                .filter(attendanceState -> isAfterDeadLine(currentTime, educationSchedule, attendanceState))
                 .findFirst()
                 .orElse(AttendanceStatus.ATTEND);
+    }
+
+    private static boolean isAfterDeadLine(
+            LocalTime currentTime,
+            EducationSchedule educationSchedule,
+            AttendanceStatus attendanceStatus
+    ) {
+        return currentTime.isAfter(educationSchedule.getStartTime().plusMinutes(attendanceStatus.deadline));
     }
 }
