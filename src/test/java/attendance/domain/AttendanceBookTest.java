@@ -18,7 +18,7 @@ public class AttendanceBookTest {
         List<LocalDateTime> dateTimes = List.of(LocalDateTime.of(2024, 12, 13, 9, 59));
         AttendanceBook attendanceBook = generateAttendanceBook("훌라", dateTimes);
 
-        assertThatThrownBy(() -> attendanceBook.attend("모루", LocalDateTime.of(2024, 12, 16, 12, 59)))
+        assertThatThrownBy(() -> attendanceBook.attend("모루", Attendance.from(LocalDateTime.of(2024, 12, 16, 12, 59))))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -26,13 +26,11 @@ public class AttendanceBookTest {
     void 닉네임과_시간을_입력하면_출석한다() {
         List<LocalDateTime> dateTimes = List.of(LocalDateTime.of(2024, 12, 13, 9, 59));
         AttendanceBook attendanceBook = generateAttendanceBook("훌라", dateTimes);
-
-        final var result = attendanceBook.attend("훌라", LocalDateTime.of(2024, 12, 16, 12, 59));
-
         LocalDateTime dateTime = LocalDateTime.of(2024, 12, 16, 12, 59);
-        Attendance comparison = Attendance.from(dateTime);
+        Attendance attendance = Attendance.from(dateTime);
 
-        assertThat(result).isEqualTo(comparison);
+        assertThatCode(() -> attendanceBook.attend("훌라", attendance))
+                .doesNotThrowAnyException();
     }
 
     @Test
@@ -40,7 +38,7 @@ public class AttendanceBookTest {
         List<LocalDateTime> dateTimes = List.of(LocalDateTime.of(2024, 12, 13, 9, 59));
         AttendanceBook attendanceBook = generateAttendanceBook("훌라", dateTimes);
 
-        assertThatThrownBy(() -> attendanceBook.attend("훌라", LocalDateTime.of(2024, 12, 13, 9, 59)))
+        assertThatThrownBy(() -> attendanceBook.attend("훌라", Attendance.from(LocalDateTime.of(2024, 12, 13, 9, 59))))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 

@@ -1,24 +1,30 @@
 package attendance.controller;
 
+import attendance.controller.util.DateTimeConverter;
+import attendance.domain.Attendance;
 import attendance.domain.AttendanceBook;
 import attendance.domain.AttendanceBookFactory;
+import attendance.domain.AttendanceDate;
+import attendance.domain.AttendanceTime;
 import attendance.domain.Menu;
+import attendance.dto.AttendanceResultResponse;
 import attendance.util.AttendancesFileReader;
 import attendance.util.CrewAttendancesDataParser;
 import attendance.view.InputView;
 import attendance.view.OutputView;
 import java.time.LocalDate;
+import java.time.LocalTime;
 
 public class AttendanceController {
     private final InputView inputView;
     private final OutputView outputView;
-
-    private final LocalDate today = LocalDate.of(2024, 21, 13);
+    private final LocalDate today;
     private AttendanceBook attendanceBook;
 
-    public AttendanceController(InputView inputView, OutputView outputView) {
+    public AttendanceController(InputView inputView, OutputView outputView, LocalDate today) {
         this.inputView = inputView;
         this.outputView = outputView;
+        this.today = today;
     }
 
     public void run() {
@@ -36,7 +42,7 @@ public class AttendanceController {
     private void executeMenu(String input) {
         Menu selectedMenu = Menu.from(input);
         if (Menu.ATTEND.equals(selectedMenu)) {
-
+            attend();
         }
         if (Menu.UPDATE_ATTENDANCE.equals(selectedMenu)) {
 
@@ -50,5 +56,18 @@ public class AttendanceController {
         if (Menu.QUIT.equals(selectedMenu)) {
             System.exit(0);
         }
+    }
+
+    private void attend() {
+        AttendanceDate attendanceDate = AttendanceDate.from(today);
+
+        String inputTime = inputView.readAttendTime();
+        LocalTime time = DateTimeConverter.convertToTime(inputTime);
+        AttendanceTime attendanceTime = AttendanceTime.from(time);
+
+        Attendance attendance = new Attendance(attendanceDate, attendanceTime);
+        attendanceBook.attend(inputView.readAttendNickname(), attendance);
+
+        outputView.printAttendResult(AttendanceResultResponse.from(attendance));
     }
 }

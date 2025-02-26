@@ -27,6 +27,22 @@ public class Attendance {
         this.attendanceTime = AttendanceTime.from(time);
     }
 
+    public AttendanceStatus checkAttendanceStatus() {
+        return attendanceTime.checkAttendanceStatus(attendanceDate.isMonday());
+    }
+
+    public boolean isSameDate(Attendance attendance) {
+        return this.attendanceDate.isEqualToDate(attendance.attendanceDate.date());
+    }
+
+    public AttendanceDate getAttendanceDate() {
+        return attendanceDate;
+    }
+
+    public AttendanceTime getAttendanceTime() {
+        return attendanceTime;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) {
@@ -35,9 +51,5 @@ public class Attendance {
         Attendance that = (Attendance) o;
         return Objects.equals(attendanceDate, that.attendanceDate) && Objects.equals(attendanceTime,
                 that.attendanceTime);
-    }
-
-    public AttendanceStatus checkAttendanceStatus() {
-        return attendanceTime.checkAttendanceStatus(attendanceDate.isMonday());
     }
 }
