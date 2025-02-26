@@ -46,5 +46,17 @@ public class AttendanceBookTest {
             assertThatThrownBy(() -> attendanceBook.registerCrew(crew))
                     .isInstanceOf(IllegalStateException.class);
         }
+
+        @DisplayName("존재하지 않는 크루에 대해 AttendaceHistory를 요구하면, 예외가 발생한다.")
+        @Test
+        public void findByCrew() throws Exception {
+            // given
+            final var crew = new Crew("헤일러");
+            final var attendanceBook = new AttendanceBook();
+
+            // when & then
+            assertThatThrownBy(() -> attendanceBook.findByCrew(crew))
+                    .isInstanceOf(IllegalArgumentException.class);
+        }
     }
 }
