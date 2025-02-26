@@ -5,6 +5,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.time.LocalDateTime;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
@@ -40,6 +41,18 @@ class TimeTest {
         assertThatCode(() -> {
             Time time = new Time(LocalDateTime.of(year, month, dayOfMonth, hour, minute));
         }).doesNotThrowAnyException();
+    }
+
+    @DisplayName("주말에 출석할 경우 예외가 발생한다.")
+    @Test
+    void 주말에_출석할_경우_예외가_발생한다() {
+
+        // given
+
+        // when & then
+        assertThatThrownBy(() -> new Time(LocalDateTime.of(2025, 2, 22, 10, 0)))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("[ERROR] 주말 및 공휴일은 출석할 수 없습니다.");
     }
 
 }
