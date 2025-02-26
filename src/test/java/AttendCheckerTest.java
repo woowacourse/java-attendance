@@ -72,8 +72,10 @@ public class AttendCheckerTest {
         //given
         OperationTimeChecker operationTimeChecker = new OperationTimeChecker();
         LocalDate weekend = LocalDate.of(2024, 12, 1);
+        LocalDate holiday = LocalDate.of(2024, 12, 25);
 
         //when & then
         assertThatThrownBy(() -> operationTimeChecker.getEducationStartTime(weekend));
+        assertThatThrownBy(() -> operationTimeChecker.getEducationStartTime(holiday));
     }
 }
