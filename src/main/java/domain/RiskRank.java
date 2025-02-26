@@ -11,33 +11,29 @@ public enum RiskRank {
     ;
 
     private final String name;
-    private final int absentLimit;
+    private final int riskCountLimit;
 
-    RiskRank(String name, int absentLimit) {
+    RiskRank(String name, int riskCountLimit) {
         this.name = name;
-        this.absentLimit = absentLimit;
+        this.riskCountLimit = riskCountLimit;
     }
 
-    public static RiskRank from(int absentCount) {
-        if (absentCount < 0) {
-            throw new IllegalArgumentException(absentCount + ": 결석 횟수는 음수일 수 없습니다.");
+    public static RiskRank from(int riskCount) {
+        if (riskCount < 0) {
+            throw new IllegalArgumentException(riskCount + ": 결석 횟수는 음수일 수 없습니다.");
         }
-        
-        return Arrays.stream(values())
-                .filter(riskRank -> riskRank.absentLimit <= absentCount)
-                .max(Comparator.comparing(RiskRank::getAbsentLimit))
-                .orElseThrow(() -> new IllegalStateException("논리적으로 도달할 수 없는 예외입니다."));
-    }
 
-    public static String getRiskRankNameByAbsentCount(int absentCount) {
-        return RiskRank.from(absentCount).name;
+        return Arrays.stream(values())
+                .filter(riskRank -> riskRank.riskCountLimit <= riskCount)
+                .max(Comparator.comparing(RiskRank::getRiskCountLimit))
+                .orElseThrow(() -> new IllegalStateException("논리적으로 도달할 수 없는 예외입니다."));
     }
 
     public String getName() {
         return name;
     }
 
-    public int getAbsentLimit() {
-        return absentLimit;
+    public int getRiskCountLimit() {
+        return riskCountLimit;
     }
 }

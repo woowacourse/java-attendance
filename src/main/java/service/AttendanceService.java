@@ -99,7 +99,7 @@ public class AttendanceService {
             return TimeStatus.createAbsentTimeStatus();
         }
         AttendanceRecord found = AttendanceRecordRepository.find(nickName, date);
-        return TimeStatus.of(found.time(), found.status().getTitle());
+        return TimeStatus.of(found.time(), found.status().getName());
     }
 
     private List<AttendanceRecordResponse> getMonthAttendanceRecordResponses(
@@ -122,30 +122,27 @@ public class AttendanceService {
             return;
         }
         AttendanceRecord found = AttendanceRecordRepository.find(nickname, targetDate);
-        monthAttendanceRecords.add(
-                AttendanceRecordResponse.of(found.date(), found.time(), found.status())
-        );
+        monthAttendanceRecords.add(AttendanceRecordResponse.of(found.date(), found.time(), found.status()));
     }
 
     private AttendanceStatusCount calculateAttendanceStatusCount(
             List<AttendanceRecordResponse> monthAttendanceRecords) {
         int attendanceCount = (int) monthAttendanceRecords.stream()
-                .filter(record -> record.attendanceStatus().equals(AttendanceStatus.ATTENDANCE.getTitle()))
+                .filter(record -> record.attendanceStatus().equals(AttendanceStatus.ATTENDANCE.getName()))
                 .count();
         int lateCount = (int) monthAttendanceRecords.stream()
-                .filter(record -> record.attendanceStatus().equals(AttendanceStatus.LATE.getTitle()))
+                .filter(record -> record.attendanceStatus().equals(AttendanceStatus.LATE.getName()))
                 .count();
         int absentCount = (int) monthAttendanceRecords.stream()
-                .filter(record -> record.attendanceStatus().equals(AttendanceStatus.ABSENT.getTitle()))
+                .filter(record -> record.attendanceStatus().equals(AttendanceStatus.ABSENT.getName()))
                 .count();
         return new AttendanceStatusCount(attendanceCount, lateCount, absentCount);
     }
 
     private RiskRank calculateRiskRank(AttendanceStatusCount attendanceStatusCount) {
-        int accumulatedCount =
-                attendanceStatusCount.lateCount() / 3
-                        + attendanceStatusCount.absentCount();
-        return RiskRank.from(accumulatedCount);
+        int riskCount = attendanceStatusCount.lateCount() / 3
+                + attendanceStatusCount.absentCount();
+        return RiskRank.from(riskCount);
     }
 
     private void validateCrew(String nickname) {

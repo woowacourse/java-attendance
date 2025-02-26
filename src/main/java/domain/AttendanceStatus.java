@@ -12,12 +12,12 @@ public enum AttendanceStatus {
     ABSENT("결석", "출석 기록 없음", Integer.MAX_VALUE),
     ;
 
-    private String title;
+    private String name;
     private String description;
     private int elapsedMinutesLimit;
 
-    AttendanceStatus(String title, String description, int elapsedMinutesLimit) {
-        this.title = title;
+    AttendanceStatus(String name, String description, int elapsedMinutesLimit) {
+        this.name = name;
         this.description = description;
         this.elapsedMinutesLimit = elapsedMinutesLimit;
     }
@@ -34,8 +34,8 @@ public enum AttendanceStatus {
                 .orElseThrow(() -> new IllegalStateException("논리적으로 발생할 수 없는 예외입니다."));
     }
 
-    public String getTitle() {
-        return title;
+    public String getName() {
+        return name;
     }
 
     public int getElapsedMinutesLimit() {

@@ -23,7 +23,7 @@ public record AttendanceRecordResponse(
         return new AttendanceRecordResponse(
                 date.format(DATE_FORMAT),
                 time.format(TIME_FORMAT),
-                status.getTitle()
+                status.getName()
         );
     }
 }
