@@ -50,14 +50,14 @@ public class InputView {
         printMenu();
         String input = userInput();
         try{
-            return isQOrOneOrTwoOrThreeOrFour(input);
+            return isMenuOption(input);
         } catch (IllegalArgumentException e){
             System.out.println(e.getMessage());
             return getUserWantMenu(todayDate);
         }
     }
 
-    public static String isQOrOneOrTwoOrThreeOrFour(String input){
+    public static String isMenuOption(String input){
         if (!input.matches(MENU_OPTION)) {
             throw new IllegalArgumentException("[ERROR] 메뉴에 없는 선택지 입니다.");
         }

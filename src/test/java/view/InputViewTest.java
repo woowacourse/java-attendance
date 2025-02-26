@@ -23,7 +23,7 @@ class InputViewTest {
         OutputStream out = new ByteArrayOutputStream();
         System.setOut(new PrintStream(out));
 
-        assertThatThrownBy(()->InputView.isQOrOneOrTwoOrThreeOrFour("5"))
+        assertThatThrownBy(()->InputView.isMenuOption("5"))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("[ERROR] 메뉴에 없는 선택지 입니다.");
     }
