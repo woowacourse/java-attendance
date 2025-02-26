@@ -1,6 +1,5 @@
 package attendance.view;
 
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -8,6 +7,9 @@ import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
 import java.util.stream.Stream;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 
 @DisplayName("메뉴 테스트")
 class MenuTest {
@@ -20,7 +22,7 @@ class MenuTest {
         Menu result = Menu.find(input);
 
         // then
-        Assertions.assertThat(result).isEqualTo(excepted);
+        assertThat(result).isEqualTo(excepted);
     }
 
     @Test
@@ -30,7 +32,7 @@ class MenuTest {
         String input = "X";
 
         // when & then
-        Assertions.assertThatIllegalArgumentException()
+        assertThatIllegalArgumentException()
                 .isThrownBy(() -> Menu.find(input))
                 .withMessage("[ERROR] 잘못된 메뉴 선택의 입력입니다.");
     }
