@@ -13,7 +13,7 @@ import java.util.Optional;
 import java.util.stream.IntStream;
 import model.Attendance;
 import model.AttendanceStatus;
-import model.Attendances;
+import model.AttendanceBook;
 import model.Crew;
 import model.AttendanceInitializer;
 import model.Crews;
@@ -145,10 +145,10 @@ public class AttendanceRegisterTest {
         Crews crews = new Crews(crewsInput);
 
         //when
-        Map<Crew, Attendances> attendancesPerCrew = AttendanceInitializer.initializeAttendanceOf(crews);
+        Map<Crew, AttendanceBook> attendancesPerCrew = AttendanceInitializer.initializeAttendanceOf(crews);
 
         //then
-        assertThat(attendancesPerCrew.get(crew)).isEqualTo(new Attendances(
+        assertThat(attendancesPerCrew.get(crew)).isEqualTo(new AttendanceBook(
                 IntStream.range(1, 32)
                         .mapToObj(date -> new Attendance(LocalDate.of(2024, 12, date), LocalTime.of(0, 0)))
                         .toList()
@@ -172,11 +172,11 @@ public class AttendanceRegisterTest {
     void test5_2() {
         Crew crew = new Crew("빙티");
         Crews crews = new Crews(List.of(crew));
-        Map<Crew, Attendances> initializedAttendances = AttendanceInitializer.initializeAttendanceOf(crews);
+        Map<Crew, AttendanceBook> initializedAttendances = AttendanceInitializer.initializeAttendanceOf(crews);
 
         //when
-        Attendances attendancesOfCrew = initializedAttendances.get(crew);
-        Attendance attendance = attendancesOfCrew.register(LocalDate.of(2024, 12, 14),
+        AttendanceBook attendanceBookOfCrew = initializedAttendances.get(crew);
+        Attendance attendance = attendanceBookOfCrew.register(LocalDate.of(2024, 12, 14),
                 LocalTime.of(10, 10));
 
         assertThat(attendance).isEqualTo(new Attendance(LocalDate.of(2024, 12, 14),
@@ -196,7 +196,7 @@ public class AttendanceRegisterTest {
                 "이든,2024-12-12 11:11"
         );
         Crews crews = new Crews(List.of(crew1, crew2));
-        Map<Crew, Attendances> defaultAttendances = AttendanceInitializer.initializeAttendanceOf(crews);
+        Map<Crew, AttendanceBook> defaultAttendances = AttendanceInitializer.initializeAttendanceOf(crews);
 
         //when
         AttendanceInitializer.updateAttendances(crews, combinedData, defaultAttendances);
@@ -309,12 +309,12 @@ public class AttendanceRegisterTest {
     void test8() {
         Crew crew = new Crew("빙티");
         Crews crews = new Crews(List.of(crew));
-        Map<Crew, Attendances> initializedAttendances = AttendanceInitializer.initializeAttendanceOf(crews);
-        Attendances attendances = initializedAttendances.get(crew);
+        Map<Crew, AttendanceBook> initializedAttendances = AttendanceInitializer.initializeAttendanceOf(crews);
+        AttendanceBook attendanceBook = initializedAttendances.get(crew);
 
-        attendances.register(LocalDate.of(2024, 12, 13), LocalTime.of(10, 5));
+        attendanceBook.register(LocalDate.of(2024, 12, 13), LocalTime.of(10, 5));
 
-        assertThatThrownBy(() -> attendances.register(LocalDate.of(2024, 12, 13), LocalTime.of(11, 11)))
+        assertThatThrownBy(() -> attendanceBook.register(LocalDate.of(2024, 12, 13), LocalTime.of(11, 11)))
                 .isInstanceOf(DuplicatedAttendanceRegistrationException.class);
     }
 }

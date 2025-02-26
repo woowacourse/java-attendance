@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import model.Attendance;
-import model.Attendances;
+import model.AttendanceBook;
 import model.DateGenerator;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -37,12 +37,12 @@ public class AttendanceModifyTest {
     void test1() {
         //given
         LocalDate modifyDate = LocalDate.of(2024, 12, 13);
-        Attendances attendances = new Attendances(List.of(
+        AttendanceBook attendanceBook = new AttendanceBook(List.of(
                 new Attendance(modifyDate, LocalTime.of(10, 10))
         ));
 
         //when
-        Attendance oldAttendance = attendances.findByDate(modifyDate);
+        Attendance oldAttendance = attendanceBook.findByDate(modifyDate);
 
         //then
         assertThat(oldAttendance.equals(new Attendance(modifyDate, LocalTime.of(10, 10))));
@@ -55,16 +55,16 @@ public class AttendanceModifyTest {
         LocalDate modifyDate = LocalDate.of(2024, 12, 13);
         LocalTime modifyTime = LocalTime.of(11, 11);
         Attendance oldAttendance = new Attendance(modifyDate, LocalTime.of(10, 10));
-        Attendances attendances = new Attendances(new ArrayList<>(Arrays.asList(
+        AttendanceBook attendanceBook = new AttendanceBook(new ArrayList<>(Arrays.asList(
                 oldAttendance
         ))); //TODO : new ttendances에 불변 들어가면 안됨! 만드는 거 분리하기
 
         //when
-        Attendance attendance = attendances.modifyFrom(oldAttendance, modifyTime);
+        Attendance attendance = attendanceBook.modifyFrom(oldAttendance, modifyTime);
 
         //then
         assertThat(attendance).isEqualTo(new Attendance(modifyDate, modifyTime));
-        assertThat(attendances.findByDate(modifyDate)).isEqualTo(attendance);
+        assertThat(attendanceBook.findByDate(modifyDate)).isEqualTo(attendance);
     }
 
     @DisplayName("미래의 날을 수정 날짜로 입력할 경우 예외를 반환한다.")
@@ -74,13 +74,13 @@ public class AttendanceModifyTest {
         LocalDate futureDate = LocalDate.of(2024, 12, 16);
         LocalTime modifyTime = LocalTime.of(11, 11);
         Attendance oldAttendance = new Attendance(futureDate, LocalTime.of(10, 10));
-        Attendances attendances = new Attendances(new ArrayList<>(Arrays.asList(
+        AttendanceBook attendanceBook = new AttendanceBook(new ArrayList<>(Arrays.asList(
                 oldAttendance
         )));
 
         //when, then
         assertThatThrownBy(() -> {
-            attendances.modifyFrom(oldAttendance, modifyTime);
+            attendanceBook.modifyFrom(oldAttendance, modifyTime);
         }).isInstanceOf(FutureAttendanceModifyException.class);
     }
 
@@ -91,13 +91,13 @@ public class AttendanceModifyTest {
         LocalDate holidayDate = LocalDate.of(2024, 12, 14);
         LocalTime modifyTime = LocalTime.of(11, 11);
         Attendance oldAttendance = new Attendance(holidayDate, LocalTime.of(10, 10));
-        Attendances attendances = new Attendances(new ArrayList<>(Arrays.asList(
+        AttendanceBook attendanceBook = new AttendanceBook(new ArrayList<>(Arrays.asList(
                 oldAttendance
         )));
 
         //when, then
         assertThatThrownBy(() -> {
-            attendances.modifyFrom(oldAttendance, modifyTime);})
+            attendanceBook.modifyFrom(oldAttendance, modifyTime);})
                 .isInstanceOf(HolidayAttendanceException.class)
                 .hasMessageContaining("12월 14일 토요일은 등교일이 아닙니다.");
     }
