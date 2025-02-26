@@ -102,6 +102,73 @@ public class AttendancesTest {
         assertThat(result).isEqualTo(3);
     }
 
+    @Test
+    void 결석_2회이면_경고대상자이다() {
+        List<LocalDateTime> dateTimes = List.of(
+                LocalDateTime.of(2024, 12, 11, 10, 31),
+                LocalDateTime.of(2024, 12, 12, 10, 31)
+        );
+        Attendances attendances = generateAttendances(dateTimes);
+        final var result = attendances.calculateWarning();
+
+        assertThat(result).isEqualTo(Warning.Warning);
+    }
+
+    @Test
+    void 결석_3회이면_면담대상자이다() {
+        List<LocalDateTime> dateTimes = List.of(
+                LocalDateTime.of(2024, 12, 11, 10, 31),
+                LocalDateTime.of(2024, 12, 12, 10, 31),
+                LocalDateTime.of(2024, 12, 13, 10, 31)
+        );
+        Attendances attendances = generateAttendances(dateTimes);
+        final var result = attendances.calculateWarning();
+
+        assertThat(result).isEqualTo(Warning.INTERVIEW);
+    }
+
+    @Test
+    void 결석_5회_초과이면_제적대상자이다() {
+        List<LocalDateTime> dateTimes = List.of(
+                LocalDateTime.of(2024, 12, 10, 10, 31),
+                LocalDateTime.of(2024, 12, 11, 10, 31),
+                LocalDateTime.of(2024, 12, 12, 10, 31),
+                LocalDateTime.of(2024, 12, 13, 10, 31),
+                LocalDateTime.of(2024, 12, 17, 10, 31),
+                LocalDateTime.of(2024, 12, 18, 10, 31)
+        );
+        Attendances attendances = generateAttendances(dateTimes);
+        final var result = attendances.calculateWarning();
+
+        assertThat(result).isEqualTo(Warning.EXPULSION);
+    }
+
+    @Test
+    void 결석_2회_미만이면_아무_대상자도_아니다() {
+        List<LocalDateTime> dateTimes = List.of(
+                LocalDateTime.of(2024, 12, 10, 10, 31)
+        );
+        Attendances attendances = generateAttendances(dateTimes);
+        final var result = attendances.calculateWarning();
+
+        assertThat(result).isEqualTo(Warning.NONE);
+    }
+
+    @Test
+    void 지각_3회도_결석_1회로_간주한다() {
+        List<LocalDateTime> dateTimes = List.of(
+                LocalDateTime.of(2024, 12, 10, 10, 6),
+                LocalDateTime.of(2024, 12, 11, 10, 6),
+                LocalDateTime.of(2024, 12, 12, 10, 6),
+                LocalDateTime.of(2024, 12, 13, 10, 31),
+                LocalDateTime.of(2024, 12, 17, 10, 31)
+        );
+        Attendances attendances = generateAttendances(dateTimes);
+        final var result = attendances.calculateWarning();
+
+        assertThat(result).isEqualTo(Warning.INTERVIEW);
+    }
+
     public static Attendances generateAttendances(List<LocalDateTime> dateTimes) {
         List<Attendance> attendances = new ArrayList<>();
         for (LocalDateTime dateTime : dateTimes) {
