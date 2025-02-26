@@ -1,5 +1,8 @@
 package attendance.domain;
 
+import static attendance.error.ErrorMessage.ERROR_CREW_ALREADY_EXIST;
+import static attendance.error.ErrorMessage.ERROR_CREW_NOT_EXIST;
+
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -9,7 +12,7 @@ public class Crews {
 
     public void addCrew(Crew crew) {
         if (crewMap.containsKey(crew.getName())) {
-            throw new IllegalArgumentException("이미 존재하는 크루입니다.");
+            throw new IllegalArgumentException(ERROR_CREW_ALREADY_EXIST);
         }
         crewMap.put(crew.getName(), crew);
     }
@@ -17,7 +20,7 @@ public class Crews {
     public Crew findByName(String name) {
         Crew crew = crewMap.get(name);
         if (crew == null) {
-            throw new IllegalArgumentException("해당 크루가 존재하지 않습니다.");
+            throw new IllegalArgumentException(ERROR_CREW_NOT_EXIST);
         }
         return crew;
     }

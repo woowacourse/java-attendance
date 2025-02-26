@@ -1,5 +1,7 @@
 package attendance.domain;
 
+import static attendance.error.ErrorMessage.ERROR_CREW_ALREADY_EXIST;
+import static attendance.error.ErrorMessage.ERROR_CREW_NOT_EXIST;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
@@ -38,7 +40,7 @@ class CrewsTest {
 
         assertThatThrownBy(() -> crews.findByName("없는크루"))
                 .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage("해당 크루가 존재하지 않습니다.");
+                .hasMessage(ERROR_CREW_NOT_EXIST);
     }
 
     @DisplayName("중복된 크루를 추가하면 예외를 발생시킨다.")
@@ -51,7 +53,7 @@ class CrewsTest {
         Crew crew2 = new Crew("빙티");
         assertThatThrownBy(() -> crews.addCrew(crew2))
                 .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage("이미 존재하는 크루입니다.");
+                .hasMessage(ERROR_CREW_ALREADY_EXIST);
     }
 
 }

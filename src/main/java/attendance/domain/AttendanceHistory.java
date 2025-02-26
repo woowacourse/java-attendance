@@ -1,6 +1,7 @@
 package attendance.domain;
 
 import static attendance.error.ErrorMessage.ERROR_CHECK_ATTENDANCE_AGAIN;
+import static attendance.error.ErrorMessage.ERROR_NO_RECORD_DATE;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -33,7 +34,7 @@ public class AttendanceHistory {
         return records.stream()
                 .filter(record -> record.isSameDate(targetDate))
                 .findAny()
-                .orElseThrow(() -> new IllegalArgumentException("출석 기록이 없는 날짜입니다."));
+                .orElseThrow(() -> new IllegalArgumentException(ERROR_NO_RECORD_DATE));
     }
 
     public WarningStatus getWarningStatus() {
