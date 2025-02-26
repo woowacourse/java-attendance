@@ -9,7 +9,7 @@ public class AttendancePolicy {
     private static final LocalTime NOT_MONDAY_ABSENCE_THRESHOLD = LocalTime.of(10, 30);
     private static final LocalTime NOT_MONDAY_LATE_THRESHOLD = LocalTime.of(10, 05);
 
-    public String calculateAttendanceStatus(DayOfWeek attendanceDay, LocalTime attendanceTime) {
+    public static String calculateAttendanceStatus(DayOfWeek attendanceDay, LocalTime attendanceTime) {
         if (attendanceDay == DayOfWeek.MONDAY) {
             if (attendanceTime.isAfter(MONDAY_ABSENCE_THRESHOLD)) {
                 return "ABSENCE";

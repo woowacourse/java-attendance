@@ -15,7 +15,7 @@ class AttendanceTest {
         void should_ReturnTrue_WhenDateIsSame() {
             //given
             LocalDate date = LocalDate.of(2024, 12, 26);
-            Attendance attendance = new Attendance(date);
+            Attendance attendance = new Attendance(date, "ATTENDANCE");
 
             //when
             boolean result = attendance.isDateEquals(date);
@@ -29,7 +29,7 @@ class AttendanceTest {
         void should_ReturnTrue_WhenDateIsNotSame() {
             //given
             LocalDate date = LocalDate.of(2024, 12, 26);
-            Attendance attendance = new Attendance(date);
+            Attendance attendance = new Attendance(date, "ATTENDANCE");
 
             //when
             boolean result = attendance.isDateEquals(date.plusDays(1));

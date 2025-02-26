@@ -18,7 +18,7 @@ class AttendanceHistoryTest {
             //given
             AttendanceHistory attendanceHistory = new AttendanceHistory();
             LocalDate date = LocalDate.of(2024, 12, 26);
-            attendanceHistory.addAttendance(new Attendance(date));
+            attendanceHistory.addAttendance(new Attendance(date, "LATE"));
 
             //when
             Optional<Attendance> result = attendanceHistory.findAttendanceByDate(date);
@@ -26,7 +26,8 @@ class AttendanceHistoryTest {
             //then
             assertAll(
                     () -> assertThat(result).isNotEmpty(),
-                    () -> assertThat(result.get().isDateEquals(date)).isTrue()
+                    () -> assertThat(result.get().isDateEquals(date)).isTrue(),
+                    () -> assertThat(result.get().getStatus()).isEqualTo("LATE")
             );
         }
 

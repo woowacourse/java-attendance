@@ -16,12 +16,11 @@ class AttendancePolicyTest {
         @Test
         void should_ReturnAttendance_WhenMondayAttendance() {
             //given
-            AttendancePolicy attendancePolicy = new AttendancePolicy();
             DayOfWeek attendanceDay = DayOfWeek.MONDAY;
             LocalTime attendanceTime = LocalTime.of(13, 05);
 
             //when
-            String result = attendancePolicy.calculateAttendanceStatus(attendanceDay, attendanceTime);
+            String result = AttendancePolicy.calculateAttendanceStatus(attendanceDay, attendanceTime);
 
             //then
             assertThat(result).isEqualTo("ATTENDANCE");
@@ -31,12 +30,11 @@ class AttendancePolicyTest {
         @Test
         void should_ReturnLate_WhenMondayLate() {
             //given
-            AttendancePolicy attendancePolicy = new AttendancePolicy();
             DayOfWeek attendanceDay = DayOfWeek.MONDAY;
             LocalTime attendanceTime = LocalTime.of(13, 06);
 
             //when
-            String result = attendancePolicy.calculateAttendanceStatus(attendanceDay, attendanceTime);
+            String result = AttendancePolicy.calculateAttendanceStatus(attendanceDay, attendanceTime);
 
             //then
             assertThat(result).isEqualTo("LATE");
@@ -46,12 +44,11 @@ class AttendancePolicyTest {
         @Test
         void should_ReturnAbsence_WhenMondayAbsence() {
             //given
-            AttendancePolicy attendancePolicy = new AttendancePolicy();
             DayOfWeek attendanceDay = DayOfWeek.MONDAY;
             LocalTime attendanceTime = LocalTime.of(13, 31);
 
             //when
-            String result = attendancePolicy.calculateAttendanceStatus(attendanceDay, attendanceTime);
+            String result = AttendancePolicy.calculateAttendanceStatus(attendanceDay, attendanceTime);
 
             //then
             assertThat(result).isEqualTo("ABSENCE");
@@ -61,12 +58,11 @@ class AttendancePolicyTest {
         @Test
         void should_ReturnAttendance_WhenNotMondayAttendance() {
             //given
-            AttendancePolicy attendancePolicy = new AttendancePolicy();
             DayOfWeek attendanceDay = DayOfWeek.WEDNESDAY;
             LocalTime attendanceTime = LocalTime.of(10, 05);
 
             //when
-            String result = attendancePolicy.calculateAttendanceStatus(attendanceDay, attendanceTime);
+            String result = AttendancePolicy.calculateAttendanceStatus(attendanceDay, attendanceTime);
 
             //then
             assertThat(result).isEqualTo("ATTENDANCE");
@@ -76,12 +72,11 @@ class AttendancePolicyTest {
         @Test
         void should_ReturnLate_WhenNotMondayLate() {
             //given
-            AttendancePolicy attendancePolicy = new AttendancePolicy();
             DayOfWeek attendanceDay = DayOfWeek.WEDNESDAY;
             LocalTime attendanceTime = LocalTime.of(10, 06);
 
             //when
-            String result = attendancePolicy.calculateAttendanceStatus(attendanceDay, attendanceTime);
+            String result = AttendancePolicy.calculateAttendanceStatus(attendanceDay, attendanceTime);
 
             //then
             assertThat(result).isEqualTo("LATE");
@@ -91,12 +86,11 @@ class AttendancePolicyTest {
         @Test
         void should_ReturnAbsence_WhenNotMondayAbsence() {
             //given
-            AttendancePolicy attendancePolicy = new AttendancePolicy();
             DayOfWeek attendanceDay = DayOfWeek.WEDNESDAY;
             LocalTime attendanceTime = LocalTime.of(10, 31);
 
             //when
-            String result = attendancePolicy.calculateAttendanceStatus(attendanceDay, attendanceTime);
+            String result = AttendancePolicy.calculateAttendanceStatus(attendanceDay, attendanceTime);
 
             //then
             assertThat(result).isEqualTo("ABSENCE");
