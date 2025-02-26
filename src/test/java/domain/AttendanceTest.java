@@ -6,6 +6,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import attendance.domain.Attendance;
 import attendance.domain.AttendanceStatus;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import org.junit.jupiter.api.Test;
 
 public class AttendanceTest {
@@ -45,5 +46,17 @@ public class AttendanceTest {
 
         //then
         assertThat(result).isEqualTo(AttendanceStatus.LATE);
+    }
+
+    @Test
+    void 시간을_수정할_수_있다() {
+        //given
+        Attendance attendance = new Attendance("포비", LocalDateTime.of(2024, 12, 13, 10, 6));
+
+        //when
+        attendance.updateAttendanceTime(LocalTime.of(10, 1));
+
+        //then
+        assertThat(attendance).isEqualTo(new Attendance("포비", LocalDateTime.of(2024, 12, 13, 10, 1)));
     }
 }
