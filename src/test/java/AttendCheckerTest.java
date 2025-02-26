@@ -76,11 +76,14 @@ public class AttendCheckerTest {
         //given
         OperationTimeChecker operationTimeChecker = new OperationTimeChecker();
         LocalDate monday = LocalDate.of(2024, 12, 2);
+        LocalDate notMonday = LocalDate.of(2024, 12, 3);
 
         //when
         LocalTime actual = operationTimeChecker.getEducationStartTime(monday);
+        LocalTime actual2 = operationTimeChecker.getEducationStartTime(notMonday);
 
         //then
         assertThat(actual).isEqualTo(LocalTime.of(13, 0));
+        assertThat(actual2).isEqualTo(LocalTime.of(10, 0));
     }
 }
