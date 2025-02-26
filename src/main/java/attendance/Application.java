@@ -4,16 +4,16 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
 
 import attendance.domain.AttendanceFileReader;
-import attendance.domain.StatusStatistic;
+import attendance.domain.HistoryStatistic;
 import attendance.domain.attendance.Attendance;
 import attendance.domain.attendance.AttendanceBook;
+import attendance.domain.attendance.AttendanceHistory;
 import attendance.domain.attendance.Attendances;
 import attendance.exception.AttendanceArgumentException;
 import attendance.exception.AttendanceFileException;
@@ -100,8 +100,9 @@ public class Application {
 
     private static void requestRegister(String nickname) {
         var attendances = attendanceBook.getAttendances(nickname);
-        var newAttendance = Attendance.from(SystemDateConfig.NOW_DATETIME);
-        attendances.validateDuplicate(newAttendance);
+        LocalDateTime dateTime = SystemDateConfig.NOW_DATETIME;
+        var newAttendance = Attendance.from(dateTime);
+        attendances.validateDuplicate(dateTime.toLocalDate());
         attendances.add(newAttendance);
     }
 
@@ -120,7 +121,7 @@ public class Application {
         Attendances attendances = attendanceBook.getAttendances(nickname);
         Attendance newAttendance = Attendance.from(dateTime);
         Optional<Attendance> oldAttendance = attendanceBook.findAttendance(nickname, dateTime.toLocalDate());
-        oldAttendance.ifPresent(attendances::remove);
+        oldAttendance.ifPresent(attendance -> attendances.remove(attendance.getDate()));
         attendances.add(newAttendance);
     }
 
@@ -137,13 +138,20 @@ public class Application {
 
     private static void requestStatistic(String nickname) {
         var attendances = attendanceBook.getAttendances(nickname);
-
-        StatusStatistic statistic = StatusStatistic.of(attendances, nickname);
-        List<String> history = attendances.getHistory();
+        Map<LocalDate, Attendance> attendancesRecord = attendances.getAttendances();
+        //1. attendances에서 출석한 날과 아닌 날을 포함한 리스트가 반환되어야 함.
+        var attendanceHistory = AttendanceHistory.from(attendancesRecord);
+        //2. 출석 / 지각 / 결석 계산
+        var statusStatistic = new HistoryStatistic(attendanceHistory.countStatusOnHistory(), nickname);
+        //3. 면담 대상자 계산
+        statusStatistic.judgeSanctionLevel();
     }
 
     private static void checkSanctionStatistic(AttendanceBook attendanceBook) {
-        attendanceBook.updateStatusStatistics();
+        // StatusStatistic statistics = new StatusStatistic();
+        // attendanceBook.updateStatusStatistics(statistics);
+
+        // 정렬 Collections.sort(statusStatistics);
         outputView.println("result");
     }
 

@@ -38,7 +38,6 @@ public class AttendancesTest {
             var attendances = attendanceBook.getAttendances(nickname);
             var newAttendance = Attendance.from(dateTime);
 
-            attendances.validateDuplicate(newAttendance);
             attendances.add(newAttendance);
         }
 
@@ -50,7 +49,7 @@ public class AttendancesTest {
             var attendances = attendanceBook.getAttendances(nickname);
             var newAttendance = Attendance.from(dateTime);
 
-            assertThatThrownBy(() -> attendances.validateDuplicate(newAttendance))
+            assertThatThrownBy(() -> attendances.validateDuplicate(dateTime.toLocalDate()))
                 .isInstanceOf(AttendanceArgumentException.class)
                 .hasMessageContaining("이미 출석되었습니다. 수정 기능을 이용해주세요.");
         }
@@ -69,7 +68,7 @@ public class AttendancesTest {
             var attendances = attendanceBook.getAttendances(nickname);
             var newAttendance = Attendance.from(dateTime);
             Optional<Attendance> oldAttendance = attendanceBook.findAttendance(nickname, dateTime.toLocalDate());
-            oldAttendance.ifPresent(attendances::remove);
+            oldAttendance.ifPresent(attendance -> attendances.remove(attendance.getDate()));
             attendances.add(newAttendance);
 
             Attendance resultAttendance = attendanceBook.findAttendance(nickname, dateTime.toLocalDate())
@@ -118,12 +117,11 @@ public class AttendancesTest {
             var attendances = attendanceBook.getAttendances(nickname);
             var newAttendance = Attendance.from(dateTime);
             Optional<Attendance> oldAttendance = attendanceBook.findAttendance(nickname, dateTime.toLocalDate());
-            oldAttendance.ifPresent(attendances::remove);
+            oldAttendance.ifPresent(attendance -> attendances.remove(attendance.getDate()));
             attendances.add(newAttendance);
 
             Optional<Attendance> resultAttendance = attendanceBook.findAttendance(nickname, dateTime.toLocalDate());
             assertThat(resultAttendance.get().attendanceStatus()).isEqualTo(expectedStatus);
         }
     }
-
 }

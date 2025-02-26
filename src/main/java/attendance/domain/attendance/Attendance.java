@@ -73,8 +73,8 @@ public record Attendance(LocalDateTime dateTime, AttendanceStatus attendanceStat
         return time.isAfter(baseSchedule.plusMinutes(minutesToAdd));
     }
 
-    public boolean isEqualDate(LocalDate date) {
-        return dateTime.toLocalDate().equals(date);
+    public LocalDate getDate() {
+        return dateTime.toLocalDate();
     }
 
     private static class Schedule {

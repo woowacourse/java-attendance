@@ -4,17 +4,16 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-import attendance.domain.StatusStatistic;
+import attendance.domain.HistoryStatistic;
 import attendance.exception.AttendanceArgumentException;
 import attendance.utility.DateTimeFormatterWrapper;
 
-public record AttendanceBook(Map<String, Attendances> attendances, List<StatusStatistic> statusStatistics) {
+public record AttendanceBook(Map<String, Attendances> attendances, List<HistoryStatistic> historyStatistics) {
 
     public static AttendanceBook from(List<String> lines) {
         Map<String, Attendances> attendances = new HashMap<>();
@@ -48,13 +47,12 @@ public record AttendanceBook(Map<String, Attendances> attendances, List<StatusSt
         return attendances.get(nickname);
     }
 
-    public void updateStatusStatistics() {
-        for (String name : attendances.keySet()) {
-            var statistic = StatusStatistic.of(attendances.get(name), name);
-            statusStatistics.add(statistic);
-        }
-
-        Collections.sort(statusStatistics);
+    public void updateStatusStatistics(HistoryStatistic statistics) {
+        // for (String name : attendances.keySet()) {
+        //     statusStatistics.add(statistic);
+        // }
+        //
+        // Collections.sort(statusStatistics);
     }
 
     private static final class Constant {
