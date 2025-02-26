@@ -22,10 +22,7 @@ public enum AttendanceStatus {
 
     public static AttendanceStatus of(LocalDateTime inputTime) {
         DayOfWeek dayOfWeek = inputTime.getDayOfWeek();
-        int startHour = 10;
-        if (dayOfWeek == DayOfWeek.MONDAY) {
-            startHour = 13;
-        }
+        final int startHour = getStartHour(dayOfWeek);
         if (inputTime.toLocalTime().toNanoOfDay() <= LocalTime.of(startHour, 5, 0).toNanoOfDay()) {
             return ATTENDANCE;
         }
@@ -33,5 +30,12 @@ public enum AttendanceStatus {
             return LATE;
         }
         return ABSENCE;
+    }
+
+    private static int getStartHour(DayOfWeek dayOfWeek) {
+        if (dayOfWeek == DayOfWeek.MONDAY) {
+            return 13;
+        }
+        return 10;
     }
 }
