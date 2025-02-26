@@ -19,6 +19,9 @@ public class AttendanceHistory {
 
     public AttendanceRecord attendance(final LocalDateTime attendanceDateTime) {
         validateAttendanceDay(attendanceDateTime);
+        if (attendanceHistory.containsKey(attendanceDateTime.toLocalDate())) {
+            throw new IllegalStateException();
+        }
         final AttendanceRecord attendanceRecord = new AttendanceRecord(attendanceDateTime);
         attendanceHistory.put(attendanceDateTime.toLocalDate(), attendanceRecord);
         return attendanceRecord;
