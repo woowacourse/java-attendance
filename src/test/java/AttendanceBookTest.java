@@ -19,6 +19,7 @@ public class AttendanceBookTest {
             // given
             final var crew = new Crew("헤일러");
             final var attendanceBook = new AttendanceBook();
+            attendanceBook.registerCrew(crew);
 
             // when
             final AttendanceHistory actual = attendanceBook.findByCrew(crew);

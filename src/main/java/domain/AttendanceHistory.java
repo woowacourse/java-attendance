@@ -14,9 +14,9 @@ public class AttendanceHistory {
     private final Crew crew;
     private final Map<LocalDate, AttendanceRecord> attendanceHistory;
 
-    public AttendanceHistory() {
+    public AttendanceHistory(final Crew crew) {
         this.attendanceHistory = new HashMap<>();
-        this.crew = null;
+        this.crew = crew;
     }
 
     public AttendanceRecord attendance(final LocalDateTime attendanceDateTime) {
@@ -43,6 +43,6 @@ public class AttendanceHistory {
     }
 
     public Crew getCrew() {
-        return null;
+        return crew;
     }
 }

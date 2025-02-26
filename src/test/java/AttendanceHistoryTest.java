@@ -2,6 +2,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import domain.AttendanceHistory;
+import domain.Crew;
 import java.time.LocalDateTime;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -19,7 +20,8 @@ public class AttendanceHistoryTest {
         @Test
         public void attendance() throws Exception {
             // given
-            final var attendanceHistory = new AttendanceHistory();
+            final Crew owner = new Crew("owner");
+            final var attendanceHistory = new AttendanceHistory(owner);
             final var attendanceDateTime = LocalDateTime.of(2024, 12, 13, 10, 5);
 
             // when
@@ -44,7 +46,8 @@ public class AttendanceHistoryTest {
         @ValueSource(ints = {14, 15, 25})
         public void attendance(final int dayOfMonth) throws Exception {
             // given
-            final var attendanceHistory = new AttendanceHistory();
+            final Crew owner = new Crew("owner");
+            final var attendanceHistory = new AttendanceHistory(owner);
             final var attendanceDateTime = LocalDateTime.of(2024, 12, dayOfMonth, 10, 5);
 
             // when & then
@@ -56,7 +59,8 @@ public class AttendanceHistoryTest {
         @Test
         public void alreadyAttendance() throws Exception {
             // given
-            final var attendanceHistory = new AttendanceHistory();
+            final Crew owner = new Crew("owner");
+            final var attendanceHistory = new AttendanceHistory(owner);
             final var attendanceDateTime = LocalDateTime.of(2024, 12, 13, 10, 5);
             attendanceHistory.attendance(attendanceDateTime);
 
