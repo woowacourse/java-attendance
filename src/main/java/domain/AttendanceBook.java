@@ -3,8 +3,11 @@ package domain;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 public class AttendanceBook {
+    private static final List<Integer> HOLIDAYS = List.of(1, 7, 8, 14, 15, 21, 22, 25, 28, 29);
+
     private final Map<String, Attendances> crewsRecords;
 
     public AttendanceBook(Map<String, Attendances> crewsRecords) {
@@ -24,6 +27,25 @@ public class AttendanceBook {
                 .filter(attendance -> attendance.isBefore(today))
                 .sorted()
                 .toList();
+    }
+
+    public List<String> getRiskOfExpelledCrews(LocalDateTime today) {
+        int weekDaysCount = calculateWeekDaysCount(today);
+
+        return crewsRecords.entrySet().stream()
+                .filter(entry -> entry.getValue().calculateCrewStatus(weekDaysCount) != CrewStatus.NORMAL)
+                .map(Entry::getKey)
+                .toList();
+    }
+
+    private int calculateWeekDaysCount(LocalDateTime today) {
+        int weekDaysCount = 0;
+        for (int day = 1; day < today.getDayOfMonth(); day++) {
+            if (!HOLIDAYS.contains(day)) {
+                weekDaysCount++;
+            }
+        }
+        return weekDaysCount;
     }
 
     private Attendances getCrewRecords(String nickname) {

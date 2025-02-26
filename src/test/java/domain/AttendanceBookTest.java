@@ -18,7 +18,7 @@ public class AttendanceBookTest {
         initValue.put("test1", new Attendances());
         initValue.put("test2", new Attendances());
         Attendances attendances = new Attendances();
-        attendances.addAttendance(LocalDateTime.of(2024, 12, 3, 10, 0));
+        attendances.addAttendance(LocalDateTime.of(2024, 12, 3, 10, 30));
         attendances.addAttendance(LocalDateTime.of(2024, 12, 2, 13, 0));
         attendances.addAttendance(LocalDateTime.of(2024, 12, 4, 11, 0));
         initValue.put("test3", attendances);
@@ -58,6 +58,17 @@ public class AttendanceBookTest {
                 () -> Assertions.assertEquals(new Attendance(LocalDateTime.of(2024, 12, 2, 13, 0)), crewRecords.get(0)),
                 () -> Assertions.assertEquals(new Attendance(LocalDateTime.of(2024, 12, 3, 10, 0)), crewRecords.get(1))
         );
+    }
 
+    @DisplayName("크루들 중 제적 위험자들을 불러온다")
+    @Test
+    void getRiskOfExpelledCrewsTest() {
+        LocalDateTime today = LocalDateTime.of(2024, 12, 6, 10, 5);
+        List<String> riskOfExpelledCrews = attendanceBook.getRiskOfExpelledCrews(today);
+        org.assertj.core.api.Assertions.assertThat(riskOfExpelledCrews)
+                .hasSize(3)
+                .contains("test1")
+                .contains("test2")
+                .contains("test3");
     }
 }

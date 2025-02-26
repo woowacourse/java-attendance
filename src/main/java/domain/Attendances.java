@@ -21,6 +21,24 @@ public class Attendances {
         records.add(attendance);
     }
 
+    public CrewStatus calculateCrewStatus(int weekDaysCount) {
+        int lateCount = 0;
+        int presentCount = 0;
+        for (Attendance attendance : records) {
+            AttendanceStatus attendanceStatus = attendance.calculateAttendanceStatus();
+            if (attendanceStatus == AttendanceStatus.LATE) {
+                lateCount++;
+                continue;
+            }
+            if (attendanceStatus == AttendanceStatus.PRESENT) {
+                presentCount++;
+            }
+        }
+
+        int absentCount = weekDaysCount - lateCount - presentCount;
+        return CrewStatus.calculateCrewStatus(absentCount + lateCount / 3);
+    }
+
     public List<Attendance> getRecords() {
         return records;
     }

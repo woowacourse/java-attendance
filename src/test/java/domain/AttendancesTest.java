@@ -35,4 +35,13 @@ public class AttendancesTest {
         Assertions.assertThrows(IllegalArgumentException.class,
                 () -> attendances.updateAttendance(LocalDateTime.of(2024, 12, 2, 15, 0), 1));
     }
+
+    @DisplayName("크루의 출석 상태를 계산한다")
+    @Test
+    void calculateCrewStatusTest() {
+        attendances.addAttendance(LocalDateTime.of(2024, 12, 3, 10, 59));
+        attendances.addAttendance(LocalDateTime.of(2024, 12, 4, 11, 0));
+        attendances.addAttendance(LocalDateTime.of(2024, 12, 5, 13, 0));
+        Assertions.assertEquals(CrewStatus.COUNSEL, attendances.calculateCrewStatus(5));
+    }
 }
