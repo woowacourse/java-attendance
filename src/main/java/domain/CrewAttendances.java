@@ -4,6 +4,7 @@ import except.AttendanceException;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import strategy.CurrentDateGenerateStrategy;
 
@@ -15,6 +16,18 @@ public class CrewAttendances {
     public CrewAttendances(CurrentDateGenerateStrategy currentDateGenerateStrategy) {
         this.currentDateGenerateStrategy = currentDateGenerateStrategy;
         this.crewAttendances = new HashMap<>();
+    }
+
+    public CrewAttendances(CurrentDateGenerateStrategy currentDateGenerateStrategy,
+                           List<AttendanceReadUnit> attendanceReadUnits) {
+        this.currentDateGenerateStrategy = currentDateGenerateStrategy;
+        this.crewAttendances = new HashMap<>();
+        for (AttendanceReadUnit attendanceReadUnit : attendanceReadUnits) {
+            CrewName crewName = attendanceReadUnit.crewName();
+            crewAttendances.putIfAbsent(attendanceReadUnit.crewName(),
+                    new DateCrewAttendanceManager(currentDateGenerateStrategy));
+            crewAttendances.get(crewName).addAttendance(attendanceReadUnit);
+        }
     }
 
     public void addAttendance(String nickname, LocalTime attendanceTime) {

@@ -18,17 +18,22 @@ public class DateCrewAttendanceManager {
     private final CurrentDateGenerateStrategy currentDateGenerateStrategy;
 
     public DateCrewAttendanceManager(CurrentDateGenerateStrategy currentDateGenerateStrategy) {
-        this.currentDateGenerateStrategy = currentDateGenerateStrategy;
         this.dateCrewAttendances = new HashMap<>();
+        this.currentDateGenerateStrategy = currentDateGenerateStrategy;
     }
 
     public void addAttendance(LocalTime time) {
         AttendanceDate attendanceDate = new AttendanceDate(currentDateGenerateStrategy.now());
         AttendanceTime attendanceTime = new AttendanceTime(time, attendanceDate);
+        CrewAttendance crewAttendance = new CrewAttendance(attendanceTime);
+        addAttendance(attendanceDate, crewAttendance);
+    }
+
+    private void addAttendance(AttendanceDate attendanceDate, CrewAttendance crewAttendance) {
         if (dateCrewAttendances.containsKey(attendanceDate)) {
             throw new AttendanceException(DUPLICATE_ATTENDANCE);
         }
-        dateCrewAttendances.put(attendanceDate, new CrewAttendance(attendanceTime));
+        dateCrewAttendances.put(attendanceDate, crewAttendance);
     }
 
     public CrewAttendance crewAttendance(LocalDate date) {
@@ -55,5 +60,10 @@ public class DateCrewAttendanceManager {
                         dateCrewAttendanceEntry.getKey()))
                 .collect(Collectors.toList());
         return CrewAttendanceHistories.from(crewAttendanceHistories);
+    }
+
+    public void addAttendance(AttendanceReadUnit attendanceReadUnit) {
+        CrewAttendance crewAttendance = new CrewAttendance(attendanceReadUnit.attendanceTime());
+        addAttendance(attendanceReadUnit.attendanceDate(), crewAttendance);
     }
 }
