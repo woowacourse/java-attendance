@@ -49,7 +49,7 @@ public class AttendanceCheckTest {
         AttendanceCheck.attend(nickname, attendanceTime);
 
         assertThatThrownBy(() -> AttendanceCheck.attend(nickname, attendanceTime))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageStartingWith("[ERROR]");
+                .isInstanceOf(IllegalStateException.class)
+                .hasMessage("[ERROR] 이미 출석이 완료되었습니다. 수정 기능을 이용하세요.");
     }
 }

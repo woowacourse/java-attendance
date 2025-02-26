@@ -6,7 +6,12 @@ public class AttendanceCheck {
     static Map<String, LocalTime> attendanceRecord = new HashMap<>();
 
     public static void attend(String nickname, LocalTime attendanceTime) {
-        attendanceRecord.put(nickname, attendanceTime);
+        if (!attendanceRecord.containsKey(nickname)) {
+            attendanceRecord.put(nickname, attendanceTime);
+            return;
+        }
+        throw new IllegalStateException("[ERROR] 이미 출석이 완료되었습니다. 수정 기능을 이용하세요.");
+
     }
 
     public static LocalTime getAttendanceTime(String nickname) {
