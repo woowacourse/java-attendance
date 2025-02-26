@@ -3,6 +3,7 @@ package attendance.view;
 import attendance.domain.dto.AttendanceState;
 import attendance.domain.dto.RecordUpdateResult;
 import attendance.record.AttendanceRecord;
+import attendance.view.message.OutputMessage;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -36,20 +37,18 @@ public class OutputView {
     }
 
     public void printAttendanceState(AttendanceState state) {
-        String stateContent = String.format("""
-                 출석: %d회
-                 지각: %d회
-                 결석: %d회
-                """, state.getAttendanceCount(), state.getLateCount(), state.getAbsenceCount());
+        String stateContent = String.format(OutputMessage.ATTENDANCE_STATE.getContent(),
+                state.getAttendanceCount(), state.getLateCount(), state.getAbsenceCount());
         System.out.println(stateContent);
-        String riskTypContent = String.format("%s 대상자입니다.", state.getRiskTyp().getName());
+        String riskTypContent = String.format(OutputMessage.RISK_TYPE.getContent(),
+                state.getRiskTyp().getName());
         System.out.println(riskTypContent);
         System.out.println();
     }
 
     public void printRiskCrews(List<AttendanceState> states) {
-        System.out.println("제적 위험자 조회 결과");
-        states.stream().map(this::makeStateContent)
+        System.out.println(OutputMessage.RISK_CREW_HEADER.getContent());
+        states.stream().map(this::makeRiskCrewContent)
                 .forEach(System.out::println);
         System.out.println();
     }
@@ -58,27 +57,27 @@ public class OutputView {
         String date = dateTimeformatter.format(record.getArrivalDateTime());
         String time = makeTimeContent(record.getArrivalDateTime().toLocalTime());
         String typeName = record.getAttendanceType().getName();
-        return String.format("%s %s (%s)", date, time, typeName);
+        return String.format(OutputMessage.RECORD.getContent(), date, time, typeName);
     }
 
     private String makeNewRecordContent(AttendanceRecord record) {
         String time = makeTimeContent(record.getArrivalDateTime().toLocalTime());
         String typeName = record.getAttendanceType().getName();
-        return String.format(" -> %s (%s) 수정 완료!", time, typeName);
+        return String.format(OutputMessage.UPDATE_RESULT.getContent(), time, typeName);
     }
 
     private String makeSearchResultHeader(String nickname) {
-        return String.format("이번 달 %s의 출석 기록입니다.", nickname);
+        return String.format(OutputMessage.SEARCH_RESULT_HEADER.getContent(), nickname);
     }
 
-    private String makeStateContent(AttendanceState state) {
-        return String.format("- %s: 결석 %d회, 지각 %d회 (%s)",
+    private String makeRiskCrewContent(AttendanceState state) {
+        return String.format(OutputMessage.RISK_CREW_CONTENT.getContent(),
                 state.getNickname(), state.getAbsenceCount(), state.getLateCount(), state.getRiskTyp().getName());
     }
 
     private String makeTimeContent(LocalTime time) {
         if (time.equals(LocalTime.MIN)) {
-            return "--:--";
+            return OutputMessage.EMPTY_TIME.getContent();
         }
         return time.toString();
     }
