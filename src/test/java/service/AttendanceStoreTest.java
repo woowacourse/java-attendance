@@ -1,6 +1,7 @@
 package service;
 
 import domain.AttendanceBook;
+import domain.AttendanceStoreManager;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -15,7 +16,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class AttendanceStoreTest {
     CrewAttendances crewAttendances = new CrewAttendances();
-    AttendanceStoreService attendanceStoreService = new AttendanceStoreService(crewAttendances);
+    AttendanceStoreManager attendanceStoreManager = new AttendanceStoreManager(crewAttendances);
 
     Map<String, AttendanceBook> attendanceBooks = new HashMap<>();
 
@@ -45,7 +46,7 @@ public class AttendanceStoreTest {
         // given
 
         // when
-        attendanceStoreService.save("src/main/resources/test_attendances.csv");
+        attendanceStoreManager.save("src/main/resources/test_attendances.csv");
 
         // then
         for (String name : attendanceBooks.keySet()) {

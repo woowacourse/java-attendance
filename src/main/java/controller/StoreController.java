@@ -1,16 +1,16 @@
 package controller;
 
-import service.AttendanceStoreService;
+import domain.AttendanceStoreManager;
 
 public class StoreController implements Controller {
-    private final AttendanceStoreService attendanceStoreService;
+    private final AttendanceStoreManager attendanceStoreManager;
 
-    public StoreController(AttendanceStoreService attendanceStoreService) {
-        this.attendanceStoreService = attendanceStoreService;
+    public StoreController(AttendanceStoreManager attendanceStoreManager) {
+        this.attendanceStoreManager = attendanceStoreManager;
     }
 
     @Override
     public void run() {
-        attendanceStoreService.save("src/main/resources/attendances.csv");
+        attendanceStoreManager.save("src/main/resources/attendances.csv");
     }
 }

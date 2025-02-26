@@ -1,4 +1,4 @@
-package service;
+package domain;
 
 import domain.Crew;
 import exception.CrewNotExistException;
@@ -10,10 +10,10 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
-public class AttendanceStoreService {
+public class AttendanceStoreManager {
     private final CrewAttendances crewAttendances;
 
-    public AttendanceStoreService(CrewAttendances crewAttendances) {
+    public AttendanceStoreManager(CrewAttendances crewAttendances) {
         this.crewAttendances = crewAttendances;
     }
 

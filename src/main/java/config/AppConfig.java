@@ -1,8 +1,8 @@
 package config;
 
 import controller.*;
+import domain.AttendanceStoreManager;
 import domain.CrewAttendances;
-import service.*;
 import view.InputView;
 import view.OutputView;
 
@@ -48,7 +48,7 @@ public class AppConfig {
 
     private Controller getAttendanceStoreController() {
         return new StoreController(
-                new AttendanceStoreService(getCrewAttendances())
+                new AttendanceStoreManager(getCrewAttendances())
         );
     }
 
