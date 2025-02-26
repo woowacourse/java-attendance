@@ -17,7 +17,7 @@ public class OperationTimeChecker {
     }
 
     public LocalTime getEducationStartTime(final LocalDate targetDate) {
-        if (isWeekend(targetDate)) {
+        if (isWeekend(targetDate) || isHoliday(targetDate)) {
             throw new IllegalArgumentException("운영일이 아닙니다.");
         }
         if (targetDate.getDayOfWeek() == DayOfWeek.MONDAY) {
