@@ -1,16 +1,17 @@
 package domain;
 
+import static util.Constants.*;
+
 import dto.AttendanceCount;
 import dto.AttendanceLog;
 import dto.ModifyResult;
-import java.time.DayOfWeek;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
+import util.DateTimeManager;
 
 public class AttendanceRecord {
     private final Set<Attendance> value;
@@ -26,44 +27,23 @@ public class AttendanceRecord {
     }
 
     public AttendanceLog findAllSortedUntil(LocalDate yesterday) {
-        return new AttendanceLog(getAllSortedUntil(yesterday));
-    }
-
-    private List<Attendance> getAllSortedUntil(LocalDate yesterday) {
-        updateUntil(yesterday);
-        return value.stream()
-                .sorted(Comparator.comparing(Attendance::getDate))
-                .toList();
-    }
-
-    private void updateUntil(LocalDate yesterday) {
-        for(int i=1; i<=yesterday.getDayOfMonth(); i++) {
-            DayOfWeek dayOfWeek = LocalDate.of(2024, 12, i).getDayOfWeek();
-            if (dayOfWeek == DayOfWeek.SATURDAY || dayOfWeek == DayOfWeek.SUNDAY || i == 25) {
-                continue;
-            }
-            Attendance attendanceCandidate = new Attendance(LocalDateTime.of(2024, 12, i, 15, 0));
-            if (contains(attendanceCandidate)) {
-                continue;
-            }
-            value.add(attendanceCandidate);
-        }
+        return new AttendanceLog(getSortedAllValueUntil(yesterday));
     }
 
     public AttendanceCount calculateCount(LocalDate yesterday) {
-        List<Attendance> allSortedUntil = getAllSortedUntil(yesterday);
+        List<Attendance> allSortedUntil = getSortedAllValueUntil(yesterday);
         int attendCount = 0;
         int lateCount = 0;
         int absentCount = 0;
 
         for (Attendance attendance : allSortedUntil) {
-            if(AttendanceStatus.from(attendance) == AttendanceStatus.ATTEND) {
+            if (AttendanceStatus.from(attendance) == AttendanceStatus.ATTEND) {
                 attendCount++;
             }
-            if(AttendanceStatus.from(attendance) == AttendanceStatus.LATE) {
+            if (AttendanceStatus.from(attendance) == AttendanceStatus.LATE) {
                 lateCount++;
             }
-            if(AttendanceStatus.from(attendance) == AttendanceStatus.ABSENT) {
+            if (AttendanceStatus.from(attendance) == AttendanceStatus.ABSENT) {
                 absentCount++;
             }
         }
@@ -99,5 +79,23 @@ public class AttendanceRecord {
                         attendance.isSameDateWith(targetAttendance))
                 .findFirst()
                 .orElseThrow(IllegalStateException::new);
+    }
+
+    private List<Attendance> getSortedAllValueUntil(LocalDate yesterday) {
+        updateUntil(yesterday);
+        return value.stream()
+                .sorted(Comparator.comparing(Attendance::getDate))
+                .toList();
+    }
+
+    private void updateUntil(LocalDate yesterday) {
+        for (int i = 1; i <= yesterday.getDayOfMonth(); i++) {
+            LocalDate targetDate = LocalDate.of(START_YEAR, START_MONTH, i);
+            Attendance attendanceCandidate = new Attendance(targetDate, ABSENT_CONSIDERING_TIME);
+            if (DateTimeManager.isHoliday(targetDate) || contains(attendanceCandidate)) {
+                continue;
+            }
+            value.add(attendanceCandidate);
+        }
     }
 }

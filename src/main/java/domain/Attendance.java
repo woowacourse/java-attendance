@@ -13,6 +13,10 @@ public class Attendance {
         this.value = value;
     }
 
+    public Attendance(LocalDate date, LocalTime time) {
+        this.value = LocalDateTime.of(date, time);
+    }
+
     public LocalDate getDate() {
         return value.toLocalDate();
     }

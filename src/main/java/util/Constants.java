@@ -1,8 +1,17 @@
 package util;
 
+import java.time.LocalTime;
+import java.util.List;
+
 public class Constants {
     public static final int ATTENDANCE_HOUR_OF_MONDAY = 13;
     public static final int ATTENDANCE_HOUR_OF_TUESDAY_TO_FRIDAY = 10;
     public static final int END_MINUTE_OF_ATTENDANCE = 5;
     public static final int END_MINUTE_OF_LATE = 30;
+
+    public static final int START_YEAR = 2024;
+    public static final int START_MONTH = 12;
+    public static final List<Integer> HOLIDAY = List.of(25);
+
+    public static final LocalTime ABSENT_CONSIDERING_TIME = LocalTime.of(15, 0);
 }
