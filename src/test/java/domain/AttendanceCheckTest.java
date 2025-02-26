@@ -1,9 +1,11 @@
+package domain;
+
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
 
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 public class AttendanceCheckTest {
@@ -17,7 +19,7 @@ public class AttendanceCheckTest {
 
         LocalTime attendanceTime = LocalTime.of(13, 0);
         AttendanceStatus attendanceStatus = attendanceCheck.judge(attendanceTime, date);
-        assertThat(attendanceStatus).isEqualTo(AttendanceStatus.ATTENDANCE);
+        Assertions.assertThat(attendanceStatus.getName()).isEqualTo("출석");
     }
 
     @Test
@@ -26,7 +28,7 @@ public class AttendanceCheckTest {
 
         LocalTime attendanceTime = LocalTime.of(13, 5);
         AttendanceStatus attendanceStatus = attendanceCheck.judge(attendanceTime, date);
-        assertThat(attendanceStatus).isEqualTo(AttendanceStatus.ATTENDANCE);
+        Assertions.assertThat(attendanceStatus.getName()).isEqualTo("출석");
     }
 
     @Test
@@ -35,7 +37,7 @@ public class AttendanceCheckTest {
 
         LocalTime attendanceTime = LocalTime.of(13, 30);
         AttendanceStatus attendanceStatus = attendanceCheck.judge(attendanceTime, date);
-        assertThat(attendanceStatus).isEqualTo(AttendanceStatus.LATENESS);
+        Assertions.assertThat(attendanceStatus.getName()).isEqualTo("지각");
     }
 
     @Test
@@ -44,7 +46,7 @@ public class AttendanceCheckTest {
 
         LocalTime attendanceTime = LocalTime.of(13, 30);
         AttendanceStatus attendanceStatus = attendanceCheck.judge(attendanceTime, date);
-        assertThat(attendanceStatus).isEqualTo(AttendanceStatus.LATENESS);
+        Assertions.assertThat(attendanceStatus.getName()).isEqualTo("지각");
     }
 
     @Test
@@ -53,7 +55,7 @@ public class AttendanceCheckTest {
 
         LocalTime attendanceTime = LocalTime.of(13, 31);
         AttendanceStatus attendanceStatus = attendanceCheck.judge(attendanceTime, date);
-        assertThat(attendanceStatus).isEqualTo(AttendanceStatus.ABSENCE);
+        Assertions.assertThat(attendanceStatus.getName()).isEqualTo("결석");
     }
 
     @Test
@@ -62,7 +64,7 @@ public class AttendanceCheckTest {
 
         LocalTime attendanceTime = LocalTime.of(10, 0);
         AttendanceStatus attendanceStatus = attendanceCheck.judge(attendanceTime, date);
-        assertThat(attendanceStatus).isEqualTo(AttendanceStatus.ATTENDANCE);
+        Assertions.assertThat(attendanceStatus.getName()).isEqualTo("출석");
     }
 
     @Test
@@ -71,7 +73,7 @@ public class AttendanceCheckTest {
 
         LocalTime attendanceTime = LocalTime.of(10, 5);
         AttendanceStatus attendanceStatus = attendanceCheck.judge(attendanceTime, date);
-        assertThat(attendanceStatus).isEqualTo(AttendanceStatus.ATTENDANCE);
+        Assertions.assertThat(attendanceStatus.getName()).isEqualTo("출석");
     }
 
     @Test
@@ -80,7 +82,7 @@ public class AttendanceCheckTest {
 
         LocalTime attendanceTime = LocalTime.of(10, 30);
         AttendanceStatus attendanceStatus = attendanceCheck.judge(attendanceTime, date);
-        assertThat(attendanceStatus).isEqualTo(AttendanceStatus.LATENESS);
+        Assertions.assertThat(attendanceStatus.getName()).isEqualTo("지각");
     }
 
     @Test
@@ -89,7 +91,7 @@ public class AttendanceCheckTest {
 
         LocalTime attendanceTime = LocalTime.of(10, 30);
         AttendanceStatus attendanceStatus = attendanceCheck.judge(attendanceTime, date);
-        assertThat(attendanceStatus).isEqualTo(AttendanceStatus.LATENESS);
+        Assertions.assertThat(attendanceStatus.getName()).isEqualTo("지각");
     }
 
     @Test
@@ -98,7 +100,7 @@ public class AttendanceCheckTest {
 
         LocalTime attendanceTime = LocalTime.of(10, 31);
         AttendanceStatus attendanceStatus = attendanceCheck.judge(attendanceTime, date);
-        assertThat(attendanceStatus).isEqualTo(AttendanceStatus.ABSENCE);
+        Assertions.assertThat(attendanceStatus.getName()).isEqualTo("결석");
     }
 
     @Test
