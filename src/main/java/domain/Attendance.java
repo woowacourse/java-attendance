@@ -1,6 +1,7 @@
 package domain;
 
 import java.time.DayOfWeek;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.Objects;
@@ -25,6 +26,6 @@ public class Attendance {
         if(this == object) return true;
         if(object == null || getClass() != object.getClass()) return false;
         Attendance other = (Attendance) object;
-        return Objects.equals(value, other.value);
+        return Objects.equals(value.toLocalDate(), other.value.toLocalDate());
     }
 }

@@ -12,6 +12,9 @@ public class AttendanceBook {
 
     public Attendance addAttendance(CrewName crewName, Attendance attendance) {
         AttendanceRecord attendanceRecord = findAttendanceRecordBy(crewName);
+        if(attendanceRecord.contains(attendance)) {
+            throw new IllegalArgumentException("[ERROR] 이미 출석 기록이 존재합니다. 수정 메뉴를 이용해주세요.");
+        }
         attendanceRecord.add(attendance);
         value.put(crewName, attendanceRecord);
         return attendance;

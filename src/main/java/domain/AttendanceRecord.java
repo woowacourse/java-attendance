@@ -17,9 +17,18 @@ public class AttendanceRecord {
 
     @Override
     public boolean equals(Object object) {
-        if(this == object) return true;
-        if(object == null || getClass() != object.getClass()) return false;
+        if (this == object) {
+            return true;
+        }
+        if (object == null || getClass() != object.getClass()) {
+            return false;
+        }
         AttendanceRecord other = (AttendanceRecord) object;
         return Objects.equals(value, other.value);
+    }
+
+    public boolean contains(Attendance targetAttendance) {
+        return value.stream()
+                .anyMatch(attendance -> attendance.equals(targetAttendance));
     }
 }
