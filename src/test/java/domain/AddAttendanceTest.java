@@ -87,10 +87,10 @@ class AddAttendance {
     }
 
     @Test
-    @DisplayName("23시 39분은 결석이다")
+    @DisplayName("23시 00분은 결석이다")
     void addAttendanceLateTest4() {
         String nickname = "투다";
-        LocalTime time = LocalTime.of(23, 39);
+        LocalTime time = LocalTime.of(23, 0);
         LocalDate date = LocalDate.of(2024, 12, 3);
         CrewAttendances crewAttendances = new CrewAttendances(new TestAttendanceCurrentDateGenerateStrategy(date));
         crewAttendances.addAttendance(nickname, time);
@@ -132,7 +132,7 @@ class AddAttendance {
             );
         }
 
-        private static Stream<Arguments> notSchoolRunningDate() {
+        private static Stream<Arguments> notSystemRunningDate() {
             return Stream.of(
                     Arguments.arguments(
                             LocalTime.of(8, 0),
