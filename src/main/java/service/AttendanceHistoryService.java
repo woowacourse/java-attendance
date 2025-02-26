@@ -21,12 +21,12 @@ public class AttendanceHistoryService {
     }
 
     public Map<AttendanceStatus, Integer> getAttendanceResultOf(String name, LocalDate startDate, LocalDate endDate) {
-        AttendanceBook attendanceBook = crewAttendances.findByCrewName(name);
+        AttendanceBook attendanceBook = crewAttendances.findAttendanceBookByCrewName(name);
         return attendanceBook.calculateAttendanceResult(startDate, endDate);
     }
 
     public CrewStatus getCrewStatus(String name, LocalDate startDate, LocalDate endDate) {
-        AttendanceBook attendanceBook = crewAttendances.findByCrewName(name);
+        AttendanceBook attendanceBook = crewAttendances.findAttendanceBookByCrewName(name);
         int lateCount = attendanceBook.getLateCount(startDate, endDate);
         int absenceCount = attendanceBook.getAbsenceCount(startDate, endDate);
         return CrewStatus.from(lateCount, absenceCount);

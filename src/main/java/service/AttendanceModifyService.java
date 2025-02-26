@@ -15,7 +15,7 @@ public class AttendanceModifyService {
     }
 
     public AttendanceModifyResponse modify(String name, LocalDate date, LocalTime time) {
-        Attendance beforeAttendance = crewAttendances.findByCrewAndDate(name, date);
+        Attendance beforeAttendance = crewAttendances.findAttendanceByCrewAndDate(name, date);
         Attendance afterAttendance = crewAttendances.modifyAttendance(name, date, time);
         return new AttendanceModifyResponse(
                 date,

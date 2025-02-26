@@ -25,7 +25,7 @@ public class AttendanceStoreService {
             try {
                 crewAttendances.findCrewByName(parsed[0]);
             } catch (CrewNotExistException e) {
-                crewAttendances.save(new Crew(parsed[0]));
+                crewAttendances.registerCrew(new Crew(parsed[0]));
             }
             LocalDateTime attendanceTime = LocalDateTime.parse(parsed[1], formatter);
             crewAttendances.createNewAttendance(

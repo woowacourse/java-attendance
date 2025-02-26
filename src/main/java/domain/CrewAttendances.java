@@ -13,7 +13,7 @@ public class CrewAttendances {
         this.crewAttendances = new HashMap<>();
     }
 
-    public void save(Crew crew) {
+    public void registerCrew(Crew crew) {
         if (crewAttendances.containsKey(crew)) {
             throw new RuntimeException("이미 출석부가 존재하는 크루입니다.");
         }
@@ -28,18 +28,18 @@ public class CrewAttendances {
         return attendance;
     }
 
-    public AttendanceBook findByCrewName(String crewName) {
+    public AttendanceBook findAttendanceBookByCrewName(String crewName) {
         Crew crew = findCrewByName(crewName);
         return crewAttendances.get(crew);
     }
 
-    public Attendance findByCrewAndDate(String crewName, LocalDate date) {
-        AttendanceBook attendanceBook = findByCrewName(crewName);
+    public Attendance findAttendanceByCrewAndDate(String crewName, LocalDate date) {
+        AttendanceBook attendanceBook = findAttendanceBookByCrewName(crewName);
         return attendanceBook.findAttendanceByDate(date);
     }
 
     public Attendance modifyAttendance(String crewName, LocalDate date, LocalTime time) {
-        AttendanceBook attendanceBook = findByCrewName(crewName);
+        AttendanceBook attendanceBook = findAttendanceBookByCrewName(crewName);
         return attendanceBook.replace(date, time);
     }
 
@@ -55,7 +55,7 @@ public class CrewAttendances {
     }
 
     public Map<LocalDate, Attendance> getAttendances(String name, LocalDate startDate, LocalDate endDate) {
-        AttendanceBook attendanceBook = findByCrewName(name);
+        AttendanceBook attendanceBook = findAttendanceBookByCrewName(name);
         List<Attendance> attendances = attendanceBook.getAllAttendances(startDate, endDate);
 
         Map<LocalDate, Attendance> result = new HashMap<>();

@@ -10,7 +10,6 @@ import org.junit.jupiter.api.Test;
 import service.dto.AttendanceModifyResponse;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.Optional;
 
@@ -27,7 +26,7 @@ class AttendanceModifyServiceTest {
         crewAttendances = new CrewAttendances();
         attendanceModifyService = new AttendanceModifyService(crewAttendances);
 
-        crewAttendances.save(crew);
+        crewAttendances.registerCrew(crew);
     }
 
     @DisplayName("기존 출석 기록을 수정한다.")

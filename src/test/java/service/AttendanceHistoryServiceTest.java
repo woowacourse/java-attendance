@@ -32,7 +32,7 @@ class AttendanceHistoryServiceTest {
     @BeforeEach
     void setUp() {
         crewAttendances = new CrewAttendances();
-        crewAttendances.save(new Crew(name));
+        crewAttendances.registerCrew(new Crew(name));
 
         crewAttendances.createNewAttendance(name, now.withDayOfMonth(2).toLocalDate(), LocalTime.of(13, 0));
         crewAttendances.createNewAttendance(name, now.withDayOfMonth(3).toLocalDate(), LocalTime.of(10, 7));

@@ -50,7 +50,7 @@ public class AttendanceStoreTest {
         // then
         for (String name : attendanceBooks.keySet()) {
             AttendanceBook expected = attendanceBooks.get(name);
-            assertThat(crewAttendances.findByCrewName(name)).isEqualTo(expected);
+            assertThat(crewAttendances.findAttendanceBookByCrewName(name)).isEqualTo(expected);
         }
     }
 }

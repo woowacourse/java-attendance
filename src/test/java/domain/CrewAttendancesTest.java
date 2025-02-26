@@ -20,7 +20,7 @@ class CrewAttendancesTest {
     void setUp() {
         Crew crew = new Crew(name);
         crewAttendances = new CrewAttendances();
-        crewAttendances.save(crew);
+        crewAttendances.registerCrew(crew);
     }
 
     @DisplayName("등교시간을 입력하면 Attendance 객체를 추가할 수 있다.")
@@ -60,7 +60,7 @@ class CrewAttendancesTest {
         // given
 
         // when & then
-        assertThatThrownBy(() -> crewAttendances.save(new Crew(name)))
+        assertThatThrownBy(() -> crewAttendances.registerCrew(new Crew(name)))
                 .isInstanceOf(RuntimeException.class);
     }
 }
