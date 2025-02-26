@@ -32,4 +32,10 @@ public class Attendances {
         return attendances.stream()
             .anyMatch(attendance -> attendance.hasAttend(attendanceDate, attendanceTime));
     }
+
+    public void checkNameExists(String name) {
+        if (!attendanceRecord.containsKey(name)) {
+            throw new IllegalArgumentException("[ERROR] 등록되지 않은 닉네임입니다.");
+        }
+    }
 }
