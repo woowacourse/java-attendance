@@ -35,10 +35,10 @@ public class Attendance {
         }
     }
 
-    public String determineStatus() {
+    public AttendanceStatus determineStatus() {
         if (EducationTime.isAttendOfMonday(attendTime)) {
-            return "출석";
+            return AttendanceStatus.ATTEND;
         }
-        return "";
+        return AttendanceStatus.ABSENT;
     }
 }

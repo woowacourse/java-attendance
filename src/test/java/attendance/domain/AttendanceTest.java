@@ -86,15 +86,18 @@ public class AttendanceTest {
         );
     }
 
-    @Test
-    void 월요일_1시부터_1시5분까지는_출석이다() {
+    @ParameterizedTest(name = "{index} : {1}")
+    @MethodSource("getAttendTime")
+    void 월요일_1시부터_1시5분까지는_출석이다(LocalTime attendTime, String message) {
         LocalDate monday = LocalDate.of(2024, 12, 9);
-        LocalTime mondayAttendStartTime = LocalTime.of(13, 0);
-        LocalTime mondayAttendEndTime = LocalTime.of(13, 5);
 
-        assertAll(
-                () -> assertThat(new Attendance(monday, mondayAttendStartTime).determineStatus()).isEqualTo("출석"),
-                () -> assertThat(new Attendance(monday, mondayAttendEndTime).determineStatus()).isEqualTo("출석")
+        assertThat(new Attendance(monday, attendTime).determineStatus()).isEqualTo(AttendanceStatus.ATTEND);
+    }
+
+    static Stream<Arguments> getAttendTime() {
+        return Stream.of(
+                Arguments.of(EducationTime.MONDAY_ATTEND.getTime(), "월요일 출석 시작 시간"),
+                Arguments.of(EducationTime.MONDAY_LATE.getTime().minusNanos(1), "월요일 출석 종료 시간")
         );
     }
 }
