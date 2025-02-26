@@ -24,7 +24,7 @@ public enum AttendanceStatus {
     }
 
     private static AttendanceStatus getAttendanceStatus(LocalTime weekdayStartTime, LocalTime attendanceTime) {
-        if (attendanceTime.isAfter(weekdayStartTime.plusMinutes(ABSENCE_BOUNDARY))) {
+        if (attendanceTime == null || attendanceTime.isAfter(weekdayStartTime.plusMinutes(ABSENCE_BOUNDARY))) {
             return ABSENCE;
         }
         if (attendanceTime.isAfter(weekdayStartTime.plusMinutes(LATE_BOUNDARY))) {

@@ -18,10 +18,14 @@ public enum Holiday {
 
     private final Predicate<LocalDate> isHoliday;
 
-    public static void check(LocalDate date) {
-        boolean isWeekendOrChristmas = Arrays.stream(values())
+    public static boolean check(LocalDate date) {
+        return Arrays.stream(values())
             .anyMatch(holiday -> holiday.isHoliday.test(date));
-        if (isWeekendOrChristmas) {
+    }
+
+    public static void validateWeekDay(LocalDate date) {
+        boolean isHoliday = check(date);
+        if (isHoliday) {
             throw new IllegalArgumentException(String.format("[ERROR] %s은 등교일이 아닙니다.", DateConverter.convertToString(date)));
         }
     }

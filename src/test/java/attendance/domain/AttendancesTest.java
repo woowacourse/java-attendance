@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.*;
@@ -65,7 +66,7 @@ public class AttendancesTest {
         // given
         Attendances attendances = new Attendances();
         attendances.addAttendance(
-            "빙티",new Attendance(LocalDate.of(2024,12,9), LocalTime.of(13,0)));
+            "빙티", new Attendance(LocalDate.of(2024, 12, 9), LocalTime.of(13, 0)));
 
         // when & then
         assertThatThrownBy(() -> attendances.validateNameExists("철수"))
@@ -78,7 +79,7 @@ public class AttendancesTest {
         // given
         Attendances attendances = new Attendances();
         attendances.addAttendance(
-            "빙티",new Attendance(LocalDate.of(2024,12,9), LocalTime.of(13,0)));
+            "빙티", new Attendance(LocalDate.of(2024, 12, 9), LocalTime.of(13, 0)));
 
         // when & then
         assertThatCode(() -> attendances.validateNameExists("빙티"))
@@ -90,13 +91,13 @@ public class AttendancesTest {
         // given
         Attendances attendances = new Attendances();
         attendances.addAttendance(
-            "빙티",new Attendance(LocalDate.of(2024,12,11), LocalTime.of(9,50)));
-        
+            "빙티", new Attendance(LocalDate.of(2024, 12, 11), LocalTime.of(9, 50)));
+
         // when
         LocalDate monday = LocalDate.of(2024, 12, 2);
         LocalTime presenceTime = LocalTime.of(12, 50);
         Optional<LocalTime> beforeEditTime = attendances.editAttendance("빙티", monday, presenceTime);
-        
+
         // then
         assertThat(beforeEditTime.isEmpty()).isTrue();
     }
@@ -108,14 +109,41 @@ public class AttendancesTest {
         LocalDate monday = LocalDate.of(2024, 12, 9);
         LocalTime presenceTime = LocalTime.of(12, 50);
         attendances.addAttendance(
-            "빙티",new Attendance(monday, presenceTime));
+            "빙티", new Attendance(monday, presenceTime));
 
         // when
         LocalTime absenceTime = LocalTime.of(13, 31);
-        Optional<LocalTime>beforeEditTime = attendances.editAttendance("빙티", monday, absenceTime);
+        Optional<LocalTime> beforeEditTime = attendances.editAttendance("빙티", monday, absenceTime);
 
         // then
         assertThat(beforeEditTime.isPresent()).isTrue();
         assertThat(beforeEditTime.get()).isEqualTo(presenceTime);
+    }
+
+    @Test
+    void 전날까지의_출석기록을_조회해온다() {
+        // given
+        Attendances attendances = new Attendances();
+        LocalDate twodaysAgo = LocalDate.of(2024, 12, 3);
+        LocalDate yesterday = LocalDate.of(2024, 12, 4);
+        LocalDate today = LocalDate.of(2024, 12, 5);
+        attendances.addAttendance(
+            "빙티", new Attendance(twodaysAgo, LocalTime.of(10, 1)));
+        attendances.addAttendance(
+            "빙티", new Attendance(yesterday, LocalTime.of(10, 2)));
+        attendances.addAttendance(
+            "빙티", new Attendance(today, LocalTime.of(10, 3)));
+
+        // when
+        List<Attendance> attendancesUntilYesterday = attendances.findAttendanceUntilYesterday("빙티", today);
+
+        // then
+        assertThat(attendancesUntilYesterday).containsExactlyElementsOf(
+            List.of(
+                new Attendance(LocalDate.of(2024, 12, 2), null),
+                new Attendance(twodaysAgo, LocalTime.of(10, 1)),
+                new Attendance(yesterday, LocalTime.of(10, 2))
+            )
+        );
     }
 }

@@ -10,6 +10,8 @@ import java.util.Optional;
 
 public class Attendances {
 
+    private static final LocalDate START_DATE_OF_DECEMBER = LocalDate.of(2024, 12, 1);
+
     private final Map<String, List<Attendance>> attendanceRecord;
 
     public Attendances() {
@@ -57,5 +59,40 @@ public class Attendances {
     private Optional<LocalTime> addNonExistingAttendance(String name, LocalDate editDate, LocalTime editTime) {
         addAttendance(name, new Attendance(editDate, editTime));
         return Optional.empty();
+    }
+
+    public List<Attendance> findAttendanceUntilYesterday(String name, LocalDate today) {
+        List<Attendance> attendances = attendanceRecord.getOrDefault(name, new ArrayList<>());
+
+        addAbsenceAttendance(today, START_DATE_OF_DECEMBER, attendances);
+
+        return attendances
+            .stream()
+            .filter(attendance -> attendance.isBefore(today))
+            .sorted()
+            .toList();
+    }
+
+    private static void addAbsenceAttendance(LocalDate today, LocalDate currentDate, List<Attendance> attendances) {
+        while (currentDate.isBefore(today)) {
+            currentDate = processAbsence(currentDate, attendances);
+        }
+    }
+
+    private static LocalDate processAbsence(LocalDate currentDate, List<Attendance> attendances) {
+        if (Holiday.check(currentDate)) {
+            return currentDate.plusDays(1);
+        }
+
+        createAbsenceAttendance(currentDate, attendances);
+        return currentDate.plusDays(1);
+    }
+
+    private static void createAbsenceAttendance(LocalDate currentDate, List<Attendance> attendances) {
+        boolean hasDate = attendances.stream()
+            .anyMatch(attendance -> attendance.hasAttendDate(currentDate));
+        if(!hasDate) {
+            attendances.add(new Attendance(currentDate, null));
+        }
     }
 }

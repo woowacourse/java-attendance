@@ -59,4 +59,16 @@ public class AttendanceTest {
         assertThat(existsAttendanceOnFriday).isTrue();
         assertThat(existsAttendanceOnThursday).isFalse();
     }
+
+    @Test
+    void 이전_날짜인지_확인한다() {
+        // given
+        Attendance attendance = new Attendance(LocalDate.of(2024, 12, 4), LocalTime.of(10, 2));
+
+        // when
+        boolean before = attendance.isBefore(LocalDate.of(2024, 12, 5));
+
+        // then
+        assertThat(before).isTrue();
+    }
 }
