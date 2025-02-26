@@ -3,11 +3,15 @@ package domain;
 import except.AttendanceException;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.stream.Stream;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import strategy.CurrentDateGenerateStrategy;
 import strategy.TestAttendanceCurrentDateGenerateStrategy;
 
@@ -40,53 +44,23 @@ public class ModifyAttendanceTest {
                 .isEqualTo(AttendanceStatus.ATTENDANCE);
     }
 
-    @Test
-    @DisplayName("학교 시작 시간전으로 수정시 에러가 발생한다")
-    void modifyAttendanceTestBeforeStart() {
-        String nickname = "투다";
-        LocalDate date = LocalDate.of(2024, 12, 3);
-        LocalTime time = LocalTime.of(7, 3);
-        Assertions.assertThatThrownBy(() -> crewAttendances.modifyAttendance(nickname, date, time))
-                .isInstanceOf(AttendanceException.class);
+    static Stream<Arguments> provideInvalidAttendanceModificationCases() {
+        return Stream.of(
+                Arguments.of("투다", LocalDate.of(2024, 12, 3), LocalTime.of(7, 3), "학교 시작 시간 전"),
+                Arguments.of("투다", LocalDate.of(2024, 12, 3), LocalTime.of(23, 3), "학교 종료 후"),
+                Arguments.of("냠냠", LocalDate.of(2024, 12, 3), LocalTime.of(8, 3), "존재하지 않는 유저"),
+                Arguments.of("투다", LocalDate.of(2024, 11, 3), LocalTime.of(8, 3), "유효하지 않은 날짜"),
+                Arguments.of("투다", LocalDate.of(2024, 12, 2), LocalTime.of(8, 3), "유효하지 않은 날짜"),
+                Arguments.of("투다", LocalDate.of(2024, 12, 3), LocalTime.of(23, 1), "유효하지 않은 시간")
+        );
     }
 
-    @Test
-    @DisplayName("학교 종료후로 수정시 에러가 발생한다")
-    void modifyAttendanceTestAfterSchoolClose() {
-        String nickname = "투다";
-        LocalDate date = LocalDate.of(2024, 12, 3);
-        LocalTime time = LocalTime.of(23, 3);
+    @ParameterizedTest
+    @MethodSource("provideInvalidAttendanceModificationCases")
+    @DisplayName("잘못된 출석 수정 요청 시 예외 발생")
+    void modifyAttendanceTest(String nickname, LocalDate date, LocalTime time, String reason) {
         Assertions.assertThatThrownBy(() -> crewAttendances.modifyAttendance(nickname, date, time))
-                .isInstanceOf(AttendanceException.class);
-    }
-
-    @Test
-    @DisplayName("존재하지 않는 유저를 수정하려하면 에러가 발생한다")
-    void doesntExistCrewModifyTest() {
-        String nickname = "냠냠";
-        LocalDate date = LocalDate.of(2024, 12, 3);
-        LocalTime time = LocalTime.of(8, 3);
-        Assertions.assertThatThrownBy(() -> crewAttendances.modifyAttendance(nickname, date, time))
-                .isInstanceOf(AttendanceException.class);
-    }
-
-    @Test
-    @DisplayName("수정날짜가 유효하지 않은 경우 예외가 발생한다")
-    void invalidModifyDateTest() {
-        String nickname = "투다";
-        LocalDate date = LocalDate.of(2024, 11, 3);
-        LocalTime time = LocalTime.of(8, 3);
-        Assertions.assertThatThrownBy(() -> crewAttendances.modifyAttendance(nickname, date, time))
-                .isInstanceOf(AttendanceException.class);
-    }
-
-    @Test
-    @DisplayName("수정시간이 유효하지 않은 경우 예외가 발생한다")
-    void invalidModifyTimeTest() {
-        String nickname = "투다";
-        LocalDate date = LocalDate.of(2024, 12, 3);
-        LocalTime time = LocalTime.of(23, 1);
-        Assertions.assertThatThrownBy(() -> crewAttendances.modifyAttendance(nickname, date, time))
-                .isInstanceOf(AttendanceException.class);
+                .isInstanceOf(AttendanceException.class)
+                .describedAs(reason);
     }
 }
