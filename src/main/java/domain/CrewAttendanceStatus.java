@@ -8,12 +8,12 @@ public class CrewAttendanceStatus {
 
     private final AttendanceStatus attendanceStatus;
 
-    public CrewAttendanceStatus(AttendanceDate attendanceDate, AttendanceTime attendanceTime) {
-        attendanceStatus = calculateAttendanceStatus(attendanceDate, attendanceTime);
+    public CrewAttendanceStatus(AttendanceTime attendanceTime) {
+        attendanceStatus = calculateAttendanceStatus(attendanceTime);
     }
 
-    private AttendanceStatus calculateAttendanceStatus(AttendanceDate attendanceDate, AttendanceTime attendanceTime) {
-        int min = attendanceTime.minuteFromSchoolStartTime(attendanceDate.isMonday());
+    private AttendanceStatus calculateAttendanceStatus(AttendanceTime attendanceTime) {
+        int min = attendanceTime.minuteFromSchoolStartTime();
         if (min > ABSENCE_STANDARD_MIN) {
             return AttendanceStatus.ABSENCE;
         }

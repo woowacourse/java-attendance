@@ -4,9 +4,9 @@ public class CrewAttendance {
     private final AttendanceTime attendanceTime;
     private final CrewAttendanceStatus crewAttendanceStatus;
 
-    public CrewAttendance(AttendanceDate attendanceDate, AttendanceTime attendanceTime) {
+    public CrewAttendance(AttendanceTime attendanceTime) {
         this.attendanceTime = attendanceTime;
-        crewAttendanceStatus = new CrewAttendanceStatus(attendanceDate, attendanceTime);
+        crewAttendanceStatus = new CrewAttendanceStatus(attendanceTime);
     }
 
     public AttendanceStatus attendanceStatus() {

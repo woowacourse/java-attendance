@@ -19,7 +19,7 @@ public class DateCrewAttendanceManager {
     public void addAttendance(LocalTime time) {
         AttendanceDate attendanceDate = new AttendanceDate(currentDateGenerateStrategy.now());
         AttendanceTime attendanceTime = new AttendanceTime(time, attendanceDate);
-        dateCrewAttendances.put(attendanceDate, new CrewAttendance(attendanceDate, attendanceTime));
+        dateCrewAttendances.put(attendanceDate, new CrewAttendance(attendanceTime));
     }
 
     public CrewAttendance crewAttendance(LocalDate date) {
@@ -30,6 +30,6 @@ public class DateCrewAttendanceManager {
     public void modifyAttendance(LocalDate modifyDate, LocalTime modifyTime) {
         AttendanceDate attendanceDate = new AttendanceDate(modifyDate);
         AttendanceTime attendanceTime = new AttendanceTime(modifyTime, attendanceDate);
-        dateCrewAttendances.put(attendanceDate, new CrewAttendance(attendanceDate, attendanceTime));
+        dateCrewAttendances.put(attendanceDate, new CrewAttendance(attendanceTime));
     }
 }
