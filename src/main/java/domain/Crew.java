@@ -77,6 +77,32 @@ public class Crew {
         }
     }
 
+
+    public String getFormatedAttendanceInfo() {
+        StringBuilder formatedAttendanceInfo = new StringBuilder();
+        for (Attendance attendance : attendanceInfo) {
+            formatedAttendanceInfo.append(attendance.getFormattedAttended()).append("\n");
+        }
+        return formatedAttendanceInfo.toString();
+    }
+
+    public String getFormatedAttendanceStateInfo() {
+        return "출석: " + getAttendanceCount() + "회\n"
+                + "지각: " + getLateCount() + "회\n"
+                + "결석: " + getAbsentCount() + "회\n";
+    }
+
+
+    public String getFormatedWarningStatus() {
+        AbsentPenalty absentPenalty = getAbsentPenalty();
+        if (absentPenalty == AbsentPenalty.NONE) {
+            return "";
+        }
+        return absentPenalty.getPenalty() + " 대상자입니다.";
+    }
+
+
+
     public AbsentPenalty getAbsentPenalty() {
         int absentCount = getAbsentCount() + getLateCount() / 3;
         if (absentCount > EXPEL.getAbsentCount()) {

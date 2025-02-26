@@ -1,10 +1,11 @@
 package controller;
 
-import domain.MenuOption;
-import domain.AllCrew;
+import domain.*;
+
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.regex.Pattern;
 
 import view.FileInputView;
@@ -25,7 +26,7 @@ public class AttendanceSystem {
     public AttendanceSystem(LocalDate todayDate) {
         this.todayDate = todayDate;
         this.userInputView = new UserInputView(todayDate);
-        this.outputView = new OutputView(todayDate);
+        this.outputView = new OutputView();
         this.fileInputView = new FileInputView();
         this.allCrew = new AllCrew();
     }
@@ -61,12 +62,16 @@ public class AttendanceSystem {
     }
 
     private void checkDangerousCrew() {
-        outputView.printAllDangerousCrew(allCrew);
+        allCrew.sortAllCrewOrderByWarningInfo();
+        List<Crew> allAbsentPenaltyReceivedCrew = allCrew.getAllAbsentPenaltyReceivedCrew();
+        outputView.printAllDangerousCrew(allAbsentPenaltyReceivedCrew);
     }
 
     private void checkCrewAttendanceHistory() {
         String name = userInputView.askNickNameForCheckAttendanceInfo();
-        outputView.printAttendanceHistory(allCrew, name);
+        Crew crew = allCrew.findCrewByName(name);
+        crew.sortAttendanceInfo();
+        outputView.printAttendanceHistory(crew);
     }
 
     private void checkAttendance() {
@@ -88,7 +93,8 @@ public class AttendanceSystem {
                 day,
                 Integer.parseInt(time.get(0)),
                 Integer.parseInt(time.get(1)));
-        outputView.printModifyAttendance(allCrew, name, dateTime);
+        AttendanceUpdateResult attendanceUpdateResult = allCrew.modifyCrewAttendanceByName(name, dateTime);
+        outputView.printModifyAttendance(attendanceUpdateResult.getOldAttendance(), attendanceUpdateResult.getNewAttendance());
     }
 }
 
