@@ -10,8 +10,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import model.Attendance;
-import model.AttendanceInitializer;
 import model.AttendanceBook;
+import model.ExistingAttendances;
+import model.AttendanceHistory;
 import model.Crew;
 import model.Crews;
 import model.DateGenerator;
@@ -30,9 +31,11 @@ public class AttendanceController {
 
     public void start() {
         List<String> data = readAttendanceFile();
-        List<String> crewNames = AttendanceInitializer.extractUniqueCrewData(data);
-        Crews crews = Crews.of(crewNames);
-        Map<Crew, AttendanceBook> attendances = registerAttendances(data, crews);
+        ExistingAttendances existingAttendances = ExistingAttendances.from(data);
+        Crews crews = Crews.from(data);
+        AttendanceBook attendanceBook = AttendanceBook.from(data, crews);
+        attendanceBook.update(existingAttendances.getAttendances(), crews);
+        Map<Crew, AttendanceHistory> attendances = registerAttendances(data, crews);
 
         String functionChoice = inputView.readFunctionChoice();
         if (functionChoice.equals("1")) {
@@ -59,13 +62,13 @@ public class AttendanceController {
         }
     }
 
-    private Map<Crew, AttendanceBook> registerAttendances(List<String> data, Crews crews) {
-        Map<Crew, AttendanceBook> defaultAttendances = AttendanceInitializer.initializeAttendanceOf(crews);
-        AttendanceInitializer.updateAttendances(crews, data, defaultAttendances);
+    private Map<Crew, AttendanceHistory> registerAttendances(List<String> data, Crews crews) {
+        Map<Crew, AttendanceHistory> defaultAttendances = ExistingAttendances.initializeAttendanceOf(crews);
+        ExistingAttendances.updateAttendances(crews, data, defaultAttendances);
         return defaultAttendances;
     }
 
-    private void doRegisterService(Map<Crew, AttendanceBook> attendances, Crews crews) {
+    private void doRegisterService(Map<Crew, AttendanceHistory> attendances, Crews crews) {
         try {
             String name = inputView.readCrewName();
             Crew crew = crews.findCrewByName(name)
@@ -75,15 +78,15 @@ public class AttendanceController {
             December.validateHoliday(date);
 
             LocalTime time = inputView.readAttendanceTime();
-            AttendanceBook crewAttendanceBook = attendances.get(crew);
-            Attendance newAttendance = crewAttendanceBook.register(date, time);
+            AttendanceHistory crewAttendanceHistory = attendances.get(crew);
+            Attendance newAttendance = crewAttendanceHistory.register(date, time);
             outputView.printAttendanceRegisterResult(newAttendance);
         } catch (IllegalArgumentException e) {
             outputView.printExceptionMessage(e.getMessage());
         }
     }
 
-    private void doModifyService(Map<Crew, AttendanceBook> attendances, Crews crews) {
+    private void doModifyService(Map<Crew, AttendanceHistory> attendances, Crews crews) {
         try {
             String name = inputView.readCrewName();
             Crew crew = crews.findCrewByName(name)
@@ -92,7 +95,7 @@ public class AttendanceController {
             LocalDate date = DateGenerator.create(inputView.readModifyDate());
             LocalTime time = inputView.readModifyTime();
 
-            AttendanceBook crewAttendance = attendances.get(crew);
+            AttendanceHistory crewAttendance = attendances.get(crew);
             Attendance oldAttendance = crewAttendance.findByDate(date);
             Attendance newAttendance = crewAttendance.modifyFrom(oldAttendance, time);
 
