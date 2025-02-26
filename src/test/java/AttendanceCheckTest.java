@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 public class AttendanceCheckTest {
 
@@ -98,5 +99,13 @@ public class AttendanceCheckTest {
         LocalTime attendanceTime = LocalTime.of(10, 31);
         AttendanceStatus attendanceStatus = attendanceCheck.judge(attendanceTime, date);
         assertThat(attendanceStatus).isEqualTo(AttendanceStatus.ABSENCE);
+    }
+
+    @Test
+    void 주말의_경우_예외를_발생시킨다() {
+        date = LocalDate.of(2024, 12, 28);
+        LocalTime attendanceTime = LocalTime.of(10, 0);
+
+        assertThatThrownBy(() -> attendanceCheck.judge(attendanceTime, date));
     }
 }
