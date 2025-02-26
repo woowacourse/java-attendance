@@ -45,6 +45,10 @@ public class AttendanceHistory {
 
     public AttendanceRecord updateTimeByDate(final LocalDateTime afterTime) {
         validateAttendanceDay(afterTime);
+        if (afterTime.toLocalTime().isBefore(LocalTime.of(8, 0)) || afterTime.toLocalTime()
+                .isAfter(LocalTime.of(23, 0))) {
+            throw new IllegalArgumentException();
+        }
         final AttendanceRecord prevRecord = attendanceHistory.get(afterTime.toLocalDate());
         final AttendanceRecord newRecord = new AttendanceRecord(afterTime);
         attendanceHistory.put(afterTime.toLocalDate(), newRecord);
