@@ -6,14 +6,20 @@ import java.util.List;
 import java.util.Map;
 
 public class AttendanceCheck {
-    static final LocalTime START_TIME = LocalTime.of(10, 0);
+    static final LocalTime ATTENDANCE_CRITERIA_TIME = LocalTime.of(10, 0);
     static final List<LocalDate> HOLIDAY = List.of(LocalDate.of(2025, 1, 1));
+    static final LocalTime OPERATION_START_TIME = LocalTime.of(8, 0);
+    static final LocalTime OPERATION_CLOSING_TIME = LocalTime.of(23, 0);
     Map<String, Map<LocalDate, LocalTime>> attendanceRecord = new HashMap<>();
 
     public void attend(LocalDate date, String nickname, LocalTime attendanceTime) {
         if (date.getDayOfWeek() == DayOfWeek.SATURDAY || date.getDayOfWeek() == DayOfWeek.SUNDAY || HOLIDAY.contains(
                 date)) {
             throw new IllegalStateException("[ERROR] 오늘은 등교일이 아닙니다.");
+        }
+
+        if (attendanceTime.isBefore(OPERATION_START_TIME) || attendanceTime.isAfter(OPERATION_CLOSING_TIME)) {
+            throw new IllegalStateException("[ERROR] 현재 운영 시간이 아닙니다.");
         }
 
         if (!attendanceRecord.containsKey(nickname) || !attendanceRecord.get(nickname).containsKey(date)) {
@@ -41,11 +47,11 @@ public class AttendanceCheck {
             return "출석";
         }
 
-        if (START_TIME.plusMinutes(30).isBefore(attendanceRecord.get(nickname).get(date))) {
+        if (ATTENDANCE_CRITERIA_TIME.plusMinutes(30).isBefore(attendanceRecord.get(nickname).get(date))) {
             return "결석";
         }
 
-        if (START_TIME.plusMinutes(5).isBefore(attendanceRecord.get(nickname).get(date))) {
+        if (ATTENDANCE_CRITERIA_TIME.plusMinutes(5).isBefore(attendanceRecord.get(nickname).get(date))) {
             return "지각";
         }
 
