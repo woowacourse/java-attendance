@@ -5,7 +5,6 @@ import java.time.LocalTime;
 import java.util.HashMap;
 import model.AttendanceCalculator;
 import model.AttendanceStatus;
-import model.MenuOption;
 import util.FileInput;
 import model.StudentAttendanceRecord;
 import model.TodayDate;
