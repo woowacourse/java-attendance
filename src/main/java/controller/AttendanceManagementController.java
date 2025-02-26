@@ -28,21 +28,21 @@ public class AttendanceManagementController {
         StudentRepository studentRepository = updateStudentAttendanceRecord();
         studentRepository.updateEveryStudentNoInformationInFile(todayDate);
 
-        while (true){
-            String userInput = InputView.getUserWantMenu(todayDate);
-            if (userInput.equals(MenuOption.QUICK.getOption())) {
-                break;
-            }
-            if (Integer.parseInt(userInput) == MenuOption.ATTENDANCE_CHECK.getNumberOption()) {
+        String userInput = "";
+
+        while (!userInput.equals(MenuOption.QUIT.getOption())){
+            userInput = InputView.getUserWantMenu(todayDate);
+
+            if (userInput.equals(MenuOption.ATTENDANCE_CHECK.getOption())) {
                 functionForMenuOne(todayDate, studentRepository);
             }
-            if (Integer.parseInt(userInput) == MenuOption.ATTENDANCE_MODIFY.getNumberOption()) {
+            if (userInput.equals(MenuOption.ATTENDANCE_MODIFY.getOption())) {
                 functionForMenuTwo(studentRepository);
             }
-            if (Integer.parseInt(userInput) == MenuOption.STUDENT_RECORD_CHECK.getNumberOption()) {
+            if (userInput.equals(MenuOption.STUDENT_RECORD_CHECK.getOption())) {
                 functionForMenuThree(studentRepository);
             }
-            if (Integer.parseInt(userInput) == MenuOption.DISMISSAL_SUBJECT_CHECK.getNumberOption()) {
+            if (userInput.equals(MenuOption.DISMISSAL_SUBJECT_CHECK.getOption())) {
                 functionForMenuFour(studentRepository);
             }
         }
