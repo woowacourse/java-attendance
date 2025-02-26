@@ -1,6 +1,8 @@
 package attendance;
 
+import attendance.domain.AttendanceManager;
 import attendance.domain.CampusManager;
+import attendance.domain.Crew;
 import attendance.view.InputView;
 import attendance.view.OutputView;
 import java.time.LocalDate;
@@ -11,6 +13,7 @@ public class Application {
     private static final Map<String, Runnable> options;
     private static final String QUIT_OPTION = "Q";
     private static final CampusManager campusManager = new CampusManager();
+    private static final AttendanceManager attendanceManager = new AttendanceManager();
 
     static {
         options = new HashMap<>();
@@ -52,6 +55,12 @@ public class Application {
             return;
         }
         String crewNickname = InputView.readCrewNickname();
+        Crew crew = new Crew(crewNickname);
+        boolean isCrewExists = attendanceManager.isCrewExists(crew);
+        if (!isCrewExists) {
+            OutputView.printNotRegisteredCrewNickname();
+            return;
+        }
     }
 
     private static void modifyAttendance() {

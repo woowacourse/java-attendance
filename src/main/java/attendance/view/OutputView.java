@@ -13,4 +13,8 @@ public class OutputView {
         String dayName = day.getDisplayName(TextStyle.FULL, Locale.KOREAN);
         System.out.printf("[ERROR] %02d월 %02d일 %s은 등교일이 아닙니다.\n", month, date, dayName);
     }
+
+    public static void printNotRegisteredCrewNickname() {
+        System.out.println("[ERROR] 등록되지 않은 닉네임입니다.");
+    }
 }
