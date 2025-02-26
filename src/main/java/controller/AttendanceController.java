@@ -5,6 +5,7 @@ import dto.AttendanceStatusDto;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.ZoneId;
 import service.AttendanceService;
 import view.FeatureType;
 import view.InputView;
@@ -29,7 +30,7 @@ public class AttendanceController {
 
             // LocalDateTime을 아예 View에서 파싱해서 넘겨주는 게 더 좋은 설계일까? 고민
             LocalTime localTime = InputView.askAttendanceTime(false);
-            LocalDateTime dateTime = LocalDateTime.of(LocalDate.now(), localTime);
+            LocalDateTime dateTime = LocalDateTime.of(LocalDate.now(ZoneId.of("Asia/Seoul")), localTime);
 
             Crew crew = Crew.from(nickname);
             validateHistoryNotAlreadyExists(crew, dateTime);

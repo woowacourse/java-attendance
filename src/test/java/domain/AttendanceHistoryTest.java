@@ -1,6 +1,7 @@
 package domain;
 
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -48,7 +49,7 @@ class AttendanceHistoryTest {
     @Test
     void hasSameCrewTest1() {
         Crew crew = Crew.from("히스타");
-        AttendanceHistory history = AttendanceHistory.of(crew, LocalDateTime.now());
+        AttendanceHistory history = AttendanceHistory.of(crew, LocalDateTime.now(ZoneId.of("Asia/Seoul")));
 
         Assertions.assertThat(history.hasSameCrew(crew)).isTrue();
     }
@@ -56,7 +57,7 @@ class AttendanceHistoryTest {
     @Test
     void hasSameCrewTest2() {
         Crew crew = Crew.from("히스타");
-        AttendanceHistory history = AttendanceHistory.of(crew, LocalDateTime.now());
+        AttendanceHistory history = AttendanceHistory.of(crew, LocalDateTime.now(ZoneId.of("Asia/Seoul")));
 
         Assertions.assertThat(history.hasSameCrew(Crew.from("히로"))).isFalse();
     }
