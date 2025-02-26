@@ -13,6 +13,6 @@ public class Crews {
         return crews.stream()
                 .filter(crew -> crew.matchName(crewName))
                 .findAny()
-                .get();
+                .orElseThrow(IllegalArgumentException::new);
     }
 }
