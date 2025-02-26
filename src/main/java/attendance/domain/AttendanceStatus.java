@@ -6,18 +6,18 @@ import java.time.LocalTime;
 import java.util.Arrays;
 import java.util.function.Function;
 
-public enum AttendanceType {
+public enum AttendanceStatus {
     ATTENDANCE((duration -> duration.toMinutes() <= 5)),
     LATE((duration -> 5 < duration.toMinutes() && duration.toMinutes() <= 30)),
     ABSENT((duration -> duration.toMinutes() > 30));
 
     private final Function<Duration, Boolean> isMatch;
 
-    AttendanceType(Function<Duration, Boolean> isMatch) {
+    AttendanceStatus(Function<Duration, Boolean> isMatch) {
         this.isMatch = isMatch;
     }
 
-    public static AttendanceType calculate(DayOfWeek dayOfWeek, LocalTime attendanceTime) {
+    public static AttendanceStatus calculate(DayOfWeek dayOfWeek, LocalTime attendanceTime) {
         LocalTime attendanceStartTime = getAttendanceStartTime(dayOfWeek);
         Duration duration = Duration.between(attendanceStartTime, attendanceTime);
         return Arrays.stream(values())

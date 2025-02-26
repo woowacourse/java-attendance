@@ -1,12 +1,12 @@
 package domain;
 
-import attendance.domain.AttendanceType;
+import attendance.domain.AttendanceStatus;
 import java.time.DayOfWeek;
 import java.time.LocalTime;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-public class AttendanceTypeTest {
+public class AttendanceStatusTest {
 
     @Test
     void 해당_요일의_시작_시각으로부터_5분_초과는_지각이다() {
@@ -15,10 +15,10 @@ public class AttendanceTypeTest {
         LocalTime attendanceTime = LocalTime.of(13, 6);
 
         //when
-        AttendanceType result = AttendanceType.calculate(dayOfWeek, attendanceTime);
+        AttendanceStatus result = AttendanceStatus.calculate(dayOfWeek, attendanceTime);
 
         //then
-        Assertions.assertThat(result).isEqualTo(AttendanceType.LATE);
+        Assertions.assertThat(result).isEqualTo(AttendanceStatus.LATE);
     }
 
     @Test
@@ -28,10 +28,10 @@ public class AttendanceTypeTest {
         LocalTime attendanceTime = LocalTime.of(13, 31);
 
         //when
-        AttendanceType result = AttendanceType.calculate(dayOfWeek, attendanceTime);
+        AttendanceStatus result = AttendanceStatus.calculate(dayOfWeek, attendanceTime);
 
         //then
-        Assertions.assertThat(result).isEqualTo(AttendanceType.ABSENT);
+        Assertions.assertThat(result).isEqualTo(AttendanceStatus.ABSENT);
     }
 
     @Test
@@ -41,9 +41,9 @@ public class AttendanceTypeTest {
         LocalTime attendanceTime = LocalTime.of(13, 5);
 
         //when
-        AttendanceType result = AttendanceType.calculate(dayOfWeek, attendanceTime);
+        AttendanceStatus result = AttendanceStatus.calculate(dayOfWeek, attendanceTime);
 
         //then
-        Assertions.assertThat(result).isEqualTo(AttendanceType.ATTENDANCE);
+        Assertions.assertThat(result).isEqualTo(AttendanceStatus.ATTENDANCE);
     }
 }
