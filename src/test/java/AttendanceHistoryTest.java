@@ -114,5 +114,18 @@ public class AttendanceHistoryTest {
             assertThatThrownBy(() -> attendanceHistory.attendance(attendanceDateTime))
                     .isInstanceOf(IllegalStateException.class);
         }
+
+        @DisplayName("등교 날짜가 아닌 날짜의 출석 기록을 찾는다면, 예외가 발생한다.")
+        @Test
+        public void findByDate() throws Exception {
+            // given
+            final Crew owner = new Crew("owner");
+            final var attendanceHistory = new AttendanceHistory(owner);
+            final var findDate = LocalDate.of(2024, 12, 14);
+
+            // when & then
+            assertThatThrownBy(() -> attendanceHistory.findByDate(findDate))
+                    .isInstanceOf(IllegalArgumentException.class);
+        }
     }
 }
