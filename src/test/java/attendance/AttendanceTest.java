@@ -130,8 +130,8 @@ class AttendanceTest {
 
         // when then
         assertSoftly(softly -> {
-            softly.assertThat(crew.getAttendanceStatusOf(LocalDate.of(2025,02,22))).isNull();
-            softly.assertThat(crew.getAttendanceStatusOf(LocalDate.of(2025,02,23))).isNull();
+            softly.assertThat(crew.getAttendanceStatusOf(LocalDate.of(2025, 02, 22))).isNull();
+            softly.assertThat(crew.getAttendanceStatusOf(LocalDate.of(2025, 02, 23))).isNull();
         });
     }
 
@@ -146,9 +146,9 @@ class AttendanceTest {
         // when
         // crew1: 결석 2회 -> 경고
         crew1.attendance(LocalDate.of(2025, 02, 03), LocalTime.of(13, 00));
+        crew1.attendance(LocalDate.of(2025, 02, 04), LocalTime.of(10, 00));
         crew1.attendance(LocalDate.of(2025, 02, 05), LocalTime.of(10, 00));
         crew1.attendance(LocalDate.of(2025, 02, 06), LocalTime.of(10, 00));
-        crew1.attendance(LocalDate.of(2025, 02, 07), LocalTime.of(10, 00));
 
         // crew2: 결석 3회 -> 면담
         crew2.attendance(LocalDate.of(2025, 02, 03), LocalTime.of(13, 00));
@@ -159,9 +159,9 @@ class AttendanceTest {
 
         // then
         assertSoftly(softly -> {
-            softly.assertThat(crew1.getRisk()).isEqualTo(Risk.WARNING);
-            softly.assertThat(crew2.getRisk()).isEqualTo(Risk.INTERVIEW);
-            softly.assertThat(crew3.getRisk()).isEqualTo(Risk.EXPULSION);
+            softly.assertThat(crew1.getRisk(LocalDate.of(2025, 02, 11))).isEqualTo(Risk.WARNING);
+            softly.assertThat(crew2.getRisk(LocalDate.of(2025, 02, 11))).isEqualTo(Risk.INTERVIEW);
+            softly.assertThat(crew3.getRisk(LocalDate.of(2025, 02, 11))).isEqualTo(Risk.EXPULSION);
         });
     }
 }

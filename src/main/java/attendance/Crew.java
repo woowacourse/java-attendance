@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.stream.IntStream;
 
 public class Crew {
 
@@ -67,5 +68,20 @@ public class Crew {
 
     private boolean isTruancy(LocalDate date) {
         return !attendanceRecords.containsKey(date) && !DayOff.isDayOff(date);
+    }
+
+    public Risk getRisk(LocalDate today) {
+        return Risk.of(getAttendanceStatistics(today));
+    }
+
+    private Map<AttendanceStatus, Integer> getAttendanceStatistics(LocalDate today) {
+        Map<AttendanceStatus, Integer> statistics = AttendanceStatus.getEmptyStatistics();
+
+        IntStream.range(1,today.getDayOfMonth())
+            .mapToObj(today::withDayOfMonth)
+            .map(this::getAttendanceStatusOf)
+            .forEach(status -> statistics.put(status, statistics.get(status) + 1));
+
+        return statistics;
     }
 }

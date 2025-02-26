@@ -5,6 +5,7 @@ import java.time.LocalTime;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public enum AttendanceStatus {
     ATTENDANCE("출석", null),
@@ -30,6 +31,13 @@ public enum AttendanceStatus {
             .filter(status -> status.minLateTime < lateTime)
             .max(Comparator.comparing(status -> status.minLateTime))
             .orElse(ATTENDANCE);
+    }
+
+    public static Map<AttendanceStatus, Integer> getEmptyStatistics() {
+        Map<AttendanceStatus, Integer> result = Arrays.stream(values())
+            .collect(Collectors.toMap(status -> status, status -> 0));
+        result.put(null, 0);
+        return result;
     }
 
     public static int getConvertedAbsence(Map<AttendanceStatus, Integer> statistics) {
