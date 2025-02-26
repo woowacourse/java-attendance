@@ -65,5 +65,38 @@ public class StudentTest {
         Assertions.assertEquals(expect, result);
     }
 
+    @Test
+    @DisplayName("학생의 출결 횟수 확인 테스트")
+    void 학생의_출석_횟수_확인_테스트(){
+        LocalDate todayDate1 = LocalDate.of(2024,12,13);
+        LocalDate todayDate2 = LocalDate.of(2024,12,12);
+        String attendanceTime = "10:04";
+        long expect = 2;
+
+        student.registerAttendanceRecord(todayDate1, attendanceTime);
+        student.registerAttendanceRecord(todayDate2, attendanceTime);
+        student.updateAttendanceCount();
+        long result = student.attendanceStatusCount.get(AttendanceStatus.ATTENDANCE);
+
+        Assertions.assertEquals(expect, result);
+    }
+
+    @Test
+    @DisplayName("학생의 지각 횟수 확인 테스트")
+    void 학생의_지각_횟수_확인_테스트(){
+        LocalDate todayDate1 = LocalDate.of(2024,12,13);
+        LocalDate todayDate2 = LocalDate.of(2024,12,12);
+        String attendanceTime1 = "10:04";
+        String attendanceTime2 = "10:06";
+        long expect = 1;
+
+        student.registerAttendanceRecord(todayDate1, attendanceTime1);
+        student.registerAttendanceRecord(todayDate2, attendanceTime2);
+        student.updateAttendanceCount();
+        long result = student.attendanceStatusCount.get(AttendanceStatus.LATE);
+
+        Assertions.assertEquals(expect, result);
+    }
+
 
 }
