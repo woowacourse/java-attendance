@@ -9,6 +9,7 @@ import java.util.Map;
 import model.AttendanceCalculator;
 import model.AttendanceStatus;
 import model.Student;
+import model.StudentAttendanceHistory;
 import model.Students;
 import util.FileInput;
 import model.TodayDate;
@@ -21,8 +22,8 @@ public class AttendanceManagementController {
     public void start() {
         TodayDate todayDate = new TodayDate();
 
-        Students studentRepository = updateStudentAttendanceRecord();
-        studentRepository.updateEveryStudentNoInformationInFile(todayDate);
+        Students students = updateStudentAttendanceRecord();
+        students.updateEveryStudentNoInformationInFile(todayDate);
 
         String userInput = "";
 
@@ -30,25 +31,26 @@ public class AttendanceManagementController {
             userInput = InputView.getUserWantMenu(todayDate);
 
             if (userInput.equals(MenuOption.ATTENDANCE_CHECK.getOption())) {
-                functionForAttendanceCheck(todayDate, studentRepository);
+                functionForAttendanceCheck(todayDate, students);
             }
             if (userInput.equals(MenuOption.ATTENDANCE_MODIFY.getOption())) {
-                functionForAttendanceModify(studentRepository);
+                functionForAttendanceModify(students);
             }
             if (userInput.equals(MenuOption.STUDENT_RECORD_CHECK.getOption())) {
-                functionForStudentRecordCheck(studentRepository);
+                functionForStudentRecordCheck(students);
             }
             if (userInput.equals(MenuOption.DISMISSAL_SUBJECT_CHECK.getOption())) {
-                functionForDismissalSubjectCheck(studentRepository);
+                functionForDismissalSubjectCheck(students);
             }
         }
     }
 
-    private Students updateStudentAttendanceRecord() {
+    public Students updateStudentAttendanceRecord() {
         Map<String, List<LocalDateTime>> studentRecordRepository = FileInput.createStudentRepository();
         List<Student> students = new ArrayList<>();
         for (String name : studentRecordRepository.keySet()) {
-            Student student = new Student(name, studentRecordRepository.get(name));
+            StudentAttendanceHistory studentAttendanceHistory = new StudentAttendanceHistory(studentRecordRepository.get(name));
+            Student student = new Student(name, studentAttendanceHistory);
             students.add(student);
         }
         return new Students(students);
@@ -58,15 +60,16 @@ public class AttendanceManagementController {
         OutputView.displayAtRiskStudent();
         for (Student student : studentRepository.getStudentRepository()) {
             OutputView.printDismissalSubject(AttendanceCalculator.recordAttendanceResult(
-                    student.getTimeRecords()), student.getName());
+                    student.getStudentAttendanceHistory().getAttendanceHistory()), student.getName());
         }
     }
 
     private static void functionForStudentRecordCheck(Students studentRepository) {
         String name = InputView.getStudentForAttendanceCheckUntilExist(studentRepository);
-        OutputView.printAttendanceRecord(studentRepository.findStudentByName(name).getTimeRecords());
+        OutputView.printAttendanceRecord(studentRepository.findStudentByName(name).getStudentAttendanceHistory()
+                .getAttendanceHistory());
         HashMap<AttendanceStatus, Integer> attendanceRecord = AttendanceCalculator.recordAttendanceResult(
-                studentRepository.findStudentByName(name).getTimeRecords());
+                studentRepository.findStudentByName(name).getStudentAttendanceHistory().getAttendanceHistory());
         OutputView.printResult(attendanceRecord);
     }
 
