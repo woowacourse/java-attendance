@@ -11,7 +11,7 @@ public class InputView {
     private static final DateTimeFormatter MAIN_MENU_FORMAT
             = DateTimeFormatter.ofPattern("MM월 dd일 E요일", Locale.KOREAN);
 
-    public static String scanMainMenuOption() {
+    public static String scanMainMenuCommand() {
         System.out.printf("""
                 오늘은 %s입니다. 기능을 선택해 주세요.
                 1. 출석 확인

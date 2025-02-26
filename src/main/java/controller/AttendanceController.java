@@ -31,14 +31,14 @@ public class AttendanceController {
     public void run() {
         boolean isRunning = true;
         while (isRunning) {
-            String option = InputView.scanMainMenuOption();
-            isRunning = executeOption(option);
+            String command = InputView.scanMainMenuCommand();
+            isRunning = executeCommand(command);
         }
     }
 
-    private boolean executeOption(String option) {
+    private boolean executeCommand(String command) {
         boolean isRunning = true;
-        switch (MainMenuCommand.from(option)) {
+        switch (MainMenuCommand.from(command)) {
             case SAVE_ATTENDANCE_RECORD -> saveAttendanceRecord();
             case MODIFY_ATTENDANCE_RECORD -> modifyAttendanceRecord();
             case PRINT_MONTH_ATTENDANCE_STATISTICS -> printMonthAttendanceStatistics();
