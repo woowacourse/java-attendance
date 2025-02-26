@@ -1,0 +1,52 @@
+package attendance.controller.command;
+
+import attendance.domain.model.AttendanceType;
+import attendance.domain.model.Campus;
+import attendance.domain.model.CrewHistories;
+import attendance.domain.model.CrewHistory;
+import attendance.domain.model.TodayClock;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import attendance.util.StringParser;
+import attendance.util.TimeFormatter;
+import attendance.view.InputView;
+import attendance.view.ResultView;
+
+public class AttendCommand implements Command {
+
+    private final InputView inputView;
+    private final Campus campus;
+    private final TodayClock todayClock;
+    private final ResultView resultView;
+
+    public AttendCommand(final InputView inputView, final Campus campus, final TodayClock todayClock,
+                         final ResultView resultView) {
+        this.inputView = inputView;
+        this.campus = campus;
+        this.todayClock = todayClock;
+        this.resultView = resultView;
+    }
+
+    @Override
+    public void execute(final CrewHistories crewHistories) {
+        LocalDate todayDate = todayClock.getTodayDate();
+        campus.validateOperationDate(todayDate);
+        CrewHistory crewHistory = getCrew(crewHistories);
+        LocalDateTime attendanceDateTime = getLocalDateTime(todayDate);
+        campus.validateOperationTime(attendanceDateTime);
+        crewHistory.attend(attendanceDateTime);
+        resultView.printAttendanceHistory(
+                TimeFormatter.formatDateTime(attendanceDateTime), AttendanceType.from(attendanceDateTime));
+    }
+
+    private CrewHistory getCrew(final CrewHistories crewHistories) {
+        String nickname = inputView.readNickname();
+        return crewHistories.findCrewByNickname(nickname);
+    }
+
+    private LocalDateTime getLocalDateTime(final LocalDate todayDate) {
+        LocalTime attendanceTime = StringParser.parseLocalTime(inputView.readAttendanceTime());
+        return LocalDateTime.of(todayDate, attendanceTime);
+    }
+}

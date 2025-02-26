@@ -1,0 +1,141 @@
+package attendance.model;
+
+import static attendance.domain.model.AttendanceType.DEFAULT_TIME;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertAll;
+
+import attendance.domain.model.AttendanceCounter;
+import attendance.domain.model.CrewHistory;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
+
+public class CrewHistoryTest {
+
+    private static final String CREW_NAME = "밍트";
+
+    @DisplayName("출석을 한다")
+    @Test
+    void checkAttendanceTest() {
+        // Given
+        CrewHistory crewHistory = new CrewHistory(new HashMap<>());
+        LocalDateTime attendanceTime = LocalDateTime.of(2024, 12, 3, 9, 0);
+
+        // When
+        crewHistory.attend(attendanceTime);
+
+        // Then
+        assertThat(crewHistory.getAttendance()).containsEntry(LocalDate.from(attendanceTime), attendanceTime);
+    }
+
+    @DisplayName("이미 출석한 경우 예외가 발생한다")
+    @Test
+    void alreadyAttendanceTest() {
+        // Given
+        CrewHistory crewHistory = new CrewHistory(new HashMap<>());
+        LocalDateTime attendanceTime = LocalDateTime.of(2024, 12, 3, 9, 0);
+        crewHistory.attend(attendanceTime);
+
+        // When & Then
+        assertThatThrownBy(() -> crewHistory.attend(attendanceTime))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("[ERROR] 이미 출석했습니다. 수정 기능을 이용해주세요.");
+    }
+
+
+    @DisplayName("출석을 수정하고 이전의 출석 기록을 반환한다")
+    @Test
+    void modifyAttendanceTest() {
+        // Given
+        CrewHistory crewHistory = new CrewHistory(new HashMap<>());
+        LocalDateTime attendanceTime = LocalDateTime.of(2024, 12, 3, 9, 0);
+        crewHistory.attend(attendanceTime);
+
+        LocalDateTime modifyTime = LocalDateTime.of(2024, 12, 3, 9, 50);
+        LocalDate todayDate = LocalDate.now();
+
+        // When
+        LocalDateTime previousDateTime = crewHistory.modify(modifyTime, todayDate);
+
+        // Then
+        assertAll(
+                () -> assertThat(crewHistory.getAttendance()).containsEntry(LocalDate.from(modifyTime), modifyTime),
+                () -> assertThat(previousDateTime).isEqualTo(attendanceTime)
+        );
+    }
+
+    @DisplayName("오늘 또는 미래의 수정 일자일 경우 예외가 발생한다")
+    @ParameterizedTest
+    @CsvSource({
+            "2024-12-03",
+            "2024-12-04"
+    })
+    void invalidModifyDateTest(LocalDate todayDate) {
+        // Given
+        CrewHistory crewHistory = new CrewHistory(new HashMap<>());
+        LocalDateTime modifyTime = LocalDateTime.of(2024, 12, 4, 9, 50);
+
+        // When & Then
+        assertThatThrownBy(() -> crewHistory.modify(modifyTime, todayDate))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("[ERROR] 수정 일자는 어제 기록까지만 수정할 수 있습니다.");
+    }
+
+    @DisplayName("크루별 출석 기록을 확인한다")
+    @Test
+    void checkAttendanceHistoryByCrewTest() {
+        // Given
+        LocalDate today = LocalDate.of(2024, 12, 19);
+
+        LocalDateTime dateTime1 = LocalDateTime.of(2024, 12, 3, 9, 0);
+        LocalDateTime dateTime2 = LocalDateTime.of(2024, 12, 4, 9, 0);
+        LocalDateTime todayDateTime = LocalDateTime.of(2024, 12, 19, 9, 0);
+        CrewHistory crewHistory = new CrewHistory(Map.of(
+                LocalDate.from(dateTime1), dateTime1,
+                LocalDate.from(dateTime2), dateTime2,
+                LocalDate.from(todayDateTime), todayDateTime
+        ));
+
+        // When
+        List<LocalDateTime> attendanceHistory = crewHistory.getAttendanceHistory(today);
+
+        // Then
+        assertThat(attendanceHistory).contains(dateTime1, dateTime2);
+    }
+
+    @DisplayName("출석 타입별 횟수를 계산한다")
+    @Test
+    void countAttendanceTypeTest() {
+        // Given
+        LocalDate todayDate = LocalDate.of(2024, 12, 13);
+        LocalDateTime dateTime1 = LocalDateTime.of(2024, 12, 2, 9, 0);
+        LocalDateTime dateTime2 = LocalDateTime.of(2024, 12, 3, 10, 6);
+        LocalDateTime dateTime3 = LocalDateTime.of(2024, 12, 4, 10, 31);
+        LocalDateTime dateTime4 = LocalDateTime.of(LocalDate.of(2024, 12, 5), DEFAULT_TIME);
+        LocalDateTime dateTime5 = LocalDateTime.of(2024, 12, 6, 9, 30);
+        CrewHistory crewHistory = new CrewHistory(Map.of(
+                LocalDate.from(dateTime1), dateTime1,
+                LocalDate.from(dateTime2), dateTime2,
+                LocalDate.from(dateTime3), dateTime3,
+                LocalDate.from(dateTime4), dateTime4,
+                LocalDate.from(dateTime5), dateTime5
+        ));
+
+        // When
+        AttendanceCounter attendanceCounter = crewHistory.countAttendanceType(todayDate);
+
+        // Then
+        assertAll(
+                () -> assertThat(attendanceCounter.getAttendanceCount()).isEqualTo(2),
+                () -> assertThat(attendanceCounter.getLateCount()).isEqualTo(1),
+                () -> assertThat(attendanceCounter.getAbsentCount()).isEqualTo(2)
+        );
+    }
+}
