@@ -2,15 +2,17 @@ import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class AttendanceCheck {
     static final LocalTime START_TIME = LocalTime.of(10, 0);
-
+    static final List<LocalDate> HOLIDAY = List.of(LocalDate.of(2025, 1, 1));
     Map<String, Map<LocalDate, LocalTime>> attendanceRecord = new HashMap<>();
 
     public void attend(LocalDate date, String nickname, LocalTime attendanceTime) {
-        if (date.getDayOfWeek() == DayOfWeek.SATURDAY || date.getDayOfWeek() == DayOfWeek.SUNDAY) {
+        if (date.getDayOfWeek() == DayOfWeek.SATURDAY || date.getDayOfWeek() == DayOfWeek.SUNDAY || HOLIDAY.contains(
+                date)) {
             throw new IllegalStateException("[ERROR] 오늘은 등교일이 아닙니다.");
         }
 
