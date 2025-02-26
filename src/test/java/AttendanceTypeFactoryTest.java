@@ -5,7 +5,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
-public class AttendanceTypeCheckerTest {
+public class AttendanceTypeFactoryTest {
     @Test
     @DisplayName("월요일에는 13시 6분에 등교하면 지각이다")
     void checkLate() {
@@ -47,4 +47,26 @@ public class AttendanceTypeCheckerTest {
         // when & then
         Assertions.assertThat(AttendanceTypeFactory.getType(attendAt)).isEqualTo("ABSENCE");
     }
+
+    @ParameterizedTest
+    @DisplayName("월요일이 아닌 경우에는 10시에 등교하면 출석이다")
+    @ValueSource(ints = {3, 4, 5, 6})
+    void checkPresentExceptForMonday(int day) {
+        // given
+        LocalDateTime attendAt = LocalDateTime.of(2024, 12, day, 10, 0);
+
+        // when & then
+        Assertions.assertThat(AttendanceTypeFactory.getType(attendAt)).isEqualTo("PRESENT");
+    }
+
+    @Test
+    @DisplayName("월요일에는 13시에 등교하면 출석이다")
+    void checkPresentForMonday() {
+        // given
+        LocalDateTime attendAt = LocalDateTime.of(2024, 12, 2, 13, 0);
+
+        // when & then
+        Assertions.assertThat(AttendanceTypeFactory.getType(attendAt)).isEqualTo("PRESENT");
+    }
+
 }

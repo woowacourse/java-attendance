@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 public class AttendanceHistory {
     private final Crew crew;
     private final LocalDateTime attendAt;
+//    private final Attendance
 
     public AttendanceHistory(Crew crew, LocalDateTime attendAt) {
 
