@@ -32,4 +32,17 @@ public class WarningLevelTest {
         //then
         assertThat(result).isEqualTo(WarningLevel.INTERVIEW);
     }
+
+    @Test
+    void 결석이_5회_초과라면_제적_대상자이다() {
+        //given
+        int lateCount = 0;
+        int absentCount = 6;
+
+        //when
+        WarningLevel result = WarningLevel.from(lateCount, absentCount);
+
+        //then
+        assertThat(result).isEqualTo(WarningLevel.WEEDING);
+    }
 }
