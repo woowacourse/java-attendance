@@ -24,8 +24,13 @@ public class Attendance {
     }
 
     private void validateAttendanceDate(LocalDate attendanceDate) {
-        if (attendanceDate.getDayOfWeek() == DayOfWeek.SATURDAY || attendanceDate.getDayOfWeek() == DayOfWeek.SUNDAY) {
+        if (isWeekend(attendanceDate)) {
             throw new IllegalArgumentException("주말에는 출석할 수 없습니다.");
         }
+    }
+
+    private boolean isWeekend(LocalDate attendanceDate) {
+        return attendanceDate.getDayOfWeek() == DayOfWeek.SATURDAY ||
+                attendanceDate.getDayOfWeek() == DayOfWeek.SUNDAY;
     }
 }

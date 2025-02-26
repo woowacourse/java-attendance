@@ -7,7 +7,7 @@ import org.junit.jupiter.api.Test;
 
 public class AttendanceTest {
     @Test
-    void 주말에_출석을_할_경우_예외가_발생한다() {
+    void 주말에_출석을_생성할_경우_예외가_발생한다() {
         //given
         String nickname = "pobi";
         LocalDateTime attendanceDateTime = LocalDateTime.of(2024, 12, 14, 10, 1); // 토요일
