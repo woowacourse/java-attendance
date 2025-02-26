@@ -17,6 +17,9 @@ public class OperationTimeChecker {
     }
 
     public LocalTime getEducationStartTime(final LocalDate targetDate) {
-        return LocalTime.of(13, 0);
+        if (targetDate.getDayOfWeek() == DayOfWeek.MONDAY) {
+            return LocalTime.of(13, 0);
+        }
+        return LocalTime.of(10, 0);
     }
 }
