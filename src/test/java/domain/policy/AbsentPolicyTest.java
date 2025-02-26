@@ -1,5 +1,6 @@
-package policy;
+package domain.policy;
 
+import domain.policy.AbsentPolicy;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -13,9 +14,9 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.stream.Stream;
 
-import static domain.AttendanceState.ABSENT;
-import static domain.AttendanceState.ATTENDANCE;
-import static domain.AttendanceState.LATE;
+import static domain.policy.AttendanceState.ABSENT;
+import static domain.policy.AttendanceState.ATTENDANCE;
+import static domain.policy.AttendanceState.LATE;
 import static org.assertj.core.api.Assertions.*;
 
 /*

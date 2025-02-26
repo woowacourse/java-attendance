@@ -1,6 +1,7 @@
 package domain;
 
-import policy.AbsentPolicy;
+import domain.policy.AbsentPolicy;
+import domain.policy.AttendanceState;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -10,7 +11,8 @@ import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
 
-import static java.util.stream.Collectors.*;
+import static java.util.stream.Collectors.counting;
+import static java.util.stream.Collectors.groupingBy;
 
 public class AttendanceSheet {
 

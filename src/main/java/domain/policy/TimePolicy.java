@@ -1,4 +1,4 @@
-package policy;
+package domain.policy;
 
 import java.time.LocalTime;
 

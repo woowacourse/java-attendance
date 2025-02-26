@@ -2,7 +2,7 @@ import config.AttendanceSheetFactory;
 import config.ReadFile;
 import domain.Attendance;
 import domain.AttendanceSheet;
-import policy.AbsentPolicy;
+import domain.policy.AbsentPolicy;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;

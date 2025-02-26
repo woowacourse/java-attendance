@@ -1,10 +1,9 @@
-package policy;
+package domain.policy;
 
-import static domain.AttendanceState.ABSENT;
-import static domain.AttendanceState.ATTENDANCE;
-import static domain.AttendanceState.LATE;
+import static domain.policy.AttendanceState.ABSENT;
+import static domain.policy.AttendanceState.ATTENDANCE;
+import static domain.policy.AttendanceState.LATE;
 
-import domain.AttendanceState;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;

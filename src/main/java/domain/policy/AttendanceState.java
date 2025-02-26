@@ -1,4 +1,4 @@
-package domain;
+package domain.policy;
 
 public enum AttendanceState {
     ATTENDANCE("출석"),

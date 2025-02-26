@@ -6,7 +6,7 @@ import org.junit.jupiter.api.Test;
 import java.time.LocalDate;
 import java.time.LocalTime;
 
-import static domain.AttendanceState.ATTENDANCE;
+import static domain.policy.AttendanceState.ATTENDANCE;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class AttendanceTest {

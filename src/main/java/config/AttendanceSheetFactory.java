@@ -2,7 +2,7 @@ package config;
 
 import domain.Attendance;
 import domain.AttendanceSheet;
-import policy.AbsentPolicy;
+import domain.policy.AbsentPolicy;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
