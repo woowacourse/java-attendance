@@ -11,31 +11,14 @@ import org.junit.jupiter.params.provider.CsvSource;
 public class AttendCheckerTest {
 
     @ParameterizedTest
-    @CsvSource(value = {"2024-12-01,true", "2024-12-02,false", "2024-12-07,true"})
-    @DisplayName("주어진 날짜를 기반으로 주말인지 판정하는 기능")
-    void checkDateIsWeekend(LocalDate targetDate, boolean expected) {
+    @CsvSource(value = {"2024-12-01", "2024-12-07", "2024-12-25"})
+    @DisplayName("주어진 날짜를 기반으로 운영일이 아니면 예외를 발생하는 기능")
+    void checkDateIsWeekend(LocalDate targetDate) {
         //given
         OperationTimeChecker operationTimeChecker = new OperationTimeChecker();
 
-        //when
-        boolean actual = operationTimeChecker.isWeekend(targetDate);
-
-        //then
-        assertThat(actual).isEqualTo(expected);
-    }
-
-    @ParameterizedTest
-    @CsvSource(value = {"2024-12-25,true", "2024-12-01,false"})
-    @DisplayName("주어진 날짜가 공휴일인지 판정하는 기능")
-    void checkDateIsHoliday(LocalDate targetDate, boolean expected) {
-        //given
-        OperationTimeChecker operationTimeChecker = new OperationTimeChecker();
-
-        //when
-        boolean actual = operationTimeChecker.isHoliday(targetDate);
-
-        //then
-        assertThat(actual).isEqualTo(expected);
+        //when & then
+        assertThatThrownBy(() -> operationTimeChecker.checkIsOperationDate(targetDate));
     }
 
     @ParameterizedTest
