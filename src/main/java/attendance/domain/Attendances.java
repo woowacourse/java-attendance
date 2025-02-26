@@ -79,4 +79,8 @@ public class Attendances {
                 .filter(attendance -> attendance.checkAttendanceStatus() == AttendanceStatus.ABSENCE)
                 .count());
     }
+
+    public List<Attendance> getAttendances() {
+        return attendances;
+    }
 }
