@@ -30,6 +30,7 @@ public class AttendanceController {
 
         Map<MainOption, Runnable> commands = Map.of(
                 MainOption.CHECK_ATTENDANCE, this::processCheckAttendance,
+                MainOption.MODIFY_ATTENDANCE, this::processModifyRecord,
                 MainOption.VIEW_CREW_HISTORY, this::processViewCrewHistory,
                 MainOption.QUIT, () -> System.exit(0)
         );
@@ -49,6 +50,21 @@ public class AttendanceController {
                     record);
 
             outputView.displayAttendanceResult(record);
+        });
+    }
+
+    private void processModifyRecord() {
+        process(() -> {
+            Crew crew = crews.findByName(inputView.readModifyName());
+            int modifyDay = inputView.readModifyDay();
+            LocalTime modifyTime = inputView.readModifyTime();
+
+            LocalDate targetDate = LocalDate.of(2024, 12, modifyDay);
+            AttendanceRecord oldRecord = attendanceBook.getRecordBy(crew.getName(), targetDate).copy();
+            attendanceBook.modify(crew.getName(), targetDate, modifyTime);
+            AttendanceRecord newRecord = attendanceBook.getRecordBy(crew.getName(), targetDate);
+
+            outputView.displayModifyResult(oldRecord, newRecord);
         });
     }
 

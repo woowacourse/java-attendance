@@ -43,4 +43,12 @@ public class AttendanceBook {
         return history;
     }
 
+    public AttendanceRecord getRecordBy(String crewName, LocalDate date) {
+        AttendanceHistory history = crewHistories.get(crewName);
+        if (history == null) {
+            throw new IllegalArgumentException("해당 크루의 기록이 없습니다.");
+        }
+        return history.getRecordByDate(date);
+    }
+
 }

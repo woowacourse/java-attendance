@@ -33,4 +33,8 @@ public class AttendanceRecord {
     public LocalDateTime getAttendanceDateTime() {
         return attendanceDateTime;
     }
+
+    public AttendanceRecord copy() {
+        return new AttendanceRecord(this.getAttendanceDateTime());
+    }
 }

@@ -35,6 +35,13 @@ public class OutputView {
         sb.print();
     }
 
+    public void displayModifyResult(AttendanceRecord oldRecord, AttendanceRecord newRecord) {
+        System.out.printf("%s -> %s 수정 완료!%n",
+                getFormattedRecord(oldRecord),
+                getFormattedRecord(newRecord)
+        );
+    }
+
     private String getFormattedRecord(AttendanceRecord record) {
         return String.format("%s (%s)",
                 record.getAttendanceDateTime().format(DATE_FORMATTER),
