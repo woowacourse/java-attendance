@@ -46,6 +46,7 @@ public class DateCrewAttendanceManager {
     }
 
     public List<CrewAttendanceHistory> crewAttendancesHistory() {
+        
         LocalDate today = currentDateGenerateStrategy.now();
         return dateCrewAttendances.entrySet()
                 .stream()

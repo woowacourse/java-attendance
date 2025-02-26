@@ -1,5 +1,6 @@
 package domain;
 
+import except.AttendanceException;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.HashMap;
@@ -8,6 +9,7 @@ import java.util.Map;
 import strategy.CurrentDateGenerateStrategy;
 
 public class CrewAttendances {
+    private static final String NOT_EXISTS_ATTENDANCE_HISTORY = "출석 기록이 존재하지 않습니다.";
     private final Map<CrewName, DateCrewAttendanceManager> crewAttendances;
     private final CurrentDateGenerateStrategy currentDateGenerateStrategy;
 
@@ -38,6 +40,10 @@ public class CrewAttendances {
     }
 
     public List<CrewAttendanceHistory> crewAttendancesHistory(String nickname) {
+        CrewName crewName = new CrewName(nickname);
+        if (!crewAttendances.containsKey(crewName)) {
+            throw new AttendanceException(NOT_EXISTS_ATTENDANCE_HISTORY);
+        }
         DateCrewAttendanceManager dateCrewAttendanceManager = dateCrewAttendanceManager(nickname);
         return dateCrewAttendanceManager.crewAttendancesHistory();
     }
