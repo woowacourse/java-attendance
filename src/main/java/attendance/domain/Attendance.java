@@ -18,6 +18,10 @@ public class Attendance {
         return attendanceDate.isSameDate(localDate);
     }
 
+    public Attendance changeTime(final LocalDateTime modificationDateTime) {
+        return new Attendance(modificationDateTime);
+    }
+
     @Override
     public boolean equals(final Object o) {
         if (this == o) {

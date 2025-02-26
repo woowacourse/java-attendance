@@ -5,6 +5,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.jupiter.api.Test;
@@ -39,6 +40,28 @@ class AttendancesTest {
         Attendances attendances = new Attendances(List.of(attendance));
 
         assertThatThrownBy(() -> attendances.findSameDateAttendance(LocalDate.of(2025, 2, 25)))
+                .isInstanceOf(IllegalArgumentException.class);
+    }
+
+    @Test
+    void 수정_일자를_알려주면_해당_출석_기록을_수정한다() {
+        Attendance attendance = new Attendance(LocalDateTime.of(2025, 2, 26, 10, 0));
+        Attendances attendances = new Attendances(new ArrayList<>(List.of(attendance)));
+        LocalDateTime modificationDateTime = LocalDateTime.of(2025, 2, 26, 9, 50);
+
+        attendances.modifyByModificationDateTime(modificationDateTime);
+
+        assertThat(attendances.findSameDateAttendance(modificationDateTime.toLocalDate()))
+                .isEqualTo(new Attendance(modificationDateTime));
+    }
+
+    @Test
+    void 존재하지_않는_일자를_알려주면_출석_기록을_수정할_수_없다() {
+        Attendance attendance = new Attendance(LocalDateTime.of(2025, 2, 26, 10, 0));
+        Attendances attendances = new Attendances(new ArrayList<>(List.of(attendance)));
+        LocalDateTime modificationDateTime = LocalDateTime.of(2025, 2, 27, 9, 50);
+
+        assertThatThrownBy(() -> attendances.modifyByModificationDateTime(modificationDateTime))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 

@@ -73,4 +73,31 @@ class CrewAttendancesTest {
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
+    @Test
+    void 크루와_수정_알자를_알려주면_해당_날짜의_출석_기록을_수정한다() {
+        LocalDateTime modificationDateTime = LocalDateTime.of(2025, 2, 26, 9, 50);
+        LocalDate today = LocalDate.of(2025, 2, 27);
+        CrewAttendances crewAttendances = new CrewAttendances(crewAttendanceDateTimes);
+        Crew crew = new Crew("빙봉");
+
+        crewAttendances.modifyCrewAttendanceByModificationDateTime(crew, modificationDateTime, today);
+
+        assertThat(crewAttendances.findCrewAttendanceByLocalDate(crew, modificationDateTime.toLocalDate()))
+                .isEqualTo(new Attendance(modificationDateTime));
+    }
+
+    @Test
+    void 수정_일자가_미래의_날짜이면_출석_기록을_수정할_수_없다() {
+        LocalDateTime modificationDateTime = LocalDateTime.of(2025, 2, 28, 9, 50);
+        LocalDate today = LocalDate.of(2025, 2, 27);
+        CrewAttendances crewAttendances = new CrewAttendances(crewAttendanceDateTimes);
+        Crew crew = new Crew("빙봉");
+
+        assertThatThrownBy(
+                () -> crewAttendances.modifyCrewAttendanceByModificationDateTime(crew, modificationDateTime, today)
+        ).isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("2월 27일 보다 미래의 날짜를 수정할 수 없습니다.");
+    }
+
+
 }

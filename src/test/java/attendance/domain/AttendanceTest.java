@@ -49,4 +49,12 @@ class AttendanceTest {
         assertThat(attendance.isSameDate(of(2025, 2, day))).isEqualTo(expected);
     }
 
+    @Test
+    void 수정_일자를_알려주면_출석_시간을_수정해_반환한다() {
+        Attendance attendance = new Attendance(LocalDateTime.of(2025, 2, 26, 10, 0));
+        LocalDateTime modificationDateTime = LocalDateTime.of(2025, 2, 26, 9, 50);
+
+        assertThat(attendance.changeTime(modificationDateTime)).isEqualTo(new Attendance(modificationDateTime));
+    }
+
 }
