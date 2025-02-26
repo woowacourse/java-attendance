@@ -12,27 +12,20 @@ import java.util.Map;
 
 public class FileInput {
     private static final String filePath = "src/main/resources/attendances.csv";
-    private static BufferedReader fileBr = null;
 
-    public FileInput() throws IOException {
-        fileBr = new BufferedReader(new FileReader(filePath));
-    }
-
-    public static List<String> readAttendanceFile() throws IOException{
+    public static List<String> readAttendanceFile() throws IOException {
         List<String> attendanceFile = new ArrayList<>();
-        fileBr.readLine();
-        while(true) {
-            String information = fileBr.readLine();
-            if (information == null) {
-                break;
+        try (BufferedReader fileBr = new BufferedReader(new FileReader(filePath))) {
+            fileBr.readLine();
+            String information;
+            while ((information = fileBr.readLine()) != null) {
+                attendanceFile.add(information);
             }
-            attendanceFile.add(information);
         }
         return attendanceFile;
     }
 
     public static Map<String, List<LocalDateTime>> readFileAndCreateStudentRepository() throws IOException {
-        FileInput fileInput = new FileInput();
         Map<String, List<LocalDateTime>> studentInformation = new HashMap<>();
         for (String information : readAttendanceFile()) {
             String[] nameAndTimeInformation = information.split(",");
@@ -41,23 +34,17 @@ public class FileInput {
             String localDateTimeFormatter = "yyyy-MM-dd HH:mm";
             DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern(localDateTimeFormatter);
             LocalDateTime localDateTime = LocalDateTime.parse(timeInformation, dateTimeFormatter);
-            if (!studentInformation.containsKey(name)) {
-                studentInformation.put(name, new ArrayList<>());
-                studentInformation.get(name).add(localDateTime);
-                continue;
-            }
-            studentInformation.get(name).add(localDateTime);
+            studentInformation.computeIfAbsent(name, k -> new ArrayList<>()).add(localDateTime);
         }
         return studentInformation;
     }
 
-    public static Map<String, List<LocalDateTime>> createStudentRepository(){
-        try{
+    public static Map<String, List<LocalDateTime>> createStudentRepository() {
+        try {
             return readFileAndCreateStudentRepository();
-        } catch (IOException e){
+        } catch (IOException e) {
             System.out.println(e.getMessage());
             return createStudentRepository();
         }
     }
-
 }
