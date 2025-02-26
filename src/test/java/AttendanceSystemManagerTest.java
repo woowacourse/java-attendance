@@ -132,6 +132,24 @@ public class AttendanceSystemManagerTest {
                     .isInstanceOf(IllegalArgumentException.class)
                     .hasMessage("존재하지 않는 출석 기록입니다. 먼저 등록 기능을 이용해주세요.");
         }
+
+        @Test
+        @DisplayName("운영 시간이 아닌 시각으로 출석 시각을 바꾸려고 하는 경우 예외가 발생한다.")
+        void test3() {
+            // given
+            String nickname = "히로";
+            Crew crew = new Crew(nickname);
+            Crews crews = new Crews(List.of(crew));
+            LocalDateTime attendAt = LocalDateTime.of(2024, 12, 2, 10, 0);
+            LocalDateTime newAttendDate = LocalDateTime.of(2024, 12, 2, 7, 0);
+            AttendanceSystemManager attendanceSystemManager = new AttendanceSystemManager(
+                    new AttendanceHistories(List.of(new AttendanceHistory(crew, attendAt))), crews);
+
+            // when
+            assertThatThrownBy(() -> attendanceSystemManager.update(nickname, newAttendDate))
+                    .isInstanceOf(IllegalArgumentException.class)
+                    .hasMessage("운영 시간 내에만 출석할 수 있습니다.");
+        }
     }
 
 }
