@@ -35,7 +35,7 @@ public class AttendanceBookTest {
         // when
         String crewName = crew.getName();
         // then & given
-        assertEquals(attendanceBook.findAttendanceLogs(crewName), attendanceLogs);
+        assertEquals(attendanceBook.findCrewAttendanceLogs(crewName), attendanceLogs);
     }
 
     @Test
@@ -44,7 +44,7 @@ public class AttendanceBookTest {
         // when
         String crewName = "토성";
         // then & given
-        assertThatThrownBy(() -> attendanceBook.findAttendanceLogs(crewName))
+        assertThatThrownBy(() -> attendanceBook.findCrewAttendanceLogs(crewName))
                 .isInstanceOf(ErrorException.class)
                 .hasMessageContaining("[ERROR]");
     }
@@ -56,7 +56,8 @@ public class AttendanceBookTest {
         String crewName = crew.getName();
         LocalDateTime attendDateTime = LocalDateTime.of(2025, 2, 26, 10, 0);
         // when & then
-        assertTrue(attendanceBook.registerAttendanceLog(crewName, attendDateTime).isAttendDate(attendDateTime.toLocalDate()));
+        assertTrue(attendanceBook.registerAttendanceLog(crewName, attendDateTime)
+                .isAttendDate(attendDateTime.toLocalDate()));
     }
 
     @Test
@@ -93,5 +94,16 @@ public class AttendanceBookTest {
         assertThatThrownBy(() -> attendanceBook.editAttendanceLog(crewName, editDate, editTime))
                 .isInstanceOf(ErrorException.class)
                 .hasMessageContaining("[ERROR]");
+    }
+
+    @Test
+    @DisplayName("크루별 출석 기록 확인 기능 테스트")
+    void 크루별_출석_기록_확인_기능_테스트() {
+        // given
+        String crewName = crew.getName();
+        // when
+        AttendanceLogs crewAttendanceLogs = attendanceBook.findCrewAttendanceLogs(crewName);
+        // then
+        assertEquals(attendanceLogs, crewAttendanceLogs);
     }
 }
