@@ -29,4 +29,12 @@ public class AttendanceHistories {
         int i = attendanceHistories.indexOf(oldHistory);
         attendanceHistories.set(i, newAttendanceHistory);
     }
+
+    public AttendanceHistory findByCrewAndDate(Crew crew, LocalDate date) {
+        return attendanceHistories.stream()
+                .filter(attendanceHistory -> attendanceHistory.isAboutSameCrew(crew)
+                        && attendanceHistory.isAboutSameDate(date))
+                .findAny()
+                .orElseThrow(() -> new IllegalArgumentException("조건에 해당하는 기록이 존재하지 않습니다."));
+    }
 }

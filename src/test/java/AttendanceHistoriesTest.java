@@ -1,4 +1,5 @@
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -52,5 +53,32 @@ public class AttendanceHistoriesTest {
 
         // then
         assertThat(attendanceHistories.checkExistenceByCrewAndDate(crew, newAttendAt.toLocalDate())).isTrue();
+    }
+
+    @Test
+    @DisplayName("조건에 맞는 출석 기록을 찾는다")
+    void test4() {
+        // given
+        Crew crew = new Crew("히로");
+        LocalDateTime attendAt = LocalDateTime.of(2024, 12, 2, 10, 0);
+        AttendanceHistory attendanceHistory = new AttendanceHistory(crew, attendAt);
+        AttendanceHistories attendanceHistories = new AttendanceHistories(new ArrayList<>(List.of(attendanceHistory)));
+
+        // when & then
+        assertThat(attendanceHistories.findByCrewAndDate(crew, attendAt.toLocalDate())).isEqualTo(attendanceHistory);
+    }
+
+    @Test
+    @DisplayName("조건에 맞는 출석 기록이 없는 경우 예외를 던진다")
+    void test5() {
+        // given
+        AttendanceHistories attendanceHistories = new AttendanceHistories(List.of());
+        Crew crew = new Crew("히로");
+        LocalDateTime attendAt = LocalDateTime.of(2024, 12, 2, 10, 0);
+
+        // when & then
+        assertThatThrownBy(() -> attendanceHistories.findByCrewAndDate(crew, attendAt.toLocalDate()))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("조건에 해당하는 기록이 존재하지 않습니다.");
     }
 }
