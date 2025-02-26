@@ -28,14 +28,14 @@ public class Attendances {
 
     public Attendance findAttendance(Attendance attendance) {
         return attendances.stream()
-            .filter((currendtAttendance) -> currendtAttendance.equals(attendance))
+            .filter(currendtAttendance -> currendtAttendance.equals(attendance))
             .findFirst()
             .orElseThrow(() -> new AttendanceArgumentException(Constant.CANT_FIND_ATTENDANCE));
     }
 
     public Optional<Attendance> findAttendance(LocalDate date) {
         return attendances.stream()
-            .filter((i) -> i.isEqualDate(date))
+            .filter(attendance -> attendance.isEqualDate(date))
             .findFirst();
     }
 
@@ -52,7 +52,9 @@ public class Attendances {
     public Map<AttendanceStatus, Integer> produceStatistic() {
         Map<AttendanceStatus, Integer> statistics = new HashMap<>();
         List<LocalDate> workingDays = extractWorkingDays();
-        workingDays.forEach(date -> processAttendanceForDate(date, statistics));
+        for (LocalDate workingDay : workingDays) {
+            processAttendanceForDate(workingDay, statistics);
+        }
         return statistics;
     }
 
