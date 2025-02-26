@@ -28,6 +28,9 @@ public class Crew {
         if (attendanceRecords.containsKey(date)) {
             throw new IllegalArgumentException("이미 출석한 경우 다시 출석할 수 없습니다. 출석 수정 기능을 이용해 주세요.");
         }
+        if (DayOff.isDayOff(date)) {
+            throw new IllegalArgumentException("주말 및 공휴일에는 등교가 불가능합니다.");
+        }
     }
 
     private void validateAttendanceTime(LocalTime time) {

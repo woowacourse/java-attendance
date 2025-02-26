@@ -62,6 +62,22 @@ class AttendanceTest {
         }).isInstanceOf(IllegalArgumentException.class);
     }
 
+    @ParameterizedTest
+    @CsvSource({
+        "2025,02,22",
+        "2025,02,23",
+    })
+    @DisplayName("운영시간이 아닌 시간에 등교를 시도할 경우 예외를 반환한다")
+    void attendanceExceptionTest3(int year, int hour, int minute) {
+        // given
+        Crew crew = new Crew("pobi");
+
+        // when then
+        assertThatThrownBy(() -> {
+            crew.attendance(LocalDate.of(year, hour, minute), TIME);
+        }).isInstanceOf(IllegalArgumentException.class);
+    }
+
     @Test
     @DisplayName("닉네임, 수정하려는 날짜, 등교 시간으로 출석 기록을 수정할 수 있다")
     void modifyAttendanceTest() {
