@@ -1,6 +1,6 @@
-package attendance.domain.dto;
+package attendance.dto;
 
-import attendance.record.AttendanceRecord;
+import attendance.domain.record.AttendanceRecord;
 
 public record RecordUpdateResult(
         AttendanceRecord oldRecord,

@@ -2,10 +2,10 @@ package attendance.controller;
 
 import attendance.configuration.ApplicationConfiguration;
 import attendance.domain.AttendanceSystem;
-import attendance.domain.dto.AttendanceState;
-import attendance.domain.dto.RecordUpdateResult;
 import attendance.domain.initializer.AttendanceSystemInitializer;
-import attendance.record.AttendanceRecord;
+import attendance.domain.record.AttendanceRecord;
+import attendance.dto.AttendanceState;
+import attendance.dto.RecordUpdateResult;
 import attendance.view.InputView;
 import attendance.view.OutputView;
 import java.time.LocalDate;

@@ -1,4 +1,4 @@
-package attendance.domain.dto;
+package attendance.dto;
 
 import attendance.domain.risk.RiskType;
 

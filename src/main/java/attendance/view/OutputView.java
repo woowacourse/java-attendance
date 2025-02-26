@@ -1,8 +1,8 @@
 package attendance.view;
 
-import attendance.domain.dto.AttendanceState;
-import attendance.domain.dto.RecordUpdateResult;
-import attendance.record.AttendanceRecord;
+import attendance.domain.record.AttendanceRecord;
+import attendance.dto.AttendanceState;
+import attendance.dto.RecordUpdateResult;
 import attendance.view.message.OutputMessage;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
