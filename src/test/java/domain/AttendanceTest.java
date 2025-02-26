@@ -12,7 +12,7 @@ public class AttendanceTest {
     void 해당_요일의_시작_시각으로부터_5분_초과는_지각이다() {
         //given
         DayOfWeek dayOfWeek = DayOfWeek.MONDAY;
-        LocalTime attendanceTime = LocalTime.of(10, 6);
+        LocalTime attendanceTime = LocalTime.of(13, 6);
 
         //when
         AttendanceType result = AttendanceType.calculate(dayOfWeek, attendanceTime);
