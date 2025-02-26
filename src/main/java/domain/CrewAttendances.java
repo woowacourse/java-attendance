@@ -4,7 +4,6 @@ import except.AttendanceException;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import strategy.CurrentDateGenerateStrategy;
 
@@ -39,7 +38,7 @@ public class CrewAttendances {
         dateCrewAttendanceManager.modifyAttendance(modifyDate, modifyTime);
     }
 
-    public List<CrewAttendanceHistory> crewAttendancesHistory(String nickname) {
+    public CrewAttendanceHistories crewAttendancesHistory(String nickname) {
         CrewName crewName = new CrewName(nickname);
         if (!crewAttendances.containsKey(crewName)) {
             throw new AttendanceException(NOT_EXISTS_ATTENDANCE_HISTORY);

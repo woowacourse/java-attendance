@@ -1,5 +1,6 @@
 package domain;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIterable;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
@@ -47,6 +48,7 @@ public class AttendanceHistoryTest {
                         "투다",
                         List.of(new CrewAttendanceHistory(crewAttendance1, attendanceDate1),
                                 new CrewAttendanceHistory(crewAttendance2, attendanceDate2)),
+                        new CrewDismissCount(0, 0, 2),
                         LocalDate.of(2024, 12, 4)
                 ),
                 Arguments.arguments(
@@ -54,11 +56,13 @@ public class AttendanceHistoryTest {
                         List.of(new CrewAttendanceHistory(crewAttendance1, attendanceDate1),
                                 new CrewAttendanceHistory(crewAttendance2, attendanceDate2),
                                 new CrewAttendanceHistory(crewAttendance3, attendanceDate3)),
+                        new CrewDismissCount(0, 0, 3),
                         LocalDate.of(2024, 12, 5)
                 ),
                 Arguments.arguments(
                         "투다",
                         List.of(),
+                        new CrewDismissCount(0, 0, 0),
                         LocalDate.of(2024, 12, 1)
                 )
         );
@@ -68,10 +72,16 @@ public class AttendanceHistoryTest {
     @MethodSource("attendanceHistoryTest")
     @DisplayName("닉네임을 입력하여 전날까지의 출석 기록을 확인할 수 있다.")
     void attendanceHistoryTest(String nickname, List<CrewAttendanceHistory> expectCrewAttendanceHistories,
+                               CrewDismissCount crewDismissCount,
                                LocalDate notIncludeDate) {
         testAttendanceCurrentDateGenerateStrategy.setTestDate(notIncludeDate);
-        assertThatIterable(crewAttendances.crewAttendancesHistory(nickname))
+        CrewAttendanceHistories crewAttendanceHistories = crewAttendances.crewAttendancesHistory(nickname);
+        List<CrewAttendanceHistory> resultCrewAttendanceHistories = crewAttendanceHistories.crewAttendanceHistories();
+
+        assertThatIterable(resultCrewAttendanceHistories)
                 .containsExactlyInAnyOrderElementsOf(expectCrewAttendanceHistories);
+        assertThat(crewAttendanceHistories.crewDismiss())
+                .isEqualTo(crewDismissCount);
     }
 
     @Nested

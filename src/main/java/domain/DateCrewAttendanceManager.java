@@ -45,22 +45,15 @@ public class DateCrewAttendanceManager {
         dateCrewAttendances.put(attendanceDate, new CrewAttendance(attendanceTime));
     }
 
-    public List<CrewAttendanceHistory> crewAttendancesHistory() {
-        LocalDate attendanceHistoryLastDate = calculateCrewHistoryLastDate();
-        return dateCrewAttendances.entrySet()
+    public CrewAttendanceHistories crewAttendancesHistory() {
+        LocalDate attendanceHistoryLastDate = currentDateGenerateStrategy.now();
+        List<CrewAttendanceHistory> crewAttendanceHistories = dateCrewAttendances.entrySet()
                 .stream()
                 .filter((entry) -> entry.getKey()
                         .isBefore(attendanceHistoryLastDate))
                 .map((dateCrewAttendanceEntry) -> new CrewAttendanceHistory(dateCrewAttendanceEntry.getValue(),
                         dateCrewAttendanceEntry.getKey()))
                 .collect(Collectors.toList());
-    }
-
-    private LocalDate calculateCrewHistoryLastDate() {
-        LocalDate calculateCrewHistoryLastDate = currentDateGenerateStrategy.now();
-        if (AttendanceDate.isOutOfSchoolOpenDate(calculateCrewHistoryLastDate)) {
-            return AttendanceDate.getSchoolLastDate();
-        }
-        return calculateCrewHistoryLastDate;
+        return CrewAttendanceHistories.from(crewAttendanceHistories);
     }
 }
