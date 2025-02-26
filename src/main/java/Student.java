@@ -6,6 +6,7 @@ import java.util.Map;
 public class Student {
     Map<LocalDate, LocalTime> attendanceTimeRecords = new HashMap<>();
     Map<LocalDate, AttendanceStatus> attendanceStatusRecords = new HashMap<>();
+    Map<AttendanceStatus, Long> attendanceStatusCount = new HashMap<>();
 
     public void registerAttendanceRecord(LocalDate todayDate, String attendanceTime) {
         attendanceTimeRecords.put(todayDate, LocalTime.parse(attendanceTime));
@@ -18,5 +19,20 @@ public class Student {
         attendanceTimeRecords.put(localDate, LocalTime.parse(modifyTime));
         AttendanceStatus attendanceStatus = AttendanceStatus.attendanceStatusCalculate(localDate, modifyTime);
         attendanceStatusRecords.put(localDate, attendanceStatus);
+    }
+
+    public void updateAttendanceCount() {
+        long attendanceCount = attendanceStatusRecords.entrySet().stream()
+                .filter(record -> record.getValue().equals(AttendanceStatus.ATTENDANCE))
+                .count();
+        long lateCount = attendanceStatusRecords.entrySet().stream()
+                .filter(record -> record.getValue().equals(AttendanceStatus.LATE))
+                .count();
+        long absentCount = attendanceStatusRecords.entrySet().stream()
+                .filter(record -> record.getValue().equals(AttendanceStatus.ABSENT))
+                .count();
+        attendanceStatusCount.put(AttendanceStatus.ATTENDANCE, attendanceCount);
+        attendanceStatusCount.put(AttendanceStatus.LATE, lateCount);
+        attendanceStatusCount.put(AttendanceStatus.ABSENT, absentCount);
     }
 }
