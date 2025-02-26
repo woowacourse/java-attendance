@@ -30,16 +30,16 @@ public class AttendanceManagementController {
             userInput = InputView.getUserWantMenu(todayDate);
 
             if (userInput.equals(MenuOption.ATTENDANCE_CHECK.getOption())) {
-                functionForMenuOne(todayDate, studentRepository);
+                functionForAttendanceCheck(todayDate, studentRepository);
             }
             if (userInput.equals(MenuOption.ATTENDANCE_MODIFY.getOption())) {
-                functionForMenuTwo(studentRepository);
+                functionForAttendanceModify(studentRepository);
             }
             if (userInput.equals(MenuOption.STUDENT_RECORD_CHECK.getOption())) {
-                functionForMenuThree(studentRepository);
+                functionForStudentRecordCheck(studentRepository);
             }
             if (userInput.equals(MenuOption.DISMISSAL_SUBJECT_CHECK.getOption())) {
-                functionForMenuFour(studentRepository);
+                functionForDismissalSubjectCheck(studentRepository);
             }
         }
     }
@@ -54,7 +54,7 @@ public class AttendanceManagementController {
         return new StudentRepository(students);
     }
 
-    private static void functionForMenuFour(StudentRepository studentRepository) {
+    private static void functionForDismissalSubjectCheck(StudentRepository studentRepository) {
         OutputView.displayAtRiskStudent();
         for (Student student : studentRepository.getStudentRepository()) {
             OutputView.printDismissalSubject(AttendanceCalculator.recordAttendanceResult(
@@ -62,7 +62,7 @@ public class AttendanceManagementController {
         }
     }
 
-    private static void functionForMenuThree(StudentRepository studentRepository) {
+    private static void functionForStudentRecordCheck(StudentRepository studentRepository) {
         String name = InputView.getStudentForAttendanceCheckUntilExist(studentRepository);
         OutputView.printAttendanceRecord(studentRepository.findStudentByName(name).getTimeRecords());
         HashMap<AttendanceStatus, Integer> attendanceRecord = AttendanceCalculator.recordAttendanceResult(
@@ -70,7 +70,7 @@ public class AttendanceManagementController {
         OutputView.printResult(attendanceRecord);
     }
 
-    private static void functionForMenuTwo(StudentRepository studentRepository) {
+    private static void functionForAttendanceModify(StudentRepository studentRepository) {
         String studentName = InputView.getStudentNameForModifyUntilValidate(studentRepository);
         LocalDateTime modifyLocalDateTime = InputView.getLocalDateTimeToModify();
         if (isHolidayForMenuTwo(modifyLocalDateTime)) {
@@ -99,7 +99,7 @@ public class AttendanceManagementController {
         return false;
     }
 
-    private static void functionForMenuOne(TodayDate todayDate, StudentRepository studentRepository) {
+    private static void functionForAttendanceCheck(TodayDate todayDate, StudentRepository studentRepository) {
         if (isHoliday(todayDate)) {
             return;
         }
