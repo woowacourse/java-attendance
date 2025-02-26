@@ -9,20 +9,15 @@ import org.junit.jupiter.params.provider.MethodSource;
 import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static policy.ExpellState.*;
 
-public class ExpellPolicyTest {
-    ExpellPolicy expellPolicy;
-
-    @BeforeEach
-    void setUp(){
-        expellPolicy = new ExpellPolicy();
-    }
+public class ExpellStateTest {
 
     @ParameterizedTest
     @DisplayName("결석 회수가 5회 초과이면 제적 대상자이다")
     @MethodSource("provideLateCountAndAbsentCountForIsExpell")
     public void expellPolicyTest(int lateCount, int absentCount) {
-        assertThat(expellPolicy.checkExpellStatus(lateCount, absentCount)).isEqualTo("제적");
+        assertThat(ExpellState.checkExpellStatus(lateCount, absentCount)).isEqualTo(EXPELL);
     }
 
     private static Stream<Arguments> provideLateCountAndAbsentCountForIsExpell() {
@@ -38,7 +33,7 @@ public class ExpellPolicyTest {
     @DisplayName("결석 회수가 3회 이상이면 면담 대상자이다")
     @MethodSource("provideLateCountAndAbsentCountForIsInterview")
     public void interviewPolicyTest(int lateCount, int absentCount) {
-        assertThat(expellPolicy.checkExpellStatus(lateCount, absentCount)).isEqualTo("면담");
+        assertThat(ExpellState.checkExpellStatus(lateCount, absentCount)).isEqualTo(INTERVIEW);
     }
 
     private static Stream<Arguments> provideLateCountAndAbsentCountForIsInterview() {
@@ -54,7 +49,7 @@ public class ExpellPolicyTest {
     @DisplayName("결석 회수가 2회 이상이면 경고 대상자이다")
     @MethodSource("provideLateCountAndAbsentCountForIsWarning")
     public void warningPolicyTest(int lateCount, int absentCount) {
-        assertThat(expellPolicy.checkExpellStatus(lateCount, absentCount)).isEqualTo("경고");
+        assertThat(ExpellState.checkExpellStatus(lateCount, absentCount)).isEqualTo(WARNING);
     }
 
     private static Stream<Arguments> provideLateCountAndAbsentCountForIsWarning() {
