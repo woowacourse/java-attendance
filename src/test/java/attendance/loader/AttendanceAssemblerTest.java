@@ -1,0 +1,71 @@
+package attendance.loader;
+
+import attendance.domain.AttendanceBook;
+import attendance.domain.AttendanceHistory;
+import java.time.LocalDateTime;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+
+class AttendanceAssemblerTest {
+
+    @DisplayName("실제 csv 파일의 데이터가 올바르게 변환된다.")
+    @Test
+    void test() {
+        // given
+        AttendanceAssembler assembler = new AttendanceAssembler(new AttendancesLoader());
+
+        // when
+        AttendanceBook attendanceBook = assembler.assembleDatas();
+
+        // then
+        AttendanceHistory history = attendanceBook.getHistoryByName("빙티");
+        Assertions.assertThat(history.getRecords()).hasSize(7);
+    }
+
+    @DisplayName("여러 크루의 데이터가 올바르게 변환된다.")
+    @Test
+    void testMultipleCrewDataConversion() {
+        // given
+        Map<String, List<LocalDateTime>> rawDatas = new HashMap<>();
+        rawDatas.put("쿠키", Arrays.asList(
+                LocalDateTime.of(2024, 12, 13, 10, 8),
+                LocalDateTime.of(2024, 12, 14, 10, 10)
+        ));
+        rawDatas.put("빙봉", Arrays.asList(
+                LocalDateTime.of(2024, 12, 13, 10, 7),
+                LocalDateTime.of(2024, 12, 14, 10, 5),
+                LocalDateTime.of(2024, 12, 15, 10, 3)
+        ));
+        rawDatas.put("빙티", Arrays.asList(
+                LocalDateTime.of(2024, 12, 13, 10, 7)
+        ));
+
+        AttendancesLoader fakeLoader = new AttendancesLoader() {
+            @Override
+            public void load() {
+                // do nothing
+            }
+
+            @Override
+            public Map<String, List<LocalDateTime>> getRawDatas() {
+                return rawDatas;
+            }
+        };
+
+        AttendanceAssembler assembler = new AttendanceAssembler(fakeLoader);
+
+        // when
+        AttendanceBook attendanceBook = assembler.assembleDatas();
+
+        // then
+        Assertions.assertThat(attendanceBook.getHistoryByName("쿠키").getRecords()).hasSize(2);
+        Assertions.assertThat(attendanceBook.getHistoryByName("빙봉").getRecords()).hasSize(3);
+        Assertions.assertThat(attendanceBook.getHistoryByName("빙티").getRecords()).hasSize(1);
+    }
+
+}
