@@ -55,36 +55,36 @@ public class AttendanceHistories {
         return AbsenceLevel.findAbsenceLevel(absentCount, lateCount);
     }
 
-    public boolean hasHistory(LocalDateTime time) {
+    public boolean hasHistory(LocalDateTime attendanceTIme) {
         return histories.stream()
                 .anyMatch(history ->
-                        history.isSameMonth(time) &&
-                                history.isSameDayOfMonth(time));
+                        history.isSameMonth(attendanceTIme) &&
+                                history.isSameDayOfMonth(attendanceTIme));
     }
 
 
-    public void deleteHistory(LocalDateTime time) {
+    public void deleteHistory(LocalDateTime attendanceTIme) {
         AttendanceHistory findAttendanceHistory =
                 histories.stream()
                         .filter(history ->
-                                (history.isSameMonth(time)) &&
-                                        (history.isSameDayOfMonth(time)))
+                                (history.isSameMonth(attendanceTIme)) &&
+                                        (history.isSameDayOfMonth(attendanceTIme)))
                         .findFirst()
                         .orElseThrow(() -> new IllegalArgumentException(
                                 "[ERROR] 해당 날짜 출석 기록이 없습니다. 출석 기록이 있는 날짜를 입력해 주세요."));
         histories.remove(findAttendanceHistory);
     }
 
-    public void editHistory(LocalDateTime time) {
-        deleteHistory(time);
-        histories.add(new AttendanceHistory(time));
+    public void editHistory(LocalDateTime attendanceTIme) {
+        deleteHistory(attendanceTIme);
+        histories.add(new AttendanceHistory(attendanceTIme));
     }
 
-    public void addHistory(LocalDateTime time) {
-        if (hasHistory(time)) {
+    public void addHistory(LocalDateTime attendanceTIme) {
+        if (hasHistory(attendanceTIme)) {
             throw new IllegalArgumentException("[ERROR] 이미 출석하셨습니다.");
         }
-        histories.add(new AttendanceHistory(time));
+        histories.add(new AttendanceHistory(attendanceTIme));
     }
 
     public Map<AttendanceResult, Integer> getAttendanceResultCount(LocalDateTime standard) {
@@ -106,22 +106,22 @@ public class AttendanceHistories {
                 .toList();
     }
 
-    public String getHistoryResult(LocalDateTime time) {
+    public String getHistoryResult(LocalDateTime attendanceTIme) {
         AttendanceHistory findAttendanceHistory = histories.stream()
                 .filter(history ->
-                        (history.isSameMonth(time)) &&
-                                (history.isSameDayOfMonth(time)))
+                        (history.isSameMonth(attendanceTIme)) &&
+                                (history.isSameDayOfMonth(attendanceTIme)))
                 .findFirst()
                 .orElseThrow(() ->
                         new IllegalArgumentException("[ERROR] 해당 날짜 출석 기록이 없습니다. 출석 기록이 있는 날짜를 입력해 주세요."));
         return findAttendanceHistory.getAttendanceResult().getResult();
     }
 
-    public LocalDateTime getHistory(LocalDateTime time) {
+    public LocalDateTime getHistory(LocalDateTime attendanceTIme) {
         AttendanceHistory findAttendanceHistory = histories.stream()
                 .filter(history ->
-                        (history.isSameMonth(time)) &&
-                                (history.isSameDayOfMonth(time)))
+                        (history.isSameMonth(attendanceTIme)) &&
+                                (history.isSameDayOfMonth(attendanceTIme)))
                 .findFirst()
                 .orElseThrow(() ->
                         new IllegalArgumentException("[ERROR] 해당 날짜 출석 기록이 없습니다. 출석 기록이 있는 날짜를 입력해 주세요."));

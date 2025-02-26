@@ -19,37 +19,41 @@ public enum Holiday {
         this.day = day;
     }
 
-    public static void validate(LocalDateTime time) {
-        validateWeekend(time);
-        validateHoliday(time);
+    public static void validate(LocalDateTime attendanceTime) {
+        validateWeekend(attendanceTime);
+        validateHoliday(attendanceTime);
     }
 
-    private static void validateWeekend(LocalDateTime time) {
-        if ((time.getDayOfWeek() == SATURDAY) || (time.getDayOfWeek() == SUNDAY)) {
+    private static void validateWeekend(LocalDateTime attendanceTime) {
+        if (isWeekend(attendanceTime.toLocalDate())) {
             throw new IllegalArgumentException(
-                    String.format("[ERROR] %d %d은 등교일이 아닙니다. 출석 확인은 등교일에만 가능합니다.", time.getMonthValue(),
-                            time.getDayOfMonth())
+                    String.format("[ERROR] %d월 %d일은 등교일이 아닙니다. 출석 확인은 등교일에만 가능합니다.",
+                            attendanceTime.getMonthValue(), attendanceTime.getDayOfMonth())
             );
         }
     }
 
-    private static void validateHoliday(LocalDateTime time) {
-        boolean isHoliday = Arrays.stream(Holiday.values())
-                .anyMatch(holiday -> holiday.month == time.getMonthValue() && holiday.day == time.getDayOfMonth());
-        if (isHoliday) {
+    private static void validateHoliday(LocalDateTime attendanceTime) {
+        if (isHoliday(attendanceTime.toLocalDate())) {
             throw new IllegalArgumentException(
-                    String.format("[ERROR] %d %d은 등교일이 아닙니다. 출석 확인은 등교일에만 가능합니다.", time.getMonthValue(),
-                            time.getDayOfMonth())
+                    String.format("[ERROR] %d월 %d일은 등교일이 아닙니다. 출석 확인은 등교일에만 가능합니다.",
+                            attendanceTime.getMonthValue(), attendanceTime.getDayOfMonth())
             );
         }
     }
 
-    public static boolean isHoliday(LocalDate time) {
-        boolean isHoliday = Arrays.stream(Holiday.values())
-                .anyMatch(holiday -> holiday.month == time.getMonthValue() && holiday.day == time.getDayOfMonth());
-        boolean isWeekend = time.getDayOfWeek() == SATURDAY || time.getDayOfWeek() == SUNDAY;
-        return isHoliday || isWeekend;
+    public static boolean isHoliday(LocalDate attendanceTime) {
+        return Arrays.stream(Holiday.values())
+                .anyMatch(holiday -> holiday.isSameDate(attendanceTime))
+                || isWeekend(attendanceTime);
+    }
+
+    private boolean isSameDate(LocalDate date) {
+        return this.month == date.getMonthValue() && this.day == date.getDayOfMonth();
     }
 
 
+    private static boolean isWeekend(LocalDate date) {
+        return date.getDayOfWeek() == SATURDAY || date.getDayOfWeek() == SUNDAY;
+    }
 }

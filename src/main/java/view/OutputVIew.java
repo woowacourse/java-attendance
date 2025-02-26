@@ -40,7 +40,7 @@ public class OutputVIew {
     private void printAttendanceHistory(HistoriesDto historiesDto) {
         System.out.printf("이번 달 %s의 출석 기록입니다.\n", historiesDto.username());
         for (HistoryDto history : historiesDto.histories()) {
-            String time = DateTimeViewConverter.dateFormattingForOutput(history.time());
+            String time = DateTimeViewConverter.dateFormattingForOutput(history.attendanceTime());
             System.out.printf("%s (%s)\n", time, history.attendanceResult());
         }
     }

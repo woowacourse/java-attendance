@@ -54,10 +54,10 @@ public class AttendanceController {
 
     private void addAttendance() {
         String name = inputView.getName();
-        LocalDateTime time = inputView.getAttendanceTime();
-        crews.addHistory(name, time);
-        String historyResult = crews.getHistoryResult(name, time);
-        outputVIew.printAttendanceConfirmation(time, historyResult);
+        LocalDateTime attendanceTime = inputView.getAttendanceTime();
+        crews.addHistory(name, attendanceTime);
+        String historyResult = crews.getHistoryResult(name, attendanceTime);
+        outputVIew.printAttendanceConfirmation(attendanceTime, historyResult);
     }
 
     private void editAttendance() {

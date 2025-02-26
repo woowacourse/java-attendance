@@ -29,16 +29,16 @@ public class Crew {
         attendanceHistories.editHistory(attendanceTime);
     }
 
-    public LocalDateTime getHistoryDate(LocalDateTime time) {
-        return attendanceHistories.getHistory(time);
+    public LocalDateTime getHistoryDate(LocalDateTime attendance) {
+        return attendanceHistories.getHistory(attendance);
     }
 
-    public AbsenceLevel getClassifyAbsenceLevel(LocalDateTime time) {
-        return attendanceHistories.classifyAbsenceLevel(time);
+    public AbsenceLevel getClassifyAbsenceLevel(LocalDateTime attendance) {
+        return attendanceHistories.classifyAbsenceLevel(attendance);
     }
 
-    public Map<AttendanceResult, Integer> getAttendanceAllResult(LocalDateTime time) {
-        return attendanceHistories.getAttendanceResultCount(time);
+    public Map<AttendanceResult, Integer> getAttendanceAllResult(LocalDateTime attendance) {
+        return attendanceHistories.getAttendanceResultCount(attendance);
     }
 
     public List<AttendanceHistory> getBeforeHistories(LocalDateTime standard) {

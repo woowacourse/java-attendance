@@ -32,33 +32,34 @@ public class DateTimeViewConverter {
         return LocalDateTime.of(STANDARD_YEAR, STANDARD_MONTH, now.getDayOfMonth(), hour, minutes);
     }
 
-    public static String dateFormattingForOutput(LocalDateTime localDateTime) {
-        if (localDateTime.getHour() == ABSENT_DEFAULT_HOUR && localDateTime.getMinute() == ABSENT_DEFAULT_MINUTE) {
-            return localDateTime.format(DATE_ONLY_FORMATTER) + " --:--";
+    public static String dateFormattingForOutput(LocalDateTime attendanceTime) {
+        if (attendanceTime.getHour() == ABSENT_DEFAULT_HOUR && attendanceTime.getMinute() == ABSENT_DEFAULT_MINUTE) {
+            return attendanceTime.format(DATE_ONLY_FORMATTER) + " --:--";
         }
-        return localDateTime.format(NORMAL_FORMATTER);
+        return attendanceTime.format(NORMAL_FORMATTER);
     }
 
-    public static String dateFormattingForInput(LocalDateTime localDateTime) {
-        LocalDateTime changedDate = changeStandardDate(localDateTime);
+    public static String dateFormattingForInput(LocalDateTime attendanceTime) {
+        LocalDateTime changedDate = changeStandardDate(attendanceTime);
         return changedDate.format(DATE_ONLY_FORMATTER);
     }
 
-    public static LocalDateTime changeStandardDate(LocalDateTime time) {
-        return LocalDateTime.of(STANDARD_YEAR, STANDARD_MONTH, time.getDayOfMonth(), time.getHour(), time.getMinute());
+    public static LocalDateTime changeStandardDate(LocalDateTime attendanceTime) {
+        return LocalDateTime.of(STANDARD_YEAR, STANDARD_MONTH, attendanceTime.getDayOfMonth(), attendanceTime.getHour(),
+                attendanceTime.getMinute());
     }
 
-    public static String timeFormattingForOutput(LocalDateTime localDateTime) {
-        return localDateTime.format(TIME_FORMATTER);
+    public static String timeFormattingForOutput(LocalDateTime attendanceTime) {
+        return attendanceTime.format(TIME_FORMATTER);
     }
 
-    public static LocalDateTime editDayOfMonth(String date, String time) {
-        validateDate(time.trim());
-        validateNumber(date.trim());
-        String[] words = time.split(DELIMITER);
+    public static LocalDateTime editDayOfMonth(String attendanceDate, String attendanceTime) {
+        validateDate(attendanceTime.trim());
+        validateNumber(attendanceDate.trim());
+        String[] words = attendanceTime.split(DELIMITER);
         int hour = Integer.parseInt(words[HOUR_INDEX].trim());
         int minutes = Integer.parseInt(words[MINUTES_INDEX].trim());
-        int day = Integer.parseInt(date);
+        int day = Integer.parseInt(attendanceDate);
         return LocalDateTime.of(STANDARD_YEAR, STANDARD_MONTH, day, hour, minutes);
     }
 
