@@ -26,6 +26,26 @@ class AttendanceHistoryTest {
     }
 
     @Test
+    void hasSameDateTest3() {
+        LocalDateTime dateTime1 = LocalDateTime.of(2025, 2, 27, 20, 9);
+        LocalDateTime dateTime2 = LocalDateTime.of(2025, 3, 27, 20, 9);
+
+        Crew crew = Crew.from("히스타");
+
+        Assertions.assertThat(AttendanceHistory.of(crew, dateTime1).hasSameDate(dateTime2)).isFalse();
+    }
+
+    @Test
+    void hasSameDateTest4() {
+        LocalDateTime dateTime1 = LocalDateTime.of(2025, 2, 27, 20, 9);
+        LocalDateTime dateTime2 = LocalDateTime.of(2024, 2, 27, 20, 9);
+
+        Crew crew = Crew.from("히스타");
+
+        Assertions.assertThat(AttendanceHistory.of(crew, dateTime1).hasSameDate(dateTime2)).isFalse();
+    }
+
+    @Test
     void hasSameCrewTest1() {
         Crew crew = Crew.from("히스타");
         AttendanceHistory history = AttendanceHistory.of(crew, LocalDateTime.now());
