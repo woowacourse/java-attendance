@@ -10,4 +10,11 @@ public class WarningCounter {
     public int getConvertedAbsences() {
         return absences + tardies / 3;
     }
+
+    public String getStatus() {
+        if (getConvertedAbsences() >= 2) {
+            return "경고";
+        }
+        return null;
+    }
 }
