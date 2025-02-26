@@ -1,5 +1,7 @@
 package attendance.domain;
 
+import attendance.domain.dto.ModifyAttendanceResult;
+import java.time.LocalDateTime;
 import java.util.List;
 
 public class MemberAttendance {
@@ -17,5 +19,15 @@ public class MemberAttendance {
 
     public List<Attendance> getAttendances() {
         return attendances;
+    }
+
+    public void modifyAttendanceRecord(LocalDateTime attendanceDateTime) {
+        Attendance modifyOldAttendance = attendances.stream()
+                .filter(attendance -> attendance.getAttendanceDate().equals(attendanceDateTime.toLocalDate()))
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 날입니다."));
+
+        attendances.remove(modifyOldAttendance);
+        attendances.add(new Attendance(attendanceDateTime));
     }
 }
