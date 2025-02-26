@@ -38,6 +38,10 @@ public class Attendance {
         return LocalDate.from(attendanceDateTime).isEqual(date);
     }
 
+    public boolean isBeforeDate(LocalDate date) {
+        return LocalDate.from(attendanceDateTime).isBefore(date);
+    }
+
     private void checkHoliday(LocalDateTime attendanceDateTime) {
         if(WEEKEND.contains(attendanceDateTime.getDayOfWeek()) || attendanceDateTime.getDayOfMonth() == CHRISTMAS) {
             throw new IllegalArgumentException("등교일이 아닙니다.");
