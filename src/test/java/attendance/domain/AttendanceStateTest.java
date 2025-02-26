@@ -1,51 +1,37 @@
 package attendance.domain;
 
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
+
+import java.util.stream.Stream;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 @DisplayName("출결 상태 테스트")
 class AttendanceStateTest {
 
-    @Test
-    @DisplayName("등교 시작 시간으로부터 5분 이하는 출석이다")
-    void presentIfWithin5MinutesOfStartTime() {
-        // given
-        int overTime = 0;
-
+    @ParameterizedTest
+    @MethodSource
+    @DisplayName("등교 시간과 시작 시간의 차이로 출결 상황을 반환한다")
+    void shouldReturnStateBasedOnTimeDifference(int overTime, AttendanceState excepted) {
         // when
         AttendanceState result = AttendanceState.evaluate(overTime);
 
         // then
-        Assertions.assertThat(result)
-                .isEqualTo(AttendanceState.ATTENDANCE);
+        assertThat(result).isEqualTo(excepted);
     }
 
-    @Test
-    @DisplayName("등교 시작 시간으로부터 5분 초과는 지각이다")
-    void lateIfMoreThan5MinutesAfterStartTime() {
-        // given
-        int overTime = 6;
-
-        // when
-        AttendanceState result = AttendanceState.evaluate(overTime);
-
-        // then
-        Assertions.assertThat(result)
-                .isEqualTo(AttendanceState.TARDY);
-    }
-
-    @Test
-    @DisplayName("등교 시작 시간으로부터 30분 초과는 결석이다")
-    void absentIfMoreThan30MinutesAfterStartTime() {
-        // given
-        int overTime = 31;
-
-        // when
-        AttendanceState result = AttendanceState.evaluate(overTime);
-
-        // then
-        Assertions.assertThat(result)
-                .isEqualTo(AttendanceState.ABSENCE);
+    private static Stream<Arguments> shouldReturnStateBasedOnTimeDifference() {
+        return Stream.of(
+                Arguments.of(-1, AttendanceState.ATTENDANCE),
+                Arguments.of(0, AttendanceState.ATTENDANCE),
+                Arguments.of(5, AttendanceState.ATTENDANCE),
+                Arguments.of(6, AttendanceState.TARDY),
+                Arguments.of(30, AttendanceState.TARDY),
+                Arguments.of(31, AttendanceState.ABSENCE),
+                Arguments.of(Integer.MAX_VALUE, AttendanceState.ABSENCE)
+        );
     }
 }
