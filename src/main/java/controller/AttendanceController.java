@@ -7,8 +7,10 @@ import domain.CrewAttendance;
 import java.time.DayOfWeek;
 import java.time.Duration;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 import java.util.Optional;
 import java.util.Scanner;
 
@@ -54,7 +56,6 @@ public class AttendanceController {
             if (previous.isPresent()) {
                 timeStamp = previous.get().toLocalDateTime().toString();
             }
-            // TODO: 바뀐 시간 출력
             System.out.printf("%s -> %s\n", timeStamp, time);
             return;
         }
@@ -63,6 +64,14 @@ public class AttendanceController {
             Crew crew = Crew.of(crewName);
             CrewAttendance crewAttendance = attendanceBook.findCrewAttendanceByCrew(crew);
             // TODO : attendanceBook에서 출석 기록을 반환하는 리스트 호출
+            LocalDate date = LocalDate.of(2024, 12, LocalDate.now().getDayOfMonth());
+            List<LocalDateTime> localDateTimes = crewAttendance.readAttendanceTimesBefore(date);
+            System.out.printf("이번 달 %s의 출석 기록입니다.\n", crewName);
+            for (LocalDateTime attendance : localDateTimes) {
+                System.out.printf("%s (%s)\n",
+                        attendance.toString(),
+                        getStatus(attendance.toLocalDate(), attendance.toLocalTime()));
+            }
             return;
         }
         if (commandCode.equals("4")) {

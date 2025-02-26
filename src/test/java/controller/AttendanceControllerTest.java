@@ -105,7 +105,6 @@ class AttendanceControllerTest {
         assertThat(getOutput()).contains("->");
     }
 
-    @Disabled
     @Test
     @DisplayName("3 입력 시 출석 기록 확인")
     void readAttendanceLogTest() {
@@ -116,7 +115,10 @@ class AttendanceControllerTest {
         attendanceController.run();
 
         // then
-        assertThat(getOutput()).contains("이번 달 이든의 출석 기록입니다.");
+        assertThat(getOutput()).contains(
+                "이번 달 이든의 출석 기록입니다.",
+                "출석", "지각", "출석", "결석"
+        );
     }
 
     @Disabled
