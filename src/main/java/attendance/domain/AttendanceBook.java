@@ -10,12 +10,11 @@ public class AttendanceBook {
         this.crewAttendances = crewAttendances;
     }
 
-    public Attendance attend(String nickname, LocalDateTime dateTime) {
+    public void attend(String nickname, Attendance attendance) {
         validateNickname(nickname);
         Attendances attendances = crewAttendances.get(nickname);
-        Attendance attendance = attendances.add(dateTime);
+        attendances.add(attendance);
         crewAttendances.put(nickname, attendances);
-        return attendance;
     }
 
     public Attendance updateAttendance(String nickname, LocalDateTime dateTime) {

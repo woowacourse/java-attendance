@@ -12,6 +12,7 @@ public class AttendancesFileReader {
             File file = new File("src/main/resources/attendances.csv");
             FileReader fileReader = new FileReader(file);
             BufferedReader bufferedReader = new BufferedReader(fileReader);
+            String title = bufferedReader.readLine();
             StringBuilder sb = new StringBuilder();
             String line;
             while ((line = bufferedReader.readLine())!= null) {
