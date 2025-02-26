@@ -12,6 +12,9 @@ public class WarningCounter {
     }
 
     public String getStatus() {
+        if (getConvertedAbsences() >= 3) {
+            return "면담";
+        }
         if (getConvertedAbsences() >= 2) {
             return "경고";
         }
