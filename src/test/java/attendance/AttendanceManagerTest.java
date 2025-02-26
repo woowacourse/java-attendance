@@ -106,7 +106,10 @@ class AttendanceManagerTest {
                     () -> assertThat(result).isNotNull(),
                     () -> assertThat(result.isDateEquals(attendanceDate)).isTrue(),
                     () -> assertThat(result.getStatus()).isEqualTo("ATTENDANCE"),
-                    () -> assertThat(attendanceManager.findAttendanceByCrewAndDate(crew, attendanceDate)).isNotEmpty()
+                    () -> {
+                        Attendance expected = attendanceManager.findAttendanceByCrewAndDate(crew, attendanceDate).get();
+                        assertThat(result).isEqualTo(expected);
+                    }
             );
         }
     }

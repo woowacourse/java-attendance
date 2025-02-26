@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.Optional;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -18,7 +19,8 @@ class AttendanceHistoryTest {
             //given
             AttendanceHistory attendanceHistory = new AttendanceHistory();
             LocalDate date = LocalDate.of(2024, 12, 26);
-            attendanceHistory.addAttendance(new Attendance(date, "LATE"));
+            LocalTime time = LocalTime.of(10, 0);
+            attendanceHistory.addAttendance(new Attendance(date, time, "LATE"));
 
             //when
             Optional<Attendance> result = attendanceHistory.findAttendanceByDate(date);

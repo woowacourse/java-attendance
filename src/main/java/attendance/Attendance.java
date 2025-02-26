@@ -1,13 +1,16 @@
 package attendance;
 
 import java.time.LocalDate;
+import java.time.LocalTime;
 
 public class Attendance {
     private final LocalDate date;
+    private final LocalTime time;
     private final String status;
 
-    public Attendance(final LocalDate date, final String status) {
+    public Attendance(final LocalDate date, final LocalTime time, final String status) {
         this.date = date;
+        this.time = time;
         this.status = status;
     }
 
