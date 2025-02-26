@@ -23,8 +23,8 @@ public class InputView {
     private static final String MENU_OPTION = "[1-4]|Q";
     private static final String PRINT_TODAY_FORMAT = "오늘은 %d월 %d일 %s입니다. 기능을 선택해 주세요.\n";
     private static final DateTimeFormatter dateTimeFormatterForHourMin = DateTimeFormatter.ofPattern("HH:mm");
-    private static final LocalTime START_TIME = LocalTime.of(8,0);
-    private static final LocalTime END_TIME = LocalTime.of(23,0);
+    private static final LocalTime START_TIME = LocalTime.of(8, 0);
+    private static final LocalTime END_TIME = LocalTime.of(23, 0);
     private static final int DECEMBER_START_DATE = 1;
     private static final int DECEMBER_ENT_DATE = 31;
     private static Scanner scanner = new Scanner(System.in);
@@ -113,7 +113,7 @@ public class InputView {
     public static LocalDateTime getLocalDateTimeToModify() {
         int modifyDate = InputView.inputDateForModify();
         InputView.printTimeForModify();
-        LocalDate localDate = LocalDate.of(2024, 12, modifyDate);
+        LocalDate localDate = LocalDate.of(2024,  12,  modifyDate);
         return getTimeUntilValidate(localDate);
     }
 

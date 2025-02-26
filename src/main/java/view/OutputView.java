@@ -16,7 +16,6 @@ public class OutputView {
     private static final String WARNING_LABEL_FORMATTER = "- %s: 결석 %d회, 지각 %d회 (경고)\n";
     private static final String DISMISSAL_LABEL_FORMATTER = "- %s: 결석 %d회, 지각 %d회 (제적)\n";
     private static final String PARENTHESES_FORMATTER = "( %s )\n";
-    private static final String SUBJECT = "%s 대상자입니다.";
     private static final String DISMISSAL_SUBJECT = "제적 대상자입니다.";
     private static final String INTERVIEW_SUBJECT = "면담 대상자입니다.";
     private static final String WARNING_SUBJECT = "경고 대상자입니다.";

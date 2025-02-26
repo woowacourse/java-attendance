@@ -48,7 +48,7 @@ public class AttendanceRecord {
     }
 
     public void updateNoInformationInFile(LocalDateTime todayDate) {
-        LocalDateTime standard = LocalDateTime.of(2024,12,1,0,0);
+        LocalDateTime standard = LocalDateTime.of(2024, 12, 1, 0, 0);
         while (!isSameDay(standard,todayDate)) {
             if (standard.getDayOfWeek().getValue() == 6 || standard.getDayOfWeek().getValue() == 7) {
                 standard = standard.plusDays(1);

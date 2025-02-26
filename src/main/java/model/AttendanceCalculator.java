@@ -9,14 +9,14 @@ import java.util.List;
 
 public enum AttendanceCalculator {
 
-    MONDAY(LocalTime.of(13,5),LocalTime.of(13,30)),
-    TUESDAY_TO_FRIDAY(LocalTime.of(10,5),LocalTime.of(10,30));
+    MONDAY(LocalTime.of(13, 5),LocalTime.of(13, 30)),
+    TUESDAY_TO_FRIDAY(LocalTime.of(10, 5),LocalTime.of(10, 30));
 
 
     private final LocalTime lateTime;
     private final LocalTime absentTime;
     private static final int CHRISTMAS = 25;
-    private static final LocalTime UNREGISTERED_TIME = LocalTime.of(0,0);
+    private static final LocalTime UNREGISTERED_TIME = LocalTime.of(0, 0);
 
 
     AttendanceCalculator(LocalTime lateTime, LocalTime absentTime) {
