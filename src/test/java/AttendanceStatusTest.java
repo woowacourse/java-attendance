@@ -24,4 +24,13 @@ class AttendanceStatusTest {
         LocalTime time = LocalTime.of(13, 10);
         assertThat(attendanceStatus.getStatus(dayOfWeek, time)).isEqualTo("지각");
     }
+
+    @DisplayName("출석 시간이 교육 시작 시간으로부터 30분 초과할 경우 결석을 반환한다.")
+    @Test
+    void test3() {
+        AttendanceStatus attendanceStatus = new AttendanceStatus();
+        DayOfWeek dayOfWeek = DayOfWeek.MONDAY;
+        LocalTime time = LocalTime.of(13, 35);
+        assertThat(attendanceStatus.getStatus(dayOfWeek, time)).isEqualTo("결석");
+    }
 }
