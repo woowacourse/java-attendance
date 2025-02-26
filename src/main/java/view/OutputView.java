@@ -38,10 +38,10 @@ public class OutputView {
         }
     }
 
-    public static void printResult(HashMap<String, Integer> studentRecord) {
-        int riskLevel = studentRecord.get(AttendanceStatus.ABSENT.getState()) + studentRecord.get(AttendanceStatus.LATE.getState()) / 3;
-        for (String state : studentRecord.keySet()) {
-            System.out.printf(STATE_FORMATTER,state,studentRecord.get(state));
+    public static void printResult(HashMap<AttendanceStatus, Integer> studentRecord) {
+        int riskLevel = studentRecord.get(AttendanceStatus.ABSENT) + studentRecord.get(AttendanceStatus.LATE) / 3;
+        for (AttendanceStatus attendanceStatus : studentRecord.keySet()) {
+            System.out.printf(STATE_FORMATTER, attendanceStatus.getState(), studentRecord.get(attendanceStatus));
         }
         if (StudentPunishment.determineDisciplinaryAction(riskLevel) == null) {
             return;
@@ -61,18 +61,18 @@ public class OutputView {
         System.out.println(PRINT_PUNISHMENT_RESULT);
     }
 
-    public static void printDismissalSubject(HashMap<String, Integer> studentRecord, String name) {
-        int riskLevel = studentRecord.get(AttendanceStatus.ABSENT.getState()) + studentRecord.get(AttendanceStatus.LATE.getState()) / 3;
+    public static void printDismissalSubject(HashMap<AttendanceStatus, Integer> studentRecord, String name) {
+        int riskLevel = studentRecord.get(AttendanceStatus.ABSENT) + studentRecord.get(AttendanceStatus.LATE) / 3;
         if (riskLevel >= StudentPunishment.DISMISSAL.getStandard()) {
-            System.out.printf(DISMISSAL_LABEL_FORMATTER,name,studentRecord.get(AttendanceStatus.ABSENT.getState()),studentRecord.get(AttendanceStatus.LATE.getState()));
+            System.out.printf(DISMISSAL_LABEL_FORMATTER,name,studentRecord.get(AttendanceStatus.ABSENT),studentRecord.get(AttendanceStatus.LATE));
             return;
         }
         if (riskLevel >= StudentPunishment.INTERVIEW.getStandard()) {
-            System.out.printf(INTERVIEW_LABEL_FORMATTER,name,studentRecord.get(AttendanceStatus.ABSENT.getState()),studentRecord.get(AttendanceStatus.LATE.getState()));
+            System.out.printf(INTERVIEW_LABEL_FORMATTER,name,studentRecord.get(AttendanceStatus.ABSENT),studentRecord.get(AttendanceStatus.LATE));
             return;
         }
         if (riskLevel >= StudentPunishment.WARNING.getStandard()) {
-            System.out.printf(WARNING_LABEL_FORMATTER,name,studentRecord.get(AttendanceStatus.ABSENT.getState()),studentRecord.get(AttendanceStatus.LATE.getState()));
+            System.out.printf(WARNING_LABEL_FORMATTER,name,studentRecord.get(AttendanceStatus.ABSENT),studentRecord.get(AttendanceStatus.LATE));
         }
     }
 

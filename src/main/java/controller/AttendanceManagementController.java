@@ -62,14 +62,14 @@ public class AttendanceManagementController {
         OutputView.displayAtRiskStudent();
         for (Student student : studentRepository.getStudentRepository()) {
             OutputView.printDismissalSubject(AttendanceCalculator.recordAttendanceResult(
-                    student.getTimeRecords()),student.getName());
+                    student.getTimeRecords()), student.getName());
         }
     }
 
     private static void functionForMenuThree(StudentRepository studentRepository) {
         String name = InputView.getStudentForAttendanceCheckUntilExist(studentRepository);
         OutputView.printAttendanceRecord(studentRepository.findStudentByName(name).getTimeRecords());
-        HashMap<String, Integer> attendanceRecord = AttendanceCalculator.recordAttendanceResult(
+        HashMap<AttendanceStatus, Integer> attendanceRecord = AttendanceCalculator.recordAttendanceResult(
                 studentRepository.findStudentByName(name).getTimeRecords());
         OutputView.printResult(attendanceRecord);
     }

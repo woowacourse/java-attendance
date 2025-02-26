@@ -1,7 +1,6 @@
 package model;
 
 import java.time.DayOfWeek;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.HashMap;
@@ -36,14 +35,14 @@ public enum AttendanceCalculator {
         return (localDateTime.getDayOfMonth() == CHRISTMAS);
     }
 
-    public static HashMap<String, Integer> recordAttendanceResult(List<LocalDateTime> record) {
-        HashMap<String, Integer> attendanceRecord = new HashMap<>();
-        attendanceRecord.put("결석", 0);
-        attendanceRecord.put("출석", 0);
-        attendanceRecord.put("지각", 0);
+    public static HashMap<AttendanceStatus, Integer> recordAttendanceResult(List<LocalDateTime> record) {
+        HashMap<AttendanceStatus, Integer> attendanceRecord = new HashMap<>();
+        attendanceRecord.put(AttendanceStatus.ABSENT, 0);
+        attendanceRecord.put(AttendanceStatus.LATE, 0);
+        attendanceRecord.put(AttendanceStatus.ATTENDANCE, 0);
         for (LocalDateTime localDateTime :record) {
-            attendanceRecord.put(calculateAttendance(localDateTime, LocalTime.from(localDateTime)).getState(),
-                    attendanceRecord.get(calculateAttendance(localDateTime, LocalTime.from(localDateTime)).getState()) + 1);
+            attendanceRecord.put(calculateAttendance(localDateTime, LocalTime.from(localDateTime)),
+                    attendanceRecord.get(calculateAttendance(localDateTime, LocalTime.from(localDateTime))) + 1);
         }
         return attendanceRecord;
     }
