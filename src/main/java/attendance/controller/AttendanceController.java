@@ -105,6 +105,4 @@ public class AttendanceController {
             outputView.printDangerousCrews(dangerousCrew);
         }
     }
-
-
 }

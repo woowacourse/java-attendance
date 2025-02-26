@@ -30,59 +30,59 @@ public class OutputView {
         LocalDateTime attendanceTime = attendanceHistory.getAttendanceTime().getTime();
         LocalDateTime modifyAttendanceTime = modifyAttendanceHistory.getAttendanceTime()
             .getTime();
-        int month = attendanceTime.getMonthValue();
-        int day = attendanceTime.getDayOfMonth();
         DayOfWeek dayOfWeek = DayOfWeek.calculateDayOfWeek(attendanceTime.toLocalDate());
         AttendanceType attendanceType = attendanceHistory.getAttendanceType();
-        int hour = attendanceTime.getHour();
-        int minute = attendanceTime.getMinute();
-
-        int modifyHour = modifyAttendanceTime.getHour();
-        int modifyMinute = modifyAttendanceTime.getMinute();
         AttendanceType modifyAttendanceType = modifyAttendanceHistory.getAttendanceType();
-
         System.out.println(MODIFY_ATTENDANCE_RESULT_MESSAGE.formatted(
-            month, day, dayOfWeek.getName(), hour, minute, attendanceType.getTypeDescription(),
-            modifyHour, modifyMinute, modifyAttendanceType.getTypeDescription())
+            attendanceTime.getMonthValue(), attendanceTime.getDayOfMonth(), dayOfWeek.getName(),
+            attendanceTime.getHour(), attendanceTime.getMinute(),
+            attendanceType.getTypeDescription(),
+            modifyAttendanceTime.getHour(), modifyAttendanceTime.getMinute(),
+            modifyAttendanceType.getTypeDescription())
         );
     }
 
     public void printAttendanceHistories(Crew crew, AttendanceHistories attendanceHistories) {
         System.out.println(ATTENDANCE_INFO_MESSAGE.formatted(crew.getName()));
         for (AttendanceHistory attendanceHistory : attendanceHistories.getAttendanceHistories()) {
-            LocalDateTime attendanceTime = attendanceHistory.getAttendanceTime()
-                .getTime();
+            LocalDateTime attendanceTime = attendanceHistory.getAttendanceTime().getTime();
 
             int month = attendanceTime.getMonthValue();
             int day = attendanceTime.getDayOfMonth();
             DayOfWeek dayOfWeek = DayOfWeek.calculateDayOfWeek(attendanceTime.toLocalDate());
             int hour = attendanceTime.getHour();
             int minute = attendanceTime.getMinute();
+
             AttendanceType attendanceType = attendanceHistory.getAttendanceType();
-            if (hour == 0 && minute == 0) {
-                System.out.println(ATTENDANCE_ABSENCE_MESSAGE.formatted(
-                    month, day, dayOfWeek.getName(), attendanceType.getTypeDescription()));
+            if (printAbsenceCase(attendanceTime, dayOfWeek, attendanceType)) {
                 continue;
             }
-
             System.out.println(ATTENDANCE_RESULT_MESSAGE.formatted(
                 month, day, dayOfWeek.getName(), hour, minute, attendanceType.getTypeDescription())
             );
         }
     }
 
+    private boolean printAbsenceCase(LocalDateTime attendanceTime, DayOfWeek dayOfWeek,
+        AttendanceType attendanceType) {
+        if (attendanceTime.getHour() == 0 && attendanceTime.getMinute() == 0) {
+            System.out.println(ATTENDANCE_ABSENCE_MESSAGE.formatted(
+                attendanceTime.getMonthValue(), attendanceTime.getDayOfMonth(), dayOfWeek.getName(),
+                attendanceType.getTypeDescription()));
+            return true;
+        }
+        return false;
+    }
+
     public void printAttendanceResult(AttendanceHistory attendanceHistory) {
         AttendanceTime attendanceTime = attendanceHistory.getAttendanceTime();
         AttendanceType attendanceType = attendanceHistory.getAttendanceType();
-        LocalDateTime localDateTime = attendanceTime.getTime();
-        LocalDate localDate = localDateTime.toLocalDate();
-        LocalTime localTime = localDateTime.toLocalTime();
-        int month = localDate.getMonthValue();
-        int day = localDate.getDayOfMonth();
+        LocalDate localDate = attendanceHistory.getAttendanceDate();
+        LocalTime localTime = attendanceTime.getTime().toLocalTime();
         DayOfWeek dayOfWeek = DayOfWeek.calculateDayOfWeek(localDate);
-        System.out.printf(ATTENDANCE_RESULT_MESSAGE, month, day, dayOfWeek.getName(),
-            localTime.getHour(),
-            localTime.getMinute(), attendanceType.getTypeDescription());
+        System.out.printf(ATTENDANCE_RESULT_MESSAGE, localDate.getMonth(),
+            localDate.getDayOfMonth(), dayOfWeek.getName(),
+            localTime.getHour(), localTime.getMinute(), attendanceType.getTypeDescription());
         System.out.println();
     }
 
