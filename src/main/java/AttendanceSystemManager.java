@@ -1,4 +1,5 @@
 import java.time.LocalDateTime;
+import java.util.List;
 
 public class AttendanceSystemManager {
 
@@ -31,5 +32,13 @@ public class AttendanceSystemManager {
         AttendanceHistory newAttendanceHistory = new AttendanceHistory(crew, requestedAt);
 
         attendanceHistories.update(oldAttendanceHistory, newAttendanceHistory);
+    }
+
+    public void findAllHistoriesOfCrew(String nickname, LocalDateTime requestedAt) {
+        Crew crew = crews.findCrewByName(nickname);
+
+        List<AttendanceHistory> historiesOfCrew = attendanceHistories.findAllHistoriesOfCrewDateBefore(
+                crew, requestedAt);
+
     }
 }
