@@ -37,7 +37,7 @@ public class AttendanceSheetTest {
     public void attendTest() {
         //given
         String nickname = "링크";
-        LocalDate date = LocalDate.of(2024, 12, 12);
+        LocalDate date = LocalDate.of(2024, 12, 13);
         LocalTime time = LocalTime.of(10,0);
 
         //when-then

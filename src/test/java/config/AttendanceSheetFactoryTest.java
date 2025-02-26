@@ -50,7 +50,7 @@ public class AttendanceSheetFactoryTest {
     public void validateAttendanceDateTimeFormatTest(@TempDir Path tempDir) throws IOException {
         //given
         Path path = tempDir.resolve("attendances.csv");
-        List<String> lines = List.of("nickname,dateTime", "2024:12:13 09:11");
+        List<String> lines = List.of("nickname,dateTime", "링크,2024:12:13 09:11");
         Files.write(path, lines);
 
         //when-then
