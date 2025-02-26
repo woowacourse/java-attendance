@@ -12,13 +12,8 @@ public class StudentRepository {
     }
 
     public boolean isExistStudent(String name) {
-        for (Student student : studentRepository) {
-            if (!student.getName().equals(name)) {
-                continue;
-            }
-            return true;
-        }
-        return false;
+        return studentRepository.stream()
+                .anyMatch(student -> student.getName().equals(name));
     }
 
     public Student findStudentByName(String name) {
@@ -27,7 +22,7 @@ public class StudentRepository {
                 return student;
             }
         }
-        return null;
+        throw new IllegalArgumentException("[ERROR] 존재하지 않는 학생의 이름입니다.");
     }
 
     public void updateEveryStudentNoInformationInFile(TodayDate todayDate) {
