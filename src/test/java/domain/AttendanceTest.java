@@ -1,9 +1,11 @@
 package domain;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+
 import attendance.domain.Attendance;
 import attendance.domain.AttendanceStatus;
 import java.time.LocalDateTime;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 public class AttendanceTest {
@@ -14,7 +16,7 @@ public class AttendanceTest {
         LocalDateTime saturday = LocalDateTime.of(2024, 12, 14, 10, 1);
 
         //when
-        Assertions.assertThatThrownBy(() -> new Attendance(nickname, saturday))
+        assertThatThrownBy(() -> new Attendance(nickname, saturday))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("주말에는 출석할 수 없습니다.");
     }
@@ -26,7 +28,7 @@ public class AttendanceTest {
         LocalDateTime christmas = LocalDateTime.of(2024, 12, 25, 10, 1);
 
         //when then
-        Assertions.assertThatThrownBy(() -> new Attendance(nickname, christmas))
+        assertThatThrownBy(() -> new Attendance(nickname, christmas))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("공휴일에는 출석할 수 없습니다.");
     }
@@ -42,6 +44,6 @@ public class AttendanceTest {
         AttendanceStatus result = attendance.getAttendanceStatus();
 
         //then
-        Assertions.assertThat(result).isEqualTo(AttendanceStatus.LATE);
+        assertThat(result).isEqualTo(AttendanceStatus.LATE);
     }
 }
