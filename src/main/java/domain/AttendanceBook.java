@@ -1,7 +1,11 @@
 package domain;
 
+import dto.AttendanceCount;
+import dto.AttendanceHistory;
+import dto.AttendanceLog;
 import dto.InitialInfo;
 import dto.ModifyResult;
+import java.time.LocalDate;
 import java.util.Map;
 
 public class AttendanceBook {
@@ -31,5 +35,12 @@ public class AttendanceBook {
 
     public ModifyResult modify(CrewName crewName, Attendance newAttendance) {
         return findAttendanceRecordBy(crewName).modify(newAttendance);
+    }
+
+    public AttendanceHistory findAttendanceHistoryUntil(CrewName crewName, LocalDate yesterday) {
+        AttendanceRecord attendanceRecord = findAttendanceRecordBy(crewName);
+        AttendanceLog attendanceLog = attendanceRecord.findAllSortedUntil(yesterday);
+        AttendanceCount attendanceCount = attendanceRecord.calculateCount(yesterday);
+        return new AttendanceHistory(attendanceLog, attendanceCount);
     }
 }

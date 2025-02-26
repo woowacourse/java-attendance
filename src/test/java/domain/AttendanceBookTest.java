@@ -2,11 +2,15 @@ package domain;
 
 import static org.assertj.core.api.Assertions.*;
 
+import dto.AttendanceCount;
+import dto.AttendanceHistory;
+import dto.AttendanceLog;
 import dto.InitialInfo;
 import dto.ModifyResult;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -125,15 +129,17 @@ public class AttendanceBookTest {
 
         // TODO : 감싸기?
         LocalDate yesterday = LocalDate.of(2024, 12, 12);
-        AttendanceHistory attendanceHistory = attendanceBook.findAttendanceHistoryUntil(yesterday);
+        AttendanceHistory attendanceHistory = attendanceBook.findAttendanceHistoryUntil(mimi, yesterday);
 
-        assertThat(attendanceHistory.getAbsentCount()).isEqualTo(2);
-        assertThat(attendanceHistory.getLateCount()).isEqualTo(3);
-        assertThat(attendanceHistory.getAttendCount()).isEqualTo(4);
+        AttendanceCount attendanceCount = attendanceHistory.attendanceCount();
+        List<Attendance> sortedAttendance = attendanceHistory.attendanceLog().sortedValue();
+        assertThat(attendanceCount.absentCount()).isEqualTo(2);
+        assertThat(attendanceCount.lateCount()).isEqualTo(3);
+        assertThat(attendanceCount.attendCount()).isEqualTo(4);
+        assertThat(sortedAttendance.getFirst()).isEqualTo(firstAttendance);
+        assertThat(sortedAttendance.getLast()).isEqualTo(expectedLastAttendance);
 
-        assertThat(attendanceHistory.getAttendances().getFirst()).isEqualTo(firstAttendance);
-        assertThat(attendanceHistory.getAttndances().getLast()).isEqualTo(expectedLastAttendance);
-
-        assertThat(attendanceHistory.getPenalty()).isEqualTo(Penalty.COUNSELING);
+        // TODO : 별도의 Penalty 검증 테스트 코드 만들기
+//        assertThat(attendanceHistory.getPenalty()).isEqualTo(Penalty.COUNSELING);
     }
 }
