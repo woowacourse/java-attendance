@@ -7,7 +7,7 @@ import java.util.Arrays;
 import java.util.function.Function;
 
 public enum AttendanceType {
-    ATTENDANCE((duration -> false)),
+    ATTENDANCE((duration -> duration.toMinutes() <= 5)),
     LATE((duration -> 5 < duration.toMinutes() && duration.toMinutes() <= 30)),
     ABSENT((duration -> duration.toMinutes() > 30));
 
