@@ -11,6 +11,9 @@ public class AttendanceHistory {
 
     private static final int CHRISTMAS_MONTH = 12;
     private static final int CHRISTMAS_MONTH_OF_DAY = 25;
+    private static final LocalTime START_TIME = LocalTime.of(8, 0);
+    private static final LocalTime END_TIME = LocalTime.of(23, 0);
+    ;
 
     private final Crew crew;
     private final Map<LocalDate, AttendanceRecord> attendanceHistory;
@@ -45,14 +48,18 @@ public class AttendanceHistory {
 
     public AttendanceRecord updateTimeByDate(final LocalDateTime afterTime) {
         validateAttendanceDay(afterTime);
-        if (afterTime.toLocalTime().isBefore(LocalTime.of(8, 0)) || afterTime.toLocalTime()
-                .isAfter(LocalTime.of(23, 0))) {
-            throw new IllegalArgumentException();
-        }
+        validateAttendanceTime(afterTime);
         final AttendanceRecord prevRecord = attendanceHistory.get(afterTime.toLocalDate());
         final AttendanceRecord newRecord = new AttendanceRecord(afterTime);
         attendanceHistory.put(afterTime.toLocalDate(), newRecord);
         return prevRecord;
+    }
+
+    private static void validateAttendanceTime(final LocalDateTime afterTime) {
+        final LocalTime time = afterTime.toLocalTime();
+        if (time.isBefore(START_TIME) || time.isAfter(END_TIME)) {
+            throw new IllegalArgumentException();
+        }
     }
 
     public AttendanceRecord findByDate(final LocalDate date) {
