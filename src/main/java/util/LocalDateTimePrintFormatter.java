@@ -9,12 +9,12 @@ import java.util.Locale;
 
 public class LocalDateTimePrintFormatter {
 
-    public static final DateTimeFormatter dateTimeFormatterForHourMin = DateTimeFormatter.ofPattern("HH:mm");
+    public static final DateTimeFormatter HOUR_MINUTE = DateTimeFormatter.ofPattern("HH:mm");
 
     public static String createAttendanceResultMessage(LocalDateTime localDateTime) {
         DayOfWeek dayOfWeek = localDateTime.getDayOfWeek();
 
-        if (localDateTime.format(dateTimeFormatterForHourMin).equals("00:00")) {
+        if (localDateTime.format(HOUR_MINUTE).equals("00:00")) {
             return localDateTime.format(DateTimeFormatter.ofPattern("MM월 dd일 " + dayOfWeek.getDisplayName(
                     TextStyle.FULL, Locale.KOREAN) + " --:--"));
         }
@@ -34,7 +34,7 @@ public class LocalDateTimePrintFormatter {
     }
 
     public static String creatModifyCompleteMessage(LocalDateTime modifyDateTime, String recordAfterModifyState) {
-        return modifyDateTime.format(dateTimeFormatterForHourMin) + " (" +recordAfterModifyState + ") 수정 완료!";
+        return modifyDateTime.format(HOUR_MINUTE) + " (" +recordAfterModifyState + ") 수정 완료!";
     }
 
 
