@@ -95,7 +95,7 @@ public class AttendanceBook {
                 continue;
             }
             Attendance attendance = findAttendanceByDate(current);
-            if (attendance.getStatus() == AttendanceStatus.ABSENCE || attendance.isAbsence()) {
+            if (attendance.isAbsence()) {
                 count++;
             }
         }
