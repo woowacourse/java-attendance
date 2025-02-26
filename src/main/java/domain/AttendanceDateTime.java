@@ -14,6 +14,14 @@ public class AttendanceDateTime {
         return new AttendanceDateTime(LocalDateTime.of(year, month, day, hour, minute));
     }
 
+    public static AttendanceDateTime from(LocalDateTime localDateTime) {
+        return new AttendanceDateTime(localDateTime);
+    }
+
+    public LocalDateTime getDateTime() {
+        return dateTime;
+    }
+
     public boolean isRestDay() {
         DayOfWeek currentDayOfWeek = dateTime.getDayOfWeek();
         if (currentDayOfWeek == DayOfWeek.SATURDAY || currentDayOfWeek == DayOfWeek.SUNDAY) {
