@@ -6,7 +6,7 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Scanner;
-import model.StudentAttendanceRecord;
+import model.StudentRepository;
 import model.TodayDate;
 
 public class InputView {
@@ -46,7 +46,8 @@ public class InputView {
     }
 
     public static String getUserWantMenu(TodayDate todayDate){
-        System.out.printf(PRINT_TODAY_FORMAT,todayDate.getTodayDate().getMonth().getValue(),todayDate.getTodayDate().getDayOfMonth(),todayDate.getTodayDay());
+        System.out.printf(PRINT_TODAY_FORMAT, todayDate.getTodayDate().getMonth().getValue(), todayDate.getTodayDate().getDayOfMonth()
+                , todayDate.getTodayDay());
         printMenu();
         String input = userInput();
         try{
@@ -117,7 +118,7 @@ public class InputView {
         return getTimeUntilValidate(localDate);
     }
 
-    public static String getStudentNameForModifyUntilValidate(StudentAttendanceRecord studentRepository) {
+    public static String getStudentNameForModifyUntilValidate(StudentRepository studentRepository) {
         try {
             InputView.printInputNicName();
             return getStudentNameUntilExist(studentRepository);
@@ -135,7 +136,7 @@ public class InputView {
         }
     }
 
-    public static String getStudentForAttendanceCheckUntilExist(StudentAttendanceRecord studentRepository) {
+    public static String getStudentForAttendanceCheckUntilExist(StudentRepository studentRepository) {
         InputView.printInputNicName();
         try {
             return getStudentNameUntilExist(studentRepository);
@@ -145,10 +146,10 @@ public class InputView {
         }
     }
 
-    public static String getStudentNameUntilExist(StudentAttendanceRecord studentRecordRepository) {
+    public static String getStudentNameUntilExist(StudentRepository studentRepository) {
         String userName = InputView.userInput();
         try{
-            if(!studentRecordRepository.isExistStudentByName(userName)) {
+            if(!studentRepository.isExistStudent(userName)) {
                 throw new IllegalArgumentException("[ERROR] 존재하지 않는 학생입니다.");
             }
             return userName;
