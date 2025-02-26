@@ -82,4 +82,15 @@ public class AttendanceBookTest {
                 .contains(expectedAttendance))
                 .isTrue();
     }
+
+    @DisplayName("출석 수정 시, 출석부에 존재하지 않는 닉네임일 경우 예외가 발생한다.")
+    @Test
+    void test6() {
+        CrewName crewName = new CrewName("밍트");
+        Attendance attendance = new Attendance(LocalDateTime.of(2024, 12, 13, 9, 59));
+
+        assertThatThrownBy(() -> attendanceBook.modify(crewName, attendance))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("[ERROR]");
+    }
 }
