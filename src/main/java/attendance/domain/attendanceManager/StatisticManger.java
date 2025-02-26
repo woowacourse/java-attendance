@@ -33,10 +33,9 @@ public class StatisticManger {
         report.append(statistic.getReportDetail());
 
         StatusStatistic.SanctionLevel level = statistic.judgeSanctionLevel();
-        if (level.equals(StatusStatistic.SanctionLevel.NONE)) {
-            return;
+        if (!level.equals(StatusStatistic.SanctionLevel.NONE)) {
+            report.append(Message.SANCTION_LEVEL.getMessage(statistic.judgeSanctionLevel().getValues()));
         }
-        report.append(Message.SANCTION_LEVEL.getMessage(statistic.judgeSanctionLevel().getValues()));
     }
 
     protected enum Message {

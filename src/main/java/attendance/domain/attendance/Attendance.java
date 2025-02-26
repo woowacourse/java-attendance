@@ -46,13 +46,9 @@ public record Attendance(LocalDateTime dateTime, AttendanceStatus attendanceStat
 
     private static void validateIsDuringCampusSchedule(LocalDateTime dateTime) {
         LocalTime time = dateTime.toLocalTime();
-        if (isDuringCampusSchedule(time)) {
+        if (time.isBefore(Schedule.CAMPUS_OPEN) || time.isAfter(Schedule.CAMPUS_CLOSE)) {
             throw new AttendanceArgumentException(Message.OUT_OF_SCHOOL_SCHEDULE);
         }
-    }
-
-    private static boolean isDuringCampusSchedule(LocalTime time) {
-        return time.isBefore(Schedule.CAMPUS_OPEN) || time.isAfter(Schedule.CAMPUS_CLOSE);
     }
 
     private static LocalTime getScheduleForDay(LocalDateTime dateTime) {
