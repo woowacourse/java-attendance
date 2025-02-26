@@ -24,4 +24,11 @@ class WarningTest {
         WarningCounter warningCounter = new WarningCounter(3, 0);
         assertThat(warningCounter.getStatus()).isEqualTo("면담");
     }
+
+    @DisplayName("누적 결석 횟수가 6회 이상일 경우 제적을 반환한다.")
+    @Test
+    void expelledStatusTest() {
+        WarningCounter warningCounter = new WarningCounter(6, 0);
+        assertThat(warningCounter.getStatus()).isEqualTo("제적");
+    }
 }
