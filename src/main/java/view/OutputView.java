@@ -12,4 +12,8 @@ public class OutputView {
         String dayOfWeek = now.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.KOREAN);
         System.out.printf("오늘은 %s %s입니다. ", date, dayOfWeek);
     }
+
+    public static void printErrorMessage(String message) {
+        System.out.println("[ERROR] " + message);
+    }
 }

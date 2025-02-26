@@ -1,5 +1,7 @@
 package view;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Scanner;
 
 public class InputView {
@@ -24,14 +26,14 @@ public class InputView {
         return scanner.next();
     }
 
-    public static String askAttendanceTime(boolean isForEdit) {
+    public static LocalDateTime askAttendanceTime(boolean isForEdit) {
         if (isForEdit) {
             System.out.println("언제로 변경하겠습니까?");
-            return scanner.next();
+            return LocalDateTime.parse(scanner.next(), DateTimeFormatter.ofPattern("HH:mm"));
         }
 
         System.out.println("등교 시간을 입력해 주세요.");
-        return scanner.next();
+        return LocalDateTime.parse(scanner.next(), DateTimeFormatter.ofPattern("HH:mm"));
     }
 
     public static String askDayForEdit() {
