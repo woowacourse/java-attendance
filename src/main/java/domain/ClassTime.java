@@ -11,10 +11,8 @@ public enum ClassTime {
     FRIDAY(LocalTime.of(10, 0), LocalTime.of(18, 0)),
     ;
 
-
     private final LocalTime classStartTime;
     private final LocalTime classEndTime;
-
 
     ClassTime(LocalTime classStartTime, LocalTime classEndTime) {
         this.classStartTime = classStartTime;
