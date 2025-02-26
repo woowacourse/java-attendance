@@ -55,4 +55,12 @@ public class CheckAttendanceTest {
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage(ErrorMessage.NOTICE_ATTENDANCE_ALREADY_EXISTED.getFormat());
     }
+
+    @Test
+    @DisplayName("등록되지 않는 닉네임의 경우 에외 메시지를 출력한다.")
+    void Name_Is_Not_Registered() {
+        assertThatThrownBy(() -> attendanceBook.checkAttendance("미등록", MONDAY_DATE, ATTEND_MONDAY))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage(ErrorMessage.NOTICE_NICKNAME_IS_NOT_REGISTERED.getFormat());
+    }
 }
