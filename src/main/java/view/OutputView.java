@@ -1,6 +1,7 @@
 package view;
 
-import domain.AttendanceStatus;
+import static domain.AttendanceStatus.ABSENT;
+
 import java.time.LocalDateTime;
 import util.DayOfWeekConverter;
 import view.dto.AlertCrewDTO;
@@ -10,6 +11,9 @@ import view.dto.ChangeAttendanceLogDTO;
 import view.dto.CrewAttendancesDTO;
 
 public class OutputView {
+
+    private static final String ABSENT_TIME = "--:--";
+
     public void printAttendancesLog(CrewAttendancesDTO crewAttendancesDTO) {
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append(String.format("이번 달 %s의 출석 기록입니다. \n\n", crewAttendancesDTO.nickName()));
@@ -19,9 +23,7 @@ public class OutputView {
         }
 
         stringBuilder.append("\n");
-
         makeAttendanceStatistics(crewAttendancesDTO, stringBuilder);
-
         System.out.println(stringBuilder);
     }
 
@@ -40,8 +42,8 @@ public class OutputView {
         StringBuilder stringBuilder = new StringBuilder();
         LocalDateTime dateTime = attendanceLogDTO.localDateTime();
         String time = String.format("%02d:%02d", dateTime.getHour(), dateTime.getMinute());
-        if (attendanceLogDTO.attendanceStatus().equals(AttendanceStatus.ABSENT)) {
-            time = "--:--";
+        if (attendanceLogDTO.attendanceStatus().equals(ABSENT)) {
+            time = ABSENT_TIME;
         }
 
         String dayOfWeekKorean = DayOfWeekConverter.convertDayOfWeek(dateTime);
@@ -71,15 +73,24 @@ public class OutputView {
     public void printChangeLog(ChangeAttendanceLogDTO changeAttendanceLogDTO) {
         LocalDateTime originalTime = changeAttendanceLogDTO.originalTime();
         LocalDateTime changeTime = changeAttendanceLogDTO.changeTime();
+
         String dayOfWeekKorean = DayOfWeekConverter.convertDayOfWeek(originalTime);
         String oldTime = String.format("%02d:%02d", originalTime.getHour(), originalTime.getMinute());
         String currentTime = String.format("%02d:%02d", changeTime.getHour(), changeTime.getMinute());
+
+        if (changeAttendanceLogDTO.originalStatus().equals(ABSENT)) {
+            oldTime = ABSENT_TIME;
+        }
+        if (changeAttendanceLogDTO.changeStatus().equals(ABSENT)) {
+            currentTime = ABSENT_TIME;
+        }
 
         System.out.printf("%d월 %02d일 %s %s (%s) -> %s (%s) 수정 완료!%n",
                 originalTime.getMonth().getValue(),
                 originalTime.getDayOfMonth(),
                 dayOfWeekKorean, oldTime, changeAttendanceLogDTO.originalStatus().getName(), currentTime,
                 changeAttendanceLogDTO.changeStatus().getName());
+
     }
 
     public void printGuide() {
