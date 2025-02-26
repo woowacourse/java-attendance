@@ -1,28 +1,32 @@
 package controller;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import model.AttendanceCalculator;
 import model.AttendanceStatus;
+import model.Student;
+import model.StudentRepository;
 import util.FileInput;
-import model.StudentAttendanceRecord;
 import model.TodayDate;
 import util.LocalDateTimePrintFormatter;
 import view.InputView;
 import view.OutputView;
 
-public class Controller {
+public class AttendanceManagementController {
     private final TodayDate todayDate;
 
-    public Controller(TodayDate todayDate) {
+    public AttendanceManagementController(TodayDate todayDate) {
         this.todayDate = todayDate;
     }
 
     public void start() {
 
-        StudentAttendanceRecord studentRecordRepository = updateStudentAttendanceRecord();
+        StudentRepository studentRepository = updateStudentAttendanceRecord();
+        studentRepository.updateEveryStudentNoInformationInFile(todayDate);
 
         while (true){
             String userInput = InputView.getUserWantMenu(todayDate);
@@ -30,52 +34,56 @@ public class Controller {
                 break;
             }
             if (Integer.parseInt(userInput) == MenuOption.ATTENDANCE_CHECK.getNumberOption()) {
-                functionForMenuOne(todayDate, studentRecordRepository);
+                functionForMenuOne(todayDate, studentRepository);
             }
             if (Integer.parseInt(userInput) == MenuOption.ATTENDANCE_MODIFY.getNumberOption()) {
-                functionForMenuTwo(studentRecordRepository);
+                functionForMenuTwo(studentRepository);
             }
             if (Integer.parseInt(userInput) == MenuOption.STUDENT_RECORD_CHECK.getNumberOption()) {
-                functionForMenuThree(studentRecordRepository);
+                functionForMenuThree(studentRepository);
             }
             if (Integer.parseInt(userInput) == MenuOption.DISMISSAL_SUBJECT_CHECK.getNumberOption()) {
-                functionForMenuFour(studentRecordRepository);
+                functionForMenuFour(studentRepository);
             }
         }
     }
 
-    private StudentAttendanceRecord updateStudentAttendanceRecord() {
-        StudentAttendanceRecord studentRecordRepository = FileInput.createStudentRepository();
-        studentRecordRepository.updateEveryStudentNoInformationInFile(todayDate.getTodayDateTIme());
-        return studentRecordRepository;
+    private StudentRepository updateStudentAttendanceRecord() {
+        Map<String, List<LocalDateTime>> studentRecordRepository = FileInput.createStudentRepository();
+        List<Student> students = new ArrayList<>();
+        for (String name : studentRecordRepository.keySet()) {
+            Student student = new Student(name, studentRecordRepository.get(name));
+            students.add(student);
+        }
+        return new StudentRepository(students);
     }
 
-    private static void functionForMenuFour(StudentAttendanceRecord studentRecordRepository) {
+    private static void functionForMenuFour(StudentRepository studentRepository) {
         OutputView.displayAtRiskStudent();
-        for (String name : studentRecordRepository.getStudentRecord().keySet()) {
+        for (Student student : studentRepository.getStudentRepository()) {
             OutputView.printDismissalSubject(AttendanceCalculator.recordAttendanceResult(
-                    studentRecordRepository.getStudentRecordByName(name).getTimeRecords()),name);
+                    student.getTimeRecords()),student.getName());
         }
     }
 
-    private static void functionForMenuThree(StudentAttendanceRecord studentRecordRepository) {
-        String name = InputView.getStudentForAttendanceCheckUntilExist(studentRecordRepository);
-        OutputView.printAttendanceRecord(studentRecordRepository.getStudentRecord().get(name).getTimeRecords());
+    private static void functionForMenuThree(StudentRepository studentRepository) {
+        String name = InputView.getStudentForAttendanceCheckUntilExist(studentRepository);
+        OutputView.printAttendanceRecord(studentRepository.findStudentByName(name).getTimeRecords());
         HashMap<String, Integer> attendanceRecord = AttendanceCalculator.recordAttendanceResult(
-                studentRecordRepository.getStudentRecordByName(name).getTimeRecords());
+                studentRepository.findStudentByName(name).getTimeRecords());
         OutputView.printResult(attendanceRecord);
     }
 
-    private static void functionForMenuTwo(StudentAttendanceRecord studentRecordRepository) {
-        String studentName = InputView.getStudentNameForModifyUntilValidate(studentRecordRepository);
+    private static void functionForMenuTwo(StudentRepository studentRepository) {
+        String studentName = InputView.getStudentNameForModifyUntilValidate(studentRepository);
         LocalDateTime modifyLocalDateTime = InputView.getLocalDateTimeToModify();
         if (isHolidayForMenuTwo(modifyLocalDateTime)) {
             return;
         }
         String recordBeforeModify = LocalDateTimePrintFormatter.createAttendanceResultMessage(
-                studentRecordRepository.getStudentRecord().get(studentName).findSameDay(modifyLocalDateTime));
+                studentRepository.findStudentByName(studentName).findSameDay(modifyLocalDateTime));
 
-        studentRecordRepository.modifyRecord(studentName, modifyLocalDateTime);
+        studentRepository.findStudentByName(studentName).modifyRecord(modifyLocalDateTime);
 
         String recordAfterModifyState = AttendanceCalculator.calculateAttendance(modifyLocalDateTime,LocalTime.from(modifyLocalDateTime)).getState();
         String recordAfterModify = LocalDateTimePrintFormatter.creatModifyCompleteMessage(modifyLocalDateTime,recordAfterModifyState);
@@ -95,27 +103,27 @@ public class Controller {
         return false;
     }
 
-    private static void functionForMenuOne(TodayDate todayDate, StudentAttendanceRecord studentRecordRepository) {
+    private static void functionForMenuOne(TodayDate todayDate, StudentRepository studentRepository) {
         if (isHoliday(todayDate)) {
             return;
         }
 
-        String name = InputView.getStudentForAttendanceCheckUntilExist(studentRecordRepository);
-        if (isAlreadyAttendance(studentRecordRepository, name, todayDate)) {
+        String name = InputView.getStudentForAttendanceCheckUntilExist(studentRepository);
+        if (isAlreadyAttendance(studentRepository, name, todayDate)) {
             return;
         }
 
         LocalDateTime localDateTime = InputView.getLocalDateTimeUntilValidate(todayDate);
-        studentRecordRepository.addRecord(name, localDateTime);
+        studentRepository.findStudentByName(name).addTime(localDateTime);
 
         AttendanceStatus todayResult = AttendanceCalculator.calculateAttendance(localDateTime,LocalTime.from(localDateTime));
         OutputView.printTodayAttendanceResult(localDateTime,todayResult);
     }
 
-    private static boolean isAlreadyAttendance(StudentAttendanceRecord studentRecordRepository, String name,
+    private static boolean isAlreadyAttendance(StudentRepository studentRepository, String name,
                                                TodayDate todayDate) {
         try {
-            studentRecordRepository.isAlreadyAttendanceDate(name, todayDate);
+            studentRepository.findStudentByName(name).isAlreadyAttendanceDate(todayDate);
         } catch (IllegalArgumentException e) {
             System.out.println(e.getMessage());
             return true;
