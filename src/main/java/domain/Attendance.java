@@ -13,6 +13,10 @@ public class Attendance {
         this.value = value;
     }
 
+    public LocalDate getDate() {
+        return value.toLocalDate();
+    }
+
     public DayOfWeek getDayOfWeek() {
         return value.getDayOfWeek();
     }
@@ -21,8 +25,8 @@ public class Attendance {
         return value.toLocalTime();
     }
 
-    public boolean isEqualDate(LocalDate targetDate) {
-        return value.toLocalDate().equals(targetDate);
+    public boolean isSameDateWith(Attendance attendance) {
+        return value.toLocalDate().equals(attendance.getDate());
     }
 
     @Override
@@ -30,6 +34,6 @@ public class Attendance {
         if(this == object) return true;
         if(object == null || getClass() != object.getClass()) return false;
         Attendance other = (Attendance) object;
-        return Objects.equals(value.toLocalDate(), other.value.toLocalDate());
+        return Objects.equals(value, other.value);
     }
 }

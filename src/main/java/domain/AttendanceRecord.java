@@ -1,8 +1,5 @@
 package domain;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
@@ -14,8 +11,20 @@ public class AttendanceRecord {
         this.value = new HashSet<>();
     }
 
+    public boolean contains(Attendance targetAttendance) {
+        return value.stream()
+                .anyMatch(attendance ->
+                        attendance.isSameDateWith(targetAttendance));
+    }
+
     public void add(Attendance attendance) {
         value.add(attendance);
+    }
+
+    public void modify(Attendance newAttendance) {
+        Attendance findAttendance = findSameDateAttendanceBy(newAttendance);
+        value.remove(findAttendance);
+        value.add(newAttendance);
     }
 
     @Override
@@ -30,20 +39,11 @@ public class AttendanceRecord {
         return Objects.equals(value, other.value);
     }
 
-    public boolean contains(Attendance targetAttendance) {
+    private Attendance findSameDateAttendanceBy(Attendance targetAttendance) {
         return value.stream()
-                .anyMatch(attendance -> attendance.equals(targetAttendance));
-    }
-
-    public Attendance modify(int day, LocalTime newTime) {
-        LocalDate date = LocalDate.of(2024, 12, day);
-        Attendance findAttendance = value.stream()
-                .filter(attendance -> attendance.isEqualDate(date))
+                .filter(attendance ->
+                        attendance.isSameDateWith(targetAttendance))
                 .findFirst()
                 .orElseThrow(IllegalStateException::new);
-        value.remove(findAttendance);
-        Attendance newAttendance = new Attendance(LocalDateTime.of(date, newTime));
-        value.add(newAttendance);
-        return newAttendance;
     }
 }

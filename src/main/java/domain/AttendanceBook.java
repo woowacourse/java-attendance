@@ -1,14 +1,13 @@
 package domain;
 
 import dto.InitialInfo;
-import java.time.LocalTime;
 import java.util.Map;
 
 public class AttendanceBook {
     private final Map<CrewName, AttendanceRecord> value;
 
     public AttendanceBook(InitialInfo initialInfo) {
-        this.value = initialInfo.getValue();
+        this.value = initialInfo.value();
     }
 
     public Attendance addAttendance(CrewName crewName, Attendance attendance) {
@@ -29,9 +28,8 @@ public class AttendanceBook {
         return attendanceRecord;
     }
 
-    public Attendance modify(CrewName crewName, int day, LocalTime newTime) {
+    public void modify(CrewName crewName, Attendance newAttendance) {
         AttendanceRecord attendanceRecord = findAttendanceRecordBy(crewName);
-        // TODO : 인자 감싸기
-        return attendanceRecord.modify(day, newTime);
+        attendanceRecord.modify(newAttendance);
     }
 }

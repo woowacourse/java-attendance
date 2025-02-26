@@ -4,7 +4,6 @@ import static org.assertj.core.api.Assertions.*;
 
 import dto.InitialInfo;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.util.HashMap;
 import java.util.Map;
 import org.junit.jupiter.api.BeforeEach;
@@ -77,9 +76,10 @@ public class AttendanceBookTest {
     void test5() {
         Attendance expectedAttendance = new Attendance(LocalDateTime.of(2024, 12, day, 10, 6));
 
-        Attendance modifiedAttendance = attendanceBook.modify(mimi, day, LocalTime.of(10, 6));
+        attendanceBook.modify(mimi, expectedAttendance);
 
-        // TODO: Attendance 비교로 수정
-        assertThat(modifiedAttendance.getTime()).isEqualTo(expectedAttendance.getTime());
+        assertThat(attendanceBook.findAttendanceRecordBy(mimi)
+                .contains(expectedAttendance))
+                .isTrue();
     }
 }
