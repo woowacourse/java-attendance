@@ -4,6 +4,7 @@ import attendance.domain.checker.AttendanceChecker;
 import attendance.domain.checker.AttendanceType;
 import attendance.domain.crew.CrewStorage;
 import attendance.domain.dto.AttendanceState;
+import attendance.domain.dto.RecordUpdateResult;
 import attendance.domain.risk.RiskType;
 import attendance.exception.ExceptionMessage;
 import attendance.record.AttendanceRecord;
@@ -25,21 +26,16 @@ public class AttendanceSystem {
         this.attendanceChecker = attendanceChecker;
     }
 
-    public void addAttendanceRecord(String crewNickname, LocalDateTime arrivalDateTime) {
+    public AttendanceRecord addAttendanceRecord(String crewNickname, LocalDateTime arrivalDateTime) {
         crewStorage.validateIsNotContained(crewNickname);
         validateAlreadyAttendance(crewNickname, arrivalDateTime.toLocalDate());
         AttendanceType attendanceType = attendanceChecker.checkAttendance(arrivalDateTime);
         AttendanceRecord newRecord = new AttendanceRecord(crewNickname, arrivalDateTime, attendanceType);
         records.add(newRecord);
+        return newRecord;
     }
 
-    public Optional<AttendanceRecord> findAttendanceRecord(String crewNickname, LocalDate date) {
-        return records.stream()
-                .filter(record -> record.isSame(crewNickname, date))
-                .findAny();
-    }
-
-    public void updateAttendance(String nickname, LocalDate arrivalDate, LocalTime newTime) {
+    public RecordUpdateResult updateAttendance(String nickname, LocalDate arrivalDate, LocalTime newTime) {
         crewStorage.validateIsNotContained(nickname);
         Optional<AttendanceRecord> originRecord = findAttendanceRecord(nickname, arrivalDate);
         originRecord.ifPresent(records::remove);
@@ -48,6 +44,10 @@ public class AttendanceSystem {
         AttendanceType attendanceType = attendanceChecker.checkAttendance(newDateTime);
         AttendanceRecord newRecord = new AttendanceRecord(nickname, newDateTime, attendanceType);
         records.add(newRecord);
+
+        AttendanceRecord oldRecord = originRecord.orElse(
+                AttendanceRecord.makeAbsenceRecord(nickname, arrivalDate));
+        return new RecordUpdateResult(oldRecord, newRecord);
     }
 
     public List<AttendanceRecord> findRecordsInMonth(String nickname, LocalDate today) {
@@ -77,6 +77,12 @@ public class AttendanceSystem {
                 .filter(state -> state.getRiskTyp() != RiskType.NONE)
                 .sorted()
                 .toList();
+    }
+
+    public Optional<AttendanceRecord> findAttendanceRecord(String crewNickname, LocalDate date) {
+        return records.stream()
+                .filter(record -> record.isSame(crewNickname, date))
+                .findAny();
     }
 
     private void validateAlreadyAttendance(String crewNickname, LocalDate date) {

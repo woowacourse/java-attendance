@@ -3,15 +3,17 @@ package attendance.domain.risk;
 import java.util.List;
 
 public enum RiskType {
-    EXPULSION(5),
-    COUNSELING(3),
-    WARNING(2),
-    NONE(0);
+    EXPULSION(5, "제적"),
+    COUNSELING(3, "면담"),
+    WARNING(2, "경고"),
+    NONE(0, "");
 
     private final int absenceScore;
+    private final String name;
 
-    RiskType(int absenceScore) {
+    RiskType(int absenceScore, String name) {
         this.absenceScore = absenceScore;
+        this.name = name;
     }
 
     public static RiskType parse(int absenceCount, int lateCount) {
@@ -21,5 +23,9 @@ public enum RiskType {
                 .filter(type -> currentAbsenceScore >= type.absenceScore)
                 .findFirst()
                 .orElse(NONE);
+    }
+
+    public String getName() {
+        return name;
     }
 }

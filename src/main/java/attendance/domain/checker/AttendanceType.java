@@ -3,14 +3,16 @@ package attendance.domain.checker;
 import java.time.LocalTime;
 
 public enum AttendanceType {
-    ATTENDANCE(0),
-    LATE(5),
-    ABSENCE(30);
+    ATTENDANCE(0, "출석"),
+    LATE(5, "지각"),
+    ABSENCE(30, "결석");
 
     private final int overTime;
+    private final String name;
 
-    AttendanceType(int overTime) {
+    AttendanceType(int overTime, String name) {
         this.overTime = overTime;
+        this.name = name;
     }
 
     public static AttendanceType parse(LocalTime startTime, LocalTime arrivalTime) {
@@ -25,5 +27,9 @@ public enum AttendanceType {
             return LATE;
         }
         return ABSENCE;
+    }
+
+    public String getName() {
+        return name;
     }
 }

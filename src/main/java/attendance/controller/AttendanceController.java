@@ -3,9 +3,11 @@ package attendance.controller;
 import attendance.configuration.ApplicationConfiguration;
 import attendance.domain.AttendanceSystem;
 import attendance.domain.dto.AttendanceState;
+import attendance.domain.dto.RecordUpdateResult;
 import attendance.domain.initializer.AttendanceSystemInitializer;
 import attendance.record.AttendanceRecord;
 import attendance.view.InputView;
+import attendance.view.OutputView;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -16,10 +18,12 @@ public class AttendanceController {
     private final AttendanceSystem attendanceSystem;
     private final AttendanceSystemInitializer initializer;
     private final InputView inputView;
+    private final OutputView outputView;
 
     public AttendanceController(ApplicationConfiguration configuration) {
         attendanceSystem = configuration.getAttendanceSystem();
         inputView = configuration.getInputView();
+        outputView = configuration.getOutputView();
         initializer = configuration.getInitializer();
         initializer.initialize();
     }
@@ -54,7 +58,8 @@ public class AttendanceController {
         String nickname = inputView.readNickname();
         LocalTime arrivalTime = inputView.readArrivalTime();
         LocalDateTime arrivalDateTime = LocalDateTime.of(now.toLocalDate(), arrivalTime);
-        attendanceSystem.addAttendanceRecord(nickname, arrivalDateTime);
+        AttendanceRecord record = attendanceSystem.addAttendanceRecord(nickname, arrivalDateTime);
+        outputView.printRecord(record);
     }
 
     private void updateAttendanceRecord(LocalDateTime now) {
@@ -62,16 +67,20 @@ public class AttendanceController {
         int dayForUpdate = inputView.readDayForUpdate();
         LocalTime newTime = inputView.readArrivalTimeForUpdate();
         LocalDate dateForUpdate = now.withDayOfMonth(dayForUpdate).toLocalDate();
-        attendanceSystem.updateAttendance(nickname, dateForUpdate, newTime);
+        RecordUpdateResult updateResult = attendanceSystem.updateAttendance(nickname, dateForUpdate, newTime);
+        outputView.printRecordUpdateResult(updateResult);
     }
 
     private void findRecordsInMonth(LocalDateTime now) {
         String nickname = inputView.readNickname();
         List<AttendanceRecord> records = attendanceSystem.findRecordsInMonth(nickname, now.toLocalDate());
         AttendanceState state = attendanceSystem.calculateAttendanceStateInMonth(nickname, now.toLocalDate());
+        outputView.printRecordSearchResult(records);
+        outputView.printAttendanceState(state);
     }
 
     private void findRiskCrew(LocalDateTime now) {
         List<AttendanceState> states = attendanceSystem.findRiskCrew(now.toLocalDate());
+        outputView.printRiskCrews(states);
     }
 }

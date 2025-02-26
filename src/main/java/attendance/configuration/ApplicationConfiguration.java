@@ -6,6 +6,7 @@ import attendance.domain.checker.HolidayChecker;
 import attendance.domain.crew.CrewStorage;
 import attendance.domain.initializer.AttendanceSystemInitializer;
 import attendance.view.InputView;
+import attendance.view.OutputView;
 import java.util.Scanner;
 
 public class ApplicationConfiguration {
@@ -17,6 +18,7 @@ public class ApplicationConfiguration {
     private final AttendanceSystemInitializer initializer;
     private final Scanner scanner;
     private final InputView inputView;
+    private final OutputView outputView;
 
     public ApplicationConfiguration() {
         this.crewStorage = new CrewStorage();
@@ -26,6 +28,7 @@ public class ApplicationConfiguration {
         this.initializer = new AttendanceSystemInitializer(crewStorage, attendanceSystem);
         this.scanner = new Scanner(System.in);
         this.inputView = new InputView(scanner);
+        this.outputView = new OutputView();
     }
 
     public AttendanceSystem getAttendanceSystem() {
@@ -38,5 +41,9 @@ public class ApplicationConfiguration {
 
     public InputView getInputView() {
         return inputView;
+    }
+
+    public OutputView getOutputView() {
+        return outputView;
     }
 }
