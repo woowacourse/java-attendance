@@ -45,7 +45,7 @@
 AttendanceBook
 
 - [x] 이미 존재하는 크루에 대해서 새롭게 register하면, 예외가 발생한다.
-- 존재하지 않는 크루에 대해 AttendanceHistory를 요구하면, 예외가 발생한다.
+- [x] 존재하지 않는 크루에 대해 AttendanceHistory를 요구하면, 예외가 발생한다.
 
 ## 기능 요구 사항
 
