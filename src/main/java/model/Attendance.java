@@ -9,8 +9,9 @@ public class Attendance {
     private final LocalTime time;
 
     public Attendance(LocalDate date, LocalTime time) {
+        //TODO : 검증로직
         this.date = date;
-        this.time = time;
+        this.time = time; //TODO : null로 해보기
     }
 
     public boolean isSameDateWith(LocalDate date) {

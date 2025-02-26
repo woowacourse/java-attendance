@@ -6,8 +6,11 @@ import common.Common;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
+import java.util.Map;
 import model.Attendance;
 import model.AttendanceHistory;
+import model.AttendanceStatistics;
+import model.AttendanceStatus;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -58,6 +61,29 @@ public class AttendanceHistoryTest {
                 new Attendance(LocalDate.of(2024, 12, 11), LocalTime.of(10, 6)));
         assertThat(attendanceHistories.get(11)).isEqualTo(
                 new Attendance(LocalDate.of(2024, 12, 12), LocalTime.of(10, 31)));
+    }
+
+    @DisplayName("한 크루의 일부 출석 기록으로 출석, 지각, 결석 횟수를 구한다.")
+    @Test
+    void test2() {
+        //given
+        int requestDate = 7;
+        AttendanceHistory attendanceHistory = new AttendanceHistory();
+        attendanceHistory.register(LocalDate.of(2024, 12, 1), LocalTime.of(10, 0)); //출석
+        attendanceHistory.register(LocalDate.of(2024, 12, 2), LocalTime.of(10, 0)); //출석
+        attendanceHistory.register(LocalDate.of(2024, 12, 3), LocalTime.of(10, 6)); //지각
+        attendanceHistory.register(LocalDate.of(2024, 12, 4), LocalTime.of(10, 31)); //결석
+
+
+        //when
+        AttendanceStatistics attendanceStatistics = new AttendanceStatistics(attendanceHistory);
+        Map<AttendanceStatus, Integer> attendanceStatusCount = attendanceStatistics.calculateStatusCountUntilBefore(requestDate);
+
+
+        //then
+        assertThat(attendanceStatusCount.get(AttendanceStatus.NORMAL)).isEqualTo(2);
+        assertThat(attendanceStatusCount.get(AttendanceStatus.LATE)).isEqualTo(1);
+        assertThat(attendanceStatusCount.get(AttendanceStatus.ABSENCE)).isEqualTo(3);
     }
 }
 
