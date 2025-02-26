@@ -52,11 +52,14 @@ public class AttendCheckerTest {
         //given
         OperationTimeChecker operationTimeChecker = new OperationTimeChecker();
         LocalTime innerOperationTime = LocalTime.of(8, 0);
+        LocalTime notOperationTime = LocalTime.of(7, 59);
 
         //when
         boolean actual = operationTimeChecker.isContainsOperationTime(innerOperationTime);
+        boolean actual2 = operationTimeChecker.isContainsOperationTime(notOperationTime);
 
         //then
         assertThat(actual).isEqualTo(true);
+        assertThat(actual2).isEqualTo(false);
     }
 }
