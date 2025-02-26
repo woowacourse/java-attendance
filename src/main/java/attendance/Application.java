@@ -19,18 +19,24 @@ public class Application {
     }
 
     public static void main(String[] args) {
-        LocalDate today = LocalDate.now();
-        String option = InputView.readOption(today);
-        if (option.equals(QUIT_OPTION)) {
-            return;
+        while (true) {
+            LocalDate today = LocalDate.now();
+            String option = InputView.readOption(today);
+            if (option.equals(QUIT_OPTION)) {
+                break;
+            }
+            try {
+                run(option);
+            } catch (IllegalArgumentException e) {
+                System.out.println(e.getMessage());
+            }
         }
-        run(option);
     }
 
     private static void run(final String option) {
         Runnable function = options.getOrDefault(option, null);
         if (function == null) {
-            throw new IllegalArgumentException("존재하지 않는 옵션입니다.");
+            throw new IllegalArgumentException("[ERROR] 존재하지 않는 옵션입니다.");
         }
         function.run();
     }
