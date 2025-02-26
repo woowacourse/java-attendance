@@ -8,6 +8,7 @@ public enum MainMenuCommand {
     PRINT_MONTH_ATTENDANCE_STATISTICS("3"),
     PRINT_RISK_CREWS("4"),
     QUIT("Q"),
+    NONE(""),
     ;
 
     private final String command;
@@ -20,6 +21,6 @@ public enum MainMenuCommand {
         return Arrays.stream(values())
                 .filter(mainMenuCommand -> option.equals(mainMenuCommand.command))
                 .findAny()
-                .orElseThrow(() -> new IllegalArgumentException(option + ": 존재하지 않는 커맨드입니다."));
+                .orElse(NONE);
     }
 }

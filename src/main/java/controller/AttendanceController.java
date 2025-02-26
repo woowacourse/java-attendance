@@ -44,6 +44,7 @@ public class AttendanceController {
             case PRINT_MONTH_ATTENDANCE_STATISTICS -> printMonthAttendanceStatistics();
             case PRINT_RISK_CREWS -> printRiskCrews();
             case QUIT -> isRunning = false;
+            default -> System.out.println("존재하지 않는 커맨드입니다.");
         }
         return isRunning;
     }
