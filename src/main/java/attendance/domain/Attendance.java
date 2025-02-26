@@ -1,5 +1,6 @@
 package attendance.domain;
 
+import attendance.constant.Holiday;
 import attendance.util.FormattedErrorMessage;
 
 import java.time.DayOfWeek;
@@ -17,6 +18,10 @@ public class Attendance {
     private void validateAttendDate(LocalDate attendDate) {
         DayOfWeek dayOfWeekOfAttendDate = attendDate.getDayOfWeek();
         if (dayOfWeekOfAttendDate == DayOfWeek.SATURDAY || dayOfWeekOfAttendDate == DayOfWeek.SUNDAY) {
+            throw new IllegalArgumentException(FormattedErrorMessage.INVALID_ATTENDANCE_ERROR.getDateFormatMessage(attendDate));
+        }
+
+        if (Holiday.isHoliday(attendDate)) {
             throw new IllegalArgumentException(FormattedErrorMessage.INVALID_ATTENDANCE_ERROR.getDateFormatMessage(attendDate));
         }
     }
