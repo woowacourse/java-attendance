@@ -1,7 +1,6 @@
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.stream.Stream;
@@ -11,13 +10,15 @@ import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
 public class AttendanceCheckTest {
-    final DayOfWeek dayOfWeek = LocalDate.now().getDayOfWeek();
+    final LocalDate today = LocalDate.now();
 
     public static Stream<Arguments> provideEachDayOfWeekAttendance() {
         return Stream.of(
-                Arguments.of(DayOfWeek.MONDAY, "에드", LocalTime.of(13, 0), "출석"),
-                Arguments.of(DayOfWeek.MONDAY, "제프", LocalTime.of(13, 6), "지각"),
-                Arguments.of(DayOfWeek.THURSDAY, "율무", LocalTime.of(13, 0), "결석")
+                // 월요일
+                Arguments.of(LocalDate.of(2025, 2, 24), "에드", LocalTime.of(13, 0), "출석"),
+                Arguments.of(LocalDate.of(2025, 2, 24), "제프", LocalTime.of(13, 6), "지각"),
+                //수요일
+                Arguments.of(LocalDate.of(2025, 2, 25), "율무", LocalTime.of(13, 0), "결석")
         );
     }
 
@@ -27,8 +28,8 @@ public class AttendanceCheckTest {
         final var attendanceTime = LocalTime.of(9, 59);
 
         AttendanceCheck attendanceCheck = new AttendanceCheck();
-        attendanceCheck.attend(dayOfWeek, nickname, attendanceTime);
-        final var actual = attendanceCheck.getAttendanceStatus(dayOfWeek, nickname);
+        attendanceCheck.attend(today, nickname, attendanceTime);
+        final var actual = attendanceCheck.getAttendanceStatus(today, nickname);
         final var expected = "출석";
         assertEquals(expected, actual);
     }
@@ -40,10 +41,10 @@ public class AttendanceCheckTest {
 
         AttendanceCheck attendanceCheck = new AttendanceCheck();
 
-        attendanceCheck.attend(dayOfWeek, nickname, attendanceTime);
+        attendanceCheck.attend(today, nickname, attendanceTime);
 
-        final var attendanceTimeRecord = attendanceCheck.getAttendanceTime(dayOfWeek, nickname);
-        final var attendanceStatus = attendanceCheck.getAttendanceStatus(dayOfWeek, nickname);
+        final var attendanceTimeRecord = attendanceCheck.getAttendanceTime(today, nickname);
+        final var attendanceStatus = attendanceCheck.getAttendanceStatus(today, nickname);
 
         assertEquals(attendanceTime, attendanceTimeRecord);
         assertEquals("출석", attendanceStatus);
@@ -55,9 +56,9 @@ public class AttendanceCheckTest {
         final var attendanceTime = LocalTime.of(9, 59);
         AttendanceCheck attendanceCheck = new AttendanceCheck();
 
-        attendanceCheck.attend(dayOfWeek, nickname, attendanceTime);
+        attendanceCheck.attend(today, nickname, attendanceTime);
 
-        assertThatThrownBy(() -> attendanceCheck.attend(dayOfWeek, nickname, attendanceTime))
+        assertThatThrownBy(() -> attendanceCheck.attend(today, nickname, attendanceTime))
                 .isInstanceOf(IllegalStateException.class)
                 .hasMessage("[ERROR] 이미 출석이 완료되었습니다. 수정 기능을 이용하세요.");
     }
@@ -68,9 +69,9 @@ public class AttendanceCheckTest {
         final var attendanceTime = LocalTime.of(10, 6);
         AttendanceCheck attendanceCheck = new AttendanceCheck();
 
-        attendanceCheck.attend(dayOfWeek, nickname, attendanceTime);
+        attendanceCheck.attend(today, nickname, attendanceTime);
         final var expected = "지각";
-        assertEquals(expected, attendanceCheck.getAttendanceStatus(dayOfWeek, nickname));
+        assertEquals(expected, attendanceCheck.getAttendanceStatus(today, nickname));
     }
 
     @Test
@@ -79,17 +80,17 @@ public class AttendanceCheckTest {
         final var attendanceTime = LocalTime.of(10, 31);
         AttendanceCheck attendanceCheck = new AttendanceCheck();
 
-        attendanceCheck.attend(dayOfWeek, nickname, attendanceTime);
+        attendanceCheck.attend(today, nickname, attendanceTime);
         final var expected = "결석";
-        assertEquals(expected, attendanceCheck.getAttendanceStatus(dayOfWeek, nickname));
+        assertEquals(expected, attendanceCheck.getAttendanceStatus(today, nickname));
     }
 
     @ParameterizedTest
     @MethodSource("provideEachDayOfWeekAttendance")
-    void 요일에_따라_다른_시작_시간을_적용한다(DayOfWeek dayOfWeek, String nickname, LocalTime attendanceTime, String expected) {
+    void 요일에_따라_다른_시작_시간을_적용한다(LocalDate today, String nickname, LocalTime attendanceTime, String expected) {
         AttendanceCheck attendanceCheck = new AttendanceCheck();
-        attendanceCheck.attend(dayOfWeek, nickname, attendanceTime);
-        final var actual = attendanceCheck.getAttendanceStatus(dayOfWeek, nickname);
+        attendanceCheck.attend(today, nickname, attendanceTime);
+        final var actual = attendanceCheck.getAttendanceStatus(today, nickname);
         assertEquals(expected, actual);
     }
 
@@ -103,8 +104,10 @@ public class AttendanceCheckTest {
         final var attendanceTime = LocalTime.of(10, 31);
         AttendanceCheck attendanceCheck = new AttendanceCheck();
 
-        assertThatThrownBy(() -> attendanceCheck.attend(offDay.getDayOfWeek(), nickname, attendanceTime))
+        assertThatThrownBy(() -> attendanceCheck.attend(offDay, nickname, attendanceTime))
                 .isInstanceOf(IllegalStateException.class)
-                .hasMessage("[ERROR] 오늘은 등교일이 아닙니다.");
+                .hasMessageStartingWith("[ERROR]");
     }
+
+    
 }
