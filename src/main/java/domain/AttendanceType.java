@@ -10,4 +10,8 @@ public enum AttendanceType {
     AttendanceType(String name) {
         this.name = name;
     }
+
+    public String getName() {
+        return name;
+    }
 }
