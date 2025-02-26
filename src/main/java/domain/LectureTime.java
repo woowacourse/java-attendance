@@ -34,8 +34,7 @@ public enum LectureTime {
                 .map(lectureTime -> lectureTime.dayOfWeek)
                 .anyMatch(dayOfWeek1 -> dayOfWeek1 == date.getDayOfWeek());
     }
-
-    // TODO: 날짜에 맞는 교육 시간을 반환한다, 교육 날이 아니면 예외를 발생시킨다
+    
     public static LectureTime from(LocalDate date) {
         return Arrays.stream(values())
                 .filter(lectureTime -> lectureTime.dayOfWeek == date.getDayOfWeek())
