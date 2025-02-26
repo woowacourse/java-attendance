@@ -17,4 +17,8 @@ public class OutputView {
     public static void printNotRegisteredCrewNickname() {
         System.out.println("[ERROR] 등록되지 않은 닉네임입니다.");
     }
+
+    public static void printNotOperationTime() {
+        System.out.println("[ERROR] 캠퍼스 운영 시간은 매일 08:00 ~ 23:00 입니다.");
+    }
 }

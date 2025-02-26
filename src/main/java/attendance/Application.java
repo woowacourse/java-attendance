@@ -6,6 +6,7 @@ import attendance.domain.Crew;
 import attendance.view.InputView;
 import attendance.view.OutputView;
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -49,6 +50,9 @@ public class Application {
 
     private static void doAttendance() {
         LocalDate today = now();
+        /**
+         * 테스트 코드
+         */
         attendanceManager.addCrew(new Crew("레오"));
         boolean isOperationDate = campusManager.isOperationDate(today);
         if (!isOperationDate) {
@@ -62,7 +66,13 @@ public class Application {
             OutputView.printNotRegisteredCrewNickname();
             return;
         }
-        InputView.readAttendanceTime();
+        LocalTime attendanceTime = InputView.readAttendanceTime();
+        boolean isOperationTime = campusManager.isOperationTime(attendanceTime);
+        if (!isOperationTime) {
+            OutputView.printNotOperationTime();
+            return;
+        }
+
     }
 
     private static void modifyAttendance() {
