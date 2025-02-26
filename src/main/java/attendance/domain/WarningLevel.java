@@ -1,14 +1,23 @@
 package attendance.domain;
 
+import java.util.Arrays;
+import java.util.function.Function;
+
 public enum WarningLevel {
-    WARNING;
+    WARNING((totalAbsent) -> totalAbsent >= 2);
+
+    private final Function<Integer, Boolean> isMatch;
+
+    WarningLevel(Function<Integer, Boolean> isMatch) {
+        this.isMatch = isMatch;
+    }
 
 
     public static WarningLevel from(int lateCount, int absentCount) {
         int totalAbsent = lateCount / 3 + absentCount;
-        if (totalAbsent >= 2) {
-            return WARNING;
-        }
-        return null;
+        return Arrays.stream(values())
+                .filter(warningLevel -> warningLevel.isMatch.apply(totalAbsent))
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException("해당하는 경고 레벨이 없습니다."));
     }
 }
