@@ -38,16 +38,20 @@ public class AttendanceBook {
     }
 
     public CheckAttendanceResponse checkAttendance(String name, LocalDate date, LocalTime time) {
-        if (time.isBefore(OPERATING_START.getTime()) || time.isAfter(OPERATING_END.getTime())) {
-            throw new IllegalArgumentException(ErrorMessage.NOTICE_TIME_IS_NOT_A_CAMPUS_OPERATING_TIME.getFormat());
-        }
+        validateTimeIsInTheRangeOfOperation(time);
         String attendanceStatus = validateTrainingDay(date, time);
-        
+
         Crew foundCrew = findCrewByName(name);
         validateAlreadyAttendance(foundCrew, date);
 
         foundCrew.addNewTimeLog(date, time);
         return new CheckAttendanceResponse(time, attendanceStatus);
+    }
+
+    private static void validateTimeIsInTheRangeOfOperation(LocalTime time) {
+        if (time.isBefore(OPERATING_START.getTime()) || time.isAfter(OPERATING_END.getTime())) {
+            throw new IllegalArgumentException(ErrorMessage.NOTICE_TIME_IS_NOT_A_CAMPUS_OPERATING_TIME.getFormat());
+        }
     }
 
     public static String validateTrainingDay(LocalDate date, LocalTime time) {
