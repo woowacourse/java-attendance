@@ -1,7 +1,7 @@
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import domain.AttendanceHistory;
-import domain.AttendanceRecord;
 import java.time.LocalDateTime;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -36,5 +36,17 @@ public class AttendanceHistoryTest {
     @Nested
     @DisplayName("실패 테스트")
     class FailCases {
+
+        @DisplayName("등교 날짜가 아닌 경우라면 예외가 발생한다.")
+        @Test
+        public void attendance() throws Exception {
+            // given
+            final var attendanceHistory = new AttendanceHistory();
+            final var attendanceDateTime = LocalDateTime.of(2024, 12, 14, 10, 5);
+
+            // when & then
+            assertThatThrownBy(() -> attendanceHistory.attendance(attendanceDateTime))
+                    .isInstanceOf(IllegalStateException.class);
+        }
     }
 }
