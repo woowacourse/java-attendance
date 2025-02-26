@@ -30,7 +30,6 @@ public class AttendanceBook {
     }
 
     public ModifyResult modify(CrewName crewName, Attendance newAttendance) {
-        AttendanceRecord attendanceRecord = findAttendanceRecordBy(crewName);
-        return attendanceRecord.modify(newAttendance);
+        return findAttendanceRecordBy(crewName).modify(newAttendance);
     }
 }

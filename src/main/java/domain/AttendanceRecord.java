@@ -23,11 +23,10 @@ public class AttendanceRecord {
     }
 
     public ModifyResult modify(Attendance newAttendance) {
-        // TODO : 네이밍 수정
-        Attendance findAttendance = findSameDateAttendanceBy(newAttendance);
-        value.remove(findAttendance);
+        Attendance originalAttendance = findSameDateAttendanceBy(newAttendance);
+        value.remove(originalAttendance);
         value.add(newAttendance);
-        return new ModifyResult(findAttendance, newAttendance);
+        return new ModifyResult(originalAttendance, newAttendance);
     }
 
     @Override
