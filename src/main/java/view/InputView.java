@@ -6,6 +6,7 @@ public class InputView {
     public static Scanner scanner = new Scanner(System.in);
 
     public static FeatureType askFeature() {
+        System.out.println("기능을 선택해 주세요.");
         for (FeatureType value : FeatureType.values()) {
             System.out.printf("%s. %s%n", value.getKey(), value.getName());
         }
