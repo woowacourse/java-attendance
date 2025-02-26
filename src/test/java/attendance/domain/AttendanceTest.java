@@ -42,7 +42,8 @@ public class AttendanceTest {
 
         //expected
         Assertions.assertThatThrownBy(() -> new Attendance(attendanceDateTime))
-                .isExactlyInstanceOf(IllegalArgumentException.class);
+                .isExactlyInstanceOf(IllegalArgumentException.class)
+                .hasMessage("[ERROR] 지정된 시간이 아니면 등교가 불가능합니다.");
     }
 
     @Test
@@ -53,6 +54,8 @@ public class AttendanceTest {
 
         //expected
         Assertions.assertThatIllegalArgumentException()
-                .isThrownBy(() -> new Attendance(attendanceDateTime));
+                .isThrownBy(() -> new Attendance(attendanceDateTime))
+                .withMessage("주말 및 공휴일은 출석을 받지않습니다");
+
     }
 }

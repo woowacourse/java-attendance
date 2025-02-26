@@ -21,9 +21,12 @@ public class Attendance {
 
 
     private void validateAttendanceDate(LocalDate localDate) {
-
-        throw new IllegalArgumentException("주말 및 공휴일은 출석을 받지");
+        if (localDate.getDayOfWeek().equals(DayOfWeek.SATURDAY) || localDate.getDayOfWeek().equals(DayOfWeek.SUNDAY)
+                || localDate.getDayOfMonth() == 25) {
+            throw new IllegalArgumentException("주말 및 공휴일은 출석을 받지않습니다");
+        }
     }
+
     private void validateAttendanceTime(LocalTime localTime) {
         if (localTime.isBefore(LocalTime.of(8, 0)) || localTime.isAfter(LocalTime.of(23, 0))) {
             throw new IllegalArgumentException("[ERROR] 지정된 시간이 아니면 등교가 불가능합니다.");
