@@ -64,7 +64,7 @@ public class AttendanceBook {
         return warningCrews;
     }
 
-    public List<CrewAttendance> findByWarningLevel(final WarningLevel warningLevel, final LocalDate today) {
+    private List<CrewAttendance> findByWarningLevel(final WarningLevel warningLevel, final LocalDate today) {
         return crewAttendances.values().stream()
                 .filter(crewAttendance -> crewAttendance.hasSameWarningLevel(warningLevel, today))
                 .toList();
