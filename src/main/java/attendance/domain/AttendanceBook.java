@@ -21,7 +21,7 @@ public class AttendanceBook {
         crewAttendance.add(localDateTime);
     }
 
-    public List<AttendanceTimeStatus> modify(final String name, final LocalDateTime newLocalDateTime) {
+    public AttendanceBeforeAfter modify(final String name, final LocalDateTime newLocalDateTime) {
         validateName(name);
         CrewAttendance crewAttendance = crewAttendances.get(name);
         LocalDate targetDate = newLocalDateTime.toLocalDate();
@@ -30,7 +30,7 @@ public class AttendanceBook {
         crewAttendance.modify(newLocalDateTime);
         AttendanceTimeStatus newAttendanceTimeStatus = crewAttendance.getAttendanceOn(targetDate);
 
-        return List.of(prevAttendanceTimeStatus, newAttendanceTimeStatus);
+        return new AttendanceBeforeAfter(prevAttendanceTimeStatus, newAttendanceTimeStatus);
     }
 
     private void validateName(final String name) {

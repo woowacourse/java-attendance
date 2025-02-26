@@ -1,5 +1,6 @@
 package attendance.controller;
 
+import attendance.domain.AttendanceBeforeAfter;
 import attendance.domain.AttendanceBook;
 import attendance.domain.AttendanceStatus;
 import attendance.domain.AttendanceTimeStatus;
@@ -68,7 +69,7 @@ public class AttendanceController {
         LocalTime newLocalTime = InputView.readModifyTime();
         LocalDateTime newLocalDateTime = LocalDateTime.of(targetDate, newLocalTime);
 
-        List<AttendanceTimeStatus> modifiedResult = attendanceBook.modify(name, newLocalDateTime);
+        AttendanceBeforeAfter modifiedResult = attendanceBook.modify(name, newLocalDateTime);
         OutputView.printModifiedResult(targetDate, modifiedResult);
     }
 

@@ -4,6 +4,7 @@ import static attendance.domain.AttendanceStatus.ABSENCE;
 import static attendance.domain.AttendanceStatus.LATENESS;
 import static attendance.domain.WarningLevel.NONE;
 
+import attendance.domain.AttendanceBeforeAfter;
 import attendance.domain.AttendanceChecker;
 import attendance.domain.AttendanceStatus;
 import attendance.domain.AttendanceTimeStatus;
@@ -64,12 +65,12 @@ public class OutputView {
     }
 
     public static void printModifiedResult(final LocalDate date,
-                                           final List<AttendanceTimeStatus> attendanceTimeStatuses) {
-        final Optional<LocalTime> prevTime = attendanceTimeStatuses.getFirst().time();
-        final AttendanceStatus prevStatus = attendanceTimeStatuses.getFirst().status();
+                                           final AttendanceBeforeAfter attendanceBeforeAfter) {
+        final Optional<LocalTime> prevTime = attendanceBeforeAfter.before().time();
+        final AttendanceStatus prevStatus = attendanceBeforeAfter.before().status();
 
-        final Optional<LocalTime> newTime = attendanceTimeStatuses.getLast().time();
-        final AttendanceStatus newStatus = attendanceTimeStatuses.getLast().status();
+        final Optional<LocalTime> newTime = attendanceBeforeAfter.after().time();
+        final AttendanceStatus newStatus = attendanceBeforeAfter.after().status();
 
         System.out.printf(System.lineSeparator() + getDisplayDate(date) + MODIFY_SUCCESS_FORMAT,
                 formatAttendanceTime(prevTime), prevStatus.getDisplayName(),
