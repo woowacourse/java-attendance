@@ -34,4 +34,11 @@ public class Attendance {
             throw new IllegalArgumentException(FormattedErrorMessage.INVALID_ATTEND_TIME_ERROR.getTimeFormatMessage(attendTime));
         }
     }
+
+    public String determineStatus() {
+        if (EducationTime.isAttendOfMonday(attendTime)) {
+            return "출석";
+        }
+        return "";
+    }
 }
