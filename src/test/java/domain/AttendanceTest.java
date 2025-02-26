@@ -12,8 +12,8 @@ public class AttendanceTest {
     @Nested
     @DisplayName("1.1 닉네임과 등교 시간을 받으면 오늘 날짜로 출석 기록을 생성할 수 있다.")
     class AttendanceCheckTest {
-        private final LocalDate MON_DATE = LocalDate.of(2024, 12, 24);
-        private final LocalDate TUE_DATE = LocalDate.of(2024, 12, 25);
+        private final LocalDate MON_DATE = LocalDate.of(2025, 2, 24);
+        private final LocalDate TUE_DATE = LocalDate.of(2025, 2, 25);
 
         @Test
         @DisplayName("화요일은 10시 5분에 출석할 경우 출석으로 처리한다.")
