@@ -90,7 +90,6 @@ public class Register {
                     crew2.getAbsenceInfo().calculateTotalAbsence(),
                     crew1.getAbsenceInfo().calculateTotalAbsence()
             );
-            //Integer.compare가 ==이면 0을 반환하니까, 0이 아닐 경우 리턴을 해주고, 0이면 닉네임순으로 정렬
             if (absenceCompare != 0) {
                 return absenceCompare;
             }
