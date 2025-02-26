@@ -58,4 +58,15 @@ public class AttendanceBookTest {
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("[ERROR]");
     }
+
+    @DisplayName("출석 저장 시, 이미 해당 날짜에 출석 기록이 있는 경우 예외가 발생한다.")
+    @Test
+    void test4() {
+        CrewName crewName = new CrewName("미미");
+        Attendance attendance = new Attendance(LocalDateTime.of(2024, 12, 10, 10, 31));
+
+        assertThatThrownBy(() -> attendanceBook.addAttendance(crewName, attendance))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("[ERROR]");
+    }
 }
