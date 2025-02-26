@@ -6,6 +6,7 @@ import exception.FutureAttendanceModifyException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -68,7 +69,7 @@ public class AttendanceHistory {
     }
 
     public List<Attendance> findAll() {
-        return null;
+        return Collections.unmodifiableList(this.attendances);
     }
 
     @Override

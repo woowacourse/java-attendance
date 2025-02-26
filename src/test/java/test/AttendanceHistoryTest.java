@@ -25,11 +25,10 @@ public class AttendanceHistoryTest {
         List<Attendance> attendanceHistories = attendanceHistory.findAll();
 
         //then
-        assertThat(attendanceHistories.size()).isEqualTo(3);
+        assertThat(attendanceHistories.size()).isEqualTo(31);
         assertThat(attendanceHistories).contains(new Attendance(LocalDate.of(2024, 12, 10), LocalTime.of(10, 0)));
         assertThat(attendanceHistories).contains(new Attendance(LocalDate.of(2024, 12, 11), LocalTime.of(10, 6)));
         assertThat(attendanceHistories).contains(new Attendance(LocalDate.of(2024, 12, 12), LocalTime.of(10, 31)));
-
     }
 }
 
