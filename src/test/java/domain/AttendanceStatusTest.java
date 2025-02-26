@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Test;
 
 import java.time.LocalTime;
 
+import static domain.AttendanceStatus.getAttendanceStatus;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
@@ -28,7 +29,7 @@ class AttendanceStatusTest {
         LocalTime classStartTime = LocalTime.of(10, 0);
         LocalTime checkInTime = LocalTime.of(10, 4);
         //when
-        AttendanceStatus status = AttendanceStatus.getAttendanceStatus(classStartTime, checkInTime);
+        AttendanceStatus status = getAttendanceStatus(classStartTime, checkInTime);
         //then
         assertThat(status).isEqualTo(AttendanceStatus.PRESENCE);
     }
@@ -55,7 +56,7 @@ class AttendanceStatusTest {
         LocalTime classStartTime = LocalTime.of(10, 0);
         LocalTime checkInTime = LocalTime.of(10, 31);
         //when
-        AttendanceStatus status = AttendanceStatus.getAttendanceStatus(classStartTime, checkInTime);
+        AttendanceStatus status = getAttendanceStatus(classStartTime, checkInTime);
         //then
         assertThat(status).isEqualTo(AttendanceStatus.ABSENCE);
     }
