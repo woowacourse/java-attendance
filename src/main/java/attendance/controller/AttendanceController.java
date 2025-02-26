@@ -11,6 +11,7 @@ import attendance.domain.Menu;
 import attendance.domain.Warning;
 import attendance.dto.AttendanceResultResponse;
 import attendance.dto.AttendancesResponse;
+import attendance.dto.WarningCrewsResponse;
 import attendance.util.AttendancesFileReader;
 import attendance.util.CrewAttendancesDataParser;
 import attendance.view.InputView;
@@ -55,7 +56,7 @@ public class AttendanceController {
             printAttendancesByCrew();
         }
         if (Menu.PRINT_WARNING.equals(selectedMenu)) {
-
+            printWarningCrews();
         }
         if (Menu.QUIT.equals(selectedMenu)) {
             System.exit(0);
@@ -100,5 +101,10 @@ public class AttendanceController {
         if (!Warning.NONE.equals(warning)) {
             outputView.printWarning(warning);
         }
+    }
+
+    private void printWarningCrews() {
+        WarningCrewsResponse response = WarningCrewsResponse.from(attendanceBook.findWarningCrews());
+        outputView.printWarningCrews(response);
     }
 }

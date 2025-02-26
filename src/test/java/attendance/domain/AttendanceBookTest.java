@@ -1,7 +1,7 @@
 package attendance.domain;
 
 import static attendance.domain.AttendancesTest.generateAttendances;
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatCode;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 
@@ -86,6 +86,25 @@ public class AttendanceBookTest {
         final var result = attendanceBook.findByNicknameAndDate("훌라", LocalDateTime.of(2024, 12, 12, 10, 4));
 
         assertThat(result).isEqualTo(Attendance.from(LocalDateTime.of(2024, 12, 12, 9, 31)));
+    }
+
+    @Test
+    void 위험자들을_반환한다() {
+        List<LocalDateTime> attendances = List.of(
+                LocalDateTime.of(2024, 12, 10, 10, 31),
+                LocalDateTime.of(2024, 12, 11, 10, 31),
+                LocalDateTime.of(2024, 12, 12, 10, 31),
+                LocalDateTime.of(2024, 12, 13, 10, 31)
+        );
+        AttendanceBook attendanceBook = new AttendanceBook(
+                Map.of(
+                        "훌라", generateAttendances(attendances),
+                        "모루", generateAttendances(attendances)
+                )
+        );
+        final var result = attendanceBook.findWarningCrews();
+
+        assertThat(result.keySet()).hasSize(2);
     }
 
     public static AttendanceBook generateAttendanceBook(String nickname, List<LocalDateTime> dateTimes) {

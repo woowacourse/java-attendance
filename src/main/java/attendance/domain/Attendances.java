@@ -50,14 +50,14 @@ public class Attendances {
 
     public Warning calculateWarning() {
         int countTotalAbsence = countAbsence() + countLate() / 3;
-        if (countTotalAbsence == 2) {
-            return Warning.Warning;
-        }
-        if (countTotalAbsence == 3) {
-            return Warning.INTERVIEW;
-        }
         if (countTotalAbsence > 5) {
             return Warning.EXPULSION;
+        }
+        if (countTotalAbsence >= 3) {
+            return Warning.INTERVIEW;
+        }
+        if (countTotalAbsence >= 2) {
+            return Warning.Warning;
         }
         return Warning.NONE;
     }
