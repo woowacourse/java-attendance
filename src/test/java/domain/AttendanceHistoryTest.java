@@ -15,14 +15,14 @@ public class AttendanceHistoryTest {
     @DisplayName("닉네임을 입력하여 전날까지의 출석 기록을 확인할 수 있다.")
     void attendanceHistoryTest() {
         String nickname = "투다";
-        AttendanceDate notIncludeDate = new AttendanceDate(LocalDate.of(2024, 12, 4));
         TestAttendanceCurrentDateGenerateStrategy testAttendanceCurrentDateGenerateStrategy = new TestAttendanceCurrentDateGenerateStrategy(
                 LocalDate.of(2024, 12, 2));
         CrewAttendances crewAttendances = new CrewAttendances(testAttendanceCurrentDateGenerateStrategy);
         crewAttendances.addAttendance("투다", LocalTime.of(8, 3));
         testAttendanceCurrentDateGenerateStrategy.setTestDate(LocalDate.of(2024, 12, 3));
         crewAttendances.addAttendance("투다", LocalTime.of(8, 3));
-        testAttendanceCurrentDateGenerateStrategy.setTestDate(LocalDate.of(2024, 12, 4));
+        LocalDate notIncludeDate = LocalDate.of(2024, 12, 4);
+        testAttendanceCurrentDateGenerateStrategy.setTestDate(notIncludeDate);
         crewAttendances.addAttendance("투다", LocalTime.of(8, 3));
         AttendanceDate attendanceDate1 = new AttendanceDate(LocalDate.of(2024, 12, 2));
         CrewAttendance crewAttendance = new CrewAttendance(new AttendanceTime(LocalTime.of(8, 3), attendanceDate1));
@@ -31,6 +31,8 @@ public class AttendanceHistoryTest {
         List<CrewAttendanceHistory> expectCrewAttendanceHistories = List.of(
                 new CrewAttendanceHistory(crewAttendance, attendanceDate1),
                 new CrewAttendanceHistory(crewAttendance2, attendanceDate2));
-        assertThatIterable(crewAttendances.crewAttendancesHistory()).isEqualTo(expectCrewAttendanceHistories);
+        testAttendanceCurrentDateGenerateStrategy.setTestDate(notIncludeDate);
+        assertThatIterable(crewAttendances.crewAttendancesHistory(nickname))
+                .containsExactlyInAnyOrderElementsOf(expectCrewAttendanceHistories);
     }
 }

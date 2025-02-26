@@ -2,6 +2,7 @@ package domain;
 
 import except.AttendanceException;
 import java.time.LocalTime;
+import java.util.Objects;
 
 public class AttendanceTime {
 
@@ -40,5 +41,23 @@ public class AttendanceTime {
         var attendanceMinute = attendanceTime.toSecondOfDay() / 60;
         var schoolStartTimeMinute = schoolAttendanceStartTime.toSecondOfDay() / 60;
         return attendanceMinute - schoolStartTimeMinute;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        AttendanceTime that = (AttendanceTime) o;
+        return Objects.equals(attendanceTime, that.attendanceTime) && Objects.equals(
+                schoolAttendanceStartTime, that.schoolAttendanceStartTime);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(attendanceTime, schoolAttendanceStartTime);
     }
 }

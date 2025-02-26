@@ -37,7 +37,8 @@ public class CrewAttendances {
         dateCrewAttendanceManager.modifyAttendance(modifyDate, modifyTime);
     }
 
-    public List<CrewAttendanceHistory> crewAttendancesHistory() {
-        return null;
+    public List<CrewAttendanceHistory> crewAttendancesHistory(String nickname) {
+        DateCrewAttendanceManager dateCrewAttendanceManager = dateCrewAttendanceManager(nickname);
+        return dateCrewAttendanceManager.crewAttendancesHistory();
     }
 }

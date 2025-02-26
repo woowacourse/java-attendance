@@ -4,7 +4,9 @@ import except.AttendanceException;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 import strategy.CurrentDateGenerateStrategy;
 
 public class DateCrewAttendanceManager {
@@ -41,5 +43,15 @@ public class DateCrewAttendanceManager {
             throw new AttendanceException(ATTENDANCE_DOENST_EXIST);
         }
         dateCrewAttendances.put(attendanceDate, new CrewAttendance(attendanceTime));
+    }
+
+    public List<CrewAttendanceHistory> crewAttendancesHistory() {
+        LocalDate today = currentDateGenerateStrategy.now();
+        return dateCrewAttendances.entrySet()
+                .stream()
+                .filter((entry) -> entry.getKey().isBefore(today))
+                .map((dateCrewAttendanceEntry) -> new CrewAttendanceHistory(dateCrewAttendanceEntry.getValue(),
+                        dateCrewAttendanceEntry.getKey()))
+                .collect(Collectors.toList());
     }
 }
