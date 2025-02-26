@@ -1,8 +1,10 @@
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
@@ -62,5 +64,16 @@ public class AttendCheckerTest {
 
         //then
         assertThat(actual).isEqualTo(expected);
+    }
+
+    @Test
+    @DisplayName("운영일이 아닌 날을 기반으로 교육 시작 시간을 판정할 시 예외 처리")
+    void throwExceptionWhenInputNotOperationDate() {
+        //given
+        OperationTimeChecker operationTimeChecker = new OperationTimeChecker();
+        LocalDate weekend = LocalDate.of(2024, 12, 1);
+
+        //when & then
+        assertThatThrownBy(() -> operationTimeChecker.getEducationStartTime(weekend));
     }
 }
