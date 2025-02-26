@@ -49,6 +49,7 @@ public class Application {
 
     private static void doAttendance() {
         LocalDate today = now();
+        attendanceManager.addCrew(new Crew("레오"));
         boolean isOperationDate = campusManager.isOperationDate(today);
         if (!isOperationDate) {
             OutputView.printNotOperationDate(today);
@@ -61,6 +62,7 @@ public class Application {
             OutputView.printNotRegisteredCrewNickname();
             return;
         }
+        InputView.readAttendanceTime();
     }
 
     private static void modifyAttendance() {

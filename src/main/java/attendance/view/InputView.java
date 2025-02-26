@@ -2,6 +2,9 @@ package attendance.view;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.time.format.TextStyle;
 import java.util.Locale;
 import java.util.Scanner;
@@ -34,5 +37,16 @@ public class InputView {
 
     private static String input() {
         return scanner.nextLine();
+    }
+
+    public static LocalTime readAttendanceTime() {
+        System.out.println("등교 시간을 입력해 주세요.");
+        String attendanceTime = input();
+        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("HH:mm");
+        try {
+            return LocalTime.parse(attendanceTime, dateTimeFormatter);
+        } catch (DateTimeParseException e) {
+            throw new IllegalArgumentException("유효한 시간을 입력해주세요.");
+        }
     }
 }
