@@ -1,4 +1,4 @@
-package domain;
+package View;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;

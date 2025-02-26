@@ -27,11 +27,11 @@ import view.dto.AttendanceLogDTO;
 import view.dto.ChangeAttendanceLogDTO;
 import view.dto.CrewAttendancesDTO;
 
-public class Controller {
+public class AttendanceController {
     private final InputView inputView;
     private final OutputView outputView;
 
-    public Controller(InputView inputView, OutputView outputView) {
+    public AttendanceController(InputView inputView, OutputView outputView) {
         this.inputView = inputView;
         this.outputView = outputView;
     }
