@@ -6,6 +6,8 @@ import java.time.LocalDateTime;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 
 public class AttendanceHistoryTest {
 
@@ -38,11 +40,12 @@ public class AttendanceHistoryTest {
     class FailCases {
 
         @DisplayName("등교 날짜가 아닌 경우라면 예외가 발생한다.")
-        @Test
-        public void attendance() throws Exception {
+        @ParameterizedTest
+        @ValueSource(ints = {14, 15, 25})
+        public void attendance(final int dayOfMonth) throws Exception {
             // given
             final var attendanceHistory = new AttendanceHistory();
-            final var attendanceDateTime = LocalDateTime.of(2024, 12, 14, 10, 5);
+            final var attendanceDateTime = LocalDateTime.of(2024, 12, dayOfMonth, 10, 5);
 
             // when & then
             assertThatThrownBy(() -> attendanceHistory.attendance(attendanceDateTime))
