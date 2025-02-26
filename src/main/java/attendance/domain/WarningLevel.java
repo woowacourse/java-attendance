@@ -5,8 +5,8 @@ import java.util.function.Function;
 
 public enum WarningLevel {
     WARNING(totalAbsent -> totalAbsent == 2),
-    INTERVIEW(totalAbsent -> totalAbsent >= 3),
-    WEEDING(totalAbsent -> false);
+    INTERVIEW(totalAbsent -> 3 <= totalAbsent && totalAbsent <= 5),
+    WEEDING(totalAbsent -> totalAbsent > 5);
 
     private final Function<Integer, Boolean> isMatch;
 
