@@ -27,22 +27,19 @@ public class AttendanceBook {
         return attendance;
     }
 
+    public Attendance replace(LocalDate date, LocalTime time) {
+        Attendance oldAttendance = findAttendanceByDate(date);
+        Attendance modifiedAttendance = oldAttendance.modify(time);
+        attendances.remove(oldAttendance);
+        attendances.add(modifiedAttendance);
+        return modifiedAttendance;
+    }
+
     public Attendance findAttendanceByDate(LocalDate date) {
         return attendances.stream()
                 .filter(attendance -> attendance.isAttendedOn(date))
                 .findFirst()
                 .orElse(Attendance.empty(date));
-    }
-
-    public Attendance replace(LocalDate date, LocalTime time) {
-        Attendance oldAttendance = attendances.stream()
-                .filter(attendance -> attendance.isAttendedOn(date))
-                .findFirst()
-                .orElse(Attendance.empty(date));
-        Attendance modifiedAttendance = oldAttendance.modify(time);
-        attendances.remove(oldAttendance);
-        attendances.add(modifiedAttendance);
-        return modifiedAttendance;
     }
 
     // TODO: 출석 내역을 날짜 기준으로 정렬해서 보여주는 것은 뷰의 책임으로 넘기기
