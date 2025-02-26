@@ -38,4 +38,20 @@ public class AttendanceStatusTest {
 
         assertThat(AttendanceStatus.from(attendance)).isEqualTo(AttendanceStatus.LATE);
     }
+
+    @DisplayName("월요일의 결석 상태를 구할 수 있다.")
+    @Test
+    void test5() {
+        Attendance attendance = new Attendance(LocalDateTime.of(2024, 12, 9, 13, 31));
+
+        assertThat(AttendanceStatus.from(attendance)).isEqualTo(AttendanceStatus.ABSENT);
+    }
+
+    @DisplayName("화~금요일의 결석 상태를 구할 수 있다.")
+    @Test
+    void test6() {
+        Attendance attendance = new Attendance(LocalDateTime.of(2024, 12, 10, 10, 31));
+
+        assertThat(AttendanceStatus.from(attendance)).isEqualTo(AttendanceStatus.ABSENT);
+    }
 }
