@@ -33,4 +33,18 @@ public class AttendanceTest {
         //then
         Assertions.assertThat(result).isEqualTo(AttendanceType.ABSENT);
     }
+
+    @Test
+    void 해당_요일의_시작_시각으로부터_5분을_초과하지_않는다면_출석이다() {
+        //given
+        DayOfWeek dayOfWeek = DayOfWeek.MONDAY;
+        LocalTime attendanceTime = LocalTime.of(13, 5);
+
+        //when
+        AttendanceType result = AttendanceType.calculate(dayOfWeek, attendanceTime);
+
+        //then
+        Assertions.assertThat(result).isEqualTo(AttendanceType.ATTENDANCE);
+
+    }
 }
