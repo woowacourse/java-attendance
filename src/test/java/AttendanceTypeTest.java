@@ -5,7 +5,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
-public class AttendanceTypeFactoryTest {
+public class AttendanceTypeTest {
     @Test
     @DisplayName("월요일에는 13시 6분에 등교하면 지각이다")
     void checkLate() {
@@ -13,7 +13,7 @@ public class AttendanceTypeFactoryTest {
         LocalDateTime attendAt = LocalDateTime.of(2024, 12, 2, 13, 6);
 
         // when & then
-        Assertions.assertThat(AttendanceTypeFactory.getType(attendAt)).isEqualTo("LATE");
+        Assertions.assertThat(AttendanceType.findAttendanceTypeByDateTime(attendAt)).isEqualTo(AttendanceType.LATE);
     }
 
     @ParameterizedTest
@@ -24,7 +24,7 @@ public class AttendanceTypeFactoryTest {
         LocalDateTime attendAt = LocalDateTime.of(2024, 12, day, 10, 6);
 
         // when & then
-        Assertions.assertThat(AttendanceTypeFactory.getType(attendAt)).isEqualTo("LATE");
+        Assertions.assertThat(AttendanceType.findAttendanceTypeByDateTime(attendAt)).isEqualTo(AttendanceType.LATE);
     }
 
     @Test
@@ -34,7 +34,7 @@ public class AttendanceTypeFactoryTest {
         LocalDateTime attendAt = LocalDateTime.of(2024, 12, 2, 13, 31);
 
         // when & then
-        Assertions.assertThat(AttendanceTypeFactory.getType(attendAt)).isEqualTo("ABSENCE");
+        Assertions.assertThat(AttendanceType.findAttendanceTypeByDateTime(attendAt)).isEqualTo(AttendanceType.ABSENCE);
     }
 
     @ParameterizedTest
@@ -45,7 +45,7 @@ public class AttendanceTypeFactoryTest {
         LocalDateTime attendAt = LocalDateTime.of(2024, 12, day, 10, 31);
 
         // when & then
-        Assertions.assertThat(AttendanceTypeFactory.getType(attendAt)).isEqualTo("ABSENCE");
+        Assertions.assertThat(AttendanceType.findAttendanceTypeByDateTime(attendAt)).isEqualTo(AttendanceType.ABSENCE);
     }
 
     @ParameterizedTest
@@ -56,7 +56,7 @@ public class AttendanceTypeFactoryTest {
         LocalDateTime attendAt = LocalDateTime.of(2024, 12, day, 10, 0);
 
         // when & then
-        Assertions.assertThat(AttendanceTypeFactory.getType(attendAt)).isEqualTo("PRESENT");
+        Assertions.assertThat(AttendanceType.findAttendanceTypeByDateTime(attendAt)).isEqualTo(AttendanceType.PRESENT);
     }
 
     @Test
@@ -66,7 +66,7 @@ public class AttendanceTypeFactoryTest {
         LocalDateTime attendAt = LocalDateTime.of(2024, 12, 2, 13, 0);
 
         // when & then
-        Assertions.assertThat(AttendanceTypeFactory.getType(attendAt)).isEqualTo("PRESENT");
+        Assertions.assertThat(AttendanceType.findAttendanceTypeByDateTime(attendAt)).isEqualTo(AttendanceType.PRESENT);
     }
 
 }

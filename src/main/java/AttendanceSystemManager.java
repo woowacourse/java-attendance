@@ -20,5 +20,7 @@ public class AttendanceSystemManager {
 
         AttendanceHistory attendanceHistory = new AttendanceHistory(crew, requestedAt);
         attendanceHistories.addNewHistory(attendanceHistory);
+
+        AttendanceType attendanceType = AttendanceType.findAttendanceTypeByDateTime(requestedAt);
     }
 }
