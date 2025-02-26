@@ -1,7 +1,7 @@
 import java.util.List;
 
 public enum December {
-    HOLYDAY(List.of(25));
+    HOLIDAY(List.of(25));
 
     private final List<Integer> days;
 
@@ -10,7 +10,7 @@ public enum December {
     }
 
     public static boolean checkHolyDay(int dayOfMonth) {
-        return HOLYDAY.days.contains(dayOfMonth);
+        return HOLIDAY.days.contains(dayOfMonth);
     }
 
     public List<Integer> getDays() {

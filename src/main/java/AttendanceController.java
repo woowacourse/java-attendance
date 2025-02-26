@@ -1,6 +1,10 @@
+import java.time.format.DateTimeFormatter;
+
 public class AttendanceController {
 
     public static final String TODAY_LOCAL_DATE = "2024-12-16";
+    public static final DateTimeFormatter TODAY_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+
     private final InputView inputView;
     private final OutputView outputView;
 
