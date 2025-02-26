@@ -98,16 +98,29 @@ public class AttendanceCheckTest {
     @Test
     void 주말에는_출석을_받지_않는다() {
         // 일요일
-        final var offDay = LocalDate.of(2025, 2, 23);
+        final var sunday = LocalDate.of(2025, 2, 23);
 
         final var nickname = "에드";
         final var attendanceTime = LocalTime.of(10, 31);
         AttendanceCheck attendanceCheck = new AttendanceCheck();
 
-        assertThatThrownBy(() -> attendanceCheck.attend(offDay, nickname, attendanceTime))
+        assertThatThrownBy(() -> attendanceCheck.attend(sunday, nickname, attendanceTime))
                 .isInstanceOf(IllegalStateException.class)
                 .hasMessageStartingWith("[ERROR]");
     }
 
-    
+    @Test
+    void 공휴일에는_출석을_받지_않는다() {
+        //설날
+        final var holiday = LocalDate.of(2025, 1, 1);
+
+        final var nickname = "에드";
+        final var attendanceTime = LocalTime.of(10, 31);
+        AttendanceCheck attendanceCheck = new AttendanceCheck();
+
+        assertThatThrownBy(() -> attendanceCheck.attend(holiday, nickname, attendanceTime))
+                .isInstanceOf(IllegalStateException.class)
+                .hasMessageStartingWith("[ERROR]");
+    }
+
 }
