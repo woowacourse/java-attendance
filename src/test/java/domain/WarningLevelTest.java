@@ -45,4 +45,17 @@ public class WarningLevelTest {
         //then
         assertThat(result).isEqualTo(WarningLevel.WEEDING);
     }
+
+    @Test
+    void 결석이_2회_미만이라면_NONE_대상자이다() {
+        //given
+        int lateCount = 0;
+        int absentCount = 1;
+
+        //when
+        WarningLevel result = WarningLevel.from(lateCount, absentCount);
+
+        //then
+        assertThat(result).isEqualTo(WarningLevel.NONE);
+    }
 }

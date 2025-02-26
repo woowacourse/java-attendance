@@ -4,6 +4,7 @@ import java.util.Arrays;
 import java.util.function.Function;
 
 public enum WarningLevel {
+    NONE(totalAbsent -> false),
     WARNING(totalAbsent -> totalAbsent == 2),
     INTERVIEW(totalAbsent -> 3 <= totalAbsent && totalAbsent <= 5),
     WEEDING(totalAbsent -> totalAbsent > 5);
