@@ -6,7 +6,7 @@ import attendance.model.EducationSchedule;
 import java.time.LocalDate;
 import org.junit.jupiter.api.Test;
 
-public class EducationScheduleTest {
+class EducationScheduleTest {
 
     @Test
     void 특정_날짜의_운영시간을_조회한다() {
