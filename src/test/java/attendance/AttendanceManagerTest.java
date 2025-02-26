@@ -3,6 +3,9 @@ package attendance;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
+import attendance.domain.Attendance;
+import attendance.domain.AttendanceManager;
+import attendance.domain.Crew;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.Optional;
