@@ -37,9 +37,8 @@ public class AttendanceBook {
         String attendanceStatus = validateTrainingDay(date, time);
 
         Crew foundCrew = findCrewByName(name);
-        if (foundCrew.isDateExisted(date)) { // 날짜가 존재한다면
-            throw new IllegalArgumentException(ErrorMessage.NOTICE_ATTENDANCE_ALREADY_EXISTED.getFormat());
-        }
+        validateAlreadyAttendance(foundCrew, date);
+        
         foundCrew.addNewTimeLog(date, time);
         return new CheckAttendanceResponse(time, attendanceStatus);
     }
@@ -53,5 +52,11 @@ public class AttendanceBook {
         }
 
         return attendanceStatus;
+    }
+
+    public static void validateAlreadyAttendance(Crew foundCrew, LocalDate date) {
+        if (foundCrew.isDateExisted(date)) { // 날짜가 존재한다면
+            throw new IllegalArgumentException(ErrorMessage.NOTICE_ATTENDANCE_ALREADY_EXISTED.getFormat());
+        }
     }
 }
