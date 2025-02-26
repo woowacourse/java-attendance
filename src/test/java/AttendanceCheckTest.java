@@ -123,4 +123,15 @@ public class AttendanceCheckTest {
                 .hasMessageStartingWith("[ERROR]");
     }
 
+    @Test
+    void 운영_시간을_벗어난_출석은_받지_않는다() {
+        final var nickname = "에드";
+        final var attendanceTime = LocalTime.of(7, 59);
+        AttendanceCheck attendanceCheck = new AttendanceCheck();
+
+        assertThatThrownBy(() -> attendanceCheck.attend(today, nickname, attendanceTime))
+                .isInstanceOf(IllegalStateException.class)
+                .hasMessageStartingWith("[ERROR]");
+    }
+
 }
