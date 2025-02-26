@@ -17,7 +17,7 @@ public class AttendanceStatusTest {
 
     @DisplayName("화~금요일의 출석 상태를 구할 수 있다.")
     @Test
-    void test1() {
+    void test2() {
         Attendance attendance = new Attendance(LocalDateTime.of(2024, 12, 10, 9, 59));
 
         assertThat(AttendanceStatus.from(attendance)).isEqualTo(AttendanceStatus.ATTEND);

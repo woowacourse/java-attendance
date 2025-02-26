@@ -1,6 +1,8 @@
 package domain;
 
+import java.time.DayOfWeek;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.Objects;
 
 public class Attendance {
@@ -8,6 +10,14 @@ public class Attendance {
 
     public Attendance(LocalDateTime value) {
         this.value = value;
+    }
+
+    public DayOfWeek getDayOfWeek() {
+        return value.getDayOfWeek();
+    }
+
+    public LocalTime getTime() {
+        return value.toLocalTime();
     }
 
     @Override
