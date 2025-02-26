@@ -24,17 +24,21 @@ public enum EducationTime {
 
     public static boolean isAttend(DayOfWeek inputDayOfWeek, LocalTime inputTime) {
         if (inputDayOfWeek == DayOfWeek.MONDAY) {
-            return !inputTime.isBefore(MONDAY_ATTEND.time) && inputTime.isBefore(MONDAY_LATE.time);
+            return isBetween(inputTime, MONDAY_ATTEND.time, MONDAY_LATE.time);
         }
 
-        return !inputTime.isBefore(GENERAL_ATTEND.time) && inputTime.isBefore(GENERAL_LATE.time);
+        return isBetween(inputTime, GENERAL_ATTEND.time, GENERAL_LATE.time);
     }
 
     public static boolean isLate(DayOfWeek inputDayOfWeek,LocalTime inputTime) {
         if (inputDayOfWeek == DayOfWeek.MONDAY) {
-            return !inputTime.isBefore(MONDAY_LATE.time) && inputTime.isBefore(MONDAY_ABSENT.time);
+            return isBetween(inputTime, MONDAY_LATE.time, MONDAY_ABSENT.time);
         }
 
-        return !inputTime.isBefore(GENERAL_LATE.time) && inputTime.isBefore(GENERAL_ABSENT.time);
+        return isBetween(inputTime, GENERAL_LATE.time, GENERAL_ABSENT.time);
+    }
+
+    private static boolean isBetween(LocalTime inputTime, LocalTime startTime, LocalTime endTime) {
+        return !inputTime.isBefore(startTime) && inputTime.isBefore(endTime);
     }
 }
