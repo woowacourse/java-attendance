@@ -15,4 +15,9 @@ public class Attendance {
         this.attendanceDate = attendanceDateTime.toLocalDate();
         this.attendanceTime = attendanceDateTime.toLocalTime();
     }
+
+    public boolean isAlreadyAttend(Attendance newAttendance) {
+        return nickname.equals(newAttendance.nickname) &&
+                attendanceDate.equals(newAttendance.attendanceDate);
+    }
 }
