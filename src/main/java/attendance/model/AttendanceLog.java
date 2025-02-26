@@ -83,6 +83,10 @@ public class AttendanceLog {
         return attendanceDate.isBefore(baseDate);
     }
 
+    public Nickname getNickname() {
+        return nickname;
+    }
+
     public LocalDateTime getAttendanceDateTime() {
         return LocalDateTime.of(attendanceDate, attendanceTime);
     }

@@ -8,6 +8,7 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.EnumMap;
 import java.util.List;
+import java.util.Set;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -29,6 +30,28 @@ class AttendanceLogsTest {
         // then
         assertThat(attendanceLogs.contains(belloAttendanceLog))
                 .isTrue();
+    }
+
+    @DisplayName("출석 로그 목록에서 존재하는 닉네임 목록을 조회할 수 있다.")
+    @Test
+    void getAllNicknamesTest() {
+        // given
+        LocalDate attendanceDate = LocalDate.of(2024, 12, 4);
+        LocalTime attendanceTime = LocalTime.of(10, 0);
+        AttendanceLogs attendanceLogs = new AttendanceLogs();
+        AttendanceLog belloAttendanceLog = new AttendanceLog(new Nickname("벨로"), attendanceDate, attendanceTime);
+        attendanceLogs.add(belloAttendanceLog);
+        AttendanceLog neoAttendanceLog = new AttendanceLog(new Nickname("네오"), attendanceDate, attendanceTime);
+        attendanceLogs.add(neoAttendanceLog);
+        AttendanceLog neoYesterdayAttendanceLog = new AttendanceLog(new Nickname("네오"), attendanceDate.minusDays(1), attendanceTime);
+        attendanceLogs.add(neoYesterdayAttendanceLog);
+
+        // when
+        Set<Nickname> allNicknames = attendanceLogs.getAllNicknames();
+
+        // then
+        assertThat(allNicknames)
+                .isEqualTo(Set.of(new Nickname("벨로"), new Nickname("네오")));
     }
 
     @DisplayName("닉네임과 출석 날짜가 같은 출석 로그를 저장할 경우 예외가 발생한다.")

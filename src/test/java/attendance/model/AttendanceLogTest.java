@@ -43,6 +43,23 @@ class AttendanceLogTest {
                 .isTrue();
     }
 
+    @DisplayName("출석 로그에서 닉네임을 확인할 수 있다.")
+    @Test
+    void getNicknameTest() {
+        // given
+        Nickname belloNickname = new Nickname("벨로");
+        LocalDate attendanceDate = LocalDate.of(2024, 12, 2);
+        LocalTime attendanceTime = LocalTime.of(10, 0);
+        AttendanceLog attendanceLog = new AttendanceLog(belloNickname, attendanceDate, attendanceTime);
+
+        // when
+        Nickname nickname = attendanceLog.getNickname();
+
+        // then
+        assertThat(nickname)
+                .isEqualTo(belloNickname);
+    }
+
     @DisplayName("닉네임이 null인 경우 예외가 발생한다.")
     @Test
     void shouldThrowException_WhenNicknameIsNull() {

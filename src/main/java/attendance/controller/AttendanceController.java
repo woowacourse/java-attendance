@@ -14,8 +14,10 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.List;
+import java.util.Set;
 
 public class AttendanceController {
 
@@ -44,6 +46,9 @@ public class AttendanceController {
         }
         if (command == Command.ATTENDANCE_LOGS) {
             displayAttendanceLogs(baseDate, attendanceLogs);
+        }
+        if (command == Command.WARNING_LIST) {
+            displayWarningList(baseDate, attendanceLogs);
         }
     }
 
@@ -108,5 +113,31 @@ public class AttendanceController {
         int lateCount = counted.get(AttendanceType.LATE);
         int absentCount = counted.get(AttendanceType.ABSENT);
         return AttendanceWarningLevel.determine(lateCount, absentCount);
+    }
+
+    // TODO: 분리가 필요합니다. 정렬 요구 사항을 해결하지 못했습니다.
+    private void displayWarningList(LocalDate baseDate, AttendanceLogs attendanceLogs) {
+        Set<Nickname> nicknames = attendanceLogs.getAllNicknames();
+        List<String> warnings = new ArrayList<>();
+        for (Nickname nickname : nicknames) {
+            EnumMap<AttendanceType, Integer> counted = attendanceLogs.countAllAttendanceType(nickname, baseDate);
+            int lateCount = counted.getOrDefault(AttendanceType.LATE, 0);
+            int absentCount = counted.getOrDefault(AttendanceType.ABSENT, 0);
+
+            AttendanceWarningLevel warningLevel = AttendanceWarningLevel.determine(lateCount, absentCount);
+
+            if (warningLevel != AttendanceWarningLevel.CLEAN) {
+                warnings.add("- %s: 결석 %d회, 지각 %d회 (%s)".formatted(
+                        nickname, absentCount, lateCount, warningLevel.getKoreanLabel()
+                ));
+            }
+        }
+
+        if (warnings.isEmpty()) {
+            System.out.println("\n제적 위험자가 없습니다.");
+            return;
+        }
+        System.out.println("\n제적 위험자 조회 결과");
+        warnings.forEach(System.out::println);
     }
 }

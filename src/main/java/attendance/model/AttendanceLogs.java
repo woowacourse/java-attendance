@@ -97,4 +97,10 @@ public class AttendanceLogs {
 
         return attendanceCounts;
     }
+
+    public Set<Nickname> getAllNicknames() {
+        return logs.stream()
+                .map(AttendanceLog::getNickname)
+                .collect(Collectors.toUnmodifiableSet());
+    }
 }
