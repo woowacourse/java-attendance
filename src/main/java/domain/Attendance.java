@@ -7,6 +7,9 @@ public class Attendance {
         if (time.isBefore(LocalTime.of(10, 5)) || time.equals(LocalTime.of(10, 5))) {
             return "출석";
         }
-        return null;
+        if (time.isBefore(LocalTime.of(10, 30)) || time.equals(LocalTime.of(10, 30))) {
+            return "지각";
+        }
+        return "결석";
     }
 }
