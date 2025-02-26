@@ -6,7 +6,6 @@ import attendance.dto.DismissalCrewDto;
 import attendance.view.ResultView;
 import java.time.Clock;
 import java.time.LocalDate;
-import java.util.List;
 import java.util.Map;
 
 public class FindDismissalCommand implements Command {
@@ -22,7 +21,6 @@ public class FindDismissalCommand implements Command {
     @Override
     public void execute(final CrewHistories crewHistories) {
         Map<String, AttendanceCounter> dismissalCrews = crewHistories.findDismissalCrews(LocalDate.now(clock));
-        List<DismissalCrewDto> dtos = DismissalCrewDto.of(dismissalCrews);
-        resultView.printDismissalResult(dtos);
+        resultView.printDismissalResult(DismissalCrewDto.of(dismissalCrews));
     }
 }

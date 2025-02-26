@@ -24,13 +24,13 @@ public class Application {
         CrewInitializer crewInitializer = new CrewInitializer(campus, fixedClock);
         CrewHistories crewHistories = crewInitializer.initialize(FileReader.read());
 
-        AttendanceController controller = makeController(campus, fixedClock);
+        AttendanceController controller = makeController(campus);
         controller.start(crewHistories);
     }
 
-    private static AttendanceController makeController(final Campus campus, final Clock clock) {
+    private static AttendanceController makeController(final Campus campus) {
         InputView inputView = new InputView(new InputValidator());
         ResultView resultView = new ResultView();
-        return new AttendanceController(inputView, resultView, campus, clock);
+        return new AttendanceController(inputView, resultView, campus, fixedClock);
     }
 }
