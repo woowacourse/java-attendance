@@ -5,13 +5,20 @@ import java.util.function.Supplier;
 
 public class ExceptionHandler {
     public static <T> T retryUntilSuccessWithReturn(Supplier<T> supplier) {
-        while (true) {
-            try {
-                return supplier.get();
-            } catch (Exception e) {
-                System.out.println(e.getMessage());
-            }
+        ExecuteResult executeResult;
+        do {
+            executeResult = executeGivenMethod(supplier);
+        } while (!executeResult.isSuccess());
+        return (T) executeResult.result();
+    }
+
+    private static <T> ExecuteResult executeGivenMethod(Supplier<T> supplier) {
+        try {
+            return new ExecuteResult(supplier.get(), true);
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
         }
+        return new ExecuteResult(null, false);
     }
 
     public static void printErrorMessageWithoutExitProgram(Runnable runnable) {
@@ -20,5 +27,8 @@ public class ExceptionHandler {
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
+    }
+
+    record ExecuteResult(Object result, boolean isSuccess) {
     }
 }
