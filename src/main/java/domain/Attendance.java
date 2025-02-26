@@ -23,4 +23,8 @@ public class Attendance {
     public void update(LocalTime updateTime) {
         this.time = updateTime;
     }
+
+    public AttendanceState getState() {
+        return state;
+    }
 }

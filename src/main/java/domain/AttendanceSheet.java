@@ -5,7 +5,11 @@ import policy.AbsentPolicy;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.EnumMap;
 import java.util.List;
+import java.util.Map;
+
+import static java.util.stream.Collectors.*;
 
 public class AttendanceSheet {
 
@@ -48,7 +52,8 @@ public class AttendanceSheet {
                         });
     }
 
-    public int countAttendance() {
-        return 0;
+    public Map<AttendanceState, Long> countAttendanceState() {
+        return attendances.stream()
+                .collect(groupingBy(Attendance::getState, () -> new EnumMap<>(AttendanceState.class), counting()));
     }
 }
