@@ -36,14 +36,9 @@ public record AttendanceBook(Map<String, Attendances> attendances, List<StatusSt
         attendanceList.add(attendance);
     }
 
-    public Attendance findAttendance(String nickname, Attendance attendance) {
-        var attendanceList = getAttendances(nickname);
-        return attendanceList.findAttendance(attendance);
-    }
-
     public Optional<Attendance> findAttendance(String nickname, LocalDate date) {
-        var attendanceList = getAttendances(nickname);
-        return attendanceList.findAttendance(date);
+        var attendances = getAttendances(nickname);
+        return attendances.findAttendance(date);
     }
 
     public Attendances getAttendances(String nickname) {
