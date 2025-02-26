@@ -174,4 +174,25 @@ public class AttendancesTest {
             )
         );
     }
+
+    @Test
+    void 모든_크루_이름을_조회한다() {
+        // given
+        Attendances attendances = new Attendances();
+        LocalDate twodaysAgo = LocalDate.of(2024, 12, 3);
+        LocalDate yesterday = LocalDate.of(2024, 12, 4);
+        LocalDate today = LocalDate.of(2024, 12, 5);
+        attendances.addAttendance(
+            "빙티", new Attendance(twodaysAgo, LocalTime.of(10, 1)));
+        attendances.addAttendance(
+            "빙봉", new Attendance(yesterday, LocalTime.of(10, 6)));
+        attendances.addAttendance(
+            "루디", new Attendance(today, LocalTime.of(10, 3)));
+
+        // when
+        List<String> crewNames = attendances.getAllCrewNames();
+
+        // then
+        assertThat(crewNames).isEqualTo(List.of("빙티", "빙봉", "루디"));
+    }
 }

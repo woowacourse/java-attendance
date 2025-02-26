@@ -107,4 +107,8 @@ public class Attendances {
         }
         return attendanceStatusCounts;
     }
+
+    public List<String> getAllCrewNames() {
+        return attendanceRecord.keySet().stream().toList();
+    }
 }
