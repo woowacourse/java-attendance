@@ -6,7 +6,9 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import model.StudentAttendanceRecord;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class FileInput {
     private static final String filePath = "src/main/resources/attendances.csv";
@@ -29,9 +31,9 @@ public class FileInput {
         return attendanceFile;
     }
 
-    public static StudentAttendanceRecord readFileAndCreateStudentRepository() throws IOException {
+    public static Map<String, List<LocalDateTime>> readFileAndCreateStudentRepository() throws IOException {
         FileInput fileInput = new FileInput();
-        StudentAttendanceRecord studentRecordRepository = new StudentAttendanceRecord();
+        Map<String, List<LocalDateTime>> studentInformation = new HashMap<>();
         for (String information : readAttendanceFile()) {
             String[] nameAndTimeInformation = information.split(",");
             String name = nameAndTimeInformation[0];
@@ -39,12 +41,17 @@ public class FileInput {
             String localDateTimeFormatter = "yyyy-MM-dd HH:mm";
             DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern(localDateTimeFormatter);
             LocalDateTime localDateTime = LocalDateTime.parse(timeInformation, dateTimeFormatter);
-            studentRecordRepository.addRecord(name,localDateTime);
+            if (!studentInformation.containsKey(name)) {
+                studentInformation.put(name, new ArrayList<>());
+                studentInformation.get(name).add(localDateTime);
+                continue;
+            }
+            studentInformation.get(name).add(localDateTime);
         }
-        return studentRecordRepository;
+        return studentInformation;
     }
 
-    public static StudentAttendanceRecord createStudentRepository(){
+    public static Map<String, List<LocalDateTime>> createStudentRepository(){
         try{
             return readFileAndCreateStudentRepository();
         } catch (IOException e){
