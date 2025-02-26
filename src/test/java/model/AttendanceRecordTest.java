@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import attendance.model.AttendanceDateTime;
 import attendance.model.AttendanceRecord;
+import attendance.model.Panalty;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import org.junit.jupiter.api.DisplayName;
@@ -90,4 +91,83 @@ class AttendanceRecordTest {
         assertThat(attendanceRecord.computeAbsenceCount()).isEqualTo(17);
     }
 
+    @Test
+    @DisplayName("해당 없는 경우")
+    void 출석_기록에서_패널티_상태를_조회한다_1() {
+        // given
+        AttendanceRecord attendanceRecord = new AttendanceRecord();
+        attendanceRecord.add(new AttendanceDateTime(
+                LocalDate.of(2024, 12, 10),
+                LocalTime.of(10, 31)
+        ));
+        assertThat(attendanceRecord.computePanalty()).isEqualTo(Panalty.NONE);
+    }
+
+    @Test
+    @DisplayName("경고인 경우")
+    void 출석_기록에서_패널티_상태를_조회한다_2() {
+        // given
+        AttendanceRecord attendanceRecord = new AttendanceRecord();
+        attendanceRecord.add(new AttendanceDateTime(
+                LocalDate.of(2024, 12, 10),
+                LocalTime.of(10, 31)
+        ));
+        attendanceRecord.add(new AttendanceDateTime(
+                LocalDate.of(2024, 12, 10),
+                LocalTime.of(10, 31)
+        ));
+        assertThat(attendanceRecord.computePanalty()).isEqualTo(Panalty.WARN);
+    }
+
+    @Test
+    @DisplayName("면담인 경우")
+    void 출석_기록에서_패널티_상태를_조회한다_3() {
+        // given
+        AttendanceRecord attendanceRecord = new AttendanceRecord();
+        attendanceRecord.add(new AttendanceDateTime(
+                LocalDate.of(2024, 12, 10),
+                LocalTime.of(10, 31)
+        ));
+        attendanceRecord.add(new AttendanceDateTime(
+                LocalDate.of(2024, 12, 10),
+                LocalTime.of(10, 31)
+        ));
+        attendanceRecord.add(new AttendanceDateTime(
+                LocalDate.of(2024, 12, 10),
+                LocalTime.of(10, 31)
+        ));
+        assertThat(attendanceRecord.computePanalty()).isEqualTo(Panalty.INTERVIEW);
+    }
+
+    @Test
+    @DisplayName("제적인 경우")
+    void 출석_기록에서_패널티_상태를_조회한다_4() {
+        // given
+        AttendanceRecord attendanceRecord = new AttendanceRecord();
+        attendanceRecord.add(new AttendanceDateTime(
+                LocalDate.of(2024, 12, 10),
+                LocalTime.of(10, 31)
+        ));
+        attendanceRecord.add(new AttendanceDateTime(
+                LocalDate.of(2024, 12, 10),
+                LocalTime.of(10, 31)
+        ));
+        attendanceRecord.add(new AttendanceDateTime(
+                LocalDate.of(2024, 12, 10),
+                LocalTime.of(10, 31)
+        ));
+        attendanceRecord.add(new AttendanceDateTime(
+                LocalDate.of(2024, 12, 10),
+                LocalTime.of(10, 31)
+        ));
+        attendanceRecord.add(new AttendanceDateTime(
+                LocalDate.of(2024, 12, 10),
+                LocalTime.of(10, 31)
+        ));
+        attendanceRecord.add(new AttendanceDateTime(
+                LocalDate.of(2024, 12, 10),
+                LocalTime.of(10, 31)
+        ));
+        assertThat(attendanceRecord.computePanalty()).isEqualTo(Panalty.DISMISSAL);
+    }
 }

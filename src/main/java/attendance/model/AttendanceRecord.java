@@ -51,4 +51,8 @@ public record AttendanceRecord(
                 .count();
         return duringEducationDayCount - computeAttendanceCount() - computeLateCount();
     }
+
+    public Panalty computePanalty() {
+        return Panalty.DISMISSAL;
+    }
 }
