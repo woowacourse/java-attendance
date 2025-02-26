@@ -29,7 +29,7 @@ class AttendanceStatusTest {
                 Arguments.arguments(AttendanceDateTime.from("2024-12-11 10:00"), AttendanceStatus.PRESENT),
                 Arguments.arguments(AttendanceDateTime.from("2024-12-13 10:06"), AttendanceStatus.LATE),
                 Arguments.arguments(AttendanceDateTime.from("2024-12-16 13:00"), AttendanceStatus.PRESENT),
-                Arguments.arguments(AttendanceDateTime.from("2024-12-17 11:00"), AttendanceStatus.ABSENCE)
+                Arguments.arguments(AttendanceDateTime.from("2024-12-17 11:00"), AttendanceStatus.ABSENT)
         );
     }
 }

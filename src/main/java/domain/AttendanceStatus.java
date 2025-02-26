@@ -5,7 +5,7 @@ import java.time.LocalTime;
 public enum AttendanceStatus {
     PRESENT("출석"),
     LATE("지각"),
-    ABSENCE("결석");
+    ABSENT("결석");
 
     private static final int LATE_CUTOFF = 30;
     private static final int ATTENDANCE_CUTOFF = 5;
@@ -23,7 +23,7 @@ public enum AttendanceStatus {
                 .toLocalTime();
 
         if (isNotWithinOperatingHours(entranceTime)) {
-            return ABSENCE;
+            return ABSENT;
         }
         if (isPresent(entranceTime, attendanceTime)) {
             return PRESENT;
@@ -31,7 +31,7 @@ public enum AttendanceStatus {
         if (isLate(entranceTime, attendanceTime)) {
             return LATE;
         }
-        return ABSENCE;
+        return ABSENT;
     }
 
     private static boolean isNotWithinOperatingHours(final LocalTime entranceTime) {
