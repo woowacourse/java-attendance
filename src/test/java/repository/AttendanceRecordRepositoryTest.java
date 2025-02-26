@@ -41,6 +41,7 @@ class AttendanceRecordRepositoryTest {
         AttendanceRecordRepository.add(new AttendanceRecord("name", checkedDate, time, status));
 
         LocalDate uncheckedDate = LocalDate.of(2025, 2, 4);
+
         // when & then
         Assertions.assertThat(AttendanceRecordRepository.exists(nickname, uncheckedDate)).isFalse();
     }
