@@ -18,7 +18,7 @@ public class InputView {
         return scanner.nextLine();
     }
 
-    public String readAttendNickname() {
+    public String readNickname() {
         System.out.println("닉네임을 입력해 주세요.");
         return scanner.nextLine();
     }

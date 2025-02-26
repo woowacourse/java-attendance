@@ -6,8 +6,11 @@ import attendance.domain.AttendanceBook;
 import attendance.domain.AttendanceBookFactory;
 import attendance.domain.AttendanceDate;
 import attendance.domain.AttendanceTime;
+import attendance.domain.Attendances;
 import attendance.domain.Menu;
+import attendance.domain.Warning;
 import attendance.dto.AttendanceResultResponse;
+import attendance.dto.AttendancesResponse;
 import attendance.util.AttendancesFileReader;
 import attendance.util.CrewAttendancesDataParser;
 import attendance.view.InputView;
@@ -49,7 +52,7 @@ public class AttendanceController {
             updateAttendance();
         }
         if (Menu.PRINT_ATTENDANCES_BY_CREW.equals(selectedMenu)) {
-
+            printAttendancesByCrew();
         }
         if (Menu.PRINT_WARNING.equals(selectedMenu)) {
 
@@ -67,22 +70,35 @@ public class AttendanceController {
         AttendanceTime attendanceTime = AttendanceTime.from(time);
 
         Attendance attendance = new Attendance(attendanceDate, attendanceTime);
-        attendanceBook.attend(inputView.readAttendNickname(), attendance);
+        attendanceBook.attend(inputView.readNickname(), attendance);
 
         outputView.printAttendResult(AttendanceResultResponse.from(attendance));
     }
 
     private void updateAttendance() {
         String nickname = inputView.readUpdateAttendanceNickname();
-        String inputDay = inputView.readUpdateAttendanceDay();
-        String inputTime = inputView.readUpdateAttendanceTime();
 
-        LocalDateTime dateTime = DateTimeConverter.convertToDateTime(inputDay, inputTime, today);
+        LocalDateTime dateTime = DateTimeConverter.convertToDateTime(
+                inputView.readUpdateAttendanceDay(), inputView.readUpdateAttendanceTime(), today);
+
         Attendance before = attendanceBook.findByNicknameAndDate(nickname, dateTime);
         AttendanceResultResponse beforeResponse = AttendanceResultResponse.from(before);
+
         Attendance after = attendanceBook.updateAttendance(nickname, dateTime);
         AttendanceResultResponse afterResponse = AttendanceResultResponse.from(after);
 
         outputView.printUpdateResult(beforeResponse, afterResponse);
+    }
+
+    private void printAttendancesByCrew() {
+        String nickname = inputView.readNickname();
+        Attendances attendances = attendanceBook.findByNickname(nickname);
+
+        outputView.printAttendancesByCrew(AttendancesResponse.of(nickname, attendances));
+
+        Warning warning = attendances.calculateWarning();
+        if (!Warning.NONE.equals(warning)) {
+            outputView.printWarning(warning);
+        }
     }
 }
