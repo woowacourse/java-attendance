@@ -1,5 +1,6 @@
 package attendance.domain;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
@@ -23,6 +24,14 @@ public class CrewAttendances {
                                 .map(Attendance::new)
                                 .toList())
                 ));
+    }
+
+    public boolean hasCrewAttendanceByLocalDate(final Crew crew, final LocalDate findDate) {
+        if (!crewAttendances.containsKey(crew)) {
+            throw new IllegalArgumentException("존재하지 않는 크루입니다.");
+        }
+        return crewAttendances.get(crew)
+                .hasAttendanceByLocalDate(findDate);
     }
 
 }
