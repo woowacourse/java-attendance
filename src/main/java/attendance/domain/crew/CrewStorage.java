@@ -26,7 +26,7 @@ public class CrewStorage {
         }
     }
 
-    private boolean checkIsNotContained(String nickname) {
+    public boolean checkIsNotContained(String nickname) {
         return crews.stream().noneMatch(crew -> crew.isSameNickname(nickname));
     }
 }

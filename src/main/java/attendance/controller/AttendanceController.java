@@ -3,6 +3,7 @@ package attendance.controller;
 import attendance.configuration.ApplicationConfiguration;
 import attendance.domain.AttendanceSystem;
 import attendance.domain.dto.AttendanceState;
+import attendance.domain.initializer.AttendanceSystemInitializer;
 import attendance.record.AttendanceRecord;
 import attendance.view.InputView;
 import java.time.LocalDate;
@@ -13,11 +14,14 @@ import java.util.List;
 public class AttendanceController {
 
     private final AttendanceSystem attendanceSystem;
+    private final AttendanceSystemInitializer initializer;
     private final InputView inputView;
 
     public AttendanceController(ApplicationConfiguration configuration) {
         attendanceSystem = configuration.getAttendanceSystem();
         inputView = configuration.getInputView();
+        initializer = configuration.getInitializer();
+        initializer.initialize();
     }
 
     public void run() {
