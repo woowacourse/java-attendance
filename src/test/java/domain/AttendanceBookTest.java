@@ -2,31 +2,61 @@ package domain;
 
 import static org.assertj.core.api.Assertions.*;
 
+import dto.InitialInfo;
 import java.time.LocalDateTime;
+import java.util.HashMap;
+import java.util.Map;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 public class AttendanceBookTest {
+    AttendanceBook attendanceBook;
+    AttendanceRecord attendanceRecord;
+    CrewName mimi = new CrewName("미미");
+    Attendance dayOfTenAttendance = new Attendance(LocalDateTime.of(2024, 12, 10, 9, 59));
+
+    @BeforeEach
+    void setUp() {
+        attendanceRecord = new AttendanceRecord();
+        attendanceRecord.add(dayOfTenAttendance);
+
+        Map<CrewName, AttendanceRecord> testData = new HashMap<>();
+        testData.put(mimi, attendanceRecord);
+
+        InitialInfo initialInfo = new InitialInfo(testData);
+        attendanceBook = new AttendanceBook(initialInfo);
+    }
+
     @DisplayName("닉네임과 등교 시간을 입력하면 출석할 수 있다.")
     @Test
     void test1() {
-        AttendanceBook attendanceBook = new AttendanceBook();
-        CrewName crewName = new CrewName("미미");
-        Attendance attendance = new Attendance(LocalDateTime.of(2024, 12, 13, 9, 59));
+        Attendance todayAttendance = new Attendance(LocalDateTime.of(2024, 12, 13, 9, 59));
+
+        attendanceBook.addAttendance(mimi, todayAttendance);
         AttendanceRecord expectedAttendanceRecord = new AttendanceRecord();
-        expectedAttendanceRecord.add(attendance);
+        expectedAttendanceRecord.add(dayOfTenAttendance);
+        expectedAttendanceRecord.add(todayAttendance);
 
-        attendanceBook.addAttendance(crewName, attendance);
-
-        assertThat(attendanceBook.findAttendanceRecordBy(crewName)).isEqualTo(expectedAttendanceRecord);
+        assertThat(attendanceBook.findAttendanceRecordBy(mimi)).isEqualTo(expectedAttendanceRecord);
     }
 
-    @DisplayName("출석부에 존재하지 않는 닉네임일 경우 예외가 발생한다.")
+    @DisplayName("출석부에 존재하지 않는 닉네임일 경우 False를 반환한다.")
     @Test
     void test2() {
-        AttendanceBook attendanceBook = new AttendanceBook();
-        CrewName crewName = new CrewName("미미");
+        CrewName crewName = new CrewName("밍트");
 
         assertThat(attendanceBook.contains(crewName)).isFalse();
+    }
+
+    @DisplayName("출석 저장 시, 출석부에 존재하지 않는 닉네임일 경우 예외가 발생한다.")
+    @Test
+    void test3() {
+        CrewName crewName = new CrewName("밍트");
+        Attendance attendance = new Attendance(LocalDateTime.of(2024, 12, 13, 9, 59));
+
+        assertThatThrownBy(() -> attendanceBook.addAttendance(crewName, attendance))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("[ERROR]");
     }
 }
