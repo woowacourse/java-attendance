@@ -1,4 +1,4 @@
-package attendance.domain.record;
+package attendance.record;
 
 import attendance.domain.checker.AttendanceType;
 import java.time.LocalDate;

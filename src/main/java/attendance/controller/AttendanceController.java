@@ -3,7 +3,7 @@ package attendance.controller;
 import attendance.configuration.ApplicationConfiguration;
 import attendance.domain.AttendanceSystem;
 import attendance.domain.dto.AttendanceState;
-import attendance.domain.record.AttendanceRecord;
+import attendance.record.AttendanceRecord;
 import attendance.view.InputView;
 import java.time.LocalDate;
 import java.time.LocalDateTime;

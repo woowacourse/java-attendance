@@ -5,14 +5,14 @@ import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 
 import attendance.domain.AttendanceSystem;
-import attendance.domain.RiskType;
 import attendance.domain.checker.AttendanceChecker;
 import attendance.domain.checker.AttendanceType;
 import attendance.domain.checker.HolidayChecker;
 import attendance.domain.crew.CrewStorage;
 import attendance.domain.dto.AttendanceState;
-import attendance.domain.record.AttendanceRecord;
+import attendance.domain.risk.RiskType;
 import attendance.exception.ExceptionMessage;
+import attendance.record.AttendanceRecord;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;

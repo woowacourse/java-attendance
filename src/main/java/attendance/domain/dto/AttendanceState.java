@@ -1,6 +1,6 @@
 package attendance.domain.dto;
 
-import attendance.domain.RiskType;
+import attendance.domain.risk.RiskType;
 
 public class AttendanceState implements Comparable<AttendanceState> {
 
