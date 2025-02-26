@@ -44,6 +44,7 @@ public class AttendanceHistory {
     }
 
     public AttendanceRecord updateTimeByDate(final LocalDateTime afterTime) {
+        validateAttendanceDay(afterTime);
         final AttendanceRecord prevRecord = attendanceHistory.get(afterTime.toLocalDate());
         final AttendanceRecord newRecord = new AttendanceRecord(afterTime);
         attendanceHistory.put(afterTime.toLocalDate(), newRecord);

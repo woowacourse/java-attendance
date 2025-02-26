@@ -134,7 +134,7 @@ public class AttendanceHistoryTest {
             // given
             final Crew owner = new Crew("owner");
             final var attendanceHistory = new AttendanceHistory(owner);
-            final var updateDateTime = LocalDateTime.of(2024, 12, 13, 10, 5);
+            final var updateDateTime = LocalDateTime.of(2024, 12, 14, 10, 5);
 
             // when & then
             assertThatThrownBy(() -> attendanceHistory.updateTimeByDate(updateDateTime))
