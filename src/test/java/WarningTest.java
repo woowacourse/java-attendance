@@ -10,4 +10,11 @@ class WarningTest {
         WarningCounter warningCounter = new WarningCounter(2, 6);
         assertThat(warningCounter.getConvertedAbsences()).isEqualTo(4);
     }
+
+    @DisplayName("누적 결석 횟수가 2회 이상일 경우 경고를 반환한다.")
+    @Test
+    void warningStatusTest() {
+        WarningCounter warningCounter = new WarningCounter(2, 0);
+        assertThat(warningCounter.getStatus()).isEqualTo("경고");
+    }
 }
