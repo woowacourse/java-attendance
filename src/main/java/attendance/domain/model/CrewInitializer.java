@@ -2,6 +2,7 @@ package attendance.domain.model;
 
 import static attendance.domain.model.AttendanceType.DEFAULT_TIME;
 
+import java.time.Clock;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.HashMap;
@@ -12,12 +13,12 @@ import java.util.Map.Entry;
 public class CrewInitializer {
 
     private final Campus campus;
-    private final TodayClock todayClock;
+    private final Clock clock;
     private final Map<LocalDate, LocalDateTime> attendance;
 
-    public CrewInitializer(final Campus campus, final TodayClock todayClock) {
+    public CrewInitializer(final Campus campus, final Clock clock) {
         this.campus = campus;
-        this.todayClock = todayClock;
+        this.clock = clock;
         this.attendance = createInitialAttendance();
     }
 
@@ -39,7 +40,7 @@ public class CrewInitializer {
 
     private Map<LocalDate, LocalDateTime> createInitialAttendance() {
         Map<LocalDate, LocalDateTime> initialAttendance = new HashMap<>();
-        LocalDate now = todayClock.getTodayDate();
+        LocalDate now = LocalDate.now(clock);
         for (int day = 1; day < now.getDayOfMonth(); day++) {
             LocalDate date = LocalDate.of(2024, 12, day);
             putOperationDate(date, initialAttendance);

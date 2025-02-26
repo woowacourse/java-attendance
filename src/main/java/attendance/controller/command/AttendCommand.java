@@ -4,33 +4,33 @@ import attendance.domain.model.AttendanceType;
 import attendance.domain.model.Campus;
 import attendance.domain.model.CrewHistories;
 import attendance.domain.model.CrewHistory;
-import attendance.domain.model.TodayClock;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
 import attendance.util.StringParser;
 import attendance.util.TimeFormatter;
 import attendance.view.InputView;
 import attendance.view.ResultView;
+import java.time.Clock;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 
 public class AttendCommand implements Command {
 
     private final InputView inputView;
     private final Campus campus;
-    private final TodayClock todayClock;
+    private final Clock clock;
     private final ResultView resultView;
 
-    public AttendCommand(final InputView inputView, final Campus campus, final TodayClock todayClock,
+    public AttendCommand(final InputView inputView, final Campus campus, final Clock clock,
                          final ResultView resultView) {
         this.inputView = inputView;
         this.campus = campus;
-        this.todayClock = todayClock;
+        this.clock = clock;
         this.resultView = resultView;
     }
 
     @Override
     public void execute(final CrewHistories crewHistories) {
-        LocalDate todayDate = todayClock.getTodayDate();
+        LocalDate todayDate = LocalDate.now(clock);
         campus.validateOperationDate(todayDate);
         CrewHistory crewHistory = getCrew(crewHistories);
         LocalDateTime attendanceDateTime = getLocalDateTime(todayDate);
