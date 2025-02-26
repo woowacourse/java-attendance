@@ -34,4 +34,18 @@ class AttendanceStateTest {
         Assertions.assertThat(result)
                 .isEqualTo(AttendanceState.TARDY);
     }
+
+    @Test
+    @DisplayName("등교 시작 시간으로부터 30분 초과는 결석이다")
+    void absentIfMoreThan30MinutesAfterStartTime() {
+        // given
+        int overTime = 31;
+
+        // when
+        AttendanceState result = AttendanceState.evaluate(overTime);
+
+        // then
+        Assertions.assertThat(result)
+                .isEqualTo(AttendanceState.ABSENCE);
+    }
 }
