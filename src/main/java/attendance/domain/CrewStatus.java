@@ -24,9 +24,7 @@ public enum CrewStatus {
     }
 
     public static CrewStatus calculateCrewStatus(Map<AttendanceType, Long> attendanceResult) {
-        int validateValue = 0;
-        validateValue += attendanceResult.get(ABSENCE);
-        validateValue += attendanceResult.get(LATE) / 3;
+        long validateValue = attendanceResult.get(ABSENCE) + attendanceResult.get(LATE) / 3;
         if (validateValue > FIRE.statusDecisionValue) {
             return FIRE;
         }
@@ -38,5 +36,4 @@ public enum CrewStatus {
         }
         return CLEAR;
     }
-
 }
