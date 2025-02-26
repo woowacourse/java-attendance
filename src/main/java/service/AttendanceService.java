@@ -101,8 +101,9 @@ public class AttendanceService {
             monthAttendanceRecords.add(AttendanceRecordResponse.from(targetDate));
             return;
         }
+        AttendanceRecord found = AttendanceRecordRepository.find(nickname, targetDate);
         monthAttendanceRecords.add(
-                AttendanceRecordResponse.from(AttendanceRecordRepository.find(nickname, targetDate))
+                AttendanceRecordResponse.of(found.date(), found.time(), found.status())
         );
     }
 
