@@ -3,12 +3,6 @@ package dto;
 import java.util.List;
 
 public record GetAttendanceRecordsResponse(
-        List<AttendanceRecord> attendanceRecords
+        List<AttendanceRecordDTO> attendanceRecordDTOs
 ) {
-    private record AttendanceRecord(
-            String date,
-            String time,
-            String status
-    ) {
-    }
 }
