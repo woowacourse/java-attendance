@@ -67,7 +67,8 @@ public class AttendanceBook {
             }
             Attendance attendance = findAttendanceByDate(current);
             AttendanceStatus status = attendance.getStatus();
-            result.replace(status, result.get(status) + 1);
+            final int updatedValue = result.getOrDefault(status, 0) + 1;
+            result.put(status, updatedValue);
         }
 
         return result;
