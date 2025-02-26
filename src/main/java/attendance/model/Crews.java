@@ -1,5 +1,6 @@
 package attendance.model;
 
+import java.time.LocalTime;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -27,6 +28,13 @@ public class Crews {
                 .filter(crew -> crew.isName(name))
                 .findAny()
                 .orElseThrow(() -> new IllegalArgumentException("입력하신 크루가 존재하지 않습니다."));
+    }
+
+    public void attendToday(Crew crew, LocalTime attendTime) {
+        crews.stream()
+                .filter(findCrew -> findCrew.equals(crew))
+                .findFirst()
+                .ifPresent(findCrew -> findCrew.attendToday(attendTime));
     }
 
     public void initCrewsAttendance(List<List<String>> csvData) {

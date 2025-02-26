@@ -1,5 +1,6 @@
 package attendance.controller;
 
+import attendance.model.Crew;
 import attendance.model.Crews;
 import attendance.model.MenuOption;
 import attendance.util.CSVReader;
@@ -8,6 +9,7 @@ import attendance.view.OutputView;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.time.format.TextStyle;
 import java.util.Locale;
 import java.util.Map;
@@ -68,7 +70,13 @@ public class AttendanceController {
     }
 
     private void attendToday() {
+        Crew crew = crews.findCrew(inputView.readCrewName());
 
+        String timeInfo = inputView.readAttendTime();
+        validateTimeFormat(timeInfo);
+        LocalTime attendTime = LocalTime.parse(timeInfo);
+
+        crews.attendToday(crew, attendTime);
     }
 
     private void modifyAttendance() {
@@ -81,6 +89,13 @@ public class AttendanceController {
 
     private void checkStatus() {
 
+    }
+
+    private void validateTimeFormat(String timeInfo) {
+        final String TIME_PATTERN = "(2[0-3]|[01][0-9]):[0-5][0-9]";
+        if (!timeInfo.matches(TIME_PATTERN)) {
+            throw new IllegalArgumentException(("올바르지 않은 시간 형식을 입력했습니다."));
+        }
     }
 
 }
