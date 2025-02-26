@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import domain.AttendanceHistory;
 import domain.AttendanceRecord;
 import domain.Crew;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -47,7 +48,7 @@ public class AttendanceHistoryTest {
             attendanceHistory.attendance(attendanceDateTime);
 
             // when
-            final AttendanceRecord actual = attendanceHistory.findByDate();
+            final AttendanceRecord actual = attendanceHistory.findByDate(LocalDate.of(2024, 12, 13));
 
             // then
             assertThat(actual.getDateTime())
@@ -70,7 +71,7 @@ public class AttendanceHistoryTest {
 
             // when
             final AttendanceRecord before = attendanceHistory.updateTimeByDate(afterTime);
-            final AttendanceRecord after = attendanceHistory.findByDate();
+            final AttendanceRecord after = attendanceHistory.findByDate(LocalDate.of(2024, 12, 13));
 
             // then
             assertThat(before.getDateTime())

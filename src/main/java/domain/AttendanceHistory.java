@@ -46,7 +46,7 @@ public class AttendanceHistory {
         return null;
     }
 
-    public AttendanceRecord findByDate() {
+    public AttendanceRecord findByDate(final LocalDate date) {
         return null;
     }
 
