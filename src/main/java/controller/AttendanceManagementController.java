@@ -1,5 +1,6 @@
 package controller;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
@@ -19,8 +20,14 @@ import view.OutputView;
 
 public class AttendanceManagementController {
 
+    private final TodayDateGenerator todayDateGenerator;
+
+    public AttendanceManagementController(final TodayDateGenerator todayDateGenerator) {
+        this.todayDateGenerator = todayDateGenerator;
+    }
     public void start() {
-        TodayDate todayDate = new TodayDate();
+
+        final TodayDate todayDate = new TodayDate(todayDateGenerator.generate());
 
         Students students = updateStudentAttendanceRecord();
         students.updateEveryStudentNoInformationInFile(todayDate);
