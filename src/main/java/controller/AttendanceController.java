@@ -32,14 +32,20 @@ public class AttendanceController {
         boolean isRunning = true;
         while (isRunning) {
             String option = InputView.scanMainMenuOption();
-            switch (MainMenuCommand.from(option)) {
-                case SAVE_ATTENDANCE_RECORD -> saveAttendanceRecord();
-                case MODIFY_ATTENDANCE_RECORD -> modifyAttendanceRecord();
-                case PRINT_MONTH_ATTENDANCE_STATISTICS -> printMonthAttendanceStatistics();
-                case PRINT_RISK_CREWS -> printRiskCrews();
-                case QUIT -> isRunning = false;
-            }
+            isRunning = executeOption(option);
         }
+    }
+
+    private boolean executeOption(String option) {
+        boolean isRunning = true;
+        switch (MainMenuCommand.from(option)) {
+            case SAVE_ATTENDANCE_RECORD -> saveAttendanceRecord();
+            case MODIFY_ATTENDANCE_RECORD -> modifyAttendanceRecord();
+            case PRINT_MONTH_ATTENDANCE_STATISTICS -> printMonthAttendanceStatistics();
+            case PRINT_RISK_CREWS -> printRiskCrews();
+            case QUIT -> isRunning = false;
+        }
+        return isRunning;
     }
 
     private void saveAttendanceRecord() {
