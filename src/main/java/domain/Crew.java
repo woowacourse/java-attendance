@@ -22,4 +22,8 @@ public class Crew {
     public boolean isMyName(String value) {
         return Objects.equals(name, value);
     }
+
+    public boolean isDateExisted(LocalDate date) {
+        return timeLogs.containsKey(date);
+    }
 }
