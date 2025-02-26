@@ -9,9 +9,9 @@ import java.time.Month;
 
 public class AttendanceLog {
 
-    private LocalDate attendanceDate;
-    private LocalTime attendanceTime;
-    private AttendanceStatus attendanceStatus;
+    private final LocalDate attendanceDate;
+    private final LocalTime attendanceTime;
+    private final AttendanceStatus attendanceStatus;
 
     public AttendanceLog(LocalDateTime attendDateTime) {
         verifyAttendDateTime(attendDateTime);
@@ -20,8 +20,20 @@ public class AttendanceLog {
         this.attendanceStatus = AttendanceStatus.findStatus(attendDateTime);
     }
 
+    public LocalDate getAttendanceDate() {
+        return attendanceDate;
+    }
+
+    public LocalTime getAttendanceTime() {
+        return attendanceTime;
+    }
+
     public AttendanceStatus getAttendanceStatus() {
         return attendanceStatus;
+    }
+
+    public boolean isAttendDate(LocalDate attendDate) {
+        return this.attendanceDate.equals(attendDate);
     }
 
     private void verifyAttendDateTime(LocalDateTime attendDateTime) {
