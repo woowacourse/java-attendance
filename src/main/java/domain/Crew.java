@@ -10,9 +10,15 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.IntStream;
 import util.Parser;
 
 public class Crew {
+    public static final int SYSTEM_YEAR = 2024;
+    public static final int SYSTEM_MONTH = 12;
+    public static final int DECEMBER_DAYS_END = 31;
+    public static final int DECEMBER_DAYS_START = 1;
+
     private final String name;
     private final Map<LocalDate, LocalTime> attendanceRecords = new HashMap<>();
 
@@ -52,9 +58,10 @@ public class Crew {
     public GetAttendanceRecordsResponse getAttendanceRecords() {
         List<AttendanceRecordDTO> attendanceRecordDTOs = new ArrayList<>();
 
-        for (int day = 1; day <= 31; day++) {
-            attendanceRecordDTOs.add(getAttendanceRecordDTO(LocalDate.of(2024, 12, day)));
-        }
+        IntStream.range(DECEMBER_DAYS_START, DECEMBER_DAYS_END + 1)
+                .forEach(day -> attendanceRecordDTOs.add(
+                        getAttendanceRecordDTO(LocalDate.of(SYSTEM_YEAR, SYSTEM_MONTH, day))
+                ));
 
         return new GetAttendanceRecordsResponse(attendanceRecordDTOs);
     }
