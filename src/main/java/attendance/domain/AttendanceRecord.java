@@ -30,4 +30,7 @@ public class AttendanceRecord {
         return date.equals(attendanceDateTime.toLocalDate());
     }
 
+    public LocalDateTime getAttendanceDateTime() {
+        return attendanceDateTime;
+    }
 }

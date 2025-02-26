@@ -27,4 +27,8 @@ public class Crew {
             throw new IllegalArgumentException(ERROR_NAME_LENGTH);
         }
     }
+
+    public String getName() {
+        return name;
+    }
 }
