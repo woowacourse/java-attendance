@@ -1,0 +1,50 @@
+import java.time.LocalDateTime;
+import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
+
+public class AttendanceTypeCheckerTest {
+    @Test
+    @DisplayName("월요일에는 13시 6분에 등교하면 지각이다")
+    void checkLate() {
+        // given
+        LocalDateTime attendAt = LocalDateTime.of(2024, 12, 2, 13, 6);
+
+        // when & then
+        Assertions.assertThat(AttendanceTypeFactory.getType(attendAt)).isEqualTo("LATE");
+    }
+
+    @ParameterizedTest
+    @DisplayName("월요일이 아닌 경우에는 10시 6분에 등교하면 지각이다")
+    @ValueSource(ints = {3, 4, 5, 6})
+    void checkLateExceptForMonday(int day) {
+        // given
+        LocalDateTime attendAt = LocalDateTime.of(2024, 12, day, 10, 6);
+
+        // when & then
+        Assertions.assertThat(AttendanceTypeFactory.getType(attendAt)).isEqualTo("LATE");
+    }
+
+    @Test
+    @DisplayName("월요일에는 13시 31분에 등교하면 지각이다")
+    void checkAbsenceForMonday() {
+        // given
+        LocalDateTime attendAt = LocalDateTime.of(2024, 12, 2, 13, 31);
+
+        // when & then
+        Assertions.assertThat(AttendanceTypeFactory.getType(attendAt)).isEqualTo("ABSENCE");
+    }
+
+    @ParameterizedTest
+    @DisplayName("월요일이 아닌 경우에는 10시 31분에 등교하면 지각이다")
+    @ValueSource(ints = {3, 4, 5, 6})
+    void checkAbsenceExceptForMonday(int day) {
+        // given
+        LocalDateTime attendAt = LocalDateTime.of(2024, 12, day, 10, 31);
+
+        // when & then
+        Assertions.assertThat(AttendanceTypeFactory.getType(attendAt)).isEqualTo("ABSENCE");
+    }
+}
