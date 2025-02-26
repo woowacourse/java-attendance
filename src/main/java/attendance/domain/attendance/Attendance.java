@@ -21,8 +21,8 @@ public record Attendance(LocalDateTime dateTime, AttendanceStatus attendanceStat
 
     private static AttendanceStatus decideAttendanceStatus(LocalDateTime dateTime) {
         validate(dateTime);
-        LocalTime baseSchedule = getScheduleForDay(dateTime);
-        return decideOnDefaultDay(dateTime.toLocalTime(), baseSchedule);
+        LocalTime schedule = getScheduleForDay(dateTime);
+        return AttendanceStatus.decideStatus(dateTime.toLocalTime(), schedule);
     }
 
     private static void validate(LocalDateTime dateTime) {
@@ -61,26 +61,12 @@ public record Attendance(LocalDateTime dateTime, AttendanceStatus attendanceStat
         return Schedule.DEFAULT;
     }
 
-    private static AttendanceStatus decideOnDefaultDay(LocalTime time, LocalTime baseSchedule) {
-        if (isAfter(time, AttendanceStatus.ABSENCE.getMinutes(), baseSchedule)) {
-            return AttendanceStatus.ABSENCE;
-        }
-        if (isAfter(time, AttendanceStatus.LATE.getMinutes(), baseSchedule)) {
-            return AttendanceStatus.LATE;
-        }
-        return AttendanceStatus.ATTENDANCE;
-    }
-
-    private static boolean isAfter(LocalTime time, int minutesToAdd, LocalTime baseSchedule) {
-        return time.isAfter(baseSchedule.plusMinutes(minutesToAdd));
-    }
-
     public LocalDate getDate() {
         return dateTime.toLocalDate();
     }
 
     private static class Schedule {
-        private static final LocalTime DEFAULT = java.time.LocalTime.of(10, 0);
+        private static final LocalTime DEFAULT = LocalTime.of(10, 0);
         private static final LocalTime MONDAY = LocalTime.of(13, 0);
         private static final LocalTime CAMPUS_OPEN = LocalTime.of(8, 0);
         private static final LocalTime CAMPUS_CLOSE = LocalTime.of(23, 0);

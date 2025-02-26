@@ -1,8 +1,10 @@
 package attendance.domain;
 
+import java.time.LocalTime;
+
 public enum AttendanceStatus {
-    ATTENDANCE("출석", 31),
-    LATE("지각", 6),
+    ATTENDANCE("출석", 30),
+    LATE("지각", 5),
     ABSENCE("결석", 0);
 
     private final String status;
@@ -17,7 +19,16 @@ public enum AttendanceStatus {
         return status;
     }
 
-    public int getMinutes() {
-        return minutes;
+    public static AttendanceStatus decideStatus(LocalTime time, LocalTime baseSchedule) {
+        for (AttendanceStatus status : values()) {
+            if (status.isAfterThreshold(time, baseSchedule)) {
+                return status;
+            }
+        }
+        return ATTENDANCE; // 기본값
+    }
+
+    private boolean isAfterThreshold(LocalTime time, LocalTime baseSchedule) {
+        return time.isAfter(baseSchedule.plusMinutes(this.minutes));
     }
 }
