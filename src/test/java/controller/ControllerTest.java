@@ -16,7 +16,7 @@ import view.InputView;
 
 class ControllerTest {
 
-    Controller controller = new Controller(new TodayDate(LocalDate.of(2024, 12, 12)));
+    AttendanceManagementController controller = new AttendanceManagementController(new TodayDate(LocalDate.of(2024, 12, 12)));
 
     @BeforeEach
     void setScanner() {
