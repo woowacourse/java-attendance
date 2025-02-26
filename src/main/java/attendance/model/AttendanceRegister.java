@@ -10,16 +10,23 @@ import java.util.Map;
 public class AttendanceRegister {
     private final Map<String, List<LocalDateTime>> register = new HashMap<>();
 
-    public void attend(String name, LocalDateTime localDateTime) {
-        List<LocalDateTime> attendanceRecord = register.getOrDefault(name, new ArrayList<>());
+    public void attend(String crewName, LocalDateTime localDateTime) {
+        List<LocalDateTime> attendanceRecord = register.getOrDefault(crewName, new ArrayList<>());
         attendanceRecord.add(localDateTime);
-        register.putIfAbsent(name, attendanceRecord);
+        register.putIfAbsent(crewName, attendanceRecord);
     }
 
-    public LocalDateTime findAttendanceByName(String name, LocalDate localDate) {
-        return register.get(name).stream()
+    public LocalDateTime findAttendanceByCrewName(String crewName, LocalDate localDate) {
+        validateContainsCrewName(crewName);
+        return register.get(crewName).stream()
                 .filter(localDateTime -> localDateTime.toLocalDate().equals(localDate))
                 .findFirst()
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 출석일입니다."));
+    }
+
+    private void validateContainsCrewName(String name) {
+        if (!register.containsKey(name)) {
+            throw new IllegalArgumentException("존재하지 않는 크루입니다.");
+        }
     }
 }
