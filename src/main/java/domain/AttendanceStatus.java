@@ -47,10 +47,6 @@ public enum AttendanceStatus {
         return !entranceTime.isAfter(getCutoffTime(attendanceTime, LATE_CUTOFF));
     }
 
-    private static boolean isAbsence(final LocalTime entranceTime, final LocalTime attendanceTime) {
-        return entranceTime.isAfter(getCutoffTime(attendanceTime, LATE_CUTOFF));
-    }
-
     private static LocalTime getCutoffTime(final LocalTime attendanceTime, final int maxMinutes) {
         return attendanceTime.plusMinutes(maxMinutes);
     }
