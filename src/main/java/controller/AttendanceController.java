@@ -2,12 +2,15 @@ package controller;
 
 import controller.dto.ModifyAttendanceRequest;
 import controller.dto.MonthAttendanceStatisticsRequest;
+import controller.dto.RiskCrewsRequest;
 import controller.dto.SaveAttendanceRequest;
 import java.time.LocalDate;
 import service.AttendanceRecordLoader;
 import service.AttendanceService;
 import service.dto.ModifyAttendanceRecordResponse;
 import service.dto.MonthAttendanceStatisticsResponse;
+import service.dto.RiskCrewsResponse;
+import service.dto.SaveAttendanceRecordResponse;
 import util.DateTimeUtil;
 import view.InputView;
 import view.OutputView;
@@ -32,7 +35,7 @@ public class AttendanceController {
                 case SAVE_ATTENDANCE_RECORD -> saveAttendanceRecord();
                 case MODIFY_ATTENDANCE_RECORD -> modifyAttendanceRecord();
                 case PRINT_MONTH_ATTENDANCE_STATISTICS -> printMonthAttendanceStatistics();
-                case PRINT_RISK_CREWS -> printCrewsOnRiskOfExpelled();
+                case PRINT_RISK_CREWS -> printRiskCrews();
                 case QUIT -> isRunning = false;
             }
         }
@@ -41,9 +44,10 @@ public class AttendanceController {
     private void saveAttendanceRecord() {
         String nickname = InputView.scanNickname();
         String time = InputView.scanAttendanceTime();
-        OutputView.printSavedAttendanceRecord(
-                attendanceService.saveAttendanceRecord(
-                        SaveAttendanceRequest.of(nickname, DateTimeUtil.nowDate(), time)));
+        SaveAttendanceRequest request = SaveAttendanceRequest.of(nickname, DateTimeUtil.nowDate(), time);
+        SaveAttendanceRecordResponse response = attendanceService.saveAttendanceRecord(request);
+
+        OutputView.printSavedAttendanceRecord(response);
     }
 
     private void modifyAttendanceRecord() {
@@ -51,23 +55,27 @@ public class AttendanceController {
         LocalDate today = DateTimeUtil.nowDate();
         int day = InputView.scanDayToModify();
         String time = InputView.scanTimeToModify();
+        ModifyAttendanceRequest request = ModifyAttendanceRequest.of(nickname, today, day, time);
+        ModifyAttendanceRecordResponse response = attendanceService.modifyAttendanceRecord(request);
 
-        ModifyAttendanceRecordResponse response = attendanceService
-                .modifyAttendanceRecord(ModifyAttendanceRequest.of(nickname, today, day, time));
         OutputView.printModifiedAttendanceRecord(response);
     }
 
     private void printMonthAttendanceStatistics() {
         String nickname = InputView.scanNickname();
         LocalDate today = DateTimeUtil.nowDate();
+        MonthAttendanceStatisticsRequest request = new MonthAttendanceStatisticsRequest(nickname, today);
+        MonthAttendanceStatisticsResponse response = attendanceService.getMonthAttendanceStatistics(request);
 
-        MonthAttendanceStatisticsResponse response = attendanceService.getMonthAttendanceStatistics(
-                new MonthAttendanceStatisticsRequest(nickname, today));
         OutputView.printMonthAttendanceRecords(response.attendanceRecords());
         OutputView.printMonthAttendanceStatusCount(response.attendanceStatusCount());
         OutputView.printRiskRank(response.riskRank());
     }
 
-    private void printCrewsOnRiskOfExpelled() {
+    private void printRiskCrews() {
+        LocalDate today = DateTimeUtil.nowDate();
+        RiskCrewsRequest request = new RiskCrewsRequest(today);
+        RiskCrewsResponse response = attendanceService.getRiskCrews(request);
+        OutputView.printRiskCrews(response);
     }
 }

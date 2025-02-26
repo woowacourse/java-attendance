@@ -6,6 +6,7 @@ import java.util.Locale;
 import java.util.Map;
 import service.dto.AttendanceRecordResponse;
 import service.dto.ModifyAttendanceRecordResponse;
+import service.dto.RiskCrewsResponse;
 import service.dto.SaveAttendanceRecordResponse;
 
 public class OutputView {
@@ -43,5 +44,24 @@ public class OutputView {
 
     public static void printRiskRank(String riskRank) {
         System.out.printf("%s 대상자입니다.%n%n", riskRank);
+    }
+
+    public static void printRiskCrews(RiskCrewsResponse riskCrews) {
+        System.out.println("제적 위험자 조회 결과");
+        riskCrews.riskCrews().forEach(riskCrew ->
+                System.out.printf("- %s: %s (%s)%n",
+                        riskCrew.nickname(),
+                        getStatusCountPrintFormat(riskCrew.attendanceStatusCount()),
+                        riskCrew.riskRank()
+                )
+        );
+    }
+
+    private static String getStatusCountPrintFormat(Map<String, Integer> statusCount) {
+        return String.join(", ",
+                statusCount.entrySet()
+                        .stream()
+                        .map(entry -> String.format("%s %d회", entry.getKey(), entry.getValue()))
+                        .toList());
     }
 }
