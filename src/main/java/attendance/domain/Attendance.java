@@ -21,4 +21,12 @@ public class Attendance {
     public String getStatus() {
         return status;
     }
+
+    public LocalDate getDate() {
+        return date;
+    }
+
+    public LocalTime getTime() {
+        return time;
+    }
 }

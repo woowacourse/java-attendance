@@ -80,6 +80,7 @@ public class Application {
             return;
         }
         Attendance attendance = attendanceManager.addAttendance(crew, today, attendanceTime);
+        OutputView.printAttendance(attendance);
     }
 
     private static void modifyAttendance() {
