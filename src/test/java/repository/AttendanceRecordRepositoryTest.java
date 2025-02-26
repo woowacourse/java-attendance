@@ -12,7 +12,7 @@ import org.junit.jupiter.api.Test;
 class AttendanceRecordRepositoryTest {
 
     @BeforeEach
-    void initRepository() {
+    void clearRepository() {
         AttendanceRecordRepository.clear();
     }
 
