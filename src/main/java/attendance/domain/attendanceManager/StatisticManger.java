@@ -14,12 +14,12 @@ public class StatisticManger {
     }
 
     public void manage(String nickname) {
-        var attendanceList = attendanceBook.getAttendanceList(nickname);
-
-        StatusStatistic statistic = StatusStatistic.of(attendanceList, nickname);
-        List<String> history = attendanceList.getHistory();
-
-        writeReport(nickname, history, statistic);
+        // var attendanceList = attendanceBook.getAttendances(nickname);
+        //
+        // StatusStatistic statistic = StatusStatistic.of(attendanceList, nickname);
+        // List<String> history = attendanceList.getHistory();
+        //
+        // writeReport(nickname, history, statistic);
     }
 
     public String getResult() {

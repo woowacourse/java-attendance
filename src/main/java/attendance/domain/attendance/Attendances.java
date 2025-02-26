@@ -19,6 +19,8 @@ import attendance.exception.AttendanceArgumentException;
 import attendance.utility.DateTimeFormatterWrapper;
 
 public class Attendances {
+    public static final String DUPLICATE_DATE = "이미 출석되었습니다. 수정 기능을 이용해주세요.";
+
     private final List<Attendance> attendances = new ArrayList<>();
     private final List<String> attendanceHistory = new ArrayList<>();
 
@@ -85,6 +87,12 @@ public class Attendances {
 
     private boolean isWeekend(LocalDate date) {
         return date.getDayOfWeek().getValue() >= DayOfWeek.SATURDAY.getValue();
+    }
+
+    public void validateDuplicate(Attendance attendance) {
+        if (contains(attendance)) {
+            throw new AttendanceArgumentException(DUPLICATE_DATE);
+        }
     }
 
     private void updateAttendanceRecord(Map<AttendanceStatus, Integer> attendanceStatusMap, Attendance attendance) {

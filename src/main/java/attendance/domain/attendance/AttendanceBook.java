@@ -2,6 +2,7 @@ package attendance.domain.attendance;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -11,6 +12,7 @@ import java.util.Optional;
 
 import attendance.domain.StatusStatistic;
 import attendance.exception.AttendanceArgumentException;
+import attendance.utility.DateTimeFormatterWrapper;
 
 public record AttendanceBook(Map<String, Attendances> attendances, List<StatusStatistic> statusStatistics) {
 
@@ -27,28 +29,27 @@ public record AttendanceBook(Map<String, Attendances> attendances, List<StatusSt
         var nickname = lines[0];
 
         Attendances attendanceList = attendances.computeIfAbsent(nickname, k -> new Attendances());
-
-        var dateTime = LocalDateTime.parse(lines[1], getFormatter(Constant.DATETIME_FORMAT));
-        var attendance = new Attendance(dateTime);
+        DateTimeFormatter dateTimeFormatter = DateTimeFormatterWrapper.getFormatter(Constant.DATETIME_FORMAT);
+        var dateTime = LocalDateTime.parse(lines[1], dateTimeFormatter);
+        var attendance = Attendance.from(dateTime);
 
         attendanceList.add(attendance);
     }
 
     public Attendance findAttendance(String nickname, Attendance attendance) {
-        var attendanceList = getAttendanceList(nickname);
+        var attendanceList = getAttendances(nickname);
         return attendanceList.findAttendance(attendance);
     }
 
     public Optional<Attendance> findAttendance(String nickname, LocalDate date) {
-        var attendanceList = getAttendanceList(nickname);
+        var attendanceList = getAttendances(nickname);
         return attendanceList.findAttendance(date);
     }
 
-    public Attendances getAttendanceList(String nickname) {
+    public Attendances getAttendances(String nickname) {
         if (!attendances.containsKey(nickname)) {
             throw new AttendanceArgumentException(Constant.NOT_REGISTERED_NICKNAME);
         }
-
         return attendances.get(nickname);
     }
 

@@ -4,20 +4,21 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
 
 import attendance.domain.AttendanceFileReader;
+import attendance.domain.StatusStatistic;
+import attendance.domain.attendance.Attendance;
 import attendance.domain.attendance.AttendanceBook;
-import attendance.domain.attendanceManager.ModifyManager;
-import attendance.domain.attendanceManager.RegisterManager;
-import attendance.domain.attendanceManager.SanctionManager;
-import attendance.domain.attendanceManager.StatisticManger;
+import attendance.domain.attendance.Attendances;
 import attendance.exception.AttendanceArgumentException;
 import attendance.exception.AttendanceFileException;
-import attendance.utility.StringUtility;
-import attendance.utility.dateTimeUtility;
+import attendance.utility.DateTimeParser;
+import attendance.view.InputValidator;
 import attendance.view.InputView;
 import attendance.view.OutputView;
 
@@ -28,6 +29,7 @@ public class Application {
 
     private static InputView inputView;
     private static OutputView outputView;
+    private static AttendanceBook attendanceBook;
 
     @FunctionalInterface
     interface AttendanceOperation {
@@ -45,7 +47,7 @@ public class Application {
         try {
             inputView = new InputView();
             outputView = new OutputView();
-            AttendanceBook attendanceBook = getAttendanceBook();
+            attendanceBook = getAttendanceBook();
             processAttendanceMenu(attendanceBook);
         } catch (AttendanceFileException e) {
             outputView.printError(e.getMessage());
@@ -86,57 +88,63 @@ public class Application {
     }
 
     private static void registerAttendance(AttendanceBook attendanceBook) {
-        RegisterManager attendanceManager = new RegisterManager(attendanceBook);
         outputView.printRequestNickname();
         String nickname = requestInputString();
         try {
-            attendanceManager.manage(nickname, SystemDateConfig.NOW_DATETIME);
-            String result = attendanceManager.getResult();
-            outputView.println(result);
+            requestRegister(nickname);
+            outputView.println("");
         } catch (AttendanceArgumentException e) {
             outputView.printError(e.getMessage());
         }
+    }
+
+    private static void requestRegister(String nickname) {
+        var attendances = attendanceBook.getAttendances(nickname);
+        var newAttendance = Attendance.from(SystemDateConfig.NOW_DATETIME);
+        attendances.validateDuplicate(newAttendance);
+        attendances.add(newAttendance);
     }
 
     private static void modifyAttendance(AttendanceBook attendanceBook) {
-        ModifyManager attendanceManager = new ModifyManager(attendanceBook);
         String nickname = requestInputStringForModify();
         var dateTime = requestLocalDateTime();
         try {
-            attendanceManager.manage(nickname, dateTime);
-            String result = attendanceManager.getResult();
-            outputView.println(result);
+            requestModify(nickname, dateTime);
+            outputView.println("");
         } catch (AttendanceArgumentException e) {
             outputView.printError(e.getMessage());
         }
+    }
+
+    private static void requestModify(String nickname, LocalDateTime dateTime) {
+        Attendances attendances = attendanceBook.getAttendances(nickname);
+        Attendance newAttendance = Attendance.from(dateTime);
+        Optional<Attendance> oldAttendance = attendanceBook.findAttendance(nickname, dateTime.toLocalDate());
+        oldAttendance.ifPresent(attendances::remove);
+        attendances.add(newAttendance);
     }
 
     private static void checkAttendanceStatisticsByCrew(AttendanceBook attendanceBook) {
-        StatisticManger attendanceManager = new StatisticManger(attendanceBook);
         outputView.printRequestNickname();
         String nickname = requestInputString();
         try {
-            attendanceManager.manage(nickname);
-            String result = attendanceManager.getResult();
-            outputView.println(result);
+            requestStatistic(nickname);
+            outputView.println("result");
         } catch (AttendanceArgumentException e) {
             outputView.printError(e.getMessage());
         }
     }
 
-    private static void checkSanctionStatistic(AttendanceBook attendanceBook) {
-        SanctionManager attendanceManager = new SanctionManager(attendanceBook);
-        attendanceManager.manage();
-        String result = attendanceManager.getResult();
-        outputView.println(result);
+    private static void requestStatistic(String nickname) {
+        var attendances = attendanceBook.getAttendances(nickname);
+
+        StatusStatistic statistic = StatusStatistic.of(attendances, nickname);
+        List<String> history = attendances.getHistory();
     }
 
-    private static String requestInputString() {
-        return handleInput(() -> {
-            String nickname = inputView.input();
-            StringUtility.validateIsEmpty(nickname);
-            return nickname;
-        });
+    private static void checkSanctionStatistic(AttendanceBook attendanceBook) {
+        attendanceBook.updateStatusStatistics();
+        outputView.println("result");
     }
 
     private static String requestInputStringForModify() {
@@ -144,13 +152,21 @@ public class Application {
         return requestInputString();
     }
 
+    private static String requestInputString() {
+        return handleInput(() -> {
+            String nickname = inputView.input();
+            InputValidator.validateIsEmpty(nickname);
+            return nickname;
+        });
+    }
+
     private static LocalDate requestDate() {
         outputView.printRequestDate();
         return handleInput(() -> {
             String input = inputView.input();
-            StringUtility.validateIsEmpty(input);
+            InputValidator.validateIsEmpty(input);
             String date = SystemDateConfig.YEAR_MONTH + input;
-            return dateTimeUtility.parseToDate(date);
+            return DateTimeParser.parseToDate(date);
         });
     }
 
@@ -158,8 +174,8 @@ public class Application {
         outputView.printRequestTime();
         return handleInput(() -> {
             String input = inputView.input();
-            StringUtility.validateIsEmpty(input);
-            return dateTimeUtility.parseToTime(input);
+            InputValidator.validateIsEmpty(input);
+            return DateTimeParser.parseToTime(input);
         });
     }
 

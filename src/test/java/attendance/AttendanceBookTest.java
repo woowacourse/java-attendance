@@ -33,15 +33,15 @@ public class AttendanceBookTest {
         return Stream.of(
             Arguments.arguments(
                 "이든",
-                new Attendance(LocalDateTime.of(2024, 12, 3, 10, 6))
+                Attendance.from(LocalDateTime.of(2024, 12, 3, 10, 6))
             ),
             Arguments.arguments(
                 "빙티",
-                new Attendance(LocalDateTime.of(2024, 12, 5, 10, 6))
+                Attendance.from(LocalDateTime.of(2024, 12, 5, 10, 6))
             ),
             Arguments.arguments(
                 "짱수",
-                new Attendance(LocalDateTime.of(2024, 12, 3, 10, 0))
+                Attendance.from(LocalDateTime.of(2024, 12, 3, 10, 0))
             )
         );
     }

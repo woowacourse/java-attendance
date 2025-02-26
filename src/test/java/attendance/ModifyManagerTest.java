@@ -30,12 +30,12 @@ public class ModifyManagerTest {
     void test_modifyAttendance() {
         var nickname = "이든";
         var dateTime = LocalDateTime.of(2024, 12, 2, 13, 2);
-        var attendance = new Attendance(dateTime);
+        var attendance = Attendance.from(dateTime);
 
         assertThat(attendanceBook.findAttendance(nickname, attendance)).isEqualTo(attendance);
 
         var modifiedTime = dateTime.minusHours(3);
-        var modifiedAttendance = new Attendance(modifiedTime);
+        var modifiedAttendance = Attendance.from(modifiedTime);
         attendanceModifier.manage(nickname, modifiedTime);
 
         assertThatThrownBy(() -> attendanceBook.findAttendance(nickname, attendance))
@@ -61,7 +61,7 @@ public class ModifyManagerTest {
     void test_modifyNonAttendanceDay() {
         var nickname = "이든";
         var dateTime = LocalDateTime.of(2024, 12, 24, 10, 1);
-        var attendance = new Attendance(dateTime);
+        var attendance = Attendance.from(dateTime);
 
         assertThatThrownBy(() -> attendanceBook.findAttendance(nickname, attendance))
             .isInstanceOf(AttendanceArgumentException.class)
@@ -85,13 +85,13 @@ public class ModifyManagerTest {
         var nickname = "이든";
 
         var dateTime = LocalDateTime.of(2024, 12, dayOfMonth, hour, 2);
-        var attendance = new Attendance(dateTime);
+        var attendance = Attendance.from(dateTime);
 
         assertThat(attendanceBook.findAttendance(nickname, attendance).attendanceStatus())
             .isEqualTo(AttendanceStatus.ATTENDANCE);
 
         var modifiedTime = dateTime.plusMinutes(addMinutes);
-        var modifiedAttendance = new Attendance(modifiedTime);
+        var modifiedAttendance = Attendance.from(modifiedTime);
         attendanceModifier.manage(nickname, modifiedTime);
 
         assertThatThrownBy(() -> attendanceBook.findAttendance(nickname, attendance))

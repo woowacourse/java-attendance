@@ -12,8 +12,9 @@ import attendance.exception.AttendanceArgumentException;
 
 public record Attendance(LocalDateTime dateTime, AttendanceStatus attendanceStatus) {
 
-    public Attendance(LocalDateTime dateTime) {
-        this(dateTime, decideAttendanceStatus(dateTime));
+    public static Attendance from(LocalDateTime dateTime) {
+        AttendanceStatus attendanceStatus = decideAttendanceStatus(dateTime);
+        return new Attendance(dateTime, attendanceStatus);
     }
 
     private static AttendanceStatus decideAttendanceStatus(LocalDateTime dateTime) {

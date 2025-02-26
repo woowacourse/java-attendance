@@ -14,7 +14,7 @@ public class SanctionManager {
     }
 
     public void manage() {
-        attendanceBook.updateStatusStatistics();
+        // attendanceBook.updateStatusStatistics();
     }
 
     public String getResult() {

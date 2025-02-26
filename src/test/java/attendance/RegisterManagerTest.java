@@ -28,7 +28,7 @@ public class RegisterManagerTest {
         var nickname = "이든";
         var dateTime = LocalDateTime.of(2024, 12, 11, 10, 1);
 
-        var attendance = new Attendance(dateTime);
+        var attendance = Attendance.from(dateTime);
 
         attendanceRegister.manage(nickname, dateTime);
 
