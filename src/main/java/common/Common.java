@@ -15,6 +15,9 @@ public class Common {
             .withLocale(Locale.forLanguageTag("ko"));
     public static final DateTimeFormatter hourMinuteFormatter = DateTimeFormatter.ofPattern("HH:mm");
 
+    public static final DateTimeFormatter yearMonthDateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+
+
     public static final LocalTime noneAttendanceTime = LocalTime.of(0, 0);
 
 }

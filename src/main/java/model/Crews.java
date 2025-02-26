@@ -8,8 +8,9 @@ import java.util.Optional;
 public class Crews {
     private final List<Crew> crews;
 
-    public static Crews of(List<String> crewNames) {
-        List<Crew> crews = crewNames.stream()
+    public static Crews from(List<String> combinedData) {
+        List<String> uniqueCrewNames = extractUniqueCrewData(combinedData);
+        List<Crew> crews = uniqueCrewNames.stream()
                 .map(Crew::new)
                 .toList();
         return new Crews(crews);
@@ -17,6 +18,13 @@ public class Crews {
 
     public Crews(List<Crew> crews) {
         this.crews = crews;
+    }
+
+    public static List<String> extractUniqueCrewData(List<String> combinedData) {
+        return combinedData.stream()
+                .map(data -> data.split(",")[0])
+                .distinct()
+                .toList();
     }
 
     public Optional<Crew> findCrewByName(String name) {
