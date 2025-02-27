@@ -40,4 +40,8 @@ public class MemberAttendance {
             .filter(attendance -> attendance.getAttendanceStatus().equals(subject.getStatus())).count());
     }
 
+    public String checkSubjectStatus(int attendanceCount, int lateCount, int absentCount) {
+        return null;
+    }
+
 }

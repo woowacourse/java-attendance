@@ -26,6 +26,11 @@ public class MemberAttendanceTest {
         sampleAttendances.add(new Attendance(LocalDateTime.of(2024, 12, 4, 14, 30)));
         sampleAttendances.add(new Attendance(LocalDateTime.of(2024, 12, 5, 10, 10)));
         sampleAttendances.add(new Attendance(LocalDateTime.of(2024, 12, 6, 9, 30)));
+        sampleAttendances.add(new Attendance(LocalDateTime.of(2024, 12, 9, 15, 30)));
+        sampleAttendances.add(new Attendance(LocalDateTime.of(2024, 12, 10, 18, 30)));
+        sampleAttendances.add(new Attendance(LocalDateTime.of(2024, 12, 11, 10, 15)));
+        sampleAttendances.add(new Attendance(LocalDateTime.of(2024, 12, 12, 10, 10)));
+        sampleAttendances.add(new Attendance(LocalDateTime.of(2024, 12, 13, 9, 30)));
 
     }
 
@@ -58,6 +63,23 @@ public class MemberAttendanceTest {
             softly.assertThat(memberAttendance.countAttendanceStatus(Subject.LATE)).isEqualTo(1);
             softly.assertThat(memberAttendance.countAttendanceStatus(Subject.ABSENT)).isEqualTo(1);
         });
+    }
+
+    @Test
+    @DisplayName("닉네임과 등교시간을 입력하면 출석,지각,결석 횟수가 증가한다")
+    void checkSubjectStatusTest() {
+
+        //given
+        MemberAttendance memberAttendance = new MemberAttendance(crew, sampleAttendances);
+        int attendanceCount = memberAttendance.countAttendanceStatus(Subject.ATTENDANCE);
+        int lateCount =  memberAttendance.countAttendanceStatus(Subject.LATE);
+        int absentCount = memberAttendance.countAttendanceStatus(Subject.ABSENT);
+
+        //when
+        String subjectStatus = memberAttendance.checkSubjectStatus(attendanceCount, lateCount, absentCount);
+
+        //then
+        org.assertj.core.api.Assertions.assertThat(subjectStatus).isEqualTo("면담대상자");
     }
 
 
