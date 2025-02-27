@@ -1,5 +1,6 @@
 package domain;
 
+import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -27,8 +28,12 @@ public class AttendanceBook {
     }
 
     private void validateContainsCrew(final Crew crew) {
-        if(!attendanceBook.containsKey(crew)){
+        if (!attendanceBook.containsKey(crew)) {
             throw new IllegalArgumentException();
         }
+    }
+
+    public RiskOfExpulsionStatus calculateRiskOfExpulsionStatus(final LocalDate date) {
+        return null;
     }
 }
