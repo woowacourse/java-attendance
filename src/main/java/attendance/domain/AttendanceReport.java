@@ -33,6 +33,10 @@ public class AttendanceReport {
         return countByAttendanceStatus(AttendanceStatus.LATE);
     }
 
+    public long countEffectiveAbsences() {
+        return countAbsent() + countLate() / 3;
+    }
+
     public long countAbsent() {
         long absentCount = countByAttendanceStatus(AttendanceStatus.ABSENT);
         long noAttendanceCount = calculateNoAttendanceDays(startDate, endDate, policy);

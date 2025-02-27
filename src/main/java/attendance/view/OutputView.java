@@ -1,12 +1,15 @@
 package attendance.view;
 
+import static attendance.util.DateFormatUtil.DATE_TIME_FORMATTER;
+import static attendance.util.DateFormatUtil.NO_ATTENDANCE_DATE_FORMATTER;
+
 import attendance.domain.AttendanceRecord;
 import attendance.domain.AttendanceStatus;
 import attendance.dto.CrewHistoryDto;
 import attendance.dto.CrewHistoryDto.AttendanceRecordDto;
 import attendance.dto.WarningResultDto;
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.SortedSet;
@@ -14,8 +17,6 @@ import java.util.TreeSet;
 import java.util.stream.Collectors;
 
 public class OutputView {
-    private final static DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("MM월 dd일 EEEE HH:mm");
-    private final static DateTimeFormatter NO_ATTENDANCE_FORMATTER = DateTimeFormatter.ofPattern("MM월 dd일 EEEE --:--");
 
     public void displayAttendanceResult(AttendanceRecord record) {
         System.out.println(getFormattedRecord(record));
@@ -36,15 +37,15 @@ public class OutputView {
         sb.appendLine();
         sb.appendLine(getStatistics(dto));
         sb.appendLine("");
-        sb.appendLine(String.format("%s입니다.", dto.warningStatus()));
+        sb.appendLine(String.format("%s 대상자입니다.", dto.warningStatus()));
         sb.print();
     }
 
     private Map<LocalDate, AttendanceRecordDto> buildAttendanceMap(CrewHistoryDto dto) {
         return dto.recordDtos().stream()
                 .collect(Collectors.toMap(
-                        r -> r.attendanceDateTime().toLocalDate(),
-                        r -> r
+                        recordDto -> recordDto.attendanceDateTime().toLocalDate(),
+                        recordDto -> recordDto
                 ));
     }
 
@@ -59,10 +60,10 @@ public class OutputView {
     private String formatDateLine(LocalDate date, Map<LocalDate, AttendanceRecordDto> attendanceMap) {
         if (attendanceMap.containsKey(date)) {
             AttendanceRecordDto recordDto = attendanceMap.get(date);
-            String formattedDateTime = recordDto.attendanceDateTime().format(DATE_FORMATTER);
+            String formattedDateTime = recordDto.attendanceDateTime().format(DATE_TIME_FORMATTER);
             return String.format("%s (%s)", formattedDateTime, recordDto.AttendanceStatus());
         }
-        return String.format("%s (결석)", date.format(NO_ATTENDANCE_FORMATTER));
+        return String.format("%s (결석)", date.format(NO_ATTENDANCE_DATE_FORMATTER));
     }
 
     private String getStatistics(CrewHistoryDto dto) {
@@ -81,7 +82,7 @@ public class OutputView {
 
     private String getFormattedRecord(AttendanceRecord record) {
         return String.format("%s (%s)",
-                record.getDateTIme().format(DATE_FORMATTER),
+                record.getDateTIme().format(DATE_TIME_FORMATTER),
                 record.getAttendanceStatus().getTitle()
         );
     }
@@ -89,19 +90,30 @@ public class OutputView {
     public void displayWarningCrews(List<WarningResultDto> dtos) {
         CustomStringBuilder sb = new CustomStringBuilder();
 
-        dtos.forEach(dto -> {
-            sb.appendLine(String.format("- %s: 결석: %d회, 지각: %d회 (%s)",
-                    dto.crewName(),
-                    dto.absentCount(),
-                    dto.lateCount(),
-                    dto.status()
-            ));
-        });
+        List<WarningResultDto> sortedDtos = getSortedDtos(dtos);
+        sortedDtos.forEach(dto -> sb.appendLine(String.format("- %s: 결석: %d회, 지각: %d회 (%s)",
+                dto.crewName(),
+                dto.absentCount(),
+                dto.lateCount(),
+                dto.status()
+        )));
         sb.print();
     }
 
+    private List<WarningResultDto> getSortedDtos(List<WarningResultDto> dtos) {
+        return dtos.stream()
+                .sorted(getWarningResultComparator())
+                .toList();
+    }
+
+    private Comparator<WarningResultDto> getWarningResultComparator() {
+        return Comparator
+                .comparingLong(WarningResultDto::effectiveAbsencesCount).reversed()
+                .thenComparing(WarningResultDto::crewName);
+    }
+
     public void printError(String message) {
-        System.out.println(message);
+        System.out.println("[ERROR] " + message);
         System.out.println(System.lineSeparator());
     }
 }

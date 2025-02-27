@@ -3,7 +3,8 @@ package attendance.view;
 import static attendance.util.DateFormatUtil.DATE_FORMATTER;
 
 import attendance.domain.CustomClock;
-import attendance.util.Util;
+import attendance.util.DateFormatUtil;
+import attendance.util.Parser;
 import java.time.LocalTime;
 import java.util.Scanner;
 
@@ -36,7 +37,7 @@ public class InputView {
 
     public LocalTime readEntryTime() {
         System.out.println("등교 시간을 입력해 주세요.");
-        return Util.parseToTime(scanner.nextLine());
+        return DateFormatUtil.parseToTime(scanner.nextLine());
     }
 
     public String readModifyName() {
@@ -46,12 +47,12 @@ public class InputView {
 
     public int readModifyDay() {
         System.out.println("수정하려는 날짜(일)를 입력해 주세요.");
-        return Util.parseToInt(scanner.nextLine());
+        return Parser.parseToInt(scanner.nextLine());
     }
 
     public LocalTime readModifyTime() {
         System.out.println("언제로 변경하겠습니까?");
-        return Util.parseToTime(scanner.nextLine());
+        return DateFormatUtil.parseToTime(scanner.nextLine());
     }
 
 }

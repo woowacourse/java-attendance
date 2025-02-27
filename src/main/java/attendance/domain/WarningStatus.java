@@ -3,9 +3,9 @@ package attendance.domain;
 import java.util.Arrays;
 
 public enum WarningStatus {
-    OUT("제적 대상자", 6),
-    NEED_MEETING("면담 대상자", 3),
-    WARNING("경고 대상자", 2),
+    OUT("제적", 6),
+    NEED_MEETING("면담", 3),
+    WARNING("경고", 2),
     NONE("해당 없음", 0);
 
     private final String title;

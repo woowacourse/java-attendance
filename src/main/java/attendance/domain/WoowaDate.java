@@ -1,5 +1,6 @@
 package attendance.domain;
 
+import static attendance.error.ErrorMessage.ERROR_NOT_EDUCATION_DAY;
 import static attendance.util.DateFormatUtil.DATE_FORMATTER;
 
 import java.time.DayOfWeek;
@@ -19,7 +20,9 @@ public class WoowaDate {
 
     private void validate(LocalDate date) {
         if (!policy.isEducationDay(date)) {
-            throw new IllegalArgumentException(date.format(DATE_FORMATTER));
+            throw new IllegalArgumentException(
+                    String.format(ERROR_NOT_EDUCATION_DAY, date.format(DATE_FORMATTER))
+            );
         }
     }
 
