@@ -3,6 +3,7 @@ package domain;
 import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public class AttendanceBook {
     private final Map<Crew, AttendanceHistory> attendanceBook;
@@ -38,6 +39,12 @@ public class AttendanceBook {
     }
 
     public Map<Crew, AttendanceHistory> calculateRiskOfExpulsionCrews(final LocalDate targetDate) {
-        return null;
+        return attendanceBook.entrySet()
+                .stream()
+                .filter(entry -> entry.getValue().isRiskOfExpulsion(targetDate))
+                .collect(Collectors.toMap(
+                        entry -> entry.getKey(),
+                        entry -> entry.getValue()
+                ));
     }
 }
