@@ -9,11 +9,11 @@ public class Attendance {
     private LocalDateTime dateTime;
     private AttendanceType type;
 
-    public Attendance(LocalDateTime dateTime) {
+    public Attendance(final LocalDateTime dateTime) {
         this.dateTime = dateTime;
     }
 
-    public Attendance(LocalDateTime dateTime, AttendanceType type) {
+    public Attendance(final LocalDateTime dateTime, final AttendanceType type) {
         this.dateTime = dateTime;
         this.type = type;
     }
@@ -26,11 +26,11 @@ public class Attendance {
         return type;
     }
 
-    public boolean isSameDate(LocalDate date) {
+    public boolean isSameDate(final LocalDate date) {
         return dateTime.toLocalDate().equals(date);
     }
 
-    public void modifyDateTime(LocalDateTime dateTime) {
+    public void modifyDateTime(final LocalDateTime dateTime) {
         this.dateTime = dateTime;
     }
 

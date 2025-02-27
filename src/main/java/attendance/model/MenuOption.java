@@ -12,11 +12,11 @@ public enum MenuOption {
 
     private final String option;
 
-    MenuOption(String option) {
+    MenuOption(final String option) {
         this.option = option;
     }
 
-    public static MenuOption of(String option) {
+    public static MenuOption of(final String option) {
         return Arrays.stream(values())
                 .filter(menuOption -> menuOption.getOption().equals(option))
                 .findFirst()

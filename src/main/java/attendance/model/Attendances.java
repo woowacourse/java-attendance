@@ -18,7 +18,7 @@ public class Attendances {
         attendances = new ArrayList<>();
     }
 
-    public void initAttendances(String name, List<List<String>> csvData) {
+    public void initAttendances(final String name, final List<List<String>> csvData) {
         Crew crew = new Crew(name);
         DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd H:m");
         csvData.stream()
@@ -29,7 +29,7 @@ public class Attendances {
                 .forEach(attendances::add);
 
         calculateAttendancesType();
-        fillEmptyAttendance(crew);
+        fillEmptyAttendance();
     }
 
     private void calculateAttendancesType() {
@@ -38,7 +38,7 @@ public class Attendances {
         }
     }
 
-    private void fillEmptyAttendance(Crew crew) {
+    private void fillEmptyAttendance() {
         LocalDate firstDate = LocalDate.of(2025, 2, 1);
         LocalDate today = LocalDate.now();
         for (LocalDate i = firstDate; i.isBefore(today); i = i.plusDays(1)) {
@@ -51,12 +51,12 @@ public class Attendances {
         }
     }
 
-    private boolean isWorkday(LocalDate date) {
+    private boolean isWorkday(final LocalDate date) {
         return date.getDayOfWeek() != DayOfWeek.SATURDAY
                 && date.getDayOfWeek() != DayOfWeek.SUNDAY;
     }
 
-    private boolean isAttend(LocalDate date) {
+    private boolean isAttend(final LocalDate date) {
         return attendances.stream()
                 .anyMatch(attendance -> attendance.isSameDate(date));
     }
@@ -79,7 +79,7 @@ public class Attendances {
                 .count();
     }
 
-    public void attend(LocalDateTime dateTime) {
+    public void attend(final LocalDateTime dateTime) {
         attendances.add(new Attendance(dateTime, AttendanceType.of(dateTime)));
     }
 
@@ -103,14 +103,14 @@ public class Attendances {
         return attendanceInfo;
     }
 
-    public Attendance findAttendance(LocalDate date) {
+    public Attendance findAttendance(final LocalDate date) {
         return attendances.stream()
                 .filter(attendance -> attendance.isSameDate(date))
                 .findFirst()
                 .orElseThrow(() -> new IllegalStateException("출석 수정은 어제까지의 기록만 가능합니다."));  // 값이 없을 경우 null 반환
     }
 
-    public void modifyAttendance(LocalDateTime dateTime) {
+    public void modifyAttendance(final LocalDateTime dateTime) {
         for (Attendance attendance : attendances) {
             if (attendance.isSameDate(dateTime.toLocalDate())) {
                 attendance.modifyDateTime(dateTime);

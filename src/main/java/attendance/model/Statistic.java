@@ -15,7 +15,7 @@ public class Statistic {
         status = Status.NONE;
     }
 
-    public void updateStatistic(Attendances attendances) {
+    public void updateStatistic(final Attendances attendances) {
         Map<AttendanceType, Integer> info = attendances.getInfo();
 
         this.presentCount = info.get(AttendanceType.PRESENT);

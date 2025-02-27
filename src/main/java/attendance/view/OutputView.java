@@ -21,11 +21,11 @@ public class OutputView {
     private static final String EXPEL_CREWS_HEAD_STRING = "제적 위험자 조회 결과";
     private static final String EXPEL_CREW_BODY_STRING = "- %s: 결석 %d회, 지각 %d회 (%s)";
 
-    public void printErrorMessage(IllegalArgumentException e) {
+    public void printErrorMessage(final IllegalArgumentException e) {
         System.out.println("[ERROR] : " + e.getMessage());
     }
 
-    public void printAttendMessage(Attendance todayAttendance) {
+    public void printAttendMessage(final Attendance todayAttendance) {
         int month = Integer.parseInt(todayAttendance.getMonth());
         int date = Integer.parseInt(todayAttendance.getDateOfMonth());
         String day = todayAttendance.getDayOfMonth().getDisplayName(TextStyle.NARROW, Locale.KOREAN);
@@ -36,7 +36,7 @@ public class OutputView {
         System.out.println();
     }
 
-    public void printCrewStatistic(Crew crew) {
+    public void printCrewStatistic(final Crew crew) {
         System.out.println(String.format(CREW_ATTENDANCE_HISTORY_STRING, crew.getName()));
 
         for (Attendance attendance : crew.getAttendanceHistory()) {
@@ -64,7 +64,7 @@ public class OutputView {
         System.out.println();
     }
 
-    public void printModifyMessage(Attendance originalAttendance, Attendance newAttendance) {
+    public void printModifyMessage(final Attendance originalAttendance, final Attendance newAttendance) {
         int month = Integer.parseInt(originalAttendance.getMonth());
         int date = Integer.parseInt(originalAttendance.getDateOfMonth());
         String day = originalAttendance.getDayOfMonth().getDisplayName(TextStyle.NARROW, Locale.KOREAN);
@@ -83,7 +83,7 @@ public class OutputView {
         System.out.println();
     }
 
-    public void printCrewsStatus(List<Crew> crews) {
+    public void printCrewsStatus(final List<Crew> crews) {
         System.out.println(EXPEL_CREWS_HEAD_STRING);
         for (Crew crew : crews) {
             System.out.println(

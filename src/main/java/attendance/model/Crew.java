@@ -11,22 +11,22 @@ public class Crew {
     private final Attendances attendances;
     private final Statistic statistic;
 
-    public Crew(String name) {
+    public Crew(final String name) {
         this.name = name;
         this.attendances = new Attendances();
         this.statistic = new Statistic();
     }
 
-    public void initCrewAttendances(List<List<String>> csvData) {
+    public void initCrewAttendances(final List<List<String>> csvData) {
         attendances.initAttendances(name, csvData);
         statistic.updateStatistic(attendances);
     }
 
-    public boolean isName(String name) {
+    public boolean isName(final String name) {
         return this.name.equals(name);
     }
 
-    public void attendToday(LocalTime time) {
+    public void attendToday(final LocalTime time) {
         attendances.attend(LocalDateTime.of(LocalDate.now(), time));
         statistic.updateStatistic(attendances);
     }
@@ -43,11 +43,11 @@ public class Crew {
         return statistic.getAbsentCount();
     }
 
-    public Attendance findAttendance(LocalDate date) {
+    public Attendance findAttendance(final LocalDate date) {
         return attendances.findAttendance(date);
     }
 
-    public void modifyAttendance(LocalDateTime dateTime) {
+    public void modifyAttendance(final LocalDateTime dateTime) {
         attendances.modifyAttendance(dateTime);
         statistic.updateStatistic(attendances);
     }

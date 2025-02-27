@@ -12,11 +12,11 @@ public enum AttendanceType {
 
     private final String type;
 
-    AttendanceType(String type) {
+    AttendanceType(final String type) {
         this.type = type;
     }
 
-    public static AttendanceType of(LocalDateTime dateTime) {
+    public static AttendanceType of(final LocalDateTime dateTime) {
         DayOfWeek dayOfWeek = dateTime.getDayOfWeek();
 
         if (isMonday(dayOfWeek)) {
@@ -28,18 +28,18 @@ public enum AttendanceType {
         return EXTRA;
     }
 
-    private static boolean isMonday(DayOfWeek dayOfWeek) {
+    private static boolean isMonday(final DayOfWeek dayOfWeek) {
         return dayOfWeek == DayOfWeek.MONDAY;
     }
 
-    private static boolean isOtherWorkDay(DayOfWeek dayOfWeek) {
+    private static boolean isOtherWorkDay(final DayOfWeek dayOfWeek) {
         return dayOfWeek == DayOfWeek.TUESDAY
                 || dayOfWeek == DayOfWeek.WEDNESDAY
                 || dayOfWeek == DayOfWeek.THURSDAY
                 || dayOfWeek == DayOfWeek.FRIDAY;
     }
 
-    private static AttendanceType calculateType(LocalTime localTime, String time) {
+    private static AttendanceType calculateType(final LocalTime localTime, final String time) {
         if (localTime.isAfter(LocalTime.parse(time).plusMinutes(30))) {
             return ABSENT;
         }
