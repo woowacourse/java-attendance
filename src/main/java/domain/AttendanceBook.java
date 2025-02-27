@@ -1,7 +1,6 @@
 package domain;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 
 public class AttendanceBook {
@@ -23,15 +22,10 @@ public class AttendanceBook {
     }
 
     public List<CrewAttendance> findDisciplinaryCrews(LocalDate date) {
-        List<CrewAttendance> disciplinaryCrews = new ArrayList<>();
-        for (CrewAttendance crewAttendance : crewAttendances) {
-            int absenceCount = crewAttendance.countAbsenceBeforeDate(date);
-            int lateCount = crewAttendance.countLateBeforeDate(date);
-            DisciplinaryStatus disciplinaryStatus = DisciplinaryStatus.from(absenceCount, lateCount);
-            if (disciplinaryStatus != DisciplinaryStatus.NORMAL) {
-                disciplinaryCrews.add(crewAttendance);
-            }
-        }
-        return disciplinaryCrews;
+        return crewAttendances.stream()
+                .filter(crewAttendance ->
+                        crewAttendance.getDisciplinaryStatus(date) != DisciplinaryStatus.NORMAL
+                )
+                .toList();
     }
 }
