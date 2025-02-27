@@ -1,7 +1,6 @@
 package model;
 
-import common.Common;
-import java.time.LocalDate;
+
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -9,8 +8,6 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 public class ExistingAttendances {
     //TODO : 혹시 만드는게 별로라면 이유는?
@@ -26,10 +23,6 @@ public class ExistingAttendances {
                 continue;
             }
             attendances.put(crewName, new ArrayList<>(Arrays.asList(dateTime)));
-//            attendances.merge(crewName, new ArrayList<>(Arrays.asList(dateTime)), (newTime, existingTimes) -> {
-//                existingTimes.add(dateTime);
-//                return existingTimes;
-//            });
         }
         return new ExistingAttendances(attendances);
     }
