@@ -38,10 +38,10 @@ public class AttendanceBook {
         return attendances.findByDate(dateTime.toLocalDate());
     }
 
-    public Map<String, Attendances> findWarningCrews() {
+    public Map<String, Attendances> findPenaltyCrews() {
         return crewAttendances.entrySet()
                 .stream()
-                .filter(entry -> !Warning.NONE.equals(entry.getValue().calculateWarning()))
+                .filter(entry -> !AttendancePenalty.NONE.equals(entry.getValue().calculatePenalty()))
                 .collect(Collectors.toMap(Entry::getKey, Entry::getValue));
     }
 

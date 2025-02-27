@@ -8,10 +8,10 @@ import attendance.domain.AttendanceDate;
 import attendance.domain.AttendanceTime;
 import attendance.domain.Attendances;
 import attendance.domain.Menu;
-import attendance.domain.Warning;
+import attendance.domain.AttendancePenalty;
 import attendance.dto.AttendanceResultResponse;
 import attendance.dto.AttendancesResponse;
-import attendance.dto.WarningCrewsResponse;
+import attendance.dto.PenaltyCrewsResponse;
 import attendance.util.AttendancesFileReader;
 import attendance.util.CrewAttendancesDataParser;
 import attendance.view.InputView;
@@ -60,7 +60,7 @@ public class AttendanceController {
             printAttendancesByCrew();
         }
         if (Menu.PRINT_WARNING.equals(selectedMenu)) {
-            printWarningCrews();
+            printPenaltyCrews();
         }
         return Menu.QUIT.equals(selectedMenu);
     }
@@ -96,14 +96,14 @@ public class AttendanceController {
 
         outputView.printAttendancesByCrew(AttendancesResponse.of(nickname, attendances));
 
-        Warning warning = attendances.calculateWarning();
-        if (!Warning.NONE.equals(warning)) {
-            outputView.printWarning(warning);
+        AttendancePenalty warning = attendances.calculatePenalty();
+        if (!AttendancePenalty.NONE.equals(warning)) {
+            outputView.printPenalty(warning);
         }
     }
 
-    private void printWarningCrews() {
-        WarningCrewsResponse response = WarningCrewsResponse.from(attendanceBook.findWarningCrews());
-        outputView.printWarningCrews(response);
+    private void printPenaltyCrews() {
+        PenaltyCrewsResponse response = PenaltyCrewsResponse.from(attendanceBook.findPenaltyCrews());
+        outputView.printPenaltyCrews(response);
     }
 }

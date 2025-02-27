@@ -102,7 +102,7 @@ public class AttendanceBookTest {
                         "모루", generateAttendances(attendances)
                 )
         );
-        final var result = attendanceBook.findWarningCrews();
+        final var result = attendanceBook.findPenaltyCrews();
 
         assertThat(result.keySet()).hasSize(2);
     }

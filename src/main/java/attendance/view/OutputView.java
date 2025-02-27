@@ -3,11 +3,11 @@ package attendance.view;
 import static attendance.domain.AttendanceStatus.ABSENCE;
 
 import attendance.domain.AttendanceStatus;
-import attendance.domain.Warning;
+import attendance.domain.AttendancePenalty;
 import attendance.dto.AttendanceResultResponse;
 import attendance.dto.AttendancesResponse;
-import attendance.dto.WarningCrewsResponse;
-import attendance.dto.WarningCrewsResponse.WarningCrew;
+import attendance.dto.PenaltyCrewsResponse;
+import attendance.dto.PenaltyCrewsResponse.PenaltyCrew;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Comparator;
@@ -53,23 +53,23 @@ public class OutputView {
         System.out.printf("%s: %s회\n", AttendanceStatus.ABSENCE.getMessage(), response.absenceCount());
     }
 
-    public void printWarning(final Warning warning) {
+    public void printPenalty(final AttendancePenalty warning) {
         System.out.printf("%s 대상자입니다.\n", warning.getMessage());
     }
 
-    public void printWarningCrews(final WarningCrewsResponse response) {
-        List<WarningCrew> warningCrews = response.warningCrews()
+    public void printPenaltyCrews(final PenaltyCrewsResponse response) {
+        List<PenaltyCrew> penaltyCrews = response.penaltyCrews()
                 .stream()
-                .sorted(Comparator.comparing(WarningCrew::absenceCount)
-                        .thenComparing(WarningCrew::lateCount)
-                        .thenComparing(WarningCrew::nickname))
+                .sorted(Comparator.comparing(PenaltyCrew::absenceCount)
+                        .thenComparing(PenaltyCrew::lateCount)
+                        .thenComparing(PenaltyCrew::nickname))
                 .toList();
-        for (WarningCrew warningCrew : warningCrews) {
+        for (PenaltyCrew penaltyCrew : penaltyCrews) {
             System.out.printf("- %s: 결석 %d회, 지각 %d회 (%s)\n",
-                    warningCrew.nickname(),
-                    warningCrew.absenceCount(),
-                    warningCrew.lateCount(),
-                    warningCrew.warning().getMessage()
+                    penaltyCrew.nickname(),
+                    penaltyCrew.absenceCount(),
+                    penaltyCrew.lateCount(),
+                    penaltyCrew.risk().getMessage()
             );
         }
     }

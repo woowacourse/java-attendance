@@ -1,6 +1,6 @@
 package attendance.domain;
 
-public enum Warning {
+public enum AttendancePenalty {
     EXPULSION("제적", 5),
     INTERVIEW("면담", 3),
     Warning("경고", 2),
@@ -9,12 +9,12 @@ public enum Warning {
     private final String message;
     private final int criteria;
 
-    Warning(String message, int criteria) {
+    AttendancePenalty(String message, int criteria) {
         this.message = message;
         this.criteria = criteria;
     }
 
-    public static Warning from(final int value) {
+    public static AttendancePenalty from(final int value) {
         if (value > EXPULSION.criteria) {
             return EXPULSION;
         }
