@@ -2,6 +2,7 @@ package domain;
 
 import domain.policy.AbsentPolicy;
 import domain.policy.AttendanceState;
+import domain.policy.ExpellState;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -9,7 +10,10 @@ import java.time.LocalTime;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
+import static domain.policy.AttendanceState.ABSENT;
+import static domain.policy.AttendanceState.LATE;
 import static java.util.stream.Collectors.*;
 
 public class AttendanceSheet {
@@ -60,7 +64,7 @@ public class AttendanceSheet {
 
         initUndefinedState(counts);
         Long absentCount = calculateAbsentCount(today, counts);
-        counts.put(AttendanceState.ABSENT, counts.get(AttendanceState.ABSENT)*2 + absentCount);
+        counts.put(ABSENT, counts.get(ABSENT)*2 + absentCount);
 
         return counts;
     }
@@ -93,4 +97,16 @@ public class AttendanceSheet {
                 ));
     }
 
+    public Map<String, ExpellState> checkExpellStatus(Map<String, Map<AttendanceState, Long>> attendances) {
+        return attendances.entrySet().stream()
+                .collect(Collectors.toMap(
+                        Map.Entry::getKey,
+                        entry -> {
+                            Map<AttendanceState, Long> attendance = entry.getValue();
+                            int lateCount = Math.toIntExact(attendance.getOrDefault(AttendanceState.LATE, 0L));
+                            int absentCount = Math.toIntExact(attendance.getOrDefault(AttendanceState.ABSENT, 0L));
+                            return ExpellState.checkExpellStatus(lateCount, absentCount);
+                        }
+                ));
+    }
 }
