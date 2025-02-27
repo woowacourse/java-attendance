@@ -25,6 +25,7 @@ public class AttendanceRegister {
 
     public void modify(String crewName, LocalDate modifyDate, LocalTime modifyTime) {
         validateModifyDate(crewName, modifyDate);
+        validateDuringEducationTime(modifyDate, modifyTime);
         validateContainsCrewName(crewName);
         AttendanceRecord attendanceRecord = register.get(crewName);
         AttendanceDateTime foundAttendanceDateTime = attendanceRecord.findAttendanceByDate(modifyDate);
