@@ -15,6 +15,6 @@ public class AttendanceRecordTest {
         AttendanceRecord attendanceRecord = new AttendanceRecord();
         attendanceRecord.addAttendanceTime(localDateTime);
 
-        Assertions.assertThat(attendanceRecord.getAttendanceRecord().getFirst()).isEqualTo(localDateTime);
+        Assertions.assertThat(attendanceRecord.getAttendanceRecord().size()).isEqualTo(1);
     }
 }

@@ -9,7 +9,7 @@ public class AttendanceRecord {
     private final List<AttendanceTime> attendanceRecord;
 
     public AttendanceRecord() {
-        this.attendanceRecord = Collections.unmodifiableList(new ArrayList<>());
+        this.attendanceRecord = new ArrayList<>();
     }
 
     public void addAttendanceTime(LocalDateTime attendanceTime) {
@@ -17,6 +17,6 @@ public class AttendanceRecord {
     }
 
     public List<AttendanceTime> getAttendanceRecord() {
-        return attendanceRecord;
+        return Collections.unmodifiableList(attendanceRecord);
     }
 }
