@@ -13,6 +13,7 @@ public class AttendanceHistory {
 
     private static final int CHRISTMAS_MONTH = 12;
     private static final int CHRISTMAS_MONTH_OF_DAY = 25;
+    private static final LocalDate ATTENDANCE_HISTORY_RECORD_BEGIN_DATE = LocalDate.of(2024, 12, 1);
     private static final LocalTime START_TIME = LocalTime.of(8, 0);
     private static final LocalTime END_TIME = LocalTime.of(23, 0);
     ;
@@ -40,10 +41,7 @@ public class AttendanceHistory {
     }
 
     private void validateAttendanceDay(final LocalDateTime attendanceDateTime) {
-        final LocalDate date = attendanceDateTime.toLocalDate();
-        final DayOfWeek dayOfWeek = date.getDayOfWeek();
-        if (DayOfWeek.SATURDAY == dayOfWeek || DayOfWeek.SUNDAY == dayOfWeek
-                || (date.getMonthValue() == CHRISTMAS_MONTH && date.getDayOfMonth() == CHRISTMAS_MONTH_OF_DAY)) {
+        if (!isAttendanceDay(attendanceDateTime.toLocalDate())) {
             throw new IllegalArgumentException();
         }
     }
@@ -77,7 +75,7 @@ public class AttendanceHistory {
     }
 
     public List<AttendanceRecord> findAllUntilBeforeToday(final LocalDate targetDate) {
-        return LocalDate.of(2024, 12, 1).datesUntil(targetDate)
+        return ATTENDANCE_HISTORY_RECORD_BEGIN_DATE.datesUntil(targetDate)
                 .filter(this::isAttendanceDay)
                 .map(date -> attendanceHistory.getOrDefault(date, AttendanceRecord.empty(date)))
                 .collect(Collectors.toList());
