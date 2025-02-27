@@ -4,19 +4,19 @@ import java.util.List;
 
 public class Students {
 
-    List<Student> studentRepository;
+    private final List<Student> students;
 
     public Students(List<Student> studentRepository) {
-        this.studentRepository = studentRepository;
+        this.students = studentRepository;
     }
 
     public boolean isExistStudent(String name) {
-        return studentRepository.stream()
+        return students.stream()
                 .anyMatch(student -> student.getName().equals(name));
     }
 
     public Student findStudentByName(String name) {
-        for (Student student : studentRepository) {
+        for (Student student : students) {
             if (student.getName().equals(name)) {
                 return student;
             }
@@ -25,12 +25,12 @@ public class Students {
     }
 
     public void updateEveryStudentNoInformationInFile(TodayDate todayDate) {
-        for (Student student : studentRepository) {
+        for (Student student : students) {
             student.updateNoInformationInFile(todayDate.getTodayDateTIme());
         }
     }
 
-    public List<Student> getStudentRepository() {
-        return studentRepository;
+    public List<Student> getStudents() {
+        return students;
     }
 }
