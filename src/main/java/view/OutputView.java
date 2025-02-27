@@ -20,7 +20,7 @@ public class OutputView {
         attendanceRecordDto.forEach(this::printAttendanceRecord);
     }
 
-    private void printAttendanceRecord(final AttendanceRecordDto attendanceRecordDto) {
+    public void printAttendanceRecord(final AttendanceRecordDto attendanceRecordDto) {
         if (attendanceRecordDto.isEmpty()) {
             System.out.printf(attendanceRecordDto.dateTime().format(EMPTY_TIME_FORMATTER) + " (%s)\n",
                     attendanceRecordDto.attendanceStatus());

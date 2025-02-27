@@ -11,6 +11,8 @@ import domain.Crews;
 import domain.RiskOfExpulsionStatus;
 import dto.RiskOfExpulsionCrewDto;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
 import java.util.Map;
 import view.InputView;
@@ -34,7 +36,17 @@ public class AttendanceController {
         final AttendanceBook attendanceBook = new AttendanceBook();
         final Crews crews = savedDataLoader.loadCrews();
         savedDataLoader.loadAttendances(attendanceBook, crews);
-        checkRiskOfExpulsionCrews(attendanceBook);
+        attendance(attendanceBook, crews);
+    }
+
+    public void attendance(final AttendanceBook attendanceBook, final Crews crews) {
+        final Crew crew = inputCrew(crews);
+        final LocalTime attendanceTime = inputView.readAttendanceTime();
+
+        final AttendanceHistory attendanceHistory = attendanceBook.findByCrew(crew);
+        final AttendanceRecord attendanceRecord = attendanceHistory.attendance(LocalDateTime.of(now(), attendanceTime));
+
+        outputView.printAttendanceRecord(dtoConverter.convertToAttendanceRecordDto(attendanceRecord));
     }
 
     public void checkAttendanceForEachCrew(final AttendanceBook attendanceBook, final Crews crews) {

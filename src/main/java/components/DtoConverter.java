@@ -20,7 +20,7 @@ public class DtoConverter {
                 .collect(Collectors.toList());
     }
 
-    private AttendanceRecordDto convertToAttendanceRecordDto(final AttendanceRecord attendanceRecord) {
+    public AttendanceRecordDto convertToAttendanceRecordDto(final AttendanceRecord attendanceRecord) {
         return new AttendanceRecordDto(
                 attendanceRecord.getDateTime(),
                 attendanceRecord.isEmpty(),
