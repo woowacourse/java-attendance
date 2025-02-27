@@ -1,7 +1,6 @@
 package domain;
 
 import java.time.DayOfWeek;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 
@@ -27,18 +26,17 @@ public class Attendance {
     }
 
     public AttendanceStatus judge() {
-        LocalDate date = localDateTime.toLocalDate();
         LocalTime attendanceTime = localDateTime.toLocalTime();
-        StandardTime standardTime = StandardTime.findByDayOfWeek(date.getDayOfWeek());
+        StandardTime standardTime = StandardTime.findByDayOfWeek(localDateTime.toLocalDate().getDayOfWeek());
 
-        if (attendanceTime.isAfter(standardTime.getAbsentTime())) {
-            return AttendanceStatus.ABSENCE;
-        }
+        if (attendanceTime.isAfter(standardTime.getAbsentTime())) return AttendanceStatus.ABSENCE;
 
-        if (attendanceTime.isAfter(standardTime.getLateTime())) {
-            return AttendanceStatus.LATENESS;
-        }
+        if (attendanceTime.isAfter(standardTime.getLateTime())) return AttendanceStatus.LATENESS;
 
         return AttendanceStatus.ATTENDANCE;
+    }
+
+    public LocalDateTime getLocalDateTime() {
+        return localDateTime;
     }
 }
