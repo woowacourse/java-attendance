@@ -3,8 +3,7 @@ package domain;
 import static org.assertj.core.api.Assertions.*;
 
 import dto.AttendanceCount;
-import dto.AttendanceHistory;
-import dto.InitialInfo;
+import dto.InitialInformation;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.HashMap;
@@ -28,8 +27,8 @@ public class PenaltyTest {
         Map<CrewName, AttendanceRecord> testData = new HashMap<>();
         testData.put(mimi, attendanceRecord);
 
-        InitialInfo initialInfo = new InitialInfo(testData);
-        attendanceBook = new AttendanceBook(initialInfo);
+        InitialInformation initialInformation = new InitialInformation(testData);
+        attendanceBook = new AttendanceBook(initialInformation);
     }
 
     @DisplayName("결석이 5회를 초과하는 경우 제적에 처한다.")

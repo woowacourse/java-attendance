@@ -11,7 +11,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
-import util.Constants;
 import util.DateTimeManager;
 
 public class AttendanceRecord {

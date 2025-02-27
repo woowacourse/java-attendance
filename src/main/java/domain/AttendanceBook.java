@@ -2,7 +2,7 @@ package domain;
 
 import dto.AttendanceCount;
 import dto.AttendanceHistory;
-import dto.InitialInfo;
+import dto.InitialInformation;
 import dto.ModifyResult;
 import java.time.LocalDate;
 import java.util.Map;
@@ -10,8 +10,8 @@ import java.util.Map;
 public class AttendanceBook {
     private final Map<CrewName, AttendanceRecord> value;
 
-    public AttendanceBook(InitialInfo initialInfo) {
-        this.value = initialInfo.value();
+    public AttendanceBook(InitialInformation initialInformation) {
+        this.value = initialInformation.value();
     }
 
     public Attendance addAttendance(CrewName crewName, Attendance attendance) {
