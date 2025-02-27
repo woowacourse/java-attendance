@@ -51,6 +51,12 @@ public class Attendance {
         return this.day.equals(day);
     }
 
+    public void modifyTimeTo(LocalTime time) {
+        validateTime(time);
+        this.time = time;
+        updateStatus();
+    }
+
     @Override
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) {

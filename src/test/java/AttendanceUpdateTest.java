@@ -31,7 +31,7 @@ class AttendanceUpdateTest {
 
         final var modifiedTime = LocalTime.of(10, 5);
         AttendanceUpdate attendanceUpdate = new AttendanceUpdate();
-        attendanceUpdate.updateAttendanceTime(nickname, day, modifiedTime);
+        attendanceUpdate.updateAttendanceTime(attendanceBook, nickname, day, modifiedTime);
 
         assertEquals(modifiedTime, attendance.getTime());
     }
