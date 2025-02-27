@@ -55,6 +55,10 @@ public class Attendance {
         return AttendanceStatus.calculate(attendanceDate.getDayOfWeek(), attendanceTime);
     }
 
+    public boolean isEqualNickname(String nickname) {
+        return this.nickname.equals(nickname);
+    }
+
     @Override
     public boolean equals(Object object) {
         if (this == object) {

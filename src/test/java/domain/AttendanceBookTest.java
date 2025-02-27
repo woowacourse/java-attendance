@@ -85,7 +85,7 @@ public class AttendanceBookTest {
     void 크루의_출석_기록을_조회할_수_있다() {
         //given
         AttendanceBook attendanceBook = new AttendanceBook(
-                new Attendance("pobi", LocalDateTime.of(2024, 11, 24, 10, 1)),
+                new Attendance("pobi", LocalDateTime.of(2024, 11, 25, 10, 1)),
                 new Attendance("pobi", LocalDateTime.of(2024, 12, 2, 13, 1)),
                 new Attendance("neo", LocalDateTime.of(2024, 12, 3, 10, 1))
         );
@@ -96,7 +96,7 @@ public class AttendanceBookTest {
         //then
         assertThat(attendances)
                 .isEqualTo(List.of(
-                        new Attendance("pobi", LocalDateTime.of(2024, 11, 24, 10, 1)),
+                        new Attendance("pobi", LocalDateTime.of(2024, 11, 25, 10, 1)),
                         new Attendance("pobi", LocalDateTime.of(2024, 12, 2, 13, 1))
                 ));
     }

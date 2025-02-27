@@ -39,6 +39,12 @@ public class AttendanceBook {
                 .findFirst();
     }
 
+    public List<Attendance> findAttendancesByNickname(String nickname) {
+        return attendances.stream()
+                .filter(attendance -> attendance.isEqualNickname(nickname))
+                .toList();
+    }
+
     @Override
     public boolean equals(Object object) {
         if (this == object) {
@@ -55,9 +61,5 @@ public class AttendanceBook {
     @Override
     public int hashCode() {
         return attendances.hashCode();
-    }
-
-    public List<Attendance> findAttendancesByNickname(String nickname) {
-        return List.of();
     }
 }
