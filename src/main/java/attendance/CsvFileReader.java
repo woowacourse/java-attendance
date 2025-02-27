@@ -6,10 +6,9 @@ import java.io.FileReader;
 import java.io.IOException;
 
 public class CsvFileReader {
-    public static final String ATTENDANCE_CSV = "../resources/attendance.csv";
     private static final String NEW_LINE = "\n";
 
-    public static String read(String filePath) throws IOException {
+    public static String read(final String filePath) {
         try {
             File file = new File(filePath);
             BufferedReader br = new BufferedReader(new FileReader(file));

@@ -7,7 +7,7 @@ public enum AbsenceRule {
     WARNING(2),
     NONE(0);
 
-    private int criteria;
+    private final int criteria;
 
     AbsenceRule(final int criteria) {
         this.criteria = criteria;
