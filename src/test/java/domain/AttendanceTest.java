@@ -174,4 +174,17 @@ public class AttendanceTest {
             repository.update("dompoo", localDate, localTime);
         }).isInstanceOf(IllegalArgumentException.class);
     }
+
+    @Test
+    void 주말_및_공휴일에는_출석을_수정할_수_없다() {
+        // given
+        String name = "fora";
+        LocalDate localDate = LocalDate.of(2024, 12, 1);
+        LocalTime localTime = LocalTime.of(9, 55);
+
+        // when & then
+        Assertions.assertThatThrownBy(() -> {
+            repository.update(name, localDate, localTime);
+        }).isInstanceOf(IllegalArgumentException.class);
+    }
 }
