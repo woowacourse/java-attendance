@@ -24,21 +24,28 @@ public enum AttendanceStatus {
             .getMinute()
             .orElse(null);
 
-        if (hour == null || minute == null) {
-            return ABSENCE;
-        }
-
         final int startHour = attendance.getAttendanceDate()
             .getAttendanceDayOfWeekDayOfWeek()
             .getStartHour();
+
+        return caculateAttendanceStatus(hour, minute, startHour);
+    }
+
+    private static AttendanceStatus caculateAttendanceStatus(
+        final Integer hour,
+        final Integer minute,
+        final int startHour
+    ) {
+        if (hour == null || minute == null) {
+            return ABSENCE;
+        }
 
         if (hour > startHour ||
             (hour.equals(startHour) && minute > ABSENCE.threshold)) {
             return ABSENCE;
         }
 
-        if (hour > startHour ||
-            (hour.equals(startHour) && minute > LATE.threshold)) {
+        if (hour.equals(startHour) && minute > LATE.threshold) {
             return LATE;
         }
 
