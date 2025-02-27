@@ -7,17 +7,17 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
 class AttendanceStatisticsTest {
-    @DisplayName("d")
+    @DisplayName("출석_지각_결석_횟수를_기반으로_크루_상태를_반환할_수_있다")
     @CsvSource(value = {"1:3:0:NONE", "1:3:1:WARNING", "4:0:3:INTERVIEW", "2:10:3:FIRE"}, delimiterString = ":")
     @ParameterizedTest
-    void should_ReturnDangerousStatus(int attendanceCount, int lateCount, int absenceCount, String dangerousStatus) {
+    void should_ReturnDangerousStatus(int attendanceCount, int lateCount, int absenceCount, CrewStatus expected) {
         //given
         AttendanceStatistics attendanceStatistics = new AttendanceStatistics(attendanceCount, lateCount, absenceCount);
 
         //when
-        String result = attendanceStatistics.calculateDangerousStatus();
+        CrewStatus result = attendanceStatistics.calculateCrewStatus();
 
         //then
-        assertThat(result).isEqualTo(dangerousStatus);
+        assertThat(result).isEqualTo(expected);
     }
 }

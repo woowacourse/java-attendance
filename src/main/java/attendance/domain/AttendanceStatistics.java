@@ -1,5 +1,10 @@
 package attendance.domain;
 
+import static attendance.domain.CrewStatus.FIRE;
+import static attendance.domain.CrewStatus.INTERVIEW;
+import static attendance.domain.CrewStatus.NONE;
+import static attendance.domain.CrewStatus.WARNING;
+
 public class AttendanceStatistics {
     private final int attendanceCount;
     private final int lateCount;
@@ -10,18 +15,18 @@ public class AttendanceStatistics {
         this.absenceCount = absenceCount;
     }
 
-    public String calculateDangerousStatus() {
+    public CrewStatus calculateCrewStatus() {
         int totalAbsence = absenceCount;
         totalAbsence += (lateCount / 3);
         if (totalAbsence > 5) {
-            return "FIRE";
+            return FIRE;
         }
         if (totalAbsence > 2) {
-            return "INTERVIEW";
+            return INTERVIEW;
         }
         if (totalAbsence > 1) {
-            return "WARNING";
+            return WARNING;
         }
-        return "NONE";
+        return NONE;
     }
 }
