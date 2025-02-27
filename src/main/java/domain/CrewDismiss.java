@@ -1,6 +1,7 @@
 package domain;
 
 import java.util.Map;
+import java.util.Objects;
 
 public class CrewDismiss {
 
@@ -33,10 +34,10 @@ public class CrewDismiss {
         if (absenceCount > DISMISS_STANDARD) {
             return DismissStatus.DISMISS;
         }
-        if (absenceCount > NEED_MEETING_STANDARD) {
+        if (absenceCount >= NEED_MEETING_STANDARD) {
             return DismissStatus.NEED_MEETING;
         }
-        if (absenceCount > WARNING_STANDARD) {
+        if (absenceCount >= WARNING_STANDARD) {
             return DismissStatus.WARNING;
         }
         return DismissStatus.ELSE;
@@ -64,5 +65,23 @@ public class CrewDismiss {
 
     public int attendance() {
         return attendance;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        CrewDismiss that = (CrewDismiss) o;
+        return absence == that.absence && late == that.late && attendance == that.attendance
+                && dismissStatus == that.dismissStatus;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(absence, late, attendance, dismissStatus);
     }
 }

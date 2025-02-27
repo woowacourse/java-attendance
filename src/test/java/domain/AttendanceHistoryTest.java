@@ -1,13 +1,13 @@
 package domain;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatIterable;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import except.AttendanceException;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Stream;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
@@ -46,16 +46,16 @@ public class AttendanceHistoryTest {
         return Stream.of(
                 Arguments.arguments(
                         "투다",
-                        List.of(new CrewAttendanceHistory(crewAttendance1, attendanceDate1),
-                                new CrewAttendanceHistory(crewAttendance2, attendanceDate2)),
+                        List.of(LocalDate.of(2024, 12, 2),
+                                LocalDate.of(2024, 12, 3)),
                         LocalDate.of(2024, 12, 4),
                         new AttendanceCount(2, 0, 0)
                 ),
                 Arguments.arguments(
                         "투다",
-                        List.of(new CrewAttendanceHistory(crewAttendance1, attendanceDate1),
-                                new CrewAttendanceHistory(crewAttendance2, attendanceDate2),
-                                new CrewAttendanceHistory(crewAttendance3, attendanceDate3)),
+                        List.of(LocalDate.of(2024, 12, 2),
+                                LocalDate.of(2024, 12, 3),
+                                LocalDate.of(2024, 12, 4)),
                         LocalDate.of(2024, 12, 5),
                         new AttendanceCount(3, 0, 0)
                 ),
@@ -71,16 +71,19 @@ public class AttendanceHistoryTest {
     @ParameterizedTest
     @MethodSource("attendanceHistoryTest")
     @DisplayName("닉네임을 입력하여 전날까지의 출석 기록을 확인할 수 있다.")
-    void attendanceHistoryTest(String nickname, List<CrewAttendanceHistory> expectCrewAttendanceHistories,
+    void attendanceHistoryTest(String nickname, List<LocalDate> historyDates,
                                LocalDate notIncludeDate, AttendanceCount crewDismissCount) {
         testAttendanceCurrentDateGenerateStrategy.setTestDate(notIncludeDate);
-        CrewAttendanceHistories crewAttendanceHistories = crewAttendances.crewAttendancesHistory(nickname);
-        List<CrewAttendanceHistory> resultCrewAttendanceHistories = crewAttendanceHistories.crewAttendanceHistories();
+        SystemTimeCrewAttendanceHistories systemTimeCrewAttendanceHistories = crewAttendances.crewAttendancesHistory(
+                nickname);
+        Map<LocalDate, CrewAttendance> dateCrewAttendanceMap = systemTimeCrewAttendanceHistories.renewDateCrewAttendance();
+        CrewDismiss crewDismiss = systemTimeCrewAttendanceHistories.crewDismiss();
 
-        assertThatIterable(resultCrewAttendanceHistories)
-                .containsExactlyInAnyOrderElementsOf(expectCrewAttendanceHistories);
-        assertThat(crewAttendanceHistories.crewDismiss()
-                .attendanceCount())
+        for (LocalDate date : historyDates) {
+            assertThat(dateCrewAttendanceMap.containsKey(date))
+                    .isTrue();
+        }
+        assertThat(crewDismiss.attendanceCount())
                 .isEqualTo(crewDismissCount);
     }
 

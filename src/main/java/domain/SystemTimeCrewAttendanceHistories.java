@@ -27,7 +27,7 @@ public class SystemTimeCrewAttendanceHistories {
 
     public SystemTimeCrewAttendanceHistories(CrewAttendanceHistories dateCrewAttendance,
                                              CurrentDateGenerateStrategy currentDateGenerateStrategy) {
-        Map<LocalDate, CrewAttendance> prevDateCrewAttendance = calculateDateCrewAttendance(dateCrewAttendance);
+        Map<LocalDate, CrewAttendance> previousDateCrewAttendance = calculateDateCrewAttendance(dateCrewAttendance);
         LocalDate systemStartDate = AttendanceDate.schoolStartDate();
         LocalDate systemLastDate = AttendanceDate.schoolLastDate().plusDays(1);
         LocalDate now = currentDateGenerateStrategy.now();
@@ -35,7 +35,7 @@ public class SystemTimeCrewAttendanceHistories {
             systemLastDate = now;
         }
         this.renewDateCrewAttendance.putAll(
-                calculateNewAbsenceCount(prevDateCrewAttendance, systemStartDate, systemLastDate));
+                calculateNewAbsenceCount(previousDateCrewAttendance, systemStartDate, systemLastDate));
         this.renewCrewDismiss = renewCrewDismiss(renewDateCrewAttendance);
     }
 

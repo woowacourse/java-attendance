@@ -4,9 +4,11 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import except.AttendanceException;
+import java.time.LocalDate;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import strategy.AttendanceCurrentDateGenerateStrategy;
+import strategy.TestAttendanceCurrentDateGenerateStrategy;
 
 public class AttendanceReaderTest {
 
@@ -15,10 +17,13 @@ public class AttendanceReaderTest {
     void addAttendanceFromFile() {
         String fileName = "/testAttendance.csv";
         AttendanceReader attendanceReader = new AttendanceReader(fileName);
-        CrewAttendances crewAttendances = new CrewAttendances(new AttendanceCurrentDateGenerateStrategy(),
+        CrewAttendances crewAttendances = new CrewAttendances(
+                new TestAttendanceCurrentDateGenerateStrategy(LocalDate.of(2024, 12, 7)),
                 attendanceReader.readAttendances());
-        CrewAttendanceHistories crewAttendanceHistories = crewAttendances.crewAttendancesHistory("투다");
-        assertThat(crewAttendanceHistories.crewAttendanceHistories().size())
+
+        SystemTimeCrewAttendanceHistories systemTimeCrewAttendanceHistories = crewAttendances.crewAttendancesHistory(
+                "투다");
+        assertThat(systemTimeCrewAttendanceHistories.renewDateCrewAttendance().size())
                 .isEqualTo(5);
     }
 
