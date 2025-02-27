@@ -5,7 +5,8 @@ import java.util.Arrays;
 public enum AttendanceRisk {
     WEEDING(6),
     INTERVIEW(3),
-    WARNING(2);
+    WARNING(2),
+    NONE(Integer.MIN_VALUE);
 
     private final int threshold;
 
@@ -13,10 +14,14 @@ public enum AttendanceRisk {
         this.threshold = threshold;
     }
 
-    public static AttendanceRisk evaluate(final int absence) {
+    public static AttendanceRisk evaluate(final int absence, final int tardy) {
         return Arrays.stream(values())
-                .filter(type -> type.threshold <= absence)
+                .filter(type -> type.threshold <= calculateAllAbsence(absence, tardy))
                 .findFirst()
-                .orElse(null);
+                .orElse(NONE);
+    }
+
+    private static int calculateAllAbsence(final int absence, final int tardy) {
+        return absence + tardy / 3;
     }
 }
