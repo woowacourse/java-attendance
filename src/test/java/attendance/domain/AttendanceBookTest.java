@@ -92,4 +92,30 @@ public class AttendanceBookTest {
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("오늘은 이미 출석하셨습니다. 출석 수정 기능을 이용해 주세요.");
     }
+
+    @Test
+    void 크루와_day를_알려주면_해당_날짜의_출석시간_객체를_알려준다() {
+        // Given
+        Crew crew = new Crew("쿠키");
+        int day = 25;
+        AttendanceDateTime expected = new AttendanceDateTime(Year.of(2025).atMonth(2).atDay(25).atTime(10, 4));
+
+        // When
+        AttendanceDateTime actual = attendanceBook.findAttendanceDateTimeByCrewAndDay(crew, day);
+
+        // Then
+        assertThat(actual).isEqualTo(expected);
+    }
+
+    @Test
+    void 크루와_day를_알려주지만_해당_day에_출석하지_않았을_경우() {
+        // Given
+        Crew crew = new Crew("쿠키");
+        int day = 28;
+
+        // Then
+        assertThatThrownBy(() -> attendanceBook.findAttendanceDateTimeByCrewAndDay(crew, day))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("해당 일자에 출석하지 않았습니다.");
+    }
 }
