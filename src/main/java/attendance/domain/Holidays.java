@@ -3,26 +3,27 @@ package attendance.domain;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.format.TextStyle;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
 public class Holidays {
 
-    private final List<Holiday> holidays;
+    private final List<Holiday> holidays = new ArrayList<>();
 
-    public Holidays(final List<Holiday> holidays) {
-        this.holidays = holidays;
+    public void addHoliday(final LocalDate date) {
+        holidays.add(new Holiday(date));
     }
 
-    public static void validateAttendanceDate(final LocalDate attendanceDate) {
+    public void validateAttendanceDate(final LocalDate attendanceDate) {
         DayOfWeek dayOfWeek = attendanceDate.getDayOfWeek();
         if (dayOfWeek == DayOfWeek.SATURDAY || dayOfWeek == DayOfWeek.SUNDAY) {
             throw new IllegalArgumentException(formatErrorMessage(attendanceDate));
         }
     }
 
-    public List<Holiday> getHolidays() {
-        return holidays;
+    public boolean contains(final LocalDate date) {
+        return holidays.contains(new Holiday(date));
     }
 
     private static String formatErrorMessage(final LocalDate date) {
