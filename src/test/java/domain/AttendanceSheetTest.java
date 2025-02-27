@@ -2,6 +2,7 @@ package domain;
 
 import domain.policy.AbsentPolicy;
 import domain.policy.AttendanceState;
+import domain.policy.TimePolicy;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -30,7 +31,7 @@ public class AttendanceSheetTest {
     @BeforeEach
     void setUp() {
         today = LocalDate.of(2024, 12, 11);
-        attendanceSheet = new AttendanceSheet(new AbsentPolicy(),
+        attendanceSheet = new AttendanceSheet(new TimePolicy(), new AbsentPolicy(),
                 new ArrayList<>(
                         List.of(
                                 new Attendance("링크", LocalDate.of(2024, 12, 10), LocalTime.of(13,5), ATTENDANCE),

@@ -2,6 +2,7 @@ package config;
 
 import domain.Attendance;
 import domain.AttendanceSheet;
+import domain.policy.TimePolicy;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -22,7 +23,7 @@ public class AttendanceSheetFactoryTest {
 
     @BeforeEach
     void setUp() {
-        readFile = new AttendanceSheetFactory(new AbsentPolicy());
+        readFile = new AttendanceSheetFactory(new TimePolicy(), new AbsentPolicy());
     }
 
     @Test

@@ -6,7 +6,7 @@ import domain.AttendanceSheet;
 import domain.policy.AbsentPolicy;
 import view.InputView;
 import view.OutputView;
-import view.Policy.TimePolicy;
+import domain.policy.TimePolicy;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -24,7 +24,7 @@ public enum AppConfig {
     }
 
     private InputView createInputView() {
-        return new InputView(new Scanner(System.in), new TimePolicy());
+        return new InputView(new Scanner(System.in));
     }
 
     private OutputView createOutputView() {
@@ -32,7 +32,7 @@ public enum AppConfig {
     }
 
     private AttendanceSheet createAttendanceSheet() {
-        ReadFile<Attendance, AttendanceSheet> readFile = new AttendanceSheetFactory(new AbsentPolicy());
+        ReadFile<Attendance, AttendanceSheet> readFile = new AttendanceSheetFactory(new TimePolicy(), new AbsentPolicy());
         return readFile.loadFile(FILE_PATH);
     }
 }

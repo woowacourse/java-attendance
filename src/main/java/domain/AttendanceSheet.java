@@ -3,6 +3,7 @@ package domain;
 import domain.policy.AbsentPolicy;
 import domain.policy.AttendanceState;
 import domain.policy.ExpellState;
+import domain.policy.TimePolicy;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -20,16 +21,19 @@ public class AttendanceSheet {
     public static final int ATTENDANCE_YEAR = 2024;
     public static final int ATTENDANCE_MONTH = 12;
 
+    private final TimePolicy timePolicy;
     private final AbsentPolicy absentPolicy;
     private final List<Attendance> attendances;
 
-    public AttendanceSheet(AbsentPolicy absentPolicy, List<Attendance> attendances) {
+    public AttendanceSheet(TimePolicy timePolicy, AbsentPolicy absentPolicy, List<Attendance> attendances) {
+        this.timePolicy = timePolicy;
         this.absentPolicy = absentPolicy;
         this.attendances = attendances;
     }
 
     public void add(String nickname, LocalDate date, LocalTime time) {
         validateIsAlreadyAttendance(nickname, date);
+        timePolicy.validateOperatingTime(time);
         this.attendances.add(new Attendance(nickname, date, time, absentPolicy.checkAttendanceStatus(LocalDateTime.of(date, time))));
     }
 

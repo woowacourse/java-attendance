@@ -1,6 +1,6 @@
 package view;
 
-import view.Policy.TimePolicy;
+import view.parser.TimeParser;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -10,11 +10,9 @@ import java.util.Scanner;
 
 public class InputView {
     private final Scanner scanner;
-    private final TimePolicy timePolicy;
 
-    public InputView(Scanner scanner, TimePolicy timePolicy) {
+    public InputView(Scanner scanner) {
         this.scanner = scanner;
-        this.timePolicy = timePolicy;
     }
 
     public String inputMenu(LocalDate today) {
@@ -36,7 +34,7 @@ public class InputView {
         System.out.println(ViewMessage.ATTENDANCE_TIME);
 
         String time = scanner.nextLine();
-        return timePolicy.validateOperatingTime(time);
+        return TimeParser.validateTimeFormat(time);
     }
 
     public String inputUpdateNickname() {
@@ -56,6 +54,5 @@ public class InputView {
 
         return scanner.nextLine();
     }
-
 
 }

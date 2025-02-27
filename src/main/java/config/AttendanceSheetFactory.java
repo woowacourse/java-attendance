@@ -3,6 +3,7 @@ package config;
 import domain.Attendance;
 import domain.AttendanceSheet;
 import domain.policy.AbsentPolicy;
+import domain.policy.TimePolicy;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -15,9 +16,11 @@ public class AttendanceSheetFactory extends ReadFile<Attendance,AttendanceSheet>
     private static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
     private static final int LINE_SPLIT_COUNT = 2;
 
+    private final TimePolicy timePolicy;
     private final AbsentPolicy absentPolicy;
 
-    public AttendanceSheetFactory(AbsentPolicy absentPolicy) {
+    public AttendanceSheetFactory(TimePolicy timePolicy, AbsentPolicy absentPolicy) {
+        this.timePolicy = timePolicy;
         this.absentPolicy = absentPolicy;
     }
 
@@ -52,6 +55,6 @@ public class AttendanceSheetFactory extends ReadFile<Attendance,AttendanceSheet>
 
     @Override
     protected AttendanceSheet createInstances(List<Attendance> instances) {
-        return new AttendanceSheet(absentPolicy, instances);
+        return new AttendanceSheet(timePolicy, absentPolicy, instances);
     }
 }
