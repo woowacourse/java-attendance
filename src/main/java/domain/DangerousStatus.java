@@ -1,16 +1,12 @@
 package domain;
 
 import static domain.AttendTime.LATE_TO_ABSENT_COUNT;
+import static domain.Dangerous.DISMISSAL;
+import static domain.Dangerous.GOOD;
+import static domain.Dangerous.INTERVIEW;
+import static domain.Dangerous.WARNING;
 
 public class DangerousStatus {
-
-    public static final String DISMISSAL = "제적";
-    public static final String INTERVIEW = "면담";
-    public static final String WARNING = "경고";
-    public static final String GOOD = "모범";
-    public static final int DISMISSAL_COUNT = 5;
-    public static final int INTERVIEW_COUNT = 3;
-    public static final int WARNING_COUNT = 2;
 
     private int onTime;
     private int late;
@@ -27,19 +23,19 @@ public class DangerousStatus {
         int total = absent;
         total += late / LATE_TO_ABSENT_COUNT;
 
-        if (total > DISMISSAL_COUNT) {
-            status = DISMISSAL;
+        if (total > DISMISSAL.getCount()) {
+            status = DISMISSAL.getStatus();
             return;
         }
-        if (total >= INTERVIEW_COUNT) {
-            status = INTERVIEW;
+        if (total >= INTERVIEW.getCount()) {
+            status = INTERVIEW.getStatus();
             return;
         }
-        if (total >= WARNING_COUNT) {
-            status = WARNING;
+        if (total >= WARNING.getCount()) {
+            status = WARNING.getStatus();
             return;
         }
-        status = GOOD;
+        status = GOOD.getStatus();
     }
 
     public String getStatus() {

@@ -1,8 +1,8 @@
 package controller;
 
-import static domain.DangerousStatus.DISMISSAL;
-import static domain.DangerousStatus.INTERVIEW;
-import static domain.DangerousStatus.WARNING;
+import static domain.Dangerous.DISMISSAL;
+import static domain.Dangerous.INTERVIEW;
+import static domain.Dangerous.WARNING;
 import static domain.December.DEFAULT_MONTH;
 import static domain.December.DEFAULT_YEAR;
 
@@ -87,9 +87,9 @@ public class AttendanceController {
 
     private void findDangerousCrews(final Crews crews) {
         outputView.printDismissalCrews(
-                crews.getDangerousCrews(DISMISSAL),
-                crews.getDangerousCrews(INTERVIEW),
-                crews.getDangerousCrews(WARNING)
+                crews.getDangerousCrews(DISMISSAL.getStatus()),
+                crews.getDangerousCrews(INTERVIEW.getStatus()),
+                crews.getDangerousCrews(WARNING.getStatus())
         );
     }
 

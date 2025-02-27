@@ -1,4 +1,4 @@
-import static domain.DangerousStatus.DISMISSAL;
+import static domain.Dangerous.DISMISSAL;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import domain.AttendTime;
@@ -20,6 +20,6 @@ public class DangerousStatusTest {
 
         DangerousStatus dangerousStatus = new DangerousStatus(attendanceHistory.calculateOnTime(),
                 attendanceHistory.calculateLate(), attendanceHistory.calculateAbsent());
-        assertThat(dangerousStatus.getStatus()).isEqualTo(DISMISSAL);
+        assertThat(dangerousStatus.getStatus()).isEqualTo(DISMISSAL.getStatus());
     }
 }
