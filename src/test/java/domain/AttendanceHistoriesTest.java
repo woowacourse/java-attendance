@@ -13,7 +13,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
-public class AttendanceTest {
+public class AttendanceHistoriesTest {
     private final LocalDate MONDAY_DATE = LocalDate.of(2025, 2, 24);
     private final LocalDate TUESDAY_DATE = LocalDate.of(2025, 2, 25);
 
@@ -24,11 +24,12 @@ public class AttendanceTest {
         @DisplayName("화요일은 10시 5분에 출석할 경우 출석으로 처리한다.")
         void testPresentAttendance() {
             // given
-            Attendance attendance = new Attendance();
+            AttendanceHistories attendanceHistories = new AttendanceHistories();
             Crew crew = new Crew("노랑");
             LocalTime time = LocalTime.of(10, 5);
             // when
-            AttendanceStatus attendanceStatus = attendance.checkAttendance(crew, LocalDateTime.of(TUESDAY_DATE, time));
+            AttendanceStatus attendanceStatus = attendanceHistories.addAttendanceHistory(crew,
+                    LocalDateTime.of(TUESDAY_DATE, time));
             // then
             assertThat(attendanceStatus).isEqualTo(AttendanceStatus.PRESENT);
         }
@@ -37,11 +38,12 @@ public class AttendanceTest {
         @DisplayName("화요일은 10시 30분에 출석할 경우 지각으로 처리한다.")
         void testTardyAttendance() {
             // given
-            Attendance attendance = new Attendance();
+            AttendanceHistories attendanceHistories = new AttendanceHistories();
             Crew crew = new Crew("노랑");
             LocalTime time = LocalTime.of(10, 30);
             // when
-            AttendanceStatus attendanceStatus = attendance.checkAttendance(crew, LocalDateTime.of(TUESDAY_DATE, time));
+            AttendanceStatus attendanceStatus = attendanceHistories.addAttendanceHistory(crew,
+                    LocalDateTime.of(TUESDAY_DATE, time));
             // then
             assertThat(attendanceStatus).isEqualTo(AttendanceStatus.TARDY);
         }
@@ -50,11 +52,12 @@ public class AttendanceTest {
         @DisplayName("화요일은 10시 30분 1초에 출석할 경우 결석으로 처리한다.")
         void testAbsentAttendance() {
             // given
-            Attendance attendance = new Attendance();
+            AttendanceHistories attendanceHistories = new AttendanceHistories();
             Crew crew = new Crew("노랑");
             LocalTime time = LocalTime.of(10, 30, 1);
             // when
-            AttendanceStatus attendanceStatus = attendance.checkAttendance(crew, LocalDateTime.of(TUESDAY_DATE, time));
+            AttendanceStatus attendanceStatus = attendanceHistories.addAttendanceHistory(crew,
+                    LocalDateTime.of(TUESDAY_DATE, time));
             // then
             assertThat(attendanceStatus).isEqualTo(AttendanceStatus.ABSENT);
         }
@@ -63,11 +66,12 @@ public class AttendanceTest {
         @DisplayName("월요일은 13시 5분에 출석할 경우 출석으로 처리한다.")
         void testPresentAttendanceOnMonday() {
             // given
-            Attendance attendance = new Attendance();
+            AttendanceHistories attendanceHistories = new AttendanceHistories();
             Crew crew = new Crew("노랑");
             LocalTime time = LocalTime.of(13, 5);
             // when
-            AttendanceStatus attendanceStatus = attendance.checkAttendance(crew, LocalDateTime.of(MONDAY_DATE, time));
+            AttendanceStatus attendanceStatus = attendanceHistories.addAttendanceHistory(crew,
+                    LocalDateTime.of(MONDAY_DATE, time));
             // then
             assertThat(attendanceStatus).isEqualTo(AttendanceStatus.PRESENT);
         }
@@ -76,11 +80,12 @@ public class AttendanceTest {
         @DisplayName("월요일은 13시 30분에 출석할 경우 지각으로 처리한다.")
         void testTardyAttendanceOnMonday() {
             // given
-            Attendance attendance = new Attendance();
+            AttendanceHistories attendanceHistories = new AttendanceHistories();
             Crew crew = new Crew("노랑");
             LocalTime time = LocalTime.of(13, 30);
             // when
-            AttendanceStatus attendanceStatus = attendance.checkAttendance(crew, LocalDateTime.of(MONDAY_DATE, time));
+            AttendanceStatus attendanceStatus = attendanceHistories.addAttendanceHistory(crew,
+                    LocalDateTime.of(MONDAY_DATE, time));
             // then
             assertThat(attendanceStatus).isEqualTo(AttendanceStatus.TARDY);
         }
@@ -89,11 +94,12 @@ public class AttendanceTest {
         @DisplayName("월요일은 13시 30분 1초에 출석할 경우 결석으로 처리한다.")
         void testAbsentAttendanceOnMonday() {
             // given
-            Attendance attendance = new Attendance();
+            AttendanceHistories attendanceHistories = new AttendanceHistories();
             Crew crew = new Crew("노랑");
             LocalTime time = LocalTime.of(13, 30, 1);
             // when
-            AttendanceStatus attendanceStatus = attendance.checkAttendance(crew, LocalDateTime.of(MONDAY_DATE, time));
+            AttendanceStatus attendanceStatus = attendanceHistories.addAttendanceHistory(crew,
+                    LocalDateTime.of(MONDAY_DATE, time));
             // then
             assertThat(attendanceStatus).isEqualTo(AttendanceStatus.ABSENT);
         }
@@ -103,12 +109,12 @@ public class AttendanceTest {
     @DisplayName("1.2 이미 출석한 경우 예외를 발생시킬 수 있다.")
     void testValidateDuplicateAttendance() {
         // given
-        Attendance attendance = new Attendance();
+        AttendanceHistories attendanceHistories = new AttendanceHistories();
         Crew crew = new Crew("노랑");
         LocalDateTime dateTime = TUESDAY_DATE.atTime(10, 0);
-        attendance.checkAttendance(crew, dateTime);
+        attendanceHistories.addAttendanceHistory(crew, dateTime);
         // when & then
-        assertThatThrownBy(() -> attendance.checkAttendance(crew, dateTime))
+        assertThatThrownBy(() -> attendanceHistories.addAttendanceHistory(crew, dateTime))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("[ERROR] 이미 출석을 확인하였습니다. 필요한 경우 수정 기능을 이용해 주세요.");
     }
@@ -120,11 +126,11 @@ public class AttendanceTest {
         @DisplayName("토요일에 등교할 경우 예외를 발생시킬 수 있다.")
         void testSaturdayException() {
             // given
-            Attendance attendance = new Attendance();
+            AttendanceHistories attendanceHistories = new AttendanceHistories();
             Crew crew = new Crew("노랑");
             LocalDateTime dateTime = LocalDateTime.of(2025, 3, 1, 10, 0);
             // when & then
-            assertThatThrownBy(() -> attendance.checkAttendance(crew, dateTime))
+            assertThatThrownBy(() -> attendanceHistories.addAttendanceHistory(crew, dateTime))
                     .isInstanceOf(IllegalArgumentException.class)
                     .hasMessageContaining("[ERROR] 3월 1일 토요일은 등교일이 아닙니다.");
         }
@@ -133,11 +139,11 @@ public class AttendanceTest {
         @DisplayName("일요일에 등교할 경우 예외를 발생시킬 수 있다.")
         void testSundayException() {
             // given
-            Attendance attendance = new Attendance();
+            AttendanceHistories attendanceHistories = new AttendanceHistories();
             Crew crew = new Crew("노랑");
             LocalDateTime dateTime = LocalDateTime.of(2025, 3, 2, 10, 0);
             // when & then
-            assertThatThrownBy(() -> attendance.checkAttendance(crew, dateTime))
+            assertThatThrownBy(() -> attendanceHistories.addAttendanceHistory(crew, dateTime))
                     .isInstanceOf(IllegalArgumentException.class)
                     .hasMessageContaining("[ERROR] 3월 2일 일요일은 등교일이 아닙니다.");
         }
@@ -146,11 +152,11 @@ public class AttendanceTest {
         @DisplayName("법정공휴일에 등교할 경우 예외를 발생시킬 수 있다.")
         void validateHolidayException() {
             // given
-            Attendance attendance = new Attendance();
+            AttendanceHistories attendanceHistories = new AttendanceHistories();
             Crew crew = new Crew("노랑");
             LocalDateTime dateTime = LocalDateTime.of(2025, 3, 3, 10, 0);
             // when & then
-            assertThatThrownBy(() -> attendance.checkAttendance(crew, dateTime))
+            assertThatThrownBy(() -> attendanceHistories.addAttendanceHistory(crew, dateTime))
                     .isInstanceOf(IllegalArgumentException.class)
                     .hasMessageContaining("[ERROR] 3월 3일 월요일은 등교일이 아닙니다.");
         }
@@ -160,12 +166,12 @@ public class AttendanceTest {
         @CsvSource({"2025-04-07", "2025-04-14", "2025-08-25"})
         void validateVacationException(LocalDate date) {
             // given
-            Attendance attendance = new Attendance();
+            AttendanceHistories attendanceHistories = new AttendanceHistories();
             Crew crew = new Crew("노랑");
             LocalDateTime dateTime = date.atTime(10, 0);
             // when & then
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("M월 d일 E요일");
-            assertThatThrownBy(() -> attendance.checkAttendance(crew, dateTime))
+            assertThatThrownBy(() -> attendanceHistories.addAttendanceHistory(crew, dateTime))
                     .isInstanceOf(IllegalArgumentException.class)
                     .hasMessageContaining(String.format("[ERROR] %s은 등교일이 아닙니다.", formatter.format(date)));
         }
@@ -176,11 +182,11 @@ public class AttendanceTest {
     @CsvSource({"07:59", "23:01"})
     void testValidateOperatingTime(LocalTime time) {
         // given
-        Attendance attendance = new Attendance();
+        AttendanceHistories attendanceHistories = new AttendanceHistories();
         Crew crew = new Crew("노랑");
         LocalDateTime dateTime = MONDAY_DATE.atTime(time);
         // when & then
-        assertThatThrownBy(() -> attendance.checkAttendance(crew, dateTime))
+        assertThatThrownBy(() -> attendanceHistories.addAttendanceHistory(crew, dateTime))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("[ERROR] 캠퍼스 운영 시간에만 출석이 가능합니다.");
     }
