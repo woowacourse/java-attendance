@@ -2,8 +2,6 @@ package attendance.domain;
 
 import attendance.domain.dto.AttendanceResult;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.stream.Stream;
 import org.assertj.core.api.Assertions;
 import org.assertj.core.api.SoftAssertions;

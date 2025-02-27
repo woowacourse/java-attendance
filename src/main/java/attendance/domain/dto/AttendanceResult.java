@@ -9,7 +9,6 @@ public record AttendanceResult(
         int attendanceMinute,
         String attendanceStatus
 ) {
-
     public static AttendanceResult from(Attendance attendance) {
         return new AttendanceResult(
                 attendance.getAttendanceDate().getMonthValue(),

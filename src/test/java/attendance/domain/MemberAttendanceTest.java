@@ -39,13 +39,28 @@ public class MemberAttendanceTest {
         //then
         SoftAssertions.assertSoftly(softly -> {
             softly.assertThat(memberAttendance.getCrew().getName()).isEqualTo("Lemon");
-            softly.assertThat(memberAttendance.getAttendances().get(0).getAttendanceDate())
-                    .isEqualTo(LocalDate.of(2024, 12, 4));
-            softly.assertThat(memberAttendance.getAttendances().get(0).getAttendanceTime())
-                    .isEqualTo(LocalTime.of(9, 50));
+            softly.assertThat(memberAttendance.getAttendances().get(0).getAttendanceDate()).isEqualTo(LocalDate.of(2024, 12, 4));
+            softly.assertThat(memberAttendance.getAttendances().get(0).getAttendanceTime()).isEqualTo(LocalTime.of(9, 50));
             softly.assertThat(memberAttendance.getAttendances().get(0).getAttendanceStatus()).isEqualTo("출석");
         });
     }
+
+    @Test
+    @DisplayName("닉네임과 등교시간을 입력하면 출석,지각,결석 횟수가 증가한다")
+    void countAttendanceStatusTest() {
+
+        //when
+        MemberAttendance memberAttendance = new MemberAttendance(crew, sampleAttendances);
+
+        //then
+        SoftAssertions.assertSoftly(softly -> {
+            softly.assertThat(memberAttendance.countAttendanceStatus(Subject.ATTENDANCE)).isEqualTo(3);
+            softly.assertThat(memberAttendance.countAttendanceStatus(Subject.LATE)).isEqualTo(1);
+            softly.assertThat(memberAttendance.countAttendanceStatus(Subject.ABSENT)).isEqualTo(1);
+        });
+    }
+
+
 
     @Test
     @DisplayName("출석 수정 테스트")
@@ -87,6 +102,6 @@ public class MemberAttendanceTest {
             assertThat(attendancesResult.get(2).attendanceMinute()).isEqualTo(30);
             assertThat(attendancesResult.get(2).attendanceStatus()).isEqualTo("결석");
         });
-
     }
+
 }

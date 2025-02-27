@@ -7,9 +7,11 @@ public class MemberAttendance {
     private final Crew crew;
     private final List<Attendance> attendances;
 
+
     public MemberAttendance(Crew crew, List<Attendance> attendances) {
         this.crew = crew;
         this.attendances = attendances;
+
     }
 
     public Crew getCrew() {
@@ -32,4 +34,10 @@ public class MemberAttendance {
 
         return List.of(modifyOldAttendance, modifyNewAttendance);
     }
+
+    public int countAttendanceStatus(Subject subject) {
+        return Math.toIntExact(attendances.stream()
+            .filter(attendance -> attendance.getAttendanceStatus().equals(subject.getStatus())).count());
+    }
+
 }
