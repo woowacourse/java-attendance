@@ -1,7 +1,6 @@
 package controller.operator;
 
 import domain.AttendanceBook;
-import domain.Attendances;
 import domain.Crew;
 import java.time.LocalDate;
 import util.InputProcessor;
