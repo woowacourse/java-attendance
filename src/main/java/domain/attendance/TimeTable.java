@@ -66,16 +66,27 @@ public enum TimeTable {
                 || (localTime.isAfter(CAMPUS_OPERATING_START) && localTime.isBefore(CAMPUS_OPERATING_END));
     }
 
-    public boolean isOverTardyTimeLimit(DayOfWeek dayOfWeek, LocalTime attendTime){
+    public static boolean isBeforeTardyTimeLimit(DayOfWeek dayOfWeek, LocalTime attendTime){
         if(dayOfWeek == MONDAY){
             LocalTime tardyTime = MON_ATTENDANCE_START.plusMinutes(TARDY_LIMIT_MIN);
-            return attendTime.isAfter(tardyTime);
+            return attendTime.isBefore(tardyTime) || attendTime.equals(tardyTime);
         }
         LocalTime tardyTime = WEEKDAYS_EXCEPT_MON_ATTENDANCE_START.plusMinutes(TARDY_LIMIT_MIN);
-        return attendTime.isAfter(tardyTime);
+        return attendTime.isBefore(tardyTime) || attendTime.equals(tardyTime);
     }
 
-    public boolean isOverAbsenceTimeLimit(DayOfWeek dayOfWeek, LocalTime attendTime){
+    public static boolean isOverTardyTimeLimit(DayOfWeek dayOfWeek, LocalTime attendTime){
+        if(dayOfWeek == MONDAY){
+            LocalTime tardyTime = MON_ATTENDANCE_START.plusMinutes(TARDY_LIMIT_MIN);
+            LocalTime absenceTime = MON_ATTENDANCE_START.plusMinutes(ABSENCE_LIMIT_MIN);
+            return attendTime.isAfter(tardyTime) || attendTime.equals(absenceTime);
+        }
+        LocalTime tardyTime = WEEKDAYS_EXCEPT_MON_ATTENDANCE_START.plusMinutes(TARDY_LIMIT_MIN);
+        LocalTime absenceTime = WEEKDAYS_EXCEPT_MON_ATTENDANCE_START.plusMinutes(ABSENCE_LIMIT_MIN);
+        return attendTime.isAfter(tardyTime) || attendTime.equals(absenceTime);
+    }
+
+    public static boolean isOverAbsenceTimeLimit(DayOfWeek dayOfWeek, LocalTime attendTime){
         if(dayOfWeek == MONDAY){
             LocalTime absenceTime = MON_ATTENDANCE_START.plusMinutes(ABSENCE_LIMIT_MIN);
             return attendTime.isAfter(absenceTime);
