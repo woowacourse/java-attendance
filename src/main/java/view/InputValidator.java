@@ -17,7 +17,9 @@ public class InputValidator {
         }
     }
 
-    public static void validateName(String invalidNameFormat) {
-
+    public static void validateName(String name) {
+        if (name.length() >= 5 || name.length() <= 1) {
+            throw new IllegalArgumentException("[ERROR] 닉네임은 2자 이상 4자 이하로 입력해주세요.");
+        }
     }
 }
