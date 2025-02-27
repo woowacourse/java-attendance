@@ -1,5 +1,5 @@
 public enum AttendanceStatus {
     ATTENDANCE,
-    LATE
-    ;
+    LATE,
+    ABSENCE;
 }
