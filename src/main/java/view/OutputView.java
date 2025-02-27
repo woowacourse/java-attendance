@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import util.DayOfWeekConvertor;
+import view.sortingMachine.SortingMachine;
 
 public class OutputView {
 
@@ -50,13 +51,8 @@ public class OutputView {
         printCrewStatusMessage(attendances);
     }
 
-    public void printExpelledCrews(List<Crew> crews) {
-        List<Crew> sortedCrews = new ArrayList<>(crews);
-        sortedCrews.sort(Comparator.comparing(Crew::getCrewStatusSequence)
-                .thenComparing(crew -> crew.getExpelledAbsentCount(Constants.NOW_DATE))
-                .reversed()
-                .thenComparing(Crew::getName));
-
+    public void printExpelledCrews(List<Crew> crews, SortingMachine sortingMachine) {
+        List<Crew> sortedCrews = sortingMachine.sortCrews(crews);
         System.out.println("제적 위험자 조회 결과");
         for (Crew crew : sortedCrews) {
             System.out.println(generateExpelledCrewMessage(crew));
@@ -65,7 +61,6 @@ public class OutputView {
     }
 
     private String generateExpelledCrewMessage(Crew crew) {
-//        - 빙티: 결석 3회, 지각 4회 (면담)
         return String.format("- %s: 결석 %d회, 지각 %d회 (%s)",
                 crew.getName(),
                 crew.getAbsentCount(Constants.NOW_DATE),
