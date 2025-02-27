@@ -1,6 +1,8 @@
 package view;
 
 import common.Common;
+import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import model.Attendance;
@@ -74,7 +76,8 @@ public class OutputView {
     public void printPenaltyResult(Map<Crew, AttendanceStatistic> penaltyTargets) {
         System.out.println();
         System.out.println("제적 위험자 조회 결과");
-        for (Crew crew : penaltyTargets.keySet()) {
+        Map<Crew, AttendanceStatistic> sortedPenaltyTargets = sortStatistics(penaltyTargets);
+        for (Crew crew : sortedPenaltyTargets.keySet()) {
             AttendanceStatistic statistic = penaltyTargets.get(crew);
             System.out.printf("- %s: 결석 %d회, 지각 %d회 (%s)%n",
                     crew.getName(),
@@ -85,8 +88,20 @@ public class OutputView {
         }
     }
 
-    private List<AttendanceStatistic> sortStatistics(List<AttendanceStatistic> statistics) {
-        //TODO : 정렬
-        return statistics;
+    private Map<Crew, AttendanceStatistic> sortStatistics(Map<Crew, AttendanceStatistic> origin) {
+        Map<Crew, AttendanceStatistic> sorted = new HashMap<>();
+        origin.entrySet().stream()
+                .sorted(Comparator.comparing((Map.Entry<Crew, AttendanceStatistic> entrySet) -> {
+                            Map<AttendanceStatus, Integer> attendanceCount = entrySet.getValue().getAttendanceCount();
+                            int finalAbsenceCount = attendanceCount.get(AttendanceStatus.ABSENCE)
+                                    + (attendanceCount.get(AttendanceStatus.LATE) / 3); //TODO : 분리하기
+                            return finalAbsenceCount;
+                        }).reversed()
+                        .thenComparing((Map.Entry<Crew, AttendanceStatistic> entrySet) -> entrySet.getKey().getName())
+                )
+                        .forEach((Map.Entry<Crew, AttendanceStatistic> entrySet) -> {
+                            sorted.put(entrySet.getKey(), entrySet.getValue());
+                        });
+        return sorted;
     }
 }
