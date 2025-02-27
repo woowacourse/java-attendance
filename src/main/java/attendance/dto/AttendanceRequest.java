@@ -11,7 +11,7 @@ public record AttendanceRequest(
     public static AttendanceRequest of(String name, String time) {
         return new AttendanceRequest(
             name,
-            LocalTime.parse(time, DateTimeUtil.TIME_FORMATTER)
+            DateTimeUtil.convertToLocalTime(time)
         );
     }
 }

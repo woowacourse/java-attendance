@@ -46,7 +46,8 @@ public class AttendanceController {
     }
 
     private void modifyAttendance() {
-
+        OutputView.modifyAttendanceResponse(
+        service.modifyAttendance(InputView.modifyAttendance(DateTimeUtil.nowDate())));
     }
 
     private void history() {

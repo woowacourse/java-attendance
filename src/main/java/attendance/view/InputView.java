@@ -6,10 +6,14 @@ import java.util.Locale;
 import java.util.Scanner;
 
 import attendance.dto.AttendanceRequest;
+import attendance.dto.ModifyAttendanceRequest;
 
 public class InputView {
 
     private static final Scanner scanner = new Scanner(System.in);
+
+    private InputView() {
+    }
 
     public static String menu(LocalDate today) {
         System.out.printf("""
@@ -34,11 +38,14 @@ public class InputView {
         return AttendanceRequest.of(name, time);
     }
 
-    public static String modifyAttendance() {
+    public static ModifyAttendanceRequest modifyAttendance(LocalDate date) {
         System.out.println("출석을 수정하려는 크루의 닉네임을 입력해 주세요.");
+        String name = scanner.nextLine();
         System.out.println("수정하려는 날짜(일)를 입력해 주세요.");
+        String day = scanner.nextLine();
         System.out.println("언제로 변경하겠습니까?");
-        return scanner.nextLine();
+        String time = scanner.nextLine();
+        return ModifyAttendanceRequest.of(name, day, time, date);
     }
 
     public static String history() {

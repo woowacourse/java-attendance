@@ -50,7 +50,7 @@ public class Crew {
 
     private void validateModifyAttendanceDate(LocalDate date) {
         if (!attendanceRecords.containsKey(date)) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("출석 기록이 존재하지 않습니다.");
         }
     }
 
