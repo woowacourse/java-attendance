@@ -1,0 +1,27 @@
+package domain;
+
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+
+public class Crew {
+    private final String name;
+    private List<Attendance> attendanceHistory;
+
+    public Crew(String name) {
+        this.name = name;
+        attendanceHistory = new ArrayList<>();
+    }
+
+    public void addAttendanceWithDateTime(LocalDateTime localDateTime) {
+        attendanceHistory.add(new Attendance(localDateTime));
+    }
+
+    public List<Attendance> getAttendanceHistory() {
+        return attendanceHistory;
+    }
+
+    public void addAttendance(Attendance attendance) {
+        attendanceHistory.add(attendance);
+    }
+}
