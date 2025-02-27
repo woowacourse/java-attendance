@@ -26,4 +26,13 @@ public class InputValidatorTest {
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining(ERROR_HEADER);
     }
+
+    @DisplayName("날짜 형식이 올바르지 않을 경우 예외가 발생한다.")
+    @ParameterizedTest
+    @ValueSource(strings = {"", " ", "32", "0"})
+    void test3(String invalidDayFormat) {
+        assertThatThrownBy(() -> InputValidator.validateDay(invalidDayFormat))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining(ERROR_HEADER);
+    }
 }
