@@ -1,5 +1,6 @@
 package model;
 
+import java.util.regex.Pattern;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -17,7 +18,7 @@ class NickNameTest {
         final String expected = "가나";
 
         // when
-        Nickname nickname = new Nickname(nicknameInput);
+        final Nickname nickname = new Nickname(nicknameInput);
 
         // then
         Assertions.assertThat(nickname.getValue()).isEqualTo(expected);
@@ -34,5 +35,26 @@ class NickNameTest {
         Assertions.assertThatThrownBy(
                 () -> new Nickname(nickname)
         ).isInstanceOf(IllegalArgumentException.class);
+    }
+
+    @Test
+    @DisplayName("올바른 정규 표현식인지 검증 테스트")
+    void validRegularExpression() {
+
+        // given
+        final String validNickname = "가나";
+        final String invalidNickname = "world";
+        final String prefix = "^[가-힣]{2,4}$";
+
+        // when
+        final boolean validMatchResult = Pattern.matches(prefix, validNickname);
+        final boolean invalidMatchResult = Pattern.matches(prefix, invalidNickname);
+
+        // then
+
+        org.junit.jupiter.api.Assertions.assertAll(
+                () -> Assertions.assertThat(validMatchResult).isTrue(),
+                () -> Assertions.assertThat(invalidMatchResult).isFalse()
+        );
     }
 }
