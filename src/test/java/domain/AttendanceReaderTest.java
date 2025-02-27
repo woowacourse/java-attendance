@@ -27,10 +27,9 @@ public class AttendanceReaderTest {
     void invalidAddAttendanceFromFile() {
         String fileName = "/invalidTestAttendance.csv";
         AttendanceReader attendanceReader = new AttendanceReader(fileName);
-        CrewAttendances crewAttendances = new CrewAttendances(new AttendanceCurrentDateGenerateStrategy(),
-                attendanceReader.readAttendances());
-        CrewAttendanceHistories crewAttendanceHistories = crewAttendances.crewAttendancesHistory("투다");
-        assertThatThrownBy(crewAttendanceHistories::crewAttendanceHistories)
+
+        assertThatThrownBy(() -> new CrewAttendances(new AttendanceCurrentDateGenerateStrategy(),
+                attendanceReader.readAttendances()))
                 .isInstanceOf(AttendanceException.class);
     }
 }
