@@ -9,7 +9,7 @@ import java.util.Optional;
 
 public class AttendanceCount {
 
-    private static final LocalDate ATTENDANCE_START_DATE = LocalDate.of(2024, 12, 1);
+    private static final AttendanceDate ATTENDANCE_START_DATE = new AttendanceDate(LocalDate.of(2024, 12, 2));
 
     private final Map<AttendanceStatus, Integer> attendances;
 
@@ -17,15 +17,12 @@ public class AttendanceCount {
         this.attendances = attendances;
     }
 
-    public static AttendanceCount create(String nickname, List<Attendance> attendances, LocalDate AttendanceEndDate) {
+    public static AttendanceCount create(String nickname,
+                                         List<Attendance> attendances,
+                                         AttendanceDate attendanceEndDate) {
         Map<AttendanceStatus, Integer> attendanceMap = new HashMap<>();
-        LocalDate currentDate = ATTENDANCE_START_DATE;
-        while (currentDate.isBefore(AttendanceEndDate) || currentDate.isEqual(AttendanceEndDate)) {
-            if (!Attendance.canAttend(currentDate)) {
-                System.out.println("date = " + currentDate);
-                currentDate = currentDate.plusDays(1);
-                continue;
-            }
+        AttendanceDate currentDate = ATTENDANCE_START_DATE;
+        while (currentDate.isBeforeAndEqual(attendanceEndDate)) {
             findAttendanceByDate(nickname, attendances, currentDate)
                     .ifPresentOrElse(
                             attendance -> attendanceMap.put(
@@ -37,14 +34,14 @@ public class AttendanceCount {
                                     attendanceMap.getOrDefault(AttendanceStatus.ABSENT, 0) + 1
                             )
                     );
-            currentDate = currentDate.plusDays(1);
+            currentDate = currentDate.nextDate();
         }
         return new AttendanceCount(attendanceMap);
     }
 
     private static Optional<Attendance> findAttendanceByDate(String nickname,
                                                              List<Attendance> attendances,
-                                                             LocalDate attendanceDate) {
+                                                             AttendanceDate attendanceDate) {
         return attendances.stream()
                 .filter(attendance -> attendance.isAlreadyAttend(nickname, attendanceDate))
                 .findFirst();

@@ -35,7 +35,9 @@ public class AttendanceBook {
 
     private Optional<Attendance> findAttendance(String nickname, LocalDateTime updateDateTime) {
         return attendances.stream()
-                .filter(attendance -> attendance.isAlreadyAttend(nickname, updateDateTime.toLocalDate()))
+                .filter(attendance -> attendance.isAlreadyAttend(
+                        nickname,
+                        new AttendanceDate(updateDateTime.toLocalDate())))
                 .findFirst();
     }
 
