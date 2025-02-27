@@ -55,24 +55,6 @@ class AttendanceBookTest {
                 .isEqualTo(AttendanceStatus.LATE);
     }
 
-    @DisplayName("해당 크루의 기록에 따라 알맞은 경고 등급을 반환한다.")
-    @Test
-    void test_getWarningStatus() {
-        // given
-        Map<String, AttendanceHistory> map = new HashMap<>();
-        String crewName = "빙티";
-        map.put(crewName, new AttendanceHistory()); // 미리 해당 크루의 기록을 등록
-        AttendanceBook attendanceBook = new AttendanceBook(map);
-        attendanceBook.add(crewName, TestUtil.createRecord(LocalDateTime.of(2024, 12, 3, 11, 0)));
-        attendanceBook.add(crewName, TestUtil.createRecord(LocalDateTime.of(2024, 12, 4, 11, 0)));
-
-        // when
-        WarningStatus warning = attendanceBook.getWarningByCrew(crewName);
-
-        // then
-        assertThat(warning).isEqualTo(WarningStatus.WARNING);
-    }
-
     @DisplayName("크루 이름으로 해당 크루의 기록을 찾는다.")
     @Test
     void test_findCrewHistory() {

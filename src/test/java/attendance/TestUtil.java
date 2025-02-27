@@ -1,11 +1,12 @@
 package attendance;
 
+import attendance.domain.AttendanceHistory;
 import attendance.domain.AttendanceRecord;
+import attendance.domain.AttendanceReport;
 import attendance.domain.EducationDayPolicy;
 import attendance.domain.WoowaDate;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.util.Set;
 
 public class TestUtil {
@@ -16,9 +17,12 @@ public class TestUtil {
         return new AttendanceRecord(woowaDate, dateTime.toLocalTime());
     }
 
-    public static AttendanceRecord createRecord(LocalDate date, LocalTime time) {
-        WoowaDate woowaDate = new WoowaDate(date, policy);
-        return new AttendanceRecord(woowaDate, time);
+    public static AttendanceReport toReport(AttendanceHistory history, int startDay, int endDay) {
+        return history.toReport(
+                LocalDate.of(2024, 12, startDay),
+                LocalDate.of(2024, 12, endDay),
+                new EducationDayPolicy(Set.of())
+        );
     }
 
     public static WoowaDate WoowaDatefrom(LocalDate date) {

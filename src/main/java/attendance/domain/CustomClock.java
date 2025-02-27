@@ -15,6 +15,10 @@ public class CustomClock {
         return dateTime.toLocalDate();
     }
 
+    public LocalDate getMonthStartDay() {
+        return LocalDate.of(dateTime.getYear(), dateTime.getMonthValue(), 1);
+    }
+
     public LocalDate createDateFromDay(int day) {
         return LocalDate.of(dateTime.getYear(), dateTime.getMonthValue(), day);
     }

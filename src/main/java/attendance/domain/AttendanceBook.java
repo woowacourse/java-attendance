@@ -20,13 +20,13 @@ public class AttendanceBook {
         history.modifyRecord(targetDate, modifyTime);
     }
 
-    public WarningStatus getWarningByCrew(String crewName) {
-        AttendanceHistory history = crewHistories.get(crewName);
-        if (history == null) {
-            throw new IllegalArgumentException("해당 크루의 기록이 없습니다.");
-        }
-        return history.getWarningStatus();
-    }
+//    public WarningStatus getWarningByCrew(String crewName) {
+//        AttendanceHistory history = crewHistories.get(crewName);
+//        if (history == null) {
+//            throw new IllegalArgumentException("해당 크루의 기록이 없습니다.");
+//        }
+//        return history.getWarningStatus();
+//    }
 
     public AttendanceHistory getHistoryByName(String crewName) {
         AttendanceHistory history = crewHistories.get(crewName);

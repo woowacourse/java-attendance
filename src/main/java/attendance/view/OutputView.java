@@ -1,15 +1,13 @@
 package attendance.view;
 
-import attendance.domain.AttendanceBook;
-import attendance.domain.AttendanceHistory;
 import attendance.domain.AttendanceRecord;
+import attendance.domain.AttendanceReport;
 import attendance.domain.AttendanceStatus;
 import attendance.domain.Crew;
-import attendance.domain.Crews;
-import attendance.domain.WarningStatus;
+import attendance.dto.WarningResultDto;
 import java.time.format.DateTimeFormatter;
-import java.util.Arrays;
 import java.util.Comparator;
+import java.util.List;
 
 public class OutputView {
     private final static DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("MM월 dd일 EEEE HH:mm");
@@ -23,19 +21,20 @@ public class OutputView {
         System.out.println(System.lineSeparator());
     }
 
-    public void displayCrewHistory(Crew crew, AttendanceHistory history) {
+    public void displayCrewHistory(Crew crew, AttendanceReport report) {
         CustomStringBuilder sb = new CustomStringBuilder();
         sb.appendLine(String.format("이번 달 %s의 출석 기록입니다.", crew.getName()));
 
-        history.getRecords().stream()
+        report.getRecords().stream()
                 .sorted(Comparator.comparing(AttendanceRecord::getDate))
                 .forEach(record -> sb.appendLine(getFormattedRecord(record)));
 
-        Arrays.stream(AttendanceStatus.values())
-                .forEach(status -> sb.appendLine(
-                        String.format("%s: %d회", status.getTitle(), history.countByAttendanceStatus(status))
-                ));
+        sb.appendLine(String.format("%s: %d회", AttendanceStatus.PRESENT.getTitle(), report.countPresent()));
+        sb.appendLine(String.format("%s: %d회", AttendanceStatus.LATE.getTitle(), report.countLate()));
+        sb.appendLine(String.format("%s: %d회", AttendanceStatus.ABSENT.getTitle(), report.countAbsent()));
 
+        sb.appendLine();
+        sb.appendLine(String.format("%s입니다.", report.getWarningStatus().getTitle()));
         sb.print();
     }
 
@@ -53,22 +52,17 @@ public class OutputView {
         );
     }
 
-    public void displayWarning(Crews crews, AttendanceBook attendanceBook) {
+    public void displayWarningCrews(List<WarningResultDto> dtos) {
         CustomStringBuilder sb = new CustomStringBuilder();
 
-        crews.getAllCrews().values().stream()
-                .filter(crew -> attendanceBook.getWarningByCrew(crew.getName()) != WarningStatus.NONE)
-                .forEach(crew -> {
-                    AttendanceHistory history = attendanceBook.getHistoryByName(crew.getName());
-                    long lateCount = history.countByAttendanceStatus(AttendanceStatus.LATE);
-                    long absentCount = history.countByAttendanceStatus(AttendanceStatus.ABSENT);
-                    sb.appendLine(String.format("- %s: 결석: %d회, 지각: %d회 (%s)",
-                            crew.getName(),
-                            absentCount,
-                            lateCount,
-                            history.getWarningStatus().getTitle()
-                    ));
-                });
+        dtos.forEach(dto -> {
+            sb.appendLine(String.format("- %s: 결석: %d회, 지각: %d회 (%s)",
+                    dto.crewName(),
+                    dto.absentCount(),
+                    dto.lateCount(),
+                    dto.status()
+            ));
+        });
 
         sb.print();
     }

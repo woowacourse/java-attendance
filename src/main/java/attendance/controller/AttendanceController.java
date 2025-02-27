@@ -3,14 +3,17 @@ package attendance.controller;
 import attendance.domain.AttendanceBook;
 import attendance.domain.AttendanceHistory;
 import attendance.domain.AttendanceRecord;
+import attendance.domain.AttendanceReport;
 import attendance.domain.Crew;
 import attendance.domain.Crews;
 import attendance.domain.CustomClock;
 import attendance.domain.EducationDayPolicy;
 import attendance.domain.WoowaDate;
+import attendance.dto.WarningResultDto;
 import attendance.view.InputView;
 import attendance.view.OutputView;
 import java.time.LocalTime;
+import java.util.List;
 import java.util.Map;
 
 public class AttendanceController {
@@ -81,12 +84,21 @@ public class AttendanceController {
 
             AttendanceHistory history = attendanceBook.getHistoryByName(crew.getName());
 
-            outputView.displayCrewHistory(crew, history);
+            AttendanceReport report = history.toReport(clock.getMonthStartDay(), clock.nowDate(), policy);
+            outputView.displayCrewHistory(crew, report);
         });
     }
 
     private void processCheckWarning() {
-        outputView.displayWarning(crews, attendanceBook);
+        List<WarningResultDto> warningDtos = crews.getAllCrews().values().stream()
+                .map(crew -> {
+                    AttendanceHistory history = attendanceBook.getHistoryByName(crew.getName());
+                    AttendanceReport report = history.toReport(clock.getMonthStartDay(), clock.nowDate(), policy);
+                    return WarningResultDto.of(crew, report);
+                })
+                .toList();
+
+        outputView.displayWarningCrews(warningDtos);
     }
 
     private void process(Runnable runnable) {
