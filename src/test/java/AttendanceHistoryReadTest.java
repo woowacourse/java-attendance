@@ -38,7 +38,7 @@ class AttendanceHistoryReadTest {
     //  면담 대상자: 결석 3회 이상
     //  제적 대상자: 결석 5회 초과
     @Test
-    void 닉네임에_따라_전날까지의_각_출석_상태_횟수를_확인한다() {
+    void 닉네임에_따라_각_출석_상태_횟수를_확인한다() {
         final var nickname = "에드";
         setUpAttendances(nickname);
 
@@ -50,6 +50,17 @@ class AttendanceHistoryReadTest {
         assertEquals(3, lateCount);
         assertEquals(1, absentCount);
         assertEquals(2, attendanceCount);
+    }
+
+    @Test
+    void 등교를_하지_않은_날은_결석으로_처리한다() {
+        final var nickname = "에드";
+        setUpAttendances(nickname);
+
+        AttendanceHistoryRead attendanceHistoryRead = new AttendanceHistoryRead();
+        attendanceHistoryRead.recordAllAbsence(attendanceBook);
+        final var absentCount = attendanceHistoryRead.getAbsentCountOf(attendanceBook, nickname);
+        assertEquals(3, absentCount);
     }
 
 }
