@@ -79,4 +79,19 @@ class CampusDateTest {
         assertThat(campusDate.getDayOfWeek()).isEqualTo(dayOfWeek);
     }
 
+    @Test
+    void 해당_날짜가_주말이라면_예외를_발생시킨다() {
+        // given
+        LocalDate now = LocalDate.of(2025, 2, 27);
+
+        // when // then
+        assertThatThrownBy(() -> CampusDate.ofNowAndDay(now, 22))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("[ERROR] 주말에는 캠퍼스에 출석할 수 없습니다.");
+
+        assertThatThrownBy(() -> CampusDate.ofNowAndDay(now, 23))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("[ERROR] 주말에는 캠퍼스에 출석할 수 없습니다.");
+    }
+
 }

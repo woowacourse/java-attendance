@@ -9,6 +9,7 @@ public class CampusDate {
     private final LocalDate date;
 
     private CampusDate(final LocalDate date) {
+        validateDateIsWeekday(date);
         this.date = date;
     }
 
@@ -26,6 +27,12 @@ public class CampusDate {
             now.withDayOfMonth(day);
         } catch (DateTimeException e) {
             throw new IllegalArgumentException("[ERROR] 해당 월의 가능한 일 수 내에서 입력해 주세요.");
+        }
+    }
+
+    private void validateDateIsWeekday(final LocalDate date) {
+        if (date.getDayOfWeek() == DayOfWeek.SATURDAY || date.getDayOfWeek() == DayOfWeek.SUNDAY) {
+            throw new IllegalArgumentException("[ERROR] 주말에는 캠퍼스에 출석할 수 없습니다.");
         }
     }
 
