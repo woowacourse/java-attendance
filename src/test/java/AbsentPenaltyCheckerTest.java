@@ -33,4 +33,19 @@ public class AbsentPenaltyCheckerTest {
         Assertions.assertThat(absentPenalty)
                 .isEqualTo(AbsentPenalty.INTERVIEW);
     }
+
+    @DisplayName("결석이 5회 초과이면 제적 대상자이다.")
+    @Test
+    void test3() {
+        // given
+        AbsentPenaltyChecker checker = new AbsentPenaltyChecker();
+        final var absentCount = 6;
+
+        // when
+        final var absentPenalty = checker.check(absentCount);
+
+        // then
+        Assertions.assertThat(absentPenalty)
+                .isEqualTo(AbsentPenalty.DISMISSAL);
+    }
 }
