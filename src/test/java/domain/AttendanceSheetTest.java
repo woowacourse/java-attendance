@@ -116,5 +116,6 @@ public class AttendanceSheetTest {
 
         //when-then
         assertThat(attendanceSheet.countAttendancesState().get("링크").get(LATE)).isEqualTo(4);
+        assertThat(attendanceSheet.countAttendancesState().get("링크").get(ABSENT)).isEqualTo(5);
     }
 }
