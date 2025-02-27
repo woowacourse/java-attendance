@@ -22,27 +22,19 @@ public enum EducationTime {
         return time;
     }
 
-    public static boolean isAttend(DayOfWeek inputDayOfWeek, LocalTime inputTime) {
+    public static boolean isBeforeAttendTime(DayOfWeek inputDayOfWeek, LocalTime inputTime) {
         if (inputDayOfWeek == DayOfWeek.MONDAY) {
-            return isBetweenAttendTime(inputTime, MONDAY_ATTEND.time, MONDAY_LATE.time);
+            return !inputTime.isAfter(MONDAY_LATE.time);
         }
 
-        return isBetweenAttendTime(inputTime, GENERAL_ATTEND.time, GENERAL_LATE.time);
+        return !inputTime.isAfter(GENERAL_LATE.time);
     }
 
-    public static boolean isLate(DayOfWeek inputDayOfWeek,LocalTime inputTime) {
+    public static boolean isBetweenLateTime(DayOfWeek inputDayOfWeek,LocalTime inputTime) {
         if (inputDayOfWeek == DayOfWeek.MONDAY) {
-            return isBetweenLateTime(inputTime, MONDAY_LATE.time, MONDAY_ABSENT.time);
+            return inputTime.isAfter(MONDAY_LATE.time) && !inputTime.isAfter(MONDAY_ABSENT.time);
         }
 
-        return isBetweenLateTime(inputTime, GENERAL_LATE.time, GENERAL_ABSENT.time);
-    }
-
-    private static boolean isBetweenAttendTime(LocalTime inputTime, LocalTime startTime, LocalTime endTime) {
-        return !inputTime.isBefore(startTime) && !inputTime.isAfter(endTime);
-    }
-
-    private static boolean isBetweenLateTime(LocalTime inputTime, LocalTime startTime, LocalTime endTime) {
-        return inputTime.isAfter(startTime) && !inputTime.isAfter(endTime);
+        return inputTime.isAfter(GENERAL_LATE.time) && !inputTime.isAfter(GENERAL_ABSENT.time);
     }
 }

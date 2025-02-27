@@ -16,14 +16,16 @@ class EducationTimeTest {
 
     @ParameterizedTest(name = "{index} : {2}")
     @MethodSource("getAttendTimeByDayOfWeek")
-    void 요일별_시간이_출석시간_이내라면_true를_반환한다(DayOfWeek inputDayOfWeek, LocalTime inputTime, String message) {
-        assertThat(EducationTime.isAttend(inputDayOfWeek, inputTime)).isTrue();
+    void 요일별_시간이_출석시간_이전이라면_true를_반환한다(DayOfWeek inputDayOfWeek, LocalTime inputTime, String message) {
+        assertThat(EducationTime.isBeforeAttendTime(inputDayOfWeek, inputTime)).isTrue();
     }
 
     static Stream<Arguments> getAttendTimeByDayOfWeek() {
         return Stream.of(
+                Arguments.of(DayOfWeek.MONDAY, EducationTime.MONDAY_ATTEND.getTime().minusNanos(1), "월요일 출석 시작 시간 1 나노초 전"),
                 Arguments.of(DayOfWeek.MONDAY, EducationTime.MONDAY_ATTEND.getTime(), "월요일 출석 시작 시간"),
                 Arguments.of(DayOfWeek.MONDAY, EducationTime.MONDAY_LATE.getTime(), "월요일 출석 종료 시간"),
+                Arguments.of(DayOfWeek.WEDNESDAY, EducationTime.GENERAL_ATTEND.getTime().minusNanos(1), "수요일 출석 시작 시간 1 나노초 전"),
                 Arguments.of(DayOfWeek.WEDNESDAY, EducationTime.GENERAL_ATTEND.getTime(), "수요일 출석 시작 시간"),
                 Arguments.of(DayOfWeek.WEDNESDAY, EducationTime.GENERAL_LATE.getTime(), "수요일 출석 종료 시간")
         );
@@ -31,15 +33,13 @@ class EducationTimeTest {
 
     @ParameterizedTest(name = "{index} : {2}")
     @MethodSource("getNotAttendTimeByDayOfWeek")
-    void 요일별_시간이_출석시간_이내가_아니라면_false를_반환한다(DayOfWeek inputDayOfWeek, LocalTime inputTime, String message) {
-        assertThat(EducationTime.isAttend(inputDayOfWeek, inputTime)).isFalse();
+    void 요일별_시간이_출석시간_이전이_아니라면_false를_반환한다(DayOfWeek inputDayOfWeek, LocalTime inputTime, String message) {
+        assertThat(EducationTime.isBeforeAttendTime(inputDayOfWeek, inputTime)).isFalse();
     }
 
     static Stream<Arguments> getNotAttendTimeByDayOfWeek() {
         return Stream.of(
-                Arguments.of(DayOfWeek.MONDAY, EducationTime.MONDAY_ATTEND.getTime().minusNanos(1), "월요일 출석 시작 시간 1 나노초 전"),
                 Arguments.of(DayOfWeek.MONDAY, EducationTime.MONDAY_LATE.getTime().plusNanos(1), "월요일 출석 종료 시간 1 나노초 후"),
-                Arguments.of(DayOfWeek.WEDNESDAY, EducationTime.GENERAL_ATTEND.getTime().minusNanos(1), "수요일 출석 시작 시간 1 나노초 전"),
                 Arguments.of(DayOfWeek.WEDNESDAY, EducationTime.GENERAL_LATE.getTime().plusNanos(1), "수요일 출석 종료 시간 1 나노초 후")
         );
     }
@@ -47,7 +47,7 @@ class EducationTimeTest {
     @ParameterizedTest(name = "{index} : {2}")
     @MethodSource("getLateTimeByDayOfWeek")
     void 요일별_시간이_지각시간_사이라면_true를_반환한다(DayOfWeek inputDayOfWeek, LocalTime inputTime, String message) {
-        assertThat(EducationTime.isLate(inputDayOfWeek, inputTime)).isTrue();
+        assertThat(EducationTime.isBetweenLateTime(inputDayOfWeek, inputTime)).isTrue();
     }
 
     static Stream<Arguments> getLateTimeByDayOfWeek() {
@@ -62,7 +62,7 @@ class EducationTimeTest {
     @ParameterizedTest(name = "{index} : {2}")
     @MethodSource("getNotLateTimeByDayOfWeek")
     void 요일별_시간이_지각시간_사이가_아니라면_false를_반환한다(DayOfWeek inputDayOfWeek, LocalTime inputTime, String message) {
-        assertThat(EducationTime.isLate(inputDayOfWeek, inputTime)).isFalse();
+        assertThat(EducationTime.isBetweenLateTime(inputDayOfWeek, inputTime)).isFalse();
     }
 
     static Stream<Arguments> getNotLateTimeByDayOfWeek() {

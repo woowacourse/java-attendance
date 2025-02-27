@@ -16,11 +16,11 @@ public enum AttendanceStatus {
     }
 
     public static AttendanceStatus determine(LocalDate inputDate, LocalTime inputTime) {
-        if (EducationTime.isAttend(inputDate.getDayOfWeek(), inputTime)) {
+        if (EducationTime.isBeforeAttendTime(inputDate.getDayOfWeek(), inputTime)) {
             return ATTEND;
         }
 
-        if (EducationTime.isLate(inputDate.getDayOfWeek(), inputTime)) {
+        if (EducationTime.isBetweenLateTime(inputDate.getDayOfWeek(), inputTime)) {
             return LATE;
         }
 
