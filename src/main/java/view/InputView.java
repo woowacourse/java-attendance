@@ -9,7 +9,7 @@ public class InputView {
     Scanner sc = new Scanner(System.in);
 
     public String readFunctionChoice() {
-        System.out.printf("오늘은 %s입니다. 가능을 선택해주세요.\n",
+        System.out.printf("\n오늘은 %s입니다. 가능을 선택해주세요.\n",
                 DateGenerator.now().format(Common.monthDateDayFormatter)
         );
         System.out.print("""
@@ -23,7 +23,7 @@ public class InputView {
     }
 
     public String readCrewName() {
-        System.out.println("닉네임을 입력해 주세요.");
+        System.out.println("\n닉네임을 입력해 주세요.");
         return sc.nextLine();
     }
 

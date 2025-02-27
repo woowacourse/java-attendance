@@ -66,6 +66,7 @@ public class AttendanceHistory {
     }
 
     public Attendance findByDate(LocalDate date) { //TODO :private
+        December.validateHoliday(date);
         return this.attendances.stream()
                 .filter(attendance -> attendance.isSameDateWith(date))
                 .findAny()
