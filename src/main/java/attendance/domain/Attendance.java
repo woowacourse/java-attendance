@@ -30,6 +30,14 @@ public class Attendance {
         return attendanceDate.isBeforeOrEqualDate(localDate);
     }
 
+    public boolean isMonday() {
+        return attendanceDate.isMonday();
+    }
+
+    public boolean isAttendanceComplete() {
+        return AttendanceStatus.isAttendance(this, attendanceTime);
+    }
+
     @Override
     public boolean equals(final Object o) {
         if (this == o) {

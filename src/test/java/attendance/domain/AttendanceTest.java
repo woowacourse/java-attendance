@@ -78,4 +78,20 @@ class AttendanceTest {
         assertThat(attendance.isSameDate(LocalDate.of(2025, 2, day))).isEqualTo(expected);
     }
 
+    @CsvSource(value = {"24,true", "25,false"})
+    @ParameterizedTest
+    void 출석_날짜가_월요일인지_알려준다(int day, boolean expected) {
+        Attendance attendance = new Attendance(LocalDateTime.of(2025, 2, day, 10, 0));
+
+        assertThat(attendance.isMonday()).isEqualTo(expected);
+    }
+
+    @CsvSource(value = {"10,5,true", "10,6,false"})
+    @ParameterizedTest
+    void 현재_출석이_출석_완료인지_알려준다(int hour, int minute, boolean expected) {
+        Attendance attendance = new Attendance(LocalDateTime.of(2025, 2, 27, hour, minute));
+
+        assertThat(attendance.isAttendanceComplete()).isEqualTo(expected);
+    }
+
 }

@@ -1,6 +1,5 @@
 package attendance.domain;
 
-import static org.assertj.core.api.Assertions.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
@@ -122,6 +121,15 @@ class CrewAttendancesTest {
         crewAttendances.addAttendance(crew, attendance);
 
         assertThat(crewAttendances.findAllCrewAttendanceUntilStandardDate(crew, standardDate)).hasSize(2);
+    }
+
+    @Test
+    void 지정한_날짜_까지의_출석_횟수를_계산한다() {
+        CrewAttendances crewAttendances = new CrewAttendances(crewAttendanceDateTimes);
+        LocalDate standardDate = LocalDate.of(2025, 2, 26);
+        Crew crew = new Crew("빙봉");
+
+        assertThat(crewAttendances.calculateAttendanceCount(crew, standardDate)).isEqualTo(1);
     }
 
 }

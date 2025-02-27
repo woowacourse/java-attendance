@@ -58,4 +58,10 @@ public class Attendances {
         return beforeAttendances;
     }
 
+    public int calculateAttendanceCount(final LocalDate standardDate) {
+        return (int) attendances.stream()
+                .filter(attendance -> attendance.isBeforeOrEqualDate(standardDate) && attendance.isAttendanceComplete())
+                .count();
+    }
+
 }

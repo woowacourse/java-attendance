@@ -50,4 +50,14 @@ class AttendanceDateTest {
         assertThat(attendanceDate.isBeforeOrEqualDate(LocalDate.of(2025, 2, day))).isEqualTo(expected);
     }
 
+    @CsvSource(value = {
+            "24,true", "25,false"
+    })
+    @ParameterizedTest()
+    void 날짜를_알려주면_출석_날짜가_월요일인지_알려준다(int day, boolean expected) {
+        AttendanceDate attendanceDate = new AttendanceDate(LocalDate.of(2025, 2, day));
+
+        assertThat(attendanceDate.isMonday()).isEqualTo(expected);
+    }
+
 }

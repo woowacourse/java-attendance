@@ -1,10 +1,12 @@
 package attendance.domain;
 
+import static org.assertj.core.api.Assertions.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.time.LocalTime;
 
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
@@ -26,6 +28,19 @@ class AttendanceTimeTest {
         AttendanceTime attendanceTime = new AttendanceTime(localTime);
 
         assertThat(attendanceTime).isEqualTo(new AttendanceTime(LocalTime.of(hour, minute)));
+    }
+
+    @CsvSource(value = {
+            "10,0,true","18,0,true",
+            "9,59,false","18,1,false"
+    })
+    @ParameterizedTest
+    void 시작_시간과_끝_시간을_알려주면_출석_시간이_사이에_존재하는지_알려준다(int hour, int minute, boolean expected) {
+        LocalTime startInclusive = LocalTime.of(10, 0);
+        LocalTime endInclusive = LocalTime.of(18, 0);
+        AttendanceTime attendanceTime = new AttendanceTime(LocalTime.of(hour, minute));
+
+        assertThat(attendanceTime.isBetweenInclusive(startInclusive, endInclusive)).isEqualTo(expected);
     }
 
 }

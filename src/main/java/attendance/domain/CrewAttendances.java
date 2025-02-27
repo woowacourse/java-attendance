@@ -76,4 +76,9 @@ public class CrewAttendances {
         return attendances.findAllUntilStandardDate(standardDate);
     }
 
+    public int calculateAttendanceCount(final Crew crew, final LocalDate standardDate) {
+        Attendances attendances = crewAttendances.get(crew);
+        return attendances.calculateAttendanceCount(standardDate);
+    }
+
 }

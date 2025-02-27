@@ -28,6 +28,11 @@ public class AttendanceTime {
         return CAMPUS_OPEN_TIME.isAfter(attendanceTime) || CAMPUS_CLOSE_TIME.isBefore(attendanceTime);
     }
 
+    public boolean isBetweenInclusive(final LocalTime startInclusive, final LocalTime endInclusive) {
+        return (attendanceTime.isAfter(startInclusive) || attendanceTime.equals(startInclusive))
+                && (attendanceTime.isBefore(endInclusive) || attendanceTime.equals(endInclusive));
+    }
+
     @Override
     public boolean equals(final Object o) {
         if (this == o) {

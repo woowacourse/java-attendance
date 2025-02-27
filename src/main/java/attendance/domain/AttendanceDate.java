@@ -1,5 +1,6 @@
 package attendance.domain;
 
+import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Locale;
@@ -35,6 +36,10 @@ public class AttendanceDate {
 
     public boolean isBeforeOrEqualDate(final LocalDate localDate) {
         return isSameDate(localDate) || attendanceDate.isBefore(localDate);
+    }
+
+    public boolean isMonday() {
+        return attendanceDate.getDayOfWeek().equals(DayOfWeek.MONDAY);
     }
 
     @Override
