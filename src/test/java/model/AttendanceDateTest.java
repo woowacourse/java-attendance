@@ -4,7 +4,7 @@ import attendance.model.AttendanceDate;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-public class AttendanceDateTest {
+class AttendanceDateTest {
 
     @Test
     void 공휴일을_출석_날짜로_설정하면_예외가_발생한다() {
