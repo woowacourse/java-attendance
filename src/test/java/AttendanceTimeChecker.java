@@ -3,43 +3,37 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 
 public class AttendanceTimeChecker {
+
+    private static final int CRITERION_HOUR_FOR_MONDAY = 13;
+    private static final int CRITERION_HOUR_EXCLUDE_MONDAY = 10;
+    private static final int CRITERION_MINUTE_FOR_LATE = 5;
+    private static final int CRITERION_MINUTE_FOR_ABSENT = 30;
+
     public AttendPolicy attendanceCheck(LocalDate date, LocalTime time) {
         int hour = time.getHour();
         int minute = time.getMinute();
 
         if (date.getDayOfWeek() == DayOfWeek.MONDAY) {
-            if (hour > 13) {
-                return AttendPolicy.ABSENT;
-            }
-
-            if (hour < 13) {
-                return AttendPolicy.ATTEND;
-            }
-
-            if (minute > 30) {
-                return AttendPolicy.ABSENT;
-            }
-
-            if (minute > 5) {
-                return AttendPolicy.LATE;
-            }
-
-            return AttendPolicy.ATTEND;
+            return determineAttendPolicy(hour, minute, CRITERION_HOUR_FOR_MONDAY);
         }
 
-        if (hour > 10) {
+        return determineAttendPolicy(hour, minute, CRITERION_HOUR_EXCLUDE_MONDAY);
+    }
+
+    private AttendPolicy determineAttendPolicy(int hour, int minute, int criterionHour) {
+        if (hour > criterionHour) {
             return AttendPolicy.ABSENT;
         }
 
-        if (hour < 10) {
+        if (hour < criterionHour) {
             return AttendPolicy.ATTEND;
         }
 
-        if (minute > 30) {
+        if (minute > CRITERION_MINUTE_FOR_ABSENT) {
             return AttendPolicy.ABSENT;
         }
 
-        if (minute > 5) {
+        if (minute > CRITERION_MINUTE_FOR_LATE) {
             return AttendPolicy.LATE;
         }
 
