@@ -25,4 +25,14 @@ public class AttendanceBook {
     public void recordAllAbsences() {
         crewsAttendances.forEach((nickname, attendances) -> attendances.recordAbsences());
     }
+
+    public Map<String, Attendances> getPenaltyHistory() {
+        Map<String, Attendances> penaltyHistory = new HashMap<>();
+        crewsAttendances.forEach((nickname, attendances) -> {
+            if (attendances.getPenaltyStatus() != null) {
+                penaltyHistory.put(nickname, attendances);
+            }
+        });
+        return penaltyHistory;
+    }
 }

@@ -21,12 +21,14 @@ public class Attendances {
 
     public Integer getLateCount() {
         return (int) attendances.stream()
+                .filter(attendance -> !attendance.has(new Day(LocalDate.now())))
                 .filter(Attendance::isLate)
                 .count();
     }
 
     public Integer getAbsentCount() {
         return (int) attendances.stream()
+                .filter(attendance -> !attendance.has(new Day(LocalDate.now())))
                 .filter(Attendance::isAbsent)
                 .count();
     }
@@ -58,9 +60,6 @@ public class Attendances {
 
     public Penalty getPenaltyStatus() {
         Integer penaltyPoint = getAbsentCount() + getLateCount() / LATE_COUNT_FOR_ABSENCE;
-        Penalty penalty = Penalty.getPenaltyOf(penaltyPoint);
-        return penalty;
+        return Penalty.getPenaltyOf(penaltyPoint);
     }
-
-
 }
