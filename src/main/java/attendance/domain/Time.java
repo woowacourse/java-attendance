@@ -25,4 +25,12 @@ public class Time {
             throw new IllegalArgumentException("[ERROR] 주말 및 공휴일은 출석할 수 없습니다.");
         }
     }
+
+    public boolean isSameLocalDate(Time time) {
+        return this.attendanceTime.getYear() == time.attendanceTime.getYear()
+                && this.attendanceTime.getMonth() == time.attendanceTime.getMonth()
+                && this.attendanceTime.getDayOfMonth() == time.attendanceTime.getDayOfMonth();
+    }
+
+
 }
