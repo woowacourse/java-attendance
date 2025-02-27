@@ -1,17 +1,9 @@
-import config.AttendanceSheetFactory;
-import config.ReadFile;
-import domain.Attendance;
-import domain.AttendanceSheet;
-import domain.policy.AbsentPolicy;
-
-import java.nio.file.Path;
-import java.nio.file.Paths;
+import config.AppConfig;
+import controller.AttendanceController;
 
 public class Application {
     public static void main(String[] args){
-        final Path FILE_PATH = Paths.get("src/main/resources/attendances.csv");
-
-        ReadFile<Attendance, AttendanceSheet> readFile = new AttendanceSheetFactory(new AbsentPolicy());
-        AttendanceSheet attendanceSheet = readFile.loadFile(FILE_PATH);
+        AttendanceController attendanceController = AppConfig.INSTANCE.createAttendanceController();
+        attendanceController.start();
     }
 }
