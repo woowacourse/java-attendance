@@ -3,9 +3,6 @@ package domain;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-import domain.AttendanceHistory;
-import domain.AttendanceRecord;
-import domain.Crew;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -135,6 +132,21 @@ public class AttendanceHistoryTest {
 
             // then
             assertThat(actual).usingRecursiveComparison().isEqualTo(expected);
+        }
+
+        @DisplayName("출석 기록이 제적 위험이 존재하는지를 반환한다.")
+        @Test
+        public void isRiskOfExpulsion() throws Exception {
+            // given
+            final Crew owner = new Crew("owner");
+            final var attendanceHistory = new AttendanceHistory(owner);
+            final LocalDate targetDate = LocalDate.of(2024, 12, 13);
+
+            // when
+            final boolean actual = attendanceHistory.isRiskOfExpulsion(targetDate);
+
+            // then
+            assertThat(actual).isTrue();
         }
     }
 
