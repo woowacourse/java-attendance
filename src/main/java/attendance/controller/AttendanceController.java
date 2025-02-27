@@ -6,6 +6,7 @@ import attendance.domain.initializer.AttendanceSystemInitializer;
 import attendance.domain.record.AttendanceRecord;
 import attendance.dto.AttendanceState;
 import attendance.dto.RecordUpdateResult;
+import attendance.exception.ExceptionMessage;
 import attendance.view.InputView;
 import attendance.view.OutputView;
 import java.time.LocalDate;
@@ -56,6 +57,7 @@ public class AttendanceController {
 
     private void addAttendanceRecord(LocalDateTime now) {
         String nickname = inputView.readNickname();
+        validateRegisteredCrew(nickname);
         LocalTime arrivalTime = inputView.readArrivalTime();
         LocalDateTime arrivalDateTime = LocalDateTime.of(now.toLocalDate(), arrivalTime);
         AttendanceRecord record = attendanceSystem.addAttendanceRecord(nickname, arrivalDateTime);
@@ -64,6 +66,7 @@ public class AttendanceController {
 
     private void updateAttendanceRecord(LocalDateTime now) {
         String nickname = inputView.readNicknameForUpdate();
+        validateRegisteredCrew(nickname);
         int dayForUpdate = inputView.readDayForUpdate();
         LocalTime newTime = inputView.readArrivalTimeForUpdate();
         LocalDate dateForUpdate = now.withDayOfMonth(dayForUpdate).toLocalDate();
@@ -73,6 +76,7 @@ public class AttendanceController {
 
     private void findRecordsInMonth(LocalDateTime now) {
         String nickname = inputView.readNickname();
+        validateRegisteredCrew(nickname);
         List<AttendanceRecord> records = attendanceSystem.findRecordsInMonth(nickname, now.toLocalDate());
         AttendanceState state = attendanceSystem.calculateAttendanceStateInMonth(nickname, now.toLocalDate());
         outputView.printRecordSearchResult(records);
@@ -82,5 +86,12 @@ public class AttendanceController {
     private void findRiskCrew(LocalDateTime now) {
         List<AttendanceState> states = attendanceSystem.findRiskCrew(now.toLocalDate());
         outputView.printRiskCrews(states);
+    }
+
+    private void validateRegisteredCrew(String nickname) {
+        boolean isNotRegistered = !attendanceSystem.checkRegisteredCrew(nickname);
+        if (isNotRegistered) {
+            throw new IllegalArgumentException(ExceptionMessage.INVALID_CREW.getMessage());
+        }
     }
 }

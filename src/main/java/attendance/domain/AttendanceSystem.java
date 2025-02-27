@@ -74,6 +74,10 @@ public class AttendanceSystem {
                 .toList();
     }
 
+    public boolean checkRegisteredCrew(String nickname) {
+        return !crewStorage.checkIsNotContained(nickname);
+    }
+
     private AttendanceRecord makeNewAttendance(String nickname, LocalDateTime arrivalDateTime) {
         AttendanceType attendanceType = attendanceChecker.checkAttendance(arrivalDateTime);
         return new AttendanceRecord(nickname, arrivalDateTime, attendanceType);
