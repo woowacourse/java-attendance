@@ -38,4 +38,20 @@ public class AttendancesTest {
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("출석이 이미 존재합니다.");
     }
+
+    @Test
+    void 크루와_날짜로_출석기록을_조회한다() {
+        //given
+        Crew crew = new Crew("쿠키");
+        LocalDateTime time = LocalDateTime.of(2024, 12, 2, 9, 30);
+        AttendanceTime attendanceTime = new AttendanceTime(time);
+        Attendance attendance = new Attendance(crew, attendanceTime);
+        Attendances attendances = new Attendances(List.of(attendance));
+
+        Attendance expected = new Attendance(crew, attendanceTime);
+        //when
+        Attendance actual = attendances.findByCrewAndDate(crew, time.toLocalDate()).get();
+        //then
+        assertThat(actual).isEqualTo(expected);
+    }
 }
