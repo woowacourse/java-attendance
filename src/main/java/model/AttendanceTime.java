@@ -37,6 +37,11 @@ public class AttendanceTime {
         }
     }
 
+    public boolean isBeforeToPlus(final AttendanceDateTime attendanceDateTime, final int plusMinutes) {
+        return getTime().plusMinutes(plusMinutes)
+                .isBefore(attendanceDateTime.getTime());
+    }
+
     public LocalTime getTime() {
         return time;
     }

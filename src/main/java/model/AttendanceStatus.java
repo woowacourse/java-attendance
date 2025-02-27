@@ -6,6 +6,9 @@ public enum AttendanceStatus {
     TARDINESS("지각"),
     ABSENCE("결석");
 
+    private static final int ABSENCE_OVER_LIMIT = 30;
+    private static final int TARDINESS_OVER_LIMIT = 30;
+
     private final String displayName;
 
     AttendanceStatus(final String displayName) {
@@ -16,11 +19,11 @@ public enum AttendanceStatus {
         final BusinessHours businessHours = BusinessHours.find(attendanceDateTime);
         final AttendanceTime startTime = businessHours.getStartTime();
 
-        if (startTime.getTime().plusMinutes(30).isBefore(attendanceDateTime.getTime())) {
+        if (startTime.isBeforeToPlus(attendanceDateTime, ABSENCE_OVER_LIMIT)) {
             return ABSENCE;
         }
 
-        if (startTime.getTime().plusMinutes(5).isBefore(attendanceDateTime.getTime())) {
+        if (startTime.isBeforeToPlus(attendanceDateTime, TARDINESS_OVER_LIMIT)) {
             return TARDINESS;
         }
         return ATTENDANCE;
