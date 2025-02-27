@@ -3,7 +3,9 @@ package attendance.domain;
 import java.util.Arrays;
 import java.util.function.Predicate;
 
-public enum SanctionLevel {
+import attendance.utility.EnumTextConverter;
+
+public enum SanctionLevel implements Displayable {
     DISMISS(weight -> weight > 5),
     NEED_MEETING(weight -> weight >= 3),
     WARNING(weight -> weight > 1),
@@ -25,5 +27,10 @@ public enum SanctionLevel {
             .filter(status -> status.matches(wight))
             .findFirst()
             .orElse(NONE);
+    }
+
+    @Override
+    public String getConvertedText() {
+        return EnumTextConverter.convertLevel(this);
     }
 }

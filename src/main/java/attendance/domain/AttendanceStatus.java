@@ -2,7 +2,9 @@ package attendance.domain;
 
 import java.time.LocalTime;
 
-public enum AttendanceStatus {
+import attendance.utility.EnumTextConverter;
+
+public enum AttendanceStatus implements Displayable {
     ABSENCE(30),
     LATE(5),
     ATTENDANCE(0);
@@ -24,5 +26,10 @@ public enum AttendanceStatus {
 
     private boolean isAfterThreshold(LocalTime time, LocalTime baseSchedule) {
         return time.isAfter(baseSchedule.plusMinutes(this.minutes));
+    }
+
+    @Override
+    public String getConvertedText() {
+        return EnumTextConverter.convertState(this);
     }
 }
