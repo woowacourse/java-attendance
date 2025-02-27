@@ -33,11 +33,27 @@ public class AttendanceBook {
         writeAttendances(rawAttendances, nicknameToAttendances);
     }
 
+    public Attendances findByNickname(Nickname nickname) {
+        if (existsByNickname(nickname)) {
+            return nicknameToAttendances.get(nickname);
+        }
+        throw new IllegalArgumentException("해당 닉네임으로 출석된 기록이 없습니다.");
+    }
+
+    public Attendance add(Nickname nickname, Attendance attendance) {
+        if (!existsByNickname(nickname)) {
+            nicknameToAttendances.put(nickname, Attendances.initialize());
+        }
+
+        Attendances attendances = nicknameToAttendances.get(nickname);
+        return attendances.add(attendance);
+    }
+
     private void writeNickname(Map<String, Map<LocalDate, LocalTime>> rawAttendances,
                                Map<Nickname, Attendances> nicknameToAttendances) {
         rawAttendances.keySet().stream()
                 .map(Nickname::from)
-                .forEach(nickname -> nicknameToAttendances.put(nickname, Attendances.create()));
+                .forEach(nickname -> nicknameToAttendances.put(nickname, Attendances.initialize()));
     }
 
     private void writeAttendances(Map<String, Map<LocalDate, LocalTime>> rawAttendances,
@@ -56,5 +72,9 @@ public class AttendanceBook {
                     AttendanceDate.of(date, attendancePolicy),
                     AttendanceTime.of(time, attendancePolicy)));
         });
+    }
+
+    private boolean existsByNickname(Nickname nickname) {
+        return nicknameToAttendances.containsKey(nickname);
     }
 }
