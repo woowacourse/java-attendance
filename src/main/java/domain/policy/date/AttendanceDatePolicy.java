@@ -1,8 +1,8 @@
-package policy.date;
+package domain.policy.date;
 
-import policy.date.rule.HolidayRule;
-import policy.date.rule.SpecialDayOfWeekRule;
-import policy.date.rule.WeekendRule;
+import domain.policy.date.rule.HolidayRule;
+import domain.policy.date.rule.SpecialDayOfWeekRule;
+import domain.policy.date.rule.WeekendRule;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;

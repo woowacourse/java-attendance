@@ -1,4 +1,4 @@
-package policy.time.rule;
+package domain.policy.time.rule;
 
 public enum AttendanceStateRule {
 

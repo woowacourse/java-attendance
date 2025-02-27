@@ -1,4 +1,4 @@
-package policy.time.rule;
+package domain.policy.time.rule;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

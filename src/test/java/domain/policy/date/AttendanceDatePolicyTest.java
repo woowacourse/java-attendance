@@ -1,4 +1,4 @@
-package policy.date;
+package domain.policy.date;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

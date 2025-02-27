@@ -1,12 +1,11 @@
-package policy.time.rule;
+package domain.policy.time.rule;
 
 import java.time.LocalTime;
 
 public enum CampusTimeRule {
 
     OPEN(8, 0, "캠퍼스 운영 시작 시간"),
-    CLOSE(23, 0, "캠퍼스 운영 끝 시간")
-    ;
+    CLOSE(23, 0, "캠퍼스 운영 끝 시간");
 
     private final int hour;
     private final int minute;

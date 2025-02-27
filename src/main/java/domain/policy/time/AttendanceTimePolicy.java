@@ -1,8 +1,8 @@
-package policy.time;
+package domain.policy.time;
 
-import policy.time.rule.AttendanceStateRule;
-import policy.time.rule.CampusTimeRule;
-import policy.time.rule.StudyTimeRule;
+import domain.policy.time.rule.AttendanceStateRule;
+import domain.policy.time.rule.CampusTimeRule;
+import domain.policy.time.rule.StudyTimeRule;
 
 import java.time.LocalTime;
 

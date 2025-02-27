@@ -1,4 +1,4 @@
-package policy.date.rule;
+package domain.policy.date.rule;
 
 import java.time.DayOfWeek;
 import java.util.stream.Stream;
@@ -7,8 +7,7 @@ public enum WeekendRule {
 
     FRIDAY(DayOfWeek.FRIDAY, false, "금요일이 주말이 되길"),
     SATURDAY(DayOfWeek.SATURDAY, true, "놀토가 돌아오지 않길"),
-    SUNDAY(DayOfWeek.SUNDAY, true, "일요일")
-    ;
+    SUNDAY(DayOfWeek.SUNDAY, true, "일요일");
 
     private final DayOfWeek dayOfWeek;
     private final boolean isActive;

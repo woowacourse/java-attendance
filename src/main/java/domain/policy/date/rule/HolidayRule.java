@@ -1,4 +1,4 @@
-package policy.date.rule;
+package domain.policy.date.rule;
 
 import java.time.MonthDay;
 import java.util.stream.Stream;

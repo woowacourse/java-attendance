@@ -1,10 +1,13 @@
-package policy;
+package domain.policy;
 
+import domain.Attendance;
+import domain.AttendanceDate;
+import domain.AttendanceTime;
+import domain.policy.date.AttendanceDatePolicy;
+import domain.policy.time.AttendanceTimePolicy;
+import domain.policy.time.rule.AttendanceStateRule;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import policy.date.AttendanceDatePolicy;
-import policy.time.AttendanceTimePolicy;
-import policy.time.rule.AttendanceStateRule;
 
 import java.time.LocalDate;
 import java.time.LocalTime;

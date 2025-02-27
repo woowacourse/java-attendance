@@ -1,4 +1,4 @@
-package policy.date.rule;
+package domain.policy.date.rule;
 
 import java.time.DayOfWeek;
 import java.util.stream.Stream;
@@ -6,8 +6,7 @@ import java.util.stream.Stream;
 public enum SpecialDayOfWeekRule {
 
     DEEP_SLEEP(DayOfWeek.MONDAY, true, "우아한 숙면을 취하리"),
-    I_WANNABE_SPECIAL_DAY(DayOfWeek.FRIDAY, false, "금요일도 늦게 등교한다면 어떨까")
-    ;
+    I_WANNABE_SPECIAL_DAY(DayOfWeek.FRIDAY, false, "금요일도 늦게 등교한다면 어떨까");
 
     private final DayOfWeek dayOfWeek;
     private final boolean isActive;

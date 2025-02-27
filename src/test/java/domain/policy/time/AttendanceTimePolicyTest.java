@@ -1,9 +1,9 @@
-package policy.time;
+package domain.policy.time;
 
+import domain.policy.time.rule.AttendanceStateRule;
+import domain.policy.time.rule.StudyTimeRule;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import policy.time.rule.AttendanceStateRule;
-import policy.time.rule.StudyTimeRule;
 
 import java.time.LocalTime;
 
@@ -11,7 +11,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 class AttendanceTimePolicyTest {
 
-    private final AttendanceTimePolicy attendanceTimePolicy = new AttendanceTimePolicy();;
+    private final AttendanceTimePolicy attendanceTimePolicy = new AttendanceTimePolicy();
 
     @Test
     @DisplayName("특수한 날이면 SPECIAL_STUDY_START 시간이 반환된다.")
