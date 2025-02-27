@@ -1,41 +1,35 @@
 package domain;
 
-import domain.rule.AttendanceStateRule;
-import domain.rule.AttendanceTimeRule;
+import domain.policy.AttendancePolicy;
+import util.FormatUtil;
 
-import java.time.Duration;
 import java.time.LocalTime;
 
-public record AttendanceTime(LocalTime time) {
+public class AttendanceTime {
 
-    public AttendanceTime {
-        validate(time);
+    private final LocalTime time;
+
+    private AttendanceTime(LocalTime time,
+                           AttendancePolicy attendancePolicy) {
+        validate(time, attendancePolicy);
+        this.time = time;
     }
 
-    public static AttendanceTime from(LocalTime time) {
-        return new AttendanceTime(time);
+    public static AttendanceTime of(LocalTime time,
+                                    AttendancePolicy attendancePolicy) {
+        return new AttendanceTime(time, attendancePolicy);
     }
 
-    public AttendanceStateRule checkAttendanceState(boolean isSpecialDay) {
-        LocalTime AttendLimitTime = AttendanceTimeRule.getAttendLimitTime(isSpecialDay);
-        long timeDifference = Duration.between(AttendLimitTime, time).toMinutes();
-
-        if (timeDifference > AttendanceStateRule.ABSENT.getLimit()) {
-            return AttendanceStateRule.ABSENT;
+    private void validate(LocalTime time,
+                          AttendancePolicy attendancePolicy) {
+        if (attendancePolicy.canAttendTime(time)) {
+            return;
         }
-
-        if (timeDifference > AttendanceStateRule.LATE.getLimit()) {
-            return AttendanceStateRule.LATE;
-        }
-
-        return AttendanceStateRule.ATTEND;
+        throw new IllegalArgumentException(String.format("%s는 등교할 수 없는 시간입니다.",
+                time.format(FormatUtil.TIME_FORMATTER)));
     }
 
-    private void validate(LocalTime time) {
-        validateEnterTime(time);
-    }
-
-    private static void validateEnterTime(LocalTime time) {
-        AttendanceTimeRule.validateEnterTime(time);
+    public LocalTime toLocalTime() {
+        return time;
     }
 }
