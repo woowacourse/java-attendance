@@ -3,7 +3,7 @@ import org.junit.jupiter.api.Test;
 
 import java.time.LocalDateTime;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatNoException;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class AttendanceRecordTest {
@@ -14,7 +14,7 @@ class AttendanceRecordTest {
         LocalDateTime dateTime = LocalDateTime.of(2024, 12, 2, 13, 0);
 
         // then
-        assertThat(new AttendanceRecord(dateTime)).isInstanceOf(AttendanceRecord.class);
+        assertThatNoException().isThrownBy(() -> new AttendanceRecord(dateTime));
     }
 
     @DisplayName("출석을 기록하려는 날짜가 등교일이 아닐 경우 예외가 발생한다.")
