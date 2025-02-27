@@ -1,21 +1,31 @@
 package domain;
 
+import java.time.DateTimeException;
 import java.time.LocalDate;
 
 public class CampusDate {
 
     private final LocalDate date;
 
-    private CampusDate(LocalDate date) {
+    private CampusDate(final LocalDate date) {
         this.date = date;
     }
 
-    public static CampusDate fromNow(LocalDate now) {
+    public static CampusDate fromNow(final LocalDate now) {
         return new CampusDate(now);
     }
 
-    public static CampusDate ofNowAndDay(LocalDate now, int day) {
+    public static CampusDate ofNowAndDay(final LocalDate now, final int day) {
+        validateDayRangeOfMonth(now, day);
         return new CampusDate(now.withDayOfMonth(day));
+    }
+
+    private static void validateDayRangeOfMonth(final LocalDate now, final int day) {
+        try {
+            now.withDayOfMonth(day);
+        } catch (DateTimeException e) {
+            throw new IllegalArgumentException("[ERROR] 해당 월의 가능한 일 수 내에서 입력해 주세요.");
+        }
     }
 
     public int getMonth() {
