@@ -46,6 +46,7 @@ public class AttendanceRepository {
     }
 
     public void update(String name, LocalDate localDate, LocalTime localTime) {
+        validateExistingCrew(name);
         List<Attendance> crewAttendances = attendances.get(name);
 
         crewAttendances.replaceAll(attendance -> {

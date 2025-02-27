@@ -136,7 +136,7 @@ public class AttendanceTest {
     }
 
     @Test
-    void 존재하는_크루만_출석할_수_있다() {
+    void 존재하는_않는_크루는_출석할_수_없다() {
         // given
         LocalDate localDate = LocalDate.of(2024, 12, 3);
         LocalTime localTime = LocalTime.of(9, 55);
@@ -161,5 +161,17 @@ public class AttendanceTest {
         // then
         Assertions.assertThat(attendance.getName()).isEqualTo(name);
         Assertions.assertThat(attendance.getLocalTime()).isEqualTo(localTime);
+    }
+
+    @Test
+    void 존재하는_않는_크루는_출석을_수정할_수_없다() {
+        // given
+        LocalDate localDate = LocalDate.of(2024, 12, 3);
+        LocalTime localTime = LocalTime.of(9, 55);
+
+        // when & then
+        Assertions.assertThatThrownBy(() -> {
+            repository.update("dompoo", localDate, localTime);
+        }).isInstanceOf(IllegalArgumentException.class);
     }
 }
