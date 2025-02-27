@@ -1,7 +1,10 @@
 package attendance.domain;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 
+import java.time.DayOfWeek;
 import java.time.LocalDateTime;
 import java.time.Year;
 
@@ -73,5 +76,22 @@ public class AttendanceDateTimeTest {
         // When & Then
         assertThat(startDateTime.calculateMinuteDifference(end))
                 .isEqualTo(210);
+    }
+
+    @CsvSource({
+            "17, MONDAY",
+            "18, TUESDAY",
+            "19, WEDNESDAY",
+            "20, THURSDAY",
+            "21, FRIDAY"
+    })
+    @ParameterizedTest
+    void 해당_출석날짜의_요일을_알려준다(int day, DayOfWeek expected) {
+        // Given
+        LocalDateTime localDateTime = Year.of(2025).atMonth(2).atDay(day).atTime(13, 30);
+        AttendanceDateTime attendanceDateTime = new AttendanceDateTime(localDateTime);
+
+        // When & Then
+        assertThat(attendanceDateTime.calculateDayOfWeek()).isEqualTo(expected);
     }
 }
