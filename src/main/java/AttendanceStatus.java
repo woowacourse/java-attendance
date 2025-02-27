@@ -1,16 +1,27 @@
 import java.time.DayOfWeek;
+import java.time.Duration;
 import java.time.LocalTime;
+import java.util.Arrays;
 
-public class AttendanceStatus {
-    public String getStatus(DayOfWeek dayOfWeek, LocalTime time) {
-        LocalTime classStartTime = ClassSchedule.getStartTimeOf(dayOfWeek);
+public enum AttendanceStatus {
+    PRESENT("출석", 0),
+    TARDY("지각", 5),
+    ABSENT("결석", 30);
 
-        if (time.isBefore(classStartTime.plusMinutes(6))) {
-            return "출석";
-        }
-        if (time.isBefore(classStartTime.plusMinutes(31))) {
-            return "지각";
-        }
-        return "결석";
+    private final String name;
+    private final int minutesAfter;
+
+    AttendanceStatus(String name, int minutesAfter) {
+        this.name = name;
+        this.minutesAfter = minutesAfter;
+    }
+
+    public static AttendanceStatus getStatus(DayOfWeek dayOfWeek, LocalTime time) {
+        LocalTime startTime = ClassSchedule.getStartTimeOf(dayOfWeek);
+        Duration lateness = Duration.between(startTime, time);
+        return Arrays.stream(AttendanceStatus.values())
+                .filter(status -> lateness.toMinutes() > status.minutesAfter)
+                .reduce((first, second) -> second)
+                .orElse(PRESENT);
     }
 }
