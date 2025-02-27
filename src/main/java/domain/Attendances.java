@@ -56,18 +56,10 @@ public class Attendances {
                 .forEach(date -> add(new Attendance(new Day(date), null)));
     }
 
-    public String getPenaltyStatus() {
-        int penaltyPoint = getAbsentCount() + getLateCount() / LATE_COUNT_FOR_ABSENCE;
-        if (penaltyPoint > 5) {
-            return "제적";
-        }
-        if (penaltyPoint >= 3) {
-            return "면담";
-        }
-        if (penaltyPoint >= 2) {
-            return "경고";
-        }
-        return "";
+    public Penalty getPenaltyStatus() {
+        Integer penaltyPoint = getAbsentCount() + getLateCount() / LATE_COUNT_FOR_ABSENCE;
+        Penalty penalty = Penalty.getPenaltyOf(penaltyPoint);
+        return penalty;
     }
 
 
