@@ -26,4 +26,8 @@ public class AttendanceStatistics {
     public int hashCode() {
         return Objects.hashCode(statistics);
     }
+
+    public List<AttendanceStatistic> findPenaltyTargets() {
+        return null;
+    }
 }
