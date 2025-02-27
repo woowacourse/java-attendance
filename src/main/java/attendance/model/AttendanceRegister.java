@@ -24,9 +24,7 @@ public class AttendanceRegister {
     }
 
     public void modify(String crewName, LocalDate modifyDate, LocalTime modifyTime) {
-        if (!register.get(crewName).containsAttendanceDateTimeByDate(modifyDate)) {
-            throw new IllegalArgumentException("출석내역이 없는 날짜입니다.");
-        }
+        validateModifyDate(crewName, modifyDate);
         validateContainsCrewName(crewName);
         AttendanceRecord attendanceRecord = register.get(crewName);
         AttendanceDateTime foundAttendanceDateTime = attendanceRecord.findAttendanceByDate(modifyDate);
@@ -58,6 +56,12 @@ public class AttendanceRegister {
     private void validateContainsCrewName(String name) {
         if (!register.containsKey(name)) {
             throw new IllegalArgumentException("존재하지 않는 크루입니다.");
+        }
+    }
+
+    private void validateModifyDate(String crewName, LocalDate modifyDate) {
+        if (!register.get(crewName).containsAttendanceDateTimeByDate(modifyDate)) {
+            throw new IllegalArgumentException("출석내역이 없는 날짜입니다.");
         }
     }
 }
