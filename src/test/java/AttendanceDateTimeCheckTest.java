@@ -6,13 +6,14 @@ import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-public class AttendanceTimeCheckTest {
+public class AttendanceDateTimeCheckTest {
 
     @DisplayName("시작 시간 5분 초과 출석은 지각이다.")
     @Test
     void check() {
         // given
         AttendanceTimeChecker checker = new AttendanceTimeChecker();
+            AttendanceDateTimeChecker checker = new AttendanceDateTimeChecker();
 
         // when
         AttendPolicy policy = checker.attendanceCheck(LocalDate.of(2024, 12, 3), LocalTime.of(10, 6));
@@ -27,6 +28,7 @@ public class AttendanceTimeCheckTest {
     void check2() {
         // given
         AttendanceTimeChecker checker = new AttendanceTimeChecker();
+            AttendanceDateTimeChecker checker = new AttendanceDateTimeChecker();
 
         // when
         AttendPolicy policy = checker.attendanceCheck(LocalDate.of(2024, 12, 3), LocalTime.of(10, 31));
@@ -41,6 +43,7 @@ public class AttendanceTimeCheckTest {
     void check3() {
         // given
         AttendanceTimeChecker checker = new AttendanceTimeChecker();
+            AttendanceDateTimeChecker checker = new AttendanceDateTimeChecker();
 
         // when
         AttendPolicy policy = checker.attendanceCheck(LocalDate.of(2024, 12, 3), LocalTime.of(10, 1));
@@ -55,6 +58,7 @@ public class AttendanceTimeCheckTest {
     void check4() {
         // given
         AttendanceTimeChecker checker = new AttendanceTimeChecker();
+            AttendanceDateTimeChecker checker = new AttendanceDateTimeChecker();
 
         // when
         AttendPolicy policy = checker.attendanceCheck(LocalDate.of(2024, 12, 3), LocalTime.of(9, 57));
@@ -69,6 +73,7 @@ public class AttendanceTimeCheckTest {
     void check5() {
         // given
         AttendanceTimeChecker checker = new AttendanceTimeChecker();
+            AttendanceDateTimeChecker checker = new AttendanceDateTimeChecker();
 
         // when
         AttendPolicy policy = checker.attendanceCheck(LocalDate.of(2024, 12, 3), LocalTime.of(12, 0));
@@ -83,6 +88,7 @@ public class AttendanceTimeCheckTest {
     void check6() {
         // given
         AttendanceTimeChecker checker = new AttendanceTimeChecker();
+            AttendanceDateTimeChecker checker = new AttendanceDateTimeChecker();
 
         // when
         AttendPolicy policy = checker.attendanceCheck(LocalDate.of(2024, 12, 2), LocalTime.of(13, 6));
@@ -97,6 +103,7 @@ public class AttendanceTimeCheckTest {
     void check7() {
         // given
         AttendanceTimeChecker checker = new AttendanceTimeChecker();
+            AttendanceDateTimeChecker checker = new AttendanceDateTimeChecker();
 
         // when
         AttendPolicy policy = checker.attendanceCheck(LocalDate.of(2024, 12, 2), LocalTime.of(13, 31));
@@ -111,6 +118,7 @@ public class AttendanceTimeCheckTest {
     void check8() {
         // given
         AttendanceTimeChecker checker = new AttendanceTimeChecker();
+            AttendanceDateTimeChecker checker = new AttendanceDateTimeChecker();
 
         // when
         AttendPolicy policy = checker.attendanceCheck(LocalDate.of(2024, 12, 2), LocalTime.of(13, 5));
@@ -125,6 +133,7 @@ public class AttendanceTimeCheckTest {
     void check9() {
         // given
         AttendanceTimeChecker checker = new AttendanceTimeChecker();
+            AttendanceDateTimeChecker checker = new AttendanceDateTimeChecker();
 
         // when
         AttendPolicy policy = checker.attendanceCheck(LocalDate.of(2024, 12, 2), LocalTime.of(11, 31));
@@ -139,6 +148,7 @@ public class AttendanceTimeCheckTest {
     void check10() {
         // given
         AttendanceTimeChecker checker = new AttendanceTimeChecker();
+            AttendanceDateTimeChecker checker = new AttendanceDateTimeChecker();
 
         // when
         AttendPolicy policy = checker.attendanceCheck(LocalDate.of(2024, 12, 2), LocalTime.of(14, 0));
@@ -152,7 +162,7 @@ public class AttendanceTimeCheckTest {
     @Test
     void check11() {
         // given
-        AttendanceTimeChecker checker = new AttendanceTimeChecker();
+        AttendanceDateTimeChecker checker = new AttendanceDateTimeChecker();
         LocalDate today = LocalDate.of(2024, 12, 3);
         LocalTime attendanceTime = LocalTime.of(7, 0);
 
@@ -167,7 +177,7 @@ public class AttendanceTimeCheckTest {
     @Test
     void check12() {
         // given
-        AttendanceTimeChecker checker = new AttendanceTimeChecker();
+        AttendanceDateTimeChecker checker = new AttendanceDateTimeChecker();
         LocalDate today = LocalDate.of(2024, 12, 3);
         LocalTime attendanceTime = LocalTime.of(23, 1);
 
@@ -182,7 +192,7 @@ public class AttendanceTimeCheckTest {
     @Test
     void check14() {
         // given
-        AttendanceTimeChecker checker = new AttendanceTimeChecker();
+        AttendanceDateTimeChecker checker = new AttendanceDateTimeChecker();
         LocalDate saturday = LocalDate.of(2024, 9, 7);
         LocalDate sunday = LocalDate.of(2024, 12, 8);
         LocalTime attendanceTime = LocalTime.of(10, 12);
@@ -205,7 +215,7 @@ public class AttendanceTimeCheckTest {
     @Test
     void check13() {
         // given
-        AttendanceTimeChecker checker = new AttendanceTimeChecker();
+        AttendanceDateTimeChecker checker = new AttendanceDateTimeChecker();
         LocalDate holiday = LocalDate.of(2024, 12, 25);
         LocalTime attendanceTime = LocalTime.of(10, 12);
 

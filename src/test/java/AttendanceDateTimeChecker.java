@@ -1,11 +1,10 @@
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.time.MonthDay;
 import java.time.format.TextStyle;
 import java.util.Locale;
 
-public class AttendanceTimeChecker {
+public class AttendanceDateTimeChecker {
 
     private static final int CRITERION_HOUR_FOR_MONDAY = 13;
     private static final int CRITERION_HOUR_EXCLUDE_MONDAY = 10;
