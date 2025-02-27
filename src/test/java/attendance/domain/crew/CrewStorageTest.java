@@ -52,5 +52,4 @@ class CrewStorageTest {
         assertThat(crewStorage.checkIsNotContained("쿠키")).isFalse();
         assertThat(crewStorage.checkIsNotContained("빙봉")).isTrue();
     }
-
 }

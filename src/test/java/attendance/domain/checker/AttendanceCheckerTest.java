@@ -113,7 +113,6 @@ class AttendanceCheckerTest {
         );
     }
 
-
     @DisplayName("캠퍼스 운영시간이 아닌 경우 예외를 발생시킨다")
     @ParameterizedTest
     @MethodSource
