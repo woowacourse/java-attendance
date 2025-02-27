@@ -43,9 +43,9 @@ public class Attendances {
                 .orElseThrow(() -> new IllegalArgumentException("[ERROR] 출석하지 않은 날짜입니다."));
     }
 
-    public Warning calculateWarning() {
+    public AttendancePenalty calculatePenalty() {
         int totalAbsenceCount = countAbsence() + countLate() / LATE_TO_ABSENCE_UNIT;
-        return Warning.from(totalAbsenceCount);
+        return AttendancePenalty.from(totalAbsenceCount);
     }
 
     public int countAttend() {
