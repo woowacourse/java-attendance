@@ -9,6 +9,7 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 @DisplayName("크루 리스트 테스트")
 public class CrewsTest {
@@ -30,5 +31,17 @@ public class CrewsTest {
         assertThatThrownBy(() -> crews.add(duei))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage(ErrorMessage.CREW_DUPLICATE_ERROR.getMessage());
+    }
+
+    @Test
+    void 크루_리스트에_포함된_크루면_true_아니면_false를_반환한다() {
+        Crew duei = new Crew(new Nickname("듀이"));
+        Crews crews = new Crews(List.of(duei));
+        Crew brown = new Crew(new Nickname("브라운"));
+
+        assertAll(
+                () -> assertThat(crews.contains(duei)).isTrue(),
+                () -> assertThat(crews.contains(brown)).isFalse()
+        );
     }
 }
