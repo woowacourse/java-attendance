@@ -12,6 +12,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 class AttendanceLogsTest {
@@ -107,5 +108,104 @@ class AttendanceLogsTest {
                 () -> assertThat(actual.get(AttendanceStatus.ABSENCE)).isEqualTo(2),
                 () -> assertThat(actual.get(AttendanceStatus.LATE)).isEqualTo(1)
         );
+    }
+
+    //     - 총 결석 횟수를 반환한다.
+    //    - 총 지각 횟수를 반환한다.
+    //    - 정책이 적용된 총 결석 횟수를 반환한다.
+    //    - 정책이 적용된 총 지각 횟수를 반환한다.
+
+    @DisplayName("총 결석 횟수를 반환한다.")
+    @Test
+    void getAbsenceCount() {
+
+        // Given
+        final int expected = 1;
+
+        // When
+        final int actual = attendanceLogs.getAbsenceCount();
+
+        // Then
+        assertThat(actual).isEqualTo(expected);
+    }
+
+    @DisplayName("총 지각 횟수를 반환한다.")
+    @Test
+    void getLateCount() {
+
+        // Given
+        final int expected = 1;
+
+        // When
+        final int actual = attendanceLogs.getLateCount();
+
+        // Then
+        assertThat(actual).isEqualTo(expected);
+    }
+
+    @DisplayName("정책이 적용된 총 결석 횟수를 반환한다.")
+    @Test
+    void getPolicyAppliedAbsenceCount() {
+
+        // Given
+        final AttendanceLogs attendanceLogs = new AttendanceLogs(new ArrayList<>());
+        attendanceLogs.add(
+                AttendanceLog.fromDateTime(
+                        LocalDateTime.of(2024, 12, 2, 13, 10),
+                        campusOperationPolicy
+                )
+        );
+        attendanceLogs.add(
+                AttendanceLog.fromDateTime(
+                        LocalDateTime.of(2024, 12, 3, 10, 6),
+                        campusOperationPolicy
+                )
+        );
+        attendanceLogs.add(
+                AttendanceLog.fromDateTime(
+                        LocalDateTime.of(2024, 12, 4, 10, 6),
+                        campusOperationPolicy
+                )
+        );
+        final int expected = 1;
+
+        // When
+        final int actual = attendanceLogs.getPolicyAppliedAbsenceCount();
+
+        // Then
+        assertThat(actual).isEqualTo(expected);
+    }
+
+    @DisplayName("정책이 적용된 총 지각 횟수를 반환한다.")
+    @Test
+    void getPolicyAppliedLateCount() {
+
+        // Given
+        final AttendanceLogs attendanceLogs = new AttendanceLogs(new ArrayList<>());
+        attendanceLogs.add(
+                AttendanceLog.fromDateTime(
+                        LocalDateTime.of(2024, 12, 2, 13, 10),
+                        campusOperationPolicy
+                )
+        );
+        attendanceLogs.add(
+                AttendanceLog.fromDateTime(
+                        LocalDateTime.of(2024, 12, 3, 10, 6),
+                        campusOperationPolicy
+                )
+        );
+        attendanceLogs.add(
+                AttendanceLog.fromDateTime(
+                        LocalDateTime.of(2024, 12, 4, 10, 6),
+                        campusOperationPolicy
+                )
+        );
+        final int expected = 0;
+
+        // When
+        final int actual = attendanceLogs.getPolicyAppliedLateCount();
+
+        // Then
+        assertThat(actual).isEqualTo(expected);
     }
 }

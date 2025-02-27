@@ -83,4 +83,20 @@ public class AttendanceLogs {
     public List<AttendanceLog> getValues() {
         return values;
     }
+
+    public int getPolicyAppliedAbsenceCount() {
+        return -1;
+    }
+
+    public int getAbsenceCount() {
+        return -1;
+    }
+
+    public int getPolicyAppliedLateCount() {
+        return -1;
+    }
+
+    public int getLateCount() {
+        return -1;
+    }
 }
