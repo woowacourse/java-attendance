@@ -26,4 +26,8 @@ public class Crews {
     public int size() {
         return crews.size();
     }
+
+    public boolean contains(Crew crew) {
+        return crews.contains(crew);
+    }
 }
