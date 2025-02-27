@@ -1,13 +1,10 @@
-package attendance;
+package attendance.domain;
 
 import static attendance.domain.AttendanceStatus.ATTENDANCE;
 import static attendance.domain.AttendanceStatus.LATE;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
-import attendance.domain.Attendance;
-import attendance.domain.AttendanceHistory;
-import attendance.domain.AttendanceStatus;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.Optional;
