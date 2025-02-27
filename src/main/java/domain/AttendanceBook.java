@@ -1,5 +1,7 @@
 package domain;
 
+import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 public class AttendanceBook {
@@ -18,5 +20,18 @@ public class AttendanceBook {
                 .filter(crewAttendance -> crewAttendance.belongsTo(crew))
                 .findAny()
                 .orElseThrow(() -> new IllegalArgumentException("해당하는 이름의 크루가 존재하지 않습니다."));
+    }
+
+    public List<CrewAttendance> findDisciplinaryCrews(LocalDate date) {
+        List<CrewAttendance> disciplinaryCrews = new ArrayList<>();
+        for (CrewAttendance crewAttendance : crewAttendances) {
+            int absenceCount = crewAttendance.countAbsenceBeforeDate(date);
+            int lateCount = crewAttendance.countLateBeforeDate(date);
+            DisciplinaryStatus disciplinaryStatus = DisciplinaryStatus.from(absenceCount, lateCount);
+            if (disciplinaryStatus != DisciplinaryStatus.NORMAL) {
+                disciplinaryCrews.add(crewAttendance);
+            }
+        }
+        return disciplinaryCrews;
     }
 }
