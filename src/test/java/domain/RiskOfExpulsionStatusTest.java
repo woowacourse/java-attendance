@@ -1,6 +1,7 @@
 package domain;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.util.stream.Stream;
 import org.junit.jupiter.api.DisplayName;
@@ -43,5 +44,16 @@ public class RiskOfExpulsionStatusTest {
     @Nested
     @DisplayName("실패 테스트")
     class FailCases {
+
+        @DisplayName("주어진 값이 음수라면 예외가 발생한다.")
+        @Test
+        public void calculateRiskOfExpulsionStatus() throws Exception {
+            // given
+            final int negativeNumber = -1;
+
+            // when & then
+            assertThatThrownBy(() -> RiskOfExpulsionStatus.calculateRiskOfExpulsionStatus(negativeNumber))
+                    .isInstanceOf(IllegalArgumentException.class);
+        }
     }
 }
