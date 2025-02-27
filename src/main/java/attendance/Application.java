@@ -68,7 +68,7 @@ public class Application {
             OutputView.printNotRegisteredCrewNickname();
             return;
         }
-        Optional<Attendance> existingAttendance = attendanceManager.findAttendanceByCrewAndDate(crew, today);
+        Optional<Attendance> existingAttendance = attendanceManager.findAttendance(crew, today);
         if (existingAttendance.isPresent()) {
             OutputView.printDuplicatedAttendance();
             return;

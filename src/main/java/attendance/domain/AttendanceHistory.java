@@ -13,7 +13,7 @@ public class AttendanceHistory {
         return attendance;
     }
 
-    public Optional<Attendance> findAttendanceByDate(final LocalDate date) {
+    public Optional<Attendance> findAttendance(final LocalDate date) {
         return attendances.stream()
                 .filter(attendance -> attendance.isDateEquals(date))
                 .findAny();

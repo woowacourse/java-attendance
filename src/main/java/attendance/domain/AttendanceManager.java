@@ -24,8 +24,8 @@ public class AttendanceManager {
         return attendanceHistory.addAttendance(attendance);
     }
 
-    public Optional<Attendance> findAttendanceByCrewAndDate(final Crew crew, final LocalDate attendanceDate) {
+    public Optional<Attendance> findAttendance(final Crew crew, final LocalDate attendanceDate) {
         AttendanceHistory attendanceHistory = attendanceBook.get(crew);
-        return attendanceHistory.findAttendanceByDate(attendanceDate);
+        return attendanceHistory.findAttendance(attendanceDate);
     }
 }

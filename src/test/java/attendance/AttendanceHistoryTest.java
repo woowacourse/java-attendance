@@ -14,7 +14,7 @@ import org.junit.jupiter.api.Test;
 
 class AttendanceHistoryTest {
     @Nested
-    class findAttendanceByDate {
+    class findAttendance {
         @DisplayName("주어진_날짜의_출석을_찾아_반환한다")
         @Test
         void should_ReturnAttendance_WhenSameDateExists() {
@@ -25,7 +25,7 @@ class AttendanceHistoryTest {
             attendanceHistory.addAttendance(new Attendance(date, time, "LATE"));
 
             //when
-            Optional<Attendance> result = attendanceHistory.findAttendanceByDate(date);
+            Optional<Attendance> result = attendanceHistory.findAttendance(date);
 
             //then
             assertAll(
@@ -43,7 +43,7 @@ class AttendanceHistoryTest {
             LocalDate date = LocalDate.of(2024, 12, 26);
 
             //when
-            Optional<Attendance> result = attendanceHistory.findAttendanceByDate(date);
+            Optional<Attendance> result = attendanceHistory.findAttendance(date);
 
             //then
             assertThat(result).isEmpty();

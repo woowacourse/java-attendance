@@ -46,7 +46,7 @@ class AttendanceManagerTest {
     }
 
     @Nested
-    class findAttendanceByCrewAndDate {
+    class findAttendance {
         @DisplayName("주어진_날짜에_크루의_출석을_반환할_수_있다")
         @Test
         void can_ReturnAttendance_WhenAttendanceExists() {
@@ -60,7 +60,7 @@ class AttendanceManagerTest {
             attendanceManager.addAttendance(crew, attendanceDate, attendanceTime);
 
             //when
-            Optional<Attendance> attendance = attendanceManager.findAttendanceByCrewAndDate(crew, attendanceDate);
+            Optional<Attendance> attendance = attendanceManager.findAttendance(crew, attendanceDate);
 
             //then
             assertAll(
@@ -81,7 +81,7 @@ class AttendanceManagerTest {
             LocalDate attendanceDate = LocalDate.of(2024, 12, 26);
 
             //when
-            Optional<Attendance> attendance = attendanceManager.findAttendanceByCrewAndDate(crew, attendanceDate);
+            Optional<Attendance> attendance = attendanceManager.findAttendance(crew, attendanceDate);
 
             //then
             assertThat(attendance.isEmpty()).isTrue();
@@ -110,7 +110,7 @@ class AttendanceManagerTest {
                     () -> assertThat(result.isDateEquals(attendanceDate)).isTrue(),
                     () -> assertThat(result.getStatus()).isEqualTo("ATTENDANCE"),
                     () -> {
-                        Attendance expected = attendanceManager.findAttendanceByCrewAndDate(crew, attendanceDate).get();
+                        Attendance expected = attendanceManager.findAttendance(crew, attendanceDate).get();
                         assertThat(result).isEqualTo(expected);
                     }
             );
