@@ -137,7 +137,7 @@ public class Application {
 
     private static void checkAttendanceHistory() {
         LocalDate today = now();
-        String crewNickname = InputView.readCrewNicknameToModify();
+        String crewNickname = InputView.readCrewNickname();
         Crew crew = new Crew(crewNickname);
         boolean isCrewExists = attendanceManager.isCrewExists(crew);
         if (!isCrewExists) {

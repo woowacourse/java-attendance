@@ -24,7 +24,7 @@ public class InputView {
         int date = today.getDayOfMonth();
         DayOfWeek day = today.getDayOfWeek();
         String dayName = day.getDisplayName(TextStyle.FULL, Locale.KOREAN);
-        System.out.printf("오늘은 %02d월 %02d일 %s입니다. 기능을 선택해 주세요.\n", month, date, dayName);
+        System.out.printf("\n오늘은 %02d월 %02d일 %s입니다. 기능을 선택해 주세요.\n", month, date, dayName);
         System.out.println("1. 출석 확인\n"
                 + "2. 출석 수정\n"
                 + "3. 크루별 출석 기록 확인\n"
@@ -33,7 +33,7 @@ public class InputView {
     }
 
     public static String readCrewNickname() {
-        System.out.println("닉네임을 입력해 주세요.");
+        System.out.println("\n닉네임을 입력해 주세요.");
         return input();
     }
 
@@ -49,7 +49,7 @@ public class InputView {
     }
 
     public static String readCrewNicknameToModify() {
-        System.out.println("출석을 수정하려는 크루의 닉네임을 입력해 주세요.");
+        System.out.println("\n출석을 수정하려는 크루의 닉네임을 입력해 주세요.");
         return input();
     }
 

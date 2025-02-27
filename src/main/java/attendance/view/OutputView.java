@@ -65,7 +65,7 @@ public class OutputView {
         DayOfWeek attendanceDay = attendanceDate.getDayOfWeek();
         LocalTime beforeAttendanceTime = beforeAttendance.getTime();
         LocalTime afterAttendanceTime = afterAttendance.getTime();
-        System.out.printf("%02d월 %02d일 %s %02d:%02d (%s) -> %02d:%02d (%s) 수정 완료!\n",
+        System.out.printf("\n%02d월 %02d일 %s %02d:%02d (%s) -> %02d:%02d (%s) 수정 완료!\n",
                 attendanceDate.getMonthValue(),
                 attendanceDate.getDayOfMonth(),
                 attendanceDay.getDisplayName(TextStyle.FULL, Locale.KOREAN),
@@ -79,7 +79,8 @@ public class OutputView {
     }
 
     public static void printMonthlyAttendances(final LocalDate today, final Crew crew, final List<Attendance> attendances) {
-        System.out.printf("이번 달 %s의 출석 기록입니다.\n", crew.getNickname());
+        System.out.printf("\n이번 달 %s의 출석 기록입니다.\n", crew.getNickname());
+        System.out.println();
         for (int i = today.getDayOfMonth() - 1; i > 0; i--) {
             LocalDate date = today.minusDays(i);
             boolean isOperationDate = CampusManager.isOperationDate(date);
@@ -91,6 +92,7 @@ public class OutputView {
                     .findAny()
                     .ifPresentOrElse(attendance -> printAttendance(attendance), () -> printNoAttendance(date));
         }
+        System.out.println();
     }
 
     private static void printNoAttendance(final LocalDate noAttendanceDate) {
@@ -106,6 +108,7 @@ public class OutputView {
             int statusCount = attendanceStatistics.getStatusCount(status);
             System.out.printf("%s: %d회\n", status.getName(), statusCount);
         }
+        System.out.println();
         CrewStatus crewStatus = attendanceStatistics.calculateCrewStatus();
         if (crewStatus.equals(CrewStatus.INTERVIEW)) {
             System.out.println("면담 대상자입니다.");
@@ -113,6 +116,7 @@ public class OutputView {
     }
 
     public static void printDangerousCrews(final Map<Crew, AttendanceStatistics> dangerousCrews) {
+        System.out.println("\n제적 위험자 조회 결과");
         List<Crew> crews = sortDangerousCrews(dangerousCrews);
         for (Crew crew : crews) {
             String nickname = crew.getNickname();
