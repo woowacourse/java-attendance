@@ -118,9 +118,27 @@ public class SomeTest {
 
     }
 
+    //
+    @Nested
+    @DisplayName("미 개장 시간 출석 시도")
+    class ClosedTimeAttendanceTest {
+        @DisplayName("개장 전 출석 시도")
+        @Test
+        void test1() {
+            // given
+            LocalDateTime attendedTime =  LocalDateTime.of(2024, 12, 5, 7, 0);
 
+            // when & then
+            assertThatThrownBy(() -> AttendanceStatus.getStatusByAttendedTime(attendedTime)).hasMessage(ERROR_MESSAGE.CLOSED_TIME.getMessage());
+        }
+        @DisplayName("개장 후 출석 시도")
+        @Test
+        void test2() {
+            // given
+            LocalDateTime attendedTime =  LocalDateTime.of(2024, 12, 5, 23, 30);
 
-
-    // 미 개장 시간 출석 시도
-
+            // when & then
+            assertThatThrownBy(() -> AttendanceStatus.getStatusByAttendedTime(attendedTime)).hasMessage(ERROR_MESSAGE.CLOSED_TIME.getMessage());
+        }
+    }
 }
