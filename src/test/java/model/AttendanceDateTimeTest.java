@@ -77,4 +77,12 @@ class AttendanceDateTimeTest {
         ).isEqualTo(LocalDateTime.of(2024, 12, 25, 0, 0).toLocalDate());
     }
 
+    @Test
+    @DisplayName("하루 추가하는 메서드 테스트")
+    void test10() {
+        AttendanceDateTime attendanceDateTime = new AttendanceDateTime(LocalDateTime.of(2024, 12, 25, 0, 0));
+        AttendanceDateTime attendanceDateTime1 = attendanceDateTime.addOneDay();
+        attendanceDateTime1.equals(new AttendanceDateTime(LocalDateTime.of(2024, 12, 26, 0, 0)));
+    }
+
 }
