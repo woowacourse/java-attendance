@@ -6,6 +6,7 @@ import java.time.format.TextStyle;
 import java.util.Locale;
 
 public enum FormattedErrorMessage {
+
     INVALID_ATTEND_DATE_ERROR("%d월 %d일 %s은 등교일이 아닙니다."),
     INVALID_ATTEND_TIME_ERROR("%02d시 %02d분은 운영 시간이 아닙니다.")
     ;

@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 
 public enum AttendanceStatus {
+
     ATTEND("출석"),
     LATE("지각"),
     ABSENT("결석")

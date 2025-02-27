@@ -1,6 +1,7 @@
 package attendance.domain;
 
 public enum Penalty {
+
     REMOVAL("제적", 5),
     INTERVIEW("면담", 3),
     WARNING("경고", 2),

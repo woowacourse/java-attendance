@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.util.Arrays;
 
 public enum Holiday {
+
     CHRISTMAS_2024(LocalDate.of(2024, 12, 25)),
     NEW_YEAR_DAY(LocalDate.of(2025, 1, 1)),
     LUNAR_NEW_YEAR_ALTERNATIVE_DAY(LocalDate.of(2025, 1, 27)),

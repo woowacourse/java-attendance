@@ -4,6 +4,7 @@ import java.time.DayOfWeek;
 import java.time.LocalTime;
 
 public enum EducationTime {
+
     MONDAY_ATTEND(LocalTime.of(13, 0)),
     MONDAY_LATE(LocalTime.of(13, 5)),
     MONDAY_ABSENT(LocalTime.of(13, 30)),
