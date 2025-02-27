@@ -2,7 +2,7 @@ package attendance.domain;
 
 import java.util.Objects;
 
-public class Crew {
+public class Crew implements Comparable {
     final String nickname;
 
     public Crew(final String nickname) {
@@ -28,5 +28,14 @@ public class Crew {
     @Override
     public int hashCode() {
         return Objects.hash(nickname);
+    }
+
+    @Override
+    public int compareTo(Object o) {
+        if (o == null || getClass() != o.getClass()) {
+            return 0;
+        }
+        Crew that = (Crew) o;
+        return that.nickname.compareTo(this.nickname);
     }
 }

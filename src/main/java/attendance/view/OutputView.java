@@ -135,7 +135,11 @@ public class OutputView {
             public int compare(Crew firstCrew, Crew secondCrew) {
                 AttendanceStatistics firstCrewStatistics = dangerousCrews.get(firstCrew);
                 AttendanceStatistics secondCrewStatistics = dangerousCrews.get(secondCrew);
-                return firstCrewStatistics.compareTo(secondCrewStatistics);
+                int compareResult = firstCrewStatistics.compareTo(secondCrewStatistics);
+                if (compareResult == 0) {
+                    return secondCrew.compareTo(firstCrew);
+                }
+                return compareResult;
             }
         });
         return crews;
