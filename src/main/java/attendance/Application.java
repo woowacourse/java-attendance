@@ -24,7 +24,6 @@ import attendance.domain.SystemDateTime;
 import attendance.exception.AttendanceArgumentException;
 import attendance.exception.AttendanceFileException;
 import attendance.utility.CsvReader;
-import attendance.view.InputValidator;
 import attendance.view.InputView;
 import attendance.view.OutputView;
 
@@ -221,29 +220,22 @@ public class Application {
     }
 
     private static String requestInputString() {
-        return handleInput(() -> {
-            String nickname = inputView.input();
-            InputValidator.validateIsEmpty(nickname);
-            return nickname;
-        });
+        return handleInput(inputView::input);
+
     }
 
     private static LocalDate requestDate() {
         outputView.printRequestDate();
         return handleInput(() -> {
-            String input = inputView.input();
-            int parsedInt = InputValidator.validateInputDate(input);
-            LocalDateTime current = systemDateTime.now().withDayOfMonth(parsedInt);
+            int input = inputView.inputDayInMonthly();
+            LocalDateTime current = systemDateTime.now().withDayOfMonth(input);
             return current.toLocalDate();
         });
     }
 
     private static LocalTime requestTime() {
         outputView.printRequestTime();
-        return handleInput(() -> {
-            String input = inputView.input();
-            return InputValidator.validateInputTimeFormat(input);
-        });
+        return handleInput(inputView::inputTime);
     }
 
     private static LocalDateTime requestLocalDateTime() {
