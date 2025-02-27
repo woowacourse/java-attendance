@@ -8,13 +8,14 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
 import java.time.DayOfWeek;
+import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.Arrays;
+import java.util.stream.IntStream;
 
 import static domain.attendance.TimeTable.*;
 import static java.time.DayOfWeek.*;
 import static org.assertj.core.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.*;
 
 class TimeTableTest {
     @Nested
@@ -152,6 +153,20 @@ class TimeTableTest {
                 Arrays.stream(DayOfWeek.values()).filter(dayOfWeek -> dayOfWeek != MONDAY).forEach(
                         dayOfWeek -> assertThat(isOverAbsenceTimeLimit(dayOfWeek,localTime)).isFalse()
                 );
+            }
+        }
+    }
+
+    @Nested
+    class AttendanceDayTest{
+        @Test
+        void attendanceDayTest(){
+            for(int i=1; i<=28; i++){ // 2월 1일은 토요일
+                if(i % 7 == 1 || i % 7 == 2){
+                    assertThat(isAttendanceDay(LocalDate.of(2025,2,i))).isFalse();
+                } else {
+                    assertThat(isAttendanceDay(LocalDate.of(2025,2,i))).isTrue();
+                }
             }
         }
     }

@@ -1,6 +1,7 @@
 package domain.attendance;
 
 import java.time.DayOfWeek;
+import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.EnumSet;
 import java.util.Set;
@@ -93,6 +94,10 @@ public enum TimeTable {
         }
         LocalTime absenceTime = WEEKDAYS_EXCEPT_MON_ATTENDANCE_START.plusMinutes(ABSENCE_LIMIT_MIN);
         return attendTime.isAfter(absenceTime);
+    }
+
+    public static boolean isAttendanceDay(LocalDate date){
+        return date.getDayOfWeek() != SATURDAY && date.getDayOfWeek() != SUNDAY;
     }
 
     public Set<DayOfWeek> getDays() {
