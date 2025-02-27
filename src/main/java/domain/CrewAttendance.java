@@ -1,10 +1,10 @@
 package domain;
 
+import java.time.LocalTime;
 import java.util.Objects;
 
 public class CrewAttendance {
     private final AttendanceTime attendanceTime;
-
     private final CrewAttendanceStatus crewAttendanceStatus;
 
     public CrewAttendance(AttendanceTime attendanceTime) {
@@ -14,6 +14,10 @@ public class CrewAttendance {
 
     public AttendanceStatus attendanceStatus() {
         return crewAttendanceStatus.attendanceStatus();
+    }
+
+    public LocalTime attendanceTime() {
+        return attendanceTime.getAttendanceTime();
     }
 
     @Override

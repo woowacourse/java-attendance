@@ -13,9 +13,10 @@ public class AttendanceTime {
     private static final int NORMAL_SCHOOL_START_MINI = 0;
     private static final LocalTime SCHOOL_START_HOUR = LocalTime.of(8, 0);
     private static final LocalTime SCHOOL_CLOSE_TIME = LocalTime.of(23, 0);
-    private final LocalTime attendanceTime;
-    private final LocalTime schoolAttendanceStartTime;
 
+    private final LocalTime attendanceTime;
+
+    private final LocalTime schoolAttendanceStartTime;
 
     public AttendanceTime(LocalTime attendanceTime, AttendanceDate attendanceDate) {
         validateAttendanceTime(attendanceTime);
@@ -41,6 +42,10 @@ public class AttendanceTime {
         var attendanceMinute = attendanceTime.toSecondOfDay() / 60;
         var schoolStartTimeMinute = schoolAttendanceStartTime.toSecondOfDay() / 60;
         return attendanceMinute - schoolStartTimeMinute;
+    }
+
+    public LocalTime getAttendanceTime() {
+        return attendanceTime;
     }
 
     @Override
