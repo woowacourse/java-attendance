@@ -11,10 +11,10 @@ public class Attendances {
     }
 
     public void add(Attendance attendance) {
-
+        attendances.add(attendance);
     }
 
     public boolean contains(Attendance attendance) {
-        return true;
+        return attendances.contains(attendance);
     }
 }
