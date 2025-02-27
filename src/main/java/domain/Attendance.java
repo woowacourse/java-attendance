@@ -13,6 +13,8 @@ public class Attendance {
     private static final int ABSENT_THRESHOLD_MINUTE = 30;
     private static final LocalTime MONDAY_OPEN = LocalTime.of(13, 0);
     private static final LocalTime DEFAULT_OPEN = LocalTime.of(10, 0);
+    private static final LocalTime OPEN_TIME = LocalTime.of(8, 0);
+    private static final LocalTime CLOSE_TIME = LocalTime.of(23, 0);
 
     Map<Crew, LocalDate> attendanceHistory = new HashMap<>();
 
@@ -27,12 +29,6 @@ public class Attendance {
             return checkAttendanceByDay(attendanceTime, MONDAY_OPEN);
         }
         return checkAttendanceByDay(attendanceTime, DEFAULT_OPEN);
-    }
-
-    private void validateOperatingTime(LocalTime attendanceTime) {
-        if (attendanceTime.isBefore(LocalTime.of(8, 0)) || attendanceTime.isAfter(LocalTime.of(23, 0))) {
-            throw new IllegalArgumentException("[ERROR] 캠퍼스 운영 시간에만 출석이 가능합니다.");
-        }
     }
 
     private void validateDuplicateAttendance(Crew crew, LocalDate attendanceDateTime) {
@@ -50,6 +46,12 @@ public class Attendance {
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("M월 d일 E요일");
             throw new IllegalArgumentException(
                     String.format("[ERROR] %s은 등교일이 아닙니다.", formatter.format(attendanceDate)));
+        }
+    }
+
+    private void validateOperatingTime(LocalTime attendanceTime) {
+        if (attendanceTime.isBefore(OPEN_TIME) || attendanceTime.isAfter(CLOSE_TIME)) {
+            throw new IllegalArgumentException("[ERROR] 캠퍼스 운영 시간에만 출석이 가능합니다.");
         }
     }
 

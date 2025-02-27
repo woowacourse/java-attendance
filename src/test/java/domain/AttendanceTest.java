@@ -171,13 +171,14 @@ public class AttendanceTest {
         }
     }
 
-    @Test
+    @ParameterizedTest
     @DisplayName("1.5 캠퍼스 운영 시간이 아닐 경우 예외를 발생시킬 수 있다.")
-    void testSaturdayException() {
+    @CsvSource({"07:59", "23:01"})
+    void testValidateOperatingTime(LocalTime time) {
         // given
         Attendance attendance = new Attendance();
         Crew crew = new Crew("노랑");
-        LocalDateTime dateTime = MONDAY_DATE.atTime(7, 59);
+        LocalDateTime dateTime = MONDAY_DATE.atTime(time);
         // when & then
         assertThatThrownBy(() -> attendance.checkAttendance(crew, dateTime))
                 .isInstanceOf(IllegalArgumentException.class)
