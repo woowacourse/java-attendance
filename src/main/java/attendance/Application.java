@@ -84,7 +84,7 @@ public class Application {
     }
 
     private static void modifyAttendance() {
-
+        String crewNickname = InputView.readCrewNickname();
     }
 
     private static void checkAttendanceHistory() {
