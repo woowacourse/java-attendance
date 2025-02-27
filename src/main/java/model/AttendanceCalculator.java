@@ -12,7 +12,6 @@ public enum AttendanceCalculator {
 
     private final LocalTime lateTime;
     private final LocalTime absentTime;
-    private static final int CHRISTMAS = 25;
     private static final LocalTime UNREGISTERED_TIME = LocalTime.of(0, 0);
 
 
