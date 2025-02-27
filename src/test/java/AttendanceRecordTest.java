@@ -26,4 +26,15 @@ class AttendanceRecordTest {
         // then
         assertThatThrownBy(() -> new AttendanceRecord(dateTime)).isInstanceOf(IllegalArgumentException.class);
     }
+
+    @DisplayName("등교 시간에 따른 출석 상태를 저장한다.")
+    @Test
+    void attendanceStatusTest() {
+        // given
+        LocalDateTime dateTime = LocalDateTime.of(2024, 12, 2, 13, 10);
+        AttendanceRecord attendanceRecord = new AttendanceRecord(dateTime);
+
+        // then
+        assertThat(attendanceRecord.getAttendanceStatus).isEqualTo(AttendanceStatus.TARDY);
+    }
 }
