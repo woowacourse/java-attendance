@@ -32,8 +32,8 @@
 - [x] 시간은 24시간 형식
 
 #### DayOfMonth
-- [ ] format: Integer
-- [ ] range: 1 - 31
+- [x] format: Integer
+- [x] range: 1 - 31
 
 
 #### 기능1. 출석 확인
