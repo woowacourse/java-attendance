@@ -9,6 +9,8 @@ import domain.Attendances;
 import domain.Crew;
 import domain.CrewStatus;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import util.DayOfWeekConvertor;
 
@@ -46,6 +48,29 @@ public class OutputView {
             System.out.println(generateCrewAttendanceMessage(attendances, educationDate));
         }
         printCrewStatusMessage(attendances);
+    }
+
+    public void printExpelledCrews(List<Crew> crews) {
+        List<Crew> sortedCrews = new ArrayList<>(crews);
+        sortedCrews.sort(Comparator.comparing(Crew::getCrewStatusSequence)
+                .thenComparing(crew -> crew.getExpelledAbsentCount(Constants.NOW_DATE))
+                .reversed()
+                .thenComparing(Crew::getName));
+
+        System.out.println("제적 위험자 조회 결과");
+        for (Crew crew : sortedCrews) {
+            System.out.println(generateExpelledCrewMessage(crew));
+        }
+        System.out.println();
+    }
+
+    private String generateExpelledCrewMessage(Crew crew) {
+//        - 빙티: 결석 3회, 지각 4회 (면담)
+        return String.format("- %s: 결석 %d회, 지각 %d회 (%s)",
+                crew.getName(),
+                crew.getAbsentCount(Constants.NOW_DATE),
+                crew.getLateCount(),
+                crew.getCrewStatus(Constants.NOW_DATE).getStatus());
     }
 
     private String generateCrewAttendanceMessage(Attendances attendances, LocalDate educationDate) {

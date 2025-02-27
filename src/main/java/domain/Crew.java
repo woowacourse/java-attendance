@@ -1,5 +1,6 @@
 package domain;
 
+import constant.Constants;
 import java.time.LocalDate;
 import java.util.Objects;
 
@@ -49,7 +50,15 @@ public class Crew {
         return this.attendances.countUnattended(nowDate);
     }
 
-    public Object getName() {
+    public int getExpelledAbsentCount(LocalDate nowDate) {
+        return getAbsentCount(nowDate) + getLateCount() / 3;
+    }
+
+    public int getCrewStatusSequence() {
+        return getCrewStatus(Constants.NOW_DATE).getSequence();
+    }
+
+    public String getName() {
         return this.name;
     }
 
