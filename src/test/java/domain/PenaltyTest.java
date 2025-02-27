@@ -46,4 +46,22 @@ public class PenaltyTest {
         AttendanceHistory attendanceHistory = attendanceBook.findAttendanceHistoryUntil(mimi, yesterday);
         assertThat(Penalty.from(attendanceHistory.attendanceCount())).isEqualTo(Penalty.EXPULSION);
     }
+
+    @DisplayName("결석이 3회 이상인 경우 면담에 처한다.")
+    @Test
+    void test2() {
+        attendanceBook.addAttendance(mimi, new Attendance(LocalDateTime.of(2024, 12, 2, 13, 0)));
+        attendanceBook.addAttendance(mimi, new Attendance(LocalDateTime.of(2024, 12, 3, 10, 15)));
+        attendanceBook.addAttendance(mimi, new Attendance(LocalDateTime.of(2024, 12, 4, 10, 15)));
+        attendanceBook.addAttendance(mimi, new Attendance(LocalDateTime.of(2024, 12, 5, 10, 15)));
+        attendanceBook.addAttendance(mimi, new Attendance(LocalDateTime.of(2024, 12, 6, 10, 0)));
+        // 7, 8 => 주말
+        // 9 => 결석
+        // 10 => 이미 존재
+        // 11, 12 => 결석
+        LocalDate yesterday = LocalDate.of(2024, 12, 12);
+
+        AttendanceHistory attendanceHistory = attendanceBook.findAttendanceHistoryUntil(mimi, yesterday);
+        assertThat(Penalty.from(attendanceHistory.attendanceCount())).isEqualTo(Penalty.COUNSELING);
+    }
 }
