@@ -41,6 +41,10 @@ public class AttendanceBook {
                 .orElseThrow(CrewNotExistException::new);
     }
 
+    public List<AttendanceStatistics> findAllStatistics() {
+        return null;
+    }
+
 //    public static Map<Crew, AttendanceHistory> initializeAttendanceOf(Crews crews) {
 //        Map<Crew, AttendanceHistory> attendances = new HashMap<>();
 //        for (Crew crew : crews.getCrews()) {
