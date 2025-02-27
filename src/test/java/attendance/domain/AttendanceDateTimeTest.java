@@ -62,4 +62,16 @@ public class AttendanceDateTimeTest {
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("미래의 시간으로는 출석할 수 없습니다.");
     }
+
+    @Test
+    void 두_날짜_사이의_차이를_분으로_환산하여_반환한다() {
+        // Given
+        LocalDateTime start = Year.of(2025).atMonth(2).atDay(27).atTime(13, 30);
+        AttendanceDateTime startDateTime = new AttendanceDateTime(start);
+        LocalDateTime end = Year.of(2025).atMonth(2).atDay(27).atTime(10, 00);
+
+        // When & Then
+        assertThat(startDateTime.calculateMinuteDifference(end))
+                .isEqualTo(210);
+    }
 }
