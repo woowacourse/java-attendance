@@ -9,6 +9,7 @@ import java.time.LocalTime;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 
 class AttendancesTest {
 
@@ -28,5 +29,20 @@ class AttendancesTest {
         // then
         assertThat(result.getDateTime())
                 .isEqualTo(attendanceDateTime);
+    }
+
+    @Test
+    @DisplayName("출석할때 이미 출석한 경우 예외가 발생한다")
+    void 출석할때_이미_출석한_경우_예외가_발생한다() {
+        // given
+        Attendance defaultAttendance = new Attendance(LocalDateTime.of(LocalDate.now(), LocalTime.of(10, 0)));
+        Attendances attendances = new Attendances(List.of(defaultAttendance));
+
+        LocalDateTime attendanceDateTime = LocalDateTime.of(LocalDate.now(), LocalTime.of(10, 0));
+
+        // when & then
+        assertThatIllegalArgumentException()
+                .isThrownBy(() -> attendances.processCheck(attendanceDateTime))
+                .withMessage("[ERROR] 이미 출석이 등록되었습니다. 수정 기능을 이용 해주세요.");
     }
 }
