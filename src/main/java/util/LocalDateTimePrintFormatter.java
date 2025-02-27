@@ -8,33 +8,28 @@ import model.AttendanceDateTime;
 
 public class LocalDateTimePrintFormatter {
 
-    public static final DateTimeFormatter HOUR_MINUTE = DateTimeFormatter.ofPattern("HH:mm");
+    private static final String DATE_PATTERN = "MM월 dd일 EEEE";
+    private static final String TIME_PATTERN = "HH:mm";
+    private static final String FULL_PATTERN = DATE_PATTERN + " " + TIME_PATTERN;
+    private static final String EMPTY_TIME_PATTERN = DATE_PATTERN + " --:--";
+
+    private static final DateTimeFormatter KOREAN_DATE_FORMATTER = DateTimeFormatter.ofPattern(DATE_PATTERN, Locale.KOREAN);
+    private static final DateTimeFormatter KOREAN_FULL_FORMATTER = DateTimeFormatter.ofPattern(FULL_PATTERN, Locale.KOREAN);
+    private static final DateTimeFormatter KOREAN_EMPTY_TIME_FORMATTER = DateTimeFormatter.ofPattern(EMPTY_TIME_PATTERN, Locale.KOREAN);
+    private static final DateTimeFormatter HOUR_MINUTE = DateTimeFormatter.ofPattern(TIME_PATTERN);
 
     public static String createAttendanceResultMessage(AttendanceDateTime attendanceDateTime) {
-        DayOfWeek dayOfWeek = attendanceDateTime.toDayOfWeek();
-
         if (attendanceDateTime.isZeroTime(HOUR_MINUTE)) {
-            return attendanceDateTime.toLocalDate().format(DateTimeFormatter.ofPattern("MM월 dd일 " + dayOfWeek.getDisplayName(
-                    TextStyle.FULL, Locale.KOREAN) + " --:--"));
+            return attendanceDateTime.toLocalDate().format(KOREAN_EMPTY_TIME_FORMATTER);
         }
-
-        return attendanceDateTime.getAttendanceDateTime().format(DateTimeFormatter.ofPattern("MM월 dd일 " + dayOfWeek.getDisplayName(
-                TextStyle.FULL, Locale.KOREAN) + " HH:mm"));
+        return attendanceDateTime.getAttendanceDateTime().format(KOREAN_FULL_FORMATTER);
     }
 
     public static String createNonSchoolDayMessage(AttendanceDateTime attendanceDateTime) {
-        DayOfWeek dayOfWeek = attendanceDateTime.toDayOfWeek();
-
-        String formattedDate = attendanceDateTime.toLocalDate().format(DateTimeFormatter.ofPattern("MM월 dd일"));
-
-        return "[ERROR] " + formattedDate + " " +
-                dayOfWeek.getDisplayName(TextStyle.FULL, Locale.KOREAN) +
-                "은 등교일이 아닙니다.";
+        return "[ERROR] " + attendanceDateTime.toLocalDate().format(KOREAN_DATE_FORMATTER) + "은 등교일이 아닙니다.";
     }
 
-    public static String creatModifyCompleteMessage(AttendanceDateTime attendanceDateTime, String recordAfterModifyState) {
-        return attendanceDateTime.getAttendanceDateTime().format(HOUR_MINUTE) + " (" +recordAfterModifyState + ") 수정 완료!";
+    public static String createModifyCompleteMessage(AttendanceDateTime attendanceDateTime, String recordAfterModifyState) {
+        return attendanceDateTime.getAttendanceDateTime().format(HOUR_MINUTE) + " (" + recordAfterModifyState + ") 수정 완료!";
     }
-
-
 }

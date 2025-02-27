@@ -92,7 +92,7 @@ public class AttendanceManagementController {
         students.findStudentByName(studentName).modifyRecord(modifyLocalDateTime);
 
         String recordAfterModifyState = AttendanceCalculator.calculateAttendance(modifyLocalDateTime, modifyLocalDateTime.toLocalTime()).getState();
-        String recordAfterModify = LocalDateTimePrintFormatter.creatModifyCompleteMessage(modifyLocalDateTime,recordAfterModifyState);
+        String recordAfterModify = LocalDateTimePrintFormatter.createModifyCompleteMessage(modifyLocalDateTime,recordAfterModifyState);
 
         OutputView.printSecondMenu(recordBeforeModify, recordAfterModify);
     }
