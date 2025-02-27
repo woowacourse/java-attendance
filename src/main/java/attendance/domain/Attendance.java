@@ -47,6 +47,16 @@ public class Attendance implements Comparable<Attendance> {
         return AttendanceStatus.isAbsent(this, attendanceTime);
     }
 
+    public AttendanceStatus calculateStatus() {
+        if (isAbsent()) {
+            return AttendanceStatus.ABSENT;
+        }
+        if (isLate()) {
+            return AttendanceStatus.LATE;
+        }
+        return AttendanceStatus.ATTENDANCE_COMPLETE;
+    }
+
     public LocalDate getAttendanceLocalDate() {
         return attendanceDate.getAttendanceDate();
     }

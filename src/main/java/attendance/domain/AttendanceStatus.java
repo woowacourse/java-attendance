@@ -63,4 +63,7 @@ public enum AttendanceStatus {
         return absentCount + lateCount / LATE_PER_ABSENT;
     }
 
+    public String getText() {
+        return this.text;
+    }
 }

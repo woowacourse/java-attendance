@@ -1,12 +1,30 @@
 package attendance.view;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Locale;
 import java.util.Scanner;
 import java.util.regex.Pattern;
 
 public class InputView {
 
+    private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("M월 d일 E요일", Locale.KOREA);
     private static final Pattern TIME_INPUT_PATTERN = Pattern.compile("\\d{2}:\\d{2}");
     private final Scanner scanner = new Scanner(System.in);
+
+    public String readOperationCommand(final LocalDateTime today) {
+        System.out.println(String.join("", "오늘은 ", DATE_FORMATTER.format(today), "입니다. 기능을 선택해 주세요."));
+        System.out.print("""
+                1. 출석 확인
+                2. 출석 수정
+                3. 크루별 출석 기록 확인
+                4. 제적 위험자 확인
+                Q. 종료
+                """);
+        String operationCommand = scanner.nextLine();
+        validateBlank(operationCommand);
+        return operationCommand;
+    }
 
     public String readAttendanceConfirmNickname() {
         System.out.println("닉네임을 입력해 주세요.");
