@@ -22,6 +22,14 @@ public class Crew {
     }
 
     public void addAttendance(Attendance attendance) {
+        if (isAlreadyAttendedDay(attendance)) {
+            throw new IllegalArgumentException(ERROR_MESSAGE.ALREADY_ATTENDED.getMessage());
+        }
         attendanceHistory.add(attendance);
+    }
+
+    private boolean isAlreadyAttendedDay(Attendance newAttendance) {
+        return attendanceHistory.stream()
+                .anyMatch(attendance -> attendance.getDayOfMonth() == newAttendance.getDayOfMonth());
     }
 }

@@ -10,4 +10,8 @@ public class Attendance {
         this.dateTime = dateTime;
         this.status = AttendanceStatus.getStatusByAttendedTime(dateTime);
     }
+
+    public int getDayOfMonth() {
+        return dateTime.getDayOfMonth();
+    }
 }
