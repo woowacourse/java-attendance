@@ -2,15 +2,18 @@ package controller;
 
 import domain.Attendance;
 import domain.AttendanceBook;
+import domain.Attendances;
 import domain.AttendancesFile;
 import domain.Time;
 import java.nio.file.Path;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 import view.InputView;
 import view.OutputView;
 
 public class Controller {
-    private static final LocalDateTime today = LocalDateTime.of(2024, 12, 18, 10, 0);
+    private static final LocalDate today = LocalDate.of(2024, 12, 18);
     private static final Path path = Path.of("src", "main", "resources", "attendances.csv");
 
     private final InputView inputView;
@@ -22,7 +25,7 @@ public class Controller {
     }
 
     public void runAttendanceSystem() {
-        AttendanceBook attendanceBook = new AttendanceBook(new AttendancesFile().loadInitialAttendances(path));
+        AttendanceBook attendanceBook = new AttendanceBook(new AttendancesFile().loadInitialAttendances(path, today));
         try {
             runMenuOption(attendanceBook);
         } catch (UnsupportedOperationException ex) {
@@ -85,6 +88,8 @@ public class Controller {
 
     private void runShowCrewAttendance(AttendanceBook attendanceBook) {
         String nickname = inputView.readShowCrewAttendanceNickname();
+        Attendances crewRecords = attendanceBook.getAttendanceByNickname(nickname);
+        outputView.printCrewAttendances(nickname, crewRecords, today);
     }
 
     private void runShowRiskOfExpelledCrews(AttendanceBook attendanceBook) {

@@ -3,6 +3,7 @@ package domain;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 import org.assertj.core.api.Assertions;
@@ -11,6 +12,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
 class AttendancesFileTest {
+    LocalDate today = LocalDate.of(2024, 12, 13);
     AttendancesFile attendancesFile = new AttendancesFile();
 
     @DisplayName("파일을 읽어와서 초기 출석부 값으로 변경한다")
@@ -27,10 +29,10 @@ class AttendancesFileTest {
                         """);
         Files.write(testPath, lines);
 
-        Map<String, Attendances> initialAttendanceBook = attendancesFile.loadInitialAttendances(testPath);
+        Map<String, Attendances> initialAttendanceBook = attendancesFile.loadInitialAttendances(testPath, today);
         Assertions.assertThat(initialAttendanceBook).hasSize(2);
-        Assertions.assertThat(initialAttendanceBook.get("빙봉").getRecords()).hasSize(2);
-        Assertions.assertThat(initialAttendanceBook.get("이든").getRecords()).hasSize(1);
+        Assertions.assertThat(initialAttendanceBook.get("빙봉").getRecords()).hasSize(10);
+        Assertions.assertThat(initialAttendanceBook.get("이든").getRecords()).hasSize(10);
     }
 
     @DisplayName("파일이 존재하지 않으면 빈 맵를 반환한다")
@@ -38,6 +40,6 @@ class AttendancesFileTest {
     void FileNotFoundExceptionTest() {
         Path testPath = Path.of("noFile.txt");
 
-        Assertions.assertThat(attendancesFile.loadInitialAttendances(testPath)).isEmpty();
+        Assertions.assertThat(attendancesFile.loadInitialAttendances(testPath, today)).isEmpty();
     }
 }

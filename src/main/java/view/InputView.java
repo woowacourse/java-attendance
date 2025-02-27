@@ -1,12 +1,13 @@
 package view;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.TextStyle;
 import java.util.Locale;
 import java.util.Scanner;
 
 public class InputView {
-    public String readMenuOption(LocalDateTime today) {
+    public String readMenuOption(LocalDate today) {
         System.out.printf("오늘은 12월 %d일 %s입니다. 기능을 선택해 주세요.\n",
                 today.getDayOfMonth(),
                 today.getDayOfWeek().getDisplayName(

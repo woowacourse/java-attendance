@@ -1,13 +1,12 @@
 package domain;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
 public class AttendanceBook {
-    private static final List<Integer> HOLIDAYS = List.of(1, 7, 8, 14, 15, 21, 22, 25, 28, 29);
-
     private final Map<String, Attendances> crewsRecords;
 
     public AttendanceBook(Map<String, Attendances> crewsRecords) {
@@ -19,26 +18,14 @@ public class AttendanceBook {
         return attendances.addAttendance(dateTime);
     }
 
-    public Attendance updateAttendanceForCrew(String nickname, LocalDateTime dateTime, LocalDateTime today) {
+    public Attendance updateAttendanceForCrew(String nickname, LocalDateTime dateTime, LocalDate today) {
         Attendances attendances = getCrewRecords(nickname);
         return attendances.updateAttendance(dateTime, today.getDayOfMonth());
     }
 
-    public List<Attendance> getPreviousCrewRecords(String nickname, LocalDateTime today) {
-        validateCrewNickname(nickname);
-        return crewsRecords.get(nickname)
-                .getRecords()
-                .stream()
-                .filter(attendance -> attendance.isBefore(today))
-                .sorted()
-                .toList();
-    }
-
-    public List<String> getRiskOfExpelledCrews(LocalDateTime today) {
-        int weekDaysCount = calculateWeekDaysCount(today);
-
+    public List<String> getRiskOfExpelledCrews() {
         return crewsRecords.entrySet().stream()
-                .filter(entry -> entry.getValue().calculateCrewStatus(weekDaysCount) != CrewStatus.NORMAL)
+                .filter(entry -> entry.getValue().calculateCrewStatus() == CrewStatus.NORMAL)
                 .map(Entry::getKey)
                 .toList();
     }
@@ -46,16 +33,6 @@ public class AttendanceBook {
     public Attendance getAttendanceByNicknameAndDate (String nickname, int day) {
         Attendances attendances = getCrewRecords(nickname);
         return attendances.getAttendanceByDay(day);
-    }
-
-    private int calculateWeekDaysCount(LocalDateTime today) {
-        int weekDaysCount = 0;
-        for (int day = 1; day < today.getDayOfMonth(); day++) {
-            if (!HOLIDAYS.contains(day)) {
-                weekDaysCount++;
-            }
-        }
-        return weekDaysCount;
     }
 
     private Attendances getCrewRecords(String nickname) {
@@ -67,6 +44,10 @@ public class AttendanceBook {
         if (!crewsRecords.containsKey(nickname)) {
             throw new IllegalArgumentException("존재하지 않는 닉네임입니다.");
         }
+    }
+
+    public Attendances getAttendanceByNickname(String nickname) {
+        return crewsRecords.get(nickname);
     }
 
     public Map<String, Attendances> getCrewsRecords() {

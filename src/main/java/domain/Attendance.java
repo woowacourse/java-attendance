@@ -1,13 +1,12 @@
 package domain;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.TextStyle;
-import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
 
 public class Attendance implements Comparable<Attendance> {
-    private static final List<Integer> HOLIDAYS = List.of(1, 7, 8, 14, 15, 21, 22, 25, 28, 29);
     private final LocalDateTime dateTime;
 
     public Attendance(LocalDateTime dateTime) {
@@ -16,7 +15,7 @@ public class Attendance implements Comparable<Attendance> {
     }
 
     private void validateDateTime(LocalDateTime dateTime) {
-        if (HOLIDAYS.contains(dateTime.getDayOfMonth())) {
+        if (DayType.calculateDayType(dateTime.getDayOfMonth()) != DayType.WEEKDAY) {
             throw new IllegalArgumentException(
                     String.format("12월 %d일 %s요일은 등교일이 아닙니다.",
                             dateTime.getDayOfMonth(),
@@ -28,8 +27,8 @@ public class Attendance implements Comparable<Attendance> {
         return AttendanceStatus.calculateAttendanceStatus(dateTime);
     }
 
-    public boolean isBefore(LocalDateTime today) {
-        return dateTime.isBefore(today);
+    public boolean isBefore(LocalDate today) {
+        return LocalDate.of(2024, 12, dateTime.getDayOfMonth()).isBefore(today);
     }
 
     @Override
@@ -56,5 +55,9 @@ public class Attendance implements Comparable<Attendance> {
 
     public LocalDateTime getDateTime() {
         return dateTime;
+    }
+
+    public boolean isSameDay(int day) {
+        return dateTime.getDayOfMonth() == day;
     }
 }

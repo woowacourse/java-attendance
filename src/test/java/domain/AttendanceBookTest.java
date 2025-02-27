@@ -1,5 +1,6 @@
 package domain;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
@@ -19,8 +20,8 @@ public class AttendanceBookTest {
         initValue.put("test2", new Attendances());
         Attendances attendances = new Attendances();
         attendances.addAttendance(LocalDateTime.of(2024, 12, 3, 10, 30));
-        attendances.addAttendance(LocalDateTime.of(2024, 12, 2, 13, 0));
-        attendances.addAttendance(LocalDateTime.of(2024, 12, 4, 11, 0));
+        attendances.addAttendance(LocalDateTime.of(2024, 12, 2, 10, 0));
+        attendances.addAttendance(LocalDateTime.of(2024, 12, 4, 10, 0));
         initValue.put("test3", attendances);
         attendanceBook = new AttendanceBook(initValue);
     }
@@ -51,20 +52,20 @@ public class AttendanceBookTest {
     @Test
     void getCrewAttendanceTest() {
         String nickname = "test3";
-        LocalDateTime today = LocalDateTime.of(2024, 12, 4, 10, 5);
-        List<Attendance> crewRecords = attendanceBook.getPreviousCrewRecords(nickname, today);
+        List<Attendance> crewRecords = attendanceBook.getAttendanceByNickname(nickname).getRecords();
         Assertions.assertAll(
-                () -> org.assertj.core.api.Assertions.assertThat(crewRecords).hasSize(2),
-                () -> Assertions.assertEquals(new Attendance(LocalDateTime.of(2024, 12, 2, 13, 0)), crewRecords.get(0)),
-                () -> Assertions.assertEquals(new Attendance(LocalDateTime.of(2024, 12, 3, 10, 0)), crewRecords.get(1))
+                () -> org.assertj.core.api.Assertions.assertThat(crewRecords).hasSize(3),
+                () -> org.assertj.core.api.Assertions.assertThat(crewRecords)
+                        .contains(new Attendance(LocalDateTime.of(2024, 12, 2, 13, 0))),
+                () -> org.assertj.core.api.Assertions.assertThat(crewRecords)
+                        .contains(new Attendance(LocalDateTime.of(2024, 12, 3, 10, 0)))
         );
     }
 
     @DisplayName("크루들 중 제적 위험자들을 불러온다")
     @Test
     void getRiskOfExpelledCrewsTest() {
-        LocalDateTime today = LocalDateTime.of(2024, 12, 6, 10, 5);
-        List<String> riskOfExpelledCrews = attendanceBook.getRiskOfExpelledCrews(today);
+        List<String> riskOfExpelledCrews = attendanceBook.getRiskOfExpelledCrews();
         org.assertj.core.api.Assertions.assertThat(riskOfExpelledCrews)
                 .hasSize(3)
                 .contains("test1")

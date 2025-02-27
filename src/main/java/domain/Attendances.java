@@ -2,7 +2,9 @@ package domain;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.EnumMap;
 import java.util.List;
+import java.util.Map;
 
 public class Attendances {
     private final List<Attendance> records = new ArrayList<>();
@@ -27,22 +29,29 @@ public class Attendances {
         return attendance;
     }
 
-    public CrewStatus calculateCrewStatus(int weekDaysCount) {
-        int lateCount = 0;
-        int presentCount = 0;
+    public CrewStatus calculateCrewStatus() {
+        Map<AttendanceStatus, Integer> attendanceStatusCounts = calculateAllAttendanceStatus();
+        return CrewStatus.calculateCrewStatus(attendanceStatusCounts.get(AttendanceStatus.ABSENT)
+                + attendanceStatusCounts.get(AttendanceStatus.LATE) / 3);
+    }
+
+    public Map<AttendanceStatus, Integer> calculateAllAttendanceStatus() {
+        //TODO 당일 포함안하도록 변경 필요
+        Map<AttendanceStatus, Integer> attendanceStatusCount = initMap();
         for (Attendance attendance : records) {
             AttendanceStatus attendanceStatus = attendance.calculateAttendanceStatus();
-            if (attendanceStatus == AttendanceStatus.LATE) {
-                lateCount++;
-                continue;
-            }
-            if (attendanceStatus == AttendanceStatus.PRESENT) {
-                presentCount++;
-            }
+            attendanceStatusCount.put(attendanceStatus, attendanceStatusCount.get(attendanceStatus) + 1);
         }
 
-        int absentCount = weekDaysCount - lateCount - presentCount;
-        return CrewStatus.calculateCrewStatus(absentCount + lateCount / 3);
+        return attendanceStatusCount;
+    }
+
+    private Map<AttendanceStatus, Integer> initMap() {
+        EnumMap<AttendanceStatus, Integer> attedanceStatusCounts = new EnumMap<>(AttendanceStatus.class);
+        for (AttendanceStatus attendanceStatus : AttendanceStatus.values()) {
+            attedanceStatusCounts.put(attendanceStatus, 0);
+        }
+        return attedanceStatusCounts;
     }
 
     public Attendance getAttendanceByDay(int day) {
