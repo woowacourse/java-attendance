@@ -175,6 +175,20 @@ public class AttendanceBookTest {
         assertThat(crewNames).isEqualTo(List.of(malone, norang, pree, river));
     }
 
+    @DisplayName("제적 위험자는 지각을 결석으로 간주하여 내림차순한다.")
+    @Test
+    void test11() {
+        setAttendanceBook();
+        updateConsideredAbsent();
+
+        PenaltyInformation penaltyInformation = attendanceBook.findPenaltyCrewSorted(LocalDate.of(2024, 12, 12));
+        List<CrewName> crewNames = penaltyInformation.sortedValue().stream()
+                .map(AttendanceCount::crewName)
+                .toList();
+
+        assertThat(crewNames).isEqualTo(List.of(malone, norang, river, pree));
+    }
+
     private void setAttendanceBook() {
         Map<CrewName, AttendanceRecord> testData = new HashMap<>();
 
@@ -190,6 +204,16 @@ public class AttendanceBookTest {
         makeFirstCounseling();
         makeFirstExpulsion();
         makeSecondExpulsion();
+    }
+
+    private void updateConsideredAbsent() { // 면담 4 (2 + 2)
+        attendanceBook.modify(river, new Attendance(LocalDateTime.of(2024, 12, 2, 13, 15)));
+        attendanceBook.modify(river, new Attendance(LocalDateTime.of(2024, 12, 3, 10, 15)));
+        attendanceBook.modify(river, new Attendance(LocalDateTime.of(2024, 12, 4, 10, 15)));
+        attendanceBook.modify(river, new Attendance(LocalDateTime.of(2024, 12, 5, 10, 15)));
+        attendanceBook.modify(river, new Attendance(LocalDateTime.of(2024, 12, 6, 10, 15)));
+        attendanceBook.modify(river, new Attendance(LocalDateTime.of(2024, 12, 9, 13, 15)));
+        attendanceBook.modify(river, dayOfTenAttendance);
     }
 
     void makeFirstExpulsion() { // 결석 6
