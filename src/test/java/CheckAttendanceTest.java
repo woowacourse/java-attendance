@@ -53,5 +53,17 @@ public class CheckAttendanceTest {
 
     }
 
+    @Test
+    @DisplayName("휴일 처리 예외 테스트(주말, 공휴일 예외 처리")
+    public void isHoliday() {
+        LocalDateTime notHoliday = LocalDateTime.of(2024, 12, 17, 10, 0);
+        LocalDateTime weekend = LocalDateTime.of(2024, 12, 21, 10, 0);
+        LocalDateTime christmas = LocalDateTime.of(2024, 12, 25, 10, 0);
+
+        assertThat(AttendancePolicy.iOperatingDay(notHoliday)).isFalse;
+        assertThat(AttendancePolicy.iOperatingDay(weekend)).isTrue;
+        assertThat(AttendancePolicy.iOperatingDay(christmas)).isTrue;
+    }
+
 
 }
