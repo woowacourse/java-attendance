@@ -10,10 +10,7 @@ public enum Penalty {
     WARNING("경고"),
     NONE("X");
 
-    private final String expression;
-
     Penalty(String expression) {
-        this.expression = expression;
     }
 
     public static Penalty from(AttendanceCount attendanceCount) {

@@ -53,12 +53,8 @@ public class AttendanceRecord {
 
     @Override
     public boolean equals(Object object) {
-        if (this == object) {
-            return true;
-        }
-        if (object == null || getClass() != object.getClass()) {
-            return false;
-        }
+        if (this == object) return true;
+        if (object == null || getClass() != object.getClass()) return false;
         AttendanceRecord other = (AttendanceRecord) object;
         return Objects.equals(value, other.value);
     }
@@ -81,11 +77,13 @@ public class AttendanceRecord {
     private void updateUntil(LocalDate yesterday) {
         for (int i = 1; i <= yesterday.getDayOfMonth(); i++) {
             LocalDate targetDate = LocalDate.of(START_YEAR, START_MONTH, i);
-            Attendance attendanceCandidate = new Attendance(targetDate, ABSENT_CONSIDERING_TIME);
-            if (DateTimeManager.isHoliday(targetDate) || contains(attendanceCandidate)) {
-                continue;
-            }
-            value.add(attendanceCandidate);
+            addWhenNotExistedTo(targetDate);
         }
+    }
+
+    private void addWhenNotExistedTo(LocalDate targetDate) {
+        Attendance attendanceCandidate = new Attendance(targetDate, ABSENT_CONSIDERING_TIME);
+        if (DateTimeManager.isHoliday(targetDate) || contains(attendanceCandidate)) return;
+        add(attendanceCandidate);
     }
 }
