@@ -42,6 +42,10 @@ public class Attendance {
         return AttendanceStatus.isLate(this, attendanceTime);
     }
 
+    public boolean isAbsent() {
+        return AttendanceStatus.isAbsent(this, attendanceTime);
+    }
+
     @Override
     public boolean equals(final Object o) {
         if (this == o) {

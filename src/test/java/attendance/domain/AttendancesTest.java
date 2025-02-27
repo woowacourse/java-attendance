@@ -107,13 +107,23 @@ class AttendancesTest {
     }
 
     @Test
-    void 기준_날짜를_알려주면_해당_날짜까지의_결석_횟수를_알려준다() {
+    void 기준_날짜를_알려주면_해당_날짜까지의_지각_횟수를_알려준다() {
         Attendance attendance = new Attendance(LocalDateTime.of(2025, 2, 26, 10, 0));
         Attendance lateAttendance = new Attendance(LocalDateTime.of(2025, 2, 27, 10, 6));
         Attendances attendances = new Attendances(new ArrayList<>(List.of(attendance, lateAttendance)));
         LocalDate standardDate = LocalDate.of(2025, 2, 27);
 
         assertThat(attendances.calculateLateCount(standardDate)).isEqualTo(1);
+    }
+
+    @Test
+    void 기준_날짜를_알려주면_해당_날짜까지의_결석_횟수를_알려준다() {
+        Attendance attendance = new Attendance(LocalDateTime.of(2025, 2, 26, 10, 0));
+        Attendance lateAttendance = new Attendance(LocalDateTime.of(2025, 2, 27, 10, 31));
+        Attendances attendances = new Attendances(new ArrayList<>(List.of(attendance, lateAttendance)));
+        LocalDate standardDate = LocalDate.of(2025, 2, 27);
+
+        assertThat(attendances.calculateAbsentCount(standardDate)).isEqualTo(1);
     }
 
 }

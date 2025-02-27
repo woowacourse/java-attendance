@@ -105,4 +105,15 @@ class AttendanceTest {
         assertThat(attendance.isLate()).isEqualTo(expected);
     }
 
+    @CsvSource(value = {
+            "27,10,31,true", "24,13,31,true",
+            "27,10,30,false", "24,13,30,false"
+    })
+    @ParameterizedTest
+    void 현재_출석이_결석인지_알려준다(int day, int hour, int minute, boolean expected) {
+        Attendance attendance = new Attendance(LocalDateTime.of(2025, 2, day, hour, minute));
+
+        assertThat(attendance.isAbsent()).isEqualTo(expected);
+    }
+
 }

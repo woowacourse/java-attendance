@@ -86,4 +86,9 @@ public class CrewAttendances {
         return attendances.calculateLateCount(standardDate);
     }
 
+    public int calculateAbsentCount(final Crew crew, final LocalDate standardDate) {
+        Attendances attendances = crewAttendances.get(crew);
+        return attendances.calculateAbsentCount(standardDate);
+    }
+
 }

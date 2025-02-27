@@ -133,13 +133,23 @@ class CrewAttendancesTest {
     }
 
     @Test
-    void 지정한_날짜_까지의_결석_횟수를_계산한다() {
+    void 지정한_날짜_까지의_지각_횟수를_계산한다() {
         CrewAttendances crewAttendances = new CrewAttendances(crewAttendanceDateTimes);
         LocalDate standardDate = LocalDate.of(2025, 2, 27);
         Crew crew = new Crew("빙봉");
         crewAttendances.addAttendance(crew, new Attendance(standardDate.atTime(10, 6)));
 
         assertThat(crewAttendances.calculateLateCount(crew, standardDate)).isEqualTo(1);
+    }
+
+    @Test
+    void 지정한_날짜_까지의_결석_횟수를_계산한다() {
+        CrewAttendances crewAttendances = new CrewAttendances(crewAttendanceDateTimes);
+        LocalDate standardDate = LocalDate.of(2025, 2, 27);
+        Crew crew = new Crew("빙봉");
+        crewAttendances.addAttendance(crew, new Attendance(standardDate.atTime(10, 31)));
+
+        assertThat(crewAttendances.calculateAbsentCount(crew, standardDate)).isEqualTo(1);
     }
 
 }

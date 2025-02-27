@@ -70,4 +70,10 @@ public class Attendances {
                 .count();
     }
 
+    public int calculateAbsentCount(final LocalDate standardDate) {
+        return (int) attendances.stream()
+                .filter(attendance -> attendance.isBeforeOrEqualDate(standardDate) && attendance.isAbsent())
+                .count();
+    }
+
 }
