@@ -49,10 +49,10 @@ public class InputView {
         return DayParser.validateDayFormat(scanner.nextLine());
     }
 
-    public String inputUpdateTime() {
+    public LocalTime inputUpdateTime() {
         System.out.println(ViewMessage.UPDATE_WHEN);
 
-        return scanner.nextLine();
+        return TimeParser.validateTimeFormat(scanner.nextLine());
     }
 
 }

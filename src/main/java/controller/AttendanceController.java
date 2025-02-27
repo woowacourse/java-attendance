@@ -58,7 +58,9 @@ public class AttendanceController {
     private void updateAttendance() {
         String nickname = inputView.inputUpdateNickname();
         int day = inputView.inputUpdateDate();
+        LocalTime updateTime = inputView.inputUpdateTime();
 
+        attendanceSheet.update(nickname, day, updateTime);
     }
 
     private void printAttendance() {
