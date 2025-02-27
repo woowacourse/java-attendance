@@ -9,24 +9,16 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class Attendance {
-    private static final int TARDY_THRESHOLD_MINUTE = 5;
-    private static final int ABSENT_THRESHOLD_MINUTE = 30;
-    private static final LocalTime MONDAY_OPEN = LocalTime.of(13, 0);
-    private static final LocalTime DEFAULT_OPEN = LocalTime.of(10, 0);
-
     private final Map<Crew, LocalDate> attendanceHistory = new HashMap<>();
 
-    public String checkAttendance(Crew crew, LocalDateTime attendanceDateTime) {
+    public AttendanceStatus checkAttendance(Crew crew, LocalDateTime attendanceDateTime) {
         LocalDate attendanceDate = attendanceDateTime.toLocalDate();
         LocalTime attendanceTime = attendanceDateTime.toLocalTime();
         validateDuplicateAttendance(crew, attendanceDate);
         validateDayOff(attendanceDate);
         validateOperatingTime(attendanceTime);
         attendanceHistory.put(crew, attendanceDate);
-        if (attendanceDateTime.getDayOfWeek() == DayOfWeek.MONDAY) {
-            return checkAttendanceByDay(attendanceTime, MONDAY_OPEN);
-        }
-        return checkAttendanceByDay(attendanceTime, DEFAULT_OPEN);
+        return AttendanceStatus.of(attendanceDateTime);
     }
 
     private void validateDuplicateAttendance(Crew crew, LocalDate attendanceDateTime) {
@@ -51,15 +43,5 @@ public class Attendance {
         if (!CampusHour.isOperatingTime(attendanceTime)) {
             throw new IllegalArgumentException("[ERROR] 캠퍼스 운영 시간에만 출석이 가능합니다.");
         }
-    }
-
-    private String checkAttendanceByDay(LocalTime attendanceTime, LocalTime openTime) {
-        if (attendanceTime.isAfter(openTime.plusMinutes(ABSENT_THRESHOLD_MINUTE))) {
-            return "결석";
-        }
-        if (attendanceTime.isAfter(openTime.plusMinutes(TARDY_THRESHOLD_MINUTE))) {
-            return "지각";
-        }
-        return "출석";
     }
 }

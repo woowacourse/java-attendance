@@ -28,9 +28,9 @@ public class AttendanceTest {
             Crew crew = new Crew("노랑");
             LocalTime time = LocalTime.of(10, 5);
             // when
-            String attendanceRecord = attendance.checkAttendance(crew, LocalDateTime.of(TUESDAY_DATE, time));
+            AttendanceStatus attendanceStatus = attendance.checkAttendance(crew, LocalDateTime.of(TUESDAY_DATE, time));
             // then
-            assertThat(attendanceRecord).isEqualTo("출석");
+            assertThat(attendanceStatus).isEqualTo(AttendanceStatus.PRESENT);
         }
 
         @Test
@@ -41,9 +41,9 @@ public class AttendanceTest {
             Crew crew = new Crew("노랑");
             LocalTime time = LocalTime.of(10, 30);
             // when
-            String attendanceRecord = attendance.checkAttendance(crew, LocalDateTime.of(TUESDAY_DATE, time));
+            AttendanceStatus attendanceStatus = attendance.checkAttendance(crew, LocalDateTime.of(TUESDAY_DATE, time));
             // then
-            assertThat(attendanceRecord).isEqualTo("지각");
+            assertThat(attendanceStatus).isEqualTo(AttendanceStatus.TARDY);
         }
 
         @Test
@@ -54,9 +54,9 @@ public class AttendanceTest {
             Crew crew = new Crew("노랑");
             LocalTime time = LocalTime.of(10, 30, 1);
             // when
-            String attendanceRecord = attendance.checkAttendance(crew, LocalDateTime.of(TUESDAY_DATE, time));
+            AttendanceStatus attendanceStatus = attendance.checkAttendance(crew, LocalDateTime.of(TUESDAY_DATE, time));
             // then
-            assertThat(attendanceRecord).isEqualTo("결석");
+            assertThat(attendanceStatus).isEqualTo(AttendanceStatus.ABSENT);
         }
 
         @Test
@@ -67,9 +67,9 @@ public class AttendanceTest {
             Crew crew = new Crew("노랑");
             LocalTime time = LocalTime.of(13, 5);
             // when
-            String attendanceRecord = attendance.checkAttendance(crew, LocalDateTime.of(MONDAY_DATE, time));
+            AttendanceStatus attendanceStatus = attendance.checkAttendance(crew, LocalDateTime.of(MONDAY_DATE, time));
             // then
-            assertThat(attendanceRecord).isEqualTo("출석");
+            assertThat(attendanceStatus).isEqualTo(AttendanceStatus.PRESENT);
         }
 
         @Test
@@ -80,9 +80,9 @@ public class AttendanceTest {
             Crew crew = new Crew("노랑");
             LocalTime time = LocalTime.of(13, 30);
             // when
-            String attendanceRecord = attendance.checkAttendance(crew, LocalDateTime.of(MONDAY_DATE, time));
+            AttendanceStatus attendanceStatus = attendance.checkAttendance(crew, LocalDateTime.of(MONDAY_DATE, time));
             // then
-            assertThat(attendanceRecord).isEqualTo("지각");
+            assertThat(attendanceStatus).isEqualTo(AttendanceStatus.TARDY);
         }
 
         @Test
@@ -93,9 +93,9 @@ public class AttendanceTest {
             Crew crew = new Crew("노랑");
             LocalTime time = LocalTime.of(13, 30, 1);
             // when
-            String attendanceRecord = attendance.checkAttendance(crew, LocalDateTime.of(MONDAY_DATE, time));
+            AttendanceStatus attendanceStatus = attendance.checkAttendance(crew, LocalDateTime.of(MONDAY_DATE, time));
             // then
-            assertThat(attendanceRecord).isEqualTo("결석");
+            assertThat(attendanceStatus).isEqualTo(AttendanceStatus.ABSENT);
         }
     }
 
