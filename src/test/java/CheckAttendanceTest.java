@@ -17,14 +17,17 @@ public class CheckAttendanceTest {
         // given
         LocalDateTime attendanceTime = LocalDateTime.of(2024, 12, 17, 10, 0);
         LocalDateTime lateTime = LocalDateTime.of(2024, 12, 17, 10, 6);
+        LocalDateTime absentTime = LocalDateTime.of(2024, 12, 17, 10, 40);
 
         // when
         AttendanceStatus attendanceStatus = AttendancePolicy.checkAttendanceStatus(attendanceTime);
         AttendanceStatus lateStatus = AttendancePolicy.checkAttendanceStatus(lateTime);
+        AttendanceStatus absentStatus = AttendancePolicy.checkAttendanceStatus(absentTime);
 
         // then
         assertThat(attendanceStatus).isEqualTo(AttendanceStatus.ATTEND);
         assertThat(lateStatus).isEqualTo(AttendanceStatus.LATE);
+        assertThat(lateStatus).isEqualTo(AttendanceStatus.ABSENT);
     }
     //운영시간 외 처리
 
