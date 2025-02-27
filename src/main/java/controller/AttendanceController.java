@@ -23,7 +23,7 @@ public class AttendanceController {
     private InputView inputView;
     private OutputView outputView;
     private AttendanceSheet attendanceSheet;
-
+    
     public AttendanceController(InputView inputView, OutputView outputView, AttendanceSheet attendanceSheet) {
         this.inputView = inputView;
         this.outputView = outputView;
@@ -60,5 +60,12 @@ public class AttendanceController {
         String day = inputView.inputUpdateDate();
 
     }
+
+    private void printAttendance() {
+    }
+
+    private void printRiskOfExpulsion() {
+    }
+
 
 }

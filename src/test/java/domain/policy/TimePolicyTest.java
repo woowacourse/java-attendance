@@ -1,6 +1,6 @@
 package domain.policy;
 
-import domain.policy.TimePolicy;
+import view.Policy.TimePolicy;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;

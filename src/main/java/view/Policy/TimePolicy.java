@@ -1,4 +1,4 @@
-package domain.policy;
+package view.Policy;
 
 import java.time.LocalTime;
 
@@ -42,7 +42,7 @@ public class TimePolicy {
         return splitTime;
     }
 
-    public void validateOperatingTime(String time) {
+    public LocalTime validateOperatingTime(String time) {
         String[] splitTime = validateTimeFormat(time);
 
         int hour = validateHour(splitTime[0]);
@@ -53,6 +53,8 @@ public class TimePolicy {
         {
             throw new IllegalArgumentException("[ERROR] 캠퍼스 운영 시간이 아닙니다");
         }
+
+        return LocalTime.of(hour, minute);
     }
 
     private int validateInteger(String input) {
