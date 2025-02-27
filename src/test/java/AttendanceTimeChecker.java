@@ -1,8 +1,17 @@
+import java.time.DayOfWeek;
+import java.time.LocalDate;
+
 public class AttendanceTimeChecker {
-    public AttendPolicy attendanceCheck(String time) {
+    public AttendPolicy attendanceCheck(LocalDate date, String time) {
         String[] split = time.split(":");
         int hour = Integer.parseInt(split[0]);
         int minute = Integer.parseInt(split[1]);
+
+        if (date.getDayOfWeek() == DayOfWeek.MONDAY) {
+            if (minute > 5) {
+                return AttendPolicy.LATE;
+            }
+        }
 
         if (hour > 10) {
             return AttendPolicy.ABSENT;
