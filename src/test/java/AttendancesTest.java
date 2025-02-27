@@ -1,4 +1,5 @@
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatCode;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -42,6 +43,28 @@ class AttendancesTest {
 
         //then
         assertThat(attendance).isEqualTo(attendances1);
+    }
+
+    @DisplayName("닉네임과 등교시간을 받아 출석을 할 수 있다.")
+    @Test
+    void attendanceCheckBy() {
+        //given
+        Attendance attendances1 = createAttendance("도기");
+        Attendance attendances2 = createAttendance("포비");
+
+        Attendances attendances = new Attendances();
+        attendances.add(attendances1);
+        attendances.add(attendances2);
+
+        String name = "도기";
+        LocalDateTime time = LocalDateTime.of(2024, 12, 12, 10, 10);
+
+        //when
+        attendances.checkAttendance(name, time);
+
+        //then
+        assertThatCode(() -> attendances.checkAttendance(name, time))
+                .doesNotThrowAnyException();
     }
 
     private Attendance createAttendance(final String name) {

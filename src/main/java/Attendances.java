@@ -1,3 +1,4 @@
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -11,6 +12,11 @@ public class Attendances {
 
     public void add(final Attendance attendance) {
         attendances.add(attendance);
+    }
+
+    public void checkAttendance(final String name, final LocalDateTime time) {
+        Attendance crew = findCrewBy(name);
+        crew.add(time);
     }
 
     public Attendance findCrewBy(final String name) {
