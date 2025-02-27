@@ -62,33 +62,35 @@ public class AttendanceManagementController {
         return new Students(students);
     }
 
-    private static void functionForDismissalSubjectCheck(Students studentRepository) {
+    private static void functionForDismissalSubjectCheck(Students students) {
         OutputView.displayAtRiskStudent();
-        for (Student student : studentRepository.getStudents()) {
+        for (Student student : students.getStudents()) {
             OutputView.printDismissalSubject(AttendanceCalculator.recordAttendanceResult(
                     student.getStudentAttendanceHistory().getAttendanceHistory()), student.getName());
         }
     }
 
-    private static void functionForStudentRecordCheck(Students studentRepository) {
-        String name = InputView.getStudentForAttendanceCheckUntilExist(studentRepository);
-        OutputView.printAttendanceRecord(studentRepository.findStudentByName(name).getStudentAttendanceHistory()
+    private static void functionForStudentRecordCheck(Students students) {
+        String name = InputView.getStudentForAttendanceCheckUntilExist(students);
+        students.findStudentByName(name).sortStudentAttendanceHistory();
+
+        OutputView.printAttendanceRecord(students.findStudentByName(name).getStudentAttendanceHistory()
                 .getAttendanceHistory());
         HashMap<AttendanceStatus, Integer> attendanceRecord = AttendanceCalculator.recordAttendanceResult(
-                studentRepository.findStudentByName(name).getStudentAttendanceHistory().getAttendanceHistory());
+                students.findStudentByName(name).getStudentAttendanceHistory().getAttendanceHistory());
         OutputView.printResult(attendanceRecord);
     }
 
-    private static void functionForAttendanceModify(Students studentRepository) {
-        String studentName = InputView.getStudentNameForModifyUntilValidate(studentRepository);
+    private static void functionForAttendanceModify(Students students) {
+        String studentName = InputView.getStudentNameForModifyUntilValidate(students);
         LocalDateTime modifyLocalDateTime = InputView.getLocalDateTimeToModify();
-        if (isHolidayForMenuTwo(modifyLocalDateTime)) {
+        if (isHolidayFofAttendanceModify(modifyLocalDateTime)) {
             return;
         }
         String recordBeforeModify = LocalDateTimePrintFormatter.createAttendanceResultMessage(
-                studentRepository.findStudentByName(studentName).findSameDay(modifyLocalDateTime));
+                students.findStudentByName(studentName).findSameDay(modifyLocalDateTime));
 
-        studentRepository.findStudentByName(studentName).modifyRecord(modifyLocalDateTime);
+        students.findStudentByName(studentName).modifyRecord(modifyLocalDateTime);
 
         String recordAfterModifyState = AttendanceCalculator.calculateAttendance(modifyLocalDateTime,LocalTime.from(modifyLocalDateTime)).getState();
         String recordAfterModify = LocalDateTimePrintFormatter.creatModifyCompleteMessage(modifyLocalDateTime,recordAfterModifyState);
@@ -96,7 +98,7 @@ public class AttendanceManagementController {
         OutputView.printSecondMenu(recordBeforeModify, recordAfterModify);
     }
 
-    private static boolean isHolidayForMenuTwo(LocalDateTime modifyLocalDateTime) {
+    private static boolean isHolidayFofAttendanceModify(LocalDateTime modifyLocalDateTime) {
         try {
             if(AttendanceCalculator.checkHoliday(modifyLocalDateTime)) {
                 throw new IllegalArgumentException("[ERROR] 주말 및 공휴일에는 출석을 수정할 수 없습니다.");
@@ -108,27 +110,27 @@ public class AttendanceManagementController {
         return false;
     }
 
-    private static void functionForAttendanceCheck(TodayDate todayDate, Students studentRepository) {
+    private static void functionForAttendanceCheck(TodayDate todayDate, Students students) {
         if (isHoliday(todayDate)) {
             return;
         }
 
-        String name = InputView.getStudentForAttendanceCheckUntilExist(studentRepository);
-        if (isAlreadyAttendance(studentRepository, name, todayDate)) {
+        String name = InputView.getStudentForAttendanceCheckUntilExist(students);
+        if (isAlreadyAttendance(students, name, todayDate)) {
             return;
         }
 
         LocalDateTime localDateTime = InputView.getLocalDateTimeUntilValidate(todayDate);
-        studentRepository.findStudentByName(name).addTime(localDateTime);
+        students.findStudentByName(name).addTime(localDateTime);
 
         AttendanceStatus todayResult = AttendanceCalculator.calculateAttendance(localDateTime,LocalTime.from(localDateTime));
         OutputView.printTodayAttendanceResult(localDateTime,todayResult);
     }
 
-    private static boolean isAlreadyAttendance(Students studentRepository, String name,
+    private static boolean isAlreadyAttendance(Students students, String name,
                                                TodayDate todayDate) {
         try {
-            studentRepository.findStudentByName(name).validateAlreadyAttendanceDate(todayDate);
+            students.findStudentByName(name).validateAlreadyAttendanceDate(todayDate);
         } catch (IllegalArgumentException e) {
             System.out.println(e.getMessage());
             return true;
