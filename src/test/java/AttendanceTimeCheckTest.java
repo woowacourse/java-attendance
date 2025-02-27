@@ -1,5 +1,7 @@
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.time.format.TextStyle;
+import java.util.Locale;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -181,12 +183,21 @@ public class AttendanceTimeCheckTest {
     void check13() {
         // given
         AttendanceTimeChecker checker = new AttendanceTimeChecker();
-        LocalDate today = LocalDate.of(2024, 12, 7);
+        LocalDate saturday = LocalDate.of(2024, 9, 7);
+        LocalDate sunday = LocalDate.of(2024, 12, 8);
         LocalTime attendanceTime = LocalTime.of(10, 12);
 
         // when
         // then
-        Assertions.assertThatThrownBy(() -> checker.attendanceCheck(today, attendanceTime))
-                .isInstanceOf(IllegalArgumentException.class);
+        Assertions.assertThatThrownBy(() -> checker.attendanceCheck(saturday, attendanceTime))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage(String.format("[ERROR] %02d월 %02d일 %s은 등교일이 아닙니다.",
+                        saturday.getMonth().getValue(), saturday.getDayOfMonth(), saturday.getDayOfWeek().getDisplayName(
+                                TextStyle.FULL, Locale.KOREAN)));
+        Assertions.assertThatThrownBy(() -> checker.attendanceCheck(sunday, attendanceTime))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage(String.format("[ERROR] %02d월 %02d일 %s은 등교일이 아닙니다.",
+                        sunday.getMonth().getValue(), sunday.getDayOfMonth(), sunday.getDayOfWeek().getDisplayName(
+                                TextStyle.FULL, Locale.KOREAN)));
     }
 }
