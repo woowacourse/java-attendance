@@ -48,5 +48,29 @@ class AttendanceStatusTest {
             // then
             assertThat(status).isEqualTo(AttendanceStatus.LATE);
         }
+
+        @ParameterizedTest
+        @CsvSource(
+            {
+                "8, 0",
+                "13, 0",
+                "13, 5"
+            }
+        )
+        void 출석시간을_기준으로_기준을_지킨다면_출석이다(
+            Integer hour,
+            Integer minute
+        ) {
+            // given
+            Attendance attendance = new Attendance(
+                new AttendanceDate(2024, 12, 2),
+                new AttendanceTime(hour, minute));
+
+            // when
+            AttendanceStatus status = AttendanceStatus.from(attendance);
+
+            // then
+            assertThat(status).isEqualTo(AttendanceStatus.ATTENDANCE);
+        }
     }
 }
