@@ -1,6 +1,7 @@
 package domain;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -10,12 +11,12 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 public class AttendanceTest {
+    private final LocalDate MONDAY_DATE = LocalDate.of(2025, 2, 24);
+    private final LocalDate TUESDAY_DATE = LocalDate.of(2025, 2, 25);
+
     @Nested
     @DisplayName("1.1 닉네임과 등교 시간을 받으면 오늘 날짜로 출석 기록을 생성할 수 있다.")
     class AttendanceCheckTest {
-        private final LocalDate MONDAY_DATE = LocalDate.of(2025, 2, 24);
-        private final LocalDate TUESDAY_DATE = LocalDate.of(2025, 2, 25);
-
         @Test
         @DisplayName("화요일은 10시 5분에 출석할 경우 출석으로 처리한다.")
         void testPresentAttendance() {
@@ -94,4 +95,19 @@ public class AttendanceTest {
             assertThat(attendanceRecord).isEqualTo("결석");
         }
     }
+
+    @Test
+    @DisplayName("1.2 이미 출석한 경우 예외를 발생시킬 수 있다.")
+    void test() {
+        // given
+        Attendance attendance = new Attendance();
+        String nickname = "노랑";
+        LocalDateTime dateTime = TUESDAY_DATE.atTime(10, 0);
+        attendance.checkAttendance(nickname, dateTime);
+        // when & then
+        assertThatThrownBy(() -> attendance.checkAttendance(nickname, dateTime))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("[ERROR] 이미 출석을 확인하였습니다. 필요한 경우 수정 기능을 이용해 주세요.");
+    }
+
 }
