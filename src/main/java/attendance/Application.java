@@ -85,6 +85,12 @@ public class Application {
 
     private static void modifyAttendance() {
         String crewNickname = InputView.readCrewNickname();
+        Crew crew = new Crew(crewNickname);
+        boolean isCrewExists = attendanceManager.isCrewExists(crew);
+        if (!isCrewExists) {
+            OutputView.printNotRegisteredCrewNickname();
+            return;
+        }
     }
 
     private static void checkAttendanceHistory() {
