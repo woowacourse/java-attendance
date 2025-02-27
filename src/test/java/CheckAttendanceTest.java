@@ -1,6 +1,7 @@
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -38,9 +39,9 @@ public class CheckAttendanceTest {
     @DisplayName("운영 시간 예외 처리 테스트")
     public void isOperatingTimeTest() {
         //given
-        LocalDateTime inOperatingTime = LocalDateTime.of(2024, 12, 17, 7, 0);
-        LocalDateTime beforeOperatingTime = LocalDateTime.of(2024, 12, 17, 7, 0);
-        LocalDateTime afterOperatingTime = LocalDateTime.of(2024, 12, 17, 23, 44);
+        LocalTime inOperatingTime = LocalTime.of(10, 0);
+        LocalTime beforeOperatingTime = LocalTime.of(7, 0);
+        LocalTime afterOperatingTime = LocalTime.of(23, 44);
         //when
         Boolean isOperating = AttendancePolicy.isOperatingTime(inOperatingTime);
         Boolean notOperating = AttendancePolicy.isOperatingTime(beforeOperatingTime);
@@ -49,7 +50,6 @@ public class CheckAttendanceTest {
         assertThat(isOperating).isTrue();
         assertThat(notOperating).isFalse();
         assertThat(notOperating2).isFalse();
-
 
     }
 
