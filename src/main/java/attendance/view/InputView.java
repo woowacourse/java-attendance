@@ -35,10 +35,6 @@ public class InputView {
         return input();
     }
 
-    private static String input() {
-        return scanner.nextLine();
-    }
-
     public static LocalTime readAttendanceTime() {
         System.out.println("등교 시간을 입력해 주세요.");
         String attendanceTime = input();
@@ -48,5 +44,22 @@ public class InputView {
         } catch (DateTimeParseException e) {
             throw new IllegalArgumentException("유효한 시간을 입력해주세요.");
         }
+    }
+
+    public static String readModifyCrewNickname() {
+        System.out.println("출석을 수정하려는 크루의 닉네임을 입력해 주세요.\n");
+        return input();
+    }
+
+    public static LocalDate readModifiedDate(final LocalDate today) {
+        System.out.println("수정하려는 날짜(일)를 입력해 주세요.");
+        int year = today.getYear();
+        int month = today.getMonthValue();
+        int date = scanner.nextInt();
+        return LocalDate.of(year, month, date);
+    }
+
+    private static String input() {
+        return scanner.nextLine();
     }
 }

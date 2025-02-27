@@ -84,13 +84,15 @@ public class Application {
     }
 
     private static void modifyAttendance() {
-        String crewNickname = InputView.readCrewNickname();
+        LocalDate today = now();
+        String crewNickname = InputView.readModifyCrewNickname();
         Crew crew = new Crew(crewNickname);
         boolean isCrewExists = attendanceManager.isCrewExists(crew);
         if (!isCrewExists) {
             OutputView.printNotRegisteredCrewNickname();
             return;
         }
+        LocalDate modifiedAttendanceDate = InputView.readModifiedDate(today);
     }
 
     private static void checkAttendanceHistory() {
