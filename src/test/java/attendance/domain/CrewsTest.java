@@ -1,5 +1,6 @@
 package attendance.domain;
 
+import attendance.util.ErrorMessage;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -28,6 +29,6 @@ public class CrewsTest {
 
         assertThatThrownBy(() -> crews.add(duei))
                 .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage("[ERROR] 같은 크루를 중복하여 추가할 수 없습니다.");
+                .hasMessage(ErrorMessage.CREW_DUPLICATE_ERROR.getMessage());
     }
 }
