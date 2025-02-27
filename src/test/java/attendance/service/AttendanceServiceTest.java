@@ -10,6 +10,8 @@ import attendance.dto.AttendanceCheckDto;
 import attendance.dto.AttendanceEditDto;
 import attendance.dto.AttendanceInfoDto;
 import attendance.dto.PenaltyCrewDto;
+import org.junit.jupiter.api.DisplayNameGeneration;
+import org.junit.jupiter.api.DisplayNameGenerator;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
@@ -20,6 +22,7 @@ import java.util.Map;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+@DisplayNameGeneration(DisplayNameGenerator.class)
 public class AttendanceServiceTest {
 
     @Test
