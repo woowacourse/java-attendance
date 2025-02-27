@@ -2,7 +2,6 @@ package domain;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
-import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,21 +11,11 @@ public class AttendanceDate {
     private static final List<LocalDate> HOLIDAYS = List.of(LocalDate.of(2024, 12, 25));
     private static final LocalDate JANUARY_START_DATE = LocalDate.of(2025, 1, 1);
 
-    private static final LocalTime MONDAY_EDUCATION_START_TIME = LocalTime.of(13, 0);
-    private static final LocalTime EDUCATION_START_TIME = LocalTime.of(10, 0);
-
     private final LocalDate attendanceDate;
 
     public AttendanceDate(final LocalDate date) {
         validateCampusOpen(date);
         this.attendanceDate = date;
-    }
-
-    public LocalTime getEducationStartTime() {
-        if (attendanceDate.getDayOfWeek().equals(DayOfWeek.MONDAY)) {
-            return MONDAY_EDUCATION_START_TIME;
-        }
-        return EDUCATION_START_TIME;
     }
 
     public static List<LocalDate> getPastEducationDates(LocalDate nowDate) {
@@ -42,6 +31,10 @@ public class AttendanceDate {
 
     public boolean isSameAs(AttendanceDate date) {
         return this.attendanceDate.equals(date.attendanceDate);
+    }
+
+    public boolean isMonday() {
+        return this.attendanceDate.getDayOfWeek().equals(DayOfWeek.MONDAY);
     }
 
     public int getMonthValue() {
