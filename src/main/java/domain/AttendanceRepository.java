@@ -45,6 +45,17 @@ public class AttendanceRepository {
         }
     }
 
+    public void update(String name, LocalDate localDate, LocalTime localTime) {
+        List<Attendance> crewAttendances = attendances.get(name);
+
+        crewAttendances.replaceAll(attendance -> {
+            if (attendance.getLocalDate().equals(localDate)) {
+                return new Attendance(name, localDate, localTime);
+            }
+            return attendance;
+        });
+    }
+
     public Attendance getAttendance(String name, LocalDate localDate) {
         List<Attendance> crewAttendances = attendances.get(name);
 

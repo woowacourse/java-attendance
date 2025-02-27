@@ -70,14 +70,12 @@ public class AttendanceTest {
     void 이미_출석한_경우_다시_출석할_수_없다() {
         // given
         String name = "fora";
-        LocalDate localDate = LocalDate.of(2024, 12, 3);
-        LocalTime firstTime = LocalTime.of(9, 55);
-        LocalTime secondTime = LocalTime.of(10, 3);
+        LocalDate localDate = LocalDate.of(2024, 12, 5);
+        LocalTime localTime = LocalTime.of(9, 55);
 
         // when & then
         Assertions.assertThatThrownBy(() -> {
-            repository.checkIn(name, localDate, firstTime);
-            repository.checkIn(name, localDate, secondTime);
+            repository.checkIn(name, localDate, localTime);
         }).isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -147,5 +145,21 @@ public class AttendanceTest {
         Assertions.assertThatThrownBy(() -> {
             repository.checkIn("dompoo", localDate, localTime);
         }).isInstanceOf(IllegalArgumentException.class);
+    }
+
+    @Test
+    void 닉네임과_수정할_날짜와_등교_시간을_입력시_출석기록이_수정된다() {
+        // given
+        String name = "fora";
+        LocalDate localDate = LocalDate.of(2024, 12, 5);
+        LocalTime localTime = LocalTime.of(10, 10);
+
+        // when
+        repository.update(name, localDate, localTime);
+        Attendance attendance = repository.getAttendance(name, localDate);
+
+        // then
+        Assertions.assertThat(attendance.getName()).isEqualTo(name);
+        Assertions.assertThat(attendance.getLocalTime()).isEqualTo(localTime);
     }
 }
