@@ -7,9 +7,14 @@ import java.util.List;
 public class Attendances {
     private final List<Attendance> records = new ArrayList<>();
 
-    public void addAttendance(LocalDateTime dateTime) {
+    public Attendance addAttendance(LocalDateTime dateTime) {
         Attendance attendance = new Attendance(dateTime);
+        if (records.contains(attendance)) {
+            throw new UnsupportedOperationException("오늘 이미 출석하셨습니다. 출석 수정을 이용해주세요");
+        }
         records.add(attendance);
+
+        return attendance;
     }
 
     public void updateAttendance(LocalDateTime dateTime, int day) {

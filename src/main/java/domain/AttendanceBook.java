@@ -14,9 +14,14 @@ public class AttendanceBook {
         this.crewsRecords = crewsRecords;
     }
 
-    public void addAttendanceForCrew(String nickname, LocalDateTime dateTime) {
+    public Attendance addAttendanceForCrew(String nickname, LocalDateTime dateTime) {
         Attendances attendances = getCrewRecords(nickname);
-        attendances.addAttendance(dateTime);
+        return attendances.addAttendance(dateTime);
+    }
+
+    public void updateAttendanceForCrew(String nickname, LocalDateTime dateTime, LocalDateTime today) {
+        Attendances attendances = getCrewRecords(nickname);
+        attendances.updateAttendance(dateTime, today.getDayOfMonth());
     }
 
     public List<Attendance> getPreviousCrewRecords(String nickname, LocalDateTime today) {

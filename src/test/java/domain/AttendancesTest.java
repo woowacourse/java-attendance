@@ -22,6 +22,14 @@ public class AttendancesTest {
         Assertions.assertEquals(2, attendances.getRecords().size());
     }
 
+    @DisplayName("이미 출석을 한 경우 예외를 발생시킨다")
+    @Test
+    void addAttendanceException() {
+        Assertions.assertThrows(UnsupportedOperationException.class,
+                () -> attendances.addAttendance(LocalDateTime.of(2024, 12, 2, 10, 0)));
+        Assertions.assertEquals(1, attendances.getRecords().size());
+    }
+
     @DisplayName("출석을 수정한다")
     @Test
     void updateAttendance() {

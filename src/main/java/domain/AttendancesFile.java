@@ -24,7 +24,7 @@ public class AttendancesFile {
             LocalDateTime dateTime = convertStringToDateTime(splitLines);
             if (crewAttendances.containsKey(nickname)) {
                 crewAttendances.get(nickname).addAttendance(dateTime);
-                break;
+                continue;
             }
             Attendances attendances = new Attendances();
             attendances.addAttendance(dateTime);

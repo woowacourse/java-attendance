@@ -62,4 +62,8 @@ public class Attendance implements Comparable<Attendance> {
     public int compareTo(Attendance o) {
         return dateTime.compareTo(o.dateTime);
     }
+
+    public LocalDateTime getDateTime() {
+        return dateTime;
+    }
 }
