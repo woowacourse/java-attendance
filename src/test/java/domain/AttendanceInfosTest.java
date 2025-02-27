@@ -50,6 +50,21 @@ class AttendanceInfosTest {
         assertThat(attendanceInfos.getAttendanceInfos()).hasSize(2);
     }
 
+    @Test
+    void 날짜가_주어지면_해당되는_출석_정보를_찾아낸다() {
+        // given
+        AttendanceInfo attendanceInfo1 = createAttendanceInfo("10:31", 2025, 2, 27);
+        AttendanceInfo attendanceInfo2 = createAttendanceInfo("10:31", 2025, 2, 28);
+        AttendanceInfos attendanceInfos = AttendanceInfos.from(List.of(attendanceInfo1, attendanceInfo2));
+
+        // when
+        AttendanceInfo infoByDay = attendanceInfos.findInfoByDay(27);
+
+        // then
+        assertThat(infoByDay.getMonth()).isEqualTo(2);
+        assertThat(infoByDay.getDay()).isEqualTo(27);
+    }
+
     private static AttendanceInfo createAttendanceInfo(String inputTime, int year, int month, int day) {
         CampusTime time = CampusTime.from(inputTime);
         CampusDate date = CampusDate.fromNow(LocalDate.of(year, month, day));
