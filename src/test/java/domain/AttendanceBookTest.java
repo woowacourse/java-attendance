@@ -13,9 +13,8 @@ import org.junit.jupiter.api.Test;
 
 class AttendanceBookTest {
 
+    private final String testCrewName = "pobi";
     private AttendanceBook attendanceBook;
-
-    private String testCrewName = "pobi";
 
     @BeforeEach
     void setUp() {
