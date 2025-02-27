@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.time.LocalDate;
+import java.util.Map;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -44,6 +45,23 @@ public class AttendanceBookTest {
 
             // then
             assertThat(actual).isEqualByComparingTo(RiskOfExpulsionStatus.EXPULSION);
+        }
+
+        @DisplayName("제적 위험자들의 통계를 반환한다.")
+        @Test
+        public void calculateRiskOfExpulsionCrewStatistics() throws Exception {
+            // given
+            final var crew = new Crew("헤일러");
+            final var attendanceBook = new AttendanceBook();
+            attendanceBook.registerCrew(crew);
+            final LocalDate targetDate = LocalDate.of(2024, 12, 13);
+
+            // when
+            final Map<Crew, Map<AttendanceStatus, Integer>> actual = attendanceBook.calculateRiskOfExpulsionCrewStatistics(
+                    targetDate);
+
+            // then
+            assertThat(actual).containsKey(crew);
         }
     }
 

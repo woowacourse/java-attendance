@@ -40,4 +40,9 @@ public class AttendanceBook {
         final int absenceCount = statistics.get(AttendanceStatus.ABSENCE) + statistics.get(AttendanceStatus.LATE) / 3;
         return RiskOfExpulsionStatus.calculateRiskOfExpulsionStatus(absenceCount);
     }
+
+    public Map<Crew, Map<AttendanceStatus, Integer>> calculateRiskOfExpulsionCrewStatistics(
+            final LocalDate targetDate) {
+        return null;
+    }
 }
