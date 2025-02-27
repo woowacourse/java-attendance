@@ -6,7 +6,7 @@ import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Crew {
+public class Crew implements Comparable<Crew> {
 
     private final String nickname;
     private final List<Attendance> attendances;
@@ -55,5 +55,17 @@ public class Crew {
 
     public List<Attendance> getAttendances() {
         return attendances;
+    }
+
+    @Override
+    public int compareTo(final Crew crew) {
+        long thisLate = this.countAttendanceStatus(AttendanceStatus.LATE);
+        long otherLate = crew.countAttendanceStatus(AttendanceStatus.LATE);
+        long thisTotalAbsence = crew.countAttendanceStatus(AttendanceStatus.ABSENCE) + thisLate / 3;
+        long otherTotalAbsence = crew.countAttendanceStatus(AttendanceStatus.ABSENCE) + otherLate / 3;
+
+        if(thisTotalAbsence != otherTotalAbsence) return Long.compare(otherTotalAbsence, thisTotalAbsence);
+        if(thisLate % 3 != otherLate % 3) return Long.compare(otherLate % 3, thisLate % 3);
+        return this.nickname.compareTo(crew.nickname);
     }
 }

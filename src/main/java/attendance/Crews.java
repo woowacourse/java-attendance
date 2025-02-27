@@ -16,7 +16,7 @@ public class Crews {
         this.crews = new ArrayList<>();
     }
 
-    public Crew add(final String nickname) {
+    public Crew create(final String nickname) {
         crews.stream().filter(crew -> crew.isEqualCrew(nickname))
                 .findAny()
                 .ifPresent(crew -> {
@@ -69,6 +69,7 @@ public class Crews {
                     .add(crew);
         }
 
+        warningExpulsionCrews.forEach((key, value) -> value.sort(Crew::compareTo));
         return warningExpulsionCrews;
     }
 }
