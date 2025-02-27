@@ -1,6 +1,5 @@
-package domain;
+package attendance.domain;
 
-import attendance.domain.CampusOperationTime;
 import java.time.LocalDateTime;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.params.ParameterizedTest;
