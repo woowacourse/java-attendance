@@ -24,11 +24,10 @@ public class AttendanceBook {
         this.attendances = attendances;
     }
 
-    public void update(Map<String, List<LocalDateTime>> updatingAttendances, Crews crews) {
-        for (String crewName : updatingAttendances.keySet()) {
-            List<LocalDateTime> attendanceTimes = updatingAttendances.get(crewName);
-            Crew crew = crews.findCrewByName(crewName).orElseThrow(CrewNotExistException::new); //TODO : Crews를 굳이 가져오는게 불편함
-            AttendanceHistory attendanceHistory = this.attendances.get(crew); //TODO : 없으면 예외
+    public void update(Map<Crew, List<LocalDateTime>> updatingAttendances) {
+        for (Crew crew : updatingAttendances.keySet()) {
+            List<LocalDateTime> attendanceTimes = updatingAttendances.get(crew);
+            AttendanceHistory attendanceHistory = this.attendances.get(crew);
             attendanceTimes.forEach(attendanceTime ->
                     attendanceHistory.register(attendanceTime.toLocalDate(), attendanceTime.toLocalTime()));
         }

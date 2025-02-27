@@ -1,5 +1,6 @@
 package controller;
 
+import java.time.LocalDateTime;
 import model.exception.CrewNotExistException;
 import java.io.BufferedReader;
 import java.io.FileReader;
@@ -37,11 +38,12 @@ public class AttendanceController {
 
     public void start() {
         try {
-            List<String> crewAttendanceData = readAttendanceFile();
-            ExistingAttendances existingAttendances = ExistingAttendances.from(crewAttendanceData);
-            Crews crews = Crews.from(crewAttendanceData);
+            List<String> rawCrewAttendanceData = readAttendanceFile();
+            ExistingAttendances existingAttendances = ExistingAttendances.from(rawCrewAttendanceData);
+            Crews crews = Crews.from(existingAttendances.findAllCrewNames());
             AttendanceBook attendanceBook = AttendanceBook.from(crews);
-            attendanceBook.update(existingAttendances.getAttendances(), crews);
+            Map<Crew, List<LocalDateTime>> crewAttendanceData = crews.mapCrewWithNameIn(existingAttendances.getAttendances());
+            attendanceBook.update(crewAttendanceData);
 
             boolean continueService = true;
             while (continueService) {
@@ -145,5 +147,4 @@ public class AttendanceController {
         Map<Crew, AttendanceStatistic> penaltyTargets = attendanceStatistics.findPenaltyTargets();
         outputView.printPenaltyResult(penaltyTargets);
     }
-
 }
