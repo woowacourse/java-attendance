@@ -62,6 +62,10 @@ public class AttendanceDateTime {
         }
     }
 
+    public DayOfWeek calculateDayOfWeek() {
+        return this.dateTime.getDayOfWeek();
+    }
+
     public int calculateMinuteDifference(final LocalDateTime otherDateTime) {
         return (int)Duration.between(otherDateTime, dateTime)
                 .toMinutes();
