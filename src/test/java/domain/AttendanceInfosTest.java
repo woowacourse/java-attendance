@@ -35,6 +35,21 @@ class AttendanceInfosTest {
         assertThat(attendanceInfos.getAttendanceInfos().getLast().getDay()).isEqualTo(3);
     }
 
+    @Test
+    void 출석_정보를_더한다() {
+        // given
+        AttendanceInfos attendanceInfos = AttendanceInfos.initInfos();
+        AttendanceInfo attendanceInfo1 = createAttendanceInfo("10:31", 2025, 2, 27);
+        AttendanceInfo attendanceInfo2 = createAttendanceInfo("10:31", 2025, 2, 28);
+
+        // when
+        attendanceInfos.addInfo(attendanceInfo1);
+        attendanceInfos.addInfo(attendanceInfo2);
+
+        // then
+        assertThat(attendanceInfos.getAttendanceInfos()).hasSize(2);
+    }
+
     private static AttendanceInfo createAttendanceInfo(String inputTime, int year, int month, int day) {
         CampusTime time = CampusTime.from(inputTime);
         CampusDate date = CampusDate.fromNow(LocalDate.of(year, month, day));

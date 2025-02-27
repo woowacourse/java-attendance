@@ -19,6 +19,10 @@ public class AttendanceInfos {
         return new AttendanceInfos(new ArrayList<>());
     }
 
+    public void addInfo(AttendanceInfo attendanceInfo) {
+        attendanceInfos.add(attendanceInfo);
+    }
+
     public List<AttendanceInfo> getAttendanceInfos() {
         return new ArrayList<>(attendanceInfos);
     }
