@@ -1,5 +1,6 @@
 package attendance.view;
 
+import static attendance.util.DateFormatUtil.DATE_FORMATTER;
 import static attendance.util.DateFormatUtil.DATE_TIME_FORMATTER;
 import static attendance.util.DateFormatUtil.NO_ATTENDANCE_DATE_FORMATTER;
 
@@ -75,9 +76,18 @@ public class OutputView {
 
     public void displayModifyResult(AttendanceRecord oldRecord, AttendanceRecord newRecord) {
         System.out.printf("%s -> %s 수정 완료!%n",
-                getFormattedRecord(oldRecord),
+                getFormattedOldRecord(oldRecord, newRecord.getWoowaDate().toLocalDate()),
                 getFormattedRecord(newRecord)
         );
+        System.out.println(System.lineSeparator());
+    }
+
+    private String getFormattedOldRecord(AttendanceRecord oldRecord, LocalDate date) {
+        if (oldRecord == null) {
+            String formattedDate = date.format(DATE_FORMATTER);
+            return String.format("%s --:-- (결석)", formattedDate);
+        }
+        return getFormattedRecord(oldRecord);
     }
 
     private String getFormattedRecord(AttendanceRecord record) {

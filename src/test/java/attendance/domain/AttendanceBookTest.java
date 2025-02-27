@@ -51,7 +51,7 @@ class AttendanceBookTest {
 
         // then
         AttendanceHistory updatedHistory = attendanceBook.getHistoryByName(crewName);
-        assertThat(updatedHistory.getRecordByDate(TestUtil.WoowaDatefrom(targetDate)).getAttendanceStatus())
+        assertThat(updatedHistory.findRecordByDate(TestUtil.WoowaDatefrom(targetDate)).get().getAttendanceStatus())
                 .isEqualTo(AttendanceStatus.LATE);
     }
 
@@ -71,7 +71,9 @@ class AttendanceBookTest {
 
         // then
         assertThat(history.getRecords()).hasSize(1);
-        AttendanceRecord findRecord = history.getRecordByDate(TestUtil.WoowaDatefrom(LocalDate.of(2024, 12, 3)));
+        AttendanceRecord findRecord = history.findRecordByDate(
+                TestUtil.WoowaDatefrom(LocalDate.of(2024, 12, 3))
+        ).get();
         assertThat(findRecord).isEqualTo(record);
     }
 }

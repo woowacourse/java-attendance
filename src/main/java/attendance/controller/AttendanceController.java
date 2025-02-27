@@ -16,6 +16,7 @@ import attendance.view.OutputView;
 import java.time.LocalTime;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 public class AttendanceController {
     private final InputView inputView;
@@ -69,11 +70,17 @@ public class AttendanceController {
             Crew crew = crews.findByName(inputView.readModifyName());
             int modifyDay = inputView.readModifyDay();
             WoowaDate targetDate = new WoowaDate(clock.createDateFromDay(modifyDay), policy);
-            LocalTime modifyTime = inputView.readModifyTime();
 
-            AttendanceRecord oldRecord = attendanceBook.getRecordBy(crew.getName(), targetDate).copy();
+            Optional<AttendanceRecord> findOldRecord = attendanceBook.findRecordBy(crew.getName(), targetDate);
+
+            AttendanceRecord oldRecord = null;
+            if (findOldRecord.isPresent()) {
+                oldRecord = findOldRecord.get().copy();
+            }
+
+            LocalTime modifyTime = inputView.readModifyTime();
             attendanceBook.modify(crew.getName(), targetDate, modifyTime);
-            AttendanceRecord newRecord = attendanceBook.getRecordBy(crew.getName(), targetDate);
+            AttendanceRecord newRecord = attendanceBook.findRecordBy(crew.getName(), targetDate).get();
 
             outputView.displayModifyResult(oldRecord, newRecord);
         });

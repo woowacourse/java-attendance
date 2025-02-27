@@ -1,13 +1,13 @@
 package attendance.domain;
 
 import static attendance.error.ErrorMessage.ERROR_CHECK_ATTENDANCE_AGAIN;
-import static attendance.error.ErrorMessage.ERROR_NO_RECORD_DATE;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 public class AttendanceHistory {
 
@@ -27,15 +27,18 @@ public class AttendanceHistory {
     }
 
     public void modifyRecord(WoowaDate targetDate, LocalTime modifyTime) {
-        AttendanceRecord record = getRecordByDate(targetDate);
+        Optional<AttendanceRecord> findRecord = findRecordByDate(targetDate);
+        AttendanceRecord record = findRecord.orElseGet(() ->
+                new AttendanceRecord(targetDate, modifyTime)
+        );
+        addRecord(record);
         record.modify(modifyTime);
     }
 
-    public AttendanceRecord getRecordByDate(WoowaDate targetDate) {
+    public Optional<AttendanceRecord> findRecordByDate(WoowaDate targetDate) {
         return records.stream()
                 .filter(record -> record.isSameDate(targetDate))
-                .findAny()
-                .orElseThrow(() -> new IllegalArgumentException(ERROR_NO_RECORD_DATE));
+                .findAny();
     }
 
     public AttendanceReport toReport(LocalDate startDate, LocalDate endDate, EducationDayPolicy policy) {

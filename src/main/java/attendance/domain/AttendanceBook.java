@@ -1,7 +1,10 @@
 package attendance.domain;
 
+import static attendance.error.ErrorMessage.ERROR_NO_HISTORY_CREW;
+
 import java.time.LocalTime;
 import java.util.Map;
+import java.util.Optional;
 
 public class AttendanceBook {
     private final Map<String, AttendanceHistory> crewHistories;
@@ -11,7 +14,7 @@ public class AttendanceBook {
     }
 
     public void add(String crewName, AttendanceRecord record) {
-        AttendanceHistory history = crewHistories.get(crewName);
+        AttendanceHistory history = getHistoryByName(crewName);
         history.addRecord(record);
     }
 
@@ -20,20 +23,17 @@ public class AttendanceBook {
         history.modifyRecord(targetDate, modifyTime);
     }
 
+    public Optional<AttendanceRecord> findRecordBy(String crewName, WoowaDate date) {
+        AttendanceHistory history = getHistoryByName(crewName);
+        return history.findRecordByDate(date);
+    }
+
     public AttendanceHistory getHistoryByName(String crewName) {
         AttendanceHistory history = crewHistories.get(crewName);
         if (history == null) {
-            throw new IllegalArgumentException("해당 크루의 기록이 없습니다.");
+            throw new IllegalArgumentException(ERROR_NO_HISTORY_CREW);
         }
         return history;
-    }
-
-    public AttendanceRecord getRecordBy(String crewName, WoowaDate date) {
-        AttendanceHistory history = crewHistories.get(crewName);
-        if (history == null) {
-            throw new IllegalArgumentException("해당 크루의 기록이 없습니다.");
-        }
-        return history.getRecordByDate(date);
     }
 
 }

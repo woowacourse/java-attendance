@@ -57,7 +57,7 @@ class AttendanceHistoryTest {
         history.modifyRecord(TestUtil.WoowaDatefrom(targetDate), modifyTime);
 
         // then
-        AttendanceRecord findRecord = history.getRecordByDate(TestUtil.WoowaDatefrom(targetDate));
+        AttendanceRecord findRecord = history.findRecordByDate(TestUtil.WoowaDatefrom(targetDate)).get();
         assertThat(findRecord.getAttendanceStatus()).isEqualTo(AttendanceStatus.LATE);
     }
 
@@ -72,7 +72,7 @@ class AttendanceHistoryTest {
         history.addRecord(record);
 
         // when
-        AttendanceRecord findRecord = history.getRecordByDate(TestUtil.WoowaDatefrom(targetDate));
+        AttendanceRecord findRecord = history.findRecordByDate(TestUtil.WoowaDatefrom(targetDate)).get();
 
         // then
         assertThat(findRecord).isEqualTo(record);
