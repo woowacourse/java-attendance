@@ -13,6 +13,7 @@ public class AttendanceDateTime {
     private final LocalDateTime dateTime;
 
     private AttendanceDateTime(final LocalDateTime dateTime) {
+        HolidayCalendar.validateHoliday(dateTime.toLocalDate());
         this.dateTime = dateTime;
     }
 

@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
@@ -28,6 +29,18 @@ class AttendanceDateTimeTest {
         // when
         // then
         assertThatThrownBy(() -> AttendanceDateTime.from(input))
+                .isInstanceOf(IllegalArgumentException.class);
+    }
+
+    @DisplayName("공휴일에 츨석을 시도하면 예외 처리")
+    @Test
+    void invalidateDateTimeAboutHoliday() {
+        // given
+        final String inputDate = "2024-12-25 10:12";
+
+        // when
+        // then
+        assertThatThrownBy(() -> AttendanceDateTime.from(inputDate))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 }
