@@ -10,7 +10,14 @@ public class Attendance {
     private final LocalDateTime value;
 
     public Attendance(LocalDateTime value) {
+        validateTime(value.toLocalTime());
         this.value = value;
+    }
+
+    private void validateTime(LocalTime time) {
+        if (time.isBefore(LocalTime.of(8, 0)) || time.isAfter(LocalTime.of(23, 0))) {
+            throw new IllegalArgumentException("[ERROR] 캠퍼스 운영시간이 아닙니다.");
+        }
     }
 
     public Attendance(LocalDate date, LocalTime time) {
