@@ -17,7 +17,7 @@ public class FileInput {
     private static final String FILE_PATH = "src/main/resources/attendances.csv";
     private static final String INFORMATION_REGEX = "[가-힣]+,\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}";
 
-    public static List<String> readAttendanceFile() {
+    private static List<String> readAttendanceFile() {
         List<String> attendanceFile = new ArrayList<>();
         try (BufferedReader fileBr = new BufferedReader(new FileReader(FILE_PATH))) {
             fileBr.readLine();
