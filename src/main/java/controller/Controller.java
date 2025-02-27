@@ -4,6 +4,7 @@ import domain.Attendance;
 import domain.AttendanceBook;
 import domain.Attendances;
 import domain.AttendancesFile;
+import domain.MenuOption;
 import domain.Time;
 import java.nio.file.Path;
 import java.time.LocalDate;
@@ -38,26 +39,23 @@ public class Controller {
     }
 
     private void runMenuOption(AttendanceBook attendanceBook) {
-        String menuOption = "";
-        while (!menuOption.equals("Q")) {
-            menuOption = inputView.readMenuOption(today);
-            if (menuOption.equals("1")) {
+        while (true) {
+            MenuOption menuOption = MenuOption.selectOption(inputView.readMenuOption(today));
+            if(menuOption == MenuOption.QUIT) {
+                return;
+            }
+            if (menuOption == MenuOption.CHECK_ATTENDANCE) {
                 runCheckAttendance(attendanceBook);
-                continue;
             }
-            if (menuOption.equals("2")) {
+            if (menuOption == MenuOption.CHANGE_ATTENDANCE) {
                 runChangeAttendance(attendanceBook);
-                continue;
             }
-            if (menuOption.equals("3")) {
+            if (menuOption == MenuOption.SHOW_CREW_ATTENDANCE) {
                 runShowCrewAttendance(attendanceBook);
-                continue;
             }
-            if (menuOption.equals("4")) {
+            if (menuOption == MenuOption.SHOW_RISK_OF_EXPELLED_CREWS) {
                 runShowRiskOfExpelledCrews(attendanceBook);
-                continue;
             }
-            outputView.printException("올바른 번호를 입력해주세요");
         }
     }
 

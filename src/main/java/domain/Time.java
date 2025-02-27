@@ -9,7 +9,6 @@ public class Time {
     LocalTime time;
 
     public Time(String rawTime) {
-
         LocalTime time = LocalTime.parse(rawTime, DateTimeFormatter.ofPattern("H:m"));
         validateTime(time);
         this.time = time;
