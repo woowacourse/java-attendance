@@ -10,7 +10,7 @@ public class Application {
         AttendanceController attendanceController = new AttendanceController(
                 new InputView(),
                 new OutputView(),
-                LocalDate.of(2024,12,13)
+                LocalDate.of(2024,12,17)
         );
         attendanceController.run();
     }
