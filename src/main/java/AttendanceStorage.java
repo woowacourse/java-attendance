@@ -12,12 +12,13 @@ public class AttendanceStorage {
         this.attendances = new HashMap<>();
     }
 
-    public void register(LocalDate date, LocalTime time) {
+    public Attendance register(LocalDate date, LocalTime time) {
         AttendanceDate enterDate = new AttendanceDate(date);
         if (attendances.containsKey(enterDate)) {
             throw new DuplicateAttendanceException();
         }
         AttendanceTime enterTime = new AttendanceTime(time);
         attendances.put(enterDate, enterTime);
+        return new Attendance(date, time);
     }
 }
