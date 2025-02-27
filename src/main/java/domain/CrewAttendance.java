@@ -51,11 +51,22 @@ public class CrewAttendance {
     }
     
     public AttendanceStatus getAttendanceStatusOf(final LocalDate date) {
+        validateIsAttendedDay(date);
+        
+        return attendances.get(date).getStatus();
+    }
+    
+    
+    public AttendanceTime getAttendanceTimeOf(final LocalDate date) {
+        validateIsAttendedDay(date);
+        
+        return attendances.get(date).getAttendTime();
+    }
+    
+    private void validateIsAttendedDay(final LocalDate date) {
         if (!attendances.containsKey(date)) {
             throw new IllegalArgumentException("출석하지 않은 날입니다.");
         }
-        
-        return attendances.get(date).getStatus();
     }
     
     public Set<Attendance> getAllAttendances() {

@@ -1,8 +1,8 @@
 package io.view;
 
+import domain.Attendance;
 import domain.AttendanceStatus;
 import domain.ExpelWarning;
-import io.dto.AttendanceResponse;
 import io.dto.ExpelWarningCrewResponse;
 import io.writer.Writer;
 
@@ -45,7 +45,7 @@ public class OutputView {
     
     public void outputAttendanceRecords(
             final String nickname,
-            final Set<AttendanceResponse> attendanceResponses,
+            final Set<Attendance> attendanceResponses,
             final int attendCount,
             final int lateCount,
             final int absentCount,
@@ -63,7 +63,7 @@ public class OutputView {
                 %s
                 """.formatted(
                 nickname,
-                parseAttendanceResponses(attendanceResponses),
+                parseAttendances(attendanceResponses),
                 attendCount,
                 lateCount,
                 absentCount,
@@ -114,10 +114,13 @@ public class OutputView {
         );
     }
     
-    private String parseAttendanceResponses(final Set<AttendanceResponse> attendanceResponses) {
-        return attendanceResponses.stream()
-                .sorted(Comparator.comparing(AttendanceResponse::attendDate))
-                .map(response -> parseDateTimeStatus(response.attendDate(), response.attendTime(), response.status()))
+    private String parseAttendances(final Set<Attendance> attendances) {
+        return attendances.stream()
+                .sorted(Comparator.comparing(Attendance::getAttendDate))
+                .map(attendance -> parseDateTimeStatus(
+                        attendance.getAttendDate(),
+                        attendance.getAttendTime().getAttendTime(),
+                        attendance.getStatus()))
                 .reduce((s1, s2) -> s1 + "\n" + s2)
                 .orElse("");
     }

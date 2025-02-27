@@ -38,6 +38,12 @@ public class AttendanceBook {
         crewAttendances.get(nickname).attend(date, time);
     }
     
+    public AttendanceTime getAttendanceTimeOf(final String nickname, final LocalDate date) {
+        validateNicknameExist(nickname);
+        
+        return crewAttendances.get(nickname).getAttendanceTimeOf(date);
+    }
+    
     public AttendanceStatus getAttendanceStatusOf(final String nickname, final LocalDate date) {
         validateNicknameExist(nickname);
         
@@ -60,6 +66,10 @@ public class AttendanceBook {
         return crewAttendances.entrySet().stream()
                 .filter(entry -> entry.getValue().getExpelWarning() != ExpelWarning.정상)
                 .collect(Collectors.toMap(Map.Entry::getKey, entry -> entry.getValue().getExpelWarning()));
+    }
+    
+    public ExpelWarning getExpelWarningOf(final String nickname) {
+        return crewAttendances.get(nickname).getExpelWarning();
     }
     
     public int countAttendanceStatusOf(final String nickname, final AttendanceStatus status) {
