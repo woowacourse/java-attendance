@@ -11,6 +11,6 @@ public class Attendance {
     }
 
     public boolean isSameCrewAndTime(Crew crew, AttendanceTime time) {
-        return true;
+        return this.crew.equals(crew) && this.attendanceTime.isSameDay(time);
     }
 }
