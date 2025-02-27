@@ -11,11 +11,11 @@ import java.util.List;
 import java.util.Map;
 
 public class FileInput {
-    private static final String filePath = "src/main/resources/attendances.csv";
+    private static final String FILE_PATH = "src/main/resources/attendances.csv";
 
     public static List<String> readAttendanceFile() throws IOException {
         List<String> attendanceFile = new ArrayList<>();
-        try (BufferedReader fileBr = new BufferedReader(new FileReader(filePath))) {
+        try (BufferedReader fileBr = new BufferedReader(new FileReader(FILE_PATH))) {
             fileBr.readLine();
             String information;
             while ((information = fileBr.readLine()) != null) {
