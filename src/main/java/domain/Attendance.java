@@ -21,11 +21,18 @@ public class Attendance {
         LocalTime attendanceTime = attendanceDateTime.toLocalTime();
         validateDuplicateAttendance(crew, attendanceDate);
         validateDayOff(attendanceDate);
+        validateOperatingTime(attendanceTime);
         attendanceHistory.put(crew, attendanceDate);
         if (attendanceDateTime.getDayOfWeek() == DayOfWeek.MONDAY) {
             return checkAttendanceByDay(attendanceTime, MONDAY_OPEN);
         }
         return checkAttendanceByDay(attendanceTime, DEFAULT_OPEN);
+    }
+
+    private void validateOperatingTime(LocalTime attendanceTime) {
+        if (attendanceTime.isBefore(LocalTime.of(8, 0)) || attendanceTime.isAfter(LocalTime.of(23, 0))) {
+            throw new IllegalArgumentException("[ERROR] 캠퍼스 운영 시간에만 출석이 가능합니다.");
+        }
     }
 
     private void validateDuplicateAttendance(Crew crew, LocalDate attendanceDateTime) {
