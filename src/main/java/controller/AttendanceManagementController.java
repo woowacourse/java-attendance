@@ -1,6 +1,5 @@
 package controller;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
@@ -30,7 +29,7 @@ public class AttendanceManagementController {
         final TodayDate todayDate = new TodayDate(todayDateGenerator.generate());
 
         Students students = updateStudentAttendanceRecord();
-        students.updateEveryStudentNoInformationInFile(todayDate);
+        students.updateMissingAttendanceRecords(todayDate);
 
         String userInput = "";
 
@@ -65,7 +64,7 @@ public class AttendanceManagementController {
 
     private static void functionForDismissalSubjectCheck(Students studentRepository) {
         OutputView.displayAtRiskStudent();
-        for (Student student : studentRepository.getStudentRepository()) {
+        for (Student student : studentRepository.getStudents()) {
             OutputView.printDismissalSubject(AttendanceCalculator.recordAttendanceResult(
                     student.getStudentAttendanceHistory().getAttendanceHistory()), student.getName());
         }
@@ -129,7 +128,7 @@ public class AttendanceManagementController {
     private static boolean isAlreadyAttendance(Students studentRepository, String name,
                                                TodayDate todayDate) {
         try {
-            studentRepository.findStudentByName(name).isAlreadyAttendanceDate(todayDate);
+            studentRepository.findStudentByName(name).validateAlreadyAttendanceDate(todayDate);
         } catch (IllegalArgumentException e) {
             System.out.println(e.getMessage());
             return true;
