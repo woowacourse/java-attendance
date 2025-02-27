@@ -21,5 +21,10 @@ public class AttendanceHistoryRead {
         attendanceBook.recordAllAbsences();
     }
 
+    public String getPenaltyStatus(AttendanceBook attendanceBook, String nickname) {
+        Attendances attendances = attendanceBook.getAttendances(nickname);
+        return attendances.getPenaltyStatus();
+    }
+
 
 }

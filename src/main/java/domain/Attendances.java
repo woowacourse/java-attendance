@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Attendances {
+    private static final Integer LATE_COUNT_FOR_ABSENCE = 3;
     private final List<Attendance> attendances = new ArrayList<>();
 
     public void add(Attendance attendance) {
@@ -53,6 +54,20 @@ public class Attendances {
                 .filter(date -> !Holiday.isHoliday(date))
                 .filter(date -> !isAlreadyAttended(date))
                 .forEach(date -> add(new Attendance(new Day(date), null)));
+    }
+
+    public String getPenaltyStatus() {
+        int penaltyPoint = getAbsentCount() + getLateCount() / LATE_COUNT_FOR_ABSENCE;
+        if (penaltyPoint > 5) {
+            return "제적";
+        }
+        if (penaltyPoint >= 3) {
+            return "면담";
+        }
+        if (penaltyPoint >= 2) {
+            return "경고";
+        }
+        return "";
     }
 
 
