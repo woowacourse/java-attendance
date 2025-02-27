@@ -2,6 +2,7 @@ package attendance.domain;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.Objects;
 
 public class Attendance {
@@ -14,6 +15,10 @@ public class Attendance {
 
     public boolean isSameDate(final LocalDate date) {
         return this.dateTime.toLocalDate().equals(date);
+    }
+
+    public boolean isNotDefaultTime() {
+        return !dateTime.toLocalTime().equals(LocalTime.MAX);
     }
 
     public LocalDateTime getDateTime() {

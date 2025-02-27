@@ -16,6 +16,10 @@ public class Attendances {
     public Attendances processCheck(final LocalDateTime dateTime) {
         Attendance before = findAttendanceByDate(dateTime.toLocalDate());
 
+        if (before.isNotDefaultTime()) {
+            throw new IllegalArgumentException("[ERROR] 이미 출석이 등록되었습니다. 수정 기능을 이용 해주세요.");
+        }
+
         List<Attendance> newAttendances = new ArrayList<>(attendances);
         newAttendances.remove(before);
         newAttendances.add(new Attendance(dateTime));
