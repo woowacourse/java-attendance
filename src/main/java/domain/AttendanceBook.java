@@ -62,7 +62,7 @@ public class AttendanceBook {
             penaltyInformation.add(findCountUntil(crewName, yesterday));
         }
         penaltyInformation.sort(
-                Comparator.comparingInt(AttendanceCount::absentCount)
+                Comparator.comparingInt(AttendanceCount::consideredAbsentCount)
                         .reversed());
         return new PenaltyInformation(penaltyInformation);
     }
