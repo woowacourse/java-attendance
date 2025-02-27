@@ -93,7 +93,7 @@ public class Controller {
     }
 
     private void runShowRiskOfExpelledCrews(AttendanceBook attendanceBook) {
-        Map<String, Attendances> riskOfExpelledCrews = attendanceBook.getRiskOfExpelledCrews();
-        outputView.printRiskOfExpelledCrews(riskOfExpelledCrews);
+        Map<String, Attendances> riskOfExpelledCrews = attendanceBook.getRiskOfExpelledCrews(today);
+        outputView.printRiskOfExpelledCrews(riskOfExpelledCrews, today);
     }
 }

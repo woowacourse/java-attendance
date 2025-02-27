@@ -22,9 +22,9 @@ public class AttendanceBook {
         return attendances.updateAttendance(dateTime, today.getDayOfMonth());
     }
 
-    public Map<String, Attendances> getRiskOfExpelledCrews() {
+    public Map<String, Attendances> getRiskOfExpelledCrews(LocalDate today) {
         return crewsRecords.entrySet().stream()
-                .filter(entry -> entry.getValue().calculateCrewStatus() != CrewStatus.NORMAL)
+                .filter(entry -> entry.getValue().calculateCrewStatus(today) != CrewStatus.NORMAL)
                 .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
     }
 

@@ -50,8 +50,8 @@ public class OutputView {
     }
 
     public void printCrewAttendances(String nickname, Attendances attendances, LocalDate today) {
-        CrewStatus crewStatus = attendances.calculateCrewStatus();
-        Map<AttendanceStatus, Integer> attendanceStatuses = attendances.calculateAllAttendanceStatus();
+        CrewStatus crewStatus = attendances.calculateCrewStatus(today);
+        Map<AttendanceStatus, Integer> attendanceStatuses = attendances.calculateAllAttendanceStatus(today);
         List<Attendance> list = attendances.getRecords()
                 .stream()
                 .filter(record -> record.isBefore(today))
@@ -75,12 +75,12 @@ public class OutputView {
         }
     }
 
-    public void printRiskOfExpelledCrews(Map<String, Attendances> riskOfExpelledCrews) {
+    public void printRiskOfExpelledCrews(Map<String, Attendances> riskOfExpelledCrews, LocalDate today) {
         System.out.println("제적 위험자 조회 결과\n");
 
         List<ExpelledCrewsInfo> expelledCrewsInfos = new ArrayList<>();
         for (Entry<String, Attendances> entry : riskOfExpelledCrews.entrySet()) {
-            expelledCrewsInfos.add(new ExpelledCrewsInfo(entry.getKey(), entry.getValue()));
+            expelledCrewsInfos.add(new ExpelledCrewsInfo(entry.getKey(), entry.getValue(), today));
         }
 
         expelledCrewsInfos.stream().sorted()
@@ -93,12 +93,12 @@ public class OutputView {
         int lateCount;
         CrewStatus crewStatus;
 
-        public ExpelledCrewsInfo(String nickname, Attendances attendances) {
-            Map<AttendanceStatus, Integer> attendanceStatus = attendances.calculateAllAttendanceStatus();
+        public ExpelledCrewsInfo(String nickname, Attendances attendances, LocalDate today) {
+            Map<AttendanceStatus, Integer> attendanceStatus = attendances.calculateAllAttendanceStatus(today);
             this.nickname = nickname;
             this.absentCount = attendanceStatus.get(AttendanceStatus.ABSENT);
             this.lateCount = attendanceStatus.get(AttendanceStatus.LATE);
-            this.crewStatus = attendances.calculateCrewStatus();
+            this.crewStatus = attendances.calculateCrewStatus(today);
         }
 
         @Override

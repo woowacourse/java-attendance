@@ -1,5 +1,6 @@
 package domain;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.EnumMap;
@@ -29,18 +30,19 @@ public class Attendances {
         return attendance;
     }
 
-    public CrewStatus calculateCrewStatus() {
-        Map<AttendanceStatus, Integer> attendanceStatusCounts = calculateAllAttendanceStatus();
+    public CrewStatus calculateCrewStatus(LocalDate today) {
+        Map<AttendanceStatus, Integer> attendanceStatusCounts = calculateAllAttendanceStatus(today);
         return CrewStatus.calculateCrewStatus(attendanceStatusCounts.get(AttendanceStatus.ABSENT)
                 + attendanceStatusCounts.get(AttendanceStatus.LATE) / 3);
     }
 
-    public Map<AttendanceStatus, Integer> calculateAllAttendanceStatus() {
-        //TODO 당일 포함안하도록 변경 필요
+    public Map<AttendanceStatus, Integer> calculateAllAttendanceStatus(LocalDate today) {
         Map<AttendanceStatus, Integer> attendanceStatusCount = initMap();
         for (Attendance attendance : records) {
-            AttendanceStatus attendanceStatus = attendance.calculateAttendanceStatus();
-            attendanceStatusCount.put(attendanceStatus, attendanceStatusCount.get(attendanceStatus) + 1);
+            if(attendance.isBefore(today)) {
+                AttendanceStatus attendanceStatus = attendance.calculateAttendanceStatus();
+                attendanceStatusCount.put(attendanceStatus, attendanceStatusCount.get(attendanceStatus) + 1);
+            }
         }
 
         return attendanceStatusCount;

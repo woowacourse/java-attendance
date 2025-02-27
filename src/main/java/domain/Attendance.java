@@ -31,6 +31,10 @@ public class Attendance implements Comparable<Attendance> {
         return LocalDate.of(2024, 12, dateTime.getDayOfMonth()).isBefore(today);
     }
 
+    public boolean isSameDay(int day) {
+        return dateTime.getDayOfMonth() == day;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -55,9 +59,5 @@ public class Attendance implements Comparable<Attendance> {
 
     public LocalDateTime getDateTime() {
         return dateTime;
-    }
-
-    public boolean isSameDay(int day) {
-        return dateTime.getDayOfMonth() == day;
     }
 }
