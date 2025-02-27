@@ -41,8 +41,8 @@ public class AttendanceTest {
         Attendance attendance = repository.getAttendance(name, localDate);
 
         // then
-        Assertions.assertThat(attendance.getName().equals(name));
-        Assertions.assertThat(attendance.getLocalTime().equals(localTime));
+        Assertions.assertThat(attendance.getName()).isEqualTo(name);
+        Assertions.assertThat(attendance.getLocalTime()).isEqualTo(localTime);
     }
 
     @Test
@@ -53,11 +53,7 @@ public class AttendanceTest {
         LocalTime firstTime = LocalTime.of(9, 55);
         LocalTime secondTime = LocalTime.of(10, 3);
 
-        // when
-//        repository.checkIn(name, localDate, firstTime);
-//        repository.checkIn(name, localDate, secondTime);
-
-        // then
+        // when & then
         Assertions.assertThatThrownBy(() -> {
             repository.checkIn(name, localDate, firstTime);
             repository.checkIn(name, localDate, secondTime);
