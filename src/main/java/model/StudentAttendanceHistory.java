@@ -14,14 +14,8 @@ public class StudentAttendanceHistory {
         this.attendanceHistory = attendanceHistory;
     }
 
-
-    public List<LocalDateTime> getAttendanceHistory() {
-        return attendanceHistory;
-    }
-
     public void addTime(LocalDateTime localDateTime) {
         attendanceHistory.add(localDateTime);
-        Collections.sort(attendanceHistory);
     }
 
     public LocalDateTime findSameDay(LocalDateTime wantToFindLocalDateTime) {
@@ -54,7 +48,6 @@ public class StudentAttendanceHistory {
             addTimeRecordIfValid(standard);
             standard = standard.plusDays(1);
         }
-        Collections.sort(attendanceHistory);
     }
 
     private void addTimeRecordIfValid(LocalDateTime standard) {
@@ -69,5 +62,9 @@ public class StudentAttendanceHistory {
 
     public boolean isAlreadyAttendanceDate(TodayDate todayDate) {
         return attendanceHistory.contains(todayDate.getTodayDateTIme());
+    }
+
+    public List<LocalDateTime> getAttendanceHistory() {
+        return Collections.unmodifiableList(attendanceHistory);
     }
 }
