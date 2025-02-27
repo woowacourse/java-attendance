@@ -18,6 +18,13 @@ public class AttendanceStorage {
     public AttendanceHistory getAttendanceHistory(int index) {
         return attendanceHistories.get(index);
     }
+
+    public List<AttendanceHistory> getAllHistoriesFrom(Crew crew) {
+        return attendanceHistories.stream()
+                .filter(history -> history.hasSameCrew(crew))
+                .toList();
+    }
+
     public void add(Crew crew) {
         crews.add(crew);
     }

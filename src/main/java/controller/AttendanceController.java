@@ -61,6 +61,10 @@ public class AttendanceController {
 
         if (featureType == FeatureType.CHECK_ATTENDANCE_OF_CREW) {
             // 닉네임 입력 -> 등록 체크 -> 모든 출석 기록 출력 -> 출석/지각/결석 횟수 출력 -> 대상 패널티 출력
+            String nickname = InputView.askNickname(false);
+            validateNicknameRegistered(nickname);
+            List<AttendanceStatusDto> statusDtos = attendanceService.getHistoriesDtoFrom(Crew.from(nickname));
+
             return;
         }
 

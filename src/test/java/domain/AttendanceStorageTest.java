@@ -3,8 +3,6 @@ package domain;
 import java.time.LocalDateTime;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.ValueSource;
 
 class AttendanceStorageTest {
     @Test
@@ -78,7 +76,7 @@ class AttendanceStorageTest {
         AttendanceHistory newAttendanceHistory = AttendanceHistory.of(crew, LocalDateTime.of(2025, 2, 26, 1, 0));
         storage.replace(newAttendanceHistory);
 
-        Assertions.assertThat(storage.getAttendanceHistory(0).getDateTime().getLocalDateTime().getHour() == 1).isTrue();
+        Assertions.assertThat(storage.getAttendanceHistory(0).getAttendanceDateTime().getLocalDateTime().getHour() == 1).isTrue();
     }
 
     @Test
@@ -128,5 +126,27 @@ class AttendanceStorageTest {
         storage.add(attendanceHistory);
 
         Assertions.assertThatIllegalArgumentException().isThrownBy(() -> storage.indexOfSameDateAndCrew(comparedAttendanceHistory));
+    }
+
+    @Test
+    void getAllHistoriesFromTest1() {
+        Crew crew = Crew.from("히스타");
+        AttendanceHistory attendanceHistory = AttendanceHistory.of(crew, LocalDateTime.of(2025, 2, 26, 0, 0));
+        AttendanceStorage storage = new AttendanceStorage();
+        storage.add(crew);
+        storage.add(attendanceHistory);
+
+        Assertions.assertThat(storage.getAllHistoriesFrom(crew).size()).isEqualTo(1);
+    }
+
+    @Test
+    void getAllHistoriesFromTest2() {
+        Crew crew = Crew.from("히스타");
+        AttendanceHistory attendanceHistory = AttendanceHistory.of(crew, LocalDateTime.of(2025, 2, 26, 0, 0));
+        AttendanceStorage storage = new AttendanceStorage();
+        storage.add(crew);
+        storage.add(attendanceHistory);
+
+        Assertions.assertThat(storage.getAllHistoriesFrom(Crew.from("히로")).size()).isEqualTo(0);
     }
 }

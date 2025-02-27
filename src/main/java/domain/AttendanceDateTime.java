@@ -5,17 +5,27 @@ import java.time.LocalDateTime;
 
 public class AttendanceDateTime {
     private final LocalDateTime dateTime;
+    private final boolean isRecorded;
 
-    private AttendanceDateTime(LocalDateTime dateTime) {
+    private AttendanceDateTime(LocalDateTime dateTime, boolean isRecorded) {
         this.dateTime = dateTime;
+        this.isRecorded = isRecorded;
     }
 
     public static AttendanceDateTime of(int year, int month, int day, int hour, int minute) {
-        return new AttendanceDateTime(LocalDateTime.of(year, month, day, hour, minute));
+        return new AttendanceDateTime(LocalDateTime.of(year, month, day, hour, minute), true);
     }
 
     public static AttendanceDateTime from(LocalDateTime localDateTime) {
-        return new AttendanceDateTime(localDateTime);
+        return new AttendanceDateTime(localDateTime, true);
+    }
+
+    public static AttendanceDateTime generateNotRecordedAttendanceOf(int year, int month, int day) {
+        return new AttendanceDateTime(LocalDateTime.of(year, month, day, 0, 0), false);
+    }
+
+    public boolean isRecorded() {
+        return isRecorded;
     }
 
     public LocalDateTime getLocalDateTime() {

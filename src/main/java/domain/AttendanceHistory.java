@@ -4,11 +4,11 @@ import java.time.LocalDateTime;
 
 public class AttendanceHistory {
     private final Crew crew;
-    private final AttendanceDateTime dateTime;
+    private final AttendanceDateTime attendanceDateTime;
 
-    private AttendanceHistory(Crew crew, AttendanceDateTime dateTime) {
+    private AttendanceHistory(Crew crew, AttendanceDateTime attendanceDateTime) {
         this.crew = crew;
-        this.dateTime = dateTime;
+        this.attendanceDateTime = attendanceDateTime;
     }
 
     public static AttendanceHistory of(Crew crew, AttendanceDateTime dateTime) {
@@ -19,16 +19,20 @@ public class AttendanceHistory {
         return new AttendanceHistory(crew, AttendanceDateTime.from(dateTime));
     }
 
-    public AttendanceDateTime getDateTime() {
-        return dateTime;
+    public AttendanceDateTime getAttendanceDateTime() {
+        return attendanceDateTime;
+    }
+
+    public boolean isRecorded() {
+        return attendanceDateTime.isRecorded();
     }
 
     public boolean hasSameDate(LocalDateTime comparedDateTime) {
-        return dateTime.getLocalDateTime().toLocalDate().equals(comparedDateTime.toLocalDate());
+        return attendanceDateTime.getLocalDateTime().toLocalDate().equals(comparedDateTime.toLocalDate());
     }
 
     public boolean hasSameDate(AttendanceHistory attendanceHistory) {
-        return hasSameDate(attendanceHistory.dateTime.getLocalDateTime());
+        return hasSameDate(attendanceHistory.attendanceDateTime.getLocalDateTime());
     }
 
     public boolean hasSameCrew(Crew comparedCrew) {
@@ -40,6 +44,6 @@ public class AttendanceHistory {
     }
 
     public AttendanceType getAttendanceType() {
-        return dateTime.getAttendanceType();
+        return attendanceDateTime.getAttendanceType();
     }
 }
