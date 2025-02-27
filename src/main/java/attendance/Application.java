@@ -92,23 +92,24 @@ public class Application {
             OutputView.printNotRegisteredCrewNickname();
             return;
         }
-        LocalDate attendanceDateToModify = InputView.readAttendanceDateToModify(today);
-        boolean isOperationDate = campusManager.isOperationDate(attendanceDateToModify);
+        LocalDate dateToModify = InputView.readAttendanceDateToModify(today);
+        boolean isOperationDate = campusManager.isOperationDate(dateToModify);
         if (!isOperationDate) {
-            OutputView.printNotOperationDate(attendanceDateToModify);
+            OutputView.printNotOperationDate(dateToModify);
             return;
         }
-        Optional<Attendance> existingAttendance = attendanceManager.findAttendance(crew, attendanceDateToModify);
+        Optional<Attendance> existingAttendance = attendanceManager.findAttendance(crew, dateToModify);
         if (existingAttendance.isEmpty()) {
             OutputView.printNoAttendanceToModify();
             return;
         }
-        LocalTime attendanceModificationTime = InputView.readAttendanceModificationTime();
-        boolean isOperationTime = campusManager.isOperationTime(attendanceModificationTime);
+        LocalTime modificationTime = InputView.readAttendanceModificationTime();
+        boolean isOperationTime = campusManager.isOperationTime(modificationTime);
         if (!isOperationTime) {
             OutputView.printNotOperationTime();
             return;
         }
+        Attendance modifiedAttendance = attendanceManager.modifyAttendance(crew, dateToModify, modificationTime);
     }
 
     private static void checkAttendanceHistory() {
