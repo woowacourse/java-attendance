@@ -2,20 +2,19 @@ package attendance.dto;
 
 import attendance.domain.Attendances;
 import attendance.domain.Warning;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 public record WarningCrewsResponse(
-    List<WarningCrew> warningCrews
+        List<WarningCrew> warningCrews
 ) {
-    public static WarningCrewsResponse from(Map<String, Attendances> warningCrewsAttendances) {
-        List<WarningCrew> warningCrews = new ArrayList<>();
-        for (String nickname : warningCrewsAttendances.keySet()) {
-            Attendances attendances = warningCrewsAttendances.get(nickname);
-            warningCrews.add(WarningCrew.of(nickname, attendances));
-        }
-        return new  WarningCrewsResponse(warningCrews);
+    public static WarningCrewsResponse from(final Map<String, Attendances> warningCrewsAttendances) {
+        return new WarningCrewsResponse(
+                warningCrewsAttendances.entrySet()
+                        .stream()
+                        .map(entry -> WarningCrew.of(entry.getKey(), entry.getValue()))
+                        .toList()
+        );
     }
 
     public record WarningCrew(
@@ -24,7 +23,7 @@ public record WarningCrewsResponse(
             int absenceCount,
             Warning warning
     ) {
-        public static WarningCrew of(String nickname, Attendances attendances) {
+        public static WarningCrew of(final String nickname, final Attendances attendances) {
             return new WarningCrew(
                     nickname,
                     attendances.countLate(),
