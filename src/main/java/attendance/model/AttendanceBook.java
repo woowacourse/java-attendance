@@ -27,7 +27,13 @@ public class AttendanceBook {
     }
 
     public boolean isCrewExists(final String name) {
-        
+
         return attendances.containsKey(name);
+    }
+
+    public boolean isAlreadyExists(final String name, final LocalDate localDate) {
+
+        List<AttendanceTime> crewAttendances = attendances.get(name);
+        return crewAttendances.stream().anyMatch(attendanceTime -> attendanceTime.isSameDay(localDate));
     }
 }
