@@ -10,5 +10,6 @@ public class FileLoader {
 
     public static Scanner loadCSV(String filePath) throws FileNotFoundException {
         // TODO: 첫줄을 제외한 파일 내용 반환하기
+        return null;
     }
 }

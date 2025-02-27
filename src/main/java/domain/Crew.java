@@ -2,6 +2,7 @@ package domain;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -19,6 +20,11 @@ public class Crew {
     }
 
     public void initializeDailyRecords(List<LocalDateTime> crewRecords) {
-        // TODO: 외부에서 한 크루에 대한 데이터를 받으면 이를 날짜별로 분리하여 초기화
+        for(LocalDateTime dateTime : crewRecords) {
+            LocalDate date = dateTime.toLocalDate();
+            LocalTime time = dateTime.toLocalTime();
+
+            dailyRecords.put(date, new DailyRecord(date.getDayOfWeek(), time));
+        }
     }
 }
