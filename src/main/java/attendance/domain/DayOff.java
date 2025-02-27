@@ -27,9 +27,6 @@ public enum DayOff {
     }
 
     private static boolean isWeekend(LocalDate date) {
-        if (date.getDayOfWeek() == DayOfWeek.SATURDAY || date.getDayOfWeek() == DayOfWeek.SUNDAY) {
-            return true;
-        }
-        return false;
+        return date.getDayOfWeek() == DayOfWeek.SATURDAY || date.getDayOfWeek() == DayOfWeek.SUNDAY;
     }
 }
