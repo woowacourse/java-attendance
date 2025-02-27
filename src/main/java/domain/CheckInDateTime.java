@@ -1,6 +1,6 @@
 package domain;
 
-public class CheckInDateTime {
+public class CheckInDateTime implements Comparable<CheckInDateTime> {
     private final CheckInDate checkInDate;
     private final CheckInTime checkInTime;
 
@@ -13,7 +13,7 @@ public class CheckInDateTime {
         return new CheckInDateTime(checkInDate, checkInTime);
     }
 
-    /*    @Override
+    @Override
     public int compareTo(CheckInDateTime o) {
         return this.checkInDate.compareTo(o.checkInDate);
     }
@@ -28,6 +28,6 @@ public class CheckInDateTime {
 
     @Override
     public int hashCode() {
-        return Objects.hash(checkInDate);
-    }*/
+        return checkInDate.hashCode();
+    }
 }

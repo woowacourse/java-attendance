@@ -18,8 +18,10 @@ class CheckInHistoryTest {
 
     @BeforeEach
     void setUp() {
+        CheckInDate checkInDate = CheckInDate.of(LocalDate.of(2024, 12, 3));
+        CheckInTime checkInTime = CheckInTime.of(LocalTime.of(10, 0));
         CheckInDateTime checkInDateTime = CheckInDateTime.of(
-                LocalDate.of(2024, 12, 3), LocalTime.of(10, 0)
+                checkInDate, checkInTime
         );
         TreeSet<CheckInDateTime> dateTimes = new TreeSet<>();
         dateTimes.add(checkInDateTime);
@@ -30,8 +32,10 @@ class CheckInHistoryTest {
     @DisplayName("출석 기록부에 내역을 정상적으로 추가")
     void addCheckInTimeTest() {
         //given
+        CheckInDate checkInDate = CheckInDate.of(LocalDate.of(2024, 12, 4));
+        CheckInTime checkInTime = CheckInTime.of(LocalTime.of(10, 0));
         CheckInDateTime checkInDateTime = CheckInDateTime.of(
-                LocalDate.of(2024, 12, 4), LocalTime.of(10, 0)
+                checkInDate, checkInTime
         );
         //when
         history.checkIn(checkInDateTime);
@@ -43,8 +47,10 @@ class CheckInHistoryTest {
     @DisplayName("당일에 이미 출석 기록이 있는 경우 예외 발생")
     void alreadyCheckInExceptionTest() {
         //given
+        CheckInDate checkInDate = CheckInDate.of(LocalDate.of(2024, 12, 3));
+        CheckInTime checkInTime = CheckInTime.of(LocalTime.of(11, 0));
         CheckInDateTime checkInDateTime = CheckInDateTime.of(
-                LocalDate.of(2024, 12, 3), LocalTime.of(11, 0)
+                checkInDate, checkInTime
         );
         //when
         //then
