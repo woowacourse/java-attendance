@@ -113,7 +113,8 @@ public class Application {
     }
 
     private static void checkAttendanceHistory() {
-
+        String crewNickname = InputView.readCrewNicknameToModify();
+        Crew crew = new Crew(crewNickname);
     }
 
     private static void checkDangerousCrews() {
