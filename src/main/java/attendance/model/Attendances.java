@@ -90,17 +90,18 @@ public class Attendances {
         attendanceInfo.put(AttendanceType.ABSENT, 0);
 
         for (Attendance attendance : attendances) {
-            if (attendance.getType() == AttendanceType.PRESENT) {
-                attendanceInfo.put(AttendanceType.PRESENT, attendanceInfo.get(AttendanceType.PRESENT) + 1);
-            }
-            if (attendance.getType() == AttendanceType.LATE) {
-                attendanceInfo.put(AttendanceType.LATE, attendanceInfo.get(AttendanceType.LATE) + 1);
-            }
-            if (attendance.getType() == AttendanceType.ABSENT) {
-                attendanceInfo.put(AttendanceType.ABSENT, attendanceInfo.get(AttendanceType.ABSENT) + 1);
-            }
+            plusStatisticCount(attendance, AttendanceType.PRESENT, attendanceInfo);
+            plusStatisticCount(attendance, AttendanceType.LATE, attendanceInfo);
+            plusStatisticCount(attendance, AttendanceType.ABSENT, attendanceInfo);
         }
         return attendanceInfo;
+    }
+
+    private static void plusStatisticCount(Attendance attendance, AttendanceType present,
+                                           Map<AttendanceType, Integer> attendanceInfo) {
+        if (attendance.getType() == present) {
+            attendanceInfo.put(present, attendanceInfo.get(present) + 1);
+        }
     }
 
     public Attendance findAttendance(final LocalDate date) {
