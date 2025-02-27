@@ -2,9 +2,9 @@ package attendance.dto;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.IntStream;
 
 import attendance.domain.AttendanceStatus;
 import attendance.domain.Crew;
@@ -17,15 +17,13 @@ public record AttendanceHistoryResponse(
     Risk risk
 ) {
 
-    // TODO 리팩토링
     public static AttendanceHistoryResponse of(LocalDate today, Crew crew) {
-        List<AttendanceHistoryResponse.InnerAttendanceHistory> histories = new ArrayList<>();
-        for (LocalDate day = today.withDayOfMonth(1); day.isBefore(today); day = day.plusDays(1)) {
-            histories.add(AttendanceHistoryResponse.InnerAttendanceHistory.of(day, crew));
-        }
         return new AttendanceHistoryResponse(
             crew.getName(),
-            histories,
+            IntStream.range(1, today.getDayOfMonth())
+                .mapToObj(today::withDayOfMonth)
+                .map(day -> InnerAttendanceHistory.of(day, crew))
+                .toList(),
             crew.getAttendanceStatistics(today),
             crew.getRisk(today));
     }
