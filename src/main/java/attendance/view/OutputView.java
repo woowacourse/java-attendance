@@ -2,10 +2,13 @@ package attendance.view;
 
 import attendance.domain.Attendance;
 import attendance.domain.AttendanceStatus;
+import attendance.domain.CampusManager;
+import attendance.domain.Crew;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.TextStyle;
+import java.util.List;
 import java.util.Locale;
 
 public class OutputView {
@@ -65,5 +68,28 @@ public class OutputView {
                 afterAttendanceTime.getMinute(),
                 afterAttendance.getStatus().getName()
         );
+    }
+
+    public static void printMonthlyAttendances(final LocalDate today, final Crew crew, final List<Attendance> attendances) {
+        System.out.printf("이번 달 %s의 출석 기록입니다.\n", crew.getNickname());
+        for (int i = today.getDayOfMonth() - 1; i > 0; i--) {
+            LocalDate date = today.minusDays(i);
+            boolean isOperationDate = CampusManager.isOperationDate(date);
+            if (!isOperationDate) {
+                continue;
+            }
+            attendances.stream()
+                    .filter(attendance -> attendance.isDateEquals(date))
+                    .findAny()
+                    .ifPresentOrElse(attendance -> printAttendance(attendance), () -> printNoAttendance(date));
+        }
+    }
+
+    private static void printNoAttendance(final LocalDate noAttendanceDate) {
+        int month = noAttendanceDate.getMonthValue();
+        int date = noAttendanceDate.getDayOfMonth();
+        DayOfWeek day = noAttendanceDate.getDayOfWeek();
+        String dayName = day.getDisplayName(TextStyle.FULL, Locale.KOREAN);
+        System.out.printf("%02d월 %02d일 %s --:-- (결석)\n", month, date, dayName);
     }
 }

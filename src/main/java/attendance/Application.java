@@ -123,6 +123,7 @@ public class Application {
             return;
         }
         List<Attendance> monthlyAttendances = attendanceManager.getMonthlyAttendances(today, crew);
+        OutputView.printMonthlyAttendances(today, crew, monthlyAttendances);
     }
 
     private static void checkDangerousCrews() {
