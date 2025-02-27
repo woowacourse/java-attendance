@@ -16,14 +16,14 @@ public record AttendanceRecord(
         attendanceDateTimes.add(attendanceDateTime);
     }
 
-    public boolean containsAttendanceDateTimeByDate(LocalDate localDate) {
+    public boolean containsAttendanceDateTimeByDate(AttendanceDate attendanceDate) {
         return attendanceDateTimes.stream()
-                .anyMatch(attendanceDateTime -> attendanceDateTime.equalsDate(localDate));
+                .anyMatch(attendanceDateTime -> attendanceDateTime.equalsDate(attendanceDate));
     }
 
-    public AttendanceDateTime findAttendanceByDate(LocalDate date) {
+    public AttendanceDateTime findAttendanceByDate(AttendanceDate attendanceDate) {
         return attendanceDateTimes.stream()
-                .filter(attendanceDateTime -> attendanceDateTime.equalsDate(date))
+                .filter(attendanceDateTime -> attendanceDateTime.equalsDate(attendanceDate))
                 .findFirst()
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 출석일입니다."));
     }
@@ -32,7 +32,7 @@ public record AttendanceRecord(
         return attendanceDateTimes.stream()
                 .filter(attendanceDateTime -> AttendanceStatus.from(
                         attendanceDateTime.getAttendanceTime(),
-                        EducationSchedule.from(attendanceDateTime.getAttendanceDate())
+                        EducationSchedule.from(attendanceDateTime.getAttendanceDate().date())
                 ).equals(AttendanceStatus.LATE)).count();
     }
 
@@ -40,7 +40,7 @@ public record AttendanceRecord(
         return attendanceDateTimes.stream()
                 .filter(attendanceDateTime -> AttendanceStatus.from(
                         attendanceDateTime.getAttendanceTime(),
-                        EducationSchedule.from(attendanceDateTime.getAttendanceDate())
+                        EducationSchedule.from(attendanceDateTime.getAttendanceDate().date())
                 ).equals(AttendanceStatus.ATTEND)).count();
     }
 

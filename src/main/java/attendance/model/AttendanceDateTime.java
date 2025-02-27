@@ -1,14 +1,13 @@
 package attendance.model;
 
-import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.Objects;
 
 public class AttendanceDateTime {
-    private final LocalDate attendanceDate;
+    private final AttendanceDate attendanceDate;
     private LocalTime attendanceTime;
 
-    public AttendanceDateTime(LocalDate attendanceDate, LocalTime attendanceTime) {
+    public AttendanceDateTime(AttendanceDate attendanceDate, LocalTime attendanceTime) {
         this.attendanceDate = attendanceDate;
         this.attendanceTime = attendanceTime;
     }
@@ -17,8 +16,8 @@ public class AttendanceDateTime {
         this.attendanceTime = attendanceTime;
     }
 
-    public boolean equalsDate(LocalDate localDate) {
-        return this.attendanceDate.equals(localDate);
+    public boolean equalsDate(AttendanceDate attendanceDate) {
+        return this.attendanceDate.equals(attendanceDate);
     }
 
     @Override
@@ -42,7 +41,7 @@ public class AttendanceDateTime {
         return attendanceTime;
     }
 
-    public LocalDate getAttendanceDate() {
+    public AttendanceDate getAttendanceDate() {
         return attendanceDate;
     }
 }

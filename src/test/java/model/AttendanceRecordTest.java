@@ -2,6 +2,7 @@ package model;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import attendance.model.AttendanceDate;
 import attendance.model.AttendanceDateTime;
 import attendance.model.AttendanceRecord;
 import attendance.model.Panalty;
@@ -17,19 +18,19 @@ class AttendanceRecordTest {
         // given
         AttendanceRecord attendanceRecord = new AttendanceRecord();
         attendanceRecord.add(new AttendanceDateTime(
-                LocalDate.of(2024, 12, 10),
+                new AttendanceDate(2024, 12, 10),
                 LocalTime.of(10, 6)
         ));
         attendanceRecord.add(new AttendanceDateTime(
-                LocalDate.of(2024, 12, 11),
+                new AttendanceDate(2024, 12, 11),
                 LocalTime.of(10, 30)
         ));
         attendanceRecord.add(new AttendanceDateTime(
-                LocalDate.of(2024, 12, 12),
+                new AttendanceDate(2024, 12, 12),
                 LocalTime.of(10, 5)
         ));
         attendanceRecord.add(new AttendanceDateTime(
-                LocalDate.of(2024, 12, 13),
+                new AttendanceDate(2024, 12, 13),
                 LocalTime.of(10, 31)
         ));
 
@@ -45,23 +46,23 @@ class AttendanceRecordTest {
         // given
         AttendanceRecord attendanceRecord = new AttendanceRecord();
         attendanceRecord.add(new AttendanceDateTime(
-                LocalDate.of(2024, 12, 10),
+                new AttendanceDate(2024, 12, 10),
                 LocalTime.of(9, 50)
         ));
         attendanceRecord.add(new AttendanceDateTime(
-                LocalDate.of(2024, 12, 11),
+                new AttendanceDate(2024, 12, 11),
                 LocalTime.of(10, 6)
         ));
         attendanceRecord.add(new AttendanceDateTime(
-                LocalDate.of(2024, 12, 12),
+                new AttendanceDate(2024, 12, 12),
                 LocalTime.of(10, 30)
         ));
         attendanceRecord.add(new AttendanceDateTime(
-                LocalDate.of(2024, 12, 13),
+                new AttendanceDate(2024, 12, 13),
                 LocalTime.of(10, 5)
         ));
         attendanceRecord.add(new AttendanceDateTime(
-                LocalDate.of(2024, 12, 17),
+                new AttendanceDate(2024, 12, 17),
                 LocalTime.of(10, 31)
         ));
 
@@ -78,23 +79,23 @@ class AttendanceRecordTest {
         // given
         AttendanceRecord attendanceRecord = new AttendanceRecord();
         attendanceRecord.add(new AttendanceDateTime(
-                LocalDate.of(2024, 12, 10),
+                new AttendanceDate(2024, 12, 10),
                 LocalTime.of(9, 50)
         ));
         attendanceRecord.add(new AttendanceDateTime(
-                LocalDate.of(2024, 12, 11),
+                new AttendanceDate(2024, 12, 11),
                 LocalTime.of(10, 6)
         ));
         attendanceRecord.add(new AttendanceDateTime(
-                LocalDate.of(2024, 12, 12),
+                new AttendanceDate(2024, 12, 12),
                 LocalTime.of(10, 30)
         ));
         attendanceRecord.add(new AttendanceDateTime(
-                LocalDate.of(2024, 12, 13),
+                new AttendanceDate(2024, 12, 13),
                 LocalTime.of(10, 5)
         ));
         attendanceRecord.add(new AttendanceDateTime(
-                LocalDate.of(2024, 12, 17),
+                new AttendanceDate(2024, 12, 17),
                 LocalTime.of(10, 31)
         ));
         LocalDate now = LocalDate.of(2024, 12, 18);
@@ -112,7 +113,7 @@ class AttendanceRecordTest {
         // given
         AttendanceRecord attendanceRecord = new AttendanceRecord();
         attendanceRecord.add(new AttendanceDateTime(
-                LocalDate.of(2024, 12, 2),
+                new AttendanceDate(2024, 12, 2),
                 LocalTime.of(10, 31)
         ));
         LocalDate now = LocalDate.of(2024, 12, 3);
@@ -129,11 +130,11 @@ class AttendanceRecordTest {
         // given
         AttendanceRecord attendanceRecord = new AttendanceRecord();
         attendanceRecord.add(new AttendanceDateTime(
-                LocalDate.of(2024, 12, 2),
+                new AttendanceDate(2024, 12, 2),
                 LocalTime.of(10, 31)
         ));
         attendanceRecord.add(new AttendanceDateTime(
-                LocalDate.of(2024, 12, 3),
+                new AttendanceDate(2024, 12, 3),
                 LocalTime.of(10, 31)
         ));
         LocalDate now = LocalDate.of(2024, 12, 4);
@@ -151,11 +152,11 @@ class AttendanceRecordTest {
         // given
         AttendanceRecord attendanceRecord = new AttendanceRecord();
         attendanceRecord.add(new AttendanceDateTime(
-                LocalDate.of(2024, 12, 2),
+                new AttendanceDate(2024, 12, 2),
                 LocalTime.of(10, 31)
         ));
         attendanceRecord.add(new AttendanceDateTime(
-                LocalDate.of(2024, 12, 3),
+                new AttendanceDate(2024, 12, 3),
                 LocalTime.of(10, 31)
         ));
         LocalDate now = LocalDate.of(2024, 12, 5);
@@ -173,7 +174,7 @@ class AttendanceRecordTest {
         // given
         AttendanceRecord attendanceRecord = new AttendanceRecord();
         attendanceRecord.add(new AttendanceDateTime(
-                LocalDate.of(2024, 12, 2),
+                new AttendanceDate(2024, 12, 2),
                 LocalTime.of(10, 31)
         ));
         LocalDate now = LocalDate.of(2024, 12, 17);
