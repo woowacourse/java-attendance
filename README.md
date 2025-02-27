@@ -192,8 +192,6 @@
 - **생성**
     - 크루 출석 기록 역직렬화기와 크루 출석 데이터 Path 를 받아 생성된다.
 - **동작** (getter, equals, hashCode 제외)
-    - 크루와 LocalDateTime 을 통해 크루 출석을 추가한다.
-    - 크루와 LocalDateTime 을 통해 크루 출석을 수정한다.
-    - 크루를 통해 해당 크루의 CrewAttendanceLog 를 반환한다.
+    - 크루와 AttendanceLog 를 통해 크루 출석을 추가한다.
+    - 크루와 AttendanceLog 를 통해 크루 출석을 수정한다.
     - 시작 LocalDate 부터 종료 LocalDate 까지 특정 크루의 CrewAttendanceLog 를 반환한다.
-    - CrewAttendanceLogComparator 를 통해 크루 출석 기록을 정렬하여 반환한다.
