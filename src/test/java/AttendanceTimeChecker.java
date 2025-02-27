@@ -1,6 +1,8 @@
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.time.format.TextStyle;
+import java.util.Locale;
 
 public class AttendanceTimeChecker {
 
@@ -13,9 +15,7 @@ public class AttendanceTimeChecker {
         int hour = time.getHour();
         int minute = time.getMinute();
 
-        if (date.getDayOfWeek() == DayOfWeek.SATURDAY || date.getDayOfWeek() == DayOfWeek.SUNDAY) {
-            throw new IllegalArgumentException();
-        }
+        validateInWeekDays(date);
         validateInOperatingTime(hour, minute);
 
         if (date.getDayOfWeek() == DayOfWeek.MONDAY) {
@@ -23,6 +23,14 @@ public class AttendanceTimeChecker {
         }
 
         return determineAttendPolicy(hour, minute, CRITERION_HOUR_EXCLUDE_MONDAY);
+    }
+
+    private void validateInWeekDays(LocalDate date) {
+        if (date.getDayOfWeek() == DayOfWeek.SATURDAY || date.getDayOfWeek() == DayOfWeek.SUNDAY) {
+            String koreanDayOfWeek = date.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.KOREAN);
+            throw new IllegalArgumentException(String.format("[ERROR] %02d월 %02d일 %s은 등교일이 아닙니다.",
+                    date.getMonth().getValue(), date.getDayOfMonth(), koreanDayOfWeek));
+        }
     }
 
     private void validateInOperatingTime(int hour, int minute) {
