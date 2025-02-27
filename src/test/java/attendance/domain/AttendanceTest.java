@@ -23,7 +23,7 @@ class AttendanceTest {
     void attendanceTest() {
         // given
         Crew crew = new Crew("pobi");
-        Crews crews = new Crews();
+        Crews crews = Crews.generate();
         crews.add(crew);
 
         // when then
@@ -84,7 +84,7 @@ class AttendanceTest {
         // given
         Crew crew = new Crew("pobi");
         crew.attendance(DATE, TIME);
-        Crews crews = new Crews();
+        Crews crews = Crews.generate();
         crews.add(crew);
 
         // when

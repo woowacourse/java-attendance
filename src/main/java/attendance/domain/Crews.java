@@ -3,9 +3,23 @@ package attendance.domain;
 import java.util.ArrayList;
 import java.util.List;
 
+import attendance.util.AttendanceParser;
+
 public class Crews {
 
-    private final List<Crew> crews = new ArrayList<>();
+    private final List<Crew> crews;
+
+    private Crews(List<Crew> crews) {
+        this.crews = crews;
+    }
+
+    public static Crews generate() {
+        return new Crews(new ArrayList<>());
+    }
+
+    public static Crews fromFile() {
+        return new Crews(AttendanceParser.parseFile());
+    }
 
     public void add(Crew crew) {
         crews.add(crew);

@@ -1,8 +1,9 @@
 package attendance.controller;
 
-import java.time.LocalDate;
 import java.util.function.BooleanSupplier;
 
+import attendance.service.AttendanceService;
+import attendance.util.DateTimeUtil;
 import attendance.view.InputView;
 import attendance.view.OutputView;
 
@@ -16,7 +17,7 @@ public class AttendanceController {
     }
 
     private boolean menu() {
-        switch (InputView.menu(LocalDate.now())) {
+        switch (InputView.menu(DateTimeUtil.nowDate())) {
             case "1" -> {
                 process(this::attendance);
             }
@@ -40,7 +41,7 @@ public class AttendanceController {
     }
 
     private void attendance() {
-
+        service.attendance(DateTimeUtil.nowDate(), InputView.attendance());
     }
 
     private void modifyAttendance() {
@@ -69,7 +70,7 @@ public class AttendanceController {
             return action.getAsBoolean();
         } catch (IllegalArgumentException e) {
             OutputView.exception(e);
-            process(action);
+            return process(action);
         }
     }
 }

@@ -23,7 +23,7 @@ public class AttendanceParser {
     private AttendanceParser() {
     }
 
-    public List<Crew> parseFile() {
+    public static List<Crew> parseFile() {
         try (final Stream<String> lines = Files.lines(Path.of(""))) {
             return parseLines(lines);
         } catch (final IOException e) {

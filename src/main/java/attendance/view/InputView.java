@@ -5,6 +5,8 @@ import java.time.format.TextStyle;
 import java.util.Locale;
 import java.util.Scanner;
 
+import attendance.dto.AttendanceRequest;
+
 public class InputView {
 
     private static final Scanner scanner = new Scanner(System.in);
@@ -24,10 +26,12 @@ public class InputView {
         return scanner.nextLine();
     }
 
-    public static String attendance() {
+    public static AttendanceRequest attendance() {
         System.out.println("닉네임을 입력해 주세요.");
+        String name = scanner.nextLine();
         System.out.println("등교 시간을 입력해 주세요.");
-        return scanner.nextLine();
+        String time = scanner.nextLine();
+        return AttendanceRequest.of(name, time);
     }
 
     public static String modifyAttendance() {
