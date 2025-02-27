@@ -4,12 +4,18 @@ import java.time.LocalDateTime;
 
 public class AttendanceTime {
     private final LocalDateTime attendanceTime;
+    private final AttendanceStatus attendanceStatus;
 
     public AttendanceTime(final LocalDateTime attendanceTime) {
         this.attendanceTime = attendanceTime;
+        this.attendanceStatus = AttendanceStatus.fetchUserAttendanceStatus(attendanceTime);
     }
 
     public LocalDateTime getAttendanceTime() {
         return attendanceTime;
+    }
+
+    public AttendanceStatus getAttendanceStatus() {
+        return attendanceStatus;
     }
 }
