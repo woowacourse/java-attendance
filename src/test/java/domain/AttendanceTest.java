@@ -1,7 +1,9 @@
 package domain;
 
-import domain.rule.AttendanceStateRule;
-import domain.rule.AttendanceTimeRule;
+import domain.policy.AttendancePolicy;
+import domain.policy.date.AttendanceDatePolicy;
+import domain.policy.time.AttendanceTimePolicy;
+import domain.policy.time.rule.AttendanceStateRule;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -13,36 +15,39 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 
 class AttendanceTest {
 
+    private final AttendancePolicy attendancePolicy = new AttendancePolicy(
+            new AttendanceDatePolicy(),
+            new AttendanceTimePolicy()
+    );
+
     @Test
-    @DisplayName("출석 상태를 결정할 수 있다")
-    void shouldDetermineAttendanceStateBasedOnTime() {
+    @DisplayName("출석은 자신의 출석 상태를 결정할 수 있다.")
+    void attendanceCanDecideSelfState() {
         // given
-        LocalTime normalAttendanceTime = AttendanceTimeRule.NORMAL_ATTEND_LIMIT_TIME.toLocalTime();
+        Attendance attendance_ATTEND = Attendance.of(
+                AttendanceDate.of(LocalDate.of(2024, 12, 13), attendancePolicy),
+                AttendanceTime.of(LocalTime.of(10, 0), attendancePolicy)
+        );
 
-        AttendanceDate date = AttendanceDate.from(LocalDate.of(2024, 12, 18));
+        Attendance attendance_LATE = Attendance.of(
+                AttendanceDate.of(LocalDate.of(2024, 12, 13), attendancePolicy),
+                AttendanceTime.of(LocalTime.of(10, 6), attendancePolicy)
+        );
 
-        AttendanceTime onTime = AttendanceTime.from(normalAttendanceTime);
-        AttendanceTime lateTime = AttendanceTime.from(normalAttendanceTime
-                .plusMinutes(AttendanceStateRule.LATE.getLimit())
-                .plusMinutes(1));
-        AttendanceTime absentTime = AttendanceTime.from(normalAttendanceTime
-                .plusMinutes(AttendanceStateRule.ABSENT.getLimit())
-                .plusMinutes(1));
-
-        Attendance attendanceOnTime = Attendance.from(date, onTime);
-        Attendance attendanceLate = Attendance.from(date, lateTime);
-        Attendance attendanceAbsent = Attendance.from(date, absentTime);
+        Attendance attendance_ABSENT = Attendance.of(
+                AttendanceDate.of(LocalDate.of(2024, 12, 13), attendancePolicy),
+                AttendanceTime.of(LocalTime.of(10, 31), attendancePolicy)
+        );
 
         // when
-        AttendanceStateRule onTimeState = attendanceOnTime.decisionAttendanceState();
-        AttendanceStateRule lateState = attendanceLate.decisionAttendanceState();
-        AttendanceStateRule absentState = attendanceAbsent.decisionAttendanceState();
-
         // then
         assertAll(
-                () -> assertThat(onTimeState).isEqualTo(AttendanceStateRule.ATTEND),
-                () -> assertThat(lateState).isEqualTo(AttendanceStateRule.LATE),
-                () -> assertThat(absentState).isEqualTo(AttendanceStateRule.ABSENT)
+                () -> assertThat(attendance_ATTEND.decideAttendanceState(attendancePolicy))
+                        .isEqualTo(AttendanceStateRule.ATTEND),
+                () -> assertThat(attendance_LATE.decideAttendanceState(attendancePolicy))
+                        .isEqualTo(AttendanceStateRule.LATE),
+                () -> assertThat(attendance_ABSENT.decideAttendanceState(attendancePolicy))
+                        .isEqualTo(AttendanceStateRule.ABSENT)
         );
     }
 }

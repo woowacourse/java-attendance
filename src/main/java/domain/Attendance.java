@@ -1,27 +1,42 @@
 package domain;
 
-import domain.rule.AttendanceStateRule;
+import domain.policy.AttendancePolicy;
+import domain.policy.time.rule.AttendanceStateRule;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
 
-public record Attendance(
-        AttendanceDate attendanceDate,
-        AttendanceTime attendanceTime
-) {
-    public static Attendance from(AttendanceDate attendanceDate, AttendanceTime attendanceTime) {
+public class Attendance {
+
+    private final AttendanceDate attendanceDate;
+    private final AttendanceTime attendanceTime;
+
+    public Attendance(AttendanceDate attendanceDate, AttendanceTime attendanceTime) {
+        this.attendanceDate = attendanceDate;
+        this.attendanceTime = attendanceTime;
+    }
+
+    public static Attendance of(AttendanceDate attendanceDate, AttendanceTime attendanceTime) {
         return new Attendance(attendanceDate, attendanceTime);
     }
 
-    public AttendanceStateRule decisionAttendanceState() {
-        return attendanceTime.checkAttendanceState(attendanceDate().isSpecialDay());
+    public AttendanceStateRule decideAttendanceState(AttendancePolicy attendancePolicy) {
+        return attendancePolicy.decideAttendanceState(this);
     }
 
     public LocalDate toLocalDate() {
-        return attendanceDate.date();
+        return attendanceDate.toLocalDate();
     }
 
     public LocalTime toLocalTime() {
-        return attendanceTime.time();
+        return attendanceTime.toLocalTime();
+    }
+
+    public AttendanceDate getAttendanceDate() {
+        return attendanceDate;
+    }
+
+    public AttendanceTime getAttendanceTime() {
+        return attendanceTime;
     }
 }
