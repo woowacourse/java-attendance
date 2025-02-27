@@ -13,10 +13,6 @@ public class Student {
         this.studentAttendanceHistory = studentAttendanceHistory;
     }
 
-    public String getName() {
-        return name;
-    }
-
     public boolean isSameName(String studentName) {
         return studentName.equals(name);
     }
@@ -49,5 +45,9 @@ public class Student {
 
     public void sortStudentAttendanceHistory() {
         studentAttendanceHistory.sortHistoryBeforePrint();
+    }
+
+    public String getName() {
+        return name;
     }
 }

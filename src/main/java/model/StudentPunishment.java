@@ -11,10 +11,6 @@ public enum StudentPunishment {
         this.standard = standard;
     }
 
-    public int getStandard() {
-        return standard;
-    }
-
     public static StudentPunishment determineDisciplinaryAction(int riskLevel) {
         if (riskLevel >= DISMISSAL.standard) {
             return DISMISSAL;
@@ -26,6 +22,10 @@ public enum StudentPunishment {
             return WARNING;
         }
         return null;
+    }
+
+    public int getStandard() {
+        return standard;
     }
 
 }
