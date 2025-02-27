@@ -71,6 +71,7 @@ public class CheckAttendanceTest {
         LocalDateTime monday = LocalDateTime.of(2024, 12, 16, 13, 0);
         AttendanceStatus attendanceStatus = AttendancePolicy.checkAttendanceStatus(monday);
         assertThat(attendanceStatus).isEqualTo(AttendanceStatus.ATTEND);
+
     }
 
 
