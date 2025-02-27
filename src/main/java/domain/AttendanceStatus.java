@@ -17,6 +17,9 @@ public class AttendanceStatus {
 
     public static String judgeAttendanceStatusByDateAndTime(LocalDate date, LocalTime time) {
         String dayOfWeek = DecemberCalendar.judgeWorkingDay(date);
+        if (time == null) {
+            return ABSENT;
+        }
         if (dayOfWeek.equals("월요일")) {
             return judgeAttendanceByTimeAtMonday(time);
         }

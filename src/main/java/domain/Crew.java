@@ -26,4 +26,23 @@ public class Crew {
     public boolean isDateExisted(LocalDate date) {
         return timeLogs.containsKey(date);
     }
+
+    public Map<LocalDate, LocalTime> getTimeLogs() {
+        return timeLogs;
+    }
+
+    public void gratifyTimeLogs() {
+        for (int recordingDay = 1; recordingDay <= 31; recordingDay++) {
+            LocalDate recordingDate = LocalDate.of(2024, 12, recordingDay);
+
+            if (!(DecemberCalendar.judgeWorkingDay(recordingDate).equals("근무일") ||
+                    DecemberCalendar.judgeWorkingDay(recordingDate).equals("월요일"))) { // 근무일이 아닌 경우
+                continue;
+            }
+
+            if (!timeLogs.containsKey(recordingDate)) { // 기록이 존재하지 않으면
+                addNewTimeLog(recordingDate, null);
+            }
+        }
+    }
 }

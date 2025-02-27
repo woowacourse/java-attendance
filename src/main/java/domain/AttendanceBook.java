@@ -3,12 +3,15 @@ package domain;
 import static constants.AttendanceCriteria.OPERATING_END;
 import static constants.AttendanceCriteria.OPERATING_START;
 
+import dto.CheckAttendanceRecordResponse;
 import dto.CheckAttendanceResponse;
 import dto.ModifyAttendanceResponse;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 import view.ErrorMessage;
 
 public class AttendanceBook {
@@ -80,9 +83,22 @@ public class AttendanceBook {
         return new ModifyAttendanceResponse(date, time, attendanceStatus);
     }
 
-    public static void validateIsDateFuture(LocalDate date) {
+    public void validateIsDateFuture(LocalDate date) {
         if (date.isAfter(LocalDate.now())) { // 현재보다 미래 시점인 경우
             throw new IllegalArgumentException(ErrorMessage.NOTICE_FUTURE_CAN_NOT_BE_MODIFIED.getFormat());
         }
+    }
+
+    public List<CheckAttendanceRecordResponse> checkAttendanceRecord(String name) {
+        Crew foundCrew = findCrewByName(name);
+
+        foundCrew.gratifyTimeLogs();
+        return foundCrew.getTimeLogs().entrySet().stream()
+                .sorted(Map.Entry.comparingByKey()) // 날짜 기준으로 정렬
+                .map(entry -> new CheckAttendanceRecordResponse(
+                        entry.getKey(),
+                        entry.getValue(),
+                        AttendanceStatus.judgeAttendanceStatusByDateAndTime(entry.getKey(), entry.getValue())))
+                .collect(Collectors.toList());
     }
 }
