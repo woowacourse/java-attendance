@@ -19,4 +19,14 @@ public class AttendanceRecord {
     public List<AttendanceTime> getAttendanceRecord() {
         return Collections.unmodifiableList(attendanceRecord);
     }
+
+    public PenaltyType checkPenaltyStatus() {
+        int absenceCounts = 0;
+        for (AttendanceTime attendanceTime : attendanceRecord) {
+            if (attendanceTime.isAbsence(AttendanceStatus.ABSENCE)) {
+                absenceCounts += 1;
+            }
+        }
+        return PenaltyType.fetchPenaltyType(absenceCounts);
+    }
 }

@@ -17,4 +17,18 @@ public class AttendanceRecordTest {
 
         Assertions.assertThat(attendanceRecord.getAttendanceRecord().size()).isEqualTo(1);
     }
+
+    @Test
+    public void 패널티_상태_반환() {
+        //given
+        LocalDateTime attendanceTimeOne = LocalDateTime.of(2025, 2, 24, 13, 31);
+        LocalDateTime attendanceTimeTwo = LocalDateTime.of(2025, 2, 25, 10, 31);
+
+        //when
+        AttendanceRecord attendanceRecord = new AttendanceRecord();
+        attendanceRecord.addAttendanceTime(attendanceTimeOne);
+        attendanceRecord.addAttendanceTime(attendanceTimeTwo);
+
+        Assertions.assertThat(attendanceRecord.checkPenaltyStatus()).isEqualTo(PenaltyType.WARNING);
+    }
 }

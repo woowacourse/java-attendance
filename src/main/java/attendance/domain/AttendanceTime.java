@@ -18,4 +18,8 @@ public class AttendanceTime {
     public AttendanceStatus getAttendanceStatus() {
         return attendanceStatus;
     }
+
+    public boolean isAbsence(AttendanceStatus attendanceStatus) {
+        return this.attendanceStatus.equals(attendanceStatus);
+    }
 }
