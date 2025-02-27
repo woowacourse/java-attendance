@@ -1,3 +1,4 @@
+import java.time.LocalDate;
 import java.util.TreeSet;
 
 public class AttendanceRecords {
@@ -5,5 +6,9 @@ public class AttendanceRecords {
 
     public void add(AttendanceRecord record) {
         records.add(record);
+    }
+
+    public boolean hasRecordOnDate(LocalDate date) {
+        return records.stream().anyMatch(record -> record.getDate().equals(date));
     }
 }

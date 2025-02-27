@@ -1,3 +1,4 @@
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 public class AttendanceRecord implements Comparable<AttendanceRecord> {
@@ -14,6 +15,10 @@ public class AttendanceRecord implements Comparable<AttendanceRecord> {
         if (ClassSchedule.isDayOff(dateTime.toLocalDate())) {
             throw new IllegalArgumentException("[ERROR] 등교일이 아닙니다.");
         }
+    }
+
+    public LocalDate getDate() {
+        return dateTime.toLocalDate();
     }
 
     public AttendanceStatus getAttendanceStatus() {
