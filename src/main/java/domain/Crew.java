@@ -32,4 +32,22 @@ public class Crew {
         return attendanceHistory.stream()
                 .anyMatch(attendance -> attendance.getDayOfMonth() == newAttendance.getDayOfMonth());
     }
+
+    public int getAttendCount() {
+        return (int) attendanceHistory.stream()
+                .filter(attendance -> attendance.getAttendanceStatus() == AttendanceStatus.ATTEND)
+                .count();
+    }
+
+    public int getLateCount() {
+        return (int) attendanceHistory.stream()
+                .filter(attendance -> attendance.getAttendanceStatus() == AttendanceStatus.LATE)
+                .count();
+    }
+
+    public int getAbsentCount() {
+        return (int) attendanceHistory.stream()
+                .filter(attendance -> attendance.getAttendanceStatus() == AttendanceStatus.ABSENT)
+                .count();
+    }
 }

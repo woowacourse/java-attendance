@@ -14,4 +14,8 @@ public class Attendance {
     public int getDayOfMonth() {
         return dateTime.getDayOfMonth();
     }
+
+    public AttendanceStatus getAttendanceStatus() {
+        return status;
+    }
 }
