@@ -110,7 +110,7 @@ public class AttendanceHistoryTest {
         //given
         LocalDate requestDate = LocalDate.of(2024, 12, 7);
         AttendanceHistory attendanceHistory = new AttendanceHistory();
-        attendanceHistory.register(LocalDate.of(2024, 12, 2), LocalTime.of(10, 0)); //출석
+        attendanceHistory.register(LocalDate.of(2024, 12, 2), LocalTime.of(13, 0)); //출석
         attendanceHistory.register(LocalDate.of(2024, 12, 3), LocalTime.of(10, 10)); //지각
         attendanceHistory.register(LocalDate.of(2024, 12, 4), LocalTime.of(10, 10)); //지각
         attendanceHistory.register(LocalDate.of(2024, 12, 5), LocalTime.of(10, 10)); //지각
@@ -130,10 +130,10 @@ public class AttendanceHistoryTest {
         //given
         LocalDate requestDate = LocalDate.of(2024, 12, 7);
         AttendanceHistory attendanceHistory = new AttendanceHistory();
-        attendanceHistory.register(LocalDate.of(2024, 12, 2), LocalTime.of(10, 10)); //지각
+        attendanceHistory.register(LocalDate.of(2024, 12, 2), LocalTime.of(13, 10)); //지각
         attendanceHistory.register(LocalDate.of(2024, 12, 3), LocalTime.of(10, 10)); //지각
         attendanceHistory.register(LocalDate.of(2024, 12, 4), LocalTime.of(10, 10)); //지각
-        attendanceHistory.register(LocalDate.of(2024, 12, 5), LocalTime.of(10, 10)); //결석
+        attendanceHistory.register(LocalDate.of(2024, 12, 5), LocalTime.of(10, 31)); //결석
 //        attendanceHistory.register(LocalDate.of(2024, 12, 6), LocalTime.of(10, 31)); //결석
         AttendanceStatistics attendanceStatistics = new AttendanceStatistics(attendanceHistory);
 
