@@ -1,25 +1,22 @@
 package attendance.view;
 
 import attendance.controller.MenuCommand;
+import attendance.utility.DateTimeUtility;
 import attendance.view.message.InputMessage;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
-import java.util.Locale;
 import java.util.Scanner;
 
 public class InputView {
 
     private final Scanner scanner;
-    private final DateTimeFormatter dateTimeformatter =
-            DateTimeFormatter.ofPattern("MM월 dd일 E요일").withLocale(Locale.KOREA);
 
     public InputView(Scanner scanner) {
         this.scanner = scanner;
     }
 
     public MenuCommand readMenuCommand(LocalDateTime now) {
-        String dateContent = dateTimeformatter.format(now);
+        String dateContent = DateTimeUtility.formatDateTime(now);
         String menuContent = String.format(InputMessage.MENU.getContent(), dateContent);
         System.out.println(menuContent);
         String input = scanner.nextLine();
@@ -33,7 +30,7 @@ public class InputView {
 
     public LocalTime readArrivalTime() {
         System.out.println(InputMessage.ARRIVAL_TIME.getContent());
-        return LocalTime.parse(scanner.nextLine());
+        return DateTimeUtility.parseTimeByDefault(scanner.nextLine());
     }
 
     public String readNicknameForUpdate() {
@@ -48,6 +45,6 @@ public class InputView {
 
     public LocalTime readArrivalTimeForUpdate() {
         System.out.println(InputMessage.TIME_FOR_UPDATE.getContent());
-        return LocalTime.parse(scanner.nextLine());
+        return DateTimeUtility.parseTimeByDefault(scanner.nextLine());
     }
 }

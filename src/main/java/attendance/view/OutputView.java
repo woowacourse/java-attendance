@@ -3,16 +3,12 @@ package attendance.view;
 import attendance.domain.record.AttendanceRecord;
 import attendance.dto.AttendanceState;
 import attendance.dto.RecordUpdateResult;
+import attendance.utility.DateTimeUtility;
 import attendance.view.message.OutputMessage;
 import java.time.LocalTime;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
-import java.util.Locale;
 
 public class OutputView {
-
-    private final DateTimeFormatter dateTimeformatter =
-            DateTimeFormatter.ofPattern("MM월 dd일 E요일").withLocale(Locale.KOREA);
 
     public void printRecord(AttendanceRecord record) {
         String content = makeRecordContent(record);
@@ -54,7 +50,7 @@ public class OutputView {
     }
 
     private String makeRecordContent(AttendanceRecord record) {
-        String date = dateTimeformatter.format(record.getArrivalDateTime());
+        String date = DateTimeUtility.formatDateTime(record.getArrivalDateTime());
         String time = makeTimeContent(record.getArrivalDateTime().toLocalTime());
         String typeName = record.getAttendanceType().getName();
         return String.format(OutputMessage.RECORD.getContent(), date, time, typeName);

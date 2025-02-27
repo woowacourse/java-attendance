@@ -7,7 +7,8 @@ public enum ExceptionMessage {
     OUT_OF_CAMPUS_TIME("[ERROR] 캠퍼스 운영 시간이 아닙니다."),
     INCORRECT_MENU("[ERROR] 잘못된 메뉴가 선택되었습니다. 메뉴를 다시 입력해주세요!"),
     NOT_FOUND_FILE("파일을 찾을 수 없습니다."),
-    FILE_IO_ERROR("파일을 읽는 도중 오류가 발생했습니다.");
+    FILE_IO_ERROR("파일을 읽는 도중 오류가 발생했습니다."),
+    TIME_FORMAT_ERROR("지원하지 않는 시간형식이 입력되었습니다.");
 
     private final String message;
 
