@@ -5,6 +5,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.ValueSource;
 
 class CrewTest {
@@ -21,6 +22,14 @@ class CrewTest {
         Crew crew = new Crew("빙봉");
 
         assertThat(crew).isEqualTo(new Crew("빙봉"));
+    }
+
+    @CsvSource(value = {"빙봉,true", "이든,false"})
+    @ParameterizedTest
+    void 닉네임을_알려주면_크루의_닉네임과_같은지_알려준다(String nickname, boolean expected) {
+        Crew crew = new Crew("빙봉");
+
+        assertThat(crew.isSameNickname(nickname)).isEqualTo(expected);
     }
 
 }

@@ -22,6 +22,10 @@ public class Crew {
         }
     }
 
+    public boolean isSameNickname(final String otherNickname) {
+        return this.nickname.equals(otherNickname);
+    }
+
     @Override
     public boolean equals(final Object o) {
         if (this == o) {

@@ -32,4 +32,11 @@ public class Crews {
                 .toList();
     }
 
+    public Crew findCrewByNickname(final String nickname) {
+        return crews.stream()
+                .filter(crew -> crew.isSameNickname(nickname))
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException("등록되지 않은 닉네임입니다."));
+    }
+
 }

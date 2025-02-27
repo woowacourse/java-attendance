@@ -1,5 +1,6 @@
 package attendance.domain;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
@@ -26,6 +27,13 @@ class CrewsTest {
     @Test
     void 닉네임_목록을_알려주면_크루_목록을_생성한다() {
         assertDoesNotThrow(() -> new Crews(List.of("빙봉", "쿠키")));
+    }
+
+    @Test
+    void 닉네임을_알려주면_해당_크루를_조회한다() {
+        Crews crews = new Crews(List.of("빙봉", "쿠키"));
+
+        assertThat(crews.findCrewByNickname("빙봉")).isEqualTo(new Crew("빙봉"));
     }
 
 }
