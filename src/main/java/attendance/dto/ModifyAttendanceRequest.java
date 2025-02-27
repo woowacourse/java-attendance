@@ -10,6 +10,7 @@ public record ModifyAttendanceRequest(
     LocalDate date,
     LocalTime time
 ) {
+
     public static ModifyAttendanceRequest of(String name, String day, String time, LocalDate date) {
         return new ModifyAttendanceRequest(
             name,
