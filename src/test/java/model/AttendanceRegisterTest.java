@@ -138,5 +138,19 @@ class AttendanceRegisterTest {
                 .hasMessageContaining("등교시간이 아닙니다.");
     }
 
+    @Test
+    void 출석이_없는_날짜를_수정하면_예외가_발생한다() {
+        // given
+        AttendanceRegister attendanceRegister = new AttendanceRegister();
+        LocalDate attendanceDate = LocalDate.of(2024, 12, 10);
+        LocalTime attendanceTime = LocalTime.of(10, 5);
+        attendanceRegister.attend("한스", attendanceDate, attendanceTime);
+        LocalDate modifyDate = LocalDate.of(2024, 12, 11);
+        LocalTime modifyTime = LocalTime.of(10, 3);
 
+        // when & then
+        assertThatThrownBy(() -> attendanceRegister.modify("한스", modifyDate, modifyTime))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("출석기록이 없는 날짜입니다.");
+    }
 }
