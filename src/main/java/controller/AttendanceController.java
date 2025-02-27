@@ -4,25 +4,26 @@ import domain.AttendanceDate;
 import domain.AttendanceReader;
 import domain.AttendanceTime;
 import domain.CrewAttendance;
+import domain.CrewAttendanceHistories;
 import domain.CrewAttendances;
+import domain.CrewDismiss;
 import domain.CrewName;
+import domain.SystemTimeCrewAttendanceHistories;
 import except.AttendanceException;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
+import java.util.List;
+import java.util.Map;
 import java.util.function.Supplier;
 import strategy.AttendanceCurrentDateGenerateStrategy;
+import view.AttendanceHistoryDto;
 import view.InputMethod;
 import view.InputView;
 import view.OutputView;
 
 public class AttendanceController {
-
-
-    private final CrewAttendances crewAttendances;
-    private final InputView inputView;
-    private final OutputView outputView;
 
     private final DateTimeFormatter TIME_FORMATTER = DateTimeFormatter.ofPattern("HH:mm");
     private final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("yyyy MM d");
@@ -31,9 +32,12 @@ public class AttendanceController {
     private final String MODIFY_DATE_FORMAT = "%s %s %s";
     private final String NOT_SUPPORTED_METHOD = "아직 지원하지 않는 기능입니다.";
     private final String INVALID_TIME_FORMAT = "유효하지 않은 시간 양식 입니다. (HH:MM)";
-    private static final String INVALID_DATE_FORMAT = "유효하지 않은 날짜 양식입니다. (d)";
     private final String NOT_EXIST_ATTENDNACE = "존재하지 않는 출석 기록입니다";
+    private final String INVALID_DATE_FORMAT = "유효하지 않은 날짜 양식입니다. (d)";
 
+    private final CrewAttendances crewAttendances;
+    private final InputView inputView;
+    private final OutputView outputView;
 
     public AttendanceController(String fileName, OutputView outputView, InputView inputView) {
         AttendanceReader attendanceReader = new AttendanceReader(fileName);
@@ -63,11 +67,31 @@ public class AttendanceController {
         switch (inputMethod) {
             case ATTENDANCE -> handleAddAttendance();
             case MODIFY -> handleModify();
-//            case ATTENDANCE_HISTORY -> handleInput(handleAttendanceHistory());
+            case ATTENDANCE_HISTORY -> handleAttendanceHistory();
 //            case DISMISS_HISTORY -> handleInput(handleDismissHistory());
             default -> throw new AttendanceException(NOT_SUPPORTED_METHOD);
         }
     }
+
+    private void handleAttendanceHistory() {
+        String crewNickname = handleInput(this::handleAddAttendanceNickname);
+        CrewAttendanceHistories crewAttendanceHistories = crewAttendances.crewAttendancesHistory(crewNickname);
+        SystemTimeCrewAttendanceHistories systemTimeCrewAttendanceHistories = new SystemTimeCrewAttendanceHistories(
+                crewAttendanceHistories);
+        Map<LocalDate, CrewAttendance> dateCrewAttendance = systemTimeCrewAttendanceHistories.renewDateCrewAttendance();
+        CrewDismiss crewDismiss = systemTimeCrewAttendanceHistories.crewDismiss();
+        printDateCrewAttendanceHistory(dateCrewAttendance, crewNickname);
+        outputView.printCrewDismissCount(crewDismiss.attendance(), crewDismiss.late(),
+                crewDismiss.absence());
+        outputView.printCrewDismissStatus(crewDismiss.dismissStatus().status);
+    }
+
+    private void printDateCrewAttendanceHistory(Map<LocalDate, CrewAttendance> dateCrewAttendance,
+                                                String crewNickname) {
+        List<AttendanceHistoryDto> attendanceHistoryDtos = AttendanceHistoryDto.from(dateCrewAttendance);
+        outputView.printCrewAttendanceHistory(attendanceHistoryDtos, crewNickname);
+    }
+
 
     private void handleModify() {
         String crewNickname = handleInput(this::handleModifyAttendanceNickname);
@@ -85,11 +109,6 @@ public class AttendanceController {
     private void printPreviousAttendanceDateTimeStatus(CrewAttendance prevAttendance, LocalDate attendanceDate) {
         outputView.printPreviousAttendance(attendanceDate, prevAttendance.attendanceTime(),
                 prevAttendance.attendanceStatusMessage());
-    }
-
-    private void printPreviousAttendanceDateTimeStatus(LocalTime attendanceTime, LocalDate attendanceDate,
-                                                       String status) {
-        outputView.printPreviousAttendance(attendanceDate, attendanceTime, status);
     }
 
     private void validateExistAttendance(String crewNickname) {

@@ -14,7 +14,6 @@ public record CrewAttendanceHistories(List<CrewAttendanceHistory> crewAttendance
             crewAttendanceStatusCount.put(attendanceStatus,
                     crewAttendanceStatusCount.getOrDefault(attendanceStatus, 0) + 1);
         }
-
         return new CrewAttendanceHistories(crewAttendanceHistories, new CrewDismiss(crewAttendanceStatusCount));
     }
 }

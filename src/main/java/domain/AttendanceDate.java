@@ -23,8 +23,19 @@ public class AttendanceDate {
         return SCHOOL_OPEN_END_DATE.isBefore(attendanceDate) || SCHOOL_OPEN_START_DATE.isAfter(attendanceDate);
     }
 
-    public static LocalDate getSchoolLastDate() {
+    public static LocalDate schoolLastDate() {
         return SCHOOL_OPEN_END_DATE;
+    }
+
+    public static LocalDate schoolStartDate() {
+        return SCHOOL_OPEN_START_DATE;
+    }
+
+    public static boolean isValidAttendanceDate(LocalDate date) {
+        if (isWeekend(date) || isOutOfSchoolOpenDate(date)) {
+            return false;
+        }
+        return true;
     }
 
     private void validateAttendanceDate(LocalDate attendanceDate) {
@@ -41,7 +52,7 @@ public class AttendanceDate {
         return dayOfWeek.getValue() == MONDAY;
     }
 
-    public boolean isWeekend(LocalDate attendanceDate) {
+    public static boolean isWeekend(LocalDate attendanceDate) {
         DayOfWeek dayOfWeek = attendanceDate.getDayOfWeek();
         if (dayOfWeek == DayOfWeek.SATURDAY || dayOfWeek == DayOfWeek.SUNDAY) {
             return true;
@@ -68,5 +79,9 @@ public class AttendanceDate {
     @Override
     public int hashCode() {
         return Objects.hash(date);
+    }
+
+    public LocalDate date() {
+        return date;
     }
 }

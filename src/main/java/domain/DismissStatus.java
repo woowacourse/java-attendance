@@ -6,9 +6,9 @@ public enum DismissStatus {
     DISMISS("제적"),
     ELSE("");
 
-    DismissStatus(String dismissStatus) {
-        this.dismissStatus = dismissStatus;
+    DismissStatus(String status) {
+        this.status = status;
     }
 
-    public String dismissStatus;
+    public String status;
 }

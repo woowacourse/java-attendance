@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 import java.util.Locale;
 
 public class OutputView {
@@ -19,8 +20,13 @@ public class OutputView {
     private static final String INPUT_NICKNAME = "닉네임을 입력해주세요.";
     private static final String INPUT_MODIFY_NICKNAME = "출석을 수정하려는 크루의 닉네임을 입력해 주세요.";
     private static final String ADD_ATTENDANCE_INPUT_TIME = "등교 시간을 입력해 주세요.";
-    private static final String DATE_DAY_WEEK_FORMAT = "MM월 dd일 E요일 ";
-    private static final DateTimeFormatter DATE_DAY_WEEK_FORMATTER = DateTimeFormatter.ofPattern(DATE_DAY_WEEK_FORMAT,
+    private static final String DATE_DAY_WEEK_TIME_FORMAT = "MM월 dd일 E요일 HH:mm";
+    private static final String ABSENCE_DATE_DAY_WEEK_FORMAT = "MM월 dd일 E요일 --:--";
+    private static final DateTimeFormatter ABSENCE_DATE_DAY_WEEK_FORMATTER = DateTimeFormatter.ofPattern(
+            ABSENCE_DATE_DAY_WEEK_FORMAT,
+            Locale.KOREA);
+    private static final DateTimeFormatter DATE_DAY_WEEK_FORMATTER = DateTimeFormatter.ofPattern(
+            DATE_DAY_WEEK_TIME_FORMAT,
             Locale.KOREA);
     private static final String TIME_FORMAT = "HH:mm";
     private static final DateTimeFormatter TIME_FORMATTER = DateTimeFormatter.ofPattern(TIME_FORMAT, Locale.KOREA);
@@ -29,6 +35,12 @@ public class OutputView {
     private static final String NEW_LINE = "\n";
     private static final String ERROR_PREFIX = "[ERROR] ";
     private static final String INPUT_ATTENDANCE_MODIFY_DATE = "수정하려는 날짜(일)를 입력해 주세요.";
+    private static final String CREW_DISMISS_COUNT_FORMAT = "출석: %d회\n"
+            + "지각: %d회\n"
+            + "결석: %d회";
+    private static final String DISMISS_STATUS_FORMAT = "%s 대상자입니다.";
+    private static final String CREW_ATTENDANCE_HISTORY_START_FORMAT = "이번 달 %s의 출석 기록입니다.";
+
 
     public void printError(String errorMessage) {
         println(ERROR_PREFIX + errorMessage);
@@ -58,14 +70,6 @@ public class OutputView {
     }
 
 
-    public void printAttendanceDateTimeStatus(String status, LocalTime attendanceTime, LocalDate attendanceDate) {
-        LocalDateTime dateTime = LocalDateTime.of(attendanceDate, attendanceTime);
-        String attendanceDateTime = dateTime.format(DATE_DAY_WEEK_FORMATTER);
-        print(attendanceDateTime);
-        printAttendanceTime(attendanceTime);
-        printAttendanceStatus(status);
-    }
-
     private void print(String message) {
         System.out.print(message);
     }
@@ -89,6 +93,14 @@ public class OutputView {
         print(NEXT_ATTENDANCE_SEPARATOR);
     }
 
+    public void printAttendanceDateTimeStatus(String status, LocalTime attendanceTime, LocalDate attendanceDate) {
+        LocalDateTime dateTime = LocalDateTime.of(attendanceDate, attendanceTime);
+        String attendanceDateTime = dateTime.format(DATE_DAY_WEEK_FORMATTER);
+        print(attendanceDateTime);
+        printAttendanceTime(attendanceTime);
+        printAttendanceStatus(status);
+    }
+
     public void newLine() {
         print(NEW_LINE);
     }
@@ -96,6 +108,34 @@ public class OutputView {
     public void printAttendanceTimeStatus(LocalTime attendanceTime, String status) {
         printAttendanceTime(attendanceTime);
         printAttendanceStatus(status);
+    }
+
+    public void printCrewDismissCount(int attendance, int late, int absence) {
+        println(String.format(CREW_DISMISS_COUNT_FORMAT, attendance, late, absence));
+    }
+
+    public void printCrewDismissStatus(String dismissStatus) {
+        println(String.format(DISMISS_STATUS_FORMAT, dismissStatus));
+    }
+
+    public void printCrewAttendanceHistory(List<AttendanceHistoryDto> attendanceHistoriesDto, String crewNickname) {
+        StringBuilder stringBuilder = new StringBuilder(
+                String.format(CREW_ATTENDANCE_HISTORY_START_FORMAT, crewNickname));
+        for (AttendanceHistoryDto attendanceHistoryDto : attendanceHistoriesDto) {
+            stringBuilder.append(formattingAbsenceCheckedDateDayWeek(attendanceHistoryDto));
+            stringBuilder.append(String.format(ATTENDANCE_STATUS_FORMAT, attendanceHistoryDto.attendanceStatus()));
+            stringBuilder.append(NEW_LINE);
+        }
+        println(stringBuilder.toString());
+    }
+
+    private String formattingAbsenceCheckedDateDayWeek(AttendanceHistoryDto attendanceHistoryDto) {
+        LocalDateTime dateTime = LocalDateTime.of(attendanceHistoryDto.attendanceDate(),
+                attendanceHistoryDto.attendanceTime());
+        if (attendanceHistoryDto.isAbsence()) {
+            return dateTime.format(ABSENCE_DATE_DAY_WEEK_FORMATTER);
+        }
+        return dateTime.format(DATE_DAY_WEEK_FORMATTER);
     }
 }
 
