@@ -1,6 +1,7 @@
 package attendance.view;
 
 import attendance.domain.Attendance;
+import attendance.domain.AttendanceStatus;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -37,8 +38,8 @@ public class OutputView {
         LocalTime attendanceTime = attendance.getTime();
         int hour = attendanceTime.getHour();
         int minute = attendanceTime.getMinute();
-        String status = attendance.getStatus();
-        System.out.printf("%02d월 %02d일 %s %02d:%02d (%s)\n", month, date, dayName, hour, minute, status);
+        AttendanceStatus status = attendance.getStatus();
+        System.out.printf("%02d월 %02d일 %s %02d:%02d (%s)\n", month, date, dayName, hour, minute, status.getName());
     }
 
     public static void printNoAttendanceToModify() {
@@ -59,10 +60,10 @@ public class OutputView {
                 attendanceDay.getDisplayName(TextStyle.FULL, Locale.KOREAN),
                 beforeAttendanceTime.getHour(),
                 beforeAttendanceTime.getMinute(),
-                beforeAttendance.getStatus(),
+                beforeAttendance.getStatus().getName(),
                 afterAttendanceTime.getHour(),
                 afterAttendanceTime.getMinute(),
-                afterAttendance.getStatus()
+                afterAttendance.getStatus().getName()
         );
     }
 }

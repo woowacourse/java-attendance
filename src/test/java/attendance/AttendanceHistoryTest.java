@@ -1,10 +1,13 @@
 package attendance;
 
+import static attendance.domain.AttendanceStatus.ATTENDANCE;
+import static attendance.domain.AttendanceStatus.LATE;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
 import attendance.domain.Attendance;
 import attendance.domain.AttendanceHistory;
+import attendance.domain.AttendanceStatus;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.Optional;
@@ -22,7 +25,7 @@ class AttendanceHistoryTest {
             AttendanceHistory attendanceHistory = new AttendanceHistory();
             LocalDate date = LocalDate.of(2024, 12, 26);
             LocalTime time = LocalTime.of(10, 0);
-            attendanceHistory.addAttendance(new Attendance(date, time, "LATE"));
+            attendanceHistory.addAttendance(new Attendance(date, time, LATE));
 
             //when
             Optional<Attendance> result = attendanceHistory.findAttendance(date);
@@ -31,7 +34,7 @@ class AttendanceHistoryTest {
             assertAll(
                     () -> assertThat(result).isNotEmpty(),
                     () -> assertThat(result.get().isDateEquals(date)).isTrue(),
-                    () -> assertThat(result.get().getStatus()).isEqualTo("LATE")
+                    () -> assertThat(result.get().getStatus()).isEqualTo(LATE)
             );
         }
 
@@ -57,10 +60,10 @@ class AttendanceHistoryTest {
         AttendanceHistory attendanceHistory = new AttendanceHistory();
         LocalDate date = LocalDate.of(2024, 12, 26);
         LocalTime time = LocalTime.of(10, 7);
-        attendanceHistory.addAttendance(new Attendance(date, time, "LATE"));
+        attendanceHistory.addAttendance(new Attendance(date, time, LATE));
 
         LocalTime modificationTime = LocalTime.of(10, 0);
-        String modificationStatus = "ATTENDANCE";
+        AttendanceStatus modificationStatus = ATTENDANCE;
         Attendance modifiedAttendance = new Attendance(date, modificationTime, modificationStatus);
 
         //when

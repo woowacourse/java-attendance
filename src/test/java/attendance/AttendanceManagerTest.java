@@ -1,5 +1,7 @@
 package attendance;
 
+import static attendance.domain.AttendanceStatus.ATTENDANCE;
+import static attendance.domain.AttendanceStatus.LATE;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
@@ -66,7 +68,7 @@ class AttendanceManagerTest {
             assertAll(
                     () -> assertThat(attendance.isPresent()).isTrue(),
                     () -> assertThat(attendance.get().isDateEquals(attendanceDate)).isTrue(),
-                    () -> assertThat(attendance.get().getStatus()).isEqualTo("ATTENDANCE")
+                    () -> assertThat(attendance.get().getStatus()).isEqualTo(ATTENDANCE)
             );
         }
 
@@ -108,7 +110,7 @@ class AttendanceManagerTest {
             assertAll(
                     () -> assertThat(result).isNotNull(),
                     () -> assertThat(result.isDateEquals(attendanceDate)).isTrue(),
-                    () -> assertThat(result.getStatus()).isEqualTo("ATTENDANCE"),
+                    () -> assertThat(result.getStatus()).isEqualTo(ATTENDANCE),
                     () -> {
                         Attendance expected = attendanceManager.findAttendance(crew, attendanceDate).get();
                         assertThat(result).isEqualTo(expected);
@@ -140,7 +142,7 @@ class AttendanceManagerTest {
             assertAll(
                     () -> assertThat(result).isNotNull(),
                     () -> assertThat(result.isDateEquals(attendanceDate)).isTrue(),
-                    () -> assertThat(result.getStatus()).isEqualTo("LATE"),
+                    () -> assertThat(result.getStatus()).isEqualTo(LATE),
                     () -> {
                         Attendance expected = attendanceManager.findAttendance(crew, attendanceDate).get();
                         assertThat(result).isEqualTo(expected);

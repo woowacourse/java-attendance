@@ -25,4 +25,8 @@ public class AttendanceHistory {
         attendances.remove(beforeAttendance);
         return addAttendance(modifiedAttendance);
     }
+
+    public int countAttendanceStatus(final LocalDate today, final String status) {
+        return 0;
+    }
 }

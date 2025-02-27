@@ -1,5 +1,6 @@
 package attendance;
 
+import static attendance.domain.AttendanceStatus.ATTENDANCE;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import attendance.domain.Attendance;
@@ -18,7 +19,7 @@ class AttendanceTest {
             //given
             LocalDate date = LocalDate.of(2024, 12, 26);
             LocalTime time = LocalTime.of(10, 0);
-            Attendance attendance = new Attendance(date, time, "ATTENDANCE");
+            Attendance attendance = new Attendance(date, time, ATTENDANCE);
 
             //when
             boolean result = attendance.isDateEquals(date);
@@ -33,7 +34,7 @@ class AttendanceTest {
             //given
             LocalDate date = LocalDate.of(2024, 12, 26);
             LocalTime time = LocalTime.of(10, 0);
-            Attendance attendance = new Attendance(date, time, "ATTENDANCE");
+            Attendance attendance = new Attendance(date, time, ATTENDANCE);
 
             //when
             boolean result = attendance.isDateEquals(date.plusDays(1));

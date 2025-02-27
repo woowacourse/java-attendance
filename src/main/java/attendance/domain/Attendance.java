@@ -6,9 +6,9 @@ import java.time.LocalTime;
 public class Attendance {
     private final LocalDate date;
     private final LocalTime time;
-    private final String status;
+    private final AttendanceStatus status;
 
-    public Attendance(final LocalDate date, final LocalTime time, final String status) {
+    public Attendance(final LocalDate date, final LocalTime time, final AttendanceStatus status) {
         this.date = date;
         this.time = time;
         this.status = status;
@@ -18,7 +18,7 @@ public class Attendance {
         return this.date.isEqual(date);
     }
 
-    public String getStatus() {
+    public AttendanceStatus getStatus() {
         return status;
     }
 

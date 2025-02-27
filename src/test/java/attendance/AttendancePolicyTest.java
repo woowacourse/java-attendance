@@ -1,8 +1,12 @@
 package attendance;
 
+import static attendance.domain.AttendanceStatus.ABSENCE;
+import static attendance.domain.AttendanceStatus.ATTENDANCE;
+import static attendance.domain.AttendanceStatus.LATE;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import attendance.domain.AttendancePolicy;
+import attendance.domain.AttendanceStatus;
 import java.time.DayOfWeek;
 import java.time.LocalTime;
 import org.junit.jupiter.api.DisplayName;
@@ -21,10 +25,10 @@ class AttendancePolicyTest {
             LocalTime attendanceTime = LocalTime.of(13, 05);
 
             //when
-            String result = AttendancePolicy.calculateAttendanceStatus(attendanceDay, attendanceTime);
+            AttendanceStatus result = AttendancePolicy.calculateAttendanceStatus(attendanceDay, attendanceTime);
 
             //then
-            assertThat(result).isEqualTo("ATTENDANCE");
+            assertThat(result).isEqualTo(ATTENDANCE);
         }
 
         @DisplayName("월요일_출석_시간이_교육_시작_시간으로부터_5분_초과_시_LATE_를_반환한다")
@@ -35,10 +39,10 @@ class AttendancePolicyTest {
             LocalTime attendanceTime = LocalTime.of(13, 06);
 
             //when
-            String result = AttendancePolicy.calculateAttendanceStatus(attendanceDay, attendanceTime);
+            AttendanceStatus result = AttendancePolicy.calculateAttendanceStatus(attendanceDay, attendanceTime);
 
             //then
-            assertThat(result).isEqualTo("LATE");
+            assertThat(result).isEqualTo(LATE);
         }
 
         @DisplayName("월요일_출석_시간이_교육_시작_시간으로부터_30분_초과_시_ABSENCE_를_반환한다")
@@ -49,10 +53,10 @@ class AttendancePolicyTest {
             LocalTime attendanceTime = LocalTime.of(13, 31);
 
             //when
-            String result = AttendancePolicy.calculateAttendanceStatus(attendanceDay, attendanceTime);
+            AttendanceStatus result = AttendancePolicy.calculateAttendanceStatus(attendanceDay, attendanceTime);
 
             //then
-            assertThat(result).isEqualTo("ABSENCE");
+            assertThat(result).isEqualTo(ABSENCE);
         }
 
         @DisplayName("월요일_아닌_출석_시간이_교육_시작_시간으로부터_5분_이내_출석_시_ATTENDANCE_를_반환한다")
@@ -63,10 +67,10 @@ class AttendancePolicyTest {
             LocalTime attendanceTime = LocalTime.of(10, 05);
 
             //when
-            String result = AttendancePolicy.calculateAttendanceStatus(attendanceDay, attendanceTime);
+            AttendanceStatus result = AttendancePolicy.calculateAttendanceStatus(attendanceDay, attendanceTime);
 
             //then
-            assertThat(result).isEqualTo("ATTENDANCE");
+            assertThat(result).isEqualTo(ATTENDANCE);
         }
 
         @DisplayName("월요일_아닌_출석_시간이_교육_시작_시간으로부터_5분_초과_시_LATE_를_반환한다")
@@ -77,10 +81,10 @@ class AttendancePolicyTest {
             LocalTime attendanceTime = LocalTime.of(10, 06);
 
             //when
-            String result = AttendancePolicy.calculateAttendanceStatus(attendanceDay, attendanceTime);
+            AttendanceStatus result = AttendancePolicy.calculateAttendanceStatus(attendanceDay, attendanceTime);
 
             //then
-            assertThat(result).isEqualTo("LATE");
+            assertThat(result).isEqualTo(LATE);
         }
 
         @DisplayName("월요일_아닌_출석_시간이_교육_시작_시간으로부터_30분_초과_시_ABSENCE_를_반환한다")
@@ -91,10 +95,10 @@ class AttendancePolicyTest {
             LocalTime attendanceTime = LocalTime.of(10, 31);
 
             //when
-            String result = AttendancePolicy.calculateAttendanceStatus(attendanceDay, attendanceTime);
+            AttendanceStatus result = AttendancePolicy.calculateAttendanceStatus(attendanceDay, attendanceTime);
 
             //then
-            assertThat(result).isEqualTo("ABSENCE");
+            assertThat(result).isEqualTo(ABSENCE);
         }
     }
 }
