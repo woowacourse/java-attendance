@@ -35,16 +35,20 @@ public class AttendanceController {
     public void run() {
         attendanceBook = AttendanceBookFactory.create(
                 CrewAttendancesDataParser.parse(AttendancesFileReader.read()), today);
-        while (true) {
-            try {
-                executeMenu(inputView.readSelectMenu(today));
-            } catch (IllegalArgumentException e) {
-                outputView.printErrorMessage(e.getMessage());
-            }
+        while (!processMenu()) {
         }
     }
 
-    private void executeMenu(final String input) {
+    private boolean processMenu() {
+        try {
+            return executeMenu(inputView.readSelectMenu(today));
+        } catch (IllegalArgumentException e) {
+            outputView.printErrorMessage(e.getMessage());
+            return false;
+        }
+    }
+
+    private boolean executeMenu(final String input) {
         Menu selectedMenu = Menu.from(input);
         if (Menu.ATTEND.equals(selectedMenu)) {
             attend();
@@ -58,9 +62,7 @@ public class AttendanceController {
         if (Menu.PRINT_WARNING.equals(selectedMenu)) {
             printWarningCrews();
         }
-        if (Menu.QUIT.equals(selectedMenu)) {
-            System.exit(0);
-        }
+        return Menu.QUIT.equals(selectedMenu);
     }
 
     private void attend() {
