@@ -29,13 +29,13 @@ public class ResultView {
                             Comparator.reverseOrder())
                     .thenComparing(DismissalCrewDto::nickname);
     private static final String DISMISSAL_RESULT_FORM = "- %s: 결석 %d회, 지각 %d회 (%s)";
-    private static Map<WarningLevel, String> WARNING_LEVEL_KOREAN = Map.of(
+    private static final Map<WarningLevel, String> WARNING_LEVEL_KOREAN = Map.of(
             WarningLevel.WARNING, "경고",
             WarningLevel.INTERVIEW, "면담",
             WarningLevel.EXPULSION, "제적",
             WarningLevel.NOT_APPLICABLE, "해당없음"
     );
-    private static Map<AttendanceStatus, String> ATTENDANCE_STATUS_KOREAN = Map.of(
+    private static final Map<AttendanceStatus, String> ATTENDANCE_STATUS_KOREAN = Map.of(
             AttendanceStatus.ATTENDANCE, "출석",
             AttendanceStatus.LATE, "지각",
             AttendanceStatus.ABSENCE, "결석"
