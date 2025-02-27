@@ -2,13 +2,9 @@ package attendance.domain;
 
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.time.MonthDay;
 import java.util.Objects;
-import java.util.Set;
 
 public class Attendance {
-
-    private static final Set<MonthDay> HOLIDAYS = Set.of(MonthDay.of(12, 25));
 
     private final String nickname;
     private final AttendanceDate attendanceDate;
