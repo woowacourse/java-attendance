@@ -32,11 +32,11 @@ class AttendanceBookTest {
         Crew testCrew = attendanceBook.findCrewByName(testCrewName);
         testCrew.checkAttendance(LocalDate.of(2024, 12, 3), EXCEPT_MONDAY_ATTEND_TIME);
         testCrew.checkAttendance(LocalDate.of(2024, 12, 4),
-                EXCEPT_MONDAY_ATTEND_TIME.plusMinutes(LATE_THRESHOLD_MINUTES));
+                EXCEPT_MONDAY_ATTEND_TIME.plusMinutes(LATE_THRESHOLD_MINUTES + 1));
         testCrew.checkAttendance(LocalDate.of(2024, 12, 5),
-                EXCEPT_MONDAY_ATTEND_TIME.plusMinutes(ABSENT_THRESHOLD_MINUTES));
+                EXCEPT_MONDAY_ATTEND_TIME.plusMinutes(ABSENT_THRESHOLD_MINUTES + 1));
 
         assertThat(attendanceBook.getPenaltyCountResponseByName(testCrewName))
-                .isEqualTo(new PenaltyCountResponse(0, 0, 31));
+                .isEqualTo(new PenaltyCountResponse(1, 1, 29));
     }
 }

@@ -58,7 +58,7 @@ public class Crew {
     public GetAttendanceRecordsResponse getAttendanceRecords() {
         List<AttendanceRecordDTO> attendanceRecordDTOs = new ArrayList<>();
 
-        IntStream.range(DECEMBER_DAYS_START, DECEMBER_DAYS_END + 1)
+        IntStream.rangeClosed(DECEMBER_DAYS_START, DECEMBER_DAYS_END)
                 .forEach(day -> attendanceRecordDTOs.add(
                         getAttendanceRecordDTO(LocalDate.of(SYSTEM_YEAR, SYSTEM_MONTH, day))
                 ));
@@ -81,5 +81,24 @@ public class Crew {
                 time,
                 status
         );
+    }
+
+    public int getCountByStatus(AttendanceStatus targetStatus) {
+        return (int) IntStream.rangeClosed(DECEMBER_DAYS_START, DECEMBER_DAYS_END)
+                .mapToObj(this::getAttendanceStatusByDay)
+                .filter(status -> status == targetStatus)
+                .count();
+    }
+
+    private AttendanceStatus getAttendanceStatusByDay(int day) {
+        LocalDate date = LocalDate.of(SYSTEM_YEAR, SYSTEM_MONTH, day);
+        if (attendanceRecords.containsKey(date)) {
+            return AttendanceStatus.findByAttendDateAndTime(date, attendanceRecords.get(date));
+        }
+        return AttendanceStatus.ABSENT;
+    }
+
+    public boolean isName(String input) {
+        return name.equals(input);
     }
 }

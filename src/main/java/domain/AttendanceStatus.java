@@ -27,6 +27,13 @@ public enum AttendanceStatus {
         return findByAttendTime(EXCEPT_MONDAY_ATTEND_TIME, time).message;
     }
 
+    public static AttendanceStatus findByAttendDateAndTime(LocalDate date, LocalTime time) {
+        if (DayType.matches(date, DayType.MONDAYS)) {
+            return findByAttendTime(MONDAY_ATTEND_TIME, time);
+        }
+        return findByAttendTime(EXCEPT_MONDAY_ATTEND_TIME, time);
+    }
+
     private static AttendanceStatus findByAttendTime(LocalTime standardTime, LocalTime attendTime) {
         if (isBetween(
                 attendTime,
