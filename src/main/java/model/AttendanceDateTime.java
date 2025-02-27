@@ -5,6 +5,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Objects;
 
 public class AttendanceDateTime implements Comparable<AttendanceDateTime> {
     private final LocalDateTime attendanceDateTime;
@@ -52,6 +53,14 @@ public class AttendanceDateTime implements Comparable<AttendanceDateTime> {
 
     public boolean isZeroTime(DateTimeFormatter dateTimeFormatter) {
         return attendanceDateTime.format(dateTimeFormatter).equals("00:00");
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        AttendanceDateTime that = (AttendanceDateTime) o;
+        return Objects.equals(attendanceDateTime, that.attendanceDateTime);
     }
 
     public LocalDateTime getAttendanceDateTime() {
