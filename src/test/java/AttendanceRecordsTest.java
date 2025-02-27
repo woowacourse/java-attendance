@@ -45,7 +45,7 @@ class AttendanceRecordsTest {
         // when
         attendanceRecords.add(new AttendanceRecord(LocalDateTime.parse("2024-12-02T13:00")));
         attendanceRecords.add(new AttendanceRecord(LocalDateTime.parse("2024-12-03T10:00")));
-        attendanceRecords.add(new AttendanceRecord(LocalDateTime.parse("2024-12-05T10:00")));
+        attendanceRecords.add(new AttendanceRecord(LocalDateTime.parse("2024-12-04T10:00")));
 
         // then
         assertThat(attendanceRecords.getAttendanceCount(targetStatus)).isEqualTo(3);
@@ -61,7 +61,7 @@ class AttendanceRecordsTest {
         // when
         attendanceRecords.add(new AttendanceRecord(LocalDateTime.parse("2024-12-02T13:10")));
         attendanceRecords.add(new AttendanceRecord(LocalDateTime.parse("2024-12-03T10:00")));
-        attendanceRecords.add(new AttendanceRecord(LocalDateTime.parse("2024-12-05T10:10")));
+        attendanceRecords.add(new AttendanceRecord(LocalDateTime.parse("2024-12-04T10:20")));
 
         // then
         assertThat(attendanceRecords.getAttendanceCount(targetStatus)).isEqualTo(2);
@@ -75,10 +75,11 @@ class AttendanceRecordsTest {
         AttendanceRecords attendanceRecords = new AttendanceRecords();
 
         // when
-        attendanceRecords.add(new AttendanceRecord(LocalDateTime.parse("2024-12-02T13:40")));
+        attendanceRecords.add(new AttendanceRecord(LocalDateTime.parse("2024-12-02T13:00")));
         attendanceRecords.add(new AttendanceRecord(LocalDateTime.parse("2024-12-03T10:00")));
+        attendanceRecords.add(new AttendanceRecord(LocalDateTime.parse("2024-12-04T10:40")));
 
         // then
-        assertThat(attendanceRecords.getAttendanceCount(targetStatus)).isEqualTo(3);
+        assertThat(attendanceRecords.getAttendanceCount(targetStatus)).isEqualTo(1);
     }
 }
