@@ -2,6 +2,7 @@ package controller;
 
 import domain.AttendanceSheet;
 import domain.policy.AttendanceState;
+import domain.policy.ExpellState;
 import view.InputView;
 import view.OutputView;
 
@@ -9,6 +10,8 @@ import java.time.LocalTime;
 import java.util.Map;
 
 import static config.AppConfig.TODAY;
+import static domain.policy.AttendanceState.ABSENT;
+import static domain.policy.AttendanceState.LATE;
 import static util.ExceptionHandler.runInputCommand;
 
 public class AttendanceController {
@@ -65,12 +68,14 @@ public class AttendanceController {
     private void printAttendance() {
         String nickname = inputView.inputNickname();
         outputView.printAttendanceSheetIntro(nickname);
-
         outputView.printAttendancesSheet(nickname, attendanceSheet.findAttendanceByNickname(nickname));
 
         Map<AttendanceState, Long> attendanceState = attendanceSheet.countAttendanceState(nickname);
+        int lateCount = Math.toIntExact(attendanceState.get(LATE));
+        int absentCount = Math.toIntExact(attendanceState.get(ABSENT));
+
         outputView.printAttendanceStatistics(attendanceState);
-        outputView.printAbsentPolicy(attendanceSheet.calculateExpellStatus(attendanceState));
+        outputView.printAbsentPolicy(ExpellState.checkExpellStatus(lateCount, absentCount));
     }
 
     private void printRiskOfExpulsion() {

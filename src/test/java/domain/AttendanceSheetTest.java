@@ -147,4 +147,10 @@ public class AttendanceSheetTest {
             softly.assertThat(attendanceSheet.calculateAllExpellStatus(attendances).get("링크4")).isEqualTo(NONE);
         });
     }
+
+    @Test
+    @DisplayName("제적 상태를 알 수 있다")
+    public void calculateAllExpellStatusTest() {
+
+    }
 }

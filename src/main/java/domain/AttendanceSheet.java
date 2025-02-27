@@ -108,12 +108,6 @@ public class AttendanceSheet {
                 ));
     }
 
-    public ExpellState calculateExpellStatus(Map<AttendanceState, Long> attendanceState) {
-        int lateCount = Math.toIntExact(attendanceState.get(LATE));
-        int absentCount = Math.toIntExact(attendanceState.get(ABSENT));
-        return ExpellState.checkExpellStatus(lateCount, absentCount);
-    }
-
     public Map<String, ExpellState> calculateAllExpellStatus(Map<String, Map<AttendanceState, Long>> attendances) {
         return attendances.entrySet().stream()
                 .collect(Collectors.toMap(
