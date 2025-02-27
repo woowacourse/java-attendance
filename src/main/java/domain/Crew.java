@@ -7,4 +7,8 @@ public class Crew {
     public Crew(String name) {
         this.name = name;
     }
+
+    boolean hasName(String name) {
+        return this.name.equals(name);
+    }
 }

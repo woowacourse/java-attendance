@@ -3,6 +3,7 @@ package domain;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.DisplayNameGeneration;
@@ -16,7 +17,7 @@ public class AttendanceBookTest {
     private AttendanceBook book;
     private final Crew crew = new Crew("크루");
 
-    private AttendanceDateTime dateTime1 = AttendanceDateTime.parse("2025-02-24T10:00");
+    private final AttendanceDateTime dateTime = AttendanceDateTime.parse("2025-02-24T10:00");
 
     @BeforeEach
     public void setUp() {
@@ -24,24 +25,40 @@ public class AttendanceBookTest {
     }
 
     @Test
-    void 크루와_일시를_통해_해당_크루의_출석_기록에_출석일시를_추가할_수_있다() {
-        book.attend(crew, dateTime1);
+    void 출석한_적이_있는_크루를_닉네임으로_조회할_수_있다() {
+        book.attend(crew, dateTime);
 
-        AttendanceRecords records = book.getRecordsOfCrew(crew);
-        assertThat(records.getRecords()).contains(dateTime1);
+        Optional<Crew> crew = book.findCrewByName("크루");
+
+        assertThat(crew).isPresent();
+    }
+
+    @Test
+    void 출석한_적이_없는_크루를_닉네임으로_조회하면_비어있는_Optional을_반환한다() {
+        Optional<Crew> existCrew = book.findCrewByName("크루");
+
+        assertThat(existCrew).isEmpty();
+    }
+
+    @Test
+    void 크루와_출석일시를_통해_해당_크루의_출석_기록에_출석일시를_추가할_수_있다() {
+        book.attend(crew, dateTime);
+
+        var records = book.getRecordsOfCrew(crew);
+        assertThat(records.getRecords()).contains(dateTime);
     }
 
     @Test
     void 출석하려는_날짜에_이미_출석했으면_예외가_발생한다() {
-        book.attend(crew, dateTime1);
+        book.attend(crew, dateTime);
 
-        assertThatThrownBy(() -> book.attend(crew, dateTime1))
+        assertThatThrownBy(() -> book.attend(crew, dateTime))
             .isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
     void 크루가_출석한_적이_없으면_출석기록은_비어있다() {
-        AttendanceRecords records = book.getRecordsOfCrew(crew);
+        var records = book.getRecordsOfCrew(crew);
         assertThat(records.getRecords()).isEmpty();
     }
 }
