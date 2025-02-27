@@ -24,6 +24,26 @@ class AttendancesTest {
         assertThat(attendances.getAttendances()).hasSize(2);
     }
 
+    @DisplayName("닉네임과 일치하는 크루의 출석부를 반환한다.")
+    @Test
+    void findCrewBy() {
+        //given
+        Attendance attendances1 = createAttendance("도기");
+        Attendance attendances2 = createAttendance("포비");
+
+        Attendances attendances = new Attendances();
+        attendances.add(attendances1);
+        attendances.add(attendances2);
+
+        String name = "도기";
+
+        //when
+        Attendance attendance = attendances.findCrewBy(name);
+
+        //then
+        assertThat(attendance).isEqualTo(attendances1);
+    }
+
     private Attendance createAttendance(final String name) {
         Crew crew = Crew.of(name);
 
@@ -36,6 +56,5 @@ class AttendancesTest {
 
         return new Attendance(crew, attendanceTime);
     }
-
 
 }

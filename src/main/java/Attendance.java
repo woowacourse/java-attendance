@@ -19,4 +19,8 @@ public class Attendance {
     public List<LocalDateTime> getAttendanceTime() {
         return new ArrayList<>(attendanceTime);
     }
+
+    public boolean isSame(final String name) {
+        return this.crew.isSame(name);
+    }
 }
