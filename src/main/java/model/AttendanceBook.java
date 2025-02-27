@@ -42,7 +42,9 @@ public class AttendanceBook {
     }
 
     public List<AttendanceStatistics> findAllStatistics() {
-        return null;
+        return attendances.keySet().stream()
+                .map(crew -> new AttendanceStatistics(attendances.get(crew)))
+                .toList();
     }
 
 //    public static Map<Crew, AttendanceHistory> initializeAttendanceOf(Crews crews) {
