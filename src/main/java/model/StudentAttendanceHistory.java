@@ -30,13 +30,12 @@ public class StudentAttendanceHistory {
         try {
             attendanceHistory.remove(findSameDay(wantToModifyLocalDateTime));
             addTime(wantToModifyLocalDateTime);
-            Collections.sort(attendanceHistory);
         } catch (IllegalArgumentException e) {
             System.out.println(e.getMessage());
         }
     }
 
-    private boolean isExistSameDay(LocalDateTime localDateTime1, LocalDateTime localDateTime2) {
+    private boolean isSameDay(LocalDateTime localDateTime1, LocalDateTime localDateTime2) {
         LocalDateTime dayDate1 = localDateTime1.truncatedTo(ChronoUnit.DAYS);
         LocalDateTime dayDate2 = localDateTime2.truncatedTo(ChronoUnit.DAYS);
 
@@ -45,14 +44,19 @@ public class StudentAttendanceHistory {
 
     public void updateNoInformationInFile(LocalDateTime todayDate) {
         LocalDateTime standard = LocalDateTime.of(2024, 12, 1, 0, 0);
-        while (!isExistSameDay(standard, todayDate)) {
+        while (!isSameDay(standard, todayDate)) {
             addTimeRecordIfValid(standard);
             standard = standard.plusDays(1);
         }
     }
 
+    private boolean isExistSameDay(LocalDateTime wantToFindDay) {
+        return attendanceHistory.stream()
+                .anyMatch(localDateTime -> isSameDay(localDateTime,wantToFindDay));
+    }
+
     private void addTimeRecordIfValid(LocalDateTime standard) {
-        if (!isWeekend(standard) && findSameDay(standard) == null) {
+        if (!isWeekend(standard) && !isExistSameDay(standard)) {
             attendanceHistory.add(standard);
         }
     }
@@ -63,6 +67,10 @@ public class StudentAttendanceHistory {
 
     public boolean isAlreadyAttendanceDate(TodayDate todayDate) {
         return attendanceHistory.contains(todayDate.getTodayDateTIme());
+    }
+
+    public void sortHistoryBeforePrint() {
+        Collections.sort(attendanceHistory);
     }
 
     public List<LocalDateTime> getAttendanceHistory() {
