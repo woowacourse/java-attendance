@@ -55,7 +55,7 @@ public class AttendanceTimeCheckTest {
         AttendanceTimeChecker checker = new AttendanceTimeChecker();
 
         // when
-        AttendPolicy policy = checker.attendanceCheck(LocalDate.of(2024, 12, 3),  LocalTime.of(9, 57));
+        AttendPolicy policy = checker.attendanceCheck(LocalDate.of(2024, 12, 3), LocalTime.of(9, 57));
 
         // then
         Assertions.assertThat(policy)
@@ -144,5 +144,19 @@ public class AttendanceTimeCheckTest {
         // then
         Assertions.assertThat(policy)
                 .isEqualTo(AttendPolicy.ABSENT);
+    }
+
+    @DisplayName("운영시간 전에는 출석할 수 없다.")
+    @Test
+    void check11() {
+        // given
+        AttendanceTimeChecker checker = new AttendanceTimeChecker();
+        LocalDate today = LocalDate.of(2024, 12, 3);
+        LocalTime attendanceTime = LocalTime.of(7, 0);
+
+        // when
+        // then
+        Assertions.assertThatThrownBy(() -> checker.attendanceCheck(today, attendanceTime))
+                .isInstanceOf(IllegalArgumentException.class);
     }
 }
