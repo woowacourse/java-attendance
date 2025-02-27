@@ -173,6 +173,70 @@ class CrewAttendanceTest {
         assertThat(times).hasSize(3);
     }
 
+    @Test
+    @DisplayName("해당 크루의 출석부를 보고 정상 학생 판단 후 반환")
+    void getDisciplinaryStatusNormalTest() {
+        // given
+        LocalDate today = LocalDate.of(2024, 12, 10);
+        Crew crew = Crew.of("차니");
+        AttendanceTimes attendanceTimes = AttendanceBookTest.createAttendanceTimes();
+        CrewAttendance crewAttendance = CrewAttendance.of(crew, attendanceTimes);
+
+        // when
+        DisciplinaryStatus disciplinaryStatus = crewAttendance.getDisciplinaryStatus(today);
+
+        // then
+        assertThat(disciplinaryStatus).isEqualTo(DisciplinaryStatus.NORMAL);
+    }
+
+    @Test
+    @DisplayName("해당 크루의 출석부를 보고 경고 학생 판단 후 반환")
+    void getDisciplinaryStatusWarnedTest() {
+        // given
+        LocalDate today = LocalDate.of(2024, 12, 10);
+        Crew crew = Crew.of("차니");
+        AttendanceTimes attendanceTimes = AttendanceBookTest.createWarnedAttendanceTimes();
+        CrewAttendance crewAttendance = CrewAttendance.of(crew, attendanceTimes);
+
+        // when
+        DisciplinaryStatus disciplinaryStatus = crewAttendance.getDisciplinaryStatus(today);
+
+        // then
+        assertThat(disciplinaryStatus).isEqualTo(DisciplinaryStatus.WARNED);
+    }
+
+    @Test
+    @DisplayName("해당 크루의 출석부를 보고 상담 학생 판단 후 반환")
+    void getDisciplinaryStatusCounselingTest() {
+        // given
+        LocalDate today = LocalDate.of(2024, 12, 10);
+        Crew crew = Crew.of("차니");
+        AttendanceTimes attendanceTimes = AttendanceBookTest.createCounselingAttendanceTimes();
+        CrewAttendance crewAttendance = CrewAttendance.of(crew, attendanceTimes);
+
+        // when
+        DisciplinaryStatus disciplinaryStatus = crewAttendance.getDisciplinaryStatus(today);
+
+        // then
+        assertThat(disciplinaryStatus).isEqualTo(DisciplinaryStatus.COUNSELING);
+    }
+
+    @Test
+    @DisplayName("해당 크루의 출석부를 보고 제적 학생 판단 후 반환")
+    void getDisciplinaryStatusDismissTest() {
+        // given
+        LocalDate today = LocalDate.of(2024, 12, 10);
+        Crew crew = Crew.of("차니");
+        AttendanceTimes attendanceTimes = AttendanceBookTest.createDismissAttendanceTimes();
+        CrewAttendance crewAttendance = CrewAttendance.of(crew, attendanceTimes);
+
+        // when
+        DisciplinaryStatus disciplinaryStatus = crewAttendance.getDisciplinaryStatus(today);
+
+        // then
+        assertThat(disciplinaryStatus).isEqualTo(DisciplinaryStatus.DISMISSED);
+    }
+
     private AttendanceTimes createAttendanceTimes() {
         AttendanceTime attendanceTime1 = AttendanceTime.of(
                 LocalDate.of(2024, 12, 10),

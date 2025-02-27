@@ -38,6 +38,12 @@ public class CrewAttendance {
                 .toList();
     }
 
+    public DisciplinaryStatus getDisciplinaryStatus(LocalDate date) {
+        int absenceCount = countAbsenceBeforeDate(date);
+        int lateCount = countLateBeforeDate(date);
+        return DisciplinaryStatus.from(absenceCount, lateCount);
+    }
+
     public int countAttendanceBeforeDate(LocalDate date) {
         return attendanceTimes.countAttendanceBeforeDate(date);
     }

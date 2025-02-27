@@ -92,7 +92,7 @@ class AttendanceBookTest {
     }
 
     // 결석 1회, 지각 2회
-    private AttendanceTimes createAttendanceTimes() {
+    static AttendanceTimes createAttendanceTimes() {
         AttendanceTime attendanceTime1 = AttendanceTime.of(
                 LocalDate.of(2024, 12, 2),
                 LocalTime.of(11, 6)
@@ -128,7 +128,7 @@ class AttendanceBookTest {
     }
 
     // 결석 1회, 지각 3회, 경고 대상자
-    private AttendanceTimes createWarnedAttendanceTimes() {
+    static AttendanceTimes createWarnedAttendanceTimes() {
         AttendanceTime attendanceTime1 = AttendanceTime.of(
                 LocalDate.of(2024, 12, 2),
                 LocalTime.of(13, 6)
@@ -164,7 +164,7 @@ class AttendanceBookTest {
     }
 
     // 결석 2회, 지각 3회, 면담 대상자
-    private AttendanceTimes createCounselingAttendanceTimes() {
+    static AttendanceTimes createCounselingAttendanceTimes() {
         AttendanceTime attendanceTime1 = AttendanceTime.of(
                 LocalDate.of(2024, 12, 2),
                 LocalTime.of(15, 6)
@@ -200,7 +200,7 @@ class AttendanceBookTest {
     }
 
     // 결석 6회
-    private AttendanceTimes createDismissAttendanceTimes() {
+    static AttendanceTimes createDismissAttendanceTimes() {
         AttendanceTime attendanceTime1 = AttendanceTime.of(
                 LocalDate.of(2024, 12, 2),
                 LocalTime.of(16, 6)
