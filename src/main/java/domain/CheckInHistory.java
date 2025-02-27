@@ -25,10 +25,14 @@ public class CheckInHistory {
     }
 
     public void modifyCheckInTime(CheckInDate checkInDate, CheckInTime checkInTime) {
-        if (history.containsKey(checkInDate) && history.get(checkInDate).equals(checkInTime)) {
+        validateNonSameTime(checkInDate, checkInTime);
+        history.put(checkInDate, checkInTime);
+    }
+
+    private void validateNonSameTime(CheckInDate checkInDate, CheckInTime checkInTime) {
+        if (history.get(checkInDate).equals(checkInTime)) {
             throw new AppException("이미 같은 시간에 출석 기록이 있습니다.");
         }
-        history.put(checkInDate, checkInTime);
     }
 
     private void validateAlreadyCheckIn(CheckInDate checkInDate) {
