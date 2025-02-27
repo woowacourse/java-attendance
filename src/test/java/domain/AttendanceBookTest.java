@@ -172,11 +172,7 @@ public class AttendanceBookTest {
                 .map(AttendanceCount::crewName)
                 .toList();
 
-        assertThat(crewNames).isEqualTo(
-                List.of(new CrewName("말론"),
-                        new CrewName("노랑"),
-                        new CrewName("프리"),
-                        new CrewName("리버")));
+        assertThat(crewNames).isEqualTo(List.of(malone, norang, pree, river));
     }
 
     private void setAttendanceBook() {

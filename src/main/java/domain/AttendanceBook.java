@@ -59,15 +59,7 @@ public class AttendanceBook {
     public PenaltyInformation findPenaltyCrewSorted(LocalDate yesterday) {
         List<AttendanceCount> penaltyInformation = new ArrayList<>();
         for (CrewName crewName : value.keySet()) {
-            AttendanceRecord attendanceRecord = findAttendanceRecordBy(crewName);
-            AttendanceCount attendanceCount = new AttendanceCount(
-                    crewName,
-                    attendanceRecord.calculateCountOf(AttendanceStatus.ATTEND, yesterday),
-                    attendanceRecord.calculateCountOf(AttendanceStatus.LATE, yesterday),
-                    attendanceRecord.calculateCountOf(AttendanceStatus.ABSENT, yesterday),
-                    attendanceRecord.calculateConsideredAbsentCount(yesterday)
-            );
-            penaltyInformation.add(attendanceCount);
+            penaltyInformation.add(findCountUntil(crewName, yesterday));
         }
         penaltyInformation.sort(
                 Comparator.comparingInt(AttendanceCount::absentCount)
