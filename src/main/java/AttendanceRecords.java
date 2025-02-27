@@ -11,4 +11,10 @@ public class AttendanceRecords {
     public boolean hasRecordOnDate(LocalDate date) {
         return records.stream().anyMatch(record -> record.getDate().equals(date));
     }
+
+    public int getAttendanceCount(AttendanceStatus status) {
+        return (int) records.stream()
+                .filter(record -> record.getAttendanceStatus() == status)
+                .count();
+    }
 }
