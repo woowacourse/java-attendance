@@ -5,6 +5,7 @@ import static attendance.domain.AttendancePolicy.calculateAttendanceStatus;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -40,5 +41,10 @@ public class AttendanceManager {
         AttendanceHistory attendanceHistory = attendanceBook.get(crew);
         Attendance modifiedAttendance = new Attendance(dateToModify, modificationTime, modificationStatus);
         return attendanceHistory.modifyAttendance(modifiedAttendance);
+    }
+
+    public List<Attendance> getMonthlyAttendances(final LocalDate today, final Crew crew) {
+        AttendanceHistory attendanceHistory = attendanceBook.get(crew);
+        return attendanceHistory.getMonthlyAttendances(today);
     }
 }

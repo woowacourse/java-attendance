@@ -9,6 +9,7 @@ import attendance.view.OutputView;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -113,6 +114,7 @@ public class Application {
     }
 
     private static void checkAttendanceHistory() {
+        LocalDate today = now();
         String crewNickname = InputView.readCrewNicknameToModify();
         Crew crew = new Crew(crewNickname);
         boolean isCrewExists = attendanceManager.isCrewExists(crew);
@@ -120,6 +122,7 @@ public class Application {
             OutputView.printNotRegisteredCrewNickname();
             return;
         }
+        List<Attendance> monthlyAttendances = attendanceManager.getMonthlyAttendances(today, crew);
     }
 
     private static void checkDangerousCrews() {

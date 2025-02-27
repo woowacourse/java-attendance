@@ -1,13 +1,18 @@
 package attendance.domain;
 
-import static attendance.domain.AttendanceStatus.*;
+import static attendance.domain.AttendanceStatus.ABSENCE;
+import static attendance.domain.AttendanceStatus.ATTENDANCE;
+import static attendance.domain.AttendanceStatus.LATE;
+import static attendance.domain.AttendanceStatus.values;
 
 import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 public class AttendanceHistory {
     private final Set<Attendance> attendances = new HashSet<>();
@@ -30,6 +35,12 @@ public class AttendanceHistory {
         return addAttendance(modifiedAttendance);
     }
 
+    public List<Attendance> getMonthlyAttendances(final LocalDate today) {
+        return attendances.stream()
+                .filter(attendance -> attendance.isYearMonthEquals(today))
+                .collect(Collectors.toUnmodifiableList());
+    }
+
     public AttendanceStatistics returnAttendanceStatistics(final LocalDate today) {
         Map<AttendanceStatus, Integer> statistics = new HashMap<>();
         initializeStatistics(statistics);
@@ -50,7 +61,7 @@ public class AttendanceHistory {
         return new AttendanceStatistics(statistics.get(ATTENDANCE), statistics.get(LATE), statistics.get(ABSENCE));
     }
 
-    private void initializeStatistics(Map<AttendanceStatus, Integer> statistics) {
+    private void initializeStatistics(final Map<AttendanceStatus, Integer> statistics) {
         for (AttendanceStatus status : values()) {
             statistics.put(status, 0);
         }

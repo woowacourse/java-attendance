@@ -18,6 +18,11 @@ public class Attendance {
         return this.date.isEqual(date);
     }
 
+    public boolean isYearMonthEquals(final LocalDate today) {
+        return date.getYear() == today.getYear() &&
+                date.getMonthValue() == today.getMonthValue();
+    }
+
     public AttendanceStatus getStatus() {
         return status;
     }
