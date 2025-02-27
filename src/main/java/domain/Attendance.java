@@ -1,8 +1,11 @@
 package domain;
 
 import java.time.DayOfWeek;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.HashMap;
+import java.util.Map;
 
 public class Attendance {
     private static final int TARDY_THRESHOLD_MINUTE = 5;
@@ -10,12 +13,26 @@ public class Attendance {
     private static final LocalTime MONDAY_OPEN = LocalTime.of(13, 0);
     private static final LocalTime DEFAULT_OPEN = LocalTime.of(10, 0);
 
+    Map<String, LocalDate> attendanceHistory = new HashMap<>();
+
     public String checkAttendance(String nickname, LocalDateTime attendanceDateTime) {
+        LocalDate attendanceDate = attendanceDateTime.toLocalDate();
         LocalTime attendanceTime = attendanceDateTime.toLocalTime();
+        validateDuplicateAttendance(nickname, attendanceDate);
+        attendanceHistory.put(nickname, attendanceDate);
         if (attendanceDateTime.getDayOfWeek() == DayOfWeek.MONDAY) {
             return checkAttendanceByDay(attendanceTime, MONDAY_OPEN);
         }
         return checkAttendanceByDay(attendanceTime, DEFAULT_OPEN);
+    }
+
+    private void validateDuplicateAttendance(String nickname, LocalDate attendanceDateTime) {
+        if (!attendanceHistory.containsKey(nickname)) {
+            return;
+        }
+        if (attendanceHistory.get(nickname).isEqual(attendanceDateTime)) {
+            throw new IllegalArgumentException("[ERROR] 이미 출석을 확인하였습니다. 필요한 경우 수정 기능을 이용해 주세요.");
+        }
     }
 
     private String checkAttendanceByDay(LocalTime attendanceTime, LocalTime openTime) {
