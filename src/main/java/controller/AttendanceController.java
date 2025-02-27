@@ -36,7 +36,7 @@ public class AttendanceController {
         final AttendanceBook attendanceBook = new AttendanceBook();
         final Crews crews = savedDataLoader.loadCrews();
         savedDataLoader.loadAttendances(attendanceBook, crews);
-        attendance(attendanceBook, crews);
+        updateAttendance(attendanceBook, crews);
     }
 
     public void attendance(final AttendanceBook attendanceBook, final Crews crews) {
@@ -47,6 +47,22 @@ public class AttendanceController {
         final AttendanceRecord attendanceRecord = attendanceHistory.attendance(LocalDateTime.of(now(), attendanceTime));
 
         outputView.printAttendanceRecord(dtoConverter.convertToAttendanceRecordDto(attendanceRecord));
+    }
+
+    public void updateAttendance(final AttendanceBook attendanceBook, final Crews crews) {
+        final Crew crew = crews.findByName(inputView.readUpdateCrewName());
+        final int updateMonthOfDay = inputView.readUpdateMonthOfDay();
+        final LocalTime updateTime = inputView.readUpdateTime();
+
+        final AttendanceHistory attendanceHistory = attendanceBook.findByCrew(crew);
+        final AttendanceRecord beforeAttendanceRecord = attendanceHistory.updateTimeByDate(
+                LocalDateTime.of(now().withDayOfMonth(updateMonthOfDay), updateTime));
+        final AttendanceRecord afterAttendanceRecord = attendanceHistory.findByDate(
+                now().withDayOfMonth(updateMonthOfDay));
+
+        outputView.printUpdateAttendanceResult(dtoConverter.convertToAttendanceRecordDto(beforeAttendanceRecord),
+                dtoConverter.convertToAttendanceRecordDto(afterAttendanceRecord));
+
     }
 
     public void checkAttendanceForEachCrew(final AttendanceBook attendanceBook, final Crews crews) {

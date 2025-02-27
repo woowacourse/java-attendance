@@ -11,6 +11,21 @@ public class OutputView {
 
     private static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("MM월 dd일 E요일 HH:mm");
     private static final DateTimeFormatter EMPTY_TIME_FORMATTER = DateTimeFormatter.ofPattern("MM월 dd일 E요일 --:--");
+    private static final DateTimeFormatter TIME_FORMATTER = DateTimeFormatter.ofPattern("HH:mm");
+    private static final DateTimeFormatter EMPTY_FORMATTER = DateTimeFormatter.ofPattern("--:--");
+
+    public void printUpdateAttendanceResult(final AttendanceRecordDto before, final AttendanceRecordDto after) {
+        System.out.printf("%s -> %s", formatAttendanceRecord(before), formatAttendanceTime(after));
+    }
+
+    private String formatAttendanceTime(final AttendanceRecordDto attendanceRecordDto) {
+        if (attendanceRecordDto.isEmpty()) {
+            return String.format("%s (%s)", attendanceRecordDto.dateTime().format(EMPTY_FORMATTER),
+                    attendanceRecordDto.attendanceStatus());
+        }
+        return String.format("%s (%s)", attendanceRecordDto.dateTime().format(TIME_FORMATTER),
+                attendanceRecordDto.attendanceStatus());
+    }
 
     public void printIntroduceAttendanceRecords(final String crewName) {
         System.out.printf("이번 달 %s의 출석 기록입니다.\n", crewName);
@@ -21,13 +36,16 @@ public class OutputView {
     }
 
     public void printAttendanceRecord(final AttendanceRecordDto attendanceRecordDto) {
+        System.out.println(formatAttendanceRecord(attendanceRecordDto));
+    }
+
+    private String formatAttendanceRecord(final AttendanceRecordDto attendanceRecordDto) {
         if (attendanceRecordDto.isEmpty()) {
-            System.out.printf(attendanceRecordDto.dateTime().format(EMPTY_TIME_FORMATTER) + " (%s)\n",
+            return String.format(attendanceRecordDto.dateTime().format(EMPTY_TIME_FORMATTER) + " (%s)",
                     attendanceRecordDto.attendanceStatus());
-            return;
         }
-        System.out.printf(
-                attendanceRecordDto.dateTime().format(DATE_TIME_FORMATTER) + " (%s)\n",
+        return String.format(
+                attendanceRecordDto.dateTime().format(DATE_TIME_FORMATTER) + " (%s)",
                 attendanceRecordDto.attendanceStatus());
     }
 
