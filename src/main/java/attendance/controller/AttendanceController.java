@@ -6,6 +6,7 @@ import attendance.domain.initializer.AttendanceSystemInitializer;
 import attendance.domain.record.AttendanceRecord;
 import attendance.dto.AttendanceState;
 import attendance.dto.RecordUpdateResult;
+import attendance.exception.AttendanceException;
 import attendance.exception.ExceptionMessage;
 import attendance.view.InputView;
 import attendance.view.OutputView;
@@ -91,7 +92,7 @@ public class AttendanceController {
     private void validateRegisteredCrew(String nickname) {
         boolean isNotRegistered = !attendanceSystem.checkRegisteredCrew(nickname);
         if (isNotRegistered) {
-            throw new IllegalArgumentException(ExceptionMessage.INVALID_CREW.getMessage());
+            throw new AttendanceException(ExceptionMessage.INVALID_CREW.getMessage());
         }
     }
 }

@@ -1,6 +1,7 @@
 package attendance.domain.record;
 
 import attendance.domain.checker.AttendanceType;
+import attendance.exception.AttendanceException;
 import attendance.exception.ExceptionMessage;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -56,7 +57,7 @@ public class AttendanceRecordStorage {
         Optional<AttendanceRecord> originRecord = find(
                 record.getNickname(), record.getArrivalDateTime().toLocalDate());
         if (originRecord.isPresent()) {
-            throw new IllegalArgumentException(ExceptionMessage.ALREADY_ATTENDANCE.getMessage());
+            throw new AttendanceException(ExceptionMessage.ALREADY_ATTENDANCE.getMessage());
         }
     }
 

@@ -1,9 +1,10 @@
 package attendance.domain.record;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import attendance.domain.checker.AttendanceType;
+import attendance.exception.AttendanceException;
 import attendance.exception.ExceptionMessage;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -35,9 +36,9 @@ class AttendanceRecordStorageTest {
     @Test
     void 출석_기록_추가_출석_기록이_이미_존재하는_날에_예외를_발생시킨다() {
         recordStorage.add(RECORD);
-        assertThatIllegalArgumentException()
-                .isThrownBy(() -> recordStorage.add(RECORD))
-                .withMessage(ExceptionMessage.ALREADY_ATTENDANCE.getMessage());
+        assertThatThrownBy(() -> recordStorage.add(RECORD))
+                .isInstanceOf(AttendanceException.class)
+                .hasMessage(ExceptionMessage.ALREADY_ATTENDANCE.getMessage());
     }
 
     @DisplayName("출석 기록 추가 - 결석 기록은 추가할 수 없다")

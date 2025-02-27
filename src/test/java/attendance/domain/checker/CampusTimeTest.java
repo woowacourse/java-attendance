@@ -1,8 +1,9 @@
 package attendance.domain.checker;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+import attendance.exception.AttendanceException;
 import attendance.exception.ExceptionMessage;
 import java.time.LocalTime;
 import java.util.stream.Stream;
@@ -39,9 +40,9 @@ class CampusTimeTest {
     @ParameterizedTest
     @MethodSource()
     void 컴퍼스_운영시간이_아닌_경우를_검증할_수_있다(LocalTime time) {
-        assertThatIllegalArgumentException()
-                .isThrownBy(() -> CampusTime.validateCampusTime(time))
-                .withMessage(ExceptionMessage.OUT_OF_CAMPUS_TIME.getMessage());
+        assertThatThrownBy(() -> CampusTime.validateCampusTime(time))
+                .isInstanceOf(AttendanceException.class)
+                .hasMessage(ExceptionMessage.OUT_OF_CAMPUS_TIME.getMessage());
     }
 
     static Stream<Arguments> 컴퍼스_운영시간이_아닌_경우를_검증할_수_있다() {

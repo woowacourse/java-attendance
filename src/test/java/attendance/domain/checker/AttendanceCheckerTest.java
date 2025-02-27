@@ -1,8 +1,9 @@
 package attendance.domain.checker;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+import attendance.exception.AttendanceException;
 import attendance.exception.ExceptionMessage;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -99,9 +100,9 @@ class AttendanceCheckerTest {
         LocalDateTime holidayDateTime = LocalDateTime.of(holiday, LocalTime.of(8, 50));
 
         String expectedMessage = makeHolidayAttendanceExceptionMessage(holiday);
-        assertThatIllegalArgumentException()
-                .isThrownBy(() -> attendanceChecker.checkAttendance(holidayDateTime))
-                .withMessage(expectedMessage);
+        assertThatThrownBy(() -> attendanceChecker.checkAttendance(holidayDateTime))
+                .isInstanceOf(AttendanceException.class)
+                .hasMessage(expectedMessage);
     }
 
     static Stream<Arguments> 휴일인_경우에는_예외를_발생시킨다() {
@@ -119,9 +120,9 @@ class AttendanceCheckerTest {
     void 캠퍼스_운영시간이_아닌_경우_예외를_발생시킨다(LocalTime time) {
         LocalDateTime dateTime = LocalDateTime.of(MONDAY, time);
 
-        assertThatIllegalArgumentException()
-                .isThrownBy(() -> attendanceChecker.checkAttendance(dateTime))
-                .withMessage(ExceptionMessage.OUT_OF_CAMPUS_TIME.getMessage());
+        assertThatThrownBy(() -> attendanceChecker.checkAttendance(dateTime))
+                .isInstanceOf(AttendanceException.class)
+                .hasMessage(ExceptionMessage.OUT_OF_CAMPUS_TIME.getMessage());
     }
 
 

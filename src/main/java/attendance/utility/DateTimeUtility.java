@@ -1,6 +1,7 @@
 package attendance.utility;
 
 import attendance.exception.ExceptionMessage;
+import attendance.exception.InputException;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
@@ -16,7 +17,7 @@ public class DateTimeUtility {
         try {
             return LocalTime.parse(input);
         } catch (DateTimeParseException exception) {
-            throw new IllegalArgumentException(ExceptionMessage.TIME_FORMAT_ERROR.getMessage());
+            throw new InputException(ExceptionMessage.TIME_FORMAT_ERROR.getMessage());
         }
     }
 

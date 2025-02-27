@@ -1,5 +1,6 @@
 package attendance.domain.crew;
 
+import attendance.exception.AttendanceException;
 import attendance.exception.ExceptionMessage;
 import java.util.HashSet;
 import java.util.List;
@@ -22,7 +23,7 @@ public class CrewStorage {
 
     public void validateIsNotContained(String nickname) {
         if (checkIsNotContained(nickname)) {
-            throw new IllegalArgumentException(ExceptionMessage.INVALID_CREW.getMessage());
+            throw new AttendanceException(ExceptionMessage.INVALID_CREW.getMessage());
         }
     }
 

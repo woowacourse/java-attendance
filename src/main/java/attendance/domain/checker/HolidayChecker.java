@@ -1,5 +1,6 @@
 package attendance.domain.checker;
 
+import attendance.exception.AttendanceException;
 import attendance.exception.ExceptionMessage;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
@@ -21,7 +22,7 @@ public class HolidayChecker {
             String exceptionMessage = String.format(ExceptionMessage.HOLIDAY_ATTENDANCE.getMessage(),
                     date.getMonth().getValue(), date.getDayOfMonth(),
                     date.getDayOfWeek().getDisplayName(TextStyle.SHORT, Locale.KOREA));
-            throw new IllegalArgumentException(exceptionMessage);
+            throw new AttendanceException(exceptionMessage);
         }
     }
 

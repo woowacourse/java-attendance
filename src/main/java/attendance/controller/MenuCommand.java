@@ -1,6 +1,7 @@
 package attendance.controller;
 
 import attendance.exception.ExceptionMessage;
+import attendance.exception.MenuException;
 import java.util.List;
 
 public enum MenuCommand {
@@ -22,7 +23,7 @@ public enum MenuCommand {
         return commands.stream()
                 .filter(command -> command.getContent().equals(upperInput))
                 .findAny()
-                .orElseThrow(() -> new IllegalArgumentException(ExceptionMessage.INCORRECT_MENU.getMessage()));
+                .orElseThrow(() -> new MenuException(ExceptionMessage.INCORRECT_MENU.getMessage()));
     }
 
     public String getContent() {

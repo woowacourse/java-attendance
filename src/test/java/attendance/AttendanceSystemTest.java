@@ -1,7 +1,7 @@
 package attendance;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import attendance.domain.AttendanceSystem;
 import attendance.domain.checker.AttendanceChecker;
@@ -12,6 +12,7 @@ import attendance.domain.record.AttendanceRecord;
 import attendance.domain.record.AttendanceRecordStorage;
 import attendance.domain.risk.RiskType;
 import attendance.dto.AttendanceState;
+import attendance.exception.AttendanceException;
 import attendance.exception.ExceptionMessage;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -131,9 +132,9 @@ class AttendanceSystemTest {
         LocalDateTime arrivalDateTime = LocalDateTime.of(MONDAY, MONDAY_ATTENDANCE_TIME);
         attendanceSystem.addAttendanceRecord(nickname, arrivalDateTime);
 
-        assertThatIllegalArgumentException()
-                .isThrownBy(() -> attendanceSystem.addAttendanceRecord(nickname, arrivalDateTime))
-                .withMessage(ExceptionMessage.ALREADY_ATTENDANCE.getMessage());
+        assertThatThrownBy(() -> attendanceSystem.addAttendanceRecord(nickname, arrivalDateTime))
+                .isInstanceOf(AttendanceException.class)
+                .hasMessage(ExceptionMessage.ALREADY_ATTENDANCE.getMessage());
     }
 
     @DisplayName("출석 확인 - 네임이 등록되지 않은 경우 예외 메세지를 출력한다")
@@ -142,9 +143,9 @@ class AttendanceSystemTest {
         String nickname = INVALID_CREW_NICKNAME;
         LocalDateTime arrivalDateTime = LocalDateTime.of(MONDAY, MONDAY_ATTENDANCE_TIME);
 
-        assertThatIllegalArgumentException()
-                .isThrownBy(() -> attendanceSystem.addAttendanceRecord(nickname, arrivalDateTime))
-                .withMessage(ExceptionMessage.INVALID_CREW.getMessage());
+        assertThatThrownBy(() -> attendanceSystem.addAttendanceRecord(nickname, arrivalDateTime))
+                .isInstanceOf(AttendanceException.class)
+                .hasMessage(ExceptionMessage.INVALID_CREW.getMessage());
     }
 
     @DisplayName("출석 확인 - 등교일이 아닌 경우 예외 메세지를 출력한다")
@@ -152,10 +153,9 @@ class AttendanceSystemTest {
     @MethodSource()
     void 출석_확인_등교일이_아닌_경우_예외_메세지를_출력한다(LocalDateTime arrivalDateTime) {
         String nickname = VALID_CREW_NICKNAME;
-
-        assertThatIllegalArgumentException()
-                .isThrownBy(() -> attendanceSystem.addAttendanceRecord(nickname, arrivalDateTime))
-                .withMessage(makeHolidayAttendanceExceptionMessage(arrivalDateTime.toLocalDate()));
+        assertThatThrownBy(() -> attendanceSystem.addAttendanceRecord(nickname, arrivalDateTime))
+                .isInstanceOf(AttendanceException.class)
+                .hasMessage(makeHolidayAttendanceExceptionMessage(arrivalDateTime.toLocalDate()));
     }
 
     static Stream<Arguments> 출석_확인_등교일이_아닌_경우_예외_메세지를_출력한다() {
@@ -170,10 +170,10 @@ class AttendanceSystemTest {
     @ParameterizedTest
     @MethodSource()
     void 출석_확인_캠퍼스_운영_시간이_아닌_경우_예외_메세지를_출력한다(LocalDateTime arrivalDateTime) {
-        assertThatIllegalArgumentException()
-                .isThrownBy(() -> attendanceSystem.addAttendanceRecord(VALID_CREW_NICKNAME,
-                        LocalDateTime.of(MONDAY, CAMPUS_END_TIME)))
-                .withMessage(ExceptionMessage.OUT_OF_CAMPUS_TIME.getMessage());
+        assertThatThrownBy(() -> attendanceSystem.addAttendanceRecord(VALID_CREW_NICKNAME,
+                LocalDateTime.of(MONDAY, CAMPUS_END_TIME)))
+                .isInstanceOf(AttendanceException.class)
+                .hasMessage(ExceptionMessage.OUT_OF_CAMPUS_TIME.getMessage());
     }
 
     static Stream<Arguments> 출석_확인_캠퍼스_운영_시간이_아닌_경우_예외_메세지를_출력한다() {
@@ -223,20 +223,20 @@ class AttendanceSystemTest {
     @DisplayName("출석 기록 수정 - 닉네임이 등록되지 않은 경우 예외 메세지를 출력한다")
     @Test
     void 출석_기록_수정_닉네임이_등록되지_않은_경우_예외_메세지를_출력한다() {
-        assertThatIllegalArgumentException()
-                .isThrownBy(() -> attendanceSystem.updateAttendance(
-                        INVALID_CREW_NICKNAME, MONDAY, MONDAY_ATTENDANCE_TIME))
-                .withMessage(ExceptionMessage.INVALID_CREW.getMessage());
+        assertThatThrownBy(
+                () -> attendanceSystem.updateAttendance(INVALID_CREW_NICKNAME, MONDAY, MONDAY_ATTENDANCE_TIME))
+                .isInstanceOf(AttendanceException.class)
+                .hasMessage(ExceptionMessage.INVALID_CREW.getMessage());
     }
 
     @DisplayName("출석 기록 수정 - 등교일이 아닌 경우 예외 메세지를 출력한다")
     @ParameterizedTest
     @MethodSource()
     void 출석_기록_수정_등교일이_아닌_경우_예외_메세지를_출력한다(LocalDate holiday) {
-        assertThatIllegalArgumentException()
-                .isThrownBy(() -> attendanceSystem.updateAttendance(
-                        VALID_CREW_NICKNAME, holiday, MONDAY_ATTENDANCE_TIME))
-                .withMessage(makeHolidayAttendanceExceptionMessage(holiday));
+        assertThatThrownBy(
+                () -> attendanceSystem.updateAttendance(VALID_CREW_NICKNAME, holiday, MONDAY_ATTENDANCE_TIME))
+                .isInstanceOf(AttendanceException.class)
+                .hasMessage(makeHolidayAttendanceExceptionMessage(holiday));
     }
 
     static Stream<Arguments> 출석_기록_수정_등교일이_아닌_경우_예외_메세지를_출력한다() {
@@ -251,10 +251,10 @@ class AttendanceSystemTest {
     @ParameterizedTest
     @MethodSource()
     void 출석_기록_수정_캠퍼스_운영_시간이_아닌_경우_예외_메세지를_출력한다(LocalDateTime arrivalDateTime) {
-        assertThatIllegalArgumentException()
-                .isThrownBy(() -> attendanceSystem.updateAttendance(
-                        VALID_CREW_NICKNAME, arrivalDateTime.toLocalDate(), arrivalDateTime.toLocalTime()))
-                .withMessage(ExceptionMessage.OUT_OF_CAMPUS_TIME.getMessage());
+        assertThatThrownBy(() -> attendanceSystem.updateAttendance(VALID_CREW_NICKNAME, arrivalDateTime.toLocalDate(),
+                arrivalDateTime.toLocalTime()))
+                .isInstanceOf(AttendanceException.class)
+                .hasMessage(ExceptionMessage.OUT_OF_CAMPUS_TIME.getMessage());
     }
 
     static Stream<Arguments> 출석_기록_수정_캠퍼스_운영_시간이_아닌_경우_예외_메세지를_출력한다() {
@@ -309,9 +309,9 @@ class AttendanceSystemTest {
     @Test
     void 출석_조회_닉네임이_등록되지_않은_경우_예외_메세지를_출력한다() {
         LocalDate today = LocalDate.of(2025, 2, 7);
-        assertThatIllegalArgumentException()
-                .isThrownBy(() -> attendanceSystem.calculateAttendanceStateInMonth(INVALID_CREW_NICKNAME, today))
-                .withMessage(ExceptionMessage.INVALID_CREW.getMessage());
+        assertThatThrownBy(() -> attendanceSystem.calculateAttendanceStateInMonth(INVALID_CREW_NICKNAME, today))
+                .isInstanceOf(AttendanceException.class)
+                .hasMessage(ExceptionMessage.INVALID_CREW.getMessage());
     }
 
     @DisplayName("제적 위험자 조회 - 제적 위험이 있는 크루의 출석 상태와 제적 위험도를 구할 수 있다")

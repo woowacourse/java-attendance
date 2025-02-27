@@ -1,9 +1,10 @@
 package attendance.view.validator;
 
 import static org.assertj.core.api.Assertions.assertThatCode;
-import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import attendance.exception.ExceptionMessage;
+import attendance.exception.InputException;
 import java.time.LocalDate;
 import java.time.Month;
 import java.util.stream.Stream;
@@ -25,17 +26,17 @@ class InputValidatorTest {
     @ParameterizedTest
     @NullAndEmptySource
     void 비어있는_값이_입력되었는지_검증할_수_있다(String input) {
-        assertThatIllegalArgumentException()
-                .isThrownBy(() -> InputValidator.validateBlank(input))
-                .withMessage(ExceptionMessage.BLANK_INPUT.getMessage());
+        assertThatThrownBy(() -> InputValidator.validateBlank(input))
+                .isInstanceOf(InputException.class)
+                .hasMessage(ExceptionMessage.BLANK_INPUT.getMessage());
     }
 
     @DisplayName("숫자 형식 아닌 데이터가 입력되었는지 검증할 수 있다")
     @Test
     void 숫자_형식_아닌_데이터가_입력되었는지_검증할_수_있다() {
-        assertThatIllegalArgumentException()
-                .isThrownBy(() -> InputValidator.validateNonNumeric("숫자아님"))
-                .withMessage(ExceptionMessage.NOT_NUMERIC_INPUT.getMessage());
+        assertThatThrownBy(() -> InputValidator.validateNonNumeric("숫자아님"))
+                .isInstanceOf(InputException.class)
+                .hasMessage(ExceptionMessage.NOT_NUMERIC_INPUT.getMessage());
     }
 
     @DisplayName("달에 포한된 날짜가 입력되었는지 검증할 수 있다")
@@ -48,9 +49,9 @@ class InputValidatorTest {
             return;
         }
 
-        assertThatIllegalArgumentException()
-                .isThrownBy(() -> InputValidator.validateIsInMonth(YEAR, MONTH, day))
-                .withMessage(ExceptionMessage.INVALID_DAY_INPUT.getMessage());
+        assertThatThrownBy(() -> InputValidator.validateIsInMonth(YEAR, MONTH, day))
+                .isInstanceOf(InputException.class)
+                .hasMessage(ExceptionMessage.INVALID_DAY_INPUT.getMessage());
     }
 
     static Stream<Arguments> 달에_포한된_날짜가_입력되었는지_검증할_수_있다() {

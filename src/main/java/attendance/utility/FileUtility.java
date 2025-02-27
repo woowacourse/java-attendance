@@ -1,6 +1,7 @@
 package attendance.utility;
 
 import attendance.exception.ExceptionMessage;
+import attendance.exception.FileException;
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
@@ -24,7 +25,7 @@ public class FileUtility {
             FileReader fileReader = new FileReader(RESOURCE_PATH + fileName);
             return new BufferedReader(fileReader);
         } catch (FileNotFoundException exception) {
-            throw new IllegalArgumentException(ExceptionMessage.NOT_FOUND_FILE.getMessage());
+            throw new FileException(ExceptionMessage.NOT_FOUND_FILE.getMessage());
         }
     }
 
@@ -37,7 +38,7 @@ public class FileUtility {
             }
             return lines;
         } catch (IOException exception) {
-            throw new IllegalArgumentException(ExceptionMessage.FILE_IO_ERROR.getMessage());
+            throw new FileException(ExceptionMessage.FILE_IO_ERROR.getMessage());
         }
     }
 }

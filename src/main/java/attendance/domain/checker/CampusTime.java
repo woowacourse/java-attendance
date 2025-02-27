@@ -1,5 +1,6 @@
 package attendance.domain.checker;
 
+import attendance.exception.AttendanceException;
 import attendance.exception.ExceptionMessage;
 import java.time.LocalTime;
 
@@ -15,7 +16,7 @@ public enum CampusTime {
 
     public static void validateCampusTime(LocalTime time) {
         if (!checkInCampusTime(time)) {
-            throw new IllegalArgumentException(ExceptionMessage.OUT_OF_CAMPUS_TIME.getMessage());
+            throw new AttendanceException(ExceptionMessage.OUT_OF_CAMPUS_TIME.getMessage());
         }
     }
 

@@ -2,8 +2,9 @@ package attendance.domain.crew;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
-import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+import attendance.exception.AttendanceException;
 import attendance.exception.ExceptionMessage;
 import java.util.List;
 import org.junit.jupiter.api.DisplayName;
@@ -39,9 +40,9 @@ class CrewStorageTest {
 
         assertThatCode(() -> crewStorage.validateIsNotContained("쿠키"))
                 .doesNotThrowAnyException();
-        assertThatIllegalArgumentException()
-                .isThrownBy(() -> crewStorage.validateIsNotContained("빙봉"))
-                .withMessage(ExceptionMessage.INVALID_CREW.getMessage());
+        assertThatThrownBy(() -> crewStorage.validateIsNotContained("빙봉"))
+                .isInstanceOf(AttendanceException.class)
+                .hasMessage(ExceptionMessage.INVALID_CREW.getMessage());
     }
 
     @DisplayName("해당 이름의 크루가 존재하는지 체크할 수 있다")

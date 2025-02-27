@@ -1,8 +1,9 @@
 package attendance.domain.checker;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+import attendance.exception.AttendanceException;
 import attendance.exception.ExceptionMessage;
 import java.time.LocalDate;
 import java.time.format.TextStyle;
@@ -54,9 +55,9 @@ class HolidayCheckerTest {
     @ParameterizedTest
     @MethodSource()
     void 휴일이_아닌_경우를_검증할_수_있다(LocalDate holiday) {
-        assertThatIllegalArgumentException()
-                .isThrownBy(() -> holidayChecker.validateNotHoliday(holiday))
-                .withMessage(makeHolidayAttendanceExceptionMessage(holiday));
+        assertThatThrownBy(() -> holidayChecker.validateNotHoliday(holiday))
+                .isInstanceOf(AttendanceException.class)
+                .hasMessage(makeHolidayAttendanceExceptionMessage(holiday));
     }
 
     static Stream<Arguments> 휴일이_아닌_경우를_검증할_수_있다() {
