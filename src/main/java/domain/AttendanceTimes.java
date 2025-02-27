@@ -46,4 +46,28 @@ public class AttendanceTimes {
         }
         return Optional.of(currentTime.get().modify(time));
     }
+
+    public int countAttendanceBeforeDate(LocalDate date) {
+        int count = 0;
+        for (AttendanceTime time : attendanceLog) {
+            if (time.isBefore(date)) {
+                if (!time.isAbsence() && !time.isLate()) {
+                    count++;
+                }
+            }
+        }
+        return count;
+    }
+
+    public int countLateBeforeDate(LocalDate date) {
+        int count = 0;
+        for (AttendanceTime time : attendanceLog) {
+            if (time.isBefore(date)) {
+                if (time.isLate()) {
+                    count++;
+                }
+            }
+        }
+        return count;
+    }
 }

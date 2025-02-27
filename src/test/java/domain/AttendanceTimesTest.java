@@ -103,6 +103,34 @@ class AttendanceTimesTest {
         assertThat(modified).isEqualTo(LocalDateTime.of(date, time));
     }
 
+    @Test
+    @DisplayName("출석 횟수 반환")
+    void countAttendanceTest() {
+        // given
+        AttendanceTimes attendanceTimes = AttendanceTimes.of(createAttendanceLog());
+        LocalDate today = LocalDate.of(2024, 12, 13);
+
+        // when
+        int count = attendanceTimes.countAttendanceBeforeDate(today);
+
+        // then
+        assertThat(count).isEqualTo(2);
+    }
+
+    @Test
+    @DisplayName("지각 횟수 반환")
+    void countLateTest() {
+        // given
+        AttendanceTimes attendanceTimes = AttendanceTimes.of(createAttendanceLog());
+        LocalDate today = LocalDate.of(2024, 12, 13);
+
+        // when
+        int count = attendanceTimes.countLateBeforeDate(today);
+
+        // then
+        assertThat(count).isEqualTo(1);
+    }
+
     private List<AttendanceTime> createAttendanceLog() {
         AttendanceTime attendanceTime1 = AttendanceTime.of(
                 LocalDate.of(2024, 12, 10),
