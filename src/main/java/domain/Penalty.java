@@ -7,7 +7,8 @@ import dto.AttendanceCount;
 public enum Penalty {
     EXPULSION("제적"),
     COUNSELING("면담"),
-    WARNING("경고");
+    WARNING("경고"),
+    NONE("X");
 
     private final String expression;
 
@@ -16,15 +17,17 @@ public enum Penalty {
     }
 
     public static Penalty from(AttendanceCount attendanceCount) {
-        if(attendanceCount.absentCount() >= EXPULSION_CONDITION) {
+        int consideredAbsentCount = attendanceCount.absentCount() + (attendanceCount.lateCount() / 3);
+
+        if(consideredAbsentCount >= EXPULSION_CONDITION) {
             return Penalty.EXPULSION;
         }
-        if (attendanceCount.absentCount() >= COUNSELING_CONDITION) {
+        if (consideredAbsentCount >= COUNSELING_CONDITION) {
             return Penalty.COUNSELING;
         }
-        if (attendanceCount.absentCount() >= WARNING_CONDITION) {
+        if (consideredAbsentCount >= WARNING_CONDITION) {
             return Penalty.WARNING;
         }
-        return null;
+        return NONE;
     }
 }
