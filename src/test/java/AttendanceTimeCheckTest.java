@@ -73,4 +73,18 @@ public class AttendanceTimeCheckTest {
         Assertions.assertThat(policy)
                 .isEqualTo(AttendPolicy.ABSENT);
     }
+
+    @DisplayName("월요일은 13시 5분 초과 시 지각이다.")
+    @Test
+    void check6() {
+        // given
+        AttendanceTimeChecker checker = new AttendanceTimeChecker();
+
+        // when
+        AttendPolicy policy = checker.attendanceCheck("13:06");
+
+        // then
+        Assertions.assertThat(policy)
+                .isEqualTo(AttendPolicy.LATE);
+    }
 }
