@@ -106,6 +106,16 @@ public class SomeTest {
             // when & then
             assertThatThrownBy(() -> AttendanceStatus.getStatusByAttendedTime(attendedTime)).hasMessage(ERROR_MESSAGE.CLOSED_DAY.getMessage());
         }
+        @DisplayName("성탄절 출석 시도")
+        @Test
+        void test2() {
+            // given
+            LocalDateTime attendedTime =  LocalDateTime.of(2024, 12, 25, 10, 0);
+
+            // when & then
+            assertThatThrownBy(() -> AttendanceStatus.getStatusByAttendedTime(attendedTime)).hasMessage(ERROR_MESSAGE.CLOSED_DAY.getMessage());
+        }
+
     }
 
 
