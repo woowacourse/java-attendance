@@ -9,7 +9,7 @@ public class AttendanceTime {
 
     private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("H:m");
 
-    private static LocalTime time;
+    private final LocalTime time;
 
     private AttendanceTime(final LocalTime time) {
         this.time = time;
@@ -35,5 +35,9 @@ public class AttendanceTime {
         } catch (DateTimeParseException e) {
             throw new IllegalArgumentException("AttendanceTime 의 형식은 H:m 로 들어와야 합니다");
         }
+    }
+
+    public LocalTime getTime() {
+        return time;
     }
 }
