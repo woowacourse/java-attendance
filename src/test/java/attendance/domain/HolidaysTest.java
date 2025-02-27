@@ -7,7 +7,6 @@ import org.junit.jupiter.params.provider.CsvSource;
 
 import java.time.LocalDate;
 import java.time.format.TextStyle;
-import java.util.List;
 import java.util.Locale;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -18,8 +17,8 @@ import static org.assertj.core.api.Assertions.assertThatNoException;
 class HolidaysTest {
 
     @Test
-    @DisplayName("휴일에 공휴일을 추가한다")
-    void 휴일에_공휴일을_추가한다() {
+    @DisplayName("휴일에 새로운 공휴일을 추가한다")
+    void addNewHolidayToHolidays() {
         // given
         LocalDate addHoliday = LocalDate.of(2024, 12, 25);
         Holidays holidays = new Holidays();
@@ -31,28 +30,51 @@ class HolidaysTest {
         assertThat(holidays.contains(addHoliday)).isTrue();
     }
 
+    @Test
+    @DisplayName("평일에 출석할 경우 예외가 발생하지 않는다")
+    void 등교_일자인_경우_예외가_발생하지_않는다() {
+        // given
+        Holidays holidays = new Holidays();
+        LocalDate attendanceDate = LocalDate.of(2024, 12, 2);
+
+        // when & then
+        assertThatNoException()
+                .isThrownBy(() -> holidays.validateAttendanceDate(attendanceDate));
+    }
+
     @ParameterizedTest
     @CsvSource({
             "2024-12-01",
             "2024-12-07",
             "2024-12-14"
     })
-    @DisplayName("등교 일자가 아닌 경우 예외가 발생한다")
+    @DisplayName("주말에 출석할 경우 예외가 발생한다")
     void shouldThrowExceptionWhenNotASchoolDay(LocalDate attendanceDate) {
+        // given
+        Holidays holidays = new Holidays();
+
+        // that
         assertThatIllegalArgumentException()
-                .isThrownBy(() -> Holidays.validateAttendanceDate(attendanceDate))
+                .isThrownBy(() -> holidays.validateAttendanceDate(attendanceDate))
                 .withMessage(formatErrorMessage(attendanceDate));
     }
 
-    @Test
-    @DisplayName("등교 일자인 경우 예외가 발생하지 않는다")
-    void 등교_일자인_경우_예외가_발생하지_않는다() {
+    @ParameterizedTest
+    @CsvSource({
+            "2024-12-25",
+            "2025-01-01",
+            "2025-05-05"
+    })
+    @DisplayName("공휴일에 출석할 경우 예외가 발생한다")
+    void 공휴일에_출석한_경우_예외가_발생한다(LocalDate attendanceDate) {
         // given
-        LocalDate attendanceDate = LocalDate.of(2024, 12, 2);
+        Holidays holidays = new Holidays();
+        holidays.addHoliday(attendanceDate);
 
         // when & then
-        assertThatNoException()
-                .isThrownBy(() -> Holidays.validateAttendanceDate(attendanceDate));
+        assertThatIllegalArgumentException()
+                .isThrownBy(() -> holidays.validateAttendanceDate(attendanceDate))
+                .withMessage(formatErrorMessage(attendanceDate));
     }
 
     private static String formatErrorMessage(final LocalDate date) {
