@@ -28,6 +28,7 @@ public class AttendancesTest {
                 LocalDateTime.of(2024, 12, 13, 9, 59)
         );
         Attendances attendances = generateAttendances(dateTimes);
+
         final var result = attendances.countAttend();
 
         assertThat(result).isEqualTo(3);
@@ -41,6 +42,7 @@ public class AttendancesTest {
                 LocalDateTime.of(2024, 12, 13, 10, 6)
         );
         Attendances attendances = generateAttendances(dateTimes);
+
         final var result = attendances.countLate();
 
         assertThat(result).isEqualTo(3);
@@ -53,6 +55,7 @@ public class AttendancesTest {
                 LocalDateTime.of(2024, 12, 12, 10, 6)
         );
         Attendances attendances = generateAttendances(dateTimes);
+
         final var result = attendances.countLate();
 
         assertThat(result).isEqualTo(2);
@@ -66,6 +69,7 @@ public class AttendancesTest {
                 LocalDateTime.of(2024, 12, 13, 10, 31)
         );
         Attendances attendances = generateAttendances(dateTimes);
+
         final var result = attendances.countAbsence();
 
         assertThat(result).isEqualTo(3);
@@ -78,6 +82,7 @@ public class AttendancesTest {
                 LocalDateTime.of(2024, 12, 12, 10, 31)
         );
         Attendances attendances = generateAttendances(dateTimes);
+
         final var result = attendances.calculatePenalty();
 
         assertThat(result).isEqualTo(AttendancePenalty.Warning);
@@ -107,6 +112,7 @@ public class AttendancesTest {
                 LocalDateTime.of(2024, 12, 18, 10, 31)
         );
         Attendances attendances = generateAttendances(dateTimes);
+
         final var result = attendances.calculatePenalty();
 
         assertThat(result).isEqualTo(AttendancePenalty.EXPULSION);
@@ -118,6 +124,7 @@ public class AttendancesTest {
                 LocalDateTime.of(2024, 12, 10, 10, 31)
         );
         Attendances attendances = generateAttendances(dateTimes);
+
         final var result = attendances.calculatePenalty();
 
         assertThat(result).isEqualTo(AttendancePenalty.NONE);
@@ -133,6 +140,7 @@ public class AttendancesTest {
                 LocalDateTime.of(2024, 12, 17, 10, 31)
         );
         Attendances attendances = generateAttendances(dateTimes);
+
         final var result = attendances.calculatePenalty();
 
         assertThat(result).isEqualTo(AttendancePenalty.INTERVIEW);

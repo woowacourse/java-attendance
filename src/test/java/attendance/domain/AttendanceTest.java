@@ -12,6 +12,7 @@ public class AttendanceTest {
     @Test
     void 날짜가_같다면_true를_반환한다() {
         Attendance attendance = Attendance.from(LocalDateTime.of(2024, 12, 13, 9, 59));
+
         final var result = attendance.isEqualToDate(LocalDate.of(2024, 12, 13));
 
         assertThat(result).isTrue();
@@ -20,6 +21,7 @@ public class AttendanceTest {
     @Test
     void 날짜가_다르면_false를_반환한다() {
         Attendance attendance = Attendance.from(LocalDateTime.of(2024, 12, 13, 9, 59));
+
         final var result = attendance.isEqualToDate(LocalDate.of(2024, 12, 14));
 
         assertThat(result).isFalse();
@@ -39,6 +41,7 @@ public class AttendanceTest {
     @Test
     void 월요일_출결_상태를_반환한다_출석() {
         Attendance attend = Attendance.from(LocalDateTime.of(2024, 12, 9, 12, 59));
+
         final var result = attend.checkAttendanceStatus();
 
         assertThat(result).isEqualTo(AttendanceStatus.ATTEND);
@@ -47,6 +50,7 @@ public class AttendanceTest {
     @Test
     void 월요일_출결_상태를_반환한다_지각() {
         Attendance attend = Attendance.from(LocalDateTime.of(2024, 12, 9, 13, 6));
+
         final var result = attend.checkAttendanceStatus();
 
         assertThat(result).isEqualTo(AttendanceStatus.LATE);
@@ -55,6 +59,7 @@ public class AttendanceTest {
     @Test
     void 월요일_출결_상태를_반환한다_결석() {
         Attendance attend = Attendance.from(LocalDateTime.of(2024, 12, 9, 13, 31));
+
         final var result = attend.checkAttendanceStatus();
 
         assertThat(result).isEqualTo(AttendanceStatus.ABSENCE);
@@ -63,6 +68,7 @@ public class AttendanceTest {
     @Test
     void 다른_요일_출결_상태를_반환한다_출석() {
         Attendance attend = Attendance.from(LocalDateTime.of(2024, 12, 13, 9, 59));
+
         final var result = attend.checkAttendanceStatus();
 
         assertThat(result).isEqualTo(AttendanceStatus.ATTEND);
@@ -71,6 +77,7 @@ public class AttendanceTest {
     @Test
     void 다른_요일_출결_상태를_반환한다_지각() {
         Attendance attend = Attendance.from(LocalDateTime.of(2024, 12, 13, 10, 6));
+
         final var result = attend.checkAttendanceStatus();
 
         assertThat(result).isEqualTo(AttendanceStatus.LATE);
@@ -79,6 +86,7 @@ public class AttendanceTest {
     @Test
     void 다른_요일_출결_상태를_반환한다_결석() {
         Attendance attend = Attendance.from(LocalDateTime.of(2024, 12, 13, 10, 31));
+
         final var result = attend.checkAttendanceStatus();
 
         assertThat(result).isEqualTo(AttendanceStatus.ABSENCE);
