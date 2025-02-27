@@ -1,7 +1,12 @@
 package view;
 
 import common.Common;
+import java.util.List;
+import java.util.Map;
 import model.Attendance;
+import model.AttendanceStatus;
+import model.Crew;
+import model.PenaltyStatus;
 
 public class OutputView {
     public void printAttendanceRegisterResult(Attendance newAttendance) {
@@ -26,6 +31,35 @@ public class OutputView {
                 getAttendanceTimeExpression(newAttendance),
                 newAttendance.findStatus().getMeaning()
         );
+    }
+
+    public void printAttendanceHistories(List<Attendance> attendanceHistories, String crewName) {
+        System.out.println();
+        System.out.printf("이번 달 %s의 출석 기록입니다.%n%n", crewName);
+
+        for (Attendance attendance : attendanceHistories) {
+            System.out.printf("%s %s (%s)%n",
+                    attendance.getDate().format(Common.monthDateDayFormatter),
+                    getAttendanceTimeExpression(attendance),
+                    attendance.findStatus().getMeaning()
+            );
+        }
+
+    }
+
+    public void printAttendanceStatusHistory(Map<AttendanceStatus, Integer> attendanceStatusHistory) {
+        System.out.println();
+        for (AttendanceStatus status : AttendanceStatus.findAllInAscendingOrder()) {
+            System.out.printf("%s: %d회%n", status.getMeaning(), attendanceStatusHistory.get(status));
+        }
+    }
+
+    public void printPenaltyStatus(PenaltyStatus penaltyStatus) {
+        if (penaltyStatus == PenaltyStatus.NONE) {
+            return;
+        }
+        System.out.println();
+        System.out.printf("%s 대상자입니다.%n", penaltyStatus.getMeaning());
     }
 
     private String getAttendanceTimeExpression(Attendance attendance) {

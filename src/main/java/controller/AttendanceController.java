@@ -11,12 +11,15 @@ import java.util.List;
 import java.util.Map;
 import model.Attendance;
 import model.AttendanceBook;
+import model.AttendanceStatistics;
+import model.AttendanceStatus;
 import model.ExistingAttendances;
 import model.AttendanceHistory;
 import model.Crew;
 import model.Crews;
 import model.DateGenerator;
 import model.December;
+import model.PenaltyStatus;
 import view.InputView;
 import view.OutputView;
 
@@ -42,6 +45,9 @@ public class AttendanceController {
         }
         if (functionChoice.equals("2")) {
             doModifyService(attendanceBook, crews);
+        }
+        if (functionChoice.equals("3")) {
+            doHistoryService(attendanceBook, crews);
         }
     }
 
@@ -93,6 +99,28 @@ public class AttendanceController {
             Attendance newAttendance = crewAttendance.modifyFrom(oldAttendance, time);
 
             outputView.printAttendanceModifyResult(oldAttendance, newAttendance);
+        } catch (IllegalArgumentException e) {
+            outputView.printExceptionMessage(e.getMessage());
+        }
+    }
+
+    private void doHistoryService(AttendanceBook attendanceBook, Crews crews) {
+        try {
+            String name = inputView.readCrewName();
+            Crew crew = crews.findCrewByName(name)
+                    .orElseThrow(CrewNotExistException::new);
+
+            LocalDate now = DateGenerator.now();
+            AttendanceHistory attendanceHistory = attendanceBook.findByCrew(crew);
+            AttendanceStatistics attendanceStatistics = new AttendanceStatistics(attendanceHistory);
+
+            List<Attendance> attendanceHistories = attendanceHistory.sliceByDateUntilBefore(now);
+            Map<AttendanceStatus, Integer> attendanceStatusHistory = attendanceStatistics.calculateStatusCountUntilBefore(now);
+            PenaltyStatus penaltyStatus = attendanceStatistics.calculatePenaltyUntilBefore(now);
+
+            outputView.printAttendanceHistories(attendanceHistories, name);
+            outputView.printAttendanceStatusHistory(attendanceStatusHistory);
+            outputView.printPenaltyStatus(penaltyStatus);
         } catch (IllegalArgumentException e) {
             outputView.printExceptionMessage(e.getMessage());
         }

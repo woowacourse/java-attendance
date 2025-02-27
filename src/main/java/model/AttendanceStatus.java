@@ -4,6 +4,8 @@ import common.Common;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.Arrays;
+import java.util.List;
 
 public enum AttendanceStatus {
     NORMAL("출석"),
@@ -32,6 +34,10 @@ public enum AttendanceStatus {
             return LATE;
         }
         return ABSENCE;
+    }
+
+    public static List<AttendanceStatus> findAllInAscendingOrder() {
+        return Arrays.stream(AttendanceStatus.values()).toList();
     }
 
     public String getMeaning() {

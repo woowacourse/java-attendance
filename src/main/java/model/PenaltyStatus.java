@@ -27,4 +27,7 @@ public enum PenaltyStatus {
         return NONE;
     }
 
+    public String getMeaning() {
+        return meaning;
+    }
 }
