@@ -48,4 +48,19 @@ public class AbsentPenaltyCheckerTest {
         Assertions.assertThat(absentPenalty)
                 .isEqualTo(AbsentPenalty.DISMISSAL);
     }
+
+    @DisplayName("결석이 2회 미만이면 어떤 대상자도 아니다.")
+    @Test
+    void test4() {
+        // given
+        AbsentPenaltyChecker checker = new AbsentPenaltyChecker();
+        final var absentCount = 1;
+
+        // when
+        final var absentPenalty = checker.check(absentCount);
+
+        // then
+        Assertions.assertThat(absentPenalty)
+                .isEqualTo(AbsentPenalty.NONE);
+    }
 }

@@ -1,3 +1,6 @@
 public enum AbsentPenalty {
-    WARNING, INTERVIEW, DISMISSAL,
+    WARNING,
+    INTERVIEW,
+    DISMISSAL,
+    NONE,
 }
