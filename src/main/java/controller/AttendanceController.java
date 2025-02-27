@@ -57,7 +57,7 @@ public class AttendanceController {
 
     private void updateAttendance() {
         String nickname = inputView.inputUpdateNickname();
-        String day = inputView.inputUpdateDate();
+        int day = inputView.inputUpdateDate();
 
     }
 

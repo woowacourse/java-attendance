@@ -26,14 +26,6 @@ public class TimeParser {
         return LocalTime.of(hour, minute);
     }
 
-    private static int validateInteger(String input) {
-        try{
-            return Integer.parseInt(input);
-        }catch (NumberFormatException e){
-            throw new IllegalArgumentException("[ERROR] 정수로 입력해 주세요");
-        }
-    }
-
     public static int validateHour(String inputHour){
         int hour = validateInteger(inputHour);
         if(hour > MAX_HOUR || hour < MIN_HOUR){
@@ -48,5 +40,13 @@ public class TimeParser {
             throw new IllegalArgumentException("[ERROR] 시간 입력 형식이 잘못되었습니다");
         }
         return minute;
+    }
+
+    private static int validateInteger(String input) {
+        try{
+            return Integer.parseInt(input);
+        }catch (NumberFormatException e){
+            throw new IllegalArgumentException("[ERROR] 정수로 입력해 주세요");
+        }
     }
 }

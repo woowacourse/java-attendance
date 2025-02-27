@@ -1,5 +1,6 @@
 package view;
 
+import view.parser.DayParser;
 import view.parser.TimeParser;
 
 import java.time.LocalDate;
@@ -33,8 +34,7 @@ public class InputView {
     public LocalTime inputTime() {
         System.out.println(ViewMessage.ATTENDANCE_TIME);
 
-        String time = scanner.nextLine();
-        return TimeParser.validateTimeFormat(time);
+        return TimeParser.validateTimeFormat(scanner.nextLine());
     }
 
     public String inputUpdateNickname() {
@@ -43,10 +43,10 @@ public class InputView {
         return scanner.nextLine();
     }
 
-    public String inputUpdateDate() {
+    public int inputUpdateDate() {
         System.out.println(ViewMessage.UPDATE_DATE);
 
-        return scanner.nextLine();
+        return DayParser.validateDayFormat(scanner.nextLine());
     }
 
     public String inputUpdateTime() {
