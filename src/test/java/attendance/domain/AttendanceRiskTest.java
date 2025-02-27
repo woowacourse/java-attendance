@@ -24,6 +24,7 @@ class AttendanceRiskTest {
 
     private static Stream<Arguments> 결석과_지각_횟수로_위험도를_판단해_반환한다() {
         return Stream.of(
+                Arguments.of(1, 2, AttendanceRisk.NONE),
                 Arguments.of(1, 3, AttendanceRisk.WARNING),
                 Arguments.of(2, 2, AttendanceRisk.WARNING),
                 Arguments.of(2, 3, AttendanceRisk.INTERVIEW),
