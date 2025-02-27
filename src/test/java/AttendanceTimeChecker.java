@@ -3,6 +3,10 @@ public class AttendanceTimeChecker {
         String[] split = time.split(":");
         int minute = Integer.parseInt(split[1]);
 
+        if (minute < 5) {
+            return AttendPolicy.ATTEND;
+        }
+
         if (minute > 30) {
             return AttendPolicy.ABSENT;
         }
