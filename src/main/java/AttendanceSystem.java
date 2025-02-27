@@ -1,5 +1,5 @@
 import controller.AttendanceController;
-import model.DateGenerator;
+import model.December;
 import view.InputView;
 import view.OutputView;
 
@@ -8,7 +8,7 @@ public class AttendanceSystem {
         AttendanceController attendanceController = new AttendanceController(
                 new OutputView(),
                 new InputView(),
-                DateGenerator.now()
+                December.now()
         );
         attendanceController.start();
     }
