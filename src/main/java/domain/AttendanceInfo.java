@@ -16,6 +16,10 @@ public class AttendanceInfo {
         return new AttendanceInfo(campusDate, campusTime);
     }
 
+    public AttendanceInfo modifyInfoByTime (final CampusTime campusTime) {
+        return new AttendanceInfo(this.campusDate, campusTime);
+    }
+
     public int getMonth() {
         return campusDate.getMonth();
     }

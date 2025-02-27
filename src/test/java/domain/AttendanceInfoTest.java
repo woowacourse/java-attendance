@@ -25,4 +25,20 @@ class AttendanceInfoTest {
         assertThat(attendanceInfo.getDayOfWeek()).isEqualTo(DayOfWeek.THURSDAY);
     }
 
+    @Test
+    void 시간_정보로_출석정보_시간을_수정한다() {
+        // given
+        CampusTime beforeCampusTime = CampusTime.from("10:29");
+        CampusTime afterCampusTime = CampusTime.from("10:31");
+        CampusDate campusDate = CampusDate.fromNow(LocalDate.of(2025, 2, 27));
+        AttendanceInfo beforeInfo = AttendanceInfo.fromDateAndTime(campusDate, beforeCampusTime);
+
+        // when
+        AttendanceInfo afterInfo = beforeInfo.modifyInfoByTime(afterCampusTime);
+
+        // then
+        assertThat(afterInfo.getHour()).isEqualTo(10);
+        assertThat(afterInfo.getMinute()).isEqualTo(31);
+    }
+
 }
