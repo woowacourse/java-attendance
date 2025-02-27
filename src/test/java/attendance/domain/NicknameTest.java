@@ -1,5 +1,6 @@
 package attendance.domain;
 
+import attendance.util.ErrorMessage;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -14,10 +15,10 @@ public class NicknameTest {
 
     @ParameterizedTest(name = "{index} : {1}")
     @MethodSource("getEmptyOrNullNickname")
-    void 닉네임이_빈칸이거나_널이면_예외가_발생한다(String nickname) {
+    void 닉네임이_빈칸이거나_널이면_예외가_발생한다(String nickname, String meesage) {
         assertThatThrownBy(() -> new Nickname(nickname))
                 .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage("[ERROR] 크루의 닉네임은 반드시 존재해야 합니다.");
+                .hasMessage(ErrorMessage.NICKNAME_MISSING_ERROR.getMessage());
     }
 
     static Stream<Arguments> getEmptyOrNullNickname() {
