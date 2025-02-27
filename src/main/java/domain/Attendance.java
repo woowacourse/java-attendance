@@ -7,14 +7,22 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.Objects;
+import util.DateTimeManager;
 
 public class Attendance {
     private static final String NOT_RUNNING_TIME_ERROR = "[ERROR] 캠퍼스 운영시간이 아닙니다.";
     private final LocalDateTime value;
 
     public Attendance(LocalDateTime value) {
+        validateDate(value.toLocalDate());
         validateTime(value.toLocalTime());
         this.value = value;
+    }
+
+    private void validateDate(LocalDate date) {
+        if(DateTimeManager.isHoliday(date)) {
+            throw new IllegalArgumentException("[ERROR] 주말 및 공휴일은 출석할 수 없습니다.");
+        }
     }
 
     private void validateTime(LocalTime time) {
