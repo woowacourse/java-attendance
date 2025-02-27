@@ -1,46 +1,106 @@
 package domain;
 
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.Arguments;
-import org.junit.jupiter.params.provider.MethodSource;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 class AttendancesTest {
 
-    private static Stream<Arguments> provideCrewAttendances() {
-        return Stream.of(
-                Arguments.arguments("짱수", List.of(
+    private static Attendances attendances;
+
+    @BeforeAll
+    public static void setAttendances() {
+        attendances = new Attendances(Map.of(
+                "짱수", List.of(
                         new Attendance(LocalDateTime.of(2025, 2, 3, 13, 5)),
                         new Attendance(LocalDateTime.of(2025, 2, 4, 10, 10)),
                         new Attendance(LocalDateTime.of(2025, 2, 5, 10, 4)),
                         new Attendance(LocalDateTime.of(2025, 2, 6, 10, 31)),
-                        new Attendance(LocalDateTime.of(2025, 2, 7, 10, 0))
-                ), 3, 1, 1),
-                Arguments.arguments("빙봉", List.of(
+                        new Attendance(LocalDateTime.of(2025, 2, 7, 10, 0))),
+                "이든", List.of(
+                        new Attendance(LocalDateTime.of(2025, 2, 3, 13, 31)),
+                        new Attendance(LocalDateTime.of(2025, 2, 4, 10, 31)),
+                        new Attendance(LocalDateTime.of(2025, 2, 5, 10, 31)),
+                        new Attendance(LocalDateTime.of(2025, 2, 6, 11, 0)),
+                        new Attendance(LocalDateTime.of(2025, 2, 7, 10, 40))),
+                "빙티", List.of(
                         new Attendance(LocalDateTime.of(2025, 2, 3, 13, 30)),
+                        new Attendance(LocalDateTime.of(2025, 2, 4, 12, 0)),
+                        new Attendance(LocalDateTime.of(2025, 2, 5, 13, 0)),
+                        new Attendance(LocalDateTime.of(2025, 2, 6, 15, 0)),
+                        new Attendance(LocalDateTime.of(2025, 2, 7, 14, 0))),
+                "빙봉", List.of(
+                        new Attendance(LocalDateTime.of(2025, 2, 3, 13, 31)),
                         new Attendance(LocalDateTime.of(2025, 2, 4, 10, 15)),
-                        new Attendance(LocalDateTime.of(2025, 2, 5, 10, 0)),
+                        new Attendance(LocalDateTime.of(2025, 2, 5, 12, 0)),
                         new Attendance(LocalDateTime.of(2025, 2, 6, 9, 56)),
-                        new Attendance(LocalDateTime.of(2025, 2, 7, 10, 40))
-                ), 2, 2, 1)
-        );
+                        new Attendance(LocalDateTime.of(2025, 2, 7, 10, 45))),
+                "쿠키", List.of(
+                        new Attendance(LocalDateTime.of(2025, 2, 3, 13, 31)),
+                        new Attendance(LocalDateTime.of(2025, 2, 4, 11, 0)),
+                        new Attendance(LocalDateTime.of(2025, 2, 5, 10, 6)),
+                        new Attendance(LocalDateTime.of(2025, 2, 6, 10, 10)),
+                        new Attendance(LocalDateTime.of(2025, 2, 7, 10, 29))
+                )
+        ));
     }
 
-    @ParameterizedTest
-    @MethodSource("provideCrewAttendances")
-    void 크루의_출석_상태별_횟수를_조회한다(String name, List<Attendance> attendanceLogs,
-                             int attendanceCount, int lateCount, int absentCount) {
+    @Test
+    void 크루의_출석_상태별_횟수를_조회한다() {
+        String nickname = "짱수";
 
-        Attendances attendances = new Attendances(Map.of(name, attendanceLogs));
+        assertThat(attendances.calculateAttendanceCount(nickname)).isEqualTo(3);
+        assertThat(attendances.calculateLateCount(nickname)).isEqualTo(1);
+        assertThat(attendances.calculateAbsentCount(nickname)).isEqualTo(1);
+    }
 
-        assertThat(attendances.calculateAttendanceCount(name)).isEqualTo(attendanceCount);
-        assertThat(attendances.calculateLateCount(name)).isEqualTo(lateCount);
-        assertThat(attendances.calculateAbsentCount(name)).isEqualTo(absentCount);
+    @Test
+    void 결석_5회_이상일경우_제적_대상자이다() {
+        String nickname = "이든";
+
+        PenaltyStatus statusByNickname = PenaltyStatus.findStatusByNickname(nickname, attendances);
+
+        assertThat(statusByNickname).isEqualTo(PenaltyStatus.EXPULSION);
+    }
+
+    @Test
+    void 결석_3회_초과일경우_면담_대상자이다() {
+        String nickname = "빙티";
+
+        PenaltyStatus statusByNickname = PenaltyStatus.findStatusByNickname(nickname, attendances);
+
+        assertThat(statusByNickname).isEqualTo(PenaltyStatus.INTERVIEW);
+    }
+
+    @Test
+    void 결석_3회_초과일경우_경고_대상자이다() {
+        String nickname = "빙봉";
+
+        PenaltyStatus statusByNickname = PenaltyStatus.findStatusByNickname(nickname, attendances);
+
+        assertThat(statusByNickname).isEqualTo(PenaltyStatus.CAUTION);
+    }
+
+    @Test
+    void 지각_3회는_결석_1회로_간주한다() {
+        String nickname = "쿠키";
+
+        PenaltyStatus statusByNickname = PenaltyStatus.findStatusByNickname(nickname, attendances);
+
+        assertThat(statusByNickname).isEqualTo(PenaltyStatus.CAUTION);
+    }
+
+    @Test
+    void 결석_2회_이하일경우_제적_대상자가_아니다() {
+        String nickname = "짱수";
+
+        PenaltyStatus statusByNickname = PenaltyStatus.findStatusByNickname(nickname, attendances);
+
+        assertThat(statusByNickname).isEqualTo(PenaltyStatus.NONE);
     }
 }
