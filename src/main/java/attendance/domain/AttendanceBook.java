@@ -1,5 +1,7 @@
 package attendance.domain;
 
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
 import java.util.Map;
 
@@ -37,5 +39,10 @@ public class AttendanceBook {
                 .filter(attendanceDateTime -> attendanceDateTime.isThisDayInCurrentMonth(day))
                 .findFirst()
                 .orElseThrow(() -> new IllegalArgumentException("해당 일자에 출석하지 않았습니다."));
+    }
+
+    public void removeAttendanceDateTime(Crew crew,AttendanceDateTime attendanceDateTime) {
+        List<AttendanceDateTime> attendances = this.crewAttedances.get(crew);
+        attendances.remove(attendanceDateTime);
     }
 }
