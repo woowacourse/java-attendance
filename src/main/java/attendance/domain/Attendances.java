@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 
 public class Attendances {
@@ -110,5 +111,17 @@ public class Attendances {
 
     public List<String> getAllCrewNames() {
         return attendanceRecord.keySet().stream().toList();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        Attendances that = (Attendances) o;
+        return Objects.equals(attendanceRecord, that.attendanceRecord);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(attendanceRecord);
     }
 }

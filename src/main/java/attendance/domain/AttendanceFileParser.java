@@ -12,7 +12,7 @@ import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
-public class AttendanceFileParser {
+public class AttendanceFileParser implements AttendanceReader{
 
     public static final String DELIMITER = ",";
     public static final int NAME_INDEX = 0;
