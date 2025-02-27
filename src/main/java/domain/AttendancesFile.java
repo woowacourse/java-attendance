@@ -16,6 +16,18 @@ import java.util.stream.Stream;
 public class AttendancesFile {
     public static final String DELIMITER = ",";
 
+    private static void addAbsent(List<Attendance> records, int day) {
+        if (DayType.calculateDayType(day) != DayType.WEEKDAY) {
+            return;
+        }
+        if (records.stream()
+                .anyMatch(attendance -> attendance.isSameDay(day))) {
+            return;
+        }
+
+        records.add(new Attendance(LocalDateTime.of(2024, 12, day, 23, 59)));
+    }
+
     public Map<String, Attendances> loadInitialAttendances(Path path, LocalDate today) {
         Map<String, Attendances> crewAttendances = new HashMap<>();
 
@@ -32,28 +44,16 @@ public class AttendancesFile {
             crewAttendances.put(nickname, attendances);
         }
 
-        for(Attendances attendances : crewAttendances.values()) {
+        for (Attendances attendances : crewAttendances.values()) {
             addAllAbsents(today.getDayOfMonth(), attendances.getRecords());
         }
         return crewAttendances;
     }
 
     private void addAllAbsents(int today, List<Attendance> records) {
-        for(int day = 1; day < today; day++) {
+        for (int day = 1; day < today; day++) {
             addAbsent(records, day);
         }
-    }
-
-    private static void addAbsent(List<Attendance> records, int day) {
-        if(DayType.calculateDayType(day) != DayType.WEEKDAY) {
-            return;
-        }
-        if(records.stream()
-                .anyMatch(attendance -> attendance.isSameDay(day))) {
-            return;
-        }
-
-        records.add(new Attendance(LocalDateTime.of(2024, 12, day, 23, 59)));
     }
 
     private List<String> readLines(Path path) {

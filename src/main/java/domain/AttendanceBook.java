@@ -2,9 +2,8 @@ package domain;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
+import java.util.stream.Collectors;
 
 public class AttendanceBook {
     private final Map<String, Attendances> crewsRecords;
@@ -23,14 +22,13 @@ public class AttendanceBook {
         return attendances.updateAttendance(dateTime, today.getDayOfMonth());
     }
 
-    public List<String> getRiskOfExpelledCrews() {
+    public Map<String, Attendances> getRiskOfExpelledCrews() {
         return crewsRecords.entrySet().stream()
-                .filter(entry -> entry.getValue().calculateCrewStatus() == CrewStatus.NORMAL)
-                .map(Entry::getKey)
-                .toList();
+                .filter(entry -> entry.getValue().calculateCrewStatus() != CrewStatus.NORMAL)
+                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
     }
 
-    public Attendance getAttendanceByNicknameAndDate (String nickname, int day) {
+    public Attendance getAttendanceByNicknameAndDate(String nickname, int day) {
         Attendances attendances = getCrewRecords(nickname);
         return attendances.getAttendanceByDay(day);
     }

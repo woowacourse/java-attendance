@@ -8,7 +8,7 @@ import domain.Time;
 import java.nio.file.Path;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.List;
+import java.util.Map;
 import view.InputView;
 import view.OutputView;
 
@@ -93,6 +93,7 @@ public class Controller {
     }
 
     private void runShowRiskOfExpelledCrews(AttendanceBook attendanceBook) {
-
+        Map<String, Attendances> riskOfExpelledCrews = attendanceBook.getRiskOfExpelledCrews();
+        outputView.printRiskOfExpelledCrews(riskOfExpelledCrews);
     }
 }

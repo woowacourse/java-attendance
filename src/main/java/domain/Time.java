@@ -14,7 +14,7 @@ public class Time {
     }
 
     private void validateTime(LocalTime time) {
-        if(time.isAfter(closeTime) || time.isBefore(openTime)) {
+        if (time.isAfter(closeTime) || time.isBefore(openTime)) {
             throw new IllegalArgumentException("캠퍼스 운영 시간은 08:00 ~ 23:00 입니다.");
         }
     }
