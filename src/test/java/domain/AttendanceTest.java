@@ -23,13 +23,13 @@ public class AttendanceTest {
         LocalTime localTime = LocalTime.of(10, 0);
 
         initialAttendances.put("fora", new ArrayList<>(List.of(
-                new Attendance("fora", localDate, localTime)
+                new Attendance(localDate, localTime)
         )));
         initialAttendances.put("mingom", new ArrayList<>(List.of(
-                new Attendance("mingom", localDate, localTime)
+                new Attendance(localDate, localTime)
         )));
         initialAttendances.put("mungoo", new ArrayList<>(List.of(
-                new Attendance("mungoo", localDate, localTime)
+                new Attendance(localDate, localTime)
         )));
 
         repository = new AttendanceRepository(initialAttendances);
@@ -43,10 +43,10 @@ public class AttendanceTest {
         LocalTime localTime = LocalTime.of(9, 55);
 
         // when
-        Attendance attendance = new Attendance(name, localDate, localTime);
+        Attendance attendance = new Attendance(localDate, localTime);
 
         // then
-        Assertions.assertThat(attendance.getName()).isEqualTo(name);
+//        Assertions.assertThat(attendance.getName()).isEqualTo(name);
         Assertions.assertThat(attendance.getLocalTime()).isEqualTo(localTime);
     }
 
@@ -62,7 +62,7 @@ public class AttendanceTest {
         Attendance attendance = repository.getAttendance(name, localDate);
 
         // then
-        Assertions.assertThat(attendance.getName()).isEqualTo(name);
+//        Assertions.assertThat(attendance.getName()).isEqualTo(name);
         Assertions.assertThat(attendance.getLocalTime()).isEqualTo(localTime);
     }
 
@@ -162,7 +162,7 @@ public class AttendanceTest {
         Attendance attendance = repository.getAttendance(name, localDate);
 
         // then
-        Assertions.assertThat(attendance.getName()).isEqualTo(name);
+//        Assertions.assertThat(attendance.getName()).isEqualTo(name);
         Assertions.assertThat(attendance.getLocalTime()).isEqualTo(localTime);
     }
 

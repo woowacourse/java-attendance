@@ -22,7 +22,7 @@ public class AttendanceRepository {
         validateWeekDay(localDate);
         validateExistingCrew(name);
         validateDuplicateCheckIn(name, localDate);
-        attendances.get(name).add(new Attendance(name, localDate, localTime));
+        attendances.get(name).add(new Attendance(localDate, localTime));
     }
 
     private void validateDuplicateCheckIn(String name, LocalDate localDate) {
