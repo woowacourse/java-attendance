@@ -11,6 +11,7 @@ import model.Attendance;
 import model.AttendanceHistory;
 import model.AttendanceStatistics;
 import model.AttendanceStatus;
+import model.PenaltyStatus;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -98,10 +99,10 @@ public class AttendanceHistoryTest {
         AttendanceStatistics attendanceStatistics = new AttendanceStatistics(attendanceHistory);
 
         //when
-        String penaltyStatus = attendanceStatistics.calculatePenaltyUntilBefore(requestDate);
+        PenaltyStatus penaltyStatus = attendanceStatistics.calculatePenaltyUntilBefore(requestDate);
 
         //then
-        assertThat(penaltyStatus).isEqualTo("없음");
+        assertThat(penaltyStatus).isEqualTo(PenaltyStatus.NONE);
     }
 
     @DisplayName("한 크루의 일부 출석 기록으로 패널티 여부를 구한다. - 경고")
@@ -118,10 +119,10 @@ public class AttendanceHistoryTest {
         AttendanceStatistics attendanceStatistics = new AttendanceStatistics(attendanceHistory);
 
         //when
-        String penaltyStatus = attendanceStatistics.calculatePenaltyUntilBefore(requestDate);
+        PenaltyStatus penaltyStatus = attendanceStatistics.calculatePenaltyUntilBefore(requestDate);
 
         //then
-        assertThat(penaltyStatus).isEqualTo("경고");
+        assertThat(penaltyStatus).isEqualTo(PenaltyStatus.WARNING);
     }
 
     @DisplayName("한 크루의 일부 출석 기록으로 패널티 여부를 구한다. - 면담")
@@ -138,10 +139,10 @@ public class AttendanceHistoryTest {
         AttendanceStatistics attendanceStatistics = new AttendanceStatistics(attendanceHistory);
 
         //when
-        String penaltyStatus = attendanceStatistics.calculatePenaltyUntilBefore(requestDate);
+        PenaltyStatus penaltyStatus = attendanceStatistics.calculatePenaltyUntilBefore(requestDate);
 
         //then
-        assertThat(penaltyStatus).isEqualTo("면담");
+        assertThat(penaltyStatus).isEqualTo(PenaltyStatus.MEETING);
     }
 
     @DisplayName("한 크루의 일부 출석 기록으로 패널티 여부를 구한다. - 제적")
@@ -153,10 +154,10 @@ public class AttendanceHistoryTest {
         AttendanceStatistics attendanceStatistics = new AttendanceStatistics(attendanceHistory);
 
         //when
-        String penaltyStatus = attendanceStatistics.calculatePenaltyUntilBefore(requestDate);
+        PenaltyStatus penaltyStatus = attendanceStatistics.calculatePenaltyUntilBefore(requestDate);
 
         //then
-        assertThat(penaltyStatus).isEqualTo("제적");
+        assertThat(penaltyStatus).isEqualTo(PenaltyStatus.EXPELLED);
     }
 }
 
