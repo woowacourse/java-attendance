@@ -24,6 +24,27 @@ public class AttendanceRepository {
         attendances.get(name).add(new Attendance(name, localDate, localTime));
     }
 
+    private void validateDuplicateCheckIn(String name, LocalDate localDate) {
+        if (attendances.get(name).stream()
+                .anyMatch(attendance -> attendance.getLocalDate().equals(localDate))) {
+            throw new IllegalArgumentException("이미 출석한 크루입니다.");
+        }
+    }
+
+    public void update(String name, LocalDate localDate, LocalTime localTime) {
+        validateWeekDay(localDate);
+        validateExistingCrew(name);
+        validateAfterToday(localDate);
+        List<Attendance> crewAttendances = attendances.get(name);
+
+        crewAttendances.replaceAll(attendance -> {
+            if (attendance.getLocalDate().equals(localDate)) {
+                return new Attendance(name, localDate, localTime);
+            }
+            return attendance;
+        });
+    }
+
     private void validateWeekDay(LocalDate localDate) {
         DayOfWeek dayOfWeek = localDate.getDayOfWeek();
         if (dayOfWeek == DayOfWeek.SATURDAY || dayOfWeek == DayOfWeek.SUNDAY || localDate.equals(
@@ -38,24 +59,10 @@ public class AttendanceRepository {
         }
     }
 
-    private void validateDuplicateCheckIn(String name, LocalDate localDate) {
-        if (attendances.get(name).stream()
-                .anyMatch(attendance -> attendance.getLocalDate().equals(localDate))) {
-            throw new IllegalArgumentException("이미 출석한 크루입니다.");
+    private void validateAfterToday(LocalDate localDate) {
+        if (localDate.isAfter(LocalDate.now())) {
+            throw new IllegalArgumentException("수정할 수 없는 날짜입니다.");
         }
-    }
-
-    public void update(String name, LocalDate localDate, LocalTime localTime) {
-        validateWeekDay(localDate);
-        validateExistingCrew(name);
-        List<Attendance> crewAttendances = attendances.get(name);
-
-        crewAttendances.replaceAll(attendance -> {
-            if (attendance.getLocalDate().equals(localDate)) {
-                return new Attendance(name, localDate, localTime);
-            }
-            return attendance;
-        });
     }
 
     public Attendance getAttendance(String name, LocalDate localDate) {

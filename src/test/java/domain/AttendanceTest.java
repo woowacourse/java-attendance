@@ -192,4 +192,19 @@ public class AttendanceTest {
                 }).isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("주말 및 공휴일에는 출석할 수 없습니다.");
     }
+
+    @Test
+    void 오늘_이후의_날짜는_출석할_수_없다() {
+        // given
+        String name = "fora";
+        LocalDate localDate = LocalDate.of(2025, 7, 25);
+        LocalTime localTime = LocalTime.of(9, 55);
+
+        // when & then
+        Assertions.assertThatThrownBy(() -> {
+                    repository.update(name, localDate, localTime);
+                }).isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("수정할 수 없는 날짜입니다.");
+
+    }
 }
