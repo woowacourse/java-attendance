@@ -45,4 +45,18 @@ public class AttendanceTimeCheckTest {
         Assertions.assertThat(policy)
                 .isEqualTo(AttendPolicy.ATTEND);
     }
+
+    @DisplayName("시작 시간 이전에 출석해도 출석이다.")
+    @Test
+    void check4() {
+        // given
+        AttendanceTimeChecker checker = new AttendanceTimeChecker();
+
+        // when
+        AttendPolicy policy = checker.attendanceCheck("09:57");
+
+        // then
+        Assertions.assertThat(policy)
+                .isEqualTo(AttendPolicy.ATTEND);
+    }
 }
