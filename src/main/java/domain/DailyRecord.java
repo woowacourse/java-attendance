@@ -1,5 +1,6 @@
 package domain;
 
+import java.time.DayOfWeek;
 import java.time.LocalTime;
 
 public class DailyRecord {
@@ -7,9 +8,9 @@ public class DailyRecord {
     private final LocalTime attendedTime;
     private final AttendanceStatus status;
 
-    public DailyRecord(LocalTime attendedTime, AttendanceStatus status) {
+    public DailyRecord(DayOfWeek dayOfWeek, LocalTime attendedTime) {
         this.attendedTime = attendedTime;
-        this.status = status;
+        this.status = AttendanceStatus.of(dayOfWeek, attendedTime);
     }
 
     @Override
