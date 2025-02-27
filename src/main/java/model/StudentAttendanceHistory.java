@@ -19,23 +19,24 @@ public class StudentAttendanceHistory {
     }
 
     public LocalDateTime findSameDay(LocalDateTime wantToFindLocalDateTime) {
-        for (LocalDateTime localDateTime : attendanceHistory) {
-            LocalDateTime dayDate1 = localDateTime.truncatedTo(ChronoUnit.DAYS);
-            LocalDateTime dayDate2 = wantToFindLocalDateTime.truncatedTo(ChronoUnit.DAYS);
-            if (dayDate1.isEqual(dayDate2)) {
-                return localDateTime;
-            }
-        }
-        return null;
+        return attendanceHistory.stream()
+                .filter(localDateTime -> localDateTime.truncatedTo(ChronoUnit.DAYS)
+                        .isEqual(wantToFindLocalDateTime.truncatedTo(ChronoUnit.DAYS)))
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException("[ERROR] 출석하지 않는 날짜입니다."));
     }
 
     public void modifyRecord(LocalDateTime wantToModifyLocalDateTime) {
-        attendanceHistory.remove(findSameDay(wantToModifyLocalDateTime));
-        addTime(wantToModifyLocalDateTime);
-        Collections.sort(attendanceHistory);
+        try {
+            attendanceHistory.remove(findSameDay(wantToModifyLocalDateTime));
+            addTime(wantToModifyLocalDateTime);
+            Collections.sort(attendanceHistory);
+        } catch (IllegalArgumentException e) {
+            System.out.println(e.getMessage());
+        }
     }
 
-    public boolean isExistSameDay(LocalDateTime localDateTime1, LocalDateTime localDateTime2) {
+    private boolean isExistSameDay(LocalDateTime localDateTime1, LocalDateTime localDateTime2) {
         LocalDateTime dayDate1 = localDateTime1.truncatedTo(ChronoUnit.DAYS);
         LocalDateTime dayDate2 = localDateTime2.truncatedTo(ChronoUnit.DAYS);
 
