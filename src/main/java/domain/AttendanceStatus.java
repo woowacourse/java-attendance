@@ -1,4 +1,4 @@
-package model;
+package domain;
 
 public enum AttendanceStatus {
     PRESENT("출석"),

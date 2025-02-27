@@ -1,4 +1,4 @@
-package model;
+package domain;
 
 import java.time.LocalTime;
 
@@ -10,5 +10,11 @@ public class DailyRecord {
     public DailyRecord(LocalTime attendedTime, AttendanceStatus status) {
         this.attendedTime = attendedTime;
         this.status = status;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        DailyRecord other = (DailyRecord) obj;
+        return attendedTime.equals(other.attendedTime);
     }
 }
