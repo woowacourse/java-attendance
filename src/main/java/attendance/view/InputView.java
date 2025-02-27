@@ -5,6 +5,7 @@ import java.time.format.TextStyle;
 import java.util.Locale;
 import java.util.Scanner;
 
+import attendance.dto.AttendanceHistoryRequest;
 import attendance.dto.AttendanceRequest;
 import attendance.dto.ModifyAttendanceRequest;
 
@@ -48,8 +49,8 @@ public class InputView {
         return ModifyAttendanceRequest.of(name, day, time, date);
     }
 
-    public static String history() {
+    public static AttendanceHistoryRequest attendanceHisotory() {
         System.out.println("닉네임을 입력해 주세요.");
-        return scanner.nextLine();
+        return new AttendanceHistoryRequest(scanner.nextLine());
     }
 }

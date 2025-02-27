@@ -73,7 +73,7 @@ public class Crew {
         return Risk.of(getAttendanceStatistics(today));
     }
 
-    private Map<AttendanceStatus, Integer> getAttendanceStatistics(LocalDate today) {
+    public Map<AttendanceStatus, Integer> getAttendanceStatistics(LocalDate today) {
         Map<AttendanceStatus, Integer> statistics = AttendanceStatus.getEmptyStatistics();
 
         IntStream.range(1, today.getDayOfMonth())

@@ -1,5 +1,7 @@
 package attendance.view;
 
+import attendance.domain.AttendanceStatus;
+import attendance.dto.AttendanceHistoryResponse;
 import attendance.dto.AttendanceResponse;
 import attendance.dto.ModifyAttendanceResponse;
 import attendance.util.DateTimeUtil;
@@ -23,6 +25,34 @@ public class OutputView {
             response.after().time().format(DateTimeUtil.TIME_FORMATTER),
             response.after().status().getName()
         );
+    }
+
+    // TODO : 삼항연산자 제거
+    // TODO : forEach 제거
+    public static void attendanceHistoryResponse(AttendanceHistoryResponse response) {
+        System.out.printf("이번 달 %s의 출석 기록입니다.%n%n", response.name());
+        response.histories().forEach(history -> {
+            if (history.status() == AttendanceStatus.DAY_OFF) {
+                return;
+            }
+
+            System.out.printf("%s %s (%s)%n",
+                history.date().format(DateTimeUtil.DATE_FORMATTER),
+                history.time() == null ? "--:--" : history.time().format(DateTimeUtil.TIME_FORMATTER),
+                history.status().getName());
+        });
+        System.out.println();
+        System.out.printf("""
+                출석: %d회
+                지각: %d회
+                결석: %d회
+                """,
+            response.statistics().get(AttendanceStatus.ATTENDANCE),
+            response.statistics().get(AttendanceStatus.LATENESS),
+            response.statistics().get(AttendanceStatus.ABSENCE));
+        if (response.risk() != null) {
+            System.out.printf("%n%s 대상자입니다.%n%n", response.risk().getName());
+        }
     }
 
     public static void exception(Exception e) {

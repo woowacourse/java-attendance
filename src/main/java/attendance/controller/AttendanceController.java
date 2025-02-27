@@ -25,7 +25,7 @@ public class AttendanceController {
                 process(this::modifyAttendance);
             }
             case "3" -> {
-                process(this::history);
+                process(this::attendanceHistory);
             }
             case "4" -> {
                 process(this::riskCrews);
@@ -50,8 +50,9 @@ public class AttendanceController {
         service.modifyAttendance(InputView.modifyAttendance(DateTimeUtil.nowDate())));
     }
 
-    private void history() {
-
+    private void attendanceHistory() {
+        OutputView.attendanceHistoryResponse(
+        service.attendanceHistory(DateTimeUtil.nowDate(), InputView.attendanceHisotory()));
     }
 
     private void riskCrews() {

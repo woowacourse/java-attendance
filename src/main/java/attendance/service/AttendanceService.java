@@ -4,6 +4,8 @@ import java.time.LocalDate;
 
 import attendance.domain.Crew;
 import attendance.domain.Crews;
+import attendance.dto.AttendanceHistoryRequest;
+import attendance.dto.AttendanceHistoryResponse;
 import attendance.dto.AttendanceRequest;
 import attendance.dto.AttendanceResponse;
 import attendance.dto.ModifyAttendanceRequest;
@@ -32,5 +34,10 @@ public class AttendanceService {
             crew.getAttendanceTimeOf(date),
             crew.getAttendanceStatusOf(date)
         );
+    }
+
+    public AttendanceHistoryResponse attendanceHistory(LocalDate date, AttendanceHistoryRequest request) {
+        Crew crew = crews.get(request.name());
+        return AttendanceHistoryResponse.of(date, crew);
     }
 }
