@@ -2,6 +2,7 @@ package domain;
 
 import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
+import static util.Constants.ERROR_HEADER;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -51,7 +52,7 @@ public class AttendanceTest {
 
         assertThatThrownBy(() -> new Attendance(LocalDateTime.of(notValidDate, validTime)))
                 .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining("[ERROR]");
+                .hasMessageContaining(ERROR_HEADER);
     }
 
     @DisplayName("공휴일에는 출석을 받지 않는다.")
@@ -61,6 +62,6 @@ public class AttendanceTest {
 
         assertThatThrownBy(() -> new Attendance(LocalDateTime.of(notValidDate, validTime)))
                 .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining("[ERROR]");
+                .hasMessageContaining(ERROR_HEADER);
     }
 }

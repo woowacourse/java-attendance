@@ -1,6 +1,7 @@
 package domain;
 
 import static org.assertj.core.api.Assertions.*;
+import static util.Constants.ERROR_HEADER;
 
 import dto.AttendanceCount;
 import dto.AttendanceHistory;
@@ -59,7 +60,7 @@ public class AttendanceBookTest {
 
         assertThatThrownBy(() -> attendanceBook.findAttendanceRecordBy(crewName))
                 .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining("[ERROR]");
+                .hasMessageContaining(ERROR_HEADER);
     }
 
     @DisplayName("출석 저장 시, 출석부에 존재하지 않는 닉네임일 경우 예외가 발생한다.")
@@ -71,7 +72,7 @@ public class AttendanceBookTest {
 
         assertThatThrownBy(() -> attendanceBook.addAttendance(crewName, attendance))
                 .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining("[ERROR]");
+                .hasMessageContaining(ERROR_HEADER);
     }
 
     @DisplayName("출석 저장 시, 이미 해당 날짜에 출석 기록이 있는 경우 예외가 발생한다.")
@@ -83,7 +84,7 @@ public class AttendanceBookTest {
 
         assertThatThrownBy(() -> attendanceBook.addAttendance(crewName, attendance))
                 .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining("[ERROR]");
+                .hasMessageContaining(ERROR_HEADER);
     }
 
     @DisplayName("닉네임, 수정하려는 날짜, 등교 시간을 입력하여 출석 기록을 수정할 수 있다.")
@@ -108,7 +109,7 @@ public class AttendanceBookTest {
 
         assertThatThrownBy(() -> attendanceBook.modify(crewName, attendance))
                 .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining("[ERROR]");
+                .hasMessageContaining(ERROR_HEADER);
     }
 
     @DisplayName("출석 수정 시, 기존 출석 기록과 업데이트된 출석 기록을 모두 확인할 수 있다.")

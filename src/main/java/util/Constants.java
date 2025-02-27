@@ -23,4 +23,6 @@ public class Constants {
 
     public static final LocalTime CAMPUS_START_TIME = LocalTime.of(8, 0);
     public static final LocalTime CAMPUS_END_TIME = LocalTime.of(23, 0);
+
+    public static final String ERROR_HEADER = "[ERROR] ";
 }

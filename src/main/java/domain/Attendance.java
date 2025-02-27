@@ -10,8 +10,8 @@ import java.util.Objects;
 import util.Constants;
 
 public class Attendance {
-    private static final String NOT_RUNNING_TIME_ERROR = "[ERROR] 캠퍼스 운영시간이 아닙니다.";
-    private static final String HOLIDAY_ERROR = "[ERROR] 주말 및 공휴일은 출석할 수 없습니다.";
+    private static final String NOT_RUNNING_TIME_ERROR = "캠퍼스 운영시간이 아닙니다.";
+    private static final String HOLIDAY_ERROR = "주말 및 공휴일은 출석할 수 없습니다.";
     private final LocalDateTime value;
 
     public Attendance(LocalDateTime value) {
@@ -28,13 +28,13 @@ public class Attendance {
 
     private void validateDate(LocalDate date) {
         if(isHoliday(date)) {
-            throw new IllegalArgumentException(HOLIDAY_ERROR);
+            throw new IllegalArgumentException(ERROR_HEADER + HOLIDAY_ERROR);
         }
     }
 
     private void validateTime(LocalTime time) {
         if (time.isBefore(CAMPUS_START_TIME) || time.isAfter(CAMPUS_END_TIME)) {
-            throw new IllegalArgumentException(NOT_RUNNING_TIME_ERROR);
+            throw new IllegalArgumentException(ERROR_HEADER + NOT_RUNNING_TIME_ERROR);
         }
     }
 

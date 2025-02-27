@@ -12,7 +12,7 @@ import java.util.Objects;
 import java.util.Set;
 
 public class AttendanceRecord {
-    private static final String ATTENDANCE_ALREADY_EXISTED_ERROR = "[ERROR] 이미 출석 기록이 존재합니다. 수정 메뉴를 이용해주세요.";
+    private static final String ATTENDANCE_ALREADY_EXISTED_ERROR = "이미 출석 기록이 존재합니다. 수정 메뉴를 이용해주세요.";
     private final Set<Attendance> value;
 
     public AttendanceRecord() {
@@ -42,7 +42,7 @@ public class AttendanceRecord {
 
     public void add(Attendance attendance) {
         if(contains(attendance)) {
-            throw new IllegalArgumentException(ATTENDANCE_ALREADY_EXISTED_ERROR);
+            throw new IllegalArgumentException(ERROR_HEADER + ATTENDANCE_ALREADY_EXISTED_ERROR);
         }
         value.add(attendance);
     }

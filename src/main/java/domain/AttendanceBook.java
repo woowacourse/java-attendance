@@ -1,5 +1,7 @@
 package domain;
 
+import static util.Constants.ERROR_HEADER;
+
 import dto.AttendanceCount;
 import dto.AttendanceHistory;
 import dto.InitialInformation;
@@ -12,7 +14,7 @@ import java.util.List;
 import java.util.Map;
 
 public class AttendanceBook {
-    private static final String CREWNAME_NOT_EXISTED_ERROR = "[ERROR] 존재하지 않는 닉네임입니다.";
+    private static final String CREWNAME_NOT_EXISTED_ERROR = "존재하지 않는 닉네임입니다.";
     private final Map<CrewName, AttendanceRecord> value;
 
     public AttendanceBook(InitialInformation initialInformation) {
@@ -29,7 +31,7 @@ public class AttendanceBook {
     public AttendanceRecord findAttendanceRecordBy(CrewName crewName) {
         AttendanceRecord attendanceRecord = value.get(crewName);
         if (attendanceRecord == null) {
-            throw new IllegalArgumentException(CREWNAME_NOT_EXISTED_ERROR);
+            throw new IllegalArgumentException(ERROR_HEADER + CREWNAME_NOT_EXISTED_ERROR);
         }
         return attendanceRecord;
     }

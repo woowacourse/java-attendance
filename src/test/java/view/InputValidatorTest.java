@@ -1,6 +1,7 @@
 package view;
 
 import static org.assertj.core.api.Assertions.*;
+import static util.Constants.ERROR_HEADER;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -14,7 +15,7 @@ public class InputValidatorTest {
     void test1(String invalidTimeFormat) {
         assertThatThrownBy(() -> InputValidator.validateTime(invalidTimeFormat))
                 .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining("[ERROR]");
+                .hasMessageContaining(ERROR_HEADER);
     }
 
     @DisplayName("닉네임이 1자 이하, 5자 이상일 경우 예외가 발생한다.")
@@ -23,6 +24,6 @@ public class InputValidatorTest {
     void test2(String invalidNameFormat) {
         assertThatThrownBy(() -> InputValidator.validateName(invalidNameFormat))
                 .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining("[ERROR]");
+                .hasMessageContaining(ERROR_HEADER);
     }
 }
