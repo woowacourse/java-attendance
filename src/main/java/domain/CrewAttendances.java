@@ -59,4 +59,9 @@ public class CrewAttendances {
         DateCrewAttendanceManager dateCrewAttendanceManager = dateCrewAttendanceManager(nickname);
         return dateCrewAttendanceManager.crewAttendancesHistory();
     }
+
+    public boolean isExistAttendance(String nickname) {
+        CrewName crewName = new CrewName(nickname);
+        return crewAttendances.containsKey(crewName);
+    }
 }

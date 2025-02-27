@@ -20,6 +20,10 @@ public class CrewAttendance {
         return attendanceTime.getAttendanceTime();
     }
 
+    public String attendanceStatusMessage() {
+        return attendanceStatus().getStatus();
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {

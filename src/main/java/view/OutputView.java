@@ -13,21 +13,22 @@ public class OutputView {
             + "4. 제적 위험자 확인\n"
             + "Q. 종료";
 
-    public static final String TODAY_FORMAT = "오늘은 MM월 dd일 E요일입니다. ";
+    public static final String TODAY_FORMAT = "\n오늘은 MM월 dd일 E요일입니다. ";
     private static final DateTimeFormatter TODAY_FORMATTER = DateTimeFormatter.ofPattern(TODAY_FORMAT,
             Locale.KOREA);
     private static final String INPUT_NICKNAME = "닉네임을 입력해주세요.";
     private static final String INPUT_MODIFY_NICKNAME = "출석을 수정하려는 크루의 닉네임을 입력해 주세요.";
     private static final String ADD_ATTENDANCE_INPUT_TIME = "등교 시간을 입력해 주세요.";
-    private static final String DATE_DAY_WEEK_FORMAT = "MM월 DD일 E요일";
+    private static final String DATE_DAY_WEEK_FORMAT = "MM월 dd일 E요일 ";
     private static final DateTimeFormatter DATE_DAY_WEEK_FORMATTER = DateTimeFormatter.ofPattern(DATE_DAY_WEEK_FORMAT,
             Locale.KOREA);
-    private static final String TIME_FORMAT = "HH:MM";
+    private static final String TIME_FORMAT = "HH:mm";
     private static final DateTimeFormatter TIME_FORMATTER = DateTimeFormatter.ofPattern(TIME_FORMAT, Locale.KOREA);
-    private static final String ATTENDANCE_STATUS_FORMAT = "(%s)";
-
-
-    private String ERROR_PREFIX = "[ERROR] ";
+    private static final String ATTENDANCE_STATUS_FORMAT = " (%s) ";
+    private static final String NEXT_ATTENDANCE_SEPARATOR = "-> ";
+    private static final String NEW_LINE = "\n";
+    private static final String ERROR_PREFIX = "[ERROR] ";
+    private static final String INPUT_ATTENDANCE_MODIFY_DATE = "수정하려는 날짜(일)를 입력해 주세요.";
 
     public void printError(String errorMessage) {
         println(ERROR_PREFIX + errorMessage);
@@ -57,7 +58,7 @@ public class OutputView {
     }
 
 
-    public void printAttendanceDateTime(String status, LocalTime attendanceTime, LocalDate attendanceDate) {
+    public void printAttendanceDateTimeStatus(String status, LocalTime attendanceTime, LocalDate attendanceDate) {
         LocalDateTime dateTime = LocalDateTime.of(attendanceDate, attendanceTime);
         String attendanceDateTime = dateTime.format(DATE_DAY_WEEK_FORMATTER);
         print(attendanceDateTime);
@@ -66,16 +67,35 @@ public class OutputView {
     }
 
     private void print(String message) {
-        System.out.println(message);
+        System.out.print(message);
     }
 
     private void printAttendanceStatus(String status) {
-        println(String.format(ATTENDANCE_STATUS_FORMAT, status));
+        print(String.format(ATTENDANCE_STATUS_FORMAT, status));
     }
 
     private void printAttendanceTime(LocalTime attendanceTime) {
         String resultAttendanceTime = attendanceTime.format(TIME_FORMATTER);
         print(resultAttendanceTime);
+    }
+
+    public void printInputDate() {
+        println(INPUT_ATTENDANCE_MODIFY_DATE);
+    }
+
+    public void printPreviousAttendance(LocalDate attendanceDate, LocalTime attendanceTime,
+                                        String status) {
+        printAttendanceDateTimeStatus(status, attendanceTime, attendanceDate);
+        print(NEXT_ATTENDANCE_SEPARATOR);
+    }
+
+    public void newLine() {
+        print(NEW_LINE);
+    }
+
+    public void printAttendanceTimeStatus(LocalTime attendanceTime, String status) {
+        printAttendanceTime(attendanceTime);
+        printAttendanceStatus(status);
     }
 }
 

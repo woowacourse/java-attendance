@@ -2,7 +2,6 @@ package controller;
 
 import domain.AttendanceDate;
 import domain.AttendanceReader;
-import domain.AttendanceStatus;
 import domain.AttendanceTime;
 import domain.CrewAttendance;
 import domain.CrewAttendances;
@@ -20,13 +19,20 @@ import view.OutputView;
 
 public class AttendanceController {
 
+
     private final CrewAttendances crewAttendances;
     private final InputView inputView;
     private final OutputView outputView;
+
+    private final DateTimeFormatter TIME_FORMATTER = DateTimeFormatter.ofPattern("HH:mm");
+    private final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("yyyy MM d");
+    private final int SYSTEM_RUNNING_YEAR = 2024;
+    private final int SYSTEM_RUNNING_MONTH = 12;
+    private final String MODIFY_DATE_FORMAT = "%s %s %s";
     private final String NOT_SUPPORTED_METHOD = "아직 지원하지 않는 기능입니다.";
-    private final DateTimeFormatter TIME_FORMATTER = DateTimeFormatter.ofPattern("HH:MM");
-    private final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("dd");
     private final String INVALID_TIME_FORMAT = "유효하지 않은 시간 양식 입니다. (HH:MM)";
+    private static final String INVALID_DATE_FORMAT = "유효하지 않은 날짜 양식입니다. (d)";
+    private final String NOT_EXIST_ATTENDNACE = "존재하지 않는 출석 기록입니다";
 
 
     public AttendanceController(String fileName, OutputView outputView, InputView inputView) {
@@ -56,23 +62,82 @@ public class AttendanceController {
     private void executeMethod(InputMethod inputMethod) {
         switch (inputMethod) {
             case ATTENDANCE -> handleAddAttendance();
-//            case MODIFY -> handleInput(handleModify());
+            case MODIFY -> handleModify();
 //            case ATTENDANCE_HISTORY -> handleInput(handleAttendanceHistory());
 //            case DISMISS_HISTORY -> handleInput(handleDismissHistory());
             default -> throw new AttendanceException(NOT_SUPPORTED_METHOD);
         }
     }
 
+    private void handleModify() {
+        String crewNickname = handleInput(this::handleModifyAttendanceNickname);
+        validateExistAttendance(crewNickname);
+        LocalDate attendanceDate = handleInput(this::handleAttendanceInputDate);
+        LocalTime attendanceTime = handleInput(() -> handleAddAttendanceTime(attendanceDate));
+        CrewAttendance prevAttendance = crewAttendances.crewAttendance(crewNickname, attendanceDate);
+        crewAttendances.modifyAttendance(crewNickname, attendanceDate, attendanceTime);
+        CrewAttendance afterCrewAttendance = crewAttendances.crewAttendance(crewNickname, attendanceDate);
+        String attendanceStatusMessage = afterCrewAttendance.attendanceStatusMessage();
+        printPreviousAttendanceDateTimeStatus(prevAttendance, attendanceDate);
+        outputView.printAttendanceTimeStatus(afterCrewAttendance.attendanceTime(), attendanceStatusMessage);
+    }
+
+    private void printPreviousAttendanceDateTimeStatus(CrewAttendance prevAttendance, LocalDate attendanceDate) {
+        outputView.printPreviousAttendance(attendanceDate, prevAttendance.attendanceTime(),
+                prevAttendance.attendanceStatusMessage());
+    }
+
+    private void printPreviousAttendanceDateTimeStatus(LocalTime attendanceTime, LocalDate attendanceDate,
+                                                       String status) {
+        outputView.printPreviousAttendance(attendanceDate, attendanceTime, status);
+    }
+
+    private void validateExistAttendance(String crewNickname) {
+        if (!crewAttendances.isExistAttendance(crewNickname)) {
+            throw new AttendanceException(NOT_EXIST_ATTENDNACE);
+        }
+    }
+
+    private String handleModifyAttendanceNickname() {
+        outputView.printInputModifyNickname();
+        return inputNickname();
+    }
+
+    private String handleAddAttendanceNickname() {
+        outputView.printInputNickname();
+        return inputNickname();
+    }
+
+    private LocalDate handleAttendanceInputDate() {
+        outputView.printInputDate();
+        return inputDate();
+    }
+
+    private LocalDate inputDate() {
+        String inputDate = inputView.input();
+        String systemFormattedDate = String.format(MODIFY_DATE_FORMAT, SYSTEM_RUNNING_YEAR, SYSTEM_RUNNING_MONTH,
+                inputDate);
+        LocalDate date = parseDate(systemFormattedDate);
+        validateAttendanceDate(date);
+        return date;
+    }
+
     private void handleAddAttendance() {
         validateAttendanceDate(LocalDate.now());
-        String crewNickname = handleInput(this::inputNickname);
+        String crewNickname = handleInput(this::handleAddAttendanceNickname);
         LocalDate attendanceDate = LocalDate.now();
-        LocalTime attendanceTime = handleInput(() -> inputTime(attendanceDate));
+        LocalTime attendanceTime = handleInput(() -> handleAddAttendanceTime(attendanceDate));
         crewAttendances.addAttendance(crewNickname, attendanceTime);
         CrewAttendance crewAttendance = crewAttendances.crewAttendance(crewNickname, attendanceDate);
-        AttendanceStatus attendanceStatus = crewAttendance.attendanceStatus();
+        String attendanceStatus = crewAttendance.attendanceStatusMessage();
         LocalTime resultAttendanceTime = crewAttendance.attendanceTime();
-        outputView.printAttendanceDateTime(attendanceStatus.getStatus(), resultAttendanceTime, attendanceDate);
+        outputView.printAttendanceDateTimeStatus(attendanceStatus, resultAttendanceTime, attendanceDate);
+        outputView.newLine();
+    }
+
+    private LocalTime handleAddAttendanceTime(LocalDate attendanceDate) {
+        outputView.printAddAttendanceInputTime();
+        return inputTime(attendanceDate);
     }
 
     private void validateAttendanceDate(LocalDate date) {
@@ -80,7 +145,6 @@ public class AttendanceController {
     }
 
     private LocalTime inputTime(LocalDate attendanceDate) {
-        outputView.printAddAttendanceInputTime();
         String inputTime = inputView.input();
         LocalTime time = parseTime(inputTime);
         validateAttendanceTime(time, attendanceDate);
@@ -88,7 +152,6 @@ public class AttendanceController {
     }
 
     private String inputNickname() {
-        outputView.printInputNickname();
         String nickname = inputView.input();
         validateCrewName(nickname);
         return nickname;
@@ -111,7 +174,11 @@ public class AttendanceController {
     }
 
     private LocalDate parseDate(String date) {
-        return LocalDate.parse(date, DATE_FORMATTER);
+        try {
+            return LocalDate.parse(date, DATE_FORMATTER);
+        } catch (DateTimeParseException e) {
+            throw new AttendanceException(INVALID_DATE_FORMAT);
+        }
     }
 
     private InputMethod inputMethod() {
