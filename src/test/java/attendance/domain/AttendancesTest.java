@@ -59,4 +59,17 @@ class AttendancesTest {
         // then
         assertThat(attendance1).isEqualTo(attendance2);
     }
+
+    @DisplayName("크루 이름과 년월일로 출석 기록을 검색시, 없으면 예외가 발생한다.")
+    @Test
+    void 크루_이름과_년월일로_출석_기록을_검색시_없으면_예외가_발생한다() {
+
+        // given
+        LocalDate localDate = LocalDate.of(2025, 2, 27);
+
+        // when & then
+        assertThatThrownBy(() -> attendances.findByCrewNameAndLocalDate("체체2", localDate))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("[ERROR] 출석 기록이 존재하지 않습니다.");
+    }
 }

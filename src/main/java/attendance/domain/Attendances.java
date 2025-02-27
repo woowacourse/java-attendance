@@ -22,6 +22,6 @@ public class Attendances {
         return attendances.stream()
                 .filter(attendance -> attendance.isSameLocalDate(crewName, localDate))
                 .findFirst()
-                .orElse(null);
+                .orElseThrow(() -> new IllegalArgumentException("[ERROR] 출석 기록이 존재하지 않습니다."));
     }
 }
