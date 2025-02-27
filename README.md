@@ -78,7 +78,8 @@
 ## 🕹️ Controller
 
 ### AttendanceController
-- [ ] 출석과 관련된 기능의 흐름 제어
+- [x] 출석과 관련된 컨트롤러의 흐름 제어
+  - [ ] 출석 날짜에 따른 출석 확인 메뉴 옵션 예외 처리
 
 ### AttendanceMenuController
 - [x] 출석과 괸련된 메뉴 옵션의 흐름 제어 
