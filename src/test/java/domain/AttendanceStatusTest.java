@@ -2,7 +2,6 @@ package domain;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import domain.AttendanceStatus;
 import java.time.DayOfWeek;
 import java.time.LocalTime;
 import org.junit.jupiter.api.DisplayName;
@@ -59,7 +58,6 @@ public class AttendanceStatusTest {
             // then
             assertThat(actual).isEqualByComparingTo(AttendanceStatus.ATTENDANCE);
         }
-
 
     }
 

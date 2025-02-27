@@ -18,7 +18,6 @@ public class AttendanceHistory {
     private static final LocalDate ATTENDANCE_HISTORY_RECORD_BEGIN_DATE = LocalDate.of(2024, 12, 1);
     private static final LocalTime START_TIME = LocalTime.of(8, 0);
     private static final LocalTime END_TIME = LocalTime.of(23, 0);
-    ;
 
     private final Crew crew;
     private final Map<LocalDate, AttendanceRecord> attendanceHistory;
