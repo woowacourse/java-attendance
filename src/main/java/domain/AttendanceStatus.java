@@ -22,8 +22,13 @@ public enum AttendanceStatus {
         LocalTime lateTime = educationStartTime.plusMinutes(LATE_MINUTE);
         LocalTime unattendedTime = educationStartTime.plusMinutes(UNATTENDED_MINUTE);
 
-        if (attendanceTime.isAfter(lateTime)
-                && attendanceTime.isBefore(unattendedTime.plusMinutes(1))) {
+        return determineAttendanceStatus(attendanceTime, lateTime, unattendedTime);
+    }
+
+    private static AttendanceStatus determineAttendanceStatus(AttendanceTime attendanceTime,
+                                                              LocalTime lateTime,
+                                                              LocalTime unattendedTime) {
+        if (attendanceTime.isAfter(lateTime) && attendanceTime.isBefore(unattendedTime.plusMinutes(1))) {
             return LATE;
         }
         if (attendanceTime.isAfter(unattendedTime)) {

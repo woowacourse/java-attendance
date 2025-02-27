@@ -12,13 +12,6 @@ public class Attendances {
         this.attendances = new ArrayList<>(attendances);
     }
 
-    public Attendance findAttendanceByDate(LocalDate date) {
-        return this.attendances.stream()
-                .filter(attendance -> attendance.isSameDate(date))
-                .findAny()
-                .orElseThrow(() -> new IllegalArgumentException("[ERROR] 해당 날짜에 대한 출석 기록이 존재하지 않습니다."));
-    }
-
     public Attendance findAttendanceByDate(AttendanceDate date) {
         return this.attendances.stream()
                 .filter(attendance -> attendance.isSameDate(date))

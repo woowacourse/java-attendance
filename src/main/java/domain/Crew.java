@@ -51,7 +51,7 @@ public class Crew {
     }
 
     public int getExpelledAbsentCount(LocalDate nowDate) {
-        return getAbsentCount(nowDate) + getLateCount() / 3;
+        return getAbsentCount(nowDate) + getLateCount() / Constants.LATE_TO_UNATTENDED_UNIT;
     }
 
     public int getCrewStatusSequence() {

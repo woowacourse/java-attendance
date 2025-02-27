@@ -12,6 +12,9 @@ public class AttendanceDate {
     private static final List<LocalDate> HOLIDAYS = List.of(LocalDate.of(2024, 12, 25));
     private static final LocalDate JANUARY_START_DATE = LocalDate.of(2025, 1, 1);
 
+    private static final LocalTime MONDAY_EDUCATION_START_TIME = LocalTime.of(13, 0);
+    private static final LocalTime EDUCATION_START_TIME = LocalTime.of(10, 0);
+
     private final LocalDate attendanceDate;
 
     public AttendanceDate(final LocalDate date) {
@@ -21,9 +24,9 @@ public class AttendanceDate {
 
     public LocalTime getEducationStartTime() {
         if (attendanceDate.getDayOfWeek().equals(DayOfWeek.MONDAY)) {
-            return LocalTime.of(13, 0);
+            return MONDAY_EDUCATION_START_TIME;
         }
-        return LocalTime.of(10, 0);
+        return EDUCATION_START_TIME;
     }
 
     public static List<LocalDate> getPastEducationDates(LocalDate nowDate) {
@@ -35,10 +38,6 @@ public class AttendanceDate {
             addEducationDate(date, educationDates);
         }
         return educationDates;
-    }
-
-    public boolean isSameAs(LocalDate date) {
-        return this.attendanceDate.equals(date);
     }
 
     public boolean isSameAs(AttendanceDate date) {

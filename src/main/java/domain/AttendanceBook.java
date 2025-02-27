@@ -11,7 +11,6 @@ public class AttendanceBook {
 
     private final List<Crew> crews;
 
-    // TODO: 변환 책임에 대해 고민해보기
     public AttendanceBook(Map<String, List<LocalDateTime>> crewAttendances) {
         this.crews = new ArrayList<>();
         for (String name : crewAttendances.keySet()) {

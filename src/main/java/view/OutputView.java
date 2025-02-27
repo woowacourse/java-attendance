@@ -3,8 +3,6 @@ package view;
 import constant.Constants;
 import domain.Attendance;
 import domain.AttendanceDate;
-import domain.AttendanceStatus;
-import domain.AttendanceTime;
 import domain.Attendances;
 import domain.Crew;
 import domain.CrewStatus;
@@ -67,25 +65,22 @@ public class OutputView {
     }
 
     private String generateCrewAttendanceMessage(Attendances attendances, LocalDate educationDate) {
-        if (attendances.checkAlreadyAttend(new AttendanceDate(educationDate))) {
-            Attendance attendance = attendances.findAttendanceByDate(educationDate);
+        AttendanceDate attendanceDate = new AttendanceDate(educationDate);
+        if (attendances.checkAlreadyAttend(attendanceDate)) {
+            Attendance attendance = attendances.findAttendanceByDate(attendanceDate);
             return generateAttendanceMessage(attendance);
         }
         return generateAbsentMessage(educationDate);
     }
 
     private String generateAttendanceMessage(Attendance attendance) {
-        AttendanceDate attendanceDate = attendance.getAttendanceDate();
-        AttendanceTime attendanceTime = attendance.getAttendanceTime();
-        AttendanceStatus attendanceStatus = attendance.getAttendanceStatus();
-
         return String.format("%02d월 %02d일 %s요일 %02d:%02d (%s)",
-                attendanceDate.getMonthValue(),
-                attendanceDate.getDayOfMonth(),
-                DayOfWeekConvertor.convertToKorean(attendanceDate.getDayOfWeek()),
-                attendanceTime.getHour(),
-                attendanceTime.getMinute(),
-                attendanceStatus.getStatus());
+                attendance.getAttendanceDate().getMonthValue(),
+                attendance.getAttendanceDate().getDayOfMonth(),
+                DayOfWeekConvertor.convertToKorean(attendance.getAttendanceDate().getDayOfWeek()),
+                attendance.getAttendanceTime().getHour(),
+                attendance.getAttendanceTime().getMinute(),
+                attendance.getAttendanceStatus().getStatus());
     }
 
     private String generateAbsentMessage(LocalDate date) {
@@ -96,15 +91,11 @@ public class OutputView {
     }
 
     private void printCrewStatusMessage(Attendances attendances) {
-        int attendanceCount = attendances.countAttendance();
-        int lateCount = attendances.countLate();
-        int absentCount = attendances.countUnattended(Constants.NOW_DATE);
+        System.out.println(System.lineSeparator() + String.format("출석: %d회", attendances.countAttendance()) +
+                System.lineSeparator() + String.format("지각: %d회", attendances.countLate()) +
+                System.lineSeparator() + String.format("결석: %d회", attendances.countUnattended(Constants.NOW_DATE)) + System.lineSeparator());
 
-        System.out.println(System.lineSeparator() + String.format("출석: %d회", attendanceCount) +
-                System.lineSeparator() + String.format("지각: %d회", lateCount) +
-                System.lineSeparator() + String.format("결석: %d회", absentCount) + System.lineSeparator());
-
-        CrewStatus crewStatus = CrewStatus.checkCrewStatus(lateCount, absentCount);
+        CrewStatus crewStatus = CrewStatus.checkCrewStatus(attendances.countLate(), attendances.countUnattended(Constants.NOW_DATE));
 
         if (!crewStatus.equals(CrewStatus.NORMAL)) {
             System.out.println(String.format("%s입니다.", crewStatus.getStatus()) + System.lineSeparator());

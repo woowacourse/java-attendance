@@ -42,7 +42,7 @@ public class AttendancesTest {
         );
         Attendances attendances = new Attendances(List.of(firstAttendance, secondAttendance));
 
-        assertThat(attendances.findAttendanceByDate(LocalDate.of(2024, 12, 3)))
+        assertThat(attendances.findAttendanceByDate(new AttendanceDate(LocalDate.of(2024, 12, 3))))
                 .isEqualTo(secondAttendance);
     }
 
@@ -111,7 +111,7 @@ public class AttendancesTest {
                 new AttendanceDate(editDate),
                 new AttendanceTime(editTime));
 
-        Assertions.assertThat(attendances.findAttendanceByDate(editDate).isLate()).isEqualTo(false);
+        Assertions.assertThat(attendances.findAttendanceByDate(new AttendanceDate(editDate)).isLate()).isEqualTo(false);
 
     }
 

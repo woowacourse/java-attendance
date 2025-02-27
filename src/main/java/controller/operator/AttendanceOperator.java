@@ -14,22 +14,28 @@ public class AttendanceOperator implements OptionOperator {
     @Override
     public void process(AttendanceBook attendanceBook, LocalDate nowDate) {
         AttendanceDate attendanceDate = new AttendanceDate(nowDate);
-
-        Crew crew = InputProcessor.processInputUntilSuccess(() -> {
-            String name = inputView.getNameInput();
-            Crew attendCrew = attendanceBook.findCrewByName(name);
-            attendanceBook.checkAlreadyAttended(attendCrew, attendanceDate);
-            return attendCrew;
-        });
-
-        AttendanceTime attendanceTime = InputProcessor.processInputUntilSuccess(() -> {
-            LocalTime attendTime = inputView.getAttendTimeInput();
-            return new AttendanceTime(attendTime);
-        });
+        Crew crew = processCrewInput(attendanceBook, attendanceDate);
+        AttendanceTime attendanceTime = processTimeInput();
 
         attendanceBook.attend(crew, attendanceDate, attendanceTime);
         Attendance attendance = crew.findAttendanceByDate(attendanceDate);
 
         outputView.printAttendanceMessage(attendance);
+    }
+
+    private AttendanceTime processTimeInput() {
+        return InputProcessor.processInputUntilSuccess(() -> {
+            LocalTime attendTime = inputView.getAttendTimeInput();
+            return new AttendanceTime(attendTime);
+        });
+    }
+
+    private Crew processCrewInput(AttendanceBook attendanceBook, AttendanceDate attendanceDate) {
+        return InputProcessor.processInputUntilSuccess(() -> {
+            String name = inputView.getNameInput();
+            Crew attendCrew = attendanceBook.findCrewByName(name);
+            attendanceBook.checkAlreadyAttended(attendCrew, attendanceDate);
+            return attendCrew;
+        });
     }
 }
