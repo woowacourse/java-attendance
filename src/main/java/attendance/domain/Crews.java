@@ -1,7 +1,5 @@
 package attendance.domain;
 
-import attendance.util.ErrorMessage;
-
 import java.util.List;
 
 public class Crews {
@@ -13,14 +11,12 @@ public class Crews {
     }
 
     public void add(Crew crew) {
-        validateDuplicate(crew);
-        crews.add(crew);
-    }
-
-    private void validateDuplicate(Crew crew) {
+        int index = crews.indexOf(crew);
         if (crews.contains(crew)) {
-            throw new IllegalArgumentException(ErrorMessage.CREW_DUPLICATE_ERROR.getMessage());
+            crews.set(index, crew);
+            return;
         }
+        crews.add(crew);
     }
 
     public int size() {
