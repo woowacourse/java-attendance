@@ -9,6 +9,7 @@ public class AttendanceStatistics {
     private final int attendanceCount;
     private final int lateCount;
     private final int absenceCount;
+
     public AttendanceStatistics(final int attendanceCount, final int lateCount, final int absenceCount) {
         this.attendanceCount = attendanceCount;
         this.lateCount = lateCount;

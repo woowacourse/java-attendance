@@ -77,4 +77,32 @@ class AttendanceHistoryTest {
             }
         );
     }
+
+    @DisplayName("오늘_이전까지의_출석_통계를_반환할_수_있다")
+    @Test
+    void should_ReturnAttendanceStatistics() {
+        //given
+        AttendanceHistory attendanceHistory = new AttendanceHistory();
+        attendanceHistory.addAttendance(new Attendance(
+                LocalDate.of(2024, 12, 2),
+                LocalTime.of(13, 7),
+                LATE)
+        );
+        attendanceHistory.addAttendance(new Attendance(
+                LocalDate.of(2024, 12, 3),
+                LocalTime.of(10, 0),
+                ATTENDANCE)
+        );
+        LocalDate today = LocalDate.of(2024, 12, 6);
+
+        //when
+        AttendanceStatistics result = attendanceHistory.returnAttendanceStatistics(today);
+
+        //then
+        assertAll(
+                () -> assertThat(result).extracting("attendanceCount").isEqualTo(1),
+                () -> assertThat(result).extracting("lateCount").isEqualTo(1),
+                () -> assertThat(result).extracting("absenceCount").isEqualTo(2)
+        );
+    }
 }

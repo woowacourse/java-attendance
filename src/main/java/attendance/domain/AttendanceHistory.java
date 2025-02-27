@@ -26,7 +26,7 @@ public class AttendanceHistory {
         return addAttendance(modifiedAttendance);
     }
 
-    public int countAttendanceStatus(final LocalDate today, final String status) {
-        return 0;
+    public AttendanceStatistics returnAttendanceStatistics(final LocalDate today) {
+        return new AttendanceStatistics(1, 2, 3);
     }
 }
