@@ -4,22 +4,16 @@ import java.util.Arrays;
 import java.util.function.Predicate;
 
 public enum SanctionLevel {
-    DISMISS("제적", weight -> weight > 5),
-    NEED_MEETING("면담", weight -> weight >= 3),
-    WARNING("경고", weight -> weight > 1),
-    NONE("", weight -> weight <= 1),
+    DISMISS(weight -> weight > 5),
+    NEED_MEETING(weight -> weight >= 3),
+    WARNING(weight -> weight > 1),
+    NONE(weight -> weight <= 1),
     ;
 
     private final Predicate<Integer> condition;
-    private final String value;
 
-    SanctionLevel(String value, Predicate<Integer> condition) {
-        this.value = value;
+    SanctionLevel(Predicate<Integer> condition) {
         this.condition = condition;
-    }
-
-    public String getValues() {
-        return value;
     }
 
     public boolean matches(int wight) {

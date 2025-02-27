@@ -15,7 +15,7 @@ public enum Schedule {
     CAMPUS_OPEN(LocalTime.of(8, 0), Collections.emptySet()),
     CAMPUS_CLOSE(LocalTime.of(23, 0), Collections.emptySet());
 
-    private static final String OUT_OF_SCHOOL_SCHEDULE = "등교시간에만 출석 가능합니다.";
+    private static final String ERROR_OUT_OF_SCHOOL_SCHEDULE = "등교시간에만 출석 가능합니다.";
     private final LocalTime time;
     private final Set<DayOfWeek> dayOfWeeks;
 
@@ -44,7 +44,7 @@ public enum Schedule {
     public static void validateCampusSchedule(LocalDateTime dateTime) {
         LocalTime time = dateTime.toLocalTime();
         if (time.isBefore(CAMPUS_OPEN.getTime()) || time.isAfter(CAMPUS_CLOSE.getTime())) {
-            throw new AttendanceArgumentException(OUT_OF_SCHOOL_SCHEDULE);
+            throw new AttendanceArgumentException(ERROR_OUT_OF_SCHOOL_SCHEDULE);
         }
     }
 }

@@ -35,8 +35,4 @@ public record Attendance(LocalDateTime dateTime, AttendanceStatus attendanceStat
     public LocalTime getTime() {
         return dateTime.toLocalTime();
     }
-
-    public String getStatusString() {
-        return attendanceStatus.getStatus();
-    }
 }
