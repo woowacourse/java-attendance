@@ -20,6 +20,10 @@ public class AttendanceBookTest {
     AttendanceBook attendanceBook;
     AttendanceRecord attendanceRecord;
     CrewName mimi = new CrewName("미미");
+    CrewName malone = new CrewName("말론");
+    CrewName norang = new CrewName("노랑");
+    CrewName pree = new CrewName("프리");
+    CrewName river = new CrewName("리버");
     int day = 10;
     Attendance dayOfTenAttendance = new Attendance(LocalDateTime.of(2024, 12, day, 10, 0));
 
@@ -161,12 +165,9 @@ public class AttendanceBookTest {
     @DisplayName("전날까지의 크루 출석 기록을 바탕으로 제적 대상자, 면담 대상자, 경고 대상자순으로 출력한다.")
     @Test
     void test10() {
-        makeFirstWarning();
-        makeFirstCounseling();
-        makeSecondExpulsion();
-        makeFirstExpulsion();
+        setAttendanceBook();
 
-        PenaltyInformation penaltyInformation = attendanceBook.findPenaltyCrewSorted();
+        PenaltyInformation penaltyInformation = attendanceBook.findPenaltyCrewSorted(LocalDate.of(2024, 12, 12));
         List<CrewName> crewNames = penaltyInformation.sortedValue().stream()
                 .map(AttendanceCount::crewName)
                 .toList();
@@ -178,36 +179,52 @@ public class AttendanceBookTest {
                         new CrewName("리버")));
     }
 
+    private void setAttendanceBook() {
+        Map<CrewName, AttendanceRecord> testData = new HashMap<>();
+
+        testData.put(malone, new AttendanceRecord());
+        testData.put(norang, new AttendanceRecord());
+        testData.put(pree, new AttendanceRecord());
+        testData.put(river, new AttendanceRecord());
+
+        InitialInformation initialInformation = new InitialInformation(testData);
+        attendanceBook = new AttendanceBook(initialInformation);
+
+        makeFirstWarning();
+        makeFirstCounseling();
+        makeFirstExpulsion();
+        makeSecondExpulsion();
+    }
+
     void makeFirstExpulsion() { // 결석 6
-        CrewName crewName = new CrewName("말론");
-        attendanceBook.addAttendance(crewName, new Attendance(LocalDateTime.of(2024, 12, 2, 13, 0)));
-        attendanceBook.addAttendance(crewName, new Attendance(LocalDateTime.of(2024, 12, 3, 10, 0)));
+        attendanceBook.addAttendance(malone, new Attendance(LocalDateTime.of(2024, 12, 2, 13, 0)));
+        attendanceBook.addAttendance(malone, new Attendance(LocalDateTime.of(2024, 12, 3, 10, 0)));
+        attendanceBook.addAttendance(malone, dayOfTenAttendance);
     }
 
     void makeSecondExpulsion() { // 결석 5
-        CrewName crewName = new CrewName("노랑");
-        attendanceBook.addAttendance(crewName, new Attendance(LocalDateTime.of(2024, 12, 2, 13, 0)));
-        attendanceBook.addAttendance(crewName, new Attendance(LocalDateTime.of(2024, 12, 3, 10, 0)));
-        attendanceBook.addAttendance(crewName, new Attendance(LocalDateTime.of(2024, 12, 4, 10, 0)));
+        attendanceBook.addAttendance(norang, new Attendance(LocalDateTime.of(2024, 12, 2, 13, 0)));
+        attendanceBook.addAttendance(norang, new Attendance(LocalDateTime.of(2024, 12, 3, 10, 0)));
+        attendanceBook.addAttendance(norang, new Attendance(LocalDateTime.of(2024, 12, 4, 10, 0)));
+        attendanceBook.addAttendance(norang, dayOfTenAttendance);
     }
 
     void makeFirstCounseling() { // 면담 3
-        CrewName crewName = new CrewName("프리");
-        attendanceBook.addAttendance(crewName, new Attendance(LocalDateTime.of(2024, 12, 2, 13, 0)));
-        attendanceBook.addAttendance(crewName, new Attendance(LocalDateTime.of(2024, 12, 3, 10, 0)));
-        attendanceBook.addAttendance(crewName, new Attendance(LocalDateTime.of(2024, 12, 4, 10, 0)));
-        attendanceBook.addAttendance(crewName, new Attendance(LocalDateTime.of(2024, 12, 5, 10, 0)));
-        attendanceBook.addAttendance(crewName, new Attendance(LocalDateTime.of(2024, 12, 6, 10, 0)));
+        attendanceBook.addAttendance(pree, new Attendance(LocalDateTime.of(2024, 12, 2, 13, 0)));
+        attendanceBook.addAttendance(pree, new Attendance(LocalDateTime.of(2024, 12, 3, 10, 0)));
+        attendanceBook.addAttendance(pree, new Attendance(LocalDateTime.of(2024, 12, 4, 10, 0)));
+        attendanceBook.addAttendance(pree, new Attendance(LocalDateTime.of(2024, 12, 5, 10, 0)));
+        attendanceBook.addAttendance(pree, new Attendance(LocalDateTime.of(2024, 12, 6, 10, 0)));
+        attendanceBook.addAttendance(pree, dayOfTenAttendance);
     }
 
     void makeFirstWarning() { // 경고 2
-        CrewName crewName = new CrewName("리버");
-        attendanceBook.addAttendance(crewName, new Attendance(LocalDateTime.of(2024, 12, 2, 13, 0)));
-        attendanceBook.addAttendance(crewName, new Attendance(LocalDateTime.of(2024, 12, 3, 10, 0)));
-        attendanceBook.addAttendance(crewName, new Attendance(LocalDateTime.of(2024, 12, 4, 10, 0)));
-        attendanceBook.addAttendance(crewName, new Attendance(LocalDateTime.of(2024, 12, 5, 10, 0)));
-        attendanceBook.addAttendance(crewName, new Attendance(LocalDateTime.of(2024, 12, 6, 10, 0)));
-        attendanceBook.addAttendance(crewName, new Attendance(LocalDateTime.of(2024, 12, 9, 13, 0)));
+        attendanceBook.addAttendance(river, new Attendance(LocalDateTime.of(2024, 12, 2, 13, 0)));
+        attendanceBook.addAttendance(river, new Attendance(LocalDateTime.of(2024, 12, 3, 10, 0)));
+        attendanceBook.addAttendance(river, new Attendance(LocalDateTime.of(2024, 12, 4, 10, 0)));
+        attendanceBook.addAttendance(river, new Attendance(LocalDateTime.of(2024, 12, 5, 10, 0)));
+        attendanceBook.addAttendance(river, new Attendance(LocalDateTime.of(2024, 12, 6, 10, 0)));
+        attendanceBook.addAttendance(river, new Attendance(LocalDateTime.of(2024, 12, 9, 13, 0)));
+        attendanceBook.addAttendance(river, dayOfTenAttendance);
     }
-
 }

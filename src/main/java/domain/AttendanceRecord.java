@@ -2,7 +2,6 @@ package domain;
 
 import static util.Constants.*;
 
-import dto.AttendanceCount;
 import dto.AttendanceHistory;
 import dto.ModifyResult;
 import java.time.LocalDate;
@@ -30,25 +29,15 @@ public class AttendanceRecord {
         return new AttendanceHistory(getSortedAllValueUntil(yesterday));
     }
 
-    public AttendanceCount calculateCount(LocalDate yesterday) {
-        List<Attendance> allSortedUntil = getSortedAllValueUntil(yesterday);
-        int attendCount = 0;
-        int lateCount = 0;
-        int absentCount = 0;
+    public int calculateCountOf(AttendanceStatus attendanceStatus, LocalDate yesterday) {
+        return (int) getSortedAllValueUntil(yesterday).stream()
+                .filter(attendance -> AttendanceStatus.from(attendance) == attendanceStatus)
+                .count();
+    }
 
-        for (Attendance attendance : allSortedUntil) {
-            if (AttendanceStatus.from(attendance) == AttendanceStatus.ATTEND) {
-                attendCount++;
-            }
-            if (AttendanceStatus.from(attendance) == AttendanceStatus.LATE) {
-                lateCount++;
-            }
-            if (AttendanceStatus.from(attendance) == AttendanceStatus.ABSENT) {
-                absentCount++;
-            }
-        }
-        int consideredAbsentCount = absentCount + (lateCount / ABSENT_CONSIDERING_UNIT);
-        return new AttendanceCount(attendCount, lateCount, absentCount, consideredAbsentCount);
+    public int calculateConsideredAbsentCount(LocalDate yesterday) {
+        return calculateCountOf(AttendanceStatus.ABSENT, yesterday)
+                + (calculateCountOf(AttendanceStatus.LATE, yesterday) / ABSENT_CONSIDERING_UNIT);
     }
 
     public void add(Attendance attendance) {

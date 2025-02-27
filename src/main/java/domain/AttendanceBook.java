@@ -4,7 +4,11 @@ import dto.AttendanceCount;
 import dto.AttendanceHistory;
 import dto.InitialInformation;
 import dto.ModifyResult;
+import dto.PenaltyInformation;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
 import java.util.Map;
 
 public class AttendanceBook {
@@ -43,6 +47,31 @@ public class AttendanceBook {
 
     public AttendanceCount findCountUntil(CrewName crewName, LocalDate yesterday) {
         AttendanceRecord attendanceRecord = findAttendanceRecordBy(crewName);
-        return attendanceRecord.calculateCount(yesterday);
+        return new AttendanceCount(
+                crewName,
+                attendanceRecord.calculateCountOf(AttendanceStatus.ATTEND, yesterday),
+                attendanceRecord.calculateCountOf(AttendanceStatus.LATE, yesterday),
+                attendanceRecord.calculateCountOf(AttendanceStatus.ABSENT, yesterday),
+                attendanceRecord.calculateConsideredAbsentCount(yesterday)
+        );
+    }
+
+    public PenaltyInformation findPenaltyCrewSorted(LocalDate yesterday) {
+        List<AttendanceCount> penaltyInformation = new ArrayList<>();
+        for (CrewName crewName : value.keySet()) {
+            AttendanceRecord attendanceRecord = findAttendanceRecordBy(crewName);
+            AttendanceCount attendanceCount = new AttendanceCount(
+                    crewName,
+                    attendanceRecord.calculateCountOf(AttendanceStatus.ATTEND, yesterday),
+                    attendanceRecord.calculateCountOf(AttendanceStatus.LATE, yesterday),
+                    attendanceRecord.calculateCountOf(AttendanceStatus.ABSENT, yesterday),
+                    attendanceRecord.calculateConsideredAbsentCount(yesterday)
+            );
+            penaltyInformation.add(attendanceCount);
+        }
+        penaltyInformation.sort(
+                Comparator.comparingInt(AttendanceCount::absentCount)
+                        .reversed());
+        return new PenaltyInformation(penaltyInformation);
     }
 }
