@@ -5,9 +5,21 @@ import domain.AttendanceBook;
 import domain.Day;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.stream.Stream;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 
 class AttendanceUpdateTest {
+    //String nickname, LocalTime orginTime, LocalTime modifiedTime, Boolean isLateExpected, Boolean isAbsentExpected) {
+    public static Stream<Arguments> provideModificationInformation() {
+        return Stream.of(
+                Arguments.of("에드", LocalTime.of(10, 0), LocalTime.of(10, 6), true, false),
+                Arguments.of("제프", LocalTime.of(10, 6), LocalTime.of(10, 4), false, false),
+                Arguments.of("율무", LocalTime.of(10, 0), LocalTime.of(10, 31), false, true),
+                Arguments.of("링크", LocalTime.of(10, 31), LocalTime.of(10, 30), true, false));
+    }
 
     //출석 확인을 수정하려면 닉네임, 수정하려는 날짜, 등교 시간을 입력하여 기록을 수정할 수 있다.
     //수정 후에는 변경 전과 변경 후의 출석 기록을 확인할 수 있다.
@@ -36,4 +48,23 @@ class AttendanceUpdateTest {
         assertEquals(modifiedTime, attendance.getTime());
     }
 
+    @ParameterizedTest
+    @MethodSource("provideModificationInformation")
+    void 수정된_시간에_따라_출석_상태도_함께_변경된다(String nickname, LocalTime originTime, LocalTime modifiedTime,
+                                   Boolean isLateExpected,
+                                   Boolean isAbsentExpected) {
+        final var day = new Day(LocalDate.of(2025, 2, 27));
+        final var attendance = new Attendance(day, originTime);
+        AttendanceBook attendanceBook = new AttendanceBook();
+        attendanceBook.recordAttendance(nickname, attendance);
+
+        AttendanceUpdate attendanceUpdate = new AttendanceUpdate();
+        attendanceUpdate.updateAttendanceTime(attendanceBook, nickname, day, modifiedTime);
+
+        Boolean isLate = attendance.isLate();
+        Boolean isAbsent = attendance.isAbsent();
+
+        //assertEquals(isLateExpected, isLate);
+        assertEquals(isAbsentExpected, isAbsent);
+    }
 }
