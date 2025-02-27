@@ -23,6 +23,15 @@ public class Attendances {
         return new Attendances(newAttendances);
     }
 
+    public Attendances updateAttendance(final LocalDateTime dateTime) {
+        Attendance before = findAttendanceByDate(dateTime.toLocalDate());
+
+        List<Attendance> newAttendances = new ArrayList<>(attendances);
+        newAttendances.remove(before);
+        newAttendances.add(new Attendance(dateTime));
+        return new Attendances(newAttendances);
+    }
+
     public Attendance findAttendanceByDate(final LocalDate date) {
         return attendances.stream()
                 .filter(attendance -> attendance.isSameDate(date))
