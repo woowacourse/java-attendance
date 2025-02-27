@@ -51,4 +51,9 @@ public class AttendanceTime {
 
         return LocalTime.of(hour, minute).isBefore(localTime);
     }
+
+    public boolean isSameDay(LocalDate localDate) {
+        
+        return date.isEqual(localDate);
+    }
 }

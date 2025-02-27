@@ -1,5 +1,6 @@
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
+import attendance.model.AttendanceBook;
 import attendance.model.AttendanceTime;
 import java.time.LocalDate;
 import org.junit.jupiter.api.Test;
