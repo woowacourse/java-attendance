@@ -9,4 +9,8 @@ public class Attendance {
         this.crew = crew;
         this.attendanceTime = attendanceTime;
     }
+
+    public boolean isSameCrewAndTime(Crew crew, AttendanceTime time) {
+        return true;
+    }
 }
