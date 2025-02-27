@@ -1,6 +1,6 @@
 import java.time.LocalDateTime;
 
-public class AttendanceRecord {
+public class AttendanceRecord implements Comparable<AttendanceRecord> {
     private final LocalDateTime dateTime;
     private final AttendanceStatus attendanceStatus;
 
@@ -18,5 +18,10 @@ public class AttendanceRecord {
 
     public AttendanceStatus getAttendanceStatus() {
         return this.attendanceStatus;
+    }
+
+    @Override
+    public int compareTo(AttendanceRecord o) {
+        return o.dateTime.compareTo(this.dateTime);
     }
 }
