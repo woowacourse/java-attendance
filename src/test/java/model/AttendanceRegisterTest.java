@@ -5,6 +5,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import attendance.model.AttendanceDate;
 import attendance.model.AttendanceDateTime;
+import attendance.model.AttendanceRecord;
 import attendance.model.AttendanceRegister;
 import java.time.LocalTime;
 import org.assertj.core.api.Assertions;
@@ -142,5 +143,20 @@ class AttendanceRegisterTest {
         assertThatThrownBy(() -> attendanceRegister.modify("한스", modifyDate, modifyTime))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("등교시간이 아닙니다.");
+    }
+
+    @Test
+    void 특정_크루의_출석기록을_조회한다() {
+        // given
+        AttendanceRegister attendanceRegister = new AttendanceRegister();
+        AttendanceDate attendanceDate = new AttendanceDate(2024, 12, 10);
+        LocalTime attendanceTime = LocalTime.of(10, 5);
+        attendanceRegister.attend("한스", attendanceDate, attendanceTime);
+
+        // when
+        AttendanceRecord attendanceRecord = attendanceRegister.findAttendanceRecordByCrewName("한스");
+
+        // then
+        assertThat(attendanceRecord.attendanceDateTimes().size()).isEqualTo(1);
     }
 }
