@@ -26,9 +26,9 @@
 
 ### 초기화
 
-- [ ] 프로그램 시작 시, attendances.csv 파일을 통해 초기화
+- [x] 프로그램 시작 시, attendances.csv 파일을 통해 초기화
   - [x] 파일을 읽어 String타입에 담아 리턴
-  - [ ] 읽은 내용을 받아 파싱하여 Crews로 리턴
+  - [x] 읽은 내용을 받아 파싱하여 Map<String, List<LocalDateTime>>으로 리턴
 
 ### 출석 확인
 

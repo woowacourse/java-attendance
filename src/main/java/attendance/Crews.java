@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
@@ -14,6 +15,10 @@ public class Crews {
 
     public Crews() {
         this.crews = new ArrayList<>();
+    }
+
+    public Crews(List<Crew> crews) {
+        this.crews = new ArrayList<>(crews);
     }
 
     public Crew create(final String nickname) {
@@ -53,13 +58,6 @@ public class Crews {
         return attendancesUtilYesterday;
     }
 
-    private Attendance findAttendanceForDate(final List<Attendance> crewAttendances, final LocalDate date) {
-        return crewAttendances.stream()
-                .filter(crewAttendance -> crewAttendance.isEqualDate(date))
-                .findFirst()
-                .orElseGet(() -> new Attendance(LocalDateTime.of(date, LocalTime.MIN)));
-    }
-
     public Map<AbsenceRule, List<Crew>> findWarningExpulsionCrews() {
         Map<AbsenceRule, List<Crew>> warningExpulsionCrews = new EnumMap<>(AbsenceRule.class);
 
@@ -71,5 +69,16 @@ public class Crews {
 
         warningExpulsionCrews.forEach((key, value) -> value.sort(Crew::compareTo));
         return warningExpulsionCrews;
+    }
+
+    private Attendance findAttendanceForDate(final List<Attendance> crewAttendances, final LocalDate date) {
+        return crewAttendances.stream()
+                .filter(crewAttendance -> crewAttendance.isEqualDate(date))
+                .findFirst()
+                .orElseGet(() -> new Attendance(LocalDateTime.of(date, LocalTime.MIN)));
+    }
+
+    public List<Crew> getCrews() {
+        return Collections.unmodifiableList(crews);
     }
 }

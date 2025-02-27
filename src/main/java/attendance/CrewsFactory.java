@@ -1,0 +1,23 @@
+package attendance;
+
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
+public class CrewsFactory {
+
+    public static Crews initFromCsv(final String filePath) {
+        String fileContents = CsvFileReader.read(filePath);
+        Map<String, List<LocalDateTime>> crewAttendances = AttendanceFileParser.parse(fileContents);
+
+        List<Crew> crews = new ArrayList<>();
+        crewAttendances.forEach((nickname, attendances) -> {
+            Crew crew = new Crew(nickname);
+            attendances.forEach(crew::addAttendance);
+            crews.add(crew);
+        });
+
+        return new Crews(crews);
+    }
+}
