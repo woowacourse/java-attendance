@@ -2,6 +2,10 @@ package domain;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -13,7 +17,22 @@ public class AttendanceTest {
 
     @BeforeEach
     void setUp() {
-        repository = new AttendanceRepository();
+        Map<String, List<Attendance>> initialAttendances = new HashMap<>();
+
+        LocalDate localDate = LocalDate.of(2024, 12, 5);
+        LocalTime localTime = LocalTime.of(10, 0);
+
+        initialAttendances.put("fora", new ArrayList<>(List.of(
+                new Attendance("fora", localDate, localTime)
+        )));
+        initialAttendances.put("mingom", new ArrayList<>(List.of(
+                new Attendance("mingom", localDate, localTime)
+        )));
+        initialAttendances.put("mungoo", new ArrayList<>(List.of(
+                new Attendance("mungoo", localDate, localTime)
+        )));
+
+        repository = new AttendanceRepository(initialAttendances);
     }
 
     @Test
@@ -115,6 +134,18 @@ public class AttendanceTest {
         // when & then
         Assertions.assertThatThrownBy(() -> {
             repository.checkIn(name, localDate, localTime);
+        }).isInstanceOf(IllegalArgumentException.class);
+    }
+
+    @Test
+    void 존재하는_크루만_출석할_수_있다() {
+        // given
+        LocalDate localDate = LocalDate.of(2024, 12, 3);
+        LocalTime localTime = LocalTime.of(9, 55);
+
+        // when & then
+        Assertions.assertThatThrownBy(() -> {
+            repository.checkIn("dompoo", localDate, localTime);
         }).isInstanceOf(IllegalArgumentException.class);
     }
 }

@@ -3,16 +3,14 @@ package domain;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 public class AttendanceRepository {
     private final Map<String, List<Attendance>> attendances;
 
-    public AttendanceRepository() {
-        this.attendances = new HashMap<>();
+    public AttendanceRepository(Map<String, List<Attendance>> initialAttendances) {
+        this.attendances = initialAttendances;
     }
 
     public Map<String, List<Attendance>> getAttendances() {
@@ -21,7 +19,7 @@ public class AttendanceRepository {
 
     public void checkIn(String name, LocalDate localDate, LocalTime localTime) {
         validateWeekDay(localDate);
-        attendances.putIfAbsent(name, new ArrayList<>());
+        validateExistingCrew(name);
         validateDuplicateCheckIn(name, localDate);
         attendances.get(name).add(new Attendance(name, localDate, localTime));
     }
@@ -31,6 +29,12 @@ public class AttendanceRepository {
         if (dayOfWeek == DayOfWeek.SATURDAY || dayOfWeek == DayOfWeek.SUNDAY || localDate.equals(
                 LocalDate.of(2024, 12, 25))) {
             throw new IllegalArgumentException("주말 및 공휴일에는 출석할 수 없습니다.");
+        }
+    }
+
+    private void validateExistingCrew(String name) {
+        if (!attendances.containsKey(name)) {
+            throw new IllegalArgumentException("존재하는 크루의 닉네임을 입력해주세요.");
         }
     }
 
