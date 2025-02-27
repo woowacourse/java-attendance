@@ -2,10 +2,10 @@ package view;
 
 import java.time.DateTimeException;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Scanner;
+import model.AttendanceDateTime;
 import model.Students;
 import model.TodayDate;
 
@@ -17,7 +17,6 @@ public class InputView {
     private static final String QUICK = "Q";
     private static final String PROMPT_TIME_INPUT_TO_MODIFY = "언제로 변경하겠습니까?";
     private static final String PROMPT_DAY_INPUT_TO_MODIFY = "수정하려는 날짜(일)를 입력해 주세요.";
-    private static final String PROMPT_STUDENT_NAME_INPUT_TO_MODIFY = "출석을 수정하려는 크루의 닉네임을 입력해 주세요.";
     private static final String PROMPT_STUDENT_NAME_INPUT = "닉네임을 입력해 주세요.";
     private static final String PROMPT_START_TIME_INPUT = "등교 시간을 입력해 주세요.";
     private static final String MENU_OPTION = "[1-4]|Q";
@@ -27,11 +26,7 @@ public class InputView {
     private static final LocalTime END_TIME = LocalTime.of(23, 0);
     private static final int DECEMBER_START_DATE = 1;
     private static final int DECEMBER_ENT_DATE = 31;
-    private static Scanner scanner = new Scanner(System.in);
-
-    public static void setScanner(Scanner newScanner) {
-        scanner = newScanner;
-    }
+    private static final Scanner scanner = new Scanner(System.in);
 
     private static void printMenu() {
         System.out.println(ATTENDANCE_CHECK_MENU);
@@ -47,7 +42,7 @@ public class InputView {
 
     public static String getUserWantMenu(TodayDate todayDate){
         System.out.printf(PRINT_TODAY_FORMAT, todayDate.getTodayDate().getMonth().getValue(), todayDate.getTodayDate().getDayOfMonth()
-                , todayDate.getTodayDay());
+                , todayDate.getTodayDayName());
         printMenu();
         String input = userInput();
         try{
@@ -73,10 +68,6 @@ public class InputView {
         System.out.println(PROMPT_START_TIME_INPUT);
     }
 
-    public static void printStudentNameForModify(){
-        System.out.println(PROMPT_STUDENT_NAME_INPUT_TO_MODIFY);
-    }
-
     public static int inputDateForModify(){
         System.out.println(PROMPT_DAY_INPUT_TO_MODIFY);
         try{
@@ -95,23 +86,23 @@ public class InputView {
         System.out.println(PROMPT_TIME_INPUT_TO_MODIFY);
     }
 
-    public static LocalDateTime makeLocalDateToLocalDateTime(LocalDate localDate) {
+    public static AttendanceDateTime makeLocalDateToAttendanceDateTime(LocalDate localDate) {
         String time = userInput();
         try {
-            LocalTime localTime = LocalTime.parse(time,dateTimeFormatterForHourMin);
-            return localDate.atTime(localTime);
+            LocalTime localTime = LocalTime.parse(time, dateTimeFormatterForHourMin);
+            return new AttendanceDateTime(localDate.atTime(localTime));
         } catch (DateTimeException e) {
             throw new IllegalArgumentException("[ERROR] 시간 형식에 맞지 않습니다.");
         }
     }
 
-    public static void isNotOpeningHour(LocalDateTime localDateTime) {
-        if (localDateTime.toLocalTime().isBefore(START_TIME) || localDateTime.toLocalTime().isAfter(END_TIME)) {
+    public static void isNotOpeningHour(AttendanceDateTime attendanceDateTime) {
+        if (attendanceDateTime.toLocalTime().isBefore(START_TIME) || attendanceDateTime.toLocalTime().isAfter(END_TIME)) {
             throw new IllegalArgumentException("[ERROR] 캠퍼스 운영 시간이 아닙니다.");
         }
     }
 
-    public static LocalDateTime getLocalDateTimeToModify() {
+    public static AttendanceDateTime getAttendanceDateTimeToModify() {
         int modifyDate = InputView.inputDateForModify();
         InputView.printTimeForModify();
         LocalDate localDate = LocalDate.of(2024,  12,  modifyDate);
@@ -127,12 +118,12 @@ public class InputView {
         }
     }
 
-    public static LocalDateTime getLocalDateTimeUntilValidate(TodayDate todayDate) {
+    public static AttendanceDateTime getAttendanceDateTimeUntilValidate(TodayDate todayDate) {
         try {
             InputView.printStartTime();
             return getTimeUntilValidate(todayDate.getTodayDate());
         } catch (IllegalArgumentException e) {
-            return getLocalDateTimeUntilValidate(todayDate);
+            return getAttendanceDateTimeUntilValidate(todayDate);
         }
     }
 
@@ -159,11 +150,11 @@ public class InputView {
         }
     }
 
-    public static LocalDateTime getTimeUntilValidate(LocalDate localDate) {
+    public static AttendanceDateTime getTimeUntilValidate(LocalDate localDate) {
         try{
-            LocalDateTime localDateTimeToAttendanceCheck = InputView.makeLocalDateToLocalDateTime(localDate);
-            InputView.isNotOpeningHour(localDateTimeToAttendanceCheck);
-            return localDateTimeToAttendanceCheck;
+            AttendanceDateTime attendanceDateTimeToAttendanceCheck = InputView.makeLocalDateToAttendanceDateTime(localDate);
+            InputView.isNotOpeningHour(attendanceDateTimeToAttendanceCheck);
+            return attendanceDateTimeToAttendanceCheck;
         }catch (IllegalArgumentException e){
             System.out.println(e.getMessage());
             throw new IllegalArgumentException();

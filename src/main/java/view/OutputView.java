@@ -1,10 +1,9 @@
 package view;
 
-import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.util.HashMap;
 import java.util.List;
 import model.AttendanceCalculator;
+import model.AttendanceDateTime;
 import model.AttendanceStatus;
 import model.StudentPunishment;
 import util.LocalDateTimePrintFormatter;
@@ -20,8 +19,8 @@ public class OutputView {
     private static final String INTERVIEW_SUBJECT = "면담 대상자입니다.";
     private static final String WARNING_SUBJECT = "경고 대상자입니다.";
 
-    public static void printTodayAttendanceResult(LocalDateTime localDateTime, AttendanceStatus attendanceStatus) {
-        String dateAndTime = LocalDateTimePrintFormatter.createAttendanceResultMessage(localDateTime);
+    public static void printTodayAttendanceResult(AttendanceDateTime attendanceDateTime, AttendanceStatus attendanceStatus) {
+        String dateAndTime = LocalDateTimePrintFormatter.createAttendanceResultMessage(attendanceDateTime);
         System.out.printf(dateAndTime);
         System.out.printf(PARENTHESES_FORMATTER,attendanceStatus.getState());
     }
@@ -30,11 +29,11 @@ public class OutputView {
         System.out.println(recordBeforeModify + " -> " + localDateTimeFormat3);
     }
 
-    public static void printAttendanceRecord(List<LocalDateTime> record) {
-        for (LocalDateTime localDateTime : record) {
-            System.out.printf(LocalDateTimePrintFormatter.createAttendanceResultMessage(localDateTime));
-            System.out.printf(PARENTHESES_FORMATTER, AttendanceCalculator.calculateAttendance(localDateTime,
-                    LocalTime.from(localDateTime)).getState());
+    public static void printAttendanceRecord(List<AttendanceDateTime> record) {
+        for (AttendanceDateTime attendanceDateTime : record) {
+            System.out.printf(LocalDateTimePrintFormatter.createAttendanceResultMessage(attendanceDateTime));
+            System.out.printf(PARENTHESES_FORMATTER, AttendanceCalculator.calculateAttendance(attendanceDateTime,
+                    attendanceDateTime.toLocalTime()).getState());
         }
     }
 

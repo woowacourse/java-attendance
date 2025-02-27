@@ -1,31 +1,30 @@
 package model;
 
-import java.time.DayOfWeek;
 import java.time.LocalDateTime;
-import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
 public class StudentAttendanceHistory {
 
-    private final List<LocalDateTime> attendanceHistory;
+    private final List<AttendanceDateTime> attendanceHistory;
 
-    public StudentAttendanceHistory(List<LocalDateTime> attendanceHistory) {
-        this.attendanceHistory = attendanceHistory;
+    public StudentAttendanceHistory(List<AttendanceDateTime> attendanceHistory) {
+        this.attendanceHistory = new ArrayList<>(attendanceHistory);
     }
 
-    public void addTime(LocalDateTime localDateTime) {
-        attendanceHistory.add(localDateTime);
+    public void addTime(AttendanceDateTime attendanceDateTime) {
+        attendanceHistory.add(attendanceDateTime);
     }
 
-    public LocalDateTime findSameDay(LocalDateTime wantToFindLocalDateTime) {
+    public AttendanceDateTime findSameDay(AttendanceDateTime wantToFindLocalDateTime) {
         return attendanceHistory.stream()
-                .filter(localDateTime -> isSameDay(localDateTime, wantToFindLocalDateTime))
+                .filter(attendanceDateTime -> isSameDay(attendanceDateTime, wantToFindLocalDateTime))
                 .findFirst()
                 .orElseThrow(() -> new IllegalArgumentException("[ERROR] 출석하지 않는 날짜입니다."));
     }
 
-    public void modifyRecord(LocalDateTime wantToModifyLocalDateTime) {
+    public void modifyRecord(AttendanceDateTime wantToModifyLocalDateTime) {
         try {
             attendanceHistory.remove(findSameDay(wantToModifyLocalDateTime));
             addTime(wantToModifyLocalDateTime);
@@ -34,42 +33,43 @@ public class StudentAttendanceHistory {
         }
     }
 
-    private boolean isSameDay(LocalDateTime firstDateTime, LocalDateTime secondDateTime) {
-        return firstDateTime.toLocalDate().isEqual(secondDateTime.toLocalDate());
+    private boolean isSameDay(AttendanceDateTime firstDateTime, AttendanceDateTime secondDateTime) {
+        return firstDateTime.isSameAttendanceDateTime(secondDateTime);
     }
 
-    public void updateNoInformationInFile(LocalDateTime todayDate) {
-        LocalDateTime standard = LocalDateTime.of(2024, 12, 1, 0, 0);
+    public void fillMissingAttendanceRecords(AttendanceDateTime todayDate) {
+        LocalDateTime startOfDecember = LocalDateTime.of(2024, 12, 1, 0, 0);
+        AttendanceDateTime standard = new AttendanceDateTime(startOfDecember);
         while (!isSameDay(standard, todayDate)) {
             addTimeRecordIfValid(standard);
-            standard = standard.plusDays(1);
+            standard = standard.addOneDay();
         }
     }
 
-    private boolean isExistSameDay(LocalDateTime wantToFindDay) {
+    private boolean isExistSameDay(AttendanceDateTime wantToFindDay) {
         return attendanceHistory.stream()
-                .anyMatch(localDateTime -> isSameDay(localDateTime,wantToFindDay));
+                .anyMatch(attendanceDateTime -> isSameDay(attendanceDateTime,wantToFindDay));
     }
 
-    private void addTimeRecordIfValid(LocalDateTime standard) {
+    private void addTimeRecordIfValid(AttendanceDateTime standard) {
         if (!isWeekend(standard) && !isExistSameDay(standard)) {
             attendanceHistory.add(standard);
         }
     }
 
-    private boolean isWeekend(LocalDateTime localDateTime) {
-        return (localDateTime.getDayOfWeek().equals(DayOfWeek.SUNDAY) || localDateTime.getDayOfWeek().equals(DayOfWeek.SATURDAY));
+    private boolean isWeekend(AttendanceDateTime attendanceDateTime) {
+        return (attendanceDateTime.isChristmas() || attendanceDateTime.isWeekend());
     }
 
     public boolean isAlreadyAttendanceDate(TodayDate todayDate) {
-        return attendanceHistory.contains(todayDate.getTodayDateTIme());
+        return this.isExistSameDay(todayDate.toAttendanceDateTime());
     }
 
     public void sortHistoryBeforePrint() {
         Collections.sort(attendanceHistory);
     }
 
-    public List<LocalDateTime> getAttendanceHistory() {
+    public List<AttendanceDateTime> getAttendanceHistory() {
         return Collections.unmodifiableList(attendanceHistory);
     }
 }

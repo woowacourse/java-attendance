@@ -1,7 +1,5 @@
 package model;
 
-import java.time.DayOfWeek;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.HashMap;
 import java.util.List;
@@ -23,35 +21,27 @@ public enum AttendanceCalculator {
         this.absentTime = absentTime;
     }
 
-    public static boolean checkHoliday(LocalDateTime localDateTime) {
-        return (isWeekendDay(localDateTime) || isChristmas(localDateTime));
+    public static boolean checkHoliday(AttendanceDateTime attendanceDateTime) {
+        return (attendanceDateTime.isWeekend() || attendanceDateTime.isChristmas());
     }
 
-    private static boolean isWeekendDay(LocalDateTime localDateTime) {
-        return (localDateTime.getDayOfWeek().equals(DayOfWeek.SATURDAY) || localDateTime.getDayOfWeek().equals(DayOfWeek.SUNDAY));
-    }
-
-    private static boolean isChristmas(LocalDateTime localDateTime) {
-        return (localDateTime.getDayOfMonth() == CHRISTMAS);
-    }
-
-    public static HashMap<AttendanceStatus, Integer> recordAttendanceResult(List<LocalDateTime> record) {
+    public static HashMap<AttendanceStatus, Integer> recordAttendanceResult(List<AttendanceDateTime> record) {
         HashMap<AttendanceStatus, Integer> attendanceRecord = new HashMap<>();
         attendanceRecord.put(AttendanceStatus.ABSENT, 0);
         attendanceRecord.put(AttendanceStatus.LATE, 0);
         attendanceRecord.put(AttendanceStatus.ATTENDANCE, 0);
-        for (LocalDateTime localDateTime :record) {
-            attendanceRecord.merge(calculateAttendance(localDateTime, LocalTime.from(localDateTime)),
+        for (AttendanceDateTime attendanceDateTime :record) {
+            attendanceRecord.merge(calculateAttendance(attendanceDateTime, attendanceDateTime.toLocalTime()),
                      1, Integer::sum);
         }
         return attendanceRecord;
     }
 
-    public static AttendanceStatus calculateAttendance(LocalDateTime localDateTime, LocalTime localTime) {
+    public static AttendanceStatus calculateAttendance(AttendanceDateTime attendanceDateTime, LocalTime localTime) {
         if (localTime.equals(UNREGISTERED_TIME)) {
             return AttendanceStatus.ABSENT;
         }
-        if (localDateTime.getDayOfWeek().equals(DayOfWeek.MONDAY)) {
+        if (attendanceDateTime.isMonday()) {
             return getAttendanceStatus(localTime, AttendanceCalculator.MONDAY);
         }
         return getAttendanceStatus(localTime, AttendanceCalculator.TUESDAY_TO_FRIDAY);

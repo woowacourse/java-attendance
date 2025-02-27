@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import model.AttendanceDateTime;
 
 public class FileInput {
 
@@ -33,8 +34,8 @@ public class FileInput {
         return attendanceFile;
     }
 
-    public static Map<String, List<LocalDateTime>> readFileAndCreateStudentRepository(){
-        Map<String, List<LocalDateTime>> studentInformation = new HashMap<>();
+    public static Map<String, List<AttendanceDateTime>> readFileAndCreateStudentRepository(){
+        Map<String, List<AttendanceDateTime>> studentInformation = new HashMap<>();
         try {
             for (String information : readAttendanceFile()) {
                 if (!information.matches(INFORMATION_REGEX)) {
@@ -46,7 +47,7 @@ public class FileInput {
                 String localDateTimeFormatter = "yyyy-MM-dd HH:mm";
                 DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern(localDateTimeFormatter);
                 LocalDateTime localDateTime = LocalDateTime.parse(timeInformation, dateTimeFormatter);
-                studentInformation.computeIfAbsent(name, k -> new ArrayList<>()).add(localDateTime);
+                studentInformation.computeIfAbsent(name, k -> new ArrayList<>()).add(new AttendanceDateTime(localDateTime));
             }
         } catch (IllegalArgumentException e) {
             System.out.println(e.getMessage());

@@ -1,6 +1,6 @@
 package model;
 
-import java.time.LocalDateTime;
+import java.util.Objects;
 
 public class Student {
 
@@ -17,20 +17,20 @@ public class Student {
         return studentName.equals(name);
     }
 
-    public void addTime(LocalDateTime localDateTime) {
-        studentAttendanceHistory.addTime(localDateTime);
+    public void addTime(AttendanceDateTime attendanceDateTime) {
+        studentAttendanceHistory.addTime(attendanceDateTime);
     }
 
-    public LocalDateTime findSameDay(LocalDateTime wantToFindLocalDateTime) {
+    public AttendanceDateTime findSameDay(AttendanceDateTime wantToFindLocalDateTime) {
         return studentAttendanceHistory.findSameDay(wantToFindLocalDateTime);
     }
 
-    public void modifyRecord(LocalDateTime wantToModifyLocalDateTime) {
+    public void modifyRecord(AttendanceDateTime wantToModifyLocalDateTime) {
         studentAttendanceHistory.modifyRecord(wantToModifyLocalDateTime);
     }
 
-    public void updateNoInformationInFile(LocalDateTime todayDate) {
-        studentAttendanceHistory.updateNoInformationInFile(todayDate);
+    public void updateNoInformationInFile(AttendanceDateTime todayDate) {
+        studentAttendanceHistory.fillMissingAttendanceRecords(todayDate);
     }
 
     public void validateAlreadyAttendanceDate(TodayDate todayDate) {
@@ -39,15 +39,23 @@ public class Student {
         }
     }
 
-    public StudentAttendanceHistory getStudentAttendanceHistory() {
-        return studentAttendanceHistory;
-    }
-
     public void sortStudentAttendanceHistory() {
         studentAttendanceHistory.sortHistoryBeforePrint();
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Student that = (Student) o;
+        return Objects.equals(name, that.name);
+    }
+
     public String getName() {
         return name;
+    }
+
+    public StudentAttendanceHistory getStudentAttendanceHistory() {
+        return studentAttendanceHistory;
     }
 }
