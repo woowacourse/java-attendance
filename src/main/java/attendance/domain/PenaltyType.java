@@ -5,7 +5,8 @@ import java.util.Arrays;
 public enum PenaltyType {
     EXPULSION(6),
     COUNSELING(3),
-    WARNING(2);
+    WARNING(2),
+    NONE(0);
 
     private final int penaltyCounts;
 

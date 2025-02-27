@@ -17,6 +17,31 @@ public class AttendanceRecordTest {
 
         Assertions.assertThat(attendanceRecord.getAttendanceRecord().size()).isEqualTo(1);
     }
+    @Test
+    public void 패널티_없는_상태_반환_결석_1회() {
+        //given
+        LocalDateTime attendanceTimeOne = LocalDateTime.of(2025, 2, 24, 13, 31);
+
+        //when
+        AttendanceRecord attendanceRecord = new AttendanceRecord();
+        attendanceRecord.addAttendanceTime(attendanceTimeOne);
+
+        //then
+        Assertions.assertThat(attendanceRecord.checkPenaltyStatus()).isEqualTo(PenaltyType.NONE);
+    }
+
+    @Test
+    public void 패널티_없는_상태_반환_결석_0회() {
+        //given
+        LocalDateTime attendanceTimeOne = LocalDateTime.of(2025, 2, 24, 12, 31);
+
+        //when
+        AttendanceRecord attendanceRecord = new AttendanceRecord();
+        attendanceRecord.addAttendanceTime(attendanceTimeOne);
+
+        //then
+        Assertions.assertThat(attendanceRecord.checkPenaltyStatus()).isEqualTo(PenaltyType.NONE);
+    }
 
     @Test
     public void 패널티_경고_상태_반환() {
