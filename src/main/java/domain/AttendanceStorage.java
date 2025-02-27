@@ -19,9 +19,10 @@ public class AttendanceStorage {
         return attendanceHistories.get(index);
     }
 
-    public List<AttendanceHistory> getAllHistoriesFrom(Crew crew) {
+    public List<AttendanceHistory> getAllHistoriesOf(Crew crew, int untilDay) {
         return attendanceHistories.stream()
-                .filter(history -> history.hasSameCrew(crew))
+                .filter(history -> history.hasSameCrew(crew) &&
+                        history.isBeforeFrom(untilDay))
                 .toList();
     }
 

@@ -63,7 +63,7 @@ public class AttendanceDateTime {
         }
 
         if (dateTime.getHour() < attendanceHourThreshold || (dateTime.getHour() == attendanceHourThreshold
-                && dateTime.getMinute() == 0)) {
+                && dateTime.getMinute() <= 5)) {
             return AttendanceType.ATTENDANCE;
         }
         if (dateTime.getHour() == attendanceHourThreshold && dateTime.getMinute() <= 30) {

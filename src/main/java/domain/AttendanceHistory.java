@@ -23,6 +23,10 @@ public class AttendanceHistory {
         return attendanceDateTime;
     }
 
+    public boolean isBeforeFrom(int comparedDay) {
+        return attendanceDateTime.getLocalDateTime().getDayOfMonth() < comparedDay;
+    }
+
     public boolean isRecorded() {
         return attendanceDateTime.isRecorded();
     }

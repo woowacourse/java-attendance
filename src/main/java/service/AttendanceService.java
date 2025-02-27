@@ -3,10 +3,14 @@ package service;
 import domain.AttendanceDateTime;
 import domain.AttendanceHistory;
 import domain.AttendanceStorage;
+import domain.AttendanceType;
 import domain.Crew;
+import domain.PenaltyType;
 import dto.AttendanceStatusDto;
+import dto.AttendanceStatusesOfCrewDto;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
@@ -48,11 +52,18 @@ public class AttendanceService {
         return List.of(oldStatusDto, newStatusDto);
     }
 
-    public List<AttendanceStatusDto> getHistoriesDtoFrom(Crew crew) {
+    public AttendanceStatusesOfCrewDto getHistoriesDtoFrom(Crew crew, int untilDay) {
         List<AttendanceStatusDto> attendanceStatusDtos = new ArrayList<>();
-        Map<Integer, AttendanceHistory> historyOfDays = getAllHistoryOfDaysFrom(crew);
-        for (int currentDay = 1; currentDay <= 31; currentDay++) {
+        Map<Integer, AttendanceHistory> historyOfDays = getAllHistoryOfDaysOf(crew, untilDay);
+        Map<AttendanceType, Integer> attendanceTypeCount = new HashMap<>();
+
+        for (int currentDay = 1; currentDay < untilDay; currentDay++) {
             AttendanceHistory currentDayHistory = historyOfDays.get(currentDay);
+            if (currentDayHistory.getAttendanceDateTime().isRestDay()) {
+                continue;
+            }
+            attendanceTypeCount.merge(currentDayHistory.getAttendanceType(), 1, Integer::sum);
+
             if (currentDayHistory.isRecorded()) {
                 AttendanceStatusDto currentStatusDto = AttendanceStatusDto.of(
                         currentDayHistory.getAttendanceDateTime().getLocalDateTime(),
@@ -66,11 +77,11 @@ public class AttendanceService {
             attendanceStatusDtos.add(currentStatusDto);
         }
 
-        return attendanceStatusDtos;
+        return new AttendanceStatusesOfCrewDto(attendanceStatusDtos, attendanceTypeCount, PenaltyType.getFrom(attendanceTypeCount));
     }
 
-    private Map<Integer, AttendanceHistory> getAllHistoryOfDaysFrom(Crew crew) {
-        List<AttendanceHistory> foundHistories = attendanceStorage.getAllHistoriesFrom(crew);
+    private Map<Integer, AttendanceHistory> getAllHistoryOfDaysOf(Crew crew, int untilDay) {
+        List<AttendanceHistory> foundHistories = attendanceStorage.getAllHistoriesOf(crew, untilDay);
         Map<Integer, AttendanceHistory> historyOfDays = foundHistories.stream()
                 .collect(
                         Collectors.toMap(
@@ -80,11 +91,10 @@ public class AttendanceService {
                 );
 
         // 비어있는 값 (결석) 채우기
-        for (int currentDay = 1; currentDay <= 31; currentDay++) {
+        for (int currentDay = 1; currentDay < untilDay; currentDay++) {
             if (historyOfDays.containsKey(currentDay)) {
                 continue;
             }
-
             AttendanceDateTime notRecordedAttendance = AttendanceDateTime.generateNotRecordedAttendanceOf(2024, 12, currentDay);
             AttendanceHistory absenceHistory = AttendanceHistory.of(crew, notRecordedAttendance);
             historyOfDays.put(currentDay, absenceHistory);

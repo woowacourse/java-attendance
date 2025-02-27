@@ -2,6 +2,7 @@ package controller;
 
 import domain.Crew;
 import dto.AttendanceStatusDto;
+import dto.AttendanceStatusesOfCrewDto;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -61,10 +62,11 @@ public class AttendanceController {
 
         if (featureType == FeatureType.CHECK_ATTENDANCE_OF_CREW) {
             // 닉네임 입력 -> 등록 체크 -> 모든 출석 기록 출력 -> 출석/지각/결석 횟수 출력 -> 대상 패널티 출력
+            int currentDay = LocalDate.now(ZoneId.of("Asia/Seoul")).getDayOfMonth();
             String nickname = InputView.askNickname(false);
             validateNicknameRegistered(nickname);
-            List<AttendanceStatusDto> statusDtos = attendanceService.getHistoriesDtoFrom(Crew.from(nickname));
-
+            AttendanceStatusesOfCrewDto statusesDto = attendanceService.getHistoriesDtoFrom(Crew.from(nickname), currentDay);
+//            OutputView.printAttendanceStatus(statusesDto);
             return;
         }
 
