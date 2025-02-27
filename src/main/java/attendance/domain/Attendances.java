@@ -32,4 +32,11 @@ public class Attendances {
                 .filter(attendance -> attendance.isSameYearAndMonth(year, month))
                 .toList();
     }
+    
+    public long getStatusCount(AttendanceStatus status, String crewName, int year, int month, int startHour,
+                               int startMinute) {
+        return findAttendancesByCrewName(crewName, year, month).stream()
+                .filter(attendance -> attendance.checkStatus(startHour, startMinute).equals(status))
+                .count();
+    }
 }

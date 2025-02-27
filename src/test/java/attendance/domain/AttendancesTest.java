@@ -10,6 +10,8 @@ import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 
 class AttendancesTest {
 
@@ -86,6 +88,51 @@ class AttendancesTest {
 
         // then
         assertThat(currentAttendances.size()).isEqualTo(1);
+    }
+
+    @DisplayName("크루 이름을 통해 해당 크루의 출석 기록을 모두 가져온다.")
+    @ParameterizedTest
+    @CsvSource(value = {
+            "ATTEND,1", "LATE,1", "ABSENT,1"
+    })
+    void 크루_이름을_통해_해당_월의_출석_상태를_가져온다(AttendanceStatus status, int result) {
+
+        // given
+        String crewName = "체체";
+        Attendance attendance2 = new Attendance(crewName, new Time(LocalDateTime.of(2025, 2, 26, 10, 6)));
+        Attendance attendance3 = new Attendance(crewName, new Time(LocalDateTime.of(2025, 2, 25, 10, 31)));
+
+        attendances.add(attendance2);
+        attendances.add(attendance3);
+
+        // when
+        long statusCount = attendances.getStatusCount(status, crewName, 2025, 2, 10, 0);
+
+        // then
+        assertThat(statusCount).isEqualTo(result);
+    }
+
+    @DisplayName("한 크루의 특정 출석 상태의 횟수를 구한다.")
+    @Test
+    void 한_크루의_특정_출석_상태의_횟수를_구한다() {
+
+        // given
+        String crewName = "체체";
+        Attendance attendance2 = new Attendance(crewName, new Time(LocalDateTime.of(2025, 2, 26, 10, 31)));
+        Attendance attendance3 = new Attendance(crewName, new Time(LocalDateTime.of(2025, 2, 25, 10, 31)));
+        Attendance attendance4 = new Attendance(crewName, new Time(LocalDateTime.of(2025, 2, 24, 10, 31)));
+        Attendance attendance5 = new Attendance(crewName, new Time(LocalDateTime.of(2025, 2, 21, 10, 31)));
+        attendances.add(attendance2);
+        attendances.add(attendance3);
+        attendances.add(attendance4);
+        attendances.add(attendance5);
+
+        // when
+        long count = attendances.getStatusCount(AttendanceStatus.ABSENT, crewName, 2025, 2, 10, 0);
+
+        // then
+        assertThat(count).isEqualTo(4);
+
     }
 
 }

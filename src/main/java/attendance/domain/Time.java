@@ -44,6 +44,10 @@ public class Time {
                 .withHour(modifyTime.getHour())
                 .withMinute(modifyTime.getMinute());
     }
+    
+    public AttendanceStatus getStatus(int hour, int minute) {
+        return AttendanceStatus.getStatusByTime(attendanceTime.toLocalTime(), LocalTime.of(hour, minute));
+    }
 
     public LocalDate getLocalDate() {
         return attendanceTime.toLocalDate();

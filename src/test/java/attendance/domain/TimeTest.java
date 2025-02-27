@@ -6,6 +6,7 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -55,6 +56,22 @@ class TimeTest {
         assertThatThrownBy(() -> new Time(LocalDateTime.of(2025, 2, 22, 10, 0)))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("[ERROR] 주말 및 공휴일은 출석할 수 없습니다.");
+    }
+
+    @DisplayName("출석 시간을 수정한다.")
+    @Test
+    void 출석_시간을_수정한다() {
+
+        // given
+        Time time = new Time(LocalDateTime.of(2025, 2, 27, 10, 0));
+        LocalTime modifyTime = LocalTime.of(10, 6);
+
+        // when
+        time.modify(modifyTime);
+
+        // then
+        assertThat(time.getStatus(10, 0)).isEqualTo(AttendanceStatus.LATE);
+
     }
 
     @DisplayName("년월일이 같다면 true 다르다면 false를 반환한다")
