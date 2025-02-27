@@ -9,23 +9,31 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class AttendanceHistories {
-    private final Map<Crew, LocalDate> attendanceHistories = new HashMap<>();
+    private final Map<Crew, LocalDate> attendanceHistories;
 
     public AttendanceHistories() {
+        this.attendanceHistories = new HashMap<>();
     }
 
     public AttendanceHistories(Map<Crew, LocalDate> attendanceHistoryData) {
-
+        this.attendanceHistories = attendanceHistoryData;
     }
 
     public AttendanceStatus addAttendanceHistory(Crew crew, LocalDateTime attendanceDateTime) {
         LocalDate attendanceDate = attendanceDateTime.toLocalDate();
         LocalTime attendanceTime = attendanceDateTime.toLocalTime();
+        validateCrew(crew);
         validateDuplicateAttendance(crew, attendanceDate);
         validateDayOff(attendanceDate);
         validateOperatingTime(attendanceTime);
         attendanceHistories.put(crew, attendanceDate);
         return AttendanceStatus.of(attendanceDateTime);
+    }
+
+    private void validateCrew(Crew crew) {
+        if (!attendanceHistories.containsKey(crew)) {
+            throw new IllegalArgumentException("[ERROR] 등록되지 않은 닉네임입니다.");
+        }
     }
 
     private void validateDuplicateAttendance(Crew crew, LocalDate attendanceDateTime) {

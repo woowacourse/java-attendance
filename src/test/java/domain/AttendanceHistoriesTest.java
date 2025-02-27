@@ -19,6 +19,15 @@ public class AttendanceHistoriesTest {
     private final LocalDate MONDAY_DATE = LocalDate.of(2025, 2, 24);
     private final LocalDate TUESDAY_DATE = LocalDate.of(2025, 2, 25);
 
+    private AttendanceHistories attendanceHistories;
+
+    {
+        Crew crew = new Crew("노랑");
+        Map<Crew, LocalDate> attendanceHistoryData = new HashMap<>();
+        attendanceHistoryData.put(crew, LocalDate.of(2025, 2, 21));
+        attendanceHistories = new AttendanceHistories(attendanceHistoryData);
+    }
+
     @Nested
     @DisplayName("1.1 닉네임과 등교 시간을 받으면 오늘 날짜로 출석 기록을 생성할 수 있다.")
     class AttendanceCheckTest {
@@ -26,7 +35,6 @@ public class AttendanceHistoriesTest {
         @DisplayName("화요일은 10시 5분에 출석할 경우 출석으로 처리한다.")
         void testPresentAttendance() {
             // given
-            AttendanceHistories attendanceHistories = new AttendanceHistories();
             Crew crew = new Crew("노랑");
             LocalTime time = LocalTime.of(10, 5);
             // when
@@ -40,7 +48,6 @@ public class AttendanceHistoriesTest {
         @DisplayName("화요일은 10시 30분에 출석할 경우 지각으로 처리한다.")
         void testTardyAttendance() {
             // given
-            AttendanceHistories attendanceHistories = new AttendanceHistories();
             Crew crew = new Crew("노랑");
             LocalTime time = LocalTime.of(10, 30);
             // when
@@ -54,7 +61,6 @@ public class AttendanceHistoriesTest {
         @DisplayName("화요일은 10시 30분 1초에 출석할 경우 결석으로 처리한다.")
         void testAbsentAttendance() {
             // given
-            AttendanceHistories attendanceHistories = new AttendanceHistories();
             Crew crew = new Crew("노랑");
             LocalTime time = LocalTime.of(10, 30, 1);
             // when
@@ -68,7 +74,6 @@ public class AttendanceHistoriesTest {
         @DisplayName("월요일은 13시 5분에 출석할 경우 출석으로 처리한다.")
         void testPresentAttendanceOnMonday() {
             // given
-            AttendanceHistories attendanceHistories = new AttendanceHistories();
             Crew crew = new Crew("노랑");
             LocalTime time = LocalTime.of(13, 5);
             // when
@@ -82,7 +87,6 @@ public class AttendanceHistoriesTest {
         @DisplayName("월요일은 13시 30분에 출석할 경우 지각으로 처리한다.")
         void testTardyAttendanceOnMonday() {
             // given
-            AttendanceHistories attendanceHistories = new AttendanceHistories();
             Crew crew = new Crew("노랑");
             LocalTime time = LocalTime.of(13, 30);
             // when
@@ -96,7 +100,6 @@ public class AttendanceHistoriesTest {
         @DisplayName("월요일은 13시 30분 1초에 출석할 경우 결석으로 처리한다.")
         void testAbsentAttendanceOnMonday() {
             // given
-            AttendanceHistories attendanceHistories = new AttendanceHistories();
             Crew crew = new Crew("노랑");
             LocalTime time = LocalTime.of(13, 30, 1);
             // when
@@ -111,7 +114,6 @@ public class AttendanceHistoriesTest {
     @DisplayName("1.2 이미 출석한 경우 예외를 발생시킬 수 있다.")
     void testValidateDuplicateAttendance() {
         // given
-        AttendanceHistories attendanceHistories = new AttendanceHistories();
         Crew crew = new Crew("노랑");
         LocalDateTime dateTime = TUESDAY_DATE.atTime(10, 0);
         attendanceHistories.addAttendanceHistory(crew, dateTime);
@@ -145,7 +147,6 @@ public class AttendanceHistoriesTest {
         @DisplayName("토요일에 등교할 경우 예외를 발생시킬 수 있다.")
         void testSaturdayException() {
             // given
-            AttendanceHistories attendanceHistories = new AttendanceHistories();
             Crew crew = new Crew("노랑");
             LocalDateTime dateTime = LocalDateTime.of(2025, 3, 1, 10, 0);
             // when & then
@@ -158,7 +159,6 @@ public class AttendanceHistoriesTest {
         @DisplayName("일요일에 등교할 경우 예외를 발생시킬 수 있다.")
         void testSundayException() {
             // given
-            AttendanceHistories attendanceHistories = new AttendanceHistories();
             Crew crew = new Crew("노랑");
             LocalDateTime dateTime = LocalDateTime.of(2025, 3, 2, 10, 0);
             // when & then
@@ -171,7 +171,6 @@ public class AttendanceHistoriesTest {
         @DisplayName("법정공휴일에 등교할 경우 예외를 발생시킬 수 있다.")
         void validateHolidayException() {
             // given
-            AttendanceHistories attendanceHistories = new AttendanceHistories();
             Crew crew = new Crew("노랑");
             LocalDateTime dateTime = LocalDateTime.of(2025, 3, 3, 10, 0);
             // when & then
@@ -185,7 +184,6 @@ public class AttendanceHistoriesTest {
         @CsvSource({"2025-04-07", "2025-04-14", "2025-08-25"})
         void validateVacationException(LocalDate date) {
             // given
-            AttendanceHistories attendanceHistories = new AttendanceHistories();
             Crew crew = new Crew("노랑");
             LocalDateTime dateTime = date.atTime(10, 0);
             // when & then
@@ -201,7 +199,6 @@ public class AttendanceHistoriesTest {
     @CsvSource({"07:59", "23:01"})
     void testValidateOperatingTime(LocalTime time) {
         // given
-        AttendanceHistories attendanceHistories = new AttendanceHistories();
         Crew crew = new Crew("노랑");
         LocalDateTime dateTime = MONDAY_DATE.atTime(time);
         // when & then
