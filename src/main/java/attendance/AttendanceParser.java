@@ -9,7 +9,9 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Stream;
 
 public class AttendanceParser {
@@ -19,10 +21,9 @@ public class AttendanceParser {
     private AttendanceParser() {
     }
 
-    // TODO: 구현 필요
     public List<Crew> parseFile() {
         try (final Stream<String> lines = Files.lines(Path.of(""))) {
-            return null;
+            return parseLines(lines);
         } catch (final IOException e) {
             throw new UncheckedIOException(e);
         }
@@ -30,23 +31,12 @@ public class AttendanceParser {
 
     public static List<Crew> parseLines(Stream<String> lines) {
         List<CrewData> crewData = lines.map(AttendanceParser::parseLine).toList();
-        List<Crew> crews = new ArrayList<>();
+        Map<String, Crew> map = new HashMap<>();
         for (CrewData data : crewData) {
-            Crew crew = hasSameCrew(crews, data.name);
-            if (crew == null) {
-                crew = new Crew(data.name);
-                crews.add(crew);
-            }
-            crew.attendance(data.date, data.time);
+            Crew crew = map.computeIfAbsent(data.name, Crew::new);
+             crew.attendance(data.date, data.time);
         }
-        return crews;
-    }
-
-    private static Crew hasSameCrew(List<Crew> crews, String name) {
-        return crews.stream()
-            .filter(crew -> crew.getName().equals(name))
-            .findAny()
-            .orElse(null);
+        return new ArrayList<>(map.values());
     }
 
     public static CrewData parseLine(String line) {

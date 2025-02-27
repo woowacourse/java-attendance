@@ -97,7 +97,7 @@
 
 ## 파일 입출력 요구사항
 
-- [ ] 프로그램을 시작하면 src/main/resources/attendances.csv를 통해 구현에 필요한 정보를 조회한다.
+- [x] 프로그램을 시작하면 src/main/resources/attendances.csv를 통해 구현에 필요한 정보를 조회한다.
 
 ```
 nickname,datetime
