@@ -99,6 +99,11 @@ public class Application {
             return;
         }
         LocalTime attendanceModificationTime = InputView.readAttendanceModificationTime();
+        boolean isOperationTime = campusManager.isOperationTime(attendanceModificationTime);
+        if (!isOperationTime) {
+            OutputView.printNotOperationTime();
+            return;
+        }
     }
 
     private static void checkAttendanceHistory() {
