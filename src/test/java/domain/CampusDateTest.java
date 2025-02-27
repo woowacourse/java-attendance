@@ -17,7 +17,7 @@ class CampusDateTest {
         LocalDate now = LocalDate.of(2025, 2, 27);
 
         // when
-        CampusDate campusDate = CampusDate.fromNow(now);
+        CampusDate campusDate = CampusDate.fromDate(now);
 
         // then
         assertThat(campusDate.getMonth()).isEqualTo(2);

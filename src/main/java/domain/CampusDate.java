@@ -13,8 +13,12 @@ public class CampusDate {
         this.date = date;
     }
 
-    public static CampusDate fromNow(final LocalDate now) {
-        return new CampusDate(now);
+    public static CampusDate now() {
+        return new CampusDate(LocalDate.now());
+    }
+
+    public static CampusDate fromDate(final LocalDate date) {
+        return new CampusDate(date);
     }
 
     public static CampusDate ofNowAndDay(final LocalDate now, final int day) {

@@ -14,7 +14,7 @@ class AttendanceInfoTest {
     void 캠퍼스시간과_캠퍼스날짜를_입력받아_객체를_생성한다() {
         // given
         CampusTime campusTime = CampusTime.from("10:29");
-        CampusDate campusDate = CampusDate.fromNow(LocalDate.of(2025, 2, 27));
+        CampusDate campusDate = CampusDate.fromDate(LocalDate.of(2025, 2, 27));
 
         // when
         AttendanceInfo attendanceInfo = AttendanceInfo.fromDateAndTime(campusDate, campusTime);
@@ -32,7 +32,7 @@ class AttendanceInfoTest {
         // given
         CampusTime beforeCampusTime = CampusTime.from("10:29");
         CampusTime afterCampusTime = CampusTime.from("10:31");
-        CampusDate campusDate = CampusDate.fromNow(LocalDate.of(2025, 2, 27));
+        CampusDate campusDate = CampusDate.fromDate(LocalDate.of(2025, 2, 27));
         AttendanceInfo beforeInfo = AttendanceInfo.fromDateAndTime(campusDate, beforeCampusTime);
 
         // when
@@ -56,7 +56,7 @@ class AttendanceInfoTest {
     void 날짜와_시간을_입력하면_출석상태를_계산한다(String inputTime, AttendanceStatus status) {
         // given
         CampusTime campusTime = CampusTime.from(inputTime);
-        CampusDate campusDate = CampusDate.fromNow(LocalDate.of(2025, 2, 27));
+        CampusDate campusDate = CampusDate.fromDate(LocalDate.of(2025, 2, 27));
 
         // when
         AttendanceInfo attendanceInfo = AttendanceInfo.fromDateAndTime(campusDate, campusTime);
