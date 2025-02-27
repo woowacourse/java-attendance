@@ -3,10 +3,12 @@ package attendance.view;
 import java.time.LocalTime;
 import java.time.format.DateTimeParseException;
 
+import attendance.exception.InputValidationException;
+
 public final class InputValidator {
-    private static final String WRONG_INPUT_NULL = "입력값이 Null입니다.";
+    private static final String WRONG_INPUT_NULL = "입력값이 비어있습니다.";
     private static final String WRONG_INPUT_EMPTY = "입력값이 공백입니다.";
-    private static final String WRONG_INPUT_TYPE_INT = "입력값은 1~31 이내의 숫자여야합니다.";
+    private static final String WRONG_INPUT_INT_IN_MONTHLY = "입력값은 1~31 이내의 숫자여야합니다.";
     private static final String WRONG_INPUT_TIME_FORMAT = "시간 입력은 --:--와 같은 형태야합니다: ";
 
     private InputValidator() {
@@ -25,16 +27,16 @@ public final class InputValidator {
         validateIsEmpty(input);
         try {
             int parseInt = Integer.parseInt(input);
-            validateDate(parseInt);
+            validateDateInMonthly(parseInt);
             return parseInt;
         } catch (IllegalArgumentException e) {
-            throw new InputValidationException(WRONG_INPUT_TYPE_INT, e);
+            throw new InputValidationException(WRONG_INPUT_INT_IN_MONTHLY, e);
         }
     }
 
-    private static void validateDate(int parseInt) {
+    private static void validateDateInMonthly(int parseInt) {
         if (parseInt < 1 || parseInt > 31) {
-            throw new InputValidationException(WRONG_INPUT_TYPE_INT);
+            throw new InputValidationException(WRONG_INPUT_INT_IN_MONTHLY);
         }
     }
 
@@ -44,16 +46,6 @@ public final class InputValidator {
             return LocalTime.parse(input);
         } catch (DateTimeParseException e) {
             throw new InputValidationException(WRONG_INPUT_TIME_FORMAT + input);
-        }
-    }
-
-    private static class InputValidationException extends IllegalArgumentException {
-        public InputValidationException(String message) {
-            super("[ERROR] " + message);
-        }
-
-        public InputValidationException(String message, Throwable cause) {
-            super("[ERROR] " + message, cause);
         }
     }
 }
