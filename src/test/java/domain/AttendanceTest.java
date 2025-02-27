@@ -116,10 +116,10 @@ public class AttendanceTest {
         // given
         Attendance attendance = new Attendance();
         Crew crew = new Crew("노랑");
-        LocalDateTime dateTime = LocalDateTime.of(2025, 2, 29, 10, 0);
+        LocalDateTime dateTime = LocalDateTime.of(2025, 3, 1, 10, 0);
         // when & then
         assertThatThrownBy(() -> attendance.checkAttendance(crew, dateTime))
                 .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining("[ERROR] 2월 29일 토요일은 등교일이 아닙니다.");
+                .hasMessageContaining("[ERROR] 3월 1일 토요일은 등교일이 아닙니다.");
     }
 }

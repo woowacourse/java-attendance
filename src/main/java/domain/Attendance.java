@@ -19,11 +19,18 @@ public class Attendance {
         LocalDate attendanceDate = attendanceDateTime.toLocalDate();
         LocalTime attendanceTime = attendanceDateTime.toLocalTime();
         validateDuplicateAttendance(crew, attendanceDate);
+        validateDayOff(attendanceDate);
         attendanceHistory.put(crew, attendanceDate);
         if (attendanceDateTime.getDayOfWeek() == DayOfWeek.MONDAY) {
             return checkAttendanceByDay(attendanceTime, MONDAY_OPEN);
         }
         return checkAttendanceByDay(attendanceTime, DEFAULT_OPEN);
+    }
+
+    private void validateDayOff(LocalDate attendanceDate) {
+        if (attendanceDate.getDayOfWeek() == DayOfWeek.SATURDAY || attendanceDate.getDayOfWeek() == DayOfWeek.SUNDAY) {
+            throw new IllegalArgumentException("[ERROR] 3월 1일 토요일은 등교일이 아닙니다.");
+        }
     }
 
     private void validateDuplicateAttendance(Crew crew, LocalDate attendanceDateTime) {
