@@ -2,7 +2,7 @@ package attendance.controller.command;
 
 import attendance.domain.model.AttendanceCounter;
 import attendance.domain.model.CrewHistories;
-import attendance.dto.DismissalCrewDto;
+import attendance.dto.AttendanceWarning;
 import attendance.view.ResultView;
 import java.time.Clock;
 import java.time.LocalDate;
@@ -21,6 +21,6 @@ public class FindDismissalCommand implements Command {
     @Override
     public void execute(final CrewHistories crewHistories) {
         Map<String, AttendanceCounter> dismissalCrews = crewHistories.findDismissalCrews(LocalDate.now(clock));
-        resultView.printDismissalResult(DismissalCrewDto.of(dismissalCrews));
+        resultView.printDismissalResult(AttendanceWarning.of(dismissalCrews));
     }
 }

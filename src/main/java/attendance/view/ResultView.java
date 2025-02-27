@@ -3,7 +3,7 @@ package attendance.view;
 import attendance.domain.model.AttendanceCounter;
 import attendance.domain.model.AttendanceStatus;
 import attendance.domain.model.WarningLevel;
-import attendance.dto.DismissalCrewDto;
+import attendance.dto.AttendanceWarning;
 import attendance.util.TimeFormatter;
 import java.time.LocalDateTime;
 import java.util.Comparator;
@@ -23,11 +23,11 @@ public class ResultView {
             """;
     private static final String WARNING_LEVEL_FORM = "%s 대상자입니다.";
     private static final String DISMISSAL_RESULT_TITLE = "제적 위험자 조회 결과";
-    private static final Comparator<DismissalCrewDto> COMPARATOR =
-            Comparator.comparing(DismissalCrewDto::warningLevel, WarningLevel.getComparator())
+    private static final Comparator<AttendanceWarning> COMPARATOR =
+            Comparator.comparing(AttendanceWarning::warningLevel, WarningLevel.getComparator())
                     .thenComparing(dto -> WarningLevel.calculateTotalLateCount(dto.lateCount(), dto.absentCount()),
                             Comparator.reverseOrder())
-                    .thenComparing(DismissalCrewDto::nickname);
+                    .thenComparing(AttendanceWarning::nickname);
     private static final String DISMISSAL_RESULT_FORM = "- %s: 결석 %d회, 지각 %d회 (%s)";
     private static final Map<WarningLevel, String> WARNING_LEVEL_KOREAN = Map.of(
             WarningLevel.WARNING, "경고",
@@ -63,7 +63,7 @@ public class ResultView {
         printWarningLevel(WarningLevel.from(attendanceCounter.getAbsentCount(), attendanceCounter.getLateCount()));
     }
 
-    public void printDismissalResult(final List<DismissalCrewDto> dtos) {
+    public void printDismissalResult(final List<AttendanceWarning> dtos) {
         System.out.println(DISMISSAL_RESULT_TITLE);
         dtos.stream()
                 .sorted(COMPARATOR)
