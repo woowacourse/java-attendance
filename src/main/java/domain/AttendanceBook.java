@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Map;
 
 public class AttendanceBook {
+    private static final String CREWNAME_NOT_EXISTED_ERROR = "[ERROR] 존재하지 않는 닉네임입니다.";
     private final Map<CrewName, AttendanceRecord> value;
 
     public AttendanceBook(InitialInformation initialInformation) {
@@ -20,9 +21,6 @@ public class AttendanceBook {
 
     public Attendance addAttendance(CrewName crewName, Attendance attendance) {
         AttendanceRecord attendanceRecord = findAttendanceRecordBy(crewName);
-        if(attendanceRecord.contains(attendance)) {
-            throw new IllegalArgumentException("[ERROR] 이미 출석 기록이 존재합니다. 수정 메뉴를 이용해주세요.");
-        }
         attendanceRecord.add(attendance);
         value.put(crewName, attendanceRecord);
         return attendance;
@@ -31,7 +29,7 @@ public class AttendanceBook {
     public AttendanceRecord findAttendanceRecordBy(CrewName crewName) {
         AttendanceRecord attendanceRecord = value.get(crewName);
         if (attendanceRecord == null) {
-            throw new IllegalArgumentException("[ERROR] 존재하지 않는 닉네임입니다.");
+            throw new IllegalArgumentException(CREWNAME_NOT_EXISTED_ERROR);
         }
         return attendanceRecord;
     }
