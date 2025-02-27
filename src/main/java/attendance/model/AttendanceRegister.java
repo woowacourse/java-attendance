@@ -2,6 +2,7 @@ package attendance.model;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -9,6 +10,11 @@ public class AttendanceRegister {
     private final Map<String, AttendanceRecord> register = new HashMap<>();
 
     public void attend(String crewName, LocalDate attendanceDate, LocalTime attendanceTime) {
+        if (!EducationDay.isDuringEducationDay(attendanceDate)) {
+            throw new IllegalArgumentException(
+                    attendanceDate.format(DateTimeFormatter.ofPattern("MM월 dd일 EEE은 등교일이 아닙니다.")
+                    ));
+        }
         AttendanceRecord attendanceRecord = register.getOrDefault(crewName, new AttendanceRecord());
         validateExistAttendance(attendanceDate, attendanceRecord);
         attendanceRecord.add(new AttendanceDateTime(attendanceDate, attendanceTime));
