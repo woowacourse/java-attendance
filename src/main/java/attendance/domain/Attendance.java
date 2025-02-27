@@ -1,5 +1,7 @@
 package attendance.domain;
 
+import java.time.LocalTime;
+
 public class Attendance {
 
     private final String crewName;
@@ -14,5 +16,10 @@ public class Attendance {
         if (this.crewName.equals(attendance.crewName) && attendanceTime.isSameLocalDate(attendance.attendanceTime)) {
             throw new IllegalArgumentException("[ERROR] 이미 출석 기록이 존재합니다. 수정 기능을 이용해 주세요.");
         }
+    }
+
+    public Attendance modifyAttendanceTime(LocalTime modifyTime) {
+
+        return this;
     }
 }
