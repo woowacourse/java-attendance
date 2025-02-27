@@ -4,6 +4,7 @@ import except.AttendanceException;
 import java.util.Arrays;
 
 public enum InputMethod {
+    
     ATTENDANCE("1"),
     MODIFY("2"),
     ATTENDANCE_HISTORY("3"),

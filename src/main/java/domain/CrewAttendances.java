@@ -10,7 +10,9 @@ import java.util.stream.Collectors;
 import strategy.CurrentDateGenerateStrategy;
 
 public class CrewAttendances {
+
     private static final String NOT_EXISTS_ATTENDANCE_HISTORY = "출석 기록이 존재하지 않습니다.";
+    
     private final Map<CrewName, DateCrewAttendanceManager> crewAttendances;
     private final CurrentDateGenerateStrategy currentDateGenerateStrategy;
 

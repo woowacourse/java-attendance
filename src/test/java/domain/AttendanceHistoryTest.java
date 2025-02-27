@@ -37,12 +37,6 @@ public class AttendanceHistoryTest {
     }
 
     private static Stream<Arguments> attendanceHistoryTest() {
-        AttendanceDate attendanceDate1 = new AttendanceDate(LocalDate.of(2024, 12, 2));
-        CrewAttendance crewAttendance1 = crewAttendances.crewAttendance("투다", LocalDate.of(2024, 12, 2));
-        AttendanceDate attendanceDate2 = new AttendanceDate(LocalDate.of(2024, 12, 3));
-        CrewAttendance crewAttendance2 = crewAttendances.crewAttendance("투다", LocalDate.of(2024, 12, 3));
-        AttendanceDate attendanceDate3 = new AttendanceDate(LocalDate.of(2024, 12, 4));
-        CrewAttendance crewAttendance3 = crewAttendances.crewAttendance("투다", LocalDate.of(2024, 12, 4));
         return Stream.of(
                 Arguments.arguments(
                         "투다",

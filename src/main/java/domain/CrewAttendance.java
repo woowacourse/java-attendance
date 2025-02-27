@@ -4,6 +4,7 @@ import java.time.LocalTime;
 import java.util.Objects;
 
 public class CrewAttendance {
+    
     private final AttendanceTime attendanceTime;
     private final CrewAttendanceStatus crewAttendanceStatus;
 

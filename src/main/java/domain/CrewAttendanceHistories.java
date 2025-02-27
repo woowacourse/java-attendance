@@ -4,9 +4,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public record CrewAttendanceHistories(List<CrewAttendanceHistory> crewAttendanceHistories,
-                                      CrewDismiss crewDismiss) {
-    
+public record CrewAttendanceHistories(List<CrewAttendanceHistory> crewAttendanceHistories, CrewDismiss crewDismiss) {
+
     public static CrewAttendanceHistories from(List<CrewAttendanceHistory> crewAttendanceHistories) {
         Map<AttendanceStatus, Integer> crewAttendanceStatusCount = new HashMap<>();
         for (CrewAttendanceHistory attendanceHistory : crewAttendanceHistories) {

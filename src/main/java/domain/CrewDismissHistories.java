@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.List;
 
 public class CrewDismissHistories {
+
     private final List<CrewDismissHistory> crewDismisses;
 
     public CrewDismissHistories() {

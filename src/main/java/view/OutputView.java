@@ -10,13 +10,13 @@ import view.dto.AttendanceHistoryDto;
 import view.dto.CrewDismissHistoryDto;
 
 public class OutputView {
+
     private static final String INPUT_METHOD = "기능을 선택해 주세요.\n1. 출석 확인\n"
             + "2. 출석 수정\n"
             + "3. 크루별 출석 기록 확인\n"
             + "4. 제적 위험자 확인\n"
             + "Q. 종료";
-
-    public static final String TODAY_FORMAT = "\n오늘은 MM월 dd일 E요일입니다. ";
+    private static final String TODAY_FORMAT = "\n오늘은 MM월 dd일 E요일입니다. ";
     private static final DateTimeFormatter TODAY_FORMATTER = DateTimeFormatter.ofPattern(TODAY_FORMAT,
             Locale.KOREA);
     private static final String INPUT_NICKNAME = "닉네임을 입력해주세요.";
@@ -45,7 +45,6 @@ public class OutputView {
     private static final String CREW_DISMISS_FORMAT = "- %s: 결석 %d회, 지각 %d회 (%s)\n";
     private static final String CREW_DISMISSES_PREFIX = "제적 위험자 확인\n";
 
-
     public void printError(String errorMessage) {
         println(ERROR_PREFIX + errorMessage);
     }
@@ -72,7 +71,6 @@ public class OutputView {
     public void printAddAttendanceInputTime() {
         println(ADD_ATTENDANCE_INPUT_TIME);
     }
-
 
     private void print(String message) {
         System.out.print(message);

@@ -11,11 +11,8 @@ public class CrewDismiss {
     private static final int DISMISS_STANDARD = 5;
 
     private final int absence;
-
     private final int late;
-
     private final int attendance;
-
     private final DismissStatus dismissStatus;
 
     public CrewDismiss(Map<AttendanceStatus, Integer> crewAttendanceStatusCount) {

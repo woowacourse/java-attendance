@@ -15,7 +15,6 @@ public class AttendanceTime {
     private static final LocalTime SCHOOL_CLOSE_TIME = LocalTime.of(23, 0);
 
     private final LocalTime attendanceTime;
-
     private final LocalTime schoolAttendanceStartTime;
 
     public AttendanceTime(LocalTime attendanceTime, AttendanceDate attendanceDate) {
@@ -27,13 +26,6 @@ public class AttendanceTime {
             return;
         }
         schoolAttendanceStartTime = LocalTime.of(NORMAL_SCHOOL_START_HOUR, NORMAL_SCHOOL_START_MINI);
-    }
-
-    public static boolean isValidAttendanceTime(LocalTime attendanceTime) {
-        if (attendanceTime.isBefore(SCHOOL_START_HOUR) || attendanceTime.isAfter(SCHOOL_CLOSE_TIME)) {
-            return false;
-        }
-        return true;
     }
 
     private void validateAttendanceTime(LocalTime attendanceTime) {

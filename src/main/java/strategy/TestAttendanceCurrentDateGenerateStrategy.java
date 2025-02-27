@@ -12,7 +12,6 @@ public class TestAttendanceCurrentDateGenerateStrategy implements CurrentDateGen
 
     public void setTestDate(LocalDate testAttendanceDate) {
         this.testAttendanceDate = testAttendanceDate;
-
     }
 
     @Override

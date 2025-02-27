@@ -72,7 +72,6 @@ public class AttendanceController {
             case ATTENDANCE_HISTORY -> handleAttendanceHistory();
             case DISMISS_HISTORY -> handleDismissHistory();
             case QUIT -> {
-                return;
             }
             default -> throw new AttendanceException(NOT_SUPPORTED_METHOD);
         }
