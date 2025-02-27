@@ -1,3 +1,3 @@
 public enum AttendPolicy {
-    ABSENT, LATE
+    ABSENT, ATTEND, LATE
 }
