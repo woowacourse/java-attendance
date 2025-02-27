@@ -14,13 +14,13 @@ public class FileUtility {
     private static final String RESOURCE_PATH = "./src/main/resources/";
 
     public static List<String> readFile(String fileName) {
-        BufferedReader reader = ladFile(fileName);
+        BufferedReader reader = loadFile(fileName);
         List<String> lines = readLine(reader);
         lines.removeFirst();
         return lines;
     }
 
-    private static BufferedReader ladFile(String fileName) {
+    private static BufferedReader loadFile(String fileName) {
         try {
             FileReader fileReader = new FileReader(RESOURCE_PATH + fileName);
             return new BufferedReader(fileReader);
