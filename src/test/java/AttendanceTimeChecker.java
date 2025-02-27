@@ -4,6 +4,10 @@ public class AttendanceTimeChecker {
         int hour = Integer.parseInt(split[0]);
         int minute = Integer.parseInt(split[1]);
 
+        if (hour > 10) {
+            return AttendPolicy.ABSENT;
+        }
+
         if (hour < 10) {
             return AttendPolicy.ATTEND;
         }
