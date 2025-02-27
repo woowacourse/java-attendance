@@ -23,6 +23,7 @@ public enum Vacation {
 
     private boolean contains(LocalDate date) {
         return (date.isAfter(this.start) && date.isBefore(this.end))
-                || date.isEqual(this.start) || date.isEqual(this.end);
+                || date.isEqual(this.start)
+                || date.isEqual(this.end);
     }
 }

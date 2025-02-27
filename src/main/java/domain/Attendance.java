@@ -13,10 +13,8 @@ public class Attendance {
     private static final int ABSENT_THRESHOLD_MINUTE = 30;
     private static final LocalTime MONDAY_OPEN = LocalTime.of(13, 0);
     private static final LocalTime DEFAULT_OPEN = LocalTime.of(10, 0);
-    private static final LocalTime OPEN_TIME = LocalTime.of(8, 0);
-    private static final LocalTime CLOSE_TIME = LocalTime.of(23, 0);
 
-    Map<Crew, LocalDate> attendanceHistory = new HashMap<>();
+    private final Map<Crew, LocalDate> attendanceHistory = new HashMap<>();
 
     public String checkAttendance(Crew crew, LocalDateTime attendanceDateTime) {
         LocalDate attendanceDate = attendanceDateTime.toLocalDate();
@@ -50,7 +48,7 @@ public class Attendance {
     }
 
     private void validateOperatingTime(LocalTime attendanceTime) {
-        if (attendanceTime.isBefore(OPEN_TIME) || attendanceTime.isAfter(CLOSE_TIME)) {
+        if (!CampusHour.isOperatingTime(attendanceTime)) {
             throw new IllegalArgumentException("[ERROR] 캠퍼스 운영 시간에만 출석이 가능합니다.");
         }
     }
