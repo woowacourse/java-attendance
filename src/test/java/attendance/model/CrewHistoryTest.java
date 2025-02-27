@@ -1,6 +1,5 @@
 package attendance.model;
 
-import static attendance.domain.model.AttendanceType.DEFAULT_TIME;
 import static attendance.fixture.TestFixture.makeAbsent;
 import static attendance.fixture.TestFixture.makeAttendance;
 import static attendance.fixture.TestFixture.makeDefaultTime;
@@ -23,7 +22,19 @@ import org.junit.jupiter.params.provider.CsvSource;
 
 public class CrewHistoryTest {
 
-    private static final String CREW_NAME = "밍트";
+    @DisplayName("출석 데이터를 초기화한다")
+    @Test
+    void loadHistoryTest() {
+        // Given
+        CrewHistory crewHistory = new CrewHistory(new HashMap<>());
+        LocalDateTime attendanceTime = makeAttendance(3);
+
+        // When
+        crewHistory.loadHistory(attendanceTime);
+
+        // Then
+        assertThat(crewHistory.getAttendance()).containsEntry(LocalDate.from(attendanceTime), attendanceTime);
+    }
 
     @DisplayName("출석을 한다")
     @Test

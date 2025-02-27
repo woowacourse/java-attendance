@@ -6,6 +6,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Objects;
 import java.util.TreeMap;
 
 public class CrewHistory {
@@ -53,6 +54,19 @@ public class CrewHistory {
 
     private boolean isEqualOrAfterToday(final LocalDate todayDate, final LocalDate modifyDate) {
         return modifyDate.isEqual(todayDate) || modifyDate.isAfter(todayDate);
+    }
+
+    @Override
+    public boolean equals(final Object o) {
+        if (!(o instanceof final CrewHistory that)) {
+            return false;
+        }
+        return Objects.equals(getAttendance(), that.getAttendance());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(getAttendance());
     }
 
     public Map<LocalDate, LocalDateTime> getAttendance() {
