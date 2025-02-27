@@ -1,6 +1,7 @@
 package attendance.view;
 
 import attendance.domain.record.AttendanceRecord;
+import attendance.domain.risk.RiskType;
 import attendance.dto.AttendanceState;
 import attendance.dto.RecordUpdateResult;
 import attendance.utility.DateTimeUtility;
@@ -36,8 +37,10 @@ public class OutputView {
         String stateContent = String.format(OutputMessage.ATTENDANCE_STATE.getContent(),
                 state.getAttendanceCount(), state.getLateCount(), state.getAbsenceCount());
         System.out.println(stateContent);
-        String riskTypContent = String.format(OutputMessage.RISK_TYPE.getContent(),
-                state.getRiskTyp().getName());
+        if (state.getRiskTyp() != RiskType.NONE) {
+            return;
+        }
+        String riskTypContent = String.format(OutputMessage.RISK_TYPE.getContent(), state.getRiskTyp().getName());
         System.out.println(riskTypContent);
         System.out.println();
     }
