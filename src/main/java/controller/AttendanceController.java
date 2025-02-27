@@ -7,7 +7,6 @@ import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -42,19 +41,32 @@ public class AttendanceController {
         AttendanceBook attendanceBook = AttendanceBook.from(crews);
         attendanceBook.update(existingAttendances.getAttendances(), crews);
 
+        boolean continueService = true;
+        while (continueService) {
+            continueService = chooseAndDoService(attendanceBook, crews);
+        }
+    }
+
+    private boolean chooseAndDoService(AttendanceBook attendanceBook, Crews crews) {
         String functionChoice = inputView.readFunctionChoice();
         if (functionChoice.equals("1")) {
             doRegisterService(attendanceBook, crews);
+            return true;
         }
         if (functionChoice.equals("2")) {
             doModifyService(attendanceBook, crews);
+            return true;
         }
         if (functionChoice.equals("3")) {
             doHistoryService(attendanceBook, crews);
+            return true;
         }
         if (functionChoice.equals("4")) {
             doPenaltyService(attendanceBook, crews);
+            return true;
         }
+        //TODO: 메뉴 선택 enum화
+        return false;
     }
 
     //TODO : 도메인 없는 순수 리더
