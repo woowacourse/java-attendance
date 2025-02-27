@@ -26,16 +26,14 @@ import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
 public class AttendanceSheetTest {
     AttendanceSheet attendanceSheet;
-    LocalDate today;
 
     @BeforeEach
     void setUp() {
-        today = LocalDate.of(2024, 12, 11);
         attendanceSheet = new AttendanceSheet(new TimePolicy(), new AbsentPolicy(),
                 new ArrayList<>(
                         List.of(
                                 new Attendance("링크", LocalDate.of(2024, 12, 10), LocalTime.of(13,5), ATTENDANCE),
-                                new Attendance("링크2", LocalDate.of(2024, 12, 8), LocalTime.of(13,5), ATTENDANCE),
+                                new Attendance("링크2", LocalDate.of(2024, 12, 6), LocalTime.of(13,5), ATTENDANCE),
                                 new Attendance("링크2", LocalDate.of(2024, 12, 9), LocalTime.of(10,5), ATTENDANCE),
                                 new Attendance("링크2", LocalDate.of(2024, 12, 10), LocalTime.of(10,10), LATE),
                                 new Attendance("링크2", LocalDate.of(2024, 12, 11), LocalTime.of(10,10), LATE),
@@ -44,12 +42,16 @@ public class AttendanceSheetTest {
                                 new Attendance("링크3", LocalDate.of(2024, 12, 4), LocalTime.of(13,5), ATTENDANCE),
                                 new Attendance("링크3", LocalDate.of(2024, 12, 5), LocalTime.of(13,5), ATTENDANCE),
                                 new Attendance("링크3", LocalDate.of(2024, 12, 6), LocalTime.of(13,5), ATTENDANCE),
+                                new Attendance("링크3", LocalDate.of(2024, 12, 9), LocalTime.of(13,5), ATTENDANCE),
+                                new Attendance("링크3", LocalDate.of(2024, 12, 10), LocalTime.of(13,5), ATTENDANCE),
                                 new Attendance("링크4", LocalDate.of(2024, 12, 2), LocalTime.of(13,5), ATTENDANCE),
                                 new Attendance("링크4", LocalDate.of(2024, 12, 3), LocalTime.of(13,5), ATTENDANCE),
                                 new Attendance("링크4", LocalDate.of(2024, 12, 4), LocalTime.of(13,5), ATTENDANCE),
                                 new Attendance("링크4", LocalDate.of(2024, 12, 5), LocalTime.of(13,5), ATTENDANCE),
                                 new Attendance("링크4", LocalDate.of(2024, 12, 6), LocalTime.of(13,5), ATTENDANCE),
-                                new Attendance("링크4", LocalDate.of(2024, 12, 9), LocalTime.of(13,5), ATTENDANCE)
+                                new Attendance("링크4", LocalDate.of(2024, 12, 9), LocalTime.of(13,5), ATTENDANCE),
+                                new Attendance("링크4", LocalDate.of(2024, 12, 10), LocalTime.of(13,5), ATTENDANCE),
+                                new Attendance("링크4", LocalDate.of(2024, 12, 11), LocalTime.of(13,5), ATTENDANCE)
                         ))
         );
     }
@@ -107,14 +109,14 @@ public class AttendanceSheetTest {
     @DisplayName("크루의 출석 상태 횟수를 계산할 수 있다")
     @MethodSource("provideAttendanceStateForCount")
     public void countAttendanceStateTest(AttendanceState state, int expected) {
-        assertThat(attendanceSheet.countAttendanceState("링크", today).get(state)).isEqualTo(expected);
+        assertThat(attendanceSheet.countAttendanceState("링크").get(state)).isEqualTo(expected);
     }
 
     static Stream<Arguments> provideAttendanceStateForCount() {
         return Stream.of(
                 Arguments.of(ATTENDANCE, 1),
                 Arguments.of(LATE, 0),
-                Arguments.of(ABSENT, 6)
+                Arguments.of(ABSENT, 8)
         );
     }
 
@@ -124,10 +126,10 @@ public class AttendanceSheetTest {
         assertSoftly(softly -> {
             softly.assertThat(attendanceSheet.countAttendancesState().get("링크").get(ATTENDANCE)).isEqualTo(1);
             softly.assertThat(attendanceSheet.countAttendancesState().get("링크").get(LATE)).isEqualTo(0);
-            softly.assertThat(attendanceSheet.countAttendancesState().get("링크").get(ABSENT)).isEqualTo(6);
+            softly.assertThat(attendanceSheet.countAttendancesState().get("링크").get(ABSENT)).isEqualTo(8);
             softly.assertThat(attendanceSheet.countAttendancesState().get("링크2").get(ATTENDANCE)).isEqualTo(2);
             softly.assertThat(attendanceSheet.countAttendancesState().get("링크2").get(LATE)).isEqualTo(2);
-            softly.assertThat(attendanceSheet.countAttendancesState().get("링크2").get(ABSENT)).isEqualTo(3);
+            softly.assertThat(attendanceSheet.countAttendancesState().get("링크2").get(ABSENT)).isEqualTo(5);
         });
     }
 
@@ -135,7 +137,7 @@ public class AttendanceSheetTest {
     @DisplayName("크루의 제적 상태를 알 수 있다")
     public void countExpellTest() {
         //given
-        Map<String, Map<AttendanceState, Long>> attendances = attendanceSheet.countAttendancesState(today);
+        Map<String, Map<AttendanceState, Long>> attendances = attendanceSheet.countAttendancesState();
 
         //when-then
         assertSoftly(softly -> {
