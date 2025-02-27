@@ -7,8 +7,10 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
@@ -81,5 +83,21 @@ public class AttendanceTest {
             LocalTime enterTime = LocalTime.of(10, 0);
             attendanceStorage.register(sunday, enterTime);
         }).isInstanceOf(InvalidDateException.class);
+    }
+
+    @DisplayName("제시간에 출석을 기록한 경우, 기록된 출석 내역과 '출석' 상태를 반환할 수 있다.")
+    @Test
+    void test6() {
+        // given
+        AttendanceStorage attendanceStorage = new AttendanceStorage();
+        LocalDate date = LocalDate.of(2025, 2, 27);
+        LocalTime enterTime = LocalTime.of(10, 0);
+
+        // when
+        Attendance attendance = attendanceStorage.register(date, enterTime);
+
+        // then
+        assertThat(attendance.getDateTime()).isEqualTo(LocalDateTime.of(date, enterTime));
+        assertThat(attendance.getStatus()).isSameAs(AttendanceStatus.ATTENDANCE);
     }
 }
