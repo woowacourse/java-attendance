@@ -66,3 +66,21 @@
 - [x] 입력한 날짜 형식이 올바르지 않은 경우
 - [x] 입력한 시간 형식이 올바르지 않은 경우
 - [x] 출석 기록이 존재하는데 다시 출석을 시도하는 경우
+
+## domain에 대한 설명
+- AttendanceBook - 출석부. 기록에 존재하는 크루들을 저장
+  - 필드: List< Crew >
+- Crew - 크루의 이름과 해당 크루의 출석 기록들을 저장
+  - 필드: String, Attendances
+- Attendances - 출석 기록들을 저장
+  - 필드: List< Attendance >
+- Attendance - 출석 날짜, 시간, 상태(출석/지각/결석) 저장
+  - 필드: AttendanceDate, AttendanceTime, AttendanceStatus
+- AttendanceDate - 출석 날짜를 검증하고 저장
+  - 필드: LocalDate
+- AttendanceTime - 출석 시간을 검증하고 저장
+  - 필드: LocalTime
+- CrewStatus - 크루의 제적 상태 저장
+  - 필드: String(status), int(sequence)
+- AttendanceStatus - 출석/지각/결석 상태 저장
+  - 필드: String(status)
