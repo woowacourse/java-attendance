@@ -16,7 +16,7 @@ public class FileInput {
     private FileInput() {}
 
     private static final String FILE_PATH = "src/main/resources/attendances.csv";
-    private static final String INFORMATION_REGEX = "[가-힣]+,\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}";
+    private static final String STUDENT_INFORMATION_REGEX = "[가-힣]+,\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}";
 
     private static List<String> readAttendanceFile() {
         List<String> attendanceFile = new ArrayList<>();
@@ -38,7 +38,7 @@ public class FileInput {
         Map<String, List<AttendanceDateTime>> studentInformation = new HashMap<>();
         try {
             for (String information : readAttendanceFile()) {
-                if (!information.matches(INFORMATION_REGEX)) {
+                if (!information.matches(STUDENT_INFORMATION_REGEX)) {
                     throw new IllegalArgumentException("[ERROR] 잘못된 파일 양식입니다.");
                 }
                 String[] nameAndTimeInformation = information.split(",");
