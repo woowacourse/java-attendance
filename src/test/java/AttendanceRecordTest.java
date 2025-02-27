@@ -3,8 +3,7 @@ import org.junit.jupiter.api.Test;
 
 import java.time.LocalDateTime;
 
-import static org.assertj.core.api.Assertions.assertThatNoException;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.assertj.core.api.Assertions.*;
 
 class AttendanceRecordTest {
     @DisplayName("LocalDateTime을 받아 기록 객체를 생성할 수 있다.")
@@ -35,6 +34,6 @@ class AttendanceRecordTest {
         AttendanceRecord attendanceRecord = new AttendanceRecord(dateTime);
 
         // then
-        assertThat(attendanceRecord.getAttendanceStatus).isEqualTo(AttendanceStatus.TARDY);
+        assertThat(attendanceRecord.getAttendanceStatus()).isEqualTo(AttendanceStatus.TARDY);
     }
 }
