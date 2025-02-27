@@ -130,7 +130,7 @@ public class AttendanceBookTest {
         LocalDate yesterday = LocalDate.of(2024, 12, 12);
         AttendanceHistory attendanceHistory = attendanceBook.findAttendanceHistoryUntil(mimi, yesterday);
 
-        List<Attendance> sortedAttendance = attendanceHistory.attendanceLog().sortedValue();
+        List<Attendance> sortedAttendance = attendanceHistory.sortedValue();
         assertThat(sortedAttendance.getFirst()).isEqualTo(firstAttendance);
         assertThat(sortedAttendance.getLast()).isEqualTo(expectedLastAttendance);
     }

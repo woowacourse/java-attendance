@@ -1,4 +1,7 @@
 package dto;
 
-public record AttendanceHistory(AttendanceLog attendanceLog) {
+import domain.Attendance;
+import java.util.List;
+
+public record AttendanceHistory(List<Attendance> sortedValue) {
 }

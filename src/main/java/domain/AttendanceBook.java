@@ -2,7 +2,6 @@ package domain;
 
 import dto.AttendanceCount;
 import dto.AttendanceHistory;
-import dto.AttendanceLog;
 import dto.InitialInfo;
 import dto.ModifyResult;
 import java.time.LocalDate;
@@ -39,8 +38,7 @@ public class AttendanceBook {
 
     public AttendanceHistory findAttendanceHistoryUntil(CrewName crewName, LocalDate yesterday) {
         AttendanceRecord attendanceRecord = findAttendanceRecordBy(crewName);
-        AttendanceLog attendanceLog = attendanceRecord.findAllSortedUntil(yesterday);
-        return new AttendanceHistory(attendanceLog);
+        return attendanceRecord.findAllSortedUntil(yesterday);
     }
 
     public AttendanceCount findCountUntil(CrewName crewName, LocalDate yesterday) {

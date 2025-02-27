@@ -17,16 +17,15 @@ public enum Penalty {
     }
 
     public static Penalty from(AttendanceCount attendanceCount) {
-        int consideredAbsentCount = attendanceCount.absentCount() + (attendanceCount.lateCount() / 3);
-
+        int consideredAbsentCount = attendanceCount.consideredAbsentCount();
         if(consideredAbsentCount >= EXPULSION_CONDITION) {
-            return Penalty.EXPULSION;
+            return EXPULSION;
         }
         if (consideredAbsentCount >= COUNSELING_CONDITION) {
-            return Penalty.COUNSELING;
+            return COUNSELING;
         }
-        if (consideredAbsentCount >= WARNING_CONDITION) {
-            return Penalty.WARNING;
+        if (consideredAbsentCount == WARNING_CONDITION) {
+            return WARNING;
         }
         return NONE;
     }

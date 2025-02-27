@@ -1,4 +1,6 @@
 package dto;
 
-public record AttendanceCount(int attendCount, int lateCount, int absentCount) {
+import util.Constants;
+
+public record AttendanceCount(int attendCount, int lateCount, int absentCount, int consideredAbsentCount) {
 }

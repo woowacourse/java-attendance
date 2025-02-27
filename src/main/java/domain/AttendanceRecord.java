@@ -3,7 +3,7 @@ package domain;
 import static util.Constants.*;
 
 import dto.AttendanceCount;
-import dto.AttendanceLog;
+import dto.AttendanceHistory;
 import dto.ModifyResult;
 import java.time.LocalDate;
 import java.util.Comparator;
@@ -11,6 +11,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
+import util.Constants;
 import util.DateTimeManager;
 
 public class AttendanceRecord {
@@ -26,8 +27,8 @@ public class AttendanceRecord {
                         attendance.isSameDateWith(targetAttendance));
     }
 
-    public AttendanceLog findAllSortedUntil(LocalDate yesterday) {
-        return new AttendanceLog(getSortedAllValueUntil(yesterday));
+    public AttendanceHistory findAllSortedUntil(LocalDate yesterday) {
+        return new AttendanceHistory(getSortedAllValueUntil(yesterday));
     }
 
     public AttendanceCount calculateCount(LocalDate yesterday) {
@@ -47,7 +48,8 @@ public class AttendanceRecord {
                 absentCount++;
             }
         }
-        return new AttendanceCount(attendCount, lateCount, absentCount);
+        int consideredAbsentCount = absentCount + (lateCount / ABSENT_CONSIDERING_UNIT);
+        return new AttendanceCount(attendCount, lateCount, absentCount, consideredAbsentCount);
     }
 
     public void add(Attendance attendance) {
