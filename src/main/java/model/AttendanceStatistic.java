@@ -52,4 +52,8 @@ public class AttendanceStatistic {
     public int hashCode() {
         return Objects.hashCode(target);
     }
+
+    public AttendanceHistory getAttendanceHistory() {
+        return null;
+    }
 }
