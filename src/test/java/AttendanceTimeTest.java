@@ -23,6 +23,19 @@ public class AttendanceTimeTest {
 
     @ParameterizedTest
     @CsvSource({
+            "12, 1", "12, 25"
+    })
+    void 출석시간을_생성할_때_휴일인_경우_예외를_발생시킨다(int month, int date) {
+        //given
+        LocalDateTime checkInTime = LocalDateTime.of(2024, month, date, 9, 30);
+        //when & then
+        assertThatThrownBy(() -> new AttendanceTime(checkInTime))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("주말과 공휴일에는 출석할 수 없습니다.");
+    }
+
+    @ParameterizedTest
+    @CsvSource({
             "2, 9, 30, 2, 10, 30, true",
             "2, 9, 30, 3, 10, 30, false"
     })
