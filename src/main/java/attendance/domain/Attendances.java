@@ -64,4 +64,10 @@ public class Attendances {
                 .count();
     }
 
+    public int calculateLateCount(final LocalDate standardDate) {
+        return (int) attendances.stream()
+                .filter(attendance -> attendance.isBeforeOrEqualDate(standardDate) && attendance.isLate())
+                .count();
+    }
+
 }

@@ -13,6 +13,17 @@ public enum AttendanceStatus {
         }
         return attendanceTime.isBetweenInclusive(startInclusive,
                 CampusTime.TUESDAY_TO_FRIDAY_LECTURE_START_TIME.getLocalTime().plusMinutes(5L));
+    }),
+    LATE("지각", (attendance, attendanceTime) -> {
+        if (attendance.isMonday()) {
+            return attendanceTime.isBetweenInclusive(
+                    CampusTime.MONDAY_LECTURE_START_TIME.getLocalTime().plusMinutes(6L),
+                    CampusTime.MONDAY_LECTURE_START_TIME.getLocalTime().plusMinutes(30L));
+        }
+        return attendanceTime.isBetweenInclusive(
+                CampusTime.TUESDAY_TO_FRIDAY_LECTURE_START_TIME.getLocalTime().plusMinutes(6L),
+                CampusTime.TUESDAY_TO_FRIDAY_LECTURE_START_TIME.getLocalTime().plusMinutes(30L)
+        );
     });
 
     private final String text;
@@ -25,6 +36,10 @@ public enum AttendanceStatus {
 
     public static boolean isAttendance(final Attendance attendance, final AttendanceTime attendanceTime) {
         return ATTENDANCE_COMPLETE.condition.test(attendance, attendanceTime);
+    }
+
+    public static boolean isLate(final Attendance attendance, final AttendanceTime attendanceTime) {
+        return LATE.condition.test(attendance, attendanceTime);
     }
 
 }

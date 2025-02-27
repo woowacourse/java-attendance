@@ -25,4 +25,18 @@ class AttendanceStatusTest {
         assertThat(AttendanceStatus.isAttendance(attendance, attendanceTime)).isEqualTo(expected);
     }
 
+    @CsvSource(value = {
+            "24,13,6,true", "27,10,6,true", "24,13,30,true", "27,10,30,true",
+            "24,13,5,false", "27,10,5,false", "24,13,31,false", "27,10,31,false"
+    })
+    @ParameterizedTest
+    void 출석_기록을_알려주면_지각인지_알려준다(int day, int hour, int minute, boolean expected) {
+        LocalDate localDate = LocalDate.of(2025, 2, day);
+        LocalTime localTime = LocalTime.of(hour, minute);
+        Attendance attendance = new Attendance(LocalDateTime.of(localDate, localTime));
+        AttendanceTime attendanceTime = new AttendanceTime(localTime);
+
+        assertThat(AttendanceStatus.isLate(attendance, attendanceTime)).isEqualTo(expected);
+    }
+
 }
