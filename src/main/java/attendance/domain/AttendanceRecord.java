@@ -30,11 +30,15 @@ public class AttendanceRecord {
         return date.equals(attendanceDateTime.toLocalDate());
     }
 
-    public LocalDateTime getAttendanceDateTime() {
+    public AttendanceRecord copy() {
+        return new AttendanceRecord(this.getDateTime());
+    }
+
+    public LocalDateTime getDateTime() {
         return attendanceDateTime;
     }
 
-    public AttendanceRecord copy() {
-        return new AttendanceRecord(this.getAttendanceDateTime());
+    public LocalDate getDate() {
+        return attendanceDateTime.toLocalDate();
     }
 }

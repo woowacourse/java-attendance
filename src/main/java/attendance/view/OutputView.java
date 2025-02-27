@@ -27,7 +27,7 @@ public class OutputView {
         sb.appendLine(String.format("이번 달 %s의 출석 기록입니다.", crew.getName()));
 
         history.getRecords().stream()
-                .sorted(Comparator.comparing(record -> record.getAttendanceDateTime().toLocalDate()))
+                .sorted(Comparator.comparing(record -> record.getDateTime().toLocalDate()))
                 .forEach(record -> sb.appendLine(getFormattedRecord(record)));
 
         Arrays.stream(AttendanceStatus.values())
@@ -47,7 +47,7 @@ public class OutputView {
 
     private String getFormattedRecord(AttendanceRecord record) {
         return String.format("%s (%s)",
-                record.getAttendanceDateTime().format(DATE_FORMATTER),
+                record.getDateTime().format(DATE_FORMATTER),
                 record.getAttendanceStatus().getTitle()
         );
     }

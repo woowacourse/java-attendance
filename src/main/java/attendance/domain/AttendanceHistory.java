@@ -21,8 +21,8 @@ public class AttendanceHistory {
 
     private boolean alreadyPresent(AttendanceRecord record) {
         return records.stream()
-                .anyMatch(existingRecord -> existingRecord.getAttendanceDateTime().toLocalDate()
-                        .equals(record.getAttendanceDateTime().toLocalDate()));
+                .anyMatch(existingRecord -> existingRecord.getDateTime().toLocalDate()
+                        .equals(record.getDateTime().toLocalDate()));
     }
 
     public void modifyRecord(LocalDate targetDate, LocalTime modifyTime) {
