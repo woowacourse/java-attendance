@@ -41,8 +41,8 @@ public enum AttendanceCalculator {
         attendanceRecord.put(AttendanceStatus.LATE, 0);
         attendanceRecord.put(AttendanceStatus.ATTENDANCE, 0);
         for (LocalDateTime localDateTime :record) {
-            attendanceRecord.put(calculateAttendance(localDateTime, LocalTime.from(localDateTime)),
-                    attendanceRecord.get(calculateAttendance(localDateTime, LocalTime.from(localDateTime))) + 1);
+            attendanceRecord.merge(calculateAttendance(localDateTime, LocalTime.from(localDateTime)),
+                     1, Integer::sum);
         }
         return attendanceRecord;
     }
