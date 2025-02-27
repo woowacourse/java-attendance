@@ -1,7 +1,6 @@
 package domain;
 
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.time.format.TextStyle;
 import java.util.List;
 import java.util.Locale;
@@ -9,9 +8,6 @@ import java.util.Objects;
 
 public class Attendance implements Comparable<Attendance> {
     private static final List<Integer> HOLIDAYS = List.of(1, 7, 8, 14, 15, 21, 22, 25, 28, 29);
-    private static final LocalTime openTime = LocalTime.of(8, 0);
-    private static final LocalTime closeTime = LocalTime.of(23, 0);
-
     private final LocalDateTime dateTime;
 
     public Attendance(LocalDateTime dateTime) {
@@ -25,11 +21,6 @@ public class Attendance implements Comparable<Attendance> {
                     String.format("12월 %d일 %s요일은 등교일이 아닙니다.",
                             dateTime.getDayOfMonth(),
                             dateTime.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.KOREAN)));
-        }
-
-        LocalTime currentTime = LocalTime.of(dateTime.getHour(), dateTime.getMinute());
-        if (currentTime.isBefore(openTime) || currentTime.isAfter(closeTime)) {
-            throw new IllegalArgumentException("캠퍼스 오픈 시간은 08:00 ~ 23:00입니다");
         }
     }
 

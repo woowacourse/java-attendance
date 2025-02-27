@@ -17,13 +17,14 @@ public class Attendances {
         return attendance;
     }
 
-    public void updateAttendance(LocalDateTime dateTime, int day) {
+    public Attendance updateAttendance(LocalDateTime dateTime, int day) {
         if (dateTime.getDayOfMonth() > day) {
             throw new IllegalArgumentException("미래는 수정할 수 없습니다.");
         }
         Attendance attendance = new Attendance(dateTime);
         records.remove(attendance);
         records.add(attendance);
+        return attendance;
     }
 
     public CrewStatus calculateCrewStatus(int weekDaysCount) {
@@ -42,6 +43,13 @@ public class Attendances {
 
         int absentCount = weekDaysCount - lateCount - presentCount;
         return CrewStatus.calculateCrewStatus(absentCount + lateCount / 3);
+    }
+
+    public Attendance getAttendanceByDay(int day) {
+        return records.stream()
+                .filter(attendance -> attendance.getDateTime().getDayOfMonth() == day)
+                .findFirst()
+                .orElse(new Attendance(LocalDateTime.of(2024, 12, day, 23, 59)));
     }
 
     public List<Attendance> getRecords() {

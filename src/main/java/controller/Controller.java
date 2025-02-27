@@ -3,6 +3,7 @@ package controller;
 import domain.Attendance;
 import domain.AttendanceBook;
 import domain.AttendancesFile;
+import domain.Time;
 import java.nio.file.Path;
 import java.time.LocalDateTime;
 import view.InputView;
@@ -59,13 +60,34 @@ public class Controller {
 
     private void runCheckAttendance(AttendanceBook attendanceBook) {
         String nickname = inputView.readCheckAttendanceNickname();
-        String time = inputView.readCheckAttendanceTime();
-        String[] times = time.split(":");
+        Time time = new Time(inputView.readCheckAttendanceTime());
 
         Attendance checkedAttendance = attendanceBook.addAttendanceForCrew(nickname,
-                LocalDateTime.of(today.getYear(), today.getMonth(), today.getDayOfMonth(), Integer.parseInt(times[0]),
-                        Integer.parseInt(times[1])));
+                LocalDateTime.of(today.getYear(), today.getMonth(), today.getDayOfMonth(), time.getHour(),
+                        time.getMinute()));
 
         outputView.printCheckAttendance(checkedAttendance.getDateTime(), checkedAttendance.calculateAttendanceStatus());
+    }
+
+    private void runChangeAttendance(AttendanceBook attendanceBook) {
+        String nickname = inputView.readChangeAttendanceNickname();
+        String dayOfMonth = inputView.readChangeAttendanceDayOfMonth();
+        Time time = new Time(inputView.readChangeAttendanceTime());
+
+        Attendance originalAttendance = attendanceBook.getAttendanceByNicknameAndDate(nickname,
+                Integer.parseInt(dayOfMonth));
+        Attendance changeAttendance = attendanceBook.updateAttendanceForCrew(nickname,
+                LocalDateTime.of(today.getYear(), today.getMonth(), Integer.parseInt(dayOfMonth),
+                        time.getHour(), time.getMinute()), today);
+
+        outputView.printChangeAttendance(originalAttendance, changeAttendance);
+    }
+
+    private void runShowCrewAttendance(AttendanceBook attendanceBook) {
+        String nickname = inputView.readShowCrewAttendanceNickname();
+    }
+
+    private void runShowRiskOfExpelledCrews(AttendanceBook attendanceBook) {
+
     }
 }

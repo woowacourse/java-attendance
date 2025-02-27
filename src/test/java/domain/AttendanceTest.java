@@ -23,17 +23,6 @@ public class AttendanceTest {
         Assertions.assertThrows(IllegalArgumentException.class, () -> new Attendance(holiday));
     }
 
-    @DisplayName("캠퍼스가 연 시간이 아니라면 예외를 발생시킨다.")
-    @Test
-    void notOpenTimeTest() {
-        LocalDateTime notOpenTime = LocalDateTime.of(2024, 12, 3, 7, 0);
-        LocalDateTime closedTime = LocalDateTime.of(2024, 12, 3, 23, 30);
-        Assertions.assertAll(
-                () -> Assertions.assertThrows(IllegalArgumentException.class, () -> new Attendance(notOpenTime)),
-                () -> Assertions.assertThrows(IllegalArgumentException.class, () -> new Attendance(closedTime))
-        );
-    }
-
     @DisplayName("기준 시간에서 5분 이하는 출석이다")
     @ParameterizedTest
     @ValueSource(ints = {0, 4, 5})

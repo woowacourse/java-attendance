@@ -19,9 +19,9 @@ public class AttendanceBook {
         return attendances.addAttendance(dateTime);
     }
 
-    public void updateAttendanceForCrew(String nickname, LocalDateTime dateTime, LocalDateTime today) {
+    public Attendance updateAttendanceForCrew(String nickname, LocalDateTime dateTime, LocalDateTime today) {
         Attendances attendances = getCrewRecords(nickname);
-        attendances.updateAttendance(dateTime, today.getDayOfMonth());
+        return attendances.updateAttendance(dateTime, today.getDayOfMonth());
     }
 
     public List<Attendance> getPreviousCrewRecords(String nickname, LocalDateTime today) {
@@ -41,6 +41,11 @@ public class AttendanceBook {
                 .filter(entry -> entry.getValue().calculateCrewStatus(weekDaysCount) != CrewStatus.NORMAL)
                 .map(Entry::getKey)
                 .toList();
+    }
+
+    public Attendance getAttendanceByNicknameAndDate (String nickname, int day) {
+        Attendances attendances = getCrewRecords(nickname);
+        return attendances.getAttendanceByDay(day);
     }
 
     private int calculateWeekDaysCount(LocalDateTime today) {
