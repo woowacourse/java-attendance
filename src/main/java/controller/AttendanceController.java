@@ -7,7 +7,6 @@ import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import model.Attendance;
@@ -62,7 +61,7 @@ public class AttendanceController {
             return true;
         }
         if (functionChoice.equals("4")) {
-            doPenaltyService(attendanceBook, crews);
+            doPenaltyService(attendanceBook);
             return true;
         }
         //TODO: 메뉴 선택 enum화
@@ -130,11 +129,11 @@ public class AttendanceController {
 
             LocalDate now = DateGenerator.now();
             AttendanceHistory attendanceHistory = attendanceBook.findByCrew(crew);
-            AttendanceStatistic attendanceStatistic = new AttendanceStatistic(attendanceHistory);
 
             List<Attendance> attendanceHistories = attendanceHistory.sliceByDateUntilBefore(now);
-            Map<AttendanceStatus, Integer> attendanceStatusHistory = attendanceStatistic.calculateStatusCountUntilBefore(now);
-            PenaltyStatus penaltyStatus = attendanceStatistic.calculatePenaltyUntilBefore(now);
+            AttendanceStatistic attendanceStatistic = AttendanceStatistic.from(attendanceHistories);
+            Map<AttendanceStatus, Integer> attendanceStatusHistory = attendanceStatistic.getAttendanceCount();
+            PenaltyStatus penaltyStatus = attendanceStatistic.getPenaltyStatus();
 
             outputView.printAttendanceHistories(attendanceHistories, name);
             outputView.printAttendanceStatusHistory(attendanceStatusHistory);
@@ -144,17 +143,11 @@ public class AttendanceController {
         }
     }
 
-    private void doPenaltyService(AttendanceBook attendanceBook, Crews crews) {
+    private void doPenaltyService(AttendanceBook attendanceBook) {
         LocalDate now = DateGenerator.now(); //TODO : 컨트롤러 생성자
-        AttendanceStatistics attendanceStatistics = attendanceBook.findAllStatistics();
-        List<AttendanceStatistic> penaltyTargets = attendanceStatistics.findPenaltyTargets(now);
-        Map<Crew, AttendanceStatistic> penaltyTargetCrews = new HashMap<>();
-        penaltyTargets.stream()
-                .forEach(statistic -> {
-                    Crew crew = attendanceBook.findCrewByAttendance(statistic.getAttendanceHistory());
-                    penaltyTargetCrews.put(crew, statistic);
-                });
-
-        outputView.printPenaltyResult(penaltyTargetCrews);
+        Map<Crew, List<Attendance>> attendanceHistories = attendanceBook.findAllStatisticsUntilBefore(now);
+        AttendanceStatistics attendanceStatistics = AttendanceStatistics.from(attendanceHistories);
+        Map<Crew, AttendanceStatistic> penaltyTargets = attendanceStatistics.findPenaltyTargets();
+        outputView.printPenaltyResult(penaltyTargets);
     }
 }

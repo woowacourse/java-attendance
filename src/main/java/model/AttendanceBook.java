@@ -1,6 +1,7 @@
 package model;
 
 import exception.CrewNotExistException;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
@@ -41,11 +42,14 @@ public class AttendanceBook {
                 .orElseThrow(CrewNotExistException::new);
     }
 
-    public AttendanceStatistics findAllStatistics() {
-        List<AttendanceStatistic> statistics = attendances.keySet().stream()
-                .map(crew -> new AttendanceStatistic(attendances.get(crew)))
-                .toList();
-        return new AttendanceStatistics(statistics);
+    public Map<Crew, List<Attendance>> findAllStatisticsUntilBefore(LocalDate limitDate) {
+        Map<Crew, List<Attendance>> statistics = new HashMap<>();
+        attendances.keySet().forEach(
+                crew -> {
+                    List<Attendance> slicedAttendances = attendances.get(crew).sliceByDateUntilBefore(limitDate);
+                    statistics.put(crew, slicedAttendances);
+                });
+        return statistics;
     }
 
 //    public static Map<Crew, AttendanceHistory> initializeAttendanceOf(Crews crews) {
