@@ -24,6 +24,13 @@ public class CheckInHistory {
         return history.size();
     }
 
+    public void modifyCheckInTime(CheckInDate checkInDate, CheckInTime checkInTime) {
+        if (history.containsKey(checkInDate) && history.get(checkInDate).equals(checkInTime)) {
+            throw new AppException("이미 같은 시간에 출석 기록이 있습니다.");
+        }
+        history.put(checkInDate, checkInTime);
+    }
+
     private void validateAlreadyCheckIn(CheckInDate checkInDate) {
         if (history.containsKey(checkInDate)) {
             throw new AppException("이미 출석 기록이 있습니다. 수정 기능을 이용해 주세요.");

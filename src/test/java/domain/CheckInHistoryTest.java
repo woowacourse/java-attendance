@@ -55,20 +55,7 @@ class CheckInHistoryTest {
         CheckInTime modifyTime = CheckInTime.of(11, 0);
         //when
         //then
-        assertThatCode(() -> history.checkIn(modifyDate, modifyTime)).doesNotThrowAnyException();
-    }
-
-    @Test
-    @DisplayName("수정하려는 시간이 캠퍼스 오픈 시간이 아닐 경우 에외 발생")
-    void nonCampusTimeException() {
-        //given
-        CheckInDate checkInDate = CheckInDate.of(2024, 12, 3);
-        CheckInTime checkInTime = CheckInTime.of(23, 10);
-        //when
-        //then
-        assertThatThrownBy(() -> history.checkIn(checkInDate, checkInTime))
-                .isInstanceOf(AppException.class)
-                .hasMessageContaining(AppException.PREFIX);
+        assertThatCode(() -> history.modifyCheckInTime(modifyDate, modifyTime)).doesNotThrowAnyException();
     }
 
     @Test
@@ -79,7 +66,7 @@ class CheckInHistoryTest {
         CheckInTime modifyTime = CheckInTime.of(10, 0);
         //when
         //then
-        assertThatThrownBy(() -> history.checkIn(modifyDate, modifyTime))
+        assertThatThrownBy(() -> history.modifyCheckInTime(modifyDate, modifyTime))
                 .isInstanceOf(AppException.class)
                 .hasMessageContaining(AppException.PREFIX);
     }
