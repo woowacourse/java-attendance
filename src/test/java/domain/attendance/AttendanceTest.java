@@ -8,11 +8,16 @@ import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
 import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
 import static domain.attendance.TimeTable.*;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 class AttendanceTest {
     Attendance attendance;
@@ -37,6 +42,18 @@ class AttendanceTest {
         void addAllLocalDate(){
             IntStream.range(1,28)
                     .forEach(day -> attendance.addAttendance(LocalDateTime.of(2025,2,day,10,0)));
+
+            IntStream.range(1,28)
+                    .filter(day -> !isAttendanceDay(LocalDate.of(2025,2,day)))
+                    .forEach(day -> assertThatThrownBy(
+                            () -> attendance.findByLocalDate(LocalDate.of(2025,2,day))).isInstanceOf(IllegalArgumentException.class));
+        }
+
+        @DisplayName("캠퍼스 운영시간이 아닌 경우 입력되지 않음")
+        @Test
+        void isNotCampusOperatingTime(){
+            IntStream.range(1,28)
+                    .forEach(day -> attendance.addAttendance(LocalDateTime.of(2025,2,day,0,0)));
 
             IntStream.range(1,28)
                     .filter(day -> !isAttendanceDay(LocalDate.of(2025,2,day)))
@@ -129,6 +146,49 @@ class AttendanceTest {
             LocalDateTime missingDate = LocalDateTime.of(2025,2,9,13,0);
 
             assertThatThrownBy(() -> attendance.editAttendance(missingDate)).isInstanceOf(IllegalArgumentException.class);
+        }
+    }
+
+    @Nested
+    class getStatusCountTest{
+        @BeforeEach
+        void setUpAttendanceDate(){
+            List<LocalDateTime> attendanceList = List.of(
+                    LocalDateTime.of(2025,2,3,10,3),
+                    LocalDateTime.of(2025,2,6,10,3),
+                    LocalDateTime.of(2025,2,10,12,3),
+                    LocalDateTime.of(2025,2,18,10,3),
+                    LocalDateTime.of(2025,2,25,10,4)
+            );
+
+            List<LocalDateTime> tardyList = List.of(
+                    LocalDateTime.of(2025,2,4,10,6),
+                    LocalDateTime.of(2025,2,26,10,10)
+            );
+
+            List<LocalDateTime> absenceList = List.of(
+                    LocalDateTime.of(2025,2,5,15,3),
+                    LocalDateTime.of(2025,2,7,15,3),
+                    LocalDateTime.of(2025,2,12,14,3),
+                    LocalDateTime.of(2025,2,13,15,3),
+                    LocalDateTime.of(2025,2,20,15,3),
+                    LocalDateTime.of(2025,2,24,16,4)
+            );
+
+            attendanceList.forEach(date -> attendance.addAttendance(date));
+            tardyList.forEach(date -> attendance.addAttendance(date));
+            absenceList.forEach(date -> attendance.addAttendance(date));
+        }
+
+        @DisplayName("출석 지각 결석 수 확인")
+        @Test
+        void statusCountCheck(){
+            assertAll(
+                    () -> assertThat(attendance.getAttendanceCount()).isEqualTo(5),
+                    () -> assertThat(attendance.getTardyCount()).isEqualTo(2),
+                    () -> assertThat(attendance.getAbsenceCount()).isEqualTo(6),
+                    () -> assertThat(attendance.getAbsenceIncludingTardyCount()).isEqualTo(6)
+            );
         }
     }
 }

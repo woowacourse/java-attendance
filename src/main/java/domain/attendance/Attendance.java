@@ -2,6 +2,7 @@ package domain.attendance;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -27,7 +28,8 @@ public class Attendance {
         if(has(attendanceDate)){
             throw new IllegalArgumentException("[ERROR] 출석 기록이 이미 존재합니다.");
         }
-        if(isAttendanceDay(LocalDate.from(attendanceDateTime))){
+        if(isAttendanceDay(LocalDate.from(attendanceDateTime)) &&
+                isOnCampusOperatingTime(LocalTime.of(attendanceDateTime.getHour(),attendanceDateTime.getMinute()))){
             attendanceDates.put(attendanceDate,new AttendanceDate(attendanceDateTime));
         }
     }
@@ -41,6 +43,28 @@ public class Attendance {
 
     public boolean has(LocalDate findDate){
         return attendanceDates.containsKey(findDate);
+    }
+
+    public int getAttendanceCount(){
+        return Math.toIntExact(attendanceDates.entrySet().stream()
+                .filter(localDateAttendanceDateEntry -> localDateAttendanceDateEntry.getValue().isAttendance())
+                .count());
+    }
+
+    public int getTardyCount(){
+        return Math.toIntExact(attendanceDates.entrySet().stream()
+                .filter(localDateAttendanceDateEntry -> localDateAttendanceDateEntry.getValue().isTardy())
+                .count());
+    }
+
+    public int getAbsenceCount(){
+        return Math.toIntExact(attendanceDates.entrySet().stream()
+                .filter(localDateAttendanceDateEntry -> localDateAttendanceDateEntry.getValue().isAbsence())
+                .count());
+    }
+
+    public int getAbsenceIncludingTardyCount() {
+        return getAbsenceCount() + getTardyCount() / 3;
     }
 
     @Override
