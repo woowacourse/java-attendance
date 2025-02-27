@@ -4,6 +4,7 @@ import attendance.domain.AttendanceStatus;
 import attendance.dto.AttendanceHistoryResponse;
 import attendance.dto.AttendanceResponse;
 import attendance.dto.ModifyAttendanceResponse;
+import attendance.dto.RiskCrewsResponse;
 import attendance.util.DateTimeUtil;
 
 public class OutputView {
@@ -53,6 +54,20 @@ public class OutputView {
         if (response.risk() != null) {
             System.out.printf("%n%s 대상자입니다.%n%n", response.risk().getName());
         }
+    }
+
+    public static void riskCrewsResponse(RiskCrewsResponse response) {
+        System.out.printf("%n제적 위험자 조회 결과%n");
+        response.crews().stream()
+            .sorted()
+            .forEach(crew ->
+            System.out.printf("- %s: 결석 %d회, 지각 %d회 (%s)%n",
+                crew.name(),
+                crew.statistics().get(AttendanceStatus.ABSENCE),
+                crew.statistics().get(AttendanceStatus.LATENESS),
+                crew.risk().getName()
+            ));
+        System.out.println();
     }
 
     public static void exception(Exception e) {

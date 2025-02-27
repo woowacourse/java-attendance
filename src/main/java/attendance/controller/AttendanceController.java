@@ -47,16 +47,17 @@ public class AttendanceController {
 
     private void modifyAttendance() {
         OutputView.modifyAttendanceResponse(
-        service.modifyAttendance(InputView.modifyAttendance(DateTimeUtil.nowDate())));
+            service.modifyAttendance(InputView.modifyAttendance(DateTimeUtil.nowDate())));
     }
 
     private void attendanceHistory() {
         OutputView.attendanceHistoryResponse(
-        service.attendanceHistory(DateTimeUtil.nowDate(), InputView.attendanceHisotory()));
+            service.attendanceHistory(DateTimeUtil.nowDate(), InputView.attendanceHisotory()));
     }
 
     private void riskCrews() {
-
+        OutputView.riskCrewsResponse(
+            service.riskCrews(DateTimeUtil.nowDate()));
     }
 
     private void process(Runnable action) {

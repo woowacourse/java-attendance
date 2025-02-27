@@ -1,6 +1,7 @@
 package attendance.service;
 
 import java.time.LocalDate;
+import java.util.List;
 
 import attendance.domain.Crew;
 import attendance.domain.Crews;
@@ -10,6 +11,7 @@ import attendance.dto.AttendanceRequest;
 import attendance.dto.AttendanceResponse;
 import attendance.dto.ModifyAttendanceRequest;
 import attendance.dto.ModifyAttendanceResponse;
+import attendance.dto.RiskCrewsResponse;
 
 public class AttendanceService {
 
@@ -36,8 +38,14 @@ public class AttendanceService {
         );
     }
 
+    // TODO: 매개변수명에서 date들 전부 today로 변경
     public AttendanceHistoryResponse attendanceHistory(LocalDate date, AttendanceHistoryRequest request) {
         Crew crew = crews.get(request.name());
         return AttendanceHistoryResponse.of(date, crew);
+    }
+
+    public RiskCrewsResponse riskCrews(LocalDate date) {
+        List<Crew> riskCrews = crews.getRiskCrews(date);
+        return RiskCrewsResponse.of(riskCrews, date);
     }
 }
