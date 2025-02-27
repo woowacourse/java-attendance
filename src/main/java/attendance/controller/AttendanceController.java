@@ -1,7 +1,8 @@
 package attendance.controller;
 
+import attendance.dto.AttendanceCheckDto;
 import attendance.dto.AttendanceEditDto;
-import attendance.dto.AttendanceRemarkDto;
+import attendance.dto.AttendanceInfoDto;
 import attendance.service.AttendanceService;
 import attendance.view.InputView;
 import attendance.view.OutputView;
@@ -41,10 +42,13 @@ public class AttendanceController {
         if (option.equals(AttendanceOption.EDIT)) {
             editAttendance();
         }
+        if(option.equals(AttendanceOption.CHECK)) {
+            checkAttendance(today);
+        }
     }
 
     private void remarkAttendance(LocalDate today) {
-        String name = inputView.readRemarkAttendanceName();
+        String name = inputView.readAttendanceName();
         attendanceService.validateNameExists(name);
         if (attendanceService.hasAttendance(name, today)) {
             outputView.printUseEdit();
@@ -52,8 +56,8 @@ public class AttendanceController {
         }
 
         LocalTime attendanceTime = inputView.readRemarkAttendanceTime();
-        AttendanceRemarkDto attendanceRemarkDto = attendanceService.remarkAttendance(name, today, attendanceTime);
-        outputView.printRemarkAttendanceResult(attendanceRemarkDto);
+        AttendanceInfoDto attendanceInfoDto = attendanceService.remarkAttendance(name, today, attendanceTime);
+        outputView.printRemarkAttendanceResult(attendanceInfoDto);
     }
 
     private void editAttendance() {
@@ -64,5 +68,13 @@ public class AttendanceController {
         LocalTime editAttendanceTime = inputView.readEditAttendanceTime();
         AttendanceEditDto dto = attendanceService.editAttendance(name, editAttendanceDate, editAttendanceTime);
         outputView.printEditAttendanceResult(dto);
+    }
+
+    private void checkAttendance(LocalDate today) {
+        String name = inputView.readAttendanceName();
+        attendanceService.validateNameExists(name);
+
+        AttendanceCheckDto dto = attendanceService.checkAttendance(name, today);
+        outputView.printCheckAttendanceResult(dto);
     }
 }

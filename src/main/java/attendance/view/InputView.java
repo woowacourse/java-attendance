@@ -28,7 +28,7 @@ public class InputView {
         return AttendanceOption.find(input);
     }
 
-    public String readRemarkAttendanceName() {
+    public String readAttendanceName() {
         System.out.println(REMARK_ATTENDANCE_NAME_MESSAGE);
         return scanner.nextLine();
     }

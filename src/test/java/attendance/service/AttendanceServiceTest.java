@@ -2,14 +2,18 @@ package attendance.service;
 
 import attendance.domain.Attendance;
 import attendance.domain.AttendanceFileParser;
+import attendance.domain.AttendancePenalty;
 import attendance.domain.AttendanceStatus;
 import attendance.domain.Attendances;
+import attendance.dto.AttendanceCheckDto;
 import attendance.dto.AttendanceEditDto;
-import attendance.dto.AttendanceRemarkDto;
+import attendance.dto.AttendanceInfoDto;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.List;
+import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -45,10 +49,10 @@ public class AttendanceServiceTest {
         LocalTime attendanceTime = LocalTime.of(12, 50);
 
         // when
-        AttendanceRemarkDto dto = service.remarkAttendance("빙봉", attendanceDate, attendanceTime);
+        AttendanceInfoDto dto = service.remarkAttendance("빙봉", attendanceDate, attendanceTime);
 
         // then
-        assertThat(dto).isEqualTo(AttendanceRemarkDto.of(attendanceDate, attendanceTime, AttendanceStatus.PRESENCE));
+        assertThat(dto).isEqualTo(AttendanceInfoDto.of(attendanceDate, attendanceTime, AttendanceStatus.PRESENCE));
     }
 
     @Test
@@ -127,5 +131,33 @@ public class AttendanceServiceTest {
         assertThatThrownBy(() -> service.remarkAttendance("빙봉", editDate, editTime))
             .isInstanceOf(IllegalArgumentException.class)
             .hasMessage("[ERROR] 캠퍼스 운영시간이 아닙니다.");
+    }
+
+    @Test
+    void 출석_조회시_dto를_반환한다() {
+        // given
+        AttendanceService service = new AttendanceService(
+            new AttendanceFileParser("src/test/java/resources/testAttendances.csv")
+        );
+        LocalDate second = LocalDate.of(2024, 12, 2);
+        LocalDate today = LocalDate.of(2024, 12, 3);
+
+        // when
+        AttendanceCheckDto dto = service.checkAttendance("빙티", today);
+
+        // then
+        AttendanceCheckDto expectedDto = AttendanceCheckDto.of("빙티",
+            List.of(
+                AttendanceInfoDto.of(second, null, AttendanceStatus.ABSENCE)
+            ),
+            Map.of(
+                AttendanceStatus.LATE, 0,
+                AttendanceStatus.PRESENCE, 0,
+                AttendanceStatus.ABSENCE, 1
+            ),
+            AttendancePenalty.NONE
+        );
+
+        assertThat(dto).isEqualTo(expectedDto);
     }
 }

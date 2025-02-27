@@ -1,16 +1,20 @@
 package attendance.service;
 
 import attendance.domain.Attendance;
+import attendance.domain.AttendancePenalty;
 import attendance.domain.AttendanceReader;
 import attendance.domain.AttendanceStatus;
 import attendance.domain.Attendances;
+import attendance.domain.PenaltyCount;
+import attendance.dto.AttendanceCheckDto;
 import attendance.dto.AttendanceEditDto;
 import attendance.dto.AttendanceFileDto;
-import attendance.dto.AttendanceRemarkDto;
+import attendance.dto.AttendanceInfoDto;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 public class AttendanceService {
@@ -41,10 +45,10 @@ public class AttendanceService {
         return attendances.hasAttendance(name, attendanceDate);
     }
 
-    public AttendanceRemarkDto remarkAttendance(String name, LocalDate attendanceDate, LocalTime attendanceTime) {
+    public AttendanceInfoDto remarkAttendance(String name, LocalDate attendanceDate, LocalTime attendanceTime) {
         attendances.addAttendance(name, new Attendance(attendanceDate, attendanceTime));
         AttendanceStatus attendanceStatus = AttendanceStatus.findAttendanceStatus(attendanceDate, attendanceTime);
-        return AttendanceRemarkDto.of(attendanceDate, attendanceTime, attendanceStatus);
+        return AttendanceInfoDto.of(attendanceDate, attendanceTime, attendanceStatus);
     }
 
     public AttendanceEditDto editAttendance(String name, LocalDate editAttendanceDate, LocalTime editAttendanceTime) {
@@ -53,5 +57,23 @@ public class AttendanceService {
         AttendanceStatus editStatus = AttendanceStatus.findAttendanceStatus(editAttendanceDate, editAttendanceTime);
         return AttendanceEditDto.of(
             editAttendanceDate, beforeEditTime.orElse(null), beforeEditStatus, editAttendanceTime, editStatus);
+    }
+
+    public AttendanceCheckDto checkAttendance(String name, LocalDate today) {
+        List<Attendance> attendanceUntilYesterday = attendances.findAttendanceUntilYesterday(name, today);
+        Map<AttendanceStatus, Integer> attendanceStatusCount = attendances.countAttendanceStatus(name, today);
+        PenaltyCount penaltyCount = new PenaltyCount(attendanceStatusCount);
+        AttendancePenalty attendancePenalty = penaltyCount.findAttendancePenalty();
+
+        List<AttendanceInfoDto> attendanceInfoDtos = convertToAttendanceInfo(attendanceUntilYesterday);
+        return AttendanceCheckDto.of(name, attendanceInfoDtos, attendanceStatusCount, attendancePenalty);
+    }
+
+    private static List<AttendanceInfoDto> convertToAttendanceInfo(List<Attendance> attendanceUntilYesterday) {
+        return attendanceUntilYesterday.stream()
+            .map(attendance -> AttendanceInfoDto.of(
+                attendance.getAttendanceDate(), attendance.getAttendanceTime(),
+                AttendanceStatus.findAttendanceStatus(attendance.getAttendanceDate(), attendance.getAttendanceTime())))
+            .toList();
     }
 }
