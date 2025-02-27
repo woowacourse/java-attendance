@@ -26,8 +26,7 @@ public class AttendanceBookTest {
     void 닉네임과_시간을_입력하면_출석한다() {
         List<LocalDateTime> dateTimes = List.of(LocalDateTime.of(2024, 12, 13, 9, 59));
         AttendanceBook attendanceBook = generateAttendanceBook("훌라", dateTimes);
-        LocalDateTime dateTime = LocalDateTime.of(2024, 12, 16, 12, 59);
-        Attendance attendance = Attendance.from(dateTime);
+        Attendance attendance = Attendance.from(LocalDateTime.of(2024, 12, 16, 12, 59));
 
         assertThatCode(() -> attendanceBook.attend("훌라", attendance))
                 .doesNotThrowAnyException();
@@ -74,6 +73,7 @@ public class AttendanceBookTest {
     void 닉네임과_날짜를_이용해_출석기록을_가져온다() {
         List<LocalDateTime> attendances = List.of(LocalDateTime.of(2024, 12, 13, 9, 59));
         AttendanceBook attendanceBook = generateAttendanceBook("훌라", attendances);
+
         final var result = attendanceBook.findByNicknameAndDate("훌라", LocalDateTime.of(2024, 12, 13, 10, 6));
 
         assertThat(result).isEqualTo(Attendance.from(LocalDateTime.of(2024, 12, 13, 9, 59)));
@@ -83,6 +83,7 @@ public class AttendanceBookTest {
     void 닉네임과_날짜를_이용해_출석기록을_가져온다2() {
         List<LocalDateTime> attendances = List.of(LocalDateTime.of(2024, 12, 12, 9, 31));
         AttendanceBook attendanceBook = generateAttendanceBook("훌라", attendances);
+
         final var result = attendanceBook.findByNicknameAndDate("훌라", LocalDateTime.of(2024, 12, 12, 10, 4));
 
         assertThat(result).isEqualTo(Attendance.from(LocalDateTime.of(2024, 12, 12, 9, 31)));
@@ -102,6 +103,7 @@ public class AttendanceBookTest {
                         "모루", generateAttendances(attendances)
                 )
         );
+        
         final var result = attendanceBook.findPenaltyCrews();
 
         assertThat(result.keySet()).hasSize(2);
