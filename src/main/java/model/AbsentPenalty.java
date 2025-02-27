@@ -1,3 +1,5 @@
+package model;
+
 public enum AbsentPenalty {
     WARNING(2),
     INTERVIEW(3),
