@@ -60,9 +60,17 @@ public class CheckAttendanceTest {
         LocalDateTime weekend = LocalDateTime.of(2024, 12, 21, 10, 0);
         LocalDateTime christmas = LocalDateTime.of(2024, 12, 25, 10, 0);
 
-        assertThat(AttendancePolicy.iOperatingDay(notHoliday)).isFalse;
-        assertThat(AttendancePolicy.iOperatingDay(weekend)).isTrue;
-        assertThat(AttendancePolicy.iOperatingDay(christmas)).isTrue;
+        assertThat(AttendancePolicy.isOperatingDay(notHoliday)).isFalse();
+        assertThat(AttendancePolicy.isOperatingDay(weekend)).isTrue();
+        assertThat(AttendancePolicy.isOperatingDay(christmas)).isTrue();
+    }
+
+    @Test
+    @DisplayName("월요일에 따라 다른 출석 확인 처리")
+    public void checkMondayAttendanceStatus() {
+        LocalDateTime monday = LocalDateTime.of(2024, 12, 16, 13, 0);
+        AttendanceStatus attendanceStatus = AttendancePolicy.checkAttendanceStatus(monday);
+        assertThat(attendanceStatus).isEqualTo(AttendanceStatus.ATTEND);
     }
 
 
