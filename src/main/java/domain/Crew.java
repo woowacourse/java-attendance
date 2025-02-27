@@ -27,6 +27,10 @@ public class Crew {
         return timeLogs.containsKey(date);
     }
 
+    public String getName() {
+        return name;
+    }
+
     public Map<LocalDate, LocalTime> getTimeLogs() {
         return timeLogs;
     }

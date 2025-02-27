@@ -6,6 +6,8 @@ import static constants.AttendanceCriteria.OPERATING_START;
 import dto.CheckAttendanceRecordResponse;
 import dto.CheckAttendanceResponse;
 import dto.ModifyAttendanceResponse;
+import dto.PenaltyCrewResponse;
+import dto.PenaltyResponse;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
@@ -100,5 +102,18 @@ public class AttendanceBook {
                         entry.getValue(),
                         AttendanceStatus.judgeAttendanceStatusByDateAndTime(entry.getKey(), entry.getValue())))
                 .collect(Collectors.toList());
+    }
+
+    public List<PenaltyCrewResponse> checkPenaltyCrew() {
+        List<PenaltyCrewResponse> responses = new ArrayList<>();
+        for (Crew crew : crews) {
+            PenaltyResponse response = PenaltyStatus.judgeCrewAttendanceRecord(checkAttendanceRecord(crew.getName()));
+            if (!response.penalty().isEmpty()) { // 패널티가 존재하는 경우
+                responses.add(new PenaltyCrewResponse(crew.getName(), response.lateCount(), response.absentCount(),
+                        response.penalty()));
+            }
+        }
+
+        return responses;
     }
 }
