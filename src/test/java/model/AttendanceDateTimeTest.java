@@ -6,6 +6,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import attendance.model.AttendanceDate;
 import attendance.model.AttendanceDateTime;
 import java.time.LocalTime;
+import org.assertj.core.api.SoftAssertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -83,5 +84,24 @@ class AttendanceDateTimeTest {
                 new AttendanceDate(2024, 12, 10),
                 LocalTime.of(23, 1)
         )).isInstanceOf(IllegalArgumentException.class);
+    }
+
+    @Test
+    void 출결일시를_깊은복사_한다() {
+        // given
+        AttendanceDateTime attendanceDateTime = new AttendanceDateTime(
+                new AttendanceDate(2024, 12, 10),
+                LocalTime.of(10, 5)
+        );
+
+        // when
+        AttendanceDateTime cloned = attendanceDateTime.copy();
+
+        // then
+
+        SoftAssertions softly = new SoftAssertions();
+        softly.assertThat(attendanceDateTime).isNotSameAs(cloned);
+        softly.assertThat(attendanceDateTime).isEqualTo(cloned);
+        softly.assertAll();
     }
 }

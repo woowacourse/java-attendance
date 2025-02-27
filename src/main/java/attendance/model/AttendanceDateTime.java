@@ -54,4 +54,8 @@ public class AttendanceDateTime {
                     ));
         }
     }
+
+    public AttendanceDateTime copy() {
+        return null;
+    }
 }
