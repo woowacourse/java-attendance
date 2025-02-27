@@ -34,6 +34,19 @@ public class AttendanceTimeTest {
         Assertions.assertThatThrownBy(() -> new AttendanceTime(localdate, hour, minute))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("[ERROR] 캠퍼스 운영 시간이 아닙니다.");
+    }
 
+    @ParameterizedTest
+    @CsvSource(value = {
+            "8,0",
+            "23,0"
+    })
+    void 입력_받은_시간이_유효한_시간이면_출석_시간이_생성된다(final int hour, final int minute) {
+
+        // given
+        final LocalDate localdate = LocalDate.of(2025, 2, 27);
+
+        // when & then
+        org.junit.jupiter.api.Assertions.assertDoesNotThrow(() -> new AttendanceTime(localdate, hour, minute));
     }
 }
