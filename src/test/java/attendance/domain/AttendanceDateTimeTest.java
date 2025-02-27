@@ -110,4 +110,19 @@ public class AttendanceDateTimeTest {
         assertThat(attendanceDateTime.isThisDayInCurrentMonth(day))
                 .isEqualTo(expected);
     }
+
+    @Test
+    void 변경할_시간을_주면_해당_시간으로_출석시간을_바꿔준다() {
+        // Given
+        LocalDateTime originalDateTime = Year.of(2025).atMonth(2).atDay(27).atTime(13, 30);
+        AttendanceDateTime originalAttendanceDateTime = new AttendanceDateTime(originalDateTime);
+        LocalTime newTime = LocalTime.of(10, 30);
+        AttendanceDateTime expected = new AttendanceDateTime(Year.of(2025).atMonth(2).atDay(27).atTime(10, 30));
+
+        // When
+        AttendanceDateTime newAttendanceDateTime = originalAttendanceDateTime.changeTime(newTime);
+
+        // Then
+        assertThat(newAttendanceDateTime).isEqualTo(expected);
+    }
 }
