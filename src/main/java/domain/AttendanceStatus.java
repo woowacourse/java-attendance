@@ -3,18 +3,12 @@ package domain;
 import java.time.LocalTime;
 
 public enum AttendanceStatus {
-    PRESENT("출석"),
-    LATE("지각"),
-    ABSENT("결석");
+    PRESENT,
+    LATE,
+    ABSENT;
 
     private static final int LATE_CUTOFF = 30;
     private static final int ATTENDANCE_CUTOFF = 5;
-
-    private final String displayName;
-
-    AttendanceStatus(final String displayName) {
-        this.displayName = displayName;
-    }
 
     public static AttendanceStatus findByAttendanceDateTime(final AttendanceDateTime attendanceDateTime,
                                                             final AttendanceTimePolicy attendanceTimePolicy) {
