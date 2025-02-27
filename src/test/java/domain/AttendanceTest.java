@@ -110,16 +110,46 @@ public class AttendanceTest {
                 .hasMessageContaining("[ERROR] 이미 출석을 확인하였습니다. 필요한 경우 수정 기능을 이용해 주세요.");
     }
 
-    @Test
+    @Nested
     @DisplayName("1.4 등교일이 아닐 경우(주말, 공휴일) 예외를 발생시킬 수 있다.")
-    void test() {
-        // given
-        Attendance attendance = new Attendance();
-        Crew crew = new Crew("노랑");
-        LocalDateTime dateTime = LocalDateTime.of(2025, 3, 1, 10, 0);
-        // when & then
-        assertThatThrownBy(() -> attendance.checkAttendance(crew, dateTime))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining("[ERROR] 3월 1일 토요일은 등교일이 아닙니다.");
+    public class ValidateDayOffTest {
+        @Test
+        @DisplayName("토요일에 등교할 경우 예외를 발생시킬 수 있다.")
+        void test1() {
+            // given
+            Attendance attendance = new Attendance();
+            Crew crew = new Crew("노랑");
+            LocalDateTime dateTime = LocalDateTime.of(2025, 3, 1, 10, 0);
+            // when & then
+            assertThatThrownBy(() -> attendance.checkAttendance(crew, dateTime))
+                    .isInstanceOf(IllegalArgumentException.class)
+                    .hasMessageContaining("[ERROR] 3월 1일 토요일은 등교일이 아닙니다.");
+        }
+
+        @Test
+        @DisplayName("일요일에 등교할 경우 예외를 발생시킬 수 있다.")
+        void test2() {
+            // given
+            Attendance attendance = new Attendance();
+            Crew crew = new Crew("노랑");
+            LocalDateTime dateTime = LocalDateTime.of(2025, 3, 2, 10, 0);
+            // when & then
+            assertThatThrownBy(() -> attendance.checkAttendance(crew, dateTime))
+                    .isInstanceOf(IllegalArgumentException.class)
+                    .hasMessageContaining("[ERROR] 3월 2일 일요일은 등교일이 아닙니다.");
+        }
+
+        @Test
+        @DisplayName("법정공휴일에 등교할 경우 예외를 발생시킬 수 있다.")
+        void test3() {
+            // given
+            Attendance attendance = new Attendance();
+            Crew crew = new Crew("노랑");
+            LocalDateTime dateTime = LocalDateTime.of(2025, 3, 3, 10, 0);
+            // when & then
+            assertThatThrownBy(() -> attendance.checkAttendance(crew, dateTime))
+                    .isInstanceOf(IllegalArgumentException.class)
+                    .hasMessageContaining("[ERROR] 3월 3일 월요일은 등교일이 아닙니다.");
+        }
     }
 }
