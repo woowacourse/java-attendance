@@ -1,5 +1,6 @@
 package attendance;
 
+import org.assertj.core.api.InstanceOfAssertFactories;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -260,5 +261,42 @@ public class CrewsTest {
                 assertThat(result).doesNotContain(new Attendance(LocalDateTime.of(2024, 12, 13, 10, 6)));
             });
         }
+    }
+
+    @Test
+    @DisplayName("전날까지의 출석 기록을 바탕으로 제적 대상자 찾기")
+    void findWarningCrewsTest1() {
+        Crews crews = new Crews();
+        Crew crew = crews.add("모루");
+        crew.addAttendance(LocalDateTime.of(2024, 12, 11, 11, 6));
+        crew.addAttendance(LocalDateTime.of(2024, 12, 12, 11, 6));
+        crew.addAttendance(LocalDateTime.of(2024, 12, 13, 11, 6));
+        crew.addAttendance(LocalDateTime.of(2024, 12, 16, 14, 6));
+        crew.addAttendance(LocalDateTime.of(2024, 12, 17, 11, 6));
+
+        assertThat(crews.findWarningExpulsionCrews()).asInstanceOf(InstanceOfAssertFactories.MAP).containsEntry(AbsenceRule.EXPULSION, List.of(crew));
+    }
+
+    @Test
+    @DisplayName("전날까지의 출석 기록을 바탕으로 면담 대상자 찾기")
+    void findWarningCrewsTest2() {
+        Crews crews = new Crews();
+        Crew crew = crews.add("모루");
+        crew.addAttendance(LocalDateTime.of(2024, 12, 11, 11, 6));
+        crew.addAttendance(LocalDateTime.of(2024, 12, 12, 11, 6));
+        crew.addAttendance(LocalDateTime.of(2024, 12, 13, 11, 6));
+
+        assertThat(crews.findWarningExpulsionCrews()).asInstanceOf(InstanceOfAssertFactories.MAP).containsEntry(AbsenceRule.COUNSELING, List.of(crew));
+    }
+
+    @Test
+    @DisplayName("전날까지의 출석 기록을 바탕으로 경고 대상자 찾기")
+    void findWarningCrewsTest3() {
+        Crews crews = new Crews();
+        Crew crew = crews.add("모루");
+        crew.addAttendance(LocalDateTime.of(2024, 12, 11, 11, 6));
+        crew.addAttendance(LocalDateTime.of(2024, 12, 12, 11, 6));
+
+        assertThat(crews.findWarningExpulsionCrews()).asInstanceOf(InstanceOfAssertFactories.MAP).containsEntry(AbsenceRule.WARNING, List.of(crew));
     }
 }

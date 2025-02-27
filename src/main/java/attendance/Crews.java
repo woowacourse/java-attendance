@@ -4,7 +4,9 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.EnumMap;
 import java.util.List;
+import java.util.Map;
 
 public class Crews {
 
@@ -56,5 +58,17 @@ public class Crews {
                 .filter(crewAttendance -> crewAttendance.isEqualDate(date))
                 .findFirst()
                 .orElseGet(() -> new Attendance(LocalDateTime.of(date, LocalTime.MIN)));
+    }
+
+    public Map<AbsenceRule, List<Crew>> findWarningExpulsionCrews() {
+        Map<AbsenceRule, List<Crew>> warningExpulsionCrews = new EnumMap<>(AbsenceRule.class);
+
+        for (Crew crew : crews) {
+            warningExpulsionCrews
+                    .computeIfAbsent(crew.checkAbsenceRule(), k -> new ArrayList<>())
+                    .add(crew);
+        }
+
+        return warningExpulsionCrews;
     }
 }
