@@ -30,4 +30,12 @@ public class AttendanceBook {
         List<AttendanceDateTime> attendances = this.crewAttedances.get(crew);
         attendances.add(attendanceDateTime);
     }
+
+    public AttendanceDateTime findAttendanceDateTimeByCrewAndDay(final Crew crew, final int day) {
+        List<AttendanceDateTime> attendances = this.crewAttedances.get(crew);
+        return attendances.stream()
+                .filter(attendanceDateTime -> attendanceDateTime.isThisDayInCurrentMonth(day))
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException("해당 일자에 출석하지 않았습니다."));
+    }
 }
