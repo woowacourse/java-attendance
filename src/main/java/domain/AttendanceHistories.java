@@ -11,6 +11,13 @@ import java.util.Map;
 public class AttendanceHistories {
     private final Map<Crew, LocalDate> attendanceHistories = new HashMap<>();
 
+    public AttendanceHistories() {
+    }
+
+    public AttendanceHistories(Map<Crew, LocalDate> attendanceHistoryData) {
+
+    }
+
     public AttendanceStatus addAttendanceHistory(Crew crew, LocalDateTime attendanceDateTime) {
         LocalDate attendanceDate = attendanceDateTime.toLocalDate();
         LocalTime attendanceTime = attendanceDateTime.toLocalTime();

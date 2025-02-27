@@ -7,6 +7,8 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
+import java.util.HashMap;
+import java.util.Map;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -117,6 +119,23 @@ public class AttendanceHistoriesTest {
         assertThatThrownBy(() -> attendanceHistories.addAttendanceHistory(crew, dateTime))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("[ERROR] 이미 출석을 확인하였습니다. 필요한 경우 수정 기능을 이용해 주세요.");
+    }
+
+    @Test
+    @DisplayName("1.3 기록이 없는 닉네임을 입력하면 예외를 발생시킬 수 있다.")
+    void test() {
+        // given
+        Crew crew = new Crew("노랑");
+        Map<Crew, LocalDate> attendanceHistoryData = new HashMap<>();
+        attendanceHistoryData.put(crew, MONDAY_DATE);
+        AttendanceHistories attendanceHistories = new AttendanceHistories(attendanceHistoryData);
+        // when
+        Crew invalidCrew = new Crew("포비");
+        LocalDateTime dateTime = MONDAY_DATE.atTime(10, 0);
+        // then
+        assertThatThrownBy(() -> attendanceHistories.addAttendanceHistory(invalidCrew, dateTime))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("[ERROR] 등록되지 않은 닉네임입니다.");
     }
 
     @Nested
