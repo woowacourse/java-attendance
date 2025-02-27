@@ -2,6 +2,8 @@ package view;
 
 import static util.Constants.ERROR_HEADER;
 
+import java.time.DateTimeException;
+import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
@@ -26,6 +28,15 @@ public class InputValidator {
     public static void validateName(String name) {
         if (name.length() < MIN_NAME_LENGTH || name.length() > MAX_NAME_LENGTH) {
             throw new IllegalArgumentException(ERROR_HEADER + NAME_FORMAT_ERROR);
+        }
+    }
+
+    public static void validateDay(LocalDate today, String day) {
+        try {
+            int dayNumber = Integer.parseInt(day);
+            LocalDate.of(today.getYear(), today.getMonth(), dayNumber);
+        } catch (NumberFormatException | DateTimeException e) {
+            throw new IllegalArgumentException("[ERROR] 유효하지 않은 날짜입니다.");
         }
     }
 }

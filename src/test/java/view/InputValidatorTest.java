@@ -3,6 +3,7 @@ package view;
 import static org.assertj.core.api.Assertions.*;
 import static util.Constants.ERROR_HEADER;
 
+import java.time.LocalDate;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
@@ -31,7 +32,9 @@ public class InputValidatorTest {
     @ParameterizedTest
     @ValueSource(strings = {"", " ", "32", "0"})
     void test3(String invalidDayFormat) {
-        assertThatThrownBy(() -> InputValidator.validateDay(invalidDayFormat))
+        LocalDate today = LocalDate.of(2024, 12, 13);
+
+        assertThatThrownBy(() -> InputValidator.validateDay(today, invalidDayFormat))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining(ERROR_HEADER);
     }
