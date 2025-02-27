@@ -131,4 +131,18 @@ public class AttendanceTimeCheckTest {
         Assertions.assertThat(policy)
                 .isEqualTo(AttendPolicy.ATTEND);
     }
+
+    @DisplayName("월요일은 13시가 한참지나 출석하면 결석이다.")
+    @Test
+    void check10() {
+        // given
+        AttendanceTimeChecker checker = new AttendanceTimeChecker();
+
+        // when
+        AttendPolicy policy = checker.attendanceCheck(LocalDate.of(2024, 12, 2), LocalTime.of(14, 0));
+
+        // then
+        Assertions.assertThat(policy)
+                .isEqualTo(AttendPolicy.ABSENT);
+    }
 }
