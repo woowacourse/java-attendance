@@ -59,6 +59,7 @@ public class InputView {
         int month = today.getMonthValue();
         try {
             int date = scanner.nextInt();
+            scanner.nextLine();
             return LocalDate.of(year, month, date);
         } catch (InputMismatchException e) {
             throw new IllegalArgumentException("유효한 날짜를 입력해주세요.");
