@@ -32,4 +32,17 @@ class AttendanceRiskTest {
         // then
         Assertions.assertThat(result).isEqualTo(AttendanceRisk.INTERVIEW);
     }
+
+    @Test
+    @DisplayName("결석 5회 초과는 제적 대상자이다")
+    void 결석_5회_초과는_제적_대상자이다() {
+        // given
+        int absence = 6;
+
+        // when
+        AttendanceRisk result = AttendanceRisk.evaluate(absence);
+
+        // then
+        Assertions.assertThat(result).isEqualTo(AttendanceRisk.WEEDING);
+    }
 }
