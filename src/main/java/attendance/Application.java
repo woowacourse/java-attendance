@@ -85,7 +85,7 @@ public class Application {
 
     private static void modifyAttendance() {
         LocalDate today = now();
-        String crewNickname = InputView.readModifyCrewNickname();
+        String crewNickname = InputView.readCrewNicknameToModify();
         Crew crew = new Crew(crewNickname);
         boolean isCrewExists = attendanceManager.isCrewExists(crew);
         if (!isCrewExists) {
@@ -98,6 +98,7 @@ public class Application {
             OutputView.printNotOperationDate(attendanceDateToModify);
             return;
         }
+        LocalTime attendanceModificationTime = InputView.readAttendanceModificationTime();
     }
 
     private static void checkAttendanceHistory() {

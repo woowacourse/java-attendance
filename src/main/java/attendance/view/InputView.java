@@ -48,7 +48,7 @@ public class InputView {
         }
     }
 
-    public static String readModifyCrewNickname() {
+    public static String readCrewNicknameToModify() {
         System.out.println("출석을 수정하려는 크루의 닉네임을 입력해 주세요.");
         return input();
     }
@@ -65,6 +65,17 @@ public class InputView {
             throw new IllegalArgumentException("유효한 날짜를 입력해주세요.");
         } catch (DateTimeException e) {
             throw new IllegalArgumentException("유효한 날짜를 입력해주세요.");
+        }
+    }
+
+    public static LocalTime readAttendanceModificationTime() {
+        System.out.println("언제로 변경하겠습니까?");
+        String attendanceTime = input();
+        DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("HH:mm");
+        try {
+            return LocalTime.parse(attendanceTime, dateTimeFormatter);
+        } catch (DateTimeParseException e) {
+            throw new IllegalArgumentException("유효한 시간을 입력해주세요.");
         }
     }
 
