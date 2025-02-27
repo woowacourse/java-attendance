@@ -6,9 +6,12 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 
 public class AttendanceTest {
     private final LocalDate MONDAY_DATE = LocalDate.of(2025, 2, 24);
@@ -115,7 +118,7 @@ public class AttendanceTest {
     public class ValidateDayOffTest {
         @Test
         @DisplayName("토요일에 등교할 경우 예외를 발생시킬 수 있다.")
-        void test1() {
+        void testSaturdayException() {
             // given
             Attendance attendance = new Attendance();
             Crew crew = new Crew("노랑");
@@ -128,7 +131,7 @@ public class AttendanceTest {
 
         @Test
         @DisplayName("일요일에 등교할 경우 예외를 발생시킬 수 있다.")
-        void test2() {
+        void testSundayException() {
             // given
             Attendance attendance = new Attendance();
             Crew crew = new Crew("노랑");
@@ -141,7 +144,7 @@ public class AttendanceTest {
 
         @Test
         @DisplayName("법정공휴일에 등교할 경우 예외를 발생시킬 수 있다.")
-        void test3() {
+        void validateHolidayException() {
             // given
             Attendance attendance = new Attendance();
             Crew crew = new Crew("노랑");
@@ -150,6 +153,21 @@ public class AttendanceTest {
             assertThatThrownBy(() -> attendance.checkAttendance(crew, dateTime))
                     .isInstanceOf(IllegalArgumentException.class)
                     .hasMessageContaining("[ERROR] 3월 3일 월요일은 등교일이 아닙니다.");
+        }
+
+        @ParameterizedTest
+        @DisplayName("방학에 등교할 경우 예외를 발생시킬 수 있다.")
+        @CsvSource({"2025-04-07", "2025-04-14", "2025-08-25"})
+        void validateVacationException(LocalDate date) {
+            // given
+            Attendance attendance = new Attendance();
+            Crew crew = new Crew("노랑");
+            LocalDateTime dateTime = date.atTime(10, 0);
+            // when & then
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("M월 d일 E요일");
+            assertThatThrownBy(() -> attendance.checkAttendance(crew, dateTime))
+                    .isInstanceOf(IllegalArgumentException.class)
+                    .hasMessageContaining(String.format("[ERROR] %s은 등교일이 아닙니다.", formatter.format(date)));
         }
     }
 }
