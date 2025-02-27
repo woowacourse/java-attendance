@@ -27,7 +27,7 @@ public class CheckAttendanceTest {
         // then
         assertThat(attendanceStatus).isEqualTo(AttendanceStatus.ATTEND);
         assertThat(lateStatus).isEqualTo(AttendanceStatus.LATE);
-        assertThat(lateStatus).isEqualTo(AttendanceStatus.ABSENT);
+        assertThat(absentStatus).isEqualTo(AttendanceStatus.ABSENT);
     }
     //운영시간 외 처리
 
