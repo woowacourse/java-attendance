@@ -1,8 +1,7 @@
-package attendance.model;
+package attendance.domain;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import attendance.domain.model.WarningLevel;
 import java.util.stream.Stream;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

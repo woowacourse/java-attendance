@@ -1,6 +1,6 @@
 package attendance.controller.command;
 
-import attendance.domain.model.CrewHistories;
+import attendance.domain.CrewHistories;
 
 public interface Command {
 

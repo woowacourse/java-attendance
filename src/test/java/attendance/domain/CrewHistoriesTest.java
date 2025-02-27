@@ -1,4 +1,4 @@
-package attendance.model;
+package attendance.domain;
 
 import static attendance.fixture.TestFixture.makeAttendance;
 import static attendance.fixture.TestFixture.makeDay;
@@ -6,8 +6,6 @@ import static attendance.fixture.TestFixture.makeDefaultTime;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-import attendance.domain.model.CrewHistories;
-import attendance.domain.model.CrewHistory;
 import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.Map;

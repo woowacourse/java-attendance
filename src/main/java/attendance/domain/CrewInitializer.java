@@ -1,6 +1,6 @@
-package attendance.domain.model;
+package attendance.domain;
 
-import static attendance.domain.model.AttendanceStatus.DEFAULT_TIME;
+import static attendance.domain.AttendanceStatus.DEFAULT_TIME;
 
 import java.time.Clock;
 import java.time.LocalDate;

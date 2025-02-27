@@ -1,9 +1,9 @@
 package attendance;
 
 import attendance.controller.AttendanceController;
-import attendance.domain.model.Campus;
-import attendance.domain.model.CrewHistories;
-import attendance.domain.model.CrewInitializer;
+import attendance.domain.Campus;
+import attendance.domain.CrewHistories;
+import attendance.domain.CrewInitializer;
 import attendance.util.FileReader;
 import attendance.view.InputValidator;
 import attendance.view.InputView;

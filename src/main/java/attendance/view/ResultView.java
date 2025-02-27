@@ -1,8 +1,8 @@
 package attendance.view;
 
-import attendance.domain.model.AttendanceCounter;
-import attendance.domain.model.AttendanceStatus;
-import attendance.domain.model.WarningLevel;
+import attendance.domain.AttendanceCounter;
+import attendance.domain.AttendanceStatus;
+import attendance.domain.WarningLevel;
 import attendance.dto.AttendanceWarning;
 import attendance.util.TimeFormatter;
 import java.time.LocalDateTime;

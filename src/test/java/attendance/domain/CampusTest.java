@@ -1,8 +1,7 @@
-package attendance.model;
+package attendance.domain;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-import attendance.domain.model.Campus;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import org.assertj.core.api.Assertions;

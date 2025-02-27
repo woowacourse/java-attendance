@@ -1,8 +1,7 @@
-package attendance.model;
+package attendance.domain;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import attendance.domain.model.AttendanceStatus;
 import java.time.LocalDateTime;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;

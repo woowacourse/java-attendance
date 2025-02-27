@@ -1,8 +1,8 @@
 package attendance.controller.command;
 
-import attendance.domain.model.AttendanceCounter;
-import attendance.domain.model.CrewHistories;
-import attendance.domain.model.CrewHistory;
+import attendance.domain.AttendanceCounter;
+import attendance.domain.CrewHistories;
+import attendance.domain.CrewHistory;
 import attendance.view.InputView;
 import attendance.view.ResultView;
 import java.time.Clock;

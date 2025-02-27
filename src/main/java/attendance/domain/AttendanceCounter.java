@@ -1,4 +1,4 @@
-package attendance.domain.model;
+package attendance.domain;
 
 import java.time.LocalDateTime;
 import java.util.EnumMap;

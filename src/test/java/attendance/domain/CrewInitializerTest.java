@@ -1,4 +1,4 @@
-package attendance.domain.model;
+package attendance.domain;
 
 import static attendance.fixture.TestFixture.makeAbsent;
 import static attendance.fixture.TestFixture.makeAttendance;

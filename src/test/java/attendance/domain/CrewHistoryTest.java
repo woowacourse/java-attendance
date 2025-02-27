@@ -1,4 +1,4 @@
-package attendance.model;
+package attendance.domain;
 
 import static attendance.fixture.TestFixture.makeAbsent;
 import static attendance.fixture.TestFixture.makeAttendance;
@@ -8,8 +8,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
-import attendance.domain.model.AttendanceCounter;
-import attendance.domain.model.CrewHistory;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.HashMap;

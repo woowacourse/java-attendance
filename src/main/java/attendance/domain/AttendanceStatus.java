@@ -1,4 +1,4 @@
-package attendance.domain.model;
+package attendance.domain;
 
 import java.time.DayOfWeek;
 import java.time.Duration;

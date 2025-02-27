@@ -1,4 +1,4 @@
-package attendance.domain.model;
+package attendance.domain;
 
 import java.time.LocalDate;
 import java.util.HashMap;

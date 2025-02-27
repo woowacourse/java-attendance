@@ -1,9 +1,9 @@
 package attendance.controller.command;
 
-import attendance.domain.model.AttendanceStatus;
-import attendance.domain.model.Campus;
-import attendance.domain.model.CrewHistories;
-import attendance.domain.model.CrewHistory;
+import attendance.domain.AttendanceStatus;
+import attendance.domain.Campus;
+import attendance.domain.CrewHistories;
+import attendance.domain.CrewHistory;
 import attendance.util.StringParser;
 import attendance.util.TimeFormatter;
 import attendance.view.InputView;
