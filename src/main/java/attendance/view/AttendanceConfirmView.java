@@ -3,7 +3,9 @@ package attendance.view;
 import attendance.domain.AttendanceDateTime;
 import attendance.domain.AttendanceStatusChecker.AttendanceStatus;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.Scanner;
@@ -22,9 +24,11 @@ public class AttendanceConfirmView {
         System.out.println("등교 시간을 입력해 주세요.");
         String timeInput = readOneLine();
         try {
-            return LocalDateTime.parse(timeInput, TIME_FORMATTER);
+            LocalDate attendanceDate = LocalDate.now();
+            LocalTime attendanceTime = LocalTime.parse(timeInput, TIME_FORMATTER);
+            return LocalDateTime.of(attendanceDate, attendanceTime);
         } catch (DateTimeParseException exception) {
-            throw new IllegalArgumentException("시간의 'HH:mm' 형식으로 입력해 주세요.");
+            throw new IllegalArgumentException("시간은 'HH:mm' 형식으로 입력해 주세요.");
         }
     }
 
