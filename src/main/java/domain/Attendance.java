@@ -22,15 +22,23 @@ public class Attendance {
     }
     
     private void validateNotWeekend(final LocalDate date) {
-        if (WEEKENDS.contains(date.getDayOfWeek())) {
+        if (isWeekend(date)) {
             throw new IllegalArgumentException("주말에는 출석할 수 없습니다.");
         }
     }
     
+    private static boolean isWeekend(final LocalDate date) {
+        return WEEKENDS.contains(date.getDayOfWeek());
+    }
+    
     private void validateNotHoliday(final LocalDate date) {
-        if (Holiday.isHoliday(date)) {
+        if (isHoliday(date)) {
             throw new IllegalArgumentException("공휴일에는 출석할 수 없습니다.");
         }
+    }
+    
+    private static boolean isHoliday(final LocalDate date) {
+        return Holiday.isHoliday(date);
     }
     
     public static Attendance of(final LocalDate attendDate, final LocalTime attendTime) {
@@ -47,6 +55,10 @@ public class Attendance {
                 AttendanceTime.noShow(),
                 AttendanceStatus.결석
         );
+    }
+    
+    public static boolean isAttendableDate(LocalDate date) {
+        return !isWeekend(date) && !isHoliday(date);
     }
     
     public LocalDate getAttendDate() {
