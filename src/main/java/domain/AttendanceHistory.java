@@ -14,9 +14,6 @@ import utils.DayOfWeeks;
 import utils.SolarCalendarHoliday;
 
 public class AttendanceHistory {
-
-    private static final int CHRISTMAS_MONTH = 12;
-    private static final int CHRISTMAS_MONTH_OF_DAY = 25;
     private static final LocalDate ATTENDANCE_HISTORY_RECORD_BEGIN_DATE = LocalDate.of(2024, 12, 1);
     private static final LocalTime START_TIME = LocalTime.of(8, 0);
     private static final LocalTime END_TIME = LocalTime.of(23, 0);
