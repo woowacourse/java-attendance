@@ -2,7 +2,9 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 
 import domain.AttendanceBook;
+import domain.AttendanceHistoryLoader;
 import java.io.File;
+import java.io.FileReader;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -26,8 +28,8 @@ class AttandanceHistoryLoaderTest {
                 제프, 2025-02-26 10:01
                 """;
         File file = createTempFile(csvData);
-        AttandanceHistoryLoader loader = new AttandanceHistoryLoader();
-        AttendanceBook attendanceBook = loader.initializeAttendanceWith(file);
+        AttendanceHistoryLoader loader = new AttendanceHistoryLoader();
+        AttendanceBook attendanceBook = loader.initializeAttendanceWith(new FileReader(file.getPath()));
 
         assertThat(attendanceBook.getAttendances("에드")).isNotInstanceOf(Exception.class);
         assertThat(attendanceBook.getAttendances("제프")).isNotInstanceOf(Exception.class);
@@ -52,9 +54,9 @@ class AttandanceHistoryLoaderTest {
                     """})
     void CSV_파일의_형식이_잘못되면_예외를_발생시킨다(String csvData) throws IOException {
         File file = createTempFile(csvData);
-        AttandanceHistoryLoader loader = new AttandanceHistoryLoader();
+        AttendanceHistoryLoader loader = new AttendanceHistoryLoader();
 
-        assertThatThrownBy(() -> loader.initializeAttendanceWith(file))
+        assertThatThrownBy(() -> loader.initializeAttendanceWith(new FileReader(file.getPath())))
                 .isInstanceOf(IOException.class)
                 .hasMessageStartingWith("[ERROR]");
     }
