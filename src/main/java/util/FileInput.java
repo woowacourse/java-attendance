@@ -11,6 +11,9 @@ import java.util.List;
 import java.util.Map;
 
 public class FileInput {
+
+    private FileInput() {}
+
     private static final String FILE_PATH = "src/main/resources/attendances.csv";
 
     public static List<String> readAttendanceFile() throws IOException {
