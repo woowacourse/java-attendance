@@ -1,5 +1,6 @@
 package attendance.domain;
 
+import attendance.util.ErrorMessage;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -31,6 +32,6 @@ public class AttendancesTest {
 
         assertThatThrownBy(() -> attendances.add(sameDateAttendance))
                 .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage("[ERROR] 이미 출석을 완료했습니다. 수정 기능을 이용해주세요.");
+                .hasMessage(ErrorMessage.ATTENDANCE_ALREADY_EXIST_ERROR.getMessage());
     }
 }
