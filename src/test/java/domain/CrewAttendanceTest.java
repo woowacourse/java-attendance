@@ -70,7 +70,7 @@ class CrewAttendanceTest {
         int count = crewAttendance.countAbsenceBeforeDate(today);
 
         // then
-        assertThat(count).isEqualTo(1);
+        assertThat(count).isEqualTo(7);
     }
 
     @Test
