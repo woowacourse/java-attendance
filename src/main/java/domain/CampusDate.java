@@ -10,6 +10,10 @@ public class CampusDate {
         this.date = date;
     }
 
+    public static CampusDate fromNow(LocalDate now) {
+        return new CampusDate(now);
+    }
+
     public static CampusDate ofNowAndDay(LocalDate now, int day) {
         return new CampusDate(now.withDayOfMonth(day));
     }
