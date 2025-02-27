@@ -13,10 +13,9 @@ public class AttendanceDateTime {
         this.attendedTime = attendedTime;
     }
 
-    public boolean isSameDay(AttendanceDateTime other) {
+    public boolean isSameDate(LocalDate date) {
         LocalDate thisDate = this.attendedTime.toLocalDate();
-        LocalDate otherDate = other.attendedTime.toLocalDate();
-        return thisDate.isEqual(otherDate);
+        return thisDate.isEqual(date);
     }
 
     public LocalDate getDate() {

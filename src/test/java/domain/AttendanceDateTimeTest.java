@@ -78,21 +78,21 @@ public class AttendanceDateTimeTest {
     }
 
     @Test
-    void 다른_출석일시와_같은_날짜인지_확인할_수_있다() {
-        var var1 = AttendanceDateTime.parse("2025-02-26T10:00");
-        var var2 = AttendanceDateTime.parse("2025-02-26T11:00");
+    void 날짜가_출석일시와_같은_날짜인지_확인할_수_있다() {
+        var attendanceDate20250226 = AttendanceDateTime.parse("2025-02-26T10:00");
+        var date20250226 = LocalDate.of(2025, 2, 26);
 
-        boolean result = var1.isSameDay(var2);
+        boolean result = attendanceDate20250226.isSameDate(date20250226);
 
         assertThat(result).isTrue();
     }
 
     @Test
-    void 다른_출석일시와_같은_날짜가_아닌지_확인할_수_있다() {
-        var var1 = AttendanceDateTime.parse("2025-02-25T10:00");
-        var var2 = AttendanceDateTime.parse("2025-02-26T11:00");
+    void 날짜가_출석일시와_다른_날짜인지_확인할_수_있다() {
+        var attendanceDate20250225 = AttendanceDateTime.parse("2025-02-25T10:00");
+        var date20250226 = LocalDate.of(2025, 2, 26);
 
-        boolean result = var1.isSameDay(var2);
+        boolean result = attendanceDate20250225.isSameDate(date20250226);
 
         assertThat(result).isFalse();
     }

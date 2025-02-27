@@ -1,5 +1,6 @@
 package domain;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,8 +16,9 @@ public class AttendanceRecords {
     }
 
     private boolean existsSameDate(AttendanceDateTime attendanceDateTime) {
+        LocalDate date = attendanceDateTime.getDate();
         return records.stream()
-            .anyMatch(record -> record.isSameDay(attendanceDateTime));
+            .anyMatch(record -> record.isSameDate(date));
     }
 
     public List<AttendanceDateTime> getRecords() {
