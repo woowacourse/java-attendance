@@ -22,7 +22,7 @@ public enum AttendanceStatus {
     }
 
     public static AttendanceStatus calculateStatus(final LocalTime time, final DayOfWeek dayOfWeek) {
-        return sortAscByBoundaryMinute().stream()
+        return sortDescByBoundaryMinute().stream()
                 .filter(status -> isAfterTime(dayOfWeek, time, status))
                 .findFirst()
                 .orElse(ATTENDANCE);
@@ -35,7 +35,7 @@ public enum AttendanceStatus {
         return time.isAfter(BESIDE_MONDAY_START_CAMPUS.plusMinutes(status.boundaryMinute));
     }
 
-    private static List<AttendanceStatus> sortAscByBoundaryMinute() {
+    private static List<AttendanceStatus> sortDescByBoundaryMinute() {
         return Arrays.stream(values())
                 .sorted(Comparator.comparingInt(AttendanceStatus::getBoundaryMinute).reversed())
                 .collect(Collectors.toList());

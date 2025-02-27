@@ -18,13 +18,13 @@ public enum RiskOfExpulsionStatus {
     }
 
     public static RiskOfExpulsionStatus calculateRiskOfExpulsionStatus(final int absenceCount) {
-        return sortAscByAbsenceCountBoundary().stream()
+        return sortDescByAbsenceCountBoundary().stream()
                 .filter(status -> absenceCount >= status.absenceCountBoundary)
                 .findFirst()
                 .orElseThrow(IllegalArgumentException::new);
     }
 
-    private static List<RiskOfExpulsionStatus> sortAscByAbsenceCountBoundary() {
+    private static List<RiskOfExpulsionStatus> sortDescByAbsenceCountBoundary() {
         return Arrays.stream(values())
                 .sorted(Comparator.comparingInt(RiskOfExpulsionStatus::getAbsenceCountBoundary).reversed())
                 .collect(Collectors.toList());
