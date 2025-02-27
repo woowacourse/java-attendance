@@ -17,6 +17,9 @@ public class Attendance {
     }
 
     public AttendanceStatus getStatus() {
+        if (time.getValue().isAfter(LocalTime.of(10, 5))) {
+            return AttendanceStatus.LATE;
+        }
         return AttendanceStatus.ATTENDANCE;
     }
 
