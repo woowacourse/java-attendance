@@ -3,6 +3,7 @@ package attendance.domain;
 import java.util.Arrays;
 
 public enum AttendanceRisk {
+    WEEDING(6),
     INTERVIEW(3),
     WARNING(2);
 
