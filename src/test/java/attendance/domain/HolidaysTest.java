@@ -7,12 +7,30 @@ import org.junit.jupiter.params.provider.CsvSource;
 
 import java.time.LocalDate;
 import java.time.format.TextStyle;
+import java.util.List;
 import java.util.Locale;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.assertj.core.api.Assertions.assertThatNoException;
 
-class HolidayTest {
+@DisplayName("휴일 테스트")
+class HolidaysTest {
+
+    @Test
+    @DisplayName("휴일에 공휴일을 추가한다")
+    void 휴일에_공휴일을_추가한다() {
+        // given
+        LocalDate addHoliday = LocalDate.of(2024, 12, 25);
+        Holiday holiday = new Holiday(addHoliday);
+        Holidays holidays = new Holidays(List.of(holiday));
+
+        // when
+        List<Holiday> result = holidays.getHolidays();
+
+        // then
+        assertThat(result).contains(holiday);
+    }
 
     @ParameterizedTest
     @CsvSource({
@@ -23,7 +41,7 @@ class HolidayTest {
     @DisplayName("등교 일자가 아닌 경우 예외가 발생한다")
     void shouldThrowExceptionWhenNotASchoolDay(LocalDate attendanceDate) {
         assertThatIllegalArgumentException()
-                .isThrownBy(() -> Holiday.validateAttendanceDate(attendanceDate))
+                .isThrownBy(() -> Holidays.validateAttendanceDate(attendanceDate))
                 .withMessage(formatErrorMessage(attendanceDate));
     }
 
@@ -35,7 +53,7 @@ class HolidayTest {
 
         // when & then
         assertThatNoException()
-                .isThrownBy(() -> Holiday.validateAttendanceDate(attendanceDate));
+                .isThrownBy(() -> Holidays.validateAttendanceDate(attendanceDate));
     }
 
     private static String formatErrorMessage(final LocalDate date) {
