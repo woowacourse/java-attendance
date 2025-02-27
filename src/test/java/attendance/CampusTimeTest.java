@@ -1,20 +1,24 @@
 package attendance;
 
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+
+import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-public class CampusTime {
+public class CampusTimeTest {
 
-    @DisplayName("출석 24시간 형식 확인")
+    @DisplayName("입력한 시간에 콜론이 있는지 확인")
     @Test
     void checkTimeFormat() {
         //given
-        String inputTime = "09:59";
+        String attendanceTime = "09:59";
 
         //when
-        CampusTime campusTime = new CampusTime(inputTime);
+        List<String> dividedTime = Parser.divideByColon(attendanceTime);
 
         //then
-        campusTime.getTime().equals(inputTime);
+        assertThat(dividedTime.size()).isEqualTo(2);
+
     }
 }
