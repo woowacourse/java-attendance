@@ -180,7 +180,7 @@ public class AttendanceTimeCheckTest {
 
     @DisplayName("주말에는 출석할 수 없다.")
     @Test
-    void check13() {
+    void check14() {
         // given
         AttendanceTimeChecker checker = new AttendanceTimeChecker();
         LocalDate saturday = LocalDate.of(2024, 9, 7);
@@ -198,6 +198,23 @@ public class AttendanceTimeCheckTest {
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage(String.format("[ERROR] %02d월 %02d일 %s은 등교일이 아닙니다.",
                         sunday.getMonth().getValue(), sunday.getDayOfMonth(), sunday.getDayOfWeek().getDisplayName(
+                                TextStyle.FULL, Locale.KOREAN)));
+    }
+
+    @DisplayName("공휴일에는 출석할 수 없다.")
+    @Test
+    void check13() {
+        // given
+        AttendanceTimeChecker checker = new AttendanceTimeChecker();
+        LocalDate holiday = LocalDate.of(2024, 12, 25);
+        LocalTime attendanceTime = LocalTime.of(10, 12);
+
+        // when
+        // then
+        Assertions.assertThatThrownBy(() -> checker.attendanceCheck(holiday, attendanceTime))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage(String.format("[ERROR] %02d월 %02d일 %s은 등교일이 아닙니다.",
+                        holiday.getMonth().getValue(), holiday.getDayOfMonth(), holiday.getDayOfWeek().getDisplayName(
                                 TextStyle.FULL, Locale.KOREAN)));
     }
 }
