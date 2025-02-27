@@ -1,5 +1,6 @@
 import attendance.model.AttendanceTime;
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.stream.Stream;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -67,10 +68,33 @@ public class AttendanceTimeTest {
         Assertions.assertThat(result).isEqualTo(expectedResult);
     }
 
+    @ParameterizedTest
+    @MethodSource("hourAndMinuteAndResult")
+    void 현재_출석_시간이_입력받은_시간보다_이전인지_판단한다(final LocalTime time, final boolean expectedResult) {
+
+        // given
+        final LocalDate localdate = LocalDate.of(2025, 2, 10);
+
+        // when
+        final boolean result = new AttendanceTime(localdate, 10, 5).isBefore(time);
+
+        // then
+        Assertions.assertThat(result).isEqualTo(expectedResult);
+    }
+
     private static Stream<Arguments> dateAndResult() {
+
         return Stream.of(
                 Arguments.of(24, true),
                 Arguments.of(27, false)
+        );
+    }
+
+    public static Stream<Arguments> hourAndMinuteAndResult() {
+
+        return Stream.of(
+                Arguments.of(LocalTime.of(10, 6), true),
+                Arguments.of(LocalTime.of(10, 4), false)
         );
     }
 }
