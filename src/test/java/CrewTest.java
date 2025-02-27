@@ -25,7 +25,7 @@ public class CrewTest {
     void test3() {
         Crew crew = new Crew("폰트", "2024-12-13 10:08");
 
-        crew.addAttendTime("2024-12-13 10:09");
+        crew.addAttendTime("2024-12-14 10:09");
 
         assertThat(crew.getAttendTimes().size()).isEqualTo(2);
     }

@@ -10,6 +10,7 @@ import domain.AttendTime;
 import domain.Crew;
 import domain.Crews;
 import domain.December;
+import domain.Today;
 import infrastructure.AttendanceFileReader;
 import java.time.LocalDateTime;
 import view.InputView;
@@ -50,7 +51,7 @@ public class AttendanceController {
     }
 
     private void attendCrew(final Crews crews) {
-        December.checkWeekday(LocalDateTime.now());
+        December.checkWeekday(Today.TODAY);
 
         String nickname = inputView.readNickname();
         Crew crew = crews.findByNickname(nickname);
@@ -58,7 +59,7 @@ public class AttendanceController {
         String time = inputView.readTime();
         crew.addAttendTime(time);
 
-        AttendTime attendTime = crew.findAttendTimeByDate(LocalDateTime.now().getDayOfMonth());
+        AttendTime attendTime = crew.findAttendTimeByDate(Today.TODAY.getDayOfMonth());
         String attendanceStatus = attendTime.checkAttendanceStatus();
         outputView.printTodayAttendance(attendTime, attendanceStatus);
     }

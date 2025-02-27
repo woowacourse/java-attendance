@@ -1,6 +1,6 @@
 package view;
 
-import java.time.LocalDate;
+import domain.Today;
 import java.time.LocalDateTime;
 import java.time.format.TextStyle;
 import java.util.Locale;
@@ -14,7 +14,7 @@ public class InputView {
     }
 
     public String readCommand() {
-        LocalDate today = LocalDate.now();
+        LocalDateTime today = Today.TODAY;
         System.out.printf("오늘은 %d월 %s일 %s입니다. 기능을 선택해 주세요.\n" +
                         "1. 출석 확인\n" +
                         "2. 출석 수정\n" +
