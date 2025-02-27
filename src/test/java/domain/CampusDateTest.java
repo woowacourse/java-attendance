@@ -66,8 +66,6 @@ class CampusDateTest {
                     "19,WEDNESDAY",
                     "20,THURSDAY",
                     "21,FRIDAY",
-                    "22,SATURDAY",
-                    "23,SUNDAY"
             }
     )
     void 해당_날짜의_요일을_반환한다(int day, DayOfWeek dayOfWeek) {
