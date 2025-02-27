@@ -1,19 +1,23 @@
+import exception.DuplicateAttendanceException;
+
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.HashMap;
 import java.util.Map;
 
 public class AttendanceStorage {
-    private Map<LocalDate, LocalTime> attendances;
+    private final Map<AttendanceDate, AttendanceTime> attendances;
 
     public AttendanceStorage() {
         this.attendances = new HashMap<>();
     }
 
-    public void register(LocalDate date, LocalTime enterTime) {
-        if (attendances.containsKey(date)) {
-            throw new IllegalArgumentException("이미 존재하는 출석입니다.");
+    public void register(LocalDate date, LocalTime time) {
+        AttendanceDate enterDate = new AttendanceDate(date);
+        if (attendances.containsKey(enterDate)) {
+            throw new DuplicateAttendanceException();
         }
-        attendances.put(date, enterTime);
+        AttendanceTime enterTime = new AttendanceTime(time);
+        attendances.put(enterDate, enterTime);
     }
 }
