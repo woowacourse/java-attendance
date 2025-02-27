@@ -3,9 +3,6 @@ package domain;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-import domain.AttendanceBook;
-import domain.AttendanceHistory;
-import domain.Crew;
 import java.time.LocalDate;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -39,6 +36,7 @@ public class AttendanceBookTest {
             // given
             final var crew = new Crew("헤일러");
             final var attendanceBook = new AttendanceBook();
+            attendanceBook.registerCrew(crew);
             final LocalDate today = LocalDate.of(2024, 12, 13);
 
             // when

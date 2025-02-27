@@ -34,6 +34,10 @@ public class AttendanceBook {
     }
 
     public RiskOfExpulsionStatus calculateRiskOfExpulsionStatus(final Crew crew, final LocalDate date) {
-        return null;
+        final AttendanceHistory crewHistory = findByCrew(crew);
+        final Map<AttendanceStatus, Integer> statistics = crewHistory.calculateAttendanceStatusStatistics(
+                date);
+        final int absenceCount = statistics.get(AttendanceStatus.ABSENCE) + statistics.get(AttendanceStatus.LATE) / 3;
+        return RiskOfExpulsionStatus.calculateRiskOfExpulsionStatus(absenceCount);
     }
 }
