@@ -1,6 +1,5 @@
 package domain;
 
-import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -10,6 +9,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+import utils.DayOfWeeks;
 
 public class AttendanceHistory {
 
@@ -79,8 +79,7 @@ public class AttendanceHistory {
     }
 
     private boolean isAttendanceDay(final LocalDate targetDate) {
-        final DayOfWeek dayOfWeek = targetDate.getDayOfWeek();
-        if (DayOfWeek.SATURDAY == dayOfWeek || DayOfWeek.SUNDAY == dayOfWeek
+        if (DayOfWeeks.isWeekend(targetDate.getDayOfWeek())
                 || (targetDate.getMonthValue() == CHRISTMAS_MONTH && targetDate.getDayOfMonth() == CHRISTMAS_MONTH_OF_DAY)) {
             return false;
         }
