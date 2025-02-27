@@ -23,7 +23,6 @@ import attendance.domain.SystemDateTime;
 import attendance.exception.AttendanceArgumentException;
 import attendance.exception.AttendanceFileException;
 import attendance.utility.CsvReader;
-import attendance.utility.DateTimeParser;
 import attendance.view.InputValidator;
 import attendance.view.InputView;
 import attendance.view.OutputView;
@@ -230,8 +229,7 @@ public class Application {
         outputView.printRequestDate();
         return handleInput(() -> {
             String input = inputView.input();
-            InputValidator.validateIsEmpty(input);
-            int parsedInt = InputValidator.validateInputTypeInteger(input);
+            int parsedInt = InputValidator.validateInputDate(input);
             LocalDateTime current = systemDateTime.now().withDayOfMonth(parsedInt);
             return current.toLocalDate();
         });
@@ -241,8 +239,7 @@ public class Application {
         outputView.printRequestTime();
         return handleInput(() -> {
             String input = inputView.input();
-            InputValidator.validateIsEmpty(input);
-            return DateTimeParser.parseToTime(input);
+            return InputValidator.validateInputTimeFormat(input);
         });
     }
 
