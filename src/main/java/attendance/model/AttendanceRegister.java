@@ -24,6 +24,9 @@ public class AttendanceRegister {
     }
 
     public void modify(String crewName, LocalDate modifyDate, LocalTime modifyTime) {
+        if (!register.get(crewName).containsAttendanceDateTimeByDate(modifyDate)) {
+            throw new IllegalArgumentException("출석내역이 없는 날짜입니다.");
+        }
         validateContainsCrewName(crewName);
         AttendanceRecord attendanceRecord = register.get(crewName);
         AttendanceDateTime foundAttendanceDateTime = attendanceRecord.findAttendanceByDate(modifyDate);

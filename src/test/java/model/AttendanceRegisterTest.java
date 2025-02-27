@@ -151,6 +151,6 @@ class AttendanceRegisterTest {
         // when & then
         assertThatThrownBy(() -> attendanceRegister.modify("한스", modifyDate, modifyTime))
                 .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining("출석기록이 없는 날짜입니다.");
+                .hasMessageContaining("출석내역이 없는 날짜입니다.");
     }
 }
