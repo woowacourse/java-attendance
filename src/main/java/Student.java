@@ -22,17 +22,17 @@ public class Student {
     }
 
     public void updateAttendanceCount() {
-        long attendanceCount = attendanceStatusRecords.entrySet().stream()
-                .filter(record -> record.getValue().equals(AttendanceStatus.ATTENDANCE))
-                .count();
-        long lateCount = attendanceStatusRecords.entrySet().stream()
-                .filter(record -> record.getValue().equals(AttendanceStatus.LATE))
-                .count();
-        long absentCount = attendanceStatusRecords.entrySet().stream()
-                .filter(record -> record.getValue().equals(AttendanceStatus.ABSENT))
-                .count();
+        long attendanceCount = findAttendanceStatusCount(AttendanceStatus.ATTENDANCE);
+        long lateCount = findAttendanceStatusCount(AttendanceStatus.LATE);
+        long absentCount = findAttendanceStatusCount(AttendanceStatus.ABSENT);
+
         attendanceStatusCount.put(AttendanceStatus.ATTENDANCE, attendanceCount);
         attendanceStatusCount.put(AttendanceStatus.LATE, lateCount);
         attendanceStatusCount.put(AttendanceStatus.ABSENT, absentCount);
+    }
+    private long findAttendanceStatusCount(AttendanceStatus attendanceStatus){
+        return attendanceStatusRecords.entrySet().stream()
+                .filter(record -> record.getValue().equals(attendanceStatus))
+                .count();
     }
 }
