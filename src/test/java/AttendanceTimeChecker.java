@@ -13,6 +13,9 @@ public class AttendanceTimeChecker {
         int hour = time.getHour();
         int minute = time.getMinute();
 
+        if (date.getDayOfWeek() == DayOfWeek.SATURDAY || date.getDayOfWeek() == DayOfWeek.SUNDAY) {
+            throw new IllegalArgumentException();
+        }
         validateInOperatingTime(hour, minute);
 
         if (date.getDayOfWeek() == DayOfWeek.MONDAY) {
