@@ -11,8 +11,7 @@ import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
 
-import static java.util.stream.Collectors.counting;
-import static java.util.stream.Collectors.groupingBy;
+import static java.util.stream.Collectors.*;
 
 public class AttendanceSheet {
 
@@ -55,8 +54,9 @@ public class AttendanceSheet {
                         });
     }
 
-    public Map<AttendanceState, Long> countAttendanceState() {
+    public Map<AttendanceState, Long> countAttendanceState(String nickname) {
         Map<AttendanceState, Long> counts = attendances.stream()
+                .filter(attendance -> attendance.isSameNickname(nickname))
                 .collect(groupingBy(Attendance::getState, () -> new EnumMap<>(AttendanceState.class), counting()));
 
         Arrays.stream(AttendanceState.values())
@@ -64,4 +64,12 @@ public class AttendanceSheet {
 
         return counts;
     }
+
+    public Map<String, Map<AttendanceState, Long>> countAttendancesState() {
+//        return attendances.stream()
+//                .collect(groupingBy(Attendance::getNickname,
+//                        groupingBy(Attendance::getState, counting())));
+        return null;
+    }
+
 }

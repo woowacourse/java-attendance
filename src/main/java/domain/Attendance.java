@@ -26,6 +26,10 @@ public class Attendance {
         this.time = updateTime;
     }
 
+    public boolean isSameNickname(String nickname) {
+        return this.nickname.equals(nickname);
+    }
+
     public AttendanceState getState() {
         return state;
     }
