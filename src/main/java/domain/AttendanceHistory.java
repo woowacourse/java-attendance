@@ -113,6 +113,8 @@ public class AttendanceHistory {
     }
 
     public RiskOfExpulsionStatus calculateRiskOfExpulsionStatus(final LocalDate targetDate) {
-        return null;
+        final Map<AttendanceStatus, Integer> statistics = calculateAttendanceStatusStatistics(targetDate);
+        final int absenceCount = statistics.get(AttendanceStatus.ABSENCE) + statistics.get(AttendanceStatus.LATE) / 3;
+        return RiskOfExpulsionStatus.calculateRiskOfExpulsionStatus(absenceCount);
     }
 }
