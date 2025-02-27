@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 import domain.Attendance;
 import domain.Crew;
 import domain.ERROR_MESSAGE;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
@@ -107,6 +108,8 @@ public class SomeTest {
             // 6일 결석
             crew.addAttendanceWithDateTime(LocalDateTime.of(2024, 12, 9, 15, 0)); // 결석
 
+            crew.fillEmptyDateWithAbsent(LocalDate.of(2024,12,9));
+
             // then
             assertAll(
                     () -> assertThat(crew.getAttendCount()).isEqualTo(3),
@@ -115,4 +118,7 @@ public class SomeTest {
             );
         }
     }
+
+
+    // 출석하지 않은 날을 결석으로 간주하기
 }
