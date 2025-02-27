@@ -1,4 +1,6 @@
+import java.time.DayOfWeek;
 import java.time.LocalDate;
+import java.util.Arrays;
 
 public enum Holiday {
 
@@ -13,6 +15,15 @@ public enum Holiday {
     }
 
     public static boolean isHoliday(LocalDate day) {
-        return true;
+        return isWeekend(day) || isPublicHoliday(day);
+    }
+
+    private static boolean isWeekend(LocalDate day) {
+        return day.getDayOfWeek() == DayOfWeek.SATURDAY || day.getDayOfWeek() == DayOfWeek.SUNDAY;
+    }
+
+    private static boolean isPublicHoliday(LocalDate day) {
+        return Arrays.stream(values())
+                .anyMatch(holiday -> holiday.month == day.getMonthValue() && holiday.day == day.getDayOfMonth());
     }
 }
