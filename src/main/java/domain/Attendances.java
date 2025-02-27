@@ -11,26 +11,26 @@ public class Attendances {
         this.attendances = attendances;
     }
 
-    public List<Attendance> getLogsWithName(String nickName) {
-        return attendances.get(nickName);
+    public List<Attendance> getLogsWithName(String nickname) {
+        return attendances.get(nickname);
     }
 
-    public int calculateAttendanceCount(String nickName) {
-        List<Attendance> logs = getLogsWithName(nickName);
+    public int calculateAttendanceCount(String nickname) {
+        List<Attendance> logs = getLogsWithName(nickname);
         return (int) logs.stream()
                 .filter(attendance -> attendance.judge() == AttendanceStatus.ATTENDANCE)
                 .count();
     }
 
-    public int calculateLateCount(String nickName) {
-        List<Attendance> logs = getLogsWithName(nickName);
+    public int calculateLateCount(String nickname) {
+        List<Attendance> logs = getLogsWithName(nickname);
         return (int) logs.stream()
                 .filter(attendance -> attendance.judge() == AttendanceStatus.LATENESS)
                 .count();
     }
 
-    public int calculateAbsentCount(String nickName) {
-        List<Attendance> logs = getLogsWithName(nickName);
+    public int calculateAbsentCount(String nickname) {
+        List<Attendance> logs = getLogsWithName(nickname);
         return (int) logs.stream()
                 .filter(attendance -> attendance.judge() == AttendanceStatus.ABSENCE)
                 .count();
