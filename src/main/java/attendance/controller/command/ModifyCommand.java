@@ -31,16 +31,17 @@ public class ModifyCommand implements Command {
     @Override
     public void execute(final CrewHistories crewHistories) {
         CrewHistory crewHistory = crewHistories.findCrewByNickname(inputView.readModifyNickname());
-        LocalDateTime modifyTime = getModifyLocalDateTime();
+        LocalDate todayDate = LocalDate.now(clock);
+        LocalDateTime modifyTime = getModifyLocalDateTime(todayDate.getYear(), todayDate.getDayOfMonth());
         campus.validateOperationTime(modifyTime);
-        LocalDateTime previousTime = crewHistory.modify(modifyTime, LocalDate.now(clock));
+        LocalDateTime previousTime = crewHistory.modify(modifyTime, todayDate);
 
         resultView.printModifyHistory(TimeFormatter.formatDateTime(previousTime), AttendanceType.from(previousTime),
                 TimeFormatter.formatTime(LocalTime.from(modifyTime)), AttendanceType.from(modifyTime));
     }
 
-    private LocalDateTime getModifyLocalDateTime() {
-        LocalDate modifyDate = StringParser.parseLocalDate(inputView.readModifyDay());
+    private LocalDateTime getModifyLocalDateTime(final int year, final int month) {
+        LocalDate modifyDate = StringParser.parseLocalDate(year, month, inputView.readModifyDay());
         campus.validateOperationDate(modifyDate);
         LocalTime modifyTime = StringParser.parseLocalTime(inputView.readModifyTime());
         return LocalDateTime.of(modifyDate, modifyTime);

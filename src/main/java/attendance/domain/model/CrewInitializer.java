@@ -42,7 +42,7 @@ public class CrewInitializer {
         Map<LocalDate, LocalDateTime> initialAttendance = new HashMap<>();
         LocalDate now = LocalDate.now(clock);
         for (int day = 1; day < now.getDayOfMonth(); day++) {
-            LocalDate date = LocalDate.of(2024, 12, day);
+            LocalDate date = LocalDate.of(now.getYear(), now.getMonth(), day);
             putOperationDate(date, initialAttendance);
         }
         return initialAttendance;
