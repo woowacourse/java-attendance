@@ -19,6 +19,9 @@ public enum Penalty {
         if(attendanceCount.absentCount() >= EXPULSION_CONDITION) {
             return Penalty.EXPULSION;
         }
+        if (attendanceCount.absentCount() >= 3) {
+            return Penalty.COUNSELING;
+        }
         return null;
     }
 }
