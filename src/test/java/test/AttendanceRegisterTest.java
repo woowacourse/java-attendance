@@ -170,7 +170,7 @@ public class AttendanceRegisterTest {
     void test5_1() {
         String combinedData = "쿠키,2024-12-13 10:08";
 
-        LocalDateTime dateTime = ExistingAttendances.parseAttendanceFrom(combinedData);
+        LocalDateTime dateTime = ExistingAttendances.parseAttendanceData(combinedData);
 
         assertThat(dateTime).isEqualTo(
                 LocalDateTime.of(2024, 12, 13, 10, 8)
