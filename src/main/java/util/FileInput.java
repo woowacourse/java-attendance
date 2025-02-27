@@ -16,7 +16,7 @@ public class FileInput {
 
     private static final String FILE_PATH = "src/main/resources/attendances.csv";
 
-    public static List<String> readAttendanceFile() throws IOException {
+    public static List<String> readAttendanceFile() {
         List<String> attendanceFile = new ArrayList<>();
         try (BufferedReader fileBr = new BufferedReader(new FileReader(FILE_PATH))) {
             fileBr.readLine();
@@ -24,11 +24,14 @@ public class FileInput {
             while ((information = fileBr.readLine()) != null) {
                 attendanceFile.add(information);
             }
+        } catch (IOException e) {
+            System.out.println(e.getMessage());
+            System.out.println("[ERROR] 파일 읽는 중 오류가 발생하였습니다.");
         }
         return attendanceFile;
     }
 
-    public static Map<String, List<LocalDateTime>> readFileAndCreateStudentRepository() throws IOException {
+    public static Map<String, List<LocalDateTime>> readFileAndCreateStudentRepository(){
         Map<String, List<LocalDateTime>> studentInformation = new HashMap<>();
         for (String information : readAttendanceFile()) {
             String[] nameAndTimeInformation = information.split(",");
@@ -40,14 +43,5 @@ public class FileInput {
             studentInformation.computeIfAbsent(name, k -> new ArrayList<>()).add(localDateTime);
         }
         return studentInformation;
-    }
-
-    public static Map<String, List<LocalDateTime>> createStudentRepository() {
-        try {
-            return readFileAndCreateStudentRepository();
-        } catch (IOException e) {
-            System.out.println(e.getMessage());
-            return createStudentRepository();
-        }
     }
 }
