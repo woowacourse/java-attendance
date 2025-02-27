@@ -23,9 +23,19 @@ public class AttendanceInfos {
         attendanceInfos.add(attendanceInfo);
     }
 
-    public AttendanceInfo findInfoByDay(final int day) {
+    public void addInfoByDayAndTime(final CampusDate campusDate, final CampusTime campusTime) {
+        AttendanceInfo attendanceInfo = AttendanceInfo.fromDateAndTime(campusDate, campusTime);
+        attendanceInfos.add(attendanceInfo);
+    }
+
+    public boolean hasInfoByDate(final CampusDate campusDate) {
         return attendanceInfos.stream()
-                .filter(attendanceInfo -> attendanceInfo.getDay() == day)
+                .anyMatch(attendanceInfo -> attendanceInfo.getDay() == campusDate.getDay());
+    }
+
+    public AttendanceInfo findInfoByDate(final CampusDate campusDate) {
+        return attendanceInfos.stream()
+                .filter(attendanceInfo -> attendanceInfo.getDay() == campusDate.getDay())
                 .findFirst()
                 .orElseThrow(() -> new IllegalArgumentException("[ERROR] 해당 날짜의 출석 정보를 찾을 수 없습니다."));
     }

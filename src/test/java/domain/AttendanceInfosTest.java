@@ -51,6 +51,23 @@ class AttendanceInfosTest {
     }
 
     @Test
+    void 캠퍼스_날짜와_시간_정보를_받아_출석_정보를_더한다() {
+        // given
+        AttendanceInfos attendanceInfos = AttendanceInfos.initInfos();
+        CampusTime campusTime = CampusTime.from("10:31");
+        LocalDate date = LocalDate.of(2025, 2, 27);
+        CampusDate campusDate1 = CampusDate.ofDateAndDay(date, 27);
+        CampusDate campusDate2 = CampusDate.ofDateAndDay(date, 28);
+
+        // when
+        attendanceInfos.addInfoByDayAndTime(campusDate1, campusTime);
+        attendanceInfos.addInfoByDayAndTime(campusDate2, campusTime);
+
+        // then
+        assertThat(attendanceInfos.getAttendanceInfos()).hasSize(2);
+    }
+
+    @Test
     void 날짜가_주어지면_해당되는_출석_정보를_찾아낸다() {
         // given
         AttendanceInfo attendanceInfo1 = createAttendanceInfo("10:31", 2025, 2, 27);
@@ -58,16 +75,35 @@ class AttendanceInfosTest {
         AttendanceInfos attendanceInfos = AttendanceInfos.from(List.of(attendanceInfo1, attendanceInfo2));
 
         // when
-        AttendanceInfo infoByDay = attendanceInfos.findInfoByDay(27);
+        AttendanceInfo infoByDay = attendanceInfos.findInfoByDate(
+                CampusDate.ofDateAndDay(LocalDate.of(2025, 2, 3), 27));
 
         // then
         assertThat(infoByDay.getMonth()).isEqualTo(2);
         assertThat(infoByDay.getDay()).isEqualTo(27);
     }
 
+    @Test
+    void 날짜가_주어지면_해당되는_출석_정보의_존재_여부를_판별한다() {
+        // given
+        AttendanceInfo attendanceInfo1 = createAttendanceInfo("10:31", 2025, 2, 27);
+        AttendanceInfo attendanceInfo2 = createAttendanceInfo("10:31", 2025, 2, 28);
+        AttendanceInfos attendanceInfos = AttendanceInfos.from(List.of(attendanceInfo1, attendanceInfo2));
+
+        // when
+        boolean result1 = attendanceInfos.hasInfoByDate(
+                CampusDate.ofDateAndDay(LocalDate.of(2025, 2, 3), 27));
+        boolean result2 = attendanceInfos.hasInfoByDate(
+                CampusDate.ofDateAndDay(LocalDate.of(2025, 2, 3), 25));
+
+        // then
+        assertThat(result1).isTrue();
+        assertThat(result2).isFalse();
+    }
+
     private static AttendanceInfo createAttendanceInfo(String inputTime, int year, int month, int day) {
         CampusTime time = CampusTime.from(inputTime);
-        CampusDate date = CampusDate.fromNow(LocalDate.of(year, month, day));
+        CampusDate date = CampusDate.fromDate(LocalDate.of(year, month, day));
         return AttendanceInfo.fromDateAndTime(date, time);
     }
 
