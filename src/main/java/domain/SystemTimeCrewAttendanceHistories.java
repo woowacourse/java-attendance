@@ -6,6 +6,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.TreeMap;
+import strategy.CurrentDateGenerateStrategy;
 
 public class SystemTimeCrewAttendanceHistories {
 
@@ -24,11 +25,12 @@ public class SystemTimeCrewAttendanceHistories {
         return dateCrewAttendance;
     }
 
-    public SystemTimeCrewAttendanceHistories(CrewAttendanceHistories dateCrewAttendance) {
+    public SystemTimeCrewAttendanceHistories(CrewAttendanceHistories dateCrewAttendance,
+                                             CurrentDateGenerateStrategy currentDateGenerateStrategy) {
         Map<LocalDate, CrewAttendance> prevDateCrewAttendance = calculateDateCrewAttendance(dateCrewAttendance);
         LocalDate systemStartDate = AttendanceDate.schoolStartDate();
         LocalDate systemLastDate = AttendanceDate.schoolLastDate().plusDays(1);
-        LocalDate now = LocalDate.now();
+        LocalDate now = currentDateGenerateStrategy.now();
         if (now.isBefore(systemLastDate)) {
             systemLastDate = now;
         }

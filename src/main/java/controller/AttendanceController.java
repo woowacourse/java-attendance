@@ -4,20 +4,16 @@ import domain.AttendanceDate;
 import domain.AttendanceReader;
 import domain.AttendanceTime;
 import domain.CrewAttendance;
-import domain.CrewAttendanceHistories;
 import domain.CrewAttendances;
 import domain.CrewDismiss;
 import domain.CrewDismissHistory;
 import domain.CrewName;
-import domain.DismissStatus;
 import domain.SystemTimeCrewAttendanceHistories;
 import except.AttendanceException;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Supplier;
@@ -87,34 +83,15 @@ public class AttendanceController {
     }
 
     private List<CrewDismissHistory> orderedDismissHistory() {
-        List<String> crewNicknames = crewAttendances.nicknames();
-        List<CrewDismissHistory> crewDismisses = new ArrayList<>();
-        for (String crewNickname : crewNicknames) {
-            CrewAttendanceHistories crewAttendanceHistories = crewAttendances.crewAttendancesHistory(crewNickname);
-            SystemTimeCrewAttendanceHistories systemTimeCrewAttendanceHistories = new SystemTimeCrewAttendanceHistories(
-                    crewAttendanceHistories);
-            addDismissHistory(crewNickname, crewDismisses, systemTimeCrewAttendanceHistories);
-        }
-        Collections.sort(crewDismisses);
-        return crewDismisses;
-    }
-
-    private static void addDismissHistory(String crewNickname, List<CrewDismissHistory> crewDismisses,
-                                          SystemTimeCrewAttendanceHistories systemTimeCrewAttendanceHistories) {
-        CrewDismiss crewDismiss = systemTimeCrewAttendanceHistories.crewDismiss();
-        if (crewDismiss.dismissStatus() == DismissStatus.ELSE) {
-            return;
-        }
-        crewDismisses.add(new CrewDismissHistory(crewNickname, crewDismiss));
+        return crewAttendances.orderedDismissHistory();
     }
 
     private void handleAttendanceHistory() {
         String crewNickname = handleInput(this::handleAddAttendanceNickname);
-        CrewAttendanceHistories crewAttendanceHistories = crewAttendances.crewAttendancesHistory(crewNickname);
-        SystemTimeCrewAttendanceHistories systemTimeCrewAttendanceHistories = new SystemTimeCrewAttendanceHistories(
-                crewAttendanceHistories);
-        Map<LocalDate, CrewAttendance> dateCrewAttendance = systemTimeCrewAttendanceHistories.renewDateCrewAttendance();
+        SystemTimeCrewAttendanceHistories systemTimeCrewAttendanceHistories = crewAttendances.crewAttendancesHistory(
+                crewNickname);
         CrewDismiss crewDismiss = systemTimeCrewAttendanceHistories.crewDismiss();
+        Map<LocalDate, CrewAttendance> dateCrewAttendance = systemTimeCrewAttendanceHistories.renewDateCrewAttendance();
         printDateCrewAttendanceHistory(dateCrewAttendance, crewNickname);
         outputView.printCrewDismissCount(crewDismiss.attendance(), crewDismiss.late(),
                 crewDismiss.absence());

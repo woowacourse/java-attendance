@@ -52,13 +52,15 @@ public class CrewAttendances {
         dateCrewAttendanceManager.modifyAttendance(modifyDate, modifyTime);
     }
 
-    public CrewAttendanceHistories crewAttendancesHistory(String nickname) {
+    public SystemTimeCrewAttendanceHistories crewAttendancesHistory(String nickname) {
         CrewName crewName = new CrewName(nickname);
         if (!crewAttendances.containsKey(crewName)) {
             throw new AttendanceException(NOT_EXISTS_ATTENDANCE_HISTORY);
         }
         DateCrewAttendanceManager dateCrewAttendanceManager = dateCrewAttendanceManager(nickname);
-        return dateCrewAttendanceManager.crewAttendancesHistory();
+        CrewAttendanceHistories crewAttendanceHistories = dateCrewAttendanceManager.crewAttendancesHistory();
+        return new SystemTimeCrewAttendanceHistories(
+                crewAttendanceHistories, currentDateGenerateStrategy);
     }
 
     public boolean isExistAttendance(String nickname) {
@@ -71,5 +73,14 @@ public class CrewAttendances {
                 .stream()
                 .map(CrewName::nickname)
                 .collect(Collectors.toList());
+    }
+
+    public List<CrewDismissHistory> orderedDismissHistory() {
+        CrewDismissHistories crewDismisses = new CrewDismissHistories();
+        for (String crewNickname : nicknames()) {
+            SystemTimeCrewAttendanceHistories systemTimeCrewAttendanceHistories = crewAttendancesHistory(crewNickname);
+            crewDismisses.addDismissHistory(crewNickname, systemTimeCrewAttendanceHistories);
+        }
+        return crewDismisses.crewDismissHistories();
     }
 }
