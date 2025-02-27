@@ -11,15 +11,13 @@ class PenaltyCheckTest {
 
     @Test
     void 제적_위험자인_크루의_정보를_가져온다() throws IOException {
-        PenaltyCheck penaltyCheck = new PenaltyCheck();
-
         AttendanceBook attendanceBook = new AttendanceBook();
         AttendanceHistoryLoader attendanceHistoryLoader = new AttendanceHistoryLoader();
         attendanceBook = attendanceHistoryLoader.initializeAttendanceWith(
                 new FileReader("src/main/resources/attendances.csv"));
         attendanceBook.recordAllAbsences();
 
-        final var penaltyCrews = penaltyCheck.getPenaltyHistory(attendanceBook);
+        final var penaltyCrews = attendanceBook.getPenaltyHistory();
 
         assertTrue(penaltyCrews.containsKey("짱수"));
         assertTrue(penaltyCrews.containsKey("빙봉"));
