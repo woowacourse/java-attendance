@@ -7,7 +7,7 @@ import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.TreeSet;
+import java.util.TreeMap;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -20,12 +20,9 @@ class CheckInHistoryTest {
     void setUp() {
         CheckInDate checkInDate = CheckInDate.of(LocalDate.of(2024, 12, 3));
         CheckInTime checkInTime = CheckInTime.of(LocalTime.of(10, 0));
-        CheckInDateTime checkInDateTime = CheckInDateTime.of(
-                checkInDate, checkInTime
-        );
-        TreeSet<CheckInDateTime> dateTimes = new TreeSet<>();
-        dateTimes.add(checkInDateTime);
-        history = CheckInHistory.of(dateTimes);
+        TreeMap<CheckInDate, CheckInTime> dateAndTimes = new TreeMap<>();
+        dateAndTimes.put(checkInDate, checkInTime);
+        history = CheckInHistory.of(dateAndTimes);
     }
 
     @Test
