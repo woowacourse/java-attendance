@@ -1,13 +1,14 @@
 package attendance.view;
 
-import attendance.dto.DismissalCrewDto;
-import java.time.LocalDateTime;
-import java.util.Comparator;
-import java.util.List;
 import attendance.domain.model.AttendanceCounter;
 import attendance.domain.model.AttendanceType;
 import attendance.domain.model.SubjectType;
+import attendance.dto.DismissalCrewDto;
 import attendance.util.TimeFormatter;
+import java.time.LocalDateTime;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Map;
 
 public class ResultView {
 
@@ -28,15 +29,26 @@ public class ResultView {
                             Comparator.reverseOrder())
                     .thenComparing(DismissalCrewDto::nickname);
     private static final String DISMISSAL_RESULT_FORM = "- %s: 결석 %d회, 지각 %d회 (%s)";
+    private static Map<SubjectType, String> SUBJECT_TYPE_KOREAN = Map.of(
+            SubjectType.WARNING, "경고",
+            SubjectType.INTERVIEW, "면담",
+            SubjectType.EXPULSION, "제적",
+            SubjectType.NOT_APPLICABLE, "해당없음"
+    );
+    private static Map<AttendanceType, String> ATTENDANCE_TYPE_KOREAN = Map.of(
+            AttendanceType.ATTENDANCE, "출석",
+            AttendanceType.LATE, "지각",
+            AttendanceType.ABSENCE, "결석"
+    );
 
     public void printAttendanceHistory(final String attendanceTime, final AttendanceType attendanceType) {
-        System.out.printf(ATTENDANCE_HISTORY_FORM + LINE, attendanceTime, attendanceType.getName());
+        System.out.printf(ATTENDANCE_HISTORY_FORM + LINE, attendanceTime, ATTENDANCE_TYPE_KOREAN.get(attendanceType));
     }
 
     public void printModifyHistory(final String previousTime, final AttendanceType previousType,
                                    final String modifyTime, final AttendanceType modifyType) {
-        System.out.printf(LINE + MODIFY_HISTORY_FORM + LINE, previousTime, previousType.getName(),
-                modifyTime, modifyType.getName());
+        System.out.printf(LINE + MODIFY_HISTORY_FORM + LINE, previousTime, ATTENDANCE_TYPE_KOREAN.get(previousType),
+                modifyTime, ATTENDANCE_TYPE_KOREAN.get(modifyType));
     }
 
     public void printAttendanceHistoryResultByCrew(
@@ -55,7 +67,7 @@ public class ResultView {
         dtos.stream()
                 .sorted(COMPARATOR)
                 .map(dto -> String.format(DISMISSAL_RESULT_FORM, dto.nickname(),
-                        dto.absentCount(), dto.lateCount(), dto.subjectType().getName()))
+                        dto.absentCount(), dto.lateCount(), SUBJECT_TYPE_KOREAN.get(dto.subjectType())))
                 .forEach(System.out::println);
     }
 
@@ -77,6 +89,6 @@ public class ResultView {
         if (subjectType.equals(SubjectType.NOT_APPLICABLE)) {
             return;
         }
-        System.out.printf(SUBJECT_TYPE_FORM + LINE, subjectType.getName());
+        System.out.printf(SUBJECT_TYPE_FORM + LINE, SUBJECT_TYPE_KOREAN.get(subjectType));
     }
 }

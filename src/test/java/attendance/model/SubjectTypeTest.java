@@ -16,16 +16,16 @@ class SubjectTypeTest {
     @DisplayName("출석, 지각, 결석 횟수를 통해 제적 위험자인지 결정한다")
     @ParameterizedTest
     @CsvSource({
-            "0,0,해당없음",
-            "0,2,경고",
-            "0,3,면담",
-            "0,6,제적",
+            "0,0,NOT_APPLICABLE",
+            "0,2,WARNING",
+            "0,3,INTERVIEW",
+            "0,6,EXPULSION",
 
-            "6,0,경고",
-            "9,0,면담",
-            "18,0,제적",
+            "6,0,WARNING",
+            "9,0,INTERVIEW",
+            "18,0,EXPULSION",
 
-            "5,2,면담"
+            "5,2,INTERVIEW"
     })
     void determineSubjectTypeTest(final int lateCount,
                                   final int absentCount, final String subjectTypeName) {
@@ -35,7 +35,7 @@ class SubjectTypeTest {
         SubjectType expected = SubjectType.from(absentCount, lateCount);
 
         // Then
-        assertThat(expected.getName()).isEqualTo(subjectTypeName);
+        assertThat(expected.name()).isEqualTo(subjectTypeName);
     }
 
     @Test

@@ -1,8 +1,8 @@
 package attendance.view;
 
+import attendance.util.TimeFormatter;
 import java.time.LocalDate;
 import java.util.Scanner;
-import attendance.util.TimeFormatter;
 
 public class InputView {
 

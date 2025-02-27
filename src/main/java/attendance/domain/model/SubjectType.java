@@ -5,20 +5,18 @@ import java.util.Comparator;
 
 public enum SubjectType {
 
-    WARNING("경고", 2),
-    INTERVIEW("면담", 3),
-    EXPULSION("제적", 6),
-    NOT_APPLICABLE("해당없음", 0);
+    WARNING(2),
+    INTERVIEW(3),
+    EXPULSION(6),
+    NOT_APPLICABLE(0);
 
     private static final Comparator<SubjectType> COMPARATOR = (baseType, comparedType) ->
             Integer.compare(comparedType.threshold, baseType.threshold);
     private static final int CONVERTED_ABSENT_UNIT = 3;
 
-    private final String name;
     private final int threshold;
 
-    SubjectType(final String name, final int threshold) {
-        this.name = name;
+    SubjectType(final int threshold) {
         this.threshold = threshold;
     }
 
@@ -45,9 +43,5 @@ public enum SubjectType {
 
     public boolean isApplicable() {
         return this != SubjectType.NOT_APPLICABLE;
-    }
-
-    public String getName() {
-        return name;
     }
 }
