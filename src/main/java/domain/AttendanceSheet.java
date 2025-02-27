@@ -62,7 +62,20 @@ public class AttendanceSheet {
         Arrays.stream(AttendanceState.values())
                 .forEach(state -> counts.putIfAbsent(state, 0L));
 
+        Long absentCount = counts.values().stream()
+                .reduce(dayCount(), (allDay, attendedDay) -> allDay - attendedDay);
+
+        counts.put(AttendanceState.ABSENT, counts.get(AttendanceState.ABSENT)*2 + absentCount);
+
         return counts;
+    }
+
+    private Long dayCount() {
+        return LocalDate.of(2024, 12, 13).withDayOfMonth(1)
+                .datesUntil(LocalDate.of(2024, 12, 13))
+                .filter(date -> absentPolicy.isWeekday(date.getDayOfWeek()))
+                .filter(absentPolicy::isNotHoliday)
+                .count();
     }
 
     public Map<String, Map<AttendanceState, Long>> countAttendancesState() {

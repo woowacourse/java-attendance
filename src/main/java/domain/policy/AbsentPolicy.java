@@ -19,6 +19,14 @@ public class AbsentPolicy {
     private static final LocalTime MONDAY_EDUCATION_START_TIME = LocalTime.of(13, 0);
     private static final LocalTime STANDARD_EDUCATION_START_TIME = LocalTime.of(10, 0);
 
+    public boolean isWeekday(DayOfWeek attendanceDayOfWeek) {
+        return !(attendanceDayOfWeek == DayOfWeek.SATURDAY || attendanceDayOfWeek == DayOfWeek.SUNDAY);
+    }
+
+    public boolean isNotHoliday(LocalDate date) {
+        return !date.equals(CHRISTMAS);
+    }
+
     public void validateIsWeekend(DayOfWeek attendanceDayOfWeek) {
         if(attendanceDayOfWeek == DayOfWeek.SATURDAY || attendanceDayOfWeek == DayOfWeek.SUNDAY){
             throw new IllegalArgumentException("[ERROR] 주말에는 출석할 수 없습니다");
