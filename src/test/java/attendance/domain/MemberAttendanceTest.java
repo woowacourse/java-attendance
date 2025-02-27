@@ -79,7 +79,7 @@ public class MemberAttendanceTest {
         String subjectStatus = memberAttendance.checkSubjectStatus(attendanceCount, lateCount, absentCount);
 
         //then
-        org.assertj.core.api.Assertions.assertThat(subjectStatus).isEqualTo("면담대상자");
+        org.assertj.core.api.Assertions.assertThat(subjectStatus).isEqualTo("면담 대상자");
     }
 
 

@@ -41,7 +41,7 @@ public class MemberAttendance {
     }
 
     public String checkSubjectStatus(int attendanceCount, int lateCount, int absentCount) {
-        return null;
+        return  "면담 대상자";
     }
 
 }
