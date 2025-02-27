@@ -13,7 +13,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
-class AttendanceTest {
+class CrewTest {
 
     private static final LocalDate DATE = LocalDate.of(2025, 02, 25);
     private static final LocalTime TIME = LocalTime.of(10, 00);

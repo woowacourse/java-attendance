@@ -7,6 +7,8 @@ import java.time.LocalTime;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 
 class LectureTimeTest {
 
@@ -15,29 +17,31 @@ class LectureTimeTest {
     void fromTest() {
         // when then
         assertSoftly(softly -> {
-            softly.assertThat(LectureTime.from(LocalDate.of(2025, 02, 24))).isEqualTo(LectureTime.MONDAY);
-            softly.assertThat(LectureTime.from(LocalDate.of(2025, 02, 25))).isEqualTo(LectureTime.TUESDAY);
-            softly.assertThat(LectureTime.from(LocalDate.of(2025, 02, 26))).isEqualTo(LectureTime.WEDNESDAY);
-            softly.assertThat(LectureTime.from(LocalDate.of(2025, 02, 27))).isEqualTo(LectureTime.THURSDAY);
-            softly.assertThat(LectureTime.from(LocalDate.of(2025, 02, 28))).isEqualTo(LectureTime.FRIDAY);
-            softly.assertThat(LectureTime.from(LocalDate.of(2025, 03, 01))).isEqualTo(LectureTime.SATURDAY);
-            softly.assertThat(LectureTime.from(LocalDate.of(2025, 03, 02))).isEqualTo(LectureTime.SUNDAY);
+            softly.assertThat(LectureTime.from(LocalDate.of(2025, 2, 24))).isEqualTo(LectureTime.MONDAY);
+            softly.assertThat(LectureTime.from(LocalDate.of(2025, 2, 25))).isEqualTo(LectureTime.TUESDAY);
+            softly.assertThat(LectureTime.from(LocalDate.of(2025, 2, 26))).isEqualTo(LectureTime.WEDNESDAY);
+            softly.assertThat(LectureTime.from(LocalDate.of(2025, 2, 27))).isEqualTo(LectureTime.THURSDAY);
+            softly.assertThat(LectureTime.from(LocalDate.of(2025, 2, 28))).isEqualTo(LectureTime.FRIDAY);
+            softly.assertThat(LectureTime.from(LocalDate.of(2025, 3, 01))).isEqualTo(LectureTime.SATURDAY);
+            softly.assertThat(LectureTime.from(LocalDate.of(2025, 3, 02))).isEqualTo(LectureTime.SUNDAY);
         });
     }
 
-    @Test
+    @ParameterizedTest
+    @CsvSource({
+        "2025,2,24,13,05", // MONDAY
+        "2025,2,24,13,35", // MONDAY
+        "2025,2,25,10,05", // OTHER DAY
+        "2025,2,25,10,35", // OTHER DAY
+    })
     @DisplayName("늦은 시간(분)을 계산한다")
-    void getLateTimeOfTest() {
+    void getLateTimeOfTest(int year, int month, int day, int hour, int minute) {
         // when
-        LocalDate monday = LocalDate.of(2025, 02, 24);
-        LocalDate otherDay = LocalDate.of(2025, 02, 25);
+        LocalDate date = LocalDate.of(year, month, day);
 
         // then
         assertSoftly(softly -> {
-            softly.assertThat(LectureTime.from(monday).getLateTimeOf(LocalTime.of(13, 00))).isEqualTo(0);
-            softly.assertThat(LectureTime.from(monday).getLateTimeOf(LocalTime.of(13, 05))).isEqualTo(5);
-            softly.assertThat(LectureTime.from(otherDay).getLateTimeOf(LocalTime.of(10, 10))).isEqualTo(10);
-            softly.assertThat(LectureTime.from(otherDay).getLateTimeOf(LocalTime.of(10, 35))).isEqualTo(35);
+            softly.assertThat(LectureTime.from(date).getLateTimeOf(LocalTime.of(hour, minute))).isEqualTo(minute);
         });
     }
 }
