@@ -7,7 +7,7 @@ public class ClockTodayProvider implements TodayProvider {
     
     private final Clock clock;
     
-    private ClockTodayProvider(final Clock clock) {
+    public ClockTodayProvider(final Clock clock) {
         this.clock = clock;
     }
     

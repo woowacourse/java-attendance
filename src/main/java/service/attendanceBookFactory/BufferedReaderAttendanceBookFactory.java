@@ -19,7 +19,7 @@ public class BufferedReaderAttendanceBookFactory implements AttendanceBookFactor
     private final TodayProvider todayProvider;
     private final BufferedReader reader;
     
-    private BufferedReaderAttendanceBookFactory(final TodayProvider todayProvider, final BufferedReader reader) {
+    public BufferedReaderAttendanceBookFactory(final TodayProvider todayProvider, final BufferedReader reader) {
         this.todayProvider = todayProvider;
         this.reader = reader;
     }

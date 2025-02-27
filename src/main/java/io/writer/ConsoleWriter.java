@@ -1,22 +1,17 @@
 package io.writer;
 
-import java.io.BufferedWriter;
-import java.io.IOException;
+import java.io.PrintWriter;
 
 public class ConsoleWriter implements Writer {
     
-    private final BufferedWriter writer;
+    private final PrintWriter writer;
     
-    private ConsoleWriter(final BufferedWriter writer) {
+    public ConsoleWriter(final PrintWriter writer) {
         this.writer = writer;
     }
     
     @Override
     public void writeLine(final String value) {
-        try {
-            writer.write(value + "\n");
-        } catch (IOException e) {
-            throw new RuntimeException("출력 중 장애가 발생하였습니다.", e);
-        }
+        writer.println(value);
     }
 }

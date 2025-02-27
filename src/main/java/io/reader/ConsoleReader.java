@@ -7,7 +7,7 @@ public class ConsoleReader implements Reader {
     
     private final BufferedReader reader;
     
-    private ConsoleReader(final BufferedReader reader) {
+    public ConsoleReader(final BufferedReader reader) {
         this.reader = reader;
     }
     

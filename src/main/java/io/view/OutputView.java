@@ -17,7 +17,7 @@ public class OutputView {
     
     private final Writer writer;
     
-    OutputView(final Writer writer) {
+    public OutputView(final Writer writer) {
         this.writer = writer;
     }
     
@@ -137,7 +137,7 @@ public class OutputView {
     }
     
     private String parseDate(final LocalDate date) {
-        return "%2d월 %2d일 %s".formatted(
+        return "%02d월 %02d일 %s".formatted(
                 date.getMonth().getValue(),
                 date.getDayOfMonth(),
                 date.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.KOREAN)
@@ -145,7 +145,11 @@ public class OutputView {
     }
     
     private String parseTimeAndStatus(final LocalTime time, final AttendanceStatus status) {
-        return "%2d:%2d (%s)".formatted(
+        if (time == null) {
+            return "--:-- (%s)".formatted(status.name());
+        }
+        
+        return "%02d:%02d (%s)".formatted(
                 time.getHour(),
                 time.getMinute(),
                 status.name()

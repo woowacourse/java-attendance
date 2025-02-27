@@ -16,20 +16,20 @@ public class InputView {
     private final Reader reader;
     private final Writer writer;
     
-    private InputView(final Reader reader, final Writer writer) {
+    public InputView(final Reader reader, final Writer writer) {
         this.reader = reader;
         this.writer = writer;
     }
     
     public MenuSelect getSelectedMenu(final LocalDate today) {
         String output = """
+                
                 오늘은 %d월 %d일 %s입니다. 기능을 선택해 주세요.
                 1. 출석 확인
                 2. 출석 수정
                 3. 크루별 출석 기록 확인
                 4. 제적 위험자 확인
                 Q. 종료
-                
                 """.formatted(
                 today.getMonth().getValue(),
                 today.getDayOfMonth(),
