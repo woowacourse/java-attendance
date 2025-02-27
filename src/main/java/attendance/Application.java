@@ -92,7 +92,7 @@ public class Application {
             OutputView.printNotRegisteredCrewNickname();
             return;
         }
-        LocalDate modifiedAttendanceDate = InputView.readModifiedDate(today);
+        LocalDate attendanceDateToModify = InputView.readAttendanceDateToModify(today);
     }
 
     private static void checkAttendanceHistory() {

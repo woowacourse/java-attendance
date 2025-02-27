@@ -53,7 +53,7 @@ public class InputView {
         return input();
     }
 
-    public static LocalDate readModifiedDate(final LocalDate today) {
+    public static LocalDate readAttendanceDateToModify(final LocalDate today) {
         System.out.println("수정하려는 날짜(일)를 입력해 주세요.");
         int year = today.getYear();
         int month = today.getMonthValue();
