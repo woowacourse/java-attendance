@@ -1,20 +1,15 @@
 package domain;
 
-import config.Holiday;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import util.DateUtils;
 
 public enum AttendanceStatus {
     ON_TIME("출석"),
     LATE("지각"),
     ABSENCE("결석"),
     NONE("없음");
-
-    public static final LocalTime CAMPUS_OPEN_TIME = LocalTime.of(8, 0);
-    public static final LocalTime CAMPUS_CLOSE_TIME = LocalTime.of(23, 0);
 
     public static final int MONDAY_START_HOUR = 13;
     public static final int NOT_MONDAY_START_HOUR = 10;
@@ -36,15 +31,10 @@ public enum AttendanceStatus {
     }
 
     public static AttendanceStatus determine(LocalDateTime attendTime) {
+        AttendanceDateTimeValidator.validate(attendTime);
+
         LocalDate date = attendTime.toLocalDate();
         LocalTime time = attendTime.toLocalTime();
-        if (DateUtils.isWeekend(date)
-            || Holiday.isHoliday(date)
-            || time.isBefore(CAMPUS_OPEN_TIME)
-            || time.isAfter(CAMPUS_CLOSE_TIME)) {
-            return NONE;
-        }
-
         return computeAttendanceStatus(date, time);
     }
 

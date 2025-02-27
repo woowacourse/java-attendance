@@ -1,6 +1,7 @@
 package domain;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -44,9 +45,10 @@ public class AttendanceStatusTest {
         "2025-02-28,10:31,ABSENCE",
 
     })
-    void 화수목금_시간별_출석_시_출석상태(LocalDate attendDate, LocalTime attendTime, AttendanceStatus expectedStatus) {
+    void 화수목금_시간별_출석_시_출석상태(LocalDate attendDate, LocalTime attendTime,
+        AttendanceStatus expectedStatus) {
         var result = AttendanceStatus.determine(LocalDateTime.of(attendDate, attendTime));
-        
+
         assertThat(result).isEqualTo(expectedStatus);
     }
 
@@ -55,9 +57,9 @@ public class AttendanceStatusTest {
         "2025-02-22T10:00:00", // 토요일
         "2025-02-23T10:00:00" // 일요일
     })
-    void 주말_출석_시_상태_없음(LocalDateTime attendTime) {
-        var result = AttendanceStatus.determine(attendTime);
-        assertThat(result).isEqualTo(AttendanceStatus.NONE);
+    void 주말에_출석_시_예외가_발생한다(LocalDateTime attendTime) {
+        assertThatThrownBy(() -> AttendanceStatus.determine(attendTime))
+            .isInstanceOf(IllegalArgumentException.class);
     }
 
     @ParameterizedTest
@@ -65,18 +67,16 @@ public class AttendanceStatusTest {
         "2025-03-01T10:00:00", // 삼일절
         "2025-05-05T10:00:00" // 목요일 어린이날
     })
-    void 공휴일_출석_시_상태_없음(LocalDateTime attendTime) {
-        var result = AttendanceStatus.determine(attendTime);
-        assertThat(result).isEqualTo(AttendanceStatus.NONE);
+    void 공휴일에_출석_시_예외가_발생한다(LocalDateTime attendTime) {
+        assertThatThrownBy(() -> AttendanceStatus.determine(attendTime))
+            .isInstanceOf(IllegalArgumentException.class);
     }
 
     @ParameterizedTest
-    @CsvSource({
-        "07:59", "23:01"
-    })
-    void 캠퍼스_운영시간이_아닐_때_출석_시_상태_없음(LocalTime attendTime) {
+    @CsvSource({"07:59", "23:01"})
+    void 캠퍼스_운영시간이_아닐_때_출석_시_예외가_발생한다(LocalTime attendTime) {
         var weekday = LocalDate.of(2025, 2, 25);
-        var result = AttendanceStatus.determine(LocalDateTime.of(weekday, attendTime));
-        assertThat(result).isEqualTo(AttendanceStatus.NONE);
+        assertThatThrownBy(() -> AttendanceStatus.determine(LocalDateTime.of(weekday, attendTime)))
+            .isInstanceOf(IllegalArgumentException.class);
     }
 }
