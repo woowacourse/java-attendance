@@ -2,6 +2,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import domain.AttendanceTime;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
@@ -50,4 +51,22 @@ public class AttendanceTimeTest {
         //then
         assertThat(expected).isEqualTo(isSameDay);
     }
+
+    @ParameterizedTest
+    @CsvSource({
+            "2024, 12, 2, false",
+            "2024, 12, 3, true",
+            "2024, 11, 2, false",
+            "2023, 12, 2, false"
+    })
+    void 출석시간이_특정날짜인지_확인한다(int year, int month, int date, boolean expected) {
+        //given
+        LocalDateTime time = LocalDateTime.of(2024, 12, 3, 9, 30);
+        AttendanceTime attendanceTime = new AttendanceTime(time);
+        //when
+        boolean actual = attendanceTime.isIn(LocalDate.of(year, month, date));
+        //then
+        assertThat(actual).isEqualTo(expected);
+    }
+
 }
