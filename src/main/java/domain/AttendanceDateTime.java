@@ -8,7 +8,7 @@ public class AttendanceDateTime {
 
     private final LocalDateTime attendedTime;
 
-    AttendanceDateTime(LocalDateTime attendedTime) {
+    private AttendanceDateTime(LocalDateTime attendedTime) {
         AttendanceDateTimeValidator.validate(attendedTime);
         this.attendedTime = attendedTime;
     }
@@ -27,7 +27,29 @@ public class AttendanceDateTime {
         return attendedTime.toLocalTime();
     }
 
+    public static AttendanceDateTime of(int year, int month, int dayOfMonth, int hour, int minute) {
+        return new AttendanceDateTime(LocalDateTime.of(year, month, dayOfMonth, hour, minute));
+    }
+
+    public static AttendanceDateTime from(LocalDateTime localDateTime) {
+        return new AttendanceDateTime(localDateTime);
+    }
+
     public static AttendanceDateTime parse(String attendedTime) {
         return new AttendanceDateTime(LocalDateTime.parse(attendedTime));
+    }
+
+    @Override
+    public final boolean equals(Object o) {
+        if (!(o instanceof AttendanceDateTime that)) {
+            return false;
+        }
+
+        return attendedTime.equals(that.attendedTime);
+    }
+
+    @Override
+    public int hashCode() {
+        return attendedTime.hashCode();
     }
 }

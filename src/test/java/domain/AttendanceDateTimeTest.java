@@ -16,28 +16,23 @@ import org.junit.jupiter.api.Test;
 public class AttendanceDateTimeTest {
 
     @Test
-    void 날짜와_시간을_통해서_출석_가능한_시간에_출석시간을_생성한다() {
-        var date = LocalDate.of(2025, 2, 26);
-        var time = LocalTime.of(10, 0);
-
-        AttendanceDateTime attendance = new AttendanceDateTime(LocalDateTime.of(date, time));
+    void 날짜와_시간을_통해서_출석_가능한_시간에_출석일시를_생성한다() {
+        AttendanceDateTime attendance = AttendanceDateTime.of(2025, 2, 26, 10, 0);
 
         assertThat(attendance).isNotNull();
     }
 
     @Test
-    void 출석시간은_생성_시_주어진_날짜와_시간을_가진다() {
-        var date = LocalDate.of(2025, 2, 26);
-        var time = LocalTime.of(10, 0);
+    void LocalDateTime으로부터_출석일시를_생성한다() {
+        LocalDateTime localDateTime = LocalDateTime.of(2025, 2, 26, 10, 0);
+        AttendanceDateTime attendanceDateTime = AttendanceDateTime.from(localDateTime);
 
-        AttendanceDateTime attendance = new AttendanceDateTime(LocalDateTime.of(date, time));
-
-        assertThat(attendance.getDate()).isEqualTo(date);
-        assertThat(attendance.getTime()).isEqualTo(time);
+        assertThat(attendanceDateTime.getDate()).isEqualTo(localDateTime.toLocalDate());
+        assertThat(attendanceDateTime.getTime()).isEqualTo(localDateTime.toLocalTime());
     }
 
     @Test
-    void 문자열을_파싱하여_출석시간을_생성할_수_있다() {
+    void 문자열을_파싱하여_출석일시를_생성할_수_있다() {
         String dateTimeString = "2025-02-26T10:00";
 
         AttendanceDateTime result = AttendanceDateTime.parse(dateTimeString);
@@ -47,35 +42,43 @@ public class AttendanceDateTimeTest {
     }
 
     @Test
-    void _평일8시_전에_출석시간을_생성하려하면_예외가_발생한다() {
-        var weekday_0759 = LocalDateTime.of(2025, 2, 26, 7, 59);
-        assertThatThrownBy(() -> new AttendanceDateTime(weekday_0759))
+    void 출석일시는_생성_시_주어진_날짜와_시간을_가진다() {
+        AttendanceDateTime attendance = AttendanceDateTime.of(2025, 2, 26, 10, 0);
+
+        var date = LocalDate.of(2025, 2, 26);
+        var time = LocalTime.of(10, 0);
+        assertThat(attendance.getDate()).isEqualTo(date);
+        assertThat(attendance.getTime()).isEqualTo(time);
+    }
+
+    @Test
+    void _평일8시_전에_출석일시를_생성하려하면_예외가_발생한다() {
+        assertThatThrownBy(() -> AttendanceDateTime.of(2025, 2, 26, 7, 59))
             .isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
-    void _평일23시_후에_출석시간을_생성하려하면_예외가_발생한다() {
-        var weekday_2301 = LocalDateTime.of(2025, 2, 26, 23, 1);
-        assertThatThrownBy(() -> new AttendanceDateTime(weekday_2301))
+    void _평일23시_후에_출석일시를_생성하려하면_예외가_발생한다() {
+        assertThatThrownBy(() -> AttendanceDateTime.of(2025, 2, 26, 23, 1))
             .isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
-    void 주말날짜로_출석시간을_생성하려하면_예외가_발생한다() {
+    void 주말날짜로_출석일시를_생성하려하면_예외가_발생한다() {
         var weekend = LocalDateTime.of(2025, 2, 23, 10, 0);
-        assertThatThrownBy(() -> new AttendanceDateTime(weekend))
+        assertThatThrownBy(() -> AttendanceDateTime.from(weekend))
             .isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
-    void 공휴일에_출석하려고_하면_예외가_발생한다() {
+    void 공휴일_날짜로_출석일시를_생성하려하면_예외가_발생한다() {
         var weekend = LocalDateTime.of(2025, 5, 5, 10, 0);
-        assertThatThrownBy(() -> new AttendanceDateTime(weekend))
+        assertThatThrownBy(() -> AttendanceDateTime.from(weekend))
             .isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
-    void 다른_출석시간과_같은_날짜인지_확인할_수_있다() {
+    void 다른_출석일시와_같은_날짜인지_확인할_수_있다() {
         var var1 = AttendanceDateTime.parse("2025-02-26T10:00");
         var var2 = AttendanceDateTime.parse("2025-02-26T11:00");
 
@@ -85,7 +88,7 @@ public class AttendanceDateTimeTest {
     }
 
     @Test
-    void 다른_출석시간과_같은_날짜가_아닌지_확인할_수_있다() {
+    void 다른_출석일시와_같은_날짜가_아닌지_확인할_수_있다() {
         var var1 = AttendanceDateTime.parse("2025-02-25T10:00");
         var var2 = AttendanceDateTime.parse("2025-02-26T11:00");
 
