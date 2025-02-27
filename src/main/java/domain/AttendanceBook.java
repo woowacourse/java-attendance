@@ -1,6 +1,7 @@
 package domain;
 
-import dto.AttendanceStatusCountResponse;
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,27 +17,44 @@ public class AttendanceBook {
         crews.add(newCrew);
     }
 
-    public AttendanceStatusCountResponse getAttendanceStatusCountResponseByName(String name) {
-        Crew crew = findCrewByName(name);
-
-        return new AttendanceStatusCountResponse(
-                crew.countAttendanceStatus(AttendanceStatus.ATTEND),
-                crew.countAttendanceStatus(AttendanceStatus.LATE),
-                crew.countAttendanceStatus(AttendanceStatus.ABSENT)
-        );
+    public boolean checkNameExists(String name) {
+        return crews.stream()
+                .anyMatch(crew -> crew.hasName(name));
     }
 
     public String getPenaltyMessageByName(String name) {
         Crew crew = findCrewByName(name);
-        int lateCount = crew.countAttendanceStatus(AttendanceStatus.LATE);
-        int absentCount = crew.countAttendanceStatus(AttendanceStatus.ABSENT);
+        int lateCount = crew.countAttendanceStatusInDecember(AttendanceStatus.LATE);
+        int absentCount = crew.countAttendanceStatusInDecember(AttendanceStatus.ABSENT);
         return Penalty.findPenaltyMessageByAttendanceStatusCount(lateCount, absentCount);
     }
 
-    public Crew findCrewByName(String name) {
+    private Crew findCrewByName(String name) {
         return crews.stream()
-                .filter(crew -> crew.isName(name))
+                .filter(crew -> crew.hasName(name))
                 .findAny()
                 .orElseThrow(() -> new IllegalArgumentException(ErrorCode.CREW_NAME_NOT_FOUND.getMessage()));
+    }
+
+    public int getAttendanceStatusCountByName(String name, AttendanceStatus attendanceStatus) {
+        Crew crew = findCrewByName(name);
+
+        return crew.countAttendanceStatusInDecember(attendanceStatus);
+    }
+
+    public void putAttendanceRecordByName(String name, LocalDate date, LocalTime time) {
+        Crew crew = findCrewByName(name);
+        crew.putAttendanceRecord(date, time);
+    }
+
+    public void modifyAttendanceRecordByName(String name, LocalDate date, LocalTime time) {
+        Crew crew = findCrewByName(name);
+        crew.modifyAttendanceRecord(date, time);
+    }
+
+    public LocalTime findTimeByNameAndDate(String name, LocalDate date) {
+        Crew crew = findCrewByName(name);
+
+        return crew.findTimeByDate(date);
     }
 }

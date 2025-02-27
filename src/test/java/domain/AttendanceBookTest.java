@@ -5,8 +5,9 @@ import static domain.AttendanceStatus.EXCEPT_MONDAY_ATTEND_TIME;
 import static domain.AttendanceStatus.LATE_THRESHOLD_MINUTES;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
-import dto.AttendanceStatusCountResponse;
 import java.time.LocalDate;
+import java.time.LocalTime;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -16,6 +17,7 @@ class AttendanceBookTest {
     private final String testCrewName = "pobi";
     private AttendanceBook attendanceBook;
 
+
     @BeforeEach
     void setUp() {
         attendanceBook = new AttendanceBook();
@@ -23,19 +25,34 @@ class AttendanceBookTest {
     }
 
     @Test
-    @DisplayName("출석, 지각, 결석 횟수를 종합하여 확인할 수 있다.")
+    @DisplayName("출석 확인을 수정하려면 수정하려는 날짜, 등교 시간을 입력하여 기록을 수정할 수 있다.")
     void attendanceBookTest1() {
-        assertThat(attendanceBook.getAttendanceStatusCountResponseByName(testCrewName))
-                .isEqualTo(new AttendanceStatusCountResponse(0, 0, 31));
+        LocalDate date = LocalDate.now();
+        LocalTime originalTime = LocalTime.now();
+        LocalTime timeToModify = LocalTime.now().minusHours(1);
 
-        Crew testCrew = attendanceBook.findCrewByName(testCrewName);
-        testCrew.checkAttendance(LocalDate.of(2024, 12, 3), EXCEPT_MONDAY_ATTEND_TIME);
-        testCrew.checkAttendance(LocalDate.of(2024, 12, 4),
+        attendanceBook.putAttendanceRecordByName(testCrewName, date, originalTime);
+        attendanceBook.modifyAttendanceRecordByName(testCrewName, date, timeToModify);
+
+        assertThat(attendanceBook.findTimeByNameAndDate(testCrewName, date))
+                .isEqualTo(timeToModify);
+    }
+
+    @Test
+    @DisplayName("출석, 지각, 결석 횟수를 확인할 수 있다.")
+    void attendanceBookTest2() {
+        attendanceBook.putAttendanceRecordByName(testCrewName, LocalDate.of(2024, 12, 3),
+                EXCEPT_MONDAY_ATTEND_TIME);
+        attendanceBook.putAttendanceRecordByName(testCrewName, LocalDate.of(2024, 12, 4),
                 EXCEPT_MONDAY_ATTEND_TIME.plusMinutes(LATE_THRESHOLD_MINUTES + 1));
-        testCrew.checkAttendance(LocalDate.of(2024, 12, 5),
+        attendanceBook.putAttendanceRecordByName(testCrewName, LocalDate.of(2024, 12, 5),
                 EXCEPT_MONDAY_ATTEND_TIME.plusMinutes(ABSENT_THRESHOLD_MINUTES + 1));
 
-        assertThat(attendanceBook.getAttendanceStatusCountResponseByName(testCrewName))
-                .isEqualTo(new AttendanceStatusCountResponse(1, 1, 29));
+        Assertions.assertThat(attendanceBook.getAttendanceStatusCountByName(testCrewName, AttendanceStatus.ATTEND))
+                .isEqualTo(1);
+        Assertions.assertThat(attendanceBook.getAttendanceStatusCountByName(testCrewName, AttendanceStatus.LATE))
+                .isEqualTo(1);
+        Assertions.assertThat(attendanceBook.getAttendanceStatusCountByName(testCrewName, AttendanceStatus.ABSENT))
+                .isEqualTo(29);
     }
 }

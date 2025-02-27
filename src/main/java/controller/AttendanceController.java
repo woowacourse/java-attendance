@@ -1,0 +1,80 @@
+package controller;
+
+import static domain.Crew.DECEMBER_DAYS_END;
+import static domain.Crew.DECEMBER_DAYS_START;
+import static domain.Crew.SYSTEM_MONTH;
+import static domain.Crew.SYSTEM_YEAR;
+
+import domain.AttendanceBook;
+import domain.AttendanceStatus;
+import dto.AttendanceStatusCountResponse;
+import dto.CheckAttendanceResponse;
+import dto.GetAttendanceRecordsResponse;
+import dto.GetAttendanceRecordsResponse.AttendanceRecordDTO;
+import dto.ModifyAttendanceResponse;
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
+import util.Parser;
+
+public class AttendanceController {
+
+    private final AttendanceBook attendanceBook;
+
+    public AttendanceController(AttendanceBook attendanceBook) {
+        this.attendanceBook = attendanceBook;
+    }
+
+    public void start() {
+    }
+
+    public CheckAttendanceResponse checkAttendance(String name, LocalDate date, LocalTime time) {
+        attendanceBook.putAttendanceRecordByName(name, date, time);
+
+        return new CheckAttendanceResponse(
+                Parser.parseDateInKorean(date), Parser.parseTimeToString(time),
+                AttendanceStatus.findMessageByAttendDateAndTime(date, time)
+        );
+    }
+
+    public ModifyAttendanceResponse modifyAttendance(String name, LocalDate date, LocalTime timeToModify) {
+        LocalTime originalTime = attendanceBook.findTimeByNameAndDate(name, date);
+        attendanceBook.putAttendanceRecordByName(name, date, timeToModify);
+
+        return new ModifyAttendanceResponse(
+                Parser.parseDateInKorean(date),
+                Parser.parseTimeToString(originalTime),
+                Parser.parseTimeToString(timeToModify),
+                AttendanceStatus.findMessageByAttendDateAndTime(date, originalTime),
+                AttendanceStatus.findMessageByAttendDateAndTime(date, timeToModify)
+        );
+    }
+
+    public GetAttendanceRecordsResponse getAttendanceRecords(String name) {
+        return new GetAttendanceRecordsResponse(
+                IntStream.rangeClosed(DECEMBER_DAYS_START, DECEMBER_DAYS_END)
+                        .mapToObj(day -> createAttendanceRecordDTOByName(name, day))
+                        .collect(Collectors.toList()));
+    }
+
+    private AttendanceRecordDTO createAttendanceRecordDTOByName(String name, int day) {
+        LocalDate date = LocalDate.of(SYSTEM_YEAR, SYSTEM_MONTH, day);
+        LocalTime time = attendanceBook.findTimeByNameAndDate(name, date);
+
+        return new AttendanceRecordDTO(
+                Parser.parseDateInKorean(date),
+                Parser.parseTimeToString(time),
+                AttendanceStatus.findByAttendDateAndTime(date, time).getMessage()
+        );
+    }
+
+
+    public AttendanceStatusCountResponse getAttendanceStatusCountResponseByName(String name) {
+        return new AttendanceStatusCountResponse(
+                attendanceBook.getAttendanceStatusCountByName(name, AttendanceStatus.ATTEND),
+                attendanceBook.getAttendanceStatusCountByName(name, AttendanceStatus.LATE),
+                attendanceBook.getAttendanceStatusCountByName(name, AttendanceStatus.ABSENT)
+        );
+    }
+}
