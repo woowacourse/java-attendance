@@ -1,6 +1,5 @@
-package domain;
+package domain.attendance;
 
-import domain.attendance.AttendanceDate;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
