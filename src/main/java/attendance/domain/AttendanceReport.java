@@ -1,7 +1,6 @@
 package attendance.domain;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -62,18 +61,11 @@ public class AttendanceReport {
     }
 
     public List<WoowaDate> getNoAttendanceDates() {
-        List<WoowaDate> missingDates = new ArrayList<>();
-        for (LocalDate date = startDate; !date.isAfter(endDate); date = date.plusDays(1)) {
-            if (policy.isEducationDay(date)) {
-                WoowaDate currentDate = new WoowaDate(date, policy);
-                boolean hasRecord = records.stream()
-                        .anyMatch(record -> record.getWoowaDate().equals(currentDate));
-                if (!hasRecord) {
-                    missingDates.add(currentDate);
-                }
-            }
-        }
-        return Collections.unmodifiableList(missingDates);
+        return startDate.datesUntil(endDate.plusDays(1))
+                .filter(policy::isEducationDay)
+                .map(date -> new WoowaDate(date, policy))
+                .filter(currentDate -> records.stream().noneMatch(record -> record.getWoowaDate().equals(currentDate)))
+                .toList();
     }
 
     public List<AttendanceRecord> getRecords() {
