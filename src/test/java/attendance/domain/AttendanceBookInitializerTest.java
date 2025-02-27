@@ -15,15 +15,17 @@ public class AttendanceBookInitializerTest {
         AttendanceBookInitializer attendanceBookInitializer = new AttendanceBookInitializer();
         List<String> crewAttendanceTexts = List.of("쿠키,2025-02-25 10:04", "빙봉,2025-02-26 10:07", "빙봉,2025-02-27 10:35");
 
+        Crew cookie = new Crew("쿠키");
         List<AttendanceDateTime> cookieAttendanceDateTimes = List.of(
                 new AttendanceDateTime(Year.of(2025).atMonth(2).atDay(25).atTime(10, 4)));
+        Crew bingbong = new Crew("빙봉");
         List<AttendanceDateTime> bingbongAttendanceDateTimes = List.of(
                 new AttendanceDateTime(Year.of(2025).atMonth(2).atDay(26).atTime(10, 7)),
                 new AttendanceDateTime(Year.of(2025).atMonth(2).atDay(27).atTime(10, 35)));
-        Map<String, List<AttendanceDateTime>> expected = Map.of("쿠키", cookieAttendanceDateTimes, "빙봉", bingbongAttendanceDateTimes);
+        Map<Crew, List<AttendanceDateTime>> expected = Map.of(cookie, cookieAttendanceDateTimes, bingbong, bingbongAttendanceDateTimes);
 
         // When
-        Map<String, List<AttendanceDateTime>> crewAttendances = attendanceBookInitializer.parseTexts(crewAttendanceTexts);
+        Map<Crew, List<AttendanceDateTime>> crewAttendances = attendanceBookInitializer.parseTexts(crewAttendanceTexts);
 
         // Then
         Assertions.assertThat(crewAttendances)

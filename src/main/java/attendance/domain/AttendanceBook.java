@@ -5,9 +5,9 @@ import java.util.Map;
 
 public class AttendanceBook {
 
-    private final Map<String, List<AttendanceDateTime>> crewAttedances;
+    private final Map<Crew, List<AttendanceDateTime>> crewAttedances;
 
-    public AttendanceBook(Map<String, List<AttendanceDateTime>> crewAttendances) {
+    public AttendanceBook(final Map<Crew, List<AttendanceDateTime>> crewAttendances) {
         this.crewAttedances = crewAttendances;
     }
 }
