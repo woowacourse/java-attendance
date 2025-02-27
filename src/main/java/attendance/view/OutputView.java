@@ -5,6 +5,7 @@ import attendance.model.Crew;
 import attendance.model.Status;
 import java.time.format.DateTimeFormatter;
 import java.time.format.TextStyle;
+import java.util.List;
 import java.util.Locale;
 
 public class OutputView {
@@ -17,6 +18,8 @@ public class OutputView {
             결석: %d회
             """;
     private static final String CREW_STATUS_STRING = "%s 대상자입니다.";
+    private static final String EXPEL_CREWS_HEAD_STRING = "제적 위험자 조회 결과";
+    private static final String EXPEL_CREW_BODY_STRING = "- %s: 결석 %d회, 지각 %d회 (%s)";
 
     public void printErrorMessage(IllegalArgumentException e) {
         System.out.println("[ERROR] : " + e.getMessage());
@@ -77,6 +80,16 @@ public class OutputView {
                         newType
                 )
         );
+        System.out.println();
+    }
+
+    public void printCrewsStatus(List<Crew> crews) {
+        System.out.println(EXPEL_CREWS_HEAD_STRING);
+        for (Crew crew : crews) {
+            System.out.println(
+                    String.format(EXPEL_CREW_BODY_STRING, crew.getName(), crew.getAbsentCount(), crew.getLateCount(),
+                            crew.getStatus()));
+        }
         System.out.println();
     }
 }

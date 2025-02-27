@@ -107,7 +107,7 @@ public class AttendanceController {
 
     // 4번, 제적 위험자 조회 기능
     private void checkStatus() {
-
+        outputView.printCrewsStatus(crews.calculateExpelCrew());
     }
 
     private LocalDate organizeCrewModifyDate(Crew crew) {

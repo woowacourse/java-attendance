@@ -68,6 +68,10 @@ public class Crew {
         return statistic.getStatus();
     }
 
+    public int getPenaltyCount() {
+        return statistic.getAbsentCount() + statistic.getLateCount() / 3;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {

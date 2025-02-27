@@ -3,6 +3,7 @@ package attendance.model;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -92,5 +93,12 @@ public class Crews {
                 .filter(modifyCrew -> modifyCrew.equals(crew))
                 .findFirst()
                 .ifPresent(modifyCrew -> modifyCrew.modifyAttendance(LocalDateTime.of(modifyDate, modifyTime)));
+    }
+
+    public List<Crew> calculateExpelCrew() {
+        return crews.stream()
+                .filter(crew -> !crew.getStatus().equals(Status.NONE))
+                .sorted(Comparator.comparingInt(Crew::getPenaltyCount).reversed().thenComparing(Crew::getName))
+                .toList();
     }
 }
