@@ -9,6 +9,77 @@ import org.junit.jupiter.api.Test;
 
 public class AttendanceDateTimeCheckTest {
 
+    @DisplayName("운영시간 전에는 출석할 수 없다.")
+    @Test
+    void before_operating_time() {
+        // given
+        AttendanceDateTimeChecker checker = new AttendanceDateTimeChecker();
+        LocalDate today = LocalDate.of(2024, 12, 3);
+        LocalTime attendanceTime = LocalTime.of(7, 0);
+
+        // when
+        // then
+        Assertions.assertThatThrownBy(() -> checker.attendanceCheck(today, attendanceTime))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("[ERROR] 운영 시간이 아닙니다.");
+    }
+
+    @DisplayName("운영시간 후에는 출석할 수 없다.")
+    @Test
+    void after_operating_time() {
+        // given
+        AttendanceDateTimeChecker checker = new AttendanceDateTimeChecker();
+        LocalDate today = LocalDate.of(2024, 12, 3);
+        LocalTime attendanceTime = LocalTime.of(23, 1);
+
+        // when
+        // then
+        Assertions.assertThatThrownBy(() -> checker.attendanceCheck(today, attendanceTime))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("[ERROR] 운영 시간이 아닙니다.");
+    }
+
+    @DisplayName("주말에는 출석할 수 없다.")
+    @Test
+    void weekend() {
+        // given
+        AttendanceDateTimeChecker checker = new AttendanceDateTimeChecker();
+        LocalDate saturday = LocalDate.of(2024, 9, 7);
+        LocalDate sunday = LocalDate.of(2024, 12, 8);
+        LocalTime attendanceTime = LocalTime.of(10, 12);
+
+        // when
+        // then
+        Assertions.assertThatThrownBy(() -> checker.attendanceCheck(saturday, attendanceTime))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage(String.format("[ERROR] %02d월 %02d일 %s은 등교일이 아닙니다.",
+                        saturday.getMonth().getValue(), saturday.getDayOfMonth(),
+                        saturday.getDayOfWeek().getDisplayName(
+                                TextStyle.FULL, Locale.KOREAN)));
+        Assertions.assertThatThrownBy(() -> checker.attendanceCheck(sunday, attendanceTime))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage(String.format("[ERROR] %02d월 %02d일 %s은 등교일이 아닙니다.",
+                        sunday.getMonth().getValue(), sunday.getDayOfMonth(), sunday.getDayOfWeek().getDisplayName(
+                                TextStyle.FULL, Locale.KOREAN)));
+    }
+
+    @DisplayName("공휴일에는 출석할 수 없다.")
+    @Test
+    void holiday() {
+        // given
+        AttendanceDateTimeChecker checker = new AttendanceDateTimeChecker();
+        LocalDate holiday = LocalDate.of(2024, 12, 25);
+        LocalTime attendanceTime = LocalTime.of(10, 12);
+
+        // when
+        // then
+        Assertions.assertThatThrownBy(() -> checker.attendanceCheck(holiday, attendanceTime))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage(String.format("[ERROR] %02d월 %02d일 %s은 등교일이 아닙니다.",
+                        holiday.getMonth().getValue(), holiday.getDayOfMonth(), holiday.getDayOfWeek().getDisplayName(
+                                TextStyle.FULL, Locale.KOREAN)));
+    }
+
     @Nested
     class ExcludeMonday {
         @DisplayName("시작 시간 5분 초과 출석은 지각이다.")
@@ -18,7 +89,10 @@ public class AttendanceDateTimeCheckTest {
             AttendanceDateTimeChecker checker = new AttendanceDateTimeChecker();
 
             // when
-            AttendPolicy policy = checker.attendanceCheck(LocalDate.of(2024, 12, 3), LocalTime.of(10, 6));
+            AttendPolicy policy = checker.attendanceCheck(
+                    LocalDate.of(2024, 12, 3),
+                    LocalTime.of(10, 6)
+            );
 
             // then
             Assertions.assertThat(policy)
@@ -32,7 +106,10 @@ public class AttendanceDateTimeCheckTest {
             AttendanceDateTimeChecker checker = new AttendanceDateTimeChecker();
 
             // when
-            AttendPolicy policy = checker.attendanceCheck(LocalDate.of(2024, 12, 3), LocalTime.of(10, 31));
+            AttendPolicy policy = checker.attendanceCheck(
+                    LocalDate.of(2024, 12, 3),
+                    LocalTime.of(10, 31)
+            );
 
             // then
             Assertions.assertThat(policy)
@@ -46,7 +123,10 @@ public class AttendanceDateTimeCheckTest {
             AttendanceDateTimeChecker checker = new AttendanceDateTimeChecker();
 
             // when
-            AttendPolicy policy = checker.attendanceCheck(LocalDate.of(2024, 12, 3), LocalTime.of(10, 1));
+            AttendPolicy policy = checker.attendanceCheck(
+                    LocalDate.of(2024, 12, 3),
+                    LocalTime.of(10, 1)
+            );
 
             // then
             Assertions.assertThat(policy)
@@ -60,7 +140,10 @@ public class AttendanceDateTimeCheckTest {
             AttendanceDateTimeChecker checker = new AttendanceDateTimeChecker();
 
             // when
-            AttendPolicy policy = checker.attendanceCheck(LocalDate.of(2024, 12, 3), LocalTime.of(9, 57));
+            AttendPolicy policy = checker.attendanceCheck(
+                    LocalDate.of(2024, 12, 3),
+                    LocalTime.of(9, 57)
+            );
 
             // then
             Assertions.assertThat(policy)
@@ -74,7 +157,10 @@ public class AttendanceDateTimeCheckTest {
             AttendanceDateTimeChecker checker = new AttendanceDateTimeChecker();
 
             // when
-            AttendPolicy policy = checker.attendanceCheck(LocalDate.of(2024, 12, 3), LocalTime.of(12, 0));
+            AttendPolicy policy = checker.attendanceCheck(
+                    LocalDate.of(2024, 12, 3),
+                    LocalTime.of(12, 0)
+            );
 
             // then
             Assertions.assertThat(policy)
@@ -91,7 +177,10 @@ public class AttendanceDateTimeCheckTest {
             AttendanceDateTimeChecker checker = new AttendanceDateTimeChecker();
 
             // when
-            AttendPolicy policy = checker.attendanceCheck(LocalDate.of(2024, 12, 2), LocalTime.of(13, 6));
+            AttendPolicy policy = checker.attendanceCheck(
+                    LocalDate.of(2024, 12, 2),
+                    LocalTime.of(13, 6)
+            );
 
             // then
             Assertions.assertThat(policy)
@@ -105,7 +194,10 @@ public class AttendanceDateTimeCheckTest {
             AttendanceDateTimeChecker checker = new AttendanceDateTimeChecker();
 
             // when
-            AttendPolicy policy = checker.attendanceCheck(LocalDate.of(2024, 12, 2), LocalTime.of(13, 31));
+            AttendPolicy policy = checker.attendanceCheck(
+                    LocalDate.of(2024, 12, 2),
+                    LocalTime.of(13, 31)
+            );
 
             // then
             Assertions.assertThat(policy)
@@ -119,7 +211,10 @@ public class AttendanceDateTimeCheckTest {
             AttendanceDateTimeChecker checker = new AttendanceDateTimeChecker();
 
             // when
-            AttendPolicy policy = checker.attendanceCheck(LocalDate.of(2024, 12, 2), LocalTime.of(13, 5));
+            AttendPolicy policy = checker.attendanceCheck(
+                    LocalDate.of(2024, 12, 2),
+                    LocalTime.of(13, 5)
+            );
 
             // then
             Assertions.assertThat(policy)
@@ -133,7 +228,10 @@ public class AttendanceDateTimeCheckTest {
             AttendanceDateTimeChecker checker = new AttendanceDateTimeChecker();
 
             // when
-            AttendPolicy policy = checker.attendanceCheck(LocalDate.of(2024, 12, 2), LocalTime.of(11, 31));
+            AttendPolicy policy = checker.attendanceCheck(
+                    LocalDate.of(2024, 12, 2),
+                    LocalTime.of(11, 31)
+            );
 
             // then
             Assertions.assertThat(policy)
@@ -147,81 +245,14 @@ public class AttendanceDateTimeCheckTest {
             AttendanceDateTimeChecker checker = new AttendanceDateTimeChecker();
 
             // when
-            AttendPolicy policy = checker.attendanceCheck(LocalDate.of(2024, 12, 2), LocalTime.of(14, 0));
+            AttendPolicy policy = checker.attendanceCheck(
+                    LocalDate.of(2024, 12, 2),
+                    LocalTime.of(14, 0)
+            );
 
             // then
             Assertions.assertThat(policy)
                     .isEqualTo(AttendPolicy.ABSENT);
         }
-    }
-
-    @DisplayName("운영시간 전에는 출석할 수 없다.")
-    @Test
-    void check11() {
-        // given
-        AttendanceDateTimeChecker checker = new AttendanceDateTimeChecker();
-        LocalDate today = LocalDate.of(2024, 12, 3);
-        LocalTime attendanceTime = LocalTime.of(7, 0);
-
-        // when
-        // then
-        Assertions.assertThatThrownBy(() -> checker.attendanceCheck(today, attendanceTime))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage("[ERROR] 운영 시간이 아닙니다.");
-    }
-
-    @DisplayName("운영시간 후에는 출석할 수 없다.")
-    @Test
-    void check12() {
-        // given
-        AttendanceDateTimeChecker checker = new AttendanceDateTimeChecker();
-        LocalDate today = LocalDate.of(2024, 12, 3);
-        LocalTime attendanceTime = LocalTime.of(23, 1);
-
-        // when
-        // then
-        Assertions.assertThatThrownBy(() -> checker.attendanceCheck(today, attendanceTime))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage("[ERROR] 운영 시간이 아닙니다.");
-    }
-
-    @DisplayName("주말에는 출석할 수 없다.")
-    @Test
-    void check14() {
-        // given
-        AttendanceDateTimeChecker checker = new AttendanceDateTimeChecker();
-        LocalDate saturday = LocalDate.of(2024, 9, 7);
-        LocalDate sunday = LocalDate.of(2024, 12, 8);
-        LocalTime attendanceTime = LocalTime.of(10, 12);
-
-        // when
-        // then
-        Assertions.assertThatThrownBy(() -> checker.attendanceCheck(saturday, attendanceTime))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage(String.format("[ERROR] %02d월 %02d일 %s은 등교일이 아닙니다.",
-                        saturday.getMonth().getValue(), saturday.getDayOfMonth(), saturday.getDayOfWeek().getDisplayName(
-                                TextStyle.FULL, Locale.KOREAN)));
-        Assertions.assertThatThrownBy(() -> checker.attendanceCheck(sunday, attendanceTime))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage(String.format("[ERROR] %02d월 %02d일 %s은 등교일이 아닙니다.",
-                        sunday.getMonth().getValue(), sunday.getDayOfMonth(), sunday.getDayOfWeek().getDisplayName(
-                                TextStyle.FULL, Locale.KOREAN)));
-    }
-
-    @DisplayName("공휴일에는 출석할 수 없다.")
-    @Test
-    void check13() {
-        // given
-        AttendanceDateTimeChecker checker = new AttendanceDateTimeChecker();
-        LocalDate holiday = LocalDate.of(2024, 12, 25);
-        LocalTime attendanceTime = LocalTime.of(10, 12);
-
-        // when
-        // then
-        Assertions.assertThatThrownBy(() -> checker.attendanceCheck(holiday, attendanceTime))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage(String.format("[ERROR] %02d월 %02d일 %s은 등교일이 아닙니다.",
-                        holiday.getMonth().getValue(), holiday.getDayOfMonth(), holiday.getDayOfWeek().getDisplayName(
-                                TextStyle.FULL, Locale.KOREAN)));
     }
 }
