@@ -41,7 +41,11 @@ public class MemberAttendance {
     }
 
     public String checkSubjectStatus(int attendanceCount, int lateCount, int absentCount) {
-        return  "면담 대상자";
+        absentCount += lateCount/3;
+        if (absentCount > 5) {return "제적 대상자";}
+        if (absentCount >= 3) {return  "면담 대상자";}
+        if (absentCount >= 2) {return  "경고 대상자";}
+        return null;
     }
 
 }

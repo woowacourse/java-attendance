@@ -1,5 +1,6 @@
 package attendance.domain;
 
+import static org.assertj.core.api.Assertions.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import attendance.domain.dto.AttendanceResult;
@@ -79,7 +80,7 @@ public class MemberAttendanceTest {
         String subjectStatus = memberAttendance.checkSubjectStatus(attendanceCount, lateCount, absentCount);
 
         //then
-        org.assertj.core.api.Assertions.assertThat(subjectStatus).isEqualTo("면담 대상자");
+        assertThat(subjectStatus).isEqualTo("면담 대상자");
     }
 
 
