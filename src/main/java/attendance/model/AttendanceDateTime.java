@@ -56,6 +56,6 @@ public class AttendanceDateTime {
     }
 
     public AttendanceDateTime copy() {
-        return null;
+        return new AttendanceDateTime(attendanceDate, attendanceTime);
     }
 }
