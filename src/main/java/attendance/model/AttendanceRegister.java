@@ -11,6 +11,11 @@ public class AttendanceRegister {
 
     public void attend(String crewName, LocalDate attendanceDate, LocalTime attendanceTime) {
         validateDuringEducationDay(attendanceDate);
+        if (!CampusOpenTime.isDurationTime(attendanceDate, attendanceTime)) {
+            throw new IllegalArgumentException(
+                    attendanceTime.format(DateTimeFormatter.ofPattern("HH시 mm분은 등교시간이 아닙니다.")
+                    ));
+        }
         AttendanceRecord attendanceRecord = register.getOrDefault(crewName, new AttendanceRecord());
         validateExistAttendance(attendanceDate, attendanceRecord);
         attendanceRecord.add(new AttendanceDateTime(attendanceDate, attendanceTime));
