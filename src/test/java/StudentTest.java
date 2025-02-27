@@ -83,9 +83,9 @@ public class StudentTest {
 
     @Test
     @DisplayName("학생의 지각 횟수 확인 테스트")
-    void 학생의_지각_횟수_확인_테스트(){
-        LocalDate todayDate1 = LocalDate.of(2024,12,13);
-        LocalDate todayDate2 = LocalDate.of(2024,12,12);
+    void 학생의_지각_횟수_확인_테스트() {
+        LocalDate todayDate1 = LocalDate.of(2024, 12, 13);
+        LocalDate todayDate2 = LocalDate.of(2024, 12, 12);
         String attendanceTime1 = "10:04";
         String attendanceTime2 = "10:06";
         long expect = 1;
@@ -95,6 +95,46 @@ public class StudentTest {
         student.updateAttendanceCount();
         long result = student.attendanceStatusCount.get(AttendanceStatus.LATE);
 
+        Assertions.assertEquals(expect, result);
+    }
+    @Test
+    @DisplayName("지각 3회는 결석 1회로 간주하여 계산하기 테스트")
+    void 지각_3회는_결석_1회로_간주(){
+        LocalDate todayDate1 = LocalDate.of(2024, 12, 13);
+        LocalDate todayDate2 = LocalDate.of(2024, 12, 12);
+        LocalDate todayDate3 = LocalDate.of(2024, 12, 11);
+        String attendanceTime1 = "10:06";
+        String attendanceTime2 = "10:06";
+        String attendanceTime3 = "10:07";
+        long expect = 1;
+        student.registerAttendanceRecord(todayDate1, attendanceTime1);
+        student.registerAttendanceRecord(todayDate2, attendanceTime2);
+        student.registerAttendanceRecord(todayDate3, attendanceTime3);
+
+        long result = student.convertTardiesToAbsence();
+        Assertions.assertEquals(expect, result);
+    }
+
+    @Test
+    @DisplayName("지각 6회는 결석 2회로 간주하여 계산하기 테스트")
+    void 지각_6회는_결석_2회로_간주(){
+        LocalDate todayDate1 = LocalDate.of(2024, 12, 13);
+        LocalDate todayDate2 = LocalDate.of(2024, 12, 12);
+        LocalDate todayDate3 = LocalDate.of(2024, 12, 11);
+        LocalDate todayDate4 = LocalDate.of(2024, 12, 6);
+        LocalDate todayDate5 = LocalDate.of(2024, 12, 5);
+        LocalDate todayDate6 = LocalDate.of(2024, 12, 4);
+        String attendanceTime = "10:06";
+        long expect = 2;
+        student.registerAttendanceRecord(todayDate1, attendanceTime);
+        student.registerAttendanceRecord(todayDate2, attendanceTime);
+        student.registerAttendanceRecord(todayDate3, attendanceTime);
+        student.registerAttendanceRecord(todayDate4, attendanceTime);
+        student.registerAttendanceRecord(todayDate5, attendanceTime);
+        student.registerAttendanceRecord(todayDate6, attendanceTime);
+
+
+        long result = student.convertTardiesToAbsence();
         Assertions.assertEquals(expect, result);
     }
 
