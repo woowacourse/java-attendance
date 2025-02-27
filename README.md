@@ -121,6 +121,10 @@
     - 크루 출석 데이터를 종합하여 Map<AttendanceStatus, Integer> 를 반환한다.
         - Map<AttendanceStatus, Integer> 에는 각 AttendanceStatus 가 몇 개 있는지 저장한다.
     - AttendanceLog 를 추가한다.(크루 출석 기록을 추가한다)
+    - 총 결석 횟수를 반환한다.
+    - 총 지각 횟수를 반환한다.
+    - 정책이 적용된 총 결석 횟수를 반환한다.
+    - 정책이 적용된 총 지각 횟수를 반환한다.
 
 ### AttendanceDate (출석 일자 Class)
 
