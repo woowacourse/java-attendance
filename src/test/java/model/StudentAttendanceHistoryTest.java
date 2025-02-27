@@ -70,7 +70,6 @@ class StudentAttendanceHistoryTest {
 
         List<AttendanceDateTime> sortedHistory = studentAttendanceHistory.getAttendanceHistory();
 
-
         Assertions.assertEquals(
                 new AttendanceDateTime(LocalDateTime.of(2024, 12, 2, 0, 0)), sortedHistory.get(0));
         Assertions.assertEquals(
