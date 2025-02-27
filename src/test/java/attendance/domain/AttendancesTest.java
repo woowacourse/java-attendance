@@ -22,10 +22,11 @@ class AttendancesTest {
         LocalDateTime attendanceDateTime = LocalDateTime.of(LocalDate.now(), LocalTime.of(10, 0));
 
         // when
-        Attendance attendance = attendances.processCheck(attendanceDateTime);
+        Attendances newAttendances = attendances.processCheck(attendanceDateTime);
+        Attendance result = newAttendances.findAttendanceByDate(attendanceDateTime.toLocalDate());
 
         // then
-        assertThat(attendance.getDateTime())
+        assertThat(result.getDateTime())
                 .isEqualTo(attendanceDateTime);
     }
 }
