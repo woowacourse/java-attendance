@@ -98,6 +98,11 @@ public class Application {
             OutputView.printNotOperationDate(attendanceDateToModify);
             return;
         }
+        Optional<Attendance> existingAttendance = attendanceManager.findAttendance(crew, attendanceDateToModify);
+        if (existingAttendance.isEmpty()) {
+            OutputView.printNoAttendanceToModify();
+            return;
+        }
         LocalTime attendanceModificationTime = InputView.readAttendanceModificationTime();
         boolean isOperationTime = campusManager.isOperationTime(attendanceModificationTime);
         if (!isOperationTime) {

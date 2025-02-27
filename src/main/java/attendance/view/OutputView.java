@@ -40,4 +40,8 @@ public class OutputView {
         String status = attendance.getStatus();
         System.out.printf("%02d월 %02d일 %s %02d:%02d (%s)\n", month, date, dayName, hour, minute, status);
     }
+
+    public static void printNoAttendanceToModify() {
+        System.out.println("[ERROR] 수정할 출석 기록이 없습니다.");
+    }
 }
