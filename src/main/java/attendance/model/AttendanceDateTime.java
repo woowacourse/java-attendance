@@ -9,11 +9,7 @@ public class AttendanceDateTime {
     private LocalTime attendanceTime;
 
     public AttendanceDateTime(AttendanceDate attendanceDate, LocalTime attendanceTime) {
-        if (!CampusOpenTime.isDurationTime(attendanceDate.date(), attendanceTime)) {
-            throw new IllegalArgumentException(
-                    attendanceTime.format(DateTimeFormatter.ofPattern("HH시 mm분은 등교시간이 아닙니다.")
-                    ));
-        }
+        validateDurationTime(attendanceDate, attendanceTime);
         this.attendanceDate = attendanceDate;
         this.attendanceTime = attendanceTime;
     }
@@ -24,6 +20,14 @@ public class AttendanceDateTime {
 
     public boolean equalsDate(AttendanceDate attendanceDate) {
         return this.attendanceDate.equals(attendanceDate);
+    }
+
+    public LocalTime getAttendanceTime() {
+        return attendanceTime;
+    }
+
+    public AttendanceDate getAttendanceDate() {
+        return attendanceDate;
     }
 
     @Override
@@ -43,11 +47,11 @@ public class AttendanceDateTime {
         return Objects.hash(attendanceDate, attendanceTime);
     }
 
-    public LocalTime getAttendanceTime() {
-        return attendanceTime;
-    }
-
-    public AttendanceDate getAttendanceDate() {
-        return attendanceDate;
+    private void validateDurationTime(AttendanceDate attendanceDate, LocalTime attendanceTime) {
+        if (!CampusOpenTime.isDurationTime(attendanceDate.date(), attendanceTime)) {
+            throw new IllegalArgumentException(
+                    attendanceTime.format(DateTimeFormatter.ofPattern("HH시 mm분은 등교시간이 아닙니다.")
+                    ));
+        }
     }
 }

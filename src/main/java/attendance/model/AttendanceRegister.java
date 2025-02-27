@@ -38,7 +38,7 @@ public class AttendanceRegister {
         }
     }
 
-    private static void validateExistAttendance(AttendanceDate attendanceDate, AttendanceRecord attendanceRecord) {
+    private void validateExistAttendance(AttendanceDate attendanceDate, AttendanceRecord attendanceRecord) {
         if (attendanceRecord.containsAttendanceDateTimeByDate(attendanceDate)) {
             throw new IllegalArgumentException("이미 출석한 날짜입니다.");
         }
