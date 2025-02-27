@@ -3,7 +3,7 @@ package attendance.controller;
 import attendance.controller.util.DateTimeConverter;
 import attendance.domain.Attendance;
 import attendance.domain.AttendanceBook;
-import attendance.domain.AttendanceBookFactory;
+import attendance.util.AttendanceBookFactory;
 import attendance.domain.AttendanceDate;
 import attendance.domain.AttendanceTime;
 import attendance.domain.Attendances;

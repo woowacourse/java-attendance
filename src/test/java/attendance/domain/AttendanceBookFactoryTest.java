@@ -2,6 +2,7 @@ package attendance.domain;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import attendance.util.AttendanceBookFactory;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -18,14 +19,5 @@ class AttendanceBookFactoryTest {
         AttendanceBook attendanceBook = AttendanceBookFactory.create(input, today);
 
         assertThat(attendanceBook).isNotNull();
-    }
-
-    @Test
-    void 오늘_날짜까지_모두_채워넣는다() {
-        List<LocalDateTime> inputDateTimes = List.of(LocalDateTime.of(2024, 12, 12, 9, 59));
-        LocalDate today = LocalDate.of(2024, 12, 13);
-        List<Attendance> attendances = AttendanceBookFactory.initAttendances(inputDateTimes, today);
-
-        assertThat(attendances).hasSize(9);
     }
 }

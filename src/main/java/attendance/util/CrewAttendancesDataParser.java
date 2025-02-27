@@ -8,11 +8,14 @@ import java.util.List;
 import java.util.Map;
 
 public class CrewAttendancesDataParser {
+    private static final String LINE_BREAK = "\n";
+    private static final String DELIMITER = ",";
+
     public static Map<String, List<LocalDateTime>> parse(String input) {
-        String[] lines = input.split("\n");
+        String[] lines = input.split(LINE_BREAK);
         Map<String, List<LocalDateTime>> result = new HashMap<>();
         for (String line : lines) {
-            String[] data = line.split(",");
+            String[] data = line.split(DELIMITER);
             String nickname = data[0];
             List<LocalDateTime> attendances = result.getOrDefault(nickname, new ArrayList<>());
             attendances.add(parseLocalDateTime(data[1]));
