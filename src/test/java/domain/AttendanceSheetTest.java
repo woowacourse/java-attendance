@@ -94,7 +94,7 @@ public class AttendanceSheetTest {
         return Stream.of(
                 Arguments.of(ATTENDANCE, 2),
                 Arguments.of(LATE, 1),
-                Arguments.of(ABSENT, 0)
+                Arguments.of(ABSENT, 6)
         );
     }
 
