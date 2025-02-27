@@ -42,9 +42,19 @@ public class Attendance {
         }
     }
 
-    private boolean isWeekend(LocalDate attendanceDate) {
+    private static boolean isWeekend(LocalDate attendanceDate) {
         return attendanceDate.getDayOfWeek() == DayOfWeek.SATURDAY ||
                 attendanceDate.getDayOfWeek() == DayOfWeek.SUNDAY;
+    }
+
+    public static boolean canAttend(LocalDate attendanceDate) {
+        if (isWeekend(attendanceDate)) {
+            return false;
+        }
+        if (HOLIDAYS.contains(MonthDay.from(attendanceDate))) {
+            return false;
+        }
+        return true;
     }
 
     public void updateAttendanceTime(LocalTime updateTime) {
