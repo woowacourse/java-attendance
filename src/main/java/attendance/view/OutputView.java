@@ -12,19 +12,28 @@ import java.util.List;
 import java.util.Map;
 
 public class OutputView {
+
+    public static final String ALREADY_ATTEND_MESSAGE = "오늘 출석 기록이 있습니다. 출석 수정기능을 이용해 주세요";
+    public static final String ATTENDANCE_PRINT_FORMAT = "%s %s (%s)%n";
+    public static final String EDIT_ATTENDANCE_FORMAT = "%s %s (%s) -> %s (%s) 수정 완료!%n";
+    public static final String ATTENDANCE_RECORD_MESSAGE = "이번 달 %s의 출석 기록입니다.%n%n";
+    public static final String ATTENDANCE_STATUS_COUNT_PRINT_FORMAT = "출석: %d회%n지각: %d회%n결석: %d회%n%n";
+    public static final String PENALTY_PRINT_FORMAT = "%s 대상자 입니다.%n%n";
+    public static final String PENALTY_CREW_PRINT_FORMAT = "- %s: 결석 %d회, 지각 %d회 (%s)%n";
+
     public void printUseEdit() {
-        System.out.println("오늘 출석 기록이 있습니다. 출석 수정기능을 이용해 주세요");
+        System.out.println(ALREADY_ATTEND_MESSAGE);
     }
 
     public void printRemarkAttendanceResult(AttendanceInfoDto attendanceInfoDto) {
-        System.out.printf("%s %s (%s)%n",
+        System.out.printf(ATTENDANCE_PRINT_FORMAT,
             DateConverter.convertToString(attendanceInfoDto.attendanceDate()),
             DateConverter.convertToString(attendanceInfoDto.attendanceTime()),
             parseStatusToString(attendanceInfoDto.attendanceStatus()));
     }
 
     public void printEditAttendanceResult(AttendanceEditDto dto) {
-        System.out.printf("%s %s (%s) -> %s (%s) 수정 완료!%n",
+        System.out.printf(EDIT_ATTENDANCE_FORMAT,
             DateConverter.convertToString(dto.editDate()),
             DateConverter.convertToString(dto.beforeEditTime()),
             parseStatusToString(dto.beforeEditStatus()),
@@ -34,7 +43,7 @@ public class OutputView {
     }
 
     public void printCheckAttendanceResult(AttendanceCheckDto dto) {
-        System.out.printf("이번 달 %s의 출석 기록입니다.%n%n", dto.name());
+        System.out.printf(ATTENDANCE_RECORD_MESSAGE, dto.name());
         printAttendanceRecord(dto);
         printAttendanceStatusCount(dto);
         printPenalty(dto);
@@ -49,7 +58,7 @@ public class OutputView {
 
     private static void printAttendanceStatusCount(AttendanceCheckDto dto) {
         Map<AttendanceStatus, Integer> statusCount = dto.attendanceStatusCount();
-        System.out.printf("출석: %d회%n지각: %d회%n결석: %d회%n%n",
+        System.out.printf(ATTENDANCE_STATUS_COUNT_PRINT_FORMAT,
             statusCount.getOrDefault(AttendanceStatus.PRESENCE, 0),
             statusCount.getOrDefault(AttendanceStatus.LATE, 0),
             statusCount.getOrDefault(AttendanceStatus.ABSENCE, 0));
@@ -58,12 +67,12 @@ public class OutputView {
     private void printPenalty(AttendanceCheckDto dto) {
         AttendancePenalty penalty = dto.penalty();
         if (penalty == AttendancePenalty.NONE) return;
-        System.out.printf("%s 대상자 입니다.%n%n", parsePenaltyToString(penalty));
+        System.out.printf(PENALTY_PRINT_FORMAT, parsePenaltyToString(penalty));
     }
 
     public void printPenaltyCrews(List<PenaltyCrewDto> penaltyCrewsDto) {
         for (PenaltyCrewDto penaltyCrewDto : penaltyCrewsDto) {
-            System.out.printf("- %s: 결석 %d회, 지각 %d회 (%s)%n",
+            System.out.printf(PENALTY_CREW_PRINT_FORMAT,
                 penaltyCrewDto.name(),
                 penaltyCrewDto.absenceCount(),
                 penaltyCrewDto.lateCount(),
