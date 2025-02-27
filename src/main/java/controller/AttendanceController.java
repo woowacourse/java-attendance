@@ -7,11 +7,14 @@ import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import model.Attendance;
 import model.AttendanceBook;
 import model.AttendanceStatistic;
+import model.AttendanceStatistics;
 import model.AttendanceStatus;
 import model.ExistingAttendances;
 import model.AttendanceHistory;
@@ -48,6 +51,9 @@ public class AttendanceController {
         }
         if (functionChoice.equals("3")) {
             doHistoryService(attendanceBook, crews);
+        }
+        if (functionChoice.equals("4")) {
+            doPenaltyService(attendanceBook, crews);
         }
     }
 
@@ -124,5 +130,19 @@ public class AttendanceController {
         } catch (IllegalArgumentException e) {
             outputView.printExceptionMessage(e.getMessage());
         }
+    }
+
+    private void doPenaltyService(AttendanceBook attendanceBook, Crews crews) {
+        LocalDate now = DateGenerator.now(); //TODO : 컨트롤러 생성자
+        AttendanceStatistics attendanceStatistics = attendanceBook.findAllStatistics();
+        List<AttendanceStatistic> penaltyTargets = attendanceStatistics.findPenaltyTargets(now);
+        Map<Crew, AttendanceStatistic> penaltyTargetCrews = new HashMap<>();
+        penaltyTargets.stream()
+                .forEach(statistic -> {
+                    Crew crew = attendanceBook.findCrewByAttendance(statistic.getAttendanceHistory());
+                    penaltyTargetCrews.put(crew, statistic);
+                });
+
+        outputView.printPenaltyResult(penaltyTargetCrews);
     }
 }

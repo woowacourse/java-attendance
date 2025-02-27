@@ -1,11 +1,14 @@
 package view;
 
 import common.Common;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import model.Attendance;
+import model.AttendanceStatistic;
 import model.AttendanceStatus;
 import model.Crew;
+import model.DateGenerator;
 import model.PenaltyStatus;
 
 public class OutputView {
@@ -67,5 +70,26 @@ public class OutputView {
             return "--:--";
         }
         return attendance.getTime().format(Common.hourMinuteFormatter);
+    }
+
+    public void printPenaltyResult(Map<Crew, AttendanceStatistic> penaltyTargetCrews) {
+        System.out.println();
+        System.out.println("제적 위험자 조회 결과");
+        for (Crew crew : penaltyTargetCrews.keySet()) {
+            AttendanceStatistic statistic = penaltyTargetCrews.get(crew); //TODO : calculate할 값은 모두 dto에 go
+            Map<AttendanceStatus, Integer> attendanceStatus = statistic.calculateStatusCountUntilBefore(
+                    DateGenerator.now());
+            System.out.printf("- %s: 결석 %d회, 지각 %d회 (%s)%n",
+                    crew.getName(),
+                    attendanceStatus.get(AttendanceStatus.ABSENCE),
+                    attendanceStatus.get(AttendanceStatus.LATE),
+                    statistic.calculatePenaltyUntilBefore(DateGenerator.now()).getMeaning()
+            );
+        }
+    }
+
+    private List<AttendanceStatistic> sortStatistics(List<AttendanceStatistic> statistics) {
+        //TODO : 정렬
+        return statistics;
     }
 }
