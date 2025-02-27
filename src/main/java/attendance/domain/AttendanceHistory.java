@@ -41,7 +41,7 @@ public class AttendanceHistory {
                 .collect(Collectors.toUnmodifiableList());
     }
 
-    public AttendanceStatistics returnAttendanceStatistics(final LocalDate today) {
+    public AttendanceStatistics getAttendanceStatistics(final LocalDate today) {
         Map<AttendanceStatus, Integer> statistics = new HashMap<>();
         initializeStatistics(statistics);
         for (int i = today.getDayOfMonth() - 1; i > 0; i--) {

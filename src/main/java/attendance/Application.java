@@ -2,6 +2,7 @@ package attendance;
 
 import attendance.domain.Attendance;
 import attendance.domain.AttendanceManager;
+import attendance.domain.AttendanceStatistics;
 import attendance.domain.CampusManager;
 import attendance.domain.Crew;
 import attendance.view.InputView;
@@ -124,6 +125,8 @@ public class Application {
         }
         List<Attendance> monthlyAttendances = attendanceManager.getMonthlyAttendances(today, crew);
         OutputView.printMonthlyAttendances(today, crew, monthlyAttendances);
+        AttendanceStatistics attendanceStatistics = attendanceManager.getAttendanceStatistics(today, crew);
+        OutputView.printAttendanceStatistics(attendanceStatistics);
     }
 
     private static void checkDangerousCrews() {

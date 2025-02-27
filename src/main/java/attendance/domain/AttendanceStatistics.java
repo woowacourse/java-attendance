@@ -1,5 +1,7 @@
 package attendance.domain;
 
+import static attendance.domain.AttendanceStatus.ATTENDANCE;
+import static attendance.domain.AttendanceStatus.LATE;
 import static attendance.domain.CrewStatus.FIRE;
 import static attendance.domain.CrewStatus.INTERVIEW;
 import static attendance.domain.CrewStatus.NONE;
@@ -29,5 +31,15 @@ public class AttendanceStatistics {
             return WARNING;
         }
         return NONE;
+    }
+
+    public int getStatusCount(final AttendanceStatus status) {
+        if (status.equals(ATTENDANCE)) {
+            return attendanceCount;
+        }
+        if (status.equals(LATE)) {
+            return lateCount;
+        }
+        return absenceCount;
     }
 }

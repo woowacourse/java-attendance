@@ -47,4 +47,9 @@ public class AttendanceManager {
         AttendanceHistory attendanceHistory = attendanceBook.get(crew);
         return attendanceHistory.getMonthlyAttendances(today);
     }
+
+    public AttendanceStatistics getAttendanceStatistics(final LocalDate today, final Crew crew) {
+        AttendanceHistory attendanceHistory = attendanceBook.get(crew);
+        return attendanceHistory.getAttendanceStatistics(today);
+    }
 }

@@ -102,7 +102,7 @@ class AttendanceHistoryTest {
         LocalDate today = LocalDate.of(2024, 12, 8);
 
         //when
-        AttendanceStatistics result = attendanceHistory.returnAttendanceStatistics(today);
+        AttendanceStatistics result = attendanceHistory.getAttendanceStatistics(today);
 
         //then
         assertAll(

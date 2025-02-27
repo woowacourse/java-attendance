@@ -1,9 +1,11 @@
 package attendance.view;
 
 import attendance.domain.Attendance;
+import attendance.domain.AttendanceStatistics;
 import attendance.domain.AttendanceStatus;
 import attendance.domain.CampusManager;
 import attendance.domain.Crew;
+import attendance.domain.CrewStatus;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -91,5 +93,16 @@ public class OutputView {
         DayOfWeek day = noAttendanceDate.getDayOfWeek();
         String dayName = day.getDisplayName(TextStyle.FULL, Locale.KOREAN);
         System.out.printf("%02d월 %02d일 %s --:-- (결석)\n", month, date, dayName);
+    }
+
+    public static void printAttendanceStatistics(final AttendanceStatistics attendanceStatistics) {
+        for (AttendanceStatus status : AttendanceStatus.values()) {
+            int statusCount = attendanceStatistics.getStatusCount(status);
+            System.out.printf("%s: %d회\n", status.getName(), statusCount);
+        }
+        CrewStatus crewStatus = attendanceStatistics.calculateCrewStatus();
+        if (crewStatus.equals(CrewStatus.INTERVIEW)) {
+            System.out.println("면담 대상자입니다.");
+        }
     }
 }
