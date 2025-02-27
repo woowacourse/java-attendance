@@ -4,6 +4,8 @@ import java.time.DayOfWeek;
 import java.time.LocalTime;
 import java.util.Arrays;
 import java.util.Comparator;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public enum AttendanceStatus {
 
@@ -20,16 +22,23 @@ public enum AttendanceStatus {
     }
 
     public static AttendanceStatus calculateStatus(final LocalTime time, final DayOfWeek dayOfWeek) {
-        return Arrays.stream(values())
-                .sorted(Comparator.comparingInt(AttendanceStatus::getBoundaryMinute).reversed())
-                .filter(status -> {
-                    if (dayOfWeek == DayOfWeek.MONDAY) {
-                        return time.isAfter(MONDAY_START_CAMPUS.plusMinutes(status.boundaryMinute));
-                    }
-                    return time.isAfter(BESIDE_MONDAY_START_CAMPUS.plusMinutes(status.boundaryMinute));
-                })
+        return sortAscByBoundaryMinute().stream()
+                .filter(status -> isAfterTime(dayOfWeek, time, status))
                 .findFirst()
                 .orElse(ATTENDANCE);
+    }
+
+    private static boolean isAfterTime(final DayOfWeek dayOfWeek, final LocalTime time, final AttendanceStatus status) {
+        if (dayOfWeek == DayOfWeek.MONDAY) {
+            return time.isAfter(MONDAY_START_CAMPUS.plusMinutes(status.boundaryMinute));
+        }
+        return time.isAfter(BESIDE_MONDAY_START_CAMPUS.plusMinutes(status.boundaryMinute));
+    }
+
+    private static List<AttendanceStatus> sortAscByBoundaryMinute() {
+        return Arrays.stream(values())
+                .sorted(Comparator.comparingInt(AttendanceStatus::getBoundaryMinute))
+                .collect(Collectors.toList());
     }
 
     public int getBoundaryMinute() {
