@@ -1,5 +1,7 @@
 package domain;
 
+import java.time.LocalDate;
+
 public class Attendance {
 
     private final Crew crew;
@@ -11,6 +13,10 @@ public class Attendance {
     }
 
     public boolean isSameCrewAndTime(Attendance otherAttendance) {
-        return crew.equals(otherAttendance.crew) && this.attendanceTime.isSameDay(otherAttendance.attendanceTime);
+        return this.crew.equals(otherAttendance.crew) && this.attendanceTime.isSameDay(otherAttendance.attendanceTime);
+    }
+
+    public boolean compareByCrewAndTime(Crew otherCrew, LocalDate day) {
+        return crew.equals(otherCrew) && attendanceTime.isIn(day);
     }
 }
