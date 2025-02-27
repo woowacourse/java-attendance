@@ -63,7 +63,9 @@ public class AttendanceBook {
         }
         penaltyInformation.sort(
                 Comparator.comparingInt(AttendanceCount::consideredAbsentCount)
-                        .reversed());
+                        .reversed()
+                        .thenComparing(AttendanceCount::crewName)
+        );
         return new PenaltyInformation(penaltyInformation);
     }
 }
