@@ -18,4 +18,19 @@ public class AbsentPenaltyCheckerTest {
         Assertions.assertThat(absentPenalty)
                 .isEqualTo(AbsentPenalty.WARNING);
     }
+
+    @DisplayName("결석이 3회 이상이면 면담 대상자이다.")
+    @Test
+    void test2() {
+        // given
+        AbsentPenaltyChecker checker = new AbsentPenaltyChecker();
+        final var absentCount = 3;
+
+        // when
+        final var absentPenalty = checker.check(absentCount);
+
+        // then
+        Assertions.assertThat(absentPenalty)
+                .isEqualTo(AbsentPenalty.INTERVIEW);
+    }
 }
