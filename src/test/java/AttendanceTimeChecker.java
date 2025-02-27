@@ -1,11 +1,11 @@
 import java.time.DayOfWeek;
 import java.time.LocalDate;
+import java.time.LocalTime;
 
 public class AttendanceTimeChecker {
-    public AttendPolicy attendanceCheck(LocalDate date, String time) {
-        String[] split = time.split(":");
-        int hour = Integer.parseInt(split[0]);
-        int minute = Integer.parseInt(split[1]);
+    public AttendPolicy attendanceCheck(LocalDate date, LocalTime time) {
+        int hour = time.getHour();
+        int minute = time.getMinute();
 
         if (date.getDayOfWeek() == DayOfWeek.MONDAY) {
             if (minute > 5) {
