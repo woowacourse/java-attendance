@@ -6,6 +6,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.HashSet;
+import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -72,4 +73,19 @@ class AttendancesTest {
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("[ERROR] 출석 기록이 존재하지 않습니다.");
     }
+
+    @DisplayName("크루 이름을 통해 해당 크루의 출석 기록을 모두 가져온다.")
+    @Test
+    void 크루_이름을_통해_해당_크루의_출석_기록을_모두_가져온다() {
+
+        // given
+        String crewName = "체체";
+
+        // when
+        List<Attendance> currentAttendances = attendances.findAttendancesByCrewName(crewName);
+
+        // then
+        assertThat(currentAttendances.size()).isEqualTo(1);
+    }
+
 }
