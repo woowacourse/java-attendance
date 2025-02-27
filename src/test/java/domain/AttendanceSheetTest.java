@@ -18,6 +18,7 @@ import java.util.stream.Stream;
 import static domain.policy.AttendanceState.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.assertj.core.api.SoftAssertions.assertSoftly;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 
 public class AttendanceSheetTest {
@@ -87,7 +88,11 @@ public class AttendanceSheetTest {
     @DisplayName("크루의 출석 상태 횟수를 계산할 수 있다")
     @MethodSource("provideAttendanceStateForCount")
     public void countAttendanceStateTest(AttendanceState state, int expected) {
-        assertThat(attendanceSheet.countAttendanceState("링크").get(state)).isEqualTo(expected);
+        //given
+        LocalDate today = LocalDate.of(2024, 12, 13);
+
+        //when-then
+        assertThat(attendanceSheet.countAttendanceState("링크", today).get(state)).isEqualTo(expected);
     }
 
     static Stream<Arguments> provideAttendanceStateForCount() {
@@ -99,23 +104,30 @@ public class AttendanceSheetTest {
     }
 
     @Test
-    @DisplayName("제적 위험자를 확인할 수 있다")
+    @DisplayName("모든 크루의 출석 상태 횟수를 계산할 수 있다")
     public void countAttendancesStateTest() {
         //given
-        //2 3 4 5 6
-        //9 10 11 12 13
         LocalDate today = LocalDate.of(2024, 12, 13);
         attendanceSheet = new AttendanceSheet(new AbsentPolicy(),
                 new ArrayList<>(
-                        List.of(new Attendance("링크", LocalDate.of(2024, 12, 9), LocalTime.of(13,10), LATE),
-                                new Attendance("링크", LocalDate.of(2024, 12, 10), LocalTime.of(10,10), LATE),
-                                new Attendance("링크", LocalDate.of(2024, 12, 11), LocalTime.of(10,10), LATE),
-                                new Attendance("링크", LocalDate.of(2024, 12, 12), LocalTime.of(10,10), LATE)
+                        List.of(
+                                new Attendance("링크", LocalDate.of(2024, 12, 10), LocalTime.of(13,10), ATTENDANCE),
+                                new Attendance("링크", LocalDate.of(2024, 12, 11), LocalTime.of(13,10), ATTENDANCE),
+                                new Attendance("링크", LocalDate.of(2024, 12, 12), LocalTime.of(13,10), LATE),
+                                new Attendance("링크2", LocalDate.of(2024, 12, 9), LocalTime.of(13,10), LATE),
+                                new Attendance("링크2", LocalDate.of(2024, 12, 10), LocalTime.of(10,10), LATE),
+                                new Attendance("링크2", LocalDate.of(2024, 12, 11), LocalTime.of(10,10), LATE),
+                                new Attendance("링크2", LocalDate.of(2024, 12, 12), LocalTime.of(10,10), LATE)
                         ))
         );
 
         //when-then
-        assertThat(attendanceSheet.countAttendancesState().get("링크").get(LATE)).isEqualTo(4);
-        assertThat(attendanceSheet.countAttendancesState().get("링크").get(ABSENT)).isEqualTo(5);
+        assertSoftly(softly -> {
+            softly.assertThat(attendanceSheet.countAttendancesState(today).get("링크").get(ATTENDANCE)).isEqualTo(2);
+            softly.assertThat(attendanceSheet.countAttendancesState(today).get("링크").get(LATE)).isEqualTo(1);
+            softly.assertThat(attendanceSheet.countAttendancesState(today).get("링크").get(ABSENT)).isEqualTo(6);
+            softly.assertThat(attendanceSheet.countAttendancesState(today).get("링크2").get(LATE)).isEqualTo(4);
+            softly.assertThat(attendanceSheet.countAttendancesState(today).get("링크2").get(ABSENT)).isEqualTo(5);
+        });
     }
 }

@@ -53,7 +53,7 @@ public class AttendanceSheet {
                         });
     }
 
-    public Map<AttendanceState, Long> countAttendanceState(String nickname) {
+    public Map<AttendanceState, Long> countAttendanceState(String nickname, LocalDate today) {
         Map<AttendanceState, Long> counts = attendances.stream()
                 .filter(attendance -> attendance.isSameNickname(nickname))
                 .collect(groupingBy(Attendance::getState, counting()));
@@ -62,28 +62,28 @@ public class AttendanceSheet {
                 .forEach(state -> counts.putIfAbsent(state, 0L));
 
         Long absentCount = counts.values().stream()
-                .reduce(dayCount(), (allDay, attendedDay) -> allDay - attendedDay);
+                .reduce(dayCount(today), (allDay, attendedDay) -> allDay - attendedDay);
 
         counts.put(AttendanceState.ABSENT, counts.get(AttendanceState.ABSENT)*2 + absentCount);
 
         return counts;
     }
 
-    private Long dayCount() {
-        return LocalDate.of(2024, 12, 13).withDayOfMonth(1)
-                .datesUntil(LocalDate.of(2024, 12, 13))
+    private Long dayCount(LocalDate today) {
+        return today.withDayOfMonth(1)
+                .datesUntil(today)
                 .filter(date -> absentPolicy.isWeekday(date.getDayOfWeek()))
                 .filter(absentPolicy::isNotHoliday)
                 .count();
     }
 
-    public Map<String, Map<AttendanceState, Long>> countAttendancesState() {
+    public Map<String, Map<AttendanceState, Long>> countAttendancesState(LocalDate today) {
         return attendances.stream()
                 .collect(groupingBy(Attendance::getNickname))
                 .keySet().stream()
                 .collect(toMap(
                         nickname -> nickname,
-                        this::countAttendanceState
+                        nicknameForCount -> countAttendanceState(nicknameForCount, today)
                 ));
     }
 
