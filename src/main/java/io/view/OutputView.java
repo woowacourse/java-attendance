@@ -26,7 +26,7 @@ public class OutputView {
             final LocalTime attendTime,
             final AttendanceStatus status
     ) {
-        writer.writeLine(parseDateTimeStatus(attendDate, attendTime, status));
+        writer.writeLine("\n" + parseDateTimeStatus(attendDate, attendTime, status) + "\n");
     }
     
     public void outputAttendanceModifyResult(
@@ -36,7 +36,7 @@ public class OutputView {
             final LocalTime newTime,
             final AttendanceStatus newStatus
     ) {
-        String output = "%s -> %s 수정 완료".formatted(
+        String output = "\n%s -> %s 수정 완료\n".formatted(
                 parseDateTimeStatus(date, oldTime, oldStatus),
                 parseTimeAndStatus(newTime, newStatus)
         );
@@ -52,6 +52,7 @@ public class OutputView {
             final ExpelWarning expelWarning
     ) {
         String output = """
+                
                 이번 달 %s의 출석 기록입니다.
                 
                 %s
@@ -59,23 +60,22 @@ public class OutputView {
                 출석: %d회
                 지각: %d회
                 결석: %d회
-                
-                %s
                 """.formatted(
                 nickname,
                 parseAttendances(attendanceResponses),
                 attendCount,
                 lateCount,
-                absentCount,
-                parseExpelWarning(expelWarning)
-        );
+                absentCount
+        ) + parseExpelWarning(expelWarning);
         writer.writeLine(output);
     }
     
     public void outputExpelWarningCrews(final Set<ExpelWarningCrewResponse> expelWarningCrewResponses) {
         StringBuilder sb = new StringBuilder();
         
-        sb.append("제적 위험자 조회 결과").append("\n");
+        sb.append("\n")
+                .append("제적 위험자 조회 결과")
+                .append("\n");
         
         expelWarningCrewResponses.stream()
                 .sorted(new ExpelWarningCrewResponseComparator())
@@ -129,7 +129,7 @@ public class OutputView {
         if (expelWarning == ExpelWarning.정상) {
             return "";
         }
-        return "%s 대상자입니다.".formatted(expelWarning.name());
+        return "\n%s 대상자입니다.\n".formatted(expelWarning.name());
     }
     
     private String parseDateTimeStatus(final LocalDate date, final LocalTime time, final AttendanceStatus status) {
