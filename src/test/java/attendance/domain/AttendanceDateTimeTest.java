@@ -6,6 +6,7 @@ import org.junit.jupiter.params.provider.CsvSource;
 
 import java.time.DayOfWeek;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.Year;
 
 import static org.assertj.core.api.Assertions.*;
@@ -71,7 +72,7 @@ public class AttendanceDateTimeTest {
         // Given
         LocalDateTime start = Year.of(2025).atMonth(2).atDay(27).atTime(13, 30);
         AttendanceDateTime startDateTime = new AttendanceDateTime(start);
-        LocalDateTime end = Year.of(2025).atMonth(2).atDay(27).atTime(10, 00);
+        LocalTime end = LocalTime.of(10, 00);
 
         // When & Then
         assertThat(startDateTime.calculateMinuteDifference(end))
