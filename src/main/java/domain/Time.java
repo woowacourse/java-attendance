@@ -1,6 +1,7 @@
 package domain;
 
 import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 
 public class Time {
     private static final LocalTime openTime = LocalTime.of(8, 0);
@@ -8,7 +9,8 @@ public class Time {
     LocalTime time;
 
     public Time(String rawTime) {
-        LocalTime time = LocalTime.parse(rawTime);
+
+        LocalTime time = LocalTime.parse(rawTime, DateTimeFormatter.ofPattern("H:m"));
         validateTime(time);
         this.time = time;
     }

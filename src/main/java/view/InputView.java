@@ -6,6 +6,12 @@ import java.util.Locale;
 import java.util.Scanner;
 
 public class InputView {
+    private final InputValidator inputValidator;
+
+    public InputView(InputValidator inputValidator) {
+        this.inputValidator = inputValidator;
+    }
+
     public String readMenuOption(LocalDate today) {
         System.out.printf("오늘은 12월 %d일 %s입니다. 기능을 선택해 주세요.\n",
                 today.getDayOfMonth(),
@@ -28,7 +34,9 @@ public class InputView {
 
     public String readCheckAttendanceTime() {
         System.out.println("등교 시간을 입력해 주세요.");
-        return readInput();
+        String input = readInput();
+        inputValidator.validateTimeFormat(input);
+        return input;
     }
 
     public String readChangeAttendanceNickname() {
@@ -38,12 +46,16 @@ public class InputView {
 
     public String readChangeAttendanceDayOfMonth() {
         System.out.println("수정하려는 날짜(일)를 입력해 주세요.");
-        return readInput();
+        String input = readInput();
+        inputValidator.validateDateFormat(input);
+        return input;
     }
 
     public String readChangeAttendanceTime() {
         System.out.println("언제로 변경하겠습니까?");
-        return readInput();
+        String input = readInput();
+        inputValidator.validateTimeFormat(input);
+        return input;
     }
 
     public String readShowCrewAttendanceNickname() {
