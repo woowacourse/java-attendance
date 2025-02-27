@@ -16,12 +16,10 @@ public class Students {
     }
 
     public Student findStudentByName(String name) {
-        for (Student student : students) {
-            if (student.getName().equals(name)) {
-                return student;
-            }
-        }
-        throw new IllegalArgumentException("[ERROR] 존재하지 않는 학생의 이름입니다.");
+        return students.stream()
+                .filter(s -> s.getName().equals(name))
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException("[ERROR] 존재하지 않는 학생의 이름입니다."));
     }
 
     public void updateEveryStudentNoInformationInFile(TodayDate todayDate) {
