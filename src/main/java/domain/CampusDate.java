@@ -17,18 +17,24 @@ public class CampusDate {
         return new CampusDate(LocalDate.now());
     }
 
-    public static CampusDate fromDate(final LocalDate date) {
-        return new CampusDate(date);
-    }
-
-    public static CampusDate ofNowAndDay(final LocalDate now, final int day) {
+    public static CampusDate nowWithDay(final int day) {
+        LocalDate now = LocalDate.now();
         validateDayRangeOfMonth(now, day);
         return new CampusDate(now.withDayOfMonth(day));
     }
 
-    private static void validateDayRangeOfMonth(final LocalDate now, final int day) {
+    public static CampusDate fromDate(final LocalDate date) {
+        return new CampusDate(date);
+    }
+
+    public static CampusDate ofDateAndDay(final LocalDate date, final int day) {
+        validateDayRangeOfMonth(date, day);
+        return new CampusDate(date.withDayOfMonth(day));
+    }
+
+    private static void validateDayRangeOfMonth(final LocalDate date, final int day) {
         try {
-            now.withDayOfMonth(day);
+            date.withDayOfMonth(day);
         } catch (DateTimeException e) {
             throw new IllegalArgumentException("[ERROR] 해당 월의 가능한 일 수 내에서 입력해 주세요.");
         }

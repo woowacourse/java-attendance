@@ -31,7 +31,7 @@ class CampusDateTest {
         int day = 7;
 
         // when
-        CampusDate campusDate = CampusDate.ofNowAndDay(date, day);
+        CampusDate campusDate = CampusDate.ofDateAndDay(date, day);
 
         // then
         assertThat(campusDate.getMonth()).isEqualTo(2);
@@ -53,7 +53,7 @@ class CampusDateTest {
         LocalDate now = LocalDate.of(2025, 2, 27);
 
         // when // then
-        assertThatThrownBy(() -> CampusDate.ofNowAndDay(now.withMonth(month), day))
+        assertThatThrownBy(() -> CampusDate.ofDateAndDay(now.withMonth(month), day))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("[ERROR] 해당 월의 가능한 일 수 내에서 입력해 주세요.");
     }
@@ -71,7 +71,7 @@ class CampusDateTest {
     void 해당_날짜의_요일을_반환한다(int day, DayOfWeek dayOfWeek) {
         // given
         LocalDate now = LocalDate.of(2025, 2, 27);
-        CampusDate campusDate = CampusDate.ofNowAndDay(now, day);
+        CampusDate campusDate = CampusDate.ofDateAndDay(now, day);
 
         // when // then
         assertThat(campusDate.getDayOfWeek()).isEqualTo(dayOfWeek);
@@ -83,11 +83,11 @@ class CampusDateTest {
         LocalDate now = LocalDate.of(2025, 2, 27);
 
         // when // then
-        assertThatThrownBy(() -> CampusDate.ofNowAndDay(now, 22))
+        assertThatThrownBy(() -> CampusDate.ofDateAndDay(now, 22))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("[ERROR] 주말에는 캠퍼스에 출석할 수 없습니다.");
 
-        assertThatThrownBy(() -> CampusDate.ofNowAndDay(now, 23))
+        assertThatThrownBy(() -> CampusDate.ofDateAndDay(now, 23))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("[ERROR] 주말에는 캠퍼스에 출석할 수 없습니다.");
     }
