@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Test;
 
 import java.time.LocalDateTime;
 import java.time.Year;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -18,8 +19,9 @@ public class AttendanceBookTest {
     @BeforeEach
     void 출석부_초기화() {
         Crew cookie = new Crew("쿠키");
-        List<AttendanceDateTime> cookieAttendanceDateTimes = List.of(
-                new AttendanceDateTime(Year.of(2025).atMonth(2).atDay(25).atTime(10, 4)));
+        List<AttendanceDateTime> cookieAttendanceDateTimes = new ArrayList<>(List.of(
+                new AttendanceDateTime(Year.of(2025).atMonth(2).atDay(25).atTime(10, 4))
+        ));
         Map<Crew, List<AttendanceDateTime>> crewAttendances = Map.of(cookie, cookieAttendanceDateTimes);
         this.attendanceBook = new AttendanceBook(crewAttendances);
     }
@@ -71,6 +73,22 @@ public class AttendanceBookTest {
 
         // When & Then
         assertThatThrownBy(() -> attendanceBook.validateDuplicateAttendanceDate(cookie, attendanceDateTime))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("오늘은 이미 출석하셨습니다. 출석 수정 기능을 이용해 주세요.");
+    }
+
+    @Test
+    void 크루의_출석을_등록한다() {
+        // Given
+        Crew crew = new Crew("쿠키");
+        LocalDateTime localDateTime = Year.of(2025).atMonth(2).atDay(26).atTime(10, 0);
+        AttendanceDateTime attendanceDateTime = new AttendanceDateTime(localDateTime);
+
+        // When
+        attendanceBook.saveAttendanceDateTime(crew, attendanceDateTime);
+
+        // Then
+        assertThatThrownBy(() -> attendanceBook.validateDuplicateAttendanceDate(crew, attendanceDateTime))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("오늘은 이미 출석하셨습니다. 출석 수정 기능을 이용해 주세요.");
     }
