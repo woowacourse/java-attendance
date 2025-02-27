@@ -36,6 +36,9 @@ public class AttendanceManager {
             final LocalDate attendanceDateToModify,
             final LocalTime modificationTime
     ) {
-        return null;
+        String modificationStatus = calculateAttendanceStatus(attendanceDateToModify.getDayOfWeek(), modificationTime);
+        AttendanceHistory attendanceHistory = attendanceBook.get(crew);
+        Attendance modifiedAttendance = new Attendance(attendanceDateToModify, modificationTime, modificationStatus);
+        return attendanceHistory.modifyAttendance(modifiedAttendance);
     }
 }

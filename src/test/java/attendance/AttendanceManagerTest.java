@@ -131,7 +131,7 @@ class AttendanceManagerTest {
             LocalTime attendanceTime = LocalTime.of(10, 0);
             attendanceManager.addAttendance(crew, attendanceDate, attendanceTime);
 
-            LocalTime modificationTime = LocalTime.of(10, 5);
+            LocalTime modificationTime = LocalTime.of(10, 6);
 
             //when
             Attendance result = attendanceManager.modifyAttendance(crew, attendanceDate, modificationTime);
