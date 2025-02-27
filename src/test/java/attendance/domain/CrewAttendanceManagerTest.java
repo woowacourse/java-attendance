@@ -21,7 +21,7 @@ class CrewAttendanceManagerTest {
         // given
         String nickname = "비타";
         LocalDate nowDate = LocalDate.now();
-        LocalTime attendanceTime = LocalTime.of(10, 0);
+        LocalDateTime attendanceDateTime = LocalDateTime.of(nowDate, LocalTime.of(10, 0));
 
         Attendance attendance = new Attendance(LocalDateTime.of(nowDate, LocalTime.MAX));
         Attendances attendances = new Attendances(List.of(attendance));
@@ -29,10 +29,10 @@ class CrewAttendanceManagerTest {
         attendanceManager.addNewCrew(nickname, attendances);
 
         // when
-        Attendance result = attendanceManager.processAttendanceCheck(nickname, attendanceTime);
+        Attendance result = attendanceManager.processAttendanceCheck(nickname, attendanceDateTime);
 
         // then
-        assertThat(result.getDateTime().toLocalTime())
-                .isEqualTo(attendanceTime);
+        assertThat(result.getDateTime())
+                .isEqualTo(attendanceDateTime);
     }
 }
