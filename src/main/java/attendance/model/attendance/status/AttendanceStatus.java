@@ -1,4 +1,4 @@
-package attendance.model.attendance;
+package attendance.model.attendance.status;
 
 import attendance.model.attendance.datetime.AttendanceDateTime;
 import java.time.DayOfWeek;

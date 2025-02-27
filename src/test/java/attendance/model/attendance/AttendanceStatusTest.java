@@ -3,6 +3,7 @@ package attendance.model.attendance;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import attendance.model.attendance.datetime.AttendanceDateTime;
+import attendance.model.attendance.status.AttendanceStatus;
 import attendance.model.campus.CampusOperationPolicy;
 import java.time.LocalDateTime;
 import java.util.stream.Stream;

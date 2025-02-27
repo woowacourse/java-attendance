@@ -1,6 +1,6 @@
 package attendance.model.attendance.log;
 
-import attendance.model.attendance.AttendanceStatus;
+import attendance.model.attendance.status.AttendanceStatus;
 import attendance.model.campus.CampusOperationPolicy;
 import java.time.LocalDate;
 import java.time.LocalDateTime;

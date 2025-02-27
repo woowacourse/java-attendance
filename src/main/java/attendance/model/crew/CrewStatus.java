@@ -1,6 +1,6 @@
 package attendance.model.crew;
 
-import attendance.model.attendance.AttendanceStatus;
+import attendance.model.attendance.status.AttendanceStatus;
 import java.util.List;
 
 public enum CrewStatus {

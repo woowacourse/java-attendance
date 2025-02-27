@@ -2,7 +2,7 @@ package attendance.model.crew;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import attendance.model.attendance.AttendanceStatus;
+import attendance.model.attendance.status.AttendanceStatus;
 import java.util.List;
 import java.util.stream.Stream;
 import org.junit.jupiter.api.DisplayName;
