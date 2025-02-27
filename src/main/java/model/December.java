@@ -22,4 +22,12 @@ public class December {
                 || date.getDayOfWeek() == DayOfWeek.SATURDAY
                 || date.getDayOfWeek() == DayOfWeek.SUNDAY;
     }
+
+    public static LocalDate createDecemberDateWith(int rawDate) {
+        return LocalDate.of(YEAR, MONTH, rawDate);
+    }
+
+    public static LocalDate now() {
+        return LocalDate.of(YEAR, MONTH, 13);
+    }
 }
