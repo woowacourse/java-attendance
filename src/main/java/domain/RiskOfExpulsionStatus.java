@@ -2,6 +2,8 @@ package domain;
 
 import java.util.Arrays;
 import java.util.Comparator;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public enum RiskOfExpulsionStatus {
     NORMAL(0),
@@ -16,11 +18,16 @@ public enum RiskOfExpulsionStatus {
     }
 
     public static RiskOfExpulsionStatus calculateRiskOfExpulsionStatus(final int absenceCount) {
-        return Arrays.stream(values())
-                .sorted(Comparator.comparingInt(RiskOfExpulsionStatus::getAbsenceCountBoundary).reversed())
+        return sortAscByAbsenceCountBoundary().stream()
                 .filter(status -> absenceCount >= status.absenceCountBoundary)
                 .findFirst()
-                .orElseThrow(IllegalAccessError::new);
+                .orElseThrow(IllegalArgumentException::new);
+    }
+
+    private static List<RiskOfExpulsionStatus> sortAscByAbsenceCountBoundary() {
+        return Arrays.stream(values())
+                .sorted(Comparator.comparingInt(RiskOfExpulsionStatus::getAbsenceCountBoundary).reversed())
+                .collect(Collectors.toList());
     }
 
     public int getAbsenceCountBoundary() {
