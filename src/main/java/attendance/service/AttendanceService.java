@@ -17,10 +17,10 @@ public class AttendanceService {
 
     private final Crews crews = Crews.fromFile();
 
-    public AttendanceResponse attendance(LocalDate date, AttendanceRequest request) {
+    public AttendanceResponse attendance(LocalDate today, AttendanceRequest request) {
         Crew crew = crews.get(request.name());
-        crew.attendance(date, request.time());
-        return AttendanceResponse.of(crew, date);
+        crew.attendance(today, request.time());
+        return AttendanceResponse.of(crew, today);
     }
 
     public ModifyAttendanceResponse modifyAttendance(ModifyAttendanceRequest request) {
@@ -31,21 +31,20 @@ public class AttendanceService {
         return new ModifyAttendanceResponse(request.date(), before, after);
     }
 
-    private static ModifyAttendanceResponse.InnerAttendance getAttendanceResult(LocalDate date, Crew crew) {
+    private static ModifyAttendanceResponse.InnerAttendance getAttendanceResult(LocalDate today, Crew crew) {
         return new ModifyAttendanceResponse.InnerAttendance(
-            crew.getAttendanceTimeOf(date),
-            crew.getAttendanceStatusOf(date)
+            crew.getAttendanceTimeOf(today),
+            crew.getAttendanceStatusOf(today)
         );
     }
 
-    // TODO: 매개변수명에서 date들 전부 today로 변경
-    public AttendanceHistoryResponse attendanceHistory(LocalDate date, AttendanceHistoryRequest request) {
+    public AttendanceHistoryResponse attendanceHistory(LocalDate today, AttendanceHistoryRequest request) {
         Crew crew = crews.get(request.name());
-        return AttendanceHistoryResponse.of(date, crew);
+        return AttendanceHistoryResponse.of(today, crew);
     }
 
-    public RiskCrewsResponse riskCrews(LocalDate date) {
-        List<Crew> riskCrews = crews.getRiskCrews(date);
-        return RiskCrewsResponse.of(riskCrews, date);
+    public RiskCrewsResponse riskCrews(LocalDate today) {
+        List<Crew> riskCrews = crews.getRiskCrews(today);
+        return RiskCrewsResponse.of(riskCrews, today);
     }
 }
