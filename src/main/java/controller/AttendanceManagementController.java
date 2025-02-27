@@ -1,12 +1,11 @@
 package controller;
 
-import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import model.AttendanceCalculator;
+import model.AttendanceDateTime;
 import model.AttendanceStatus;
 import model.Student;
 import model.StudentAttendanceHistory;
@@ -52,7 +51,7 @@ public class AttendanceManagementController {
     }
 
     public Students updateStudentAttendanceRecord() {
-        Map<String, List<LocalDateTime>> studentRecordRepository = FileInput.readFileAndCreateStudentRepository();
+        Map<String, List<AttendanceDateTime>> studentRecordRepository = FileInput.readFileAndCreateStudentRepository();
         List<Student> students = new ArrayList<>();
         for (String name : studentRecordRepository.keySet()) {
             StudentAttendanceHistory studentAttendanceHistory = new StudentAttendanceHistory(studentRecordRepository.get(name));
@@ -83,7 +82,7 @@ public class AttendanceManagementController {
 
     private static void functionForAttendanceModify(Students students) {
         String studentName = InputView.getStudentNameForModifyUntilValidate(students);
-        LocalDateTime modifyLocalDateTime = InputView.getLocalDateTimeToModify();
+        AttendanceDateTime modifyLocalDateTime = InputView.getAttendanceDateTimeToModify();
         if (isHolidayFofAttendanceModify(modifyLocalDateTime)) {
             return;
         }
@@ -92,15 +91,15 @@ public class AttendanceManagementController {
 
         students.findStudentByName(studentName).modifyRecord(modifyLocalDateTime);
 
-        String recordAfterModifyState = AttendanceCalculator.calculateAttendance(modifyLocalDateTime,LocalTime.from(modifyLocalDateTime)).getState();
+        String recordAfterModifyState = AttendanceCalculator.calculateAttendance(modifyLocalDateTime, modifyLocalDateTime.toLocalTime()).getState();
         String recordAfterModify = LocalDateTimePrintFormatter.creatModifyCompleteMessage(modifyLocalDateTime,recordAfterModifyState);
 
         OutputView.printSecondMenu(recordBeforeModify, recordAfterModify);
     }
 
-    private static boolean isHolidayFofAttendanceModify(LocalDateTime modifyLocalDateTime) {
+    private static boolean isHolidayFofAttendanceModify(AttendanceDateTime modifyLocalDateTime) {
         try {
-            if(AttendanceCalculator.checkHoliday(modifyLocalDateTime)) {
+            if(modifyLocalDateTime.isChristmas() || modifyLocalDateTime.isWeekend()) {
                 throw new IllegalArgumentException("[ERROR] 주말 및 공휴일에는 출석을 수정할 수 없습니다.");
             }
         } catch (IllegalArgumentException e) {
@@ -120,11 +119,11 @@ public class AttendanceManagementController {
             return;
         }
 
-        LocalDateTime localDateTime = InputView.getLocalDateTimeUntilValidate(todayDate);
-        students.findStudentByName(name).addTime(localDateTime);
+        AttendanceDateTime attendanceDateTime = InputView.getAttendanceDateTimeUntilValidate(todayDate);
+        students.findStudentByName(name).addTime(attendanceDateTime);
 
-        AttendanceStatus todayResult = AttendanceCalculator.calculateAttendance(localDateTime,LocalTime.from(localDateTime));
-        OutputView.printTodayAttendanceResult(localDateTime,todayResult);
+        AttendanceStatus todayResult = AttendanceCalculator.calculateAttendance(attendanceDateTime, attendanceDateTime.toLocalTime());
+        OutputView.printTodayAttendanceResult(attendanceDateTime, todayResult);
     }
 
     private static boolean isAlreadyAttendance(Students students, String name,
@@ -142,7 +141,7 @@ public class AttendanceManagementController {
         try {
             if (todayDate.isHoliday()) {
                 throw new IllegalArgumentException(LocalDateTimePrintFormatter.createNonSchoolDayMessage(
-                        todayDate.getTodayDate()));}
+                        todayDate.toAttendanceDateTime()));}
         }catch (IllegalArgumentException e) {
             System.out.println(e.getMessage());
             return true;
