@@ -17,6 +17,10 @@ public class AttendanceBook {
         attendanceBook.put(crew, new AttendanceHistory(crew));
     }
 
+    public boolean containsCrew(final Crew crew) {
+        return attendanceBook.containsKey(crew);
+    }
+
     private void validateAlreadyRegister(final Crew crew) {
         if (attendanceBook.containsKey(crew)) {
             throw new IllegalStateException();

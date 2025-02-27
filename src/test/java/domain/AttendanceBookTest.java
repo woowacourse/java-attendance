@@ -46,6 +46,24 @@ public class AttendanceBookTest {
             // then
             assertThat(actual).containsKey(crew);
         }
+
+        @DisplayName("크루가 출석부에 등록되어 있는지 여부를 검사한다.")
+        @Test
+        public void containsCrew() throws Exception {
+            // given
+            final var crew1 = new Crew("헤일러");
+            final var crew2 = new Crew("미소");
+            final var attendanceBook = new AttendanceBook();
+            attendanceBook.registerCrew(crew1);
+
+            // when
+            final boolean actual1 = attendanceBook.containsCrew(crew1);
+            final boolean actual2 = attendanceBook.containsCrew(crew2);
+
+            // then
+            assertThat(actual1).isTrue();
+            assertThat(actual2).isFalse();
+        }
     }
 
     @Nested
