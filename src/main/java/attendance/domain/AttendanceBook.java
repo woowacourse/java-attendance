@@ -20,11 +20,11 @@ public class AttendanceBook {
         crewAttendances.put(nickname, attendances);
     }
 
-    public Attendance updateAttendance(String nickname, LocalDateTime dateTime) {
+    public Attendance updateAttendance(final String nickname, final LocalDateTime dateTime) {
         Attendances attendances = crewAttendances.get(nickname);
-        Attendance before = attendances.updateAttendance(dateTime);
+        Attendance attendance = attendances.updateAttendance(dateTime);
         crewAttendances.put(nickname, attendances);
-        return before;
+        return attendance;
     }
 
     public Attendances findByNickname(String nickname) {
@@ -32,7 +32,7 @@ public class AttendanceBook {
         return crewAttendances.get(nickname);
     }
 
-    public Attendance findByNicknameAndDate(String nickname, LocalDateTime dateTime) {
+    public Attendance findByNicknameAndDate(final String nickname, final LocalDateTime dateTime) {
         Attendances attendances = crewAttendances.get(nickname);
         return attendances.findByDate(dateTime.toLocalDate());
     }

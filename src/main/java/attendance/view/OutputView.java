@@ -26,8 +26,8 @@ public class OutputView {
         System.out.printf("%s (%s)\n", dateTime.format(formatter), status.getMessage());
     }
 
-    public void printUpdateResult(AttendanceResultResponse beforeResponse,
-                                  AttendanceResultResponse afterResponse) {
+    public void printUpdateResult(final AttendanceResultResponse beforeResponse,
+                                  final AttendanceResultResponse afterResponse) {
         DateTimeFormatter afterFormatter = DateTimeFormatter.ofPattern("HH:mm");
 
         printAbsenceResult(beforeResponse);

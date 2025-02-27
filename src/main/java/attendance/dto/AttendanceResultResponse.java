@@ -10,7 +10,7 @@ public record AttendanceResultResponse(
         LocalDateTime dateTime,
         AttendanceStatus status
 ) {
-    public static AttendanceResultResponse from(Attendance attendance) {
+    public static AttendanceResultResponse from(final Attendance attendance) {
         LocalDate date = attendance.getAttendanceDate().date();
         LocalTime time = attendance.getAttendanceTime().time();
         return new AttendanceResultResponse(LocalDateTime.of(date, time), attendance.checkAttendanceStatus());
