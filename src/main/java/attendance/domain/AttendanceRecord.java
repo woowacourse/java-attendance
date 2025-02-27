@@ -6,16 +6,17 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 
 public class AttendanceRecord {
-    private LocalDateTime attendanceDateTime;
+    private final WoowaDate attendanceDate;
+    private LocalTime attendanceTime;
 
-    public AttendanceRecord(LocalDateTime attendanceDateTime) {
-        this.attendanceDateTime = attendanceDateTime;
+    public AttendanceRecord(WoowaDate attendanceDate, LocalTime attendanceTime) {
+        this.attendanceDate = attendanceDate;
+        this.attendanceTime = attendanceTime;
     }
 
     public AttendanceStatus getAttendanceStatus() {
-        EducationTime educationTime = EducationTime.from(attendanceDateTime.getDayOfWeek());
+        EducationTime educationTime = EducationTime.from(attendanceDate.getDayOfWeek());
         LocalTime startTime = educationTime.getStartTime();
-        LocalTime attendanceTime = attendanceDateTime.toLocalTime();
         Duration duration = Duration.between(startTime, attendanceTime);
         long minutes = duration.toMinutes();
 
@@ -23,22 +24,23 @@ public class AttendanceRecord {
     }
 
     public void modify(LocalTime modifyTime) {
-        attendanceDateTime = LocalDateTime.of(attendanceDateTime.toLocalDate(), modifyTime);
+        attendanceTime = modifyTime;
     }
 
-    public boolean isSameDate(LocalDate date) {
-        return date.equals(attendanceDateTime.toLocalDate());
+    public boolean isSameDate(WoowaDate date) {
+        return date.equals(attendanceDate);
     }
 
     public AttendanceRecord copy() {
-        return new AttendanceRecord(this.getDateTime());
-    }
-
-    public LocalDateTime getDateTime() {
-        return attendanceDateTime;
+        return new AttendanceRecord(this.attendanceDate, this.attendanceTime);
     }
 
     public LocalDate getDate() {
-        return attendanceDateTime.toLocalDate();
+        return attendanceDate.toLocalDate();
     }
+
+    public LocalDateTime getDateTIme() {
+        return LocalDateTime.of(attendanceDate.toLocalDate(), attendanceTime);
+    }
+
 }

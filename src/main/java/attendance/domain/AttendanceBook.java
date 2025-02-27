@@ -1,6 +1,5 @@
 package attendance.domain;
 
-import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.Map;
 
@@ -16,7 +15,7 @@ public class AttendanceBook {
         history.addRecord(record);
     }
 
-    public void modify(String crewName, LocalDate targetDate, LocalTime modifyTime) {
+    public void modify(String crewName, WoowaDate targetDate, LocalTime modifyTime) {
         AttendanceHistory history = crewHistories.get(crewName);
         history.modifyRecord(targetDate, modifyTime);
     }
@@ -37,7 +36,7 @@ public class AttendanceBook {
         return history;
     }
 
-    public AttendanceRecord getRecordBy(String crewName, LocalDate date) {
+    public AttendanceRecord getRecordBy(String crewName, WoowaDate date) {
         AttendanceHistory history = crewHistories.get(crewName);
         if (history == null) {
             throw new IllegalArgumentException("해당 크루의 기록이 없습니다.");

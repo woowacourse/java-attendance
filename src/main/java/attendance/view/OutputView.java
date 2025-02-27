@@ -20,6 +20,7 @@ public class OutputView {
 
     public void printError(String message) {
         System.out.println(message);
+        System.out.println(System.lineSeparator());
     }
 
     public void displayCrewHistory(Crew crew, AttendanceHistory history) {
@@ -27,7 +28,7 @@ public class OutputView {
         sb.appendLine(String.format("이번 달 %s의 출석 기록입니다.", crew.getName()));
 
         history.getRecords().stream()
-                .sorted(Comparator.comparing(record -> record.getDateTime().toLocalDate()))
+                .sorted(Comparator.comparing(AttendanceRecord::getDate))
                 .forEach(record -> sb.appendLine(getFormattedRecord(record)));
 
         Arrays.stream(AttendanceStatus.values())
@@ -47,7 +48,7 @@ public class OutputView {
 
     private String getFormattedRecord(AttendanceRecord record) {
         return String.format("%s (%s)",
-                record.getDateTime().format(DATE_FORMATTER),
+                record.getDateTIme().format(DATE_FORMATTER),
                 record.getAttendanceStatus().getTitle()
         );
     }

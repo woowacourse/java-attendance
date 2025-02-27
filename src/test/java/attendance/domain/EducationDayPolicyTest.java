@@ -7,17 +7,17 @@ import java.util.Set;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-class EducationDayTest {
+class EducationDayPolicyTest {
 
     @DisplayName("주말은 등교일이 아니다")
     @Test
     void test_weekend_isNotEducationDay() {
         // given
-        EducationDay educationDay = new EducationDay(Set.of());
+        EducationDayPolicy educationDayPolicy = new EducationDayPolicy(Set.of());
         LocalDate wantAttendanceDate = LocalDate.of(2024, 12, 1);
 
         // when
-        boolean canAttendance = educationDay.isEducationDay(wantAttendanceDate);
+        boolean canAttendance = educationDayPolicy.isEducationDay(wantAttendanceDate);
 
         // then
         assertThat(canAttendance).isFalse();
@@ -27,11 +27,11 @@ class EducationDayTest {
     @Test
     void test_weekday_isEducationDay() {
         // given
-        EducationDay educationDay = new EducationDay(Set.of());
+        EducationDayPolicy educationDayPolicy = new EducationDayPolicy(Set.of());
         LocalDate wantAttendanceDate = LocalDate.of(2024, 12, 2);
 
         // when
-        boolean canAttendance = educationDay.isEducationDay(wantAttendanceDate);
+        boolean canAttendance = educationDayPolicy.isEducationDay(wantAttendanceDate);
 
         // then
         assertThat(canAttendance).isTrue();
@@ -42,12 +42,12 @@ class EducationDayTest {
     void test_holiday_isNotEducationDay() {
         // given
         Set<LocalDate> holidays = Set.of(LocalDate.of(2024, 12, 25));
-        EducationDay educationDay = new EducationDay(holidays);
+        EducationDayPolicy educationDayPolicy = new EducationDayPolicy(holidays);
 
         LocalDate wantAttendanceDate = LocalDate.of(2024, 12, 25);
 
         // when
-        boolean canAttendance = educationDay.isEducationDay(wantAttendanceDate);
+        boolean canAttendance = educationDayPolicy.isEducationDay(wantAttendanceDate);
 
         // then
         assertThat(canAttendance).isFalse();

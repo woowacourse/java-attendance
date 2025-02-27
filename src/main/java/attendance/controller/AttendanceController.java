@@ -5,10 +5,11 @@ import attendance.domain.AttendanceHistory;
 import attendance.domain.AttendanceRecord;
 import attendance.domain.Crew;
 import attendance.domain.Crews;
+import attendance.domain.CustomClock;
+import attendance.domain.EducationDayPolicy;
+import attendance.domain.WoowaDate;
 import attendance.view.InputView;
 import attendance.view.OutputView;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.Map;
 
@@ -17,13 +18,17 @@ public class AttendanceController {
     private final OutputView outputView;
     private final AttendanceBook attendanceBook;
     private final Crews crews;
+    private final CustomClock clock;
+    private final EducationDayPolicy policy;
 
     public AttendanceController(InputView inputView, OutputView outputView, AttendanceBook attendanceBook,
-                                Crews crews) {
+                                Crews crews, CustomClock clock, EducationDayPolicy policy) {
         this.inputView = inputView;
         this.outputView = outputView;
         this.attendanceBook = attendanceBook;
         this.crews = crews;
+        this.clock = clock;
+        this.policy = policy;
     }
 
     public void run() {
@@ -43,10 +48,12 @@ public class AttendanceController {
 
     private void processCheckAttendance() {
         process(() -> {
+            WoowaDate woowaDate = new WoowaDate(clock.nowDate(), policy);
+
             Crew crew = crews.findByName(inputView.readName());
             LocalTime entryTime = inputView.readEntryTime();
 
-            AttendanceRecord record = new AttendanceRecord(LocalDateTime.of(LocalDate.of(2024, 12, 16), entryTime));
+            AttendanceRecord record = new AttendanceRecord(woowaDate, entryTime);
             attendanceBook.add(crew.getName(), record);
 
             outputView.displayAttendanceResult(record);
@@ -57,9 +64,9 @@ public class AttendanceController {
         process(() -> {
             Crew crew = crews.findByName(inputView.readModifyName());
             int modifyDay = inputView.readModifyDay();
+            WoowaDate targetDate = new WoowaDate(clock.createDateFromDay(modifyDay), policy);
             LocalTime modifyTime = inputView.readModifyTime();
 
-            LocalDate targetDate = LocalDate.of(2024, 12, modifyDay);
             AttendanceRecord oldRecord = attendanceBook.getRecordBy(crew.getName(), targetDate).copy();
             attendanceBook.modify(crew.getName(), targetDate, modifyTime);
             AttendanceRecord newRecord = attendanceBook.getRecordBy(crew.getName(), targetDate);

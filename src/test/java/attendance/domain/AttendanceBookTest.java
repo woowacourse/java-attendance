@@ -2,6 +2,7 @@ package attendance.domain;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import attendance.TestUtil;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -20,7 +21,7 @@ class AttendanceBookTest {
         String crewName = "빙티";
         map.put(crewName, new AttendanceHistory());
         AttendanceBook attendanceBook = new AttendanceBook(map);
-        AttendanceRecord record = new AttendanceRecord(LocalDateTime.of(2024, 12, 2, 13, 0));
+        AttendanceRecord record = TestUtil.createRecord(LocalDateTime.of(2024, 12, 2, 13, 0));
 
         // when
         attendanceBook.add(crewName, record);
@@ -40,17 +41,17 @@ class AttendanceBookTest {
         AttendanceHistory history = new AttendanceHistory();
         map.put(crewName, history);
         AttendanceBook attendanceBook = new AttendanceBook(map);
-        AttendanceRecord record = new AttendanceRecord(LocalDateTime.of(2024, 12, 2, 13, 0));
+        AttendanceRecord record = TestUtil.createRecord(LocalDateTime.of(2024, 12, 2, 13, 0));
         attendanceBook.add(crewName, record);
 
         // when
         LocalDate targetDate = LocalDate.of(2024, 12, 2);
         LocalTime modifyTime = LocalTime.of(13, 6);
-        attendanceBook.modify(crewName, targetDate, modifyTime);
+        attendanceBook.modify(crewName, TestUtil.WoowaDatefrom(targetDate), modifyTime);
 
         // then
         AttendanceHistory updatedHistory = attendanceBook.getHistoryByName(crewName);
-        assertThat(updatedHistory.getRecordByDate(targetDate).getAttendanceStatus())
+        assertThat(updatedHistory.getRecordByDate(TestUtil.WoowaDatefrom(targetDate)).getAttendanceStatus())
                 .isEqualTo(AttendanceStatus.LATE);
     }
 
@@ -62,8 +63,8 @@ class AttendanceBookTest {
         String crewName = "빙티";
         map.put(crewName, new AttendanceHistory()); // 미리 해당 크루의 기록을 등록
         AttendanceBook attendanceBook = new AttendanceBook(map);
-        attendanceBook.add(crewName, new AttendanceRecord(LocalDateTime.of(2024, 12, 3, 11, 0)));
-        attendanceBook.add(crewName, new AttendanceRecord(LocalDateTime.of(2024, 12, 4, 11, 0)));
+        attendanceBook.add(crewName, TestUtil.createRecord(LocalDateTime.of(2024, 12, 3, 11, 0)));
+        attendanceBook.add(crewName, TestUtil.createRecord(LocalDateTime.of(2024, 12, 4, 11, 0)));
 
         // when
         WarningStatus warning = attendanceBook.getWarningByCrew(crewName);
@@ -80,7 +81,7 @@ class AttendanceBookTest {
         String crewName = "빙티";
         map.put(crewName, new AttendanceHistory()); // 미리 해당 크루의 기록을 등록
         AttendanceBook attendanceBook = new AttendanceBook(map);
-        AttendanceRecord record = new AttendanceRecord(LocalDateTime.of(2024, 12, 3, 11, 0));
+        AttendanceRecord record = TestUtil.createRecord(LocalDateTime.of(2024, 12, 3, 11, 0));
         attendanceBook.add(crewName, record);
 
         // when
@@ -88,7 +89,7 @@ class AttendanceBookTest {
 
         // then
         assertThat(history.getRecords()).hasSize(1);
-        AttendanceRecord findRecord = history.getRecordByDate(LocalDate.of(2024, 12, 3));
+        AttendanceRecord findRecord = history.getRecordByDate(TestUtil.WoowaDatefrom(LocalDate.of(2024, 12, 3)));
         assertThat(findRecord).isEqualTo(record);
     }
 }

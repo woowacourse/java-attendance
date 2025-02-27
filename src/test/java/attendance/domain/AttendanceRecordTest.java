@@ -2,6 +2,7 @@ package attendance.domain;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import attendance.TestUtil;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -17,7 +18,7 @@ class AttendanceRecordTest {
         LocalDateTime attendanceDateTime = LocalDateTime.of(2024, 12, 2, 13, 0);
 
         // when
-        AttendanceRecord record = new AttendanceRecord(attendanceDateTime);
+        AttendanceRecord record = TestUtil.createRecord(attendanceDateTime);
 
         // then
         AttendanceStatus status = record.getAttendanceStatus();
@@ -31,7 +32,7 @@ class AttendanceRecordTest {
         LocalDateTime attendanceDateTime = LocalDateTime.of(2024, 12, 2, 13, 6);
 
         // when
-        AttendanceRecord record = new AttendanceRecord(attendanceDateTime);
+        AttendanceRecord record = TestUtil.createRecord(attendanceDateTime);
 
         // then
         AttendanceStatus status = record.getAttendanceStatus();
@@ -45,7 +46,7 @@ class AttendanceRecordTest {
         LocalDateTime attendanceDateTime = LocalDateTime.of(2024, 12, 2, 13, 31);
 
         // when
-        AttendanceRecord record = new AttendanceRecord(attendanceDateTime);
+        AttendanceRecord record = TestUtil.createRecord(attendanceDateTime);
 
         // then
         AttendanceStatus status = record.getAttendanceStatus();
@@ -59,7 +60,7 @@ class AttendanceRecordTest {
         LocalDateTime attendanceDateTime = LocalDateTime.of(2024, 12, 3, 10, 0);
 
         // when
-        AttendanceRecord record = new AttendanceRecord(attendanceDateTime);
+        AttendanceRecord record = TestUtil.createRecord(attendanceDateTime);
 
         // then
         AttendanceStatus status = record.getAttendanceStatus();
@@ -73,7 +74,7 @@ class AttendanceRecordTest {
         LocalDateTime attendanceDateTime = LocalDateTime.of(2024, 12, 3, 10, 6);
 
         // when
-        AttendanceRecord record = new AttendanceRecord(attendanceDateTime);
+        AttendanceRecord record = TestUtil.createRecord(attendanceDateTime);
 
         // then
         AttendanceStatus status = record.getAttendanceStatus();
@@ -87,7 +88,7 @@ class AttendanceRecordTest {
         LocalDateTime attendanceDateTime = LocalDateTime.of(2024, 12, 3, 10, 31);
 
         // when
-        AttendanceRecord record = new AttendanceRecord(attendanceDateTime);
+        AttendanceRecord record = TestUtil.createRecord(attendanceDateTime);
 
         // then
         AttendanceStatus status = record.getAttendanceStatus();
@@ -99,10 +100,10 @@ class AttendanceRecordTest {
     void test_isSameDate_true() {
         // given
         LocalDateTime attendanceDateTime = LocalDateTime.of(2024, 12, 3, 10, 0);
-        AttendanceRecord record = new AttendanceRecord(attendanceDateTime);
+        AttendanceRecord record = TestUtil.createRecord(attendanceDateTime);
 
         // when
-        boolean isSame = record.isSameDate(LocalDate.of(2024, 12, 3));
+        boolean isSame = record.isSameDate(TestUtil.WoowaDatefrom(LocalDate.of(2024, 12, 3)));
 
         // then
         assertThat(isSame).isTrue();
@@ -113,7 +114,7 @@ class AttendanceRecordTest {
     void test_modifyTime() {
         // given
         LocalDateTime attendanceDateTime = LocalDateTime.of(2024, 12, 3, 10, 0);
-        AttendanceRecord record = new AttendanceRecord(attendanceDateTime);
+        AttendanceRecord record = TestUtil.createRecord(attendanceDateTime);
 
         // when
         LocalTime modifyTime = LocalTime.of(10, 6);
@@ -128,10 +129,10 @@ class AttendanceRecordTest {
     void test_isSameDate_false() {
         // given
         LocalDateTime attendanceDateTime = LocalDateTime.of(2024, 12, 3, 10, 31);
-        AttendanceRecord record = new AttendanceRecord(attendanceDateTime);
+        AttendanceRecord record = TestUtil.createRecord(attendanceDateTime);
 
         // when
-        boolean isSame = record.isSameDate(LocalDate.of(2024, 12, 4));
+        boolean isSame = record.isSameDate(TestUtil.WoowaDatefrom(LocalDate.of(2024, 12, 4)));
 
         // then
         assertThat(isSame).isFalse();

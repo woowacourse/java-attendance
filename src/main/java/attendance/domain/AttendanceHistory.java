@@ -3,7 +3,6 @@ package attendance.domain;
 import static attendance.error.ErrorMessage.ERROR_CHECK_ATTENDANCE_AGAIN;
 import static attendance.error.ErrorMessage.ERROR_NO_RECORD_DATE;
 
-import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -21,16 +20,16 @@ public class AttendanceHistory {
 
     private boolean alreadyPresent(AttendanceRecord record) {
         return records.stream()
-                .anyMatch(existingRecord -> existingRecord.getDateTime().toLocalDate()
-                        .equals(record.getDateTime().toLocalDate()));
+                .anyMatch(existingRecord -> existingRecord.getDate()
+                        .equals(record.getDate()));
     }
 
-    public void modifyRecord(LocalDate targetDate, LocalTime modifyTime) {
+    public void modifyRecord(WoowaDate targetDate, LocalTime modifyTime) {
         AttendanceRecord record = getRecordByDate(targetDate);
         record.modify(modifyTime);
     }
 
-    public AttendanceRecord getRecordByDate(LocalDate targetDate) {
+    public AttendanceRecord getRecordByDate(WoowaDate targetDate) {
         return records.stream()
                 .filter(record -> record.isSameDate(targetDate))
                 .findAny()

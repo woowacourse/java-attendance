@@ -4,6 +4,7 @@ import static attendance.error.ErrorMessage.ERROR_CHECK_ATTENDANCE_AGAIN;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+import attendance.TestUtil;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -18,7 +19,7 @@ class AttendanceHistoryTest {
     void test_addCrewRecord() {
         // given
         AttendanceHistory history = new AttendanceHistory();
-        AttendanceRecord record = new AttendanceRecord(LocalDateTime.of(2024, 12, 2, 13, 0));
+        AttendanceRecord record = TestUtil.createRecord(LocalDateTime.of(2024, 12, 2, 13, 0));
 
         // when
         history.addRecord(record);
@@ -33,11 +34,11 @@ class AttendanceHistoryTest {
     void test_addCrewRecord_sameDate() {
         // given
         AttendanceHistory history = new AttendanceHistory();
-        history.addRecord(new AttendanceRecord(LocalDateTime.of(2024, 12, 2, 13, 0)));
+        history.addRecord(TestUtil.createRecord(LocalDateTime.of(2024, 12, 2, 13, 0)));
 
         // when & then
         assertThatThrownBy(() -> history.addRecord(
-                new AttendanceRecord(LocalDateTime.of(2024, 12, 2, 13, 0))
+                TestUtil.createRecord(LocalDateTime.of(2024, 12, 2, 13, 0))
         ))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage(ERROR_CHECK_ATTENDANCE_AGAIN);
@@ -48,16 +49,16 @@ class AttendanceHistoryTest {
     void test_modifyCrewRecord() {
         // given
         AttendanceHistory history = new AttendanceHistory();
-        AttendanceRecord record = new AttendanceRecord(LocalDateTime.of(2024, 12, 2, 13, 0));
+        AttendanceRecord record = TestUtil.createRecord(LocalDateTime.of(2024, 12, 2, 13, 0));
         history.addRecord(record);
 
         // when
         LocalDate targetDate = LocalDate.of(2024, 12, 2);
         LocalTime modifyTime = LocalTime.of(13, 6);
-        history.modifyRecord(targetDate, modifyTime);
+        history.modifyRecord(TestUtil.WoowaDatefrom(targetDate), modifyTime);
 
         // then
-        AttendanceRecord findRecord = history.getRecordByDate(targetDate);
+        AttendanceRecord findRecord = history.getRecordByDate(TestUtil.WoowaDatefrom(targetDate));
         assertThat(findRecord.getAttendanceStatus()).isEqualTo(AttendanceStatus.LATE);
     }
 
@@ -67,11 +68,12 @@ class AttendanceHistoryTest {
         // given
         AttendanceHistory history = new AttendanceHistory();
         LocalDate targetDate = LocalDate.of(2024, 12, 3);
-        AttendanceRecord record = new AttendanceRecord(LocalDateTime.of(targetDate, LocalTime.of(10, 0)));
+
+        AttendanceRecord record = TestUtil.createRecord(LocalDateTime.of(targetDate, LocalTime.of(10, 0)));
         history.addRecord(record);
 
         // when
-        AttendanceRecord findRecord = history.getRecordByDate(targetDate);
+        AttendanceRecord findRecord = history.getRecordByDate(TestUtil.WoowaDatefrom(targetDate));
 
         // then
         assertThat(findRecord).isEqualTo(record);
@@ -82,8 +84,8 @@ class AttendanceHistoryTest {
     void test_getWarning() {
         // given
         AttendanceHistory history = new AttendanceHistory();
-        history.addRecord(new AttendanceRecord(LocalDateTime.of(2024, 12, 2, 14, 0)));
-        history.addRecord(new AttendanceRecord(LocalDateTime.of(2024, 12, 3, 11, 0)));
+        history.addRecord(TestUtil.createRecord(LocalDateTime.of(2024, 12, 2, 14, 0)));
+        history.addRecord(TestUtil.createRecord(LocalDateTime.of(2024, 12, 3, 11, 0)));
 
         // when
         WarningStatus status = history.getWarningStatus();
@@ -97,8 +99,8 @@ class AttendanceHistoryTest {
     void test_countPresentStatus() {
         // given
         AttendanceHistory history = new AttendanceHistory();
-        history.addRecord(new AttendanceRecord(LocalDateTime.of(2024, 12, 2, 13, 0)));
-        history.addRecord(new AttendanceRecord(LocalDateTime.of(2024, 12, 3, 10, 0)));
+        history.addRecord(TestUtil.createRecord(LocalDateTime.of(2024, 12, 2, 13, 0)));
+        history.addRecord(TestUtil.createRecord(LocalDateTime.of(2024, 12, 3, 10, 0)));
 
         // when
         long count = history.countByAttendanceStatus(AttendanceStatus.PRESENT);

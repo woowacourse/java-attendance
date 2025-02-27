@@ -1,11 +1,14 @@
 package attendance.loader;
 
 import attendance.domain.AttendanceHistory;
+import attendance.domain.EducationDayPolicy;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -16,7 +19,8 @@ class AttendanceAssemblerTest {
     @Test
     void test() {
         // given
-        AttendanceAssembler assembler = new AttendanceAssembler(new AttendancesLoader());
+        EducationDayPolicy policy = new EducationDayPolicy(Set.of(LocalDate.of(2024, 12, 25)));
+        AttendanceAssembler assembler = new AttendanceAssembler(new AttendancesLoader(), policy);
 
         // when
         Map<String, AttendanceHistory> assembleDatas = assembler.assembleDatas();
@@ -33,12 +37,12 @@ class AttendanceAssemblerTest {
         Map<String, List<LocalDateTime>> rawDatas = new HashMap<>();
         rawDatas.put("쿠키", Arrays.asList(
                 LocalDateTime.of(2024, 12, 13, 10, 8),
-                LocalDateTime.of(2024, 12, 14, 10, 10)
+                LocalDateTime.of(2024, 12, 17, 10, 10)
         ));
         rawDatas.put("빙봉", Arrays.asList(
                 LocalDateTime.of(2024, 12, 13, 10, 7),
-                LocalDateTime.of(2024, 12, 14, 10, 5),
-                LocalDateTime.of(2024, 12, 15, 10, 3)
+                LocalDateTime.of(2024, 12, 17, 10, 5),
+                LocalDateTime.of(2024, 12, 18, 10, 3)
         ));
         rawDatas.put("빙티", List.of(
                 LocalDateTime.of(2024, 12, 13, 10, 7)
@@ -56,7 +60,8 @@ class AttendanceAssemblerTest {
             }
         };
 
-        AttendanceAssembler assembler = new AttendanceAssembler(fakeLoader);
+        EducationDayPolicy policy = new EducationDayPolicy(Set.of(LocalDate.of(2024, 12, 25)));
+        AttendanceAssembler assembler = new AttendanceAssembler(fakeLoader, policy);
 
         // when
         Map<String, AttendanceHistory> assembleDatas = assembler.assembleDatas();
