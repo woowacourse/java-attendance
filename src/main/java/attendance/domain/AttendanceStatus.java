@@ -15,6 +15,22 @@ public enum AttendanceStatus {
     }
 
     public static AttendanceStatus fetchUserAttendanceStatus(final LocalDateTime localDateTime) {
-        return AttendanceStatus.ATTENDANCE;
+        DayOfWeek dayOfWeek = localDateTime.getDayOfWeek();
+        if (dayOfWeek.getValue() == 1) {
+            if (localDateTime.getHour() > 13 || (localDateTime.getHour() == 13 && localDateTime.getMinute() > 30)) {
+                return ABSENCE;
+            }
+            if (localDateTime.getHour() == 13 && localDateTime.getMinute() > 5) {
+                return LATE;
+            }
+            return ATTENDANCE;
+        }
+        if (localDateTime.getHour() > 10 || (localDateTime.getHour() == 10 && localDateTime.getMinute() > 30)) {
+            return ABSENCE;
+        }
+        if (localDateTime.getHour() == 10 && localDateTime.getMinute() > 5) {
+            return LATE;
+        }
+        return ATTENDANCE;
     }
 }
