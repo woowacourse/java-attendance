@@ -2,6 +2,7 @@ package domain.attendance;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -16,14 +17,18 @@ public class Attendance {
         this.attendanceDates = new HashMap<>();
     }
 
-    public boolean has(LocalDate findDate){
-        return attendanceDates.containsKey(findDate);
+    public void editAttendance(LocalDateTime editLocalDateTime){
+        LocalDate editDate = LocalDate.from(editLocalDateTime);
+        if(!has(editDate)){
+            throw new IllegalArgumentException("[ERROR] 수정하려는 날짜가 존재하지 않습니다.");
+        }
+        findByLocalDate(editDate).editLocalDate(editLocalDateTime);
     }
 
     public void addAttendance(LocalDateTime  attendanceDateTime) {
         LocalDate attendanceDate = LocalDate.from(attendanceDateTime);
         if(has(attendanceDate)){
-            throw new IllegalArgumentException("[ERROR] 해당 LocalDate 이미 존재합니다.");
+            throw new IllegalArgumentException("[ERROR] 출석 기록이 이미 존재합니다.");
         }
         if(isAttendanceDay(LocalDate.from(attendanceDateTime))){
             attendanceDates.put(attendanceDate,new AttendanceDate(attendanceDateTime));
@@ -35,6 +40,10 @@ public class Attendance {
             throw new IllegalArgumentException("[ERROR] 존재하지 않는 LocalDate 입니다.");
         }
         return attendanceDates.get(findLocalDate);
+    }
+
+    public boolean has(LocalDate findDate){
+        return attendanceDates.containsKey(findDate);
     }
 
     @Override

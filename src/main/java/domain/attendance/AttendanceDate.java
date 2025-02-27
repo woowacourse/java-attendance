@@ -23,6 +23,11 @@ public class AttendanceDate {
                 .orElseThrow(() -> new IllegalArgumentException("[ERROR] 해당 요일을 찾을 수 없음"));
     }
 
+    public void editLocalDate(LocalDateTime editLocalDateTime){
+        this.attendanceAt = editLocalDateTime;
+        updateAttendanceStatus();
+    }
+
     private void updateAttendanceStatus(){
         this.status = calcAttendanceStatus(getDayOfWeek(), LocalTime.from(this.attendanceAt));
     }

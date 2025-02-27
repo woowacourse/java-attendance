@@ -1,5 +1,6 @@
 package domain.attendance;
 
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -14,14 +15,15 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 
 class AttendanceTest {
+    Attendance attendance;
+
+    @BeforeEach
+    void setUpAttendance(){
+        attendance = new Attendance();
+    }
+
     @Nested
     class AddAttendanceDateTest{
-        Attendance attendance;
-        @BeforeEach
-        void setUpAttendance(){
-            attendance = new Attendance();
-        }
-
         @DisplayName("2025.2.27일 (목요일) 넣기")
         @Test
         void addAttendanceDate(){
@@ -45,12 +47,6 @@ class AttendanceTest {
 
     @Nested
     class findAttendanceDateTest{
-        Attendance attendance;
-        @BeforeEach
-        void setUpAttendance(){
-            attendance = new Attendance();
-        }
-
         @DisplayName("존재하지 않는 날짜 조회 시 에러 발생")
         @Test
         void nonExistenceLocalDateTest(){
@@ -98,6 +94,41 @@ class AttendanceTest {
                 attendance.addAttendance(absenceTime);
                 assertThat(attendance.findByLocalDate(LocalDate.from(absenceTime)).isAttendance()).isTrue();
             }
+        }
+    }
+
+    @Nested
+    class editAttendanceDateTest{
+        @BeforeEach
+        void addLocalDate(){
+            IntStream.range(1,28).
+                    forEach(day -> attendance.addAttendance(LocalDateTime.of(2025,2,day,10,0)));
+        }
+
+        @DisplayName("존재하는 날짜 결석으로 수정")
+        @Test
+        void editExistAttendanceToAbsence(){
+            LocalDateTime editToAbsence = LocalDateTime.of(2025,2,11,14,0);
+            attendance.editAttendance(editToAbsence);
+
+            assertThat(attendance.findByLocalDate(LocalDate.from(editToAbsence)).isAbsence()).isTrue();
+        }
+
+        @DisplayName("존재하는 날짜 지각으로 수정")
+        @Test
+        void editExistAttendanceToTardy(){
+            LocalDateTime editToAbsence = LocalDateTime.of(2025,2,11,10,10);
+            attendance.editAttendance(editToAbsence);
+
+            assertThat(attendance.findByLocalDate(LocalDate.from(editToAbsence)).isTardy()).isTrue();
+        }
+
+        @DisplayName("존재하지 않는 날짜 수정 시 에러 발생")
+        @Test
+        void editNoneExistAttendance(){
+            LocalDateTime missingDate = LocalDateTime.of(2025,2,9,13,0);
+
+            assertThatThrownBy(() -> attendance.editAttendance(missingDate)).isInstanceOf(IllegalArgumentException.class);
         }
     }
 }
