@@ -19,7 +19,7 @@ public class AttendanceRecordTest {
     }
 
     @Test
-    public void 패널티_상태_반환() {
+    public void 패널티_경고_상태_반환() {
         //given
         LocalDateTime attendanceTimeOne = LocalDateTime.of(2025, 2, 24, 13, 31);
         LocalDateTime attendanceTimeTwo = LocalDateTime.of(2025, 2, 25, 10, 31);
@@ -29,6 +29,46 @@ public class AttendanceRecordTest {
         attendanceRecord.addAttendanceTime(attendanceTimeOne);
         attendanceRecord.addAttendanceTime(attendanceTimeTwo);
 
+        //then
         Assertions.assertThat(attendanceRecord.checkPenaltyStatus()).isEqualTo(PenaltyType.WARNING);
+    }
+
+    @Test
+    public void 패널티_면담_상태_반환() {
+        //given
+        LocalDateTime attendanceTimeOne = LocalDateTime.of(2025, 2, 24, 13, 31);
+        LocalDateTime attendanceTimeTwo = LocalDateTime.of(2025, 2, 25, 10, 31);
+        LocalDateTime attendanceTimeThree = LocalDateTime.of(2025, 2, 26, 10, 31);
+        //when
+        AttendanceRecord attendanceRecord = new AttendanceRecord();
+        attendanceRecord.addAttendanceTime(attendanceTimeOne);
+        attendanceRecord.addAttendanceTime(attendanceTimeTwo);
+        attendanceRecord.addAttendanceTime(attendanceTimeThree);
+
+        //then
+        Assertions.assertThat(attendanceRecord.checkPenaltyStatus()).isEqualTo(PenaltyType.COUNSELING);
+    }
+
+    @Test
+    public void 패널티_제적_상태_반환() {
+        //given
+        LocalDateTime attendanceTimeOne = LocalDateTime.of(2025, 2, 24, 13, 31);
+        LocalDateTime attendanceTimeTwo = LocalDateTime.of(2025, 2, 25, 10, 31);
+        LocalDateTime attendanceTimeThree = LocalDateTime.of(2025, 2, 26, 13, 31);
+        LocalDateTime attendanceTimeFour = LocalDateTime.of(2025, 2, 27, 10, 31);
+        LocalDateTime attendanceTimeFive = LocalDateTime.of(2025, 2, 28, 13, 31);
+        LocalDateTime attendanceTimeSix = LocalDateTime.of(2025, 3, 1, 13, 31);
+
+        //when
+        AttendanceRecord attendanceRecord = new AttendanceRecord();
+        attendanceRecord.addAttendanceTime(attendanceTimeOne);
+        attendanceRecord.addAttendanceTime(attendanceTimeTwo);
+        attendanceRecord.addAttendanceTime(attendanceTimeThree);
+        attendanceRecord.addAttendanceTime(attendanceTimeFour);
+        attendanceRecord.addAttendanceTime(attendanceTimeFive);
+        attendanceRecord.addAttendanceTime(attendanceTimeSix);
+
+        //then
+        Assertions.assertThat(attendanceRecord.checkPenaltyStatus()).isEqualTo(PenaltyType.EXPULSION);
     }
 }

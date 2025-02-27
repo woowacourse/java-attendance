@@ -19,7 +19,7 @@ public class AttendanceTime {
         return attendanceStatus;
     }
 
-    public boolean isAbsence(AttendanceStatus attendanceStatus) {
-        return this.attendanceStatus.equals(attendanceStatus);
+    public boolean isAbsence() {
+        return this.attendanceStatus.equals(AttendanceStatus.ABSENCE);
     }
 }

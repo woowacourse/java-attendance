@@ -16,17 +16,23 @@ public class AttendanceRecord {
         this.attendanceRecord.add(new AttendanceTime(attendanceTime));
     }
 
+    public PenaltyType checkPenaltyStatus() {
+        int absenceCounts = 0;
+        for (AttendanceTime attendanceTime : attendanceRecord) {
+            absenceCounts += calculateAbsenceCounts(attendanceTime);
+        }
+        return PenaltyType.fetchPenaltyType(absenceCounts);
+    }
+
+    private int calculateAbsenceCounts(AttendanceTime attendanceTime) {
+        if (attendanceTime.isAbsence()) {
+            return 1;
+        }
+        return 0;
+    }
+
     public List<AttendanceTime> getAttendanceRecord() {
         return Collections.unmodifiableList(attendanceRecord);
     }
 
-    public PenaltyType checkPenaltyStatus() {
-        int absenceCounts = 0;
-        for (AttendanceTime attendanceTime : attendanceRecord) {
-            if (attendanceTime.isAbsence(AttendanceStatus.ABSENCE)) {
-                absenceCounts += 1;
-            }
-        }
-        return PenaltyType.fetchPenaltyType(absenceCounts);
-    }
 }
