@@ -77,6 +77,10 @@ public class AttendanceTime {
         return this.date.equals(date);
     }
 
+    public boolean isBefore(LocalDate date) {
+        return this.date.isBefore(date);
+    }
+
     @Override
     public boolean equals(Object o) {
         if (!(o instanceof AttendanceTime that)) {

@@ -214,4 +214,33 @@ class AttendanceTimeTest {
         assertThat(b1).isFalse();
         assertThat(b2).isTrue();
     }
+
+    @Test
+    @DisplayName("날짜를 입력받아 필드의 날짜가 이전인지 판단")
+    void isBeforeTest() {
+        // given
+        AttendanceTime time1 = AttendanceTime.of(
+                LocalDate.of(2024, 12, 3),
+                LocalTime.of(10, 30)
+        );
+        AttendanceTime time2 = AttendanceTime.of(
+                LocalDate.of(2024, 12, 2),
+                LocalTime.of(10, 30)
+        );
+        AttendanceTime time3 = AttendanceTime.of(
+                LocalDate.of(2024, 12, 4),
+                LocalTime.of(10, 30)
+        );
+        LocalDate today = LocalDate.of(2024, 12, 3);
+
+        // when
+        boolean b1 = time1.isBefore(today);
+        boolean b2 = time2.isBefore(today);
+        boolean b3 = time3.isBefore(today);
+
+        // then
+        assertThat(b1).isFalse();
+        assertThat(b2).isTrue();
+        assertThat(b3).isFalse();
+    }
 }
