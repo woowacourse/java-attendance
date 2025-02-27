@@ -13,19 +13,19 @@ public class AttendanceTimeChecker {
         int hour = time.getHour();
         int minute = time.getMinute();
 
-        if (hour < 8) {
-            throw new IllegalArgumentException();
-        }
-
-        if (hour == 23 && minute > 0) {
-            throw new IllegalArgumentException();
-        }
+        validateInOperatingTime(hour, minute);
 
         if (date.getDayOfWeek() == DayOfWeek.MONDAY) {
             return determineAttendPolicy(hour, minute, CRITERION_HOUR_FOR_MONDAY);
         }
 
         return determineAttendPolicy(hour, minute, CRITERION_HOUR_EXCLUDE_MONDAY);
+    }
+
+    private void validateInOperatingTime(int hour, int minute) {
+        if (hour < 8 || (hour == 23 && minute > 0)) {
+            throw new IllegalArgumentException("[ERROR] 운영 시간이 아닙니다.");
+        }
     }
 
     private AttendPolicy determineAttendPolicy(int hour, int minute, int criterionHour) {

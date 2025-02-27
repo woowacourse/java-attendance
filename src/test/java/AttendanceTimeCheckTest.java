@@ -157,7 +157,8 @@ public class AttendanceTimeCheckTest {
         // when
         // then
         Assertions.assertThatThrownBy(() -> checker.attendanceCheck(today, attendanceTime))
-                .isInstanceOf(IllegalArgumentException.class);
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("[ERROR] 운영 시간이 아닙니다.");
     }
 
     @DisplayName("운영시간 후에는 출석할 수 없다.")
@@ -171,6 +172,7 @@ public class AttendanceTimeCheckTest {
         // when
         // then
         Assertions.assertThatThrownBy(() -> checker.attendanceCheck(today, attendanceTime))
-                .isInstanceOf(IllegalArgumentException.class);
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("[ERROR] 운영 시간이 아닙니다.");
     }
 }
