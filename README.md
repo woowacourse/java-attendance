@@ -81,19 +81,19 @@
 - [ ] 출석과 관련된 기능의 흐름 제어
 
 ### AttendanceMenuController
-- [ ] 출석과 괸련된 메뉴 옵션의 흐름 제어 
+- [x] 출석과 괸련된 메뉴 옵션의 흐름 제어 
 
-### AttendanceRegisterController
-- [ ] 출석 확인 흐름 제어
-
-### AttendanceEditController
-- [ ] 출석 수정 흐름 제어
-
-### CrewAttendanceController
-- [ ] 크루별 출석 기록 확인 흐름 제어
-
-### ExpulsionRiskController
-- [ ] 제적 위험자 확인 흐름 제어
+  ### AttendanceRegisterController
+  - [ ] 출석 확인 흐름 제어
+  
+  ### AttendanceEditController
+  - [ ] 출석 수정 흐름 제어
+  
+  ### CrewAttendanceController
+  - [ ] 크루별 출석 기록 확인 흐름 제어
+  
+  ### ExpulsionRiskController
+  - [ ] 제적 위험자 확인 흐름 제어
 
 ### AttendanceStoreController
 - [x] 출결 데이터 저장 흐름 제어
