@@ -1,15 +1,52 @@
 package attendance;
 
+import java.io.IOException;
+import java.io.UncheckedIOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Stream;
 
 public class AttendanceParser {
 
     private static final DateTimeFormatter DATETIME_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
 
     private AttendanceParser() {
+    }
+
+    // TODO: 구현 필요
+    public List<Crew> parseFile() {
+        try (final Stream<String> lines = Files.lines(Path.of(""))) {
+            return null;
+        } catch (final IOException e) {
+            throw new UncheckedIOException(e);
+        }
+    }
+
+    public static List<Crew> parseLines(Stream<String> lines) {
+        List<CrewData> crewData = lines.map(AttendanceParser::parseLine).toList();
+        List<Crew> crews = new ArrayList<>();
+        for (CrewData data : crewData) {
+            Crew crew = hasSameCrew(crews, data.name);
+            if (crew == null) {
+                crew = new Crew(data.name);
+                crews.add(crew);
+            }
+            crew.attendance(data.date, data.time);
+        }
+        return crews;
+    }
+
+    private static Crew hasSameCrew(List<Crew> crews, String name) {
+        return crews.stream()
+            .filter(crew -> crew.getName().equals(name))
+            .findAny()
+            .orElse(null);
     }
 
     public static CrewData parseLine(String line) {
