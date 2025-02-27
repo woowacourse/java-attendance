@@ -66,10 +66,9 @@ public class AttendanceSheet {
     }
 
     public Map<String, Map<AttendanceState, Long>> countAttendancesState() {
-//        return attendances.stream()
-//                .collect(groupingBy(Attendance::getNickname,
-//                        groupingBy(Attendance::getState, counting())));
-        return null;
+        return attendances.stream()
+                .collect(groupingBy(Attendance::getNickname,
+                        groupingBy(Attendance::getState, counting())));
     }
 
 }

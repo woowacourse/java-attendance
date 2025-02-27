@@ -33,4 +33,8 @@ public class Attendance {
     public AttendanceState getState() {
         return state;
     }
+
+    public String getNickname() {
+        return nickname;
+    }
 }
