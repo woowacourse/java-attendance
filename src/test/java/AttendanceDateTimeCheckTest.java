@@ -2,6 +2,8 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.TextStyle;
 import java.util.Locale;
+import model.AttendPolicy;
+import model.AttendanceDateTimeChecker;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -80,6 +82,7 @@ public class AttendanceDateTimeCheckTest {
                                 TextStyle.FULL, Locale.KOREAN)));
     }
 
+    @DisplayName("월요일 제외 출석 처리")
     @Nested
     class ExcludeMonday {
         @DisplayName("시작 시간 5분 초과 출석은 지각이다.")
@@ -168,6 +171,7 @@ public class AttendanceDateTimeCheckTest {
         }
     }
 
+    @DisplayName("월요일 출석 처리")
     @Nested
     class Monday {
         @DisplayName("월요일은 13시 5분 초과 시 지각이다.")

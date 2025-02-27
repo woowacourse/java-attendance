@@ -1,3 +1,5 @@
+package model;
+
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -27,7 +29,7 @@ public class AttendanceDateTimeChecker {
 
     private void validateInWeekDays(LocalDate date) {
         if (date.getDayOfWeek() == DayOfWeek.SATURDAY || date.getDayOfWeek() == DayOfWeek.SUNDAY
-        || date.isEqual(LocalDate.of(2024, 12, 25))) {
+                || date.isEqual(LocalDate.of(2024, 12, 25))) {
             String koreanDayOfWeek = date.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.KOREAN);
             throw new IllegalArgumentException(String.format("[ERROR] %02d월 %02d일 %s은 등교일이 아닙니다.",
                     date.getMonth().getValue(), date.getDayOfMonth(), koreanDayOfWeek));
