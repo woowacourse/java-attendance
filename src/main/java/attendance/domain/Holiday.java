@@ -1,5 +1,6 @@
 package attendance.domain;
 
+import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.format.TextStyle;
 import java.util.Locale;
@@ -7,7 +8,10 @@ import java.util.Locale;
 public class Holiday {
 
     public static void validateAttendanceDate(final LocalDate attendanceDate) {
-        throw new IllegalArgumentException(formatErrorMessage(attendanceDate));
+        DayOfWeek dayOfWeek = attendanceDate.getDayOfWeek();
+        if (dayOfWeek == DayOfWeek.SATURDAY || dayOfWeek == DayOfWeek.SUNDAY) {
+            throw new IllegalArgumentException(formatErrorMessage(attendanceDate));
+        }
     }
 
     private static String formatErrorMessage(final LocalDate date) {
