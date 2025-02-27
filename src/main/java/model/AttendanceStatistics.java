@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 public class AttendanceStatistics {
     private final AttendanceHistory target;
@@ -33,5 +34,22 @@ public class AttendanceStatistics {
         int lateCount = statusStatistics.get(AttendanceStatus.LATE);
         int absenceCount = statusStatistics.get(AttendanceStatus.ABSENCE);
         return PenaltyStatus.findByAttendanceCount(lateCount, absenceCount);
+    }
+
+    @Override
+    public boolean equals(Object object) {
+        if (this == object) {
+            return true;
+        }
+        if (object == null || getClass() != object.getClass()) {
+            return false;
+        }
+        AttendanceStatistics that = (AttendanceStatistics) object;
+        return Objects.equals(target, that.target);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(target);
     }
 }
