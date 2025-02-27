@@ -23,7 +23,7 @@ class AttendancesTest {
         LocalDateTime attendanceDateTime = LocalDateTime.of(LocalDate.now(), LocalTime.of(10, 0));
 
         // when
-        Attendances newAttendances = attendances.processCheck(attendanceDateTime);
+        Attendances newAttendances = attendances.registerAttendance(attendanceDateTime);
         Attendance result = newAttendances.findAttendanceByDate(attendanceDateTime.toLocalDate());
 
         // then
@@ -42,7 +42,7 @@ class AttendancesTest {
 
         // when & then
         assertThatIllegalArgumentException()
-                .isThrownBy(() -> attendances.processCheck(attendanceDateTime))
+                .isThrownBy(() -> attendances.registerAttendance(attendanceDateTime))
                 .withMessage("[ERROR] 이미 출석이 등록되었습니다. 수정 기능을 이용 해주세요.");
     }
 }

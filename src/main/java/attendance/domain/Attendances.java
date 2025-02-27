@@ -13,12 +13,9 @@ public class Attendances {
         this.attendances = attendances;
     }
 
-    public Attendances processCheck(final LocalDateTime dateTime) {
+    public Attendances registerAttendance(final LocalDateTime dateTime) {
         Attendance before = findAttendanceByDate(dateTime.toLocalDate());
-
-        if (before.isNotDefaultTime()) {
-            throw new IllegalArgumentException("[ERROR] 이미 출석이 등록되었습니다. 수정 기능을 이용 해주세요.");
-        }
+        validateAlreadyAttendance(before);
 
         List<Attendance> newAttendances = new ArrayList<>(attendances);
         newAttendances.remove(before);
@@ -31,5 +28,11 @@ public class Attendances {
                 .filter(attendance -> attendance.isSameDate(date))
                 .findFirst()
                 .orElseThrow(IllegalArgumentException::new);
+    }
+
+    private void validateAlreadyAttendance(final Attendance before) {
+        if (before.isNotDefaultTime()) {
+            throw new IllegalArgumentException("[ERROR] 이미 출석이 등록되었습니다. 수정 기능을 이용 해주세요.");
+        }
     }
 }
