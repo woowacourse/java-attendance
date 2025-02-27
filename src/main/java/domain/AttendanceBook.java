@@ -4,6 +4,8 @@ import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.stream.Collectors;
 
 public class AttendanceBook {
     private final Map<Crew, AttendanceHistory> attendanceBook;
@@ -39,6 +41,10 @@ public class AttendanceBook {
     }
 
     public List<AttendanceHistory> calculateRiskOfExpulsionHistory(final LocalDate targetDate) {
-        return null;
+        return attendanceBook.entrySet()
+                .stream()
+                .map(Entry::getValue)
+                .filter(attendanceHistory -> attendanceHistory.isRiskOfExpulsion(targetDate))
+                .collect(Collectors.toList());
     }
 }
