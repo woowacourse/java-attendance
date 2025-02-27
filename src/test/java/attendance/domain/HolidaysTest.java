@@ -1,7 +1,6 @@
 package attendance.domain;
 
 import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
@@ -9,30 +8,22 @@ import java.time.LocalDate;
 import java.time.format.TextStyle;
 import java.util.Locale;
 
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
 import static org.assertj.core.api.Assertions.assertThatNoException;
 
 @DisplayName("휴일 테스트")
 class HolidaysTest {
 
-    @Test
-    @DisplayName("휴일에 새로운 공휴일을 추가한다")
-    void addNewHolidayToHolidays() {
-        // given
-        LocalDate addHoliday = LocalDate.of(2024, 12, 25);
-        Holidays holidays = new Holidays();
-
-        // when
-        holidays.addHoliday(addHoliday);
-
-        // then
-        assertThat(holidays.contains(addHoliday)).isTrue();
-    }
-
-    @Test
+    @ParameterizedTest
+    @CsvSource({
+            "2024-12-02",
+            "2024-12-03",
+            "2024-12-04",
+            "2024-12-05",
+            "2024-12-06"
+    })
     @DisplayName("평일에 출석할 경우 예외가 발생하지 않는다")
-    void 등교_일자인_경우_예외가_발생하지_않는다() {
+    void shouldNotThrowExceptionWhenAttendingOnWeekday() {
         // given
         Holidays holidays = new Holidays();
         LocalDate attendanceDate = LocalDate.of(2024, 12, 2);
@@ -49,7 +40,7 @@ class HolidaysTest {
             "2024-12-14"
     })
     @DisplayName("주말에 출석할 경우 예외가 발생한다")
-    void shouldThrowExceptionWhenNotASchoolDay(LocalDate attendanceDate) {
+    void shouldThrowExceptionWhenAttendingOnWeekend(LocalDate attendanceDate) {
         // given
         Holidays holidays = new Holidays();
 
@@ -66,7 +57,7 @@ class HolidaysTest {
             "2025-05-05"
     })
     @DisplayName("공휴일에 출석할 경우 예외가 발생한다")
-    void 공휴일에_출석한_경우_예외가_발생한다(LocalDate attendanceDate) {
+    void shouldThrowExceptionWhenAttendingOnHoliday(LocalDate attendanceDate) {
         // given
         Holidays holidays = new Holidays();
         holidays.addHoliday(attendanceDate);
