@@ -29,6 +29,9 @@ public class AttendanceRecord {
     }
 
     public AttendanceStatus calculateAttendanceStatus() {
+        if (isEmpty) {
+            return AttendanceStatus.ABSENCE;
+        }
         return AttendanceStatus.calculateStatus(attendanceDateTime.toLocalTime(), attendanceDateTime.getDayOfWeek());
     }
 
