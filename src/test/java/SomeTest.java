@@ -104,7 +104,7 @@ public class SomeTest {
             LocalDateTime attendedTime =  LocalDateTime.of(2024, 12, 7, 10, 0);
 
             // when & then
-            assertThatThrownBy(() -> AttendanceStatus.getStatusByAttendedTime(attendedTime)).isEqualTo(ERROR_MESSAGE.CLOSED_DAY);
+            assertThatThrownBy(() -> AttendanceStatus.getStatusByAttendedTime(attendedTime)).hasMessage(ERROR_MESSAGE.CLOSED_DAY.getMessage());
         }
     }
 
