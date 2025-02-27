@@ -23,6 +23,17 @@ class CampusTimeTest {
     }
 
     @Test
+    void 시_및_분의_숫자가_두자리가_아닌경우_예외를_발생시킨다() {
+        // given
+        String givenData = "1:30";
+
+        // when // then
+        assertThatThrownBy(() -> CampusTime.from(givenData))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("[ERROR] 유효한 범위의 숫자를 입력해 주세요.");
+    }
+
+    @Test
     void 시간_및_분_범위를_초과하는_숫자_입력시_예외를_발생시킨다() {
         // given
         String givenData = "24:01";
