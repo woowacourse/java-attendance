@@ -1,6 +1,6 @@
 package domain;
 
-import static util.Constants.EXPULSION_CONDITION;
+import static util.Constants.*;
 
 import dto.AttendanceCount;
 
@@ -19,7 +19,7 @@ public enum Penalty {
         if(attendanceCount.absentCount() >= EXPULSION_CONDITION) {
             return Penalty.EXPULSION;
         }
-        if (attendanceCount.absentCount() >= 3) {
+        if (attendanceCount.absentCount() >= COUNSELING_CONDITION) {
             return Penalty.COUNSELING;
         }
         return null;

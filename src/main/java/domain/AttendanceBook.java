@@ -40,7 +40,11 @@ public class AttendanceBook {
     public AttendanceHistory findAttendanceHistoryUntil(CrewName crewName, LocalDate yesterday) {
         AttendanceRecord attendanceRecord = findAttendanceRecordBy(crewName);
         AttendanceLog attendanceLog = attendanceRecord.findAllSortedUntil(yesterday);
-        AttendanceCount attendanceCount = attendanceRecord.calculateCount(yesterday);
-        return new AttendanceHistory(attendanceLog, attendanceCount);
+        return new AttendanceHistory(attendanceLog);
+    }
+
+    public AttendanceCount findCountUntil(CrewName crewName, LocalDate yesterday) {
+        AttendanceRecord attendanceRecord = findAttendanceRecordBy(crewName);
+        return attendanceRecord.calculateCount(yesterday);
     }
 }

@@ -16,4 +16,5 @@ public class Constants {
     public static final LocalTime ABSENT_CONSIDERING_TIME = LocalTime.of(15, 0);
 
     public static final int EXPULSION_CONDITION = 6;
+    public static final int COUNSELING_CONDITION = 3;
 }

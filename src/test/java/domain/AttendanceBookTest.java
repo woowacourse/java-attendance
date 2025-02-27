@@ -110,6 +110,7 @@ public class AttendanceBookTest {
         assertThat(modifyResult.modifiedAttendance()).isEqualTo(newAttendance);
     }
 
+    // TODO : 지금은 기준 날짜도 주입하고 있는데, 전날은 오늘 기준으로 고정되도록 만들어야 하나?
     @DisplayName("닉네임을 입력하면 전날까지의 크루 출석 기록을 확인할 수 있다.")
     @Test
     void test8() {
@@ -122,7 +123,6 @@ public class AttendanceBookTest {
         attendanceBook.addAttendance(mimi, new Attendance(LocalDateTime.of(2024, 12, 9, 13, 0)));
         // 10 이미 존재
         // 11, 12 => 결석
-        // TODO : 결석 간주 시간 상수 분리?
         Attendance expectedLastAttendance = new Attendance(LocalDateTime.of(2024, 12, 12, 15, 0));
         // 결석 2, 지각 3, 출석 4
 
@@ -130,12 +130,30 @@ public class AttendanceBookTest {
         LocalDate yesterday = LocalDate.of(2024, 12, 12);
         AttendanceHistory attendanceHistory = attendanceBook.findAttendanceHistoryUntil(mimi, yesterday);
 
-        AttendanceCount attendanceCount = attendanceHistory.attendanceCount();
         List<Attendance> sortedAttendance = attendanceHistory.attendanceLog().sortedValue();
+        assertThat(sortedAttendance.getFirst()).isEqualTo(firstAttendance);
+        assertThat(sortedAttendance.getLast()).isEqualTo(expectedLastAttendance);
+    }
+
+    @DisplayName("닉네임을 입력하면 전날까지의 크루 출석 상태 횟수를 확인할 수 있다.")
+    @Test
+    void test9() {
+        Attendance firstAttendance = new Attendance(LocalDateTime.of(2024, 12, 2, 13, 0));
+        attendanceBook.addAttendance(mimi, firstAttendance);
+        attendanceBook.addAttendance(mimi, new Attendance(LocalDateTime.of(2024, 12, 3, 10, 15)));
+        attendanceBook.addAttendance(mimi, new Attendance(LocalDateTime.of(2024, 12, 4, 10, 15)));
+        attendanceBook.addAttendance(mimi, new Attendance(LocalDateTime.of(2024, 12, 5, 10, 15)));
+        attendanceBook.addAttendance(mimi, new Attendance(LocalDateTime.of(2024, 12, 6, 10, 0)));
+        attendanceBook.addAttendance(mimi, new Attendance(LocalDateTime.of(2024, 12, 9, 13, 0)));
+        // 10 이미 존재
+        // 11, 12 => 결석
+        // 결석 2, 지각 3, 출석 4
+
+        LocalDate yesterday = LocalDate.of(2024, 12, 12);
+        AttendanceCount attendanceCount = attendanceBook.findCountUntil(mimi, yesterday);
+
         assertThat(attendanceCount.absentCount()).isEqualTo(2);
         assertThat(attendanceCount.lateCount()).isEqualTo(3);
         assertThat(attendanceCount.attendCount()).isEqualTo(4);
-        assertThat(sortedAttendance.getFirst()).isEqualTo(firstAttendance);
-        assertThat(sortedAttendance.getLast()).isEqualTo(expectedLastAttendance);
     }
 }

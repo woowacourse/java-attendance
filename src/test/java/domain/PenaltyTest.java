@@ -2,6 +2,7 @@ package domain;
 
 import static org.assertj.core.api.Assertions.*;
 
+import dto.AttendanceCount;
 import dto.AttendanceHistory;
 import dto.InitialInfo;
 import java.time.LocalDate;
@@ -43,8 +44,8 @@ public class PenaltyTest {
         // 11, 12 => 결석
         LocalDate yesterday = LocalDate.of(2024, 12, 12);
 
-        AttendanceHistory attendanceHistory = attendanceBook.findAttendanceHistoryUntil(mimi, yesterday);
-        assertThat(Penalty.from(attendanceHistory.attendanceCount())).isEqualTo(Penalty.EXPULSION);
+        AttendanceCount attendanceCount = attendanceBook.findCountUntil(mimi, yesterday);
+        assertThat(Penalty.from(attendanceCount)).isEqualTo(Penalty.EXPULSION);
     }
 
     @DisplayName("결석이 3회 이상인 경우 면담에 처한다.")
@@ -61,7 +62,7 @@ public class PenaltyTest {
         // 11, 12 => 결석
         LocalDate yesterday = LocalDate.of(2024, 12, 12);
 
-        AttendanceHistory attendanceHistory = attendanceBook.findAttendanceHistoryUntil(mimi, yesterday);
-        assertThat(Penalty.from(attendanceHistory.attendanceCount())).isEqualTo(Penalty.COUNSELING);
+        AttendanceCount attendanceCount = attendanceBook.findCountUntil(mimi, yesterday);
+        assertThat(Penalty.from(attendanceCount)).isEqualTo(Penalty.COUNSELING);
     }
 }

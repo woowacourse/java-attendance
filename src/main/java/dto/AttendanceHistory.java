@@ -1,4 +1,4 @@
 package dto;
 
-public record AttendanceHistory(AttendanceLog attendanceLog, AttendanceCount attendanceCount) {
+public record AttendanceHistory(AttendanceLog attendanceLog) {
 }
