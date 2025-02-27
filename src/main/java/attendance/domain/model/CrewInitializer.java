@@ -57,9 +57,6 @@ public class CrewInitializer {
     }
 
     private CrewHistory getCrew(final String nickname, Map<String, CrewHistory> inputs) {
-        if (inputs.containsKey(nickname)) {
-            return inputs.get(nickname);
-        }
         CrewHistory crewHistory = new CrewHistory(new HashMap<>(attendance));
         inputs.put(nickname, crewHistory);
         return crewHistory;
