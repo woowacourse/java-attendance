@@ -155,9 +155,8 @@ public class Application {
         List<HistoryStatistic> historyStatistics = new ArrayList<>();
         for (String nickname : attendanceBook.getNicknameSet()) {
             var attendances = attendanceBook.getAttendances(nickname);
-            Map<LocalDate, Attendance> attendancesRecord = attendances.getAttendances();
-            var attendanceHistory = AttendanceHistory.of(attendancesRecord, systemDateTime.extractWorkingDays());
-
+            var attendanceHistory = AttendanceHistory.of(attendances.getAttendances(),
+                systemDateTime.extractWorkingDays());
             historyStatistics.add(new HistoryStatistic(attendanceHistory.countStatusOnHistory(), nickname));
         }
         Collections.sort(historyStatistics);
@@ -183,7 +182,7 @@ public class Application {
         return handleInput(() -> {
             String input = inputView.input();
             InputValidator.validateIsEmpty(input);
-            int parsedInt = Integer.parseInt(input); //Todo
+            int parsedInt = InputValidator.validateInputTypeInteger(input);
             LocalDateTime current = systemDateTime.now().withDayOfMonth(parsedInt);
             return current.toLocalDate();
         });

@@ -1,6 +1,5 @@
 package attendance.utility;
 
-import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeParseException;
 
@@ -14,14 +13,6 @@ public final class DateTimeParser {
     public static LocalTime parseToTime(String input) {
         try {
             return LocalTime.parse(input);
-        } catch (DateTimeParseException e) {
-            throw new IllegalArgumentException(ERROR_PARSE_DATE + input);
-        }
-    }
-
-    public static LocalDate parseToDate(String input) {
-        try {
-            return LocalDate.parse(input);
         } catch (DateTimeParseException e) {
             throw new IllegalArgumentException(ERROR_PARSE_TIME + input);
         }
