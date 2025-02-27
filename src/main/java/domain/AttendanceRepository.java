@@ -5,6 +5,7 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public class AttendanceRepository {
     private final Map<String, List<Attendance>> attendances;
@@ -37,15 +38,16 @@ public class AttendanceRepository {
         validateAfterToday(localDate);
         List<Attendance> crewAttendances = attendances.get(name);
 
-        for (int i = 0; i < crewAttendances.size(); i++) {
-            Attendance attendance = crewAttendances.get(i);
-            if (attendance.getLocalDate().equals(localDate)) {
-                Attendance updatedAttendance = new Attendance(name, localDate, localTime);
-                crewAttendances.set(i, updatedAttendance);
-                return updatedAttendance;
-            }
-        }
-        return null;
+        Attendance beforeAttendance = getBeforeAttendance(localDate, crewAttendances);
+
+        List<Attendance> newAttendances = getNewAttendances(localDate, crewAttendances);
+
+        Attendance updatedAttendance = new Attendance(name, localDate, localTime);
+        newAttendances.add(updatedAttendance);
+
+        attendances.put(name, List.copyOf(newAttendances));
+
+        return beforeAttendance;
     }
 
     private void validateWeekDay(LocalDate localDate) {
@@ -66,6 +68,19 @@ public class AttendanceRepository {
         if (localDate.isAfter(LocalDate.now())) {
             throw new IllegalArgumentException("수정할 수 없는 날짜입니다.");
         }
+    }
+
+    private static Attendance getBeforeAttendance(LocalDate localDate, List<Attendance> crewAttendances) {
+        return crewAttendances.stream()
+                .filter(a -> a.getLocalDate().equals(localDate))
+                .findFirst()
+                .orElse(null);
+    }
+
+    private static List<Attendance> getNewAttendances(LocalDate localDate, List<Attendance> crewAttendances) {
+        return crewAttendances.stream()
+                .filter(a -> !a.getLocalDate().equals(localDate))
+                .collect(Collectors.toList());
     }
 
     public Attendance getAttendance(String name, LocalDate localDate) {

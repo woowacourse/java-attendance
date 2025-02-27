@@ -158,7 +158,8 @@ public class AttendanceTest {
         LocalTime localTime = LocalTime.of(10, 10);
 
         // when
-        Attendance attendance = repository.update(name, localDate, localTime);
+        repository.update(name, localDate, localTime);
+        Attendance attendance = repository.getAttendance(name, localDate);
 
         // then
         Assertions.assertThat(attendance.getName()).isEqualTo(name);
@@ -221,12 +222,13 @@ public class AttendanceTest {
         void 출석에서_지각() {
             // given
             repository.checkIn(name, localDate, attendanceLocalTime);
-            Attendance beforeAttendance = repository.getAttendance(name, localDate);
+
+            // when
+            Attendance beforeAttendance = repository.update(name, localDate, lateLocalTime);
             AttendanceState beforeState = AttendanceState.findStateBy(beforeAttendance.getLocalDate(),
                     beforeAttendance.getLocalTime());
 
-            // when
-            Attendance afterAttendance = repository.update(name, localDate, lateLocalTime);
+            Attendance afterAttendance = repository.getAttendance(name, localDate);
             AttendanceState afterState = AttendanceState.findStateBy(afterAttendance.getLocalDate(),
                     afterAttendance.getLocalTime());
 
@@ -239,12 +241,13 @@ public class AttendanceTest {
         void 출석에서_결석() {
             // given
             repository.checkIn(name, localDate, attendanceLocalTime);
-            Attendance beforeAttendance = repository.getAttendance(name, localDate);
+
+            // when
+            Attendance beforeAttendance = repository.update(name, localDate, absenceLocalTime);
             AttendanceState beforeState = AttendanceState.findStateBy(beforeAttendance.getLocalDate(),
                     beforeAttendance.getLocalTime());
 
-            // when
-            Attendance afterAttendance = repository.update(name, localDate, absenceLocalTime);
+            Attendance afterAttendance = repository.getAttendance(name, localDate);
             AttendanceState afterState = AttendanceState.findStateBy(afterAttendance.getLocalDate(),
                     afterAttendance.getLocalTime());
 
@@ -257,12 +260,13 @@ public class AttendanceTest {
         void 지각에서_출석() {
             // given
             repository.checkIn(name, localDate, lateLocalTime);
-            Attendance beforeAttendance = repository.getAttendance(name, localDate);
+
+            // when
+            Attendance beforeAttendance = repository.update(name, localDate, attendanceLocalTime);
             AttendanceState beforeState = AttendanceState.findStateBy(beforeAttendance.getLocalDate(),
                     beforeAttendance.getLocalTime());
 
-            // when
-            Attendance afterAttendance = repository.update(name, localDate, attendanceLocalTime);
+            Attendance afterAttendance = repository.getAttendance(name, localDate);
             AttendanceState afterState = AttendanceState.findStateBy(afterAttendance.getLocalDate(),
                     afterAttendance.getLocalTime());
 
@@ -275,12 +279,13 @@ public class AttendanceTest {
         void 지각에서_결석() {
             // given
             repository.checkIn(name, localDate, lateLocalTime);
-            Attendance beforeAttendance = repository.getAttendance(name, localDate);
+
+            // when
+            Attendance beforeAttendance = repository.update(name, localDate, absenceLocalTime);
             AttendanceState beforeState = AttendanceState.findStateBy(beforeAttendance.getLocalDate(),
                     beforeAttendance.getLocalTime());
 
-            // when
-            Attendance afterAttendance = repository.update(name, localDate, absenceLocalTime);
+            Attendance afterAttendance = repository.getAttendance(name, localDate);
             AttendanceState afterState = AttendanceState.findStateBy(afterAttendance.getLocalDate(),
                     afterAttendance.getLocalTime());
 
@@ -293,12 +298,13 @@ public class AttendanceTest {
         void 결석에서_출석() {
             // given
             repository.checkIn(name, localDate, absenceLocalTime);
-            Attendance beforeAttendance = repository.getAttendance(name, localDate);
+
+            // when
+            Attendance beforeAttendance = repository.update(name, localDate, attendanceLocalTime);
             AttendanceState beforeState = AttendanceState.findStateBy(beforeAttendance.getLocalDate(),
                     beforeAttendance.getLocalTime());
 
-            // when
-            Attendance afterAttendance = repository.update(name, localDate, attendanceLocalTime);
+            Attendance afterAttendance = repository.getAttendance(name, localDate);
             AttendanceState afterState = AttendanceState.findStateBy(afterAttendance.getLocalDate(),
                     afterAttendance.getLocalTime());
 
@@ -311,12 +317,13 @@ public class AttendanceTest {
         void 결석에서_지각() {
             // given
             repository.checkIn(name, localDate, absenceLocalTime);
-            Attendance beforeAttendance = repository.getAttendance(name, localDate);
+
+            // when
+            Attendance beforeAttendance = repository.update(name, localDate, lateLocalTime);
             AttendanceState beforeState = AttendanceState.findStateBy(beforeAttendance.getLocalDate(),
                     beforeAttendance.getLocalTime());
 
-            // when
-            Attendance afterAttendance = repository.update(name, localDate, lateLocalTime);
+            Attendance afterAttendance = repository.getAttendance(name, localDate);
             AttendanceState afterState = AttendanceState.findStateBy(afterAttendance.getLocalDate(),
                     afterAttendance.getLocalTime());
 
