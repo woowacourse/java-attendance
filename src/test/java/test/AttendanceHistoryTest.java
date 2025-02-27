@@ -74,14 +74,16 @@ public class AttendanceHistoryTest {
         attendanceHistory.register(LocalDate.of(2024, 12, 3), LocalTime.of(10, 6)); //지각
         attendanceHistory.register(LocalDate.of(2024, 12, 4), LocalTime.of(10, 31)); //결석
 
+        List<Attendance> attendances = attendanceHistory.sliceByDateUntilBefore(requestDate);
+
         //when
-        AttendanceStatistic attendanceStatistic = new AttendanceStatistic(attendanceHistory);
-        Map<AttendanceStatus, Integer> attendanceStatusCount = attendanceStatistic.calculateStatusCountUntilBefore(requestDate);
+        AttendanceStatistic attendanceStatistic = AttendanceStatistic.from(attendances);
+        Map<AttendanceStatus, Integer> attendanceCount = attendanceStatistic.getAttendanceCount();
 
         //then
-        assertThat(attendanceStatusCount.get(AttendanceStatus.NORMAL)).isEqualTo(1);
-        assertThat(attendanceStatusCount.get(AttendanceStatus.LATE)).isEqualTo(1);
-        assertThat(attendanceStatusCount.get(AttendanceStatus.ABSENCE)).isEqualTo(3);
+        assertThat(attendanceCount.get(AttendanceStatus.NORMAL)).isEqualTo(1);
+        assertThat(attendanceCount.get(AttendanceStatus.LATE)).isEqualTo(1);
+        assertThat(attendanceCount.get(AttendanceStatus.ABSENCE)).isEqualTo(3);
     }
 
     @DisplayName("한 크루의 일부 출석 기록으로 패널티 여부를 구한다. - 패널티 없음")
@@ -96,10 +98,11 @@ public class AttendanceHistoryTest {
         attendanceHistory.register(LocalDate.of(2024, 12, 5), LocalTime.of(10, 10)); //지각
         attendanceHistory.register(LocalDate.of(2024, 12, 6), LocalTime.of(10, 31)); //결석
 
-        AttendanceStatistic attendanceStatistic = new AttendanceStatistic(attendanceHistory);
+        List<Attendance> attendances = attendanceHistory.sliceByDateUntilBefore(requestDate);
+        AttendanceStatistic attendanceStatistic = AttendanceStatistic.from(attendances);
 
         //when
-        PenaltyStatus penaltyStatus = attendanceStatistic.calculatePenaltyUntilBefore(requestDate);
+        PenaltyStatus penaltyStatus = attendanceStatistic.getPenaltyStatus();
 
         //then
         assertThat(penaltyStatus).isEqualTo(PenaltyStatus.NONE);
@@ -116,10 +119,12 @@ public class AttendanceHistoryTest {
         attendanceHistory.register(LocalDate.of(2024, 12, 4), LocalTime.of(10, 10)); //지각
         attendanceHistory.register(LocalDate.of(2024, 12, 5), LocalTime.of(10, 10)); //지각
         attendanceHistory.register(LocalDate.of(2024, 12, 6), LocalTime.of(10, 31)); //결석
-        AttendanceStatistic attendanceStatistic = new AttendanceStatistic(attendanceHistory);
+
+        List<Attendance> attendances = attendanceHistory.sliceByDateUntilBefore(requestDate);
+        AttendanceStatistic attendanceStatistic = AttendanceStatistic.from(attendances);
 
         //when
-        PenaltyStatus penaltyStatus = attendanceStatistic.calculatePenaltyUntilBefore(requestDate);
+        PenaltyStatus penaltyStatus = attendanceStatistic.getPenaltyStatus();
 
         //then
         assertThat(penaltyStatus).isEqualTo(PenaltyStatus.WARNING);
@@ -136,10 +141,12 @@ public class AttendanceHistoryTest {
         attendanceHistory.register(LocalDate.of(2024, 12, 4), LocalTime.of(10, 10)); //지각
         attendanceHistory.register(LocalDate.of(2024, 12, 5), LocalTime.of(10, 31)); //결석
 //        attendanceHistory.register(LocalDate.of(2024, 12, 6), LocalTime.of(10, 31)); //결석
-        AttendanceStatistic attendanceStatistic = new AttendanceStatistic(attendanceHistory);
+
+        List<Attendance> attendances = attendanceHistory.sliceByDateUntilBefore(requestDate);
+        AttendanceStatistic attendanceStatistic = AttendanceStatistic.from(attendances);
 
         //when
-        PenaltyStatus penaltyStatus = attendanceStatistic.calculatePenaltyUntilBefore(requestDate);
+        PenaltyStatus penaltyStatus = attendanceStatistic.getPenaltyStatus();
 
         //then
         assertThat(penaltyStatus).isEqualTo(PenaltyStatus.MEETING);
@@ -151,10 +158,12 @@ public class AttendanceHistoryTest {
         //given
         LocalDate requestDate = LocalDate.of(2024, 12, 10);
         AttendanceHistory attendanceHistory = new AttendanceHistory();
-        AttendanceStatistic attendanceStatistic = new AttendanceStatistic(attendanceHistory);
+
+        List<Attendance> attendances = attendanceHistory.sliceByDateUntilBefore(requestDate);
+        AttendanceStatistic attendanceStatistic = AttendanceStatistic.from(attendances);
 
         //when
-        PenaltyStatus penaltyStatus = attendanceStatistic.calculatePenaltyUntilBefore(requestDate);
+        PenaltyStatus penaltyStatus = attendanceStatistic.getPenaltyStatus();
 
         //then
         assertThat(penaltyStatus).isEqualTo(PenaltyStatus.EXPELLED);
