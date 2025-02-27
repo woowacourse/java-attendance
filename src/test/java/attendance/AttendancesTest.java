@@ -14,6 +14,7 @@ import org.junit.jupiter.params.provider.CsvSource;
 
 import attendance.domain.Attendance;
 import attendance.domain.AttendanceBook;
+import attendance.domain.AttendanceBookFactory;
 import attendance.domain.AttendanceDateTime;
 import attendance.domain.AttendanceStatus;
 import attendance.domain.SystemDateTime;
@@ -24,7 +25,8 @@ import attendance.utility.CsvReader;
 public class AttendancesTest {
     private final CsvReader csvReader = new CsvReader("/attendances.csv");
     private final SystemDateTime systemDateTime = new AttendanceDateTime();
-    private final AttendanceBook attendanceBook = AttendanceBook.of(csvReader.getLines(), systemDateTime);
+    private final AttendanceBookFactory attendanceBookFactory = new AttendanceBookFactory(systemDateTime);
+    private final AttendanceBook attendanceBook = attendanceBookFactory.from(csvReader.getLines());
 
     public AttendancesTest() throws AttendanceFileException {
     }

@@ -12,6 +12,7 @@ import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
 import attendance.domain.AttendanceBook;
+import attendance.domain.AttendanceBookFactory;
 import attendance.domain.AttendanceDateTime;
 import attendance.exception.AttendanceArgumentException;
 import attendance.exception.AttendanceFileException;
@@ -19,7 +20,8 @@ import attendance.utility.CsvReader;
 
 public class AttendanceBookTest {
     private final CsvReader csvReader = new CsvReader("/attendances.csv");
-    private final AttendanceBook attendanceBook = AttendanceBook.of(csvReader.getLines(), new AttendanceDateTime());
+    private final AttendanceBookFactory attendanceBookFactory = new AttendanceBookFactory(new AttendanceDateTime());
+    private final AttendanceBook attendanceBook = attendanceBookFactory.from(csvReader.getLines());
 
     public AttendanceBookTest() throws AttendanceFileException {
     }

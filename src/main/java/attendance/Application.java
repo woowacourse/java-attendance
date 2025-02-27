@@ -14,6 +14,7 @@ import java.util.stream.Stream;
 
 import attendance.domain.Attendance;
 import attendance.domain.AttendanceBook;
+import attendance.domain.AttendanceBookFactory;
 import attendance.domain.AttendanceDateTime;
 import attendance.domain.AttendanceHistory;
 import attendance.domain.AttendanceStatus;
@@ -53,16 +54,18 @@ public class Application {
         try {
             inputView = new InputView();
             outputView = new OutputView();
-            attendanceBook = generateAttendanceBook();
+            AttendanceBookFactory attendanceBookFactory = new AttendanceBookFactory(systemDateTime);
+            attendanceBook = generateAttendanceBook(attendanceBookFactory);
         } catch (AttendanceFileException e) {
             outputView.printError(e.getMessage());
         }
     }
 
-    private static AttendanceBook generateAttendanceBook() throws AttendanceFileException {
+    private static AttendanceBook generateAttendanceBook(AttendanceBookFactory attendanceBookFactory) throws
+        AttendanceFileException {
         var repository = new CsvReader(FILE);
         var lines = repository.getLines();
-        return AttendanceBook.of(lines, systemDateTime);
+        return attendanceBookFactory.from(lines);
     }
 
     public static void processAttendanceMenu() {
