@@ -4,7 +4,9 @@ import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class Attendance {
@@ -12,6 +14,8 @@ public class Attendance {
     private static final int ABSENT_THRESHOLD_MINUTE = 30;
     private static final LocalTime MONDAY_OPEN = LocalTime.of(13, 0);
     private static final LocalTime DEFAULT_OPEN = LocalTime.of(10, 0);
+    private static final List<LocalDate> HOLIDAYS = List.of(LocalDate.of(2025, 3, 1), LocalDate.of(2025, 3, 3),
+            LocalDate.of(2025, 5, 5), LocalDate.of(2025, 5, 6), LocalDate.of(2025, 6, 6));
 
     Map<Crew, LocalDate> attendanceHistory = new HashMap<>();
 
@@ -28,8 +32,11 @@ public class Attendance {
     }
 
     private void validateDayOff(LocalDate attendanceDate) {
-        if (attendanceDate.getDayOfWeek() == DayOfWeek.SATURDAY || attendanceDate.getDayOfWeek() == DayOfWeek.SUNDAY) {
-            throw new IllegalArgumentException("[ERROR] 3월 1일 토요일은 등교일이 아닙니다.");
+        if (attendanceDate.getDayOfWeek() == DayOfWeek.SATURDAY || attendanceDate.getDayOfWeek() == DayOfWeek.SUNDAY
+                || HOLIDAYS.contains(attendanceDate)) {
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("M월 d일 E요일");
+            throw new IllegalArgumentException(
+                    String.format("[ERROR] %s은 등교일이 아닙니다.", formatter.format(attendanceDate)));
         }
     }
 
