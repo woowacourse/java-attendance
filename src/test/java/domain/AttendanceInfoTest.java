@@ -5,6 +5,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 
 class AttendanceInfoTest {
 
@@ -39,6 +41,28 @@ class AttendanceInfoTest {
         // then
         assertThat(afterInfo.getHour()).isEqualTo(10);
         assertThat(afterInfo.getMinute()).isEqualTo(31);
+    }
+
+    @ParameterizedTest
+    @CsvSource(value = {
+            "10:31, ABSENCE",
+            "10:30, TARDINESS",
+            "10:29, TARDINESS",
+            "10:06, TARDINESS",
+            "10:05, ATTENDANCE",
+            "10:04, ATTENDANCE",
+            "10:03, ATTENDANCE"
+    })
+    void 날짜와_시간을_입력하면_출석상태를_계산한다(String inputTime, AttendanceStatus status) {
+        // given
+        CampusTime campusTime = CampusTime.from(inputTime);
+        CampusDate campusDate = CampusDate.fromNow(LocalDate.of(2025, 2, 27));
+
+        // when
+        AttendanceInfo attendanceInfo = AttendanceInfo.fromDateAndTime(campusDate, campusTime);
+
+        // then
+        assertThat(attendanceInfo.getAttendanceStatus()).isEqualTo(status);
     }
 
 }

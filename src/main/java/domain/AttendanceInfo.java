@@ -6,10 +6,12 @@ public class AttendanceInfo {
 
     private final CampusDate campusDate;
     private final CampusTime campusTime;
+    private final AttendanceStatus attendanceStatus;
 
     private AttendanceInfo(final CampusDate campusDate, final CampusTime campusTime) {
         this.campusDate = campusDate;
         this.campusTime = campusTime;
+        this.attendanceStatus = AttendanceStatus.calculateByDateAndTime(campusDate, campusTime);
     }
 
     public static AttendanceInfo fromDateAndTime (final CampusDate campusDate, final CampusTime campusTime) {
@@ -38,5 +40,9 @@ public class AttendanceInfo {
 
     public DayOfWeek getDayOfWeek() {
         return campusDate.getDayOfWeek();
+    }
+
+    public AttendanceStatus getAttendanceStatus() {
+        return attendanceStatus;
     }
 }
