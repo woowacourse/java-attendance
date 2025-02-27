@@ -1,6 +1,7 @@
 package attendance.model;
 
 import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Objects;
 
 public class AttendanceDateTime {
@@ -8,6 +9,11 @@ public class AttendanceDateTime {
     private LocalTime attendanceTime;
 
     public AttendanceDateTime(AttendanceDate attendanceDate, LocalTime attendanceTime) {
+        if (!CampusOpenTime.isDurationTime(attendanceDate.date(), attendanceTime)) {
+            throw new IllegalArgumentException(
+                    attendanceTime.format(DateTimeFormatter.ofPattern("HH시 mm분은 등교시간이 아닙니다.")
+                    ));
+        }
         this.attendanceDate = attendanceDate;
         this.attendanceTime = attendanceTime;
     }
