@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
-public class ExpelledCrewsSortingMachine implements SortingMachine {
+public class ExpelledCrewsCrewSortingMachine implements CrewSortingMachine {
 
     @Override
     public List<Crew> sortCrews(List<Crew> crews) {

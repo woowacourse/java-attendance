@@ -9,11 +9,9 @@ import domain.Attendances;
 import domain.Crew;
 import domain.CrewStatus;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 import util.DayOfWeekConvertor;
-import view.sortingMachine.SortingMachine;
+import view.sortingMachine.CrewSortingMachine;
 
 public class OutputView {
 
@@ -51,8 +49,8 @@ public class OutputView {
         printCrewStatusMessage(attendances);
     }
 
-    public void printExpelledCrews(List<Crew> crews, SortingMachine sortingMachine) {
-        List<Crew> sortedCrews = sortingMachine.sortCrews(crews);
+    public void printExpelledCrews(List<Crew> crews, CrewSortingMachine crewSortingMachine) {
+        List<Crew> sortedCrews = crewSortingMachine.sortCrews(crews);
         System.out.println("제적 위험자 조회 결과");
         for (Crew crew : sortedCrews) {
             System.out.println(generateExpelledCrewMessage(crew));
