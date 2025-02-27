@@ -19,9 +19,26 @@ public class CheckInTime {
         return new CheckInTime(checkInTime);
     }
 
+    public static CheckInTime of(int hour, int minute) {
+        return new CheckInTime(LocalTime.of(hour, minute));
+    }
+
     private void validateCampusTime(LocalTime checkInTime) {
         if (checkInTime.isBefore(CAMPUS_START_TIME) || checkInTime.isAfter(CAMPUS_END_TIME)) {
             throw new AppException("캠퍼스 이용 시간은 08시부터 23시까지 입니다.");
         }
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        CheckInTime that = (CheckInTime) o;
+        return checkInTime.equals(that.checkInTime);
+    }
+
+    @Override
+    public int hashCode() {
+        return checkInTime.hashCode();
     }
 }

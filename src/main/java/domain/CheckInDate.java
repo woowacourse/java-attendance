@@ -13,6 +13,10 @@ public class CheckInDate implements Comparable<CheckInDate> {
         return new CheckInDate(checkInDate);
     }
 
+    public static CheckInDate of(int year, int month, int day) {
+        return of(LocalDate.of(year, month, day));
+    }
+
     @Override
     public int compareTo(CheckInDate o) {
         return checkInDate.compareTo(o.checkInDate);
