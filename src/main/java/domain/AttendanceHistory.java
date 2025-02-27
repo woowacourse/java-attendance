@@ -7,6 +7,7 @@ import java.time.LocalTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public class AttendanceHistory {
 
@@ -76,6 +77,18 @@ public class AttendanceHistory {
     }
 
     public List<AttendanceRecord> findAllUntilBeforeToday(final LocalDate targetDate) {
-        return null;
+        return LocalDate.of(2024, 12, 1).datesUntil(targetDate)
+                .filter(this::isAttendanceDay)
+                .map(date -> attendanceHistory.getOrDefault(date, AttendanceRecord.empty(date)))
+                .collect(Collectors.toList());
+    }
+
+    private boolean isAttendanceDay(final LocalDate date) {
+        final DayOfWeek dayOfWeek = date.getDayOfWeek();
+        if (DayOfWeek.SATURDAY == dayOfWeek || DayOfWeek.SUNDAY == dayOfWeek
+                || (date.getMonthValue() == CHRISTMAS_MONTH && date.getDayOfMonth() == CHRISTMAS_MONTH_OF_DAY)) {
+            return false;
+        }
+        return true;
     }
 }

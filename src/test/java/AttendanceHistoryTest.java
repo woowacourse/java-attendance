@@ -114,6 +114,7 @@ public class AttendanceHistoryTest {
             assertThat(actual).hasSize(1);
             assertThat(actual.getFirst().getDateTime())
                     .hasDayOfMonth(2);
+            assertThat(actual.getFirst().isEmpty()).isTrue();
         }
     }
 
