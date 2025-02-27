@@ -15,6 +15,7 @@ public class FileInput {
     private FileInput() {}
 
     private static final String FILE_PATH = "src/main/resources/attendances.csv";
+    private static final String INFORMATION_REGEX = "[가-힣]+,\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}";
 
     public static List<String> readAttendanceFile() {
         List<String> attendanceFile = new ArrayList<>();
@@ -27,20 +28,29 @@ public class FileInput {
         } catch (IOException e) {
             System.out.println(e.getMessage());
             System.out.println("[ERROR] 파일 읽는 중 오류가 발생하였습니다.");
+            throw new IllegalArgumentException();
         }
         return attendanceFile;
     }
 
     public static Map<String, List<LocalDateTime>> readFileAndCreateStudentRepository(){
         Map<String, List<LocalDateTime>> studentInformation = new HashMap<>();
-        for (String information : readAttendanceFile()) {
-            String[] nameAndTimeInformation = information.split(",");
-            String name = nameAndTimeInformation[0];
-            String timeInformation = nameAndTimeInformation[1];
-            String localDateTimeFormatter = "yyyy-MM-dd HH:mm";
-            DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern(localDateTimeFormatter);
-            LocalDateTime localDateTime = LocalDateTime.parse(timeInformation, dateTimeFormatter);
-            studentInformation.computeIfAbsent(name, k -> new ArrayList<>()).add(localDateTime);
+        try {
+            for (String information : readAttendanceFile()) {
+                if (!information.matches(INFORMATION_REGEX)) {
+                    throw new IllegalArgumentException("[ERROR] 잘못된 파일 양식입니다.");
+                }
+                String[] nameAndTimeInformation = information.split(",");
+                String name = nameAndTimeInformation[0];
+                String timeInformation = nameAndTimeInformation[1];
+                String localDateTimeFormatter = "yyyy-MM-dd HH:mm";
+                DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern(localDateTimeFormatter);
+                LocalDateTime localDateTime = LocalDateTime.parse(timeInformation, dateTimeFormatter);
+                studentInformation.computeIfAbsent(name, k -> new ArrayList<>()).add(localDateTime);
+            }
+        } catch (IllegalArgumentException e) {
+            System.out.println(e.getMessage());
+            throw new IllegalArgumentException();
         }
         return studentInformation;
     }
