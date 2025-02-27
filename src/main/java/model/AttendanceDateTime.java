@@ -9,6 +9,9 @@ import java.util.Objects;
 
 public class AttendanceDateTime implements Comparable<AttendanceDateTime> {
     private final LocalDateTime attendanceDateTime;
+    private static final int CHRISTMAS = 25;
+    private static final String UNRECORDED_ATTENDANCE_TIME = "00:00";
+    private static final int NEXT_DAY_INCREMENT = 1;
 
     public AttendanceDateTime(LocalDateTime attendanceDateTime) {
         this.attendanceDateTime = attendanceDateTime;
@@ -27,11 +30,11 @@ public class AttendanceDateTime implements Comparable<AttendanceDateTime> {
     }
 
     public boolean isChristmas() {
-        return attendanceDateTime.getDayOfMonth() == 25;
+        return attendanceDateTime.getDayOfMonth() == CHRISTMAS;
     }
 
     public AttendanceDateTime addOneDay() {
-        return new AttendanceDateTime(attendanceDateTime.plusDays(1));
+        return new AttendanceDateTime(attendanceDateTime.plusDays(NEXT_DAY_INCREMENT));
     }
 
     @Override
@@ -52,7 +55,7 @@ public class AttendanceDateTime implements Comparable<AttendanceDateTime> {
     }
 
     public boolean isZeroTime(DateTimeFormatter dateTimeFormatter) {
-        return attendanceDateTime.format(dateTimeFormatter).equals("00:00");
+        return attendanceDateTime.format(dateTimeFormatter).equals(UNRECORDED_ATTENDANCE_TIME);
     }
 
     @Override
