@@ -13,6 +13,7 @@ public class AttendanceTime {
     private static final LocalTime CAMPUS_END_TIME = LocalTime.of(23, 0);
 
     public AttendanceTime(final LocalDate date, final int hour, final int minute) {
+
         validateAttendDate(date);
         validateOperatingTime(hour, minute);
         this.date = date;
@@ -21,16 +22,19 @@ public class AttendanceTime {
     }
 
     private void validateAttendDate(final LocalDate date) {
+
         if (isWeekend(date.getDayOfWeek())) {
             throw new IllegalArgumentException("[ERROR] 등교 날짜가 아닙니다.");
         }
     }
 
     private boolean isWeekend(final DayOfWeek day) {
+
         return day == DayOfWeek.SATURDAY || day == DayOfWeek.SUNDAY;
     }
 
     private void validateOperatingTime(final int hour, final int minute) {
+        
         LocalTime inputTime = LocalTime.of(hour, minute);
 
         if (inputTime.isBefore(CAMPUS_START_TIME) || inputTime.isAfter(CAMPUS_END_TIME)) {
