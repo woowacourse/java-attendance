@@ -17,7 +17,7 @@ class AttendanceHistoryReadTest {
         Attendance attendance2 = new Attendance(new Day(LocalDate.of(2025, 2, 18)), LocalTime.of(10, 15)); // 지각
         Attendance attendance3 = new Attendance(new Day(LocalDate.of(2025, 2, 19)), LocalTime.of(11, 0)); // 결석
         Attendance attendance4 = new Attendance(new Day(LocalDate.of(2025, 2, 20)), LocalTime.of(9, 50)); // 출석
-        Attendance attendance5 = new Attendance(new Day(LocalDate.of(2025, 2, 24)), LocalTime.of(10, 6)); // 지각
+        Attendance attendance5 = new Attendance(new Day(LocalDate.of(2025, 2, 24)), LocalTime.of(13, 6)); // 지각
         Attendance attendance6 = new Attendance(new Day(LocalDate.of(2025, 2, 26)), LocalTime.of(10, 25)); // 지각
         attendanceBook.recordAttendance(nickname, attendance1);
         attendanceBook.recordAttendance(nickname, attendance2);
@@ -43,11 +43,11 @@ class AttendanceHistoryReadTest {
         setUpAttendances(nickname);
 
         AttendanceHistoryRead attendanceHistoryRead = new AttendanceHistoryRead();
-        final var lateCount = attendanceHistoryRead.getLateCountOf(nickname);
-        final var absentCount = attendanceHistoryRead.getAbsentCountOf(nickname);
-        final var attendanceCount = attendanceHistoryRead.getAttendanceCountOf(nickname);
+        final var lateCount = attendanceHistoryRead.getLateCountOf(attendanceBook, nickname);
+        final var absentCount = attendanceHistoryRead.getAbsentCountOf(attendanceBook, nickname);
+        final var attendanceCount = attendanceHistoryRead.getAttendanceCountOf(attendanceBook, nickname);
 
-        assertEquals(2, lateCount);
+        assertEquals(3, lateCount);
         assertEquals(1, absentCount);
         assertEquals(2, attendanceCount);
     }

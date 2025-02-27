@@ -17,6 +17,22 @@ public class Attendances {
         }
     }
 
+    public Integer getLateCount() {
+        return (int) attendances.stream()
+                .filter(Attendance::isLate)
+                .count();
+    }
+
+    public Integer getAbsentCount() {
+        return (int) attendances.stream()
+                .filter(Attendance::isAbsent)
+                .count();
+    }
+
+    public Integer getTotalCount() {
+        return attendances.size();
+    }
+
     public Attendance findByDay(Day day) {
         return attendances.stream()
                 .filter(attendance -> attendance.has(day))
