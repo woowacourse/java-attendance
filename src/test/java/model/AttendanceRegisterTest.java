@@ -126,7 +126,7 @@ class AttendanceRegisterTest {
     }
 
     @Test
-    void 캠퍼스_운영시간이_아닌_시간예_출석을_하면_예외가_발생한다() {
+    void 캠퍼스_운영시간이_아닌_시간에_출석을_하면_예외가_발생한다() {
         // given
         AttendanceRegister attendanceRegister = new AttendanceRegister();
         LocalDate date = LocalDate.of(2024, 12, 10);

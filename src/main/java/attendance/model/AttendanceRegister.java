@@ -11,11 +11,7 @@ public class AttendanceRegister {
 
     public void attend(String crewName, LocalDate attendanceDate, LocalTime attendanceTime) {
         validateDuringEducationDay(attendanceDate);
-        if (!CampusOpenTime.isDurationTime(attendanceDate, attendanceTime)) {
-            throw new IllegalArgumentException(
-                    attendanceTime.format(DateTimeFormatter.ofPattern("HH시 mm분은 등교시간이 아닙니다.")
-                    ));
-        }
+        validateDuringEducationTime(attendanceDate, attendanceTime);
         AttendanceRecord attendanceRecord = register.getOrDefault(crewName, new AttendanceRecord());
         validateExistAttendance(attendanceDate, attendanceRecord);
         attendanceRecord.add(new AttendanceDateTime(attendanceDate, attendanceTime));
@@ -38,6 +34,14 @@ public class AttendanceRegister {
         if (!EducationDay.isDuringEducationDay(attendanceDate)) {
             throw new IllegalArgumentException(
                     attendanceDate.format(DateTimeFormatter.ofPattern("MM월 dd일 EEE은 등교일이 아닙니다.")
+                    ));
+        }
+    }
+
+    private void validateDuringEducationTime(LocalDate attendanceDate, LocalTime attendanceTime) {
+        if (!CampusOpenTime.isDurationTime(attendanceDate, attendanceTime)) {
+            throw new IllegalArgumentException(
+                    attendanceTime.format(DateTimeFormatter.ofPattern("HH시 mm분은 등교시간이 아닙니다.")
                     ));
         }
     }
