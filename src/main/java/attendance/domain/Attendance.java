@@ -19,7 +19,16 @@ public class Attendance {
         final AttendanceTime attendanceTime
     ) {
         if (attendanceDate == null || attendanceTime == null) {
-            throw new IllegalArgumentException("출석은 출석 날짜와 출석 시간을 가지고 있어야 합니다.");
+            throw new IllegalArgumentException(
+                "출석은 출석 날짜와 출석 시간을 가지고 있어야 합니다.");
         }
+    }
+
+    public AttendanceDate getAttendanceDate() {
+        return attendanceDate;
+    }
+
+    public AttendanceTime getAttendanceTime() {
+        return attendanceTime;
     }
 }

@@ -1,0 +1,37 @@
+package attendance.domain;
+
+import static org.assertj.core.api.Assertions.assertThat;
+
+import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
+
+class AttendanceStatusTest {
+
+    @Nested
+    class ValidCases {
+
+        @ParameterizedTest
+        @CsvSource(
+            value = {"null, null",
+                "13, 31"}
+            ,
+            nullValues = {"null"}
+        )
+        void 출석시간을_기준으로_30분초과면_결석이다(
+            Integer hour,
+            Integer minute
+        ) {
+            // given
+            Attendance attendance = new Attendance(
+                new AttendanceDate(2024, 12, 2),
+                new AttendanceTime(hour, minute));
+
+            // when
+            AttendanceStatus status = AttendanceStatus.from(attendance);
+
+            // then
+            assertThat(status).isEqualTo(AttendanceStatus.ABSENCE);
+        }
+    }
+}
