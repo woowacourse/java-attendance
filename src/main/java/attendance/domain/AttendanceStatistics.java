@@ -54,6 +54,6 @@ public class AttendanceStatistics implements Comparable {
             return 0;
         }
         AttendanceStatistics that = (AttendanceStatistics) o;
-        return -(that.calculateTotalAbsence() - this.calculateTotalAbsence());
+        return that.calculateTotalAbsence() - this.calculateTotalAbsence();
     }
 }

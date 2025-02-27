@@ -7,8 +7,11 @@ import attendance.domain.CampusManager;
 import attendance.domain.Crew;
 import attendance.view.InputView;
 import attendance.view.OutputView;
+import java.io.BufferedReader;
+import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -29,8 +32,9 @@ public class Application {
     }
 
     public static void main(String[] args) {
+        initializeAttendances();
         while (true) {
-            LocalDate today = LocalDate.now();
+            LocalDate today = now();
             String option = InputView.readOption(today);
             if (option.equals(QUIT_OPTION)) {
                 break;
@@ -40,6 +44,27 @@ public class Application {
             } catch (IllegalArgumentException e) {
                 System.out.println(e.getMessage());
             }
+        }
+    }
+
+    private static void initializeAttendances() {
+        try {
+            BufferedReader bufferedReader = AttendancesFileReader.readFile();
+            bufferedReader.readLine();
+            String line;
+            while((line = bufferedReader.readLine()) != null) {
+                String[] split = line.split(",");
+                Crew crew = new Crew(split[0]);
+                if (!attendanceManager.isCrewExists(crew)) {
+                    attendanceManager.addCrew(crew);
+                }
+                DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+                LocalDate attendanceDate = LocalDate.parse(split[1], dateTimeFormatter);
+                LocalTime attendanceTime = LocalTime.parse(split[1], dateTimeFormatter);
+                attendanceManager.addAttendance(crew, attendanceDate, attendanceTime);
+            }
+        } catch (IOException e) {
+            throw new IllegalArgumentException(e);
         }
     }
 
@@ -132,6 +157,6 @@ public class Application {
     }
 
     private static LocalDate now() {
-        return LocalDate.now();
+        return LocalDate.of(2024, 12, 16);
     }
 }
