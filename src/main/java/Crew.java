@@ -36,6 +36,18 @@ public class Crew {
     public boolean isDismissalCrew() {
         return DangerousTarget.getWarningStatus(attendTimes.calculateLateCount(),attendTimes.calculateAbsentCount())!=DangerousTarget.SAFE;
     }
+
+    public int getCrewAttendedCount() {
+            return attendTimes.calculateAttendedCount();
+    }
+
+    public int getCrewLateCount() {
+        return attendTimes.calculateLateCount();
+    }
+
+    public int getCrewAbsentCount() {
+        return attendTimes.calculateAbsentCount();
+    }
     public String getNickname() {
         return nickname;
     }
@@ -43,5 +55,4 @@ public class Crew {
     public AttendTimes getAttendTimes() {
         return attendTimes;
     }
-
 }

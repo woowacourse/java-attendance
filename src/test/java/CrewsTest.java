@@ -47,4 +47,13 @@ public class CrewsTest {
         List<Crew> dismissalCrews = crews.findDismissalCrews();
         assertThat(dismissalCrews.size()).isEqualTo(5);
     }
+
+    @DisplayName("제적 대상자 크루들을 정렬된 상태로 찾을 수 있다")
+    @Test
+    void test6(){
+        List<String> crewAttendanceResource = CrewAttendanceFileReader.readFile("src/main/resources/attendances.csv");
+        Crews crews = new Crews(crewAttendanceResource);
+        List<Crew> dismissalCrews=crews.findDismissalCrewsByImportance();
+        assertThat(dismissalCrews.size()).isEqualTo(5);
+    }
 }
