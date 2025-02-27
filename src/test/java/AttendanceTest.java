@@ -24,7 +24,7 @@ public class AttendanceTest {
         Crew crew2 = new Crew(nickname);
         AttendanceTime time2 = new AttendanceTime(LocalDateTime.of(2024, 12, date, 9, 30));
         //when
-        boolean actual = attendance.isSameCrewAndTime(crew2, time2);
+        boolean actual = attendance.isSameCrewAndTime(new Attendance(crew2, time2));
         //then
         assertThat(expected).isEqualTo(actual);
     }

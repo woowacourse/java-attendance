@@ -10,7 +10,7 @@ public class Attendance {
         this.attendanceTime = attendanceTime;
     }
 
-    public boolean isSameCrewAndTime(Crew crew, AttendanceTime time) {
-        return this.crew.equals(crew) && this.attendanceTime.isSameDay(time);
+    public boolean isSameCrewAndTime(Attendance otherAttendance) {
+        return crew.equals(otherAttendance.crew) && this.attendanceTime.isSameDay(otherAttendance.attendanceTime);
     }
 }
