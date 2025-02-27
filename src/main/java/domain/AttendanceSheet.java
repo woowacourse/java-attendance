@@ -58,15 +58,21 @@ public class AttendanceSheet {
                 .filter(attendance -> attendance.isSameNickname(nickname))
                 .collect(groupingBy(Attendance::getState, counting()));
 
-        Arrays.stream(AttendanceState.values())
-                .forEach(state -> counts.putIfAbsent(state, 0L));
-
-        Long absentCount = counts.values().stream()
-                .reduce(dayCount(today), (allDay, attendedDay) -> allDay - attendedDay);
-
+        initUndefinedState(counts);
+        Long absentCount = calculateAbsentCount(today, counts);
         counts.put(AttendanceState.ABSENT, counts.get(AttendanceState.ABSENT)*2 + absentCount);
 
         return counts;
+    }
+
+    private Long calculateAbsentCount(LocalDate today, Map<AttendanceState, Long> counts) {
+        return counts.values().stream()
+                .reduce(dayCount(today), (allDay, attendedDay) -> allDay - attendedDay);
+    }
+
+    private static void initUndefinedState(Map<AttendanceState, Long> counts) {
+        Arrays.stream(AttendanceState.values())
+                .forEach(state -> counts.putIfAbsent(state, 0L));
     }
 
     private Long dayCount(LocalDate today) {

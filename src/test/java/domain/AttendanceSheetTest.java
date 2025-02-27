@@ -28,9 +28,14 @@ public class AttendanceSheetTest {
     void setUp() {
         attendanceSheet = new AttendanceSheet(new AbsentPolicy(),
                 new ArrayList<>(
-                        List.of(new Attendance("링크", LocalDate.of(2024, 12, 10), LocalTime.of(10,0), ATTENDANCE),
-                                new Attendance("링크", LocalDate.of(2024, 12, 11), LocalTime.of(10,0), ATTENDANCE),
-                                new Attendance("링크", LocalDate.of(2024, 12, 12), LocalTime.of(10,10), LATE)
+                        List.of(
+                                new Attendance("링크", LocalDate.of(2024, 12, 10), LocalTime.of(13,10), ATTENDANCE),
+                                new Attendance("링크", LocalDate.of(2024, 12, 11), LocalTime.of(13,10), ATTENDANCE),
+                                new Attendance("링크", LocalDate.of(2024, 12, 12), LocalTime.of(13,10), LATE),
+                                new Attendance("링크2", LocalDate.of(2024, 12, 9), LocalTime.of(13,10), LATE),
+                                new Attendance("링크2", LocalDate.of(2024, 12, 10), LocalTime.of(10,10), LATE),
+                                new Attendance("링크2", LocalDate.of(2024, 12, 11), LocalTime.of(10,10), LATE),
+                                new Attendance("링크2", LocalDate.of(2024, 12, 12), LocalTime.of(10,10), LATE)
                         ))
         );
     }
@@ -108,18 +113,6 @@ public class AttendanceSheetTest {
     public void countAttendancesStateTest() {
         //given
         LocalDate today = LocalDate.of(2024, 12, 13);
-        attendanceSheet = new AttendanceSheet(new AbsentPolicy(),
-                new ArrayList<>(
-                        List.of(
-                                new Attendance("링크", LocalDate.of(2024, 12, 10), LocalTime.of(13,10), ATTENDANCE),
-                                new Attendance("링크", LocalDate.of(2024, 12, 11), LocalTime.of(13,10), ATTENDANCE),
-                                new Attendance("링크", LocalDate.of(2024, 12, 12), LocalTime.of(13,10), LATE),
-                                new Attendance("링크2", LocalDate.of(2024, 12, 9), LocalTime.of(13,10), LATE),
-                                new Attendance("링크2", LocalDate.of(2024, 12, 10), LocalTime.of(10,10), LATE),
-                                new Attendance("링크2", LocalDate.of(2024, 12, 11), LocalTime.of(10,10), LATE),
-                                new Attendance("링크2", LocalDate.of(2024, 12, 12), LocalTime.of(10,10), LATE)
-                        ))
-        );
 
         //when-then
         assertSoftly(softly -> {
