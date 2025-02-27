@@ -98,10 +98,7 @@ public class AttendanceHistory {
     }
 
     public boolean isRiskOfExpulsion(final LocalDate targetDate) {
-        final int absenceCount = calculateAbsenceCountConsideredThreeLateToAbsence(targetDate);
-        final RiskOfExpulsionStatus status = RiskOfExpulsionStatus.calculateRiskOfExpulsionStatus(
-                absenceCount);
-        return status != RiskOfExpulsionStatus.NORMAL;
+        return calculateRiskOfExpulsionStatus(targetDate) != RiskOfExpulsionStatus.NORMAL;
     }
 
     public RiskOfExpulsionStatus calculateRiskOfExpulsionStatus(final LocalDate targetDate) {
