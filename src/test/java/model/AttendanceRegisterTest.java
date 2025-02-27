@@ -167,6 +167,6 @@ class AttendanceRegisterTest {
         // when & then
         assertThatThrownBy(() -> attendanceRegister.modify("한스", modifyDate, modifyTime))
                 .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining("캠퍼스가 운영중이지 않은 시간입니다.");
+                .hasMessageContaining("등교시간이 아닙니다.");
     }
 }
