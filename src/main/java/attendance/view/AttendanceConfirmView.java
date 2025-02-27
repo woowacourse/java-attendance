@@ -8,12 +8,13 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
+import java.util.Locale;
 import java.util.Scanner;
 
 public class AttendanceConfirmView {
 
     public static final DateTimeFormatter TIME_FORMATTER = DateTimeFormatter.ofPattern("HH:mm");
-    public static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("MM월 dd일 E요일 HH:mm");
+    public static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("MM월 dd일 E요일 HH:mm", Locale.KOREA);
 
     public String readCrewNickname() {
         System.out.println("닉네임을 입력해 주세요.");
@@ -28,7 +29,7 @@ public class AttendanceConfirmView {
             LocalTime attendanceTime = LocalTime.parse(timeInput, TIME_FORMATTER);
             return LocalDateTime.of(attendanceDate, attendanceTime);
         } catch (DateTimeParseException exception) {
-            throw new IllegalArgumentException("시간은 'HH:mm' 형식으로 입력해 주세요.");
+            throw new IllegalArgumentException("시간을 올바르게 입력해 주세요.");
         }
     }
 

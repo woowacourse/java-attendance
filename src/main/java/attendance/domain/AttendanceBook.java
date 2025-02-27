@@ -25,4 +25,9 @@ public class AttendanceBook {
             throw new IllegalArgumentException("오늘은 이미 출석하셨습니다. 출석 수정 기능을 이용해 주세요.");
         }
     }
+
+    public void saveAttendanceDateTime(Crew crew, AttendanceDateTime attendanceDateTime) {
+        List<AttendanceDateTime> attendances = this.crewAttedances.get(crew);
+        attendances.add(attendanceDateTime);
+    }
 }
