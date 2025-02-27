@@ -54,7 +54,7 @@ public class PenaltyTest {
         attendanceBook.addAttendance(mimi, new Attendance(LocalDateTime.of(2024, 12, 2, 13, 0)));
         attendanceBook.addAttendance(mimi, new Attendance(LocalDateTime.of(2024, 12, 3, 10, 15)));
         attendanceBook.addAttendance(mimi, new Attendance(LocalDateTime.of(2024, 12, 4, 10, 15)));
-        attendanceBook.addAttendance(mimi, new Attendance(LocalDateTime.of(2024, 12, 5, 10, 15)));
+        attendanceBook.addAttendance(mimi, new Attendance(LocalDateTime.of(2024, 12, 5, 10, 0)));
         attendanceBook.addAttendance(mimi, new Attendance(LocalDateTime.of(2024, 12, 6, 10, 0)));
         // 7, 8 => 주말
         // 9 => 결석
@@ -72,7 +72,7 @@ public class PenaltyTest {
         attendanceBook.addAttendance(mimi, new Attendance(LocalDateTime.of(2024, 12, 2, 13, 0)));
         attendanceBook.addAttendance(mimi, new Attendance(LocalDateTime.of(2024, 12, 3, 10, 15)));
         attendanceBook.addAttendance(mimi, new Attendance(LocalDateTime.of(2024, 12, 4, 10, 15)));
-        attendanceBook.addAttendance(mimi, new Attendance(LocalDateTime.of(2024, 12, 5, 10, 15)));
+        attendanceBook.addAttendance(mimi, new Attendance(LocalDateTime.of(2024, 12, 5, 10, 0)));
         attendanceBook.addAttendance(mimi, new Attendance(LocalDateTime.of(2024, 12, 6, 10, 0)));
         // 7, 8 => 주말
         attendanceBook.addAttendance(mimi, new Attendance(LocalDateTime.of(2024, 12, 9, 13, 0)));
@@ -82,5 +82,24 @@ public class PenaltyTest {
 
         AttendanceCount attendanceCount = attendanceBook.findCountUntil(mimi, yesterday);
         assertThat(Penalty.from(attendanceCount)).isEqualTo(Penalty.WARNING);
+    }
+
+    @DisplayName("지각 3회는 결석 1회로 간주한다.")
+    @Test
+    void test4() {
+        attendanceBook.addAttendance(mimi, new Attendance(LocalDateTime.of(2024, 12, 2, 13, 0)));
+        attendanceBook.addAttendance(mimi, new Attendance(LocalDateTime.of(2024, 12, 3, 10, 15)));
+        attendanceBook.addAttendance(mimi, new Attendance(LocalDateTime.of(2024, 12, 4, 10, 15)));
+        attendanceBook.addAttendance(mimi, new Attendance(LocalDateTime.of(2024, 12, 5, 10, 15)));
+        attendanceBook.addAttendance(mimi, new Attendance(LocalDateTime.of(2024, 12, 6, 10, 0)));
+        // 7, 8 => 주말
+        attendanceBook.addAttendance(mimi, new Attendance(LocalDateTime.of(2024, 12, 9, 13, 0)));
+        // 10 => 이미 존재
+        // 11, 12 => 결석
+        // 지각 3회 => 결석 1회 간주, 총 결석 3회
+        LocalDate yesterday = LocalDate.of(2024, 12, 12);
+
+        AttendanceCount attendanceCount = attendanceBook.findCountUntil(mimi, yesterday);
+        assertThat(Penalty.from(attendanceCount)).isEqualTo(Penalty.COUNSELING);
     }
 }
