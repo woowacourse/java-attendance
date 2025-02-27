@@ -1,0 +1,34 @@
+package attendance.domain;
+
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.Objects;
+
+public class Attendance {
+
+    private final LocalDateTime dateTime;
+
+    public Attendance(final LocalDateTime dateTime) {
+        this.dateTime = dateTime;
+    }
+
+    public boolean isSameDate(final LocalDate date) {
+        return this.dateTime.toLocalDate().equals(date);
+    }
+
+    public LocalDateTime getDateTime() {
+        return dateTime;
+    }
+
+    @Override
+    public boolean equals(final Object object) {
+        if (object == null || getClass() != object.getClass()) return false;
+        Attendance o = (Attendance) object;
+        return dateTime.equals(o.dateTime);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(dateTime);
+    }
+}
