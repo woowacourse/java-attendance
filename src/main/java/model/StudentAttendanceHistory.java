@@ -35,11 +35,8 @@ public class StudentAttendanceHistory {
         }
     }
 
-    private boolean isSameDay(LocalDateTime localDateTime1, LocalDateTime localDateTime2) {
-        LocalDateTime dayDate1 = localDateTime1.truncatedTo(ChronoUnit.DAYS);
-        LocalDateTime dayDate2 = localDateTime2.truncatedTo(ChronoUnit.DAYS);
-
-        return (dayDate1.isEqual(dayDate2));
+    private boolean isSameDay(LocalDateTime firstDateTime, LocalDateTime secondDateTime) {
+        return firstDateTime.toLocalDate().isEqual(secondDateTime.toLocalDate());
     }
 
     public void updateNoInformationInFile(LocalDateTime todayDate) {
