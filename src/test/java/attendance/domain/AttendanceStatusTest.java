@@ -1,11 +1,13 @@
 package attendance.domain;
 
+import static org.assertj.core.api.Assertions.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
@@ -51,6 +53,14 @@ class AttendanceStatusTest {
         AttendanceTime attendanceTime = new AttendanceTime(localTime);
 
         assertThat(AttendanceStatus.isAbsent(attendance, attendanceTime)).isEqualTo(expected);
+    }
+
+    @Test
+    void 결석_횟수와_지각_횟수를_알려주면_총_결석_횟수를_알려준다() {
+        int absentCount = 1;
+        int lateCount = 5;
+
+        assertThat(AttendanceStatus.calculateTotalAbsentCount(absentCount, lateCount)).isEqualTo(2);
     }
 
 }

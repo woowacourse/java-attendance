@@ -37,6 +37,8 @@ public enum AttendanceStatus {
         );
     });
 
+    private static final int LATE_PER_ABSENT = 3;
+
     private final String text;
     private final BiPredicate<Attendance, AttendanceTime> condition;
 
@@ -55,6 +57,10 @@ public enum AttendanceStatus {
 
     public static boolean isAbsent(final Attendance attendance, final AttendanceTime attendanceTime) {
         return ABSENT.condition.test(attendance, attendanceTime);
+    }
+
+    public static int calculateTotalAbsentCount(final int absentCount, final int lateCount) {
+        return absentCount + lateCount / LATE_PER_ABSENT;
     }
 
 }

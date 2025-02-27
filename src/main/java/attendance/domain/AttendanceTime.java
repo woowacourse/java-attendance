@@ -28,6 +28,10 @@ public class AttendanceTime {
                 && (attendanceTime.isBefore(endInclusive) || attendanceTime.equals(endInclusive));
     }
 
+    public LocalTime getAttendanceTime() {
+        return attendanceTime;
+    }
+
     @Override
     public boolean equals(final Object o) {
         if (this == o) {

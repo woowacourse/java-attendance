@@ -2,9 +2,10 @@ package attendance.domain;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.Objects;
 
-public class Attendance {
+public class Attendance implements Comparable<Attendance> {
 
     private final AttendanceDate attendanceDate;
     private final AttendanceTime attendanceTime;
@@ -44,6 +45,19 @@ public class Attendance {
 
     public boolean isAbsent() {
         return AttendanceStatus.isAbsent(this, attendanceTime);
+    }
+
+    public LocalDate getAttendanceLocalDate() {
+        return attendanceDate.getAttendanceDate();
+    }
+
+    public LocalTime getAttendanceLocalTime() {
+        return attendanceTime.getAttendanceTime();
+    }
+
+    @Override
+    public int compareTo(final Attendance o) {
+        return this.attendanceDate.compareTo(o.attendanceDate);
     }
 
     @Override

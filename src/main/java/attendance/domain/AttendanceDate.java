@@ -6,7 +6,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.Locale;
 import java.util.Objects;
 
-public class AttendanceDate {
+public class AttendanceDate implements Comparable<AttendanceDate> {
 
     private static final DateTimeFormatter MONTH_DAY_DAY_OF_WEEK =
             DateTimeFormatter.ofPattern("M월 d일 E요일", Locale.KOREA);
@@ -40,6 +40,15 @@ public class AttendanceDate {
 
     public boolean isMonday() {
         return attendanceDate.getDayOfWeek().equals(DayOfWeek.MONDAY);
+    }
+
+    public LocalDate getAttendanceDate() {
+        return attendanceDate;
+    }
+
+    @Override
+    public int compareTo(final AttendanceDate o) {
+        return this.attendanceDate.compareTo(o.attendanceDate);
     }
 
     @Override

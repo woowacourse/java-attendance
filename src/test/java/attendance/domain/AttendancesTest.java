@@ -7,10 +7,13 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Stream;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.CsvSource;
+import org.junit.jupiter.params.provider.MethodSource;
 
 class AttendancesTest {
 
@@ -124,6 +127,37 @@ class AttendancesTest {
         LocalDate standardDate = LocalDate.of(2025, 2, 27);
 
         assertThat(attendances.calculateAbsentCount(standardDate)).isEqualTo(1);
+    }
+
+    @MethodSource("provideAttendancesWithDateAndExpectedStatusInfo")
+    @ParameterizedTest
+    void 현재_저장된_이번달_출석_기록을_통해_제적_위험자_상태를_알려준다(List<Attendance> attendanceGroup, ExpulsionStatus expectedStatus) {
+        Attendances attendances = new Attendances(attendanceGroup);
+
+        assertThat(attendances.findExpulsionStatusUntilLastDate()).isEqualByComparingTo(expectedStatus);
+    }
+
+    private static Stream<Arguments> provideAttendancesWithDateAndExpectedStatusInfo() {
+        List<Attendance> attendances = createOneAttendanceCompleteSixAbsent();
+        return Stream.of(
+                Arguments.of(attendances, ExpulsionStatus.EXPULSION),
+                Arguments.of(attendances.subList(0, 6), ExpulsionStatus.INTERVIEW),
+                Arguments.of(attendances.subList(0, 4), ExpulsionStatus.INTERVIEW),
+                Arguments.of(attendances.subList(0, 3), ExpulsionStatus.WARNING),
+                Arguments.of(attendances.subList(0, 2), ExpulsionStatus.NONE)
+        );
+    }
+
+    private static List<Attendance> createOneAttendanceCompleteSixAbsent() {
+        List<Attendance> attendances = new ArrayList<>();
+        attendances.add(new Attendance(LocalDateTime.of(2025, 2, 17, 10, 30)));
+        attendances.add(new Attendance(LocalDateTime.of(2025, 2, 18, 10, 31)));
+        attendances.add(new Attendance(LocalDateTime.of(2025, 2, 19, 10, 31)));
+        attendances.add(new Attendance(LocalDateTime.of(2025, 2, 20, 10, 31)));
+        attendances.add(new Attendance(LocalDateTime.of(2025, 2, 21, 10, 31)));
+        attendances.add(new Attendance(LocalDateTime.of(2025, 2, 24, 13, 31)));
+        attendances.add(new Attendance(LocalDateTime.of(2025, 2, 25, 13, 31)));
+        return attendances;
     }
 
 }
