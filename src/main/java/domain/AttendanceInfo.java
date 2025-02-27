@@ -1,5 +1,7 @@
 package domain;
 
+import java.time.DayOfWeek;
+
 public class AttendanceInfo {
 
     private final CampusDate campusDate;
@@ -28,5 +30,9 @@ public class AttendanceInfo {
 
     public int getMinute() {
         return campusTime.getMinute();
+    }
+
+    public DayOfWeek getDayOfWeek() {
+        return campusDate.getDayOfWeek();
     }
 }

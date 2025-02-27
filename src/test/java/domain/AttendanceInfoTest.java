@@ -1,7 +1,9 @@
 package domain;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
+import java.time.DayOfWeek;
 import java.time.LocalDate;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 class AttendanceInfoTest {
@@ -16,10 +18,11 @@ class AttendanceInfoTest {
         AttendanceInfo attendanceInfo = AttendanceInfo.fromDateAndTime(campusDate, campusTime);
 
         // then
-        Assertions.assertThat(attendanceInfo.getMonth()).isEqualTo(2);
-        Assertions.assertThat(attendanceInfo.getDay()).isEqualTo(27);
-        Assertions.assertThat(attendanceInfo.getHour()).isEqualTo(10);
-        Assertions.assertThat(attendanceInfo.getMinute()).isEqualTo(29);
+        assertThat(attendanceInfo.getMonth()).isEqualTo(2);
+        assertThat(attendanceInfo.getDay()).isEqualTo(27);
+        assertThat(attendanceInfo.getHour()).isEqualTo(10);
+        assertThat(attendanceInfo.getMinute()).isEqualTo(29);
+        assertThat(attendanceInfo.getDayOfWeek()).isEqualTo(DayOfWeek.THURSDAY);
     }
 
 }
