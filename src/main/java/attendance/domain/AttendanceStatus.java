@@ -27,10 +27,6 @@ public enum AttendanceStatus {
         this.timeCondition = timeCondition;
     }
 
-    public String getStatus() {
-        return status;
-    }
-
     public static AttendanceStatus getStatusByTime(LocalTime arrivalTime, LocalTime startTime) {
 
         return Arrays.stream(AttendanceStatus.values())
@@ -41,5 +37,9 @@ public enum AttendanceStatus {
 
     private boolean matches(LocalTime arrivalTime, LocalTime startTime) {
         return timeCondition.test(arrivalTime, startTime);
+    }
+
+    public String getStatus() {
+        return status;
     }
 }
