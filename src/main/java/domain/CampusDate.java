@@ -13,16 +13,6 @@ public class CampusDate {
         this.date = date;
     }
 
-    public static CampusDate now() {
-        return new CampusDate(LocalDate.now());
-    }
-
-    public static CampusDate nowWithDay(final int day) {
-        LocalDate now = LocalDate.now();
-        validateDayRangeOfMonth(now, day);
-        return new CampusDate(now.withDayOfMonth(day));
-    }
-
     public static CampusDate fromDate(final LocalDate date) {
         return new CampusDate(date);
     }
