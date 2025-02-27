@@ -28,11 +28,11 @@ public class AttendancePolicy {
         return !attendanceDatePolicy.isHoliday(date) && !attendanceDatePolicy.isWeekend(date);
     }
 
-    public AttendanceStateRule decideState(LocalDate date, LocalTime localTime) {
+    public AttendanceStateRule decideAttendanceState(Attendance attendance) {
         LocalTime AttendStartTime = attendanceTimePolicy.getAttendStartTime(
-                attendanceDatePolicy.isSpecialDay(date));
+                attendanceDatePolicy.isSpecialDay(attendance.toLocalDate()));
 
-        long lateMinutes = Duration.between(AttendStartTime, localTime)
+        long lateMinutes = Duration.between(AttendStartTime, attendance.toLocalTime())
                 .toMinutes();
 
         return attendanceTimePolicy.decisionAttendanceState(lateMinutes);

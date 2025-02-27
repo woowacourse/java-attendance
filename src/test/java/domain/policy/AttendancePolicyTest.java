@@ -66,16 +66,21 @@ class AttendancePolicyTest {
     @DisplayName("일반적인 날의 출석 상태를 결정할 수 있다")
     void decideAttendanceStateReturnStateWhenNormalDay() {
         // given
-        LocalDate normalDay = LocalDate.of(2024, 12, 18);
-        LocalTime attendTime = attendanceTimePolicy.getAttendStartTime(false);
+        AttendanceDate normalDay = AttendanceDate.of(LocalDate.of(2024, 12, 18), attendancePolicy);
+        AttendanceTime attendTime = AttendanceTime.of(attendanceTimePolicy.getAttendStartTime(false), attendancePolicy);
+        AttendanceTime attendTime_6MinutesLate = AttendanceTime.of(attendanceTimePolicy.getAttendStartTime(false)
+                .plusMinutes(6), attendancePolicy);
+        AttendanceTime attendTime_31MinutesLate = AttendanceTime.of(attendanceTimePolicy.getAttendStartTime(false)
+                .plusMinutes(31), attendancePolicy);
 
-        LocalTime _6MinutesLate = attendTime.plusMinutes(6);
-        LocalTime _31MinutesLate = attendTime.plusMinutes(31);
+        Attendance attendance = Attendance.of(normalDay, attendTime);
+        Attendance attendance_6MinutesLate = Attendance.of(normalDay, attendTime_6MinutesLate);
+        Attendance attendance_31MinutesLate = Attendance.of(normalDay, attendTime_31MinutesLate);
 
         // when
-        AttendanceStateRule attendState = attendancePolicy.decideState(normalDay, attendTime);
-        AttendanceStateRule lateState = attendancePolicy.decideState(normalDay, _6MinutesLate);
-        AttendanceStateRule absentState = attendancePolicy.decideState(normalDay, _31MinutesLate);
+        AttendanceStateRule attendState = attendancePolicy.decideAttendanceState(attendance);
+        AttendanceStateRule lateState = attendancePolicy.decideAttendanceState(attendance_6MinutesLate);
+        AttendanceStateRule absentState = attendancePolicy.decideAttendanceState(attendance_31MinutesLate);
 
         // then
         assertAll(
@@ -89,16 +94,20 @@ class AttendancePolicyTest {
     @DisplayName("특별한 날의 출석 상태를 결정할 수 있다")
     void decideAttendanceStateReturnStateWhenSpecialDay() {
         // given
-        LocalDate specialDay = LocalDate.of(2024, 12, 16);
-        LocalTime attendTime = attendanceTimePolicy.getAttendStartTime(true);
+        AttendanceDate normalDay = AttendanceDate.of(LocalDate.of(2024, 12, 16), attendancePolicy);
+        AttendanceTime attendTime = AttendanceTime.of(attendanceTimePolicy.getAttendStartTime(true), attendancePolicy);
+        AttendanceTime attendTime_6MinutesLate = AttendanceTime.of(attendanceTimePolicy.getAttendStartTime(true)
+                .plusMinutes(6), attendancePolicy);
+        AttendanceTime attendTime_31MinutesLate = AttendanceTime.of(attendanceTimePolicy.getAttendStartTime(true)
+                .plusMinutes(31), attendancePolicy);
 
-        LocalTime _6MinutesLate = attendTime.plusMinutes(6);
-        LocalTime _31MinutesLate = attendTime.plusMinutes(31);
-
+        Attendance attendance = Attendance.of(normalDay, attendTime);
+        Attendance attendance_6MinutesLate = Attendance.of(normalDay, attendTime_6MinutesLate);
+        Attendance attendance_31MinutesLate = Attendance.of(normalDay, attendTime_31MinutesLate);
         // when
-        AttendanceStateRule attendState = attendancePolicy.decideState(specialDay, attendTime);
-        AttendanceStateRule lateState = attendancePolicy.decideState(specialDay, _6MinutesLate);
-        AttendanceStateRule absentState = attendancePolicy.decideState(specialDay, _31MinutesLate);
+        AttendanceStateRule attendState = attendancePolicy.decideAttendanceState(attendance);
+        AttendanceStateRule lateState = attendancePolicy.decideAttendanceState(attendance_6MinutesLate);
+        AttendanceStateRule absentState = attendancePolicy.decideAttendanceState(attendance_31MinutesLate);
 
         // then
         assertAll(
