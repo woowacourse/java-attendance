@@ -1,6 +1,7 @@
 package attendance.model;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.HashSet;
 import java.util.List;
@@ -56,5 +57,40 @@ public class Crews {
                 .findFirst()
                 .map(Crew::isAttendToday)
                 .get();
+    }
+
+    public LocalTime findCrewAttendanceTime(Crew crew, LocalDate modifyDate) {
+        return crews.stream()
+                .filter(findCrew -> findCrew.equals(crew))
+                .findFirst()
+                .map(Crew::getAttendanceHistory)
+                .flatMap(attendanceHistory ->
+                        attendanceHistory.stream()
+                                .filter(attendance -> attendance.isSameDate(modifyDate))
+                                .map(Attendance::getTime)
+                                .findFirst()
+                )
+                .orElseThrow(() -> new IllegalStateException("출석 조회를 실패했습니다."));
+    }
+
+    public Attendance findCrewAttendance(Crew crew, LocalDate modifyDate) {
+        return crews.stream()
+                .filter(findCrew -> findCrew.equals(crew))
+                .findFirst()
+                .map(Crew::getAttendanceHistory)
+                .map(attendanceHistory -> attendanceHistory.stream()
+                        .filter(attendance -> attendance.isSameDate(modifyDate))
+                        .findFirst()
+                )
+                .get()
+                .map(Attendance::createSameAttendance)
+                .orElseThrow(() -> new IllegalStateException("해당하는 날짜의 출석 기록을 가져올 수 없습니다."));
+    }
+
+    public void modifyAttendance(Crew crew, LocalDate modifyDate, LocalTime modifyTime) {
+        crews.stream()
+                .filter(modifyCrew -> modifyCrew.equals(crew))
+                .findFirst()
+                .ifPresent(modifyCrew -> modifyCrew.modifyAttendance(LocalDateTime.of(modifyDate, modifyTime)));
     }
 }

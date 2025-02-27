@@ -1,10 +1,9 @@
 package attendance.model;
 
+import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.time.format.TextStyle;
-import java.util.Locale;
+import java.time.LocalTime;
 
 public class Attendance {
     private LocalDateTime dateTime;
@@ -43,11 +42,15 @@ public class Attendance {
         return String.valueOf(dateTime.getDayOfMonth());
     }
 
-    public String getDayOfMonth() {
-        return dateTime.getDayOfWeek().getDisplayName(TextStyle.NARROW, Locale.KOREAN);
+    public DayOfWeek getDayOfMonth() {
+        return dateTime.getDayOfWeek();
     }
 
-    public String getTime() {
-        return dateTime.toLocalTime().format(DateTimeFormatter.ofPattern("HH:mm"));
+    public LocalTime getTime() {
+        return dateTime.toLocalTime();
+    }
+
+    public Attendance createSameAttendance() {
+        return new Attendance(dateTime, type);
     }
 }
