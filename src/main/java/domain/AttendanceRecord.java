@@ -28,6 +28,10 @@ public class AttendanceRecord {
         return this.isEmpty;
     }
 
+    public AttendanceStatus calculateAttendanceStatus() {
+        return null;
+    }
+
     public LocalDateTime getDateTime() {
         return this.attendanceDateTime;
     }
