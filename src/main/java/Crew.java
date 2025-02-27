@@ -33,6 +33,9 @@ public class Crew {
         return attendTimes.findAttendanceByDate(dayOfMonth).orElseThrow(()->new IllegalArgumentException("없는 이름입니다."));
     }
 
+    public boolean isDismissalCrew() {
+        return DangerousTarget.getWarningStatus(attendTimes.calculateLateCount(),attendTimes.calculateAbsentCount())!=DangerousTarget.SAFE;
+    }
     public String getNickname() {
         return nickname;
     }
@@ -40,4 +43,5 @@ public class Crew {
     public AttendTimes getAttendTimes() {
         return attendTimes;
     }
+
 }

@@ -33,8 +33,11 @@ public class Crews {
         return crews.stream().filter(crew -> crew.getNickname().equals(nickname)).findFirst();
     }
 
+    public List<Crew> findDismissalCrews() {
+        return new ArrayList<Crew>(crews.stream().filter(Crew::isDismissalCrew).toList());
+    }
+
     public List<Crew> getCrews() {
         return crews;
     }
-
 }
