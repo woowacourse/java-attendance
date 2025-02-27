@@ -5,6 +5,7 @@ import attendance.utility.DateTimeUtility;
 import attendance.view.message.InputMessage;
 import attendance.view.processor.InputPreprocessor;
 import attendance.view.validator.InputValidator;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.Scanner;
@@ -45,7 +46,9 @@ public class InputView {
         System.out.println(InputMessage.DAY_FOR_UPDATE.getContent());
         String input = readInput();
         InputValidator.validateNonNumeric(input);
-        return Integer.parseInt(input);
+        int day = Integer.parseInt(input);
+        InputValidator.validateIsInMonth(LocalDate.now().getYear(), LocalDate.now().getMonth(), day);
+        return day;
     }
 
     public LocalTime readArrivalTimeForUpdate() {

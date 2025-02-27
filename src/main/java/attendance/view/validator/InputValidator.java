@@ -1,6 +1,7 @@
 package attendance.view.validator;
 
 import attendance.exception.ExceptionMessage;
+import java.time.LocalDate;
 import java.time.Month;
 
 public class InputValidator {
@@ -20,6 +21,9 @@ public class InputValidator {
     }
 
     public static void validateIsInMonth(int year, Month month, int day) {
-
+        int lastDayInMonth = LocalDate.of(year, month, 1).lengthOfMonth();
+        if (day < 1 || day > lastDayInMonth) {
+            throw new IllegalArgumentException(ExceptionMessage.INVALID_DAY_INPUT.getMessage());
+        }
     }
 }
