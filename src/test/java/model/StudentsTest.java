@@ -17,7 +17,7 @@ class StudentsTest {
     void test1() {
         Assertions.assertThatThrownBy(() -> students.findStudentByName("말론"))
                 .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage("[ERROR] 존재하지 않는 학생의 이름입니다.");
+                .hasMessage("[ERROR] 존재하지 않는 학생입니다.");
     }
 
     @Test
