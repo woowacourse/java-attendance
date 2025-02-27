@@ -19,13 +19,15 @@ import org.junit.jupiter.api.Test;
 public class AttendanceBookTest {
     AttendanceBook attendanceBook;
     AttendanceRecord attendanceRecord;
+    int day = 10;
+    Attendance dayOfTenAttendance = new Attendance(
+            LocalDateTime.of(2024, 12, day, 10, 0));
+    LocalDate yesterday = LocalDate.of(2024, 12, 12);
     CrewName mimi = new CrewName("미미");
     CrewName malone = new CrewName("말론");
     CrewName norang = new CrewName("노랑");
     CrewName pree = new CrewName("프리");
     CrewName river = new CrewName("리버");
-    int day = 10;
-    Attendance dayOfTenAttendance = new Attendance(LocalDateTime.of(2024, 12, day, 10, 0));
 
     @BeforeEach
     void setUp() {
@@ -42,7 +44,8 @@ public class AttendanceBookTest {
     @DisplayName("닉네임과 등교 시간을 입력하면 출석할 수 있다.")
     @Test
     void test1() {
-        Attendance todayAttendance = new Attendance(LocalDateTime.of(2024, 12, 13, 9, 59));
+        Attendance todayAttendance = new Attendance(
+                LocalDateTime.of(2024, 12, 13, 9, 59));
 
         Attendance savedAttendance = attendanceBook.addAttendance(mimi, todayAttendance);
 
@@ -63,7 +66,8 @@ public class AttendanceBookTest {
     @Test
     void test3() {
         CrewName crewName = new CrewName("밍트");
-        Attendance attendance = new Attendance(LocalDateTime.of(2024, 12, 13, 9, 59));
+        Attendance attendance = new Attendance(
+                LocalDateTime.of(2024, 12, 13, 9, 59));
 
         assertThatThrownBy(() -> attendanceBook.addAttendance(crewName, attendance))
                 .isInstanceOf(IllegalArgumentException.class)
@@ -74,7 +78,8 @@ public class AttendanceBookTest {
     @Test
     void test4() {
         CrewName crewName = new CrewName("미미");
-        Attendance attendance = new Attendance(LocalDateTime.of(2024, 12, 10, 10, 31));
+        Attendance attendance = new Attendance(
+                LocalDateTime.of(2024, 12, 10, 10, 31));
 
         assertThatThrownBy(() -> attendanceBook.addAttendance(crewName, attendance))
                 .isInstanceOf(IllegalArgumentException.class)
@@ -84,7 +89,8 @@ public class AttendanceBookTest {
     @DisplayName("닉네임, 수정하려는 날짜, 등교 시간을 입력하여 출석 기록을 수정할 수 있다.")
     @Test
     void test5() {
-        Attendance newAttendance = new Attendance(LocalDateTime.of(2024, 12, day, 10, 6));
+        Attendance newAttendance = new Attendance(
+                LocalDateTime.of(2024, 12, day, 10, 6));
 
         attendanceBook.modify(mimi, newAttendance);
 
@@ -97,7 +103,8 @@ public class AttendanceBookTest {
     @Test
     void test6() {
         CrewName crewName = new CrewName("밍트");
-        Attendance attendance = new Attendance(LocalDateTime.of(2024, 12, 13, 9, 59));
+        Attendance attendance = new Attendance(
+                LocalDateTime.of(2024, 12, 13, 9, 59));
 
         assertThatThrownBy(() -> attendanceBook.modify(crewName, attendance))
                 .isInstanceOf(IllegalArgumentException.class)
@@ -107,7 +114,8 @@ public class AttendanceBookTest {
     @DisplayName("출석 수정 시, 기존 출석 기록과 업데이트된 출석 기록을 모두 확인할 수 있다.")
     @Test
     void test7() {
-        Attendance newAttendance = new Attendance(LocalDateTime.of(2024, 12, day, 10, 6));
+        Attendance newAttendance = new Attendance(
+                LocalDateTime.of(2024, 12, day, 10, 6));
 
         ModifyResult modifyResult = attendanceBook.modify(mimi, newAttendance);
 
@@ -115,27 +123,28 @@ public class AttendanceBookTest {
         assertThat(modifyResult.modifiedAttendance()).isEqualTo(newAttendance);
     }
 
-    // TODO : 지금은 기준 날짜도 주입하고 있는데, 전날은 오늘 기준으로 고정되도록 만들어야 하나?
     @DisplayName("닉네임을 입력하면 전날까지의 크루 출석 기록을 확인할 수 있다.")
     @Test
     void test8() {
-        Attendance firstAttendance = new Attendance(LocalDateTime.of(2024, 12, 2, 13, 0));
-        attendanceBook.addAttendance(mimi, firstAttendance);
-        attendanceBook.addAttendance(mimi, new Attendance(LocalDateTime.of(2024, 12, 3, 10, 15)));
-        attendanceBook.addAttendance(mimi, new Attendance(LocalDateTime.of(2024, 12, 4, 10, 15)));
-        attendanceBook.addAttendance(mimi, new Attendance(LocalDateTime.of(2024, 12, 5, 10, 15)));
-        attendanceBook.addAttendance(mimi, new Attendance(LocalDateTime.of(2024, 12, 6, 10, 0)));
-        attendanceBook.addAttendance(mimi, new Attendance(LocalDateTime.of(2024, 12, 9, 13, 0)));
-        // 10 이미 존재
-        // 11, 12 => 결석
-        Attendance expectedLastAttendance = new Attendance(LocalDateTime.of(2024, 12, 12, 15, 0));
-        // 결석 2, 지각 3, 출석 4
+        addAttendanceToBook(mimi,
+                LocalDateTime.of(2024, 12, 2, 13, 0),
+                LocalDateTime.of(2024, 12, 3, 10, 15),
+                LocalDateTime.of(2024, 12, 4, 10, 15),
+                LocalDateTime.of(2024, 12, 5, 10, 15),
+                LocalDateTime.of(2024, 12, 6, 10, 0),
+                LocalDateTime.of(2024, 12, 9, 13, 0)
+                // 10 이미 존재
+                // 11, 12 => 결석
+                // 결석 2, 지각 3, 출석 4
+        );
+        Attendance firstAttendance = new Attendance(
+                LocalDateTime.of(2024, 12, 2, 13, 0));
+        Attendance expectedLastAttendance = new Attendance(
+                LocalDateTime.of(2024, 12, 12, 15, 0));
 
-        // TODO : 감싸기?
-        LocalDate yesterday = LocalDate.of(2024, 12, 12);
         AttendanceHistory attendanceHistory = attendanceBook.findAttendanceHistoryUntil(mimi, yesterday);
-
         List<Attendance> sortedAttendance = attendanceHistory.sortedValue();
+
         assertThat(sortedAttendance.getFirst()).isEqualTo(firstAttendance);
         assertThat(sortedAttendance.getLast()).isEqualTo(expectedLastAttendance);
     }
@@ -143,18 +152,18 @@ public class AttendanceBookTest {
     @DisplayName("닉네임을 입력하면 전날까지의 크루 출석 상태 횟수를 확인할 수 있다.")
     @Test
     void test9() {
-        Attendance firstAttendance = new Attendance(LocalDateTime.of(2024, 12, 2, 13, 0));
-        attendanceBook.addAttendance(mimi, firstAttendance);
-        attendanceBook.addAttendance(mimi, new Attendance(LocalDateTime.of(2024, 12, 3, 10, 15)));
-        attendanceBook.addAttendance(mimi, new Attendance(LocalDateTime.of(2024, 12, 4, 10, 15)));
-        attendanceBook.addAttendance(mimi, new Attendance(LocalDateTime.of(2024, 12, 5, 10, 15)));
-        attendanceBook.addAttendance(mimi, new Attendance(LocalDateTime.of(2024, 12, 6, 10, 0)));
-        attendanceBook.addAttendance(mimi, new Attendance(LocalDateTime.of(2024, 12, 9, 13, 0)));
-        // 10 이미 존재
-        // 11, 12 => 결석
-        // 결석 2, 지각 3, 출석 4
+        addAttendanceToBook(mimi,
+                LocalDateTime.of(2024, 12, 2, 13, 0),
+                LocalDateTime.of(2024, 12, 3, 10, 15),
+                LocalDateTime.of(2024, 12, 4, 10, 15),
+                LocalDateTime.of(2024, 12, 5, 10, 15),
+                LocalDateTime.of(2024, 12, 6, 10, 0),
+                LocalDateTime.of(2024, 12, 9, 13, 0)
+                // 10 이미 존재
+                // 11, 12 => 결석
+                // 결석 2, 지각 3, 출석 4
 
-        LocalDate yesterday = LocalDate.of(2024, 12, 12);
+        );
         AttendanceCount attendanceCount = attendanceBook.findCountUntil(mimi, yesterday);
 
         assertThat(attendanceCount.absentCount()).isEqualTo(2);
@@ -167,7 +176,7 @@ public class AttendanceBookTest {
     void test10() {
         setAttendanceBook();
 
-        PenaltyInformation penaltyInformation = attendanceBook.findPenaltyCrewSorted(LocalDate.of(2024, 12, 12));
+        PenaltyInformation penaltyInformation = attendanceBook.findPenaltyCrewSorted(yesterday);
         List<CrewName> crewNames = penaltyInformation.sortedValue().stream()
                 .map(AttendanceCount::crewName)
                 .toList();
@@ -181,7 +190,7 @@ public class AttendanceBookTest {
         setAttendanceBook();
         updateConsideredAbsent();
 
-        PenaltyInformation penaltyInformation = attendanceBook.findPenaltyCrewSorted(LocalDate.of(2024, 12, 12));
+        PenaltyInformation penaltyInformation = attendanceBook.findPenaltyCrewSorted(yesterday);
         List<CrewName> crewNames = penaltyInformation.sortedValue().stream()
                 .map(AttendanceCount::crewName)
                 .toList();
@@ -195,7 +204,7 @@ public class AttendanceBookTest {
         setAttendanceBook();
         updateEqualAbsent();
 
-        PenaltyInformation penaltyInformation = attendanceBook.findPenaltyCrewSorted(LocalDate.of(2024, 12, 12));
+        PenaltyInformation penaltyInformation = attendanceBook.findPenaltyCrewSorted(yesterday);
         List<CrewName> crewNames = penaltyInformation.sortedValue().stream()
                 .map(AttendanceCount::crewName)
                 .toList();
@@ -205,7 +214,6 @@ public class AttendanceBookTest {
 
     private void setAttendanceBook() {
         Map<CrewName, AttendanceRecord> testData = new HashMap<>();
-
         testData.put(malone, new AttendanceRecord());
         testData.put(norang, new AttendanceRecord());
         testData.put(pree, new AttendanceRecord());
@@ -221,50 +229,73 @@ public class AttendanceBookTest {
     }
 
     private void updateConsideredAbsent() { // 면담 4 (2 + 2)
-        attendanceBook.modify(river, new Attendance(LocalDateTime.of(2024, 12, 2, 13, 15)));
-        attendanceBook.modify(river, new Attendance(LocalDateTime.of(2024, 12, 3, 10, 15)));
-        attendanceBook.modify(river, new Attendance(LocalDateTime.of(2024, 12, 4, 10, 15)));
-        attendanceBook.modify(river, new Attendance(LocalDateTime.of(2024, 12, 5, 10, 15)));
-        attendanceBook.modify(river, new Attendance(LocalDateTime.of(2024, 12, 6, 10, 15)));
-        attendanceBook.modify(river, new Attendance(LocalDateTime.of(2024, 12, 9, 13, 15)));
-        attendanceBook.modify(river, dayOfTenAttendance);
+        updateAttendance(river,
+                LocalDateTime.of(2024, 12, 2, 13, 15),
+                LocalDateTime.of(2024, 12, 3, 10, 15),
+                LocalDateTime.of(2024, 12, 4, 10, 15),
+                LocalDateTime.of(2024, 12, 5, 10, 15),
+                LocalDateTime.of(2024, 12, 6, 10, 15),
+                LocalDateTime.of(2024, 12, 9, 13, 15),
+                LocalDateTime.of(2024, 12, 10, 10, 0)
+        );
     }
 
     private void updateEqualAbsent() { // 면담 3 (2 + 1)
-        attendanceBook.modify(river, new Attendance(LocalDateTime.of(2024, 12, 5, 10, 15)));
-        attendanceBook.modify(river, new Attendance(LocalDateTime.of(2024, 12, 6, 10, 15)));
-        attendanceBook.modify(river, new Attendance(LocalDateTime.of(2024, 12, 9, 13, 15)));
+        updateAttendance(river,
+                LocalDateTime.of(2024, 12, 5, 10, 15),
+                LocalDateTime.of(2024, 12, 6, 10, 15),
+                LocalDateTime.of(2024, 12, 9, 13, 15));
     }
 
-    void makeFirstExpulsion() { // 결석 6
-        attendanceBook.addAttendance(malone, new Attendance(LocalDateTime.of(2024, 12, 2, 13, 0)));
-        attendanceBook.addAttendance(malone, new Attendance(LocalDateTime.of(2024, 12, 3, 10, 0)));
-        attendanceBook.addAttendance(malone, dayOfTenAttendance);
+    private void makeFirstExpulsion() { // 결석 6
+        addAttendanceToBook(malone,
+                LocalDateTime.of(2024, 12, 2, 13, 0),
+                LocalDateTime.of(2024, 12, 3, 10, 0),
+                LocalDateTime.of(2024, 12, 10, 10, 0)
+        );
     }
 
-    void makeSecondExpulsion() { // 결석 5
-        attendanceBook.addAttendance(norang, new Attendance(LocalDateTime.of(2024, 12, 2, 13, 0)));
-        attendanceBook.addAttendance(norang, new Attendance(LocalDateTime.of(2024, 12, 3, 10, 0)));
-        attendanceBook.addAttendance(norang, new Attendance(LocalDateTime.of(2024, 12, 4, 10, 0)));
-        attendanceBook.addAttendance(norang, dayOfTenAttendance);
+    private void makeSecondExpulsion() { // 결석 5
+        addAttendanceToBook(norang,
+                LocalDateTime.of(2024, 12, 2, 13, 0),
+                LocalDateTime.of(2024, 12, 3, 10, 0),
+                LocalDateTime.of(2024, 12, 4, 10, 0),
+                LocalDateTime.of(2024, 12 ,10, 10, 0)
+        );
     }
 
-    void makeFirstCounseling() { // 면담 3
-        attendanceBook.addAttendance(pree, new Attendance(LocalDateTime.of(2024, 12, 2, 13, 0)));
-        attendanceBook.addAttendance(pree, new Attendance(LocalDateTime.of(2024, 12, 3, 10, 0)));
-        attendanceBook.addAttendance(pree, new Attendance(LocalDateTime.of(2024, 12, 4, 10, 0)));
-        attendanceBook.addAttendance(pree, new Attendance(LocalDateTime.of(2024, 12, 5, 10, 0)));
-        attendanceBook.addAttendance(pree, new Attendance(LocalDateTime.of(2024, 12, 6, 10, 0)));
-        attendanceBook.addAttendance(pree, dayOfTenAttendance);
+    private void makeFirstCounseling() { // 면담 3
+        addAttendanceToBook(pree,
+                LocalDateTime.of(2024, 12, 2, 13, 0),
+                LocalDateTime.of(2024, 12, 3, 10, 0),
+                LocalDateTime.of(2024, 12, 4, 10, 0),
+                LocalDateTime.of(2024, 12, 5, 10, 0),
+                LocalDateTime.of(2024, 12, 6, 10, 0),
+                LocalDateTime.of(2024, 12, 10, 10, 0)
+        );
     }
 
-    void makeFirstWarning() { // 경고 2
-        attendanceBook.addAttendance(river, new Attendance(LocalDateTime.of(2024, 12, 2, 13, 0)));
-        attendanceBook.addAttendance(river, new Attendance(LocalDateTime.of(2024, 12, 3, 10, 0)));
-        attendanceBook.addAttendance(river, new Attendance(LocalDateTime.of(2024, 12, 4, 10, 0)));
-        attendanceBook.addAttendance(river, new Attendance(LocalDateTime.of(2024, 12, 5, 10, 0)));
-        attendanceBook.addAttendance(river, new Attendance(LocalDateTime.of(2024, 12, 6, 10, 0)));
-        attendanceBook.addAttendance(river, new Attendance(LocalDateTime.of(2024, 12, 9, 13, 0)));
-        attendanceBook.addAttendance(river, dayOfTenAttendance);
+    private void makeFirstWarning() { // 경고 2
+        addAttendanceToBook(river,
+                LocalDateTime.of(2024, 12, 2, 13, 0),
+                LocalDateTime.of(2024, 12, 3, 10, 0),
+                LocalDateTime.of(2024, 12, 4, 10, 0),
+                LocalDateTime.of(2024, 12, 5, 10, 0),
+                LocalDateTime.of(2024, 12, 6, 10, 0),
+                LocalDateTime.of(2024, 12, 9, 13, 0),
+                LocalDateTime.of(2024, 12, 10, 10, 0)
+        );
+    }
+
+    private void addAttendanceToBook(CrewName crewName, LocalDateTime... localDateTimes) {
+        for (LocalDateTime localDateTime : localDateTimes) {
+            attendanceBook.addAttendance(crewName, new Attendance(localDateTime));
+        }
+    }
+
+    private void updateAttendance(CrewName crewName, LocalDateTime... localDateTimes) {
+        for (LocalDateTime localDateTime : localDateTimes) {
+            attendanceBook.modify(crewName, new Attendance(localDateTime));
+        }
     }
 }
