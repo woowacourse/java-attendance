@@ -103,4 +103,12 @@ public class AttendanceHistory {
         return Arrays.stream(AttendanceStatus.values())
                 .collect(Collectors.toMap(Function.identity(), status -> 0));
     }
+
+    public boolean isRiskOfExpulsion(final LocalDate targetDate) {
+        final Map<AttendanceStatus, Integer> statistics = calculateAttendanceStatusStatistics(targetDate);
+        final int absenceCount = statistics.get(AttendanceStatus.ABSENCE) + statistics.get(AttendanceStatus.LATE) / 3;
+        final RiskOfExpulsionStatus status = RiskOfExpulsionStatus.calculateRiskOfExpulsionStatus(
+                absenceCount);
+        return status != RiskOfExpulsionStatus.NORMAL;
+    }
 }
