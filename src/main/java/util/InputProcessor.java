@@ -12,7 +12,7 @@ public class InputProcessor {
             try {
                 return process.get();
             } catch (IllegalArgumentException e) {
-                outputView.printErrorMessage(e.getMessage());
+                this.outputView.printErrorMessage(e.getMessage());
             }
         }
     }

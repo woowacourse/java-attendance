@@ -30,19 +30,19 @@ public class Attendances {
     }
 
     public int countAttendance() {
-        return (int) attendances.stream()
+        return (int) this.attendances.stream()
                 .filter(Attendance::isAttended)
                 .count();
     }
 
     public int countLate() {
-        return (int) attendances.stream()
+        return (int) this.attendances.stream()
                 .filter(Attendance::isLate)
                 .count();
     }
 
     public int countUnattended(LocalDate nowDate) {
-        int absentCount = (int) attendances.stream()
+        int absentCount = (int) this.attendances.stream()
                 .filter(Attendance::isUnattendedOrNoShow)
                 .count();
 
@@ -56,7 +56,7 @@ public class Attendances {
 
     public void editAttendance(AttendanceDate attendanceDate, AttendanceTime attendanceTime) {
         Attendance oldAttendance = findAttendanceByDate(attendanceDate);
-        attendances.remove(oldAttendance);
-        attendances.add(new Attendance(attendanceDate, attendanceTime));
+        this.attendances.remove(oldAttendance);
+        this.attendances.add(new Attendance(attendanceDate, attendanceTime));
     }
 }

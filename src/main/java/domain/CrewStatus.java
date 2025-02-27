@@ -34,10 +34,10 @@ public enum CrewStatus {
     }
 
     public String getStatus() {
-        return status;
+        return this.status;
     }
 
     public int getSequence() {
-        return sequence;
+        return this.sequence;
     }
 }

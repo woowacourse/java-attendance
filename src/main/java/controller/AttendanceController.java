@@ -23,14 +23,14 @@ public class AttendanceController {
         MenuOption option;
 
         do {
-            outputView.printWelcomeMessage();
+            this.outputView.printWelcomeMessage();
             option = InputProcessor.processInputUntilSuccess(this::processOptionInput);
             option.process(attendanceBook, Constants.NOW_DATE);
         } while (!option.equals(MenuOption.QUIT));
     }
 
     private MenuOption processOptionInput() {
-        String optionInput = inputView.getOptionInput();
+        String optionInput = this.inputView.getOptionInput();
         return MenuOption.findOptionByCommand(optionInput);
     }
 }

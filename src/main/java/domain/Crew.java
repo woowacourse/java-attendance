@@ -75,11 +75,11 @@ public class Crew {
             return false;
         }
         Crew crew = (Crew) o;
-        return Objects.equals(name, crew.name);
+        return Objects.equals(this.name, crew.name);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(name);
+        return Objects.hashCode(this.name);
     }
 }

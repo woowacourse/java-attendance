@@ -30,7 +30,7 @@ public class AttendanceBook {
     }
 
     public Crew findCrewByName(String name) {
-        return crews.stream()
+        return this.crews.stream()
                 .filter(crew -> crew.isSameName(name))
                 .findAny()
                 .orElseThrow(() -> new IllegalArgumentException("[ERROR] 등록되지 않은 닉네임입니다."));
@@ -47,7 +47,7 @@ public class AttendanceBook {
     }
 
     public List<Crew> findRiskOfExpulsionCrew(LocalDate nowDate) {
-        return crews.stream()
+        return this.crews.stream()
                 .filter(crew -> crew.isExpelledStatus(nowDate))
                 .toList();
     }

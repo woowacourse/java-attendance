@@ -23,6 +23,6 @@ public enum AttendanceStatus {
     }
 
     public String getStatus() {
-        return status;
+        return this.status;
     }
 }
