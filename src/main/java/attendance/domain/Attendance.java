@@ -19,7 +19,7 @@ public class Attendance {
     }
 
     public Attendance modifyAttendanceTime(LocalTime modifyTime) {
-
+        attendanceTime.modify(modifyTime);
         return this;
     }
 }

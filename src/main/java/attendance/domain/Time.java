@@ -2,10 +2,11 @@ package attendance.domain;
 
 import java.time.DayOfWeek;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 
 public class Time {
 
-    private final LocalDateTime attendanceTime;
+    private LocalDateTime attendanceTime;
 
     public Time(LocalDateTime attendanceTime) {
         validateHoliday(attendanceTime);
@@ -33,4 +34,9 @@ public class Time {
     }
 
 
+    public void modify(LocalTime modifyTime) {
+        attendanceTime = attendanceTime
+                .withHour(modifyTime.getHour())
+                .withMinute(modifyTime.getMinute());
+    }
 }
