@@ -42,4 +42,23 @@ public class AttendanceBookTest {
         // then
         Assertions.assertThat(result).isEqualTo(expectedResult);
     }
+
+    @ParameterizedTest
+    @CsvSource(value = {
+            "27,true",
+            "28,false"
+    })
+    void 입력_받은_이름과_날짜에_해당하는_출석_기록이_존재하는지_판단한다(final int date, final boolean expectedResult) {
+
+        // given
+        final AttendanceBook attendanceBook = new AttendanceBook();
+        attendanceBook.add("이름", new AttendanceTime(LocalDate.of(2025, 2, 27), 10, 10));
+
+        // when
+        final boolean result = attendanceBook.isAlreadyExists("이름", LocalDate.of(2025, 2, date));
+
+        // then
+        Assertions.assertThat(result).isEqualTo(expectedResult);
+    }
+
 }
