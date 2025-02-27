@@ -19,6 +19,14 @@ public enum AttendanceType {
         if (arrivalTime.getHour() < startTime.getHour()) {
             return ATTENDANCE;
         }
+        return parseByOverTime(startTime, arrivalTime);
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    private static AttendanceType parseByOverTime(LocalTime startTime, LocalTime arrivalTime) {
         int overTime = arrivalTime.getMinute() - startTime.getMinute();
         if (arrivalTime.getHour() == startTime.getHour() && overTime < LATE.overTime) {
             return ATTENDANCE;
@@ -27,9 +35,5 @@ public enum AttendanceType {
             return LATE;
         }
         return ABSENCE;
-    }
-
-    public String getName() {
-        return name;
     }
 }
