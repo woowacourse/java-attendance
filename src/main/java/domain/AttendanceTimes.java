@@ -11,7 +11,6 @@ public class AttendanceTimes {
 
     private AttendanceTimes(List<AttendanceTime> attendanceLog) {
         this.attendanceLog = new ArrayList<>(attendanceLog);
-        ;
     }
 
     public static AttendanceTimes of(List<AttendanceTime> attendanceTimes) {
