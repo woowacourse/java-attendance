@@ -42,7 +42,7 @@ public class AttendanceBookTest {
             final LocalDate today = LocalDate.of(2024, 12, 13);
 
             // when
-            final RiskOfExpulsionStatus actual = attendanceBook.calculateRiskOfExpulsionStatus(today);
+            final RiskOfExpulsionStatus actual = attendanceBook.calculateRiskOfExpulsionStatus(crew, today);
 
             // then
             assertThat(actual).isEqualByComparingTo(RiskOfExpulsionStatus.EXPULSION);

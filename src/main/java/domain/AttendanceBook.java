@@ -33,7 +33,7 @@ public class AttendanceBook {
         }
     }
 
-    public RiskOfExpulsionStatus calculateRiskOfExpulsionStatus(final LocalDate date) {
+    public RiskOfExpulsionStatus calculateRiskOfExpulsionStatus(final Crew crew, final LocalDate date) {
         return null;
     }
 }
