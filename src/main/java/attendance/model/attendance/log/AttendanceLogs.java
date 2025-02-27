@@ -85,18 +85,34 @@ public class AttendanceLogs {
     }
 
     public int getPolicyAppliedAbsenceCount() {
-        return -1;
+        return getAbsenceCount() + getLateCount() / 3;
     }
 
     public int getAbsenceCount() {
-        return -1;
+        return Math.toIntExact(
+                values.stream()
+                        .filter(this::isAbsence)
+                        .count()
+        );
     }
 
     public int getPolicyAppliedLateCount() {
-        return -1;
+        return getLateCount() % 3;
     }
 
     public int getLateCount() {
-        return -1;
+        return Math.toIntExact(
+                values.stream()
+                        .filter(this::isLate)
+                        .count()
+        );
+    }
+
+    private boolean isLate(AttendanceLog attendanceLog) {
+        return attendanceLog.getAttendanceStatus() == AttendanceStatus.LATE;
+    }
+
+    private boolean isAbsence(AttendanceLog attendanceLog) {
+        return attendanceLog.getAttendanceStatus() == AttendanceStatus.ABSENCE;
     }
 }
